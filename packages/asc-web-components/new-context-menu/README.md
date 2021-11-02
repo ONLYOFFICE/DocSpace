@@ -29,6 +29,7 @@ and header(show only tablet or mobile, when view changed).
 | `id`           |    `string`    |    -     |   -    | `contextMenu` | Accepts id               |
 | `model`        |    `array`     |    -     |   -    |     `[]`      | Items collection         |
 | `header`       |    `object`    |    -     |   -    |     `{}`      | ContextMenu header       |
+| `position`     |    `object`    |    -     |   -    |     `{}`      | ContextMenu position     |
 | `style`        | `obj`, `array` |    -     |   -    |       -       | Accepts css style        |
 | `targetAreaId` |    `string`    |    -     |   -    |       -       | Id of container apply to |
 | `withBackdrop` |     `bool`     |    -     |   -    |    `true`     | Used to display backdrop |

@@ -33,6 +33,8 @@ const Row = React.memo(({ data, index, style }) => {
       // eslint-disable-next-line react/prop-types
       isSeparator={data[index].isSeparator}
       // eslint-disable-next-line react/prop-types
+      options={data[index].options}
+      // eslint-disable-next-line react/prop-types
       onClick={data[index].onClick}
       style={style}
     />
@@ -146,6 +148,25 @@ class NewContextMenu extends React.Component {
   }
 
   position(event) {
+    if (this.props.position) {
+      let width = this.menuRef.current.offsetParent
+        ? this.menuRef.current.offsetWidth
+        : DomHelpers.getHiddenElementOuterWidth(this.menuRef.current);
+      let viewport = DomHelpers.getViewport();
+      if (
+        this.props.position.left + width >
+        viewport.width - DomHelpers.calculateScrollbarWidth()
+      ) {
+        this.menuRef.current.style.right =
+          // -1 * this.props.position.width + width + "px";
+          0 + "px";
+      } else {
+        this.menuRef.current.style.left = this.props.position.left + "px";
+      }
+
+      this.menuRef.current.style.top = this.props.position.top + "px";
+      return;
+    }
     if (event) {
       let left = event.pageX + 1;
       let top = event.pageY + 1;
@@ -343,6 +364,7 @@ class NewContextMenu extends React.Component {
             icon={item.icon}
             label={item.label}
             isSeparator={item.isSeparator}
+            options={item.options}
             onClick={item.onClick}
           />
         );
@@ -356,10 +378,11 @@ class NewContextMenu extends React.Component {
     const className = classNames("p-contextmenu", this.props.className);
 
     const items = this.renderContextMenuItems();
-
     return (
       <>
-        <Backdrop visible={this.state.visible} withBackground={true} />
+        {this.props.withBackdrop && (
+          <Backdrop visible={this.state.visible} withBackground={true} />
+        )}
         <StyledContextMenu changeView={this.state.changeView}>
           <CSSTransition
             nodeRef={this.menuRef}
@@ -406,16 +429,20 @@ class NewContextMenu extends React.Component {
 NewContextMenu.propTypes = {
   /** Unique identifier of the element */
   id: PropTypes.string,
-  /** An array of menuitems */
+  /** An array of objects */
   model: PropTypes.array,
-  /** An object of header */
+  /** An object of header with icon and label */
   header: PropTypes.object,
+  /** Position of context menu */
+  position: PropTypes.object,
   /** Inline style of the component */
   style: PropTypes.object,
   /** Style class of the component */
   className: PropTypes.string,
   /** Attaches the menu to document instead of a particular item */
   global: PropTypes.bool,
+  /** Tell when context menu was render with backdrop */
+  withBackdrop: PropTypes.bool,
   /** Base zIndex value to use in layering */
   autoZIndex: PropTypes.bool,
   /** Whether to automatically manage layering */
@@ -431,6 +458,8 @@ NewContextMenu.propTypes = {
 NewContextMenu.defaultProps = {
   id: null,
   model: null,
+  position: null,
+  header: null,
   style: null,
   className: null,
   global: false,
@@ -439,6 +468,7 @@ NewContextMenu.defaultProps = {
   appendTo: null,
   onShow: null,
   onHide: null,
+  withBackdrop: true,
 };
 
 export default NewContextMenu;

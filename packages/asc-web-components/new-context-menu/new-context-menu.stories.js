@@ -110,6 +110,20 @@ const Template = (args) => {
       icon: "/static/images/catalog.shared.react.svg",
       key: "sharing-settings10",
       label: "Sharing settings",
+      options: [
+        {
+          key: "key1",
+          icon: "static/images/nav.logo.react.svg",
+          label: "Item after separator",
+          onClick: () => console.log("Button 1 clicked"),
+        },
+        {
+          key: "key2",
+          icon: "static/images/nav.logo.react.svg",
+          label: "Item after separator",
+          onClick: () => console.log("Button 2 clicked"),
+        },
+      ],
       onClick: () => console.log("item 3 clicked"),
     },
     {

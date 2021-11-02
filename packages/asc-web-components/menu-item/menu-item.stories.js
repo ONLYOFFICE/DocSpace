@@ -45,6 +45,25 @@ const Template = () => {
       <MenuItem onClick={() => console.log("Button 3 clicked")}>
         <div>some child without styles</div>
       </MenuItem>
+      <MenuItem
+        icon={"static/images/nav.logo.react.svg"}
+        label="Item after separator"
+        options={[
+          {
+            key: "key1",
+            icon: "static/images/nav.logo.react.svg",
+            label: "Item after separator",
+            onClick: () => console.log("Button 1 clicked"),
+          },
+          {
+            key: "key2",
+            icon: "static/images/nav.logo.react.svg",
+            label: "Item after separator",
+            onClick: () => console.log("Button 2 clicked"),
+          },
+        ]}
+        onClick={() => console.log("Button 2 clicked")}
+      />
     </div>
   );
 };

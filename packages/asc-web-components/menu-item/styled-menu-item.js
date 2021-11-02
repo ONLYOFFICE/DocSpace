@@ -17,6 +17,7 @@ const styledMobileText = css`
 `;
 
 const StyledText = styled(Text)`
+  width: 100%;
   font-weight: ${(props) => props.theme.menuItem.text.fontWeight};
   font-size: ${(props) => props.theme.menuItem.text.fontSize};
   line-height: ${(props) => props.theme.menuItem.text.lineHeight};
@@ -125,6 +126,10 @@ const StyledMenuItem = styled.div`
         cursor: default !important;
       }
     `}
+
+  .arrow-icon {
+    margin: 0 0 0 8px;
+  }
 `;
 StyledMenuItem.defaultProps = { theme: Base };
 
