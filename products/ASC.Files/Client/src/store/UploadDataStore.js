@@ -460,10 +460,7 @@ class UploadDataStore {
       filter,
       setFilter,
     } = this.filesStore;
-    if (
-      this.selectedFolderStore.id === folderId &&
-      window.location.pathname.indexOf("/history") === -1
-    ) {
+    if (window.location.pathname.indexOf("/history") === -1) {
       const newFiles = files;
       const newFolders = folders;
 
@@ -527,15 +524,17 @@ class UploadDataStore {
           setExpandedKeys,
           treeFolders,
         } = this.treeFoldersStore;
-        const newExpandedKeys = expandedKeys.filter((x) => x !== folderId + "");
+
+        const newExpandedKeys = expandedKeys.filter(
+          (x) => x !== folderInfo.path[folderInfo.path.length - 1] + ""
+        );
+
         setExpandedKeys(newExpandedKeys);
 
-        let path = this.selectedFolderStore.pathParts.slice(0);
-
         loopTreeFolders(
-          path,
+          folderInfo.path,
           treeFolders,
-          this.filesStore.folders,
+          this.filesStore.folders.length === 1 ? this.filesStore.folders : [],
           this.filesStore.folders.length
         );
       }
@@ -606,10 +605,9 @@ class UploadDataStore {
     const { needConvert } = currentFile;
 
     let folderInfo = null;
-
-    if (path[path.length - 2] === this.selectedFolderStore.id) {
-      folderInfo = await getFolderInfo(path[path.length - 1]);
-    }
+    const index = path.findIndex((x) => x === this.selectedFolderStore.id);
+    const folderId = path[index + 1];
+    if (folderId) folderInfo = await getFolderInfo(folderId);
 
     if (needConvert) {
       runInAction(() => (currentFile.action = "convert"));
@@ -621,16 +619,26 @@ class UploadDataStore {
       }
       return Promise.resolve();
     } else {
-      //TODO:
       if (currentFile.action === "uploaded") {
         const toFolder =
           currentFile.fileInfo.folderId === this.selectedFolderStore.id
             ? currentFile.fileInfo.folderId
             : folderInfo
-            ? folderInfo.parentId
+            ? folderId
             : null;
 
-        this.refreshFiles(toFolder, true, currentFile, folderInfo);
+        if (folderInfo) {
+          const newPath = [];
+
+          let i = 0;
+          while (path[i] && path[i] !== folderId) {
+            newPath.push(path[i]);
+            i++;
+          }
+
+          folderInfo.path = newPath;
+        }
+        this.refreshFiles(toFolder, !!folderInfo, currentFile, folderInfo);
       }
       return Promise.resolve();
     }
