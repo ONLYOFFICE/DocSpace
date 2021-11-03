@@ -187,25 +187,25 @@ const Form = (props) => {
   const { error, confirmedEmail } = match.params;
 
   const oAuthLogin = async (profile) => {
-    await thirdPartyLogin(profile)
-      .then(() => {
-        const redirectPath = localStorage.getItem("redirectPath");
+    try {
+      await thirdPartyLogin(profile);
 
-        if (redirectPath) {
-          localStorage.removeItem("redirectPath");
-          window.location.href = redirectPath;
-        }
-      })
-      .catch(() => {
-        toastr.error(
-          t("Common:ProviderNotConnected"),
-          t("Common:ProviderLoginError")
-        );
-      })
-      .finally(() => {
-        localStorage.removeItem("profile");
-        localStorage.removeItem("code");
-      });
+      const redirectPath = localStorage.getItem("redirectPath");
+
+      if (redirectPath) {
+        localStorage.removeItem("redirectPath");
+        window.location.href = redirectPath;
+      }
+    }
+    catch(e) {
+      toastr.error(
+        t("Common:ProviderNotConnected"),
+        t("Common:ProviderLoginError")
+      );
+    }
+
+    localStorage.removeItem("profile");
+    localStorage.removeItem("code");
   };
 
   useEffect(() => {
