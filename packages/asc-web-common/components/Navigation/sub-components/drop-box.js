@@ -159,7 +159,7 @@ const DropBox = React.forwardRef(
       const currentHeight = itemsHeight.reduce((a, b) => a + b);
 
       setDropBoxHeight(
-        currentHeight > window.innerHeight - 95 ? window.innerHeight - 95 : currentHeight,
+        currentHeight > window.innerHeight - 99 ? window.innerHeight - 99 : currentHeight,
       );
     });
 
