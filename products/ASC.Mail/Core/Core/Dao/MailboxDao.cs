@@ -37,7 +37,6 @@ using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
-using ASC.Mail.Extensions;
 using ASC.Mail.Models;
 using ASC.Security.Cryptography;
 
@@ -107,14 +106,16 @@ namespace ASC.Mail.Core.Dao
 
             return mailboxes;
         }
-
         public List<Mailbox> GetUniqueMailBoxes(IMailboxesExp exp)
         {
             var query = MailDbContext.MailMailbox
-                 .Where(exp.GetExpression())
-                 .Select(ToMailbox)
-                 .DistinctBy(b => b.Address)
-                 .ToList();
+                .FromSqlRaw(
+                "SELECT m.* FROM mail_mailbox m " +
+                "INNER JOIN(SELECT address, MAX(id) AS max_id FROM mail_mailbox GROUP BY address) m1 " +
+                "ON m.address = m1.address AND m.id = m1.max_id")
+                .Where(exp.GetExpression())
+                .Select(ToMailbox)
+                .ToList();
 
             if (!string.IsNullOrEmpty(exp.OrderBy) && exp.OrderAsc.HasValue)
             {
@@ -126,7 +127,6 @@ namespace ASC.Mail.Core.Dao
                 {
                     query = query.OrderByDescending(b => b.DateChecked).ToList();
                 }
-
             }
 
             if (exp.Limit.HasValue)
