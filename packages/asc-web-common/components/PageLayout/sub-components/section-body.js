@@ -151,7 +151,7 @@ class SectionBody extends React.Component {
           tabIndex: -1,
         }
       : {};
-    console.log("isDesktop", isDesktop);
+
     return uploadFiles ? (
       <StyledDropZoneBody
         isDropZone
