@@ -10,6 +10,12 @@ import Scrollbar from "@appserver/components/scrollbar";
 import DragAndDrop from "@appserver/components/drag-and-drop";
 import { tablet, desktop } from "@appserver/components/utils/device";
 
+const paddingStyles = css`
+  padding: 17px 7px 16px 24px;
+  @media ${tablet} {
+    padding: 16px 0 16px 24px;
+  }
+`;
 const commonStyles = css`
   flex-grow: 1;
 
@@ -19,9 +25,17 @@ const commonStyles = css`
 
   -webkit-user-select: none;
 
+  .section-wrapper {
+    ${(props) =>
+      !props.withScroll &&
+      `display: flex; height: 100%; box-sizing:border-box`};
+    ${(props) => !props.withScroll && paddingStyles}
+  }
+
   .section-wrapper-content {
+    ${paddingStyles}
     flex: 1 0 auto;
-    padding: 17px 7px 16px 24px;
+
     outline: none;
     ${(props) =>
       props.viewAs == "tile" &&
@@ -30,8 +44,10 @@ const commonStyles = css`
         padding-left: 20px;
       `}
 
-    @media ${tablet} {
-      padding: 16px 0 16px 24px;
+    .section-wrapper {
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
     }
 
     .section-wrapper {
@@ -58,7 +74,16 @@ const StyledSectionBody = styled.div`
     props.withScroll &&
     `
     margin-left: -24px;
-  `}
+  `} 
+
+  .additional-scroll-height {
+    ${(props) =>
+      !props.withScroll &&
+      !props.pinned &&
+      `  height: 64px;
+  
+`}
+  }
 `;
 
 const StyledDropZoneBody = styled(DragAndDrop)`
@@ -97,8 +122,9 @@ class SectionBody extends React.Component {
   // }
 
   componentDidMount() {
+    const { withScroll } = this.props;
     if (!this.props.autoFocus) return;
-    this.focusRef.current.focus();
+    if (withScroll) this.focusRef.current.focus();
   }
 
   componentWillUnmount() {
@@ -125,7 +151,7 @@ class SectionBody extends React.Component {
           tabIndex: -1,
         }
       : {};
-
+    console.log("isDesktop", isDesktop);
     return uploadFiles ? (
       <StyledDropZoneBody
         isDropZone
@@ -188,10 +214,7 @@ class SectionBody extends React.Component {
             </div>
           )
         ) : (
-          <div className="section-wrapper">
-            {children}
-            <StyledSpacer pinned={pinned} />
-          </div>
+          <div className="section-wrapper">{children}</div>
         )}
       </StyledSectionBody>
     );
