@@ -336,7 +336,7 @@ class UploadDataStore {
             }
           });
 
-          this.refreshFiles(file.fileInfo.folderId, false, file);
+          this.refreshFiles(file);
           const percent = this.getConversationPercent(index + 1);
           this.setConversionPercent(percent, !!error);
         }
@@ -451,7 +451,7 @@ class UploadDataStore {
     }
   };
 
-  refreshFiles = (folderId, needUpdateTree = true, currentFile, folderInfo) => {
+  refreshFiles = async (currentFile) => {
     const {
       files,
       setFiles,
@@ -463,6 +463,22 @@ class UploadDataStore {
     if (window.location.pathname.indexOf("/history") === -1) {
       const newFiles = files;
       const newFolders = folders;
+
+      let folderInfo = null;
+      const index = currentFile.path.findIndex(
+        (x) => x === this.selectedFolderStore.id
+      );
+      const folderId = currentFile.path[index + 1];
+      if (folderId) folderInfo = await getFolderInfo(folderId);
+
+      const newPath = [];
+      if (folderInfo) {
+        let i = 0;
+        while (currentFile.path[i] && currentFile.path[i] !== folderId) {
+          newPath.push(currentFile.path[i]);
+          i++;
+        }
+      }
 
       const addNewFile = () => {
         if (folderInfo) {
@@ -518,7 +534,7 @@ class UploadDataStore {
         addNewFile();
       }
 
-      if (needUpdateTree) {
+      if (!!folderInfo) {
         const {
           expandedKeys,
           setExpandedKeys,
@@ -526,13 +542,13 @@ class UploadDataStore {
         } = this.treeFoldersStore;
 
         const newExpandedKeys = expandedKeys.filter(
-          (x) => x !== folderInfo.path[folderInfo.path.length - 1] + ""
+          (x) => x !== newPath[newPath.length - 1] + ""
         );
 
         setExpandedKeys(newExpandedKeys);
 
         loopTreeFolders(
-          folderInfo.path,
+          newPath,
           treeFolders,
           this.filesStore.folders.length === 1 ? this.filesStore.folders : [],
           this.filesStore.folders.length
@@ -601,13 +617,9 @@ class UploadDataStore {
     // All chuncks are uploaded
 
     const currentFile = this.files[indexOfFile];
+    currentFile.path = path;
     if (!currentFile) return Promise.resolve();
     const { needConvert } = currentFile;
-
-    let folderInfo = null;
-    const index = path.findIndex((x) => x === this.selectedFolderStore.id);
-    const folderId = path[index + 1];
-    if (folderId) folderInfo = await getFolderInfo(folderId);
 
     if (needConvert) {
       runInAction(() => (currentFile.action = "convert"));
@@ -620,25 +632,7 @@ class UploadDataStore {
       return Promise.resolve();
     } else {
       if (currentFile.action === "uploaded") {
-        const toFolder =
-          currentFile.fileInfo.folderId === this.selectedFolderStore.id
-            ? currentFile.fileInfo.folderId
-            : folderInfo
-            ? folderId
-            : null;
-
-        if (folderInfo) {
-          const newPath = [];
-
-          let i = 0;
-          while (path[i] && path[i] !== folderId) {
-            newPath.push(path[i]);
-            i++;
-          }
-
-          folderInfo.path = newPath;
-        }
-        this.refreshFiles(toFolder, !!folderInfo, currentFile, folderInfo);
+        this.refreshFiles(currentFile);
       }
       return Promise.resolve();
     }
