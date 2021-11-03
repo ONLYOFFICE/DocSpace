@@ -463,19 +463,22 @@ class UploadDataStore {
     if (window.location.pathname.indexOf("/history") === -1) {
       const newFiles = files;
       const newFolders = folders;
+      const path = currentFile.path;
+
+      if (path[path.length - 1] !== this.selectedFolderStore.id) {
+        return;
+      }
 
       let folderInfo = null;
-      const index = currentFile.path.findIndex(
-        (x) => x === this.selectedFolderStore.id
-      );
-      const folderId = currentFile.path[index + 1];
+      const index = path.findIndex((x) => x === this.selectedFolderStore.id);
+      const folderId = index !== -1 ? path[index + 1] : null;
       if (folderId) folderInfo = await getFolderInfo(folderId);
 
       const newPath = [];
       if (folderInfo) {
         let i = 0;
-        while (currentFile.path[i] && currentFile.path[i] !== folderId) {
-          newPath.push(currentFile.path[i]);
+        while (path[i] && path[i] !== folderId) {
+          newPath.push(path[i]);
           i++;
         }
       }
