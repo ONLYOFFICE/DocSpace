@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
+import getFilesFromEvent from "./get-files-from-event";
 import PropTypes from "prop-types";
 
 import StyledDragAndDrop from "./styled-drag-and-drop";
@@ -8,23 +9,24 @@ const DragAndDrop = (props) => {
   const { isDropZone, children, dragging, className, ...rest } = props;
   const classNameProp = className ? className : "";
 
-  const onDrop = (acceptedFiles, array) => {
+  const onDrop = useCallback((acceptedFiles) => {
     acceptedFiles.length && props.onDrop && props.onDrop(acceptedFiles);
-  };
+  }, []);
 
-  const onDragOver = (e) => {
+  const onDragOver = useCallback((e) => {
     props.onDragOver && props.onDragOver(isDragActive, e);
-  };
+  }, []);
 
-  const onDragLeave = (e) => {
+  const onDragLeave = useCallback((e) => {
     props.onDragLeave && props.onDragLeave(e);
-  };
+  }, []);
 
   const { getRootProps, isDragActive } = useDropzone({
     noDragEventsBubbling: !isDropZone,
     onDrop,
     onDragOver,
     onDragLeave,
+    getFilesFromEvent: (event) => getFilesFromEvent(event),
   });
 
   return (
