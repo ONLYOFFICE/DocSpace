@@ -113,11 +113,11 @@ namespace ASC.FederatedLogin.LoginProviders
             InstanceCrypto = instanceCrypto;
         }
 
-        public virtual LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params)
+        public virtual LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs = null)
         {
             try
             {
-                var token = Auth(context, Scopes, out var redirect);
+                var token = Auth(context, Scopes, out var redirect, @params, additionalStateArgs);
 
                 if (redirect)
                 {
@@ -136,7 +136,7 @@ namespace ASC.FederatedLogin.LoginProviders
             }
         }
 
-        protected virtual OAuth20Token Auth(HttpContext context, string scopes, out bool redirect, Dictionary<string, string> additionalArgs = null)
+        protected virtual OAuth20Token Auth(HttpContext context, string scopes, out bool redirect, IDictionary<string, string> additionalArgs = null, IDictionary<string, string> additionalStateArgs = null)
         {
             var error = context.Request.Query["error"];
             if (!string.IsNullOrEmpty(error))
@@ -151,7 +151,7 @@ namespace ASC.FederatedLogin.LoginProviders
             var code = context.Request.Query["code"];
             if (string.IsNullOrEmpty(code))
             {
-                context.Response.Redirect(OAuth20TokenHelper.RequestCode<T>(scopes, additionalArgs));
+                context.Response.Redirect(OAuth20TokenHelper.RequestCode<T>(scopes, additionalArgs, additionalStateArgs));
                 redirect = true;
                 return null;
             }
