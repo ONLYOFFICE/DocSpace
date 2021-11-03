@@ -194,6 +194,7 @@ class SectionBody extends React.Component {
         withScroll={withScroll}
         pinned={pinned}
         isLoaded={isLoaded}
+        isDesktop={isDesktop}
       >
         {withScroll ? (
           !isMobile ? (
