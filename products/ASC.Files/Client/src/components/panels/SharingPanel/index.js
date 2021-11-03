@@ -145,14 +145,7 @@ class SharingPanelComponent extends React.Component {
     const ownerId =
       filesOwnerId !== owner.sharedTo.id ? owner.sharedTo.id : null;
 
-    this.setState(
-      {
-        isLoading: true,
-      },
-      function () {
-        this.setShareInfo(folderIds, fileIds, share, externalAccess, ownerId);
-      }
-    );
+    this.setShareInfo(folderIds, fileIds, share, externalAccess, ownerId);
   };
 
   setShareInfo = (folderIds, fileIds, share, externalAccess, ownerId) => {
@@ -171,6 +164,8 @@ class SharingPanelComponent extends React.Component {
       setShareFiles,
       onSuccess,
     } = this.props;
+
+    this.onClose();
 
     setShareFiles(
       folderIds,
@@ -217,11 +212,7 @@ class SharingPanelComponent extends React.Component {
         return Promise.resolve();
       })
       .then(() => onSuccess && onSuccess())
-      .catch((err) => toastr.error(err))
-      .finally(() => {
-        this.setState({ isLoading: false });
-        this.onClose();
-      });
+      .catch((err) => toastr.error(err));
   };
 
   onNotifyUsersChange = () =>
