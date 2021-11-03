@@ -194,15 +194,7 @@ class SectionHeaderContent extends React.Component {
   onBackToParentFolder = () => {
     const { setIsLoading, parentId, filter, fetchFiles } = this.props;
     setIsLoading(true);
-<<<<<<< HEAD
-    fetchFiles(parentId, filter).finally(() => setIsLoading(false));
-  };
-
-  onCheck = (checked) => {
-    this.props.setSelected(checked ? 'all' : 'none');
-=======
     fetchFiles(parentId, null, true, false).finally(() => setIsLoading(false));
->>>>>>> develop
   };
 
   onSelect = (e) => {
@@ -215,51 +207,22 @@ class SectionHeaderContent extends React.Component {
   };
 
   getMenuItems = () => {
-<<<<<<< HEAD
-    const { t, getHeaderMenu, cbMenuItems, getCheckboxItemLabel } = this.props;
-
-    const headerMenu = getHeaderMenu(t);
-    const children = cbMenuItems.map((key, index) => {
-      const label = getCheckboxItemLabel(t, key);
-      return <DropDownItem key={key} label={label} data-index={index} />;
-    });
-
-    let menu = [
-      {
-        label: t('Common:Select'),
-        isDropdown: true,
-        isSeparator: true,
-        isSelect: true,
-        fontWeight: 'bold',
-        children,
-        onSelect: this.onSelect,
-      },
-    ];
-=======
     const { t, cbMenuItems, getCheckboxItemLabel } = this.props;
 
     const checkboxOptions = (
       <>
         {cbMenuItems.map((key) => {
           const label = getCheckboxItemLabel(t, key);
-          return (
-            <DropDownItem
-              key={key}
-              label={label}
-              data-key={key}
-              onClick={this.onSelect}
-            />
-          );
+          return <DropDownItem key={key} label={label} data-key={key} onClick={this.onSelect} />;
         })}
       </>
     );
->>>>>>> develop
 
     return checkboxOptions;
   };
 
   onChange = (checked) => {
-    this.props.setSelected(checked ? "all" : "none");
+    this.props.setSelected(checked ? 'all' : 'none');
   };
 
   onClickFolder = (data) => {
@@ -275,6 +238,7 @@ class SectionHeaderContent extends React.Component {
     //console.log("Body header render");
 
     const {
+      t,
       tReady,
       isRootFolder,
       title,
@@ -282,19 +246,15 @@ class SectionHeaderContent extends React.Component {
       isDesktop,
       isTabletView,
       personal,
-<<<<<<< HEAD
       navigationPath,
-=======
       getHeaderMenu,
       viewAs,
->>>>>>> develop
     } = this.props;
     const menuItems = this.getMenuItems();
     const isLoading = !title || !tReady;
     const headerMenu = getHeaderMenu(t);
 
     return (
-<<<<<<< HEAD
       <Navigation
         isRootFolder={isRootFolder}
         canCreate={canCreate}
@@ -312,100 +272,6 @@ class SectionHeaderContent extends React.Component {
         onClickFolder={this.onClickFolder}
         onBackToParentFolder={this.onBackToParentFolder}
       />
-=======
-      <Consumer>
-        {(context) => (
-          <StyledContainer
-            width={context.sectionWidth}
-            isRootFolder={isRootFolder}
-            canCreate={canCreate}
-            title={title}
-            isDesktop={isDesktop}
-            isTabletView={isTabletView}
-            isLoading={isLoading}
-            viewAs={viewAs}
-          >
-            {isHeaderVisible ? (
-              <TableGroupMenu
-                checkboxOptions={menuItems}
-                onChange={this.onChange}
-                isChecked={isHeaderChecked}
-                isIndeterminate={isHeaderIndeterminate}
-                headerMenu={headerMenu}
-              />
-            ) : (
-              <div className="header-container">
-                {isLoading ? (
-                  <Loaders.SectionHeader />
-                ) : (
-                  <>
-                    {!isRootFolder && (
-                      <IconButton
-                        iconName="/static/images/arrow.path.react.svg"
-                        size="17"
-                        color="#A3A9AE"
-                        hoverColor="#657077"
-                        isFill={true}
-                        onClick={this.onBackToParentFolder}
-                        className="arrow-button"
-                      />
-                    )}
-                    <Headline
-                      className="headline-header"
-                      type="content"
-                      truncate={true}
-                    >
-                      {title}
-                    </Headline>
-                    {!isRootFolder && canCreate ? (
-                      <>
-                        <ContextMenuButton
-                          className="add-button"
-                          directionX="right"
-                          iconName="images/header.plus.svg"
-                          size={17}
-                          color="#A3A9AE"
-                          hoverColor="#657077"
-                          isFill
-                          getData={this.getContextOptionsPlus}
-                          isDisabled={false}
-                        />
-
-                        <ContextMenuButton
-                          className="option-button"
-                          directionX="right"
-                          iconName="images/vertical-dots.react.svg"
-                          size={17}
-                          color="#A3A9AE"
-                          hoverColor="#657077"
-                          isFill
-                          getData={this.getContextOptionsFolder}
-                          isDisabled={false}
-                        />
-                      </>
-                    ) : (
-                      canCreate && (
-                        <ContextMenuButton
-                          className="add-button"
-                          directionX="right"
-                          iconName="images/header.plus.svg"
-                          size={17}
-                          color="#A3A9AE"
-                          hoverColor="#657077"
-                          isFill
-                          getData={this.getContextOptionsPlus}
-                          isDisabled={false}
-                        />
-                      )
-                    )}
-                  </>
-                )}
-              </div>
-            )}
-          </StyledContainer>
-        )}
-      </Consumer>
->>>>>>> develop
     );
   }
 }
