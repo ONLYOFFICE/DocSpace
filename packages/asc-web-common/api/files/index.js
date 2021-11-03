@@ -249,6 +249,27 @@ export function createFolder(parentFolderId, title) {
   return request(options);
 }
 
+//TODO: Change to API method
+export async function createFolderPath(parentFolderId, folderPath) {
+  const pathParts = folderPath.split("/").filter((p) => p !== "");
+
+  const folders = [];
+
+  let i = 0;
+  let parentId = parentFolderId;
+  while (i < pathParts.length) {
+    let title = pathParts[i];
+
+    const folder = await createFolder(parentId, title);
+
+    folders.push(folder);
+    parentId = folder.id;
+    i++;
+  }
+
+  return folders;
+}
+
 export function renameFolder(folderId, title) {
   const data = { title };
   const options = {

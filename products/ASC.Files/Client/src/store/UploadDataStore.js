@@ -15,6 +15,7 @@ import {
   getFileConversationProgress,
   copyToFolder,
   moveToFolder,
+  createFolderPath,
 } from "@appserver/common/api/files";
 
 class UploadDataStore {
@@ -378,10 +379,25 @@ class UploadDataStore {
     this.tempConversionFiles = [];
   };
 
+  createEmptyFolders = (emptyFolders, toFolderId) => {
+    for (let i = 0; i < emptyFolders.length; i++) {
+      let folder = emptyFolders[i];
+      if (!folder.path || folder.path.length === 0) continue;
+
+      createFolderPath(toFolderId, folder.path);
+    }
+  };
+
   startUpload = (uploadFiles, folderId, t) => {
     const { canConvert } = this.formatsStore.docserviceStore;
 
     const toFolderId = folderId ? folderId : this.selectedFolderStore.id;
+
+    const emptyFolders = uploadFiles.filter((f) => f.isEmptyDirectory);
+
+    if (emptyFolders.length > 0) {
+      this.createEmptyFolders(emptyFolders, toFolderId);
+    }
 
     if (this.uploaded) {
       this.files = this.files.filter((f) => f.action !== "upload");
