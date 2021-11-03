@@ -465,10 +465,6 @@ class UploadDataStore {
       const newFolders = folders;
       const path = currentFile.path;
 
-      if (path[path.length - 1] !== this.selectedFolderStore.id) {
-        return;
-      }
-
       let folderInfo = null;
       const index = path.findIndex((x) => x === this.selectedFolderStore.id);
       const folderId = index !== -1 ? path[index + 1] : null;
@@ -481,6 +477,10 @@ class UploadDataStore {
           newPath.push(path[i]);
           i++;
         }
+      }
+
+      if (newPath[newPath.length - 1] !== this.selectedFolderStore.id) {
+        return;
       }
 
       const addNewFile = () => {
