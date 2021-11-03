@@ -192,9 +192,11 @@ class AuthStore {
 
       setWithCredentialsStatus(true);
 
+      this.reset();
+
       this.init();
 
-      return Promise.resolve(true);
+      return Promise.resolve(this.settingsStore.defaultPage);
     } catch (e) {
       return Promise.reject(e);
     }
