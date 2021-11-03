@@ -93,26 +93,8 @@ class SharingPanelComponent extends React.Component {
   };
 
   onSaveClick = () => {
-    const {
-      baseShareData,
-      isNotifyUsers,
-      message,
-      shareDataItems,
-      filesOwnerId,
-    } = this.state;
-    const {
-      selection,
-      isPrivacy,
-      replaceFileStream,
-      t,
-      uploadPanelVisible,
-      updateUploadedItem,
-      uploadSelection,
-      isDesktop,
-      setEncryptionAccess,
-      setShareFiles,
-      onSuccess,
-    } = this.props;
+    const { baseShareData, shareDataItems, filesOwnerId } = this.state;
+    const { selection } = this.props;
 
     let folderIds = [];
     let fileIds = [];
@@ -168,63 +150,80 @@ class SharingPanelComponent extends React.Component {
         isLoading: true,
       },
       function () {
-        setShareFiles(
-          folderIds,
-          fileIds,
-          share,
-          isNotifyUsers,
-          message,
-          externalAccess,
-          ownerId
-        )
-          .then((res) => {
-            if (!ownerId) {
-              this.updateRowData(selection);
-            }
-            if (isPrivacy && isDesktop) {
-              if (share.length === 0) return Promise.resolve();
-              selection.forEach((item) => {
-                return setEncryptionAccess(item).then((encryptedFile) => {
-                  if (!encryptedFile) return Promise.resolve();
-
-                  toastr.info(t("Translations:EncryptedFileSaving"));
-
-                  const title = item.title;
-
-                  return replaceFileStream(
-                    item.id,
-                    encryptedFile,
-                    true,
-                    true
-                  ).then(() =>
-                    toastr.success(
-                      <Trans
-                        t={t}
-                        i18nKey="EncryptedFileSharing"
-                        ns="SharingPanel"
-                      >
-                        File {{ title }} successfully shared
-                      </Trans>
-                    )
-                  );
-                });
-              });
-            }
-
-            if (uploadPanelVisible && uploadSelection) {
-              return updateUploadedItem(selection[0].id);
-            }
-            return Promise.resolve();
-          })
-          .then(() => onSuccess && onSuccess())
-          .catch((err) => toastr.error(err))
-          .finally(() => {
-            this.setState({ isLoading: false });
-            this.onClose();
-          });
+        this.setShareInfo(folderIds, fileIds, share, externalAccess, ownerId);
       }
     );
   };
+
+  setShareInfo = (folderIds, fileIds, share, externalAccess, ownerId) => {
+    const { isNotifyUsers, message } = this.state;
+
+    const {
+      selection,
+      isPrivacy,
+      replaceFileStream,
+      t,
+      uploadPanelVisible,
+      updateUploadedItem,
+      uploadSelection,
+      isDesktop,
+      setEncryptionAccess,
+      setShareFiles,
+      onSuccess,
+    } = this.props;
+
+    setShareFiles(
+      folderIds,
+      fileIds,
+      share,
+      isNotifyUsers,
+      message,
+      externalAccess,
+      ownerId
+    )
+      .then((res) => {
+        if (!ownerId) {
+          this.updateRowData(selection);
+        }
+        if (isPrivacy && isDesktop) {
+          if (share.length === 0) return Promise.resolve();
+          selection.forEach((item) => {
+            return setEncryptionAccess(item).then((encryptedFile) => {
+              if (!encryptedFile) return Promise.resolve();
+
+              toastr.info(t("Translations:EncryptedFileSaving"));
+
+              const title = item.title;
+
+              return replaceFileStream(item.id, encryptedFile, true, true).then(
+                () =>
+                  toastr.success(
+                    <Trans
+                      t={t}
+                      i18nKey="EncryptedFileSharing"
+                      ns="SharingPanel"
+                    >
+                      File {{ title }} successfully shared
+                    </Trans>
+                  )
+              );
+            });
+          });
+        }
+
+        if (uploadPanelVisible && uploadSelection) {
+          return updateUploadedItem(selection[0].id);
+        }
+        return Promise.resolve();
+      })
+      .then(() => onSuccess && onSuccess())
+      .catch((err) => toastr.error(err))
+      .finally(() => {
+        this.setState({ isLoading: false });
+        this.onClose();
+      });
+  };
+
   onNotifyUsersChange = () =>
     this.setState({ isNotifyUsers: !this.state.isNotifyUsers });
 
@@ -276,13 +275,6 @@ class SharingPanelComponent extends React.Component {
   };
 
   getShareData = () => {
-    const {
-      getAccessOption,
-      getExternalAccessOption,
-      selection,
-      getShareUsers,
-    } = this.props;
-
     const returnValue = this.getData();
     const folderId = returnValue[0];
     const fileId = returnValue[1];
@@ -293,37 +285,48 @@ class SharingPanelComponent extends React.Component {
           isLoading: true,
         },
         function () {
-          getShareUsers(folderId, fileId)
-            .then((shareDataItems) => {
-              const baseShareData = JSON.parse(JSON.stringify(shareDataItems));
-              const accessOptions = getAccessOption(selection);
-
-              const externalAccessOptions = getExternalAccessOption(selection);
-              const filesOwner = shareDataItems.find((x) => x.isOwner);
-              const filesOwnerId = filesOwner ? filesOwner.sharedTo.id : null;
-
-              this.setState({
-                baseShareData,
-                shareDataItems,
-                accessOptions,
-                externalAccessOptions,
-                //showPanel: true,
-                filesOwnerId,
-              });
-            })
-
-            .catch((err) => {
-              toastr.error(err);
-              this.onClose();
-            })
-            .finally(() =>
-              this.setState({
-                isLoading: false,
-              })
-            );
+          this.getShareUsers(folderId, fileId);
         }
       );
     }
+  };
+
+  getShareUsers = (folderId, fileId) => {
+    const {
+      getAccessOption,
+      getExternalAccessOption,
+      selection,
+      getShareUsers,
+    } = this.props;
+
+    getShareUsers(folderId, fileId)
+      .then((shareDataItems) => {
+        const baseShareData = JSON.parse(JSON.stringify(shareDataItems));
+        const accessOptions = getAccessOption(selection);
+
+        const externalAccessOptions = getExternalAccessOption(selection);
+        const filesOwner = shareDataItems.find((x) => x.isOwner);
+        const filesOwnerId = filesOwner ? filesOwner.sharedTo.id : null;
+
+        this.setState({
+          baseShareData,
+          shareDataItems,
+          accessOptions,
+          externalAccessOptions,
+          //showPanel: true,
+          filesOwnerId,
+        });
+      })
+
+      .catch((err) => {
+        toastr.error(err);
+        this.onClose();
+      })
+      .finally(() =>
+        this.setState({
+          isLoading: false,
+        })
+      );
   };
 
   getInternalLink = () => {
