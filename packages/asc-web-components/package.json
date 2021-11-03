@@ -30,7 +30,7 @@
     "react-countdown": "2.3.2",
     "react-custom-scrollbars": "^4.2.1",
     "react-device-detect": "^1.17.0",
-    "react-dropzone": "^11.2.4",
+    "react-dropzone": "^11.4.2",
     "react-lifecycles-compat": "^3.0.4",
     "react-onclickoutside": "^6.11.2",
     "react-svg": "^12.1.0",
