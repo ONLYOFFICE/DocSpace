@@ -216,7 +216,7 @@ const VersionRow = (props) => {
           <div className="version_links-container">
             {canEdit && (
               <Link
-                {...(!isRestoring && { onClick: onRestoreClick })}
+                onClick={onRestoreClick}
                 {...linkStyles}
                 className="version_link-action"
               >

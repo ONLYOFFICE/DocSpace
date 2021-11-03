@@ -34,8 +34,8 @@ const commonStyles = css`
     ${paddingStyles}
     flex: 1 0 auto;
 
-        outline: none;
-            ${(props) =>
+    outline: none;
+    ${(props) =>
       props.viewAs == "tile" &&
       css`
         padding-right: 0;
@@ -46,11 +46,6 @@ const commonStyles = css`
       display: flex;
       flex-direction: column;
       min-height: 100%;
-    }
-
-    .people-row-container,
-    .files-row-container {
-      margin-top: -22px;
     }
 
     .section-wrapper {
