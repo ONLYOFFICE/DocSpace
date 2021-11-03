@@ -81,7 +81,7 @@ class SharingPanelComponent extends React.Component {
     this.setState({
       shareDataItems: newDataItems,
       showEmbeddingContent: false,
-      isUpdated: true,
+      isUpdated: !isUpdated,
     });
   };
 
@@ -219,7 +219,6 @@ class SharingPanelComponent extends React.Component {
   onNotifyUsersChange = () =>
     this.setState({
       isNotifyUsers: !this.state.isNotifyUsers,
-      isUpdated: true,
     });
 
   onShowUsersPanel = () =>
@@ -247,7 +246,7 @@ class SharingPanelComponent extends React.Component {
     const index = shareDataItems.findIndex((x) => x.sharedTo.id === id);
     if (index !== -1) {
       shareDataItems.splice(index, 1);
-      this.setState({ shareDataItems, isUpdated: true });
+      this.setState({ shareDataItems });
     }
   };
 
@@ -352,8 +351,7 @@ class SharingPanelComponent extends React.Component {
 
   onChangeMessage = (e) => this.setState({ message: e.target.value });
 
-  setShareDataItems = (shareDataItems) =>
-    this.setState({ shareDataItems, isUpdated: true });
+  setShareDataItems = (shareDataItems) => this.setState({ shareDataItems });
 
   onClose = () => {
     const {
@@ -642,7 +640,7 @@ class SharingPanelComponent extends React.Component {
                 minwidth="100px"
                 primary
                 onClick={this.onSaveClick}
-                isDisabled={isLoading || !isUpdated}
+                isDisabled={isLoading}
               />
             </StyledFooter>
           </StyledContent>
