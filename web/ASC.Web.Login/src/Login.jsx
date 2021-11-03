@@ -176,7 +176,6 @@ const Form = (props) => {
     login,
     hashSettings,
     isDesktop,
-    defaultPage,
     match,
     organizationName,
     greetingTitle,
@@ -187,19 +186,15 @@ const Form = (props) => {
 
   const { error, confirmedEmail } = match.params;
 
-  useEffect(() => {
-    const profile = localStorage.getItem("profile");
-
-    if (!profile) return;
-
-    thirdPartyLogin(profile)
+  const oAuthLogin = async (profile) => {
+    await thirdPartyLogin(profile)
       .then(() => {
         const redirectPath = localStorage.getItem("redirectPath");
 
         if (redirectPath) {
           localStorage.removeItem("redirectPath");
           window.location.href = redirectPath;
-        } else history.push(defaultPage);
+        }
       })
       .catch(() => {
         toastr.error(
@@ -211,7 +206,14 @@ const Form = (props) => {
         localStorage.removeItem("profile");
         localStorage.removeItem("code");
       });
-  }, [t]);
+  };
+
+  useEffect(() => {
+    const profile = localStorage.getItem("profile");
+    if (!profile) return;
+
+    oAuthLogin(profile);
+  }, []);
 
   const onKeyDown = (e) => {
     //console.log("onKeyDown", e.key);
@@ -232,22 +234,7 @@ const Form = (props) => {
   //const throttledKeyPress = throttle(onKeyPress, 500);
 
   const authCallback = (profile) => {
-    thirdPartyLogin(profile)
-      .then(() => {
-        setIsLoading(true);
-        const redirectPath = localStorage.getItem("redirectPath");
-
-        if (redirectPath) {
-          localStorage.removeItem("redirectPath");
-          window.location.href = redirectPath;
-        } else history.push(defaultPage);
-      })
-      .catch(() => {
-        toastr.error(
-          t("Common:ProviderNotConnected"),
-          t("Common:ProviderLoginError")
-        );
-      });
+    oAuthLogin(profile);
   };
 
   const setProviders = async () => {
