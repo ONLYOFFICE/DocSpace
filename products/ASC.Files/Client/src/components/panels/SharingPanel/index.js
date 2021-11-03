@@ -168,7 +168,6 @@ class SharingPanelComponent extends React.Component {
         isLoading: true,
       },
       function () {
-        this.onClose();
         setShareFiles(
           folderIds,
           fileIds,
@@ -219,7 +218,10 @@ class SharingPanelComponent extends React.Component {
           })
           .then(() => onSuccess && onSuccess())
           .catch((err) => toastr.error(err))
-          .finally(() => this.setState({ isLoading: false }));
+          .finally(() => {
+            this.setState({ isLoading: false });
+            this.onClose();
+          });
       }
     );
   };
