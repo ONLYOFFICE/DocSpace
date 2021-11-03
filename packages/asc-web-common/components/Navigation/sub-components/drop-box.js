@@ -25,6 +25,7 @@ const StyledBox = styled.div`
   ${isMobile &&
   css`
     width: 100vw !important;
+    max-width: 100vw !important;
   `}
   height: fit-content;
   min-width: 185px;
@@ -46,6 +47,7 @@ const StyledBox = styled.div`
   @media ${tablet} {
     left: -16px;
     width: 100vw;
+    max-width: 100vw !important;
   }
 `;
 
@@ -157,7 +159,7 @@ const DropBox = React.forwardRef(
       const currentHeight = itemsHeight.reduce((a, b) => a + b);
 
       setDropBoxHeight(
-        currentHeight > window.innerHeight - 97 ? window.innerHeight - 97 : currentHeight,
+        currentHeight > window.innerHeight - 95 ? window.innerHeight - 95 : currentHeight,
       );
     });
 

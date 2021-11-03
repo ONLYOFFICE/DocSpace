@@ -24,6 +24,7 @@ const StyledItem = styled.div`
 
   @media ${tablet} {
     padding: 0px 16px;
+    max-width: 100vw !important;
   }
 `;
 
