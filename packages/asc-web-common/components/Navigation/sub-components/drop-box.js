@@ -24,6 +24,7 @@ const StyledBox = styled.div`
   left: ${isMobile ? '-16px' : '-24px'};
   ${isMobile &&
   css`
+    top: 0px;
     width: 100vw !important;
     max-width: 100vw !important;
   `}
@@ -45,6 +46,7 @@ const StyledBox = styled.div`
   border-radius: 0px 0px 6px 6px;
 
   @media ${tablet} {
+    top: 0px;
     left: -16px;
     width: 100vw;
     max-width: 100vw !important;
