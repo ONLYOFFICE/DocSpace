@@ -1,6 +1,6 @@
 {
   "name": "@appserver/debug-info",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Command line tool for generating debug info by commit history",
   "main": "src/index.js",
