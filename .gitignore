@@ -15,5 +15,3 @@ Logs/
 **/.DS_Store
 .eslintcache
 build/deploy/
-build/install/win/*.exe
-!build/install/win/MySQL Installer Runner.exe
