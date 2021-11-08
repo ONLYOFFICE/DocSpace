@@ -382,8 +382,6 @@ class FilesStore {
     }
 
     if (!newItems.find((x) => x.id == folderId)) {
-      //newItems.push(data.current);
-
       path.splice(data.pathParts.length - 1, 1);
       const subfolders = await getSubfolders(data.current.parentId);
       loopTreeFolders(path, treeFolders, subfolders, 0);
