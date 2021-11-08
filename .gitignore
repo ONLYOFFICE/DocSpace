@@ -14,4 +14,3 @@ Data/
 Logs/
 **/.DS_Store
 .eslintcache
-build/deploy/
