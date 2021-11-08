@@ -106,9 +106,13 @@ const Banner = (props) => {
     .split(",")
     .filter((campaign) => campaign.length > 0);
 
-  if (!campaigns.length || !tReady) {
+  if (!campaigns.length) {
     return <></>;
   }
+
+  /*if (!tReady) {
+    return <h1>Loading...</h1>;
+  }*/
 
   return (
     <CampaignsBanner
@@ -117,6 +121,7 @@ const Banner = (props) => {
       img={bannerImage}
       btnLabel={t("ButtonLabel")}
       link={t("Link")}
+      isLoading={!tReady}
     />
   );
 };
