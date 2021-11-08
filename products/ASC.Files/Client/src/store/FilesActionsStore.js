@@ -56,15 +56,39 @@ class FilesActionStore {
     }
   };
 
-  updateCurrentFolder = () => {
+  isEmptyLastPageAfterOperation = (selectionLength) => {
+    const { filter, files, folders } = this.filesStore;
+
+    return (
+      filter.page > 0 &&
+      !filter.hasNext() &&
+      selectionLength === files.length + folders.length
+    );
+  };
+
+  updateCurrentFolder = (selectionLength) => {
     const {
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
     const { filter, fetchFiles } = this.filesStore;
-    fetchFiles(this.selectedFolderStore.id, filter, true, true).finally(() =>
-      setTimeout(() => clearSecondaryProgressData(), TIMEOUT)
-    );
+
+    let newFilter;
+
+    if (
+      selectionLength &&
+      this.isEmptyLastPageAfterOperation(selectionLength)
+    ) {
+      newFilter = filter.clone();
+      newFilter.page--;
+    }
+
+    fetchFiles(
+      this.selectedFolderStore.id,
+      newFilter ? newFilter : filter,
+      true,
+      true
+    ).finally(() => setTimeout(() => clearSecondaryProgressData(), TIMEOUT));
   };
 
   deleteAction = async (translations, newSelection = null) => {
@@ -113,7 +137,7 @@ class FilesActionStore {
               label: translations.deleteOperation,
             };
             await this.uploadDataStore.loopFilesOperations(data, pbData);
-            this.updateCurrentFolder();
+            this.updateCurrentFolder(selection.length);
           }
         );
       } catch (err) {
@@ -312,7 +336,7 @@ class FilesActionStore {
         label: translations.deleteOperation,
         alert: false,
       });
-
+      debugger;
       try {
         await this.deleteItemOperation(isFile, itemId, translations);
       } catch (err) {
@@ -331,7 +355,7 @@ class FilesActionStore {
       icon: "trash",
       label: translations.deleteOperation,
     };
-
+    console.log("deleteItemOperation");
     if (isFile) {
       this.isMediaOpen();
       return deleteFile(itemId)
