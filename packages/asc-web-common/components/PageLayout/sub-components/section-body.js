@@ -8,23 +8,39 @@ import { inject, observer } from "mobx-react";
 
 import Scrollbar from "@appserver/components/scrollbar";
 import DragAndDrop from "@appserver/components/drag-and-drop";
-import { tablet } from "@appserver/components/utils/device";
+import { tablet, desktop } from "@appserver/components/utils/device";
 
+const paddingStyles = css`
+  padding: 17px 7px 16px 20px;
+  @media ${tablet} {
+    padding: 16px 0 16px 24px;
+  }
+`;
 const commonStyles = css`
   flex-grow: 1;
-  height: 100%;
+  ${(props) => !props.withScroll && `height: 100%;`}
+  border-left: none;
 
   -webkit-user-select: none;
 
-  .section-wrapper-content {
-    flex: 1 0 auto;
-    padding: 17px 7px 16px 24px;
-    outline: none;
-    ${(props) => props.viewAs == "tile" && "padding-right:0;"}
+  .section-wrapper {
+    ${(props) =>
+      !props.withScroll &&
+      `display: flex; height: 100%; box-sizing:border-box`};
+    ${(props) => !props.withScroll && paddingStyles}
+  }
 
-    @media ${tablet} {
-      padding: 16px 0 16px 24px;
-    }
+  .section-wrapper-content {
+    ${paddingStyles}
+    flex: 1 0 auto;
+
+    outline: none;
+    ${(props) =>
+      props.viewAs == "tile" &&
+      css`
+        padding-right: 0;
+        padding-left: 20px;
+      `}
 
     .section-wrapper {
       display: flex;
@@ -35,6 +51,10 @@ const commonStyles = css`
     .people-row-container,
     .files-row-container {
       margin-top: -22px;
+
+      @media ${desktop} {
+        ${(props) => props.viewAs === "row" && `margin-top: -9px;`}
+      }
     }
   }
 `;
@@ -45,9 +65,17 @@ const StyledSectionBody = styled.div`
   ${(props) =>
     props.withScroll &&
     `
-
     margin-left: -24px;
-  `}
+  `} 
+
+  .additional-scroll-height {
+    ${(props) =>
+      !props.withScroll &&
+      !props.pinned &&
+      `  height: 64px;
+  
+`}
+  }
 `;
 
 const StyledDropZoneBody = styled(DragAndDrop)`
@@ -86,8 +114,9 @@ class SectionBody extends React.Component {
   // }
 
   componentDidMount() {
+    const { withScroll } = this.props;
     if (!this.props.autoFocus) return;
-    this.focusRef.current.focus();
+    if (withScroll) this.focusRef.current.focus();
   }
 
   componentWillUnmount() {
@@ -175,10 +204,7 @@ class SectionBody extends React.Component {
             </div>
           )
         ) : (
-          <div className="section-wrapper">
-            {children}
-            <StyledSpacer pinned={pinned} />
-          </div>
+          <div className="section-wrapper">{children}</div>
         )}
       </StyledSectionBody>
     );

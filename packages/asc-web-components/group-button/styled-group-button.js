@@ -35,9 +35,13 @@ const StyledDropdownToggle = styled.div`
 
   float: ${(props) => props.theme.groupButton.float};
   height: ${(props) => props.theme.groupButton.height};
-  margin: 18px 12px 19px ${(props) => (props.isSelect ? "0px" : "13px")};
+  margin: 14px 12px 19px ${(props) => (props.isSelect ? "0px" : "13px")};
   overflow: ${(props) => props.theme.groupButton.overflow};
   padding: ${(props) => props.theme.groupButton.padding};
+
+  @media ${tablet} {
+    margin: 18px 12px 19px ${(props) => (props.isSelect ? "0px" : "13px")};
+  }
 
   text-align: center;
   text-decoration: none;

@@ -81,7 +81,7 @@ class TreeFolders extends React.Component {
         iconUrl = "/static/images/catalog.user.react.svg";
         break;
       case FolderType.SHARE:
-        iconUrl = "/static/images/catalog.shared.react.svg";
+        iconUrl = "/static/images/catalog.share.react.svg";
         break;
       case FolderType.COMMON:
         iconUrl = "/static/images/catalog.portfolio.react.svg";

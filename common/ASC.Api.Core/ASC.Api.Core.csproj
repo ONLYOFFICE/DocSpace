@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
+    <ProjectReference Include="..\ASC.Webhooks.Core\ASC.Webhooks.Core.csproj" />
   </ItemGroup>
 
 </Project>

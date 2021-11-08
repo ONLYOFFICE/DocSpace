@@ -20,5 +20,7 @@
   "TemporaryPassword": "Temporary password",
   "TermsOfUsePopupHelperLink": "Read more about terms of use",
   "UpdatingProcess": "Updating...",
-  "WriteComment": "Add comment"
+  "WriteComment": "Add comment",
+  "ErrorInvalidUserLastName": "Invalid last name",
+  "ErrorInvalidUserFirstName": "Invalid first name"
 }

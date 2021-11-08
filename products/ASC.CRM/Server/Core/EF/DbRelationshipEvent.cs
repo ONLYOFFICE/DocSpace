@@ -80,7 +80,7 @@ namespace ASC.CRM.Core.EF
         {
             modelBuilder
                 .Add(MySqlAddDbRelationshipEvent, Provider.MySql)
-                .Add(PgSqlAddDbRelationshipEvent, Provider.Postgre);
+                .Add(PgSqlAddDbRelationshipEvent, Provider.PostgreSql);
 
             return modelBuilder;
         }

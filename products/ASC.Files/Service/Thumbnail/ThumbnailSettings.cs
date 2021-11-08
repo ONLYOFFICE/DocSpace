@@ -25,25 +25,22 @@ namespace ASC.Files.ThumbnailBuilder
     [Singletone]
     public class ThumbnailSettings
     {
-        public ThumbnailSettings()
+        public static ThumbnailSettings GetInstance(ConfigurationExtension configuration)
         {
-
-        }
-
-        public ThumbnailSettings(ConfigurationExtension configuration)
-        {
+            var result = new ThumbnailSettings();
             var cfg = configuration.GetSetting<ThumbnailSettings>("thumbnail");
-            ServerRoot = cfg.ServerRoot ?? "http://localhost/";
-            LaunchFrequency = cfg.LaunchFrequency != 0 ? cfg.LaunchFrequency : 1;
-            ConnectionStringName = cfg.ConnectionStringName ?? "default";
-            Formats = cfg.Formats ?? ".pptx|.pptm|.ppt|.ppsx|.ppsm|.pps|.potx|.potm|.pot|.odp|.fodp|.otp|.gslides|.xlsx|.xlsm|.xls|.xltx|.xltm|.xlt|.ods|.fods|.ots|.gsheet|.csv|.docx|.docm|.doc|.dotx|.dotm|.dot|.odt|.fodt|.ott|.gdoc|.txt|.rtf|.mht|.html|.htm|.fb2|.epub|.pdf|.djvu|.xps|.bmp|.jpeg|.jpg|.png|.gif|.tiff|.tif|.ico";
-            SqlMaxResults = cfg.SqlMaxResults != 0 ? cfg.SqlMaxResults : 1000;
-            MaxDegreeOfParallelism = cfg.MaxDegreeOfParallelism != 0 ? cfg.MaxDegreeOfParallelism : 10;
-            AvailableFileSize = cfg.AvailableFileSize ?? 100L * 1024L * 1024L;
-            AttemptsLimit = cfg.AttemptsLimit ?? 3;
-            AttemptWaitInterval = cfg.AttemptWaitInterval != 0 ? cfg.AttemptWaitInterval : 1000;
-            ThumbnaillHeight = cfg.ThumbnaillHeight != 0  ? cfg.ThumbnaillHeight : 128;
-            ThumbnaillWidth = cfg.ThumbnaillWidth != 0 ? cfg.ThumbnaillWidth : 192;
+            result.ServerRoot = cfg.ServerRoot ?? "http://localhost/";
+            result.LaunchFrequency = cfg.LaunchFrequency != 0 ? cfg.LaunchFrequency : 1;
+            result.ConnectionStringName = cfg.ConnectionStringName ?? "default";
+            result.Formats = cfg.Formats ?? ".pptx|.pptm|.ppt|.ppsx|.ppsm|.pps|.potx|.potm|.pot|.odp|.fodp|.otp|.gslides|.xlsx|.xlsm|.xls|.xltx|.xltm|.xlt|.ods|.fods|.ots|.gsheet|.csv|.docx|.docm|.doc|.dotx|.dotm|.dot|.odt|.fodt|.ott|.gdoc|.txt|.rtf|.mht|.html|.htm|.fb2|.epub|.pdf|.djvu|.xps|.bmp|.jpeg|.jpg|.png|.gif|.tiff|.tif|.ico";
+            result.SqlMaxResults = cfg.SqlMaxResults != 0 ? cfg.SqlMaxResults : 1000;
+            result.MaxDegreeOfParallelism = cfg.MaxDegreeOfParallelism != 0 ? cfg.MaxDegreeOfParallelism : 10;
+            result.AvailableFileSize = cfg.AvailableFileSize ?? 100L * 1024L * 1024L;
+            result.AttemptsLimit = cfg.AttemptsLimit ?? 3;
+            result.AttemptWaitInterval = cfg.AttemptWaitInterval != 0 ? cfg.AttemptWaitInterval : 1000;
+            result.ThumbnaillHeight = cfg.ThumbnaillHeight != 0 ? cfg.ThumbnaillHeight : 128;
+            result.ThumbnaillWidth = cfg.ThumbnaillWidth != 0 ? cfg.ThumbnaillWidth : 192;
+            return result;
         }
 
         #region worker settings

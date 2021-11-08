@@ -77,17 +77,7 @@ namespace ASC.Data.Storage.S3
         private bool _revalidateCloudFront;
         private string _distributionId = string.Empty;
         private string _subDir = string.Empty;
-
-        public S3Storage(
-            TempStream tempStream,
-            TenantManager tenantManager,
-            PathUtils pathUtils,
-            EmailValidationKeyProvider emailValidationKeyProvider,
-            IOptionsMonitor<ILog> options)
-            : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, options)
-        {
-        }
-
+        
         public S3Storage(
             TempStream tempStream,
             TenantManager tenantManager,
