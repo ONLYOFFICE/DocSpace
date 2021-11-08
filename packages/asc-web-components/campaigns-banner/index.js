@@ -11,7 +11,7 @@ const onButtonClick = (url) => {
 };
 
 const CampaignsBanner = (props) => {
-  const { headerLabel, subHeaderLabel, img, btnLabel, link } = props;
+  const { headerLabel, subHeaderLabel, img, btnLabel, link, isLoading } = props;
   const [imageLoad, setImageLoad] = useState(false);
 
   const handleImageLoaded = () => {
@@ -25,26 +25,56 @@ const CampaignsBanner = (props) => {
   return (
     <BannerWrapper>
       <a href={link}>
-        <Text fontWeight="700" fontSize="13px">
-          {headerLabel}
-        </Text>
-        <Text className="banner-sub-header" fontWeight="500" fontSize="12px">
-          {subHeaderLabel}
-        </Text>
+        {isLoading ? (
+          <Loaders.Rectangle height="32px" borderRadius="5px" />
+        ) : (
+          <>
+            <Text fontWeight="700" fontSize="13px">
+              {headerLabel}
+            </Text>
+            <Text
+              className="banner-sub-header"
+              fontWeight="500"
+              fontSize="12px"
+            >
+              {subHeaderLabel}
+            </Text>
+          </>
+        )}
 
-        {!imageLoad && <Loaders.Rectangle height="150px" borderRadius="5px" />}
-        <img src={img} onMouseDown={onMouseDown} onLoad={handleImageLoaded} />
+        {isLoading ? (
+          <Loaders.Rectangle height="150px" borderRadius="5px" />
+        ) : (
+          <>
+            {!imageLoad && (
+              <Loaders.Rectangle height="150px" borderRadius="5px" />
+            )}
+            <img
+              src={img}
+              onMouseDown={onMouseDown}
+              onLoad={handleImageLoaded}
+            />
+          </>
+        )}
       </a>
 
-      <Button
-        className="banner-btn"
-        primary
-        size="medium"
-        isDisabled={false}
-        disableHover={true}
-        label={btnLabel}
-        onClick={() => onButtonClick(link)}
-      />
+      {isLoading ? (
+        <Loaders.Rectangle
+          height="32px"
+          borderRadius="5px"
+          className="banner-btn"
+        />
+      ) : (
+        <Button
+          className="banner-btn"
+          primary
+          size="medium"
+          isDisabled={false}
+          disableHover={true}
+          label={btnLabel}
+          onClick={() => onButtonClick(link)}
+        />
+      )}
     </BannerWrapper>
   );
 };
@@ -58,12 +88,14 @@ CampaignsBanner.propTypes = {
   img: PropTypes.string,
   btnLabel: PropTypes.string,
   link: PropTypes.string,
+  isLoading: PropTypes.bool,
 };
 
 CampaignsBanner.defaultProps = {
   id: undefined,
   className: undefined,
   style: undefined,
+  isLoading: false,
 };
 
 export default CampaignsBanner;
