@@ -430,7 +430,7 @@ namespace Frontend.Translations.Tests
             var allJsTranslationKeys = JavaScriptFiles
                 .Where(f => !f.Path.Contains("Banner.js")) // skip Banner.js (translations from firebase)
                 .SelectMany(j => j.TranslationKeys)
-                .Select(k => k.Replace("Common:", "").Replace("Translations:", ""))
+                .Select(k => k.Replace("Common:", "").Replace("Translations:", "").Replace("Home:", ""))
                 .Distinct();
 
             var notFoundJsKeys = allJsTranslationKeys.Except(allEnKeys);
