@@ -39,7 +39,6 @@ const HeaderNavigationIcon = ({
   ...rest
 }) => {
   const color = active ? activeColor : baseColor;
-  console.log(iconUrl);
   return (
     <div style={{ position: 'relative', width: '20px', height: '20px', marginRight: '22px' }}>
       <StyledReactSVG src={iconUrl} href={url} onClick={onItemClick} {...rest} color={color} />
