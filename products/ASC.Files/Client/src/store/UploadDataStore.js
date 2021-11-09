@@ -897,7 +897,14 @@ class UploadDataStore {
 
   moveToCopyTo = (destFolderId, pbData, isCopy) => {
     const { treeFolders, setTreeFolders } = this.treeFoldersStore;
-    const { fetchFiles, filter } = this.filesStore;
+    const {
+      fetchFiles,
+      filter,
+      selection,
+      isEmptyLastPageAfterOperation,
+      resetFilterPage,
+    } = this.filesStore;
+
     const {
       clearSecondaryProgressData,
       setSecondaryProgressBarData,
@@ -912,11 +919,20 @@ class UploadDataStore {
       loopTreeFolders(path, newTreeFolders, folders, foldersCount);
 
       if (!isCopy || destFolderId === this.selectedFolderStore.id) {
-        fetchFiles(this.selectedFolderStore.id, filter, true, true).finally(
-          () => {
-            setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-          }
-        );
+        let newFilter;
+
+        if (selection && isEmptyLastPageAfterOperation(selection.length)) {
+          newFilter = resetFilterPage();
+        }
+
+        fetchFiles(
+          this.selectedFolderStore.id,
+          newFilter ? newFilter : filter,
+          true,
+          true
+        ).finally(() => {
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+        });
       } else {
         setSecondaryProgressBarData({
           icon: pbData.icon,
