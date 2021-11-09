@@ -7,11 +7,23 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import Heading from "@appserver/components/heading";
 import ContextMenu from "@appserver/components/context-menu";
 import CustomScrollbarsVirtualList from "@appserver/components/scrollbar";
-
 import { tablet, desktop } from "@appserver/components/utils/device";
+
+const paddingCss = css`
+  @media ${desktop} {
+    margin-left: 1px;
+    padding-right: 3px;
+  }
+
+  @media ${tablet} {
+    margin-left: -1px;
+  }
+`;
 
 const foldersStyle = css`
   grid-gap: 19px 16px;
+
+  ${paddingCss}
 
   @media ${tablet} {
     grid-gap: 17px 12px;
@@ -20,6 +32,8 @@ const foldersStyle = css`
 
 const filesStyle = css`
   grid-gap: 14px 16px;
+
+  ${paddingCss}
 
   @media ${tablet} {
     grid-gap: 12px;
