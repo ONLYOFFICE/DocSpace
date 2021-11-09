@@ -43,6 +43,7 @@ const checkedStyle = css`
 const StyledTile = styled.div`
   cursor: ${(props) => (!props.isRecycleBin ? "pointer" : "default")};
   min-height: 57px;
+  box-sizing: border-box;
   width: 100%;
   border: 1px solid #d0d5da;
   border-radius: 3px;
@@ -226,7 +227,7 @@ const StyledFileTileBottom = styled.div`
   ${FlexBoxStyles}
   padding: 9px 10px;
   padding-right: 0;
-  min-height: 56px;
+  height: 56px;
   box-sizing: border-box;
 `;
 
