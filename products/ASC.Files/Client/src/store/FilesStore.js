@@ -269,6 +269,22 @@ class FilesStore {
     );
   };
 
+  isEmptyLastPageAfterOperation = (selectionLength) => {
+    return (
+      this.filter.page > 0 &&
+      !this.filter.hasNext() &&
+      selectionLength === this.files.length + this.folders.length
+    );
+  };
+
+  resetFilterPage = () => {
+    let newFilter;
+    newFilter = this.filter.clone();
+    newFilter.page--;
+
+    return newFilter;
+  };
+
   fetchFiles = (
     folderId,
     filter,
@@ -287,7 +303,7 @@ class FilesStore {
     const filterStorageItem = localStorage.getItem(
       `UserFilter=${this.userStore.user.id}`
     );
-
+    console.log("FETCH");
     if (filterStorageItem && !filter) {
       const splitFilter = filterStorageItem.split(",");
 

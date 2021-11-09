@@ -56,31 +56,22 @@ class FilesActionStore {
     }
   };
 
-  isEmptyLastPageAfterOperation = (selectionLength) => {
-    const { filter, files, folders } = this.filesStore;
-
-    return (
-      filter.page > 0 &&
-      !filter.hasNext() &&
-      selectionLength === files.length + folders.length
-    );
-  };
-
   updateCurrentFolder = (selectionLength) => {
     const {
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
-    const { filter, fetchFiles } = this.filesStore;
+    const {
+      filter,
+      fetchFiles,
+      isEmptyLastPageAfterOperation,
+      resetFilterPage,
+    } = this.filesStore;
 
     let newFilter;
 
-    if (
-      selectionLength &&
-      this.isEmptyLastPageAfterOperation(selectionLength)
-    ) {
-      newFilter = filter.clone();
-      newFilter.page--;
+    if (selectionLength && isEmptyLastPageAfterOperation(selectionLength)) {
+      newFilter = resetFilterPage();
     }
 
     fetchFiles(
@@ -336,7 +327,7 @@ class FilesActionStore {
         label: translations.deleteOperation,
         alert: false,
       });
-      debugger;
+
       try {
         await this.deleteItemOperation(isFile, itemId, translations);
       } catch (err) {
