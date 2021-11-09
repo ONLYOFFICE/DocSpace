@@ -347,13 +347,15 @@ class FilesActionStore {
       label: translations.deleteOperation,
     };
 
+    const selectionFilesLength = 1;
+
     if (isFile) {
       this.isMediaOpen();
       return deleteFile(itemId)
         .then(async (res) => {
           const data = res[0] ? res[0] : null;
           await this.uploadDataStore.loopFilesOperations(data, pbData);
-          this.updateCurrentFolder();
+          this.updateCurrentFolder(selectionFilesLength);
         })
         .then(() => toastr.success(translations.successRemoveFile));
     } else {
@@ -361,7 +363,7 @@ class FilesActionStore {
         .then(async (res) => {
           const data = res[0] ? res[0] : null;
           await this.uploadDataStore.loopFilesOperations(data, pbData);
-          this.updateCurrentFolder();
+          this.updateCurrentFolder(selectionFilesLength);
         })
         .then(() => toastr.success(translations.successRemoveFolder));
     }
