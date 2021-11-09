@@ -303,7 +303,7 @@ class FilesStore {
     const filterStorageItem = localStorage.getItem(
       `UserFilter=${this.userStore.user.id}`
     );
-    console.log("FETCH");
+
     if (filterStorageItem && !filter) {
       const splitFilter = filterStorageItem.split(",");
 
