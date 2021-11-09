@@ -272,6 +272,26 @@ class FilesStore {
     );
   };
 
+  isEmptyLastPageAfterOperation = (newSelection) => {
+    const selection =
+      newSelection || this.selection?.length || [this.bufferSelection].length;
+
+    return (
+      selection &&
+      this.filter.page > 0 &&
+      !this.filter.hasNext() &&
+      selection === this.files.length + this.folders.length
+    );
+  };
+
+  resetFilterPage = () => {
+    let newFilter;
+    newFilter = this.filter.clone();
+    newFilter.page--;
+
+    return newFilter;
+  };
+
   fetchFiles = (
     folderId,
     filter,
