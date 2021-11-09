@@ -387,9 +387,12 @@ class FilesStore {
 
   checkUpdateNode = async (data, folderId) => {
     const { treeFolders, getSubfolders } = this.treeFoldersStore;
+    const { pathParts, current } = data;
 
-    const somePath = data.pathParts.slice(0);
-    const path = data.pathParts.slice(0);
+    if (current.parentId === 0) return;
+
+    const somePath = pathParts.slice(0);
+    const path = pathParts.slice(0);
     let newItems = treeFolders;
 
     while (somePath.length !== 1) {
@@ -402,8 +405,8 @@ class FilesStore {
     }
 
     if (!newItems.find((x) => x.id == folderId)) {
-      path.splice(data.pathParts.length - 1, 1);
-      const subfolders = await getSubfolders(data.current.parentId);
+      path.splice(pathParts.length - 1, 1);
+      const subfolders = await getSubfolders(current.parentId);
       loopTreeFolders(path, treeFolders, subfolders, 0);
     }
   };
