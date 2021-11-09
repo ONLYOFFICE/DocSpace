@@ -346,7 +346,7 @@ class FilesActionStore {
       icon: "trash",
       label: translations.deleteOperation,
     };
-    console.log("deleteItemOperation");
+
     if (isFile) {
       this.isMediaOpen();
       return deleteFile(itemId)
