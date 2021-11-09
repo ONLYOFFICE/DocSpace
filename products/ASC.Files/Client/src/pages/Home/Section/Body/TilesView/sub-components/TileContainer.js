@@ -11,30 +11,18 @@ import CustomScrollbarsVirtualList from "@appserver/components/scrollbar";
 import { tablet, desktop } from "@appserver/components/utils/device";
 
 const foldersStyle = css`
-  grid-gap: 19px 14px;
-
-  @media ${desktop} {
-    margin-left: -1px;
-    padding-right: 1px;
-  }
+  grid-gap: 19px 16px;
 
   @media ${tablet} {
     grid-gap: 17px 12px;
-    margin-left: -1px;
   }
 `;
 
 const filesStyle = css`
-  grid-gap: 14px 18px;
-
-  @media ${desktop} {
-    padding-right: 5px;
-  }
+  grid-gap: 14px 16px;
 
   @media ${tablet} {
-    grid-gap: 12px 14px;
-    margin-left: -1px;
-    padding-right: 2px;
+    grid-gap: 12px;
   }
 `;
 
@@ -59,10 +47,6 @@ const StyledTileContainer = styled.div`
     }
     &.folder {
       padding: 0;
-
-      .drag-and-drop {
-        margin: 0px;
-      }
     }
   }
 
@@ -73,16 +57,6 @@ const StyledTileContainer = styled.div`
 
     &.files {
       padding-top: 8px;
-    }
-
-    margin-left: -1px;
-  }
-
-  @media (min-width: 1024px) {
-    .tile-item-wrapper {
-      &.file {
-        margin-left: 1px;
-      }
     }
   }
 
