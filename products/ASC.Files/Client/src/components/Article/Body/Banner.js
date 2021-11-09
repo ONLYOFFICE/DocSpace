@@ -11,6 +11,7 @@ import { LANGUAGE } from "@appserver/common/constants";
 const i18nConfig = i18n.createInstance();
 
 let translationUrl;
+let errors = 0;
 
 const loadLanguagePath = async () => {
   if (!window.firebaseHelper) return;
@@ -21,6 +22,9 @@ const loadLanguagePath = async () => {
   const campaigns = (localStorage.getItem("campaigns") || "")
     .split(",")
     .filter((campaign) => campaign.length > 0);
+
+  if (errors === campaigns.length) return;
+
   const index = Number(localStorage.getItem("bannerIndex") || 0);
   const campaign = campaigns[index];
 
@@ -30,11 +34,15 @@ const loadLanguagePath = async () => {
       language
     );
   } catch (e) {
-    translationUrl = await window.firebaseHelper.getCampaignsTranslations(
-      campaign,
-      "en"
-    );
-    //console.error(e);
+    try {
+      translationUrl = await window.firebaseHelper.getCampaignsTranslations(
+        campaign,
+        "en"
+      );
+    } catch (e) {
+      errors++;
+      console.error(e);
+    }
   }
   return translationUrl;
 };
@@ -50,6 +58,9 @@ const bannerHOC = (WrappedComponent) => (props) => {
   const [bannerTranslation, setBannerTranslation] = useState();
 
   const updateBanner = async () => {
+    //console.log("errors", errors);
+    if (errors === campaigns.length) return;
+
     let index = Number(localStorage.getItem("bannerIndex") || 0);
     const campaign = campaigns[index];
 
@@ -77,10 +88,14 @@ const bannerHOC = (WrappedComponent) => (props) => {
         },
       });
 
-      const image = await FirebaseHelper.getCampaignsImages(
-        campaign.toLowerCase()
-      );
-      setBannerImage(image);
+      try {
+        const image = await FirebaseHelper.getCampaignsImages(
+          campaign.toLowerCase()
+        );
+        setBannerImage(image);
+      } catch (e) {
+        console.error(e);
+      }
     } catch (e) {
       updateBanner();
       //console.error(e);
