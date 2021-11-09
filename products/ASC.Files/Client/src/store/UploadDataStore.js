@@ -471,7 +471,7 @@ class UploadDataStore {
       if (folderId) folderInfo = await getFolderInfo(folderId);
 
       const newPath = [];
-      if (folderInfo) {
+      if (folderInfo || path[path.length - 1] === this.selectedFolderStore.id) {
         let i = 0;
         while (path[i] && path[i] !== folderId) {
           newPath.push(path[i]);
