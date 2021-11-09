@@ -877,10 +877,6 @@ class UploadDataStore {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
     } = this.secondaryProgressDataStore;
-    const { selection, setBufferSelection } = this.filesStore;
-
-    (!selection || selection?.length === 0) &&
-      setBufferSelection(folderIds.length + fileIds.length);
 
     return moveToFolder(
       destFolderId,
@@ -904,8 +900,7 @@ class UploadDataStore {
         setTimeout(() => clearPrimaryProgressData(), TIMEOUT);
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         return Promise.reject(err);
-      })
-      .finally(() => setBufferSelection(null));
+      });
   };
 
   itemOperationToFolder = (data) => {
