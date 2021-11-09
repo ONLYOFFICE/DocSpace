@@ -196,7 +196,7 @@ const StyledFileTileTop = styled.div`
   justify-content: space-between;
   align-items: baseline;
   background-color: #f8f9f9;
-  padding: 13px;
+  padding-top: 21px;
   height: ${(props) => (props.checked || props.isActive ? "156px" : "156px")};
   position: relative;
   border-bottom: ${(props) =>
@@ -213,6 +213,11 @@ const StyledFileTileTop = styled.div`
     bottom: 0;
     margin: auto;
     z-index: 0;
+
+    min-width: 208px;
+  }
+
+  .temporary-icon > .injected-svg {
     margin-bottom: 16px;
   }
 `;
