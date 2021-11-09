@@ -40,6 +40,7 @@ class UploadDataStore {
   converted = true;
   uploadPanelVisible = false;
   selectedUploadFile = [];
+  selectedFilesLength = null;
 
   constructor(
     formatsStore,
@@ -877,6 +878,10 @@ class UploadDataStore {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
     } = this.secondaryProgressDataStore;
+    const { selection } = this.filesStore;
+
+    this.selectedFilesLength =
+      selection?.length || folderIds.length + fileIds.length;
 
     return moveToFolder(
       destFolderId,
@@ -1003,7 +1008,10 @@ class UploadDataStore {
       if (!isCopy || destFolderId === this.selectedFolderStore.id) {
         let newFilter;
 
-        if (selection && isEmptyLastPageAfterOperation(selection.length)) {
+        if (
+          this.selectedFilesLength &&
+          isEmptyLastPageAfterOperation(this.selectedFilesLength)
+        ) {
           newFilter = resetFilterPage();
         }
 
