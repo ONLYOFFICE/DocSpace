@@ -23,7 +23,6 @@ class UserStore {
 
   getCurrentUser = async () => {
     const user = await api.people.getUser();
-
     this.setUser(user);
   };
 
