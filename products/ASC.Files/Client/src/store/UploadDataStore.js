@@ -878,10 +878,10 @@ class UploadDataStore {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
     } = this.secondaryProgressDataStore;
-    const { selection } = this.filesStore;
+    const { selection, setBufferSelection } = this.filesStore;
 
-    this.selectedFilesLength =
-      selection?.length || folderIds.length + fileIds.length;
+    (!selection || selection?.length === 0) &&
+      setBufferSelection(folderIds.length + fileIds.length);
 
     return moveToFolder(
       destFolderId,
@@ -905,7 +905,8 @@ class UploadDataStore {
         setTimeout(() => clearPrimaryProgressData(), TIMEOUT);
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         return Promise.reject(err);
-      });
+      })
+      .finally(() => setBufferSelection(null));
   };
 
   itemOperationToFolder = (data) => {
@@ -987,7 +988,6 @@ class UploadDataStore {
     const {
       fetchFiles,
       filter,
-      selection,
       isEmptyLastPageAfterOperation,
       resetFilterPage,
     } = this.filesStore;
@@ -1008,10 +1008,7 @@ class UploadDataStore {
       if (!isCopy || destFolderId === this.selectedFolderStore.id) {
         let newFilter;
 
-        if (
-          this.selectedFilesLength &&
-          isEmptyLastPageAfterOperation(this.selectedFilesLength)
-        ) {
+        if (isEmptyLastPageAfterOperation()) {
           newFilter = resetFilterPage();
         }
 

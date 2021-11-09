@@ -272,11 +272,14 @@ class FilesStore {
     );
   };
 
-  isEmptyLastPageAfterOperation = (selectionLength) => {
+  isEmptyLastPageAfterOperation = () => {
+    const selection = this.selection?.length || [this.bufferSelection].length;
+
     return (
+      selection &&
       this.filter.page > 0 &&
       !this.filter.hasNext() &&
-      selectionLength === this.files.length + this.folders.length
+      selection === this.files.length + this.folders.length
     );
   };
 
