@@ -40,7 +40,6 @@ class UploadDataStore {
   converted = true;
   uploadPanelVisible = false;
   selectedUploadFile = [];
-  selectedFilesLength = null;
 
   constructor(
     formatsStore,
