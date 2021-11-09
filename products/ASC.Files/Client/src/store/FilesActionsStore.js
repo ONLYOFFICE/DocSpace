@@ -70,7 +70,7 @@ class FilesActionStore {
 
     let newFilter;
 
-    if (selectionLength && isEmptyLastPageAfterOperation()) {
+    if (selectionLength && isEmptyLastPageAfterOperation(selectionLength)) {
       newFilter = resetFilterPage();
     }
 

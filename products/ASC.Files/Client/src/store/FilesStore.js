@@ -272,8 +272,9 @@ class FilesStore {
     );
   };
 
-  isEmptyLastPageAfterOperation = () => {
-    const selection = this.selection?.length || [this.bufferSelection].length;
+  isEmptyLastPageAfterOperation = (newSelection) => {
+    const selection =
+      newSelection || this.selection?.length || [this.bufferSelection].length;
 
     return (
       selection &&
