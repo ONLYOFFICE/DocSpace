@@ -468,9 +468,17 @@ class FilesActionStore {
   };
 
   openLocationAction = (locationId, isFolder) => {
+    const { createNewExpandedKeys, setExpandedKeys } = this.treeFoldersStore;
+
     const locationFilter = isFolder ? this.filesStore.filter : null;
     this.filesStore.setBufferSelection(null);
-    return this.filesStore.fetchFiles(locationId, locationFilter);
+    return this.filesStore
+      .fetchFiles(locationId, locationFilter)
+      .then((data) => {
+        const pathParts = data.selectedFolder.pathParts;
+        const newExpandedKeys = createNewExpandedKeys(pathParts);
+        setExpandedKeys(newExpandedKeys);
+      });
     /*.then(() =>
       //isFolder ? null : this.selectRowAction(!checked, item)
     );*/
@@ -584,13 +592,14 @@ class FilesActionStore {
       setConflictResolveDialogVisible,
       setConflictResolveDialogItems,
     } = this.dialogsStore;
+    const { setBufferSelection } = this.filesStore;
 
     let conflicts;
 
     try {
       conflicts = await checkFileConflicts(destFolderId, folderIds, fileIds);
     } catch (err) {
-      this.filesStore.setBufferSelection(null);
+      setBufferSelection(null);
       return toastr.error(err.message ? err.message : err);
     }
 
@@ -602,10 +611,12 @@ class FilesActionStore {
       try {
         await this.uploadDataStore.itemOperationToFolder(operationData);
       } catch (err) {
-        this.filesStore.setBufferSelection(null);
+        setBufferSelection(null);
         return toastr.error(err.message ? err.message : err);
       }
     }
+
+    setBufferSelection(null);
   };
 
   isAvailableOption = (option) => {

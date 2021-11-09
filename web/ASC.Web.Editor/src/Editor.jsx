@@ -256,6 +256,8 @@ const Editor = () => {
       }
 
       if (!doc && !successAuth) {
+        localStorage.setItem("redirectPath", window.location.href);
+
         window.open(
           combineUrl(
             AppServerConfig.proxyURL,

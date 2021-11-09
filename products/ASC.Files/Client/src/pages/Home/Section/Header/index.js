@@ -295,7 +295,7 @@ class SectionHeaderContent extends React.Component {
   onBackToParentFolder = () => {
     const { setIsLoading, parentId, filter, fetchFiles } = this.props;
     setIsLoading(true);
-    fetchFiles(parentId, filter).finally(() => setIsLoading(false));
+    fetchFiles(parentId, null, true, false).finally(() => setIsLoading(false));
   };
 
   onCheck = (checked) => {

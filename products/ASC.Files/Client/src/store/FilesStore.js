@@ -98,7 +98,7 @@ class FilesStore {
   };
 
   setStartDrag = (startDrag) => {
-    this.selection = this.selection.filter((x) => !x.isThirdPartyFolder); // removed root thirdparty folders
+    this.selection = this.selection.filter((x) => !x.providerKey); // removed root thirdparty folders
     this.startDrag = startDrag;
   };
 
@@ -227,6 +227,9 @@ class FilesStore {
   };
 
   setSelected = (selected) => {
+    if (selected === "close" || selected === "none")
+      this.setBufferSelection(null);
+
     this.selected = selected;
     const files = this.files.concat(this.folders);
     this.selection = this.getFilesBySelected(files, selected);
@@ -323,6 +326,8 @@ class FilesStore {
           const isRecycleBinFolder =
             data.current.rootFolderType === FolderType.TRASH;
 
+          !isRecycleBinFolder && this.checkUpdateNode(data, folderId);
+
           if (!isRecycleBinFolder && withSubfolders) {
             const path = data.pathParts.slice(0);
             const foldersCount = data.current.foldersCount;
@@ -353,7 +358,7 @@ class FilesStore {
           const selectedFolder = {
             selectedFolder: { ...this.selectedFolderStore },
           };
-          this.createThumbnails();
+          this.viewAs === "tile" && this.createThumbnails();
           return Promise.resolve(selectedFolder);
         })
         .catch((err) => {
@@ -374,6 +379,29 @@ class FilesStore {
         });
 
     return request();
+  };
+
+  checkUpdateNode = async (data, folderId) => {
+    const { treeFolders, getSubfolders } = this.treeFoldersStore;
+
+    const somePath = data.pathParts.slice(0);
+    const path = data.pathParts.slice(0);
+    let newItems = treeFolders;
+
+    while (somePath.length !== 1) {
+      newItems = newItems.find((x) => x.id === somePath[0])?.folders;
+      if (!newItems) {
+        return;
+      }
+
+      somePath.shift();
+    }
+
+    if (!newItems.find((x) => x.id == folderId)) {
+      path.splice(data.pathParts.length - 1, 1);
+      const subfolders = await getSubfolders(data.current.parentId);
+      loopTreeFolders(path, treeFolders, subfolders, 0);
+    }
   };
 
   isFileSelected = (fileId, parentId) => {

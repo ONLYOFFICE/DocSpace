@@ -71,9 +71,9 @@ namespace ASC.FederatedLogin.LoginProviders
                 : ConsumerFactory.GetByKey(providerType) as ILoginProvider;
         }
 
-        public LoginProfile Process(string providerType, HttpContext context, IDictionary<string, string> @params)
+        public LoginProfile Process(string providerType, HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs = null)
         {
-            return GetLoginProvider(providerType).ProcessAuthoriztion(context, @params);
+            return GetLoginProvider(providerType).ProcessAuthoriztion(context, @params, additionalStateArgs);
         }
 
         public LoginProfile GetLoginProfile(string providerType, string accessToken)

@@ -72,7 +72,6 @@ const StyledSimpleFilesRow = styled(Row)`
 
   .share-button-icon {
     margin-right: 7px;
-    margin-top: -1px;
   }
 
   .share-button:hover,
