@@ -170,6 +170,11 @@ export function updateUserCulture(id, cultureName) {
     method: "put",
     url: `/people/${id}/culture`,
     data: { cultureName },
+  }).then((user) => {
+    if (user && user.displayName) {
+      user.displayName = Encoder.htmlDecode(user.displayName);
+    }
+    return user;
   });
 }
 
