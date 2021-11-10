@@ -8,8 +8,7 @@ namespace ASC.Core.Common.Caching
     {
         public string UserName;
         public int Tenant;
-        public int CurrentFolder;
-        public List<string> Uidls;
+        public List<int> Uds;
         public MailUserAction Action;
         public int Destination;
     }
