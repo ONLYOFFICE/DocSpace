@@ -55,6 +55,7 @@ class SharingPanelComponent extends React.Component {
       accessOptions: [],
       filesOwnerId: null,
       showEmbeddingContent: false,
+      isUpdated: false,
       isLoading: false,
     };
 
@@ -71,7 +72,7 @@ class SharingPanelComponent extends React.Component {
   };
 
   onToggleLink = (item) => {
-    const { shareDataItems } = this.state;
+    const { shareDataItems, isUpdated } = this.state;
     const { DenyAccess, ReadOnly } = ShareAccessRights;
 
     const rights = item.access !== DenyAccess ? DenyAccess : ReadOnly;
@@ -81,6 +82,7 @@ class SharingPanelComponent extends React.Component {
     this.setState({
       shareDataItems: newDataItems,
       showEmbeddingContent: false,
+      isUpdated: !isUpdated,
     });
   };
 
@@ -216,7 +218,9 @@ class SharingPanelComponent extends React.Component {
   };
 
   onNotifyUsersChange = () =>
-    this.setState({ isNotifyUsers: !this.state.isNotifyUsers });
+    this.setState({
+      isNotifyUsers: !this.state.isNotifyUsers,
+    });
 
   onShowUsersPanel = () =>
     this.setState({
@@ -232,7 +236,7 @@ class SharingPanelComponent extends React.Component {
 
     if (elem.access !== +access) {
       elem.access = +access;
-      this.setState({ shareDataItems });
+      this.setState({ shareDataItems, isUpdated: true });
     }
   };
 
@@ -448,6 +452,7 @@ class SharingPanelComponent extends React.Component {
       accessOptions,
       externalAccessOptions,
       showEmbeddingContent,
+      isUpdated,
       isLoading,
     } = this.state;
 
@@ -516,7 +521,7 @@ class SharingPanelComponent extends React.Component {
             size="big"
             primary
             onClick={this.onSaveClick}
-            isDisabled={isLoading}
+            isDisabled={isLoading || !isUpdated}
           />
         </ModalDialog.Footer>
       </ModalDialog>
