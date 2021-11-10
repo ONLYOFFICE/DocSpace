@@ -15,7 +15,7 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.3");
+                .HasAnnotation("ProductVersion", "5.0.10");
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.CrmContact", b =>
                 {
@@ -32,7 +32,7 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
                         .HasColumnType("varchar(255)")
                         .HasColumnName("company_name")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("ContactTypeId")
                         .HasColumnType("int")
@@ -43,7 +43,7 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
                         .HasColumnType("char(38)")
                         .HasColumnName("create_by")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("CreateOn")
                         .HasColumnType("datetime")
@@ -53,25 +53,25 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
                         .HasColumnType("varchar(3)")
                         .HasColumnName("currency")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("DisplayName")
                         .HasColumnType("varchar(255)")
                         .HasColumnName("display_name")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("FirstName")
                         .HasColumnType("varchar(255)")
                         .HasColumnName("first_name")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Industry")
                         .HasColumnType("varchar(255)")
                         .HasColumnName("industry")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<bool>("IsCompany")
                         .HasColumnType("tinyint(1)")
@@ -86,7 +86,7 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
                         .HasColumnType("char(38)")
                         .HasColumnName("last_modifed_by")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("LastModifedOn")
                         .HasColumnType("datetime")
@@ -96,13 +96,13 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
                         .HasColumnType("varchar(255)")
                         .HasColumnName("last_name")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Notes")
                         .HasColumnType("text")
                         .HasColumnName("notes")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("StatusId")
                         .HasColumnType("int")
@@ -116,7 +116,7 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
                         .HasColumnType("varchar(255)")
                         .HasColumnName("title")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("Id");
 
@@ -141,7 +141,7 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
                         .HasColumnType("varchar(50)")
                         .HasColumnName("id")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("AnsweredBy")
                         .IsRequired()
@@ -150,7 +150,7 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
                         .HasColumnName("answered_by")
                         .HasDefaultValueSql("'00000000-0000-0000-0000-000000000000'")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("ContactId")
                         .HasColumnType("int")
@@ -172,21 +172,21 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
                         .HasColumnType("varchar(50)")
                         .HasColumnName("number_from")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("NumberTo")
                         .IsRequired()
                         .HasColumnType("varchar(50)")
                         .HasColumnName("number_to")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("ParentCallId")
                         .IsRequired()
                         .HasColumnType("varchar(50)")
                         .HasColumnName("parent_call_id")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(10,4)")
@@ -204,13 +204,13 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
                         .HasColumnType("varchar(50)")
                         .HasColumnName("record_sid")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("RecordUrl")
                         .HasColumnType("text")
                         .HasColumnName("record_url")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("Status")
                         .HasColumnType("int")
@@ -239,26 +239,26 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
                         .HasColumnType("varchar(50)")
                         .HasColumnName("id")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Alias")
                         .HasColumnType("varchar(255)")
                         .HasColumnName("alias")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Number")
                         .IsRequired()
                         .HasColumnType("varchar(50)")
                         .HasColumnName("number")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Settings")
                         .HasColumnType("text")
                         .HasColumnName("settings")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("TenantId")
                         .HasColumnType("int")

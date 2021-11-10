@@ -82,7 +82,7 @@ namespace ASC.Files.Core.EF
         {
             modelBuilder
                 .Add(MySqlAddDbFiles, Provider.MySql)
-                .Add(PgSqlAddDbFiles, Provider.Postgre);
+                .Add(PgSqlAddDbFiles, Provider.PostgreSql);
             return modelBuilder;
         }
         public static void MySqlAddDbFiles(this ModelBuilder modelBuilder)

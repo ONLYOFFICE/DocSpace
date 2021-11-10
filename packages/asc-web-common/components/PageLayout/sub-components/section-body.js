@@ -11,7 +11,7 @@ import DragAndDrop from "@appserver/components/drag-and-drop";
 import { tablet } from "@appserver/components/utils/device";
 
 const paddingStyles = css`
-  padding: 17px 7px 16px 24px;
+  padding: 17px 7px 16px 20px;
   @media ${tablet} {
     padding: 16px 0 16px 24px;
   }
@@ -35,7 +35,12 @@ const commonStyles = css`
     flex: 1 0 auto;
 
     outline: none;
-    ${(props) => props.viewAs == "tile" && "padding-right:0;"}
+    ${(props) =>
+      props.viewAs == "tile" &&
+      css`
+        padding-right: 0;
+        padding-left: 20px;
+      `}
 
     .section-wrapper {
       display: flex;

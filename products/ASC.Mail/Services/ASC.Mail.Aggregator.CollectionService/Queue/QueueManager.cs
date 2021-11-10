@@ -649,8 +649,8 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
                     Log.InfoFormat($"User '{mailbox.UserId}' was {userStatus}. Tenant = {mailbox.TenantId}. Disable mailboxes for user.");
 
-                    mailboxEngine.LoggedDisableMailboxes(
-                        new UserMailboxExp(mailbox.TenantId, mailbox.UserId), Log);
+                    mailboxEngine.DisableMailboxes(
+                        new UserMailboxExp(mailbox.TenantId, mailbox.UserId));
 
                     alertEngine.CreateDisableAllMailboxesAlert(mailbox.TenantId,
                         new List<string> { mailbox.UserId });

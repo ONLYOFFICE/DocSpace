@@ -28,9 +28,9 @@ using System;
 using System.Collections.Generic;
 
 using ASC.Common;
-using ASC.Common.Logging;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Entities;
+using ASC.Mail.Models;
 
 namespace ASC.Mail.Core.Dao.Interfaces
 {
@@ -65,8 +65,7 @@ namespace ASC.Mail.Core.Dao.Interfaces
 
         int SetMailboxesInProcess(string address);
 
-        bool ReleaseMailbox(Mailbox mailbox, int nextLoginDelay, ILog log, bool? enabled = null, int? messageCount = null,
-            long? size = null, bool? quotaError = null, string oAuthToken = null, string imapIntervalsJson = null, bool? resetImapIntervals = false);
+        bool ReleaseMailboxes(List<Mailbox> mailboxes, MailBoxData mainMailBox, bool disable);
 
         bool SetMailboxAuthError(int id, DateTime? authErroDate);
 
@@ -75,7 +74,5 @@ namespace ASC.Mail.Core.Dao.Interfaces
         bool CanAccessTo(IMailboxExp exp);
 
         MailboxStatus GetMailBoxStatus(IMailboxExp exp);
-
-        public bool LoggedEnable(IMailboxExp exp, bool enabled, ILog log);
     }
 }

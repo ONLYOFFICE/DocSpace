@@ -13,6 +13,7 @@
     <Company>Ascensio System SIA</Company>
     <Product>ASC.Mail</Product>
     <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
