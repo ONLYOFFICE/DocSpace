@@ -56,7 +56,7 @@ class SharingRow extends React.Component {
         body,
       });
 
-    window.open(mailtoLink);
+    window.open(mailtoLink, "_self");
   };
 
   onShareTwitter = () => {
@@ -69,7 +69,7 @@ class SharingRow extends React.Component {
         text: shareLink,
       });
 
-    window.open(twitterLink);
+    window.open(twitterLink, "", "width=1000,height=670");
   };
 
   // onShareFacebook = () => {
