@@ -115,11 +115,6 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                 return null;
             }
 
-            if (_lockedMailBoxList.Any(m => m.EMail.Address == mailBoxData.EMail.Address))
-            {
-                return null;
-            }
-
             _lockedMailBoxList.Add(mailBoxData);
 
             CancelHandler.Reset();
@@ -142,25 +137,9 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
             var mailboxEngine = scope.ServiceProvider.GetService<MailboxEngine>();
 
-            if (firstTime)
+            foreach (var mailbox in cloneCollection)
             {
-                foreach (var mailbox in cloneCollection)
-                {
-                    var sameMboxes = mailboxEngine.GetMailboxDataList(new ConcreteMailboxesExp(mailbox.EMail.Address));
-                    if (sameMboxes.Count > 0)
-                    {
-                        mailbox.NotOnlyOne = true;
-                    }
-
-                    ReleaseMailbox(mailbox);
-                }
-            }
-            else
-            {
-                foreach (var mailbox in cloneCollection)
-                {
-                    ReleaseMailbox(mailbox);
-                }
+                ReleaseMailbox(mailbox);
             }
         }
 
@@ -193,14 +172,6 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                 _lockedMailBoxList.RemoveAll(m => m.MailBoxId == mailBoxData.MailBoxId);
 
                 DeleteMailboxFromDumpDb(mailBoxData.MailBoxId);
-            }
-            catch (NullReferenceException nEx)
-            {
-                Log.ErrorFormat($"QueueManager -> ReleaseMailbox(Tenant = {mailBoxData.TenantId} MailboxId = {mailBoxData.MailBoxId}, Address = '{mailBoxData.Account}')\r\nException: {nEx + "\nBox will be removed from queue"} \r\n.");
-                _lockedMailBoxList.RemoveAll(m => m.MailBoxId == mailBoxData.MailBoxId);
-
-                Log.Info($"Boxes in queue: ");
-                foreach (var b in _lockedMailBoxList) { Log.Info($"Id: {b.MailBoxId}\n"); };
             }
             catch (Exception ex)
             {
@@ -536,14 +507,6 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                 Log.Debug($"Mailbox with id |{box.MailBoxId}| for user {box.UserId} from tenant {box.TenantId} was removed from queue");
             }
 
-            string boxes = "";
-            foreach (var b in mbList)
-            {
-                boxes += $"{b.MailBoxId} | ";
-            }
-
-            Log.Debug($"Now in queue next mailboxes: {boxes}");
-
             ReloadQueue(mbList);
         }
 
@@ -677,7 +640,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
                 Log.DebugFormat("TryLockMailbox {2} (MailboxId: {0} is {1})", mailbox.MailBoxId, mailbox.Active ? "active" : "inactive", mailbox.EMail.Address);
 
-                return mailboxEngine.LockMaibox(mailbox);
+                return mailboxEngine.LockMaibox(mailbox.MailBoxId);
 
             }
             catch (Exception ex)

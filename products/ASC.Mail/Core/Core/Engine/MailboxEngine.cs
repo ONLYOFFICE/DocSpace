@@ -113,12 +113,6 @@ namespace ASC.Mail.Core.Engine
             return tuples.Select(t => t.Item1).ToList();
         }
 
-        public List<MailBoxData> GetUniqueMailboxDataList(IMailboxesExp exp)
-        {
-            var tuples = GetUniqueMailboxFullInfoList(exp);
-            return tuples.Select(t => t.Item1).ToList();
-        }
-
         public List<Mailbox> GetMailboxList(IMailboxesExp exp)
         {
             var tuples = GetMailboxFullInfoList(exp);
@@ -130,23 +124,6 @@ namespace ASC.Mail.Core.Engine
             var list = new List<Tuple<MailBoxData, Mailbox>>();
 
             var mailboxes = MailDaoFactory.GetMailboxDao().GetMailBoxes(exp);
-
-            list.AddRange(mailboxes.Select(GetMailbox).Where(tuple => tuple != null));
-
-            return list;
-        }
-
-        public List<Tuple<MailBoxData, Mailbox>> GetUniqueMailboxFullInfoList(IMailboxesExp exp)
-        {
-            var list = new List<Tuple<MailBoxData, Mailbox>>();
-
-            var mailboxes = MailDaoFactory.GetMailboxDao().GetUniqueMailBoxes(exp);
-
-            Log.Info($"Returned for queue boxes: ");
-            foreach (var box in mailboxes)
-            {
-                Log.Info($"Box {box.Id} have {box.DateLoginDelayExpires} date login delay expires. IsProcessed: {box.IsProcessed}");
-            }
 
             list.AddRange(mailboxes.Select(GetMailbox).Where(tuple => tuple != null));
 
@@ -536,48 +513,68 @@ namespace ASC.Mail.Core.Engine
             return mailboxes;
         }
 
-        public bool LockMaibox(MailBoxData mailBox)
+        public bool LockMaibox(int id)
         {
-            var boxesCount = MailDaoFactory.GetMailboxDao().SetMailboxesInProcess(mailBox.EMail.Address);
-
-            if (boxesCount > 1)
-            {
-                mailBox.NotOnlyOne = true;
-
-                Log.Info($"The box '{mailBox.EMail.Address}' width id '{mailBox.MailBoxId}' not alone. " +
-                    $"Boxes of the same name are set in the process too");
-            }
-
-            return boxesCount > 0;
+            return MailDaoFactory.GetMailboxDao().SetMailboxInProcess(id);
         }
 
-        public void ReleaseMailbox(MailBoxData mailBox, MailSettings mailSettings)
+        public class MailboxReleasedOptions
+        {
+            public bool? Enabled = null;
+            public int? MessageCount = null;
+            public long? Size = null;
+            public bool? QuotaError = null;
+            public string OAuthToken = null;
+            public string ImapIntervalsJson = null;
+            public bool? ResetImapIntervals = null;
+
+            public bool DisableBox;
+            public int ServerLoginDelay;
+
+            public MailboxReleasedOptions(bool disable)
+            {
+                DisableBox = disable;
+            }
+            public string GetImapIntervalForQuery()
+            {
+                var newInterval = "";
+                foreach (var ch in ImapIntervalsJson)
+                {
+                    if (ch == '{') newInterval += "{{";
+                    else if (ch == '}') newInterval += "}}";
+                    else newInterval += ch;
+                }
+                return $"'{newInterval}'";
+            }
+        }
+
+        public bool ReleaseMailbox(MailBoxData account, MailSettings mailSettings)
         {
             var disableMailbox = false;
 
-            if (mailBox.AuthErrorDate.HasValue)
+            if (account.AuthErrorDate.HasValue)
             {
-                var difference = DateTime.UtcNow - mailBox.AuthErrorDate.Value;
+                var difference = DateTime.UtcNow - account.AuthErrorDate.Value;
 
                 if (difference > mailSettings.Defines.AuthErrorDisableMailboxTimeout)
                 {
                     disableMailbox = true;
 
-                    AlertEngine.CreateAuthErrorDisableAlert(mailBox.TenantId, mailBox.UserId,
-                        mailBox.MailBoxId);
+                    AlertEngine.CreateAuthErrorDisableAlert(account.TenantId, account.UserId,
+                        account.MailBoxId);
                 }
                 else if (difference > mailSettings.Defines.AuthErrorWarningTimeout)
                 {
-                    AlertEngine.CreateAuthErrorWarningAlert(mailBox.TenantId, mailBox.UserId,
-                        mailBox.MailBoxId);
+                    AlertEngine.CreateAuthErrorWarningAlert(account.TenantId, account.UserId,
+                        account.MailBoxId);
                 }
             }
 
-            if (mailBox.QuotaErrorChanged)
+            if (account.QuotaErrorChanged)
             {
-                if (mailBox.QuotaError)
+                if (account.QuotaError)
                 {
-                    AlertEngine.CreateQuotaErrorWarningAlert(mailBox.TenantId, mailBox.UserId);
+                    AlertEngine.CreateQuotaErrorWarningAlert(account.TenantId, account.UserId);
                 }
                 else
                 {
@@ -585,15 +582,55 @@ namespace ASC.Mail.Core.Engine
                 }
             }
 
-            var boxes = GetMailboxList(new ConcreteMailboxesExp(mailBox.EMail.Address));
+            var exp = new СoncreteUserMailboxExp(account.MailBoxId, account.TenantId, account.UserId);
 
-            if (boxes == null) throw new NullReferenceException("Box collection for release was null.");
+            var mailbox = MailDaoFactory.GetMailboxDao().GetMailBox(exp);
 
-            if (!boxes.Any()) throw new Exception("Box collection for release was empty.");
+            if (mailbox == null) return true;
 
-            Log.Info($"{boxes.Count} {boxes.FirstOrDefault().Address} mailboxes will be released.");
+            MailboxReleasedOptions rOptions = new MailboxReleasedOptions(disableMailbox);
 
-            MailDaoFactory.GetMailboxDao().ReleaseMailboxes(boxes, mailBox, disableMailbox);
+            if (account.AuthErrorDate.HasValue)
+            {
+                if (rOptions.DisableBox)
+                {
+                    rOptions.Enabled = false;
+                }
+            }
+
+            if (mailbox.MsgCountLast != account.MessagesCount)
+            {
+                rOptions.MessageCount = account.MessagesCount;
+            }
+
+            if (mailbox.SizeLast != account.Size)
+            {
+                rOptions.Size = account.Size;
+            }
+
+            if (account.QuotaErrorChanged)
+            {
+                rOptions.QuotaError = account.QuotaError;
+            }
+
+            if (account.AccessTokenRefreshed)
+            {
+                rOptions.OAuthToken = account.OAuthToken;
+            }
+
+            if (account.Imap && account.ImapFolderChanged)
+            {
+                if (account.BeginDateChanged)
+                {
+                    rOptions.ResetImapIntervals = true;
+                }
+                else
+                {
+                    rOptions.ImapIntervalsJson = account.ImapIntervalsJson;
+                }
+            }
+
+            return MailDaoFactory.GetMailboxDao().ReleaseMailbox(mailbox, rOptions);
         }
 
         public bool SetMaiboxAuthError(int id, DateTime? authErroDate)
@@ -770,7 +807,7 @@ namespace ASC.Mail.Core.Engine
 
             Log.Debug("GetActiveMailboxForProcessing()");
 
-            var mailboxes = GetUniqueMailboxDataList(new MailboxesForProcessingExp(mailSettings, tasksLimit, true));
+            var mailboxes = GetMailboxDataList(new MailboxesForProcessingExp(mailSettings, tasksLimit, true));
 
             Log.DebugFormat("Found {0} active tasks", mailboxes.Count);
 
@@ -784,7 +821,7 @@ namespace ASC.Mail.Core.Engine
 
             Log.Debug("GetInactiveMailboxForProcessing()");
 
-            var mailboxes = GetUniqueMailboxDataList(new MailboxesForProcessingExp(mailSettings, tasksLimit, false));
+            var mailboxes = GetMailboxDataList(new MailboxesForProcessingExp(mailSettings, tasksLimit, false));
 
             Log.DebugFormat($"Found {mailboxes.Count} inactive tasks");
 
