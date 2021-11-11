@@ -9,7 +9,7 @@ const newInstance = i18n.createInstance();
 newInstance.use(Backend).init({
   lng: localStorage.getItem(LANGUAGE) || "en",
   fallbackLng: "en",
-  load: "all",
+  load: "currentOnly",
   //debug: true,
 
   interpolation: {

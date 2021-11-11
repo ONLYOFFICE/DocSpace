@@ -471,7 +471,7 @@ class UploadDataStore {
       if (folderId) folderInfo = await getFolderInfo(folderId);
 
       const newPath = [];
-      if (folderInfo) {
+      if (folderInfo || path[path.length - 1] === this.selectedFolderStore.id) {
         let i = 0;
         while (path[i] && path[i] !== folderId) {
           newPath.push(path[i]);
@@ -583,6 +583,11 @@ class UploadDataStore {
       //console.log(`Uploaded chunk ${index}/${length}`, res);
 
       //let isLatestFile = indexOfFile === newFilesLength - 1;
+
+      if (!res.data.data && res.data.message) {
+        return Promise.reject(res.data.message);
+      }
+
       const fileId = res.data.data.id;
 
       const { uploaded } = res.data.data;
@@ -979,7 +984,13 @@ class UploadDataStore {
 
   moveToCopyTo = (destFolderId, pbData, isCopy) => {
     const { treeFolders, setTreeFolders } = this.treeFoldersStore;
-    const { fetchFiles, filter } = this.filesStore;
+    const {
+      fetchFiles,
+      filter,
+      isEmptyLastPageAfterOperation,
+      resetFilterPage,
+    } = this.filesStore;
+
     const {
       clearSecondaryProgressData,
       setSecondaryProgressBarData,
@@ -994,11 +1005,20 @@ class UploadDataStore {
       loopTreeFolders(path, newTreeFolders, folders, foldersCount);
 
       if (!isCopy || destFolderId === this.selectedFolderStore.id) {
-        fetchFiles(this.selectedFolderStore.id, filter, true, true).finally(
-          () => {
-            setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-          }
-        );
+        let newFilter;
+
+        if (isEmptyLastPageAfterOperation()) {
+          newFilter = resetFilterPage();
+        }
+
+        fetchFiles(
+          this.selectedFolderStore.id,
+          newFilter ? newFilter : filter,
+          true,
+          true
+        ).finally(() => {
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+        });
       } else {
         setSecondaryProgressBarData({
           icon: pbData.icon,

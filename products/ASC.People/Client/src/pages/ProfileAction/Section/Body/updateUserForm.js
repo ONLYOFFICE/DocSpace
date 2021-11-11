@@ -91,7 +91,6 @@ class UpdateUserForm extends React.Component {
 
     this.openAvatarEditor = this.openAvatarEditor.bind(this);
     this.openAvatarEditorPage = this.openAvatarEditorPage.bind(this);
-    this.onSaveAvatar = this.onSaveAvatar.bind(this);
     this.onCloseAvatarEditor = this.onCloseAvatarEditor.bind(this);
     this.onLoadFileAvatar = this.onLoadFileAvatar.bind(this);
 
@@ -602,6 +601,8 @@ class UpdateUserForm extends React.Component {
     this.setIsEdit();
   }
 
+  onSaveClick = () => this.setState({ isLoading: true });
+
   render() {
     const {
       isLoading,
@@ -735,7 +736,7 @@ class UpdateUserForm extends React.Component {
               image={this.state.avatar.image}
               visible={this.state.visibleAvatarEditor}
               onClose={this.onCloseAvatarEditor}
-              onSave={this.onSaveAvatar}
+              onSave={this.onSaveClick}
               onLoadFile={this.onLoadFileAvatar}
               headerLabel={t("EditPhoto")}
               selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}

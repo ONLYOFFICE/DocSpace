@@ -48,6 +48,10 @@ export function getFolderPath(folderId) {
 }
 
 export function getFolder(folderId, filter) {
+  if (folderId && typeof folderId === "string") {
+    folderId = encodeURIComponent(folderId.replace(/\\\\/g, "\\"));
+  }
+
   const params =
     filter && filter instanceof FilesFilter
       ? `${folderId}?${filter.toApiUrlParams()}`

@@ -272,6 +272,26 @@ class FilesStore {
     );
   };
 
+  isEmptyLastPageAfterOperation = (newSelection) => {
+    const selection =
+      newSelection || this.selection?.length || [this.bufferSelection].length;
+
+    return (
+      selection &&
+      this.filter.page > 0 &&
+      !this.filter.hasNext() &&
+      selection === this.files.length + this.folders.length
+    );
+  };
+
+  resetFilterPage = () => {
+    let newFilter;
+    newFilter = this.filter.clone();
+    newFilter.page--;
+
+    return newFilter;
+  };
+
   fetchFiles = (
     folderId,
     filter,
@@ -367,13 +387,21 @@ class FilesStore {
 
   checkUpdateNode = async (data, folderId) => {
     const { treeFolders, getSubfolders } = this.treeFoldersStore;
+    const { pathParts, current } = data;
 
-    const somePath = data.pathParts.slice(0);
-    const path = data.pathParts.slice(0);
+    if (current.parentId === 0) return;
+
+    const somePath = pathParts.slice(0);
+    const path = pathParts.slice(0);
     let newItems = treeFolders;
 
     while (somePath.length !== 1) {
-      newItems = newItems.find((x) => x.id === somePath[0])?.folders;
+      const folderItem = newItems.find((x) => x.id === somePath[0]);
+      newItems = folderItem.folders
+        ? folderItem.folders
+        : somePath.length > 1
+        ? []
+        : null;
       if (!newItems) {
         return;
       }
@@ -382,8 +410,8 @@ class FilesStore {
     }
 
     if (!newItems.find((x) => x.id == folderId)) {
-      path.splice(data.pathParts.length - 1, 1);
-      const subfolders = await getSubfolders(data.current.parentId);
+      path.splice(pathParts.length - 1, 1);
+      const subfolders = await getSubfolders(current.parentId);
       loopTreeFolders(path, treeFolders, subfolders, 0);
     }
   };
