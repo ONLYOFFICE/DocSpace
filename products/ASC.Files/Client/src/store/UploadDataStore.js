@@ -294,11 +294,13 @@ class UploadDataStore {
 
       if (data && data[0]) {
         let progress = data[0].progress;
+        let fileInfo = null;
         let error = null;
 
         while (progress < 100) {
           const res = await this.getConversationProgress(fileId);
           progress = res && res[0] && res[0].progress;
+          fileInfo = res && res[0].result;
 
           runInAction(() => {
             const file = this.files.find((file) => file.fileId === fileId);
@@ -336,6 +338,8 @@ class UploadDataStore {
             }
           });
 
+          this.settingsStore.storeOriginalFiles && this.refreshFiles(file);
+          file.fileInfo = fileInfo;
           this.refreshFiles(file);
           const percent = this.getConversationPercent(index + 1);
           this.setConversionPercent(percent, !!error);
@@ -463,7 +467,7 @@ class UploadDataStore {
     if (window.location.pathname.indexOf("/history") === -1) {
       const newFiles = files;
       const newFolders = folders;
-      const path = currentFile.path;
+      const path = currentFile.path || [];
 
       let folderInfo = null;
       const index = path.findIndex((x) => x === this.selectedFolderStore.id);
@@ -479,7 +483,10 @@ class UploadDataStore {
         }
       }
 
-      if (newPath[newPath.length - 1] !== this.selectedFolderStore.id) {
+      if (
+        newPath[newPath.length - 1] !== this.selectedFolderStore.id &&
+        path.length
+      ) {
         return;
       }
 
@@ -494,16 +501,21 @@ class UploadDataStore {
             setFilter(newFilter);
           }
         } else {
-          const isFileExist = newFiles.find(
+          const fileIndex = newFiles.findIndex(
             (x) => x.id === currentFile.fileInfo.id
           );
 
-          if (!isFileExist && currentFile && currentFile.fileInfo) {
-            newFiles.unshift(currentFile.fileInfo);
-            setFiles(newFiles);
-            const newFilter = filter;
-            newFilter.total = newFilter.total += 1;
-            setFilter(newFilter);
+          if (currentFile && currentFile.fileInfo) {
+            if (fileIndex === -1) {
+              newFiles.unshift(currentFile.fileInfo);
+              setFiles(newFiles);
+              const newFilter = filter;
+              newFilter.total = newFilter.total += 1;
+              setFilter(newFilter);
+            } else if (!this.settingsStore.storeOriginalFiles) {
+              newFiles[fileIndex] = currentFile.fileInfo;
+              setFiles(newFiles);
+            }
           }
         }
       };
