@@ -56,15 +56,30 @@ class FilesActionStore {
     }
   };
 
-  updateCurrentFolder = () => {
+  updateCurrentFolder = (selectionLength) => {
     const {
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
-    const { filter, fetchFiles } = this.filesStore;
-    fetchFiles(this.selectedFolderStore.id, filter, true, true).finally(() =>
-      setTimeout(() => clearSecondaryProgressData(), TIMEOUT)
-    );
+    const {
+      filter,
+      fetchFiles,
+      isEmptyLastPageAfterOperation,
+      resetFilterPage,
+    } = this.filesStore;
+
+    let newFilter;
+
+    if (selectionLength && isEmptyLastPageAfterOperation(selectionLength)) {
+      newFilter = resetFilterPage();
+    }
+
+    fetchFiles(
+      this.selectedFolderStore.id,
+      newFilter ? newFilter : filter,
+      true,
+      true
+    ).finally(() => setTimeout(() => clearSecondaryProgressData(), TIMEOUT));
   };
 
   deleteAction = async (translations, newSelection = null) => {
@@ -113,7 +128,7 @@ class FilesActionStore {
               label: translations.deleteOperation,
             };
             await this.uploadDataStore.loopFilesOperations(data, pbData);
-            this.updateCurrentFolder();
+            this.updateCurrentFolder(selection.length);
           }
         );
       } catch (err) {
@@ -332,13 +347,15 @@ class FilesActionStore {
       label: translations.deleteOperation,
     };
 
+    const selectionFilesLength = 1;
+
     if (isFile) {
       this.isMediaOpen();
       return deleteFile(itemId)
         .then(async (res) => {
           const data = res[0] ? res[0] : null;
           await this.uploadDataStore.loopFilesOperations(data, pbData);
-          this.updateCurrentFolder();
+          this.updateCurrentFolder(selectionFilesLength);
         })
         .then(() => toastr.success(translations.successRemoveFile));
     } else {
@@ -346,7 +363,7 @@ class FilesActionStore {
         .then(async (res) => {
           const data = res[0] ? res[0] : null;
           await this.uploadDataStore.loopFilesOperations(data, pbData);
-          this.updateCurrentFolder();
+          this.updateCurrentFolder(selectionFilesLength);
         })
         .then(() => toastr.success(translations.successRemoveFolder));
     }

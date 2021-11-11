@@ -10,7 +10,7 @@ i18n
   .init({
     lng: localStorage.getItem(LANGUAGE) || "en",
     fallbackLng: "en",
-    load: "all",
+    load: "currentOnly",
     //debug: true,
 
     interpolation: {

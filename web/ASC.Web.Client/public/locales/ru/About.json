@@ -3,7 +3,7 @@
   "DocumentManagement": "Управление документами",
   "OnlineEditors": "Онлайн редакторы",
   "SoftwareLicense": "Лицензия на ПО",
-  "AboutCompanyAddressTitle": "Адрес",
-  "AboutCompanyEmailTitle": "Email",
-  "AboutCompanyTelTitle": "Телефон"
+  "AboutCompanyAddressTitle": "адрес",
+  "AboutCompanyEmailTitle": "email",
+  "AboutCompanyTelTitle": "тел."
 }

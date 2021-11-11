@@ -19,7 +19,6 @@ class AuthStore {
   tfaStore = null;
 
   isLoading = false;
-  isAuthenticated = false;
   version = null;
   skipModules = false;
   providers = [];
@@ -41,8 +40,6 @@ class AuthStore {
     this.skipModules = skipModules;
 
     await this.userStore.init();
-
-    if (this.userStore.user) this.setIsAuthenticated(true);
 
     const requests = [];
     requests.push(this.settingsStore.init());
@@ -202,15 +199,17 @@ class AuthStore {
     }
   };
 
-  reset = () => {
+  reset = (skipUser = false) => {
     this.isInit = false;
     this.skipModules = false;
-    this.userStore = new UserStore();
+    if (!skipUser) {
+      this.userStore = new UserStore();
+    }
     this.moduleStore = new ModuleStore();
     this.settingsStore = new SettingsStore();
   };
 
-  logout = async (withoutRedirect) => {
+  logout = async (redirectToLogin = true) => {
     await api.user.logout();
 
     //console.log("Logout response ", response);
@@ -221,22 +220,24 @@ class AuthStore {
 
     isDesktop && logoutDesktop();
 
-    this.reset();
-
-    this.init();
-
-    if (!withoutRedirect) {
+    if (redirectToLogin) {
       if (personal) {
-        window.location.replace("/");
+        return window.location.replace("/");
       } else {
-        history.push(combineUrl(proxyURL, "/login"));
+        this.reset(true);
+        this.userStore.setUser(null);
+        this.init();
+        return history.push(combineUrl(proxyURL, "/login"));
       }
+    } else {
+      this.reset();
+      this.init();
     }
   };
 
-  setIsAuthenticated = (isAuthenticated) => {
-    this.isAuthenticated = isAuthenticated;
-  };
+  get isAuthenticated() {
+    return this.userStore.isAuthenticated;
+  }
 
   getEncryptionAccess = (fileId) => {
     return api.files
