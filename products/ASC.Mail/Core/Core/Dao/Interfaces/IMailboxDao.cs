@@ -30,7 +30,8 @@ using System.Collections.Generic;
 using ASC.Common;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Entities;
-using ASC.Mail.Models;
+
+using static ASC.Mail.Core.Engine.MailboxEngine;
 
 namespace ASC.Mail.Core.Dao.Interfaces
 {
@@ -63,9 +64,9 @@ namespace ASC.Mail.Core.Dao.Interfaces
 
         bool SetMailboxesActivity(int tenant, string user, bool userOnline = true);
 
-        int SetMailboxesInProcess(string address);
+        bool SetMailboxInProcess(int id);
 
-        bool ReleaseMailboxes(List<Mailbox> mailboxes, MailBoxData mainMailBox, bool disable);
+        bool ReleaseMailbox(Mailbox mailbox, MailboxReleasedOptions releasedOptions);
 
         bool SetMailboxAuthError(int id, DateTime? authErroDate);
 

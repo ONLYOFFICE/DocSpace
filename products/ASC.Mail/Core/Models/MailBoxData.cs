@@ -33,7 +33,6 @@ using System.Runtime.Serialization;
 using ASC.FederatedLogin;
 using ASC.FederatedLogin.Helpers;
 using ASC.Mail.Authorization;
-//using ASC.Mail.Authorization;
 using ASC.Mail.Clients.Imap;
 using ASC.Mail.Enums;
 using ASC.Mail.Utils;
@@ -80,9 +79,6 @@ namespace ASC.Mail.Models
                 }
             }
         }
-
-        [IgnoreDataMember]
-        public bool NotOnlyOne { get; set; }
 
         [DataMember(Name = "name")]
         public string Name { get; set; }

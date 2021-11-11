@@ -693,28 +693,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
                 log.InfoFormat($"Found message (UIDL: '{uidl}', MailboxId = {mailbox.MailBoxId}, Address = {mailbox.EMail})");
 
-                using var scope = ServiceProvider.CreateScope();
-
-                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                tenantManager.SetCurrentTenant(mailbox.TenantId);
-
-                var factory = scope.ServiceProvider.GetService<MailEnginesFactory>();
-
-                if (mailbox.NotOnlyOne)
-                {
-                    var sameMboxes = factory.MailboxEngine.GetMailboxDataList(new ConcreteMailboxesExp(mailbox.EMail.Address));
-
-                    log.InfoFormat($"Boxes with the same name ({mailbox.EMail.Address}) detected. The message will be sent to them.");
-
-                    foreach (var box in sameMboxes)
-                    {
-                        SaveAndOptional(box, boxInfo, uidl, log);
-                    }
-                }
-                else
-                {
-                    SaveAndOptional(mailbox, boxInfo, uidl, log);
-                }
+                if (!SaveAndOptional(mailbox, boxInfo, uidl, log)) return;
             }
             catch (Exception ex)
             {
@@ -740,7 +719,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             public bool Unread { get; set; }
         }
 
-        private void SaveAndOptional(MailBoxData mailbox, MailBoxSaveInfo boxInfo, string uidl, ILog log)
+        private bool SaveAndOptional(MailBoxData mailbox, MailBoxSaveInfo boxInfo, string uidl, ILog log)
         {
             using var scope = ServiceProvider.CreateScope();
 
@@ -756,10 +735,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
             var message = factory.MessageEngine.Save(mailbox, boxInfo.MimeMessage, uidl, boxInfo.Folder, null, boxInfo.Unread, log);
 
-            if (message == null || message.Id <= 0)
-            {
-                return;
-            }
+            if (message == null || message.Id <= 0) return false;
 
             log.InfoFormat($"Message saved (to Mbox_{mailbox.MailBoxId} - {mailbox.EMail.Address}) (Id: {message.Id}, From: {message.From}, Subject: {message.Subject}, Unread: {message.IsNew})");
 
@@ -768,6 +744,8 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             DoOptionalOperations(message, boxInfo.MimeMessage, mailbox, boxInfo.Folder, log, mailEnginesFactory);
 
             log.Info("DoOptionalOperations -> END");
+
+            return true;
         }
 
         enum MailboxState
