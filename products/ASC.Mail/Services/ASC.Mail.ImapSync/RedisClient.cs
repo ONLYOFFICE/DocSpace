@@ -41,11 +41,6 @@ namespace ASC.Mail.ImapSync
             redis = new StackExchangeRedisCacheClient(new Serializer(), _mailSettings.ImapSync.RedisConnectionString);
         }
 
-        public string CreateQueueKey(int MailBoxId)
-        {
-            return RedisClientPrefix + MailBoxId.ToString("000000");
-        }
-
         public T Get<T>(string key) where T : class
         {
             return redis.Get<T>(key);

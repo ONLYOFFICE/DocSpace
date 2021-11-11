@@ -66,7 +66,7 @@ namespace ASC.Mail.ImapSync
                 return MailWorkFolder.Folder;
             }
         }
-        public Dictionary<IMailFolder, Models.MailFolder> foldersDictionary { get; private set; }
+        private Dictionary<IMailFolder, Models.MailFolder> foldersDictionary { get; set; }
 
         #region Event from Imap handlers
 
@@ -105,7 +105,9 @@ namespace ASC.Mail.ImapSync
 
         #endregion
 
-        public IMailFolder GetImapFolderByType(int folderType) => foldersDictionary.FirstOrDefault(x => x.Value.Folder == (FolderType)folderType).Key;
+        public IMailFolder GetImapFolderByType(int folderType) => GetImapFolderByType((FolderType)folderType);
+
+        public IMailFolder GetImapFolderByType(FolderType folderType) => foldersDictionary.FirstOrDefault(x => x.Value.Folder == folderType).Key;
 
         public SimpleImapClient(MailBoxData mailbox, CancellationToken cancelToken, MailSettings mailSettings, ILog log)
         {
@@ -136,6 +138,35 @@ namespace ASC.Mail.ImapSync
             Authenticate();
 
             LoadFoldersFromIMAP();
+        }
+
+        internal void ExecuteUserAction(List<MailInfo> clientMessages, MailUserAction action, int destination)
+        {
+            if (clientMessages.Count == 0) return;
+
+            var messagesByFolders = clientMessages.GroupBy(x => x.Folder);
+
+            foreach (var messagesInFolder in messagesByFolders)
+            {
+                var imapFolder = GetImapFolderByType(messagesInFolder.Key);
+
+                if (imapFolder == null) continue;
+
+                var uids = messagesInFolder.Select(x => x.Uidl.ToUniqueId()).Where(x => x.IsValid).ToList();
+
+                if (action == MailUserAction.MoveTo)
+                {
+                    var imapDestination = GetImapFolderByType(destination);
+
+                    if (imapDestination == null) continue;
+
+                    AddTask(new Task(() => MoveMessageInImap(imapFolder, uids, imapDestination)));
+                }
+                else
+                {
+                    AddTask(new Task(() => SetFlagsInImap(imapFolder, uids, action)));
+                }
+            }
         }
 
         public void ChangeFolder(int folderActivity)
@@ -405,7 +436,7 @@ namespace ASC.Mail.ImapSync
                 return;
             }
 
-            int maxIndex = ImapMessagesList.Max(x=>x.Index);
+            int maxIndex = ImapMessagesList.Max(x => x.Index);
 
             try
             {
@@ -491,11 +522,6 @@ namespace ASC.Mail.ImapSync
             }
         }
 
-        public void TryMoveMessageInImap(IMailFolder sourceFolder, List<UniqueId> uniqueIds, IMailFolder destinationFolder)
-        {
-            AddTask(new Task(() => MoveMessageInImap(ImapWorkFolder, uniqueIds, destinationFolder)));
-        }
-
         private void MoveMessageInImap(IMailFolder sourceFolder, List<UniqueId> uniqueIds, IMailFolder destinationFolder)
         {
             if (uniqueIds.Count == 0 || sourceFolder == null || destinationFolder == null)
@@ -523,11 +549,6 @@ namespace ASC.Mail.ImapSync
             {
                 _log.Error($"MoveMessageInImap: {ex.Message}");
             }
-        }
-
-        public void TrySetFlagsInImap(IMailFolder folder, List<UniqueId> uniqueIds, MailUserAction action)
-        {
-            AddTask(new Task(() => SetFlagsInImap(folder, uniqueIds, action)));
         }
 
         private bool SetFlagsInImap(IMailFolder folder, List<UniqueId> uniqueIds, MailUserAction action)

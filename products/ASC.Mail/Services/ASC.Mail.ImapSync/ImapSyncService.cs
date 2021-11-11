@@ -105,9 +105,9 @@ namespace ASC.Mail.ImapSync
         {
             if (clients.ContainsKey(cashedTenantUserMailBox.UserName))
             {
-                clients[cashedTenantUserMailBox.UserName]?.CheckRedis(cashedTenantUserMailBox.MailBoxId, cashedTenantUserMailBox.Folder, cashedTenantUserMailBox.tags);
+                clients[cashedTenantUserMailBox.UserName]?.CheckRedis(cashedTenantUserMailBox.Folder, cashedTenantUserMailBox.tags);
 
-                _log.Info($"User Activity -> {cashedTenantUserMailBox.MailBoxId}, folder={cashedTenantUserMailBox.Folder}. ");
+                _log.Info($"User Activity -> {cashedTenantUserMailBox.UserName}, folder={cashedTenantUserMailBox.Folder}. ");
 
                 return;
             }

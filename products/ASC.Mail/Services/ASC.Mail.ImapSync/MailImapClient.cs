@@ -29,7 +29,6 @@ using ASC.Core.Common.Caching;
 using ASC.Core.Notify.Signalr;
 using ASC.Core.Users;
 using ASC.Data.Storage;
-using ASC.Mail.Clients;
 using ASC.Mail.Configuration;
 using ASC.Mail.Core.Dao;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
@@ -56,6 +55,7 @@ namespace ASC.Mail.ImapSync
     {
         public readonly string UserName;
         public readonly int Tenant;
+        public readonly string RedisKey;
 
         public bool IsReady { get; private set; } = false;
 
@@ -99,58 +99,35 @@ namespace ASC.Mail.ImapSync
 
         private bool _IsProcessActionFromImapInNextTurn = false;
 
-        public async void CheckRedis(int mailBoxId, int folderActivity, IEnumerable<int> tags)
+        public async void CheckRedis(int folderActivity, IEnumerable<int> tags)
         {
             _IsDieInNextTurn = false;
 
-            var mailBox = simpleImapClients.Keys.FirstOrDefault(x => x.MailBoxId == mailBoxId);
-
-            if (mailBox == null) return;
-
-            SimpleImapClient simpleImapClient = simpleImapClients[mailBox];
-
-            if (simpleImapClient == null)
-            {
-                CreateSimpleImapClient(mailBox);
-
-                _log.Debug($"Client for mailboxid={mailBoxId} will cteated.");
-
-                return;
-            }
-
-            var key = _redisClient.CreateQueueKey(mailBoxId);
-
-            _log.Debug($"ProcessActionFromRedis. Begin read key: {key}.");
+            _log.Debug($"ProcessActionFromRedis. Begin read key: {RedisKey}.");
 
             int iterationCount = 0;
 
-            simpleImapClient.ChangeFolder(folderActivity);
+            simpleImapClients.Select(x => x.Value).AsParallel().ForAll(x => x.ChangeFolder(folderActivity));
 
             try
             {
                 while (true)
                 {
-                    var actionFromCache = await _redisClient.PopFromQueue<CashedMailUserAction>(key);
+                    var actionFromCache = await _redisClient.PopFromQueue<CashedMailUserAction>(RedisKey);
 
                     if (actionFromCache == null) break;
 
-                    var imapfolder = simpleImapClient.GetImapFolderByType(actionFromCache.CurrentFolder);
+                    var exp = SimpleMessagesExp.CreateBuilder(Tenant, UserName).SetMessageIds(actionFromCache.Uds);
 
-                    if (imapfolder == null) continue;
+                    var messages = _mailInfoDao.GetMailInfoList(exp.Build()).ToList();
 
-                    var uids = actionFromCache.Uidls.Select(x => x.ToUniqueId()).Where(x => x.IsValid).ToList();
-
-                    if (actionFromCache.Action == MailUserAction.MoveTo)
+                    foreach(var simpleClient in simpleImapClients.Values)
                     {
-                        var destination = simpleImapClient.GetImapFolderByType(actionFromCache.Destination);
+                        if (simpleClient == null) continue;
 
-                        if (destination == null) continue;
+                        var clientMessages = messages.Where(x => x.MailboxId == simpleClient.Account.MailBoxId).ToList();
 
-                        simpleImapClient.TryMoveMessageInImap(imapfolder, uids, destination);
-                    }
-                    else
-                    {
-                        simpleImapClient.TrySetFlagsInImap(imapfolder, uids, actionFromCache.Action);
+                        simpleClient.ExecuteUserAction(clientMessages, actionFromCache.Action, actionFromCache.Destination);
                     }
                 }
             }
@@ -166,6 +143,7 @@ namespace ASC.Mail.ImapSync
         {
             UserName = userName;
             Tenant = tenant;
+            RedisKey = "ASC.MailAction:" + userName;
 
             _mailSettings = mailSettings;
 
@@ -181,7 +159,7 @@ namespace ASC.Mail.ImapSync
             _storageFactory = clientScope.GetService<StorageFactory>();
             _mailInfoDao = clientScope.GetService<IMailInfoDao>();
             _mailEnginesFactory = clientScope.GetService<MailEnginesFactory>();
-            
+
             _folderEngine = clientScope.GetService<FolderEngine>();
             _signalrServiceClient = clientScope.GetService<IOptionsSnapshot<SignalrServiceClient>>().Get("mail");
             _redisClient = clientScope.GetService<RedisClient>();
@@ -254,7 +232,7 @@ namespace ASC.Mail.ImapSync
             simpleImapClient.NewMessage += ImapClient_NewMessage;
             simpleImapClient.MessagesListUpdated += ImapClient_MessagesListUpdated;
             simpleImapClient.NewActionFromImap += ImapClient_NewActionFromImap;
-            simpleImapClient.OnCriticalError += ImapClient_OnCriticalError; 
+            simpleImapClient.OnCriticalError += ImapClient_OnCriticalError;
             simpleImapClient.OnUidlsChange += ImapClient_OnUidlsChange;
 
             simpleImapClients.Add(mailbox, simpleImapClient);
