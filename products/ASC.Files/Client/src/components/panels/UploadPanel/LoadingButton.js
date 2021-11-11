@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled, { css, keyframes } from "styled-components";
 import globalColors from "@appserver/components/utils/globalColors";
 
@@ -92,7 +92,13 @@ const LoadingButton = ({ id, className, style, ...rest }) => {
     setIsAnimation(false);
   };
 
-  setTimeout(stopAnimation, 5000);
+  useEffect(() => {
+    const timer = setTimeout(stopAnimation, 5000);
+
+    return function cleanup() {
+      clearTimeout(timer);
+    };
+  }, [isAnimation]);
 
   return (
     <StyledCircleWrap
