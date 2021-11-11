@@ -396,7 +396,12 @@ class FilesStore {
     let newItems = treeFolders;
 
     while (somePath.length !== 1) {
-      newItems = newItems.find((x) => x.id === somePath[0])?.folders;
+      const folderItem = newItems.find((x) => x.id === somePath[0]);
+      newItems = folderItem.folders
+        ? folderItem.folders
+        : somePath.length > 1
+        ? []
+        : null;
       if (!newItems) {
         return;
       }
