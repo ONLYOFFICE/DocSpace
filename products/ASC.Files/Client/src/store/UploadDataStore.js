@@ -583,6 +583,11 @@ class UploadDataStore {
       //console.log(`Uploaded chunk ${index}/${length}`, res);
 
       //let isLatestFile = indexOfFile === newFilesLength - 1;
+
+      if (!res.data.data && res.data.message) {
+        return Promise.reject(res.data.message);
+      }
+
       const fileId = res.data.data.id;
 
       const { uploaded } = res.data.data;
