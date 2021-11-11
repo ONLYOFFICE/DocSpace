@@ -468,6 +468,9 @@ class UploadDataStore {
       const newFiles = files;
       const newFolders = folders;
       const path = currentFile.path || [];
+      const fileIndex = newFiles.findIndex(
+        (x) => x.id === currentFile.fileInfo.id
+      );
 
       let folderInfo = null;
       const index = path.findIndex((x) => x === this.selectedFolderStore.id);
@@ -501,10 +504,6 @@ class UploadDataStore {
             setFilter(newFilter);
           }
         } else {
-          const fileIndex = newFiles.findIndex(
-            (x) => x.id === currentFile.fileInfo.id
-          );
-
           if (currentFile && currentFile.fileInfo) {
             if (fileIndex === -1) {
               newFiles.unshift(currentFile.fileInfo);
@@ -539,7 +538,7 @@ class UploadDataStore {
 
       if (filter.total >= filter.pageCount) {
         if (files.length) {
-          newFiles.pop();
+          fileIndex === -1 && newFiles.pop();
           addNewFile();
         } else {
           newFolders.pop();
