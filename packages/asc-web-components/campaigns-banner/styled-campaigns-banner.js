@@ -16,10 +16,15 @@ const BannerWrapper = styled.div`
     color: #000;
   }
 
+  .banner-img-wrapper {
+    height: 160px;
+    width: 100%;
+  }
+
   img {
     max-width: 100%;
     height: auto;
-    margin-top: 10px;
+    margin-top: 5px;
   }
 
   .banner-sub-header {
