@@ -129,6 +129,17 @@ class FilesActionStore {
             };
             await this.uploadDataStore.loopFilesOperations(data, pbData);
             this.updateCurrentFolder(selection.length);
+            if (isRecycleBinFolder) {
+              return toastr.success(translations.deleteFromTrash);
+            }
+
+            if (selection.length > 1) {
+              return toastr.success(translations.deleteSelectedElem);
+            }
+            if (selection[0].fileExst) {
+              return toastr.success(translations.FileRemoved);
+            }
+            return toastr.success(translations.FolderRemoved);
           }
         );
       } catch (err) {
@@ -737,6 +748,8 @@ class FilesActionStore {
                   deleteOperation: t("Translations:DeleteOperation"),
                   deleteFromTrash: t("Translations:DeleteFromTrash"),
                   deleteSelectedElem: t("Translations:DeleteSelectedElem"),
+                  FileRemoved: t("Home:FileRemoved"),
+                  FolderRemoved: t("Home:FolderRemoved"),
                 };
 
                 this.deleteAction(translations).catch((err) =>
