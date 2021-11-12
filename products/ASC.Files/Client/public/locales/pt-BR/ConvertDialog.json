@@ -3,7 +3,6 @@
   "ConversionMessage": "Todos os documentos que você carregar serão convertidos no formato Office Open XML (docx, xlsx ou pptx) para uma edição mais rápida.",
   "ConversionTitle": "Carregando documento",
   "ConvertAndOpenTitle": "Converter e abrir documento",
-  "ConvertingLabel": "Conversão de arquivos: {{file}} para {{totalFiles}}",
   "HideMessage": "Não mostre esta mensagem novamente",
   "SaveOriginalFormatMessage": "Salvar a cópia do arquivo no formato original"
 }
