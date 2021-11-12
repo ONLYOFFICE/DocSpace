@@ -129,7 +129,7 @@ class DeleteDialogComponent extends React.Component {
 
     const title =
       isPrivacyFolder || isRecycleBinFolder || checkedSelections[0]?.providerKey
-        ? t("ConfirmRemove")
+        ? t("Common:Confirmation")
         : unsubscribe
         ? t("UnsubscribeTitle")
         : checkedSelections.length === 1 || isPrivacyFolder
