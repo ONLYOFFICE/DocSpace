@@ -1,9 +1,5 @@
 {
   "AboutCompanyAddressTitle": "адрес",
   "AboutCompanyEmailTitle": "email",
-  "AboutCompanyLicensor": "АВТОРСКИЕ ПРАВА",
-  "AboutCompanyTelTitle": "тел.",
-  "AllRightsReservedCustomMode": "<0>Ascensio System SIA.</0> <1>All rights reserved.</1>",
-  "LicensedUnder": "Программа распространяется под лицензией: {{license}}",
-  "SourceCode": "Исходный код программы доступен по cсылке"
+  "AboutCompanyTelTitle": "тел."
 }

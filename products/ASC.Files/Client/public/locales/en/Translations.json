@@ -40,6 +40,5 @@
   "TypeTitleSharePoint": "SharePoint",
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
-  "TypeTitleYandex": "Yandex.Disk",
-  "UploadingLabel": "Uploading files: {{file}} of {{totalFiles}}"
+  "TypeTitleYandex": "Yandex.Disk"
 }
