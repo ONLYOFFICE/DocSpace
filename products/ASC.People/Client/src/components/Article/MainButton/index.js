@@ -75,6 +75,7 @@ class ArticleMainButtonContent extends React.Component {
           isDisabled={false}
           isDropdown={true}
           text={t("Common:Actions")}
+          className="people_main-button"
         >
           <DropDownItem
             icon={combineUrl(

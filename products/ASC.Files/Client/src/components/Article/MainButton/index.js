@@ -79,6 +79,7 @@ class ArticleMainButtonContent extends React.Component {
         isDisabled={isDisabled ? isDisabled : !canCreate}
         isDropdown={true}
         text={t("Common:Actions")}
+        className="files_main-button"
       >
         <DropDownItem
           className="main-button_drop-down main-button_new-document"
