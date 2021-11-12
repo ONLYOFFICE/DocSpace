@@ -222,7 +222,7 @@ class TreeFolders extends React.Component {
           <TreeNode
             id={item.id}
             key={item.id}
-            className="tree-drag"
+            className={item.folderClassName}
             data-value={value}
             title={item.title}
             icon={this.getFolderIcon(item)}
@@ -253,7 +253,7 @@ class TreeFolders extends React.Component {
         <TreeNode
           id={item.id}
           key={item.id}
-          className="tree-drag"
+          className={item.folderClassName}
           data-value={value}
           title={item.title}
           needTopMargin={item.rootFolderType === FolderType.TRASH}
