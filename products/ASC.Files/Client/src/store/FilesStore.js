@@ -397,7 +397,7 @@ class FilesStore {
 
     while (somePath.length !== 1) {
       const folderItem = newItems.find((x) => x.id === somePath[0]);
-      newItems = folderItem.folders
+      newItems = folderItem?.folders
         ? folderItem.folders
         : somePath.length > 1
         ? []
