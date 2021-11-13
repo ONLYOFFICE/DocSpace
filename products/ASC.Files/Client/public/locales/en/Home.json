@@ -36,7 +36,7 @@
   "MarkRead": "Mark as read",
   "Media": "Media",
   "MoveItem": "<strong>{{title}}</strong> moved",
-  "MoveItems": "<strong>{{qty}}</strong> elements has been moved",
+  "MoveItems": "<strong>{{qty}}</strong> elements have been moved",
   "MoveTo": "Move to",
   "MyEmptyContainerDescription": "Documents you create or upload are kept in 'My Documents' section. You can edit, share, and collaborate on them with your team.",
   "New": "New",

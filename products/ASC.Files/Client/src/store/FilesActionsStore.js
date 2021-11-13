@@ -175,6 +175,7 @@ class FilesActionStore {
           label: translations.deleteOperation,
         };
         await this.uploadDataStore.loopFilesOperations(data, pbData);
+        toastr.success(translations.successOperation);
         this.updateCurrentFolder();
       });
     } catch (err) {
