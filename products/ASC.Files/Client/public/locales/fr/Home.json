@@ -74,7 +74,7 @@
   "TitleUploaded": "Téléchargé",
   "TooltipElementCopyMessage": "Copier {{element}}",
   "TooltipElementsCopyMessage": "Copier {{element}} des elements",
-  "TooltipElementsMoveMessage": "Déplacer les éléments {{élément}}",
+  "TooltipElementsMoveMessage": "Déplacer les éléments {{element}}",
   "TrashEmptyContainerDescription": "La Corbeille est l'endroit où sont déplacés tous les fichiers supprimés. Vous pouvez les restaurer ou les supprimer définitivement en vidant la Corbeille. ",
   "UnblockVersion": "Débloquer/enregistrer",
   "UploadToFolder": "Télécharger le dossier",

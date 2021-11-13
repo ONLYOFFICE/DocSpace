@@ -1,6 +1,6 @@
 {
   "AccessRights": "Direitos de Acesso.",
-  "AccessRightsAccessToProduct": "O acesso ao módulo {{produto}} é dado a",
+  "AccessRightsAccessToProduct": "O acesso ao módulo {{product}} é dado a",
   "AccessRightsAllUsers": "Todos {{users}}",
   "AccessRightsChangeOwnerConfirmText": "As alterações serão aplicadas após a confirmação por e-mail.",
   "AccessRightsOwnerOpportunities": "Faça o mesmo como os administradores do módulo|Nomear administradores módulo|Definir direitos de acesso do módulo|Gerenciar configuração do portal|Gerenciar contas de usuário|Alterar proprietário portal|Fazer backup dos dados do portal|Desativar ou excluir portal",
@@ -21,7 +21,7 @@
   "ChangeOwner": "Alterar Proprietário Portal",
   "ChooseOwner": "Escolher proprietário",
   "CompanyNameForCanvasLogo": "Nome da empresa",
-  "ConfirmEmailSended": "O e-mail de confirmação foi enviado para {{{nome do proprietário}}}.",
+  "ConfirmEmailSended": "O e-mail de confirmação foi enviado para {{{ownerName}}}.",
   "Customization": "Personalização",
   "CustomTitles": "Títulos personalizados",
   "CustomTitlesSettingsDescription": "Será exibido em sua página de boas-vindas e utilizado para notificações por e-mail (Do campo). O nome de domínio personalizado é uma forma de definir uma URL alternativa para seu portal. O nome do portal personalizado aparecerá ao lado do endereço onlyoffice.com/onlyoffice.eu.",

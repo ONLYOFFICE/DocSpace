@@ -41,7 +41,7 @@
   "MeLabel": "Eu",
   "More": "Mais",
   "Next": "Próximo",
-  "NotFoundLanguage": "Não consegue encontrar seu idioma? Entre em contato conosco em <1>{{supportEmail}</1> para participar da tradução e receber recompensas.",
+  "NotFoundLanguage": "Não consegue encontrar seu idioma? Entre em contato conosco em <1>{{supportEmail}}</1> para participar da tradução e receber recompensas.",
   "OKButton": "OK",
   "OpenApp": "Abra seu {{title}} app",
   "PageOfTotalPage": "{{page}} de {{totalPage}}",
