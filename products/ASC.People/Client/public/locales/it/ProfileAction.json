@@ -11,6 +11,8 @@
   "EditPhoto": "Modifica Foto",
   "EditUserDialogTitle": "Modifica profilo",
   "EmailPopupHelper": "L'email principale viene utilizzata per le notifiche e il ripristino dell'accesso. <1> Puoi creare una nuova email su questo dominio per l'utente e impostare una password monouso per il primo accesso.</1>",
+  "ErrorInvalidUserLastName": "Cognome non valido",
+  "ErrorInvalidUserFirstName": "Nome non valido",
   "FirstName": "Nome",
   "Message": "Parla",
   "ProductsAndInstruments_Products": "Moduli",
