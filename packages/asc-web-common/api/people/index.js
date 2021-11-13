@@ -58,7 +58,12 @@ export function createUser(data, confirmKey = null) {
 
   if (confirmKey) options.headers = { confirm: confirmKey };
 
-  return request(options);
+  return request(options).then((user) => {
+    if (user && user.displayName) {
+      user.displayName = Encoder.htmlDecode(user.displayName);
+    }
+    return user;
+  });
 }
 
 export function changePassword(userId, passwordHash, key) {
@@ -96,6 +101,11 @@ export function updateUser(data) {
     method: "put",
     url: `/people/${data.id}`,
     data,
+  }).then((user) => {
+    if (user && user.displayName) {
+      user.displayName = Encoder.htmlDecode(user.displayName);
+    }
+    return user;
   });
 }
 
