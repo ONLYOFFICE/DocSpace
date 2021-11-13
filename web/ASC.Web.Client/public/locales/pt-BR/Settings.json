@@ -21,7 +21,7 @@
   "ChangeOwner": "Alterar Proprietário Portal",
   "ChooseOwner": "Escolher proprietário",
   "CompanyNameForCanvasLogo": "Nome da empresa",
-  "ConfirmEmailSended": "O e-mail de confirmação foi enviado para {{{ownerName}}}.",
+  "ConfirmEmailSended": "O e-mail de confirmação foi enviado para {{ownerName}}.",
   "Customization": "Personalização",
   "CustomTitles": "Títulos personalizados",
   "CustomTitlesSettingsDescription": "Será exibido em sua página de boas-vindas e utilizado para notificações por e-mail (Do campo). O nome de domínio personalizado é uma forma de definir uma URL alternativa para seu portal. O nome do portal personalizado aparecerá ao lado do endereço onlyoffice.com/onlyoffice.eu.",
