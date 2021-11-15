@@ -25,6 +25,9 @@ i18n
     backend: {
       loadPath: loadLanguagePath(config.homepage),
     },
+
+    ns: ["ChangePasswordDialog", "ChangeEmailDialog"],
+
     react: {
       useSuspense: false,
     },
