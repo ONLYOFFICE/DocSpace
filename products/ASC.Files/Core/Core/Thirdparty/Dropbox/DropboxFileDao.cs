@@ -302,7 +302,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public override Stream GetFileStream(File<string> file)
         {
-            return GetFileStream(file, 0);
+            return GetFileStreamAsync(file).Result;
         }
 
         public override async Task<Stream> GetFileStreamAsync(File<string> file)
@@ -369,20 +369,20 @@ namespace ASC.Files.Thirdparty.Dropbox
                 if (!newDropboxFile.Name.Equals(file.Title))
                 {
                     var parentFolderPath = GetParentFolderPath(newDropboxFile);
-                    file.Title = GetAvailableTitle(file.Title, parentFolderPath, IsExist);
+                    file.Title = await GetAvailableTitleAsync (file.Title, parentFolderPath, IsExistAsync);
                     newDropboxFile = await ProviderInfo.Storage.MoveFileAsync(filePath, parentFolderPath, file.Title);
                 }
             }
             else if (file.FolderID != null)
             {
                 var folderPath = MakeDropboxPath(file.FolderID);
-                file.Title = GetAvailableTitle(file.Title, folderPath, IsExist);
+                file.Title = await GetAvailableTitleAsync(file.Title, folderPath, IsExistAsync);
                 newDropboxFile = await ProviderInfo.Storage.CreateFileAsync(fileStream, file.Title, folderPath);
             }
 
             await ProviderInfo.CacheResetAsync(newDropboxFile);
             var parentPath = GetParentFolderPath(newDropboxFile);
-            if (parentPath != null) ProviderInfo.CacheReset(parentPath);
+            if (parentPath != null) await ProviderInfo.CacheResetAsync(parentPath);
 
             return ToFile(newDropboxFile);
         }
@@ -587,7 +587,7 @@ namespace ASC.Files.Thirdparty.Dropbox
         {
             var dropboxFile = await GetDropboxFileAsync(file.ID);
             var parentFolderPath = GetParentFolderPath(dropboxFile);
-            newTitle = GetAvailableTitle(newTitle, parentFolderPath, IsExist);
+            newTitle = await GetAvailableTitleAsync(newTitle, parentFolderPath, IsExistAsync);
 
             dropboxFile = await ProviderInfo.Storage.MoveFileAsync(MakeDropboxPath(dropboxFile), parentFolderPath, newTitle);
 
@@ -733,7 +733,7 @@ namespace ASC.Files.Thirdparty.Dropbox
                 else
                 {
                     var folderPath = MakeDropboxPath(file.FolderID);
-                    var title = GetAvailableTitle(file.Title, folderPath, IsExist);
+                    var title = await GetAvailableTitleAsync(file.Title, folderPath, IsExistAsync);
                     dropboxFile = await ProviderInfo.Storage.FinishResumableSessionAsync(dropboxSession, folderPath, title, uploadSession.BytesUploaded);
                 }
 

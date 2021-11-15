@@ -84,14 +84,29 @@ namespace ASC.Common.Threading
             notify.Publish(new DistributedTaskCancelation() { Id = id }, CacheNotifyAction.Remove);
         }
 
+        public async Task CancelTaskAsync(string id)
+        {
+            await notify.PublishAsync(new DistributedTaskCancelation() { Id = id }, CacheNotifyAction.Remove);
+        }
+
         public void SetTask(DistributedTask task)
         {
             notifyCache.Publish(task.DistributedTaskCache, CacheNotifyAction.InsertOrUpdate);
         }
 
+        public async Task SetTaskAsync(DistributedTask task)
+        {
+            await notifyCache.PublishAsync(task.DistributedTaskCache, CacheNotifyAction.InsertOrUpdate);
+        }
+
         public void RemoveTask(string id, string key)
         {
             notifyCache.Publish(new DistributedTaskCache() { Id = id, Key = key }, CacheNotifyAction.Remove);
+        }
+
+        public async Task RemoveTaskAsync(string id, string key)
+        {
+            await notifyCache.PublishAsync(new DistributedTaskCache() { Id = id, Key = key }, CacheNotifyAction.Remove);
         }
     }
 

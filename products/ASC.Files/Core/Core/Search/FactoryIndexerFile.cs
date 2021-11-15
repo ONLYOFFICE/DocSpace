@@ -144,7 +144,7 @@ namespace ASC.Web.Files.Core.Search
                         data.ForEach(r =>
                         {
                             TenantManager.SetCurrentTenant(r.TenantId);
-                            fileDao.InitDocument(r);
+                            fileDao.InitDocumentAsync(r).Wait();
                         });
                         Index(data);
                     }
@@ -154,7 +154,7 @@ namespace ASC.Web.Files.Core.Search
                         data.ForEach(r =>
                         {
                             TenantManager.SetCurrentTenant(r.TenantId);
-                            fileDao.InitDocument(r);
+                            fileDao.InitDocumentAsync(r).Wait();
                         });
 
                         tasks.Add(IndexAsync(data));

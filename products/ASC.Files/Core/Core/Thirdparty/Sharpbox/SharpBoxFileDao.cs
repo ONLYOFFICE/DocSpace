@@ -98,9 +98,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return GetFileAsync(fileId).Result;
         }
 
-        public Task<File<string>> GetFileAsync(string fileId)
+        public async Task<File<string>> GetFileAsync(string fileId)
         {
-            return Task.FromResult(GetFile(fileId, 1));
+            return await GetFileAsync(fileId, 1);
         }
 
         public File<string> GetFile(string fileId, int fileVersion)
@@ -576,7 +576,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
             if (toFolderId is string tsId)
             {
-                return CopyFile(fileId, tsId) as File<TTo>;
+                return await CopyFileAsync(fileId, tsId) as File<TTo>;
             }
 
             throw new NotImplementedException();
@@ -730,7 +730,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 if (uploadSession.BytesTotal == 0)
                     uploadSession.BytesTotal = chunkLength;
 
-                uploadSession.File = SaveFile(uploadSession.File, stream);
+                uploadSession.File = await SaveFileAsync(uploadSession.File, stream);
                 uploadSession.BytesUploaded = chunkLength;
                 return uploadSession.File;
             }

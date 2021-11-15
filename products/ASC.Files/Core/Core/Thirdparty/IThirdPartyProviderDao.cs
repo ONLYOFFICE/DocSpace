@@ -40,7 +40,17 @@ namespace ASC.Files.Thirdparty
             return new List<File<string>>();
         }
 
+        public Task<List<File<string>>> GetFilesAsync(IEnumerable<string> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        {
+            return Task.FromResult(new List<File<string>>());
+        }
+
         public IEnumerable<File<string>> Search(string text, bool bunch)
+        {
+            return null;
+        }
+
+        public Task<IEnumerable<File<string>>> SearchAsync(string text, bool bunch)
         {
             return null;
         }
@@ -56,6 +66,11 @@ namespace ASC.Files.Thirdparty
         }
 
         public List<EditHistory> GetEditHistory(DocumentServiceHelper documentServiceHelper, string fileId, int fileVersion)
+        {
+            return null;
+        }
+
+        public Task<List<EditHistory>> GetEditHistoryAsync(DocumentServiceHelper documentServiceHelper, string fileId, int fileVersion)
         {
             return null;
         }
@@ -92,7 +107,7 @@ namespace ASC.Files.Thirdparty
 
         public Task<bool> IsExistOnStorageAsync(File<string> file)
         {
-            return Task.FromResult(IsExistOnStorage(file));
+            return Task.FromResult(true);
         }
 
         public string GetUniqFilePath(File<string> file, string fileTitle)

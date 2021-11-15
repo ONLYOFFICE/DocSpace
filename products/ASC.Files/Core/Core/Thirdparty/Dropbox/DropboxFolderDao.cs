@@ -377,14 +377,19 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public Folder<TTo> CopyFolder<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
         {
+            return CopyFolderAsync(folderId, toFolderId, cancellationToken).Result;
+        }
+
+        public async Task<Folder<TTo>> CopyFolderAsync<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
+        {
             if (toFolderId is int tId)
             {
-                return CopyFolder(folderId, tId, cancellationToken) as Folder<TTo>;
+                return await CopyFolderAsync(folderId, tId, cancellationToken) as Folder<TTo>;
             }
 
             if (toFolderId is string tsId)
             {
-                return CopyFolder(folderId, tsId, cancellationToken) as Folder<TTo>;
+                return await CopyFolderAsync(folderId, tsId, cancellationToken) as Folder<TTo>;
             }
 
             throw new NotImplementedException();

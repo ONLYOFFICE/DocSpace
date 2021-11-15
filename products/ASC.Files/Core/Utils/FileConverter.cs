@@ -33,6 +33,7 @@ using System.Net;
 using System.Security;
 using System.Text.Json;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Common;
@@ -657,12 +658,42 @@ namespace ASC.Web.Files.Utils
             return Exec(file, FileUtility.GetInternalExtension(file.Title));
         }
 
+        public async Task<Stream> ExecAsync<T>(File<T> file)
+        {
+            return await ExecAsync(file, FileUtility.GetInternalExtension(file.Title));
+        }
+
         public Stream Exec<T>(File<T> file, string toExtension)
         {
             if (!EnableConvert(file, toExtension))
             {
                 var fileDao = DaoFactory.GetFileDao<T>();
-                return fileDao.GetFileStream(file);
+                return fileDao.GetFileStreamAsync(file).Result;
+            }
+
+            if (file.ContentLength > SetupInfo.AvailableFileSize)
+            {
+                throw new Exception(string.Format(FilesCommonResource.ErrorMassage_FileSizeConvert, FileSizeComment.FilesSizeToString(SetupInfo.AvailableFileSize)));
+            }
+
+            var fileUri = PathProvider.GetFileStreamUrl(file);
+            var docKey = DocumentServiceHelper.GetDocKey(file);
+            fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
+            DocumentServiceConnector.GetConvertedUri(fileUri, file.ConvertedExtension, toExtension, docKey, null, null, null, false, out var convertUri);
+
+            if (WorkContext.IsMono && ServicePointManager.ServerCertificateValidationCallback == null)
+            {
+                ServicePointManager.ServerCertificateValidationCallback += (s, c, n, p) => true; //HACK: http://ubuntuforums.org/showthread.php?t=1841740
+            }
+            return new ResponseStream(((HttpWebRequest)WebRequest.Create(convertUri)).GetResponse());
+        }
+
+        public async Task<Stream> ExecAsync<T>(File<T> file, string toExtension)
+        {
+            if (!EnableConvert(file, toExtension))
+            {
+                var fileDao = DaoFactory.GetFileDao<T>();
+                return await fileDao.GetFileStreamAsync(file);
             }
 
             if (file.ContentLength > SetupInfo.AvailableFileSize)
@@ -815,7 +846,7 @@ namespace ASC.Web.Files.Utils
             {
                 using var convertedFileStream = new ResponseStream(req.GetResponse());
                 newFile.ContentLength = convertedFileStream.Length;
-                newFile = fileDao.SaveFile(newFile, convertedFileStream);
+                newFile = fileDao.SaveFileAsync(newFile, convertedFileStream).Result;
             }
             catch (WebException e)
             {

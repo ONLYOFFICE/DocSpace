@@ -309,7 +309,7 @@ namespace ASC.Files.ThumbnailBuilder
         {
             logger.DebugFormat("CropImage: FileId: {0}.", file.ID);
 
-            using (var stream = fileDao.GetFileStream(file))
+            using (var stream = fileDao.GetFileStreamAsync(file).Result)
             {
                 Crop(fileDao, file, stream);
             }

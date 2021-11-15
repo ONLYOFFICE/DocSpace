@@ -32,6 +32,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 using ASC.Api.Core;
 using ASC.Api.Utils;
@@ -223,12 +224,80 @@ namespace ASC.Api.Documents
             return result.Select(r => FilesControllerHelperInt.GetFolder(r, userIdOrGroupId, filterType, withsubfolders)).ToList();
         }
 
+        [Read("@rootAsync")]
+        public async Task<IEnumerable<FolderContentWrapper<int>>> GetRootFoldersAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders, bool withoutTrash, bool withoutAdditionalFolder)
+        {
+            var IsVisitor = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsVisitor(UserManager);
+            var IsOutsider = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsOutsider(UserManager);
+            var result = new SortedSet<int>();
+
+            if (IsOutsider)
+            {
+                withoutTrash = true;
+                withoutAdditionalFolder = true;
+            }
+
+            if (!IsVisitor)
+            {
+                result.Add(GlobalFolderHelper.FolderMy);
+            }
+
+            if (!CoreBaseSettings.Personal && !UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsOutsider(UserManager))
+            {
+                result.Add(GlobalFolderHelper.FolderShare);
+            }
+
+            if (!IsVisitor && !withoutAdditionalFolder)
+            {
+                if (FilesSettingsHelper.FavoritesSection)
+                {
+                    result.Add(GlobalFolderHelper.FolderFavorites);
+                }
+
+                if (FilesSettingsHelper.RecentSection)
+                {
+                    result.Add(GlobalFolderHelper.FolderRecent);
+                }
+
+                if (!CoreBaseSettings.Personal && PrivacyRoomSettings.IsAvailable(TenantManager))
+                {
+                    result.Add(GlobalFolderHelper.FolderPrivacy);
+                }
+            }
+
+            if (!CoreBaseSettings.Personal)
+            {
+                result.Add(GlobalFolderHelper.FolderCommon);
+            }
+
+            if (!IsVisitor
+               && !withoutAdditionalFolder
+               && FileUtility.ExtsWebTemplate.Any()
+               && FilesSettingsHelper.TemplatesSection)
+            {
+                result.Add(GlobalFolderHelper.FolderTemplates);
+            }
+
+            if (!withoutTrash)
+            {
+                result.Add((int)GlobalFolderHelper.FolderTrash);
+            }
+
+            return await result.ToAsyncEnumerable().SelectAwait(async r => await FilesControllerHelperInt.GetFolderAsync(r, userIdOrGroupId, filterType, withsubfolders)).ToListAsync();
+        }
 
         [Read("@privacy")]
         public FolderContentWrapper<int> GetPrivacyFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             if (!IsAvailablePrivacyRoomSettings()) throw new System.Security.SecurityException();
             return FilesControllerHelperInt.GetFolder(GlobalFolderHelper.FolderPrivacy, userIdOrGroupId, filterType, withsubfolders);
+        }
+
+        [Read("@privacyAsync")]
+        public async Task<FolderContentWrapper<int>> GetPrivacyFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        {
+            if (!IsAvailablePrivacyRoomSettings()) throw new System.Security.SecurityException();
+            return await FilesControllerHelperInt.GetFolderAsync(GlobalFolderHelper.FolderPrivacy, userIdOrGroupId, filterType, withsubfolders);
         }
 
         [Read("@privacy/available")]
@@ -251,6 +320,12 @@ namespace ASC.Api.Documents
             return FilesControllerHelperInt.GetFolder(GlobalFolderHelper.FolderMy, userIdOrGroupId, filterType, withsubfolders);
         }
 
+        [Read("@myAsync")]
+        public async Task<FolderContentWrapper<int>> GetMyFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        {
+            return await FilesControllerHelperInt.GetFolderAsync(GlobalFolderHelper.FolderMy, userIdOrGroupId, filterType, withsubfolders);
+        }
+
         /// <summary>
         /// Returns the detailed list of files and folders located in the current user 'Projects Documents' section
         /// </summary>
@@ -263,6 +338,12 @@ namespace ASC.Api.Documents
         public FolderContentWrapper<string> GetProjectsFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             return FilesControllerHelperString.GetFolder(GlobalFolderHelper.GetFolderProjects<string>(), userIdOrGroupId, filterType, withsubfolders);
+        }
+
+        [Read("@projectsAsync")]
+        public async Task<FolderContentWrapper<string>> GetProjectsFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        {
+            return await FilesControllerHelperString.GetFolderAsync(GlobalFolderHelper.GetFolderProjects<string>(), userIdOrGroupId, filterType, withsubfolders);
         }
 
 
@@ -280,6 +361,12 @@ namespace ASC.Api.Documents
             return FilesControllerHelperInt.GetFolder(GlobalFolderHelper.FolderCommon, userIdOrGroupId, filterType, withsubfolders);
         }
 
+        [Read("@commonAsync")]
+        public async Task<FolderContentWrapper<int>> GetCommonFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        {
+            return await FilesControllerHelperInt.GetFolderAsync(GlobalFolderHelper.FolderCommon, userIdOrGroupId, filterType, withsubfolders);
+        }
+
         /// <summary>
         /// Returns the detailed list of files and folders located in the 'Shared with Me' section
         /// </summary>
@@ -294,6 +381,12 @@ namespace ASC.Api.Documents
             return FilesControllerHelperInt.GetFolder(GlobalFolderHelper.FolderShare, userIdOrGroupId, filterType, withsubfolders);
         }
 
+        [Read("@shareAsync")]
+        public async Task<FolderContentWrapper<int>> GetShareFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        {
+            return await FilesControllerHelperInt.GetFolderAsync(GlobalFolderHelper.FolderShare, userIdOrGroupId, filterType, withsubfolders);
+        }
+
         /// <summary>
         /// Returns the detailed list of recent files
         /// </summary>
@@ -304,6 +397,12 @@ namespace ASC.Api.Documents
         public FolderContentWrapper<int> GetRecentFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             return FilesControllerHelperInt.GetFolder(GlobalFolderHelper.FolderRecent, userIdOrGroupId, filterType, withsubfolders);
+        }
+
+        [Read("@recentAsync")]
+        public async Task<FolderContentWrapper<int>> GetRecentFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        {
+            return await FilesControllerHelperInt.GetFolderAsync(GlobalFolderHelper.FolderRecent, userIdOrGroupId, filterType, withsubfolders);
         }
 
         [Create("file/{fileId}/recent", order: int.MaxValue)]
@@ -330,6 +429,12 @@ namespace ASC.Api.Documents
             return FilesControllerHelperInt.GetFolder(GlobalFolderHelper.FolderFavorites, userIdOrGroupId, filterType, withsubfolders);
         }
 
+        [Read("@favoritesAsync")]
+        public async Task<FolderContentWrapper<int>> GetFavoritesFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        {
+            return await FilesControllerHelperInt.GetFolderAsync(GlobalFolderHelper.FolderFavorites, userIdOrGroupId, filterType, withsubfolders);
+        }
+
         /// <summary>
         /// Returns the detailed list of templates files
         /// </summary>
@@ -340,6 +445,12 @@ namespace ASC.Api.Documents
         public FolderContentWrapper<int> GetTemplatesFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             return FilesControllerHelperInt.GetFolder(GlobalFolderHelper.FolderTemplates, userIdOrGroupId, filterType, withsubfolders);
+        }
+
+        [Read("@templatesAsync")]
+        public async Task<FolderContentWrapper<int>> GetTemplatesFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        {
+            return await FilesControllerHelperInt.GetFolderAsync(GlobalFolderHelper.FolderTemplates, userIdOrGroupId, filterType, withsubfolders);
         }
 
         /// <summary>
@@ -354,6 +465,12 @@ namespace ASC.Api.Documents
         public FolderContentWrapper<int> GetTrashFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             return FilesControllerHelperInt.GetFolder(Convert.ToInt32(GlobalFolderHelper.FolderTrash), userIdOrGroupId, filterType, withsubfolders);
+        }
+
+        [Read("@trashAsync")]
+        public async Task<FolderContentWrapper<int>> GetTrashFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        {
+            return await FilesControllerHelperInt.GetFolderAsync(Convert.ToInt32(GlobalFolderHelper.FolderTrash), userIdOrGroupId, filterType, withsubfolders);
         }
 
         /// <summary>
@@ -373,14 +490,33 @@ namespace ASC.Api.Documents
             return FilesControllerHelperString.GetFolder(folderId, userIdOrGroupId, filterType, withsubfolders).NotFoundIfNull();
         }
 
+        [Read("{folderId}/Async", order: int.MaxValue, DisableFormat = true)]
+        public async Task<FolderContentWrapper<string>> GetFolderAsync(string folderId, Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        {
+            var folder = await FilesControllerHelperString.GetFolderAsync(folderId, userIdOrGroupId, filterType, withsubfolders);
+            return folder.NotFoundIfNull();
+        }
+
         [Read("{folderId:int}", order: int.MaxValue - 1)]
         public FolderContentWrapper<int> GetFolder(int folderId, Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             return FilesControllerHelperInt.GetFolder(folderId, userIdOrGroupId, filterType, withsubfolders);
         }
 
+        [Read("{folderId:int}/async", order: int.MaxValue - 1)]
+        public async Task<FolderContentWrapper<int>> GetFolderAsync(int folderId, Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        {
+            return await FilesControllerHelperInt.GetFolderAsync(folderId, userIdOrGroupId, filterType, withsubfolders);
+        }
+
         [Read("{folderId}/subfolders")]
         public IEnumerable<FileEntryWrapper> GetFolders(string folderId)
+        {
+            return FilesControllerHelperString.GetFolders(folderId);
+        }
+
+        [Read("{folderId}/subfoldersAsync")]
+        public IEnumerable<FileEntryWrapper> GetFoldersAsync(string folderId)
         {
             return FilesControllerHelperString.GetFolders(folderId);
         }
@@ -636,11 +772,24 @@ namespace ASC.Api.Documents
             return FilesControllerHelperString.StartEdit(fileId, model.EditingAlone, model.Doc);
         }
 
+        [Create("fileAsync/{fileId}/startedit")]
+        public async Task<object> StartEditFromBodyAsync(string fileId, [FromBody] StartEditModel model)
+        {
+            return await FilesControllerHelperString.StartEditAsync(fileId, model.EditingAlone, model.Doc);
+        }
+
         [Create("file/{fileId}/startedit")]
         [Consumes("application/x-www-form-urlencoded")]
         public object StartEditFromForm(string fileId, [FromForm] StartEditModel model)
         {
             return FilesControllerHelperString.StartEdit(fileId, model.EditingAlone, model.Doc);
+        }
+
+        [Create("fileAsync/{fileId}/startedit")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public async Task<object> StartEditFromFormAsync(string fileId, [FromForm] StartEditModel model)
+        {
+            return await FilesControllerHelperString.StartEditAsync(fileId, model.EditingAlone, model.Doc);
         }
 
         [Create("file/{fileId:int}/startedit")]
@@ -649,11 +798,24 @@ namespace ASC.Api.Documents
             return FilesControllerHelperInt.StartEdit(fileId, model.EditingAlone, model.Doc);
         }
 
+        [Create("fileAsync/{fileId:int}/startedit")]
+        public async Task<object> StartEditFromBodyAsync(int fileId, [FromBody] StartEditModel model)
+        {
+            return await FilesControllerHelperInt.StartEditAsync(fileId, model.EditingAlone, model.Doc);
+        }
+
         [Create("file/{fileId:int}/startedit")]
         [Consumes("application/x-www-form-urlencoded")]
         public object StartEditFromForm(int fileId, [FromForm] StartEditModel model)
         {
             return FilesControllerHelperInt.StartEdit(fileId, model.EditingAlone, model.Doc);
+        }
+
+        [Create("fileAsync/{fileId:int}/startedit")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public async Task<object> StartEditFromFormAsync(int fileId, [FromForm] StartEditModel model)
+        {
+            return await FilesControllerHelperInt.StartEditAsync(fileId, model.EditingAlone, model.Doc);
         }
 
         /// <summary>
@@ -1130,10 +1292,22 @@ namespace ASC.Api.Documents
             return FilesControllerHelperString.GetFileInfo(fileId, version);
         }
 
+        [Read("fileAsync/{fileId}", DisableFormat = true)]
+        public async Task<FileWrapper<string>> GetFileInfoAsync(string fileId, int version = -1)
+        {
+            return await FilesControllerHelperString.GetFileInfoAsync(fileId, version);
+        }
+
         [Read("file/{fileId:int}")]
         public FileWrapper<int> GetFileInfo(int fileId, int version = -1)
         {
             return FilesControllerHelperInt.GetFileInfo(fileId, version);
+        }
+
+        [Read("fileAsync/{fileId:int}")]
+        public async Task<FileWrapper<int>> GetFileInfoAsync(int fileId, int version = -1)
+        {
+            return await FilesControllerHelperInt.GetFileInfoAsync(fileId, version);
         }
 
         /// <summary>
@@ -1151,11 +1325,24 @@ namespace ASC.Api.Documents
             return FilesControllerHelperString.UpdateFile(fileId, model.Title, model.LastVersion);
         }
 
+        [Update("fileAsync/{fileId}", DisableFormat = true)]
+        public async Task<FileWrapper<string>> UpdateFileFromBodyAsync(string fileId, [FromBody] UpdateFileModel model)
+        {
+            return await FilesControllerHelperString.UpdateFileAsync(fileId, model.Title, model.LastVersion);
+        }
+
         [Update("file/{fileId}", DisableFormat = true)]
         [Consumes("application/x-www-form-urlencoded")]
         public FileWrapper<string> UpdateFileFromForm(string fileId, [FromForm] UpdateFileModel model)
         {
             return FilesControllerHelperString.UpdateFile(fileId, model.Title, model.LastVersion);
+        }
+
+        [Update("fileAsync/{fileId}", DisableFormat = true)]
+        [Consumes("application/x-www-form-urlencoded")]
+        public async Task<FileWrapper<string>> UpdateFileFromFormAsync(string fileId, [FromForm] UpdateFileModel model)
+        {
+            return await FilesControllerHelperString.UpdateFileAsync(fileId, model.Title, model.LastVersion);
         }
 
         [Update("file/{fileId:int}")]
@@ -1164,11 +1351,24 @@ namespace ASC.Api.Documents
             return FilesControllerHelperInt.UpdateFile(fileId, model.Title, model.LastVersion);
         }
 
+        [Update("fileAsync/{fileId:int}")]
+        public async Task<FileWrapper<int>> UpdateFileFromBodyAsync(int fileId, [FromBody] UpdateFileModel model)
+        {
+            return await FilesControllerHelperInt.UpdateFileAsync(fileId, model.Title, model.LastVersion);
+        }
+
         [Update("file/{fileId:int}")]
         [Consumes("application/x-www-form-urlencoded")]
         public FileWrapper<int> UpdateFileFromForm(int fileId, [FromForm] UpdateFileModel model)
         {
             return FilesControllerHelperInt.UpdateFile(fileId, model.Title, model.LastVersion);
+        }
+
+        [Update("file/{fileId:int}")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public async Task<FileWrapper<int>> UpdateFileFromFormAsync(int fileId, [FromForm] UpdateFileModel model)
+        {
+            return await FilesControllerHelperInt.UpdateFileAsync(fileId, model.Title, model.LastVersion);
         }
 
         /// <summary>
@@ -1717,11 +1917,24 @@ namespace ASC.Api.Documents
             return FilesControllerHelperString.GenerateSharedLink(fileId, model.Share);
         }
 
+        [Update("{fileId}/sharedlinkAsync")]
+        public async Task<object> GenerateSharedLinkFromBodyAsync(string fileId, [FromBody] GenerateSharedLinkModel model)
+        {
+            return await FilesControllerHelperString.GenerateSharedLinkAsync(fileId, model.Share);
+        }
+
         [Update("{fileId}/sharedlink")]
         [Consumes("application/x-www-form-urlencoded")]
         public object GenerateSharedLinkFromForm(string fileId, [FromForm] GenerateSharedLinkModel model)
         {
             return FilesControllerHelperString.GenerateSharedLink(fileId, model.Share);
+        }
+
+        [Update("{fileId}/sharedlinkAsync")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public async Task<object> GenerateSharedLinkFromFormAsync(string fileId, [FromForm] GenerateSharedLinkModel model)
+        {
+            return await FilesControllerHelperString.GenerateSharedLinkAsync(fileId, model.Share);
         }
 
         [Update("{fileId:int}/sharedlink")]
@@ -1730,11 +1943,24 @@ namespace ASC.Api.Documents
             return FilesControllerHelperInt.GenerateSharedLink(fileId, model.Share);
         }
 
+        [Update("{fileId:int}/sharedlinkAsync")]
+        public async Task<object> GenerateSharedLinkFromBodyAsync(int fileId, [FromBody] GenerateSharedLinkModel model)
+        {
+            return await FilesControllerHelperInt.GenerateSharedLinkAsync(fileId, model.Share);
+        }
+
         [Update("{fileId:int}/sharedlink")]
         [Consumes("application/x-www-form-urlencoded")]
         public object GenerateSharedLinkFromForm(int fileId, [FromForm] GenerateSharedLinkModel model)
         {
             return FilesControllerHelperInt.GenerateSharedLink(fileId, model.Share);
+        }
+
+        [Update("{fileId:int}/sharedlinkAsync")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public async Task<object> GenerateSharedLinkFromFormAsync(int fileId, [FromForm] GenerateSharedLinkModel model)
+        {
+            return await FilesControllerHelperInt.GenerateSharedLinkAsync(fileId, model.Share);
         }
 
         [Update("{fileId:int}/setacelink")]

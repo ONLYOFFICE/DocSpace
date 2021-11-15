@@ -78,7 +78,7 @@ namespace ASC.CRM.Core.Dao
         {
             var dao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
-            dao.DeleteFile(id);
+            dao.DeleteFileAsync(id).Wait();
         }
 
         public int GetRoot()

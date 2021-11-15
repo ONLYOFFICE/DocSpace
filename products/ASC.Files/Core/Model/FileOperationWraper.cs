@@ -206,7 +206,7 @@ namespace ASC.Api.Documents
             IEnumerable<FileEntryWrapper> GetFiles<T>(IEnumerable<T> files)
             {
                 var fileDao = DaoFactory.GetFileDao<T>();
-                return fileDao.GetFiles(files)
+                return fileDao.GetFilesAsync(files).ToListAsync().Result
                     .Select(r => FilesWrapperHelper.Get(r))
                     .Cast<FileEntryWrapper>();
             }

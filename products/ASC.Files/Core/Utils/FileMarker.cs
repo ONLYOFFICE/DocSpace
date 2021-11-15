@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -512,6 +513,28 @@ namespace ASC.Web.Files.Utils
             return 0;
         }
 
+
+        public async Task<int> GetRootFoldersIdMarkedAsNewAsync<T>(T rootId)
+        {
+            var fromCache = GetCountFromCahce(rootId);
+            if (fromCache == -1)
+            {
+                var tagDao = DaoFactory.GetTagDao<T>();
+                var folderDao = DaoFactory.GetFolderDao<T>();
+                var requestTags = await tagDao.GetNewTagsAsync(AuthContext.CurrentAccount.ID, await folderDao.GetFolderAsync(rootId));
+                var requestTag = requestTags.FirstOrDefault(tag => tag.EntryId.Equals(rootId));
+                var count = requestTag == null ? 0 : requestTag.Count;
+                InsertToCahce(rootId, count);
+
+                return count;
+            }
+            else if (fromCache > 0)
+            {
+                return fromCache;
+            }
+
+            return 0;
+        }
         public List<FileEntry> MarkedItems<T>(Folder<T> folder)
         {
             if (folder == null) throw new ArgumentNullException("folder", FilesCommonResource.ErrorMassage_FolderNotFound);

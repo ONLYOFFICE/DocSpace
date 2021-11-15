@@ -744,7 +744,7 @@ namespace ASC.Files.Core.Security
 
             if (filterType != FilterType.FoldersOnly)
             {
-                var files = fileDao.GetFilesFiltered(fileIds.Keys.ToArray(), filterType, subjectGroup, subjectID, searchText, searchInContent);
+                var files = fileDao.GetFilesFilteredAsync(fileIds.Keys.ToArray(), filterType, subjectGroup, subjectID, searchText, searchInContent).ToListAsync().Result;
 
                 files.ForEach(x =>
                     {
@@ -780,7 +780,7 @@ namespace ASC.Files.Core.Security
 
             if (filterType != FilterType.FoldersOnly && withSubfolders)
             {
-                var filesInSharedFolders = fileDao.GetFiles(folderIds.Keys, filterType, subjectGroup, subjectID, searchText, searchInContent);
+                var filesInSharedFolders = fileDao.GetFilesAsync(folderIds.Keys, filterType, subjectGroup, subjectID, searchText, searchInContent).Result;
                 filesInSharedFolders = FilterRead(filesInSharedFolders).ToList();
                 entries.AddRange(filesInSharedFolders);
                 entries = entries.Distinct().ToList();
@@ -863,7 +863,7 @@ namespace ASC.Files.Core.Security
 
             if (filterType != FilterType.FoldersOnly)
             {
-                var files = fileDao.GetFilesFiltered(fileIds.Keys.ToArray(), filterType, subjectGroup, subjectID, searchText, searchInContent);
+                var files = fileDao.GetFilesFilteredAsync(fileIds.Keys.ToArray(), filterType, subjectGroup, subjectID, searchText, searchInContent).ToListAsync().Result;
 
                 files.ForEach(x =>
                 {
@@ -899,7 +899,7 @@ namespace ASC.Files.Core.Security
 
             if (filterType != FilterType.FoldersOnly && withSubfolders)
             {
-                var filesInSharedFolders = fileDao.GetFiles(folderIds.Keys, filterType, subjectGroup, subjectID, searchText, searchInContent);
+                var filesInSharedFolders = fileDao.GetFilesAsync(folderIds.Keys, filterType, subjectGroup, subjectID, searchText, searchInContent).Result;
                 filesInSharedFolders = FilterRead(filesInSharedFolders).ToList();
                 entries.AddRange(filesInSharedFolders);
                 entries = entries.Distinct().ToList();

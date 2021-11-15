@@ -600,7 +600,7 @@ namespace ASC.Web.Files.Classes
                 using (var stream = storeTemp.GetReadStream("", filePath))
                 {
                     file.ContentLength = stream.CanSeek ? stream.Length : storeTemp.GetFileSize("", filePath);
-                    file = fileDao.SaveFile(file, stream);
+                    file = fileDao.SaveFileAsync(file, stream).Result;
                 }
 
                 var pathThumb = filePath + "." + Global.ThumbnailExtension;

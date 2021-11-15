@@ -130,7 +130,9 @@ namespace ASC.Files.Core
         /// <param name="toFolderId">destination folder id</param>
         /// <param name="cancellationToken"></param>
         T MoveFolder(T folderId, T toFolderId, CancellationToken? cancellationToken);
+        Task<T> MoveFolderAsync(T folderId, T toFolderId, CancellationToken? cancellationToken);
         TTo MoveFolder<TTo>(T folderId, TTo toFolderId, CancellationToken? cancellationToken);
+        Task<TTo> MoveFolderAsync<TTo>(T folderId, TTo toFolderId, CancellationToken? cancellationToken);
         string MoveFolder(T folderId, string toFolderId, CancellationToken? cancellationToken);
         Task<string> MoveFolderAsync(T folderId, string toFolderId, CancellationToken? cancellationToken);
         int MoveFolder(T folderId, int toFolderId, CancellationToken? cancellationToken);
@@ -145,9 +147,12 @@ namespace ASC.Files.Core
         /// <returns> 
         /// </returns>
         Folder<T> CopyFolder(T folderId, T toFolderId, CancellationToken? cancellationToken);
+        Task<Folder<T>> CopyFolderAsync(T folderId, T toFolderId, CancellationToken? cancellationToken);
         Folder<TTo> CopyFolder<TTo>(T folderId, TTo toFolderId, CancellationToken? cancellationToken);
+        Task<Folder<TTo>> CopyFolderAsync<TTo>(T folderId, TTo toFolderId, CancellationToken? cancellationToken);
         Folder<string> CopyFolder(T folderId, string toFolderId, CancellationToken? cancellationToken);
         Task<Folder<string>> CopyFolderAsync(T folderId, string toFolderId, CancellationToken? cancellationToken);
+        Folder<int> CopyFolder(T folderId, int toFolderId, CancellationToken? cancellationToken);
         Task<Folder<int>> CopyFolderAsync(T folderId, int toFolderId, CancellationToken? cancellationToken);
 
         /// <summary>

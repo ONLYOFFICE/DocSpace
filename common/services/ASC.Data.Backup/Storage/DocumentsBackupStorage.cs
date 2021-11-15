@@ -180,7 +180,7 @@ namespace ASC.Data.Backup.Storage
                 throw new FileNotFoundException("File not found.");
             }
 
-            using var source = fileDao.GetFileStream(file.Result);
+            using var source = fileDao.GetFileStreamAsync(file.Result).Result;
             using var destination = File.OpenWrite(targetLocalPath);
             source.CopyTo(destination);
         }
@@ -188,7 +188,7 @@ namespace ASC.Data.Backup.Storage
         private void DeleteDao<T>(T fileId)
         {
             var fileDao = GetFileDao<T>();
-            fileDao.DeleteFile(fileId);
+            fileDao.DeleteFileAsync(fileId).Wait();
         }
 
         private bool IsExistsDao<T>(T fileId)

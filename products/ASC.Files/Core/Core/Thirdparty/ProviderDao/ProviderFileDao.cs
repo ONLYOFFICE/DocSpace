@@ -54,9 +54,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
         public void InvalidateCache(string fileId)
         {
-            var selector = GetSelector(fileId);
-            var fileDao = selector.GetFileDao(fileId);
-            fileDao.InvalidateCache(selector.ConvertId(fileId));
+            InvalidateCacheAsync(fileId).Wait();
         }
 
         public async Task InvalidateCacheAsync(string fileId)

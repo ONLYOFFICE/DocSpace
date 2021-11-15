@@ -397,7 +397,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
                     file = EntryManager.CompleteVersionFile(fileId, 0, false, false);
 
-                    DaoFactory.GetFileDao<T>().UpdateComment(file.ID, file.Version, string.Join("; ", comments));
+                    DaoFactory.GetFileDao<T>().UpdateCommentAsync(file.ID, file.Version, string.Join("; ", comments)).Wait();
 
                     file = null;
                     Logger.ErrorFormat("DocService save error. Empty url. File id: '{0}'. UserId: {1}. DocKey '{2}'", fileId, userId, fileData.Key);

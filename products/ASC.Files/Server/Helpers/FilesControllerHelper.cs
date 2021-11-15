@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Api.Core;
@@ -118,6 +119,12 @@ namespace ASC.Files.Helpers
             return ToFolderContentWrapper(folderId, userIdOrGroupId, filterType, withSubFolders).NotFoundIfNull();
         }
 
+        public async Task<FolderContentWrapper<T>> GetFolderAsync(T folderId, Guid userIdOrGroupId, FilterType filterType, bool withSubFolders)
+        {
+            var folderContentWrapper = ToFolderContentWrapperAsync(folderId, userIdOrGroupId, filterType, withSubFolders);
+            return await folderContentWrapper.NotFoundIfNull();
+        }
+
         public List<FileWrapper<T>> UploadFile(T folderId, UploadModel uploadModel)
         {
             if (uploadModel.StoreOriginalFileFlag.HasValue)
@@ -193,6 +200,11 @@ namespace ASC.Files.Helpers
         public string StartEdit(T fileId, bool editingAlone, string doc)
         {
             return FileStorageService.StartEdit(fileId, editingAlone, doc);
+        }
+
+        public async Task<string> StartEditAsync(T fileId, bool editingAlone, string doc)
+        {
+            return await FileStorageService.StartEditAsync(fileId, editingAlone, doc);
         }
 
         public KeyValuePair<bool, string> TrackEditFile(T fileId, Guid tabId, string docKeyForTrack, string doc, bool isFinish)
@@ -331,9 +343,22 @@ namespace ASC.Files.Helpers
             return FileWrapperHelper.Get(file);
         }
 
+        public async Task<FileWrapper<T>> GetFileInfoAsync(T fileId, int version = -1)
+        {
+            var file = await FileStorageService.GetFileAsync(fileId, version).NotFoundIfNull("File not found");
+            return FileWrapperHelper.Get(file);
+        }
+
         public FileWrapper<T> AddToRecent(T fileId, int version = -1)
         {
             var file = FileStorageService.GetFile(fileId, version).NotFoundIfNull("File not found");
+            EntryManager.MarkAsRecent(file);
+            return FileWrapperHelper.Get(file);
+        }
+
+        public async Task<FileWrapper<T>> AddToRecentAsync(T fileId, int version = -1)
+        {
+            var file = await FileStorageService.GetFileAsync(fileId, version).NotFoundIfNull("File not found");
             EntryManager.MarkAsRecent(file);
             return FileWrapperHelper.Get(file);
         }
@@ -354,6 +379,17 @@ namespace ASC.Files.Helpers
                 FileStorageService.UpdateToVersion(fileId, lastVersion);
 
             return GetFileInfo(fileId);
+        }
+
+        public async Task<FileWrapper<T>> UpdateFileAsync(T fileId, string title, int lastVersion)
+        {
+            if (!string.IsNullOrEmpty(title))
+                await FileStorageService.FileRenameAsync(fileId, title);
+
+            if (lastVersion > 0)
+                FileStorageService.UpdateToVersion(fileId, lastVersion);
+
+            return await GetFileInfoAsync(fileId);
         }
 
         public IEnumerable<FileOperationWraper> DeleteFile(T fileId, bool deleteAfter, bool immediately)
@@ -403,6 +439,45 @@ namespace ASC.Files.Helpers
                 }
                 return o;
             });
+        }
+
+        public async Task<IEnumerable<ConversationResult<T>>> CheckConversionAsync(T fileId, bool start)
+        {
+            return await FileStorageService.CheckConversion(new List<List<string>>
+            {
+                new List<string> { fileId.ToString(), "0", start.ToString() }
+            })
+            .ToAsyncEnumerable()
+            .SelectAwait(async r =>
+            {
+                var o = new ConversationResult<T>
+                {
+                    Id = r.Id,
+                    Error = r.Error,
+                    OperationType = r.OperationType,
+                    Processed = r.Processed,
+                    Progress = r.Progress,
+                    Source = r.Source,
+                };
+                if (!string.IsNullOrEmpty(r.Result))
+                {
+                    try
+                    {
+                        var options = new JsonSerializerOptions
+                        {
+                            AllowTrailingCommas = true,
+                            PropertyNameCaseInsensitive = true
+                        };
+                        var jResult = JsonSerializer.Deserialize<FileJsonSerializerData<T>>(r.Result, options);
+                        o.File = await GetFileInfoAsync(jResult.Id, jResult.Version);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error(e);
+                    }
+                }
+                return o;
+            }).ToListAsync();
         }
 
         public IEnumerable<FileOperationWraper> DeleteFolder(T folderId, bool deleteAfter, bool immediately)
@@ -599,6 +674,34 @@ namespace ASC.Files.Helpers
             return sharedInfo.Link;
         }
 
+        public async Task<string> GenerateSharedLinkAsync(T fileId, FileShare share)
+        {
+            var file = await GetFileInfoAsync(fileId);
+
+            var sharedInfo = FileStorageService.GetSharedInfo(new List<T> { fileId }, new List<T> { }).Find(r => r.SubjectId == FileConstant.ShareLinkId);
+            if (sharedInfo == null || sharedInfo.Share != share)
+            {
+                var list = new List<AceWrapper>
+                    {
+                        new AceWrapper
+                            {
+                                SubjectId = FileConstant.ShareLinkId,
+                                SubjectGroup = true,
+                                Share = share
+                            }
+                    };
+                var aceCollection = new AceCollection<T>
+                {
+                    Files = new List<T> { fileId },
+                    Aces = list
+                };
+                FileStorageService.SetAceObject(aceCollection, false);
+                sharedInfo = FileStorageService.GetSharedInfo(new List<T> { fileId }, new List<T> { }).Find(r => r.SubjectId == FileConstant.ShareLinkId);
+            }
+
+            return sharedInfo.Link;
+        }
+
         public bool SetAceLink(T fileId, FileShare share)
         {
             return FileStorageService.SetAceLink(fileId, share);
@@ -630,6 +733,28 @@ namespace ASC.Files.Helpers
 
             var startIndex = Convert.ToInt32(ApiContext.StartIndex);
             return FolderContentWrapperHelper.Get(FileStorageService.GetFolderItems(folderId,
+                                                                               startIndex,
+                                                                               Convert.ToInt32(ApiContext.Count),
+                                                                               filterType,
+                                                                               filterType == FilterType.ByUser,
+                                                                               userIdOrGroupId.ToString(),
+                                                                               ApiContext.FilterValue,
+                                                                               false,
+                                                                               withSubFolders,
+                                                                               orderBy),
+                                            startIndex);
+        }
+
+        private async Task<FolderContentWrapper<T>> ToFolderContentWrapperAsync(T folderId, Guid userIdOrGroupId, FilterType filterType, bool withSubFolders)
+        {
+            OrderBy orderBy = null;
+            if (Enum.TryParse(ApiContext.SortBy, true, out SortedByType sortBy))
+            {
+                orderBy = new OrderBy(sortBy, !ApiContext.SortDescending);
+            }
+
+            var startIndex = Convert.ToInt32(ApiContext.StartIndex);
+            return FolderContentWrapperHelper.Get(await FileStorageService.GetFolderItemsAsync(folderId,
                                                                                startIndex,
                                                                                Convert.ToInt32(ApiContext.Count),
                                                                                filterType,

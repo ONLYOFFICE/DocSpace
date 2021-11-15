@@ -159,7 +159,7 @@ namespace ASC.CRM.Core.Dao
             var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
             var ids = GetFilesIDs(contactID, entityType, entityID);
-            var files = 0 < ids.Length ? filedao.GetFiles(ids) : new List<File<int>>();
+            var files = 0 < ids.Length ? filedao.GetFilesAsync(ids).ToListAsync().Result : new List<File<int>>();
 
             files.ForEach(_crmSecurity.SetAccessTo);
 
@@ -179,7 +179,7 @@ namespace ASC.CRM.Core.Dao
 
             var filesID = findedTags.Select(t => Convert.ToInt32(t.EntryId)).ToArray();
 
-            var files = 0 < filesID.Length ? filedao.GetFiles(filesID) : new List<File<int>>();
+            var files = 0 < filesID.Length ? filedao.GetFilesAsync(filesID).ToListAsync().Result : new List<File<int>>();
 
             var filesTemp = new Dictionary<object, File<int>>();
 
@@ -202,7 +202,7 @@ namespace ASC.CRM.Core.Dao
             var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
             var ids = tagdao.GetTags(String.Concat("RelationshipEvent_", eventID), TagType.System).Where(t => t.EntryType == FileEntryType.File).Select(t => Convert.ToInt32(t.EntryId)).ToArray();
-            var files = 0 < ids.Length ? filedao.GetFiles(ids) : new List<File<int>>();
+            var files = 0 < ids.Length ? filedao.GetFilesAsync(ids).ToListAsync().Result : new List<File<int>>();
 
             files.ForEach(_crmSecurity.SetAccessTo);
 
@@ -222,7 +222,7 @@ namespace ASC.CRM.Core.Dao
 
             foreach (var file in files)
             {
-                dao.DeleteFile(file.ID);
+                dao.DeleteFileAsync(file.ID).Wait();
             }
         }
 
@@ -240,7 +240,7 @@ namespace ASC.CRM.Core.Dao
 
             var dao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
-            dao.DeleteFile(file.ID);
+            dao.DeleteFileAsync(file.ID).Wait();
 
             foreach (var eventID in eventIDs)
             {

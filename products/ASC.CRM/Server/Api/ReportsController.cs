@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Api.CRM;
 using ASC.Api.Documents;
@@ -121,6 +122,21 @@ namespace ASC.CRM.Api
             if (fileid < 0) throw new ArgumentException();
 
             var file = _daoFactory.GetReportDao().GetFile(fileid);
+
+            if (file == null) throw new ItemNotFoundException("File not found");
+
+            _daoFactory.GetReportDao().DeleteFile(fileid);
+        }
+
+        [Delete(@"report/fileAsync/{fileid:int}")]
+        public async Task DeleteFileAsync(int fileid)
+        {
+            if (!_global.CanCreateReports)
+                throw _crmSecurity.CreateSecurityException();
+
+            if (fileid < 0) throw new ArgumentException();
+
+            var file = await _daoFactory.GetReportDao().GetFileAsync(fileid);
 
             if (file == null) throw new ItemNotFoundException("File not found");
 

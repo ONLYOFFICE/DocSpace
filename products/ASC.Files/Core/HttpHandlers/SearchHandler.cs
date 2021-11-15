@@ -99,7 +99,7 @@ namespace ASC.Web.Files.Configuration
         {
             var security = FileSecurity;
             var fileDao = DaoFactory.GetFileDao<int>();
-            return fileDao.Search(text).Where(security.CanRead);
+            return fileDao.SearchAsync(text).Result.Where(security.CanRead);
         }
 
         public IEnumerable<Folder<int>> SearchFolders(string text)

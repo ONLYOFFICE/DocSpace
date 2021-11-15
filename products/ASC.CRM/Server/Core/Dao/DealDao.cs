@@ -839,7 +839,7 @@ namespace ASC.CRM.Core.Dao
 
             foreach (var filesID in filesIDs)
             {
-                filedao.DeleteFile(Convert.ToInt32(filesID));
+                filedao.DeleteFileAsync(Convert.ToInt32(filesID)).Wait();
             }
 
         }

@@ -340,14 +340,19 @@ namespace ASC.Files.Thirdparty.Box
 
         public TTo MoveFolder<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
         {
+            return MoveFolderAsync(folderId, toFolderId, cancellationToken).Result;
+        }
+
+        public async Task<TTo> MoveFolderAsync<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
+        {
             if (toFolderId is int tId)
             {
-                return (TTo)Convert.ChangeType(MoveFolder(folderId, tId, cancellationToken), typeof(TTo));
+                return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tId, cancellationToken), typeof(TTo));
             }
 
             if (toFolderId is string tsId)
             {
-                return (TTo)Convert.ChangeType(MoveFolder(folderId, tsId, cancellationToken), typeof(TTo));
+                return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tsId, cancellationToken), typeof(TTo));
             }
 
             throw new NotImplementedException();

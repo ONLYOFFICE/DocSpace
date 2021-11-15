@@ -370,7 +370,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public File<string> ReplaceFileVersion(File<string> file, Stream fileStream)
         {
-            return SaveFile(file, fileStream);
+            return ReplaceFileVersionAsync(file, fileStream).Result;
         }
 
         public async Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)

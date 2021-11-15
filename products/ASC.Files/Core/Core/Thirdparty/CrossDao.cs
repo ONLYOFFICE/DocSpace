@@ -107,7 +107,7 @@ namespace ASC.Files.Core.Thirdparty
                 }
 
                 //Delete source file if needed
-                fromFileDao.DeleteFile(fromConverter(fromFileId));
+                fromFileDao.DeleteFileAsync(fromConverter(fromFileId)).Wait();
             }
             return toFile;
         }
@@ -145,11 +145,11 @@ namespace ASC.Files.Core.Thirdparty
 
             var mustConvert = !string.IsNullOrEmpty(fromFile.ConvertedType);
             using (var fromFileStream = mustConvert
-                                            ? FileConverter.Exec(fromFile)
-                                            : fromFileDao.GetFileStream(fromFile))
+                                            ? await FileConverter.ExecAsync(fromFile)
+                                            : await fromFileDao.GetFileStreamAsync(fromFile))
             {
                 toFile.ContentLength = fromFileStream.CanSeek ? fromFileStream.Length : fromFile.ContentLength;
-                toFile = toFileDao.SaveFile(toFile, fromFileStream);
+                toFile = await toFileDao.SaveFileAsync(toFile, fromFileStream);
             }
 
             if (fromFile.ThumbnailStatus == Thumbnail.Created)
@@ -183,7 +183,7 @@ namespace ASC.Files.Core.Thirdparty
                 }
 
                 //Delete source file if needed
-                fromFileDao.DeleteFile(fromConverter(fromFileId));
+                await fromFileDao.DeleteFileAsync(fromConverter(fromFileId));
             }
             return toFile;
         }

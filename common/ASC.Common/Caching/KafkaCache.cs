@@ -294,7 +294,7 @@ namespace ASC.Common.Caching
             }
         }
 
-        public async Task PublishAsync(T obj, CacheNotifyAction action)
+        public Task PublishAsync(T obj, CacheNotifyAction action)
         {
             if (actions.TryGetValue(GetKey(action), out var onchange) && onchange != null)
             {
@@ -303,7 +303,7 @@ namespace ASC.Common.Caching
                     a(obj);
                 }
             }
-            await Task.FromResult(0);
+            return Task.FromResult(0);
         }
 
         public void Subscribe(Action<T> onchange, CacheNotifyAction notifyAction)

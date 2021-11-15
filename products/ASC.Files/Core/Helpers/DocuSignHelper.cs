@@ -262,7 +262,7 @@ namespace ASC.Web.Files.Helpers
             if (file.ContentLength > MaxFileSize) throw new Exception(FileSizeComment.GetFileSizeExceptionString(MaxFileSize));
 
             byte[] fileBytes;
-            using (var stream = fileDao.GetFileStream(file))
+            using (var stream = fileDao.GetFileStreamAsync(file).Result)
             {
                 var buffer = new byte[16 * 1024];
                 using var ms = new MemoryStream();
@@ -418,7 +418,7 @@ namespace ASC.Web.Files.Helpers
             using (var stream = envelopesApi.GetDocument(account.AccountId, envelopeId, documentId))
             {
                 file.ContentLength = stream.Length;
-                file = fileDao.SaveFile(file, stream);
+                file = fileDao.SaveFileAsync(file, stream).Result;
             }
 
             FilesMessageService.Send(file, MessageInitiator.ThirdPartyProvider, MessageAction.DocumentSignComplete, "DocuSign", file.Title);

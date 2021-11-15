@@ -360,7 +360,7 @@ namespace ASC.Files.Thirdparty.OneDrive
                 newOneDriveFile = await ProviderInfo.Storage.SaveStreamAsync(MakeOneDriveId(file.ID), fileStream);
                 if (!newOneDriveFile.Name.Equals(file.Title))
                 {
-                    file.Title = GetAvailableTitle(file.Title, GetParentFolderId(newOneDriveFile), IsExist);
+                    file.Title = await GetAvailableTitleAsync(file.Title, GetParentFolderId(newOneDriveFile), IsExistAsync);
                     newOneDriveFile = await ProviderInfo.Storage.RenameItemAsync(newOneDriveFile.Id, file.Title);
                 }
             }
@@ -368,7 +368,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             {
                 var folderId = MakeOneDriveId(file.FolderID);
                 var folder = await GetOneDriveItemAsync(folderId);
-                file.Title = GetAvailableTitle(file.Title, folderId, IsExist);
+                file.Title = await GetAvailableTitleAsync(file.Title, folderId, IsExistAsync);
                 newOneDriveFile = await ProviderInfo.Storage.CreateFileAsync(fileStream, file.Title, MakeOneDrivePath(folder));
             }
 
@@ -504,7 +504,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
             var fromFolderId = GetParentFolderId(onedriveFile);
 
-            var newTitle = GetAvailableTitle(onedriveFile.Name, toOneDriveFolder.Id, IsExist);
+            var newTitle = await GetAvailableTitleAsync(onedriveFile.Name, toOneDriveFolder.Id, IsExistAsync);
             onedriveFile = await ProviderInfo.Storage.MoveItemAsync(onedriveFile.Id, newTitle, toOneDriveFolder.Id);
 
             await ProviderInfo.CacheResetAsync(onedriveFile.Id);
@@ -562,7 +562,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             var toOneDriveFolder = await GetOneDriveItemAsync(toFolderId);
             if (toOneDriveFolder is ErrorItem errorItem1) throw new Exception(errorItem1.Error);
 
-            var newTitle = GetAvailableTitle(onedriveFile.Name, toOneDriveFolder.Id, IsExist);
+            var newTitle = await GetAvailableTitleAsync(onedriveFile.Name, toOneDriveFolder.Id, IsExistAsync);
             var newOneDriveFile = await ProviderInfo.Storage.CopyItemAsync(onedriveFile.Id, newTitle, toOneDriveFolder.Id);
 
             await ProviderInfo.CacheResetAsync(newOneDriveFile.Id);
@@ -579,7 +579,7 @@ namespace ASC.Files.Thirdparty.OneDrive
         public async Task<string> FileRenameAsync(File<string> file, string newTitle)
         {
             var onedriveFile = await GetOneDriveItemAsync(file.ID);
-            newTitle = GetAvailableTitle(newTitle, GetParentFolderId(onedriveFile), IsExist);
+            newTitle = await GetAvailableTitleAsync(newTitle, GetParentFolderId(onedriveFile), IsExistAsync);
 
             onedriveFile = await ProviderInfo.Storage.RenameItemAsync(onedriveFile.Id, newTitle);
 

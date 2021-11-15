@@ -25,6 +25,7 @@
 
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -150,12 +151,28 @@ namespace ASC.Api.Documents
             return EncryptionKeyPairHelper.GetKeyPair(fileId, FileStorageService);
         }
 
+        [Read("accessAsync/{fileId}")]
+        public async Task<IEnumerable<EncryptionKeyPair>> GetPublicKeysWithAccessAsync(string fileId)
+        {
+            if (!PrivacyRoomSettings.GetEnabled(SettingsManager)) throw new System.Security.SecurityException();
+
+            return await EncryptionKeyPairHelper.GetKeyPairAsync(fileId, FileStorageService);
+        }
+
         [Read("access/{fileId:int}")]
         public IEnumerable<EncryptionKeyPair> GetPublicKeysWithAccess(int fileId)
         {
             if (!PrivacyRoomSettings.GetEnabled(SettingsManager)) throw new System.Security.SecurityException();
 
             return EncryptionKeyPairHelper.GetKeyPair(fileId, FileStorageServiceInt);
+        }
+
+        [Read("accessAsync/{fileId:int}")]
+        public async Task<IEnumerable<EncryptionKeyPair>> GetPublicKeysWithAccessAsync(int fileId)
+        {
+            if (!PrivacyRoomSettings.GetEnabled(SettingsManager)) throw new System.Security.SecurityException();
+
+            return await EncryptionKeyPairHelper.GetKeyPairAsync(fileId, FileStorageServiceInt);
         }
 
 

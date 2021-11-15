@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -51,6 +52,7 @@ using ASC.Web.Files.Api;
 
 using AutoMapper;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -330,7 +332,7 @@ namespace ASC.CRM.Core.Dao
 
             var fileIds = Query(CrmDbContext.ReportFile).Where(x => x.CreateBy == userId).Select(x => x.FileId).ToArray();
 
-            return fileIds.Length > 0 ? filedao.GetFiles(fileIds) : new List<Files.Core.File<int>>();
+            return fileIds.Length > 0 ? filedao.GetFilesAsync(fileIds).ToListAsync().Result : new List<Files.Core.File<int>>();
 
         }
 
@@ -345,6 +347,11 @@ namespace ASC.CRM.Core.Dao
             return GetFile(fileid, _securityContext.CurrentAccount.ID);
         }
 
+        public async Task<Files.Core.File<int>> GetFileAsync(int fileid)
+        {
+            return await GetFileAsync(fileid, _securityContext.CurrentAccount.ID);
+        }
+
         public Files.Core.File<int> GetFile(int fileid, Guid userId)
         {
             var exist = Query(CrmDbContext.ReportFile)
@@ -353,6 +360,17 @@ namespace ASC.CRM.Core.Dao
             var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
             return exist ? filedao.GetFileAsync(fileid).Result : null;
+
+        }
+
+        public async Task<Files.Core.File<int>> GetFileAsync(int fileid, Guid userId)
+        {
+            var exist = await Query(CrmDbContext.ReportFile)
+                        .AnyAsync(x => x.CreateBy == userId && x.FileId == fileid);
+
+            var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
+
+            return exist ? await filedao.GetFileAsync(fileid) : null;
 
         }
 
@@ -365,7 +383,7 @@ namespace ASC.CRM.Core.Dao
 
             var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
-            filedao.DeleteFile(fileid);
+            filedao.DeleteFileAsync(fileid).Wait();
         }
 
         public void DeleteFiles(Guid userId)
@@ -381,7 +399,7 @@ namespace ASC.CRM.Core.Dao
 
             foreach (var fileId in fileIds)
             {
-                filedao.DeleteFile(fileId);
+                filedao.DeleteFileAsync(fileId).Wait();
             }
 
         }

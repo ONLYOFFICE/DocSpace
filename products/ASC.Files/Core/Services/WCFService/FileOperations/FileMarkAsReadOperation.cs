@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Security.Authentication;
@@ -97,7 +98,57 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
             if (Files.Any())
             {
-                entries.AddRange(FileDao.GetFiles(Files));
+                entries.AddRange(FileDao.GetFilesAsync(Files).ToListAsync().Result);
+            }
+            entries.ForEach(x =>
+            {
+                CancellationToken.ThrowIfCancellationRequested();
+
+                fileMarker.RemoveMarkAsNew(x, ((IAccount)Thread.CurrentPrincipal.Identity).ID);
+
+                if (x.FileEntryType == FileEntryType.File)
+                {
+                    ProcessedFile(((File<T>)x).ID);
+                }
+                else
+                {
+                    ProcessedFolder(((Folder<T>)x).ID);
+                }
+                ProgressStep();
+            });
+
+            var rootIds = new List<int>
+                {
+                    globalFolder.GetFolderMy(fileMarker, daoFactory),
+                    globalFolder.GetFolderCommon(fileMarker, daoFactory),
+                    globalFolder.GetFolderShare(daoFactory),
+                    globalFolder.GetFolderProjects(daoFactory),
+                };
+
+            if (PrivacyRoomSettings.GetEnabled(settingsManager))
+            {
+                rootIds.Add(globalFolder.GetFolderPrivacy(daoFactory));
+            }
+
+            var newrootfolder =
+                rootIds.Select(r => new KeyValuePair<int, int>(r, fileMarker.GetRootFoldersIdMarkedAsNew(r)))
+                .Select(item => string.Format("new_{{\"key\"? \"{0}\", \"value\"? \"{1}\"}}", item.Key, item.Value));
+
+            Result += string.Join(SPLIT_CHAR, newrootfolder.ToArray());
+        }
+
+        protected override async Task DoAsync(IServiceScope scope)
+        {
+            var scopeClass = scope.ServiceProvider.GetService<FileMarkAsReadOperationScope>();
+            var (fileMarker, globalFolder, daoFactory, settingsManager) = scopeClass;
+            var entries = new List<FileEntry<T>>();
+            if (Folders.Any())
+            {
+                entries.AddRange(await FolderDao.GetFoldersAsync(Folders).ToListAsync());
+            }
+            if (Files.Any())
+            {
+                entries.AddRange(await FileDao.GetFilesAsync(Files).ToListAsync());
             }
             entries.ForEach(x =>
             {

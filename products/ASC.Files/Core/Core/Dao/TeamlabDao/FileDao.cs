@@ -570,7 +570,7 @@ namespace ASC.Files.Core.Data
                             var stored = GlobalStore.GetStore().IsDirectory(GetUniqFileDirectory(file.ID));
                             await DeleteFileAsync(file.ID, stored);
                         }
-                        else if (!IsExistOnStorage(file))
+                        else if (!IsExistOnStorageAsync(file).Result)
                         {
                             await DeleteVersionAsync(file);
                         }
@@ -583,7 +583,7 @@ namespace ASC.Files.Core.Data
                 }
             }
 
-            FactoryIndexer.IndexAsync(InitDocument(toInsert)).Start();
+            FactoryIndexer.IndexAsync(await InitDocumentAsync(toInsert)).Start();
 
             return await GetFileAsync(file.ID);
         }
@@ -690,15 +690,15 @@ namespace ASC.Files.Core.Data
                 }
                 catch
                 {
-                    if (!IsExistOnStorage(file))
+                    if (!await IsExistOnStorageAsync(file))
                     {
-                        DeleteVersion(file);
+                        await DeleteVersionAsync(file);
                     }
                     throw;
                 }
             }
 
-            FactoryIndexer.IndexAsync(InitDocument(toUpdate)).Start();
+            FactoryIndexer.IndexAsync(await InitDocumentAsync(toUpdate)).Start();
 
             return await GetFileAsync(file.ID);
         }
@@ -969,10 +969,10 @@ namespace ASC.Files.Core.Data
                 copy.Comment = FilesCommonResource.CommentCopy;
                 copy.Encrypted = file.Encrypted;
 
-                using (var stream = GetFileStream(file))
+                using (var stream = GetFileStreamAsync(file).Result)
                 {
                     copy.ContentLength = stream.CanSeek ? stream.Length : file.ContentLength;
-                    copy = SaveFile(copy, stream);
+                    copy = SaveFileAsync(copy, stream).Result;
                 }
 
                 if (file.ThumbnailStatus == Thumbnail.Created)

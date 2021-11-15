@@ -220,7 +220,7 @@ namespace ASC.Web.CRM.Classes
                 {
                     var fileObj = fileDao.GetFileAsync(fileID);
                     if (fileObj == null) continue;
-                    using (var fileStream = fileDao.GetFileStream(fileObj.Result))
+                    using (var fileStream = fileDao.GetFileStreamAsync(fileObj.Result).Result)
                     {
                         var directoryPath = Path.Combine(Path.GetTempPath(), "teamlab", _tenantID.ToString(),
                             "crm/files/mailsender/");
@@ -422,7 +422,7 @@ namespace ASC.Web.CRM.Classes
                 var fileObj = fileDao.GetFileAsync(fileID);
                 if (fileObj == null) continue;
 
-                fileDao.DeleteFile(fileObj.Result.ID);
+                fileDao.DeleteFileAsync(fileObj.Result.ID).Wait();
             }
 
         }

@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.CRM.Core.Dao;
@@ -95,6 +96,34 @@ namespace ASC.CRM.Core
                 return _crmSecurity.CanAccessTo(invoice, userId);
 
             var reportFile = _daoFactory.GetReportDao().GetFile(Convert.ToInt32(entry.ID), userId);
+
+            if (reportFile != null)
+                return true;
+
+            var tagDao = _filesIntegration.DaoFactory.GetTagDao<T>();
+
+            var eventIds = tagDao.GetTags(entry.ID, FileEntryType.File, TagType.System)
+                .Where(x => x.TagName.StartsWith("RelationshipEvent_"))
+                .Select(x => Convert.ToInt32(x.TagName.Split(new[] { '_' })[1]))
+                .ToList();
+
+            if (!eventIds.Any()) return false;
+
+            var eventItem = _daoFactory.GetRelationshipEventDao().GetByID(eventIds.First());
+
+            return _crmSecurity.CanAccessTo(eventItem, userId);
+
+        }
+
+        public async Task<bool> CanReadAsync<T>(FileEntry<T> entry, Guid userId)
+        {
+            if (entry.FileEntryType == FileEntryType.Folder) return false;
+
+            var invoice = _daoFactory.GetInvoiceDao().GetByFileId(Convert.ToInt32(entry.ID));
+            if (invoice != null)
+                return _crmSecurity.CanAccessTo(invoice, userId);
+
+            var reportFile = await _daoFactory.GetReportDao().GetFileAsync(Convert.ToInt32(entry.ID), userId);
 
             if (reportFile != null)
                 return true;

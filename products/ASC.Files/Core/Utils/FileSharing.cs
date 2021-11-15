@@ -442,7 +442,7 @@ namespace ASC.Web.Files.Utils
             var result = new List<AceWrapper>();
 
             var fileDao = DaoFactory.GetFileDao<T>();
-            var files = fileDao.GetFiles(fileIds);
+            var files = fileDao.GetFilesAsync(fileIds).ToListAsync().Result;
 
             var folderDao = DaoFactory.GetFolderDao<T>();
             var folders = folderDao.GetFolders(folderIds);

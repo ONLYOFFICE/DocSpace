@@ -1643,7 +1643,7 @@ namespace ASC.CRM.Core.Dao
 
             foreach (var filesID in filesIDs)
             {
-                filedao.DeleteFile(filesID);
+                filedao.DeleteFileAsync(filesID).Wait();
             }
 
             //todo: remove indexes

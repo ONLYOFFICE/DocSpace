@@ -127,7 +127,7 @@ namespace ASC.Web.Files.Utils
             var file = VerifyFileUpload(folderId, title, contentLength, !createNewIfExist);
 
             var dao = DaoFactory.GetFileDao<T>();
-            file = dao.SaveFile(file, data);
+            file = dao.SaveFileAsync(file, data).Result;
 
             FileMarker.MarkAsNew(file);
 

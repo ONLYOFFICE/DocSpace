@@ -92,7 +92,7 @@ namespace ASC.Files.Thirdparty.Box
 
         public File<string> GetFile(string fileId)
         {
-            return GetFile(fileId, 1);
+            return GetFileAsync(fileId).Result;
         }
 
         public async Task<File<string>> GetFileAsync(string fileId)
@@ -425,14 +425,14 @@ namespace ASC.Files.Thirdparty.Box
                 if (!newBoxFile.Name.Equals(file.Title))
                 {
                     var folderId = GetParentFolderId(await GetBoxFileAsync(fileId));
-                    file.Title = GetAvailableTitle(file.Title, folderId, IsExist);
+                    file.Title = await GetAvailableTitleAsync(file.Title, folderId, IsExistAsync);
                     newBoxFile = await ProviderInfo.Storage.RenameFileAsync(fileId, file.Title);
                 }
             }
             else if (file.FolderID != null)
             {
                 var folderId = MakeBoxId(file.FolderID);
-                file.Title = GetAvailableTitle(file.Title, folderId, IsExist);
+                file.Title = await GetAvailableTitleAsync(file.Title, folderId, IsExistAsync);
                 newBoxFile = await  ProviderInfo.Storage.CreateFileAsync(fileStream, file.Title, folderId);
             }
 
@@ -508,8 +508,7 @@ namespace ASC.Files.Thirdparty.Box
 
         public bool IsExist(string title, object folderId)
         {
-            return GetBoxItems(folderId.ToString(), false)
-                .Any(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
+            return IsExistAsync(title, folderId).Result;
         }
 
         public async Task<bool> IsExistAsync(string title, object folderId)
@@ -568,7 +567,7 @@ namespace ASC.Files.Thirdparty.Box
 
             var fromFolderId = GetParentFolderId(boxFile);
 
-            var newTitle = GetAvailableTitle(boxFile.Name, toBoxFolder.Id, IsExist);
+            var newTitle = await GetAvailableTitleAsync(boxFile.Name, toBoxFolder.Id, IsExistAsync);
             boxFile = await ProviderInfo.Storage.MoveFileAsync(boxFile.Id, newTitle, toBoxFolder.Id);
 
             await ProviderInfo.CacheResetAsync(boxFile.Id, true);
@@ -611,7 +610,7 @@ namespace ASC.Files.Thirdparty.Box
             var toBoxFolder = await GetBoxFolderAsync(toFolderId);
             if (toBoxFolder is ErrorFolder errorFolder) throw new Exception(errorFolder.Error);
 
-            var newTitle = GetAvailableTitle(boxFile.Name, toBoxFolder.Id, IsExist);
+            var newTitle = await GetAvailableTitleAsync(boxFile.Name, toBoxFolder.Id, IsExistAsync);
             var newBoxFile = ProviderInfo.Storage.CopyFile(boxFile.Id, newTitle, toBoxFolder.Id);
 
             await ProviderInfo.CacheResetAsync(newBoxFile);
@@ -643,7 +642,7 @@ namespace ASC.Files.Thirdparty.Box
         public async Task<string> FileRenameAsync(File<string> file, string newTitle)
         {
             var boxFile = await GetBoxFileAsync(file.ID);
-            newTitle = GetAvailableTitle(newTitle, GetParentFolderId(boxFile), IsExist);
+            newTitle = await GetAvailableTitleAsync(newTitle, GetParentFolderId(boxFile), IsExistAsync);
 
             boxFile = await ProviderInfo.Storage.RenameFileAsync(boxFile.Id, newTitle);
 

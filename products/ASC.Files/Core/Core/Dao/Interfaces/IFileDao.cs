@@ -301,7 +301,7 @@ namespace ASC.Files.Core
         /// <param name="searchInContent"></param>
         /// <returns></returns>
         List<File<T>> GetFiles(IEnumerable<T> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent);
-
+        Task<List<File<T>>> GetFilesAsync(IEnumerable<T> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent);
         /// <summary>
         /// Search the list of files containing text
         /// Only in TMFileDao
@@ -310,7 +310,7 @@ namespace ASC.Files.Core
         /// <param name="bunch"></param>
         /// <returns>list of files</returns>
         IEnumerable<File<T>> Search(string text, bool bunch = false);
-
+        Task<IEnumerable<File<T>>> SearchAsync(string text, bool bunch = false);
         /// <summary>
         ///   Checks whether file exists on storage
         /// </summary>
@@ -323,6 +323,7 @@ namespace ASC.Files.Core
         void SaveEditHistory(File<T> file, string changes, Stream differenceStream);
 
         List<EditHistory> GetEditHistory(DocumentServiceHelper documentServiceHelper, T fileId, int fileVersion = 0);
+        Task<List<EditHistory>> GetEditHistoryAsync(DocumentServiceHelper documentServiceHelper, T fileId, int fileVersion = 0);
 
         Stream GetDifferenceStream(File<T> file);
 

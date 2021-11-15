@@ -309,14 +309,19 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public TTo MoveFolder<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
         {
+            return MoveFolderAsync(folderId, toFolderId, cancellationToken).Result;
+        }
+
+        public async Task<TTo> MoveFolderAsync<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
+        {
             if (toFolderId is int tId)
             {
-                return (TTo)Convert.ChangeType(MoveFolder(folderId, tId, cancellationToken), typeof(TTo));
+                return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tId, cancellationToken), typeof(TTo));
             }
 
             if (toFolderId is string tsId)
             {
-                return (TTo)Convert.ChangeType(MoveFolder(folderId, tsId, cancellationToken), typeof(TTo));
+                return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tsId, cancellationToken), typeof(TTo));
             }
 
             throw new NotImplementedException();
@@ -364,14 +369,19 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public Folder<TTo> CopyFolder<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
         {
+            return CopyFolderAsync(folderId, toFolderId, cancellationToken).Result;
+        }
+
+        public async Task<Folder<TTo>> CopyFolderAsync<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
+        {
             if (toFolderId is int tId)
             {
-                return CopyFolder(folderId, tId, cancellationToken) as Folder<TTo>;
+                return await CopyFolderAsync(folderId, tId, cancellationToken) as Folder<TTo>;
             }
 
             if (toFolderId is string tsId)
             {
-                return CopyFolder(folderId, tsId, cancellationToken) as Folder<TTo>;
+                return await CopyFolderAsync(folderId, tsId, cancellationToken) as Folder<TTo>;
             }
 
             throw new NotImplementedException();
