@@ -1,3 +1,9 @@
+echo "##########################################################"
+echo "#########  Start build and deploy Personal  ##############"
+echo "##########################################################"
+
+echo.
+
 PUSHD %~dp0
 call runasadmin.bat "%~dpnx0"
 if %errorlevel% == 0 (
