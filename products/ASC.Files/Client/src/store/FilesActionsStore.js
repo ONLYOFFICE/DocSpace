@@ -188,8 +188,6 @@ class FilesActionStore {
     }
   };
 
-  downloadFilesOperation = () => {};
-
   downloadFiles = async (fileConvertIds, folderIds, label) => {
     const {
       setSecondaryProgressBarData,
@@ -528,6 +526,7 @@ class FilesActionStore {
   markAsRead = (folderIds, fileId, item) => {
     const {
       setSecondaryProgressBarData,
+      clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
     setSecondaryProgressBarData({
@@ -544,7 +543,8 @@ class FilesActionStore {
         await this.uploadDataStore.loopFilesOperations(data, pbData);
       })
       .then(() => item && this.setNewBadgeCount(item))
-      .catch((err) => toastr.error(err));
+      .catch((err) => toastr.error(err))
+      .finally(() => setTimeout(() => clearSecondaryProgressData(), TIMEOUT));
   };
 
   moveDragItems = (destFolderId, folderTitle, translations) => {
