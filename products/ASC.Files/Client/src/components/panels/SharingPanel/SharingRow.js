@@ -250,7 +250,7 @@ class SharingRow extends React.Component {
                     ))}
                   {isOwner ? (
                     <Text className="sharing_panel-remove-icon" color="#A3A9AE">
-                      {t("Owner")}
+                      {t("Common:Owner")}
                     </Text>
                   ) : id === isMyId ? (
                     <Text

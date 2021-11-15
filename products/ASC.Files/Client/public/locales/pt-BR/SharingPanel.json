@@ -13,7 +13,6 @@
   "InternalLink": "Link interno",
   "LinkText": "Adicionar Usuários",
   "Notify users": "Notificar os usuários",
-  "Owner": "Proprietário",
   "ReadOnly": "Somente leitura",
   "ShareEmailBody": "Foi-lhe concedido acesso ao documento {{itemName}}. Clique no link abaixo para abrir o documento agora mesmo: {{shareLink}}",
   "ShareEmailSubject": "Você obteve acesso ao documento {{itemName}}.",
