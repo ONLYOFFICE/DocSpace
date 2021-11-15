@@ -24,15 +24,24 @@ const Content = styled.div`
   width: ${(props) => props.contentWidth};
   background-color: ${(props) =>
     props.theme.modalDialog.content.backgroundColor};
-  padding: ${(props) => props.theme.modalDialog.content.padding};
+  padding: ${(props) =>
+    props.displayType === "modal"
+      ? props.theme.modalDialog.content.modalPadding
+      : props.theme.modalDialog.content.asidePadding};
 
   .heading {
     max-width: ${(props) => props.theme.modalDialog.content.heading.maxWidth};
     margin: ${(props) => props.theme.modalDialog.content.heading.margin};
     line-height: ${(props) =>
-      props.theme.modalDialog.content.heading.lineHeight};
+      props.displayType === "modal"
+        ? props.theme.modalDialog.content.heading.modalLineHeight
+        : props.theme.modalDialog.content.heading.asideLineHeight};
     font-weight: ${(props) =>
       props.theme.modalDialog.content.heading.fontWeight};
+    font-size: ${(props) =>
+      props.displayType === "modal"
+        ? props.theme.modalDialog.content.heading.modalFontSize
+        : props.theme.modalDialog.content.heading.asideFontSize};
   }
 
   ${(props) =>

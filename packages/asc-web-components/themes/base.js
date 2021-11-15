@@ -491,13 +491,16 @@ const Base = {
 
     content: {
       backgroundColor: white,
-      padding: "0 16px 16px",
-
+      modalPadding: "0 12px 12px",
+      asidePadding: "0 16px 16px",
       heading: {
         maxWidth: "500px",
         margin: "0",
-        lineHeight: "56px",
+        modalLineHeight: "40px",
+        asideLineHeight: "56px",
         fontWeight: "700",
+        asideFontSize: "21px",
+        modalFontSize: "18px",
       },
     },
 
@@ -512,7 +515,7 @@ const Base = {
       minHeight: "17px",
 
       right: "16px",
-      top: "19px",
+      top: "11px",
       hoverColor: grayMain,
     },
   },
