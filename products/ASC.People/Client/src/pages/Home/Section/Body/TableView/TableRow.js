@@ -52,7 +52,6 @@ const PeopleTableRow = (props) => {
   };
 
   const userRole = getRoleTranslation();
-  console.log("userRole", userRole);
 
   const nameColor = statusType === "pending" ? "#A3A9AE" : "#333333";
   const sideInfoColor = statusType === "pending" ? "#D0D5DA" : "#A3A9AE";
