@@ -326,7 +326,14 @@ class AvatarEditorBody extends React.Component {
   };
 
   render() {
-    const { maxSize, accept, role, title, useModalDialog } = this.props;
+    const {
+      maxSize,
+      accept,
+      role,
+      title,
+      useModalDialog,
+      maxSizeLabel,
+    } = this.props;
 
     const desktopMode = isDesktop();
     //const tabletMode = isTablet();
@@ -483,6 +490,10 @@ class AvatarEditorBody extends React.Component {
             </DropZoneContainer>
           )}
         </Dropzone>
+        <Text as="p" color="#A3A9AE" fontSize="12px" fontWeight="600">
+          {maxSizeLabel}
+        </Text>
+
         <StyledErrorContainer key="errorMsg">
           {this.state.errorText !== null && (
             <Text as="p" color="#C96C27" isBold={true}>
@@ -514,6 +525,7 @@ AvatarEditorBody.propTypes = {
   role: PropTypes.string,
   title: PropTypes.string,
   useModalDialog: PropTypes.bool,
+  maxSizeLabel: PropTypes.string,
 };
 
 AvatarEditorBody.defaultProps = {
