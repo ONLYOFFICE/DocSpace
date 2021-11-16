@@ -77,6 +77,24 @@ class FilesStore {
     this.filesSettingsStore = filesSettingsStore;
   }
 
+  addActiveItems = (files, folders) => {
+    if (folders && folders.length) {
+      if (!this.activeFolders.length) {
+        this.setActiveFolders(folders);
+      } else {
+        folders.map((item) => this.activeFolders.push(item));
+      }
+    }
+
+    if (files && files.length) {
+      if (!this.activeFiles.length) {
+        this.setActiveFiles(files);
+      } else {
+        files.map((item) => this.activeFiles.push(item));
+      }
+    }
+  };
+
   setActiveFiles = (activeFiles) => {
     this.activeFiles = activeFiles;
   };

@@ -69,7 +69,7 @@ class FilesActionStore {
 
   deleteAction = async (translations, newSelection = null) => {
     const { isRecycleBinFolder, isPrivacyFolder } = this.treeFoldersStore;
-    const { setActiveFiles, setActiveFolders } = this.filesStore;
+    const { addActiveItems } = this.filesStore;
 
     const selection = newSelection ? newSelection : this.filesStore.selection;
 
@@ -102,8 +102,8 @@ class FilesActionStore {
       i++;
     }
 
-    setActiveFiles(fileIds);
-    setActiveFolders(folderIds);
+    addActiveItems(fileIds);
+    addActiveItems(null, folderIds);
 
     if (folderIds.length || fileIds.length) {
       this.isMediaOpen();
@@ -336,7 +336,7 @@ class FilesActionStore {
   };
 
   deleteItemOperation = (isFile, itemId, translations) => {
-    const { setActiveFiles, setActiveFolders } = this.filesStore;
+    const { addActiveItems } = this.filesStore;
 
     const pbData = {
       icon: "trash",
@@ -344,7 +344,7 @@ class FilesActionStore {
     };
 
     if (isFile) {
-      setActiveFiles([itemId]);
+      addActiveItems([itemId]);
       this.isMediaOpen();
       return deleteFile(itemId)
         .then(async (res) => {
@@ -356,7 +356,7 @@ class FilesActionStore {
         })
         .then(() => toastr.success(translations.successRemoveFile));
     } else {
-      setActiveFolders([itemId]);
+      addActiveItems(null, [itemId]);
       return deleteFolder(itemId)
         .then(async (res) => {
           const data = res[0] ? res[0] : null;
@@ -594,14 +594,10 @@ class FilesActionStore {
       setConflictResolveDialogVisible,
       setConflictResolveDialogItems,
     } = this.dialogsStore;
-    const {
-      setBufferSelection,
-      setActiveFiles,
-      setActiveFolders,
-    } = this.filesStore;
+    const { setBufferSelection, addActiveItems } = this.filesStore;
 
-    setActiveFiles(fileIds);
-    setActiveFolders(folderIds);
+    addActiveItems(fileIds);
+    addActiveItems(null, folderIds);
 
     let conflicts;
 
