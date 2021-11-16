@@ -24,6 +24,10 @@ class ArticleMainButtonContent extends React.Component {
     });
   };
 
+  onSelectFile = () => {
+    console.log("Select from form");
+  };
+
   onUploadFileClick = () => {
     if (this.props.isPrivacy) {
       encryptionUploadDialog((encryptedFile, encrypted) => {
@@ -100,6 +104,19 @@ class ArticleMainButtonContent extends React.Component {
           label={t("NewPresentation")}
           onClick={this.onCreate}
           data-format="pptx"
+        />
+        <DropDownItem
+          className="main-button_drop-down"
+          icon="images/form.react.svg"
+          label={t("NewForm")}
+          onClick={this.onCreate}
+          data-format="docxf"
+        />
+        <DropDownItem
+          className="main-button_drop-down"
+          icon="images/form.file.react.svg"
+          label={t("NewFormFile")}
+          onClick={this.onSelectFile}
         />
         <DropDownItem
           className="main-button_drop-down"
