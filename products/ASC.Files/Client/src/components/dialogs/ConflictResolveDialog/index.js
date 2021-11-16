@@ -19,6 +19,8 @@ const ConflictResolveDialog = (props) => {
     conflictResolveDialogData,
     items,
     itemOperationToFolder,
+    activeFiles,
+    setActiveFiles,
   } = props;
 
   const {
@@ -54,12 +56,15 @@ const ConflictResolveDialog = (props) => {
     const conflictResolveType = getResolveType();
 
     let newFileIds = fileIds;
+    let newActiveFiles = activeFiles;
     if (conflictResolveType === ConflictResolveType.Skip) {
       for (let item of items) {
         newFileIds = newFileIds.filter((x) => x.id === item.id);
+        newActiveFiles = newActiveFiles.filter((f) => f === item.id);
       }
     }
 
+    setActiveFiles(newActiveFiles);
     if (!folderIds.length && !newFileIds.length) return onClose();
 
     const data = {
@@ -168,7 +173,7 @@ const ConflictResolveDialog = (props) => {
   );
 };
 
-export default inject(({ dialogsStore, uploadDataStore }) => {
+export default inject(({ dialogsStore, uploadDataStore, filesStore }) => {
   const {
     conflictResolveDialogVisible: visible,
     setConflictResolveDialogVisible,
@@ -177,6 +182,7 @@ export default inject(({ dialogsStore, uploadDataStore }) => {
   } = dialogsStore;
 
   const { itemOperationToFolder } = uploadDataStore;
+  const { activeFiles, setActiveFiles } = filesStore;
 
   return {
     items,
@@ -184,6 +190,8 @@ export default inject(({ dialogsStore, uploadDataStore }) => {
     conflictResolveDialogData,
     setConflictResolveDialogVisible,
     itemOperationToFolder,
+    activeFiles,
+    setActiveFiles,
   };
 })(
   withRouter(
