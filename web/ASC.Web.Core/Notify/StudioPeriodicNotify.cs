@@ -291,7 +291,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 5 days before SAAS TRIAL ends to admins
 
-                        else if (dueDateIsNotMax && dueDate.AddDays(-5) == nowDate)
+                        else if (!coreBaseSettings.CustomMode && dueDateIsNotMax && dueDate.AddDays(-5) == nowDate)
                         {
                             toadmins = true;
                             action = Actions.SaasAdminTrialWarningBefore5V115;
@@ -1023,7 +1023,7 @@ namespace ASC.Web.Studio.Core.Notify
                                 case 28:
                                     action = Actions.PersonalAfterRegistration28;
                                     greenButtonText = () => WebstudioNotifyPatternResource.ButtonStartFreeTrial;
-                                    greenButtonUrl = "https://www.onlyoffice.com/download-commercial.aspx";
+                                    greenButtonUrl = "https://www.onlyoffice.com/download-workspace.aspx";
                                     break;
                                 default:
                                     continue;

@@ -65,6 +65,11 @@ namespace ASC.Files.Core.Data
         {
             return ServiceProvider.GetService<ISecurityDao<T>>();
         }
+
+        public ILinkDao GetLinkDao()
+        {
+            return ServiceProvider.GetService<ILinkDao>();
+        }
     }
 
     public class DaoFactoryExtension
@@ -89,6 +94,8 @@ namespace ASC.Files.Core.Data
 
             services.TryAdd<ITagDao<int>, TagDao<int>>();
             services.TryAdd<ITagDao<string>, ProviderTagDao>();
+
+            services.TryAdd<ILinkDao, LinkDao>();
 
             // AddSharpBoxDaoSelectorService
         }

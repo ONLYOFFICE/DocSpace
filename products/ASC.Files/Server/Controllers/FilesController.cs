@@ -49,6 +49,7 @@ using ASC.Web.Api.Routing;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Configuration;
+using ASC.Web.Files.Core.Compress;
 using ASC.Web.Files.Helpers;
 using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.Services.WCFService;
@@ -97,6 +98,7 @@ namespace ASC.Api.Documents
         private ProductEntryPoint ProductEntryPoint { get; }
         private TenantManager TenantManager { get; }
         private FileUtility FileUtility { get; }
+        private FileConverter FileConverter { get; }
 
         /// <summary>
         /// </summary>
@@ -125,7 +127,8 @@ namespace ASC.Api.Documents
             ProductEntryPoint productEntryPoint,
             TenantManager tenantManager,
             FileUtility fileUtility,
-            ConsumerFactory consumerFactory)
+            ConsumerFactory consumerFactory,
+            FileConverter fileConverter)
         {
             FilesControllerHelperString = filesControllerHelperString;
             FilesControllerHelperInt = filesControllerHelperInt;
@@ -150,6 +153,7 @@ namespace ASC.Api.Documents
             ProductEntryPoint = productEntryPoint;
             TenantManager = tenantManager;
             FileUtility = fileUtility;
+            FileConverter = fileConverter;
         }
 
         [Read("info")]
@@ -2181,13 +2185,13 @@ namespace ASC.Api.Documents
         /// <category>Settings</category>
         /// <returns></returns>
         [Update(@"settings/downloadtargz")]
-        public bool ChangeDownloadZipFromBody([FromBody] DisplayModel model)
+        public ICompress ChangeDownloadZipFromBody([FromBody] DisplayModel model)
         {
             return FileStorageService.ChangeDownloadTarGz(model.Set);
         }
 
         [Update(@"settings/downloadtargz")]
-        public bool ChangeDownloadZipFromForm([FromForm] DisplayModel model)
+        public ICompress ChangeDownloadZipFromForm([FromForm] DisplayModel model)
         {
             return FileStorageService.ChangeDownloadTarGz(model.Set);
         }
@@ -2231,6 +2235,32 @@ namespace ASC.Api.Documents
         public IEnumerable<JsonElement> CreateThumbnailsFromForm([FromForm][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchModel model)
         {
             return FileStorageService.CreateThumbnails(model.FileIds.ToList());
+        }
+
+        [Create("masterform/{fileId}/checkfillformdraft")]
+        public object CheckFillFormDraftFromBody(string fileId, [FromBody] CheckFillFormDraftModel model)
+        {
+            return FilesControllerHelperString.CheckFillFormDraft(fileId, model.Version, model.Doc, !model.RequestEmbedded, model.RequestView);
+        }
+
+        [Create("masterform/{fileId}/checkfillformdraft")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public object CheckFillFormDraftFromForm(string fileId, [FromForm] CheckFillFormDraftModel model)
+        {
+            return FilesControllerHelperString.CheckFillFormDraft(fileId, model.Version, model.Doc, !model.RequestEmbedded, model.RequestView);
+        }
+
+        [Create("masterform/{fileId:int}/checkfillformdraft")]
+        public object CheckFillFormDraftFromBody(int fileId, [FromBody] CheckFillFormDraftModel model)
+        {
+            return FilesControllerHelperInt.CheckFillFormDraft(fileId, model.Version, model.Doc, !model.RequestEmbedded, model.RequestView);
+        }
+
+        [Create("masterform/{fileId:int}/checkfillformdraft")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public object CheckFillFormDraftFromForm(int fileId, [FromForm] CheckFillFormDraftModel model)
+        {
+            return FilesControllerHelperInt.CheckFillFormDraft(fileId, model.Version, model.Doc, !model.RequestEmbedded, model.RequestView);
         }
 
         public IEnumerable<string> CheckDocServiceUrl(CheckDocServiceUrlModel model)

@@ -112,9 +112,9 @@ namespace ASC.Web.Studio.Core.Quota
 
             StorageSize = (ulong)Math.Max(0, quota.MaxTotalSize);
             UsedSize = (ulong)Math.Max(0, quotaRows.Sum(r => r.Counter));
-            MaxUsersCount = TenantExtra.GetTenantQuota().ActiveUsers;
+            MaxUsersCount = quota.ActiveUsers;
             UsersCount = coreBaseSettings.Personal ? 1 : TenantStatisticsProvider.GetUsersCount();
-            MaxVisitors = coreBaseSettings.Standalone ? -1 : constants.CoefficientOfVisitors * TenantExtra.GetTenantQuota().ActiveUsers;
+            MaxVisitors = coreBaseSettings.Standalone ? -1 : constants.CoefficientOfVisitors * quota.ActiveUsers;
             VisitorsCount = coreBaseSettings.Personal ? 0 : TenantStatisticsProvider.GetVisitorsCount();
 
             StorageUsage = quotaRows
