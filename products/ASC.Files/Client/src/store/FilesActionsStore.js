@@ -69,6 +69,7 @@ class FilesActionStore {
 
   deleteAction = async (translations, newSelection = null) => {
     const { isRecycleBinFolder, isPrivacyFolder } = this.treeFoldersStore;
+    const { setActiveFiles, setActiveFolders } = this.filesStore;
 
     const selection = newSelection ? newSelection : this.filesStore.selection;
 
@@ -101,6 +102,9 @@ class FilesActionStore {
       i++;
     }
 
+    setActiveFiles(fileIds);
+    setActiveFolders(folderIds);
+
     if (folderIds.length || fileIds.length) {
       this.isMediaOpen();
 
@@ -112,7 +116,12 @@ class FilesActionStore {
               icon: "trash",
               label: translations.deleteOperation,
             };
-            await this.uploadDataStore.loopFilesOperations(data, pbData);
+            await this.uploadDataStore.loopFilesOperations(
+              data,
+              pbData,
+              fileIds,
+              folderIds
+            );
             this.updateCurrentFolder();
           }
         );
@@ -327,25 +336,33 @@ class FilesActionStore {
   };
 
   deleteItemOperation = (isFile, itemId, translations) => {
+    const { setActiveFiles, setActiveFolders } = this.filesStore;
+
     const pbData = {
       icon: "trash",
       label: translations.deleteOperation,
     };
 
     if (isFile) {
+      setActiveFiles([itemId]);
       this.isMediaOpen();
       return deleteFile(itemId)
         .then(async (res) => {
           const data = res[0] ? res[0] : null;
-          await this.uploadDataStore.loopFilesOperations(data, pbData);
+          await this.uploadDataStore.loopFilesOperations(data, pbData, [
+            itemId,
+          ]);
           this.updateCurrentFolder();
         })
         .then(() => toastr.success(translations.successRemoveFile));
     } else {
+      setActiveFolders([itemId]);
       return deleteFolder(itemId)
         .then(async (res) => {
           const data = res[0] ? res[0] : null;
-          await this.uploadDataStore.loopFilesOperations(data, pbData);
+          await this.uploadDataStore.loopFilesOperations(data, pbData, null, [
+            itemId,
+          ]);
           this.updateCurrentFolder();
         })
         .then(() => toastr.success(translations.successRemoveFolder));

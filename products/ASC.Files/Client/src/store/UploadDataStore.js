@@ -853,7 +853,7 @@ class UploadDataStore {
         );
   };
 
-  loopFilesOperations = async (data, pbData) => {
+  loopFilesOperations = async (data, pbData, fileIds, folderIds) => {
     const label = this.secondaryProgressDataStore.label;
 
     const {
@@ -892,16 +892,26 @@ class UploadDataStore {
       });
     }
 
-    const newActiveFiles = activeFiles.filter(
-      (x) => !operationItem.files.find((y) => y.id === x)
-    );
+    if (operationItem.files || operationItem.folders) {
+      const newActiveFiles = activeFiles.filter(
+        (x) => !operationItem.files.find((y) => y.id === x)
+      );
 
-    const newActiveFolders = activeFolders.filter(
-      (x) => !operationItem.folders.find((y) => y.id === x)
-    );
+      const newActiveFolders = activeFolders.filter(
+        (x) => !operationItem.folders.find((y) => y.id === x)
+      );
 
-    setActiveFiles(newActiveFiles);
-    setActiveFolders(newActiveFolders);
+      setActiveFiles(newActiveFiles);
+      setActiveFolders(newActiveFolders);
+    } else if (fileIds || folderIds) {
+      const newActiveFiles = activeFiles.filter((el) => !fileIds.includes(el));
+      const newActiveFolders = activeFolders.filter(
+        (el) => !folderIds.includes(el)
+      );
+
+      setActiveFiles(newActiveFiles);
+      setActiveFolders(newActiveFolders);
+    }
 
     // setTimeout(() => {
     //   setActiveFiles(newActiveFiles);
