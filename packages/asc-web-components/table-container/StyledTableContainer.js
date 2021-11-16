@@ -197,6 +197,10 @@ const StyledTableRow = styled.div`
         ? `${props.theme.dragAndDrop.acceptBackground} !important`
         : "none"};
   }
+
+  .table-container_row-loader {
+    display: inline-flex;
+  }
 `;
 
 const StyledTableCell = styled.div`
