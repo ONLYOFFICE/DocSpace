@@ -728,8 +728,6 @@ class UploadDataStore {
       if (!this.primaryProgressDataStore.alert) {
         this.primaryProgressDataStore.clearPrimaryProgressData();
       }
-      // !this.primaryProgressDataStore.alert &&
-      //   this.primaryProgressDataStore.clearPrimaryProgressData();
 
       if (this.uploadPanelVisible || this.primaryProgressDataStore.alert) {
         uploadData.files = this.files;
@@ -754,7 +752,6 @@ class UploadDataStore {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
     } = this.secondaryProgressDataStore;
-    const { clearPrimaryProgressData } = this.primaryProgressDataStore;
 
     return copyToFolder(
       destFolderId,
@@ -777,7 +774,6 @@ class UploadDataStore {
           visible: true,
           alert: true,
         });
-        setTimeout(() => clearPrimaryProgressData(), TIMEOUT);
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         return Promise.reject(err);
       });
@@ -790,7 +786,6 @@ class UploadDataStore {
     conflictResolveType,
     deleteAfter
   ) => {
-    const { clearPrimaryProgressData } = this.primaryProgressDataStore;
     const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
@@ -815,7 +810,6 @@ class UploadDataStore {
           visible: true,
           alert: true,
         });
-        setTimeout(() => clearPrimaryProgressData(), TIMEOUT);
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         return Promise.reject(err);
       });
@@ -866,6 +860,12 @@ class UploadDataStore {
       clearSecondaryProgressData,
       setSecondaryProgressBarData,
     } = this.secondaryProgressDataStore;
+    const {
+      activeFiles,
+      activeFolders,
+      setActiveFiles,
+      setActiveFolders,
+    } = this.filesStore;
 
     let progress = data.progress;
 
@@ -891,6 +891,22 @@ class UploadDataStore {
         alert: false,
       });
     }
+
+    const newActiveFiles = activeFiles.filter(
+      (x) => !operationItem.files.find((y) => y.id === x)
+    );
+
+    const newActiveFolders = activeFolders.filter(
+      (x) => !operationItem.folders.find((y) => y.id === x)
+    );
+
+    setActiveFiles(newActiveFiles);
+    setActiveFolders(newActiveFolders);
+
+    // setTimeout(() => {
+    //   setActiveFiles(newActiveFiles);
+    //   setActiveFolders(newActiveFolders);
+    // }, TIMEOUT);
 
     return operationItem;
   };

@@ -50,6 +50,8 @@ class FilesStore {
   selected = "close";
   filter = FilesFilter.getDefault(); //TODO: FILTER
   loadTimeout = null;
+  activeFiles = [];
+  activeFolders = [];
 
   constructor(
     authStore,
@@ -74,6 +76,14 @@ class FilesStore {
     this.formatsStore = formatsStore;
     this.filesSettingsStore = filesSettingsStore;
   }
+
+  setActiveFiles = (activeFiles) => {
+    this.activeFiles = activeFiles;
+  };
+
+  setActiveFolders = (activeFolders) => {
+    this.activeFolders = activeFolders;
+  };
 
   setIsLoaded = (isLoaded) => {
     this.isLoaded = isLoaded;
@@ -1483,8 +1493,9 @@ class FilesStore {
           : splitValue.slice(1).join("_");
 
       if (fileType === "file") {
-        newSelection.push(this.files.find((f) => f.id == id));
-      } else {
+        this.activeFiles.findIndex((f) => f == id) === -1 &&
+          newSelection.push(this.files.find((f) => f.id == id));
+      } else if (this.activeFolders.findIndex((f) => f == id) === -1) {
         const selectableFolder = this.folders.find((f) => f.id == id);
         selectableFolder.isFolder = true;
         newSelection.push(selectableFolder);

@@ -177,6 +177,7 @@ const FilesTableRow = (props) => {
     isActive,
     onHideContextMenu,
     onFilesClick,
+    isDisabled,
   } = props;
 
   const sharedButton =
@@ -246,6 +247,7 @@ const FilesTableRow = (props) => {
         {...contextOptionsProps}
         checked={checkedProps}
         isActive={isActive}
+        isDisabled={isDisabled}
         onHideContextMenu={onHideContextMenu}
         isThirdPartyFolder={item.isThirdPartyFolder}
         onDoubleClick={onFilesClick}

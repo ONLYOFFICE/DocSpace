@@ -577,7 +577,14 @@ class FilesActionStore {
       setConflictResolveDialogVisible,
       setConflictResolveDialogItems,
     } = this.dialogsStore;
-    const { setBufferSelection } = this.filesStore;
+    const {
+      setBufferSelection,
+      setActiveFiles,
+      setActiveFolders,
+    } = this.filesStore;
+
+    setActiveFiles(fileIds);
+    setActiveFolders(folderIds);
 
     let conflicts;
 
