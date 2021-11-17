@@ -900,23 +900,21 @@ class UploadDataStore {
       const newActiveFolders = activeFolders.filter(
         (x) => !operationItem.folders.find((y) => y.id === x)
       );
-
-      setActiveFiles(newActiveFiles);
-      setActiveFolders(newActiveFolders);
+      setTimeout(() => {
+        setActiveFiles(newActiveFiles);
+        setActiveFolders(newActiveFolders);
+      }, TIMEOUT);
     } else if (fileIds || folderIds) {
       const newActiveFiles = activeFiles.filter((el) => !fileIds.includes(el));
       const newActiveFolders = activeFolders.filter(
         (el) => !folderIds.includes(el)
       );
 
-      setActiveFiles(newActiveFiles);
-      setActiveFolders(newActiveFolders);
+      setTimeout(() => {
+        setActiveFiles(newActiveFiles);
+        setActiveFolders(newActiveFolders);
+      }, TIMEOUT);
     }
-
-    // setTimeout(() => {
-    //   setActiveFiles(newActiveFiles);
-    //   setActiveFolders(newActiveFolders);
-    // }, TIMEOUT);
 
     return operationItem;
   };
