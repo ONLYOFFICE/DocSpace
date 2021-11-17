@@ -61,6 +61,13 @@ const StyledTableRow = styled(TableRow)`
       !props.isThirdPartyFolder &&
       (props.checked || props.isActive) &&
       "url(images/cursor.palm.svg), auto"};
+
+    ${(props) =>
+      props.isDisabled &&
+      css`
+        pointer-events: none;
+        /* cursor: wait; */
+      `}
   }
 
   .table-container_element {
