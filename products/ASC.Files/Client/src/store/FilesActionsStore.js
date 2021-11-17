@@ -70,13 +70,17 @@ class FilesActionStore {
   deleteAction = async (translations, newSelection = null) => {
     const { isRecycleBinFolder, isPrivacyFolder } = this.treeFoldersStore;
     const { addActiveItems } = this.filesStore;
-
-    const selection = newSelection ? newSelection : this.filesStore.selection;
-
+    const {
+      secondaryProgressDataStore,
+      loopFilesOperations,
+      clearActiveOperations,
+    } = this.uploadDataStore;
     const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
-    } = this.uploadDataStore.secondaryProgressDataStore;
+    } = secondaryProgressDataStore;
+
+    const selection = newSelection ? newSelection : this.filesStore.selection;
 
     setSecondaryProgressBarData({
       icon: "trash",
@@ -111,21 +115,18 @@ class FilesActionStore {
       try {
         await removeFiles(folderIds, fileIds, deleteAfter, immediately).then(
           async (res) => {
+            if (res[0]?.error) return Promise.reject(res[0].error);
             const data = res[0] ? res[0] : null;
             const pbData = {
               icon: "trash",
               label: translations.deleteOperation,
             };
-            await this.uploadDataStore.loopFilesOperations(
-              data,
-              pbData,
-              fileIds,
-              folderIds
-            );
+            await loopFilesOperations(data, pbData, fileIds, folderIds);
             this.updateCurrentFolder();
           }
         );
       } catch (err) {
+        clearActiveOperations(fileIds, folderIds);
         setSecondaryProgressBarData({
           visible: true,
           alert: true,
@@ -152,6 +153,7 @@ class FilesActionStore {
 
     try {
       await emptyTrash().then(async (res) => {
+        if (res[0]?.error) return Promise.reject(res[0].error);
         const data = res[0] ? res[0] : null;
         const pbData = {
           icon: "trash",
@@ -304,9 +306,13 @@ class FilesActionStore {
 
   deleteItemAction = async (itemId, translations, isFile, isThirdParty) => {
     const {
+      secondaryProgressDataStore,
+      clearActiveOperations,
+    } = this.uploadDataStore;
+    const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
-    } = this.uploadDataStore.secondaryProgressDataStore;
+    } = secondaryProgressDataStore;
     if (
       this.settingsStore.confirmDelete ||
       this.treeFoldersStore.isPrivacyFolder ||
@@ -325,6 +331,7 @@ class FilesActionStore {
       try {
         await this.deleteItemOperation(isFile, itemId, translations);
       } catch (err) {
+        clearActiveOperations(isFile && [itemId], !isFile && [itemId]);
         setSecondaryProgressBarData({
           visible: true,
           alert: true,
@@ -348,6 +355,7 @@ class FilesActionStore {
       this.isMediaOpen();
       return deleteFile(itemId)
         .then(async (res) => {
+          if (res[0]?.error) return Promise.reject(res[0].error);
           const data = res[0] ? res[0] : null;
           await this.uploadDataStore.loopFilesOperations(data, pbData, [
             itemId,
@@ -359,6 +367,7 @@ class FilesActionStore {
       addActiveItems(null, [itemId]);
       return deleteFolder(itemId)
         .then(async (res) => {
+          if (res[0]?.error) return Promise.reject(res[0].error);
           const data = res[0] ? res[0] : null;
           await this.uploadDataStore.loopFilesOperations(data, pbData, null, [
             itemId,
@@ -400,6 +409,7 @@ class FilesActionStore {
       setSecondaryProgressBarData,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
+    //TODO: duplicate for folders?
     const folderIds = [];
     const fileIds = [];
     item.fileExst ? fileIds.push(item.id) : folderIds.push(item.id);
@@ -413,6 +423,8 @@ class FilesActionStore {
       label,
       alert: false,
     });
+
+    this.filesStore.addActiveItems(fileIds, folderIds);
 
     return this.uploadDataStore.copyToAction(
       this.selectedFolderStore.id,
