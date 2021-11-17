@@ -56,15 +56,16 @@ class FilesActionStore {
     }
   };
 
-  updateCurrentFolder = () => {
+  updateCurrentFolder = (fileIds, folderIds) => {
     const {
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
     const { filter, fetchFiles } = this.filesStore;
-    fetchFiles(this.selectedFolderStore.id, filter, true, true).finally(() =>
-      setTimeout(() => clearSecondaryProgressData(), TIMEOUT)
-    );
+    fetchFiles(this.selectedFolderStore.id, filter, true, true).finally(() => {
+      this.uploadDataStore.clearActiveOperations(fileIds, folderIds);
+      setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+    });
   };
 
   deleteAction = async (translations, newSelection = null) => {
@@ -121,8 +122,8 @@ class FilesActionStore {
               icon: "trash",
               label: translations.deleteOperation,
             };
-            await loopFilesOperations(data, pbData, fileIds, folderIds);
-            this.updateCurrentFolder();
+            await loopFilesOperations(data, pbData);
+            this.updateCurrentFolder(fileIds, folderIds);
           }
         );
       } catch (err) {
@@ -169,8 +170,8 @@ class FilesActionStore {
           icon: "trash",
           label: translations.deleteOperation,
         };
-        await loopFilesOperations(data, pbData, fileIds, folderIds);
-        this.updateCurrentFolder();
+        await loopFilesOperations(data, pbData);
+        this.updateCurrentFolder(fileIds, folderIds);
       });
     } catch (err) {
       clearActiveOperations(fileIds, folderIds);
@@ -219,12 +220,9 @@ class FilesActionStore {
         const item =
           data?.finished && data?.url
             ? data
-            : await this.uploadDataStore.loopFilesOperations(
-                data,
-                pbData,
-                fileIds,
-                folderIds
-              );
+            : await this.uploadDataStore.loopFilesOperations(data, pbData);
+
+        clearActiveOperations(fileIds, folderIds);
 
         if (item.url) {
           window.location.href = item.url;
@@ -383,10 +381,8 @@ class FilesActionStore {
         .then(async (res) => {
           if (res[0]?.error) return Promise.reject(res[0].error);
           const data = res[0] ? res[0] : null;
-          await this.uploadDataStore.loopFilesOperations(data, pbData, [
-            itemId,
-          ]);
-          this.updateCurrentFolder();
+          await this.uploadDataStore.loopFilesOperations(data, pbData);
+          this.updateCurrentFolder([itemId]);
         })
         .then(() => toastr.success(translations.successRemoveFile));
     } else {
@@ -395,10 +391,8 @@ class FilesActionStore {
         .then(async (res) => {
           if (res[0]?.error) return Promise.reject(res[0].error);
           const data = res[0] ? res[0] : null;
-          await this.uploadDataStore.loopFilesOperations(data, pbData, null, [
-            itemId,
-          ]);
-          this.updateCurrentFolder();
+          await this.uploadDataStore.loopFilesOperations(data, pbData);
+          this.updateCurrentFolder(null, [itemId]);
         })
         .then(() => toastr.success(translations.successRemoveFolder));
     }

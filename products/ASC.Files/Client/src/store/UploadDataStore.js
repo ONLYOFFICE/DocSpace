@@ -765,12 +765,9 @@ class UploadDataStore {
 
         const data = res[0] ? res[0] : null;
         const pbData = { icon: "duplicate" };
-        return this.loopFilesOperations(
-          data,
-          pbData,
-          fileIds,
-          folderIds
-        ).then(() => this.moveToCopyTo(destFolderId, pbData, true));
+        return this.loopFilesOperations(data, pbData).then(() =>
+          this.moveToCopyTo(destFolderId, pbData, true, fileIds, folderIds)
+        );
       })
       .catch((err) => {
         setSecondaryProgressBarData({
@@ -805,12 +802,9 @@ class UploadDataStore {
       .then((res) => {
         const data = res[0] ? res[0] : null;
         const pbData = { icon: "move" };
-        return this.loopFilesOperations(
-          data,
-          pbData,
-          fileIds,
-          folderIds
-        ).then(() => this.moveToCopyTo(destFolderId, pbData, false));
+        return this.loopFilesOperations(data, pbData).then(() =>
+          this.moveToCopyTo(destFolderId, pbData, false, fileIds, folderIds)
+        );
       })
       .catch((err) => {
         setSecondaryProgressBarData({
@@ -861,14 +855,7 @@ class UploadDataStore {
         );
   };
 
-  loopFilesOperations = async (data, pbData, fileIds, folderIds) => {
-    const {
-      activeFiles,
-      activeFolders,
-      setActiveFiles,
-      setActiveFolders,
-    } = this.filesStore;
-
+  loopFilesOperations = async (data, pbData) => {
     const {
       clearSecondaryProgressData,
       setSecondaryProgressBarData,
@@ -900,29 +887,10 @@ class UploadDataStore {
       });
     }
 
-    if (
-      !operationItem.error &&
-      (operationItem.files || operationItem.folders)
-    ) {
-      const newActiveFiles = activeFiles.filter(
-        (x) => !operationItem.files.find((y) => y.id === x)
-      );
-
-      const newActiveFolders = activeFolders.filter(
-        (x) => !operationItem.folders.find((y) => y.id === x)
-      );
-      setTimeout(() => {
-        setActiveFiles(newActiveFiles);
-        setActiveFolders(newActiveFolders);
-      }, TIMEOUT);
-    } else if (fileIds || folderIds) {
-      this.clearActiveOperations(fileIds, folderIds);
-    }
-
     return operationItem;
   };
 
-  moveToCopyTo = (destFolderId, pbData, isCopy) => {
+  moveToCopyTo = (destFolderId, pbData, isCopy, fileIds, folderIds) => {
     const { treeFolders, setTreeFolders } = this.treeFoldersStore;
     const { fetchFiles, filter } = this.filesStore;
     const {
@@ -937,6 +905,8 @@ class UploadDataStore {
       let folders = data.folders;
       let foldersCount = data.current.foldersCount;
       loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+
+      this.clearActiveOperations(fileIds, folderIds);
 
       if (!isCopy || destFolderId === this.selectedFolderStore.id) {
         fetchFiles(this.selectedFolderStore.id, filter, true, true).finally(
