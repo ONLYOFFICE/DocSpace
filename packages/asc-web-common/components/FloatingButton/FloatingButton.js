@@ -24,7 +24,7 @@ const StyledButtonAlertIcon = styled(ButtonAlertIcon)`
   ${commonIconsStyles}
 `;
 const FloatingButton = ({ id, className, style, ...rest }) => {
-  const { icon, alert, percent, onClick } = rest;
+  const { icon, alert, percent, onClick, color } = rest;
 
   return (
     <StyledCircleWrap
@@ -42,7 +42,7 @@ const FloatingButton = ({ id, className, style, ...rest }) => {
           <div className="circle__fill"></div>
         </div>
 
-        <StyledFloatingButton>
+        <StyledFloatingButton color={color}>
           <IconBox>
             {icon == "upload" ? (
               <ButtonUploadIcon />
@@ -85,6 +85,7 @@ FloatingButton.propTypes = {
   alert: PropTypes.bool,
   percent: PropTypes.number,
   onClick: PropTypes.func,
+  color: PropTypes.string,
 };
 
 FloatingButton.defaultProps = {
