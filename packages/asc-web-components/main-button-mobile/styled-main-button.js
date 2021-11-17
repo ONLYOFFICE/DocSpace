@@ -5,12 +5,7 @@ import DropDownItem from "../drop-down-item";
 import FloatingButton from "@appserver/common/components/FloatingButton";
 
 const StyledFloatingButton = styled(FloatingButton)`
-  & + div {
-  }
-
   .circle__mask + div {
-    background-color: #ed7309;
-
     svg {
       margin-top: 4px;
     }
@@ -38,17 +33,13 @@ const StyledFloatingButton = styled(FloatingButton)`
   .circle__mask .circle__fill {
     background-color: #fff;
   }
-
-  /* .circle__mask {
-    transform: none !important;
-    clip: none !important;
-  } */
 `;
 
 const StyledDropDown = styled(DropDown)`
   bottom: ${(props) => props.theme.mainButtonMobile.dropDown.bottom};
   right: ${(props) => props.theme.mainButtonMobile.dropDown.right};
   z-index: ${(props) => props.theme.mainButtonMobile.dropDown.zIndex};
+  height: ${(props) => (props.isMobile ? "100vh" : "auto")};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

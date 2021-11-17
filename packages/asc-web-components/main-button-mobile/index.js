@@ -16,6 +16,7 @@ import IconButton from "../icon-button";
 import Button from "../button";
 import Text from "../text";
 import Scrollbar from "@appserver/components/scrollbar";
+import { isMobile, isTablet } from "react-device-detect";
 
 const ProgressBarMobile = ({
   label,
@@ -102,18 +103,9 @@ const MainButtonMobile = (props) => {
     ? progressOptions.filter((option) => option.open)
     : [];
 
-  console.log(dropDownRef);
-
-  const renderDropDown = () => {
+  const renderItems = () => {
     return (
-      <StyledDropDown
-        forwardedRef={dropDownRef}
-        open={isOpen}
-        clickOutsideAction={outsideClick}
-        manualWidth={manualWidth || "400px"}
-        directionY="top"
-        directionX="right"
-      >
+      <>
         <StyledContainerAction>
           {actionOptions.map((option) => (
             <StyledDropDownItem
@@ -178,11 +170,11 @@ const MainButtonMobile = (props) => {
             />
           </StyledButtonWrapper>
         )}
-      </StyledDropDown>
+      </>
     );
   };
 
-  const children = renderDropDown();
+  const children = renderItems();
 
   return (
     <div ref={ref} className={className} style={style}>
@@ -190,8 +182,25 @@ const MainButtonMobile = (props) => {
         icon={isOpen ? "minus" : "plus"}
         onClick={onMainButtonClick}
         percent={percent}
+        color={"#ed7309"}
       />
-      {children}
+      <StyledDropDown
+        forwardedRef={dropDownRef}
+        open={isOpen}
+        clickOutsideAction={outsideClick}
+        manualWidth={manualWidth || "400px"}
+        directionY="top"
+        directionX="right"
+        isMobile={isMobile || isTablet}
+      >
+        {isMobile || isTablet ? (
+          <Scrollbar scrollclass="section-scroll" stype="mediumBlack">
+            {children}
+          </Scrollbar>
+        ) : (
+          children
+        )}
+      </StyledDropDown>
     </div>
   );
 };
