@@ -906,15 +906,15 @@ class UploadDataStore {
       let foldersCount = data.current.foldersCount;
       loopTreeFolders(path, newTreeFolders, folders, foldersCount);
 
-      this.clearActiveOperations(fileIds, folderIds);
-
       if (!isCopy || destFolderId === this.selectedFolderStore.id) {
         fetchFiles(this.selectedFolderStore.id, filter, true, true).finally(
           () => {
+            this.clearActiveOperations(fileIds, folderIds);
             setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
           }
         );
       } else {
+        this.clearActiveOperations(fileIds, folderIds);
         setSecondaryProgressBarData({
           icon: pbData.icon,
           label: pbData.label || label,
