@@ -190,7 +190,7 @@ class SelectFileDialogModalView extends React.Component {
           zIndex={zIndex}
           onClose={onClose}
           className="select-file-modal-dialog"
-          style={{ maxWidth: "890px" }}
+          style={{ maxWidth: "725px" }}
           displayType="modal"
           bodyPadding="0"
         >
