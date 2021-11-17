@@ -48,14 +48,23 @@ powershell -Command "(gc build\deploy\nginx\sites-enabled\onlyoffice-studio.conf
 
 REM restart nginx
 echo service nginx stop
-call sc stop nginx
+call sc stop nginx > nul
 
 REM sleep 5 seconds
 call ping 127.0.0.1 -n 6 > nul
 
 echo service nginx start
-call sc start nginx
+call sc start nginx > nul
+
+if NOT %errorlevel% == 0 (
+	echo Couldn't restarte Onlyoffice%%~nf service			
 )
+
+)
+
+echo.
+
+POPD
 
 if "%1"=="nopause" goto start
 pause
