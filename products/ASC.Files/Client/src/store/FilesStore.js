@@ -887,8 +887,8 @@ class FilesStore {
     return api.files.addFileToRecentlyViewed(fileId);
   };
 
-  createFile = (folderId, title) => {
-    return api.files.createFile(folderId, title).then((file) => {
+  createFile = (folderId, title, templateId) => {
+    return api.files.createFile(folderId, title, templateId).then((file) => {
       return Promise.resolve(file);
     });
   };
