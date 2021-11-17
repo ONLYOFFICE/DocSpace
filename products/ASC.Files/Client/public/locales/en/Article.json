@@ -4,5 +4,7 @@
   "NewPresentation": "New Presentation",
   "NewSpreadsheet": "New Spreadsheet",
   "UploadFiles": "Upload files",
-  "UploadFolder": "Upload folder"
+  "UploadFolder": "Upload folder",
+  "NewForm": "New form",
+  "NewFormFile": "New form from file"
 }

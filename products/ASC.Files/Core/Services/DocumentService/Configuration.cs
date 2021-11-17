@@ -865,10 +865,12 @@ namespace ASC.Web.Files.Services.DocumentService
         public LogoConfig(
             SettingsManager settingsManager,
             BaseCommonLinkUtility baseCommonLinkUtility,
-            TenantLogoHelper tenantLogoHelper)
+            TenantLogoHelper tenantLogoHelper,
+            FileUtility fileUtility)
         {
             BaseCommonLinkUtility = baseCommonLinkUtility;
             TenantLogoHelper = tenantLogoHelper;
+            FileUtility = fileUtility;
             SettingsManager = settingsManager;
         }
 
@@ -883,9 +885,12 @@ namespace ASC.Web.Files.Services.DocumentService
             set { }
             get
             {
+                var fillingForm = FileUtility.CanWebRestrictedEditing(_configuration.Document.Title);
+
                 return
                     _configuration.EditorType == EditorType.Embedded
-                        ? null
+                    || fillingForm
+                        ? BaseCommonLinkUtility.GetFullAbsolutePath(TenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.Dark, !_configuration.EditorConfig.Customization.IsRetina))
                         : BaseCommonLinkUtility.GetFullAbsolutePath(TenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.DocsEditor, !_configuration.EditorConfig.Customization.IsRetina));
             }
         }
@@ -910,6 +915,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
         private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
         private TenantLogoHelper TenantLogoHelper { get; }
+        public FileUtility FileUtility { get; }
         private SettingsManager SettingsManager { get; }
     }
 

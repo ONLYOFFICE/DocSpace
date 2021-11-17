@@ -2119,7 +2119,7 @@ namespace ASC.Api.Settings
 
             result.Add(instance);
 
-            if (!instance.IsDefault(CoreSettings) && !instance.GetIsLicensor(TenantManager, CoreSettings))
+            if (!instance.IsDefault(CoreSettings) && !instance.IsLicensor)
             {
                 result.Add(instance.GetDefault(ServiceProvider) as CompanyWhiteLabelSettings);
             }
@@ -2638,7 +2638,7 @@ namespace ASC.Api.Settings
 
             DemandRebrandingPermission();
 
-            companyWhiteLabelSettingsWrapper.Settings.IsLicensorSetting = false; //TODO: CoreContext.TenantManager.GetTenantQuota(TenantProvider.CurrentTenantID).Branding && settings.IsLicensor
+            companyWhiteLabelSettingsWrapper.Settings.IsLicensor = false; //TODO: CoreContext.TenantManager.GetTenantQuota(TenantProvider.CurrentTenantID).Branding && settings.IsLicensor
 
             SettingsManager.SaveForDefaultTenant(companyWhiteLabelSettingsWrapper.Settings);
             return true;
@@ -2863,7 +2863,13 @@ namespace ASC.Api.Settings
                     changed = true;
                 }
             }
-            if (validateKeyProvider != null && !validateKeyProvider.ValidateKeys() && !consumer.All(r => string.IsNullOrEmpty(r.Value)))
+
+            //TODO: Consumer implementation required (Bug 50606)
+            var allPropsIsEmpty = consumer.GetType() == typeof(SmscProvider)
+                ? consumer.ManagedKeys.All(key => string.IsNullOrEmpty(consumer[key]))
+                : consumer.All(r => string.IsNullOrEmpty(r.Value));
+
+            if (validateKeyProvider != null && !validateKeyProvider.ValidateKeys() && !allPropsIsEmpty)
             {
                 consumer.Clear();
                 throw new ArgumentException(Resource.ErrorBadKeys);

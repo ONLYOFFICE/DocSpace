@@ -1379,6 +1379,7 @@ namespace ASC.Files.Core.Data
 
         protected IQueryable<DbFileQuery> FromQueryWithShared(IQueryable<DbFile> dbFiles)
         {
+            var cId = AuthContext.CurrentAccount.ID;
             return from r in dbFiles
                    select new DbFileQuery
                    {
@@ -1396,12 +1397,17 @@ namespace ASC.Files.Core.Data
                        Shared = (from f in FilesDbContext.Security
                                  where f.EntryType == FileEntryType.File && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId
                                  select f
-                                 ).Any()
+                                 ).Any(),
+                       Linked = (from f in FilesDbContext.FilesLink
+                                 where f.TenantId == r.TenantId && f.LinkedId == r.Id.ToString() && f.LinkedFor == cId
+                                 select f)
+                                 .Any()
                    };
         }
 
         protected IQueryable<DbFileQuery> FromQuery(IQueryable<DbFile> dbFiles)
         {
+            var cId = AuthContext.CurrentAccount.ID;
             return dbFiles
                 .Select(r => new DbFileQuery
                 {
@@ -1416,7 +1422,11 @@ namespace ASC.Files.Core.Data
                             where f.TenantId == r.TenantId
                             select f
                               ).FirstOrDefault(),
-                    Shared = true
+                    Shared = true,
+                    Linked = (from f in FilesDbContext.FilesLink
+                              where f.TenantId == r.TenantId && f.LinkedId == r.Id.ToString() && f.LinkedFor == cId
+                              select f)
+                                 .Any()
                 });
         }
 
@@ -1443,6 +1453,7 @@ namespace ASC.Files.Core.Data
             file.Encrypted = r.File.Encrypted;
             file.Forcesave = r.File.Forcesave;
             file.ThumbnailStatus = r.File.Thumb;
+            file.IsFillFormDraft = r.Linked;
             return file;
         }
 
@@ -1535,6 +1546,7 @@ namespace ASC.Files.Core.Data
         public DbFile File { get; set; }
         public DbFolder Root { get; set; }
         public bool Shared { get; set; }
+        public bool Linked { get; set; }
     }
 
     public class DbFileQueryWithSecurity

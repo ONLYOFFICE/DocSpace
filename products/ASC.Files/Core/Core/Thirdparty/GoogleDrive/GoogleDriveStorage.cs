@@ -414,7 +414,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             }
             catch (WebException exception)
             {
-                if (exception.Status == WebExceptionStatus.ProtocolError)
+                if (exception.Status == WebExceptionStatus.ProtocolError || exception.Status == WebExceptionStatus.UnknownError) //Status is UnknownError (unix)
                 {
                     if (exception.Response != null && exception.Response.Headers.AllKeys.Contains("Range"))
                     {

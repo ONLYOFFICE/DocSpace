@@ -241,15 +241,13 @@ namespace ASC.Web.Studio.Core.Notify
         }
 
         public void SendMailboxCreated(List<string> toEmails, string username, string address, string server,
-            string encyption, int portImap, int portSmtp, string login)
+            string encyption, int portImap, int portSmtp, string login, bool skipSettings = false)
         {
             var tags = new List<ITagValue>
             {
                 new TagValue(Tags.UserName, username ?? string.Empty),
                 new TagValue(Tags.Address, address ?? string.Empty)
             };
-
-            var skipSettings = string.IsNullOrEmpty(server);
 
             if (!skipSettings)
             {
@@ -781,11 +779,13 @@ namespace ASC.Web.Studio.Core.Notify
 
             var lang = CoreBaseSettings.CustomMode
                            ? "ru-RU"
-                           : Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName;
+                           : Thread.CurrentThread.CurrentUICulture.Name;
+
+            var culture = SetupInfo.GetPersonalCulture(lang);
 
             var confirmUrl = CommonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmpInvite, (int)EmployeeType.User)
                              + "&emplType=" + (int)EmployeeType.User
-                             + "&lang=" + lang
+                             + "&lang=" + culture.Key
                              + additionalMember;
 
             client.SendNoticeToAsync(

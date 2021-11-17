@@ -56,6 +56,7 @@ using ASC.Web.Core.Files;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Users;
 using ASC.Web.Files.Classes;
+using ASC.Web.Files.Core.Compress;
 using ASC.Web.Files.Core.Entries;
 using ASC.Web.Files.Helpers;
 using ASC.Web.Files.Services.DocumentService;
@@ -119,6 +120,7 @@ namespace ASC.Web.Files.Services.WCFService
         private FileTrackerHelper FileTracker { get; }
         private ICacheNotify<ThumbnailRequest> ThumbnailNotify { get; }
         private EntryStatusManager EntryStatusManager { get; }
+        public CompressToArchive CompressToArchive { get; }
         private ILog Logger { get; set; }
 
         public FileStorageService(
@@ -163,7 +165,8 @@ namespace ASC.Web.Files.Services.WCFService
             TenantManager tenantManager,
             FileTrackerHelper fileTracker,
             ICacheNotify<ThumbnailRequest> thumbnailNotify,
-            EntryStatusManager entryStatusManager)
+            EntryStatusManager entryStatusManager,
+            CompressToArchive compressToArchive)
         {
             Global = global;
             GlobalStore = globalStore;
@@ -207,6 +210,7 @@ namespace ASC.Web.Files.Services.WCFService
             FileTracker = fileTracker;
             ThumbnailNotify = thumbnailNotify;
             EntryStatusManager = entryStatusManager;
+            CompressToArchive = compressToArchive;
         }
 
         public Folder<T> GetFolder(T folderId)
@@ -588,24 +592,24 @@ namespace ASC.Web.Files.Services.WCFService
             }
 
             var externalExt = false;
-
-            var fileExt = !enableExternalExt ? FileUtility.GetInternalExtension(fileWrapper.Title) : FileUtility.GetFileExtension(fileWrapper.Title);
-            if (!FileUtility.InternalExtension.Values.Contains(fileExt))
+            var title = fileWrapper.Title;
+            var fileExt = FileUtility.GetFileExtension(title);
+            if (fileExt != FileUtility.MasterFormExtension)
             {
-                if (!enableExternalExt)
+                fileExt = FileUtility.GetInternalExtension(title);
+                if (!FileUtility.InternalExtension.Values.Contains(fileExt))
                 {
                     fileExt = FileUtility.InternalExtension[FileType.Document];
-                    file.Title = fileWrapper.Title + fileExt;
+                    file.Title = title + fileExt;
                 }
                 else
                 {
-                    externalExt = true;
-                    file.Title = fileWrapper.Title;
+                    file.Title = FileUtility.ReplaceFileExtension(title, fileExt);
                 }
             }
             else
             {
-                file.Title = FileUtility.ReplaceFileExtension(fileWrapper.Title, fileExt);
+                file.Title = FileUtility.ReplaceFileExtension(title, fileExt);
             }
 
             if (EqualityComparer<T>.Default.Equals(fileWrapper.TemplateId, default(T)))
@@ -752,7 +756,7 @@ namespace ASC.Web.Files.Services.WCFService
                     FileTracker.Remove(fileId);
                 }
 
-                var file = EntryManager.SaveEditing(fileId, fileExtension, fileuri, stream, doc, forcesave: forcesave ? ForcesaveType.User : ForcesaveType.None);
+                var file = EntryManager.SaveEditing(fileId, fileExtension, fileuri, stream, doc, forcesave: forcesave ? ForcesaveType.User : ForcesaveType.None, keepLink: true);
 
                 if (file != null)
                     FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdated, file.Title);
@@ -1584,6 +1588,54 @@ namespace ASC.Web.Files.Services.WCFService
             }
         }
 
+        public string CheckFillFormDraft(T fileId, int version, string doc, bool editPossible, bool view)
+        {
+            var file = DocumentServiceHelper.GetParams(fileId, version, doc, editPossible, !view, true, out var _configuration);
+            var _valideShareLink = !string.IsNullOrEmpty(FileShareLink.Parse(doc));
+
+            if (_valideShareLink)
+            {
+                _configuration.Document.SharedLinkKey += doc;
+            }
+
+            if (_configuration.EditorConfig.ModeWrite
+                && FileUtility.CanWebRestrictedEditing(file.Title)
+                && FileSecurity.CanFillForms(file)
+                && !FileSecurity.CanEdit(file))
+            {
+                if (!file.IsFillFormDraft)
+                {
+                    FileMarker.RemoveMarkAsNew(file);
+
+                    Folder<int> folderIfNew;
+                    File<int> form;
+                    try
+                    {
+                        form = EntryManager.GetFillFormDraft(file, out folderIfNew);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error("DocEditor", ex);
+                        throw;
+                    }
+
+                    var comment = folderIfNew == null
+                        ? string.Empty
+                        : "#message/" + HttpUtility.UrlEncode(string.Format(FilesCommonResource.MessageFillFormDraftCreated, folderIfNew.Title));
+
+                    return FilesLinkUtility.GetFileWebEditorUrl(form.ID) + comment;
+                }
+                else if (!EntryManager.CheckFillFormDraft(file))
+                {
+                    var comment = "#message/" + HttpUtility.UrlEncode(FilesCommonResource.MessageFillFormDraftDiscard);
+
+                    return FilesLinkUtility.GetFileWebEditorUrl(file.ID) + comment;
+                }
+            }
+
+            return FilesLinkUtility.GetFileWebEditorUrl(file.ID);
+        }
+
         public void ReassignStorage(Guid userFromId, Guid userToId)
         {
             //check current user have access
@@ -1662,6 +1714,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             var folderDao = GetFolderDao();
             var fileDao = GetFileDao();
+            var linkDao = GetLinkDao();
 
             //delete all markAsNew
             var rootFoldersId = new List<T>
@@ -1686,7 +1739,7 @@ namespace ASC.Web.Files.Services.WCFService
             //delete all from My
             if (!Equals(folderIdFromMy, 0))
             {
-                EntryManager.DeleteSubitems(folderIdFromMy, folderDao, fileDao);
+                EntryManager.DeleteSubitems(folderIdFromMy, folderDao, fileDao, linkDao);
 
                 //delete My userFrom folder
                 folderDao.DeleteFolder(folderIdFromMy);
@@ -1697,7 +1750,7 @@ namespace ASC.Web.Files.Services.WCFService
             var folderIdFromTrash = folderDao.GetFolderIDTrash(false, userId);
             if (!Equals(folderIdFromTrash, 0))
             {
-                EntryManager.DeleteSubitems(folderIdFromTrash, folderDao, fileDao);
+                EntryManager.DeleteSubitems(folderIdFromTrash, folderDao, fileDao, linkDao);
                 folderDao.DeleteFolder(folderIdFromTrash);
                 GlobalFolderHelper.FolderTrash = userId;
             }
@@ -2274,11 +2327,11 @@ namespace ASC.Web.Files.Services.WCFService
             return FilesSettingsHelper.TemplatesSection;
         }
 
-        public bool ChangeDownloadTarGz(bool set)
+        public ICompress ChangeDownloadTarGz(bool set)
         {
             FilesSettingsHelper.DownloadTarGz = set;
 
-            return FilesSettingsHelper.DownloadTarGz;
+            return CompressToArchive;
         }
 
         public bool ChangeDeleteConfrim(bool set)
@@ -2348,6 +2401,11 @@ namespace ASC.Web.Files.Services.WCFService
         private ISecurityDao<T> GetSecurityDao()
         {
             return DaoFactory.GetSecurityDao<T>();
+        }
+
+        private ILinkDao GetLinkDao()
+        {
+            return DaoFactory.GetLinkDao();
         }
 
         private static void ErrorIf(bool condition, string errorMessage)
