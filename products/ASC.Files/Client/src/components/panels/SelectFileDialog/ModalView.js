@@ -20,6 +20,7 @@ const exceptSortedByTagsFolders = [
 ];
 
 const exceptTrashFolder = [FolderType.TRASH];
+const exceptPrivacyTrashFolders = [FolderType.Privacy, FolderType.TRASH];
 class SelectFileDialogModalView extends React.Component {
   constructor(props) {
     super(props);
@@ -72,6 +73,19 @@ class SelectFileDialogModalView extends React.Component {
           console.error(err);
         }
 
+        this.loadersCompletes();
+        break;
+      case "exceptPrivacyTrashFolders":
+        try {
+          const foldersTree = await getFoldersTree();
+          this.folderList = SelectFolderDialog.convertFolders(
+            foldersTree,
+            exceptPrivacyTrashFolders
+          );
+          this.onSetSelectedFolder();
+        } catch (err) {
+          console.error(err);
+        }
         this.loadersCompletes();
         break;
       case "common":

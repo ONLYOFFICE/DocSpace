@@ -103,6 +103,7 @@ class SelectFileDialogBody extends React.Component {
       resetTreeFolders,
       setExpandedPanelKeys,
       setDefaultSelectedFolder,
+      setSelectedFolder,
       setFolderId,
       setFile,
     } = this.props;
@@ -111,7 +112,7 @@ class SelectFileDialogBody extends React.Component {
 
     if (resetTreeFolders) {
       setExpandedPanelKeys(null);
-      setDefaultSelectedFolder();
+      //setSelectedFolder(null);
 
       setFolderId(null);
       setFile(null);
@@ -144,11 +145,11 @@ class SelectFileDialogBody extends React.Component {
   };
 
   onSelectFolder = (id) => {
-    const { setFolderId } = this.props;
+    const { setFolderId, setExpandedPanelKeys } = this.props;
 
     if (id) {
       setFolderId(id);
-
+      setExpandedPanelKeys([`${id}`]);
       this.setState({
         selectedFolder: id,
         hasNextPage: true,
@@ -184,7 +185,7 @@ class SelectFileDialogBody extends React.Component {
   };
 
   loadNextPage = () => {
-    const { setSelectedNode, setSelectedFolder } = this.props;
+    //const { setSelectedNode, setSelectedFolder } = this.props;
     const { selectedFolder, page } = this.state;
 
     if (this._isLoadNextPage) return;
@@ -202,17 +203,16 @@ class SelectFileDialogBody extends React.Component {
             ? this.state.filesList.concat(data.files)
             : data.files;
 
-          setSelectedNode([selectedFolder + ""]);
-          const newPathParts = SelectFolderDialog.convertPathParts(
-            data.pathParts
-          );
-
-          setSelectedFolder({
-            folders: data.folders,
-            ...data.current,
-            pathParts: newPathParts,
-            ...{ new: data.new },
-          });
+          // const newPathParts = SelectFolderDialog.convertPathParts( //TODO: maybe need
+          //   data.pathParts
+          // );
+          // setSelectedNode([selectedFolder + ""]);
+          // setSelectedFolder({
+          //   folders: data.folders,
+          //   ...data.current,
+          //   pathParts: newPathParts,
+          //   ...{ new: data.new },
+          // });
           this.setState({
             hasNextPage: newFilesList.length < data.total,
             isNextPageLoading: false,
@@ -321,6 +321,7 @@ SelectFileDialogBody.propTypes = {
     "third-party",
     "exceptSortedByTags",
     "exceptTrashFolder",
+    "exceptPrivacyTrashFolders",
   ]),
   folderId: PropTypes.string,
   withoutProvider: PropTypes.bool,
@@ -351,10 +352,7 @@ const SelectFileDialogWrapper = inject(
 
     const { setSelectedNode, setExpandedPanelKeys } = treeFoldersStore;
     const { filter } = filesStore;
-    const {
-      setSelectedFolder,
-      toDefault: setDefaultSelectedFolder,
-    } = selectedFolderStore;
+    const { setSelectedFolder } = selectedFolderStore;
     return {
       storeFolderId,
       fileInfo,
@@ -363,7 +361,6 @@ const SelectFileDialogWrapper = inject(
       setSelectedFolder,
       setSelectedNode,
       filter,
-      setDefaultSelectedFolder,
       setExpandedPanelKeys,
     };
   }

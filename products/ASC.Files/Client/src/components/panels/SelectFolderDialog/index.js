@@ -38,6 +38,7 @@ const exceptSortedByTagsFolders = [
 ];
 
 const exceptTrashFolder = [FolderType.TRASH];
+const exceptPrivacyTrashFolders = [FolderType.Privacy, FolderType.TRASH];
 class SelectFolderModalDialog extends React.Component {
   constructor(props) {
     super(props);
@@ -88,6 +89,7 @@ class SelectFolderModalDialog extends React.Component {
       id,
       selectedFolderId,
     } = this.props;
+
     switch (foldersType) {
       case "exceptSortedByTags":
         try {
@@ -109,6 +111,20 @@ class SelectFolderModalDialog extends React.Component {
             foldersTree,
             exceptTrashFolder
           );
+          this.setBaseSettings();
+        } catch (err) {
+          console.error(err);
+          this.loadersCompletes();
+        }
+        break;
+      case "exceptPrivacyTrashFolders":
+        try {
+          const foldersTree = await getFoldersTree();
+          folderList = SelectFolderDialog.convertFolders(
+            foldersTree,
+            exceptPrivacyTrashFolders
+          );
+          console.log("folderList", folderList);
           this.setBaseSettings();
         } catch (err) {
           console.error(err);
@@ -303,15 +319,14 @@ class SelectFolderModalDialog extends React.Component {
   setFolderObjectToTree = (id, data) => {
     const { setSelectedNode, setSelectedFolder } = this.props;
 
-    setSelectedNode([id + ""]);
-
-    const newPathParts = SelectFolderDialog.convertPathParts(data.pathParts);
-    setSelectedFolder({
-      folders: data.folders,
-      ...data.current,
-      pathParts: newPathParts,
-      ...{ new: data.new },
-    });
+    //setSelectedNode([id + ""]);
+    //const newPathParts = SelectFolderDialog.convertPathParts(data.pathParts);
+    // setSelectedFolder({
+    //   folders: data.folders,
+    //   ...data.current,
+    //   pathParts: newPathParts,
+    //   ...{ new: data.new },
+    // });
   };
 
   componentWillUnmount() {
@@ -497,6 +512,7 @@ SelectFolderModalDialog.propTypes = {
     "third-party",
     "exceptSortedByTags",
     "exceptTrashFolder",
+    "exceptPrivacyTrashFolders",
   ]),
   displayType: PropTypes.oneOf(["aside", "modal"]),
   id: PropTypes.string,
@@ -518,6 +534,7 @@ SelectFolderModalDialog.defaultProps = {
   zIndex: 310,
   withoutProvider: false,
   folderPath: "",
+  showButtons: false,
 };
 
 const SelectFolderDialogWrapper = inject(
