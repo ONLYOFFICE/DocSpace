@@ -3,21 +3,13 @@
 PUSHD %~dp0..
 call runasadmin.bat "%~dpnx0"
 
-if %errorlevel% == 0 (
-	for /R "run\" %%f in (*.bat) do (
-		call sc stop "Onlyoffice%%~nf" > nul
+POPD
 
-		if %errorlevel% == 0 (
-			echo Onlyoffice%%~nf service has been stopped		
-		) else (
-			echo Couldn't stop Onlyoffice%%~nf service			
-		)
-	)
+if %errorlevel% == 0 (
+	pwsh  %~dp0/command.ps1 "stop"
 )
 
 echo.
-
-POPD
 
 if "%1"=="nopause" goto start
 pause
