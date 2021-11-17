@@ -4,5 +4,6 @@
   "NewPresentation": "New Presentation",
   "NewSpreadsheet": "New Spreadsheet",
   "UploadFiles": "Upload files",
-  "UploadFolder": "Upload folder"
+  "UploadFolder": "Upload folder",
+  "CreateMasterFormFromFile": "Create Master Form from file"
 }
