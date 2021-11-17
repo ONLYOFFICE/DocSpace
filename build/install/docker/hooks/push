@@ -21,5 +21,5 @@ for i in ${!arrayImagesName[@]}; do
 done
 docker image ls | grep $DOCKER_TAG-$BUILD_NUMBER
 
-docker-compose -f build.yml push \
-    --build-arg DOCKER_TAG=$DOCKER_TAG-$BUILD_NUMBER
+DOCKER_TAG=$DOCKER_TAG-$BUILD_NUMBE
+docker-compose -f build.yml push
