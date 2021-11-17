@@ -242,7 +242,10 @@ class SectionHeaderContent extends React.Component {
   };
 
   onEmptyTrashAction = () => this.props.setEmptyTrashDialogVisible(true);
-  onRestoreAllAction = () => console.log("Restore all");
+  onRestoreAllAction = () => {
+    this.props.setSelected("all");
+    this.props.setMoveToPanelVisible(true);
+  };
 
   getContextOptionsFolder = () => {
     const { t } = this.props;
@@ -374,6 +377,7 @@ class SectionHeaderContent extends React.Component {
       personal,
       viewAs,
       isRecycleBinFolder,
+      isEmptyFilesList,
     } = this.props;
 
     const menuItems = this.getMenuItems();
@@ -471,7 +475,7 @@ class SectionHeaderContent extends React.Component {
                         />
                       )
                     )}
-                    {isRecycleBinFolder && (
+                    {isRecycleBinFolder && !isEmptyFilesList && (
                       <ContextMenuButton
                         className="option-button"
                         directionX="left"
@@ -519,6 +523,7 @@ export default inject(
       viewAs,
       cbMenuItems,
       getCheckboxItemLabel,
+      isEmptyFilesList,
     } = filesStore;
     const { setAction } = fileActionStore;
     const {
@@ -565,6 +570,7 @@ export default inject(
 
       isRecycleBinFolder,
       setEmptyTrashDialogVisible,
+      isEmptyFilesList,
     };
   }
 )(
