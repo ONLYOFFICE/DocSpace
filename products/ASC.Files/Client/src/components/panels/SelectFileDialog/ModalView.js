@@ -176,6 +176,7 @@ class SelectFileDialogModalView extends React.Component {
       selectedFile,
       onClickSave,
       headerName,
+      buttonName,
     } = this.props;
 
     const { isLoading, isAvailable } = this.state;
@@ -250,7 +251,7 @@ class SelectFileDialogModalView extends React.Component {
                   className="select-file-modal-dialog-buttons-save"
                   primary
                   size="medium"
-                  label={t("Common:SaveButton")}
+                  label={buttonName ? buttonName : t("Common:SaveButton")}
                   onClick={onClickSave}
                   isDisabled={selectedFile.length === 0}
                 />

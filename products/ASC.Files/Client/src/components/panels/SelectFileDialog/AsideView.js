@@ -44,6 +44,7 @@ const SelectFileDialogAsideView = ({
   passedId,
   headerName,
   isAvailableFolderList,
+  buttonName,
 }) => {
   const [isLoadingData, setIsLoadingData] = useState(false);
   const onSetLoadingData = (loading) => {
@@ -71,9 +72,9 @@ const SelectFileDialogAsideView = ({
           <StyledSelectFilePanel isHeaderChildren={isHeaderChildren}>
             <div className="select-file-dialog_aside-body_wrapper">
               <div className="select-file-dialog_aside-children">{header}</div>
-              <Text fontWeight="600" fontSize="14px">
+              {/* <Text fontWeight="600" fontSize="14px">
                 {t("Translations:SelectFolder")}
-              </Text>
+              </Text> */}
               <div className="select-file-dialog_aside_body">
                 <SelectFolderInput
                   onClickInput={onClickInput}
@@ -131,7 +132,7 @@ const SelectFileDialogAsideView = ({
                 className="select-file-dialog-buttons-save"
                 primary
                 size="big"
-                label={t("Common:SaveButton")}
+                label={buttonName ? buttonName : t("Common:SaveButton")}
                 onClick={onClickSave}
                 isDisabled={selectedFile.length === 0}
               />

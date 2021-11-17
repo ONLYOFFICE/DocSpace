@@ -238,6 +238,7 @@ class SelectFileDialogBody extends React.Component {
       onSetFileName,
       tReady,
       headerName,
+      buttonName,
     } = this.props;
     const {
       isVisible,
@@ -286,6 +287,7 @@ class SelectFileDialogBody extends React.Component {
         passedId={passedId}
         header={header}
         isAvailableFolderList={isAvailableFolderList}
+        buttonName={buttonName}
       />
     ) : (
       <SelectFileDialogModalView
@@ -308,6 +310,7 @@ class SelectFileDialogBody extends React.Component {
         folderId={folderId}
         passedId={passedId}
         header={header}
+        buttonName={buttonName}
       />
     );
   }

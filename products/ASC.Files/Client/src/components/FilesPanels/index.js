@@ -44,7 +44,7 @@ const Panels = (props) => {
     selectFileDialogVisible,
     setSelectFileDialogVisible,
   } = props;
-  const { t } = useTranslation("Article");
+  const { t } = useTranslation(["Article", "Home"]);
   const onClose = () => {
     setSelectFileDialogVisible(false);
   };
@@ -88,7 +88,8 @@ const Panels = (props) => {
         onClose={onClose}
         foldersType="exceptPrivacyTrashFolders"
         isDocumentsOnly
-        headerName={t("CreateMasterFormFromFile")}
+        headerName={t("Article:CreateMasterFormFromFile")}
+        buttonName={t("Home:Create")}
       />
     ),
   ];
