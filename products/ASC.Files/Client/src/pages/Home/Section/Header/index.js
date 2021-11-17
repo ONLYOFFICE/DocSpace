@@ -242,6 +242,7 @@ class SectionHeaderContent extends React.Component {
   };
 
   onEmptyTrashAction = () => this.props.setEmptyTrashDialogVisible(true);
+  onRestoreAllAction = () => console.log("Restore all");
 
   getContextOptionsFolder = () => {
     const { t } = this.props;
@@ -288,6 +289,26 @@ class SectionHeaderContent extends React.Component {
         label: t("Common:Delete"),
         onClick: this.onDeleteAction,
         disabled: true,
+      },
+    ];
+  };
+
+  getContextOptionsTrash = () => {
+    const { t } = this.props;
+    return [
+      {
+        key: "clear-trash",
+        label: t("EmptyRecycleBin"),
+        icon: "images/clear.active.react.svg",
+        onClick: this.onEmptyTrashAction,
+        disabled: false,
+      },
+      {
+        key: "restore-all",
+        label: t("Translations:Restore"),
+        icon: "images/move.react.svg",
+        onClick: this.onRestoreAllAction,
+        disabled: false,
       },
     ];
   };
@@ -352,6 +373,7 @@ class SectionHeaderContent extends React.Component {
       isTabletView,
       personal,
       viewAs,
+      isRecycleBinFolder,
     } = this.props;
 
     const menuItems = this.getMenuItems();
@@ -449,6 +471,19 @@ class SectionHeaderContent extends React.Component {
                         />
                       )
                     )}
+                    {isRecycleBinFolder && (
+                      <ContextMenuButton
+                        className="option-button"
+                        directionX="left"
+                        iconName="images/vertical-dots.react.svg"
+                        size={17}
+                        color="#A3A9AE"
+                        hoverColor="#657077"
+                        isFill
+                        getData={this.getContextOptionsTrash}
+                        isDisabled={false}
+                      />
+                    )}
                   </>
                 )}
               </div>
@@ -468,6 +503,7 @@ export default inject(
     selectedFolderStore,
     filesActionsStore,
     settingsStore,
+    treeFoldersStore,
   }) => {
     const {
       setSelected,
@@ -490,8 +526,10 @@ export default inject(
       setMoveToPanelVisible,
       setCopyPanelVisible,
       setDeleteDialogVisible,
+      setEmptyTrashDialogVisible,
     } = dialogsStore;
 
+    const { isRecycleBinFolder } = treeFoldersStore;
     const { deleteAction, downloadAction, getHeaderMenu } = filesActionsStore;
 
     return {
@@ -524,6 +562,9 @@ export default inject(
       downloadAction,
       getHeaderMenu,
       getCheckboxItemLabel,
+
+      isRecycleBinFolder,
+      setEmptyTrashDialogVisible,
     };
   }
 )(
