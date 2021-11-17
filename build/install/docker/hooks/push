@@ -4,15 +4,22 @@ BASE_NAME="appserver"
 BUILD_NUMBER="$(date "+%Y%m%d%H")"
 docker-compose -f build.yml push
 
+echo $DOCKER_TAG
+echo "$STATUS"
+echo "$BASE_NAME"
+echo $BUILD_NUMBER
+docker image ls
+docker image ls | grep "$DOCKER_TAG" | grep "$STATUS" | grep "$BASE_NAME" | awk '{print $1}' 
+
 # Get docker images
 arrayImagesName=($(docker image ls | grep "$DOCKER_TAG" | grep "$STATUS" | grep "$BASE_NAME" | awk '{print $1}' ))
 
 # Modify docker image tag
 for i in ${!arrayImagesName[@]}; do
-    echo " Modify $arrayImagesName[$i]):$DOCKER_TAG "
-    docker image tag $arrayImagesName[$i]:$DOCKER_TAG $arrayImagesName[$i]:$DOCKER_TAG-$BUILD_NUMBER
-    docker image ls | grep $DOCKER_TAG_NEW
+    echo " Modify ${arrayImagesName[$i]}:$DOCKER_TAG "
+    docker image tag ${arrayImagesName[$i]}:$DOCKER_TAG ${arrayImagesName[$i]}:$DOCKER_TAG-$BUILD_NUMBER
 done
+docker image ls | grep $DOCKER_TAG-$BUILD_NUMBER
 
 docker-compose -f build.yml push \
     --build-arg DOCKER_TAG=$DOCKER_TAG-$BUILD_NUMBER
