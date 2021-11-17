@@ -139,9 +139,19 @@ class FilesActionStore {
 
   emptyTrash = async (translations) => {
     const {
+      secondaryProgressDataStore,
+      loopFilesOperations,
+      clearActiveOperations,
+    } = this.uploadDataStore;
+    const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
-    } = this.uploadDataStore.secondaryProgressDataStore;
+    } = secondaryProgressDataStore;
+    const { addActiveItems, files, folders } = this.filesStore;
+
+    const fileIds = files.map((f) => f.id);
+    const folderIds = folders.map((f) => f.id);
+    addActiveItems(fileIds, folderIds);
 
     setSecondaryProgressBarData({
       icon: "trash",
@@ -159,10 +169,11 @@ class FilesActionStore {
           icon: "trash",
           label: translations.deleteOperation,
         };
-        await this.uploadDataStore.loopFilesOperations(data, pbData);
+        await loopFilesOperations(data, pbData, fileIds, folderIds);
         this.updateCurrentFolder();
       });
     } catch (err) {
+      clearActiveOperations(fileIds, folderIds);
       setSecondaryProgressBarData({
         visible: true,
         alert: true,
