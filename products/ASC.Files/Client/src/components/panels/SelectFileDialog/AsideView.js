@@ -14,6 +14,7 @@ import Button from "@appserver/components/button";
 import Loaders from "@appserver/common/components/Loaders";
 import Loader from "@appserver/components/loader";
 import EmptyContainer from "../../EmptyContainer/EmptyContainer";
+import ModalDialog from "@appserver/components/modal-dialog";
 const DISPLAY_TYPE = "aside";
 const SelectFileDialogAsideView = ({
   t,
@@ -52,27 +53,22 @@ const SelectFileDialogAsideView = ({
 
   return (
     <StyledAsidePanel visible={isPanelVisible}>
-      <Backdrop
-        onClick={onClose}
+      <ModalDialog
         visible={isPanelVisible}
         zIndex={zIndex}
-        isAside={true}
-      />
-      <Aside visible={isPanelVisible} zIndex={zIndex}>
-        {isTranslationsReady ? (
-          <StyledSelectFilePanel
-            displayType={DISPLAY_TYPE}
-            isHeaderChildren={isHeaderChildren}
-          >
-            <StyledHeaderContent className="select-file-dialog_aside-header">
-              <Heading
-                size="medium"
-                className="select-file-dialog_aside-header_title"
-              >
-                {headerName ? headerName : t("SelectFile")}
-              </Heading>
-            </StyledHeaderContent>
-
+        onClose={onClose}
+        //className="select-file-modal-dialog"
+        //style={{ maxWidth: "890px" }}
+        contentHeight="100%"
+        displayType="aside"
+        //bodyPadding="0"
+        removeScroll
+      >
+        <ModalDialog.Header>
+          {headerName ? headerName : t("SelectFile")}
+        </ModalDialog.Header>
+        <ModalDialog.Body className="select-file_body-modal-dialog">
+          <StyledSelectFilePanel isHeaderChildren={isHeaderChildren}>
             <div className="select-file-dialog_aside-body_wrapper">
               <div className="select-file-dialog_aside-children">{header}</div>
               <Text fontWeight="600" fontSize="14px">
@@ -126,6 +122,10 @@ const SelectFileDialogAsideView = ({
                 )}
               </div>
             </div>
+          </StyledSelectFilePanel>
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <StyledSelectFilePanel isHeaderChildren={isHeaderChildren}>
             <div className="select-file-dialog-aside_buttons">
               <Button
                 className="select-file-dialog-buttons-save"
@@ -142,10 +142,8 @@ const SelectFileDialogAsideView = ({
               />
             </div>
           </StyledSelectFilePanel>
-        ) : (
-          <Loaders.DialogAsideLoader withoutAside isPanel />
-        )}
-      </Aside>
+        </ModalDialog.Footer>
+      </ModalDialog>
     </StyledAsidePanel>
   );
 };

@@ -659,18 +659,12 @@ const StyledSelectFolderPanel = styled.div`
   }
 `;
 const StyledSelectFilePanel = styled.div`
+  height: 100%;
   .select-file-dialog_empty-container {
     .ec-header {
       word-break: break-word;
     }
   }
-
-  ${(props) =>
-    props.displayType === "aside" &&
-    css`
-      height: 100%;
-      overflow: hidden;
-    `}
 
   .select-file-dialog-modal_buttons {
     ${(props) =>
@@ -678,17 +672,15 @@ const StyledSelectFilePanel = styled.div`
   }
   .select-file-dialog_aside-body_wrapper {
     height: ${(props) =>
-      props.isHeaderChildren ? "calc(100% - 260px);" : "calc(100% - 212px);"};
+      props.isHeaderChildren ? "calc(100% - 147px);" : "calc(100% - 100px);"};
   }
-  .select-file-dialog_aside-body_wrapper,
+
   .select-folder-dialog_aside-body_wrapper {
     width: 320px;
-    padding: 0 16px;
     box-sizing: border-box;
-  }
-  .select-folder-dialog_aside-body_wrapper {
     height: 100%;
   }
+
   .select-file-dialog_aside-children {
     ${(props) => props.isHeaderChildren && `padding-bottom: 16px;`}
   }
@@ -697,19 +689,7 @@ const StyledSelectFilePanel = styled.div`
     height: 100%;
     width: 290px;
   }
-  .select-file-dialog_aside-header_title {
-    margin: 0px;
-    line-height: 56px;
-    max-width: 474px;
-    width: 400px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-  }
-  .select-file-dialog_aside-header {
-    margin-bottom: 16px;
-  }
-  .select-file-dialog_aside-header,
+
   .file-name {
     border-bottom: 1px solid #eceef1;
   }
@@ -767,7 +747,6 @@ const StyledSelectFilePanel = styled.div`
   }
   .select-file-dialog-buttons-save {
     margin-right: 8px;
-    margin-left: 16px;
   }
   .select-file-modal-dialog-buttons-save {
     margin-right: 8px;
