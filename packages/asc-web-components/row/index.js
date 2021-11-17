@@ -72,11 +72,11 @@ class Row extends React.Component {
       this.cm.current.show(e);
     };
 
-    const { onRowClick, isDisabled, ...rest } = this.props;
+    const { onRowClick, inProgress, ...rest } = this.props;
 
     return (
       <StyledRow ref={this.row} {...rest} onContextMenu={onContextMenu}>
-        {isDisabled ? (
+        {inProgress ? (
           <Loader className="row-loader" type="oval" size="16px" />
         ) : (
           renderCheckbox && (
@@ -155,7 +155,7 @@ Row.propTypes = {
   /** Accepts css style  */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   sectionWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  isDisabled: PropTypes.bool,
+  inProgress: PropTypes.bool,
 };
 
 Row.defaultProps = {

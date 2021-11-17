@@ -21,7 +21,7 @@ const TableRow = (props) => {
     style,
     selectionProp,
     hasAccess,
-    isDisabled,
+    inProgress,
     ...rest
   } = props;
 
@@ -62,7 +62,7 @@ const TableRow = (props) => {
         style={style}
         className={`${selectionProp?.className} table-container_row-checkbox-wrapper`}
       >
-        {isDisabled ? (
+        {inProgress ? (
           <Loader
             className="table-container_row-loader"
             type="oval"
@@ -128,7 +128,7 @@ TableRow.propTypes = {
   className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   style: PropTypes.object,
   hasAccess: PropTypes.bool,
-  isDisabled: PropTypes.bool,
+  inProgress: PropTypes.bool,
 };
 
 export default TableRow;

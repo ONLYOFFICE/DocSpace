@@ -44,7 +44,7 @@ const checkedStyle = css`
 const StyledTile = styled.div`
   cursor: ${(props) => (!props.isRecycleBin ? "pointer" : "default")};
   ${(props) =>
-    props.isDisabled &&
+    props.inProgress &&
     css`
       pointer-events: none;
       /* cursor: wait; */
@@ -188,7 +188,7 @@ const StyledTile = styled.div`
     ${(props) =>
       !props.dragging &&
       props.isDesktop &&
-      !props.isDisabled &&
+      !props.inProgress &&
       css`
         .checkbox {
           opacity: 1;
@@ -355,7 +355,7 @@ class Tile extends React.PureComponent {
       isRecycleBin,
       item,
       isActive,
-      isDisabled,
+      inProgress,
       isEdit,
     } = this.props;
     const { isFolder, id, fileExst } = item;
@@ -399,14 +399,14 @@ class Tile extends React.PureComponent {
         isRecycleBin={isRecycleBin}
         checked={checked}
         isActive={isActive}
-        isDisabled={isDisabled}
+        inProgress={inProgress}
         isDesktop={isDesktop}
       >
         {isFolder || (!fileExst && id === -1) ? (
           <>
             {renderElement && !(!fileExst && id === -1) && !isEdit && (
               <>
-                {!isDisabled ? (
+                {!inProgress ? (
                   <div className="file-icon_container">
                     <StyledElement
                       className="file-icon"
@@ -462,7 +462,7 @@ class Tile extends React.PureComponent {
             <StyledFileTileBottom>
               {id !== -1 && !isEdit && (
                 <>
-                  {!isDisabled ? (
+                  {!inProgress ? (
                     <div className="file-icon_container">
                       <div className="file-icon" onClick={this.onFileIconClick}>
                         {element}

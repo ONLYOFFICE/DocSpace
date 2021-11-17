@@ -61,7 +61,7 @@ const StyledSimpleFilesRow = styled(Row)`
     (props.checked || props.isActive) &&
     "url(images/cursor.palm.svg), auto"};
   ${(props) =>
-    props.isDisabled &&
+    props.inProgress &&
     css`
       pointer-events: none;
       /* cursor: wait; */
@@ -126,7 +126,7 @@ const SimpleFilesRow = (props) => {
     isEdit,
     showShare,
     isActive,
-    isDisabled,
+    inProgress,
   } = props;
 
   const sharedButton =
@@ -170,7 +170,7 @@ const SimpleFilesRow = (props) => {
           contextButtonSpacerWidth={displayShareButton}
           dragging={dragging && isDragging}
           isActive={isActive}
-          isDisabled={isDisabled}
+          inProgress={inProgress}
           isThirdPartyFolder={item.isThirdPartyFolder}
         >
           <FilesRowContent

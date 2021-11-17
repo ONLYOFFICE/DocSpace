@@ -37,7 +37,7 @@ const FilesTile = (props) => {
     showShare,
     isActive,
     isEdit,
-    isDisabled,
+    inProgress,
   } = props;
 
   const temporaryExtension =
@@ -94,7 +94,7 @@ const FilesTile = (props) => {
           {...contextOptionsProps}
           contextButtonSpacerWidth={displayShareButton}
           isActive={isActive}
-          isDisabled={isDisabled}
+          inProgress={inProgress}
           isEdit={isEdit}
         >
           <FilesTileContent

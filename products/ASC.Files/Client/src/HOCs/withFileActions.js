@@ -57,7 +57,7 @@ export default function withFileActions(WrappedFileItem) {
         item,
         setBufferSelection,
         isActive,
-        isDisabled,
+        inProgress,
       } = this.props;
 
       const { isThirdPartyFolder } = item;
@@ -73,7 +73,7 @@ export default function withFileActions(WrappedFileItem) {
         notSelectable ||
         isMobile ||
         isThirdPartyFolder ||
-        isDisabled
+        inProgress
       ) {
         return e;
       }
@@ -356,11 +356,7 @@ export default function withFileActions(WrappedFileItem) {
       const canConvert = docserviceStore.canConvert(item.fileExst);
       const canViewedDocs = docserviceStore.canViewedDocs(item.fileExst);
 
-      // const isDisabled =
-      //   activeFiles.findIndex((x) => x === item.id) === -1 ||
-      //   activeFolders.findIndex((x) => x === item.id && item.isFolder) === -1;
-
-      const isDisabled =
+      const inProgress =
         activeFiles.findIndex((x) => x === item.id) !== -1 ||
         activeFolders.findIndex((x) => x === item.id && item.isFolder) !== -1;
 
@@ -413,7 +409,7 @@ export default function withFileActions(WrappedFileItem) {
         isItemsSelected: selection.length > 0,
         setNewBadgeCount,
         isActive,
-        isDisabled,
+        inProgress,
         setBufferSelection,
         bufferSelection,
       };
