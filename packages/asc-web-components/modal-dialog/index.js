@@ -182,6 +182,7 @@ class ModalDialog extends React.Component {
             zIndex={zIndex}
             contentPaddingBottom={contentPaddingBottom}
             className="modal-dialog-aside not-selectable"
+            withoutBodyScroll={removeScroll}
           >
             <Content
               contentHeight={contentHeight}

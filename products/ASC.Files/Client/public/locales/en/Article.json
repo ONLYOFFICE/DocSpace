@@ -6,5 +6,6 @@
   "UploadFiles": "Upload files",
   "UploadFolder": "Upload folder",
   "NewForm": "New form",
-  "NewFormFile": "New form from file"
+  "NewFormFile": "New form from file",
+  "CreateMasterFormFromFile": "Create Master Form from file"
 }

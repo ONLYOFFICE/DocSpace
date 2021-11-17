@@ -24,8 +24,9 @@ class ArticleMainButtonContent extends React.Component {
     });
   };
 
-  onSelectFile = () => {
-    console.log("Select from form");
+  onShowSelectFileDialog = () => {
+    const { setSelectFileDialogVisible } = this.props;
+    setSelectFileDialogVisible(true);
   };
 
   onUploadFileClick = () => {
@@ -116,7 +117,7 @@ class ArticleMainButtonContent extends React.Component {
           className="main-button_drop-down"
           icon="images/form.file.react.svg"
           label={t("NewFormFile")}
-          onClick={this.onSelectFile}
+          onClick={this.onShowSelectFileDialog}
         />
         <DropDownItem
           className="main-button_drop-down"
@@ -170,22 +171,25 @@ ArticleMainButtonContent.propTypes = {
   history: PropTypes.object.isRequired,
 };
 
-export default inject(({ filesStore, uploadDataStore, treeFoldersStore }) => {
-  const { firstLoad, fileActionStore, filter, canCreate } = filesStore;
-  const { isPrivacyFolder } = treeFoldersStore;
-  const { startUpload } = uploadDataStore;
+export default inject(
+  ({ filesStore, uploadDataStore, treeFoldersStore, dialogsStore }) => {
+    const { firstLoad, fileActionStore, filter, canCreate } = filesStore;
+    const { isPrivacyFolder } = treeFoldersStore;
+    const { startUpload } = uploadDataStore;
+    const { setSelectFileDialogVisible } = dialogsStore;
+    return {
+      homepage: config.homepage,
+      firstLoad,
+      isPrivacy: isPrivacyFolder,
+      filter,
+      canCreate,
 
-  return {
-    homepage: config.homepage,
-    firstLoad,
-    isPrivacy: isPrivacyFolder,
-    filter,
-    canCreate,
-
-    setAction: fileActionStore.setAction,
-    startUpload,
-  };
-})(
+      setAction: fileActionStore.setAction,
+      startUpload,
+      setSelectFileDialogVisible,
+    };
+  }
+)(
   withRouter(
     withTranslation(["Article", "Common"])(
       withLoader(observer(ArticleMainButtonContent))(<Loaders.MainButton />)

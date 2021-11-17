@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import {
   SharingPanel,
@@ -7,6 +8,7 @@ import {
   VersionHistoryPanel,
   ChangeOwnerPanel,
   NewFilesPanel,
+  SelectFileDialog,
 } from "../panels";
 import {
   ThirdPartyMoveDialog,
@@ -38,8 +40,14 @@ const Panels = (props) => {
     newFilesPanelVisible,
     conflictResolveDialogVisible,
     convertDialogVisible,
+    createMasterForm,
+    selectFileDialogVisible,
+    setSelectFileDialogVisible,
   } = props;
-
+  const { t } = useTranslation(["Article", "Home"]);
+  const onClose = () => {
+    setSelectFileDialogVisible(false);
+  };
   return [
     uploadPanelVisible && <UploadPanel key="upload-panel" />,
     sharingPanelVisible && (
@@ -71,6 +79,19 @@ const Panels = (props) => {
       <ConflictResolveDialog key="conflict-resolve-dialog" />
     ),
     convertDialogVisible && <ConvertDialog key="convert-dialog" />,
+    selectFileDialogVisible && (
+      <SelectFileDialog
+        key="select-file-dialog"
+        resetTreeFolders
+        onSelectFile={createMasterForm}
+        isPanelVisible={selectFileDialogVisible}
+        onClose={onClose}
+        foldersType="exceptPrivacyTrashFolders"
+        isDocumentsOnly
+        headerName={t("Article:CreateMasterFormFromFile")}
+        buttonName={t("Home:Create")}
+      />
+    ),
   ];
 };
 
@@ -93,6 +114,10 @@ export default inject(
       convertDialogVisible,
 
       connectItem, //TODO:
+
+      createMasterForm,
+      selectFileDialogVisible,
+      setSelectFileDialogVisible,
     } = dialogsStore;
 
     const { uploadPanelVisible } = uploadDataStore;
@@ -115,6 +140,9 @@ export default inject(
       newFilesPanelVisible,
       conflictResolveDialogVisible,
       convertDialogVisible,
+      selectFileDialogVisible,
+      createMasterForm,
+      setSelectFileDialogVisible,
     };
   }
 )(observer(Panels));

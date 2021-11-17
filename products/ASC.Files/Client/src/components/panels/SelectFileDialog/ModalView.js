@@ -20,6 +20,7 @@ const exceptSortedByTagsFolders = [
 ];
 
 const exceptTrashFolder = [FolderType.TRASH];
+const exceptPrivacyTrashFolders = [FolderType.Privacy, FolderType.TRASH];
 class SelectFileDialogModalView extends React.Component {
   constructor(props) {
     super(props);
@@ -72,6 +73,19 @@ class SelectFileDialogModalView extends React.Component {
           console.error(err);
         }
 
+        this.loadersCompletes();
+        break;
+      case "exceptPrivacyTrashFolders":
+        try {
+          const foldersTree = await getFoldersTree();
+          this.folderList = SelectFolderDialog.convertFolders(
+            foldersTree,
+            exceptPrivacyTrashFolders
+          );
+          this.onSetSelectedFolder();
+        } catch (err) {
+          console.error(err);
+        }
         this.loadersCompletes();
         break;
       case "common":
@@ -162,6 +176,7 @@ class SelectFileDialogModalView extends React.Component {
       selectedFile,
       onClickSave,
       headerName,
+      buttonName,
     } = this.props;
 
     const { isLoading, isAvailable } = this.state;
@@ -175,7 +190,7 @@ class SelectFileDialogModalView extends React.Component {
           zIndex={zIndex}
           onClose={onClose}
           className="select-file-modal-dialog"
-          style={{ maxWidth: "890px" }}
+          style={{ maxWidth: "725px" }}
           displayType="modal"
           bodyPadding="0"
         >
@@ -236,7 +251,7 @@ class SelectFileDialogModalView extends React.Component {
                   className="select-file-modal-dialog-buttons-save"
                   primary
                   size="medium"
-                  label={t("Common:SaveButton")}
+                  label={buttonName ? buttonName : t("Common:SaveButton")}
                   onClick={onClickSave}
                   isDisabled={selectedFile.length === 0}
                 />
