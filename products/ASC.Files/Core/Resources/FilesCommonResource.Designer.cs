@@ -19,7 +19,7 @@ namespace ASC.Files.Core.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class FilesCommonResource {
@@ -210,6 +210,15 @@ namespace ASC.Files.Core.Resources {
         public static string CommentCreateByDocuSign {
             get {
                 return ResourceManager.GetString("CommentCreateByDocuSign", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Created to fill in the form.
+        /// </summary>
+        public static string CommentCreateFillFormDraft {
+            get {
+                return ResourceManager.GetString("CommentCreateFillFormDraft", resourceCulture);
             }
         }
         
@@ -804,6 +813,33 @@ namespace ASC.Files.Core.Resources {
         public static string MessageFileCreated {
             get {
                 return ResourceManager.GetString("MessageFileCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The fillable OFORM document is ready. It is saved in the {0}.
+        /// </summary>
+        public static string MessageFileCreatedForm {
+            get {
+                return ResourceManager.GetString("MessageFileCreatedForm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The oform copy is created in the {0} folder. Please fill out the form and download the result as a PDF or DOCX file..
+        /// </summary>
+        public static string MessageFillFormDraftCreated {
+            get {
+                return ResourceManager.GetString("MessageFillFormDraftCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file is no longer a draft to fill in the form..
+        /// </summary>
+        public static string MessageFillFormDraftDiscard {
+            get {
+                return ResourceManager.GetString("MessageFillFormDraftDiscard", resourceCulture);
             }
         }
         

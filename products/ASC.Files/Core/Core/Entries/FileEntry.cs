@@ -113,8 +113,15 @@ namespace ASC.Files.Core
         }
     }
 
+
+    public interface IFileEntry<in T>
+    {
+        string UniqID { get; }
+    }
+
+
     [Serializable]
-    public abstract class FileEntry<T> : FileEntry, ICloneable
+    public abstract class FileEntry<T> : FileEntry, ICloneable, IFileEntry<T>
     {
         public T ID { get; set; }
 

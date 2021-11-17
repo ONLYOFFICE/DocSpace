@@ -178,8 +178,13 @@ namespace ASC.Web.Api.Controllers
         [Read("logout")]// temp fix
         public void Logout()
         {
+            if (SecurityContext.IsAuthenticated)
+                CookiesManager.ResetUserCookie(SecurityContext.CurrentAccount.ID);
+
             CookiesManager.ClearCookies(CookiesType.AuthKey);
             CookiesManager.ClearCookies(CookiesType.SocketIO);
+
+            SecurityContext.Logout();
         }
 
         [Create("confirm", false)]

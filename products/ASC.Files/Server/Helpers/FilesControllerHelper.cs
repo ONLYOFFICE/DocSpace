@@ -424,6 +424,11 @@ namespace ASC.Files.Helpers
             });
         }
 
+        public string CheckFillFormDraft(T fileId, int version, string doc, bool editPossible, bool view)
+        {
+            return FileStorageService.CheckFillFormDraft(fileId, version, doc, editPossible, view);
+        }
+
         public IEnumerable<FileOperationWraper> DeleteFolder(T folderId, bool deleteAfter, bool immediately)
         {
             return FileStorageService.DeleteFolder("delete", folderId, false, deleteAfter, immediately)
