@@ -149,7 +149,7 @@ class SelectFileDialogBody extends React.Component {
 
     if (id) {
       setFolderId(id);
-      setExpandedPanelKeys([`${id}`]);
+      // setExpandedPanelKeys([`${id}`]);
       this.setState({
         selectedFolder: id,
         hasNextPage: true,

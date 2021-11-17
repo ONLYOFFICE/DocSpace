@@ -177,7 +177,12 @@ class DialogsStore {
   };
 
   createMasterForm = async (fileInfo) => {
-    console.log("fileInfo", fileInfo);
+    const { createFile, fetchFiles, filter } = this.filesStore;
+    const { id } = this.selectedFolderStore;
+
+    createFile(id, `${fileInfo.title}.docxf`, fileInfo.id)
+      .then(() => fetchFiles(id, filter, true, true))
+      .catch((err) => console.error(err));
   };
 }
 
