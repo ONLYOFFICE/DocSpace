@@ -20,6 +20,7 @@ class DialogsStore {
   newFilesPanelVisible = false;
   conflictResolveDialogVisible = false;
   convertDialogVisible = false;
+  selectFileDialogVisible = false;
 
   removeItem = null;
   connectItem = null;
@@ -169,6 +170,14 @@ class DialogsStore {
 
   setConvertItem = (item) => {
     this.convertItem = item;
+  };
+
+  setSelectFileDialogVisible = (visible) => {
+    this.selectFileDialogVisible = visible;
+  };
+
+  createMasterForm = async (fileInfo) => {
+    console.log("fileInfo", fileInfo);
   };
 }
 
