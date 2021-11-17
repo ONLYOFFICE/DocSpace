@@ -176,9 +176,15 @@ class FilesActionStore {
 
   downloadFiles = async (fileConvertIds, folderIds, label) => {
     const {
+      clearActiveOperations,
+      secondaryProgressDataStore,
+    } = this.uploadDataStore;
+    const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
-    } = this.uploadDataStore.secondaryProgressDataStore;
+    } = secondaryProgressDataStore;
+
+    const { addActiveItems } = this.filesStore;
 
     setSecondaryProgressBarData({
       icon: "file",
@@ -187,6 +193,9 @@ class FilesActionStore {
       label,
       alert: false,
     });
+
+    const fileIds = fileConvertIds.map((f) => f.key || f);
+    addActiveItems(fileIds, folderIds);
 
     try {
       await downloadFiles(fileConvertIds, folderIds).then(async (res) => {
@@ -199,7 +208,12 @@ class FilesActionStore {
         const item =
           data?.finished && data?.url
             ? data
-            : await this.uploadDataStore.loopFilesOperations(data, pbData);
+            : await this.uploadDataStore.loopFilesOperations(
+                data,
+                pbData,
+                fileIds,
+                folderIds
+              );
 
         if (item.url) {
           window.location.href = item.url;
@@ -213,6 +227,7 @@ class FilesActionStore {
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
     } catch (err) {
+      clearActiveOperations(fileIds, folderIds);
       setSecondaryProgressBarData({
         visible: true,
         alert: true,

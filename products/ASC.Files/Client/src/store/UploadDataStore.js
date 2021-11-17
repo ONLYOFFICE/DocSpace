@@ -889,7 +889,7 @@ class UploadDataStore {
       const item = await this.getOperationProgress(data.id);
       operationItem = item;
       progress = item ? item.progress : 100;
-      finished = item.finished;
+      finished = item.finished || true;
 
       setSecondaryProgressBarData({
         icon: pbData.icon,
