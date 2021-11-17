@@ -61,6 +61,13 @@ const StyledTableRow = styled(TableRow)`
       !props.isThirdPartyFolder &&
       (props.checked || props.isActive) &&
       "url(images/cursor.palm.svg), auto"};
+
+    ${(props) =>
+      props.inProgress &&
+      css`
+        pointer-events: none;
+        /* cursor: wait; */
+      `}
   }
 
   .table-container_element {
@@ -177,6 +184,7 @@ const FilesTableRow = (props) => {
     isActive,
     onHideContextMenu,
     onFilesClick,
+    inProgress,
   } = props;
 
   const sharedButton =
@@ -246,6 +254,7 @@ const FilesTableRow = (props) => {
         {...contextOptionsProps}
         checked={checkedProps}
         isActive={isActive}
+        inProgress={inProgress}
         onHideContextMenu={onHideContextMenu}
         isThirdPartyFolder={item.isThirdPartyFolder}
         onDoubleClick={onFilesClick}

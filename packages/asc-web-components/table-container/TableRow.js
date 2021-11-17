@@ -5,6 +5,7 @@ import TableCell from "./TableCell";
 import ContextMenu from "../context-menu";
 import ContextMenuButton from "../context-menu-button";
 import Checkbox from "../checkbox";
+import Loader from "../loader";
 
 const TableRow = (props) => {
   const {
@@ -20,6 +21,7 @@ const TableRow = (props) => {
     style,
     selectionProp,
     hasAccess,
+    inProgress,
     ...rest
   } = props;
 
@@ -60,12 +62,22 @@ const TableRow = (props) => {
         style={style}
         className={`${selectionProp?.className} table-container_row-checkbox-wrapper`}
       >
-        <div className="table-container_element">{element}</div>
-        <Checkbox
-          className="table-container_row-checkbox"
-          onChange={onChange}
-          isChecked={checked}
-        />
+        {inProgress ? (
+          <Loader
+            className="table-container_row-loader"
+            type="oval"
+            size="16px"
+          />
+        ) : (
+          <>
+            <div className="table-container_element">{element}</div>
+            <Checkbox
+              className="table-container_row-checkbox"
+              onChange={onChange}
+              isChecked={checked}
+            />
+          </>
+        )}
       </TableCell>
       {children}
       <div>
@@ -116,6 +128,7 @@ TableRow.propTypes = {
   className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   style: PropTypes.object,
   hasAccess: PropTypes.bool,
+  inProgress: PropTypes.bool,
 };
 
 export default TableRow;
