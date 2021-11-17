@@ -218,6 +218,12 @@ class FilesStore {
   };
 
   getFilesChecked = (file, selected) => {
+    if (!file.parentId) {
+      if (this.activeFiles.includes(file.id)) return false;
+    } else {
+      if (this.activeFolders.includes(file.id)) return false;
+    }
+
     const type = file.fileType;
     switch (selected) {
       case "all":
