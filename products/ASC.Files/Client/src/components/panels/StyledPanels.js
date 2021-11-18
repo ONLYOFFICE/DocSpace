@@ -665,11 +665,13 @@ const StyledSelectFilePanel = styled.div`
   height: 100%;
   .files-list-body {
     height: 100%;
+    ${(props) =>
+      props.displayType === "aside" &&
+      css`
     margin-left: -16px;
     margin-right: -16px;
     .nav-thumb-vertical {
-      margin-left: -7px !important;
-    }
+      margin-left: -7px !important;`}
   }
   .select-file-dialog_aside_body-files_list {
     height: 100%;
