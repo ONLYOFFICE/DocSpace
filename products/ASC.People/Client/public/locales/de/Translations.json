@@ -25,6 +25,5 @@
   "SocialProfiles": "Soziale Profile",
   "SuccessChangeUserStatus": "Der Benutzerstatus war erfolgreich geändert",
   "SuccessSentInvitation": "Die Einladung wurde erfolgreich gesendet",
-  "Birthdate": "Geburtsdatum",
-  "maxSizeLabel": "(JPG oder PNG, maximal 1 MB)"
+  "Birthdate": "Geburtsdatum"
 }

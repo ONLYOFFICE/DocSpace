@@ -27,5 +27,5 @@
   "SuccessSentInvitation": "Приглашение было успешно отправлено",
   "SuccessDeletePersonalData": "Персональные данные успешно удалены",
   "Birthdate": "Дата рождения",
-  "maxSizeLabel": "(JPG или PNG, максимум 1 Мб)"
+  "MaxSizeLabel": "(JPG или PNG, максимум 1 Мб)"
 }

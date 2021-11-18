@@ -267,7 +267,7 @@ class CreateAvatarEditorPage extends React.PureComponent {
           }
           cancelButtonLabel={t("Common:CancelButton")}
           saveButtonLoading={this.state.isLoading}
-          maxSizeLabel={t("Translations:maxSizeLabel")}
+          maxSizeLabel={t("Translations:MaxSizeLabel")}
         />
       </AvatarEditorBody>
     ) : (
