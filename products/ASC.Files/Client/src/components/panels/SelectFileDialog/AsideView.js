@@ -92,6 +92,8 @@ const SelectFileDialogAsideView = ({
                   fileName={fileName}
                   displayType={displayType}
                   dialogWithFiles
+                  showButtons
+                  selectionButtonPrimary
                 />
 
                 {selectedFolder && !isLoadingData ? (

@@ -26,6 +26,7 @@ const SelectFolderDialogModalView = ({
   onSave,
   canCreate,
   isLoading,
+  primaryButtonName,
 }) => {
   return (
     <StyledAsidePanel visible={isPanelVisible}>
@@ -64,13 +65,13 @@ const SelectFolderDialogModalView = ({
                   className="select-folder-dialog-buttons-save"
                   primary
                   size="medium"
-                  label={t("Common:SaveButton")}
+                  label={primaryButtonName}
                   onClick={onSave}
                   isDisabled={isLoadingData || !isAvailable || !canCreate}
                 />
                 <Button
                   size="medium"
-                  label={t("Common:CloseButton")}
+                  label={t("Common:CancelButton")}
                   onClick={onClose}
                   isDisabled={isLoadingData || isLoading}
                 />
