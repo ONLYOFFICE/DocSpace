@@ -657,9 +657,25 @@ const StyledSelectFolderPanel = styled.div`
     max-width: ${(props) =>
       props.displayType === "aside" ? "243px" : "466px"};
   }
+  .files-tree-menu {
+    margin-top: 0 !important;
+  }
 `;
 const StyledSelectFilePanel = styled.div`
   height: 100%;
+  .files-list-body {
+    height: 100%;
+    ${(props) =>
+      props.displayType === "aside" &&
+      css`
+    margin-left: -16px;
+    margin-right: -16px;
+    .nav-thumb-vertical {
+      margin-left: -7px !important;`}
+  }
+  .select-file-dialog_aside_body-files_list {
+    height: 100%;
+  }
   .select-file-dialog_empty-container {
     .ec-header {
       word-break: break-word;
@@ -688,7 +704,7 @@ const StyledSelectFilePanel = styled.div`
   .select-file-dialog_aside_body_files-list {
     //margin-top: 16px;
     height: 100%;
-    width: 290px;
+    width: 293px;
   }
   .select-file-dialog_aside_body_files-list {
     margin-left: -17px;
@@ -840,7 +856,8 @@ const StyledFilesList = styled.div`
             grid-template-areas: "checked-button icon-name full-name owner-name";
           `}
     grid-template-columns: 22px 32px 1fr;
-    padding-left: 12px;
+    padding-left: ${(props) =>
+      props.displayType === "aside" ? "16px" : "12px"};
   }
 `;
 

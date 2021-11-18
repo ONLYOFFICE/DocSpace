@@ -28,6 +28,7 @@ const SelectFolderDialogAsideView = ({
   header,
   canCreate,
   isLoading,
+  primaryButtonName,
 }) => {
   return (
     <StyledAsidePanel visible={isPanelVisible}>
@@ -52,7 +53,7 @@ const SelectFolderDialogAsideView = ({
                   color="#A3A9AE"
                 />
               )}
-              {headerName ? headerName : t("Translations:SelectFolder")}
+              {headerName ? headerName : t("Translations:FolderSelection")}
             </div>
           </StyledSelectFolderPanel>
         </ModalDialog.Header>
@@ -87,13 +88,13 @@ const SelectFolderDialogAsideView = ({
                   className="select-folder-dialog-buttons-save"
                   primary
                   size="big"
-                  label={t("Common:SaveButton")}
+                  label={primaryButtonName}
                   onClick={onSave}
                   isDisabled={isLoadingData || !isAvailable || !canCreate}
                 />
                 <Button
                   size="big"
-                  label={t("Common:CloseButton")}
+                  label={t("Common:CancelButton")}
                   onClick={onClose}
                   isDisabled={isLoadingData || isLoading}
                 />

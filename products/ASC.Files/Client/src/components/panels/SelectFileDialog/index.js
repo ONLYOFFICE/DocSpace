@@ -24,7 +24,18 @@ const { auth: authStore } = store;
 class SelectFileDialogBody extends React.Component {
   constructor(props) {
     super(props);
-    const { folderId, storeFolderId, fileInfo, filter } = this.props;
+    const {
+      folderId,
+      storeFolderId,
+      fileInfo,
+      filter,
+      creationButtonPrimary,
+      t,
+    } = this.props;
+
+    this.buttonName = creationButtonPrimary
+      ? t("Create")
+      : t("Common:SaveButton");
 
     this.state = {
       isVisible: false,
@@ -149,7 +160,7 @@ class SelectFileDialogBody extends React.Component {
 
     if (id) {
       setFolderId(id);
-      setExpandedPanelKeys([`${id}`]);
+      // setExpandedPanelKeys([`${id}`]);
       this.setState({
         selectedFolder: id,
         hasNextPage: true,
@@ -238,7 +249,6 @@ class SelectFileDialogBody extends React.Component {
       onSetFileName,
       tReady,
       headerName,
-      buttonName,
     } = this.props;
     const {
       isVisible,
@@ -287,7 +297,7 @@ class SelectFileDialogBody extends React.Component {
         passedId={passedId}
         header={header}
         isAvailableFolderList={isAvailableFolderList}
-        buttonName={buttonName}
+        primaryButtonName={this.buttonName}
       />
     ) : (
       <SelectFileDialogModalView
@@ -310,7 +320,7 @@ class SelectFileDialogBody extends React.Component {
         folderId={folderId}
         passedId={passedId}
         header={header}
-        buttonName={buttonName}
+        primaryButtonName={this.buttonName}
       />
     );
   }
@@ -328,6 +338,7 @@ SelectFileDialogBody.propTypes = {
   ]),
   folderId: PropTypes.string,
   withoutProvider: PropTypes.bool,
+  creationButtonPrimary: PropTypes.bool,
   headerName: PropTypes.string,
   zIndex: PropTypes.number,
 };
@@ -337,6 +348,7 @@ SelectFileDialogBody.defaultProps = {
   header: "",
   withoutProvider: false,
   zIndex: 310,
+  creationButtonPrimary: false,
 };
 
 const SelectFileDialogWrapper = inject(
