@@ -843,11 +843,7 @@ class FilesActionStore {
         label: t("Translations:Restore"),
         onClick: () => setMoveToPanelVisible(true),
       })
-      .set("delete", deleteOption)
-      .set("emptyRecycleBin", {
-        label: t("EmptyRecycleBin"),
-        onClick: () => setEmptyTrashDialogVisible(true),
-      });
+      .set("delete", deleteOption);
     return this.convertToArray(itemsCollection);
   };
   getHeaderMenu = (t) => {
