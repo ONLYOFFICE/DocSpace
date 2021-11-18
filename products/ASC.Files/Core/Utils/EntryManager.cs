@@ -926,15 +926,13 @@ namespace ASC.Web.Files.Utils
                 if (folderIfNew == null) throw new Exception(FilesCommonResource.ErrorMassage_FolderNotFound);
                 if (!fileSecurity.CanCreate(folderIfNew)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
 
-                linkedFile = new File<int>
-                {
-                    Title = sourceFile.Title,
-                    FolderID = folderIfNew.ID,
-                    FileStatus = sourceFile.FileStatus,
-                    ConvertedType = sourceFile.ConvertedType,
-                    Comment = FilesCommonResource.CommentCreateFillFormDraft,
-                    Encrypted = sourceFile.Encrypted,
-                };
+                linkedFile = ServiceProvider.GetService<File<int>>();
+                linkedFile.Title = sourceFile.Title;
+                linkedFile.FolderID = folderIfNew.ID;
+                linkedFile.FileStatus = sourceFile.FileStatus;
+                linkedFile.ConvertedType = sourceFile.ConvertedType;
+                linkedFile.Comment = FilesCommonResource.CommentCreateFillFormDraft;
+                linkedFile.Encrypted = sourceFile.Encrypted;
 
                 using (var stream = sourceFileDao.GetFileStream(sourceFile))
                 {

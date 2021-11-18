@@ -14,8 +14,11 @@
  *
 */
 
+using ASC.Common;
+
 namespace ASC.Files.Core
 {
+    [Scope]
     public interface ILinkDao
     {
         void AddLink(string sourceId, string linkedId);
