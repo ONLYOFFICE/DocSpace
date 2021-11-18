@@ -139,7 +139,7 @@ class DocserviceStore {
     { ".doc": [".docx", ".odt", ".pdf", ".rtf", ".txt"] },
     { ".docm": [".docx", ".odt", ".pdf", ".rtf", ".txt"] },
     { ".doct": [".docx"] },
-    { ".docx": [".odt", ".pdf", ".rtf", ".txt"] },
+    { ".docx": [".docxf", ".odt", ".pdf", ".rtf", ".txt"] },
     { ".dot": [".docx", ".odt", ".pdf", ".rtf", ".txt"] },
     { ".dotm": [".docx", ".odt", ".pdf", ".rtf", ".txt"] },
     { ".dotx": [".docx", ".odt", ".pdf", ".rtf", ".txt"] },
