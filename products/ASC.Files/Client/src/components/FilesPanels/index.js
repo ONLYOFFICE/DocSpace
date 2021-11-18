@@ -44,10 +44,13 @@ const Panels = (props) => {
     selectFileDialogVisible,
     setSelectFileDialogVisible,
   } = props;
-  const { t } = useTranslation(["Article", "Home"]);
+
+  const { t } = useTranslation("Article");
+
   const onClose = () => {
     setSelectFileDialogVisible(false);
   };
+
   return [
     uploadPanelVisible && <UploadPanel key="upload-panel" />,
     sharingPanelVisible && (
@@ -88,8 +91,9 @@ const Panels = (props) => {
         onClose={onClose}
         foldersType="exceptPrivacyTrashFolders"
         isDocumentsOnly
+        searchParam={"docx"}
         headerName={t("Article:CreateMasterFormFromFile")}
-        buttonName={t("Home:Create")}
+        creationButtonPrimary
       />
     ),
   ];

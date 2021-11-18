@@ -44,7 +44,7 @@ const SelectFileDialogAsideView = ({
   passedId,
   headerName,
   isAvailableFolderList,
-  buttonName,
+  primaryButtonName,
 }) => {
   const [isLoadingData, setIsLoadingData] = useState(false);
   const onSetLoadingData = (loading) => {
@@ -134,13 +134,13 @@ const SelectFileDialogAsideView = ({
                 className="select-file-dialog-buttons-save"
                 primary
                 size="big"
-                label={buttonName ? buttonName : t("Common:SaveButton")}
+                label={primaryButtonName}
                 onClick={onClickSave}
                 isDisabled={selectedFile.length === 0}
               />
               <Button
                 size="big"
-                label={t("Common:CloseButton")}
+                label={t("Common:CancelButton")}
                 onClick={onClose}
               />
             </div>
