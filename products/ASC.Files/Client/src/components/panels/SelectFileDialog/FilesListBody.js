@@ -10,7 +10,7 @@ import { inject, observer } from "mobx-react";
 import FilesListRow from "./FilesListRow";
 import EmptyContainer from "../../EmptyContainer/EmptyContainer";
 import i18n from "./i18n";
-
+import Loaders from "@appserver/common/components/Loaders";
 import { I18nextProvider } from "react-i18next";
 
 const FilesListBody = ({
@@ -52,18 +52,33 @@ const FilesListBody = ({
   }, [isNextPageLoading, filesList, displayType]);
 
   const renderLoader = useCallback(
-    (style) => {
+    (style, index) => {
       return (
         <div style={style}>
-          <div key="loader" className="panel-loader-wrapper">
-            <Loader type="oval" size="16px" className="panel-loader" />
-            <Text as="span">{loadingText}</Text>
+          <div
+            key="loader"
+            className="panel-loader-wrapper loader-wrapper_margin"
+          >
+            {index > 10 ? (
+              <>
+                <Loader type="oval" size="16px" className="panel-loader" />
+                <Text as="span">{loadingText}</Text>
+              </>
+            ) : (
+              <Loaders.Rows
+                style={{
+                  marginBottom: displayType === "aside" ? "24px" : "19px",
+                }}
+                count={displayType === "aside" ? 12 : 7}
+              />
+            )}
           </div>
         </div>
       );
     },
     [loadingText]
   );
+
   const isFileChecked = useCallback(
     (file) => {
       const checked = selectedFile ? file.id === selectedFile.id : false;
@@ -76,7 +91,7 @@ const FilesListBody = ({
       const isLoaded = isItemLoaded(index);
 
       if (!isLoaded) {
-        return renderLoader(style);
+        return renderLoader(style, index);
       }
 
       const file = filesList[index];

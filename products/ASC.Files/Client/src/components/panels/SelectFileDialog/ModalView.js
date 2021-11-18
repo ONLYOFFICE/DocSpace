@@ -12,7 +12,7 @@ import Text from "@appserver/components/text";
 import { isArrayEqual } from "@appserver/components/utils/array";
 import { FolderType } from "@appserver/common/constants";
 import { getFoldersTree } from "@appserver/common/api/files";
-
+import Loaders from "@appserver/common/components/Loaders";
 const exceptSortedByTagsFolders = [
   FolderType.Recent,
   FolderType.TRASH,
@@ -193,55 +193,48 @@ class SelectFileDialogModalView extends React.Component {
           style={{ maxWidth: "725px" }}
           displayType="modal"
           bodyPadding="0"
+          isLoading={isLoading}
+          modalDialogHeight="277px"
         >
           <ModalDialog.Header>
             {headerName ? headerName : t("SelectFile")}
           </ModalDialog.Header>
           <ModalDialog.Body className="select-file_body-modal-dialog">
-            <StyledSelectFilePanel isHeaderChildren={isHeaderChildren}>
-              {!isLoading ? (
-                <div className="modal-dialog_body">
-                  <div className="modal-dialog_children">{header}</div>
-                  <div className="modal-dialog_tree-body">
-                    <FolderTreeBody
-                      expandedKeys={expandedKeys}
-                      folderList={this.folderList}
-                      onSelect={this.onSelect}
-                      withoutProvider={withoutProvider}
-                      certainFolders
-                      isAvailable={isAvailable}
-                      filter={filter}
-                      selectedKeys={[selectedFolder]}
-                      isHeaderChildren={isHeaderChildren}
+            <StyledSelectFilePanel
+              isHeaderChildren={isHeaderChildren}
+              displayType="modal"
+            >
+              <div className="modal-dialog_body">
+                <div className="modal-dialog_children">{header}</div>
+                <div className="modal-dialog_tree-body">
+                  <FolderTreeBody
+                    expandedKeys={expandedKeys}
+                    folderList={this.folderList}
+                    onSelect={this.onSelect}
+                    withoutProvider={withoutProvider}
+                    certainFolders
+                    isAvailable={isAvailable}
+                    filter={filter}
+                    selectedKeys={[selectedFolder]}
+                    isHeaderChildren={isHeaderChildren}
+                  />
+                </div>
+                <div className="modal-dialog_files-body">
+                  {selectedFolder && (
+                    <FilesListBody
+                      filesList={filesList}
+                      onSelectFile={onSelectFile}
+                      hasNextPage={hasNextPage}
+                      isNextPageLoading={isNextPageLoading}
+                      loadNextPage={loadNextPage}
+                      selectedFolder={selectedFolder}
+                      loadingText={loadingText}
+                      selectedFile={selectedFile}
+                      listHeight={isHeaderChildren ? 280 : 310}
                     />
-                  </div>
-                  <div className="modal-dialog_files-body">
-                    {selectedFolder && (
-                      <FilesListBody
-                        filesList={filesList}
-                        onSelectFile={onSelectFile}
-                        hasNextPage={hasNextPage}
-                        isNextPageLoading={isNextPageLoading}
-                        loadNextPage={loadNextPage}
-                        selectedFolder={selectedFolder}
-                        loadingText={loadingText}
-                        selectedFile={selectedFile}
-                        listHeight={isHeaderChildren ? 280 : 310}
-                      />
-                    )}
-                  </div>
+                  )}
                 </div>
-              ) : (
-                <div
-                  key="loader"
-                  className="select-file-dialog_modal-loader panel-loader-wrapper"
-                >
-                  <Loader type="oval" size="16px" className="panel-loader" />
-                  <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
-                    "Common:LoadingDescription"
-                  )}`}</Text>
-                </div>
-              )}
+              </div>
             </StyledSelectFilePanel>
           </ModalDialog.Body>
           <ModalDialog.Footer>

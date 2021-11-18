@@ -668,10 +668,12 @@ const StyledSelectFilePanel = styled.div`
     ${(props) =>
       props.displayType === "aside" &&
       css`
-    margin-left: -16px;
-    margin-right: -16px;
-    .nav-thumb-vertical {
-      margin-left: -7px !important;`}
+        margin-left: -16px;
+        margin-right: -16px;
+        .nav-thumb-vertical {
+          margin-left: -7px !important;
+        }
+      `}
   }
   .select-file-dialog_aside_body-files_list {
     height: 100%;
@@ -720,7 +722,20 @@ const StyledSelectFilePanel = styled.div`
     padding: 7px 0px;
   }
   .panel-loader-wrapper {
-    margin-top: 8px;
+    ${(props) =>
+      props.displayType === "modal" &&
+      css`
+        margin-top: 16px;
+      `};
+    .first-row-content__mobile {
+      width: ${(props) => (props.displayType === "aside" ? "147px" : "402px")};
+    }
+    .second-row-content__mobile {
+      width: 229px;
+    }
+  }
+  .loader-wrapper_margin {
+    margin-left: 16px;
   }
   .select-file-dialog_modal-loader {
     height: 290px;
@@ -746,7 +761,7 @@ const StyledSelectFilePanel = styled.div`
   .modal-dialog_body {
     display: grid;
     grid-template-columns: 212px 489px;
-    height: 300px;
+    height: 280px;
     // grid-column-gap: 8px;
     grid-template-areas: "children children" "tree files-list";
     .modal-dialog_tree-body {
