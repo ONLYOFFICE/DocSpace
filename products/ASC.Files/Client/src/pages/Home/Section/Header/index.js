@@ -256,11 +256,6 @@ class SectionHeaderContent extends React.Component {
   };
 
   onEmptyTrashAction = () => this.props.setEmptyTrashDialogVisible(true);
-  //TODO: add restore all api method
-  onRestoreAllAction = () => {
-    this.props.setSelected("all");
-    this.props.setMoveToPanelVisible(true);
-  };
 
   getContextOptionsFolder = () => {
     const { t } = this.props;
@@ -307,26 +302,6 @@ class SectionHeaderContent extends React.Component {
         label: t("Common:Delete"),
         onClick: this.onDeleteAction,
         disabled: true,
-      },
-    ];
-  };
-
-  getContextOptionsTrash = () => {
-    const { t } = this.props;
-    return [
-      {
-        key: "clear-trash",
-        label: t("EmptyRecycleBin"),
-        icon: "images/clear.active.react.svg",
-        onClick: this.onEmptyTrashAction,
-        disabled: false,
-      },
-      {
-        key: "restore-all",
-        label: t("Translations:Restore"),
-        icon: "images/move.react.svg",
-        onClick: this.onRestoreAllAction,
-        disabled: false,
       },
     ];
   };
