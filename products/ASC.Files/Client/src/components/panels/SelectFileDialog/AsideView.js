@@ -95,34 +95,39 @@ const SelectFileDialogAsideView = ({
                   showButtons
                   selectionButtonPrimary
                 />
-
-                {selectedFolder && !isLoadingData ? (
-                  <FilesListBody
-                    filesList={filesList}
-                    onSelectFile={onSelectFile}
-                    hasNextPage={hasNextPage}
-                    isNextPageLoading={isNextPageLoading}
-                    loadNextPage={loadNextPage}
-                    selectedFolder={selectedFolder}
-                    displayType={DISPLAY_TYPE}
-                    loadingText={loadingText}
-                    selectedFile={selectedFile}
-                  />
-                ) : isAvailableFolderList ? (
-                  <div key="loader">
-                    <Loader type="oval" size="16px" className="panel-loader" />
-                    <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
-                      "Common:LoadingDescription"
-                    )}`}</Text>
-                  </div>
-                ) : (
-                  <div className="select-file-dialog_empty-container">
-                    <EmptyContainer
-                      headerText={t("Home:EmptyFolderHeader")}
-                      imageSrc="/static/images/empty_screen.png"
+                <div className="select-file-dialog_aside_body-files_list">
+                  {selectedFolder && !isLoadingData ? (
+                    <FilesListBody
+                      filesList={filesList}
+                      onSelectFile={onSelectFile}
+                      hasNextPage={hasNextPage}
+                      isNextPageLoading={isNextPageLoading}
+                      loadNextPage={loadNextPage}
+                      selectedFolder={selectedFolder}
+                      displayType={DISPLAY_TYPE}
+                      loadingText={loadingText}
+                      selectedFile={selectedFile}
                     />
-                  </div>
-                )}
+                  ) : isAvailableFolderList ? (
+                    <div key="loader">
+                      <Loader
+                        type="oval"
+                        size="16px"
+                        className="panel-loader"
+                      />
+                      <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
+                        "Common:LoadingDescription"
+                      )}`}</Text>
+                    </div>
+                  ) : (
+                    <div className="select-file-dialog_empty-container">
+                      <EmptyContainer
+                        headerText={t("Home:EmptyFolderHeader")}
+                        imageSrc="/static/images/empty_screen.png"
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </StyledSelectFilePanel>
