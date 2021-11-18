@@ -82,7 +82,7 @@ const StyledContainer = styled.div`
 
       @media ${tablet} {
         & > div:first-child {
-          //padding: 8px 8px 8px 8px;
+          padding: 8px 8px 8px 8px;
           margin-right: -8px;
         }
       }
