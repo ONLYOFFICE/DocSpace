@@ -5,9 +5,12 @@ import { useEffect, useReducer, useState } from "react";
 export default {
   title: "Components/MainButtonMobile",
   component: MainButtonMobile,
+  parameters: {
+    docs: { description: { component: "Components/MainButtonMobile" } },
+  },
 };
 
-const Template = () => {
+const Template = ({ ...args }) => {
   const maxUploads = 10;
   const maxOperations = 7;
 
@@ -148,7 +151,8 @@ const Template = () => {
 
   return (
     <MainButtonMobile
-      style={{ position: "absolute", top: "85%", left: "50%" }}
+      {...args}
+      style={{ position: "absolute", top: "87%", left: "87%" }}
       actionOptions={actionOptions}
       progressOptions={progressOptions}
       buttonOptions={buttonOptions}
@@ -163,3 +167,8 @@ const Template = () => {
 };
 
 export const Default = Template.bind({});
+Default.args = {
+  title: "Upload",
+  percent: 0,
+  opened: null,
+};
