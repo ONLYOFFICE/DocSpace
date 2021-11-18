@@ -657,6 +657,9 @@ const StyledSelectFolderPanel = styled.div`
     max-width: ${(props) =>
       props.displayType === "aside" ? "243px" : "466px"};
   }
+  .files-tree-menu {
+    margin-top: 0 !important;
+  }
 `;
 const StyledSelectFilePanel = styled.div`
   height: 100%;
