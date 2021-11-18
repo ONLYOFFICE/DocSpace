@@ -307,10 +307,18 @@ class AvatarEditorBody extends React.Component {
   };
 
   renderLinkContainer = () => {
-    const { selectNewPhotoLabel, orDropFileHereLabel } = this.props;
+    const {
+      selectNewPhotoLabel,
+      orDropFileHereLabel,
+      maxSizeLabel,
+    } = this.props;
+    const { image } = this.state;
+
     const desktopMode = isDesktop();
+    const labelAlign = image === "" ? "center" : "left";
+
     return (
-      <Text as="span">
+      <Text as="p">
         <Link
           type="action"
           fontWeight={600}
@@ -321,19 +329,21 @@ class AvatarEditorBody extends React.Component {
           {selectNewPhotoLabel}
         </Link>{" "}
         {desktopMode && orDropFileHereLabel}
+        <Text
+          as="p"
+          color="#A3A9AE"
+          fontSize="12px"
+          fontWeight="600"
+          textAlign={labelAlign}
+        >
+          {maxSizeLabel}
+        </Text>
       </Text>
     );
   };
 
   render() {
-    const {
-      maxSize,
-      accept,
-      role,
-      title,
-      useModalDialog,
-      maxSizeLabel,
-    } = this.props;
+    const { maxSize, accept, role, title, useModalDialog } = this.props;
 
     const desktopMode = isDesktop();
     //const tabletMode = isTablet();
@@ -490,9 +500,6 @@ class AvatarEditorBody extends React.Component {
             </DropZoneContainer>
           )}
         </Dropzone>
-        <Text as="p" color="#A3A9AE" fontSize="12px" fontWeight="600">
-          {maxSizeLabel}
-        </Text>
 
         <StyledErrorContainer key="errorMsg">
           {this.state.errorText !== null && (
