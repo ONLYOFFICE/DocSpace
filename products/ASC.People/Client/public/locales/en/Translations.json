@@ -26,5 +26,6 @@
   "SuccessChangeUserStatus": "The user status was successfully changed",
   "SuccessSentInvitation": "The invitation was successfully sent",
   "SuccessDeletePersonalData": "Personal data has been successfully deleted",
-  "Birthdate": "Date of birth"
+  "Birthdate": "Date of birth",
+  "MaxSizeLabel": "(JPG or PNG, max 1 MB)"
 }

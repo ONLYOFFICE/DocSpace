@@ -26,5 +26,6 @@
   "SuccessChangeUserStatus": "Статус пользователя успешно изменен",
   "SuccessSentInvitation": "Приглашение было успешно отправлено",
   "SuccessDeletePersonalData": "Персональные данные успешно удалены",
-  "Birthdate": "Дата рождения"
+  "Birthdate": "Дата рождения",
+  "MaxSizeLabel": "(JPG или PNG, максимум 1 Мб)"
 }
