@@ -12,7 +12,7 @@ import EmptyContainer from "../../EmptyContainer/EmptyContainer";
 import i18n from "./i18n";
 import Loaders from "@appserver/common/components/Loaders";
 import { I18nextProvider } from "react-i18next";
-
+let countLoad;
 const FilesListBody = ({
   filesList,
   onSelectFile,
@@ -32,6 +32,7 @@ const FilesListBody = ({
   const filesListRef = useRef(null);
 
   useEffect(() => {
+    countLoad = 0;
     if (filesListRef && filesListRef.current) {
       filesListRef.current.resetloadMoreItemsCache(true);
     }
@@ -48,37 +49,48 @@ const FilesListBody = ({
 
   const loadMoreItems = useCallback(() => {
     if (isNextPageLoading) return;
+    countLoad++;
     loadNextPage && loadNextPage();
   }, [isNextPageLoading, filesList, displayType]);
-
-  const renderLoader = useCallback(
-    (style, index) => {
+  
+  const renderPageLoader = useCallback(
+    (style) => {
+      console.log("renderLoader");
       return (
         <div style={style}>
           <div
             key="loader"
             className="panel-loader-wrapper loader-wrapper_margin"
           >
-            {index > 10 ? (
-              <>
-                <Loader type="oval" size="16px" className="panel-loader" />
-                <Text as="span">{loadingText}</Text>
-              </>
-            ) : (
-              <Loaders.Rows
-                style={{
-                  marginBottom: displayType === "aside" ? "24px" : "19px",
-                }}
-                count={displayType === "aside" ? 12 : 7}
-              />
-            )}
+            <Loader type="oval" size="16px" className="panel-loader" />
+            <Text as="span">{loadingText}</Text>
           </div>
         </div>
       );
     },
     [loadingText]
   );
-
+  const renderFirstLoader = useCallback(
+    (style) => {
+      console.log("loader");
+      return (
+        <div style={style}>
+          <div
+            key="loader"
+            className="panel-loader-wrapper loader-wrapper_margin"
+          >
+            <Loaders.Rows
+              style={{
+                marginBottom: displayType === "aside" ? "24px" : "19px",
+              }}
+              count={displayType === "aside" ? 12 : 7}
+            />
+          </div>
+        </div>
+      );
+    },
+    [loadingText]
+  );
   const isFileChecked = useCallback(
     (file) => {
       const checked = selectedFile ? file.id === selectedFile.id : false;
@@ -86,12 +98,14 @@ const FilesListBody = ({
     },
     [selectedFile]
   );
+
   const Item = useCallback(
     ({ index, style }) => {
       const isLoaded = isItemLoaded(index);
 
       if (!isLoaded) {
-        return renderLoader(style, index);
+        if (countLoad > 1) return renderPageLoader(style);
+        return renderFirstLoader(style);
       }
 
       const file = filesList[index];
@@ -128,7 +142,7 @@ const FilesListBody = ({
         </div>
       );
     },
-    [filesList, selectedFile, displayType, renderLoader]
+    [filesList, selectedFile, displayType, renderFirstLoader, renderPageLoader]
   );
   return (
     <div className="files-list-body">
