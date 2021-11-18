@@ -201,6 +201,7 @@ class AvatarEditor extends React.Component {
           maxSizeFileError={maxSizeFileError}
           unknownError={unknownError}
           useModalDialog={false}
+          maxSizeLabel={maxSizeLabel}
         />
         <StyledButtonsWrapper>
           <Button
