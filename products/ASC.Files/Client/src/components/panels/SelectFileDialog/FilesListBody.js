@@ -116,7 +116,7 @@ const FilesListBody = ({
     [filesList, selectedFile, displayType, renderLoader]
   );
   return (
-    <>
+    <div className="files-list-body">
       <AutoSizer>
         {({ width, height }) => (
           <InfiniteLoader
@@ -129,7 +129,7 @@ const FilesListBody = ({
               <List
                 height={displayType === "aside" ? height : listHeight}
                 itemCount={itemCount}
-                itemSize={displayType === "aside" ? 56 : 36}
+                itemSize={displayType === "aside" ? 56 : 41}
                 onItemsRendered={onItemsRendered}
                 ref={ref}
                 width={width + 8}
@@ -150,7 +150,7 @@ const FilesListBody = ({
           />
         </div>
       )}
-    </>
+    </div>
   );
 };
 FilesListBody.defaultProps = {

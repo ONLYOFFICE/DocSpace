@@ -271,8 +271,8 @@ export function deleteFolder(folderId, deleteAfter, immediately) {
   return request(options);
 }
 
-export function createFile(folderId, title) {
-  const data = { title };
+export function createFile(folderId, title, templateId) {
+  const data = { title, templateId };
   const options = {
     method: "post",
     url: `/files/${folderId}/file`,

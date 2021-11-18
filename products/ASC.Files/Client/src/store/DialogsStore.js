@@ -20,6 +20,7 @@ class DialogsStore {
   newFilesPanelVisible = false;
   conflictResolveDialogVisible = false;
   convertDialogVisible = false;
+  selectFileDialogVisible = false;
 
   removeItem = null;
   connectItem = null;
@@ -169,6 +170,19 @@ class DialogsStore {
 
   setConvertItem = (item) => {
     this.convertItem = item;
+  };
+
+  setSelectFileDialogVisible = (visible) => {
+    this.selectFileDialogVisible = visible;
+  };
+
+  createMasterForm = async (fileInfo) => {
+    const { createFile, fetchFiles, filter } = this.filesStore;
+    const { id } = this.selectedFolderStore;
+
+    createFile(id, `${fileInfo.title}.docxf`, fileInfo.id)
+      .then(() => fetchFiles(id, filter, true, true))
+      .catch((err) => console.error(err));
   };
 }
 

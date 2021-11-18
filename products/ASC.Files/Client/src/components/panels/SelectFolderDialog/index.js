@@ -38,11 +38,23 @@ const exceptSortedByTagsFolders = [
 ];
 
 const exceptTrashFolder = [FolderType.TRASH];
+const exceptPrivacyTrashFolders = [FolderType.Privacy, FolderType.TRASH];
 class SelectFolderModalDialog extends React.Component {
   constructor(props) {
     super(props);
-    const { isSetFolderImmediately, id, displayType } = this.props;
+    const {
+      isSetFolderImmediately,
+      id,
+      displayType,
+      selectionButtonPrimary,
+      t,
+    } = this.props;
+   
     const isNeedFolder = id ? true : isSetFolderImmediately;
+    this.buttonName = selectionButtonPrimary
+      ? t("Select")
+      : t("Common:SaveButton");
+
     this.state = {
       isLoadingData: false,
       isLoading: false,
@@ -71,8 +83,18 @@ class SelectFolderModalDialog extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { storeFolderId, canCreate, showButtons } = this.props;
-    if (showButtons && storeFolderId !== prevProps.storeFolderId) {
+    const {
+      storeFolderId,
+      canCreate,
+      showButtons,
+      selectionButtonPrimary,
+    } = this.props;
+
+    if (
+      showButtons &&
+      !selectionButtonPrimary &&
+      storeFolderId !== prevProps.storeFolderId
+    ) {
       this.setState({
         canCreate: canCreate,
         isLoading: false,
@@ -88,6 +110,7 @@ class SelectFolderModalDialog extends React.Component {
       id,
       selectedFolderId,
     } = this.props;
+
     switch (foldersType) {
       case "exceptSortedByTags":
         try {
@@ -109,6 +132,20 @@ class SelectFolderModalDialog extends React.Component {
             foldersTree,
             exceptTrashFolder
           );
+          this.setBaseSettings();
+        } catch (err) {
+          console.error(err);
+          this.loadersCompletes();
+        }
+        break;
+      case "exceptPrivacyTrashFolders":
+        try {
+          const foldersTree = await getFoldersTree();
+          folderList = SelectFolderDialog.convertFolders(
+            foldersTree,
+            exceptPrivacyTrashFolders
+          );
+          console.log("folderList", folderList);
           this.setBaseSettings();
         } catch (err) {
           console.error(err);
@@ -264,7 +301,7 @@ class SelectFolderModalDialog extends React.Component {
       });
   };
   setSelectedFolder = async (id) => {
-    const { onSetBaseFolderPath } = this.props;
+    const { onSetBaseFolderPath, selectionButtonPrimary } = this.props;
 
     let folder,
       folderPath,
@@ -282,7 +319,7 @@ class SelectFolderModalDialog extends React.Component {
       console.error(e);
     }
 
-    folder && this.setFolderObjectToTree(id, folder);
+    folder && !selectionButtonPrimary && this.setFolderObjectToTree(id, folder);
 
     if (onSetBaseFolderPath && folderPath) {
       this.folderTitle = SelectFolderInput.setFullFolderPath(folderPath);
@@ -304,7 +341,6 @@ class SelectFolderModalDialog extends React.Component {
     const { setSelectedNode, setSelectedFolder } = this.props;
 
     setSelectedNode([id + ""]);
-
     const newPathParts = SelectFolderDialog.convertPathParts(data.pathParts);
     setSelectedFolder({
       folders: data.folders,
@@ -347,7 +383,13 @@ class SelectFolderModalDialog extends React.Component {
   };
 
   onSelect = async (folder) => {
-    const { onSelectFolder, onClose, showButtons, onSetFullPath } = this.props;
+    const {
+      onSelectFolder,
+      onClose,
+      showButtons,
+      onSetFullPath,
+      selectionButtonPrimary,
+    } = this.props;
     const { folderId } = this.state;
 
     let requests = [];
@@ -362,7 +404,7 @@ class SelectFolderModalDialog extends React.Component {
 
     let folderInfo, folderPath;
 
-    if (showButtons) {
+    if (showButtons && !selectionButtonPrimary) {
       this.setState({
         isLoading: true,
         canCreate: false,
@@ -380,7 +422,7 @@ class SelectFolderModalDialog extends React.Component {
           : (folderPath = await getFolderPath(folder));
       }
 
-      if (folderInfo) {
+      if (folderInfo && !selectionButtonPrimary) {
         this.setFolderObjectToTree(folder[0], folderInfo);
       }
 
@@ -461,6 +503,7 @@ class SelectFolderModalDialog extends React.Component {
         isLoadingData={isLoadingData}
         canCreate={canCreate}
         isLoading={isLoading}
+        primaryButtonName={this.buttonName}
       />
     ) : (
       <SelectFolderDialogModalView
@@ -483,6 +526,7 @@ class SelectFolderModalDialog extends React.Component {
         canCreate={canCreate}
         isLoadingData={isLoadingData}
         isLoading={isLoading}
+        primaryButtonName={this.buttonName}
       />
     );
   }
@@ -497,6 +541,7 @@ SelectFolderModalDialog.propTypes = {
     "third-party",
     "exceptSortedByTags",
     "exceptTrashFolder",
+    "exceptPrivacyTrashFolders",
   ]),
   displayType: PropTypes.oneOf(["aside", "modal"]),
   id: PropTypes.string,
@@ -505,6 +550,7 @@ SelectFolderModalDialog.propTypes = {
   isNeedArrowIcon: PropTypes.bool,
   dialogWithFiles: PropTypes.bool,
   showButtons: PropTypes.bool,
+  selectionButtonPrimary: PropTypes.bool,
   modalHeightContent: PropTypes.string,
   asideHeightContent: PropTypes.string,
 };
@@ -518,6 +564,8 @@ SelectFolderModalDialog.defaultProps = {
   zIndex: 310,
   withoutProvider: false,
   folderPath: "",
+  showButtons: false,
+  selectionButtonPrimary: false,
 };
 
 const SelectFolderDialogWrapper = inject(
