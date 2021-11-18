@@ -61,7 +61,7 @@ const SelectFileDialogAsideView = ({
         //className="select-file-modal-dialog"
         //style={{ maxWidth: "890px" }}
         contentHeight="100%"
-        displayType="aside"
+        displayType={DISPLAY_TYPE}
         //bodyPadding="0"
         removeScroll
       >
@@ -69,7 +69,10 @@ const SelectFileDialogAsideView = ({
           {headerName ? headerName : t("SelectFile")}
         </ModalDialog.Header>
         <ModalDialog.Body className="select-file_body-modal-dialog">
-          <StyledSelectFilePanel isHeaderChildren={isHeaderChildren}>
+          <StyledSelectFilePanel
+            isHeaderChildren={isHeaderChildren}
+            displayType={DISPLAY_TYPE}
+          >
             <div className="select-file-dialog_aside-body_wrapper">
               <div className="select-file-dialog_aside-children">{header}</div>
               {/* <Text fontWeight="600" fontSize="14px">
@@ -109,15 +112,13 @@ const SelectFileDialogAsideView = ({
                       selectedFile={selectedFile}
                     />
                   ) : isAvailableFolderList ? (
-                    <div key="loader">
-                      <Loader
-                        type="oval"
-                        size="16px"
-                        className="panel-loader"
+                    <div key="loader" className="panel-loader-wrapper">
+                      <Loaders.Rows
+                        style={{
+                          marginBottom: "24px",
+                        }}
+                        count={12}
                       />
-                      <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
-                        "Common:LoadingDescription"
-                      )}`}</Text>
                     </div>
                   ) : (
                     <div className="select-file-dialog_empty-container">
