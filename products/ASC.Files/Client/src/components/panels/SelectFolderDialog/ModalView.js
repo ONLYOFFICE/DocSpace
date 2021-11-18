@@ -38,7 +38,7 @@ const SelectFolderDialogModalView = ({
         {...(!header && !footer && !showButtons && { contentHeight: "416px" })}
       >
         <ModalDialog.Header>
-          {headerName ? headerName : t("Translations:SelectFolder")}
+          {headerName ? headerName : t("Translations:FolderSelection")}
         </ModalDialog.Header>
 
         <ModalDialog.Body>
