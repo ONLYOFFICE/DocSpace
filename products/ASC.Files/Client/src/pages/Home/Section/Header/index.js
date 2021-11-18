@@ -82,7 +82,21 @@ const StyledContainer = styled.div`
 
       @media ${tablet} {
         & > div:first-child {
-          padding: 8px 8px 8px 8px;
+          //padding: 8px 8px 8px 8px;
+          margin-right: -8px;
+        }
+      }
+    }
+
+    .trash-button {
+      margin-bottom: -1px;
+
+      @media (min-width: 1024px) {
+        margin-left: 8px;
+      }
+
+      @media ${tablet} {
+        & > div:first-child {
           margin-right: -8px;
         }
       }
@@ -242,6 +256,7 @@ class SectionHeaderContent extends React.Component {
   };
 
   onEmptyTrashAction = () => this.props.setEmptyTrashDialogVisible(true);
+  //TODO: add restore all api method
   onRestoreAllAction = () => {
     this.props.setSelected("all");
     this.props.setMoveToPanelVisible(true);
@@ -476,17 +491,17 @@ class SectionHeaderContent extends React.Component {
                       )
                     )}
                     {isRecycleBinFolder && !isEmptyFilesList && (
-                      <ContextMenuButton
-                        className="option-button"
-                        directionX="left"
-                        iconName="images/vertical-dots.react.svg"
-                        size={17}
-                        color="#A3A9AE"
-                        hoverColor="#657077"
-                        isFill
-                        getData={this.getContextOptionsTrash}
-                        isDisabled={false}
-                      />
+                      <span title={t("EmptyRecycleBin")}>
+                        <IconButton
+                          iconName="images/clear.active.react.svg"
+                          size="15"
+                          color="#A3A9AE"
+                          hoverColor="#657077"
+                          isFill={true}
+                          onClick={this.onEmptyTrashAction}
+                          className="trash-button"
+                        />
+                      </span>
                     )}
                   </>
                 )}
