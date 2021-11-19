@@ -7,5 +7,7 @@
   "UploadFolder": "Upload folder",
   "NewForm": "Master form",
   "NewFormFile": "Master form from file",
-  "CreateMasterFormFromFile": "Create Master Form from file"
+  "CreateMasterFormFromFile": "Create Master Form from file",
+  "SubNewForm": "From blank",
+  "SubNewFormFile": "From an existing text file"
 }
