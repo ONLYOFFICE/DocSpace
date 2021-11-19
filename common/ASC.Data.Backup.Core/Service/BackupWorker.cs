@@ -565,6 +565,9 @@ namespace ASC.Data.Backup.Service
             {
                 tenant = tenantManager.GetTenant(TenantId);
                 tenantManager.SetCurrentTenant(tenant);
+                tenant.SetStatus(TenantStatus.Restoring);
+                tenantManager.SaveTenant(tenant);
+
                 notifyHelper.SendAboutRestoreStarted(tenant, Notify);
                 var storage = backupStorageFactory.GetBackupStorage(StorageType, TenantId, StorageParams);
                 storage.Download(StoragePath, tempFile);
@@ -580,9 +583,6 @@ namespace ASC.Data.Backup.Service
                 }
 
                 Percentage = 10;
-
-                tenant.SetStatus(TenantStatus.Restoring);
-                tenantManager.SaveTenant(tenant);
 
                 var columnMapper = new ColumnMapper();
                 columnMapper.SetMapping("tenants_tenants", "alias", tenant.TenantAlias, (Guid.Parse(Id)).ToString("N"));
