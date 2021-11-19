@@ -17,55 +17,52 @@
 
 using System;
 using System.IO;
+using System.Text.Json;
+using System.Threading.Tasks;
 
-using ASC.Common;
 using ASC.Core;
+using ASC.Web.Core.Utility;
+using ASC.Web.Studio.Core;
 
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
-namespace ASC.Web.Studio.Core.Backup
+namespace ASC.Data.Backup
 {
-    [Scope]
     public class BackupFileUploadHandler
     {
         private const long MaxBackupFileSize = 1024L * 1024L * 1024L;
-        private const string BackupTempFolder = "backup";
-        private const string BackupFileName = "backup.tmp";
 
-        private PermissionContext PermissionContext { get; }
-        private TempPath TempPath { get; }
-        private TenantManager TenantManager { get; }
-
-        public BackupFileUploadHandler(
-            PermissionContext permissionContext,
-            TempPath tempPath,
-            TenantManager tenantManager)
+        public BackupFileUploadHandler(RequestDelegate next)
         {
-            PermissionContext = permissionContext;
-            TempPath = tempPath;
-            TenantManager = tenantManager;
+
         }
-
-        public string ProcessUpload(IFormFile file)
+        public async Task Invoke(HttpContext context,
+            PermissionContext permissionContext,
+            BackupAjaxHandler backupAjaxHandler)
         {
-            if (file == null)
+            FileUploadResult result = null;
+            try
             {
-                return "No files.";
+            if (context.Request.Form.Files.Count == 0)
+            {
+                result = Error("No files.");
             }
 
-            if (!PermissionContext.CheckPermissions(SecutiryConstants.EditPortalSettings))
+            if (!permissionContext.CheckPermissions(SecutiryConstants.EditPortalSettings))
             {
-                return "Access denied.";
+                result = Error("Access denied.");
             }
+
+            var file = context.Request.Form.Files[0];
 
             if (file.Length <= 0 || file.Length > MaxBackupFileSize)
             {
-                return $"File size must be greater than 0 and less than {MaxBackupFileSize} bytes";
+                result = Error($"File size must be greater than 0 and less than {MaxBackupFileSize} bytes");
             }
 
-            try
-            {
-                var filePath = GetFilePath();
+            
+                var filePath = backupAjaxHandler.GetTmpFilePath();
 
                 if (File.Exists(filePath))
                 {
@@ -74,27 +71,42 @@ namespace ASC.Web.Studio.Core.Backup
 
                 using (var fileStream = File.Create(filePath))
                 {
-                    file.CopyTo(fileStream);
+                    await file.CopyToAsync(fileStream);
                 }
 
-                return string.Empty;
+                result = Success();
             }
             catch (Exception error)
             {
-                return error.Message;
+                result = Error(error.Message);
             }
+
+            await context.Response.WriteAsync(JsonSerializer.Serialize(result));
         }
 
-        internal string GetFilePath()
+        private FileUploadResult Success()
         {
-            var folder = Path.Combine(TempPath.GetTempPath(), BackupTempFolder, TenantManager.GetCurrentTenant().TenantId.ToString());
-
-            if (!Directory.Exists(folder))
+            return new FileUploadResult
             {
-                Directory.CreateDirectory(folder);
-            }
+                Success = true
+            };
+        }
 
-            return Path.Combine(folder, BackupFileName);
+        private FileUploadResult Error(string messageFormat, params object[] args)
+        {
+            return new FileUploadResult
+            {
+                Success = false,
+                Message = string.Format(messageFormat, args)
+            };
+        }
+    }
+
+    public static class BackupFileUploadHandlerExtensions
+    {
+        public static IApplicationBuilder UseBackupFileUploadHandler(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<BackupFileUploadHandler>();
         }
     }
 }

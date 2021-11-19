@@ -30,6 +30,8 @@ using ASC.Data.Backup.Controllers;
 using ASC.Data.Backup.Service;
 using ASC.Web.Studio.Core.Notify;
 
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -58,6 +60,18 @@ namespace ASC.Data.Backup
             NotifyConfigurationExtension.Register(DIHelper);
 
             services.AddHostedService<BackupServiceLauncher>();
+        }
+
+        public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            base.Configure(app, env);
+
+            app.MapWhen(
+                context => context.Request.Path.ToString().EndsWith("backupFileUpload.ashx"),
+                appBranch =>
+                {
+                    appBranch.UseBackupFileUploadHandler();
+                });
         }
     }
 }
