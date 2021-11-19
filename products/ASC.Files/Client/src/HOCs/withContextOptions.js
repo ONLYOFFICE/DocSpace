@@ -16,6 +16,10 @@ export default function withContextOptions(WrappedComponent) {
       openLocationAction(locationId, !fileExst);
     };
 
+    onClickLinkFillForm = () => {
+      return this.gotoDocEditor(false);
+    };
+
     onOpenLocation = () => {
       const { item, openLocationAction } = this.props;
       const { parentId, folderId, fileExst } = item;
@@ -362,6 +366,14 @@ export default function withContextOptions(WrappedComponent) {
               label: t("LinkForPortalUsers"),
               icon: "/static/images/invitation.link.react.svg",
               onClick: this.onClickLinkForPortal,
+              disabled: false,
+            };
+          case "fill-form":
+            return {
+              key: option,
+              label: t("Common:FillFormButton"),
+              icon: "/static/images/access.edit.form.react.svg",
+              onClick: this.onClickLinkFillForm,
               disabled: false,
             };
           case "edit":

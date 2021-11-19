@@ -166,7 +166,7 @@ class SelectFileDialogBody extends React.Component {
 
     if (id) {
       setFolderId(id);
-      // setExpandedPanelKeys([`${id}`]);
+
       this.setState({
         selectedFolder: id,
         hasNextPage: true,
@@ -202,7 +202,11 @@ class SelectFileDialogBody extends React.Component {
   };
 
   loadNextPage = () => {
-    //const { setSelectedNode, setSelectedFolder } = this.props;
+    const {
+      setSelectedNode,
+      setSelectedFolder,
+      setExpandedPanelKeys,
+    } = this.props;
     const { selectedFolder, page } = this.state;
 
     if (this._isLoadNextPage) return;
@@ -220,9 +224,15 @@ class SelectFileDialogBody extends React.Component {
             ? this.state.filesList.concat(data.files)
             : data.files;
 
-          // const newPathParts = SelectFolderDialog.convertPathParts( //TODO: maybe need
+          //TODO:  it will need if passed the folder id - need to come up with a different solution.
+
+          // const newPathParts = SelectFolderDialog.convertPathParts(
+          //
           //   data.pathParts
           // );
+
+          //setExpandedPanelKeys(newPathParts);
+
           // setSelectedNode([selectedFolder + ""]);
           // setSelectedFolder({
           //   folders: data.folders,
