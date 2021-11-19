@@ -27,6 +27,7 @@ import {
   markAsFavorite,
   getPresignedUri,
   convertFile,
+  checkFillFormDraft,
 } from "@appserver/common/api/files";
 import FilesFilter from "@appserver/common/api/files/filter";
 
@@ -67,7 +68,7 @@ let successAuth;
 let isSharingAccess;
 let user = null;
 let personal;
-const url = window.location.href;
+let url = window.location.href;
 const filesUrl = url.substring(0, url.indexOf("/doceditor"));
 
 toast.configure();
@@ -287,6 +288,22 @@ const Editor = () => {
       }
 
       const config = await openEdit(fileId, version, doc, view);
+
+      if (
+        !view &&
+        fileInfo &&
+        fileInfo.canWebRestrictedEditing &&
+        fileInfo.canFillForms &&
+        !fileInfo.canEdit
+      ) {
+        try {
+          const formUrl = await checkFillFormDraft(fileId);
+          history.pushState({}, null, formUrl);
+          url = window.location.href;
+        } catch (err) {
+          console.error(err);
+        }
+      }
 
       actionLink = config?.editorConfig?.actionLink;
 

@@ -783,3 +783,11 @@ export function getPresignedUri(fileId) {
     url: `files/file/${fileId}/presigned`,
   });
 }
+
+export function checkFillFormDraft(fileId) {
+  return request({
+    method: "post",
+    url: `files/masterform/${fileId}/checkfillformdraft`,
+    data: { fileId },
+  });
+}
