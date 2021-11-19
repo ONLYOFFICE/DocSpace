@@ -417,7 +417,11 @@ class FilesStore {
       isMy,
     } = this.treeFoldersStore;
 
-    const { canWebEdit, canViewedDocs } = this.formatsStore.docserviceStore;
+    const {
+      canWebEdit,
+      canViewedDocs,
+      canFormFillingDocs,
+    } = this.formatsStore.docserviceStore;
 
     const isThirdPartyFolder =
       item.providerKey && item.id === item.rootFolderId;
@@ -429,10 +433,12 @@ class FilesStore {
     const { isDesktopClient } = this.authStore.settingsStore;
 
     if (isFile) {
-      const shouldEdit = canWebEdit(item.fileExst);
+      const shouldFillForm = canFormFillingDocs(item.fileExst);
+      const shouldEdit = !shouldFillForm && canWebEdit(item.fileExst);
       const shouldView = canViewedDocs(item.fileExst);
       let fileOptions = [
         //"open",
+        "fill-form",
         "edit",
         "preview",
         "view",
@@ -465,6 +471,9 @@ class FilesStore {
         "unsubscribe",
         "delete",
       ];
+
+      if (!shouldFillForm)
+        fileOptions = this.removeOptions(fileOptions, ["fill-form"]);
 
       if (personal) {
         fileOptions = this.removeOptions(fileOptions, [
