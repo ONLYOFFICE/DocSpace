@@ -372,7 +372,7 @@ export default function withContextOptions(WrappedComponent) {
             return {
               key: option,
               label: t("Common:FillFormButton"),
-              icon: "/static/images/access.edit.form.react.svg",
+              icon: "/static/images/form.fill.rect.svg",
               onClick: this.onClickLinkFillForm,
               disabled: false,
             };
