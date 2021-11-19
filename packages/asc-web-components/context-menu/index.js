@@ -369,8 +369,10 @@ class ContextMenu extends Component {
 
   position(event) {
     if (event) {
-      let left = event.pageX + 1;
-      let top = event.pageY + 1;
+      const rects = this.props.containerRef?.current.getBoundingClientRect();
+
+      let left = rects ? rects.left : event.pageX + 1;
+      let top = rects ? rects.top : event.pageY + 1;
       let width = this.menuRef.current.offsetParent
         ? this.menuRef.current.offsetWidth
         : DomHelpers.getHiddenElementOuterWidth(this.menuRef.current);
@@ -397,6 +399,14 @@ class ContextMenu extends Component {
       //fit
       if (top < document.body.scrollTop) {
         top = document.body.scrollTop;
+      }
+
+      if (this.props.containerRef) {
+        top += rects.height + 4;
+
+        if (this.props.scaled) {
+          this.menuRef.current.style.width = rects.width + "px";
+        }
       }
 
       this.menuRef.current.style.left = left + "px";
@@ -583,6 +593,10 @@ ContextMenu.propTypes = {
   onShow: PropTypes.func,
   /** Callback to invoke when a popup menu is hidden */
   onHide: PropTypes.func,
+  /** If you want to display relative to another component */
+  containerRef: PropTypes.any,
+  /** Scale with by container component*/
+  scaled: PropTypes.bool,
 };
 
 ContextMenu.defaultProps = {
@@ -596,6 +610,8 @@ ContextMenu.defaultProps = {
   appendTo: null,
   onShow: null,
   onHide: null,
+  scaled: false,
+  containerRef: null,
 };
 
 export default ContextMenu;
