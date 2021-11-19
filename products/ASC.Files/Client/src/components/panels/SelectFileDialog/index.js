@@ -65,6 +65,7 @@ class SelectFileDialogBody extends React.Component {
       isTablesOnly,
       isMediaOnly,
       searchParam = "",
+      ByExtension,
     } = this.props;
 
     if (isImageOnly) {
@@ -91,6 +92,11 @@ class SelectFileDialogBody extends React.Component {
     if (isMediaOnly) {
       return { filterType: FilterType.MediaOnly, filterValue: searchParam };
     }
+
+    if (ByExtension) {
+      return { filterType: FilterType.ByExtension, filterValue: searchParam };
+    }
+
     return { filterType: FilterType.FilesOnly, filterValue: "" };
   };
 

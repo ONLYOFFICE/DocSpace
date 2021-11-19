@@ -90,7 +90,7 @@ const Panels = (props) => {
         isPanelVisible={selectFileDialogVisible}
         onClose={onClose}
         foldersType="exceptPrivacyTrashFolders"
-        isDocumentsOnly
+        ByExtension
         searchParam={"docx"}
         headerName={t("Article:CreateMasterFormFromFile")}
         creationButtonPrimary
