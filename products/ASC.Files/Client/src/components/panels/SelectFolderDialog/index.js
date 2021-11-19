@@ -319,7 +319,7 @@ class SelectFolderModalDialog extends React.Component {
       console.error(e);
     }
 
-    folder && !selectionButtonPrimary && this.setFolderObjectToTree(id, folder);
+    folder && this.setFolderObjectToTree(id, folder);
 
     if (onSetBaseFolderPath && folderPath) {
       this.folderTitle = SelectFolderInput.setFullFolderPath(folderPath);
@@ -338,25 +338,32 @@ class SelectFolderModalDialog extends React.Component {
   };
 
   setFolderObjectToTree = (id, data) => {
-    const { setSelectedNode, setSelectedFolder } = this.props;
+    const {
+      setSelectedNode,
+      setSelectedFolder,
+      selectionButtonPrimary,
+      //setExpandedPanelKeys
+    } = this.props;
+    if (!selectionButtonPrimary) {
+      //TODO:  it need for canCreate function now, will need when passed the folder id - need to come up with a different solution.
+      setSelectedNode([id + ""]);
+      const newPathParts = SelectFolderDialog.convertPathParts(data.pathParts);
 
-    setSelectedNode([id + ""]);
-    const newPathParts = SelectFolderDialog.convertPathParts(data.pathParts);
-    setSelectedFolder({
-      folders: data.folders,
-      ...data.current,
-      pathParts: newPathParts,
-      ...{ new: data.new },
-    });
+      // setExpandedPanelKeys(newPathParts)
+      setSelectedFolder({
+        folders: data.folders,
+        ...data.current,
+        pathParts: newPathParts,
+        ...{ new: data.new },
+      });
+    }
   };
 
   componentWillUnmount() {
     const {
       setExpandedPanelKeys,
-      setDefaultSelectedFolder,
-
       resetTreeFolders,
-
+      setSelectedFolder,
       dialogWithFiles,
     } = this.props;
     if (this.throttledResize) {
@@ -366,7 +373,7 @@ class SelectFolderModalDialog extends React.Component {
 
     if (resetTreeFolders && !dialogWithFiles) {
       setExpandedPanelKeys(null);
-      setDefaultSelectedFolder();
+      setSelectedFolder(null);
     }
   }
   getDisplayType = () => {
@@ -422,7 +429,7 @@ class SelectFolderModalDialog extends React.Component {
           : (folderPath = await getFolderPath(folder));
       }
 
-      if (folderInfo && !selectionButtonPrimary) {
+      if (folderInfo) {
         this.setFolderObjectToTree(folder[0], folderInfo);
       }
 
@@ -577,11 +584,7 @@ const SelectFolderDialogWrapper = inject(
   }) => {
     const { setSelectedNode, setExpandedPanelKeys } = treeFoldersStore;
     const { canCreate } = filesStore;
-    const {
-      setSelectedFolder,
-      id,
-      toDefault: setDefaultSelectedFolder,
-    } = selectedFolderStore;
+    const { setSelectedFolder, id } = selectedFolderStore;
     const { setFolderId, setFile } = selectedFilesStore;
     return {
       setSelectedFolder,
@@ -589,7 +592,6 @@ const SelectFolderDialogWrapper = inject(
       canCreate,
       storeFolderId: id,
       setExpandedPanelKeys,
-      setDefaultSelectedFolder,
       setFolderId,
       setFile,
     };
