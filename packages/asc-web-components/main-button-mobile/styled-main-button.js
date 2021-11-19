@@ -39,11 +39,15 @@ const StyledDropDown = styled(DropDown)`
   bottom: ${(props) => props.theme.mainButtonMobile.dropDown.bottom};
   right: ${(props) => props.theme.mainButtonMobile.dropDown.right};
   z-index: ${(props) => props.theme.mainButtonMobile.dropDown.zIndex};
-  height: ${(props) => (props.isMobile ? "100vh" : "auto")};
+  height: ${(props) => (props.isMobile ? props.heightProp : "auto")};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   padding: 0px;
+
+  .section-scroll {
+    padding-right: 0px !important;
+  }
 
   .separator-wrapper {
     padding: 23px;
@@ -116,7 +120,7 @@ const StyledProgressBarContainer = styled.div`
   .progress_count {
     width: 42%;
     text-align: right;
-    margin-right: 7px;
+    margin-right: 6px;
   }
 `;
 
@@ -131,7 +135,10 @@ const StyledBar = styled.div`
   width: ${(props) => props.uploadPercent}%;
   height: 4px;
   opacity: 1;
-  background: linear-gradient(225deg, #2274aa 0%, #0f4071 100%);
+  background: ${(props) =>
+    props.error
+      ? "#C96C27"
+      : "linear-gradient(225deg, #2274aa 0%, #0f4071 100%)"}; ;
 `;
 
 StyledDropDown.defaultProps = { theme: Base };
