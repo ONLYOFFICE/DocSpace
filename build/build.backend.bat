@@ -1,6 +1,7 @@
+@echo off
+
 PUSHD %~dp0..
 dotnet build ASC.Web.slnf  /fl1 /flp1:LogFile=build/ASC.Web.log;Verbosity=Normal
-@echo off
 echo.
 echo Install nodejs projects dependencies...
 echo.
@@ -14,6 +15,8 @@ if %errorlevel% == 0 (
 )
 
 echo.
+
+POPD
 
 if "%1"=="nopause" goto start
 pause
