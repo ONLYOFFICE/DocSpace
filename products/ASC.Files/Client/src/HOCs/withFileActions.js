@@ -97,7 +97,7 @@ export default function withFileActions(WrappedFileItem) {
       this.props.markAsRead([], [`${id}`], this.props.item);
 
     onMouseClick = (e) => {
-      const { viewAs, isItemsSelected } = this.props;
+      const { viewAs } = this.props;
 
       if (
         e.target.closest(".checkbox") ||
@@ -106,8 +106,8 @@ export default function withFileActions(WrappedFileItem) {
         e.target.tagName === "A" ||
         e.target.closest(".expandButton") ||
         e.target.closest(".badges") ||
-        e.button !== 0 /* ||
-        isItemsSelected */
+        e.button !== 0 ||
+        e.target.closest(".not-selectable")
       )
         return;
 
@@ -406,7 +406,6 @@ export default function withFileActions(WrappedFileItem) {
         setConvertDialogVisible,
         isDesktop: auth.settingsStore.isDesktopClient,
         personal: auth.settingsStore.personal,
-        isItemsSelected: selection.length > 0,
         setNewBadgeCount,
         isActive,
         inProgress,

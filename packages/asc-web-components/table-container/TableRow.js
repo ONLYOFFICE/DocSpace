@@ -72,7 +72,7 @@ const TableRow = (props) => {
           <>
             <div className="table-container_element">{element}</div>
             <Checkbox
-              className="table-container_row-checkbox"
+              className="table-container_row-checkbox not-selectable"
               onChange={onChange}
               isChecked={checked}
             />

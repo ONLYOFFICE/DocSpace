@@ -222,6 +222,7 @@ const StyledTableCell = styled.div`
   }
   .table-container_row-checkbox {
     display: ${(props) => (props.checked ? "flex" : "none")};
+    padding: 12px 12px 12px 0px;
   }
 
   ${(props) =>
