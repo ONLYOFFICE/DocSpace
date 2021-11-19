@@ -52,10 +52,9 @@ const FilesListBody = ({
     countLoad++;
     loadNextPage && loadNextPage();
   }, [isNextPageLoading, filesList, displayType]);
-  
+
   const renderPageLoader = useCallback(
     (style) => {
-      console.log("renderLoader");
       return (
         <div style={style}>
           <div
@@ -72,7 +71,6 @@ const FilesListBody = ({
   );
   const renderFirstLoader = useCallback(
     (style) => {
-      console.log("loader");
       return (
         <div style={style}>
           <div
