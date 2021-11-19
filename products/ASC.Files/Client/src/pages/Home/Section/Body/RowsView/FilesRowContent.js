@@ -49,6 +49,13 @@ const SimpleFilesRowContent = styled(RowContent)`
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  .edit {
+    svg:not(:root) {
+      width: 12px;
+      height: 12px;
+    }
+  }
 `;
 
 const FilesRowContent = ({
