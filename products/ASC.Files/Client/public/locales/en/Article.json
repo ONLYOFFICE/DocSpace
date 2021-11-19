@@ -5,7 +5,7 @@
   "NewSpreadsheet": "New Spreadsheet",
   "UploadFiles": "Upload files",
   "UploadFolder": "Upload folder",
-  "NewForm": "New form",
-  "NewFormFile": "New form from file",
+  "NewForm": "Master form",
+  "NewFormFile": "Master form from file",
   "CreateMasterFormFromFile": "Create Master Form from file"
 }

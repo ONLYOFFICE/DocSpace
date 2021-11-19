@@ -41,6 +41,7 @@ const Badges = ({
   const isEditingWithFav = fileStatus === 33;
   const showEditBadge = !locked || item.access === 0;
   const isPrivacy = isPrivacyFolder && isDesktopClient;
+  const isForm = fileExst === ".oform";
 
   return fileExst ? (
     <div className="badges additional-badges">
@@ -65,8 +66,12 @@ const Badges = ({
         !canConvert && (
           <IconButton
             onClick={onFilesClick}
-            iconName="/static/images/access.edit.react.svg"
-            className="badge icons-group"
+            iconName={
+              isForm
+                ? "/static/images/access.edit.form.react.svg"
+                : "/static/images/access.edit.react.svg"
+            }
+            className="badge icons-group edit"
             size="small"
             isfill={true}
             color="#A3A9AE"
