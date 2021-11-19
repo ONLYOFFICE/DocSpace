@@ -192,7 +192,7 @@ class SelectFileDialogModalView extends React.Component {
           className="select-file-modal-dialog"
           style={{ maxWidth: "725px" }}
           displayType="modal"
-          bodyPadding="0"
+          modalBodyPadding="0px"
           isLoading={isLoading}
           modalDialogHeight="277px"
         >

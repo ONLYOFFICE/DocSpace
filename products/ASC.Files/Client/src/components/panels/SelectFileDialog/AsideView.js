@@ -62,7 +62,6 @@ const SelectFileDialogAsideView = ({
         //style={{ maxWidth: "890px" }}
         contentHeight="100%"
         displayType={DISPLAY_TYPE}
-        //bodyPadding="0"
         removeScroll
       >
         <ModalDialog.Header>
