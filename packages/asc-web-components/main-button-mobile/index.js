@@ -26,6 +26,7 @@ const ProgressBarMobile = ({
   onCancel,
   icon,
   onClick,
+  error,
 }) => {
   const uploadPercent = percent > 100 ? 100 : percent;
 
@@ -39,7 +40,7 @@ const ProgressBarMobile = ({
       </Text>
       <IconButton onClick={onCancel} iconName={icon} size={14} />
       <StyledMobileProgressBar>
-        <StyledBar uploadPercent={uploadPercent} />
+        <StyledBar uploadPercent={uploadPercent} error={error} />
       </StyledMobileProgressBar>
     </StyledProgressBarContainer>
   );
@@ -54,6 +55,8 @@ ProgressBarMobile.propTypes = {
   icon: PropTypes.string,
   /** The function that will be called after the progress header click  */
   onClick: PropTypes.func,
+  /** If true the progress bar changes color */
+  error: PropTypes.bool,
 };
 
 const MainButtonMobile = (props) => {
@@ -74,6 +77,9 @@ const MainButtonMobile = (props) => {
   } = props;
 
   const [isOpen, setIsOpen] = useState(opened);
+  const [height, setHeight] = useState("90vh");
+
+  const divRef = useRef();
 
   useEffect(() => {
     if (opened !== isOpen) {
@@ -81,11 +87,19 @@ const MainButtonMobile = (props) => {
     }
   }, [opened]);
 
+  useEffect(() => {
+    let height = divRef.current.getBoundingClientRect().height;
+    height >= window.innerHeight ? setHeight("90vh") : setHeight(height + "px");
+  }, [isOpen, window.innerHeight]);
+
   const ref = useRef();
 
   const dropDownRef = useRef();
 
   const toggle = (isOpen) => {
+    if (isOpen && onClose) {
+      onClose();
+    }
     return setIsOpen(isOpen);
   };
 
@@ -105,7 +119,7 @@ const MainButtonMobile = (props) => {
 
   const renderItems = () => {
     return (
-      <>
+      <div ref={divRef}>
         <StyledContainerAction>
           {actionOptions.map((option) => (
             <StyledDropDownItem
@@ -132,6 +146,7 @@ const MainButtonMobile = (props) => {
                 status={option.status}
                 open={option.open}
                 onCancel={option.onCancel}
+                error={option.error}
               />
             ))}
         </StyledProgressContainer>
@@ -170,7 +185,7 @@ const MainButtonMobile = (props) => {
             />
           </StyledButtonWrapper>
         )}
-      </>
+      </div>
     );
   };
 
@@ -185,16 +200,20 @@ const MainButtonMobile = (props) => {
         color={"#ed7309"}
       />
       <StyledDropDown
-        forwardedRef={dropDownRef}
         open={isOpen}
         clickOutsideAction={outsideClick}
         manualWidth={manualWidth || "400px"}
         directionY="top"
         directionX="right"
         isMobile={isMobile || isTablet}
+        heightProp={height}
       >
         {isMobile || isTablet ? (
-          <Scrollbar scrollclass="section-scroll" stype="mediumBlack">
+          <Scrollbar
+            scrollclass="section-scroll"
+            stype="mediumBlack"
+            ref={dropDownRef}
+          >
             {children}
           </Scrollbar>
         ) : (
@@ -229,6 +248,8 @@ MainButtonMobile.propTypes = {
   className: PropTypes.string,
   /** Tells when the dropdown should be opened */
   opened: PropTypes.bool,
+  /** If you need close drop down  */
+  onClose: PropTypes.func,
 };
 
 export default MainButtonMobile;

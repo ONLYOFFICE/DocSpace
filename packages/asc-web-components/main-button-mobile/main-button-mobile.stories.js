@@ -117,9 +117,10 @@ const Template = ({ ...args }) => {
       label: "Other operations",
       icon: "/static/images/mobile.actions.remove.react.svg",
       percent: operationPercent,
-      status: `${state.operations}/${maxOperations}`,
+      status: `3 files not loaded`,
       open: isOpenOperations,
       onCancel: () => setIsOpenOperations(false),
+      error: true,
     },
   ];
 
