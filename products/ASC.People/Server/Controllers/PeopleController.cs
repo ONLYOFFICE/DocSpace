@@ -1611,14 +1611,9 @@ namespace ASC.Employee.Core.Controllers
                 {
 
                     var url = VirtualPathUtility.ToAbsolute("~/login.ashx") + $"?auth={provider}";
-                    var mode = (settingsView || inviteView || (!MobileDetector.IsMobile() && !Request.DesktopApp())
-                                     ? ("&mode=popup&callback=" + clientCallback)
-                                     : ("&mode=Redirect&returnurl="
-                                    + HttpUtility.UrlEncode(new Uri(Request.GetUrlRewriter(),
-                                        "Auth.aspx"
-                                        + (Request.DesktopApp() ? "?desktop=true" : "")
-                                        ).ToString())
-                                 ));
+                    var mode = settingsView || inviteView || (!MobileDetector.IsMobile() && !Request.DesktopApp())
+                            ? $"&mode=popup&callback={clientCallback}"
+                            : "&mode=Redirect&desktop=true";
 
                     infos.Add(new AccountInfo
                     {
