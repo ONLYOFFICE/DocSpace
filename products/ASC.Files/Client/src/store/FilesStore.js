@@ -126,7 +126,7 @@ class FilesStore {
   };
 
   setStartDrag = (startDrag) => {
-    this.selection = this.selection.filter((x) => !x.isThirdPartyFolder); // removed root thirdparty folders
+    this.selection = this.selection.filter((x) => !x.providerKey); // removed root thirdparty folders
     this.startDrag = startDrag;
   };
 
@@ -306,6 +306,26 @@ class FilesStore {
     );
   };
 
+  isEmptyLastPageAfterOperation = (newSelection) => {
+    const selection =
+      newSelection || this.selection?.length || [this.bufferSelection].length;
+
+    return (
+      selection &&
+      this.filter.page > 0 &&
+      !this.filter.hasNext() &&
+      selection === this.files.length + this.folders.length
+    );
+  };
+
+  resetFilterPage = () => {
+    let newFilter;
+    newFilter = this.filter.clone();
+    newFilter.page--;
+
+    return newFilter;
+  };
+
   fetchFiles = (
     folderId,
     filter,
@@ -344,6 +364,8 @@ class FilesStore {
           const isRecycleBinFolder =
             data.current.rootFolderType === FolderType.TRASH;
 
+          !isRecycleBinFolder && this.checkUpdateNode(data, folderId);
+
           if (!isRecycleBinFolder && withSubfolders) {
             const path = data.pathParts.slice(0);
             const foldersCount = data.current.foldersCount;
@@ -374,7 +396,7 @@ class FilesStore {
           const selectedFolder = {
             selectedFolder: { ...this.selectedFolderStore },
           };
-          this.createThumbnails();
+          this.viewAs === "tile" && this.createThumbnails();
           return Promise.resolve(selectedFolder);
         })
         .catch((err) => {
@@ -395,6 +417,37 @@ class FilesStore {
         });
 
     return request();
+  };
+
+  checkUpdateNode = async (data, folderId) => {
+    const { treeFolders, getSubfolders } = this.treeFoldersStore;
+    const { pathParts, current } = data;
+
+    if (current.parentId === 0) return;
+
+    const somePath = pathParts.slice(0);
+    const path = pathParts.slice(0);
+    let newItems = treeFolders;
+
+    while (somePath.length !== 1) {
+      const folderItem = newItems.find((x) => x.id === somePath[0]);
+      newItems = folderItem?.folders
+        ? folderItem.folders
+        : somePath.length > 1
+        ? []
+        : null;
+      if (!newItems) {
+        return;
+      }
+
+      somePath.shift();
+    }
+
+    if (!newItems.find((x) => x.id == folderId)) {
+      path.splice(pathParts.length - 1, 1);
+      const subfolders = await getSubfolders(current.parentId);
+      loopTreeFolders(path, treeFolders, subfolders, 0);
+    }
   };
 
   isFileSelected = (fileId, parentId) => {

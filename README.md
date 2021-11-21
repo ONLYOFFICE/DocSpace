@@ -2,7 +2,7 @@
 Platform for building your own scalable online office with ONLYOFFICE modules
 
 ## Overview
-App Server is a platform for building your own online office by connecting ONLYOFFICE modules packed as separate apps.
+App Server is a platform for building your own online office by connecting ONLYOFFICE modules packaged as separate apps.
 
 ## How to install
 [coming soon]
@@ -35,4 +35,4 @@ Components source code - [https://github.com/ONLYOFFICE/AppComponents](https://g
 
 ## User feedback and support
 
-If you have any problems or question about App Server, use the issues section here, in this repository.
+If you have any problems or questions about App Server, use the issues section here, in this repository.

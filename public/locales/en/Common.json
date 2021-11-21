@@ -14,6 +14,7 @@
   "CloseButton": "Close",
   "ComingSoon": "Coming soon",
   "CommunityProduct": "Community",
+  "Confirmation": "Confirmation",
   "ContinueButton": "Continue",
   "CopyEmailAndPassword": "Copy email and password",
   "CountPerPage": "{{count}} per page",
@@ -104,5 +105,6 @@
   "Audio": "Audio",
   "Department": "Department",
   "Role": "Role",
-  "Phone": "Phone"
+  "Phone": "Phone",
+  "Owner": "Owner"
 }

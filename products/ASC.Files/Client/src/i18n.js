@@ -11,7 +11,7 @@ const lng = localStorage.getItem(LANGUAGE) || "en";
 newInstance.use(Backend).init({
   lng: lng,
   fallbackLng: "en",
-  load: "all",
+  load: "currentOnly",
   //debug: true,
 
   interpolation: {

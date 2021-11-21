@@ -65,8 +65,7 @@ class FilesActionStore {
     fetchFiles(this.selectedFolderStore.id, filter, true, true).finally(() => {
       this.uploadDataStore.clearActiveOperations(fileIds, folderIds);
       setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-    });
-  };
+    });  };
 
   deleteAction = async (translations, newSelection = null) => {
     const { isRecycleBinFolder, isPrivacyFolder } = this.treeFoldersStore;
@@ -122,8 +121,19 @@ class FilesActionStore {
               icon: "trash",
               label: translations.deleteOperation,
             };
-            await loopFilesOperations(data, pbData);
+            await this.uploadDataStore.loopFilesOperations(data, pbData);
             this.updateCurrentFolder(fileIds, folderIds);
+            if (isRecycleBinFolder) {
+              return toastr.success(translations.deleteFromTrash);
+          }
+
+            if (selection.length > 1) {
+              return toastr.success(translations.deleteSelectedElem);
+            }
+            if (selection[0].fileExst) {
+              return toastr.success(translations.FileRemoved);
+            }
+            return toastr.success(translations.FolderRemoved);
           }
         );
       } catch (err) {
@@ -170,9 +180,9 @@ class FilesActionStore {
           icon: "trash",
           label: translations.deleteOperation,
         };
-        await loopFilesOperations(data, pbData);
-        this.updateCurrentFolder(fileIds, folderIds);
-      });
+        await this.uploadDataStore.loopFilesOperations(data, pbData);
+        toastr.success(translations.successOperation);
+        this.updateCurrentFolder(fileIds, folderIds);      });
     } catch (err) {
       clearActiveOperations(fileIds, folderIds);
       setSecondaryProgressBarData({
@@ -183,8 +193,6 @@ class FilesActionStore {
       return toastr.error(err.message ? err.message : err);
     }
   };
-
-  downloadFilesOperation = () => {};
 
   downloadFiles = async (fileConvertIds, folderIds, label) => {
     const {
@@ -374,6 +382,8 @@ class FilesActionStore {
       label: translations.deleteOperation,
     };
 
+    const selectionFilesLength = 1;
+
     if (isFile) {
       addActiveItems([itemId]);
       this.isMediaOpen();
@@ -548,6 +558,7 @@ class FilesActionStore {
   markAsRead = (folderIds, fileId, item) => {
     const {
       setSecondaryProgressBarData,
+      clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
     setSecondaryProgressBarData({
@@ -564,7 +575,8 @@ class FilesActionStore {
         await this.uploadDataStore.loopFilesOperations(data, pbData);
       })
       .then(() => item && this.setNewBadgeCount(item))
-      .catch((err) => toastr.error(err));
+      .catch((err) => toastr.error(err))
+      .finally(() => setTimeout(() => clearSecondaryProgressData(), TIMEOUT));
   };
 
   moveDragItems = (destFolderId, folderTitle, translations) => {
@@ -772,6 +784,8 @@ class FilesActionStore {
                   deleteOperation: t("Translations:DeleteOperation"),
                   deleteFromTrash: t("Translations:DeleteFromTrash"),
                   deleteSelectedElem: t("Translations:DeleteSelectedElem"),
+                  FileRemoved: t("Home:FileRemoved"),
+                  FolderRemoved: t("Home:FolderRemoved"),
                 };
 
                 this.deleteAction(translations).catch((err) =>

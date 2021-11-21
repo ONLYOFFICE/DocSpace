@@ -32,6 +32,7 @@ export class CustomScrollbars extends React.Component {
         className={className}
       >
         {children}
+        <div className="additional-scroll-height"></div>
       </Scrollbar>
     );
   }

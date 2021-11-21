@@ -1,1 +1,23 @@
-{}
+{
+  "AddAccount": "Adaugă cont",
+  "ArchivingData": "Se arhiveaza datele",
+  "ConnectingAccount": "Conectare cont",
+  "Copy": "Copiere",
+  "CopyOperation": "Copiază",
+  "DeleteFromTrash": "Elementele selectate au fost șterse cu succes din Coșul de gunoi",
+  "DeleteOperation": "Ștergere în curs de desfășurare",
+  "DeleteSelectedElem": "Elementele selectate au fost șterse cu succes",
+  "DeleteThirdParty": "Ștergere serviciu terță",
+  "DownloadAs": "Descărcare ca",
+  "EncryptedFileSaving": "Salvarea fișierului criptat",
+  "Files": "Fișiere",
+  "Folders": "Dosare",
+  "LinkCopySuccess": "Link-ul a fost copiat în clipboard",
+  "Move": "Mută",
+  "MoveToOperation": "Mutare",
+  "OwnerChange": "Schimbare proprietar",
+  "Presentations": "Prezentări",
+  "Restore": "Restabilire",
+  "Spreadsheets": "Foi de calcul",
+  "ThirdPartyInfo": "Modificarea informațiilor despre servicii terțe"
+}

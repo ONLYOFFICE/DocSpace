@@ -2,7 +2,7 @@
   "ChangeEmailTitle": "Zmeniť email",
   "Domain": "Doména",
   "ErrorEmail": "Neplatná e-mailová adresa",
-  "ErrorLicenseRead": "Na {{email}} (emailovú adresu majiteľa portálu) bol zaslaný potvrdzujúci odkaz.",
+  "ErrorLicenseRead": "Prijmite licenčnú zmluvu",
   "ErrorLicenseTitle": "Chyba načítavania",
   "ErrorParamsBody": "Boli zadané nesprávne údaje:",
   "ErrorPassword": "Heslo nespĺňa požiadavky",

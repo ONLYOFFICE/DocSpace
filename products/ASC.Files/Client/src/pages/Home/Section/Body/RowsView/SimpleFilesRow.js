@@ -144,7 +144,7 @@ const SimpleFilesRow = (props) => {
   );
 
   return (
-    <StyledWrapper ref={props.selectableRef}>
+    <StyledWrapper>
       <DragAndDrop
         data-title={item.title}
         value={value}

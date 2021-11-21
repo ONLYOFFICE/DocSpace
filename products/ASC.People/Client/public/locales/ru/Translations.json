@@ -1,5 +1,6 @@
 {
   "AddMembers": "Добавить участников",
+  "Birthdate": "Дата рождения",
   "Comments": "Комментарии",
   "DeleteSelfProfile": "Удалить профиль",
   "DisabledEmployeeStatus": "Заблокирован",
@@ -24,7 +25,6 @@
   "Sex": "Пол",
   "SocialProfiles": "Социальные профили",
   "SuccessChangeUserStatus": "Статус пользователя успешно изменен",
-  "SuccessSentInvitation": "Приглашение было успешно отправлено",
   "SuccessDeletePersonalData": "Персональные данные успешно удалены",
-  "Birthdate": "Дата рождения"
+  "SuccessSentInvitation": "Приглашение было успешно отправлено"
 }
