@@ -171,7 +171,7 @@ namespace ASC.Web.Studio.Core
             ValidAuthKeyInterval = GetAppSettings("auth.validinterval", TimeSpan.FromHours(1));
 
             SalesEmail = GetAppSettings("web.payment.email", "sales@onlyoffice.com");
-            web_autotest_secret_email = (configuration["web.autotest.secret-email"] ?? "").Trim();
+            web_autotest_secret_email = (configuration["web:autotest:secret-email"] ?? "").Trim();
 
             RecaptchaPublicKey = GetAppSettings("web.recaptcha.public-key", null);
             RecaptchaPrivateKey = GetAppSettings("web.recaptcha.private-key", "");
