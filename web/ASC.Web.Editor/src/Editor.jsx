@@ -74,9 +74,10 @@ toast.configure();
 
 const Editor = () => {
   const urlParams = getObjectByLocation(window.location);
-  const fileId = urlParams
+  const decodedId = urlParams
     ? urlParams.fileId || urlParams.fileid || null
     : null;
+  const fileId = encodeURIComponent(decodedId);
   const version = urlParams ? urlParams.version || null : null;
   const doc = urlParams ? urlParams.doc || null : null;
   const isDesktop = window["AscDesktopEditor"] !== undefined;

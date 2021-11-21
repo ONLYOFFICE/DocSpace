@@ -1,4 +1,8 @@
 {
   "Account": "Compte",
-  "Login": "Identifiant"
+  "ConnectFolderTitle": "Titre du dossier",
+  "ConnectionUrl": "URL de connexion",
+  "ConnectMakeShared": "Partager et mettre dans le dossier \"commun\".",
+  "Login": "Identifiant",
+  "Reconnect": "Reconnexion"
 }

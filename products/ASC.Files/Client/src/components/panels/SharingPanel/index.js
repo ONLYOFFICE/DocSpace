@@ -55,6 +55,8 @@ class SharingPanelComponent extends React.Component {
       accessOptions: [],
       filesOwnerId: null,
       showEmbeddingContent: false,
+      isUpdated: false,
+      isLoading: false,
     };
 
     this.ref = React.createRef();
@@ -70,7 +72,7 @@ class SharingPanelComponent extends React.Component {
   };
 
   onToggleLink = (item) => {
-    const { shareDataItems } = this.state;
+    const { shareDataItems, isUpdated } = this.state;
     const { DenyAccess, ReadOnly } = ShareAccessRights;
 
     const rights = item.access !== DenyAccess ? DenyAccess : ReadOnly;
@@ -80,6 +82,7 @@ class SharingPanelComponent extends React.Component {
     this.setState({
       shareDataItems: newDataItems,
       showEmbeddingContent: false,
+      isUpdated: !isUpdated,
     });
   };
 
@@ -96,6 +99,8 @@ class SharingPanelComponent extends React.Component {
   };
 
   onSaveClick = () => {
+
+
     const {
       baseShareData,
       isNotifyUsers,
@@ -176,8 +181,28 @@ class SharingPanelComponent extends React.Component {
     const ownerId =
       filesOwnerId !== owner.sharedTo.id ? owner.sharedTo.id : null;
 
-    setIsLoading(true);
+    this.setShareInfo(folderIds, fileIds, share, externalAccess, ownerId);
+  };
+
+  setShareInfo = (folderIds, fileIds, share, externalAccess, ownerId) => {
+    const { isNotifyUsers, message } = this.state;
+
+    const {
+      selection,
+      isPrivacy,
+      replaceFileStream,
+      t,
+      uploadPanelVisible,
+      updateUploadedItem,
+      uploadSelection,
+      isDesktop,
+      setEncryptionAccess,
+      setShareFiles,
+      onSuccess,
+    } = this.props;
+
     this.onClose();
+
     setShareFiles(
       folderIds,
       fileIds,
@@ -229,8 +254,11 @@ class SharingPanelComponent extends React.Component {
         setIsLoading(false);
       });
   };
+
   onNotifyUsersChange = () =>
-    this.setState({ isNotifyUsers: !this.state.isNotifyUsers });
+    this.setState({
+      isNotifyUsers: !this.state.isNotifyUsers,
+    });
 
   onShowUsersPanel = () =>
     this.setState({
@@ -246,7 +274,7 @@ class SharingPanelComponent extends React.Component {
 
     if (elem.access !== +access) {
       elem.access = +access;
-      this.setState({ shareDataItems });
+      this.setState({ shareDataItems, isUpdated: true });
     }
   };
 
@@ -288,19 +316,30 @@ class SharingPanelComponent extends React.Component {
   };
 
   getShareData = () => {
+    const returnValue = this.getData();
+    const folderId = returnValue[0];
+    const fileId = returnValue[1];
+
+    if (folderId.length !== 0 || fileId.length !== 0) {
+      this.setState(
+        {
+          isLoading: true,
+        },
+        function () {
+          this.getShareUsers(folderId, fileId);
+        }
+      );
+    }
+  };
+
+  getShareUsers = (folderId, fileId) => {
     const {
       getAccessOption,
       getExternalAccessOption,
       selection,
-      setIsLoading,
       getShareUsers,
     } = this.props;
 
-    const returnValue = this.getData();
-    const folderId = returnValue[0];
-    const fileId = returnValue[1];
-    if (folderId.length !== 0 || fileId.length !== 0) {
-      !isMobile && setIsLoading(true);
       getShareUsers(folderId, fileId)
         .then((shareDataItems) => {
           const baseShareData = JSON.parse(JSON.stringify(shareDataItems));
@@ -324,8 +363,11 @@ class SharingPanelComponent extends React.Component {
           toastr.error(err);
           this.onClose();
         })
-        .finally(() => !isMobile && setIsLoading(false));
-    }
+      .finally(() =>
+        this.setState({
+          isLoading: false,
+        })
+      );
   };
 
   getInternalLink = () => {
@@ -441,7 +483,6 @@ class SharingPanelComponent extends React.Component {
       selection,
       groupsCaption,
       canShareOwnerChange,
-      isLoading,
       uploadPanelVisible,
       documentTitle,
       sharingPanelVisible,
@@ -461,6 +502,8 @@ class SharingPanelComponent extends React.Component {
       accessOptions,
       externalAccessOptions,
       showEmbeddingContent,
+      isUpdated,
+      isLoading,
     } = this.state;
 
     const visible = sharingPanelVisible;
@@ -528,7 +571,7 @@ class SharingPanelComponent extends React.Component {
             size="big"
             primary
             onClick={this.onSaveClick}
-            isDisabled={isLoading}
+            isDisabled={isLoading || !isUpdated}
           />
         </ModalDialog.Footer>
       </ModalDialog>
@@ -743,11 +786,9 @@ const SharingPanel = inject(
       setFolder,
       getShareUsers,
       setShareFiles,
-      setIsLoading,
       setSelection,
       getFileInfo,
       getFolderInfo,
-      isLoading,
       setBufferSelection,
     } = filesStore;
     const { isPrivacyFolder } = treeFoldersStore;
@@ -774,13 +815,11 @@ const SharingPanel = inject(
         : selection.length
         ? selection
         : [bufferSelection],
-      isLoading,
       isPrivacy: isPrivacyFolder,
       isFolderActions,
       selectedUploadFile,
       canShareOwnerChange,
 
-      setIsLoading,
       setSharingPanelVisible,
       setIsFolderActions,
       setSelection,

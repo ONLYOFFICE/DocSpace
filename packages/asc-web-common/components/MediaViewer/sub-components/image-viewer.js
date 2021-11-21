@@ -13,6 +13,7 @@ import MediaDownloadIcon from "../../../../../public/images/media.download.react
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import MediaScrollButton from "./scroll-button";
 import ControlBtn from "./control-btn";
+import equal from "fast-deep-equal/react";
 
 const StyledMediaZoomInIcon = styled(MediaZoomInIcon)`
   ${commonIconsStyles}
@@ -228,6 +229,9 @@ class ImageViewer extends React.Component {
       document.getElementsByClassName("iconContainer reset")[0].click();
   }
 
+  shouldComponentUpdate(nextProps) {
+    return !equal(this.props, nextProps);
+  }
   render() {
     const {
       className,

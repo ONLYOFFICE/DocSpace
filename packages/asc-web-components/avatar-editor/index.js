@@ -72,30 +72,12 @@ class AvatarEditor extends React.Component {
   };
 
   onSaveButtonClick = () => {
+    this.props.onSave && this.props.onSave();
     this.avatarEditorBodyRef.current.onSaveImage();
-    //this.saveAvatar();
   };
 
   onCancelButtonClick = () => {
     this.props.onCancel();
-  };
-
-  saveAvatar = () => {
-    if (!this.state.existImage) {
-      this.props.onSave(this.state.existImage);
-      return;
-    }
-
-    this.props.onSave(
-      this.state.existImage,
-      {
-        x: this.state.x,
-        y: this.state.y,
-        width: this.state.width,
-        height: this.state.height,
-      },
-      this.state.croppedImage
-    );
   };
 
   onClose = () => {
@@ -156,7 +138,6 @@ class AvatarEditor extends React.Component {
             onLoadFileError={this.onLoadFileError}
             onLoadFile={this.onLoadFile}
             deleteImage={this.onDeleteImage}
-            saveAvatar={this.saveAvatar}
             maxSize={maxSize * 1000000} // megabytes to bytes
             accept={accept}
             image={image}
@@ -189,7 +170,6 @@ class AvatarEditor extends React.Component {
           onLoadFileError={this.onLoadFileError}
           onLoadFile={this.onLoadFile}
           deleteImage={this.onDeleteImage}
-          saveAvatar={this.saveAvatar}
           maxSize={maxSize * 1000000} // megabytes to bytes
           accept={accept}
           image={image}

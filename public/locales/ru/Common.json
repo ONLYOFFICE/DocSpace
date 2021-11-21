@@ -14,6 +14,7 @@
   "CloseButton": "Закрыть",
   "ComingSoon": "Скоро появится",
   "CommunityProduct": "Сообщество",
+  "Confirmation": "Подтверждение",
   "ContinueButton": "Продолжить",
   "CopyEmailAndPassword": "Скопировать email и пароль",
   "CountPerPage": "{{count}} на странице",
@@ -104,5 +105,6 @@
   "Audio": "Аудио",
   "Department": "Отдел",
   "Role": "Позиция",
-  "Phone": "Телефон"
+  "Phone": "Телефон",
+  "Owner": "Владелец"
 }
