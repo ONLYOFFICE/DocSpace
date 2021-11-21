@@ -117,6 +117,7 @@ class ArticleMainButtonContent extends React.Component {
           isDropdown={true}
           text={t("Common:Actions")}
           model={menuModel}
+            className="main-button_invitation-link"
         />
         {dialogVisible && (
           <InviteDialog

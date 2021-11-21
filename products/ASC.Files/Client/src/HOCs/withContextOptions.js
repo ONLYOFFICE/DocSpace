@@ -134,7 +134,7 @@ export default function withContextOptions(WrappedComponent) {
         ? combineUrl(
             AppServerConfig.proxyURL,
             config.homepage,
-            `/doceditor?fileId=${id}&action=view`
+            `/doceditor?fileId=${encodeURIComponent(id)}&action=view`
           )
         : null;
 

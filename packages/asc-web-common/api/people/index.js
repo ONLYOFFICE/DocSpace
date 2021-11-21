@@ -2,6 +2,7 @@ import { request } from "../client";
 //import axios from "axios";
 import Filter from "./filter";
 import * as fakePeople from "./fake";
+import { Encoder } from "../../utils/encoder";
 
 export function getUserList(filter = Filter.getDefault(), fake = false) {
   if (fake) {
@@ -18,6 +19,14 @@ export function getUserList(filter = Filter.getDefault(), fake = false) {
   return request({
     method: "get",
     url: `/people${params}`,
+  }).then((res) => {
+    res.items = res.items.map((user) => {
+      if (user && user.displayName) {
+        user.displayName = Encoder.htmlDecode(user.displayName);
+      }
+      return user;
+    });
+    return res;
   });
 }
 
@@ -26,6 +35,11 @@ export function getUser(userName = null) {
     method: "get",
     url: `/people/${userName || "@self"}.json`,
     skipUnauthorized: true,
+  }).then((user) => {
+    if (user && user.displayName) {
+      user.displayName = Encoder.htmlDecode(user.displayName);
+    }
+    return user;
   });
 }
 export function getUserPhoto(userId) {
@@ -44,7 +58,12 @@ export function createUser(data, confirmKey = null) {
 
   if (confirmKey) options.headers = { confirm: confirmKey };
 
-  return request(options);
+  return request(options).then((user) => {
+    if (user && user.displayName) {
+      user.displayName = Encoder.htmlDecode(user.displayName);
+    }
+    return user;
+  });
 }
 
 export function changePassword(userId, passwordHash, key) {
@@ -82,6 +101,11 @@ export function updateUser(data) {
     method: "put",
     url: `/people/${data.id}`,
     data,
+  }).then((user) => {
+    if (user && user.displayName) {
+      user.displayName = Encoder.htmlDecode(user.displayName);
+    }
+    return user;
   });
 }
 
@@ -156,6 +180,11 @@ export function updateUserCulture(id, cultureName) {
     method: "put",
     url: `/people/${id}/culture`,
     data: { cultureName },
+  }).then((user) => {
+    if (user && user.displayName) {
+      user.displayName = Encoder.htmlDecode(user.displayName);
+    }
+    return user;
   });
 }
 

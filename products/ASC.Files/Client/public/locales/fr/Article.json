@@ -1,1 +1,8 @@
-{}
+{
+  "NewDocument": "Nouveau document",
+  "NewFolder": "Nouveau dossier",
+  "NewPresentation": "Nouvelle présentation",
+  "NewSpreadsheet": "Nouvelle feuille de calcul",
+  "UploadFiles": "Télécharger les fichiers",
+  "UploadFolder": "Télécharger le dossier"
+}
