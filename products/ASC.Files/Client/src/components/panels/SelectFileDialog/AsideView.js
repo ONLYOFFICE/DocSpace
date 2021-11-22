@@ -33,7 +33,7 @@ const SelectFileDialogAsideView = ({
   isNextPageLoading,
   loadNextPage,
   selectedFolder,
-  header,
+  titleFilesList,
   loadingText,
   selectedFile,
   onClickSave,
@@ -50,7 +50,7 @@ const SelectFileDialogAsideView = ({
   const onSetLoadingData = (loading) => {
     setIsLoadingData(loading);
   };
-  const isHeaderChildren = !!header;
+  const isHeaderChildren = !!titleFilesList;
 
   return (
     <StyledAsidePanel visible={isPanelVisible}>
@@ -73,10 +73,7 @@ const SelectFileDialogAsideView = ({
             displayType={DISPLAY_TYPE}
           >
             <div className="select-file-dialog_aside-body_wrapper">
-              <div className="select-file-dialog_aside-children">{header}</div>
-              {/* <Text fontWeight="600" fontSize="14px">
-                {t("Translations:SelectFolder")}
-              </Text> */}
+              <div className="select-file-dialog_aside-children"></div>
               <div className="select-file-dialog_aside_body">
                 <SelectFolderInput
                   onClickInput={onClickInput}
@@ -97,6 +94,11 @@ const SelectFileDialogAsideView = ({
                   showButtons
                   selectionButtonPrimary
                 />
+                {titleFilesList && (
+                  <Text className="modal-dialog-filter-title">
+                    {titleFilesList}
+                  </Text>
+                )}
                 <div className="select-file-dialog_aside_body-files_list">
                   {selectedFolder && !isLoadingData ? (
                     <FilesListBody

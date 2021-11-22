@@ -259,7 +259,7 @@ class SelectFileDialogBody extends React.Component {
       zIndex,
       foldersType,
       withoutProvider,
-      header,
+      titleFilesList,
       loadingLabel,
       folderId,
       onSetFileName,
@@ -311,7 +311,7 @@ class SelectFileDialogBody extends React.Component {
         displayType={displayType}
         isTranslationsReady={tReady}
         passedId={passedId}
-        header={header}
+        titleFilesList={titleFilesList}
         isAvailableFolderList={isAvailableFolderList}
         primaryButtonName={this.buttonName}
       />
@@ -335,7 +335,7 @@ class SelectFileDialogBody extends React.Component {
         selectedFile={selectedFile}
         folderId={folderId}
         passedId={passedId}
-        header={header}
+        titleFilesList={titleFilesList}
         primaryButtonName={this.buttonName}
       />
     );
@@ -356,12 +356,13 @@ SelectFileDialogBody.propTypes = {
   withoutProvider: PropTypes.bool,
   creationButtonPrimary: PropTypes.bool,
   headerName: PropTypes.string,
+  titleFilesList: PropTypes.string,
   zIndex: PropTypes.number,
 };
 
 SelectFileDialogBody.defaultProps = {
   folderId: "",
-  header: "",
+  titleFilesList: "",
   withoutProvider: false,
   zIndex: 310,
   creationButtonPrimary: false,

@@ -111,7 +111,7 @@ class ModalDialog extends React.Component {
       isLoading,
       contentPaddingBottom,
       removeScroll,
-      modalDialogHeight,
+      modalLoaderBodyHeight,
     } = this.props;
 
     let header = null;
@@ -156,7 +156,7 @@ class ModalDialog extends React.Component {
               displayType={this.state.displayType}
             >
               {isLoading ? (
-                <Loaders.DialogLoader bodyHeight={modalDialogHeight} />
+                <Loaders.DialogLoader bodyHeight={modalLoaderBodyHeight} />
               ) : (
                 <>
                   <StyledHeader>
