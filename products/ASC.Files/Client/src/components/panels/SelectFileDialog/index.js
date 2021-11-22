@@ -11,7 +11,7 @@ import SelectFileDialogModalView from "./ModalView";
 import SelectFileDialogAsideView from "./AsideView";
 
 import utils from "@appserver/components/utils";
-import SelectFolderDialog from "../SelectFolderDialog";
+//import SelectFolderDialog from "../SelectFolderDialog";
 import { getFolder } from "@appserver/common/api/files";
 import { FilterType } from "@appserver/common/constants";
 
@@ -162,7 +162,7 @@ class SelectFileDialogBody extends React.Component {
   };
 
   onSelectFolder = (id) => {
-    const { setFolderId, setExpandedPanelKeys } = this.props;
+    const { setFolderId } = this.props;
 
     if (id) {
       setFolderId(id);
@@ -202,11 +202,11 @@ class SelectFileDialogBody extends React.Component {
   };
 
   loadNextPage = () => {
-    const {
-      setSelectedNode,
-      setSelectedFolder,
-      setExpandedPanelKeys,
-    } = this.props;
+    // const {
+    //   setSelectedNode,
+    //   setSelectedFolder,
+    //   setExpandedPanelKeys,
+    // } = this.props;
     const { selectedFolder, page } = this.state;
 
     if (this._isLoadNextPage) return;

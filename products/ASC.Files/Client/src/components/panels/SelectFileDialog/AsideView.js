@@ -1,18 +1,10 @@
 import React, { useState } from "react";
-import {
-  StyledAsidePanel,
-  StyledSelectFilePanel,
-  StyledHeaderContent,
-} from "../StyledPanels";
+import { StyledAsidePanel, StyledSelectFilePanel } from "../StyledPanels";
 import Text from "@appserver/components/text";
 import SelectFolderInput from "../SelectFolderInput";
 import FilesListBody from "./FilesListBody";
-import Aside from "@appserver/components/aside";
-import Heading from "@appserver/components/heading";
-import Backdrop from "@appserver/components/backdrop";
 import Button from "@appserver/components/button";
 import Loaders from "@appserver/common/components/Loaders";
-import Loader from "@appserver/components/loader";
 import EmptyContainer from "../../EmptyContainer/EmptyContainer";
 import ModalDialog from "@appserver/components/modal-dialog";
 const DISPLAY_TYPE = "aside";
@@ -58,8 +50,6 @@ const SelectFileDialogAsideView = ({
         visible={isPanelVisible}
         zIndex={zIndex}
         onClose={onClose}
-        //className="select-file-modal-dialog"
-        //style={{ maxWidth: "890px" }}
         contentHeight="100%"
         displayType={DISPLAY_TYPE}
         removeScroll

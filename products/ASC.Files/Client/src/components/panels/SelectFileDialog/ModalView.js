@@ -1,18 +1,14 @@
 import React from "react";
-import { Provider as MobxProvider } from "mobx-react";
-import stores from "../../../store/index";
 import { StyledAsidePanel, StyledSelectFilePanel } from "../StyledPanels";
 import ModalDialog from "@appserver/components/modal-dialog";
 import SelectFolderDialog from "../SelectFolderDialog";
 import FolderTreeBody from "../../FolderTreeBody";
 import FilesListBody from "./FilesListBody";
 import Button from "@appserver/components/button";
-import Loader from "@appserver/components/loader";
 import Text from "@appserver/components/text";
 import { isArrayEqual } from "@appserver/components/utils/array";
 import { FolderType } from "@appserver/common/constants";
 import { getFoldersTree } from "@appserver/common/api/files";
-import Loaders from "@appserver/common/components/Loaders";
 const exceptSortedByTagsFolders = [
   FolderType.Recent,
   FolderType.TRASH,

@@ -49,7 +49,7 @@ class SelectFolderModalDialog extends React.Component {
       selectionButtonPrimary,
       t,
     } = this.props;
-   
+
     const isNeedFolder = id ? true : isSetFolderImmediately;
     this.buttonName = selectionButtonPrimary
       ? t("Select")
@@ -301,7 +301,7 @@ class SelectFolderModalDialog extends React.Component {
       });
   };
   setSelectedFolder = async (id) => {
-    const { onSetBaseFolderPath, selectionButtonPrimary } = this.props;
+    const { onSetBaseFolderPath } = this.props;
 
     let folder,
       folderPath,

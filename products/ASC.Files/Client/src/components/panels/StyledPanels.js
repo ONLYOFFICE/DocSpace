@@ -613,9 +613,6 @@ const StyledSelectFolderPanel = styled.div`
     height: ${(props) => (props.displayType === "aside" ? "100%" : "291px")};
   }
 
-  /* .rc-tree-child-tree-open {
-    width: fit-content;
-  } */
   .select-folder-dialog-buttons-save {
     margin-right: 8px;
   }
@@ -653,13 +650,6 @@ const StyledSelectFolderPanel = styled.div`
           `}
   }
 
-  /* span.rc-tree-title {
-    max-width: ${(props) =>
-    props.displayType === "aside" ? "243px" : "466px"};
-  } */
-  /* .rc-tree-treenode-selected {
-    max-width: 260px;
-  } */
   .files-tree-menu {
     margin-top: 0 !important;
   }
@@ -710,12 +700,8 @@ const StyledSelectFilePanel = styled.div`
     height: 100%;
   }
 
-  /* .select-file-dialog_aside-children {
-    ${(props) => props.isHeaderChildren && `padding-bottom: 16px;`}
-  } */
   .select-file-dialog_aside_body,
   .select-file-dialog_aside_body_files-list {
-    //margin-top: 16px;
     height: 100%;
     width: 293px;
   }
@@ -758,10 +744,6 @@ const StyledSelectFilePanel = styled.div`
     margin-right: 10px;
   }
 
-  /* .modal-dialog_children {
-    grid-area: children;
-    ${(props) => props.isHeaderChildren && `padding: 16px 0;`}
-  } */
   .modal-dialog_tree-body {
     grid-area: tree;
   }
@@ -773,7 +755,6 @@ const StyledSelectFilePanel = styled.div`
     display: grid;
     grid-template-columns: 212px 493px;
     height: 295px;
-    // grid-column-gap: 8px;
     grid-template-areas: "tree files-list";
     .modal-dialog_tree-body {
       padding-top: 0;
@@ -818,7 +799,6 @@ const StyledFilesList = styled.div`
   }
 
   .files-list_file-owner {
-    //margin-left: auto;
     max-width: 213px;
     overflow: hidden;
     white-space: nowrap;
@@ -854,7 +834,6 @@ const StyledFilesList = styled.div`
   }
   .select-file-dialog_checked {
     grid-area: checked-button;
-    //padding-left: 6px;
   }
   .files-list_file-children_wrapper {
     grid-area: owner-name;
