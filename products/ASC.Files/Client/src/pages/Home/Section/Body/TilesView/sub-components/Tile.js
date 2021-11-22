@@ -43,6 +43,7 @@ const checkedStyle = css`
 const StyledTile = styled.div`
   cursor: ${(props) => (!props.isRecycleBin ? "pointer" : "default")};
   min-height: 57px;
+  box-sizing: border-box;
   width: 100%;
   border: 1px solid #d0d5da;
   border-radius: 3px;
@@ -196,7 +197,7 @@ const StyledFileTileTop = styled.div`
   justify-content: space-between;
   align-items: baseline;
   background-color: #f8f9f9;
-  padding: 13px;
+  padding-top: 21px;
   height: ${(props) => (props.checked || props.isActive ? "156px" : "156px")};
   position: relative;
   border-bottom: ${(props) =>
@@ -213,6 +214,11 @@ const StyledFileTileTop = styled.div`
     bottom: 0;
     margin: auto;
     z-index: 0;
+
+    min-width: 208px;
+  }
+
+  .temporary-icon > .injected-svg {
     margin-bottom: 16px;
   }
 `;
@@ -221,7 +227,7 @@ const StyledFileTileBottom = styled.div`
   ${FlexBoxStyles}
   padding: 9px 10px;
   padding-right: 0;
-  min-height: 56px;
+  height: 56px;
   box-sizing: border-box;
 `;
 

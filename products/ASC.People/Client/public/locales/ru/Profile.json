@@ -3,6 +3,7 @@
   "ChangesApplied": "Изменения успешно применены",
   "Connect": "Подключить",
   "ContactInformation": "Контактные данные",
+  "CountCodesRemaining": "оставшиеся коды",
   "Disconnect": "Отключить",
   "EditPhoto": "Изменить фотографию",
   "EditSubscriptionsBtn": "Изменить подписки",
@@ -13,10 +14,8 @@
   "PhoneLbl": "Основной телефон",
   "ProviderSuccessfullyConnected": "Провайдер успешно подключен",
   "ProviderSuccessfullyDisconnected": "Провайдер успешно отключен",
-  "Subscriptions": "Подписки",
-
-  "TwoFactorDescription": "Двухфакторная аутентификация через приложение для генерации кодов включена для всех пользователей администратором облачного сервиса.",
   "ShowBackupCodes": "Показать резервные коды",
-  "CountCodesRemaining": "кодов осталось",
-  "TfaLoginSettings": "Настройки входа"
+  "Subscriptions": "Подписки",
+  "TfaLoginSettings": "Настройки входа",
+  "TwoFactorDescription": "Двухфакторная аутентификация с помощью приложения для генерации кодов включена администратором для всех пользователей."
 }
