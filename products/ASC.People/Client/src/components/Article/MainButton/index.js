@@ -108,6 +108,22 @@ class ArticleMainButtonContent extends React.Component {
         label: t("Translations:InviteLinkTitle"),
         onClick: this.onInvitationDialogClick,
       },
+      /* {
+        icon: combineUrl(
+          AppServerConfig.proxyURL,
+          "/static/images/plane.react.svg"
+        ),
+        label: t("SendInvitesAgain"),
+        onClick: this.onNotImplementedClick.bind(this, t("SendInvitesAgain")),
+      },
+      {
+        icon: combineUrl(
+          AppServerConfig.proxyURL,
+          "/static/images/import.react.svg"
+        ),
+        label: t("ImportPeople"),
+        onClick: this.onImportClick,
+      }, */
     ];
 
     return isAdmin ? (
@@ -117,7 +133,7 @@ class ArticleMainButtonContent extends React.Component {
           isDropdown={true}
           text={t("Common:Actions")}
           model={menuModel}
-            className="main-button_invitation-link"
+          className="main-button_invitation-link"
         />
         {dialogVisible && (
           <InviteDialog
