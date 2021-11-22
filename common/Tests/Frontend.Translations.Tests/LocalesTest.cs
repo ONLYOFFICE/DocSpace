@@ -528,7 +528,7 @@ namespace Frontend.Translations.Tests
                 {
                     var list = lng.Translations
                          .Select(t => t.Key)
-                         .Except(notCommonKeys.Select(k => k.Replace("Translations:", "")))
+                         .Except(notCommonKeys.Select(k => k.Substring(k.IndexOf(":") + 1)))
                          .ToList();
 
                     if (!list.Any())
