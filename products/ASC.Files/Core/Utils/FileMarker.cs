@@ -661,6 +661,20 @@ namespace ASC.Web.Files.Utils
             }
         }
 
+        public async Task RemoveMarkAsNewForAllAsync<T>(FileEntry<T> fileEntry)
+        {
+            List<Guid> userIDs;
+
+            var tagDao = DaoFactory.GetTagDao<T>();
+            var tags = await tagDao.GetTagsAsync(fileEntry.ID, fileEntry.FileEntryType == FileEntryType.File ? FileEntryType.File : FileEntryType.Folder, TagType.New);
+            userIDs = tags.Select(tag => tag.Owner).Distinct().ToList();
+
+            foreach (var userID in userIDs)
+            {
+                await RemoveMarkAsNewAsync(fileEntry, userID);
+            }
+        }
+
         public int GetRootFoldersIdMarkedAsNew<T>(T rootId)
         {
             var fromCache = GetCountFromCahce(rootId);

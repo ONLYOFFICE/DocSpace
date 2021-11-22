@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Api.Core;
 using ASC.Api.Utils;
@@ -202,6 +203,40 @@ namespace ASC.Api.Documents
                 else
                 {
                     parentFolder = folderDao.GetFolder(file.FolderID);
+                    if (!FileSecurity.CanRead(parentFolder))
+                    {
+                        result.FolderId = GlobalFolderHelper.GetFolderShare<T>();
+                    }
+                }
+            }
+
+
+            return result;
+        }
+
+        public async Task<FileWrapper<T>> GetAsync<T>(File<T> file, List<Tuple<FileEntry<T>, bool>> folders = null)
+        {
+            var result = GetFileWrapper(file);
+
+            result.FolderId = file.FolderID;
+            if (file.RootFolderType == FolderType.USER
+                && !Equals(file.RootFolderCreator, AuthContext.CurrentAccount.ID))
+            {
+                result.RootFolderType = FolderType.SHARE;
+                var folderDao = DaoFactory.GetFolderDao<T>();
+                FileEntry<T> parentFolder;
+
+                if (folders != null)
+                {
+                    var folderWithRight = folders.FirstOrDefault(f => f.Item1.ID.Equals(file.FolderID));
+                    if (folderWithRight == null || !folderWithRight.Item2)
+                    {
+                        result.FolderId = GlobalFolderHelper.GetFolderShare<T>();
+                    }
+                }
+                else
+                {
+                    parentFolder = await folderDao.GetFolderAsync(file.FolderID);
                     if (!FileSecurity.CanRead(parentFolder))
                     {
                         result.FolderId = GlobalFolderHelper.GetFolderShare<T>();

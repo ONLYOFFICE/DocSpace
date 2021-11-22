@@ -605,6 +605,46 @@ namespace ASC.Web.Files.Services.DocumentService
             DropUser(docKey, usersDrop, file.ID);
         }
 
+        public async Task CheckUsersForDropAsync<T>(File<T> file)
+        {
+            var fileSecurity = FileSecurity;
+            var sharedLink =
+                fileSecurity.CanEdit(file, FileConstant.ShareLinkId)
+                || fileSecurity.CanCustomFilterEdit(file, FileConstant.ShareLinkId)
+                || fileSecurity.CanReview(file, FileConstant.ShareLinkId)
+                || fileSecurity.CanFillForms(file, FileConstant.ShareLinkId)
+                || fileSecurity.CanComment(file, FileConstant.ShareLinkId);
+
+            var usersDrop = FileTracker.GetEditingBy(file.ID)
+                                       .Where(uid =>
+                                       {
+                                           if (!UserManager.UserExists(uid))
+                                           {
+                                               return !sharedLink;
+                                           }
+                                           return
+                                                !fileSecurity.CanEdit(file, uid)
+                                                && !fileSecurity.CanCustomFilterEdit(file, uid)
+                                                && !fileSecurity.CanReview(file, uid)
+                                                && !fileSecurity.CanFillForms(file, uid)
+                                                && !fileSecurity.CanComment(file, uid);
+                                       })
+                                       .Select(u => u.ToString()).ToArray();
+
+            if (!usersDrop.Any()) return;
+
+            var fileStable = file;
+            if (file.Forcesave != ForcesaveType.None)
+            {
+                var fileDao = DaoFactory.GetFileDao<T>();
+                fileStable = await fileDao.GetFileStableAsync(file.ID, file.Version);
+            }
+
+            var docKey = GetDocKey(fileStable);
+            DropUser(docKey, usersDrop, file.ID);
+        }
+
+
         public bool DropUser(string docKeyForTrack, string[] users, object fileId = null)
         {
             return DocumentServiceConnector.Command(Web.Core.Files.DocumentService.CommandMethod.Drop, docKeyForTrack, fileId, null, users);

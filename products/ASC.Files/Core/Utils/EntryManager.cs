@@ -288,6 +288,12 @@ namespace ASC.Web.Files.Utils
             SetFileStatus(files.OfType<File<string>>().Where(r => !string.IsNullOrEmpty(r.ID)));
         }
 
+        public async Task SetFileStatusAsync(IEnumerable<FileEntry> files)
+        {
+            await SetFileStatusAsync(files.OfType<File<int>>().Where(r => r.ID != 0));
+            await SetFileStatusAsync(files.OfType<File<string>>().Where(r => !string.IsNullOrEmpty(r.ID)));
+        }
+
         public void SetFileStatus<T>(IEnumerable<File<T>> files)
         {
             var tagDao = DaoFactory.GetTagDao<T>();
@@ -945,6 +951,41 @@ namespace ASC.Web.Files.Utils
                 var fileSecurity = FileSecurity;
 
                 var providers = providerDao.GetProvidersInfo(parent.RootFolderType, searchText);
+                folderList = providers
+                    .Select(providerInfo => GetFakeThirdpartyFolder<T>(providerInfo, parent.ID.ToString()))
+                    .Where(r => fileSecurity.CanRead(r)).ToList();
+
+                if (folderList.Any())
+                {
+                    var securityDao = DaoFactory.GetSecurityDao<string>();
+                    securityDao.GetPureShareRecords(folderList)
+                    //.Where(x => x.Owner == SecurityContext.CurrentAccount.ID)
+                    .Select(x => x.EntryId).Distinct().ToList()
+                    .ForEach(id =>
+                    {
+                        folderList.First(y => y.ID.Equals(id)).Shared = true;
+                    });
+                }
+            }
+
+            return folderList;
+        }
+
+        public async Task<IEnumerable<Folder<string>>> GetThirpartyFoldersAsync<T>(Folder<T> parent, string searchText = null)
+        {
+            var folderList = new List<Folder<string>>();
+
+            if ((parent.ID.Equals(GlobalFolderHelper.FolderMy) || parent.ID.Equals(GlobalFolderHelper.FolderCommon))
+                && ThirdpartyConfiguration.SupportInclusion(DaoFactory)
+                && (FilesSettingsHelper.EnableThirdParty
+                    || CoreBaseSettings.Personal))
+            {
+                var providerDao = DaoFactory.ProviderDao;
+                if (providerDao == null) return folderList;
+
+                var fileSecurity = FileSecurity;
+
+                var providers = await providerDao.GetProvidersInfoAsync(parent.RootFolderType, searchText);
                 folderList = providers
                     .Select(providerInfo => GetFakeThirdpartyFolder<T>(providerInfo, parent.ID.ToString()))
                     .Where(r => fileSecurity.CanRead(r)).ToList();
@@ -1778,7 +1819,7 @@ namespace ASC.Web.Files.Utils
             var fileDao = DaoFactory.GetFileDao<T>();
             if (version < 1) throw new ArgumentNullException("version");
 
-            var editLink = FileShareLink.Check(doc, false, fileDao, out var fromFile);
+            var (editLink, fromFile) = await FileShareLink.CheckAsync(doc, false, fileDao);
 
             if (fromFile == null)
                 fromFile = await fileDao.GetFileAsync(fileId);
@@ -1840,9 +1881,9 @@ namespace ASC.Web.Files.Utils
                     newFile.ThumbnailStatus = Thumbnail.Created;
                 }
 
-                FileMarker.MarkAsNew(newFile);
+                await FileMarker.MarkAsNewAsync(newFile);
 
-                EntryStatusManager.SetFileStatus(newFile);
+                await EntryStatusManager.SetFileStatusAsync(newFile);
 
                 newFile.Access = fromFile.Access;
 
@@ -1906,6 +1947,47 @@ namespace ASC.Web.Files.Utils
             }
 
             EntryStatusManager.SetFileStatus(lastVersionFile);
+
+            return lastVersionFile;
+        }
+
+        public async Task<File<T>> CompleteVersionFileAsync<T>(T fileId, int version, bool continueVersion, bool checkRight = true)
+        {
+            var fileDao = DaoFactory.GetFileDao<T>();
+            var fileVersion = version > 0
+                ? await fileDao.GetFileAsync(fileId, version)
+                : await fileDao.GetFileAsync(fileId);
+            if (fileVersion == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
+            if (checkRight && (!FileSecurity.CanEdit(fileVersion) || UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager))) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
+            if (await FileLockedForMeAsync(fileVersion.ID)) throw new Exception(FilesCommonResource.ErrorMassage_LockedFile);
+            if (fileVersion.RootFolderType == FolderType.TRASH) throw new Exception(FilesCommonResource.ErrorMassage_ViewTrashItem);
+            if (fileVersion.ProviderEntry) throw new Exception(FilesCommonResource.ErrorMassage_BadRequest);
+
+            var lastVersionFile = await fileDao.GetFileAsync(fileVersion.ID);
+
+            if (continueVersion)
+            {
+                if (lastVersionFile.VersionGroup > 1)
+                {
+                    await fileDao.ContinueVersionAsync(fileVersion.ID, fileVersion.Version);
+                    lastVersionFile.VersionGroup--;
+                }
+            }
+            else
+            {
+                if (!FileTracker.IsEditing(lastVersionFile.ID))
+                {
+                    if (fileVersion.Version == lastVersionFile.Version)
+                    {
+                        lastVersionFile = await UpdateToVersionFileAsync(fileVersion.ID, fileVersion.Version, null, checkRight);
+                    }
+
+                    fileDao.CompleteVersion(fileVersion.ID, fileVersion.Version);
+                    lastVersionFile.VersionGroup++;
+                }
+            }
+
+            await EntryStatusManager.SetFileStatusAsync(lastVersionFile);
 
             return lastVersionFile;
         }
