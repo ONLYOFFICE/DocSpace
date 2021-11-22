@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import ModalDialog from "@appserver/components/modal-dialog";
 import { StyledAsidePanel, StyledSelectFolderPanel } from "../StyledPanels";

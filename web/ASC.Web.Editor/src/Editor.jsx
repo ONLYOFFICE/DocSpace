@@ -751,19 +751,17 @@ const Editor = () => {
         return i18n.t("DocumentsFileType");
     }
   };
-  const SelectFileHeader = () => {
+  const selectFilesListTitle = () => {
     return (
-      <StyledSelectFile>
-        <Text className="editor-select-file_text">
-          {filesType === mailMergeAction ? (
-            getFileTypeTranslation()
-          ) : (
-            <Trans i18n={i18n} i18nKey="SelectFilesType" ns="Editor">
-              Select files of type: {{ fileType: getFileTypeTranslation() }}
-            </Trans>
-          )}
-        </Text>
-      </StyledSelectFile>
+      <>
+        {filesType === mailMergeAction ? (
+          getFileTypeTranslation()
+        ) : (
+          <Trans i18n={i18n} i18nKey="SelectFilesType" ns="Editor">
+            Select files of type: {{ fileType: getFileTypeTranslation() }}
+          </Trans>
+        )}
+      </>
     );
   };
 
@@ -818,7 +816,7 @@ const Editor = () => {
               onClose={onCloseFileDialog}
               foldersType="exceptTrashFolder"
               {...fileTypeDetection()}
-              header={<SelectFileHeader />}
+              titleFilesList={selectFilesListTitle()}
               headerName={i18n.t("SelectFileTitle")}
             />
           )}

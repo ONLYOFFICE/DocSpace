@@ -301,7 +301,7 @@ class SelectFolderModalDialog extends React.Component {
       });
   };
   setSelectedFolder = async (id) => {
-    const { onSetBaseFolderPath, selectionButtonPrimary } = this.props;
+    const { onSetBaseFolderPath } = this.props;
 
     let folder,
       folderPath,
@@ -566,7 +566,7 @@ SelectFolderModalDialog.defaultProps = {
   dialogWithFiles: false,
   isNeedArrowIcon: false,
   id: "",
-  modalHeightContent: "325px",
+  modalHeightContent: "291px",
   asideHeightContent: "100%",
   zIndex: 310,
   withoutProvider: false,

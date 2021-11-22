@@ -1,18 +1,10 @@
 import React, { useState } from "react";
-import {
-  StyledAsidePanel,
-  StyledSelectFilePanel,
-  StyledHeaderContent,
-} from "../StyledPanels";
+import { StyledAsidePanel, StyledSelectFilePanel } from "../StyledPanels";
 import Text from "@appserver/components/text";
 import SelectFolderInput from "../SelectFolderInput";
 import FilesListBody from "./FilesListBody";
-import Aside from "@appserver/components/aside";
-import Heading from "@appserver/components/heading";
-import Backdrop from "@appserver/components/backdrop";
 import Button from "@appserver/components/button";
 import Loaders from "@appserver/common/components/Loaders";
-import Loader from "@appserver/components/loader";
 import EmptyContainer from "../../EmptyContainer/EmptyContainer";
 import ModalDialog from "@appserver/components/modal-dialog";
 const DISPLAY_TYPE = "aside";
@@ -33,7 +25,7 @@ const SelectFileDialogAsideView = ({
   isNextPageLoading,
   loadNextPage,
   selectedFolder,
-  header,
+  titleFilesList,
   loadingText,
   selectedFile,
   onClickSave,
@@ -50,7 +42,7 @@ const SelectFileDialogAsideView = ({
   const onSetLoadingData = (loading) => {
     setIsLoadingData(loading);
   };
-  const isHeaderChildren = !!header;
+  const isHeaderChildren = !!titleFilesList;
 
   return (
     <StyledAsidePanel visible={isPanelVisible}>
@@ -58,8 +50,6 @@ const SelectFileDialogAsideView = ({
         visible={isPanelVisible}
         zIndex={zIndex}
         onClose={onClose}
-        //className="select-file-modal-dialog"
-        //style={{ maxWidth: "890px" }}
         contentHeight="100%"
         displayType={DISPLAY_TYPE}
         removeScroll
@@ -73,10 +63,7 @@ const SelectFileDialogAsideView = ({
             displayType={DISPLAY_TYPE}
           >
             <div className="select-file-dialog_aside-body_wrapper">
-              <div className="select-file-dialog_aside-children">{header}</div>
-              {/* <Text fontWeight="600" fontSize="14px">
-                {t("Translations:SelectFolder")}
-              </Text> */}
+              <div className="select-file-dialog_aside-children"></div>
               <div className="select-file-dialog_aside_body">
                 <SelectFolderInput
                   onClickInput={onClickInput}
@@ -97,6 +84,11 @@ const SelectFileDialogAsideView = ({
                   showButtons
                   selectionButtonPrimary
                 />
+                {titleFilesList && (
+                  <Text className="modal-dialog-filter-title">
+                    {titleFilesList}
+                  </Text>
+                )}
                 <div className="select-file-dialog_aside_body-files_list">
                   {selectedFolder && !isLoadingData ? (
                     <FilesListBody

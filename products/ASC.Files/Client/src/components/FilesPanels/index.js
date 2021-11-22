@@ -45,7 +45,7 @@ const Panels = (props) => {
     setSelectFileDialogVisible,
   } = props;
 
-  const { t } = useTranslation("Article");
+  const { t } = useTranslation(["Article", "SelectFile"]);
 
   const onClose = () => {
     setSelectFileDialogVisible(false);
@@ -93,6 +93,7 @@ const Panels = (props) => {
         ByExtension
         searchParam={"docx"}
         headerName={t("Article:CreateMasterFormFromFile")}
+        titleFilesList={t("SelectFile:SelectDOCXFormat")}
         creationButtonPrimary
       />
     ),

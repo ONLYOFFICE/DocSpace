@@ -1,18 +1,14 @@
 import React from "react";
-import { Provider as MobxProvider } from "mobx-react";
-import stores from "../../../store/index";
 import { StyledAsidePanel, StyledSelectFilePanel } from "../StyledPanels";
 import ModalDialog from "@appserver/components/modal-dialog";
 import SelectFolderDialog from "../SelectFolderDialog";
 import FolderTreeBody from "../../FolderTreeBody";
 import FilesListBody from "./FilesListBody";
 import Button from "@appserver/components/button";
-import Loader from "@appserver/components/loader";
 import Text from "@appserver/components/text";
 import { isArrayEqual } from "@appserver/components/utils/array";
 import { FolderType } from "@appserver/common/constants";
 import { getFoldersTree } from "@appserver/common/api/files";
-import Loaders from "@appserver/common/components/Loaders";
 const exceptSortedByTagsFolders = [
   FolderType.Recent,
   FolderType.TRASH,
@@ -171,7 +167,7 @@ class SelectFileDialogModalView extends React.Component {
       isNextPageLoading,
       loadNextPage,
       selectedFolder,
-      header,
+      titleFilesList,
       loadingText,
       selectedFile,
       onClickSave,
@@ -181,7 +177,7 @@ class SelectFileDialogModalView extends React.Component {
 
     const { isLoading, isAvailable } = this.state;
 
-    const isHeaderChildren = !!header;
+    const isHeaderChildren = !!titleFilesList;
 
     return (
       <StyledAsidePanel visible={isPanelVisible}>
@@ -194,7 +190,7 @@ class SelectFileDialogModalView extends React.Component {
           displayType="modal"
           modalBodyPadding="0px"
           isLoading={isLoading}
-          modalDialogHeight="277px"
+          modalLoaderBodyHeight="277px"
         >
           <ModalDialog.Header>
             {headerName ? headerName : t("SelectFile")}
@@ -205,7 +201,6 @@ class SelectFileDialogModalView extends React.Component {
               displayType="modal"
             >
               <div className="modal-dialog_body">
-                <div className="modal-dialog_children">{header}</div>
                 <div className="modal-dialog_tree-body">
                   <FolderTreeBody
                     expandedKeys={expandedKeys}
@@ -220,19 +215,27 @@ class SelectFileDialogModalView extends React.Component {
                   />
                 </div>
                 <div className="modal-dialog_files-body">
-                  {selectedFolder && (
-                    <FilesListBody
-                      filesList={filesList}
-                      onSelectFile={onSelectFile}
-                      hasNextPage={hasNextPage}
-                      isNextPageLoading={isNextPageLoading}
-                      loadNextPage={loadNextPage}
-                      selectedFolder={selectedFolder}
-                      loadingText={loadingText}
-                      selectedFile={selectedFile}
-                      listHeight={isHeaderChildren ? 280 : 310}
-                    />
-                  )}
+                  <>
+                    {titleFilesList && (
+                      <Text className="modal-dialog-filter-title">
+                        {titleFilesList}
+                      </Text>
+                    )}
+                    {selectedFolder && (
+                      <FilesListBody
+                        filesList={filesList}
+                        onSelectFile={onSelectFile}
+                        hasNextPage={hasNextPage}
+                        isNextPageLoading={isNextPageLoading}
+                        loadNextPage={loadNextPage}
+                        selectedFolder={selectedFolder}
+                        loadingText={loadingText}
+                        selectedFile={selectedFile}
+                        listHeight={isHeaderChildren ? 260 : 303}
+                        onSetLoadingData={this.onSetLoadingData}
+                      />
+                    )}
+                  </>
                 </div>
               </div>
             </StyledSelectFilePanel>
