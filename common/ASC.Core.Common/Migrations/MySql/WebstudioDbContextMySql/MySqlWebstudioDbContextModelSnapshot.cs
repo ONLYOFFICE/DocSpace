@@ -15,7 +15,7 @@ namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.3");
+                .HasAnnotation("ProductVersion", "5.0.10");
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbWebstudioIndex", b =>
                 {
@@ -23,7 +23,7 @@ namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
                         .HasColumnType("varchar(50)")
                         .HasColumnName("index_name")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("LastModified")
                         .ValueGeneratedOnAddOrUpdate()
@@ -47,19 +47,19 @@ namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
                         .HasColumnType("varchar(64)")
                         .HasColumnName("ID")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("UserId")
                         .HasColumnType("varchar(64)")
                         .HasColumnName("UserID")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Data")
                         .IsRequired()
                         .HasColumnType("mediumtext")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("TenantId", "Id", "UserId")
                         .HasName("PRIMARY");
@@ -75,7 +75,7 @@ namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
                             TenantId = 1,
                             Id = "9a925891-1f92-4ed7-b277-d6f649739f06",
                             UserId = "00000000-0000-0000-0000-000000000000",
-                            Data = "{'Completed':false}"
+                            Data = "{\"Completed\":false}"
                         });
                 });
 
@@ -93,13 +93,13 @@ namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
                         .HasColumnType("varchar(38)")
                         .HasColumnName("productid")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("UserId")
                         .HasColumnType("varchar(38)")
                         .HasColumnName("userid")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("FirstVisitTime")
                         .HasColumnType("datetime")
@@ -120,6 +120,8 @@ namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
                         .HasDatabaseName("visitdate");
 
                     b.ToTable("webstudio_uservisit");
+
+                  
                 });
 #pragma warning restore 612, 618
         }

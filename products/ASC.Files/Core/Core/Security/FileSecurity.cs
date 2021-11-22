@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Core;
@@ -203,6 +204,11 @@ namespace ASC.Files.Core.Security
             return WhoCan(entry, FilesSecurityActions.Read);
         }
 
+        public async Task<IEnumerable<Guid>> WhoCanReadAsync<T>(FileEntry<T> entry)
+        {
+            return await WhoCanAsync(entry, FilesSecurityActions.Read);
+        }
+
         private IEnumerable<Guid> WhoCan<T>(FileEntry<T> entry, FilesSecurityActions action)
         {
             var shares = GetShares(entry);
@@ -317,6 +323,125 @@ namespace ASC.Files.Core.Security
 
                                              return new[] { x.Subject };
                                          })
+                         .Distinct()
+                         .Where(x => Can(entry, x, action))
+                         .ToList();
+        }
+
+        private async Task<IEnumerable<Guid>> WhoCanAsync<T>(FileEntry<T> entry, FilesSecurityActions action)
+        {
+            var shares = GetShares(entry);
+
+            FileShareRecord defaultShareRecord;
+
+            switch (entry.RootFolderType)
+            {
+                case FolderType.COMMON:
+                    defaultShareRecord = new FileShareRecord
+                    {
+                        Level = int.MaxValue,
+                        EntryId = entry.ID,
+                        EntryType = entry.FileEntryType,
+                        Share = DefaultCommonShare,
+                        Subject = Constants.GroupEveryone.ID,
+                        Tenant = TenantManager.GetCurrentTenant().TenantId,
+                        Owner = AuthContext.CurrentAccount.ID
+                    };
+
+                    if (!shares.Any())
+                    {
+                        if ((defaultShareRecord.Share == FileShare.Read && action == FilesSecurityActions.Read) ||
+                            (defaultShareRecord.Share == FileShare.ReadWrite))
+                            return UserManager.GetUsersByGroup(defaultShareRecord.Subject)
+                                              .Where(x => x.Status == EmployeeStatus.Active).Select(y => y.ID).Distinct();
+
+                        return Enumerable.Empty<Guid>();
+                    }
+
+                    break;
+
+                case FolderType.USER:
+                    defaultShareRecord = new FileShareRecord
+                    {
+                        Level = int.MaxValue,
+                        EntryId = entry.ID,
+                        EntryType = entry.FileEntryType,
+                        Share = DefaultMyShare,
+                        Subject = entry.RootFolderCreator,
+                        Tenant = TenantManager.GetCurrentTenant().TenantId,
+                        Owner = entry.RootFolderCreator
+                    };
+
+                    if (!shares.Any())
+                        return new List<Guid>
+                            {
+                                entry.RootFolderCreator
+                            };
+
+                    break;
+
+                case FolderType.Privacy:
+                    defaultShareRecord = new FileShareRecord
+                    {
+                        Level = int.MaxValue,
+                        EntryId = entry.ID,
+                        EntryType = entry.FileEntryType,
+                        Share = DefaultPrivacyShare,
+                        Subject = entry.RootFolderCreator,
+                        Tenant = TenantManager.GetCurrentTenant().TenantId,
+                        Owner = entry.RootFolderCreator
+                    };
+
+                    if (!shares.Any())
+                        return new List<Guid>
+                            {
+                                entry.RootFolderCreator
+                            };
+
+                    break;
+
+                case FolderType.BUNCH:
+                    if (action == FilesSecurityActions.Read)
+                    {
+                        var folderDao = daoFactory.GetFolderDao<T>();
+                        var root = await folderDao.GetFolderAsync(entry.RootFolderId);
+                        if (root != null)
+                        {
+                            var path = folderDao.GetBunchObjectID(root.ID);
+
+                            var adapter = FilesIntegration.GetFileSecurity(path);
+
+                            if (adapter != null)
+                            {
+                                return adapter.WhoCanRead(entry);
+                            }
+                        }
+                    }
+
+                    // TODO: For Projects and other
+                    defaultShareRecord = null;
+                    break;
+
+                default:
+                    defaultShareRecord = null;
+                    break;
+            }
+
+            if (defaultShareRecord != null)
+                shares = shares.Concat(new[] { defaultShareRecord });
+
+            return shares.SelectMany(x =>
+            {
+                var groupInfo = UserManager.GetGroupInfo(x.Subject);
+
+                if (groupInfo.ID != Constants.LostGroupInfo.ID)
+                    return
+                        UserManager.GetUsersByGroup(groupInfo.ID)
+                                   .Where(p => p.Status == EmployeeStatus.Active)
+                                   .Select(y => y.ID);
+
+                return new[] { x.Subject };
+            })
                          .Distinct()
                          .Where(x => Can(entry, x, action))
                          .ToList();

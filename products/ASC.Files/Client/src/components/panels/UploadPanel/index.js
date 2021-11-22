@@ -87,7 +87,11 @@ class UploadPanelComponent extends React.Component {
           zIndex={zIndex}
           isAside={true}
         />
-        <Aside className="header_aside-panel" visible={visible}>
+        <Aside
+          className="header_aside-panel"
+          visible={visible}
+          withoutBodyScroll
+        >
           <StyledContent>
             <StyledHeaderContent className="upload-panel_header-content">
               <Heading className="upload_panel-header" size="medium" truncate>

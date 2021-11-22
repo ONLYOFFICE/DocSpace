@@ -69,7 +69,7 @@ namespace ASC.Web.CRM.Core.Search
                 entityDao.CrmDbContext.Cases
                         .AsQueryable()
                         .Where(r => r.LastModifedOn >= lastIndexed)
-                        .Join(entityDao.CrmDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new { DbEntity = f, DbTenant = t })
+                        .Join(entityDao.TenantDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new { DbEntity = f, DbTenant = t })
                         .Where(r => r.DbTenant.Status == ASC.Core.Tenants.TenantStatus.Active)
                         .Select(r => r.DbEntity);
 

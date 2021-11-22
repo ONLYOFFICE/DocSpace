@@ -20,12 +20,25 @@ namespace ASC.Api.Core.Core
             Source = source;
             var endpoints = Source.Endpoints.Cast<RouteEndpoint>();
             Endpoints = endpoints
-                .Where(r =>
+                .SelectMany(r =>
                 {
+                    var endpoints = new List<RouteEndpoint>();
+
                     var attr = r.Metadata.OfType<CustomHttpMethodAttribute>().FirstOrDefault();
-                    return attr == null || !attr.DisableFormat;
+                    var enableFormat = attr == null || !attr.DisableFormat;
+
+                    if (enableFormat)
+                    {
+                        endpoints.Add(new RouteEndpoint(r.RequestDelegate, RoutePatternFactory.Parse(r.RoutePattern.RawText + ".{format}"), r.Order, r.Metadata, r.DisplayName));
+                    }
+                    else
+                    {
+                        endpoints.Add(new RouteEndpoint(r.RequestDelegate, RoutePatternFactory.Parse(r.RoutePattern.RawText + ".json"), r.Order - 1, r.Metadata, r.DisplayName));
+                        endpoints.Add(new RouteEndpoint(r.RequestDelegate, RoutePatternFactory.Parse(r.RoutePattern.RawText + ".xml"), r.Order - 1, r.Metadata, r.DisplayName));
+                    }
+
+                    return endpoints;
                 })
-                .Select(r => new RouteEndpoint(r.RequestDelegate, RoutePatternFactory.Parse(r.RoutePattern.RawText + ".{format}"), r.Order, r.Metadata, r.DisplayName))
                 .ToList();
         }
 

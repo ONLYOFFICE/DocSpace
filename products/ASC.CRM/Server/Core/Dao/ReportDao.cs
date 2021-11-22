@@ -38,6 +38,7 @@ using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.CRM.Classes;
@@ -80,6 +81,7 @@ namespace ASC.CRM.Core.Dao
         #region Constructor
 
         public ReportDao(DbContextManager<CrmDbContext> dbContextManager,
+                       DbContextManager<TenantDbContext> dbContextManager1,
                        TenantManager tenantManager,
                        SecurityContext securityContext,
                        FilesIntegration filesIntegration,
@@ -95,6 +97,7 @@ namespace ASC.CRM.Core.Dao
                        DisplayUserSettingsHelper displayUserSettingsHelper,
                        IMapper mapper) :
             base(dbContextManager,
+                dbContextManager1,
                  tenantManager,
                  securityContext,
                  logger,

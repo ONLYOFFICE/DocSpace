@@ -87,9 +87,30 @@ namespace ASC.Web.Files.Utils
             return lockedBy != Guid.Empty && lockedBy != userId;
         }
 
+        public async Task<bool> FileLockedForMeAsync<T>(T fileId, Guid userId = default)
+        {
+            var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
+            if (app != null)
+            {
+                return false;
+            }
+
+            userId = userId == default ? AuthContext.CurrentAccount.ID : userId;
+            var tagDao = DaoFactory.GetTagDao<T>();
+            var lockedBy = await FileLockedByAsync(fileId, tagDao);
+            return lockedBy != Guid.Empty && lockedBy != userId;
+        }
+
         public Guid FileLockedBy<T>(T fileId, ITagDao<T> tagDao)
         {
             var tagLock = tagDao.GetTags(fileId, FileEntryType.File, TagType.Locked).FirstOrDefault();
+            return tagLock != null ? tagLock.Owner : Guid.Empty;
+        }
+
+        public async Task<Guid> FileLockedByAsync<T>(T fileId, ITagDao<T> tagDao)
+        {
+            var tags = await tagDao.GetTagsAsync(fileId, FileEntryType.File, TagType.Locked);
+            var tagLock = tags.FirstOrDefault();
             return tagLock != null ? tagLock.Owner : Guid.Empty;
         }
     }
@@ -118,6 +139,12 @@ namespace ASC.Web.Files.Utils
         {
             var folderDao = DaoFactory.GetFolderDao<T>();
             return GetBreadCrumbs(folderId, folderDao);
+        }
+
+        public async Task<List<FileEntry>> GetBreadCrumbsAsync<T>(T folderId)
+        {
+            var folderDao = DaoFactory.GetFolderDao<T>();
+            return await GetBreadCrumbsAsync(folderId, folderDao);
         }
 
         public List<FileEntry> GetBreadCrumbs<T>(T folderId, IFolderDao<T> folderDao)
@@ -172,6 +199,59 @@ namespace ASC.Web.Files.Utils
 
             return breadCrumbs;
         }
+
+        public async Task<List<FileEntry>> GetBreadCrumbsAsync<T>(T folderId, IFolderDao<T> folderDao)
+        {
+            if (folderId == null) return new List<FileEntry>();
+            var breadCrumbs = FileSecurity.FilterRead(await folderDao.GetParentFoldersAsync(folderId)).Cast<FileEntry>().ToList();
+
+            var firstVisible = breadCrumbs.ElementAtOrDefault(0) as Folder<T>;
+
+            var rootId = 0;
+            if (firstVisible == null)
+            {
+                rootId = GlobalFolderHelper.FolderShare;
+            }
+            else
+            {
+                switch (firstVisible.FolderType)
+                {
+                    case FolderType.DEFAULT:
+                        if (!firstVisible.ProviderEntry)
+                        {
+                            rootId = GlobalFolderHelper.FolderShare;
+                        }
+                        else
+                        {
+                            switch (firstVisible.RootFolderType)
+                            {
+                                case FolderType.USER:
+                                    rootId = AuthContext.CurrentAccount.ID == firstVisible.RootFolderCreator
+                                        ? GlobalFolderHelper.FolderMy
+                                        : GlobalFolderHelper.FolderShare;
+                                    break;
+                                case FolderType.COMMON:
+                                    rootId = GlobalFolderHelper.FolderCommon;
+                                    break;
+                            }
+                        }
+                        break;
+
+                    case FolderType.BUNCH:
+                        rootId = GlobalFolderHelper.FolderProjects;
+                        break;
+                }
+            }
+
+            var folderDaoInt = DaoFactory.GetFolderDao<int>();
+
+            if (rootId != 0)
+            {
+                breadCrumbs.Insert(0, await folderDaoInt.GetFolderAsync(rootId));
+            }
+
+            return breadCrumbs;
+        }
     }
 
     [Scope]
@@ -193,6 +273,13 @@ namespace ASC.Web.Files.Utils
             if (file == null || file.ID == null) return;
 
             SetFileStatus(new List<File<T>>(1) { file });
+        }
+
+        public async Task SetFileStatusAsync<T>(File<T> file)
+        {
+            if (file == null || file.ID == null) return;
+
+            await SetFileStatusAsync(new List<File<T>>(1) { file });
         }
 
         public void SetFileStatus(IEnumerable<FileEntry> files)
@@ -235,13 +322,48 @@ namespace ASC.Web.Files.Utils
                 }
             }
         }
+
+        public async Task SetFileStatusAsync<T>(IEnumerable<File<T>> files)
+        {
+            var tagDao = DaoFactory.GetTagDao<T>();
+
+            var tags = tagDao.GetTags(AuthContext.CurrentAccount.ID, new[] { TagType.Favorite, TagType.Template, TagType.Locked }, files);
+            var tagsNew = await tagDao.GetNewTagsAsync(AuthContext.CurrentAccount.ID, files);
+
+            foreach (var file in files)
+            {
+                foreach (var t in tags)
+                {
+                    if (!t.Key.Equals(file.ID)) continue;
+
+                    if (t.Value.Any(r => r.TagType == TagType.Favorite)) file.IsFavorite = true;
+                    if (t.Value.Any(r => r.TagType == TagType.Template)) file.IsTemplate = true;
+
+                    var lockedTag = t.Value.FirstOrDefault(r => r.TagType == TagType.Locked);
+                    if (lockedTag != null)
+                    {
+                        var lockedBy = lockedTag.Owner;
+                        file.Locked = lockedBy != Guid.Empty;
+                        file.LockedBy = lockedBy != Guid.Empty && lockedBy != AuthContext.CurrentAccount.ID
+                            ? Global.GetUserName(lockedBy)
+                            : null;
+                        continue;
+                    }
+                }
+
+                if (tagsNew.Any(r => r.EntryId.Equals(file.ID)))
+                {
+                    file.IsNew = true;
+                }
+            }
+        }
     }
 
     [Scope]
     public class EntryManager
     {
         private const string UPDATE_LIST = "filesUpdateList";
-        
+
         private ICache Cache { get; set; }
         private FileTrackerHelper FileTracker { get; }
         private EntryStatusManager EntryStatusManager { get; }
@@ -292,7 +414,7 @@ namespace ASC.Web.Files.Utils
             BreadCrumbsManager breadCrumbsManager,
             TenantManager tenantManager,
             SettingsManager settingsManager,
-            IServiceProvider serviceProvider, 
+            IServiceProvider serviceProvider,
             ICache cache,
             FileTrackerHelper fileTracker,
             EntryStatusManager entryStatusManager)
@@ -465,7 +587,7 @@ namespace ASC.Web.Files.Utils
 
                 entries = entries.Concat(folders);
                 entries = entries.Concat(files);
-                
+
                 CalculateTotal();
             }
             else if (parent.FolderType == FolderType.Templates)
@@ -850,7 +972,7 @@ namespace ASC.Web.Files.Utils
 
             var fileIds = tags.Where(tag => tag.EntryType == FileEntryType.File).ToList();
 
-            List<FileEntry> files = GetRecentByIds(fileIds.Where(r => r.EntryId is int).Select(r=> (int)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent).ToList();
+            List<FileEntry> files = GetRecentByIds(fileIds.Where(r => r.EntryId is int).Select(r => (int)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent).ToList();
             files.AddRange(GetRecentByIds(fileIds.Where(r => r.EntryId is string).Select(r => (string)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent));
 
             var listFileIds = fileIds.Select(tag => tag.EntryId).ToList();
@@ -876,7 +998,7 @@ namespace ASC.Web.Files.Utils
             {
                 var folderDao = DaoFactory.GetFolderDao<T>();
                 var fileDao = DaoFactory.GetFileDao<T>();
-                var files = fileDao.GetFilesFilteredAsync(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent).ToListAsync().Result;
+                var files = fileDao.GetFilesFilteredAsync(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent, true).ToListAsync().Result;
                 files = files.Where(file => file.RootFolderType != FolderType.TRASH).ToList();
 
                 files = FileSecurity.FilterRead(files).ToList();
@@ -975,7 +1097,7 @@ namespace ASC.Web.Files.Utils
 
                 if (filter != FilterType.FoldersOnly)
                 {
-                    files = fileDao.GetFilesFilteredAsync(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent).ToListAsync().Result;
+                    files = fileDao.GetFilesFilteredAsync(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent, true).ToListAsync().Result;
                     files = files.Where(file => file.RootFolderType != FolderType.TRASH).ToList();
 
                     files = fileSecurity.FilterRead(files).ToList();
@@ -1140,6 +1262,11 @@ namespace ASC.Web.Files.Utils
             return BreadCrumbsManager.GetBreadCrumbs(folderId);
         }
 
+        public async Task<List<FileEntry>> GetBreadCrumbsAsync<T>(T folderId)
+        {
+            return await BreadCrumbsManager.GetBreadCrumbsAsync(folderId);
+        }
+
         public List<FileEntry> GetBreadCrumbs<T>(T folderId, IFolderDao<T> folderDao)
         {
             return BreadCrumbsManager.GetBreadCrumbs(folderId, folderDao);
@@ -1182,6 +1309,11 @@ namespace ASC.Web.Files.Utils
         public bool FileLockedForMe<T>(T fileId, Guid userId = default)
         {
             return LockerManager.FileLockedForMe(fileId, userId);
+        }
+
+        public async Task<bool> FileLockedForMeAsync<T>(T fileId, Guid userId = default)
+        {
+            return await LockerManager.FileLockedForMeAsync(fileId, userId);
         }
 
         public Guid FileLockedBy<T>(T fileId, ITagDao<T> tagDao)
@@ -1329,6 +1461,147 @@ namespace ASC.Web.Files.Utils
             return file;
         }
 
+        public async Task<File<T>> SaveEditingAsync<T>(T fileId, string fileExtension, string downloadUri, Stream stream, string doc, string comment = null, bool checkRight = true, bool encrypted = false, ForcesaveType? forcesave = null)
+        {
+            var newExtension = string.IsNullOrEmpty(fileExtension)
+                              ? FileUtility.GetFileExtension(downloadUri)
+                              : fileExtension;
+
+            var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
+            if (app != null)
+            {
+                app.SaveFile(fileId.ToString(), newExtension, downloadUri, stream);
+                return null;
+            }
+
+            var fileDao = DaoFactory.GetFileDao<T>();
+            var check = await FileShareLink.CheckAsync(doc, false, fileDao);
+            var editLink = check.EditLink;
+            var file = check.File;
+            if (file == null)
+            {
+                file = await fileDao.GetFileAsync(fileId);
+            }
+
+            if (file == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
+            var fileSecurity = FileSecurity;
+            if (checkRight && !editLink && (!fileSecurity.CanEdit(file) || UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager))) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
+            if (checkRight && FileLockedForMe(file.ID)) throw new Exception(FilesCommonResource.ErrorMassage_LockedFile);
+            if (checkRight && (!forcesave.HasValue || forcesave.Value == ForcesaveType.None) && FileTracker.IsEditing(file.ID)) throw new Exception(FilesCommonResource.ErrorMassage_SecurityException_UpdateEditingFile);
+            if (file.RootFolderType == FolderType.TRASH) throw new Exception(FilesCommonResource.ErrorMassage_ViewTrashItem);
+
+            var currentExt = file.ConvertedExtension;
+            if (string.IsNullOrEmpty(newExtension)) newExtension = FileUtility.GetInternalExtension(file.Title);
+
+            var replaceVersion = false;
+            if (file.Forcesave != ForcesaveType.None)
+            {
+                if (file.Forcesave == ForcesaveType.User && FilesSettingsHelper.StoreForcesave || encrypted)
+                {
+                    file.Version++;
+                }
+                else
+                {
+                    replaceVersion = true;
+                }
+            }
+            else
+            {
+                if (file.Version != 1)
+                {
+                    file.VersionGroup++;
+                }
+                else
+                {
+                    var storeTemplate = GlobalStore.GetStoreTemplate();
+
+                    var path = FileConstant.NewDocPath + Thread.CurrentThread.CurrentCulture + "/";
+                    if (!storeTemplate.IsDirectory(path))
+                    {
+                        path = FileConstant.NewDocPath + "en-US/";
+                    }
+                    path += "new" + FileUtility.GetInternalExtension(file.Title);
+
+                    //todo: think about the criteria for saving after creation
+                    if (!storeTemplate.IsFile(path) || file.ContentLength != storeTemplate.GetFileSize("", path))
+                    {
+                        file.VersionGroup++;
+                    }
+                }
+                file.Version++;
+            }
+            file.Forcesave = forcesave ?? ForcesaveType.None;
+
+            if (string.IsNullOrEmpty(comment))
+                comment = FilesCommonResource.CommentEdit;
+
+            file.Encrypted = encrypted;
+
+            file.ConvertedType = FileUtility.GetFileExtension(file.Title) != newExtension ? newExtension : null;
+            file.ThumbnailStatus = encrypted ? Thumbnail.NotRequired : Thumbnail.Waiting;
+
+            if (file.ProviderEntry && !newExtension.Equals(currentExt))
+            {
+                if (FileUtility.ExtsConvertible.Keys.Contains(newExtension)
+                    && FileUtility.ExtsConvertible[newExtension].Contains(currentExt))
+                {
+                    if (stream != null)
+                    {
+                        downloadUri = PathProvider.GetTempUrl(stream, newExtension);
+                        downloadUri = DocumentServiceConnector.ReplaceCommunityAdress(downloadUri);
+                    }
+
+                    var key = DocumentServiceConnector.GenerateRevisionId(downloadUri);
+                    DocumentServiceConnector.GetConvertedUri(downloadUri, newExtension, currentExt, key, null, null, null, false, out downloadUri);
+
+                    stream = null;
+                }
+                else
+                {
+                    file.ID = default;
+                    file.Title = FileUtility.ReplaceFileExtension(file.Title, newExtension);
+                }
+
+                file.ConvertedType = null;
+            }
+
+            using (var tmpStream = new MemoryStream())
+            {
+                if (stream != null)
+                {
+                    await stream.CopyToAsync(tmpStream);
+                }
+                else
+                {
+                    // hack. http://ubuntuforums.org/showthread.php?t=1841740
+                    if (WorkContext.IsMono)
+                    {
+                        ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
+                    }
+
+                    var req = (HttpWebRequest)WebRequest.Create(downloadUri);
+                    using var editedFileStream = new ResponseStream(req.GetResponse());
+                    await editedFileStream.CopyToAsync(tmpStream);
+                }
+                tmpStream.Position = 0;
+
+                file.ContentLength = tmpStream.Length;
+                file.Comment = string.IsNullOrEmpty(comment) ? null : comment;
+                if (replaceVersion)
+                {
+                    file = await fileDao.ReplaceFileVersionAsync(file, tmpStream);
+                }
+                else
+                {
+                    file = await fileDao.SaveFileAsync(file, tmpStream);
+                }
+            }
+
+            await FileMarker.MarkAsNewAsync(file);
+            await FileMarker.RemoveMarkAsNewAsync(file);
+            return file;
+        }
+
         public void TrackEditing<T>(T fileId, Guid tabId, Guid userId, string doc, bool editingAlone = false)
         {
             bool checkRight;
@@ -1357,6 +1630,44 @@ namespace ASC.Web.Files.Utils
                 throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
             }
             if (FileLockedForMe(file.ID, userId)) throw new Exception(FilesCommonResource.ErrorMassage_LockedFile);
+            if (file.RootFolderType == FolderType.TRASH) throw new Exception(FilesCommonResource.ErrorMassage_ViewTrashItem);
+
+            checkRight = FileTracker.ProlongEditing(fileId, tabId, userId, editingAlone);
+            if (checkRight)
+            {
+                FileTracker.ChangeRight(fileId, userId, false);
+            }
+        }
+
+        public async Task TrackEditingAsync<T>(T fileId, Guid tabId, Guid userId, string doc, bool editingAlone = false)
+        {
+            bool checkRight;
+            if (FileTracker.GetEditingBy(fileId).Contains(userId))
+            {
+                checkRight = FileTracker.ProlongEditing(fileId, tabId, userId, editingAlone);
+                if (!checkRight) return;
+            }
+
+            var fileDao = DaoFactory.GetFileDao<T>();
+            var check = await FileShareLink.CheckAsync(doc, false, fileDao);
+            var editLink = check.EditLink;
+            var file = check.File;
+            if (file == null)
+                file = await fileDao.GetFileAsync(fileId);
+
+            if (file == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
+            var fileSecurity = FileSecurity;
+            if (!editLink
+                && (!fileSecurity.CanEdit(file, userId)
+                    && !fileSecurity.CanCustomFilterEdit(file, userId)
+                    && !fileSecurity.CanReview(file, userId)
+                    && !fileSecurity.CanFillForms(file, userId)
+                    && !fileSecurity.CanComment(file, userId)
+                    || UserManager.GetUsers(userId).IsVisitor(UserManager)))
+            {
+                throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
+            }
+            if (await FileLockedForMeAsync(file.ID, userId)) throw new Exception(FilesCommonResource.ErrorMassage_LockedFile);
             if (file.RootFolderType == FolderType.TRASH) throw new Exception(FilesCommonResource.ErrorMassage_ViewTrashItem);
 
             checkRight = FileTracker.ProlongEditing(fileId, tabId, userId, editingAlone);

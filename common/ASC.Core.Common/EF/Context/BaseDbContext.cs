@@ -11,7 +11,7 @@ namespace ASC.Core.Common.EF
 {
     public enum Provider
     {
-        Postgre,
+        PostgreSql,
         MySql
     }
 
@@ -26,7 +26,7 @@ namespace ASC.Core.Common.EF
 
         internal string MigrateAssembly { get; set; }
         internal ILoggerFactory LoggerFactory { get; set; }
-        internal ConnectionStringSettings ConnectionStringSettings { get; set; }
+        public ConnectionStringSettings ConnectionStringSettings { get; set; }
         protected internal Provider Provider { get; set; }
 
         public static ServerVersion ServerVersion = ServerVersion.Parse("8.0.25");
@@ -58,11 +58,11 @@ namespace ASC.Core.Common.EF
         {
             optionsBuilder.UseLoggerFactory(LoggerFactory);
             optionsBuilder.EnableSensitiveDataLogging();
-            Provider = GetProviderByConnectionString();
+            Provider = GetProviderByConnectionString();         
             switch (Provider)
             {
                 case Provider.MySql:
-                    optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString, ServerVersion, r=>
+                    optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString, ServerVersion, r =>
                     {
                         if (!string.IsNullOrEmpty(MigrateAssembly))
                         {
@@ -70,11 +70,10 @@ namespace ASC.Core.Common.EF
                         }
                     });
                     break;
-                case Provider.Postgre:
+                case Provider.PostgreSql:
                     optionsBuilder.UseNpgsql(ConnectionStringSettings.ConnectionString);
                     break;
             }
-           
         }
 
         public Provider GetProviderByConnectionString()
@@ -84,7 +83,7 @@ namespace ASC.Core.Common.EF
                 case "MySql.Data.MySqlClient":
                     return Provider.MySql;
                 case "Npgsql":
-                    return Provider.Postgre;
+                    return Provider.PostgreSql;
                 default:
                     break;
             }

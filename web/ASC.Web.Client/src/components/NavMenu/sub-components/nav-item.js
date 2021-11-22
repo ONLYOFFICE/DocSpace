@@ -22,7 +22,7 @@ const NavItemSeparator = styled.div`
 
 const NavItemWrapper = styled(Link)`
   display: flex;
-  min-width: 56px;
+  min-width: 48px;
   min-height: 50px;
   align-items: center;
   padding: 0 16px 0 20px;

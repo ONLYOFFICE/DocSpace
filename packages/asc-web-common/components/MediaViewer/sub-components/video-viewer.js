@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { findDOMNode } from "react-dom";
 import screenfull from "screenfull";
 import ReactPlayer from "react-player";
@@ -9,10 +9,18 @@ import Duration from "./duration";
 import Progress from "./progress";
 import MediaPauseIcon from "../../../../../public/images/media.pause.react.svg";
 import MediaPlayIcon from "../../../../../public/images/media.play.react.svg";
-import MediaFullScreenIcon from "../../../../../public/images/media.fullscreen.react.svg";
+import MediaFullScreenIcon from "../../../../../public/images/media.fullscreen.video.react.svg";
 import MediaMuteIcon from "../../../../../public/images/media.mute.react.svg";
 import MediaMuteOffIcon from "../../../../../public/images/media.muteoff.react.svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+
+const iconsStyles = css`
+  path,
+  stroke,
+  rect {
+    fill: #fff;
+  }
+`;
 
 const controlsHeight = 40;
 const StyledControls = styled.div`
@@ -26,10 +34,10 @@ const StyledControls = styled.div`
 `;
 const StyledVideoControlBtn = styled.div`
   display: inline-block;
-  height: 30px;
+  height: 26px;
   line-height: 30px;
-  margin: 5px;
-  width: 40px;
+  margin: 5px 2px;
+  width: 38px;
   border-radius: 2px;
   cursor: pointer;
   text-align: center;
@@ -39,43 +47,62 @@ const StyledVideoControlBtn = styled.div`
   }
 
   .playBtnContainer {
-    width: 23px;
+    width: 16px;
+    height: 16px;
     line-height: 0;
-    margin: 3px auto;
+    margin: 5px auto;
   }
   .pauseBtnContainer {
     display: block;
-    width: 19px;
+    width: 16px;
+    height: 16px;
     margin: 3px 10px;
     line-height: 19px;
   }
   .muteBtnContainer {
     display: block;
-    width: 26px;
-    margin: 3px 7px;
+    width: 16px;
+    height: 16px;
+    margin: 3px 11px;
     line-height: 19px;
   }
   .fullscreenBtnContainer {
     display: block;
-    width: 20px;
-    margin: 3px 10px;
+    width: 16px;
+    height: 16px;
+    margin: 3px 11px;
     line-height: 19px;
   }
 `;
 const StyledMediaPauseIcon = styled(MediaPauseIcon)`
   ${commonIconsStyles}
+  ${iconsStyles}
 `;
 const StyledMediaPlayIcon = styled(MediaPlayIcon)`
   ${commonIconsStyles}
+  ${iconsStyles}
 `;
 const StyledMediaFullScreenIcon = styled(MediaFullScreenIcon)`
   ${commonIconsStyles}
+  ${iconsStyles}
 `;
 const StyledMediaMuteIcon = styled(MediaMuteIcon)`
   ${commonIconsStyles}
+
+  path:first-child {
+    stroke: #fff;
+  }
+
+  path:last-child {
+    fill: #fff;
+  }
 `;
 const StyledMediaMuteOffIcon = styled(MediaMuteOffIcon)`
   ${commonIconsStyles}
+
+  path, rect {
+    fill: #fff;
+  }
 `;
 const VideoControlBtn = (props) => {
   return (
@@ -152,8 +179,8 @@ const StyledValumeContainer = styled.div`
 `;
 const StyledDuration = styled.div`
   display: inline-block;
-  height: 30px;
-  line-height: 30px;
+  height: 26px;
+  line-height: 26px;
   margin: 5px;
   width: 60px;
   text-align: center;
@@ -183,6 +210,19 @@ const StyledVideoViewer = styled.div`
       z-index: 300;
     }
   }
+`;
+
+const ErrorContainer = styled.div`
+  z-index: 301;
+  display: block;
+  position: fixed;
+  left: calc(50% - 110px);
+  top: calc(50% - 40px);
+  background-color: #000;
+  color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
 `;
 
 class ValumeBtn extends Component {
@@ -241,6 +281,9 @@ class VideoViewer extends Component {
     duration: 0,
     playbackRate: 1.0,
     loop: false,
+    isNew: false,
+    error: false,
+    isLoaded: false,
   };
 
   componentDidMount() {
@@ -255,7 +298,8 @@ class VideoViewer extends Component {
     if (this.props.url !== prevProps.url) {
       this.setState({
         url: this.props.url,
-        playing: false,
+        isNew: true,
+        error: false,
       });
     }
   }
@@ -265,7 +309,7 @@ class VideoViewer extends Component {
   };
 
   handlePlayPause = () => {
-    this.setState({ playing: !this.state.playing });
+    this.setState({ playing: !this.state.playing, isNew: false });
   };
 
   handleStop = () => {
@@ -357,6 +401,11 @@ class VideoViewer extends Component {
 
   onError = (e) => {
     console.log("onError", e);
+    this.setState({ error: true });
+  };
+
+  onPlay = () => {
+    this.setState({ playing: !this.state.isNew, isNew: false, isLoaded: true });
   };
 
   render() {
@@ -373,7 +422,11 @@ class VideoViewer extends Component {
       duration,
       playbackRate,
       pip,
+      error,
+      isLoaded,
     } = this.state;
+    const { errorLabel } = this.props;
+
     const parentOffset = this.props.getOffset() || 0;
     var screenSize = {
       w: window.innerWidth,
@@ -415,6 +468,14 @@ class VideoViewer extends Component {
       ? width - videoControlBtnWidth
       : width - audioControlBtnWidth;
 
+    if (error) {
+      return (
+        <ErrorContainer>
+          <p>{errorLabel}</p>
+        </ErrorContainer>
+      );
+    }
+
     return (
       <StyledVideoViewer
         isVideo={this.props.isVideo}
@@ -422,25 +483,26 @@ class VideoViewer extends Component {
         height={height}
         left={left}
         top={height + controlsHeight}
-        onClick={this.handlePlayPause}
       >
         <div>
-          <div className="playerWrapper">
+          <div className="playerWrapper" onClick={this.handlePlayPause}>
             <ReactPlayer
               ref={this.ref}
               className="react-player"
+              style={{ opacity: isLoaded ? 1 : 0 }}
               width="100%"
               height="100%"
               url={url}
               pip={pip}
               playing={playing}
+              playsinline={true}
               controls={controls}
               light={light}
               loop={loop}
               playbackRate={playbackRate}
               volume={volume}
               muted={muted}
-              onPlay={this.handlePlay}
+              onPlay={this.onPlay}
               onEnablePIP={this.handleEnablePIP}
               onDisablePIP={this.handleDisablePIP}
               onPause={this.handlePause}
@@ -489,6 +551,7 @@ VideoViewer.propTypes = {
   isVideo: PropTypes.bool,
   url: PropTypes.string,
   getOffset: PropTypes.func,
+  errorLabel: PropTypes.string,
 };
 
 export default VideoViewer;

@@ -7,9 +7,9 @@ import { FilterType } from "@appserver/common/constants";
 import Loaders from "@appserver/common/components/Loaders";
 import FilterInput from "@appserver/common/components/FilterInput";
 import { withLayoutSize } from "@appserver/common/utils";
-//import equal from "fast-deep-equal/react";
 import { isMobileOnly, isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
+import withLoader from "../../../../HOCs/withLoader";
 
 const getFilterType = (filterValues) => {
   const filterType = result(
@@ -94,7 +94,14 @@ class SectionFilterContent extends React.Component {
 
   onChangeViewAs = (view) => {
     const { setViewAs } = this.props;
-    setViewAs(view);
+    //const tabletView = isTabletView();
+
+    if (view === "row") {
+      //tabletView ? setViewAs("table") : setViewAs("row");
+      setViewAs("table");
+    } else {
+      setViewAs(view);
+    }
   };
 
   getData = () => {
@@ -270,15 +277,11 @@ class SectionFilterContent extends React.Component {
       {
         value: "row",
         label: t("ViewList"),
-        isSetting: isMobileOnly,
-        default: true,
         icon: "/static/images/view-rows.react.svg",
       },
       {
         value: "tile",
         label: t("ViewTiles"),
-        isSetting: isMobileOnly,
-        default: true,
         icon: "/static/images/view-tiles.react.svg",
         callback: createThumbnails,
       },
@@ -297,7 +300,7 @@ class SectionFilterContent extends React.Component {
 
     selectedFilterData.inputValue = filter.search;
 
-    if (filter.filterType >= 0) {
+    if (filter.filterType) {
       selectedFilterData.filterValues.push({
         key: `${filter.filterType}`,
         group: "filter-filterType",
@@ -331,20 +334,11 @@ class SectionFilterContent extends React.Component {
   render() {
     //console.log("Filter render");
     const selectedFilterData = this.getSelectedFilterData();
-    const {
-      t,
-      sectionWidth,
-      tReady,
-      isFiltered,
-      viewAs,
-      personal,
-    } = this.props;
+    const { t, sectionWidth, isFiltered, viewAs, personal } = this.props;
     const filterColumnCount =
       window.innerWidth < 500 ? {} : { filterColumnCount: personal ? 2 : 3 };
 
-    return !isFiltered ? null : !tReady ? (
-      <Loaders.Filter />
-    ) : (
+    return !isFiltered ? null : (
       <FilterInput
         sectionWidth={sectionWidth}
         getFilterData={this.getData}
@@ -415,7 +409,7 @@ export default inject(
   withRouter(
     withLayoutSize(
       withTranslation(["Home", "Common", "Translations"])(
-        observer(SectionFilterContent)
+        withLoader(observer(SectionFilterContent))(<Loaders.Filter />)
       )
     )
   )

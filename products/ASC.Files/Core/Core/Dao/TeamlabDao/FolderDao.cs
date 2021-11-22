@@ -35,6 +35,7 @@ using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.ElasticSearch;
@@ -77,7 +78,8 @@ namespace ASC.Files.Core.Data
         public FolderDao(
             FactoryIndexerFolder factoryIndexer,
             UserManager userManager,
-            DbContextManager<FilesDbContext> dbContextManager,
+            DbContextManager<EF.FilesDbContext> dbContextManager,
+            DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             TenantUtil tenantUtil,
             SetupInfo setupInfo,
@@ -95,6 +97,7 @@ namespace ASC.Files.Core.Data
             CrossDao crossDao)
             : base(
                   dbContextManager,
+                  dbContextManager1,
                   userManager,
                   tenantManager,
                   tenantUtil,
@@ -374,7 +377,7 @@ namespace ASC.Files.Core.Data
 
                 if (folder.FolderType == FolderType.DEFAULT || folder.FolderType == FolderType.BUNCH)
                 {
-                    await FactoryIndexer.IndexAsync(toUpdate);
+                    FactoryIndexer.IndexAsync(toUpdate);
                 }
             }
             else
@@ -397,7 +400,7 @@ namespace ASC.Files.Core.Data
                 await FilesDbContext.SaveChangesAsync();
                 if (folder.FolderType == FolderType.DEFAULT || folder.FolderType == FolderType.BUNCH)
                 {
-                    await FactoryIndexer.IndexAsync(newFolder);
+                    FactoryIndexer.IndexAsync(newFolder);
                 }
                 folder.ID = newFolder.Id;
 
@@ -592,6 +595,7 @@ namespace ASC.Files.Core.Data
                 var toInsert = await FilesDbContext.Tree
                     .AsQueryable()
                     .Where(r => r.FolderId == toFolderId)
+                    .OrderBy(r => r.Level)
                     .ToListAsync();
 
                 foreach (var subfolder in subfolders)
@@ -602,7 +606,7 @@ namespace ASC.Files.Core.Data
                         {
                             FolderId = subfolder.Key,
                             ParentId = f.ParentId,
-                            Level = f.Level + 1
+                            Level = subfolder.Value + 1 + f.Level
                         };
                         await FilesDbContext.AddOrUpdateAsync(r => r.Tree, newTree);
                     }
@@ -816,10 +820,8 @@ namespace ASC.Files.Core.Data
         private async Task<int> GetFoldersCountAsync(int parentId)
         {
             var count = await FilesDbContext.Tree
-                .AsNoTracking()
-                .Where(r => r.ParentId == parentId)
-                .Where(r => r.Level > 0)
-                .CountAsync();
+                .AsQueryable()
+                .CountAsync(r => r.ParentId == parentId && r.Level > 0);
 
             return count;
         }
@@ -832,9 +834,11 @@ namespace ASC.Files.Core.Data
         private async Task<int> GetFilesCountAsync(int folderId)
         {
             var count = await Query(FilesDbContext.Files)
-                .AsNoTracking()
+                .Join(FilesDbContext.Tree, r => r.FolderId, r => r.FolderId, (file, tree) => new { tree, file })
+                .Where(r => r.tree.ParentId == folderId)
+                .Select(r => r.file.Id)
                 .Distinct()
-                .CountAsync(r => FilesDbContext.Tree.AsQueryable().Where(r => r.ParentId == folderId).Select(r => r.FolderId).Contains(r.FolderId));
+                .CountAsync();
 
             return count;
         }

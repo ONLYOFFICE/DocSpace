@@ -10,12 +10,12 @@ const loginURL = combineUrl(proxyURL, "/login");
 const paymentsURL = combineUrl(proxyURL, "/payments");
 
 window.AppServer = {
+  ...window.AppServer,
   origin,
   proxyURL,
   apiPrefixURL,
   apiBaseURL,
   apiTimeout,
-  loginURL,
   paymentsURL,
 };
 
@@ -66,6 +66,8 @@ export const request = function (options) {
     if (response.data.hasOwnProperty("total"))
       return { total: +response.data.total, items: response.data.response };
 
+    if (response.request.responseType === "text") return response.data;
+
     return response.data.response;
   };
 
@@ -76,7 +78,7 @@ export const request = function (options) {
       ? getResponseError(error.response)
       : error.message;
 
-    switch (error.response.status) {
+    switch (error.response?.status) {
       case 401:
         if (options.skipUnauthorized) return Promise.resolve();
 
@@ -85,7 +87,7 @@ export const request = function (options) {
           url: "/authentication/logout",
         }).then(() => {
           setWithCredentialsStatus(false);
-          window.location.href = loginURL;
+          window.location.href = window?.AppServer?.personal ? "/" : loginURL;
         });
         break;
       case 402:

@@ -20,7 +20,7 @@ namespace ASC.Core.Common.EF.Model.Mail
         {
             modelBuilder
                 .Add(MySqlAddMailboxServer, Provider.MySql)
-                .Add(PgSqlAddMailboxServer, Provider.Postgre)
+                .Add(PgSqlAddMailboxServer, Provider.PostgreSql)
                 .HasData(
                 new MailboxServer { Id = 493, IdProvider = 1, Type = "imap", Hostname = "imap.1und1.de", Port = 993, SocketType = "SSL", UserName = "%EMAILADDRESS%", Authentication = "password-cleartext", IsUserData = bool.Parse("false") },
                 new MailboxServer { Id = 494, IdProvider = 1, Type = "imap", Hostname = "imap.1und1.de", Port = 143, SocketType = "STARTTLS", UserName = "%EMAILADDRESS%", Authentication = "password-cleartext", IsUserData = bool.Parse("false") },

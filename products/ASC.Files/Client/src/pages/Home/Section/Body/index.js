@@ -7,6 +7,8 @@ import FilesRowContainer from "./RowsView/FilesRowContainer";
 import FilesTileContainer from "./TilesView/FilesTileContainer";
 import EmptyContainer from "../../../../components/EmptyContainer";
 import withLoader from "../../../../HOCs/withLoader";
+import TableView from "./TableView/TableContainer";
+import { Consumer } from "@appserver/components/utils/context";
 
 let currentDroppable = null;
 
@@ -26,6 +28,9 @@ const SectionBodyContent = (props) => {
     moveDragItems,
     viewAs,
     setSelection,
+    setBufferSelection,
+    tooltipPageX,
+    tooltipPageY,
   } = props;
 
   useEffect(() => {
@@ -44,6 +49,7 @@ const SectionBodyContent = (props) => {
     document.addEventListener("dragover", onDragOver);
     document.addEventListener("dragleave", onDragLeaveDoc);
     document.addEventListener("drop", onDropEvent);
+
     return () => {
       window.removeEventListener("mousedown", onMouseDown);
       window.removeEventListener("mouseup", onMouseUp);
@@ -59,12 +65,22 @@ const SectionBodyContent = (props) => {
     if (
       e.target.closest(".scroll-body") &&
       !e.target.closest(".files-item") &&
-      !e.target.closest(".not-selectable")
-    )
+      !e.target.closest(".not-selectable") &&
+      !e.target.closest(".table-container_group-menu")
+    ) {
       setSelection([]);
+      setBufferSelection(null);
+    }
   };
 
   const onMouseMove = (e) => {
+    if (
+      Math.abs(e.pageX - tooltipPageX) < 5 &&
+      Math.abs(e.pageY - tooltipPageY) < 5
+    ) {
+      return false;
+    }
+
     if (!dragging) {
       document.body.classList.add("drag-cursor");
       setDragging(true);
@@ -79,13 +95,31 @@ const SectionBodyContent = (props) => {
     const droppable = wrapperElement.closest(".droppable");
     if (currentDroppable !== droppable) {
       if (currentDroppable) {
-        currentDroppable.classList.remove("droppable-hover");
+        if (viewAs === "table") {
+          const value = currentDroppable.getAttribute("value");
+          const classElements = document.getElementsByClassName(value);
+
+          for (let cl of classElements) {
+            cl.classList.remove("droppable-hover");
+          }
+        } else {
+          currentDroppable.classList.remove("droppable-hover");
+        }
       }
       currentDroppable = droppable;
 
       if (currentDroppable) {
-        currentDroppable.classList.add("droppable-hover");
-        currentDroppable = droppable;
+        if (viewAs === "table") {
+          const value = currentDroppable.getAttribute("value");
+          const classElements = document.getElementsByClassName(value);
+
+          for (let cl of classElements) {
+            cl.classList.add("droppable-hover");
+          }
+        } else {
+          currentDroppable.classList.add("droppable-hover");
+          currentDroppable = droppable;
+        }
       }
     }
   };
@@ -154,12 +188,23 @@ const SectionBodyContent = (props) => {
   };
 
   //console.log("Files Home SectionBodyContent render", props);
-  return (!fileActionId && isEmptyFilesList) || null ? (
-    <EmptyContainer />
-  ) : viewAs === "tile" ? (
-    <FilesTileContainer t={t} />
-  ) : (
-    <FilesRowContainer tReady={tReady} />
+  return (
+    <Consumer>
+      {(context) =>
+        (!fileActionId && isEmptyFilesList) || null ? (
+          <EmptyContainer />
+        ) : viewAs === "tile" ? (
+          <FilesTileContainer sectionWidth={context.sectionWidth} t={t} />
+        ) : viewAs === "table" ? (
+          <TableView sectionWidth={context.sectionWidth} tReady={tReady} />
+        ) : (
+          <FilesRowContainer
+            sectionWidth={context.sectionWidth}
+            tReady={tReady}
+          />
+        )
+      }
+    </Consumer>
   );
 };
 
@@ -172,7 +217,7 @@ export default inject(
   }) => {
     const {
       fileActionStore,
-      filesList,
+      isEmptyFilesList,
       dragging,
       setDragging,
       viewAs,
@@ -180,6 +225,9 @@ export default inject(
       startDrag,
       setStartDrag,
       setSelection,
+      tooltipPageX,
+      tooltipPageY,
+      setBufferSelection,
     } = filesStore;
 
     return {
@@ -187,7 +235,7 @@ export default inject(
       startDrag,
       setStartDrag,
       fileActionId: fileActionStore.id,
-      isEmptyFilesList: filesList.length <= 0,
+      isEmptyFilesList,
       setDragging,
       startDrag,
       setStartDrag,
@@ -197,6 +245,9 @@ export default inject(
       moveDragItems: filesActionsStore.moveDragItems,
       viewAs,
       setSelection,
+      setBufferSelection,
+      tooltipPageX,
+      tooltipPageY,
     };
   }
 )(

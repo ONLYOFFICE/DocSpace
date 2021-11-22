@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.9.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.9.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Поле кода подтверждения не может быть пустым</value>
@@ -209,7 +209,7 @@
     <value>Ключ Facebook</value>
   </data>
   <data name="ConsumersFacebookDescription" xml:space="preserve">
-    <value>Подключите приложение для входа на портал по учетной записи Facebook и поиска контактов.</value>
+    <value>Подключите приложение для входа на портал по учетной записи Facebook.</value>
   </data>
   <data name="ConsumersFacebookInstruction" xml:space="preserve">
     <value>Добавив приложение сервиса Facebook, Вы сможете на странице своего профиля подключить вход на портал ONLYOFFICE™ с помощью аккаунта Facebook. Также Вы сможете на странице редактирования персоны или компании CRM находить и привязывать аккаунт Facebook.</value>
@@ -693,6 +693,9 @@
   </data>
   <data name="ReassignDataRemoveUserError" xml:space="preserve">
     <value>Процесс передачи данных для {0} не завершен.</value>
+  </data>
+  <data name="RecaptchaInvalid" xml:space="preserve">
+    <value>Неверный код Recaptcha</value>
   </data>
   <data name="SgServerRegion" xml:space="preserve">
     <value>АТР (Сингапур)</value>

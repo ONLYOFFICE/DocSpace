@@ -23,8 +23,11 @@ class ProfileActions extends React.PureComponent {
   };
 
   componentDidMount() {
-    const { user } = this.state;
-    this.getAvatar(user.id);
+    if (this.props.userIsUpdate) {
+      this.getAvatar();
+    } else {
+      this.setState({ avatar: this.state.user.avatar });
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -37,7 +40,7 @@ class ProfileActions extends React.PureComponent {
     }
 
     if (this.props.userIsUpdate !== prevProps.userIsUpdate) {
-      this.getAvatar(this.state.user.id);
+      this.getAvatar();
       this.props.setUserIsUpdate(false);
     }
   }
@@ -71,8 +74,9 @@ class ProfileActions extends React.PureComponent {
     e.preventDefault();
   };
 
-  getAvatar = async (id) => {
-    const avatar = await api.people.getUserPhoto(id);
+  getAvatar = async () => {
+    const user = await api.people.getUser();
+    const avatar = user.avatar;
     this.setState({ avatar: avatar });
   };
 
@@ -86,15 +90,15 @@ class ProfileActions extends React.PureComponent {
         <Avatar
           onClick={this.onClick}
           role={userRole}
-          size="small"
-          source={String(avatar.big)}
+          size="min"
+          source={avatar}
           userName={user.displayName}
           className="icon-profile-menu"
         />
         <ProfileMenu
           className="profile-menu"
           avatarRole={userRole}
-          avatarSource={avatar.medium}
+          avatarSource={avatar}
           displayName={user.displayName}
           email={user.email}
           open={opened}

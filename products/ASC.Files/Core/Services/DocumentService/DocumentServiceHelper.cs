@@ -124,7 +124,7 @@ namespace ASC.Web.Files.Services.DocumentService
             return GetParams(file, lastVersion, linkRight, true, true, editPossible, tryEdit, tryCoauth, out configuration);
         }
 
-        public async Task<FileOptions<T>> GetParamsAsync<T>(T fileId, int version, string doc, bool editPossible, bool tryEdit, bool tryCoauth)
+        public async Task<(File<T> File, Configuration<T> Configuration)> GetParamsAsync<T>(T fileId, int version, string doc, bool editPossible, bool tryEdit, bool tryCoauth)
         {
             var lastVersion = true;
             FileShare linkRight;
@@ -151,36 +151,7 @@ namespace ASC.Web.Files.Services.DocumentService
             }
 
             return await GetParamsAsync(file, lastVersion, linkRight, true, true, editPossible, tryEdit, tryCoauth);
-        }
-
-        public async Task<FileOptions<T>> GetParamsAsyncTuple<T>(T fileId, int version, string doc, bool editPossible, bool tryEdit, bool tryCoauth)
-        {
-            var lastVersion = true;
-            FileShare linkRight;
-
-            var fileDao = DaoFactory.GetFileDao<T>();
-
-            var fileOptions = await FileShareLink.CheckAsyncTuple(doc, fileDao);
-            var file = fileOptions.File;
-            linkRight = fileOptions.FileShare;
-
-            if (file == null)
-            {
-                var curFile = await fileDao.GetFileAsync(fileId);
-
-                if (curFile != null && 0 < version && version < curFile.Version)
-                {
-                    file = await fileDao.GetFileAsync(fileId, version);
-                    lastVersion = false;
-                }
-                else
-                {
-                    file = curFile;
-                }
-            }
-
-            return await GetParamsAsync(file, lastVersion, linkRight, true, true, editPossible, tryEdit, tryCoauth);
-        }
+        }    
 
         public File<T> GetParams<T>(File<T> file, bool lastVersion, FileShare linkRight, bool rightToRename, bool rightToEdit, bool editPossible, bool tryEdit, bool tryCoauth, out Configuration<T> configuration)
         {
@@ -373,7 +344,7 @@ namespace ASC.Web.Files.Services.DocumentService
             return file;
         }
 
-        public async Task<FileOptions<T>> GetParamsAsync<T>(File<T> file, bool lastVersion, FileShare linkRight, bool rightToRename, bool rightToEdit, bool editPossible, bool tryEdit, bool tryCoauth)
+        public async Task<(File<T> File, Configuration<T> Configuration)> GetParamsAsync<T>(File<T> file, bool lastVersion, FileShare linkRight, bool rightToRename, bool rightToEdit, bool editPossible, bool tryEdit, bool tryCoauth)
         {
             if (file == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
             if (!string.IsNullOrEmpty(file.Error)) throw new Exception(file.Error);
@@ -530,7 +501,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             if (file.FolderID != null)
             {
-                EntryStatusManager.SetFileStatus(file);
+                await EntryStatusManager.SetFileStatusAsync(file);
             }
 
             var configuration = new Configuration<T>(file, ServiceProvider)
@@ -561,7 +532,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 configuration.Document.Title += string.Format(" ({0})", file.CreateOnString);
             }
 
-            return new FileOptions<T>{ File = file, Configuration = configuration };
+            return (file, configuration);
         }
 
 

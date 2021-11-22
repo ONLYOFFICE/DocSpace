@@ -13,6 +13,7 @@ import equal from "fast-deep-equal/react";
 import Hammer from "hammerjs";
 import IconButton from "@appserver/components/icon-button";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import { isDesktop } from "react-device-detect";
 
 const StyledVideoViewer = styled(VideoViewer)`
   z-index: 301;
@@ -58,6 +59,7 @@ class MediaViewer extends React.Component {
       allowConvert: true,
       playlist: props.playlist,
       playlistPos,
+      fileUrl: item.src,
     };
 
     this.detailsContainer = React.createRef();
@@ -65,15 +67,13 @@ class MediaViewer extends React.Component {
   }
 
   updateHammer() {
-    let currentPlaylistPos = this.state.playlistPos;
+    const { playlistPos, playlist } = this.state;
 
-    let currentFile = this.state.playlist[currentPlaylistPos];
-    let fileTitle = currentFile.title;
-    let url = currentFile.src;
-    var ext = this.getFileExtension(fileTitle)
-      ? this.getFileExtension(fileTitle)
-      : this.getFileExtension(url);
-    var _this = this;
+    const currentFile = playlist[playlistPos];
+    const { title } = currentFile;
+
+    const ext = this.getFileExtension(title);
+    const _this = this;
 
     if (this.hammer) {
       this.hammer.off("swipeleft", this.nextMedia);
@@ -105,79 +105,105 @@ class MediaViewer extends React.Component {
             document.getElementsByClassName("videoViewerOverlay")[0]
           );
         }
-        if (_this.hammer) {
+        if (_this.hammer && !isDesktop) {
           _this.hammer.on("swipeleft", _this.nextMedia);
           _this.hammer.on("swiperight", _this.prevMedia);
         }
       } catch (ex) {
-        console.error("MediaViewer updateHammer", ex);
+        //console.error("MediaViewer updateHammer", ex);
+        this.hammer = null;
       }
     }, 500);
   }
 
-  componentDidUpdate(prevProps) {
-    this.updateHammer();
-    if (this.props.visible !== prevProps.visible) {
+  componentDidUpdate(prevProps, prevState) {
+    const {
+      visible,
+      playlist,
+      currentFileId,
+      onEmptyPlaylistError,
+    } = this.props;
+
+    const { playlistPos, fileUrl } = this.state;
+    const src = playlist[playlistPos]?.src;
+    const title = playlist[playlistPos]?.title;
+    const ext = this.getFileExtension(title);
+
+    if (visible !== prevProps.visible) {
+      const newPlaylistPos =
+        playlist.length > 0
+          ? playlist.find((file) => file.fileId === currentFileId).id
+          : 0;
+
       this.setState({
-        visible: this.props.visible,
-        playlistPos:
-          this.props.playlist.length > 0
-            ? this.props.playlist.find(
-                (file) => file.fileId === this.props.currentFileId
-              ).id
-            : 0,
+        visible: visible,
+        playlistPos: newPlaylistPos,
       });
     }
+
     if (
-      this.props.visible &&
-      this.props.visible === prevProps.visible &&
-      !equal(this.props.playlist, prevProps.playlist)
+      src &&
+      src !== fileUrl &&
+      playlistPos === prevState.playlistPos &&
+      ext !== ".tif" &&
+      ext !== ".tiff"
     ) {
-      let playlistPos = 0;
-      if (this.props.playlist.length > 0) {
-        if (this.props.playlist.length - 1 < this.state.playlistPos) {
-          playlistPos = this.props.playlist.length - 1;
-        }
+      this.setState({ fileUrl: src });
+    }
+
+    if (
+      visible &&
+      visible === prevProps.visible &&
+      playlistPos !== prevState.playlistPos
+    ) {
+      if (ext === ".tiff" || ext === ".tif") {
+        this.getTiffDataURL(src);
+      } else {
+        this.setState({ fileUrl: src });
+      }
+    }
+
+    if (
+      visible &&
+      visible === prevProps.visible &&
+      !equal(playlist, prevProps.playlist)
+    ) {
+      if (playlist.length > 0) {
+        this.updateHammer();
+
+        const newPlaylistPos = playlistPos < playlist.length ? playlistPos : 0;
+
         this.setState({
-          playlist: this.props.playlist,
-          playlistPos: playlistPos,
+          playlist: playlist,
+          playlistPos: newPlaylistPos,
         });
       } else {
-        this.props.onEmptyPlaylistError();
+        onEmptyPlaylistError();
         this.setState({
           visible: false,
         });
       }
-    } else if (!equal(this.props.playlist, prevProps.playlist)) {
+    } else if (!equal(playlist, prevProps.playlist)) {
       this.setState({
-        playlist: this.props.playlist,
+        playlist: playlist,
       });
     }
   }
 
   componentDidMount() {
-    var _this = this;
-    setTimeout(function () {
-      if (document.getElementsByClassName("react-viewer-canvas").length > 0) {
-        _this.hammer = Hammer(
-          document.getElementsByClassName("react-viewer-canvas")[0]
-        );
-        var pinch = new Hammer.Pinch();
-        _this.hammer.add([pinch]);
-        _this.hammer.on("pinchout", _this.handleZoomOut);
-        _this.hammer.on("pinchin", _this.handleZoomIn);
-        _this.hammer.on("pinchend", _this.handleZoomEnd);
-        _this.hammer.on("doubletap", _this.doubleTap);
-      } else {
-        _this.hammer = Hammer(
-          document.getElementsByClassName("videoViewerOverlay")[0]
-        );
-      }
-      if (_this.hammer) {
-        _this.hammer.on("swipeleft", _this.nextMedia);
-        _this.hammer.on("swiperight", _this.prevMedia);
-      }
-    }, 500);
+    const { playlist } = this.props;
+    const { playlistPos } = this.state;
+
+    const currentFile = playlist[playlistPos];
+    const { src, title } = currentFile;
+    const ext = this.getFileExtension(title);
+
+    if (ext === ".tiff" || ext === ".tif") {
+      this.getTiffDataURL(src);
+    }
+
+    this.updateHammer();
+
     document.addEventListener("keydown", this.onKeydown, false);
     document.addEventListener("keyup", this.onKeyup, false);
   }
@@ -193,6 +219,7 @@ class MediaViewer extends React.Component {
     }
     document.removeEventListener("keydown", this.onKeydown, false);
     document.removeEventListener("keyup", this.onKeyup, false);
+    this.onClose();
   }
 
   mapSupplied = {
@@ -217,20 +244,24 @@ class MediaViewer extends React.Component {
   };
 
   canImageView = function (ext) {
-    return this.props.extsImagePreviewed.indexOf(ext) != -1;
+    const { extsImagePreviewed } = this.props;
+    return extsImagePreviewed.indexOf(ext) != -1;
   };
+
   canPlay = (fileTitle, allowConvert) => {
-    var ext =
+    const { extsMediaPreviewed } = this.props;
+
+    const ext =
       fileTitle[0] === "." ? fileTitle : this.getFileExtension(fileTitle);
 
-    var supply = this.mapSupplied[ext];
+    const supply = this.mapSupplied[ext];
 
-    var canConv = allowConvert || this.props.allowConvert;
+    const canConvert = allowConvert || this.props.allowConvert;
 
     return (
       !!supply &&
-      this.props.extsMediaPreviewed.indexOf(ext) != -1 &&
-      (!supply.convertable || canConv)
+      extsMediaPreviewed.indexOf(ext) != -1 &&
+      (!supply.convertable || canConvert)
     );
   };
 
@@ -239,34 +270,40 @@ class MediaViewer extends React.Component {
       return "";
     }
     fileTitle = fileTitle.trim();
-    var posExt = fileTitle.lastIndexOf(".");
+    const posExt = fileTitle.lastIndexOf(".");
     return 0 <= posExt ? fileTitle.substring(posExt).trim().toLowerCase() : "";
   };
 
   zoom = 1;
+
   handleZoomEnd = () => {
     this.zoom = 1;
   };
+
   handleZoomIn = (e) => {
     if (this.zoom - e.scale > 0.1) {
       this.zoom = e.scale;
       document.querySelector('li[data-key="zoomOut"]').click();
     }
   };
+
   handleZoomOut = (e) => {
     if (e.scale - this.zoom > 0.3) {
       this.zoom = e.scale;
       document.querySelector('li[data-key="zoomIn"]').click();
     }
   };
+
   doubleTap = () => {
     document.querySelector('li[data-key="zoomIn"]').click();
   };
+
   prevMedia = () => {
-    let currentPlaylistPos = this.state.playlistPos;
+    const { playlistPos, playlist } = this.state;
+
+    let currentPlaylistPos = playlistPos;
     currentPlaylistPos--;
-    if (currentPlaylistPos < 0)
-      currentPlaylistPos = this.state.playlist.length - 1;
+    if (currentPlaylistPos < 0) currentPlaylistPos = playlist.length - 1;
 
     this.setState({
       playlistPos: currentPlaylistPos,
@@ -274,13 +311,16 @@ class MediaViewer extends React.Component {
   };
 
   nextMedia = () => {
-    let currentPlaylistPos = this.state.playlistPos;
-    currentPlaylistPos = (currentPlaylistPos + 1) % this.state.playlist.length;
+    const { playlistPos, playlist } = this.state;
+
+    let currentPlaylistPos = playlistPos;
+    currentPlaylistPos = (currentPlaylistPos + 1) % playlist.length;
 
     this.setState({
       playlistPos: currentPlaylistPos,
     });
   };
+
   getOffset = () => {
     if (this.detailsContainer.current && this.viewerToolbox.current) {
       return (
@@ -291,19 +331,23 @@ class MediaViewer extends React.Component {
       return 0;
     }
   };
+
   onDelete = () => {
+    const { playlist, playlistPos } = this.state;
+
     let currentFileId =
-      this.state.playlist.length > 0
-        ? this.state.playlist.find((file) => file.id === this.state.playlistPos)
-            .fileId
+      playlist.length > 0
+        ? playlist.find((file) => file.id === playlistPos).fileId
         : 0;
     this.props.onDelete && this.props.onDelete(currentFileId);
   };
+
   onDownload = () => {
+    const { playlist, playlistPos } = this.state;
+
     let currentFileId =
-      this.state.playlist.length > 0
-        ? this.state.playlist.find((file) => file.id === this.state.playlistPos)
-            .fileId
+      playlist.length > 0
+        ? playlist.find((file) => file.id === playlistPos).fileId
         : 0;
     this.props.onDownload && this.props.onDownload(currentFileId);
   };
@@ -380,25 +424,48 @@ class MediaViewer extends React.Component {
     this.setState({ visible: false });
   };
 
+  getTiffDataURL = (src) => {
+    if (!window.Tiff) return;
+    const _this = this;
+    const xhr = new XMLHttpRequest();
+    xhr.responseType = "arraybuffer";
+    xhr.open("GET", src);
+    xhr.onload = function () {
+      try {
+        const tiff = new window.Tiff({ buffer: xhr.response });
+        const dataUrl = tiff.toDataURL();
+        _this.setState({ fileUrl: dataUrl });
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    xhr.send();
+  };
+
   render() {
-    let currentPlaylistPos = this.state.playlistPos;
-    let currentFileId =
-      this.state.playlist.length > 0
-        ? this.state.playlist.find((file) => file.id === currentPlaylistPos)
-            .fileId
+    const { playlistPos, playlist, visible, fileUrl } = this.state;
+    const {
+      onClose,
+      userAccess,
+      canDelete,
+      canDownload,
+      errorLabel,
+      previewFile,
+    } = this.props;
+
+    const currentFileId =
+      playlist.length > 0
+        ? playlist.find((file) => file.id === playlistPos).fileId
         : 0;
 
-    let currentFile = this.state.playlist[currentPlaylistPos];
-    let fileTitle = currentFile.title;
-    let url = currentFile.src;
+    const currentFile = playlist[playlistPos];
+    const { title } = currentFile;
 
     let isImage = false;
     let isVideo = false;
     let canOpen = true;
 
-    var ext = this.getFileExtension(fileTitle)
-      ? this.getFileExtension(fileTitle)
-      : this.getFileExtension(url);
+    const ext = this.getFileExtension(title);
 
     if (!this.canPlay(ext) && !this.canImageView(ext)) {
       canOpen = false;
@@ -414,25 +481,26 @@ class MediaViewer extends React.Component {
         : false;
     }
 
-    if (this.mapSupplied[ext])
-      if (!isImage && this.mapSupplied[ext].convertable && !url.includes("#")) {
-        url += (url.includes("?") ? "&" : "?") + "convpreview=true";
-      }
+    // TODO: rewrite with fileURL
+    /*if (this.mapSupplied[ext])
+      if (!isImage && this.mapSupplied[ext].convertable && !src.includes("#")) {
+        src += (src.includes("?") ? "&" : "?") + "convpreview=true";
+      }*/
 
     return (
-      <StyledMediaViewer visible={this.state.visible}>
+      <StyledMediaViewer visible={visible}>
         <div className="videoViewerOverlay"></div>
         {!isImage && (
           <>
             <MediaScrollButton
               orientation="right"
               onClick={this.prevMedia}
-              inactive={this.state.playlist.length <= 1}
+              inactive={playlist.length <= 1}
             />
             <MediaScrollButton
               orientation="left"
               onClick={this.nextMedia}
-              inactive={this.state.playlist.length <= 1}
+              inactive={playlist.length <= 1}
             />
           </>
         )}
@@ -440,16 +508,17 @@ class MediaViewer extends React.Component {
         <div>
           <div className="details" ref={this.detailsContainer}>
             <Text isBold fontSize="14px" color="#fff" className="title">
-              {fileTitle}
+              {title}
             </Text>
             <ControlBtn
-              onClick={this.props.onClose && this.props.onClose}
+              onClick={onClose && onClose}
               className="mediaPlayerClose"
             >
               <IconButton
                 color="#fff"
                 iconName="/static/images/cross.react.svg"
                 size={25}
+                isClickable
               />
             </ControlBtn>
           </div>
@@ -457,11 +526,11 @@ class MediaViewer extends React.Component {
         {canOpen &&
           (isImage ? (
             <ImageViewer
-              userAccess={this.props.userAccess}
-              visible={this.state.visible}
+              userAccess={userAccess}
+              visible={visible}
               onClose={this.onClose}
-              images={[{ src: url, alt: "" }]}
-              inactive={this.state.playlist.length <= 1}
+              images={[{ src: fileUrl, alt: "" }]}
+              inactive={playlist.length <= 1}
               onNextClick={this.nextMedia}
               onPrevClick={this.prevMedia}
               onDeleteClick={this.onDelete}
@@ -469,22 +538,23 @@ class MediaViewer extends React.Component {
             />
           ) : (
             <StyledVideoViewer
-              url={url}
+              url={fileUrl}
               isVideo={isVideo}
               getOffset={this.getOffset}
+              errorLabel={errorLabel}
             />
           ))}
         <div className="mediaViewerToolbox" ref={this.viewerToolbox}>
           {!isImage && (
             <span>
-              {this.props.canDelete(currentFileId) && (
+              {canDelete(currentFileId) && !previewFile && (
                 <ControlBtn onClick={this.onDelete}>
                   <div className="deleteBtnContainer">
                     <StyledMediaDeleteIcon size="scale" />
                   </div>
                 </ControlBtn>
               )}
-              {this.props.canDownload(currentFileId) && (
+              {canDownload(currentFileId) && (
                 <ControlBtn onClick={this.onDownload}>
                   <div className="downloadBtnContainer">
                     <StyledMediaDownloadIcon size="scale" />
@@ -514,6 +584,8 @@ MediaViewer.propTypes = {
   onClose: PropTypes.func,
   onEmptyPlaylistError: PropTypes.func,
   deleteDialogVisible: PropTypes.bool,
+  errorLabel: PropTypes.string,
+  previewFile: PropTypes.bool,
 };
 
 MediaViewer.defaultProps = {
@@ -526,6 +598,7 @@ MediaViewer.defaultProps = {
   canDownload: () => {
     return true;
   },
+  previewFile: false,
 };
 
 export default MediaViewer;

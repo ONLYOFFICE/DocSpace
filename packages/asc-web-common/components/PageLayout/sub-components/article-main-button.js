@@ -4,11 +4,13 @@ import equal from "fast-deep-equal/react";
 import { tablet } from "@appserver/components/utils/device";
 
 const StyledArticleMainButton = styled.div`
-  margin: 16px 0 0;
+  margin: 12px 0 0;
+  max-width: 216px;
   .main-button_drop-down {
     line-height: 36px;
   }
   @media ${tablet} {
+    margin: 16px 0 0;
     .main-button_drop-down {
       line-height: 40px;
     }

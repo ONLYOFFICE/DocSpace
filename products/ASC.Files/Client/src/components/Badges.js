@@ -25,7 +25,15 @@ const Badges = ({
   onBadgeClick,
   setConvertDialogVisible,
 }) => {
-  const { id, locked, fileStatus, versionGroup, title, fileExst } = item;
+  const {
+    id,
+    locked,
+    fileStatus,
+    version,
+    versionGroup,
+    title,
+    fileExst,
+  } = item;
 
   const isFavorite = fileStatus === 32;
   const isEditing = fileStatus === 1;
@@ -72,7 +80,7 @@ const Badges = ({
           size="small"
         />
       )}
-      {locked && accessToEdit && (
+      {locked && accessToEdit && !isTrashFolder && (
         <StyledFileActionsLockedIcon
           className="badge lock-file icons-group"
           size="small"
@@ -91,7 +99,7 @@ const Badges = ({
           onClick={onClickFavorite}
         />
       )}
-      {versionGroup > 1 && (
+      {version > 1 && (
         <Badge
           className="badge-version icons-group"
           backgroundColor="#A3A9AE"

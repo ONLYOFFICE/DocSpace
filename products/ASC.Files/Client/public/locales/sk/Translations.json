@@ -1,1 +1,18 @@
-{}
+{
+  "FolderTitleBoxNet": "Box priečinok",
+  "FolderTitleDocuSign": "Účet DocuSign",
+  "FolderTitleDropBox": "Dropbox priečinok",
+  "FolderTitleGoogle": "Google priečinok",
+  "FolderTitleSharePoint": "Adresár SharePoint",
+  "FolderTitleSkyDrive": "Adresár OneDrive",
+  "FolderTitleWebDav": "Adresár WebDAV",
+  "FolderTitleYandex": "Adresár Yandex",
+  "TypeTitleBoxNet": "Box",
+  "TypeTitleDocuSign": "DocuSign",
+  "TypeTitleDropBox": "Dropbox",
+  "TypeTitleGoogle": "Google Drive",
+  "TypeTitleSharePoint": "SharePoint",
+  "TypeTitleSkyDrive": "OneDrive",
+  "TypeTitleWebDav": "WebDAV",
+  "TypeTitleYandex": "Yandex.Disk"
+}

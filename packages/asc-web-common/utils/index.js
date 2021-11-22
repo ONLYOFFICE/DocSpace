@@ -236,18 +236,18 @@ export function toCommunityHostname(hostname) {
 
 export function getProviderTranslation(provider, t) {
   switch (provider) {
-    case "Google":
+    case "google":
       return t("Common:SignInWithGoogle");
-    case "Facebook":
+    case "facebook":
       return t("Common:SignInWithFacebook");
-    case "Twitter":
+    case "twitter":
       return t("Common:SignInWithTwitter");
-    case "LinkedIn":
+    case "linkedin":
       return t("Common:SignInWithLinkedIn");
   }
 }
 
-function getLanguage(lng) {
+export function getLanguage(lng) {
   try {
     let language = lng == "en-US" || lng == "en-GB" ? "en" : lng;
 
@@ -272,9 +272,38 @@ export function loadLanguagePath(homepage, fixedNS = null) {
     if (ns.length > 0 && ns[0] === "Common") {
       return `/static/locales/${language}/Common.json`;
     }
-    if (ns.length > 0 && ns[0].includes("Campaign")) {
-      return `/static/locales/${language}/${ns[0]}.json`;
-    }
     return `${homepage}/locales/${language}/${fixedNS || ns}.json`;
   };
+}
+
+export function loadScript(url, id, onLoad, onError) {
+  try {
+    const script = document.createElement("script");
+    script.setAttribute("type", "text/javascript");
+    script.setAttribute("id", id);
+
+    if (onLoad) script.onload = onLoad;
+    if (onError) script.onerror = onError;
+
+    script.src = url;
+    script.async = true;
+
+    document.body.appendChild(script);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export function isRetina() {
+  if (window.devicePixelRatio > 1) return true;
+
+  var mediaQuery =
+    "(-webkit-min-device-pixel-ratio: 1.5),\
+      (min--moz-device-pixel-ratio: 1.5),\
+      (-o-min-device-pixel-ratio: 3/2),\
+      (min-resolution: 1.5dppx),\
+      (min-device-pixel-ratio: 1.5)";
+
+  if (window.matchMedia && window.matchMedia(mediaQuery).matches) return true;
+  return false;
 }

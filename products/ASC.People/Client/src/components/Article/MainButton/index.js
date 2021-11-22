@@ -58,11 +58,18 @@ class ArticleMainButtonContent extends React.Component {
 
   render() {
     //console.log("People ArticleMainButtonContent render");
-    const { t, homepage, userCaption, guestCaption, groupCaption } = this.props;
+    const {
+      t,
+      isAdmin,
+      homepage,
+      userCaption,
+      guestCaption,
+      groupCaption,
+    } = this.props;
 
     const { dialogVisible } = this.state;
 
-    return (
+    return isAdmin ? (
       <>
         <MainButton
           isDisabled={false}
@@ -131,21 +138,29 @@ class ArticleMainButtonContent extends React.Component {
           />
         )}
       </>
+    ) : (
+      <></>
     );
   }
 }
 
 export default withRouter(
-  inject(({ auth }) => ({
-    homepage: config.homepage,
-    userCaption: auth.settingsStore.customNames.userCaption,
-    guestCaption: auth.settingsStore.customNames.guestCaption,
-    groupCaption: auth.settingsStore.customNames.groupCaption,
-  }))(
+  inject(({ auth }) => {
+    const {
+      userCaption,
+      guestCaption,
+      groupCaption,
+    } = auth.settingsStore.customNames;
+    return {
+      isAdmin: auth.isAdmin,
+      homepage: config.homepage,
+      userCaption,
+      guestCaption,
+      groupCaption,
+    };
+  })(
     withTranslation(["Article", "Common", "Translations"])(
-      withLoader(observer(ArticleMainButtonContent))(
-        <Loaders.Rectangle width="217px" />
-      )
+      withLoader(observer(ArticleMainButtonContent))(<Loaders.MainButton />)
     )
   )
 );

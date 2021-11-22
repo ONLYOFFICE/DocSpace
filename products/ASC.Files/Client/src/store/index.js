@@ -16,7 +16,7 @@ import PrimaryProgressDataStore from "./PrimaryProgressDataStore";
 
 import VersionHistoryStore from "./VersionHistoryStore";
 import DialogsStore from "./DialogsStore";
-
+import selectedFilesStore from "./SelectedFilesStore";
 import store from "studio/store";
 
 const formatsStore = new FormatsStore(
@@ -36,9 +36,10 @@ const filesStore = new FilesStore(
   selectedFolderStore,
   treeFoldersStore,
   formatsStore,
-  settingsStore
+  settingsStore,
+  selectedFilesStore
 );
-const mediaViewerDataStore = new MediaViewerDataStore(filesStore);
+const mediaViewerDataStore = new MediaViewerDataStore(filesStore, formatsStore);
 
 const secondaryProgressDataStore = new SecondaryProgressDataStore();
 const primaryProgressDataStore = new PrimaryProgressDataStore();
@@ -71,6 +72,7 @@ const filesActionsStore = new FilesActionsStore(
 
 const versionHistoryStore = new VersionHistoryStore(filesStore);
 
+//const selectedFilesStore = new SelectedFilesStore(selectedFilesStore);
 const stores = {
   filesStore,
   settingsStore,
@@ -82,6 +84,7 @@ const stores = {
   treeFoldersStore,
   selectedFolderStore,
   filesActionsStore,
+  selectedFilesStore,
 };
 
 export default stores;

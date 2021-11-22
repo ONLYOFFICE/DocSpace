@@ -31,6 +31,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -101,6 +102,36 @@ namespace ASC.Files.Core
         {
             var pathFolder = appendBreadCrumbs
                                  ? EntryManager.GetBreadCrumbs(session.FolderId).Select(f =>
+                                 {
+                                     //todo: check how?
+                                     if (f == null)
+                                     {
+                                         Logger.ErrorFormat("GetBreadCrumbs {0} with null", session.FolderId);
+                                         return default;
+                                     }
+                                     if (f is Folder<string> f1) return (T)Convert.ChangeType(f1.ID, typeof(T));
+                                     if (f is Folder<int> f2) return (T)Convert.ChangeType(f2.ID, typeof(T));
+                                     return (T)Convert.ChangeType(0, typeof(T));
+                                 })
+                                 : new List<T> { session.FolderId };
+
+            return new
+            {
+                id = session.Id,
+                path = pathFolder,
+                created = session.Created,
+                expired = session.Expired,
+                location = session.Location,
+                bytes_uploaded = session.BytesUploaded,
+                bytes_total = session.BytesTotal
+            };
+        }
+
+        public async Task<object> ToResponseObjectAsync<T>(ChunkedUploadSession<T> session, bool appendBreadCrumbs = false)
+        {
+            var breadCrumbs = await EntryManager.GetBreadCrumbsAsync(session.FolderId);
+            var pathFolder = appendBreadCrumbs
+                                 ? breadCrumbs.Select(f =>
                                  {
                                      //todo: check how?
                                      if (f == null)

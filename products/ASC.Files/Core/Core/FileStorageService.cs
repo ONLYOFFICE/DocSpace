@@ -236,6 +236,21 @@ namespace ASC.Web.Files.Services.WCFService
             }
         }
 
+        public async Task<List<FileEntry>> GetFoldersAsync(T parentId)
+        {
+            var folderDao = GetFolderDao();
+
+            try
+            {
+                var entries = await EntryManager.GetEntriesAsync(folderDao.GetFolder(parentId), 0, 0, FilterType.FoldersOnly, false, Guid.Empty, string.Empty, false, false, new OrderBy(SortedByType.AZ, true));
+                return new List<FileEntry>(entries.Entries);
+            }
+            catch (Exception e)
+            {
+                throw GenerateException(e);
+            }
+        }
+
         public List<object> GetPath(T folderId)
         {
             var folderDao = GetFolderDao();
@@ -318,7 +333,7 @@ namespace ASC.Web.Files.Services.WCFService
                 || parent.FolderType == FolderType.SHARE
                 || parent.RootFolderType == FolderType.Privacy;
 
-            entries = entries.Where(x => x.FileEntryType == FileEntryType.Folder || 
+            entries = entries.Where(x => x.FileEntryType == FileEntryType.Folder ||
             (x is File<string> f1 && !FileConverter.IsConverting(f1) ||
              x is File<int> f2 && !FileConverter.IsConverting(f2)));
 
@@ -711,7 +726,7 @@ namespace ASC.Web.Files.Services.WCFService
             {
                 fileWrapper.Title = UserControlsCommonResource.NewDocument + ".docx";
             }
-            
+
             var externalExt = false;
 
             var fileExt = !enableExternalExt ? FileUtility.GetInternalExtension(fileWrapper.Title) : FileUtility.GetFileExtension(fileWrapper.Title);
@@ -843,6 +858,38 @@ namespace ASC.Web.Files.Services.WCFService
             }
         }
 
+        public async Task<KeyValuePair<bool, string>> TrackEditFileAsync(T fileId, Guid tabId, string docKeyForTrack, string doc = null, bool isFinish = false)
+        {
+            try
+            {
+                var id = FileShareLink.Parse<T>(doc);
+                if (id == null)
+                {
+                    if (!AuthContext.IsAuthenticated) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+                    if (!string.IsNullOrEmpty(doc)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+                    id = fileId;
+                }
+
+                if (docKeyForTrack != DocumentServiceHelper.GetDocKey(id, -1, DateTime.MinValue)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+
+                if (isFinish)
+                {
+                    FileTracker.Remove(id, tabId);
+                    SocketManager.FilesChangeEditors(id, true);
+                }
+                else
+                {
+                    await EntryManager.TrackEditingAsync(id, tabId, AuthContext.CurrentAccount.ID, doc);
+                }
+
+                return new KeyValuePair<bool, string>(true, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                return new KeyValuePair<bool, string>(false, ex.Message);
+            }
+        }
+
         public Dictionary<string, string> CheckEditing(List<T> filesId)
         {
             ErrorIf(!AuthContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
@@ -878,6 +925,29 @@ namespace ASC.Web.Files.Services.WCFService
                 }
 
                 var file = EntryManager.SaveEditing(fileId, fileExtension, fileuri, stream, doc, forcesave: forcesave ? ForcesaveType.User : ForcesaveType.None);
+
+                if (file != null)
+                    FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdated, file.Title);
+
+                SocketManager.FilesChangeEditors(fileId, !forcesave);
+                return file;
+            }
+            catch (Exception e)
+            {
+                throw GenerateException(e);
+            }
+        }
+
+        public async Task<File<T>> SaveEditingAsync(T fileId, string fileExtension, string fileuri, Stream stream, string doc = null, bool forcesave = false)
+        {
+            try
+            {
+                if (!forcesave && FileTracker.IsEditingAlone(fileId))
+                {
+                    FileTracker.Remove(fileId);
+                }
+
+                var file = await EntryManager.SaveEditingAsync(fileId, fileExtension, fileuri, stream, doc, forcesave: forcesave ? ForcesaveType.User : ForcesaveType.None);
 
                 if (file != null)
                     FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdated, file.Title);
@@ -940,29 +1010,39 @@ namespace ASC.Web.Files.Services.WCFService
                     return DocumentServiceHelper.GetDocKey(fileId, -1, DateTime.MinValue);
                 }
 
-                Configuration<string> configuration;
+                Configuration<T> configuration;
 
                 app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
+                string key;
+
                 if (app == null)
                 {
-                    DocumentServiceHelper.GetParams(fileId.ToString(), -1, doc, true, true, false, out configuration);
+                    DocumentServiceHelper.GetParams(fileId, -1, doc, true, true, false, out configuration);
+                    ErrorIf(!configuration.EditorConfig.ModeWrite
+                        || !(configuration.Document.Permissions.Edit
+                        || configuration.Document.Permissions.ModifyFilter
+                        || configuration.Document.Permissions.Review
+                        || configuration.Document.Permissions.FillForms
+                        || configuration.Document.Permissions.Comment),
+                        !string.IsNullOrEmpty(configuration.ErrorMessage) ? configuration.ErrorMessage : FilesCommonResource.ErrorMassage_SecurityException_EditFile);
+                    key = configuration.Document.Key;
                 }
                 else
                 {
                     var file = app.GetFile(fileId.ToString(), out var editable);
-                    DocumentServiceHelper.GetParams(file, true, editable ? FileShare.ReadWrite : FileShare.Read, false, editable, editable, editable, false, out configuration);
+                    DocumentServiceHelper.GetParams(file, true, editable ? FileShare.ReadWrite : FileShare.Read, false, editable, editable, editable, false, out var configuration1);
+                    ErrorIf(!configuration1.EditorConfig.ModeWrite
+                                || !(configuration1.Document.Permissions.Edit
+                                     || configuration1.Document.Permissions.ModifyFilter
+                                     || configuration1.Document.Permissions.Review
+                                     || configuration1.Document.Permissions.FillForms
+                                     || configuration1.Document.Permissions.Comment),
+                                !string.IsNullOrEmpty(configuration1.ErrorMessage) ? configuration1.ErrorMessage : FilesCommonResource.ErrorMassage_SecurityException_EditFile);
+                    key = configuration1.Document.Key;
                 }
 
-                ErrorIf(!configuration.EditorConfig.ModeWrite
-                        || !(configuration.Document.Permissions.Edit
-                             || configuration.Document.Permissions.ModifyFilter
-                             || configuration.Document.Permissions.Review
-                             || configuration.Document.Permissions.FillForms
-                             || configuration.Document.Permissions.Comment),
-                        !string.IsNullOrEmpty(configuration.ErrorMessage) ? configuration.ErrorMessage : FilesCommonResource.ErrorMassage_SecurityException_EditFile);
-                var key = configuration.Document.Key;
 
-                if (!DocumentServiceTrackerHelper.StartTrack(fileId.ToString(), key))
+                if (!DocumentServiceTrackerHelper.StartTrack(fileId, key))
                 {
                     throw new Exception(FilesCommonResource.ErrorMassage_StartEditing);
                 }
@@ -995,7 +1075,7 @@ namespace ASC.Web.Files.Services.WCFService
                     return DocumentServiceHelper.GetDocKey(fileId, -1, DateTime.MinValue);
                 }
 
-                FileOptions<string> fileOptions;
+                (File<string> File, Configuration<string> Configuration) fileOptions;
 
                 app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
                 if (app == null)
@@ -1399,7 +1479,33 @@ namespace ASC.Web.Files.Services.WCFService
             }
         }
 
-        public List<FileOperationResult> MarkAsRead(IEnumerable<JsonElement> foldersId, IEnumerable<JsonElement> filesId)
+        public async Task<List<FileEntry>> GetNewItemsAsync(T folderId)
+        {
+            try
+            {
+                Folder<T> folder;
+                var folderDao = GetFolderDao();
+                folder = await folderDao.GetFolderAsync(folderId);
+
+                var result = FileMarker.MarkedItems(folder);
+
+                result = new List<FileEntry>(EntryManager.SortEntries<T>(result, new OrderBy(SortedByType.DateAndTime, false)));
+
+                if (!result.Any())
+                {
+                    MarkAsRead(new List<JsonElement>() { JsonDocument.Parse(JsonSerializer.Serialize(folderId)).RootElement }, new List<JsonElement>() { }); //TODO
+                }
+
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                throw GenerateException(e);
+            }
+        }
+
+        public List<FileOperationResult> MarkAsRead(List<JsonElement> foldersId, List<JsonElement> filesId)
         {
             if (!foldersId.Any() && !filesId.Any()) return GetTasksStatuses();
             return FileOperationsManager.MarkAsRead(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), foldersId, filesId);
@@ -1612,15 +1718,15 @@ namespace ASC.Web.Files.Services.WCFService
         }
 
 
-        public (List<object>, List<object>) MoveOrCopyFilesCheck<T1>(IEnumerable<JsonElement> filesId, IEnumerable<JsonElement> foldersId, T1 destFolderId)
+        public (List<object>, List<object>) MoveOrCopyFilesCheck<T1>(List<JsonElement> filesId, List<JsonElement> foldersId, T1 destFolderId)
         {
+            var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(foldersId);
+            var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(filesId);
+
             var checkedFiles = new List<object>();
             var checkedFolders = new List<object>();
 
-            var (filesInts, folderInts) = MoveOrCopyFilesCheck(
-                filesId.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()),
-                foldersId.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()),
-                destFolderId);
+            var (filesInts, folderInts) = MoveOrCopyFilesCheck(fileIntIds, folderIntIds, destFolderId);
 
             foreach (var i in filesInts)
             {
@@ -1632,10 +1738,7 @@ namespace ASC.Web.Files.Services.WCFService
                 checkedFolders.Add(i);
             }
 
-            var (filesStrings, folderStrings) = MoveOrCopyFilesCheck(
-                filesId.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()),
-                foldersId.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()),
-                destFolderId);
+            var (filesStrings, folderStrings) = MoveOrCopyFilesCheck(fileStringIds, folderStringIds, destFolderId);
 
             foreach (var i in filesStrings)
             {
@@ -1657,6 +1760,7 @@ namespace ASC.Web.Files.Services.WCFService
             var folderDao = DaoFactory.GetFolderDao<TFrom>();
             var fileDao = DaoFactory.GetFileDao<TFrom>();
             var destFolderDao = DaoFactory.GetFolderDao<TTo>();
+            var destFileDao = DaoFactory.GetFileDao<TTo>();
 
             var toFolder = destFolderDao.GetFolder(destFolderId);
             ErrorIf(toFolder == null, FilesCommonResource.ErrorMassage_FolderNotFound);
@@ -1667,7 +1771,7 @@ namespace ASC.Web.Files.Services.WCFService
                 var file = fileDao.GetFileAsync(id).Result;
                 if (file != null
                     && !file.Encrypted
-                    && fileDao.IsExistAsync(file.Title, toFolder.ID).Result)
+                    && destFileDao.IsExistAsync(file.Title, toFolder.ID).Result)
                 {
                     checkedFiles.Add(id);
                 }
@@ -1707,7 +1811,7 @@ namespace ASC.Web.Files.Services.WCFService
             return (checkedFiles, checkedFolders);
         }
 
-        public List<FileOperationResult> MoveOrCopyItems(IEnumerable<JsonElement> foldersId, IEnumerable<JsonElement> filesId, JsonElement destFolderId, FileConflictResolveType resolve, bool ic, bool deleteAfter = false)
+        public List<FileOperationResult> MoveOrCopyItems(List<JsonElement> foldersId, List<JsonElement> filesId, JsonElement destFolderId, FileConflictResolveType resolve, bool ic, bool deleteAfter = false)
         {
             List<FileOperationResult> result;
             if (foldersId.Any() || filesId.Any())
@@ -1747,10 +1851,11 @@ namespace ASC.Web.Files.Services.WCFService
             return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), foldersId, filesId, false, true, false, GetHttpHeaders());
         }
 
-        public List<FileOperationResult> CheckConversion(List<List<string>> filesInfoJSON)
+        public List<FileOperationResult> CheckConversion(List<List<string>> filesInfoJSON, bool sync = false)
         {
             if (filesInfoJSON == null || filesInfoJSON.Count == 0) return new List<FileOperationResult>();
 
+            var results = new List<FileOperationResult>();
             var fileDao = GetFileDao();
             var files = new List<KeyValuePair<File<T>, bool>>();
             foreach (var fileInfo in filesInfoJSON)
@@ -1778,7 +1883,14 @@ namespace ASC.Web.Files.Services.WCFService
                 {
                     try
                     {
-                        FileConverter.ExecAsync(file, false, fileInfo.Count > 3 ? fileInfo[3] : null);
+                        if (sync)
+                        {
+                            results.Add(FileConverter.ExecSync(file, fileInfo.Count > 3 ? fileInfo[3] : null));
+                        }
+                        else
+                        {
+                            FileConverter.ExecAsync(file, false, fileInfo.Count > 3 ? fileInfo[3] : null);
+                        }
                     }
                     catch (Exception e)
                     {
@@ -1789,9 +1901,14 @@ namespace ASC.Web.Files.Services.WCFService
                 files.Add(new KeyValuePair<File<T>, bool>(file, false));
             }
 
-            var results = FileConverter.GetStatus(files).ToList();
-
-            return new List<FileOperationResult>(results);
+            if (sync)
+            {
+                return results;
+            }
+            else
+            {
+                return FileConverter.GetStatus(files).ToList();
+            }
         }
 
         public async Task<List<FileOperationResult>> CheckConversionAsync(List<List<string>> filesInfoJSON)
@@ -2553,7 +2670,7 @@ namespace ASC.Web.Files.Services.WCFService
             return FilesSettingsHelper.ConfirmDelete;
         }
 
-        public IEnumerable<JsonElement> CreateThumbnails(IEnumerable<JsonElement> fileIds)
+        public IEnumerable<JsonElement> CreateThumbnails(List<JsonElement> fileIds)
         {
             try
             {
@@ -2563,9 +2680,11 @@ namespace ASC.Web.Files.Services.WCFService
                     BaseUrl = BaseCommonLinkUtility.GetFullAbsolutePath("")
                 };
 
-                foreach(var f in fileIds.Where(r=> r.ValueKind == JsonValueKind.Number))
+                var (fileIntIds, _) = FileOperationsManager.GetIds(fileIds);
+
+                foreach (var f in fileIntIds)
                 {
-                    req.Files.Add(f.GetInt32());
+                    req.Files.Add(f);
                 }
 
                 ThumbnailNotify.Publish(req, CacheNotifyAction.Insert);

@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { withTranslation } from "react-i18next";
 import Text from "@appserver/components/text";
 import IconButton from "@appserver/components/icon-button";
-import Loaders from "@appserver/common/components/Loaders";
 
 import withLoader from "../../../HOCs/withLoader";
 
@@ -21,15 +20,8 @@ const StyledDownloadAppList = styled.div`
   }
 `;
 
-const StyledRectangleLoader = styled(Loaders.Rectangle)`
-  margin-top: 42px;
-`;
-
 const DownloadAppListContainer = ({ t }) => {
-  const windowsLink =
-    "https://www.onlyoffice.com/download-desktop.aspx#windows";
-  const macLink = "https://www.onlyoffice.com/download-desktop.aspx#mac";
-  const linuxLink = "https://www.onlyoffice.com/download-desktop.aspx#linux";
+  const desktopLink = "https://www.onlyoffice.com/desktop.aspx";
   const androidLink = "https://www.onlyoffice.com/office-for-android.aspx";
   const iosLink = "https://www.onlyoffice.com/office-for-ios.aspx";
 
@@ -40,7 +32,7 @@ const DownloadAppListContainer = ({ t }) => {
       </Text>
       <div className="download-app-list">
         <IconButton
-          onClick={() => window.open(windowsLink)}
+          onClick={() => window.open(desktopLink)}
           className="icon-button"
           iconName="/static/images/windows.react.svg"
           size="25"
@@ -49,7 +41,7 @@ const DownloadAppListContainer = ({ t }) => {
           hoverColor="#3785D3"
         />
         <IconButton
-          onClick={() => window.open(macLink)}
+          onClick={() => window.open(desktopLink)}
           className="icon-button"
           iconName="/static/images/macOS.react.svg"
           size="25"
@@ -58,7 +50,7 @@ const DownloadAppListContainer = ({ t }) => {
           hoverColor="#000000"
         />
         <IconButton
-          onClick={() => window.open(linuxLink)}
+          onClick={() => window.open(desktopLink)}
           className="icon-button"
           iconName="/static/images/linux.react.svg"
           size="25"
@@ -90,7 +82,7 @@ const DownloadAppListContainer = ({ t }) => {
 };
 
 const DownloadAppList = withTranslation(["Translations"])(
-  withLoader(DownloadAppListContainer)(<StyledRectangleLoader />)
+  withLoader(DownloadAppListContainer)(<></>)
 );
 
 export default DownloadAppList;

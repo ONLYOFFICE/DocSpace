@@ -34,6 +34,7 @@ using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Files.Core.EF;
@@ -50,7 +51,8 @@ namespace ASC.Files.Core.Data
     internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
     {
         public SecurityDao(UserManager userManager,
-            DbContextManager<FilesDbContext> dbContextManager,
+            DbContextManager<EF.FilesDbContext> dbContextManager,
+            DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             TenantUtil tenantUtil,
             SetupInfo setupInfo,
@@ -63,6 +65,7 @@ namespace ASC.Files.Core.Data
             IServiceProvider serviceProvider,
             ICache cache)
             : base(dbContextManager,
+                  dbContextManager1,
                   userManager,
                   tenantManager,
                   tenantUtil,

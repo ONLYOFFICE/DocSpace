@@ -3,23 +3,50 @@ const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
+const DefinePlugin = require("webpack").DefinePlugin;
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const combineUrl = require("@appserver/common/utils/combineUrl");
 const AppServerConfig = require("@appserver/common/constants/AppServerConfig");
+const sharedDeps = require("@appserver/common/constants/sharedDependencies");
 
 const path = require("path");
 const pkg = require("./package.json");
-const deps = pkg.dependencies;
+const deps = pkg.dependencies || {};
 const homepage = pkg.homepage; //combineUrl(AppServerConfig.proxyURL, pkg.homepage);
 const title = pkg.title;
+const version = pkg.version;
 
 const config = {
   entry: "./src/index",
   mode: "development",
 
+  stats: {
+    errorDetails: true,
+  },
+
   devServer: {
-    contentBase: [path.join(__dirname, "dist")],
+    devMiddleware: {
+      publicPath: homepage,
+      //writeToDisk: true,
+    },
+    static: {
+      directory: path.join(__dirname, "dist"),
+      publicPath: homepage,
+    },
+    client: {
+      logging: "info",
+      // Can be used only for `errors`/`warnings`
+      //
+      // overlay: {
+      //   errors: true,
+      //   warnings: true,
+      // }
+      overlay: {
+        warnings: false,
+      },
+      progress: true,
+    },
     port: 5001,
     historyApiFallback: {
       // Paths with dots should still use the history fallback.
@@ -27,22 +54,21 @@ const config = {
       disableDotRule: true,
       index: homepage,
     },
-    writeToDisk: true,
-    // proxy: [
-    //   {
-    //     context: "/api",
-    //     target: "http://localhost:8092",
-    //   },
-    // ],
     hot: false,
-    hotOnly: false,
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
       "Access-Control-Allow-Headers":
         "X-Requested-With, content-type, Authorization",
     },
-    openPage: "http://localhost:8092",
+
+    open: {
+      target: [`http://localhost:8092`],
+      app: {
+        name: "google-chrome",
+        arguments: ["--incognito", "--new-window"],
+      },
+    },
   },
   resolve: {
     extensions: [".jsx", ".js", ".json"],
@@ -104,7 +130,23 @@ const config = {
           // Creates `style` nodes from JS strings
           "style-loader",
           // Translates CSS into CommonJS
-          "css-loader",
+          {
+            loader: "css-loader",
+            options: {
+              url: {
+                filter: (url, resourcePath) => {
+                  // resourcePath - path to css file
+
+                  // Don't handle `/static` urls
+                  if (url.startsWith("/static") || url.startsWith("data:")) {
+                    return false;
+                  }
+
+                  return true;
+                },
+              },
+            },
+          },
           // Compiles Sass to CSS
           "sass-loader",
         ],
@@ -140,10 +182,6 @@ const config = {
           AppServerConfig.proxyURL,
           "/remoteEntry.js"
         )}`,
-        login: `login@${combineUrl(
-          AppServerConfig.proxyURL,
-          "/login/remoteEntry.js"
-        )}`,
         people: `people@${combineUrl(
           AppServerConfig.proxyURL,
           "/products/people/remoteEntry.js"
@@ -163,17 +201,7 @@ const config = {
       },
       shared: {
         ...deps,
-        react: {
-          singleton: true,
-          requiredVersion: deps.react,
-        },
-        "react-dom": {
-          singleton: true,
-          requiredVersion: deps["react-dom"],
-        },
-        "./src/store": {
-          singleton: true,
-        },
+        ...sharedDeps,
       },
     }),
     new ExternalTemplateRemotesPlugin(),
@@ -194,6 +222,14 @@ const config = {
           },
         },
       ],
+    }),
+    new DefinePlugin({
+      VERSION: JSON.stringify(version),
+      BUILD_AT: DefinePlugin.runtimeValue(function () {
+        const timeElapsed = Date.now();
+        const today = new Date(timeElapsed);
+        return JSON.stringify(today.toISOString().split(".")[0] + "Z");
+      }, true),
     }),
   ],
 };

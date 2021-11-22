@@ -3,15 +3,16 @@ import React, { useEffect, useState } from "react";
 import Toast from "@appserver/components/toast";
 import toastr from "studio/toastr";
 import { toast } from "react-toastify";
-
+import { Trans } from "react-i18next";
 import Box from "@appserver/components/box";
 import { regDesktop } from "@appserver/common/desktop";
-import Loaders from "@appserver/common/components/Loaders";
 import {
   combineUrl,
   getObjectByLocation,
-  //showLoader,
-  //hideLoader,
+  loadScript,
+  isRetina,
+  getCookie,
+  setCookie,
 } from "@appserver/common/utils";
 import {
   getDocServiceUrl,
@@ -24,6 +25,8 @@ import {
   updateFile,
   removeFromFavorite,
   markAsFavorite,
+  getPresignedUri,
+  convertFile,
 } from "@appserver/common/api/files";
 import FilesFilter from "@appserver/common/api/files/filter";
 
@@ -33,9 +36,15 @@ import { homepage } from "../package.json";
 
 import { AppServerConfig, FolderType } from "@appserver/common/constants";
 import SharingDialog from "files/SharingDialog";
-import { getDefaultFileName } from "files/utils";
+import { getDefaultFileName, SaveAs, canConvert } from "files/utils";
+import SelectFileDialog from "files/SelectFileDialog";
+import SelectFolderDialog from "files/SelectFolderDialog";
+import { StyledSelectFolder, StyledSelectFile } from "./StyledEditor";
 import i18n from "./i18n";
-
+import Text from "@appserver/components/text";
+import TextInput from "@appserver/components/text-input";
+import Checkbox from "@appserver/components/checkbox";
+import { isMobile } from "react-device-detect";
 import store from "studio/store";
 
 const { auth: authStore } = store;
@@ -45,6 +54,9 @@ let documentIsReady = false;
 const text = "text";
 const spreadSheet = "spreadsheet";
 const presentation = "presentation";
+const insertImageAction = "imageFileType";
+const mailMergeAction = "mailMergeFileType";
+const compareFilesAction = "documentsFileType";
 
 let docTitle = null;
 let actionLink;
@@ -54,6 +66,7 @@ let fileInfo;
 let successAuth;
 let isSharingAccess;
 let user = null;
+let personal;
 const url = window.location.href;
 const filesUrl = url.substring(0, url.indexOf("/doceditor"));
 
@@ -67,13 +80,22 @@ const Editor = () => {
   const version = urlParams ? urlParams.version || null : null;
   const doc = urlParams ? urlParams.doc || null : null;
   const isDesktop = window["AscDesktopEditor"] !== undefined;
+  const view = url.indexOf("action=view") !== -1;
 
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
-
+  const [titleSelectorFolder, setTitleSelectorFolder] = useState("");
+  const [extension, setExtension] = useState();
+  const [urlSelectorFolder, setUrlSelectorFolder] = useState("");
+  const [openNewTab, setNewOpenTab] = useState(false);
+  const [typeInsertImageAction, setTypeInsertImageAction] = useState();
   const throttledChangeTitle = throttle(() => changeTitle(), 500);
 
   useEffect(() => {
+    if (isRetina() && getCookie("is_retina") == null) {
+      setCookie("is_retina", true, { path: "/" });
+    }
+
     init();
   }, []);
 
@@ -85,6 +107,36 @@ const Editor = () => {
     });
   };
 
+  const insertImage = (link) => {
+    const token = link.token;
+
+    docEditor.insertImage({
+      ...typeInsertImageAction,
+      fileType: link.filetype,
+      ...(token && { token }),
+      url: link.url,
+    });
+  };
+
+  const mailMerge = (link) => {
+    const token = link.token;
+
+    docEditor.setMailMergeRecipients({
+      fileType: link.filetype,
+      ...(token && { token }),
+      url: link.url,
+    });
+  };
+
+  const compareFiles = (link) => {
+    const token = link.token;
+
+    docEditor.setRevisedFile({
+      fileType: link.filetype,
+      ...(token && { token }),
+      url: link.url,
+    });
+  };
   const updateFavorite = (favorite) => {
     docEditor.setFavorite(favorite);
   };
@@ -140,12 +192,12 @@ const Editor = () => {
   };
 
   const initDesktop = (config) => {
-    const isEncryption = config.editorConfig["encryptionKeys"] !== undefined;
+    const isEncryption = config?.editorConfig["encryptionKeys"] !== undefined;
 
     regDesktop(
       user,
       isEncryption,
-      config.editorConfig.encryptionKeys,
+      config?.editorConfig.encryptionKeys,
       (keys) => {
         setEncryptionKeys(keys);
       },
@@ -173,6 +225,11 @@ const Editor = () => {
     );
   };
 
+  const convertDocumentUrl = async () => {
+    const convert = await convertFile(fileId, true);
+    return convert[0].result.webUrl;
+  };
+
   const init = async () => {
     try {
       if (!fileId) return;
@@ -192,24 +249,36 @@ const Editor = () => {
       try {
         await authStore.init(true);
         user = authStore.userStore.user;
-        successAuth = user !== null;
+        personal = authStore.settingsStore.personal;
+        successAuth = !!user;
       } catch (e) {
         successAuth = false;
       }
 
       if (!doc && !successAuth) {
+        localStorage.setItem("redirectPath", window.location.href);
+
         window.open(
-          combineUrl(AppServerConfig.proxyURL, "/login"),
+          combineUrl(
+            AppServerConfig.proxyURL,
+            personal ? "/sign-in" : "/login"
+          ),
           "_self",
           "",
           true
         );
         return;
       }
-
       if (successAuth) {
         try {
           fileInfo = await getFileInfo(fileId);
+
+          if (url.indexOf("#message/") > -1) {
+            if (canConvert(fileInfo.fileExst)) {
+              const url = await convertDocumentUrl();
+              history.pushState({}, null, url);
+            }
+          }
         } catch (err) {
           console.error(err);
         }
@@ -217,7 +286,7 @@ const Editor = () => {
         setIsAuthenticated(successAuth);
       }
 
-      const config = await openEdit(fileId, version, doc);
+      const config = await openEdit(fileId, version, doc, view);
 
       actionLink = config?.editorConfig?.actionLink;
 
@@ -238,13 +307,13 @@ const Editor = () => {
 
       isSharingAccess = fileInfo && fileInfo.canShare;
 
-      if (url.indexOf("action=view") !== -1) {
+      if (view) {
         config.editorConfig.mode = "view";
       }
 
       setIsLoading(false);
 
-      loadDocApi(docApiUrl, () => onLoad(config));
+      loadScript(docApiUrl, "scripDocServiceAddress", () => onLoad(config));
     } catch (error) {
       console.log(error);
       toastr.error(
@@ -321,20 +390,6 @@ const Editor = () => {
     document.title = title;
   };
 
-  const loadDocApi = (docApiUrl, onLoadCallback) => {
-    const script = document.createElement("script");
-    script.setAttribute("type", "text/javascript");
-    script.setAttribute("id", "scripDocServiceAddress");
-
-    script.onload = onLoadCallback;
-
-    script.src = docApiUrl;
-    script.async = true;
-
-    console.log("PureEditor componentDidMount: added script");
-    document.body.appendChild(script);
-  };
-
   const onLoad = (config) => {
     try {
       if (!window.DocsAPI) throw new Error("DocsAPI is not defined");
@@ -346,7 +401,7 @@ const Editor = () => {
       setFavicon(config.documentType);
       setDocumentTitle(docTitle);
 
-      if (window.innerWidth < 720) {
+      if (isMobile) {
         config.type = "mobile";
       }
 
@@ -369,6 +424,11 @@ const Editor = () => {
         ...config.editorConfig.customization,
         goback: goBack,
       };
+
+      if (personal && !fileInfo) {
+        //TODO: add conditions for SaaS
+        config.document.info.favorite = null;
+      }
 
       if (url.indexOf("anchor") !== -1) {
         const splitUrl = url.split("anchor=");
@@ -401,9 +461,12 @@ const Editor = () => {
             )}`
           );
       }
-
-      let onRequestSharingSettings;
-      let onRequestRename;
+      let onRequestSharingSettings,
+        onRequestRename,
+        onRequestSaveAs,
+        onRequestInsertImage,
+        onRequestMailMergeRecipients,
+        onRequestCompareFile;
 
       if (isSharingAccess) {
         onRequestSharingSettings = onSDKRequestSharingSettings;
@@ -411,6 +474,13 @@ const Editor = () => {
 
       if (fileInfo && fileInfo.canEdit) {
         onRequestRename = onSDKRequestRename;
+      }
+
+      if (successAuth) {
+        onRequestSaveAs = onSDKRequestSaveAs;
+        onRequestInsertImage = onSDKRequestInsertImage;
+        onRequestMailMergeRecipients = onSDKRequestMailMergeRecipients;
+        onRequestCompareFile = onSDKRequestCompareFile;
       }
 
       const events = {
@@ -425,6 +495,11 @@ const Editor = () => {
           onRequestSharingSettings,
           onRequestRename,
           onMakeActionLink: onMakeActionLink,
+          onRequestInsertImage,
+          onRequestSaveAs,
+          onRequestMailMergeRecipients,
+          onRequestCompareFile,
+          onRequestEditRights: onSDKRequestEditRights,
         },
       };
 
@@ -444,12 +519,13 @@ const Editor = () => {
     if (index > -1) {
       const splitUrl = url.split("#message/");
       const message = decodeURIComponent(splitUrl[1]).replaceAll("+", " ");
-      message && toastr.info(message);
       history.pushState({}, null, url.substring(0, index));
+      docEditor.showMessage(message);
     }
 
-    if (fileInfo && fileInfo.canShare) {
-      loadUsersRightsList();
+    const tempElm = document.getElementById("loader");
+    if (tempElm) {
+      tempElm.outerHTML = "";
     }
   };
 
@@ -459,7 +535,26 @@ const Editor = () => {
     );
   };
 
+  const onSDKRequestEditRights = async () => {
+    console.log("ONLYOFFICE Document Editor requests editing rights");
+    const index = url.indexOf("&action=view");
+
+    if (index) {
+      let convertUrl = url.substring(0, index);
+
+      if (canConvert(fileInfo.fileExst)) {
+        convertUrl = await convertDocumentUrl();
+      }
+
+      history.pushState({}, null, convertUrl);
+      document.location.reload();
+    }
+  };
+
   const [isVisible, setIsVisible] = useState(false);
+  const [isFileDialogVisible, setIsFileDialogVisible] = useState(false);
+  const [isFolderDialogVisible, setIsFolderDialogVisible] = useState(false);
+  const [filesType, setFilesType] = useState("");
 
   const onSDKRequestSharingSettings = () => {
     setIsVisible(true);
@@ -517,6 +612,10 @@ const Editor = () => {
 
   const onDocumentReady = () => {
     documentIsReady = true;
+
+    if (isSharingAccess) {
+      loadUsersRightsList();
+    }
   };
 
   const onMetaChange = (event) => {
@@ -528,14 +627,150 @@ const Editor = () => {
       docTitle = newTitle;
     }
 
-    if (!newTitle)
+    if (!newTitle) {
+      const onlyNumbers = new RegExp("^[0-9]+$");
+      const isFileWithoutProvider = onlyNumbers.test(fileId);
+
+      const convertFileId = isFileWithoutProvider ? +fileId : fileId;
+
       favorite
-        ? markAsFavorite([+fileId])
+        ? markAsFavorite([convertFileId])
             .then(() => updateFavorite(favorite))
             .catch((error) => console.log("error", error))
-        : removeFromFavorite([+fileId])
+        : removeFromFavorite([convertFileId])
             .then(() => updateFavorite(favorite))
             .catch((error) => console.log("error", error));
+    }
+  };
+
+  const onSDKRequestInsertImage = (event) => {
+    setTypeInsertImageAction(event.data);
+    setFilesType(insertImageAction);
+    setIsFileDialogVisible(true);
+  };
+
+  const onSDKRequestMailMergeRecipients = () => {
+    setFilesType(mailMergeAction);
+    setIsFileDialogVisible(true);
+  };
+
+  const onSDKRequestCompareFile = () => {
+    setFilesType(compareFilesAction);
+    setIsFileDialogVisible(true);
+  };
+  const onSelectFile = async (file) => {
+    try {
+      const link = await getPresignedUri(file.id);
+
+      if (filesType === insertImageAction) insertImage(link);
+      if (filesType === mailMergeAction) mailMerge(link);
+      if (filesType === compareFilesAction) compareFiles(link);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const onCloseFileDialog = () => {
+    setIsFileDialogVisible(false);
+  };
+
+  const onSDKRequestSaveAs = (event) => {
+    setTitleSelectorFolder(event.data.title);
+    setUrlSelectorFolder(event.data.url);
+    setExtension(event.data.title.split(".").pop());
+
+    setIsFolderDialogVisible(true);
+  };
+
+  const onCloseFolderDialog = () => {
+    setIsFolderDialogVisible(false);
+    setNewOpenTab(false);
+  };
+
+  const getSavingInfo = async (title, folderId) => {
+    const savingInfo = await SaveAs(
+      title,
+      urlSelectorFolder,
+      folderId,
+      openNewTab
+    );
+
+    if (savingInfo) {
+      const convertedInfo = savingInfo.split(": ").pop();
+      docEditor.showMessage(convertedInfo);
+    }
+  };
+  const onClickSaveSelectFolder = (e, folderId) => {
+    const currentExst = titleSelectorFolder.split(".").pop();
+
+    const title =
+      currentExst !== extension
+        ? titleSelectorFolder.concat(`.${extension}`)
+        : titleSelectorFolder;
+
+    if (openNewTab) {
+      SaveAs(title, urlSelectorFolder, folderId, openNewTab);
+    } else {
+      getSavingInfo(title, folderId);
+    }
+  };
+
+  const onChangeInput = (e) => {
+    setTitleSelectorFolder(e.target.value);
+  };
+
+  const onClickCheckbox = () => {
+    setNewOpenTab(!openNewTab);
+  };
+
+  const getFileTypeTranslation = () => {
+    switch (filesType) {
+      case mailMergeAction:
+        return i18n.t("MailMergeFileType");
+      case insertImageAction:
+        return i18n.t("ImageFileType");
+      case compareFilesAction:
+        return i18n.t("DocumentsFileType");
+    }
+  };
+  const SelectFileHeader = () => {
+    return (
+      <StyledSelectFile>
+        <Text className="editor-select-file_text">
+          {filesType === mailMergeAction ? (
+            getFileTypeTranslation()
+          ) : (
+            <Trans i18n={i18n} i18nKey="SelectFilesType" ns="Editor">
+              Select files of type: {{ fileType: getFileTypeTranslation() }}
+            </Trans>
+          )}
+        </Text>
+      </StyledSelectFile>
+    );
+  };
+
+  const insertImageActionProps = {
+    isImageOnly: true,
+  };
+
+  const mailMergeActionProps = {
+    isTablesOnly: true,
+    searchParam: "xlsx",
+  };
+  const compareFilesActionProps = {
+    isDocumentsOnly: true,
+  };
+
+  const fileTypeDetection = () => {
+    if (filesType === insertImageAction) {
+      return insertImageActionProps;
+    }
+    if (filesType === mailMergeAction) {
+      return mailMergeActionProps;
+    }
+    if (filesType === compareFilesAction) {
+      return compareFilesActionProps;
+    }
   };
 
   return (
@@ -556,11 +791,61 @@ const Editor = () => {
               onSuccess={loadUsersRightsList}
             />
           )}
+
+          {isFileDialogVisible && (
+            <SelectFileDialog
+              resetTreeFolders
+              onSelectFile={onSelectFile}
+              isPanelVisible={isFileDialogVisible}
+              onClose={onCloseFileDialog}
+              foldersType="exceptTrashFolder"
+              {...fileTypeDetection()}
+              header={<SelectFileHeader />}
+              headerName={i18n.t("SelectFileTitle")}
+            />
+          )}
+
+          {isFolderDialogVisible && (
+            <SelectFolderDialog
+              resetTreeFolders
+              showButtons
+              isPanelVisible={isFolderDialogVisible}
+              isSetFolderImmediately
+              asideHeightContent="calc(100% - 50px)"
+              onClose={onCloseFolderDialog}
+              foldersType="exceptSortedByTags"
+              onSave={onClickSaveSelectFolder}
+              header={
+                <StyledSelectFolder>
+                  <Text className="editor-select-folder_text">
+                    {i18n.t("FileName")}
+                  </Text>
+                  <TextInput
+                    className="editor-select-folder_text-input"
+                    scale
+                    onChange={onChangeInput}
+                    value={titleSelectorFolder}
+                  />
+                </StyledSelectFolder>
+              }
+              headerName={i18n.t("FolderForSave")}
+              {...(extension !== "fb2" && {
+                footer: (
+                  <StyledSelectFolder>
+                    <Checkbox
+                      className="editor-select-folder_checkbox"
+                      label={i18n.t("OpenSavedDocument")}
+                      onChange={onClickCheckbox}
+                      isChecked={openNewTab}
+                    />
+                  </StyledSelectFolder>
+                ),
+              })}
+            />
+          )}
         </>
       ) : (
-        <Box paddingProp="16px">
-          <Loaders.Rectangle height="96vh" />
-        </Box>
+        <></>
       )}
     </Box>
   );

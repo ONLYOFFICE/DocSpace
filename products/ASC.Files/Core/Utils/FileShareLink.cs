@@ -104,6 +104,19 @@ namespace ASC.Web.Files.Utils
                 || (checkRead && fileShare != FileShare.Restrict);
         }
 
+        public async Task<(bool EditLink, File<T> File)> CheckAsync<T>(string doc, bool checkRead, IFileDao<T> fileDao)
+        {
+            var check = await CheckAsync(doc, fileDao);
+            var fileShare = check.FileShare;
+            return ((!checkRead
+                    && (fileShare == FileShare.ReadWrite
+                        || fileShare == FileShare.CustomFilter
+                        || fileShare == FileShare.Review
+                        || fileShare == FileShare.FillForms
+                        || fileShare == FileShare.Comment))
+                || (checkRead && fileShare != FileShare.Restrict), check.File);
+        }
+
         public FileShare Check<T>(string doc, IFileDao<T> fileDao, out File<T> file)
         {
             file = null;
@@ -122,24 +135,7 @@ namespace ASC.Web.Files.Utils
             return FileShare.Restrict;
         }
 
-        public async Task<FileOptions<T>> CheckAsync<T>(string doc, IFileDao<T> fileDao)
-        {
-            if (string.IsNullOrEmpty(doc)) return new FileOptions<T>{ FileShare = FileShare.Restrict, File = null };
-            var fileId = Parse<T>(doc);
-            var file = await fileDao.GetFileAsync(fileId);
-            if (file == null) return new FileOptions<T> { FileShare = FileShare.Restrict, File = file };
-
-            var filesSecurity = FileSecurity;
-            if (filesSecurity.CanEdit(file, FileConstant.ShareLinkId)) return new FileOptions<T> { FileShare = FileShare.ReadWrite, File = file };
-            if (filesSecurity.CanCustomFilterEdit(file, FileConstant.ShareLinkId)) return new FileOptions<T> { FileShare = FileShare.CustomFilter, File = file };
-            if (filesSecurity.CanReview(file, FileConstant.ShareLinkId)) return new FileOptions<T> { FileShare = FileShare.Review, File = file };
-            if (filesSecurity.CanFillForms(file, FileConstant.ShareLinkId)) return new FileOptions<T> { FileShare = FileShare.FillForms, File = file };
-            if (filesSecurity.CanComment(file, FileConstant.ShareLinkId)) return new FileOptions<T> { FileShare = FileShare.Comment, File = file };
-            if (filesSecurity.CanRead(file, FileConstant.ShareLinkId)) return new FileOptions<T> { FileShare = FileShare.Read, File = file };
-            return new FileOptions<T> { FileShare = FileShare.Restrict, File = file };
-        }
-
-        public async Task<(FileShare FileShare, File<T> File)> CheckAsyncTuple<T>(string doc, IFileDao<T> fileDao)
+        public async Task<(FileShare FileShare, File<T> File)> CheckAsync<T>(string doc, IFileDao<T> fileDao)
         {
             if (string.IsNullOrEmpty(doc)) return (FileShare.Restrict, null);
             var fileId = Parse<T>(doc);

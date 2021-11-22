@@ -16,8 +16,6 @@ class DepartmentField extends React.Component {
   };
 
   render() {
-    console.log("DepartmentField render");
-
     const {
       isRequired,
       isDisabled,
@@ -32,6 +30,7 @@ class DepartmentField extends React.Component {
       selectorIsVisible,
       selectorSelectedOptions,
       selectorOnSelectGroups,
+      maxLabelWidth,
     } = this.props;
 
     return (
@@ -40,6 +39,7 @@ class DepartmentField extends React.Component {
         hasError={hasError}
         labelText={labelText}
         className="departments-field"
+        maxLabelWidth={maxLabelWidth}
       >
         <SelectorAddButton
           isDisabled={isDisabled}

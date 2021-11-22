@@ -4,8 +4,12 @@ import FilesFilter from "./filter";
 import { FolderType } from "../../constants";
 import find from "lodash/find";
 
-export function openEdit(fileId, version, doc) {
+export function openEdit(fileId, version, doc, view) {
   const params = []; // doc ? `?doc=${doc}` : "";
+
+  if (view) {
+    params.push(`view=${view}`);
+  }
 
   if (version) {
     params.push(`version=${version}`);
@@ -56,26 +60,26 @@ export function getFolder(folderId, filter) {
   return request(options);
 }
 
-const getFolderNameByType = (folderType) => {
-  switch (folderType) {
-    case FolderType.USER:
-      return "@my";
-    case FolderType.SHARE:
-      return "@share";
-    case FolderType.COMMON:
-      return "@common";
-    case FolderType.Projects:
-      return "@projects";
-    case FolderType.Favorites:
-      return "@favorites";
-    case FolderType.Recent:
-      return "@recent";
-    case FolderType.TRASH:
-      return "@trash";
-    default:
-      return "";
-  }
-}; //TODO: need get from settings
+// const getFolderNameByType = (folderType) => {
+//   switch (folderType) {
+//     case FolderType.USER:
+//       return "@my";
+//     case FolderType.SHARE:
+//       return "@share";
+//     case FolderType.COMMON:
+//       return "@common";
+//     case FolderType.Projects:
+//       return "@projects";
+//     case FolderType.Favorites:
+//       return "@favorites";
+//     case FolderType.Recent:
+//       return "@recent";
+//     case FolderType.TRASH:
+//       return "@trash";
+//     default:
+//       return "";
+//   }
+// }; //TODO: need get from settings
 
 const sortInDisplayOrder = (folders) => {
   const sorted = [];
@@ -137,7 +141,7 @@ export function getFoldersTree() {
       const folders = sortInDisplayOrder(response);
       return folders.map((data, index) => {
         const type = +data.current.rootFolderType;
-        const name = getFolderNameByType(type);
+        //const name = getFolderNameByType(type);
         const isRecycleBinFolder = type === FolderType.TRASH;
         return {
           id: data.current.id,
@@ -145,7 +149,7 @@ export function getFoldersTree() {
           parentId: data.current.parentId,
           title: data.current.title,
           rootFolderType: type,
-          rootFolderName: name,
+          //rootFolderName: name,
           // folders: !isRecycleBinFolder
           //   ? data.folders.map((folder) => {
           //       return {
@@ -161,7 +165,9 @@ export function getFoldersTree() {
           //   : null,
           folders: null,
           pathParts: data.pathParts,
-          foldersCount: !isRecycleBinFolder ? data.current.foldersCount : null,
+          foldersCount: !isRecycleBinFolder
+            ? data.current.foldersCount || data.folders.length
+            : null,
           newItems: data.new,
         };
       });
@@ -469,18 +475,20 @@ export function downloadFiles(fileIds, folderIds) {
   return request({ method: "put", url: "/files/fileops/bulkdownload", data });
 }
 
-export function downloadFormatFiles(fileConvertIds, folderIds) {
-  const data = { folderIds, fileConvertIds };
-  return request({ method: "put", url: "/files/fileops/bulkdownload", data });
-}
-
 export function getProgress() {
   return request({ method: "get", url: "/files/fileops" });
 }
 
 export function checkFileConflicts(destFolderId, folderIds, fileIds) {
-  const data = { destFolderId, folderIds, fileIds };
-  return request({ method: "post", url: "/files/fileops/move", data });
+  let paramsString =
+    folderIds.length > 0 ? `&folderIds=${folderIds.join("&folderIds=")}` : "";
+  paramsString +=
+    fileIds.length > 0 ? `&fileIds=${fileIds.join("&fileIds=")}` : "";
+
+  return request({
+    method: "get",
+    url: `/files/fileops/move.json?destFolderId=${destFolderId}${paramsString}`,
+  });
 }
 
 export function copyToFolder(
@@ -536,10 +544,13 @@ export function getNewFiles(folderId) {
   });
 }
 
-export function convertFile(fileId) {
+export function convertFile(fileId, sync = false) {
+  const data = { sync };
+
   return request({
     method: "put",
     url: `/files/file/${fileId}/checkconversion`,
+    data,
   });
 }
 
@@ -764,4 +775,11 @@ export function createThumbnails(fileIds) {
   };
 
   return request(options);
+}
+
+export function getPresignedUri(fileId) {
+  return request({
+    method: "get",
+    url: `files/file/${fileId}/presigned`,
+  });
 }

@@ -19,6 +19,7 @@ using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.FederatedLogin.Helpers;
 using ASC.Files.Core;
+using ASC.Files.Core.Model;
 using ASC.Files.Model;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
@@ -64,6 +65,7 @@ namespace ASC.Files.Helpers
         private DocumentServiceTrackerHelper DocumentServiceTracker { get; }
         private SettingsManager SettingsManager { get; }
         private EncryptionKeyPairHelper EncryptionKeyPairHelper { get; }
+        private IHttpContextAccessor HttpContextAccessor { get; }
         private ILog Logger { get; set; }
 
         /// <summary>
@@ -90,7 +92,8 @@ namespace ASC.Files.Helpers
             DocumentServiceTrackerHelper documentServiceTracker,
             IOptionsMonitor<ILog> optionMonitor,
             SettingsManager settingsManager,
-            EncryptionKeyPairHelper encryptionKeyPairHelper)
+            EncryptionKeyPairHelper encryptionKeyPairHelper,
+            IHttpContextAccessor httpContextAccessor)
         {
             ApiContext = context;
             FileStorageService = fileStorageService;
@@ -111,6 +114,7 @@ namespace ASC.Files.Helpers
             DocumentServiceTracker = documentServiceTracker;
             SettingsManager = settingsManager;
             EncryptionKeyPairHelper = encryptionKeyPairHelper;
+            HttpContextAccessor = httpContextAccessor;
             Logger = optionMonitor.Get("ASC.Files");
         }
 
@@ -125,27 +129,32 @@ namespace ASC.Files.Helpers
             return await folderContentWrapper.NotFoundIfNull();
         }
 
-        public List<FileWrapper<T>> UploadFile(T folderId, UploadModel uploadModel)
+        public object UploadFile(T folderId, UploadModel uploadModel)
         {
             if (uploadModel.StoreOriginalFileFlag.HasValue)
             {
                 FilesSettingsHelper.StoreOriginalFiles = uploadModel.StoreOriginalFileFlag.Value;
             }
 
-            if (uploadModel.Files != null && uploadModel.Files.Any())
+            IEnumerable<IFormFile> files = HttpContextAccessor.HttpContext.Request.Form.Files;
+            if (files == null || !files.Any())
             {
-                if (uploadModel.Files.Count() == 1)
+                files = uploadModel.Files;
+            }
+
+            if (files != null && files.Any())
+            {
+                if (files.Count() == 1)
                 {
                     //Only one file. return it
-                    var postedFile = uploadModel.Files.First();
-                    return new List<FileWrapper<T>>
-                    {
-                        InsertFile(folderId, postedFile.OpenReadStream(), postedFile.FileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus)
-                    };
+                    var postedFile = files.First();
+                    return InsertFile(folderId, postedFile.OpenReadStream(), postedFile.FileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus);
                 }
+
                 //For case with multiple files
                 return uploadModel.Files.Select(postedFile => InsertFile(folderId, postedFile.OpenReadStream(), postedFile.FileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus)).ToList();
             }
+
             if (uploadModel.File != null)
             {
                 var fileName = "file" + MimeMapping.GetExtention(uploadModel.ContentType.MediaType);
@@ -156,9 +165,53 @@ namespace ASC.Files.Helpers
 
                 return new List<FileWrapper<T>>
                 {
-                    InsertFile(folderId, uploadModel.File, fileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus)
+                    InsertFile(folderId, uploadModel.File.OpenReadStream(), fileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus)
                 };
             }
+
+            throw new InvalidOperationException("No input files");
+        }
+
+        public async Task<object> UploadFileAsync(T folderId, UploadModel uploadModel)
+        {
+            if (uploadModel.StoreOriginalFileFlag.HasValue)
+            {
+                FilesSettingsHelper.StoreOriginalFiles = uploadModel.StoreOriginalFileFlag.Value;
+            }
+
+            IEnumerable<IFormFile> files = HttpContextAccessor.HttpContext.Request.Form.Files;
+            if (files == null || !files.Any())
+            {
+                files = uploadModel.Files;
+            }
+
+            if (files != null && files.Any())
+            {
+                if (files.Count() == 1)
+                {
+                    //Only one file. return it
+                    var postedFile = files.First();
+                    return await InsertFileAsync(folderId, postedFile.OpenReadStream(), postedFile.FileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus);
+                }
+
+                //For case with multiple files
+                return uploadModel.Files.Select(postedFile => InsertFile(folderId, postedFile.OpenReadStream(), postedFile.FileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus)).ToList();
+            }
+
+            if (uploadModel.File != null)
+            {
+                var fileName = "file" + MimeMapping.GetExtention(uploadModel.ContentType.MediaType);
+                if (uploadModel.ContentDisposition != null)
+                {
+                    fileName = uploadModel.ContentDisposition.FileName;
+                }
+
+                return new List<FileWrapper<T>>
+                {
+                    await InsertFileAsync(folderId, uploadModel.File.OpenReadStream(), fileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus)
+                };
+            }
+
             throw new InvalidOperationException("No input files");
         }
 
@@ -167,6 +220,23 @@ namespace ASC.Files.Helpers
             try
             {
                 var resultFile = FileUploader.Exec(folderId, title, file.Length, file, createNewIfExist ?? !FilesSettingsHelper.UpdateIfExist, !keepConvertStatus);
+                return FileWrapperHelper.Get(resultFile);
+            }
+            catch (FileNotFoundException e)
+            {
+                throw new ItemNotFoundException("File not found", e);
+            }
+            catch (DirectoryNotFoundException e)
+            {
+                throw new ItemNotFoundException("Folder not found", e);
+            }
+        }
+
+        public async Task<FileWrapper<T>> InsertFileAsync(T folderId, Stream file, string title, bool? createNewIfExist, bool keepConvertStatus = false)
+        {
+            try
+            {
+                var resultFile = await FileUploader.ExecAsync(folderId, title, file.Length, file, createNewIfExist ?? !FilesSettingsHelper.UpdateIfExist, !keepConvertStatus);
                 return FileWrapperHelper.Get(resultFile);
             }
             catch (FileNotFoundException e)
@@ -197,6 +267,11 @@ namespace ASC.Files.Helpers
             return FileWrapperHelper.Get(FileStorageService.SaveEditing(fileId, fileExtension, downloadUri, stream, doc, forcesave));
         }
 
+        public async Task<FileWrapper<T>> SaveEditingAsync(T fileId, string fileExtension, string downloadUri, Stream stream, string doc, bool forcesave)
+        {
+            return FileWrapperHelper.Get(await FileStorageService.SaveEditingAsync(fileId, fileExtension, downloadUri, stream, doc, forcesave));
+        }
+
         public string StartEdit(T fileId, bool editingAlone, string doc)
         {
             return FileStorageService.StartEdit(fileId, editingAlone, doc);
@@ -212,13 +287,21 @@ namespace ASC.Files.Helpers
             return FileStorageService.TrackEditFile(fileId, tabId, docKeyForTrack, doc, isFinish);
         }
 
-        public Configuration<T> OpenEdit(T fileId, int version, string doc)
+        public async Task<KeyValuePair<bool, string>> TrackEditFileAsync(T fileId, Guid tabId, string docKeyForTrack, string doc, bool isFinish)
         {
-            DocumentServiceHelper.GetParams(fileId, version, doc, true, true, true, out var configuration);
-            configuration.EditorType = EditorType.External;
-            configuration.EditorConfig.CallbackUrl = DocumentServiceTracker.GetCallbackUrl(configuration.Document.Info.File.ID.ToString());
+            return await FileStorageService.TrackEditFileAsync(fileId, tabId, docKeyForTrack, doc, isFinish);
+        }
 
-            if (configuration.Document.Info.File.RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(SettingsManager))
+        public Configuration<T> OpenEdit(T fileId, int version, string doc, bool view)
+        {
+            DocumentServiceHelper.GetParams(fileId, version, doc, true, !view, true, out var configuration);
+            configuration.EditorType = EditorType.External;
+            if (configuration.EditorConfig.ModeWrite)
+            {
+                configuration.EditorConfig.CallbackUrl = DocumentServiceTracker.GetCallbackUrl(configuration.Document.Info.GetFile().ID.ToString());
+            }
+
+            if (configuration.Document.Info.GetFile().RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(SettingsManager))
             {
                 var keyPair = EncryptionKeyPairHelper.GetKeyPair();
                 if (keyPair != null)
@@ -230,8 +313,38 @@ namespace ASC.Files.Helpers
                     };
                 }
             }
-            
-            if (!configuration.Document.Info.File.Encrypted && !configuration.Document.Info.File.ProviderEntry) EntryManager.MarkAsRecent(configuration.Document.Info.File);
+
+            if (!configuration.Document.Info.GetFile().Encrypted && !configuration.Document.Info.GetFile().ProviderEntry) EntryManager.MarkAsRecent(configuration.Document.Info.GetFile());
+
+            configuration.Token = DocumentServiceHelper.GetSignature(configuration);
+            return configuration;
+        }
+
+        public async Task<Configuration<T>> OpenEditAsync(T fileId, int version, string doc, bool view)
+        {
+            var docParams = await DocumentServiceHelper.GetParamsAsync(fileId, version, doc, true, !view, true);
+            var configuration = docParams.Configuration;
+
+            configuration.EditorType = EditorType.External;
+            if (configuration.EditorConfig.ModeWrite)
+            {
+                configuration.EditorConfig.CallbackUrl = DocumentServiceTracker.GetCallbackUrl(configuration.Document.Info.GetFile().ID.ToString());
+            }
+
+            if (configuration.Document.Info.GetFile().RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(SettingsManager))
+            {
+                var keyPair = EncryptionKeyPairHelper.GetKeyPair();
+                if (keyPair != null)
+                {
+                    configuration.EditorConfig.EncryptionKeys = new EncryptionKeysConfig
+                    {
+                        PrivateKeyEnc = keyPair.PrivateKeyEnc,
+                        PublicKey = keyPair.PublicKey,
+                    };
+                }
+            }
+
+            if (!configuration.Document.Info.GetFile().Encrypted && !configuration.Document.Info.GetFile().ProviderEntry) EntryManager.MarkAsRecent(configuration.Document.Info.GetFile());
 
             configuration.Token = DocumentServiceHelper.GetSignature(configuration);
             return configuration;
@@ -246,6 +359,46 @@ namespace ASC.Files.Helpers
                 var session = FileUploader.InitiateUpload(file.FolderID, (file.ID ?? default), file.Title, file.ContentLength, encrypted);
 
                 var responseObject = ChunkedUploadSessionHelper.ToResponseObject(session, true);
+                return new
+                {
+                    success = true,
+                    data = responseObject
+                };
+            }
+
+            var createSessionUrl = FilesLinkUtility.GetInitiateUploadSessionUrl(TenantManager.GetCurrentTenant().TenantId, file.FolderID, file.ID, file.Title, file.ContentLength, encrypted, SecurityContext);
+            var request = (HttpWebRequest)WebRequest.Create(createSessionUrl);
+            request.Method = "POST";
+            request.ContentLength = 0;
+
+            // hack for uploader.onlyoffice.com in api requests
+            var rewriterHeader = ApiContext.HttpContextAccessor.HttpContext.Request.Headers[HttpRequestExtensions.UrlRewriterHeader];
+            if (!string.IsNullOrEmpty(rewriterHeader))
+            {
+                request.Headers[HttpRequestExtensions.UrlRewriterHeader] = rewriterHeader;
+            }
+
+            // hack. http://ubuntuforums.org/showthread.php?t=1841740
+            if (WorkContext.IsMono)
+            {
+                ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
+            }
+
+            using var response = request.GetResponse();
+            using var responseStream = response.GetResponseStream();
+            using var streamReader = new StreamReader(responseStream);
+            return JObject.Parse(streamReader.ReadToEnd()); //result is json string
+        }
+
+        public async Task<object> CreateUploadSessionAsync(T folderId, string fileName, long fileSize, string relativePath, bool encrypted)
+        {
+            var file = await FileUploader.VerifyChunkedUploadAsync(folderId, fileName, fileSize, FilesSettingsHelper.UpdateIfExist, relativePath);
+
+            if (FilesLinkUtility.IsLocalFileUploader)
+            {
+                var session = await FileUploader.InitiateUploadAsync(file.FolderID, (file.ID ?? default), file.Title, file.ContentLength, encrypted);
+
+                var responseObject = await ChunkedUploadSessionHelper.ToResponseObjectAsync(session, true);
                 return new
                 {
                     success = true,
@@ -292,10 +445,34 @@ namespace ASC.Files.Helpers
             return CreateFile(folderId, title, content, extension);
         }
 
+        public async Task<FileWrapper<T>> CreateTextFileAsync(T folderId, string title, string content)
+        {
+            if (title == null) throw new ArgumentNullException("title");
+            //Try detect content
+            var extension = ".txt";
+            if (!string.IsNullOrEmpty(content))
+            {
+                if (Regex.IsMatch(content, @"<([^\s>]*)(\s[^<]*)>"))
+                {
+                    extension = ".html";
+                }
+            }
+            return await CreateFileAsync(folderId, title, content, extension);
+        }
+
         private FileWrapper<T> CreateFile(T folderId, string title, string content, string extension)
         {
             using var memStream = new MemoryStream(Encoding.UTF8.GetBytes(content));
             var file = FileUploader.Exec(folderId,
+                              title.EndsWith(extension, StringComparison.OrdinalIgnoreCase) ? title : (title + extension),
+                              memStream.Length, memStream);
+            return FileWrapperHelper.Get(file);
+        }
+
+        private async Task<FileWrapper<T>> CreateFileAsync(T folderId, string title, string content, string extension)
+        {
+            using var memStream = new MemoryStream(Encoding.UTF8.GetBytes(content));
+            var file = await FileUploader.ExecAsync(folderId,
                               title.EndsWith(extension, StringComparison.OrdinalIgnoreCase) ? title : (title + extension),
                               memStream.Length, memStream);
             return FileWrapperHelper.Get(file);
@@ -370,15 +547,27 @@ namespace ASC.Files.Helpers
                 .ToList();
         }
 
+        public async Task<List<FileEntryWrapper>> GetNewItemsAsync(T folderId)
+        {
+            var newItems = await FileStorageService.GetNewItemsAsync(folderId);
+            return newItems.Select(GetFileEntryWrapper).ToList();
+        }
+
         public FileWrapper<T> UpdateFile(T fileId, string title, int lastVersion)
         {
+            File<T> newFile = null;
             if (!string.IsNullOrEmpty(title))
-                FileStorageService.FileRename(fileId, title);
+            {
+                newFile = FileStorageService.FileRename(fileId, title);
+            }
 
             if (lastVersion > 0)
-                FileStorageService.UpdateToVersion(fileId, lastVersion);
+            {
+                var pair = FileStorageService.UpdateToVersion(fileId, lastVersion);
+                newFile = pair.Key;
+            }
 
-            return GetFileInfo(fileId);
+            return newFile != null ? FileWrapperHelper.Get(newFile) : GetFileInfo(fileId);
         }
 
         public async Task<FileWrapper<T>> UpdateFileAsync(T fileId, string title, int lastVersion)
@@ -398,17 +587,17 @@ namespace ASC.Files.Helpers
                 .Select(FileOperationWraperHelper.Get);
         }
 
-        public IEnumerable<ConversationResult<T>> StartConversion(T fileId)
+        public IEnumerable<ConversationResult<T>> StartConversion(T fileId, bool sync = false)
         {
-            return CheckConversion(fileId, true);
+            return CheckConversion(fileId, true, sync);
         }
 
-        public IEnumerable<ConversationResult<T>> CheckConversion(T fileId, bool start)
+        public IEnumerable<ConversationResult<T>> CheckConversion(T fileId, bool start, bool sync = false)
         {
             return FileStorageService.CheckConversion(new List<List<string>>
             {
                 new List<string> { fileId.ToString(), "0", start.ToString() }
-            })
+            }, sync)
             .Select(r =>
             {
                 var o = new ConversationResult<T>
@@ -494,11 +683,11 @@ namespace ASC.Files.Helpers
 
             if (batchModel.DestFolderId.ValueKind == JsonValueKind.Number)
             {
-                (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds, batchModel.FolderIds, batchModel.DestFolderId.GetInt32());
+                (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds.ToList(), batchModel.FolderIds.ToList(), batchModel.DestFolderId.GetInt32());
             }
             else
             {
-                (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds, batchModel.FolderIds, batchModel.DestFolderId.GetString());
+                (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds.ToList(), batchModel.FolderIds.ToList(), batchModel.DestFolderId.GetString());
             }
 
             var entries = FileStorageService.GetItems(checkedFiles.OfType<int>().Select(Convert.ToInt32), checkedFiles.OfType<int>().Select(Convert.ToInt32), FilterType.FilesOnly, false, "", "");
@@ -510,21 +699,21 @@ namespace ASC.Files.Helpers
 
         public IEnumerable<FileOperationWraper> MoveBatchItems(BatchModel batchModel)
         {
-            return FileStorageService.MoveOrCopyItems(batchModel.FolderIds, batchModel.FileIds, batchModel.DestFolderId, batchModel.ConflictResolveType, false, batchModel.DeleteAfter)
+            return FileStorageService.MoveOrCopyItems(batchModel.FolderIds.ToList(), batchModel.FileIds.ToList(), batchModel.DestFolderId, batchModel.ConflictResolveType, false, batchModel.DeleteAfter)
                 .Select(FileOperationWraperHelper.Get)
                 .ToList();
         }
 
         public IEnumerable<FileOperationWraper> CopyBatchItems(BatchModel batchModel)
         {
-            return FileStorageService.MoveOrCopyItems(batchModel.FolderIds, batchModel.FileIds, batchModel.DestFolderId, batchModel.ConflictResolveType, true, batchModel.DeleteAfter)
+            return FileStorageService.MoveOrCopyItems(batchModel.FolderIds.ToList(), batchModel.FileIds.ToList(), batchModel.DestFolderId, batchModel.ConflictResolveType, true, batchModel.DeleteAfter)
                 .Select(FileOperationWraperHelper.Get)
                 .ToList();
         }
 
-        public IEnumerable<FileOperationWraper> MarkAsRead(BaseBatchModel<JsonElement> model)
+        public IEnumerable<FileOperationWraper> MarkAsRead(BaseBatchModel model)
         {
-            return FileStorageService.MarkAsRead(model.FolderIds, model.FileIds).Select(FileOperationWraperHelper.Get).ToList();
+            return FileStorageService.MarkAsRead(model.FolderIds.ToList(), model.FileIds.ToList()).Select(FileOperationWraperHelper.Get).ToList();
         }
 
         public IEnumerable<FileOperationWraper> TerminateTasks()
@@ -568,19 +757,24 @@ namespace ASC.Files.Helpers
         public IEnumerable<FileWrapper<T>> GetFileVersionInfo(T fileId)
         {
             var files = FileStorageService.GetFileHistory(fileId);
-            return files.Select(r=> FileWrapperHelper.Get(r)).ToList();
+            return files.Select(r => FileWrapperHelper.Get(r)).ToList();
         }
 
         public IEnumerable<FileWrapper<T>> ChangeHistory(T fileId, int version, bool continueVersion)
         {
             var history = FileStorageService.CompleteVersion(fileId, version, continueVersion).Value;
-            return history.Select(r=> FileWrapperHelper.Get(r)).ToList();
+            return history.Select(r => FileWrapperHelper.Get(r)).ToList();
         }
 
         public FileWrapper<T> LockFile(T fileId, bool lockFile)
         {
             var result = FileStorageService.LockFile(fileId, lockFile);
             return FileWrapperHelper.Get(result);
+        }
+
+        public DocumentService.FileLink GetPresignedUri(T fileId)
+        {
+            return FileStorageService.GetPresignedUri(fileId);
         }
 
         public string UpdateComment(T fileId, int version, string comment)
@@ -605,6 +799,12 @@ namespace ASC.Files.Helpers
                                 .ToList();
         }
 
+        public async Task<IEnumerable<FileEntryWrapper>> GetFoldersAsync(T folderId)
+        {
+            var folders = await FileStorageService.GetFoldersAsync(folderId);
+            return folders.Select(GetFileEntryWrapper).ToList();
+        }
+
         public IEnumerable<FileShareWrapper> GetSecurityInfo(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
         {
             var fileShares = FileStorageService.GetSharedInfo(fileIds, folderIds);
@@ -618,7 +818,7 @@ namespace ASC.Files.Helpers
 
         public IEnumerable<FileShareWrapper> SetFolderSecurityInfo(T folderId, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
         {
-            return SetSecurityInfo(new List<T>(), new List<T> { folderId}, share, notify, sharingMessage);
+            return SetSecurityInfo(new List<T>(), new List<T> { folderId }, share, notify, sharingMessage);
         }
 
         public IEnumerable<FileShareWrapper> SetSecurityInfo(IEnumerable<T> fileIds, IEnumerable<T> folderIds, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
@@ -788,6 +988,17 @@ namespace ASC.Files.Helpers
             }
 
             return wrapper;
+        }
+
+        internal IFormFile GetFileFromRequest(IModelWithFile model)
+        {
+            IEnumerable<IFormFile> files = HttpContextAccessor.HttpContext.Request.Form.Files;
+            if (files != null && files.Any())
+            {
+                return files.First();
+            }
+
+            return model.File;
         }
     }
 }
