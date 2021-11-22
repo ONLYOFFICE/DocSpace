@@ -8,9 +8,16 @@
   "DeleteProfileSuccessMessage": "Votre compte a été supprimé avec succès.",
   "DeleteProfileSuccessMessageInfo": "Consultez notre politique de confidentialité pour en savoir plus sur la suppression de votre compte et des données qui y sont associées.",
   "EmailAndPasswordCopiedToClipboard": "Adresse mail et mot de passe copiés dans le Presse-papier",
+  "EnterAppCodeDescription": "Entrez le code à 6 chiffres généré par votre application. Si vous n'avez pas accès à votre téléphone, utilisez les codes de secours.",
+  "EnterAppCodeTitle": "Saisissez le code de l'application d'authentification",
+  "EnterCodePlaceholder": "Saisissez le code",
   "FirstName": "Prénom",
   "InviteTitle": "Vous êtes invités à rejoindre ce portail !",
   "LoginRegistryButton": "S'inscrire",
   "LoginWithAccount": "ou connectez-vous avec :",
-  "PassworResetTitle": "Maintenant, vous pouvez créer un nouveau mot de passe."
+  "PassworResetTitle": "Maintenant, vous pouvez créer un nouveau mot de passe.",
+  "SetAppButton": "Connecter l'application",
+  "SetAppDescription": "L'authentification à deux facteurs est activée. Configurez votre application d'authentification pour continuer à travailler sur le portail. Vous pouvez utiliser Google Authenticator pour <1>Android</1> et <4>iOS</4> ou Authenticator pour <8>Windows Phone</8>.",
+  "SetAppInstallDescription": "Pour connecter l'app, scannez le code QR ou saisissez manuellement votre clé secrète <1>{{ secretKey }}</1>, puis saisissez un code à 6 chiffres de votre app dans le champ ci-dessous.",
+  "SetAppTitle": "Configurez votre application d'authentification"
 }

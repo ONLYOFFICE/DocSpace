@@ -11,6 +11,8 @@
   "EditPhoto": "Modifica Foto",
   "EditUserDialogTitle": "Modifica profilo",
   "EmailPopupHelper": "L'email principale viene utilizzata per le notifiche e il ripristino dell'accesso. <1> Puoi creare una nuova email su questo dominio per l'utente e impostare una password monouso per il primo accesso.</1>",
+  "ErrorInvalidUserLastName": "Cognome non valido",
+  "ErrorInvalidUserFirstName": "Nome non valido",
   "FirstName": "Nome",
   "Message": "Parla",
   "ProductsAndInstruments_Products": "Moduli",
@@ -19,7 +21,5 @@
   "TemporaryPassword": "Password temporanea",
   "TermsOfUsePopupHelperLink": "Maggiori dettagli sui termini di utilizzo",
   "UpdatingProcess": "Caricamento in corso...",
-  "WriteComment": "Aggiungi commento",
-  "ErrorInvalidUserLastName": "Cognome non valido",
-  "ErrorInvalidUserFirstName": "Nome non valido"
+  "WriteComment": "Aggiungi commento"
 }

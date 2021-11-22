@@ -108,9 +108,13 @@ const StyledVersionHistoryPanel = styled.div`
     }
   }
   .version-history-panel-body {
-    padding: ${(props) => (props.isLoading ? "16px 0" : null)};
-    margin: 0 16px;
+    padding-top: ${(props) => (props.isLoading ? "16px" : null)};
+    padding-bottom: ${(props) => (props.isLoading ? "0px" : null)};
+    margin-left: 16px;
     border-top: 1px solid #eceef1;
+
+    height: calc(100% - 53px);
+    box-sizing: border-box;
 
     .version-comment-wrapper {
       margin-left: 79px;
@@ -170,6 +174,7 @@ const StyledContent = styled.div`
   box-sizing: border-box;
   position: relative;
   width: 100%;
+  height: 100%;
   background-color: #fff;
 
   .header_aside-panel-header {

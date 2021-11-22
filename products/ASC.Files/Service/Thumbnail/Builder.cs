@@ -331,6 +331,7 @@ namespace ASC.Files.ThumbnailBuilder
                     }
                 }
             }
+            GC.Collect();
         }
 
         private Image GetImageThumbnail(Bitmap sourceBitmap)

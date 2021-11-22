@@ -317,7 +317,7 @@ class AvatarEditorBody extends React.Component {
     const desktopMode = isDesktop();
     const labelAlign = image === "" ? "center" : "left";
 
-    console.log("maxSizeLabel", maxSizeLabel);
+    //console.log("maxSizeLabel", maxSizeLabel);
     return (
       <Text as="span" textAlign={!desktopMode ? labelAlign : "left"}>
         <Link
