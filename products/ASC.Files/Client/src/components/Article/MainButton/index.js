@@ -116,14 +116,14 @@ class ArticleMainButtonContent extends React.Component {
           {
             className: "main-button_drop-down_sub",
             icon: "images/form.react.svg",
-            label: t("SubNewForm"),
+            label: t("NewForm"),
             onClick: this.onCreate,
             action: "docxf",
           },
           {
             className: "main-button_drop-down_sub",
             icon: "images/form.file.react.svg",
-            label: t("SubNewFormFile"),
+            label: t("NewFormFile"),
             onClick: this.onShowSelectFileDialog,
           },
         ];
