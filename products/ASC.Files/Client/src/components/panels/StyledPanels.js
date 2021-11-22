@@ -633,7 +633,8 @@ const StyledSelectFolderPanel = styled.div`
     margin-right: 16px;
   }
   .select-folder-dialog_aside_body {
-    height: calc(100% - 64px);
+    height: ${(props) =>
+      props.isFooter ? "calc(100% - 110px)" : "calc(100% - 64px)"};
     width: 296px;
   }
   #folder-tree-scroll-bar {
@@ -695,8 +696,7 @@ const StyledSelectFilePanel = styled.div`
       props.isHeaderChildren ? "margin-top: 20px" : "margin-top:20px"};
   }
   .select-file-dialog_aside-body_wrapper {
-    height: ${(props) =>
-      props.isHeaderChildren ? "calc(100% - 147px);" : "calc(100% - 100px);"};
+    height: calc(100% - 109px);
   }
 
   .select-folder-dialog_aside-body_wrapper {
@@ -737,7 +737,7 @@ const StyledSelectFilePanel = styled.div`
     }
   }
   .loader-wrapper_margin {
-    margin-left: 16px;
+    margin-left: 12px;
   }
   .select-file-dialog_modal-loader {
     height: 290px;
@@ -866,7 +866,7 @@ const StyledFilesList = styled.div`
             height: 41px;
             grid-template-areas: "checked-button icon-name full-name owner-name";
           `}
-    grid-template-columns: 22px 32px 1fr;
+    grid-template-columns: 22px 33px 1fr;
     padding-left: ${(props) =>
       props.displayType === "aside" ? "16px" : "12px"};
   }

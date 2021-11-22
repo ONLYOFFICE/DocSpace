@@ -36,7 +36,7 @@ const SelectFolderDialogAsideView = ({
         visible={isPanelVisible}
         zIndex={zIndex}
         contentHeight="100%"
-        contentPaddingBottom={!footer && !showButtons ? "0px" : "80px"}
+        contentPaddingBottom={footer && showButtons ? "100px" : "40px"}
         onClose={onClose}
         removeScroll
         displayType="aside"
@@ -61,6 +61,7 @@ const SelectFolderDialogAsideView = ({
           <StyledSelectFolderPanel
             displayType={DISPLAY_TYPE}
             showButtons={showButtons}
+            isFooter={!!footer}
           >
             <div className="select-folder-dialog_aside_body">
               <div>{header} </div>
