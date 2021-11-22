@@ -737,7 +737,8 @@ const StyledSelectFilePanel = styled.div`
     }
   }
   .loader-wrapper_margin {
-    margin-left: 12px;
+    margin-left: ${(props) =>
+      props.displayType === "aside" ? "16px" : "12px"};
   }
   .select-file-dialog_modal-loader {
     height: 290px;
