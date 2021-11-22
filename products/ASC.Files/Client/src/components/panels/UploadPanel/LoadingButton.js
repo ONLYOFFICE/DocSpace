@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled, { css, keyframes } from "styled-components";
 import globalColors from "@appserver/components/utils/globalColors";
 
@@ -32,7 +32,7 @@ const StyledCircle = styled.div`
   }
 
   ${(props) =>
-    props.percent === 0
+    props.percent === 0 || (props.isAnimation && props.inConversion)
       ? css`
           .circle__fill {
             animation: ${rotate360} 2s linear infinite;
@@ -86,6 +86,19 @@ const StyledLoadingButton = styled.div`
 
 const LoadingButton = ({ id, className, style, ...rest }) => {
   const { percent, onClick, isConversion, inConversion } = rest;
+  const [isAnimation, setIsAnimation] = useState(true);
+
+  const stopAnimation = () => {
+    setIsAnimation(false);
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(stopAnimation, 5000);
+
+    return function cleanup() {
+      clearTimeout(timer);
+    };
+  }, [isAnimation]);
 
   return (
     <StyledCircleWrap
@@ -94,7 +107,11 @@ const LoadingButton = ({ id, className, style, ...rest }) => {
       style={style}
       onClick={onClick}
     >
-      <StyledCircle percent={percent} isConversion={isConversion}>
+      <StyledCircle
+        percent={percent}
+        inConversion={inConversion}
+        isAnimation={isAnimation}
+      >
         <div className="circle__mask circle__full">
           <div className="circle__fill"></div>
         </div>

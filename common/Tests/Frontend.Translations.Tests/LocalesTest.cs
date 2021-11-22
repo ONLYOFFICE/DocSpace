@@ -428,8 +428,9 @@ namespace Frontend.Translations.Tests
                  .Select(item => item.Key);
 
             var allJsTranslationKeys = JavaScriptFiles
+                .Where(f => !f.Path.Contains("Banner.js")) // skip Banner.js (translations from firebase)
                 .SelectMany(j => j.TranslationKeys)
-                .Select(k => k.Replace("Common:", "").Replace("Translations:", ""))
+                .Select(k => k.Replace("Common:", "").Replace("Translations:", "").Replace("Home:", ""))
                 .Distinct();
 
             var notFoundJsKeys = allJsTranslationKeys.Except(allEnKeys);
@@ -809,6 +810,83 @@ namespace Frontend.Translations.Tests
                 });
 
             Assert.AreEqual(0, NotTranslatedToasts.Count, message);
+        }
+
+        [Test]
+        public void WrongTranslationVariablesTest()
+        {
+            var message = $"Next keys have wrong variables:\r\n\r\n";
+            var regVariables = new Regex("\\{\\{([^\\{].?[^\\}]+)\\}\\}", RegexOptions.Compiled | RegexOptions.Multiline);
+
+            var groupedByLng = TranslationFiles
+                .GroupBy(t => t.Language)
+                .Select(g => new
+                {
+                    Language = g.Key,
+                    TranslationsWithVariables = g.ToList()
+                        .SelectMany(t => t.Translations)
+                        .Where(k => k.Value.IndexOf("{{") != -1)
+                        .Select(t => new
+                        {
+                            t.Key,
+                            t.Value,
+                            Variables = regVariables.Matches(t.Value)
+                                        .Select(m => m.Groups[1]?.Value?.Trim().Replace(", lowercase", ""))
+                                        .ToList()
+                        })
+                        .ToList()
+                })
+                .ToList();
+
+            var enWithVariables = groupedByLng
+                .Where(t => t.Language == "en")
+                .SelectMany(t => t.TranslationsWithVariables)
+                .ToList();
+
+            var otherLanguagesWithVariables = groupedByLng
+                .Where(t => t.Language != "en")
+                .ToList();
+
+            var i = 0;
+            var errorsCount = 0;
+
+            foreach (var lng in otherLanguagesWithVariables)
+            {
+                foreach (var t in lng.TranslationsWithVariables)
+                {
+                    var enKey = enWithVariables
+                        .Where(en => en.Key == t.Key)
+                        .FirstOrDefault();
+
+                    if (enKey == null)
+                    {
+                        // wrong
+                        message += $"{++i}. lng='{lng.Language}' key='{t.Key}' has no 'en' language variant (!!!useless key!!!)\r\n\r\n";
+                        errorsCount++;
+                        continue;
+                    }
+
+                    if (enKey.Variables.Count != t.Variables.Count)
+                    {
+                        // wrong
+                        message += $"{++i}. lng='{lng.Language}' key='{t.Key}' has less variables then 'en' language have " +
+                            $"(en={enKey.Variables.Count}|{lng.Language}={t.Variables.Count})\r\n" +
+                            $"'en': '{enKey.Value}'\r\n'{lng.Language}': '{t.Value}'\r\n\r\n";
+                        errorsCount++;
+                    }
+
+                    if (!t.Variables.All(v => enKey.Variables.Contains(v)))
+                    {
+                        // wrong
+                        errorsCount++;
+                        message += $"{++i}. lng='{lng.Language}' key='{t.Key}' has not equals variables of 'en' language have\r\n\r\n" +
+                            $"Have to be:\r\n'{enKey.Value}'\r\n\r\n{string.Join("\r\n", enKey.Variables)}\r\n\r\n" +
+                            $"But in real:\r\n'{t.Value}'\r\n\r\n{string.Join("\r\n", t.Variables)} \r\n\r\n";
+                    }
+                }
+            }
+
+            Assert.AreEqual(0, errorsCount, message);
         }
 
         /*[Test]

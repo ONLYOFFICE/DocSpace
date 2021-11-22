@@ -6,6 +6,7 @@ echo "##########################################################"
 
 echo.
 
+PUSHD %~dp0
 setlocal EnableDelayedExpansion
 
 call runasadmin.bat "%~dpnx0"
