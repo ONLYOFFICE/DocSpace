@@ -49,10 +49,10 @@ class SelectFolderModalDialog extends React.Component {
       selectionButtonPrimary,
       t,
     } = this.props;
-   
+
     const isNeedFolder = id ? true : isSetFolderImmediately;
     this.buttonName = selectionButtonPrimary
-      ? t("Select")
+      ? t("Common:Select")
       : t("Common:SaveButton");
 
     this.state = {
