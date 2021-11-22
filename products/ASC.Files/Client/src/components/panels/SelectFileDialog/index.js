@@ -34,7 +34,7 @@ class SelectFileDialogBody extends React.Component {
     } = this.props;
 
     this.buttonName = creationButtonPrimary
-      ? t("Create")
+      ? t("Common:Create")
       : t("Common:SaveButton");
 
     this.state = {
