@@ -26,13 +26,15 @@ const StyledTableContainer = styled.div`
     margin: 14px 8px 0 auto;
     z-index: 1;
     border-right: 2px solid #d0d5da;
+    &:hover {
+      border-color: #657077;
+    }
   }
 
-  .table-container_group-menu {
-    padding-left: 24px;
-    margin-left: -24px;
-    padding-right: 24px;
-    margin-right: -24px;
+  .table-container_group-menu,
+  .table-container_header {
+    padding: 0 24px;
+    margin: 0 -24px;
 
     border-bottom: 1px solid;
     border-image-slice: 1;
@@ -143,6 +145,8 @@ const StyledTableHeaderCell = styled.div`
   .header-container-text-icon {
     padding: 13px 0 0 4px;
 
+    padding: 16px 0 16px 4px;
+
     display: ${(props) =>
       props.isActive && props.showIcon ? "block" : "none"};
     ${(props) =>
@@ -176,6 +180,9 @@ const StyledTableHeaderCell = styled.div`
     height: 38px;
     display: flex;
     align-items: center;
+    &:hover {
+      color: #657077;
+    }
   }
 `;
 

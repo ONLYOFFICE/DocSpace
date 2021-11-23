@@ -30,6 +30,7 @@ using System.Linq;
 
 using ASC.Common;
 using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Core.Tenants;
 using ASC.Data.Backup.EF.Context;
 using ASC.Data.Backup.EF.Model;
@@ -40,10 +41,13 @@ namespace ASC.Data.Backup.Storage
     {
         private Lazy<BackupsContext> LazyBackupsContext { get; }
         private BackupsContext BackupContext { get => LazyBackupsContext.Value; }
+        private Lazy<TenantDbContext> LazyTenantDbContext { get; }
+        private TenantDbContext TenantDbContext { get => LazyTenantDbContext.Value; }
 
-        public BackupRepository(DbContextManager<BackupsContext> backupContext)
+        public BackupRepository(DbContextManager<BackupsContext> backupContext, DbContextManager<TenantDbContext> tenantDbContext)
         {
             LazyBackupsContext = new Lazy<BackupsContext>(() => backupContext.Value);
+            LazyTenantDbContext = new Lazy<TenantDbContext>(() => tenantDbContext.Value);
         }
 
         public void SaveBackupRecord(BackupRecord backup)
@@ -103,7 +107,7 @@ namespace ASC.Data.Backup.Storage
 
         public List<BackupSchedule> GetBackupSchedules()
         {
-            var query = BackupContext.Schedules.Join(BackupContext.Tenants,
+            var query = BackupContext.Schedules.Join(TenantDbContext.Tenants,
                 s => s.TenantId,
                 t => t.Id,
                 (s, t) => new { schedule = s, tenant = t })

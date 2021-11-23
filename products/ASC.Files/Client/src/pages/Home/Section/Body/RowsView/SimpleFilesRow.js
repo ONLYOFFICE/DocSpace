@@ -72,7 +72,6 @@ const StyledSimpleFilesRow = styled(Row)`
 
   .share-button-icon {
     margin-right: 7px;
-    margin-top: -1px;
   }
 
   .share-button:hover,
@@ -137,7 +136,7 @@ const SimpleFilesRow = (props) => {
   );
 
   return (
-    <StyledWrapper ref={props.selectableRef}>
+    <StyledWrapper>
       <DragAndDrop
         data-title={item.title}
         value={value}

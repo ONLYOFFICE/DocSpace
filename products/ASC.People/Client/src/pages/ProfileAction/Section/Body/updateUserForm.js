@@ -91,7 +91,6 @@ class UpdateUserForm extends React.Component {
 
     this.openAvatarEditor = this.openAvatarEditor.bind(this);
     this.openAvatarEditorPage = this.openAvatarEditorPage.bind(this);
-    this.onSaveAvatar = this.onSaveAvatar.bind(this);
     this.onCloseAvatarEditor = this.onCloseAvatarEditor.bind(this);
     this.onLoadFileAvatar = this.onLoadFileAvatar.bind(this);
 
@@ -466,6 +465,9 @@ class UpdateUserForm extends React.Component {
     data.append("Autosave", false);
     loadAvatar(this.state.profile.id, data)
       .then((response) => {
+        if (!response.success && response.message) {
+          throw response.message;
+        }
         var img = new Image();
         img.onload = function () {
           _this.setState({ isLoading: false });
@@ -602,6 +604,8 @@ class UpdateUserForm extends React.Component {
     this.setIsEdit();
   }
 
+  onSaveClick = () => this.setState({ isLoading: true });
+
   render() {
     const {
       isLoading,
@@ -621,6 +625,7 @@ class UpdateUserForm extends React.Component {
       isSelf,
       language,
       personal,
+      isTabletView,
     } = this.props;
     const {
       guestCaption,
@@ -734,7 +739,7 @@ class UpdateUserForm extends React.Component {
               image={this.state.avatar.image}
               visible={this.state.visibleAvatarEditor}
               onClose={this.onCloseAvatarEditor}
-              onSave={this.onSaveAvatar}
+              onSave={this.onSaveClick}
               onLoadFile={this.onLoadFileAvatar}
               headerLabel={t("EditPhoto")}
               selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
@@ -750,7 +755,11 @@ class UpdateUserForm extends React.Component {
               saveButtonLoading={this.state.isLoading}
             />
           </AvatarContainer>
-          <MainFieldsContainer ref={this.mainFieldsContainerRef} noSelect>
+          <MainFieldsContainer
+            ref={this.mainFieldsContainerRef}
+            noSelect
+            {...(!isTabletView && { marginBottom: "32px" })}
+          >
             <TextChangeField
               labelText={`${t("Common:Email")}:`}
               inputName="email"
@@ -938,7 +947,10 @@ class UpdateUserForm extends React.Component {
           </MainFieldsContainer>
         </MainContainer>
         {!personal && (
-          <InfoFieldContainer headerText={t("Translations:Comments")}>
+          <InfoFieldContainer
+            headerText={t("Translations:Comments")}
+            marginBottom={"42px"}
+          >
             <Textarea
               placeholder={t("WriteComment")}
               name="notes"
@@ -949,7 +961,10 @@ class UpdateUserForm extends React.Component {
             />
           </InfoFieldContainer>
         )}
-        <InfoFieldContainer headerText={t("ContactInformation")}>
+        <InfoFieldContainer
+          headerText={t("ContactInformation")}
+          marginBottom={"42px"}
+        >
           <ContactsField
             pattern={pattern.contact}
             contacts={contacts.contact}
@@ -961,7 +976,10 @@ class UpdateUserForm extends React.Component {
             onItemRemove={this.onContactsItemRemove}
           />
         </InfoFieldContainer>
-        <InfoFieldContainer headerText={t("Translations:SocialProfiles")}>
+        <InfoFieldContainer
+          headerText={t("Translations:SocialProfiles")}
+          {...(isTabletView && { marginBottom: "36px" })}
+        >
           <ContactsField
             pattern={pattern.social}
             contacts={contacts.social}
@@ -1047,6 +1065,7 @@ export default withRouter(
     personal: auth.settingsStore.personal,
     setUserIsUpdate: auth.userStore.setUserIsUpdate,
     userFormValidation: auth.settingsStore.userFormValidation,
+    isTabletView: auth.settingsStore.isTabletView,
   }))(
     observer(
       withTranslation(["ProfileAction", "Common", "Translations"])(

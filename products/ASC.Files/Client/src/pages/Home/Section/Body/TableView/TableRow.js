@@ -99,7 +99,7 @@ const StyledTableRow = styled(TableRow)`
   .table-container_row-context-menu-wrapper {
     margin-right: -20x;
     width: 28px;
-    padding-right: 20px;
+    padding-right: 18px;
     border-bottom: 1px solid;
     border-image-slice: 1;
     border-image-source: linear-gradient(to left, #ffffff 24px, #eceef1 24px);
@@ -134,7 +134,8 @@ const StyledShare = styled.div`
     }
 
     .share-button-icon {
-      margin-right: 7px;
+      margin-right: 4px;
+      padding-top: 3px;
     }
   }
 `;
@@ -190,6 +191,7 @@ const FilesTableRow = (props) => {
         id={item.id}
         shared={item.shared}
         isFolder={item.isFolder}
+        isSmallIcon={true}
       />
     ) : null;
 

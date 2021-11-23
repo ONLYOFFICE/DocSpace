@@ -3,6 +3,7 @@
   "ChangesApplied": "Changes are applied",
   "Connect": "Connect",
   "ContactInformation": "Contact Information",
+  "CountCodesRemaining": "codes remaining",
   "Disconnect": "Disconnect",
   "EditPhoto": "Edit photo",
   "EditSubscriptionsBtn": "Edit subscriptions",
@@ -13,10 +14,8 @@
   "PhoneLbl": "Phone",
   "ProviderSuccessfullyConnected": "Provider successfully connected",
   "ProviderSuccessfullyDisconnected": "Provider successfully disconnected",
-  "Subscriptions": "Subscriptions",
-
-  "TwoFactorDescription": "Two-factor authentication via code generating application was enabled for all users by cloud service administrator.",
   "ShowBackupCodes": "Show backup codes",
-  "CountCodesRemaining": "codes remaining",
-  "TfaLoginSettings": "Login settings"
+  "Subscriptions": "Subscriptions",
+  "TfaLoginSettings": "Login settings",
+  "TwoFactorDescription": "Two-factor authentication via a code-generating app was enabled for all users by the admin."
 }

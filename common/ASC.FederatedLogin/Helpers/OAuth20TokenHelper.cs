@@ -49,7 +49,7 @@ namespace ASC.FederatedLogin.Helpers
             ConsumerFactory = consumerFactory;
         }
 
-        public string RequestCode<T>(string scope = null, Dictionary<string, string> additionalArgs = null) where T : Consumer, IOAuthProvider, new()
+        public string RequestCode<T>(string scope = null, IDictionary<string, string> additionalArgs = null, IDictionary<string, string> additionalStateArgs = null) where T : Consumer, IOAuthProvider, new()
         {
             var loginProvider = ConsumerFactory.Get<T>();
             var requestUrl = loginProvider.CodeUrl;
@@ -67,7 +67,20 @@ namespace ASC.FederatedLogin.Helpers
             if (!string.IsNullOrEmpty(scope)) query += $"&scope={HttpUtility.UrlEncode(scope)}";
 
             var u = HttpContextAccessor.HttpContext.Request.GetUrlRewriter();
-            var state = HttpUtility.UrlEncode(new UriBuilder(u.Scheme, u.Host, u.Port, $"thirdparty/{loginProvider.Name.ToLower()}/code").Uri.AbsoluteUri);
+
+            var stateUriBuilder = new UriBuilder(u.Scheme, u.Host, u.Port, $"thirdparty/{loginProvider.Name.ToLower()}/code");
+
+            if (additionalStateArgs != null && additionalStateArgs.Any())
+            {
+                var stateQuery = "";
+                stateQuery = additionalStateArgs.Keys
+                    .Where(a => a != null)
+                    .Aggregate(stateQuery, (current, a) => a != null ? $"{current}&{a.Trim()}={additionalStateArgs[a] ?? "".Trim()}" : null);
+
+                stateUriBuilder.Query = stateQuery.Substring(1);
+            }
+
+            var state = HttpUtility.UrlEncode(stateUriBuilder.Uri.AbsoluteUri);
             query += $"&state={state}";
 
             if (additionalArgs != null)

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactTooltip from "react-tooltip";
-
+import Portal from "../portal";
 import StyledTooltip from "./styled-tooltip";
 
 class Tooltip extends Component {
@@ -12,16 +12,6 @@ class Tooltip extends Component {
   componentDidUpdate() {
     ReactTooltip.rebuild();
   }
-
-  overridePosition = ({ left, top }) => {
-    const d = document.documentElement;
-    left = Math.min(d.clientWidth - 340, left);
-    top = Math.min(d.clientHeight - 0, top);
-    left = Math.max(0, left);
-    top = Math.max(0, top);
-    //console.log("left:", left, "top:", top);
-    return { top, left };
-  };
 
   render() {
     const {
@@ -40,10 +30,16 @@ class Tooltip extends Component {
       className,
       style,
       color,
+      maxWidth,
     } = this.props;
 
-    return (
-      <StyledTooltip className={className} style={style} color={color}>
+    const renderTooltip = () => (
+      <StyledTooltip
+        className={className}
+        style={style}
+        color={color}
+        maxWidth={maxWidth}
+      >
         <ReactTooltip
           id={id}
           ref={reference}
@@ -61,12 +57,15 @@ class Tooltip extends Component {
           afterShow={afterShow}
           afterHide={afterHide}
           isCapture={true}
-          overridePosition={this.overridePosition}
         >
           {children}
         </ReactTooltip>
       </StyledTooltip>
     );
+
+    const tooltip = renderTooltip();
+
+    return <Portal element={tooltip} />;
   }
 }
 
@@ -100,6 +99,7 @@ Tooltip.propTypes = {
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   color: PropTypes.string,
+  maxWidth: PropTypes.string,
 };
 
 Tooltip.defaultProps = {
@@ -109,7 +109,7 @@ Tooltip.defaultProps = {
   offsetRight: 0,
   offsetBottom: 0,
   offsetLeft: 0,
-  color: "#fff",
+  color: "#f8f7bf",
 };
 
 export default Tooltip;

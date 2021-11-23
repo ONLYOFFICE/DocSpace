@@ -63,7 +63,7 @@ export const openDocEditor = async (
     url = combineUrl(
       AppServerConfig.proxyURL,
       config.homepage,
-      `/doceditor?fileId=${id}`
+      `/doceditor?fileId=${encodeURIComponent(id)}`
     );
   }
 

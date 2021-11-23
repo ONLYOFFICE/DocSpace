@@ -49,7 +49,7 @@ namespace ASC.Core.Common.EF
         {
             modelBuilder
                 .Add(MySqlAddUser, Provider.MySql)
-                .Add(PgSqlAddUser, Provider.Postgre)
+                .Add(PgSqlAddUser, Provider.PostgreSql)
                 .HasData(
                 new User
                 {
@@ -61,8 +61,8 @@ namespace ASC.Core.Common.EF
                     Email = "",
                     Status = (EmployeeStatus)1,
                     ActivationStatus = 0,
-                    WorkFromDate = DateTime.UtcNow,
-                    LastModified = DateTime.UtcNow
+                    WorkFromDate = new DateTime(2021, 3, 9, 9, 52, 55, 764, DateTimeKind.Utc).AddTicks(9157),
+                    LastModified = new DateTime(2021, 3, 9, 9, 52, 55, 765, DateTimeKind.Utc).AddTicks(1420)
                 });
 
             return modelBuilder;

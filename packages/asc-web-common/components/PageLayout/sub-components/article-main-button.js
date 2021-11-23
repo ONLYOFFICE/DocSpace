@@ -10,6 +10,7 @@ const StyledArticleMainButton = styled.div`
     line-height: 36px;
   }
   @media ${tablet} {
+    margin: 16px 0 0;
     .main-button_drop-down {
       line-height: 40px;
     }
