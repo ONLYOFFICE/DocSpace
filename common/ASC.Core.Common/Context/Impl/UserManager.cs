@@ -158,14 +158,6 @@ namespace ASC.Core
             return UserService.GetUsers(Tenant.TenantId, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text, sortBy, sortOrderAsc, limit, offset, out total, out count);
         }
 
-        public DateTime GetMaxUsersLastModified()
-        {
-            return UserService.GetUsers(Tenant.TenantId, default)
-                .Select(g => g.LastModified)
-                .DefaultIfEmpty()
-                .Max();
-        }
-
         public string[] GetUserNames(EmployeeStatus status)
         {
             return GetUsers(status)
@@ -203,6 +195,7 @@ namespace ASC.Core
             var u = UserService.GetUser(Tenant.TenantId, id);
             return u != null && !u.Removed ? u : Constants.LostUser;
         }
+
         public UserInfo GetUser(Guid id, Expression<Func<User, UserInfo>> exp)
         {
             if (IsSystemUser(id)) return SystemUsers[id];
@@ -312,7 +305,7 @@ namespace ASC.Core
             if (u.Status == EmployeeStatus.Terminated && u.ID == TenantManager.GetCurrentTenant().OwnerId)
             {
                 throw new InvalidOperationException("Can not disable tenant owner.");
-}
+            }
 
             var newUser = UserService.SaveUser(TenantManager.GetCurrentTenant().TenantId, u);
 
@@ -343,11 +336,6 @@ namespace ASC.Core
         {
             if (IsSystemUser(id)) return null;
             return UserService.GetUserPhoto(Tenant.TenantId, id);
-        }
-
-        public IEnumerable<Guid> GetUserGroupsId(Guid id)
-        {
-            return GetUserGroupsGuids(id);
         }
 
         public List<GroupInfo> GetUserGroups(Guid id)
@@ -418,38 +406,6 @@ namespace ASC.Core
             {
                 result = result.Where(r => r.CategoryID.Equals(categoryId.Value)).ToList();
             }
-
-            return result;
-        }
-
-        internal IEnumerable<Guid> GetUserGroupsGuids(Guid userID)
-        {
-            var httpRequestDictionary = new HttpRequestDictionary<List<Guid>>(Accessor?.HttpContext, "GroupInfoID");
-            var fromCache = httpRequestDictionary.Get(userID.ToString());
-            if (fromCache != null)
-            {
-                return fromCache;
-            }
-
-            var result = new List<Guid>();
-
-            var refs = GetRefsInternal();
-
-            if (refs is UserGroupRefStore store)
-            {
-                var userRefs = store.GetRefsByUser(userID);
-
-                if (userRefs != null)
-                {
-                    var toAdd = userRefs.Where(r => !r.Removed &&
-                        r.RefType == UserGroupRefType.Contains &&
-                        !Constants.BuildinGroups.Any(g => g.ID.Equals(r.GroupId)))
-                        .Select(r => r.GroupId);
-                    result.AddRange(toAdd);
-                }
-            }
-
-            httpRequestDictionary.Add(userID.ToString(), result);
 
             return result;
         }
@@ -577,14 +533,6 @@ namespace ASC.Core
                 .SingleOrDefault(g => g.Sid == sid) ?? Constants.LostGroupInfo;
         }
 
-        public DateTime GetMaxGroupsLastModified()
-        {
-            return UserService.GetGroups(Tenant.TenantId, default)
-                .Select(g => g.LastModified)
-                .DefaultIfEmpty()
-                .Max();
-        }
-
         public GroupInfo SaveGroupInfo(GroupInfo g)
         {
             if (Constants.LostGroupInfo.Equals(g)) return Constants.LostGroupInfo;
@@ -625,21 +573,22 @@ namespace ASC.Core
 
         private IEnumerable<UserInfo> GetUsersInternal()
         {
-            return UserService.GetUsers(Tenant.TenantId, default)
+            return UserService.GetUsers(Tenant.TenantId)
                 .Where(u => !u.Removed);
         }
 
         private IEnumerable<GroupInfo> GetGroupsInternal()
         {
-            return UserService.GetGroups(Tenant.TenantId, default)
+            return UserService.GetGroups(Tenant.TenantId)
                 .Where(g => !g.Removed)
                 .Select(g => new GroupInfo(g.CategoryId) { ID = g.Id, Name = g.Name, Sid = g.Sid })
-                .Concat(Constants.BuildinGroups);
+                .Concat(Constants.BuildinGroups)
+                .ToList();
         }
 
         private IDictionary<string, UserGroupRef> GetRefsInternal()
         {
-            return UserService.GetUserGroupRefs(Tenant.TenantId, default);
+            return UserService.GetUserGroupRefs(Tenant.TenantId);
         }
 
         private bool IsUserInGroupInternal(Guid userId, Guid groupId, IDictionary<string, UserGroupRef> refs)

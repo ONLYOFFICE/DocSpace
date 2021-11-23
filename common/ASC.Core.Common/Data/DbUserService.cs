@@ -208,10 +208,11 @@ namespace ASC.Core.Data
                 .FirstOrDefault();
         }
 
-        public IEnumerable<Group> GetGroups(int tenant, DateTime from)
+        public IEnumerable<Group> GetGroups(int tenant)
         {
-            return GetGroupQuery(tenant, from)
-                .Select(FromDbGroupToGroup);
+            return GetGroupQuery(tenant)
+                .Select(FromDbGroupToGroup)
+                .ToList();
         }
 
         public UserInfo GetUser(int tenant, Guid id)
@@ -224,14 +225,14 @@ namespace ASC.Core.Data
 
         public UserInfo GetUser(int tenant, string email)
         {
-            return GetUserQuery(tenant, default(DateTime))
+            return GetUserQuery(tenant)
                 .Select(FromUserToUserInfo)
                 .FirstOrDefault(r => r.Email == email && !r.Removed);
         }
 
         public UserInfo GetUserByUserName(int tenant, string userName)
         {
-            return GetUserQuery(tenant, default(DateTime))
+            return GetUserQuery(tenant)
                 .Select(FromUserToUserInfo)
                 .FirstOrDefault(r => r.UserName == userName && !r.Removed);
         }
@@ -333,18 +334,13 @@ namespace ASC.Core.Data
                 .Select(FromUserGroupToUserGroupRef).SingleOrDefault();
         }
 
-        public IDictionary<string, UserGroupRef> GetUserGroupRefs(int tenant, DateTime from)
+        public IDictionary<string, UserGroupRef> GetUserGroupRefs(int tenant)
         {
             IQueryable<UserGroup> q = UserDbContext.UserGroups;
 
             if (tenant != Tenant.DEFAULT_TENANT)
             {
                 q = q.Where(r => r.Tenant == tenant);
-            }
-
-            if (from != default)
-            {
-                q = q.Where(r => r.LastModified >= from);
             }
 
             return q.Select(FromUserGroupToUserGroupRef).AsEnumerable().ToDictionary(r => r.CreateKey(), r => r);
@@ -372,10 +368,11 @@ namespace ASC.Core.Data
             return photo ?? new byte[0];
         }
 
-        public IEnumerable<UserInfo> GetUsers(int tenant, DateTime from)
+        public IEnumerable<UserInfo> GetUsers(int tenant)
         {
-            return GetUserQuery(tenant, from)
-                .Select(FromUserToUserInfo);
+            return GetUserQuery(tenant)
+                .Select(FromUserToUserInfo)
+                .ToList();
         }
 
         public IQueryable<UserInfo> GetUsers(int tenant, bool isAdmin, EmployeeStatus? employeeStatus, List<List<Guid>> includeGroups, List<Guid> excludeGroups, EmployeeActivationStatus? activationStatus, string text, string sortBy, bool sortOrderAsc, long limit, long offset, out int total, out int count)
@@ -656,12 +653,12 @@ namespace ASC.Core.Data
             tr.Commit();
         }
 
-        private IQueryable<User> GetUserQuery(int tenant, DateTime from = default)
+        private IQueryable<User> GetUserQuery(int tenant)
         {
-            return GetUserQuery(UserDbContext, tenant, from);
+            return GetUserQuery(UserDbContext, tenant);
         }
 
-        private IQueryable<User> GetUserQuery(UserDbContext userDbContext, int tenant, DateTime from = default)
+        private IQueryable<User> GetUserQuery(UserDbContext userDbContext, int tenant)
         {
             var q = userDbContext.Users.AsQueryable();
             var where = false;
@@ -669,12 +666,6 @@ namespace ASC.Core.Data
             if (tenant != Tenant.DEFAULT_TENANT)
             {
                 q = q.Where(r => r.Tenant == tenant);
-                where = true;
-            }
-
-            if (from != default)
-            {
-                q = q.Where(r => r.LastModified >= from);
                 where = true;
             }
 
@@ -686,18 +677,13 @@ namespace ASC.Core.Data
             return q;
         }
 
-        private IQueryable<DbGroup> GetGroupQuery(int tenant, DateTime from = default)
+        private IQueryable<DbGroup> GetGroupQuery(int tenant)
         {
             var q = UserDbContext.Groups.Where(r => true);
 
             if (tenant != Tenant.DEFAULT_TENANT)
             {
                 q = q.Where(r => r.Tenant == tenant);
-            }
-
-            if (from != default)
-            {
-                q = q.Where(r => r.LastModified >= from);
             }
 
             return q;
