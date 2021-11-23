@@ -10,7 +10,7 @@ import { withLayoutSize } from "@appserver/common/utils";
 import { isMobileOnly, isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import withLoader from "../../../../HOCs/withLoader";
-
+import { FileAction } from "@appserver/common/constants";
 const getFilterType = (filterValues) => {
   const filterType = result(
     find(filterValues, (value) => {
@@ -373,6 +373,8 @@ export default inject(
       createThumbnails,
     } = filesStore;
 
+    const { type: fileActionType } = filesStore.fileActionStore;
+
     const { user } = auth.userStore;
     const { customNames, culture, personal } = auth.settingsStore;
     const { isFavoritesFolder, isRecentFolder } = treeFoldersStore;
@@ -383,7 +385,8 @@ export default inject(
         !!folders.length ||
         search ||
         filterType ||
-        authorType) &&
+        authorType ||
+        fileActionType === FileAction.Create) &&
       !(treeFoldersStore.isPrivacyFolder && isMobile);
 
     return {
