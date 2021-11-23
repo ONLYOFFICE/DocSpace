@@ -57,8 +57,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="MailKit" Version="2.5.1" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.0-preview7" />
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.0-preview.5" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.0" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.0" />
     <PackageReference Include="Telegram.Bot" Version="15.7.1" />
   </ItemGroup>
   <ItemGroup>

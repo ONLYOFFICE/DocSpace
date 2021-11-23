@@ -42,7 +42,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="6.0.0-preview.7.21378.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="6.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="6.0.0-preview.4.21253.5" />
     <PackageReference Include="openstack.net" Version="1.7.9" />
   </ItemGroup>
