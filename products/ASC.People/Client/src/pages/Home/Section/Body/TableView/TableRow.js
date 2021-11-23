@@ -18,7 +18,7 @@ const StyledPeopleRow = styled(TableRow)`
     padding-left: 4px;
 
     .table-container_row-checkbox {
-      margin-left: 8px;
+      margin-left: -4px;
     }
   }
 `;
