@@ -143,6 +143,9 @@ class CreateAvatarEditorPage extends React.PureComponent {
 
     loadAvatar(0, data)
       .then((response) => {
+        if (!response.success && response.message) {
+          throw response.message;
+        }
         var img = new Image();
         img.onload = function () {
           if (fileData) {
