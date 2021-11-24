@@ -23,8 +23,6 @@ const commonStyles = css`
 
   border-left: none;
 
-  -webkit-user-select: none;
-
   .section-wrapper {
     ${(props) =>
       !props.withScroll &&
