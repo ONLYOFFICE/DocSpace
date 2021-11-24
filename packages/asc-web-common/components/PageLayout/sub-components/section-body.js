@@ -18,6 +18,9 @@ const paddingStyles = css`
 `;
 const commonStyles = css`
   flex-grow: 1;
+
+  ${(props) => (props.isDesktop ? "height: auto" : "height: 100%")};
+
   ${(props) => !props.withScroll && `height: 100%;`}
   border-left: none;
 
@@ -134,6 +137,7 @@ class SectionBody extends React.Component {
       viewAs,
       withScroll,
       isLoaded,
+      isDesktop,
     } = this.props;
 
     const focusProps = autoFocus
@@ -151,6 +155,7 @@ class SectionBody extends React.Component {
         viewAs={viewAs}
         pinned={pinned}
         isLoaded={isLoaded}
+        isDesktop={isDesktop}
         className="section-body"
       >
         {withScroll ? (
@@ -184,6 +189,7 @@ class SectionBody extends React.Component {
         withScroll={withScroll}
         pinned={pinned}
         isLoaded={isLoaded}
+        isDesktop={isDesktop}
       >
         {withScroll ? (
           !isMobile ? (
@@ -236,7 +242,10 @@ SectionBody.defaultProps = {
 };
 
 export default inject(({ auth }) => {
+  const { settingsStore } = auth;
+  const { isDesktopClient: isDesktop } = settingsStore;
   return {
     isLoaded: auth.isLoaded,
+    isDesktop,
   };
 })(observer(SectionBody));

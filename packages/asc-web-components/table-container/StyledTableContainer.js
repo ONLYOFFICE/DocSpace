@@ -26,6 +26,9 @@ const StyledTableContainer = styled.div`
     margin: 14px 8px 0 auto;
     z-index: 1;
     border-right: 2px solid #d0d5da;
+    &:hover {
+      border-color: #657077;
+    }
   }
 
   .table-container_group-menu,
@@ -177,6 +180,9 @@ const StyledTableHeaderCell = styled.div`
     height: 38px;
     display: flex;
     align-items: center;
+    &:hover {
+      color: #657077;
+    }
   }
 `;
 

@@ -209,7 +209,7 @@ class SectionBodyContent extends React.PureComponent {
   };
   loginCallback = (profile) => {
     const { setProviders, t } = this.props;
-    linkOAuth(profile.Serialized).then((resp) => {
+    linkOAuth(profile).then((resp) => {
       getAuthProviders().then((providers) => {
         setProviders(providers);
         toastr.success(t("ProviderSuccessfullyConnected"));

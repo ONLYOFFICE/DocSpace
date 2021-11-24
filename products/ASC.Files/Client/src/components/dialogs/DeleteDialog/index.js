@@ -61,6 +61,8 @@ class DeleteDialogComponent extends React.Component {
       deleteOperation: t("Translations:DeleteOperation"),
       deleteFromTrash: t("Translations:DeleteFromTrash"),
       deleteSelectedElem: t("Translations:DeleteSelectedElem"),
+      FileRemoved: t("Home:FileRemoved"),
+      FolderRemoved: t("Home:FolderRemoved"),
     };
 
     const selection = this.state.selection.filter((f) => f.checked);
@@ -129,7 +131,7 @@ class DeleteDialogComponent extends React.Component {
 
     const title =
       isPrivacyFolder || isRecycleBinFolder || checkedSelections[0]?.providerKey
-        ? t("ConfirmRemove")
+        ? t("Common:Confirmation")
         : unsubscribe
         ? t("UnsubscribeTitle")
         : checkedSelections.length === 1 || isPrivacyFolder
