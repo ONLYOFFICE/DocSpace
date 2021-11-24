@@ -631,6 +631,7 @@ class FilesStore {
 
       if (isRecycleBinFolder) {
         fileOptions = this.removeOptions(fileOptions, [
+          "fill-form",
           "open",
           "open-location",
           "view",
