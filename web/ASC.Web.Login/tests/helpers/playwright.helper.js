@@ -28,6 +28,24 @@ class PlaywrightHelper extends Helper {
       }),
     );
   }
+
+  async checkRequest(url, form, baseDir, scenario) {
+    const { page } = this.helpers.Playwright;
+    const rootDir = 'tests/mocking/mock-data/';
+    await page.route(new RegExp(url), (route) => {
+      for (let key in form) {
+        assert(route.request().postData().includes(form[key]));
+      }
+
+      return route.fulfill({
+        path: path.resolve(rootDir, baseDir, `${scenario}.json`),
+        headers: {
+          'content-type': 'application/json',
+          'access-control-allow-origin': '*',
+        },
+      });
+    });
+  }
 }
 
 module.exports = PlaywrightHelper;
