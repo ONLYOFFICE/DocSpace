@@ -18,7 +18,6 @@
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="5.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="6.0.0" />
-    <PackageReference Include="NLog" Version="4.7.10" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.13.0" />
   </ItemGroup>
 

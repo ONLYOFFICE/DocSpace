@@ -43,8 +43,6 @@
     </PackageReference>
     <PackageReference Include="LumenWorksCsvReader" Version="4.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="6.0.0" />
-    <PackageReference Include="SharpZipLib" Version="1.3.2" />
-    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0008" />
   </ItemGroup>
 
   <ItemGroup>

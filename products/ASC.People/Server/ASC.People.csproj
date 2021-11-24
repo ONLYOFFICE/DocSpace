@@ -26,7 +26,6 @@
   <ItemGroup>
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.2.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="6.0.0" />
-    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0008" />
   </ItemGroup>
   
   <ItemGroup>

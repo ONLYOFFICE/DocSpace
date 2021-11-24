@@ -22,6 +22,10 @@
 
 	</Target>
 	<ItemGroup>
+	  <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.2.0" />
+	  <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="6.0.0" />
+	</ItemGroup>
+	<ItemGroup>
 	  <ProjectReference Include="..\..\ASC.Data.Backup.Core\ASC.Data.Backup.Core.csproj" />
 	</ItemGroup>
 
