@@ -32,6 +32,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Runtime.Serialization;
 using System.Security.Cryptography;
 using System.Text;
@@ -126,7 +127,7 @@ namespace ASC.Web.Core.Files
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(documentConverterUrl);
             request.Method = HttpMethod.Post;
-            request.Headers.Add("accept", "text/xml; charset=utf-8");
+            request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
             using var httpClient = new HttpClient();
             httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
@@ -168,7 +169,7 @@ namespace ASC.Web.Core.Files
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             });
 
-            request.Content = new StringContent(bodyString, Encoding.UTF8, "text/xml; charset=utf-8");
+            request.Content = new StringContent(bodyString, Encoding.UTF8, "application/json");
 
             // hack. http://ubuntuforums.org/showthread.php?t=1841740
             if (WorkContext.IsMono)
@@ -193,7 +194,7 @@ namespace ASC.Web.Core.Files
                     }
                     catch (HttpRequestException ex)
                     {
-                         throw new HttpException((int)HttpStatusCode.BadRequest, ex.Message, ex);
+                        throw new HttpException((int)HttpStatusCode.BadRequest, ex.Message, ex);
                     }
                 }
                 if (countTry == MaxTry)
@@ -285,7 +286,7 @@ namespace ASC.Web.Core.Files
             }
 
             string dataResponse;
-            var response = httpClient.Send(request);
+            using (var response = httpClient.Send(request))
             using (var stream = response.Content.ReadAsStream())
             {
                 if (stream == null) throw new Exception("Response is null");
@@ -368,7 +369,7 @@ namespace ASC.Web.Core.Files
 
             string dataResponse = null;
 
-            var response = httpClient.Send(request);
+            using (var response = httpClient.Send(request))
             using (var responseStream = response.Content.ReadAsStream())
             {
                 if (responseStream != null)
@@ -413,7 +414,7 @@ namespace ASC.Web.Core.Files
             using var httpClient = new HttpClient();
             httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
 
-            var response = httpClient.Send(request);
+            using var response = httpClient.Send(request);
             using var responseStream = response.Content.ReadAsStream();
             if (responseStream == null)
             {

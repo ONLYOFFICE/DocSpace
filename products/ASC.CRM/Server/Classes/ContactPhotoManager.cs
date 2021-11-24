@@ -545,8 +545,8 @@ namespace ASC.Web.CRM.Classes
             request.RequestUri = new Uri(imageUrl);
 
             using var httpClient = new HttpClient();
-
-            using (var inputStream = httpClient.Send(request).Content.ReadAsStream())
+            using var response = httpClient.Send(request);
+            using (var inputStream = response.Content.ReadAsStream())
             {
                 var imageData = ToByteArray(inputStream, (int)inputStream.Length);
                 return UploadPhoto(imageData, contactID, uploadOnly, checkFormat);
@@ -581,7 +581,8 @@ namespace ASC.Web.CRM.Classes
             request.RequestUri = new Uri(imageUrl);
 
             using var httpClient = new HttpClient();
-            using (var inputStream = httpClient.Send(request).Content.ReadAsStream())
+            using var response = httpClient.Send(request);
+            using (var inputStream = response.Content.ReadAsStream())
             {
                 var imageData = ToByteArray(inputStream, (int)inputStream.Length);
                 if (string.IsNullOrEmpty(tmpDirName))

@@ -117,10 +117,9 @@ namespace ASC.Web.Core.Utility
             request.Headers.Add("Encoding", Encoding.UTF8.ToString());//todo check 
 
             using var httpClient = new HttpClient();
-            var response = httpClient.Send(request);
-
-            var stream = response.Content.ReadAsStream();
-            var rs = new StreamReader(stream);
+            using var response = httpClient.Send(request);
+            using var stream = response.Content.ReadAsStream();
+            using var rs = new StreamReader(stream);
             return CommonLinkUtility.GetFullAbsolutePath(url + rs.ReadToEnd());
         }
 

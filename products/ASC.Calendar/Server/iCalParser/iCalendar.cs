@@ -26,21 +26,22 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text.RegularExpressions;
+
 using ASC.Calendar.Resources;
 using ASC.Common.Utils;
-using ASC.Web.Core.Calendars;
-using System.IO;
 using ASC.Core;
-using System.Net.Http;
+using ASC.Web.Core.Calendars;
 
 namespace ASC.Calendar.iCalParser
 {
     public class iCalendar : BaseCalendar
     {
         private TenantManager TenantManager { get; }
-       
+
         public iCalendar GetFromStream(TextReader reader)
         {
             var emitter = new iCalendarEmitter(AuthContext, TimeZoneConverter, TenantManager);
@@ -72,8 +73,7 @@ namespace ASC.Calendar.iCalParser
                 request.RequestUri = new Uri(url);
 
                 using var httpClient = new HttpClient();
-                var response = httpClient.Send(request);
-
+                using (var response = httpClient.Send(request))
                 using (var stream = response.Content.ReadAsStream())
                 {
                     var ms = new MemoryStream();
@@ -102,7 +102,7 @@ namespace ASC.Calendar.iCalParser
 
 
         public List<iCalEvent> Events { get; set; }
-        
+
 
         public iCalendar(
             AuthContext authContext,

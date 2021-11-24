@@ -114,7 +114,7 @@ namespace ASC.Core
 
             using var httpClient = new HttpClient();
 
-            httpClient.Send(request); 
+            using var response = httpClient.Send(request);
 
             tariffService.ClearCache(TenantManager.GetCurrentTenant().TenantId);
 

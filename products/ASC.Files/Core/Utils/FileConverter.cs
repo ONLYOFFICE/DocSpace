@@ -689,8 +689,8 @@ namespace ASC.Web.Files.Utils
             request.RequestUri = new Uri(convertUri);
 
             using var httpClient = new HttpClient();
-
-            return new ResponseStream(httpClient.Send(request));
+            using var response = httpClient.Send(request);
+            return new ResponseStream(response);
         }
 
         public FileOperationResult ExecSync<T>(File<T> file, string doc)
@@ -865,7 +865,8 @@ namespace ASC.Web.Files.Utils
 
             try
             {
-                using var convertedFileStream = new ResponseStream(httpClient.Send(request));
+                using var response = httpClient.Send(request);
+                using var convertedFileStream = new ResponseStream(response);
                 newFile.ContentLength = convertedFileStream.Length;
                 newFile = fileDao.SaveFile(newFile, convertedFileStream);
             }

@@ -330,14 +330,15 @@ namespace ASC.Web.Files.ThirdPartyApp
             else
             {
                 var downloadRequest = new HttpRequestMessage();
-                using var downloadStream = new ResponseStream(httpClient.Send(downloadRequest));
+                using var response = httpClient.Send(request);
+                using var downloadStream = new ResponseStream(response);
 
                 request.Content = new StreamContent(downloadStream);
             }
 
             try
             {
-                var response = httpClient.Send(request);
+                using var response = httpClient.Send(request);
                 using var responseStream = response.Content.ReadAsStream();
                 string result = null;
                 if (responseStream != null)
@@ -522,8 +523,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                 request.Headers.Add("Authorization", "Bearer " + token);
 
                 using var httpClient = new HttpClient();
-
-                var response = httpClient.Send(request);
+                using var response = httpClient.Send(request);
                 using var stream = new ResponseStream(response);
                 stream.CopyTo(context.Response.Body);
 
@@ -733,8 +733,8 @@ namespace ASC.Web.Files.ThirdPartyApp
             request.RequestUri = new Uri(contentUrl);
 
             using var httpClient = new HttpClient();
-
-            using var content = new ResponseStream(httpClient.Send(request));
+            using var response = httpClient.Send(request);
+            using var content = new ResponseStream(response);
             return CreateFile(content, fileName, folderId, token);
         }
 
@@ -778,7 +778,7 @@ namespace ASC.Web.Files.ThirdPartyApp
 
             try
             {
-                var response = httpClient.Send(request);
+                using var response = httpClient.Send(request);
                 using var responseStream = response.Content.ReadAsStream();
                 string result = null;
                 if (responseStream != null)
@@ -857,7 +857,8 @@ namespace ASC.Web.Files.ThirdPartyApp
                 Logger.Debug("GoogleDriveApp: download exportLink - " + downloadUrl);
                 try
                 {
-                    using var fileStream = new ResponseStream(httpClient.Send(request));
+                    using var response = httpClient.Send(request);
+                    using var fileStream = new ResponseStream(response);
                     driveFile = CreateFile(fileStream, fileName, folderId, token);
                 }
                 catch (HttpRequestException e)

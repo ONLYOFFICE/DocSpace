@@ -174,7 +174,7 @@ namespace ASC.Web.Core.Sms
                 using var httpClient = new HttpClient();
                 httpClient.Timeout = TimeSpan.FromMilliseconds(15000);
 
-                var response = httpClient.Send(request);
+                using var response = httpClient.Send(request);
                 using var stream = response.Content.ReadAsStream();
                 if (stream != null)
                 {
@@ -268,7 +268,7 @@ namespace ASC.Web.Core.Sms
                     using var httpClient = new HttpClient();
                     httpClient.Timeout = TimeSpan.FromMilliseconds(1000);
 
-                    var response = httpClient.Send(request);
+                    using var response = httpClient.Send(request);
                     using var stream = response.Content.ReadAsStream();
                     if (stream != null)
                     {
@@ -452,7 +452,7 @@ namespace ASC.Web.Core.Sms
             IOptionsMonitor<ILog> options,
             ICache memCache,
             string name, int order, Dictionary<string, string> props)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache ,name, order, props)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache, name, order, props)
         {
             AuthContext = authContext;
             TenantUtil = tenantUtil;

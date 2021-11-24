@@ -245,11 +245,11 @@ namespace ASC.Web.Studio.UserControls.FirstTime
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(getAmiIdUrl);
 
-                using var httpClient = new HttpClient();
-
                 try
                 {
-                    using (var responseStream = httpClient.Send(request).Content.ReadAsStream())
+                    using (var httpClient = new HttpClient())
+                    using (var response = httpClient.Send(request))
+                    using (var responseStream = response.Content.ReadAsStream())
                     using (var reader = new StreamReader(responseStream))
                     {
                         _amiId = reader.ReadToEnd();
@@ -287,7 +287,7 @@ namespace ASC.Web.Studio.UserControls.FirstTime
                 request.Content = new StringContent(data);
 
                 using var httpClient = new HttpClient();
-                var response = httpClient.Send(request);
+                using var response = httpClient.Send(request);
 
                 Log.Debug("Subscribe response: " + response);//toto write
 

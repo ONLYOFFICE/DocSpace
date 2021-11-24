@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -171,13 +172,12 @@ namespace ASC.ApiSystem.Controllers
 
             var request = new HttpRequestMessage();
             request.Method = HttpMethod.Post;
-            request.Headers.Add("Accept", "application/x-www-form-urlencoded");
+            request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/x-www-form-urlencoded"));
 
             try
             {
                 using var httpClient = new HttpClient();
-                var response = httpClient.Send(request);
-
+                using var response = httpClient.Send(request);
                 using var stream = response.Content.ReadAsStream();
                 using var reader = new StreamReader(stream, Encoding.UTF8);
 
@@ -308,11 +308,11 @@ namespace ASC.ApiSystem.Controllers
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(url);
                 request.Method = HttpMethod.Post;
-                request.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
-                request.Content = new StringContent(data);
+                request.Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded"););
 
                 using var httpClient = new HttpClient();
-                using var stream = httpClient.Send(request).Content.ReadAsStream();
+                using var httpClientResponse = httpClient.Send(request);
+                using var stream = httpClientResponse.Content.ReadAsStream();
                 using var reader = new StreamReader(stream);
 
                 var resp = reader.ReadToEnd();

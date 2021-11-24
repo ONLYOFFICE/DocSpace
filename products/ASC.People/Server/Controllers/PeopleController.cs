@@ -1865,8 +1865,9 @@ namespace ASC.Employee.Core.Controllers
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(url);
 
-                using var httpClient = new HttpClient();
-                using (var stream = httpClient.Send(request).Content.ReadAsStream())
+                using (var httpClient = new HttpClient())
+                using (var response = httpClient.Send(request))
+                using (var stream = response.Content.ReadAsStream())
                 {
                     var buffer = new byte[512];
                     int bytesRead;
@@ -2115,8 +2116,7 @@ namespace ASC.Employee.Core.Controllers
             request.RequestUri = new Uri(files);
 
             using var httpClient = new HttpClient();
-
-            var response = httpClient.Send(request);
+            using var response = httpClient.Send(request);
             using var inputStream = response.Content.ReadAsStream();
             using var br = new BinaryReader(inputStream);
             var imageByteArray = br.ReadBytes((int)inputStream.Length);

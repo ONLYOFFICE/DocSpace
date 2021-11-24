@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
@@ -155,11 +156,11 @@ namespace ASC.Web.Core.Helpers
             request.RequestUri = new Uri(url);
             request.Method = new HttpMethod(httpMethod);
             request.Headers.Add("Authorization", CreateAuthToken(userId.ToString()));
-            request.Headers.Add("accept", "application/json");
+            request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
             request.Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
 
             using var httpClient = new HttpClient();
-            var response = httpClient.Send(request);
+            using var response = httpClient.Send(request);
             using var stream = response.Content.ReadAsStream();
             using var reader = new StreamReader(stream, Encoding.UTF8);
             return reader.ReadToEnd();

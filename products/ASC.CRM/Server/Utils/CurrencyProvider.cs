@@ -38,8 +38,6 @@ using ASC.Core.Common.Settings;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 
-using Autofac;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
@@ -342,14 +340,12 @@ namespace ASC.Web.CRM.Classes
                 handler.UseDefaultCredentials = true;
 
                 var httpClient = new HttpClient(handler);
-
-                var response = httpClient.Send(request);
+                using var response = httpClient.Send(request);
                 using (var responseStream = new StreamReader(response.Content.ReadAsStream()))
                 {
                     var data = responseStream.ReadToEnd();
 
                     File.WriteAllText(filepath, data);
-
                 }
             }
             catch (Exception error)

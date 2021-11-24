@@ -53,11 +53,11 @@ namespace ASC.Security.Cryptography
             var hasher = Aes.Create();
             hasher.Key = EKey();
             hasher.IV = new byte[hasher.BlockSize >> 3];
+
             using var ms = new MemoryStream();
             using var ss = new CryptoStream(ms, hasher.CreateEncryptor(), CryptoStreamMode.Write);
-            ss.Write(data, 0, data.Length);
-            ss.FlushFinalBlock();
-            hasher.Clear();
+            using var plainTextStream = new MemoryStream(data);
+            plainTextStream.CopyTo(ss);
             return ms.ToArray();
         }
 
@@ -73,17 +73,13 @@ namespace ASC.Security.Cryptography
             hasher.IV = new byte[hasher.BlockSize >> 3];
 
             using (MemoryStream msDecrypt = new MemoryStream(data))
+            using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, hasher.CreateDecryptor(), CryptoStreamMode.Read))
+            using (StreamReader srDecrypt = new StreamReader(csDecrypt))
             {
-                using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, hasher.CreateDecryptor(), CryptoStreamMode.Read))
-                {
-                    using (StreamReader srDecrypt = new StreamReader(csDecrypt))
-                    {
 
-                        // Read the decrypted bytes from the decrypting stream
-                        // and place them in a string.
-                        return srDecrypt.ReadToEnd();
-                    }
-                }
+                // Read the decrypted bytes from the decrypting stream
+                // and place them in a string.
+                return srDecrypt.ReadToEnd();
             }
         }
 

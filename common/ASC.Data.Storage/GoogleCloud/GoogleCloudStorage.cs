@@ -70,7 +70,7 @@ namespace ASC.Data.Storage.GoogleCloud
         private Uri _bucketSSlRoot;
 
         private bool _lowerCasing = true;
-            
+
         public GoogleCloudStorage(
             TempStream tempStream,
             TenantManager tenantManager,
@@ -769,7 +769,7 @@ namespace ASC.Data.Storage.GoogleCloud
             request.Method = HttpMethod.Put;
             request.Headers.Add("Content-Range", contentRangeHeader);
             request.Content = new StreamContent(stream);
-            
+
 
             long MAX_RETRIES = 100;
             int millisecondsTimeout;
@@ -783,7 +783,7 @@ namespace ASC.Data.Storage.GoogleCloud
                 try
                 {
                     using var httpClient = new HttpClient();
-                    var response = httpClient.Send(request);
+                    using var response = httpClient.Send(request);
                     var status = response.StatusCode;
 
                     break;

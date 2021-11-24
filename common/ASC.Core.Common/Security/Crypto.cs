@@ -62,31 +62,22 @@ namespace ASC.Core
             hasher.Key = keyno == 1 ? GetSK1(false) : GetSK2(false);
             hasher.IV = new byte[hasher.BlockSize >> 3];
 
-            string result;
             if (reverse)
             {
                 using var ms = new MemoryStream();
                 using var ss = new CryptoStream(ms, hasher.CreateEncryptor(), CryptoStreamMode.Write);
-                var buffer = Encoding.Unicode.GetBytes(data);
-                ss.Write(buffer, 0, buffer.Length);
-                ss.FlushFinalBlock();
-                hasher.Clear();
-                result = Convert.ToBase64String(ms.ToArray());
+                using var plainTextStream = new MemoryStream(Convert.FromBase64String(data));
+                plainTextStream.CopyTo(ss);
+                return Convert.ToBase64String(ms.ToArray());
             }
             else
             {
-                var bytes = Convert.FromBase64String(data);
-                using var ms = new MemoryStream(bytes);
+                using var ms = new MemoryStream(Convert.FromBase64String(data));
                 using var ss = new CryptoStream(ms, hasher.CreateDecryptor(), CryptoStreamMode.Read);
-                var buffer = new byte[bytes.Length];
-                var size = ss.Read(buffer, 0, buffer.Length);
-                hasher.Clear();
-                var newBuffer = new byte[size];
-                Array.Copy(buffer, newBuffer, size);
-                result = Encoding.Unicode.GetString(newBuffer);
+                using var plainTextStream = new MemoryStream();
+                ss.CopyTo(plainTextStream);
+                return Encoding.Unicode.GetString(plainTextStream.ToArray());
             }
-
-            return result;
         }
 
         internal static byte[] GetV(byte[] data, int keyno, bool reverse)
@@ -95,31 +86,22 @@ namespace ASC.Core
             hasher.Key = keyno == 1 ? GetSK1(false) : GetSK2(false);
             hasher.IV = new byte[hasher.BlockSize >> 3];
 
-            byte[] result;
             if (reverse)
             {
                 using var ms = new MemoryStream();
                 using var ss = new CryptoStream(ms, hasher.CreateEncryptor(), CryptoStreamMode.Write);
-                var buffer = data;
-                ss.Write(buffer, 0, buffer.Length);
-                ss.FlushFinalBlock();
-                hasher.Clear();
-                result = ms.ToArray();
+                using var plainTextStream = new MemoryStream(data);
+                plainTextStream.CopyTo(ss);
+                return ms.ToArray();
             }
             else
             {
-                var bytes = data;
-                using var ms = new MemoryStream(bytes);
+                using var ms = new MemoryStream(data);
                 using var ss = new CryptoStream(ms, hasher.CreateDecryptor(), CryptoStreamMode.Read);
-                var buffer = new byte[bytes.Length];
-                var size = ss.Read(buffer, 0, buffer.Length);
-                hasher.Clear();
-                var newBuffer = new byte[size];
-                Array.Copy(buffer, newBuffer, size);
-                result = newBuffer;
+                using var plainTextStream = new MemoryStream();
+                ss.CopyTo(plainTextStream);
+                return plainTextStream.ToArray();
             }
-
-            return result;
         }
     }
 }

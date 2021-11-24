@@ -296,8 +296,8 @@ namespace ASC.Files.ThumbnailBuilder
             }
 
             using var httpClient = new HttpClient();
-
-            using (var stream = new ResponseStream(httpClient.Send(request)))
+            using var response = httpClient.Send(request);
+            using (var stream = new ResponseStream(response))
             {
                 Crop(fileDao, file, stream);
             }

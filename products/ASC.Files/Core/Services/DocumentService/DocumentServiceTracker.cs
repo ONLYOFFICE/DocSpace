@@ -504,10 +504,9 @@ namespace ASC.Web.Files.Services.DocumentService
                         {
                             ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
                         }
-                        
-                        var responseDownload = httpClient.Send(requestDownload);
-                        var streamDownload = responseDownload.Content.ReadAsStream();
 
+                        using (var responseDownload = httpClient.Send(requestDownload))
+                        using (var streamDownload = responseDownload.Content.ReadAsStream())
                         using (var downloadStream = new ResponseStream(streamDownload, streamDownload.Length))
                         {
                             const int bufferSize = 2048;
@@ -545,8 +544,8 @@ namespace ASC.Web.Files.Services.DocumentService
                             ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
                         }
 
-                        
-                        var httpResponse = httpClient.Send(httpRequest);
+
+                        using (var httpResponse = httpClient.Send(httpRequest))
                         using (var stream = httpResponse.Content.ReadAsStream())
                             if (stream != null)
                                 using (var reader = new StreamReader(stream, Encoding.GetEncoding(Encoding.UTF8.WebName)))
@@ -618,9 +617,9 @@ namespace ASC.Web.Files.Services.DocumentService
                     ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
                 }
 
-                using var httpClient = new HttpClient();
-                var stream = httpClient.Send(request).Content.ReadAsStream();
-
+                using (var httpClient = new HttpClient())
+                using (var response = httpClient.Send(request))
+                using (var stream = response.Content.ReadAsStream())
                 using (var fileStream = new ResponseStream(stream, stream.Length))
                 {
                     store.Save(FileConstant.StorageDomainTmp, path, fileStream);
@@ -652,7 +651,8 @@ namespace ASC.Web.Files.Services.DocumentService
                 }
 
                 using var httpClient = new HttpClient();
-                var stream = httpClient.Send(request).Content.ReadAsStream();
+                using var response = httpClient.Send(request);
+                using var stream = response.Content.ReadAsStream();
 
                 using var differenceStream = new ResponseStream(stream, stream.Length);
                 fileDao.SaveEditHistory(file, changes, differenceStream);

@@ -217,8 +217,7 @@ namespace ASC.Web.Api.Controllers
             request.RequestUri = new Uri(string.Format(Configuration["bookmarking:thumbnail-url"], url));
 
             using var httpClient = new HttpClient();
-            var response = httpClient.Send(request);
-
+            using var response = httpClient.Send(request);
             using var stream = response.Content.ReadAsStream();
             var bytes = new byte[stream.Length];
             stream.Read(bytes, 0, (int)stream.Length);
@@ -251,7 +250,7 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Create("mobile/registration")]
-        public void RegisterMobileAppInstallFromBody([FromBody]MobileAppModel model)
+        public void RegisterMobileAppInstallFromBody([FromBody] MobileAppModel model)
         {
             var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
             MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, model.Type);
@@ -259,7 +258,7 @@ namespace ASC.Web.Api.Controllers
 
         [Create("mobile/registration")]
         [Consumes("application/x-www-form-urlencoded")]
-        public void RegisterMobileAppInstallFromForm([FromForm]MobileAppModel model)
+        public void RegisterMobileAppInstallFromForm([FromForm] MobileAppModel model)
         {
             var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
             MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, model.Type);

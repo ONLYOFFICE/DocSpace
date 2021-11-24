@@ -29,6 +29,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Web;
 
 using ASC.ApiSystem.Classes;
@@ -340,14 +342,13 @@ namespace ASC.ApiSystem.Controllers
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(url);
             request.Method = new HttpMethod(httpMethod);
-            request.Headers.Add("accept", "application/json");
-            request.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
+            request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
             using var httpClient = new HttpClient();
 
             if (data != null)
             {
-                request.Content = new StringContent(data);
+                request.Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
             }
 
             httpClient.Send(request);

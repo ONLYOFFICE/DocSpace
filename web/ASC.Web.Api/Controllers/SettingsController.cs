@@ -1378,7 +1378,7 @@ namespace ASC.Api.Settings
                     request.Content = new StringContent(body);
 
                     using var httpClient = new HttpClient();
-                    httpClient.Send(request);
+                    using var response = httpClient.Send(request);
 
                 }
                 catch (Exception e)

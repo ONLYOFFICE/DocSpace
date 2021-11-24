@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Net;
 using System.Net.Http;
 using System.Security.Authentication;
 using System.Text;
@@ -47,7 +46,8 @@ namespace ASC.Web.Core
                 request.Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
 
                 using var httpClient = new HttpClient();
-                using (var reader = new StreamReader(httpClient.Send(request).Content.ReadAsStream()))
+                using var httpClientResponse = httpClient.Send(request);
+                using (var reader = new StreamReader(httpClientResponse.Content.ReadAsStream()))
                 {
                     var resp = reader.ReadToEnd();
                     var resObj = JObject.Parse(resp);

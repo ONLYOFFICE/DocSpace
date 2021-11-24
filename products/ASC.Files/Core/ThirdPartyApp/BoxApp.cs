@@ -332,8 +332,8 @@ namespace ASC.Web.Files.ThirdPartyApp
                 {
                     var downloadRequest = new HttpRequestMessage();
                     downloadRequest.RequestUri = new Uri(downloadUrl);
-
-                    using var downloadStream = new ResponseStream(httpClient.Send(downloadRequest));
+                    using var response = httpClient.Send(request);
+                    using var downloadStream = new ResponseStream(response);
                     downloadStream.CopyTo(tmpStream);
                 }
 
@@ -346,13 +346,13 @@ namespace ASC.Web.Files.ThirdPartyApp
                 request.Headers.Add("Content-Type", "multipart/form-data; boundary=" + boundary);
                 Logger.Debug("BoxApp: save file totalSize - " + tmpStream.Length);
 
-                tmpStream.Seek(0, SeekOrigin.Begin); 
+                tmpStream.Seek(0, SeekOrigin.Begin);
                 request.Content = new StreamContent(tmpStream);
             }
 
             try
             {
-                var response = httpClient.Send(request);
+                using var response = httpClient.Send(request);
                 using var responseStream = response.Content.ReadAsStream();
                 string result = null;
                 if (responseStream != null)
@@ -472,8 +472,8 @@ namespace ASC.Web.Files.ThirdPartyApp
                 request.Headers.Add("Authorization", "Bearer " + token);
 
                 using var httpClient = new HttpClient();
-
-                using var stream = new ResponseStream(httpClient.Send(request));
+                using var response = httpClient.Send(request);
+                using var stream = new ResponseStream(response);
                 stream.CopyTo(context.Response.Body);
             }
             catch (Exception ex)

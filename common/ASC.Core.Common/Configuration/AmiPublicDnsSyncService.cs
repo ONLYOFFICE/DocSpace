@@ -86,7 +86,7 @@ namespace ASC.Core.Configuration
                 using var httpClient = new HttpClient();
                 httpClient.Timeout = TimeSpan.FromMilliseconds(5000);
 
-                var responce = httpClient.Send(request);
+                using var responce = httpClient.Send(request);
                 using var stream = responce.Content.ReadAsStream();
                 using var reader = new StreamReader(stream);
                 return reader.ReadToEnd();

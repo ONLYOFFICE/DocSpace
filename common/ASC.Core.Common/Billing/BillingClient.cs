@@ -221,7 +221,7 @@ namespace ASC.Core.Billing
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(url);
             request.Method = HttpMethod.Post;
-                if (!string.IsNullOrEmpty(_billingKey))
+            if (!string.IsNullOrEmpty(_billingKey))
             {
                 request.Headers.Add("Authorization", CreateAuthToken(_billingKey, _billingSecret));
             }
@@ -247,10 +247,10 @@ namespace ASC.Core.Billing
             }
 
             var body = JsonSerializer.Serialize(data);
-            request.Content = new StringContent(body,Encoding.UTF8, "application/json");
+            request.Content = new StringContent(body, Encoding.UTF8, "application/json");
 
             string result;
-            var response = httpClient.Send(request);
+            using (var response = httpClient.Send(request))
             using (var stream = response.Content.ReadAsStream())
             {
                 if (stream == null)

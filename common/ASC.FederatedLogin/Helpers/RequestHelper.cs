@@ -63,12 +63,12 @@ namespace ASC.FederatedLogin.Helpers
                 }
             }
 
-            var response = httpClient.Send(request);
+            using var response = httpClient.Send(request);
             using var stream = response.Content.ReadAsStream();
             if (stream == null) return null;
             using var readStream = new StreamReader(stream);
             return readStream.ReadToEnd();
-            
+
         }
     }
 }

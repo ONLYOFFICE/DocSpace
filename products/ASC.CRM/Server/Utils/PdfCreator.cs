@@ -40,10 +40,11 @@ using ASC.Files.Core;
 using ASC.Web.Files.Services.DocumentService;
 
 using ICSharpCode.SharpZipLib.Zip;
-using SixLabors.ImageSharp;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+
+using SixLabors.ImageSharp;
 
 namespace ASC.Web.CRM.Classes
 {
@@ -129,9 +130,9 @@ namespace ASC.Web.CRM.Classes
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(urlToFile);
 
-                using var httpClient = new HttpClient();
-
-                using (var stream = httpClient.Send(request).Content.ReadAsStream())
+                using (var httpClient = new HttpClient())
+                using (var response = httpClient.Send(request))
+                using (var stream = response.Content.ReadAsStream())
                 {
                     _logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. SaveFile", invoiceId);
                     file = _daoFactory.GetFileDao().SaveFile(file, stream);

@@ -148,7 +148,7 @@ namespace ASC.Web.Files.Utils
 
             string responseAttachString;
             using var httpClient = new HttpClient();
-            var response = httpClient.Send(request);
+            using var response = httpClient.Send(request);
             using (var stream = response.Content.ReadAsStream())
             {
                 if (stream == null) throw new HttpRequestException("Could not get an answer");

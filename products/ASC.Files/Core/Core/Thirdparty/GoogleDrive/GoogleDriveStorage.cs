@@ -223,7 +223,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
 
             using var httpClient = new HttpClient();
-            var response = httpClient.Send(request);
+            using var response = httpClient.Send(request);
 
             if (offset == 0 && file.Size.HasValue && file.Size > 0)
             {
@@ -366,19 +366,19 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                 body = !string.IsNullOrEmpty(titleData + parentData) ? string.Format("{{{0}{1}}}", titleData, parentData) : "";
             }
 
-            var request  = new HttpRequestMessage();
+            var request = new HttpRequestMessage();
             request.RequestUri = new Uri(GoogleLoginProvider.GoogleUrlFileUpload + fileId + "?uploadType=resumable");
             request.Method = new HttpMethod(method);
             request.Headers.Add("X-Upload-Content-Type", MimeMapping.GetMimeMapping(driveFile.Name));
             request.Headers.Add("X-Upload-Content-Length", contentLength.ToString(CultureInfo.InvariantCulture));
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
-            request.Content = new StringContent(body, Encoding.UTF8, "application/json; charset=UTF-8");
+            request.Content = new StringContent(body, Encoding.UTF8, "application/json");
 
             using var httpClient = new HttpClient();
-            var response = httpClient.Send(request);
+            using var response = httpClient.Send(request);
 
             var uploadSession = new ResumableUploadSession(driveFile.Id, folderId, contentLength);
-            
+
             uploadSession.Location = response.Headers.Location.ToString();
             uploadSession.Status = ResumableUploadSessionStatus.Started;
 

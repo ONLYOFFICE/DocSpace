@@ -242,7 +242,7 @@ namespace ASC.Data.Storage
                 request.RequestUri = new Uri(path);
                 request.Method = HttpMethod.Head;
                 using var httpClient = new HttpClient();
-                var response = httpClient.Send(request);
+                using var response = httpClient.Send(request);
 
                 return response.StatusCode == HttpStatusCode.OK;
             }

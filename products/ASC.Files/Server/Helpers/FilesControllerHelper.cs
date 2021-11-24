@@ -276,7 +276,7 @@ namespace ASC.Files.Helpers
                 ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
             }
 
-            var response = httpClient.Send(request);
+            using var response = httpClient.Send(request);
             using var responseStream = response.Content.ReadAsStream();
             using var streamReader = new StreamReader(responseStream);
             return JObject.Parse(streamReader.ReadToEnd()); //result is json string

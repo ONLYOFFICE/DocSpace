@@ -1013,7 +1013,8 @@ namespace ASC.Web.Files.Utils
                     request.RequestUri = new Uri(downloadUri);
 
                     using var httpClient = new HttpClient();
-                    using var editedFileStream = new ResponseStream(httpClient.Send(request));
+                    using var response = httpClient.Send(request);
+                    using var editedFileStream = new ResponseStream(response);
                     editedFileStream.CopyTo(tmpStream);
                 }
                 tmpStream.Position = 0;
