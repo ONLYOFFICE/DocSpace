@@ -18,11 +18,11 @@
     "test.e2e:webkit": "npx codeceptjs run --steps --profile webkit",
     "test:webkit": "cross-env DEVICE_TYPE=mobile yarn test.e2e:webkit && cross-env DEVICE_TYPE=smallTablet yarn test.e2e:webkit && cross-env DEVICE_TYPE=tablet yarn test.e2e:webkit && cross-env DEVICE_TYPE=desktop yarn test.e2e:webkit",
     "test:model": "yarn test:chromium:model && yarn test:firefox:model && yarn test:webkit:model",
-    "test.e2e.model:chromium": "npx codeceptjs run --steps --profile chromium",
+    "test.e2e.model:chromium": "npx codeceptjs run --steps --profile chromium run-workers 2",
     "test:chromium:model": "cross-env DEVICE_TYPE=mobile MODEL=true yarn test.e2e:chromium && cross-env DEVICE_TYPE=smallTablet MODEL=true yarn test.e2e:chromium && cross-env DEVICE_TYPE=tablet MODEL=true yarn test.e2e:chromium && cross-env DEVICE_TYPE=desktop MODEL=true yarn test.e2e:chromium",
-    "test.e2e.model:firefox": "npx codeceptjs run --steps --profile firefox",
+    "test.e2e.model:firefox": "npx codeceptjs run --steps --profile firefox run-workers 2",
     "test:firefox:model": "cross-env DEVICE_TYPE=mobile MODEL=true yarn test.e2e:firefox && cross-env DEVICE_TYPE=smallTablet MODEL=true yarn test.e2e:firefox && cross-env DEVICE_TYPE=tablet MODEL=true yarn test.e2e:firefox && cross-env DEVICE_TYPE=desktop MODEL=true yarn test.e2e:firefox",
-    "test.e2e.model:webkit": "npx codeceptjs run --steps --profile webkit",
+    "test.e2e.model:webkit": "npx codeceptjs run --steps --profile webkit run-workers 2",
     "test:webkit:model": "cross-env DEVICE_TYPE=mobile MODEL=true yarn test.e2e:webkit && cross-env DEVICE_TYPE=smallTablet MODEL=true yarn test.e2e:webkit && cross-env DEVICE_TYPE=tablet MODEL=true yarn test.e2e:webkit && cross-env DEVICE_TYPE=desktop MODEL=true yarn test.e2e:webkit"
   },
   "dependencies": {

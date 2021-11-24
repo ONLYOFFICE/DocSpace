@@ -1,0 +1,80 @@
+{
+  "count": 1,
+  "response": {
+    "files": [
+      {
+        "folderId": 8,
+        "version": 1,
+        "versionGroup": 1,
+        "contentLength": "1.08 MB",
+        "pureContentLength": 1130719,
+        "fileStatus": 0,
+        "viewUrl": "http://localhost:8092/products/files/httphandlers/filehandler.ashx?action=download&fileid=3",
+        "webUrl": "http://localhost:8092/products/files/doceditor?fileid=3&version=1",
+        "fileType": 6,
+        "fileExst": ".pptx",
+        "comment": "Создано",
+        "thumbnailUrl": "http://localhost:8092/products/files/httphandlers/filehandler.ashx?action=thumb&fileid=3&version=1",
+        "thumbnailStatus": 1,
+        "id": 3,
+        "rootFolderId": 8,
+        "canShare": false,
+        "canEdit": false,
+        "title": "ONLYOFFICE Sample Presentation.pptx",
+        "access": 0,
+        "shared": true,
+        "created": "2021-09-15T10:00:22.0000000Z",
+        "createdBy": {
+          "id": "fcfa85e3-15fc-11ec-8f4f-80ce62334fc7",
+          "displayName": "Administrator ",
+          "avatarSmall": "/images/default_user_photo_size_32-32.png",
+          "profileUrl": "http://localhost:8092/products/people/view/administrator"
+        },
+        "updated": "2021-09-27T15:14:26.0000000Z",
+        "rootFolderType": 3,
+        "updatedBy": {
+          "id": "fcfa85e3-15fc-11ec-8f4f-80ce62334fc7",
+          "displayName": "Administrator ",
+          "avatarSmall": "/images/default_user_photo_size_32-32.png",
+          "profileUrl": "http://localhost:8092/products/people/view/administrator"
+        }
+      }
+    ],
+    "folders": [],
+    "current": {
+      "parentId": 0,
+      "filesCount": 1,
+      "foldersCount": 0,
+      "new": 0,
+      "id": 8,
+      "rootFolderId": 8,
+      "canShare": false,
+      "canEdit": false,
+      "title": "Trash",
+      "access": 0,
+      "shared": false,
+      "created": "2021-09-16T12:09:15.0000000Z",
+      "createdBy": {
+        "id": "fcfa85e3-15fc-11ec-8f4f-80ce62334fc7",
+        "displayName": "Administrator ",
+        "avatarSmall": "/images/default_user_photo_size_32-32.png",
+        "profileUrl": "http://localhost:8092/products/people/view/administrator"
+      },
+      "updated": "2021-09-16T12:09:15.0000000Z",
+      "rootFolderType": 3,
+      "updatedBy": {
+        "id": "fcfa85e3-15fc-11ec-8f4f-80ce62334fc7",
+        "displayName": "Administrator ",
+        "avatarSmall": "/images/default_user_photo_size_32-32.png",
+        "profileUrl": "http://localhost:8092/products/people/view/administrator"
+      }
+    },
+    "pathParts": [8],
+    "startIndex": 0,
+    "count": 1,
+    "total": 1,
+    "new": 0
+  },
+  "status": 0,
+  "statusCode": 200
+}

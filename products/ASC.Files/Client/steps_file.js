@@ -18,5 +18,23 @@ module.exports = function () {
       this.mockEndpoint(Endpoints.thirdparty, 'thirdparty');
       this.mockEndpoint(Endpoints.thumbnails, 'thumbnails');
     },
+    openArticle: function () {
+      this.seeElement({ react: 'SectionToggler', props: { visible: true } });
+      this.click({ react: 'SectionToggler', props: { visible: true } });
+    },
+
+    openProfileMenu: function () {
+      this.seeElement({ react: 'Avatar', props: { className: 'icon-profile-menu' } });
+      this.click({ react: 'Avatar', props: { className: 'icon-profile-menu' } });
+    },
+
+    openContextMenu: function () {
+      this.seeElement({ react: 'ContextMenuButton', props: { className: 'expandButton' } });
+      this.click({ react: 'ContextMenuButton', props: { className: 'expandButton' } });
+    },
+
+    switchViewOnTile: function () {
+      this.click({ react: 'styled.div', key: 'tile', props: { isChecked: false, lastItem: true } });
+    },
   });
 };

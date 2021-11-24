@@ -59,9 +59,27 @@ module.exports = class Endpoints {
     method: 'POST',
     baseDir: 'files/settings',
   };
-  static folder = {
-    url: 'http://localhost:8092/api/2.0/files/',
-    method: 'GET',
-    baseDir: 'files/folder',
+  static getFolder = (folderId) => {
+    return {
+      url: `http://localhost:8092/api/2.0/files/${folderId}`,
+      method: 'GET',
+      baseDir: 'files/folder',
+    };
+  };
+
+  static getSubfolder = (folderId) => {
+    return {
+      url: `http://localhost:8092/api/2.0/files/${folderId}/subfolders`,
+      method: 'GET',
+      baseDir: 'files/subfolder',
+    };
+  };
+
+  static getFile = (fileId) => {
+    return {
+      url: `http://localhost:8092/api/2.0/files/file/${fileId}`,
+      method: 'GET',
+      baseDir: 'files/file',
+    };
   };
 };
