@@ -22,7 +22,7 @@ const isModel = !!process.env.MODEL;
 
 const screenshotOutput = isModel
   ? `./tests/screenshots/${browser}/${deviceType}`
-  : './tests/output';
+  : `./tests/output/${browser}/${deviceType}`;
 exports.config = {
   tests: './tests/*_tests.js',
   output: screenshotOutput,
@@ -30,13 +30,13 @@ exports.config = {
     Playwright: {
       url: 'http://localhost:8092',
       // show browser window
-      show: true,
+      show: false,
       browser: browser,
       // restart browser between tests
       restart: true,
       waitForNavigation: 'networkidle0',
       // don't save screenshot on failure
-      disableScreenshots: false,
+      disableScreenshots: true,
     },
     ResembleHelper: {
       require: 'codeceptjs-resemblehelper',
