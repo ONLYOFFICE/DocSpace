@@ -16,6 +16,12 @@ module.exports = function () {
       this.mockEndpoint(Endpoints.self, 'self');
     },
 
+    openPage: function () {
+      this.amOnPage('/products/people');
+      this.refreshPage();
+      this.wait(5);
+    },
+
     openArticle: function () {
       this.seeElement({ react: 'SectionToggler', props: { visible: true } });
       this.click({ react: 'SectionToggler', props: { visible: true } });
@@ -34,6 +40,17 @@ module.exports = function () {
     clickArticleMainButton: function () {
       this.seeElement({ react: 'ArticleMainButton' });
       this.click({ react: 'ArticleMainButton' });
+    },
+
+    addHeadInNewGroup: function () {
+      this.click('Select');
+      this.click('Administrator1');
+    },
+
+    addUserInNewGroup: function () {
+      this.click('#users-selector_button');
+      this.click({ react: 'Checkbox', props: { value: '2' } });
+      this.click('Add members');
     },
 
     fillForm: function (form) {
