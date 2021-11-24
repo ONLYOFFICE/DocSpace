@@ -37,6 +37,16 @@ const ConflictResolveDialog = (props) => {
 
   const onSelectResolveType = (e) => setResolveType(e.target.value);
   const onClose = () => setConflictResolveDialogVisible(false);
+  const onCloseDialog = () => {
+    let newActiveFiles = activeFiles;
+
+    for (let item of fileIds) {
+      newActiveFiles = newActiveFiles.filter((f) => f !== item);
+    }
+
+    setActiveFiles(newActiveFiles);
+    onClose();
+  };
 
   const getResolveType = () => {
     switch (resolveType) {
@@ -59,8 +69,8 @@ const ConflictResolveDialog = (props) => {
     let newActiveFiles = activeFiles;
     if (conflictResolveType === ConflictResolveType.Skip) {
       for (let item of items) {
-        newFileIds = newFileIds.filter((x) => x.id === item.id);
-        newActiveFiles = newActiveFiles.filter((f) => f === item.id);
+        newFileIds = newFileIds.filter((x) => x !== item.id);
+        newActiveFiles = newActiveFiles.filter((f) => f !== item.id);
       }
     }
 
@@ -124,7 +134,7 @@ const ConflictResolveDialog = (props) => {
     <ModalDialogContainer
       isLoading={!tReady}
       visible={visible}
-      onClose={onClose}
+      onClose={onCloseDialog}
     >
       <ModalDialog.Header>{t("ConflictResolveTitle")}</ModalDialog.Header>
       <ModalDialog.Body>
@@ -165,7 +175,7 @@ const ConflictResolveDialog = (props) => {
           key="CancelButton"
           label={t("Common:CancelButton")}
           size="medium"
-          onClick={onClose}
+          onClick={onCloseDialog}
           //isLoading={isLoading}
         />
       </ModalDialog.Footer>
