@@ -1515,7 +1515,7 @@ class FilesStore {
 
     if (webComment) AccessOptions.push("Comment");
     if (webReview) AccessOptions.push("Review");
-    if (formFillingDocs) AccessOptions.push("FormFilling");
+    if (formFillingDocs && !externalAccess) AccessOptions.push("FormFilling");
     if (webFilter) AccessOptions.push("FilterEditing");
 
     return AccessOptions;
