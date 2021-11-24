@@ -40,7 +40,7 @@ module.exports = class Endpoints {
     baseDir: 'files/settings',
   };
   static my = {
-    url: 'http://localhost:8092/api/2.0/files/@my',
+    url: 'http://localhost:8092/api/2.0/files/%40my',
     method: 'GET',
     baseDir: 'files/my',
   };
