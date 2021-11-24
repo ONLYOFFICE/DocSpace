@@ -33,8 +33,9 @@ module.exports = function () {
       this.click({ react: 'ContextMenuButton', props: { className: 'expandButton' } });
     },
 
-    switchViewOnTile: function () {
-      this.click({ react: 'styled.div', key: 'tile', props: { isChecked: false, lastItem: true } });
+    switchView: function (type) {
+      this.click({ react: 'styled.div', key: type, props: { isChecked: false } });
+      this.wait(2);
     },
   });
 };
