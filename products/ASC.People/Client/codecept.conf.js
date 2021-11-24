@@ -30,7 +30,7 @@ exports.config = {
     Playwright: {
       url: 'http://localhost:8092',
       // show browser window
-      show: false,
+      show: true,
       browser: browser,
       // restart browser between tests
       restart: true,
