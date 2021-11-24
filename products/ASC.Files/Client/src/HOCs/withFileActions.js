@@ -89,7 +89,7 @@ export default function withFileActions(WrappedFileItem) {
       }
       e.preventDefault();
       setTooltipPosition(e.pageX, e.pageY);
-      !isFileName && setStartDrag(true);
+      setStartDrag(true);
       !isActive && setBufferSelection(null);
     };
 

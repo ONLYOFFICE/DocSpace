@@ -11,6 +11,7 @@ import TableView from "./TableView/TableContainer";
 import { Consumer } from "@appserver/components/utils/context";
 
 let currentDroppable = null;
+let isDragActive = false;
 
 const SectionBodyContent = (props) => {
   const {
@@ -80,6 +81,7 @@ const SectionBodyContent = (props) => {
       return false;
     }
 
+    isDragActive = true;
     if (!dragging) {
       document.body.classList.add("drag-cursor");
       setDragging(true);
@@ -135,9 +137,10 @@ const SectionBodyContent = (props) => {
     const elem = e.target.closest(".droppable");
     const title = elem && elem.dataset.title;
     const value = elem && elem.getAttribute("value");
-    if ((!value && !treeValue) || isRecycleBinFolder) {
+    if ((!value && !treeValue) || isRecycleBinFolder || !isDragActive) {
       setDragging(false);
       setStartDrag(false);
+      isDragActive = false;
       return;
     }
 
@@ -146,6 +149,7 @@ const SectionBodyContent = (props) => {
     setStartDrag(false);
     setDragging(false);
     onMoveTo(folderId, title);
+    isDragActive = false;
     return;
   };
 
@@ -228,8 +232,6 @@ export default inject(
       fileActionId: fileActionStore.id,
       isEmptyFilesList,
       setDragging,
-      startDrag,
-      setStartDrag,
       folderId: selectedFolderStore.id,
       setTooltipPosition,
       isRecycleBinFolder: treeFoldersStore.isRecycleBinFolder,
