@@ -22,7 +22,7 @@ const isModel = !!process.env.MODEL;
 
 const screenshotOutput = isModel
   ? `./tests/screenshots/${browser}/${deviceType}`
-  : './tests/output';
+  : `./tests/output/${browser}/${deviceType}`;
 
 exports.config = {
   tests: './tests/*_tests.js',
