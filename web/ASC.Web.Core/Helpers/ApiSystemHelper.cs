@@ -157,7 +157,11 @@ namespace ASC.Web.Core.Helpers
             request.Method = new HttpMethod(httpMethod);
             request.Headers.Add("Authorization", CreateAuthToken(userId.ToString()));
             request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
-            request.Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
+
+            if (data != null)
+            {
+                request.Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
+            }
 
             using var httpClient = new HttpClient();
             using var response = httpClient.Send(request);
