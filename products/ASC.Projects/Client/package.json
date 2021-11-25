@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack --mode production",
     "clean": "shx rm -rf dist",
-    "deploy": "shx mkdir -p ../../../build/deploy/products/ASC.Projects/client && shx cp -r dist/* ../../../build/deploy/products/ASC.Projects/client",
+    "deploy": "shx --silent mkdir -p ../../../build/deploy/products/ASC.Projects/client && shx cp -r dist/* ../../../build/deploy/products/ASC.Projects/client",
     "serve": "serve dist -p 5015",
     "start": "webpack-cli serve",
     "start-prod": "webpack --mode production && serve dist -p 5015"
