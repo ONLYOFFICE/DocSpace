@@ -6,5 +6,6 @@
   "UploadFiles": "Загрузить файлы",
   "UploadFolder": "Загрузить папку",
   "ButtonAddGoogle": "Добавить аккаунт Google",
-  "ButtonAddBoxNet": "Добавить аккаунт Box"
+  "ButtonAddBoxNet": "Добавить аккаунт Box",
+  "ButtonAddDropBox": "Добавить аккаунт Dropbox"
 }

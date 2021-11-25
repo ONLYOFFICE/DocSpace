@@ -6,5 +6,6 @@
   "UploadFiles": "Upload files",
   "UploadFolder": "Upload folder",
   "ButtonAddGoogle": "Add Google account",
-  "ButtonAddBoxNet": "Add Box account"
+  "ButtonAddBoxNet": "Add Box account",
+  "ButtonAddDropBox": "Add DropBox account"
 }

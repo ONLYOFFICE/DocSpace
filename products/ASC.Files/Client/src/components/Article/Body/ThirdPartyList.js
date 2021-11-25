@@ -190,6 +190,7 @@ const PureThirdPartyListContainer = ({
             capability={dropboxConnectItem}
             src="images/services/dropbox.svg"
             onClick={onConnect}
+            title={t("ButtonAddDropBox")}
           />
         )}
         {oneDriveConnectItem && (
