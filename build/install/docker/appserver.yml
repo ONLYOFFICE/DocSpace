@@ -191,6 +191,7 @@ services:
       - onlyoffice-studio
       - onlyoffice-ssoauth
     environment:
+      - UPSTREAM=${UPSTREAM}
       - SERVICE_API_SYSTEM=${SERVICE_API_SYSTEM}
       - SERVICE_BACKUP=${SERVICE_BACKUP}
       - SERVICE_CALENDAR=${SERVICE_CALENDAR}
