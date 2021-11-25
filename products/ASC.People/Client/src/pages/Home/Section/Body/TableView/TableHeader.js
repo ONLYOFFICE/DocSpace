@@ -4,8 +4,9 @@ import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import DropDownItem from "@appserver/components/drop-down-item";
 
-const TABLE_COLUMNS = "peopleTableColumns";
-const COLUMNS_SIZE = "peopleColumnsSize";
+const TABLE_VERSION = "2";
+const TABLE_COLUMNS = `peopleTableColumns_ver-${TABLE_VERSION}`;
+const COLUMNS_SIZE = `peopleColumnsSize_ver-${TABLE_VERSION}`;
 
 class PeopleTableHeader extends React.Component {
   constructor(props) {
