@@ -8,5 +8,6 @@
   "ButtonAddGoogle": "Google-Konto hinzufügen",
   "ButtonAddBoxNet": "Box-Konto hinzufügen",
   "ButtonAddDropBox": "Dropbox-Konto hinzufügen",
-  "ButtonAddNextcloud": "Nextcloud Konto hinzufügen"
+  "ButtonAddNextcloud": "Nextcloud Konto hinzufügen",
+  "ButtonAddSkyDrive": "OneDrive-Konto hinzufügen"
 }

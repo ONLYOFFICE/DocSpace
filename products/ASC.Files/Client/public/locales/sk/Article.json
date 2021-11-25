@@ -2,5 +2,6 @@
   "ButtonAddGoogle": "Pridať Google konto",
   "ButtonAddBoxNet": "Pridať Box konto",
   "ButtonAddDropBox": "Pridať Dropbox konto",
-  "ButtonAddNextcloud": "Pridať Nextcloud účet"
+  "ButtonAddNextcloud": "Pridať Nextcloud účet",
+  "ButtonAddSkyDrive": "Pridať OneDrive účet"
 }

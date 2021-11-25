@@ -7,5 +7,6 @@
   "UploadFolder": "Încarcă dosarul",
   "ButtonAddGoogle": "Adaugă cont Google",
   "ButtonAddBoxNet": "Adaugă cont Box",
-  "ButtonAddDropBox": "Adaugă cont DropBox"
+  "ButtonAddDropBox": "Adaugă cont DropBox",
+  "ButtonAddSkyDrive": "Adaugă cont OneDrive"
 }

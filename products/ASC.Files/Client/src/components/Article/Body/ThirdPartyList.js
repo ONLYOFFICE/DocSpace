@@ -198,6 +198,7 @@ const PureThirdPartyListContainer = ({
             capability={oneDriveConnectItem}
             src="images/services/onedrive.svg"
             onClick={onConnect}
+            title={t("ButtonAddSkyDrive")}
           />
         )}
         {nextCloudConnectItem && (
