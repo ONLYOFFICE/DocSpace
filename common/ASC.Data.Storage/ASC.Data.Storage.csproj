@@ -42,7 +42,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="openstack.net" Version="1.7.9" />
+    <PackageReference Include="openstack.net" Version="1.8.0" />
   </ItemGroup>
 
   <ItemGroup>
