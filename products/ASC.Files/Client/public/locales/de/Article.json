@@ -7,5 +7,6 @@
   "UploadFolder": "Ordner hochladen",
   "ButtonAddGoogle": "Google-Konto hinzufügen",
   "ButtonAddBoxNet": "Box-Konto hinzufügen",
-  "ButtonAddDropBox": "Dropbox-Konto hinzufügen"
+  "ButtonAddDropBox": "Dropbox-Konto hinzufügen",
+  "ButtonAddNextcloud": "Nextcloud Konto hinzufügen"
 }

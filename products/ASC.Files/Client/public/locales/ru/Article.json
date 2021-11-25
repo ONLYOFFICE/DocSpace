@@ -7,5 +7,6 @@
   "UploadFolder": "Загрузить папку",
   "ButtonAddGoogle": "Добавить аккаунт Google",
   "ButtonAddBoxNet": "Добавить аккаунт Box",
-  "ButtonAddDropBox": "Добавить аккаунт Dropbox"
+  "ButtonAddDropBox": "Добавить аккаунт Dropbox",
+  "ButtonAddNextcloud": "Добавить аккаунт Nextcloud"
 }

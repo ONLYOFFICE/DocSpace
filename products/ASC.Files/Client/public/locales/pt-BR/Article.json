@@ -7,5 +7,6 @@
   "UploadFolder": "Carregar pasta",
   "ButtonAddGoogle": "Adicionar Conta do Google",
   "ButtonAddBoxNet": "Adicionar Conta Box",
-  "ButtonAddDropBox": "Adicionar Conta Dropbox"
+  "ButtonAddDropBox": "Adicionar Conta Dropbox",
+  "ButtonAddNextcloud": "Adicionar conta do Nextcloud"
 }

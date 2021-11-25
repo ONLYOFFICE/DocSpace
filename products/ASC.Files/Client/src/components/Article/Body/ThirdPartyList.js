@@ -205,6 +205,7 @@ const PureThirdPartyListContainer = ({
             capability={nextCloudConnectItem}
             src="images/services/nextcloud.svg"
             onClick={onConnect}
+            title={t("ButtonAddNextcloud")}
           />
         )}
         {/* {webDavConnectItem && (

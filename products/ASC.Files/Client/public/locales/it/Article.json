@@ -7,5 +7,6 @@
   "UploadFolder": "Carica cartella",
   "ButtonAddGoogle": "Aggiungi account Google",
   "ButtonAddBoxNet": "Aggiungi account Box",
-  "ButtonAddDropBox": "Aggiungi account Dropbox"
+  "ButtonAddDropBox": "Aggiungi account Dropbox",
+  "ButtonAddNextcloud": "Aggiungi un account Nextcloud",
 }
