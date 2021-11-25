@@ -96,7 +96,7 @@ class AdvancedSelector extends React.Component {
         {displayType === "dropdown" ? (
           <DropDown
             open={isOpen}
-            className="dropdown-container"
+            className="selector_dropdown-container"
             clickOutsideAction={this.onClose}
           >
             <Selector {...this.props} displayType={displayType} />

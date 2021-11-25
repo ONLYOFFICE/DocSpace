@@ -842,6 +842,7 @@ class UpdateUserForm extends React.Component {
               calendarHeaderContent={`${t("CalendarSelectDate")}:`}
               labelText={`${t("Translations:Birthdate")}:`}
               inputName="birthday"
+              inputClassName="date-picker_input-birthday"
               inputValue={
                 profile.birthday ? new Date(profile.birthday) : undefined
               }
@@ -886,6 +887,7 @@ class UpdateUserForm extends React.Component {
                 calendarHeaderContent={`${t("CalendarSelectDate")}:`}
                 labelText={`${regDateCaption}:`}
                 inputName="workFrom"
+                inputClassName="date-picker_input-reg-date"
                 inputValue={
                   profile.workFrom ? new Date(profile.workFrom) : undefined
                 }

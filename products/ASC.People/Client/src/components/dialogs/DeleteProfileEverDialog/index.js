@@ -83,6 +83,7 @@ class DeleteProfileEverDialogComponent extends React.Component {
         <ModalDialog.Footer>
           <Button
             key="OKBtn"
+            className="delete-profile_button-delete"
             label={t("Common:OKButton")}
             size="medium"
             primary={true}

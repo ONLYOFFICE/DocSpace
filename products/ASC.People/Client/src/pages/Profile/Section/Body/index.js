@@ -380,6 +380,7 @@ class SectionBodyContent extends React.PureComponent {
                 label={t("EditUser")}
                 title={t("EditUser")}
                 onClick={this.onEditProfileClick}
+                className="edit-profile-button"
               />
             </EditButtonWrapper>
           )}
@@ -451,7 +452,9 @@ class SectionBodyContent extends React.PureComponent {
         {profile.notes && (
           <ToggleWrapper>
             <ToggleContent label={t("Translations:Comments")} isOpen={true}>
-              <Text as="span">{profile.notes}</Text>
+              <Text className="profile-comments" as="span">
+                {profile.notes}
+              </Text>
             </ToggleContent>
           </ToggleWrapper>
         )}

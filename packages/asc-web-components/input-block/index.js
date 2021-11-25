@@ -96,6 +96,7 @@ class InputBlock extends React.Component {
         </div>
         <TextInput
           id={id}
+          className={className}
           name={name}
           type={type}
           value={value}
