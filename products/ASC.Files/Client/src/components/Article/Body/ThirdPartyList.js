@@ -220,6 +220,7 @@ const PureThirdPartyListContainer = ({
         <IconButton
           iconName="images/services/more.svg"
           onClick={onShowConnectPanel}
+          title={t("Translations:AddAccount")}
           {...iconButtonProps}
         />
       </div>

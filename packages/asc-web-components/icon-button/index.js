@@ -137,12 +137,14 @@ class IconButton extends React.PureComponent {
       id,
       style,
       dataTip,
+      title,
     } = this.props;
 
     return (
       <StyledOuter
         className={className}
         size={size}
+        title={title}
         isDisabled={isDisabled}
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}
