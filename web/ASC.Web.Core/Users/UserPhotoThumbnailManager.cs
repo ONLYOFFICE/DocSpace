@@ -55,7 +55,7 @@ namespace ASC.Web.Core.Users
 
             var resultBitmaps = new List<ThumbnailItem>();
 
-            var img = thumbnailsData.MainImgBitmap(out var format);
+            using var img = thumbnailsData.MainImgBitmap(out var format);
 
             if (img == null) return null;
 

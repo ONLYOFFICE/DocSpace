@@ -308,7 +308,7 @@ namespace ASC.ApiSystem.Controllers
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(url);
                 request.Method = HttpMethod.Post;
-                request.Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded"););
+                request.Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
 
                 using var httpClient = new HttpClient();
                 using var httpClientResponse = httpClient.Send(request);
