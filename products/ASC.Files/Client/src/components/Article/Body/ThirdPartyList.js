@@ -182,6 +182,7 @@ const PureThirdPartyListContainer = ({
             capability={boxConnectItem}
             src="images/services/box.svg"
             onClick={onConnect}
+            title={t("ButtonAddBoxNet")}
           />
         )}
         {dropboxConnectItem && (

@@ -5,5 +5,6 @@
   "NewSpreadsheet": "Nuovo foglio di calcolo elettronico",
   "UploadFiles": "Caricamento file",
   "UploadFolder": "Carica cartella",
-  "ButtonAddGoogle": "Aggiungi account Google"
+  "ButtonAddGoogle": "Aggiungi account Google",
+  "ButtonAddBoxNet": "Aggiungi account Box"
 }
