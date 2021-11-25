@@ -19,7 +19,7 @@ namespace ASC.Web.HealthChecks.UI
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .UseSystemd()
-                .TryUseWindowsService()
+                .UseWindowsService()
                 .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
     }
 }

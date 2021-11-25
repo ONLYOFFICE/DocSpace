@@ -32,7 +32,7 @@ namespace ASC.CRM.BackgroundTasks
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .UseSystemd()
-                .TryUseWindowsService()
+                .UseWindowsService()
                 .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .ConfigureAppConfiguration((hostContext, config) =>
                 {

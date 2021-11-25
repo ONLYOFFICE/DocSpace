@@ -28,7 +28,7 @@ namespace ASC.People
         {
             return Host.CreateDefaultBuilder(args)
                 .UseSystemd()
-                .TryUseWindowsService()
+                .UseWindowsService()
                 .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
