@@ -174,6 +174,7 @@ const PureThirdPartyListContainer = ({
             capability={googleConnectItem}
             src="images/services/google_drive.svg"
             onClick={onConnect}
+            title={t("ButtonAddGoogle")}
           />
         )}
         {boxConnectItem && (
