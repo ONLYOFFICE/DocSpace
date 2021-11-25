@@ -44,6 +44,7 @@ namespace ASC.Web.Files.Core
         {
             _stream = response.Content.ReadAsStream();
             _length = _stream.Length;
+            Response = response;
         }
 
         public override bool CanRead
@@ -77,6 +78,8 @@ namespace ASC.Web.Files.Core
             set { _stream.Position = value; }
         }
 
+        private HttpResponseMessage Response { get; }
+
         public override int Read(byte[] buffer, int offset, int count)
         {
             return _stream.Read(buffer, offset, count);
@@ -102,6 +105,7 @@ namespace ASC.Web.Files.Core
             if (disposing)
             {
                 _stream.Dispose();
+                Response.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -109,6 +113,7 @@ namespace ASC.Web.Files.Core
         public override void Close()
         {
             _stream.Close();
+            base.Close();
         }
     }
 }
