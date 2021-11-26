@@ -28,7 +28,6 @@ using System;
 using System.Collections;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Globalization;
 
 namespace ASC.Calendar.iCalParser

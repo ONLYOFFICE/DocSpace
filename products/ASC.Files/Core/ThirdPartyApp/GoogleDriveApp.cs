@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Security;
 using System.Text;
 using System.Threading;
@@ -314,42 +315,31 @@ namespace ASC.Web.Files.ThirdPartyApp
                 }
             }
 
-            var request = (HttpWebRequest)WebRequest.Create(GoogleLoginProvider.GoogleUrlFileUpload + "/{fileId}?uploadType=media".Replace("{fileId}", fileId));
-            request.Method = "PATCH";
+            using var httpClient = new HttpClient();
+
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(GoogleLoginProvider.GoogleUrlFileUpload + "/{fileId}?uploadType=media".Replace("{fileId}", fileId));
+            request.Method = HttpMethod.Patch;
             request.Headers.Add("Authorization", "Bearer " + token);
-            request.ContentType = MimeMapping.GetMimeMapping(currentType);
+            request.Headers.Add("Content-Type", MimeMapping.GetMimeMapping(currentType));
 
             if (stream != null)
             {
-                request.ContentLength = stream.Length;
-
-                const int bufferSize = 2048;
-                var buffer = new byte[bufferSize];
-                int readed;
-                while ((readed = stream.Read(buffer, 0, bufferSize)) > 0)
-                {
-                    request.GetRequestStream().Write(buffer, 0, readed);
-                }
+                request.Content = new StreamContent(stream);
             }
             else
             {
-                var downloadRequest = (HttpWebRequest)WebRequest.Create(downloadUrl);
-                using var downloadStream = new ResponseStream(downloadRequest.GetResponse());
-                request.ContentLength = downloadStream.Length;
+                var downloadRequest = new HttpRequestMessage();
+                using var response = httpClient.Send(request);
+                using var downloadStream = new ResponseStream(response);
 
-                const int bufferSize = 2048;
-                var buffer = new byte[bufferSize];
-                int readed;
-                while ((readed = downloadStream.Read(buffer, 0, bufferSize)) > 0)
-                {
-                    request.GetRequestStream().Write(buffer, 0, readed);
-                }
+                request.Content = new StreamContent(downloadStream);
             }
 
             try
             {
-                using var response = request.GetResponse();
-                using var responseStream = response.GetResponseStream();
+                using var response = httpClient.Send(request);
+                using var responseStream = response.Content.ReadAsStream();
                 string result = null;
                 if (responseStream != null)
                 {
@@ -359,12 +349,10 @@ namespace ASC.Web.Files.ThirdPartyApp
 
                 Logger.Debug("GoogleDriveApp: save file stream response - " + result);
             }
-            catch (WebException e)
+            catch (HttpRequestException e)
             {
                 Logger.Error("GoogleDriveApp: Error save file stream", e);
-                request.Abort();
-                var httpResponse = (HttpWebResponse)e.Response;
-                if (httpResponse.StatusCode == HttpStatusCode.Forbidden || httpResponse.StatusCode == HttpStatusCode.Unauthorized)
+                if (e.StatusCode == HttpStatusCode.Forbidden || e.StatusCode == HttpStatusCode.Unauthorized)
                 {
                     throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException, e);
                 }
@@ -529,11 +517,13 @@ namespace ASC.Web.Files.ThirdPartyApp
 
                 Logger.Debug("GoogleDriveApp: get file stream downloadUrl - " + downloadUrl);
 
-                var request = (HttpWebRequest)WebRequest.Create(downloadUrl);
-                request.Method = "GET";
+                var request = new HttpRequestMessage();
+                request.RequestUri = new Uri(downloadUrl);
+                request.Method = HttpMethod.Get;
                 request.Headers.Add("Authorization", "Bearer " + token);
 
-                using var response = request.GetResponse();
+                using var httpClient = new HttpClient();
+                using var response = httpClient.Send(request);
                 using var stream = new ResponseStream(response);
                 stream.CopyTo(context.Response.Body);
 
@@ -739,9 +729,12 @@ namespace ASC.Web.Files.ThirdPartyApp
             }
             Logger.Debug("GoogleDriveApp: create from - " + contentUrl);
 
-            var request = (HttpWebRequest)WebRequest.Create(contentUrl);
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(contentUrl);
 
-            using var content = new ResponseStream(request.GetResponse());
+            using var httpClient = new HttpClient();
+            using var response = httpClient.Send(request);
+            using var content = new ResponseStream(response);
             return CreateFile(content, fileName, folderId, token);
         }
 
@@ -749,7 +742,10 @@ namespace ASC.Web.Files.ThirdPartyApp
         {
             Logger.Debug("GoogleDriveApp: create file");
 
-            var request = (HttpWebRequest)WebRequest.Create(GoogleLoginProvider.GoogleUrlFileUpload + "?uploadType=multipart");
+            using var httpClient = new HttpClient();
+
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(GoogleLoginProvider.GoogleUrlFileUpload + "?uploadType=multipart");
 
             using (var tmpStream = new MemoryStream())
             {
@@ -771,26 +767,19 @@ namespace ASC.Web.Files.ThirdPartyApp
                 bytes = Encoding.UTF8.GetBytes(mediaPartEnd);
                 tmpStream.Write(bytes, 0, bytes.Length);
 
-                request.Method = "POST";
+                request.Method = HttpMethod.Post;
                 request.Headers.Add("Authorization", "Bearer " + token);
-                request.ContentType = "multipart/related; boundary=" + boundary;
-                request.ContentLength = tmpStream.Length;
+                request.Headers.Add("Content-Type", "multipart/related; boundary=" + boundary);
+
                 Logger.Debug("GoogleDriveApp: create file totalSize - " + tmpStream.Length);
 
-                const int bufferSize = 2048;
-                var buffer = new byte[bufferSize];
-                int readed;
-                tmpStream.Seek(0, SeekOrigin.Begin);
-                while ((readed = tmpStream.Read(buffer, 0, bufferSize)) > 0)
-                {
-                    request.GetRequestStream().Write(buffer, 0, readed);
-                }
+                request.Content = new StreamContent(tmpStream);
             }
 
             try
             {
-                using var response = request.GetResponse();
-                using var responseStream = response.GetResponseStream();
+                using var response = httpClient.Send(request);
+                using var responseStream = response.Content.ReadAsStream();
                 string result = null;
                 if (responseStream != null)
                 {
@@ -801,13 +790,11 @@ namespace ASC.Web.Files.ThirdPartyApp
                 Logger.Debug("GoogleDriveApp: create file response - " + result);
                 return result;
             }
-            catch (WebException e)
+            catch (HttpRequestException e)
             {
                 Logger.Error("GoogleDriveApp: Error create file", e);
-                request.Abort();
 
-                var httpResponse = (HttpWebResponse)e.Response;
-                if (httpResponse.StatusCode == HttpStatusCode.Forbidden || httpResponse.StatusCode == HttpStatusCode.Unauthorized)
+                if (e.StatusCode == HttpStatusCode.Forbidden || e.StatusCode == HttpStatusCode.Unauthorized)
                 {
                     throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException, e);
                 }
@@ -860,23 +847,25 @@ namespace ASC.Web.Files.ThirdPartyApp
                                                   fileId,
                                                   HttpUtility.UrlEncode(requiredMimeType));
 
-                var request = (HttpWebRequest)WebRequest.Create(downloadUrl);
-                request.Method = "GET";
+                using var httpClient = new HttpClient();
+
+                var request = new HttpRequestMessage();
+                request.RequestUri = new Uri(downloadUrl);
+                request.Method = HttpMethod.Get;
                 request.Headers.Add("Authorization", "Bearer " + token);
 
                 Logger.Debug("GoogleDriveApp: download exportLink - " + downloadUrl);
                 try
                 {
-                    using var fileStream = new ResponseStream(request.GetResponse());
+                    using var response = httpClient.Send(request);
+                    using var fileStream = new ResponseStream(response);
                     driveFile = CreateFile(fileStream, fileName, folderId, token);
                 }
-                catch (WebException e)
+                catch (HttpRequestException e)
                 {
                     Logger.Error("GoogleDriveApp: Error download exportLink", e);
-                    request.Abort();
 
-                    var httpResponse = (HttpWebResponse)e.Response;
-                    if (httpResponse.StatusCode == HttpStatusCode.Forbidden || httpResponse.StatusCode == HttpStatusCode.Unauthorized)
+                    if (e.StatusCode == HttpStatusCode.Forbidden || e.StatusCode == HttpStatusCode.Unauthorized)
                     {
                         throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException, e);
                     }

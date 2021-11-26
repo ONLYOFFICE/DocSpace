@@ -33,8 +33,6 @@ using ASC.CRM.Classes;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Enums;
 
-using AutoMapper;
-
 namespace ASC.CRM.ApiModels
 {
     /// <summary>

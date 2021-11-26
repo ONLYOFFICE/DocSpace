@@ -23,11 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using ASC.Web.Core.Subscriptions;
-
 namespace ASC.Calendar.Notification
 {
     /*

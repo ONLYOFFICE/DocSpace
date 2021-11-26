@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -44,7 +43,11 @@ using ASC.Web.Core.Utility.Skins;
 
 using Microsoft.Extensions.Options;
 
+using SixLabors.ImageSharp;
+
 using TMResourceData;
+
+using UnknownImageFormatException = SixLabors.ImageSharp.UnknownImageFormatException;
 
 namespace ASC.Web.Core.WhiteLabel
 {
@@ -322,9 +325,9 @@ namespace ASC.Web.Core.WhiteLabel
             #endregion
 
             using (var memory = new MemoryStream(data))
-            using (var image = Image.FromStream(memory))
+            using (var image = Image.Load(memory))
             {
-                var logoSize = image.Size;
+                var logoSize = image.Size();
                 var logoFileName = BuildLogoFileName(type, logoFileExt, false);
 
                 memory.Seek(0, SeekOrigin.Begin);
@@ -523,15 +526,15 @@ namespace ASC.Web.Core.WhiteLabel
         private static void ResizeLogo(string fileName, byte[] data, long maxFileSize, Size size, IDataStore store)
         {
             //Resize synchronously
-            if (data == null || data.Length <= 0) throw new UnknownImageFormatException();
+            if (data == null || data.Length <= 0) throw new UnknownImageFormatException("data null");
             if (maxFileSize != -1 && data.Length > maxFileSize) throw new ImageWeightLimitException();
 
             try
             {
                 using var stream = new MemoryStream(data);
-                using var img = Image.FromStream(stream);
-                var imgFormat = img.RawFormat;
-                if (size != img.Size)
+                using var img = Image.Load(stream, out var format);
+                var imgFormat = format;
+                if (size != img.Size())
                 {
                     using var img2 = CommonPhotoManager.DoThumbnail(img, size, false, true, false);
                     data = CommonPhotoManager.SaveToBytes(img2);
@@ -548,7 +551,7 @@ namespace ASC.Web.Core.WhiteLabel
             }
             catch (ArgumentException error)
             {
-                throw new UnknownImageFormatException(error);
+                throw new UnknownImageFormatException(error.Message);
             }
         }
 

@@ -25,13 +25,12 @@
 
 
 using System.IO;
-using System.Net;
+using System.Net.Http;
 
 namespace ASC.Web.Files.Core
 {
     public class ResponseStream : Stream
     {
-        private readonly WebResponse _webResponse;
         private readonly Stream _stream;
         private readonly long _length;
 
@@ -41,11 +40,11 @@ namespace ASC.Web.Files.Core
             _length = length;
         }
 
-        public ResponseStream(WebResponse response)
+        public ResponseStream(HttpResponseMessage response)
         {
-            _stream = response.GetResponseStream();
-            _length = response.ContentLength;
-            _webResponse = response;
+            _stream = response.Content.ReadAsStream();
+            _length = _stream.Length;
+            Response = response;
         }
 
         public override bool CanRead
@@ -79,6 +78,8 @@ namespace ASC.Web.Files.Core
             set { _stream.Position = value; }
         }
 
+        private HttpResponseMessage Response { get; }
+
         public override int Read(byte[] buffer, int offset, int count)
         {
             return _stream.Read(buffer, offset, count);
@@ -104,8 +105,7 @@ namespace ASC.Web.Files.Core
             if (disposing)
             {
                 _stream.Dispose();
-                if (_webResponse != null)
-                    _webResponse.Dispose();
+                Response.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -113,8 +113,7 @@ namespace ASC.Web.Files.Core
         public override void Close()
         {
             _stream.Close();
-            if (_webResponse != null)
-                _webResponse.Close();
+            base.Close();
         }
     }
 }
