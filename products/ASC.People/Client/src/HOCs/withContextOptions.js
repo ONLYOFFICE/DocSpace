@@ -26,7 +26,7 @@ export default function withContextOptions(WrappedComponent) {
 
     const isRefetchPeople = true; //TODO: why always true?
 
-    const { t } = useTranslation(["Home", "Translations"]);
+    const { t } = useTranslation(["Home", "Common", "Translations"]);
 
     const onEmailSentClick = () => {
       window.open("mailto:" + email);
@@ -258,7 +258,11 @@ export default function withContextOptions(WrappedComponent) {
         : {};
 
     return (
-      <WrappedComponent contextOptionsProps={contextOptionsProps} {...props} />
+      <WrappedComponent
+        t={t}
+        contextOptionsProps={contextOptionsProps}
+        {...props}
+      />
     );
   };
 

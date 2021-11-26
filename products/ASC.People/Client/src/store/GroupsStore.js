@@ -32,6 +32,7 @@ class GroupsStore {
     const res = await api.groups.createGroup(groupName, groupManager, members);
     this.peopleStore.selectedGroupStore.resetGroup();
     this.groups.push(res);
+    this.groups.sort((a, b) => a.name.localeCompare(b.name));
     return Promise.resolve(res);
   };
 

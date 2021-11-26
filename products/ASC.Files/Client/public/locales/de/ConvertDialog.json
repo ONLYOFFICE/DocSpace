@@ -1,6 +1,8 @@
 {
-  "ConversionMessage": "Alle hochladenden Dokumente werden ins Format Office Open XML (DOCX, XLSX oder PPTX) für schnellere Bearbeitung.",
+  "ConversionFileMessage": "Die Datei wird in OOXML (DOCX, XLSX oder PPTX) für schnellere Arbeit konviertiert.",
+  "ConversionMessage": "Alle hochgeladenden Dokumente werden ins Office Open XML Format (DOCX, XLSX oder PPTX) für eine schnellere Bearbeitung konvertiert.",
   "ConversionTitle": "Das Dokument wird hochgeladen",
+  "ConvertAndOpenTitle": "Dokument umwandeln und öffnen",
   "HideMessage": "Diese Nachricht nicht mehr anzeigen.",
   "SaveOriginalFormatMessage": "Kopie dieser Datei im Originalformat speichern"
 }

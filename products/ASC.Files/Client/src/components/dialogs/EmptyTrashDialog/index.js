@@ -21,7 +21,10 @@ const EmptyTrashDialogComponent = (props) => {
 
   const onEmptyTrash = () => {
     onClose();
-    const translations = { deleteOperation: t("Translations:DeleteOperation") };
+    const translations = {
+      deleteOperation: t("Translations:DeleteOperation"),
+      successOperation: t("SuccessEmptyTrash"),
+    };
     emptyTrash(translations);
   };
 

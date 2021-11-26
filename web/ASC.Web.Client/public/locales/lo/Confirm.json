@@ -1,7 +1,7 @@
 {
   "ChangePasswordSuccess": "ລະຫັດຜ່ານໄດ້ຖືກປ່ຽນແລ້ວ",
   "ConfirmOwnerPortalSuccessMessage": "ປ່ຽນເຈົ້າຂອງ Portal ສຳເລັດ. ໃນ 10 ວິນາທີທ່ານຈະໄດ້ຮັບການປ່ຽນເສັ້ນທາງ.",
-  "ConfirmOwnerPortalTitle": "ກະລຸນາຢືນຢັນວ່າທ່ານຕ້ອງການທີ່ຈະປ່ຽນຜູ້ໃຊ້ເກົ່າ portal owner ເປັນ {{ຜູ້ໃຊ້ໃຫມ່}}",
+  "ConfirmOwnerPortalTitle": "ກະລຸນາຢືນຢັນວ່າທ່ານຕ້ອງການທີ່ຈະປ່ຽນຜູ້ໃຊ້ເກົ່າ portal owner ເປັນ {{newOwner}}",
   "DeleteProfileBtn": "ລຶບບັນຊີຂອງຂ້ອຍ",
   "DeleteProfileConfirmation": "ຮຽນທ່ານ!ກ່ຽວກັບການລຶບບັນຊີຂອງທ່ານ",
   "DeleteProfileConfirmationInfo": "ໂດຍການກົດປຸ່ມ \"ລຶບບັນຊີຂອງຂ້ອຍ\" ທ່ານເຫັນດີກັບນະໂຍບາຍຄວາມເປັນສ່ວນຕົວຂອງພວກເຮົາຫູືບໍ່.",

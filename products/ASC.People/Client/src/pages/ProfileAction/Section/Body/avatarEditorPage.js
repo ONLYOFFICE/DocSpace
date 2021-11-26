@@ -219,6 +219,9 @@ class AvatarEditorPage extends React.PureComponent {
     data.append("Autosave", false);
     loadAvatar(profile.id, data)
       .then((response) => {
+        if (!response.success && response.message) {
+          throw response.message;
+        }
         var img = new Image();
         img.onload = function () {
           _this.setState({ isLoading: false });

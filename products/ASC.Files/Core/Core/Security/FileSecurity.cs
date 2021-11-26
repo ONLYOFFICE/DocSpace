@@ -211,7 +211,8 @@ namespace ASC.Files.Core.Security
 
         private IEnumerable<Guid> WhoCan<T>(FileEntry<T> entry, FilesSecurityActions action)
         {
-            var shares = GetShares(entry);
+            var copyshares = GetShares(entry);
+            IEnumerable<FileShareRecord> shares = copyshares.ToList();
 
             FileShareRecord defaultShareRecord;
 
@@ -324,7 +325,7 @@ namespace ASC.Files.Core.Security
                                              return new[] { x.Subject };
                                          })
                          .Distinct()
-                         .Where(x => Can(entry, x, action))
+                         .Where(x => Can(entry, x, action, copyshares))
                          .ToList();
         }
 
@@ -467,9 +468,9 @@ namespace ASC.Files.Core.Security
             return Filter(entries.Cast<FileEntry<T>>(), FilesSecurityActions.Edit, AuthContext.CurrentAccount.ID).Cast<Folder<T>>();
         }
 
-        private bool Can<T>(FileEntry<T> entry, Guid userId, FilesSecurityActions action)
+        private bool Can<T>(FileEntry<T> entry, Guid userId, FilesSecurityActions action, IEnumerable<FileShareRecord> shares = null)
         {
-            return Filter(new[] { entry }, action, userId).Any();
+            return Filter(new[] { entry }, action, userId, shares).Any();
         }
 
         private List<Tuple<FileEntry<T>, bool>> Can<T>(IEnumerable<FileEntry<T>> entry, Guid userId, FilesSecurityActions action)
@@ -478,7 +479,7 @@ namespace ASC.Files.Core.Security
             return entry.Select(r => new Tuple<FileEntry<T>, bool>(r, filtres.Any(a => a.ID.Equals(r.ID)))).ToList();
         }
 
-        private IEnumerable<FileEntry<T>> Filter<T>(IEnumerable<FileEntry<T>> entries, FilesSecurityActions action, Guid userId)
+        private IEnumerable<FileEntry<T>> Filter<T>(IEnumerable<FileEntry<T>> entries, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares = null)
         {
             if (entries == null || !entries.Any()) return Enumerable.Empty<FileEntry<T>>();
 
@@ -508,8 +509,7 @@ namespace ASC.Files.Core.Security
 
             if (entries.Any(filter))
             {
-                var subjects = GetUserSubjects(userId);
-                List<FileShareRecord> shares = null;
+                List<Guid> subjects = null;
                 foreach (var e in entries.Where(filter))
                 {
                     if (!AuthManager.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, userId).IsAuthenticated && userId != FileConstant.ShareLinkId)
@@ -641,10 +641,17 @@ namespace ASC.Files.Core.Security
                         continue;
                     }
 
-                    if (shares == null)
+                    if (subjects == null)
                     {
-                        shares = GetShares(entries).Join(subjects, r => r.Subject, s => s, (r, s) => r).ToList();
-                        // shares ordered by level
+                        subjects = GetUserSubjects(userId);
+                        if (shares == null)
+                        {
+                            shares = GetShares(entries);
+                            // shares ordered by level
+                        }
+                        shares = shares
+                            .Join(subjects, r => r.Subject, s => s, (r, s) => r)
+                            .ToList();
                     }
 
                     FileShareRecord ace;
@@ -830,7 +837,7 @@ namespace ASC.Files.Core.Security
             var records = securityDao.GetShares(subjects);
 
             var result = new List<FileEntry>();
-            result.AddRange(GetSharesForMe<int>(records.Where(r=> r.EntryId.GetType() == typeof(int)), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
+            result.AddRange(GetSharesForMe<int>(records.Where(r => r.EntryId.GetType() == typeof(int)), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
             result.AddRange(GetSharesForMe<string>(records.Where(r => r.EntryId.GetType() == typeof(string)), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
             return result;
         }
