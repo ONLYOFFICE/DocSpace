@@ -856,6 +856,7 @@ const StyledFilesList = styled.div`
   }
   .modal-dialog_file-name {
     border-radius: 3px;
+    margin-right: 12px;
     ${(props) => props.isChecked && `background:#F8F9F9;`}
     cursor: ${(props) => (props.needRowSelection ? "pointer" : "default")};
     border-bottom: 1px solid #eceef1;
