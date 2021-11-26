@@ -8,7 +8,7 @@ const sizes = {
   mobile: { width: 375, height: 667 },
   smallTablet: { width: 600, height: 667 },
   tablet: { width: 1023, height: 667 },
-  desktop: { width: 1440, height: 667 },
+  desktop: { width: 1920, height: 1080 },
 };
 
 const deviceType = process.env.DEVICE_TYPE || 'desktop';
@@ -23,6 +23,7 @@ const isModel = !!process.env.MODEL;
 const screenshotOutput = isModel
   ? `./tests/screenshots/${browser}/${deviceType}`
   : `./tests/output/${browser}/${deviceType}`;
+
 exports.config = {
   tests: './tests/*_tests.js',
   output: screenshotOutput,
