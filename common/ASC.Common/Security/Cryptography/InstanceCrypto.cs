@@ -58,6 +58,8 @@ namespace ASC.Security.Cryptography
             using var ss = new CryptoStream(ms, hasher.CreateEncryptor(), CryptoStreamMode.Write);
             using var plainTextStream = new MemoryStream(data);
             plainTextStream.CopyTo(ss);
+            ss.FlushFinalBlock();
+            hasher.Clear();
             return ms.ToArray();
         }
 

@@ -68,6 +68,8 @@ namespace ASC.Core
                 using var ss = new CryptoStream(ms, hasher.CreateEncryptor(), CryptoStreamMode.Write);
                 using var plainTextStream = new MemoryStream(Convert.FromBase64String(data));
                 plainTextStream.CopyTo(ss);
+                ss.FlushFinalBlock();
+                hasher.Clear();
                 return Convert.ToBase64String(ms.ToArray());
             }
             else
@@ -76,6 +78,7 @@ namespace ASC.Core
                 using var ss = new CryptoStream(ms, hasher.CreateDecryptor(), CryptoStreamMode.Read);
                 using var plainTextStream = new MemoryStream();
                 ss.CopyTo(plainTextStream);
+                hasher.Clear();
                 return Encoding.Unicode.GetString(plainTextStream.ToArray());
             }
         }
@@ -92,6 +95,8 @@ namespace ASC.Core
                 using var ss = new CryptoStream(ms, hasher.CreateEncryptor(), CryptoStreamMode.Write);
                 using var plainTextStream = new MemoryStream(data);
                 plainTextStream.CopyTo(ss);
+                ss.FlushFinalBlock();
+                hasher.Clear();
                 return ms.ToArray();
             }
             else
@@ -100,6 +105,7 @@ namespace ASC.Core
                 using var ss = new CryptoStream(ms, hasher.CreateDecryptor(), CryptoStreamMode.Read);
                 using var plainTextStream = new MemoryStream();
                 ss.CopyTo(plainTextStream);
+                hasher.Clear();
                 return plainTextStream.ToArray();
             }
         }
