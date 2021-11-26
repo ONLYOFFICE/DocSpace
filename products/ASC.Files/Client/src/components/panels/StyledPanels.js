@@ -828,8 +828,7 @@ const StyledFilesList = styled.div`
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    max-width: ${(props) =>
-      props.displayType === "aside" ? "213px" : "274px"};
+    max-width: ${(props) => props.displayType === "aside" && "213px"};
 
     grid-area: full-name;
     display: flex;
@@ -847,12 +846,9 @@ const StyledFilesList = styled.div`
   }
   .files-list_file-children_wrapper {
     grid-area: owner-name;
-    margin-right: 12px;
-    ${(props) =>
-      props.displayType === "aside" &&
-      css`
-        margin-top: -17px;
-      `}
+    /* margin-right: 12px; */
+    margin-top: ${(props) =>
+      props.displayType === "aside" ? "-17px" : "-8px"};
   }
   .modal-dialog_file-name {
     border-radius: 3px;
@@ -870,7 +866,7 @@ const StyledFilesList = styled.div`
           `
         : css`
             height: 41px;
-            grid-template-areas: "checked-button icon-name full-name owner-name";
+            grid-template-areas: "checked-button icon-name full-name" "checked-button icon-name owner-name";
           `}
     grid-template-columns: 22px 33px 1fr;
     padding-left: ${(props) =>
