@@ -458,6 +458,7 @@ const Dark = {
     content: {
       backgroundColor: white,
       padding: "0 16px 16px",
+      modalBorderRadius: "6px",
 
       heading: {
         maxWidth: "500px",

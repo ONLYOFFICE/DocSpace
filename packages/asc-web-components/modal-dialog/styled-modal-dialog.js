@@ -28,6 +28,8 @@ const Content = styled.div`
     props.displayType === "modal"
       ? props.theme.modalDialog.content.modalPadding
       : props.theme.modalDialog.content.asidePadding};
+  border-radius: ${(props) =>
+    props.theme.modalDialog.content.modalBorderRadius};
 
   .heading {
     max-width: ${(props) => props.theme.modalDialog.content.heading.maxWidth};
