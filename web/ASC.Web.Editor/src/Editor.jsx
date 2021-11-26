@@ -78,7 +78,8 @@ const Editor = () => {
   const decodedId = urlParams
     ? urlParams.fileId || urlParams.fileid || null
     : null;
-  const fileId = encodeURIComponent(decodedId);
+  const fileId =
+    typeof decodedId === "string" ? encodeURIComponent(decodedId) : decodedId;
   const version = urlParams ? urlParams.version || null : null;
   const doc = urlParams ? urlParams.doc || null : null;
   const isDesktop = window["AscDesktopEditor"] !== undefined;
