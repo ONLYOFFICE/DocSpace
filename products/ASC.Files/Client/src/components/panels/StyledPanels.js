@@ -572,6 +572,10 @@ const StyledLinkRow = styled.div`
     }
   }
 
+  .sharing_panel-link-container {
+    display: flex;
+  }
+
   .link-row {
     ${(props) => !props.withToggle && "border-bottom:none;"}
   }
