@@ -489,12 +489,15 @@ class FilesStore {
       const shouldFillForm = canFormFillingDocs(item.fileExst);
       const shouldEdit = !shouldFillForm && canWebEdit(item.fileExst);
       const shouldView = canViewedDocs(item.fileExst);
+      const isForm = item.fileExst === ".docxf";
+
       let fileOptions = [
         //"open",
         "fill-form",
         "edit",
         "preview",
         "view",
+        "make-form",
         "separator0",
         "sharing-settings",
         "external-link",
@@ -524,6 +527,8 @@ class FilesStore {
         "unsubscribe",
         "delete",
       ];
+
+      if (!isForm) fileOptions = this.removeOptions(fileOptions, ["make-form"]);
 
       if (!shouldFillForm)
         fileOptions = this.removeOptions(fileOptions, ["fill-form"]);
@@ -637,6 +642,7 @@ class FilesStore {
           "view",
           "preview",
           "edit",
+          "make-form",
           "link-for-portal-users",
           "sharing-settings",
           "external-link",
