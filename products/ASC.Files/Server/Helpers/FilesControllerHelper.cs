@@ -118,11 +118,6 @@ namespace ASC.Files.Helpers
             Logger = optionMonitor.Get("ASC.Files");
         }
 
-        public FolderContentWrapper<T> GetFolder(T folderId, Guid userIdOrGroupId, FilterType filterType, bool withSubFolders)
-        {
-            return ToFolderContentWrapper(folderId, userIdOrGroupId, filterType, withSubFolders).NotFoundIfNull();
-        }
-
         public async Task<FolderContentWrapper<T>> GetFolderAsync(T folderId, Guid userIdOrGroupId, FilterType filterType, bool withSubFolders)
         {
             var folderContentWrapper = ToFolderContentWrapperAsync(folderId, userIdOrGroupId, filterType, withSubFolders);
@@ -475,7 +470,7 @@ namespace ASC.Files.Helpers
             var file = await FileUploader.ExecAsync(folderId,
                               title.EndsWith(extension, StringComparison.OrdinalIgnoreCase) ? title : (title + extension),
                               memStream.Length, memStream);
-            return FileWrapperHelper.Get(file);
+            return await FileWrapperHelper.GetAsync(file);
         }
 
         public FileWrapper<T> CreateHtmlFile(T folderId, string title, string content)
@@ -568,18 +563,11 @@ namespace ASC.Files.Helpers
             return await FileWrapperHelper.GetAsync(file);
         }
 
-        public FileWrapper<T> AddToRecent(T fileId, int version = -1)
-        {
-            var file = FileStorageService.GetFile(fileId, version).NotFoundIfNull("File not found");
-            EntryManager.MarkAsRecent(file);
-            return FileWrapperHelper.Get(file);
-        }
-
         public async Task<FileWrapper<T>> AddToRecentAsync(T fileId, int version = -1)
         {
             var file = await FileStorageService.GetFileAsync(fileId, version).NotFoundIfNull("File not found");
             EntryManager.MarkAsRecent(file);
-            return FileWrapperHelper.Get(file);
+            return await FileWrapperHelper.GetAsync(file);
         }
 
         public List<FileEntryWrapper> GetNewItems(T folderId)
@@ -910,10 +898,13 @@ namespace ASC.Files.Helpers
                                 .ToList();
         }
 
-        public async Task<IEnumerable<FileEntryWrapper>> GetFoldersAsync(T folderId)
+        public async IAsyncEnumerable<FileEntryWrapper> GetFoldersAsync(T folderId)
         {
             var folders = await FileStorageService.GetFoldersAsync(folderId);
-            return folders.Select(GetFileEntryWrapper).ToList();
+            foreach (var folder in folders)
+            {
+                yield return await GetFileEntryWrapperAsync(folder);
+            }
         }
 
         public IEnumerable<FileShareWrapper> GetSecurityInfo(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
@@ -1079,29 +1070,6 @@ namespace ASC.Files.Helpers
         //    return files.Concat(folders);
         //}
 
-
-        private FolderContentWrapper<T> ToFolderContentWrapper(T folderId, Guid userIdOrGroupId, FilterType filterType, bool withSubFolders)
-        {
-            OrderBy orderBy = null;
-            if (Enum.TryParse(ApiContext.SortBy, true, out SortedByType sortBy))
-            {
-                orderBy = new OrderBy(sortBy, !ApiContext.SortDescending);
-            }
-
-            var startIndex = Convert.ToInt32(ApiContext.StartIndex);
-            return FolderContentWrapperHelper.Get(FileStorageService.GetFolderItems(folderId,
-                                                                               startIndex,
-                                                                               Convert.ToInt32(ApiContext.Count),
-                                                                               filterType,
-                                                                               filterType == FilterType.ByUser,
-                                                                               userIdOrGroupId.ToString(),
-                                                                               ApiContext.FilterValue,
-                                                                               false,
-                                                                               withSubFolders,
-                                                                               orderBy),
-                                            startIndex);
-        }
-
         private async Task<FolderContentWrapper<T>> ToFolderContentWrapperAsync(T folderId, Guid userIdOrGroupId, FilterType filterType, bool withSubFolders)
         {
             OrderBy orderBy = null;
@@ -1111,7 +1079,7 @@ namespace ASC.Files.Helpers
             }
 
             var startIndex = Convert.ToInt32(ApiContext.StartIndex);
-            return FolderContentWrapperHelper.Get(await FileStorageService.GetFolderItemsAsync(folderId,
+            return await FolderContentWrapperHelper.GetAsync(await FileStorageService.GetFolderItemsAsync(folderId,
                                                                                startIndex,
                                                                                Convert.ToInt32(ApiContext.Count),
                                                                                filterType,

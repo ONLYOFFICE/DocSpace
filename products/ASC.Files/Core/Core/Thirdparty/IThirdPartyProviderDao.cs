@@ -458,9 +458,9 @@ namespace ASC.Files.Thirdparty
             return new List<Tag>();
         }
 
-        public Task<IEnumerable<Tag>> GetTagsAsync(Guid subject, TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
+        public IAsyncEnumerable<Tag> GetTagsAsync(Guid subject, TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
         {
-            return Task.FromResult((IEnumerable<Tag>)new List<Tag>());
+            return AsyncEnumerable.Empty<Tag>();
         }
 
         public IEnumerable<Tag> GetTags(TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
@@ -468,9 +468,9 @@ namespace ASC.Files.Thirdparty
             return new List<Tag>();
         }
 
-        public Task<IEnumerable<Tag>> GetTagsAsync(TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
+        public IAsyncEnumerable<Tag> GetTagsAsync(TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
         {
-            return Task.FromResult((IEnumerable<Tag>)new List<Tag>());
+            return AsyncEnumerable.Empty<Tag>();
         }
 
         public IEnumerable<Tag> GetTags(Guid owner, TagType tagType)
@@ -478,9 +478,9 @@ namespace ASC.Files.Thirdparty
             return new List<Tag>();
         }
 
-        public Task<IEnumerable<Tag>> GetTagsAsync(Guid owner, TagType tagType)
+        public IAsyncEnumerable<Tag> GetTagsAsync(Guid owner, TagType tagType)
         {
-            return Task.FromResult((IEnumerable<Tag>)new List<Tag>());
+            return AsyncEnumerable.Empty<Tag>();
         }
 
         public IEnumerable<Tag> GetTags(string name, TagType tagType)
@@ -488,9 +488,9 @@ namespace ASC.Files.Thirdparty
             return new List<Tag>();
         }
 
-        public Task<IEnumerable<Tag>> GetTagsAsync(string name, TagType tagType)
+        public IAsyncEnumerable<Tag> GetTagsAsync(string name, TagType tagType)
         {
-            return Task.FromResult((IEnumerable<Tag>)new List<Tag>());
+            return AsyncEnumerable.Empty<Tag>();
         }
 
         public IEnumerable<Tag> GetTags(string[] names, TagType tagType)
@@ -498,9 +498,9 @@ namespace ASC.Files.Thirdparty
             return new List<Tag>();
         }
 
-        public Task<IEnumerable<Tag>> GetTagsAsync(string[] names, TagType tagType)
+        public IAsyncEnumerable<Tag> GetTagsAsync(string[] names, TagType tagType)
         {
-            return Task.FromResult((IEnumerable<Tag>)new List<Tag>());
+            return AsyncEnumerable.Empty<Tag>();
         }
 
         public IDictionary<object, IEnumerable<Tag>> GetTags(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<string>> fileEntries)
@@ -519,9 +519,9 @@ namespace ASC.Files.Thirdparty
             return new List<Tag>();
         }
 
-        public Task<IEnumerable<Tag>> GetNewTagsAsync(Guid subject, IEnumerable<FileEntry<string>> fileEntries)
+        public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, IEnumerable<FileEntry<string>> fileEntries)
         {
-            return Task.FromResult((IEnumerable<Tag>)new List<Tag>());
+            return AsyncEnumerable.Empty<Tag>();
         }
 
         public IEnumerable<Tag> GetNewTags(Guid subject, FileEntry<string> fileEntry)
@@ -529,9 +529,9 @@ namespace ASC.Files.Thirdparty
             return new List<Tag>();
         }
 
-        public Task<IEnumerable<Tag>> GetNewTagsAsync(Guid subject, FileEntry<string> fileEntry)
+        public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, FileEntry<string> fileEntry)
         {
-            return Task.FromResult((IEnumerable<Tag>)new List<Tag>());
+            return AsyncEnumerable.Empty<Tag>();
         }
 
         public IEnumerable<Tag> SaveTags(IEnumerable<Tag> tag)
@@ -565,9 +565,9 @@ namespace ASC.Files.Thirdparty
             return new List<Tag>();
         }
 
-        public Task<IEnumerable<Tag>> GetTagsAsync(string entryID, FileEntryType entryType, TagType tagType)
+        public IAsyncEnumerable<Tag> GetTagsAsync(string entryID, FileEntryType entryType, TagType tagType)
         {
-            return Task.FromResult((IEnumerable<Tag>)new List<Tag>());
+            return AsyncEnumerable.Empty<Tag>();
         }
 
         public void MarkAsNew(Guid subject, FileEntry<string> fileEntry)
@@ -619,7 +619,7 @@ namespace ASC.Files.Thirdparty
             return tags.Where(tag => folderFileIds.Contains(tag.EntryId.ToString()));
         }
 
-        public async Task<IEnumerable<Tag>> GetNewTagsAsync(Guid subject, Folder<string> parentFolder, bool deepSearch)
+        public async IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, Folder<string> parentFolder, bool deepSearch)
         {
             var folderId = DaoSelector.ConvertId(parentFolder.ID);
 
@@ -629,7 +629,7 @@ namespace ASC.Files.Thirdparty
                        .Select(r => r.HashId)
                        .ToListAsync();
 
-            if (!entryIDs.Any()) return new List<Tag>();
+            if (!entryIDs.Any()) yield break;
 
             var q = from r in FilesDbContext.Tag
                     from l in FilesDbContext.TagLink.AsQueryable().Where(a => a.TenantId == r.TenantId && a.TagId == r.Id).DefaultIfEmpty()
@@ -641,29 +641,35 @@ namespace ASC.Files.Thirdparty
                 q = q.Where(r => r.tag.Owner == subject);
             }
 
-            var qList = await q
+            var qList = q
                 .Distinct()
-                .ToListAsync();
+                .AsAsyncEnumerable();
 
             var tags = qList
-                .Select(r => new Tag
+                .SelectAwait(async r => new Tag
                 {
                     TagName = r.tag.Name,
                     TagType = r.tag.Flag,
                     Owner = r.tag.Owner,
-                    EntryId = MappingID(r.tagLink.EntryId),
+                    EntryId = await MappingIDAsync(r.tagLink.EntryId),
                     EntryType = r.tagLink.EntryType,
                     Count = r.tagLink.TagCount,
                     Id = r.tag.Id
                 });
 
 
-            if (deepSearch) return tags;
+            if (deepSearch)
+            {
+                await foreach (var e in tags)
+                    yield return e;
+                yield break;
+            }
 
             var folderFileIds = new[] { parentFolder.ID }
-                .Concat(GetChildren(folderId));
+                .Concat(await GetChildrenAsync(folderId));
 
-            return tags.Where(tag => folderFileIds.Contains(tag.EntryId.ToString()));
+            await foreach (var e in tags.Where(tag => folderFileIds.Contains(tag.EntryId.ToString())))
+                yield return e;
         }
 
         protected abstract IEnumerable<string> GetChildren(string folderId);

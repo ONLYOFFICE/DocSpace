@@ -109,8 +109,8 @@ namespace ASC.Web.Files.Utils
 
         public async Task<Guid> FileLockedByAsync<T>(T fileId, ITagDao<T> tagDao)
         {
-            var tags = await tagDao.GetTagsAsync(fileId, FileEntryType.File, TagType.Locked);
-            var tagLock = tags.FirstOrDefault();
+            var tags = tagDao.GetTagsAsync(fileId, FileEntryType.File, TagType.Locked);
+            var tagLock = await tags .FirstOrDefaultAsync();
             return tagLock != null ? tagLock.Owner : Guid.Empty;
         }
     }
@@ -334,7 +334,7 @@ namespace ASC.Web.Files.Utils
             var tagDao = DaoFactory.GetTagDao<T>();
 
             var tags = tagDao.GetTags(AuthContext.CurrentAccount.ID, new[] { TagType.Favorite, TagType.Template, TagType.Locked }, files);
-            var tagsNew = await tagDao.GetNewTagsAsync(AuthContext.CurrentAccount.ID, files);
+            var tagsNew = tagDao.GetNewTagsAsync(AuthContext.CurrentAccount.ID, files);
 
             foreach (var file in files)
             {
@@ -357,7 +357,7 @@ namespace ASC.Web.Files.Utils
                     }
                 }
 
-                if (tagsNew.Any(r => r.EntryId.Equals(file.ID)))
+                if (await tagsNew.AnyAsync(r => r.EntryId.Equals(file.ID)))
                 {
                     file.IsNew = true;
                 }
@@ -759,6 +759,7 @@ namespace ASC.Web.Files.Utils
                     var rootKeys = folderIDProjectTitle.Keys.ToArray();
                     if (filter == FilterType.None || filter == FilterType.FoldersOnly)
                     {
+                        var sdasd = AsyncEnumerable.Empty<int>();
                         var folders = await DaoFactory.GetFolderDao<int>().GetFoldersAsync(rootKeys, filter, subjectGroup, subjectId, searchText, withSubfolders, false).ToListAsync();
 
                         var emptyFilter = string.IsNullOrEmpty(searchText) && filter == FilterType.None && subjectId == Guid.Empty;
@@ -772,7 +773,7 @@ namespace ASC.Web.Files.Utils
 
                             folders.RemoveAll(folder => rootKeys.Contains(folder.ID));
 
-                            var projectFolders = DaoFactory.GetFolderDao<int>().GetFolders(projectFolderIds.ToList(), filter, subjectGroup, subjectId, null, false, false);
+                            var projectFolders = await DaoFactory.GetFolderDao<int>().GetFoldersAsync(projectFolderIds.ToList(), filter, subjectGroup, subjectId, null, false, false).ToListAsync();
                             folders.AddRange(projectFolders);
                         }
 
@@ -887,7 +888,7 @@ namespace ASC.Web.Files.Utils
                 if (0 < count) entries = entries.Take(count);
             }
 
-            entries = FileMarker.SetTagsNew(parent, entries);
+            entries = await FileMarker.SetTagsNewAsync(parent, entries);
 
             //sorting after marking
             if (orderBy.SortedBy == SortedByType.New)
@@ -899,7 +900,7 @@ namespace ASC.Web.Files.Utils
                 if (0 < count) entries = entries.Take(count);
             }
 
-            EntryStatusManager.SetFileStatus(entries.Where(r => r != null && r.FileEntryType == FileEntryType.File).ToList());
+            await EntryStatusManager.SetFileStatusAsync(entries.Where(r => r != null && r.FileEntryType == FileEntryType.File).ToList());
             return (entries, total);
 
             void CalculateTotal()
@@ -1053,8 +1054,7 @@ namespace ASC.Web.Files.Utils
         public async Task<IEnumerable<FileEntry>> GetRecentAsync(FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
         {
             var tagDao = DaoFactory.GetTagDao<int>();
-            var tagsEnum = await tagDao.GetTagsAsync(AuthContext.CurrentAccount.ID, TagType.Recent);
-            var tags = tagsEnum.ToList();
+            var tags = await tagDao.GetTagsAsync(AuthContext.CurrentAccount.ID, TagType.Recent).ToListAsync();
 
             var fileIds = tags.Where(tag => tag.EntryType == FileEntryType.File).ToList();
 
@@ -1085,8 +1085,7 @@ namespace ASC.Web.Files.Utils
             {
                 var folderDao = DaoFactory.GetFolderDao<T>();
                 var fileDao = DaoFactory.GetFileDao<T>();
-                var files = await fileDao.GetFilesFilteredAsync(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent).ToListAsync();
-                files = files.Where(file => file.RootFolderType != FolderType.TRASH).ToList();
+                var files = await fileDao.GetFilesFilteredAsync(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent).Where(file => file.RootFolderType != FolderType.TRASH).ToListAsync();
 
                 files = FileSecurity.FilterRead(files).ToList();
 

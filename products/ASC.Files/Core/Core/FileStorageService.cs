@@ -278,93 +278,6 @@ namespace ASC.Web.Files.Services.WCFService
             }));
         }
 
-        public DataWrapper<T> GetFolderItems(T parentId, int from, int count, FilterType filter, bool subjectGroup, string ssubject, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy)
-        {
-            var subjectId = string.IsNullOrEmpty(ssubject) ? Guid.Empty : new Guid(ssubject);
-
-            var folderDao = GetFolderDao();
-            var fileDao = GetFileDao();
-
-            Folder<T> parent = null;
-            try
-            {
-                parent = folderDao.GetFolder(parentId);
-                if (parent != null && !string.IsNullOrEmpty(parent.Error)) throw new Exception(parent.Error);
-            }
-            catch (Exception e)
-            {
-                if (parent != null && parent.ProviderEntry)
-                {
-                    throw GenerateException(new Exception(FilesCommonResource.ErrorMassage_SharpBoxException, e));
-                }
-                throw GenerateException(e);
-            }
-
-            ErrorIf(parent == null, FilesCommonResource.ErrorMassage_FolderNotFound);
-            ErrorIf(!FileSecurity.CanRead(parent), FilesCommonResource.ErrorMassage_SecurityException_ViewFolder);
-            ErrorIf(parent.RootFolderType == FolderType.TRASH && !Equals(parent.ID, GlobalFolderHelper.FolderTrash), FilesCommonResource.ErrorMassage_ViewTrashItem);
-
-            if (orderBy != null)
-            {
-                FilesSettingsHelper.DefaultOrder = orderBy;
-            }
-            else
-            {
-                orderBy = FilesSettingsHelper.DefaultOrder;
-            }
-
-            if (Equals(parent.ID, GlobalFolderHelper.FolderShare) && orderBy.SortedBy == SortedByType.DateAndTime)
-                orderBy.SortedBy = SortedByType.New;
-
-            int total;
-            IEnumerable<FileEntry> entries;
-            try
-            {
-                entries = EntryManager.GetEntries(parent, from, count, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, out total);
-            }
-            catch (Exception e)
-            {
-                if (parent.ProviderEntry)
-                {
-                    throw GenerateException(new Exception(FilesCommonResource.ErrorMassage_SharpBoxException, e));
-                }
-                throw GenerateException(e);
-            }
-
-            var breadCrumbs = EntryManager.GetBreadCrumbs(parentId, folderDao);
-
-            var prevVisible = breadCrumbs.ElementAtOrDefault(breadCrumbs.Count() - 2);
-            if (prevVisible != null)
-            {
-                if (prevVisible is Folder<string> f1) parent.FolderID = (T)Convert.ChangeType(f1.ID, typeof(T));
-                if (prevVisible is Folder<int> f2) parent.FolderID = (T)Convert.ChangeType(f2.ID, typeof(T));
-            }
-
-            parent.Shareable = FileSharing.CanSetAccess(parent)
-                || parent.FolderType == FolderType.SHARE
-                || parent.RootFolderType == FolderType.Privacy;
-
-            entries = entries.Where(x => x.FileEntryType == FileEntryType.Folder ||
-            (x is File<string> f1 && !FileConverter.IsConverting(f1) ||
-             x is File<int> f2 && !FileConverter.IsConverting(f2)));
-
-            var result = new DataWrapper<T>
-            {
-                Total = total,
-                Entries = new List<FileEntry>(entries.ToList()),
-                FolderPathParts = new List<object>(breadCrumbs.Select(f =>
-                {
-                    if (f is Folder<string> f1) return (object)f1.ID;
-                    if (f is Folder<int> f2) return f2.ID;
-                    return 0;
-                })),
-                FolderInfo = parent,
-                New = FileMarker.GetRootFoldersIdMarkedAsNew(parentId)
-            };
-
-            return result;
-        }
-
         public async Task<DataWrapper<T>> GetFolderItemsAsync(T parentId, int from, int count, FilterType filter, bool subjectGroup, string ssubject, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy)
         {
             var subjectId = string.IsNullOrEmpty(ssubject) ? Guid.Empty : new Guid(ssubject);
@@ -450,17 +363,6 @@ namespace ASC.Web.Files.Services.WCFService
             };
 
             return result;
-        }
-
-        public object GetFolderItemsXml(T parentId, int from, int count, FilterType filter, bool subjectGroup, string subjectID, string search, bool searchInContent, bool withSubfolders, OrderBy orderBy)
-        {
-            var folderItems = GetFolderItems(parentId, from, count, filter, subjectGroup, subjectID, search, searchInContent, withSubfolders, orderBy);
-            var response = new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = new StreamContent(serializer.ToXml(folderItems))
-            };
-            response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/xml");
-            return response;
         }
 
         public async Task<object> GetFolderItemsXmlAsync(T parentId, int from, int count, FilterType filter, bool subjectGroup, string subjectID, string search, bool searchInContent, bool withSubfolders, OrderBy orderBy)
@@ -686,8 +588,8 @@ namespace ASC.Web.Files.Services.WCFService
                 //}
             }
 
-            var newTags = await tagDao.GetNewTagsAsync(AuthContext.CurrentAccount.ID, folder);
-            var tag = newTags.FirstOrDefault();
+            var newTags = tagDao.GetNewTagsAsync(AuthContext.CurrentAccount.ID, folder);
+            var tag = await newTags.FirstOrDefaultAsync();
             if (tag != null)
             {
                 folder.NewForMe = tag.Count;
@@ -1643,8 +1545,8 @@ namespace ASC.Web.Files.Services.WCFService
             ErrorIf(!FileSecurity.CanEdit(file) || lockfile && UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager), FilesCommonResource.ErrorMassage_SecurityException_EditFile);
             ErrorIf(file.RootFolderType == FolderType.TRASH, FilesCommonResource.ErrorMassage_ViewTrashItem);
 
-            var tags = await tagDao.GetTagsAsync(file.ID, FileEntryType.File, TagType.Locked);
-            var tagLocked = tags.FirstOrDefault();
+            var tags = tagDao.GetTagsAsync(file.ID, FileEntryType.File, TagType.Locked);
+            var tagLocked = await tags.FirstOrDefaultAsync();
 
             ErrorIf(tagLocked != null
                     && tagLocked.Owner != AuthContext.CurrentAccount.ID

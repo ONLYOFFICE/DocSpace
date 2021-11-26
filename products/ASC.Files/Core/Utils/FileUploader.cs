@@ -148,7 +148,7 @@ namespace ASC.Web.Files.Utils
             if (contentLength <= 0)
                 throw new Exception(FilesCommonResource.ErrorMassage_EmptyFile);
 
-            var file = VerifyFileUpload(folderId, title, contentLength, !createNewIfExist);
+            var file = await VerifyFileUploadAsync(folderId, title, contentLength, !createNewIfExist);
 
             var dao = DaoFactory.GetFileDao<T>();
             file = await dao.SaveFileAsync(file, data);
@@ -234,6 +234,21 @@ namespace ASC.Web.Files.Utils
                 throw FileSizeComment.GetFileSizeException(maxUploadSize);
 
             var file = VerifyFileUpload(folderId, fileName, updateIfExists);
+            file.ContentLength = fileSize;
+            return file;
+        }
+
+        public async Task<File<T>> VerifyFileUploadAsync<T>(T folderId, string fileName, long fileSize, bool updateIfExists)
+        {
+            if (fileSize <= 0)
+                throw new Exception(FilesCommonResource.ErrorMassage_EmptyFile);
+
+            var maxUploadSize = GetMaxFileSize(folderId);
+
+            if (fileSize > maxUploadSize)
+                throw FileSizeComment.GetFileSizeException(maxUploadSize);
+
+            var file = await VerifyFileUploadAsync(folderId, fileName, updateIfExists);
             file.ContentLength = fileSize;
             return file;
         }
