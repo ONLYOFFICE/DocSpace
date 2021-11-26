@@ -65,7 +65,7 @@ namespace System
         {
             var bytes = Encoding.Unicode.GetBytes(str);
 
-            using var CSP = new MD5CryptoServiceProvider();
+            using var CSP = MD5.Create();
 
             var byteHash = CSP.ComputeHash(bytes);
 

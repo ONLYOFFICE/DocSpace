@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Runtime.Serialization;
 using ASC.Core;
 using ASC.Api.Core;
@@ -35,8 +34,6 @@ using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
 using ASC.Web.Core.Calendars;
 using ASC.Calendar.Models;
-using System.Net;
-using System.IO;
 using ASC.Calendar.iCalParser;
 using ASC.Common.Utils;
 

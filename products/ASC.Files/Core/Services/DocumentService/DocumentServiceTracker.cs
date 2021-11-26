@@ -31,6 +31,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
@@ -490,11 +491,13 @@ namespace ASC.Web.Files.Services.DocumentService
 
                 var message = fileData.MailMerge.Message;
                 Stream attach = null;
+                using var httpClient = new HttpClient();
                 switch (fileData.MailMerge.Type)
                 {
                     case MailMergeType.AttachDocx:
                     case MailMergeType.AttachPdf:
-                        var downloadRequest = (HttpWebRequest)WebRequest.Create(DocumentServiceConnector.ReplaceDocumentAdress(fileData.Url));
+                        var requestDownload = new HttpRequestMessage();
+                        requestDownload.RequestUri = new Uri(DocumentServiceConnector.ReplaceDocumentAdress(fileData.Url));
 
                         // hack. http://ubuntuforums.org/showthread.php?t=1841740
                         if (WorkContext.IsMono)
@@ -502,7 +505,9 @@ namespace ASC.Web.Files.Services.DocumentService
                             ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
                         }
 
-                        using (var downloadStream = new ResponseStream(downloadRequest.GetResponse()))
+                        using (var responseDownload = httpClient.Send(requestDownload))
+                        using (var streamDownload = responseDownload.Content.ReadAsStream())
+                        using (var downloadStream = new ResponseStream(streamDownload, streamDownload.Length))
                         {
                             const int bufferSize = 2048;
                             var buffer = new byte[bufferSize];
@@ -530,7 +535,8 @@ namespace ASC.Web.Files.Services.DocumentService
                         break;
 
                     case MailMergeType.Html:
-                        var httpWebRequest = (HttpWebRequest)WebRequest.Create(DocumentServiceConnector.ReplaceDocumentAdress(fileData.Url));
+                        var httpRequest = new HttpRequestMessage();
+                        httpRequest.RequestUri = new Uri(DocumentServiceConnector.ReplaceDocumentAdress(fileData.Url));
 
                         // hack. http://ubuntuforums.org/showthread.php?t=1841740
                         if (WorkContext.IsMono)
@@ -538,8 +544,9 @@ namespace ASC.Web.Files.Services.DocumentService
                             ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
                         }
 
-                        using (var httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse())
-                        using (var stream = httpWebResponse.GetResponseStream())
+
+                        using (var httpResponse = httpClient.Send(httpRequest))
+                        using (var stream = httpResponse.Content.ReadAsStream())
                             if (stream != null)
                                 using (var reader = new StreamReader(stream, Encoding.GetEncoding(Encoding.UTF8.WebName)))
                                 {
@@ -601,7 +608,8 @@ namespace ASC.Web.Files.Services.DocumentService
                                          fileName);
 
                 var store = GlobalStore.GetStore();
-                var req = (HttpWebRequest)WebRequest.Create(downloadUri);
+                var request = new HttpRequestMessage();
+                request.RequestUri = new Uri(downloadUri);
 
                 // hack. http://ubuntuforums.org/showthread.php?t=1841740
                 if (WorkContext.IsMono)
@@ -609,7 +617,10 @@ namespace ASC.Web.Files.Services.DocumentService
                     ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
                 }
 
-                using (var fileStream = new ResponseStream(req.GetResponse()))
+                using (var httpClient = new HttpClient())
+                using (var response = httpClient.Send(request))
+                using (var stream = response.Content.ReadAsStream())
+                using (var fileStream = new ResponseStream(stream, stream.Length))
                 {
                     store.Save(FileConstant.StorageDomainTmp, path, fileStream);
                 }
@@ -630,7 +641,8 @@ namespace ASC.Web.Files.Services.DocumentService
             try
             {
                 var fileDao = DaoFactory.GetFileDao<T>();
-                var req = (HttpWebRequest)WebRequest.Create(differenceUrl);
+                var request = new HttpRequestMessage();
+                request.RequestUri = new Uri(differenceUrl);
 
                 // hack. http://ubuntuforums.org/showthread.php?t=1841740
                 if (WorkContext.IsMono)
@@ -638,7 +650,11 @@ namespace ASC.Web.Files.Services.DocumentService
                     ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
                 }
 
-                using var differenceStream = new ResponseStream(req.GetResponse());
+                using var httpClient = new HttpClient();
+                using var response = httpClient.Send(request);
+                using var stream = response.Content.ReadAsStream();
+
+                using var differenceStream = new ResponseStream(stream, stream.Length);
                 fileDao.SaveEditHistory(file, changes, differenceStream);
             }
             catch (Exception ex)

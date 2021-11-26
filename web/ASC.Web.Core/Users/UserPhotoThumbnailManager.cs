@@ -26,10 +26,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 
 using ASC.Core.Common.Settings;
+
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.Processing;
 
 namespace ASC.Web.Core.Users
 {
@@ -53,13 +55,13 @@ namespace ASC.Web.Core.Users
 
             var resultBitmaps = new List<ThumbnailItem>();
 
-            var img = thumbnailsData.MainImgBitmap();
+            using var img = thumbnailsData.MainImgBitmap(out var format);
 
             if (img == null) return null;
 
             foreach (var thumbnail in thumbnailsData.ThumbnailList())
             {
-                thumbnail.Bitmap = GetBitmap(img, thumbnail.Size, thumbnailSettings);
+                thumbnail.Image = GetImage(img, thumbnail.Size, thumbnailSettings);
 
                 resultBitmaps.Add(thumbnail);
             }
@@ -71,32 +73,22 @@ namespace ASC.Web.Core.Users
             return thumbnailsData.ThumbnailList();
         }
 
-        public static Bitmap GetBitmap(Image mainImg, Size size, UserPhotoThumbnailSettings thumbnailSettings, InterpolationMode interpolationMode = InterpolationMode.HighQualityBicubic)
+        public static Image GetImage(Image mainImg, Size size, UserPhotoThumbnailSettings thumbnailSettings)
         {
-            var thumbnailBitmap = new Bitmap(size.Width, size.Height);
 
-            var scaleX = size.Width / (1.0 * thumbnailSettings.Size.Width);
-            var scaleY = size.Height / (1.0 * thumbnailSettings.Size.Height);
+            var x = thumbnailSettings.Point.X > 0 ? thumbnailSettings.Point.X : 0;
+            var y = thumbnailSettings.Point.Y > 0 ? thumbnailSettings.Point.Y : 0;
+            var rect = new Rectangle(x,
+                                     y,
+                                     thumbnailSettings.Size.Width,
+                                     thumbnailSettings.Size.Height);
 
-            var rect = new Rectangle(-(int)(scaleX * (1.0 * thumbnailSettings.Point.X)),
-                                     -(int)(scaleY * (1.0 * thumbnailSettings.Point.Y)),
-                                     (int)(scaleX * mainImg.Width),
-                                     (int)(scaleY * mainImg.Height));
-
-            using (var graphic = Graphics.FromImage(thumbnailBitmap))
+            Image destRound = mainImg.Clone(x => x.Crop(rect).Resize(new ResizeOptions
             {
-                graphic.InterpolationMode = interpolationMode;
-                graphic.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                graphic.SmoothingMode = SmoothingMode.HighQuality;
-                graphic.CompositingMode = CompositingMode.SourceCopy;
-                graphic.CompositingQuality = CompositingQuality.HighQuality;
-
-                using var wrapMode = new System.Drawing.Imaging.ImageAttributes();
-                wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                graphic.DrawImage(mainImg, rect, 0, 0, mainImg.Width, mainImg.Height, GraphicsUnit.Pixel, wrapMode);
-            }
-
-            return thumbnailBitmap;
+                Size = size,
+                Mode = ResizeMode.Stretch
+            }));
+            return destRound;
         }
     }
 
@@ -104,7 +96,7 @@ namespace ASC.Web.Core.Users
     {
         public Size Size { get; set; }
         public string ImgUrl { get; set; }
-        public Bitmap Bitmap { get; set; }
+        public Image Image { get; set; }
     }
 
     public class ThumbnailsData
@@ -118,9 +110,11 @@ namespace ASC.Web.Core.Users
             UserPhotoManager = userPhotoManager;
         }
 
-        public Bitmap MainImgBitmap()
+        public Image MainImgBitmap(out IImageFormat format)
         {
-            return UserPhotoManager.GetPhotoBitmap(UserId);
+            var img = UserPhotoManager.GetPhotoImage(UserId, out var imageFormat);
+            format = imageFormat;
+            return img;
         }
 
         public string MainImgUrl()
@@ -164,8 +158,8 @@ namespace ASC.Web.Core.Users
         {
             foreach (var item in bitmaps)
             {
-                using var mainImgBitmap = MainImgBitmap();
-                UserPhotoManager.SaveThumbnail(UserId, item.Bitmap, mainImgBitmap.RawFormat);
+                using var mainImgBitmap = MainImgBitmap(out var format);
+                UserPhotoManager.SaveThumbnail(UserId, item.Image, format);
             }
         }
     }

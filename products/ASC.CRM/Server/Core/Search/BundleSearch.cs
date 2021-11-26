@@ -29,7 +29,6 @@ using System.Linq;
 
 using ASC.Common;
 using ASC.CRM.Core.EF;
-using ASC.CRM.Core.Enums;
 using ASC.ElasticSearch;
 
 namespace ASC.Web.CRM.Core.Search

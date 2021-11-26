@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 
 using ASC.Common;
@@ -37,8 +37,6 @@ using ASC.Common.Logging;
 using ASC.Core.Common.Settings;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
-
-using Autofac;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -331,20 +329,23 @@ namespace ASC.Web.CRM.Classes
 
                 var destinationURI = new Uri(String.Format("https://themoneyconverter.com/{0}/{0}.aspx", currency));
 
-                var request = (HttpWebRequest)WebRequest.Create(destinationURI);
-                request.Method = "GET";
-                request.AllowAutoRedirect = true;
-                request.MaximumAutomaticRedirections = 2;
-                request.UserAgent = "Mozilla/5.0 (Windows NT 6.1; rv:8.0) Gecko/20100101 Firefox/8.0";
-                request.UseDefaultCredentials = true;
+                var request = new HttpRequestMessage();
+                request.RequestUri = destinationURI;
+                request.Method = HttpMethod.Get;
+                request.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; rv:8.0) Gecko/20100101 Firefox/8.0");
 
-                using (var response = (HttpWebResponse)request.GetResponse())
-                using (var responseStream = new StreamReader(response.GetResponseStream()))
+                var handler = new HttpClientHandler();
+                handler.AllowAutoRedirect = true;
+                handler.MaxAutomaticRedirections = 2;
+                handler.UseDefaultCredentials = true;
+
+                var httpClient = new HttpClient(handler);
+                using var response = httpClient.Send(request);
+                using (var responseStream = new StreamReader(response.Content.ReadAsStream()))
                 {
                     var data = responseStream.ReadToEnd();
 
                     File.WriteAllText(filepath, data);
-
                 }
             }
             catch (Exception error)
