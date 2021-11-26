@@ -96,17 +96,17 @@ class ArticleMainButtonContent extends React.Component {
           {
             className: "main-button_drop-down",
             icon: "images/form.react.svg",
-            label: t("NewForm"),
+            label: t("Translations:NewForm"),
             items: [
               {
                 className: "main-button_drop-down_sub",
-                label: t("SubNewForm"),
+                label: t("Translations:SubNewForm"),
                 onClick: this.onCreate,
                 action: "docxf",
               },
               {
                 className: "main-button_drop-down_sub",
-                label: t("SubNewFormFile"),
+                label: t("Translations:SubNewFormFile"),
                 onClick: this.onShowSelectFileDialog,
               },
             ],
@@ -116,14 +116,14 @@ class ArticleMainButtonContent extends React.Component {
           {
             className: "main-button_drop-down_sub",
             icon: "images/form.react.svg",
-            label: t("NewForm"),
+            label: t("Translations:NewForm"),
             onClick: this.onCreate,
             action: "docxf",
           },
           {
             className: "main-button_drop-down_sub",
             icon: "images/form.file.react.svg",
-            label: t("NewFormFile"),
+            label: t("Translations:NewFormFile"),
             onClick: this.onShowSelectFileDialog,
           },
         ];
@@ -227,7 +227,7 @@ export default inject(
   }
 )(
   withRouter(
-    withTranslation(["Article", "Common"])(
+    withTranslation(["Article", "Common", "Translations"])(
       withLoader(observer(ArticleMainButtonContent))(<Loaders.MainButton />)
     )
   )
