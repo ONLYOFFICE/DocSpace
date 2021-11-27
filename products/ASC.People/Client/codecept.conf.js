@@ -54,7 +54,11 @@ exports.config = {
     I: './steps_file.js',
   },
   bootstrap: null,
-  mocha: {},
+  mocha: {
+    reporterOptions: {
+      mochaFile: 'output/result.xml',
+    },
+  },
   name: 'ASC.Web.People',
   plugins: {
     pauseOnFail: {},
