@@ -71,7 +71,7 @@ Scenario('Test one person and group lists render', async ({ I }) => {
 
 Scenario('Test many people and groups lists render', async ({ I }) => {
   I.mockEndpoint(Endpoints.filter, 'many');
-  I.mockEndpoint(Endpoints.group, 'empty');
+  I.mockEndpoint(Endpoints.group, 'many');
   I.openPage();
 
   I.saveScreenshot(`5.many-people-list.png`);
