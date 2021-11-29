@@ -574,6 +574,20 @@ const StyledLinkRow = styled.div`
 
   .sharing_panel-link-container {
     display: flex;
+
+    .sharing_panel-link {
+      a {
+        text-decoration: none;
+
+        ${(props) =>
+          props.isDisabled &&
+          css`
+            :hover {
+              text-decoration: none;
+            }
+          `};
+      }
+    }
   }
 
   .link-row {
@@ -763,7 +777,7 @@ const StyledSelectFilePanel = styled.div`
 
   .modal-dialog_body {
     display: grid;
-    grid-template-columns: 212px 493px;
+    grid-template-columns: 228px 477px;
     height: 295px;
     grid-template-areas: "tree files-list";
     .modal-dialog_tree-body {
@@ -809,7 +823,8 @@ const StyledFilesList = styled.div`
   }
 
   .files-list_file-owner {
-    max-width: 213px;
+    max-width: ${(props) =>
+      props.displayType === "aside" ? "213px" : "406px"};
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -828,8 +843,7 @@ const StyledFilesList = styled.div`
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    max-width: ${(props) =>
-      props.displayType === "aside" ? "213px" : "274px"};
+    max-width: ${(props) => props.displayType === "aside" && "213px"};
 
     grid-area: full-name;
     display: flex;
@@ -847,15 +861,13 @@ const StyledFilesList = styled.div`
   }
   .files-list_file-children_wrapper {
     grid-area: owner-name;
-    margin-right: 12px;
-    ${(props) =>
-      props.displayType === "aside" &&
-      css`
-        margin-top: -17px;
-      `}
+    /* margin-right: 12px; */
+    margin-top: ${(props) =>
+      props.displayType === "aside" ? "-17px" : "-8px"};
   }
   .modal-dialog_file-name {
     border-radius: 3px;
+    padding-right: 12px;
     ${(props) => props.isChecked && `background:#F8F9F9;`}
     cursor: ${(props) => (props.needRowSelection ? "pointer" : "default")};
     border-bottom: 1px solid #eceef1;
@@ -869,7 +881,7 @@ const StyledFilesList = styled.div`
           `
         : css`
             height: 41px;
-            grid-template-areas: "checked-button icon-name full-name owner-name";
+            grid-template-areas: "checked-button icon-name full-name" "checked-button icon-name owner-name";
           `}
     grid-template-columns: 22px 33px 1fr;
     padding-left: ${(props) =>
@@ -883,6 +895,9 @@ const StyledModalRowContainer = styled.div`
   min-height: 47px;
 
   .link-row__container {
+    display: flex;
+    align-items: center;
+    height: 41px;
     width: 100%;
 
     .link-row {

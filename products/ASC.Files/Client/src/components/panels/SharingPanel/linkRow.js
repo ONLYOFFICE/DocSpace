@@ -92,7 +92,7 @@ class LinkRow extends React.Component {
                 color="#333"
                 dropdownType="alwaysDashed"
                 data={options}
-                fontSize="14px"
+                fontSize="13px"
                 fontWeight={600}
                 isDisabled={isDisabled}
               >
