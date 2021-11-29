@@ -21,15 +21,17 @@ class PlaywrightHelper extends Helper {
   async mockEndpoint(endpoint, scenario) {
     const { page } = this.helpers.Playwright;
     const rootDir = 'tests/mocking/mock-data/';
-    await page.route(new RegExp(endpoint.url), (route) =>
-      route.fulfill({
-        path: path.resolve(rootDir, endpoint.baseDir, `${scenario}.json`),
-        headers: {
-          'content-type': 'application/json',
-          'access-control-allow-origin': '*',
-        },
-      }),
-    );
+    endpoint.url.forEach(async (url, index) => {
+      await page.route(new RegExp(url), (route) =>
+        route.fulfill({
+          path: path.resolve(rootDir, endpoint.baseDir, `${scenario}.json`),
+          headers: {
+            'content-type': 'application/json',
+            'access-control-allow-origin': '*',
+          },
+        }),
+      );
+    });
   }
 
   async checkRequest(url, form, baseDir, scenario) {
