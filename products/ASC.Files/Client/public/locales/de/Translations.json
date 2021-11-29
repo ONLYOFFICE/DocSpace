@@ -24,6 +24,7 @@
   "LinkCopySuccess": "Der Link wurde in die Zwischenablage kopiert",
   "Move": "Verschieben",
   "MoveToOperation": "Wird verschoben",
+  "MobileWin": "Download ONLYOFFICE Desktop Editors für Windows",
   "OwnerChange": "Besitzer ändern",
   "Presentations": "Präsentationen",
   "Restore": "Wiederherstellen",
@@ -37,5 +38,5 @@
   "TypeTitleSharePoint": "SharePoint",
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
-  "TypeTitleYandex": "Yandex.Disk"
+  "TypeTitleYandex": "Yandex.Disk",
 }
