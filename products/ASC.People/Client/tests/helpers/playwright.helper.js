@@ -35,16 +35,18 @@ class PlaywrightHelper extends Helper {
   async checkRequest(urls, form, baseDir, scenario) {
     const { page } = this.helpers.Playwright;
     const rootDir = 'tests/mocking/mock-data/';
-    urls.forEach((url, index) => {
+    urls.forEach(async (url, index) => {
       await page.route(new RegExp(url), (route) => {
         for (let key in form) {
           if (typeof form[key] === 'string') {
             assert(route.request().postDataJSON()[key] === form[key]);
           } else {
-            assert(JSON.stringify(route.request().postDataJSON()[key]) === JSON.stringify(form[key]));
+            assert(
+              JSON.stringify(route.request().postDataJSON()[key]) === JSON.stringify(form[key]),
+            );
           }
         }
-  
+
         return route.fulfill({
           path: path.resolve(rootDir, baseDir, `${scenario}.json`),
           headers: {
@@ -53,7 +55,7 @@ class PlaywrightHelper extends Helper {
           },
         });
       });
-    })
+    });
   }
 }
 
