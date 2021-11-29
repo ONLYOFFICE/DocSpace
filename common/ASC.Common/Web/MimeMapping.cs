@@ -160,6 +160,7 @@ namespace ASC.Common.Web
             AddMimeMapping(".doct", "application/doct");
             AddMimeMapping(".docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
             AddMimeMapping(".docxf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+            AddMimeMapping(".docxf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document.docxf");
             AddMimeMapping(".dot", "application/msword");
             AddMimeMapping(".dotm", "application/vnd.ms-word.template.macroEnabled.12");
             AddMimeMapping(".dotx", "application/vnd.openxmlformats-officedocument.wordprocessingml.template");
@@ -432,6 +433,7 @@ namespace ASC.Common.Web
             AddMimeMapping(".ods", "application/vnd.oasis.opendocument.spreadsheet");
             AddMimeMapping(".odt", "application/vnd.oasis.opendocument.text");
             AddMimeMapping(".oform", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+            AddMimeMapping(".oform", "application/vnd.openxmlformats-officedocument.wordprocessingml.document.oform");
             AddMimeMapping(".oga", "audio/ogg");
             AddMimeMapping(".ogg", "video/ogg");
             AddMimeMapping(".ogg", "audio/ogg");

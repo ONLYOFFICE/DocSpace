@@ -1118,6 +1118,37 @@ namespace ASC.Api.Documents
             return FilesControllerHelperInt.GetFileInfo(fileId, version);
         }
 
+        [Create("file/{fileId:int}/copyas")]
+        public FileWrapper<int> CopyFileAs(int fileId, [FromBody] CopyAsModel<int> model)
+        {
+            var file = FileStorageServiceInt.GetFile(fileId, -1);
+            var ext = FileUtility.GetFileExtension(file.Title);
+            var destExt = FileUtility.GetFileExtension(model.Title);
+
+            if (ext == destExt)
+            {
+                var createFileModel = new CreateFileModel<int>()
+                {
+                    Title = model.Title,
+                    TemplateId = fileId,
+                    EnableExternalExt = model.EnableExternalExt
+                };
+
+                return CreateFileFromBody(createFileModel);
+            }
+
+            using (var fileStream = FileConverter.Exec(file, destExt))
+            {
+                var insertFileModel = new InsertFileModel()
+                {
+                    Title = file.Title,
+                    CreateNewIfExist = true,
+                    Stream = fileStream
+                };
+                return InsertFile(model.FolderId, insertFileModel);
+            }
+        }
+
         /// <summary>
         ///     Updates the information of the selected file with the parameters specified in the request
         /// </summary>
