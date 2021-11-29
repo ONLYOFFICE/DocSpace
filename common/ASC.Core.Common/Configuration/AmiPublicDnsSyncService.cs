@@ -28,6 +28,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 
 using ASC.Common.Module;
@@ -78,16 +79,21 @@ namespace ASC.Core.Configuration
         {
             try
             {
-                var request = WebRequest.Create("http://169.254.169.254/latest/meta-data/public-hostname");
-                request.Timeout = 5000;
-                using var responce = request.GetResponse();
-                using var stream = responce.GetResponseStream();
+                var request = new HttpRequestMessage();
+                request.RequestUri = new Uri("http://169.254.169.254/latest/meta-data/public-hostname");
+                request.Method = HttpMethod.Get;
+
+                using var httpClient = new HttpClient();
+                httpClient.Timeout = TimeSpan.FromMilliseconds(5000);
+
+                using var responce = httpClient.Send(request);
+                using var stream = responce.Content.ReadAsStream();
                 using var reader = new StreamReader(stream);
                 return reader.ReadToEnd();
             }
-            catch (WebException ex)
+            catch (HttpRequestException ex)
             {
-                if (ex.Status == WebExceptionStatus.ProtocolError)
+                if (ex.StatusCode == HttpStatusCode.NotFound || ex.StatusCode == HttpStatusCode.Conflict)
                 {
                     throw;
                 }

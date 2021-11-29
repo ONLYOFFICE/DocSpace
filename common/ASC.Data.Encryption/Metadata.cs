@@ -187,15 +187,14 @@ namespace ASC.Data.Encryption
 
         public SymmetricAlgorithm GetCryptographyAlgorithm()
         {
-            return new RijndaelManaged
-            {
-                KeySize = keySize,
-                BlockSize = blockSize,
-                Key = Key,
-                IV = IV,
-                Padding = PaddingMode.PKCS7,
-                Mode = CipherMode.CBC
-            };
+            var aes = Aes.Create();
+            aes.KeySize = keySize;
+            aes.BlockSize = blockSize;
+            aes.Key = Key;
+            aes.IV = IV;
+            aes.Padding = PaddingMode.PKCS7;
+            aes.Mode = CipherMode.CBC;
+            return aes;
         }
 
         public void ComputeAndWriteHmacHash(Stream stream)
@@ -245,10 +244,7 @@ namespace ASC.Data.Encryption
         {
             var random = new byte[length];
 
-            using (var rng = new RNGCryptoServiceProvider())
-            {
-                rng.GetBytes(random);
-            }
+            random = RandomNumberGenerator.GetBytes(length);
 
             return random;
         }
@@ -269,7 +265,7 @@ namespace ASC.Data.Encryption
         {
             var hmacKey = new byte[hmacKeyLength];
 
-            using (var sha512 = new SHA512Managed())
+            using (var sha512 = SHA512.Create())
             {
                 hmacKey = sha512.ComputeHash(Key);
             }

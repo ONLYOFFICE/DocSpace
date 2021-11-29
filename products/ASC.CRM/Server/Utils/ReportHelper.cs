@@ -26,7 +26,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Net;
+using System.Net.Http;
 using System.Text.Json;
 
 using ASC.Common;
@@ -221,11 +221,12 @@ namespace ASC.Web.CRM.Classes
                          .Replace("${reportData}", JsonSerializer.Serialize(data));
         }
 
-        private void SaveReportFile(ReportState state, string url)
+        private async void SaveReportFile(ReportState state, string url)
         {
-            var data = new WebClient().DownloadData(url);
+            using var httpClient = new HttpClient();
+            var responseData = await httpClient.GetByteArrayAsync(url);
 
-            using (var stream = new System.IO.MemoryStream(data))
+            using (var stream = new System.IO.MemoryStream(responseData))
             {
                 var document = _serviceProvider.GetService<File<int>>();
 
