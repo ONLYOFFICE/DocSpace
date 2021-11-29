@@ -659,6 +659,16 @@ const StyledSelectFolderPanel = styled.div`
     .nav-thumb-horizontal {
       height: 0px !important;
     }
+
+    ${(props) =>
+      props.displayType === "modal" &&
+      css`
+        .nav-thumb-vertical {
+          margin-left: 4px !important;
+          width: 4px !important;
+        }
+      `}
+
     .scroll-body {
       overflow-x: hidden !important;
     }
@@ -689,6 +699,15 @@ const StyledSelectFilePanel = styled.div`
         margin-right: -16px;
         .nav-thumb-vertical {
           margin-left: -7px !important;
+        }
+      `}
+
+    ${(props) =>
+      props.displayType === "modal" &&
+      css`
+        .nav-thumb-vertical {
+          margin-left: 4px !important;
+          width: 4px !important;
         }
       `}
   }

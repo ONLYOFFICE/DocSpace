@@ -1118,35 +1118,30 @@ namespace ASC.Api.Documents
             return FilesControllerHelperInt.GetFileInfo(fileId, version);
         }
 
-        [Create("file/{fileId:int}/copyas")]
-        public FileWrapper<int> CopyFileAs(int fileId, [FromBody] CopyAsModel<int> model)
+        [Create("file/{fileId:int}/copyas", order: int.MaxValue - 1)]
+        public FileWrapper<int> CopyFileAsFromBody(int fileId, [FromBody] CopyAsModel<int> model)
         {
-            var file = FileStorageServiceInt.GetFile(fileId, -1);
-            var ext = FileUtility.GetFileExtension(file.Title);
-            var destExt = FileUtility.GetFileExtension(model.Title);
+            return FilesControllerHelperInt.CopyFileAs(fileId, model.DestFolderId, model.DestTitle);
+        }
 
-            if (ext == destExt)
-            {
-                var createFileModel = new CreateFileModel<int>()
-                {
-                    Title = model.Title,
-                    TemplateId = fileId,
-                    EnableExternalExt = model.EnableExternalExt
-                };
+        [Create("file/{fileId:int}/copyas", order: int.MaxValue - 1)]
+        [Consumes("application/x-www-form-urlencoded")]
+        public FileWrapper<int> CopyFileAsFromForm(int fileId, [FromForm] CopyAsModel<int> model)
+        {
+            return FilesControllerHelperInt.CopyFileAs(fileId, model.DestFolderId, model.DestTitle);
+        }
 
-                return CreateFileFromBody(createFileModel);
-            }
+        [Create("file/{fileId}/copyas", order: int.MaxValue)]
+        public FileWrapper<string> CopyFileAsFromBody(string fileId, [FromBody] CopyAsModel<string> model)
+        {
+            return FilesControllerHelperString.CopyFileAs(fileId, model.DestFolderId, model.DestTitle);
+        }
 
-            using (var fileStream = FileConverter.Exec(file, destExt))
-            {
-                var insertFileModel = new InsertFileModel()
-                {
-                    Title = file.Title,
-                    CreateNewIfExist = true,
-                    Stream = fileStream
-                };
-                return InsertFile(model.FolderId, insertFileModel);
-            }
+        [Create("file/{fileId}/copyas", order: int.MaxValue)]
+        [Consumes("application/x-www-form-urlencoded")]
+        public FileWrapper<string> CopyFileAsFromForm(string fileId, [FromBody] CopyAsModel<string> model)
+        {
+            return FilesControllerHelperString.CopyFileAs(fileId, model.DestFolderId, model.DestTitle);
         }
 
         /// <summary>
