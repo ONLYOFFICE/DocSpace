@@ -21,16 +21,13 @@ export default function withContextOptions(WrappedComponent) {
     };
 
     onClickMakeForm = () => {
-      const { convertFile, item } = this.props;
+      const { copyAsAction, item, formfillingDocs } = this.props;
+      const { title, id, folderId, fileExst } = item;
 
-      const convertItem = {
-        fileId: item.id,
-        toFolderId: item.folderId,
-        action: "convert",
-        fileInfo: item,
-      };
+      const newTitle =
+        title.substring(0, title.length - fileExst.length) + formfillingDocs[0];
 
-      convertFile(convertItem);
+      copyAsAction(id, newTitle, folderId);
     };
 
     onOpenLocation = () => {
@@ -565,7 +562,7 @@ export default function withContextOptions(WrappedComponent) {
       },
       { item }
     ) => {
-      const { openDocEditor, fileActionStore } = filesStore;
+      const { openDocEditor, fileActionStore, formatsStore } = filesStore;
       const {
         deleteItemAction,
         downloadAction,
@@ -594,7 +591,8 @@ export default function withContextOptions(WrappedComponent) {
       const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
       const { setAction, type, extension, id } = fileActionStore;
       const { setMediaViewerData } = mediaViewerDataStore;
-      const { convertFile } = uploadDataStore;
+      const { copyAsAction } = uploadDataStore;
+      const { formfillingDocs } = formatsStore.docserviceStore;
 
       const { isRecycleBinFolder, isShare } = treeFoldersStore;
       const isShareFolder = isShare(item.rootFolderType);
@@ -633,7 +631,8 @@ export default function withContextOptions(WrappedComponent) {
         setDeleteDialogVisible,
         setUnsubscribe,
         isDesktop: isDesktopClient,
-        convertFile,
+        copyAsAction,
+        formfillingDocs,
       };
     }
   )(observer(WithContextOptions));

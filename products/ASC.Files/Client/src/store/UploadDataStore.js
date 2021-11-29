@@ -15,6 +15,7 @@ import {
   getFileConversationProgress,
   copyToFolder,
   moveToFolder,
+  fileCopyAs,
 } from "@appserver/common/api/files";
 
 class UploadDataStore {
@@ -912,6 +913,33 @@ class UploadDataStore {
         setSecondaryProgressBarData({
           visible: true,
           alert: true,
+        });
+        setTimeout(() => clearPrimaryProgressData(), TIMEOUT);
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+        return Promise.reject(err);
+      });
+  };
+
+  copyAsAction = (fileId, title, folderId, enableExternalExt) => {
+    const { clearPrimaryProgressData } = this.primaryProgressDataStore;
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = this.secondaryProgressDataStore;
+
+    return fileCopyAs(fileId, title, folderId, enableExternalExt)
+      .then((res) => {
+        const data = res[0] ? res[0] : null;
+        const pbData = { icon: "duplicate" };
+        return this.loopFilesOperations(data, pbData).then(() =>
+          this.moveToCopyTo(destFolderId, pbData, true)
+        );
+      })
+      .catch((err) => {
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+          icon: "duplicate",
         });
         setTimeout(() => clearPrimaryProgressData(), TIMEOUT);
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
