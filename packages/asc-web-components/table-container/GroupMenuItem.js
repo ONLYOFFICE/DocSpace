@@ -45,6 +45,7 @@ const GroupMenuItem = ({ item }) => {
   return (
     <StyledButton
       label={label}
+      title={label}
       isDisabled={disabled}
       onClick={onClick}
       icon={<ReactSVG src={iconUrl} className="combo-button_selected-icon" />}
