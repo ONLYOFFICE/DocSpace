@@ -510,13 +510,13 @@ const Base = {
     },
 
     closeButton: {
-      width: "17px",
-      height: "17px",
-      minWidth: "17px",
-      minHeight: "17px",
+      width: "14px",
+      height: "14px",
+      minWidth: "14px",
+      minHeight: "14px",
 
       right: "16px",
-      top: "11px",
+      top: "13px",
       hoverColor: grayMain,
     },
   },

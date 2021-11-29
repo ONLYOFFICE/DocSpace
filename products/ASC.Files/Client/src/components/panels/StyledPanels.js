@@ -574,6 +574,20 @@ const StyledLinkRow = styled.div`
 
   .sharing_panel-link-container {
     display: flex;
+
+    .sharing_panel-link {
+      a {
+        text-decoration: none;
+
+        ${(props) =>
+          props.isDisabled &&
+          css`
+            :hover {
+              text-decoration: none;
+            }
+          `};
+      }
+    }
   }
 
   .link-row {
@@ -809,7 +823,8 @@ const StyledFilesList = styled.div`
   }
 
   .files-list_file-owner {
-    max-width: 213px;
+    max-width: ${(props) =>
+      props.displayType === "aside" ? "213px" : "406px"};
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -880,6 +895,9 @@ const StyledModalRowContainer = styled.div`
   min-height: 47px;
 
   .link-row__container {
+    display: flex;
+    align-items: center;
+    height: 41px;
     width: 100%;
 
     .link-row {
