@@ -49,7 +49,6 @@ Scenario('Default root folders render test', ({ I }) => {
 
   if (deviceType !== 'desktop') I.openArticle();
   I.click('Shared with me');
-  I.wait(2);
   I.see('Shared with me');
   I.saveScreenshot(`2.empty-shared-with-me-tab.png`);
   if (!isModel) {
@@ -61,7 +60,6 @@ Scenario('Default root folders render test', ({ I }) => {
 
   if (deviceType !== 'desktop') I.openArticle();
   I.click('Favorites');
-  I.wait(2);
   I.see('Favorites');
   I.saveScreenshot(`3.empty-favorites-tab.png`);
   if (!isModel) {
@@ -73,7 +71,6 @@ Scenario('Default root folders render test', ({ I }) => {
 
   if (deviceType !== 'desktop') I.openArticle();
   I.click('Recent');
-  I.wait(2);
   I.see('Recent');
   I.saveScreenshot(`4.empty-recent-tab.png`);
   if (!isModel) {
@@ -85,7 +82,6 @@ Scenario('Default root folders render test', ({ I }) => {
 
   if (deviceType !== 'desktop') I.openArticle();
   I.click('Private Room');
-  I.wait(2);
   I.see('Private Room');
   I.saveScreenshot(`5.empty-private-room-tab.png`);
   if (!isModel) {
@@ -97,7 +93,6 @@ Scenario('Default root folders render test', ({ I }) => {
 
   if (deviceType !== 'desktop') I.openArticle();
   I.click('Common');
-  I.wait(2);
   I.see('Common');
   I.saveScreenshot(`6.empty-common-tab.png`);
   if (!isModel) {
@@ -109,7 +104,6 @@ Scenario('Default root folders render test', ({ I }) => {
 
   if (deviceType !== 'desktop') I.openArticle();
   I.click('Trash');
-  I.wait(2);
   I.see('Trash');
   I.saveScreenshot(`7.empty-trash-tab.png`);
   if (!isModel) {
@@ -158,7 +152,6 @@ Scenario('Default settings render test', ({ I }) => {
   if (deviceType !== 'desktop') I.openArticle();
   I.click('Connected clouds');
   if (deviceType !== 'desktop') I.forceClick('.backdrop-active');
-  I.wait(2);
   I.see('Connected clouds');
   I.saveScreenshot(`10.default-connected-clouds-tab.png`);
   if (!isModel) {
