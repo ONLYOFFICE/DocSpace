@@ -5,7 +5,7 @@ const deviceType = process.env.DEVICE_TYPE || 'desktop';
 const isModel = !!process.env.MODEL;
 
 const featureName = isModel
-  ? `Create screenshots model on '${browser}' with '${deviceType}' dimension (render)`
+  ? `Render people on '${browser}' with '${deviceType}' dimension (model)`
   : `Render people on '${browser}' with '${deviceType}' dimension`;
 
 Feature(featureName);

@@ -6,7 +6,7 @@ const deviceType = process.env.DEVICE_TYPE || 'desktop';
 const isModel = !!process.env.MODEL;
 
 const featureName = isModel
-  ? `Create screenshots actions model on '${browser}' with '${deviceType}' dimension (actions)`
+  ? `People actions on '${browser}' with '${deviceType}' dimension (model)`
   : `People actions on '${browser}' with '${deviceType}' dimension`;
 
 const userForm = {
