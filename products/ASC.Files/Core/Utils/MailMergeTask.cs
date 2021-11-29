@@ -27,6 +27,7 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Web;
 
 using ASC.Common;
@@ -132,19 +133,12 @@ namespace ASC.Web.Files.Utils
                                              mailMergeTask.MessageId,
                                              mailMergeTask.AttachTitle);
 
-            var request = (HttpWebRequest)WebRequest.Create(BaseCommonLinkUtility.GetFullAbsolutePath(apiUrlAttach));
-            request.Method = "POST";
-            request.ContentType = MimeMapping.GetMimeMapping(mailMergeTask.AttachTitle);
-            request.ContentLength = mailMergeTask.Attach.Length;
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(BaseCommonLinkUtility.GetFullAbsolutePath(apiUrlAttach));
+            request.Method = HttpMethod.Post;
             request.Headers.Add("Authorization", SecurityContext.AuthenticateMe(SecurityContext.CurrentAccount.ID));
-
-            const int bufferSize = 2048;
-            var buffer = new byte[bufferSize];
-            int readed;
-            while ((readed = mailMergeTask.Attach.Read(buffer, 0, bufferSize)) > 0)
-            {
-                request.GetRequestStream().Write(buffer, 0, readed);
-            }
+            request.Headers.Add("Content-Type", MimeMapping.GetMimeMapping(mailMergeTask.AttachTitle));
+            request.Content = new StreamContent(mailMergeTask.Attach);
 
             // hack. http://ubuntuforums.org/showthread.php?t=1841740
             if (WorkContext.IsMono)
@@ -153,10 +147,11 @@ namespace ASC.Web.Files.Utils
             }
 
             string responseAttachString;
-            using (var response = request.GetResponse())
-            using (var stream = response.GetResponseStream())
+            using var httpClient = new HttpClient();
+            using var response = httpClient.Send(request);
+            using (var stream = response.Content.ReadAsStream())
             {
-                if (stream == null) throw new WebException("Could not get an answer");
+                if (stream == null) throw new HttpRequestException("Could not get an answer");
                 using var reader = new StreamReader(stream);
                 responseAttachString = reader.ReadToEnd();
             }

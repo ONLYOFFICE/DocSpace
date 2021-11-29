@@ -24,10 +24,12 @@
 */
 
 
+
 using System;
-using System.Drawing;
 
 using ASC.Core.Common.Settings;
+
+using SixLabors.ImageSharp;
 
 namespace ASC.Web.Core.Users
 {

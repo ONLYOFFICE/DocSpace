@@ -143,10 +143,7 @@ namespace ASC.Core.Encryption
             var array2 = new char[length];
             var num = 0;
 
-            using (var rng = new RNGCryptoServiceProvider())
-            {
-                rng.GetBytes(array);
-            }
+            array = RandomNumberGenerator.GetBytes(length);
 
             for (var i = 0; i < length; i++)
             {

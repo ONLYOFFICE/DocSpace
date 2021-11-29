@@ -30,7 +30,6 @@ using System.Linq;
 using ASC.Web.Core.Calendars;
 using ASC.Core;
 using ASC.Core.Users;
-using ASC.Api.Core;
 using ASC.Web.Core.Users;
 using ASC.Common.Utils;
 using System.Runtime.Serialization;

@@ -36,7 +36,6 @@ using ASC.Core.Common.Settings;
 using ASC.CRM.ApiModels;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
-using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;

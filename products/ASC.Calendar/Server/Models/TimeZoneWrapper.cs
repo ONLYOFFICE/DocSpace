@@ -25,13 +25,8 @@
 
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.Serialization;
 using ASC.Common.Utils;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using ASC.Common;
 
 namespace ASC.Calendar.Models
