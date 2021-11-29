@@ -7,9 +7,8 @@
     "ByCreationDate": "Vytvoøeno",
     "ByLastModifiedDate": "Upraveno",
     "ByTitle": "Název",
-    "CommonEmptyContainerDescription": "Sekce 'Sdílené' obsahuje soubory, které správce portálu sdílí se všemi uživateli. Soubory v ní mohou vytváøet pouze správci portálu. Uživatelùm lze v rámci sekce udìlit plný pøístup k urèité složce. Tímto zpùsobem budou moci vytváøet/nahrávat soubory právì v této složce.  ",
-    "ContainsSpecCharacter"
-    (ObsahujeSpecifickýznak): "Název nesmí obsahovat žádný z následujících znakù: *+:\"<>?|/",
+    "CommonEmptyContainerDescription": "Sekce 'Sdílené' obsahuje soubory, které správce portálu sdílí se všemi uživateli. Soubory v ní mohou vytváøet pouze správci portálu. Uživatelùm lze v rámci sekce udìlit plný pøístup k urèité složce. Tímto zpùsobem budou moci vytváøet/nahrávat soubory právì v této složce.",
+    "ContainsSpecCharacter": "Název nesmí obsahovat žádný z následujících znakù: *+:\"<>?|/",
     "Convert": "Konvertovat",
     "CopyItem": "<strong>{{title}}</strong> zkopírováno",
     "CopyItems": "Prvky <strong>{{qty}}</strong> zkopírovany",
