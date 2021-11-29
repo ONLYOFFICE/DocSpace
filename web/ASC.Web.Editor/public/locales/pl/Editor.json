@@ -1,0 +1,11 @@
+﻿{
+    "FileLocation": "Otwórz lokalizację pliku",
+    "FileName": "Nazwa pliku",
+    "FolderForSave": "Folder do zapisu",
+    "OpenSavedDocument": "Open saved document in new tab",
+    "SelectFilesType": "Select files of type: {{fileType}}",
+    "ImageFileType": "obrazy",
+    "DocumentsFileType": "dokumenty",
+    "MailMergeFileType": "Select the file in XLSX format",
+    "SelectFileTitle": "Wybierz źródło danych"
+}

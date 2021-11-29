@@ -1,0 +1,11 @@
+{
+    "FileLocation": "Open bestandslocatie",
+    "FileName": "Bestandsnaam",
+    "FolderForSave": "Map voor opslaan",
+    "OpenSavedDocument": "Open bewaard document in nieuwe tab",
+    "SelectFilesType": "Select files of type: {{fileType}}",
+    "ImageFileType": "afbeeldingen",
+    "DocumentsFileType": "documenten",
+    "MailMergeFileType": "Selecteer het bestand in XLSX-formaat",
+    "SelectFileTitle": "Gegevensbron selecteren"
+}

@@ -1,0 +1,20 @@
+﻿{
+    "Authorization": "Εξουσιοδότηση",
+    "CookieSettingsTitle": "Session lifetime",
+    "ForgotPassword": "Ξεχάσατε τον κωδικό σας;",
+    "LoginButton": "Είσοδος",
+    "MessageAuthorize": "Συνδεθείτε για να συνεχίσετε",
+    "MessageEmailConfirmed": "Your email was activated successfully.",
+    "MessageSendPasswordRecoveryInstructionsOnEmail": "Please, enter the email you used for registration. The password recovery instructions will be sent to it.",
+    "Or": "ή",
+    "PasswordRecoveryTitle": "Ανάκτηση κωδικού πρόσβασης",
+    "Register": "Register",
+    "RegisterSendButton": "Send request",
+    "RegisterTextBodyAfterDomainsList": "To register, enter your email and click Send request. An activation link will be sent to you.",
+    "RegisterTextBodyBeforeDomainsList": "Registration is available to users with an email account at",
+    "RegisterTitle": "Registration request",
+    "RegistrationEmail": "Your registration email",
+    "RegistrationEmailWatermark": "Email",
+    "Remember": "Remember me",
+    "RememberHelper": "The default session lifetime is 20 minutes. Check this option to set it to 1 year. To set your own value, go to Settings."
+}

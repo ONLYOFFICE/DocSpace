@@ -1,0 +1,11 @@
+﻿{
+    "FileLocation": "Dosya konumunu aç",
+    "FileName": "Dosya Adı",
+    "FolderForSave": "Kaydetmek için klasör",
+    "OpenSavedDocument": "Kaydedilen belgeyi yeni sekmede aç",
+    "SelectFilesType": "Şu türdeki dosyaları seçin: {{fileType}}",
+    "ImageFileType": "görüntüler",
+    "DocumentsFileType": "dökümanlar",
+    "MailMergeFileType": "Select the file in XLSX format",
+    "SelectFileTitle": "Veri Kaynağını Seçin"
+}

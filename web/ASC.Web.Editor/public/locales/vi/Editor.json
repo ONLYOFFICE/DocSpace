@@ -1,0 +1,11 @@
+﻿{
+    "FileLocation": "Đi tới Tài liệu",
+    "FileName": "Tên file",
+    "FolderForSave": "Folder for save",
+    "OpenSavedDocument": "Open saved document in new tab",
+    "SelectFilesType": "Select files of type: {{fileType}}",
+    "ImageFileType": "hình ảnh",
+    "DocumentsFileType": "tài liệu",
+    "MailMergeFileType": "Select the file in XLSX format",
+    "SelectFileTitle": "Select Data Source"
+}

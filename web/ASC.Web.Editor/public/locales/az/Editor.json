@@ -1,0 +1,12 @@
+﻿{
+  "FileLocation": "Open file location",
+  "FileName": "Fayl adı",
+  "FolderForSave": "Folder for save",
+  "OpenSavedDocument": "Yadda saxlanmış sənədi yeni tabda açın",
+  "SelectFilesType": "Bu növ faylları seçin: {{fileType}}",
+  "ImageFileType": "Şəkillər",
+  "DocumentsFileType": "Sənədlər",
+  "MailMergeFileType": "Select the file in XLSX format",
+  "SelectFileTitle": "Select Data Source"
+
+}

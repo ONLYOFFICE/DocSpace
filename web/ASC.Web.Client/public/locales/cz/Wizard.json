@@ -1,0 +1,22 @@
+{
+  "ChangeEmailTitle": "Zmìnit e-mail",
+  "Desc": "Nastavte prosím registraèní údaje portálu.",
+  "Domain": "Domain:",
+  "ErrorEmail": "Neplatná e-mailová adresa",
+  "ErrorInitWizard": "Služba je momentálnì nedostupná, zkuste to prosím pozdìji.",
+  "ErrorInitWizardButton": "Zkuste to znovu",
+  "ErrorLicenseBody": "Licence není platná. Ujistìte se, že jste vybrali správný soubor."
+  "ErrorLicenseRead": "Pøijmìte licenèní smlouvu",
+  "ErrorLicenseTitle": "Chyba pøi naèítání",
+  "ErrorParamsBody": "Nesprávnì zadané údaje:",
+  "ErrorParamsTitle": "Chyba registrace",
+  "ErrorPassword": "Heslo nesplòuje požadavky",
+  "ErrorUploadLicenseFile": "Vyberte licenèní soubor",
+  "GeneratePassword": "Generovat heslo",
+  "License": "Pøijmìte podmínky ",
+  "LicenseLink": "Licenèní ujednání",
+  "PlaceholderLicense": "Váš licenèní soubor",
+  "Timezone": "Èasové pásmo:",
+  "WelcomeTitle": "Vítejte na svém portálu!",
+  "WizardTitle": "Nastavení vašeho portálu"
+}

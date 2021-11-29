@@ -1,0 +1,23 @@
+{
+  "ChangePasswordSuccess": "Heslo bylo úspìšnì zmìnìno",
+  "ConfirmOwnerPortalSuccessMessage": "Vlastník portálu byl úspìšnì zmìnìn. Za 10 sekund budete pøesmìrováni",
+  "ConfirmOwnerPortalTitle": "Potvrïte prosím, že chcete zmìnit vlastníka portálu na {{newOwner}}",
+  "DeleteProfileBtn": "Smazat mùj úèet",
+  "DeleteProfileConfirmation": "Pozor! Chystáte se smazat svùj úèet.",
+  "DeleteProfileConfirmationInfo": "Kliknutím na \"Smazat mùj úèet\" souhlasíte s našimi Zásadami ochrany osobních údajù.",
+  "DeleteProfileSuccessMessage": "Your Váš úèet byl úspìšnì smazán.",
+  "DeleteProfileSuccessMessageInfo": "Více informací o vymazání vašeho úètu a údajù s ním spojených naleznete v našich Zásadách ochrany osobních údajù.",
+  "EmailAndPasswordCopiedToClipboard": "Email a heslo zkopírované do schránky",
+  "EnterAppCodeDescription": "Zadejte šestimístný kód vygenerovaný z vaší aplikace. Pokud nemáte pøístup k telefonu, použijte záložní kódy.",
+  "EnterAppCodeTitle": "Zadejte kód z ovìøovací aplikace",
+  "EnterCodePlaceholder": "Zadejte kód",
+  "FirstName": "Køestní jméno",
+  "InviteTitle": "Zveme vás, abyste se pøipojili k tomuto portálu!",
+  "LoginRegistryButton": "Pøipojit se",
+  "LoginWithAccount": "nebo se pøihlaste pomocí:",
+  "PassworResetTitle": "Nyní si mùžete vytvoøit nové heslo.",
+  "SetAppButton": "Pøipojit aplikaci",
+  "SetAppDescription": "Dvoufázové ovìøování je povoleno. Nakonfigurujte aplikaci autentizátoru, abyste mohli pokraèovat v práci na portálu. Mùžete použít aplikaci Google Authenticator pro <1>Android</1> a <4>iOS</4> nebo Authenticator pro <8>Windows Phone</8>.",
+  "SetAppInstallDescription": "Chcete-li aplikaci pøipojit, naskenujte kód QR nebo ruènì zadejte svùj tajný klíè <1>{{{ secretKey }}</1> a poté zadejte šestimístný kód z aplikace do pole níže.",
+  "SetAppTitle": "Nastavení aplikace autentizaèního zaøízení"
+}

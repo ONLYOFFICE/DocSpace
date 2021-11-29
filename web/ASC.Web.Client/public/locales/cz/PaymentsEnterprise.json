@@ -1,0 +1,21 @@
+{
+  "AccessSubscription": "Vaše pøedplatné podpory a aktualizací vyprší dne",
+  "AdvantageEditor": "{{organizationName}} editory s profesionálními funkcemi",
+  "AdvantagePrivateRooom": "Private Soukromá místnost pro šifrovanou spolupráci",
+  "AdvantageProfessionalTechSupport": "1 rok služby profesionální technické podpory",
+  "AdvantageUpdates": "Pravidelné aktualizace funkcí a zabezpeèení po dobu 1 roku",
+  "AdvantageWebEditors": "Mobilní webové editory",
+  "ButtonBuyLicense": "Koupit nyní",
+  "ButtonUploadLicense": "Nahrát licenci",
+  "ContactEmail": "V pøípadì jakýchkoli dotazù ohlednì nákupu nás kontaktujte na adrese ",
+  "ContactUrl": "Pro øešení technických problémù použijt",
+  "ErrorLoadingLicense": "Ujistìte se, že jste vybrali správný soubor",
+  "ExpiryPaidLicense": "Podpora pro vaši licenci již není k dispozici od",
+  "ExpiryTrialLicense": "Dìkujeme, že jste vyzkoušeli {{organizationName}}!",
+  "HeaderExpiredTrialLicense": "Bezplatné zkušební období vypršelo",
+  "HeaderLicense": "Používáte Enterprise Edition {{organizationName}}",
+  "PaymentsTitle": "Platby",
+  "RenewalLicense": "Pokud jste již zakoupili obnovení, nahrajte licenèní soubor.",
+  "SubscriptionRenewedLicense": "Obnovte pøedplatné a získejte:",
+  "SuccessLoadingLicense": "Licence byla úspìšnì aktivována"
+}

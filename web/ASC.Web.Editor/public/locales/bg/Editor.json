@@ -1,0 +1,11 @@
+{
+    "FileLocation": "Mестоположението на файла",
+    "FileName": "Име на файла",
+    "FolderForSave": "Папка за запис",
+    "OpenSavedDocument": "Отворете записания документ в нов раздел",
+    "SelectFilesType": "Изберете файлове от тип: {{fileType}}",
+    "ImageFileType": "cнимки",
+    "DocumentsFileType": "документи",
+    "MailMergeFileType": "Select the file in XLSX format",
+    "SelectFileTitle": "Изберете източник на данни"
+}

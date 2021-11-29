@@ -1,0 +1,11 @@
+{
+    "FileLocation": "Перейти до документів",
+    "FileName": "Ім'я файлу",
+    "FolderForSave": "Folder for save",
+    "OpenSavedDocument": "Open saved document in new tab",
+    "SelectFilesType": "Select files of type: {{fileType}}",
+    "ImageFileType": "картинки",
+    "DocumentsFileType": "документи",
+    "MailMergeFileType": "Select the file in XLSX format",
+    "SelectFileTitle": "Виберати джерело даних"
+}

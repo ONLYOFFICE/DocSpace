@@ -1,0 +1,11 @@
+﻿{
+    "FileLocation": "Otevřít umístění souboru",
+    "FileName": "Název souboru",
+    "FolderForSave": "Složka pro uložení",
+    "OpenSavedDocument": "Open saved document in new tab",
+    "SelectFilesType": "Select files of type: {{fileType}}",
+    "ImageFileType": "obrázky",
+    "DocumentsFileType": "dokumenty",
+    "MailMergeFileType": "Select the file in XLSX format",
+    "SelectFileTitle": "Select Data Source"
+}

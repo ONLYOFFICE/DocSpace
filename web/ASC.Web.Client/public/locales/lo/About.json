@@ -1,5 +1,9 @@
 {
-  "AboutCompanyAddressTitle": "ທີ່ຢູ່",
-  "AboutCompanyEmailTitle": "ອີເມວ",
-  "AboutCompanyTelTitle": "ໂທ."
+    "AboutCompanyAddressTitle": "ທີ່ຢູ່",
+    "AboutCompanyEmailTitle": "ອີເມວ",
+    "AboutCompanyTelTitle": "ໂທ.",
+    "AboutHeader": "About this program",
+    "DocumentManagement": "Document management",
+    "OnlineEditors": "Online editors",
+    "SoftwareLicense": "Software license"
 }
