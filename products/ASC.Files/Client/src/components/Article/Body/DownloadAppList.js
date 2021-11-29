@@ -49,6 +49,7 @@ const DownloadAppListContainer = ({ t }) => {
           isfill={true}
           color="#A3A9AE"
           hoverColor="#000000"
+          title={t("Translations:MobileMac")}
         />
         <IconButton
           onClick={() => window.open(desktopLink)}
