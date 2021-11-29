@@ -50,6 +50,7 @@ module.exports = function () {
     addUserInNewGroup: function () {
       this.click('#users-selector_button');
       this.click({ react: 'Checkbox', props: { value: '2' } });
+      this.click({ react: 'Checkbox', props: { value: '3' } });
       this.click('Add members');
     },
 
@@ -59,19 +60,28 @@ module.exports = function () {
       this.fillField('lastName', form.lastName);
       this.fillField('email', form.email);
       this.fillField('password', form.password);
+      this.click({ react: 'div', props: { className: 'append' } });
+      this.click({ react: 'ComboButton', props: { optionsLength: 12 } });
+      this.click({ react: 'DropDownItem', props: { label: 'January' } });
+      this.click({ react: 'ComboButton', props: { optionsLength: 122 } });
+      this.click({ react: 'DropDownItem', props: { label: '2020' } });
+      this.click('.calendar-month_weekend');
+      this.seeElement({ react: 'InputBlock', props: { value: '01/04/2020' } });
+      this.fillField('location', form.location);
+      this.fillField('title', 'Test title');
+      this.fillField('notes', form.notes);
       this.click({ react: 'Button', props: { label: 'Save' } });
     },
 
     checkText: function (form, type) {
-      this.wait(3);
-      this.see('Done');
-      this.see('Changes saved successfully');
+      this.wait(2);
       this.see(`${form.firstName} ${form.lastName}`);
       this.see('Edit profile');
       this.see(type);
       this.see(form.email);
       this.see('Male');
-      this.see('11/17/2021');
+      this.see('1/16/2020');
+      this.see('1/15/2021');
     },
   });
 };
