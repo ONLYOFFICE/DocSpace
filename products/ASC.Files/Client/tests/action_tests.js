@@ -1,12 +1,12 @@
 const Endpoints = require('./mocking/endpoints.js');
 
-const browser = process.env.profile || 'chromium';
+const browser = process.env.profile !== 'undefined' ? process.env.profile : 'chromium';
 const deviceType = process.env.DEVICE_TYPE || 'desktop';
 const isModel = !!process.env.MODEL;
 
 const featureName = isModel
-  ? `Create screenshots model on '${browser}' with '${deviceType}' dimension (actions)`
-  : `Testing actions files on '${browser}' with '${deviceType}' dimension`;
+  ? `Files actions on '${browser}' with '${deviceType}' dimension (model)`
+  : `Files actions on '${browser}' with '${deviceType}' dimension`;
 
 const renamedFolderTitle = 'Renamed folder';
 
