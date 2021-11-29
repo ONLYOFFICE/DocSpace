@@ -79,6 +79,7 @@ const DownloadAppListContainer = ({ t }) => {
           isfill={true}
           color="#A3A9AE"
           hoverColor="#000000"
+          title={t("Translations:MobileIos")}
         />
       </div>
     </StyledDownloadAppList>
