@@ -759,10 +759,10 @@ const Base = {
     span: { maxWidth: "300px" },
 
     caret: {
-      width: "8px",
-      minWidth: "8px",
-      height: "8px",
-      minHeight: "8px",
+      width: "5px",
+      minWidth: "5px",
+      height: "4px",
+      minHeight: "4px",
       marginLeft: "5px",
       marginTop: "-4px",
       right: "6px",
