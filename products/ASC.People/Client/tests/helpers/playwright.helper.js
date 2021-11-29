@@ -21,39 +21,37 @@ class PlaywrightHelper extends Helper {
   async mockEndpoint(endpoint, scenario) {
     const { page } = this.helpers.Playwright;
     const rootDir = 'tests/mocking/mock-data/';
-    await page.route(new RegExp(endpoint.url), (route) =>
-      route.fulfill({
-        path: path.resolve(rootDir, endpoint.baseDir, `${scenario}.json`),
-        headers: {
-          'content-type': 'application/json',
-          'access-control-allow-origin': '*',
-        },
-      }),
-    );
-  }
-
-  async checkRequest(urls, form, baseDir, scenario) {
-    const { page } = this.helpers.Playwright;
-    const rootDir = 'tests/mocking/mock-data/';
-    urls.forEach(async (url, index) => {
-      await page.route(new RegExp(url), (route) => {
-        for (let key in form) {
-          if (typeof form[key] === 'string') {
-            assert(route.request().postDataJSON()[key] === form[key]);
-          } else {
-            assert(
-              JSON.stringify(route.request().postDataJSON()[key]) === JSON.stringify(form[key]),
-            );
-          }
-        }
-
-        return route.fulfill({
-          path: path.resolve(rootDir, baseDir, `${scenario}.json`),
+    endpoint.url.forEach(async (url, index) => {
+      await page.route(new RegExp(url), (route) =>
+        route.fulfill({
+          path: path.resolve(rootDir, endpoint.baseDir, `${scenario}.json`),
           headers: {
             'content-type': 'application/json',
             'access-control-allow-origin': '*',
           },
-        });
+        }),
+      );
+    });
+  }
+
+  async checkRequest(url, form, baseDir, scenario) {
+    const { page } = this.helpers.Playwright;
+    const rootDir = 'tests/mocking/mock-data/';
+    await page.route(new RegExp(url), (route) => {
+      for (let key in form) {
+        if (typeof form[key] === 'string') {
+          assert(route.request().postDataJSON()[key] === form[key]);
+        } else {
+          assert(JSON.stringify(route.request().postDataJSON()[key]) === JSON.stringify(form[key]));
+        }
+      }
+
+      return route.fulfill({
+        path: path.resolve(rootDir, baseDir, `${scenario}.json`),
+        headers: {
+          'content-type': 'application/json',
+          'access-control-allow-origin': '*',
+        },
       });
     });
   }
