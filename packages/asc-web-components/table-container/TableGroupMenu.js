@@ -46,6 +46,7 @@ const TableGroupMenu = (props) => {
           selectedOption={{}}
           manualY="42px"
           manualX="-32px"
+          title={t("Translations:TitleSelectFile")}
         />
         <div className="table-container_group-menu-separator" />
         <StyledScrollbar>
