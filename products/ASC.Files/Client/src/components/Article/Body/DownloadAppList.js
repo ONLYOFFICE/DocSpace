@@ -69,6 +69,7 @@ const DownloadAppListContainer = ({ t }) => {
           isfill={true}
           color="#A3A9AE"
           hoverColor="#9BD71C"
+          title={t("Translations:MobileAndroid")}
         />
         <IconButton
           onClick={() => window.open(iosLink)}
