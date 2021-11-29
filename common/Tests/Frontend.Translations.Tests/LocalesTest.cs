@@ -800,8 +800,8 @@ namespace Frontend.Translations.Tests
                 exists = true;
 
                 var translated = lng.TotalKeysCount == expectedTotalKeysCount
-                    ? Math.Round(100f - (lng.EmptyKeysCount * 100f / expectedTotalKeysCount))
-                    : Math.Round(lng.TotalKeysCount * 100f / expectedTotalKeysCount);
+                    ? Math.Round(100f - (lng.EmptyKeysCount * 100f / expectedTotalKeysCount), 1)
+                    : Math.Round(lng.TotalKeysCount * 100f / expectedTotalKeysCount, 1);
 
                 message += $"{++i}. Language '{lng.Language}' translated by '{translated}%'\r\n";
             }
