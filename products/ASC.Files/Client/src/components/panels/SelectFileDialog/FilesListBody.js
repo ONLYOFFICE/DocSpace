@@ -156,7 +156,7 @@ const FilesListBody = ({
               <List
                 height={displayType === "aside" ? height : listHeight}
                 itemCount={itemCount}
-                itemSize={displayType === "aside" ? 56 : 41}
+                itemSize={displayType === "aside" ? 56 : 50}
                 onItemsRendered={onItemsRendered}
                 ref={ref}
                 width={width + 8}
