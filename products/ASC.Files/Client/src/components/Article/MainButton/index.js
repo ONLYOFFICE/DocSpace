@@ -25,7 +25,8 @@ class ArticleMainButtonContent extends React.Component {
   };
 
   onShowSelectFileDialog = () => {
-    const { setSelectFileDialogVisible } = this.props;
+    const { setSelectFileDialogVisible, hideArticle } = this.props;
+    hideArticle();
     setSelectFileDialogVisible(true);
   };
 
@@ -208,11 +209,12 @@ ArticleMainButtonContent.propTypes = {
 };
 
 export default inject(
-  ({ filesStore, uploadDataStore, treeFoldersStore, dialogsStore }) => {
+  ({ auth, filesStore, uploadDataStore, treeFoldersStore, dialogsStore }) => {
     const { firstLoad, fileActionStore, filter, canCreate } = filesStore;
     const { isPrivacyFolder } = treeFoldersStore;
     const { startUpload } = uploadDataStore;
     const { setSelectFileDialogVisible } = dialogsStore;
+    const { hideArticle } = auth.settingsStore;
     return {
       homepage: config.homepage,
       firstLoad,
@@ -223,6 +225,7 @@ export default inject(
       setAction: fileActionStore.setAction,
       startUpload,
       setSelectFileDialogVisible,
+      hideArticle,
     };
   }
 )(
