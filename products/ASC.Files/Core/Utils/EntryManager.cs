@@ -1008,7 +1008,13 @@ namespace ASC.Web.Files.Utils
             if (file.RootFolderType == FolderType.TRASH) throw new Exception(FilesCommonResource.ErrorMassage_ViewTrashItem);
 
             var currentExt = file.ConvertedExtension;
-            if (string.IsNullOrEmpty(newExtension)) newExtension = FileUtility.GetInternalExtension(file.Title);
+            if (string.IsNullOrEmpty(newExtension))
+            {
+                if (currentExt != FileUtility.MasterFormExtension)
+                    newExtension = FileUtility.GetInternalExtension(file.Title);
+                else
+                    newExtension = currentExt;
+            }
 
             var replaceVersion = false;
             if (file.Forcesave != ForcesaveType.None)
@@ -1037,7 +1043,12 @@ namespace ASC.Web.Files.Utils
                     {
                         path = FileConstant.NewDocPath + "en-US/";
                     }
-                    path += "new" + FileUtility.GetInternalExtension(file.Title);
+
+                    var fileExt = currentExt != FileUtility.MasterFormExtension
+                        ? FileUtility.GetInternalExtension(file.Title)
+                        : currentExt;
+
+                    path += "new" + fileExt;
 
                     //todo: think about the criteria for saving after creation
                     if (!storeTemplate.IsFile(path) || file.ContentLength != storeTemplate.GetFileSize("", path))
