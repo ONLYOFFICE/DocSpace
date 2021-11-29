@@ -1,0 +1,13 @@
+{
+    "NewDocument": "Створити документ",
+    "NewFolder": "Створити папку",
+    "NewPresentation": "Створити презентацію",
+    "NewSpreadsheet": "Створити електронну таблицю",
+    "UploadFiles": "Передати файли",
+    "UploadFolder": "Передати папку",
+    "NewForm": "Master form",
+    "NewFormFile": "Master form from file",
+    "CreateMasterFormFromFile": "Create Master Form from file",
+    "SubNewForm": "From blank",
+    "SubNewFormFile": "From an existing text file"
+}

@@ -1,8 +1,13 @@
 {
-  "NewDocument": "Новый документ",
-  "NewFolder": "Новая папка",
-  "NewPresentation": "Новая презентация",
-  "NewSpreadsheet": "Новая таблица",
-  "UploadFiles": "Загрузить файлы",
-  "UploadFolder": "Загрузить папку"
+    "NewDocument": "Новый документ",
+    "NewFolder": "Новая папка",
+    "NewPresentation": "Новая презентация",
+    "NewSpreadsheet": "Новая таблица",
+    "UploadFiles": "Загрузить файлы",
+    "UploadFolder": "Загрузить папку",
+    "NewForm": "Мастер-форма",
+    "NewFormFile": "Мастер-форма из файла",
+    "CreateMasterFormFromFile": "Создать мастер-форму из файла",
+    "SubNewForm": "Пустая",
+    "SubNewFormFile": "Из существующего текстового файла"
 }

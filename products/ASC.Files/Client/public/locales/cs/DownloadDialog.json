@@ -1,0 +1,9 @@
+{
+  "ChooseFormatText": "Zvolte formát každého stahovaného souboru",
+  "ConvertInto": "Konvertovat do",
+  "ConvertMessage": "Pokud zvolíte pøevod souboru do jiného formátu než pùvodního, mùže dojít ke ztrátì nìkterých dat.",
+  "ConvertToZip": "Soubory budou zkomprimovány do souboru .zip",
+  "CustomFormat": "Vlastní formát",
+  "OriginalFormat": "Pùvodní formát",
+  "Other": "Jiný"
+}

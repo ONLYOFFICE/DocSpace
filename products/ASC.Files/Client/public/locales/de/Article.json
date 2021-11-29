@@ -1,8 +1,13 @@
 {
-  "NewDocument": "Neues Dokument",
-  "NewFolder": "Neuer Ordner",
-  "NewPresentation": "Neue Präsentation",
-  "NewSpreadsheet": "Neue Tabellenkalkulation",
-  "UploadFiles": "Dateien hochladen",
-  "UploadFolder": "Ordner hochladen"
+    "NewDocument": "Neues Dokument",
+    "NewFolder": "Neuer Ordner",
+    "NewPresentation": "Neue Präsentation",
+    "NewSpreadsheet": "Neue Tabellenkalkulation",
+    "UploadFiles": "Dateien hochladen",
+    "UploadFolder": "Ordner hochladen",
+    "NewForm": "Master-Formular",
+    "NewFormFile": "Master-Formular aus Datei",
+    "CreateMasterFormFromFile": "Master-Formular aus Datei erstellen",
+    "SubNewForm": "Leere Form",
+    "SubNewFormFile": "Form aus Textdatei"
 }

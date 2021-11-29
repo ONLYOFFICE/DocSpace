@@ -1,8 +1,13 @@
 {
-  "NewDocument": "Novo Documento",
-  "NewFolder": "Nova pasta",
-  "NewPresentation": "Nova apresentação",
-  "NewSpreadsheet": "Nova planilha",
-  "UploadFiles": "Carregar arquivos",
-  "UploadFolder": "Carregar pasta"
+    "NewDocument": "Novo Documento",
+    "NewFolder": "Nova pasta",
+    "NewPresentation": "Nova apresentação",
+    "NewSpreadsheet": "Nova planilha",
+    "UploadFiles": "Carregar arquivos",
+    "UploadFolder": "Carregar pasta",
+    "NewForm": "Master form",
+    "NewFormFile": "Master form from file",
+    "CreateMasterFormFromFile": "Create Master Form from file",
+    "SubNewForm": "From blank",
+    "SubNewFormFile": "From an existing text file"
 }

@@ -1,0 +1,22 @@
+{
+    "AddGroupsForSharingButton": "Pøidat skupiny",
+    "AddShareMessage": "Pøidat zprávu",
+    "Comment": "Okomentovat",
+    "CopyExternalLink": "Zkopírovat externí odkaz",
+    "CopyInternalLink": "Zkopírovat externí odkaz",
+    "CustomFilter": "Vlastní filtr",
+    "DenyAccess": "Zamítnout pøístup",
+    "Embedding": "Vkládání",
+    "EncryptedFileSharing": "Soubor <strong>{{title}}</strong> úspìšnì nasdílen",
+    "ExternalLink": "Externí odkaz",
+    "FormFilling": "Vyplòování formuláøe",
+    "InternalLink": "Interní odkaz",
+    "LinkText": "Pøidat uživatele",
+    "Notify users": "Upozornit uživatele",
+    "ReadOnly": "Pouze pro ètení",
+    "ShareEmailBody": "Byl vám udìlen pøístup k dokumentu {{itemName}}. Kliknutím na níže uvedený odkaz dokument právì teï otevøete: {{shareLink}}",
+    "ShareEmailSubject": "Byl vám udìlen pøístup k dokumentu {{itemName}}",
+    "ShareEveryone": "Všichni",
+    "ShareVia": "Sdílet prostøednictvím",
+    "SharingSettingsTitle": "Nastavení sdílení"
+}

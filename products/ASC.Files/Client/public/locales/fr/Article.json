@@ -1,8 +1,13 @@
 {
-  "NewDocument": "Nouveau document",
-  "NewFolder": "Nouveau dossier",
-  "NewPresentation": "Nouvelle présentation",
-  "NewSpreadsheet": "Nouvelle feuille de calcul",
-  "UploadFiles": "Télécharger les fichiers",
-  "UploadFolder": "Télécharger le dossier"
+    "NewDocument": "Nouveau document",
+    "NewFolder": "Nouveau dossier",
+    "NewPresentation": "Nouvelle présentation",
+    "NewSpreadsheet": "Nouvelle feuille de calcul",
+    "UploadFiles": "Télécharger les fichiers",
+    "UploadFolder": "Télécharger le dossier",
+    "NewForm": "Master form",
+    "NewFormFile": "Master form à partir d'un fichier",
+    "CreateMasterFormFromFile": "Créer Master Form à partir d'un fichier",
+    "SubNewForm": "À partir de zéro",
+    "SubNewFormFile": "À partir d'un fichier texte existant"
 }

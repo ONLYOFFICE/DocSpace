@@ -1,0 +1,13 @@
+{
+    "NewDocument": "Nový dokument",
+    "NewFolder": "Nová složka",
+    "NewPresentation": "Nová prezentaec",
+    "NewSpreadsheet": "Nová tabulka",
+    "UploadFiles": "Nahrát soubory",
+    "UploadFolder": "Nahrát složku",
+    "NewForm": "Master form",
+    "NewFormFile": "Master form from file",
+    "CreateMasterFormFromFile": "Create Master Form from file",
+    "SubNewForm": "From blank",
+    "SubNewFormFile": "From an existing text file"
+}

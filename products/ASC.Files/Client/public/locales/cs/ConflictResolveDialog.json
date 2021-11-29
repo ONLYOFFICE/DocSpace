@@ -1,0 +1,12 @@
+{
+  "ConflictResolveDescription": "Soubor s názvem {{file}} již existuje ve složce {{folder}}.",
+  "ConflictResolveDescriptionFiles": "Ve složce '{{folder}}' již existuje {{filesCount}} dokumentù se stejným názvem.",
+  "ConflictResolveSelectAction": "Prosím, vyberte akci:",
+  "ConflictResolveTitle": "Potvrzení o pøepsání",
+  "CreateDescription": "Ve složce budou dva rùzné soubory.",
+  "CreateTitle": "Vytvoøit kopii souboru",
+  "OverwriteDescription": "Soubor bude pøidán do souboru se stejným názvem jako verze.",
+  "OverwriteTitle": "Pøepsat aktualizací verze",
+  "SkipDescription": "Žádný soubor nebude zkopírován. Pùvodní soubor bude zachován v cílové složce.",
+  "SkipTitle": "Pøeskoèit"
+}

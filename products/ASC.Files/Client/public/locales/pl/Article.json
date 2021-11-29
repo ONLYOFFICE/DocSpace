@@ -1,0 +1,13 @@
+{
+    "NewDocument": "Nowy dokument",
+    "NewFolder": "Nowy folder",
+    "NewPresentation": "Nowa prezentacja",
+    "NewSpreadsheet": "Nowy arkusz kalkulacyjny",
+    "UploadFiles": "Wgraj pliki",
+    "UploadFolder": "Wgraj folder",
+    "NewForm": "Master form",
+    "NewFormFile": "Master form from file",
+    "CreateMasterFormFromFile": "Create Master Form from file",
+    "SubNewForm": "From blank",
+    "SubNewFormFile": "From an existing text file"
+}

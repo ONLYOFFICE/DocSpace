@@ -1,0 +1,13 @@
+{
+    "NewDocument": "新しいドキュメント",
+    "NewFolder": "新しいフォルダ",
+    "NewPresentation": "新しいプレゼンテーション",
+    "NewSpreadsheet": "新しいスプレッドシート",
+    "UploadFiles": "ファイルのアップロード",
+    "UploadFolder": "フォルダのアップロード",
+    "NewForm": "Master form",
+    "NewFormFile": "Master form from file",
+    "CreateMasterFormFromFile": "Create Master Form from file",
+    "SubNewForm": "From blank",
+    "SubNewFormFile": "From an existing text file"
+}

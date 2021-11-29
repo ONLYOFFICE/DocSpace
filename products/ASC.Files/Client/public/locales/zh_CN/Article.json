@@ -1,0 +1,13 @@
+{
+    "NewDocument": "新文档",
+    "NewFolder": "新文件夹",
+    "NewPresentation": "新演示文稿",
+    "NewSpreadsheet": "新电子表格",
+    "UploadFiles": "上传文件",
+    "UploadFolder": "上传文件夹",
+    "NewForm": "Master form",
+    "NewFormFile": "Master form from file",
+    "CreateMasterFormFromFile": "Create Master Form from file",
+    "SubNewForm": "From blank",
+    "SubNewFormFile": "From an existing text file"
+}

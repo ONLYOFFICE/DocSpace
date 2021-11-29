@@ -1,0 +1,10 @@
+{
+  "PrivacyButton": "Otevøít ONLYOFFICE Desktop Editors",
+  "PrivacyClick": "Kliknìte na Otevøít <1>ONLYOFFICE Desktop</1> v dialogovém oknì prohlížeèe a pracujte se zašifrovanými dokumenty",
+  "PrivacyDescriptionConnect": "Tento soubor mùžete otevøít z rozhraní desktopové aplikace, jakmile je váš cloud pøipojen",
+  "PrivacyDescriptionEditors": "Pokud máte nainstalovanou aplikaci ONLYOFFICE Desktop Editors, ale nemùžete ji otevøít z této stránky, váš prohlížeè ji možná blokuje",
+  "PrivacyDialog": "Pokud se vám nezobrazí dialogové okno, kliknìte na tlaèítko níže",
+  "PrivacyEditors": "Nemáte nainstalovány ONLYOFFICE Desktop Editors?",
+  "PrivacyHeader": "Tento dokument je zašifrovaný",
+  "PrivacyInstall": "Instalovat nyní"
+}

@@ -1,0 +1,13 @@
+﻿{
+    "NewDocument": "Tài liệu Mới",
+    "NewFolder": "Thư mục mới",
+    "NewPresentation": "Bản trình bày mới",
+    "NewSpreadsheet": "Bảng tính mới",
+    "UploadFiles": "Tải tệp lên",
+    "UploadFolder": "Tải thư mục lên",
+    "NewForm": "Master form",
+    "NewFormFile": "Master form from file",
+    "CreateMasterFormFromFile": "Create Master Form from file",
+    "SubNewForm": "From blank",
+    "SubNewFormFile": "From an existing text file"
+}

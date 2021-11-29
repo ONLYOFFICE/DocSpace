@@ -1,0 +1,21 @@
+{
+  "CommonSettings": "Spoleèná nastavení",
+  "ConnectAccounts": "Pøipojené úèty",
+  "ConnectAccountsSubTitle": "Žádné pøipojené úèty",
+  "ConnectAdminDescription": "Pro úspìšné pøipojení zadejte potøebné údaje na <1>této stránce</1>.",
+  "ConnectDescription": "K dokumentùm ONLYOFFICE mùžete pøipojit následující úèty. Dokumenty z tìchto úètù budou k dispozici k úpravám v sekci 'Moje dokumenty'.",
+  "ConnectedCloud": "Pøipojený cloud",
+  "ConnectMakeShared": "Sdílet sdílené a umístit do složky 'Sdílené'",
+  "ConnextOtherAccount": "Jiný úèet",
+  "DisplayFavorites": "Zobrazit oblíbené",
+  "DisplayNotification": "Zobrazit oznámení pøi pøesunu položek do koše",
+  "DisplayRecent": "Zobrazit nedávné",
+  "DisplayTemplates": "Zobrazit šablony",
+  "IntermediateVersion": "Zachovat všechny uložené meziverze",
+  "KeepIntermediateVersion": "Pøi úpravách zachovat meziverze",
+  "OriginalCopy": "Uložit kopii souboru i v pùvodním formátu",
+  "StoringFileVersion": "Ukládání verzí souborù",
+  "ThirdPartyBtn": "Umožnit uživatelùm pøipojit úložištì tøetích stran",
+  "ThirdPartySettings": "Pøipojené cloudy",
+  "UpdateOrCreate": "Aktualizovat verzi souboru pro existující soubor se stejným názvem. V opaèném pøípadì bude vytvoøena kopie souboru."
+}

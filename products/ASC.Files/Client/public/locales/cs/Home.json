@@ -1,0 +1,103 @@
+{
+    "All": "Vše",
+    "AllFiles": "Všechny soubory",
+    "Archives": "Archives",
+    "BackToParentFolderButton": "Zpìt do nadøazené složky",
+    "ByAuthor": "Autor",
+    "ByCreationDate": "Vytvoøeno",
+    "ByLastModifiedDate": "Upraveno",
+    "ByTitle": "Název",
+    "CommonEmptyContainerDescription": "Sekce 'Sdílené' obsahuje soubory, které správce portálu sdílí se všemi uživateli. Soubory v ní mohou vytváøet pouze správci portálu. Uživatelùm lze v rámci sekce udìlit plný pøístup k urèité složce. Tímto zpùsobem budou moci vytváøet/nahrávat soubory právì v této složce.  ",
+    "ContainsSpecCharacter"
+    (ObsahujeSpecifickýznak): "Název nesmí obsahovat žádný z následujících znakù: *+:\"<>?|/",
+    "Convert": "Konvertovat",
+    "CopyItem": "<strong>{{title}}</strong> zkopírováno",
+    "CopyItems": "Prvky <strong>{{qty}}</strong> zkopírovany",
+    "CreateWithEmptyTitle": "Nelze vytvoøit složku nebo soubor s prázdným názvem",
+    "Document": "Dokument",
+    "Duplicate": "Vytvoøit kopii",
+    "EmptyFile": "Prázdný soubor",
+    "EmptyFilterDescriptionText": "Tomuto filtru neodpovídají žádné soubory ani složky. Vyzkoušejte jiný nebo vymažte filtr pro zobrazení všech souborù. ",
+    "EmptyFilterSubheadingText": "Pro tento filtr nejsou žádné soubory k zobrazení",
+    "EmptyFolderHeader": "V této složce nejsou žádné soubory",
+    "EmptyRecycleBin":
+    "Empty Trash": "Prázdný koš",
+    "FavoritesEmptyContainerDescription": "Chcete-li oznaèit soubory jako oblíbené nebo je z tohoto seznamu odstranit, použijte kontextovou nabídku.",
+    "FileRemoved": "Soubor pøesunut do koše",
+    "FileRenamed": "Dokument '{{oldTitle}}' je pøejmenován na '{{newTitle}}'",
+    "Filter": "Filtr",
+    "FinalizeVersion": "Dokonèit verzi",
+    "Folder": "Složka",
+    "FolderRemoved": "Složka pøesunuta do koše",
+    "FolderRenamed": "Složka '{{{folderTitle}}' je pøejmenována na '{{newFoldedTitle}}'",
+    "GoToMyButton": "Pøejít do mých dokumentù",
+    "Obrázky": "Obrázky",
+    "LinkForPortalUsers": "Odkaz pro uživatele portálu",
+    "MarkAsFavorite": "Oznaèit jako oblíbené",
+    "MarkedAsFavorite": "Pøidáno k oblíbeným",
+    "MarkRead": "Oznaèit jako pøeètené",
+    "Media": "Média",
+    "MoveItem": "<strong>{{title}}</strong> pøesunuty",
+    "MoveItems": "Prvky <strong>{{qty}}</strong> byly pøesunuty",
+    "MoveTo": "Pøesunout do",
+    "MyEmptyContainerDescription": "Dokumenty, které jste vytvoøili nebo nahráli, jsou uchovávány v sekci 'Moje dokumenty'. Mùžete je upravovat, sdílet a spolupracovat na nich se svým týmem.",
+    "New": "Nový"
+    "NewDocument": "Nový dokument",
+    "NewFolder": "Nová složka",
+    "NewPresentation": "Nová prezentace",
+    "NewSpreadsheet": "Nový tabulkový procesor",
+    "NoSubfolders": "Žádné podsložky",
+    "Open": "Otevøít",
+    "OpenLocation": "Otevøít umístìní",
+    "Presentation": "Prezentace",
+    "Preview": "Náhled",
+    "PrivateRoomDescriptionEncrypted": "Šifrované úpravy a spolupráce v reálném èase.",
+    "PrivateRoomDescriptionSafest": "Nejbezpeènìjší úložištì pro soubory docx, xlsx a pptx.",
+    "PrivateRoomDescriptionSecure": "Bezpeèné sdílení s dùvìryhodnými èleny týmu.",
+    "PrivateRoomDescriptionUnbreakable": "Neprolomitelný algoritmus AES-256.",
+    "PrivateRoomHeader": "Vítejte v soukromé místnosti ONLYOFFICE, kde je každý symbol, který zadáte, zašifrován",
+    "PrivateRoomSupport": "Práce v soukromé místnosti je dostupná prostøednictvím desktopové aplikace {{organizationName}}. <3>Instrukce</3>",
+    "RecentEmptyContainerDescription": "Sekce 'Nedávné' zobrazuje naposledy zobrazené nebo upravené soubory.",
+    "RemovedFromFavorites": "Odstranìno z oblíbených položek",
+    "RemoveFromFavorites": "Odebrat z oblíbených",
+    "RemoveFromList": "Odebrat ze seznamu",
+    "Rename": "Pøejmenovat",
+    "SendByEmail": "Odeslat emailem",
+    "Share":
+    "Share": "Sdílet",
+    "SharedEmptyContainerDescription": V
+    sekci 'Sdíleno se mnou'
+    se zobrazují
+    soubory,
+    které vám
+    nasdíleli spoluhráèi.
+    Pokud jste
+    nevidìli poslední
+    zmìny,
+    jsou oznaèeny
+    jako nové.
+    Soubory mùžete
+    ze seznamu
+    odstranit pomocí
+    kontextové nabídky.
+    ",
+    "SharingSettings": "Nastavení sdílení",
+    "ShowVersionHistory": "Zobrazit historii verzí",
+    "Spreadsheet": "Spreadsheet",
+    "SubheadingEmptyText": "V této sekci se nezobrazují žádné soubory",
+    "TitleCreated": "Vytvoøeno",
+    "TitleDocuments": "Doc",
+    "TitleModified": "Aktualizováno",
+    "TitleSubfolders": "Slož",
+    "TitleUploaded": "Nahráno",
+    "TooltipElementCopyMessage": "Zkopírovat {{element}}",
+    "TooltipElementsCopyMessage": "Zkopírovat prvky {{element}}",
+    "TooltipElementsMoveMessage": "Pøesunout prvky {{element}}",
+    "TrashEmptyContainerDescription": "Do koše se pøesouvají všechny smazané soubory. Vyprázdnìním Koše je mùžete obnovit nebo trvale odstranit. ",
+    "UnblockVersion": "Odblokování/pøihlášení",
+    "UploadToFolder": "Nahrát do složky",
+    "ViewList": "Seznam",
+    "ViewTiles": "Dlaždice"
+    "NewMasterForm": "New master form",
+    "ViewTiles": "Dlaždice"
+}

@@ -1,0 +1,12 @@
+{
+  "MoveToTrashButton": "Pøesunout do koše",
+  "MoveToTrashItemsNote": "Pokud odstraníte sdílené položky, ostatní uživatelé k nim nebudou mít pøístup.",
+  "MoveToTrashItemsTitle": "Pøesunout položky do koše?",
+  "MoveToTrashOneFileNote": "Pokud odstraníte sdílený soubor, ostatní uživatelé k nìmu nebudou mít pøístup.",
+  "MoveToTrashOneFileTitle": "Pøesunout soubor do koše?",
+  "MoveToTrashOneFolderNote": "Pokud odstraníte sdílenou složku, ostatní uživatelé k ní nebudou mít pøístup.",
+  "MoveToTrashOneFolderTitle": "Pøesunout složku do koše?",
+  "UnsubscribeButton": "Unsubscribe": "Zrušit odbìr",
+  "UnsubscribeNote": "Urèitì chcete zrušit odbìr vybraných položek ze seznamu?",
+  "UnsubscribeTitle": "Potvrzení o odhlášení"
+}

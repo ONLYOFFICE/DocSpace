@@ -1,0 +1,13 @@
+{
+    "NewDocument": "Uusi asiakirja",
+    "NewFolder": "Uusi kansio",
+    "NewPresentation": "Uusi esitys",
+    "NewSpreadsheet": "Uusi ",
+    "UploadFiles": "Lataa tiedostoja",
+    "UploadFolder": "Lataa kansio",
+    "NewForm": "Master form",
+    "NewFormFile": "Master form from file",
+    "CreateMasterFormFromFile": "Create Master Form from file",
+    "SubNewForm": "From blank",
+    "SubNewFormFile": "From an existing text file"
+}
