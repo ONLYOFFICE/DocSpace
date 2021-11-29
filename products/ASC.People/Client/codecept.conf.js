@@ -38,7 +38,7 @@ exports.config = {
       restart: true,
       waitForNavigation: 'networkidle0',
       // don't save screenshot on failure
-      disableScreenshots: true,
+      disableScreenshots: false,
     },
     ResembleHelper: {
       require: 'codeceptjs-resemblehelper',
