@@ -56,7 +56,20 @@ exports.config = {
   bootstrap: null,
   mocha: {
     reporterOptions: {
-      mochaFile: 'output/result.xml',
+      mochawesome: {
+        stdout: '-',
+        options: {
+          reportDir: `./tests/reports/${browser}/${deviceType}`,
+          reportFilename: 'report',
+        },
+      },
+      'mocha-junit-reporter': {
+        stdout: '-',
+        options: {
+          mochaFile: `./tests/reports/${browser}/${deviceType}/report.xml`,
+          attachments: false, //add screenshot for a failed test
+        },
+      },
     },
   },
   name: 'ASC.Web.People',
