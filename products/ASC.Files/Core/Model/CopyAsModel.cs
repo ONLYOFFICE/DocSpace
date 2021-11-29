@@ -2,9 +2,9 @@
 {
     public class CopyAsModel<T>
     {
-        public string Title { get; set; }
+        public string DestTitle { get; set; }
 
-        public T FolderId { get; set; }
+        public T DestFolderId { get; set; }
 
         public bool EnableExternalExt { get; set; }
     }
