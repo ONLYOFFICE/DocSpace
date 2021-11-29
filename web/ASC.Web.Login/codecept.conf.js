@@ -8,7 +8,7 @@ const sizes = {
   mobile: { width: 375, height: 667 },
   smallTablet: { width: 600, height: 667 },
   tablet: { width: 1023, height: 667 },
-  desktop: { width: 1440, height: 667 },
+  desktop: { width: 1920, height: 1080 },
 };
 
 const deviceType = process.env.DEVICE_TYPE || 'desktop';
@@ -17,12 +17,14 @@ const device = sizes[deviceType];
 
 setWindowSize(device.width, device.height);
 
-const browser = process.env.profile || 'chromium';
+const browser = process.env.profile !== 'undefined' ? process.env.profile : 'chromium';
+
 const isModel = !!process.env.MODEL;
 
 const screenshotOutput = isModel
   ? `./tests/screenshots/${browser}/${deviceType}`
   : `./tests/output/${browser}/${deviceType}`;
+
 exports.config = {
   tests: './tests/*_tests.js',
   output: screenshotOutput,
@@ -36,7 +38,7 @@ exports.config = {
       restart: true,
       waitForNavigation: 'networkidle0',
       // don't save screenshot on failure
-      disableScreenshots: true,
+      disableScreenshots: false,
     },
     ResembleHelper: {
       require: 'codeceptjs-resemblehelper',
@@ -52,7 +54,24 @@ exports.config = {
     I: './steps_file.js',
   },
   bootstrap: null,
-  mocha: {},
+  mocha: {
+    reporterOptions: {
+      mochawesome: {
+        stdout: '-',
+        options: {
+          reportDir: `./tests/reports/${browser}/${deviceType}`,
+          reportFilename: 'report',
+        },
+      },
+      'mocha-junit-reporter': {
+        stdout: '-',
+        options: {
+          mochaFile: `./tests/reports/${browser}/${deviceType}/report.xml`,
+          attachments: false, //add screenshot for a failed test
+        },
+      },
+    },
+  },
   name: 'ASC.Web.Login',
   plugins: {
     pauseOnFail: {},
