@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -28,10 +29,13 @@ namespace Frontend.Translations.Tests
         public List<ModuleFolder> ModuleFolders { get; set; }
         public List<KeyValuePair<string, string>> NotTranslatedToasts { get; set; }
         public List<LanguageItem> CommonTranslations { get; set; }
+        public List<ParseJsonError> ParseJsonErrors { get; set; }
 
-        [SetUp]
+        [OneTimeSetUp]
         public void Setup()
         {
+            ParseJsonErrors = new List<ParseJsonError>();
+
             var packageJsonPath = Path.Combine(BasePath, @"package.json");
 
             var jsonPackage = JObject.Parse(File.ReadAllText(packageJsonPath));
@@ -57,23 +61,32 @@ namespace Frontend.Translations.Tests
 
             foreach (var path in translationFiles)
             {
-                var jsonTranslation = JObject.Parse(File.ReadAllText(path));
+                try
+                {
 
-                var translationFile = new TranslationFile(path, jsonTranslation.Properties()
-                    .Select(p => new TranslationItem(p.Name, (string)p.Value))
-                    .ToList());
+                    var jsonTranslation = JObject.Parse(File.ReadAllText(path));
 
-                TranslationFiles.Add(translationFile);
+                    var translationFile = new TranslationFile(path, jsonTranslation.Properties()
+                        .Select(p => new TranslationItem(p.Name, (string)p.Value))
+                        .ToList());
 
-                /*   Re-write by order */
+                    TranslationFiles.Add(translationFile);
 
-                //var orderedList = jsonTranslation.Properties().OrderBy(t => t.Name);
+                    /*   Re-write by order */
 
-                //var result = new JObject(orderedList);
+                    //var orderedList = jsonTranslation.Properties().OrderBy(t => t.Name);
 
-                //var sortedJsonString = JsonConvert.SerializeObject(result, Formatting.Indented);
+                    //var result = new JObject(orderedList);
 
-                //File.WriteAllText(path, sortedJsonString);
+                    //var sortedJsonString = JsonConvert.SerializeObject(result, Formatting.Indented);
+
+                    //File.WriteAllText(path, sortedJsonString);
+                }
+                catch(Exception ex)
+                {
+                    ParseJsonErrors.Add(new ParseJsonError(path, ex));
+                    Debug.WriteLine($"File path = {path} failed to parse with error: {ex.Message}");
+                }
             }
 
             var javascriptFiles = (from wsPath in Workspaces
@@ -201,6 +214,12 @@ namespace Frontend.Translations.Tests
                     Language = t.Language,
                     Translations = t.Translations
                 }).ToList();
+        }
+
+        [Test]
+        public void ParseJsonTest()
+        {
+            Assert.AreEqual(0, ParseJsonErrors.Count, string.Join("\r\n", ParseJsonErrors.Select(e => $"File path = '{e.Path}' failed to parse with error: '{e.Exception.Message}'")));
         }
 
         [Test]
