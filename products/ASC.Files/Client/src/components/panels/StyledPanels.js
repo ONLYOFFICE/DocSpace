@@ -763,7 +763,7 @@ const StyledSelectFilePanel = styled.div`
 
   .modal-dialog_body {
     display: grid;
-    grid-template-columns: 212px 493px;
+    grid-template-columns: 228px 477px;
     height: 295px;
     grid-template-areas: "tree files-list";
     .modal-dialog_tree-body {
