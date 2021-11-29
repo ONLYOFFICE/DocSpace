@@ -75,7 +75,7 @@ const CloseButton = styled(CrossSidebarIcon)`
 
   &:hover {
     path {
-      fill: ${(props) => props.theme.modalDialog.closeButton.hoverColor};
+      stroke: ${(props) => props.theme.modalDialog.closeButton.hoverColor};
     }
   }
 `;
