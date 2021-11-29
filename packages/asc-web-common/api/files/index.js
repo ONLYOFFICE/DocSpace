@@ -797,3 +797,15 @@ export function checkFillFormDraft(fileId) {
     data: { fileId },
   });
 }
+
+export function fileCopyAs(fileId, title, folderId, enableExternalExt) {
+  return request({
+    method: "post",
+    url: `file/${fileId}/copyas`,
+    data: {
+      title,
+      folderId,
+      enableExternalExt,
+    },
+  });
+}
