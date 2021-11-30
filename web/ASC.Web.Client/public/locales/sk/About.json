@@ -1,9 +1,9 @@
-{
+﻿{
     "AboutCompanyAddressTitle": "Adresa",
     "AboutCompanyEmailTitle": "E-mail",
     "AboutCompanyTelTitle": "tel.",
-    "AboutHeader": "About this program",
-    "DocumentManagement": "Document management",
-    "OnlineEditors": "Online editors",
-    "SoftwareLicense": "Software license"
+    "AboutHeader": "O tomto programe",
+    "DocumentManagement": "Manažment dokumentov",
+    "OnlineEditors": "Online redaktori",
+    "SoftwareLicense": "Softvérová licencia"
 }
