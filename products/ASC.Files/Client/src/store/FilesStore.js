@@ -489,7 +489,7 @@ class FilesStore {
       const shouldFillForm = canFormFillingDocs(item.fileExst);
       const shouldEdit = !shouldFillForm && canWebEdit(item.fileExst);
       const shouldView = canViewedDocs(item.fileExst);
-      const isForm = item.fileExst === ".docxf";
+      const isMasterForm = item.fileExst === ".docxf";
 
       let fileOptions = [
         //"open",
@@ -528,7 +528,8 @@ class FilesStore {
         "delete",
       ];
 
-      if (!isForm) fileOptions = this.removeOptions(fileOptions, ["make-form"]);
+      if (!isMasterForm)
+        fileOptions = this.removeOptions(fileOptions, ["make-form"]);
 
       if (!shouldFillForm)
         fileOptions = this.removeOptions(fileOptions, ["fill-form"]);
