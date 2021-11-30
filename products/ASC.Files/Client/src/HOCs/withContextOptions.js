@@ -27,7 +27,7 @@ export default function withContextOptions(WrappedComponent) {
       const newTitle =
         title.substring(0, title.length - fileExst.length) + formfillingDocs[0];
 
-      copyAsAction(id, newTitle, folderId);
+      copyAsAction(id, newTitle, folderId).catch((err) => toastr.error(err));
     };
 
     onOpenLocation = () => {
