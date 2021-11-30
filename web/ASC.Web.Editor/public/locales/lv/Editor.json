@@ -1,11 +1,11 @@
 ﻿{
-    "FileLocation": "Open file location",
+    "FileLocation": "Atvērt faila atrašanās vietu",
     "FileName": "Faila nosaukums",
-    "FolderForSave": "Folder for save",
-    "OpenSavedDocument": "Open saved document in new tab",
-    "SelectFilesType": "Select files of type: {{fileType}}",
+    "FolderForSave": "Mape saglabāšanai",
+    "OpenSavedDocument": "Atvērt saglabāto dokumentu jaunā cilnē",
+    "SelectFilesType": "Atlasīt šāda veida failus: {{fileType}}",
     "ImageFileType": "attēli",
     "DocumentsFileType": "dokumenti",
     "MailMergeFileType": "Select the file in XLSX format",
-    "SelectFileTitle": "Select Data Source"
+    "SelectFileTitle": "Atlasīt datu avotu"
 }

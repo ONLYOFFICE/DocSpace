@@ -6,6 +6,6 @@
     "SelectFilesType": "Şu türdeki dosyaları seçin: {{fileType}}",
     "ImageFileType": "görüntüler",
     "DocumentsFileType": "dökümanlar",
-    "MailMergeFileType": "Select the file in XLSX format",
+    "MailMergeFileType": "Dosyayı XLSX formatında seçin",
     "SelectFileTitle": "Veri Kaynağını Seçin"
 }
