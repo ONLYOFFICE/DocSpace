@@ -6,8 +6,8 @@
     "UploadFiles": "Încarcă fișiere",
     "UploadFolder": "Încarcă dosarul",
     "NewForm": "Master form",
-    "NewFormFile": "Master form from file",
-    "CreateMasterFormFromFile": "Create Master Form from file",
-    "SubNewForm": "From blank",
-    "SubNewFormFile": "From an existing text file"
+    "NewFormFile": "Coordonator de Forme din fișier",
+    "CreateMasterFormFromFile": "Crearea Coordonatorului de Forme din fișier",
+    "SubNewForm": "Din fișierul necompletat",
+    "SubNewFormFile": "Din fișierul text existent"
 }
