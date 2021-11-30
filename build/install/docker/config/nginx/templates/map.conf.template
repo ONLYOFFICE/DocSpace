@@ -1,98 +1,103 @@
 resolver $DNS_NAMESERVER valid=30s;
 
-map $SERVICE_API_SYSTEM $service_api_system {
+map $API_SYSTEM_HOST $service_api_system {
     volatile;
-    $SERVICE_API_SYSTEM $SERVICE_API_SYSTEM;
+    $API_SYSTEM_HOST $API_SYSTEM_HOST:$SERVICE_PORT;
 }
 
-map $SERVICE_BACKUP $service_backup {
+map $BACKUP_HOST $service_backup {
     volatile;
-    $SERVICE_BACKUP $SERVICE_BACKUP;
+    $BACKUP_HOST $BACKUP_HOST:$SERVICE_PORT;
 }
 
-map $SERVICE_CALENDAR $service_calendar {
+map $CALENDAR_HOST $service_calendar {
     volatile;
-    $SERVICE_CALENDAR $SERVICE_CALENDAR;
+    $CALENDAR_HOST $CALENDAR_HOST:$SERVICE_PORT;
 }
 
-map $SERVICE_CRM $service_crm {
+map $CRM_HOST $service_crm {
     volatile;
-    $SERVICE_CRM $SERVICE_CRM;
+    $CRM_HOST $CRM_HOST:$SERVICE_PORT;
 }
 
-map $SERVICE_STORAGE_ENCRYPTION $service_storage_encryption {
+map $STORAGE_ENCRYPTION_HOST $service_storage_encryption {
     volatile;
-    $SERVICE_STORAGE_ENCRYPTION $SERVICE_STORAGE_ENCRYPTION;
+    $STORAGE_ENCRYPTION_HOST $STORAGE_ENCRYPTION_HOST:$SERVICE_PORT;
 }
 
-map $SERVICE_FILES $service_files {
+map $FILES_HOST $service_files {
     volatile;
-    $SERVICE_FILES $SERVICE_FILES;
+    $FILES_HOST $FILES_HOST:$SERVICE_PORT;
 }
 
-map $SERVICE_FILES_SERVICES $service_files_services {
+map $FILES_SERVICES_HOST $service_files_services {
     volatile;
-    $SERVICE_FILES_SERVICES $SERVICE_FILES_SERVICES;
+    $FILES_SERVICES_HOST $FILES_SERVICES_HOST:$SERVICE_PORT;
 }
 
-map $SERVICE_MAIL $service_mail {
+map $MAIL_HOST $service_mail {
     volatile;
-    $SERVICE_MAIL $SERVICE_MAIL;
+    $MAIL_HOST $MAIL_HOST:$SERVICE_PORT;
 }
 
-map $SERVICE_STORAGE_MIGRATION $service_storage_migration {
+map $STORAGE_MIGRATION_HOST $service_storage_migration {
     volatile;
-    $SERVICE_STORAGE_MIGRATION $SERVICE_STORAGE_MIGRATION;
+    $STORAGE_MIGRATION_HOST $STORAGE_MIGRATION_HOST:$SERVICE_PORT;
 }
 
-map $SERVICE_NOTIFY $service_notify {
+map $NOTIFY_HOST $service_notify {
     volatile;
-    $SERVICE_NOTIFY $SERVICE_NOTIFY;
+    $NOTIFY_HOST $NOTIFY_HOST:$SERVICE_PORT;
 }
 
-map $SERVICE_PEOPLE_SERVER $service_people_server {
+map $PEOPLE_SERVER_HOST $service_people_server {
     volatile;
-    $SERVICE_PEOPLE_SERVER $SERVICE_PEOPLE_SERVER;
+    $PEOPLE_SERVER_HOST $PEOPLE_SERVER_HOST:$SERVICE_PORT;
 }
 
-map $SERVICE_PROJECTS_SERVER $service_projects_server {
+map $PROJECTS_SERVER_HOST $service_projects_server {
     volatile;
-    $SERVICE_PROJECTS_SERVER $SERVICE_PROJECTS_SERVER;
+    $PROJECTS_SERVER_HOST $PROJECTS_SERVER_HOST:$SERVICE_PORT;
 }
 
-map $SERVICE_SOCKET $service_socket {
+map $SOCKET_HOST $service_socket {
     volatile;
-    $SERVICE_SOCKET $SERVICE_SOCKET;
+    $SOCKET_HOST $SOCKET_HOST:9899;
 }
 
-map $SERVICE_STUDIO_NOTIFY $service_studio_notify {
+map $STUDIO_NOTIFY_HOST $service_studio_notify {
     volatile;
-    $SERVICE_STUDIO_NOTIFY $SERVICE_STUDIO_NOTIFY;
+    $STUDIO_NOTIFY_HOST $STUDIO_NOTIFY_HOST:$SERVICE_PORT;
 }
 
-map $SERVICE_TELEGRAM_SERVICE $service_telegram_service {
+map $TELEGRAM_SERVICE_HOST $service_telegram_service {
     volatile;
-    $SERVICE_TELEGRAM_SERVICE $SERVICE_TELEGRAM_SERVICE;
+    $TELEGRAM_SERVICE_HOST $TELEGRAM_SERVICE_HOST:$SERVICE_PORT;
 }
 
-map $SERVICE_THUMBNAILS $service_thumbnails {
+map $THUMBNAILS_HOST $service_thumbnails {
     volatile;
-    $SERVICE_THUMBNAILS $SERVICE_THUMBNAILS;
+    $THUMBNAILS_HOST $THUMBNAILS_HOST:9800;
 }
 
-map $SERVICE_URLSHORTENER $service_urlshortener {
+map $URLSHORTENER_HOST $service_urlshortener {
     volatile;
-    $SERVICE_URLSHORTENER $SERVICE_URLSHORTENER;
+    $URLSHORTENER_HOST $URLSHORTENER_HOST:9999;
 }
 
-map $SERVICE_API $service_api {
+map $API_HOST $service_api {
     volatile;
-    $SERVICE_API $SERVICE_API;
+    $API_HOST $API_HOST:$SERVICE_PORT;
 }
 
-map $SERVICE_STUDIO $service_studio {
+map $STUDIO_HOST $service_studio {
     volatile;
-    $SERVICE_STUDIO $SERVICE_STUDIO;
+    $STUDIO_HOST $STUDIO_HOST:$SERVICE_PORT;
+}
+
+map $SSOAUTH_HOST $service_studio {
+    volatile;
+    $SSOAUTH_HOST $SSOAUTH_HOST:9834;
 }
 
 map $DOCUMENT_SERVER $document_server {
