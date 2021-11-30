@@ -111,6 +111,7 @@ class ArticleMainButtonContent extends React.Component {
                 onClick: this.onShowSelectFileDialog,
               },
             ],
+            disabled: isPrivacy,
           },
         ]
       : [
@@ -120,12 +121,14 @@ class ArticleMainButtonContent extends React.Component {
             label: t("Translations:NewForm"),
             onClick: this.onCreate,
             action: "docxf",
+            disabled: isPrivacy,
           },
           {
             className: "main-button_drop-down_sub",
             icon: "images/form.file.react.svg",
             label: t("Translations:NewFormFile"),
             onClick: this.onShowSelectFileDialog,
+            disabled: isPrivacy,
           },
         ];
 
