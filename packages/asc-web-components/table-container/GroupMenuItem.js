@@ -41,11 +41,11 @@ const StyledButton = styled(Button)`
 `;
 
 const GroupMenuItem = ({ item }) => {
-  const { label, disabled, onClick, iconUrl } = item;
+  const { label, disabled, onClick, iconUrl, title } = item;
   return (
     <StyledButton
       label={label}
-      title={label}
+      title={title || label}
       isDisabled={disabled}
       onClick={onClick}
       icon={<ReactSVG src={iconUrl} className="combo-button_selected-icon" />}
