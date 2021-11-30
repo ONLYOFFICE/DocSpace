@@ -34,6 +34,8 @@
   "Presentations": "Präsentationen",
   "Restore": "Wiederherstellen",
   "Spreadsheets": "Tabellenkalkulationen",
+  "switchToThumbnails": "Thumbnails aktivieren",
+  "SwitchViewToCompact": "Auf Kompaktansicht umschalten",
   "ThirdPartyInfo": "Ändern Sie die Drittanbieterinformationen",
   "TypeTitleBoxNet": "Box",
   "TypeTitleDocuSign": "DocuSign",
@@ -44,5 +46,6 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TitleSelectFile": "Wählen"
+  "TitleSelectFile": "Wählen",
+  
 }
