@@ -13,7 +13,6 @@
 		<DebugType>none</DebugType>
 		<DebugSymbols>false</DebugSymbols>
 	</PropertyGroup>
-	  <PackageReference Include="Google.Protobuf" Version="3.14.0" />
 	<Target Name="ChangeAliasesOfStrongNameAssemblies" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
 		<ItemGroup>
 			<ReferencePath Condition="'%(FileName)' == 'MySqlConnector'">

@@ -96,7 +96,8 @@ namespace ASC.Files.Core.Data
 
             foreach (var f in fileEntries)
             {
-                var id = (string)await MappingIDAsync(f.ID);
+                var idObj = await MappingIDAsync(f.ID);
+                var id = idObj.ToString();
                 if (f.FileEntryType == FileEntryType.File)
                 {
                     filesId.Add(id);
@@ -137,7 +138,8 @@ namespace ASC.Files.Core.Data
 
             foreach (var f in fileEntries)
             {
-                var id = (string)await MappingIDAsync(f.ID);
+                var idObj = await MappingIDAsync(f.ID);
+                var id = idObj.ToString();
                 if (f.FileEntryType == FileEntryType.File)
                 {
                     filesId.Add(id);
@@ -556,7 +558,8 @@ namespace ASC.Files.Core.Data
 
             foreach (var r in fileEntries)
             {
-                var id = (string)await MappingIDAsync(r.ID);
+                var idObj = await MappingIDAsync(r.ID);
+                var id = idObj.ToString();
                 var entryType = (r.FileEntryType == FileEntryType.File) ? FileEntryType.File : FileEntryType.Folder;
 
                 tags.Add(new DbFilesTagLink

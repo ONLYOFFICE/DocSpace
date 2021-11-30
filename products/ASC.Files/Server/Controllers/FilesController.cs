@@ -26,11 +26,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 using ASC.Api.Core;
@@ -252,7 +254,14 @@ namespace ASC.Api.Documents
         [Read("@my")]
         public async Task<FolderContentWrapper<int>> GetMyFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
-            return await FilesControllerHelperInt.GetFolderAsync(GlobalFolderHelper.FolderMy, userIdOrGroupId, filterType, withsubfolders);
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+
+            var res = await FilesControllerHelperInt.GetFolderAsync(GlobalFolderHelper.FolderMy, userIdOrGroupId, filterType, withsubfolders);
+
+            stopWatch.Stop();
+            TimeSpan sw = stopWatch.Elapsed;
+            return res;
         }
 
         /// <summary>

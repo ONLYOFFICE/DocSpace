@@ -120,8 +120,8 @@ namespace ASC.Files.Helpers
 
         public async Task<FolderContentWrapper<T>> GetFolderAsync(T folderId, Guid userIdOrGroupId, FilterType filterType, bool withSubFolders)
         {
-            var folderContentWrapper = ToFolderContentWrapperAsync(folderId, userIdOrGroupId, filterType, withSubFolders);
-            return await folderContentWrapper.NotFoundIfNull();
+            var folderContentWrapper = await ToFolderContentWrapperAsync(folderId, userIdOrGroupId, filterType, withSubFolders);
+            return folderContentWrapper.NotFoundIfNull();
         }
 
         public object UploadFile(T folderId, UploadModel uploadModel)

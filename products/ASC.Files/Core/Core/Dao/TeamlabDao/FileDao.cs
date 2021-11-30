@@ -226,7 +226,7 @@ namespace ASC.Files.Core.Data
             var query = GetFileQuery(r => fileIds.Contains(r.Id) && r.CurrentVersion)
                 .AsNoTracking();
 
-            return FromQueryWithShared(query).Select(e => ToFile(e)).AsAsyncEnumerable();
+            return FromQueryWithShared(query).AsAsyncEnumerable().Select(e => ToFile(e));
         }
 
         public List<File<int>> GetFilesFiltered(IEnumerable<int> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false)
@@ -381,7 +381,8 @@ namespace ASC.Files.Core.Data
                     break;
             }
 
-            return await FromQueryWithShared(q).Select(e =>ToFile(e)).ToListAsync();
+            var query = await FromQueryWithShared(q).ToListAsync();
+            return query.ConvertAll(e =>ToFile(e));
         }
 
         public Stream GetFileStream(File<int> file, long offset)
@@ -1315,7 +1316,8 @@ namespace ASC.Files.Core.Data
                     break;
             }
 
-            return await FromQueryWithShared(q).Select(e => ToFile(e)).ToListAsync();
+            var query = await FromQueryWithShared(q).ToListAsync();
+            return query.ConvertAll(e => ToFile(e));
         }
 
         public IEnumerable<File<int>> Search(string searchText, bool bunch)
@@ -1546,16 +1548,6 @@ namespace ASC.Files.Core.Data
             var storage = GlobalStore.GetStore();
             var isFile = await storage.IsFileAsync(string.Empty, path);
             if (!isFile) throw new FileNotFoundException();
-            return await storage.GetReadStreamAsync(string.Empty, path, 0);
-        }
-
-        public async Task<Stream> GetThumbnailAsync(File<int> file)
-        {
-            var thumnailName = ThumbnailTitle + "." + Global.ThumbnailExtension;
-            var path = GetUniqFilePath(file, thumnailName);
-            var storage = GlobalStore.GetStore();
-            var isExist = await storage.IsFileAsync(string.Empty, path);
-            if (!isExist) throw new FileNotFoundException();
             return await storage.GetReadStreamAsync(string.Empty, path, 0);
         }
 

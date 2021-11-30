@@ -190,46 +190,46 @@ namespace ASC.Api.Documents
         {
             var foldersIntWithRights = await GetFoldersIntWithRightsAsync<int>();
             var foldersStringWithRights = await GetFoldersIntWithRightsAsync<string>();
+            var files = new List<FileEntryWrapper>();
+            var folders = new List<FileEntryWrapper>();
+
+            var fileEntries = folderItems.Entries.Where(r => r.FileEntryType == FileEntryType.File);
+            foreach (var r in fileEntries)
+            {
+                FileEntryWrapper wrapper = null;
+                if (r is File<int> fol1)
+                {
+                    wrapper = await FileWrapperHelper.GetAsync(fol1, foldersIntWithRights);
+                }
+                if (r is File<string> fol2)
+                {
+                    wrapper = await FileWrapperHelper.GetAsync(fol2, foldersStringWithRights);
+                }
+
+                files.Add(wrapper);
+            }
+
+            var folderEntries = folderItems.Entries.Where(r => r.FileEntryType == FileEntryType.Folder);
+            foreach (var r in folderEntries)
+            {
+                FileEntryWrapper wrapper = null;
+                if (r is File<int> fol1)
+                {
+                    wrapper = await FileWrapperHelper.GetAsync(fol1, foldersIntWithRights);
+                }
+                if (r is File<string> fol2)
+                {
+                    wrapper = await FileWrapperHelper.GetAsync(fol2, foldersStringWithRights);
+                }
+
+                folders.Add(wrapper);
+            }
+
 
             var result = new FolderContentWrapper<T>
             {
-                Files = await folderItems.Entries
-                .ToAsyncEnumerable()
-                .Where(r => r.FileEntryType == FileEntryType.File)
-                .SelectAwait(async r =>
-                {
-                    FileEntryWrapper wrapper = null;
-                    if (r is File<int> fol1)
-                    {
-                        wrapper = await FileWrapperHelper.GetAsync(fol1, foldersIntWithRights);
-                    }
-                    if (r is File<string> fol2)
-                    {
-                        wrapper = await FileWrapperHelper.GetAsync(fol2, foldersStringWithRights);
-                    }
-
-                    return wrapper;
-                }
-                )
-                .ToListAsync(),
-                Folders = await folderItems.Entries
-                .ToAsyncEnumerable()
-                .Where(r => r.FileEntryType == FileEntryType.Folder)
-                .SelectAwait(async r =>
-                {
-                    FileEntryWrapper wrapper = null;
-                    if (r is Folder<int> fol1)
-                    {
-                        wrapper = await FolderWrapperHelper.GetAsync(fol1, foldersIntWithRights);
-                    }
-                    if (r is Folder<string> fol2)
-                    {
-                        wrapper = await FolderWrapperHelper.GetAsync(fol2, foldersStringWithRights);
-                    }
-
-                    return wrapper;
-                }
-                ).ToListAsync(),
+                Files = files,
+                Folders = folders,
                 PathParts = folderItems.FolderPathParts,
                 StartIndex = startIndex
             };

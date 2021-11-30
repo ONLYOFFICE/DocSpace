@@ -254,7 +254,8 @@ namespace ASC.Files.Core.Data
                 }
             }
 
-            return await FromQueryWithShared(q).Select(e => ToFolder(e)).ToListAsync();
+            var query = await FromQueryWithShared(q).ToListAsync();
+            return query.ConvertAll(e => ToFolder(e));
         }
 
         public List<Folder<int>> GetFolders(IEnumerable<int> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
@@ -311,7 +312,7 @@ namespace ASC.Files.Core.Data
                 }
             }
 
-            return (checkShare ? FromQueryWithShared(q) : FromQuery(q)).Select(e => ToFolder(e)).Distinct().AsAsyncEnumerable();
+            return (checkShare ? FromQueryWithShared(q) : FromQuery(q)).AsAsyncEnumerable().Select(e => ToFolder(e)).Distinct();
         }
 
         public List<Folder<int>> GetParentFolders(int folderId)
@@ -328,7 +329,8 @@ namespace ASC.Files.Core.Data
                 .OrderByDescending(r => r.tree.Level)
                 .Select(r => r.folder);
 
-            return await FromQueryWithShared(q).Select(e => ToFolder(e)).ToListAsync();
+            var query = await FromQueryWithShared(q).ToListAsync();
+            return query.ConvertAll(e => ToFolder(e));
         }
 
         public int SaveFolder(Folder<int> folder)
@@ -795,7 +797,7 @@ namespace ASC.Files.Core.Data
 
             await FilesDbContext.SaveChangesAsync();
 
-            await FactoryIndexer.IndexAsync(toUpdate);
+            FactoryIndexer.IndexAsync(toUpdate);
 
             return folder.ID;
         }
@@ -1183,7 +1185,7 @@ namespace ASC.Files.Core.Data
 
         protected IQueryable<DbFolderQuery> FromQueryWithShared(IQueryable<DbFolder> dbFiles)
         {
-            return from r in dbFiles
+            var e =  from r in dbFiles
                    select new DbFolderQuery
                    {
                        Folder = r,
@@ -1202,6 +1204,9 @@ namespace ASC.Files.Core.Data
                                  select f
                                  ).Any()
                    };
+
+            var t = e.ToListAsync().Result;
+            return e;
         }
 
         protected IQueryable<DbFolderQuery> FromQuery(IQueryable<DbFolder> dbFiles)

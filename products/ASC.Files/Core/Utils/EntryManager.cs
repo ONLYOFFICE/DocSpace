@@ -627,7 +627,7 @@ namespace ASC.Web.Files.Utils
                 if (parent.FolderType == FolderType.TRASH)
                     withSubfolders = false;
 
-                var folders = DaoFactory.GetFolderDao<T>().GetFolders(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, withSubfolders);
+                var folders = DaoFactory.GetFolderDao<T>().GetFoldersAsync(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, withSubfolders).Result;
                 entries = entries.Concat(fileSecurity.FilterRead(folders));
 
                 var files = DaoFactory.GetFileDao<T>().GetFilesAsync(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders).Result;
@@ -759,7 +759,6 @@ namespace ASC.Web.Files.Utils
                     var rootKeys = folderIDProjectTitle.Keys.ToArray();
                     if (filter == FilterType.None || filter == FilterType.FoldersOnly)
                     {
-                        var sdasd = AsyncEnumerable.Empty<int>();
                         var folders = await DaoFactory.GetFolderDao<int>().GetFoldersAsync(rootKeys, filter, subjectGroup, subjectId, searchText, withSubfolders, false).ToListAsync();
 
                         var emptyFilter = string.IsNullOrEmpty(searchText) && filter == FilterType.None && subjectId == Guid.Empty;
@@ -813,7 +812,7 @@ namespace ASC.Web.Files.Utils
             }
             else if (parent.FolderType == FolderType.Recent)
             {
-                var files = GetRecent(filter, subjectGroup, subjectId, searchText, searchInContent);
+                var files = await GetRecentAsync(filter, subjectGroup, subjectId, searchText, searchInContent);
                 entries = entries.Concat(files);
 
                 CalculateTotal();
@@ -823,7 +822,7 @@ namespace ASC.Web.Files.Utils
                 var fileDao = DaoFactory.GetFileDao<T>();
                 var folderDao = DaoFactory.GetFolderDao<T>();
 
-                var (files, folders) = GetFavorites(filter, subjectGroup, subjectId, searchText, searchInContent);
+                var (files, folders) = await GetFavoritesAsync(filter, subjectGroup, subjectId, searchText, searchInContent);
 
                 entries = entries.Concat(folders);
                 entries = entries.Concat(files);
@@ -834,7 +833,7 @@ namespace ASC.Web.Files.Utils
             {
                 var folderDao = DaoFactory.GetFolderDao<T>();
                 var fileDao = DaoFactory.GetFileDao<T>();
-                var files = GetTemplates(folderDao, fileDao, filter, subjectGroup, subjectId, searchText, searchInContent);
+                var files = await GetTemplatesAsync(folderDao, fileDao, filter, subjectGroup, subjectId, searchText, searchInContent);
                 entries = entries.Concat(files);
 
                 CalculateTotal();
@@ -869,7 +868,7 @@ namespace ASC.Web.Files.Utils
 
                 if (filter == FilterType.None || filter == FilterType.FoldersOnly)
                 {
-                    var folderList = GetThirpartyFolders(parent, searchText);
+                    var folderList = await GetThirpartyFoldersAsync(parent, searchText);
 
                     var thirdPartyFolder = FilterEntries(folderList, filter, subjectGroup, subjectId, searchText, searchInContent);
                     entries = entries.Concat(thirdPartyFolder);
@@ -933,6 +932,23 @@ namespace ASC.Web.Files.Utils
             files = FileSecurity.FilterRead(files).ToList();
 
             CheckFolderId(folderDao, files);
+
+            return files;
+        }
+
+        public async Task<IEnumerable<File<T>>> GetTemplatesAsync<T>(IFolderDao<T> folderDao, IFileDao<T> fileDao, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
+        {
+            var tagDao = DaoFactory.GetTagDao<T>();
+            var tags = tagDao.GetTagsAsync(AuthContext.CurrentAccount.ID, TagType.Template);
+
+            var fileIds = await tags.Where(tag => tag.EntryType == FileEntryType.File).Select(tag => (T)Convert.ChangeType(tag.EntryId, typeof(T))).ToArrayAsync();
+
+            var filesAsync = fileDao.GetFilesFilteredAsync(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent);
+            var files = await filesAsync.Where(file => file.RootFolderType != FolderType.TRASH).ToListAsync();
+
+            files = FileSecurity.FilterRead(files).ToList();
+
+            await CheckFolderIdAsync(folderDao, files);
 
             return files;
         }
@@ -1149,6 +1165,59 @@ namespace ASC.Web.Files.Utils
             }
         }
 
+        public async Task<(IEnumerable<FileEntry>, IEnumerable<FileEntry>)> GetFavoritesAsync(FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
+        {
+            var fileSecurity = FileSecurity;
+            var tagDao = DaoFactory.GetTagDao<int>();
+            var tags = tagDao.GetTagsAsync(AuthContext.CurrentAccount.ID, TagType.Favorite);
+
+            var fileIds = await tags.Where(tag => tag.EntryType == FileEntryType.File).ToListAsync();
+            var folderIds = await tags.Where(tag => tag.EntryType == FileEntryType.Folder).ToListAsync();
+
+            var (filesInt, foldersInt) = await GetFavoritesByIdAsync(fileIds.Where(r => r.EntryId is int).Select(r => (int)r.EntryId), folderIds.Where(r => r.EntryId is int).Select(r => (int)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent);
+            var (filesString, foldersString) = await GetFavoritesByIdAsync(fileIds.Where(r => r.EntryId is string).Select(r => (string)r.EntryId), folderIds.Where(r => r.EntryId is string).Select(r => (string)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent);
+
+            var files = new List<FileEntry>();
+            files.AddRange(filesInt);
+            files.AddRange(filesString);
+
+            var folders = new List<FileEntry>();
+            folders.AddRange(foldersInt);
+            folders.AddRange(foldersString);
+
+            return (files, folders);
+
+            async Task<(IEnumerable<FileEntry>, IEnumerable<FileEntry>)> GetFavoritesByIdAsync<T>(IEnumerable<T> fileIds, IEnumerable<T> folderIds, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
+            {
+                var folderDao = DaoFactory.GetFolderDao<T>();
+                var fileDao = DaoFactory.GetFileDao<T>();
+                var folders = new List<Folder<T>>();
+                var asyncFolders = folderDao.GetFoldersAsync(folderIds, filter, subjectGroup, subjectId, searchText, false, false);
+                var files = new List<File<T>>();
+                var asyncFiles = fileDao.GetFilesFilteredAsync(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent, true);
+                var fileSecurity = FileSecurity;
+                if (filter == FilterType.None || filter == FilterType.FoldersOnly)
+                {
+                    folders = await asyncFolders.Where(folder => folder.RootFolderType != FolderType.TRASH).ToListAsync();
+
+                    folders = fileSecurity.FilterRead(folders).ToList();
+
+                    await CheckFolderIdAsync(folderDao, folders);
+                }
+
+                if (filter != FilterType.FoldersOnly)
+                {
+                    files = await asyncFiles.Where(file => file.RootFolderType != FolderType.TRASH).ToListAsync();
+
+                    files = fileSecurity.FilterRead(files).ToList();
+
+                    await CheckFolderIdAsync(folderDao, folders);
+                }
+
+                return (files, folders);
+            }
+        }
+
         public IEnumerable<FileEntry<T>> FilterEntries<T>(IEnumerable<FileEntry<T>> entries, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
         {
             if (entries == null || !entries.Any()) return entries;
@@ -1310,6 +1379,11 @@ namespace ASC.Web.Files.Utils
         public List<FileEntry> GetBreadCrumbs<T>(T folderId, IFolderDao<T> folderDao)
         {
             return BreadCrumbsManager.GetBreadCrumbs(folderId, folderDao);
+        }
+
+        public async Task<List<FileEntry>> GetBreadCrumbsAsync<T>(T folderId, IFolderDao<T> folderDao)
+        {
+            return await BreadCrumbsManager.GetBreadCrumbsAsync(folderId, folderDao);
         }
 
         public void CheckFolderId<T>(IFolderDao<T> folderDao, IEnumerable<FileEntry<T>> entries)

@@ -320,7 +320,7 @@ namespace ASC.Web.Files.Services.WCFService
             IEnumerable<FileEntry> entries;
             try
             {
-                entries = EntryManager.GetEntries(parent, from, count, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, out total);
+                (entries, total) = await EntryManager.GetEntriesAsync(parent, from, count, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy);
             }
             catch (Exception e)
             {
@@ -331,7 +331,7 @@ namespace ASC.Web.Files.Services.WCFService
                 throw GenerateException(e);
             }
 
-            var breadCrumbs = EntryManager.GetBreadCrumbs(parentId, folderDao);
+            var breadCrumbs = await EntryManager.GetBreadCrumbsAsync(parentId, folderDao);
 
             var prevVisible = breadCrumbs.ElementAtOrDefault(breadCrumbs.Count() - 2);
             if (prevVisible != null)
