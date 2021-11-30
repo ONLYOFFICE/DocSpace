@@ -849,8 +849,13 @@ const StyledFilesList = styled.div`
     text-overflow: ellipsis;
     color: #a3a9ae;
     font-weight: 600;
-  }
 
+    ${(props) => props.displayType === "modal" && ` font-size: 11px;`}
+
+    height: ${(props) => (props.displayType === "aside" ? "16px" : "12px")};
+    padding-bottom: ${(props) =>
+      props.displayType === "aside" ? "10px" : "11px"};
+  }
   .file-exst {
     color: #a3a9ae;
     font-weight: 600;
@@ -866,23 +871,18 @@ const StyledFilesList = styled.div`
 
     grid-area: full-name;
     display: flex;
-    ${(props) =>
-      props.displayType === "aside" &&
-      css`
-        padding-top: 4px;
-      `}
+    padding-top: 10px;
   }
   .select-file-dialog_icon {
     grid-area: icon-name;
+    padding-top: 12px;
   }
   .select-file-dialog_checked {
     grid-area: checked-button;
   }
   .files-list_file-children_wrapper {
     grid-area: owner-name;
-    /* margin-right: 12px; */
-    margin-top: ${(props) =>
-      props.displayType === "aside" ? "-17px" : "-8px"};
+    margin-top: ${(props) => props.displayType === "modal" && "-8px"};
   }
   .modal-dialog_file-name {
     border-radius: 3px;
@@ -890,21 +890,23 @@ const StyledFilesList = styled.div`
     ${(props) => props.isChecked && `background:#F8F9F9;`}
     cursor: ${(props) => (props.needRowSelection ? "pointer" : "default")};
     border-bottom: 1px solid #eceef1;
-    align-items: center;
     display: grid;
     ${(props) =>
       props.displayType === "aside"
         ? css`
             height: 56px;
-            grid-template-areas: "checked-button icon-name full-name full-name" "checked-button icon-name owner-name owner-name";
+            grid-template-areas: "checked-button icon-name full-name" "checked-button icon-name owner-name";
           `
         : css`
-            height: 41px;
+            height: 49px;
             grid-template-areas: "checked-button icon-name full-name" "checked-button icon-name owner-name";
           `}
     grid-template-columns: 22px 33px 1fr;
+    ${(props) => props.displayType === "modal" && ` grid-row-gap: 4px;`}
+
     padding-left: ${(props) =>
       props.displayType === "aside" ? "16px" : "12px"};
+    box-sizing: border-box;
   }
 `;
 
