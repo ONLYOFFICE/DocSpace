@@ -921,28 +921,13 @@ class UploadDataStore {
   };
 
   copyAsAction = (fileId, title, folderId, enableExternalExt) => {
-    const { clearPrimaryProgressData } = this.primaryProgressDataStore;
-    const {
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = this.secondaryProgressDataStore;
+    const { fetchFiles, filter } = this.filesStore;
 
     return fileCopyAs(fileId, title, folderId, enableExternalExt)
-      .then((res) => {
-        const data = res[0] ? res[0] : null;
-        const pbData = { icon: "duplicate" };
-        return this.loopFilesOperations(data, pbData).then(() =>
-          this.moveToCopyTo(destFolderId, pbData, true)
-        );
+      .then(() => {
+        fetchFiles(folderId, filter, true, true);
       })
       .catch((err) => {
-        setSecondaryProgressBarData({
-          visible: true,
-          alert: true,
-          icon: "duplicate",
-        });
-        setTimeout(() => clearPrimaryProgressData(), TIMEOUT);
-        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         return Promise.reject(err);
       });
   };
