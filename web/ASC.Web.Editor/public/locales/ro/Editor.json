@@ -2,10 +2,10 @@
     "FileLocation": "Deschidere locația fișierului",
     "FileName": "Numele fișierului",
     "FolderForSave": "Folderul de salvare",
-    "OpenSavedDocument": "Open saved document in new tab",
-    "SelectFilesType": "Select files of type: {{fileType}}",
+    "OpenSavedDocument": "Deschide documentul salvat într-o filă nouă",
+    "SelectFilesType": "Selectare tip de fișier: {{fileType}}",
     "ImageFileType": "imagini",
     "DocumentsFileType": "documente",
-    "MailMergeFileType": "Select the file in XLSX format",
+    "MailMergeFileType": "Selectare fișier format XLSX",
     "SelectFileTitle": "Selectați sursa de date"
 }
