@@ -79,9 +79,10 @@ const FilesListBody = ({
           >
             <Loaders.Rows
               style={{
-                marginBottom: displayType === "aside" ? "24px" : "19px",
+                marginBottom: displayType === "aside" ? "24px" : "26px",
+                marginTop: displayType === "aside" ? "8px" : "10px",
               }}
-              count={displayType === "aside" ? 12 : 7}
+              count={displayType === "aside" ? 12 : 5}
             />
           </div>
         </div>
@@ -102,7 +103,7 @@ const FilesListBody = ({
       const isLoaded = isItemLoaded(index);
 
       if (!isLoaded) {
-        if (countLoad > 1) return renderPageLoader(style);
+        if (countLoad >= 1) return renderPageLoader(style);
         return renderFirstLoader(style);
       }
 

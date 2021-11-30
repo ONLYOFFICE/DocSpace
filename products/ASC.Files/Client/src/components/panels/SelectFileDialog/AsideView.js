@@ -107,6 +107,7 @@ const SelectFileDialogAsideView = ({
                       <Loaders.Rows
                         style={{
                           marginBottom: "24px",
+                          marginTop: "20px",
                         }}
                         count={12}
                       />

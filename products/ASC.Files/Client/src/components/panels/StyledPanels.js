@@ -761,14 +761,24 @@ const StyledSelectFilePanel = styled.div`
     padding: 7px 0px;
   }
   .panel-loader-wrapper {
-    ${(props) =>
-      props.displayType === "modal" &&
-      css`
-        margin-top: 16px;
-      `};
     .first-row-content__mobile {
-      width: ${(props) => (props.displayType === "aside" ? "147px" : "402px")};
+      width: ${(props) => (props.displayType === "aside" ? "147px" : "234px")};
+      height: ${(props) => (props.displayType === "aside" ? "16px" : "10px")};
     }
+
+    @media ${desktop} {
+      .second-row-content__mobile {
+        max-width: 185px;
+        height: 8px;
+        display: block;
+      }
+      .row-content {
+        grid-template-rows: 10px;
+        grid-row-gap: 6px;
+        margin-top: -3px;
+      }
+    }
+
     .second-row-content__mobile {
       width: 229px;
     }
