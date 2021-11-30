@@ -301,7 +301,7 @@ namespace ASC.Web.Api.Controllers
             try
             {
                 var token = SecurityContext.AuthenticateMe(user.ID);
-                CookiesManager.SetCookies(CookiesType.AuthKey, token);
+                CookiesManager.SetCookies(CookiesType.AuthKey, token, auth.Session);
 
                 MessageService.Send(viaEmail ? MessageAction.LoginSuccessViaApi : MessageAction.LoginSuccessViaApiSocialAccount);
 
@@ -436,6 +436,8 @@ namespace ASC.Web.Api.Controllers
                     {
                         throw new Exception("user not found");
                     }
+
+                    Cache.Insert("loginsec/" + memberModel.UserName, (--counter).ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
                 }
                 else
                 {

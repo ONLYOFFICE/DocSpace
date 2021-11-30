@@ -462,18 +462,18 @@ namespace ASC.Files.Core.Security
                         continue;
                     }
 
-                    if (e.FileEntryType == FileEntryType.File
-                        && file.IsFillFormDraft)
-                    {
-                        e.Access = FileShare.FillForms;
+                    //if (e.FileEntryType == FileEntryType.File
+                    //    && file.IsFillFormDraft)
+                    //{
+                    //    e.Access = FileShare.FillForms;
 
-                        if (action != FilesSecurityActions.Read
-                            && action != FilesSecurityActions.FillForms
-                            && action != FilesSecurityActions.Delete)
-                        {
-                            continue;
-                        }
-                    }
+                    //    if (action != FilesSecurityActions.Read
+                    //        && action != FilesSecurityActions.FillForms
+                    //        && action != FilesSecurityActions.Delete)
+                    //    {
+                    //        continue;
+                    //    }
+                    //}
 
                     if (e.RootFolderType == FolderType.USER && e.RootFolderCreator == userId && !isVisitor)
                     {

@@ -131,15 +131,6 @@ class SharingRow extends React.Component {
 
     const externalLinkOptions = [
       {
-        key: "linkItem_0",
-        label: t("CopyExternalLink"),
-        onClick: this.onCopyClick,
-      },
-      {
-        key: "linkItem_1",
-        isSeparator: true,
-      },
-      {
         key: "linkItem_2",
         label: `${t("ShareVia")} e-mail`,
         onClick: this.onShareEmail,
@@ -181,6 +172,7 @@ class SharingRow extends React.Component {
             externalLinkData={externalLinkData}
             onToggleLink={onToggleLink}
             withToggle
+            onCopyLink={this.onCopyClick}
             {...this.props}
           />
         )}

@@ -20,8 +20,6 @@ import {
   setEncryptionKeys,
   getEncryptionAccess,
   getFileInfo,
-  getRecentFolderList,
-  getFolderInfo,
   updateFile,
   removeFromFavorite,
   markAsFavorite,
@@ -78,7 +76,8 @@ const Editor = () => {
   const decodedId = urlParams
     ? urlParams.fileId || urlParams.fileid || null
     : null;
-  const fileId = encodeURIComponent(decodedId);
+  const fileId =
+    typeof decodedId === "string" ? encodeURIComponent(decodedId) : decodedId;
   const version = urlParams ? urlParams.version || null : null;
   const doc = urlParams ? urlParams.doc || null : null;
   const isDesktop = window["AscDesktopEditor"] !== undefined;
@@ -141,56 +140,6 @@ const Editor = () => {
   };
   const updateFavorite = (favorite) => {
     docEditor.setFavorite(favorite);
-  };
-
-  const getRecent = async (config) => {
-    try {
-      const recentFolderList = await getRecentFolderList();
-
-      const filesArray = recentFolderList.files.slice(0, 25);
-
-      const recentFiles = filesArray.filter(
-        (file) =>
-          file.rootFolderType !== FolderType.SHARE &&
-          ((config.documentType === text && file.fileType === 7) ||
-            (config.documentType === spreadSheet && file.fileType === 5) ||
-            (config.documentType === presentation && file.fileType === 6))
-      );
-
-      const groupedByFolder = recentFiles.reduce((r, a) => {
-        r[a.folderId] = [...(r[a.folderId] || []), a];
-        return r;
-      }, {});
-
-      const requests = Object.entries(groupedByFolder).map((item) =>
-        getFolderInfo(item[0])
-          .then((folderInfo) =>
-            Promise.resolve({
-              files: item[1],
-              folderInfo: folderInfo,
-            })
-          )
-          .catch((e) => console.error(e))
-      );
-
-      let recent = [];
-
-      let responses = await Promise.all(requests);
-
-      for (let res of responses) {
-        res.files.forEach((file) => {
-          const convertedData = convertRecentData(file, res.folderInfo);
-          if (Object.keys(convertedData).length !== 0)
-            recent.push(convertedData);
-        });
-      }
-
-      return recent;
-    } catch (e) {
-      console.error(e);
-    }
-
-    return null;
   };
 
   const initDesktop = (config) => {
@@ -312,17 +261,6 @@ const Editor = () => {
         initDesktop();
       }
 
-      if (successAuth) {
-        const recent = await getRecent(config); //TODO: too slow for 1st loading
-
-        if (recent) {
-          config.editorConfig = {
-            ...config.editorConfig,
-            recent: recent,
-          };
-        }
-      }
-
       isSharingAccess = fileInfo && fileInfo.canShare;
 
       if (view) {
@@ -341,20 +279,6 @@ const Editor = () => {
         true
       );
     }
-  };
-
-  const convertRecentData = (file, folder) => {
-    let obj = {};
-    const folderName = folder.title;
-    const fileName = file.title;
-
-    if (+fileId !== file.id)
-      obj = {
-        folder: folderName,
-        title: fileName,
-        url: file.webUrl,
-      };
-    return obj;
   };
 
   const isIPad = () => {

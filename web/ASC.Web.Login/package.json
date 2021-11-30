@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack --mode production",
     "clean": "shx rm -rf dist",
-    "deploy": "shx mkdir -p ../../build/deploy/studio/login && shx cp -r dist/* ../../build/deploy/studio/login",
+    "deploy": "shx --silent mkdir -p ../../build/deploy/studio/login && shx cp -r dist/* ../../build/deploy/studio/login",
     "serve": "serve dist -p 5011",
     "start": "webpack-cli serve",
     "start-prod": "webpack --mode production && serve dist -p 5011"

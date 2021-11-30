@@ -31,7 +31,7 @@ class SelectFileDialogBody extends React.Component {
       filter,
       creationButtonPrimary,
       t,
-    } = this.props;
+    } = props;
 
     this.buttonName = creationButtonPrimary
       ? t("Common:Create")
@@ -384,9 +384,9 @@ const SelectFileDialogWrapper = inject(
 
     const { setSelectedNode, setExpandedPanelKeys } = treeFoldersStore;
     const { filter } = filesStore;
-    const { setSelectedFolder } = selectedFolderStore;
+    const { setSelectedFolder, id } = selectedFolderStore;
     return {
-      storeFolderId,
+      storeFolderId: storeFolderId || id,
       fileInfo,
       setFile,
       setFolderId,

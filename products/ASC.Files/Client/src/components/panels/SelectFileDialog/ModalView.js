@@ -233,6 +233,7 @@ class SelectFileDialogModalView extends React.Component {
                         selectedFile={selectedFile}
                         listHeight={isHeaderChildren ? 260 : 303}
                         onSetLoadingData={this.onSetLoadingData}
+                        displayType={"modal"}
                       />
                     )}
                   </>

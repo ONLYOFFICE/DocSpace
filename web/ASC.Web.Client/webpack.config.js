@@ -19,16 +19,12 @@ const version = pkg.version;
 
 const config = {
   entry: "./src/index",
+  target: "web",
   mode: "development",
-
-  stats: {
-    errorDetails: true,
-  },
 
   devServer: {
     devMiddleware: {
       publicPath: homepage,
-      //writeToDisk: true,
     },
     static: {
       directory: path.join(__dirname, "dist"),
@@ -240,11 +236,7 @@ module.exports = (env, argv) => {
     config.optimization = {
       splitChunks: { chunks: "all" },
       minimize: true,
-      minimizer: [
-        new TerserPlugin({
-          include: "./src/store",
-        }),
-      ],
+      minimizer: [new TerserPlugin()],
     };
   } else {
     config.devtool = "cheap-module-source-map";
