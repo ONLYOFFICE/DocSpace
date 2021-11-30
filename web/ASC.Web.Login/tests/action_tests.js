@@ -40,10 +40,12 @@ Scenario('Checkbox click test', async ({ I }) => {
   });
 
   I.saveScreenshot(`5.checked-checkbox.png`);
-  I.seeVisualDiff(`5.checked-checkbox.png`, {
-    tolerance: 1,
-    prepareBaseImage: false,
-  });
+  if (!isModel) {
+    I.seeVisualDiff(`5.checked-checkbox.png`, {
+      tolerance: 1,
+      prepareBaseImage: false,
+    });
+  }
 });
 
 Scenario('Test login error', async ({ I }) => {
