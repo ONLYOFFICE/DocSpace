@@ -798,13 +798,13 @@ export function checkFillFormDraft(fileId) {
   });
 }
 
-export function fileCopyAs(fileId, title, folderId, enableExternalExt) {
+export function fileCopyAs(fileId, destTitle, destFolderId, enableExternalExt) {
   return request({
     method: "post",
-    url: `file/${fileId}/copyas`,
+    url: `files/file/${fileId}/copyas`,
     data: {
-      title,
-      folderId,
+      destTitle,
+      destFolderId,
       enableExternalExt,
     },
   });
