@@ -212,6 +212,7 @@ class SelectFileDialogModalView extends React.Component {
                     filter={filter}
                     selectedKeys={[selectedFolder]}
                     isHeaderChildren={isHeaderChildren}
+                    displayType="modal"
                   />
                 </div>
                 <div className="modal-dialog_files-body">
