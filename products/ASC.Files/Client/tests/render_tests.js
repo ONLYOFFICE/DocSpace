@@ -25,13 +25,13 @@ Scenario('Default root folders render test', ({ I }) => {
   I.mockEndpoint(Endpoints.getFolder(8), 'emptyTrash');
 
   I.amOnPage('/products/files');
-  I.wait(5);
+  I.wait(6);
 
   I.see('My documents');
   I.saveScreenshot(`1.row-default-my-documents-tab.png`);
   if (!isModel) {
     I.seeVisualDiff(`1.row-default-my-documents-tab.png`, {
-      tolerance: 1,
+      tolerance: 3,
       prepareBaseImage: false,
     });
   }
@@ -41,7 +41,7 @@ Scenario('Default root folders render test', ({ I }) => {
     I.saveScreenshot(`1.tile-default-my-documents-tab.png`);
     if (!isModel) {
       I.seeVisualDiff(`1.tile-default-my-documents-tab.png`, {
-        tolerance: 1,
+        tolerance: 3,
         prepareBaseImage: false,
       });
     }
@@ -49,66 +49,72 @@ Scenario('Default root folders render test', ({ I }) => {
 
   if (deviceType !== 'desktop') I.openArticle();
   I.click('Shared with me');
+  I.wait(2);
   I.see('Shared with me');
   I.saveScreenshot(`2.empty-shared-with-me-tab.png`);
   if (!isModel) {
     I.seeVisualDiff(`2.empty-shared-with-me-tab.png`, {
-      tolerance: 1,
+      tolerance: 3,
       prepareBaseImage: false,
     });
   }
 
   if (deviceType !== 'desktop') I.openArticle();
   I.click('Favorites');
+  I.wait(2);
   I.see('Favorites');
   I.saveScreenshot(`3.empty-favorites-tab.png`);
   if (!isModel) {
     I.seeVisualDiff(`3.empty-favorites-tab.png`, {
-      tolerance: 1,
+      tolerance: 3,
       prepareBaseImage: false,
     });
   }
 
   if (deviceType !== 'desktop') I.openArticle();
   I.click('Recent');
+  I.wait(2);
   I.see('Recent');
   I.saveScreenshot(`4.empty-recent-tab.png`);
   if (!isModel) {
     I.seeVisualDiff(`4.empty-recent-tab.png`, {
-      tolerance: 1,
+      tolerance: 3,
       prepareBaseImage: false,
     });
   }
 
   if (deviceType !== 'desktop') I.openArticle();
   I.click('Private Room');
+  I.wait(2);
   I.see('Private Room');
   I.saveScreenshot(`5.empty-private-room-tab.png`);
   if (!isModel) {
     I.seeVisualDiff(`5.empty-private-room-tab.png`, {
-      tolerance: 1,
+      tolerance: 3,
       prepareBaseImage: false,
     });
   }
 
   if (deviceType !== 'desktop') I.openArticle();
   I.click('Common');
+  I.wait(2);
   I.see('Common');
   I.saveScreenshot(`6.empty-common-tab.png`);
   if (!isModel) {
     I.seeVisualDiff(`6.empty-common-tab.png`, {
-      tolerance: 1,
+      tolerance: 3,
       prepareBaseImage: false,
     });
   }
 
   if (deviceType !== 'desktop') I.openArticle();
   I.click('Trash');
+  I.wait(2);
   I.see('Trash');
   I.saveScreenshot(`7.empty-trash-tab.png`);
   if (!isModel) {
     I.seeVisualDiff(`7.empty-trash-tab.png`, {
-      tolerance: 1,
+      tolerance: 3,
       prepareBaseImage: false,
     });
   }
@@ -132,7 +138,7 @@ Scenario('Default settings render test', ({ I }) => {
   I.saveScreenshot(`8.default-common-settings-tab.png`);
   if (!isModel) {
     I.seeVisualDiff(`8.default-common-settings-tab.png`, {
-      tolerance: 1,
+      tolerance: 3,
       prepareBaseImage: false,
     });
   }
@@ -144,7 +150,7 @@ Scenario('Default settings render test', ({ I }) => {
   I.saveScreenshot(`9.default-admin-settings-tab.png`);
   if (!isModel) {
     I.seeVisualDiff(`9.default-admin-settings-tab.png`, {
-      tolerance: 1,
+      tolerance: 3,
       prepareBaseImage: false,
     });
   }
@@ -156,7 +162,7 @@ Scenario('Default settings render test', ({ I }) => {
   I.saveScreenshot(`10.default-connected-clouds-tab.png`);
   if (!isModel) {
     I.seeVisualDiff(`10.default-connected-clouds-tab.png`, {
-      tolerance: 1,
+      tolerance: 3,
       prepareBaseImage: false,
     });
   }
@@ -176,7 +182,7 @@ Scenario('Many documents and folders render test', ({ I }) => {
   I.saveScreenshot(`11.row-many-documents.png`);
   if (!isModel) {
     I.seeVisualDiff(`11.row-many-documents.png`, {
-      tolerance: 1,
+      tolerance: 3,
       prepareBaseImage: false,
     });
   }
@@ -186,36 +192,7 @@ Scenario('Many documents and folders render test', ({ I }) => {
     I.saveScreenshot(`11.tile-many-documents.png`);
     if (!isModel) {
       I.seeVisualDiff(`11.tile-many-documents.png`, {
-        tolerance: 1,
-        prepareBaseImage: false,
-      });
-    }
-  }
-});
-
-Scenario('Context menu render test', ({ I }) => {
-  I.mockEndpoint(Endpoints.root, 'one');
-  I.mockEndpoint(Endpoints.my, 'many');
-  I.mockEndpoint(Endpoints.getFolder(9), '9');
-  I.mockEndpoint(Endpoints.getSubfolder(9), '9');
-  I.amOnPage('/products/files');
-  I.wait(5);
-
-  I.openContextMenu();
-  I.saveScreenshot(`12.row-context-menu.png`);
-  if (!isModel) {
-    I.seeVisualDiff(`12.row-context-menu.png`, {
-      tolerance: 1,
-      prepareBaseImage: false,
-    });
-  }
-
-  if (deviceType !== 'mobile') {
-    I.switchView('tile');
-    I.saveScreenshot(`12.tile-context-menu.png`);
-    if (!isModel) {
-      I.seeVisualDiff(`12.tile-context-menu.png`, {
-        tolerance: 1,
+        tolerance: 3,
         prepareBaseImage: false,
       });
     }

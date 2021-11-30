@@ -57,20 +57,20 @@ Scenario('Add and remove from favorites file test', ({ I }) => {
   I.openContextMenu();
   I.see('Mark as favorite');
   I.click('Mark as favorite');
-  I.wait(2);
-  I.saveScreenshot(`13.row-favorite-file.png`);
+  I.wait(7);
+  I.saveScreenshot(`12.row-favorite-file.png`);
   if (!isModel) {
-    I.seeVisualDiff(`13.row-favorite-file.png`, {
-      tolerance: 1,
+    I.seeVisualDiff(`12.row-favorite-file.png`, {
+      tolerance: 3,
       prepareBaseImage: false,
     });
   }
   if (deviceType !== 'mobile') {
     I.switchView('tile');
-    I.saveScreenshot(`13.tile-favorite-file.png`);
+    I.saveScreenshot(`12.tile-favorite-file.png`);
     if (!isModel) {
-      I.seeVisualDiff(`13.tile-favorite-file.png`, {
-        tolerance: 1,
+      I.seeVisualDiff(`12.tile-favorite-file.png`, {
+        tolerance: 3,
         prepareBaseImage: false,
       });
     }
@@ -80,21 +80,21 @@ Scenario('Add and remove from favorites file test', ({ I }) => {
   I.openContextMenu();
   I.see('Remove from favorites');
   I.click('Remove from favorites');
-  I.wait(2);
+  I.wait(8);
 
-  I.saveScreenshot(`14.row-remove-from-favorite-file.png`);
+  I.saveScreenshot(`13.row-remove-from-favorite-file.png`);
   if (!isModel) {
-    I.seeVisualDiff(`14.row-remove-from-favorite-file.png`, {
-      tolerance: 1,
+    I.seeVisualDiff(`13.row-remove-from-favorite-file.png`, {
+      tolerance: 3,
       prepareBaseImage: false,
     });
   }
   if (deviceType !== 'mobile') {
     I.switchView('row');
-    I.saveScreenshot(`14.tile-remove-from-favorite-file.png`);
+    I.saveScreenshot(`13.tile-remove-from-favorite-file.png`);
     if (!isModel) {
-      I.seeVisualDiff(`14.tile-remove-from-favorite-file.png`, {
-        tolerance: 1,
+      I.seeVisualDiff(`13.tile-remove-from-favorite-file.png`, {
+        tolerance: 3,
         prepareBaseImage: false,
       });
     }
