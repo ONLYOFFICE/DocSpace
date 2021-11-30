@@ -15,6 +15,7 @@ import {
   getFileConversationProgress,
   copyToFolder,
   moveToFolder,
+  fileCopyAs,
 } from "@appserver/common/api/files";
 
 class UploadDataStore {
@@ -915,6 +916,18 @@ class UploadDataStore {
         });
         setTimeout(() => clearPrimaryProgressData(), TIMEOUT);
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+        return Promise.reject(err);
+      });
+  };
+
+  copyAsAction = (fileId, title, folderId, enableExternalExt) => {
+    const { fetchFiles, filter } = this.filesStore;
+
+    return fileCopyAs(fileId, title, folderId, enableExternalExt)
+      .then(() => {
+        fetchFiles(folderId, filter, true, true);
+      })
+      .catch((err) => {
         return Promise.reject(err);
       });
   };

@@ -4,10 +4,5 @@
   "NewPresentation": "New Presentation",
   "NewSpreadsheet": "New Spreadsheet",
   "UploadFiles": "Upload files",
-  "UploadFolder": "Upload folder",
-  "NewForm": "Master form",
-  "NewFormFile": "Master form from file",
-  "CreateMasterFormFromFile": "Create Master Form from file",
-  "SubNewForm": "From blank",
-  "SubNewFormFile": "From an existing text file"
+  "UploadFolder": "Upload folder"
 }

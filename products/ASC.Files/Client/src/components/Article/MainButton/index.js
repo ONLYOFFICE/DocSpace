@@ -25,7 +25,8 @@ class ArticleMainButtonContent extends React.Component {
   };
 
   onShowSelectFileDialog = () => {
-    const { setSelectFileDialogVisible } = this.props;
+    const { setSelectFileDialogVisible, hideArticle } = this.props;
+    hideArticle();
     setSelectFileDialogVisible(true);
   };
 
@@ -96,17 +97,17 @@ class ArticleMainButtonContent extends React.Component {
           {
             className: "main-button_drop-down",
             icon: "images/form.react.svg",
-            label: t("NewForm"),
+            label: t("Translations:NewForm"),
             items: [
               {
                 className: "main-button_drop-down_sub",
-                label: t("SubNewForm"),
+                label: t("Translations:SubNewForm"),
                 onClick: this.onCreate,
                 action: "docxf",
               },
               {
                 className: "main-button_drop-down_sub",
-                label: t("SubNewFormFile"),
+                label: t("Translations:SubNewFormFile"),
                 onClick: this.onShowSelectFileDialog,
               },
             ],
@@ -116,14 +117,14 @@ class ArticleMainButtonContent extends React.Component {
           {
             className: "main-button_drop-down_sub",
             icon: "images/form.react.svg",
-            label: t("NewForm"),
+            label: t("Translations:NewForm"),
             onClick: this.onCreate,
             action: "docxf",
           },
           {
             className: "main-button_drop-down_sub",
             icon: "images/form.file.react.svg",
-            label: t("NewFormFile"),
+            label: t("Translations:NewFormFile"),
             onClick: this.onShowSelectFileDialog,
           },
         ];
@@ -208,11 +209,12 @@ ArticleMainButtonContent.propTypes = {
 };
 
 export default inject(
-  ({ filesStore, uploadDataStore, treeFoldersStore, dialogsStore }) => {
+  ({ auth, filesStore, uploadDataStore, treeFoldersStore, dialogsStore }) => {
     const { firstLoad, fileActionStore, filter, canCreate } = filesStore;
     const { isPrivacyFolder } = treeFoldersStore;
     const { startUpload } = uploadDataStore;
     const { setSelectFileDialogVisible } = dialogsStore;
+    const { hideArticle } = auth.settingsStore;
     return {
       homepage: config.homepage,
       firstLoad,
@@ -223,11 +225,12 @@ export default inject(
       setAction: fileActionStore.setAction,
       startUpload,
       setSelectFileDialogVisible,
+      hideArticle,
     };
   }
 )(
   withRouter(
-    withTranslation(["Article", "Common"])(
+    withTranslation(["Article", "Common", "Translations"])(
       withLoader(observer(ArticleMainButtonContent))(<Loaders.MainButton />)
     )
   )

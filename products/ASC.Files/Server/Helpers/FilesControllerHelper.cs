@@ -65,6 +65,7 @@ namespace ASC.Files.Helpers
         private SettingsManager SettingsManager { get; }
         private EncryptionKeyPairHelper EncryptionKeyPairHelper { get; }
         private IHttpContextAccessor HttpContextAccessor { get; }
+        private FileConverter FileConverter { get; }
         private ILog Logger { get; set; }
 
         /// <summary>
@@ -92,7 +93,8 @@ namespace ASC.Files.Helpers
             IOptionsMonitor<ILog> optionMonitor,
             SettingsManager settingsManager,
             EncryptionKeyPairHelper encryptionKeyPairHelper,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            FileConverter fileConverter)
         {
             ApiContext = context;
             FileStorageService = fileStorageService;
@@ -114,6 +116,7 @@ namespace ASC.Files.Helpers
             SettingsManager = settingsManager;
             EncryptionKeyPairHelper = encryptionKeyPairHelper;
             HttpContextAccessor = httpContextAccessor;
+            FileConverter = fileConverter;
             Logger = optionMonitor.Get("ASC.Files");
         }
 
@@ -342,6 +345,22 @@ namespace ASC.Files.Helpers
         {
             var file = FileStorageService.GetFile(fileId, version).NotFoundIfNull("File not found");
             return FileWrapperHelper.Get(file);
+        }
+        public FileWrapper<T> CopyFileAs(T fileId, T destFolderId, string destTitle)
+        {
+            var file = FileStorageService.GetFile(fileId, -1);
+            var ext = FileUtility.GetFileExtension(file.Title);
+            var destExt = FileUtility.GetFileExtension(destTitle);
+
+            if (ext == destExt)
+            {
+                return CreateFile(destFolderId, destTitle, fileId);
+            }
+
+            using (var fileStream = FileConverter.Exec(file, destExt))
+            {
+                return InsertFile(destFolderId, fileStream, destTitle, true);
+            }
         }
 
         public FileWrapper<T> AddToRecent(T fileId, int version = -1)

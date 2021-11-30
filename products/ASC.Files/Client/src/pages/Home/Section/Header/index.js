@@ -174,6 +174,13 @@ class SectionHeaderContent extends React.Component {
 
   createPresentation = () => this.onCreate("pptx");
 
+  createForm = () => this.onCreate("docxf");
+
+  createFormFromFile = () => {
+    const { setSelectFileDialogVisible } = this.props;
+    setSelectFileDialogVisible(true);
+  };
+
   createFolder = () => this.onCreate();
 
   uploadToFolder = () => console.log("Upload To Folder click");
@@ -196,6 +203,14 @@ class SectionHeaderContent extends React.Component {
         key: "new-presentation",
         label: t("NewPresentation"),
         onClick: this.createPresentation,
+      },
+      {
+        label: t("Translations:NewForm"),
+        onClick: this.createForm,
+      },
+      {
+        label: t("Translations:NewFormFile"),
+        onClick: this.createFormFromFile,
       },
       {
         key: "new-folder",
@@ -522,6 +537,7 @@ export default inject(
       setCopyPanelVisible,
       setDeleteDialogVisible,
       setEmptyTrashDialogVisible,
+      setSelectFileDialogVisible,
     } = dialogsStore;
 
     const { isRecycleBinFolder } = treeFoldersStore;
@@ -557,6 +573,7 @@ export default inject(
       downloadAction,
       getHeaderMenu,
       getCheckboxItemLabel,
+      setSelectFileDialogVisible,
 
       isRecycleBinFolder,
       setEmptyTrashDialogVisible,
