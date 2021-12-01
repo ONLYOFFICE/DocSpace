@@ -4,7 +4,7 @@ import ModalDialog from "@appserver/components/modal-dialog";
 
 const ModalDialogContainer = styled(ModalDialog)`
   .row-main-container-wrapper {
-    width: 220px;
+    width: 100%;
   }
 
   .flex {
