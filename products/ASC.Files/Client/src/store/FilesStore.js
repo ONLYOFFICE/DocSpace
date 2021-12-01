@@ -605,6 +605,7 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, [
           "open",
           "edit",
+          "make-form",
           "link-for-portal-users",
           "external-link",
           "send-by-email",
