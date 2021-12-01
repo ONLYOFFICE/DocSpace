@@ -95,7 +95,7 @@ map $STUDIO_HOST $service_studio {
     $STUDIO_HOST $STUDIO_HOST:$SERVICE_PORT;
 }
 
-map $SSOAUTH_HOST $service_studio {
+map $SSOAUTH_HOST $service_ssoauth {
     volatile;
     $SSOAUTH_HOST $SSOAUTH_HOST:9834;
 }

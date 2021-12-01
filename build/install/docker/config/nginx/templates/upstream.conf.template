@@ -81,7 +81,7 @@ map $STUDIO_HOST $service_studio {
     $STUDIO_HOST $STUDIO_HOST;
 }
 
-map $SSOAUTH_HOST $service_studio {
+map $SSOAUTH_HOST $service_ssoauth {
     $SSOAUTH_HOST $SSOAUTH_HOST;
 }
 
@@ -92,105 +92,111 @@ upstream $service_api_system {
 }
 
 upstream $service_backup {
-    server $SERVICE_BACKUP:$SERVICE_PORT;
+    server $BACKUP_HOST:$SERVICE_PORT;
 
     keepalive $service_keepalive;
 }
 
 upstream $service_calendar {
-    server $SERVICE_CALENDAR:$SERVICE_PORT;
+    server $CALENDAR_HOST:$SERVICE_PORT;
 
     keepalive $service_keepalive;
 }
 
 upstream $service_crm {
-    server $SERVICE_CRM:$SERVICE_PORT;
+    server $CRM_HOST:$SERVICE_PORT;
 
     keepalive $service_keepalive;
 }
 
 #upstream $service_storage_encryption {
-#    server $SERVICE_STORAGE_ENCRYPTION:$SERVICE_PORT;
+#    server $STORAGE_ENCRYPTION_HOST:$SERVICE_PORT;
 
 #    keepalive $service_keepalive;
 #}
 
 upstream $service_files {
-    server $SERVICE_FILES:$SERVICE_PORT;
+    server $FILES_HOST:$SERVICE_PORT;
 }
 
 #upstream $service_files_services {
-#    server $SERVICE_FILES_SERVICES:$SERVICE_PORT;
+#    server $FILES_SERVICES_HOST:$SERVICE_PORT;
 #    keepalive $service_keepalive;
 #}
 
 upstream $service_mail {
-    server $SERVICE_MAIL:$SERVICE_PORT;
+    server $MAIL_HOST:$SERVICE_PORT;
 
     keepalive $service_keepalive;
 }
 
 #upstream $service_storage_migration {
-#    server $SERVICE_STORAGE_MIGRATION:$SERVICE_PORT;
+#    server $STORAGE_MIGRATION_HOST:$SERVICE_PORT;
 
 #    keepalive $service_keepalive;
 #}
 
 #upstream $service_notify {
-#    server $SERVICE_NOTIFY:$SERVICE_PORT;
+#    server $NOTIFY_HOST:$SERVICE_PORT;
 #    keepalive $service_keepalive;
 #}
 
 upstream $service_people_server {
-    server $SERVICE_PEOPLE_SERVER:$SERVICE_PORT;
+    server $PEOPLE_SERVER_HOST:$SERVICE_PORT;
 
     keepalive $service_keepalive;
 }
 
 upstream $service_projects_server {
-    server $SERVICE_PROJECTS_SERVER:$SERVICE_PORT;
+    server $PROJECTS_SERVER_HOST:$SERVICE_PORT;
 
     keepalive $service_keepalive;
 }
 
 #upstream $service_socket {
-#    server $SERVICE_SOCKET:$SERVICE_PORT;
+#    server $SOCKET_HOST:$SERVICE_PORT;
     
 #    keepalive $service_keepalive;
 #}
 
 #upstream $service_studio_notify {
-#    server $SERVICE_STUDIO_NOTIFY:$SERVICE_PORT;
+#    server $STUDIO_NOTIFY_HOST:$SERVICE_PORT;
 
 #    keepalive $service_keepalive;
 #}
 
 #upstream $service_telegram_service {
-#    server $SERVICE_TELEGRAM_SERVICE:$SERVICE_PORT;
+#    server $TELEGRAM_SERVICE_HOST:$SERVICE_PORT;
 #    
 #    keepalive $service_keepalive;
 #}
 
 #upstream $service_thumbnails {
-#    server $SERVICE_THUMBNAILS:$SERVICE_PORT;
+#    server $THUMBNAILS_HOST:$SERVICE_PORT;
 #    
 #    keepalive $service_keepalive;
 #}
 
 upstream $service_urlshortener {
-    server $SERVICE_URLSHORTENER:$SERVICE_PORT;
+    server $URLSHORTENER_HOST:$SERVICE_PORT;
 
     keepalive $service_keepalive;
 }
 
 upstream $service_api {
-    server $SERVICE_API:$SERVICE_PORT;
+    server $API_HOST:$SERVICE_PORT;
 
     keepalive $service_keepalive;
 }
 
 upstream $service_studio {
-    server $SERVICE_STUDIO:$SERVICE_PORT;
+    server $STUDIO_HOST:$SERVICE_PORT;
+
+    keepalive $service_keepalive;
+}
+
+upstream $service_ssoauth {
+    server $SSOAUTH_HOST:9834;
 
     keepalive $service_keepalive;
 }
