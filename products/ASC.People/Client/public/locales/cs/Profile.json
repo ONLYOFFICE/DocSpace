@@ -1,0 +1,21 @@
+{
+  "ChangeEmailSuccess": "E-mail byl úspìšnì zmìnìn ",
+  "ChangesApplied": "Zmìny jsou aplikovány",
+  "Connect": "Pøipojit",
+  "ContactInformation": "Contact Information",
+  "CountCodesRemaining": "zbývající kódy",
+  "Disconnect": "Odpojit",
+  "EditPhoto": "Upravit fotografii",
+  "EditSubscriptionsBtn": "Upravit pøedplatné",
+  "EditUser": "Upravit profil",
+  "InviteAgainLbl": "Pozvat znovu",
+  "LoginSettings": "Nastavení pøihlášení",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Pokyny k aktivaci e-mailu byly odeslány na e-mailovou adresu <strong>{{ email }}</strong>",
+  "PhoneLbl": "Telefon",
+  "ProviderSuccessfullyConnected": "Poskytovatel úspìšnì pøipojen",
+  "ProviderSuccessfullyDisconnected": "Poskytovatel úspìšnì odpojen",
+  "ShowBackupCodes": "Zobrazit záložní kódy",
+  "Subscriptions": "Pøedplatné",
+  "TfaLoginSettings": "Nastavení pøihlášení",
+  "TwoFactorDescription": "Dvoufázové ovìøování prostøednictvím aplikace generující kódy bylo správcem povoleno pro všechny uživatele."
+}

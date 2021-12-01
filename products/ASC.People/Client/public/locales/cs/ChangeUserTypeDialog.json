@@ -1,0 +1,7 @@
+{
+  "ChangeUserTypeButton": "Zmìnit typ",
+  "ChangeUserTypeHeader": "Zmìnit typ uživatele",
+  "ChangeUserTypeMessage": "Uživatelé s typem '{{ firstType }}' budou pøesunuti na typ '{{ secondType }}'.",
+  "ChangeUserTypeMessageWarning": "Nemùžete zmìnit typ pro správce portálu a pro sebe.",
+  "SuccessChangeUserType": "Typ uživatele byl úspìšnì zmìnìn"
+}
