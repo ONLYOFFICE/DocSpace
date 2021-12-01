@@ -50,5 +50,7 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Яндекс.Диск",
+  "TitleShowActions": "Показать действия над файлом",
+  "TitleShowFolderActions": "Показать действия над папкой",
   "TitleSelectFile": "Выделить"
 }

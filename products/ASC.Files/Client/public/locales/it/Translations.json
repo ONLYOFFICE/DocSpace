@@ -26,5 +26,7 @@
   "MobileAndroid": "Ottieni ONLYOFFICE Documents da Google Play",
   "MobileIos": "Scarica ONLYOFFICE Documents dall'App Store",
   "MainHeaderSelectAll": "Seleziona tutto",
+  "TitleShowActions": "Mostra azioni con file",
+  "TitleShowFolderActions": "Mostra azioni con cartelle",
   "TitleSelectFile": "Seleziona"
 }
