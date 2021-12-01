@@ -65,14 +65,6 @@ Scenario('Create new user test', async ({ I }) => {
   I.fillForm(userForm);
 
   I.checkText(userForm, 'User');
-
-  I.saveScreenshot(`10.create-new-user.png`);
-  if (!isModel) {
-    I.seeVisualDiff(`10.create-new-user.png`, {
-      tolerance: 1,
-      prepareBaseImage: false,
-    });
-  }
 });
 
 Scenario('Create new guest test', async ({ I }) => {
@@ -100,14 +92,6 @@ Scenario('Create new guest test', async ({ I }) => {
   I.fillForm(userForm);
 
   I.checkText(userForm, 'Guest');
-
-  I.saveScreenshot(`11.create-new-guest.png`);
-  if (!isModel) {
-    I.seeVisualDiff(`11.create-new-guest.png`, {
-      tolerance: 1,
-      prepareBaseImage: false,
-    });
-  }
 });
 
 Scenario('Create new group test', async ({ I }) => {
