@@ -287,6 +287,7 @@
     <ROW Action="AI_TxtUpdaterRollback" Description="Откат изменений текстового файла." DescriptionLocId="ActionText.Description.AI_TxtUpdaterRollback" Template="Откат изменений текстового файла." TemplateLocId="ActionText.Template.AI_TxtUpdaterRollback"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
+    <ROW Name="PowerShellScriptLauncher.dll" SourcePath="&lt;AI_CUSTACTS&gt;PowerShellScriptLauncher.dll"/>
     <ROW Name="TxtUpdater.dll" SourcePath="&lt;AI_CUSTACTS&gt;TxtUpdater.dll"/>
     <ROW Name="aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
   </COMPONENT>
@@ -320,6 +321,7 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
     <ROW Action="AI_BACKUP_AI_SETUPEXEPATH" Type="51" Source="AI_SETUPEXEPATH_ORIGINAL" Target="[AI_SETUPEXEPATH]"/>
+    <ROW Action="AI_DATA_SETTER" Type="51" Source="CustomActionData" Target="AEQAaQBnAGkAdABhAGwAbAB5AFMAaQBnAG4AUwBjAHIAaQBwAHQAAgABAEYAbABhAGcAcwACADYAAQBQAGEAcgBhAG0AcwACAAEAUwBjAHIAaQBwAHQAAgAjAFIAZQBxAHUAaQByAGUAcwAgAC0AdgBlAHIAcwBpAG8AbgAgADMADQAKAFAAYQByAGEAbQAoACkADQAKAA0ACgAkAEEAUABQAEQASQBSACAAPQAgAEEASQBfAEcAZQB0AE0AcwBpAFAAcgBvAHAAZQByAHQAeQAgAEEAUABQAEQASQBSAA0ACgAkAE0AQQBJAE4ARABJAFIAIAA9ACAAJABBAFAAUABEAEkAUgAuAFQAbwBTAHQAcgBpAG4AZwAoACkAIAArACAAIgAuAC4AIgANAAoAUgBlAG0AbwB2AGUALQBJAHQAZQBtACAAJABNAEEASQBOAEQASQBSACAALQBSAGUAYwB1AHIAcwBl"/>
     <ROW Action="AI_DOWNGRADE" Type="19" Target="4010"/>
     <ROW Action="AI_DpiContentScale" Type="1" Source="aicustact.dll" Target="DpiContentScale"/>
     <ROW Action="AI_EnableDebugLog" Type="321" Source="aicustact.dll" Target="EnableDebugLog"/>
@@ -335,6 +337,7 @@
     <ROW Action="AI_TxtUpdaterConfig" Type="11265" Source="TxtUpdater.dll" Target="OnTxtUpdaterConfig" WithoutSeq="true"/>
     <ROW Action="AI_TxtUpdaterInstall" Type="1" Source="TxtUpdater.dll" Target="OnTxtUpdaterInstall"/>
     <ROW Action="AI_TxtUpdaterRollback" Type="11521" Source="TxtUpdater.dll" Target="OnTxtUpdaterRollback" WithoutSeq="true"/>
+    <ROW Action="RemoveManufactorDir" Type="65" Source="PowerShellScriptLauncher.dll" Target="RunPowerShellScript" Options="1" AdditionalSeq="AI_DATA_SETTER"/>
     <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]"/>
     <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]"/>
     <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
@@ -360,6 +363,8 @@
     <ROW Action="AI_ResolveKnownFolders" Sequence="52"/>
     <ROW Action="AI_EnableDebugLog" Sequence="51"/>
     <ROW Action="AI_TxtUpdaterInstall" Sequence="5101"/>
+    <ROW Action="RemoveManufactorDir" Condition="( NOT Installed )" Sequence="6602"/>
+    <ROW Action="AI_DATA_SETTER" Condition="( NOT Installed )" Sequence="6601"/>
     <ATTRIBUTE name="RegisterProduct" value="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
