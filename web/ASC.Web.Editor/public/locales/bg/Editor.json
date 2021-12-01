@@ -6,6 +6,6 @@
     "SelectFilesType": "Изберете файлове от тип: {{fileType}}",
     "ImageFileType": "cнимки",
     "DocumentsFileType": "документи",
-    "MailMergeFileType": "Select the file in XLSX format",
+    "MailMergeFileType": "Изберете файл във XLSX формат",
     "SelectFileTitle": "Изберете източник на данни"
 }
