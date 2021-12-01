@@ -119,8 +119,8 @@ COPY --from=base /etc/nginx/includes /etc/nginx/includes
 COPY --from=base ${SRC_PATH}/build/deploy/products ${BUILD_PATH}/products
 COPY --from=base ${SRC_PATH}/build/deploy/public ${BUILD_PATH}/public
 COPY --from=base ${SRC_PATH}/build/deploy/studio ${BUILD_PATH}/studio
-COPY /config/nginx/templates/upstream.conf.template /etc/nginx/templates/upstream.conf.upstream
-COPY /config/nginx/templates/map.conf.template /etc/nginx/templates/map.conf.map
+COPY /config/nginx/templates/upstream.conf.template /etc/nginx/templates/10.upstream.conf.upstream
+COPY /config/nginx/templates/map.conf.template /etc/nginx/templates/10.map.conf.map
 COPY /config/nginx/templates/nginx.conf.template /etc/nginx/nginx.conf.template
 COPY prepare-nginx-proxy.sh /docker-entrypoint.d/prepare-nginx-proxy.sh
 
