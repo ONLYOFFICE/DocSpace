@@ -195,8 +195,8 @@ upstream $service_studio {
     keepalive $service_keepalive;
 }
 
-upstream $service_ssoauth {
-    server $SSOAUTH_HOST:9834;
+#upstream $service_ssoauth {
+#    server $SSOAUTH_HOST:9834;
 
-    keepalive $service_keepalive;
-}
+#    keepalive $service_keepalive;
+#}
