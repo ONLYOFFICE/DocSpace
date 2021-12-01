@@ -1,0 +1,8 @@
+{
+  "ChangeUsersActiveStatus": "uitgeschakeld",
+  "ChangeUsersDisableStatus": "ingeschakeld",
+  "ChangeUsersStatusButton": "Wijzig gebruikersstatus",
+  "ChangeUserStatusDialog": "De gebruikers met de '{{ status }}' status zullen worden uitgeschakeld.",
+  "ChangeUserStatusDialogHeader": "Wijzig gebruikersstatus",
+  "ChangeUserStatusDialogMessage": "U kunt de status voor de portaal eigenaar en voor uzelf niet veranderen"
+}
