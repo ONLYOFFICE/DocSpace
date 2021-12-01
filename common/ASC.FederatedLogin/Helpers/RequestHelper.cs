@@ -27,7 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
+using System.Net.Http;
 using System.Text;
 
 namespace ASC.FederatedLogin.Helpers
@@ -38,9 +38,13 @@ namespace ASC.FederatedLogin.Helpers
         {
             if (string.IsNullOrEmpty(uri)) throw new ArgumentNullException("uri");
 
-            var request = WebRequest.Create(uri);
-            request.Method = method;
-            request.Timeout = timeout;
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(uri);
+            request.Method = new HttpMethod(method);
+
+            using var httpClient = new HttpClient();
+            httpClient.Timeout = TimeSpan.FromMilliseconds(timeout);
+
             if (headers != null)
             {
                 foreach (var key in headers.Keys)
@@ -49,33 +53,22 @@ namespace ASC.FederatedLogin.Helpers
                 }
             }
 
-
-            if (!string.IsNullOrEmpty(contentType))
-            {
-                request.ContentType = contentType;
-            }
-
             var bytes = Encoding.UTF8.GetBytes(body ?? "");
-            if (request.Method != "GET" && bytes.Length > 0)
+            if (request.Method != HttpMethod.Get && bytes.Length > 0)
             {
-                request.ContentLength = bytes.Length;
-                using var stream = request.GetRequestStream();
-                stream.Write(bytes, 0, bytes.Length);
+                request.Content = new ByteArrayContent(bytes, 0, bytes.Length);
+                if (!string.IsNullOrEmpty(contentType))
+                {
+                    request.Headers.Add("Content-Type", contentType);
+                }
             }
 
-            try
-            {
-                using var response = request.GetResponse();
-                using var stream = response.GetResponseStream();
-                if (stream == null) return null;
-                using var readStream = new StreamReader(stream);
-                return readStream.ReadToEnd();
-            }
-            catch (WebException)
-            {
-                request.Abort();
-                throw;
-            }
+            using var response = httpClient.Send(request);
+            using var stream = response.Content.ReadAsStream();
+            if (stream == null) return null;
+            using var readStream = new StreamReader(stream);
+            return readStream.ReadToEnd();
+
         }
     }
 }
