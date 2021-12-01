@@ -1,0 +1,8 @@
+{
+  "ChangeUsersActiveStatus": "devre dışı bırakıldı",
+  "ChangeUsersDisableStatus": "etkinleştirildi",
+  "ChangeUsersStatusButton": "Kullanıcı durumunu değiştir",
+  "ChangeUserStatusDialog": "'{{ status }}' durumuna sahip kullanıcılar devre dışı bırakılacak.",
+  "ChangeUserStatusDialogHeader": "Kullanıcı durumunu değiştir",
+  "ChangeUserStatusDialogMessage": "Portal sahibi ve kendiniz için durumu değiştiremezsiniz"
+}
