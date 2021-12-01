@@ -3,6 +3,10 @@ import { tablet } from "@appserver/components/utils/device";
 import ModalDialog from "@appserver/components/modal-dialog";
 
 const ModalDialogContainer = styled(ModalDialog)`
+  .row-main-container-wrapper {
+    width: 220px;
+  }
+
   .flex {
     display: flex;
     justify-content: space-between;
