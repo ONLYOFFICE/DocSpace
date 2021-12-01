@@ -57,46 +57,10 @@ Scenario('Add and remove from favorites file test', ({ I }) => {
   I.openContextMenu();
   I.see('Mark as favorite');
   I.click('Mark as favorite');
-  I.wait(7);
-  I.saveScreenshot(`12.row-favorite-file.png`);
-  if (!isModel) {
-    I.seeVisualDiff(`12.row-favorite-file.png`, {
-      tolerance: 3,
-      prepareBaseImage: false,
-    });
-  }
-  if (deviceType !== 'mobile') {
-    I.switchView('tile');
-    I.saveScreenshot(`12.tile-favorite-file.png`);
-    if (!isModel) {
-      I.seeVisualDiff(`12.tile-favorite-file.png`, {
-        tolerance: 3,
-        prepareBaseImage: false,
-      });
-    }
-  }
+
   I.mockEndpoint(Endpoints.getFile(5), 'removeFavorite');
 
   I.openContextMenu();
   I.see('Remove from favorites');
   I.click('Remove from favorites');
-  I.wait(8);
-
-  I.saveScreenshot(`13.row-remove-from-favorite-file.png`);
-  if (!isModel) {
-    I.seeVisualDiff(`13.row-remove-from-favorite-file.png`, {
-      tolerance: 3,
-      prepareBaseImage: false,
-    });
-  }
-  if (deviceType !== 'mobile') {
-    I.switchView('row');
-    I.saveScreenshot(`13.tile-remove-from-favorite-file.png`);
-    if (!isModel) {
-      I.seeVisualDiff(`13.tile-remove-from-favorite-file.png`, {
-        tolerance: 3,
-        prepareBaseImage: false,
-      });
-    }
-  }
 });

@@ -25,7 +25,7 @@ Scenario('Default root folders render test', ({ I }) => {
   I.mockEndpoint(Endpoints.getFolder(8), 'emptyTrash');
 
   I.amOnPage('/products/files');
-  I.wait(6);
+  I.wait(5);
 
   I.see('My documents');
   I.saveScreenshot(`1.row-default-my-documents-tab.png`);
