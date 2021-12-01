@@ -872,7 +872,7 @@ namespace ASC.Files.Core.Data
 
         protected async IAsyncEnumerable<Tag> FromQueryAsync(IQueryable<TagLinkData> dbFilesTags)
         {
-            var files = dbFilesTags
+            var files = await dbFilesTags
                 .Select(r => new TagLinkData()
                 {
                     Tag = new DbFilesTag
@@ -888,7 +888,7 @@ namespace ASC.Files.Core.Data
                         EntryId = r.Link.EntryId,
                         EntryType = r.Link.EntryType
                     }
-                });
+                }).ToListAsync();
 
             foreach (var file in files)
             {

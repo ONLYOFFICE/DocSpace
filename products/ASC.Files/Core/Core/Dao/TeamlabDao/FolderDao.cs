@@ -1205,7 +1205,6 @@ namespace ASC.Files.Core.Data
                                  ).Any()
                    };
 
-            var t = e.ToListAsync().Result;
             return e;
         }
 

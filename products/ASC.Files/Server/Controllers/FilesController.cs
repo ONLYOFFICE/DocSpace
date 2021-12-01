@@ -254,14 +254,7 @@ namespace ASC.Api.Documents
         [Read("@my")]
         public async Task<FolderContentWrapper<int>> GetMyFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
-
-            var res = await FilesControllerHelperInt.GetFolderAsync(GlobalFolderHelper.FolderMy, userIdOrGroupId, filterType, withsubfolders);
-
-            stopWatch.Stop();
-            TimeSpan sw = stopWatch.Elapsed;
-            return res;
+            return await FilesControllerHelperInt.GetFolderAsync(GlobalFolderHelper.FolderMy, userIdOrGroupId, filterType, withsubfolders);
         }
 
         /// <summary>

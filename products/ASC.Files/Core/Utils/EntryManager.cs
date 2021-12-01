@@ -290,8 +290,8 @@ namespace ASC.Web.Files.Utils
 
         public async Task SetFileStatusAsync(IEnumerable<FileEntry> files)
         {
-            await SetFileStatusAsync(files.OfType<File<int>>().Where(r => r.ID != 0));
-            await SetFileStatusAsync(files.OfType<File<string>>().Where(r => !string.IsNullOrEmpty(r.ID)));
+            await SetFileStatusAsync(files.OfType<File<int>>().Where(r => r.ID != 0).ToList());
+            await SetFileStatusAsync(files.OfType<File<string>>().Where(r => !string.IsNullOrEmpty(r.ID)).ToList());
         }
 
         public void SetFileStatus<T>(IEnumerable<File<T>> files)
@@ -333,8 +333,8 @@ namespace ASC.Web.Files.Utils
         {
             var tagDao = DaoFactory.GetTagDao<T>();
 
-            var tags = tagDao.GetTags(AuthContext.CurrentAccount.ID, new[] { TagType.Favorite, TagType.Template, TagType.Locked }, files);
-            var tagsNew = tagDao.GetNewTagsAsync(AuthContext.CurrentAccount.ID, files);
+            var tags = await tagDao.GetTagsAsync(AuthContext.CurrentAccount.ID, new[] { TagType.Favorite, TagType.Template, TagType.Locked }, files);
+            var tagsNew = await tagDao.GetNewTagsAsync(AuthContext.CurrentAccount.ID, files).ToListAsync();
 
             foreach (var file in files)
             {
@@ -357,7 +357,7 @@ namespace ASC.Web.Files.Utils
                     }
                 }
 
-                if (await tagsNew.AnyAsync(r => r.EntryId.Equals(file.ID)))
+                if (tagsNew.Any(r => r.EntryId.Equals(file.ID)))
                 {
                     file.IsNew = true;
                 }
@@ -842,10 +842,10 @@ namespace ASC.Web.Files.Utils
             {
                 var folderDao = DaoFactory.GetFolderDao<T>();
                 var fileDao = DaoFactory.GetFileDao<T>();
-                var folders = folderDao.GetFolders(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, withSubfolders);
+                var folders = await folderDao.GetFoldersAsync(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, withSubfolders);
                 entries = entries.Concat(fileSecurity.FilterRead(folders));
 
-                var files = fileDao.GetFilesAsync(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders).Result;
+                var files = await fileDao.GetFilesAsync(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
                 entries = entries.Concat(fileSecurity.FilterRead(files));
 
                 //share
