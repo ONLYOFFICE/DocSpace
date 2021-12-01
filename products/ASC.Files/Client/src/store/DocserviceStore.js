@@ -184,6 +184,7 @@ class DocserviceStore {
         ".fb2",
         ".html",
         ".odt",
+        ".oform",
         ".ott",
         ".pdf",
         ".rtf",
