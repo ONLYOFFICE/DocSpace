@@ -120,7 +120,7 @@ const StyledShare = styled.div`
   cursor: pointer;
   margin: 0 auto;
 
-  .share-button {
+  .share-button-icon {
     padding: 4px;
     border: 1px solid transparent;
     border-radius: 3px;
@@ -131,11 +131,6 @@ const StyledShare = styled.div`
       svg {
         cursor: pointer;
       }
-    }
-
-    .share-button-icon {
-      margin-right: 4px;
-      padding-top: 3px;
     }
   }
 `;

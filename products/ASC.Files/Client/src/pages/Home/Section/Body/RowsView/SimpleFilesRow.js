@@ -70,7 +70,6 @@ const StyledSimpleFilesRow = styled(Row)`
       }
   `}
 
-  .share-button:hover,
   .share-button-icon:hover {
     cursor: pointer;
     color: #657077;
@@ -81,7 +80,7 @@ const StyledSimpleFilesRow = styled(Row)`
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   @media (max-width: 1312px) {
-    .share-button {
+    .share-button-icon {
       padding-top: 3px;
     }
   }

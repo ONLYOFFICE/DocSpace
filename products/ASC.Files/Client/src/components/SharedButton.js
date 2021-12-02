@@ -24,24 +24,14 @@ const SharedButton = ({
     : "/static/images/catalog.share.react.svg";
 
   return (
-    <Text
-      className="badge share-button"
-      as="span"
-      title={t("Share")}
-      fontSize="12px"
-      fontWeight={600}
+    <IconButton
+      className="badge share-button-icon"
       color={color}
-      display="inline-flex"
+      hoverColor="#657077"
+      size={isSmallIcon ? 12 : 16}
+      iconName={icon}
       onClick={onClickShare}
-    >
-      <IconButton
-        className="share-button-icon"
-        color={color}
-        hoverColor="#657077"
-        size={isSmallIcon ? 12 : 16}
-        iconName={icon}
-      />
-    </Text>
+    />
   );
 };
 
