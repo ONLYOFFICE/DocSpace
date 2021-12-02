@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Badge from "@appserver/components/badge";
 import IconButton from "@appserver/components/icon-button";
 import {
   StyledFavoriteIcon,
   StyledFileActionsConvertEditDocIcon,
+  StyledFileActionsEditFormIcon,
   StyledFileActionsLockedIcon,
 } from "./Icons";
 
@@ -78,13 +79,17 @@ const Badges = ({
             hoverColor="#3B72A7"
           />
         )}
-      {(isEditing || isEditingWithFav) && (
-        <StyledFileActionsConvertEditDocIcon
-          onClick={onFilesClick}
-          className="badge icons-group is-editing"
-          size="small"
-        />
-      )}
+      {(isEditing || isEditingWithFav) &&
+        React.createElement(
+          isForm
+            ? StyledFileActionsEditFormIcon
+            : StyledFileActionsConvertEditDocIcon,
+          {
+            onClick: onFilesClick,
+            className: "badge icons-group is-editing",
+            size: "small",
+          }
+        )}
       {locked && accessToEdit && !isTrashFolder && (
         <StyledFileActionsLockedIcon
           className="badge lock-file icons-group"
