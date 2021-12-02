@@ -1,4 +1,4 @@
-import { action, makeObservable, observable } from "mobx";
+import { makeAutoObservable } from "mobx";
 import api from "../api";
 
 class UserStore {
@@ -8,29 +8,20 @@ class UserStore {
   userIsUpdate = false;
 
   constructor() {
-    makeObservable(this, {
-      user: observable,
-      isLoading: observable,
-      isLoaded: observable,
-      userIsUpdate: observable,
-      getCurrentUser: action,
-      setIsLoading: action,
-      setIsLoaded: action,
-      setUser: action,
-      setUserIsUpdate: action,
-    });
+    makeAutoObservable(this);
   }
 
-  getCurrentUser = async () => {
+  loadCurrentUser = async () => {
     const user = await api.people.getUser();
-
     this.setUser(user);
   };
 
   init = async () => {
+    if (this.isLoaded) return;
+
     this.setIsLoading(true);
 
-    await this.getCurrentUser();
+    await this.loadCurrentUser();
 
     this.setIsLoading(false);
     this.setIsLoaded(true);
@@ -61,6 +52,10 @@ class UserStore {
     //console.log("setUserIsUpdate");
     this.userIsUpdate = isUpdate;
   };
+
+  get isAuthenticated() {
+    return !!this.user;
+  }
 }
 
 export default UserStore;

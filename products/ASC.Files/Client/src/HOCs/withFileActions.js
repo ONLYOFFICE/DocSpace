@@ -54,36 +54,29 @@ export default function withFileActions(WrappedFileItem) {
         setStartDrag,
         isPrivacy,
         isTrashFolder,
-        onSelectItem,
         item,
         setBufferSelection,
         isActive,
+        inProgress,
       } = this.props;
 
-      const { id, isFolder, isThirdPartyFolder } = item;
+      const { isThirdPartyFolder } = item;
 
-      const notSelectable = e.target.classList.contains("not-selectable");
+      const notSelectable = e.target.closest(".not-selectable");
       const isFileName = e.target.classList.contains("item-file-name");
 
       if (
         isPrivacy ||
         isTrashFolder ||
-        (!draggable && !isFileName && !isActive)
-      )
-        return e;
-
-      if (
+        (!draggable && !isFileName && !isActive) ||
         window.innerWidth < 1025 ||
         notSelectable ||
         isMobile ||
-        isThirdPartyFolder
+        isThirdPartyFolder ||
+        inProgress
       ) {
         return e;
       }
-
-      // if (!draggable) {
-      //   id !== -1 && onSelectItem({ id, isFolder });
-      // }
 
       const mouseButton = e.which
         ? e.which !== 1
@@ -104,7 +97,7 @@ export default function withFileActions(WrappedFileItem) {
       this.props.markAsRead([], [`${id}`], this.props.item);
 
     onMouseClick = (e) => {
-      const { viewAs, isItemsSelected } = this.props;
+      const { viewAs } = this.props;
 
       if (
         e.target.closest(".checkbox") ||
@@ -113,8 +106,8 @@ export default function withFileActions(WrappedFileItem) {
         e.target.tagName === "A" ||
         e.target.closest(".expandButton") ||
         e.target.closest(".badges") ||
-        e.button !== 0 /* ||
-        isItemsSelected */
+        e.button !== 0 ||
+        e.target.closest(".not-selectable")
       )
         return;
 
@@ -210,7 +203,7 @@ export default function withFileActions(WrappedFileItem) {
           return;
         }
 
-        return window.open(viewUrl, "_blank");
+        return window.open(viewUrl, "_self");
       }
     };
 
@@ -338,6 +331,8 @@ export default function withFileActions(WrappedFileItem) {
         viewAs,
         bufferSelection,
         setBufferSelection,
+        activeFiles,
+        activeFolders,
       } = filesStore;
       const { startUpload } = uploadDataStore;
       const { type, extension, id } = fileActionStore;
@@ -360,6 +355,10 @@ export default function withFileActions(WrappedFileItem) {
       const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
       const canConvert = docserviceStore.canConvert(item.fileExst);
       const canViewedDocs = docserviceStore.canViewedDocs(item.fileExst);
+
+      const inProgress =
+        activeFiles.findIndex((x) => x === item.id) !== -1 ||
+        activeFolders.findIndex((x) => x === item.id && item.isFolder) !== -1;
 
       const isActive =
         bufferSelection &&
@@ -407,9 +406,9 @@ export default function withFileActions(WrappedFileItem) {
         setConvertDialogVisible,
         isDesktop: auth.settingsStore.isDesktopClient,
         personal: auth.settingsStore.personal,
-        isItemsSelected: selection.length > 0,
         setNewBadgeCount,
         isActive,
+        inProgress,
         setBufferSelection,
         bufferSelection,
       };

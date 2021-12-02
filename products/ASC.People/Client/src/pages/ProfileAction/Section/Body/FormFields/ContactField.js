@@ -21,8 +21,6 @@ class ContactField extends React.Component {
   }
 
   render() {
-    console.log("ContactField render");
-
     const {
       isDisabled,
 

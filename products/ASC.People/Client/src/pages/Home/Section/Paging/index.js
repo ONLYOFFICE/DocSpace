@@ -1,19 +1,19 @@
 import React, { useCallback, useMemo } from "react";
 import { isMobile } from "react-device-detect";
 import Paging from "@appserver/components/paging";
-import { useTranslation } from "react-i18next";
+import { withTranslation } from "react-i18next";
 import Loaders from "@appserver/common/components/Loaders";
 import { inject, observer } from "mobx-react";
 
-const SectionPagingContent = ({
+const PureSectionPagingContent = ({
   fetchPeople,
   filter,
   setIsLoading,
   selectedCount,
   isLoaded,
+  t,
   tReady,
 }) => {
-  const { t } = useTranslation("Home");
   const onNextClick = useCallback(
     (e) => {
       if (!filter.hasNext()) {
@@ -151,6 +151,8 @@ const SectionPagingContent = ({
     <Loaders.Filter />
   );
 };
+
+const SectionPagingContent = withTranslation("Home")(PureSectionPagingContent);
 
 export default inject(({ auth, peopleStore }) => {
   const { isLoaded } = auth;

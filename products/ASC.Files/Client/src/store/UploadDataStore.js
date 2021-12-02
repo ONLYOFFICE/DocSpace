@@ -2,12 +2,12 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { TIMEOUT } from "../helpers/constants";
 import { loopTreeFolders } from "../helpers/files-helpers";
 import uniqueid from "lodash/uniqueId";
-import throttle from "lodash/throttle";
 import sumBy from "lodash/sumBy";
 import { ConflictResolveType } from "@appserver/common/constants";
 import {
   getFolder,
   getFileInfo,
+  getFolderInfo,
   getProgress,
   uploadFile,
   convertFile,
@@ -294,11 +294,13 @@ class UploadDataStore {
 
       if (data && data[0]) {
         let progress = data[0].progress;
+        let fileInfo = null;
         let error = null;
 
         while (progress < 100) {
           const res = await this.getConversationProgress(fileId);
           progress = res && res[0] && res[0].progress;
+          fileInfo = res && res[0].result;
 
           runInAction(() => {
             const file = this.files.find((file) => file.fileId === fileId);
@@ -317,7 +319,8 @@ class UploadDataStore {
                 file.inConversion = false;
               }
             });
-            this.refreshFiles(toFolderId, false);
+
+            //this.refreshFiles(toFolderId, false);
             break;
           }
 
@@ -335,7 +338,9 @@ class UploadDataStore {
             }
           });
 
-          this.refreshFiles(toFolderId, false);
+          this.settingsStore.storeOriginalFiles && this.refreshFiles(file);
+          file.fileInfo = fileInfo;
+          this.refreshFiles(file);
           const percent = this.getConversationPercent(index + 1);
           this.setConversionPercent(percent, !!error);
         }
@@ -389,7 +394,7 @@ class UploadDataStore {
       this.uploadToFolder = null;
       this.percent = 0;
     }
-    if (this.converted) {
+    if (this.uploaded && this.converted) {
       this.files = [];
       this.filesToConversion = [];
     }
@@ -450,38 +455,121 @@ class UploadDataStore {
     }
   };
 
-  refreshFiles = (folderId, needUpdateTree = true) => {
-    const { setTreeFolders } = this.treeFoldersStore;
-    if (
-      this.selectedFolderStore.id === folderId &&
-      window.location.pathname.indexOf("/history") === -1
-    ) {
-      return this.filesStore.fetchFiles(
-        this.selectedFolderStore.id,
-        this.filesStore.filter.clone(),
-        false,
-        true
+  refreshFiles = async (currentFile) => {
+    const {
+      files,
+      setFiles,
+      folders,
+      setFolders,
+      filter,
+      setFilter,
+    } = this.filesStore;
+    if (window.location.pathname.indexOf("/history") === -1) {
+      const newFiles = files;
+      const newFolders = folders;
+      const path = currentFile.path || [];
+      const fileIndex = newFiles.findIndex(
+        (x) => x.id === currentFile.fileInfo.id
       );
-    } else if (needUpdateTree) {
-      return getFolder(folderId, this.filesStore.filter.clone()).then(
-        (data) => {
-          const path = data.pathParts;
-          const newTreeFolders = this.treeFoldersStore.treeFolders;
-          const folders = data.folders;
-          const foldersCount = data.count;
-          loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-          setTreeFolders(newTreeFolders);
+
+      let folderInfo = null;
+      const index = path.findIndex((x) => x === this.selectedFolderStore.id);
+      const folderId = index !== -1 ? path[index + 1] : null;
+      if (folderId) folderInfo = await getFolderInfo(folderId);
+
+      const newPath = [];
+      if (folderInfo || path[path.length - 1] === this.selectedFolderStore.id) {
+        let i = 0;
+        while (path[i] && path[i] !== folderId) {
+          newPath.push(path[i]);
+          i++;
         }
+      }
+
+    if (
+        newPath[newPath.length - 1] !== this.selectedFolderStore.id &&
+        path.length
+    ) {
+        return;
+        }
+
+      const addNewFile = () => {
+        if (folderInfo) {
+          const isFolderExist = newFolders.find((x) => x.id === folderInfo.id);
+          if (!isFolderExist && folderInfo) {
+            newFolders.unshift(folderInfo);
+            setFolders(newFolders);
+            const newFilter = filter;
+            newFilter.total = newFilter.total += 1;
+            setFilter(newFilter);
+          }
+        } else {
+          if (currentFile && currentFile.fileInfo) {
+            if (fileIndex === -1) {
+              newFiles.unshift(currentFile.fileInfo);
+              setFiles(newFiles);
+              const newFilter = filter;
+              newFilter.total = newFilter.total += 1;
+              setFilter(newFilter);
+            } else if (!this.settingsStore.storeOriginalFiles) {
+              newFiles[fileIndex] = currentFile.fileInfo;
+              setFiles(newFiles);
+            }
+          }
+        }
+      };
+
+      const isFiltered =
+        filter.filterType ||
+        filter.authorType ||
+        filter.search ||
+        filter.page !== 0;
+
+      if ((!currentFile && !folderInfo) || isFiltered) return;
+      if (folderInfo && this.selectedFolderStore.id === folderInfo.id) return;
+
+      if (folderInfo) {
+        const folderIndex = folders.findIndex((f) => f.id === folderInfo.id);
+        if (folderIndex !== -1) {
+          folders[folderIndex] = folderInfo;
+          return;
+        }
+      }
+
+      if (filter.total >= filter.pageCount) {
+        if (files.length) {
+          fileIndex === -1 && newFiles.pop();
+          addNewFile();
+        } else {
+          newFolders.pop();
+          addNewFile();
+        }
+      } else {
+        addNewFile();
+      }
+
+      if (!!folderInfo) {
+        const {
+          expandedKeys,
+          setExpandedKeys,
+          treeFolders,
+        } = this.treeFoldersStore;
+
+        const newExpandedKeys = expandedKeys.filter(
+          (x) => x !== newPath[newPath.length - 1] + ""
       );
+
+        setExpandedKeys(newExpandedKeys);
+
+        loopTreeFolders(
+          newPath,
+          treeFolders,
+          this.filesStore.folders.length === 1 ? this.filesStore.folders : [],
+          this.filesStore.folders.length
+        );
+    }
     }
   };
-
-  throttleRefreshFiles = throttle((toFolderId) => {
-    return this.refreshFiles(toFolderId).catch((err) => {
-      console.log("RefreshFiles failed", err);
-      return Promise.resolve();
-    });
-  }, 1000);
 
   uploadFileChunks = async (
     location,
@@ -489,7 +577,7 @@ class UploadDataStore {
     fileSize,
     indexOfFile,
     file,
-    t
+    path
   ) => {
     const length = requestsDataArray.length;
     for (let index = 0; index < length; index++) {
@@ -506,6 +594,11 @@ class UploadDataStore {
       //console.log(`Uploaded chunk ${index}/${length}`, res);
 
       //let isLatestFile = indexOfFile === newFilesLength - 1;
+
+      if (!res.data.data && res.data.message) {
+        return Promise.reject(res.data.message);
+      }
+
       const fileId = res.data.data.id;
 
       const { uploaded } = res.data.data;
@@ -543,8 +636,9 @@ class UploadDataStore {
     // All chuncks are uploaded
 
     const currentFile = this.files[indexOfFile];
+    currentFile.path = path;
     if (!currentFile) return Promise.resolve();
-    const { toFolderId, needConvert } = currentFile;
+    const { needConvert } = currentFile;
 
     if (needConvert) {
       runInAction(() => (currentFile.action = "convert"));
@@ -556,7 +650,10 @@ class UploadDataStore {
       }
       return Promise.resolve();
     } else {
-      return this.throttleRefreshFiles(toFolderId);
+      if (currentFile.action === "uploaded") {
+        this.refreshFiles(currentFile);
+    }
+      return Promise.resolve();
     }
   };
 
@@ -646,6 +743,7 @@ class UploadDataStore {
     )
       .then((res) => {
         const location = res.data.location;
+        const path = res.data.path;
 
         const requestsDataArray = [];
 
@@ -659,9 +757,9 @@ class UploadDataStore {
           chunk++;
         }
 
-        return { location, requestsDataArray, fileSize };
+        return { location, requestsDataArray, fileSize, path };
       })
-      .then(({ location, requestsDataArray, fileSize }) => {
+      .then(({ location, requestsDataArray, fileSize, path }) => {
         this.primaryProgressDataStore.setPrimaryProgressBarData({
           icon: "upload",
           visible: true,
@@ -678,7 +776,7 @@ class UploadDataStore {
           fileSize,
           indexOfFile,
           file,
-          t
+          path
         );
       })
       .catch((err) => {
@@ -728,8 +826,6 @@ class UploadDataStore {
       if (!this.primaryProgressDataStore.alert) {
         this.primaryProgressDataStore.clearPrimaryProgressData();
       }
-      // !this.primaryProgressDataStore.alert &&
-      //   this.primaryProgressDataStore.clearPrimaryProgressData();
 
       if (this.uploadPanelVisible || this.primaryProgressDataStore.alert) {
         uploadData.files = this.files;
@@ -754,7 +850,6 @@ class UploadDataStore {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
     } = this.secondaryProgressDataStore;
-    const { clearPrimaryProgressData } = this.primaryProgressDataStore;
 
     return copyToFolder(
       destFolderId,
@@ -769,7 +864,7 @@ class UploadDataStore {
         const data = res[0] ? res[0] : null;
         const pbData = { icon: "duplicate" };
         return this.loopFilesOperations(data, pbData).then(() =>
-          this.moveToCopyTo(destFolderId, pbData, true)
+          this.moveToCopyTo(destFolderId, pbData, true, fileIds, folderIds)
         );
       })
       .catch((err) => {
@@ -777,7 +872,7 @@ class UploadDataStore {
           visible: true,
           alert: true,
         });
-        setTimeout(() => clearPrimaryProgressData(), TIMEOUT);
+        this.clearActiveOperations(fileIds, folderIds);
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         return Promise.reject(err);
       });
@@ -790,7 +885,6 @@ class UploadDataStore {
     conflictResolveType,
     deleteAfter
   ) => {
-    const { clearPrimaryProgressData } = this.primaryProgressDataStore;
     const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
@@ -807,7 +901,7 @@ class UploadDataStore {
         const data = res[0] ? res[0] : null;
         const pbData = { icon: "move" };
         return this.loopFilesOperations(data, pbData).then(() =>
-          this.moveToCopyTo(destFolderId, pbData, false)
+          this.moveToCopyTo(destFolderId, pbData, false, fileIds, folderIds)
         );
       })
       .catch((err) => {
@@ -815,7 +909,7 @@ class UploadDataStore {
           visible: true,
           alert: true,
         });
-        setTimeout(() => clearPrimaryProgressData(), TIMEOUT);
+        this.clearActiveOperations(fileIds, folderIds);
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         return Promise.reject(err);
       });
@@ -860,13 +954,12 @@ class UploadDataStore {
   };
 
   loopFilesOperations = async (data, pbData) => {
-    const label = this.secondaryProgressDataStore.label;
-
     const {
       clearSecondaryProgressData,
       setSecondaryProgressBarData,
     } = this.secondaryProgressDataStore;
 
+    const label = this.secondaryProgressDataStore.label;
     let progress = data.progress;
 
     if (!data) {
@@ -874,30 +967,36 @@ class UploadDataStore {
       return;
     }
 
-    let operationItem = null;
+    let operationItem = data;
+    let finished = data.finished;
 
-    while (progress !== 100) {
-      await this.getOperationProgress(data.id)
-        .then((item) => {
-          operationItem = item;
-          progress = item ? item.progress : 100;
+    while (!finished) {
+      const item = await this.getOperationProgress(data.id);
+      operationItem = item;
+      progress = item ? item.progress : 100;
+      finished = item ? item.finished : true;
 
-          setSecondaryProgressBarData({
-            icon: pbData.icon,
-            label: pbData.label || label,
-            percent: progress,
-            visible: true,
-            alert: false,
-          });
-        })
-        .catch((err) => Promise.reject(err));
+      setSecondaryProgressBarData({
+        icon: pbData.icon,
+        label: pbData.label || label,
+        percent: progress,
+        visible: true,
+        alert: false,
+      });
     }
-    return Promise.resolve(operationItem);
+
+    return operationItem;
   };
 
-  moveToCopyTo = (destFolderId, pbData, isCopy) => {
+  moveToCopyTo = (destFolderId, pbData, isCopy, fileIds, folderIds) => {
     const { treeFolders, setTreeFolders } = this.treeFoldersStore;
-    const { fetchFiles, filter } = this.filesStore;
+    const {
+      fetchFiles,
+      filter,
+      isEmptyLastPageAfterOperation,
+      resetFilterPage,
+    } = this.filesStore;
+
     const {
       clearSecondaryProgressData,
       setSecondaryProgressBarData,
@@ -912,12 +1011,23 @@ class UploadDataStore {
       loopTreeFolders(path, newTreeFolders, folders, foldersCount);
 
       if (!isCopy || destFolderId === this.selectedFolderStore.id) {
-        fetchFiles(this.selectedFolderStore.id, filter, true, true).finally(
-          () => {
+        let newFilter;
+
+        if (isEmptyLastPageAfterOperation()) {
+          newFilter = resetFilterPage();
+        }
+
+        fetchFiles(
+          this.selectedFolderStore.id,
+          newFilter ? newFilter : filter,
+          true,
+          true
+        ).finally(() => {
+            this.clearActiveOperations(fileIds, folderIds);
             setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-          }
-        );
+        });
       } else {
+        this.clearActiveOperations(fileIds, folderIds);
         setSecondaryProgressBarData({
           icon: pbData.icon,
           label: pbData.label || label,
@@ -949,6 +1059,25 @@ class UploadDataStore {
       }, 1000);
     });
     return promise;
+  };
+
+  clearActiveOperations = (fileIds, folderIds) => {
+    const {
+      activeFiles,
+      activeFolders,
+      setActiveFiles,
+      setActiveFolders,
+    } = this.filesStore;
+
+    const newActiveFiles = activeFiles.filter((el) => !fileIds.includes(el));
+    const newActiveFolders = activeFolders.filter(
+      (el) => !folderIds.includes(el)
+    );
+
+    setTimeout(() => {
+      setActiveFiles(newActiveFiles);
+      setActiveFolders(newActiveFolders);
+    }, TIMEOUT);
   };
 }
 

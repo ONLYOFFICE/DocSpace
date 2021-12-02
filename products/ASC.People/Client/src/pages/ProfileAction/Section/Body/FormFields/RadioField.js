@@ -9,8 +9,6 @@ class RadioField extends React.Component {
   }
 
   render() {
-    //console.log("RadioField render");
-
     const {
       isRequired,
       hasError,

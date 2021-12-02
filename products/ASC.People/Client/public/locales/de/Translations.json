@@ -1,5 +1,6 @@
 {
   "AddMembers": "Mitglieder hinzufügen",
+  "Birthdate": "Geburtsdatum",
   "Comments": "Kommentare",
   "DeleteSelfProfile": "Profil löschen",
   "DisabledEmployeeStatus": "Deaktiviert",
@@ -24,6 +25,6 @@
   "Sex": "Geschlecht",
   "SocialProfiles": "Soziale Profile",
   "SuccessChangeUserStatus": "Der Benutzerstatus war erfolgreich geändert",
-  "SuccessSentInvitation": "Die Einladung wurde erfolgreich gesendet",
-  "Birthdate": "Geburtsdatum"
+  "SuccessDeletePersonalData": "Alle persönlichen Daten wurden erfolgreich gelöscht",
+  "SuccessSentInvitation": "Die Einladung wurde erfolgreich gesendet"
 }

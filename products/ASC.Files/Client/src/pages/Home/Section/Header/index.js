@@ -37,6 +37,7 @@ const StyledContainer = styled.div`
               : props.canCreate
               ? "auto 1fr auto auto"
               : "auto 1fr auto"};
+          ${(props) => !props.isLoading && "top: 7px;"}
         }
       `}
     align-items: center;
@@ -294,7 +295,7 @@ class SectionHeaderContent extends React.Component {
   onBackToParentFolder = () => {
     const { setIsLoading, parentId, filter, fetchFiles } = this.props;
     setIsLoading(true);
-    fetchFiles(parentId, filter).finally(() => setIsLoading(false));
+    fetchFiles(parentId, null, true, false).finally(() => setIsLoading(false));
   };
 
   onCheck = (checked) => {
@@ -354,7 +355,7 @@ class SectionHeaderContent extends React.Component {
     } = this.props;
 
     const menuItems = this.getMenuItems();
-
+    const isLoading = !title || !tReady;
     return (
       <Consumer>
         {(context) => (
@@ -365,6 +366,7 @@ class SectionHeaderContent extends React.Component {
             title={title}
             isDesktop={isDesktop}
             isTabletView={isTabletView}
+            isLoading={isLoading}
           >
             {isHeaderVisible && viewAs !== "table" ? (
               <div className="group-button-menu-container">
@@ -383,7 +385,7 @@ class SectionHeaderContent extends React.Component {
               </div>
             ) : (
               <div className="header-container">
-                {!title || !tReady ? (
+                {isLoading ? (
                   <Loaders.SectionHeader />
                 ) : (
                   <>

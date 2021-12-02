@@ -66,8 +66,6 @@ class ContactsField extends React.Component {
   }
 
   render() {
-    console.log("ContactsField render");
-
     const {
       pattern,
       contacts,

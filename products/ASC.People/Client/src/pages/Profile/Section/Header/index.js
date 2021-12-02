@@ -149,6 +149,9 @@ class SectionHeaderContent extends React.PureComponent {
     data.append("Autosave", false);
     loadAvatar(this.state.profile.id, data)
       .then((response) => {
+        if (!response.success && response.message) {
+          throw response.message;
+        }
         var img = new Image();
         img.onload = function () {
           var stateCopy = Object.assign({}, _this.state);
@@ -321,16 +324,19 @@ class SectionHeaderContent extends React.PureComponent {
         return [
           {
             key: "edit",
+            className: "header-context-menu_edit",
             label: t("EditUser"),
             onClick: this.onEditClick,
           },
           {
             key: "change-password",
+            className: "header-context-menu_change-password",
             label: t("Translations:PasswordChangeButton"),
             onClick: this.toggleChangePasswordDialog,
           },
           {
             key: "change-email",
+            className: "header-context-menu_change-email",
             label: t("Translations:EmailChangeButton"),
             onClick: this.toggleChangeEmailDialog,
           },
@@ -339,11 +345,13 @@ class SectionHeaderContent extends React.PureComponent {
               ? {}
               : {
                   key: "delete-profile",
+                  className: "header-context-menu_delete-profile",
                   label: t("Translations:DeleteSelfProfile"),
                   onClick: this.toggleDeleteSelfProfileDialog,
                 }
             : {
                 key: "disable",
+                className: "header-context-menu_disable",
                 label: t("Translations:DisableUserButton"),
                 onClick: this.onDisableClick,
               },
@@ -352,21 +360,25 @@ class SectionHeaderContent extends React.PureComponent {
         return [
           {
             key: "enable",
+            className: "header-context-menu_enable",
             label: t("Translations:EnableUserButton"),
             onClick: this.onEnableClick,
           },
           {
             key: "reassign-data",
+            className: "header-context-menu_reassign-data",
             label: t("Translations:ReassignData"),
             onClick: this.onReassignDataClick.bind(this, user),
           },
           {
             key: "delete-personal-data",
+            className: "header-context-menu_delete-personal-data",
             label: t("Translations:RemoveData"),
             onClick: this.onDeletePersonalDataClick,
           },
           {
             key: "delete-profile",
+            className: "header-context-menu_delete-profile",
             label: t("Translations:DeleteSelfProfile"),
             onClick: this.toggleDeleteProfileEverDialog,
           },
@@ -375,11 +387,13 @@ class SectionHeaderContent extends React.PureComponent {
         return [
           {
             key: "edit",
+            className: "header-context-menu_edit",
             label: t("Common:EditButton"),
             onClick: this.onEditClick,
           },
           {
             key: "invite-again",
+            className: "header-context-menu_invite-again",
             label: t("InviteAgainLbl"),
             onClick: this.onInviteAgainClick,
           },
@@ -387,16 +401,19 @@ class SectionHeaderContent extends React.PureComponent {
             (user.status === EmployeeStatus.Active
               ? {
                   key: "disable",
+                  className: "header-context-menu_disable",
                   label: t("Translations:DisableUserButton"),
                   onClick: this.onDisableClick,
                 }
               : {
                   key: "enable",
+                  className: "header-context-menu_enable",
                   label: t("Translations:EnableUserButton"),
                   onClick: this.onEnableClick,
                 }),
           isMe && {
             key: "delete-profile",
+            className: "header-context-menu_delete-profile",
             label: t("Translations:DeleteSelfProfile"),
             onClick: this.toggleDeleteSelfProfileDialog,
           },

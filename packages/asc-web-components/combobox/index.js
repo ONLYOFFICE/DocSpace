@@ -89,6 +89,7 @@ class ComboBox extends React.Component {
       toggleAction,
       textOverflow,
       showDisabledItems,
+      offsetDropDownY,
       isDefaultMode,
     } = this.props;
     const { isOpen, selectedOption } = this.state;
@@ -143,7 +144,7 @@ class ComboBox extends React.Component {
             className="dropdown-container not-selectable"
             directionX={directionX}
             directionY={directionY}
-            manualY="102%"
+            manualY={offsetDropDownY}
             open={isOpen}
             forwardedRef={this.ref}
             clickOutsideAction={this.handleClickOutside}
@@ -220,6 +221,8 @@ ComboBox.propTypes = {
   disableIconClick: PropTypes.bool,
   /** Defines the operation mode of the component, by default with the portal */
   isDefaultMode: PropTypes.bool,
+  /** Y offset */
+  offsetDropDownY: PropTypes.string,
 };
 
 ComboBox.defaultProps = {
@@ -231,6 +234,7 @@ ComboBox.defaultProps = {
   size: "base",
   disableIconClick: true,
   showDisabledItems: false,
+  offsetDropDownY: "102%",
   isDefaultMode: true,
 };
 

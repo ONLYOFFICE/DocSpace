@@ -91,8 +91,6 @@ class UpdateUserForm extends React.Component {
 
     this.openAvatarEditor = this.openAvatarEditor.bind(this);
     this.openAvatarEditorPage = this.openAvatarEditorPage.bind(this);
-    this.onSaveAvatar = this.onSaveAvatar.bind(this);
-    this.onCloseAvatarEditor = this.onCloseAvatarEditor.bind(this);
     this.onLoadFileAvatar = this.onLoadFileAvatar.bind(this);
 
     this.onShowGroupSelector = this.onShowGroupSelector.bind(this);
@@ -466,9 +464,11 @@ class UpdateUserForm extends React.Component {
     data.append("Autosave", false);
     loadAvatar(this.state.profile.id, data)
       .then((response) => {
+        if (!response.success && response.message) {
+          throw response.message;
+        }
         var img = new Image();
-        img.onload = function () {
-          _this.setState({ isLoading: false });
+        img.onload = () => {
           if (fileData) {
             fileData.avatar = {
               tmpFile: response.data,
@@ -499,7 +499,6 @@ class UpdateUserForm extends React.Component {
     this.setState({ isLoading: true });
     const { profile, setAvatarMax, personal } = this.props;
 
-    console.log("profile", profile);
     if (isUpdate) {
       createThumbnailsAvatar(profile.id, {
         x: Math.round(result.x * avatar.defaultWidth - result.width / 2),
@@ -555,11 +554,7 @@ class UpdateUserForm extends React.Component {
     }
   };
 
-  onCloseAvatarEditor() {
-    this.setState({
-      visibleAvatarEditor: false,
-    });
-  }
+  onCloseAvatarEditor = () => this.setState({ visibleAvatarEditor: false });
 
   onShowGroupSelector() {
     var stateCopy = Object.assign({}, this.state);
@@ -603,6 +598,8 @@ class UpdateUserForm extends React.Component {
     this.setIsEdit();
   }
 
+  onSaveClick = () => this.setState({ isLoading: true });
+
   render() {
     const {
       isLoading,
@@ -622,6 +619,7 @@ class UpdateUserForm extends React.Component {
       isSelf,
       language,
       personal,
+      isTabletView,
     } = this.props;
     const {
       guestCaption,
@@ -727,7 +725,6 @@ class UpdateUserForm extends React.Component {
               source={this.props.avatarMax || profile.avatarMax}
               userName={profile.displayName}
               editing={true}
-              editLabel={t("Common:EditAvatar")}
               editAction={
                 isMobile ? this.openAvatarEditorPage : this.openAvatarEditor
               }
@@ -736,7 +733,7 @@ class UpdateUserForm extends React.Component {
               image={this.state.avatar.image}
               visible={this.state.visibleAvatarEditor}
               onClose={this.onCloseAvatarEditor}
-              onSave={this.onSaveAvatar}
+              onSave={this.onSaveClick}
               onLoadFile={this.onLoadFileAvatar}
               headerLabel={t("EditPhoto")}
               selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
@@ -745,14 +742,16 @@ class UpdateUserForm extends React.Component {
               maxSizeFileError={t("Translations:maxSizeFileError")}
               unknownError={t("Common:Error")}
               saveButtonLabel={
-                this.state.isLoading
-                  ? t("UpdatingProcess")
-                  : t("Common:SaveButton")
+                isLoading ? t("UpdatingProcess") : t("Common:SaveButton")
               }
-              saveButtonLoading={this.state.isLoading}
+              saveButtonLoading={isLoading}
             />
           </AvatarContainer>
-          <MainFieldsContainer ref={this.mainFieldsContainerRef} noSelect>
+          <MainFieldsContainer
+            ref={this.mainFieldsContainerRef}
+            noSelect
+            {...(!isTabletView && { marginBottom: "32px" })}
+          >
             <TextChangeField
               labelText={`${t("Common:Email")}:`}
               inputName="email"
@@ -843,6 +842,7 @@ class UpdateUserForm extends React.Component {
               calendarHeaderContent={`${t("CalendarSelectDate")}:`}
               labelText={`${t("Translations:Birthdate")}:`}
               inputName="birthday"
+              inputClassName="date-picker_input-birthday"
               inputValue={
                 profile.birthday ? new Date(profile.birthday) : undefined
               }
@@ -887,6 +887,7 @@ class UpdateUserForm extends React.Component {
                 calendarHeaderContent={`${t("CalendarSelectDate")}:`}
                 labelText={`${regDateCaption}:`}
                 inputName="workFrom"
+                inputClassName="date-picker_input-reg-date"
                 inputValue={
                   profile.workFrom ? new Date(profile.workFrom) : undefined
                 }
@@ -940,7 +941,10 @@ class UpdateUserForm extends React.Component {
           </MainFieldsContainer>
         </MainContainer>
         {!personal && (
-          <InfoFieldContainer headerText={t("Translations:Comments")}>
+          <InfoFieldContainer
+            headerText={t("Translations:Comments")}
+            marginBottom={"42px"}
+          >
             <Textarea
               placeholder={t("WriteComment")}
               name="notes"
@@ -951,7 +955,10 @@ class UpdateUserForm extends React.Component {
             />
           </InfoFieldContainer>
         )}
-        <InfoFieldContainer headerText={t("ContactInformation")}>
+        <InfoFieldContainer
+          headerText={t("ContactInformation")}
+          marginBottom={"42px"}
+        >
           <ContactsField
             pattern={pattern.contact}
             contacts={contacts.contact}
@@ -963,7 +970,10 @@ class UpdateUserForm extends React.Component {
             onItemRemove={this.onContactsItemRemove}
           />
         </InfoFieldContainer>
-        <InfoFieldContainer headerText={t("Translations:SocialProfiles")}>
+        <InfoFieldContainer
+          headerText={t("Translations:SocialProfiles")}
+          {...(isTabletView && { marginBottom: "36px" })}
+        >
           <ContactsField
             pattern={pattern.social}
             contacts={contacts.social}
@@ -1049,6 +1059,7 @@ export default withRouter(
     personal: auth.settingsStore.personal,
     setUserIsUpdate: auth.userStore.setUserIsUpdate,
     userFormValidation: auth.settingsStore.userFormValidation,
+    isTabletView: auth.settingsStore.isTabletView,
   }))(
     observer(
       withTranslation(["ProfileAction", "Common", "Translations"])(

@@ -54,6 +54,7 @@ const TableHeaderCell = ({
             iconName="/static/images/folder arrow.react.svg"
             className="header-container-text-icon"
             size="small"
+            hoverColor="#657077"
           />
         </div>
         {resizable && (

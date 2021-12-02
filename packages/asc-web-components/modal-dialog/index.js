@@ -157,7 +157,10 @@ class ModalDialog extends React.Component {
                     <Heading className="heading" size="medium" truncate={true}>
                       {header ? header.props.children : null}
                     </Heading>
-                    <CloseButton onClick={onClose}></CloseButton>
+                    <CloseButton
+                      className="modal-dialog-button_close"
+                      onClick={onClose}
+                    ></CloseButton>
                   </StyledHeader>
                   <BodyBox paddingProp={bodyPadding}>
                     {body ? body.props.children : null}

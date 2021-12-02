@@ -9,14 +9,13 @@ class DateField extends React.Component {
   }
 
   render() {
-    console.log("DateField render");
-
     const {
       isRequired,
       hasError,
       labelText,
       calendarHeaderContent,
       inputName,
+      inputClassName,
       inputValue,
       inputIsDisabled,
       inputOnChange,
@@ -34,6 +33,7 @@ class DateField extends React.Component {
         maxLabelWidth={maxLabelWidth}
       >
         <DatePicker
+          inputClassName={inputClassName}
           name={inputName}
           selectedDate={inputValue}
           isDisabled={inputIsDisabled}

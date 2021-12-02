@@ -60,6 +60,13 @@ const StyledSimpleFilesRow = styled(Row)`
     !props.isThirdPartyFolder &&
     (props.checked || props.isActive) &&
     "url(images/cursor.palm.svg), auto"};
+  ${(props) =>
+    props.inProgress &&
+    css`
+      pointer-events: none;
+      /* cursor: wait; */
+    `}
+
   margin-top: -2px;
 
   ${(props) =>
@@ -72,7 +79,6 @@ const StyledSimpleFilesRow = styled(Row)`
 
   .share-button-icon {
     margin-right: 7px;
-    margin-top: -1px;
   }
 
   .share-button:hover,
@@ -120,6 +126,7 @@ const SimpleFilesRow = (props) => {
     isEdit,
     showShare,
     isActive,
+    inProgress,
   } = props;
 
   const sharedButton =
@@ -137,7 +144,7 @@ const SimpleFilesRow = (props) => {
   );
 
   return (
-    <StyledWrapper ref={props.selectableRef}>
+    <StyledWrapper>
       <DragAndDrop
         data-title={item.title}
         value={value}
@@ -163,6 +170,7 @@ const SimpleFilesRow = (props) => {
           contextButtonSpacerWidth={displayShareButton}
           dragging={dragging && isDragging}
           isActive={isActive}
+          inProgress={inProgress}
           isThirdPartyFolder={item.isThirdPartyFolder}
         >
           <FilesRowContent

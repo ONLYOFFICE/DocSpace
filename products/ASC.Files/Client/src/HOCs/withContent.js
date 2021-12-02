@@ -109,18 +109,19 @@ export default function withContent(WrappedContent) {
       return this.completeAction(e);
     };
 
-    onClickUpdateItem = (e) => {
+    onClickUpdateItem = (e, open = true) => {
       const { fileActionType } = this.props;
       fileActionType === FileAction.Create
-        ? this.createItem(e)
+        ? this.createItem(e, open)
         : this.updateItem(e);
     };
 
-    createItem = (e) => {
+    createItem = (e, open) => {
       const {
         createFile,
         item,
         setIsLoading,
+        isLoading,
         openDocEditor,
         isPrivacy,
         isDesktop,
@@ -130,6 +131,8 @@ export default function withContent(WrappedContent) {
         createFolder,
       } = this.props;
       const { itemTitle } = this.state;
+
+      if (isLoading) return;
 
       setIsLoading(true);
 
@@ -141,7 +144,7 @@ export default function withContent(WrappedContent) {
       }
 
       let tab =
-        !isDesktop && item.fileExst
+        !isDesktop && item.fileExst && open
           ? window.open(
               combineUrl(
                 AppServerConfig.proxyURL,
@@ -170,10 +173,12 @@ export default function withContent(WrappedContent) {
                     encryptedFile,
                     true,
                     false
-                  ).then(() => openDocEditor(file.id, file.providerKey, tab));
+                  ).then(
+                    () => open && openDocEditor(file.id, file.providerKey, tab)
+                  );
                 });
               }
-              return openDocEditor(file.id, file.providerKey, tab);
+              return open && openDocEditor(file.id, file.providerKey, tab);
             })
             .then(() => this.completeAction(itemId))
             .catch((e) => toastr.error(e))
@@ -315,6 +320,7 @@ export default function withContent(WrappedContent) {
       const { editCompleteAction } = filesActionsStore;
       const {
         setIsLoading,
+        isLoading,
         openDocEditor,
         updateFile,
         renameFolder,
@@ -338,6 +344,7 @@ export default function withContent(WrappedContent) {
 
       return {
         setIsLoading,
+        isLoading,
         isTrashFolder: isRecycleBinFolder,
         openDocEditor,
         updateFile,

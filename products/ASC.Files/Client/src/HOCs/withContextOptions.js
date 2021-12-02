@@ -130,7 +130,7 @@ export default function withContextOptions(WrappedComponent) {
         ? combineUrl(
             AppServerConfig.proxyURL,
             config.homepage,
-            `/doceditor?fileId=${id}&action=view`
+            `/doceditor?fileId=${encodeURIComponent(id)}&action=view`
           )
         : null;
 
@@ -248,9 +248,10 @@ export default function withContextOptions(WrappedComponent) {
     };
 
     onClickShare = () => {
-      const { onSelectItem, setSharingPanelVisible, id, isFolder } = this.props;
-      onSelectItem({ id, isFolder });
-      setSharingPanelVisible(true);
+      const { setSharingPanelVisible } = this.props;
+      setTimeout(() => {
+        setSharingPanelVisible(true);
+      }, 10); //TODO: remove delay after fix context menu callback
     };
 
     onClickMarkRead = () => {
@@ -336,7 +337,7 @@ export default function withContextOptions(WrappedComponent) {
             return {
               key: option,
               label: t("SharingSettings"),
-              icon: "/static/images/catalog.shared.react.svg",
+              icon: "/static/images/catalog.share.react.svg",
               onClick: this.onClickShare,
               disabled: !isShareable,
             };

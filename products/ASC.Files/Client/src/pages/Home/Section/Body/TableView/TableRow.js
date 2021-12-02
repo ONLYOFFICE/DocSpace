@@ -61,6 +61,17 @@ const StyledTableRow = styled(TableRow)`
       !props.isThirdPartyFolder &&
       (props.checked || props.isActive) &&
       "url(images/cursor.palm.svg), auto"};
+
+    ${(props) =>
+      props.inProgress &&
+      css`
+        pointer-events: none;
+        /* cursor: wait; */
+      `}
+  }
+
+  .table-container_element {
+    margin-left: ${(props) => (props.item.isFolder ? "-3px" : "-4px")};
   }
 
   &:hover {
@@ -90,7 +101,7 @@ const StyledTableRow = styled(TableRow)`
   .table-container_row-context-menu-wrapper {
     margin-right: -20x;
     width: 28px;
-    padding-right: 20px;
+    padding-right: 18px;
     border-bottom: 1px solid;
     border-image-slice: 1;
     border-image-source: linear-gradient(to left, #ffffff 24px, #eceef1 24px);
@@ -125,7 +136,8 @@ const StyledShare = styled.div`
     }
 
     .share-button-icon {
-      margin-right: 7px;
+      margin-right: 4px;
+      padding-top: 3px;
     }
   }
 `;
@@ -172,6 +184,7 @@ const FilesTableRow = (props) => {
     isActive,
     onHideContextMenu,
     onFilesClick,
+    inProgress,
   } = props;
 
   const sharedButton =
@@ -181,6 +194,7 @@ const FilesTableRow = (props) => {
         id={item.id}
         shared={item.shared}
         isFolder={item.isFolder}
+        isSmallIcon={true}
       />
     ) : null;
 
@@ -240,6 +254,7 @@ const FilesTableRow = (props) => {
         {...contextOptionsProps}
         checked={checkedProps}
         isActive={isActive}
+        inProgress={inProgress}
         onHideContextMenu={onHideContextMenu}
         isThirdPartyFolder={item.isThirdPartyFolder}
         onDoubleClick={onFilesClick}

@@ -105,8 +105,10 @@ class GroupButton extends React.Component {
       ? { maxHeight: dropDownMaxHeight }
       : {};
     const offsetSelectDropDown = isSelect
-      ? { manualX: window.innerWidth <= 1024 ? "16px" : "24px" }
+      ? { manualX: window.innerWidth <= 1024 ? "44px" : "50px" }
       : {};
+
+    const manualY = window.innerWidth <= 1024 ? "60px" : "53px";
 
     return (
       <StyledGroupButton
@@ -141,7 +143,7 @@ class GroupButton extends React.Component {
               forwardedRef={this.ref}
               {...dropDownMaxHeightProp}
               {...offsetSelectDropDown}
-              manualY="72px"
+              manualY={manualY}
               open={this.state.isOpen}
               clickOutsideAction={this.clickOutsideAction}
               showDisabledItems={true}

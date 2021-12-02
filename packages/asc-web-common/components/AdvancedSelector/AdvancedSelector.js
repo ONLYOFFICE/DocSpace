@@ -104,6 +104,7 @@ class AdvancedSelector extends React.Component {
           <DropDown
             forwardedRef={this.ref}
             open={isOpen}
+            className="selector_dropdown-container"
             smallSectionWidth={smallSectionWidth}
             isDefaultMode={isDefaultDisplayDropDown}
             className="dropdown-container"
