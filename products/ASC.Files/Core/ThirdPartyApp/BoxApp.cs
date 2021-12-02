@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Security;
 using System.Text;
 using System.Threading;
@@ -309,7 +310,10 @@ namespace ASC.Web.Files.ThirdPartyApp
                 }
             }
 
-            var request = (HttpWebRequest)WebRequest.Create(BoxUrlUpload.Replace("{fileId}", fileId));
+            using var httpClient = new HttpClient();
+
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(BoxUrlUpload.Replace("{fileId}", fileId));
 
             using (var tmpStream = new MemoryStream())
             {
@@ -326,8 +330,10 @@ namespace ASC.Web.Files.ThirdPartyApp
                 }
                 else
                 {
-                    var downloadRequest = (HttpWebRequest)WebRequest.Create(downloadUrl);
-                    using var downloadStream = new ResponseStream(downloadRequest.GetResponse());
+                    var downloadRequest = new HttpRequestMessage();
+                    downloadRequest.RequestUri = new Uri(downloadUrl);
+                    using var response = httpClient.Send(request);
+                    using var downloadStream = new ResponseStream(response);
                     downloadStream.CopyTo(tmpStream);
                 }
 
@@ -335,26 +341,19 @@ namespace ASC.Web.Files.ThirdPartyApp
                 bytes = Encoding.UTF8.GetBytes(mediaPartEnd);
                 tmpStream.Write(bytes, 0, bytes.Length);
 
-                request.Method = "POST";
+                request.Method = HttpMethod.Post;
                 request.Headers.Add("Authorization", "Bearer " + token);
-                request.ContentType = "multipart/form-data; boundary=" + boundary;
-                request.ContentLength = tmpStream.Length;
+                request.Headers.Add("Content-Type", "multipart/form-data; boundary=" + boundary);
                 Logger.Debug("BoxApp: save file totalSize - " + tmpStream.Length);
 
-                const int bufferSize = 2048;
-                var buffer = new byte[bufferSize];
-                int readed;
                 tmpStream.Seek(0, SeekOrigin.Begin);
-                while ((readed = tmpStream.Read(buffer, 0, bufferSize)) > 0)
-                {
-                    request.GetRequestStream().Write(buffer, 0, readed);
-                }
+                request.Content = new StreamContent(tmpStream);
             }
 
             try
             {
-                using var response = request.GetResponse();
-                using var responseStream = response.GetResponseStream();
+                using var response = httpClient.Send(request);
+                using var responseStream = response.Content.ReadAsStream();
                 string result = null;
                 if (responseStream != null)
                 {
@@ -364,12 +363,10 @@ namespace ASC.Web.Files.ThirdPartyApp
 
                 Logger.Debug("BoxApp: save file response - " + result);
             }
-            catch (WebException e)
+            catch (HttpRequestException e)
             {
                 Logger.Error("BoxApp: Error save file", e);
-                request.Abort();
-                var httpResponse = (HttpWebResponse)e.Response;
-                if (httpResponse.StatusCode == HttpStatusCode.Forbidden || httpResponse.StatusCode == HttpStatusCode.Unauthorized)
+                if (e.StatusCode == HttpStatusCode.Forbidden || e.StatusCode == HttpStatusCode.Unauthorized)
                 {
                     throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException, e);
                 }
@@ -469,11 +466,14 @@ namespace ASC.Web.Files.ThirdPartyApp
                     throw new SecurityException("Access token is null");
                 }
 
-                var request = (HttpWebRequest)WebRequest.Create(BoxUrlFile.Replace("{fileId}", fileId) + "/content");
-                request.Method = "GET";
+                var request = new HttpRequestMessage();
+                request.RequestUri = new Uri(BoxUrlFile.Replace("{fileId}", fileId) + "/content");
+                request.Method = HttpMethod.Get;
                 request.Headers.Add("Authorization", "Bearer " + token);
 
-                using var stream = new ResponseStream(request.GetResponse());
+                using var httpClient = new HttpClient();
+                using var response = httpClient.Send(request);
+                using var stream = new ResponseStream(response);
                 stream.CopyTo(context.Response.Body);
             }
             catch (Exception ex)

@@ -31,6 +31,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Runtime.Serialization;
 using System.Security.Cryptography;
 using System.Text;
@@ -122,11 +124,13 @@ namespace ASC.Web.Core.Files
                                      : documentRevisionId;
             documentRevisionId = GenerateRevisionId(documentRevisionId);
 
-            var request = (HttpWebRequest)WebRequest.Create(documentConverterUrl);
-            request.Method = "POST";
-            request.ContentType = "application/json";
-            request.Accept = "application/json";
-            request.Timeout = Timeout;
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(documentConverterUrl);
+            request.Method = HttpMethod.Post;
+            request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+            using var httpClient = new HttpClient();
+            httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
 
             var body = new ConvertionBody
             {
@@ -161,16 +165,11 @@ namespace ASC.Web.Core.Files
 
             var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions()
             {
-                IgnoreNullValues = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             });
 
-            var bytes = Encoding.UTF8.GetBytes(bodyString ?? "");
-            request.ContentLength = bytes.Length;
-            using (var stream = request.GetRequestStream())
-            {
-                stream.Write(bytes, 0, bytes.Length);
-            }
+            request.Content = new StringContent(bodyString, Encoding.UTF8, "application/json");
 
             // hack. http://ubuntuforums.org/showthread.php?t=1841740
             if (WorkContext.IsMono)
@@ -179,7 +178,7 @@ namespace ASC.Web.Core.Files
             }
 
             string dataResponse;
-            WebResponse response = null;
+            HttpResponseMessage response = null;
             Stream responseStream = null;
             try
             {
@@ -189,21 +188,18 @@ namespace ASC.Web.Core.Files
                     try
                     {
                         countTry++;
-                        response = request.GetResponse();
-                        responseStream = response.GetResponseStream();
+                        response = httpClient.Send(request);
+                        responseStream = response.Content.ReadAsStream();
                         break;
                     }
-                    catch (WebException ex)
+                    catch (HttpRequestException ex)
                     {
-                        if (ex.Status != WebExceptionStatus.Timeout)
-                        {
-                            throw new HttpException((int)HttpStatusCode.BadRequest, ex.Message, ex);
-                        }
+                        throw new HttpException((int)HttpStatusCode.BadRequest, ex.Message, ex);
                     }
                 }
                 if (countTry == MaxTry)
                 {
-                    throw new WebException("Timeout", WebExceptionStatus.Timeout);
+                    throw new HttpRequestException("Timeout");
                 }
 
                 if (responseStream == null) throw new WebException("Could not get an answer");
@@ -243,10 +239,12 @@ namespace ASC.Web.Core.Files
             string signatureSecret,
             out string version)
         {
-            var request = (HttpWebRequest)WebRequest.Create(documentTrackerUrl);
-            request.Method = "POST";
-            request.ContentType = "application/json";
-            request.Timeout = Timeout;
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(documentTrackerUrl);
+            request.Method = HttpMethod.Post;
+
+            using var httpClient = new HttpClient();
+            httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
 
             var body = new CommandBody
             {
@@ -275,16 +273,11 @@ namespace ASC.Web.Core.Files
 
             var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions()
             {
-                IgnoreNullValues = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             });
 
-            var bytes = Encoding.UTF8.GetBytes(bodyString ?? "");
-            request.ContentLength = bytes.Length;
-            using (var stream = request.GetRequestStream())
-            {
-                stream.Write(bytes, 0, bytes.Length);
-            }
+            request.Content = new StringContent(bodyString, Encoding.UTF8, "application/json");
 
             // hack. http://ubuntuforums.org/showthread.php?t=1841740
             if (WorkContext.IsMono)
@@ -293,8 +286,8 @@ namespace ASC.Web.Core.Files
             }
 
             string dataResponse;
-            using (var response = request.GetResponse())
-            using (var stream = response.GetResponseStream())
+            using (var response = httpClient.Send(request))
+            using (var stream = response.Content.ReadAsStream())
             {
                 if (stream == null) throw new Exception("Response is null");
 
@@ -331,10 +324,12 @@ namespace ASC.Web.Core.Files
             if (string.IsNullOrEmpty(requestKey) && string.IsNullOrEmpty(scriptUrl))
                 throw new ArgumentException("requestKey or inputScript is empty");
 
-            var request = (HttpWebRequest)WebRequest.Create(docbuilderUrl);
-            request.Method = "POST";
-            request.ContentType = "application/json";
-            request.Timeout = Timeout;
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(docbuilderUrl);
+            request.Method = HttpMethod.Post;
+
+            using var httpClient = new HttpClient();
+            httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
 
             var body = new BuilderBody
             {
@@ -360,16 +355,11 @@ namespace ASC.Web.Core.Files
 
             var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions()
             {
-                IgnoreNullValues = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             });
 
-            var bytes = Encoding.UTF8.GetBytes(bodyString ?? "");
-            request.ContentLength = bytes.Length;
-            using (var stream = request.GetRequestStream())
-            {
-                stream.Write(bytes, 0, bytes.Length);
-            }
+            request.Content = new StringContent(bodyString, Encoding.UTF8, "application/json");
 
             // hack. http://ubuntuforums.org/showthread.php?t=1841740
             if (WorkContext.IsMono)
@@ -378,8 +368,9 @@ namespace ASC.Web.Core.Files
             }
 
             string dataResponse = null;
-            using (var response = (HttpWebResponse)request.GetResponse())
-            using (var responseStream = response.GetResponseStream())
+
+            using (var response = httpClient.Send(request))
+            using (var responseStream = response.Content.ReadAsStream())
             {
                 if (responseStream != null)
                 {
@@ -417,11 +408,14 @@ namespace ASC.Web.Core.Files
             if (string.IsNullOrEmpty(healthcheckUrl))
                 throw new ArgumentNullException("healthcheckUrl");
 
-            var request = (HttpWebRequest)WebRequest.Create(healthcheckUrl);
-            request.Timeout = Timeout;
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(healthcheckUrl);
 
-            using var response = (HttpWebResponse)request.GetResponse();
-            using var responseStream = response.GetResponseStream();
+            using var httpClient = new HttpClient();
+            httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
+
+            using var response = httpClient.Send(request);
+            using var responseStream = response.Content.ReadAsStream();
             if (responseStream == null)
             {
                 throw new Exception("Empty response");

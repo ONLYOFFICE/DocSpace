@@ -315,6 +315,8 @@ namespace ASC.Files.Core
 
         Stream GetThumbnail(File<T> file);
 
+        Task<Stream> GetThumbnailAsync(File<T> file);
+
         IEnumerable<(File<int>, SmallShareRecord)> GetFeeds(int tenant, DateTime from, DateTime to);
 
         IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime);

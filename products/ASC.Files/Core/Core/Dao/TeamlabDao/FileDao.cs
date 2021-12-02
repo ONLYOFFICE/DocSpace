@@ -1307,6 +1307,16 @@ namespace ASC.Files.Core.Data
             return storage.GetReadStream(string.Empty, path);
         }
 
+        public async Task<Stream> GetThumbnailAsync(File<int> file)
+        {
+            var thumnailName = ThumbnailTitle + "." + Global.ThumbnailExtension;
+            var path = GetUniqFilePath(file, thumnailName);
+            var storage = GlobalStore.GetStore();
+            var isExist = await storage.IsFileAsync(string.Empty, path);
+            if (!isExist) throw new FileNotFoundException();
+            return await storage.GetReadStreamAsync(string.Empty, path, 0);
+        }
+
         #endregion
 
         private Func<Selector<DbFile>, Selector<DbFile>> GetFuncForSearch(object parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)

@@ -118,6 +118,9 @@ class CreateUserForm extends React.Component {
 
     loadAvatar(0, data)
       .then((response) => {
+        if (!response.success && response.message) {
+          throw response.message;
+        }
         var img = new Image();
         img.onload = function () {
           if (fileData) {
@@ -442,6 +445,8 @@ class CreateUserForm extends React.Component {
   onValidateEmailField = (value) =>
     this.setState({ errors: { ...this.state.errors, email: !value.isValid } });
 
+  onSaveClick = () => this.setState({ isLoading: true });
+
   render() {
     const { isLoading, errors, profile, selector, isMobile } = this.state;
     const {
@@ -480,7 +485,7 @@ class CreateUserForm extends React.Component {
               image={createdAvatar.image}
               visible={this.state.visibleAvatarEditor}
               onClose={this.onCloseAvatarEditor}
-              onSave={this.onSaveAvatar}
+              onSave={this.onSaveClick}
               onLoadFile={this.onLoadFileAvatar}
               headerLabel={t("AddPhoto")}
               selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
@@ -489,6 +494,7 @@ class CreateUserForm extends React.Component {
               maxSizeFileError={t("Translations:maxSizeFileError")}
               unknownError={t("Common:Error")}
               saveButtonLabel={t("Common:SaveButton")}
+              saveButtonLoading={this.state.isLoading}
             />
           </AvatarContainer>
           <MainFieldsContainer

@@ -35,7 +35,6 @@ using ASC.Core.Common.Settings;
 using ASC.CRM.ApiModels;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
-using ASC.CRM.Core.Enums;
 using ASC.Web.Api.Routing;
 using ASC.Web.CRM.Classes;
 using ASC.Web.Files.Services.DocumentService;

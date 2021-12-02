@@ -7,7 +7,7 @@ import Text from "../text";
 import Loaders from "@appserver/common/components/Loaders";
 
 const onButtonClick = (url) => {
-  window.location = url;
+  window.open(url, "_blank");
 };
 
 const CampaignsBanner = (props) => {
