@@ -152,23 +152,24 @@ const PureTreeSettings = ({
   const renderTreeNode = () => {
     return (
       <TreeNode
-        id="settings"
+        id="settings" //does not work
         key="settings"
         title={t("Common:Settings")}
         isLeaf={false}
         icon={<StyledSettingsIcon size="scale" />}
+        className="tree-settings"
       >
         <TreeNode
-          className="settings-node"
-          id="common-settings"
+          className="settings-node common-settings"
+          id="common-settings" //does not work
           key="common"
           isLeaf={true}
           title={t("CommonSettings")}
         />
         {isAdmin ? (
           <TreeNode
-            className="settings-node"
-            id="admin-settings"
+            className="settings-node admin-settings"
+            id="admin-settings" //does not work
             key="admin"
             isLeaf={true}
             title={t("Common:AdminSettings")}
@@ -177,8 +178,8 @@ const PureTreeSettings = ({
         {enableThirdParty && !isVisitor && !isDesktop ? (
           <TreeNode
             selectable={true}
-            className="settings-node"
-            id="connected-clouds"
+            className="settings-node connected-clouds"
+            id="connected-clouds" //does not work
             key="thirdParty"
             isLeaf={true}
             title={t("ThirdPartySettings")}

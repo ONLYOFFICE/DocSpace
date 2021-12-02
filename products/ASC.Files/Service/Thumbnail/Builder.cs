@@ -17,11 +17,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -38,6 +37,9 @@ using ASC.Web.Files.Services.DocumentService;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Png;
 
 namespace ASC.Files.ThumbnailBuilder
 {
@@ -284,7 +286,8 @@ namespace ASC.Files.ThumbnailBuilder
         {
             logger.DebugFormat("SaveThumbnail: FileId: {0}. ThumbnailUrl {1}.", file.ID, thumbnailUrl);
 
-            var req = (HttpWebRequest)WebRequest.Create(thumbnailUrl);
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(thumbnailUrl);
 
             //HACK: http://ubuntuforums.org/showthread.php?t=1841740
             if (WorkContext.IsMono && ServicePointManager.ServerCertificateValidationCallback == null)
@@ -292,7 +295,9 @@ namespace ASC.Files.ThumbnailBuilder
                 ServicePointManager.ServerCertificateValidationCallback += (s, c, n, p) => true;
             }
 
-            using (var stream = new ResponseStream(req.GetResponse()))
+            using var httpClient = new HttpClient();
+            using var response = httpClient.Send(request);
+            using (var stream = new ResponseStream(response))
             {
                 Crop(fileDao, file, stream);
             }
@@ -320,20 +325,21 @@ namespace ASC.Files.ThumbnailBuilder
 
         private void Crop(IFileDao<T> fileDao, File<T> file, Stream stream)
         {
-            using (var sourceBitmap = new Bitmap(stream))
+            using (var sourceImg = Image.Load(stream))
             {
-                using (var targetBitmap = GetImageThumbnail(sourceBitmap))
+                using (var targetImg = GetImageThumbnail(sourceImg))
                 {
                     using (var targetStream = new MemoryStream())
                     {
-                        targetBitmap.Save(targetStream, System.Drawing.Imaging.ImageFormat.Png);
+                        targetImg.Save(targetStream, PngFormat.Instance);
                         fileDao.SaveThumbnail(file, targetStream);
                     }
                 }
             }
+            GC.Collect();
         }
 
-        private Image GetImageThumbnail(Bitmap sourceBitmap)
+        private Image GetImageThumbnail(Image sourceBitmap)
         {
             //bad for small or disproportionate images
             //return sourceBitmap.GetThumbnailImage(config.ThumbnaillWidth, config.ThumbnaillHeight, () => false, IntPtr.Zero);
@@ -363,7 +369,7 @@ namespace ASC.Files.ThumbnailBuilder
 
             var targetThumbnailSettings = new UserPhotoThumbnailSettings(point, size);
 
-            return UserPhotoThumbnailManager.GetBitmap(sourceBitmap, targetSize, targetThumbnailSettings, InterpolationMode.Bilinear);
+            return UserPhotoThumbnailManager.GetImage(sourceBitmap, targetSize, targetThumbnailSettings);
         }
     }
 }

@@ -7,10 +7,6 @@ const StyledSectionPaging = styled.div`
 `;
 
 class SectionPaging extends React.Component {
-  shouldComponentUpdate(nextProps) {
-    return !equal(this.props, nextProps);
-  }
-
   render() {
     return <StyledSectionPaging {...this.props} />;
   }

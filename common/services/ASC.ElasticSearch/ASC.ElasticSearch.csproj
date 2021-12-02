@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ProductVersion>9.0.30729</ProductVersion>
     <ProjectGuid>{AE1A0E06-6CD4-4E1D-8209-22BBBD6D5652}</ProjectGuid>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <FileUpgradeFlags />
     <UpgradeBackupLocation />
     <AssemblyTitle>ASC.ElasticSearch</AssemblyTitle>

@@ -29,6 +29,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
@@ -150,23 +152,20 @@ namespace ASC.Web.Core.Helpers
 
             var url = string.Format("{0}/{1}", absoluteApiUrl, apiPath);
 
-            var webRequest = (HttpWebRequest)WebRequest.Create(url);
-            webRequest.Method = httpMethod;
-            webRequest.Accept = "application/json";
-            webRequest.Headers.Add(HttpRequestHeader.Authorization, CreateAuthToken(userId.ToString()));
-            webRequest.ContentType = "application/x-www-form-urlencoded";
-            webRequest.ContentLength = 0;
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(url);
+            request.Method = new HttpMethod(httpMethod);
+            request.Headers.Add("Authorization", CreateAuthToken(userId.ToString()));
+            request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
             if (data != null)
             {
-                webRequest.ContentLength = data.Length;
-
-                using var writer = new StreamWriter(webRequest.GetRequestStream());
-                writer.Write(data);
+                request.Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
             }
 
-            using var response = webRequest.GetResponse();
-            using var stream = response.GetResponseStream();
+            using var httpClient = new HttpClient();
+            using var response = httpClient.Send(request);
+            using var stream = response.Content.ReadAsStream();
             using var reader = new StreamReader(stream, Encoding.UTF8);
             return reader.ReadToEnd();
         }

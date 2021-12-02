@@ -24,6 +24,7 @@ const ViewSelector = ({
   };
 
   const lastIndx = viewSettings && viewSettings.length - 1;
+  const loadingSVG = () => <svg></svg>;
 
   return (
     <StyledViewSelector
@@ -46,7 +47,7 @@ const ViewSelector = ({
               className="view-selector-icon"
               data-view={value}
             >
-              <ReactSVG src={icon} />
+              <ReactSVG src={icon} loading={loadingSVG} />
             </IconWrapper>
           );
         })}

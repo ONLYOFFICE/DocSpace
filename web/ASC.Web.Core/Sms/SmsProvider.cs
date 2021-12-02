@@ -28,7 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Net;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Web;
 
@@ -167,12 +167,15 @@ namespace ASC.Web.Core.Sms
                 var url = SendMessageUrl();
                 url = url.Replace("{phone}", number).Replace("{text}", HttpUtility.UrlEncode(message));
 
-                var request = (HttpWebRequest)WebRequest.Create(url);
-                request.ContentType = "application/x-www-form-urlencoded";
-                request.Timeout = 15000;
+                var request = new HttpRequestMessage();
+                request.RequestUri = new Uri(url);
+                request.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
 
-                using var response = request.GetResponse();
-                using var stream = response.GetResponseStream();
+                using var httpClient = new HttpClient();
+                httpClient.Timeout = TimeSpan.FromMilliseconds(15000);
+
+                using var response = httpClient.Send(request);
+                using var stream = response.Content.ReadAsStream();
                 if (stream != null)
                 {
                     using var reader = new StreamReader(stream);
@@ -258,12 +261,15 @@ namespace ASC.Web.Core.Sms
                 {
                     var url = GetBalanceUrl();
 
-                    var request = (HttpWebRequest)WebRequest.Create(url);
-                    request.ContentType = "application/x-www-form-urlencoded";
-                    request.Timeout = 1000;
+                    var request = new HttpRequestMessage();
+                    request.RequestUri = new Uri(url);
+                    request.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
 
-                    using var response = request.GetResponse();
-                    using var stream = response.GetResponseStream();
+                    using var httpClient = new HttpClient();
+                    httpClient.Timeout = TimeSpan.FromMilliseconds(1000);
+
+                    using var response = httpClient.Send(request);
+                    using var stream = response.Content.ReadAsStream();
                     if (stream != null)
                     {
                         using var reader = new StreamReader(stream);
@@ -446,7 +452,7 @@ namespace ASC.Web.Core.Sms
             IOptionsMonitor<ILog> options,
             ICache memCache,
             string name, int order, Dictionary<string, string> props)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache ,name, order, props)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache, name, order, props)
         {
             AuthContext = authContext;
             TenantUtil = tenantUtil;

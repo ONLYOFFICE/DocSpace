@@ -25,8 +25,6 @@
 
 
 using System;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -43,6 +41,9 @@ using ASC.Web.Core.Files;
 using ASC.Web.Studio.Core;
 
 using Microsoft.Extensions.Configuration;
+
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats;
 
 namespace ASC.Web.CRM.Classes
 {
@@ -215,25 +216,9 @@ namespace ASC.Web.CRM.Classes
             return br.ToArray();
         }
 
-        public static string GetImgFormatName(ImageFormat format)
+        public static string GetImgFormatName(IImageFormat format)
         {
-            if (format.Equals(ImageFormat.Bmp)) return "bmp";
-            if (format.Equals(ImageFormat.Emf)) return "emf";
-            if (format.Equals(ImageFormat.Exif)) return "exif";
-            if (format.Equals(ImageFormat.Gif)) return "gif";
-            if (format.Equals(ImageFormat.Icon)) return "icon";
-            if (format.Equals(ImageFormat.Jpeg)) return "jpeg";
-            if (format.Equals(ImageFormat.MemoryBmp)) return "MemoryBMP";
-            if (format.Equals(ImageFormat.Png)) return "png";
-            if (format.Equals(ImageFormat.Tiff)) return "tiff";
-            if (format.Equals(ImageFormat.Wmf)) return "wmf";
-
-            return "jpg";
-        }
-
-        public static byte[] SaveToBytes(Image img)
-        {
-            return CommonPhotoManager.SaveToBytes(img, GetImgFormatName(img.RawFormat));
+            return format.Name.ToLower();
         }
 
         private static readonly string[] Formats = new[]

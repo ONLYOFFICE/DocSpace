@@ -56,7 +56,7 @@ namespace ASC.Api.Core
             if (bool.TryParse(Configuration["core:products"], out var loadProducts))
             {
                 LoadProducts = loadProducts;
-            }
+        }
         }
 
         public virtual void ConfigureServices(IServiceCollection services)
@@ -71,18 +71,18 @@ namespace ASC.Api.Core
             DIHelper.Configure(services);
 
             Action<JsonOptions> jsonOptions = options =>
-                               {
-                                   options.JsonSerializerOptions.WriteIndented = false;
-                                   options.JsonSerializerOptions.IgnoreNullValues = true;
-                                   options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
+                {
+                    options.JsonSerializerOptions.WriteIndented = false;
+                    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+                    options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
 
-                                   if (Converters != null)
-                                   {
-                                       foreach (var c in Converters)
-                                       {
-                                           options.JsonSerializerOptions.Converters.Add(c);
-                                       }
-                                   }
+                    if (Converters != null)
+                    {
+                        foreach (var c in Converters)
+                        {
+                            options.JsonSerializerOptions.Converters.Add(c);
+                        }
+                    }
                                };
 
             services.AddControllers()

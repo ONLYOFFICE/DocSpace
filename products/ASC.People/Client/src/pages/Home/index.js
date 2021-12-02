@@ -35,6 +35,7 @@ const Home = ({
   showCatalog,
   firstLoad,
   setFirstLoad,
+  viewAs,
 }) => {
   const { location } = history;
   const { pathname } = location;
@@ -72,13 +73,13 @@ const Home = ({
         withBodyScroll
         withBodyAutoFocus={!isMobile}
         isLoading={isLoading}
-        firstLoad={firstLoad}>
+        firstLoad={firstLoad}
+        viewAs={viewAs}>
         {showCatalog && (
           <PageLayout.CatalogHeader>
             <CatalogHeaderContent />
           </PageLayout.CatalogHeader>
         )}
-
         {showCatalog && isAdmin && (
           <PageLayout.CatalogMainButton>
             <CatalogMainButtonContent />
@@ -89,37 +90,30 @@ const Home = ({
             <CatalogBodyContent />
           </PageLayout.CatalogBody>
         )}
-
         {!showCatalog && (
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />
           </PageLayout.ArticleHeader>
         )}
-
         {!showCatalog && (
           <PageLayout.ArticleMainButton>
             <ArticleMainButtonContent />
           </PageLayout.ArticleMainButton>
         )}
-
         {!showCatalog && (
           <PageLayout.ArticleBody>
             <ArticleBodyContent />
           </PageLayout.ArticleBody>
         )}
-
         <PageLayout.SectionHeader>
           <SectionHeaderContent />
         </PageLayout.SectionHeader>
-
         <PageLayout.SectionFilter>
           <SectionFilterContent />
         </PageLayout.SectionFilter>
-
         <PageLayout.SectionBody>
           <SectionBodyContent />
         </PageLayout.SectionBody>
-
         <PageLayout.SectionPaging>
           <SectionPagingContent />
         </PageLayout.SectionPaging>
@@ -137,7 +131,7 @@ Home.propTypes = {
 export default inject(({ auth, peopleStore }) => {
   const { settingsStore } = auth;
   const { showCatalog } = settingsStore;
-  const { usersStore, selectedGroupStore, loadingStore } = peopleStore;
+  const { usersStore, selectedGroupStore, loadingStore, viewAs } = peopleStore;
   const { getUsersList } = usersStore;
   const { selectedGroup } = selectedGroupStore;
   const { isLoading, setIsLoading, setIsRefresh, firstLoad, setFirstLoad } = loadingStore;
@@ -152,5 +146,6 @@ export default inject(({ auth, peopleStore }) => {
     showCatalog,
     firstLoad,
     setFirstLoad,
+    viewAs,
   };
 })(observer(withRouter(Home)));
