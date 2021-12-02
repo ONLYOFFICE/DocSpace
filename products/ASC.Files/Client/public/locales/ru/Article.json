@@ -5,9 +5,9 @@
     "NewSpreadsheet": "Новая таблица",
     "UploadFiles": "Загрузить файлы",
     "UploadFolder": "Загрузить папку",
-    "NewForm": "Мастер-форма",
-    "NewFormFile": "Мастер-форма из файла",
-    "CreateMasterFormFromFile": "Создать мастер-форму из файла",
+    "NewForm": "Шаблон формы",
+    "NewFormFile": "Шаблон формы из файла",
+    "CreateMasterFormFromFile": "Создать шаблон формы из файла",
     "SubNewForm": "Пустая",
     "SubNewFormFile": "Из существующего текстового файла"
 }
