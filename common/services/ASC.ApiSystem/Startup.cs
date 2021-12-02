@@ -24,6 +24,8 @@
 */
 
 
+using System.Text.Json.Serialization;
+
 using ASC.Api.Core;
 using ASC.ApiSystem.Classes;
 using ASC.ApiSystem.Controllers;
@@ -66,7 +68,7 @@ namespace ASC.ApiSystem
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.WriteIndented = false;
-                    options.JsonSerializerOptions.IgnoreNullValues = true;
+                    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                 });
 
             services.AddMemoryCache();

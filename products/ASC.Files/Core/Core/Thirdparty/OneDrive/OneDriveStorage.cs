@@ -380,16 +380,17 @@ namespace ASC.Files.Thirdparty.OneDrive
                 Path = "/" + ApiVersion + "/drive/items/" + folderId + ":/" + fileName + ":/oneDrive.createUploadSession"
             };
 
-            var request = WebRequest.Create(uploadUriBuilder.Uri);
-            request.Method = "POST";
-            request.ContentLength = 0;
-
-            request.ContentType = "application/json; charset=UTF-8";
+            var request = new HttpRequestMessage();
+            request.RequestUri = uploadUriBuilder.Uri;
+            request.Method = HttpMethod.Post;
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
+            request.Headers.Add("Content-Type", "application/json; charset=UTF-8");
 
             var uploadSession = new ResumableUploadSession(onedriveFile.Id, folderId, contentLength);
-            using (var response = request.GetResponse())
-            using (var responseStream = response.GetResponseStream())
+
+            using (var httpClient = new HttpClient())
+            using (var response = httpClient.Send(request))
+            using (var responseStream = response.Content.ReadAsStream())
             {
                 if (responseStream != null)
                 {
@@ -450,21 +451,19 @@ namespace ASC.Files.Thirdparty.OneDrive
             if (oneDriveSession.Status != ResumableUploadSessionStatus.Started)
                 throw new InvalidOperationException("Can't upload chunk for given upload session.");
 
-            var request = WebRequest.Create(oneDriveSession.Location);
-            request.Method = "PUT";
-            request.ContentLength = chunkLength;
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(oneDriveSession.Location);
+            request.Method = HttpMethod.Put;
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
             request.Headers.Add("Content-Range", string.Format("bytes {0}-{1}/{2}",
                                                                oneDriveSession.BytesTransfered,
                                                                oneDriveSession.BytesTransfered + chunkLength - 1,
                                                                oneDriveSession.BytesToTransfer));
+            request.Content = new StreamContent(stream);
 
-            using (var requestStream = request.GetRequestStream())
-            {
-                stream.CopyTo(requestStream);
-            }
+            using var httpClient = new HttpClient();
+            using var response = httpClient.Send(request);
 
-            using var response = (HttpWebResponse)request.GetResponse();
             if (response.StatusCode != HttpStatusCode.Created && response.StatusCode != HttpStatusCode.OK)
             {
                 oneDriveSession.BytesTransfered += chunkLength;
@@ -473,7 +472,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             {
                 oneDriveSession.Status = ResumableUploadSessionStatus.Completed;
 
-                using var responseStream = response.GetResponseStream();
+                using var responseStream = response.Content.ReadAsStream();
                 if (responseStream == null) return;
                 using var readStream = new StreamReader(responseStream);
                 var responseString = readStream.ReadToEnd();
@@ -521,15 +520,6 @@ namespace ASC.Files.Thirdparty.OneDrive
                 var responseJson = JObject.Parse(responseString);
 
                 oneDriveSession.FileId = responseJson.Value<string>("id");
-            }
-        }
-
-        public void CancelTransfer(ResumableUploadSession oneDriveSession)
-        {
-            var request = WebRequest.Create(oneDriveSession.Location);
-            request.Method = "DELETE";
-            using (request.GetResponse())
-            {
             }
         }
 

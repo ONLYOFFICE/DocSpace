@@ -27,9 +27,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -45,6 +42,10 @@ using ASC.Data.Storage;
 using ASC.Web.Core.Utility.Skins;
 
 using Microsoft.Extensions.Options;
+
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.Processing;
 
 namespace ASC.Web.Core.Users
 {
@@ -350,7 +351,7 @@ namespace ASC.Web.Core.Users
         public bool UserHasAvatar(Guid userID)
         {
             var path = GetPhotoAbsoluteWebPath(userID);
-            var fileName = Path.GetFileName(path);
+            var fileName = System.IO.Path.GetFileName(path);
             return fileName != _defaultAvatar;
         }
 
@@ -602,18 +603,17 @@ namespace ASC.Web.Core.Users
             SettingsManager.SaveForUser(settings, userId);
         }
 
-        private byte[] TryParseImage(byte[] data, long maxFileSize, Size maxsize, out ImageFormat imgFormat, out int width, out int height)
+        private byte[] TryParseImage(byte[] data, long maxFileSize, Size maxsize, out IImageFormat imgFormat, out int width, out int height)
         {
             if (data == null || data.Length <= 0) throw new UnknownImageFormatException();
             if (maxFileSize != -1 && data.Length > maxFileSize) throw new ImageSizeLimitException();
 
-            data = ImageHelper.RotateImageByExifOrientationData(data, Log);
+            //data = ImageHelper.RotateImageByExifOrientationData(data, Log);
 
             try
             {
-                using var stream = new MemoryStream(data);
-                using var img = new Bitmap(stream);
-                imgFormat = img.RawFormat;
+                using var img = Image.Load(data ,out var format);
+                imgFormat = format;
                 width = img.Width;
                 height = img.Height;
                 var maxWidth = maxsize.Width;
@@ -650,16 +650,16 @@ namespace ASC.Web.Core.Users
                         height = maxHeight;
                     }
 
+                    var tmpW = width;
+                    var tmpH = height;
                     #endregion
+                    using Image destRound = img.Clone(x => x.Resize(new ResizeOptions
+                    {
+                        Size = new Size(tmpW, tmpH),
+                        Mode = ResizeMode.Stretch
+                    }));
 
-                    using var b = new Bitmap(width, height);
-                    using var gTemp = Graphics.FromImage(b);
-                    gTemp.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    gTemp.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                    gTemp.SmoothingMode = SmoothingMode.HighQuality;
-                    gTemp.DrawImage(img, 0, 0, width, height);
-
-                    data = CommonPhotoManager.SaveToBytes(b);
+                    data = CommonPhotoManager.SaveToBytes(destRound);
                 }
                 return data;
             }
@@ -711,13 +711,13 @@ namespace ASC.Web.Core.Users
             {
                 var data = item.Data;
                 using var stream = new MemoryStream(data);
-                using var img = Image.FromStream(stream);
-                var imgFormat = img.RawFormat;
-                if (item.Size != img.Size)
+                using var img = Image.Load(stream, out var format);
+                var imgFormat = format;
+                if (item.Size != img.Size())
                 {
                     using var img2 = item.Settings.IsDefault ?
                         CommonPhotoManager.DoThumbnail(img, item.Size, true, true, true) :
-                        UserPhotoThumbnailManager.GetBitmap(img, item.Size, item.Settings);
+                        UserPhotoThumbnailManager.GetImage(img, item.Size, item.Settings);
                     data = CommonPhotoManager.SaveToBytes(img2);
                 }
                 else
@@ -775,8 +775,8 @@ namespace ASC.Web.Core.Users
             if (store.IsFile(_tempDomainName, fileName))
             {
                 using var s = store.GetReadStream(_tempDomainName, fileName);
-                using var img = Image.FromStream(s);
-                var imgFormat = img.RawFormat;
+                using var img = Image.Load(s, out var format);
+                var imgFormat = format;
                 byte[] data;
 
                 if (img.Width != newWidth || img.Height != newHeight)
@@ -812,26 +812,28 @@ namespace ASC.Web.Core.Users
         }
 
 
-        public Bitmap GetPhotoBitmap(Guid userID)
+        public Image GetPhotoImage(Guid userID, out IImageFormat format)
         {
             try
             {
                 var data = UserManager.GetUserPhoto(userID);
                 if (data != null)
                 {
-                    using var s = new MemoryStream(data);
-                    return new Bitmap(s);
+                    var img = Image.Load(data, out var imgFormat);
+                    format = imgFormat;
+                    return img;
                 }
             }
             catch { }
+            format = null;
             return null;
         }
 
-        public string SaveThumbnail(Guid userID, Image img, ImageFormat format)
+        public string SaveThumbnail(Guid userID, Image img, IImageFormat format)
         {
             var moduleID = Guid.Empty;
             var widening = CommonPhotoManager.GetImgFormatName(format);
-            var size = img.Size;
+            var size = img.Size();
             var fileName = string.Format("{0}{1}_size_{2}-{3}.{4}", (moduleID == Guid.Empty ? "" : moduleID.ToString()), userID, img.Width, img.Height, widening);
 
             var store = GetDataStore();
@@ -919,7 +921,7 @@ namespace ASC.Web.Core.Users
     /// <summary>
     /// Helper class for manipulating images.
     /// </summary>
-    public static class ImageHelper
+    /*public static class ImageHelper
     {
         /// <summary>
         /// Rotate the given image byte array according to Exif Orientation data
@@ -932,7 +934,8 @@ namespace ASC.Web.Core.Users
             try
             {
                 using var stream = new MemoryStream(data);
-                using var img = new Bitmap(stream);
+                using var img = Image.Load(stream);
+                
                 var fType = RotateImageByExifOrientationData(img, updateExifData);
                 if (fType != RotateFlipType.RotateNoneFlipNone)
                 {
@@ -1012,7 +1015,7 @@ namespace ASC.Web.Core.Users
                 _ => RotateFlipType.RotateNoneFlipNone,
             };
         }
-    }
+    }*/
 
     public static class SizeExtend
     {

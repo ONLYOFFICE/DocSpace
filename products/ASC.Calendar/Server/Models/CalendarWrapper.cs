@@ -34,8 +34,6 @@ using ASC.Web.Core.Users;
 using ASC.Web.Core.Calendars;
 using ASC.Calendar.ExternalCalendars;
 using ASC.Common.Security;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using ASC.Common;
 using System.Text.Json.Serialization;
 

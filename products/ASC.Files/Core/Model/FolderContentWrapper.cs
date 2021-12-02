@@ -213,13 +213,13 @@ namespace ASC.Api.Documents
             foreach (var r in folderEntries)
             {
                 FileEntryWrapper wrapper = null;
-                if (r is File<int> fol1)
+                if (r is Folder<int> fol1)
                 {
-                    wrapper = await FileWrapperHelper.GetAsync(fol1, foldersIntWithRights);
+                    wrapper = await FolderWrapperHelper.GetAsync(fol1, foldersIntWithRights);
                 }
-                if (r is File<string> fol2)
+                if (r is Folder<string> fol2)
                 {
-                    wrapper = await FileWrapperHelper.GetAsync(fol2, foldersStringWithRights);
+                    wrapper = await FolderWrapperHelper.GetAsync(fol2, foldersStringWithRights);
                 }
 
                 folders.Add(wrapper);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -362,15 +363,18 @@ namespace ASC.Files.Helpers
             }
 
             var createSessionUrl = FilesLinkUtility.GetInitiateUploadSessionUrl(TenantManager.GetCurrentTenant().TenantId, file.FolderID, file.ID, file.Title, file.ContentLength, encrypted, SecurityContext);
-            var request = (HttpWebRequest)WebRequest.Create(createSessionUrl);
-            request.Method = "POST";
-            request.ContentLength = 0;
+
+            using var httpClient = new HttpClient();
+
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(createSessionUrl);
+            request.Method = HttpMethod.Post;
 
             // hack for uploader.onlyoffice.com in api requests
             var rewriterHeader = ApiContext.HttpContextAccessor.HttpContext.Request.Headers[HttpRequestExtensions.UrlRewriterHeader];
             if (!string.IsNullOrEmpty(rewriterHeader))
             {
-                request.Headers[HttpRequestExtensions.UrlRewriterHeader] = rewriterHeader;
+                request.Headers.Add(HttpRequestExtensions.UrlRewriterHeader, rewriterHeader.ToString());
             }
 
             // hack. http://ubuntuforums.org/showthread.php?t=1841740
@@ -379,8 +383,8 @@ namespace ASC.Files.Helpers
                 ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
             }
 
-            using var response = request.GetResponse();
-            using var responseStream = response.GetResponseStream();
+            using var response = httpClient.Send(request);
+            using var responseStream = response.Content.ReadAsStream();
             using var streamReader = new StreamReader(responseStream);
             return JObject.Parse(streamReader.ReadToEnd()); //result is json string
         }

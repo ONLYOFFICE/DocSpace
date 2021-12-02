@@ -50,12 +50,14 @@ namespace ASC.Security.Cryptography
 
         public byte[] Encrypt(byte[] data)
         {
-            var hasher = Rijndael.Create();
+            var hasher = Aes.Create();
             hasher.Key = EKey();
             hasher.IV = new byte[hasher.BlockSize >> 3];
+
             using var ms = new MemoryStream();
             using var ss = new CryptoStream(ms, hasher.CreateEncryptor(), CryptoStreamMode.Write);
-            ss.Write(data, 0, data.Length);
+            using var plainTextStream = new MemoryStream(data);
+            plainTextStream.CopyTo(ss);
             ss.FlushFinalBlock();
             hasher.Clear();
             return ms.ToArray();
@@ -63,23 +65,24 @@ namespace ASC.Security.Cryptography
 
         public string Decrypt(string data)
         {
-            return Encoding.UTF8.GetString(Decrypt(Convert.FromBase64String(data)));
+            return Decrypt(Convert.FromBase64String(data));
         }
 
-        public byte[] Decrypt(byte[] data)
+        public string Decrypt(byte[] data)
         {
-            var hasher = Rijndael.Create();
+            var hasher = Aes.Create();
             hasher.Key = EKey();
             hasher.IV = new byte[hasher.BlockSize >> 3];
 
-            using var ms = new MemoryStream(data);
-            using var ss = new CryptoStream(ms, hasher.CreateDecryptor(), CryptoStreamMode.Read);
-            var buffer = new byte[data.Length];
-            var size = ss.Read(buffer, 0, buffer.Length);
-            hasher.Clear();
-            var newBuffer = new byte[size];
-            Array.Copy(buffer, newBuffer, size);
-            return newBuffer;
+            using (MemoryStream msDecrypt = new MemoryStream(data))
+            using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, hasher.CreateDecryptor(), CryptoStreamMode.Read))
+            using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+            {
+
+                // Read the decrypted bytes from the decrypting stream
+                // and place them in a string.
+                return srDecrypt.ReadToEnd();
+            }
         }
 
         private byte[] EKey()
