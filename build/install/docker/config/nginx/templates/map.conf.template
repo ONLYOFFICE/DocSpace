@@ -1,106 +1,85 @@
 resolver $DNS_NAMESERVER valid=30s;
 
-map $API_SYSTEM_HOST $service_api_system {
-    volatile;
-    $API_SYSTEM_HOST $API_SYSTEM_HOST:$SERVICE_PORT;
+map $host   $service_api_system {
+    default $API_SYSTEM_HOST:$SERVICE_PORT;
 }
 
-map $BACKUP_HOST $service_backup {
-    volatile;
-    $BACKUP_HOST $BACKUP_HOST:$SERVICE_PORT;
+map $host   $service_backup {
+    default $BACKUP_HOST:$SERVICE_PORT;
 }
 
-map $CALENDAR_HOST $service_calendar {
-    volatile;
-    $CALENDAR_HOST $CALENDAR_HOST:$SERVICE_PORT;
+map $host   $service_calendar {
+    default $CALENDAR_HOST:$SERVICE_PORT;
 }
 
-map $CRM_HOST $service_crm {
-    volatile;
-    $CRM_HOST $CRM_HOST:$SERVICE_PORT;
+map $host   $service_crm {
+    default $CRM_HOST:$SERVICE_PORT;
 }
 
-map $STORAGE_ENCRYPTION_HOST $service_storage_encryption {
-    volatile;
-    $STORAGE_ENCRYPTION_HOST $STORAGE_ENCRYPTION_HOST:$SERVICE_PORT;
+map $host   $service_storage_encryption {
+    default $STORAGE_ENCRYPTION_HOST:$SERVICE_PORT;
 }
 
-map $FILES_HOST $service_files {
-    volatile;
-    $FILES_HOST $FILES_HOST:$SERVICE_PORT;
+map $host   $service_files {
+    default $FILES_HOST:$SERVICE_PORT;
 }
 
-map $FILES_SERVICES_HOST $service_files_services {
-    volatile;
-    $FILES_SERVICES_HOST $FILES_SERVICES_HOST:$SERVICE_PORT;
+map $host   $service_files_services {
+    default $FILES_SERVICES_HOST:$SERVICE_PORT;
 }
 
-map $MAIL_HOST $service_mail {
-    volatile;
-    $MAIL_HOST $MAIL_HOST:$SERVICE_PORT;
+map $host   $service_mail {
+    default $MAIL_HOST:$SERVICE_PORT;
 }
 
-map $STORAGE_MIGRATION_HOST $service_storage_migration {
-    volatile;
-    $STORAGE_MIGRATION_HOST $STORAGE_MIGRATION_HOST:$SERVICE_PORT;
+map $host   $service_storage_migration {
+    default $STORAGE_MIGRATION_HOST:$SERVICE_PORT;
 }
 
-map $NOTIFY_HOST $service_notify {
-    volatile;
-    $NOTIFY_HOST $NOTIFY_HOST:$SERVICE_PORT;
+map $host   $service_notify {
+    default $NOTIFY_HOST:$SERVICE_PORT;
 }
 
-map $PEOPLE_SERVER_HOST $service_people_server {
-    volatile;
-    $PEOPLE_SERVER_HOST $PEOPLE_SERVER_HOST:$SERVICE_PORT;
+map $host   $service_people_server {
+    default $PEOPLE_SERVER_HOST:$SERVICE_PORT;
 }
 
-map $PROJECTS_SERVER_HOST $service_projects_server {
-    volatile;
-    $PROJECTS_SERVER_HOST $PROJECTS_SERVER_HOST:$SERVICE_PORT;
+map $host   $service_projects_server {
+    default $PROJECTS_SERVER_HOST:$SERVICE_PORT;
 }
 
-map $SOCKET_HOST $service_socket {
-    volatile;
-    $SOCKET_HOST $SOCKET_HOST:9899;
+map $host   $service_socket {
+    default $SOCKET_HOST:9899;
 }
 
-map $STUDIO_NOTIFY_HOST $service_studio_notify {
-    volatile;
-    $STUDIO_NOTIFY_HOST $STUDIO_NOTIFY_HOST:$SERVICE_PORT;
+map $host   $service_studio_notify {
+    default $STUDIO_NOTIFY_HOST:$SERVICE_PORT;
 }
 
-map $TELEGRAM_SERVICE_HOST $service_telegram_service {
-    volatile;
-    $TELEGRAM_SERVICE_HOST $TELEGRAM_SERVICE_HOST:$SERVICE_PORT;
+map $host   $service_telegram_service {
+    default $TELEGRAM_SERVICE_HOST:$SERVICE_PORT;
 }
 
-map $THUMBNAILS_HOST $service_thumbnails {
-    volatile;
-    $THUMBNAILS_HOST $THUMBNAILS_HOST:9800;
+map $host   $service_thumbnails {
+    default $THUMBNAILS_HOST:9800;
 }
 
-map $URLSHORTENER_HOST $service_urlshortener {
-    volatile;
-    $URLSHORTENER_HOST $URLSHORTENER_HOST:9999;
+map $host   $service_urlshortener {
+    default $URLSHORTENER_HOST:9999;
 }
 
-map $API_HOST $service_api {
-    volatile;
-    $API_HOST $API_HOST:$SERVICE_PORT;
+map $host   $service_api {
+    default $API_HOST:$SERVICE_PORT;
 }
 
-map $STUDIO_HOST $service_studio {
-    volatile;
-    $STUDIO_HOST $STUDIO_HOST:$SERVICE_PORT;
+map $host   $service_studio {
+    default $STUDIO_HOST:$SERVICE_PORT;
 }
 
-map $SSOAUTH_HOST $service_ssoauth {
-    volatile;
-    $SSOAUTH_HOST $SSOAUTH_HOST:9834;
+map $host   $service_ssoauth {
+    default $SSOAUTH_HOST:9834;
 }
 
-map $DOCUMENT_SERVER $document_server {
-    volatile;
-    $DOCUMENT_SERVER $DOCUMENT_SERVER;
+map $host   $document_server {
+    default $DOCUMENT_SERVER;
 }

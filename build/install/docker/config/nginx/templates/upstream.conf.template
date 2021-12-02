@@ -1,202 +1,141 @@
 resolver $DNS_NAMESERVER valid=30s;
 
-map $DOCUMENT_SERVER $document_server {
-    volatile;
-    $DOCUMENT_SERVER $DOCUMENT_SERVER;
+upstream $API_SYSTEM_HOST {
+    server      $API_SYSTEM_HOST:$SERVICE_PORT;
+    keepalive   $service_keepalive;
 }
 
-map $API_SYSTEM_HOST $service_api_system {
-    $API_SYSTEM_HOST $API_SYSTEM_HOST;
+upstream $BACKUP_HOST {
+    server      $BACKUP_HOST:$SERVICE_PORT;
+    keepalive   $service_keepalive;
 }
 
-map $BACKUP_HOST $service_backup {
-    $BACKUP_HOST $BACKUP_HOST;
+upstream $CALENDAR_HOST {
+    server      $CALENDAR_HOST:$SERVICE_PORT;
+    keepalive   $service_keepalive;
 }
 
-map $CALENDAR_HOST $service_calendar {
-    $CALENDAR_HOST $CALENDAR_HOST;
+upstream $CRM_HOST {
+    server      $CRM_HOST:$SERVICE_PORT;
+    keepalive   $service_keepalive;
 }
 
-map $CRM_HOST $service_crm {
-    $CRM_HOST $CRM_HOST;
+upstream $FILES_HOST {
+    server      $FILES_HOST:$SERVICE_PORT;
+    keepalive   $service_keepalive;
 }
 
-map $STORAGE_ENCRYPTION_HOST $service_storage_encryption {
-    $STORAGE_ENCRYPTION_HOST $STORAGE_ENCRYPTION_HOST;
+upstream $MAIL_HOST {
+    server      $MAIL_HOST:$SERVICE_PORT;
+    keepalive   $service_keepalive;
 }
 
-map $FILES_HOST $service_files {
-    $FILES_HOST $FILES_HOST;
+upstream $PEOPLE_SERVER_HOST {
+    server      $PEOPLE_SERVER_HOST:$SERVICE_PORT;
+    keepalive   $service_keepalive;
 }
 
-map $FILES_SERVICES_HOST $service_files_services {
-    $FILES_SERVICES_HOST $FILES_SERVICES_HOST;
+upstream $PROJECTS_SERVER_HOST {
+    server      $PROJECTS_SERVER_HOST:$SERVICE_PORT;
+    keepalive   $service_keepalive;
 }
 
-map $MAIL_HOST $service_mail {
-    $MAIL_HOST $MAIL_HOST;
+upstream $URLSHORTENER_HOST {
+    server      $URLSHORTENER_HOST:$SERVICE_PORT;
+    keepalive   $service_keepalive;
 }
 
-map $STORAGE_MIGRATION_HOST $service_storage_migration {
-    $STORAGE_MIGRATION_HOST $STORAGE_MIGRATION_HOST;
+upstream $API_HOST {
+    server      $API_HOST:$SERVICE_PORT;
+    keepalive   $service_keepalive;
 }
 
-map $NOTIFY_HOST $service_notify {
-    $NOTIFY_HOST $NOTIFY_HOST;
+upstream $STUDIO_HOST {
+    server      $STUDIO_HOST:$SERVICE_PORT;
+    keepalive   $service_keepalive;
 }
 
-map $PEOPLE_SERVER_HOST $service_people_server {
-    $PEOPLE_SERVER_HOST $PEOPLE_SERVER_HOST;
+# Map variables
+map $host   $service_api_system {
+    default $API_SYSTEM_HOST;
 }
 
-map $PROJECTS_SERVER_HOST $service_projects_server {
-    $PROJECTS_SERVER_HOST $PROJECTS_SERVER_HOST;
+map $host   $service_backup {
+    default $BACKUP_HOST;
 }
 
-map $SOCKET_HOST $service_socket {
-    $SOCKET_HOST $SOCKET_HOST;
+map $host   $service_calendar {
+    default $CALENDAR_HOST;
 }
 
-map $STUDIO_NOTIFY_HOST $service_studio_notify {
-    $STUDIO_NOTIFY_HOST $STUDIO_NOTIFY_HOST;
+map $host   $service_crm {
+    default $CRM_HOST;
 }
 
-map $TELEGRAM_SERVICE_HOST $service_telegram_service {
-    $TELEGRAM_SERVICE_HOST $TELEGRAM_SERVICE_HOST;
+map $host   $service_storage_encryption {
+    default $STORAGE_ENCRYPTION_HOST;
 }
 
-map $THUMBNAILS_HOST $service_thumbnails {
-    $THUMBNAILS_HOST $THUMBNAILS_HOST;
+map $host   $service_files {
+    default $FILES_HOST;
 }
 
-map $URLSHORTENER_HOST $service_urlshortener {
-    $URLSHORTENER_HOST $URLSHORTENER_HOST;
+map $host   $service_files_services {
+    default $FILES_SERVICES_HOST;
 }
 
-map $API_HOST $service_api {
-    $API_HOST $API_HOST;
+map $host   $service_mail {
+    default $MAIL_HOST;
 }
 
-map $STUDIO_HOST $service_studio {
-    $STUDIO_HOST $STUDIO_HOST;
+map $host   $service_storage_migration {
+    default $STORAGE_MIGRATION_HOST;
 }
 
-map $SSOAUTH_HOST $service_ssoauth {
-    $SSOAUTH_HOST $SSOAUTH_HOST;
+map $host   $service_notify {
+    default $NOTIFY_HOST;
 }
 
-upstream $service_api_system {
-    server $API_SYSTEM_HOST:$SERVICE_PORT;
-
-    keepalive $service_keepalive;
+map $host   $service_people_server {
+    default $PEOPLE_SERVER_HOST;
 }
 
-upstream $service_backup {
-    server $BACKUP_HOST:$SERVICE_PORT;
-
-    keepalive $service_keepalive;
+map $host   $service_projects_server {
+    default $PROJECTS_SERVER_HOST;
 }
 
-upstream $service_calendar {
-    server $CALENDAR_HOST:$SERVICE_PORT;
-
-    keepalive $service_keepalive;
+map $host   $service_socket {
+    default $SOCKET_HOST;
 }
 
-upstream $service_crm {
-    server $CRM_HOST:$SERVICE_PORT;
-
-    keepalive $service_keepalive;
+map $host   $service_studio_notify {
+    default $STUDIO_NOTIFY_HOST;
 }
 
-#upstream $service_storage_encryption {
-#    server $STORAGE_ENCRYPTION_HOST:$SERVICE_PORT;
-
-#    keepalive $service_keepalive;
-#}
-
-upstream $service_files {
-    server $FILES_HOST:$SERVICE_PORT;
+map $host   $service_telegram_service {
+    default $TELEGRAM_SERVICE_HOST;
 }
 
-#upstream $service_files_services {
-#    server $FILES_SERVICES_HOST:$SERVICE_PORT;
-#    keepalive $service_keepalive;
-#}
-
-upstream $service_mail {
-    server $MAIL_HOST:$SERVICE_PORT;
-
-    keepalive $service_keepalive;
+map $host   $service_thumbnails {
+    default $THUMBNAILS_HOST;
 }
 
-#upstream $service_storage_migration {
-#    server $STORAGE_MIGRATION_HOST:$SERVICE_PORT;
-
-#    keepalive $service_keepalive;
-#}
-
-#upstream $service_notify {
-#    server $NOTIFY_HOST:$SERVICE_PORT;
-#    keepalive $service_keepalive;
-#}
-
-upstream $service_people_server {
-    server $PEOPLE_SERVER_HOST:$SERVICE_PORT;
-
-    keepalive $service_keepalive;
+map $host   $service_urlshortener {
+    default $URLSHORTENER_HOST;
 }
 
-upstream $service_projects_server {
-    server $PROJECTS_SERVER_HOST:$SERVICE_PORT;
-
-    keepalive $service_keepalive;
+map $host   $service_api {
+    default $API_HOST;
 }
 
-#upstream $service_socket {
-#    server $SOCKET_HOST:$SERVICE_PORT;
-    
-#    keepalive $service_keepalive;
-#}
-
-#upstream $service_studio_notify {
-#    server $STUDIO_NOTIFY_HOST:$SERVICE_PORT;
-
-#    keepalive $service_keepalive;
-#}
-
-#upstream $service_telegram_service {
-#    server $TELEGRAM_SERVICE_HOST:$SERVICE_PORT;
-#    
-#    keepalive $service_keepalive;
-#}
-
-#upstream $service_thumbnails {
-#    server $THUMBNAILS_HOST:$SERVICE_PORT;
-#    
-#    keepalive $service_keepalive;
-#}
-
-upstream $service_urlshortener {
-    server $URLSHORTENER_HOST:$SERVICE_PORT;
-
-    keepalive $service_keepalive;
+map $host   $service_studio {
+    default $STUDIO_HOST;
 }
 
-upstream $service_api {
-    server $API_HOST:$SERVICE_PORT;
-
-    keepalive $service_keepalive;
+map $host   $service_ssoauth {
+    default $SSOAUTH_HOST;
 }
 
-upstream $service_studio {
-    server $STUDIO_HOST:$SERVICE_PORT;
-
-    keepalive $service_keepalive;
+map $host   $document_server {
+    default $DOCUMENT_SERVER;
 }
-
-#upstream $service_ssoauth {
-#    server $SSOAUTH_HOST:9834;
-
-#    keepalive $service_keepalive;
-#}
