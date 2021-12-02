@@ -1,8 +1,8 @@
 {
-  "Account": "Account",
-  "ConnectFolderTitle": "Folder title",
-  "ConnectionUrl": "Connection url",
-  "ConnectMakeShared": "Share and put into 'Common' folder",
+  "Account": "Akkaunt",
+  "ConnectFolderTitle": "Qovluq başlığı",
+  "ConnectionUrl": "Qoşulma üçün URL",
+  "ConnectMakeShared": "Paylaş və 'Ümumi' qovluğa yerləşdir",
   "Login": "Login",
-  "Reconnect": "Reconnect"
+  "Reconnect": "Yenidən qoşul"
 }

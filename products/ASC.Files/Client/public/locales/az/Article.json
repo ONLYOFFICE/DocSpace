@@ -1,13 +1,8 @@
 {
-  "NewDocument": "New Document",
-  "NewFolder": "New Folder",
-  "NewPresentation": "New Presentation",
-  "NewSpreadsheet": "New Spreadsheet",
-  "UploadFiles": "Upload files",
-  "UploadFolder": "Upload folder",
-  "NewForm": "Master form",
-  "NewFormFile": "Master form from file",
-  "CreateMasterFormFromFile": "Create Master Form from file",
-  "SubNewForm": "From blank",
-  "SubNewFormFile": "From an existing text file"
+  "NewDocument": "Yeni Sənəd",
+  "NewFolder": "Yeni Qovluq",
+  "NewPresentation": "Yeni Təqdimat",
+  "NewSpreadsheet": "Yeni Cədvəl",
+  "UploadFiles": "Faylları yüklə",
+  "UploadFolder": "Qolvuğu yüklə"
 }

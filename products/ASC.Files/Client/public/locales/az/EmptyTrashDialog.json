@@ -1,6 +1,6 @@
 {
-  "DeleteForeverButton": "Delete forever",
-  "DeleteForeverNote": "All items from Trash will be deleted forever. You won’t be able to restore them.",
-  "DeleteForeverTitle": "Delete forever?",
-  "SuccessEmptyTrash": "Trash emptied"
+  "DeleteForeverButton": "Həmişəlik sil",
+  "DeleteForeverNote": "Zibil qutusundan elementlər həmişəlik silinəcək. Siz onları bərpa edə bilməyəcəksiniz.",
+  "DeleteForeverTitle": "Həmişəlik silinsin?",
+  "SuccessEmptyTrash": "Zibil qutusu təmizləndi"
 }
