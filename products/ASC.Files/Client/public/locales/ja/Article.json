@@ -5,9 +5,9 @@
     "NewSpreadsheet": "新しいスプレッドシート",
     "UploadFiles": "ファイルのアップロード",
     "UploadFolder": "フォルダのアップロード",
-    "NewForm": "Master form",
-    "NewFormFile": "Master form from file",
-    "CreateMasterFormFromFile": "Create Master Form from file",
+    "NewForm": "フォーム テンプレート",
+    "NewFormFile": "ファイルからのフォームテンプレート",
+    "CreateMasterFormFromFile": "ファイルからフォームテンプレートを作成する",
     "SubNewForm": "From blank",
     "SubNewFormFile": "From an existing text file"
 }
