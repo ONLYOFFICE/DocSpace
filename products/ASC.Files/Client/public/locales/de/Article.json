@@ -5,9 +5,9 @@
     "NewSpreadsheet": "Neue Tabellenkalkulation",
     "UploadFiles": "Dateien hochladen",
     "UploadFolder": "Ordner hochladen",
-    "NewForm": "Master-Formular",
-    "NewFormFile": "Master-Formular aus Datei",
-    "CreateMasterFormFromFile": "Master-Formular aus Datei erstellen",
+    "NewForm": "Formularvorlage",
+    "NewFormFile": "Formularvorlage aus Datei",
+    "CreateMasterFormFromFile": "Formularvorlage aus Datei erstellen",
     "SubNewForm": "Leere Form",
     "SubNewFormFile": "Form aus Textdatei"
 }

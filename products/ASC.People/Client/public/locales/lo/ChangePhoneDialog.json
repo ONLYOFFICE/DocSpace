@@ -1,4 +1,5 @@
 {
-  "MobilePhoneChangeTitle": "ປ່ຽນໂທລະສັບມືຖື",
-  "MobilePhoneEraseDescription": "ຄຳແນະນຳກ່ຽວກັບວິທີປ່ຽນເລກໂທລະສັບມືຖືຂອງຜູ້ໃຊ້ຈະຖືກສົ່ງໄປທີ່ອີເມວຂອງຜູ້ໃຊ້"
+    "ChangePhoneInstructionSent": "The phone change instructions have been successfully sent",
+    "MobilePhoneChangeTitle": "ປ່ຽນໂທລະສັບມືຖື",
+    "MobilePhoneEraseDescription": "ຄຳແນະນຳກ່ຽວກັບວິທີປ່ຽນເລກໂທລະສັບມືຖືຂອງຜູ້ໃຊ້ຈະຖືກສົ່ງໄປທີ່ອີເມວຂອງຜູ້ໃຊ້"
 }

@@ -5,9 +5,9 @@
     "NewSpreadsheet": "Nouvelle feuille de calcul",
     "UploadFiles": "Télécharger les fichiers",
     "UploadFolder": "Télécharger le dossier",
-    "NewForm": "Master form",
-    "NewFormFile": "Master form à partir d'un fichier",
-    "CreateMasterFormFromFile": "Créer Master Form à partir d'un fichier",
+    "NewForm": "Modèle de formulaire",
+    "NewFormFile": "Modèle de formulaire à partir d'un fichier",
+    "CreateMasterFormFromFile": "Créer un modèle de formulaire à partir d'un fichier",
     "SubNewForm": "À partir de zéro",
     "SubNewFormFile": "À partir d'un fichier texte existant"
 }

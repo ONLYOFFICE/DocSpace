@@ -5,9 +5,9 @@
     "NewSpreadsheet": "Foaie de calcul nouă",
     "UploadFiles": "Încarcă fișiere",
     "UploadFolder": "Încarcă dosarul",
-    "NewForm": "Master form",
-    "NewFormFile": "Coordonator de Forme din fișier",
-    "CreateMasterFormFromFile": "Crearea Coordonatorului de Forme din fișier",
+    "NewForm": "Șablon formă,",
+    "NewFormFile": "Șablon formă din fișier",
+    "CreateMasterFormFromFile": "Crearea unui șablon formă din fișier",
     "SubNewForm": "Din fișierul necompletat",
     "SubNewFormFile": "Din fișierul text existent"
 }

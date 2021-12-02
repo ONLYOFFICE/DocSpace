@@ -5,9 +5,9 @@
     "NewSpreadsheet": "新电子表格",
     "UploadFiles": "上传文件",
     "UploadFolder": "上传文件夹",
-    "NewForm": "Master form",
-    "NewFormFile": "Master form from file",
-    "CreateMasterFormFromFile": "Create Master Form from file",
-    "SubNewForm": "From blank",
-    "SubNewFormFile": "From an existing text file"
+    "NewForm": "表单模板",
+    "NewFormFile": "来自文件的表单模板",
+    "CreateMasterFormFromFile": "从文件创建表单模板",
+    "SubNewForm": "来自空白",
+    "SubNewFormFile": "从一个现有的文本文件中"
 }
