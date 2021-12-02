@@ -28,7 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
 using System.Runtime.Serialization;
 using System.Security.Cryptography;
 using System.ServiceModel;
@@ -218,15 +218,16 @@ namespace ASC.Core.Billing
         {
             var url = _billingDomain + method;
 
-            var request = WebRequest.Create(url);
-            request.Method = "POST";
-            request.Timeout = 60000;
-            request.ContentType = "application/json";
-
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(url);
+            request.Method = HttpMethod.Post;
             if (!string.IsNullOrEmpty(_billingKey))
             {
                 request.Headers.Add("Authorization", CreateAuthToken(_billingKey, _billingSecret));
             }
+
+            using var httpClient = new HttpClient();
+            httpClient.Timeout = TimeSpan.FromMilliseconds(60000);
 
             var data = new Dictionary<string, List<string>>();
             if (!string.IsNullOrEmpty(portalId))
@@ -244,35 +245,22 @@ namespace ASC.Core.Billing
                     data[parameter.Item1].Add(parameter.Item2);
                 }
             }
-            var body = JsonSerializer.Serialize(data);
 
-            var bytes = Encoding.UTF8.GetBytes(body ?? "");
-            request.ContentLength = bytes.Length;
-            using (var stream = request.GetRequestStream())
-            {
-                stream.Write(bytes, 0, bytes.Length);
-            }
+            var body = JsonSerializer.Serialize(data);
+            request.Content = new StringContent(body, Encoding.UTF8, "application/json");
 
             string result;
-            try
+            using (var response = httpClient.Send(request))
+            using (var stream = response.Content.ReadAsStream())
             {
-                using (var response = request.GetResponse())
-                using (var stream = response.GetResponseStream())
+                if (stream == null)
                 {
-                    if (stream == null)
-                    {
-                        throw new BillingNotConfiguredException("Billing response is null");
-                    }
-                    using (var readStream = new StreamReader(stream))
-                    {
-                        result = readStream.ReadToEnd();
-                    }
+                    throw new BillingNotConfiguredException("Billing response is null");
                 }
-            }
-            catch (WebException)
-            {
-                request.Abort();
-                throw;
+                using (var readStream = new StreamReader(stream))
+                {
+                    result = readStream.ReadToEnd();
+                }
             }
 
             if (string.IsNullOrEmpty(result))

@@ -25,8 +25,6 @@
 
 
 using System;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 
 using ASC.Common;
@@ -38,6 +36,9 @@ using ASC.Web.Core.Utility.Skins;
 using ASC.Web.CRM.Configuration;
 
 using Microsoft.Extensions.Options;
+
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats;
 
 namespace ASC.Web.CRM.Classes
 {
@@ -91,19 +92,19 @@ namespace ASC.Web.CRM.Classes
         {
             var data = imageData;
             using (var stream = new MemoryStream(data))
-            using (var img = new Bitmap(stream))
+            using (var img = Image.Load(stream, out var format))
             {
-                var imgFormat = img.RawFormat;
-                if (fotoSize != img.Size)
+                var imgFormat = format;
+                if (fotoSize != img.Size())
                 {
                     using (var img2 = CommonPhotoManager.DoThumbnail(img, fotoSize, false, false, false))
                     {
-                        data = CommonPhotoManager.SaveToBytes(img2, Global.GetImgFormatName(imgFormat));
+                        data = CommonPhotoManager.SaveToBytes(img2, imgFormat);
                     }
                 }
                 else
                 {
-                    data = Global.SaveToBytes(img);
+                    data = CommonPhotoManager.SaveToBytes(img, imgFormat);
                 }
 
                 using (var fileStream = new MemoryStream(data))
@@ -188,7 +189,7 @@ namespace ASC.Web.CRM.Classes
             }
         }
 
-        public String UploadLogo(byte[] imageData, ImageFormat imageFormat)
+        public String UploadLogo(byte[] imageData, IImageFormat imageFormat)
         {
             var photoPath = BuildFilePath("." + Global.GetImgFormatName(imageFormat));
 

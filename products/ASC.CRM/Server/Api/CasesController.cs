@@ -43,7 +43,6 @@ using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core.Users;
 using ASC.Web.CRM.Services.NotifyService;
-using ASC.Web.Files.Services.WCFService;
 
 using AutoMapper;
 
