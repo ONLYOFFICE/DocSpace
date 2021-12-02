@@ -5,9 +5,9 @@
     "NewSpreadsheet": "Nuovo foglio di calcolo elettronico",
     "UploadFiles": "Caricamento file",
     "UploadFolder": "Carica cartella",
-    "NewForm": "Master form",
-    "NewFormFile": "Master form dal file",
-    "CreateMasterFormFromFile": "Crea Master Form dal file",
+    "NewForm": "Modello di modulo",
+    "NewFormFile": "Modello di modulo da file",
+    "CreateMasterFormFromFile": "Creare modello di modulo da file",
     "SubNewForm": "Da un vuoto",
     "SubNewFormFile": "Da un file di testo esistente"
 }
