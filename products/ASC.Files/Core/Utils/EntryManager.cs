@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Security;
 using System.Text;
 using System.Threading;
@@ -1008,9 +1009,12 @@ namespace ASC.Web.Files.Utils
                     {
                         ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
                     }
+                    var request = new HttpRequestMessage();
+                    request.RequestUri = new Uri(downloadUri);
 
-                    var req = (HttpWebRequest)WebRequest.Create(downloadUri);
-                    using var editedFileStream = new ResponseStream(req.GetResponse());
+                    using var httpClient = new HttpClient();
+                    using var response = httpClient.Send(request);
+                    using var editedFileStream = new ResponseStream(response);
                     editedFileStream.CopyTo(tmpStream);
                 }
                 tmpStream.Position = 0;

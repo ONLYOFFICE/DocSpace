@@ -27,13 +27,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using ASC.Calendar.BusinessObjects;
+
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Web.Core.Calendars;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Calendar.iCalParser

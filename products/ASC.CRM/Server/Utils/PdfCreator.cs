@@ -27,7 +27,7 @@
 using System;
 using System.Globalization;
 using System.IO;
-using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Xml;
 
@@ -43,6 +43,8 @@ using ICSharpCode.SharpZipLib.Zip;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+
+using SixLabors.ImageSharp;
 
 namespace ASC.Web.CRM.Classes
 {
@@ -125,13 +127,13 @@ namespace ASC.Web.CRM.Classes
                 file.Title = string.Format("{0}{1}", invoice.Number, FormatPdf);
                 file.FolderID = _daoFactory.GetFileDao().GetRoot();
 
-                var request = WebRequest.Create(urlToFile);
+                var request = new HttpRequestMessage();
+                request.RequestUri = new Uri(urlToFile);
 
-                using (var response = request.GetResponse())
-                using (var stream = response.GetResponseStream())
+                using (var httpClient = new HttpClient())
+                using (var response = httpClient.Send(request))
+                using (var stream = response.Content.ReadAsStream())
                 {
-                    file.ContentLength = response.ContentLength;
-
                     _logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. SaveFile", invoiceId);
                     file = _daoFactory.GetFileDao().SaveFile(file, stream);
                 }
@@ -244,27 +246,27 @@ namespace ASC.Web.CRM.Classes
         {
             File<int> file = null;
 
-            var request = (HttpWebRequest)WebRequest.Create(url);
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(url);
 
-            using (var response = request.GetResponse())
+            using var httpClient = new HttpClient();
+
+            using (var stream = httpClient.Send(request).Content.ReadAsStream())
             {
-                using (var stream = response.GetResponseStream())
+                if (stream != null)
                 {
-                    if (stream != null)
+                    var document = _serviceProvider.GetService<File<int>>();
+
+                    document.Title = string.Format("{0}{1}", data.Number, FormatPdf);
+                    document.FolderID = _daoFactory.GetFileDao().GetRoot();
+                    document.ContentLength = stream.Length;
+
+                    if (data.GetInvoiceFile(daoFactory) != null)
                     {
-                        var document = _serviceProvider.GetService<File<int>>();
-
-                        document.Title = string.Format("{0}{1}", data.Number, FormatPdf);
-                        document.FolderID = _daoFactory.GetFileDao().GetRoot();
-                        document.ContentLength = response.ContentLength;
-
-                        if (data.GetInvoiceFile(daoFactory) != null)
-                        {
-                            document.ID = data.FileID;
-                        }
-
-                        file = _daoFactory.GetFileDao().SaveFile(document, stream);
+                        document.ID = data.FileID;
                     }
+
+                    file = _daoFactory.GetFileDao().SaveFile(document, stream);
                 }
             }
 
@@ -389,8 +391,7 @@ namespace ASC.Web.CRM.Classes
                 }
                 else
                 {
-                    using (var stream = new MemoryStream(logo))
-                    using (var img = System.Drawing.Image.FromStream(stream))
+                    using (var img = Image.Load(logo))
                     {
                         var cx = img.Width * 9525; //1px =  9525emu
                         var cy = img.Height * 9525; //1px =  9525emu

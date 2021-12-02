@@ -176,7 +176,6 @@ const Form = (props) => {
     login,
     hashSettings,
     isDesktop,
-    defaultPage,
     match,
     organizationName,
     greetingTitle,
@@ -186,6 +185,35 @@ const Form = (props) => {
   } = props;
 
   const { error, confirmedEmail } = match.params;
+
+  const oAuthLogin = async (profile) => {
+    try {
+      await thirdPartyLogin(profile);
+
+      const redirectPath = localStorage.getItem("redirectPath");
+
+      if (redirectPath) {
+        localStorage.removeItem("redirectPath");
+        window.location.href = redirectPath;
+      }
+    }
+    catch(e) {
+      toastr.error(
+        t("Common:ProviderNotConnected"),
+        t("Common:ProviderLoginError")
+      );
+    }
+
+    localStorage.removeItem("profile");
+    localStorage.removeItem("code");
+  };
+
+  useEffect(() => {
+    const profile = localStorage.getItem("profile");
+    if (!profile) return;
+
+    oAuthLogin(profile);
+  }, []);
 
   const onKeyDown = (e) => {
     //console.log("onKeyDown", e.key);
@@ -206,22 +234,7 @@ const Form = (props) => {
   //const throttledKeyPress = throttle(onKeyPress, 500);
 
   const authCallback = (profile) => {
-    thirdPartyLogin(profile.Serialized)
-      .then(() => {
-        setIsLoading(true);
-        const redirectPath = localStorage.getItem("redirectPath");
-
-        if (redirectPath) {
-          localStorage.removeItem("redirectPath");
-          window.location.href = redirectPath;
-        } else history.push(defaultPage);
-      })
-      .catch(() => {
-        toastr.error(
-          t("Common:ProviderNotConnected"),
-          t("Common:ProviderLoginError")
-        );
-      });
+    oAuthLogin(profile);
   };
 
   const setProviders = async () => {
@@ -335,11 +348,13 @@ const Form = (props) => {
     const { getOAuthToken, getLoginLink } = props;
 
     try {
-      const tokenGetterWin = window.open(
-        url,
-        "login",
-        "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
-      );
+      const tokenGetterWin = isDesktop
+        ? (window.location.href = url)
+        : window.open(
+            url,
+            "login",
+            "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
+          );
 
       getOAuthToken(tokenGetterWin).then((code) => {
         const token = window.btoa(

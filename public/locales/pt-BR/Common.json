@@ -12,6 +12,7 @@
   "CloseButton": "Fechar",
   "ComingSoon": "Em breve",
   "CommunityProduct": "Comunidade",
+  "Confirmation": "Confirmação",
   "ContinueButton": "Continue",
   "CopyEmailAndPassword": "Copiar e-mail e senha",
   "CountPerPage": "{{count}} por página",
@@ -40,7 +41,7 @@
   "MeLabel": "Eu",
   "More": "Mais",
   "Next": "Próximo",
-  "NotFoundLanguage": "Não consegue encontrar seu idioma? Entre em contato conosco em <1>{{supportEmail}</1> para participar da tradução e receber recompensas.",
+  "NotFoundLanguage": "Não consegue encontrar seu idioma? Entre em contato conosco em <1>{{supportEmail}}</1> para participar da tradução e receber recompensas.",
   "OKButton": "OK",
   "OpenApp": "Abra seu {{title}} app",
   "PageOfTotalPage": "{{page}} de {{totalPage}}",
@@ -75,5 +76,6 @@
   "ViewWeb": "Veja a versão web",
   "Warning": "Aviso",
   "Name": "Nome",
-  "Phone": "Telefone"
+  "Phone": "Telefone",
+  "Owner": "Proprietário"
 }

@@ -25,28 +25,25 @@
 
 
 using System;
-using ASC.Api.Core;
-using ASC.Calendar.BusinessObjects;
+
 using ASC.Common;
-using ASC.Common.Logging;
 using ASC.Core;
-using ASC.Core.Billing;
 using ASC.Core.Notify;
-using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Notify;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
-using ASC.Web.Core.Calendars;
 using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
+
 using Microsoft.Extensions.DependencyInjection;
+
 using NotifyContext = ASC.Notify.Context;
 
 namespace ASC.Calendar.Notification
 {
- 
+
     [Scope]
     public class CalendarNotifyClient
     {

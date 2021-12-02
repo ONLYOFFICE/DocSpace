@@ -211,17 +211,19 @@ class TreeFolders extends React.Component {
       const provider = item.providerKey;
 
       const serviceFolder = !!item.providerKey;
-      let className = `tree-drag tree-id_${item.id}`;
 
       if (withoutProvider && provider) return;
 
-      if (dragging) className += " dragging";
+      let value = "";
+      if (dragging) value = `${item.id} dragging`;
+
       if ((item.folders && item.folders.length > 0) || serviceFolder) {
         return (
           <TreeNode
             id={item.id}
             key={item.id}
-            className={className}
+            className={`tree-drag ${item.folderClassName}`}
+            data-value={value}
             title={item.title}
             icon={this.getFolderIcon(item)}
             dragging={dragging}
@@ -251,7 +253,8 @@ class TreeFolders extends React.Component {
         <TreeNode
           id={item.id}
           key={item.id}
-          className={className}
+          className={`tree-drag ${item.folderClassName}`}
+          data-value={value}
           title={item.title}
           needTopMargin={item.rootFolderType === FolderType.TRASH}
           dragging={dragging}

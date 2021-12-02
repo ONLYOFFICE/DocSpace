@@ -183,20 +183,17 @@ namespace ASC.Web.Studio.Core.TFA
 
             var list = new List<BackupCode>();
 
-            using (var rngCrypto = new RNGCryptoServiceProvider())
+            for (var i = 0; i < count; i++)
             {
-                for (var i = 0; i < count; i++)
+                data = RandomNumberGenerator.GetBytes(length);
+
+                var result = new StringBuilder(length);
+                foreach (var b in data)
                 {
-                    rngCrypto.GetBytes(data);
-
-                    var result = new StringBuilder(length);
-                    foreach (var b in data)
-                    {
-                        result.Append(alphabet[b % (alphabet.Length)]);
-                    }
-
-                    list.Add(new BackupCode(InstanceCrypto, Signature, result.ToString()));
+                    result.Append(alphabet[b % (alphabet.Length)]);
                 }
+
+                list.Add(new BackupCode(InstanceCrypto, Signature, result.ToString()));
             }
             var settings = SettingsManager.LoadForCurrentUser<TfaAppUserSettings>();
             settings.CodesSetting = list;

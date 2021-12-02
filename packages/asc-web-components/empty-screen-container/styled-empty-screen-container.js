@@ -5,6 +5,7 @@ import NoUserSelect from "../utils/commonStyles";
 const EmptyContentBody = styled.div`
   margin: 0 auto;
   padding: 64px 0;
+  grid-template-columns: 150px 1fr;
 
   display: grid;
   grid-template-areas:

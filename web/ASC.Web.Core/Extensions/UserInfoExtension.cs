@@ -26,11 +26,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Text;
 
 using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
+
+using SixLabors.ImageSharp;
 
 namespace ASC.Core.Users
 {

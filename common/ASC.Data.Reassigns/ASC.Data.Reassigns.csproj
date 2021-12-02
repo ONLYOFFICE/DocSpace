@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -9,10 +9,6 @@
     <DebugSymbols>false</DebugSymbols>
     <NoWarn>1701;1702;NU1701;</NoWarn>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="UAParser" Version="3.1.44" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />

@@ -54,6 +54,7 @@ const TableHeaderCell = ({
             iconName="/static/images/sort.desc.react.svg"
             className="header-container-text-icon"
             size="small"
+            hoverColor="#657077"
             color={isActive ? globalColors.grayMain : globalColors.gray}
           />
         </div>

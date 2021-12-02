@@ -9,8 +9,8 @@ import { isMobile } from "react-device-detect";
 const StyledArticleBody = styled.div`
   ${(props) => props.displayBorder && `outline: 1px dotted;`}
   flex-grow: 1;
-  height: 100%;
 
+  ${(props) => (props.isDesktop ? "height:auto" : "height:100%")};
   .custom-scrollbar {
     width: calc(100% + 24px) !important;
   }
