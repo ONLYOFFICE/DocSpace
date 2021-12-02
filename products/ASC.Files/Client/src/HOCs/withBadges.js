@@ -56,6 +56,7 @@ export default function withBadges(WrappedComponent) {
         );
       }
     };
+
     onBadgeClick = () => {
       const {
         item,
@@ -141,6 +142,7 @@ export default function withBadges(WrappedComponent) {
         onFilesClick, // from withFileAction HOC
         isAdmin,
         isDesktopClient,
+        showShare,
       } = this.props;
       const { fileStatus, access } = item;
 
@@ -157,6 +159,7 @@ export default function withBadges(WrappedComponent) {
           item={item}
           isAdmin={isAdmin}
           showNew={showNew}
+          showShare={showShare}
           newItems={newItems}
           canWebEdit={canWebEdit}
           canConvert={canConvert}

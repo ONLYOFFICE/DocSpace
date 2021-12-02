@@ -6,6 +6,7 @@ import {
   StyledFileActionsConvertEditDocIcon,
   StyledFileActionsLockedIcon,
 } from "./Icons";
+import SharedButton from "@appserver/files/src/components/SharedButton";
 
 const Badges = ({
   t,
@@ -18,6 +19,7 @@ const Badges = ({
   canConvert,
   accessToEdit,
   showNew,
+  showShare,
   onFilesClick,
   onClickLock,
   onClickFavorite,
@@ -44,6 +46,21 @@ const Badges = ({
 
   return fileExst ? (
     <div className="badges additional-badges">
+      {version > 1 && (
+        <Badge
+          className="badge-version icons-group"
+          backgroundColor="#A3A9AE"
+          borderRadius="11px"
+          color="#FFFFFF"
+          fontSize="10px"
+          fontWeight={800}
+          label={`Ver.${versionGroup}`}
+          maxWidth="50px"
+          onClick={onShowVersionHistory}
+          padding="0 5px"
+          data-id={id}
+        />
+      )}
       {canConvert && !isTrashFolder && (
         <IconButton
           onClick={setConvertDialogVisible}
@@ -80,6 +97,14 @@ const Badges = ({
           size="small"
         />
       )}
+      {item.canShare && showShare ? (
+        <SharedButton
+          t={t}
+          id={item.id}
+          shared={item.shared}
+          isFolder={item.isFolder}
+        />
+      ) : null}
       {locked && accessToEdit && !isTrashFolder && (
         <StyledFileActionsLockedIcon
           className="badge lock-file icons-group"
@@ -97,21 +122,6 @@ const Badges = ({
           data-id={id}
           data-title={title}
           onClick={onClickFavorite}
-        />
-      )}
-      {version > 1 && (
-        <Badge
-          className="badge-version icons-group"
-          backgroundColor="#A3A9AE"
-          borderRadius="11px"
-          color="#FFFFFF"
-          fontSize="10px"
-          fontWeight={800}
-          label={`Ver.${versionGroup}`}
-          maxWidth="50px"
-          onClick={onShowVersionHistory}
-          padding="0 5px"
-          data-id={id}
         />
       )}
       {(showNew || isNewWithFav) && (

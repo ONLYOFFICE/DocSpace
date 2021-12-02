@@ -25,7 +25,7 @@ const SharedButton = ({
 
   return (
     <Text
-      className="share-button"
+      className="badge share-button"
       as="span"
       title={t("Share")}
       fontSize="12px"
@@ -41,7 +41,6 @@ const SharedButton = ({
         size={isSmallIcon ? 12 : 16}
         iconName={icon}
       />
-      {t("Share")}
     </Text>
   );
 };

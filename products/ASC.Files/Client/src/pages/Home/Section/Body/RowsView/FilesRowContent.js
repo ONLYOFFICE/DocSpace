@@ -9,7 +9,6 @@ import Text from "@appserver/components/text";
 import RowContent from "@appserver/components/row-content";
 
 import withContent from "../../../../../HOCs/withContent";
-import withBadges from "../../../../../HOCs/withBadges";
 
 const sideColor = "#A3A9AE";
 
@@ -19,30 +18,6 @@ const SimpleFilesRowContent = styled(RowContent)`
   }
   .badge-ext {
     margin-right: 8px;
-  }
-
-  .badge {
-    height: 14px;
-    width: 14px;
-    margin-right: 6px;
-  }
-  .lock-file {
-    cursor: ${(props) => (props.withAccess ? "pointer" : "default")};
-  }
-  .badges {
-    display: flex;
-    align-items: center;
-    height: 19px;
-  }
-
-  .favorite {
-    cursor: pointer;
-    margin-right: 6px;
-  }
-
-  .share-icon {
-    margin-top: -4px;
-    padding-right: 8px;
   }
 
   .row_update-text {
@@ -59,7 +34,6 @@ const FilesRowContent = ({
   updatedDate,
   fileOwner,
   linkStyles,
-  badgesComponent,
   isAdmin,
 }) => {
   const {
@@ -108,7 +82,6 @@ const FilesRowContent = ({
             </Text>
           )}
         </Link>
-        <div className="badges">{badgesComponent}</div>
         <Text
           containerMinWidth="120px"
           containerWidth="15%"
@@ -156,7 +129,5 @@ const FilesRowContent = ({
 };
 
 export default withRouter(
-  withTranslation(["Home", "Translations"])(
-    withContent(withBadges(FilesRowContent))
-  )
+  withTranslation(["Home", "Translations"])(withContent(FilesRowContent))
 );

@@ -8,7 +8,7 @@ import { withRouter } from "react-router-dom";
 
 import withFileActions from "../../../../../HOCs/withFileActions";
 import withContextOptions from "../../../../../HOCs/withContextOptions";
-import SharedButton from "../../../../../components/SharedButton";
+import withBadges from "../../../../../HOCs/withBadges";
 import ItemIcon from "../../../../../components/ItemIcon";
 
 const checkedStyle = css`
@@ -70,10 +70,6 @@ const StyledSimpleFilesRow = styled(Row)`
       }
   `}
 
-  .share-button-icon {
-    margin-right: 7px;
-  }
-
   .share-button:hover,
   .share-button-icon:hover {
     cursor: pointer;
@@ -95,6 +91,38 @@ const StyledSimpleFilesRow = styled(Row)`
     /* width: ${(props) => (props.isEdit ? "52px" : "24px")}; */
     margin-right: 7px;
   }
+
+  .badge {
+    height: 14px;
+    width: 14px;
+    margin-right: 25px;
+  }
+
+  .badge:last-child {
+    margin-right: 0px;
+  }
+
+  .badge-version {
+    margin-right: 25px;
+  }
+
+  .lock-file {
+    cursor: ${(props) => (props.withAccess ? "pointer" : "default")};
+  }
+
+  .badges {
+    display: flex;
+    align-items: center;
+    height: 19px;
+  }
+
+  .favorite {
+    cursor: pointer;
+  }
+
+  .expandButton {
+    margin-left: 7px;
+  }
 `;
 
 const SimpleFilesRow = (props) => {
@@ -110,6 +138,7 @@ const SimpleFilesRow = (props) => {
     className,
     isDragging,
     value,
+    badgesComponent,
     displayShareButton,
     isPrivacy,
     contextOptionsProps,
@@ -117,19 +146,8 @@ const SimpleFilesRow = (props) => {
     onFilesClick,
     onMouseClick,
     isEdit,
-    showShare,
     isActive,
   } = props;
-
-  const sharedButton =
-    item.canShare && showShare ? (
-      <SharedButton
-        t={t}
-        id={item.id}
-        shared={item.shared}
-        isFolder={item.isFolder}
-      />
-    ) : null;
 
   const element = (
     <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
@@ -151,7 +169,7 @@ const SimpleFilesRow = (props) => {
           isEdit={isEdit}
           element={element}
           sectionWidth={sectionWidth}
-          contentElement={sharedButton}
+          contentElement={badgesComponent}
           onSelect={onContentFileSelect}
           rowContextClick={fileContextClick}
           isPrivacy={isPrivacy}
@@ -176,5 +194,5 @@ const SimpleFilesRow = (props) => {
 };
 
 export default withTranslation(["Home", "Translations"])(
-  withFileActions(withRouter(withContextOptions(SimpleFilesRow)))
+  withFileActions(withRouter(withContextOptions(withBadges(SimpleFilesRow))))
 );
