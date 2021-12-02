@@ -85,8 +85,8 @@ class ProfileMenu extends React.Component {
       open,
       forwardedRef,
     } = this.props;
-    const right = isTablet ? "6px" : "12px";
-    const top = "66px";
+    const right = isTablet ? "4px" : "8px";
+    const top = "62px";
 
     return (
       <DropDown
