@@ -71,6 +71,7 @@ const Badges = ({
             isfill={true}
             color="#A3A9AE"
             hoverColor="#3B72A7"
+            title={t("Translations:ButtonEdit")}
           />
         )}
       {(isEditing || isEditingWithFav) && (
