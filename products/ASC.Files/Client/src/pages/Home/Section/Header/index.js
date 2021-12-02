@@ -186,7 +186,7 @@ class SectionHeaderContent extends React.Component {
   uploadToFolder = () => console.log("Upload To Folder click");
 
   getContextOptionsPlus = () => {
-    const { t } = this.props;
+    const { t, isPrivacyFolder } = this.props;
 
     return [
       {
@@ -211,6 +211,7 @@ class SectionHeaderContent extends React.Component {
       {
         label: t("Translations:NewFormFile"),
         onClick: this.createFormFromFile,
+        disabled: isPrivacyFolder,
       },
       {
         key: "new-folder",
@@ -540,7 +541,7 @@ export default inject(
       setSelectFileDialogVisible,
     } = dialogsStore;
 
-    const { isRecycleBinFolder } = treeFoldersStore;
+    const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
     const { deleteAction, downloadAction, getHeaderMenu } = filesActionsStore;
 
     return {
@@ -578,6 +579,7 @@ export default inject(
       isRecycleBinFolder,
       setEmptyTrashDialogVisible,
       isEmptyFilesList,
+      isPrivacyFolder,
     };
   }
 )(
