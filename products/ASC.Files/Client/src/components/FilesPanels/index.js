@@ -91,7 +91,7 @@ const Panels = (props) => {
         onClose={onClose}
         foldersType="exceptPrivacyTrashFolders"
         ByExtension
-        searchParam={"docx"}
+        searchParam={".docx"}
         headerName={t("Translations:CreateMasterFormFromFile")}
         titleFilesList={t("SelectFile:SelectDOCXFormat")}
         creationButtonPrimary

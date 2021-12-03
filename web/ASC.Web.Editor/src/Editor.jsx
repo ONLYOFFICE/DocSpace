@@ -695,7 +695,7 @@ const Editor = () => {
 
   const mailMergeActionProps = {
     isTablesOnly: true,
-    searchParam: "xlsx",
+    searchParam: ".xlsx",
   };
   const compareFilesActionProps = {
     isDocumentsOnly: true,
