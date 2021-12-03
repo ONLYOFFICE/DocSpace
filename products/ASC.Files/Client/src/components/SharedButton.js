@@ -19,17 +19,13 @@ const SharedButton = ({
     setSharingPanelVisible(true);
   };
 
-  const icon = isSmallIcon
-    ? "/static/images/catalog.share.small.react.svg"
-    : "/static/images/catalog.share.react.svg";
-
   return (
     <IconButton
       className="badge share-button-icon"
       color={color}
       hoverColor="#657077"
-      size={isSmallIcon ? 12 : 16}
-      iconName={icon}
+      size={isSmallIcon ? 10 : 14}
+      iconName={"/static/images/catalog.share.react.svg"}
       onClick={onClickShare}
     />
   );
