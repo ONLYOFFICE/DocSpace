@@ -180,13 +180,9 @@ class DialogsStore {
     const { createFile, fetchFiles, filter } = this.filesStore;
     const { id } = this.selectedFolderStore;
     let newTitle = fileInfo.title;
-    const templateId =
-      typeof fileInfo.id === "string"
-        ? encodeURIComponent(fileInfo.id)
-        : fileInfo.id;
     newTitle = newTitle.substring(0, newTitle.lastIndexOf("."));
 
-    createFile(id, `${newTitle}.docxf`, templateId)
+    createFile(id, `${newTitle}.docxf`, fileInfo.id)
       .then(() => fetchFiles(id, filter, true, true))
       .catch((err) => console.error(err));
   };
