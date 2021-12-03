@@ -148,9 +148,9 @@ class AuthStore {
     return [settingsModuleWrapper];
   };
 
-  login = async (user, hash) => {
+  login = async (user, hash, session = true) => {
     try {
-      const response = await api.user.login(user, hash);
+      const response = await api.user.login(user, hash, session);
 
       if (!response || (!response.token && !response.tfa))
         throw response.error.message;
