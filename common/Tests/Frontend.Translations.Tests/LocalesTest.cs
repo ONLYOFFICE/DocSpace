@@ -350,7 +350,7 @@ namespace Frontend.Translations.Tests
                 {
                     var lng = incompleteList[i];
 
-                    message += $"{i}. {lng.Issue}\r\n";
+                    message += $"\r\n\r\n{i}. {lng.Issue}\r\n";
 
                     var lngFilePaths = lng.Files.Select(f => f.FilePath).ToList();
 
