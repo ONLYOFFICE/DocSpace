@@ -771,7 +771,7 @@ namespace ASC.Web.Files.Services.WCFService
             }
         }
 
-        public File<T> UpdateFileStream(T fileId, Stream stream, bool encrypted, bool forcesave)
+        public File<T> UpdateFileStream(T fileId, Stream stream, string fileExtension, bool encrypted, bool forcesave)
         {
             try
             {
@@ -781,7 +781,7 @@ namespace ASC.Web.Files.Services.WCFService
                 }
 
                 var file = EntryManager.SaveEditing(fileId,
-                    null,
+                    fileExtension,
                     null,
                     stream,
                     null,

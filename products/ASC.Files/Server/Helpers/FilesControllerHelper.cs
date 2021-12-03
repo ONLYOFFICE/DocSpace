@@ -185,11 +185,11 @@ namespace ASC.Files.Helpers
             }
         }
 
-        public FileWrapper<T> UpdateFileStream(Stream file, T fileId, bool encrypted = false, bool forcesave = false)
+        public FileWrapper<T> UpdateFileStream(Stream file, T fileId, string fileExtension, bool encrypted = false, bool forcesave = false)
         {
             try
             {
-                var resultFile = FileStorageService.UpdateFileStream(fileId, file, encrypted, forcesave);
+                var resultFile = FileStorageService.UpdateFileStream(fileId, file, fileExtension, encrypted, forcesave);
                 return FileWrapperHelper.Get(resultFile);
             }
             catch (FileNotFoundException e)

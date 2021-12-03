@@ -558,13 +558,13 @@ namespace ASC.Api.Documents
         [Update("{fileId}/update")]
         public FileWrapper<string> UpdateFileStreamFromForm(string fileId, [FromForm] FileStreamModel model)
         {
-            return FilesControllerHelperString.UpdateFileStream(FilesControllerHelperInt.GetFileFromRequest(model).OpenReadStream(), fileId, model.Encrypted, model.Forcesave);
+            return FilesControllerHelperString.UpdateFileStream(FilesControllerHelperInt.GetFileFromRequest(model).OpenReadStream(), fileId, model.FileExtension, model.Encrypted, model.Forcesave);
         }
 
         [Update("{fileId:int}/update")]
         public FileWrapper<int> UpdateFileStreamFromForm(int fileId, [FromForm] FileStreamModel model)
         {
-            return FilesControllerHelperInt.UpdateFileStream(FilesControllerHelperInt.GetFileFromRequest(model).OpenReadStream(), fileId, model.Encrypted, model.Forcesave);
+            return FilesControllerHelperInt.UpdateFileStream(FilesControllerHelperInt.GetFileFromRequest(model).OpenReadStream(), fileId, model.FileExtension, model.Encrypted, model.Forcesave);
         }
 
 
