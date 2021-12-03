@@ -69,6 +69,7 @@ export default function withContent(WrappedContent) {
             isTextOverflow
             containerMinWidth="120px"
             containerWidth="15%"
+            directionY="both"
             title={temp[0].label}
             fontSize="12px"
             fontWeight={400}

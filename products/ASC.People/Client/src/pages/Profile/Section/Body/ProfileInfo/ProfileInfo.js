@@ -364,6 +364,7 @@ class ProfileInfo extends React.PureComponent {
               {cultureNames && selectedLanguage ? (
                 <>
                   <ComboBox
+                    directionY="both"
                     options={cultureNames}
                     selectedOption={selectedLanguage}
                     onSelect={this.onLanguageSelect}
