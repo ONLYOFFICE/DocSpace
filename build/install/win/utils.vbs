@@ -223,3 +223,52 @@ Function ElasticSearchInstallPlugin
     Set Shell = Nothing
     
 End Function
+
+Function TestSqlConnection
+    On Error Resume Next
+
+    Const HKLM = &H80000002 
+    Dim ErrorText
+    Dim Pos, keys, mysqlDriver
+    Dim registry
+    
+    TestSqlConnection = 0
+    Session.Property("SqlConnectionError") = ""
+
+    Set registry = GetObject("winmgmts:{impersonationLevel=impersonate}!\\.\root\default:StdRegProv")
+    registry.EnumKey HKLM, "SOFTWARE\ODBC\ODBCINST.INI", keys
+    If Not IsNull(keys) Then
+        For Each key In keys
+            If InStr(1, key, "MySQL ODBC", 1) <> 0 And InStr(1, key, "ANSI", 1) = 0 Then
+                mysqlDriver = key
+            End If
+        Next
+    End If
+
+    If mysqlDriver = "" Then
+        registry.EnumKey HKLM, "SOFTWARE\WOW6432Node\ODBC\ODBCINST.INI", keys
+        If Not IsNull(keys) Then
+            For Each key In keys
+                If InStr(1, key, "MySQL ODBC", 1) <> 0 And InStr(1, key, "ANSI", 1) = 0 Then
+                    mysqlDriver = key
+                End If
+            Next
+        End If
+    End If
+    
+    Session.Property("MYSQLODBCDRIVER") = mysqlDriver
+
+    Set ConnectionObject = CreateObject("ADODB.Connection")
+    ConnectionObject.Open "Driver={" & mysqlDriver & "};Server=" & Session.Property("SERVER_PROP") & ";Port=" & Session.Property("PORT_PROP") & ";Uid=" & Session.Property("USERNAME_PROP") & ";Pwd=" & Session.Property("PASSWORD_PROP")
+    
+    If Err.Number <> 0 Then
+        ErrorText = Err.Description
+        Pos = InStrRev( ErrorText, "]" )
+        If 0 < Pos Then
+            ErrorText = Right( ErrorText, Len( ErrorText ) - Pos )
+        End If
+        Session.Property("SqlConnectionError") = ErrorText
+    End If
+    
+    Set ConnectionObject = Nothing
+End Function
