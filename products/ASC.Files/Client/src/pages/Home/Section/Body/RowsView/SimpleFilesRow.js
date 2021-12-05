@@ -92,8 +92,8 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .badge {
-    height: 14px;
-    width: 14px;
+    width: 100%;
+    height: 100%;
     margin-right: 25px;
   }
 
@@ -103,6 +103,8 @@ const StyledSimpleFilesRow = styled(Row)`
 
   .badge-version {
     margin-right: 25px;
+    height: 16px;
+    width: 27px;
   }
 
   .lock-file {

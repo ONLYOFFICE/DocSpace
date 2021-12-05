@@ -4,7 +4,7 @@ import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
 import FavoriteIcon from "../../public/images/favorite.react.svg";
 import FileActionsConvertEditDocIcon from "../../public/images/file.actions.convert.edit.doc.react.svg";
-import FileActionsLockedIcon from "../../public/images/file.actions.locked.react.svg";
+//import FileActionsLockedIcon from "../../public/images/file.actions.locked.react.svg";
 
 export const EncryptedFileIcon = styled.div`
   background: url("images/security.svg") no-repeat 0 0 / 16px 16px transparent;
@@ -28,9 +28,9 @@ export const StyledFileActionsConvertEditDocIcon = styled(
   }
 `;
 
-export const StyledFileActionsLockedIcon = styled(FileActionsLockedIcon)`
+/*export const StyledFileActionsLockedIcon = styled(FileActionsLockedIcon)`
   ${commonIconsStyles}
   path {
     fill: #3b72a7;
   }
-`;
+`;*/

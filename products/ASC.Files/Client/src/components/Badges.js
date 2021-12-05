@@ -4,10 +4,15 @@ import IconButton from "@appserver/components/icon-button";
 import {
   StyledFavoriteIcon,
   StyledFileActionsConvertEditDocIcon,
-  StyledFileActionsLockedIcon,
 } from "./Icons";
 import SharedButton from "@appserver/files/src/components/SharedButton";
 
+import styled from "styled-components";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+
+export const StyledLockedIcon = styled(IconButton)`
+  ${commonIconsStyles}
+`;
 const Badges = ({
   t,
   newItems,
@@ -54,7 +59,7 @@ const Badges = ({
           color="#FFFFFF"
           fontSize="10px"
           fontWeight={800}
-          label={`Ver.${versionGroup}`}
+          label={`V.${versionGroup}`}
           maxWidth="50px"
           onClick={onShowVersionHistory}
           padding="0 5px"
@@ -105,13 +110,19 @@ const Badges = ({
           isFolder={item.isFolder}
         />
       ) : null}
-      {locked && accessToEdit && !isTrashFolder && (
-        <StyledFileActionsLockedIcon
+      {accessToEdit && !isTrashFolder && (
+        <StyledLockedIcon
+          iconName={
+            locked
+              ? "/static/images/file.actions.locked.react.svg"
+              : "/static/images/locked.react.svg"
+          }
           className="badge lock-file icons-group"
-          size="small"
+          size="medium"
           data-id={id}
-          data-locked={true}
+          data-locked={locked ? true : false}
           onClick={onClickLock}
+          hoverColor="#3B72A7"
         />
       )}
       {(isFavorite || isNewWithFav || isEditingWithFav) && !isTrashFolder && (
