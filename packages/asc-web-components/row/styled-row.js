@@ -29,7 +29,7 @@ const StyledRow = styled.div`
   align-content: center;
 
   .row-loader {
-    padding: 16px 12px 12px 0px;
+    padding: 15px 12px 12px 0px;
   }
 `;
 StyledRow.defaultProps = { theme: Base };

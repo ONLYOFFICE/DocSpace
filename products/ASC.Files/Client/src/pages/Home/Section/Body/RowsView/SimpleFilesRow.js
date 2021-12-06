@@ -10,20 +10,11 @@ import withFileActions from "../../../../../HOCs/withFileActions";
 import withContextOptions from "../../../../../HOCs/withContextOptions";
 import SharedButton from "../../../../../components/SharedButton";
 import ItemIcon from "../../../../../components/ItemIcon";
+import marginStyles from "./CommonStyles";
 
 const checkedStyle = css`
   background: #f3f4f4;
-  margin-left: -24px;
-  margin-right: -24px;
-  padding-left: 24px;
-  padding-right: 24px;
-
-  @media (max-width: 1024px) {
-    margin-left: -16px;
-    margin-right: -16px;
-    padding-left: 16px;
-    padding-right: 16px;
-  }
+  ${marginStyles}
 `;
 
 const draggingStyle = css`
@@ -31,17 +22,7 @@ const draggingStyle = css`
   &:hover {
     background: #efefb2;
   }
-  margin-left: -24px;
-  margin-right: -24px;
-  padding-left: 24px;
-  padding-right: 24px;
-
-  @media (max-width: 1024px) {
-    margin-left: -16px;
-    margin-right: -16px;
-    padding-left: 16px;
-    padding-right: 16px;
-  }
+  ${marginStyles}
 `;
 
 const StyledWrapper = styled.div`
@@ -144,7 +125,11 @@ const SimpleFilesRow = (props) => {
   );
 
   return (
-    <StyledWrapper>
+    <StyledWrapper
+      className={`row-wrapper ${
+        checkedProps || isActive ? "row-selected" : ""
+      }`}
+    >
       <DragAndDrop
         data-title={item.title}
         value={value}
@@ -172,6 +157,7 @@ const SimpleFilesRow = (props) => {
           isActive={isActive}
           inProgress={inProgress}
           isThirdPartyFolder={item.isThirdPartyFolder}
+          className="files-row"
         >
           <FilesRowContent
             item={item}
