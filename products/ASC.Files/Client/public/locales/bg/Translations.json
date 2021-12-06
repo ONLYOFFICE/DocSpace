@@ -41,4 +41,9 @@
     "TypeTitleSkyDrive": "OneDrive",
     "TypeTitleWebDav": "WebDAV",
     "TypeTitleYandex": "Yandex.Disk",
+    "NewForm": "Form template",
+    "NewFormFile": "Form from text file",
+    "CreateMasterFormFromFile": "Create Form Template from file",
+    "SubNewForm": "Blank",
+    "SubNewFormFile": "From text file"
 }

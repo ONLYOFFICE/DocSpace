@@ -1,5 +1,5 @@
 {
-  "ConflictResolveDescription": "{{File}} adlı fayl artıq {{folder}} qovluğunda mövcuddur. ",
+  "ConflictResolveDescription": "{{file}} adlı fayl artıq {{folder}} qovluğunda mövcuddur. ",
   "ConflictResolveDescriptionFiles": "{{filesCount}} sənəd sayı artıq '{{folder}}' qovluğunda mövcuddur.",
   "ConflictResolveSelectAction": "Xahiş edirik əməliyyatı seçin:",
   "ConflictResolveTitle": "Üzərinə yazmanın təsdiqlənməsi",
