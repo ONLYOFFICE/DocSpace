@@ -27,11 +27,18 @@ export default function withBadges(WrappedComponent) {
       return;
     };
 
-    onClickFavorite = () => {
+    onClickFavorite = (showFavorite) => {
       const { t, item, setFavoriteAction } = this.props;
 
-      setFavoriteAction("remove", item.id)
-        .then(() => toastr.success(t("RemovedFromFavorites")))
+      if (showFavorite) {
+        setFavoriteAction("remove", item.id)
+          .then(() => toastr.success(t("RemovedFromFavorites")))
+          .catch((err) => toastr.error(err));
+        return;
+      }
+
+      setFavoriteAction("mark", item.id)
+        .then(() => toastr.success(t("MarkedAsFavorite")))
         .catch((err) => toastr.error(err));
     };
 

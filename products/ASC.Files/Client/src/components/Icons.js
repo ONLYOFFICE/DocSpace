@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
-import FavoriteIcon from "../../public/images/favorite.react.svg";
+//import FavoriteIcon from "../../public/images/file.actions.favorite.react.svg";
 import FileActionsConvertEditDocIcon from "../../public/images/file.actions.convert.edit.doc.react.svg";
 //import FileActionsLockedIcon from "../../public/images/file.actions.locked.react.svg";
 
@@ -15,9 +15,9 @@ export const EncryptedFileIcon = styled.div`
   margin-left: ${(props) => (props.isEdit ? "40px" : "12px")};
 `;
 
-export const StyledFavoriteIcon = styled(FavoriteIcon)`
-  ${commonIconsStyles}
-`;
+// export const StyledFavoriteIcon = styled(FavoriteIcon)`
+//   ${commonIconsStyles}
+// `;
 
 export const StyledFileActionsConvertEditDocIcon = styled(
   FileActionsConvertEditDocIcon
