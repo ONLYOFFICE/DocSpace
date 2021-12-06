@@ -2,10 +2,10 @@
     "FileLocation": "Abrir localização",
     "FileName": "Nome do ficheiro",
     "FolderForSave": "Pasta para guardar",
-    "OpenSavedDocument": "Open saved document in new tab",
-    "SelectFilesType": "Select files of type: {{fileType}}",
+    "OpenSavedDocument": "Abrir o documento guardado numa nova aba",
+    "SelectFilesType": "Selecione ficheiros do tipo: {{fileType}}",
     "ImageFileType": "imagens",
     "DocumentsFileType": "ficheiros",
-    "MailMergeFileType": "Select the file in XLSX format",
-    "SelectFileTitle": "Select Data Source"
+    "MailMergeFileType": "Selecione o ficheiro no formato XLSX",
+    "SelectFileTitle": "Selecione a Fonte dos Dados"
 }
