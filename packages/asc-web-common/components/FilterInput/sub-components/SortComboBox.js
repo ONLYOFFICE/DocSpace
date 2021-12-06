@@ -155,6 +155,7 @@ class SortComboBox extends React.Component {
         ref={this.combobox}
         scaled={true}
         selectedOption={selectedOption}
+        scaledOptions={true}
         size="content"
       >
         <StyledIconButton sortDirection={!!sortDirection}>

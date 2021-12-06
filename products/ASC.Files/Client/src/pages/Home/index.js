@@ -117,7 +117,7 @@ class PureHome extends React.Component {
       .all(requests)
       .catch((err) => {
         Promise.resolve(FilesFilter.getDefault());
-        console.warn("Filter restored by default", err);
+        //console.warn("Filter restored by default", err);
       })
       .then((data) => {
         const filter = data[0];
