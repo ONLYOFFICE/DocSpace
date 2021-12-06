@@ -739,7 +739,7 @@ namespace ASC.Web.Files.Utils
                     break;
                 case FilterType.ByExtension:
                     var filterExt = (searchText ?? string.Empty).ToLower().Trim();
-                    where = f => !string.IsNullOrEmpty(filterExt) && f.FileEntryType == FileEntryType.File && FileUtility.GetFileExtension(f.Title).Contains(filterExt);
+                    where = f => !string.IsNullOrEmpty(filterExt) && f.FileEntryType == FileEntryType.File && FileUtility.GetFileExtension(f.Title).Equals(filterExt);
                     break;
             }
 
@@ -1008,13 +1008,7 @@ namespace ASC.Web.Files.Utils
             if (file.RootFolderType == FolderType.TRASH) throw new Exception(FilesCommonResource.ErrorMassage_ViewTrashItem);
 
             var currentExt = file.ConvertedExtension;
-            if (string.IsNullOrEmpty(newExtension))
-            {
-                if (currentExt != FileUtility.MasterFormExtension)
-                    newExtension = FileUtility.GetInternalExtension(file.Title);
-                else
-                    newExtension = currentExt;
-            }
+            if (string.IsNullOrEmpty(newExtension)) newExtension = FileUtility.GetFileExtension(file.Title);
 
             var replaceVersion = false;
             if (file.Forcesave != ForcesaveType.None)

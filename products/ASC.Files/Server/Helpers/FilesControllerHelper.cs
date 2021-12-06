@@ -185,11 +185,11 @@ namespace ASC.Files.Helpers
             }
         }
 
-        public FileWrapper<T> UpdateFileStream(Stream file, T fileId, bool encrypted = false, bool forcesave = false)
+        public FileWrapper<T> UpdateFileStream(Stream file, T fileId, string fileExtension, bool encrypted = false, bool forcesave = false)
         {
             try
             {
-                var resultFile = FileStorageService.UpdateFileStream(fileId, file, encrypted, forcesave);
+                var resultFile = FileStorageService.UpdateFileStream(fileId, file, fileExtension, encrypted, forcesave);
                 return FileWrapperHelper.Get(resultFile);
             }
             catch (FileNotFoundException e)
@@ -317,9 +317,23 @@ namespace ASC.Files.Helpers
             return FolderWrapperHelper.Get(folder);
         }
 
-        public FileWrapper<T> CreateFile(T folderId, string title, T templateId, bool enableExternalExt = false)
+        public FileWrapper<T> CreateFile(T folderId, string title, JsonElement templateId, bool enableExternalExt = false)
         {
-            var file = FileStorageService.CreateNewFile(new FileModel<T> { ParentId = folderId, Title = title, TemplateId = templateId }, enableExternalExt);
+            File<T> file;
+
+            if (templateId.ValueKind == JsonValueKind.Number)
+            {
+                file = FileStorageService.CreateNewFile(new FileModel<T, int> { ParentId = folderId, Title = title, TemplateId = templateId.GetInt32() }, enableExternalExt);
+            }
+            else if (templateId.ValueKind == JsonValueKind.String)
+            {
+                file = FileStorageService.CreateNewFile(new FileModel<T, string> { ParentId = folderId, Title = title, TemplateId = templateId.GetString() }, enableExternalExt);
+            }
+            else
+            {
+                file = FileStorageService.CreateNewFile(new FileModel<T, int> { ParentId = folderId, Title = title, TemplateId = 0 }, enableExternalExt);
+            }
+
             return FileWrapperHelper.Get(file);
         }
 
@@ -354,7 +368,8 @@ namespace ASC.Files.Helpers
 
             if (ext == destExt)
             {
-                return CreateFile(destFolderId, destTitle, fileId);
+                var newFile = FileStorageService.CreateNewFile(new FileModel<T, T> { ParentId = destFolderId, Title = destTitle, TemplateId = fileId }, false);
+                return FileWrapperHelper.Get(newFile);
             }
 
             using (var fileStream = FileConverter.Exec(file, destExt))
