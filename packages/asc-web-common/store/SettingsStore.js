@@ -4,6 +4,7 @@ import { ARTICLE_PINNED_KEY, LANGUAGE } from "../constants";
 import { combineUrl } from "../utils";
 import FirebaseHelper from "../utils/firebase";
 import { AppServerConfig } from "../constants";
+import { version } from "../package.json";
 const { proxyURL } = AppServerConfig;
 
 class SettingsStore {
@@ -85,6 +86,14 @@ class SettingsStore {
     measurementId: "",
   };
   version = "";
+  buildVersionInfo = {
+    appServer: version,
+    documentServer: "6.4.1",
+  };
+  debugInfo = false;
+
+  userFormValidation = /^[\p{L}\p{M}'\-]+$/gu;
+  folderFormValidation = new RegExp('[*+:"<>?|\\\\/]', "gim");
 
   constructor() {
     makeAutoObservable(this);
@@ -183,7 +192,7 @@ class SettingsStore {
   init = async () => {
     this.setIsLoading(true);
 
-    await this.getPortalSettings();
+    await Promise.all([this.getPortalSettings(), this.getBuildVersionInfo()]);
 
     this.setIsLoading(false);
     this.setIsLoaded(true);
@@ -329,6 +338,22 @@ class SettingsStore {
     window.firebaseHelper = new FirebaseHelper(this.firebase);
     return window.firebaseHelper;
   }
+
+  getBuildVersionInfo = async () => {
+    const versionInfo = await api.settings.getBuildVersion();
+    this.setBuildVersionInfo(versionInfo);
+  };
+
+  setBuildVersionInfo = (versionInfo) => {
+    this.buildVersionInfo = {
+      ...this.buildVersionInfo,
+      appServer: version,
+      ...versionInfo,
+    };
+
+    if (!this.buildVersionInfo.documentServer)
+      this.buildVersionInfo.documentServer = "6.4.1";
+  };
 }
 
 export default SettingsStore;

@@ -13,6 +13,7 @@ import MediaDownloadIcon from "../../../../../public/images/media.download.react
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import MediaScrollButton from "./scroll-button";
 import ControlBtn from "./control-btn";
+import equal from "fast-deep-equal/react";
 
 const StyledMediaZoomInIcon = styled(MediaZoomInIcon)`
   ${commonIconsStyles}
@@ -95,7 +96,7 @@ const StyledViewer = styled(Viewer)`
     @media (max-width: 600px) {
       position: initial;
     }
-    bottom: 10px;
+    bottom: 9px;
     .controlBtn {
       margin: 0;
     }
@@ -107,20 +108,32 @@ const StyledViewer = styled(Viewer)`
     right: 12px;
   }
   .iconContainer {
-    width: 20px;
+    width: 16px;
+    height: 16px;
     line-height: 20px;
-    margin: 4px auto;
+    margin: 3px auto;
 
     &.reset {
       width: 18px;
+    }
+
+    path,
+    rect {
+      fill: #fff;
     }
   }
 
   .btnContainer {
     display: block;
-    width: 18px;
-    margin: 4px 10px;
+    width: 16px;
+    height: 16px;
+    margin: 4px 12px;
     line-height: 19px;
+
+    path,
+    rect {
+      fill: #fff;
+    }
   }
   .scrollBtn {
     cursor: ${(props) => (props.inactive ? "default" : "pointer")};
@@ -216,6 +229,9 @@ class ImageViewer extends React.Component {
       document.getElementsByClassName("iconContainer reset")[0].click();
   }
 
+  shouldComponentUpdate(nextProps) {
+    return !equal(this.props, nextProps);
+  }
   render() {
     const {
       className,

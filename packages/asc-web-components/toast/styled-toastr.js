@@ -33,6 +33,7 @@ const StyledDiv = styled.div`
     align-self: center;
     font-size: ${(props) => props.theme.toastr.text.fontSize};
     color: ${(props) => props.theme.toastr.text.color};
+    word-break: break-word;
   }
 `;
 StyledDiv.defaultProps = { theme: Base };

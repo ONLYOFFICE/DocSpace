@@ -102,7 +102,7 @@ namespace ASC.FederatedLogin.LoginProviders
         }
 
 
-        public override LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params)
+        public override LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs = null)
         {
             try
             {
@@ -111,7 +111,7 @@ namespace ASC.FederatedLogin.LoginProviders
                                           {
                                                               { "revoke", "1" }
                                           }
-                                      : null);
+                                      : null, additionalStateArgs);
 
                 if (redirect)
                 {

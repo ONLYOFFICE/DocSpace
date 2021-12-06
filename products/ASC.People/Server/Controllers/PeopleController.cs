@@ -1,11 +1,9 @@
 ﻿
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
 using System.Net.Mail;
 using System.Security;
 using System.ServiceModel.Security;
@@ -47,6 +45,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats;
 
 using SecurityContext = ASC.Core.SecurityContext;
 
@@ -1046,7 +1047,7 @@ namespace ASC.Employee.Core.Controllers
                 }
 
             }
-            catch (UnknownImageFormatException)
+            catch (Web.Core.Users.UnknownImageFormatException)
             {
                 result.Success = false;
                 result.Message = PeopleResource.ErrorUnknownFileImageType;
@@ -1611,14 +1612,9 @@ namespace ASC.Employee.Core.Controllers
                 {
 
                     var url = VirtualPathUtility.ToAbsolute("~/login.ashx") + $"?auth={provider}";
-                    var mode = (settingsView || inviteView || (!MobileDetector.IsMobile() && !Request.DesktopApp())
-                                     ? ("&mode=popup&callback=" + clientCallback)
-                                     : ("&mode=Redirect&returnurl="
-                                    + HttpUtility.UrlEncode(new Uri(Request.GetUrlRewriter(),
-                                        "Auth.aspx"
-                                        + (Request.DesktopApp() ? "?desktop=true" : "")
-                                        ).ToString())
-                                 ));
+                    var mode = settingsView || inviteView || (!MobileDetector.IsMobile() && !Request.DesktopApp())
+                            ? $"&mode=popup&callback={clientCallback}"
+                            : "&mode=Redirect&desktop=true";
 
                     infos.Add(new AccountInfo
                     {
@@ -1866,9 +1862,12 @@ namespace ASC.Employee.Core.Controllers
         {
             using (var memstream = new MemoryStream())
             {
-                var req = WebRequest.Create(url);
-                using (var response = req.GetResponse())
-                using (var stream = response.GetResponseStream())
+                var request = new HttpRequestMessage();
+                request.RequestUri = new Uri(url);
+
+                using (var httpClient = new HttpClient())
+                using (var response = httpClient.Send(request))
+                using (var stream = response.Content.ReadAsStream())
                 {
                     var buffer = new byte[512];
                     int bytesRead;
@@ -2113,23 +2112,24 @@ namespace ASC.Employee.Core.Controllers
             {
                 files = new Uri(ApiContext.HttpContextAccessor.HttpContext.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Scheme | UriPartial.Authority) + "/" + files.TrimStart('/');
             }
-            var request = WebRequest.Create(files);
-            using var response = (HttpWebResponse)request.GetResponse();
-            using var inputStream = response.GetResponseStream();
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(files);
+
+            using var httpClient = new HttpClient();
+            using var response = httpClient.Send(request);
+            using var inputStream = response.Content.ReadAsStream();
             using var br = new BinaryReader(inputStream);
-            var imageByteArray = br.ReadBytes((int)response.ContentLength);
+            var imageByteArray = br.ReadBytes((int)inputStream.Length);
             UserPhotoManager.SaveOrUpdatePhoto(user.ID, imageByteArray);
         }
 
         private static void CheckImgFormat(byte[] data)
         {
-            ImageFormat imgFormat;
-
+            IImageFormat imgFormat;
             try
             {
-                using var stream = new MemoryStream(data);
-                using var img = new Bitmap(stream);
-                imgFormat = img.RawFormat;
+                using var img = Image.Load(data, out var format);
+                imgFormat = format;
             }
             catch (OutOfMemoryException)
             {
@@ -2137,12 +2137,12 @@ namespace ASC.Employee.Core.Controllers
             }
             catch (ArgumentException error)
             {
-                throw new UnknownImageFormatException(error);
+                throw new Web.Core.Users.UnknownImageFormatException(error);
             }
 
-            if (!imgFormat.Equals(ImageFormat.Png) && !imgFormat.Equals(ImageFormat.Jpeg))
+            if (imgFormat.Name != "PNG" && imgFormat.Name != "JPEG")
             {
-                throw new UnknownImageFormatException();
+                throw new Web.Core.Users.UnknownImageFormatException();
             }
         }
     }

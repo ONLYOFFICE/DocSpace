@@ -17,11 +17,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -39,6 +38,9 @@ using ASC.Web.Files.Services.DocumentService;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Png;
+
 namespace ASC.Files.ThumbnailBuilder
 {
     [Singletone]
@@ -48,11 +50,11 @@ namespace ASC.Files.ThumbnailBuilder
         private readonly ILog logger;
         private IServiceProvider ServiceProvider { get; }
 
-        public BuilderQueue(IServiceProvider serviceProvider, IOptionsMonitor<ILog> log, ThumbnailSettings thumbnailSettings)
+        public BuilderQueue(IServiceProvider serviceProvider, IOptionsMonitor<ILog> log, ASC.Common.Utils.ConfigurationExtension configurationExtension)
         {
             logger = log.Get("ASC.Files.ThumbnailBuilder");
             ServiceProvider = serviceProvider;
-            config = thumbnailSettings;
+            config = ThumbnailSettings.GetInstance(configurationExtension);
         }
 
         public void BuildThumbnails(IEnumerable<FileData<T>> filesWithoutThumbnails)
@@ -62,13 +64,14 @@ namespace ASC.Files.ThumbnailBuilder
                 Parallel.ForEach(
                     filesWithoutThumbnails,
                     new ParallelOptions { MaxDegreeOfParallelism = config.MaxDegreeOfParallelism },
-                    (fileData) => {
+                    (fileData) =>
+                    {
                         using var scope = ServiceProvider.CreateScope();
                         var commonLinkUtilitySettings = scope.ServiceProvider.GetService<CommonLinkUtilitySettings>();
                         commonLinkUtilitySettings.ServerUri = fileData.BaseUri;
 
                         var builder = scope.ServiceProvider.GetService<Builder<T>>();
-                        builder.BuildThumbnail(fileData); 
+                        builder.BuildThumbnail(fileData);
                     }
                 );
             }
@@ -93,7 +96,7 @@ namespace ASC.Files.ThumbnailBuilder
         private PathProvider PathProvider { get; }
 
         public Builder(
-            ThumbnailSettings config,
+            Common.Utils.ConfigurationExtension configurationExtension,
             TenantManager tenantManager,
             IDaoFactory daoFactory,
             DocumentServiceConnector documentServiceConnector,
@@ -102,7 +105,7 @@ namespace ASC.Files.ThumbnailBuilder
             PathProvider pathProvider,
             IOptionsMonitor<ILog> log)
         {
-            this.config = config;
+            this.config = ThumbnailSettings.GetInstance(configurationExtension);
             TenantManager = tenantManager;
             DaoFactory = daoFactory;
             DocumentServiceConnector = documentServiceConnector;
@@ -283,7 +286,8 @@ namespace ASC.Files.ThumbnailBuilder
         {
             logger.DebugFormat("SaveThumbnail: FileId: {0}. ThumbnailUrl {1}.", file.ID, thumbnailUrl);
 
-            var req = (HttpWebRequest)WebRequest.Create(thumbnailUrl);
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(thumbnailUrl);
 
             //HACK: http://ubuntuforums.org/showthread.php?t=1841740
             if (WorkContext.IsMono && ServicePointManager.ServerCertificateValidationCallback == null)
@@ -291,7 +295,9 @@ namespace ASC.Files.ThumbnailBuilder
                 ServicePointManager.ServerCertificateValidationCallback += (s, c, n, p) => true;
             }
 
-            using (var stream = new ResponseStream(req.GetResponse()))
+            using var httpClient = new HttpClient();
+            using var response = httpClient.Send(request);
+            using (var stream = new ResponseStream(response))
             {
                 Crop(fileDao, file, stream);
             }
@@ -319,20 +325,21 @@ namespace ASC.Files.ThumbnailBuilder
 
         private void Crop(IFileDao<T> fileDao, File<T> file, Stream stream)
         {
-            using (var sourceBitmap = new Bitmap(stream))
+            using (var sourceImg = Image.Load(stream))
             {
-                using (var targetBitmap = GetImageThumbnail(sourceBitmap))
+                using (var targetImg = GetImageThumbnail(sourceImg))
                 {
                     using (var targetStream = new MemoryStream())
                     {
-                        targetBitmap.Save(targetStream, System.Drawing.Imaging.ImageFormat.Png);
+                        targetImg.Save(targetStream, PngFormat.Instance);
                         fileDao.SaveThumbnail(file, targetStream);
                     }
                 }
             }
+            GC.Collect();
         }
 
-        private Image GetImageThumbnail(Bitmap sourceBitmap)
+        private Image GetImageThumbnail(Image sourceBitmap)
         {
             //bad for small or disproportionate images
             //return sourceBitmap.GetThumbnailImage(config.ThumbnaillWidth, config.ThumbnaillHeight, () => false, IntPtr.Zero);
@@ -362,7 +369,7 @@ namespace ASC.Files.ThumbnailBuilder
 
             var targetThumbnailSettings = new UserPhotoThumbnailSettings(point, size);
 
-            return UserPhotoThumbnailManager.GetBitmap(sourceBitmap, targetSize, targetThumbnailSettings, InterpolationMode.Bilinear);
+            return UserPhotoThumbnailManager.GetImage(sourceBitmap, targetSize, targetThumbnailSettings);
         }
     }
 }

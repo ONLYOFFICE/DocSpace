@@ -373,7 +373,7 @@ namespace ASC.FederatedLogin.Profile
 
         internal void FromTransport(string transportstring)
         {
-            var serialized = Encoding.UTF8.GetString(InstanceCrypto.Decrypt(WebEncoders.Base64UrlDecode(transportstring)));
+            var serialized = InstanceCrypto.Decrypt(WebEncoders.Base64UrlDecode(transportstring));
             FromSerializedString(serialized);
         }
 

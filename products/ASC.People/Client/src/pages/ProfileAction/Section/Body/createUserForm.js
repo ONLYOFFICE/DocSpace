@@ -118,6 +118,9 @@ class CreateUserForm extends React.Component {
 
     loadAvatar(0, data)
       .then((response) => {
+        if (!response.success && response.message) {
+          throw response.message;
+        }
         var img = new Image();
         img.onload = function () {
           if (fileData) {
@@ -242,8 +245,19 @@ class CreateUserForm extends React.Component {
   }
 
   onInputChange = (event) => {
+    const { userFormValidation } = this.props;
     var stateCopy = Object.assign({}, this.state);
-    stateCopy.profile[event.target.name] = event.target.value;
+    const value = event.target.value;
+    const title = event.target.name;
+
+    if (!value.match(userFormValidation)) {
+      stateCopy.errors[title] = true;
+    } else {
+      if (this.state.errors[title]) stateCopy.errors[title] = false;
+    }
+
+    stateCopy.profile[title] = value;
+
     this.setState(stateCopy);
     this.setIsEdit();
   };
@@ -262,8 +276,20 @@ class CreateUserForm extends React.Component {
     this.setIsEdit();
   };
 
+  scrollToErrorForm = () => {
+    const element = this.mainFieldsContainerRef.current;
+    const parent = element.closest(".scroll-body");
+    (parent || window).scrollTo(0, element.offsetTop);
+  };
+
   validate = () => {
     const { profile, errors: stateErrors } = this.state;
+
+    if (stateErrors.firstName || stateErrors.lastName) {
+      this.scrollToErrorForm();
+      return;
+    }
+
     const errors = {
       firstName: !profile.firstName.trim(),
       lastName: !profile.lastName.trim(),
@@ -274,9 +300,7 @@ class CreateUserForm extends React.Component {
       errors.firstName || errors.lastName || errors.email || errors.password;
 
     if (hasError) {
-      const element = this.mainFieldsContainerRef.current;
-      const parent = element.closest(".scroll-body");
-      (parent || window).scrollTo(0, element.offsetTop);
+      this.scrollToErrorForm();
     }
 
     this.setState({ errors: errors });
@@ -421,6 +445,8 @@ class CreateUserForm extends React.Component {
   onValidateEmailField = (value) =>
     this.setState({ errors: { ...this.state.errors, email: !value.isValid } });
 
+  onSaveClick = () => this.setState({ isLoading: true });
+
   render() {
     const { isLoading, errors, profile, selector, isMobile } = this.state;
     const {
@@ -430,11 +456,15 @@ class CreateUserForm extends React.Component {
       croppedAvatar,
       passwordSettings,
       language,
+      isTabletView,
     } = this.props;
     const { regDateCaption, userPostCaption, groupCaption } = customNames;
 
     const pattern = getUserContactsPattern();
     const contacts = getUserContacts(profile.contacts);
+
+    const notEmptyFirstName = Boolean(profile.firstName.trim());
+    const notEmptyLastName = Boolean(profile.lastName.trim());
 
     return (
       <>
@@ -455,7 +485,7 @@ class CreateUserForm extends React.Component {
               image={createdAvatar.image}
               visible={this.state.visibleAvatarEditor}
               onClose={this.onCloseAvatarEditor}
-              onSave={this.onSaveAvatar}
+              onSave={this.onSaveClick}
               onLoadFile={this.onLoadFileAvatar}
               headerLabel={t("AddPhoto")}
               selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
@@ -464,12 +494,19 @@ class CreateUserForm extends React.Component {
               maxSizeFileError={t("Translations:maxSizeFileError")}
               unknownError={t("Common:Error")}
               saveButtonLabel={t("Common:SaveButton")}
+              saveButtonLoading={this.state.isLoading}
             />
           </AvatarContainer>
-          <MainFieldsContainer ref={this.mainFieldsContainerRef}>
+          <MainFieldsContainer
+            ref={this.mainFieldsContainerRef}
+            {...(!isTabletView && { marginBottom: "32px" })}
+          >
             <TextField
               isRequired={true}
               hasError={errors.firstName}
+              {...(notEmptyFirstName && {
+                errorMessage: t("ErrorInvalidUserFirstName"),
+              })}
               labelText={`${t("FirstName")}:`}
               inputName="firstName"
               inputValue={profile.firstName}
@@ -481,6 +518,9 @@ class CreateUserForm extends React.Component {
             <TextField
               isRequired={true}
               hasError={errors.lastName}
+              {...(notEmptyLastName && {
+                errorMessage: t("ErrorInvalidUserLastName"),
+              })}
               labelText={`${t("Common:LastName")}:`}
               inputName="lastName"
               inputValue={profile.lastName}
@@ -608,7 +648,10 @@ class CreateUserForm extends React.Component {
             />
           </MainFieldsContainer>
         </MainContainer>
-        <InfoFieldContainer headerText={t("Translations:Comments")}>
+        <InfoFieldContainer
+          headerText={t("Translations:Comments")}
+          marginBottom={"42px"}
+        >
           <Textarea
             placeholder={t("WriteComment")}
             name="notes"
@@ -618,7 +661,10 @@ class CreateUserForm extends React.Component {
             tabIndex={9}
           />
         </InfoFieldContainer>
-        <InfoFieldContainer headerText={t("ContactInformation")}>
+        <InfoFieldContainer
+          headerText={t("ContactInformation")}
+          marginBottom={"42px"}
+        >
           <ContactsField
             pattern={pattern.contact}
             contacts={contacts.contact}
@@ -630,7 +676,10 @@ class CreateUserForm extends React.Component {
             onItemRemove={this.onContactsItemRemove}
           />
         </InfoFieldContainer>
-        <InfoFieldContainer headerText={t("Translations:SocialProfiles")}>
+        <InfoFieldContainer
+          headerText={t("Translations:SocialProfiles")}
+          {...(isTabletView && { marginBottom: "36px" })}
+        >
           <ContactsField
             pattern={pattern.social}
             contacts={contacts.social}
@@ -687,6 +736,8 @@ export default withRouter(
     setCroppedAvatar: peopleStore.avatarEditorStore.setCroppedAvatar,
     updateProfileInUsers: peopleStore.usersStore.updateProfileInUsers,
     updateCreatedAvatar: peopleStore.targetUserStore.updateCreatedAvatar,
+    userFormValidation: auth.settingsStore.userFormValidation,
+    isTabletView: auth.settingsStore.isTabletView,
   }))(
     observer(
       withTranslation(["ProfileAction", "Common", "Translations"])(

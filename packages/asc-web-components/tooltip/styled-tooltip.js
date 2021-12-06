@@ -13,7 +13,8 @@ const StyledTooltip = styled.div`
     opacity: ${(props) => props.theme.tooltip.opacity};
     padding: ${(props) => props.theme.tooltip.padding};
     pointer-events: ${(props) => props.theme.tooltip.pointerEvents};
-    max-width: ${(props) => props.theme.tooltip.maxWidth};
+    max-width: ${(props) =>
+      props.maxWidth ? props.maxWidth : props.theme.tooltip.maxWidth};
 
     &:before {
       border: ${(props) => props.theme.tooltip.before.border};

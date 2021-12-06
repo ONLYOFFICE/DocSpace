@@ -1,3 +1,4 @@
+
 /*
  *
  * (c) Copyright Ascensio System Limited 2010-2018
@@ -34,6 +35,7 @@ using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Core.Tenants;
 using ASC.CRM.Classes;
 using ASC.CRM.Core.EF;
@@ -71,6 +73,7 @@ namespace ASC.CRM.Core.Dao
 
 
         public SearchDao(DbContextManager<CrmDbContext> dbContextManager,
+             DbContextManager<TenantDbContext> dbContextManager1,
                       TenantManager tenantManager,
                       DaoFactory daoFactory,
                       SecurityContext securityContext,
@@ -86,6 +89,7 @@ namespace ASC.CRM.Core.Dao
                       IMapper mapper
                       ) :
            base(dbContextManager,
+               dbContextManager1,
                 tenantManager,
                 securityContext,
                 logger,

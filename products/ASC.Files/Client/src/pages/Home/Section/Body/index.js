@@ -28,6 +28,7 @@ const SectionBodyContent = (props) => {
     moveDragItems,
     viewAs,
     setSelection,
+    setBufferSelection,
     tooltipPageX,
     tooltipPageY,
   } = props;
@@ -64,9 +65,12 @@ const SectionBodyContent = (props) => {
     if (
       e.target.closest(".scroll-body") &&
       !e.target.closest(".files-item") &&
-      !e.target.closest(".not-selectable")
-    )
+      !e.target.closest(".not-selectable") &&
+      !e.target.closest(".table-container_group-menu")
+    ) {
       setSelection([]);
+      setBufferSelection(null);
+    }
   };
 
   const onMouseMove = (e) => {
@@ -124,18 +128,10 @@ const SectionBodyContent = (props) => {
     document.body.classList.remove("drag-cursor");
 
     const treeElem = e.target.closest(".tree-drag");
-    const treeClassList = treeElem && treeElem.classList;
-    const isDragging = treeElem && treeClassList.contains("dragging");
-
-    let index = null;
-    for (let i in treeClassList) {
-      if (treeClassList[i] === "dragging") {
-        index = i - 1;
-        break;
-      }
-    }
-
-    const treeValue = isDragging ? treeClassList[index].split("_")[1] : null;
+    const treeDataValue = treeElem?.dataset?.value;
+    const splitValue = treeDataValue && treeDataValue.split(" ");
+    const isDragging = splitValue && splitValue.includes("dragging");
+    const treeValue = isDragging ? splitValue[0] : null;
 
     const elem = e.target.closest(".droppable");
     const title = elem && elem.dataset.title;
@@ -223,6 +219,7 @@ export default inject(
       setSelection,
       tooltipPageX,
       tooltipPageY,
+      setBufferSelection,
     } = filesStore;
 
     return {
@@ -240,6 +237,7 @@ export default inject(
       moveDragItems: filesActionsStore.moveDragItems,
       viewAs,
       setSelection,
+      setBufferSelection,
       tooltipPageX,
       tooltipPageY,
     };

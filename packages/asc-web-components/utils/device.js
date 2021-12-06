@@ -34,3 +34,7 @@ export const isTouchDevice = !!(
   typeof navigator !== "undefined" &&
   ("ontouchstart" in window || navigator.msMaxTouchPoints > 0)
 );
+
+export const getModalType = () => {
+  return window.innerWidth < size.desktop ? "aside" : "modal";
+};

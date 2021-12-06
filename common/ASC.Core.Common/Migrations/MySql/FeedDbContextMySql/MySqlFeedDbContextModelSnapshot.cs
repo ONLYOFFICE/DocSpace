@@ -15,7 +15,7 @@ namespace ASC.Core.Common.Migrations.MySql.FeedDbContextMySql
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.3");
+                .HasAnnotation("ProductVersion", "5.0.10");
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.FeedAggregate", b =>
                 {
@@ -23,7 +23,7 @@ namespace ASC.Core.Common.Migrations.MySql.FeedDbContextMySql
                         .HasColumnType("varchar(88)")
                         .HasColumnName("id")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("AggregateDate")
                         .HasColumnType("datetime")
@@ -34,7 +34,7 @@ namespace ASC.Core.Common.Migrations.MySql.FeedDbContextMySql
                         .HasColumnType("char(38)")
                         .HasColumnName("author")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime")
@@ -44,27 +44,27 @@ namespace ASC.Core.Common.Migrations.MySql.FeedDbContextMySql
                         .HasColumnType("varchar(70)")
                         .HasColumnName("group_id")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Json")
                         .IsRequired()
                         .HasColumnType("mediumtext")
                         .HasColumnName("json")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Keywords")
                         .HasColumnType("text")
                         .HasColumnName("keywords")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("ModifiedBy")
                         .IsRequired()
                         .HasColumnType("char(38)")
                         .HasColumnName("modified_by")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime")
@@ -75,14 +75,14 @@ namespace ASC.Core.Common.Migrations.MySql.FeedDbContextMySql
                         .HasColumnType("varchar(50)")
                         .HasColumnName("module")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Product")
                         .IsRequired()
                         .HasColumnType("varchar(50)")
                         .HasColumnName("product")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("Tenant")
                         .HasColumnType("int")
@@ -108,7 +108,7 @@ namespace ASC.Core.Common.Migrations.MySql.FeedDbContextMySql
                         .HasColumnType("varchar(128)")
                         .HasColumnName("last_key")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("LastDate")
                         .HasColumnType("datetime")
@@ -130,13 +130,13 @@ namespace ASC.Core.Common.Migrations.MySql.FeedDbContextMySql
                         .HasColumnType("varchar(38)")
                         .HasColumnName("user_id")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Module")
                         .HasColumnType("varchar(50)")
                         .HasColumnName("module")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("datetime")
@@ -154,13 +154,13 @@ namespace ASC.Core.Common.Migrations.MySql.FeedDbContextMySql
                         .HasColumnType("varchar(88)")
                         .HasColumnName("feed_id")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("UserId")
                         .HasColumnType("char(38)")
                         .HasColumnName("user_id")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("FeedId", "UserId")
                         .HasName("PRIMARY");

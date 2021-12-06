@@ -51,6 +51,11 @@ namespace AppLimit.CloudComputing.SharpBox.Common.Net.Web.Dav
             // set the content type
             request.ContentType = "application/octet-stream";
 
+            // bug 53196
+            request.ServicePoint.Expect100Continue = true;
+#if NET6_0_OR_GREATER
+            request.Headers.Add("Expect", "100-continue");
+#endif
             // go ahead
             return request;
         }
@@ -87,9 +92,9 @@ namespace AppLimit.CloudComputing.SharpBox.Common.Net.Web.Dav
             return (HttpStatusCode)code;
         }
 
-        #endregion
+#endregion
 
-        #region Overrides
+#region Overrides
 
         public override WebRequest CreateWebRequest(string url, string method, ICredentials credentials, bool bAllowStreamBuffering, object context)
         {
@@ -154,6 +159,6 @@ namespace AppLimit.CloudComputing.SharpBox.Common.Net.Web.Dav
             }
         }
 
-        #endregion
+#endregion
     }
 }

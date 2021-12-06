@@ -26,14 +26,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
 namespace ASC.Calendar.Models
 {
-    
+
     [DataContract(Name = "permissions", Namespace = "")]
     public class Permissions
     {

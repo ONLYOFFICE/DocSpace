@@ -1,12 +1,8 @@
-﻿using ASC.Api.Core;
-using ASC.Common;
+﻿using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
-using ASC.Web.Studio.Utility;
+
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ASC.Calendar.Core
 {

@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Web;
 
 using ASC.Common;
@@ -265,8 +266,12 @@ namespace ASC.Web.Files.Services.DocumentService
 
                 try
                 {
-                    var request = (HttpWebRequest)WebRequest.Create(convertedFileUri);
-                    using var response = (HttpWebResponse)request.GetResponse();
+                    var request1 = new HttpRequestMessage();
+                    request1.RequestUri = new Uri(convertedFileUri);
+
+                    using var httpClient = new HttpClient();
+                    using var response = httpClient.Send(request1);
+
                     if (response.StatusCode != HttpStatusCode.OK)
                     {
                         throw new Exception("Converted url is not available");

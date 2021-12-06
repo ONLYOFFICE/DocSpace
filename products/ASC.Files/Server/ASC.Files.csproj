@@ -1,19 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <ProductVersion>9.0.30729</ProductVersion>
-    <ProjectGuid>{77BA2F61-6155-4283-BB39-F8E42F46A0B0}</ProjectGuid>
-    <TargetFramework>net5.0</TargetFramework>
-    <FileUpgradeFlags />
-    <UpgradeBackupLocation />
-    <AssemblyTitle>ASC.Files</AssemblyTitle>
-    <Company>Ascensio System SIA</Company>
-    <Product>ASC.Files</Product>
-    <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
+	  <TargetFramework>net6.0</TargetFramework>
+	  <IsPackable>false</IsPackable>
+	  <DefaultItemExcludes>$(DefaultItemExcludes);</DefaultItemExcludes>
+	  <RazorCompileOnBuild>false</RazorCompileOnBuild>
+	  <GenerateMvcApplicationPartsAssemblyAttributes>false</GenerateMvcApplicationPartsAssemblyAttributes>
+	  <AssemblyTitle>ASC.Files</AssemblyTitle>
+	  <Company>Ascensio System SIA</Company>
+	  <Product>ASC.Files</Product>
+	  <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <EnableNETAnalyzers>false</EnableNETAnalyzers>
-    <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
-    <RazorCompileOnBuild>false</RazorCompileOnBuild>
-    <GenerateMvcApplicationPartsAssemblyAttributes>false</GenerateMvcApplicationPartsAssemblyAttributes>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -23,9 +19,8 @@
     <Optimize>true</Optimize>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="5.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\common\ASC.Api.Core\ASC.Api.Core.csproj" />

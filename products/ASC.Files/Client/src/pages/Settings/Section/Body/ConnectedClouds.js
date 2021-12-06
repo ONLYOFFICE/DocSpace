@@ -287,7 +287,7 @@ class ConnectClouds extends React.Component {
                 />
                 <Box className="flex-wrapper_container">
                   <Link onClick={this.onShowThirdPartyDialog} {...linkStyles}>
-                    {t("Translations:AddAccount")},
+                    {t("Translations:AddAccount")}
                   </Link>
                 </Box>
               </div>

@@ -66,7 +66,7 @@ const bannerHOC = (WrappedComponent) => (props) => {
       i18nConfig.use(Backend).init({
         lng: localStorage.getItem(LANGUAGE) || "en",
         fallbackLng: "en",
-        load: "all",
+        load: "currentOnly",
         debug: false,
         defaultNS: "",
 

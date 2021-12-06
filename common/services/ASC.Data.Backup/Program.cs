@@ -72,6 +72,7 @@ namespace ASC.Data.Backup
                         .AddJsonFile("kafka.json")
                         .AddJsonFile($"kafka.{env}.json", true)
                         .AddEnvironmentVariables()
+                        .AddCommandLine(args)
                         .AddInMemoryCollection(new Dictionary<string, string>
                             {
                                 {"pathToConf", path }

@@ -10,6 +10,7 @@ const SharedButton = ({
   shared,
   onSelectItem,
   setSharingPanelVisible,
+  isSmallIcon = false,
 }) => {
   const color = shared ? "#657077" : "#a3a9ae";
 
@@ -17,6 +18,10 @@ const SharedButton = ({
     onSelectItem({ id, isFolder });
     setSharingPanelVisible(true);
   };
+
+  const icon = isSmallIcon
+    ? "/static/images/catalog.share.small.react.svg"
+    : "/static/images/catalog.share.react.svg";
 
   return (
     <Text
@@ -33,8 +38,8 @@ const SharedButton = ({
         className="share-button-icon"
         color={color}
         hoverColor="#657077"
-        size={18}
-        iconName="/static/images/catalog.shared.react.svg"
+        size={isSmallIcon ? 12 : 16}
+        iconName={icon}
       />
       {t("Share")}
     </Text>

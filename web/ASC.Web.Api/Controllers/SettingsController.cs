@@ -30,9 +30,11 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.Mail;
 using System.Security;
 using System.ServiceModel.Security;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Web;
 
@@ -82,6 +84,8 @@ using ASC.Web.Studio.UserControls.FirstTime;
 using ASC.Web.Studio.UserControls.Management;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
+using ASC.Webhooks.Core;
+using ASC.Webhooks.Core.Dao.Models;
 
 using Google.Authenticator;
 
@@ -166,6 +170,7 @@ namespace ASC.Api.Settings
         private ILog Log { get; set; }
         private TelegramHelper TelegramHelper { get; }
         private PaymentManager PaymentManager { get; }
+        private DbWorker WebhookDbWorker { get; }
         public Constants Constants { get; }
 
         public SettingsController(
@@ -228,6 +233,7 @@ namespace ASC.Api.Settings
             EncryptionWorker encryptionWorker,
             PasswordHasher passwordHasher,
             PaymentManager paymentManager,
+            DbWorker dbWorker,
             Constants constants)
         {
             Log = option.Get("ASC.Api");
@@ -289,6 +295,7 @@ namespace ASC.Api.Settings
             UrlShortener = urlShortener;
             TelegramHelper = telegramHelper;
             PaymentManager = paymentManager;
+            WebhookDbWorker = dbWorker;
             Constants = constants;
         }
 
@@ -325,6 +332,12 @@ namespace ASC.Api.Settings
                     AppId = Configuration["firebase:appId"] ?? "",
                     MeasurementId = Configuration["firebase:measurementId"] ?? ""
                 };
+
+                bool debugInfo;
+                if (bool.TryParse(Configuration["debug-info:enabled"], out debugInfo))
+                {
+                    settings.DebugInfo = debugInfo;
+                }
             }
             else
             {
@@ -1353,14 +1366,20 @@ namespace ASC.Api.Settings
             {
                 try
                 {
-                    using var client = new WebClient();
+                    var request = new HttpRequestMessage();
+                    request.RequestUri = new Uri(string.Format("{0}/tips/deletereaded", SetupInfo.TipsAddress));
+
                     var data = new NameValueCollection
                     {
                         ["userId"] = AuthContext.CurrentAccount.ID.ToString(),
                         ["tenantId"] = Tenant.TenantId.ToString(CultureInfo.InvariantCulture)
                     };
+                    var body = JsonSerializer.Serialize(data);//todo check
+                    request.Content = new StringContent(body);
 
-                    client.UploadValues(string.Format("{0}/tips/deletereaded", SetupInfo.TipsAddress), data);
+                    using var httpClient = new HttpClient();
+                    using var response = httpClient.Send(request);
+
                 }
                 catch (Exception e)
                 {
@@ -2931,6 +2950,49 @@ namespace ASC.Api.Settings
         {
             TelegramHelper.Disconnect(AuthContext.CurrentAccount.ID, Tenant.TenantId);
         }
+
+        /// <summary>
+        /// Add new config for webhooks
+        /// </summary>
+        [Create("webhook")]
+        public void CreateWebhook(WebhooksConfig model)
+        {
+            if (model.Uri == null) throw new ArgumentNullException("Uri");
+            if (model.SecretKey == null) throw new ArgumentNullException("SecretKey");
+            WebhookDbWorker.AddWebhookConfig(model);
+        }
+
+        /// <summary>
+        /// Update config for webhooks
+        /// </summary>
+        [Update("webhook")]
+        public void UpdateWebhook(WebhooksConfig model)
+        {
+            if (model.Uri == null) throw new ArgumentNullException("Uri");
+            if (model.SecretKey == null) throw new ArgumentNullException("SecretKey");
+            WebhookDbWorker.UpdateWebhookConfig(model);
+        }
+
+        /// <summary>
+        /// Remove config for webhooks
+        /// </summary>
+        [Delete("webhook")]
+        public void RemoveWebhook(WebhooksConfig model)
+        {
+            if (model.Uri == null) throw new ArgumentNullException("Uri");
+            if (model.SecretKey == null) throw new ArgumentNullException("SecretKey");
+            WebhookDbWorker.RemoveWebhookConfig(model);
+        }
+
+        /// <summary>
+        /// Read Webhooks history for actual tenant
+        /// </summary>
+        [Read("webhooks")]
+        public List<WebhooksLog> TenantWebhooks()
+        {
+            return WebhookDbWorker.GetTenantWebhooks();
+        }
+
 
         private readonly int maxCount = 10;
         private readonly int expirationMinutes = 2;
