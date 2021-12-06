@@ -1,5 +1,3 @@
-resolver $DNS_NAMESERVER valid=30s;
-
 upstream $API_SYSTEM_HOST {
     server      $API_SYSTEM_HOST:$SERVICE_PORT;
     keepalive   $service_keepalive;
