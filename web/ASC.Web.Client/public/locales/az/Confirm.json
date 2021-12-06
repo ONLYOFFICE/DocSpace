@@ -1,6 +1,6 @@
 ﻿{
     "ChangePasswordSuccess": "Şifrə uğurla dəyişdirildi",
-    "ConfirmOwnerPortalSuccessMessage": "Portal owner has been successfully changed. In 10 seconds you will be redirected",
+    "ConfirmOwnerPortalSuccessMessage": "Portal sahibi uğurla dəyişdirildi. 10 saniyə ərzində yönləndiriləcəksiniz",
     "ConfirmOwnerPortalTitle": "Lütfən portal sahibini {{newOwner}} olaraq dəyişdirmək istədiyinizi təsdiqləyin",
     "DeleteProfileBtn": "Hesabımı silin",
     "DeleteProfileConfirmation": "Diqqət! Hesabınızı silmək üzrəsiniz.",
