@@ -1,9 +1,9 @@
-{
-  "AboutCompanyAddressTitle": "address",
-  "AboutCompanyEmailTitle": "email",
-  "AboutCompanyTelTitle": "tel.",
-  "AboutHeader": "About this program",
-  "DocumentManagement": "Document management",
-  "OnlineEditors": "Online editors",
-  "SoftwareLicense": "Software license"
+﻿{
+    "AboutCompanyAddressTitle": "Ünvan",
+    "AboutCompanyEmailTitle": "e-poçt",
+    "AboutCompanyTelTitle": "Nöm.",
+    "AboutHeader": "Bu proqram haqqında",
+    "DocumentManagement": "Sənədlərin idarə edilməsi",
+    "OnlineEditors": "Onlayn redaktorlar",
+    "SoftwareLicense": "Proqram təminatı lisenziyası"
 }
