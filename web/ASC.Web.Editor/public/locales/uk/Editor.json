@@ -1,11 +1,11 @@
 {
     "FileLocation": "Перейти до документів",
     "FileName": "Ім'я файлу",
-    "FolderForSave": "Folder for save",
-    "OpenSavedDocument": "Open saved document in new tab",
-    "SelectFilesType": "Select files of type: {{fileType}}",
+    "FolderForSave": "Папка для зберігання",
+    "OpenSavedDocument": "Відкрити збережений документ на новій вкладці",
+    "SelectFilesType": "Вибрати файли типу: {{fileType}}",
     "ImageFileType": "картинки",
     "DocumentsFileType": "документи",
-    "MailMergeFileType": "Select the file in XLSX format",
+    "MailMergeFileType": "Вибрати файл у форматі XLSX",
     "SelectFileTitle": "Виберати джерело даних"
 }
