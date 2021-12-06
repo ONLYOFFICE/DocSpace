@@ -161,7 +161,10 @@ namespace ASC.Files.Thirdparty.Dropbox
                     break;
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
-                        files = files.Where(x => FileUtility.GetFileExtension(x.Title).Contains(searchText));
+                    {
+                        searchText = searchText.Trim().ToLower();
+                        files = files.Where(x => FileUtility.GetFileExtension(x.Title).Equals(searchText));
+                    }
                     break;
             }
 
@@ -219,7 +222,10 @@ namespace ASC.Files.Thirdparty.Dropbox
                     break;
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
-                        files = files.Where(x => FileUtility.GetFileExtension(x.Title).Contains(searchText));
+                    {
+                        searchText = searchText.Trim().ToLower();
+                        files = files.Where(x => FileUtility.GetFileExtension(x.Title).Equals(searchText));
+                    }
                     break;
             }
 

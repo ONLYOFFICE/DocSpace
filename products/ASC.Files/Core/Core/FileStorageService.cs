@@ -559,7 +559,7 @@ namespace ASC.Web.Files.Services.WCFService
             return new List<File<T>>(result);
         }
 
-        public File<T> CreateNewFile(FileModel<T> fileWrapper, bool enableExternalExt = false)
+        public File<T> CreateNewFile<TTemplate>(FileModel<T, TTemplate> fileWrapper, bool enableExternalExt = false)
         {
             if (string.IsNullOrEmpty(fileWrapper.Title) || fileWrapper.ParentId == null) throw new ArgumentException();
 
@@ -612,7 +612,7 @@ namespace ASC.Web.Files.Services.WCFService
                 file.Title = FileUtility.ReplaceFileExtension(title, fileExt);
             }
 
-            if (EqualityComparer<T>.Default.Equals(fileWrapper.TemplateId, default(T)))
+            if (EqualityComparer<TTemplate>.Default.Equals(fileWrapper.TemplateId, default(TTemplate)))
             {
                 var culture = UserManager.GetUsers(AuthContext.CurrentAccount.ID).GetCulture();
                 var storeTemplate = GetStoreTemplate();
@@ -656,13 +656,14 @@ namespace ASC.Web.Files.Services.WCFService
             }
             else
             {
-                var template = fileDao.GetFile(fileWrapper.TemplateId);
+                var fileTemlateDao = DaoFactory.GetFileDao<TTemplate>();
+                var template = fileTemlateDao.GetFile(fileWrapper.TemplateId);
                 ErrorIf(template == null, FilesCommonResource.ErrorMassage_FileNotFound);
                 ErrorIf(!FileSecurity.CanRead(template), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
                 try
                 {
-                    using (var stream = fileDao.GetFileStream(template))
+                    using (var stream = fileTemlateDao.GetFileStream(template))
                     {
                         file.ContentLength = template.ContentLength;
                         file = fileDao.SaveFile(file, stream);
@@ -670,7 +671,7 @@ namespace ASC.Web.Files.Services.WCFService
 
                     if (template.ThumbnailStatus == Thumbnail.Created)
                     {
-                        using (var thumb = fileDao.GetThumbnail(template))
+                        using (var thumb = fileTemlateDao.GetThumbnail(template))
                         {
                             fileDao.SaveThumbnail(file, thumb);
                         }
@@ -770,7 +771,7 @@ namespace ASC.Web.Files.Services.WCFService
             }
         }
 
-        public File<T> UpdateFileStream(T fileId, Stream stream, bool encrypted, bool forcesave)
+        public File<T> UpdateFileStream(T fileId, Stream stream, string fileExtension, bool encrypted, bool forcesave)
         {
             try
             {
@@ -780,7 +781,7 @@ namespace ASC.Web.Files.Services.WCFService
                 }
 
                 var file = EntryManager.SaveEditing(fileId,
-                    null,
+                    fileExtension,
                     null,
                     stream,
                     null,
@@ -2432,10 +2433,10 @@ namespace ASC.Web.Files.Services.WCFService
         }
     }
 
-    public class FileModel<T>
+    public class FileModel<T, TTempate>
     {
         public T ParentId { get; set; }
         public string Title { get; set; }
-        public T TemplateId { get; set; }
+        public TTempate TemplateId { get; set; }
     }
 }
