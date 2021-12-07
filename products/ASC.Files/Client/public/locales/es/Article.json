@@ -5,9 +5,4 @@
     "NewSpreadsheet": "Nueva hoja de cálculo",
     "UploadFiles": "Cargar archivos",
     "UploadFolder": "Cargar carpeta",
-    "NewForm": "Plantilla de formulario",
-    "NewFormFile": "Plantilla de formulario desde archivo",
-    "CreateMasterFormFromFile": "Crear plantilla de formulario desde archivo",
-    "SubNewForm": "Desde cero",
-    "SubNewFormFile": "Desde un archivo de texto existente"
 }
