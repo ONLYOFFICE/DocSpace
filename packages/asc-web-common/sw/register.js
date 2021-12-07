@@ -41,8 +41,8 @@ const SnackBarWrapper = (props) => {
   if (ready) {
     const barConfig = {
       parentElementId: "snackbar",
-      text: t("NewVersionAvailable"),
-      btnText: t("Load"),
+      text: t("Common:NewVersionAvailable"),
+      btnText: t("Common:Load"),
       onAction: () => props.onButtonClick(),
       opacity: 1,
       countDownTime: 5 * 60 * 1000,
