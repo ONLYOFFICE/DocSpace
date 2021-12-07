@@ -40,5 +40,10 @@
     "TypeTitleSharePoint": "SharePoint",
     "TypeTitleSkyDrive": "OneDrive",
     "TypeTitleWebDav": "WebDAV",
-    "TypeTitleYandex": "Yandex.Disk"
+    "TypeTitleYandex": "Yandex.Disk",
+    "NewForm": "Predloga obrazca",
+    "NewFormFile": "Datoteka s predlogo obrazca",
+    "CreateMasterFormFromFile": "Ustvarite predlogo obrazca iz datoteke",
+    "SubNewForm": "Od začetka",
+    "SubNewFormFile": "Iz obstoječe tekstovne datoteke"
 }
