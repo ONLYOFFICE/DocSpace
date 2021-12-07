@@ -40,5 +40,10 @@
     "TypeTitleSharePoint": "SharePoint",
     "TypeTitleSkyDrive": "OneDrive",
     "TypeTitleWebDav": "WebDAV",
-    "TypeTitleYandex": "Yandex.Disk"
+    "TypeTitleYandex": "Yandex.Disk",
+    "NewForm": "Modèle de formulaire",
+    "NewFormFile": "Formulaire à partir d'un fichier texte",
+    "CreateMasterFormFromFile": "Créer un modèle de formulaire à partir d'un fichier",
+    "SubNewForm": "Blanc",
+    "SubNewFormFile": "Depuis un fichier texte"
 }
