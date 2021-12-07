@@ -8,7 +8,7 @@
     "ChangesSavedSuccessfully": "変更の保存に成功",
     "ContactInformation": "連絡先",
     "CopiedResourceText": "コピーされた",
-    "CustomCreation": "{{ユーザー}}の (作成)",
+    "CustomCreation": "{{user}}の (作成)",
     "EditPhoto": "写真の編集",
     "EditUserDialogTitle": "プロフィールの編集",
     "EmailPopupHelper": "メインのメールは、通知やアクセスの復元に使用されます。<1> このドメインにユーザー用の新しいメールを作成し、初回ログイン時のワンタイムパスワードを設定することができます</1>。",
