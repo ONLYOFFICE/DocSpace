@@ -40,5 +40,10 @@
     "TypeTitleSharePoint": "SharePoint",
     "TypeTitleSkyDrive": "OneDrive",
     "TypeTitleWebDav": "WebDAV",
-    "TypeTitleYandex": "Yandex.Disk"
+    "TypeTitleYandex": "Yandex.Disk",
+    "NewForm": "表单模板",
+    "NewFormFile": "来自文本文件的表格",
+    "CreateMasterFormFromFile": "从文件中创建表格模板",
+    "SubNewForm": "空白",
+    "SubNewFormFile": "来自文本文件"
 }
