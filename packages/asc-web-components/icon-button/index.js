@@ -137,6 +137,7 @@ class IconButton extends React.PureComponent {
       id,
       style,
       dataTip,
+      ...rest
     } = this.props;
 
     return (
@@ -155,7 +156,7 @@ class IconButton extends React.PureComponent {
         data-for={id}
         style={style}
         color={this.state.currentIconColor}
-        //{...this.props}
+        {...rest}
       >
         {/* {React.createElement(Icons["CalendarIcon"], {
           size: "scale",
