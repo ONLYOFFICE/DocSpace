@@ -267,7 +267,7 @@ class ProfileInfo extends React.PureComponent {
         {!personal && (
           <InfoItem>
             <InfoItemLabel>{t("Common:Type")}:</InfoItemLabel>
-            <InfoItemValue>{type}</InfoItemValue>
+            <InfoItemValue className="profile-info_type">{type}</InfoItemValue>
           </InfoItem>
         )}
         {email && (
@@ -312,37 +312,49 @@ class ProfileInfo extends React.PureComponent {
         {sex && (
           <InfoItem>
             <InfoItemLabel>{t("Translations:Sex")}:</InfoItemLabel>
-            <InfoItemValue>{formatedSex}</InfoItemValue>
+            <InfoItemValue className="profile-info_sex">
+              {formatedSex}
+            </InfoItemValue>
           </InfoItem>
         )}
         {birthday && (
           <InfoItem>
             <InfoItemLabel>{t("Translations:Birthdate")}:</InfoItemLabel>
-            <InfoItemValue>{birthDayDate}</InfoItemValue>
+            <InfoItemValue className="profile-info_birthdate">
+              {birthDayDate}
+            </InfoItemValue>
           </InfoItem>
         )}
         {!personal && title && (
           <InfoItem>
             <InfoItemLabel>{userPostCaption}:</InfoItemLabel>
-            <InfoItemValue>{title}</InfoItemValue>
+            <InfoItemValue className="profile-info_title">
+              {title}
+            </InfoItemValue>
           </InfoItem>
         )}
         {!personal && department && (
           <InfoItem>
             <InfoItemLabel>{groupCaption}:</InfoItemLabel>
-            <InfoItemValue>{formatedDepartments}</InfoItemValue>
+            <InfoItemValue className="profile-info_group">
+              {formatedDepartments}
+            </InfoItemValue>
           </InfoItem>
         )}
         {location && (
           <InfoItem>
             <InfoItemLabel>{t("Translations:Location")}:</InfoItemLabel>
-            <InfoItemValue>{location}</InfoItemValue>
+            <InfoItemValue className="profile-info_location">
+              {location}
+            </InfoItemValue>
           </InfoItem>
         )}
         {!personal && workFrom && (
           <InfoItem>
             <InfoItemLabel>{regDateCaption}:</InfoItemLabel>
-            <InfoItemValue>{workFromDate}</InfoItemValue>
+            <InfoItemValue className="profile-info_reg-date">
+              {workFromDate}
+            </InfoItemValue>
           </InfoItem>
         )}
         {isSelf && (
@@ -352,6 +364,7 @@ class ProfileInfo extends React.PureComponent {
               {cultureNames && selectedLanguage ? (
                 <>
                   <ComboBox
+                    directionY="both"
                     options={cultureNames}
                     selectedOption={selectedLanguage}
                     onSelect={this.onLanguageSelect}

@@ -563,6 +563,7 @@ class SharingPanelComponent extends React.Component {
                     />
 
                     <DropDown
+                      forwardedRef={this.ref}
                       directionX="right"
                       className="sharing_panel-drop-down"
                       open={showActionPanel}

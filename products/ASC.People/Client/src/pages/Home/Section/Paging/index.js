@@ -1,26 +1,26 @@
 import React, { useCallback, useMemo } from "react";
 import { isMobile } from "react-device-detect";
 import Paging from "@appserver/components/paging";
-import { useTranslation } from "react-i18next";
+import { withTranslation } from "react-i18next";
 import Loaders from "@appserver/common/components/Loaders";
 import { inject, observer } from "mobx-react";
 
-const SectionPagingContent = ({
+const PureSectionPagingContent = ({
   fetchPeople,
   filter,
   setIsLoading,
   selectedCount,
   isLoaded,
+  t,
   tReady,
 }) => {
-  const { t } = useTranslation("Home");
   const onNextClick = useCallback(
     (e) => {
       if (!filter.hasNext()) {
         e.preventDefault();
         return;
       }
-      console.log("Next Clicked", e);
+      //console.log("Next Clicked", e);
 
       const newFilter = filter.clone();
       newFilter.page++;
@@ -38,7 +38,7 @@ const SectionPagingContent = ({
         return;
       }
 
-      console.log("Prev Clicked", e);
+      //console.log("Prev Clicked", e);
 
       const newFilter = filter.clone();
       newFilter.page--;
@@ -51,7 +51,7 @@ const SectionPagingContent = ({
 
   const onChangePageSize = useCallback(
     (pageItem) => {
-      console.log("Paging onChangePageSize", pageItem);
+      //console.log("Paging onChangePageSize", pageItem);
 
       const newFilter = filter.clone();
       newFilter.page = 0;
@@ -65,7 +65,7 @@ const SectionPagingContent = ({
 
   const onChangePage = useCallback(
     (pageItem) => {
-      console.log("Paging onChangePage", pageItem);
+      //console.log("Paging onChangePage", pageItem);
 
       const newFilter = filter.clone();
       newFilter.page = pageItem.key;
@@ -126,7 +126,7 @@ const SectionPagingContent = ({
   //console.log("SectionPagingContent render", filter);
 
   return isLoaded ? (
-    !filter || filter.total < filter.pageCount || !tReady ? (
+    !tReady || !filter || filter.total < filter.pageCount ? (
       <></>
     ) : (
       <Paging
@@ -142,7 +142,7 @@ const SectionPagingContent = ({
         disableHover={isMobile}
         previousAction={onPrevClick}
         nextAction={onNextClick}
-        openDirection="top"
+        openDirection="both"
         selectedPageItem={selectedPageItem} //FILTER CURRENT PAGE
         selectedCountItem={selectedCountItem} //FILTER PAGE COUNT
       />
@@ -151,6 +151,8 @@ const SectionPagingContent = ({
     <Loaders.Filter />
   );
 };
+
+const SectionPagingContent = withTranslation("Home")(PureSectionPagingContent);
 
 export default inject(({ auth, peopleStore }) => {
   const { isLoaded } = auth;

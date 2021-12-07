@@ -75,6 +75,9 @@ const StyledFileRow = styled(Row)`
       `}
   }
 `;
+const StyledLoadErrorIcon = styled(LoadErrorIcon)`
+  outline: none !important;
+`;
 
 const FileRow = (props) => {
   const {
@@ -192,7 +195,7 @@ const FileRow = (props) => {
             </>
           ) : item.error || (!item.fileId && uploaded) ? (
             <div className="upload_panel-icon">
-              <LoadErrorIcon
+              <StyledLoadErrorIcon
                 size="medium"
                 data-for="errorTooltip"
                 data-tip={item.error || t("Common:UnknownError")}
@@ -200,7 +203,11 @@ const FileRow = (props) => {
               <Tooltip
                 id="errorTooltip"
                 offsetTop={0}
-                getContent={(dataTip) => <Text fontSize="13px">{dataTip}</Text>}
+                getContent={(dataTip) => (
+                  <Text fontSize="13px" noSelect>
+                    {dataTip}
+                  </Text>
+                )}
                 effect="float"
                 place="left"
                 maxWidth={320}

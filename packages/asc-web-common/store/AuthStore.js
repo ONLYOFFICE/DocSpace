@@ -176,6 +176,8 @@ class AuthStore {
     await this.tfaStore.loginWithCode(userName, passwordHash, code);
     setWithCredentialsStatus(true);
 
+    this.reset();
+
     this.init();
 
     return Promise.resolve(this.settingsStore.defaultPage);

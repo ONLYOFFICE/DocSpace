@@ -19,6 +19,8 @@ const ConflictResolveDialog = (props) => {
     conflictResolveDialogData,
     items,
     itemOperationToFolder,
+    activeFiles,
+    setActiveFiles,
   } = props;
 
   const {
@@ -35,6 +37,16 @@ const ConflictResolveDialog = (props) => {
 
   const onSelectResolveType = (e) => setResolveType(e.target.value);
   const onClose = () => setConflictResolveDialogVisible(false);
+  const onCloseDialog = () => {
+    let newActiveFiles = activeFiles;
+
+    for (let item of fileIds) {
+      newActiveFiles = newActiveFiles.filter((f) => f !== item);
+    }
+
+    setActiveFiles(newActiveFiles);
+    onClose();
+  };
 
   const getResolveType = () => {
     switch (resolveType) {
@@ -54,12 +66,15 @@ const ConflictResolveDialog = (props) => {
     const conflictResolveType = getResolveType();
 
     let newFileIds = fileIds;
+    let newActiveFiles = activeFiles;
     if (conflictResolveType === ConflictResolveType.Skip) {
       for (let item of items) {
-        newFileIds = newFileIds.filter((x) => x.id === item.id);
+        newFileIds = newFileIds.filter((x) => x !== item.id);
+        newActiveFiles = newActiveFiles.filter((f) => f !== item.id);
       }
     }
 
+    setActiveFiles(newActiveFiles);
     if (!folderIds.length && !newFileIds.length) return onClose();
 
     const data = {
@@ -119,7 +134,7 @@ const ConflictResolveDialog = (props) => {
     <ModalDialogContainer
       isLoading={!tReady}
       visible={visible}
-      onClose={onClose}
+      onClose={onCloseDialog}
     >
       <ModalDialog.Header>{t("ConflictResolveTitle")}</ModalDialog.Header>
       <ModalDialog.Body>
@@ -160,7 +175,7 @@ const ConflictResolveDialog = (props) => {
           key="CancelButton"
           label={t("Common:CancelButton")}
           size="medium"
-          onClick={onClose}
+          onClick={onCloseDialog}
           //isLoading={isLoading}
         />
       </ModalDialog.Footer>
@@ -168,7 +183,7 @@ const ConflictResolveDialog = (props) => {
   );
 };
 
-export default inject(({ dialogsStore, uploadDataStore }) => {
+export default inject(({ dialogsStore, uploadDataStore, filesStore }) => {
   const {
     conflictResolveDialogVisible: visible,
     setConflictResolveDialogVisible,
@@ -177,6 +192,7 @@ export default inject(({ dialogsStore, uploadDataStore }) => {
   } = dialogsStore;
 
   const { itemOperationToFolder } = uploadDataStore;
+  const { activeFiles, setActiveFiles } = filesStore;
 
   return {
     items,
@@ -184,6 +200,8 @@ export default inject(({ dialogsStore, uploadDataStore }) => {
     conflictResolveDialogData,
     setConflictResolveDialogVisible,
     itemOperationToFolder,
+    activeFiles,
+    setActiveFiles,
   };
 })(
   withRouter(

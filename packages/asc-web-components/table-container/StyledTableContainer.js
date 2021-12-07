@@ -203,6 +203,10 @@ const StyledTableRow = styled.div`
         ? `${props.theme.dragAndDrop.acceptBackground} !important`
         : "none"};
   }
+
+  .table-container_row-loader {
+    display: inline-flex;
+  }
 `;
 
 const StyledTableCell = styled.div`
@@ -224,6 +228,8 @@ const StyledTableCell = styled.div`
   }
   .table-container_row-checkbox {
     display: ${(props) => (props.checked ? "flex" : "none")};
+    padding: 12px;
+    margin-left: -12px;
   }
 
   ${(props) =>

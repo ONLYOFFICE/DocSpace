@@ -91,7 +91,6 @@ class UpdateUserForm extends React.Component {
 
     this.openAvatarEditor = this.openAvatarEditor.bind(this);
     this.openAvatarEditorPage = this.openAvatarEditorPage.bind(this);
-    this.onCloseAvatarEditor = this.onCloseAvatarEditor.bind(this);
     this.onLoadFileAvatar = this.onLoadFileAvatar.bind(this);
 
     this.onShowGroupSelector = this.onShowGroupSelector.bind(this);
@@ -465,9 +464,11 @@ class UpdateUserForm extends React.Component {
     data.append("Autosave", false);
     loadAvatar(this.state.profile.id, data)
       .then((response) => {
+        if (!response.success && response.message) {
+          throw response.message;
+        }
         var img = new Image();
-        img.onload = function () {
-          _this.setState({ isLoading: false });
+        img.onload = () => {
           if (fileData) {
             fileData.avatar = {
               tmpFile: response.data,
@@ -553,11 +554,7 @@ class UpdateUserForm extends React.Component {
     }
   };
 
-  onCloseAvatarEditor() {
-    this.setState({
-      visibleAvatarEditor: false,
-    });
-  }
+  onCloseAvatarEditor = () => this.setState({ visibleAvatarEditor: false });
 
   onShowGroupSelector() {
     var stateCopy = Object.assign({}, this.state);
@@ -745,11 +742,9 @@ class UpdateUserForm extends React.Component {
               maxSizeFileError={t("Translations:maxSizeFileError")}
               unknownError={t("Common:Error")}
               saveButtonLabel={
-                this.state.isLoading
-                  ? t("UpdatingProcess")
-                  : t("Common:SaveButton")
+                isLoading ? t("UpdatingProcess") : t("Common:SaveButton")
               }
-              saveButtonLoading={this.state.isLoading}
+              saveButtonLoading={isLoading}
             />
           </AvatarContainer>
           <MainFieldsContainer
@@ -847,6 +842,7 @@ class UpdateUserForm extends React.Component {
               calendarHeaderContent={`${t("CalendarSelectDate")}:`}
               labelText={`${t("Translations:Birthdate")}:`}
               inputName="birthday"
+              inputClassName="date-picker_input-birthday"
               inputValue={
                 profile.birthday ? new Date(profile.birthday) : undefined
               }
@@ -891,6 +887,7 @@ class UpdateUserForm extends React.Component {
                 calendarHeaderContent={`${t("CalendarSelectDate")}:`}
                 labelText={`${regDateCaption}:`}
                 inputName="workFrom"
+                inputClassName="date-picker_input-reg-date"
                 inputValue={
                   profile.workFrom ? new Date(profile.workFrom) : undefined
                 }

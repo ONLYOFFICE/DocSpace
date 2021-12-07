@@ -118,6 +118,9 @@ class CreateUserForm extends React.Component {
 
     loadAvatar(0, data)
       .then((response) => {
+        if (!response.success && response.message) {
+          throw response.message;
+        }
         var img = new Image();
         img.onload = function () {
           if (fileData) {
@@ -579,6 +582,7 @@ class CreateUserForm extends React.Component {
               calendarHeaderContent={`${t("CalendarSelectDate")}:`}
               labelText={`${t("Translations:Birthdate")}:`}
               inputName="birthday"
+              inputClassName="date-picker_input-birthday"
               inputValue={
                 profile.birthday ? new Date(profile.birthday) : undefined
               }
@@ -602,6 +606,7 @@ class CreateUserForm extends React.Component {
               calendarHeaderContent={`${t("CalendarSelectDate")}:`}
               labelText={`${regDateCaption}:`}
               inputName="workFrom"
+              inputClassName="date-picker_input-reg-date"
               inputValue={
                 profile.workFrom ? new Date(profile.workFrom) : undefined
               }
@@ -696,6 +701,7 @@ class CreateUserForm extends React.Component {
             isDisabled={isLoading}
             size="big"
             tabIndex={10}
+            className="create-user_save-btn"
           />
           <Button
             label={t("Common:CancelButton")}
@@ -704,6 +710,7 @@ class CreateUserForm extends React.Component {
             size="big"
             style={{ marginLeft: "8px" }}
             tabIndex={11}
+            className="create-user_cancel-btn"
           />
         </div>
       </>

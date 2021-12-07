@@ -50,6 +50,8 @@ class FilesStore {
   selected = "close";
   filter = FilesFilter.getDefault(); //TODO: FILTER
   loadTimeout = null;
+  activeFiles = [];
+  activeFolders = [];
 
   constructor(
     authStore,
@@ -74,6 +76,32 @@ class FilesStore {
     this.formatsStore = formatsStore;
     this.filesSettingsStore = filesSettingsStore;
   }
+
+  addActiveItems = (files, folders) => {
+    if (folders && folders.length) {
+      if (!this.activeFolders.length) {
+        this.setActiveFolders(folders);
+      } else {
+        folders.map((item) => this.activeFolders.push(item));
+      }
+    }
+
+    if (files && files.length) {
+      if (!this.activeFiles.length) {
+        this.setActiveFiles(files);
+      } else {
+        files.map((item) => this.activeFiles.push(item));
+      }
+    }
+  };
+
+  setActiveFiles = (activeFiles) => {
+    this.activeFiles = activeFiles;
+  };
+
+  setActiveFolders = (activeFolders) => {
+    this.activeFolders = activeFolders;
+  };
 
   setIsLoaded = (isLoaded) => {
     this.isLoaded = isLoaded;
@@ -190,6 +218,12 @@ class FilesStore {
   };
 
   getFilesChecked = (file, selected) => {
+    if (!file.parentId) {
+      if (this.activeFiles.includes(file.id)) return false;
+    } else {
+      if (this.activeFolders.includes(file.id)) return false;
+    }
+
     const type = file.fileType;
     switch (selected) {
       case "all":
@@ -315,7 +349,7 @@ class FilesStore {
       const splitFilter = filterStorageItem.split(",");
 
       filterData.sortBy = splitFilter[0];
-      filterData.pageCount = splitFilter[1];
+      filterData.pageCount = +splitFilter[1];
       filterData.sortOrder = splitFilter[2];
     }
 
@@ -397,7 +431,7 @@ class FilesStore {
 
     while (somePath.length !== 1) {
       const folderItem = newItems.find((x) => x.id === somePath[0]);
-      newItems = folderItem.folders
+      newItems = folderItem?.folders
         ? folderItem.folders
         : somePath.length > 1
         ? []
@@ -1536,8 +1570,9 @@ class FilesStore {
           : splitValue.slice(1).join("_");
 
       if (fileType === "file") {
-        newSelection.push(this.files.find((f) => f.id == id));
-      } else {
+        this.activeFiles.findIndex((f) => f == id) === -1 &&
+          newSelection.push(this.files.find((f) => f.id == id));
+      } else if (this.activeFolders.findIndex((f) => f == id) === -1) {
         const selectableFolder = this.folders.find((f) => f.id == id);
         selectableFolder.isFolder = true;
         newSelection.push(selectableFolder);

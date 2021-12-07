@@ -75,6 +75,9 @@ class MainButton extends React.PureComponent {
 
   render() {
     //console.log("MainButton render");
+    const dropDownManualWidthProp = this.ref.current
+      ? { manualWidth: this.ref.current.clientWidth + "px" }
+      : {};
     return (
       <GroupMainButton {...this.props} ref={this.ref}>
         <StyledMainButton {...this.props} onClick={this.onMainButtonClick}>
@@ -82,8 +85,10 @@ class MainButton extends React.PureComponent {
         </StyledMainButton>
         {this.props.isDropdown ? (
           <StyledDropDown
+            forwardedRef={this.ref}
             open={this.state.isOpen}
             clickOutsideAction={this.handleClick}
+            {...dropDownManualWidthProp}
             {...this.props}
             onClick={this.onDropDownClick}
           />

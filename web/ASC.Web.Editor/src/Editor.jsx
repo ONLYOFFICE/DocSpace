@@ -67,6 +67,7 @@ let successAuth;
 let isSharingAccess;
 let user = null;
 let personal;
+let config;
 const url = window.location.href;
 const filesUrl = url.substring(0, url.indexOf("/doceditor"));
 
@@ -74,9 +75,10 @@ toast.configure();
 
 const Editor = () => {
   const urlParams = getObjectByLocation(window.location);
-  const fileId = urlParams
+  const decodedId = urlParams
     ? urlParams.fileId || urlParams.fileid || null
     : null;
+  const fileId = encodeURIComponent(decodedId);
   const version = urlParams ? urlParams.version || null : null;
   const doc = urlParams ? urlParams.doc || null : null;
   const isDesktop = window["AscDesktopEditor"] !== undefined;
@@ -286,7 +288,7 @@ const Editor = () => {
         setIsAuthenticated(successAuth);
       }
 
-      const config = await openEdit(fileId, version, doc, view);
+      config = await openEdit(fileId, version, doc, view);
 
       actionLink = config?.editorConfig?.actionLink;
 
@@ -521,6 +523,8 @@ const Editor = () => {
       const message = decodeURIComponent(splitUrl[1]).replaceAll("+", " ");
       history.pushState({}, null, url.substring(0, index));
       docEditor.showMessage(message);
+    } else {
+      if (config?.Error) docEditor.showMessage(config.Error);
     }
 
     const tempElm = document.getElementById("loader");

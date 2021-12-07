@@ -160,7 +160,16 @@ class FilterItem extends React.Component {
       groupsCaption,
       defaultOption,
       asideView,
+      smallSectionWidth,
+      openItems,
+      sectionWidth,
     } = this.props;
+
+    const openInAside =
+      ((window.innerWidth < 1360 || sectionWidth < 1080) && openItems >= 3) ||
+      ((window.innerWidth < 1170 || sectionWidth < 1000) && openItems >= 2) ||
+      sectionWidth < 780;
+
     return (
       <StyledFilterItem key={id} id={id} block={block} opened={opened}>
         <StyledFilterItemContent isDisabled={isDisabled} isOpen={isOpen}>
@@ -186,6 +195,7 @@ class FilterItem extends React.Component {
                 isMultiSelect={false}
                 onCancel={this.onCancelSelector}
                 onSelect={this.onSelectGroup}
+                smallSectionWidth={smallSectionWidth}
                 displayType={asideView ? "aside" : "auto"}
               />
             </>
@@ -213,8 +223,9 @@ class FilterItem extends React.Component {
                 defaultOption={defaultOption}
                 defaultOptionLabel={defaultOptionLabel}
                 onCancel={this.onCancelSelector}
+                smallSectionWidth={smallSectionWidth}
                 onSelect={this.onSelectGroup}
-                displayType={asideView ? "aside" : "auto"}
+                displayType={asideView || openInAside ? "aside" : "auto"}
               />
             </>
           )}
@@ -234,7 +245,9 @@ class FilterItem extends React.Component {
                   size="content"
                   scaled={false}
                   noBorder={true}
+                  isDefaultMode={false}
                   opened={opened}
+                  textOverflow={true}
                   directionX="left"
                   toggleAction={this.toggleCombobox}
                   dropDownMaxHeight={300}
@@ -317,7 +330,12 @@ class FilterBlock extends React.Component {
     });
   };
   getFilterItems = () => {
-    const { openFilterItems, hiddenFilterItems } = this.props;
+    const {
+      openFilterItems,
+      hiddenFilterItems,
+      smallSectionWidth,
+      sectionWidth,
+    } = this.props;
     const { asideView } = this.props;
     const _this = this;
     let result = [];
@@ -341,6 +359,8 @@ class FilterBlock extends React.Component {
           <FilterItem
             block={false}
             isDisabled={_this.props.isDisabled}
+            sectionWidth={sectionWidth}
+            smallSectionWidth={smallSectionWidth}
             key={key}
             groupItems={_this.props.getFilterData().filter(function (t) {
               return t.group == group && t.group != t.key;
@@ -359,6 +379,7 @@ class FilterBlock extends React.Component {
             selectedItem={selectedItem}
             onFilterRender={_this.props.onFilterRender}
             asideView={asideView}
+            openItems={openFilterItems.length}
           ></FilterItem>
         );
       });
@@ -388,11 +409,13 @@ class FilterBlock extends React.Component {
               return t.group == group && t.group != t.key;
             })}
             onSelectFilterItem={_this.props.onClickFilterItem}
+            sectionWidth={sectionWidth}
             id={key}
             groupLabel={groupLabel}
             opened={key.indexOf("_-1") == -1 ? false : true}
             label={label}
             onClose={_this.onDeleteFilterItem}
+            smallSectionWidth={smallSectionWidth}
             typeSelector={typeSelector}
             groupsCaption={groupsCaption}
             defaultOptionLabel={defaultOptionLabel}

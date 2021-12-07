@@ -146,6 +146,7 @@ class AvatarEditor extends React.Component {
             unknownTypeError={unknownTypeError}
             maxSizeFileError={maxSizeFileError}
             unknownError={unknownError}
+            isLoading={saveButtonLoading}
           />
         </ModalDialog.Body>
         <ModalDialog.Footer>
@@ -179,6 +180,7 @@ class AvatarEditor extends React.Component {
           maxSizeFileError={maxSizeFileError}
           unknownError={unknownError}
           useModalDialog={false}
+          isLoading={saveButtonLoading}
         />
         <StyledButtonsWrapper>
           <Button
