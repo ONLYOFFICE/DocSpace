@@ -62,6 +62,7 @@ const SelectFolderDialogAsideView = ({
             displayType={DISPLAY_TYPE}
             showButtons={showButtons}
             isFooter={!!footer}
+            folderListLength={folderList?.length}
           >
             <div className="select-folder-dialog_aside_body">
               <div>{header} </div>

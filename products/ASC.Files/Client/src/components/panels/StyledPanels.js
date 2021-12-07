@@ -621,6 +621,17 @@ const StyledSelectFolderPanel = styled.div`
     css`
       height: 100%;
     `}
+
+  ${(props) =>
+    props.folderListLength === 1 &&
+    css`
+      span.rc-tree-switcher.rc-tree-switcher-noop {
+        display: none;
+      }
+    `}
+
+    
+
   .modal-dialog_header {
     display: flex;
     align-items: center;
