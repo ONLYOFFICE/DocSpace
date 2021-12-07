@@ -40,5 +40,10 @@
     "TypeTitleSharePoint": "SharePoint",
     "TypeTitleSkyDrive": "OneDrive",
     "TypeTitleWebDav": "WebDAV",
-    "TypeTitleYandex": "Yandex.Disk"
+    "TypeTitleYandex": "Yandex.Disk",
+    "NewForm": "フォーム テンプレート",
+    "NewFormFile": "テキストファイルからのフォーム",
+    "CreateMasterFormFromFile": "ファイルからフォームテンプレートを作成する",
+    "SubNewForm": "空白",
+    "SubNewFormFile": "テキスト ファイルから作成"
 }
