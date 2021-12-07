@@ -40,5 +40,10 @@
     "TypeTitleSharePoint": "SharePoint",
     "TypeTitleSkyDrive": "OneDrive",
     "TypeTitleWebDav": "WebDAV",
-    "TypeTitleYandex": "Yandex.Disk"
+    "TypeTitleYandex": "Yandex.Disk",
+    "NewForm": "Șablon formă,",
+    "NewFormFile": "Forma din fișier text",
+    "CreateMasterFormFromFile": "Crearea unui șablon formă din fișier",
+    "SubNewForm": "Necompletat",
+    "SubNewFormFile": "Din fișier text"
 }
