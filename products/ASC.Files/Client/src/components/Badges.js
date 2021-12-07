@@ -47,6 +47,7 @@ const Badges = ({
   const isPrivacy = isPrivacyFolder && isDesktopClient;
 
   const showFavorite = isFavorite || isNewWithFav || isEditingWithFav;
+  const showActionsEdit = isEditing || isEditingWithFav;
 
   return fileExst ? (
     <div className="badges additional-badges">
@@ -77,30 +78,23 @@ const Badges = ({
         />
       )}
       {canWebEdit &&
-        !isEditing &&
-        !isEditingWithFav &&
         !isTrashFolder &&
         !isPrivacy &&
         accessToEdit &&
         showEditBadge &&
         !canConvert && (
-          <IconButton
-            onClick={onFilesClick}
-            iconName="/static/images/access.edit.react.svg"
+          <StyledIcon
+            iconName={
+              showActionsEdit
+                ? "/static/images/file.actions.convert.edit.doc.react.svg"
+                : "/static/images/access.edit.react.svg"
+            }
             className="badge icons-group"
-            size="small"
-            isfill={true}
-            color="#A3A9AE"
+            size="medium"
+            onClick={onFilesClick}
             hoverColor="#3B72A7"
           />
         )}
-      {(isEditing || isEditingWithFav) && (
-        <StyledFileActionsConvertEditDocIcon
-          onClick={onFilesClick}
-          className="badge icons-group is-editing"
-          size="small"
-        />
-      )}
       {item.canShare && showShare ? (
         <SharedButton
           t={t}
