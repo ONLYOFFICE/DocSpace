@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 using ASC.Api.Core;
 using ASC.CRM.Core.Enums;
-
-using Microsoft.AspNetCore.Mvc;
 
 namespace ASC.CRM.ApiModels
 {

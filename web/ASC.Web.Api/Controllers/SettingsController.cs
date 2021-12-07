@@ -30,9 +30,11 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.Mail;
 using System.Security;
 using System.ServiceModel.Security;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Web;
 
@@ -1364,14 +1366,20 @@ namespace ASC.Api.Settings
             {
                 try
                 {
-                    using var client = new WebClient();
+                    var request = new HttpRequestMessage();
+                    request.RequestUri = new Uri(string.Format("{0}/tips/deletereaded", SetupInfo.TipsAddress));
+
                     var data = new NameValueCollection
                     {
                         ["userId"] = AuthContext.CurrentAccount.ID.ToString(),
                         ["tenantId"] = Tenant.TenantId.ToString(CultureInfo.InvariantCulture)
                     };
+                    var body = JsonSerializer.Serialize(data);//todo check
+                    request.Content = new StringContent(body);
 
-                    client.UploadValues(string.Format("{0}/tips/deletereaded", SetupInfo.TipsAddress), data);
+                    using var httpClient = new HttpClient();
+                    using var response = httpClient.Send(request);
+
                 }
                 catch (Exception e)
                 {

@@ -26,8 +26,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.ServiceModel;
 using System.Text;
@@ -363,13 +364,23 @@ namespace ASC.Core.Notify.Signalr
         {
             if (!IsAvailable()) return "";
 
-            using var webClient = new WebClient();
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Authorization", CreateAuthToken());
+            request.Method = HttpMethod.Post;
+            request.RequestUri = new Uri(GetMethod(method));
+
             var jsonData = JsonConvert.SerializeObject(data);
             Log.DebugFormat("Method:{0}, Data:{1}", method, jsonData);
-            webClient.Encoding = Encoding.UTF8;
-            webClient.Headers.Add("Authorization", CreateAuthToken());
-            webClient.Headers[HttpRequestHeader.ContentType] = "application/json";
-            return webClient.UploadString(GetMethod(method), jsonData);
+
+            request.Content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+            using (var httpClient = new HttpClient())
+            using (var response = httpClient.Send(request))
+            using (var stream = response.Content.ReadAsStream())
+            using (var streamReader = new StreamReader(stream))
+            {
+                return streamReader.ReadToEnd();
+            }
         }
 
         private T MakeRequest<T>(string method, object data)
