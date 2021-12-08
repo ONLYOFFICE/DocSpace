@@ -84,6 +84,10 @@ const StyledAsidePanel = styled.div`
       width: 320px;
       transform: translateX(${(props) => (props.visible ? "0" : "320px")});
     }
+
+    .sharing_panel-header-container {
+      padding-right: 0;
+    }
   }
   ${PanelStyles}
 `;
@@ -248,7 +252,7 @@ const StyledHeaderContent = styled.div`
     .upload_panel-vertical-dots-icon {
     }
     .upload_panel-remove-icon {
-      padding-right: 8px;
+      margin-right: -1px;
     }
   }
 
@@ -257,8 +261,6 @@ const StyledHeaderContent = styled.div`
     font-weight: 700;
     margin: 14px 0;
   }
-
-  padding-right: 0;
 
   @media ${desktop} {
     .files-operations-header,
