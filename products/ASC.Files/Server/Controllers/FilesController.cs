@@ -711,27 +711,27 @@ namespace ASC.Api.Documents
         [Create("{folderId}/upload/create_session")]
         public object CreateUploadSessionFromBody(string folderId, [FromBody] SessionModel sessionModel)
         {
-            return FilesControllerHelperString.CreateUploadSession(folderId, sessionModel.FileName, sessionModel.FileSize, sessionModel.RelativePath, sessionModel.Encrypted);
+            return FilesControllerHelperString.CreateUploadSession(folderId, sessionModel.FileName, sessionModel.FileSize, sessionModel.RelativePath, sessionModel.LastModified, sessionModel.Encrypted);
         }
 
         [Create("{folderId}/upload/create_session")]
         [Consumes("application/x-www-form-urlencoded")]
         public object CreateUploadSessionFromForm(string folderId, [FromForm] SessionModel sessionModel)
         {
-            return FilesControllerHelperString.CreateUploadSession(folderId, sessionModel.FileName, sessionModel.FileSize, sessionModel.RelativePath, sessionModel.Encrypted);
+            return FilesControllerHelperString.CreateUploadSession(folderId, sessionModel.FileName, sessionModel.FileSize, sessionModel.RelativePath, sessionModel.LastModified, sessionModel.Encrypted);
         }
 
         [Create("{folderId:int}/upload/create_session")]
         public object CreateUploadSessionFromBody(int folderId, [FromBody] SessionModel sessionModel)
         {
-            return FilesControllerHelperInt.CreateUploadSession(folderId, sessionModel.FileName, sessionModel.FileSize, sessionModel.RelativePath, sessionModel.Encrypted);
+            return FilesControllerHelperInt.CreateUploadSession(folderId, sessionModel.FileName, sessionModel.FileSize, sessionModel.RelativePath, sessionModel.LastModified, sessionModel.Encrypted);
         }
 
         [Create("{folderId:int}/upload/create_session")]
         [Consumes("application/x-www-form-urlencoded")]
         public object CreateUploadSessionFromForm(int folderId, [FromForm] SessionModel sessionModel)
         {
-            return FilesControllerHelperInt.CreateUploadSession(folderId, sessionModel.FileName, sessionModel.FileSize, sessionModel.RelativePath, sessionModel.Encrypted);
+            return FilesControllerHelperInt.CreateUploadSession(folderId, sessionModel.FileName, sessionModel.FileSize, sessionModel.RelativePath, sessionModel.LastModified, sessionModel.Encrypted);
         }
 
         /// <summary>
