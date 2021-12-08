@@ -340,8 +340,10 @@ class UploadDataStore {
           });
 
           this.settingsStore.storeOriginalFiles && this.refreshFiles(file);
-          file.fileInfo = fileInfo;
-          this.refreshFiles(file);
+          if (fileInfo) {
+            file.fileInfo = fileInfo;
+            this.refreshFiles(file);
+          }
           const percent = this.getConversationPercent(index + 1);
           this.setConversionPercent(percent, !!error);
         }
