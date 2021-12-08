@@ -17,7 +17,8 @@ const device = sizes[deviceType];
 
 setWindowSize(device.width, device.height);
 
-const browser = process.env.profile !== 'undefined' ? process.env.profile : 'chromium';
+const browser = process.env.profile || 'chromium';
+console.log(browser, process.env.profile);
 
 const isModel = !!process.env.MODEL;
 
