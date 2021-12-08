@@ -414,7 +414,8 @@ const Editor = () => {
         onRequestSaveAs,
         onRequestInsertImage,
         onRequestMailMergeRecipients,
-        onRequestCompareFile;
+        onRequestCompareFile,
+        onRequestRestore;
 
       if (isSharingAccess) {
         onRequestSharingSettings = onSDKRequestSharingSettings;
@@ -431,6 +432,9 @@ const Editor = () => {
         onRequestCompareFile = onSDKRequestCompareFile;
       }
 
+      if (!!config.document.permissions.changeHistory) {
+        onRequestRestore = onSDKRequestRestore;
+      }
       const events = {
         events: {
           onAppReady: onSDKAppReady,
@@ -451,7 +455,7 @@ const Editor = () => {
           onRequestHistory: onSDKRequestHistory,
           onRequestHistoryClose: onSDKRequestHistoryClose,
           onRequestHistoryData: onSDKRequestHistoryData,
-          onRequestRestore: onSDKRequestRestore,
+          onRequestRestore,
         },
       };
 
