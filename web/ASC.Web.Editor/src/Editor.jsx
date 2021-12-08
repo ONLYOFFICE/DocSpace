@@ -466,7 +466,6 @@ const Editor = () => {
 
   const onSDKRequestHistoryData = async (event) => {
     const version = event.data;
-    console.log("version", version);
 
     try {
       const versionDifference = await getEditDiff(fileId, version, doc);
@@ -503,7 +502,6 @@ const Editor = () => {
 
   const getDocumentHistory = (fileHistory, historyLength) => {
     let result = [];
-    console.log("fileHistory", fileHistory);
 
     for (let i = 0; i < historyLength; i++) {
       const changes = fileHistory[i].changes;
@@ -528,7 +526,6 @@ const Editor = () => {
 
       result.push(obj);
     }
-    console.log("newArr", result);
     return result;
   };
   const getCurrentDocumentVersion = (fileHistory, historyLength) => {
@@ -554,7 +551,6 @@ const Editor = () => {
 
   const onSDKRequestRestore = async (event) => {
     const restoreVersion = event.data.version;
-    console.log("version in restore func", restoreVersion);
     try {
       const updateVersions = await restoreDocumentsVersion(
         fileId,
@@ -562,7 +558,6 @@ const Editor = () => {
         doc
       );
       const historyLength = updateVersions.length;
-      console.log("restore", updateVersions);
       docEditor.refreshHistory({
         currentVersion: getCurrentDocumentVersion(
           updateVersions,
