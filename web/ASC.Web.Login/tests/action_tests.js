@@ -16,6 +16,7 @@ Before(async ({ I }) => {
   I.mockEndpoint(Endpoints.settings, 'settings');
   I.mockEndpoint(Endpoints.build, 'build');
   I.mockEndpoint(Endpoints.providers, 'providers');
+  I.mockEndpoint(Endpoints.people, '');
   I.amOnPage('/login');
   I.wait(2);
 });
