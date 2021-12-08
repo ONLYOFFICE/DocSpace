@@ -58,3 +58,19 @@ export const getLink = (link) => {
     return `${protocol}//${communityHostname}${link}?desktop_view=true`;
   }
 };
+
+export const onItemClick = (e, backdropClick = undefined) => {
+  if (!e) return;
+  e.preventDefault();
+
+  const link = e.currentTarget.dataset.link;
+
+  if (isModuleOld(link)) {
+    return window.open(link, "_blank");
+  }
+
+  history.push(link);
+  if (backdropClick) {
+    backdropClick();
+  }
+};
