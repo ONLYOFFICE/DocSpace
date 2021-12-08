@@ -20,6 +20,10 @@ const ModalDialogContainer = styled(ModalDialog)`
     margin-top: 16px;
   }
 
+  .link-other-formats {
+    pointer-events: none;
+  }
+
   .button-dialog {
     display: inline-block;
     margin-left: 8px;

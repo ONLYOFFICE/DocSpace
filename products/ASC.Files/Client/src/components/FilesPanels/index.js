@@ -95,6 +95,7 @@ const Panels = (props) => {
         headerName={t("Translations:CreateMasterFormFromFile")}
         titleFilesList={t("SelectFile:SelectDOCXFormat")}
         creationButtonPrimary
+        withSubfolders={false}
       />
     ),
   ];
