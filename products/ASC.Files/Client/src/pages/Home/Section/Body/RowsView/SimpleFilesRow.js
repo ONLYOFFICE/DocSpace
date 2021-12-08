@@ -102,8 +102,6 @@ const StyledSimpleFilesRow = styled(Row)`
   .badge-version {
     margin-right: 25px;
     min-width: max-content;
-    padding: 0;
-    border: 0;
   }
 
   .lock-file {
