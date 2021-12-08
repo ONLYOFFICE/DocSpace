@@ -2,10 +2,10 @@
     "FileLocation": "ເປີດບ່ອນຕຳແໜ່ງເອກະສານ",
     "FileName": "ຊື່ຟາຍ",
     "FolderForSave": "ແຟ້ມສຳລັບບັນທຶກ",
-    "OpenSavedDocument": "Open saved document in new tab",
-    "SelectFilesType": "Select files of type: {{fileType}}",
+    "OpenSavedDocument": "ເປີດເອກະສານທີ່ບັນທືກໄວ້ໃນແຖບໃໝ່",
+    "SelectFilesType": "ກະລຸນາເລືອກປະເພດໄຟລ໌ {{fileType}}",
     "ImageFileType": "ຮູບພາບ",
-    "DocumentsFileType": "documents",
-    "MailMergeFileType": "Select the file in XLSX format",
+    "DocumentsFileType": "ເອກະສານ",
+    "MailMergeFileType": "ກະລຸນາເລືືອກໄຟລ໌ເປັນ .XLSX",
     "SelectFileTitle": "ເລືອກແຫຼ່ງຂໍ້ມູນ"
 }
