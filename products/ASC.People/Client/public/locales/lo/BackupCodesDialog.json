@@ -1,8 +1,8 @@
-{
-  "BackupCodesDescription": "Use backup codes to sign in when you don't have access to your phone.",
-  "BackupCodesSecondDescription": "Each code can be used once. You can get new codes anytime. Only codes which were generated last are valid.",
-  "BackupCodesTitle": "Backup codes",
-  "CodesCounter": "codes:",
-  "PrintButton": "Print",
-  "RequestNewButton": "Request new"
+﻿{
+    "BackupCodesDescription": "ໃຊ້ລະຫັດສຳຮອງເພື່ອເຂົ້າສູ່ລະບົບເມື່ອທ່ານບໍ່ສາມາດເຂົ້າເຖິງໂທລະສັບຂອງທ່ານ.",
+    "BackupCodesSecondDescription": "ແຕ່ລະລະຫັດສາມາດໃຊ້ໄດ້ຄັ້ງດຽວ. ທ່ານສາມາດໄດ້ຮັບລະຫັດໃຫມ່ໄດ້ທຸກເວລາ. ມີພຽງລະຫັດທີ່ສ້າງຂຶ້ນຫຼ້າສຸດເທົ່ານັ້ນທີ່ຖືກຕ້ອງ.",
+    "BackupCodesTitle": "ລະຫັດ ສຳຮອງ",
+    "CodesCounter": "ລະຫັັດ",
+    "PrintButton": "ພີມ",
+    "RequestNewButton": "ຄຳຂໍໃໝ່"
 }
