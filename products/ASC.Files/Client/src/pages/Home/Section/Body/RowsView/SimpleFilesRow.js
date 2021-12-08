@@ -72,28 +72,26 @@ const StyledSimpleFilesRow = styled(Row)`
 
   .share-button-icon:hover {
     cursor: pointer;
-    color: #657077;
     path {
-      fill: #657077;
+      fill: #3b72a7;
     }
   }
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
-  @media (max-width: 1312px) {
-    .share-button-icon {
-      padding-top: 3px;
-    }
-  }
-
   .styled-element {
     height: 32px;
-    /* width: ${(props) => (props.isEdit ? "52px" : "24px")}; */
     margin-right: 7px;
   }
 
+  .can-convert:hover {
+    path {
+      fill: #3b72a7;
+    }
+  }
+
   .badge {
-    width: 100%;
-    height: 100%;
+    width: 16px;
+    height: 16px;
     margin-right: 25px;
   }
 
@@ -103,12 +101,14 @@ const StyledSimpleFilesRow = styled(Row)`
 
   .badge-version {
     margin-right: 25px;
-    height: 16px;
-    width: 27px;
+    min-width: max-content;
+    padding: 0;
+    border: 0;
   }
 
   .lock-file {
     cursor: ${(props) => (props.withAccess ? "pointer" : "default")};
+    width: 14px;
   }
 
   .badges {

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Badge from "@appserver/components/badge";
 import IconButton from "@appserver/components/icon-button";
-import { StyledFileActionsConvertEditDocIcon } from "./Icons";
 import SharedButton from "@appserver/files/src/components/SharedButton";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
@@ -57,12 +56,12 @@ const Badges = ({
           backgroundColor="#A3A9AE"
           borderRadius="11px"
           color="#FFFFFF"
-          fontSize="10px"
+          fontSize="9px"
           fontWeight={800}
-          label={`V.${versionGroup}`}
+          label={`V. ${versionGroup}`}
           maxWidth="50px"
           onClick={onShowVersionHistory}
-          padding="0 5px"
+          padding="1px 5px"
           data-id={id}
         />
       )}
@@ -71,8 +70,7 @@ const Badges = ({
           onClick={setConvertDialogVisible}
           iconName="/static/images/refresh.react.svg"
           className="badge icons-group can-convert"
-          size="small"
-          isfill={true}
+          size="medium"
           color="#A3A9AE"
           hoverColor="#3B72A7"
         />
@@ -104,14 +102,13 @@ const Badges = ({
         />
       ) : null}
       {accessToEdit && !isTrashFolder && (
-        <StyledIcon
+        <IconButton
           iconName={
             locked
               ? "/static/images/file.actions.locked.react.svg"
               : "/static/images/locked.react.svg"
           }
           className="badge lock-file icons-group"
-          size="medium"
           data-id={id}
           data-locked={locked ? true : false}
           onClick={onClickLock}

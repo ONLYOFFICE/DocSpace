@@ -24,7 +24,7 @@ const SharedButton = ({
       className="badge share-button-icon"
       color={color}
       hoverColor="#657077"
-      size={isSmallIcon ? 10 : 14}
+      size={isSmallIcon ? 10 : 16}
       iconName={"/static/images/catalog.share.react.svg"}
       onClick={onClickShare}
     />
