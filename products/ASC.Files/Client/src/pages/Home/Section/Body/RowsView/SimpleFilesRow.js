@@ -146,7 +146,10 @@ const SimpleFilesRow = (props) => {
     onMouseClick,
     isEdit,
     isActive,
+    isAdmin,
   } = props;
+
+  const withAccess = isAdmin || item.access === 0;
 
   const element = (
     <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
@@ -180,6 +183,7 @@ const SimpleFilesRow = (props) => {
           dragging={dragging && isDragging}
           isActive={isActive}
           isThirdPartyFolder={item.isThirdPartyFolder}
+          withAccess={withAccess}
         >
           <FilesRowContent
             item={item}

@@ -34,7 +34,6 @@ const FilesRowContent = ({
   updatedDate,
   fileOwner,
   linkStyles,
-  isAdmin,
 }) => {
   const {
     contentLength,
@@ -42,11 +41,8 @@ const FilesRowContent = ({
     filesCount,
     foldersCount,
     providerKey,
-    access,
     title,
   } = item;
-
-  const withAccess = isAdmin || access === 0;
 
   return (
     <>
@@ -55,7 +51,6 @@ const FilesRowContent = ({
         isMobile={isMobile}
         sideColor={sideColor}
         isFile={fileExst || contentLength}
-        withAccess={withAccess}
       >
         <Link
           containerWidth="55%"
