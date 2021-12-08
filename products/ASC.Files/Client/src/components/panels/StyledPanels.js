@@ -623,7 +623,7 @@ const StyledSelectFolderPanel = styled.div`
     `}
 
   ${(props) =>
-    props.folderListLength === 1 &&
+    props.noTreeSwitcher &&
     css`
       span.rc-tree-switcher.rc-tree-switcher-noop {
         display: none;
@@ -701,6 +701,14 @@ const StyledSelectFolderPanel = styled.div`
 `;
 const StyledSelectFilePanel = styled.div`
   height: 100%;
+  ${(props) =>
+    props.noTreeSwitcher &&
+    css`
+      span.rc-tree-switcher.rc-tree-switcher-noop {
+        display: none;
+      }
+    `}
+
   .files-list-body {
     height: 100%;
     ${(props) =>
