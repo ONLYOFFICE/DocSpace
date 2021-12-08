@@ -71,9 +71,9 @@ let isSharingAccess;
 let user = null;
 let personal;
 let url = window.location.href;
+let config;
 const filesUrl = url.substring(0, url.indexOf("/doceditor"));
 const doc = url.indexOf("doc=") !== -1 ? url.split("doc=")[1] : null;
-
 
 toast.configure();
 
@@ -148,7 +148,7 @@ const Editor = () => {
     docEditor.setFavorite(favorite);
   };
 
-  const initDesktop = (config) => {
+  const initDesktop = () => {
     const isEncryption = config?.editorConfig["encryptionKeys"] !== undefined;
 
     regDesktop(
@@ -275,7 +275,7 @@ const Editor = () => {
 
       setIsLoading(false);
 
-      loadScript(docApiUrl, "scripDocServiceAddress", () => onLoad(config));
+      loadScript(docApiUrl, "scripDocServiceAddress", () => onLoad());
     } catch (error) {
       console.log(error);
       toastr.error(
@@ -338,7 +338,7 @@ const Editor = () => {
     document.title = title;
   };
 
-  const onLoad = (config) => {
+  const onLoad = () => {
     try {
       if (!window.DocsAPI) throw new Error("DocsAPI is not defined");
 
