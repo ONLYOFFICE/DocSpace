@@ -381,17 +381,15 @@ namespace ASC.Files.Helpers
                 .Select(FileOperationWraperHelper.Get);
         }
 
-        public IEnumerable<ConversationResult<T>> StartConversion(T fileId, bool sync = false)
+        public IEnumerable<ConversationResult<T>> StartConversion(CheckConversionModel<T> model)
         {
-            return CheckConversion(fileId, true, sync);
+            model.StartConvert = true;
+            return CheckConversion(model);
         }
 
-        public IEnumerable<ConversationResult<T>> CheckConversion(T fileId, bool start, bool sync = false)
+        public IEnumerable<ConversationResult<T>> CheckConversion(CheckConversionModel<T> model)
         {
-            return FileStorageService.CheckConversion(new List<List<string>>
-            {
-                new List<string> { fileId.ToString(), "0", start.ToString() }
-            }, sync)
+            return FileStorageService.CheckConversion(new List<CheckConversionModel<T>>() { model })
             .Select(r =>
             {
                 var o = new ConversationResult<T>
@@ -417,6 +415,7 @@ namespace ASC.Files.Helpers
                     }
                     catch (Exception e)
                     {
+                        o.File = r.Result;
                         Logger.Error(e);
                     }
                 }

@@ -1179,15 +1179,17 @@ namespace ASC.Api.Documents
         /// <param name="fileId"></param>
         /// <returns>Operation result</returns>
         [Update("file/{fileId}/checkconversion")]
-        public IEnumerable<ConversationResult<string>> StartConversion(string fileId, [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] CheckConversionModel model)
+        public IEnumerable<ConversationResult<string>> StartConversion(string fileId, [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] CheckConversionModel<string> model)
         {
-            return FilesControllerHelperString.StartConversion(fileId, model?.Sync ?? false);
+            model.FileId = fileId;
+            return FilesControllerHelperString.StartConversion(model);
         }
 
         [Update("file/{fileId:int}/checkconversion")]
-        public IEnumerable<ConversationResult<int>> StartConversion(int fileId, [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] CheckConversionModel model)
+        public IEnumerable<ConversationResult<int>> StartConversion(int fileId, [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] CheckConversionModel<int> model)
         {
-            return FilesControllerHelperInt.StartConversion(fileId, model?.Sync ?? false);
+            model.FileId = fileId;
+            return FilesControllerHelperInt.StartConversion(model);
         }
 
         /// <summary>
@@ -1201,13 +1203,21 @@ namespace ASC.Api.Documents
         [Read("file/{fileId}/checkconversion")]
         public IEnumerable<ConversationResult<string>> CheckConversion(string fileId, bool start)
         {
-            return FilesControllerHelperString.CheckConversion(fileId, start);
+            return FilesControllerHelperString.CheckConversion(new CheckConversionModel<string>()
+            {
+                FileId = fileId,
+                StartConvert = start
+            });
         }
 
         [Read("file/{fileId:int}/checkconversion")]
         public IEnumerable<ConversationResult<int>> CheckConversion(int fileId, bool start)
         {
-            return FilesControllerHelperInt.CheckConversion(fileId, start);
+            return FilesControllerHelperInt.CheckConversion(new CheckConversionModel<int>()
+            {
+                FileId = fileId,
+                StartConvert = start
+            });
         }
 
         /// <summary>
@@ -2541,7 +2551,7 @@ namespace ASC.Api.Documents
             /// Result file of operation.
             /// </summary>
             [JsonPropertyName("result")]
-            public FileWrapper<T> File { get; set; }
+            public object File { get; set; }
 
             /// <summary>
             /// Error during conversation.
