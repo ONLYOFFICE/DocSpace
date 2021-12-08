@@ -29,6 +29,7 @@ const SelectFolderDialogAsideView = ({
   canCreate,
   isLoading,
   primaryButtonName,
+  noTreeSwitcher,
 }) => {
   return (
     <StyledAsidePanel visible={isPanelVisible}>
@@ -62,6 +63,7 @@ const SelectFolderDialogAsideView = ({
             displayType={DISPLAY_TYPE}
             showButtons={showButtons}
             isFooter={!!footer}
+            noTreeSwitcher={noTreeSwitcher}
           >
             <div className="select-folder-dialog_aside_body">
               <div>{header} </div>

@@ -25,6 +25,7 @@ class SelectFileDialogModalView extends React.Component {
       isAvailable: true,
     };
     this.folderList = "";
+    this.noTreeSwitcher = false;
   }
 
   componentDidMount() {
@@ -46,7 +47,10 @@ class SelectFileDialogModalView extends React.Component {
       case "exceptSortedByTags":
         try {
           const foldersTree = await getFoldersTree();
-          this.folderList = SelectFolderDialog.convertFolders(
+          [
+            this.folderList,
+            this.noTreeSwitcher,
+          ] = SelectFolderDialog.convertFolders(
             foldersTree,
             exceptSortedByTagsFolders
           );
@@ -60,10 +64,10 @@ class SelectFileDialogModalView extends React.Component {
       case "exceptTrashFolder":
         try {
           const foldersTree = await getFoldersTree();
-          this.folderList = SelectFolderDialog.convertFolders(
-            foldersTree,
-            exceptTrashFolder
-          );
+          [
+            this.folderList,
+            this.noTreeSwitcher,
+          ] = SelectFolderDialog.convertFolders(foldersTree, exceptTrashFolder);
           this.onSetSelectedFolder();
         } catch (err) {
           console.error(err);
@@ -74,7 +78,10 @@ class SelectFileDialogModalView extends React.Component {
       case "exceptPrivacyTrashFolders":
         try {
           const foldersTree = await getFoldersTree();
-          this.folderList = SelectFolderDialog.convertFolders(
+          [
+            this.folderList,
+            this.noTreeSwitcher,
+          ] = SelectFolderDialog.convertFolders(
             foldersTree,
             exceptPrivacyTrashFolders
           );
@@ -199,6 +206,7 @@ class SelectFileDialogModalView extends React.Component {
             <StyledSelectFilePanel
               isHeaderChildren={isHeaderChildren}
               displayType="modal"
+              noTreeSwitcher={this.noTreeSwitcher}
             >
               <div className="modal-dialog_body">
                 <div className="modal-dialog_tree-body">

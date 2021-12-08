@@ -772,6 +772,13 @@ namespace ASC.Web.Files.Services.DocumentService
                         return null;
                     }
 
+                    if (_configuration.Document.Info.GetFile().Encrypted
+                        && _configuration.Document.Info.GetFile().RootFolderType == FolderType.Privacy
+                        && !fileSecurity.CanRead(parent))
+                    {
+                        parent = folderDao.GetFolder(GlobalFolderHelper.GetFolderPrivacy<T>());
+                    }
+
                     return new GobackConfig
                     {
                         Url = PathProvider.GetFolderUrl(parent),

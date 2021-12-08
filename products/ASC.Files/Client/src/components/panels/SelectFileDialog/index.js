@@ -356,7 +356,7 @@ SelectFileDialogBody.propTypes = {
   withoutProvider: PropTypes.bool,
   creationButtonPrimary: PropTypes.bool,
   headerName: PropTypes.string,
-  titleFilesList: PropTypes.string,
+  titleFilesList: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   zIndex: PropTypes.number,
 };
 
