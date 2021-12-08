@@ -21,9 +21,13 @@ export default function withContent(WrappedContent) {
     constructor(props) {
       super(props);
 
-      const { item, fileActionId, fileActionExt } = props;
+      const { item, fileActionId, fileActionExt, fileActionTemplateId } = props;
       let titleWithoutExt = getTitleWithoutExst(item);
-      if (fileActionId === -1 && item.id === fileActionId) {
+      if (
+        fileActionId === -1 &&
+        item.id === fileActionId &&
+        fileActionTemplateId === null
+      ) {
         titleWithoutExt = getDefaultFileName(fileActionExt);
       }
 
@@ -119,16 +123,17 @@ export default function withContent(WrappedContent) {
     createItem = (e, open) => {
       const {
         createFile,
-        item,
-        setIsLoading,
-        isLoading,
-        openDocEditor,
-        isPrivacy,
-        isDesktop,
-        replaceFileStream,
-        t,
-        setEncryptionAccess,
         createFolder,
+        fileActionTemplateId,
+        isDesktop,
+        isLoading,
+        isPrivacy,
+        item,
+        openDocEditor,
+        replaceFileStream,
+        setEncryptionAccess,
+        setIsLoading,
+        t,
       } = this.props;
       const { itemTitle } = this.state;
 
@@ -162,7 +167,11 @@ export default function withContent(WrappedContent) {
             .finally(() => {
               return setIsLoading(false);
             })
-        : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
+        : createFile(
+            item.parentId,
+            `${itemTitle}.${item.fileExst}`,
+            fileActionTemplateId
+          )
             .then((file) => {
               if (isPrivacy) {
                 return setEncryptionAccess(file).then((encryptedFile) => {
@@ -230,25 +239,26 @@ export default function withContent(WrappedContent) {
     render() {
       const { itemTitle } = this.state;
       const {
-        item,
-        fileActionId,
-        fileActionExt,
-        viewer,
-        t,
-        isTrashFolder,
-        onFilesClick,
-        viewAs,
         element,
+        fileActionExt,
+        fileActionId,
         isDesktop,
+        isTrashFolder,
+        item,
+        onFilesClick,
+        t,
+        viewAs,
+        viewer,
       } = this.props;
       const {
-        id,
-        fileExst,
-        updated,
-        createdBy,
         access,
+        createdBy,
+        fileExst,
         fileStatus,
         href,
+        icon,
+        id,
+        updated,
       } = item;
 
       const titleWithoutExt = getTitleWithoutExst(item);
@@ -275,7 +285,7 @@ export default function withContent(WrappedContent) {
         : { onClick: onFilesClick };
 
       if (!isDesktop && !isTrashFolder) {
-        linkStyles.href = item.href;
+        linkStyles.href = href;
       }
 
       const newItems = item.new || fileStatus === 2;
@@ -283,7 +293,7 @@ export default function withContent(WrappedContent) {
       const elementIcon = element ? (
         element
       ) : (
-        <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
+        <ItemIcon id={id} icon={icon} fileExst={fileExst} />
       );
 
       return isEdit ? (
@@ -319,51 +329,53 @@ export default function withContent(WrappedContent) {
     ({ filesActionsStore, filesStore, treeFoldersStore, auth }, {}) => {
       const { editCompleteAction } = filesActionsStore;
       const {
-        setIsLoading,
-        isLoading,
-        openDocEditor,
-        updateFile,
-        renameFolder,
         createFile,
         createFolder,
+        isLoading,
+        openDocEditor,
+        renameFolder,
+        setIsLoading,
+        updateFile,
         viewAs,
       } = filesStore;
       const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
 
       const {
-        type: fileActionType,
         extension: fileActionExt,
         id: fileActionId,
+        templateId: fileActionTemplateId,
+        type: fileActionType,
       } = filesStore.fileActionStore;
       const { replaceFileStream, setEncryptionAccess } = auth;
       const {
         culture,
-        isDesktopClient,
         folderFormValidation,
+        isDesktopClient,
       } = auth.settingsStore;
 
       return {
-        setIsLoading,
+        createFile,
+        createFolder,
+        culture,
+        editCompleteAction,
+        fileActionExt,
+        fileActionId,
+        fileActionTemplateId,
+        fileActionType,
+        folderFormValidation,
+        homepage: config.homepage,
+        isDesktop: isDesktopClient,
         isLoading,
+        isPrivacy: isPrivacyFolder,
         isTrashFolder: isRecycleBinFolder,
         openDocEditor,
-        updateFile,
         renameFolder,
-        fileActionId,
-        editCompleteAction,
-        fileActionType,
-        createFile,
-        isPrivacy: isPrivacyFolder,
-        isDesktop: isDesktopClient,
         replaceFileStream,
         setEncryptionAccess,
-        createFolder,
-        fileActionExt,
-        culture,
-        homepage: config.homepage,
-        viewer: auth.userStore.user,
+        setIsLoading,
+        updateFile,
         viewAs,
-        folderFormValidation,
+        viewer: auth.userStore.user,
       };
     }
   )(observer(WithContent));

@@ -1,4 +1,5 @@
 import { getNewFiles } from "@appserver/common/api/files";
+import { FileAction } from "@appserver/common/constants";
 import { makeAutoObservable } from "mobx";
 
 class DialogsStore {
@@ -177,14 +178,18 @@ class DialogsStore {
   };
 
   createMasterForm = async (fileInfo) => {
-    const { createFile, fetchFiles, filter } = this.filesStore;
-    const { id } = this.selectedFolderStore;
+    const { setAction } = this.filesStore.fileActionStore;
+
     let newTitle = fileInfo.title;
     newTitle = newTitle.substring(0, newTitle.lastIndexOf("."));
 
-    createFile(id, `${newTitle}.docxf`, fileInfo.id)
-      .then(() => fetchFiles(id, filter, true, true))
-      .catch((err) => console.error(err));
+    setAction({
+      type: FileAction.Create,
+      extension: "docxf",
+      id: -1,
+      title: `${newTitle}.docxf`,
+      templateId: fileInfo.id,
+    });
   };
 }
 
