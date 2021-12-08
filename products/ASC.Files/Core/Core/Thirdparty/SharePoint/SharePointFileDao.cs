@@ -80,7 +80,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public async Task InvalidateCacheAsync(string fileId)
         {
-            await ProviderInfo.InvalidateStorageAsync();
+            await ProviderInfo.InvalidateStorageAsync().ConfigureAwait(false);
         }
 
         public File<string> GetFile(string fileId)
@@ -90,7 +90,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public async Task<File<string>> GetFileAsync(string fileId)
         {
-            return await GetFileAsync(fileId, 1);
+            return await GetFileAsync(fileId, 1).ConfigureAwait(false);
         }
 
         public File<string> GetFile(string fileId, int fileVersion)
@@ -100,7 +100,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public async Task<File<string>> GetFileAsync(string fileId, int fileVersion)
         {
-            return ProviderInfo.ToFile(await ProviderInfo.GetFileByIdAsync(fileId));
+            return ProviderInfo.ToFile(await ProviderInfo.GetFileByIdAsync(fileId).ConfigureAwait(false));
         }
 
         public File<string> GetFile(string parentId, string title)
@@ -110,7 +110,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public async Task<File<string>> GetFileAsync(string parentId, string title)
         {
-            var files = await ProviderInfo.GetFolderFilesAsync(parentId);
+            var files = await ProviderInfo.GetFolderFilesAsync(parentId).ConfigureAwait(false);
             return ProviderInfo.ToFile(files.FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase)));
         }
 
@@ -121,7 +121,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public async Task<File<string>> GetFileStableAsync(string fileId, int fileVersion = -1)
         {
-            return ProviderInfo.ToFile(await ProviderInfo.GetFileByIdAsync(fileId));
+            return ProviderInfo.ToFile(await ProviderInfo.GetFileByIdAsync(fileId).ConfigureAwait(false));
         }
 
         public List<File<string>> GetFileHistory(string fileId)
@@ -131,7 +131,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public async Task<List<File<string>>> GetFileHistoryAsync(string fileId)
         {
-            return new List<File<string>> { await GetFileAsync(fileId) };
+            return new List<File<string>> { await GetFileAsync(fileId).ConfigureAwait(false) };
         }
 
         public List<File<string>> GetFiles(IEnumerable<string> fileIds)
@@ -145,7 +145,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
             if (fileIds == null || !fileIds.Any()) return AsyncEnumerable.Empty<File<string>>();
 
-            var result = fileIds.ToAsyncEnumerable().SelectAwait(async e => ProviderInfo.ToFile(await ProviderInfo.GetFileByIdAsync(fileIds)));
+            var result = fileIds.ToAsyncEnumerable().SelectAwait(async e => ProviderInfo.ToFile(await ProviderInfo.GetFileByIdAsync(fileIds).ConfigureAwait(false)));
 
             return result;
         }
@@ -214,7 +214,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public async Task<List<string>> GetFilesAsync(string parentId)
         {
-            var files = await ProviderInfo.GetFolderFilesAsync(parentId);
+            var files = await ProviderInfo.GetFolderFilesAsync(parentId).ConfigureAwait(false);
             return files.Select(r => ProviderInfo.ToFile(r).ID).ToList();
         }
 
@@ -228,7 +228,7 @@ namespace ASC.Files.Thirdparty.SharePoint
             if (filterType == FilterType.FoldersOnly) return new List<File<string>>();
 
             //Get only files
-            var folderFiles = await ProviderInfo.GetFolderFilesAsync(parentId);
+            var folderFiles = await ProviderInfo.GetFolderFilesAsync(parentId).ConfigureAwait(false);
             var files = folderFiles.Select(r => ProviderInfo.ToFile(r));
 
             //Filter
@@ -294,7 +294,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public override async Task<Stream> GetFileStreamAsync(File<string> file)
         {
-            return await  GetFileStreamAsync(file, 0);
+            return await  GetFileStreamAsync(file, 0).ConfigureAwait(false);
         }
 
         public Stream GetFileStream(File<string> file, long offset)
@@ -304,11 +304,11 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public async Task<Stream> GetFileStreamAsync(File<string> file, long offset)
         {
-            var fileToDownload = await ProviderInfo.GetFileByIdAsync(file.ID);
+            var fileToDownload = await ProviderInfo.GetFileByIdAsync(file.ID).ConfigureAwait(false);
             if (fileToDownload == null)
                 throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
 
-            var fileStream = await ProviderInfo.GetFileStreamAsync(fileToDownload.ServerRelativeUrl, (int)offset);
+            var fileStream = await ProviderInfo.GetFileStreamAsync(fileToDownload.ServerRelativeUrl, (int)offset).ConfigureAwait(false);
 
             return fileStream;
         }
@@ -344,25 +344,25 @@ namespace ASC.Files.Thirdparty.SharePoint
 
             if (file.ID != null)
             {
-                var sharePointFile = await ProviderInfo.CreateFileAsync(file.ID, fileStream);
+                var sharePointFile = await ProviderInfo.CreateFileAsync(file.ID, fileStream).ConfigureAwait(false);
 
                 var resultFile = ProviderInfo.ToFile(sharePointFile);
                 if (!sharePointFile.Name.Equals(file.Title))
                 {
-                    var folder = await ProviderInfo.GetFolderByIdAsync(file.FolderID);
+                    var folder = await ProviderInfo.GetFolderByIdAsync(file.FolderID).ConfigureAwait(false);
                     file.Title = GetAvailableTitle(file.Title, folder, IsExist);
 
-                    var id = await ProviderInfo.RenameFileAsync(DaoSelector.ConvertId(resultFile.ID).ToString(), file.Title);
-                    return await GetFileAsync(DaoSelector.ConvertId(id));
+                    var id = await ProviderInfo.RenameFileAsync(DaoSelector.ConvertId(resultFile.ID).ToString(), file.Title).ConfigureAwait(false);
+                    return await GetFileAsync(DaoSelector.ConvertId(id)).ConfigureAwait(false);
                 }
                 return resultFile;
             }
 
             if (file.FolderID != null)
             {
-                var folder = await ProviderInfo.GetFolderByIdAsync(file.FolderID);
+                var folder = await ProviderInfo.GetFolderByIdAsync(file.FolderID).ConfigureAwait(false);
                 file.Title = GetAvailableTitle(file.Title, folder, IsExist);
-                return ProviderInfo.ToFile(await ProviderInfo.CreateFileAsync(folder.ServerRelativeUrl + "/" + file.Title, fileStream));
+                return ProviderInfo.ToFile(await ProviderInfo.CreateFileAsync(folder.ServerRelativeUrl + "/" + file.Title, fileStream).ConfigureAwait(false));
             }
 
             return null;
@@ -375,7 +375,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public async Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
         {
-            return await SaveFileAsync(file, fileStream);
+            return await SaveFileAsync(file, fileStream).ConfigureAwait(false);
         }
 
         public void DeleteFile(string fileId)
@@ -385,7 +385,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public async Task DeleteFileAsync(string fileId)
         {
-            await ProviderInfo.DeleteFileAsync(fileId);
+            await ProviderInfo.DeleteFileAsync(fileId).ConfigureAwait(false);
         }
 
         public bool IsExist(string title, object folderId)
@@ -395,7 +395,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public async Task<bool> IsExistAsync(string title, object folderId)
         {
-            var files = await ProviderInfo.GetFolderFilesAsync(folderId);
+            var files = await ProviderInfo.GetFolderFilesAsync(folderId).ConfigureAwait(false);
             return files.Any(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
         }
 
@@ -406,7 +406,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public async Task<bool> IsExistAsync(string title, Microsoft.SharePoint.Client.Folder folder)
         {
-            var files = await ProviderInfo.GetFolderFilesAsync(folder.ServerRelativeUrl);
+            var files = await ProviderInfo.GetFolderFilesAsync(folder.ServerRelativeUrl).ConfigureAwait(false);
             return files.Any(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
         }
 
@@ -419,12 +419,12 @@ namespace ASC.Files.Thirdparty.SharePoint
         {
             if (toFolderId is int tId)
             {
-                return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tId), typeof(TTo));
+                return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tId).ConfigureAwait(false), typeof(TTo));
             }
 
             if (toFolderId is string tsId)
             {
-                return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tsId), typeof(TTo));
+                return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tsId).ConfigureAwait(false), typeof(TTo));
             }
 
             throw new NotImplementedException();
@@ -440,7 +440,8 @@ namespace ASC.Files.Thirdparty.SharePoint
             var moved = await CrossDao.PerformCrossDaoFileCopyAsync(
                 fileId, this, SharePointDaoSelector.ConvertId,
                 toFolderId, FileDao, r => r,
-                true);
+                true)
+                .ConfigureAwait(false);
 
             return moved.ID;
         }
@@ -452,8 +453,8 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public async Task<string> MoveFileAsync(string fileId, string toFolderId)
         {
-            var newFileId = await ProviderInfo.MoveFileAsync(fileId, toFolderId);
-            UpdatePathInDB(ProviderInfo.MakeId(fileId), newFileId);
+            var newFileId = await ProviderInfo.MoveFileAsync(fileId, toFolderId).ConfigureAwait(false);
+            await UpdatePathInDBAsync(ProviderInfo.MakeId(fileId), newFileId).ConfigureAwait(false);
             return newFileId;
         }
 
@@ -466,12 +467,12 @@ namespace ASC.Files.Thirdparty.SharePoint
         {
             if (toFolderId is int tId)
             {
-                return await CopyFileAsync(fileId, tId) as File<TTo>;
+                return await CopyFileAsync(fileId, tId).ConfigureAwait(false) as File<TTo>;
             }
 
             if (toFolderId is string tsId)
             {
-                return await CopyFileAsync(fileId, tsId) as File<TTo>;
+                return await CopyFileAsync(fileId, tsId).ConfigureAwait(false) as File<TTo>;
             }
 
             throw new NotImplementedException();
@@ -487,7 +488,8 @@ namespace ASC.Files.Thirdparty.SharePoint
             var moved = await CrossDao.PerformCrossDaoFileCopyAsync(
                 fileId, this, SharePointDaoSelector.ConvertId,
                 toFolderId, FileDao, r => r,
-                false);
+                false)
+                .ConfigureAwait(false);
 
             return moved;
         }
@@ -499,7 +501,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public async Task<File<string>> CopyFileAsync(string fileId, string toFolderId)
         {
-            return ProviderInfo.ToFile(await ProviderInfo.CopyFileAsync(fileId, toFolderId));
+            return ProviderInfo.ToFile(await ProviderInfo.CopyFileAsync(fileId, toFolderId).ConfigureAwait(false));
         }
 
         public string FileRename(File<string> file, string newTitle)
@@ -509,8 +511,8 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public async Task<string> FileRenameAsync(File<string> file, string newTitle)
         {
-            var newFileId = await ProviderInfo.RenameFileAsync(file.ID, newTitle);
-            await UpdatePathInDBAsync(ProviderInfo.MakeId(file.ID), newFileId);
+            var newFileId = await ProviderInfo.RenameFileAsync(file.ID, newTitle).ConfigureAwait(false);
+            await UpdatePathInDBAsync(ProviderInfo.MakeId(file.ID), newFileId).ConfigureAwait(false);
             return newFileId;
         }
 
@@ -526,6 +528,11 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public void CompleteVersion(string fileId, int fileVersion)
         {
+        }
+
+        public Task CompleteVersionAsync(string fileId, int fileVersion)
+        {
+            return Task.CompletedTask;
         }
 
 
@@ -566,7 +573,7 @@ namespace ASC.Files.Thirdparty.SharePoint
                 if (uploadSession.BytesTotal == 0)
                     uploadSession.BytesTotal = chunkLength;
 
-                uploadSession.File = await SaveFileAsync(uploadSession.File, chunkStream);
+                uploadSession.File = await SaveFileAsync(uploadSession.File, chunkStream).ConfigureAwait(false);
                 uploadSession.BytesUploaded = chunkLength;
                 return uploadSession.File;
             }

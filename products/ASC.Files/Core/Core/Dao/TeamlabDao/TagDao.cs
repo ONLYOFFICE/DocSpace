@@ -96,7 +96,7 @@ namespace ASC.Files.Core.Data
 
             foreach (var f in fileEntries)
             {
-                var idObj = await MappingIDAsync(f.ID);
+                var idObj = await MappingIDAsync(f.ID).ConfigureAwait(false);
                 var id = idObj.ToString();
                 if (f.FileEntryType == FileEntryType.File)
                 {
@@ -120,7 +120,7 @@ namespace ASC.Files.Core.Data
                 q = q.Where(r => r.Link.CreateBy == subject);
             }
 
-            await foreach (var e in FromQueryAsync(q))
+            await foreach (var e in FromQueryAsync(q).ConfigureAwait(false))
             {
                 yield return e;
             }
@@ -138,7 +138,7 @@ namespace ASC.Files.Core.Data
 
             foreach (var f in fileEntries)
             {
-                var idObj = await MappingIDAsync(f.ID);
+                var idObj = await MappingIDAsync(f.ID).ConfigureAwait(false);
                 var id = idObj.ToString();
                 if (f.FileEntryType == FileEntryType.File)
                 {
@@ -164,7 +164,7 @@ namespace ASC.Files.Core.Data
                     q = q.Where(r => r.Link.CreateBy == subject);
                 }
 
-                var fromQuery = await FromQueryAsync(q).ToListAsync();
+                var fromQuery = await FromQueryAsync(q).ToListAsync().ConfigureAwait(false);
 
                 return fromQuery
                     .GroupBy(r => r.EntryId)
@@ -199,7 +199,7 @@ namespace ASC.Files.Core.Data
                 .Where(r => r.Link.EntryId == MappingID(entryID).ToString())
                 .Where(r => r.Tag.Flag == tagType);
 
-            await foreach (var e in FromQueryAsync(q))
+            await foreach (var e in FromQueryAsync(q).ConfigureAwait(false))
             {
                 yield return e;
             }
@@ -221,7 +221,7 @@ namespace ASC.Files.Core.Data
                 .Where(r => names.Contains(r.Tag.Name))
                 .Where(r => r.Tag.Flag == tagType);
 
-            await foreach(var e in FromQueryAsync(q))
+            await foreach(var e in FromQueryAsync(q).ConfigureAwait(false))
             {
                 yield return e;
             }
@@ -259,7 +259,7 @@ namespace ASC.Files.Core.Data
 
             q = q.OrderByDescending(r => r.Link.CreateOn);
 
-            await foreach (var e in FromQueryAsync(q))
+            await foreach (var e in FromQueryAsync(q).ConfigureAwait(false))
             {
                 yield return e;
             }
@@ -512,25 +512,26 @@ namespace ASC.Files.Core.Data
                             r.Owner == tag.Owner &&
                             r.Flag == tag.TagType)
                 .Select(r => r.Id)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync()
+                .ConfigureAwait(false);
 
             if (id != 0)
             {
-                var entryId = (await MappingIDAsync(tag.EntryId)).ToString();
+                var entryId = (await MappingIDAsync(tag.EntryId).ConfigureAwait(false)).ToString();
                 var toDelete = Query(FilesDbContext.TagLink)
                     .Where(r => r.TagId == id &&
                                 r.EntryId == entryId &&
                                 r.EntryType == tag.EntryType);
 
                 FilesDbContext.TagLink.RemoveRange(toDelete);
-                await FilesDbContext.SaveChangesAsync();
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-                var count = await Query(FilesDbContext.TagLink).CountAsync(r => r.TagId == id);
+                var count = await Query(FilesDbContext.TagLink).CountAsync(r => r.TagId == id).ConfigureAwait(false);
                 if (count == 0)
                 {
                     var tagToDelete = Query(FilesDbContext.Tag).Where(r => r.Id == id);
                     FilesDbContext.Tag.RemoveRange(tagToDelete);
-                    await FilesDbContext.SaveChangesAsync();
+                    await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -558,7 +559,7 @@ namespace ASC.Files.Core.Data
 
             foreach (var r in fileEntries)
             {
-                var idObj = await MappingIDAsync(r.ID);
+                var idObj = await MappingIDAsync(r.ID).ConfigureAwait(false);
                 var id = idObj.ToString();
                 var entryType = (r.FileEntryType == FileEntryType.File) ? FileEntryType.File : FileEntryType.Folder;
 
@@ -588,7 +589,7 @@ namespace ASC.Files.Core.Data
                     sqlQuery = sqlQuery.Where(r => r.Tag.Owner == subject);
                 }
 
-                await foreach (var e in FromQueryAsync(sqlQuery))
+                await foreach (var e in FromQueryAsync(sqlQuery).ConfigureAwait(false))
                 {
                     yield return e;
                 }
@@ -771,7 +772,7 @@ namespace ASC.Files.Core.Data
                 tempTags = tempTags.Concat(FromQueryAsync(q));
             }
 
-            if (await tempTags.AnyAsync())
+            if (await tempTags.AnyAsync().ConfigureAwait(false))
             {
                 if (!deepSearch)
                 {
@@ -807,7 +808,7 @@ namespace ASC.Files.Core.Data
 
             result.Concat( FromQueryAsync(newTagsForFolders));
 
-            var where = (deepSearch ? await monitorFolderIds.ToArrayAsync() : new object[] { parentFolder.ID })
+            var where = (deepSearch ? await monitorFolderIds.ToArrayAsync().ConfigureAwait(false) : new object[] { parentFolder.ID })
                 .Select(r => r.ToString())
                 .ToList();
 
@@ -836,7 +837,7 @@ namespace ASC.Files.Core.Data
                     querySelect = querySelect.Where(r => r.UserId == subject);
                 }
 
-                var folderIds = await querySelect.Select(r => r.Id).ToListAsync();
+                var folderIds = await querySelect.Select(r => r.Id).ToListAsync().ConfigureAwait(false);
                 var thirdpartyFolderIds = folderIds.ConvertAll(r => "sbox-" + r)
                                                     .Concat(folderIds.ConvertAll(r => $"box-{r}"))
                                                     .Concat(folderIds.ConvertAll(r => $"dropbox-{r}"))
@@ -888,11 +889,13 @@ namespace ASC.Files.Core.Data
                         EntryId = r.Link.EntryId,
                         EntryType = r.Link.EntryType
                     }
-                }).ToListAsync();
+                })
+                .ToListAsync()
+                .ConfigureAwait(false);
 
             foreach (var file in files)
             {
-                yield return await ToTagAsync(file);
+                yield return await ToTagAsync(file).ConfigureAwait(false);
             }
         }
 
@@ -900,7 +903,7 @@ namespace ASC.Files.Core.Data
         {
             var result = new Tag(r.Tag.Name, r.Tag.Flag, r.Tag.Owner, r.Link.TagCount)
             {
-                EntryId = await MappingIDAsync(r.Link.EntryId),
+                EntryId = await MappingIDAsync(r.Link.EntryId).ConfigureAwait(false),
                 EntryType = r.Link.EntryType,
                 Id = r.Tag.Id,
             };

@@ -84,11 +84,11 @@ namespace ASC.Files.Thirdparty.Dropbox
         public async Task InvalidateCacheAsync(string fileId)
         {
             var dropboxFilePath = MakeDropboxPath(fileId);
-            await ProviderInfo.CacheResetAsync(dropboxFilePath, true);
+            await ProviderInfo.CacheResetAsync(dropboxFilePath, true).ConfigureAwait(false);
 
-            var dropboxFile = await GetDropboxFileAsync(fileId);
+            var dropboxFile = await GetDropboxFileAsync(fileId).ConfigureAwait(false);
             var parentPath = GetParentFolderPath(dropboxFile);
-            if (parentPath != null) await ProviderInfo.CacheResetAsync(parentPath);
+            if (parentPath != null) await ProviderInfo.CacheResetAsync(parentPath).ConfigureAwait(false);
         }
 
         public File<string> GetFile(string fileId)
@@ -98,7 +98,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public async Task<File<string>> GetFileAsync(string fileId)
         {
-            return await GetFileAsync(fileId, 1);
+            return await GetFileAsync(fileId, 1).ConfigureAwait(false);
         }
 
         public File<string> GetFile(string fileId, int fileVersion)
@@ -108,7 +108,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public async Task<File<string>> GetFileAsync(string fileId, int fileVersion)
         {
-            return ToFile(await GetDropboxFileAsync(fileId));
+            return ToFile(await GetDropboxFileAsync(fileId).ConfigureAwait(false));
         }
 
         public File<string> GetFile(string parentId, string title)
@@ -122,7 +122,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public async Task<File<string>> GetFileAsync(string parentId, string title)
         {
-            var items = await GetDropboxItemsAsync(parentId, false);
+            var items = await GetDropboxItemsAsync(parentId, false).ConfigureAwait(false);
             var metadata = items.FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
             return metadata == null
                        ? null
@@ -136,7 +136,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public async Task<File<string>> GetFileStableAsync(string fileId, int fileVersion = -1)
         {
-            return ToFile(await GetDropboxFileAsync(fileId));
+            return ToFile(await GetDropboxFileAsync(fileId).ConfigureAwait(false));
         }
 
         public List<File<string>> GetFileHistory(string fileId)
@@ -146,7 +146,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public async Task<List<File<string>>> GetFileHistoryAsync(string fileId)
         {
-            return new List<File<string>> { await GetFileAsync(fileId)};
+            return new List<File<string>> { await GetFileAsync(fileId).ConfigureAwait(false) };
         }
 
         public List<File<string>> GetFiles(IEnumerable<string> fileIds)
@@ -158,7 +158,7 @@ namespace ASC.Files.Thirdparty.Dropbox
         {
             if (fileIds == null || !fileIds.Any()) return AsyncEnumerable.Empty<File<string>>();
 
-            var result = fileIds.ToAsyncEnumerable().SelectAwait(async e => ToFile(await GetDropboxFileAsync(e)));
+            var result = fileIds.ToAsyncEnumerable().SelectAwait(async e => ToFile(await GetDropboxFileAsync(e).ConfigureAwait(false)));
 
             return result;
         }
@@ -227,7 +227,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public async Task<List<string>> GetFilesAsync(string parentId)
         {
-            var items = await GetDropboxItemsAsync(parentId, false);
+            var items = await GetDropboxItemsAsync(parentId, false).ConfigureAwait(false);
             return items.Select(entry => MakeId(entry)).ToList();
         }
 
@@ -241,7 +241,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             if (filterType == FilterType.FoldersOnly) return new List<File<string>>();
 
             //Get only files
-            var items = await GetDropboxItemsAsync(parentId, false);
+            var items = await GetDropboxItemsAsync(parentId, false).ConfigureAwait(false);
             var files = items.Select(item => ToFile(item.AsFile));
 
             //Filter
@@ -307,7 +307,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public override async Task<Stream> GetFileStreamAsync(File<string> file)
         {
-            return await GetFileStreamAsync(file, 0);
+            return await GetFileStreamAsync(file, 0).ConfigureAwait(false);
         }
 
         public Stream GetFileStream(File<string> file, long offset)
@@ -318,9 +318,9 @@ namespace ASC.Files.Thirdparty.Dropbox
         public async Task<Stream> GetFileStreamAsync(File<string> file, long offset)
         {
             var dropboxFilePath = MakeDropboxPath(file.ID);
-            await ProviderInfo.CacheResetAsync(dropboxFilePath, true);
+            await ProviderInfo.CacheResetAsync(dropboxFilePath, true).ConfigureAwait(false);
 
-            var dropboxFile = await GetDropboxFileAsync(file.ID);
+            var dropboxFile = await GetDropboxFileAsync(file.ID).ConfigureAwait(false);
             if (dropboxFile == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
             if (dropboxFile is ErrorFile errorFile) throw new Exception(errorFile.Error);
 
@@ -365,24 +365,24 @@ namespace ASC.Files.Thirdparty.Dropbox
             if (file.ID != null)
             {
                 var filePath = MakeDropboxPath(file.ID);
-                newDropboxFile = await ProviderInfo.Storage.SaveStreamAsync(filePath, fileStream);
+                newDropboxFile = await ProviderInfo.Storage.SaveStreamAsync(filePath, fileStream).ConfigureAwait(false);
                 if (!newDropboxFile.Name.Equals(file.Title))
                 {
                     var parentFolderPath = GetParentFolderPath(newDropboxFile);
-                    file.Title = await GetAvailableTitleAsync (file.Title, parentFolderPath, IsExistAsync);
-                    newDropboxFile = await ProviderInfo.Storage.MoveFileAsync(filePath, parentFolderPath, file.Title);
+                    file.Title = await GetAvailableTitleAsync (file.Title, parentFolderPath, IsExistAsync).ConfigureAwait(false);
+                    newDropboxFile = await ProviderInfo.Storage.MoveFileAsync(filePath, parentFolderPath, file.Title).ConfigureAwait(false);
                 }
             }
             else if (file.FolderID != null)
             {
                 var folderPath = MakeDropboxPath(file.FolderID);
-                file.Title = await GetAvailableTitleAsync(file.Title, folderPath, IsExistAsync);
-                newDropboxFile = await ProviderInfo.Storage.CreateFileAsync(fileStream, file.Title, folderPath);
+                file.Title = await GetAvailableTitleAsync(file.Title, folderPath, IsExistAsync).ConfigureAwait(false);
+                newDropboxFile = await ProviderInfo.Storage.CreateFileAsync(fileStream, file.Title, folderPath).ConfigureAwait(false);
             }
 
-            await ProviderInfo.CacheResetAsync(newDropboxFile);
+            await ProviderInfo.CacheResetAsync(newDropboxFile).ConfigureAwait(false);
             var parentPath = GetParentFolderPath(newDropboxFile);
-            if (parentPath != null) await ProviderInfo.CacheResetAsync(parentPath);
+            if (parentPath != null) await ProviderInfo.CacheResetAsync(parentPath).ConfigureAwait(false);
 
             return ToFile(newDropboxFile);
         }
@@ -394,7 +394,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public async Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
         {
-            return await SaveFileAsync(file, fileStream);
+            return await SaveFileAsync(file, fileStream).ConfigureAwait(false);
         }
 
         public void DeleteFile(string fileId)
@@ -404,7 +404,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public async Task DeleteFileAsync(string fileId)
         {
-            var dropboxFile = await GetDropboxFileAsync(fileId);
+            var dropboxFile = await GetDropboxFileAsync(fileId).ConfigureAwait(false);
             if (dropboxFile == null) return;
             var id = MakeId(dropboxFile);
 
@@ -413,14 +413,16 @@ namespace ASC.Files.Thirdparty.Dropbox
                 var hashIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
                     .Where(r => r.Id.StartsWith(id))
                     .Select(r => r.HashId)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 var link = await Query(FilesDbContext.TagLink)
                     .Where(r => hashIDs.Any(h => h == r.EntryId))
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 FilesDbContext.TagLink.RemoveRange(link);
-                await FilesDbContext.SaveChangesAsync();
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
                 var tagsToRemove = Query(FilesDbContext.Tag)
                     .Where(r => !Query(FilesDbContext.TagLink).Where(a => a.TagId == r.Id).Any());
@@ -431,15 +433,15 @@ namespace ASC.Files.Thirdparty.Dropbox
                     .Where(r => hashIDs.Any(h => h == r.EntryId));
 
                 FilesDbContext.Security.RemoveRange(securityToDelete);
-                await FilesDbContext.SaveChangesAsync();
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
                 var mappingToDelete = Query(FilesDbContext.ThirdpartyIdMapping)
                     .Where(r => hashIDs.Any(h => h == r.HashId));
 
                 FilesDbContext.ThirdpartyIdMapping.RemoveRange(mappingToDelete);
-                await FilesDbContext.SaveChangesAsync();
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-                tx.Commit();
+                await tx.CommitAsync().ConfigureAwait(false);
             }
 
             if (!(dropboxFile is ErrorFile))
@@ -447,9 +449,9 @@ namespace ASC.Files.Thirdparty.Dropbox
                 ProviderInfo.Storage.DeleteItem(dropboxFile);
             }
 
-            ProviderInfo.CacheReset(MakeDropboxPath(dropboxFile), true);
+            await ProviderInfo.CacheResetAsync(MakeDropboxPath(dropboxFile), true).ConfigureAwait(false);
             var parentFolderPath = GetParentFolderPath(dropboxFile);
-            if (parentFolderPath != null) ProviderInfo.CacheReset(parentFolderPath);
+            if (parentFolderPath != null) await ProviderInfo.CacheResetAsync(parentFolderPath).ConfigureAwait(false);
         }
 
         public bool IsExist(string title, object folderId)
@@ -459,7 +461,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public async Task<bool> IsExistAsync(string title, object folderId)
         {
-            var items = await GetDropboxItemsAsync(folderId, false);
+            var items = await GetDropboxItemsAsync(folderId, false).ConfigureAwait(false);
             return items.Any(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
         }
 
@@ -472,12 +474,12 @@ namespace ASC.Files.Thirdparty.Dropbox
         {
             if (toFolderId is int tId)
             {
-                return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tId), typeof(TTo));
+                return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tId).ConfigureAwait(false), typeof(TTo));
             }
 
             if (toFolderId is string tsId)
             {
-                return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tsId), typeof(TTo));
+                return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tsId).ConfigureAwait(false), typeof(TTo));
             }
 
             throw new NotImplementedException();
@@ -490,19 +492,19 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public async Task<string> MoveFileAsync(string fileId, string toFolderId)
         {
-            var dropboxFile = await GetDropboxFileAsync(fileId);
+            var dropboxFile = await GetDropboxFileAsync(fileId).ConfigureAwait(false);
             if (dropboxFile is ErrorFile errorFile) throw new Exception(errorFile.Error);
 
-            var toDropboxFolder = await GetDropboxFolderAsync(toFolderId);
+            var toDropboxFolder = await GetDropboxFolderAsync(toFolderId).ConfigureAwait(false);
             if (toDropboxFolder is ErrorFolder errorFolder) throw new Exception(errorFolder.Error);
 
             var fromFolderPath = GetParentFolderPath(dropboxFile);
 
-            dropboxFile = await ProviderInfo.Storage.MoveFileAsync(MakeDropboxPath(dropboxFile), MakeDropboxPath(toDropboxFolder), dropboxFile.Name);
+            dropboxFile = await ProviderInfo.Storage.MoveFileAsync(MakeDropboxPath(dropboxFile), MakeDropboxPath(toDropboxFolder), dropboxFile.Name).ConfigureAwait(false);
 
-            await ProviderInfo.CacheResetAsync(MakeDropboxPath(dropboxFile), true);
-            await ProviderInfo.CacheResetAsync(fromFolderPath);
-            await ProviderInfo.CacheResetAsync(MakeDropboxPath(toDropboxFolder));
+            await ProviderInfo.CacheResetAsync(MakeDropboxPath(dropboxFile), true).ConfigureAwait(false);
+            await ProviderInfo.CacheResetAsync(fromFolderPath).ConfigureAwait(false);
+            await ProviderInfo.CacheResetAsync(MakeDropboxPath(toDropboxFolder)).ConfigureAwait(false);
 
             return MakeId(dropboxFile);
         }
@@ -517,7 +519,8 @@ namespace ASC.Files.Thirdparty.Dropbox
             var moved = await CrossDao.PerformCrossDaoFileCopyAsync(
                 fileId, this, DropboxDaoSelector.ConvertId,
                 toFolderId, FileDao, r => r,
-                true);
+                true)
+                .ConfigureAwait(false);
 
             return moved.ID;
         }
@@ -531,12 +534,12 @@ namespace ASC.Files.Thirdparty.Dropbox
         {
             if (toFolderId is int tId)
             {
-                return await CopyFileAsync(fileId, tId) as File<TTo>;
+                return await CopyFileAsync(fileId, tId).ConfigureAwait(false) as File<TTo>;
             }
 
             if (toFolderId is string tsId)
             {
-                return await CopyFileAsync(fileId, tsId) as File<TTo>;
+                return await CopyFileAsync(fileId, tsId).ConfigureAwait(false) as File<TTo>;
             }
 
             throw new NotImplementedException();
@@ -552,7 +555,8 @@ namespace ASC.Files.Thirdparty.Dropbox
             var moved = await CrossDao.PerformCrossDaoFileCopyAsync(
                 fileId, this, DropboxDaoSelector.ConvertId,
                 toFolderId, FileDao, r => r,
-                false);
+                false)
+                .ConfigureAwait(false);
 
             return moved;
         }
@@ -564,16 +568,16 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public async Task<File<string>> CopyFileAsync(string fileId, string toFolderId)
         {
-            var dropboxFile = await GetDropboxFileAsync(fileId);
+            var dropboxFile = await GetDropboxFileAsync(fileId).ConfigureAwait(false);
             if (dropboxFile is ErrorFile errorFile) throw new Exception(errorFile.Error);
 
-            var toDropboxFolder = await GetDropboxFolderAsync(toFolderId);
+            var toDropboxFolder = await GetDropboxFolderAsync(toFolderId).ConfigureAwait(false);
             if (toDropboxFolder is ErrorFolder errorFolder) throw new Exception(errorFolder.Error);
 
-            var newDropboxFile = await ProviderInfo.Storage.CopyFileAsync(MakeDropboxPath(dropboxFile), MakeDropboxPath(toDropboxFolder), dropboxFile.Name);
+            var newDropboxFile = await ProviderInfo.Storage.CopyFileAsync(MakeDropboxPath(dropboxFile), MakeDropboxPath(toDropboxFolder), dropboxFile.Name).ConfigureAwait(false);
 
-            await ProviderInfo.CacheResetAsync(newDropboxFile);
-            await ProviderInfo.CacheResetAsync(MakeDropboxPath(toDropboxFolder));
+            await ProviderInfo.CacheResetAsync(newDropboxFile).ConfigureAwait(false);
+            await ProviderInfo.CacheResetAsync(MakeDropboxPath(toDropboxFolder)).ConfigureAwait(false);
 
             return ToFile(newDropboxFile);
         }
@@ -585,15 +589,15 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public async Task<string> FileRenameAsync(File<string> file, string newTitle)
         {
-            var dropboxFile = await GetDropboxFileAsync(file.ID);
+            var dropboxFile = await GetDropboxFileAsync(file.ID).ConfigureAwait(false);
             var parentFolderPath = GetParentFolderPath(dropboxFile);
-            newTitle = await GetAvailableTitleAsync(newTitle, parentFolderPath, IsExistAsync);
+            newTitle = await GetAvailableTitleAsync(newTitle, parentFolderPath, IsExistAsync).ConfigureAwait(false);
 
             dropboxFile = await ProviderInfo.Storage.MoveFileAsync(MakeDropboxPath(dropboxFile), parentFolderPath, newTitle);
 
-            await ProviderInfo.CacheResetAsync(dropboxFile);
+            await ProviderInfo.CacheResetAsync(dropboxFile).ConfigureAwait(false);
             var parentPath = GetParentFolderPath(dropboxFile);
-            if (parentPath != null) await ProviderInfo.CacheResetAsync(parentPath);
+            if (parentPath != null) await ProviderInfo.CacheResetAsync(parentPath).ConfigureAwait(false);
 
             return MakeId(dropboxFile);
         }
@@ -611,7 +615,10 @@ namespace ASC.Files.Thirdparty.Dropbox
         public void CompleteVersion(string fileId, int fileVersion)
         {
         }
-
+        public Task CompleteVersionAsync(string fileId, int fileVersion)
+        {
+            return Task.CompletedTask;
+        }
 
         public void ContinueVersion(string fileId, int fileVersion)
         {
@@ -620,7 +627,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public Task ContinueVersionAsync(string fileId, int fileVersion)
         {
-            return Task.FromResult(0);
+            return Task.CompletedTask;
         }
 
         public bool UseTrashForRemove(File<string> file)
@@ -655,7 +662,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
             var uploadSession = new ChunkedUploadSession<string>(file, contentLength);
 
-            var dropboxSession = await ProviderInfo.Storage.CreateResumableSessionAsync();
+            var dropboxSession = await ProviderInfo.Storage.CreateResumableSessionAsync().ConfigureAwait(false);
             if (dropboxSession != null)
             {
                 uploadSession.Items["DropboxSession"] = dropboxSession;
@@ -681,7 +688,7 @@ namespace ASC.Files.Thirdparty.Dropbox
                 if (uploadSession.BytesTotal == 0)
                     uploadSession.BytesTotal = chunkLength;
 
-                uploadSession.File = await SaveFileAsync(uploadSession.File, stream);
+                uploadSession.File = await SaveFileAsync(uploadSession.File, stream).ConfigureAwait(false);
                 uploadSession.BytesUploaded = chunkLength;
                 return uploadSession.File;
             }
@@ -689,20 +696,20 @@ namespace ASC.Files.Thirdparty.Dropbox
             if (uploadSession.Items.ContainsKey("DropboxSession"))
             {
                 var dropboxSession = uploadSession.GetItemOrDefault<string>("DropboxSession");
-                ProviderInfo.Storage.Transfer(dropboxSession, uploadSession.BytesUploaded, stream);
+                await ProviderInfo.Storage.TransferAsync(dropboxSession, uploadSession.BytesUploaded, stream).ConfigureAwait(false);
             }
             else
             {
                 var tempPath = uploadSession.GetItemOrDefault<string>("TempPath");
                 using var fs = new FileStream(tempPath, FileMode.Append);
-                await stream.CopyToAsync(fs);
+                await stream.CopyToAsync(fs).ConfigureAwait(false);
             }
 
             uploadSession.BytesUploaded += chunkLength;
 
             if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
             {
-                uploadSession.File = await FinalizeUploadSessionAsync(uploadSession);
+                uploadSession.File = await FinalizeUploadSessionAsync(uploadSession).ConfigureAwait(false);
             }
             else
             {
@@ -728,24 +735,24 @@ namespace ASC.Files.Thirdparty.Dropbox
                 if (file.ID != null)
                 {
                     var dropboxFilePath = MakeDropboxPath(file.ID);
-                    dropboxFile = await ProviderInfo.Storage.FinishResumableSessionAsync(dropboxSession, dropboxFilePath, uploadSession.BytesUploaded);
+                    dropboxFile = await ProviderInfo.Storage.FinishResumableSessionAsync(dropboxSession, dropboxFilePath, uploadSession.BytesUploaded).ConfigureAwait(false);
                 }
                 else
                 {
                     var folderPath = MakeDropboxPath(file.FolderID);
-                    var title = await GetAvailableTitleAsync(file.Title, folderPath, IsExistAsync);
-                    dropboxFile = await ProviderInfo.Storage.FinishResumableSessionAsync(dropboxSession, folderPath, title, uploadSession.BytesUploaded);
+                    var title = await GetAvailableTitleAsync(file.Title, folderPath, IsExistAsync).ConfigureAwait(false);
+                    dropboxFile = await ProviderInfo.Storage.FinishResumableSessionAsync(dropboxSession, folderPath, title, uploadSession.BytesUploaded).ConfigureAwait(false);
                 }
 
-                await ProviderInfo.CacheResetAsync(MakeDropboxPath(dropboxFile));
-                await ProviderInfo.CacheResetAsync(GetParentFolderPath(dropboxFile), false);
+                await ProviderInfo.CacheResetAsync(MakeDropboxPath(dropboxFile)).ConfigureAwait(false);
+                await ProviderInfo.CacheResetAsync(GetParentFolderPath(dropboxFile), false).ConfigureAwait(false);
 
                 return ToFile(dropboxFile.AsFile);
             }
 
             using var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"),
                                            FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose);
-            return await SaveFileAsync(uploadSession.File, fs);
+            return await SaveFileAsync(uploadSession.File, fs).ConfigureAwait(false);
         }
 
         public void AbortUploadSession(ChunkedUploadSession<string> uploadSession)
@@ -760,7 +767,7 @@ namespace ASC.Files.Thirdparty.Dropbox
                 File.Delete(uploadSession.GetItemOrDefault<string>("TempPath"));
             }
 
-            return Task.FromResult(0);
+            return Task.CompletedTask;
         }
         #endregion
     }

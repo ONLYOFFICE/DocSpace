@@ -148,7 +148,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
                 return new List<Folder<string>>();
 
-            var foldersList = await GetFoldersAsync(parentId);
+            var foldersList = await GetFoldersAsync(parentId).ConfigureAwait(false);
             var folders = foldersList.AsEnumerable(); //TODO:!!!
 
             //Filter
@@ -242,7 +242,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 {
                     var parentFolder = GetFolderById(folder.FolderID);
 
-                    folder.Title = await GetAvailableTitleAsync(folder.Title, parentFolder, IsExistAsync);
+                    folder.Title = await GetAvailableTitleAsync(folder.Title, parentFolder, IsExistAsync).ConfigureAwait(false);
 
                     var newFolder = ProviderInfo.Storage.CreateFolder(folder.Title, parentFolder);
                     return MakeId(newFolder);
@@ -277,19 +277,21 @@ namespace ASC.Files.Thirdparty.Sharpbox
             var folder = GetFolderById(folderId);
             var id = MakeId(folder);
 
-            using (var tx = FilesDbContext.Database.BeginTransaction())
+            using (var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
             {
                 var hashIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
                    .Where(r => r.Id.StartsWith(id))
                    .Select(r => r.HashId)
-                   .ToListAsync();
+                   .ToListAsync()
+                   .ConfigureAwait(false);
 
                 var link = await Query(FilesDbContext.TagLink)
                     .Where(r => hashIDs.Any(h => h == r.EntryId))
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 FilesDbContext.TagLink.RemoveRange(link);
-                await FilesDbContext.SaveChangesAsync();
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
                 var tagsToRemove = Query(FilesDbContext.Tag)
                     .Where(r => !Query(FilesDbContext.TagLink).Where(a => a.TagId == r.Id).Any());
@@ -300,15 +302,15 @@ namespace ASC.Files.Thirdparty.Sharpbox
                     .Where(r => hashIDs.Any(h => h == r.EntryId));
 
                 FilesDbContext.Security.RemoveRange(securityToDelete);
-                await FilesDbContext.SaveChangesAsync();
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
                 var mappingToDelete = Query(FilesDbContext.ThirdpartyIdMapping)
                     .Where(r => hashIDs.Any(h => h == r.HashId));
 
                 FilesDbContext.ThirdpartyIdMapping.RemoveRange(mappingToDelete);
-                await FilesDbContext.SaveChangesAsync();
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-                tx.Commit();
+                await tx.CommitAsync().ConfigureAwait(false);
             }
 
             if (!(folder is ErrorEntry))
@@ -346,12 +348,12 @@ namespace ASC.Files.Thirdparty.Sharpbox
         {
             if (toFolderId is int tId)
             {
-                return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tId, cancellationToken), typeof(TTo));
+                return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tId, cancellationToken).ConfigureAwait(false), typeof(TTo));
             }
 
             if (toFolderId is string tsId)
             {
-                return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tsId, cancellationToken), typeof(TTo));
+                return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tsId, cancellationToken).ConfigureAwait(false), typeof(TTo));
             }
 
             throw new NotImplementedException();
@@ -367,7 +369,8 @@ namespace ASC.Files.Thirdparty.Sharpbox
             var moved = await CrossDao.PerformCrossDaoFolderCopyAsync(
                 folderId, this, SharpBoxDaoSelector.GetFileDao(folderId), SharpBoxDaoSelector.ConvertId,
                 toFolderId, FolderDao, FileDao, r => r,
-                true, cancellationToken);
+                true, cancellationToken)
+                .ConfigureAwait(false);
 
             return moved.ID;
         }
@@ -389,7 +392,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
             var newFolderId = MakeId(entry);
 
-            await UpdatePathInDBAsync(oldFolderId, newFolderId);
+            await UpdatePathInDBAsync(oldFolderId, newFolderId).ConfigureAwait(false);
 
             return newFolderId;
         }
@@ -403,12 +406,12 @@ namespace ASC.Files.Thirdparty.Sharpbox
         {
             if (toFolderId is int tId)
             {
-                return await CopyFolderAsync(folderId, tId, cancellationToken) as Folder<TTo>;
+                return await CopyFolderAsync(folderId, tId, cancellationToken).ConfigureAwait(false) as Folder<TTo>;
             }
 
             if (toFolderId is string tsId)
             {
-                return await CopyFolderAsync(folderId, tsId, cancellationToken) as Folder<TTo>;
+                return await CopyFolderAsync(folderId, tsId, cancellationToken).ConfigureAwait(false) as Folder<TTo>;
             }
 
             throw new NotImplementedException();
@@ -424,7 +427,8 @@ namespace ASC.Files.Thirdparty.Sharpbox
             var moved = await CrossDao.PerformCrossDaoFolderCopyAsync(
                 folderId, this, SharpBoxDaoSelector.GetFileDao(folderId), SharpBoxDaoSelector.ConvertId,
                 toFolderId, FolderDao, FileDao, r => r,
-                false, cancellationToken);
+                false, cancellationToken)
+                .ConfigureAwait(false);
 
             return moved;
         }
@@ -458,14 +462,39 @@ namespace ASC.Files.Thirdparty.Sharpbox
             throw new NotImplementedException();
         }
 
+        public async Task<IDictionary<string, string>> CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
+        {
+            if (to is int tId)
+            {
+                return await CanMoveOrCopyAsync(folderIds, tId).ConfigureAwait(false);
+            }
+
+            if (to is string tsId)
+            {
+                return await CanMoveOrCopyAsync(folderIds, tsId).ConfigureAwait(false);
+            }
+
+            throw new NotImplementedException();
+        }
+
         public IDictionary<string, string> CanMoveOrCopy(string[] folderIds, string to)
         {
             return new Dictionary<string, string>();
         }
 
+        public Task<IDictionary<string, string>> CanMoveOrCopyAsync(string[] folderIds, string to)
+        {
+            return Task.FromResult((IDictionary<string, string>)new Dictionary<string, string>());
+        }
+
         public IDictionary<string, string> CanMoveOrCopy(string[] folderIds, int to)
         {
             return new Dictionary<string, string>();
+        }
+
+        public Task<IDictionary<string, string>> CanMoveOrCopyAsync(string[] folderIds, int to)
+        {
+            return Task.FromResult((IDictionary<string, string>)new Dictionary<string, string>());
         }
 
         public string RenameFolder(Folder<string> folder, string newTitle)
@@ -483,13 +512,13 @@ namespace ASC.Files.Thirdparty.Sharpbox
             if ("/".Equals(MakePath(folder.ID)))
             {
                 //It's root folder
-                await DaoSelector.RenameProviderAsync(ProviderInfo, newTitle);
+                await DaoSelector.RenameProviderAsync(ProviderInfo, newTitle).ConfigureAwait(false);
                 //rename provider customer title
             }
             else
             {
                 var parentFolder = GetFolderById(folder.FolderID);
-                newTitle = await GetAvailableTitleAsync(newTitle, parentFolder, IsExistAsync);
+                newTitle = await GetAvailableTitleAsync(newTitle, parentFolder, IsExistAsync).ConfigureAwait(false);
 
                 //rename folder
                 if (ProviderInfo.Storage.RenameFileSystemEntry(entry, newTitle))
@@ -501,7 +530,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 }
             }
 
-            await UpdatePathInDBAsync(oldId, newId);
+            await UpdatePathInDBAsync(oldId, newId).ConfigureAwait(false);
 
             return newId;
         }

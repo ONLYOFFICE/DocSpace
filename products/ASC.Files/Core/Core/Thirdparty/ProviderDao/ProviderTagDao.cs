@@ -183,7 +183,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
         public async Task<IDictionary<object, IEnumerable<Tag>>> GetTagsAsync(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<string>> fileEntries)
         {
-            return await TagDao.GetTagsAsync(subject, tagType, fileEntries);
+            return await TagDao.GetTagsAsync(subject, tagType, fileEntries).ConfigureAwait(false);
         }
 
         #endregion

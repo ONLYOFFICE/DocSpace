@@ -324,6 +324,11 @@ namespace ASC.Files.Thirdparty.Dropbox
             dropboxClient.Files.UploadSessionAppendV2Async(new UploadSessionCursor(dropboxSession, (ulong)offset), body: stream).Wait();
         }
 
+        public async Task TransferAsync(string dropboxSession, long offset, Stream stream)
+        {
+            await dropboxClient.Files.UploadSessionAppendV2Async(new UploadSessionCursor(dropboxSession, (ulong)offset), body: stream);
+        }
+
         public Metadata FinishResumableSession(string dropboxSession, string dropboxFolderPath, string fileName, long offset)
         {
             var dropboxFilePath = MakeDropboxPath(dropboxFolderPath, fileName);

@@ -256,6 +256,7 @@ namespace ASC.Files.Core
         /// <param name="fileId">file id</param>
         /// <param name="fileVersion">file version</param>
         void CompleteVersion(T fileId, int fileVersion);
+        Task CompleteVersionAsync(T fileId, int fileVersion);
         /// <summary>
         ///   Continue file version
         /// </summary>
@@ -289,6 +290,7 @@ namespace ASC.Files.Core
         /// <param name="fileIds"></param>
         /// <param name="newOwnerId"></param>
         void ReassignFiles(T[] fileIds, Guid newOwnerId);
+        Task ReassignFilesAsync(T[] fileIds, Guid newOwnerId);
 
         /// <summary>
         /// Search files in SharedWithMe & Projects
@@ -321,6 +323,7 @@ namespace ASC.Files.Core
         Task<bool> IsExistOnStorageAsync(File<T> file);
 
         void SaveEditHistory(File<T> file, string changes, Stream differenceStream);
+        Task SaveEditHistoryAsync(File<T> file, string changes, Stream differenceStream);
 
         List<EditHistory> GetEditHistory(DocumentServiceHelper documentServiceHelper, T fileId, int fileVersion = 0);
         Task<List<EditHistory>> GetEditHistoryAsync(DocumentServiceHelper documentServiceHelper, T fileId, int fileVersion = 0);

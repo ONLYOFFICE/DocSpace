@@ -164,9 +164,13 @@ namespace ASC.Files.Core
         /// Returns pair of file ID, file name, in which the same name.
         /// </returns>
         IDictionary<T, string> CanMoveOrCopy(T[] folderIds, T to);
+        Task<IDictionary<T, string>> CanMoveOrCopyAsync(T[] folderIds, T to);
         IDictionary<T, string> CanMoveOrCopy<TTo>(T[] folderIds, TTo to);
+        Task<IDictionary<T, string>> CanMoveOrCopyAsync<TTo>(T[] folderIds, TTo to);
         IDictionary<T, string> CanMoveOrCopy(T[] folderIds, string to);
+        Task<IDictionary<T, string>> CanMoveOrCopyAsync(T[] folderIds, string to);
         IDictionary<T, string> CanMoveOrCopy(T[] folderIds, int to);
+        Task<IDictionary<T, string>> CanMoveOrCopyAsync(T[] folderIds, int to);
 
         /// <summary>
         ///     Rename folder
@@ -252,8 +256,10 @@ namespace ASC.Files.Core
         /// <param name="createIfNotExists"></param>
         /// <returns></returns>
         T GetFolderID(string module, string bunch, string data, bool createIfNotExists);
+        Task<T> GetFolderIDAsync(string module, string bunch, string data, bool createIfNotExists);
 
         IEnumerable<T> GetFolderIDs(string module, string bunch, IEnumerable<string> data, bool createIfNotExists);
+        Task<IEnumerable<T>> GetFolderIDsAsync(string module, string bunch, IEnumerable<string> data, bool createIfNotExists);
 
         /// <summary>
         ///  Returns id folder "Shared Documents"
@@ -261,6 +267,7 @@ namespace ASC.Files.Core
         /// </summary>
         /// <returns></returns>
         T GetFolderIDCommon(bool createIfNotExists);
+        Task<T> GetFolderIDCommonAsync(bool createIfNotExists);
 
         /// <summary>
         ///  Returns id folder "My Documents"
@@ -270,6 +277,7 @@ namespace ASC.Files.Core
         /// <param name="userId"></param>
         /// <returns></returns>
         T GetFolderIDUser(bool createIfNotExists, Guid? userId = null);
+        Task<T> GetFolderIDUserAsync(bool createIfNotExists, Guid? userId = null);
 
         /// <summary>
         /// Returns id folder "Shared with me"
@@ -278,6 +286,7 @@ namespace ASC.Files.Core
         /// <param name="createIfNotExists"></param>
         /// <returns></returns>
         T GetFolderIDShare(bool createIfNotExists);
+        Task<T> GetFolderIDShareAsync(bool createIfNotExists);
 
         /// <summary>
         /// Returns id folder "Recent"
@@ -286,6 +295,7 @@ namespace ASC.Files.Core
         /// <param name="createIfNotExists"></param>
         /// <returns></returns>
         T GetFolderIDRecent(bool createIfNotExists);
+        Task<T> GetFolderIDRecentAsync(bool createIfNotExists);
 
         /// <summary>
 
@@ -296,6 +306,7 @@ namespace ASC.Files.Core
         /// <param name="createIfNotExists"></param>
         /// <returns></returns>
         T GetFolderIDFavorites(bool createIfNotExists);
+        Task<T> GetFolderIDFavoritesAsync(bool createIfNotExists);
 
         /// <summary>
         /// Returns id folder "Templates"
@@ -304,6 +315,7 @@ namespace ASC.Files.Core
         /// <param name="createIfNotExists"></param>
         /// <returns></returns>
         T GetFolderIDTemplates(bool createIfNotExists);
+        Task<T> GetFolderIDTemplatesAsync(bool createIfNotExists);
 
         /// <summary>
         /// Returns id folder "Privacy"
@@ -312,6 +324,7 @@ namespace ASC.Files.Core
         /// <param name="createIfNotExists"></param>
         /// <returns></returns>
         T GetFolderIDPrivacy(bool createIfNotExists, Guid? userId = null);
+        Task<T> GetFolderIDPrivacyAsync(bool createIfNotExists, Guid? userId = null);
 
         /// <summary>
         /// Returns id folder "Trash"
@@ -321,6 +334,7 @@ namespace ASC.Files.Core
         /// <param name="userId"></param>
         /// <returns></returns>
         T GetFolderIDTrash(bool createIfNotExists, Guid? userId = null);
+        Task<T> GetFolderIDTrashAsync(bool createIfNotExists, Guid? userId = null);
 
         /// <summary>
         /// Returns id folder "Projects"
@@ -329,6 +343,7 @@ namespace ASC.Files.Core
         /// <param name="createIfNotExists"></param>
         /// <returns></returns>
         T GetFolderIDProjects(bool createIfNotExists);
+        Task<T> GetFolderIDProjectsAsync(bool createIfNotExists);
 
 
         /// <summary>
@@ -338,6 +353,7 @@ namespace ASC.Files.Core
         /// <param name="folderID"></param>
         /// <returns></returns>
         string GetBunchObjectID(T folderID);
+        Task<string> GetBunchObjectIDAsync(T folderID);
 
         /// <summary>
         /// Return ids of related objects
@@ -346,11 +362,12 @@ namespace ASC.Files.Core
         /// <param name="folderIDs"></param>
         /// <returns></returns>
         Dictionary<string, string> GetBunchObjectIDs(List<T> folderIDs);
-
+        Task<Dictionary<string, string>> GetBunchObjectIDsAsync(List<T> folderIDs);
 
         IEnumerable<(Folder<T>, SmallShareRecord)> GetFeedsForFolders(int tenant, DateTime from, DateTime to);
 
         IEnumerable<T> GetTenantsWithFeedsForFolders(DateTime fromTime);
+        Task<IEnumerable<T>> GetTenantsWithFeedsForFoldersAsync(DateTime fromTime);
 
         #endregion
     }

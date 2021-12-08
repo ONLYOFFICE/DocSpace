@@ -35,6 +35,11 @@ namespace ASC.Files.Thirdparty
         {
         }
 
+        public Task ReassignFilesAsync(string[] fileIds, Guid newOwnerId)
+        {
+            return Task.CompletedTask;
+        }
+
         public List<File<string>> GetFiles(IEnumerable<string> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
             return new List<File<string>>();
@@ -63,6 +68,11 @@ namespace ASC.Files.Thirdparty
         public void SaveEditHistory(File<string> file, string changes, Stream differenceStream)
         {
             //Do nothing
+        }
+
+        public Task SaveEditHistoryAsync(File<string> file, string changes, Stream differenceStream)
+        {
+            return Task.CompletedTask;
         }
 
         public List<EditHistory> GetEditHistory(DocumentServiceHelper documentServiceHelper, string fileId, int fileVersion)
@@ -147,12 +157,27 @@ namespace ASC.Files.Thirdparty
             return null;
         }
 
+        public Task<string> GetFolderIDAsync(string module, string bunch, string data, bool createIfNotExists)
+        {
+            return null;
+        }
+
         public IEnumerable<string> GetFolderIDs(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
         {
             return new List<string>();
         }
 
+        public Task<IEnumerable<string>> GetFolderIDsAsync(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
+        {
+            return Task.FromResult((IEnumerable<string>)new List<string>());
+        }
+
         public string GetFolderIDCommon(bool createIfNotExists)
+        {
+            return null;
+        }
+
+        public Task<string> GetFolderIDCommonAsync(bool createIfNotExists)
         {
             return null;
         }
@@ -162,7 +187,17 @@ namespace ASC.Files.Thirdparty
             return null;
         }
 
+        public Task<string> GetFolderIDUserAsync(bool createIfNotExists, Guid? userId)
+        {
+            return null;
+        }
+
         public string GetFolderIDShare(bool createIfNotExists)
+        {
+            return null;
+        }
+
+        public Task<string> GetFolderIDShareAsync(bool createIfNotExists)
         {
             return null;
         }
@@ -172,7 +207,17 @@ namespace ASC.Files.Thirdparty
             return null;
         }
 
+        public Task<string> GetFolderIDRecentAsync(bool createIfNotExists)
+        {
+            return null;
+        }
+
         public string GetFolderIDFavorites(bool createIfNotExists)
+        {
+            return null;
+        }
+
+        public Task<string> GetFolderIDFavoritesAsync(bool createIfNotExists)
         {
             return null;
         }
@@ -182,7 +227,17 @@ namespace ASC.Files.Thirdparty
             return null;
         }
 
+        public Task<string> GetFolderIDTemplatesAsync(bool createIfNotExists)
+        {
+            return null;
+        }
+
         public string GetFolderIDPrivacy(bool createIfNotExists, Guid? userId)
+        {
+            return null;
+        }
+
+        public Task<string> GetFolderIDPrivacyAsync(bool createIfNotExists, Guid? userId)
         {
             return null;
         }
@@ -192,6 +247,10 @@ namespace ASC.Files.Thirdparty
             return null;
         }
 
+        public Task<string> GetFolderIDTrashAsync(bool createIfNotExists, Guid? userId)
+        {
+            return null;
+        }
 
         public string GetFolderIDPhotos(bool createIfNotExists)
         {
@@ -203,12 +262,27 @@ namespace ASC.Files.Thirdparty
             return null;
         }
 
+        public Task<string> GetFolderIDProjectsAsync(bool createIfNotExists)
+        {
+            return null;
+        }
+
         public string GetBunchObjectID(string folderID)
         {
             return null;
         }
 
+        public Task<string> GetBunchObjectIDAsync(string folderID)
+        {
+            return null;
+        }
+
         public Dictionary<string, string> GetBunchObjectIDs(List<string> folderIDs)
+        {
+            return null;
+        }
+
+        public Task<Dictionary<string, string>> GetBunchObjectIDsAsync(List<string> folderIDs)
         {
             return null;
         }
@@ -219,6 +293,11 @@ namespace ASC.Files.Thirdparty
         }
 
         public IEnumerable<string> GetTenantsWithFeedsForFolders(DateTime fromTime)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<string>> GetTenantsWithFeedsForFoldersAsync(DateTime fromTime)
         {
             throw new NotImplementedException();
         }
@@ -325,7 +404,8 @@ namespace ASC.Files.Thirdparty
                         .AsQueryable()
                         .Where(r => r.HashId == id)
                         .Select(r => r.Id)
-                        .FirstOrDefaultAsync();
+                        .FirstOrDefaultAsync()
+                        .ConfigureAwait(false);
             }
             if (saveIfNotExist)
             {
@@ -336,8 +416,8 @@ namespace ASC.Files.Thirdparty
                     TenantId = TenantID
                 };
 
-                await FilesDbContext.ThirdpartyIdMapping.AddAsync(newMapping);
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.ThirdpartyIdMapping.AddAsync(newMapping).ConfigureAwait(false);
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
             }
             return result;
         }
@@ -632,7 +712,8 @@ namespace ASC.Files.Thirdparty
                        .AsQueryable()
                        .Where(r => r.Id.StartsWith(parentFolder.ID))
                        .Select(r => r.HashId)
-                       .ToListAsync();
+                       .ToListAsync()
+                       .ConfigureAwait(false);
 
             if (!entryIDs.Any()) yield break;
 
@@ -656,7 +737,7 @@ namespace ASC.Files.Thirdparty
                     TagName = r.tag.Name,
                     TagType = r.tag.Flag,
                     Owner = r.tag.Owner,
-                    EntryId = await MappingIDAsync(r.tagLink.EntryId),
+                    EntryId = await MappingIDAsync(r.tagLink.EntryId).ConfigureAwait(false),
                     EntryType = r.tagLink.EntryType,
                     Count = r.tagLink.TagCount,
                     Id = r.tag.Id
@@ -671,7 +752,7 @@ namespace ASC.Files.Thirdparty
             }
 
             var folderFileIds = new[] { parentFolder.ID }
-                .Concat(await GetChildrenAsync(folderId));
+                .Concat(await GetChildrenAsync(folderId).ConfigureAwait(false));
 
             await foreach (var e in tags.Where(tag => folderFileIds.Contains(tag.EntryId.ToString())))
                 yield return e;

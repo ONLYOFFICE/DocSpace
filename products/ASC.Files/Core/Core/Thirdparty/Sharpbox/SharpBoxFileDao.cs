@@ -100,7 +100,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public async Task<File<string>> GetFileAsync(string fileId)
         {
-            return await GetFileAsync(fileId, 1);
+            return await GetFileAsync(fileId, 1).ConfigureAwait(false);
         }
 
         public File<string> GetFile(string fileId, int fileVersion)
@@ -141,7 +141,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public async Task<List<File<string>>> GetFileHistoryAsync(string fileId)
         {
-            return new List<File<string>> { await GetFileAsync(fileId) };
+            return new List<File<string>> { await GetFileAsync(fileId).ConfigureAwait(false) };
         }
 
         public List<File<string>> GetFiles(IEnumerable<string> fileIds)
@@ -315,11 +315,11 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 {
                     var tempBuffer = TempStream.Create();
 
-                    await fileStream.CopyToAsync(tempBuffer);
-                    await tempBuffer.FlushAsync();
+                    await fileStream.CopyToAsync(tempBuffer).ConfigureAwait(false);
+                    await tempBuffer.FlushAsync().ConfigureAwait(false);
                     tempBuffer.Seek(offset, SeekOrigin.Begin);
 
-                    await fileStream.DisposeAsync();
+                    await fileStream.DisposeAsync().ConfigureAwait(false);
                     return tempBuffer;
                 }
 
@@ -356,7 +356,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public override async Task<Stream> GetFileStreamAsync(File<string> file)
         {
-            return await GetFileStreamAsync(file, 0);
+            return await GetFileStreamAsync(file, 0).ConfigureAwait(false);
         }
 
         public File<string> SaveFile(File<string> file, Stream fileStream)
@@ -421,7 +421,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public async Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
         {
-            return await SaveFileAsync(file, fileStream);
+            return await SaveFileAsync(file, fileStream).ConfigureAwait(false);
         }
 
         public void DeleteFile(string fileId)
@@ -440,14 +440,16 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 var hashIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
                     .Where(r => r.Id.StartsWith(id))
                     .Select(r => r.HashId)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 var link = await Query(FilesDbContext.TagLink)
                     .Where(r => hashIDs.Any(h => h == r.EntryId))
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 FilesDbContext.TagLink.RemoveRange(link);
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
                 var tagsToRemove = Query(FilesDbContext.Tag)
                     .Where(r => !Query(FilesDbContext.TagLink).Where(a => a.TagId == r.Id).Any());
@@ -458,15 +460,15 @@ namespace ASC.Files.Thirdparty.Sharpbox
                     .Where(r => hashIDs.Any(h => h == r.EntryId));
 
                 FilesDbContext.Security.RemoveRange(securityToDelete);
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
                 var mappingToDelete = Query(FilesDbContext.ThirdpartyIdMapping)
                     .Where(r => hashIDs.Any(h => h == r.HashId));
 
                 FilesDbContext.ThirdpartyIdMapping.RemoveRange(mappingToDelete);
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-                tx.Commit();
+                await tx.CommitAsync().ConfigureAwait(false);
             }
 
             if (!(file is ErrorEntry))
@@ -514,12 +516,12 @@ namespace ASC.Files.Thirdparty.Sharpbox
         {
             if (toFolderId is int tId)
             {
-                return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tId), typeof(TTo));
+                return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tId).ConfigureAwait(false), typeof(TTo));
             }
 
             if (toFolderId is string tsId)
             {
-                return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tsId), typeof(TTo));
+                return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tsId).ConfigureAwait(false), typeof(TTo));
             }
 
             throw new NotImplementedException();
@@ -535,7 +537,8 @@ namespace ASC.Files.Thirdparty.Sharpbox
             var moved = await CrossDao.PerformCrossDaoFileCopyAsync(
                 fileId, this, SharpBoxDaoSelector.ConvertId,
                 toFolderId, FileDao, r => r,
-                true);
+                true)
+                .ConfigureAwait(false);
 
             return moved.ID;
         }
@@ -557,7 +560,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
             var newFileId = MakeId(entry);
 
-            await UpdatePathInDBAsync(oldFileId, newFileId);
+            await UpdatePathInDBAsync(oldFileId, newFileId).ConfigureAwait(false);
 
             return newFileId;
         }
@@ -571,12 +574,12 @@ namespace ASC.Files.Thirdparty.Sharpbox
         {
             if (toFolderId is int tId)
             {
-                return await CopyFileAsync(fileId, tId) as File<TTo>;
+                return await CopyFileAsync(fileId, tId).ConfigureAwait(false) as File<TTo>;
             }
 
             if (toFolderId is string tsId)
             {
-                return await CopyFileAsync(fileId, tsId) as File<TTo>;
+                return await CopyFileAsync(fileId, tsId).ConfigureAwait(false) as File<TTo>;
             }
 
             throw new NotImplementedException();
@@ -605,7 +608,8 @@ namespace ASC.Files.Thirdparty.Sharpbox
             var moved = await CrossDao.PerformCrossDaoFileCopyAsync(
                 fileId, this, SharpBoxDaoSelector.ConvertId,
                 toFolderId, FileDao, r => r,
-                false);
+                false)
+                .ConfigureAwait(false);
 
             return moved;
         }
@@ -626,7 +630,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             var newFileId = oldFileId;
 
             var folder = GetFolderById(file.FolderID);
-            newTitle = GetAvailableTitle(newTitle, folder, IsExist);
+            newTitle = await GetAvailableTitleAsync(newTitle, folder, IsExistAsync).ConfigureAwait(false);
 
             if (ProviderInfo.Storage.RenameFileSystemEntry(entry, newTitle))
             {
@@ -636,7 +640,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 newFileId = MakeId(entry);
             }
 
-            await UpdatePathInDBAsync(oldFileId, newFileId);
+            await UpdatePathInDBAsync(oldFileId, newFileId).ConfigureAwait(false);
 
             return newFileId;
         }
@@ -653,6 +657,11 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public void CompleteVersion(string fileId, int fileVersion)
         {
+        }
+
+        public Task CompleteVersionAsync(string fileId, int fileVersion)
+        {
+            return Task.CompletedTask;
         }
 
         public void ContinueVersion(string fileId, int fileVersion)
@@ -730,7 +739,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 if (uploadSession.BytesTotal == 0)
                     uploadSession.BytesTotal = chunkLength;
 
-                uploadSession.File = await SaveFileAsync(uploadSession.File, stream);
+                uploadSession.File = await SaveFileAsync(uploadSession.File, stream).ConfigureAwait(false);
                 uploadSession.BytesUploaded = chunkLength;
                 return uploadSession.File;
             }
@@ -759,7 +768,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
             if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
             {
-                uploadSession.File = await FinalizeUploadSessionAsync(uploadSession);
+                uploadSession.File = await FinalizeUploadSessionAsync(uploadSession).ConfigureAwait(false);
             }
             else
             {
@@ -784,7 +793,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             }
 
             using var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"), FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose);
-            return await SaveFileAsync(uploadSession.File, fs);
+            return await SaveFileAsync(uploadSession.File, fs).ConfigureAwait(false);
         }
 
         public void AbortUploadSession(ChunkedUploadSession<string> uploadSession)

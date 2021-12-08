@@ -151,7 +151,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                 Wrapper.Dispose();
             }
 
-            await CacheResetAsync();
+            await CacheResetAsync().ConfigureAwait(false);
         }
 
         public void UpdateTitle(string newtitle)
@@ -166,7 +166,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         internal async Task<DriveFile> GetDriveEntryAsync(string driveId)
         {
-            return await GoogleDriveProviderInfoHelper.GetDriveEntryAsync(Storage, ID, driveId);
+            return await GoogleDriveProviderInfoHelper.GetDriveEntryAsync(Storage, ID, driveId).ConfigureAwait(false);
         }
 
         internal List<DriveFile> GetDriveEntries(string parentDriveId, bool? folder = null)
@@ -176,7 +176,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         internal async Task<List<DriveFile>> GetDriveEntriesAsync(string parentDriveId, bool? folder = null)
         {
-            return await GoogleDriveProviderInfoHelper.GetDriveEntriesAsync(Storage, ID, parentDriveId, folder);
+            return await GoogleDriveProviderInfoHelper.GetDriveEntriesAsync(Storage, ID, parentDriveId, folder).ConfigureAwait(false);
         }
 
         internal void CacheReset(DriveFile driveEntry)
@@ -186,7 +186,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         internal async Task CacheResetAsync(DriveFile driveEntry)
         {
-            await GoogleDriveProviderInfoHelper.CacheResetAsync(driveEntry, ID);
+            await GoogleDriveProviderInfoHelper.CacheResetAsync(driveEntry, ID).ConfigureAwait(false);
         }
 
         internal void CacheReset(string driveId = null, bool? childFolder = null)
@@ -196,7 +196,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         internal async Task CacheResetAsync(string driveId = null, bool? childFolder = null)
         {
-            await GoogleDriveProviderInfoHelper.CacheResetAsync(DriveRootId, ID, driveId, childFolder);
+            await GoogleDriveProviderInfoHelper.CacheResetAsync(DriveRootId, ID, driveId, childFolder).ConfigureAwait(false);
         }
 
         internal void CacheResetChilds(string parentDriveId, bool? childFolder = null)
@@ -206,7 +206,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         internal async Task CacheResetChildsAsync(string parentDriveId, bool? childFolder = null)
         {
-            await GoogleDriveProviderInfoHelper.CacheResetChildsAsync(ID, parentDriveId, childFolder);
+            await GoogleDriveProviderInfoHelper.CacheResetChildsAsync(ID, parentDriveId, childFolder).ConfigureAwait(false);
         }
     }
 
@@ -234,7 +234,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
             var driveStorage = ServiceProvider.GetService<GoogleDriveStorage>();
 
-            await CheckTokenAsync(token, id);
+            await CheckTokenAsync(token, id).ConfigureAwait(false);
 
             driveStorage.Open(token);
             return Storage = driveStorage;
@@ -254,7 +254,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
                 var dbDao = ServiceProvider.GetService<ProviderAccountDao>();
                 var authData = new AuthData(token: token.ToJson());
-                await dbDao.UpdateProviderInfoAsync(id, authData);
+                await dbDao.UpdateProviderInfoAsync(id, authData).ConfigureAwait(false);
             }
         }
 
@@ -317,7 +317,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             var entry = CacheEntry.Get<DriveFile>("drive-" + id + "-" + driveId);
             if (entry == null)
             {
-                entry = await storage.GetEntryAsync(driveId);
+                entry = await storage.GetEntryAsync(driveId).ConfigureAwait(false);
                 if (entry != null)
                     CacheEntry.Insert("drive-" + id + "-" + driveId, entry, DateTime.UtcNow.Add(CacheExpiration));
             }
@@ -338,7 +338,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                     var value = CacheChildFolders.Get<List<DriveFile>>("drived-" + id + "-" + parentDriveId);
                     if (value == null)
                     {
-                        value = await storage.GetEntriesAsync(parentDriveId, true);
+                        value = await storage.GetEntriesAsync(parentDriveId, true).ConfigureAwait(false);
                         if (value != null)
                             CacheChildFolders.Insert("drived-" + id + "-" + parentDriveId, value, DateTime.UtcNow.Add(CacheExpiration));
                     }
@@ -349,7 +349,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                     var value = CacheChildFiles.Get<List<DriveFile>>("drivef-" + id + "-" + parentDriveId);
                     if (value == null)
                     {
-                        value = await storage.GetEntriesAsync(parentDriveId, false);
+                        value = await storage.GetEntriesAsync(parentDriveId, false).ConfigureAwait(false);
                         if (value != null)
                             CacheChildFiles.Insert("drivef-" + id + "-" + parentDriveId, value, DateTime.UtcNow.Add(CacheExpiration));
                     }
@@ -360,7 +360,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             if (CacheChildFiles.Get<List<DriveFile>>("drivef-" + id + "-" + parentDriveId) == null &&
                 CacheChildFolders.Get<List<DriveFile>>("drived-" + id + "-" + parentDriveId) == null)
             {
-                var entries = await storage.GetEntriesAsync(parentDriveId);
+                var entries = await storage.GetEntriesAsync(parentDriveId).ConfigureAwait(false);
 
                 CacheChildFiles.Insert("drivef-" + id + "-" + parentDriveId, entries.Where(entry => entry.MimeType != GoogleLoginProvider.GoogleDriveMimeTypeFolder).ToList(), DateTime.UtcNow.Add(CacheExpiration));
                 CacheChildFolders.Insert("drived-" + id + "-" + parentDriveId, entries.Where(entry => entry.MimeType == GoogleLoginProvider.GoogleDriveMimeTypeFolder).ToList(), DateTime.UtcNow.Add(CacheExpiration));
@@ -371,13 +371,13 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             var folders = CacheChildFolders.Get<List<DriveFile>>("drived-" + id + "-" + parentDriveId);
             if (folders == null)
             {
-                folders = await storage.GetEntriesAsync(parentDriveId, true);
+                folders = await storage.GetEntriesAsync(parentDriveId, true).ConfigureAwait(false);
                 CacheChildFolders.Insert("drived-" + id + "-" + parentDriveId, folders, DateTime.UtcNow.Add(CacheExpiration));
             }
             var files = CacheChildFiles.Get<List<DriveFile>>("drivef-" + id + "-" + parentDriveId);
             if (files == null)
             {
-                files = await storage.GetEntriesAsync(parentDriveId, false);
+                files = await storage.GetEntriesAsync(parentDriveId, false).ConfigureAwait(false);
                 CacheChildFiles.Insert("drivef-" + id + "-" + parentDriveId, files, DateTime.UtcNow.Add(CacheExpiration));
             }
             return folders.Concat(files).ToList();
@@ -392,7 +392,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         {
             if (driveEntry != null)
             {
-                await CacheNotify.PublishAsync(new GoogleDriveCacheItem { ResetEntry = true, Key = id + "-" + driveEntry.Id }, CacheNotifyAction.Remove);
+                await CacheNotify.PublishAsync(new GoogleDriveCacheItem { ResetEntry = true, Key = id + "-" + driveEntry.Id }, CacheNotifyAction.Remove).ConfigureAwait(false);
             }
         }
 
@@ -406,7 +406,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             var key = id + "-";
             if (driveId == null)
             {
-                await CacheNotify.PublishAsync(new GoogleDriveCacheItem { ResetAll = true, Key = key }, CacheNotifyAction.Remove);
+                await CacheNotify.PublishAsync(new GoogleDriveCacheItem { ResetAll = true, Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
             }
             else
             {
@@ -416,7 +416,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                 }
                 key += driveId;
 
-                await CacheNotify.PublishAsync(new GoogleDriveCacheItem { ResetEntry = true, ResetChilds = true, Key = key, ChildFolder = childFolder ?? false, ChildFolderExist = childFolder.HasValue }, CacheNotifyAction.Remove);
+                await CacheNotify.PublishAsync(new GoogleDriveCacheItem { ResetEntry = true, ResetChilds = true, Key = key, ChildFolder = childFolder ?? false, ChildFolderExist = childFolder.HasValue }, CacheNotifyAction.Remove).ConfigureAwait(false);
             }
         }
 
@@ -427,7 +427,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         internal async Task CacheResetChildsAsync(int id, string parentDriveId, bool? childFolder = null)
         {
-            await CacheNotify.PublishAsync(new GoogleDriveCacheItem { ResetChilds = true, Key = id + "-" + parentDriveId, ChildFolder = childFolder ?? false, ChildFolderExist = childFolder.HasValue }, CacheNotifyAction.Remove);
+            await CacheNotify.PublishAsync(new GoogleDriveCacheItem { ResetChilds = true, Key = id + "-" + parentDriveId, ChildFolder = childFolder ?? false, ChildFolderExist = childFolder.HasValue }, CacheNotifyAction.Remove).ConfigureAwait(false);
         }
     }
 

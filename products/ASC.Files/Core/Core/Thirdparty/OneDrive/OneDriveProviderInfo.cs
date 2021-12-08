@@ -108,7 +108,7 @@ namespace ASC.Files.Thirdparty.OneDrive
         {
             try
             {
-                return await Storage.CheckAccessAsync();
+                return await Storage.CheckAccessAsync().ConfigureAwait(false);
             }
             catch (AggregateException)
             {
@@ -128,7 +128,7 @@ namespace ASC.Files.Thirdparty.OneDrive
                 Wrapper.Dispose();
             }
 
-            await CacheResetAsync();
+            await CacheResetAsync().ConfigureAwait(false);
         }
 
         public void UpdateTitle(string newtitle)
@@ -143,7 +143,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         internal async Task<Item> GetOneDriveItemAsync(string itemId)
         {
-            return await OneDriveProviderInfoHelper.GetOneDriveItemAsync(Storage, ID, itemId);
+            return await OneDriveProviderInfoHelper.GetOneDriveItemAsync(Storage, ID, itemId).ConfigureAwait(false);
         }
 
         internal List<Item> GetOneDriveItems(string onedriveFolderId)
@@ -153,7 +153,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         internal async Task<List<Item>> GetOneDriveItemsAsync(string onedriveFolderId)
         {
-            return await OneDriveProviderInfoHelper.GetOneDriveItemsAsync(Storage, ID, onedriveFolderId);
+            return await OneDriveProviderInfoHelper.GetOneDriveItemsAsync(Storage, ID, onedriveFolderId).ConfigureAwait(false);
         }
 
         internal void CacheReset(string onedriveId = null)
@@ -163,7 +163,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         internal async Task CacheResetAsync(string onedriveId = null)
         {
-            await OneDriveProviderInfoHelper.CacheResetAsync(ID, onedriveId);
+            await OneDriveProviderInfoHelper.CacheResetAsync(ID, onedriveId).ConfigureAwait(false);
         }
     }
 
@@ -262,7 +262,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             var file = CacheItem.Get<Item>("onedrive-" + id + "-" + itemId);
             if (file == null)
             {
-                file = await storage.GetItemAsync(itemId);
+                file = await storage.GetItemAsync(itemId).ConfigureAwait(false);
                 if (file != null)
                     CacheItem.Insert("onedrive-" + id + "-" + itemId, file, DateTime.UtcNow.Add(CacheExpiration));
             }
@@ -287,7 +287,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
             if (items == null)
             {
-                items = await storage.GetItemsAsync(onedriveFolderId);
+                items = await storage.GetItemsAsync(onedriveFolderId).ConfigureAwait(false);
                 CacheChildItems.Insert("onedrivei-" + id + "-" + onedriveFolderId, items, DateTime.UtcNow.Add(CacheExpiration));
             }
             return items;
@@ -313,13 +313,13 @@ namespace ASC.Files.Thirdparty.OneDrive
             var key = id + "-";
             if (string.IsNullOrEmpty(onedriveId))
             {
-                await CacheNotify.PublishAsync(new OneDriveCacheItem { ResetAll = true, Key = key }, CacheNotifyAction.Remove);
+                await CacheNotify.PublishAsync(new OneDriveCacheItem { ResetAll = true, Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
             }
             else
             {
                 key += onedriveId;
 
-                await CacheNotify.PublishAsync(new OneDriveCacheItem { Key = key }, CacheNotifyAction.Remove);
+                await CacheNotify.PublishAsync(new OneDriveCacheItem { Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
             }
         }
     }
