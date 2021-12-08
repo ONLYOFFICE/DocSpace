@@ -1,4 +1,6 @@
 import authStore from "@appserver/common/store/AuthStore";
+import { toCommunityHostname } from "@appserver/common/utils";
+import history from "@appserver/common/history";
 //import store from "../store/store";
 
 //const { getCurrentProduct } = commonStore.auth.selectors;
@@ -23,4 +25,36 @@ export const setDocumentTitle = (subTitle = null) => {
   }
 
   document.title = title;
+};
+
+export const isModuleOld = (link) => {
+  if (link) {
+    if (
+      link.includes("files") ||
+      link.includes("people") ||
+      link.includes("settings")
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+};
+
+export const getLink = (link) => {
+  if (link) {
+    if (!isModuleOld(link)) {
+      return link;
+    }
+
+    if (link.includes("mail") || link.includes("calendar")) {
+      link = link.replace("products", "addons");
+    }
+
+    const { protocol, hostname } = window.location;
+
+    const communityHostname = toCommunityHostname(hostname);
+
+    return `${protocol}//${communityHostname}${link}?desktop_view=true`;
+  }
 };
