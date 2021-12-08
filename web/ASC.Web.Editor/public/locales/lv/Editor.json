@@ -6,6 +6,6 @@
     "SelectFilesType": "Atlasīt šāda veida failus: {{fileType}}",
     "ImageFileType": "attēli",
     "DocumentsFileType": "dokumenti",
-    "MailMergeFileType": "Select the file in XLSX format",
+    "MailMergeFileType": "Atlasiet failu XLSX formātā",
     "SelectFileTitle": "Atlasīt datu avotu"
 }
