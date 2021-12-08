@@ -26,7 +26,6 @@ import {
   getPresignedUri,
   convertFile,
   checkFillFormDraft,
-  getFileVersionInfo,
   getEditHistory,
   getEditDiff,
   restoreDocumentsVersion,
@@ -37,12 +36,12 @@ import throttle from "lodash/throttle";
 import { isIOS, deviceType } from "react-device-detect";
 import { homepage } from "../package.json";
 
-import { AppServerConfig, FolderType } from "@appserver/common/constants";
+import { AppServerConfig } from "@appserver/common/constants";
 import SharingDialog from "files/SharingDialog";
 import { getDefaultFileName, SaveAs, canConvert } from "files/utils";
 import SelectFileDialog from "files/SelectFileDialog";
 import SelectFolderDialog from "files/SelectFolderDialog";
-import { StyledSelectFolder, StyledSelectFile } from "./StyledEditor";
+import { StyledSelectFolder } from "./StyledEditor";
 import i18n from "./i18n";
 import Text from "@appserver/components/text";
 import TextInput from "@appserver/components/text-input";
