@@ -19,10 +19,17 @@ import i18n from "../i18n";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import NoUserSelect from "@appserver/components/utils/commonStyles";
+import {
+  getLink,
+  isModuleOld,
+  onItemClick,
+} from "@appserver/studio/src/helpers/utils";
+import StyledExternalLinkIcon from "../../../helpers/StyledExternalLinkIcon";
 
 const { proxyURL } = AppServerConfig;
 
 const backgroundColor = "#0F4071";
+const linkColor = "#7a95b0";
 
 const Header = styled.header`
   align-items: center;
@@ -107,7 +114,7 @@ const Header = styled.header`
 const StyledLink = styled.div`
   display: inline;
   .nav-menu-header_link {
-    color: #7a95b0;
+    color: ${linkColor};
     font-size: 13px;
   }
 
@@ -115,14 +122,14 @@ const StyledLink = styled.div`
     text-decoration: none;
   }
   :hover {
-    color: #7a95b0;
+    color: ${linkColor};
     -webkit-text-decoration: underline;
     text-decoration: underline;
   }
 `;
 
 const versionBadgeProps = {
-  color: "#7A95B0",
+  color: linkColor,
   fontWeight: "600",
   fontSize: "13px",
 };
@@ -162,14 +169,6 @@ const HeaderComponent = ({
     toggleAside();
 
     if (item) item.onBadgeClick(e);
-  };
-
-  const onItemClick = (e) => {
-    if (!e) return;
-    const link = e.currentTarget.dataset.link;
-    history.push(link);
-    backdropClick();
-    e.preventDefault();
   };
 
   const numberOfModules = mainModules.filter((item) => !item.separator).length;
@@ -253,18 +252,20 @@ const HeaderComponent = ({
                 separator={!!separator}
                 key={id}
                 data-id={id}
-                data-link={link}
+                data-link={getLink(link)}
                 opened={isNavOpened}
                 active={id == currentProductId}
-                //iconName={iconName}
                 iconUrl={iconUrl}
                 badgeNumber={notifications}
                 onClick={onItemClick}
                 onBadgeClick={onBadgeClick}
-                url={link}
+                url={getLink(link)}
                 dashed={dashed}
               >
                 {id === "settings" ? i18n.t("Common:Settings") : title}
+                {isModuleOld(link) && (
+                  <StyledExternalLinkIcon color={linkColor} />
+                )}
               </NavItem>
             )
           )}
