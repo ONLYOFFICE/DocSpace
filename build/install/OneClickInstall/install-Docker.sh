@@ -506,8 +506,8 @@ check_hardware () {
 }
 
 install_service () {
-	COMMAND_NAME=$1
-	PACKAGE_NAME=$2
+	local COMMAND_NAME=$1
+	local PACKAGE_NAME=$2
 
 	PACKAGE_NAME=${PACKAGE_NAME:-"$COMMAND_NAME"}
 
@@ -707,8 +707,8 @@ create_network () {
 }
 
 get_container_env_parameter () {
-	CONTAINER_NAME=$1;
-	PARAMETER_NAME=$2;
+	local CONTAINER_NAME=$1;
+	local PARAMETER_NAME=$2;
 	VALUE="";
 
 	if [[ -z ${CONTAINER_NAME} ]]; then
@@ -779,45 +779,27 @@ set_core_machinekey () {
 
 	if [[ -z ${CORE_MACHINEKEY} ]] && [[ "$UPDATE" != "true" ]]; then
 		APP_CORE_MACHINEKEY=$(get_random_str 12);
+		mkdir -p ${BASE_DIR}/.private/
 		echo $APP_CORE_MACHINEKEY > ${BASE_DIR}/.private/machinekey
 	fi
 }
 
 download_files () {
-	mkdir -p ${BASE_DIR}
-	mkdir -p ${BASE_DIR}/.private/
-	mkdir -p ${BASE_DIR}/config/mysql/conf.d/
-
-	if ! command_exists wget; then
-		install_service wget
+	if ! command_exists svn; then
+		install_service svn subversion
 	fi
-	
-	DOWNLOAD_URL_PREFIX="https://raw.githubusercontent.com/ONLYOFFICE/${PRODUCT}/${GIT_BRANCH}/build/install/docker"
-	wget -q -O $BASE_DIR/.env "${DOWNLOAD_URL_PREFIX}/.env"
-	wget -q -O $BASE_DIR/db.yml "${DOWNLOAD_URL_PREFIX}/db.yml"
-	wget -q -O $BASE_DIR/ds.yml "${DOWNLOAD_URL_PREFIX}/ds.yml"
-	wget -q -O $BASE_DIR/kafka.yml "${DOWNLOAD_URL_PREFIX}/kafka.yml"
-	wget -q -O $BASE_DIR/appserver.yml "${DOWNLOAD_URL_PREFIX}/appserver.yml"
-	wget -q -O $BASE_DIR/config/createdb.sql "${DOWNLOAD_URL_PREFIX}/config/createdb.sql"
-	wget -q -O $BASE_DIR/config/onlyoffice.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.sql"
-	wget -q -O $BASE_DIR/config/onlyoffice.data.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.data.sql"
-	wget -q -O $BASE_DIR/config/mysql/conf.d/mysql.cnf "${DOWNLOAD_URL_PREFIX}/config/mysql/conf.d/mysql.cnf"
-	wget -q -O $BASE_DIR/config/onlyoffice.resources.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.resources.sql"
-	wget -q -O $BASE_DIR/config/onlyoffice.upgradev110.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.upgradev110.sql"
-	wget -q -O $BASE_DIR/config/onlyoffice.upgradev111.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.upgradev111.sql"
-	wget -q -O $BASE_DIR/config/onlyoffice.upgradev115.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.upgradev115.sql"
 
-	if [[ -n ${STATUS} ]]; then
-		sed -i "s/STATUS=.*/STATUS=\"${STATUS}\"/g" $BASE_DIR/.env
-	fi
+	svn export --force https://github.com/ONLYOFFICE/${PRODUCT}/branches/${GIT_BRANCH}/build/install/docker/ ${BASE_DIR}
+
+	reconfigure STATUS ${STATUS}
 }
 
 reconfigure () {
-	VARIABLE_NAME=$1
-	VARIABLE_VALUE=$(echo $2 | sed -e 's/;/%/g' -e 's/=/%/g' -e 's/!/%/g')
+	local VARIABLE_NAME=$1
+	local VARIABLE_VALUE=$2
 
 	if [[ -n ${VARIABLE_VALUE} ]]; then
-		sed -i "s/${VARIABLE_NAME}=.*/${VARIABLE_NAME}=${VARIABLE_VALUE}/g" $BASE_DIR/.env
+		sed -i "s~${VARIABLE_NAME}=.*~${VARIABLE_NAME}=${VARIABLE_VALUE}~g" $BASE_DIR/.env
 	fi
 }
 
@@ -827,8 +809,8 @@ install_mysql_server () {
 	fi
 
 	if [[ -z ${MYSQL_PASSWORD} ]] && [[ -z ${MYSQL_ROOT_PASSWORD} ]]; then
-		MYSQL_PASSWORD=$(get_random_str 20);
-		MYSQL_ROOT_PASSWORD=$(get_random_str 20);
+		MYSQL_PASSWORD=$(get_random_str 20 | sed -e 's/;/%/g' -e 's/=/%/g' -e 's/!/%/g');
+		MYSQL_ROOT_PASSWORD=$(get_random_str 20 | sed -e 's/;/%/g' -e 's/=/%/g' -e 's/!/%/g');
 	elif [[ -z ${MYSQL_PASSWORD} ]] || [[ -z ${MYSQL_ROOT_PASSWORD} ]]; then
 		MYSQL_PASSWORD=${MYSQL_PASSWORD:-"$MYSQL_ROOT_PASSWORD"}
 		MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-"$MYSQL_PASSWORD"}
