@@ -68,7 +68,7 @@ let isSharingAccess;
 let user = null;
 let personal;
 let config;
-const url = window.location.href;
+let url = window.location.href;
 const filesUrl = url.substring(0, url.indexOf("/doceditor"));
 
 toast.configure();
@@ -78,11 +78,12 @@ const Editor = () => {
   const decodedId = urlParams
     ? urlParams.fileId || urlParams.fileid || null
     : null;
-  const fileId = encodeURIComponent(decodedId);
-  const version = urlParams ? urlParams.version || null : null;
   const doc = urlParams ? urlParams.doc || null : null;
   const isDesktop = window["AscDesktopEditor"] !== undefined;
   const view = url.indexOf("action=view") !== -1;
+
+  let fileId = encodeURIComponent(decodedId);
+  let version = urlParams ? urlParams.version || null : null;
 
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
@@ -229,7 +230,7 @@ const Editor = () => {
 
   const convertDocumentUrl = async () => {
     const convert = await convertFile(fileId, true);
-    return convert[0].result.webUrl;
+    return convert[0]?.result;
   };
 
   const init = async () => {
@@ -277,8 +278,14 @@ const Editor = () => {
 
           if (url.indexOf("#message/") > -1) {
             if (canConvert(fileInfo.fileExst)) {
-              const url = await convertDocumentUrl();
-              history.pushState({}, null, url);
+              const result = await convertDocumentUrl();
+
+              if (result) {
+                history.pushState({}, null, result.webUrl);
+                url = window.location.href;
+                fileId = result.id;
+                version = result.version;
+              }
             }
           }
         } catch (err) {
@@ -566,7 +573,8 @@ const Editor = () => {
 
   const onSDKRequestRename = (event) => {
     const title = event.data;
-    updateFile(fileInfo.id, title);
+
+    updateFile(fileId, title);
   };
 
   const onMakeActionLink = (event) => {
