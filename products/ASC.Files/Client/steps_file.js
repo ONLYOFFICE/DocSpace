@@ -19,8 +19,11 @@ module.exports = function () {
       this.mockEndpoint(Endpoints.thumbnails, 'thumbnails');
     },
     openArticle: function () {
-      this.seeElement({ react: 'SectionToggler', props: { visible: true } });
-      this.click({ react: 'SectionToggler', props: { visible: true } });
+      this.seeElement({
+        react: 'styled.div',
+        props: { className: 'not-selectable', visible: true },
+      });
+      this.click({ react: 'styled.div', props: { className: 'not-selectable', visible: true } });
     },
 
     openProfileMenu: function () {
