@@ -30,7 +30,6 @@ services:
       - ./config/onlyoffice.upgradev111.sql:/docker-entrypoint-initdb.d/06_onlyoffice.upgradev111.sql
       - ./config/onlyoffice.upgradev115.sql:/docker-entrypoint-initdb.d/07_onlyoffice.upgradev115.sql
       - ./config/onlyoffice.upgradev116.sql:/docker-entrypoint-initdb.d/06_onlyoffice.upgradev116.sql
-      - ./config/onlyoffice.upgradev120.sql:/docker-entrypoint-initdb.d/07_onlyoffice.upgradev120.sql
     networks:
       - ${NETWORK_NAME} 
     tmpfs: /var/log/mysql/
