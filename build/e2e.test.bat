@@ -47,6 +47,15 @@ call ping 127.0.0.1 -n 6 > nul
 echo service nginx start
 call sc start nginx > nul
 
+REM sleep 5 seconds
+call ping 127.0.0.1 -n 6 > nul
+
+
+choice /t 10 /d Y /m "Do you want to start tests in sequential mode?"
+if errorlevel 2 call yarn e2e.test
+if errorlevel 1 call yarn e2e.test:sequential
+
+
 if NOT %errorlevel% == 0 (
 	echo Couldn't restarte Onlyoffice%%~nf service			
 )
