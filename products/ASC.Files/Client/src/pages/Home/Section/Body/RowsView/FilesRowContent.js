@@ -9,6 +9,7 @@ import Text from "@appserver/components/text";
 import RowContent from "@appserver/components/row-content";
 
 import withContent from "../../../../../HOCs/withContent";
+import withBadges from "../../../../../HOCs/withBadges";
 
 const sideColor = "#A3A9AE";
 
@@ -34,6 +35,7 @@ const FilesRowContent = ({
   updatedDate,
   fileOwner,
   linkStyles,
+  badgesComponent,
 }) => {
   const {
     contentLength,
@@ -77,6 +79,7 @@ const FilesRowContent = ({
             </Text>
           )}
         </Link>
+        <div className="badges">{badgesComponent}</div>
         <Text
           containerMinWidth="120px"
           containerWidth="15%"
@@ -124,5 +127,7 @@ const FilesRowContent = ({
 };
 
 export default withRouter(
-  withTranslation(["Home", "Translations"])(withContent(FilesRowContent))
+  withTranslation(["Home", "Translations"])(
+    withContent(withBadges(FilesRowContent))
+  )
 );

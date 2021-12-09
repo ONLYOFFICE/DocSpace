@@ -8,7 +8,7 @@ import { withRouter } from "react-router-dom";
 
 import withFileActions from "../../../../../HOCs/withFileActions";
 import withContextOptions from "../../../../../HOCs/withContextOptions";
-import withBadges from "../../../../../HOCs/withBadges";
+import withQuickButtons from "../../../../../HOCs/withQuickButtons";
 import ItemIcon from "../../../../../components/ItemIcon";
 
 const checkedStyle = css`
@@ -137,7 +137,7 @@ const SimpleFilesRow = (props) => {
     className,
     isDragging,
     value,
-    badgesComponent,
+    quickButtonsComponent,
     displayShareButton,
     isPrivacy,
     contextOptionsProps,
@@ -171,7 +171,7 @@ const SimpleFilesRow = (props) => {
           isEdit={isEdit}
           element={element}
           sectionWidth={sectionWidth}
-          contentElement={badgesComponent}
+          contentElement={quickButtonsComponent}
           onSelect={onContentFileSelect}
           rowContextClick={fileContextClick}
           isPrivacy={isPrivacy}
@@ -197,5 +197,7 @@ const SimpleFilesRow = (props) => {
 };
 
 export default withTranslation(["Home", "Translations"])(
-  withFileActions(withRouter(withContextOptions(withBadges(SimpleFilesRow))))
+  withFileActions(
+    withRouter(withContextOptions(withQuickButtons(SimpleFilesRow)))
+  )
 );
