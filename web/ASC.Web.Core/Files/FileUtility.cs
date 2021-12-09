@@ -254,52 +254,62 @@ namespace ASC.Web.Core.Files
 
         public bool CanImageView(string fileName)
         {
-            return ExtsImagePreviewed.Contains(GetFileExtension(fileName), StringComparer.CurrentCultureIgnoreCase);
+            var ext = GetFileExtension(fileName);
+            return ExtsImagePreviewed.Exists(r => r.Equals(ext, StringComparison.OrdinalIgnoreCase));
         }
 
         public bool CanMediaView(string fileName)
         {
-            return ExtsMediaPreviewed.Contains(GetFileExtension(fileName), StringComparer.CurrentCultureIgnoreCase);
+            var ext = GetFileExtension(fileName);
+            return ExtsMediaPreviewed.Exists(r => r.Equals(ext, StringComparison.OrdinalIgnoreCase));
         }
 
         public bool CanWebView(string fileName)
         {
-            return ExtsWebPreviewed.Contains(GetFileExtension(fileName), StringComparer.CurrentCultureIgnoreCase);
+            var ext = GetFileExtension(fileName);
+            return ExtsWebPreviewed.Exists(r => r.Equals(ext, StringComparison.OrdinalIgnoreCase));
         }
 
         public bool CanWebEdit(string fileName)
         {
-            return ExtsWebEdited.Contains(GetFileExtension(fileName), StringComparer.CurrentCultureIgnoreCase);
+            var ext = GetFileExtension(fileName);
+            return ExtsWebEdited.Exists(r => r.Equals(ext, StringComparison.OrdinalIgnoreCase));
         }
 
         public bool CanWebReview(string fileName)
         {
-            return ExtsWebReviewed.Contains(GetFileExtension(fileName), StringComparer.CurrentCultureIgnoreCase);
+            var ext = GetFileExtension(fileName);
+            return ExtsWebReviewed.Exists(r => r.Equals(ext, StringComparison.OrdinalIgnoreCase));
         }
 
         public bool CanWebCustomFilterEditing(string fileName)
         {
-            return ExtsWebCustomFilterEditing.Contains(GetFileExtension(fileName), StringComparer.CurrentCultureIgnoreCase);
+            var ext = GetFileExtension(fileName);
+            return ExtsWebCustomFilterEditing.Exists(r => r.Equals(ext, StringComparison.OrdinalIgnoreCase));
         }
 
         public bool CanWebRestrictedEditing(string fileName)
         {
-            return ExtsWebRestrictedEditing.Contains(GetFileExtension(fileName), StringComparer.CurrentCultureIgnoreCase);
+            var ext = GetFileExtension(fileName);
+            return ExtsWebRestrictedEditing.Exists(r => r.Equals(ext, StringComparison.OrdinalIgnoreCase));
         }
 
         public bool CanWebComment(string fileName)
         {
-            return ExtsWebCommented.Contains(GetFileExtension(fileName), StringComparer.CurrentCultureIgnoreCase);
+            var ext = GetFileExtension(fileName);
+            return ExtsWebCommented.Exists(r => r.Equals(ext, StringComparison.OrdinalIgnoreCase));
         }
 
         public bool CanCoAuhtoring(string fileName)
         {
-            return ExtsCoAuthoring.Contains(GetFileExtension(fileName), StringComparer.CurrentCultureIgnoreCase);
+            var ext = GetFileExtension(fileName);
+            return ExtsCoAuthoring.Exists(r => r.Equals(ext, StringComparison.OrdinalIgnoreCase));
         }
 
         public bool CanIndex(string fileName)
         {
-            return ExtsIndexing.Contains(GetFileExtension(fileName), StringComparer.CurrentCultureIgnoreCase);
+            var ext = GetFileExtension(fileName);
+            return ExtsIndexing.Exists(r => r.Equals(ext, StringComparison.OrdinalIgnoreCase));
         }
 
         #endregion
