@@ -52,4 +52,9 @@ module.exports = class Endpoints {
     method: 'GET',
     baseDir: 'people',
   };
+  static cultures = {
+    url: ['http://localhost:8092/api/2.0/settings/cultures.json'],
+    method: 'GET',
+    baseDir: 'settings',
+  };
 };

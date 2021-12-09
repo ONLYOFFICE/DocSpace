@@ -14,6 +14,7 @@ module.exports = function () {
       this.mockEndpoint(Endpoints.password, 'password');
       this.mockEndpoint(Endpoints.info, 'info');
       this.mockEndpoint(Endpoints.self, 'self');
+      this.mockEndpoint(Endpoints.cultures, 'cultures');
     },
 
     openPage: function () {
@@ -23,8 +24,11 @@ module.exports = function () {
     },
 
     openArticle: function () {
-      this.seeElement({ react: 'SectionToggler', props: { visible: true } });
-      this.click({ react: 'SectionToggler', props: { visible: true } });
+      this.seeElement({
+        react: 'styled.div',
+        props: { className: 'not-selectable', visible: true },
+      });
+      this.click({ react: 'styled.div', props: { className: 'not-selectable', visible: true } });
     },
 
     openProfileMenu: function () {
@@ -74,7 +78,7 @@ module.exports = function () {
     },
 
     checkText: function (form, type) {
-      this.wait(2);
+      this.wait(10);
       this.see(`${form.firstName} ${form.lastName}`);
       this.see('Edit profile');
       this.see(type);
