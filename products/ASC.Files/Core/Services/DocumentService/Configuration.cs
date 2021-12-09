@@ -904,7 +904,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 return
                     _configuration.EditorType == EditorType.Embedded
                     || fillingForm
-                        ? CommonLinkUtility.GetFullAbsolutePath(TenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.Dark, !_configuration.EditorConfig.Customization.IsRetina))
+                        ? CommonLinkUtility.GetFullAbsolutePath(TenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.DocsEditorEmbed, !_configuration.EditorConfig.Customization.IsRetina))
                         : CommonLinkUtility.GetFullAbsolutePath(TenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.DocsEditor, !_configuration.EditorConfig.Customization.IsRetina));
             }
         }
@@ -917,7 +917,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 return
                     _configuration.EditorType != EditorType.Embedded
                         ? null
-                        : CommonLinkUtility.GetFullAbsolutePath(TenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.Dark, !_configuration.EditorConfig.Customization.IsRetina));
+                        : CommonLinkUtility.GetFullAbsolutePath(TenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.DocsEditorEmbed, !_configuration.EditorConfig.Customization.IsRetina));
             }
         }
 
