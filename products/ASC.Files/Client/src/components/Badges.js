@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import Badge from "@appserver/components/badge";
 import IconButton from "@appserver/components/icon-button";
-import SharedButton from "@appserver/files/src/components/SharedButton";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
 export const StyledIcon = styled(IconButton)`
@@ -20,32 +19,18 @@ const Badges = ({
   canConvert,
   accessToEdit,
   showNew,
-  showShare,
   onFilesClick,
-  onClickLock,
-  onClickFavorite,
   onShowVersionHistory,
   onBadgeClick,
   setConvertDialogVisible,
 }) => {
-  const {
-    id,
-    locked,
-    fileStatus,
-    version,
-    versionGroup,
-    title,
-    fileExst,
-  } = item;
+  const { id, locked, fileStatus, version, versionGroup, fileExst } = item;
 
-  const isFavorite = fileStatus === 32;
   const isEditing = fileStatus === 1;
   const isNewWithFav = fileStatus === 34;
   const isEditingWithFav = fileStatus === 33;
   const showEditBadge = !locked || item.access === 0;
   const isPrivacy = isPrivacyFolder && isDesktopClient;
-
-  const showFavorite = isFavorite || isNewWithFav || isEditingWithFav;
   const showActionsEdit = isEditing || isEditingWithFav;
 
   return fileExst ? (
@@ -93,43 +78,6 @@ const Badges = ({
             hoverColor="#3B72A7"
           />
         )}
-      {item.canShare && showShare ? (
-        <SharedButton
-          t={t}
-          id={item.id}
-          shared={item.shared}
-          isFolder={item.isFolder}
-        />
-      ) : null}
-      {accessToEdit && !isTrashFolder && (
-        <IconButton
-          iconName={
-            locked
-              ? "/static/images/file.actions.locked.react.svg"
-              : "/static/images/locked.react.svg"
-          }
-          className="badge lock-file icons-group"
-          data-id={id}
-          data-locked={locked ? true : false}
-          onClick={onClickLock}
-          hoverColor="#3B72A7"
-        />
-      )}
-      {!isTrashFolder && (
-        <StyledIcon
-          iconName={
-            showFavorite
-              ? "/static/images/file.actions.favorite.react.svg"
-              : "/static/images/favorite.react.svg"
-          }
-          className="favorite badge icons-group"
-          size="medium"
-          data-id={id}
-          data-title={title}
-          onClick={() => onClickFavorite(showFavorite)}
-          hoverColor="#3B72A7"
-        />
-      )}
       {(showNew || isNewWithFav) && (
         <Badge
           className="badge-version icons-group"

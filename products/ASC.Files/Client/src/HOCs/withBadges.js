@@ -14,34 +14,6 @@ import config from "../../package.json";
 
 export default function withBadges(WrappedComponent) {
   class WithBadges extends React.Component {
-    onClickLock = () => {
-      const { item, lockFileAction, isAdmin, setIsLoading } = this.props;
-      const { locked, id, access } = item;
-
-      if (isAdmin || access === 0) {
-        setIsLoading(true);
-        return lockFileAction(id, !locked)
-          .catch((err) => toastr.error(err))
-          .finally(() => setIsLoading(false));
-      }
-      return;
-    };
-
-    onClickFavorite = (showFavorite) => {
-      const { t, item, setFavoriteAction } = this.props;
-
-      if (showFavorite) {
-        setFavoriteAction("remove", item.id)
-          .then(() => toastr.success(t("RemovedFromFavorites")))
-          .catch((err) => toastr.error(err));
-        return;
-      }
-
-      setFavoriteAction("mark", item.id)
-        .then(() => toastr.success(t("MarkedAsFavorite")))
-        .catch((err) => toastr.error(err));
-    };
-
     onShowVersionHistory = () => {
       const {
         homepage,
@@ -166,7 +138,6 @@ export default function withBadges(WrappedComponent) {
           item={item}
           isAdmin={isAdmin}
           showNew={showNew}
-          showShare={showShare}
           newItems={newItems}
           canWebEdit={canWebEdit}
           canConvert={canConvert}
@@ -174,8 +145,6 @@ export default function withBadges(WrappedComponent) {
           isPrivacyFolder={isPrivacyFolder}
           isDesktopClient={isDesktopClient}
           accessToEdit={accessToEdit}
-          onClickLock={this.onClickLock}
-          onClickFavorite={this.onClickFavorite}
           onShowVersionHistory={this.onShowVersionHistory}
           onBadgeClick={this.onBadgeClick}
           setConvertDialogVisible={this.setConvertDialogVisible}
@@ -210,11 +179,7 @@ export default function withBadges(WrappedComponent) {
         isPrivacyFolder,
         updateRootBadge,
       } = treeFoldersStore;
-      const {
-        lockFileAction,
-        setFavoriteAction,
-        markAsRead,
-      } = filesActionsStore;
+      const { markAsRead } = filesActionsStore;
       const { isTabletView, isDesktopClient } = auth.settingsStore;
       const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
       const {
@@ -238,8 +203,6 @@ export default function withBadges(WrappedComponent) {
         canConvert,
         isTrashFolder: isRecycleBinFolder,
         isPrivacyFolder,
-        lockFileAction,
-        setFavoriteAction,
         homepage: config.homepage,
         isTabletView,
         setIsVerHistoryPanel,
