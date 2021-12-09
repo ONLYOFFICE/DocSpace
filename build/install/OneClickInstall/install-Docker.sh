@@ -892,8 +892,7 @@ check_image_RepoDigest() {
 }
 
 docker_image_update() {
-    docker-compose -f $BASE_DIR/notify.yml down
-    docker-compose -f $BASE_DIR/appserver.yml down --volumes
+    docker-compose -f $BASE_DIR/notify.yml -f $BASE_DIR/appserver.yml down --volumes
     docker-compose -f $BASE_DIR/build.yml pull
 }
 
@@ -973,6 +972,7 @@ start_installation () {
 	if [ "$UPDATE" = "true" ]; then
 		save_parameters_from_configs
 	fi
+
 	download_files
 
 	set_jwt_secret
