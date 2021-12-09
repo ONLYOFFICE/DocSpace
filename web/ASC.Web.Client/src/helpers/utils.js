@@ -28,35 +28,35 @@ export const setDocumentTitle = (subTitle = null) => {
 };
 
 export const isModuleOld = (link) => {
-  if (link) {
-    if (
-      link.includes("files") ||
-      link.includes("people") ||
-      link.includes("settings")
-    ) {
-      return false;
-    } else {
-      return true;
-    }
+  if (!link) return undefined;
+
+  if (
+    link.includes("files") ||
+    link.includes("people") ||
+    link.includes("settings")
+  ) {
+    return false;
+  } else {
+    return true;
   }
 };
 
 export const getLink = (link) => {
-  if (link) {
-    if (!isModuleOld(link)) {
-      return link;
-    }
+  if (!link) return undefined;
 
-    if (link.includes("mail") || link.includes("calendar")) {
-      link = link.replace("products", "addons");
-    }
-
-    const { protocol, hostname } = window.location;
-
-    const communityHostname = toCommunityHostname(hostname);
-
-    return `${protocol}//${communityHostname}${link}?desktop_view=true`;
+  if (!isModuleOld(link)) {
+    return link;
   }
+
+  if (link.includes("mail") || link.includes("calendar")) {
+    link = link.replace("products", "addons");
+  }
+
+  const { protocol, hostname } = window.location;
+
+  const communityHostname = toCommunityHostname(hostname);
+
+  return `${protocol}//${communityHostname}${link}?desktop_view=true`;
 };
 
 export const onItemClick = (e, backdropClick = undefined) => {

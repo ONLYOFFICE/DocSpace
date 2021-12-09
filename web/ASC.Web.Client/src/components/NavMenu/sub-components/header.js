@@ -241,7 +241,7 @@ const HeaderComponent = ({
           {mainModules.map(
             ({
               id,
-              separator, //iconName,
+              separator,
               iconUrl,
               notifications,
               link,

@@ -2,23 +2,17 @@ import styled from "styled-components";
 
 const HomeContainer = styled.div`
   margin: 110px auto;
-  max-width: 1000px;
+  max-width: 1040px;
   width: 100%;
   box-sizing: border-box;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 
   .home-modules-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-
-    h1 {
-      font-weight: bold;
-      font-size: 23px;
-      line-height: 28px;
-      margin-bottom: 40px;
-    }
 
     .home-modules {
       display: grid;
