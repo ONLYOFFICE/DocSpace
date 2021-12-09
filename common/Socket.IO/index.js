@@ -11,7 +11,7 @@ const requestManager = require("./requestManager");
 const config = require("./config");
 const auth = require("./middleware/auth.js");
 
-const port = 9899;
+const port = config.get("port") || 3000;
 const app = express();
 
 const secret = config.get("core.machinekey") + new Date().getTime();
@@ -74,8 +74,6 @@ io.on("connection", (socket) => {
   // console.log("socket.handshake", socket.user); //TODO:
   // const request = socket.client.request;
 
-  console.log("connection success");
-
   socket.on("startFileEdit", async (fileId) => {
     const url = `files/file/${fileId}`;
     const options = { method: "GET", headers: tempHeaders }; //{ method: "POST", body: {} };
@@ -84,7 +82,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("reportFileCreation", (fileId) => {
-    console.log("reportFileCreation");
     io.emit("getFileCreation", fileId);
   });
 });
@@ -117,3 +114,5 @@ app.get("/", (req, res) => {
 });
 
 httpServer.listen(port, () => console.log(`Server started on port: ${port}`));
+
+module.exports = io;
