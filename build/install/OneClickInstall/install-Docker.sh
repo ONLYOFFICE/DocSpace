@@ -299,7 +299,7 @@ while [ "$1" != "" ]; do
 			echo "      -un, --username                   dockerhub username"
 			echo "      -p, --password                    dockerhub password"
 			echo "      -ias, --installappserver          install or update appserver (true|false)"
-			echo "      -vas, --versionappserver          select the version to install appserver (latest|develop|version number)"
+			echo "      -tag, --dockertag                 select the version to install appserver (latest|develop|version number)"
 			echo "      -ids, --installdocumentserver     install or update document server (true|false)"
 			echo "      -di, --documentserverimage        document server image name"
 			echo "      -imysql, --installmysql           install or update mysql (true|false)"			
