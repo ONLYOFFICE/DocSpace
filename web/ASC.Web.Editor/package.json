@@ -5,7 +5,7 @@
   "homepage": "/products/files/doceditor",
   "scripts": {
     "build": "webpack --mode production",
-    "build:test": "webpack --env test=true --mode production",
+    "build:test": "webpack --env minimize=false --mode production",
     "clean": "shx rm -rf dist",
     "deploy": "shx mkdir -p ../../build/deploy/products/ASC.Files/editor && shx cp -r dist/* ../../build/deploy/products/ASC.Files/editor",
     "serve": "serve dist -p 5013",

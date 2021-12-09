@@ -192,7 +192,7 @@ module.exports = (env, argv) => {
     config.mode = 'production';
     config.optimization = {
       splitChunks: { chunks: 'all' },
-      minimize: env.test ? false : true,
+      minimize: !env.minimize,
       minimizer: [new TerserPlugin()],
     };
   } else {

@@ -49,16 +49,9 @@
     "test": "yarn workspace @appserver/components test",
     "wipe": "shx rm -rf node_modules yarn.lock web/**/node_modules products/**/node_modules",
     "debug-info": "node packages/debug-info --unreleased-only --template debuginfo --output public/debuginfo.md",
-    "e2e.test:chromium": "lerna run test:chromium:sequential --parallel --scope {@appserver/people,@appserver/files,@appserver/login}",
-    "e2e.test:firefox": "lerna run test:firefox:sequential --parallel --scope {@appserver/people,@appserver/files,@appserver/login}",
-    "e2e.test:webkit": "lerna run test:webkit:sequential --parallel --scope {@appserver/people,@appserver/files,@appserver/login}",
     "e2e.test": "lerna run test:sequential --parallel --scope {@appserver/people,@appserver/files,@appserver/login}",
     "e2e.test:sequential": "yarn workspace @appserver/people test:sequential && yarn workspace @appserver/files test:sequential && yarn workspace @appserver/login test:sequential",
-    "e2e.test:chromium:model": "lerna run test:chromium:sequential:model --parallel --scope {@appserver/people,@appserver/files,@appserver/login}",
-    "e2e.test:firefox:model": "lerna run test:firefox:sequential:model --parallel --scope {@appserver/people,@appserver/files,@appserver/login}",
-    "e2e.test:webkit:model": "lerna run test:webkit:sequential:model --parallel --scope {@appserver/people,@appserver/files,@appserver/login}",
-    "e2e.test:model": "lerna run test:sequential:model --parallel --scope {@appserver/people,@appserver/files,@appserver/login}",
-    "e2e.test:model:sequential": "yarn workspace @appserver/people test:sequential:model && yarn workspace @appserver/files test:sequential:model && yarn workspace @appserver/login test:sequential:model"
+    "e2e.test:model": "yarn workspace @appserver/people test:model && yarn workspace @appserver/files test:model && yarn workspace @appserver/login test:model"
   },
   "devDependencies": {
     "lerna": "3.22.1",
