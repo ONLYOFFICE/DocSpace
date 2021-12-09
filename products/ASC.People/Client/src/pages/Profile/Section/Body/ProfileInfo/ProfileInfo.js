@@ -362,6 +362,7 @@ class ProfileInfo extends React.PureComponent {
                     size="content"
                     className="language-combo"
                     showDisabledItems={true}
+                    dropDownMaxHeight={364}
                   />
                   <HelpButton
                     place="bottom"
