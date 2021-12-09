@@ -1,8 +1,8 @@
 {
-  "Auto": "Avto",
-  "CodeCopySuccess": "Kod buferə köçürüldü",
-  "EmbedCode": "Embed code",
-  "EmbeddingDocument": "Sənədin daxil edilməsi",
-  "Height": "Uzunluq",
-  "Width": "Genişlik"
+    "Auto": "Avto",
+    "CodeCopySuccess": "Kod buferə köçürüldü",
+    "EmbedCode": "Kodu yerləşdirin",
+    "EmbeddingDocument": "Sənədin daxil edilməsi",
+    "Height": "Uzunluq",
+    "Width": "Genişlik"
 }

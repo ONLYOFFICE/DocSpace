@@ -2,7 +2,7 @@
     "ChangeUsersActiveStatus": "iz ver",
     "ChangeUsersDisableStatus": "Söndürülüb",
     "ChangeUsersStatusButton": "İstifadəçi statusunun dəyişdirilməsi",
-    "ChangeUserStatusDialog": "The users with the '{{ userStatus }}' will be  {{ status }}.",
+    "ChangeUserStatusDialog": "{{ istifadəçiStatusu }} olan istifadəçilər {{ status }} olacaqlar.",
     "ChangeUserStatusDialogHeader": "İstifadəçi statusunun dəyişdirilməsi",
     "ChangeUserStatusDialogMessage": "Potalın sahibinin və öz statusunuzu dəyişdirə bilməzsiniz."
 }
