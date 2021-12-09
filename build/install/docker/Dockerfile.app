@@ -101,9 +101,7 @@ ENTRYPOINT ["./docker-entrypoint.sh"]
 FROM nginx AS web
 ARG SRC_PATH
 ARG BUILD_PATH
-ARG COUNT_WORKER_CONNECTIONS=1024
 ENV DNS_NAMESERVER=127.0.0.11 \
-    COUNT_WORKER_CONNECTIONS=$COUNT_WORKER_CONNECTIONS \
     MAP_HASH_BUCKET_SIZE=""
 
 RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \ 
