@@ -909,6 +909,15 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
+        public string ImageDark
+        {
+            set { }
+            get
+            {
+                return CommonLinkUtility.GetFullAbsolutePath(TenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.DocsEditor, !_configuration.EditorConfig.Customization.IsRetina));
+            }
+        }
+
         public string ImageEmbedded
         {
             set { }
