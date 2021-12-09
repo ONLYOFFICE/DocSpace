@@ -192,14 +192,8 @@ module.exports = (env, argv) => {
     config.mode = 'production';
     config.optimization = {
       splitChunks: { chunks: 'all' },
-      minimize: true,
+      minimize: env.test ? false : true,
       minimizer: [new TerserPlugin()],
-    };
-  } else if (argv.mode === 'test') {
-    config.mode = 'production';
-    config.optimization = {
-      splitChunks: { chunks: 'all' },
-      minimize: false,
     };
   } else {
     config.devtool = 'cheap-module-source-map';

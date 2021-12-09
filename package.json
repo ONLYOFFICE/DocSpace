@@ -20,7 +20,7 @@
   "scripts": {
     "build": "lerna run build --parallel --ignore @appserver/common --ignore @appserver/components --ignore @appserver/browserslist-config-asc --ignore @appserver/debug-info",
     "build:personal": "lerna run build --parallel --scope {@appserver/studio,@appserver/people,@appserver/files,@appserver/editor}",
-    "build:test": "lerna run build:test --parallel --scope {@appserver/login,@appserver/people,@appserver/files} && lerna run build --parallel --ignore @appserver/common --ignore @appserver/components --ignore @appserver/browserslist-config-asc --ignore @appserver/debug-info --ignore @appserver/login --ignore @appserver/people --ignore @appserver/files",
+    "build:test": "lerna run build:test --parallel --ignore @appserver/common --ignore @appserver/components --ignore @appserver/browserslist-config-asc --ignore @appserver/debug-info",
     "bump": "lerna version --no-push --no-git-tag-version",
     "clean": "lerna run clean --parallel",
     "deploy": "shx rm -rf build/deploy/products && shx rm -rf build/deploy/public && shx rm -rf build/deploy/studio && lerna run deploy --parallel --ignore @appserver/common --ignore @appserver/components --ignore @appserver/browserslist-config-asc --ignore @appserver/debug-info && shx cp -r public build/deploy",
