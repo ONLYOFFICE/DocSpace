@@ -16,6 +16,7 @@ import { thumbnailStatuses } from "../helpers/constants";
 import { isMobile } from "react-device-detect";
 import { openDocEditor as openEditor } from "../helpers/utils";
 import toastr from "studio/toastr";
+import { startEditingFile } from "../helpers/socket";
 
 const { FilesFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
@@ -1663,6 +1664,7 @@ class FilesStore {
   };
 
   openDocEditor = (id, providerKey = null, tab = null, url = null) => {
+    startEditingFile(id);
     return openEditor(id, providerKey, tab, url);
   };
 

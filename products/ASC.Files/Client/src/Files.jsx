@@ -22,6 +22,7 @@ import PrivateRoomsPage from "./pages/PrivateRoomsPage";
 import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
 import Panels from "./components/FilesPanels";
 import { AppServerConfig } from "@appserver/common/constants";
+import { socketInit } from "./helpers/socket";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -69,6 +70,8 @@ class FilesContent extends React.Component {
 
   componentDidMount() {
     loadScript("/static/scripts/tiff.min.js", "img-tiff-script");
+
+    socketInit();
 
     this.props
       .loadFilesInfo()
