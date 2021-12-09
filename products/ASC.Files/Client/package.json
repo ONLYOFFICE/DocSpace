@@ -12,7 +12,6 @@
     "start": "webpack-cli serve",
     "start-prod": "webpack --mode production && serve dist -p 5008",
     "test:codeceptjs": "npx codeceptjs run --reporter mocha-multi",
-    "test:codeceptjs:ui": "codecept-ui --app",
     "test:mobile": "cross-env DEVICE_TYPE=mobile yarn test:codeceptjs",
     "test:smallTablet": "cross-env DEVICE_TYPE=smallTablet yarn test:codeceptjs",
     "test:tablet": "cross-env DEVICE_TYPE=tablet yarn test:codeceptjs",
