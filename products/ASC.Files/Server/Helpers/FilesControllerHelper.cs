@@ -238,9 +238,9 @@ namespace ASC.Files.Helpers
             return configuration;
         }
 
-        public object CreateUploadSession(T folderId, string fileName, long fileSize, string relativePath, bool encrypted)
+        public object CreateUploadSession(T folderId, string fileName, long fileSize, string relativePath, ApiDateTime lastModified, bool encrypted)
         {
-            var file = FileUploader.VerifyChunkedUpload(folderId, fileName, fileSize, FilesSettingsHelper.UpdateIfExist, relativePath);
+            var file = FileUploader.VerifyChunkedUpload(folderId, fileName, fileSize, FilesSettingsHelper.UpdateIfExist, lastModified, relativePath);
 
             if (FilesLinkUtility.IsLocalFileUploader)
             {
