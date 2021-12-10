@@ -27,6 +27,7 @@ const SelectFolderDialogModalView = ({
   canCreate,
   isLoading,
   primaryButtonName,
+  noTreeSwitcher,
 }) => {
   return (
     <StyledAsidePanel visible={isPanelVisible}>
@@ -44,7 +45,7 @@ const SelectFolderDialogModalView = ({
         <ModalDialog.Body>
           <StyledSelectFolderPanel
             isNeedArrowIcon={isNeedArrowIcon}
-            folderListLength={folderList?.length}
+            noTreeSwitcher={noTreeSwitcher}
           >
             <div className="select-folder-modal-dialog-header">{header} </div>
             <FolderTreeBody

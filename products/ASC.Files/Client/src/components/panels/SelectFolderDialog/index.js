@@ -67,6 +67,7 @@ class SelectFolderModalDialog extends React.Component {
     };
     this.throttledResize = throttle(this.setDisplayType, 300);
     this.folderTitle = "";
+    this.noTreeSwitcher = false;
   }
 
   componentDidMount() {
@@ -115,7 +116,7 @@ class SelectFolderModalDialog extends React.Component {
       case "exceptSortedByTags":
         try {
           const foldersTree = await getFoldersTree();
-          folderList = SelectFolderDialog.convertFolders(
+          [folderList, this.noTreeSwitcher] = SelectFolderDialog.convertFolders(
             foldersTree,
             exceptSortedByTagsFolders
           );
@@ -128,7 +129,7 @@ class SelectFolderModalDialog extends React.Component {
       case "exceptTrashFolder":
         try {
           const foldersTree = await getFoldersTree();
-          folderList = SelectFolderDialog.convertFolders(
+          [folderList, this.noTreeSwitcher] = SelectFolderDialog.convertFolders(
             foldersTree,
             exceptTrashFolder
           );
@@ -141,7 +142,7 @@ class SelectFolderModalDialog extends React.Component {
       case "exceptPrivacyTrashFolders":
         try {
           const foldersTree = await getFoldersTree();
-          folderList = SelectFolderDialog.convertFolders(
+          [folderList, this.noTreeSwitcher] = SelectFolderDialog.convertFolders(
             foldersTree,
             exceptPrivacyTrashFolders
           );
@@ -511,6 +512,7 @@ class SelectFolderModalDialog extends React.Component {
         canCreate={canCreate}
         isLoading={isLoading}
         primaryButtonName={this.buttonName}
+        noTreeSwitcher={this.noTreeSwitcher}
       />
     ) : (
       <SelectFolderDialogModalView
@@ -534,6 +536,7 @@ class SelectFolderModalDialog extends React.Component {
         isLoadingData={isLoadingData}
         isLoading={isLoading}
         primaryButtonName={this.buttonName}
+        noTreeSwitcher={this.noTreeSwitcher}
       />
     );
   }
@@ -666,11 +669,25 @@ class SelectFolderDialog extends React.Component {
   static convertFolders = (folders, arrayOfExceptions) => {
     let newArray = [];
 
+    let noSubfoldersCount = 0;
+    let needHideSwitcher = false;
     for (let i = 0; i < folders.length; i++) {
-      !arrayOfExceptions.includes(folders[i].rootFolderType) &&
+      if (!arrayOfExceptions.includes(folders[i].rootFolderType)) {
         newArray.push(folders[i]);
+
+        if (
+          folders[i].foldersCount === 0 ||
+          folders[i].rootFolderType === FolderType.Privacy
+        ) {
+          noSubfoldersCount += 1;
+        }
+      }
     }
-    return newArray;
+
+    if (newArray.length === noSubfoldersCount) {
+      needHideSwitcher = true;
+    }
+    return [newArray, needHideSwitcher];
   };
   render() {
     return (
