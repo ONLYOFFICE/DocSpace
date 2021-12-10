@@ -91,6 +91,7 @@ const Header = styled.header`
     height: 24px;
     position: relative;
     padding: ${(props) => (!props.isPersonal ? "0 20px 0 6px" : "0")};
+    margin-left: ${(props) => (props.isInModule ? "0" : "10px")};
     cursor: pointer;
 
     @media ${tablet} {
@@ -172,6 +173,7 @@ const HeaderComponent = ({
   };
 
   const numberOfModules = mainModules.filter((item) => !item.separator).length;
+  const isInModule = currentProductId !== "home";
 
   return (
     <>
@@ -181,8 +183,9 @@ const HeaderComponent = ({
         isPersonal={isPersonal}
         isAuthenticated={isAuthenticated}
         className="navMenuHeader hidingHeader"
+        isInModule={isInModule}
       >
-        {!isPersonal && (
+        {!isPersonal && isInModule && (
           <NavItem
             badgeNumber={totalNotifications}
             onClick={onClick}
@@ -315,6 +318,7 @@ HeaderComponent.propTypes = {
   version: PropTypes.string,
   isAuthenticated: PropTypes.bool,
   isAdmin: PropTypes.bool,
+  isInModule: PropTypes.bool,
 };
 
 export default inject(({ auth }) => {
