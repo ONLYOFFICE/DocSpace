@@ -44,6 +44,10 @@ export const getLink = (link) => {
 
   if (link.includes("mail") || link.includes("calendar")) {
     link = link.replace("products", "addons");
+  } else {
+    link = link.replace("products", "Products");
+    link = link.replace("crm", "CRM");
+    link = link.replace("projects", "Projects");
   }
 
   const { protocol, hostname } = window.location;
