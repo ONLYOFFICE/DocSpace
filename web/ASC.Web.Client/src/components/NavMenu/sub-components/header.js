@@ -91,7 +91,7 @@ const Header = styled.header`
     height: 24px;
     position: relative;
     padding: ${(props) => (!props.isPersonal ? "0 20px 0 6px" : "0")};
-    margin-left: ${(props) => (props.isInModule ? "0" : "10px")};
+    margin-left: ${(props) => (props.needNavMenu ? "0" : "10px")};
     cursor: pointer;
 
     @media ${tablet} {
@@ -173,7 +173,33 @@ const HeaderComponent = ({
   };
 
   const numberOfModules = mainModules.filter((item) => !item.separator).length;
-  const isInModule = currentProductId !== "home";
+  const needNavMenu = currentProductId !== "home";
+
+  const navItems = mainModules.map(
+    ({ id, separator, iconUrl, notifications, link, title, dashed }) => {
+      const itemLink = getLink(link);
+      const shouldRenderIcon = isModuleOld(link);
+      return (
+        <NavItem
+          separator={!!separator}
+          key={id}
+          data-id={id}
+          data-link={itemLink}
+          opened={isNavOpened}
+          active={id == currentProductId}
+          iconUrl={iconUrl}
+          badgeNumber={notifications}
+          onClick={onItemClick}
+          onBadgeClick={onBadgeClick}
+          url={itemLink}
+          dashed={dashed}
+        >
+          {id === "settings" ? i18n.t("Common:Settings") : title}
+          {shouldRenderIcon && <StyledExternalLinkIcon color={linkColor} />}
+        </NavItem>
+      );
+    }
+  );
 
   return (
     <>
@@ -183,9 +209,9 @@ const HeaderComponent = ({
         isPersonal={isPersonal}
         isAuthenticated={isAuthenticated}
         className="navMenuHeader hidingHeader"
-        isInModule={isInModule}
+        needNavMenu={needNavMenu}
       >
-        {!isPersonal && isInModule && (
+        {!isPersonal && needNavMenu && (
           <NavItem
             badgeNumber={totalNotifications}
             onClick={onClick}
@@ -241,37 +267,7 @@ const HeaderComponent = ({
             key={"nav-products-separator"}
             data-id={"nav-products-separator"}
           />
-          {mainModules.map(
-            ({
-              id,
-              separator,
-              iconUrl,
-              notifications,
-              link,
-              title,
-              dashed,
-            }) => (
-              <NavItem
-                separator={!!separator}
-                key={id}
-                data-id={id}
-                data-link={getLink(link)}
-                opened={isNavOpened}
-                active={id == currentProductId}
-                iconUrl={iconUrl}
-                badgeNumber={notifications}
-                onClick={onItemClick}
-                onBadgeClick={onBadgeClick}
-                url={getLink(link)}
-                dashed={dashed}
-              >
-                {id === "settings" ? i18n.t("Common:Settings") : title}
-                {isModuleOld(link) && (
-                  <StyledExternalLinkIcon color={linkColor} />
-                )}
-              </NavItem>
-            )
-          )}
+          {navItems}
           <Box className="version-box">
             <Link
               as="a"
@@ -318,7 +314,7 @@ HeaderComponent.propTypes = {
   version: PropTypes.string,
   isAuthenticated: PropTypes.bool,
   isAdmin: PropTypes.bool,
-  isInModule: PropTypes.bool,
+  needNavMenu: PropTypes.bool,
 };
 
 export default inject(({ auth }) => {

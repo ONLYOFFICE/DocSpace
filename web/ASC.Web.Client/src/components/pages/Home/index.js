@@ -14,16 +14,17 @@ import Heading from "@appserver/components/heading";
 const Tiles = ({ availableModules, username, t }) => {
   let index = 0;
   const { firstName, lastName } = username;
+  const fullName = `${firstName} ${lastName}`.trim();
 
   const getGreeting = () => {
     const time = new Date().getHours();
 
     if (time >= 5 && time <= 11) return t("GoodMorning");
     if (time >= 12 && time <= 16) return t("GoodAfternoon");
-    else return t("GoodEvening");
+    return t("GoodEvening");
   };
 
-  const greetingMessage = `${getGreeting()}, ${firstName} ${lastName}!`;
+  const greetingMessage = `${getGreeting()}, ${fullName}!`;
 
   const modules = availableModules.filter(
     (module) => module.separator !== true && module.id !== "settings"
@@ -53,7 +54,7 @@ Tiles.propTypes = {
 };
 
 const Body = ({ match, isLoaded, availableModules, username }) => {
-  const { t } = useTranslation(["Home", "Common"]);
+  const { t } = useTranslation(["Home", "translation"]);
   const { error } = match.params;
   setDocumentTitle();
 
@@ -69,7 +70,7 @@ const Body = ({ match, isLoaded, availableModules, username }) => {
 
       {!availableModules || !availableModules.length ? (
         <Text className="home-error-text" fontSize="14px" color="#c30">
-          {t("NoOneModulesAvailable")}
+          {t("translation:NoOneModulesAvailable")}
         </Text>
       ) : null}
     </HomeContainer>
@@ -103,7 +104,6 @@ Home.propTypes = {
 };
 
 export default inject(({ auth }) => {
-  console.log(auth);
   const { isLoaded, settingsStore, availableModules, userStore } = auth;
   const { defaultPage } = settingsStore;
   const { firstName, lastName } = userStore.user;

@@ -1,13 +1,8 @@
 import authStore from "@appserver/common/store/AuthStore";
 import { toCommunityHostname } from "@appserver/common/utils";
 import history from "@appserver/common/history";
-//import store from "../store/store";
-
-//const { getCurrentProduct } = commonStore.auth.selectors;
 
 export const setDocumentTitle = (subTitle = null) => {
-  // const state = store.getState();
-  // const { auth: commonState } = state;
   const { isAuthenticated, settingsStore, product: currentModule } = authStore;
   const { organizationName } = settingsStore;
 
@@ -28,9 +23,8 @@ export const setDocumentTitle = (subTitle = null) => {
 };
 
 export const isModuleOld = (link) => {
-  if (!link) return undefined;
-
   if (
+    !link ||
     link.includes("files") ||
     link.includes("people") ||
     link.includes("settings")
@@ -42,7 +36,7 @@ export const isModuleOld = (link) => {
 };
 
 export const getLink = (link) => {
-  if (!link) return undefined;
+  if (!link) return;
 
   if (!isModuleOld(link)) {
     return link;

@@ -7,7 +7,7 @@ import {
   IllustrationSvg,
 } from "./svg";
 
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { isMobile } from "react-device-detect";
 
 const StyledIllustration = styled.div`
@@ -51,23 +51,8 @@ const StyledIllustration = styled.div`
     z-index: 0;
   }
 
-  ${isMobile &&
-  css`
-    background-color: antiquewhite;
-  `}
-
   @media (max-width: 1024px) {
-    margin: 0 auto 40px;
-    order: 1;
-
-    .cloud-left,
-    .cloud-right {
-      display: none;
-    }
-
-    .illustration-svg {
-      width: 100%;
-    }
+    display: none;
   }
 `;
 

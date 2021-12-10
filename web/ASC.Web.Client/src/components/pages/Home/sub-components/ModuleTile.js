@@ -11,6 +11,7 @@ import StyledExternalLinkIcon from "@appserver/studio/src/components/StyledExter
 
 const ModuleTile = (props) => {
   const { title, imageUrl, link } = props;
+  const shouldRenderIcon = isModuleOld(link);
 
   return (
     <StyledModuleTile>
@@ -26,7 +27,7 @@ const ModuleTile = (props) => {
           <div>
             <Text fontSize="18px" className="sub-title-text">
               {title}
-              {isModuleOld(link) && <StyledExternalLinkIcon color="#333333" />}
+              {shouldRenderIcon && <StyledExternalLinkIcon color="#333333" />}
             </Text>
           </div>
         </div>

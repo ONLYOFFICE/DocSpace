@@ -1,13 +1,13 @@
 import styled, { css } from "styled-components";
-import { isMobileOnly } from "react-device-detect";
+import { isMobileOnly, isMobile } from "react-device-detect";
 
 const HomeContainer = styled.div`
-  margin: ${isMobileOnly ? "46px" : "110px"} auto;
+  margin: ${isMobileOnly ? "50px" : "42px"} auto;
   max-width: 1040px;
   width: 100%;
   box-sizing: border-box;
   display: flex;
-  justify-content: space-between;
+  justify-content: ${isMobile ? "center" : "space-between"};
   align-items: center;
 
   @media (max-width: 1024px) {
@@ -17,16 +17,13 @@ const HomeContainer = styled.div`
   .greeting {
     font-weight: bold;
     margin-bottom: 40px;
+    text-align: center;
   }
 
   .home-modules-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-
-    @media (max-width: 1024px) {
-      order: 2;
-    }
 
     .home-modules {
       display: grid;
@@ -44,6 +41,12 @@ const HomeContainer = styled.div`
 
       .home-module {
         z-index: 42;
+      }
+
+      @media (max-width: 400px) {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
       }
     }
 
