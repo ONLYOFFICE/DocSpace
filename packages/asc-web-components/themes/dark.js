@@ -1209,29 +1209,35 @@ const Dark = {
 
   toast: {
     active: {
-      success: activeSuccess,
-      error: activeError,
-      info: activeInfo,
-      warning: activeWarning,
+      success: "#292929",
+      error: "#292929",
+      info: "#292929",
+      warning: "#292929",
     },
     hover: {
-      success: hoverSuccess,
-      error: hoverError,
-      info: hoverInfo,
-      warning: hoverWarning,
+      success: "#292929",
+      error: "#292929",
+      info: "#292929",
+      warning: "#292929",
+    },
+    border: {
+      success: "2px solid rgba(174, 224, 81, 0.48)",
+      error: "2px solid rgba(224, 177, 81, 0.48)",
+      info: "2px solid rgba(224, 223, 81, 0.48)",
+      warning: "2px solid rgba(224, 119, 81, 0.48)",
     },
 
     zIndex: "9999",
     position: "fixed",
     padding: "4px",
     width: "320px",
-    color: white,
+    color: "rgba(255, 255, 255, 0.92)",
     top: "16px",
     right: "24px",
     marginTop: "0px",
 
     closeButton: {
-      color: white,
+      color: "rgba(255, 255, 255, 0.92)",
       fontWeight: "700",
       fontSize: "14px",
       background: "transparent",
@@ -1243,11 +1249,11 @@ const Dark = {
 
     main: {
       marginBottom: "1rem",
-      boxShadow: "0px 10px 16px -12px rgba(0, 0, 0, 0.3)",
+      boxShadow: "0px 16px 16px rgba(0, 0, 0, 0.16)",
       maxHeight: "800px",
       overflow: "hidden",
       borderRadius: "6px",
-      color: darkBlack,
+      color: "rgba(255, 255, 255, 0.92)",
       margin: "0 0 12px",
       padding: "12px",
       minHeight: "32px",
@@ -1263,13 +1269,18 @@ const Dark = {
       minWidth: "16px",
       height: "16px",
       minHeight: "16px",
-      color: black,
+      color: {
+        success: "#9DE051",
+        error: "#E0B151",
+        info: "#E0D751",
+        warning: "#E07751",
+      },
     },
 
     text: {
       lineHeight: " 1.3",
       fontSize: "12px",
-      color: black,
+      color: "rgba(255, 255, 255, 0.92)",
     },
 
     title: {
@@ -1277,9 +1288,16 @@ const Dark = {
       margin: "0",
       marginBottom: "5px",
       lineHeight: "16px",
-      color: darkBlack,
+      color: {
+        success: "#9DE051",
+        error: "#E0B151",
+        info: "#E0D751",
+        warning: "#E07751",
+      },
       fontSize: "12px",
     },
+
+    closeButtonColor: "rgba(255, 255, 255, 0.92)",
   },
 
   loader: {

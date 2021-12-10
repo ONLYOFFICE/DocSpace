@@ -5,7 +5,12 @@ import styled from "styled-components";
 import { CheckToastIcon, DangerToastIcon, InfoToastIcon } from "./svg";
 import IconButton from "../icon-button";
 import Text from "../text";
-import { StyledCloseWrapper, StyledDiv, IconWrapper } from "./styled-toastr";
+import {
+  StyledCloseWrapper,
+  StyledDiv,
+  IconWrapper,
+  StyledIconButton,
+} from "./styled-toastr";
 import commonIconsStyles from "../utils/common-icons-style";
 
 const StyledCheckToastIcon = styled(CheckToastIcon)`
@@ -21,11 +26,13 @@ const StyledInfoToastIcon = styled(InfoToastIcon)`
 // eslint-disable-next-line react/prop-types
 const Icon = ({ type }) =>
   type === "success" ? (
-    <StyledCheckToastIcon className="toastr_icon" />
-  ) : type === "error" || type === "warning" ? (
-    <StyledDangerToastIcon className="toastr_icon" />
+    <StyledCheckToastIcon className="toastr_icon toastr_success" />
+  ) : type === "error" ? (
+    <StyledDangerToastIcon className="toastr_icon toastr_error" />
+  ) : type === "warning" ? (
+    <StyledDangerToastIcon className="toastr_icon toastr_warning" />
   ) : (
-    <StyledInfoToastIcon className="toastr_icon" />
+    <StyledInfoToastIcon className="toastr_icon toastr_info" />
   );
 
 const toastr = {
@@ -38,12 +45,11 @@ const toastr = {
 
 const CloseButton = ({ closeToast }) => (
   <StyledCloseWrapper>
-    <IconButton
+    <StyledIconButton
       className="closeButton"
       onClick={closeToast}
       iconName="/static/images/cross.react.svg"
       size={12}
-      color="#333333"
     />
   </StyledCloseWrapper>
 );
@@ -61,7 +67,7 @@ const notify = (
       <IconWrapper>
         <Icon size="medium" type={type} />
       </IconWrapper>
-      <StyledDiv>
+      <StyledDiv type={type}>
         {typeof data === "string" ? (
           <>
             {title && <Text className="toast-title">{title}</Text>}

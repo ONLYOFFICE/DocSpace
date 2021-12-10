@@ -1219,6 +1219,12 @@ const Base = {
       info: hoverInfo,
       warning: hoverWarning,
     },
+    border: {
+      success: "none",
+      error: "none",
+      info: "none",
+      warning: "none",
+    },
 
     zIndex: "9999",
     position: "fixed",
@@ -1262,7 +1268,12 @@ const Base = {
       minWidth: "16px",
       height: "16px",
       minHeight: "16px",
-      color: black,
+      color: {
+        success: black,
+        error: black,
+        info: black,
+        warning: black,
+      },
     },
 
     text: {
@@ -1276,9 +1287,16 @@ const Base = {
       margin: "0",
       marginBottom: "5px",
       lineHeight: "16px",
-      color: darkBlack,
+      color: {
+        success: darkBlack,
+        error: darkBlack,
+        info: darkBlack,
+        warning: darkBlack,
+      },
       fontSize: "12px",
     },
+
+    closeButtonColor: "#333333",
   },
 
   loader: {
