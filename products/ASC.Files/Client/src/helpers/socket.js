@@ -1,7 +1,10 @@
 import io from "socket.io-client";
 
 const SOCKET_URL = "http://localhost:9899";
-const socket = io(SOCKET_URL /* { withCredentials: true } */);
+const socket = io(SOCKET_URL, {
+  withCredentials: true,
+  transports: ["websocket", "polling"],
+});
 
 const socketInit = async () => {
   socket.on("connect", () => console.log("socket is connected"));

@@ -50,14 +50,11 @@ app.use(session);
 
 const httpServer = createServer(app);
 
-var tempHeaders = ""; //TODO:
-
 const options = {
-  cors: {
-    origin: "*",
-    //methods: ["GET", "POST"],
-    //credentials: true,
-  },
+  // cors: {
+  //   origin: "*",
+  //   //credentials: true,
+  // },
 };
 
 const io = new Server(httpServer, options);
@@ -71,12 +68,16 @@ io.use(sharedsession(session, secretCookieParser, { autoSave: true }))
   });
 
 io.on("connection", (socket) => {
-  // console.log("socket.handshake", socket.user); //TODO:
-  // const request = socket.client.request;
+  const cookie = socket.client.request.cookies["asc_auth_key"];
+  //console.log("cookies", socket.client.request.cookies["asc_auth_key"]);
 
   socket.on("startFileEdit", async (fileId) => {
     const url = `files/file/${fileId}`;
-    const options = { method: "GET", headers: tempHeaders }; //{ method: "POST", body: {} };
+
+    const headers = [];
+    if (cookie) headers["Authorization"] = cookie;
+
+    const options = { method: "GET", headers };
     const file = await requestManager.makeRequest(url, options, socket);
     io.emit("subFileChanges", file);
   });
@@ -85,29 +86,6 @@ io.on("connection", (socket) => {
     io.emit("getFileCreation", fileId);
   });
 });
-
-io.engine.on("headers", (headers, request) => {
-  if (!request.headers.cookie) return;
-
-  const cookies = cookie.parse(request.headers.cookie);
-  headers["Authorization"] = cookies["asc_auth_key"];
-
-  tempHeaders = headers;
-});
-
-// io.engine.on("initial_headers", (headers, req) => {
-//   if (req.headers) {
-//     const xRewriterUrlHeader = "x-rewriter-url";
-//     const xForwardedForHeader = "x-forwarded-for";
-
-//     if (req.headers[xRewriterUrlHeader]) {
-//       headers[xRewriterUrlHeader] = req.headers[xRewriterUrlHeader];
-//     }
-//     if (req.headers[xForwardedForHeader]) {
-//       headers[xForwardedForHeader] = req.headers[xForwardedForHeader];
-//     }
-//   }
-// });
 
 app.get("/", (req, res) => {
   res.send("<h1>Invalid Endpoint</h1>");
