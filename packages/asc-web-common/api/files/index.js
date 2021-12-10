@@ -809,3 +809,26 @@ export function fileCopyAs(fileId, destTitle, destFolderId, enableExternalExt) {
     },
   });
 }
+
+export function getEditHistory(fileId, doc) {
+  return request({
+    method: "get",
+    url: `files/file/${fileId}/edit/history?doc=${doc}`,
+  });
+}
+
+export function getEditDiff(fileId, version, doc) {
+  return request({
+    method: "get",
+    url: `files/file/${fileId}/edit/diff?version=${version}&doc=${doc}`,
+  });
+}
+
+export function restoreDocumentsVersion(fileId, version, doc) {
+  const options = {
+    method: "get",
+    url: `files/file/${fileId}/restoreversion?version=${version}&doc=${doc}`,
+  };
+
+  return request(options);
+}

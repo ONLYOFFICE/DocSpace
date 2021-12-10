@@ -1517,6 +1517,48 @@ namespace ASC.Api.Documents
             return FilesControllerHelperInt.LockFile(fileId, model.LockFile);
         }
 
+        [AllowAnonymous]
+        [Read("file/{fileId}/edit/history")]
+        public List<EditHistoryWrapper> GetEditHistory(string fileId, string doc = null)
+        {
+            return FilesControllerHelperString.GetEditHistory(fileId, doc);
+        }
+
+        [AllowAnonymous]
+        [Read("file/{fileId:int}/edit/history")]
+        public List<EditHistoryWrapper> GetEditHistory(int fileId, string doc = null)
+        {
+            return FilesControllerHelperInt.GetEditHistory(fileId, doc);
+        }
+
+        [AllowAnonymous]
+        [Read("file/{fileId}/edit/diff")]
+        public EditHistoryData GetEditDiffUrl(string fileId, int version = 0, string doc = null)
+        {
+            return FilesControllerHelperString.GetEditDiffUrl(fileId, version, doc);
+        }
+
+        [AllowAnonymous]
+        [Read("file/{fileId:int}/edit/diff")]
+        public EditHistoryData GetEditDiffUrl(int fileId, int version = 0, string doc = null)
+        {
+            return FilesControllerHelperInt.GetEditDiffUrl(fileId, version, doc);
+        }
+
+        [AllowAnonymous]
+        [Read("file/{fileId}/restoreversion")]
+        public List<EditHistoryWrapper> RestoreVersion(string fileId, int version = 0, string url = null, string doc = null)
+        {
+            return FilesControllerHelperString.RestoreVersion(fileId, version, url, doc);
+        }
+
+        [AllowAnonymous]
+        [Read("file/{fileId:int}/restoreversion")]
+        public List<EditHistoryWrapper> RestoreVersion(int fileId, int version = 0, string url = null, string doc = null)
+        {
+            return FilesControllerHelperInt.RestoreVersion(fileId, version, url, doc);
+        }
+
         [Update("file/{fileId}/comment")]
         public object UpdateCommentFromBody(string fileId, [FromBody] UpdateCommentModel model)
         {
