@@ -401,8 +401,11 @@ const Base = {
   radioButton: {
     textColor: black,
     textDisableColor: gray,
-    disableColor: grayLight,
+
     marginRight: "4px",
+
+    background: white,
+    disableBackground: grayLight,
 
     fillColor: black,
     borderColor: grayMid,

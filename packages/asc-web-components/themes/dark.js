@@ -399,18 +399,20 @@ const Dark = {
   },
 
   radioButton: {
-    textColor: black,
-    textDisableColor: gray,
-    disableColor: grayLight,
+    testColor: "rgba(255, 255, 255, 0.92)",
+    textDisableColor: "rgba(255, 255, 255, 0.2)",
+
     marginRight: "4px",
 
-    fillColor: black,
-    borderColor: grayMid,
+    background: "#292929",
+    disableBackground: "rgba(255, 255, 255, 0.24)",
 
-    disableFillColor: grayMid,
-    disableBorderColor: grayLightMid,
+    fillColor: "rgba(255, 255, 255, 0.92)",
+    disableFillColor: "rgba(255, 255, 255, 0.24)",
 
-    hoverBorderColor: gray,
+    borderColor: "rgba(255, 255, 255, 0.24)",
+    disableBorderColor: "none",
+    hoverBorderColor: "rgba(255, 255, 255, 0.92)",
   },
 
   requestLoader: {
