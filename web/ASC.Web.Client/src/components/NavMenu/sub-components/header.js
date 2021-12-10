@@ -24,7 +24,7 @@ import {
   isModuleOld,
   onItemClick,
 } from "@appserver/studio/src/helpers/utils";
-import StyledExternalLinkIcon from "../../../helpers/StyledExternalLinkIcon";
+import StyledExternalLinkIcon from "@appserver/studio/src/components/StyledExternalLinkIcon";
 
 const { proxyURL } = AppServerConfig;
 

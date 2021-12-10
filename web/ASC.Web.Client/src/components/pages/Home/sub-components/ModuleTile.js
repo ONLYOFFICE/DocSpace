@@ -7,7 +7,7 @@ import {
   isModuleOld,
   onItemClick,
 } from "@appserver/studio/src/helpers/utils";
-import StyledExternalLinkIcon from "@appserver/studio/src/helpers/StyledExternalLinkIcon";
+import StyledExternalLinkIcon from "@appserver/studio/src/components/StyledExternalLinkIcon";
 
 const ModuleTile = (props) => {
   const { title, imageUrl, link } = props;
