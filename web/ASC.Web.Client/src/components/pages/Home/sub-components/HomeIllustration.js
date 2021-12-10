@@ -7,17 +7,13 @@ import {
   IllustrationSvg,
 } from "./svg";
 
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+import { isMobile } from "react-device-detect";
 
 const StyledIllustration = styled.div`
-  display: flex;
+  display: ${isMobile ? "none" : "flex"};
   position: relative;
-
-  h1 {
-    font-size: 44px;
-    z-index: 42;
-    text-align: center;
-  }
+  max-height: 308px;
 
   .illustration-svg {
     width: 500px;
@@ -45,18 +41,24 @@ const StyledIllustration = styled.div`
 
   .cloud-left {
     bottom: 0;
-    left: -140px;
+    left: -75px;
     z-index: 0;
   }
 
   .cloud-right {
     top: 0;
-    right: -80px;
+    right: -120px;
     z-index: 0;
   }
 
+  ${isMobile &&
+  css`
+    background-color: antiquewhite;
+  `}
+
   @media (max-width: 1024px) {
     margin: 0 auto 40px;
+    order: 1;
 
     .cloud-left,
     .cloud-right {
@@ -66,10 +68,6 @@ const StyledIllustration = styled.div`
     .illustration-svg {
       width: 100%;
     }
-  }
-
-  @media (max-width: 768px) {
-    display: none;
   }
 `;
 

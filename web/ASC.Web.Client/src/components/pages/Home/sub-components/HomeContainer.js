@@ -1,7 +1,8 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+import { isMobileOnly } from "react-device-detect";
 
 const HomeContainer = styled.div`
-  margin: 110px auto;
+  margin: ${isMobileOnly ? "46px" : "110px"} auto;
   max-width: 1040px;
   width: 100%;
   box-sizing: border-box;
@@ -9,24 +10,37 @@ const HomeContainer = styled.div`
   justify-content: space-between;
   align-items: center;
 
+  @media (max-width: 1024px) {
+    flex-direction: column;
+  }
+
+  .greeting {
+    font-weight: bold;
+    margin-bottom: 40px;
+  }
+
   .home-modules-container {
     display: flex;
     flex-direction: column;
     align-items: center;
 
+    @media (max-width: 1024px) {
+      order: 2;
+    }
+
     .home-modules {
       display: grid;
-      grid-template-columns: repeat(3, 120px);
-      max-width: 500px;
-      grid-gap: 40px 25px;
+      grid-template-columns: repeat(3, 1fr);
+      grid-gap: 40px ${isMobileOnly ? "32px" : "40px"};
 
-      @media (max-width: 1024px) {
-        grid-template-columns: repeat(3, 1fr);
-      }
-
-      @media (max-width: 500px) {
-        grid-gap: 20px 25px;
-      }
+      ${isMobileOnly &&
+      css`
+        @media (min-width: 500px) {
+          display: flex;
+          justify-content: center;
+          flex-wrap: wrap;
+        }
+      `}
 
       .home-module {
         z-index: 42;
@@ -45,15 +59,6 @@ const HomeContainer = styled.div`
         flex: 0 0 100%;
         max-width: 100%;
       }
-    }
-  }
-
-  @media (max-width: 1024px) {
-    flex-direction: column;
-    margin: 100px auto;
-
-    .home-modules {
-      margin: 0 auto;
     }
   }
 `;

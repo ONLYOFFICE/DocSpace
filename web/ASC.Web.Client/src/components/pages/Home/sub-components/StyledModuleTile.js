@@ -1,4 +1,5 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+import { isMobileOnly } from "react-device-detect";
 
 const StyledModuleTile = styled.div`
   width: auto;
@@ -11,58 +12,6 @@ const StyledModuleTile = styled.div`
     }
   }
 
-  .title-content {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-
-    .title-image-wrapper {
-      padding: 0 16px;
-      position: relative;
-
-      @media (min-width: 768px) {
-        width: auto;
-        max-width: 100%;
-      }
-
-      .title-image {
-        border: none;
-        height: 241px;
-        width: 240px;
-        cursor: pointer;
-      }
-    }
-
-    .title-text-wrapper {
-      padding: 0 16px;
-      position: relative;
-      width: 100%;
-
-      @media (min-width: 500px) {
-        width: auto;
-        max-width: 50%;
-      }
-
-      a {
-        text-decoration: none;
-      }
-    }
-
-    .title-text {
-      flex: 1 1 auto;
-      padding: 1.25rem;
-
-      .title-text-header {
-        margin: 46px 0 11px 0;
-        cursor: pointer;
-      }
-
-      .title-text-description {
-        line-height: 20px;
-      }
-    }
-  }
-
   .sub-title-content {
     text-align: center;
     cursor: pointer;
@@ -71,22 +20,27 @@ const StyledModuleTile = styled.div`
       border: none;
       height: 64px;
       width: 64px;
+      background: #ffffff;
+      box-shadow: 0px 4px 20px rgba(85, 85, 85, 0.1);
+      border-radius: 6px;
+      padding: 10px;
     }
     .sub-title-text {
       text-align: center;
       font-weight: 600;
     }
 
-    @media (max-width: 500px) {
+    ${isMobileOnly &&
+    css`
       .sub-title-image {
-        height: 48px;
-        width: 48px;
+        height: 54px;
+        width: 54px;
       }
 
       .sub-title-text {
         font-size: 14px;
       }
-    }
+    `}
 
     a {
       text-decoration: none;

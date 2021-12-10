@@ -31,7 +31,7 @@ const Tiles = ({ availableModules, username, t }) => {
 
   return modules.length > 0 ? (
     <div className="home-modules-container">
-      <Heading>{greetingMessage}</Heading>
+      <Heading className="greeting">{greetingMessage}</Heading>
 
       <div className="home-modules">
         {modules.map((m) => (

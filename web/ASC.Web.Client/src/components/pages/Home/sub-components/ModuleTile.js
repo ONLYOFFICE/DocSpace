@@ -10,9 +10,7 @@ import {
 import StyledExternalLinkIcon from "@appserver/studio/src/helpers/StyledExternalLinkIcon";
 
 const ModuleTile = (props) => {
-  const { title, imageUrl } = props;
-
-  let { link } = props;
+  const { title, imageUrl, link } = props;
 
   return (
     <StyledModuleTile>
