@@ -27,6 +27,11 @@ const {
   errorColor,
   warningColor,
   red,
+  blueLightMid,
+  grayMaxLight,
+  cyanBlueDarkShade,
+  lightCumulus,
+  lightMediumGoldenrod,
   activeSuccess,
   activeError,
   activeInfo,
@@ -40,23 +45,17 @@ const {
   strongBlue,
   lightGrayishStrongBlue,
   darkRed,
-  grayMaxLight,
-  cyanBlueDarkShade,
-  lightCumulus,
-  lightMediumGoldenrod,
-
-  blueLightMid,
 } = globalColors;
 
 const Dark = {
-  color: whiteSolitude,
-  backgroundColor: blueCharcoal,
+  color: "rgba(255, 255, 255, 0.92)",
+  backgroundColor: "#333333",
   fontFamily: "Open Sans, sans-serif, Arial",
   fontSize: "13px",
 
   text: {
-    color: white,
-    disableColor: grayLightMid,
+    color: "rgba(255, 255, 255, 0.92)",
+    disableColor: "rgba(255, 255, 255, 0.2)",
     fontWeight: "normal",
     fontWeightBold: "bold",
   },
@@ -69,42 +68,58 @@ const Dark = {
       small: "19px",
       xsmall: "15px",
     },
+
     fontWeight: 600,
   },
 
   button: {
-    fontWeight: 600,
-    margin: 0,
+    fontWeight: "600",
+    margin: "0",
     display: "inline-block",
     textAlign: "center",
     textDecoration: "none",
-    verticalAlign: "middle",
+
+    topVerticalAlign: "text-top",
+    middleVerticalAlign: "middle",
+    bottomVerticalAlign: "text-bottom",
+
     borderRadius: "3px",
     stroke: "none",
     overflow: "hidden",
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
     outline: "none",
+    boxSizing: "border-box",
+
+    paddingRight: "4px",
+
     height: {
       base: "24px",
       medium: "32px",
       big: "36px",
+      large: "44px",
     },
+
     lineHeight: {
-      base: "normal",
-      medium: "normal",
-      big: "normal",
+      base: "15px",
+      medium: "18px",
+      big: "20px",
+      large: "20px",
     },
+
     fontSize: {
       base: "12px",
       medium: "13px",
       big: "14px",
+      large: "16px",
     },
+
     padding: {
       base: "0 14px",
       medium: "0 18px",
       big: "0 20px",
     },
+
     minWidth: {
       base: "65px",
       medium: "80px",
@@ -114,7 +129,7 @@ const Dark = {
     color: {
       base: black,
       primary: white,
-      disabled: grayMid,
+      disabled: grayLightMid,
     },
 
     backgroundColor: {
@@ -129,14 +144,14 @@ const Dark = {
     },
 
     border: {
-      base: `1px solid ${grayMid}`,
-      baseHover: `1px solid ${blueMain}`,
-      baseActive: `1px solid ${blueMain}`,
-      baseDisabled: `1px solid ${grayLightMid}`,
-      primary: `1px solid ${blueMain}`,
-      primaryHover: `1px solid ${blueHover}`,
-      primaryActive: `1px solid ${blueActive}`,
-      primaryDisabled: `1px solid ${blueDisabled}`,
+      base: `1px solid ${globalColors.grayMid}`,
+      baseHover: `1px solid ${globalColors.blueMain}`,
+      baseActive: `1px solid ${globalColors.blueMain}`,
+      baseDisabled: `1px solid ${globalColors.grayLightMid}`,
+      primary: `1px solid ${globalColors.blueMain}`,
+      primaryHover: `1px solid ${globalColors.blueHover}`,
+      primaryActive: `1px solid ${globalColors.blueActive}`,
+      primaryDisabled: `1px solid ${globalColors.blueDisabled}`,
     },
   },
 
@@ -201,14 +216,13 @@ const Dark = {
   socialButton: {
     fontWeight: "600",
     textDecoration: "none",
-    margin: "20px 0 0 20px",
     padding: "0",
     borderRadius: "2px",
-    width: "201px",
     height: "40px",
     textAlign: "left",
     stroke: " none",
     outline: "none",
+    width: "100%",
 
     background: white,
     disableBackgroundColor: "rgba(0, 0, 0, 0.08)",
@@ -224,16 +238,17 @@ const Dark = {
     disableColor: "rgba(0, 0, 0, 0.4)",
 
     text: {
-      width: "142px",
+      width: "100%",
       height: "16px",
-      margin: "12px 9px 12px 10px",
-      fontWeight: "500",
+      margin: "0 11px",
+      fontWeight: "600",
       fontSize: "14px",
-      lineHeight: "16px",
+      lineHeight: "14px",
       letterSpacing: "0.21875px",
       overflow: "hidden",
       textOverflow: "ellipsis",
       whiteSpace: "nowrap",
+      color: "#757575",
     },
 
     svg: {
@@ -350,23 +365,42 @@ const Dark = {
     hoverIndeterminateColor: black,
   },
 
+  // slider: {
+  //   sliderBarColorProgress: blueMain,
+  //   sliderBarColorProgressDisabled: grayMid,
+  //   sliderBarColor: grayLightMid,
+  //   sliderBarDisableColor: grayLightMid,
+
+  //   sliderBarBorderActive: `1px solid ${globalColors.grayMid}`,
+  //   sliderBarBorderDisable: `1px solid ${globalColors.grayMid}`,
+
+  //   thumbFillDisable: grayLightMid,
+  //   thumbFillActive: grayLightMid,
+
+  //   thumbBorderColorActive: `1px solid ${globalColors.gray}`,
+  //   thumbBorderColorDisable: `1px solid ${globalColors.grayMid}`,
+
+  //   sliderWidth: "202px",
+
+  //   arrowHover: blueMain,
+  //   arrowColor: grayMid,
+  // },
+
   viewSelector: {
     fillColor: white,
     checkedFillColor: gray,
-
     fillColorDisabled: grayLight,
     disabledFillColor: grayLightMid,
     disabledFillColorInner: grayMid,
-
     hoverBorderColor: gray,
-    borderColor: grayLight,
+    borderColor: grayMid,
   },
 
   radioButton: {
-    color: white,
-    disableColor: grayLightMid,
-    width: "16px",
-    height: "16px",
+    textColor: black,
+    textDisableColor: gray,
+    disableColor: grayLight,
+    marginRight: "4px",
 
     fillColor: black,
     borderColor: grayMid,
@@ -400,7 +434,7 @@ const Dark = {
     textOverflow: "ellipsis",
 
     element: {
-      marginRight: "8px",
+      marginRight: "14px",
       marginLeft: "2px",
     },
 
@@ -445,7 +479,7 @@ const Dark = {
 
   scrollbar: {
     backgroundColorVertical: "rgba(208, 213, 218, 1)",
-    backgroundColorHorizontal: "rgba(255, 255, 255, 0.5)",
+    backgroundColorHorizontal: "rgba(0, 0, 0, 0.1)",
     hoverBackgroundColorVertical: "rgba(163, 169, 174, 1)",
   },
 
@@ -502,11 +536,11 @@ const Dark = {
   },
 
   input: {
-    color: white,
+    color: black,
     disableColor: grayMid,
 
-    backgroundColor: blueCharcoal,
-    disableBackgroundColor: shuttleGrey,
+    backgroundColor: white,
+    disableBackgroundColor: grayLight,
 
     width: {
       base: "173px",
@@ -621,7 +655,7 @@ const Dark = {
 
   textInput: {
     fontWeight: "normal",
-    placeholderColor: grayMid,
+    placeholderColor: gray,
     disablePlaceholderColor: grayMid,
 
     transition: "all 0.2s ease 0s",
@@ -630,6 +664,7 @@ const Dark = {
     flex: "1 1 0%",
     outline: "none",
     overflow: "hidden",
+    opacity: "1",
 
     lineHeight: {
       base: "20px",
@@ -691,11 +726,12 @@ const Dark = {
   },
 
   link: {
-    color: white,
+    color: black,
     lineHeight: "calc(100% + 6px)",
     opacity: "0.5",
     textDecoration: "none",
     cursor: "pointer",
+    display: "inline-block",
 
     hover: {
       textDecoration: "underline dashed",
@@ -734,7 +770,23 @@ const Dark = {
       transform: "scale(1, -1)",
     },
   },
-  //TODO: need props for dark theme
+
+  tooltip: {
+    borderRadius: "6px",
+    boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
+    opacity: "1",
+    padding: "16px",
+    pointerEvents: "auto",
+    maxWidth: "340px",
+
+    before: {
+      border: "none",
+    },
+    after: {
+      border: "none",
+    },
+  },
+
   tabsContainer: {
     scrollbar: {
       width: "100%",
@@ -758,22 +810,6 @@ const Dark = {
         color: white,
         disableColor: grayMid,
       },
-    },
-  },
-
-  tooltip: {
-    borderRadius: "6px",
-    boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
-    opacity: "1",
-    padding: "16px",
-    pointerEvents: "auto",
-    maxWidth: "340px",
-
-    before: {
-      border: "none",
-    },
-    after: {
-      border: "none",
     },
   },
 
@@ -869,7 +905,7 @@ const Dark = {
 
     imageContainer: {
       backgroundImage: blueMain,
-      background: grayLightMid,
+      background: grayMid,
       borderRadius: "50%",
       height: "100%",
 
@@ -880,6 +916,7 @@ const Dark = {
         margin: "auto",
       },
     },
+
     editContainer: {
       right: "0px",
       bottom: "0px",
@@ -891,7 +928,7 @@ const Dark = {
 
     image: {
       width: "100%",
-      height: "100%",
+      height: "auto",
       borderRadius: "50%",
     },
 
@@ -912,8 +949,129 @@ const Dark = {
     },
   },
 
+  avatarEditor: {
+    minWidth: "208px",
+    maxWidth: "300px",
+    width: "max-content",
+  },
+
+  avatarEditorBody: {
+    maxWidth: "400px",
+
+    slider: {
+      width: "100%",
+      margin: "8px 0",
+      backgroundColor: "transparent",
+
+      runnableTrack: {
+        background: grayLightMid,
+        focusBackground: grayLightMid,
+        border: `1.4px solid ${grayLightMid}`,
+        borderRadius: "5.6px",
+        width: "100%",
+        height: "8px",
+      },
+
+      sliderThumb: {
+        marginTop: "-9.4px",
+        width: "24px",
+        height: "24px",
+        background: blueMain,
+        border: `6px solid ${white}`,
+        borderRadius: "30px",
+        boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.13)",
+      },
+
+      thumb: {
+        width: "24px",
+        height: "24px",
+        background: blueMain,
+        border: `6px solid ${white}`,
+        borderRadius: "30px",
+        marginTop: "0px",
+        boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.13)",
+      },
+
+      rangeTrack: {
+        background: grayLightMid,
+        border: `1.4px solid ${grayLightMid}`,
+        borderRadius: "5.6px",
+        width: "100%",
+        height: "8px",
+      },
+
+      rangeThumb: {
+        width: "14px",
+        height: "14px",
+        background: blueMain,
+        border: `6px solid ${white}`,
+        borderRadius: "30px",
+        boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.13)",
+      },
+
+      track: {
+        background: "transparent",
+        borderColor: "transparent",
+        borderWidth: "10.2px 0",
+        color: "transparent",
+        width: "100%",
+        height: "8px",
+      },
+
+      fillLower: {
+        background: grayLightMid,
+        focusBackground: grayLightMid,
+        border: `1.4px solid ${grayLightMid}`,
+        borderRadius: "11.2px",
+      },
+
+      fillUpper: {
+        background: grayLightMid,
+        focusBackground: grayLightMid,
+        border: `1.4px solid ${grayLightMid}`,
+        borderRadius: "11.2px",
+      },
+    },
+
+    dropZone: {
+      border: `1px dashed ${silver}`,
+    },
+
+    container: {
+      miniPreview: {
+        width: "160px",
+        border: `1px solid ${grayLightMid}`,
+        borderRadius: "6px",
+        padding: "8px",
+      },
+
+      buttons: {
+        height: "32px",
+        background: gray,
+
+        mobileWidth: "40px",
+        mobileHeight: "100%",
+        mobileBackground: "none",
+      },
+
+      button: {
+        background: gray,
+        padding: "0 12px",
+        height: "40px",
+        borderRadius: "6px",
+      },
+
+      zoom: {
+        height: "56px",
+
+        mobileHeight: "24px",
+        marginTop: "16px",
+      },
+    },
+  },
+
   backdrop: {
-    backgroundColor: "rgba(255, 255, 255, 0.3)",
+    backgroundColor: "rgba(6, 22, 38, 0.1)",
     unsetBackgroundColor: "unset",
   },
 
@@ -1002,6 +1160,50 @@ const Dark = {
     },
   },
 
+  dropDown: {
+    fontWeight: "600",
+    fontSize: "13px",
+    zIndex: "200",
+    background: white,
+    borderRadius: "6px",
+    boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
+  },
+
+  dropDownItem: {
+    color: black,
+    disableColor: gray,
+    backgroundColor: white,
+    hoverBackgroundColor: grayLight,
+    hoverDisabledBackgroundColor: white,
+    fontWeight: "600",
+    fontSize: "13px",
+    width: "100%",
+    maxWidth: "500px",
+    border: "0px",
+    margin: "0px",
+    padding: "0px 16px",
+    lineHeight: "32px",
+    tabletLineHeight: "36px",
+
+    icon: {
+      width: "16px",
+      marginRight: "8px",
+      lineHeight: "14px",
+
+      color: black,
+      disableColor: gray,
+    },
+
+    separator: {
+      padding: "0px 16px",
+      borderBottom: `1px solid ${globalColors.grayLightMid}`,
+      margin: " 4px 16px 4px",
+      lineHeight: "1px",
+      height: "1px",
+      width: "calc(100% - 32px)",
+    },
+  },
+
   toast: {
     active: {
       success: activeSuccess,
@@ -1078,55 +1280,61 @@ const Dark = {
   },
 
   loader: {
-    color: white,
+    color: shuttleGrey,
     size: "40px",
     marginRight: "2px",
     borderRadius: "50%",
   },
 
-  dropDownItem: {
-    color: black,
-    disableColor: gray,
-    backgroundColor: white,
-    hoverBackgroundColor: grayLight,
-    hoverDisabledBackgroundColor: white,
-    fontWeight: "600",
-    fontSize: "13px",
-    width: "100%",
-    maxWidth: "500px",
-    border: "0px",
-    margin: "0px",
-    padding: "0px 16px",
-    lineHeight: "32px",
-    tabletLineHeight: "36px",
+  // dropDownItem: {
+  //   width: "100%",
+  //   maxWidth: "240px",
+  //   border: "none",
+  //   cursor: "pointer",
+  //   padding: "0px 16px",
+  //   lineHeight: "32px",
+  //   textAlign: "left",
+  //   background: "none",
+  //   textDecoration: "none",
+  //   fontStyle: "normal",
+  //   fontWeight: "600",
+  //   fontSize: "13px",
 
-    icon: {
-      width: "16px",
-      marginRight: "8px",
-      lineHeight: "14px",
+  //   whiteSpace: "nowrap",
+  //   overflow: "hidden",
+  //   textOverflow: "ellipsis",
 
-      color: black,
-      disableColor: gray,
-    },
+  //   outline: "none",
+  //   color: black,
+  //   textTransform: "none",
 
-    separator: {
-      padding: "0px 16px",
-      borderBottom: `1px solid ${globalColors.grayLightMid}`,
-      margin: " 4px 16px 4px",
-      lineHeight: "1px",
-      height: "1px",
-      width: "calc(100% - 32px)",
-    },
-  },
+  //   hoverBackgroundColor: grayLight,
+  //   noHoverBackgroundColor: white,
 
-  dropDown: {
-    fontWeight: "600",
-    fontSize: "13px",
-    zIndex: "200",
-    background: white,
-    borderRadius: "6px",
-    boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
-  },
+  //   header: {
+  //     color: gray,
+  //     hoverCursor: "default",
+  //     hoverBackgroundColor: "white",
+  //     textTransform: "uppercase",
+  //   },
+
+  //   disabled: {
+  //     color: gray,
+  //     hoverCursor: "default",
+  //     hoverBackgroundColor: "white",
+  //   },
+
+  //   separator: {
+  //     padding: "0px 16px",
+  //     border: `0.5px solid ${grayLightMid}`,
+  //     cursor: "default",
+  //     margin: "6px 16px 6px",
+  //     lineHeight: "1px",
+  //     height: "1px",
+  //     width: "calc(100% - 32px)",
+  //   },
+
+  //   tablet: { lineHeight: "36px" },
 
   comboBox: {
     padding: "6px 0px",
@@ -1175,7 +1383,7 @@ const Dark = {
       marginRight: "4px",
 
       disabledColor: grayMid,
-      color: white,
+      color: black,
 
       maxWidth: "175px",
 
@@ -1204,10 +1412,10 @@ const Dark = {
     arrowMarginRight: "9px",
     arrowMarginBottom: "5px",
     transform: "rotate(180deg)",
-    iconColor: white,
+    iconColor: black,
 
     childrenContent: {
-      color: white,
+      color: black,
       paddingTop: "6px",
     },
   },
@@ -1248,7 +1456,7 @@ const Dark = {
     bigMaxWidth: "325px",
 
     hover: {
-      backgroundColor: shuttleGrey,
+      backgroundColor: grayLightMid,
       borderRadius: "16px",
       cursor: "pointer",
     },
@@ -1264,7 +1472,7 @@ const Dark = {
     },
 
     weekdays: {
-      color: white,
+      color: black,
       disabledColor: gray,
       baseWidth: "272px",
       bigWidth: "295px",
@@ -1274,11 +1482,11 @@ const Dark = {
     month: {
       baseWidth: "267px",
       bigWidth: "295px",
-      color: white,
+      color: black,
       weekendColor: gray,
-      disabledColor: shuttleGrey,
-      neighboringHoverColor: white,
-      neighboringColor: grayMain,
+      disabledColor: grayLightMid,
+      neighboringHoverColor: black,
+      neighboringColor: grayLightMid,
     },
 
     selectedDay: {
@@ -1289,13 +1497,12 @@ const Dark = {
     },
 
     comboBox: {
-      color: white,
+      color: black,
       minWidth: "80px",
       height: "32px",
       marginLeft: "8px",
       padding: "0 0 24px 0",
     },
-
     comboBoxMonth: {
       baseWidth: "172px",
       bigWidth: "205px",
@@ -1317,6 +1524,7 @@ const Dark = {
     contentMaxWidth: "500px",
     contentLineHeight: "56px",
     contentFontWeight: "700",
+
     borderBottom: `1px solid ${globalColors.lightGrayishBlue}`,
   },
 
