@@ -1073,7 +1073,7 @@ const Dark = {
   },
 
   backdrop: {
-    backgroundColor: "rgba(6, 22, 38, 0.1)",
+    backgroundColor: "rgba(20, 20, 20, 0.8)",
     unsetBackgroundColor: "unset",
   },
 
