@@ -166,7 +166,9 @@ namespace ASC.Api.Settings
         private ILog Log { get; set; }
         private TelegramHelper TelegramHelper { get; }
         private PaymentManager PaymentManager { get; }
-        public Constants Constants { get; }
+        private Constants Constants { get; }
+        private InstanceCrypto InstanceCrypto { get; }
+        private Signature Signature { get; }
 
         public SettingsController(
             IOptionsMonitor<ILog> option,
@@ -228,7 +230,9 @@ namespace ASC.Api.Settings
             EncryptionWorker encryptionWorker,
             PasswordHasher passwordHasher,
             PaymentManager paymentManager,
-            Constants constants)
+            Constants constants,
+            InstanceCrypto instanceCrypto,
+            Signature signature)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
@@ -290,6 +294,8 @@ namespace ASC.Api.Settings
             TelegramHelper = telegramHelper;
             PaymentManager = paymentManager;
             Constants = constants;
+            InstanceCrypto = instanceCrypto;
+            Signature = signature;
         }
 
         [Read("", Check = false)]
@@ -1598,7 +1604,7 @@ namespace ASC.Api.Settings
             if (currentUser.IsVisitor(UserManager) || currentUser.IsOutsider(UserManager))
                 throw new NotSupportedException("Not available.");
 
-            return SettingsManager.LoadForCurrentUser<TfaAppUserSettings>().CodesSetting.Select(r => new { r.IsUsed, r.Code }).ToList();
+            return SettingsManager.LoadForCurrentUser<TfaAppUserSettings>().CodesSetting.Select(r => new { r.IsUsed, Code = r.GetEncryptedCode(InstanceCrypto, Signature) }).ToList();
         }
 
         [Update("tfaappnewcodes")]
@@ -1612,7 +1618,7 @@ namespace ASC.Api.Settings
             if (currentUser.IsVisitor(UserManager) || currentUser.IsOutsider(UserManager))
                 throw new NotSupportedException("Not available.");
 
-            var codes = TfaManager.GenerateBackupCodes().Select(r => new { r.IsUsed, r.Code }).ToList();
+            var codes = TfaManager.GenerateBackupCodes().Select(r => new { r.IsUsed, Code = r.GetEncryptedCode(InstanceCrypto, Signature) }).ToList();
             MessageService.Send(MessageAction.UserConnectedTfaApp, MessageTarget.Create(currentUser.ID), currentUser.DisplayUserName(false, DisplayUserSettingsHelper));
             return codes;
         }
