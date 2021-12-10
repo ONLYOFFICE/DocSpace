@@ -186,6 +186,7 @@ const Base = {
     svg: {
       margin: "auto",
       height: "100%",
+      fill: "#ffffff",
     },
 
     secondaryButton: {

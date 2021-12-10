@@ -168,17 +168,17 @@ const Dark = {
   },
 
   mainButton: {
-    backgroundColor: orangeMain,
-    disableBackgroundColor: orangeDisabled,
-    hoverBackgroundColor: orangeHover,
-    clickBackgroundColor: orangePressed,
+    backgroundColor: "#F59931",
+    disableBackgroundColor: "#4C3B2D",
+    hoverBackgroundColor: "#FFAD3D",
+    clickBackgroundColor: "#E6842E",
 
     padding: "5px 10px",
     borderRadius: "3px",
     lineHeight: "22px",
     fontSize: "15px",
     fontWeight: 700,
-    textColor: "#FFF",
+    textColor: "#333333",
 
     cornerRoundsTopRight: "0",
     cornerRoundsBottomRight: "0",
@@ -186,6 +186,7 @@ const Dark = {
     svg: {
       margin: "auto",
       height: "100%",
+      fill: "#333333",
     },
 
     secondaryButton: {
