@@ -1444,11 +1444,23 @@ const Dark = {
   },
 
   toggleButton: {
-    fillColor: blueMain,
-    fillColorOff: gray,
+    fillColor: "rgba(255, 255, 255, 0.92)",
+    fillColorOff: "#292929",
 
-    disableFillColor: grayLightMid,
-    disableFillColorOff: grayLightMid,
+    disableFillColor: "#333333",
+    disableFillColorOff: "rgba(255, 255, 255, 0.24)",
+
+    borderColor: "rgba(255, 255, 255, 0.1)",
+    borderColorOff: "rgba(255, 255, 255, 0.1)",
+
+    disableBorderColor: "rgba(255, 255, 255, 0.1)",
+    disableBorderColorOff: "rgba(255, 255, 255, 0.24)",
+
+    fillCircleColor: "#292929",
+    fillCircleColorOff: "rgba(255, 255, 255, 0.92)",
+
+    disableFillCircleColor: "rgba(255, 255, 255, 0.24)",
+    disableFillCircleColorOff: "#333333",
   },
 
   contextMenuButton: {

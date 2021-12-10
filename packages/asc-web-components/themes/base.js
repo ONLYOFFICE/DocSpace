@@ -1449,6 +1449,18 @@ const Base = {
 
     disableFillColor: grayLightMid,
     disableFillColorOff: grayLightMid,
+
+    borderColor: blueMain,
+    borderColorOff: gray,
+
+    disableBorderColor: grayLightMid,
+    disableBorderColorOff: grayLightMid,
+
+    fillCircleColor: white,
+    fillCircleColorOff: white,
+
+    disableFillCircleColor: white,
+    disableFillCircleColorOff: white,
   },
 
   contextMenuButton: {

@@ -13,26 +13,17 @@ const ToggleIcon = ({ isChecked, isLoading }) => {
         isChecked ? "checked" : "notChecked",
         isLoading ? "isLoading" : "",
       ]}
-      width="28"
-      height="16"
-      viewBox="0 0 28 16"
+      width="30"
+      height="18"
+      viewBox="0 0 30 18"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <motion.rect
-        width="28"
-        height="16"
-        rx="8"
-        variants={{
-          checked: { fill: Base.toggleButton.fillColor },
-          notChecked: { fill: Base.toggleButton.fillColorOff },
-        }}
-      />
+      <motion.rect x="1" y="1" width="28" height="16" rx="8" />
       <motion.circle
         fill-rule="evenodd"
         clip-rule="evenodd"
-        cy="8"
-        fill="white"
+        cy="9"
         variants={{
           isLoading: {
             r: [5, 6, 6],
@@ -44,8 +35,8 @@ const ToggleIcon = ({ isChecked, isLoading }) => {
               },
             },
           },
-          checked: { cx: 20, r: 6 },
-          notChecked: { cx: 8, r: 6 },
+          checked: { cx: 21, r: 6 },
+          notChecked: { cx: 9, r: 6 },
         }}
       />
     </motion.svg>
@@ -87,6 +78,7 @@ class ToggleButton extends Component {
         className={className}
         style={style}
         isDisabled={isDisabled}
+        isChecked={this.state.checked}
       >
         <HiddenInput
           type="checkbox"
