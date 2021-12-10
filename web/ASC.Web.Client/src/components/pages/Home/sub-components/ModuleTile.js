@@ -4,14 +4,14 @@ import Text from "@appserver/components/text";
 import StyledModuleTile from "./StyledModuleTile";
 import {
   getLink,
-  isModuleOld,
+  checkIfModuleOld,
   onItemClick,
 } from "@appserver/studio/src/helpers/utils";
 import StyledExternalLinkIcon from "@appserver/studio/src/components/StyledExternalLinkIcon";
 
 const ModuleTile = (props) => {
   const { title, imageUrl, link } = props;
-  const shouldRenderIcon = isModuleOld(link);
+  const shouldRenderIcon = checkIfModuleOld(link);
 
   return (
     <StyledModuleTile>

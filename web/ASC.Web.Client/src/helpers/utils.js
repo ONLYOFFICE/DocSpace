@@ -22,7 +22,7 @@ export const setDocumentTitle = (subTitle = null) => {
   document.title = title;
 };
 
-export const isModuleOld = (link) => {
+export const checkIfModuleOld = (link) => {
   if (
     !link ||
     link.includes("files") ||
@@ -38,7 +38,7 @@ export const isModuleOld = (link) => {
 export const getLink = (link) => {
   if (!link) return;
 
-  if (!isModuleOld(link)) {
+  if (!checkIfModuleOld(link)) {
     return link;
   }
 
@@ -59,7 +59,7 @@ export const onItemClick = (e, backdropClick = undefined) => {
 
   const link = e.currentTarget.dataset.link;
 
-  if (isModuleOld(link)) {
+  if (checkIfModuleOld(link)) {
     return window.open(link, "_blank");
   }
 

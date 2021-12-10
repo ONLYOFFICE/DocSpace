@@ -21,7 +21,7 @@ import { AppServerConfig } from "@appserver/common/constants";
 import NoUserSelect from "@appserver/components/utils/commonStyles";
 import {
   getLink,
-  isModuleOld,
+  checkIfModuleOld,
   onItemClick,
 } from "@appserver/studio/src/helpers/utils";
 import StyledExternalLinkIcon from "@appserver/studio/src/components/StyledExternalLinkIcon";
@@ -178,7 +178,7 @@ const HeaderComponent = ({
   const navItems = mainModules.map(
     ({ id, separator, iconUrl, notifications, link, title, dashed }) => {
       const itemLink = getLink(link);
-      const shouldRenderIcon = isModuleOld(link);
+      const shouldRenderIcon = checkIfModuleOld(link);
       return (
         <NavItem
           separator={!!separator}
