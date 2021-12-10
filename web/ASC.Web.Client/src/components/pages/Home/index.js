@@ -11,8 +11,19 @@ import { inject, observer } from "mobx-react";
 import { HomeIllustration, ModuleTile, HomeContainer } from "./sub-components";
 import Heading from "@appserver/components/heading";
 
-const Tiles = ({ availableModules, greetingSettings }) => {
+const Tiles = ({ availableModules, username, t }) => {
   let index = 0;
+  const { firstName, lastName } = username;
+
+  const getGreeting = () => {
+    const time = new Date().getHours();
+
+    if (time >= 5 && time <= 11) return t("GoodMorning");
+    if (time >= 12 && time <= 16) return t("GoodAfternoon");
+    else return t("GoodEvening");
+  };
+
+  const greetingMessage = `${getGreeting()}, ${firstName} ${lastName}!`;
 
   const modules = availableModules.filter(
     (module) => module.separator !== true && module.id !== "settings"
@@ -20,7 +31,7 @@ const Tiles = ({ availableModules, greetingSettings }) => {
 
   return modules.length > 0 ? (
     <div className="home-modules-container">
-      <Heading>{greetingSettings}</Heading>
+      <Heading>{greetingMessage}</Heading>
 
       <div className="home-modules">
         {modules.map((m) => (
@@ -37,11 +48,12 @@ const Tiles = ({ availableModules, greetingSettings }) => {
 
 Tiles.propTypes = {
   availableModules: PropTypes.array.isRequired,
-  greetingSettings: PropTypes.string,
+  username: PropTypes.object,
+  t: PropTypes.func,
 };
 
-const Body = ({ match, isLoaded, availableModules, greetingSettings }) => {
-  const { t } = useTranslation();
+const Body = ({ match, isLoaded, availableModules, username }) => {
+  const { t } = useTranslation(["Home", "Common"]);
   const { error } = match.params;
   setDocumentTitle();
 
@@ -51,12 +63,9 @@ const Body = ({ match, isLoaded, availableModules, greetingSettings }) => {
     <></>
   ) : (
     <HomeContainer>
-      <HomeIllustration />
+      <Tiles availableModules={availableModules} username={username} t={t} />
 
-      <Tiles
-        availableModules={availableModules}
-        greetingSettings={greetingSettings}
-      />
+      <HomeIllustration />
 
       {!availableModules || !availableModules.length ? (
         <Text className="home-error-text" fontSize="14px" color="#c30">
@@ -71,7 +80,7 @@ Body.propTypes = {
   availableModules: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool,
   match: PropTypes.object,
-  greetingSettings: PropTypes.string,
+  username: PropTypes.object,
 };
 
 const Home = ({ defaultPage, ...rest }) => {
@@ -90,16 +99,22 @@ Home.propTypes = {
   availableModules: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool,
   defaultPage: PropTypes.string,
-  greetingSettings: PropTypes.string,
+  username: PropTypes.object,
 };
 
 export default inject(({ auth }) => {
-  const { isLoaded, settingsStore, availableModules } = auth;
-  const { defaultPage, greetingSettings } = settingsStore;
+  console.log(auth);
+  const { isLoaded, settingsStore, availableModules, userStore } = auth;
+  const { defaultPage } = settingsStore;
+  const { firstName, lastName } = userStore.user;
+  const username = {
+    firstName,
+    lastName,
+  };
   return {
     defaultPage,
     isLoaded,
     availableModules,
-    greetingSettings,
+    username,
   };
 })(withRouter(observer(Home)));
