@@ -1202,14 +1202,12 @@ namespace ASC.Files.Core.Data
                     .Select(r =>
                         {
                             var item = ServiceProvider.GetService<EditHistory>();
-                            var editHistoryAuthor = ServiceProvider.GetService<EditHistoryAuthor>();
 
-                            editHistoryAuthor.Id = r.ModifiedBy;
                             item.ID = r.Id;
                             item.Version = r.Version;
                             item.VersionGroup = r.VersionGroup;
                             item.ModifiedOn = TenantUtil.DateTimeFromUtc(r.ModifiedOn);
-                            item.ModifiedBy = editHistoryAuthor;
+                            item.ModifiedBy = r.ModifiedBy;
                             item.ChangesString = r.Changes;
                             item.Key = documentServiceHelper.GetDocKey(item.ID, item.Version, TenantUtil.DateTimeFromUtc(r.CreateOn));
 
