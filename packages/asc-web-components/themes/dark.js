@@ -48,14 +48,14 @@ const {
 } = globalColors;
 
 const Dark = {
-  color: "rgba(255, 255, 255, 0.92)",
+  color: "#eeeeee",
   backgroundColor: "#333333",
   fontFamily: "Open Sans, sans-serif, Arial",
   fontSize: "13px",
 
   text: {
-    color: "rgba(255, 255, 255, 0.92)",
-    disableColor: "rgba(255, 255, 255, 0.2)",
+    color: "#eeeeee",
+    disableColor: "#5c5c5c",
     fontWeight: "normal",
     fontWeightBold: "bold",
   },
@@ -70,7 +70,7 @@ const Dark = {
     },
 
     fontWeight: 600,
-    color: "rgba(255, 255, 255, 0.92)",
+    color: "#eeeeee",
   },
 
   button: {
@@ -353,18 +353,18 @@ const Dark = {
   },
 
   checkbox: {
-    fillColor: white,
-    borderColor: grayMid,
-    arrowColor: black,
-    indeterminateColor: black,
+    fillColor: "#292929",
+    borderColor: "#474747",
+    arrowColor: "#eeeeee",
+    indeterminateColor: "#eeeeee",
 
-    disableArrowColor: grayMid,
-    disableBorderColor: grayLightMid,
-    disableFillColor: grayLight,
-    disableIndeterminateColor: gray,
+    disableArrowColor: "#474747",
+    disableBorderColor: "#646464",
+    disableFillColor: "#646464",
+    disableIndeterminateColor: "#474747",
 
-    hoverBorderColor: gray,
-    hoverIndeterminateColor: black,
+    hoverBorderColor: "#646464",
+    hoverIndeterminateColor: "#eeeeee",
   },
 
   // slider: {
@@ -399,20 +399,20 @@ const Dark = {
   },
 
   radioButton: {
-    testColor: "rgba(255, 255, 255, 0.92)",
-    textDisableColor: "rgba(255, 255, 255, 0.2)",
+    testColor: "#eeeeee",
+    textDisableColor: "#5c5c5c",
 
     marginRight: "4px",
 
     background: "#292929",
-    disableBackground: "rgba(255, 255, 255, 0.24)",
+    disableBackground: "#646464",
 
-    fillColor: "rgba(255, 255, 255, 0.92)",
-    disableFillColor: "rgba(255, 255, 255, 0.24)",
+    fillColor: "#eeeeee",
+    disableFillColor: "#646464",
 
-    borderColor: "rgba(255, 255, 255, 0.24)",
+    borderColor: "#646464",
     disableBorderColor: "none",
-    hoverBorderColor: "rgba(255, 255, 255, 0.92)",
+    hoverBorderColor: "#eeeeee",
   },
 
   requestLoader: {
@@ -1175,7 +1175,7 @@ const Dark = {
   },
 
   dropDownItem: {
-    color: "rgba(255, 255, 255, 0.92)",
+    color: "#eeeeee",
     disableColor: gray,
     backgroundColor: "#333333",
     hoverBackgroundColor: "#3D3D3D",
@@ -1195,13 +1195,13 @@ const Dark = {
       marginRight: "8px",
       lineHeight: "14px",
 
-      color: "rgba(255, 255, 255, 0.92)",
+      color: "#eeeeee",
       disableColor: gray,
     },
 
     separator: {
       padding: "0px 16px",
-      borderBottom: `1px solid rgba(255, 255, 255, 0.1)`,
+      borderBottom: `1px solid #474747`,
       margin: " 4px 16px 4px",
       lineHeight: "1px",
       height: "1px",
@@ -1223,23 +1223,23 @@ const Dark = {
       warning: "#292929",
     },
     border: {
-      success: "2px solid rgba(174, 224, 81, 0.48)",
-      error: "2px solid rgba(224, 177, 81, 0.48)",
-      info: "2px solid rgba(224, 223, 81, 0.48)",
-      warning: "2px solid rgba(224, 119, 81, 0.48)",
+      success: "2px solid #9de051",
+      error: "2px solid #e0b051",
+      info: "2px solid #e0d751",
+      warning: "2px solid #e07751",
     },
 
     zIndex: "9999",
     position: "fixed",
     padding: "4px",
     width: "320px",
-    color: "rgba(255, 255, 255, 0.92)",
+    color: "#eeeeee",
     top: "16px",
     right: "24px",
     marginTop: "0px",
 
     closeButton: {
-      color: "rgba(255, 255, 255, 0.92)",
+      color: "#eeeeee",
       fontWeight: "700",
       fontSize: "14px",
       background: "transparent",
@@ -1255,7 +1255,7 @@ const Dark = {
       maxHeight: "800px",
       overflow: "hidden",
       borderRadius: "6px",
-      color: "rgba(255, 255, 255, 0.92)",
+      color: "#eeeeee",
       margin: "0 0 12px",
       padding: "12px",
       minHeight: "32px",
@@ -1282,7 +1282,7 @@ const Dark = {
     text: {
       lineHeight: " 1.3",
       fontSize: "12px",
-      color: "rgba(255, 255, 255, 0.92)",
+      color: "#eeeeee",
     },
 
     title: {
@@ -1299,7 +1299,7 @@ const Dark = {
       fontSize: "12px",
     },
 
-    closeButtonColor: "rgba(255, 255, 255, 0.92)",
+    closeButtonColor: "#eeeeee",
   },
 
   loader: {
@@ -1444,22 +1444,22 @@ const Dark = {
   },
 
   toggleButton: {
-    fillColor: "rgba(255, 255, 255, 0.92)",
+    fillColor: "#eeeeee",
     fillColorOff: "#292929",
 
     disableFillColor: "#333333",
-    disableFillColorOff: "rgba(255, 255, 255, 0.24)",
+    disableFillColorOff: "#646464",
 
-    borderColor: "rgba(255, 255, 255, 0.1)",
-    borderColorOff: "rgba(255, 255, 255, 0.1)",
+    borderColor: "#474747",
+    borderColorOff: "#474747",
 
-    disableBorderColor: "rgba(255, 255, 255, 0.1)",
-    disableBorderColorOff: "rgba(255, 255, 255, 0.24)",
+    disableBorderColor: "#474747",
+    disableBorderColorOff: "#646464",
 
     fillCircleColor: "#292929",
-    fillCircleColorOff: "rgba(255, 255, 255, 0.92)",
+    fillCircleColorOff: "#eeeeee",
 
-    disableFillCircleColor: "rgba(255, 255, 255, 0.24)",
+    disableFillCircleColor: "#646464",
     disableFillCircleColorOff: "#333333",
   },
 
