@@ -31,7 +31,6 @@ Heading.propTypes = {
 };
 
 Heading.defaultProps = {
-  color: "#333333",
   title: null,
   truncate: false,
   isInline: false,

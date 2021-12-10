@@ -70,6 +70,7 @@ const Dark = {
     },
 
     fontWeight: 600,
+    color: "rgba(255, 255, 255, 0.92)",
   },
 
   button: {
@@ -1172,11 +1173,11 @@ const Dark = {
   },
 
   dropDownItem: {
-    color: black,
+    color: "rgba(255, 255, 255, 0.92)",
     disableColor: gray,
-    backgroundColor: white,
-    hoverBackgroundColor: grayLight,
-    hoverDisabledBackgroundColor: white,
+    backgroundColor: "#333333",
+    hoverBackgroundColor: "#3D3D3D",
+    hoverDisabledBackgroundColor: "#333333",
     fontWeight: "600",
     fontSize: "13px",
     width: "100%",
@@ -1192,13 +1193,13 @@ const Dark = {
       marginRight: "8px",
       lineHeight: "14px",
 
-      color: black,
+      color: "rgba(255, 255, 255, 0.92)",
       disableColor: gray,
     },
 
     separator: {
       padding: "0px 16px",
-      borderBottom: `1px solid ${globalColors.grayLightMid}`,
+      borderBottom: `1px solid rgba(255, 255, 255, 0.1)`,
       margin: " 4px 16px 4px",
       lineHeight: "1px",
       height: "1px",

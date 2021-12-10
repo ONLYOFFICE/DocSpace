@@ -70,6 +70,7 @@ const Base = {
     },
 
     fontWeight: 600,
+    color: "#333333",
   },
 
   button: {
