@@ -23,6 +23,10 @@ import { FolderType } from "@appserver/common/constants";
 import { isArrayEqual } from "@appserver/components/utils/array";
 import store from "studio/store";
 import toastr from "studio/toastr";
+import {
+  exceptSortedByTagsFolders,
+  exceptPrivacyTrashFolders,
+} from "./ExceptionFoldersConstants";
 
 const { auth: authStore } = store;
 
@@ -31,14 +35,6 @@ const { desktop } = utils.device;
 let pathName = "";
 let folderList;
 
-const exceptSortedByTagsFolders = [
-  FolderType.Recent,
-  FolderType.TRASH,
-  FolderType.Favorites,
-];
-
-const exceptTrashFolder = [FolderType.TRASH];
-const exceptPrivacyTrashFolders = [FolderType.Privacy, FolderType.TRASH];
 class SelectFolderModalDialog extends React.Component {
   constructor(props) {
     super(props);
@@ -116,6 +112,7 @@ class SelectFolderModalDialog extends React.Component {
       case "exceptSortedByTags":
         try {
           const foldersTree = await getFoldersTree();
+
           [folderList, this.noTreeSwitcher] = SelectFolderDialog.convertFolders(
             foldersTree,
             exceptSortedByTagsFolders
@@ -126,19 +123,6 @@ class SelectFolderModalDialog extends React.Component {
           this.loadersCompletes();
         }
         break;
-      case "exceptTrashFolder":
-        try {
-          const foldersTree = await getFoldersTree();
-          [folderList, this.noTreeSwitcher] = SelectFolderDialog.convertFolders(
-            foldersTree,
-            exceptTrashFolder
-          );
-          this.setBaseSettings();
-        } catch (err) {
-          console.error(err);
-          this.loadersCompletes();
-        }
-        break;
       case "exceptPrivacyTrashFolders":
         try {
           const foldersTree = await getFoldersTree();
@@ -146,13 +130,13 @@ class SelectFolderModalDialog extends React.Component {
             foldersTree,
             exceptPrivacyTrashFolders
           );
-          console.log("folderList", folderList);
           this.setBaseSettings();
         } catch (err) {
           console.error(err);
           this.loadersCompletes();
         }
         break;
+
       case "common":
         try {
           folderList = await SelectFolderDialog.getCommonFolders();
@@ -550,7 +534,6 @@ SelectFolderModalDialog.propTypes = {
     "common",
     "third-party",
     "exceptSortedByTags",
-    "exceptTrashFolder",
     "exceptPrivacyTrashFolders",
   ]),
   displayType: PropTypes.oneOf(["aside", "modal"]),

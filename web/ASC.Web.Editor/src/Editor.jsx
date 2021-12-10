@@ -738,7 +738,7 @@ const Editor = () => {
               onSelectFile={onSelectFile}
               isPanelVisible={isFileDialogVisible}
               onClose={onCloseFileDialog}
-              foldersType="exceptTrashFolder"
+              foldersType="exceptPrivacyTrashFolders"
               {...fileTypeDetection()}
               titleFilesList={selectFilesListTitle()}
               headerName={i18n.t("SelectFileTitle")}
