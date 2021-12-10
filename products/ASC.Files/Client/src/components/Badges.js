@@ -33,9 +33,13 @@ const Badges = ({
   const isPrivacy = isPrivacyFolder && isDesktopClient;
   const showActionsEdit = isEditing || isEditingWithFav;
 
+  const onSharedVersionClick = () => {
+    onBadgeClick(), onShowVersionHistory();
+  };
+
   return fileExst ? (
     <div className="badges additional-badges">
-      {version > 1 && (
+      {version > 1 && !(showNew || isNewWithFav) && (
         <Badge
           className="badge-version icons-group"
           backgroundColor="#A3A9AE"
@@ -46,6 +50,36 @@ const Badges = ({
           label={`V. ${versionGroup}`}
           maxWidth="50px"
           onClick={onShowVersionHistory}
+          padding="1px 5px"
+          data-id={id}
+        />
+      )}
+      {(showNew || isNewWithFav) && !(version > 1) && (
+        <Badge
+          className="badge-version icons-group"
+          backgroundColor="#ED7309"
+          borderRadius="11px"
+          color="#FFFFFF"
+          fontSize="10px"
+          fontWeight={800}
+          label={t("New")}
+          maxWidth="50px"
+          onClick={onBadgeClick}
+          padding="0 5px"
+          data-id={id}
+        />
+      )}
+      {version > 1 && (showNew || isNewWithFav) && (
+        <Badge
+          className="badge-version icons-group"
+          backgroundColor="#ED7309"
+          borderRadius="11px"
+          color="#FFFFFF"
+          fontSize="9px"
+          fontWeight={800}
+          label={`V. ${versionGroup}`}
+          maxWidth="50px"
+          onClick={onSharedVersionClick}
           padding="1px 5px"
           data-id={id}
         />
@@ -78,21 +112,6 @@ const Badges = ({
             hoverColor="#3B72A7"
           />
         )}
-      {(showNew || isNewWithFav) && (
-        <Badge
-          className="badge-version icons-group"
-          backgroundColor="#ED7309"
-          borderRadius="11px"
-          color="#FFFFFF"
-          fontSize="10px"
-          fontWeight={800}
-          label={t("New")}
-          maxWidth="50px"
-          onClick={onBadgeClick}
-          padding="0 5px"
-          data-id={id}
-        />
-      )}
     </div>
   ) : (
     showNew && (

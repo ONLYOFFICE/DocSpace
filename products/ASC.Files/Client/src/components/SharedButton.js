@@ -12,7 +12,7 @@ const SharedButton = ({
   setSharingPanelVisible,
   isSmallIcon = false,
 }) => {
-  const color = shared ? "#657077" : "#a3a9ae";
+  const color = shared ? "#3B72A7" : "#a3a9ae";
 
   const onClickShare = () => {
     onSelectItem({ id, isFolder });
