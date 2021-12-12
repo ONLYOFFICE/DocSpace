@@ -67,31 +67,46 @@ const StyledTextInput = styled(Input).attrs((props) => ({
   transition: ${(props) => props.theme.textInput.transition};
 
   ::-webkit-input-placeholder {
-    color: ${(props) => props.theme.textInput.placeholderColor};
+    color: ${(props) =>
+      props.isDisabled
+        ? props.theme.textInput.disablePlaceholderColor
+        : props.theme.textInput.placeholderColor};
     font-family: ${(props) => props.theme.fontFamily};
     ${NoUserSelect}
   }
 
   :-moz-placeholder {
-    color: ${(props) => props.theme.textInput.placeholderColor};
+    color: ${(props) =>
+      props.isDisabled
+        ? props.theme.textInput.disablePlaceholderColor
+        : props.theme.textInput.placeholderColor};
     font-family: ${(props) => props.theme.fontFamily};
     ${NoUserSelect}
   }
 
   ::-moz-placeholder {
-    color: ${(props) => props.theme.textInput.placeholderColor};
+    color: ${(props) =>
+      props.isDisabled
+        ? props.theme.textInput.disablePlaceholderColor
+        : props.theme.textInput.placeholderColor};
     font-family: ${(props) => props.theme.fontFamily};
     ${NoUserSelect}
   }
 
   :-ms-input-placeholder {
-    color: ${(props) => props.theme.textInput.placeholderColor};
+    color: ${(props) =>
+      props.isDisabled
+        ? props.theme.textInput.disablePlaceholderColor
+        : props.theme.textInput.placeholderColor};
     font-family: ${(props) => props.theme.fontFamily};
     ${NoUserSelect}
   }
 
   ::placeholder {
-    color: ${(props) => props.theme.textInput.placeholderColor};
+    color: ${(props) =>
+      props.isDisabled
+        ? props.theme.textInput.disablePlaceholderColor
+        : props.theme.textInput.placeholderColor};
     font-family: ${(props) => props.theme.fontFamily};
     ${NoUserSelect}
   }

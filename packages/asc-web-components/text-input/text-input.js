@@ -72,7 +72,6 @@ TextInput.defaultProps = {
   value: "",
   maxLength: 255,
   size: "base",
-  theme: Base,
   scale: false,
   tabIndex: -1,
   hasError: false,

@@ -550,11 +550,11 @@ const Dark = {
   },
 
   input: {
-    color: black,
-    disableColor: grayMid,
+    color: "#eeeeee",
+    disableColor: "#6c6c6c",
 
-    backgroundColor: white,
-    disableBackgroundColor: grayLight,
+    backgroundColor: "#292929",
+    disableBackgroundColor: "#474747",
 
     width: {
       base: "173px",
@@ -569,20 +569,20 @@ const Dark = {
     boxSizing: "border-box",
     border: "solid 1px",
 
-    borderColor: grayMid,
-    errorBorderColor: red,
+    borderColor: "#474747",
+    errorBorderColor: "#E06451",
     warningBorderColor: warningColor,
-    disabledBorderColor: grayLightMid,
+    disabledBorderColor: "#474747",
 
-    hoverBorderColor: gray,
-    hoverErrorBorderColor: red,
+    hoverBorderColor: "#858585",
+    hoverErrorBorderColor: "#E06451",
     hoverWarningBorderColor: warningColor,
-    hoverDisabledBorderColor: grayLightMid,
+    hoverDisabledBorderColor: "#474747",
 
-    focusBorderColor: blueMain,
-    focusErrorBorderColor: red,
+    focusBorderColor: "#eeeeee",
+    focusErrorBorderColor: "#E06451",
     focusWarningBorderColor: warningColor,
-    focusDisabledBorderColor: grayLightMid,
+    focusDisabledBorderColor: "#474747",
   },
 
   fileInput: {
@@ -669,8 +669,8 @@ const Dark = {
 
   textInput: {
     fontWeight: "normal",
-    placeholderColor: gray,
-    disablePlaceholderColor: grayMid,
+    placeholderColor: "#474747",
+    disablePlaceholderColor: "#6c6c6c",
 
     transition: "all 0.2s ease 0s",
     appearance: "none",
