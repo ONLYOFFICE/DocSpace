@@ -720,6 +720,9 @@ const Base = {
     margin: "0",
 
     borderColor: blueMain,
+
+    iconColor: "#D0D5DA",
+    hoverIconColor: "#D0D5DA",
   },
 
   textArea: {

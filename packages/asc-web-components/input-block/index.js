@@ -56,7 +56,6 @@ class InputBlock extends React.Component {
       isIconFill,
       onIconClick,
       iconSize,
-      theme,
     } = this.props;
 
     if (typeof iconSize == "number" && iconSize > 0) {
@@ -87,10 +86,11 @@ class InputBlock extends React.Component {
         size={size}
         className={className}
         style={style}
-        theme={theme}
+        color={iconColor}
+        hoverColor={hoverColor}
       >
         <div className="prepend">
-          <StyledChildrenBlock className="prepend-children" theme={theme}>
+          <StyledChildrenBlock className="prepend-children">
             {children}
           </StyledChildrenBlock>
         </div>
@@ -129,13 +129,10 @@ class InputBlock extends React.Component {
             >
               <IconButton
                 size={iconButtonSize}
-                color={iconColor}
-                hoverColor={hoverColor}
                 iconName={iconName}
                 isFill={isIconFill}
                 isDisabled={isDisabled}
                 isClickable={typeof onIconClick === "function"}
-                theme={theme}
               />
             </StyledIconBlock>
           </div>
@@ -220,8 +217,6 @@ InputBlock.defaultProps = {
 
   value: "",
   iconName: "",
-  iconColor: "#ffffff",
-  hoverColor: "#ffffff",
   isIconFill: false,
   isDisabled: false,
   keepCharPositions: false,

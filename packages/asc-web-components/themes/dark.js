@@ -719,6 +719,9 @@ const Dark = {
     margin: "0",
 
     borderColor: "#eeeeee",
+
+    iconColor: "#646464",
+    hoverIconColor: "#858585",
   },
 
   textArea: {

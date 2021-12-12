@@ -130,8 +130,6 @@ SearchInput.propTypes = {
   children: PropTypes.any,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  iconColor: PropTypes.string,
-  hoverIconColor: PropTypes.string,
 };
 
 SearchInput.defaultProps = {
