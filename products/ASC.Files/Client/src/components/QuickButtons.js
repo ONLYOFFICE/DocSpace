@@ -24,17 +24,17 @@ const QuickButtons = ({
   const isEditingWithFav = fileStatus === 33;
   const showFavorite = isFavorite || isNewWithFav || isEditingWithFav;
 
-  return fileExst ? (
+  return (
     <div className="badges additional-badges">
-      {item.canShare && showShare ? (
+      {item.canShare && showShare && (
         <SharedButton
           t={t}
           id={item.id}
           shared={item.shared}
           isFolder={item.isFolder}
         />
-      ) : null}
-      {accessToEdit && !isTrashFolder && (
+      )}
+      {fileExst && accessToEdit && !isTrashFolder && (
         <IconButton
           iconName={
             locked
@@ -48,7 +48,7 @@ const QuickButtons = ({
           hoverColor="#3B72A7"
         />
       )}
-      {!isTrashFolder && (
+      {fileExst && !isTrashFolder && (
         <StyledIcon
           iconName={
             showFavorite
@@ -64,7 +64,7 @@ const QuickButtons = ({
         />
       )}
     </div>
-  ) : null;
+  );
 };
 
 export default QuickButtons;
