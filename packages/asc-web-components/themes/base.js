@@ -629,6 +629,9 @@ const Base = {
     disableColor: grayMid,
     color: gray,
 
+    iconColor: grayMid,
+    hoverIconColor: gray,
+
     hoverColor: gray,
 
     lineHeight: "32px",

@@ -625,8 +625,11 @@ const Dark = {
   },
 
   passwordInput: {
-    disableColor: grayMid,
-    color: gray,
+    color: "#858585",
+    disableColor: "#858585",
+
+    iconColor: "#646464",
+    hoverIconColor: "#858585",
 
     hoverColor: gray,
 
