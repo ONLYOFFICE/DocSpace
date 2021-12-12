@@ -86,8 +86,6 @@ class SearchInput extends React.Component {
           }
           isIconFill={true}
           iconSize={clearButtonSize}
-          iconColor={this.props.iconColor}
-          hoverColor={this.props.hoverIconColor}
           onIconClick={
             !!this.state.inputValue || this.props.showClearButton
               ? this.clearSearch
@@ -144,8 +142,6 @@ SearchInput.defaultProps = {
   isDisabled: false,
   refreshTimeout: 1000,
   showClearButton: false,
-  iconColor: "#D0D5DA",
-  hoverIconColor: "#D0D5DA",
 };
 
 export default SearchInput;

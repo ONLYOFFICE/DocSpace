@@ -666,6 +666,9 @@ const Base = {
   searchInput: {
     fontSize: "14px",
     fontWeight: "600",
+
+    iconColor: "#D0D5DA",
+    hoverIconColor: "#D0D5DA",
   },
 
   textInput: {

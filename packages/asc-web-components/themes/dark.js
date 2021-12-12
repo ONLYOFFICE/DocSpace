@@ -665,6 +665,9 @@ const Dark = {
   searchInput: {
     fontSize: "14px",
     fontWeight: "600",
+
+    iconColor: "#646464",
+    hoverIconColor: "#858585",
   },
 
   textInput: {
@@ -715,7 +718,7 @@ const Dark = {
     padding: "2px 0px 2px 2px",
     margin: "0",
 
-    borderColor: blueMain,
+    borderColor: "#eeeeee",
   },
 
   textArea: {
