@@ -29,7 +29,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 
+using ASC.Common.Utils;
 using ASC.Core.Common.Settings;
+using ASC.Security.Cryptography;
 
 namespace ASC.Web.Studio.Core.TFA
 {
@@ -65,7 +67,7 @@ namespace ASC.Web.Studio.Core.TFA
                 var from = new DateTime(2018, 07, 07, 0, 0, 0, DateTimeKind.Utc);
                 settings.SaltSetting = salt = (long)(DateTime.UtcNow - from).TotalMilliseconds;
 
-                settingsManager.SaveForUser<TfaAppUserSettings>(settings, userId);
+                settingsManager.SaveForUser(settings, userId);
             }
             return salt;
         }
@@ -75,10 +77,10 @@ namespace ASC.Web.Studio.Core.TFA
             return settingsManager.LoadForUser<TfaAppUserSettings>(userId).CodesSetting;
         }
 
-        public static void DisableCodeForUser(SettingsManager settingsManager, Guid userId, string code)
+        public static void DisableCodeForUser(SettingsManager settingsManager, InstanceCrypto instanceCrypto, Signature signature, Guid userId, string code)
         {
             var settings = settingsManager.LoadForUser<TfaAppUserSettings>(userId);
-            var query = settings.CodesSetting.Where(x => x.Code == code).ToList();
+            var query = settings.CodesSetting.Where(x => x.GetEncryptedCode(instanceCrypto, signature) == code).ToList();
 
             if (query.Any())
                 query.First().IsUsed = true;
