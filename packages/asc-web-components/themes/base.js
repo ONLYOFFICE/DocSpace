@@ -129,8 +129,13 @@ const Base = {
 
     color: {
       base: black,
+      baseHover: black,
+      baseActive: black,
+      baseDisabled: grayLightMid,
       primary: white,
-      disabled: grayLightMid,
+      primaryHover: white,
+      primaryActive: white,
+      primaryDisabled: white,
     },
 
     backgroundColor: {
@@ -153,6 +158,11 @@ const Base = {
       primaryHover: `1px solid ${globalColors.blueHover}`,
       primaryActive: `1px solid ${globalColors.blueActive}`,
       primaryDisabled: `1px solid ${globalColors.blueDisabled}`,
+    },
+
+    loader: {
+      base: black,
+      primary: white,
     },
   },
 

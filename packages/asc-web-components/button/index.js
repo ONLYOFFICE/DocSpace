@@ -44,7 +44,6 @@ const Button = React.forwardRef((props, ref) => {
           <Loader
             type="oval"
             size={size === "large" ? "18px" : size === "big" ? "16px" : "14px"}
-            color={primary ? "#FFFFFF" : "#333333"}
             className="loader"
           />
         ) : (
