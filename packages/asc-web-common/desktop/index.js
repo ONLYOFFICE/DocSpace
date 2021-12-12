@@ -25,7 +25,11 @@ export function regDesktop(
     userId: user.id,
   };
 
-  console.log("regDesktop", data);
+  console.log(
+    "regDesktop date=",
+    data,
+    `isEncryption=${isEncryption} keys=${keys} isEditor=${isEditor}`
+  );
 
   let extendedData;
 
@@ -76,6 +80,8 @@ export function regDesktop(
           break;
       }
     };
+
+    console.log("Created window.cloudCryptoCommand", window.cloudCryptoCommand);
   }
 
   window.onSystemMessage = (e) => {
@@ -100,6 +106,8 @@ export function regDesktop(
         break;
     }
   };
+
+  console.log("Created window.onSystemMessage", window.onSystemMessage);
 }
 
 export function relogin() {
