@@ -16,6 +16,7 @@ import {
 import { ConflictResolveType, FileAction } from "@appserver/common/constants";
 import { TIMEOUT } from "../helpers/constants";
 import { loopTreeFolders } from "../helpers/files-helpers";
+import { openDocEditor as openEditor } from "../helpers/utils";
 import toastr from "studio/toastr";
 
 class FilesActionStore {
@@ -27,6 +28,7 @@ class FilesActionStore {
   settingsStore;
   dialogsStore;
   mediaViewerDataStore;
+  socketStore;
 
   constructor(
     authStore,
@@ -36,7 +38,8 @@ class FilesActionStore {
     selectedFolderStore,
     settingsStore,
     dialogsStore,
-    mediaViewerDataStore
+    mediaViewerDataStore,
+    socketStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -47,7 +50,13 @@ class FilesActionStore {
     this.settingsStore = settingsStore;
     this.dialogsStore = dialogsStore;
     this.mediaViewerDataStore = mediaViewerDataStore;
+    this.socketStore = socketStore;
   }
+
+  openDocEditor = (id, providerKey = null, tab = null, url = null) => {
+    this.socketStore.startEditingFile(id);
+    return openEditor(id, providerKey, tab, url);
+  };
 
   isMediaOpen = () => {
     const { visible, setMediaViewerData, playlist } = this.mediaViewerDataStore;
@@ -65,7 +74,8 @@ class FilesActionStore {
     fetchFiles(this.selectedFolderStore.id, filter, true, true).finally(() => {
       this.uploadDataStore.clearActiveOperations(fileIds, folderIds);
       setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-    });  };
+    });
+  };
 
   deleteAction = async (translations, newSelection = null) => {
     const { isRecycleBinFolder, isPrivacyFolder } = this.treeFoldersStore;
@@ -125,7 +135,7 @@ class FilesActionStore {
             this.updateCurrentFolder(fileIds, folderIds);
             if (isRecycleBinFolder) {
               return toastr.success(translations.deleteFromTrash);
-          }
+            }
 
             if (selection.length > 1) {
               return toastr.success(translations.deleteSelectedElem);
@@ -182,7 +192,8 @@ class FilesActionStore {
         };
         await this.uploadDataStore.loopFilesOperations(data, pbData);
         toastr.success(translations.successOperation);
-        this.updateCurrentFolder(fileIds, folderIds);      });
+        this.updateCurrentFolder(fileIds, folderIds);
+      });
     } catch (err) {
       clearActiveOperations(fileIds, folderIds);
       setSecondaryProgressBarData({

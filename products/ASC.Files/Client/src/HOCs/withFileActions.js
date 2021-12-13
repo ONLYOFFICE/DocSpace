@@ -303,6 +303,7 @@ export default function withFileActions(WrappedFileItem) {
         onSelectItem,
         markAsRead,
         setNewBadgeCount,
+        openDocEditor,
       } = filesActionsStore;
       const {
         setSharingPanelVisible,
@@ -326,7 +327,6 @@ export default function withFileActions(WrappedFileItem) {
         isFileSelected,
         setIsLoading,
         fetchFiles,
-        openDocEditor,
         getFolderInfo,
         viewAs,
         bufferSelection,

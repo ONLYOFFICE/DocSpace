@@ -22,7 +22,6 @@ import PrivateRoomsPage from "./pages/PrivateRoomsPage";
 import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
 import Panels from "./components/FilesPanels";
 import { AppServerConfig } from "@appserver/common/constants";
-import { socketInit } from "./helpers/socket";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -70,8 +69,6 @@ class FilesContent extends React.Component {
 
   componentDidMount() {
     loadScript("/static/scripts/tiff.min.js", "img-tiff-script");
-
-    socketInit();
 
     this.props
       .loadFilesInfo()
@@ -138,7 +135,7 @@ class FilesContent extends React.Component {
   }
 }
 
-const Files = inject(({ auth, filesStore }) => {
+const Files = inject(({ auth, filesStore, socketStore }) => {
   return {
     isDesktop: auth.settingsStore.isDesktopClient,
     user: auth.userStore.user,
@@ -151,6 +148,7 @@ const Files = inject(({ auth, filesStore }) => {
     loadFilesInfo: async () => {
       //await auth.init();
       await filesStore.initFiles();
+      socketStore.socketInit();
       auth.setProductVersion(config.version);
     },
   };
