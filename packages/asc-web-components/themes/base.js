@@ -944,9 +944,28 @@ const Base = {
       },
     },
 
+    administrator: {
+      fill: "#ED7309",
+      stroke: "#000000",
+      color: "#ffffff",
+    },
+
+    guest: {
+      fill: "#3B72A7",
+      stroke: "#000000",
+      color: "#ffffff",
+    },
+
+    owner: {
+      fill: "#EDC409",
+      stroke: "#000000",
+      color: "#ffffff",
+    },
+
     editContainer: {
       right: "0px",
       bottom: "0px",
+      fill: "#ffffff",
       backgroundColor: "#265a8f",
       borderRadius: "50%",
       height: "32px",

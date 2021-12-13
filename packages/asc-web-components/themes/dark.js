@@ -943,10 +943,29 @@ const Dark = {
       },
     },
 
+    administrator: {
+      fill: "#F59931",
+      stroke: "#000000",
+      color: "#333333",
+    },
+
+    guest: {
+      fill: "#575757",
+      stroke: "#000000",
+      color: "#333333",
+    },
+
+    owner: {
+      fill: "#EDC409",
+      stroke: "#000000",
+      color: "#333333",
+    },
+
     editContainer: {
       right: "0px",
       bottom: "0px",
-      backgroundColor: "#265a8f",
+      fill: "#333333",
+      backgroundColor: "#b2b2b2",
       borderRadius: "50%",
       height: "32px",
       width: "32px",

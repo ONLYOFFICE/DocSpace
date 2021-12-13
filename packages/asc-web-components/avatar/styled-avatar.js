@@ -23,6 +23,14 @@ const EditContainer = styled.div`
   width: ${(props) => props.theme.avatar.editContainer.width};
   align-items: center;
   justify-content: center;
+
+  .edit_icon {
+    svg {
+      path {
+        fill: ${(props) => props.theme.avatar.editContainer.fill};
+      }
+    }
+  }
 `;
 EditContainer.defaultProps = { theme: Base };
 
@@ -104,6 +112,42 @@ const StyledAvatar = styled.div`
   height: ${(props) => heightStyle(props)};
   font-family: ${(props) => props.theme.fontFamily};
   font-style: normal;
+
+  .admin_icon {
+    rect:nth-child(1) {
+      fill: ${(props) => props.theme.avatar.administrator.fill};
+    }
+    rect:nth-child(2) {
+      stroke: ${(props) => props.theme.avatar.administrator.stroke};
+    }
+    path {
+      fill: ${(props) => props.theme.avatar.administrator.color};
+    }
+  }
+
+  .guest_icon {
+    rect:nth-child(1) {
+      fill: ${(props) => props.theme.avatar.guest.fill};
+    }
+    rect:nth-child(2) {
+      stroke: ${(props) => props.theme.avatar.guest.stroke};
+    }
+    path {
+      fill: ${(props) => props.theme.avatar.guest.color};
+    }
+  }
+
+  .owner_icon {
+    rect:nth-child(1) {
+      fill: ${(props) => props.theme.avatar.owner.fill};
+    }
+    rect:nth-child(2) {
+      stroke: ${(props) => props.theme.avatar.owner.stroke};
+    }
+    path {
+      fill: ${(props) => props.theme.avatar.owner.color};
+    }
+  }
 `;
 StyledAvatar.defaultProps = { theme: Base };
 
