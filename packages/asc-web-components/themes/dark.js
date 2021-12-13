@@ -318,7 +318,7 @@ const Dark = {
     },
   },
 
-  iconButton: {},
+  iconButton: { color: "#858585", hoverColor: "#eeeeee" },
   selectorAddButton: {
     background: grayLight,
     activeBackground: grayLightMid,
@@ -751,7 +751,7 @@ const Dark = {
   },
 
   link: {
-    color: black,
+    color: "#eeeeee",
     lineHeight: "calc(100% + 6px)",
     opacity: "0.5",
     textDecoration: "none",
@@ -1003,15 +1003,20 @@ const Dark = {
   avatarEditorBody: {
     maxWidth: "400px",
 
+    selectLink: {
+      color: "#474747",
+      linkColor: "#eeeeee",
+    },
+
     slider: {
       width: "100%",
       margin: "8px 0",
       backgroundColor: "transparent",
 
       runnableTrack: {
-        background: grayLightMid,
-        focusBackground: grayLightMid,
-        border: `1.4px solid ${grayLightMid}`,
+        background: "#242424",
+        focusBackground: "#242424",
+        border: `1.4px solid #242424`,
         borderRadius: "5.6px",
         width: "100%",
         height: "8px",
@@ -1021,8 +1026,8 @@ const Dark = {
         marginTop: "-9.4px",
         width: "24px",
         height: "24px",
-        background: blueMain,
-        border: `6px solid ${white}`,
+        background: "#eeeeee",
+        border: `6px solid #333333`,
         borderRadius: "30px",
         boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.13)",
       },
@@ -1030,16 +1035,16 @@ const Dark = {
       thumb: {
         width: "24px",
         height: "24px",
-        background: blueMain,
-        border: `6px solid ${white}`,
+        background: "#eeeeee",
+        border: `6px solid #333333`,
         borderRadius: "30px",
         marginTop: "0px",
         boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.13)",
       },
 
       rangeTrack: {
-        background: grayLightMid,
-        border: `1.4px solid ${grayLightMid}`,
+        background: "#242424",
+        border: `1.4px solid #242424`,
         borderRadius: "5.6px",
         width: "100%",
         height: "8px",
@@ -1048,8 +1053,8 @@ const Dark = {
       rangeThumb: {
         width: "14px",
         height: "14px",
-        background: blueMain,
-        border: `6px solid ${white}`,
+        background: "#eeeeee",
+        border: `6px solid #333333`,
         borderRadius: "30px",
         boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.13)",
       },
@@ -1064,43 +1069,44 @@ const Dark = {
       },
 
       fillLower: {
-        background: grayLightMid,
-        focusBackground: grayLightMid,
-        border: `1.4px solid ${grayLightMid}`,
+        background: "#242424",
+        focusBackground: "#242424",
+        border: `1.4px solid #242424`,
         borderRadius: "11.2px",
       },
 
       fillUpper: {
-        background: grayLightMid,
-        focusBackground: grayLightMid,
-        border: `1.4px solid ${grayLightMid}`,
+        background: "#242424",
+        focusBackground: "#242424",
+        border: `1.4px solid #242424`,
         borderRadius: "11.2px",
       },
     },
 
     dropZone: {
-      border: `1px dashed ${silver}`,
+      border: `1px dashed #474747`,
     },
 
     container: {
       miniPreview: {
         width: "160px",
-        border: `1px solid ${grayLightMid}`,
+        border: `1px solid #242424`,
         borderRadius: "6px",
         padding: "8px",
       },
 
       buttons: {
         height: "32px",
-        background: gray,
-
+        background: "#292929",
         mobileWidth: "40px",
         mobileHeight: "100%",
         mobileBackground: "none",
       },
 
       button: {
-        background: gray,
+        background: "#b6b6b6",
+        fill: "#858585",
+        hoverFill: "#eeeeee",
         padding: "0 12px",
         height: "40px",
         borderRadius: "6px",
@@ -1511,7 +1517,7 @@ const Dark = {
   contextMenuButton: {
     content: {
       width: "100%",
-      backgroundColor: " #fff",
+      backgroundColor: "#333333",
       padding: "0 16px 16px",
     },
 
@@ -1520,7 +1526,7 @@ const Dark = {
       margin: "0",
       lineHeight: "56px",
       fontWeight: "700",
-      borderBottom: `1px solid ${globalColors.lightGrayishBlue}`,
+      borderBottom: `1px solid #474747`,
     },
 
     bodyContent: {
@@ -1609,7 +1615,7 @@ const Dark = {
   },
 
   aside: {
-    backgroundColor: white,
+    backgroundColor: "#333333",
     height: "100%",
     overflowX: "hidden",
     overflowY: "auto",

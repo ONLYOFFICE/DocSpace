@@ -318,7 +318,10 @@ const Base = {
     },
   },
 
-  iconButton: {},
+  iconButton: {
+    color: "#A3A9AE",
+    hoverColor: "#657077",
+  },
   selectorAddButton: {
     background: grayLight,
     activeBackground: grayLightMid,
@@ -1004,6 +1007,11 @@ const Base = {
   avatarEditorBody: {
     maxWidth: "400px",
 
+    selectLink: {
+      color: black,
+      linkColor: "#316DAA",
+    },
+
     slider: {
       width: "100%",
       margin: "8px 0",
@@ -1102,6 +1110,8 @@ const Base = {
 
       button: {
         background: gray,
+        fill: white,
+        hoverFill: white,
         padding: "0 12px",
         height: "40px",
         borderRadius: "6px",

@@ -310,12 +310,11 @@ class AvatarEditorBody extends React.Component {
     const { selectNewPhotoLabel, orDropFileHereLabel } = this.props;
     const desktopMode = isDesktop();
     return (
-      <Text as="span">
+      <Text as="span" className="select_link">
         <Link
           type="action"
           fontWeight={600}
           isHovered
-          color="#316DAA"
           onClick={this.openDialog}
         >
           {selectNewPhotoLabel}
@@ -404,7 +403,6 @@ class AvatarEditorBody extends React.Component {
                           iconName={"/static/images/catalog.trash.react.svg"}
                           isFill={true}
                           isClickable={true}
-                          color="#FFFFFF"
                           className="editor-button"
                         />
                       </Box>
@@ -465,8 +463,6 @@ class AvatarEditorBody extends React.Component {
                           </Text>
                           <ContextMenuButton
                             isFill
-                            color="#A3A9AE"
-                            hoverColor="#657077"
                             directionX="right"
                             getData={() => []}
                             isDisabled={true}
