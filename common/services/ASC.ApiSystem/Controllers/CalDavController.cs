@@ -26,9 +26,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Web;
 
 using ASC.ApiSystem.Classes;
@@ -337,24 +339,19 @@ namespace ASC.ApiSystem.Controllers
 
             Log.Info(string.Format("CalDav: SendToApi: {0}", url));
 
-            var webRequest = (HttpWebRequest)WebRequest.Create(url);
-            webRequest.Method = httpMethod;
-            webRequest.Accept = "application/json";
-            webRequest.ContentType = "application/x-www-form-urlencoded";
-            webRequest.ContentLength = 0;
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(url);
+            request.Method = new HttpMethod(httpMethod);
+            request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+            using var httpClient = new HttpClient();
 
             if (data != null)
             {
-                webRequest.ContentLength = data.Length;
-
-                using var writer = new StreamWriter(webRequest.GetRequestStream());
-
-                writer.Write(data);
+                request.Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
             }
 
-            using (webRequest.GetResponse())
-            {
-            }
+            httpClient.Send(request);
         }
 
         #endregion

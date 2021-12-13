@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Net;
+using System.IO;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
@@ -110,9 +111,16 @@ namespace ASC.Web.Core.Utility
 
         public string GetShortenLink(string shareLink)
         {
-            using var client = new WebClient { Encoding = Encoding.UTF8 };
-            client.Headers.Add("Authorization", CreateAuthToken());
-            return CommonLinkUtility.GetFullAbsolutePath(url + client.DownloadString(new Uri(internalUrl + "?url=" + HttpUtility.UrlEncode(shareLink))));
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(internalUrl + "?url=" + HttpUtility.UrlEncode(shareLink));
+            request.Headers.Add("Authorization", CreateAuthToken());
+            request.Headers.Add("Encoding", Encoding.UTF8.ToString());//todo check 
+
+            using var httpClient = new HttpClient();
+            using var response = httpClient.Send(request);
+            using var stream = response.Content.ReadAsStream();
+            using var rs = new StreamReader(stream);
+            return CommonLinkUtility.GetFullAbsolutePath(url + rs.ReadToEnd());
         }
 
         private string CreateAuthToken(string pkey = "urlShortener")
