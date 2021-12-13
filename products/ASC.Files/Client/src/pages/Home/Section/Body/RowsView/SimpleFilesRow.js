@@ -92,7 +92,23 @@ const StyledSimpleFilesRow = styled(Row)`
   .badge {
     width: 16px;
     height: 16px;
-    margin-right: 25px;
+    margin-right: 8px;
+  }
+
+  .new-items {
+    min-width: max-content;
+    p {
+      width: 6px;
+      height: 12px;
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 1439px) {
+    .new-items {
+      p {
+        padding: 2px;
+      }
+    }
   }
 
   .badge:last-child {
@@ -100,7 +116,7 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .badge-version {
-    margin-right: 25px;
+    margin-right: 8px;
     min-width: max-content;
   }
 

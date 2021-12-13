@@ -120,12 +120,12 @@ const Badges = ({
         backgroundColor="#ED7309"
         borderRadius="11px"
         color="#FFFFFF"
-        fontSize="10px"
+        fontSize="9px"
         fontWeight={800}
         label={newItems}
         maxWidth="50px"
         onClick={onBadgeClick}
-        padding="0 5px"
+        padding="0 3px"
         data-id={id}
       />
     )
