@@ -706,6 +706,8 @@ export function setEncryptionKeys(keys) {
   const data = {
     publicKey: keys.publicKey,
     privateKeyEnc: keys.privateKeyEnc,
+    enable: keys.enable,
+    update: keys.update,
   };
   return request({
     method: "put",

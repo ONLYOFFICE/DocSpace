@@ -60,6 +60,10 @@ export function regDesktop(
           setEncryptionKeys(params);
           break;
         }
+        case "updateEncryptionKeys": {
+          setEncryptionKeys(params);
+          break;
+        }
         case "relogin": {
           toastr.info(t("Common:EncryptionKeysReload"));
           //relogin();
