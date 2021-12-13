@@ -1395,7 +1395,7 @@ const Dark = {
       marginTop: "12px",
       marginRight: "8px",
       marginLeft: "auto",
-      fillColor: gray,
+      fillColor: "#9c9c9c",
     },
 
     button: {
@@ -1403,29 +1403,32 @@ const Dark = {
       heightWithBorder: "30px",
       paddingLeft: "8px",
 
-      color: black,
-      disabledColor: grayMid,
-      background: white,
+      color: "#858585",
+      disabledColor: "#858585",
+      background: "#292929",
       backgroundWithBorder: "none",
 
-      border: `1px solid ${grayMid}`,
+      border: `1px solid #474747`,
       borderRadius: "3px",
-      borderColor: blueMain,
 
-      disabledBorderColor: grayLightMid,
-      disabledBackground: grayLight,
+      borderColor: "#474747",
+      openBorderColor: "#eeeeee",
 
-      hoverBorderColor: gray,
-      hoverBorderColorOpen: blueMain,
-      hoverDisabledBorderColor: grayLightMid,
+      disabledBorderColor: "#474747",
+      disabledBackground: "#474747",
+
+      hoverBorderColor: "#858585",
+      hoverBorderColorOpen: "#eeeeee",
+      hoverDisabledBorderColor: "#474747",
     },
 
     label: {
       marginRightWithBorder: "8px",
       marginRight: "4px",
 
-      disabledColor: grayMid,
-      color: black,
+      disabledColor: "#858585",
+      color: "#858585",
+      selectedColor: "#eeeeee",
 
       maxWidth: "175px",
 
@@ -1438,10 +1441,10 @@ const Dark = {
       width: "16px",
       height: "16px",
 
-      defaultDisabledColor: grayMid,
-      defaultColor: gray,
-      disabledColor: grayMid,
-      color: black,
+      defaultDisabledColor: "#858585",
+      defaultColor: "#eeeeee",
+      disabledColor: "#858585",
+      color: "#858585",
     },
   },
 

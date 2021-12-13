@@ -44,7 +44,7 @@ const StyledComboButton = styled.div`
   `}
 
   border-color: ${(props) =>
-    props.isOpen && props.theme.comboBox.button.borderColor};
+    props.isOpen && props.theme.comboBox.button.openBorderColor};
 
   ${(props) =>
     props.isDisabled &&
@@ -84,6 +84,8 @@ const StyledComboButton = styled.div`
     color: ${(props) =>
       props.isDisabled
         ? props.theme.comboBox.label.disabledColor
+        : props.isSelected
+        ? props.theme.comboBox.label.selectedColor
         : props.theme.comboBox.label.color};
 
     max-width: ${(props) => props.theme.comboBox.label.maxWidth};

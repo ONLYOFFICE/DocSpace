@@ -1411,7 +1411,7 @@ const Base = {
       border: `1px solid ${grayMid}`,
       borderRadius: "3px",
       borderColor: blueMain,
-
+      openBorderColor: blueMain,
       disabledBorderColor: grayLightMid,
       disabledBackground: grayLight,
 
@@ -1426,7 +1426,7 @@ const Base = {
 
       disabledColor: grayMid,
       color: black,
-
+      selectedColor: black,
       maxWidth: "175px",
 
       lineHeightWithoutBorder: "16px",
