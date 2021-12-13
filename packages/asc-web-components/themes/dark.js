@@ -506,7 +506,7 @@ const Dark = {
     minHeight: "100%",
 
     content: {
-      backgroundColor: white,
+      backgroundColor: "#333333",
       padding: "0 16px 16px",
 
       heading: {
@@ -518,7 +518,7 @@ const Dark = {
     },
 
     header: {
-      borderBottom: `1px solid ${globalColors.lightGrayishBlue}`,
+      borderBottom: `1px solid #474747`,
     },
 
     closeButton: {
@@ -529,7 +529,7 @@ const Dark = {
 
       right: "16px",
       top: "19px",
-      hoverColor: grayMain,
+      hoverColor: "#EEEEEE",
     },
   },
 
