@@ -1447,6 +1447,7 @@ const Dark = {
       defaultColor: "#eeeeee",
       disabledColor: "#858585",
       color: "#858585",
+      selectedColor: "#eeeeee",
     },
   },
 

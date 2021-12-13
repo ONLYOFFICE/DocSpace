@@ -65,6 +65,7 @@ class ComboButton extends React.Component {
             className="forceColor"
             isDisabled={isDisabled}
             defaultOption={defaultOption}
+            isSelected={isSelected}
           >
             <ReactSVG
               src={selectedOption.icon}

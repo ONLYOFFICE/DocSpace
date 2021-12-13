@@ -145,6 +145,8 @@ const StyledIcon = styled.div`
             : props.theme.comboBox.childrenButton.defaultColor
           : props.isDisabled
           ? props.theme.comboBox.childrenButton.disabledColor
+          : props.isSelected
+          ? props.theme.comboBox.childrenButton.selectedColor
           : props.theme.comboBox.childrenButton.color};
     }
   }
