@@ -825,15 +825,16 @@ const Dark = {
       marginRight: "8px",
       width: "fit-content",
 
-      backgroundColor: blueLightMid,
-      hoverBackgroundColor: grayLight,
-      disableBackgroundColor: grayLightMid,
+      backgroundColor: "#d6d6d6",
+      hoverBackgroundColor: "#3D3D3D",
+      disableBackgroundColor: "#292929",
 
       title: {
         margin: "7px 15px 7px 15px",
         overflow: "hidden",
-        color: white,
-        disableColor: grayMid,
+        color: "#333333",
+        hoverColor: "#a4a4a4",
+        disableColor: "#474747",
       },
     },
   },

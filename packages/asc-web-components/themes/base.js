@@ -834,6 +834,7 @@ const Base = {
         margin: "7px 15px 7px 15px",
         overflow: "hidden",
         color: white,
+        hoverColor: white,
         disableColor: grayMid,
       },
     },
