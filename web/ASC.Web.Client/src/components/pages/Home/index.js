@@ -11,20 +11,19 @@ import { inject, observer } from "mobx-react";
 import { HomeIllustration, ModuleTile, HomeContainer } from "./sub-components";
 import Heading from "@appserver/components/heading";
 
-const Tiles = ({ availableModules, username, t }) => {
+const Tiles = ({ availableModules, displayName, t }) => {
   let index = 0;
-  const { firstName, lastName } = username;
-  const fullName = `${firstName} ${lastName}`.trim();
 
-  const getGreeting = () => {
+  const getGreeting = (displayName) => {
     const time = new Date().getHours();
 
-    if (time >= 5 && time <= 11) return t("GoodMorning");
-    if (time >= 12 && time <= 16) return t("GoodAfternoon");
-    return t("GoodEvening");
+    if (time >= 5 && time <= 11) return t("GoodMorning", { name: displayName });
+    if (time >= 12 && time <= 16)
+      return t("GoodAfternoon", { name: displayName });
+    return t("GoodEvening", { name: displayName });
   };
 
-  const greetingMessage = `${getGreeting()}, ${fullName}!`;
+  const greetingMessage = getGreeting(displayName);
 
   const modules = availableModules.filter(
     (module) => module.separator !== true && module.id !== "settings"
@@ -53,7 +52,7 @@ Tiles.propTypes = {
   t: PropTypes.func,
 };
 
-const Body = ({ match, isLoaded, availableModules, username }) => {
+const Body = ({ match, isLoaded, availableModules, displayName }) => {
   const { t } = useTranslation(["Home", "translation"]);
   const { error } = match.params;
   setDocumentTitle();
@@ -64,7 +63,11 @@ const Body = ({ match, isLoaded, availableModules, username }) => {
     <></>
   ) : (
     <HomeContainer>
-      <Tiles availableModules={availableModules} username={username} t={t} />
+      <Tiles
+        availableModules={availableModules}
+        displayName={displayName}
+        t={t}
+      />
 
       <HomeIllustration />
 
@@ -81,7 +84,7 @@ Body.propTypes = {
   availableModules: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool,
   match: PropTypes.object,
-  username: PropTypes.object,
+  displayName: PropTypes.string,
 };
 
 const Home = ({ defaultPage, ...rest }) => {
@@ -100,21 +103,18 @@ Home.propTypes = {
   availableModules: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool,
   defaultPage: PropTypes.string,
-  username: PropTypes.object,
+  displayName: PropTypes.string,
 };
 
 export default inject(({ auth }) => {
   const { isLoaded, settingsStore, availableModules, userStore } = auth;
   const { defaultPage } = settingsStore;
-  const { firstName, lastName } = userStore.user;
-  const username = {
-    firstName,
-    lastName,
-  };
+  const { displayName } = userStore.user;
+
   return {
     defaultPage,
     isLoaded,
     availableModules,
-    username,
+    displayName,
   };
 })(withRouter(observer(Home)));

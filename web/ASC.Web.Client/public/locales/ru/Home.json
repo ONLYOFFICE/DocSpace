@@ -1,5 +1,5 @@
 {
-  "GoodMorning": "Доброе утро",
-  "GoodAfternoon": "Добрый день",
-  "GoodEvening": "Добрый вечер"
+  "GoodMorning": "Доброе утро, {{name}}!",
+  "GoodAfternoon": "Добрый день, {{name}}!",
+  "GoodEvening": "Добрый вечер, {{name}}!"
 }

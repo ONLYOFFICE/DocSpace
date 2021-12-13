@@ -23,14 +23,10 @@ const ModuleTile = (props) => {
         <div className="sub-title-image-container">
           <img className="sub-title-image" src={imageUrl} />
         </div>
-        <div>
-          <div>
-            <Text fontSize="18px" className="sub-title-text">
-              {title}
-              {shouldRenderIcon && <StyledExternalLinkIcon color="#333333" />}
-            </Text>
-          </div>
-        </div>
+        <Text fontSize="18px" className="sub-title-text">
+          {title}
+          {shouldRenderIcon && <StyledExternalLinkIcon color="#333333" />}
+        </Text>
       </div>
     </StyledModuleTile>
   );
