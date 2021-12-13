@@ -740,10 +740,10 @@ const Dark = {
     fontSize: "13px",
     lineHeight: "1.5",
 
-    disabledColor: grayLight,
+    disabledColor: "#474747",
 
-    focusBorderColor: blueMain,
-    focusErrorBorderColor: red,
+    focusBorderColor: "#eeeeee",
+    focusErrorBorderColor: "#E06451",
     focusOutline: "none",
 
     scrollWidth: "100%",
