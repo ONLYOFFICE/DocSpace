@@ -275,15 +275,15 @@ const Dark = {
   groupButton: {
     fontSize: "14px",
     lineHeight: "19px",
-    color: black,
-    disableColor: gray,
+    color: "#858585",
+    disableColor: "#474747",
     float: "left",
     height: "19px",
     overflow: "hidden",
     padding: "0px",
 
     separator: {
-      border: `1px solid ${globalColors.grayLightMid}`,
+      border: `1px solid #474747`,
       width: "0px",
       height: "24px",
       margin: "16px 12px 0 12px",
@@ -297,7 +297,7 @@ const Dark = {
 
   groupButtonsMenu: {
     top: "0",
-    background: white,
+    background: "#333333",
     boxShadow: " 0px 10px 18px -8px rgba(0, 0, 0, 0.100306)",
     height: "48px",
     tabletHeight: "56px",
