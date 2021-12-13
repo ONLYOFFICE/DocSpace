@@ -349,7 +349,6 @@ SelectFileDialogBody.propTypes = {
     "common",
     "third-party",
     "exceptSortedByTags",
-    "exceptTrashFolder",
     "exceptPrivacyTrashFolders",
   ]),
   folderId: PropTypes.string,

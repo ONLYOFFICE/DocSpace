@@ -97,7 +97,7 @@ namespace ASC.Files.Core.Data
 
             services.TryAdd<ILinkDao, LinkDao>();
 
-            // AddSharpBoxDaoSelectorService
+            services.TryAdd<EditHistory>();
         }
     }
 }
