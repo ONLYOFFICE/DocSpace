@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
+
+using UtfUnknown;
 
 namespace Frontend.Translations.Tests
 {
@@ -18,7 +21,7 @@ namespace Frontend.Translations.Tests
         {
             get
             {
-                return "..\\..\\..\\..\\..\\..\\";
+                return Path.GetFullPath( "..\\..\\..\\..\\..\\..\\");
             }
         }
 
@@ -30,11 +33,13 @@ namespace Frontend.Translations.Tests
         public List<KeyValuePair<string, string>> NotTranslatedToasts { get; set; }
         public List<LanguageItem> CommonTranslations { get; set; }
         public List<ParseJsonError> ParseJsonErrors { get; set; }
+        public List<JsonEncodingError> WrongEncodingJsonErrors { get; set; }
 
         [OneTimeSetUp]
         public void Setup()
         {
             ParseJsonErrors = new List<ParseJsonError>();
+            WrongEncodingJsonErrors = new List<JsonEncodingError>();
 
             var packageJsonPath = Path.Combine(BasePath, @"package.json");
 
@@ -53,9 +58,9 @@ namespace Frontend.Translations.Tests
 
             var translationFiles = from wsPath in Workspaces
                                    let clientDir = Path.Combine(BasePath, wsPath)
-                                   from file in Directory.EnumerateFiles(clientDir, "*.json", SearchOption.AllDirectories)
-                                   where file.Contains("public\\locales\\")
-                                   select file;
+                                   from filePath in Directory.EnumerateFiles(clientDir, "*.json", SearchOption.AllDirectories)
+                                   where filePath.Contains("public\\locales\\")
+                                   select Path.GetFullPath(filePath);
 
             TranslationFiles = new List<TranslationFile>();
 
@@ -63,6 +68,14 @@ namespace Frontend.Translations.Tests
             {
                 try
                 {
+                    var result = CharsetDetector.DetectFromFile(path);
+
+                    if(result.Detected.EncodingName != "utf-8"
+                    && result.Detected.EncodingName != "ascii")
+                    {
+                        WrongEncodingJsonErrors.Add(
+                            new JsonEncodingError(path, result.Detected));
+                    }
 
                     var jsonTranslation = JObject.Parse(File.ReadAllText(path));
 
@@ -906,6 +919,73 @@ namespace Frontend.Translations.Tests
             }
 
             Assert.AreEqual(0, errorsCount, message);
+        }
+
+        [Test]
+        public void TranslationsEncodingTest()
+        {
+            /*//Convert to UTF-8
+            foreach (var issue in WrongEncodingJsonErrors)
+            {
+                if (issue.DetectionDetail.Encoding == null)
+                    continue;
+
+                ConvertFileEncoding(issue.Path, issue.Path, issue.DetectionDetail.Encoding, Encoding.UTF8);
+            }*/
+
+            var message = $"Next files have encoding issues:\r\n\r\n";
+
+            Assert.AreEqual(0, WrongEncodingJsonErrors.Count,
+               message + string.Join("\r\n", WrongEncodingJsonErrors
+                    .Select(e => $"File path = '{e.Path}' potentially wrong file encoding: {e.DetectionDetail.EncodingName}")));
+        }
+
+        /// <summary>
+        /// Converts a file from one encoding to another.
+        /// </summary>
+        /// <param name=”sourcePath”>the file to convert</param>
+        /// <param name=”destPath”>the destination for the converted file</param>
+        /// <param name=”sourceEncoding”>the original file encoding</param>
+        /// <param name=”destEncoding”>the encoding to which the contents should be converted</param>
+        public static void ConvertFileEncoding(string sourcePath, string destPath,
+                                               Encoding sourceEncoding, Encoding destEncoding)
+        {
+            // If the destination’s parent doesn’t exist, create it.
+            var parent = Path.GetDirectoryName(Path.GetFullPath(destPath));
+            if (!Directory.Exists(parent))
+            {
+                Directory.CreateDirectory(parent);
+            }
+            // If the source and destination encodings are the same, just copy the file.
+            if (sourceEncoding == destEncoding)
+            {
+                File.Copy(sourcePath, destPath, true);
+                return;
+            }
+            // Convert the file.
+            string tempName = null;
+            try
+            {
+                tempName = Path.GetTempFileName();
+                using (StreamReader sr = new StreamReader(sourcePath, sourceEncoding, false))
+                {
+                    using (StreamWriter sw = new StreamWriter(tempName, false, destEncoding))
+                    {
+                        int charsRead;
+                        char[] buffer = new char[128 * 1024];
+                        while ((charsRead = sr.ReadBlock(buffer, 0, buffer.Length)) > 0)
+                        {
+                            sw.Write(buffer, 0, charsRead);
+                        }
+                    }
+                }
+                File.Delete(destPath);
+                File.Move(tempName, destPath);
+            }
+            finally
+            {
+                File.Delete(tempName);
+            }
         }
 
         /*[Test]
