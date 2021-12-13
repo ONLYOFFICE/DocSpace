@@ -313,8 +313,8 @@ const Dark = {
       width: "20px",
       height: "20px",
       padding: "8px",
-      hoverBackgroundColor: cyanBlueDarkShade,
-      backgroundColor: grayMid,
+      hoverBackgroundColor: "#eeeeee",
+      backgroundColor: "#858585",
     },
   },
 
