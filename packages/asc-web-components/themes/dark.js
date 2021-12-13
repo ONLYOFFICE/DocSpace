@@ -489,6 +489,8 @@ const Dark = {
     padding: "1px",
     lineHeight: "0.8",
     overflow: "hidden",
+    color: "#333333",
+    backgroundColor: "#F59931",
   },
 
   scrollbar: {

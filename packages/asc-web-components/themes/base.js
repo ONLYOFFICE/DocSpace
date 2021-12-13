@@ -490,6 +490,8 @@ const Base = {
     padding: "1px",
     lineHeight: "0.8",
     overflow: "hidden",
+    color: "#FFFFFF",
+    backgroundColor: "#ED7309",
   },
 
   scrollbar: {

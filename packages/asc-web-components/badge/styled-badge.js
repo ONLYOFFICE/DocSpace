@@ -1,4 +1,7 @@
 import styled from "styled-components";
+
+import Text from "../text";
+
 import Base from "../themes/base";
 
 const StyledBadge = styled.div`
@@ -13,13 +16,19 @@ const StyledBadge = styled.div`
   overflow: ${(props) => props.theme.badge.overflow};
 
   :hover {
-    border-color: ${(props) => props.backgroundColor};
+    border-color: ${(props) =>
+      props.backgroundColor
+        ? props.backgroundColor
+        : props.theme.badge.backgroundColor};
   }
 `;
 StyledBadge.defaultProps = { theme: Base };
 
 const StyledInner = styled.div`
-  background-color: ${(props) => props.backgroundColor};
+  background-color: ${(props) =>
+    props.backgroundColor
+      ? props.backgroundColor
+      : props.theme.badge.backgroundColor};
   border-radius: ${(props) => props.borderRadius};
   padding: ${(props) => props.padding};
   max-width: ${(props) => props.maxWidth};
@@ -28,4 +37,12 @@ const StyledInner = styled.div`
   line-height: 1.5;
 `;
 
-export { StyledBadge, StyledInner };
+StyledInner.defaultProps = { theme: Base };
+
+const StyledText = styled(Text)`
+  color: ${(props) => (props.color ? props.color : props.theme.badge.color)};
+`;
+
+StyledText.defaultProps = { theme: Base };
+
+export { StyledBadge, StyledInner, StyledText };

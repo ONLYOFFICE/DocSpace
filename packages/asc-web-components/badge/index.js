@@ -1,8 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import Text from "../text";
-import { StyledBadge, StyledInner } from "./styled-badge";
+import { StyledBadge, StyledInner, StyledText } from "./styled-badge";
 
 const Badge = (props) => {
   //console.log("Badge render");
@@ -32,9 +31,9 @@ const Badge = (props) => {
         padding={padding}
         maxWidth={maxWidth}
       >
-        <Text fontWeight={fontWeight} color={color} fontSize={fontSize}>
+        <StyledText fontWeight={fontWeight} color={color} fontSize={fontSize}>
           {props.label}
-        </Text>
+        </StyledText>
       </StyledInner>
     </StyledBadge>
   );
@@ -69,8 +68,6 @@ Badge.propTypes = {
 
 Badge.defaultProps = {
   label: 0,
-  backgroundColor: "#ED7309",
-  color: "#FFFFFF",
   fontSize: "11px",
   fontWeight: 800,
   borderRadius: "11px",
