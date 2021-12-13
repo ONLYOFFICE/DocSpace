@@ -399,13 +399,13 @@ const Dark = {
   // },
 
   viewSelector: {
-    fillColor: white,
-    checkedFillColor: gray,
+    fillColor: "#333333",
+    checkedFillColor: "#858585",
     fillColorDisabled: grayLight,
     disabledFillColor: grayLightMid,
     disabledFillColorInner: grayMid,
-    hoverBorderColor: gray,
-    borderColor: grayMid,
+    hoverBorderColor: "#eeeeee",
+    borderColor: "#474747",
   },
 
   radioButton: {
