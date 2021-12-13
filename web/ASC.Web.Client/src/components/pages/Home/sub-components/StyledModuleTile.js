@@ -5,6 +5,7 @@ const StyledModuleTile = styled.div`
   width: auto;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   user-select: none;
+  margin-top: 9px;
 
   &:hover {
     .selectable {
@@ -28,6 +29,7 @@ const StyledModuleTile = styled.div`
     .sub-title-text {
       text-align: center;
       font-weight: 600;
+      margin-top: 5px;
     }
 
     ${isMobileOnly &&

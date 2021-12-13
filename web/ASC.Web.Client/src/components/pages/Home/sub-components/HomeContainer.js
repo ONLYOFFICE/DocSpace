@@ -3,7 +3,7 @@ import { isMobileOnly, isMobile } from "react-device-detect";
 
 const HomeContainer = styled.div`
   margin: ${isMobileOnly ? "50px" : "42px"} auto;
-  max-width: 1040px;
+  max-width: 1000px;
   width: 100%;
   box-sizing: border-box;
   display: flex;
@@ -16,7 +16,7 @@ const HomeContainer = styled.div`
 
   .greeting {
     font-weight: bold;
-    margin-bottom: 40px;
+    margin-bottom: 27px;
     text-align: center;
   }
 
@@ -28,7 +28,7 @@ const HomeContainer = styled.div`
     .home-modules {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      grid-gap: 40px ${isMobileOnly ? "32px" : "40px"};
+      grid-gap: 26px ${isMobileOnly ? "31px" : "45px"};
 
       ${isMobileOnly &&
       css`
