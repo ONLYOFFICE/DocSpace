@@ -1542,7 +1542,7 @@ const Dark = {
     bigMaxWidth: "325px",
 
     hover: {
-      backgroundColor: grayLightMid,
+      backgroundColor: "#292929",
       borderRadius: "16px",
       cursor: "pointer",
     },
@@ -1558,8 +1558,8 @@ const Dark = {
     },
 
     weekdays: {
-      color: black,
-      disabledColor: gray,
+      color: "#5c5c5c",
+      disabledColor: "#5c5c5c",
       baseWidth: "272px",
       bigWidth: "295px",
       marginBottom: "-5px",
@@ -1569,17 +1569,17 @@ const Dark = {
       baseWidth: "267px",
       bigWidth: "295px",
       color: black,
-      weekendColor: gray,
-      disabledColor: grayLightMid,
-      neighboringHoverColor: black,
-      neighboringColor: grayLightMid,
+      weekendColor: "#EEEEEE",
+      disabledColor: "#474747",
+      neighboringHoverColor: "#eeeeee",
+      neighboringColor: "#5c5c5c",
     },
 
     selectedDay: {
-      backgroundColor: orangeMain,
+      backgroundColor: "#F59931",
       borderRadius: "16px",
       cursor: "pointer",
-      color: white,
+      color: "#333333",
     },
 
     comboBox: {
