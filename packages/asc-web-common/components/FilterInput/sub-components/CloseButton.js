@@ -1,7 +1,7 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 
-import IconButton from "@appserver/components/icon-button";
+import IconButton from '@appserver/components/icon-button';
 
 const CloseButton = (props) => {
   //console.log("CloseButton render");
@@ -10,8 +10,6 @@ const CloseButton = (props) => {
     <div className={`styled-close-button ${className}`}>
       <IconButton
         className="close-button"
-        color={"#A3A9AE"}
-        clickColor={"#A3A9AE"}
         size={10}
         iconName="/static/images/cross.react.svg"
         isFill={true}

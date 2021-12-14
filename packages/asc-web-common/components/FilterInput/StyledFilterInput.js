@@ -1,11 +1,12 @@
-import styled, { css } from "styled-components";
+import Base from '@appserver/components/themes/base';
+import styled, { css } from 'styled-components';
 
 const StyledFilterInput = styled.div`
   width: 100%;
   min-width: 255px;
   display: flex;
   &:after {
-    content: " ";
+    content: ' ';
     display: block;
     height: 0;
     clear: both;
@@ -26,24 +27,24 @@ const StyledFilterInput = styled.div`
 
   .styled-filter-block {
     display: flex;
-    .filter-button {
+    #filter-button {
       svg {
         height: 25px;
         path:not(:first-child) {
-          stroke: #a3a9ae;
+          stroke: ${(props) => props.theme.filterInput.filterButton.stroke};
         }
       }
 
-      stroke: #a3a9ae;
+      stroke: ${(props) => props.theme.filterInput.filterButton.stroke};
       div:active {
         svg path:first-child {
-          fill: #eceef1;
-          stroke: #a3a9ae;
+          fill: ${(props) => props.theme.filterInput.filterButton.fill};
+          stroke: ${(props) => props.theme.filterInput.filterButton.stroke};
         }
       }
       div:first-child:hover {
         svg path:not(:first-child) {
-          stroke: #a3a9ae;
+          stroke: ${(props) => props.theme.filterInput.filterButton.stroke};
         }
       }
     }
@@ -74,7 +75,7 @@ const StyledFilterInput = styled.div`
       max-width: 220px;
     }
     .combo-button-label {
-      color: #333;
+      color: ${(props) => props.theme.filterInput.comboButtonLabelColor};
     }
   }
 
@@ -91,7 +92,7 @@ const StyledFilterInput = styled.div`
 
     .hide-filter-drop-down {
       .combo-button-label {
-        ${(props) => (props.isAllItemsHide ? "margin-top: 2px;" : null)}
+        ${(props) => (props.isAllItemsHide ? 'margin-top: 2px;' : null)}
       }
     }
   }
@@ -123,7 +124,7 @@ const StyledFilterInput = styled.div`
       `}
 
     .combo-button-label {
-      color: #a3a9ae;
+      color: ${(props) => props.theme.filterInput.comboButtonLabelColorTwo};
     }
   }
 
@@ -139,24 +140,35 @@ const StyledFilterInput = styled.div`
   }
 `;
 
+StyledFilterInput.defaultProps = { theme: Base };
+
 export const StyledViewSelector = styled.div`
-  border: 1px solid ${(props) => (props.isDisabled ? "#ECEEF1" : "#D0D5DA")};
+  border: 1px solid
+    ${(props) =>
+      props.isDisabled
+        ? props.theme.filterInput.viewSelector.disabledBorder
+        : props.theme.filterInput.viewSelector.border};
   border-radius: 3px;
   padding: 7px;
-  ${(props) => props.isDisabled && "background-color: #F8F9F9;"}
+  ${(props) =>
+    props.isDisabled &&
+    `background-color: ${props.theme.filterInput.viewSelector.disabledBackground}`}
 
   svg {
     pointer-events: none;
   }
 
   &.active {
-    background-color: #a3a9ae;
-    border-color: #a3a9ae;
+    background-color: ${(props) => props.theme.filterInput.viewSelector.activeBackground};
+    border-color: ${(props) => props.theme.filterInput.viewSelector.activeBorder};
   }
 
   &:hover {
-    ${(props) => !props.isDisabled && "background-color: #A3A9AE;"}
-    ${(props) => !props.isDisabled && "border-color: #A3A9AE;"}
+    ${(props) =>
+      !props.isDisabled &&
+      `background-color: ${props.theme.filterInput.viewSelector.activeBackground};`}
+    ${(props) =>
+      !props.isDisabled && `border-color: ${props.theme.filterInput.viewSelector.activeBorder};`}
   }
 
   &:first-child {
@@ -172,68 +184,73 @@ export const StyledViewSelector = styled.div`
   }
 `;
 
+StyledViewSelector.defaultProps = { theme: Base };
+
 export const StyledFilterItem = styled.div`
-  display: ${(props) => (props.block ? "flex" : "inline-block")};
-  margin-bottom: ${(props) => (props.block ? "8px" : "0")};
+  display: ${(props) => (props.block ? 'flex' : 'inline-block')};
+  margin-bottom: ${(props) => (props.block ? '8px' : '0')};
   position: relative;
   height: 25px;
   margin-right: 2px;
-  border: 1px solid #eceef1;
+  border: ${(props) => props.theme.filterInput.filterItem.border};
   border-radius: 3px;
-  background-color: #f8f9f9;
+  background-color: ${(props) => props.theme.filterInput.filterItem.backgroundColor};
   padding-right: 22px;
 
   font-weight: 600;
   font-size: 13px;
   line-height: 15px;
   box-sizing: border-box;
-  color: #555f65;
+  color: ${(props) => props.theme.filterInput.filterItem.color};
 
   &:last-child {
     margin-bottom: 0;
   }
 `;
 
+StyledFilterItem.defaultProps = { theme: Base };
+
 export const StyledFilterItemContent = styled.div`
   display: flex;
   padding: 4px 4px 2px 7px;
   width: max-content;
   user-select: none;
-  color: #333;
+  color: ${(props) => props.theme.filterInput.content.color};
   ${(props) =>
     props.isOpen &&
     !props.isDisabled &&
     css`
-      background: #eceef1;
+      background: ${props.theme.filterInput.content.background};
     `}
   ${(props) =>
     !props.isDisabled &&
     css`
       &:active {
-        background: #eceef1;
+        background: ${props.theme.filterInput.content.background};
       }
     `}
 `;
 
+StyledFilterItemContent.defaultProps = { theme: Base };
+
 export const StyledCloseButtonBlock = styled.div`
   display: flex;
-  cursor: ${(props) =>
-    props.isDisabled || !props.isClickable ? "default" : "pointer"};
+  cursor: ${(props) => (props.isDisabled || !props.isClickable ? 'default' : 'pointer')};
   align-items: center;
   position: absolute;
   height: 100%;
   width: 25px;
-  border-left: 1px solid #eceef1;
+  border-left: ${(props) => props.theme.filterInput.closeButton.borderLeft};
   right: 0;
   top: 0;
-  background-color: #f8f9f9;
+  background-color: ${(props) => props.theme.filterInput.closeButton.background};
   ${(props) =>
     !props.isDisabled &&
     css`
       &:active {
-        background: #eceef1;
+        background: ${props.theme.filterInput.closeButton.activeBackground};
         svg path:first-child {
-          fill: #a3a9ae;
+          fill: ${props.theme.filterInput.closeButton.activeFill};
         }
       }
 
@@ -241,7 +258,7 @@ export const StyledCloseButtonBlock = styled.div`
         .styled-close-button {
           svg {
             path {
-              fill: #555f65;
+              fill: ${props.theme.filterInput.closeButton.hoverFill};
             }
           }
         }
@@ -249,12 +266,14 @@ export const StyledCloseButtonBlock = styled.div`
     `}
 `;
 
+StyledCloseButtonBlock.defaultProps = { theme: Base };
+
 export const Caret = styled.div`
   width: 7px;
   position: absolute;
   right: 6px;
-  transform: ${(props) => (props.isOpen ? "rotate(180deg)" : "rotate(0)")};
-  top: ${(props) => (props.isOpen ? "2px" : "0")};
+  transform: ${(props) => (props.isOpen ? 'rotate(180deg)' : 'rotate(0)')};
+  top: ${(props) => (props.isOpen ? '2px' : '0')};
 `;
 
 export const StyledHideFilterButton = styled.div`
@@ -265,25 +284,33 @@ export const StyledHideFilterButton = styled.div`
   font-weight: 600;
   font-size: 16px;
   height: 25px;
-  border: 1px solid #eceef1;
+  border: ${(props) => props.theme.filterInput.hideButton.border};
   border-radius: 3px;
-  background-color: #f8f9f9;
+  background-color: ${(props) => props.theme.filterInput.hideButton.background};
   padding: 0 20px 0 9px;
   margin-right: 2px;
-  cursor: ${(props) => (props.isDisabled ? "default" : "pointer")};
+  cursor: ${(props) => (props.isDisabled ? 'default' : 'pointer')};
   font-family: Open Sans;
   font-style: normal;
 
   :hover {
-    border-color: ${(props) => (props.isDisabled ? "#ECEEF1" : "#A3A9AE")};
+    border-color: ${(props) =>
+      props.isDisabled
+        ? props.theme.filterInput.hideButton.disabledHoverBorder
+        : props.theme.filterInput.hideButton.hoverBorder};
   }
   :active {
-    background-color: ${(props) => (props.isDisabled ? "#F8F9F9" : "#ECEEF1")};
+    background-color: ${(props) =>
+      props.isDisabled
+        ? props.theme.filterInput.hideButton.disabledActiveBackground
+        : props.theme.filterInput.hideButton.activeBackground};
   }
 `;
 
+StyledHideFilterButton.defaultProps = { theme: Base };
+
 export const StyledIconButton = styled.div`
-  transform: ${(state) => (!state.sortDirection ? "scale(1, -1)" : "scale(1)")};
+  transform: ${(state) => (!state.sortDirection ? 'scale(1, -1)' : 'scale(1)')};
 `;
 
 export const StyledIconWrapper = styled.div`

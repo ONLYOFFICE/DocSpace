@@ -1,17 +1,17 @@
-import React from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
+import React from 'react';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
 
-import DropDown from "@appserver/components/drop-down";
+import DropDown from '@appserver/components/drop-down';
 
-import ExpanderDownIcon from "../../../../../public/images/expander-down.react.svg";
-import { Caret, StyledHideFilterButton } from "../StyledFilterInput";
-import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import ExpanderDownIcon from '../../../../../public/images/expander-down.react.svg';
+import { Caret, StyledHideFilterButton } from '../StyledFilterInput';
+import commonIconsStyles from '@appserver/components/utils/common-icons-style';
 
 const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
   ${commonIconsStyles}
   path {
-    fill: "#A3A9AE";
+    fill: '#A3A9AE';
   }
 `;
 class HideFilter extends React.Component {
@@ -50,8 +50,7 @@ class HideFilter extends React.Component {
         className="styled-hide-filter"
         onClick={this.onClick.bind(this, !popoverOpen)}
         ref={this.ref}
-        id="styled-hide-filter"
-      >
+        id="styled-hide-filter">
         <StyledHideFilterButton id="PopoverLegacy" isDisabled={isDisabled}>
           {count}
           <Caret isOpen={popoverOpen}>
@@ -64,8 +63,7 @@ class HideFilter extends React.Component {
             className="drop-down hide-filter-drop-down"
             clickOutsideAction={this.handleClickOutside}
             manualY="8px"
-            open={popoverOpen}
-          >
+            open={popoverOpen}>
             {children}
           </DropDown>
         </div>

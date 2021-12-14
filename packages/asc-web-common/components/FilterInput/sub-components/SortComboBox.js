@@ -1,14 +1,14 @@
-import React from "react";
-import equal from "fast-deep-equal/react";
-import PropTypes from "prop-types";
-import { isMobileOnly } from "react-device-detect";
+import React from 'react';
+import equal from 'fast-deep-equal/react';
+import PropTypes from 'prop-types';
+import { isMobileOnly } from 'react-device-detect';
 
-import ComboBox from "@appserver/components/combobox";
-import IconButton from "@appserver/components/icon-button";
-import DropDownItem from "@appserver/components/drop-down-item";
-import RadioButtonGroup from "@appserver/components/radio-button-group";
+import ComboBox from '@appserver/components/combobox';
+import IconButton from '@appserver/components/icon-button';
+import DropDownItem from '@appserver/components/drop-down-item';
+import RadioButtonGroup from '@appserver/components/radio-button-group';
 
-import { StyledIconButton } from "../StyledFilterInput";
+import { StyledIconButton } from '../StyledFilterInput';
 
 class SortComboBox extends React.Component {
   constructor(props) {
@@ -26,7 +26,7 @@ class SortComboBox extends React.Component {
   onButtonClick = () => {
     const { onChangeSortDirection } = this.props;
     const { sortDirection } = this.state;
-    typeof onChangeSortDirection === "function" &&
+    typeof onChangeSortDirection === 'function' &&
       onChangeSortDirection(+(sortDirection === 0 ? 1 : 0));
     this.setState({
       sortDirection: sortDirection === 0 ? 1 : 0,
@@ -35,21 +35,20 @@ class SortComboBox extends React.Component {
 
   onChangeSortId = (e) => {
     const { onChangeSortId } = this.props;
-    typeof onChangeSortId === "function" && onChangeSortId(e.target.value);
+    typeof onChangeSortId === 'function' && onChangeSortId(e.target.value);
     this.setState({ opened: !this.state.opened });
   };
 
   onChangeView = (e) => {
     const { onChangeView } = this.props;
-    typeof onChangeView === "function" && onChangeView(e.target.value);
+    typeof onChangeView === 'function' && onChangeView(e.target.value);
   };
 
   onChangeSortDirection = (e) => {
     const sortDirection = +e.target.value;
     const { onChangeSortDirection } = this.props;
     this.setState({ sortDirection, opened: !this.state.opened });
-    typeof onChangeSortDirection === "function" &&
-      onChangeSortDirection(sortDirection);
+    typeof onChangeSortDirection === 'function' && onChangeSortDirection(sortDirection);
   };
   shouldComponentUpdate(nextProps, nextState) {
     //TODO
@@ -93,8 +92,8 @@ class SortComboBox extends React.Component {
     });
 
     let sortDirectionArray = [
-      { value: "0", label: directionAscLabel },
-      { value: "1", label: directionDescLabel },
+      { value: '0', label: directionAscLabel },
+      { value: '1', label: directionDescLabel },
     ];
 
     const advancedOptions = (
@@ -103,7 +102,7 @@ class SortComboBox extends React.Component {
           <RadioButtonGroup
             fontWeight={600}
             isDisabled={isDisabled}
-            name={"direction"}
+            name={'direction'}
             onClick={this.onChangeSortDirection}
             options={sortDirectionArray}
             orientation="vertical"
@@ -116,7 +115,7 @@ class SortComboBox extends React.Component {
           <RadioButtonGroup
             fontWeight={600}
             isDisabled={isDisabled}
-            name={"sort"}
+            name={'sort'}
             onClick={this.onChangeSortId}
             options={sortArray}
             orientation="vertical"
@@ -131,7 +130,7 @@ class SortComboBox extends React.Component {
               <RadioButtonGroup
                 fontWeight={600}
                 isDisabled={isDisabled}
-                name={"view"}
+                name={'view'}
                 onClick={this.onChangeView}
                 options={viewSettings}
                 orientation="vertical"
@@ -155,11 +154,9 @@ class SortComboBox extends React.Component {
         ref={this.combobox}
         scaled={true}
         selectedOption={selectedOption}
-        size="content"
-      >
+        size="content">
         <StyledIconButton sortDirection={!!sortDirection}>
           <IconButton
-            color={"#A3A9AE"}
             iconName="/static/images/z-a.sorting.react.svg"
             isDisabled={isDisabled}
             isFill={true}

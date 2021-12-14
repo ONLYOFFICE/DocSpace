@@ -1737,6 +1737,58 @@ const Dark = {
     iconColor: "#a9a9a9",
     expanderColor: "dimgray",
   },
+
+  filterInput: {
+    filterButton: {
+      stroke: "#000000",
+      fill: "#333333",
+    },
+
+    comboButtonLabelColor: "#eeeeee",
+    comboButtonLabelColorTwo: "#a9a9a9",
+
+    viewSelector: {
+      border: "#474747",
+      disabledBorder: "#474747",
+
+      disabledBackground: "#292929",
+
+      activeBackground: "#a3a9ae",
+      activeBorder: "#a3a9ae",
+    },
+
+    filterItem: {
+      border: "1px solid #474747",
+      backgroundColor: "#333333",
+      color: "#eeeeee",
+    },
+
+    content: {
+      color: "#eeeeee",
+      background: "#292929",
+    },
+
+    closeButton: {
+      borderLeft: "1px solid #474747",
+      background: "#292929",
+
+      activeBackground: "#333333",
+      activeFill: "#eeeeee",
+
+      hoverFill: "#eeeeee",
+    },
+
+    hideButton: {
+      border: "1px solid #474747",
+      background: "#333333",
+
+      hoverBorder: "#858585",
+      disabledHoverBorder: "#858585",
+
+      activeBackground: "#292929",
+      disabledActiveBackground: "#292929",
+    },
+  },
 };
 
 export default Dark;

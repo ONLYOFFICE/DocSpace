@@ -1737,6 +1737,58 @@ const Base = {
     iconColor: "#657077",
     expanderColor: "dimgray",
   },
+
+  filterInput: {
+    filterButton: {
+      stroke: "#a3a9ae",
+      fill: "#eceef1",
+    },
+
+    comboButtonLabelColor: "#333333",
+    comboButtonLabelColorTwo: "#a3a9ae",
+
+    viewSelector: {
+      border: "#D0D5DA",
+      disabledBorder: "#ECEEF1",
+
+      disabledBackground: "#F8F9F9",
+
+      activeBackground: "#a3a9ae",
+      activeBorder: "#a3a9ae",
+    },
+
+    filterItem: {
+      border: "1px solid #eceef1",
+      backgroundColor: "#f8f9f9",
+      color: "#555f65",
+    },
+
+    content: {
+      color: "#333333",
+      background: "#eceef1",
+    },
+
+    closeButton: {
+      borderLeft: "1px solid #eceef1",
+      background: "#f8f9f9",
+
+      activeBackground: "#eceef1",
+      activeFill: "#a3a9ae",
+
+      hoverFill: "#555f65",
+    },
+
+    hideButton: {
+      border: "1px solid #eceef1",
+      background: "#f8f9f9",
+
+      hoverBorder: "#A3A9AE",
+      disabledHoverBorder: "#ECEEF1",
+
+      activeBackground: "#ECEEF1",
+      disabledActiveBackground: "#F8F9F9",
+    },
+  },
 };
 
 export default Base;

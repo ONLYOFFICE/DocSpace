@@ -87,7 +87,6 @@ class InputBlock extends React.Component {
         className={className}
         style={style}
         color={iconColor}
-        hoverColor={hoverColor}
       >
         <div className="prepend">
           <StyledChildrenBlock className="prepend-children">
