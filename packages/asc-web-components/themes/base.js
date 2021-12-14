@@ -332,7 +332,8 @@ const Base = {
     height: " 34px",
     width: "34px",
     padding: "9px",
-    color: black,
+    color: "#979797",
+    hoverColor: black,
   },
 
   saveCancelButtons: {

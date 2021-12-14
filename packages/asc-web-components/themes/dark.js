@@ -320,16 +320,17 @@ const Dark = {
 
   iconButton: { color: "#858585", hoverColor: "#eeeeee" },
   selectorAddButton: {
-    background: grayLight,
-    activeBackground: grayLightMid,
+    background: "#292929",
+    activeBackground: "#333333",
 
-    border: `1px solid ${globalColors.grayLightMid}`,
+    border: `1px solid #333333`,
     boxSizing: "border-box",
     borderRadius: "3px",
     height: " 34px",
     width: "34px",
     padding: "9px",
-    color: black,
+    color: "#858585",
+    hoverColor: "#eeeeee",
   },
 
   saveCancelButtons: {
