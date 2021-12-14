@@ -220,9 +220,6 @@ const TreeNodeMenu = styled(TreeNode)`
 
     svg {
       height: 16px;
-      path {
-        stroke: ${(props) => props.theme.treeNode.switcherColor};
-      }
     }
   }
   span.rc-tree-iconEle {
