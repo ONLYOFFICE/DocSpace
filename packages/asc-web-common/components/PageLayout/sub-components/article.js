@@ -1,9 +1,10 @@
-import React from "react";
-import styled, { css } from "styled-components";
-import PropTypes from "prop-types";
-import { Resizable } from "re-resizable";
-import { isMobile } from "react-device-detect";
-import { tablet } from "@appserver/components/utils/device";
+import React from 'react';
+import styled, { css } from 'styled-components';
+import PropTypes from 'prop-types';
+import { Resizable } from 're-resizable';
+import { isMobile } from 'react-device-detect';
+import { tablet } from '@appserver/components/utils/device';
+import Base from '@appserver/components/themes/base';
 
 const StyledArticle = styled.article`
   @media ${tablet} {
@@ -18,11 +19,10 @@ const StyledArticle = styled.article`
 
   .resizable-block {
     padding: 0 20px;
-    background: #f8f9f9;
+    background: ${(props) => props.theme.article.background};
     min-width: 256px;
     height: 100% !important;
-    max-width: ${(props) =>
-      props.firstLoad ? "256px" : "calc(100vw - 368px)"};
+    max-width: ${(props) => (props.firstLoad ? '256px' : 'calc(100vw - 368px)')};
     box-sizing: border-box;
     overflow: hidden auto;
     display: flex;
@@ -38,7 +38,7 @@ const StyledArticle = styled.article`
       height: calc(100% - 48px) !important;
       width: 240px !important;
       @media ${tablet} {
-        margin-top: ${(props) => (props.pinned ? "48px;" : "0;")};
+        margin-top: ${(props) => (props.pinned ? '48px;' : '0;')};
       }
     `}
     @media ${tablet} {
@@ -57,7 +57,7 @@ const StyledArticle = styled.article`
               top: 0;
               left: 0;
               min-width: 240px;
-              background: #f8f9f9;
+              background: ${(props) => props.theme.article.background};
               z-index: -1;
             }
           `
@@ -86,6 +86,8 @@ const StyledArticle = styled.article`
   }
 `;
 
+StyledArticle.defaultProps = { theme: Base };
+
 class Article extends React.Component {
   render() {
     //console.log("PageLayout Article render", this.props);
@@ -102,8 +104,7 @@ class Article extends React.Component {
         <Resizable
           enable={enable}
           className="resizable-block"
-          handleWrapperClass="resizable-border not-selectable"
-        >
+          handleWrapperClass="resizable-border not-selectable">
           {children}
           <div className="increaseHeight"></div>
         </Resizable>

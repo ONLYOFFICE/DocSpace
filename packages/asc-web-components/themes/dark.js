@@ -1167,8 +1167,8 @@ const Dark = {
     },
 
     selected: {
-      background: lightGrayishStrongBlue,
-      hoverBackgroundColor: lightGrayishStrongBlue,
+      background: "#333333",
+      hoverBackgroundColor: "#333333",
       borderRadius: "3px",
     },
 
@@ -1726,6 +1726,11 @@ const Dark = {
   menuContainer: {
     background: "linear-gradient(200.71deg, #333333 0%, #1f1f1f 100%)",
     color: "#FFFFFF",
+  },
+
+  article: {
+    background: "#292929",
+    pinBorderColor: "#474747",
   },
 
   peopleArticleBody: {

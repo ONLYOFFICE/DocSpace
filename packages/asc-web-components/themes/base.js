@@ -1728,6 +1728,11 @@ const Base = {
     color: "#FFFFFF",
   },
 
+  article: {
+    background: "#f8f9f9",
+    pinBorderColor: "#eceef1",
+  },
+
   peopleArticleBody: {
     iconColor: "#657077",
     expanderColor: "dimgray",
