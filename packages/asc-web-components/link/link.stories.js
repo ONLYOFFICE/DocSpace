@@ -34,7 +34,6 @@ Default.args = {
   href: "http://github.com",
   label: "Simple label",
   type: "page",
-  color: "#333333",
   fontSize: "13px",
   fontWeight: "400",
   isBold: false,
