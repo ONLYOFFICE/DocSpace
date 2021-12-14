@@ -248,7 +248,7 @@ const Base = {
 
     color: "rgba(0, 0, 0, 0.54)",
     disableColor: "rgba(0, 0, 0, 0.4)",
-
+    border: "none",
     text: {
       width: "100%",
       height: "16px",

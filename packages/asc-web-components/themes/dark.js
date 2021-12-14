@@ -236,19 +236,18 @@ const Dark = {
     outline: "none",
     width: "100%",
 
-    background: white,
+    background: "#333333",
     disableBackgroundColor: "rgba(0, 0, 0, 0.08)",
-    hoverBackground: white,
-    activeBackground: grayMaxLight,
+    hoverBackground: "#292929",
+    activeBackground: "#292929",
 
-    boxShadow:
-      "0px 1px 1px rgba(0, 0, 0, 0.24),0px 0px 1px rgba(0, 0, 0, 0.12)",
-    hoverBoxShadow:
-      "0px 2px 2px rgba(0, 0, 0, 0.24),0px 0px 2px rgba(0, 0, 0, 0.12)",
+    boxShadow: "none",
+    hoverBoxShadow: "none",
 
     color: "rgba(0, 0, 0, 0.54)",
     disableColor: "rgba(0, 0, 0, 0.4)",
 
+    border: "1px solid #474747",
     text: {
       width: "100%",
       height: "16px",
@@ -260,7 +259,7 @@ const Dark = {
       overflow: "hidden",
       textOverflow: "ellipsis",
       whiteSpace: "nowrap",
-      color: "#757575",
+      color: "#eeeeee",
     },
 
     svg: {
