@@ -1,4 +1,4 @@
-{
-  "DeleteThirdPartyAlert": "Odstranit {{service}} z modulu 'Dokumenty'? Tento krok nijak neovlivní váš úèet {{account}}.",
-  "SuccessDeleteThirdParty": "Sluba {{service}} tøetí strany je odstranìna"
+ï»¿{
+  "DeleteThirdPartyAlert": "Odstranit {{service}} z modulu 'Dokumenty'? Tento krok nijak neovlivnÃ­ vÃ¡Å¡ ÃºÄet {{account}}.",
+  "SuccessDeleteThirdParty": "SluÅ¾ba {{service}} tÅ™etÃ­ strany je odstranÄ›na"
 }

@@ -1,8 +1,8 @@
-{
-  "CopyToClipboard": "Kopírovat odkaz",
-  "GetShortenLink": "Získat zkrácený odkaz",
-  "HelpAnswerLinkInviteSettings": "Sdílet odkaz pro pozvání kolegù na portál.",
-  "InviteLinkValidInterval": "Tento odkaz je platný pouze {{ count }} dní.",
-  "InviteUsersAsCollaborators": "Pøidat uživatele jako {{guestsCaption, lowercase}}",
-  "LinkCopySuccess": "Odkaz byl zkopírován"
+ï»¿{
+  "CopyToClipboard": "KopÃ­rovat odkaz",
+  "GetShortenLink": "ZÃ­skat zkrÃ¡cenÃ½ odkaz",
+  "HelpAnswerLinkInviteSettings": "SdÃ­let odkaz pro pozvÃ¡nÃ­ kolegÅ¯ na portÃ¡l.",
+  "InviteLinkValidInterval": "Tento odkaz je platnÃ½ pouze {{ count }} dnÃ­.",
+  "InviteUsersAsCollaborators": "PÅ™idat uÅ¾ivatele jako {{guestsCaption, lowercase}}",
+  "LinkCopySuccess": "Odkaz byl zkopÃ­rovÃ¡n"
 }

@@ -1,6 +1,6 @@
-{
-  "DeleteGroupUsersMessage": "Vámi vybraní zakázaní uivatelé budou smazáni.",
-  "DeleteGroupUsersMessageHeader": "Odstranit uivatele z portálu",
-  "DeleteGroupUsersSuccessMessage": "Uivatelé byli úspìšnì odstranìni.",
-  "DeleteUserDataConfirmation": "Dokumenty uivatelù sdílené ostatními budou odstranìny. Chcete-li tomu pøedejít, pøiøaïte data znovu."
+ï»¿{
+  "DeleteGroupUsersMessage": "VÃ¡mi vybranÃ­ zakÃ¡zanÃ­ uÅ¾ivatelÃ© budou smazÃ¡ni.",
+  "DeleteGroupUsersMessageHeader": "Odstranit uÅ¾ivatele z portÃ¡lu",
+  "DeleteGroupUsersSuccessMessage": "UÅ¾ivatelÃ© byli ÃºspÄ›Å¡nÄ› odstranÄ›ni.",
+  "DeleteUserDataConfirmation": "Dokumenty uÅ¾ivatelÅ¯ sdÃ­lenÃ© ostatnÃ­mi budou odstranÄ›ny. Chcete-li tomu pÅ™edejÃ­t, pÅ™iÅ™aÄte data znovu."
 }

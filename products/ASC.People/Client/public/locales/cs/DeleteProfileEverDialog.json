@@ -1,5 +1,5 @@
-{
-    "DeleteUserConfirmation": "{{userCaption}} <strong>{{user}}</strong> bude smazán.",
-    "DeleteUserDataConfirmation": "Dokumenty uivatele sdílené s ostatními budou smazány. Chcete-li tomu zabránit, pøiøaïte data znovu.",
-    "SuccessfullyDeleteUserInfoMessage": "Uivatel byl úspìšnì odstranìn"
+ï»¿{
+    "DeleteUserConfirmation": "{{userCaption}} <strong>{{user}}</strong> bude smazÃ¡n.",
+    "DeleteUserDataConfirmation": "Dokumenty uÅ¾ivatele sdÃ­lenÃ© s ostatnÃ­mi budou smazÃ¡ny. Chcete-li tomu zabrÃ¡nit, pÅ™iÅ™aÄte data znovu.",
+    "SuccessfullyDeleteUserInfoMessage": "UÅ¾ivatel byl ÃºspÄ›Å¡nÄ› odstranÄ›n"
 }

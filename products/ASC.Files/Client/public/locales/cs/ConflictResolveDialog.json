@@ -1,12 +1,12 @@
-{
-  "ConflictResolveDescription": "Soubor s názvem {{file}} ji existuje ve sloce {{folder}}.",
-  "ConflictResolveDescriptionFiles": "Ve sloce '{{folder}}' ji existuje {{filesCount}} dokumentù se stejnım názvem.",
-  "ConflictResolveSelectAction": "Prosím, vyberte akci:",
-  "ConflictResolveTitle": "Potvrzení o pøepsání",
-  "CreateDescription": "Ve sloce budou dva rùzné soubory.",
-  "CreateTitle": "Vytvoøit kopii souboru",
-  "OverwriteDescription": "Soubor bude pøidán do souboru se stejnım názvem jako verze.",
-  "OverwriteTitle": "Pøepsat aktualizací verze",
-  "SkipDescription": "ádnı soubor nebude zkopírován. Pùvodní soubor bude zachován v cílové sloce.",
-  "SkipTitle": "Pøeskoèit"
+ï»¿{
+  "ConflictResolveDescription": "Soubor s nÃ¡zvem {{file}} jiÅ¾ existuje ve sloÅ¾ce {{folder}}.",
+  "ConflictResolveDescriptionFiles": "Ve sloÅ¾ce '{{folder}}' jiÅ¾ existuje {{filesCount}} dokumentÅ¯ se stejnÃ½m nÃ¡zvem.",
+  "ConflictResolveSelectAction": "ProsÃ­m, vyberte akci:",
+  "ConflictResolveTitle": "PotvrzenÃ­ o pÅ™epsÃ¡nÃ­",
+  "CreateDescription": "Ve sloÅ¾ce budou dva rÅ¯znÃ© soubory.",
+  "CreateTitle": "VytvoÅ™it kopii souboru",
+  "OverwriteDescription": "Soubor bude pÅ™idÃ¡n do souboru se stejnÃ½m nÃ¡zvem jako verze.",
+  "OverwriteTitle": "PÅ™epsat aktualizacÃ­ verze",
+  "SkipDescription": "Å½Ã¡dnÃ½ soubor nebude zkopÃ­rovÃ¡n. PÅ¯vodnÃ­ soubor bude zachovÃ¡n v cÃ­lovÃ© sloÅ¾ce.",
+  "SkipTitle": "PÅ™eskoÄit"
 }

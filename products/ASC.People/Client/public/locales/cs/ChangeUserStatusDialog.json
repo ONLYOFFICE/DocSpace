@@ -1,8 +1,8 @@
-{
-    "ChangeUsersActiveStatus": "deaktivován",
-    "ChangeUsersDisableStatus": "aktivován",
-    "ChangeUsersStatusButton": "Zmìnit status uivatele",
-    "ChangeUserStatusDialog": "Uivatelé se stavem '{{ status }}' budou {{ status }}.",
-    "ChangeUserStatusDialogHeader": "Zmìnit status uivatele",
-    "ChangeUserStatusDialogMessage": "Nemùete zmìnit status pro vlastníka portálu a pro sebe"
+ï»¿{
+    "ChangeUsersActiveStatus": "deaktivovÃ¡n",
+    "ChangeUsersDisableStatus": "aktivovÃ¡n",
+    "ChangeUsersStatusButton": "ZmÄ›nit status uÅ¾ivatele",
+    "ChangeUserStatusDialog": "UÅ¾ivatelÃ© se stavem '{{ status }}' budou {{ status }}.",
+    "ChangeUserStatusDialogHeader": "ZmÄ›nit status uÅ¾ivatele",
+    "ChangeUserStatusDialogMessage": "NemÅ¯Å¾ete zmÄ›nit status pro vlastnÃ­ka portÃ¡lu a pro sebe"
 }

@@ -1,5 +1,5 @@
-{
-  "MoveConfirmation": "Potvrzení pøesunu",
-  "MoveConfirmationAlert": "Urèitì chcete pøesunout prvky?",
-  "MoveConfirmationMessage": "Chystáte se pøesunout prvky z adresáøe {{provider}}. Budou smazány z vašeho úètu {{provider}} a nebudou ji pøístupné ostatním uivatelùm."
+ï»¿{
+  "MoveConfirmation": "PotvrzenÃ­ pÅ™esunu",
+  "MoveConfirmationAlert": "UrÄitÄ› chcete pÅ™esunout prvky?",
+  "MoveConfirmationMessage": "ChystÃ¡te se pÅ™esunout prvky z adresÃ¡Å™e {{provider}}. Budou smazÃ¡ny z vaÅ¡eho ÃºÄtu {{provider}} a nebudou jiÅ¾ pÅ™Ã­stupnÃ© ostatnÃ­m uÅ¾ivatelÅ¯m."
 }

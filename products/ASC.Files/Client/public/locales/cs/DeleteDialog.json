@@ -1,12 +1,12 @@
-{
-    "MoveToTrashButton": "Pøesunout do koše",
-    "MoveToTrashItemsNote": "Pokud odstraníte sdílené poloky, ostatní uivatelé k nim nebudou mít pøístup.",
-    "MoveToTrashItemsTitle": "Pøesunout poloky do koše?",
-    "MoveToTrashOneFileNote": "Pokud odstraníte sdílenı soubor, ostatní uivatelé k nìmu nebudou mít pøístup.",
-    "MoveToTrashOneFileTitle": "Pøesunout soubor do koše?",
-    "MoveToTrashOneFolderNote": "Pokud odstraníte sdílenou sloku, ostatní uivatelé k ní nebudou mít pøístup.",
-    "MoveToTrashOneFolderTitle": "Pøesunout sloku do koše?",
-    "UnsubscribeButton": "Zrušit odbìr",
-    "UnsubscribeNote": "Urèitì chcete zrušit odbìr vybranıch poloek ze seznamu?",
-    "UnsubscribeTitle": "Potvrzení o odhlášení"
+ï»¿{
+    "MoveToTrashButton": "PÅ™esunout do koÅ¡e",
+    "MoveToTrashItemsNote": "Pokud odstranÃ­te sdÃ­lenÃ© poloÅ¾ky, ostatnÃ­ uÅ¾ivatelÃ© k nim nebudou mÃ­t pÅ™Ã­stup.",
+    "MoveToTrashItemsTitle": "PÅ™esunout poloÅ¾ky do koÅ¡e?",
+    "MoveToTrashOneFileNote": "Pokud odstranÃ­te sdÃ­lenÃ½ soubor, ostatnÃ­ uÅ¾ivatelÃ© k nÄ›mu nebudou mÃ­t pÅ™Ã­stup.",
+    "MoveToTrashOneFileTitle": "PÅ™esunout soubor do koÅ¡e?",
+    "MoveToTrashOneFolderNote": "Pokud odstranÃ­te sdÃ­lenou sloÅ¾ku, ostatnÃ­ uÅ¾ivatelÃ© k nÃ­ nebudou mÃ­t pÅ™Ã­stup.",
+    "MoveToTrashOneFolderTitle": "PÅ™esunout sloÅ¾ku do koÅ¡e?",
+    "UnsubscribeButton": "ZruÅ¡it odbÄ›r",
+    "UnsubscribeNote": "UrÄitÄ› chcete zruÅ¡it odbÄ›r vybranÃ½ch poloÅ¾ek ze seznamu?",
+    "UnsubscribeTitle": "PotvrzenÃ­ o odhlÃ¡Å¡enÃ­"
 }

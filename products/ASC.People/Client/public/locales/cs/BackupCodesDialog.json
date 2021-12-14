@@ -1,8 +1,8 @@
-{
-  "BackupCodesDescription": "Pokud nemáte pøístup k telefonu, pouijte záloní kódy pro pøihlášení.",
-  "BackupCodesSecondDescription": "Kadı kód lze pouít pouze jednou. Nové kódy mùete získat kdykoli. Platné jsou pouze kódy, které byly vygenerovány jako poslední.",
-  "BackupCodesTitle": "Záloní kódy",
-  "CodesCounter": "kódy:",
+ï»¿{
+  "BackupCodesDescription": "Pokud nemÃ¡te pÅ™Ã­stup k telefonu, pouÅ¾ijte zÃ¡loÅ¾nÃ­ kÃ³dy pro pÅ™ihlÃ¡Å¡enÃ­.",
+  "BackupCodesSecondDescription": "KaÅ¾dÃ½ kÃ³d lze pouÅ¾Ã­t pouze jednou. NovÃ© kÃ³dy mÅ¯Å¾ete zÃ­skat kdykoli. PlatnÃ© jsou pouze kÃ³dy, kterÃ© byly vygenerovÃ¡ny jako poslednÃ­.",
+  "BackupCodesTitle": "ZÃ¡loÅ¾nÃ­ kÃ³dy",
+  "CodesCounter": "kÃ³dy:",
   "PrintButton": "TIsk",
-  "RequestNewButton": "Vyádat si novı"
+  "RequestNewButton": "VyÅ¾Ã¡dat si novÃ½"
 }

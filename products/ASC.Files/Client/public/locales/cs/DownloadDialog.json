@@ -1,9 +1,9 @@
-{
-  "ChooseFormatText": "Zvolte formát kadého stahovaného souboru",
+ï»¿{
+  "ChooseFormatText": "Zvolte formÃ¡t kaÅ¾dÃ©ho stahovanÃ©ho souboru",
   "ConvertInto": "Konvertovat do",
-  "ConvertMessage": "Pokud zvolíte pøevod souboru do jiného formátu ne pùvodního, mùe dojít ke ztrátì nìkterıch dat.",
-  "ConvertToZip": "Soubory budou zkomprimovány do souboru .zip",
-  "CustomFormat": "Vlastní formát",
-  "OriginalFormat": "Pùvodní formát",
-  "Other": "Jinı"
+  "ConvertMessage": "Pokud zvolÃ­te pÅ™evod souboru do jinÃ©ho formÃ¡tu neÅ¾ pÅ¯vodnÃ­ho, mÅ¯Å¾e dojÃ­t ke ztrÃ¡tÄ› nÄ›kterÃ½ch dat.",
+  "ConvertToZip": "Soubory budou zkomprimovÃ¡ny do souboru .zip",
+  "CustomFormat": "VlastnÃ­ formÃ¡t",
+  "OriginalFormat": "PÅ¯vodnÃ­ formÃ¡t",
+  "Other": "JinÃ½"
 }

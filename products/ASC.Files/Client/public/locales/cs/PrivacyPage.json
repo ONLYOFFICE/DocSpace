@@ -1,10 +1,10 @@
-{
-  "PrivacyButton": "Otevøít ONLYOFFICE Desktop Editors",
-  "PrivacyClick": "Kliknìte na Otevøít <1>ONLYOFFICE Desktop</1> v dialogovém oknì prohlíeèe a pracujte se zašifrovanımi dokumenty",
-  "PrivacyDescriptionConnect": "Tento soubor mùete otevøít z rozhraní desktopové aplikace, jakmile je váš cloud pøipojen",
-  "PrivacyDescriptionEditors": "Pokud máte nainstalovanou aplikaci ONLYOFFICE Desktop Editors, ale nemùete ji otevøít z této stránky, váš prohlíeè ji moná blokuje",
-  "PrivacyDialog": "Pokud se vám nezobrazí dialogové okno, kliknìte na tlaèítko níe",
-  "PrivacyEditors": "Nemáte nainstalovány ONLYOFFICE Desktop Editors?",
-  "PrivacyHeader": "Tento dokument je zašifrovanı",
-  "PrivacyInstall": "Instalovat nyní"
+ï»¿{
+  "PrivacyButton": "OtevÅ™Ã­t ONLYOFFICE Desktop Editors",
+  "PrivacyClick": "KliknÄ›te na OtevÅ™Ã­t <1>ONLYOFFICE Desktop</1> v dialogovÃ©m oknÄ› prohlÃ­Å¾eÄe a pracujte se zaÅ¡ifrovanÃ½mi dokumenty",
+  "PrivacyDescriptionConnect": "Tento soubor mÅ¯Å¾ete otevÅ™Ã­t z rozhranÃ­ desktopovÃ© aplikace, jakmile je vÃ¡Å¡ cloud pÅ™ipojen",
+  "PrivacyDescriptionEditors": "Pokud mÃ¡te nainstalovanou aplikaci ONLYOFFICE Desktop Editors, ale nemÅ¯Å¾ete ji otevÅ™Ã­t z tÃ©to strÃ¡nky, vÃ¡Å¡ prohlÃ­Å¾eÄ ji moÅ¾nÃ¡ blokuje",
+  "PrivacyDialog": "Pokud se vÃ¡m nezobrazÃ­ dialogovÃ© okno, kliknÄ›te na tlaÄÃ­tko nÃ­Å¾e",
+  "PrivacyEditors": "NemÃ¡te nainstalovÃ¡ny ONLYOFFICE Desktop Editors?",
+  "PrivacyHeader": "Tento dokument je zaÅ¡ifrovanÃ½",
+  "PrivacyInstall": "Instalovat nynÃ­"
 }

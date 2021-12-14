@@ -1,8 +1,8 @@
-{
-  "ConversionFileMessage": "Soubor bude pøeveden do formátu OOXML (docx, xlsx nebo pptx) pro rychlejší prohlíení a úpravy.",
-  "ConversionMessage": "Všechny nahrané dokumenty budou pøevedeny do formátu Office Open XML (docx, xlsx nebo pptx) pro rychlejší úpravy.",
-  "ConversionTitle": "Nahrávání dokumentù",
-  "ConvertAndOpenTitle": "Pøevést a otevøít dokument",
-  "HideMessage": "Tuto zprávu ji nezobrazovat",
-  "SaveOriginalFormatMessage": "Uloit kopii souboru v pùvodním formátu"
+ï»¿{
+  "ConversionFileMessage": "Soubor bude pÅ™eveden do formÃ¡tu OOXML (docx, xlsx nebo pptx) pro rychlejÅ¡Ã­ prohlÃ­Å¾enÃ­ a Ãºpravy.",
+  "ConversionMessage": "VÅ¡echny nahranÃ© dokumenty budou pÅ™evedeny do formÃ¡tu Office Open XML (docx, xlsx nebo pptx) pro rychlejÅ¡Ã­ Ãºpravy.",
+  "ConversionTitle": "NahrÃ¡vÃ¡nÃ­ dokumentÅ¯",
+  "ConvertAndOpenTitle": "PÅ™evÃ©st a otevÅ™Ã­t dokument",
+  "HideMessage": "Tuto zprÃ¡vu jiÅ¾ nezobrazovat",
+  "SaveOriginalFormatMessage": "UloÅ¾it kopii souboru v pÅ¯vodnÃ­m formÃ¡tu"
 }

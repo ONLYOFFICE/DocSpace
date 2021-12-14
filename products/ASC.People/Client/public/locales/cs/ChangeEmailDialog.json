@@ -1,17 +1,17 @@
-{
-  "DomainIpAddress": "Domény jako IP adresa nejsou podporovány",
-  "EmailActivationDescription": "Pokyny k aktivaci budou zaslány na zadanı e-mail",
-  "EmailChangeTitle": "Zmìna e-mailu",
-  "EmptyEmail": "Nebyl analyzován ádnı e-mail",
-  "EnterEmail": "Zadejte novou e-mailovou adresu",
-  "IncorrectDomain": "Nesprávná doména",
-  "IncorrectEmail": "Nesprávná emailová adresa",
-  "IncorrectLocalPart": "Nesprávná místní èást",
-  "LocalDomain": "Místní domény nejsou podporovány",
-  "ManyEmails": "Too many emails parsed",
-  "MaxLengthExceeded": "Maximální délka uivatelského jména nebo jiné místní èásti je 64 znakù.",
-  "PunycodeDomain": "Domény Punycode nejsou podporovány",
-  "PunycodeLocalPart": "Místní èást Punycode není podporována",
-  "SameEmail": "Nelze pouít stejnı e-mail",
-  "SpacesInLocalPart": "Místní èást nemùe obsahovat mezery"
+ï»¿{
+    "DomainIpAddress": "DomÃ©ny jako IP adresa nejsou podporovÃ¡ny",
+    "EmailActivationDescription": "Pokyny k aktivaci budou zaslÃ¡ny na zadanÃ½ e-mail",
+    "EmailChangeTitle": "ZmÄ›na e-mailu",
+    "EmptyEmail": "Nebyl analyzovÃ¡n Å¾Ã¡dnÃ½ e-mail",
+    "EnterEmail": "Zadejte novou e-mailovou adresu",
+    "IncorrectDomain": "NesprÃ¡vnÃ¡ domÃ©na",
+    "IncorrectEmail": "NesprÃ¡vnÃ¡ emailovÃ¡ adresa",
+    "IncorrectLocalPart": "NesprÃ¡vnÃ¡ mÃ­stnÃ­ ÄÃ¡st",
+    "LocalDomain": "MÃ­stnÃ­ domÃ©ny nejsou podporovÃ¡ny",
+    "ManyEmails": "PÅ™Ã­liÅ¡ mnoho e-mailÅ¯ analyzovanÃ½ch",
+    "MaxLengthExceeded": "MaximÃ¡lnÃ­ dÃ©lka uÅ¾ivatelskÃ©ho jmÃ©na nebo jinÃ© mÃ­stnÃ­ ÄÃ¡sti je 64 znakÅ¯.",
+    "PunycodeDomain": "DomÃ©ny Punycode nejsou podporovÃ¡ny",
+    "PunycodeLocalPart": "MÃ­stnÃ­ ÄÃ¡st Punycode nenÃ­ podporovÃ¡na",
+    "SameEmail": "Nelze pouÅ¾Ã­t stejnÃ½ e-mail",
+    "SpacesInLocalPart": "MÃ­stnÃ­ ÄÃ¡st nemÅ¯Å¾e obsahovat mezery"
 }

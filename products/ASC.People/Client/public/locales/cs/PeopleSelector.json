@@ -1,6 +1,6 @@
-{
-  "CustomAllGroups": "Vöichni {{ groupsCaption, lowercase }}",
-  "EmptySearchUsersResult": "NeexistujÌ û·dnÌ uûivatelÈ s tÌmto jmÈnem",
-  "EmptyUsers": "Nejsou û·dnÌ uûivatelÈ",
-  "SearchUsersPlaceholder": "Hledat uûivatele"
+Ôªø{
+  "CustomAllGroups": "V≈°ichni {{ groupsCaption, lowercase }}",
+  "EmptySearchUsersResult": "Neexistuj√≠ ≈æ√°dn√≠ u≈æivatel√© s t√≠mto jm√©nem",
+  "EmptyUsers": "Nejsou ≈æ√°dn√≠ u≈æivatel√©",
+  "SearchUsersPlaceholder": "Hledat u≈æivatele"
 }

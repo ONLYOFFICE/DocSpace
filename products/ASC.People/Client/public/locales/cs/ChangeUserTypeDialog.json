@@ -1,7 +1,7 @@
-{
-  "ChangeUserTypeButton": "Zmìnit typ",
-  "ChangeUserTypeHeader": "Zmìnit typ uivatele",
-  "ChangeUserTypeMessage": "Uivatelé s typem '{{ firstType }}' budou pøesunuti na typ '{{ secondType }}'.",
-  "ChangeUserTypeMessageWarning": "Nemùete zmìnit typ pro správce portálu a pro sebe.",
-  "SuccessChangeUserType": "Typ uivatele byl úspìšnì zmìnìn"
+ï»¿{
+  "ChangeUserTypeButton": "ZmÄ›nit typ",
+  "ChangeUserTypeHeader": "ZmÄ›nit typ uÅ¾ivatele",
+  "ChangeUserTypeMessage": "UÅ¾ivatelÃ© s typem '{{ firstType }}' budou pÅ™esunuti na typ '{{ secondType }}'.",
+  "ChangeUserTypeMessageWarning": "NemÅ¯Å¾ete zmÄ›nit typ pro sprÃ¡vce portÃ¡lu a pro sebe.",
+  "SuccessChangeUserType": "Typ uÅ¾ivatele byl ÃºspÄ›Å¡nÄ› zmÄ›nÄ›n"
 }

@@ -1,8 +1,8 @@
-{
-  "CustomNewDepartment": "{{groupCaption}} (vytvoøení)",
-  "GroupAction": "Skupinová akce",
-  "Members": "Èlenové",
-  "SearchAddedMembers": "Prohledat pøidané èleny",
+ï»¿{
+  "CustomNewDepartment": "{{groupCaption}} (vytvoÅ™enÃ­)",
+  "GroupAction": "SkupinovÃ¡ akce",
+  "Members": "ÄŒlenovÃ©",
+  "SearchAddedMembers": "Prohledat pÅ™idanÃ© Äleny",
   "SelectAction": "Vybrat",
-  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' byla úspìšnì uloena"
+  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' byla ÃºspÄ›Å¡nÄ› uloÅ¾ena"
 }
