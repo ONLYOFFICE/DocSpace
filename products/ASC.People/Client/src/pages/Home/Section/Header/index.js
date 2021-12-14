@@ -1,23 +1,23 @@
-import React, { useCallback, useState, useMemo } from "react";
-import styled, { css } from "styled-components";
-import { withRouter } from "react-router";
+import React, { useCallback, useState, useMemo } from 'react';
+import styled, { css } from 'styled-components';
+import { withRouter } from 'react-router';
 
-import DropDownItem from "@appserver/components/drop-down-item";
-import ContextMenuButton from "@appserver/components/context-menu-button";
-import { tablet, desktop } from "@appserver/components/utils/device";
-import { Consumer } from "@appserver/components/utils/context";
+import DropDownItem from '@appserver/components/drop-down-item';
+import ContextMenuButton from '@appserver/components/context-menu-button';
+import { tablet, desktop } from '@appserver/components/utils/device';
+import { Consumer } from '@appserver/components/utils/context';
 
-import Headline from "@appserver/common/components/Headline";
-import toastr from "studio/toastr";
-import Loaders from "@appserver/common/components/Loaders";
-import withLoader from "../../../../HOCs/withLoader";
-import { AppServerConfig } from "@appserver/common/constants";
-import { withTranslation } from "react-i18next";
-import { isMobile } from "react-device-detect";
-import { inject, observer } from "mobx-react";
-import config from "../../../../../package.json";
-import { combineUrl } from "@appserver/common/utils";
-import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu";
+import Headline from '@appserver/common/components/Headline';
+import toastr from 'studio/toastr';
+import Loaders from '@appserver/common/components/Loaders';
+import withLoader from '../../../../HOCs/withLoader';
+import { AppServerConfig } from '@appserver/common/constants';
+import { withTranslation } from 'react-i18next';
+import { isMobile } from 'react-device-detect';
+import { inject, observer } from 'mobx-react';
+import config from '../../../../../package.json';
+import { combineUrl } from '@appserver/common/utils';
+import TableGroupMenu from '@appserver/components/table-container/TableGroupMenu';
 
 const StyledContainer = styled.div`
   .group-button-menu-container {
@@ -32,12 +32,12 @@ const StyledContainer = styled.div`
         ? props.width &&
           isMobile &&
           css`
-            width: ${props.width + 40 + "px"};
+            width: ${props.width + 40 + 'px'};
           `
         : props.width &&
           isMobile &&
           css`
-            width: ${props.width + 24 + "px"};
+            width: ${props.width + 24 + 'px'};
           `}
 
     @media ${tablet} {
@@ -51,7 +51,7 @@ const StyledContainer = styled.div`
           !isMobile &&
           props.width &&
           css`
-            width: ${props.width + 16 + "px"};
+            width: ${props.width + 16 + 'px'};
           `}
 
         position: absolute;
@@ -116,31 +116,26 @@ const SectionHeaderContent = (props) => {
     setInvitationDialogVisible,
   } = props;
 
-  const {
-    userCaption,
-    guestCaption,
-    groupCaption,
-    groupsCaption,
-  } = customNames;
+  const { userCaption, guestCaption, groupCaption, groupsCaption } = customNames;
 
   //console.log("SectionHeaderContent render", props.isTabletView);
 
   const onChange = (checked) => {
-    setSelected(checked ? "all" : "none");
+    setSelected(checked ? 'all' : 'none');
   };
   const onSelect = useCallback(
     (e) => {
       const key = e.currentTarget.dataset.key;
       setSelected(key);
     },
-    [setSelected]
+    [setSelected],
   );
 
   const onSelectorSelect = useCallback(
     (item) => {
       setSelected(item.key);
     },
-    [onSelect]
+    [onSelect],
   );
 
   let menuItems = useMemo(
@@ -148,78 +143,65 @@ const SectionHeaderContent = (props) => {
       <>
         <DropDownItem
           key="active"
-          label={t("Common:Active")}
-          data-key={"active"}
+          label={t('Common:Active')}
+          data-key={'active'}
           onClick={onSelect}
         />
         <DropDownItem
           key="disabled"
-          label={t("Translations:DisabledEmployeeStatus")}
-          data-key={"disabled"}
+          label={t('Translations:DisabledEmployeeStatus')}
+          data-key={'disabled'}
           onClick={onSelect}
         />
         <DropDownItem
           key="invited"
-          label={t("LblInvited")}
-          data-key={"invited"}
+          label={t('LblInvited')}
+          data-key={'invited'}
           onClick={onSelect}
         />
       </>
     ),
-    [t, onSelectorSelect]
+    [t, onSelectorSelect],
   );
 
   const headerMenu = getHeaderMenu(t);
 
   const onEditGroup = useCallback(
-    () =>
-      history.push(
-        combineUrl(
-          AppServerConfig.proxyURL,
-          homepage,
-          `/group/edit/${group.id}`
-        )
-      ),
-    [history, homepage, group]
+    () => history.push(combineUrl(AppServerConfig.proxyURL, homepage, `/group/edit/${group.id}`)),
+    [history, homepage, group],
   );
 
   const onDeleteGroup = useCallback(() => {
     deleteGroup(group.id)
-      .then(() => toastr.success(t("SuccessfullyRemovedGroup")))
+      .then(() => toastr.success(t('SuccessfullyRemovedGroup')))
       .then(() => resetFilter());
   }, [deleteGroup, group, t]);
 
   const getContextOptionsGroup = useCallback(() => {
     return [
       {
-        key: "edit-group",
-        label: t("Common:EditButton"),
+        key: 'edit-group',
+        label: t('Common:EditButton'),
         onClick: onEditGroup,
       },
       {
-        key: "delete-group",
-        label: t("Common:Delete"),
+        key: 'delete-group',
+        label: t('Common:Delete'),
         onClick: onDeleteGroup,
       },
     ];
   }, [t, onEditGroup, onDeleteGroup]);
 
   const goToEmployeeCreate = useCallback(() => {
-    history.push(
-      combineUrl(AppServerConfig.proxyURL, homepage, "/create/user")
-    );
+    history.push(combineUrl(AppServerConfig.proxyURL, homepage, '/create/user'));
   }, [history, homepage]);
 
   const goToGuestCreate = useCallback(() => {
-    history.push(
-      combineUrl(AppServerConfig.proxyURL, homepage, "/create/guest")
-    );
+    history.push(combineUrl(AppServerConfig.proxyURL, homepage, '/create/guest'));
   }, [history, homepage]);
 
   const goToGroupCreate = useCallback(() => {
-    history.push(
-      combineUrl(AppServerConfig.proxyURL, homepage, "/group/create")
-    );
+    history.push(combineUrl(AppServerConfig.proxyURL, homepage, '/group/create'));
   }, [history, homepage]);
 
   const onInvitationDialogClick = () => setInvitationDialogVisible(true);
@@ -227,24 +209,24 @@ const SectionHeaderContent = (props) => {
   const getContextOptionsPlus = useCallback(() => {
     return [
       {
-        key: "new-employee",
+        key: 'new-employee',
         label: userCaption,
         onClick: goToEmployeeCreate,
       },
       {
-        key: "new-guest",
+        key: 'new-guest',
         label: guestCaption,
         onClick: goToGuestCreate,
       },
       {
-        key: "new-group",
+        key: 'new-group',
         label: groupCaption,
         onClick: goToGroupCreate,
       },
-      { key: "separator", isSeparator: true },
+      { key: 'separator', isSeparator: true },
       {
-        key: "make-invitation-link",
-        label: t("MakeInvitationLink"),
+        key: 'make-invitation-link',
+        label: t('MakeInvitationLink'),
         onClick: onInvitationDialogClick,
       } /* ,
       {
@@ -272,8 +254,7 @@ const SectionHeaderContent = (props) => {
           isHeaderVisible={isHeaderVisible}
           isLoaded={isLoaded}
           width={context.sectionWidth}
-          isTabletView={isTabletView}
-        >
+          isTabletView={isTabletView}>
           {isHeaderVisible ? (
             <div className="group-button-menu-container">
               <TableGroupMenu
@@ -288,21 +269,16 @@ const SectionHeaderContent = (props) => {
             <div className="header-container">
               {group ? (
                 <>
-                  <Headline
-                    className="headline-header"
-                    type="content"
-                    truncate={true}
-                  >
+                  <Headline className="headline-header" type="content" truncate={true}>
                     {group.name}
                   </Headline>
                   {isAdmin && (
                     <ContextMenuButton
                       className="action-button"
                       directionX="right"
-                      title={t("Common:Actions")}
+                      title={t('Common:Actions')}
                       iconName="/static/images/vertical-dots.react.svg"
                       size={17}
-                      color="#A3A9AE"
                       getData={getContextOptionsGroup}
                       isDisabled={false}
                     />
@@ -310,11 +286,7 @@ const SectionHeaderContent = (props) => {
                 </>
               ) : (
                 <>
-                  <Headline
-                    className="headline-header"
-                    truncate={true}
-                    type="content"
-                  >
+                  <Headline className="headline-header" truncate={true} type="content">
                     {groupsCaption}
                   </Headline>
                   {isAdmin && (
@@ -322,11 +294,9 @@ const SectionHeaderContent = (props) => {
                       <ContextMenuButton
                         className="action-button"
                         directionX="right"
-                        title={t("Common:Actions")}
+                        title={t('Common:Actions')}
                         iconName="/static/images/actions.header.touch.react.svg"
                         size={17}
-                        color="#A3A9AE"
-                        hoverColor="#657077"
                         getData={getContextOptionsPlus}
                         isDisabled={false}
                       />
@@ -358,18 +328,9 @@ export default withRouter(
       dialogStore,
     } = peopleStore;
     const { getUsersList, removeUser, updateUserStatus } = usersStore;
-    const {
-      setSelected,
-      selectByStatus,
-      clearSelection,
-      selectAll,
-    } = selectionStore;
+    const { setSelected, selectByStatus, clearSelection, selectAll } = selectionStore;
 
-    const {
-      isHeaderVisible,
-      isHeaderIndeterminate,
-      isHeaderChecked,
-    } = headerMenuStore;
+    const { isHeaderVisible, isHeaderIndeterminate, isHeaderChecked } = headerMenuStore;
     const { deleteGroup } = groupsStore;
     const { group } = selectedGroupStore;
     const { setInvitationDialogVisible } = dialogStore;
@@ -397,8 +358,8 @@ export default withRouter(
       setInvitationDialogVisible,
     };
   })(
-    withTranslation(["Home", "Common", "Translations"])(
-      withLoader(observer(SectionHeaderContent))(<Loaders.SectionHeader />)
-    )
-  )
+    withTranslation(['Home', 'Common', 'Translations'])(
+      withLoader(observer(SectionHeaderContent))(<Loaders.SectionHeader />),
+    ),
+  ),
 );

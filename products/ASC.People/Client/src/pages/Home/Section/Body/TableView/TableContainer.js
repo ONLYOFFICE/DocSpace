@@ -1,21 +1,21 @@
-import React, { useEffect, useRef } from "react";
-import TableContainer from "@appserver/components/table-container";
-import { inject, observer } from "mobx-react";
-import TableRow from "./TableRow";
-import TableHeader from "./TableHeader";
-import TableBody from "@appserver/components/table-container/TableBody";
-import EmptyScreen from "../EmptyScreen";
-import { isMobile } from "react-device-detect";
+import React, { useEffect, useRef } from 'react';
+import TableContainer from '@appserver/components/table-container';
+import { inject, observer } from 'mobx-react';
+import TableRow from './TableRow';
+import TableHeader from './TableHeader';
+import TableBody from '@appserver/components/table-container/TableBody';
+import EmptyScreen from '../EmptyScreen';
+import { isMobile } from 'react-device-detect';
 
-const Table = ({ peopleList, sectionWidth, viewAs, setViewAs }) => {
+const Table = ({ peopleList, sectionWidth, viewAs, setViewAs, theme }) => {
   const ref = useRef(null);
 
   useEffect(() => {
     if (!sectionWidth) return;
     if (sectionWidth < 1025 || isMobile) {
-      viewAs !== "row" && setViewAs("row");
+      viewAs !== 'row' && setViewAs('row');
     } else {
-      viewAs !== "table" && setViewAs("table");
+      viewAs !== 'table' && setViewAs('table');
     }
   }, [sectionWidth]);
 
@@ -24,7 +24,7 @@ const Table = ({ peopleList, sectionWidth, viewAs, setViewAs }) => {
       <TableHeader sectionWidth={sectionWidth} containerRef={ref} />
       <TableBody>
         {peopleList.map((item) => (
-          <TableRow key={item.id} item={item} />
+          <TableRow theme={theme} key={item.id} item={item} />
         ))}
       </TableBody>
     </TableContainer>
@@ -33,13 +33,15 @@ const Table = ({ peopleList, sectionWidth, viewAs, setViewAs }) => {
   );
 };
 
-export default inject(({ peopleStore }) => {
+export default inject(({ peopleStore, auth }) => {
   const { usersStore, viewAs, setViewAs } = peopleStore;
+  const { theme } = auth.settingsStore;
   const { peopleList } = usersStore;
 
   return {
     peopleList,
     viewAs,
     setViewAs,
+    theme,
   };
 })(observer(Table));

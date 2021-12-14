@@ -1,13 +1,13 @@
-import React from "react";
-import { withRouter } from "react-router";
-import TableRow from "@appserver/components/table-container/TableRow";
-import TableCell from "@appserver/components/table-container/TableCell";
-import withContextOptions from "../../../../../HOCs/withContextOptions";
-import withContent from "../../../../../HOCs/withContent";
-import Link from "@appserver/components/link";
-import Text from "@appserver/components/text";
-import styled from "styled-components";
-import Checkbox from "@appserver/components/checkbox";
+import React from 'react';
+import { withRouter } from 'react-router';
+import TableRow from '@appserver/components/table-container/TableRow';
+import TableCell from '@appserver/components/table-container/TableCell';
+import withContextOptions from '../../../../../HOCs/withContextOptions';
+import withContent from '../../../../../HOCs/withContent';
+import Link from '@appserver/components/link';
+import Text from '@appserver/components/text';
+import styled from 'styled-components';
+import Checkbox from '@appserver/components/checkbox';
 
 const StyledPeopleRow = styled(TableRow)`
   .table-container_cell {
@@ -37,26 +37,33 @@ const PeopleTableRow = (props) => {
     onEmailClick,
     onUserNameClick,
     isAdmin,
+    theme,
   } = props;
   const { displayName, email, role, statusType, userName } = item;
 
   const getRoleTranslation = () => {
     switch (role) {
-      case "owner":
-        return t("Common:Owner");
-      case "admin":
-        return t("Administrator");
-      case "guest":
-        return t("Common:Guest");
+      case 'owner':
+        return t('Common:Owner');
+      case 'admin':
+        return t('Administrator');
+      case 'guest':
+        return t('Common:Guest');
       default:
-        return t("Common:User");
+        return t('Common:User');
     }
   };
 
   const userRole = getRoleTranslation();
 
-  const nameColor = statusType === "pending" ? "#A3A9AE" : "#333333";
-  const sideInfoColor = statusType === "pending" ? "#D0D5DA" : "#A3A9AE";
+  const nameColor =
+    statusType === 'pending'
+      ? theme.peopleTableRow.pendingNameColor
+      : theme.peopleTableRow.nameColor;
+  const sideInfoColor =
+    statusType === 'pending'
+      ? theme.peopleTableRow.pendingSideInfoColor
+      : theme.peopleTableRow.sideInfoColor;
 
   const onChange = (e) => {
     onContentRowSelect && onContentRowSelect(e.target.checked, item);
@@ -68,8 +75,7 @@ const PeopleTableRow = (props) => {
         <TableCell
           hasAccess={isAdmin}
           className="table-container_row-checkbox-wrapper"
-          checked={checkedProps.checked}
-        >
+          checked={checkedProps.checked}>
           <div className="table-container_element">{element}</div>
           <Checkbox
             className="table-container_row-checkbox"
@@ -86,8 +92,7 @@ const PeopleTableRow = (props) => {
           color={nameColor}
           isTextOverflow
           href={`/products/people/view/${userName}`}
-          onClick={onUserNameClick}
-        >
+          onClick={onUserNameClick}>
           {displayName}
         </Link>
       </TableCell>
@@ -99,21 +104,19 @@ const PeopleTableRow = (props) => {
           fontSize="12px"
           fontWeight={400}
           color={sideInfoColor}
-          truncate
-        >
+          truncate>
           {userRole}
         </Text>
       </TableCell>
       <TableCell>
         <Text
-          style={{ display: "none" }} //TODO:
+          style={{ display: 'none' }} //TODO:
           type="page"
           title={userRole}
           fontSize="12px"
           fontWeight={400}
           color={sideInfoColor}
-          truncate
-        >
+          truncate>
           Phone
         </Text>
       </TableCell>
@@ -125,8 +128,7 @@ const PeopleTableRow = (props) => {
           fontWeight={400}
           color={sideInfoColor}
           onClick={onEmailClick}
-          isTextOverflow
-        >
+          isTextOverflow>
           {email}
         </Link>
       </TableCell>

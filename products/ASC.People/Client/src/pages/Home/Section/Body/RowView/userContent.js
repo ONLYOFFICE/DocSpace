@@ -1,15 +1,15 @@
-import React from "react";
-import { withRouter } from "react-router";
-import styled from "styled-components";
+import React from 'react';
+import { withRouter } from 'react-router';
+import styled from 'styled-components';
 
-import RowContent from "@appserver/components/row-content";
-import Link from "@appserver/components/link";
-import Text from "@appserver/components/text";
-import Box from "@appserver/components/box";
+import RowContent from '@appserver/components/row-content';
+import Link from '@appserver/components/link';
+import Text from '@appserver/components/text';
+import Box from '@appserver/components/box';
 
-import commonIconsStyles from "@appserver/components/utils/common-icons-style";
-import SendClockIcon from "../../../../../../public/images/send.clock.react.svg";
-import CatalogSpamIcon from "../../../../../../public/images/catalog.spam.react.svg";
+import commonIconsStyles from '@appserver/components/utils/common-icons-style';
+import SendClockIcon from '../../../../../../public/images/send.clock.react.svg';
+import CatalogSpamIcon from '../../../../../../public/images/catalog.spam.react.svg';
 
 const StyledSendClockIcon = styled(SendClockIcon)`
   ${commonIconsStyles}
@@ -31,19 +31,25 @@ const UserContent = ({
   onEmailClick,
   onUserNameClick,
   groups,
+  theme,
 }) => {
   const { userName, displayName, title, mobilePhone, email, statusType } = item;
 
-  const nameColor = statusType === "pending" ? "#A3A9AE" : "#333333";
-  const sideInfoColor = statusType === "pending" ? "#D0D5DA" : "#A3A9AE";
+  const nameColor =
+    statusType === 'pending'
+      ? theme.peopleTableRow.pendingNameColor
+      : theme.peopleTableRow.nameColor;
+  const sideInfoColor =
+    statusType === 'pending'
+      ? theme.peopleTableRow.pendingSideInfoColor
+      : theme.peopleTableRow.sideInfoColor;
 
   return (
     <RowContent
       sideColor={sideInfoColor}
       sectionWidth={sectionWidth}
       nameColor={nameColor}
-      sideInfoColor={sideInfoColor}
-    >
+      sideInfoColor={sideInfoColor}>
       <Link
         containerWidth="28%"
         type="page"
@@ -53,13 +59,12 @@ const UserContent = ({
         onClick={onUserNameClick}
         fontSize="15px"
         color={nameColor}
-        isTextOverflow={true}
-      >
+        isTextOverflow={true}>
         {displayName}
       </Link>
       <>
-        {statusType === "pending" && <StyledSendClockIcon size="small" />}
-        {statusType === "disabled" && <StyledCatalogSpamIcon size="small" />}
+        {statusType === 'pending' && <StyledSendClockIcon size="small" />}
+        {statusType === 'disabled' && <StyledCatalogSpamIcon size="small" />}
       </>
       {title ? (
         <Text
@@ -70,8 +75,7 @@ const UserContent = ({
           fontSize="12px"
           fontWeight={600}
           title={title}
-          truncate={true}
-        >
+          truncate={true}>
           {title}
         </Text>
       ) : (
@@ -87,8 +91,7 @@ const UserContent = ({
         fontWeight={400}
         color={sideInfoColor}
         onClick={onPhoneClick}
-        isTextOverflow={true}
-      >
+        isTextOverflow={true}>
         {mobilePhone}
       </Link>
       <Link
@@ -100,8 +103,7 @@ const UserContent = ({
         fontWeight={400}
         color={sideInfoColor}
         onClick={onEmailClick}
-        isTextOverflow={true}
-      >
+        isTextOverflow={true}>
         {email}
       </Link>
     </RowContent>

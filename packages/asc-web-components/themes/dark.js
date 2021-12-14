@@ -448,7 +448,7 @@ const Dark = {
   row: {
     minHeight: "47px",
     width: "100%",
-    borderBottom: globalColors.grayLightMid,
+    borderBottom: "#474747",
     minWidth: "160px",
     overflow: "hidden",
     textOverflow: "ellipsis",
@@ -1742,6 +1742,14 @@ const Dark = {
   peopleArticleBody: {
     iconColor: "#a9a9a9",
     expanderColor: "dimgray",
+  },
+
+  peopleTableRow: {
+    nameColor: "#eeeeee",
+    pendingNameColor: "#595959",
+
+    sideInfoColor: "#858585",
+    pendingSideInfoColor: "#434343",
   },
 
   filterInput: {

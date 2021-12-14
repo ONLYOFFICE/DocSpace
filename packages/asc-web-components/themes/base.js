@@ -1745,6 +1745,14 @@ const Base = {
     expanderColor: "dimgray",
   },
 
+  peopleTableRow: {
+    nameColor: "#333333",
+    pendingNameColor: "#A3A9AE",
+
+    sideInfoColor: "#A3A9AE",
+    pendingSideInfoColor: "#D0D5DA",
+  },
+
   filterInput: {
     filterButton: {
       stroke: "#a3a9ae",
