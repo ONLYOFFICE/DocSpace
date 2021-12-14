@@ -1,11 +1,11 @@
-{
-    "FileLocation": "Mестоположението на файла",
-    "FileName": "Име на файла",
-    "FolderForSave": "Папка за запис",
-    "OpenSavedDocument": "Отворете записания документ в нов раздел",
-    "SelectFilesType": "Изберете файлове от тип: {{fileType}}",
-    "ImageFileType": "cнимки",
-    "DocumentsFileType": "документи",
-    "MailMergeFileType": "Изберете файл във XLSX формат",
-    "SelectFileTitle": "Изберете източник на данни"
+п»ї{
+    "FileLocation": "MРµСЃС‚РѕРїРѕР»РѕР¶РµРЅРёРµС‚Рѕ РЅР° С„Р°Р№Р»Р°",
+    "FileName": "РРјРµ РЅР° С„Р°Р№Р»Р°",
+    "FolderForSave": "РџР°РїРєР° Р·Р° Р·Р°РїРёСЃ",
+    "OpenSavedDocument": "РћС‚РІРѕСЂРµС‚Рµ Р·Р°РїРёСЃР°РЅРёСЏ РґРѕРєСѓРјРµРЅС‚ РІ РЅРѕРІ СЂР°Р·РґРµР»",
+    "SelectFilesType": "РР·Р±РµСЂРµС‚Рµ С„Р°Р№Р»РѕРІРµ РѕС‚ С‚РёРї: {{fileType}}",
+    "ImageFileType": "cРЅРёРјРєРё",
+    "DocumentsFileType": "РґРѕРєСѓРјРµРЅС‚Рё",
+    "MailMergeFileType": "РР·Р±РµСЂРµС‚Рµ С„Р°Р№Р» РІСЉРІ XLSX С„РѕСЂРјР°С‚",
+    "SelectFileTitle": "РР·Р±РµСЂРµС‚Рµ РёР·С‚РѕС‡РЅРёРє РЅР° РґР°РЅРЅРё"
 }
