@@ -1727,6 +1727,11 @@ const Dark = {
     background: "linear-gradient(200.71deg, #333333 0%, #1f1f1f 100%)",
     color: "#FFFFFF",
   },
+
+  peopleArticleBody: {
+    iconColor: "#a9a9a9",
+    expanderColor: "dimgray",
+  },
 };
 
 export default Dark;

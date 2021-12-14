@@ -1,23 +1,24 @@
-import React from "react";
-import styled, { css } from "styled-components";
-import { withTranslation } from "react-i18next";
-import Filter from "@appserver/common/api/people/filter";
-import TreeMenu from "@appserver/components/tree-menu";
-import TreeNode from "@appserver/components/tree-menu/sub-components/tree-node";
-import Link from "@appserver/components/link";
+import React from 'react';
+import styled, { css } from 'styled-components';
+import { withTranslation } from 'react-i18next';
+import Filter from '@appserver/common/api/people/filter';
+import TreeMenu from '@appserver/components/tree-menu';
+import TreeNode from '@appserver/components/tree-menu/sub-components/tree-node';
+import Link from '@appserver/components/link';
 
-import Loaders from "@appserver/common/components/Loaders";
-import CatalogFolderIcon from "../../../../../../../public/images/catalog.folder.react.svg";
-import DepartmentsGroupIcon from "../../../../public/images/departments.group.react.svg";
-import ExpanderDownIcon from "../../../../../../../public/images/expander-down.react.svg";
-import ExpanderRightIcon from "../../../../../../../public/images/expander-right.react.svg";
-import { inject, observer } from "mobx-react";
-import { getSelectedGroup } from "../../../helpers/people-helpers";
-import commonIconsStyles from "@appserver/components/utils/common-icons-style";
-import { withRouter } from "react-router";
-import config from "../../../../package.json";
-import { clickBackdrop, combineUrl } from "@appserver/common/utils";
-import { AppServerConfig } from "@appserver/common/constants";
+import Loaders from '@appserver/common/components/Loaders';
+import CatalogFolderIcon from '../../../../../../../public/images/catalog.folder.react.svg';
+import DepartmentsGroupIcon from '../../../../public/images/departments.group.react.svg';
+import ExpanderDownIcon from '../../../../../../../public/images/expander-down.react.svg';
+import ExpanderRightIcon from '../../../../../../../public/images/expander-right.react.svg';
+import { inject, observer } from 'mobx-react';
+import { getSelectedGroup } from '../../../helpers/people-helpers';
+import commonIconsStyles from '@appserver/components/utils/common-icons-style';
+import { withRouter } from 'react-router';
+import config from '../../../../package.json';
+import { clickBackdrop, combineUrl } from '@appserver/common/utils';
+import { AppServerConfig } from '@appserver/common/constants';
+import Base from '@appserver/components/themes/base';
 
 const StyledTreeMenu = styled(TreeMenu)`
   ${(props) =>
@@ -30,27 +31,34 @@ const StyledTreeMenu = styled(TreeMenu)`
 const StyledCatalogFolderIcon = styled(CatalogFolderIcon)`
   ${commonIconsStyles}
   path {
-    fill: ${(props) => props.color};
+    fill: ${(props) => props.theme.peopleArticleBody.iconColor};
   }
 `;
+StyledCatalogFolderIcon.defaultProps = { theme: Base };
+
 const StyledDepartmentsGroupIcon = styled(DepartmentsGroupIcon)`
   ${commonIconsStyles}
   path {
-    fill: ${(props) => props.color};
+    fill: ${(props) => props.theme.peopleArticleBody.iconColor};
   }
 `;
+StyledDepartmentsGroupIcon.defaultProps = { theme: Base };
+
 const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
   ${commonIconsStyles}
   path {
-    fill: ${(props) => props.color};
+    fill: ${(props) => props.theme.peopleArticleBody.expanderColor};
   }
 `;
+StyledExpanderDownIcon.defaultProps = { theme: Base };
+
 const StyledExpanderRightIcon = styled(ExpanderRightIcon)`
   ${commonIconsStyles}
   path {
-    fill: ${(props) => props.color};
+    fill: ${(props) => props.theme.peopleArticleBody.expanderColor};
   }
 `;
+StyledExpanderRightIcon.defaultProps = { theme: Base };
 const getItems = (data) => {
   return data.map((item) => {
     if (item.children) {
@@ -61,20 +69,16 @@ const getItems = (data) => {
           key={item.key}
           icon={
             item.root ? (
-              <StyledDepartmentsGroupIcon
-                size="scale"
-                color="#657077" /* isfill={true} */
-              /> // TODO: Add isFill prop if need
+              <StyledDepartmentsGroupIcon size="scale" /* isfill={true} */ /> // TODO: Add isFill prop if need
             ) : (
               // <DepartmentsGroupIcon
               //   size="scale"
               //   isfill={true}
               //   color="#657077"
               // />
-              ""
+              ''
             )
-          }
-        >
+          }>
           {getItems(item.children)}
         </TreeNode>
       );
@@ -84,7 +88,7 @@ const getItems = (data) => {
         className="inner-folder"
         key={item.key}
         title={item.title}
-        icon={<StyledCatalogFolderIcon size="scale" color="#657077" />}
+        icon={<StyledCatalogFolderIcon size="scale" />}
       />
     );
   });
@@ -97,17 +101,17 @@ class ArticleBodyContent extends React.Component {
   }
 
   getTreeGroups = (groups, departments) => {
-    const linkProps = { fontSize: "14px", fontWeight: 600, noHover: true };
+    const linkProps = { fontSize: '14px', fontWeight: 600, noHover: true };
     const { history } = this.props;
     const link = history.location.search.slice(1);
-    let newLink = link.split("&");
-    const index = newLink.findIndex((x) => x.includes("group"));
+    let newLink = link.split('&');
+    const index = newLink.findIndex((x) => x.includes('group'));
     index && newLink.splice(1, 1);
-    newLink = newLink.join("&");
+    newLink = newLink.join('&');
 
     const treeData = [
       {
-        key: "root",
+        key: 'root',
         title: (
           <Link {...linkProps} href={`${history.location.pathname}`}>
             {departments}
@@ -123,8 +127,7 @@ class ArticleBodyContent extends React.Component {
                   <Link
                     {...linkProps}
                     data-id={g.id}
-                    href={`${history.location.pathname}?group=${g.id}&${newLink}`}
-                  >
+                    href={`${history.location.pathname}?group=${g.id}&${newLink}`}>
                     {g.name}
                   </Link>
                 ),
@@ -147,10 +150,7 @@ class ArticleBodyContent extends React.Component {
   changeTitleDocument(id) {
     const { groups, selectedKeys, setDocumentTitle } = this.props;
 
-    const currentGroup = getSelectedGroup(
-      groups,
-      id === "root" ? selectedKeys[0] : id
-    );
+    const currentGroup = getSelectedGroup(groups, id === 'root' ? selectedKeys[0] : id);
     currentGroup ? setDocumentTitle(currentGroup.name) : setDocumentTitle();
   }
 
@@ -166,14 +166,14 @@ class ArticleBodyContent extends React.Component {
   onSelect = (data) => {
     //const { selectGroup } = this.props;
     const groupId = data[0];
-    const isRoot = groupId === "root";
+    const isRoot = groupId === 'root';
     //data && data.length === 1 && data[0] !== "root" ? data[0] : null;
 
     const { history, selectGroup } = this.props;
 
     this.changeTitleDocument(groupId);
 
-    if (window.location.pathname.indexOf("/people/filter") > 0) {
+    if (window.location.pathname.indexOf('/people/filter') > 0) {
       selectGroup(groupId);
     } else {
       const { filter } = this.props;
@@ -182,11 +182,7 @@ class ArticleBodyContent extends React.Component {
       if (!isRoot) newFilter.group = groupId;
 
       const urlFilter = newFilter.toUrlParams();
-      const url = combineUrl(
-        AppServerConfig.proxyURL,
-        config.homepage,
-        `/filter?${urlFilter}`
-      );
+      const url = combineUrl(AppServerConfig.proxyURL, config.homepage, `/filter?${urlFilter}`);
       history.push(url);
     }
   };
@@ -196,21 +192,14 @@ class ArticleBodyContent extends React.Component {
       return null;
     }
     if (obj.expanded) {
-      return <StyledExpanderDownIcon size="scale" color="dimgray" />;
+      return <StyledExpanderDownIcon size="scale" />;
     } else {
-      return <StyledExpanderRightIcon size="scale" color="dimgray" />;
+      return <StyledExpanderRightIcon size="scale" />;
     }
   };
 
   render() {
-    const {
-      isLoaded,
-      groups,
-      groupsCaption,
-      selectedKeys,
-      isAdmin,
-      isVisitor,
-    } = this.props;
+    const { isLoaded, groups, groupsCaption, selectedKeys, isAdmin, isVisitor } = this.props;
 
     const data = this.getTreeGroups(groups, groupsCaption);
 
@@ -235,8 +224,7 @@ class ArticleBodyContent extends React.Component {
           gapBetweenNodes="22"
           gapBetweenNodesTablet="26"
           isEmptyRootNode={getItems(data).length > 0}
-          isAdmin={isAdmin}
-        >
+          isAdmin={isAdmin}>
           {getItems(data)}
         </StyledTreeMenu>
       ))
@@ -244,7 +232,7 @@ class ArticleBodyContent extends React.Component {
   }
 }
 
-const BodyContent = withTranslation("Article")(withRouter(ArticleBodyContent));
+const BodyContent = withTranslation('Article')(withRouter(ArticleBodyContent));
 
 export default inject(({ auth, peopleStore }) => {
   const { settingsStore, isLoaded, setDocumentTitle, isAdmin } = auth;
@@ -261,7 +249,7 @@ export default inject(({ auth, peopleStore }) => {
   const { groupsCaption } = customNames;
   const { isEdit, setIsVisibleDataLossDialog } = editingFormStore;
   const { selectedGroup, selectGroup } = selectedGroupStore;
-  const selectedKeys = selectedGroup ? [selectedGroup] : ["root"];
+  const selectedKeys = selectedGroup ? [selectedGroup] : ['root'];
   const { setFirstLoad, isLoading } = loadingStore;
   return {
     setDocumentTitle,

@@ -1727,6 +1727,11 @@ const Base = {
     background: "linear-gradient(200.71deg, #2274aa 0%, #0f4071 100%)",
     color: "#FFFFFF",
   },
+
+  peopleArticleBody: {
+    iconColor: "#657077",
+    expanderColor: "dimgray",
+  },
 };
 
 export default Base;
