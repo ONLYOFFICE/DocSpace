@@ -162,7 +162,6 @@ LinkWithDropdown.propTypes = {
 };
 
 LinkWithDropdown.defaultProps = {
-  color: "#333333",
   data: [],
   dropdownType: "alwaysDashed",
   fontSize: "13px",

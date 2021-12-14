@@ -768,7 +768,7 @@ const Dark = {
     paddingRight: "20px",
     semiTransparentOpacity: "0.5",
     textDecoration: "underline dashed",
-    disableColor: gray,
+    disableColor: "#5c5c5c",
 
     svg: {
       opacity: "1",
