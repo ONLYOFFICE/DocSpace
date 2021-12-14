@@ -168,7 +168,7 @@ const Dark = {
 
   helpButton: {
     width: "100%",
-    backgroundColor: white,
+    backgroundColor: "#333333",
     maxWidth: "500px",
     margin: "0",
     lineHeight: "56px",

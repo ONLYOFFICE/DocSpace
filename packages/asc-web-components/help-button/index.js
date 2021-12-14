@@ -141,7 +141,6 @@ HelpButton.defaultProps = {
   offsetTop: 0,
   offsetBottom: 0,
   className: "icon-button",
-  color: "#A3A9AE",
 };
 
 export default HelpButton;
