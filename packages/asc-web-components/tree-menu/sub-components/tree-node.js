@@ -13,19 +13,25 @@ import CheckboxIcon from "../../../../public/images/checkbox.react.svg";
 import commonIconsStyles from "../../utils/common-icons-style";
 
 const StyledCheckboxIcon = styled(CheckboxIcon)`
-  ${(props) => props.color && `color: ${props.color}`};
-  ${commonIconsStyles}
+  color: ${(props) => props.theme.checkbox.fillColor};
+  ${commonIconsStyles};
 `;
+
+StyledCheckboxIcon.defaultProps = { theme: Base };
 
 const StyledCheckboxCheckedIcon = styled(CheckboxCheckedIcon)`
-  ${(props) => props.color && `color: ${props.color}`};
+  color: ${(props) => props.theme.checkbox.arrowColor};
   ${commonIconsStyles}
 `;
 
+StyledCheckboxCheckedIcon.defaultProps = { theme: Base };
+
 const StyledCheckboxIndeterminateIcon = styled(CheckboxIndeterminateIcon)`
-  ${(props) => props.color && `color: ${props.color}`};
+  color: ${(props) => props.theme.checkbox.indeterminateColor};
   ${commonIconsStyles}
 `;
+
+StyledCheckboxIndeterminateIcon.defaultProps = { theme: Base };
 
 var checkboxIcon,
   checkboxСheckedIcon,
@@ -44,10 +50,10 @@ var checkboxIcon,
     ReactDOMServer.renderToString(<StyledCheckboxIcon />)
   );
   сheckboxDisabledIcon = getCssFromSvg(
-    ReactDOMServer.renderToString(<StyledCheckboxIcon color="#F8F9F9" />)
+    ReactDOMServer.renderToString(<StyledCheckboxIcon />)
   );
   сheckboxHoverIcon = getCssFromSvg(
-    ReactDOMServer.renderToString(<StyledCheckboxIcon color="white" />)
+    ReactDOMServer.renderToString(<StyledCheckboxIcon />)
   );
 
   checkboxСheckedIcon = getCssFromSvg(
@@ -56,20 +62,18 @@ var checkboxIcon,
   checkboxCheckedDisabledIcon = getCssFromSvg(
     ReactDOMServer.renderToString(
       <StyledCheckboxCheckedIcon
-        //isfill={true}
-        color="#F8F9F9"
-        //isStroke={true}
-        //stroke="#ECEEF1"
+      //isfill={true}
+      //isStroke={true}
+      //stroke="#ECEEF1"
       />
     )
   );
   checkboxCheckedHoverIcon = getCssFromSvg(
     ReactDOMServer.renderToString(
       <StyledCheckboxCheckedIcon
-        //isfill={true}
-        color="white"
-        //isStroke={true}
-        //stroke="#A3A9AE"
+      //isfill={true}
+      //isStroke={true}
+      //stroke="#A3A9AE"
       />
     )
   );
@@ -80,20 +84,18 @@ var checkboxIcon,
   checkboxIndeterminateDisabledIcon = getCssFromSvg(
     ReactDOMServer.renderToString(
       <StyledCheckboxIndeterminateIcon
-        //isfill={true}
-        color="#F8F9F9"
-        //isStroke={true}
-        //stroke="#ECEEF1"
+      //isfill={true}
+      //isStroke={true}
+      //stroke="#ECEEF1"
       />
     )
   );
   checkboxIndeterminateHoverIcon = getCssFromSvg(
     ReactDOMServer.renderToString(
       <StyledCheckboxIndeterminateIcon
-        //isfill={true}
-        color="white"
-        //isStroke={true}
-        //stroke="#A3A9AE"
+      //isfill={true}
+      //isStroke={true}
+      //stroke="#A3A9AE"
       />
     )
   );
@@ -135,7 +137,7 @@ const TreeNodeMenu = styled(TreeNode)`
         ${(props) =>
           !props.isFullFillSelection &&
           `
-            width: min-content !important; 
+            width: min-content !important;
             padding-right: 4px;
             max-width: ${(props) =>
               props.newItems > 999 ? "71%" : "98%"} !important;
@@ -192,6 +194,12 @@ const TreeNodeMenu = styled(TreeNode)`
     vertical-align: top;
 
     left: 0;
+
+    svg {
+      path {
+        fill: ${(props) => props.theme.treeNode.title.color};
+      }
+    }
   }
 
   span.rc-tree-switcher,
@@ -212,6 +220,9 @@ const TreeNodeMenu = styled(TreeNode)`
 
     svg {
       height: 16px;
+      path {
+        stroke: ${(props) => props.theme.treeNode.switcherColor};
+      }
     }
   }
   span.rc-tree-iconEle {

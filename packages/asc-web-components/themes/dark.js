@@ -1126,6 +1126,10 @@ const Dark = {
     unsetBackgroundColor: "unset",
   },
 
+  treeMenu: {
+    disabledColor: "#5c5c5c",
+  },
+
   treeNode: {
     dragging: {
       draggable: {
@@ -1159,7 +1163,7 @@ const Dark = {
     },
 
     title: {
-      color: cyanBlueDarkShade,
+      color: "#a9a9a9",
     },
 
     selected: {

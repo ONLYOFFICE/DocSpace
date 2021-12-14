@@ -1131,6 +1131,10 @@ const Base = {
     unsetBackgroundColor: "unset",
   },
 
+  treeMenu: {
+    disabledColor: "#767676",
+  },
+
   treeNode: {
     dragging: {
       draggable: {
