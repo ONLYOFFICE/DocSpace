@@ -357,9 +357,15 @@ const Base = {
       borderRight: `1px solid ${globalColors.grayLightMid}`,
     },
 
+    text: {
+      color: "#555F65",
+      disabledColor: "#D0D5DA",
+    },
+
     closeButton: {
       alignItems: "center",
       padding: "0 8px",
+      color: "#979797",
       colorHover: cyanBlueDarkShade,
       backgroundColor: grayLightMid,
     },

@@ -343,22 +343,28 @@ const Dark = {
   },
 
   selectedItem: {
-    background: grayLight,
-    border: `1px solid ${globalColors.grayLightMid}`,
+    background: "#242424",
+    border: `1px solid #242424`,
     borderRadius: "3px",
 
     textBox: {
       padding: "0 8px",
       height: "32px",
       alignItems: "center",
-      borderRight: `1px solid ${globalColors.grayLightMid}`,
+      borderRight: `1px solid #242424`,
+    },
+
+    text: {
+      color: "#eeeeee",
+      disabledColor: "#474747",
     },
 
     closeButton: {
       alignItems: "center",
       padding: "0 8px",
-      colorHover: cyanBlueDarkShade,
-      backgroundColor: grayLightMid,
+      color: "#eeeeee",
+      colorHover: "#eeeeee",
+      backgroundColor: "#242424",
     },
   },
 
