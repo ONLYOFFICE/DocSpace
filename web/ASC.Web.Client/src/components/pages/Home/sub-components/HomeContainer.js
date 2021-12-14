@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 import { isMobileOnly, isMobile } from "react-device-detect";
 
 const HomeContainer = styled.div`
-  margin: ${isMobileOnly ? "50px" : "42px"} auto;
+  margin: ${isMobileOnly ? "50px" : "42px"} auto 0;
   max-width: 1000px;
   width: 100%;
   box-sizing: border-box;

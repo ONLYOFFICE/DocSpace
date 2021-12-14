@@ -92,7 +92,7 @@ const Home = ({ defaultPage, ...rest }) => {
   return tryRedirectTo(defaultPage) ? (
     <></>
   ) : (
-    <PageLayout>
+    <PageLayout isHomepage>
       <PageLayout.SectionBody>
         <Body {...rest} />
       </PageLayout.SectionBody>
