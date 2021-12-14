@@ -1,15 +1,16 @@
-import React from "react";
-import PropTypes from "prop-types";
-import Avatar from "@appserver/components/avatar";
-import DropDown from "@appserver/components/drop-down";
+import React from 'react';
+import PropTypes from 'prop-types';
+import Avatar from '@appserver/components/avatar';
+import DropDown from '@appserver/components/drop-down';
 
-import styled, { css } from "styled-components";
-import DropDownItem from "@appserver/components/drop-down-item";
+import styled, { css } from 'styled-components';
+import DropDownItem from '@appserver/components/drop-down-item';
+import { Base } from '@appserver/components/themes';
 
 const commonStyle = css`
-  font-family: "Open Sans", sans-serif, Arial;
+  font-family: 'Open Sans', sans-serif, Arial;
   font-style: normal;
-  color: #ffffff;
+  color: ${(props) => props.theme.menuContainer.color};
   margin-left: 60px;
   margin-top: -3px;
   max-width: 300px;
@@ -30,12 +31,14 @@ export const StyledProfileMenu = styled(DropDownItem)`
 export const MenuContainer = styled.div`
   position: relative;
   height: 76px;
-  background: linear-gradient(200.71deg, #2274aa 0%, #0f4071 100%);
+  background: ${(props) => props.theme.menuContainer.background};
   border-radius: 6px 6px 0px 0px;
   padding: 16px;
   cursor: default;
   box-sizing: border-box;
 `;
+
+MenuContainer.defaultProps = { theme: Base };
 
 export const AvatarContainer = styled.div`
   display: inline-block;
@@ -49,6 +52,8 @@ export const MainLabelContainer = styled.div`
   ${commonStyle}
 `;
 
+MainLabelContainer.defaultProps = { theme: Base };
+
 export const LabelContainer = styled.div`
   font-weight: normal;
   font-size: 11px;
@@ -56,6 +61,8 @@ export const LabelContainer = styled.div`
 
   ${commonStyle}
 `;
+
+LabelContainer.defaultProps = { theme: Base };
 
 export const TopArrow = styled.div`
   position: absolute;
@@ -89,8 +96,7 @@ class ProfileMenu extends React.Component {
         className={className}
         directionX="right"
         open={open}
-        clickOutsideAction={clickOutsideAction}
-      >
+        clickOutsideAction={clickOutsideAction}>
         <StyledProfileMenu>
           <MenuContainer>
             <AvatarContainer>
@@ -112,10 +118,10 @@ class ProfileMenu extends React.Component {
   }
 }
 
-ProfileMenu.displayName = "ProfileMenu";
+ProfileMenu.displayName = 'ProfileMenu';
 
 ProfileMenu.propTypes = {
-  avatarRole: PropTypes.oneOf(["owner", "admin", "guest", "user"]),
+  avatarRole: PropTypes.oneOf(['owner', 'admin', 'guest', 'user']),
   avatarSource: PropTypes.string,
   children: PropTypes.any,
   className: PropTypes.string,

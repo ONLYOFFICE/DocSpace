@@ -1,24 +1,23 @@
-import React from "react";
-import { ReactSVG } from "react-svg";
-import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
+import React from 'react';
+import { ReactSVG } from 'react-svg';
+import PropTypes from 'prop-types';
+import styled, { css } from 'styled-components';
 
-import Badge from "@appserver/components/badge";
-import Link from "@appserver/components/link";
-import Text from "@appserver/components/text";
-import commonIconsStyles from "@appserver/components/utils/common-icons-style";
-import { tablet } from "@appserver/components/utils/device";
-import MenuIcon from "../../../../../../public/images/menu.react.svg";
-
-const baseColor = "#7A95B0",
-  activeColor = "#FFFFFF",
-  separatorColor = "#3E668D";
+import Badge from '@appserver/components/badge';
+import Link from '@appserver/components/link';
+import Text from '@appserver/components/text';
+import commonIconsStyles from '@appserver/components/utils/common-icons-style';
+import { tablet } from '@appserver/components/utils/device';
+import MenuIcon from '../../../../../../public/images/menu.react.svg';
+import { Base } from '@appserver/components/themes';
 
 const NavItemSeparator = styled.div`
-  border-bottom: 1px ${(props) => (props.dashed ? "dashed" : "solid")}
-    ${separatorColor};
+  border-bottom: 1px ${(props) => (props.dashed ? 'dashed' : 'solid')}
+    ${(props) => props.theme.navItem.separatorColor};
   margin: 0 16px;
 `;
+
+NavItemSeparator.defaultProps = { theme: Base };
 
 const NavItemWrapper = styled(Link)`
   display: flex;
@@ -34,26 +33,44 @@ const NavItemWrapper = styled(Link)`
     !props.noHover &&
     css`
       &:hover {
-        background: #0d3760;
+        background: ${(props) => props.theme.navItem.wrapper.hoverBackground};
         text-decoration: none;
       }
     `}
 
   .injected-svg {
     path {
-      fill: ${(props) => props.iconColor};
+      fill: ${(props) =>
+        props.active ? props.theme.navItem.activeColor : props.theme.navItem.baseColor};
     }
   }
+
+  ${(props) =>
+    props.iconUrl &&
+    css`
+      svg {
+        path {
+          fill: ${(props) =>
+            props.active ? props.theme.navItem.activeColor : props.theme.navItem.baseColor};
+        }
+      }
+    `}
 
   @media ${tablet} {
     padding: 0 16px 0 16px;
   }
 `;
 
+NavItemWrapper.defaultProps = { theme: Base };
+
 const NavItemLabel = styled(Text)`
   margin: 0 auto 0 16px;
-  display: ${(props) => (props.opened ? "block" : "none")};
+  display: ${(props) => (props.opened ? 'block' : 'none')};
+  color: ${(props) =>
+    props.active ? props.theme.navItem.activeColor : props.theme.navItem.baseColor};
 `;
+
+NavItemLabel.defaultProps = { theme: Base };
 
 const badgeCss = css`
   position: absolute;
@@ -63,7 +80,7 @@ const badgeCss = css`
 `;
 
 const NavItemBadge = styled(Badge)`
-  ${(props) => (props.opened ? "" : badgeCss)}
+  ${(props) => (props.opened ? '' : badgeCss)}
 `;
 
 const VersionBadge = styled.div`
@@ -82,9 +99,12 @@ const VersionBadge = styled.div`
 const StyledMenuIcon = styled(MenuIcon)`
   ${commonIconsStyles}
   path {
-    fill: ${(props) => props.color};
+    fill: ${(props) =>
+      props.active ? props.theme.navItem.activeColor : props.theme.navItem.baseColor};
   }
 `;
+
+StyledMenuIcon.defaultProps = { theme: Base };
 const NavItem = React.memo((props) => {
   //console.log("NavItem render");
   const {
@@ -101,61 +121,46 @@ const NavItem = React.memo((props) => {
     noHover,
     ...rest
   } = props;
-  const color = active ? activeColor : baseColor;
 
   return separator ? (
     <NavItemSeparator {...rest} />
   ) : (
     <NavItemWrapper
       noHover={noHover}
+      iconUrl={iconUrl}
       href={url}
       onClick={onClick}
-      iconColor={color}
-      {...rest}
-    >
+      active={active}
+      {...rest}>
       {iconUrl ? (
         <ReactSVG
           src={iconUrl}
           beforeInjection={(svg) => {
-            svg.setAttribute("style", `width: 24px; height: 24px;`);
-            svg.setAttribute("fill", color);
+            svg.setAttribute('style', `width: 24px; height: 24px;`);
           }}
         />
       ) : (
         <>
-          {iconName === "MenuIcon" && <VersionBadge>BETA</VersionBadge>}
-          <StyledMenuIcon color={color} size="big" />
+          {iconName === 'MenuIcon' && <VersionBadge>BETA</VersionBadge>}
+          <StyledMenuIcon active={active} size="big" />
         </>
       )}
       {children && (
-        <NavItemLabel
-          opened={opened}
-          color={color}
-          fontSize="16px"
-          fontWeight="bold"
-          truncate
-        >
+        <NavItemLabel opened={opened} active={active} fontSize="16px" fontWeight="bold" truncate>
           {children}
         </NavItemLabel>
       )}
-      <NavItemBadge
-        opened={opened}
-        label={badgeNumber}
-        onClick={onBadgeClick}
-      />
+      <NavItemBadge opened={opened} label={badgeNumber} onClick={onBadgeClick} />
     </NavItemWrapper>
   );
 });
 
-NavItem.displayName = "NavItem";
+NavItem.displayName = 'NavItem';
 
 NavItem.propTypes = {
   active: PropTypes.bool,
   badgeNumber: PropTypes.number,
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
-  ]),
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   url: PropTypes.string,
   iconName: PropTypes.string,
   iconUrl: PropTypes.string,

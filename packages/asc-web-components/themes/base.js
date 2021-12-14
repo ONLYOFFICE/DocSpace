@@ -1703,6 +1703,30 @@ const Base = {
   //     },
   //   },
   // },
+
+  nav: {
+    backgroundColor: "#0F4071",
+  },
+
+  navItem: {
+    baseColor: "#7A95B0",
+    activeColor: "#FFFFFF",
+    separatorColor: "#3E668D",
+
+    wrapper: {
+      hoverBackground: "#0d3760",
+    },
+  },
+
+  header: {
+    backgroundColor: "#0F4071",
+    linkColor: "#7a95b0",
+  },
+
+  menuContainer: {
+    background: "linear-gradient(200.71deg, #2274aa 0%, #0f4071 100%)",
+    color: "#FFFFFF",
+  },
 };
 
 export default Base;

@@ -1703,6 +1703,30 @@ const Dark = {
   //     },
   //   },
   // },
+
+  nav: {
+    backgroundColor: "#292929",
+  },
+
+  navItem: {
+    baseColor: "#a9a9a9",
+    activeColor: "#FFFFFF",
+    separatorColor: "#474747",
+
+    wrapper: {
+      hoverBackground: "#474747",
+    },
+  },
+
+  header: {
+    backgroundColor: "#1f1f1f ",
+    linkColor: "#a9a9a9",
+  },
+
+  menuContainer: {
+    background: "linear-gradient(200.71deg, #333333 0%, #1f1f1f 100%)",
+    color: "#FFFFFF",
+  },
 };
 
 export default Dark;
