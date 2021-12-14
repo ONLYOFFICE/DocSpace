@@ -1,14 +1,14 @@
-import React from "react";
-import { withRouter } from "react-router";
-import PropTypes from "prop-types";
-import IconButton from "@appserver/components/icon-button";
-import Headline from "@appserver/common/components/Headline";
-import { withTranslation } from "react-i18next";
-import styled from "styled-components";
-import { inject, observer } from "mobx-react";
+import React from 'react';
+import { withRouter } from 'react-router';
+import PropTypes from 'prop-types';
+import IconButton from '@appserver/components/icon-button';
+import Headline from '@appserver/common/components/Headline';
+import { withTranslation } from 'react-i18next';
+import styled from 'styled-components';
+import { inject, observer } from 'mobx-react';
 
-import withLoader from "../../../../HOCs/withLoader";
-import Loaders from "@appserver/common/components/Loaders";
+import withLoader from '../../../../HOCs/withLoader';
+import Loaders from '@appserver/common/components/Loaders';
 
 const Wrapper = styled.div`
   display: grid;
@@ -40,17 +40,13 @@ class SectionHeaderContent extends React.Component {
 
   render() {
     const { group, t, groupCaption } = this.props;
-    const headerText = group
-      ? group.name
-      : t("CustomNewDepartment", { groupCaption });
+    const headerText = group ? group.name : t('CustomNewDepartment', { groupCaption });
 
     return (
       <Wrapper>
         <IconButton
           iconName="/static/images/arrow.path.react.svg"
           size="17"
-          color="#A3A9AE"
-          hoverColor="#657077"
           isFill={true}
           onClick={this.onClickBack}
           className="arrow-button"
@@ -81,9 +77,7 @@ export default withRouter(
     resetGroup: peopleStore.selectedGroupStore.resetGroup,
   }))(
     observer(
-      withTranslation("GroupAction")(
-        withLoader(SectionHeaderContent)(<Loaders.SectionHeader />)
-      )
-    )
-  )
+      withTranslation('GroupAction')(withLoader(SectionHeaderContent)(<Loaders.SectionHeader />)),
+    ),
+  ),
 );
