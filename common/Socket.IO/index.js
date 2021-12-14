@@ -1,13 +1,12 @@
 const express = require("express");
 const { Server } = require("socket.io");
 const { createServer } = require("http");
-const cookie = require("cookie");
 const expressSession = require("express-session");
 const cookieParser = require("cookie-parser");
 const MemoryStore = require("memorystore")(expressSession);
 const sharedsession = require("express-socket.io-session");
 
-const requestManager = require("./requestManager");
+//const request = require("./requestManager");
 const config = require("./config");
 const auth = require("./middleware/auth.js");
 
@@ -68,23 +67,17 @@ io.use(sharedsession(session, secretCookieParser, { autoSave: true }))
   });
 
 io.on("connection", (socket) => {
-  const cookie = socket.client.request.cookies["asc_auth_key"];
-  //console.log("cookies", socket.client.request.cookies["asc_auth_key"]);
-
-  socket.on("startFileEdit", async (fileId) => {
-    const url = `files/file/${fileId}`;
-
-    const headers = [];
-    if (cookie) headers["Authorization"] = cookie;
-
-    const options = { method: "GET", headers };
-    const file = await requestManager.makeRequest(url, options, socket);
-    io.emit("subFileChanges", file);
+  //TODO:
+  socket.on("editFile", (fileId) => {
+    setTimeout(() => {
+      const file = { id: 123, name: "some file", fileStatus: 0 };
+      io.emit("editFile", file);
+    }, 10000);
   });
 
-  socket.on("reportFileCreation", (fileId) => {
-    io.emit("getFileCreation", fileId);
-  });
+  // socket.on("reportFileCreation", (fileId) => {
+  //   io.emit("getFileCreation", fileId);
+  // });
 });
 
 app.get("/", (req, res) => {

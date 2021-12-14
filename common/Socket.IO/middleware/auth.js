@@ -1,28 +1,21 @@
-﻿const co = require("co");
-
-const requestManager = require("../requestManager.js");
+﻿const request = require("../requestManager.js");
 const authService = require("./authService.js");
-//const apiRequestManager = require("../requestManager.js");
 
 module.exports = (socket, next) => {
   const req = socket.client.request;
   const session = socket.handshake.session;
+  const cookie = req.cookies["asc_auth_key"];
 
-  //console.log("req", req.headers);
+  // if (req.user) {
+  //   next();
 
-  if (req.user) {
-    next();
+  //   return;
+  // }
 
+  if (!req.cookies || !cookie) {
+    socket.disconnect("unauthorized");
+    next(new Error("Authentication error"));
     return;
-  }
-
-  if (
-    !req.cookies ||
-    (!req.cookies["asc_auth_key"] && !req.cookies["authorization"])
-  ) {
-    // socket.disconnect("unauthorized");
-    // next(new Error("Authentication error"));
-    // return;
   }
 
   // if (
@@ -45,25 +38,35 @@ module.exports = (socket, next) => {
   //   return;
   // }
 
-  co(() => {
-    return Promise.all([
-      requestManager.makeRequest(
-        "people/@self.json?fields=id,userName,displayName",
-        { method: "GET" /* headers */ }
-      ),
-      requestManager.makeRequest("portal.json?fields=tenantId,tenantDomain", {
-        method: "GET" /* headers, */,
-      }),
-    ])
-      .then((res) => {
-        //console.log("RESPONSE", res);
+  let headers;
+  if (cookie)
+    headers = {
+      Authorization: cookie,
+    };
 
-        session.save();
-        next();
-      })
-      .catch((err) => {
-        socket.disconnect("unauthorized");
-        next(new Error("Authentication error"));
-      });
-  });
+  const getUser = () => {
+    return request({
+      method: "get",
+      url: "/people/@self.json?fields=id,userName,displayName",
+    });
+  };
+
+  const getPortal = () => {
+    return request({
+      method: "get",
+      url: "/portal.json?fields=tenantId,tenantDomain",
+    });
+  };
+
+  return Promise.all([getUser(), getPortal()])
+    .then(([user, portal]) => {
+      session.user = user;
+      session.portal = portal;
+      session.save();
+      next();
+    })
+    .catch((err) => {
+      socket.disconnect("Unauthorized");
+      next(new Error("Authentication error"));
+    });
 };
