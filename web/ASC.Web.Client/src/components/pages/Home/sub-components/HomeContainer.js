@@ -18,6 +18,7 @@ const HomeContainer = styled.div`
     font-weight: bold;
     margin-bottom: 27px;
     text-align: center;
+    height: 30px;
   }
 
   .home-modules-container {

@@ -14,7 +14,7 @@ const StyledIllustration = styled.div`
   display: ${isMobile ? "none" : "flex"};
   position: relative;
   max-height: 308px;
-  margin-top: 16px;
+  margin-top: 18px;
 
   .illustration-svg {
     width: 500px;
