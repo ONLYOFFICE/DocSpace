@@ -175,8 +175,9 @@ const HeaderComponent = ({
   const numberOfModules = mainModules.filter((item) => !item.separator).length;
   const needNavMenu = currentProductId !== "home";
 
-  const navItems = mainModules.map(
-    ({ id, separator, iconUrl, notifications, link, title, dashed }) => {
+  const navItems = mainModules
+    .filter((module) => module.id !== "settings")
+    .map(({ id, separator, iconUrl, notifications, link, title, dashed }) => {
       const itemLink = getLink(link);
       const shouldRenderIcon = checkIfModuleOld(link);
       return (
@@ -194,12 +195,11 @@ const HeaderComponent = ({
           url={itemLink}
           dashed={dashed}
         >
-          {id === "settings" ? i18n.t("Common:Settings") : title}
+          {title}
           {shouldRenderIcon && <StyledExternalLinkIcon color={linkColor} />}
         </NavItem>
       );
-    }
-  );
+    });
 
   return (
     <>
