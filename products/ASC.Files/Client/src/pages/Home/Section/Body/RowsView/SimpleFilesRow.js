@@ -90,8 +90,8 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .badge {
-    width: 16px;
-    height: 16px;
+    width: 12px;
+    height: 12px;
     margin-right: 8px;
   }
 
@@ -103,21 +103,17 @@ const StyledSimpleFilesRow = styled(Row)`
     }
   }
 
-  @media (min-width: 768px) and (max-width: 1439px) {
-    .new-items {
-      p {
-        padding: 2px;
-      }
-    }
-  }
-
   .badge:last-child {
     margin-right: 0px;
   }
 
   .badge-version {
+    width: 21px;
     margin-right: 8px;
     min-width: max-content;
+    p {
+      text-align: center;
+    }
   }
 
   .lock-file {
@@ -137,6 +133,27 @@ const StyledSimpleFilesRow = styled(Row)`
 
   .expandButton {
     margin-left: 7px;
+  }
+
+  @media (min-width: 517px) and (max-width: 1303px) {
+    .badge {
+      width: 16px;
+      height: 16px;
+      margin-right: 26px;
+    }
+    .tablet {
+      margin-top: 20px;
+    }
+    .tablet:last-child {
+      margin-right: 58px;
+    }
+    .new-items {
+      margin-top: 20px;
+      margin-right: -2px;
+      p {
+        padding: 2px;
+      }
+    }
   }
 `;
 

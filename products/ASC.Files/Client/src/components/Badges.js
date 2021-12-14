@@ -39,61 +39,6 @@ const Badges = ({
 
   return fileExst ? (
     <div className="badges additional-badges">
-      {version > 1 && !(showNew || isNewWithFav) && (
-        <Badge
-          className="badge-version icons-group"
-          backgroundColor="#A3A9AE"
-          borderRadius="11px"
-          color="#FFFFFF"
-          fontSize="9px"
-          fontWeight={800}
-          label={`V. ${versionGroup}`}
-          maxWidth="50px"
-          onClick={onShowVersionHistory}
-          padding="1px 5px"
-          data-id={id}
-        />
-      )}
-      {(showNew || isNewWithFav) && !(version > 1) && (
-        <Badge
-          className="badge-version icons-group"
-          backgroundColor="#ED7309"
-          borderRadius="11px"
-          color="#FFFFFF"
-          fontSize="10px"
-          fontWeight={800}
-          label={t("New")}
-          maxWidth="50px"
-          onClick={onBadgeClick}
-          padding="0 5px"
-          data-id={id}
-        />
-      )}
-      {version > 1 && (showNew || isNewWithFav) && (
-        <Badge
-          className="badge-version icons-group"
-          backgroundColor="#ED7309"
-          borderRadius="11px"
-          color="#FFFFFF"
-          fontSize="9px"
-          fontWeight={800}
-          label={`V. ${versionGroup}`}
-          maxWidth="50px"
-          onClick={onSharedVersionClick}
-          padding="1px 5px"
-          data-id={id}
-        />
-      )}
-      {canConvert && !isTrashFolder && (
-        <IconButton
-          onClick={setConvertDialogVisible}
-          iconName="/static/images/refresh.react.svg"
-          className="badge icons-group can-convert"
-          size="medium"
-          color="#A3A9AE"
-          hoverColor="#3B72A7"
-        />
-      )}
       {canWebEdit &&
         !isTrashFolder &&
         !isPrivacy &&
@@ -106,12 +51,67 @@ const Badges = ({
                 ? "/static/images/file.actions.convert.edit.doc.react.svg"
                 : "/static/images/access.edit.react.svg"
             }
-            className="badge icons-group"
-            size="medium"
+            className="badge tablet icons-group"
+            size="small"
             onClick={onFilesClick}
             hoverColor="#3B72A7"
           />
         )}
+      {canConvert && !isTrashFolder && (
+        <IconButton
+          onClick={setConvertDialogVisible}
+          iconName="/static/images/refresh.react.svg"
+          className="badge tablet icons-group can-convert"
+          size="medium"
+          color="#A3A9AE"
+          hoverColor="#3B72A7"
+        />
+      )}
+      {version > 1 && !(showNew || isNewWithFav) && (
+        <Badge
+          className="badge-version tablet icons-group"
+          backgroundColor="#A3A9AE"
+          borderRadius="11px"
+          color="#FFFFFF"
+          fontSize="9px"
+          fontWeight={800}
+          label={`V.${versionGroup}`}
+          maxWidth="50px"
+          onClick={onShowVersionHistory}
+          padding="0 3px"
+          data-id={id}
+        />
+      )}
+      {version > 1 && (showNew || isNewWithFav) && (
+        <Badge
+          className="badge-version tablet icons-group"
+          backgroundColor="#ED7309"
+          borderRadius="11px"
+          color="#FFFFFF"
+          fontSize="9px"
+          fontWeight={800}
+          label={`V.${versionGroup}`}
+          maxWidth="50px"
+          onClick={onSharedVersionClick}
+          padding="1px 5px"
+          data-id={id}
+        />
+      )}
+      {(showNew || isNewWithFav) && !(version > 1) && (
+        <Badge
+          className="badge-version tablet icons-group"
+          backgroundColor="#ED7309"
+          borderRadius="11px"
+          color="#FFFFFF"
+          fontSize="10px"
+          fontWeight={800}
+          label={t("New")}
+          maxWidth="50px"
+          onClick={onBadgeClick}
+          padding="0 5px"
+          data-id={id}
+        />
+      )}
     </div>
   ) : (
     showNew && (

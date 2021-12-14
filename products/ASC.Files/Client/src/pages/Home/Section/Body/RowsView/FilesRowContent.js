@@ -17,13 +17,21 @@ const SimpleFilesRowContent = styled(RowContent)`
   .row-main-container-wrapper {
     width: 100%;
   }
+
   .badge-ext {
-    margin-right: 8px;
+    // margin-right: 8px;
   }
 
   .row_update-text {
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  @media (min-width: 517px) and (max-width: 1303px) {
+    .row-main-container-wrapper {
+      display: flex;
+      justify-content: space-between;
+    }
   }
 `;
 
