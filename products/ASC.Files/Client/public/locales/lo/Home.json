@@ -12,7 +12,6 @@
   "Convert": "ປ່ຽນ",
   "CopyItem": "<strong>{{title}}</strong> ຄັດລອກ",
   "CopyItems": "<strong>{{qty}}</strong> ອົງປະກອບທີ່ຖືກຄັດລອກ",
-  "CreateWithEmptyTitle": "ບໍ່ສາມາດສ້າງແຟ້ມ ຫຼື ເອກະສານທີ່ມີຊື່ຫົວຂໍ້ວ່າງເປົ່າ",
   "Document": "ເອກະສານ",
   "Duplicate": "ສ້າງສຳເນົາ",
   "EmptyFile": "ເອກະສານຫວ່າງເປົ່າ",

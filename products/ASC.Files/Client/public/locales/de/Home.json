@@ -12,7 +12,6 @@
   "Convert": "Konvertierung",
   "CopyItem": "<strong>{{title}}</strong> kopiert",
   "CopyItems": "Elemente kopiert: <strong>{{qty}}</strong>",
-  "CreateWithEmptyTitle": "Der Titel des Orderns oder Datei darf nicht leer sein",
   "Document": "Dokument",
   "Duplicate": "Kopie erstellen",
   "EmptyFile": "Leere Datei",

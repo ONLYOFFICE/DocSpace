@@ -12,7 +12,6 @@
   "Convert": "Converter",
   "CopyItem": "<strong>{{title}}</strong> copiado",
   "CopyItems": "<strong>{{qty}}</strong> elementos copiados",
-  "CreateWithEmptyTitle": "Não é possível criar uma pasta ou arquivo com um título vazio",
   "Document": "Documento",
   "Duplicate": "Criar uma cópia",
   "EmptyFile": "Arquivo vazio",

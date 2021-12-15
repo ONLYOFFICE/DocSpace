@@ -12,7 +12,6 @@
   "Convert": "Конвертация",
   "CopyItem": "<strong>{{title}}</strong> скопирован",
   "CopyItems": "Скопировано элементов: <strong>{{qty}}</strong>",
-  "CreateWithEmptyTitle": "Нельзя создать папку или файл с пустым названием",
   "Document": "Документ",
   "Duplicate": "Создать копию",
   "EmptyFile": "Пустой файл",
