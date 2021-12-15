@@ -121,7 +121,6 @@ const StyledSimpleFilesRow = styled(Row)`
 
   .lock-file {
     cursor: ${(props) => (props.withAccess ? "pointer" : "default")};
-    width: 14px;
   }
 
   .badges {
@@ -135,7 +134,7 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .expandButton {
-    margin-left: 7px;
+    margin-left: 10px;
   }
 
   ${(props) =>
@@ -153,7 +152,7 @@ const StyledSimpleFilesRow = styled(Row)`
     }
 
     .tablet:last-child {
-      margin-right: 58px;
+      margin-right: 60px;
     }
 
     .new-items {
@@ -200,6 +199,7 @@ const SimpleFilesRow = (props) => {
     isAdmin,
   } = props;
 
+  console.log("sectionWidth", sectionWidth);
   const withAccess = isAdmin || item.access === 0;
 
   const element = (
