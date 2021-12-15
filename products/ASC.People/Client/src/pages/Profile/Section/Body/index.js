@@ -1,40 +1,30 @@
-import Avatar from "@appserver/components/avatar";
-import Button from "@appserver/components/button";
-import IconButton from "@appserver/components/icon-button";
-import Text from "@appserver/components/text";
-import SocialButton from "@appserver/components/social-button";
-import FacebookButton from "@appserver/components/facebook-button";
-import ToggleContent from "@appserver/components/toggle-content";
-import Link from "@appserver/components/link";
-import ProfileInfo from "./ProfileInfo/ProfileInfo";
-import toastr from "studio/toastr";
-import React from "react";
-import {
-  combineUrl,
-  isMe,
-  getProviderTranslation,
-} from "@appserver/common/utils";
-import styled from "styled-components";
+import Avatar from '@appserver/components/avatar';
+import Button from '@appserver/components/button';
+import IconButton from '@appserver/components/icon-button';
+import Text from '@appserver/components/text';
+import SocialButton from '@appserver/components/social-button';
+import FacebookButton from '@appserver/components/facebook-button';
+import ToggleContent from '@appserver/components/toggle-content';
+import Link from '@appserver/components/link';
+import ProfileInfo from './ProfileInfo/ProfileInfo';
+import toastr from 'studio/toastr';
+import React from 'react';
+import { combineUrl, isMe, getProviderTranslation } from '@appserver/common/utils';
+import styled from 'styled-components';
 
-import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
-import { inject, observer } from "mobx-react";
-import {
-  getUserContacts,
-  getUserRole,
-} from "../../../../helpers/people-helpers";
-import config from "../../../../../package.json";
-import { AppServerConfig, providersData } from "@appserver/common/constants";
-import { unlinkOAuth, linkOAuth } from "@appserver/common/api/people";
-import { getAuthProviders } from "@appserver/common/api/settings";
-import { Trans, useTranslation } from "react-i18next";
-import {
-  ResetApplicationDialog,
-  BackupCodesDialog,
-} from "../../../../components/dialogs";
+import { withRouter } from 'react-router';
+import { withTranslation } from 'react-i18next';
+import { inject, observer } from 'mobx-react';
+import { getUserContacts, getUserRole } from '../../../../helpers/people-helpers';
+import config from '../../../../../package.json';
+import { AppServerConfig, providersData } from '@appserver/common/constants';
+import { unlinkOAuth, linkOAuth } from '@appserver/common/api/people';
+import { getAuthProviders } from '@appserver/common/api/settings';
+import { Trans, useTranslation } from 'react-i18next';
+import { ResetApplicationDialog, BackupCodesDialog } from '../../../../components/dialogs';
 
-import Loaders from "@appserver/common/components/Loaders";
-import withLoader from "../../../../HOCs/withLoader";
+import Loaders from '@appserver/common/components/Loaders';
+import withLoader from '../../../../HOCs/withLoader';
 
 const ProfileWrapper = styled.div`
   display: flex;
@@ -98,7 +88,7 @@ const ProviderButtonsWrapper = styled.div`
   }
 `;
 
-const createContacts = (contacts) => {
+const createContacts = (contacts, theme) => {
   const styledContacts = contacts.map((contact, index) => {
     let url = null;
     if (contact.link && contact.link.length > 0) {
@@ -108,7 +98,7 @@ const createContacts = (contacts) => {
       <ContactWrapper key={index}>
         <IconButton
           className="icon-button"
-          color="#333333"
+          color={theme ? theme.profileInfo.iconButtonColor : '#333333'}
           size={16}
           iconName={contact.icon}
           isFill={true}
@@ -123,8 +113,7 @@ const createContacts = (contacts) => {
   return styledContacts;
 };
 
-const stringFormat = (string, data) =>
-  string.replace(/\{(\d+)\}/g, (m, n) => data[n] || m);
+const stringFormat = (string, data) => string.replace(/\{(\d+)\}/g, (m, n) => data[n] || m);
 
 class SectionBodyContent extends React.PureComponent {
   constructor(props) {
@@ -166,34 +155,23 @@ class SectionBodyContent extends React.PureComponent {
     const type = await getTfaType();
     this.setState({ tfa: type });
 
-    if (type && type !== "none") {
+    if (type && type !== 'none') {
       const codes = await getBackupCodes();
       setBackupCodes(codes);
     }
     window.loginCallback = this.loginCallback;
   }
 
-  onEditSubscriptionsClick = () => console.log("Edit subscriptions onClick()");
+  onEditSubscriptionsClick = () => console.log('Edit subscriptions onClick()');
 
   onEditProfileClick = () => {
-    const {
-      isMy,
-      avatarMax,
-      setAvatarMax,
-      history,
-      profile,
-      setIsEditTargetUser,
-    } = this.props;
+    const { isMy, avatarMax, setAvatarMax, history, profile, setIsEditTargetUser } = this.props;
 
     avatarMax && setAvatarMax(null);
     setIsEditTargetUser(true);
     const editUrl = isMy
       ? combineUrl(AppServerConfig.proxyURL, `/my?action=edit`)
-      : combineUrl(
-          AppServerConfig.proxyURL,
-          config.homepage,
-          `/edit/${profile.userName}`
-        );
+      : combineUrl(AppServerConfig.proxyURL, config.homepage, `/edit/${profile.userName}`);
 
     history.push(editUrl);
   };
@@ -212,7 +190,7 @@ class SectionBodyContent extends React.PureComponent {
     linkOAuth(profile).then((resp) => {
       getAuthProviders().then((providers) => {
         setProviders(providers);
-        toastr.success(t("ProviderSuccessfullyConnected"));
+        toastr.success(t('ProviderSuccessfullyConnected'));
       });
     });
   };
@@ -222,7 +200,7 @@ class SectionBodyContent extends React.PureComponent {
     unlinkOAuth(providerName).then(() => {
       getAuthProviders().then((providers) => {
         setProviders(providers);
-        toastr.success(t("ProviderSuccessfullyDisconnected"));
+        toastr.success(t('ProviderSuccessfullyDisconnected'));
       });
     });
   };
@@ -234,17 +212,17 @@ class SectionBodyContent extends React.PureComponent {
     try {
       const tokenGetterWin = window.open(
         link,
-        "login",
-        "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
+        'login',
+        'width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no',
       );
 
       getOAuthToken(tokenGetterWin).then((code) => {
         const token = window.btoa(
           JSON.stringify({
             auth: providerName,
-            mode: "popup",
-            callback: "loginCallback",
-          })
+            mode: 'popup',
+            callback: 'loginCallback',
+          }),
         );
 
         tokenGetterWin.location.href = getLoginLink(token, code);
@@ -255,7 +233,7 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   providerButtons = () => {
-    const { t, providers } = this.props;
+    const { t, providers, theme } = this.props;
 
     const providerButtons =
       providers &&
@@ -267,7 +245,7 @@ class SectionBodyContent extends React.PureComponent {
         return (
           <React.Fragment key={`${item.provider}ProviderItem`}>
             <div>
-              {item.provider === "facebook" ? (
+              {item.provider === 'facebook' ? (
                 <FacebookButton
                   noHover={true}
                   iconName={icon}
@@ -289,22 +267,20 @@ class SectionBodyContent extends React.PureComponent {
               <div>
                 <Link
                   type="action"
-                  color="A3A9AE"
+                  color={theme.profileInfo.linkColor}
                   onClick={(e) => this.unlinkAccount(item.provider, e)}
-                  isHovered={true}
-                >
-                  {t("Disconnect")}
+                  isHovered={true}>
+                  {t('Disconnect')}
                 </Link>
               </div>
             ) : (
               <div>
                 <Link
                   type="action"
-                  color="A3A9AE"
+                  color={theme.profileInfo.linkColor}
                   onClick={(e) => this.linkAccount(item.provider, item.url, e)}
-                  isHovered={true}
-                >
-                  {t("Connect")}
+                  isHovered={true}>
+                  {t('Connect')}
                 </Link>
               </div>
             )}
@@ -341,6 +317,7 @@ class SectionBodyContent extends React.PureComponent {
       providers,
       backupCodes,
       personal,
+      theme,
     } = this.props;
     const contacts = profile.contacts && getUserContacts(profile.contacts);
     const role = getUserRole(profile);
@@ -348,9 +325,9 @@ class SectionBodyContent extends React.PureComponent {
       (contacts &&
         contacts.social &&
         contacts.social.length > 0 &&
-        createContacts(contacts.social)) ||
+        createContacts(contacts.social, theme)) ||
       null;
-    const infoContacts = contacts && createContacts(contacts.contact);
+    const infoContacts = contacts && createContacts(contacts.contact, theme);
     //const isSelf = isMe(viewer, profile.userName);
 
     let backupCodesCount = 0;
@@ -377,8 +354,8 @@ class SectionBodyContent extends React.PureComponent {
               <Button
                 size="big"
                 scale={true}
-                label={t("EditUser")}
-                title={t("EditUser")}
+                label={t('EditUser')}
+                title={t('EditUser')}
                 onClick={this.onEditProfileClick}
               />
             </EditButtonWrapper>
@@ -395,20 +372,18 @@ class SectionBodyContent extends React.PureComponent {
 
         {!personal && isSelf && this.oauthDataExists() && (
           <ToggleWrapper>
-            <ToggleContent label={t("LoginSettings")} isOpen={true}>
-              <ProviderButtonsWrapper>
-                {this.providerButtons()}
-              </ProviderButtonsWrapper>
+            <ToggleContent label={t('LoginSettings')} isOpen={true}>
+              <ProviderButtonsWrapper>{this.providerButtons()}</ProviderButtonsWrapper>
             </ToggleContent>
           </ToggleWrapper>
         )}
         {!personal && isSelf && false && (
           <ToggleWrapper isSelf={true}>
-            <ToggleContent label={t("Subscriptions")} isOpen={true}>
+            <ToggleContent label={t('Subscriptions')} isOpen={true}>
               <Text as="span">
                 <Button
                   size="big"
-                  label={t("EditSubscriptionsBtn")}
+                  label={t('EditSubscriptionsBtn')}
                   primary={true}
                   onClick={this.onEditSubscriptionsClick}
                 />
@@ -416,32 +391,30 @@ class SectionBodyContent extends React.PureComponent {
             </ToggleContent>
           </ToggleWrapper>
         )}
-        {isSelf && tfa && tfa !== "none" && (
+        {isSelf && tfa && tfa !== 'none' && (
           <ToggleWrapper>
-            <ToggleContent label={t("TfaLoginSettings")} isOpen={true}>
-              <Text as="span">{t("TwoFactorDescription")}</Text>
+            <ToggleContent label={t('TfaLoginSettings')} isOpen={true}>
+              <Text as="span">{t('TwoFactorDescription')}</Text>
               <LinkActionWrapper>
                 <Link
                   type="action"
                   isHovered={true}
                   className="link-action-reset"
                   isBold={true}
-                  onClick={this.toggleResetAppDialogVisible}
-                >
-                  {t("Common:ResetApplication")}
+                  onClick={this.toggleResetAppDialogVisible}>
+                  {t('Common:ResetApplication')}
                 </Link>
                 <Link
                   type="action"
                   isHovered={true}
                   className="link-action-backup"
                   isBold={true}
-                  onClick={this.toggleBackupCodesDialogVisible}
-                >
-                  {t("ShowBackupCodes")}
+                  onClick={this.toggleBackupCodesDialogVisible}>
+                  {t('ShowBackupCodes')}
                 </Link>
 
-                <Link color="#A3A9AE" noHover={true}>
-                  ({backupCodesCount} {t("CountCodesRemaining")})
+                <Link color={theme.profileInfo.linkColor} noHover={true}>
+                  ({backupCodesCount} {t('CountCodesRemaining')})
                 </Link>
               </LinkActionWrapper>
             </ToggleContent>
@@ -450,24 +423,21 @@ class SectionBodyContent extends React.PureComponent {
 
         {profile.notes && (
           <ToggleWrapper>
-            <ToggleContent label={t("Translations:Comments")} isOpen={true}>
+            <ToggleContent label={t('Translations:Comments')} isOpen={true}>
               <Text as="span">{profile.notes}</Text>
             </ToggleContent>
           </ToggleWrapper>
         )}
         {profile.contacts && (
           <ToggleWrapper isContacts={true}>
-            <ToggleContent label={t("ContactInformation")} isOpen={true}>
+            <ToggleContent label={t('ContactInformation')} isOpen={true}>
               <Text as="span">{infoContacts}</Text>
             </ToggleContent>
           </ToggleWrapper>
         )}
         {socialContacts && (
           <ToggleWrapper isContacts={true}>
-            <ToggleContent
-              label={t("Translations:SocialProfiles")}
-              isOpen={true}
-            >
+            <ToggleContent label={t('Translations:SocialProfiles')} isOpen={true}>
               <Text as="span">{socialContacts}</Text>
             </ToggleContent>
           </ToggleWrapper>
@@ -498,13 +468,9 @@ export default withRouter(
   inject(({ auth, peopleStore }) => {
     const { isAdmin, userStore, settingsStore, tfaStore } = auth;
     const { user: viewer } = userStore;
-    const { isTabletView, getOAuthToken, getLoginLink } = settingsStore;
+    const { isTabletView, getOAuthToken, getLoginLink, theme } = settingsStore;
     const { targetUserStore, avatarEditorStore, usersStore } = peopleStore;
-    const {
-      targetUser: profile,
-      isMe: isSelf,
-      setIsEditTargetUser,
-    } = targetUserStore;
+    const { targetUser: profile, isMe: isSelf, setIsEditTargetUser } = targetUserStore;
     const { avatarMax, setAvatarMax } = avatarEditorStore;
     const { providers, setProviders } = usersStore;
     const {
@@ -536,12 +502,13 @@ export default withRouter(
       setBackupCodes,
       setIsEditTargetUser,
       personal: auth.settingsStore.personal,
+      theme,
     };
   })(
     observer(
-      withTranslation(["Profile", "Common", "Translations"])(
-        withLoader(SectionBodyContent)(<Loaders.ProfileView />)
-      )
-    )
-  )
+      withTranslation(['Profile', 'Common', 'Translations'])(
+        withLoader(SectionBodyContent)(<Loaders.ProfileView />),
+      ),
+    ),
+  ),
 );
