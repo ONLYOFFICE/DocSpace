@@ -36,14 +36,24 @@ export default function withQuickButtons(WrappedComponent) {
     };
 
     render() {
-      const { t, item, isTrashFolder, isAdmin, showShare } = this.props;
-      const { access } = item;
+      const {
+        t,
+        item,
+        isTrashFolder,
+        isAdmin,
+        showShare,
+        fileActionExt,
+        fileActionId,
+      } = this.props;
+      const { access, id, fileExst } = item;
 
       const accessToEdit =
         access === ShareAccessRights.FullAccess ||
         access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
 
-      const quickButtonsComponent = (
+      const isEdit = id === fileActionId && fileExst === fileActionExt;
+
+      const quickButtonsComponent = !isEdit ? (
         <QuickButtons
           t={t}
           item={item}
@@ -54,7 +64,7 @@ export default function withQuickButtons(WrappedComponent) {
           onClickLock={this.onClickLock}
           onClickFavorite={this.onClickFavorite}
         />
-      );
+      ) : null;
 
       return (
         <WrappedComponent
@@ -69,12 +79,18 @@ export default function withQuickButtons(WrappedComponent) {
     const { isRecycleBinFolder } = treeFoldersStore;
     const { lockFileAction, setFavoriteAction } = filesActionsStore;
     const { setIsLoading } = filesStore;
+    const {
+      extension: fileActionExt,
+      id: fileActionId,
+    } = filesStore.fileActionStore;
     return {
       isAdmin: auth.isAdmin,
       isTrashFolder: isRecycleBinFolder,
       lockFileAction,
       setFavoriteAction,
       setIsLoading,
+      fileActionExt,
+      fileActionId,
     };
   })(observer(WithQuickButtons));
 }
