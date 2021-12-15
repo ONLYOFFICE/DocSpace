@@ -292,7 +292,13 @@ class FilesActionStore {
           setTreeFolders(treeFolders);
         }
       }
-      setAction({ type: null, id: null, extension: null });
+      setAction({
+        type: null,
+        id: null,
+        extension: null,
+        title: "",
+        templateId: null,
+      });
       setIsLoading(false);
       type === FileAction.Rename &&
         this.onSelectItem({

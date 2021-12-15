@@ -7,16 +7,12 @@ import FilesListBody from "./FilesListBody";
 import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
 import { isArrayEqual } from "@appserver/components/utils/array";
-import { FolderType } from "@appserver/common/constants";
 import { getFoldersTree } from "@appserver/common/api/files";
-const exceptSortedByTagsFolders = [
-  FolderType.Recent,
-  FolderType.TRASH,
-  FolderType.Favorites,
-];
+import {
+  exceptSortedByTagsFolders,
+  exceptPrivacyTrashFolders,
+} from "../SelectFolderDialog/ExceptionFoldersConstants";
 
-const exceptTrashFolder = [FolderType.TRASH];
-const exceptPrivacyTrashFolders = [FolderType.Privacy, FolderType.TRASH];
 class SelectFileDialogModalView extends React.Component {
   constructor(props) {
     super(props);
@@ -54,20 +50,6 @@ class SelectFileDialogModalView extends React.Component {
             foldersTree,
             exceptSortedByTagsFolders
           );
-          this.onSetSelectedFolder();
-        } catch (err) {
-          console.error(err);
-        }
-
-        this.loadersCompletes();
-        break;
-      case "exceptTrashFolder":
-        try {
-          const foldersTree = await getFoldersTree();
-          [
-            this.folderList,
-            this.noTreeSwitcher,
-          ] = SelectFolderDialog.convertFolders(foldersTree, exceptTrashFolder);
           this.onSetSelectedFolder();
         } catch (err) {
           console.error(err);

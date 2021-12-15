@@ -481,14 +481,6 @@ class AvatarEditorBody extends React.Component {
                           >
                             {title}
                           </Text>
-                          <ContextMenuButton
-                            isFill
-                            color="#A3A9AE"
-                            hoverColor="#657077"
-                            directionX="right"
-                            getData={() => []}
-                            isDisabled={true}
-                          />
                         </Box>
                       </Box>
                     )}
