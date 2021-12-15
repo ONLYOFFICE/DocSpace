@@ -142,7 +142,7 @@ const Dark = {
       base: "#333333",
       baseHover: "#333333",
       baseActive: "#292929",
-      baseDisabled: "#474747",
+      baseDisabled: "#333333",
       primary: "#d6d6d6",
       primaryHover: "#eeeeee",
       primaryActive: "#858585",
@@ -410,7 +410,7 @@ const Dark = {
     fillColorDisabled: grayLight,
     disabledFillColor: grayLightMid,
     disabledFillColorInner: grayMid,
-    hoverBorderColor: "#eeeeee",
+    hoverBorderColor: "#858585",
     borderColor: "#474747",
   },
 
@@ -1801,6 +1801,41 @@ const Dark = {
 
       activeBackground: "#292929",
       disabledActiveBackground: "#292929",
+    },
+  },
+
+  profileInfo: {
+    color: "#858585",
+    iconButtonColor: "#eeeeee",
+    linkColor: "#eeeeee",
+  },
+
+  tableContainer: {
+    borderRight: "2px solid #474747",
+    hoverBorderColor: "#eeeeee",
+    tableCellBorder: "1px solid #474747",
+
+    groupMenu: {
+      background: "#333333",
+      borderRight: "1px solid #474747",
+    },
+
+    header: {
+      background: "#333333",
+      borderBottom: "1px solid #474747",
+      textColor: "#858585",
+      activeTextColor: "#858585",
+      hoverTextColor: "#eeeeee",
+
+      iconColor: "#858585",
+      activeIconColor: "#858585",
+      hoverIconColor: "#eeeeee",
+
+      borderImageSource: "linear-gradient(0deg, #474747, #474747)",
+    },
+
+    tableCell: {
+      border: "1px solid #474747",
     },
   },
 };

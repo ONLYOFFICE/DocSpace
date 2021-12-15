@@ -1804,6 +1804,42 @@ const Base = {
       disabledActiveBackground: "#F8F9F9",
     },
   },
+
+  profileInfo: {
+    color: "#83888d",
+    iconButtonColor: "#333333",
+    linkColor: "#A3A9AE",
+  },
+
+  tableContainer: {
+    borderRight: "2px solid #d0d5da",
+    hoverBorderColor: "#657077",
+    tableCellBorder: "1px solid #eceef1",
+
+    groupMenu: {
+      background: "#fff",
+      borderRight: "1px solid #d0d5da",
+    },
+
+    header: {
+      background: "#fff",
+      borderBottom: "1px solid #eceef1",
+      textColor: gray,
+      activeTextColor: grayMain,
+      hoverTextColor: "#eeeeee",
+
+      iconColor: gray,
+      activeIconColor: grayMain,
+      hoverIconColor: "#657077",
+
+      borderImageSource:
+        "linear-gradient(to right,#ffffff 24px,#eceef1 24px,#eceef1 calc(100% - 24px),#ffffff calc(100% - 24px))",
+    },
+
+    tableCell: {
+      border: "1px solid #eceef1",
+    },
+  },
 };
 
 export default Base;

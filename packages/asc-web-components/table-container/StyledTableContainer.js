@@ -25,9 +25,9 @@ const StyledTableContainer = styled.div`
     height: 10px;
     margin: 14px 8px 0 auto;
     z-index: 1;
-    border-right: 2px solid #d0d5da;
+    border-right: ${(props) => props.theme.tableContainer.borderRight};
     &:hover {
-      border-color: #657077;
+      border-color: ${(props) => props.theme.tableContainer.hoverBorderColor};
     }
   }
 
@@ -38,13 +38,8 @@ const StyledTableContainer = styled.div`
 
     border-bottom: 1px solid;
     border-image-slice: 1;
-    border-image-source: linear-gradient(
-      to right,
-      #ffffff 24px,
-      #eceef1 24px,
-      #eceef1 calc(100% - 24px),
-      #ffffff calc(100% - 24px)
-    );
+    border-image-source: ${(props) =>
+      props.theme.tableContainer.header.borderImageSource};
     border-top: 0;
   }
 
@@ -59,7 +54,7 @@ const StyledTableContainer = styled.div`
 
   .table-cell {
     height: 47px;
-    border-bottom: 1px solid #eceef1;
+    border-bottom: ${(props) => props.theme.tableContainer.tableCellBorder};
   }
 
   .table-container_group-menu {
@@ -69,9 +64,11 @@ const StyledTableContainer = styled.div`
   }
 `;
 
+StyledTableContainer.defaultProps = { theme: Base };
+
 const StyledTableGroupMenu = styled.div`
   position: relative;
-  background: #fff;
+  background: ${(props) => props.theme.tableContainer.groupMenu.background};
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -97,7 +94,8 @@ const StyledTableGroupMenu = styled.div`
   }
 
   .table-container_group-menu-separator {
-    border-right: 1px solid #d0d5da;
+    border-right: ${(props) =>
+      props.theme.tableContainer.groupMenu.borderRight};
     width: 2px;
     height: 20px;
     margin: 0 8px;
@@ -120,13 +118,15 @@ const StyledTableGroupMenu = styled.div`
   }
 `;
 
+StyledTableGroupMenu.defaultProps = { theme: Base };
+
 const StyledTableHeader = styled.div`
   position: fixed;
-  background: #fff;
+  background: ${(props) => props.theme.tableContainer.header.background};
   display: grid;
   z-index: 1;
   height: 39px;
-  border-bottom: 1px solid #eceef1;
+  border-bottom: ${(props) => props.theme.tableContainer.header.borderBottom};
   margin: 0 -20px;
   padding: 0 20px;
 
@@ -138,6 +138,8 @@ const StyledTableHeader = styled.div`
     overflow: hidden;
   }
 `;
+
+StyledTableHeader.defaultProps = { theme: Base };
 
 const StyledTableHeaderCell = styled.div`
   cursor: ${(props) => (props.showIcon ? "pointer" : "default")};
@@ -155,6 +157,22 @@ const StyledTableHeaderCell = styled.div`
         transform: scale(1, -1);
         padding: 12px 0 0 4px;
       `}
+
+    svg {
+      path {
+        fill: ${(props) =>
+          props.isActive
+            ? props.theme.tableContainer.header.activeIconColor
+            : props.theme.tableContainer.header.iconColor} !important;
+      }
+    }
+
+    &:hover {
+      path {
+        fill: ${(props) =>
+          props.theme.tableContainer.header.hoverIconColor} !important;
+      }
+    }
   }
 
   :hover {
@@ -180,11 +198,19 @@ const StyledTableHeaderCell = styled.div`
     height: 38px;
     display: flex;
     align-items: center;
+    color: ${(props) =>
+      props.isActive
+        ? props.theme.tableContainer.header.activeTextColor
+        : props.theme.tableContainer.header.textColor} !important;
+
     &:hover {
-      color: #657077;
+      color: ${(props) =>
+        props.theme.tableContainer.header.hoverTextColor} !important;
     }
   }
 `;
+
+StyledTableHeaderCell.defaultProps = { theme: Base };
 
 const StyledTableBody = styled.div`
   display: contents;
@@ -211,7 +237,7 @@ const StyledTableCell = styled.div`
   /* padding-right: 8px; */
   height: 40px;
   max-height: 40px;
-  border-bottom: 1px solid #eceef1;
+  border-bottom: ${(props) => props.theme.tableContainer.tableCell.border};
   overflow: hidden;
 
   display: flex;
@@ -241,6 +267,8 @@ const StyledTableCell = styled.div`
       }
     `}
 `;
+
+StyledTableCell.defaultProps = { theme: Base };
 
 const StyledTableSettings = styled.div`
   margin: 14px 0 0px 8px;
