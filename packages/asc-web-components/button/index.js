@@ -16,9 +16,7 @@ const Icon = ({ size, primary, icon, isHovered }) => (
           ? isHovered
             ? icon.props.hoveredcolor
             : icon.props.color
-          : primary
-          ? "#FFFFFF"
-          : "#333333",
+          : "",
       })}
   </div>
 );

@@ -25,6 +25,17 @@ const activeCss = css`
           border: ${(props) => props.theme.button.border.primaryActive};
           box-sizing: ${(props) => props.theme.button.boxSizing};
         `}
+
+  .btnIcon {
+    svg {
+      path {
+        fill: ${(props) =>
+          props.primary
+            ? props.theme.button.color.primaryActive
+            : props.theme.button.color.baseActive};
+      }
+    }
+  }
 `;
 
 const hoverCss = css`
@@ -48,6 +59,17 @@ const hoverCss = css`
           border: ${(props) => props.theme.button.border.primaryHover};
           box-sizing: ${(props) => props.theme.button.boxSizing};
         `}
+
+  .btnIcon {
+    svg {
+      path {
+        fill: ${(props) =>
+          props.primary
+            ? props.theme.button.color.primaryHover
+            : props.theme.button.color.baseHover};
+      }
+    }
+  }
 `;
 
 const disableCss = css`
@@ -71,6 +93,17 @@ const disableCss = css`
           border: ${(props) => props.theme.button.border.primaryDisabled};
           box-sizing: ${(props) => props.theme.button.boxSizing};
         `}
+
+  .btnIcon {
+    svg {
+      path {
+        fill: ${(props) =>
+          props.primary
+            ? props.theme.button.color.primaryDisabled
+            : props.theme.button.color.baseDisabled};
+      }
+    }
+  }
 `;
 
 const heightStyle = (props) => props.theme.button.height[props.size];
@@ -135,6 +168,17 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
       : props.theme.button.border.base};
 
   ${(props) => props.scale && `width: 100%;`}
+
+  .btnIcon {
+    svg {
+      path {
+        fill: ${(props) =>
+          props.primary
+            ? props.theme.button.color.primary
+            : props.theme.button.color.base};
+      }
+    }
+  }
 
   padding: ${(props) =>
     (props.size === "large" &&
