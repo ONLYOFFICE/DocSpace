@@ -1,4 +1,5 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+import { mobile, tablet, size } from "@appserver/components/utils/device";
 
 const StyledTile = styled.div`
   position: relative;
@@ -6,6 +7,26 @@ const StyledTile = styled.div`
   width: 100%;
   height: ${(props) => (props.isFolder ? "32px" : "220px")};
   border-radius: 3px;
+
+  @media ${mobile} {
+    &:nth-of-type(n + 3) {
+      display: none;
+    }
+
+    ${(props) =>
+      props.isFolder &&
+      css`
+        &:nth-of-type(n + 2) {
+          display: none;
+        }
+      `}
+  }
+
+  @media (min-width: ${size.mobile}px) and ${tablet} {
+    &:nth-of-type(n + 7) {
+      display: none;
+    }
+  }
 `;
 
 const StyledMainContent = styled.div`
