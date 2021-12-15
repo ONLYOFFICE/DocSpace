@@ -138,7 +138,10 @@ const StyledSimpleFilesRow = styled(Row)`
     margin-left: 7px;
   }
 
-  @media (min-width: 517px) and (max-width: 1303px) {
+  ${(props) =>
+    props.sectionWidth < 1025 &&
+    props.sectionWidth > 500 &&
+    `
     .badge {
       width: 16px;
       height: 16px;
@@ -169,7 +172,7 @@ const StyledSimpleFilesRow = styled(Row)`
         height: 14px;
       }
     }
-  }
+  `}
 `;
 
 const SimpleFilesRow = (props) => {

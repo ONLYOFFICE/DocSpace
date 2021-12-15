@@ -27,12 +27,15 @@ const SimpleFilesRowContent = styled(RowContent)`
     text-overflow: ellipsis;
   }
 
-  @media (min-width: 517px) and (max-width: 1303px) {
+  ${(props) =>
+    props.sectionWidth < 1025 &&
+    props.sectionWidth > 500 &&
+    `
     .row-main-container-wrapper {
       display: flex;
       justify-content: space-between;
     }
-  }
+  `}
 `;
 
 const FilesRowContent = ({
