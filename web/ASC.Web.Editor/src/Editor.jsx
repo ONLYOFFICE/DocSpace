@@ -147,13 +147,13 @@ const Editor = () => {
     docEditor.setFavorite(favorite);
   };
 
-  const initDesktop = () => {
-    const isEncryption = config?.editorConfig["encryptionKeys"] !== undefined;
+  const initDesktop = (cfg) => {
+    const isEncryption = cfg?.editorConfig["encryptionKeys"] !== undefined;
 
     regDesktop(
       user,
       isEncryption,
-      config?.editorConfig.encryptionKeys,
+      cfg?.editorConfig.encryptionKeys,
       (keys) => {
         setEncryptionKeys(keys);
       },
@@ -263,7 +263,7 @@ const Editor = () => {
       actionLink = config?.editorConfig?.actionLink;
 
       if (isDesktop) {
-        initDesktop();
+        initDesktop(config);
       }
 
       isSharingAccess = fileInfo && fileInfo.canShare;
