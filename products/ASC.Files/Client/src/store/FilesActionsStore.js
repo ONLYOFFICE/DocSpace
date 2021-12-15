@@ -16,7 +16,6 @@ import {
 import { ConflictResolveType, FileAction } from "@appserver/common/constants";
 import { TIMEOUT } from "../helpers/constants";
 import { loopTreeFolders } from "../helpers/files-helpers";
-import { openDocEditor as openEditor } from "../helpers/utils";
 import toastr from "studio/toastr";
 
 class FilesActionStore {
@@ -28,7 +27,6 @@ class FilesActionStore {
   settingsStore;
   dialogsStore;
   mediaViewerDataStore;
-  socketStore;
 
   constructor(
     authStore,
@@ -38,8 +36,7 @@ class FilesActionStore {
     selectedFolderStore,
     settingsStore,
     dialogsStore,
-    mediaViewerDataStore,
-    socketStore
+    mediaViewerDataStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -50,13 +47,7 @@ class FilesActionStore {
     this.settingsStore = settingsStore;
     this.dialogsStore = dialogsStore;
     this.mediaViewerDataStore = mediaViewerDataStore;
-    this.socketStore = socketStore;
   }
-
-  openDocEditor = (id, providerKey = null, tab = null, url = null) => {
-    this.socketStore.startEditingFile(id);
-    return openEditor(id, providerKey, tab, url);
-  };
 
   isMediaOpen = () => {
     const { visible, setMediaViewerData, playlist } = this.mediaViewerDataStore;

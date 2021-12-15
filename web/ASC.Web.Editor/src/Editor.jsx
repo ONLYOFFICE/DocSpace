@@ -46,7 +46,7 @@ import TextInput from "@appserver/components/text-input";
 import Checkbox from "@appserver/components/checkbox";
 import { isMobile } from "react-device-detect";
 import store from "studio/store";
-//import { reportFileCreation } from "files/socket";
+import socket from "files/socket";
 
 const { auth: authStore } = store;
 
@@ -701,7 +701,7 @@ const Editor = () => {
     );
 
     if (savingInfo) {
-      //reportFileCreation(fileId);
+      socket.emit("editorCreateCopy", fileId);
 
       const convertedInfo = savingInfo.split(": ").pop();
       docEditor.showMessage(convertedInfo);

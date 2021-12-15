@@ -148,7 +148,6 @@ const Files = inject(({ auth, filesStore, socketStore }) => {
     loadFilesInfo: async () => {
       //await auth.init();
       await filesStore.initFiles();
-      socketStore.socketInit();
       auth.setProductVersion(config.version);
     },
   };

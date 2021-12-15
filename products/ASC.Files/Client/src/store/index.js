@@ -13,7 +13,6 @@ import MediaViewerDataStore from "./MediaViewerDataStore";
 import UploadDataStore from "./UploadDataStore";
 import SecondaryProgressDataStore from "./SecondaryProgressDataStore";
 import PrimaryProgressDataStore from "./PrimaryProgressDataStore";
-import SocketStore from "./SocketStore";
 
 import VersionHistoryStore from "./VersionHistoryStore";
 import DialogsStore from "./DialogsStore";
@@ -61,8 +60,6 @@ const uploadDataStore = new UploadDataStore(
   settingsStore
 );
 
-const socketStore = new SocketStore(filesStore);
-
 const filesActionsStore = new FilesActionsStore(
   store.auth,
   uploadDataStore,
@@ -71,8 +68,7 @@ const filesActionsStore = new FilesActionsStore(
   selectedFolderStore,
   settingsStore,
   dialogsStore,
-  mediaViewerDataStore,
-  socketStore
+  mediaViewerDataStore
 );
 
 const versionHistoryStore = new VersionHistoryStore(filesStore);
@@ -90,7 +86,6 @@ const stores = {
   selectedFolderStore,
   filesActionsStore,
   selectedFilesStore,
-  socketStore,
 };
 
 export default stores;

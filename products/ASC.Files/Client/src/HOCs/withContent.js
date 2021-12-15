@@ -317,10 +317,11 @@ export default function withContent(WrappedContent) {
 
   return inject(
     ({ filesActionsStore, filesStore, treeFoldersStore, auth }, {}) => {
-      const { editCompleteAction, openDocEditor } = filesActionsStore;
+      const { editCompleteAction } = filesActionsStore;
       const {
         setIsLoading,
         isLoading,
+        openDocEditor,
         updateFile,
         renameFolder,
         createFile,

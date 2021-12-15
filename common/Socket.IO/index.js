@@ -67,7 +67,7 @@ io.use(sharedsession(session, secretCookieParser, { autoSave: true }))
   });
 
 io.on("connection", (socket) => {
-  //TODO:
+  //TODO: remove fake
   socket.on("editFile", (fileId) => {
     setTimeout(() => {
       const file = { id: 123, name: "some file", fileStatus: 0 };
@@ -75,9 +75,11 @@ io.on("connection", (socket) => {
     }, 10000);
   });
 
-  // socket.on("reportFileCreation", (fileId) => {
-  //   io.emit("getFileCreation", fileId);
-  // });
+  socket.on("editorCreateCopy", (fileId) => {
+    //TODO: get folderId for file
+    const folderId = 6; //@my
+    io.emit("editorCreateCopy", folderId);
+  });
 });
 
 app.get("/", (req, res) => {

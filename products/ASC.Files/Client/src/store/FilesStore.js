@@ -13,7 +13,9 @@ import config from "../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { updateTempContent } from "@appserver/common/utils";
 import { thumbnailStatuses } from "../helpers/constants";
+import socket from "../helpers/socket";
 import { isMobile } from "react-device-detect";
+import { openDocEditor as openEditor } from "../helpers/utils";
 import toastr from "studio/toastr";
 
 const { FilesFilter } = api;
@@ -64,6 +66,23 @@ class FilesStore {
   ) {
     const pathname = window.location.pathname.toLowerCase();
     this.isEditor = pathname.indexOf("doceditor") !== -1;
+
+    socket.on("editorCreateCopy", (folderId) => {
+      //TODO:
+      selectedFolderStore.id === folderId && this.fetchFiles(folderId);
+    });
+
+    //WAIT RESPONSE OF EDITING FILE
+    socket.on("editFile", (file) => {
+      const fakeFile = { ...this.files.find((x) => x.id === 4390) };
+      console.log("fakeFile", fakeFile.folderId);
+      fakeFile.fileStatus = 0;
+      if (file) this.setFile(fakeFile);
+      //if (file) this.setFile(file);
+
+      //console.log("editFile File", file);
+      //file && console.log("subFileChanges File", JSON.parse(file)?.response);
+    });
 
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -1654,6 +1673,15 @@ class FilesStore {
     const fileInfo = await api.files.getFileInfo(id);
     this.setFile(fileInfo);
     return fileInfo;
+  };
+
+  openDocEditor = (id, providerKey = null, tab = null, url = null) => {
+    const fakeFile = { ...this.files.find((x) => x.id === 4390) };
+    fakeFile.fileStatus = 1;
+    this.setFile(fakeFile);
+    socket.emit("editFile", id);
+
+    return openEditor(id, providerKey, tab, url);
   };
 
   getFolderInfo = async (id) => {

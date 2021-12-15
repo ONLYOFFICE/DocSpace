@@ -531,7 +531,7 @@ export default function withContextOptions(WrappedComponent) {
       },
       { item }
     ) => {
-      const { fileActionStore } = filesStore;
+      const { openDocEditor, fileActionStore } = filesStore;
       const {
         openLocationAction,
         finalizeVersionAction,
@@ -544,7 +544,6 @@ export default function withContextOptions(WrappedComponent) {
         deleteItemAction,
         markAsRead,
         unsubscribeAction,
-        openDocEditor,
       } = filesActionsStore;
       const {
         setChangeOwnerPanelVisible,
