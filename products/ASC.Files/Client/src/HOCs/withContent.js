@@ -137,6 +137,8 @@ export default function withContent(WrappedContent) {
       } = this.props;
       const { itemTitle } = this.state;
 
+      let title = itemTitle;
+
       if (isLoading) return;
 
       setIsLoading(true);
@@ -144,8 +146,14 @@ export default function withContent(WrappedContent) {
       const itemId = e.currentTarget.dataset.itemid;
 
       if (itemTitle.trim() === "") {
-        toastr.warning(t("CreateWithEmptyTitle"));
-        return this.completeAction(itemId);
+        title =
+          fileActionTemplateId === null
+            ? getDefaultFileName(item.fileExst)
+            : getTitleWithoutExst(item);
+
+        this.setState({
+          itemTitle: title,
+        });
       }
 
       let tab =
@@ -161,7 +169,7 @@ export default function withContent(WrappedContent) {
           : null;
 
       !item.fileExst && !item.contentLength
-        ? createFolder(item.parentId, itemTitle)
+        ? createFolder(item.parentId, title)
             .then(() => this.completeAction(itemId))
             .catch((e) => toastr.error(e))
             .finally(() => {
@@ -169,7 +177,7 @@ export default function withContent(WrappedContent) {
             })
         : createFile(
             item.parentId,
-            `${itemTitle}.${item.fileExst}`,
+            `${title}.${item.fileExst}`,
             fileActionTemplateId
           )
             .then((file) => {
@@ -205,7 +213,9 @@ export default function withContent(WrappedContent) {
       if (title.match(folderFormValidation)) {
         toastr.warning(t("ContainsSpecCharacter"));
       }
+
       title = title.replace(folderFormValidation, "_");
+
       return this.setState({ itemTitle: title });
     };
 
