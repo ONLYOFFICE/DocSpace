@@ -24,6 +24,14 @@ const QuickButtons = ({
   const isEditingWithFav = fileStatus === 33;
   const showFavorite = isFavorite || isNewWithFav || isEditingWithFav;
 
+  const iconLock = locked
+    ? "/static/images/file.actions.locked.react.svg"
+    : "/static/images/locked.react.svg";
+
+  const iconFavorite = showFavorite
+    ? "/static/images/file.actions.favorite.react.svg"
+    : "/static/images/favorite.react.svg";
+
   return (
     <div className="badges additional-badges">
       {item.canShare && showShare && (
@@ -36,11 +44,7 @@ const QuickButtons = ({
       )}
       {fileExst && accessToEdit && !isTrashFolder && (
         <IconButton
-          iconName={
-            locked
-              ? "/static/images/file.actions.locked.react.svg"
-              : "/static/images/locked.react.svg"
-          }
+          iconName={iconLock}
           className="badge lock-file icons-group"
           data-id={id}
           data-locked={locked ? true : false}
@@ -50,11 +54,7 @@ const QuickButtons = ({
       )}
       {fileExst && !isTrashFolder && (
         <StyledIcon
-          iconName={
-            showFavorite
-              ? "/static/images/file.actions.favorite.react.svg"
-              : "/static/images/favorite.react.svg"
-          }
+          iconName={iconFavorite}
           className="favorite badge icons-group"
           size="medium"
           data-id={id}

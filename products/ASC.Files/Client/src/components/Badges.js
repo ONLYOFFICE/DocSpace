@@ -37,6 +37,15 @@ const Badges = ({
     onBadgeClick(), onShowVersionHistory();
   };
 
+  const iconEdit = showActionsEdit
+    ? "/static/images/file.actions.convert.edit.doc.react.svg"
+    : "/static/images/access.edit.react.svg";
+
+  const contentBadgeVersion =
+    `V.${versionGroup}` > 999 ? `V.999+` : `V.${versionGroup}`;
+
+  const contentNewItems = newItems > 999 ? "999+" : newItems;
+
   return fileExst ? (
     <div className="badges additional-badges">
       {canWebEdit &&
@@ -46,11 +55,7 @@ const Badges = ({
         showEditBadge &&
         !canConvert && (
           <StyledIcon
-            iconName={
-              showActionsEdit
-                ? "/static/images/file.actions.convert.edit.doc.react.svg"
-                : "/static/images/access.edit.react.svg"
-            }
+            iconName={iconEdit}
             className="badge tablet icons-group"
             size="small"
             onClick={onFilesClick}
@@ -75,7 +80,7 @@ const Badges = ({
           color="#FFFFFF"
           fontSize="9px"
           fontWeight={800}
-          label={`V.${versionGroup}`}
+          label={contentBadgeVersion}
           maxWidth="50px"
           onClick={onShowVersionHistory}
           padding="0 3px"
@@ -90,10 +95,10 @@ const Badges = ({
           color="#FFFFFF"
           fontSize="9px"
           fontWeight={800}
-          label={`V.${versionGroup}`}
+          label={contentBadgeVersion}
           maxWidth="50px"
           onClick={onSharedVersionClick}
-          padding="1px 5px"
+          padding="0 3px"
           data-id={id}
         />
       )}
@@ -103,12 +108,12 @@ const Badges = ({
           backgroundColor="#ED7309"
           borderRadius="11px"
           color="#FFFFFF"
-          fontSize="10px"
+          fontSize="9px"
           fontWeight={800}
           label={t("New")}
           maxWidth="50px"
           onClick={onBadgeClick}
-          padding="0 5px"
+          padding="0 3px"
           data-id={id}
         />
       )}
@@ -122,7 +127,7 @@ const Badges = ({
         color="#FFFFFF"
         fontSize="9px"
         fontWeight={800}
-        label={newItems}
+        label={contentNewItems}
         maxWidth="50px"
         onClick={onBadgeClick}
         padding="0 3px"
