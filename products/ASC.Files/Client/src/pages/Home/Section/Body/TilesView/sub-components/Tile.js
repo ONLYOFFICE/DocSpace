@@ -9,8 +9,9 @@ import { tablet } from "@appserver/components/utils/device";
 import { isDesktop, isMobile } from "react-device-detect";
 
 import Link from "@appserver/components/link";
+import Loader from "@appserver/components/loader";
 
-const svgLoader = () => <div style={{ width: "96px" }}></div>;
+const svgLoader = () => <div style={{ width: "96px" }} />;
 
 const FlexBoxStyles = css`
   display: flex;
@@ -23,9 +24,7 @@ const FlexBoxStyles = css`
 `;
 
 const FolderStyles = css`
-  padding-left: 13px;
-  padding-bottom: 2px;
-  box-sizing: border-box;
+  height: 64px;
 `;
 
 const draggingStyle = css`
@@ -42,49 +41,21 @@ const checkedStyle = css`
 
 const StyledTile = styled.div`
   cursor: ${(props) => (!props.isRecycleBin ? "pointer" : "default")};
-  min-height: 57px;
+  ${(props) =>
+    props.inProgress &&
+    css`
+      pointer-events: none;
+      /* cursor: wait; */
+    `}
   box-sizing: border-box;
   width: 100%;
   border: 1px solid #d0d5da;
   border-radius: 3px;
-  ${(props) => props.isFolder && "border-top-left-radius: 0px;"}
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   ${(props) => props.isFolder && FlexBoxStyles}
   ${(props) => props.isFolder && FolderStyles}
   ${(props) => (props.checked || props.isActive) && checkedStyle}
-    ${(props) =>
-    props.isFolder &&
-    css`
-      &:before {
-        content: "";
-        position: absolute;
-        top: -5px;
-        left: 0px;
-        border-top: 1px solid #d0d5da;
-        border-top-left-radius: 3px;
-        border-left: 1px solid #d0d5da;
-        width: 38px;
-        height: 8px;
-        background-color: #fff;
-        border-bottom: transparent;
-      }
-      &:after {
-        content: "";
-        position: absolute;
-        top: -3.5px;
-        left: 36px;
-        border-top: 1px solid #d0d5da;
-        background-color: #fff;
-        width: 9px;
-        height: 10px;
-        transform: rotateZ(35deg);
-
-        @media ${tablet} {
-          left: 35px;
-        }
-      }
-    `}
 
   &:before, 
   &:after {
@@ -126,51 +97,53 @@ const StyledTile = styled.div`
         : css`
             ${props.isFolder ? "5px" : "8px"}
           `};
-
-    @media ${tablet} {
-      margin-top: 2px;
-    }
   }
 
   .file-icon {
     display: ${(props) => (props.checked ? "none" : "flex")};
     flex: 0 0 auto;
-    margin-right: 4px;
+    margin-left: 5px;
     user-select: none;
-    margin-top: ${(props) => (props.isFolder ? "-8px" : "-6px")};
+    margin-top: ${(props) => (props.isFolder ? "-3px" : "-6px")};
 
-    height: ${isMobile ? "32px" : "24px"};
-    width: ${isMobile ? "32px" : "24px"};
+    height: 31px;
+    width: 31px;
 
     img {
-      height: ${isMobile ? "32px" : "24px"};
-      width: ${isMobile ? "32px" : "24px"};
+      height: 31px;
+      width: 31px;
     }
 
-    margin-left: ${(props) =>
+    /* margin-left: ${(props) =>
       isMobile
         ? css`
             ${props.isFolder ? "2px" : "4px"};
           `
         : css`
             ${props.isFolder ? "2px" : "4px"}
-          `};
+          `}; */
   }
 
   .file-icon_container {
-    min-width: ${isMobile ? "36px" : "28px"};
+    width: 32px;
+    height: 32px;
+    margin-left: 12px;
+  }
+
+  .tile-folder-loader {
+    padding-top: 4px;
   }
 
   .styled-content {
-    padding-left: 10px;
+    margin-left: 12px;
 
-    padding-left: ${(props) =>
+    margin-left: ${(props) =>
       isMobile
         ? css`
             ${props.isFolder ? "8px" : "12px"};
           `
         : css`
-            ${props.isFolder ? "10px" : "13px"}
+            ${props.isFolder ? "12px" : "13px"}
           `};
   }
 
@@ -178,6 +151,7 @@ const StyledTile = styled.div`
     ${(props) =>
       !props.dragging &&
       props.isDesktop &&
+      !props.inProgress &&
       css`
         .checkbox {
           opacity: 1;
@@ -193,7 +167,7 @@ const StyledTile = styled.div`
 `;
 
 const StyledFileTileTop = styled.div`
-  ${FlexBoxStyles}
+  ${FlexBoxStyles};
   justify-content: space-between;
   align-items: baseline;
   background-color: #f8f9f9;
@@ -224,11 +198,15 @@ const StyledFileTileTop = styled.div`
 `;
 
 const StyledFileTileBottom = styled.div`
-  ${FlexBoxStyles}
-  padding: 9px 10px;
-  padding-right: 0;
-  height: 56px;
+  ${FlexBoxStyles};
+  padding: 9px 0;
+  height: 64px;
   box-sizing: border-box;
+
+  .tile-file-loader {
+    padding-top: 4px;
+    padding-left: 3px;
+  }
 `;
 
 const StyledContent = styled.div`
@@ -344,6 +322,7 @@ class Tile extends React.PureComponent {
       isRecycleBin,
       item,
       isActive,
+      inProgress,
       isEdit,
     } = this.props;
     const { isFolder, id, fileExst } = item;
@@ -387,25 +366,37 @@ class Tile extends React.PureComponent {
         isRecycleBin={isRecycleBin}
         checked={checked}
         isActive={isActive}
+        inProgress={inProgress}
         isDesktop={isDesktop}
       >
         {isFolder || (!fileExst && id === -1) ? (
           <>
             {renderElement && !(!fileExst && id === -1) && !isEdit && (
-              <div className="file-icon_container">
-                <StyledElement
-                  className="file-icon"
-                  onClick={this.onFileIconClick}
-                >
-                  {element}
-                </StyledElement>
-                <Checkbox
-                  className="checkbox file-checkbox"
-                  isChecked={checked}
-                  isIndeterminate={indeterminate}
-                  onChange={this.changeCheckbox}
-                />
-              </div>
+              <>
+                {!inProgress ? (
+                  <div className="file-icon_container">
+                    <StyledElement
+                      className="file-icon"
+                      onClick={this.onFileIconClick}
+                    >
+                      {element}
+                    </StyledElement>
+
+                    <Checkbox
+                      className="checkbox file-checkbox"
+                      isChecked={checked}
+                      isIndeterminate={indeterminate}
+                      onChange={this.changeCheckbox}
+                    />
+                  </div>
+                ) : (
+                  <Loader
+                    className="tile-folder-loader"
+                    type="oval"
+                    size="16px"
+                  />
+                )}
+              </>
             )}
             <StyledContent
               className="styled-content"
@@ -427,7 +418,7 @@ class Tile extends React.PureComponent {
               ) : (
                 <div className="expandButton"> </div>
               )}
-              <ContextMenu model={contextOptions} ref={this.cm}></ContextMenu>
+              <ContextMenu model={contextOptions} ref={this.cm} />
             </StyledOptionButton>
           </>
         ) : (
@@ -437,17 +428,27 @@ class Tile extends React.PureComponent {
             </StyledFileTileTop>
             <StyledFileTileBottom>
               {id !== -1 && !isEdit && (
-                <div className="file-icon_container">
-                  <div className="file-icon" onClick={this.onFileIconClick}>
-                    {element}
-                  </div>
-                  <Checkbox
-                    className="file-checkbox"
-                    isChecked={checked}
-                    isIndeterminate={indeterminate}
-                    onChange={this.changeCheckbox}
-                  />
-                </div>
+                <>
+                  {!inProgress ? (
+                    <div className="file-icon_container">
+                      <div className="file-icon" onClick={this.onFileIconClick}>
+                        {element}
+                      </div>
+                      <Checkbox
+                        className="file-checkbox"
+                        isChecked={checked}
+                        isIndeterminate={indeterminate}
+                        onChange={this.changeCheckbox}
+                      />
+                    </div>
+                  ) : (
+                    <Loader
+                      className="tile-file-loader"
+                      type="oval"
+                      size="16px"
+                    />
+                  )}
+                </>
               )}
               <StyledContent
                 className="styled-content"
@@ -467,9 +468,9 @@ class Tile extends React.PureComponent {
                     onClick={onContextMenu}
                   />
                 ) : (
-                  <div className="expandButton"> </div>
+                  <div className="expandButton" />
                 )}
-                <ContextMenu model={contextOptions} ref={this.cm}></ContextMenu>
+                <ContextMenu model={contextOptions} ref={this.cm} />
               </StyledOptionButton>
             </StyledFileTileBottom>
           </>
