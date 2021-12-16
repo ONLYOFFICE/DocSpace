@@ -70,6 +70,27 @@ class FirebaseHelper {
     return await Promise.resolve(JSON.parse(maintenance.asString()));
   }
 
+  async checkBar() {
+    if (!this.isEnabled) return Promise.reject("Not enabled");
+
+    const res = await this.remoteConfig.fetchAndActivate();
+    const barValue = this.remoteConfig.getValue("bar");
+    const barString = barValue && barValue.asString();
+
+    if (!barValue || !barString) {
+      return Promise.resolve([]);
+    }
+    const list = JSON.parse(barString);
+
+    if (!list || !(list instanceof Array)) return Promise.resolve([]);
+
+    const bar = list.filter((element) => {
+      return typeof element === "string" && element.length > 0;
+    });
+
+    return await Promise.resolve(bar);
+  }
+
   async checkCampaigns() {
     if (!this.isEnabled) return Promise.reject("Not enabled");
 
@@ -96,6 +117,12 @@ class FirebaseHelper {
   async getCampaignsImages(banner) {
     const domain = this.config["authDomain"];
     return `https://${domain}/images/campaigns.${banner}.png`;
+  }
+
+  async getBarHtml(bar, lng) {
+    const storageRef = this.firebaseStorage.ref();
+    const tangRef = storageRef.child(`bar/${lng}/BarPersonal${bar}.html`);
+    return await tangRef.getDownloadURL();
   }
 
   async getCampaignsTranslations(banner, lng) {
