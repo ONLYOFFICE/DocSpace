@@ -14,30 +14,6 @@ const deps = pkg.dependencies || {};
 const homepage = pkg.homepage; // combineUrl(AppServerConfig.proxyURL, pkg.homepage);
 const title = pkg.title;
 
-function hideText() {
-  const styles = `  div,
-  p,
-  a,
-  span,
-  button,
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  ::placeholder {
-    color: #fff !important;
-    /* background: #000 !important; */
-    mix-blend-mode: multiply;
-  }`;
-
-  const styleSheet = document.createElement('style');
-  styleSheet.type = 'text/css';
-  styleSheet.innerText = styles;
-  document.head.appendChild(styleSheet);
-}
-
 var config = {
   mode: 'development',
   entry: './src/index',
@@ -190,12 +166,7 @@ var config = {
       },
     }),
     new ExternalTemplateRemotesPlugin(),
-    new HtmlWebpackPlugin({
-      template: './public/index.html',
-      publicPath: homepage,
-      title: title,
-      base: `${homepage}/`,
-    }),
+
     new CopyPlugin({
       patterns: [
         {
@@ -212,6 +183,45 @@ var config = {
 };
 
 module.exports = (env, argv) => {
+  if (env.hideText) {
+    config.plugins = [
+      ...config.plugins,
+      new HtmlWebpackPlugin({
+        template: './public/index.html',
+        publicPath: homepage,
+        title: title,
+        base: `${homepage}/`,
+        custom: `<style type="text/css">
+          div,
+          p,
+          a,
+          span,
+          button,
+          h1,
+          h2,
+          h3,
+          h4,
+          h5,
+          h6,
+          ::placeholder {
+            color: #fff !important;
+            mix-blend-mode: multiply;
+        }
+        </style>`,
+      }),
+    ];
+  } else {
+    config.plugins = [
+      ...config.plugins,
+      new HtmlWebpackPlugin({
+        template: './public/index.html',
+        publicPath: homepage,
+        title: title,
+        base: `${homepage}/`,
+      }),
+    ];
+  }
+
   if (argv.mode === 'production') {
     config.mode = 'production';
     config.optimization = {
