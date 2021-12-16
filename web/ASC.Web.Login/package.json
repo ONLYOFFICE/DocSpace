@@ -6,6 +6,7 @@
   "scripts": {
     "build": "webpack --mode production",
     "build:test": "webpack --env minimize=false --mode production",
+    "build:test.translation": "webpack --env minimize=false hideText=true --mode production",
     "clean": "shx rm -rf dist",
     "deploy": "shx mkdir -p ../../build/deploy/studio/login && shx cp -r dist/* ../../build/deploy/studio/login",
     "serve": "serve dist -p 5011",
