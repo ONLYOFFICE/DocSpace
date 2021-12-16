@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -21,7 +22,7 @@ namespace Frontend.Translations.Tests
         {
             get
             {
-                return Path.GetFullPath( "..\\..\\..\\..\\..\\..\\");
+                return Path.GetFullPath("..\\..\\..\\..\\..\\..\\");
             }
         }
 
@@ -70,20 +71,35 @@ namespace Frontend.Translations.Tests
                 {
                     var result = CharsetDetector.DetectFromFile(path);
 
-                    if(result.Detected.EncodingName != "utf-8"
+                    if (result.Detected.EncodingName != "utf-8"
                     && result.Detected.EncodingName != "ascii")
                     {
                         WrongEncodingJsonErrors.Add(
                             new JsonEncodingError(path, result.Detected));
                     }
 
-                    var jsonTranslation = JObject.Parse(File.ReadAllText(path));
+                    using (var md5 = MD5.Create())
+                    {
+                        using (var stream = File.OpenRead(path))
+                        {
+                            var hash = md5.ComputeHash(stream);
+                            var md5hash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
 
-                    var translationFile = new TranslationFile(path, jsonTranslation.Properties()
-                        .Select(p => new TranslationItem(p.Name, (string)p.Value))
-                        .ToList());
+                            stream.Position = 0;
 
-                    TranslationFiles.Add(translationFile);
+                            using var sr = new StreamReader(stream, Encoding.UTF8);
+                            {
+                                var jsonTranslation = JObject.Parse(sr.ReadToEnd());
+
+                                var translationFile = new TranslationFile(path, jsonTranslation.Properties()
+                                    .Select(p => new TranslationItem(p.Name, (string)p.Value))
+                                    .ToList(), md5hash);
+
+                                TranslationFiles.Add(translationFile);
+                            }
+
+                        }
+                    }
 
                     /*   Re-write by order */
 
@@ -95,7 +111,7 @@ namespace Frontend.Translations.Tests
 
                     //File.WriteAllText(path, sortedJsonString);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     ParseJsonErrors.Add(new ParseJsonError(path, ex));
                     Debug.WriteLine($"File path = {path} failed to parse with error: {ex.Message}");
@@ -236,7 +252,20 @@ namespace Frontend.Translations.Tests
         }
 
         [Test]
-        public void FullDublicatesTest()
+        public void DublicatesFilesByMD5HashTest()
+        {
+            var duplicatesByMD5 = TranslationFiles
+                .GroupBy(t => t.Md5Hash)
+                .Where(grp => grp.Count() > 1)
+                .Select(grp => new { Key = grp.Key, Count = grp.Count(), Paths = grp.ToList().Select(f => f.FilePath) })
+                .OrderByDescending(itm => itm.Count)
+                .ToList();
+
+            Assert.AreEqual(0, duplicatesByMD5.Count, "Dublicates by MD5 hash:\r\n" + string.Join("\r\n", duplicatesByMD5.Select(d => $"\r\nMD5='{d.Key}\r\n{string.Join("\r\n", d.Paths.Select(p => p))}'")));
+        }
+
+        [Test]
+        public void FullEnDublicatesTest()
         {
             var fullEnDuplicates = TranslationFiles
                 .Where(file => file.Language == "en")
@@ -252,7 +281,7 @@ namespace Frontend.Translations.Tests
         }
 
         [Test]
-        public void DublicatesByContentTest()
+        public void EnDublicatesByContentTest()
         {
             var allRuTranslations = TranslationFiles
                 .Where(file => file.Language == "ru")
