@@ -14,6 +14,7 @@ import SubSectionHeader from "./sub-components/section-header";
 import SubSectionFilter from "./sub-components/section-filter";
 import SubSectionBody from "./sub-components/section-body";
 import SubSectionBodyContent from "./sub-components/section-body-content";
+import SubSectionBar from "./sub-components/section-bar";
 import SubSectionPaging from "./sub-components/section-paging";
 import SectionToggler from "./sub-components/section-toggler";
 import ReactResizeDetector from "react-resize-detector";
@@ -68,6 +69,12 @@ function SectionHeader() {
 }
 SectionHeader.displayName = "SectionHeader";
 
+function SectionBar() {
+  return null;
+}
+
+SectionBar.displayName = "SectionBar";
+
 function SectionFilter() {
   return null;
 }
@@ -90,6 +97,7 @@ class PageLayout extends React.Component {
   static SectionHeader = SectionHeader;
   static SectionFilter = SectionFilter;
   static SectionBody = SectionBody;
+  static SectionBar = SectionBar;
   static SectionPaging = SectionPaging;
 
   constructor(props) {
@@ -236,6 +244,7 @@ class PageLayout extends React.Component {
     let articleMainButtonContent = null;
     let articleBodyContent = null;
     let sectionHeaderContent = null;
+    let sectionBarContent = null;
     let sectionFilterContent = null;
     let sectionPagingContent = null;
     let sectionBodyContent = null;
@@ -259,6 +268,9 @@ class PageLayout extends React.Component {
           break;
         case SectionFilter.displayName:
           sectionFilterContent = child;
+          break;
+        case SectionBar.displayName:
+          sectionBarContent = child;
           break;
         case SectionPaging.displayName:
           sectionPagingContent = child;
@@ -372,7 +384,20 @@ class PageLayout extends React.Component {
 
                     {isSectionFilterAvailable && (
                       <>
-                        <StyledMainBar id="main-bar" />
+                        <div
+                          id="main-bar"
+                          style={{
+                            display: "grid",
+                            paddingRight: "20px",
+                            marginLeft: "-4px",
+                          }}
+                        >
+                          <SubSectionBar>
+                            {sectionBarContent
+                              ? sectionBarContent.props.children
+                              : null}
+                          </SubSectionBar>
+                        </div>
                         <SubSectionFilter
                           className="section-header_filter"
                           viewAs={viewAs}
@@ -536,6 +561,7 @@ PageLayout.ArticleHeader = ArticleHeader;
 PageLayout.ArticleMainButton = ArticleMainButton;
 PageLayout.ArticleBody = ArticleBody;
 PageLayout.SectionHeader = SectionHeader;
+PageLayout.SectionBar = SectionBar;
 PageLayout.SectionFilter = SectionFilter;
 PageLayout.SectionBody = SectionBody;
 PageLayout.SectionPaging = SectionPaging;
