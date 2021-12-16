@@ -20,6 +20,7 @@ import {
   SectionFilterContent,
   SectionHeaderContent,
   SectionPagingContent,
+  Bar,
 } from "./Section";
 
 import { createTreeFolders } from "../../helpers/files-helpers";
@@ -307,6 +308,10 @@ class PureHome extends React.Component {
           <PageLayout.SectionHeader>
             <SectionHeaderContent />
           </PageLayout.SectionHeader>
+
+          <PageLayout.SectionBar>
+            <Bar firstLoad={firstLoad} />
+          </PageLayout.SectionBar>
 
           <PageLayout.SectionFilter>
             <SectionFilterContent />
