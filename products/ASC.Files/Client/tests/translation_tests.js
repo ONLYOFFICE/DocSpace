@@ -7,14 +7,8 @@ const browser = process.env.profile || 'chromium';
 const deviceType = process.env.DEVICE_TYPE || 'desktop';
 const isModel = !!process.env.MODEL;
 
-const featureName = isModel
-  ? `Files translation on '${browser}' with '${deviceType}' dimension (model)`
-  : `Files translation on '${browser}' with '${deviceType}' dimension`;
-
 for (const culture of cultures) {
-  const featureName = isModel
-    ? `Files translation on '${browser}' with '${deviceType}' dimension (model)`
-    : `Files translation on '${browser}' with '${deviceType}' dimension in ${culture}`;
+  const featureName = isModel ? `Files translation(model)` : `${culture}`;
 
   Feature(featureName);
 
@@ -22,7 +16,7 @@ for (const culture of cultures) {
     I.mockData();
   });
 
-  Scenario(`Translation files main page tests ${culture}`, ({ I }) => {
+  Scenario(`Main page tests ${culture}`, ({ I }) => {
     I.mockEndpoint(Endpoints.root, 'empty');
     I.mockEndpoint(Endpoints.my, 'default');
 
@@ -44,7 +38,7 @@ for (const culture of cultures) {
     });
   });
 
-  Scenario(`Translation profile menu tests ${culture}`, ({ I }) => {
+  Scenario(`Profile menu tests ${culture}`, ({ I }) => {
     I.mockEndpoint(Endpoints.root, 'empty');
     I.mockEndpoint(Endpoints.my, 'default');
 
@@ -65,7 +59,7 @@ for (const culture of cultures) {
     });
   });
 
-  Scenario(`Translation main button tests ${culture}`, ({ I }) => {
+  Scenario(`Main button tests ${culture}`, ({ I }) => {
     I.mockEndpoint(Endpoints.root, 'empty');
     I.mockEndpoint(Endpoints.my, 'default');
 
@@ -88,7 +82,7 @@ for (const culture of cultures) {
     });
   });
 
-  Scenario(`Translation select fields tests ${culture}`, ({ I }) => {
+  Scenario(`Select fields tests ${culture}`, ({ I }) => {
     I.mockEndpoint(Endpoints.root, 'empty');
     I.mockEndpoint(Endpoints.my, 'default');
 
