@@ -6,28 +6,11 @@ module.exports = (socket, next) => {
   const session = socket.handshake.session;
   const cookie = req.cookies["asc_auth_key"];
 
-  // if (req.user) {
-  //   next();
-
-  //   return;
-  // }
-
   if (!req.cookies || !cookie) {
     socket.disconnect("unauthorized");
     next(new Error("Authentication error"));
     return;
   }
-
-  // if (
-  //   session &&
-  //   session.user &&
-  //   session.portal
-  // ) {
-  //   req.user = session.user;
-  //   req.portal = session.portal;
-  //   next();
-  //   return;
-  // }
 
   // if (req.cookies["authorization"]) {
   //   if (!authService(req)) {

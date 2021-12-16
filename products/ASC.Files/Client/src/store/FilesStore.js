@@ -69,6 +69,7 @@ class FilesStore {
 
     socket.on("editorCreateCopy", (folderId) => {
       //TODO:
+      console.log("editorCreateCopy");
       selectedFolderStore.id === folderId && this.fetchFiles(folderId);
     });
 

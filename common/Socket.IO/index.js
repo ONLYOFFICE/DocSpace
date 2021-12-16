@@ -1,8 +1,10 @@
 const express = require("express");
 const { Server } = require("socket.io");
 const { createServer } = require("http");
+const redis = require("redis");
 const expressSession = require("express-session");
 const cookieParser = require("cookie-parser");
+const RedisStore = require("connect-redis")(expressSession);
 const MemoryStore = require("memorystore")(expressSession);
 const sharedsession = require("express-socket.io-session");
 
@@ -17,15 +19,16 @@ const secret = config.get("core.machinekey") + new Date().getTime();
 const secretCookieParser = cookieParser(secret);
 const baseCookieParser = cookieParser();
 
-const redis = {
+const redisOptions = {
   host: config.get("redis:host"),
   port: config.get("redis:port"),
   ttl: 3600,
 };
 
 let store;
-if (redis.host && redis.port) {
-  //store = new RedisStore(redis);
+if (redisOptions.host && redisOptions.port) {
+  const redisClient = redis.createClient(redisOptions);
+  store = new RedisStore({ client: redisClient });
 } else {
   store = new MemoryStore();
 }
@@ -50,10 +53,20 @@ app.use(session);
 const httpServer = createServer(app);
 
 const options = {
-  // cors: {
-  //   origin: "*",
-  //   //credentials: true,
-  // },
+  cors: {
+    "Content-Type": "text/html",
+  },
+  allowRequest: (req, fn) => {
+    var cookies = baseCookieParser(req, null, () => {});
+    if (
+      !req.cookies ||
+      (!req.cookies["asc_auth_key"] && !req.cookies["authorization"])
+    ) {
+      return fn("auth", false);
+    }
+    return fn("auth", true);
+    //return io2.checkRequest(req, fn);
+  },
 };
 
 const io = new Server(httpServer, options);
@@ -67,6 +80,17 @@ io.use(sharedsession(session, secretCookieParser, { autoSave: true }))
   });
 
 io.on("connection", (socket) => {
+  const session = socket.handshake.session;
+  if (session && session.user && session.portal) {
+    return;
+  }
+
+  const userId = session.user.id;
+  const tenantId = session.portal.tenantId;
+  const filesRoom = `${tenantId}-${userId}`;
+
+  socket.join(filesRoom);
+
   //TODO: remove fake
   socket.on("editFile", (fileId) => {
     setTimeout(() => {
@@ -75,10 +99,8 @@ io.on("connection", (socket) => {
     }, 10000);
   });
 
-  socket.on("editorCreateCopy", (fileId) => {
-    //TODO: get folderId for file
-    const folderId = 6; //@my
-    io.emit("editorCreateCopy", folderId);
+  socket.on("editorCreateCopy", (folderId) => {
+    io.to(filesRoom).emit("editorCreateCopy", folderId);
   });
 });
 

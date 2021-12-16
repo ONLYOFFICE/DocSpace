@@ -701,7 +701,7 @@ const Editor = () => {
     );
 
     if (savingInfo) {
-      socket.emit("editorCreateCopy", fileId);
+      fileInfo && socket.emit("editorCreateCopy", fileInfo.folderId);
 
       const convertedInfo = savingInfo.split(": ").pop();
       docEditor.showMessage(convertedInfo);
