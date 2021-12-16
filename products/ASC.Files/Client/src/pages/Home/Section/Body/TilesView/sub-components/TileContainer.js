@@ -20,37 +20,36 @@ const paddingCss = css`
   }
 `;
 
-const foldersStyle = css`
-  grid-gap: 19px 16px;
-
-  ${paddingCss}
-
-  @media ${tablet} {
-    grid-gap: 17px 12px;
-  }
-`;
-
-const filesStyle = css`
-  grid-gap: 14px 16px;
-
-  ${paddingCss}
-
-  @media ${tablet} {
-    grid-gap: 12px;
-  }
-`;
+// const foldersStyle = css`
+//   grid-gap: 16px;
+//
+//   ${paddingCss}
+// `;
+//
+// const filesStyle = css`
+//   grid-gap: 16px;
+//
+//   ${paddingCss}
+// `;
 
 const StyledGridWrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   width: 100%;
-  padding-bottom: 24px;
+  margin-bottom: ${(props) => (props.isFolders ? "29px" : 0)};
   box-sizing: border-box;
-  ${(props) => (props.isFolders ? foldersStyle : filesStyle)};
+  ${paddingCss};
+
+  grid-gap: 14px 16px;
+
+  @media ${tablet} {
+    grid-gap: 14px;
+  }
 `;
 
 const StyledTileContainer = styled.div`
   position: relative;
+  margin-top: -4px;
 
   .tile-item-wrapper {
     position: relative;
@@ -105,11 +104,11 @@ class TileContainer extends React.PureComponent {
   }
 
   renderFolders = () => {
-    return <div></div>;
+    return <div />;
   };
 
   renderFiles = () => {
-    return <div></div>;
+    return <div />;
   };
 
   // eslint-disable-next-line react/prop-types
@@ -209,9 +208,11 @@ class TileContainer extends React.PureComponent {
 
         {Files.length > 0 && (
           <>
-            <Heading size="xsmall" className="tile-items-heading">
-              {headingFiles}
-            </Heading>
+            {Folders.length > 0 && (
+              <Heading size="xsmall" className="tile-items-heading">
+                {headingFiles}
+              </Heading>
+            )}
             {useReactWindow ? (
               <AutoSizer>{renderList}</AutoSizer>
             ) : (

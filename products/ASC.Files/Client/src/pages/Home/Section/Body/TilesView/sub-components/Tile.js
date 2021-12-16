@@ -6,7 +6,7 @@ import { ReactSVG } from "react-svg";
 import styled, { css } from "styled-components";
 import ContextMenu from "@appserver/components/context-menu";
 import { tablet } from "@appserver/components/utils/device";
-import { isDesktop, isMobile } from "react-device-detect";
+import { isDesktop } from "react-device-detect";
 
 import Link from "@appserver/components/link";
 import Loader from "@appserver/components/loader";
@@ -25,6 +25,10 @@ const FlexBoxStyles = css`
 
 const FolderStyles = css`
   height: 64px;
+`;
+
+const FileStyles = css`
+  height: 220px;
 `;
 
 const draggingStyle = css`
@@ -54,7 +58,7 @@ const StyledTile = styled.div`
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   ${(props) => props.isFolder && FlexBoxStyles}
-  ${(props) => props.isFolder && FolderStyles}
+  ${(props) => (props.isFolder ? FolderStyles : FileStyles)}
   ${(props) => (props.checked || props.isActive) && checkedStyle}
 
   &:before, 
@@ -87,16 +91,8 @@ const StyledTile = styled.div`
   .file-checkbox {
     display: ${(props) => (props.checked ? "flex" : "none")};
     flex: 0 0 16px;
-    margin-top: 3px;
-
-    margin-left: ${(props) =>
-      isMobile
-        ? css`
-            ${props.isFolder ? "6px" : "12px"};
-          `
-        : css`
-            ${props.isFolder ? "5px" : "8px"}
-          `};
+    margin-top: 8px;
+    margin-left: 12px;
   }
 
   .file-icon {
@@ -104,24 +100,15 @@ const StyledTile = styled.div`
     flex: 0 0 auto;
     margin-left: 5px;
     user-select: none;
-    margin-top: ${(props) => (props.isFolder ? "-3px" : "-6px")};
+    margin-top: ${(props) => (props.isFolder ? "-3px" : "-4px")};
 
     height: 31px;
     width: 31px;
 
     img {
-      height: 31px;
-      width: 31px;
+      height: 30px;
+      width: 30px;
     }
-
-    /* margin-left: ${(props) =>
-      isMobile
-        ? css`
-            ${props.isFolder ? "2px" : "4px"};
-          `
-        : css`
-            ${props.isFolder ? "2px" : "4px"}
-          `}; */
   }
 
   .file-icon_container {
@@ -135,16 +122,7 @@ const StyledTile = styled.div`
   }
 
   .styled-content {
-    margin-left: 12px;
-
-    margin-left: ${(props) =>
-      isMobile
-        ? css`
-            ${props.isFolder ? "8px" : "12px"};
-          `
-        : css`
-            ${props.isFolder ? "12px" : "13px"}
-          `};
+    margin-left: ${(props) => (props.isFolder ? "12px" : "14px")};
   }
 
   :hover {
@@ -171,8 +149,7 @@ const StyledFileTileTop = styled.div`
   justify-content: space-between;
   align-items: baseline;
   background-color: #f8f9f9;
-  padding-top: 21px;
-  height: ${(props) => (props.checked || props.isActive ? "156px" : "156px")};
+  height: 154px;
   position: relative;
   border-bottom: ${(props) =>
     props.checked || props.isActive
@@ -188,8 +165,8 @@ const StyledFileTileTop = styled.div`
     bottom: 0;
     margin: auto;
     z-index: 0;
-
-    min-width: 208px;
+    width: 190px;
+    height: 132px;
   }
 
   .temporary-icon > .injected-svg {
@@ -250,10 +227,7 @@ const StyledOptionButton = styled.div`
   display: block;
 
   .expandButton > div:first-child {
-    padding-top: 8px;
-    padding-bottom: 8px;
-    padding-left: 12px;
-    padding-right: 13px;
+    padding: 8px 13px 8px 12px;
   }
 `;
 
@@ -383,7 +357,7 @@ class Tile extends React.PureComponent {
                     </StyledElement>
 
                     <Checkbox
-                      className="checkbox file-checkbox"
+                      className="file-checkbox"
                       isChecked={checked}
                       isIndeterminate={indeterminate}
                       onChange={this.changeCheckbox}
@@ -416,7 +390,7 @@ class Tile extends React.PureComponent {
                   onClick={onContextMenu}
                 />
               ) : (
-                <div className="expandButton"> </div>
+                <div className="expandButton" />
               )}
               <ContextMenu model={contextOptions} ref={this.cm} />
             </StyledOptionButton>
