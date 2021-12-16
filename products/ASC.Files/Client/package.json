@@ -16,10 +16,12 @@
     "test:smallTablet": "cross-env DEVICE_TYPE=smallTablet yarn test:codeceptjs",
     "test:tablet": "cross-env DEVICE_TYPE=tablet yarn test:codeceptjs",
     "test:desktop": "cross-env DEVICE_TYPE=desktop yarn test:codeceptjs ",
+    "test:desktop:translation": "cross-env DEVICE_TYPE=desktop translation=true yarn test:codeceptjs --profile chromium",
     "test:mobile:model": "cross-env DEVICE_TYPE=mobile MODEL=true yarn test:codeceptjs",
     "test:smallTablet:model": "cross-env DEVICE_TYPE=smallTablet MODEL=true yarn test:codeceptjs",
     "test:tablet:model": "cross-env DEVICE_TYPE=tablet MODEL=true yarn test:codeceptjs",
     "test:desktop:model": "cross-env DEVICE_TYPE=desktop MODEL=true yarn test:codeceptjs",
+    "test:desktop:translation:model": "cross-env DEVICE_TYPE=desktop MODEL=true TRANSLATION=true yarn test:codeceptjs --profile chromium",
     "test:chromium:parallel": "run-p -c \"test:mobile --profile chromium \" \"test:smallTablet --profile chromium \" \"test:tablet --profile chromium \" \"test:desktop --profile chromium \" && yarn test:parse-xml",
     "test:chromium:sequential": "run-s -c \"test:mobile --profile chromium \" \"test:smallTablet --profile chromium \" \"test:tablet --profile chromium \" \"test:desktop --profile chromium \" && yarn test:parse-xml",
     "test:chromium:model": "run-s -c \"test:mobile:model --profile chromium \" \"test:smallTablet:model --profile chromium \" \"test:tablet:model --profile chromium \" \"test:desktop:model --profile chromium \" && yarn test:parse-xml",
@@ -73,7 +75,8 @@
     "terser-webpack-plugin": "^5.2.4",
     "webpack": "5.52.1",
     "webpack-cli": "4.9.0",
-    "webpack-dev-server": "4.3.1"
+    "webpack-dev-server": "4.3.1",
+    "webpack-inject-plugin": "^1.5.5"
   },
   "id": "e67be73d-f9ae-4ce1-8fec-1880cb518cb4",
   "title": "ONLYOFFICE"

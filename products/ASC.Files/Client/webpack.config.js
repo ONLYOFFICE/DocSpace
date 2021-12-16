@@ -14,6 +14,30 @@ const deps = pkg.dependencies || {};
 const homepage = pkg.homepage; // combineUrl(AppServerConfig.proxyURL, pkg.homepage);
 const title = pkg.title;
 
+function hideText() {
+  const styles = `  div,
+  p,
+  a,
+  span,
+  button,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  ::placeholder {
+    color: #fff !important;
+    /* background: #000 !important; */
+    mix-blend-mode: multiply;
+  }`;
+
+  const styleSheet = document.createElement('style');
+  styleSheet.type = 'text/css';
+  styleSheet.innerText = styles;
+  document.head.appendChild(styleSheet);
+}
+
 var config = {
   mode: 'development',
   entry: './src/index',

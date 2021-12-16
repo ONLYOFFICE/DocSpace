@@ -13,6 +13,8 @@ const sizes = {
 
 const deviceType = process.env.DEVICE_TYPE || 'desktop';
 
+const isTranslation = !!process.env.TRANSLATION;
+
 const device = sizes[deviceType];
 
 setWindowSize(device.width, device.height);
@@ -21,12 +23,22 @@ const browser = process.env.profile || 'chromium';
 
 const isModel = !!process.env.MODEL;
 
-const screenshotOutput = isModel
+const screenshotOutput = isTranslation
+  ? isModel
+    ? `./tests/screenshots/translation/${browser}/${deviceType}`
+    : `./tests/output/translation/${browser}/${deviceType}`
+  : isModel
   ? `./tests/screenshots/${browser}/${deviceType}`
   : `./tests/output/${browser}/${deviceType}`;
 
+const baseFolder = isTranslation
+  ? `./tests/screenshots/translation/${browser}/${deviceType}`
+  : `./tests/screenshots/${browser}/${deviceType}`;
+
+const tests = isTranslation ? './tests/translation_tests.js' : './tests/*_tests.js';
+
 exports.config = {
-  tests: './tests/*_tests.js',
+  tests: tests,
   output: screenshotOutput,
   helpers: {
     Playwright: {
@@ -43,7 +55,7 @@ exports.config = {
     ResembleHelper: {
       require: 'codeceptjs-resemblehelper',
       screenshotFolder: './tests/output/',
-      baseFolder: `./tests/screenshots/${browser}/${deviceType}`,
+      baseFolder: baseFolder,
       diffFolder: './tests/output/diff/',
     },
     PlaywrightHelper: {
