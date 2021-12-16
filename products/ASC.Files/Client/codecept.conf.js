@@ -35,7 +35,9 @@ const baseFolder = isTranslation
   ? `./tests/screenshots/translation/${browser}/${deviceType}`
   : `./tests/screenshots/${browser}/${deviceType}`;
 
-const tests = isTranslation ? './tests/translation_tests.js' : './tests/*_tests.js';
+const tests = isTranslation
+  ? './tests/translation_tests.js'
+  : ['./tests/action_tests.js', './tests/render_tests.js'];
 
 exports.config = {
   tests: tests,
