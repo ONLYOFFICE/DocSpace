@@ -302,7 +302,14 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   const fetchBanners = () => {
     if (!FirebaseHelper.isEnabled) return;
 
-    console.log("fetchBanners");
+    console.log("fetchBanners");    FirebaseHelper.checkBar()
+      .then((bar) => {
+        localStorage.setItem("bar", bar);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
     FirebaseHelper.checkCampaigns()
       .then((campaigns) => {
         localStorage.setItem("campaigns", campaigns);
