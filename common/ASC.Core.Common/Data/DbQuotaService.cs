@@ -62,12 +62,12 @@ namespace ASC.Core.Data
     [Scope]
     class DbQuotaService : IQuotaService
     {
-        private Expression<Func<DbQuota, TenantQuota>> FromDbQuotaToTenantQuota { get; set; }
-        private Expression<Func<DbQuotaRow, TenantQuotaRow>> FromDbQuotaRowToTenantQuotaRow { get; set; }
+        private static Expression<Func<DbQuota, TenantQuota>> FromDbQuotaToTenantQuota { get; set; }
+        private static Expression<Func<DbQuotaRow, TenantQuotaRow>> FromDbQuotaRowToTenantQuotaRow { get; set; }
         internal CoreDbContext CoreDbContext { get => LazyCoreDbContext.Value; }
         internal Lazy<CoreDbContext> LazyCoreDbContext { get; set; }
 
-        public DbQuotaService()
+        static DbQuotaService()
         {
             FromDbQuotaToTenantQuota = r => new TenantQuota()
             {
@@ -91,7 +91,7 @@ namespace ASC.Core.Data
             };
         }
 
-        public DbQuotaService(DbContextManager<CoreDbContext> dbContextManager) : this()
+        public DbQuotaService(DbContextManager<CoreDbContext> dbContextManager)
         {
             LazyCoreDbContext = new Lazy<CoreDbContext>(() => dbContextManager.Value);
         }
