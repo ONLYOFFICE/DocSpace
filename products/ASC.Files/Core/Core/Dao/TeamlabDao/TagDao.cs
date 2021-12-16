@@ -116,6 +116,19 @@ namespace ASC.Files.Core.Data
             return FromQuery(q);
         }
 
+        static Func<EF.FilesDbContext, int, Guid, IEnumerable<TagType>, HashSet<string>, HashSet<string>, IEnumerable<TagLinkData>> getTagsQuery =
+    Microsoft.EntityFrameworkCore.EF.CompileQuery((EF.FilesDbContext ctx, int tenantId, Guid subject, IEnumerable<TagType> tagType, HashSet<string> filesId, HashSet<string> foldersId) =>
+    ctx.Tag
+    .AsNoTracking()
+    .Where(r => r.TenantId == tenantId)
+    .Where(r => tagType.Contains(r.Flag))
+    .Join(ctx.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
+    .Where(r => r.Link.TenantId == r.Tag.TenantId)
+    .Where(r => r.Link.EntryType == FileEntryType.File && filesId.Contains(r.Link.EntryId)
+    || r.Link.EntryType == FileEntryType.Folder && foldersId.Contains(r.Link.EntryId))
+    .Where(r => subject == Guid.Empty || r.Link.CreateBy == subject)
+    );
+
         public IDictionary<object, IEnumerable<Tag>> GetTags(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<T>> fileEntries)
         {
             var filesId = new HashSet<string>();
@@ -136,19 +149,7 @@ namespace ASC.Files.Core.Data
 
             if (fileEntries.Any())
             {
-                var q = Query(FilesDbContext.Tag)
-                    .Where(r => tagType.Contains(r.Flag))
-                    .Join(FilesDbContext.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
-                    .Where(r => r.Link.TenantId == r.Tag.TenantId)
-                    .Where(r => r.Link.EntryType == FileEntryType.File && filesId.Contains(r.Link.EntryId)
-                    || r.Link.EntryType == FileEntryType.Folder && foldersId.Contains(r.Link.EntryId));
-
-                if (subject != Guid.Empty)
-                {
-                    q = q.Where(r => r.Link.CreateBy == subject);
-                }
-
-                return FromQuery(q)
+                return FromQuery(getTagsQuery(FilesDbContext, TenantID, subject, tagType, filesId, foldersId))
                     .GroupBy(r => r.EntryId)
                     .ToDictionary(r => r.Key, r => r.AsEnumerable());
             }
@@ -779,8 +780,8 @@ namespace ASC.Files.Core.Data
                     }
                 })
                 .AsEnumerable()
-                .ToList()
-                .ConvertAll(ToTag);
+                .Select(ToTag)
+                .ToList();
         }
 
         protected List<Tag> FromQuery(IEnumerable<TagLinkData> dbFilesTags)
@@ -803,8 +804,8 @@ namespace ASC.Files.Core.Data
                     }
                 })
                 .AsEnumerable()
-                .ToList()
-                .ConvertAll(ToTag);
+                .Select(ToTag)
+                .ToList();
         }
 
         private Tag ToTag(TagLinkData r)
