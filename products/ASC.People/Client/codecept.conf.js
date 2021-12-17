@@ -1,3 +1,4 @@
+const fs = require('fs');
 const { setHeadlessWhen, setWindowSize } = require('@codeceptjs/configure');
 
 // turn on headless mode when running with HEADLESS=true environment variable
@@ -46,6 +47,10 @@ const reportDir = isTranslation
 const reportFileName = isTranslation ? 'people-translation' : 'report';
 
 const diffFolder = isTranslation ? '../../../testResults/people/diff' : './tests/output/diff/';
+
+fs.mkdir(diffFolder, { recursive: true }, (err) => {
+  if (err) throw err;
+});
 
 exports.config = {
   tests: tests,
