@@ -183,7 +183,7 @@ var config = {
 };
 
 module.exports = (env, argv) => {
-  if (env.hideText) {
+  if (!!env.hideText) {
     config.plugins = [
       ...config.plugins,
       new HtmlWebpackPlugin({
@@ -218,6 +218,7 @@ module.exports = (env, argv) => {
         publicPath: homepage,
         title: title,
         base: `${homepage}/`,
+        custom: '',
       }),
     ];
   }

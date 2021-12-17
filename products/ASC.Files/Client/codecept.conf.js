@@ -39,6 +39,14 @@ const tests = isTranslation
   ? './tests/translation_tests.js'
   : ['./tests/action_tests.js', './tests/render_tests.js'];
 
+const reportDir = isTranslation
+  ? `../../../testResults`
+  : `./tests/reports/${browser}/${deviceType}`;
+
+const reportFileName = isTranslation ? 'file-translation' : 'report';
+
+const diffFolder = isTranslation ? '../../../testResults/files' : './tests/output/diff/';
+
 exports.config = {
   tests: tests,
   output: screenshotOutput,
@@ -73,14 +81,14 @@ exports.config = {
       mochawesome: {
         stdout: '-',
         options: {
-          reportDir: `./tests/reports/${browser}/${deviceType}`,
-          reportFilename: 'report',
+          reportDir: reportDir,
+          reportFilename: reportFileName,
         },
       },
       'mocha-junit-reporter': {
         stdout: '-',
         options: {
-          mochaFile: `./tests/reports/${browser}/${deviceType}/report.xml`,
+          mochaFile: `${reportDir}/${reportFileName}.xml`,
           attachments: false, //add screenshot for a failed test
         },
       },
