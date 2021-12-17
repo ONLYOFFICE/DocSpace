@@ -3,6 +3,7 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { isMobile } from "react-device-detect";
+import moment from "moment";
 
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
@@ -44,7 +45,6 @@ const FilesRowContent = ({
   sectionWidth,
   titleWithoutExt,
   updatedDate,
-  fileOwner,
   linkStyles,
   badgesComponent,
 }) => {
@@ -56,6 +56,8 @@ const FilesRowContent = ({
     providerKey,
     title,
   } = item;
+
+  updatedDate = moment(new Date(updatedDate)).format("MM/D/YYYY	hh:mm A");
 
   return (
     <>
@@ -77,43 +79,20 @@ const FilesRowContent = ({
           isTextOverflow={true}
         >
           {titleWithoutExt}
-          {fileExst && (
-            <Text
-              className="badge-ext"
-              as="span"
-              color="#A3A9AE"
-              fontSize="15px"
-              fontWeight={600}
-              truncate={true}
-            >
-              {fileExst}
-            </Text>
-          )}
         </Link>
         <div className="badges">{badgesComponent}</div>
-        <Text
-          containerMinWidth="120px"
-          containerWidth="15%"
-          as="div"
-          color={sideColor}
-          fontSize="12px"
-          fontWeight={400}
-          title={fileOwner}
-          truncate={true}
-        >
-          {fileOwner}
-        </Text>
-        <Text
-          containerMinWidth="200px"
-          containerWidth="15%"
-          title={updatedDate}
-          fontSize="12px"
-          fontWeight={400}
-          color={sideColor}
-          className="row_update-text"
-        >
-          {updatedDate && updatedDate}
-        </Text>
+        {!!fileExst && (
+          <Text
+            containerMinWidth="200px"
+            containerWidth="15%"
+            fontSize="12px"
+            fontWeight={400}
+            color={sideColor}
+            className="row_update-text"
+          >
+            {updatedDate && updatedDate}
+          </Text>
+        )}
         <Text
           containerMinWidth="90px"
           containerWidth="10%"
@@ -124,12 +103,8 @@ const FilesRowContent = ({
           title=""
           truncate={true}
         >
-          {fileExst || contentLength
-            ? contentLength
-            : !providerKey
-            ? `${t("TitleDocuments")}: ${filesCount} | ${t(
-                "TitleSubfolders"
-              )}: ${foldersCount}`
+          {!fileExst && !contentLength && !providerKey
+            ? `${foldersCount} ${t("folders")} | ${filesCount} ${t("files")}`
             : ""}
         </Text>
       </SimpleFilesRowContent>
