@@ -53,7 +53,7 @@
     "e2e.test": "lerna run test:sequential --parallel --scope {@appserver/people,@appserver/files,@appserver/login}",
     "e2e.test:sequential": "yarn workspace @appserver/people test:sequential && yarn workspace @appserver/files test:sequential && yarn workspace @appserver/login test:sequential",
     "e2e.test:model": "yarn workspace @appserver/people test:model && yarn workspace @appserver/files test:model && yarn workspace @appserver/login test:model",
-    "e2e.test:translation": "yarn workspace @appserver/files test:translation"
+    "e2e.test:translation": "lerna run test:translation --parallel --scope {@appserver/people,@appserver/files}"
   },
   "devDependencies": {
     "lerna": "3.22.1",
