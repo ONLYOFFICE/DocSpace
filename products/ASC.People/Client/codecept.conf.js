@@ -40,12 +40,12 @@ const tests = isTranslation
   : ['./tests/action_tests.js', './tests/render_tests.js'];
 
 const reportDir = isTranslation
-  ? `../../../testResults`
+  ? `../../../testResults/people`
   : `./tests/reports/${browser}/${deviceType}`;
 
 const reportFileName = isTranslation ? 'people-translation' : 'report';
 
-const diffFolder = isTranslation ? '../../../testResults/people' : './tests/output/diff/';
+const diffFolder = isTranslation ? '../../../testResults/people/diff' : './tests/output/diff/';
 
 exports.config = {
   tests: tests,
@@ -66,7 +66,7 @@ exports.config = {
       require: 'codeceptjs-resemblehelper',
       screenshotFolder: './tests/output/',
       baseFolder: baseFolder,
-      diffFolder: './tests/output/diff/',
+      diffFolder: diffFolder,
     },
     PlaywrightHelper: {
       require: './tests/helpers/playwright.helper.js',
