@@ -1,7 +1,8 @@
 const Endpoints = require('./mocking/endpoints.js');
 const json = require('./mocking/mock-data/settings/cultures.json');
+const changeCulture = require('./helpers/changeCulture.js');
 
-const cultures = json.response.map((item) => item.split('-')[1]);
+const cultures = json.response;
 
 const isModel = !!process.env.MODEL;
 
@@ -12,15 +13,16 @@ for (const culture of cultures) {
 
   Before(async ({ I }) => {
     I.mockData();
+    changeCulture(culture);
   });
 
   Scenario(`Main page tests ${culture}`, ({ I }) => {
     I.mockEndpoint(Endpoints.filter, 'many');
     I.mockEndpoint(Endpoints.group, 'many');
 
-    if (!isModel && culture !== 'US') {
-      I.mockEndpoint(Endpoints.self, `self${culture}`);
-      I.mockEndpoint(Endpoints.settings, `settings${culture}`);
+    if (!isModel) {
+      I.mockEndpoint(Endpoints.self, `selfTranslation`);
+      I.mockEndpoint(Endpoints.settings, `settingsTranslation`);
     }
 
     I.openPage();
@@ -37,9 +39,9 @@ for (const culture of cultures) {
     I.mockEndpoint(Endpoints.filter, 'many');
     I.mockEndpoint(Endpoints.group, 'many');
 
-    if (!isModel && culture !== 'US') {
-      I.mockEndpoint(Endpoints.self, `self${culture}`);
-      I.mockEndpoint(Endpoints.settings, `settings${culture}`);
+    if (!isModel) {
+      I.mockEndpoint(Endpoints.self, `self`);
+      I.mockEndpoint(Endpoints.settings, `settings`);
     }
 
     I.openPage();
@@ -59,9 +61,9 @@ for (const culture of cultures) {
     I.mockEndpoint(Endpoints.filter, 'many');
     I.mockEndpoint(Endpoints.group, 'many');
 
-    if (!isModel && culture !== 'US') {
-      I.mockEndpoint(Endpoints.self, `self${culture}`);
-      I.mockEndpoint(Endpoints.settings, `settings${culture}`);
+    if (!isModel) {
+      I.mockEndpoint(Endpoints.self, `self`);
+      I.mockEndpoint(Endpoints.settings, `settings`);
     }
 
     I.openPage();
