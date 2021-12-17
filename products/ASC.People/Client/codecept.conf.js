@@ -13,6 +13,8 @@ const sizes = {
 
 const deviceType = process.env.DEVICE_TYPE || 'desktop';
 
+const isTranslation = !!process.env.TRANSLATION;
+
 const device = sizes[deviceType];
 
 setWindowSize(device.width, device.height);
@@ -21,12 +23,32 @@ const browser = process.env.profile || 'chromium';
 
 const isModel = !!process.env.MODEL;
 
-const screenshotOutput = isModel
+const screenshotOutput = isTranslation
+  ? isModel
+    ? `./tests/screenshots/translation/${browser}/${deviceType}`
+    : `./tests/output/translation/${browser}/${deviceType}`
+  : isModel
   ? `./tests/screenshots/${browser}/${deviceType}`
   : `./tests/output/${browser}/${deviceType}`;
 
+const baseFolder = isTranslation
+  ? `./tests/screenshots/translation/${browser}/${deviceType}`
+  : `./tests/screenshots/${browser}/${deviceType}`;
+
+const tests = isTranslation
+  ? './tests/translation_tests.js'
+  : ['./tests/action_tests.js', './tests/render_tests.js'];
+
+const reportDir = isTranslation
+  ? `../../../testResults`
+  : `./tests/reports/${browser}/${deviceType}`;
+
+const reportFileName = isTranslation ? 'people-translation' : 'report';
+
+const diffFolder = isTranslation ? '../../../testResults/people' : './tests/output/diff/';
+
 exports.config = {
-  tests: './tests/*_tests.js',
+  tests: tests,
   output: screenshotOutput,
   helpers: {
     Playwright: {
@@ -43,7 +65,7 @@ exports.config = {
     ResembleHelper: {
       require: 'codeceptjs-resemblehelper',
       screenshotFolder: './tests/output/',
-      baseFolder: `./tests/screenshots/${browser}/${deviceType}`,
+      baseFolder: baseFolder,
       diffFolder: './tests/output/diff/',
     },
     PlaywrightHelper: {
@@ -59,14 +81,14 @@ exports.config = {
       mochawesome: {
         stdout: '-',
         options: {
-          reportDir: `./tests/reports/${browser}/${deviceType}`,
-          reportFilename: 'report',
+          reportDir: reportDir,
+          reportFilename: reportFileName,
         },
       },
       'mocha-junit-reporter': {
         stdout: '-',
         options: {
-          mochaFile: `./tests/reports/${browser}/${deviceType}/report.xml`,
+          mochaFile: `${reportDir}/${reportFileName}.xml`,
           attachments: false, //add screenshot for a failed test
         },
       },
