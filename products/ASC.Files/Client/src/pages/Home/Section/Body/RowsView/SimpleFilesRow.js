@@ -144,6 +144,10 @@ const StyledSimpleFilesRow = styled(Row)`
     props.sectionWidth <= 1024 &&
     props.sectionWidth > 500 &&
     `
+    .row_context-menu-wrapper{
+      width: min-content;
+    } 
+
     .badges {
       height: 16px;
       margin-top: 2.5px;
@@ -166,14 +170,14 @@ const StyledSimpleFilesRow = styled(Row)`
     }
 
     .tablet:last-child {
-      margin-right: 60px;
+     margin-right: 24px; 
     }
 
     .new-items {
       width: 16px;
       height: 16px;
       margin-top: 16px;
-      margin-right: 0.2vw;  
+      margin-right: 24px;  
  
       p {
         text-align:center;
@@ -188,13 +192,6 @@ const StyledSimpleFilesRow = styled(Row)`
         padding-top: 2px;
         height: 14px;
       }
-    }
-  `}
-  ${(props) =>
-    props.sectionWidth > 755 &&
-    `
-    .new-items {
-      margin-right: -0.6vw;
     }
   `}
 `;
