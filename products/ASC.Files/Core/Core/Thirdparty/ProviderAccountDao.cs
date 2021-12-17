@@ -173,40 +173,25 @@ namespace ASC.Files.Thirdparty
             }
         }
 
-        private List<IProviderInfo> GetProvidersInfoInternal(int linkId = -1, FolderType folderType = FolderType.DEFAULT, string searchText = null)
-        {
-            return GetProvidersInfoInternalAsync(linkId, folderType, searchText).Result;
-        }
+        static Func<FilesDbContext, int, int, FolderType, Guid, string, IAsyncEnumerable<DbFilesThirdpartyAccount>> getProvidersInfoQuery =
+    EF.CompileAsyncQuery((FilesDbContext ctx, int tenantId, int linkId, FolderType folderType, Guid userId, string searchText) =>
+    ctx.ThirdpartyAccount
+    .AsNoTracking()
+    .Where(r => r.TenantId == tenantId)
+    .Where(r => !(folderType == FolderType.USER || folderType == FolderType.DEFAULT && linkId == -1) || r.UserId == userId)
+    .Where(r => linkId == -1 || r.Id == linkId)
+    .Where(r => folderType == FolderType.DEFAULT || r.FolderType == folderType)
+    .Where(r => searchText == "" || r.Title.ToLower().Contains(searchText))
+    );
 
         private async Task<List<IProviderInfo>> GetProvidersInfoInternalAsync(int linkId = -1, FolderType folderType = FolderType.DEFAULT, string searchText = null)
         {
-            var querySelect = FilesDbContext.ThirdpartyAccount.AsQueryable().Where(r => r.TenantId == TenantID);
-
-            if (folderType == FolderType.USER || folderType == FolderType.DEFAULT && linkId == -1)
-            {
-                querySelect = querySelect.Where(r => r.UserId == SecurityContext.CurrentAccount.ID);
-            }
-
-            if (linkId != -1)
-            {
-                querySelect = querySelect.Where(r => r.Id == linkId);
-            }
-
-            if (folderType != FolderType.DEFAULT)
-            {
-                querySelect = querySelect.Where(r => r.FolderType == folderType);
-            }
-
-            if (!string.IsNullOrEmpty(searchText))
-            {
-                querySelect = BuildSearch(querySelect, searchText, SearhTypeEnum.Any);
-            }
-
             try
             {
-                var query = await querySelect.ToListAsync().ConfigureAwait(false);
-                return query.Select(ToProviderInfo)
-                    .ToList();
+                return await getProvidersInfoQuery(FilesDbContext, TenantID, linkId, folderType, SecurityContext.CurrentAccount.ID, GetSearchText(searchText))
+                    .Select(ToProviderInfo)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
             }
             catch (Exception e)
             {

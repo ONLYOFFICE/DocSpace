@@ -83,7 +83,7 @@ namespace ASC.Data.Storage
                 virtPath = "";
             }
 
-            if (virtPath.StartsWith("~") && !Uri.IsWellFormedUriString(virtPath, UriKind.Absolute))
+            if (virtPath.StartsWith('~') && !Uri.IsWellFormedUriString(virtPath, UriKind.Absolute))
             {
                 var rootPath = "/";
                 if (!string.IsNullOrEmpty(WebHostEnvironment?.WebRootPath) && WebHostEnvironment?.WebRootPath.Length > 1)

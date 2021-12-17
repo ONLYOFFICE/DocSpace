@@ -47,7 +47,20 @@ namespace ASC.Files.Thirdparty.ProviderDao
 {
     internal class ProviderDaoBase : ThirdPartyProviderDao, IDisposable
     {
-        private readonly List<IDaoSelector> Selectors;
+        private List<IDaoSelector> selectors;
+        private List<IDaoSelector> Selectors
+        {
+            get => selectors ??= new List<IDaoSelector>
+            {
+                //Fill in selectors
+                ServiceProvider.GetService<SharpBoxDaoSelector>(),
+                ServiceProvider.GetService<SharePointDaoSelector>(),
+                ServiceProvider.GetService<GoogleDriveDaoSelector>(),
+                ServiceProvider.GetService<BoxDaoSelector>(),
+                ServiceProvider.GetService<DropboxDaoSelector>(),
+                ServiceProvider.GetService<OneDriveDaoSelector>()
+            };
+        }
 
         private int tenantID;
         private int TenantID { get => tenantID != 0 ? tenantID : (tenantID = TenantManager.GetCurrentTenant().TenantId); }
@@ -64,17 +77,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
             SecurityDao = securityDao;
             TagDao = tagDao;
             CrossDao = crossDao;
-
-            Selectors = new List<IDaoSelector>
-            {
-                //Fill in selectors
-                ServiceProvider.GetService<SharpBoxDaoSelector>(),
-                ServiceProvider.GetService<SharePointDaoSelector>(),
-                ServiceProvider.GetService<GoogleDriveDaoSelector>(),
-                ServiceProvider.GetService<BoxDaoSelector>(),
-                ServiceProvider.GetService<DropboxDaoSelector>(),
-                ServiceProvider.GetService<OneDriveDaoSelector>()
-            };
         }
 
         protected IServiceProvider ServiceProvider { get; }
@@ -222,7 +224,10 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
         public void Dispose()
         {
-            Selectors.ForEach(r => r.Dispose());
+            if (selectors != null)
+            {
+                selectors.ForEach(r => r.Dispose());
+            }
         }
     }
 }
