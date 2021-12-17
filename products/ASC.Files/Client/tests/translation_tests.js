@@ -3,8 +3,6 @@ const json = require('./mocking/mock-data/settings/cultures.json');
 
 const cultures = json.response.map((item) => item.split('-')[1]);
 
-const browser = process.env.profile || 'chromium';
-const deviceType = process.env.DEVICE_TYPE || 'desktop';
 const isModel = !!process.env.MODEL;
 
 for (const culture of cultures) {
@@ -26,7 +24,7 @@ for (const culture of cultures) {
     }
 
     I.amOnPage('/products/files');
-    I.wait(5);
+    I.wait(3);
 
     I.see('My documents');
 
@@ -48,7 +46,7 @@ for (const culture of cultures) {
     }
 
     I.amOnPage('/products/files');
-    I.wait(5);
+    I.wait(3);
 
     I.openProfileMenu();
 
@@ -69,7 +67,7 @@ for (const culture of cultures) {
     }
 
     I.amOnPage('/products/files');
-    I.wait(5);
+    I.wait(3);
 
     I.seeElement({ react: 'ArticleMainButton' });
     I.click({ react: 'ArticleMainButton' });
@@ -92,7 +90,7 @@ for (const culture of cultures) {
     }
 
     I.amOnPage('/products/files');
-    I.wait(5);
+    I.wait(3);
 
     I.seeElement({ react: 'TableSettings' });
     I.click({ react: 'TableSettings' });
