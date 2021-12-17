@@ -55,6 +55,21 @@ const Badges = ({
           hoverColor="#3B72A7"
         />
       )}
+      {version > 1 && (
+        <Badge
+          className="badge-version icons-group"
+          backgroundColor="#A3A9AE"
+          borderRadius="11px"
+          color="#FFFFFF"
+          fontSize="10px"
+          fontWeight={800}
+          label={`Ver.${versionGroup}`}
+          maxWidth="50px"
+          onClick={onShowVersionHistory}
+          padding="0 5px"
+          data-id={id}
+        />
+      )}
       {canWebEdit &&
         !isEditing &&
         !isEditingWithFav &&
@@ -97,21 +112,6 @@ const Badges = ({
           data-id={id}
           data-title={title}
           onClick={onClickFavorite}
-        />
-      )}
-      {version > 1 && (
-        <Badge
-          className="badge-version icons-group"
-          backgroundColor="#A3A9AE"
-          borderRadius="11px"
-          color="#FFFFFF"
-          fontSize="10px"
-          fontWeight={800}
-          label={`Ver.${versionGroup}`}
-          maxWidth="50px"
-          onClick={onShowVersionHistory}
-          padding="0 5px"
-          data-id={id}
         />
       )}
       {(showNew || isNewWithFav) && (

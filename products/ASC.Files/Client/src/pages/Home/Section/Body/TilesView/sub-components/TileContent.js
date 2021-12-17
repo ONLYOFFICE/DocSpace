@@ -50,10 +50,6 @@ const MainContainerWrapper = styled.div`
 const MainContainer = styled.div`
   height: 20px;
 
-  .badge-ext {
-    margin: 0px !important;
-  }
-
   @media (max-width: 1024px) {
     ${truncateCss};
   }
@@ -62,20 +58,26 @@ const MainContainer = styled.div`
 const MainIcons = styled.div`
   align-self: center;
   white-space: nowrap;
+
   .badges {
-    margin-right: 4px;
+    margin: 8px;
   }
 
   .additional-badges {
     position: absolute;
-    top: 1px;
-    right: 2px;
+    top: 0;
+    left: 0;
     display: flex;
     flex-direction: row;
+    filter: drop-shadow(0px 12px 40px rgba(4, 15, 27, 0.12));
 
     .icons-group {
-      margin-top: 10px;
-      margin-right: 3px;
+      margin-right: 4px;
+      background: #ffffff;
+      border-radius: 4px;
+      padding: 8px;
+      height: 16px;
+      border: none; // removes transparent border on version badge
     }
   }
 `;
