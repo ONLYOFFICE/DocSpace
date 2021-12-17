@@ -96,12 +96,12 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .new-items {
+    width: 12px;
     min-width: max-content;
-
-    p {
-      min-width: 6px;
-      height: 12px;
-    }
+    height: 12px;
+    border: 0;
+    padding: 0;
+    margin-top: 3px;
   }
 
   .badge:last-child {
@@ -112,6 +112,8 @@ const StyledSimpleFilesRow = styled(Row)`
     min-width: 21px;
     height: max-content;
     margin-right: 8px;
+    border: 0;
+    padding: 0;
 
     p {
       text-align: center;
@@ -126,7 +128,8 @@ const StyledSimpleFilesRow = styled(Row)`
   .badges {
     display: flex;
     align-items: center;
-    height: 19px;
+    height: 12px;
+    margin-top: 3px;
   }
 
   .favorite {
@@ -134,21 +137,32 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .expandButton {
-    margin-left: 10px;
+    margin-left: 12px;
   }
 
   ${(props) =>
-    props.sectionWidth < 1025 &&
+    props.sectionWidth <= 1024 &&
     props.sectionWidth > 500 &&
     `
+    .badges {
+      height: 16px;
+      margin-top: 2.5px;
+     }
+
     .badge {
       width: 16px;
       height: 16px;
-      margin-right: 26px;
+      margin-right: 24px;
+    }
+
+    .lock-file {
+      svg {
+        height: 16px;
+      }
     }
 
     .tablet {
-      margin-top: 20px;
+      margin-top: 16px;
     }
 
     .tablet:last-child {
@@ -156,13 +170,17 @@ const StyledSimpleFilesRow = styled(Row)`
     }
 
     .new-items {
-      margin-top: 20px;
-      margin-right: -2px;
-
+      width: 16px;
+      height: 16px;
+      margin-top: 16px;
+      margin-right: 0.2vw;  
+ 
       p {
-        padding: 2px;
+        text-align:center;
+        padding-top: 2px;
       }
     }
+
     .badge-version {
       min-width: 25px;
 
@@ -170,6 +188,13 @@ const StyledSimpleFilesRow = styled(Row)`
         padding-top: 2px;
         height: 14px;
       }
+    }
+  `}
+  ${(props) =>
+    props.sectionWidth > 755 &&
+    `
+    .new-items {
+      margin-right: -0.6vw;
     }
   `}
 `;

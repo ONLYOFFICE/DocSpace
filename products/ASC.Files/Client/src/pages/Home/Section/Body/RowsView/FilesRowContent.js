@@ -28,7 +28,7 @@ const SimpleFilesRowContent = styled(RowContent)`
   }
 
   ${(props) =>
-    props.sectionWidth < 1025 &&
+    props.sectionWidth <= 1024 &&
     props.sectionWidth > 500 &&
     `
     .row-main-container-wrapper {
