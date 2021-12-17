@@ -165,8 +165,6 @@ const StyledFileTileTop = styled.div`
     bottom: 0;
     margin: auto;
     z-index: 0;
-    width: 190px;
-    height: 132px;
   }
 
   .temporary-icon > .injected-svg {

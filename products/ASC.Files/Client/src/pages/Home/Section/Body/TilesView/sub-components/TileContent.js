@@ -139,7 +139,6 @@ const getSideInfo = (content) => {
 };
 
 const TileContent = (props) => {
-  //console.log("TileContent render");
   const {
     children,
     disableSideInfo,

@@ -291,7 +291,6 @@ class PureHome extends React.Component {
           isHeaderVisible={isHeaderVisible}
           onOpenUploadPanel={this.showUploadPanel}
           firstLoad={firstLoad}
-          dragging={dragging}
         >
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />

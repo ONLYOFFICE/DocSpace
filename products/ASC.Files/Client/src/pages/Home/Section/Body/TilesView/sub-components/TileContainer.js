@@ -20,18 +20,6 @@ const paddingCss = css`
   }
 `;
 
-// const foldersStyle = css`
-//   grid-gap: 16px;
-//
-//   ${paddingCss}
-// `;
-//
-// const filesStyle = css`
-//   grid-gap: 16px;
-//
-//   ${paddingCss}
-// `;
-
 const StyledGridWrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -49,7 +37,6 @@ const StyledGridWrapper = styled.div`
 
 const StyledTileContainer = styled.div`
   position: relative;
-  margin-top: -4px;
 
   .tile-item-wrapper {
     position: relative;
