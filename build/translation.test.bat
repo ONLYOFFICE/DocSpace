@@ -52,6 +52,8 @@ call ping 127.0.0.1 -n 6 > nul
 
 call yarn e2e.test:translation
 
+exit
+
 
 
 if NOT %errorlevel% == 0 (
