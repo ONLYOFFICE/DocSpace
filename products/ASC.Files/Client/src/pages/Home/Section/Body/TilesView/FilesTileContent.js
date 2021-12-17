@@ -4,7 +4,6 @@ import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 
 import Link from "@appserver/components/link";
-import Text from "@appserver/components/text";
 
 import TileContent from "./sub-components/TileContent";
 import withContent from "../../../../../HOCs/withContent";
@@ -24,11 +23,6 @@ const SimpleFilesTileContent = styled(TileContent)`
 
   .main-icons {
     align-self: flex-end;
-  }
-
-  .badge-ext {
-    margin-left: -8px;
-    margin-right: 8px;
   }
 
   .badge {
@@ -98,18 +92,6 @@ const FilesTileContent = ({
           isTextOverflow
         >
           {titleWithoutExt}
-          {fileExst ? (
-            <Text
-              className="badge-ext"
-              as="span"
-              color="#A3A9AE"
-              fontSize={isMobile ? "15px" : "13px"}
-              fontWeight={600}
-              truncate={true}
-            >
-              {fileExst}
-            </Text>
-          ) : null}
         </Link>
 
         <div className="badges">{badgesComponent}</div>
