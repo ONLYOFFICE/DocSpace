@@ -14,10 +14,13 @@
     "avatar": "/images/default_user_photo_size_82-82.png",
     "isAdmin": true,
     "isLDAP": false,
-    "listAdminModules": ["files", "people"],
+    "listAdminModules": [
+      "files",
+      "people"
+    ],
     "isOwner": true,
     "isVisitor": false,
-    "cultureName": "it-IT",
+    "cultureName": "fr-FR",
     "mobilePhoneActivationStatus": 0,
     "isSSO": false,
     "id": "fcfa85e3-15fc-11ec-8f4f-80ce62334fc7",

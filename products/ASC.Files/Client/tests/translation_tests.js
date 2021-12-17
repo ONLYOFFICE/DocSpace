@@ -1,7 +1,8 @@
 const Endpoints = require('./mocking/endpoints.js');
+const changeCulture = require('./helpers/changeCulture.js');
 const json = require('./mocking/mock-data/settings/cultures.json');
 
-const cultures = json.response.map((item) => item.split('-')[1]);
+const cultures = json.response;
 
 const isModel = !!process.env.MODEL;
 
@@ -12,15 +13,16 @@ for (const culture of cultures) {
 
   Before(async ({ I }) => {
     I.mockData();
+    changeCulture(culture);
   });
 
   Scenario(`Main page tests ${culture}`, ({ I }) => {
     I.mockEndpoint(Endpoints.root, 'empty');
     I.mockEndpoint(Endpoints.my, 'default');
 
-    if (!isModel && culture !== 'US') {
-      I.mockEndpoint(Endpoints.self, `self${culture}`);
-      I.mockEndpoint(Endpoints.settings, `settings${culture}`);
+    if (!isModel) {
+      I.mockEndpoint(Endpoints.self, `selfTranslation`);
+      I.mockEndpoint(Endpoints.settings, `settingsTranslation`);
     }
 
     I.amOnPage('/products/files');
@@ -40,9 +42,9 @@ for (const culture of cultures) {
     I.mockEndpoint(Endpoints.root, 'empty');
     I.mockEndpoint(Endpoints.my, 'default');
 
-    if (!isModel && culture !== 'US') {
-      I.mockEndpoint(Endpoints.self, `self${culture}`);
-      I.mockEndpoint(Endpoints.settings, `settings${culture}`);
+    if (!isModel) {
+      I.mockEndpoint(Endpoints.self, `selfTranslation`);
+      I.mockEndpoint(Endpoints.settings, `settingsTranslation`);
     }
 
     I.amOnPage('/products/files');
@@ -61,9 +63,9 @@ for (const culture of cultures) {
     I.mockEndpoint(Endpoints.root, 'empty');
     I.mockEndpoint(Endpoints.my, 'default');
 
-    if (!isModel && culture !== 'US') {
-      I.mockEndpoint(Endpoints.self, `self${culture}`);
-      I.mockEndpoint(Endpoints.settings, `settings${culture}`);
+    if (!isModel) {
+      I.mockEndpoint(Endpoints.self, `selfTranslation`);
+      I.mockEndpoint(Endpoints.settings, `settingsTranslation`);
     }
 
     I.amOnPage('/products/files');
@@ -84,9 +86,9 @@ for (const culture of cultures) {
     I.mockEndpoint(Endpoints.root, 'empty');
     I.mockEndpoint(Endpoints.my, 'default');
 
-    if (!isModel && culture !== 'US') {
-      I.mockEndpoint(Endpoints.self, `self${culture}`);
-      I.mockEndpoint(Endpoints.settings, `settings${culture}`);
+    if (!isModel) {
+      I.mockEndpoint(Endpoints.self, `selfTranslation`);
+      I.mockEndpoint(Endpoints.settings, `settingsTranslation`);
     }
 
     I.amOnPage('/products/files');
