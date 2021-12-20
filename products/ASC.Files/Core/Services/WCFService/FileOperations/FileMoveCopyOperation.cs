@@ -336,7 +336,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                     {
                                         Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                                     }
-                                    else if (WithError(scope, FileDao.GetFilesAsync(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).Result, out var tmpError))
+                                    else if (WithError(scope, FileDao.GetFilesAsync(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync().Result, out var tmpError))
                                     {
                                         Error = tmpError;
                                     }
@@ -373,7 +373,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             {
                                 Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                             }
-                            else if (WithError(scope, FileDao.GetFilesAsync(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).Result, out var tmpError))
+                            else if (WithError(scope, FileDao.GetFilesAsync(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync().Result, out var tmpError))
                             {
                                 Error = tmpError;
                             }
@@ -525,7 +525,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                     {
                                         Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                                     }
-                                    else if (WithError(scope, await FileDao.GetFilesAsync(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true), out var tmpError))
+                                    else if (WithError(scope, await FileDao.GetFilesAsync(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync(), out var tmpError))
                                     {
                                         Error = tmpError;
                                     }
@@ -562,7 +562,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             {
                                 Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                             }
-                            else if (WithError(scope, await FileDao .GetFilesAsync(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true), out var tmpError))
+                            else if (WithError(scope, await FileDao.GetFilesAsync(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync(), out var tmpError))
                             {
                                 Error = tmpError;
                             }
@@ -910,7 +910,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                 {
                                     fileMarker.RemoveMarkAsNewForAll(file);
 
-                                    var newFileId = await FileDao .MoveFileAsync(file.ID, toFolderId);
+                                    var newFileId = await FileDao.MoveFileAsync(file.ID, toFolderId);
                                     newFile = await fileDao.GetFileAsync(newFileId);
 
                                     if (file.RootFolderType != FolderType.USER)

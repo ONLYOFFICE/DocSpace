@@ -111,15 +111,15 @@ namespace ASC.Files.Thirdparty.ProviderDao
                 });
         }
 
-        protected async Task SetSharedPropertyAsync(IEnumerable<FileEntry<string>> entries)
+        protected async Task SetSharedPropertyAsync(IAsyncEnumerable<FileEntry<string>> entries)
         {
-            var pureShareRecords = await SecurityDao.GetPureShareRecordsAsync(entries.ToArray());
+            var pureShareRecords = await SecurityDao.GetPureShareRecordsAsync(entries);
             pureShareRecords
-                 //.Where(x => x.Owner == SecurityContext.CurrentAccount.ID)
+                //.Where(x => x.Owner == SecurityContext.CurrentAccount.ID)
                 .Select(x => x.EntryId).Distinct().ToList()
-                .ForEach(id =>
+                .ForEach(async id =>
                 {
-                    var firstEntry = entries.FirstOrDefault(y => y.ID.Equals(id));
+                    var firstEntry = await entries.FirstOrDefaultAsync(y => y.ID.Equals(id));
 
                     if (firstEntry != null)
                         firstEntry.Shared = true;

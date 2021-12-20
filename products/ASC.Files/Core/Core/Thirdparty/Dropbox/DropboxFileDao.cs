@@ -233,12 +233,12 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public List<File<string>> GetFiles(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
         {
-            return GetFilesAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders).Result;
+            return GetFilesAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders).ToListAsync().Result;
         }
 
-        public async Task<List<File<string>>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
+        public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
         {
-            if (filterType == FilterType.FoldersOnly) return new List<File<string>>();
+            if (filterType == FilterType.FoldersOnly) yield break;
 
             //Get only files
             var items = await GetDropboxItemsAsync(parentId, false).ConfigureAwait(false);
@@ -255,7 +255,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             switch (filterType)
             {
                 case FilterType.FoldersOnly:
-                    return new List<File<string>>();
+                    yield break;
                 case FilterType.DocumentsOnly:
                     files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Document);
                     break;
@@ -297,7 +297,11 @@ namespace ASC.Files.Thirdparty.Dropbox
                 SortedByType.DateAndTimeCreation => orderBy.IsAsc ? files.OrderBy(x => x.CreateOn) : files.OrderByDescending(x => x.CreateOn),
                 _ => orderBy.IsAsc ? files.OrderBy(x => x.Title) : files.OrderByDescending(x => x.Title),
             };
-            return files.ToList();
+
+            foreach (var f in files)
+            {
+                yield return f;
+            }
         }
 
         public override Stream GetFileStream(File<string> file)
@@ -369,7 +373,7 @@ namespace ASC.Files.Thirdparty.Dropbox
                 if (!newDropboxFile.Name.Equals(file.Title))
                 {
                     var parentFolderPath = GetParentFolderPath(newDropboxFile);
-                    file.Title = await GetAvailableTitleAsync (file.Title, parentFolderPath, IsExistAsync).ConfigureAwait(false);
+                    file.Title = await GetAvailableTitleAsync(file.Title, parentFolderPath, IsExistAsync).ConfigureAwait(false);
                     newDropboxFile = await ProviderInfo.Storage.MoveFileAsync(filePath, parentFolderPath, file.Title).ConfigureAwait(false);
                 }
             }
@@ -593,7 +597,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             var parentFolderPath = GetParentFolderPath(dropboxFile);
             newTitle = await GetAvailableTitleAsync(newTitle, parentFolderPath, IsExistAsync).ConfigureAwait(false);
 
-            dropboxFile = await ProviderInfo.Storage.MoveFileAsync(MakeDropboxPath(dropboxFile), parentFolderPath, newTitle);
+            dropboxFile = await ProviderInfo.Storage.MoveFileAsync(MakeDropboxPath(dropboxFile), parentFolderPath, newTitle).ConfigureAwait(false);
 
             await ProviderInfo.CacheResetAsync(dropboxFile).ConfigureAwait(false);
             var parentPath = GetParentFolderPath(dropboxFile);

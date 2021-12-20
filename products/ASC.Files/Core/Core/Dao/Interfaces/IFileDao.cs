@@ -131,7 +131,7 @@ namespace ASC.Files.Core
         ///    Return only the latest versions of files of a folder
         /// </remarks>
         List<File<T>> GetFiles(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false);
-        Task<List<File<T>>> GetFilesAsync(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false);
+        IAsyncEnumerable<File<T>> GetFilesAsync(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false);
 
         /// <summary>
         /// Get stream of file

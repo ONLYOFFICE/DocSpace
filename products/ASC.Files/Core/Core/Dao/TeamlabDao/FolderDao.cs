@@ -156,7 +156,7 @@ namespace ASC.Files.Core.Data
                 .Where(r => r.FolderId == folderId)
                 .OrderByDescending(r => r.Level)
                 .Select(r => r.ParentId)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync().ConfigureAwait(false);
 
             var query = GetFolderQuery(r => r.Id == id).AsNoTracking();
 
@@ -189,26 +189,26 @@ namespace ASC.Files.Core.Data
 
         public List<Folder<int>> GetFolders(int parentId)
         {
-            return GetFoldersAsync(parentId).Result;
+            return GetFoldersAsync(parentId).ToListAsync().Result;
         }
 
-        public async Task<List<Folder<int>>> GetFoldersAsync(int parentId)
+        public IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId)
         {
-            return await GetFoldersAsync(parentId, default, default, false, default, string.Empty).ConfigureAwait(false);
+            return GetFoldersAsync(parentId, default, default, false, default, string.Empty);
         }
 
         public List<Folder<int>> GetFolders(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
         {
-            return GetFoldersAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, withSubfolders).Result;
+            return GetFoldersAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, withSubfolders).ToListAsync().Result;
         }
 
-        public async Task<List<Folder<int>>> GetFoldersAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
+        public IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
         {
             if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
                 || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
                 || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
-                return new List<Folder<int>>();
+                return AsyncEnumerable.Empty<Folder<int>>();
 
             if (orderBy == null) orderBy = new OrderBy(SortedByType.DateAndTime, false);
 
@@ -255,8 +255,7 @@ namespace ASC.Files.Core.Data
                 }
             }
 
-            var query = await FromQueryWithShared(q).ToListAsync().ConfigureAwait(false);
-            return query.ConvertAll(e => ToFolder(e));
+            return FromQueryWithShared(q).AsAsyncEnumerable().Select(ToFolder);
         }
 
         public List<Folder<int>> GetFolders(IEnumerable<int> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
@@ -525,7 +524,7 @@ namespace ASC.Files.Core.Data
             FilesDbContext.RemoveRange(bunchToDelete);
             await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-            await tx.CommitAsync();
+            await tx.CommitAsync().ConfigureAwait(false);
 
             await RecalculateFoldersCountAsync(parent).ConfigureAwait(false);
 
@@ -1002,7 +1001,7 @@ namespace ASC.Files.Core.Data
 
             foreach (var f in toUpdate)
             {
-                var count = await FilesDbContext.Tree.AsQueryable().Where(r => r.ParentId == f.Id).CountAsync() - 1;
+                var count = await FilesDbContext.Tree.AsQueryable().Where(r => r.ParentId == f.Id).CountAsync().ConfigureAwait(false) - 1;
                 f.FoldersCount = count;
             }
 

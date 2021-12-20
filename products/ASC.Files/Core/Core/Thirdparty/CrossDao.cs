@@ -287,7 +287,7 @@ namespace ASC.Files.Core.Thirdparty
                                  ? toFolder.ID
                                  : await toFolderDao.SaveFolderAsync(toFolder1);
 
-            var foldersToCopy = await fromFolderDao.GetFoldersAsync(fromConverter(fromFolderId));
+            var foldersToCopy = await fromFolderDao.GetFoldersAsync(fromConverter(fromFolderId)).ToListAsync();
             var fileIdsToCopy = await fromFileDao.GetFilesAsync(fromConverter(fromFolderId));
             Exception copyException = null;
             //Copy files first

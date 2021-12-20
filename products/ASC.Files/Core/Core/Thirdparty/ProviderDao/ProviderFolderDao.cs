@@ -66,7 +66,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
             if (result != null)
             {
-                await SetSharedPropertyAsync(new[] { result }).ConfigureAwait(false);
+                await SetSharedPropertyAsync(new[] { result }.ToAsyncEnumerable()).ConfigureAwait(false);
             }
 
             return result;
@@ -109,35 +109,35 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
         public List<Folder<string>> GetFolders(string parentId)
         {
-            return GetFoldersAsync(parentId).Result;
+            return GetFoldersAsync(parentId).ToListAsync().Result;
         }
 
-        public async Task<List<Folder<string>>> GetFoldersAsync(string parentId)
+        public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
         {
             var selector = GetSelector(parentId);
             var folderDao = selector.GetFolderDao(parentId);
-            var folders = await folderDao.GetFoldersAsync(selector.ConvertId(parentId)).ConfigureAwait(false);
-            return folders.Where(r => r != null)
-                .ToList();
+            var folders = folderDao.GetFoldersAsync(selector.ConvertId(parentId));
+            return folders.Where(r => r != null);
         }
 
         public List<Folder<string>> GetFolders(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
         {
-            return GetFoldersAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, withSubfolders).Result;
+            return GetFoldersAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, withSubfolders).ToListAsync().Result;
         }
 
-        public async Task<List<Folder<string>>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
+        public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
         {
             var selector = GetSelector(parentId);
             var folderDao = selector.GetFolderDao(parentId);
-            var folders = await folderDao.GetFoldersAsync(selector.ConvertId(parentId), orderBy, filterType, subjectGroup, subjectID, searchText, withSubfolders).ConfigureAwait(false);
-            var result = folders.Where(r => r != null).ToList();
-
-            if (!result.Any()) return new List<Folder<string>>();
+            var folders = folderDao.GetFoldersAsync(selector.ConvertId(parentId), orderBy, filterType, subjectGroup, subjectID, searchText, withSubfolders);
+            var result = folders.Where(r => r != null);
 
             await SetSharedPropertyAsync(result).ConfigureAwait(false);
 
-            return result;
+            await foreach (var r in result.ConfigureAwait(false))
+            {
+                yield return r;
+            }
         }
 
         public List<Folder<string>> GetFolders(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)

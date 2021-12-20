@@ -37,7 +37,6 @@ using ASC.Common.Threading;
 using ASC.Common.Web;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
-using ASC.Files.Core.EF;
 using ASC.Files.Core.Resources;
 using ASC.MessagingSystem;
 using ASC.Web.Core.Files;
@@ -97,7 +96,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 var archiveExtension = "";
 
-                using(var zip = scope.ServiceProvider.GetService<CompressToArchive>())
+                using (var zip = scope.ServiceProvider.GetService<CompressToArchive>())
                 {
                     archiveExtension = zip.ArchiveExtension;
                 }
@@ -131,7 +130,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         public override async Task RunJobAsync(DistributedTask distributedTask, CancellationToken cancellationToken)
         {
-            await base .RunJobAsync(distributedTask, cancellationToken);
+            await base.RunJobAsync(distributedTask, cancellationToken);
 
             using var scope = ThirdPartyOperation.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
@@ -139,7 +138,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var stream = TempStream.Create();
 
             await (ThirdPartyOperation as FileDownloadOperation<string>).CompressToZipAsync(stream, scope);
-            await  (DaoOperation as FileDownloadOperation<int>).CompressToZipAsync(stream, scope);
+            await (DaoOperation as FileDownloadOperation<int>).CompressToZipAsync(stream, scope);
 
             if (stream != null)
             {
@@ -171,9 +170,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             FillDistributedTask();
             TaskInfo.PublishChanges();
-        } 
+        }
 
-		public override void PublishChanges(DistributedTask task)
+        public override void PublishChanges(DistributedTask task)
         {
             var thirdpartyTask = ThirdPartyOperation.GetDistributedTask();
             var daoTask = DaoOperation.GetDistributedTask();
@@ -341,7 +340,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 if (folder == null || !FilesSecurity.CanRead(folder)) continue;
                 var folderPath = path + folder.Title + "/";
 
-                var files = FileDao.GetFilesAsync(folder.ID, null, FilterType.None, false, Guid.Empty, string.Empty, true).Result;
+                var files = FileDao.GetFilesAsync(folder.ID, null, FilterType.None, false, Guid.Empty, string.Empty, true).ToListAsync().Result;
                 files = FilesSecurity.FilterRead(files).ToList();
                 files.ForEach(file => entriesPathId.Add(ExecPathFromFile(scope, file, folderPath)));
 
@@ -359,7 +358,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
             return entriesPathId;
         }
-            
+
         internal void CompressToZip(Stream stream, IServiceScope scope)
         {
             if (entriesPathId == null) return;

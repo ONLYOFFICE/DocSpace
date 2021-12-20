@@ -138,7 +138,7 @@ namespace ASC.Files.Core.Data
 
                     var toDelete = FilesDbContext.Security
                         .AsQueryable()
-                        .Where(a => a.TenantId == r.Tenant && 
+                        .Where(a => a.TenantId == r.Tenant &&
                                     folders.Contains(a.EntryId) &&
                                     a.EntryType == FileEntryType.Folder &&
                                     a.Subject == r.Subject);
@@ -156,7 +156,7 @@ namespace ASC.Files.Core.Data
                 {
                     var toDelete = FilesDbContext.Security
                         .AsQueryable()
-                        .Where(a => a.TenantId == r.Tenant && 
+                        .Where(a => a.TenantId == r.Tenant &&
                                     files.Contains(a.EntryId) &&
                                     a.EntryType == FileEntryType.File &&
                                     a.Subject == r.Subject);
@@ -206,14 +206,14 @@ namespace ASC.Files.Core.Data
             return GetPureShareRecordsDb(files, folders);
         }
 
-        public async Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(IEnumerable<FileEntry<T>> entries)
+        public async Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(IAsyncEnumerable<FileEntry<T>> entries)
         {
             if (entries == null) return new List<FileShareRecord>();
 
             var files = new List<string>();
             var folders = new List<string>();
 
-            foreach (var entry in entries)
+            await foreach (var entry in entries)
             {
                 await SelectFilesAndFoldersForShareAsync(entry, files, folders, null);
             }

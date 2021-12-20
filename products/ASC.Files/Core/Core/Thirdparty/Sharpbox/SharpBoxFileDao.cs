@@ -222,17 +222,17 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
             return Task.FromResult(folder
                     .Where(x => !(x is ICloudDirectoryEntry))
-                    .Select(x => MakeId(x)).ToList());        
+                    .Select(x => MakeId(x)).ToList());
         }
 
         public List<File<string>> GetFiles(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
         {
-            return GetFilesAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders).Result;
+            return GetFilesAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders).ToListAsync().Result;
         }
 
-        public Task<List<File<string>>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
+        public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
         {
-            if (filterType == FilterType.FoldersOnly) return Task.FromResult(new List<File<string>>());
+            if (filterType == FilterType.FoldersOnly) yield break;
 
             //Get only files
             var files = GetFolderById(parentId).Where(x => !(x is ICloudDirectoryEntry)).Select(ToFile);
@@ -248,7 +248,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             switch (filterType)
             {
                 case FilterType.FoldersOnly:
-                    return Task.FromResult(new List<File<string>>());
+                    yield break;
                 case FilterType.DocumentsOnly:
                     files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Document);
                     break;
@@ -290,7 +290,13 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 SortedByType.DateAndTimeCreation => orderBy.IsAsc ? files.OrderBy(x => x.CreateOn) : files.OrderByDescending(x => x.CreateOn),
                 _ => orderBy.IsAsc ? files.OrderBy(x => x.Title) : files.OrderByDescending(x => x.Title),
             };
-            return Task.FromResult(files.ToList());
+
+            //hack
+            await Task.Delay(1).ConfigureAwait(false);
+            foreach (var f in files)
+            {
+                yield return f;
+            }
         }
 
         public Stream GetFileStream(File<string> file, long offset)
@@ -426,7 +432,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public void DeleteFile(string fileId)
         {
-           DeleteFileAsync(fileId).Wait();
+            DeleteFileAsync(fileId).Wait();
         }
 
         public async Task DeleteFileAsync(string fileId)
@@ -761,7 +767,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             {
                 var tempPath = uploadSession.GetItemOrDefault<string>("TempPath");
                 using var fs = new FileStream(tempPath, FileMode.Append);
-                await stream.CopyToAsync(fs);
+                await stream.CopyToAsync(fs).ConfigureAwait(false);
             }
 
             uploadSession.BytesUploaded += chunkLength;

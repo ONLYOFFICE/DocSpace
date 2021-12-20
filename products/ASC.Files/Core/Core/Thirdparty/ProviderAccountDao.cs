@@ -123,53 +123,51 @@ namespace ASC.Files.Thirdparty
 
         public virtual async Task<IProviderInfo> GetProviderInfoAsync(int linkId)
         {
-            var providersInfo = await GetProvidersInfoInternalAsync(linkId).ConfigureAwait(false);
-            return providersInfo.Single();
+            var providersInfo = GetProvidersInfoInternalAsync(linkId);
+            return await providersInfo.SingleAsync().ConfigureAwait(false);
         }
 
         public virtual List<IProviderInfo> GetProvidersInfo()
         {
-            return GetProvidersInfoAsync().Result;
+            return GetProvidersInfoAsync().ToListAsync().Result;
         }
 
-        public virtual async Task<List<IProviderInfo>> GetProvidersInfoAsync()
+        public virtual IAsyncEnumerable<IProviderInfo> GetProvidersInfoAsync()
         {
-            return await GetProvidersInfoInternalAsync().ConfigureAwait(false);
+            return GetProvidersInfoInternalAsync();
         }
 
         public virtual List<IProviderInfo> GetProvidersInfo(FolderType folderType, string searchText = null)
         {
-            return GetProvidersInfoAsync(folderType, searchText).Result;
+            return GetProvidersInfoAsync(folderType, searchText).ToListAsync().Result;
         }
 
-        public virtual async Task<List<IProviderInfo>> GetProvidersInfoAsync(FolderType folderType, string searchText = null)
+        public virtual IAsyncEnumerable<IProviderInfo> GetProvidersInfoAsync(FolderType folderType, string searchText = null)
         {
-            return await GetProvidersInfoInternalAsync(folderType: folderType, searchText: searchText).ConfigureAwait(false);
+            return GetProvidersInfoInternalAsync(folderType: folderType, searchText: searchText);
         }
 
         public virtual List<IProviderInfo> GetProvidersInfo(Guid userId)
         {
-            return GetProvidersInfoAsync(userId).Result;
+            return GetProvidersInfoAsync(userId).ToListAsync().Result;
         }
 
-        public virtual async Task<List<IProviderInfo>> GetProvidersInfoAsync(Guid userId)
+        public virtual IAsyncEnumerable<IProviderInfo> GetProvidersInfoAsync(Guid userId)
         {
             try
             {
-                var thirdpartyAccounts = await FilesDbContext.ThirdpartyAccount
-                    .AsQueryable()
+                var thirdpartyAccounts = FilesDbContext.ThirdpartyAccount
                     .Where(r => r.TenantId == TenantID)
                     .Where(r => r.UserId == userId)
-                    .ToListAsync()
-                    .ConfigureAwait(false);
+                    .AsAsyncEnumerable();
+
                 return thirdpartyAccounts
-                    .Select(ToProviderInfo)
-                    .ToList();
+                    .Select(ToProviderInfo);
             }
             catch (Exception e)
             {
                 Logger.Error(string.Format("GetProvidersInfoInternal: user = {0}", userId), e);
-                return new List<IProviderInfo>();
+                return new List<IProviderInfo>().ToAsyncEnumerable();
             }
         }
 
@@ -184,20 +182,18 @@ namespace ASC.Files.Thirdparty
     .Where(r => searchText == "" || r.Title.ToLower().Contains(searchText))
     );
 
-        private async Task<List<IProviderInfo>> GetProvidersInfoInternalAsync(int linkId = -1, FolderType folderType = FolderType.DEFAULT, string searchText = null)
+        private IAsyncEnumerable<IProviderInfo> GetProvidersInfoInternalAsync(int linkId = -1, FolderType folderType = FolderType.DEFAULT, string searchText = null)
         {
             try
             {
-                return await getProvidersInfoQuery(FilesDbContext, TenantID, linkId, folderType, SecurityContext.CurrentAccount.ID, GetSearchText(searchText))
-                    .Select(ToProviderInfo)
-                    .ToListAsync()
-                    .ConfigureAwait(false);
+                return getProvidersInfoQuery(FilesDbContext, TenantID, linkId, folderType, SecurityContext.CurrentAccount.ID, GetSearchText(searchText))
+                    .Select(ToProviderInfo);
             }
             catch (Exception e)
             {
                 Logger.Error(string.Format("GetProvidersInfoInternal: linkId = {0} , folderType = {1} , user = {2}",
                                                   linkId, folderType, SecurityContext.CurrentAccount.ID), e);
-                return new List<IProviderInfo>();
+                return new List<IProviderInfo>().ToAsyncEnumerable();
             }
         }
 

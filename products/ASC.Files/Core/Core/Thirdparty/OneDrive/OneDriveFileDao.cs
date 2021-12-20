@@ -227,12 +227,12 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public List<File<string>> GetFiles(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
         {
-            return GetFilesAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders).Result;
+            return GetFilesAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders).ToListAsync().Result;
         }
 
-        public async Task<List<File<string>>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
+        public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
         {
-            if (filterType == FilterType.FoldersOnly) return new List<File<string>>();
+            if (filterType == FilterType.FoldersOnly) yield break;
 
             //Get only files
             var items = await GetOneDriveItemsAsync(parentId, false).ConfigureAwait(false);
@@ -249,7 +249,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             switch (filterType)
             {
                 case FilterType.FoldersOnly:
-                    return new List<File<string>>();
+                    yield break;
                 case FilterType.DocumentsOnly:
                     files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Document);
                     break;
@@ -291,7 +291,11 @@ namespace ASC.Files.Thirdparty.OneDrive
                 SortedByType.DateAndTimeCreation => orderBy.IsAsc ? files.OrderBy(x => x.CreateOn) : files.OrderByDescending(x => x.CreateOn),
                 _ => orderBy.IsAsc ? files.OrderBy(x => x.Title) : files.OrderByDescending(x => x.Title),
             };
-            return files.ToList();
+
+            foreach (var f in files)
+            {
+                yield return f;
+            }
         }
 
         public override Stream GetFileStream(File<string> file)
@@ -735,7 +739,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
                 await ProviderInfo.CacheResetAsync(oneDriveSession.FileId).ConfigureAwait(false);
                 var parentDriveId = oneDriveSession.FolderId;
-                if (parentDriveId != null) await ProviderInfo.CacheResetAsync(parentDriveId);
+                if (parentDriveId != null) await ProviderInfo.CacheResetAsync(parentDriveId).ConfigureAwait(false);
 
                 return ToFile(await GetOneDriveItemAsync(oneDriveSession.FileId).ConfigureAwait(false));
             }

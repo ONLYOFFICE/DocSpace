@@ -204,7 +204,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         }
                         else
                         {
-                            var files = FileDao.GetFilesAsync(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).Result;
+                            var files = FileDao.GetFilesAsync(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync().Result;
                             if (!_ignoreException && WithError(scope, files, true, out var tmpError))
                             {
                                 Error = tmpError;
@@ -278,12 +278,12 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             var files = await FileDao.GetFilesAsync(folder.ID);
                             await DeleteFilesAsync(files, scope);
 
-                            var folders = await FolderDao.GetFoldersAsync(folder.ID);
+                            var folders = await FolderDao.GetFoldersAsync(folder.ID).ToListAsync();
                             await DeleteFoldersAsync(folders.Select(f => f.ID).ToList(), scope);
 
                             if (FolderDao.IsEmpty(folder.ID))
                             {
-                                await FolderDao .DeleteFolderAsync(folder.ID);
+                                await FolderDao.DeleteFolderAsync(folder.ID);
                                 filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
 
                                 ProcessedFolder(folderId);
@@ -291,7 +291,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         }
                         else
                         {
-                            var files = await FileDao .GetFilesAsync(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true);
+                            var files = await FileDao.GetFilesAsync(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync();
                             if (!_ignoreException && WithError(scope, files, true, out var tmpError))
                             {
                                 Error = tmpError;
@@ -305,7 +305,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                 }
                                 else
                                 {
-                                    await FolderDao .MoveFolderAsync(folder.ID, _trashId, CancellationToken);
+                                    await FolderDao.MoveFolderAsync(folder.ID, _trashId, CancellationToken);
                                     filesMessageService.Send(folder, _headers, MessageAction.FolderMovedToTrash, folder.Title);
                                 }
 

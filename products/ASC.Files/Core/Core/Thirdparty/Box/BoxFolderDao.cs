@@ -113,30 +113,32 @@ namespace ASC.Files.Thirdparty.Box
 
         public List<Folder<string>> GetFolders(string parentId)
         {
-            return GetFoldersAsync(parentId).Result;
+            return GetFoldersAsync(parentId).ToListAsync().Result;
         }
 
-        public async Task<List<Folder<string>>> GetFoldersAsync(string parentId)
+        public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
         {
-            var items =  await GetBoxItemsAsync(parentId, true).ConfigureAwait(false);
-            return items.Select(item => ToFolder(item as BoxFolder)).ToList();
+            var items = await GetBoxItemsAsync(parentId, true).ConfigureAwait(false);
+            foreach (var i in items)
+            {
+                yield return ToFolder(i as BoxFolder);
+            }
         }
 
         public List<Folder<string>> GetFolders(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
         {
-            return GetFoldersAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, withSubfolders).Result;
+            return GetFoldersAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, withSubfolders).ToListAsync().Result;
         }
 
-        public async Task<List<Folder<string>>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
+        public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
         {
             if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
                 || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
                 || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
-                return new List<Folder<string>>();
+                return AsyncEnumerable.Empty<Folder<string>>();
 
-            var foldersList = await GetFoldersAsync(parentId).ConfigureAwait(false);
-            var folders = foldersList.AsEnumerable(); //TODO:!!!
+            var folders = GetFoldersAsync(parentId); //TODO:!!!
 
             if (subjectID != Guid.Empty)
             {
@@ -158,7 +160,8 @@ namespace ASC.Files.Thirdparty.Box
                 SortedByType.DateAndTimeCreation => orderBy.IsAsc ? folders.OrderBy(x => x.CreateOn) : folders.OrderByDescending(x => x.CreateOn),
                 _ => orderBy.IsAsc ? folders.OrderBy(x => x.Title) : folders.OrderByDescending(x => x.Title),
             };
-            return folders.ToList();
+
+            return folders;
         }
 
         public List<Folder<string>> GetFolders(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
@@ -300,7 +303,7 @@ namespace ASC.Files.Thirdparty.Box
                     .Where(r => hashIDs.Any(h => h == r.HashId));
 
                 FilesDbContext.ThirdpartyIdMapping.RemoveRange(mappingToDelete);
-                await FilesDbContext .SaveChangesAsync().ConfigureAwait(false);
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
                 await tx.CommitAsync().ConfigureAwait(false);
             }
@@ -503,14 +506,14 @@ namespace ASC.Files.Thirdparty.Box
             }
             else
             {
-                newTitle = await GetAvailableTitleAsync(newTitle, parentFolderId, IsExistAsync);
+                newTitle = await GetAvailableTitleAsync(newTitle, parentFolderId, IsExistAsync).ConfigureAwait(false);
 
                 //rename folder
-                boxFolder = await ProviderInfo.Storage.RenameFolderAsync(boxFolder.Id, newTitle);
+                boxFolder = await ProviderInfo.Storage.RenameFolderAsync(boxFolder.Id, newTitle).ConfigureAwait(false);
             }
 
-            await ProviderInfo.CacheResetAsync(boxFolder);
-            if (parentFolderId != null) await ProviderInfo.CacheResetAsync(parentFolderId);
+            await ProviderInfo.CacheResetAsync(boxFolder).ConfigureAwait(false);
+            if (parentFolderId != null) await ProviderInfo.CacheResetAsync(parentFolderId).ConfigureAwait(false);
 
             return MakeId(boxFolder.Id);
         }
@@ -534,7 +537,7 @@ namespace ASC.Files.Thirdparty.Box
         {
             var boxFolderId = MakeBoxId(folderId);
             //note: without cache
-            var items = await ProviderInfo.Storage.GetItemsAsync(boxFolderId, 1);
+            var items = await ProviderInfo.Storage.GetItemsAsync(boxFolderId, 1).ConfigureAwait(false);
             return items.Count == 0;
         }
 
@@ -570,7 +573,7 @@ namespace ASC.Files.Thirdparty.Box
 
         public async Task<long> GetMaxUploadSizeAsync(string folderId, bool chunkedUpload)
         {
-            var storageMaxUploadSize = await ProviderInfo.Storage.GetMaxUploadSizeAsync();
+            var storageMaxUploadSize = await ProviderInfo.Storage.GetMaxUploadSizeAsync().ConfigureAwait(false);
 
             return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, SetupInfo.AvailableFileSize);
         }

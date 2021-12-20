@@ -83,7 +83,7 @@ namespace ASC.Files.Thirdparty.Box
         public async Task InvalidateCacheAsync(string fileId)
         {
             var boxFileId = MakeBoxId(fileId);
-            await ProviderInfo.CacheResetAsync(boxFileId, true);
+            await ProviderInfo.CacheResetAsync(boxFileId, true).ConfigureAwait(false);
 
             var boxFile = await GetBoxFileAsync(fileId).ConfigureAwait(false);
             var parentPath = GetParentFolderId(boxFile);
@@ -156,7 +156,7 @@ namespace ASC.Files.Thirdparty.Box
 
             if (fileIds == null || !fileIds.Any()) return AsyncEnumerable.Empty<File<string>>();
 
-            var result = fileIds.ToAsyncEnumerable().SelectAwait(async e => ToFile(await GetBoxFileAsync(e)));
+            var result = fileIds.ToAsyncEnumerable().SelectAwait(async e => ToFile(await GetBoxFileAsync(e).ConfigureAwait(false)));
 
             return result;
         }
@@ -292,9 +292,9 @@ namespace ASC.Files.Thirdparty.Box
             return files.ToList();
         }
 
-        public async Task<List<File<string>>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
+        public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
         {
-            if (filterType == FilterType.FoldersOnly) return new List<File<string>>();
+            if (filterType == FilterType.FoldersOnly) yield break;
 
             //Get only files
             var filesWait = await GetBoxItemsAsync(parentId, false).ConfigureAwait(false);
@@ -311,7 +311,7 @@ namespace ASC.Files.Thirdparty.Box
             switch (filterType)
             {
                 case FilterType.FoldersOnly:
-                    return new List<File<string>>();
+                    yield break;
                 case FilterType.DocumentsOnly:
                     files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Document);
                     break;
@@ -353,7 +353,11 @@ namespace ASC.Files.Thirdparty.Box
                 SortedByType.DateAndTimeCreation => orderBy.IsAsc ? files.OrderBy(x => x.CreateOn) : files.OrderByDescending(x => x.CreateOn),
                 _ => orderBy.IsAsc ? files.OrderBy(x => x.Title) : files.OrderByDescending(x => x.Title),
             };
-            return files.ToList();
+
+            foreach (var f in files)
+            {
+                yield return f;
+            }
         }
 
         public override Stream GetFileStream(File<string> file)
@@ -424,7 +428,7 @@ namespace ASC.Files.Thirdparty.Box
 
                 if (!newBoxFile.Name.Equals(file.Title))
                 {
-                    var folderId = GetParentFolderId(await GetBoxFileAsync(fileId));
+                    var folderId = GetParentFolderId(await GetBoxFileAsync(fileId).ConfigureAwait(false));
                     file.Title = await GetAvailableTitleAsync(file.Title, folderId, IsExistAsync).ConfigureAwait(false);
                     newBoxFile = await ProviderInfo.Storage.RenameFileAsync(fileId, file.Title).ConfigureAwait(false);
                 }
@@ -433,7 +437,7 @@ namespace ASC.Files.Thirdparty.Box
             {
                 var folderId = MakeBoxId(file.FolderID);
                 file.Title = await GetAvailableTitleAsync(file.Title, folderId, IsExistAsync).ConfigureAwait(false);
-                newBoxFile = await  ProviderInfo.Storage.CreateFileAsync(fileStream, file.Title, folderId).ConfigureAwait(false);
+                newBoxFile = await ProviderInfo.Storage.CreateFileAsync(fileStream, file.Title, folderId).ConfigureAwait(false);
             }
 
             await ProviderInfo.CacheResetAsync(newBoxFile).ConfigureAwait(false);
@@ -615,7 +619,7 @@ namespace ASC.Files.Thirdparty.Box
             var newBoxFile = ProviderInfo.Storage.CopyFile(boxFile.Id, newTitle, toBoxFolder.Id);
 
             await ProviderInfo.CacheResetAsync(newBoxFile).ConfigureAwait(false);
-            await ProviderInfo.CacheResetAsync (toBoxFolder.Id).ConfigureAwait(false);
+            await ProviderInfo.CacheResetAsync(toBoxFolder.Id).ConfigureAwait(false);
 
             return ToFile(newBoxFile);
         }

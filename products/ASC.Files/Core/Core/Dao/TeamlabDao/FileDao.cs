@@ -306,12 +306,12 @@ namespace ASC.Files.Core.Data
 
         public List<File<int>> GetFiles(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
         {
-            return GetFilesAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders).Result;
+            return GetFilesAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders).ToListAsync().Result;
         }
 
-        public async Task<List<File<int>>> GetFilesAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
+        public IAsyncEnumerable<File<int>> GetFilesAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
         {
-            if (filterType == FilterType.FoldersOnly) return new List<File<int>>();
+            if (filterType == FilterType.FoldersOnly) return AsyncEnumerable.Empty<File<int>>();
 
             if (orderBy == null) orderBy = new OrderBy(SortedByType.DateAndTime, false);
 
@@ -383,8 +383,7 @@ namespace ASC.Files.Core.Data
                     break;
             }
 
-            var query = await FromQueryWithShared(q).ToListAsync().ConfigureAwait(false);
-            return query.ConvertAll(e =>ToFile(e));
+            return FromQueryWithShared(q).AsAsyncEnumerable().Select(ToFile);
         }
 
         public Stream GetFileStream(File<int> file, long offset)
@@ -575,11 +574,11 @@ namespace ASC.Files.Core.Data
                         if (isNew)
                         {
                             var stored = GlobalStore.GetStore().IsDirectory(GetUniqFileDirectory(file.ID));
-                            await DeleteFileAsync(file.ID, stored);
+                            await DeleteFileAsync(file.ID, stored).ConfigureAwait(false);
                         }
                         else if (!IsExistOnStorageAsync(file).Result)
                         {
-                            await DeleteVersionAsync(file);
+                            await DeleteVersionAsync(file).ConfigureAwait(false);
                         }
                     }
                     catch (Exception deleteException)
@@ -697,15 +696,15 @@ namespace ASC.Files.Core.Data
                 }
                 catch
                 {
-                    if (!await IsExistOnStorageAsync(file))
+                    if (!await IsExistOnStorageAsync(file).ConfigureAwait(false))
                     {
-                        await DeleteVersionAsync(file);
+                        await DeleteVersionAsync(file).ConfigureAwait(false);
                     }
                     throw;
                 }
             }
 
-            FactoryIndexer.IndexAsync(await InitDocumentAsync(toUpdate));
+            FactoryIndexer.IndexAsync(await InitDocumentAsync(toUpdate).ConfigureAwait(false));
 
             return await GetFileAsync(file.ID).ConfigureAwait(false);
         }
@@ -756,7 +755,7 @@ namespace ASC.Files.Core.Data
 
         public async Task DeleteFileAsync(int fileId)
         {
-            await DeleteFileAsync(fileId, true);
+            await DeleteFileAsync(fileId, true).ConfigureAwait(false);
         }
 
         private void DeleteFile(int fileId, bool deleteFolder)
@@ -1165,7 +1164,7 @@ namespace ASC.Files.Core.Data
 
         private async Task RecalculateFilesCountAsync(int folderId)
         {
-            await GetRecalculateFilesCountUpdateAsync(folderId);
+            await GetRecalculateFilesCountUpdateAsync(folderId).ConfigureAwait(false);
         }
 
         #region chunking
@@ -1611,7 +1610,7 @@ namespace ASC.Files.Core.Data
             var thumnailName = ThumbnailTitle + "." + Global.ThumbnailExtension;
             var path = GetUniqFilePath(file, thumnailName);
             var storage = GlobalStore.GetStore();
-            var isFile = await storage.IsFileAsync(string.Empty, path);
+            var isFile = await storage.IsFileAsync(string.Empty, path).ConfigureAwait(false);
             if (!isFile) throw new FileNotFoundException();
             return await storage.GetReadStreamAsync(string.Empty, path, 0).ConfigureAwait(false);
         }

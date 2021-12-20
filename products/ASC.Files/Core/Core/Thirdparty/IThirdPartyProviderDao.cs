@@ -746,7 +746,7 @@ namespace ASC.Files.Thirdparty
 
             if (deepSearch)
             {
-                await foreach (var e in tags)
+                await foreach (var e in tags.ConfigureAwait(false))
                     yield return e;
                 yield break;
             }
@@ -754,7 +754,7 @@ namespace ASC.Files.Thirdparty
             var folderFileIds = new[] { parentFolder.ID }
                 .Concat(await GetChildrenAsync(folderId).ConfigureAwait(false));
 
-            await foreach (var e in tags.Where(tag => folderFileIds.Contains(tag.EntryId.ToString())))
+            await foreach (var e in tags.Where(tag => folderFileIds.Contains(tag.EntryId.ToString())).ConfigureAwait(false))
                 yield return e;
         }
 

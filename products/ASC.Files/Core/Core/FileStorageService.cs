@@ -960,7 +960,7 @@ namespace ASC.Web.Files.Services.WCFService
                     using (var stream = await fileDao.GetFileStreamAsync(template))
                     {
                         file.ContentLength = template.ContentLength;
-                        file = await fileDao .SaveFileAsync(file, stream);
+                        file = await fileDao.SaveFileAsync(file, stream);
                     }
 
                     if (template.ThumbnailStatus == Thumbnail.Created)
@@ -1827,7 +1827,7 @@ namespace ASC.Web.Files.Services.WCFService
             var providerDao = GetProviderDao();
             if (providerDao == null) return new List<ThirdPartyParams>();
 
-            var providersInfo = await providerDao.GetProvidersInfoAsync();
+            var providersInfo = await providerDao.GetProvidersInfoAsync().ToListAsync();
 
             var resultList = providersInfo
                 .Select(r =>
@@ -2286,15 +2286,15 @@ namespace ASC.Web.Files.Services.WCFService
             var foldersProject = folders.Where(folder => folder.FolderType == FolderType.BUNCH);
             if (await foldersProject.AnyAsync())
             {
-                var toSubfolders = await destFolderDao.GetFoldersAsync(toFolder.ID);
+                var toSubfolders = await destFolderDao.GetFoldersAsync(toFolder.ID).ToListAsync();
 
                 await foreach (var folderProject in foldersProject)
                 {
                     var toSub = toSubfolders.FirstOrDefault(to => Equals(to.Title, folderProject.Title));
                     if (toSub == null) continue;
 
-                    var filesPr = await fileDao .GetFilesAsync(folderProject.ID);
-                    var foldersTmp = await folderDao.GetFoldersAsync(folderProject.ID);
+                    var filesPr = await fileDao.GetFilesAsync(folderProject.ID);
+                    var foldersTmp = await folderDao.GetFoldersAsync(folderProject.ID).ToListAsync();
                     var foldersPr = foldersTmp.Select(d => d.ID);
 
                     var (cFiles, cFolders) = await MoveOrCopyFilesCheckAsync(filesPr, foldersPr, toSub.ID);

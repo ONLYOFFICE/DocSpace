@@ -613,7 +613,7 @@ namespace ASC.Web.Files.Utils
                 var folders = folderDao.GetFolders(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, withSubfolders);
                 entries = entries.Concat(fileSecurity.FilterRead(folders));
 
-                var files = fileDao.GetFilesAsync(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders).Result;
+                var files = fileDao.GetFilesAsync(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders).ToListAsync().Result;
                 entries = entries.Concat(fileSecurity.FilterRead(files));
 
                 //share
@@ -628,10 +628,10 @@ namespace ASC.Web.Files.Utils
                 if (parent.FolderType == FolderType.TRASH)
                     withSubfolders = false;
 
-                var folders = DaoFactory.GetFolderDao<T>().GetFoldersAsync(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, withSubfolders).Result;
+                var folders = DaoFactory.GetFolderDao<T>().GetFoldersAsync(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, withSubfolders).ToListAsync().Result;
                 entries = entries.Concat(fileSecurity.FilterRead(folders));
 
-                var files = DaoFactory.GetFileDao<T>().GetFilesAsync(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders).Result;
+                var files = DaoFactory.GetFileDao<T>().GetFilesAsync(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders).ToListAsync().Result;
                 entries = entries.Concat(fileSecurity.FilterRead(files));
 
                 if (filter == FilterType.None || filter == FilterType.FoldersOnly)
@@ -843,10 +843,10 @@ namespace ASC.Web.Files.Utils
             {
                 var folderDao = DaoFactory.GetFolderDao<T>();
                 var fileDao = DaoFactory.GetFileDao<T>();
-                var folders = await folderDao.GetFoldersAsync(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, withSubfolders);
+                var folders = await folderDao.GetFoldersAsync(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, withSubfolders).ToListAsync();
                 entries = entries.Concat(fileSecurity.FilterRead(folders));
 
-                var files = await fileDao.GetFilesAsync(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
+                var files = await fileDao.GetFilesAsync(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders).ToListAsync();
                 entries = entries.Concat(fileSecurity.FilterRead(files));
 
                 //share
@@ -861,10 +861,10 @@ namespace ASC.Web.Files.Utils
                 if (parent.FolderType == FolderType.TRASH)
                     withSubfolders = false;
 
-                var folders = await DaoFactory.GetFolderDao<T>().GetFoldersAsync(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, withSubfolders);
+                var folders = await DaoFactory.GetFolderDao<T>().GetFoldersAsync(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, withSubfolders).ToListAsync();
                 entries = entries.Concat(fileSecurity.FilterRead(folders));
 
-                var files = await DaoFactory.GetFileDao<T>().GetFilesAsync(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
+                var files = await DaoFactory.GetFileDao<T>().GetFilesAsync(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders).ToListAsync();
                 entries = entries.Concat(fileSecurity.FilterRead(files));
 
                 if (filter == FilterType.None || filter == FilterType.FoldersOnly)
@@ -1003,7 +1003,7 @@ namespace ASC.Web.Files.Utils
 
                 var fileSecurity = FileSecurity;
 
-                var providers = await providerDao.GetProvidersInfoAsync(parent.RootFolderType, searchText);
+                var providers = await providerDao.GetProvidersInfoAsync(parent.RootFolderType, searchText).ToListAsync();
                 folderList = providers
                     .Select(providerInfo => GetFakeThirdpartyFolder<T>(providerInfo, parent.ID.ToString()))
                     .Where(r => fileSecurity.CanRead(r)).ToList();
@@ -2179,7 +2179,7 @@ namespace ASC.Web.Files.Utils
                 folderDao.DeleteFolder(folder.ID);
             }
 
-            var files = fileDao.GetFilesAsync(parentId, null, FilterType.None, false, Guid.Empty, string.Empty, true).Result;
+            var files = fileDao.GetFilesAsync(parentId, null, FilterType.None, false, Guid.Empty, string.Empty, true).ToListAsync().Result;
             foreach (var file in files)
             {
                 Logger.InfoFormat("Delete file {0} in {1}", file.ID, parentId);
@@ -2207,7 +2207,7 @@ namespace ASC.Web.Files.Utils
                 }
             }
 
-            var files = fileDao.GetFilesAsync(parentId, null, FilterType.None, false, Guid.Empty, string.Empty, true).Result
+            var files = fileDao.GetFilesAsync(parentId, null, FilterType.None, false, Guid.Empty, string.Empty, true).ToListAsync().Result
                 .Where(file => file.Shared &&
                 fileSecurity.GetShares(file).Any(record => record.Subject != FileConstant.ShareLinkId && record.Share != FileShare.Restrict));
 
@@ -2220,7 +2220,7 @@ namespace ASC.Web.Files.Utils
 
         public static void ReassignItems<T>(T parentId, Guid fromUserId, Guid toUserId, IFolderDao<T> folderDao, IFileDao<T> fileDao)
         {
-            var fileIds = fileDao.GetFilesAsync(parentId, new OrderBy(SortedByType.AZ, true), FilterType.ByUser, false, fromUserId, null, true, true).Result
+            var fileIds = fileDao.GetFilesAsync(parentId, new OrderBy(SortedByType.AZ, true), FilterType.ByUser, false, fromUserId, null, true, true).ToListAsync().Result
                                  .Where(file => file.CreateBy == fromUserId).Select(file => file.ID);
 
             fileDao.ReassignFiles(fileIds.ToArray(), toUserId);

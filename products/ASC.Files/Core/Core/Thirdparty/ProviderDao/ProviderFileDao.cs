@@ -78,7 +78,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
             if (result != null)
             {
-                await SetSharedPropertyAsync(new[] { result }).ConfigureAwait(false);
+                await SetSharedPropertyAsync(new[] { result }.ToAsyncEnumerable()).ConfigureAwait(false);
             }
 
             return result;
@@ -98,7 +98,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
             if (result != null)
             {
-                await SetSharedPropertyAsync(new[] { result }).ConfigureAwait(false);
+                await SetSharedPropertyAsync(new[] { result }.ToAsyncEnumerable()).ConfigureAwait(false);
             }
 
             return result;
@@ -117,7 +117,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
             if (result != null)
             {
-                await SetSharedPropertyAsync(new[] { result }).ConfigureAwait(false);
+                await SetSharedPropertyAsync(new[] { result }.ToAsyncEnumerable()).ConfigureAwait(false);
             }
 
             return result;
@@ -133,11 +133,11 @@ namespace ASC.Files.Thirdparty.ProviderDao
             var selector = GetSelector(fileId);
 
             var fileDao = selector.GetFileDao(fileId);
-            var result = await fileDao.GetFileAsync (selector.ConvertId(fileId), fileVersion).ConfigureAwait(false);
+            var result = await fileDao.GetFileAsync(selector.ConvertId(fileId), fileVersion).ConfigureAwait(false);
 
             if (result != null)
             {
-                await SetSharedPropertyAsync(new[] { result }).ConfigureAwait(false);
+                await SetSharedPropertyAsync(new[] { result }.ToAsyncEnumerable()).ConfigureAwait(false);
             }
 
             return result;
@@ -231,22 +231,23 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
         public List<File<string>> GetFiles(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
         {
-            return GetFilesAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders).Result;
+            return GetFilesAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders).ToListAsync().Result;
         }
 
-        public async Task<List<File<string>>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
+        public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
         {
             var selector = GetSelector(parentId);
 
             var fileDao = selector.GetFileDao(parentId);
-            var files = await fileDao.GetFilesAsync(selector.ConvertId(parentId), orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders).ConfigureAwait(false);
-            var result = files.Where(r => r != null).ToList();
-
-            if (!result.Any()) return new List<File<string>>();
+            var files = fileDao.GetFilesAsync(selector.ConvertId(parentId), orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders);
+            var result = files.Where(r => r != null);
 
             await SetSharedPropertyAsync(result).ConfigureAwait(false);
 
-            return result;
+            await foreach (var r in result.ConfigureAwait(false))
+            {
+                yield return r;
+            }
         }
 
         public override Stream GetFileStream(File<string> file)

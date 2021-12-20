@@ -117,27 +117,29 @@ namespace ASC.Files.Thirdparty.Dropbox
             return GetDropboxItems(parentId, true).Select(item => ToFolder(item.AsFolder)).ToList();
         }
 
-        public async Task<List<Folder<string>>> GetFoldersAsync(string parentId)
+        public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
         {
             var items = await GetDropboxItemsAsync(parentId, true).ConfigureAwait(false);
-            return items.Select(item => ToFolder(item.AsFolder)).ToList();
+            foreach (var i in items)
+            {
+                yield return ToFolder(i.AsFolder);
+            }
         }
 
         public List<Folder<string>> GetFolders(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
         {
-            return GetFoldersAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, withSubfolders).Result;
+            return GetFoldersAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, withSubfolders).ToListAsync().Result;
         }
 
-        public async Task<List<Folder<string>>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
+        public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
         {
             if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
                 || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
                 || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
-                return new List<Folder<string>>();
+                return AsyncEnumerable.Empty<Folder<string>>();
 
-            var foldersList = await GetFoldersAsync(parentId).ConfigureAwait(false);
-            var folders = foldersList.AsEnumerable(); //TODO:!!!
+            var folders = GetFoldersAsync(parentId); //TODO:!!!
 
             if (subjectID != Guid.Empty)
             {
@@ -159,7 +161,8 @@ namespace ASC.Files.Thirdparty.Dropbox
                 SortedByType.DateAndTimeCreation => orderBy.IsAsc ? folders.OrderBy(x => x.CreateOn) : folders.OrderByDescending(x => x.CreateOn),
                 _ => orderBy.IsAsc ? folders.OrderBy(x => x.Title) : folders.OrderByDescending(x => x.Title),
             };
-            return folders.ToList();
+
+            return folders;
         }
 
         public List<Folder<string>> GetFolders(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
@@ -300,7 +303,7 @@ namespace ASC.Files.Thirdparty.Dropbox
                     .Where(r => hashIDs.Any(h => h == r.HashId));
 
                 FilesDbContext.ThirdpartyIdMapping.RemoveRange(mappingToDelete);
-                await FilesDbContext .SaveChangesAsync().ConfigureAwait(false);
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
                 await tx.CommitAsync().ConfigureAwait(false);
             }
@@ -431,7 +434,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
             await ProviderInfo.CacheResetAsync(newDropboxFolder).ConfigureAwait(false);
             await ProviderInfo.CacheResetAsync(MakeDropboxPath(newDropboxFolder), false).ConfigureAwait(false);
-            await ProviderInfo .CacheResetAsync(MakeDropboxPath(toDropboxFolder)).ConfigureAwait(false);
+            await ProviderInfo.CacheResetAsync(MakeDropboxPath(toDropboxFolder)).ConfigureAwait(false);
 
             return ToFolder(newDropboxFolder);
         }

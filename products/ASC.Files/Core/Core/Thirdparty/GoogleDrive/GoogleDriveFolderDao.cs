@@ -110,30 +110,33 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         public List<Folder<string>> GetFolders(string parentId)
         {
-            return GetFoldersAsync(parentId).Result;
+            return GetFoldersAsync(parentId).ToListAsync().Result;
         }
 
-        public async Task<List<Folder<string>>> GetFoldersAsync(string parentId)
+        public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
         {
             var entries = await GetDriveEntriesAsync(parentId, true).ConfigureAwait(false);
-            return entries.Select(ToFolder).ToList();
+
+            foreach (var i in entries)
+            {
+                yield return ToFolder(i);
+            }
         }
 
         public List<Folder<string>> GetFolders(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
         {
-            return GetFoldersAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, withSubfolders).Result;
+            return GetFoldersAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, withSubfolders).ToListAsync().Result;
         }
 
-        public async Task<List<Folder<string>>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
+        public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
         {
             if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
                 || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
                 || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
-                return new List<Folder<string>>();
+                return AsyncEnumerable.Empty<Folder<string>>();
 
-            var foldersList = await GetFoldersAsync(parentId).ConfigureAwait(false);
-            var folders = foldersList.AsEnumerable(); //TODO:!!!
+            var folders = GetFoldersAsync(parentId); //TODO:!!!
 
             if (subjectID != Guid.Empty)
             {
@@ -155,7 +158,8 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                 SortedByType.DateAndTimeCreation => orderBy.IsAsc ? folders.OrderBy(x => x.CreateOn) : folders.OrderByDescending(x => x.CreateOn),
                 _ => orderBy.IsAsc ? folders.OrderBy(x => x.Title) : folders.OrderByDescending(x => x.Title),
             };
-            return folders.ToList();
+
+            return folders;
         }
 
         public List<Folder<string>> GetFolders(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
@@ -235,7 +239,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
                 await ProviderInfo.CacheResetAsync(driveFolder).ConfigureAwait(false);
                 var parentDriveId = GetParentDriveId(driveFolder);
-                if (parentDriveId != null) await ProviderInfo .CacheResetAsync(parentDriveId, true).ConfigureAwait(false);
+                if (parentDriveId != null) await ProviderInfo.CacheResetAsync(parentDriveId, true).ConfigureAwait(false);
 
                 return MakeId(driveFolder);
             }
@@ -284,7 +288,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
                 FilesDbContext.ThirdpartyIdMapping.RemoveRange(mappingToDelete);
                 await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
-                
+
                 await tx.CommitAsync().ConfigureAwait(false);
             }
 

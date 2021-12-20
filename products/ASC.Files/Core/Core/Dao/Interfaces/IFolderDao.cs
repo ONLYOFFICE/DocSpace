@@ -74,7 +74,7 @@ namespace ASC.Files.Core
         /// </summary>
         /// <param name="parentId"></param>
         List<Folder<T>> GetFolders(T parentId);
-        Task<List<Folder<T>>> GetFoldersAsync(T parentId);
+        IAsyncEnumerable<Folder<T>> GetFoldersAsync(T parentId);
         /// <summary>
         /// Get a list of folders.
         /// </summary>
@@ -87,7 +87,7 @@ namespace ASC.Files.Core
         /// <param name="withSubfolders"></param>
         /// <returns></returns>
         List<Folder<T>> GetFolders(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false);
-        Task<List<Folder<T>>> GetFoldersAsync(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false);
+        IAsyncEnumerable<Folder<T>> GetFoldersAsync(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false);
 
         /// <summary>
         /// Gets the folder (s) by ID (s)

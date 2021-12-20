@@ -67,7 +67,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             CrossDao crossDao,
             OneDriveDaoSelector oneDriveDaoSelector,
             IFileDao<int> fileDao,
-            IFolderDao<int> folderDao, 
+            IFolderDao<int> folderDao,
             TempPath tempPath)
             : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
         {
@@ -110,30 +110,33 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public List<Folder<string>> GetFolders(string parentId)
         {
-            return GetFoldersAsync(parentId).Result;
+            return GetFoldersAsync(parentId).ToListAsync().Result;
         }
 
-        public async Task<List<Folder<string>>> GetFoldersAsync(string parentId)
+        public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
         {
             var items = await GetOneDriveItemsAsync(parentId, true).ConfigureAwait(false);
-            return items.Select(ToFolder).ToList();
+
+            foreach (var i in items)
+            {
+                yield return ToFolder(i);
+            }
         }
 
         public List<Folder<string>> GetFolders(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
         {
-            return GetFoldersAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, withSubfolders).Result;
+            return GetFoldersAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, withSubfolders).ToListAsync().Result;
         }
 
-        public async Task<List<Folder<string>>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
+        public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
         {
             if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
                 || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
                 || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
-                return new List<Folder<string>>();
+                return AsyncEnumerable.Empty<Folder<string>>();
 
-            var foldersList = await GetFoldersAsync(parentId).ConfigureAwait(false);
-            var folders = foldersList.AsEnumerable(); //TODO:!!!
+            var folders = GetFoldersAsync(parentId); //TODO:!!!
             //Filter
             if (subjectID != Guid.Empty)
             {
@@ -155,7 +158,8 @@ namespace ASC.Files.Thirdparty.OneDrive
                 SortedByType.DateAndTimeCreation => orderBy.IsAsc ? folders.OrderBy(x => x.CreateOn) : folders.OrderByDescending(x => x.CreateOn),
                 _ => orderBy.IsAsc ? folders.OrderBy(x => x.Title) : folders.OrderByDescending(x => x.Title),
             };
-            return folders.ToList();
+
+            return folders;
         }
 
         public List<Folder<string>> GetFolders(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
@@ -275,7 +279,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
                 var link = await Query(FilesDbContext.TagLink)
                     .Where(r => hashIDs.Any(h => h == r.EntryId))
-                    .ToListAsync();
+                    .ToListAsync().ConfigureAwait(false);
 
                 FilesDbContext.TagLink.RemoveRange(link);
                 await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
@@ -295,9 +299,9 @@ namespace ASC.Files.Thirdparty.OneDrive
                     .Where(r => hashIDs.Any(h => h == r.HashId));
 
                 FilesDbContext.ThirdpartyIdMapping.RemoveRange(mappingToDelete);
-                await FilesDbContext .SaveChangesAsync().ConfigureAwait(false);
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-                await tx.CommitAsync();
+                await tx.CommitAsync().ConfigureAwait(false);
             }
 
             if (!(onedriveFolder is ErrorItem))
@@ -501,7 +505,7 @@ namespace ASC.Files.Thirdparty.OneDrive
                 onedriveFolder = await ProviderInfo.Storage.RenameItemAsync(onedriveFolder.Id, newTitle).ConfigureAwait(false);
             }
 
-            await ProviderInfo.CacheResetAsync(onedriveFolder.Id);
+            await ProviderInfo.CacheResetAsync(onedriveFolder.Id).ConfigureAwait(false);
             if (parentFolderId != null) await ProviderInfo.CacheResetAsync(parentFolderId).ConfigureAwait(false);
 
             return MakeId(onedriveFolder.Id);
