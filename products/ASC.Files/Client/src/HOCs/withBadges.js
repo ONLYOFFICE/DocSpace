@@ -121,7 +121,6 @@ export default function withBadges(WrappedComponent) {
         onFilesClick, // from withFileAction HOC
         isAdmin,
         isDesktopClient,
-        showShare,
         sectionWidth,
       } = this.props;
       const { fileStatus, access } = item;

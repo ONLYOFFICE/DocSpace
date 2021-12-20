@@ -19,13 +19,24 @@ const SimpleFilesRowContent = styled(RowContent)`
     width: 100%;
   }
 
-  .badge-ext {
-    // margin-right: 8px;
-  }
-
   .row_update-text {
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .new-items {
+    min-width: 12px;
+    width: max-content;
+    border: 0;
+    padding: 0;
+    margin-top: 2px;
+  }
+
+  .badge-version {
+    min-width: 21px;
+    margin-right: 8px;
+    border: 0;
+    padding: 0;
   }
 
   ${(props) =>
@@ -35,6 +46,26 @@ const SimpleFilesRowContent = styled(RowContent)`
     .row-main-container-wrapper {
       display: flex;
       justify-content: space-between;
+    }
+
+    .tablet-badge:last-child {
+      margin-right: 24px !important;
+    }
+
+    .tablet-badge {
+      margin-top: 8px;
+    }
+
+    .badge-version {
+      min-width: 25px;
+    }
+
+    .edit {
+      margin-top: 7px;
+    }
+
+    .new-items {
+      min-width: 16px;
     }
   `}
 `;

@@ -103,21 +103,6 @@ const StyledSimpleFilesRow = styled(Row)`
     margin-right: 0px;
   }
 
-  .new-items {
-    min-width: 12px;
-    width: max-content;
-    border: 0;
-    padding: 0;
-    margin-top: 2px;
-  }
-
-  .badge-version {
-    min-width: 21px;
-    margin-right: 8px;
-    border: 0;
-    padding: 0;
-  }
-
   .lock-file {
     cursor: ${(props) => (props.withAccess ? "pointer" : "default")};
   }
@@ -138,31 +123,14 @@ const StyledSimpleFilesRow = styled(Row)`
       width: min-content;
     } 
 
-    .badge,
-    .tablet-badge:last-child {
+    .badge {
       margin-right: 24px;
     }
     
-    .tablet-badge {
-      margin-top: 8px;
-    }
-
-    .badge-version {
-      min-width: 25px;
-    }
-
     .lock-file{
       svg {
         height:16px;
       }
-    }
-
-    .edit {
-      margin-top: 7px;
-    }
-
-    .new-items {
-      width: 16px;
     }
   `}
 `;
@@ -192,7 +160,6 @@ const SimpleFilesRow = (props) => {
     isAdmin,
   } = props;
 
-  console.log("sectionWidth", sectionWidth);
   const withAccess = isAdmin || item.access === 0;
 
   const element = (

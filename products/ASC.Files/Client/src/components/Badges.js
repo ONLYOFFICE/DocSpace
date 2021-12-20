@@ -43,7 +43,7 @@ const Badges = ({
     : "/static/images/access.edit.react.svg";
 
   const contentBadgeVersion =
-    `V.${versionGroup}` > 999 ? `V.999+` : `V.${versionGroup}`;
+    `V.${versionGroup}` > 999 ? "V.999+" : `V.${versionGroup}`;
 
   const contentNewItems = newItems > 999 ? "999+" : newItems;
 
