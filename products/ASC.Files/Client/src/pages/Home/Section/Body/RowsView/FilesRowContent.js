@@ -53,19 +53,16 @@ const SimpleFilesRowContent = styled(RowContent)`
     }
 
     .tablet-badge {
-      margin-top: 8px;
+      margin-top: 7px;
     }
 
     .badge-version {
       min-width: 25px;
     }
 
-    .edit {
-      margin-top: 7px;
-    }
-
     .new-items {
       min-width: 16px;
+      margin-top: 8px;
     }
   `}
 `;

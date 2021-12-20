@@ -63,7 +63,7 @@ const Badges = ({
         !canConvert && (
           <StyledIcon
             iconName={iconEdit}
-            className="badge edit tablet-badge icons-group"
+            className="badge tablet-badge icons-group"
             size={sizeBadge}
             onClick={onFilesClick}
             hoverColor="#3B72A7"

@@ -129,7 +129,7 @@ const StyledSimpleFilesRow = styled(Row)`
     
     .lock-file{
       svg {
-        height:16px;
+        height: 16px;
       }
     }
   `}
