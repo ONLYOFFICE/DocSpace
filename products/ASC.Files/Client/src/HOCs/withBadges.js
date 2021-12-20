@@ -122,6 +122,7 @@ export default function withBadges(WrappedComponent) {
         isAdmin,
         isDesktopClient,
         showShare,
+        sectionWidth,
       } = this.props;
       const { fileStatus, access } = item;
 
@@ -139,6 +140,7 @@ export default function withBadges(WrappedComponent) {
           isAdmin={isAdmin}
           showNew={showNew}
           newItems={newItems}
+          sectionWidth={sectionWidth}
           canWebEdit={canWebEdit}
           canConvert={canConvert}
           isTrashFolder={isTrashFolder}

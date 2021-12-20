@@ -89,47 +89,37 @@ const StyledSimpleFilesRow = styled(Row)`
     }
   }
 
-  .badge {
-    width: 12px;
-    height: 12px;
-    margin-right: 8px;
+  .badges {
+    display: flex;
+    align-items: center;
+    margin-top: 2px;
   }
 
-  .new-items {
-    width: 12px;
-    min-width: max-content;
-    height: 12px;
-    border: 0;
-    padding: 0;
-    margin-top: 3px;
+  .badge {
+    margin-right: 8px;
   }
 
   .badge:last-child {
     margin-right: 0px;
   }
 
+  .new-items {
+    min-width: 12px;
+    width: max-content;
+    border: 0;
+    padding: 0;
+    margin-top: 2px;
+  }
+
   .badge-version {
     min-width: 21px;
-    height: max-content;
     margin-right: 8px;
     border: 0;
     padding: 0;
-
-    p {
-      text-align: center;
-      height: 12px;
-    }
   }
 
   .lock-file {
     cursor: ${(props) => (props.withAccess ? "pointer" : "default")};
-  }
-
-  .badges {
-    display: flex;
-    align-items: center;
-    height: 12px;
-    margin-top: 3px;
   }
 
   .favorite {
@@ -148,50 +138,31 @@ const StyledSimpleFilesRow = styled(Row)`
       width: min-content;
     } 
 
-    .badges {
-      height: 16px;
-      margin-top: 2.5px;
-     }
-
-    .badge {
-      width: 16px;
-      height: 16px;
+    .badge,
+    .tablet-badge:last-child {
       margin-right: 24px;
     }
-
-    .lock-file {
-      svg {
-        height: 16px;
-      }
-    }
-
-    .tablet {
-      margin-top: 16px;
-    }
-
-    .tablet:last-child {
-     margin-right: 24px; 
-    }
-
-    .new-items {
-      width: 16px;
-      height: 16px;
-      margin-top: 16px;
-      margin-right: 24px;  
- 
-      p {
-        text-align:center;
-        padding-top: 2px;
-      }
+    
+    .tablet-badge {
+      margin-top: 8px;
     }
 
     .badge-version {
       min-width: 25px;
+    }
 
-      p {
-        padding-top: 2px;
-        height: 14px;
+    .lock-file{
+      svg {
+        height:16px;
       }
+    }
+
+    .edit {
+      margin-top: 7px;
+    }
+
+    .new-items {
+      width: 16px;
     }
   `}
 `;

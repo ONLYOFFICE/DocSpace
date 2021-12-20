@@ -44,6 +44,7 @@ export default function withQuickButtons(WrappedComponent) {
         showShare,
         fileActionExt,
         fileActionId,
+        sectionWidth,
       } = this.props;
       const { access, id, fileExst } = item;
 
@@ -57,6 +58,7 @@ export default function withQuickButtons(WrappedComponent) {
         <QuickButtons
           t={t}
           item={item}
+          sectionWidth={sectionWidth}
           isAdmin={isAdmin}
           showShare={showShare}
           isTrashFolder={isTrashFolder}

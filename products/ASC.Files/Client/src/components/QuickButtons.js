@@ -11,6 +11,7 @@ export const StyledIcon = styled(IconButton)`
 const QuickButtons = ({
   t,
   item,
+  sectionWidth,
   isTrashFolder,
   accessToEdit,
   showShare,
@@ -32,6 +33,9 @@ const QuickButtons = ({
     ? "/static/images/file.actions.favorite.react.svg"
     : "/static/images/favorite.react.svg";
 
+  const tabletViewQuickButton = sectionWidth > 500 && sectionWidth <= 1024;
+  const sizeQuickButton = tabletViewQuickButton ? "medium" : "small";
+
   return (
     <div className="badges additional-badges">
       {item.canShare && showShare && (
@@ -40,12 +44,14 @@ const QuickButtons = ({
           id={item.id}
           shared={item.shared}
           isFolder={item.isFolder}
+          isSmallIcon={!tabletViewQuickButton}
         />
       )}
       {fileExst && accessToEdit && !isTrashFolder && (
-        <IconButton
+        <StyledIcon
           iconName={iconLock}
           className="badge lock-file icons-group"
+          size={sizeQuickButton}
           data-id={id}
           data-locked={locked ? true : false}
           onClick={onClickLock}
@@ -56,7 +62,7 @@ const QuickButtons = ({
         <StyledIcon
           iconName={iconFavorite}
           className="favorite badge icons-group"
-          size="medium"
+          size={sizeQuickButton}
           data-id={id}
           data-title={title}
           onClick={() => onClickFavorite(showFavorite)}

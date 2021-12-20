@@ -11,6 +11,7 @@ export const StyledIcon = styled(IconButton)`
 const Badges = ({
   t,
   newItems,
+  sectionWidth,
   item,
   canWebEdit,
   isTrashFolder,
@@ -46,6 +47,12 @@ const Badges = ({
 
   const contentNewItems = newItems > 999 ? "999+" : newItems;
 
+  const tabletViewBadge = sectionWidth > 500 && sectionWidth <= 1024;
+
+  const sizeBadge = tabletViewBadge ? "medium" : "small";
+
+  const lineHeightBadge = tabletViewBadge ? "16px" : "12px";
+
   return fileExst ? (
     <div className="badges additional-badges">
       {canWebEdit &&
@@ -56,25 +63,25 @@ const Badges = ({
         !canConvert && (
           <StyledIcon
             iconName={iconEdit}
-            className="badge tablet icons-group"
-            size="small"
+            className="badge edit tablet-badge icons-group"
+            size={sizeBadge}
             onClick={onFilesClick}
             hoverColor="#3B72A7"
           />
         )}
       {canConvert && !isTrashFolder && (
-        <IconButton
+        <StyledIcon
           onClick={setConvertDialogVisible}
           iconName="/static/images/refresh.react.svg"
-          className="badge tablet icons-group can-convert"
-          size="medium"
+          className="badge tablet-badge icons-group can-convert"
+          size={sizeBadge}
           color="#A3A9AE"
           hoverColor="#3B72A7"
         />
       )}
       {version > 1 && !(showNew || isNewWithFav) && (
         <Badge
-          className="badge-version tablet icons-group"
+          className="badge-version tablet-badge icons-group"
           backgroundColor="#A3A9AE"
           borderRadius="11px"
           color="#FFFFFF"
@@ -84,12 +91,13 @@ const Badges = ({
           maxWidth="50px"
           onClick={onShowVersionHistory}
           padding="0 3px"
+          lineHeight={lineHeightBadge}
           data-id={id}
         />
       )}
       {version > 1 && (showNew || isNewWithFav) && (
         <Badge
-          className="badge-version tablet icons-group"
+          className="badge-version tablet-badge icons-group"
           backgroundColor="#ED7309"
           borderRadius="11px"
           color="#FFFFFF"
@@ -99,12 +107,13 @@ const Badges = ({
           maxWidth="50px"
           onClick={onSharedVersionClick}
           padding="0 3px"
+          lineHeight={lineHeightBadge}
           data-id={id}
         />
       )}
       {(showNew || isNewWithFav) && !(version > 1) && (
         <Badge
-          className="badge-version tablet icons-group"
+          className="badge-version tablet-badge icons-group"
           backgroundColor="#ED7309"
           borderRadius="11px"
           color="#FFFFFF"
@@ -114,6 +123,7 @@ const Badges = ({
           maxWidth="50px"
           onClick={onBadgeClick}
           padding="0 3px"
+          lineHeight={lineHeightBadge}
           data-id={id}
         />
       )}
@@ -121,7 +131,7 @@ const Badges = ({
   ) : (
     showNew && (
       <Badge
-        className="new-items"
+        className="new-items tablet-badge"
         backgroundColor="#ED7309"
         borderRadius="11px"
         color="#FFFFFF"
@@ -131,6 +141,7 @@ const Badges = ({
         maxWidth="50px"
         onClick={onBadgeClick}
         padding="0 3px"
+        lineHeight={lineHeightBadge}
         data-id={id}
       />
     )
