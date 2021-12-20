@@ -90,7 +90,7 @@ namespace ASC.Socket.IO.Svc
                     UseShellExecute = false,
                     FileName = "node",
                     WindowStyle = ProcessWindowStyle.Hidden,
-                    Arguments = string.Format("\"{0}\"", Path.GetFullPath(CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, settings.Path, "app.js"))),
+                    Arguments = string.Format("\"{0}\"", Path.GetFullPath(CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, settings.Path, "server.js"))),
                     WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory
                 };
                 StartInfo.EnvironmentVariables.Add("core.machinekey", Configuration["core:machinekey"]);

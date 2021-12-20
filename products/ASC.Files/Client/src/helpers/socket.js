@@ -1,6 +1,6 @@
 import io from "socket.io-client";
 
-const SOCKET_URL = "http://localhost:9899";
+const SOCKET_URL = `${window.location.protocol}//${window.location.hostname}:9899`;
 const socket = io(SOCKET_URL, {
   withCredentials: true,
   transports: ["websocket", "polling"],

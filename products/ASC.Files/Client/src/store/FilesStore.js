@@ -67,22 +67,26 @@ class FilesStore {
     const pathname = window.location.pathname.toLowerCase();
     this.isEditor = pathname.indexOf("doceditor") !== -1;
 
-    socket.on("editorCreateCopy", (folderId) => {
-      //TODO:
-      console.log("editorCreateCopy");
+    socket.on("s:refresh-folder", (folderId) => {
+      console.log("Call s:refresh-folder");
       selectedFolderStore.id === folderId && this.fetchFiles(folderId);
     });
 
-    //WAIT RESPONSE OF EDITING FILE
-    socket.on("editFile", (file) => {
-      const fakeFile = { ...this.files.find((x) => x.id === 4390) };
-      console.log("fakeFile", fakeFile.folderId);
-      fakeFile.fileStatus = 0;
-      if (file) this.setFile(fakeFile);
-      //if (file) this.setFile(file);
+    //WAIT FOR RESPONSES OF EDITING FILE
+    socket.on("s:start-edit-file", (id) => {
+      console.log(`Call s:start-edit-file (id=${id})`);
+      const foundIndex = this.files.findIndex((x) => x.id === id);
+      if (foundIndex == -1) return;
 
-      //console.log("editFile File", file);
-      //file && console.log("subFileChanges File", JSON.parse(file)?.response);
+      this.updateFileStatus(foundIndex, 1);
+    });
+
+    socket.on("s:stop-edit-file", (id) => {
+      console.log(`Call s:stop-edit-file (id=${id})`);
+      const foundIndex = this.files.findIndex((x) => x.id === id);
+      if (foundIndex == -1) return;
+
+      this.updateFileStatus(foundIndex, 0);
     });
 
     makeAutoObservable(this);
@@ -224,6 +228,12 @@ class FilesStore {
 
   setFolders = (folders) => {
     this.folders = folders;
+  };
+
+  updateFileStatus = (index, status) => {
+    if (index < 0) return;
+
+    this.files[index].fileStatus = status;
   };
 
   setFile = (file) => {
@@ -1677,10 +1687,12 @@ class FilesStore {
   };
 
   openDocEditor = (id, providerKey = null, tab = null, url = null) => {
-    const fakeFile = { ...this.files.find((x) => x.id === 4390) };
-    fakeFile.fileStatus = 1;
-    this.setFile(fakeFile);
-    socket.emit("editFile", id);
+    //TODO: Need to call stop-edit-file on Server side
+    // if (tab) {
+    //   tab.onbeforeunload = function () {
+    //     socket.emit("stop-edit-file", id);
+    //   };
+    // }
 
     return openEditor(id, providerKey, tab, url);
   };

@@ -532,6 +532,8 @@ const Editor = () => {
     if (tempElm) {
       tempElm.outerHTML = "";
     }
+
+    socket.emit("c:start-edit-file", fileInfo.id);
   };
 
   const onSDKInfo = (event) => {
@@ -701,7 +703,7 @@ const Editor = () => {
     );
 
     if (savingInfo) {
-      fileInfo && socket.emit("editorCreateCopy", fileInfo.folderId);
+      fileInfo && socket.emit("c:refresh-folder", fileInfo.folderId);
 
       const convertedInfo = savingInfo.split(": ").pop();
       docEditor.showMessage(convertedInfo);
