@@ -1,11 +1,8 @@
 const axios = require("axios");
-//const proxyURL = "";
 const apiPrefixURL = "/api/2.0";
 const apiTimeout = 30000;
 
 module.exports = (options) => {
-  //console.log("socket", socket.client.request.headers);
-
   const basePath = options.basePath;
   const url = `${basePath}${apiPrefixURL}${options.url}`;
 
@@ -35,7 +32,6 @@ module.exports = (options) => {
     if (!response || !response.data || response.isAxiosError) return null;
     if (response.request.responseType === "text") return response.data;
 
-    //return response.data;
     return response.data.response;
   };
 

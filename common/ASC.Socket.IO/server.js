@@ -1,6 +1,7 @@
 const express = require("express");
 const { Server } = require("socket.io");
 const { createServer } = require("http");
+const logger = require("morgan");
 const redis = require("redis");
 const expressSession = require("express-session");
 const cookieParser = require("cookie-parser");
@@ -8,9 +9,13 @@ const RedisStore = require("connect-redis")(expressSession);
 const MemoryStore = require("memorystore")(expressSession);
 const sharedsession = require("express-socket.io-session");
 
-//const request = require("./requestManager");
 const config = require("./config");
-const auth = require("./app/middleware/auth2.js");
+const auth = require("./app/middleware/auth.js");
+const winston = require("./app/log.js");
+
+winston.stream = {
+  write: (message) => winston.info(message),
+};
 
 const port = config.get("port") || 3000;
 const app = express();
@@ -44,6 +49,7 @@ const session = expressSession({
   name: "socketio.sid",
 });
 
+app.use(logger("dev", { stream: winston.stream }));
 app.use(session);
 
 const httpServer = createServer(app);
