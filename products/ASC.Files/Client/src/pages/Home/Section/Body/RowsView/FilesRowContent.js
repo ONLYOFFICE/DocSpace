@@ -27,16 +27,12 @@ const SimpleFilesRowContent = styled(RowContent)`
   .new-items {
     min-width: 12px;
     width: max-content;
-    border: 0;
-    padding: 0;
     margin-top: 2px;
   }
 
   .badge-version {
     min-width: 21px;
     margin-right: 8px;
-    border: 0;
-    padding: 0;
   }
 
   ${(props) =>
