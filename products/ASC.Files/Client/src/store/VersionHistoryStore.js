@@ -1,5 +1,7 @@
-import { makeObservable, action, observable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import api from "@appserver/common/api";
+import socket from "../helpers/socket";
+import { size } from "@appserver/components/utils/device";
 
 class VersionHistoryStore {
   isVisible = false;
@@ -8,22 +10,39 @@ class VersionHistoryStore {
   filesStore = null;
   showProgressBar = false;
   timerId = null;
+  isEditing = false;
 
   constructor(filesStore) {
-    makeObservable(this, {
-      isVisible: observable,
-      fileId: observable,
-      versions: observable,
-      showProgressBar: observable,
-
-      setIsVerHistoryPanel: action,
-      setVerHistoryFileId: action,
-      setVerHistoryFileVersions: action,
-      markAsVersion: action,
-      restoreVersion: action,
-      updateCommentVersion: action,
-    });
+    makeAutoObservable(this);
     this.filesStore = filesStore;
+
+    const isTabletView = window.innerWidth <= size.tablet;
+    if (isTabletView) {
+      //TODO: Files store in not initialized on versionHistory page. Need socket.
+      socket.on("s:start-edit-file", (id) => {
+        console.log(`VERSION STORE Call s:start-edit-file (id=${id})`);
+        const verIndex = this.versions.findIndex((x) => x.id == id);
+        if (verIndex == -1) return;
+
+        runInAction(() => (this.isEditing = true));
+      });
+
+      socket.on("s:stop-edit-file", (id) => {
+        console.log(`VERSION STORE Call s:stop-edit-file (id=${id})`);
+        const verIndex = this.files.findIndex((x) => x.id === id);
+        if (verIndex == -1) return;
+
+        runInAction(() => (this.isEditing = false));
+      });
+    }
+  }
+
+  get isEditingVersion() {
+    if (this.fileId && this.filesStore.files.length) {
+      const file = this.filesStore.files.find((x) => x.id === +this.fileId);
+      return file ? file.fileStatus === 1 : false;
+    }
+    return false;
   }
 
   setIsVerHistoryPanel = (isVisible) => {
