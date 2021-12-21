@@ -59,7 +59,6 @@ const StyledTile = styled.div`
 
   ${(props) => props.isFolder && FlexBoxStyles}
   ${(props) => (props.isFolder ? FolderStyles : FileStyles)}
-  ${(props) => (props.checked || props.isActive) && checkedStyle}
 
   &:before, 
   &:after {
@@ -151,10 +150,6 @@ const StyledFileTileTop = styled.div`
   background-color: #f8f9f9;
   height: 154px;
   position: relative;
-  border-bottom: ${(props) =>
-    props.checked || props.isActive
-      ? "1px solid #D0D5DA"
-      : "1px solid transparent"};
 
   .thumbnail-image,
   .temporary-icon > .injected-svg {

@@ -6,6 +6,7 @@ import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
 import CheckIcon from "../../public/images/check.react.svg";
 import CrossIcon from "../../../../../public/images/cross.react.svg";
+import { tablet } from "@appserver/components/utils/device";
 
 const StyledCheckIcon = styled(CheckIcon)`
   ${commonIconsStyles}
@@ -54,9 +55,10 @@ const EditingWrapper = styled.div`
     props.viewAs === "tile" &&
     `margin-right: 12px !important; margin-left: -4px;`}
 
-  @media (max-width: 1024px) {
+  @media ${tablet} {
     height: 56px;
   }
+
   .edit-text {
     height: 32px;
     font-size: ${(props) =>
@@ -68,15 +70,19 @@ const EditingWrapper = styled.div`
     outline: 0 !important;
     font-weight: 600;
     margin: 0;
+    margin-left: 2px;
     font-family: "Open Sans", sans-serif, Arial;
     text-align: left;
     color: #333333;
-    margin-left: 6px;
+    border: none;
+    background: none;
   }
+
   .edit-button {
-    margin-left: 8px;
     height: 32px;
     padding: 8px 7px 7px 7px;
+    border: none;
+    background: none;
 
     ${(props) =>
       props.viewAs === "table" &&
@@ -139,11 +145,9 @@ const EditingWrapperComponent = (props) => {
       if (!isLoading) setIsLoading(true);
       return onClickUpdateItem(e);
     }
-    //if (code === 27) return cancelUpdateItem(e);
   };
   const onEscapeKeyPress = (e) => {
     if (e.keyCode === 27) return cancelUpdateItem(e);
-    return;
   };
 
   const setIsHoveredOkHandler = () => {
