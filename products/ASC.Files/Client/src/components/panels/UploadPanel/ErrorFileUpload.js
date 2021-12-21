@@ -1,4 +1,3 @@
-import PasswordInput from "./PasswordInput";
 import Tooltip from "@appserver/components/tooltip";
 import LoadErrorIcon from "../../../../public/images/load.error.react.svg";
 import styled from "styled-components";
@@ -9,7 +8,7 @@ const StyledLoadErrorIcon = styled(LoadErrorIcon)`
   outline: none !important;
 `;
 
-const ErrorFileUpload = ({ item, onTextClick }) => (
+const ErrorFileUpload = ({ t, item, onTextClick }) => (
   <>
     <div className="upload_panel-icon">
       {item.needPassword && (
