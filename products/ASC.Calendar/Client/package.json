@@ -5,6 +5,8 @@
   "homepage": "/products/calendar",
   "scripts": {
     "build": "webpack --mode production",
+    "build:test": "webpack --env minimize=false --mode production",
+    "build:test.translation": "webpack --env minimize=false hideText=true --mode production",
     "clean": "shx rm -rf dist",
     "deploy": "shx --silent mkdir -p ../../../build/deploy/products/ASC.Calendar/client && shx cp -r dist/* ../../../build/deploy/products/ASC.Calendar/client",
     "serve": "serve dist -p 5017",
