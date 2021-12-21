@@ -1,8 +1,11 @@
 import React from "react";
 import { StyledText } from "./CellStyles";
+import moment from "moment";
 
 const DateCell = ({ create, updatedDate, createdDate, sideColor }) => {
-  const date = create ? createdDate : updatedDate;
+  const date = moment(new Date(create ? createdDate : updatedDate)).format(
+    "MM/D/YYYY	hh:mm A"
+  );
 
   return (
     <StyledText
