@@ -126,7 +126,7 @@ const StyledSimpleFilesRow = styled(Row)`
     .badge {
       margin-right: 24px;
     }
-    
+
     .lock-file{
       svg {
         height: 16px;

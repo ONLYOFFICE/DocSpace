@@ -27,12 +27,12 @@ const SimpleFilesRowContent = styled(RowContent)`
   .new-items {
     min-width: 12px;
     width: max-content;
-    margin-top: 2px;
+    margin: 0 -2px -2px -2px;
   }
 
   .badge-version {
     min-width: 21px;
-    margin-right: 8px;
+    margin: -2px;
   }
 
   ${(props) =>
@@ -44,21 +44,28 @@ const SimpleFilesRowContent = styled(RowContent)`
       justify-content: space-between;
     }
 
-    .tablet-badge:last-child {
-      margin-right: 24px !important;
+    .tablet-badge {
+      margin-top: 5px;
     }
 
-    .tablet-badge {
-      margin-top: 7px;
+    .tablet-edit,
+    .tablet-refresh {
+     margin-top: 6px;
+    }
+
+    .tablet-edit, 
+    .tablet-refresh {
+      margin-right: 24px !important;
     }
 
     .badge-version {
       min-width: 25px;
+      margin-right: 22px;
     }
 
     .new-items {
       min-width: 16px;
-      margin-top: 8px;
+      margin: 7px 22px 0 0;
     }
   `}
 `;

@@ -63,7 +63,7 @@ const Badges = ({
         !canConvert && (
           <StyledIcon
             iconName={iconEdit}
-            className="badge tablet-badge icons-group"
+            className="badge tablet-edit tablet-badge icons-group"
             size={sizeBadge}
             onClick={onFilesClick}
             hoverColor="#3B72A7"
@@ -73,7 +73,7 @@ const Badges = ({
         <StyledIcon
           onClick={setConvertDialogVisible}
           iconName="/static/images/refresh.react.svg"
-          className="badge tablet-badge icons-group can-convert"
+          className="badge tablet-refresh tablet-badge icons-group can-convert"
           size={sizeBadge}
           color="#A3A9AE"
           hoverColor="#3B72A7"
