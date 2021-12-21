@@ -248,7 +248,7 @@ const StyledHeaderContent = styled.div`
     .upload_panel-vertical-dots-icon {
     }
     .upload_panel-remove-icon {
-      padding-right: 8px;
+      padding-right: 16px;
     }
   }
 
