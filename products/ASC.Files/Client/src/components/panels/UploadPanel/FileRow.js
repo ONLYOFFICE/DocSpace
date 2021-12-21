@@ -4,12 +4,11 @@ import Row from "@appserver/components/row";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import LoadingButton from "./LoadingButton";
-import ShareButton from "./ShareButton";
-import IconButton from "@appserver/components/icon-button";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import PasswordInput from "./PasswordInput";
 import ErrorFileUpload from "./ErrorFileUpload.js";
+import ActionsUploadedFile from "./ActionsUploadedFile";
 
 const StyledFileRow = styled(Row)`
   /* margin: 0 16px; */
@@ -156,10 +155,6 @@ class FileRow extends Component {
     } = this.props;
     const { showPasswordInput } = this.state;
 
-    const onCancelClick = !item.inConversion
-      ? { onClick: this.onCancelCurrentUpload }
-      : {};
-
     console.log(
       "render file row",
       index,
@@ -215,35 +210,17 @@ class FileRow extends Component {
               <></>
             )}
             {item.fileId && !item.error ? (
-              <>
-                {item.action === "upload" && !isPersonal && (
-                  <ShareButton uniqueId={item.uniqueId} />
-                )}
-                {item.action === "convert" && (
-                  <div
-                    className="upload_panel-icon"
-                    data-id={item.uniqueId}
-                    data-file-id={item.fileId}
-                    data-action={item.action}
-                    {...onCancelClick}
-                  >
-                    <LoadingButton
-                      isConversion
-                      inConversion={item.inConversion}
-                      percent={item.convertProgress}
-                    />
-                    <IconButton
-                      iconName="/static/images/refresh.react.svg"
-                      className="convert_icon"
-                      size="medium"
-                      isfill={true}
-                      color="#A3A9AE"
-                    />
-                  </div>
-                )}
-              </>
+              <ActionsUploadedFile
+                item={item}
+                isPersonal={isPersonal}
+                onCancelCurrentUpload={this.onCancelCurrentUpload}
+              />
             ) : item.error || (!item.fileId && uploaded) ? (
-              <ErrorFileUpload item={item} onTextClick={this.onTextClick} />
+              <ErrorFileUpload
+                t={t}
+                item={item}
+                onTextClick={this.onTextClick}
+              />
             ) : (
               <div
                 className="upload_panel-icon"
