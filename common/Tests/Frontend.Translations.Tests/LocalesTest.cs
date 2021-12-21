@@ -314,7 +314,14 @@ namespace Frontend.Translations.Tests
         [Category("FastRunning")]
         public void DublicatesFilesByMD5HashTest()
         {
+            var skipHashes = new List<string>() {
+                "bcba174a8dadc0ff97f37f9a2d816d88",
+                "2a506ed97d0fbd0858192b755ae122d0",
+                "ec73989085d4e1b984c1c9dca10524da"
+            };
+
             var duplicatesByMD5 = TranslationFiles
+                .Where(t => !skipHashes.Contains(t.Md5Hash))
                 .GroupBy(t => t.Md5Hash)
                 .Where(grp => grp.Count() > 1)
                 .Select(grp => new { Key = grp.Key, Count = grp.Count(), Paths = grp.ToList().Select(f => f.FilePath) })
