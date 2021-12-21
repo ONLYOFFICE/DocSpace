@@ -99,6 +99,8 @@ namespace ASC.TelegramService
                         .AddJsonFile($"notify.{env}.json", true)
                         .AddJsonFile("kafka.json")
                         .AddJsonFile($"kafka.{env}.json", true)
+                        .AddJsonFile("redis.json")
+                        .AddJsonFile($"redis.{env}.json", true)
                         .AddEnvironmentVariables();
                 })
             .ConfigureNLogLogging();

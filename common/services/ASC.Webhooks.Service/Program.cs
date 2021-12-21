@@ -17,6 +17,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using StackExchange.Redis.Extensions.Core.Configuration;
+using StackExchange.Redis.Extensions.Newtonsoft;
+
 namespace ASC.Webhooks.Service
 {
     public class Program
@@ -56,6 +59,8 @@ namespace ASC.Webhooks.Service
                         .AddJsonFile("storage.json")
                         .AddJsonFile("kafka.json")
                         .AddJsonFile($"kafka.{env}.json", true)
+                        .AddJsonFile("redis.json")
+                        .AddJsonFile($"redis.{env}.json", true)
                         .AddEnvironmentVariables()
                         .AddCommandLine(args);
                 })
@@ -71,6 +76,8 @@ namespace ASC.Webhooks.Service
 
                     services.AddHostedService<WebhookHostedService>();
                     diHelper.TryAdd<WebhookHostedService>();
+
+                    services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>());
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {

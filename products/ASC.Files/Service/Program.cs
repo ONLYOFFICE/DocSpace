@@ -20,6 +20,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using StackExchange.Redis.Extensions.Core.Configuration;
+using StackExchange.Redis.Extensions.Newtonsoft;
+
 namespace ASC.Files.Service
 {
     public class Program
@@ -56,6 +59,8 @@ namespace ASC.Files.Service
                         .AddJsonFile($"notify.{env}.json", true)
                         .AddJsonFile("kafka.json")
                         .AddJsonFile($"kafka.{env}.json", true)
+                        .AddJsonFile("redis.json")
+                        .AddJsonFile($"redis.{env}.json", true)
                         .AddJsonFile("elastic.json", true)
                         .AddEnvironmentVariables()
                         .AddCommandLine(args)
@@ -94,6 +99,8 @@ namespace ASC.Files.Service
 
                     services.AddHostedService<Launcher>();
                     diHelper.TryAdd<Launcher>();
+
+                    services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>());
 
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>

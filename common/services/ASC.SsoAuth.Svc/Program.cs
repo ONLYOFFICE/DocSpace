@@ -43,10 +43,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using StackExchange.Redis.Extensions.Core.Configuration;
+using StackExchange.Redis.Extensions.Newtonsoft;
 
 namespace ASC.Socket.IO.Svc
 {
-    public class Program
+public class Program
     {
         public async static Task Main(string[] args)
         {
@@ -75,8 +77,10 @@ namespace ASC.Socket.IO.Svc
                         .AddJsonFile("appsettings.json")
                         .AddJsonFile("storage.json")
                         .AddJsonFile("kafka.json")
-                        .AddJsonFile("ssoauth.json")
                         .AddJsonFile($"kafka.{env}.json", true)
+                        .AddJsonFile("redis.json")
+                        .AddJsonFile($"redis.{env}.json", true)
+                        .AddJsonFile("ssoauth.json")
                         .AddJsonFile($"appsettings.{env}.json", true)
                         .AddJsonFile($"ssoauth.{env}.json", true)
                         .AddEnvironmentVariables()
@@ -96,6 +100,9 @@ namespace ASC.Socket.IO.Svc
 
                     services.AddHostedService<Launcher>();
                     diHelper.TryAdd<Launcher>();
+
+                    services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>());
+
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {

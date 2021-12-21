@@ -38,7 +38,7 @@
     <PackageReference Include="Google.Apis.Core" Version="1.49.0" />
     <PackageReference Include="Google.Apis.Storage.v1" Version="1.49.0.2102" />
     <PackageReference Include="Google.Cloud.Storage.V1" Version="3.3.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.32.0">
+    <PackageReference Include="Grpc.Tools" Version="2.40.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

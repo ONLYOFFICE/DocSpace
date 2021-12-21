@@ -34,6 +34,8 @@ using Microsoft.Extensions.Hosting;
 using NLog;
 using NLog.Extensions.Logging;
 
+using StackExchange.Redis.Extensions.Core.Configuration;
+
 namespace ASC.Api.Core
 {
     public abstract class BaseStartup
