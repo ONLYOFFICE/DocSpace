@@ -317,6 +317,7 @@ class UploadDataStore {
               if (file) {
                 file.error = error;
                 file.inConversion = false;
+                if (fileInfo === "password") file.needPassword = true;
               }
             });
 
@@ -339,8 +340,10 @@ class UploadDataStore {
           });
 
           this.settingsStore.storeOriginalFiles && this.refreshFiles(file);
-          file.fileInfo = fileInfo;
-          this.refreshFiles(file);
+          if (fileInfo && fileInfo !== "password") {
+            file.fileInfo = fileInfo;
+            this.refreshFiles(file);
+          }
           const percent = this.getConversationPercent(index + 1);
           this.setConversionPercent(percent, !!error);
         }
@@ -486,12 +489,12 @@ class UploadDataStore {
         }
       }
 
-    if (
+      if (
         newPath[newPath.length - 1] !== this.selectedFolderStore.id &&
         path.length
-    ) {
+      ) {
         return;
-        }
+      }
 
       const addNewFile = () => {
         if (folderInfo) {
@@ -557,7 +560,7 @@ class UploadDataStore {
 
         const newExpandedKeys = expandedKeys.filter(
           (x) => x !== newPath[newPath.length - 1] + ""
-      );
+        );
 
         setExpandedKeys(newExpandedKeys);
 
@@ -567,7 +570,7 @@ class UploadDataStore {
           this.filesStore.folders.length === 1 ? this.filesStore.folders : [],
           this.filesStore.folders.length
         );
-    }
+      }
     }
   };
 
@@ -652,7 +655,7 @@ class UploadDataStore {
     } else {
       if (currentFile.action === "uploaded") {
         this.refreshFiles(currentFile);
-    }
+      }
       return Promise.resolve();
     }
   };
@@ -1023,8 +1026,8 @@ class UploadDataStore {
           true,
           true
         ).finally(() => {
-            this.clearActiveOperations(fileIds, folderIds);
-            setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+          this.clearActiveOperations(fileIds, folderIds);
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         });
       } else {
         this.clearActiveOperations(fileIds, folderIds);

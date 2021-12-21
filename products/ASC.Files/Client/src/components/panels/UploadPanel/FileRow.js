@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, Component } from "react";
 import styled, { css } from "styled-components";
 import Tooltip from "@appserver/components/tooltip";
 import Row from "@appserver/components/row";
@@ -10,30 +10,56 @@ import LoadErrorIcon from "../../../../public/images/load.error.react.svg";
 import IconButton from "@appserver/components/icon-button";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
+import PasswordInput from "./PasswordInput";
 
 const StyledFileRow = styled(Row)`
-  margin: 0 16px;
-  width: calc(100% - 16px);
+  /* margin: 0 16px; */
+  /* width: calc(100% - 16px); */
   box-sizing: border-box;
-  font-weight: 600;
+  /* font-weight: 600; */
+  width: 100%;
+  padding-right: 16px;
+  padding-left: 16px;
 
+  min-height: 40px;
+  height: 100%;
+
+  .styled-element,
+  .row_content {
+    ${(props) => props.showPasswordInput && "margin-top: -49px"}
+  }
+
+  .password-input {
+    position: absolute;
+    top: 44px;
+    left: 16px;
+    width: 382px;
+  }
   .row_content > a,
   .row_content > p {
     margin: auto 0;
     line-height: 16px;
   }
 
+  .row_context-menu-wrapper {
+    display: none;
+  }
   .upload_panel-icon {
     margin-left: auto;
     padding-left: 16px;
     line-height: 24px;
     display: flex;
     align-items: center;
-    flex-direction: row-reverse;
+    /* flex-direction: row-reverse; */
 
     svg {
       width: 16px;
       height: 16px;
+    }
+
+    .enter-password {
+      margin-right: 8px;
+      text-decoration: underline dashed;
     }
   }
 
@@ -79,156 +105,206 @@ const StyledLoadErrorIcon = styled(LoadErrorIcon)`
   outline: none !important;
 `;
 
-const FileRow = (props) => {
-  const {
-    t,
-    item,
-    uploaded,
-    cancelCurrentUpload,
-    cancelCurrentFileConversion,
-    //onMediaClick,
-    currentFileUploadProgress,
-    fileIcon,
-    isMedia,
-    ext,
-    name,
-    isPersonal,
-    setMediaViewerData,
-    setUploadPanelVisible,
-    isMediaActive,
-    downloadInCurrentTab,
-  } = props;
+class FileRow extends Component {
+  constructor(props) {
+    super(props);
 
-  const onCancelCurrentUpload = (e) => {
+    this.state = {
+      showPasswordInput: false,
+    };
+    console.log("constructor");
+  }
+
+  componentWillUnmount() {
+    console.log("unmount");
+  }
+  onTextClick = () => {
+    const { showPasswordInput } = this.state;
+    const { updateRowsHeight, index } = this.props;
+
+    const newState = !showPasswordInput;
+
+    this.setState({ showPasswordInput: newState }, () => {
+      console.log("newState", newState);
+      updateRowsHeight(index, newState);
+    });
+  };
+
+  onCancelCurrentUpload = (e) => {
     //console.log("cancel upload ", e);
     const { id, action, fileId } = e.currentTarget.dataset;
+    const { cancelCurrentUpload, cancelCurrentFileConversion } = this.props;
 
     return action === "convert"
       ? cancelCurrentFileConversion(fileId)
       : cancelCurrentUpload(id);
   };
 
-  const onMediaClick = (id) => {
+  onMediaClick = (id) => {
+    const { setMediaViewerData, setUploadPanelVisible } = this.props;
     if (!isMediaActive) return;
     const item = { visible: true, id: id };
     setMediaViewerData(item);
     setUploadPanelVisible(false);
   };
 
-  const onCancelClick = !item.inConversion
-    ? { onClick: onCancelCurrentUpload }
-    : {};
+  render() {
+    const {
+      t,
+      item,
+      uploaded,
+      //onMediaClick,
+      currentFileUploadProgress,
+      fileIcon,
+      isMedia,
+      ext,
+      name,
+      isPersonal,
+      isMediaActive,
+      downloadInCurrentTab,
+      index,
+    } = this.props;
+    const { showPasswordInput } = this.state;
 
-  return (
-    <>
-      <StyledFileRow
-        className="download-row"
-        key={item.uniqueId}
-        checkbox={false}
-        element={
-          <img className={item.error && "img_error"} src={fileIcon} alt="" />
-        }
-        isMediaActive={isMediaActive}
-      >
-        <>
-          {item.fileId ? (
-            isMedia ? (
-              <Link
-                className="upload-panel_file-row-link"
-                fontWeight="600"
-                color={item.error || !isMediaActive ? "#A3A9AE" : ""}
-                truncate
-                onClick={() => onMediaClick(item.fileId)}
-              >
-                {name}
-              </Link>
-            ) : (
-              <Link
-                fontWeight="600"
-                color={item.error && "#A3A9AE"}
-                truncate
-                href={item.fileInfo ? item.fileInfo.webUrl : ""}
-                target={downloadInCurrentTab ? "_self" : "_blank"}
-              >
-                {name}
-              </Link>
-            )
-          ) : (
-            <Text fontWeight="600" color={item.error && "#A3A9AE"} truncate>
-              {name}
-            </Text>
-          )}
-          {ext ? (
-            <Text fontWeight="600" color="#A3A9AE">
-              {ext}
-            </Text>
-          ) : (
-            <></>
-          )}
-          {item.fileId && !item.error ? (
-            <>
-              {item.action === "upload" && !isPersonal && (
-                <ShareButton uniqueId={item.uniqueId} />
-              )}
-              {item.action === "convert" && (
-                <div
-                  className="upload_panel-icon"
-                  data-id={item.uniqueId}
-                  data-file-id={item.fileId}
-                  data-action={item.action}
-                  {...onCancelClick}
+    const onCancelClick = !item.inConversion
+      ? { onClick: this.onCancelCurrentUpload }
+      : {};
+
+    console.log(
+      "render file row",
+      index,
+      "showPasswordInput",
+      showPasswordInput
+    );
+
+    return (
+      <>
+        <StyledFileRow
+          className="download-row"
+          key={item.uniqueId}
+          checkbox={false}
+          element={
+            <img className={item.error && "img_error"} src={fileIcon} alt="" />
+          }
+          isMediaActive={isMediaActive}
+          showPasswordInput={showPasswordInput}
+        >
+          <>
+            {item.fileId ? (
+              isMedia ? (
+                <Link
+                  className="upload-panel_file-row-link"
+                  fontWeight="600"
+                  color={item.error || !isMediaActive ? "#A3A9AE" : ""}
+                  truncate
+                  onClick={() => this.onMediaClick(item.fileId)}
                 >
-                  <LoadingButton
-                    isConversion
-                    inConversion={item.inConversion}
-                    percent={item.convertProgress}
-                  />
-                  <IconButton
-                    iconName="/static/images/refresh.react.svg"
-                    className="convert_icon"
-                    size="medium"
-                    isfill={true}
-                    color="#A3A9AE"
-                  />
-                </div>
-              )}
-            </>
-          ) : item.error || (!item.fileId && uploaded) ? (
-            <div className="upload_panel-icon">
-              <StyledLoadErrorIcon
-                size="medium"
-                data-for="errorTooltip"
-                data-tip={item.error || t("Common:UnknownError")}
-              />
-              <Tooltip
-                id="errorTooltip"
-                offsetTop={0}
-                getContent={(dataTip) => (
-                  <Text fontSize="13px" noSelect>
-                    {dataTip}
-                  </Text>
+                  {name}
+                </Link>
+              ) : (
+                <Link
+                  fontWeight="600"
+                  color={item.error && "#A3A9AE"}
+                  truncate
+                  href={item.fileInfo ? item.fileInfo.webUrl : ""}
+                  target={downloadInCurrentTab ? "_self" : "_blank"}
+                >
+                  {name}
+                </Link>
+              )
+            ) : (
+              <Text fontWeight="600" color={item.error && "#A3A9AE"} truncate>
+                {name}
+              </Text>
+            )}
+            {ext ? (
+              <Text fontWeight="600" color="#A3A9AE">
+                {ext}
+              </Text>
+            ) : (
+              <></>
+            )}
+            {item.fileId && !item.error ? (
+              <>
+                {item.action === "upload" && !isPersonal && (
+                  <ShareButton uniqueId={item.uniqueId} />
                 )}
-                effect="float"
-                place="left"
-                maxWidth={320}
-                color="#f8f7bf"
-              />
-            </div>
-          ) : (
-            <div
-              className="upload_panel-icon"
-              data-id={item.uniqueId}
-              onClick={onCancelCurrentUpload}
-            >
-              <LoadingButton percent={currentFileUploadProgress} />
-            </div>
-          )}
-        </>
-      </StyledFileRow>
-    </>
-  );
-};
-
+                {item.action === "convert" && (
+                  <div
+                    className="upload_panel-icon"
+                    data-id={item.uniqueId}
+                    data-file-id={item.fileId}
+                    data-action={item.action}
+                    {...onCancelClick}
+                  >
+                    <LoadingButton
+                      isConversion
+                      inConversion={item.inConversion}
+                      percent={item.convertProgress}
+                    />
+                    <IconButton
+                      iconName="/static/images/refresh.react.svg"
+                      className="convert_icon"
+                      size="medium"
+                      isfill={true}
+                      color="#A3A9AE"
+                    />
+                  </div>
+                )}
+              </>
+            ) : item.error || (!item.fileId && uploaded) ? (
+              <>
+                <div className="upload_panel-icon">
+                  {item.needPassword && (
+                    <Text
+                      className="enter-password"
+                      fontWeight="600"
+                      color="#A3A9AE"
+                      onClick={this.onTextClick}
+                    >
+                      {"Enter Password"}
+                    </Text>
+                  )}
+                  <StyledLoadErrorIcon
+                    size="medium"
+                    data-for="errorTooltip"
+                    data-tip={item.error || t("Common:UnknownError")}
+                  />
+                  <Tooltip
+                    id="errorTooltip"
+                    offsetTop={0}
+                    getContent={(dataTip) => (
+                      <Text fontSize="13px" noSelect>
+                        {dataTip}
+                      </Text>
+                    )}
+                    effect="float"
+                    place="left"
+                    maxWidth={320}
+                    color="#f8f7bf"
+                  />
+                  {showPasswordInput && (
+                    <div className="password-input">
+                      <PasswordInput />
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <div
+                className="upload_panel-icon"
+                data-id={item.uniqueId}
+                onClick={this.onCancelCurrentUpload}
+              >
+                <LoadingButton percent={currentFileUploadProgress} />
+              </div>
+            )}
+          </>
+        </StyledFileRow>
+      </>
+    );
+  }
+}
 export default inject(
   ({ auth, formatsStore, uploadDataStore, mediaViewerDataStore }, { item }) => {
     let ext;
