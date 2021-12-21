@@ -50,8 +50,16 @@ const SelectFileDialogAsideView = ({
   };
   const isHeaderChildren = !!header;
 
+  const onMouseEvent = (event) => {
+    event.stopPropagation();
+  };
+
   return (
-    <StyledAsidePanel visible={isPanelVisible}>
+    <StyledAsidePanel
+      visible={isPanelVisible}
+      onMouseUp={onMouseEvent}
+      onMouseDown={onMouseEvent}
+    >
       <Backdrop
         onClick={onClose}
         visible={isPanelVisible}
