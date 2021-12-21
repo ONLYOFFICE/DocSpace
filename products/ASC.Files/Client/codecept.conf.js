@@ -100,7 +100,7 @@ exports.config = {
         stdout: '-',
         options: {
           mochaFile: `${reportDir}/${reportFileName}.xml`,
-          attachments: false, //add screenshot for a failed test
+          attachments: false,
         },
       },
     },
