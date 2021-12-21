@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { withRouter } from "react-router";
 import withContent from "../../../../../HOCs/withContent";
 import withBadges from "../../../../../HOCs/withBadges";
+import withQuickButtons from "../../../../../HOCs/withQuickButtons";
 import withFileActions from "../../../../../HOCs/withFileActions";
 import withContextOptions from "../../../../../HOCs/withContextOptions";
 import ItemIcon from "../../../../../components/ItemIcon";
@@ -116,43 +117,74 @@ const StyledDragAndDrop = styled(DragAndDrop)`
   display: contents;
 `;
 
-const StyledShare = styled.div`
-  cursor: pointer;
-  margin: 0 auto;
+const StyledBadgesContainer = styled.div`
+  margin-left: 8px;
 
-  .share-button-icon {
-    padding: 4px;
-    border: 1px solid transparent;
-    border-radius: 3px;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-
-    :hover {
-      border: 1px solid #a3a9ae;
-      svg {
-        cursor: pointer;
-      }
+  .can-convert:hover {
+    path {
+      fill: #3b72a7;
     }
   }
-`;
-
-const StyledBadgesContainer = styled.div`
-  display: flex;
-  align-items: center;
-  height: 19px;
-  margin-left: 8px;
 
   .badges {
     display: flex;
     align-items: center;
-    height: 19px;
     margin-right: 12px;
+  }
+
+  .badges:last-child {
+    margin-left: 0px;
   }
 
   .badge {
     cursor: pointer;
-    height: 14px;
-    width: 14px;
-    margin-right: 6px;
+    margin-right: 8px;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+
+  .new-items {
+    min-width: 12px;
+    width: max-content;
+    margin: 1px -2px -2px -2px;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+
+  .badge-version {
+    min-width: 21px;
+    margin: -2px;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+`;
+
+const StyledQuickButtonsContainer = styled.div`
+  width: 100%;
+
+  .badges {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .badge {
+    margin-right: 14px;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+
+  .badge:last-child {
+    margin-right: 10px;
+  }
+
+  .lock-file {
+    svg {
+      height: 12px;
+    }
+  }
+
+  .share-button-icon:hover {
+    cursor: pointer;
+    path {
+      fill: #3b72a7;
+    }
   }
 `;
 
@@ -172,23 +204,12 @@ const FilesTableRow = (props) => {
     isDragging,
     onDrop,
     onMouseDown,
-    showShare,
     personal,
     isActive,
     onHideContextMenu,
     onFilesClick,
+    quickButtonsComponent,
   } = props;
-
-  const sharedButton =
-    item.canShare && showShare ? (
-      <SharedButton
-        t={t}
-        id={item.id}
-        shared={item.shared}
-        isFolder={item.isFolder}
-        isSmallIcon={true}
-      />
-    ) : null;
 
   const element = (
     <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
@@ -278,7 +299,9 @@ const FilesTableRow = (props) => {
         </TableCell>
 
         <TableCell {...dragStyles} {...selectionProp}>
-          <StyledShare>{sharedButton}</StyledShare>
+          <StyledQuickButtonsContainer>
+            {quickButtonsComponent}
+          </StyledQuickButtonsContainer>
         </TableCell>
       </StyledTableRow>
     </StyledDragAndDrop>
@@ -287,6 +310,10 @@ const FilesTableRow = (props) => {
 
 export default withTranslation("Home")(
   withFileActions(
-    withRouter(withContextOptions(withContent(withBadges(FilesTableRow))))
+    withRouter(
+      withContextOptions(
+        withContent(withQuickButtons(withBadges(FilesTableRow)))
+      )
+    )
   )
 );
