@@ -139,20 +139,17 @@ const StyledBadgesContainer = styled.div`
   .badge {
     cursor: pointer;
     margin-right: 8px;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
 
   .new-items {
     min-width: 12px;
     width: max-content;
     margin: 1px -2px -2px -2px;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
 
   .badge-version {
     min-width: 21px;
     margin: -2px;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
 `;
 
@@ -167,7 +164,6 @@ const StyledQuickButtonsContainer = styled.div`
 
   .badge {
     margin-right: 14px;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
 
   .badge:last-child {
@@ -185,6 +181,7 @@ const StyledQuickButtonsContainer = styled.div`
     path {
       fill: #3b72a7;
     }
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
 `;
 
