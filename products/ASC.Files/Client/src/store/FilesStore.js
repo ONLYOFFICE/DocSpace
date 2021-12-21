@@ -519,7 +519,7 @@ class FilesStore {
     const canConvert = false; //TODO: fix of added convert check;
     const isEncrypted = item.encrypted;
     const isDocuSign = false; //TODO: need this prop;
-    const isEditing = false; //TODO: need this prop;
+    const isEditing = item.fileStatus === 1;
     const isFileOwner = item.createdBy.id === this.userStore.user.id;
 
     const {
@@ -618,6 +618,7 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, [
           "finalize-version",
           "move-to",
+          "separator2",
           "delete",
         ]);
         if (isThirdPartyFolder) {
@@ -1269,6 +1270,7 @@ class FilesStore {
         : null;
 
       const needConvert = canConvert(fileExst);
+      const isEditing = item.fileStatus === 1;
 
       const docUrl = combineUrl(
         AppServerConfig.proxyURL,
@@ -1328,6 +1330,7 @@ class FilesStore {
         folderUrl,
         href,
         isThirdPartyFolder,
+        isEditing,
       };
     });
 
@@ -1533,6 +1536,16 @@ class FilesStore {
   get isEmptyFilesList() {
     const filesList = [...this.files, ...this.folders];
     return filesList.length <= 0;
+  }
+
+  get allFilesIsEditing() {
+    const hasFolders = this.selection.find(
+      (x) => !x.fileExst || !x.contentLength
+    );
+    if (!hasFolders) {
+      return this.selection.every((x) => x.isEditing);
+    }
+    return false;
   }
 
   getOptions = (selection, externalAccess = false) => {

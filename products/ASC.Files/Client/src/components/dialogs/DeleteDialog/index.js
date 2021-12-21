@@ -20,7 +20,12 @@ class DeleteDialogComponent extends React.Component {
 
     let i = 0;
     while (props.selection.length !== i) {
-      if (!(props.isRootFolder && props.selection[i].providerKey)) {
+      if (
+        !(
+          (props.isRootFolder && props.selection[i].providerKey) ||
+          props.selection[i].isEditing
+        )
+      ) {
         if (
           props.selection[i].access === 0 ||
           props.selection[i].access === 1 ||
