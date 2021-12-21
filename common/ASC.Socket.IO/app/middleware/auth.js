@@ -5,7 +5,7 @@ const portalManager = require("../portalManager.js");
 module.exports = (socket, next) => {
   const req = socket.client.request;
   const session = socket.handshake.session;
-  const cookie = req.cookies["asc_auth_key"];
+  const cookie = req.cookies["asc_auth_key"] || req.headers["authorization"];
 
   if (!req.cookies || !cookie) {
     socket.disconnect("unauthorized");
