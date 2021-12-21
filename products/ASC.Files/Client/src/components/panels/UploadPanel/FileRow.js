@@ -1,16 +1,15 @@
-import React, { useState, useEffect, Component } from "react";
+import React, { Component } from "react";
 import styled, { css } from "styled-components";
-import Tooltip from "@appserver/components/tooltip";
 import Row from "@appserver/components/row";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import LoadingButton from "./LoadingButton";
 import ShareButton from "./ShareButton";
-import LoadErrorIcon from "../../../../public/images/load.error.react.svg";
 import IconButton from "@appserver/components/icon-button";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import PasswordInput from "./PasswordInput";
+import ErrorFileUpload from "./ErrorFileUpload.js";
 
 const StyledFileRow = styled(Row)`
   /* margin: 0 16px; */
@@ -101,10 +100,6 @@ const StyledFileRow = styled(Row)`
       `}
   }
 `;
-const StyledLoadErrorIcon = styled(LoadErrorIcon)`
-  outline: none !important;
-`;
-
 class FileRow extends Component {
   constructor(props) {
     super(props);
@@ -112,12 +107,8 @@ class FileRow extends Component {
     this.state = {
       showPasswordInput: false,
     };
-    console.log("constructor");
   }
 
-  componentWillUnmount() {
-    console.log("unmount");
-  }
   onTextClick = () => {
     const { showPasswordInput } = this.state;
     const { updateRowsHeight, index } = this.props;
@@ -125,7 +116,6 @@ class FileRow extends Component {
     const newState = !showPasswordInput;
 
     this.setState({ showPasswordInput: newState }, () => {
-      console.log("newState", newState);
       updateRowsHeight(index, newState);
     });
   };
@@ -253,43 +243,7 @@ class FileRow extends Component {
                 )}
               </>
             ) : item.error || (!item.fileId && uploaded) ? (
-              <>
-                <div className="upload_panel-icon">
-                  {item.needPassword && (
-                    <Text
-                      className="enter-password"
-                      fontWeight="600"
-                      color="#A3A9AE"
-                      onClick={this.onTextClick}
-                    >
-                      {"Enter Password"}
-                    </Text>
-                  )}
-                  <StyledLoadErrorIcon
-                    size="medium"
-                    data-for="errorTooltip"
-                    data-tip={item.error || t("Common:UnknownError")}
-                  />
-                  <Tooltip
-                    id="errorTooltip"
-                    offsetTop={0}
-                    getContent={(dataTip) => (
-                      <Text fontSize="13px" noSelect>
-                        {dataTip}
-                      </Text>
-                    )}
-                    effect="float"
-                    place="left"
-                    maxWidth={320}
-                    color="#f8f7bf"
-                  />
-                  {showPasswordInput && (
-                    <div className="password-input">
-                      <PasswordInput />
-                    </div>
-                  )}
-                </div>
-              </>
+              <ErrorFileUpload item={item} onTextClick={this.onTextClick} />
             ) : (
               <div
                 className="upload_panel-icon"
@@ -297,6 +251,11 @@ class FileRow extends Component {
                 onClick={this.onCancelCurrentUpload}
               >
                 <LoadingButton percent={currentFileUploadProgress} />
+              </div>
+            )}
+            {showPasswordInput && (
+              <div className="password-input">
+                <PasswordInput />
               </div>
             )}
           </>
