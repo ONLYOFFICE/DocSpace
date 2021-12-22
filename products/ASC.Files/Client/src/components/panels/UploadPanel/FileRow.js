@@ -155,12 +155,7 @@ class FileRow extends Component {
     } = this.props;
     const { showPasswordInput } = this.state;
 
-    console.log(
-      "render file row",
-      index,
-      "showPasswordInput",
-      showPasswordInput
-    );
+    console.log("render file row", index, "item", item);
 
     return (
       <>
@@ -232,7 +227,7 @@ class FileRow extends Component {
             )}
             {showPasswordInput && (
               <div className="password-input">
-                <PasswordInput />
+                <PasswordInput item={item} onHideInput={this.onTextClick} />
               </div>
             )}
           </>
