@@ -550,8 +550,8 @@ export function getNewFiles(folderId) {
   });
 }
 
-export function convertFile(fileId, sync = false) {
-  const data = { sync };
+export function convertFile(fileId, password = null, sync = false) {
+  const data = { password, sync };
 
   return request({
     method: "put",
