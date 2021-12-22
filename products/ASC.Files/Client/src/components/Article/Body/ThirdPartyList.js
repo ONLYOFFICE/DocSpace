@@ -1,20 +1,25 @@
-import React from "react";
-import styled from "styled-components";
-import Link from "@appserver/components/link";
-import { withTranslation } from "react-i18next";
+import React from 'react';
+import styled from 'styled-components';
+import Link from '@appserver/components/link';
+import { withTranslation } from 'react-i18next';
 
-import { inject, observer } from "mobx-react";
-import { withRouter } from "react-router";
-import { combineUrl } from "@appserver/common/utils";
-import { AppServerConfig } from "@appserver/common/constants";
-import config from "../../../../package.json";
-import withLoader from "../../../HOCs/withLoader";
-import { useCallback } from "react";
-import IconButton from "@appserver/components/icon-button";
-import { connectedCloudsTitleTranslation } from "../../../helpers/utils";
+import { inject, observer } from 'mobx-react';
+import { withRouter } from 'react-router';
+import { combineUrl } from '@appserver/common/utils';
+import { AppServerConfig } from '@appserver/common/constants';
+import config from '../../../../package.json';
+import withLoader from '../../../HOCs/withLoader';
+import { useCallback } from 'react';
+import IconButton from '@appserver/components/icon-button';
+import { connectedCloudsTitleTranslation } from '../../../helpers/utils';
+import { Base } from '@appserver/components/themes';
 
 const StyledThirdParty = styled.div`
   margin-top: 42px;
+
+  .thirdparty-text {
+    color: ${(props) => props.theme.filesArticleBody.thirdPartyList.linkColor};
+  }
 
   .tree-thirdparty-list {
     padding-top: 3px;
@@ -31,7 +36,7 @@ const StyledThirdParty = styled.div`
       //background: #eceef1;
       //text-align: center;
       margin-right: 10px;
-      color: #818b91;
+      color: ${(props) => props.theme.filesArticleBody.thirdPartyList.color};
       :first-of-type {
         border-radius: 3px 0 0 3px;
       }
@@ -66,23 +71,23 @@ const StyledThirdParty = styled.div`
   }
 `;
 
+StyledThirdParty.defaultProps = { theme: Base };
+
 const iconButtonProps = {
-  color: "#A3A9AE",
-  hoverColor: "#818b91",
   size: 25,
-  className: "icon",
+  className: 'icon',
 };
 
 const ServiceItem = (props) => {
   const { capability, src, ...rest } = props;
 
   const capabilityName = capability[0];
-  const capabilityLink = capability.length > 1 ? capability[1] : "";
+  const capabilityLink = capability.length > 1 ? capability[1] : '';
 
   const dataProps = {
-    "data-link": capabilityLink,
-    "data-title": capabilityName,
-    "data-key": capabilityName,
+    'data-link': capabilityLink,
+    'data-title': capabilityName,
+    'data-key': capabilityName,
   };
 
   return (
@@ -110,13 +115,11 @@ const PureThirdPartyListContainer = ({
   history,
 }) => {
   const redirectAction = () => {
-    const thirdPartyUrl = "/settings/thirdParty";
+    const thirdPartyUrl = '/settings/thirdParty';
     if (history.location.pathname.indexOf(thirdPartyUrl) === -1) {
-      setSelectedNode(["thirdParty"]);
+      setSelectedNode(['thirdParty']);
       setSelectedFolder(null);
-      return history.push(
-        combineUrl(AppServerConfig.proxyURL, config.homepage, thirdPartyUrl)
-      );
+      return history.push(combineUrl(AppServerConfig.proxyURL, config.homepage, thirdPartyUrl));
     }
   };
 
@@ -124,11 +127,7 @@ const PureThirdPartyListContainer = ({
     const data = e.currentTarget.dataset;
 
     if (data.link) {
-      let authModal = window.open(
-        "",
-        "Authorization",
-        "height=600, width=1020"
-      );
+      let authModal = window.open('', 'Authorization', 'height=600, width=1020');
       openConnectWindow(data.title, authModal)
         .then(() => redirectAction())
         .then((modal) =>
@@ -142,7 +141,7 @@ const PureThirdPartyListContainer = ({
             };
             setConnectItem(serviceData);
             setConnectDialogVisible(true);
-          })
+          }),
         )
         .catch((e) => console.error(e));
     } else {
@@ -161,12 +160,11 @@ const PureThirdPartyListContainer = ({
   return (
     <StyledThirdParty>
       <Link
-        color="#555F65"
+        className="thirdparty-text"
         fontSize="14px"
         fontWeight={600}
-        onClick={onShowConnectPanel}
-      >
-        {t("Translations:AddAccount")}
+        onClick={onShowConnectPanel}>
+        {t('Translations:AddAccount')}
       </Link>
       <div className="tree-thirdparty-list">
         {googleConnectItem && (
@@ -222,19 +220,12 @@ const PureThirdPartyListContainer = ({
   );
 };
 
-const ThirdPartyList = withTranslation(["Article", "Translations"])(
-  withRouter(withLoader(PureThirdPartyListContainer)(<></>))
+const ThirdPartyList = withTranslation(['Article', 'Translations'])(
+  withRouter(withLoader(PureThirdPartyListContainer)(<></>)),
 );
 
 export default inject(
-  ({
-    filesStore,
-    auth,
-    settingsStore,
-    treeFoldersStore,
-    selectedFolderStore,
-    dialogsStore,
-  }) => {
+  ({ filesStore, auth, settingsStore, treeFoldersStore, selectedFolderStore, dialogsStore }) => {
     const { setIsLoading } = filesStore;
     const { setSelectedFolder } = selectedFolderStore;
     const { setSelectedNode } = treeFoldersStore;
@@ -250,11 +241,7 @@ export default inject(
 
     const { getOAuthToken } = auth.settingsStore;
 
-    const {
-      setConnectItem,
-      setConnectDialogVisible,
-      setThirdPartyDialogVisible,
-    } = dialogsStore;
+    const { setConnectItem, setConnectDialogVisible, setThirdPartyDialogVisible } = dialogsStore;
     return {
       googleConnectItem,
       boxConnectItem,
@@ -272,5 +259,5 @@ export default inject(
       openConnectWindow,
       setThirdPartyDialogVisible,
     };
-  }
+  },
 )(observer(ThirdPartyList));

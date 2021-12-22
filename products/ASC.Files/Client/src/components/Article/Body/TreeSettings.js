@@ -1,19 +1,20 @@
-import React, { useEffect } from "react";
-import { withRouter } from "react-router";
-import TreeMenu from "@appserver/components/tree-menu";
-import TreeNode from "@appserver/components/tree-menu/sub-components/tree-node";
-import styled from "styled-components";
-import { withTranslation } from "react-i18next";
-import { inject, observer } from "mobx-react";
-import SettingsIcon from "../../../../../../../public/images/settings.react.svg";
-import ExpanderDownIcon from "../../../../../../../public/images/expander-down.react.svg";
-import ExpanderRightIcon from "../../../../../../../public/images/expander-right.react.svg";
-import commonIconsStyles from "@appserver/components/utils/common-icons-style";
-import config from "../../../../package.json";
-import { combineUrl } from "@appserver/common/utils";
-import { AppServerConfig } from "@appserver/common/constants";
-import Loaders from "@appserver/common/components/Loaders";
-import withLoader from "../../../HOCs/withLoader";
+import React, { useEffect } from 'react';
+import { withRouter } from 'react-router';
+import TreeMenu from '@appserver/components/tree-menu';
+import TreeNode from '@appserver/components/tree-menu/sub-components/tree-node';
+import styled from 'styled-components';
+import { withTranslation } from 'react-i18next';
+import { inject, observer } from 'mobx-react';
+import SettingsIcon from '../../../../../../../public/images/settings.react.svg';
+import ExpanderDownIcon from '../../../../../../../public/images/expander-down.react.svg';
+import ExpanderRightIcon from '../../../../../../../public/images/expander-right.react.svg';
+import commonIconsStyles from '@appserver/components/utils/common-icons-style';
+import config from '../../../../package.json';
+import { combineUrl } from '@appserver/common/utils';
+import { AppServerConfig } from '@appserver/common/constants';
+import Loaders from '@appserver/common/components/Loaders';
+import withLoader from '../../../HOCs/withLoader';
+import Base from '@appserver/components/themes/base';
 
 const StyledTreeMenu = styled(TreeMenu)`
   margin-top: 18px !important;
@@ -26,7 +27,7 @@ const StyledTreeMenu = styled(TreeMenu)`
   }
 
   .rc-tree-node-selected {
-    background: #dfe2e3 !important;
+    background: ${(props) => props.theme.filesArticleBody.background} !important;
   }
 
   .rc-tree-treenode-disabled > span:not(.rc-tree-switcher),
@@ -54,24 +55,30 @@ const StyledTreeMenu = styled(TreeMenu)`
     }
   }
 `;
+
+StyledTreeMenu.defaultProps = { theme: Base };
+
 const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
   ${commonIconsStyles}
   path {
-    fill: dimgray;
+    fill: ${(props) => props.theme.filesArticleBody.expanderColor};
   }
 `;
+StyledExpanderDownIcon.defaultProps = { theme: Base };
 const StyledExpanderRightIcon = styled(ExpanderRightIcon)`
   ${commonIconsStyles}
   path {
-    fill: dimgray;
+    fill: ${(props) => props.theme.filesArticleBody.expanderColor};
   }
 `;
+StyledExpanderRightIcon.defaultProps = { theme: Base };
 const StyledSettingsIcon = styled(SettingsIcon)`
   ${commonIconsStyles}
   path {
-    fill: dimgray;
+    fill: ${(props) => props.theme.filesArticleBody.expanderColor};
   }
 `;
+StyledSettingsIcon.defaultProps = { theme: Base };
 const PureTreeSettings = ({
   match,
   enableThirdParty,
@@ -100,7 +107,7 @@ const PureTreeSettings = ({
 
   useEffect(() => {
     const { setting } = match.params;
-    if (setting && !expandedSetting) setExpandSettingsTree(["settings"]);
+    if (setting && !expandedSetting) setExpandSettingsTree(['settings']);
   }, [match, expandedSetting, setExpandSettingsTree]);
 
   const switcherIcon = (obj) => {
@@ -120,27 +127,18 @@ const PureTreeSettings = ({
     //if (selectedFolder) setSelectedFolder({});
     setSelectedFolder(null); //getSelectedTreeNode
 
-    if (path === "settings") {
-      setSelectedNode(["common"]);
-      if (!expandedSetting || expandedSetting[0] !== "settings")
-        setExpandSettingsTree(section);
+    if (path === 'settings') {
+      setSelectedNode(['common']);
+      if (!expandedSetting || expandedSetting[0] !== 'settings') setExpandSettingsTree(section);
       return history.push(
-        combineUrl(
-          AppServerConfig.proxyURL,
-          config.homepage,
-          "/settings/common"
-        )
+        combineUrl(AppServerConfig.proxyURL, config.homepage, '/settings/common'),
       );
     }
 
     if (selectedTreeNode[0] !== path) {
       setSelectedNode(section);
       return history.push(
-        combineUrl(
-          AppServerConfig.proxyURL,
-          config.homepage,
-          `/settings/${path}`
-        )
+        combineUrl(AppServerConfig.proxyURL, config.homepage, `/settings/${path}`),
       );
     }
   };
@@ -154,17 +152,16 @@ const PureTreeSettings = ({
       <TreeNode
         id="settings" //does not work
         key="settings"
-        title={t("Common:Settings")}
+        title={t('Common:Settings')}
         isLeaf={false}
         icon={<StyledSettingsIcon size="scale" />}
-        className="tree-settings"
-      >
+        className="tree-settings">
         <TreeNode
           className="settings-node common-settings"
           id="common-settings" //does not work
           key="common"
           isLeaf={true}
-          title={t("CommonSettings")}
+          title={t('CommonSettings')}
         />
         {isAdmin ? (
           <TreeNode
@@ -172,7 +169,7 @@ const PureTreeSettings = ({
             id="admin-settings" //does not work
             key="admin"
             isLeaf={true}
-            title={t("Common:AdminSettings")}
+            title={t('Common:AdminSettings')}
           />
         ) : null}
         {enableThirdParty && !isVisitor && !isDesktop ? (
@@ -182,7 +179,7 @@ const PureTreeSettings = ({
             id="connected-clouds" //does not work
             key="thirdParty"
             isLeaf={true}
-            title={t("ThirdPartySettings")}
+            title={t('ThirdPartySettings')}
           />
         ) : null}
       </TreeNode>
@@ -204,33 +201,22 @@ const PureTreeSettings = ({
       onExpand={onExpand}
       isFullFillSelection={false}
       gapBetweenNodes="22"
-      gapBetweenNodesTablet="26"
-    >
+      gapBetweenNodesTablet="26">
       {nodes}
     </StyledTreeMenu>
   );
 };
 
-const TreeSettings = withTranslation(["Settings", "Common"])(
-  withRouter(withLoader(PureTreeSettings)(<></>))
+const TreeSettings = withTranslation(['Settings', 'Common'])(
+  withRouter(withLoader(PureTreeSettings)(<></>)),
 );
 
 export default inject(
-  ({
-    auth,
-    filesStore,
-    settingsStore,
-    treeFoldersStore,
-    selectedFolderStore,
-  }) => {
+  ({ auth, filesStore, settingsStore, treeFoldersStore, selectedFolderStore }) => {
     const { setIsLoading, isLoading } = filesStore;
     const { setSelectedFolder } = selectedFolderStore;
     const { selectedTreeNode, setSelectedNode } = treeFoldersStore;
-    const {
-      enableThirdParty,
-      expandedSetting,
-      setExpandSettingsTree,
-    } = settingsStore;
+    const { enableThirdParty, expandedSetting, setExpandSettingsTree } = settingsStore;
 
     return {
       isAdmin: auth.isAdmin,
@@ -246,5 +232,5 @@ export default inject(
       setExpandSettingsTree,
       isDesktop: auth.settingsStore.isDesktopClient,
     };
-  }
+  },
 )(observer(TreeSettings));

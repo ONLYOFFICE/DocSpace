@@ -1742,9 +1742,24 @@ const Dark = {
     pinBorderColor: "#474747",
   },
 
+  filesArticleBody: {
+    background: "#333333",
+    fill: "#C4C4C4",
+    expanderColor: "#C4C4C4",
+
+    downloadAppList: {
+      color: "#C4C4C4",
+    },
+
+    thirdPartyList: {
+      color: "#818b91",
+      linkColor: "#DDDDDD",
+    },
+  },
+
   peopleArticleBody: {
-    iconColor: "#a9a9a9",
-    expanderColor: "dimgray",
+    iconColor: "#C4C4C4",
+    expanderColor: "#C4C4C4",
   },
 
   peopleTableRow: {

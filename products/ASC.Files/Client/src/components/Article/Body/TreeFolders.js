@@ -1,32 +1,33 @@
-import React from "react";
-import TreeMenu from "@appserver/components/tree-menu";
-import TreeNode from "@appserver/components/tree-menu/sub-components/tree-node";
-import styled from "styled-components";
-import { FolderType, ShareAccessRights } from "@appserver/common/constants";
-import toastr from "studio/toastr";
+import React from 'react';
+import TreeMenu from '@appserver/components/tree-menu';
+import TreeNode from '@appserver/components/tree-menu/sub-components/tree-node';
+import styled from 'styled-components';
+import { FolderType, ShareAccessRights } from '@appserver/common/constants';
+import toastr from 'studio/toastr';
 
-import { onConvertFiles } from "../../../helpers/files-converter";
-import { ReactSVG } from "react-svg";
-import ExpanderDownIcon from "../../../../../../../public/images/expander-down.react.svg";
-import ExpanderRightIcon from "../../../../../../../public/images/expander-right.react.svg";
-import commonIconsStyles from "@appserver/components/utils/common-icons-style";
-import withLoader from "../../../HOCs/withLoader";
-import Loaders from "@appserver/common/components/Loaders";
+import { onConvertFiles } from '../../../helpers/files-converter';
+import { ReactSVG } from 'react-svg';
+import ExpanderDownIcon from '../../../../../../../public/images/expander-down.react.svg';
+import ExpanderRightIcon from '../../../../../../../public/images/expander-right.react.svg';
+import commonIconsStyles from '@appserver/components/utils/common-icons-style';
+import withLoader from '../../../HOCs/withLoader';
+import Loaders from '@appserver/common/components/Loaders';
 
-import { observer, inject } from "mobx-react";
-import { runInAction } from "mobx";
-import { withTranslation } from "react-i18next";
+import { observer, inject } from 'mobx-react';
+import { runInAction } from 'mobx';
+import { withTranslation } from 'react-i18next';
+import Base from '@appserver/components/themes/base';
 
-const backgroundDragColor = "#EFEFB2";
-const backgroundDragEnterColor = "#F8F7BF";
+const backgroundDragColor = '#EFEFB2';
+const backgroundDragEnterColor = '#F8F7BF';
 
 const StyledTreeMenu = styled(TreeMenu)`
   .rc-tree-node-content-wrapper {
-    background: ${(props) => !props.dragging && "none !important"};
+    background: ${(props) => !props.dragging && 'none !important'};
   }
 
   .rc-tree-node-selected {
-    background: #dfe2e3 !important;
+    background: ${(props) => props.theme.filesArticleBody.background} !important;
   }
 
   .rc-tree-treenode-disabled > span:not(.rc-tree-switcher),
@@ -39,27 +40,37 @@ const StyledTreeMenu = styled(TreeMenu)`
     margin-left: 4px;
   }*/
 `;
+
+StyledTreeMenu.defaultProps = { theme: Base };
+
 const StyledFolderSVG = styled.div`
   svg {
     width: 100%;
 
     path {
-      fill: #657077;
+      fill: ${(props) => props.theme.filesArticleBody.fill};
     }
   }
 `;
+
+StyledFolderSVG.defaultProps = { theme: Base };
+
 const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
   ${commonIconsStyles}
   path {
-    fill: dimgray;
+    fill: ${(props) => props.theme.filesArticleBody.expanderColor};
   }
 `;
+StyledExpanderDownIcon.defaultProps = { theme: Base };
+
 const StyledExpanderRightIcon = styled(ExpanderRightIcon)`
   ${commonIconsStyles}
   path {
-    fill: dimgray;
+    fill: ${(props) => props.theme.filesArticleBody.expanderColor};
   }
 `;
+StyledExpanderRightIcon.defaultProps = { theme: Base };
+
 class TreeFolders extends React.Component {
   constructor(props) {
     super(props);
@@ -74,67 +85,66 @@ class TreeFolders extends React.Component {
   };
 
   getFolderIcon = (item) => {
-    let iconUrl = "images/catalog.folder.react.svg";
+    let iconUrl = 'images/catalog.folder.react.svg';
 
     switch (item.rootFolderType) {
       case FolderType.USER:
-        iconUrl = "/static/images/catalog.user.react.svg";
+        iconUrl = '/static/images/catalog.user.react.svg';
         break;
       case FolderType.SHARE:
-        iconUrl = "/static/images/catalog.share.react.svg";
+        iconUrl = '/static/images/catalog.share.react.svg';
         break;
       case FolderType.COMMON:
-        iconUrl = "/static/images/catalog.portfolio.react.svg";
+        iconUrl = '/static/images/catalog.portfolio.react.svg';
         break;
       case FolderType.Favorites:
-        iconUrl = "/static/images/catalog.favorites.react.svg";
+        iconUrl = '/static/images/catalog.favorites.react.svg';
         break;
       case FolderType.Recent:
-        iconUrl = "/static/images/catalog.recent.react.svg";
+        iconUrl = '/static/images/catalog.recent.react.svg';
         break;
       case FolderType.Privacy:
-        iconUrl = "/static/images/catalog.private.react.svg";
+        iconUrl = '/static/images/catalog.private.react.svg';
         break;
       case FolderType.TRASH:
-        iconUrl = "/static/images/catalog.trash.react.svg";
+        iconUrl = '/static/images/catalog.trash.react.svg';
         break;
       default:
         break;
     }
 
-    if (item.parentId !== 0)
-      iconUrl = "/static/images/catalog.folder.react.svg";
+    if (item.parentId !== 0) iconUrl = '/static/images/catalog.folder.react.svg';
 
     switch (item.providerKey) {
-      case "GoogleDrive":
-        iconUrl = "/static/images/cloud.services.google.drive.react.svg";
+      case 'GoogleDrive':
+        iconUrl = '/static/images/cloud.services.google.drive.react.svg';
         break;
-      case "Box":
-        iconUrl = "/static/images/cloud.services.box.react.svg";
+      case 'Box':
+        iconUrl = '/static/images/cloud.services.box.react.svg';
         break;
-      case "DropboxV2":
-        iconUrl = "/static/images/cloud.services.dropbox.react.svg";
+      case 'DropboxV2':
+        iconUrl = '/static/images/cloud.services.dropbox.react.svg';
         break;
-      case "OneDrive":
-        iconUrl = "/static/images/cloud.services.onedrive.react.svg";
+      case 'OneDrive':
+        iconUrl = '/static/images/cloud.services.onedrive.react.svg';
         break;
-      case "SharePoint":
-        iconUrl = "/static/images/cloud.services.onedrive.react.svg";
+      case 'SharePoint':
+        iconUrl = '/static/images/cloud.services.onedrive.react.svg';
         break;
-      case "kDrive":
-        iconUrl = "/static/images/cloud.services.kdrive.react.svg";
+      case 'kDrive':
+        iconUrl = '/static/images/cloud.services.kdrive.react.svg';
         break;
-      case "Yandex":
-        iconUrl = "/static/images/cloud.services.yandex.react.svg";
+      case 'Yandex':
+        iconUrl = '/static/images/cloud.services.yandex.react.svg';
         break;
-      case "NextCloud":
-        iconUrl = "/static/images/cloud.services.nextcloud.react.svg";
+      case 'NextCloud':
+        iconUrl = '/static/images/cloud.services.nextcloud.react.svg';
         break;
-      case "OwnCloud":
-        iconUrl = "/static/images/catalog.folder.react.svg";
+      case 'OwnCloud':
+        iconUrl = '/static/images/catalog.folder.react.svg';
         break;
-      case "WebDav":
-        iconUrl = "/static/images/cloud.services.webdav.react.svg";
+      case 'WebDav':
+        iconUrl = '/static/images/cloud.services.webdav.react.svg';
         break;
       default:
         break;
@@ -160,25 +170,20 @@ class TreeFolders extends React.Component {
       return false;
     }
 
-    if (!draggableItems || draggableItems.find((x) => x.id === item.id))
-      return false;
+    if (!draggableItems || draggableItems.find((x) => x.id === item.id)) return false;
 
     // const isMy = rootFolderType === FolderType.USER;
     // const isCommon = rootFolderType === FolderType.COMMON;
     // const isShare = rootFolderType === FolderType.SHARE;
 
-    if (
-      item.rootFolderType === FolderType.SHARE &&
-      item.access === ShareAccessRights.FullAccess
-    ) {
+    if (item.rootFolderType === FolderType.SHARE && item.access === ShareAccessRights.FullAccess) {
       return true;
     }
 
     if (isAdmin) {
       //if (isMy || isCommon || isShare) {
       if (
-        (item.pathParts &&
-          (item.pathParts[0] === myId || item.pathParts[0] === commonId)) ||
+        (item.pathParts && (item.pathParts[0] === myId || item.pathParts[0] === commonId)) ||
         item.rootFolderType === FolderType.USER ||
         item.rootFolderType === FolderType.COMMON
       ) {
@@ -204,9 +209,7 @@ class TreeFolders extends React.Component {
     return data.map((item) => {
       const dragging = this.props.dragging ? this.showDragItems(item) : false;
 
-      const showBadge = item.newItems
-        ? item.newItems > 0 && this.props.needUpdate
-        : false;
+      const showBadge = item.newItems ? item.newItems > 0 && this.props.needUpdate : false;
 
       const provider = item.providerKey;
 
@@ -214,7 +217,7 @@ class TreeFolders extends React.Component {
 
       if (withoutProvider && provider) return;
 
-      let value = "";
+      let value = '';
       if (dragging) value = `${item.id} dragging`;
 
       if ((item.folders && item.folders.length > 0) || serviceFolder) {
@@ -228,21 +231,16 @@ class TreeFolders extends React.Component {
             icon={this.getFolderIcon(item)}
             dragging={dragging}
             isLeaf={
-              item.rootFolderType === FolderType.Privacy &&
-              !this.props.isDesktop
-                ? true
-                : null
+              item.rootFolderType === FolderType.Privacy && !this.props.isDesktop ? true : null
             }
             newItems={
-              !this.props.isDesktop &&
-              item.rootFolderType === FolderType.Privacy
+              !this.props.isDesktop && item.rootFolderType === FolderType.Privacy
                 ? null
                 : item.newItems
             }
             providerKey={item.providerKey}
             onBadgeClick={this.onBadgeClick}
-            showBadge={showBadge}
-          >
+            showBadge={showBadge}>
             {item.rootFolderType === FolderType.Privacy && !this.props.isDesktop
               ? null
               : this.getItems(item.folders ? item.folders : [])}
@@ -259,8 +257,7 @@ class TreeFolders extends React.Component {
           needTopMargin={item.rootFolderType === FolderType.TRASH}
           dragging={dragging}
           isLeaf={
-            (item.rootFolderType === FolderType.Privacy &&
-              !this.props.isDesktop) ||
+            (item.rootFolderType === FolderType.Privacy && !this.props.isDesktop) ||
             !item.foldersCount
               ? true
               : false
@@ -291,7 +288,7 @@ class TreeFolders extends React.Component {
   };
 
   loop = (data, child, pos) => {
-    let newPos = pos.split("-");
+    let newPos = pos.split('-');
     let newData = data;
 
     newPos.shift();
@@ -343,7 +340,7 @@ class TreeFolders extends React.Component {
       const folderIndex = treeNode.props.pos;
       let i = 0;
       for (let item of arrayFolders) {
-        item["key"] = `${folderIndex}-${i}`;
+        item['key'] = `${folderIndex}-${i}`;
         i++;
       }
 
@@ -367,14 +364,12 @@ class TreeFolders extends React.Component {
         const listIds = data.listIds;
         listIds.push(itemId);
 
-        const treeData = certainFolders
-          ? incomingDate
-          : [...this.props.treeFolders];
+        const treeData = certainFolders ? incomingDate : [...this.props.treeFolders];
 
         this.getNewTreeData(treeData, listIds, data.folders, data.level);
         this.props.setTreeFolders(treeData);
       })
-      .catch((err) => console.log("err", err))
+      .catch((err) => console.log('err', err))
       .finally(() => {
         this.setState({ isExpand: false });
         this.props.setIsLoading && this.props.setIsLoading(false);
@@ -396,9 +391,7 @@ class TreeFolders extends React.Component {
 
   onDragOver = (data) => {
     const parentElement = data.event.target.parentElement;
-    const existElement = parentElement.classList.contains(
-      "rc-tree-node-content-wrapper"
-    );
+    const existElement = parentElement.classList.contains('rc-tree-node-content-wrapper');
 
     if (existElement) {
       if (data.node.props.dragging) {
@@ -409,9 +402,7 @@ class TreeFolders extends React.Component {
 
   onDragLeave = (data) => {
     const parentElement = data.event.target.parentElement;
-    const existElement = parentElement.classList.contains(
-      "rc-tree-node-content-wrapper"
-    );
+    const existElement = parentElement.classList.contains('rc-tree-node-content-wrapper');
 
     if (existElement) {
       if (data.node.props.dragging) {
@@ -425,9 +416,7 @@ class TreeFolders extends React.Component {
     const { dragging, id } = data.node.props;
     //if (dragging) {
     setDragging(false);
-    const promise = new Promise((resolve) =>
-      onConvertFiles(data.event, resolve)
-    );
+    const promise = new Promise((resolve) => onConvertFiles(data.event, resolve));
     promise.then((files) => onTreeDrop(files, id));
     //}
   };
@@ -465,8 +454,7 @@ class TreeFolders extends React.Component {
         dragging={dragging}
         gapBetweenNodes="22"
         gapBetweenNodesTablet="26"
-        isFullFillSelection={false}
-      >
+        isFullFillSelection={false}>
         {this.getItems(data || treeFolders)}
       </StyledTreeMenu>
     );
@@ -481,15 +469,9 @@ TreeFolders.defaultProps = {
 export default inject(
   (
     { auth, filesStore, treeFoldersStore, selectedFolderStore },
-    { useDefaultSelectedKeys, selectedKeys }
+    { useDefaultSelectedKeys, selectedKeys },
   ) => {
-    const {
-      selection,
-      setIsLoading,
-      isLoading,
-      dragging,
-      setDragging,
-    } = filesStore;
+    const { selection, setIsLoading, isLoading, dragging, setDragging } = filesStore;
 
     const {
       treeFolders,
@@ -517,9 +499,7 @@ export default inject(
       expandedKeys,
       treeFolders,
       isLoading,
-      selectedKeys: useDefaultSelectedKeys
-        ? treeFoldersStore.selectedKeys
-        : selectedKeys,
+      selectedKeys: useDefaultSelectedKeys ? treeFoldersStore.selectedKeys : selectedKeys,
 
       setDragging,
       setIsLoading,
@@ -528,9 +508,5 @@ export default inject(
       setExpandedPanelKeys,
       getSubfolders,
     };
-  }
-)(
-  withTranslation(["Home", "Common"])(
-    withLoader(observer(TreeFolders))(<Loaders.TreeFolders />)
-  )
-);
+  },
+)(withTranslation(['Home', 'Common'])(withLoader(observer(TreeFolders))(<Loaders.TreeFolders />)));

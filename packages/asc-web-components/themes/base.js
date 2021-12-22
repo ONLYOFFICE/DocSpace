@@ -1742,6 +1742,19 @@ const Base = {
     pinBorderColor: "#eceef1",
   },
 
+  filesArticleBody: {
+    background: "#dfe2e3",
+    fill: "#657077",
+    expanderColor: "dimgray",
+    downloadAppList: {
+      color: "#83888d",
+    },
+    thirdPartyList: {
+      color: "#818b91",
+      linkColor: "#555f65",
+    },
+  },
+
   peopleArticleBody: {
     iconColor: "#657077",
     expanderColor: "dimgray",
