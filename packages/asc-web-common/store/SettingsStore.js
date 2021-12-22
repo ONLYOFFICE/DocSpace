@@ -17,7 +17,7 @@ class SettingsStore {
   currentProductId = '';
   culture = 'en-US';
   cultures = [];
-  theme = Dark;
+  theme = Base;
   trustedDomains = [];
   trustedDomainsType = 0;
   trustedDomains = [];
@@ -352,6 +352,11 @@ class SettingsStore {
     };
 
     if (!this.buildVersionInfo.documentServer) this.buildVersionInfo.documentServer = '6.4.1';
+  };
+
+  changeTheme = () => {
+    const currentTheme = JSON.stringify(this.theme) === JSON.stringify(Base) ? Dark : Base;
+    this.theme = currentTheme;
   };
 }
 

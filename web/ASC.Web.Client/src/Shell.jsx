@@ -434,12 +434,17 @@ const ShellWrapper = inject(({ auth }) => {
   };
 })(observer(Shell));
 
+const ThemeProviderWrapper = inject(({ auth }) => {
+  const { settingsStore } = auth;
+  return { theme: settingsStore.theme };
+})(observer(ThemeProvider));
+
 export default () => (
-  <ThemeProvider theme={Dark}>
-    <MobxProvider {...store}>
-      <I18nextProvider i18n={i18n}>
+  <MobxProvider {...store}>
+    <I18nextProvider i18n={i18n}>
+      <ThemeProviderWrapper>
         <ShellWrapper />
-      </I18nextProvider>
-    </MobxProvider>
-  </ThemeProvider>
+      </ThemeProviderWrapper>
+    </I18nextProvider>
+  </MobxProvider>
 );
