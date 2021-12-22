@@ -1,26 +1,29 @@
 const Endpoints = require('./mocking/endpoints.js');
 const changeCulture = require('./helpers/changeCulture.js');
 const config = require('../../../../config/appsettings.json');
+const ignoringCultures = require('./ignoringCultures.json');
 
 const cultures = config.web.cultures.split(',');
 
 const isModel = !!process.env.MODEL;
 
+const featureName = isModel ? `Files translation(model) ` : `Files translation tests`;
+
+Feature(featureName, { timeout: 90 });
+
 for (const culture of cultures) {
-  const featureName = isModel ? `Files translation(model) ${culture}` : `${culture}`;
-
-  Feature(featureName);
-
   Before(async ({ I }) => {
     I.mockData();
     changeCulture(culture);
   });
 
-  Scenario(`Main page tests ${culture}`, ({ I }) => {
+  Scenario(`Main page test ${culture}`, { timeout: 30 }, ({ I }) => {
+    const isExсeption = ignoringCultures.mainPage.indexOf(culture) != -1;
+
     I.mockEndpoint(Endpoints.root, 'empty');
     I.mockEndpoint(Endpoints.my, 'default');
 
-    if (!isModel) {
+    if (!isModel || isExсeption) {
       I.mockEndpoint(Endpoints.self, `selfTranslation`);
       I.mockEndpoint(Endpoints.settings, `settingsTranslation`);
     }
@@ -38,11 +41,13 @@ for (const culture of cultures) {
     });
   });
 
-  Scenario(`Profile menu tests ${culture}`, ({ I }) => {
+  Scenario(`Profile menu test ${culture}`, { timeout: 30 }, ({ I }) => {
+    const isExсeption = ignoringCultures.profileMenu.indexOf(culture) != -1;
+
     I.mockEndpoint(Endpoints.root, 'empty');
     I.mockEndpoint(Endpoints.my, 'default');
 
-    if (!isModel) {
+    if (!isModel || isExсeption) {
       I.mockEndpoint(Endpoints.self, `selfTranslation`);
       I.mockEndpoint(Endpoints.settings, `settingsTranslation`);
     }
@@ -61,11 +66,13 @@ for (const culture of cultures) {
     });
   });
 
-  Scenario(`Main button tests ${culture}`, ({ I }) => {
+  Scenario(`Main button test ${culture}`, { timeout: 30 }, ({ I }) => {
+    const isExсeption = ignoringCultures.mainButton.indexOf(culture) != -1;
+
     I.mockEndpoint(Endpoints.root, 'empty');
     I.mockEndpoint(Endpoints.my, 'default');
 
-    if (!isModel) {
+    if (!isModel || isExсeption) {
       I.mockEndpoint(Endpoints.self, `selfTranslation`);
       I.mockEndpoint(Endpoints.settings, `settingsTranslation`);
     }
@@ -86,11 +93,13 @@ for (const culture of cultures) {
     });
   });
 
-  Scenario(`Select fields tests ${culture}`, ({ I }) => {
+  Scenario(`Table settings test ${culture}`, { timeout: 30 }, ({ I }) => {
+    const isExсeption = ignoringCultures.tableSettings.indexOf(culture) != -1;
+
     I.mockEndpoint(Endpoints.root, 'empty');
     I.mockEndpoint(Endpoints.my, 'default');
 
-    if (!isModel) {
+    if (!isModel || isExсeption) {
       I.mockEndpoint(Endpoints.self, `selfTranslation`);
       I.mockEndpoint(Endpoints.settings, `settingsTranslation`);
     }
