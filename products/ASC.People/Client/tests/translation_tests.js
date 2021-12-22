@@ -11,13 +11,12 @@ const featureName = isModel ? `People translation(model) ` : `People translation
 
 Feature(featureName, { timeout: 90 });
 
+Before(async ({ I }) => {
+  I.mockData();
+});
 for (const culture of cultures) {
-  Before(async ({ I }) => {
-    I.mockData();
-    changeCulture(culture);
-  });
-
   Scenario(`Main page test ${culture}`, { timeout: 30 }, ({ I }) => {
+    changeCulture(culture);
     const isExсeption = ignoringCultures.mainPage.indexOf(culture) != -1;
 
     I.mockEndpoint(Endpoints.filter, 'many');
@@ -39,6 +38,7 @@ for (const culture of cultures) {
   });
 
   Scenario(`Main button test ${culture}`, { timeout: 30 }, ({ I }) => {
+    changeCulture(culture);
     const isExсeption = ignoringCultures.mainButton.indexOf(culture) != -1;
 
     I.mockEndpoint(Endpoints.filter, 'many');
@@ -65,6 +65,7 @@ for (const culture of cultures) {
   });
 
   Scenario(`Table settings test ${culture}`, { timeout: 30 }, async ({ I }) => {
+    changeCulture(culture);
     const isExсeption = ignoringCultures.tableSettings.indexOf(culture) != -1;
 
     await I.mockEndpoint(Endpoints.filter, 'many');

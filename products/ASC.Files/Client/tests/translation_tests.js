@@ -11,15 +11,15 @@ const featureName = isModel ? `Files translation(model) ` : `Files translation t
 
 Feature(featureName, { timeout: 90 });
 
+Before(async ({ I }) => {
+  I.mockData();
+});
+
 for (const culture of cultures) {
-  Before(async ({ I }) => {
-    I.mockData();
-    changeCulture(culture);
-  });
-
   Scenario(`Main page test ${culture}`, { timeout: 30 }, ({ I }) => {
+    changeCulture(culture);
     const isExсeption = ignoringCultures.mainPage.indexOf(culture) != -1;
-
+    console.log(isExсeption || !isModel, culture);
     I.mockEndpoint(Endpoints.root, 'empty');
     I.mockEndpoint(Endpoints.my, 'default');
 
@@ -42,6 +42,7 @@ for (const culture of cultures) {
   });
 
   Scenario(`Profile menu test ${culture}`, { timeout: 30 }, ({ I }) => {
+    changeCulture(culture);
     const isExсeption = ignoringCultures.profileMenu.indexOf(culture) != -1;
 
     I.mockEndpoint(Endpoints.root, 'empty');
@@ -67,6 +68,7 @@ for (const culture of cultures) {
   });
 
   Scenario(`Main button test ${culture}`, { timeout: 30 }, ({ I }) => {
+    changeCulture(culture);
     const isExсeption = ignoringCultures.mainButton.indexOf(culture) != -1;
 
     I.mockEndpoint(Endpoints.root, 'empty');
