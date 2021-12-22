@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { Icons } from "../icons";
 import isEmpty from "lodash/isEmpty";
 import StyledOuter from "./styled-icon-button";
 import { ReactSVG } from "react-svg";
