@@ -951,6 +951,7 @@ const Base = {
         width: "50%",
         height: "100%",
         margin: "auto",
+        fill: white,
       },
     },
 

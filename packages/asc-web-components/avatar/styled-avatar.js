@@ -49,6 +49,9 @@ const AvatarWrapper = styled.div`
     height: ${(props) =>
       props.theme.avatar.imageContainer.svg.height} !important;
     margin: ${(props) => props.theme.avatar.imageContainer.svg.margin};
+    path {
+      fill: ${(props) => props.theme.avatar.imageContainer.svg.fill};
+    }
   }
 `;
 AvatarWrapper.defaultProps = { theme: Base };

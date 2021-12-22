@@ -936,8 +936,8 @@ const Dark = {
     },
 
     imageContainer: {
-      backgroundImage: blueMain,
-      background: grayMid,
+      backgroundImage: "#606060",
+      background: "#606060",
       borderRadius: "50%",
       height: "100%",
 
@@ -946,6 +946,7 @@ const Dark = {
         width: "50%",
         height: "100%",
         margin: "auto",
+        fill: "#858585",
       },
     },
 
