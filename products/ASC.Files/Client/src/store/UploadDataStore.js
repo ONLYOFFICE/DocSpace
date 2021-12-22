@@ -101,6 +101,11 @@ class UploadDataStore {
     this.uploaded = true;
     this.converted = true;
   };
+  removeFileFromList = (id) => {
+    this.files = this.files.filter((obj) => {
+      return obj.fileId !== id;
+    });
+  };
 
   clearUploadedFiles = () => {
     const uploadData = {
@@ -200,6 +205,9 @@ class UploadDataStore {
   convertFile = (file) => {
     this.dialogsStore.setConvertItem(null);
 
+    const convertWithPassword = file.hasOwnProperty("password");
+    const conversionPositionIndex = file.hasOwnProperty("index");
+
     const alreadyConverting = this.files.some(
       (item) => item.fileId === file.fileId
     );
@@ -207,13 +215,18 @@ class UploadDataStore {
     if (this.converted) {
       this.filesToConversion = [];
       this.convertFilesSize = 0;
-      this.files = this.files.filter((f) => f.action === "converted");
+      if (!convertWithPassword)
+        this.files = this.files.filter((f) => f.action === "converted");
 
       this.primaryProgressDataStore.clearPrimaryProgressData();
     }
 
     if (!alreadyConverting) {
-      this.files.push(file);
+      if (convertWithPassword && conversionPositionIndex) {
+        this.files.splice(file.index, 0, file);
+      } else {
+        this.files.push(file);
+      }
 
       if (!this.filesToConversion.length) {
         this.filesToConversion.push(file);
@@ -278,19 +291,19 @@ class UploadDataStore {
   startConversion = async () => {
     runInAction(() => (this.converted = false));
     this.setConversionPercent(0);
-
+    //debugger;
     let index = 0;
     let len = this.filesToConversion.length;
     let filesToConversion = this.filesToConversion;
 
     while (index < len) {
       const conversionItem = filesToConversion[index];
-      const { fileId, toFolderId } = conversionItem;
-
+      const { fileId, toFolderId, password } = conversionItem;
+      const itemPassword = password ? password : null;
       const file = this.files.find((f) => f.fileId === fileId);
       if (file) runInAction(() => (file.inConversion = true));
 
-      const data = await convertFile(fileId);
+      const data = await convertFile(fileId, itemPassword);
 
       if (data && data[0]) {
         let progress = data[0].progress;
@@ -298,6 +311,7 @@ class UploadDataStore {
         let error = null;
 
         while (progress < 100) {
+          console.log("getConversationProgress");
           const res = await this.getConversationProgress(fileId);
           progress = res && res[0] && res[0].progress;
           fileInfo = res && res[0].result;
@@ -317,7 +331,10 @@ class UploadDataStore {
               if (file) {
                 file.error = error;
                 file.inConversion = false;
-                if (fileInfo === "password") file.needPassword = true;
+                if (fileInfo === "password") {
+                  file.needPassword = true;
+                  // console.log("this.files", this.files);
+                }
               }
             });
 
