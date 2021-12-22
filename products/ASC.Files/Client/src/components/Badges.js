@@ -34,10 +34,6 @@ const Badges = ({
   const isPrivacy = isPrivacyFolder && isDesktopClient;
   const showActionsEdit = isEditing || isEditingWithFav;
 
-  const onSharedVersionClick = () => {
-    onBadgeClick(), onShowVersionHistory();
-  };
-
   const iconEdit = showActionsEdit
     ? "/static/images/file.actions.convert.edit.doc.react.svg"
     : "/static/images/access.edit.react.svg";
@@ -79,7 +75,7 @@ const Badges = ({
           hoverColor="#3B72A7"
         />
       )}
-      {version > 1 && !(showNew || isNewWithFav) && (
+      {version > 1 && (
         <Badge
           className="badge-version tablet-badge icons-group"
           backgroundColor="#A3A9AE"
@@ -95,25 +91,9 @@ const Badges = ({
           data-id={id}
         />
       )}
-      {version > 1 && (showNew || isNewWithFav) && (
+      {(showNew || isNewWithFav) && (
         <Badge
-          className="badge-version tablet-badge icons-group"
-          backgroundColor="#ED7309"
-          borderRadius="11px"
-          color="#FFFFFF"
-          fontSize="9px"
-          fontWeight={800}
-          label={contentBadgeVersion}
-          maxWidth="50px"
-          onClick={onSharedVersionClick}
-          padding="0 3px"
-          lineHeight={lineHeightBadge}
-          data-id={id}
-        />
-      )}
-      {(showNew || isNewWithFav) && !(version > 1) && (
-        <Badge
-          className="badge-version tablet-badge icons-group"
+          className="badge-version badge-new-version tablet-badge icons-group"
           backgroundColor="#ED7309"
           borderRadius="11px"
           color="#FFFFFF"

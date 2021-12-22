@@ -32,7 +32,11 @@ const SimpleFilesRowContent = styled(RowContent)`
 
   .badge-version {
     min-width: 21px;
-    margin: -2px;
+    margin: -2px 6px -2px -2px;
+  }
+
+  .badge-new-version {
+    width: 28px;
   }
 
   ${(props) =>
@@ -51,11 +55,7 @@ const SimpleFilesRowContent = styled(RowContent)`
     .tablet-edit,
     .tablet-refresh {
      margin-top: 6px;
-    }
-
-    .tablet-edit, 
-    .tablet-refresh {
-      margin-right: 24px !important;
+     margin-right: 24px !important;
     }
 
     .badge-version {
@@ -66,6 +66,10 @@ const SimpleFilesRowContent = styled(RowContent)`
     .new-items {
       min-width: 16px;
       margin: 7px 22px 0 0;
+    }
+
+    .badge-new-version {
+      width: 32px;
     }
   `}
 `;
