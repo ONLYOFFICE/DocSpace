@@ -29,18 +29,14 @@ const FileList = ({ uploadDataFiles }) => {
   };
 
   const getSize = (i) => {
-    console.log("getSize", i, rowSizes[i]);
-    console.log("isMobile", isMobile);
-    return rowSizes[i]
-      ? rowSizes[i]
-      : isMobile
-      ? mobileRowHeight
-      : desktopRowHeight;
+    const standardHeight = isMobile ? mobileRowHeight : desktopRowHeight;
+
+    return rowSizes[i] ? rowSizes[i] : standardHeight;
   };
 
   const renderRow = useCallback(({ data, index, style }) => {
     const item = data[index];
-    console.log("rowSizes", rowSizes, index);
+
     return (
       <div style={style}>
         <FileRow item={item} updateRowsHeight={onUpdateHeight} index={index} />
