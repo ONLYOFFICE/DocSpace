@@ -215,6 +215,7 @@ class FileRow extends Component {
                 t={t}
                 item={item}
                 onTextClick={this.onTextClick}
+                showPasswordInput={showPasswordInput}
               />
             ) : (
               <div

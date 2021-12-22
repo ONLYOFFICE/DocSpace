@@ -8,7 +8,7 @@ const StyledLoadErrorIcon = styled(LoadErrorIcon)`
   outline: none !important;
 `;
 
-const ErrorFileUpload = ({ t, item, onTextClick }) => (
+const ErrorFileUpload = ({ t, item, onTextClick, showPasswordInput }) => (
   <>
     <div className="upload_panel-icon">
       <StyledLoadErrorIcon
@@ -36,7 +36,7 @@ const ErrorFileUpload = ({ t, item, onTextClick }) => (
           color="#A3A9AE"
           onClick={onTextClick}
         >
-          {"Enter Password"}
+          {showPasswordInput ? t("HideInput") : t("EnterPassword")}
         </Text>
       )}
     </div>
