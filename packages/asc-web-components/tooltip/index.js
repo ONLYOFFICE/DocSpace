@@ -44,7 +44,7 @@ class Tooltip extends Component {
           id={id}
           ref={reference}
           getContent={getContent}
-          type="light"
+          type="dark"
           effect={effect}
           place={place}
           offset={{
@@ -109,7 +109,6 @@ Tooltip.defaultProps = {
   offsetRight: 0,
   offsetBottom: 0,
   offsetLeft: 0,
-  color: "#f8f7bf",
 };
 
 export default Tooltip;

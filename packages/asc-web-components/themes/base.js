@@ -814,6 +814,7 @@ const Base = {
     padding: "16px",
     pointerEvents: "auto",
     maxWidth: "340px",
+    color: "#f8f7bf",
 
     before: {
       border: "none",

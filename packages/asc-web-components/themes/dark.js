@@ -804,11 +804,12 @@ const Dark = {
 
   tooltip: {
     borderRadius: "6px",
-    boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
+    boxShadow: "0px 12px 24px rgba(0, 0, 0, 0.12)",
     opacity: "1",
     padding: "16px",
     pointerEvents: "auto",
     maxWidth: "340px",
+    color: "#F5E9BA",
 
     before: {
       border: "none",

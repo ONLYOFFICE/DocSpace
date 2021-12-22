@@ -3,7 +3,8 @@ import Base from "../themes/base";
 
 const StyledTooltip = styled.div`
   .__react_component_tooltip {
-    background-color: ${(props) => props.color} !important;
+    background-color: ${(props) =>
+      props.color ? props.color : props.theme.tooltip.color} !important;
     border-radius: ${(props) => props.theme.tooltip.borderRadius};
     -moz-border-radius: ${(props) => props.theme.tooltip.borderRadius};
     -webkit-border-radius: ${(props) => props.theme.tooltip.borderRadius};
@@ -25,19 +26,23 @@ const StyledTooltip = styled.div`
   }
 
   .__react_component_tooltip.place-left::after {
-    border-left: 6px solid ${(props) => props.color} !important;
+    border-left: 6px solid
+      ${(props) => (props.color ? props.color : props.theme.tooltip.color)} !important;
   }
 
   .__react_component_tooltip.place-right::after {
-    border-right: 6px solid ${(props) => props.color} !important;
+    border-right: 6px solid
+      ${(props) => (props.color ? props.color : props.theme.tooltip.color)} !important;
   }
 
   .__react_component_tooltip.place-top::after {
-    border-top: 6px solid ${(props) => props.color} !important;
+    border-top: 6px solid
+      ${(props) => (props.color ? props.color : props.theme.tooltip.color)} !important;
   }
 
   .__react_component_tooltip.place-bottom::after {
-    border-bottom: 6px solid ${(props) => props.color} !important;
+    border-bottom: 6px solid
+      ${(props) => (props.color ? props.color : props.theme.tooltip.color)} !important;
   }
 `;
 
