@@ -7,17 +7,17 @@ const cultures = config.web.cultures.split(',');
 
 const isModel = !!process.env.MODEL;
 
+const featureName = isModel ? `People translation(model) ` : `People translation tests`;
+
+Feature(featureName, { timeout: 90 });
+
 for (const culture of cultures) {
-  const featureName = isModel ? `People translation(model)` : `${culture}`;
-
-  Feature(featureName);
-
   Before(async ({ I }) => {
     I.mockData();
     changeCulture(culture);
   });
 
-  Scenario(`Main page tests ${culture}`, ({ I }) => {
+  Scenario(`Main page test ${culture}`, { timeout: 30 }, ({ I }) => {
     const isExсeption = ignoringCultures.mainPage.indexOf(culture) != -1;
 
     I.mockEndpoint(Endpoints.filter, 'many');
@@ -38,7 +38,7 @@ for (const culture of cultures) {
     });
   });
 
-  Scenario(`Main button tests ${culture}`, ({ I }) => {
+  Scenario(`Main button test ${culture}`, { timeout: 30 }, ({ I }) => {
     const isExсeption = ignoringCultures.mainButton.indexOf(culture) != -1;
 
     I.mockEndpoint(Endpoints.filter, 'many');
@@ -64,7 +64,7 @@ for (const culture of cultures) {
     });
   });
 
-  Scenario(`Table settings tests ${culture}`, async ({ I }) => {
+  Scenario(`Table settings test ${culture}`, { timeout: 30 }, async ({ I }) => {
     const isExсeption = ignoringCultures.tableSettings.indexOf(culture) != -1;
 
     await I.mockEndpoint(Endpoints.filter, 'many');
