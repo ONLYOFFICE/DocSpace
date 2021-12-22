@@ -11,7 +11,7 @@
   "ManyEmails": "Pārāk daudz e-pasta ziņojumu parsēts",
   "MaxLengthExceeded": "Maksimālais lietotājvārda vai citas vietējās daļas garums ir 64 rakstzīmes.",
   "PunycodeDomain": "Punycode domēni netiek atbalstīti",
-  "PunycodeLocalPart": "PPunycode lokālā daļa netiek atbalstīta",
+  "PunycodeLocalPart": "Punycode lokālā daļa netiek atbalstīta",
   "SameEmail": "Jūs nevarat izmantot to pašu e-pastu",
   "SpacesInLocalPart": "Lokālajā daļā nedrīkst būt atstarpes"
 }

@@ -7,7 +7,7 @@
   "MessageEmailConfirmed": "E-posta adresiniz başarıyla etkinleştirildi.",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "Lütfen kayıt için kullandığınız e-postayı giriniz. Şifre kurtarma talimatları o adrese gönderilecektir.",
   "Or": "VEYA",
-  "PasswordRecoveryTitle": "Şİfre kurtarma",
+  "PasswordRecoveryTitle": "Şifre kurtarma",
   "Register": "Kayıt",
   "RegisterSendButton": "Talep gönder",
   "RegisterTextBodyAfterDomainsList": "Kayıt olmak için e-postanızı girin ve Talep gönder'e tıklayın. Tarafınıza bir aktivasyon bağlantısı gönderilecektir.",

@@ -14,7 +14,7 @@
   "MakeInvitationLink": "Създай връзка за покана",
   "MessageEmailActivationInstuctionsSentOnEmail": "Инструкциите за активиране на имейла бяха изпратени на имейл адрес <1>{{email}}</1>",
   "NotFoundDescription": "Изпробвайте различен филтър или го изчистете, за да видите всички хора в раздела.",
-  "NotFoundTitle": "НЯма открити съотборници",
+  "NotFoundTitle": "Няма открити съотборници",
   "SuccessfullyRemovedGroup": "Групата беше премахната успешно",
   "UserStatus": "Статус"
 }

@@ -10,7 +10,7 @@
   "ErrorLicenseTitle": "Ошибка загрузки",
   "ErrorParamsBody": "Введены некорректные данные:",
   "ErrorParamsTitle": "Ошибка регистрации",
-  "ErrorPassword": "Пароль не соответсвует требованиям",
+  "ErrorPassword": "Пароль не соответствует требованиям",
   "ErrorUploadLicenseFile": "Необходим файл лицензии",
   "GeneratePassword": "Сгенерировать пароль",
   "License": "Принять условия ",
