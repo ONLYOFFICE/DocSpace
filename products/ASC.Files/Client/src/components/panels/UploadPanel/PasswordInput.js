@@ -24,11 +24,22 @@ const PasswordComponent = ({
   onHideInput,
   uploadedFiles,
 }) => {
-  const [password, setPassword] = useState();
+  const [password, setPassword] = useState("");
+  const [passwordValid, setPasswordValid] = useState(true);
 
   const { t } = useTranslation("UploadPanel");
   const onClick = () => {
     console.log("on click", item);
+
+    let hasError = false;
+
+    const pass = password.trim();
+    if (!pass) {
+      hasError = true;
+      setPasswordValid(false);
+    }
+
+    if (hasError) return;
 
     let index;
 
@@ -63,6 +74,7 @@ const PasswordComponent = ({
         inputValue={password}
         onChange={onChangePassword}
         placeholder={t("EnterPassword")}
+        hasError={!passwordValid}
       />
       <Button
         id="conversion-button"
