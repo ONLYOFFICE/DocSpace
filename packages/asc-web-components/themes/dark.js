@@ -1732,8 +1732,9 @@ const Dark = {
   },
 
   menuContainer: {
-    background: "linear-gradient(200.71deg, #333333 0%, #1f1f1f 100%)",
-    color: "#FFFFFF",
+    background:
+      "linear-gradient(226.22deg, #EBB67A 0.24%, #E9AC6B 11.61%, #E8A25D 22.98%, #E69850 34.34%, #E58D42 45.71%, #E38235 57.08%, #E27628 68.44%, #E06A1B 79.81%)",
+    color: "#22221f",
   },
 
   article: {
