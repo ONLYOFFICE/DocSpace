@@ -6,9 +6,9 @@ namespace Frontend.Translations.Tests
 {
     public static class SpellCheck
     {
-        public static Models.SpellCheckResult HasSpellIssues(string text, WordList dictionary)
+        public static Models.SpellCheckResult HasSpellIssues(string text, string language, WordList dictionary)
         {
-            var result = new Models.SpellCheckResult(text);
+            var result = new Models.SpellCheckResult(text, language);
 
             foreach (var word in result.Words)
             {

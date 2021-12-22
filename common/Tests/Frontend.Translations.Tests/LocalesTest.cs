@@ -7,6 +7,8 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
+using Frontend.Translations.Tests.Models;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -263,6 +265,8 @@ namespace Frontend.Translations.Tests
             var errorsCount = 0;
             var message = $"Next keys have spell check issues:\r\n\r\n";
 
+            //var list = new List<SpellCheckExclude>();
+
             var groupByLng = TranslationFiles
             .GroupBy(t => t.Language)
                 .Select(g => new
@@ -278,6 +282,8 @@ namespace Frontend.Translations.Tests
                 {
                     var language = SpellCheck.GetDictionaryLanguage(group.Language);
 
+                    //var spellCheckExclude = new SpellCheckExclude(group.Language);
+
                     using (var dictionaryStream = File.OpenRead(Path.Combine(dictionariesPath, language, $"{language}.dic")))
                     using (var affixStream = File.OpenRead(Path.Combine(dictionariesPath, language, $"{language}.aff")))
                     {
@@ -287,18 +293,31 @@ namespace Frontend.Translations.Tests
                         {
                             foreach (var item in g.Translations)
                             {
-                                var result = SpellCheck.HasSpellIssues(item.Value, dictionary);
+                                var result = SpellCheck.HasSpellIssues(item.Value, group.Language, dictionary);
 
                                 if (result.HasProblems)
                                 {
                                     message += $"{++i}. lng='{group.Language}' file='{g.FilePath}'\r\nkey='{item.Key}' value='{item.Value}'\r\nIncorrect words:\r\n{string.Join("\r\n", result.SpellIssues.Select(issue => $"'{issue.Word}' Suggestion: '{issue.Suggestions.FirstOrDefault()}'"))}\r\n\r\n";
                                     errorsCount++;
+
+
+                                    /*foreach (var word in result.SpellIssues
+                                        .Where(issue => issue.Suggestions.Any())
+                                        .Select(issue => issue.Word))
+                                    {
+                                        if (!spellCheckExclude.Excludes.Contains(word))
+                                        {
+                                            spellCheckExclude.Excludes.Add(word);
+                                        }
+                                    }*/
                                 }
                             }
                         }
-
-
                     }
+
+                    //spellCheckExclude.Excludes.Sort();
+
+                    //list.Add(spellCheckExclude);
                 }
                 catch (NotSupportedException)
                 {
@@ -306,6 +325,9 @@ namespace Frontend.Translations.Tests
                     continue;
                 }
             }
+
+            //string json = JsonConvert.SerializeObject(list, Formatting.Indented);
+            //File.WriteAllText("../../../spellcheck-excludes.json", json);
 
             Assert.AreEqual(0, errorsCount, message);
         }
