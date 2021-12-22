@@ -4,23 +4,38 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import { VariableSizeList as List } from "react-window";
 import { inject, observer } from "mobx-react";
 import FileRow from "./FileRow";
+import { isMobile } from "react-device-detect";
 
 const CustomScrollbarsVirtualList = React.forwardRef((props, ref) => (
   <CustomScrollbars stype="mediumBlack" {...props} forwardedRef={ref} />
 ));
+
+const mobileRowHeight = 48;
+const desktopRowHeight = 40;
 const FileList = ({ uploadDataFiles }) => {
   const [rowSizes, setRowSizes] = useState({});
   const listRef = useRef(null);
   const onUpdateHeight = (i, showInput) => {
+    const mobileHeight = showInput ? 92 : mobileRowHeight;
+    const desktopHeight = showInput ? 88 : desktopRowHeight;
+
     if (listRef.current) {
       listRef.current.resetAfterIndex(i);
     }
-    setRowSizes((prevState) => ({ ...prevState, [i]: showInput ? 88 : 40 }));
+    setRowSizes((prevState) => ({
+      ...prevState,
+      [i]: isMobile ? mobileHeight : desktopHeight,
+    }));
   };
 
   const getSize = (i) => {
     console.log("getSize", i, rowSizes[i]);
-    return rowSizes[i] ? rowSizes[i] : 40;
+    console.log("isMobile", isMobile);
+    return rowSizes[i]
+      ? rowSizes[i]
+      : isMobile
+      ? mobileRowHeight
+      : desktopRowHeight;
   };
 
   const renderRow = useCallback(({ data, index, style }) => {

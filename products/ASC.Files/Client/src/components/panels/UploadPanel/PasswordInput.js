@@ -12,9 +12,15 @@ const StyledBody = styled.div`
   #conversion-button {
     margin-left: 8px;
     background-color: #a6dcf2;
+    width: 100%;
+    max-width: 78px;
   }
   #conversion-password {
-    width: 382px;
+    max-width: 382px;
+    width: 100%;
+  }
+  .conversion-input {
+    width: 100%;
   }
 `;
 const PasswordComponent = ({
@@ -66,10 +72,11 @@ const PasswordComponent = ({
   };
 
   return (
-    <StyledBody>
+    <StyledBody className="conversation-password-wrapper">
       <PasswordInput
         simpleView
         id="conversion-password"
+        className="conversion-input"
         type="password"
         inputValue={password}
         onChange={onChangePassword}

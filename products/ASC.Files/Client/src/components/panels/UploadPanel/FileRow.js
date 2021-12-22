@@ -9,6 +9,7 @@ import { withTranslation } from "react-i18next";
 import PasswordInput from "./PasswordInput";
 import ErrorFileUpload from "./ErrorFileUpload.js";
 import ActionsUploadedFile from "./ActionsUploadedFile";
+import { isMobile } from "react-device-detect";
 
 const StyledFileRow = styled(Row)`
   /* margin: 0 16px; */
@@ -19,20 +20,30 @@ const StyledFileRow = styled(Row)`
   padding-right: 16px;
   padding-left: 16px;
 
-  min-height: 40px;
+  ${!isMobile && "min-height: 40px;"}
+
   height: 100%;
 
   .styled-element,
   .row_content {
-    ${(props) => props.showPasswordInput && "margin-top: -49px"}
+    ${(props) =>
+      props.showPasswordInput &&
+      css`
+        margin-top: ${isMobile ? "-45px" : "-49px"};
+      `}
   }
-
   .password-input {
     position: absolute;
     top: 44px;
     left: 16px;
-    width: 382px;
+    max-width: 470px;
+    width: calc(100% - 32px);
+    .conversation-password-wrapper {
+      max-width: 470px;
+      width: 100%;
+    }
   }
+
   .row_content > a,
   .row_content > p {
     margin: auto 0;
@@ -58,6 +69,7 @@ const StyledFileRow = styled(Row)`
     .enter-password {
       margin-right: 8px;
       text-decoration: underline dashed;
+      cursor: pointer;
     }
   }
 
