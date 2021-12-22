@@ -14,6 +14,8 @@ using NUnit.Framework;
 
 using UtfUnknown;
 
+using WeCantSpell.Hunspell;
+
 namespace Frontend.Translations.Tests
 {
     public class Tests
@@ -246,25 +248,91 @@ namespace Frontend.Translations.Tests
         }
 
         [Test]
+        [Category("FastRunning")]
         public void ParseJsonTest()
         {
             Assert.AreEqual(0, ParseJsonErrors.Count, string.Join("\r\n", ParseJsonErrors.Select(e => $"File path = '{e.Path}' failed to parse with error: '{e.Exception.Message}'")));
         }
 
         [Test]
+        [Category("LongRunning")]
+        public void SpellCheckTest()
+        {
+            const string dictionariesPath = @"..\..\..\dictionaries";
+            var i = 0;
+            var errorsCount = 0;
+            var message = $"Next keys have spell check issues:\r\n\r\n";
+
+            var groupByLng = TranslationFiles
+            .GroupBy(t => t.Language)
+                .Select(g => new
+                {
+                    Language = g.Key,
+                    Files = g.ToList()
+                })
+                .ToList();
+
+            foreach (var group in groupByLng)
+            {
+                try
+                {
+                    var language = SpellCheck.GetDictionaryLanguage(group.Language);
+
+                    using (var dictionaryStream = File.OpenRead(Path.Combine(dictionariesPath, language, $"{language}.dic")))
+                    using (var affixStream = File.OpenRead(Path.Combine(dictionariesPath, language, $"{language}.aff")))
+                    {
+                        var dictionary = WordList.CreateFromStreams(dictionaryStream, affixStream);
+
+                        foreach (var g in group.Files)
+                        {
+                            foreach (var item in g.Translations)
+                            {
+                                var result = SpellCheck.HasSpellIssues(item.Value, dictionary);
+
+                                if (result.HasProblems)
+                                {
+                                    message += $"{++i}. lng='{group.Language}' file='{g.FilePath}'\r\nkey='{item.Key}' value='{item.Value}'\r\nIncorrect words:\r\n{string.Join("\r\n", result.SpellIssues.Select(issue => $"'{issue.Word}' Suggestion: '{issue.Suggestions.FirstOrDefault()}'"))}\r\n\r\n";
+                                    errorsCount++;
+                                }
+                            }
+                        }
+
+
+                    }
+                }
+                catch (NotSupportedException)
+                {
+                    // Skip not supported
+                    continue;
+                }
+            }
+
+            Assert.AreEqual(0, errorsCount, message);
+        }
+
+        [Test]
+        [Category("FastRunning")]
         public void DublicatesFilesByMD5HashTest()
         {
+            var skipHashes = new List<string>() {
+                "bcba174a8dadc0ff97f37f9a2d816d88",
+                "2a506ed97d0fbd0858192b755ae122d0",
+                "ec73989085d4e1b984c1c9dca10524da"
+            };
+
             var duplicatesByMD5 = TranslationFiles
+                .Where(t => !skipHashes.Contains(t.Md5Hash))
                 .GroupBy(t => t.Md5Hash)
                 .Where(grp => grp.Count() > 1)
                 .Select(grp => new { Key = grp.Key, Count = grp.Count(), Paths = grp.ToList().Select(f => f.FilePath) })
                 .OrderByDescending(itm => itm.Count)
                 .ToList();
 
-            Assert.AreEqual(0, duplicatesByMD5.Count, "Dublicates by MD5 hash:\r\n" + string.Join("\r\n", duplicatesByMD5.Select(d => $"\r\nMD5='{d.Key}\r\n{string.Join("\r\n", d.Paths.Select(p => p))}'")));
+            Assert.AreEqual(0, duplicatesByMD5.Count, "Dublicates by MD5 hash:\r\n" + string.Join("\r\n", duplicatesByMD5.Select(d => $"\r\nMD5='{d.Key}':\r\n{string.Join("\r\n", d.Paths.Select(p => p))}'")));
         }
 
         [Test]
+        [Category("FastRunning")]
         public void FullEnDublicatesTest()
         {
             var fullEnDuplicates = TranslationFiles
@@ -281,6 +349,7 @@ namespace Frontend.Translations.Tests
         }
 
         [Test]
+        [Category("FastRunning")]
         public void EnDublicatesByContentTest()
         {
             var allRuTranslations = TranslationFiles
@@ -359,6 +428,7 @@ namespace Frontend.Translations.Tests
         }
 
         [Test]
+        [Category("FastRunning")]
         public void NotAllLanguageTranslatedTest()
         {
             var groupedByLng = TranslationFiles
@@ -435,6 +505,7 @@ namespace Frontend.Translations.Tests
         }
 
         [Test]
+        [Category("FastRunning")]
         public void NotTranslatedKeysTest()
         {
             var message = $"Next languages are not equal 'en' by translated keys count:\r\n\r\n";
@@ -481,6 +552,7 @@ namespace Frontend.Translations.Tests
         }
 
         [Test]
+        [Category("FastRunning")]
         public void NotFoundKeysTest()
         {
             var allEnKeys = TranslationFiles
@@ -502,6 +574,7 @@ namespace Frontend.Translations.Tests
         }
 
         [Test]
+        [Category("FastRunning")]
         public void UselessTranslationKeysTest()
         {
             var allEnKeys = TranslationFiles
@@ -524,6 +597,7 @@ namespace Frontend.Translations.Tests
         }
 
         [Test]
+        [Category("FastRunning")]
         public void UselessModuleTranslationKeysTest()
         {
             var notFoundi18nKeys = new List<KeyValuePair<string, List<string>>>();
@@ -605,6 +679,7 @@ namespace Frontend.Translations.Tests
         }
 
         [Test]
+        [Category("FastRunning")]
         public void NotTranslatedCommonKeysTest()
         {
             var message = $"Some i18n-keys are not found in COMMON translations: \r\nKeys: \r\n\r\n";
@@ -703,6 +778,7 @@ namespace Frontend.Translations.Tests
         }
 
         [Test]
+        [Category("FastRunning")]
         public void EmptyValueKeysTest()
         {
             // Uncomment if new keys are available
@@ -806,6 +882,7 @@ namespace Frontend.Translations.Tests
         }
 
         [Test]
+        [Category("FastRunning")]
         public void LanguageTranslatedPercentTest()
         {
             var message = $"Next languages translated less then 100%:\r\n\r\n";
@@ -852,6 +929,7 @@ namespace Frontend.Translations.Tests
         }
 
         [Test]
+        [Category("FastRunning")]
         public void NotTranslatedToastsTest()
         {
             var message = $"Next text not translated in toasts:\r\n\r\n";
@@ -874,6 +952,7 @@ namespace Frontend.Translations.Tests
         }
 
         [Test]
+        [Category("FastRunning")]
         public void WrongTranslationVariablesTest()
         {
             var message = $"Next keys have wrong variables:\r\n\r\n";
@@ -951,6 +1030,7 @@ namespace Frontend.Translations.Tests
         }
 
         [Test]
+        [Category("FastRunning")]
         public void TranslationsEncodingTest()
         {
             /*//Convert to UTF-8
