@@ -48,7 +48,7 @@ const StyledFileRow = styled(Row)`
     line-height: 24px;
     display: flex;
     align-items: center;
-    /* flex-direction: row-reverse; */
+    flex-direction: row-reverse;
 
     svg {
       width: 16px;

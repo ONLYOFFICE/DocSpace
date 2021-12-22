@@ -11,16 +11,6 @@ const StyledLoadErrorIcon = styled(LoadErrorIcon)`
 const ErrorFileUpload = ({ t, item, onTextClick }) => (
   <>
     <div className="upload_panel-icon">
-      {item.needPassword && (
-        <Text
-          className="enter-password"
-          fontWeight="600"
-          color="#A3A9AE"
-          onClick={onTextClick}
-        >
-          {"Enter Password"}
-        </Text>
-      )}
       <StyledLoadErrorIcon
         size="medium"
         data-for="errorTooltip"
@@ -39,6 +29,16 @@ const ErrorFileUpload = ({ t, item, onTextClick }) => (
         maxWidth={320}
         color="#f8f7bf"
       />
+      {item.needPassword && (
+        <Text
+          className="enter-password"
+          fontWeight="600"
+          color="#A3A9AE"
+          onClick={onTextClick}
+        >
+          {"Enter Password"}
+        </Text>
+      )}
     </div>
   </>
 );
