@@ -140,7 +140,7 @@ namespace ASC.Api.Documents
                 }
                 else
                 {
-                    parentFolder = folderDao.GetFolder(folder.FolderID);
+                    parentFolder = folderDao.GetFolderAsync(folder.FolderID).Result;
                     if (!FileSecurity.CanRead(parentFolder))
                     {
                         result.ParentId = GlobalFolderHelper.GetFolderShare<T>();

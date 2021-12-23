@@ -94,7 +94,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var entries = new List<FileEntry<T>>();
             if (Folders.Any())
             {
-                entries.AddRange(FolderDao.GetFolders(Folders));
+                entries.AddRange(FolderDao.GetFoldersAsync(Folders).ToListAsync().Result);
             }
             if (Files.Any())
             {

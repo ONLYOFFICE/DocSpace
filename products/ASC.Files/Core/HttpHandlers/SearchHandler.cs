@@ -107,7 +107,7 @@ namespace ASC.Web.Files.Configuration
             var security = FileSecurity;
             IEnumerable<Folder<int>> result;
             var folderDao = DaoFactory.GetFolderDao<int>();
-            result = folderDao.SearchFolders(text).Where(security.CanRead);
+            result = folderDao.SearchFoldersAsync(text).Result.Where(security.CanRead);
 
             if (ThirdpartyConfiguration.SupportInclusion(DaoFactory)
                 && FilesSettingsHelper.EnableThirdParty)
@@ -115,12 +115,12 @@ namespace ASC.Web.Files.Configuration
                 var id = GlobalFolderHelper.FolderMy;
                 if (!Equals(id, 0))
                 {
-                    var folderMy = folderDao.GetFolder(id);
+                    var folderMy = folderDao.GetFolderAsync(id).Result;
                     //result = result.Concat(EntryManager.GetThirpartyFolders(folderMy, text));
                 }
 
                 id = GlobalFolderHelper.FolderCommon;
-                var folderCommon = folderDao.GetFolder(id);
+                var folderCommon = folderDao.GetFolderAsync(id).Result;
                 //result = result.Concat(EntryManager.GetThirpartyFolders(folderCommon, text));
             }
 

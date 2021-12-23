@@ -54,10 +54,10 @@ namespace ASC.Files.Core.Thirdparty
             var tagDao = ServiceProvider.GetService<ITagDao<TFrom>>();
 
             var fromFileShareRecords = securityDao.GetPureShareRecords(fromFile).Where(x => x.EntryType == FileEntryType.File);
-            var fromFileNewTags = tagDao.GetNewTags(Guid.Empty, fromFile).ToList();
-            var fromFileLockTag = tagDao.GetTags(fromFile.ID, FileEntryType.File, TagType.Locked).FirstOrDefault();
-            var fromFileFavoriteTag = tagDao.GetTags(fromFile.ID, FileEntryType.File, TagType.Favorite);
-            var fromFileTemplateTag = tagDao.GetTags(fromFile.ID, FileEntryType.File, TagType.Template);
+            var fromFileNewTags = tagDao.GetNewTagsAsync(Guid.Empty, fromFile).ToListAsync().Result;
+            var fromFileLockTag = tagDao.GetTagsAsync(fromFile.ID, FileEntryType.File, TagType.Locked).ToListAsync().Result.FirstOrDefault();
+            var fromFileFavoriteTag = tagDao.GetTagsAsync(fromFile.ID, FileEntryType.File, TagType.Favorite).ToListAsync().Result;
+            var fromFileTemplateTag = tagDao.GetTagsAsync(fromFile.ID, FileEntryType.File, TagType.Template).ToListAsync().Result;
 
             var toFile = ServiceProvider.GetService<File<TTo>>();
 
@@ -70,17 +70,17 @@ namespace ASC.Files.Core.Thirdparty
             var mustConvert = !string.IsNullOrEmpty(fromFile.ConvertedType);
             using (var fromFileStream = mustConvert
                                             ? FileConverter.Exec(fromFile)
-                                            : fromFileDao.GetFileStream(fromFile))
+                                            : fromFileDao.GetFileStreamAsync(fromFile).Result)
             {
                 toFile.ContentLength = fromFileStream.CanSeek ? fromFileStream.Length : fromFile.ContentLength;
-                toFile = toFileDao.SaveFile(toFile, fromFileStream);
+                toFile = toFileDao.SaveFileAsync(toFile, fromFileStream).Result;
             }
 
             if (fromFile.ThumbnailStatus == Thumbnail.Created)
             {
-                using (var thumbnail = fromFileDao.GetThumbnail(fromFile))
+                using (var thumbnail = fromFileDao.GetThumbnailAsync(fromFile).Result)
                 {
-                    toFileDao.SaveThumbnail(toFile, thumbnail);
+                    toFileDao.SaveThumbnailAsync(toFile, thumbnail).Wait();
                 }
                 toFile.ThumbnailStatus = Thumbnail.Created;
             }
@@ -130,10 +130,10 @@ namespace ASC.Files.Core.Thirdparty
             var tagDao = ServiceProvider.GetService<ITagDao<TFrom>>();
 
             var fromFileShareRecords = securityDao.GetPureShareRecords(fromFile).Where(x => x.EntryType == FileEntryType.File);
-            var fromFileNewTags = tagDao.GetNewTags(Guid.Empty, fromFile).ToList();
-            var fromFileLockTag = tagDao.GetTags(fromFile.ID, FileEntryType.File, TagType.Locked).FirstOrDefault();
-            var fromFileFavoriteTag = tagDao.GetTags(fromFile.ID, FileEntryType.File, TagType.Favorite);
-            var fromFileTemplateTag = tagDao.GetTags(fromFile.ID, FileEntryType.File, TagType.Template);
+            var fromFileNewTags = tagDao.GetNewTagsAsync(Guid.Empty, fromFile).ToListAsync().Result;
+            var fromFileLockTag = tagDao.GetTagsAsync(fromFile.ID, FileEntryType.File, TagType.Locked).ToListAsync().Result.FirstOrDefault();
+            var fromFileFavoriteTag = tagDao.GetTagsAsync(fromFile.ID, FileEntryType.File, TagType.Favorite).ToListAsync().Result;
+            var fromFileTemplateTag = tagDao.GetTagsAsync(fromFile.ID, FileEntryType.File, TagType.Template).ToListAsync().Result;
 
             var toFile = ServiceProvider.GetService<File<TTo>>();
 
@@ -154,9 +154,9 @@ namespace ASC.Files.Core.Thirdparty
 
             if (fromFile.ThumbnailStatus == Thumbnail.Created)
             {
-                using (var thumbnail = fromFileDao.GetThumbnail(fromFile))
+                using (var thumbnail = await fromFileDao.GetThumbnailAsync(fromFile))
                 {
-                    toFileDao.SaveThumbnail(toFile, thumbnail);
+                    await toFileDao.SaveThumbnailAsync(toFile, thumbnail);
                 }
                 toFile.ThumbnailStatus = Thumbnail.Created;
             }
@@ -193,18 +193,18 @@ namespace ASC.Files.Core.Thirdparty
             TTo toRootFolderId, IFolderDao<TTo> toFolderDao, IFileDao<TTo> toFileDao, Func<TTo, TTo> toConverter,
             bool deleteSourceFolder, CancellationToken? cancellationToken)
         {
-            var fromFolder = fromFolderDao.GetFolder(fromConverter(fromFolderId));
+            var fromFolder = fromFolderDao.GetFolderAsync(fromConverter(fromFolderId)).Result;
 
             var toFolder1 = ServiceProvider.GetService<Folder<TTo>>();
             toFolder1.Title = fromFolder.Title;
             toFolder1.FolderID = toConverter(toRootFolderId);
 
-            var toFolder = toFolderDao.GetFolder(fromFolder.Title, toConverter(toRootFolderId));
+            var toFolder = toFolderDao.GetFolderAsync(fromFolder.Title, toConverter(toRootFolderId)).Result;
             var toFolderId = toFolder != null
                                  ? toFolder.ID
-                                 : toFolderDao.SaveFolder(toFolder1);
+                                 : toFolderDao.SaveFolderAsync(toFolder1).Result;
 
-            var foldersToCopy = fromFolderDao.GetFolders(fromConverter(fromFolderId));
+            var foldersToCopy = fromFolderDao.GetFoldersAsync(fromConverter(fromFolderId)).ToListAsync().Result;
             var fileIdsToCopy = fromFileDao.GetFilesAsync(fromConverter(fromFolderId)).Result;
             Exception copyException = null;
             //Copy files first
@@ -253,7 +253,7 @@ namespace ASC.Files.Core.Thirdparty
                 }
 
                 var tagDao = ServiceProvider.GetService<ITagDao<TFrom>>();
-                var fromFileNewTags = tagDao.GetNewTags(Guid.Empty, fromFolder).ToList();
+                var fromFileNewTags = tagDao.GetNewTagsAsync(Guid.Empty, fromFolder).ToListAsync().Result;
 
                 if (fromFileNewTags.Any())
                 {
@@ -263,12 +263,12 @@ namespace ASC.Files.Core.Thirdparty
                 }
 
                 if (copyException == null)
-                    fromFolderDao.DeleteFolder(fromConverter(fromFolderId));
+                    fromFolderDao.DeleteFolderAsync(fromConverter(fromFolderId)).Wait();
             }
 
             if (copyException != null) throw copyException;
 
-            return toFolderDao.GetFolder(toConverter(toFolderId));
+            return toFolderDao.GetFolderAsync(toConverter(toFolderId)).Result;
         }
 
         public async Task<Folder<TTo>> PerformCrossDaoFolderCopyAsync<TFrom, TTo>
@@ -336,7 +336,7 @@ namespace ASC.Files.Core.Thirdparty
                 }
 
                 var tagDao = ServiceProvider.GetService<ITagDao<TFrom>>();
-                var fromFileNewTags = tagDao.GetNewTags(Guid.Empty, fromFolder).ToList();
+                var fromFileNewTags = tagDao.GetNewTagsAsync(Guid.Empty, fromFolder).ToListAsync().Result;
 
                 if (fromFileNewTags.Any())
                 {

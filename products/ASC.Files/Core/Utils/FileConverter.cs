@@ -353,7 +353,7 @@ namespace ASC.Web.Files.Utils
                                         if (newFile != null)
                                         {
                                             var folderDao = daoFactory.GetFolderDao<T>();
-                                            var folder = folderDao.GetFolder(newFile.FolderID);
+                                            var folder = folderDao.GetFolderAsync(newFile.FolderID).Result;
                                             var folderTitle = fileSecurity.CanRead(folder) ? folder.Title : null;
                                             operationResult.Result = FileJsonSerializer(entryManager, newFile, folderTitle);
                                         }
@@ -779,7 +779,7 @@ namespace ASC.Web.Files.Utils
             if (newFile != null)
             {
                 var folderDao = DaoFactory.GetFolderDao<T>();
-                var folder = folderDao.GetFolder(newFile.FolderID);
+                var folder = folderDao.GetFolderAsync(newFile.FolderID).Result;
                 var folderTitle = fileSecurity.CanRead(folder) ? folder.Title : null;
                 operationResult.Result = GetFileConverter<T>().FileJsonSerializer(EntryStatusManager, newFile, folderTitle);
             }
@@ -856,7 +856,7 @@ namespace ASC.Web.Files.Utils
             {
                 var folderId = GlobalFolderHelper.GetFolderMy<T>();
 
-                var parent = folderDao.GetFolder(file.FolderID);
+                var parent = folderDao.GetFolderAsync(file.FolderID).Result;
                 if (parent != null
                     && fileSecurity.CanCreate(parent))
                 {
@@ -926,7 +926,7 @@ namespace ASC.Web.Files.Utils
             FileMarker.MarkAsNew(newFile);
 
             var tagDao = DaoFactory.GetTagDao<T>();
-            var tags = tagDao.GetTags(file.ID, FileEntryType.File, TagType.System).ToList();
+            var tags = tagDao.GetTagsAsync(file.ID, FileEntryType.File, TagType.System).ToListAsync().Result;
             if (tags.Any())
             {
                 tags.ForEach(r => r.EntryId = newFile.ID);

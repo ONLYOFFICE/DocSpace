@@ -165,7 +165,7 @@ namespace ASC.Files.ThumbnailBuilder
                 if (!config.FormatsArray.Contains(ext) || file.Encrypted || file.RootFolderType == FolderType.TRASH || file.ContentLength > config.AvailableFileSize)
                 {
                     file.ThumbnailStatus = Thumbnail.NotRequired;
-                    fileDao.SaveThumbnail(file, null);
+                    fileDao.SaveThumbnailAsync(file, null).Wait();
                     return;
                 }
 
@@ -184,7 +184,7 @@ namespace ASC.Files.ThumbnailBuilder
                 if (file != null)
                 {
                     file.ThumbnailStatus = Thumbnail.Error;
-                    fileDao.SaveThumbnail(file, null);
+                    fileDao.SaveThumbnailAsync(file, null).Wait();
                 }
             }
         }
@@ -332,7 +332,7 @@ namespace ASC.Files.ThumbnailBuilder
                     using (var targetStream = new MemoryStream())
                     {
                         targetImg.Save(targetStream, PngFormat.Instance);
-                        fileDao.SaveThumbnail(file, targetStream);
+                        fileDao.SaveThumbnailAsync(file, targetStream).Wait();
                     }
                 }
             }

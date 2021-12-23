@@ -181,7 +181,7 @@ namespace ASC.Api.Documents
             List<Tuple<FileEntry<T1>, bool>> GetFoldersIntWithRights<T1>()
             {
                 var folderDao = DaoFactory.GetFolderDao<T1>();
-                var folders = folderDao.GetFolders(folderItems.Entries.OfType<FileEntry<T1>>().Select(r => r.FolderID).Distinct().ToList());
+                var folders = folderDao.GetFoldersAsync(folderItems.Entries.OfType<FileEntry<T1>>().Select(r => r.FolderID).Distinct().ToList()).ToListAsync().Result;
                 return FileSecurity.CanRead(folders);
             }
         }

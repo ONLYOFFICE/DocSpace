@@ -422,7 +422,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         protected virtual int InitTotalProgressSteps()
         {
             var count = Files.Count;
-            Folders.ForEach(f => count += 1 + (FolderDao.CanCalculateSubitems(f) ? FolderDao.GetItemsCount(f) : 0));
+            Folders.ForEach(f => count += 1 + (FolderDao.CanCalculateSubitems(f) ? FolderDao.GetItemsCountAsync(f).Result : 0));
             return count;
         }
 

@@ -574,7 +574,7 @@ namespace ASC.Web.Files.Utils
             var files = fileDao.GetFilesAsync(fileIds).ToListAsync().Result;
 
             var folderDao = DaoFactory.GetFolderDao<T>();
-            var folders = folderDao.GetFolders(folderIds);
+            var folders = folderDao.GetFoldersAsync(folderIds).ToListAsync().Result;
 
             var entries = files.Cast<FileEntry<T>>().Concat(folders.Cast<FileEntry<T>>());
 

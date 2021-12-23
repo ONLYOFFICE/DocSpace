@@ -138,7 +138,7 @@ namespace ASC.Data.Backup.Storage
             var folderDao = GetFolderDao<T>();
             var fileDao = GetFileDao<T>();
 
-            var folder = folderDao.GetFolder(folderId);
+            var folder = folderDao.GetFolderAsync(folderId).Result;
             if (folder == null)
             {
                 throw new FileNotFoundException("Folder not found.");
@@ -152,7 +152,7 @@ namespace ASC.Data.Backup.Storage
 
             File<T> file = null;
             var buffer = new byte[SetupInfo.ChunkUploadSize];
-            var chunkedUploadSession = fileDao.CreateUploadSession(newFile, source.Length);
+            var chunkedUploadSession = fileDao.CreateUploadSessionAsync(newFile, source.Length).Result;
             chunkedUploadSession.CheckQuota = false;
 
             var bytesRead = 0;
@@ -163,7 +163,7 @@ namespace ASC.Data.Backup.Storage
                 {
                     theMemStream.Write(buffer, 0, bytesRead);
                     theMemStream.Position = 0;
-                    file = fileDao.UploadChunk(chunkedUploadSession, theMemStream, bytesRead);
+                    file = fileDao.UploadChunkAsync(chunkedUploadSession, theMemStream, bytesRead).Result;
                 }
             }
 

@@ -36,19 +36,12 @@ namespace ASC.Files.Core
     [Scope(typeof(ProviderAccountDao), Additional = typeof(ProviderAccountDaoExtension))]
     public interface IProviderDao
     {
-        IProviderInfo GetProviderInfo(int linkId);
         Task<IProviderInfo> GetProviderInfoAsync(int linkId);
-        List<IProviderInfo> GetProvidersInfo();
         IAsyncEnumerable<IProviderInfo> GetProvidersInfoAsync();
-        List<IProviderInfo> GetProvidersInfo(FolderType folderType, string searchText = null);
         IAsyncEnumerable<IProviderInfo> GetProvidersInfoAsync(FolderType folderType, string searchText = null);
-        List<IProviderInfo> GetProvidersInfo(Guid userId);
         IAsyncEnumerable<IProviderInfo> GetProvidersInfoAsync(Guid userId);
-        int SaveProviderInfo(string providerKey, string customerTitle, AuthData authData, FolderType folderType);
         Task<int> SaveProviderInfoAsync(string providerKey, string customerTitle, AuthData authData, FolderType folderType);
-        int UpdateProviderInfo(int linkId, string customerTitle, AuthData authData, FolderType folderType, Guid? userId = null);
         Task<int> UpdateProviderInfoAsync(int linkId, string customerTitle, AuthData authData, FolderType folderType, Guid? userId = null);
-        void RemoveProviderInfo(int linkId);
         Task RemoveProviderInfoAsync(int linkId);
     }
 }

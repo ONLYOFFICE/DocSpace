@@ -116,7 +116,7 @@ namespace ASC.Web.Files.Classes
                 case FolderType.BUNCH:
                     if (projectID == 0)
                     {
-                        var path = folderDao.GetBunchObjectID(folder.RootFolderId);
+                        var path = folderDao.GetBunchObjectIDAsync(folder.RootFolderId).Result;
 
                         var projectIDFromDao = path.Split('/').Last();
 
@@ -132,7 +132,7 @@ namespace ASC.Web.Files.Classes
 
         public string GetFolderUrlById<T>(T folderId)
         {
-            var folder = DaoFactory.GetFolderDao<T>().GetFolder(folderId);
+            var folder = DaoFactory.GetFolderDao<T>().GetFolderAsync(folderId).Result;
 
             return GetFolderUrl(folder);
         }

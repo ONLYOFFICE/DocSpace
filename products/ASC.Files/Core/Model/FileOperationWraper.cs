@@ -198,8 +198,9 @@ namespace ASC.Api.Documents
             IEnumerable<FileEntryWrapper> GetFolders<T>(IEnumerable<T> folders)
             {
                 var folderDao = DaoFactory.GetFolderDao<T>();
-                return folderDao.GetFolders(folders)
+                return folderDao.GetFoldersAsync(folders)
                     .Select(r => FolderWrapperHelper.Get(r))
+                    .ToListAsync().Result
                     .Cast<FileEntryWrapper>();
             }
 

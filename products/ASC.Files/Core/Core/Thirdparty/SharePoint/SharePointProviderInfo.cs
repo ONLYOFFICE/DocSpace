@@ -78,29 +78,19 @@ namespace ASC.Files.Thirdparty.SharePoint
             TempStream = tempStream;
         }
 
-        public bool CheckAccess()
+        public Task<bool> CheckAccessAsync()
         {
             try
             {
                 clientContext.Load(clientContext.Web);
                 clientContext.ExecuteQuery();
-                return true;
+                return Task.FromResult(true);
             }
             catch (Exception e)
             {
                 Log.Warn("CheckAccess", e);
-                return false;
+                return Task.FromResult(false);
             }
-        }
-
-        public void InvalidateStorage()
-        {
-            if (clientContext != null)
-            {
-                clientContext.Dispose();
-            }
-
-            SharePointProviderInfoHelper.Invalidate();
         }
 
         public async Task InvalidateStorageAsync()
@@ -148,21 +138,6 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         #region Files
 
-        public File GetFileById(object id)
-        {
-            var key = "spointf-" + MakeId(id);
-            var file = SharePointProviderInfoHelper.GetFile(key);
-            if (file == null)
-            {
-                file = GetFile(id);
-                if (file != null)
-                {
-                    SharePointProviderInfoHelper.AddFile(key, file);
-                }
-            }
-            return file;
-        }
-
         public async Task<File> GetFileByIdAsync(object id)
         {
             var key = "spointf-" + MakeId(id);
@@ -175,30 +150,6 @@ namespace ASC.Files.Thirdparty.SharePoint
                     SharePointProviderInfoHelper.AddFile(key, file);
                 }
             }
-            return file;
-        }
-
-        private File GetFile(object id)
-        {
-            var file = clientContext.Web.GetFileByServerRelativeUrl((string)id);
-            clientContext.Load(file);
-            clientContext.Load(file.ListItemAllFields);
-
-            try
-            {
-                clientContext.ExecuteQuery();
-            }
-            catch (Exception ex)
-            {
-                SharePointProviderInfoHelper.PublishFolder(MakeId(GetParentFolderId(id)));
-                var serverException = (ServerException)ex;
-                if (serverException.ServerErrorTypeName == (typeof(FileNotFoundException)).ToString())
-                {
-                    return null;
-                }
-                return new SharePointFileErrorEntry(file.Context, file.Path) { Error = ex.Message, ID = id };
-            }
-
             return file;
         }
 
@@ -226,28 +177,6 @@ namespace ASC.Files.Thirdparty.SharePoint
             return file;
         }
 
-        public Stream GetFileStream(object id, int offset = 0)
-        {
-            var file = GetFileById(id);
-
-            if (file is SharePointFileErrorEntry) return null;
-            var fileInfo = File.OpenBinaryDirect(clientContext, (string)id);
-            clientContext.ExecuteQuery();
-
-            var tempBuffer = TempStream.Create();
-            using (var str = fileInfo.Stream)
-            {
-                if (str != null)
-                {
-                    str.CopyTo(tempBuffer);
-                    tempBuffer.Flush();
-                    tempBuffer.Seek(offset, SeekOrigin.Begin);
-                }
-            }
-
-            return tempBuffer;
-        }
-
         public async Task<Stream> GetFileStreamAsync(object id, int offset = 0)
         {
             var file = await GetFileByIdAsync(id);
@@ -270,26 +199,6 @@ namespace ASC.Files.Thirdparty.SharePoint
             return tempBuffer;
         }
 
-        public File CreateFile(string id, Stream stream)
-        {
-            byte[] b;
-
-            using (var br = new BinaryReader(stream))
-            {
-                b = br.ReadBytes((int)stream.Length);
-            }
-
-            var file = clientContext.Web.RootFolder.Files.Add(new FileCreationInformation { Content = b, Url = id, Overwrite = true });
-            clientContext.Load(file);
-            clientContext.Load(file.ListItemAllFields);
-            clientContext.ExecuteQuery();
-
-            SharePointProviderInfoHelper.AddFile("spointf-" + MakeId(id), file);
-            SharePointProviderInfoHelper.PublishFolder(MakeId(GetParentFolderId(id)));
-
-            return file;
-        }
-
         public async Task<File> CreateFileAsync(string id, Stream stream)
         {
             byte[] b;
@@ -310,18 +219,6 @@ namespace ASC.Files.Thirdparty.SharePoint
             return file;
         }
 
-        public void DeleteFile(string id)
-        {
-            SharePointProviderInfoHelper.PublishFile(MakeId(id), MakeId(GetParentFolderId(id)));
-
-            var file = GetFileById(id);
-
-            if (file is SharePointFileErrorEntry) return;
-
-            file.DeleteObject();
-            clientContext.ExecuteQuery();
-        }
-
         public async Task DeleteFileAsync(string id)
         {
             await SharePointProviderInfoHelper.PublishFileAsync(MakeId(id), MakeId(GetParentFolderId(id)));
@@ -334,21 +231,6 @@ namespace ASC.Files.Thirdparty.SharePoint
             clientContext.ExecuteQuery();
         }
 
-        public string RenameFile(string id, string newTitle)
-        {
-            SharePointProviderInfoHelper.PublishFile(MakeId(id), MakeId(GetParentFolderId(id)));
-
-            var file = GetFileById(id);
-
-            if (file is SharePointFileErrorEntry) return MakeId();
-
-            var newUrl = GetParentFolderId(file.ServerRelativeUrl) + "/" + newTitle;
-            file.MoveTo(newUrl, MoveOperations.Overwrite);
-            clientContext.ExecuteQuery();
-
-            return MakeId(newUrl);
-        }
-
         public async Task<string> RenameFileAsync(string id, string newTitle)
         {
             await SharePointProviderInfoHelper.PublishFileAsync(MakeId(id), MakeId(GetParentFolderId(id))).ConfigureAwait(false);
@@ -358,22 +240,6 @@ namespace ASC.Files.Thirdparty.SharePoint
             if (file is SharePointFileErrorEntry) return MakeId();
 
             var newUrl = GetParentFolderId(file.ServerRelativeUrl) + "/" + newTitle;
-            file.MoveTo(newUrl, MoveOperations.Overwrite);
-            clientContext.ExecuteQuery();
-
-            return MakeId(newUrl);
-        }
-
-        public string MoveFile(string id, string toFolderId)
-        {
-            SharePointProviderInfoHelper.PublishFile(MakeId(id), MakeId(GetParentFolderId(id)));
-            SharePointProviderInfoHelper.PublishFolder(MakeId(toFolderId));
-
-            var file = GetFileById(id);
-
-            if (file is SharePointFileErrorEntry) return MakeId();
-
-            var newUrl = toFolderId + "/" + file.Name;
             file.MoveTo(newUrl, MoveOperations.Overwrite);
             clientContext.ExecuteQuery();
 
@@ -394,21 +260,6 @@ namespace ASC.Files.Thirdparty.SharePoint
             clientContext.ExecuteQuery();
 
             return MakeId(newUrl);
-        }
-
-        public File CopyFile(string id, string toFolderId)
-        {
-            SharePointProviderInfoHelper.PublishFolder(MakeId(toFolderId), MakeId(GetParentFolderId(id)));
-
-            var file = GetFileById(id);
-
-            if (file is SharePointFileErrorEntry) return file;
-
-            var newUrl = toFolderId + "/" + file.Name;
-            file.CopyTo(newUrl, false);
-            clientContext.ExecuteQuery();
-
-            return file;
         }
 
         public async Task<File> CopyFileAsync(string id, string toFolderId)
@@ -495,7 +346,7 @@ namespace ASC.Files.Thirdparty.SharePoint
                 var folder = SharePointProviderInfoHelper.GetFolder(key);
                 if (folder == null)
                 {
-                    folder = GetFolderById(SpRootFolderId);
+                    folder = GetFolderByIdAsync(SpRootFolderId).Result;
                     SharePointProviderInfoHelper.AddFolder(key, folder);
                 }
                 return folder;
@@ -507,21 +358,6 @@ namespace ASC.Files.Thirdparty.SharePoint
         private TenantUtil TenantUtil { get; }
         public SharePointProviderInfoHelper SharePointProviderInfoHelper { get; }
         public TempStream TempStream { get; }
-
-        public Folder GetFolderById(object id)
-        {
-            var key = "spointd-" + MakeId(id);
-            var folder = SharePointProviderInfoHelper.GetFolder(key);
-            if (folder == null)
-            {
-                folder = GetFolder(id);
-                if (folder != null)
-                {
-                    SharePointProviderInfoHelper.AddFolder(key, folder);
-                }
-            }
-            return folder;
-        }
 
         public async Task<Folder> GetFolderByIdAsync(object id)
         {
@@ -535,32 +371,6 @@ namespace ASC.Files.Thirdparty.SharePoint
                     SharePointProviderInfoHelper.AddFolder(key, folder);
                 }
             }
-            return folder;
-        }
-
-        private Folder GetFolder(object id)
-        {
-            if ((string)id == "") id = SpRootFolderId;
-            var folder = clientContext.Web.GetFolderByServerRelativeUrl((string)id);
-            clientContext.Load(folder);
-            clientContext.Load(folder.Files, collection => collection.IncludeWithDefaultProperties(r => r.ListItemAllFields));
-            clientContext.Load(folder.Folders);
-
-            try
-            {
-                clientContext.ExecuteQuery();
-            }
-            catch (Exception ex)
-            {
-                SharePointProviderInfoHelper.PublishFolder(MakeId(GetParentFolderId(id)));
-                var serverException = (ServerException)ex;
-                if (serverException.ServerErrorTypeName == (typeof(FileNotFoundException)).ToString())
-                {
-                    return null;
-                }
-                return new SharePointFolderErrorEntry(folder.Context, folder.Path) { Error = ex.Message, ID = id };
-            }
-
             return folder;
         }
 
@@ -590,22 +400,9 @@ namespace ASC.Files.Thirdparty.SharePoint
             return folder;
         }
 
-        public Folder GetParentFolder(string serverRelativeUrl)
-        {
-            return GetFolderById(GetParentFolderId(serverRelativeUrl));
-        }
-
         public async Task<Folder> GetParentFolderAsync(string serverRelativeUrl)
         {
             return await GetFolderByIdAsync(GetParentFolderId(serverRelativeUrl)).ConfigureAwait(false);
-        }
-
-        public IEnumerable<File> GetFolderFiles(object id)
-        {
-            var folder = GetFolderById(id);
-            if (folder is SharePointFolderErrorEntry) return new List<File>();
-
-            return GetFolderById(id).Files;
         }
 
         public async Task<IEnumerable<File>> GetFolderFilesAsync(object id)
@@ -616,30 +413,12 @@ namespace ASC.Files.Thirdparty.SharePoint
             return folder.Files;
         }
 
-        public IEnumerable<Folder> GetFolderFolders(object id)
-        {
-            var folder = GetFolderById(id);
-            if (folder is SharePointFolderErrorEntry) return new List<Folder>();
-
-            return folder.Folders.ToList().Where(r => r.ServerRelativeUrl != SpRootFolderId + "/" + "Forms");
-        }
-
         public async Task<IEnumerable<Folder>> GetFolderFoldersAsync(object id)
         {
             var folder = await GetFolderByIdAsync(id).ConfigureAwait(false);
             if (folder is SharePointFolderErrorEntry) return new List<Folder>();
 
             return folder.Folders.ToList().Where(r => r.ServerRelativeUrl != SpRootFolderId + "/" + "Forms");
-        }
-
-        public object RenameFolder(object id, string newTitle)
-        {
-            SharePointProviderInfoHelper.PublishFolder(MakeId(id), MakeId(GetParentFolderId(id)));
-
-            var folder = GetFolderById(id);
-            if (folder is SharePointFolderErrorEntry) return MakeId(id);
-
-            return MakeId(MoveFld(folder, GetParentFolderId(id) + "/" + newTitle).ServerRelativeUrl);
         }
 
         public async Task<object> RenameFolderAsync(object id, string newTitle)
@@ -653,16 +432,6 @@ namespace ASC.Files.Thirdparty.SharePoint
             return MakeId(moveFld.ServerRelativeUrl);
         }
 
-        public string MoveFolder(string id, string toFolderId)
-        {
-            SharePointProviderInfoHelper.PublishFolder(MakeId(id), MakeId(GetParentFolderId(id)), MakeId(toFolderId));
-
-            var folder = GetFolderById(id);
-            if (folder is SharePointFolderErrorEntry) return MakeId(id);
-
-            return MakeId(MoveFld(folder, toFolderId + "/" + GetFolderById(id).Name).ServerRelativeUrl);
-        }
-
         public async Task<string> MoveFolderAsync(string id, string toFolderId)
         {
             await SharePointProviderInfoHelper.PublishFolderAsync(MakeId(id), MakeId(GetParentFolderId(id)), MakeId(toFolderId)).ConfigureAwait(false);
@@ -670,18 +439,9 @@ namespace ASC.Files.Thirdparty.SharePoint
             var folder = await GetFolderByIdAsync(id).ConfigureAwait(false);
             if (folder is SharePointFolderErrorEntry) return MakeId(id);
 
-            var folderName = await MoveFldAsync(folder, toFolderId + "/" + GetFolderById(id).Name).ConfigureAwait(false);
+            var nameById = await GetFolderByIdAsync(id).ConfigureAwait(false);
+            var folderName = await MoveFldAsync(folder, toFolderId + "/" + nameById.Name).ConfigureAwait(false);
             return MakeId(folderName.ServerRelativeUrl);
-        }
-
-        public Folder CopyFolder(object id, object toFolderId)
-        {
-            SharePointProviderInfoHelper.PublishFolder(MakeId(toFolderId));
-
-            var folder = GetFolderById(id);
-            if (folder is SharePointFolderErrorEntry) return folder;
-
-            return MoveFld(folder, toFolderId + "/" + GetFolderById(id).Name, false);
         }
 
         public async Task<Folder> CopyFolderAsync(object id, object toFolderId)
@@ -695,51 +455,25 @@ namespace ASC.Files.Thirdparty.SharePoint
             return await MoveFldAsync(folder, toFolderId + "/" + folderById.Name, false).ConfigureAwait(false);
         }
 
-        private Folder MoveFld(Folder folder, string newUrl, bool delete = true)
-        {
-            var newFolder = CreateFolder(newUrl);
-
-            if (delete)
-            {
-                folder.Folders.ToList().ForEach(r => MoveFolder(r.ServerRelativeUrl, newUrl));
-                folder.Files.ToList().ForEach(r => MoveFile(r.ServerRelativeUrl, newUrl));
-
-                folder.DeleteObject();
-                clientContext.ExecuteQuery();
-            }
-            else
-            {
-                folder.Folders.ToList().ForEach(r => CopyFolder(r.ServerRelativeUrl, newUrl));
-                folder.Files.ToList().ForEach(r => CopyFile(r.ServerRelativeUrl, newUrl));
-            }
-
-            return newFolder;
-        }
-
         private async Task<Folder> MoveFldAsync(Folder folder, string newUrl, bool delete = true)
         {
             var newFolder = await CreateFolderAsync(newUrl).ConfigureAwait(false);
 
             if (delete)
             {
-                folder.Folders.ToList().ForEach(r => MoveFolder(r.ServerRelativeUrl, newUrl));
-                folder.Files.ToList().ForEach(r => MoveFile(r.ServerRelativeUrl, newUrl));
+                folder.Folders.ToList().ForEach(r => MoveFolderAsync(r.ServerRelativeUrl, newUrl).Wait());
+                folder.Files.ToList().ForEach(r => MoveFileAsync(r.ServerRelativeUrl, newUrl).Wait());
 
                 folder.DeleteObject();
                 clientContext.ExecuteQuery();
             }
             else
             {
-                folder.Folders.ToList().ForEach(r => CopyFolder(r.ServerRelativeUrl, newUrl));
-                folder.Files.ToList().ForEach(r => CopyFile(r.ServerRelativeUrl, newUrl));
+                folder.Folders.ToList().ForEach(r => CopyFolderAsync(r.ServerRelativeUrl, newUrl).Wait());
+                folder.Files.ToList().ForEach(r => CopyFileAsync(r.ServerRelativeUrl, newUrl).Wait());
             }
 
             return newFolder;
-        }
-
-        public Folder CreateFolder(string id)
-        {
-            return CreateFolderAsync(id).Result;
         }
 
         public async Task<Folder> CreateFolderAsync(string id)
@@ -750,11 +484,6 @@ namespace ASC.Files.Thirdparty.SharePoint
 
             await SharePointProviderInfoHelper.CreateFolderAsync(id, MakeId(GetParentFolderId(id)), folder).ConfigureAwait(false);
             return folder;
-        }
-
-        public void DeleteFolder(string id)
-        {
-            DeleteFolderAsync(id).Wait();
         }
 
         public async Task DeleteFolderAsync(string id)
@@ -895,29 +624,14 @@ namespace ASC.Files.Thirdparty.SharePoint
             }, CacheNotifyAction.Remove);
         }
 
-        public void Invalidate()
-        {
-            Notify.Publish(new SharePointProviderCacheItem { }, CacheNotifyAction.Remove);
-        }
-
         public async Task InvalidateAsync()
         {
             await Notify.PublishAsync(new SharePointProviderCacheItem { }, CacheNotifyAction.Remove).ConfigureAwait(false);
-        }
-        public void PublishFolder(string id)
-        {
-            Notify.Publish(new SharePointProviderCacheItem { FolderKey = id }, CacheNotifyAction.Remove);
         }
 
         public async Task PublishFolderAsync(string id)
         {
             await Notify.PublishAsync(new SharePointProviderCacheItem { FolderKey = id }, CacheNotifyAction.Remove).ConfigureAwait(false);
-        }
-
-        public void PublishFolder(string id1, string id2)
-        {
-            PublishFolder(id1);
-            PublishFolder(id2);
         }
 
         public async Task PublishFolderAsync(string id1, string id2)
@@ -926,32 +640,15 @@ namespace ASC.Files.Thirdparty.SharePoint
             await PublishFolderAsync(id2).ConfigureAwait(false);
         }
 
-        public void PublishFolder(string id1, string id2, string id3)
-        {
-            PublishFolder(id1, id2);
-            PublishFolder(id3);
-        }
-
         public async Task PublishFolderAsync(string id1, string id2, string id3)
         {
             await PublishFolderAsync(id1, id2).ConfigureAwait(false);
             await PublishFolderAsync(id3).ConfigureAwait(false);
         }
 
-        public void PublishFile(string fileId, string folderId)
-        {
-            Notify.Publish(new SharePointProviderCacheItem { FileKey = fileId, FolderKey = folderId }, CacheNotifyAction.Remove);
-        }
-
         public async Task PublishFileAsync(string fileId, string folderId)
         {
             await Notify.PublishAsync(new SharePointProviderCacheItem { FileKey = fileId, FolderKey = folderId }, CacheNotifyAction.Remove).ConfigureAwait(false);
-        }
-
-        public void CreateFolder(string id, string parentFolderId, Folder folder)
-        {
-            PublishFolder(parentFolderId);
-            FolderCache.Insert("spointd-" + id, folder, DateTime.UtcNow.Add(CacheExpiration));
         }
 
         public async Task CreateFolderAsync(string id, string parentFolderId, Folder folder)

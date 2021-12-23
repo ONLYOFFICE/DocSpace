@@ -198,28 +198,9 @@ namespace ASC.Files.Thirdparty.Box
             return file;
         }
 
-        public Folder<string> GetRootFolder(string folderId)
-        {
-            return ToFolder(GetBoxFolder("0"));
-        }
-
         public async Task<Folder<string>> GetRootFolderAsync(string folderId)
         {
             return ToFolder(await GetBoxFolderAsync("0"));
-        }
-
-        protected BoxFolder GetBoxFolder(string folderId)
-        {
-            var boxFolderId = MakeBoxId(folderId);
-            try
-            {
-                var folder = ProviderInfo.GetBoxFolder(boxFolderId);
-                return folder;
-            }
-            catch (Exception ex)
-            {
-                return new ErrorFolder(ex, boxFolderId);
-            }
         }
 
         protected async Task<BoxFolder> GetBoxFolderAsync(string folderId)
@@ -233,20 +214,6 @@ namespace ASC.Files.Thirdparty.Box
             catch (Exception ex)
             {
                 return new ErrorFolder(ex, boxFolderId);
-            }
-        }
-
-        protected BoxFile GetBoxFile(string fileId)
-        {
-            var boxFileId = MakeBoxId(fileId);
-            try
-            {
-                var file = ProviderInfo.GetBoxFile(boxFileId);
-                return file;
-            }
-            catch (Exception ex)
-            {
-                return new ErrorFile(ex, boxFileId);
             }
         }
 
@@ -278,7 +245,7 @@ namespace ASC.Files.Thirdparty.Box
         protected List<BoxItem> GetBoxItems(string parentId, bool? folder = null)
         {
             var boxFolderId = MakeBoxId(parentId);
-            var items = ProviderInfo.GetBoxItems(boxFolderId);
+            var items = ProviderInfo.GetBoxItemsAsync(boxFolderId).Result;
 
             if (folder.HasValue)
             {

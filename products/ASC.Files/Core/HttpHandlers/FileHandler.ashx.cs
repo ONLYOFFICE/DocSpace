@@ -930,7 +930,7 @@ namespace ASC.Web.Files
                 context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue(".zip"));
                 context.Response.ContentType = MimeMapping.GetMimeMapping(".zip");
 
-                using var stream = fileDao.GetDifferenceStream(file);
+                using var stream = await fileDao.GetDifferenceStreamAsync(file);
                 context.Response.Headers.Add("Content-Length", stream.Length.ToString(CultureInfo.InvariantCulture));
                 await stream.CopyToAsync(context.Response.Body);
             }
@@ -1078,7 +1078,7 @@ namespace ASC.Web.Files
             Folder<T> folder;
 
             var folderDao = DaoFactory.GetFolderDao<T>();
-            folder = folderDao.GetFolder(folderId);
+            folder = folderDao.GetFolderAsync(folderId).Result;
 
             if (folder == null) throw new HttpException((int)HttpStatusCode.NotFound, FilesCommonResource.ErrorMassage_FolderNotFound);
             if (!FileSecurity.CanCreate(folder)) throw new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException_Create);

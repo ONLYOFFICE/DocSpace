@@ -77,19 +77,9 @@ namespace ASC.Files.Thirdparty.Dropbox
             FolderDao = folderDao;
         }
 
-        public Folder<string> GetFolder(string folderId)
-        {
-            return GetFolderAsync(folderId).Result;
-        }
-
         public async Task<Folder<string>> GetFolderAsync(string folderId)
         {
             return ToFolder(await GetDropboxFolderAsync(folderId).ConfigureAwait(false));
-        }
-
-        public Folder<string> GetFolder(string title, string parentId)
-        {
-            return GetFolderAsync(title, parentId).Result;
         }
 
         public async Task<Folder<string>> GetFolderAsync(string title, string parentId)
@@ -102,19 +92,9 @@ namespace ASC.Files.Thirdparty.Dropbox
                        : ToFolder(metadata.AsFolder);
         }
 
-        public Folder<string> GetRootFolderByFile(string fileId)
-        {
-            return GetRootFolderByFileAsync(fileId).Result;
-        }
-
         public async Task<Folder<string>> GetRootFolderByFileAsync(string fileId)
         {
             return await GetRootFolderAsync(fileId).ConfigureAwait(false);
-        }
-
-        public List<Folder<string>> GetFolders(string parentId)
-        {
-            return GetDropboxItems(parentId, true).Select(item => ToFolder(item.AsFolder)).ToList();
         }
 
         public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
@@ -124,11 +104,6 @@ namespace ASC.Files.Thirdparty.Dropbox
             {
                 yield return ToFolder(i.AsFolder);
             }
-        }
-
-        public List<Folder<string>> GetFolders(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
-        {
-            return GetFoldersAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, withSubfolders).ToListAsync().Result;
         }
 
         public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
@@ -165,11 +140,6 @@ namespace ASC.Files.Thirdparty.Dropbox
             return folders;
         }
 
-        public List<Folder<string>> GetFolders(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
-        {
-            return GetFoldersAsync(folderIds, filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare).ToListAsync().Result;
-        }
-
         public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
         {
             if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
@@ -193,11 +163,6 @@ namespace ASC.Files.Thirdparty.Dropbox
             return folders;
         }
 
-        public List<Folder<string>> GetParentFolders(string folderId)
-        {
-            return GetParentFoldersAsync(folderId).Result;
-        }
-
         public async Task<List<Folder<string>>> GetParentFoldersAsync(string folderId)
         {
             var path = new List<Folder<string>>();
@@ -219,11 +184,6 @@ namespace ASC.Files.Thirdparty.Dropbox
 
             path.Reverse();
             return path;
-        }
-
-        public string SaveFolder(Folder<string> folder)
-        {
-            return SaveFolderAsync(folder).Result;
         }
 
         public async Task<string> SaveFolderAsync(Folder<string> folder)
@@ -251,20 +211,10 @@ namespace ASC.Files.Thirdparty.Dropbox
             return null;
         }
 
-        public bool IsExist(string title, string folderId)
-        {
-            return IsExistAsync(title, folderId).Result;
-        }
-
         public async Task<bool> IsExistAsync(string title, string folderId)
         {
             var items = await GetDropboxItemsAsync(folderId, true).ConfigureAwait(false);
             return items.Any(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
-        }
-
-        public void DeleteFolder(string folderId)
-        {
-            DeleteFolderAsync(folderId).Wait();
         }
 
         public async Task DeleteFolderAsync(string folderId)
@@ -316,11 +266,6 @@ namespace ASC.Files.Thirdparty.Dropbox
             if (parentFolderPath != null) await ProviderInfo.CacheResetAsync(parentFolderPath).ConfigureAwait(false);
         }
 
-        public TTo MoveFolder<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
-        {
-            return MoveFolderAsync(folderId, toFolderId, cancellationToken).Result;
-        }
-
         public async Task<TTo> MoveFolderAsync<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
         {
             if (toFolderId is int tId)
@@ -336,16 +281,6 @@ namespace ASC.Files.Thirdparty.Dropbox
             throw new NotImplementedException();
         }
 
-        public int MoveFolder(string folderId, int toFolderId, CancellationToken? cancellationToken)
-        {
-            var moved = CrossDao.PerformCrossDaoFolderCopy(
-                folderId, this, DropboxDaoSelector.GetFileDao(folderId), DropboxDaoSelector.ConvertId,
-                toFolderId, FolderDao, FileDao, r => r,
-                true, cancellationToken);
-
-            return moved.ID;
-        }
-
         public async Task<int> MoveFolderAsync(string folderId, int toFolderId, CancellationToken? cancellationToken)
         {
             var moved = await CrossDao.PerformCrossDaoFolderCopyAsync(
@@ -355,11 +290,6 @@ namespace ASC.Files.Thirdparty.Dropbox
                 .ConfigureAwait(false);
 
             return moved.ID;
-        }
-
-        public string MoveFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
-        {
-            return MoveFolderAsync(folderId, toFolderId, cancellationToken).Result;
         }
 
         public async Task<string> MoveFolderAsync(string folderId, string toFolderId, CancellationToken? cancellationToken)
@@ -381,11 +311,6 @@ namespace ASC.Files.Thirdparty.Dropbox
             return MakeId(dropboxFolder);
         }
 
-        public Folder<TTo> CopyFolder<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
-        {
-            return CopyFolderAsync(folderId, toFolderId, cancellationToken).Result;
-        }
-
         public async Task<Folder<TTo>> CopyFolderAsync<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
         {
             if (toFolderId is int tId)
@@ -401,11 +326,6 @@ namespace ASC.Files.Thirdparty.Dropbox
             throw new NotImplementedException();
         }
 
-        public Folder<int> CopyFolder(string folderId, int toFolderId, CancellationToken? cancellationToken)
-        {
-            return CopyFolderAsync(folderId, toFolderId, cancellationToken).Result;
-        }
-
         public async Task<Folder<int>> CopyFolderAsync(string folderId, int toFolderId, CancellationToken? cancellationToken)
         {
             var moved = await CrossDao.PerformCrossDaoFolderCopyAsync(
@@ -415,11 +335,6 @@ namespace ASC.Files.Thirdparty.Dropbox
                 .ConfigureAwait(false);
 
             return moved;
-        }
-
-        public Folder<string> CopyFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
-        {
-            return CopyFolderAsync(folderId, toFolderId, cancellationToken).Result;
         }
 
         public async Task<Folder<string>> CopyFolderAsync(string folderId, string toFolderId, CancellationToken? cancellationToken)
@@ -439,21 +354,6 @@ namespace ASC.Files.Thirdparty.Dropbox
             return ToFolder(newDropboxFolder);
         }
 
-        public IDictionary<string, string> CanMoveOrCopy<TTo>(string[] folderIds, TTo to)
-        {
-            if (to is int tId)
-            {
-                return CanMoveOrCopy(folderIds, tId);
-            }
-
-            if (to is string tsId)
-            {
-                return CanMoveOrCopy(folderIds, tsId);
-            }
-
-            throw new NotImplementedException();
-        }
-
         public async Task<IDictionary<string, string>> CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
         {
             if (to is int tId)
@@ -469,29 +369,14 @@ namespace ASC.Files.Thirdparty.Dropbox
             throw new NotImplementedException();
         }
 
-        public IDictionary<string, string> CanMoveOrCopy(string[] folderIds, string to)
-        {
-            return new Dictionary<string, string>();
-        }
-
         public Task<IDictionary<string, string>> CanMoveOrCopyAsync(string[] folderIds, string to)
         {
             return Task.FromResult((IDictionary<string, string>)new Dictionary<string, string>());
         }
 
-        public IDictionary<string, string> CanMoveOrCopy(string[] folderIds, int to)
-        {
-            return new Dictionary<string, string>();
-        }
-
         public Task<IDictionary<string, string>> CanMoveOrCopyAsync(string[] folderIds, int to)
         {
             return Task.FromResult((IDictionary<string, string>)new Dictionary<string, string>());
-        }
-
-        public string RenameFolder(Folder<string> folder, string newTitle)
-        {
-            return RenameFolderAsync(folder, newTitle).Result;
         }
 
         public async Task<string> RenameFolderAsync(Folder<string> folder, string newTitle)
@@ -519,19 +404,9 @@ namespace ASC.Files.Thirdparty.Dropbox
             return MakeId(dropboxFolder);
         }
 
-        public int GetItemsCount(string folderId)
-        {
-            return GetItemsCountAsync(folderId).Result;
-        }
-
         public Task<int> GetItemsCountAsync(string folderId)
         {
             throw new NotImplementedException();
-        }
-
-        public bool IsEmpty(string folderId)
-        {
-            return IsEmptyAsync(folderId).Result;
         }
 
         public async Task<bool> IsEmptyAsync(string folderId)
@@ -565,13 +440,6 @@ namespace ASC.Files.Thirdparty.Dropbox
         public bool CanCalculateSubitems(string entryId)
         {
             return false;
-        }
-
-        public long GetMaxUploadSize(string folderId, bool chunkedUpload)
-        {
-            var storageMaxUploadSize = ProviderInfo.Storage.MaxChunkedUploadFileSize;
-
-            return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, SetupInfo.AvailableFileSize);
         }
 
         public Task<long> GetMaxUploadSizeAsync(string folderId, bool chunkedUpload)

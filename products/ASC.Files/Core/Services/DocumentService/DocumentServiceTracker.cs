@@ -655,7 +655,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 using var stream = response.Content.ReadAsStream();
 
                 using var differenceStream = new ResponseStream(stream, stream.Length);
-                fileDao.SaveEditHistory(file, changes, differenceStream);
+                fileDao.SaveEditHistoryAsync(file, changes, differenceStream).Wait();
             }
             catch (Exception ex)
             {

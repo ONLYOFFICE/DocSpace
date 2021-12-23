@@ -210,11 +210,6 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             return file;
         }
 
-        public Folder<string> GetRootFolder(string folderId)
-        {
-            return ToFolder(GetDriveEntry(""));
-        }
-
         public async Task<Folder<string>> GetRootFolderAsync(string folderId)
         {
             return ToFolder(await GetDriveEntryAsync(""));
@@ -225,7 +220,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             var driveId = MakeDriveId(entryId);
             try
             {
-                var entry = ProviderInfo.GetDriveEntry(driveId);
+                var entry = ProviderInfo.GetDriveEntryAsync(driveId).Result;
                 return entry;
             }
             catch (Exception ex)
@@ -262,7 +257,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         protected List<DriveFile> GetDriveEntries(object parentId, bool? folder = null)
         {
             var parentDriveId = MakeDriveId(parentId);
-            var entries = ProviderInfo.GetDriveEntries(parentDriveId, folder);
+            var entries = ProviderInfo.GetDriveEntriesAsync(parentDriveId, folder).Result;
             return entries;
         }
 

@@ -186,11 +186,6 @@ namespace ASC.Files.Thirdparty.OneDrive
             return file;
         }
 
-        public Folder<string> GetRootFolder(string folderId)
-        {
-            return ToFolder(GetOneDriveItem(""));
-        }
-
         public async Task<Folder<string>> GetRootFolderAsync(string folderId)
         {
             return ToFolder(await GetOneDriveItemAsync(""));
@@ -201,7 +196,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             var onedriveId = MakeOneDriveId(itemId);
             try
             {
-                return ProviderInfo.GetOneDriveItem(onedriveId);
+                return ProviderInfo.GetOneDriveItemAsync(onedriveId).Result;
             }
             catch (Exception ex)
             {
@@ -236,7 +231,7 @@ namespace ASC.Files.Thirdparty.OneDrive
         protected List<Item> GetOneDriveItems(string parentId, bool? folder = null)
         {
             var onedriveFolderId = MakeOneDriveId(parentId);
-            var items = ProviderInfo.GetOneDriveItems(onedriveFolderId);
+            var items = ProviderInfo.GetOneDriveItemsAsync(onedriveFolderId).Result;
 
             if (folder.HasValue)
             {

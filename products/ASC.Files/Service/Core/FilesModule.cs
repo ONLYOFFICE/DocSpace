@@ -114,19 +114,19 @@ namespace ASC.Files.Service.Core
 
         public override IEnumerable<Tuple<Feed.Aggregator.Feed, object>> GetFeeds(FeedFilter filter)
         {
-            var files = FileDao.GetFeeds(filter.Tenant, filter.Time.From, filter.Time.To)
+            var files = FileDao.GetFeedsAsync(filter.Tenant, filter.Time.From, filter.Time.To).Result
                 .Where(f => f.Item1.RootFolderType != FolderType.TRASH && f.Item1.RootFolderType != FolderType.BUNCH)
                 .ToList();
 
             var folderIDs = files.Select(r => r.Item1.FolderID).ToList();
-            var folders = FolderDao.GetFolders(folderIDs, checkShare: false);
+            var folders = FolderDao.GetFoldersAsync(folderIDs, checkShare: false).ToListAsync().Result;
 
             return files.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, folders.FirstOrDefault(r => r.ID.Equals(f.Item1.FolderID))), f));
         }
 
         public override IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
         {
-            return FileDao.GetTenantsWithFeeds(fromTime);
+            return FileDao.GetTenantsWithFeedsAsync(fromTime).Result;
         }
 
         private Feed.Aggregator.Feed ToFeed((File<int>, SmallShareRecord) tuple, Folder<int> rootFolder)

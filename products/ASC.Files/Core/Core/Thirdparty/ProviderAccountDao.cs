@@ -116,20 +116,10 @@ namespace ASC.Files.Thirdparty
             ThirdpartyConfiguration = thirdpartyConfiguration;
         }
 
-        public virtual IProviderInfo GetProviderInfo(int linkId)
-        {
-            return GetProviderInfoAsync(linkId).Result;
-        }
-
         public virtual async Task<IProviderInfo> GetProviderInfoAsync(int linkId)
         {
             var providersInfo = GetProvidersInfoInternalAsync(linkId);
             return await providersInfo.SingleAsync().ConfigureAwait(false);
-        }
-
-        public virtual List<IProviderInfo> GetProvidersInfo()
-        {
-            return GetProvidersInfoAsync().ToListAsync().Result;
         }
 
         public virtual IAsyncEnumerable<IProviderInfo> GetProvidersInfoAsync()
@@ -137,19 +127,9 @@ namespace ASC.Files.Thirdparty
             return GetProvidersInfoInternalAsync();
         }
 
-        public virtual List<IProviderInfo> GetProvidersInfo(FolderType folderType, string searchText = null)
-        {
-            return GetProvidersInfoAsync(folderType, searchText).ToListAsync().Result;
-        }
-
         public virtual IAsyncEnumerable<IProviderInfo> GetProvidersInfoAsync(FolderType folderType, string searchText = null)
         {
             return GetProvidersInfoInternalAsync(folderType: folderType, searchText: searchText);
-        }
-
-        public virtual List<IProviderInfo> GetProvidersInfo(Guid userId)
-        {
-            return GetProvidersInfoAsync(userId).ToListAsync().Result;
         }
 
         public virtual IAsyncEnumerable<IProviderInfo> GetProvidersInfoAsync(Guid userId)
@@ -197,11 +177,6 @@ namespace ASC.Files.Thirdparty
             }
         }
 
-        public virtual int SaveProviderInfo(string providerKey, string customerTitle, AuthData authData, FolderType folderType)
-        {
-            return SaveProviderInfoAsync(providerKey, customerTitle, authData, folderType).Result;
-        }
-
         public virtual async Task<int> SaveProviderInfoAsync(string providerKey, string customerTitle, AuthData authData, FolderType folderType)
         {
             ProviderTypes prKey;
@@ -242,12 +217,7 @@ namespace ASC.Files.Thirdparty
 
         public bool CheckProviderInfo(IProviderInfo providerInfo)
         {
-            return providerInfo != null && providerInfo.CheckAccess();
-        }
-
-        public virtual int UpdateProviderInfo(int linkId, AuthData authData)
-        {
-            return UpdateProviderInfoAsync(linkId, authData).Result;
+            return providerInfo != null && providerInfo.CheckAccessAsync().Result;
         }
 
         public virtual async Task<int> UpdateProviderInfoAsync(int linkId, AuthData authData)
@@ -270,11 +240,6 @@ namespace ASC.Files.Thirdparty
             await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
             return forUpdate.Count == 1 ? linkId : default;
-        }
-
-        public virtual int UpdateProviderInfo(int linkId, string customerTitle, AuthData newAuthData, FolderType folderType, Guid? userId = null)
-        {
-            return UpdateProviderInfoAsync(linkId, customerTitle, newAuthData, folderType, userId).Result;
         }
 
         public virtual async Task<int> UpdateProviderInfoAsync(int linkId, string customerTitle, AuthData newAuthData, FolderType folderType, Guid? userId = null)
@@ -356,15 +321,10 @@ namespace ASC.Files.Thirdparty
             return toUpdate.Count == 1 ? linkId : default;
         }
 
-        public virtual void RemoveProviderInfo(int linkId)
-        {
-            RemoveProviderInfoAsync(linkId).Wait();
-        }
-
         public virtual async Task RemoveProviderInfoAsync(int linkId)
         {
             using var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false);
-            var folderId = GetProviderInfo(linkId).RootFolderId.ToString();
+            var folderId = (await GetProviderInfoAsync(linkId)).RootFolderId.ToString();
 
             var entryIDs = await FilesDbContext.ThirdpartyIdMapping
                 .AsQueryable()

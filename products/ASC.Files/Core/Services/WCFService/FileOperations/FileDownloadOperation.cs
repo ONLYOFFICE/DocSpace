@@ -295,7 +295,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
             if (0 < Folders.Count)
             {
-                FilesSecurity.FilterRead(FolderDao.GetFolders(Files)).Cast<FileEntry<T>>().ToList()
+                FilesSecurity.FilterRead(FolderDao.GetFoldersAsync(Files).ToListAsync().Result).Cast<FileEntry<T>>().ToList()
                              .ForEach(folder => fileMarker.RemoveMarkAsNew(folder));
 
                 var filesInFolder = GetFilesInFolders(scope, Folders, string.Empty);
@@ -316,7 +316,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
             if (0 < Folders.Count)
             {
-                FilesSecurity.FilterRead(FolderDao.GetFolders(Files)).Cast<FileEntry<T>>().ToList()
+                FilesSecurity.FilterRead(FolderDao.GetFoldersAsync(Files).ToListAsync().Result).Cast<FileEntry<T>>().ToList()
                              .ForEach(folder => fileMarker.RemoveMarkAsNew(folder));
 
                 var filesInFolder = GetFilesInFolders(scope, Folders, string.Empty);
@@ -336,7 +336,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 CancellationToken.ThrowIfCancellationRequested();
 
-                var folder = FolderDao.GetFolder(folderId);
+                var folder = FolderDao.GetFolderAsync(folderId).Result;
                 if (folder == null || !FilesSecurity.CanRead(folder)) continue;
                 var folderPath = path + folder.Title + "/";
 
@@ -346,7 +346,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                 fileMarker.RemoveMarkAsNew(folder);
 
-                var nestedFolders = FolderDao.GetFolders(folder.ID);
+                var nestedFolders = FolderDao.GetFoldersAsync(folder.ID).ToListAsync().Result;
                 nestedFolders = FilesSecurity.FilterRead(nestedFolders).ToList();
                 if (files.Count == 0 && nestedFolders.Count == 0)
                 {

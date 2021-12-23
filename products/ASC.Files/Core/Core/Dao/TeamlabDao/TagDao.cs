@@ -84,11 +84,6 @@ namespace ASC.Files.Core.Data
         {
         }
 
-        public IEnumerable<Tag> GetTags(Guid subject, TagType tagType, IEnumerable<FileEntry<T>> fileEntries)
-        {
-            return GetTagsAsync(subject, tagType, fileEntries).ToListAsync().Result;
-        }
-
         public async IAsyncEnumerable<Tag> GetTagsAsync(Guid subject, TagType tagType, IEnumerable<FileEntry<T>> fileEntries)
         {
             var filesId = new HashSet<string>();
@@ -139,11 +134,6 @@ ctx.Tag
 .Where(r => subject == Guid.Empty || r.Link.CreateBy == subject)
 );
 
-        public IDictionary<object, IEnumerable<Tag>> GetTags(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<T>> fileEntries)
-        {
-            return GetTagsAsync(subject, tagType, fileEntries).Result;
-        }
-
         public async Task<IDictionary<object, IEnumerable<Tag>>> GetTagsAsync(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<T>> fileEntries)
         {
             var filesId = new HashSet<string>();
@@ -177,20 +167,9 @@ ctx.Tag
             return new Dictionary<object, IEnumerable<Tag>>();
         }
 
-        public IEnumerable<Tag> GetTags(TagType tagType, IEnumerable<FileEntry<T>> fileEntries)
-        {
-            return GetTagsAsync(tagType, fileEntries).ToListAsync().Result;
-        }
-
         public IAsyncEnumerable<Tag> GetTagsAsync(TagType tagType, IEnumerable<FileEntry<T>> fileEntries)
         {
             return GetTagsAsync(Guid.Empty, tagType, fileEntries);
-        }
-
-
-        public IEnumerable<Tag> GetTags(T entryID, FileEntryType entryType, TagType tagType)
-        {
-            return GetTagsAsync(entryID, entryType, tagType).ToListAsync().Result;
         }
 
         public async IAsyncEnumerable<Tag> GetTagsAsync(T entryID, FileEntryType entryType, TagType tagType)
@@ -206,11 +185,6 @@ ctx.Tag
             {
                 yield return e;
             }
-        }
-
-        public IEnumerable<Tag> GetTags(string[] names, TagType tagType)
-        {
-            return GetTagsAsync(names, tagType).ToListAsync().Result;
         }
 
         public async IAsyncEnumerable<Tag> GetTagsAsync(string[] names, TagType tagType)
@@ -230,21 +204,11 @@ ctx.Tag
             }
         }
 
-        public IEnumerable<Tag> GetTags(string name, TagType tagType)
-        {
-            return GetTagsAsync(name, tagType).ToListAsync().Result;
-        }
-
         public IAsyncEnumerable<Tag> GetTagsAsync(string name, TagType tagType)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("name");
 
             return GetTagsAsync(new[] { name }, tagType);
-        }
-
-        public IEnumerable<Tag> GetTags(Guid owner, TagType tagType)
-        {
-            return GetTagsAsync(owner, tagType).ToListAsync().Result;
         }
 
         public async IAsyncEnumerable<Tag> GetTagsAsync(Guid owner, TagType tagType)
@@ -729,19 +693,9 @@ ctx.Tag
                     .Where(r => folderType != FolderType.USER || r.UserId == subject)
                     .Select(r => r.Id));
 
-        public IEnumerable<Tag> GetNewTags(Guid subject, FileEntry<T> fileEntry)
-        {
-            return GetNewTagsAsync(subject, fileEntry).ToListAsync().Result;
-        }
-
         public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, FileEntry<T> fileEntry)
         {
             return GetNewTagsAsync(subject, new List<FileEntry<T>>(1) { fileEntry });
-        }
-
-        public IEnumerable<Tag> GetNewTags(Guid subject, IEnumerable<FileEntry<T>> fileEntries)
-        {
-            return GetNewTagsAsync(subject, fileEntries).ToListAsync().Result;
         }
 
         public async IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, IEnumerable<FileEntry<T>> fileEntries)
@@ -789,11 +743,6 @@ ctx.Tag
             }
 
             yield break;
-        }
-
-        public IEnumerable<Tag> GetNewTags(Guid subject, Folder<T> parentFolder, bool deepSearch)
-        {
-            return GetNewTagsAsync(subject, parentFolder, deepSearch).ToListAsync().Result;
         }
 
         public async IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, Folder<T> parentFolder, bool deepSearch)
@@ -877,11 +826,6 @@ ctx.Tag
             {
                 yield return e;
             }
-        }
-
-        protected List<Tag> FromQuery(IQueryable<TagLinkData> dbFilesTags)
-        {
-            return FromQueryAsync(dbFilesTags).ToListAsync().Result;
         }
 
         protected async IAsyncEnumerable<Tag> FromQueryAsync(IQueryable<TagLinkData> dbFilesTags)

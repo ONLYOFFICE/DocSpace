@@ -51,11 +51,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
         }
 
-        public Folder<string> GetFolder(string folderId)
-        {
-            return GetFolderAsync(folderId).Result;
-        }
-
         public async Task<Folder<string>> GetFolderAsync(string folderId)
         {
             var selector = GetSelector(folderId);
@@ -72,20 +67,10 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return result;
         }
 
-        public Folder<string> GetFolder(string title, string parentId)
-        {
-            return GetFolderAsync(title, parentId).Result;
-        }
-
         public async Task<Folder<string>> GetFolderAsync(string title, string parentId)
         {
             var selector = GetSelector(parentId);
             return await selector.GetFolderDao(parentId).GetFolderAsync(title, selector.ConvertId(parentId)).ConfigureAwait(false);
-        }
-
-        public Folder<string> GetRootFolder(string folderId)
-        {
-            return GetRootFolderAsync(folderId).Result;
         }
 
         public async Task<Folder<string>> GetRootFolderAsync(string folderId)
@@ -95,21 +80,11 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return await folderDao.GetRootFolderAsync(selector.ConvertId(folderId)).ConfigureAwait(false);
         }
 
-        public Folder<string> GetRootFolderByFile(string fileId)
-        {
-            return GetRootFolderByFileAsync(fileId).Result;
-        }
-
         public async Task<Folder<string>> GetRootFolderByFileAsync(string fileId)
         {
             var selector = GetSelector(fileId);
             var folderDao = selector.GetFolderDao(fileId);
             return await folderDao.GetRootFolderByFileAsync(selector.ConvertId(fileId)).ConfigureAwait(false);
-        }
-
-        public List<Folder<string>> GetFolders(string parentId)
-        {
-            return GetFoldersAsync(parentId).ToListAsync().Result;
         }
 
         public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
@@ -118,11 +93,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
             var folderDao = selector.GetFolderDao(parentId);
             var folders = folderDao.GetFoldersAsync(selector.ConvertId(parentId));
             return folders.Where(r => r != null);
-        }
-
-        public List<Folder<string>> GetFolders(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
-        {
-            return GetFoldersAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, withSubfolders).ToListAsync().Result;
         }
 
         public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
@@ -138,11 +108,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
             {
                 yield return r;
             }
-        }
-
-        public List<Folder<string>> GetFolders(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
-        {
-            return GetFoldersAsync(folderIds, filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare).ToListAsync().Result;
         }
 
         public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
@@ -171,11 +136,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return result.Distinct();
         }
 
-        public List<Folder<string>> GetParentFolders(string folderId)
-        {
-            return GetParentFoldersAsync(folderId).Result;
-        }
-
         public async Task<List<Folder<string>>> GetParentFoldersAsync(string folderId)
         {
             var selector = GetSelector(folderId);
@@ -183,10 +143,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return await folderDao.GetParentFoldersAsync(selector.ConvertId(folderId)).ConfigureAwait(false);
         }
 
-        public string SaveFolder(Folder<string> folder)
-        {
-            return SaveFolderAsync(folder).Result;
-        }
 
         public async Task<string> SaveFolderAsync(Folder<string> folder)
         {
@@ -216,21 +172,11 @@ namespace ASC.Files.Thirdparty.ProviderDao
             throw new ArgumentException("No folder id or parent folder id to determine provider");
         }
 
-        public void DeleteFolder(string folderId)
-        {
-            DeleteFolderAsync(folderId).Wait();
-        }
-
         public async Task DeleteFolderAsync(string folderId)
         {
             var selector = GetSelector(folderId);
             var folderDao = selector.GetFolderDao(folderId);
             await folderDao.DeleteFolderAsync(selector.ConvertId(folderId)).ConfigureAwait(false);
-        }
-
-        public TTo MoveFolder<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
-        {
-            return MoveFolderAsync(folderId, toFolderId, cancellationToken).Result;
         }
 
         public async Task<TTo> MoveFolderAsync<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
@@ -248,11 +194,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
             throw new NotImplementedException();
         }
 
-        public string MoveFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
-        {
-            return MoveFolderAsync(folderId, toFolderId, cancellationToken).Result;
-        }
-
         public async Task<string> MoveFolderAsync(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
             var selector = GetSelector(folderId);
@@ -265,20 +206,10 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return await folderDao.MoveFolderAsync(selector.ConvertId(folderId), selector.ConvertId(toFolderId), null).ConfigureAwait(false);
         }
 
-        public int MoveFolder(string folderId, int toFolderId, CancellationToken? cancellationToken)
-        {
-            return MoveFolderAsync(folderId, toFolderId, cancellationToken).Result;
-        }
-
         public async Task<int> MoveFolderAsync(string folderId, int toFolderId, CancellationToken? cancellationToken)
         {
             var newFolder = await PerformCrossDaoFolderCopyAsync(folderId, toFolderId, true, cancellationToken).ConfigureAwait(false);
             return newFolder.ID;
-        }
-
-        public Folder<TTo> CopyFolder<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
-        {
-            return CopyFolderAsync(folderId, toFolderId, cancellationToken).Result;
         }
 
         public async Task<Folder<TTo>> CopyFolderAsync<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
@@ -296,19 +227,9 @@ namespace ASC.Files.Thirdparty.ProviderDao
             throw new NotImplementedException();
         }
 
-        public Folder<int> CopyFolder(string folderId, int toFolderId, CancellationToken? cancellationToken)
-        {
-            return CopyFolderAsync(folderId, toFolderId, cancellationToken).Result;
-        }
-
         public async Task<Folder<int>> CopyFolderAsync(string folderId, int toFolderId, CancellationToken? cancellationToken)
         {
             return await PerformCrossDaoFolderCopyAsync(folderId, toFolderId, false, cancellationToken).ConfigureAwait(false);
-        }
-
-        public Folder<string> CopyFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
-        {
-            return CopyFolderAsync(folderId, toFolderId, cancellationToken).Result;
         }
 
         public async Task<Folder<string>> CopyFolderAsync(string folderId, string toFolderId, CancellationToken? cancellationToken)
@@ -318,21 +239,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return IsCrossDao(folderId, toFolderId)
                     ? await PerformCrossDaoFolderCopyAsync(folderId, toFolderId, false, cancellationToken).ConfigureAwait(false)
                     : await folderDao.CopyFolderAsync(selector.ConvertId(folderId), selector.ConvertId(toFolderId), null).ConfigureAwait(false);
-        }
-
-        public IDictionary<string, string> CanMoveOrCopy<TTo>(string[] folderIds, TTo to)
-        {
-            if (to is int tId)
-            {
-                return CanMoveOrCopy(folderIds, tId);
-            }
-
-            if (to is string tsId)
-            {
-                return CanMoveOrCopy(folderIds, tsId);
-            }
-
-            throw new NotImplementedException();
         }
 
         public async Task<IDictionary<string, string>> CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
@@ -350,27 +256,9 @@ namespace ASC.Files.Thirdparty.ProviderDao
             throw new NotImplementedException();
         }
 
-        public IDictionary<string, string> CanMoveOrCopy(string[] folderIds, int to)
-        {
-            return new Dictionary<string, string>();
-        }
-
         public Task<IDictionary<string, string>> CanMoveOrCopyAsync(string[] folderIds, int to)
         {
             return Task.FromResult((IDictionary<string, string>)new Dictionary<string, string>());
-        }
-
-        public IDictionary<string, string> CanMoveOrCopy(string[] folderIds, string to)
-        {
-            if (!folderIds.Any()) return new Dictionary<string, string>();
-
-            var selector = GetSelector(to);
-            var matchedIds = folderIds.Where(selector.IsMatch).ToArray();
-
-            if (!matchedIds.Any()) return new Dictionary<string, string>();
-
-            var folderDao = selector.GetFolderDao(matchedIds.FirstOrDefault());
-            return folderDao.CanMoveOrCopy(matchedIds, to);
         }
 
         public async Task<IDictionary<string, string>> CanMoveOrCopyAsync(string[] folderIds, string to)
@@ -386,11 +274,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return await folderDao.CanMoveOrCopyAsync(matchedIds, to).ConfigureAwait(false);
         }
 
-        public string RenameFolder(Folder<string> folder, string newTitle)
-        {
-            return RenameFolderAsync(folder, newTitle).Result;
-        }
-
         public async Task<string> RenameFolderAsync(Folder<string> folder, string newTitle)
         {
             var folderId = folder.ID;
@@ -401,21 +284,11 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return await folderDao.RenameFolderAsync(folder, newTitle).ConfigureAwait(false);
         }
 
-        public int GetItemsCount(string folderId)
-        {
-            return GetItemsCountAsync(folderId).Result;
-        }
-
         public async Task<int> GetItemsCountAsync(string folderId)
         {
             var selector = GetSelector(folderId);
             var folderDao = selector.GetFolderDao(folderId);
             return await folderDao.GetItemsCountAsync(selector.ConvertId(folderId)).ConfigureAwait(false);
-        }
-
-        public bool IsEmpty(string folderId)
-        {
-            return IsEmptyAsync(folderId).Result;
         }
 
         public async Task<bool> IsEmptyAsync(string folderId)
@@ -465,11 +338,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
             var selector = GetSelector(entryId);
             var folderDao = selector.GetFolderDao(entryId);
             return folderDao.CanCalculateSubitems(entryId);
-        }
-
-        public long GetMaxUploadSize(string folderId, bool chunkedUpload)
-        {
-            return GetMaxUploadSizeAsync(folderId, chunkedUpload).Result;
         }
 
         public async Task<long> GetMaxUploadSizeAsync(string folderId, bool chunkedUpload)

@@ -52,21 +52,11 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
         }
 
-        public void InvalidateCache(string fileId)
-        {
-            InvalidateCacheAsync(fileId).Wait();
-        }
-
         public async Task InvalidateCacheAsync(string fileId)
         {
             var selector = GetSelector(fileId);
             var fileDao = selector.GetFileDao(fileId);
             await fileDao.InvalidateCacheAsync(selector.ConvertId(fileId)).ConfigureAwait(false);
-        }
-
-        public File<string> GetFile(string fileId)
-        {
-            return GetFileAsync(fileId).Result;
         }
 
         public async Task<File<string>> GetFileAsync(string fileId)
@@ -84,11 +74,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return result;
         }
 
-        public File<string> GetFile(string fileId, int fileVersion)
-        {
-            return GetFileAsync(fileId, fileVersion).Result;
-        }
-
         public async Task<File<string>> GetFileAsync(string fileId, int fileVersion)
         {
             var selector = GetSelector(fileId);
@@ -104,11 +89,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return result;
         }
 
-        public File<string> GetFile(string parentId, string title)
-        {
-            return GetFileAsync(parentId, title).Result;
-        }
-
         public async Task<File<string>> GetFileAsync(string parentId, string title)
         {
             var selector = GetSelector(parentId);
@@ -121,11 +101,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
             }
 
             return result;
-        }
-
-        public File<string> GetFileStable(string fileId, int fileVersion = -1)
-        {
-            return GetFileStableAsync(fileId, fileVersion).Result;
         }
 
         public async Task<File<string>> GetFileStableAsync(string fileId, int fileVersion = -1)
@@ -143,21 +118,11 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return result;
         }
 
-        public List<File<string>> GetFileHistory(string fileId)
-        {
-            return GetFileHistoryAsync(fileId).Result;
-        }
-
         public async Task<List<File<string>>> GetFileHistoryAsync(string fileId)
         {
             var selector = GetSelector(fileId);
             var fileDao = selector.GetFileDao(fileId);
             return await fileDao.GetFileHistoryAsync(selector.ConvertId(fileId)).ConfigureAwait(false);
-        }
-
-        public List<File<string>> GetFiles(IEnumerable<string> fileIds)
-        {
-            return GetFilesAsync(fileIds).ToListAsync().Result;
         }
 
         public IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> fileIds)
@@ -183,11 +148,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
             }
 
             return result;
-        }
-
-        public List<File<string>> GetFilesFiltered(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false)
-        {
-            return GetFilesFilteredAsync(fileIds, filterType, subjectGroup, subjectID, searchText, searchInContent).ToListAsync().Result;
         }
 
         public IAsyncEnumerable<File<string>> GetFilesFilteredAsync(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false)
@@ -216,22 +176,12 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return result;
         }
 
-        public List<string> GetFiles(string parentId)
-        {
-            return GetFilesAsync(parentId).Result;
-        }
-
         public async Task<List<string>> GetFilesAsync(string parentId)
         {
             var selector = GetSelector(parentId);
             var fileDao = selector.GetFileDao(parentId);
             var files = await fileDao.GetFilesAsync(selector.ConvertId(parentId)).ConfigureAwait(false);
             return files.Where(r => r != null).ToList();
-        }
-
-        public List<File<string>> GetFiles(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
-        {
-            return GetFilesAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders).ToListAsync().Result;
         }
 
         public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
@@ -250,11 +200,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
             }
         }
 
-        public override Stream GetFileStream(File<string> file)
-        {
-            return GetFileStreamAsync(file).Result;
-        }
-
         public override async Task<Stream> GetFileStreamAsync(File<string> file)
         {
             return await GetFileStreamAsync(file, 0).ConfigureAwait(false);
@@ -266,11 +211,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
         /// <param name="file"></param>
         /// <param name="offset"></param>
         /// <returns>Stream</returns>
-        public Stream GetFileStream(File<string> file, long offset)
-        {
-            return GetFileStreamAsync(file, offset).Result;
-        }
-
         public async Task<Stream> GetFileStreamAsync(File<string> file, long offset)
         {
             if (file == null) throw new ArgumentNullException("file");
@@ -282,11 +222,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
             var stream = await fileDao.GetFileStreamAsync(file, offset).ConfigureAwait(false);
             file.ID = fileId; //Restore id
             return stream;
-        }
-
-        public bool IsSupportedPreSignedUri(File<string> file)
-        {
-            return IsSupportedPreSignedUriAsync(file).Result;
         }
 
         public async Task<bool> IsSupportedPreSignedUriAsync(File<string> file)
@@ -302,11 +237,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return isSupported;
         }
 
-        public Uri GetPreSignedUri(File<string> file, TimeSpan expires)
-        {
-            return GetPreSignedUriAsync(file, expires).Result;
-        }
-
         public async Task<Uri> GetPreSignedUriAsync(File<string> file, TimeSpan expires)
         {
             if (file == null) throw new ArgumentNullException("file");
@@ -318,11 +248,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
             var streamUri = await fileDao.GetPreSignedUriAsync(file, expires).ConfigureAwait(false);
             file.ID = fileId; //Restore id
             return streamUri;
-        }
-
-        public File<string> SaveFile(File<string> file, Stream fileStream)
-        {
-            return SaveFileAsync(file, fileStream).Result;
         }
 
         public async Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
@@ -359,11 +284,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
             throw new ArgumentException("No file id or folder id toFolderId determine provider");
         }
 
-        public File<string> ReplaceFileVersion(File<string> file, Stream fileStream)
-        {
-            return ReplaceFileVersionAsync(file, fileStream).Result;
-        }
-
         public async Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
         {
             if (file == null) throw new ArgumentNullException("file");
@@ -382,21 +302,11 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return await fileDao.ReplaceFileVersionAsync(file, fileStream).ConfigureAwait(false);
         }
 
-        public void DeleteFile(string fileId)
-        {
-            DeleteFileAsync(fileId).Wait();
-        }
-
         public async Task DeleteFileAsync(string fileId)
         {
             var selector = GetSelector(fileId);
             var fileDao = selector.GetFileDao(fileId);
             await fileDao.DeleteFileAsync(selector.ConvertId(fileId)).ConfigureAwait(false);
-        }
-
-        public bool IsExist(string title, object folderId)
-        {
-            return IsExistAsync(title, folderId).Result;
         }
 
         public async Task<bool> IsExistAsync(string title, object folderId)
@@ -405,11 +315,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
             var fileDao = selector.GetFileDao(folderId.ToString());
             return await fileDao.IsExistAsync(title, selector.ConvertId(folderId.ToString())).ConfigureAwait(false);
-        }
-
-        public TTo MoveFile<TTo>(string fileId, TTo toFolderId)
-        {
-            return MoveFileAsync(fileId, toFolderId).Result;
         }
 
         public async Task<TTo> MoveFileAsync<TTo>(string fileId, TTo toFolderId)
@@ -427,20 +332,10 @@ namespace ASC.Files.Thirdparty.ProviderDao
             throw new NotImplementedException();
         }
 
-        public int MoveFile(string fileId, int toFolderId)
-        {
-            return MoveFileAsync(fileId, toFolderId).Result;
-        }
-
         public async Task<int> MoveFileAsync(string fileId, int toFolderId)
         {
             var movedFile = await PerformCrossDaoFileCopyAsync(fileId, toFolderId, true).ConfigureAwait(false);
             return movedFile.ID;
-        }
-
-        public string MoveFile(string fileId, string toFolderId)
-        {
-            return MoveFileAsync(fileId, toFolderId).Result;
         }
 
         public async Task<string> MoveFileAsync(string fileId, string toFolderId)
@@ -454,11 +349,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
             var fileDao = selector.GetFileDao(fileId);
             return await fileDao.MoveFileAsync(selector.ConvertId(fileId), selector.ConvertId(toFolderId)).ConfigureAwait(false);
-        }
-
-        public File<TTo> CopyFile<TTo>(string fileId, TTo toFolderId)
-        {
-            return CopyFileAsync(fileId, toFolderId).Result;
         }
 
         public async Task<File<TTo>> CopyFileAsync<TTo>(string fileId, TTo toFolderId)
@@ -476,19 +366,9 @@ namespace ASC.Files.Thirdparty.ProviderDao
             throw new NotImplementedException();
         }
 
-        public File<int> CopyFile(string fileId, int toFolderId)
-        {
-            return CopyFileAsync(fileId, toFolderId).Result;
-        }
-
         public async Task<File<int>> CopyFileAsync(string fileId, int toFolderId)
         {
             return await PerformCrossDaoFileCopyAsync(fileId, toFolderId, false).ConfigureAwait(false);
-        }
-
-        public File<string> CopyFile(string fileId, string toFolderId)
-        {
-            return CopyFileAsync(fileId, toFolderId).Result;
         }
 
         public async Task<File<string>> CopyFileAsync(string fileId, string toFolderId)
@@ -503,21 +383,11 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return await fileDao.CopyFileAsync(selector.ConvertId(fileId), selector.ConvertId(toFolderId)).ConfigureAwait(false);
         }
 
-        public string FileRename(File<string> file, string newTitle)
-        {
-            return FileRenameAsync(file, newTitle).Result;
-        }
-
         public async Task<string> FileRenameAsync(File<string> file, string newTitle)
         {
             var selector = GetSelector(file.ID);
             var fileDao = selector.GetFileDao(file.ID);
             return await fileDao.FileRenameAsync(ConvertId(file), newTitle).ConfigureAwait(false);
-        }
-
-        public string UpdateComment(string fileId, int fileVersion, string comment)
-        {
-            return UpdateCommentAsync(fileId, fileVersion, comment).Result;
         }
 
         public async Task<string> UpdateCommentAsync(string fileId, int fileVersion, string comment)
@@ -528,25 +398,12 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return await fileDao.UpdateCommentAsync(selector.ConvertId(fileId), fileVersion, comment).ConfigureAwait(false);
         }
 
-        public void CompleteVersion(string fileId, int fileVersion)
-        {
-            var selector = GetSelector(fileId);
-
-            var fileDao = selector.GetFileDao(fileId);
-            fileDao.CompleteVersion(selector.ConvertId(fileId), fileVersion);
-        }
-
         public async Task CompleteVersionAsync(string fileId, int fileVersion)
         {
             var selector = GetSelector(fileId);
 
             var fileDao = selector.GetFileDao(fileId);
             await fileDao.CompleteVersionAsync(selector.ConvertId(fileId), fileVersion).ConfigureAwait(false);
-        }
-
-        public void ContinueVersion(string fileId, int fileVersion)
-        {
-            ContinueVersionAsync(fileId, fileVersion).Wait();
         }
 
         public async Task ContinueVersionAsync(string fileId, int fileVersion)
@@ -565,20 +422,10 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
         #region chunking
 
-        public ChunkedUploadSession<string> CreateUploadSession(File<string> file, long contentLength)
-        {
-            return CreateUploadSessionAsync(file, contentLength).Result;
-        }
-
         public async Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength)
         {
             var fileDao = GetFileDao(file);
             return await fileDao.CreateUploadSessionAsync(ConvertId(file), contentLength).ConfigureAwait(false);
-        }
-
-        public File<string> UploadChunk(ChunkedUploadSession<string> uploadSession, Stream chunkStream, long chunkLength)
-        {
-            return UploadChunkAsync(uploadSession, chunkStream, chunkLength).Result;
         }
 
         public async Task<File<string>> UploadChunkAsync(ChunkedUploadSession<string> uploadSession, Stream chunkStream, long chunkLength)
@@ -587,11 +434,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
             uploadSession.File = ConvertId(uploadSession.File);
             await fileDao.UploadChunkAsync(uploadSession, chunkStream, chunkLength).ConfigureAwait(false);
             return uploadSession.File;
-        }
-
-        public void AbortUploadSession(ChunkedUploadSession<string> uploadSession)
-        {
-            AbortUploadSessionAsync(uploadSession).Wait();
         }
 
         public async Task AbortUploadSessionAsync(ChunkedUploadSession<string> uploadSession)

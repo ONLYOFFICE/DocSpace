@@ -267,7 +267,7 @@ namespace ASC.Web.Files.Utils
         private T GetFolderId<T>(T folderId, IList<string> relativePath)
         {
             var folderDao = DaoFactory.GetFolderDao<T>();
-            var folder = folderDao.GetFolder(folderId);
+            var folder = folderDao.GetFolderAsync(folderId).Result;
 
             if (folder == null)
                 throw new DirectoryNotFoundException(FilesCommonResource.ErrorMassage_FolderNotFound);
@@ -281,7 +281,7 @@ namespace ASC.Web.Files.Utils
 
                 if (!string.IsNullOrEmpty(subFolderTitle))
                 {
-                    folder = folderDao.GetFolder(subFolderTitle, folder.ID);
+                    folder = folderDao.GetFolderAsync(subFolderTitle, folder.ID).Result;
 
                     if (folder == null)
                     {
@@ -289,9 +289,9 @@ namespace ASC.Web.Files.Utils
                         newFolder.Title = subFolderTitle;
                         newFolder.FolderID = folderId;
 
-                        folderId = folderDao.SaveFolder(newFolder);
+                        folderId = folderDao.SaveFolderAsync(newFolder).Result;
 
-                        folder = folderDao.GetFolder(folderId);
+                        folder = folderDao.GetFolderAsync(folderId).Result;
                         FilesMessageService.Send(folder, MessageAction.FolderCreated, folder.Title);
                     }
 
@@ -383,7 +383,7 @@ namespace ASC.Web.Files.Utils
             file.ContentLength = contentLength;
 
             var dao = DaoFactory.GetFileDao<T>();
-            var uploadSession = dao.CreateUploadSession(file, contentLength);
+            var uploadSession = dao.CreateUploadSessionAsync(file, contentLength).Result;
 
             uploadSession.Expired = uploadSession.Created + ChunkedUploadSessionHolder.SlidingExpiration;
             uploadSession.Location = FilesLinkUtility.GetUploadChunkLocationUrl(uploadSession.Id);
@@ -446,7 +446,7 @@ namespace ASC.Web.Files.Utils
             }
 
             var dao = DaoFactory.GetFileDao<T>();
-            dao.UploadChunk(uploadSession, stream, chunkLength);
+            dao.UploadChunkAsync(uploadSession, stream, chunkLength).Wait();
 
             if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
             {
@@ -468,7 +468,7 @@ namespace ASC.Web.Files.Utils
 
         private void AbortUpload<T>(ChunkedUploadSession<T> uploadSession)
         {
-            DaoFactory.GetFileDao<T>().AbortUploadSession(uploadSession);
+            DaoFactory.GetFileDao<T>().AbortUploadSessionAsync(uploadSession).Wait();
 
             ChunkedUploadSessionHolder.RemoveSession(uploadSession);
         }
@@ -476,7 +476,7 @@ namespace ASC.Web.Files.Utils
         private long GetMaxFileSize<T>(T folderId, bool chunkedUpload = false)
         {
             var folderDao = DaoFactory.GetFolderDao<T>();
-            return folderDao.GetMaxUploadSize(folderId, chunkedUpload);
+            return folderDao.GetMaxUploadSizeAsync(folderId, chunkedUpload).Result;
         }
 
         #endregion

@@ -49,7 +49,7 @@ namespace ASC.Web.Files.Api
         public T RegisterBunch<T>(string module, string bunch, string data)
         {
             var folderDao = DaoFactory.GetFolderDao<T>();
-            return folderDao.GetFolderID(module, bunch, data, true);
+            return folderDao.GetFolderIDAsync(module, bunch, data, true).Result;
         }
 
         public IEnumerable<T> RegisterBunchFolders<T>(string module, string bunch, IEnumerable<string> data)
@@ -64,7 +64,7 @@ namespace ASC.Web.Files.Api
             }
 
             var folderDao = DaoFactory.GetFolderDao<T>();
-            return folderDao.GetFolderIDs(module, bunch, data, true);
+            return folderDao.GetFolderIDsAsync(module, bunch, data, true).Result;
         }
 
         public bool IsRegisteredFileSecurityProvider(string module, string bunch)

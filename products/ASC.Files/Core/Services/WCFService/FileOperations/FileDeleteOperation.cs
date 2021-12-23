@@ -104,16 +104,16 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         protected override void Do(IServiceScope scope)
         {
             var folderDao = scope.ServiceProvider.GetService<IFolderDao<int>>();
-            _trashId = folderDao.GetFolderIDTrash(true);
+            _trashId = folderDao.GetFolderIDTrashAsync(true).Result;
 
             Folder<T> root = null;
             if (0 < Folders.Count)
             {
-                root = FolderDao.GetRootFolder(Folders[0]);
+                root = FolderDao.GetRootFolderAsync(Folders[0]).Result;
             }
             else if (0 < Files.Count)
             {
-                root = FolderDao.GetRootFolderByFile(Files[0]);
+                root = FolderDao.GetRootFolderByFileAsync(Files[0]).Result;
             }
             if (root != null)
             {
@@ -127,7 +127,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         protected override async Task DoAsync(IServiceScope scope)
         {
             var folderDao = scope.ServiceProvider.GetService<IFolderDao<int>>();
-            _trashId = folderDao.GetFolderIDTrash(true);
+            _trashId = folderDao.GetFolderIDTrashAsync(true).Result;
 
             Folder<T> root = null;
             if (0 < Folders.Count)
@@ -155,7 +155,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 CancellationToken.ThrowIfCancellationRequested();
 
-                var folder = FolderDao.GetFolder(folderId);
+                var folder = FolderDao.GetFolderAsync(folderId).Result;
                 T canCalculate = default;
                 if (folder == null)
                 {
@@ -180,7 +180,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     {
                         if (ProviderDao != null)
                         {
-                            ProviderDao.RemoveProviderInfo(folder.ProviderId);
+                            ProviderDao.RemoveProviderInfoAsync(folder.ProviderId).Wait();
                             filesMessageService.Send(folder, _headers, MessageAction.ThirdPartyDeleted, folder.ID.ToString(), folder.ProviderKey);
                         }
 
@@ -192,11 +192,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         if (immediately && FolderDao.UseRecursiveOperation(folder.ID, default(T)))
                         {
                             DeleteFiles(FileDao.GetFilesAsync(folder.ID).Result, scope);
-                            DeleteFolders(FolderDao.GetFolders(folder.ID).Select(f => f.ID).ToList(), scope);
+                            DeleteFolders(FolderDao.GetFoldersAsync(folder.ID).Select(f => f.ID).ToListAsync().Result, scope);
 
-                            if (FolderDao.IsEmpty(folder.ID))
+                            if (FolderDao.IsEmptyAsync(folder.ID).Result)
                             {
-                                FolderDao.DeleteFolder(folder.ID);
+                                FolderDao.DeleteFolderAsync(folder.ID).Wait();
                                 filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
 
                                 ProcessedFolder(folderId);
@@ -213,12 +213,12 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             {
                                 if (immediately)
                                 {
-                                    FolderDao.DeleteFolder(folder.ID);
+                                    FolderDao.DeleteFolderAsync(folder.ID).Wait();
                                     filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
                                 }
                                 else
                                 {
-                                    FolderDao.MoveFolder(folder.ID, _trashId, CancellationToken);
+                                    FolderDao.MoveFolderAsync(folder.ID, _trashId, CancellationToken).Wait();
                                     filesMessageService.Send(folder, _headers, MessageAction.FolderMovedToTrash, folder.Title);
                                 }
 
@@ -281,7 +281,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             var folders = await FolderDao.GetFoldersAsync(folder.ID).ToListAsync();
                             await DeleteFoldersAsync(folders.Select(f => f.ID).ToList(), scope);
 
-                            if (FolderDao.IsEmpty(folder.ID))
+                            if (FolderDao.IsEmptyAsync(folder.ID).Result)
                             {
                                 await FolderDao.DeleteFolderAsync(folder.ID);
                                 filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
@@ -346,7 +346,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         if (file.ThumbnailStatus == Thumbnail.Waiting)
                         {
                             file.ThumbnailStatus = Thumbnail.NotRequired;
-                            FileDao.SaveThumbnail(file, null);
+                            FileDao.SaveThumbnailAsync(file, null).Wait();
                         }
                     }
                     else
@@ -396,7 +396,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         if (file.ThumbnailStatus == Thumbnail.Waiting)
                         {
                             file.ThumbnailStatus = Thumbnail.NotRequired;
-                            FileDao.SaveThumbnail(file, null);
+                            FileDao.SaveThumbnailAsync(file, null).Wait();
                         }
                     }
                     else

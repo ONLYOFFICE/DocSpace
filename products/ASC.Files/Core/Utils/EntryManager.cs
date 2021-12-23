@@ -104,7 +104,7 @@ namespace ASC.Web.Files.Utils
 
         public Guid FileLockedBy<T>(T fileId, ITagDao<T> tagDao)
         {
-            var tagLock = tagDao.GetTags(fileId, FileEntryType.File, TagType.Locked).FirstOrDefault();
+            var tagLock = tagDao.GetTagsAsync(fileId, FileEntryType.File, TagType.Locked).ToListAsync().Result.FirstOrDefault();
             return tagLock != null ? tagLock.Owner : Guid.Empty;
         }
 
@@ -151,7 +151,7 @@ namespace ASC.Web.Files.Utils
         public List<FileEntry> GetBreadCrumbs<T>(T folderId, IFolderDao<T> folderDao)
         {
             if (folderId == null) return new List<FileEntry>();
-            var breadCrumbs = FileSecurity.FilterRead(folderDao.GetParentFolders(folderId)).Cast<FileEntry>().ToList();
+            var breadCrumbs = FileSecurity.FilterRead(folderDao.GetParentFoldersAsync(folderId).Result).Cast<FileEntry>().ToList();
 
             var firstVisible = breadCrumbs.ElementAtOrDefault(0) as Folder<T>;
 
@@ -195,7 +195,7 @@ namespace ASC.Web.Files.Utils
 
             if (rootId != 0)
             {
-                breadCrumbs.Insert(0, folderDaoInt.GetFolder(rootId));
+                breadCrumbs.Insert(0, folderDaoInt.GetFolderAsync(rootId).Result);
             }
 
             return breadCrumbs;
@@ -299,8 +299,8 @@ namespace ASC.Web.Files.Utils
         {
             var tagDao = DaoFactory.GetTagDao<T>();
 
-            var tags = tagDao.GetTags(AuthContext.CurrentAccount.ID, new[] { TagType.Favorite, TagType.Template, TagType.Locked }, files);
-            var tagsNew = tagDao.GetNewTags(AuthContext.CurrentAccount.ID, files);
+            var tags = tagDao.GetTagsAsync(AuthContext.CurrentAccount.ID, new[] { TagType.Favorite, TagType.Template, TagType.Locked }, files).Result;
+            var tagsNew = tagDao.GetNewTagsAsync(AuthContext.CurrentAccount.ID, files).ToListAsync().Result;
 
             foreach (var file in files)
             {
@@ -527,7 +527,7 @@ namespace ASC.Web.Files.Utils
                     var rootKeys = folderIDProjectTitle.Keys.ToArray();
                     if (filter == FilterType.None || filter == FilterType.FoldersOnly)
                     {
-                        var folders = DaoFactory.GetFolderDao<int>().GetFolders(rootKeys, filter, subjectGroup, subjectId, searchText, withSubfolders, false);
+                        var folders = DaoFactory.GetFolderDao<int>().GetFoldersAsync(rootKeys, filter, subjectGroup, subjectId, searchText, withSubfolders, false).ToListAsync().Result;
 
                         var emptyFilter = string.IsNullOrEmpty(searchText) && filter == FilterType.None && subjectId == Guid.Empty;
                         if (!emptyFilter)
@@ -540,7 +540,7 @@ namespace ASC.Web.Files.Utils
 
                             folders.RemoveAll(folder => rootKeys.Contains(folder.ID));
 
-                            var projectFolders = DaoFactory.GetFolderDao<int>().GetFolders(projectFolderIds.ToList(), filter, subjectGroup, subjectId, null, false, false);
+                            var projectFolders = DaoFactory.GetFolderDao<int>().GetFoldersAsync(projectFolderIds.ToList(), filter, subjectGroup, subjectId, null, false, false).ToListAsync().Result;
                             folders.AddRange(projectFolders);
                         }
 
@@ -610,7 +610,7 @@ namespace ASC.Web.Files.Utils
             {
                 var folderDao = DaoFactory.GetFolderDao<T>();
                 var fileDao = DaoFactory.GetFileDao<T>();
-                var folders = folderDao.GetFolders(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, withSubfolders);
+                var folders = folderDao.GetFoldersAsync(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, withSubfolders).ToListAsync().Result;
                 entries = entries.Concat(fileSecurity.FilterRead(folders));
 
                 var files = fileDao.GetFilesAsync(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders).ToListAsync().Result;
@@ -923,7 +923,7 @@ namespace ASC.Web.Files.Utils
         public IEnumerable<File<T>> GetTemplates<T>(IFolderDao<T> folderDao, IFileDao<T> fileDao, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
         {
             var tagDao = DaoFactory.GetTagDao<T>();
-            var tags = tagDao.GetTags(AuthContext.CurrentAccount.ID, TagType.Template);
+            var tags = tagDao.GetTagsAsync(AuthContext.CurrentAccount.ID, TagType.Template).ToListAsync().Result;
 
             var fileIds = tags.Where(tag => tag.EntryType == FileEntryType.File).Select(tag => (T)Convert.ChangeType(tag.EntryId, typeof(T))).ToArray();
 
@@ -968,7 +968,7 @@ namespace ASC.Web.Files.Utils
 
                 var fileSecurity = FileSecurity;
 
-                var providers = providerDao.GetProvidersInfo(parent.RootFolderType, searchText);
+                var providers = providerDao.GetProvidersInfoAsync(parent.RootFolderType, searchText).ToListAsync().Result;
                 folderList = providers
                     .Select(providerInfo => GetFakeThirdpartyFolder<T>(providerInfo, parent.ID.ToString()))
                     .Where(r => fileSecurity.CanRead(r)).ToList();
@@ -1027,7 +1027,7 @@ namespace ASC.Web.Files.Utils
         public IEnumerable<FileEntry> GetRecent(FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
         {
             var tagDao = DaoFactory.GetTagDao<int>();
-            var tags = tagDao.GetTags(AuthContext.CurrentAccount.ID, TagType.Recent).ToList();
+            var tags = tagDao.GetTagsAsync(AuthContext.CurrentAccount.ID, TagType.Recent).ToListAsync().Result;
 
             var fileIds = tags.Where(tag => tag.EntryType == FileEntryType.File).ToList();
 
@@ -1116,7 +1116,7 @@ namespace ASC.Web.Files.Utils
         {
             var fileSecurity = FileSecurity;
             var tagDao = DaoFactory.GetTagDao<int>();
-            var tags = tagDao.GetTags(AuthContext.CurrentAccount.ID, TagType.Favorite);
+            var tags = tagDao.GetTagsAsync(AuthContext.CurrentAccount.ID, TagType.Favorite).ToListAsync().Result;
 
             var fileIds = tags.Where(tag => tag.EntryType == FileEntryType.File).ToList();
             var folderIds = tags.Where(tag => tag.EntryType == FileEntryType.Folder).ToList();
@@ -1144,7 +1144,7 @@ namespace ASC.Web.Files.Utils
 
                 if (filter == FilterType.None || filter == FilterType.FoldersOnly)
                 {
-                    folders = folderDao.GetFolders(folderIds, filter, subjectGroup, subjectId, searchText, false, false);
+                    folders = folderDao.GetFoldersAsync(folderIds, filter, subjectGroup, subjectId, searchText, false, false).ToListAsync().Result;
                     folders = folders.Where(folder => folder.RootFolderType != FolderType.TRASH).ToList();
 
                     folders = fileSecurity.FilterRead(folders).ToList();
@@ -1395,7 +1395,7 @@ namespace ASC.Web.Files.Utils
                     && entry.RootFolderCreator != AuthContext.CurrentAccount.ID)
                 {
                     var folderId = entry.FolderID;
-                    var folder = folderDao.GetFolder(folderId);
+                    var folder = folderDao.GetFolderAsync(folderId).Result;
                     if (!FileSecurity.CanRead(folder))
                     {
                         entry.FolderIdDisplay = GlobalFolderHelper.GetFolderShare<T>();
@@ -1859,9 +1859,9 @@ namespace ASC.Web.Files.Utils
 
                 if (fromFile.ThumbnailStatus == Thumbnail.Created)
                 {
-                    using (var thumb = fileDao.GetThumbnail(fromFile))
+                    using (var thumb = fileDao.GetThumbnailAsync(fromFile).Result)
                     {
-                        fileDao.SaveThumbnail(newFile, thumb);
+                        fileDao.SaveThumbnailAsync(newFile, thumb).Wait();
                     }
                     newFile.ThumbnailStatus = Thumbnail.Created;
                 }
@@ -1955,9 +1955,9 @@ namespace ASC.Web.Files.Utils
 
                 if (fromFile.ThumbnailStatus == Thumbnail.Created)
                 {
-                    using (var thumb = fileDao.GetThumbnail(fromFile))
+                    using (var thumb = await fileDao.GetThumbnailAsync(fromFile))
                     {
-                        fileDao.SaveThumbnail(newFile, thumb);
+                        await fileDao.SaveThumbnailAsync(newFile, thumb);
                     }
                     newFile.ThumbnailStatus = Thumbnail.Created;
                 }
@@ -2022,7 +2022,7 @@ namespace ASC.Web.Files.Utils
                         lastVersionFile = UpdateToVersionFile(fileVersion.ID, fileVersion.Version, null, checkRight);
                     }
 
-                    fileDao.CompleteVersion(fileVersion.ID, fileVersion.Version);
+                    fileDao.CompleteVersionAsync(fileVersion.ID, fileVersion.Version).Wait();
                     lastVersionFile.VersionGroup++;
                 }
             }
@@ -2063,7 +2063,7 @@ namespace ASC.Web.Files.Utils
                         lastVersionFile = await UpdateToVersionFileAsync(fileVersion.ID, fileVersion.Version, null, checkRight);
                     }
 
-                    fileDao.CompleteVersion(fileVersion.ID, fileVersion.Version);
+                    fileDao.CompleteVersionAsync(fileVersion.ID, fileVersion.Version).Wait();
                     lastVersionFile.VersionGroup++;
                 }
             }
@@ -2170,13 +2170,13 @@ namespace ASC.Web.Files.Utils
         //Long operation
         public void DeleteSubitems<T>(T parentId, IFolderDao<T> folderDao, IFileDao<T> fileDao)
         {
-            var folders = folderDao.GetFolders(parentId);
+            var folders = folderDao.GetFoldersAsync(parentId).ToListAsync().Result;
             foreach (var folder in folders)
             {
                 DeleteSubitems(folder.ID, folderDao, fileDao);
 
                 Logger.InfoFormat("Delete folder {0} in {1}", folder.ID, parentId);
-                folderDao.DeleteFolder(folder.ID);
+                folderDao.DeleteFolderAsync(folder.ID).Wait();
             }
 
             var files = fileDao.GetFilesAsync(parentId, null, FilterType.None, false, Guid.Empty, string.Empty, true).ToListAsync().Result;
@@ -2191,7 +2191,7 @@ namespace ASC.Web.Files.Utils
         {
             var fileSecurity = FileSecurity;
 
-            var folders = folderDao.GetFolders(parentId);
+            var folders = folderDao.GetFoldersAsync(parentId).ToListAsync().Result;
             foreach (var folder in folders)
             {
                 var shared = folder.Shared
@@ -2199,7 +2199,7 @@ namespace ASC.Web.Files.Utils
                 if (shared)
                 {
                     Logger.InfoFormat("Move shared folder {0} from {1} to {2}", folder.ID, parentId, toId);
-                    folderDao.MoveFolder(folder.ID, toId, null);
+                    folderDao.MoveFolderAsync(folder.ID, toId, null).Wait();
                 }
                 else
                 {
@@ -2223,12 +2223,13 @@ namespace ASC.Web.Files.Utils
             var fileIds = fileDao.GetFilesAsync(parentId, new OrderBy(SortedByType.AZ, true), FilterType.ByUser, false, fromUserId, null, true, true).ToListAsync().Result
                                  .Where(file => file.CreateBy == fromUserId).Select(file => file.ID);
 
-            fileDao.ReassignFiles(fileIds.ToArray(), toUserId);
+            fileDao.ReassignFilesAsync(fileIds.ToArray(), toUserId).Wait();
 
-            var folderIds = folderDao.GetFolders(parentId, new OrderBy(SortedByType.AZ, true), FilterType.ByUser, false, fromUserId, null, true)
-                                     .Where(folder => folder.CreateBy == fromUserId).Select(folder => folder.ID);
+            var folderIds = folderDao.GetFoldersAsync(parentId, new OrderBy(SortedByType.AZ, true), FilterType.ByUser, false, fromUserId, null, true)
+                                     .Where(folder => folder.CreateBy == fromUserId).Select(folder => folder.ID)
+                                     .ToListAsync().Result;
 
-            folderDao.ReassignFolders(folderIds.ToArray(), toUserId);
+            folderDao.ReassignFoldersAsync(folderIds.ToArray(), toUserId).Wait();
         }
     }
 }

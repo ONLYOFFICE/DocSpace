@@ -393,7 +393,7 @@ namespace ASC.Web.Files.Helpers
 
             Folder<T> folder;
             if (folderId == null
-                || (folder = folderDao.GetFolder(folderId)) == null
+                || (folder = folderDao.GetFolderAsync(folderId).Result) == null
                 || folder.RootFolderType == FolderType.TRASH
                 || !FileSecurity.CanCreate(folder))
             {

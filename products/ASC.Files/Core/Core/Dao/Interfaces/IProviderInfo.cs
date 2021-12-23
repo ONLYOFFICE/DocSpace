@@ -25,6 +25,7 @@
 
 
 using System;
+using System.Threading.Tasks;
 
 namespace ASC.Files.Core
 {
@@ -39,8 +40,8 @@ namespace ASC.Files.Core
 
         string RootFolderId { get; }
 
-        bool CheckAccess();
-        void InvalidateStorage();
+        Task<bool> CheckAccessAsync();
+        Task InvalidateStorageAsync();
         void UpdateTitle(string newtitle);
     }
 

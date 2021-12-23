@@ -286,10 +286,10 @@ namespace ASC.Files.Core.Security
                     if (action == FilesSecurityActions.Read)
                     {
                         var folderDao = daoFactory.GetFolderDao<T>();
-                        var root = folderDao.GetFolder(entry.RootFolderId);
+                        var root = folderDao.GetFolderAsync(entry.RootFolderId).Result;
                         if (root != null)
                         {
-                            var path = folderDao.GetBunchObjectID(root.ID);
+                            var path = folderDao.GetBunchObjectIDAsync(root.ID).Result;
 
                             var adapter = FilesIntegration.GetFileSecurity(path);
 
@@ -408,7 +408,7 @@ namespace ASC.Files.Core.Security
                         var root = await folderDao.GetFolderAsync(entry.RootFolderId);
                         if (root != null)
                         {
-                            var path = folderDao.GetBunchObjectID(root.ID);
+                            var path = folderDao.GetBunchObjectIDAsync(root.ID).Result;
 
                             var adapter = FilesIntegration.GetFileSecurity(path);
 
@@ -713,8 +713,8 @@ namespace ASC.Files.Core.Security
                         .Select(r => r.RootFolderId)
                         .ToList();
 
-                var rootsFolders = folderDao.GetFolders(roots);
-                var bunches = folderDao.GetBunchObjectIDs(rootsFolders.Select(r => r.ID).ToList());
+                var rootsFolders = folderDao.GetFoldersAsync(roots).ToListAsync().Result;
+                var bunches = folderDao.GetBunchObjectIDsAsync(rootsFolders.Select(r => r.ID).ToList()).Result;
                 var findedAdapters = FilesIntegration.GetFileSecurity(bunches);
 
                 foreach (var e in filteredEntries)
@@ -786,7 +786,7 @@ namespace ASC.Files.Core.Security
             if ((action == FilesSecurityActions.Read || action == FilesSecurityActions.Delete) && entries.Any(filter))
             {
                 var folderDao = daoFactory.GetFolderDao<T>();
-                var mytrashId = folderDao.GetFolderIDTrash(false, userId);
+                var mytrashId = folderDao.GetFolderIDTrashAsync(false, userId).Result;
                 if (!Equals(mytrashId, 0))
                 {
                     result.AddRange(entries.Where(filter).Where(e => Equals(e.RootFolderId, mytrashId)));
@@ -892,7 +892,7 @@ namespace ASC.Files.Core.Security
 
             if (filterType == FilterType.None || filterType == FilterType.FoldersOnly)
             {
-                var folders = folderDao.GetFolders(folderIds.Keys, filterType, subjectGroup, subjectID, searchText, withSubfolders, false);
+                var folders = folderDao.GetFoldersAsync(folderIds.Keys, filterType, subjectGroup, subjectID, searchText, withSubfolders, false).ToListAsync().Result;
 
                 if (withSubfolders)
                 {
@@ -1011,7 +1011,7 @@ namespace ASC.Files.Core.Security
 
             if (filterType == FilterType.None || filterType == FilterType.FoldersOnly)
             {
-                var folders = folderDao.GetFolders(folderIds.Keys, filterType, subjectGroup, subjectID, searchText, withSubfolders, false);
+                var folders = folderDao.GetFoldersAsync(folderIds.Keys, filterType, subjectGroup, subjectID, searchText, withSubfolders, false).ToListAsync().Result;
 
                 if (withSubfolders)
                 {

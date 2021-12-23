@@ -151,7 +151,7 @@ namespace ASC.Files.Thirdparty
         public void RenameProvider(T provider, string newTitle)
         {
             var dbDao = ServiceProvider.GetService<ProviderAccountDao>();
-            dbDao.UpdateProviderInfo(provider.ID, newTitle, null, provider.RootFolderType);
+            dbDao.UpdateProviderInfoAsync(provider.ID, newTitle, null, provider.RootFolderType).Wait();
             provider.UpdateTitle(newTitle); //This will update cached version too
         }
 
@@ -167,7 +167,7 @@ namespace ASC.Files.Thirdparty
             var dbDao = DaoFactory.ProviderDao;
             try
             {
-                return dbDao.GetProviderInfo(linkId) as T;
+                return dbDao.GetProviderInfoAsync(linkId).Result as T;
             }
             catch (InvalidOperationException)
             {

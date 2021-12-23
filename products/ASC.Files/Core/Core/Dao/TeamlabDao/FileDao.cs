@@ -128,19 +128,9 @@ namespace ASC.Files.Core.Data
             Settings = settingsHelper.Settings;
         }
 
-        public void InvalidateCache(int fileId)
-        {
-            InvalidateCacheAsync(fileId).Wait();
-        }
-
         public Task InvalidateCacheAsync(int fileId)
         {
             return Task.CompletedTask;
-        }
-
-        public File<int> GetFile(int fileId)
-        {
-            return GetFileAsync(fileId).Result;
         }
 
         public async Task<File<int>> GetFileAsync(int fileId)
@@ -153,11 +143,6 @@ namespace ASC.Files.Core.Data
                 .ConfigureAwait(false));
         }
 
-        public File<int> GetFile(int fileId, int fileVersion)
-        {
-            return GetFileAsync(fileId, fileVersion).Result;
-        }
-
         public async Task<File<int>> GetFileAsync(int fileId, int fileVersion)
         {
             var query = GetFileQuery(r => r.Id == fileId && r.Version == fileVersion).AsNoTracking();
@@ -165,11 +150,6 @@ namespace ASC.Files.Core.Data
                 FromQueryWithShared(query)
                 .SingleOrDefaultAsync()
                 .ConfigureAwait(false));
-        }
-
-        public File<int> GetFile(int parentId, string title)
-        {
-            return GetFileAsync(parentId, title).Result;
         }
 
         public async Task<File<int>> GetFileAsync(int parentId, string title)
@@ -183,10 +163,6 @@ namespace ASC.Files.Core.Data
             return ToFile(await FromQueryWithShared(query).FirstOrDefaultAsync().ConfigureAwait(false));
         }
 
-        public File<int> GetFileStable(int fileId, int fileVersion = -1)
-        {
-            return GetFileStableAsync(fileId, fileVersion).Result;
-        }
 
         public async Task<File<int>> GetFileStableAsync(int fileId, int fileVersion = -1)
         {
@@ -203,21 +179,11 @@ namespace ASC.Files.Core.Data
             return ToFile(await FromQueryWithShared(query).FirstOrDefaultAsync().ConfigureAwait(false));
         }
 
-        public List<File<int>> GetFileHistory(int fileId)
-        {
-            return GetFileHistoryAsync(fileId).Result;
-        }
-
         public async Task<List<File<int>>> GetFileHistoryAsync(int fileId)
         {
             var query = GetFileQuery(r => r.Id == fileId).OrderByDescending(r => r.Version).AsNoTracking();
 
             return await FromQueryWithShared(query).Select(e => ToFile(e)).ToListAsync().ConfigureAwait(false);
-        }
-
-        public List<File<int>> GetFiles(IEnumerable<int> fileIds)
-        {
-            return GetFilesAsync(fileIds).ToListAsync().Result;
         }
 
         public IAsyncEnumerable<File<int>> GetFilesAsync(IEnumerable<int> fileIds)
@@ -228,11 +194,6 @@ namespace ASC.Files.Core.Data
                 .AsNoTracking();
 
             return FromQueryWithShared(query).AsAsyncEnumerable().Select(e => ToFile(e));
-        }
-
-        public List<File<int>> GetFilesFiltered(IEnumerable<int> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false)
-        {
-            return GetFilesFilteredAsync(fileIds, filterType, subjectGroup, subjectID, searchText, searchInContent, checkShared).ToListAsync().Result;
         }
 
         public IAsyncEnumerable<File<int>> GetFilesFilteredAsync(IEnumerable<int> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false)
@@ -289,11 +250,6 @@ namespace ASC.Files.Core.Data
             return (checkShared ? FromQueryWithShared(query) : FromQuery(query)).Select(e => ToFile(e)).AsAsyncEnumerable();
         }
 
-        public List<int> GetFiles(int parentId)
-        {
-            return GetFilesAsync(parentId).Result;
-        }
-
         public async Task<List<int>> GetFilesAsync(int parentId)
         {
             return await Query(FilesDbContext.Files)
@@ -302,11 +258,6 @@ namespace ASC.Files.Core.Data
                 .Select(r => r.Id)
                 .ToListAsync()
                 .ConfigureAwait(false);
-        }
-
-        public List<File<int>> GetFiles(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
-        {
-            return GetFilesAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders).ToListAsync().Result;
         }
 
         public IAsyncEnumerable<File<int>> GetFilesAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
@@ -386,19 +337,9 @@ namespace ASC.Files.Core.Data
             return FromQueryWithShared(q).AsAsyncEnumerable().Select(ToFile);
         }
 
-        public Stream GetFileStream(File<int> file, long offset)
-        {
-            return GetFileStreamAsync(file, offset).Result;
-        }
-
         public async Task<Stream> GetFileStreamAsync(File<int> file, long offset)
         {
             return await GlobalStore.GetStore().GetReadStreamAsync(string.Empty, GetUniqFilePath(file), (int)offset).ConfigureAwait(false);
-        }
-
-        public Uri GetPreSignedUri(File<int> file, TimeSpan expires)
-        {
-            return GetPreSignedUriAsync(file, expires).Result;
         }
 
         public Task<Uri> GetPreSignedUriAsync(File<int> file, TimeSpan expires)
@@ -410,38 +351,19 @@ namespace ASC.Files.Core.Data
                                                          }));
         }
 
-        public bool IsSupportedPreSignedUri(File<int> file)
-        {
-            return IsSupportedPreSignedUriAsync(file).Result;
-        }
-
         public Task<bool> IsSupportedPreSignedUriAsync(File<int> file)
         {
             return Task.FromResult(GlobalStore.GetStore().IsSupportedPreSignedUri);
         }
 
-        public Stream GetFileStream(File<int> file)
-        {
-            return GetFileStream(file, 0);
-        }
         public async Task<Stream> GetFileStreamAsync(File<int> file)
         {
             return await GlobalStore.GetStore().GetReadStreamAsync(string.Empty, GetUniqFilePath(file), 0).ConfigureAwait(false);
         }
 
-        public File<int> SaveFile(File<int> file, Stream fileStream)
-        {
-            return SaveFileAsync(file, fileStream).Result;
-        }
-
         public async Task<File<int>> SaveFileAsync(File<int> file, Stream fileStream)
         {
             return await SaveFileAsync(file, fileStream, true).ConfigureAwait(false);
-        }
-
-        public File<int> SaveFile(File<int> file, Stream fileStream, bool checkQuota = true)
-        {
-            return SaveFileAsync(file, fileStream, checkQuota).Result;
         }
 
         public async Task<File<int>> SaveFileAsync(File<int> file, Stream fileStream, bool checkQuota = true)
@@ -557,7 +479,7 @@ namespace ASC.Files.Core.Data
 
                 if (isNew)
                 {
-                    RecalculateFilesCount(file.FolderID);
+                    RecalculateFilesCountAsync(file.FolderID).Wait();
                 }
             }
 
@@ -592,11 +514,6 @@ namespace ASC.Files.Core.Data
             FactoryIndexer.IndexAsync(await InitDocumentAsync(toInsert).ConfigureAwait(false));
 
             return await GetFileAsync(file.ID).ConfigureAwait(false);
-        }
-
-        public File<int> ReplaceFileVersion(File<int> file, Stream fileStream)
-        {
-            return ReplaceFileVersionAsync(file, fileStream).Result;
         }
 
         public async Task<File<int>> ReplaceFileVersionAsync(File<int> file, Stream fileStream)
@@ -709,11 +626,6 @@ namespace ASC.Files.Core.Data
             return await GetFileAsync(file.ID).ConfigureAwait(false);
         }
 
-        private void DeleteVersion(File<int> file)
-        {
-            DeleteVersionAsync(file).Wait();
-        }
-
         private async Task DeleteVersionAsync(File<int> file)
         {
             if (file == null
@@ -748,19 +660,9 @@ namespace ASC.Files.Core.Data
             GlobalStore.GetStore().Save(string.Empty, GetUniqFilePath(file), stream, file.Title);
         }
 
-        public void DeleteFile(int fileId)
-        {
-            DeleteFileAsync(fileId).Wait();
-        }
-
         public async Task DeleteFileAsync(int fileId)
         {
             await DeleteFileAsync(fileId, true).ConfigureAwait(false);
-        }
-
-        private void DeleteFile(int fileId, bool deleteFolder)
-        {
-            DeleteFileAsync(fileId, deleteFolder).Wait();
         }
 
         private async Task DeleteFileAsync(int fileId, bool deleteFolder)
@@ -812,22 +714,11 @@ namespace ASC.Files.Core.Data
             }
         }
 
-
-        public bool IsExist(string title, object folderId)
-        {
-            return IsExistAsync(title, folderId).Result;
-        }
-
         public async Task<bool> IsExistAsync(string title, object folderId)
         {
             if (folderId is int fId) return await IsExistAsync(title, fId).ConfigureAwait(false);
 
             throw new NotImplementedException();
-        }
-
-        public bool IsExist(string title, int folderId)
-        {
-            return IsExistAsync(title, folderId).Result;
         }
 
         public async Task<bool> IsExistAsync(string title, int folderId)
@@ -838,11 +729,6 @@ namespace ASC.Files.Core.Data
                           r.FolderId == folderId &&
                           r.CurrentVersion)
                 .ConfigureAwait(false);
-        }
-
-        public TTo MoveFile<TTo>(int fileId, TTo toFolderId)
-        {
-            return MoveFileAsync(fileId, toFolderId).Result;
         }
 
         public async Task<TTo> MoveFileAsync<TTo>(int fileId, TTo toFolderId)
@@ -858,11 +744,6 @@ namespace ASC.Files.Core.Data
             }
 
             throw new NotImplementedException();
-        }
-
-        public int MoveFile(int fileId, int toFolderId)
-        {
-            return MoveFileAsync(fileId, toFolderId).Result;
         }
 
         public async Task<int> MoveFileAsync(int fileId, int toFolderId)
@@ -923,11 +804,6 @@ namespace ASC.Files.Core.Data
             return fileId;
         }
 
-        public string MoveFile(int fileId, string toFolderId)
-        {
-            return MoveFileAsync(fileId, toFolderId).Result;
-        }
-
         public async Task<string> MoveFileAsync(int fileId, string toFolderId)
         {
             var toSelector = ProviderFolderDao.GetSelector(toFolderId);
@@ -939,11 +815,6 @@ namespace ASC.Files.Core.Data
                 .ConfigureAwait(false);
 
             return moved.ID;
-        }
-
-        public File<TTo> CopyFile<TTo>(int fileId, TTo toFolderId)
-        {
-            return CopyFileAsync(fileId, toFolderId).Result;
         }
 
         public async Task<File<TTo>> CopyFileAsync<TTo>(int fileId, TTo toFolderId)
@@ -959,11 +830,6 @@ namespace ASC.Files.Core.Data
             }
 
             throw new NotImplementedException();
-        }
-
-        public File<int> CopyFile(int fileId, int toFolderId)
-        {
-            return CopyFileAsync(fileId, toFolderId).Result;
         }
 
         public async Task<File<int>> CopyFileAsync(int fileId, int toFolderId)
@@ -987,7 +853,7 @@ namespace ASC.Files.Core.Data
 
                 if (file.ThumbnailStatus == Thumbnail.Created)
                 {
-                    using (var thumbnail = GetThumbnail(file))
+                    using (var thumbnail = await GetThumbnailAsync(file).ConfigureAwait(false))
                     {
                         await SaveThumbnailAsync(copy, thumbnail).ConfigureAwait(false);
                     }
@@ -997,11 +863,6 @@ namespace ASC.Files.Core.Data
                 return copy;
             }
             return null;
-        }
-
-        public File<string> CopyFile(int fileId, string toFolderId)
-        {
-            return CopyFileAsync(fileId, toFolderId).Result;
         }
 
         public async Task<File<string>> CopyFileAsync(int fileId, string toFolderId)
@@ -1015,11 +876,6 @@ namespace ASC.Files.Core.Data
                 .ConfigureAwait(false);
 
             return moved;
-        }
-
-        public int FileRename(File<int> file, string newTitle)
-        {
-            return FileRenameAsync(file, newTitle).Result;
         }
 
         public async Task<int> FileRenameAsync(File<int> file, string newTitle)
@@ -1042,11 +898,6 @@ namespace ASC.Files.Core.Data
             return file.ID;
         }
 
-        public string UpdateComment(int fileId, int fileVersion, string comment)
-        {
-            return UpdateCommentAsync(fileId, fileVersion, comment).Result;
-        }
-
         public async Task<string> UpdateCommentAsync(int fileId, int fileVersion, string comment)
         {
             var toUpdate = await Query(FilesDbContext.Files)
@@ -1060,23 +911,9 @@ namespace ASC.Files.Core.Data
 
             toUpdate.Comment = comment;
 
-            FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
             return comment;
-        }
-
-        public void CompleteVersion(int fileId, int fileVersion)
-        {
-            var toUpdate = Query(FilesDbContext.Files)
-                .Where(r => r.Id == fileId)
-                .Where(r => r.Version > fileVersion);
-
-            foreach (var f in toUpdate)
-            {
-                f.VersionGroup += 1;
-            }
-
-            FilesDbContext.SaveChanges();
         }
 
         public async Task CompleteVersionAsync(int fileId, int fileVersion)
@@ -1091,11 +928,6 @@ namespace ASC.Files.Core.Data
             }
 
             await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
-        }
-
-        public void ContinueVersion(int fileId, int fileVersion)
-        {
-            ContinueVersionAsync(fileId, fileVersion).Wait();
         }
 
         public async Task ContinueVersionAsync(int fileId, int fileVersion)
@@ -1157,11 +989,6 @@ namespace ASC.Files.Core.Data
                        : null;
         }
 
-        private void RecalculateFilesCount(int folderId)
-        {
-            RecalculateFilesCountAsync(folderId).Wait();
-        }
-
         private async Task RecalculateFilesCountAsync(int folderId)
         {
             await GetRecalculateFilesCountUpdateAsync(folderId).ConfigureAwait(false);
@@ -1169,18 +996,9 @@ namespace ASC.Files.Core.Data
 
         #region chunking
 
-        public ChunkedUploadSession<int> CreateUploadSession(File<int> file, long contentLength)
-        {
-            return CreateUploadSessionAsync(file, contentLength).Result;
-        }
         public Task<ChunkedUploadSession<int>> CreateUploadSessionAsync(File<int> file, long contentLength)
         {
             return Task.FromResult(ChunkedUploadSessionHolder.CreateUploadSession(file, contentLength));
-        }
-
-        public File<int> UploadChunk(ChunkedUploadSession<int> uploadSession, Stream stream, long chunkLength)
-        {
-            return UploadChunkAsync(uploadSession, stream, chunkLength).Result;
         }
 
         public async Task<File<int>> UploadChunkAsync(ChunkedUploadSession<int> uploadSession, Stream stream, long chunkLength)
@@ -1190,7 +1008,7 @@ namespace ASC.Files.Core.Data
                 using var streamToSave = await ChunkedUploadSessionHolder.UploadSingleChunkAsync(uploadSession, stream, chunkLength).ConfigureAwait(false);
                 if (streamToSave != Stream.Null)
                 {
-                    uploadSession.File = await SaveFileAsync(GetFileForCommit(uploadSession), streamToSave).ConfigureAwait(false);
+                    uploadSession.File = await SaveFileAsync(await GetFileForCommitAsync(uploadSession).ConfigureAwait(false), streamToSave).ConfigureAwait(false);
                 }
 
                 return uploadSession.File;
@@ -1206,11 +1024,6 @@ namespace ASC.Files.Core.Data
             return uploadSession.File;
         }
 
-        private File<int> FinalizeUploadSession(ChunkedUploadSession<int> uploadSession)
-        {
-            return FinalizeUploadSessionAsync(uploadSession).Result;
-        }
-
         private async Task<File<int>> FinalizeUploadSessionAsync(ChunkedUploadSession<int> uploadSession)
         {
             ChunkedUploadSessionHolder.FinalizeUploadSession(uploadSession);
@@ -1222,20 +1035,10 @@ namespace ASC.Files.Core.Data
             return file;
         }
 
-        public void AbortUploadSession(ChunkedUploadSession<int> uploadSession)
-        {
-            AbortUploadSessionAsync(uploadSession).Wait();
-        }
-
         public Task AbortUploadSessionAsync(ChunkedUploadSession<int> uploadSession)
         {
             ChunkedUploadSessionHolder.AbortUploadSession(uploadSession);
             return Task.CompletedTask;
-        }
-
-        private File<int> GetFileForCommit(ChunkedUploadSession<int> uploadSession)
-        {
-            return GetFileForCommitAsync(uploadSession).Result;
         }
 
         private async Task<File<int>> GetFileForCommitAsync(ChunkedUploadSession<int> uploadSession)
@@ -1266,20 +1069,6 @@ namespace ASC.Files.Core.Data
 
         #region Only in TMFileDao
 
-        public void ReassignFiles(int[] fileIds, Guid newOwnerId)
-        {
-            var toUpdate = Query(FilesDbContext.Files)
-                .Where(r => r.CurrentVersion)
-                .Where(r => fileIds.Contains(r.Id));
-
-            foreach (var f in toUpdate)
-            {
-                f.CreateBy = newOwnerId;
-            }
-
-            FilesDbContext.SaveChanges();
-        }
-
         public async Task ReassignFilesAsync(int[] fileIds, Guid newOwnerId)
         {
             var toUpdate = Query(FilesDbContext.Files)
@@ -1292,11 +1081,6 @@ namespace ASC.Files.Core.Data
             }
 
             await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
-        }
-
-        public List<File<int>> GetFiles(IEnumerable<int> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
-        {
-            return GetFilesAsync(parentIds, filterType, subjectGroup, subjectID, searchText, searchInContent).Result;
         }
 
         public async Task<List<File<int>>> GetFilesAsync(IEnumerable<int> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
@@ -1358,11 +1142,6 @@ namespace ASC.Files.Core.Data
             return query.ConvertAll(e => ToFile(e));
         }
 
-        public IEnumerable<File<int>> Search(string searchText, bool bunch)
-        {
-            return SearchAsync(searchText, bunch).Result;
-        }
-
         public async Task<IEnumerable<File<int>>> SearchAsync(string searchText, bool bunch)
         {
             if (FactoryIndexer.TrySelectIds(s => s.MatchAll(searchText), out var ids))
@@ -1392,39 +1171,12 @@ namespace ASC.Files.Core.Data
             GlobalStore.GetStore().DeleteDirectory(GetUniqFileDirectory(fileId));
         }
 
-        public bool IsExistOnStorage(File<int> file)
-        {
-            return IsExistOnStorageAsync(file).Result;
-        }
-
         public async Task<bool> IsExistOnStorageAsync(File<int> file)
         {
             return await GlobalStore.GetStore().IsFileAsync(string.Empty, GetUniqFilePath(file)).ConfigureAwait(false);
         }
 
         private const string DiffTitle = "diff.zip";
-
-        public void SaveEditHistory(File<int> file, string changes, Stream differenceStream)
-        {
-            if (file == null) throw new ArgumentNullException("file");
-            if (string.IsNullOrEmpty(changes)) throw new ArgumentNullException("changes");
-            if (differenceStream == null) throw new ArgumentNullException("differenceStream");
-
-            changes = changes.Trim();
-
-            var toUpdate = Query(FilesDbContext.Files)
-                .Where(r => r.Id == file.ID)
-                .Where(r => r.Version == file.Version);
-
-            foreach (var f in toUpdate)
-            {
-                f.Changes = changes;
-            }
-
-            FilesDbContext.SaveChanges();
-
-            GlobalStore.GetStore().Save(string.Empty, GetUniqFilePath(file, DiffTitle), differenceStream, DiffTitle);
-        }
 
         public async Task SaveEditHistoryAsync(File<int> file, string changes, Stream differenceStream)
         {
@@ -1446,11 +1198,6 @@ namespace ASC.Files.Core.Data
             await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
             GlobalStore.GetStore().Save(string.Empty, GetUniqFilePath(file, DiffTitle), differenceStream, DiffTitle);
-        }
-
-        public List<EditHistory> GetEditHistory(DocumentServiceHelper documentServiceHelper, int fileId, int fileVersion = 0)
-        {
-            return GetEditHistoryAsync(documentServiceHelper, fileId, fileVersion).Result;
         }
 
         public async Task<List<EditHistory>> GetEditHistoryAsync(DocumentServiceHelper documentServiceHelper, int fileId, int fileVersion = 0)
@@ -1487,19 +1234,9 @@ namespace ASC.Files.Core.Data
                     .ToList();
         }
 
-        public Stream GetDifferenceStream(File<int> file)
-        {
-            return GetDifferenceStreamAsync(file).Result;
-        }
-
         public async Task<Stream> GetDifferenceStreamAsync(File<int> file)
         {
             return await GlobalStore.GetStore().GetReadStreamAsync(string.Empty, GetUniqFilePath(file, DiffTitle), 0).ConfigureAwait(false);
-        }
-
-        public bool ContainChanges(int fileId, int fileVersion)
-        {
-            return ContainChangesAsync(fileId, fileVersion).Result;
         }
 
         public async Task<bool> ContainChangesAsync(int fileId, int fileVersion)
@@ -1509,11 +1246,6 @@ namespace ASC.Files.Core.Data
                           r.Version == fileVersion &&
                           r.Changes != null)
                 .ConfigureAwait(false);
-        }
-
-        public IEnumerable<(File<int>, SmallShareRecord)> GetFeeds(int tenant, DateTime from, DateTime to)
-        {
-            return GetFeedsAsync(tenant, from, to).Result;
         }
 
         public async Task<IEnumerable<(File<int>, SmallShareRecord)>> GetFeedsAsync(int tenant, DateTime from, DateTime to)
@@ -1544,11 +1276,6 @@ namespace ASC.Files.Core.Data
             return fileWithShare.Union(q4.Select(ToFileWithShare).ToList());
         }
 
-        public IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
-        {
-            return GetTenantsWithFeedsAsync(fromTime).Result;
-        }
-
         public async Task<IEnumerable<int>> GetTenantsWithFeedsAsync(DateTime fromTime)
         {
             var q1 = await FilesDbContext.Files
@@ -1574,11 +1301,6 @@ namespace ASC.Files.Core.Data
 
         private const string ThumbnailTitle = "thumb";
 
-        public void SaveThumbnail(File<int> file, Stream thumbnail)
-        {
-            SaveThumbnailAsync(file, thumbnail).Wait();
-        }
-
         public async Task SaveThumbnailAsync(File<int> file, Stream thumbnail)
         {
             if (file == null) throw new ArgumentNullException("file");
@@ -1598,11 +1320,6 @@ namespace ASC.Files.Core.Data
 
             var thumnailName = ThumbnailTitle + "." + Global.ThumbnailExtension;
             GlobalStore.GetStore().Save(string.Empty, GetUniqFilePath(file, thumnailName), thumbnail, thumnailName);
-        }
-
-        public Stream GetThumbnail(File<int> file)
-        {
-            return GetThumbnailAsync(file).Result;
         }
 
         public async Task<Stream> GetThumbnailAsync(File<int> file)
@@ -1770,11 +1487,6 @@ namespace ASC.Files.Core.Data
                 : null;
 
             return (file, record);
-        }
-
-        internal protected DbFile InitDocument(DbFile dbFile)
-        {
-            return InitDocumentAsync(dbFile).Result;
         }
 
         internal protected async Task<DbFile> InitDocumentAsync(DbFile dbFile)

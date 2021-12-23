@@ -83,19 +83,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
             FolderDao = folderDao;
         }
 
-        public Folder<string> GetFolder(string folderId)
-        {
-            return GetFolderAsync(folderId).Result;
-        }
-
         public Task<Folder<string>> GetFolderAsync(string folderId)
         {
             return Task.FromResult(ToFolder(GetFolderById(folderId)));
-        }
-
-        public Folder<string> GetFolder(string title, string parentId)
-        {
-            return GetFolderAsync(title, parentId).Result;
         }
 
         public Task<Folder<string>> GetFolderAsync(string title, string parentId)
@@ -104,19 +94,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return Task.FromResult(ToFolder(parentFolder.OfType<ICloudDirectoryEntry>().FirstOrDefault(x => x.Name.Equals(title, StringComparison.OrdinalIgnoreCase))));
         }
 
-        public Folder<string> GetRootFolder(string folderId)
-        {
-            return GetRootFolderAsync(folderId).Result;
-        }
-
         public Task<Folder<string>> GetRootFolderAsync(string folderId)
         {
             return Task.FromResult(ToFolder(RootFolder()));
-        }
-
-        public Folder<string> GetRootFolderByFile(string fileId)
-        {
-            return GetRootFolderByFileAsync(fileId).Result;
         }
 
         public Task<Folder<string>> GetRootFolderByFileAsync(string fileId)
@@ -124,20 +104,10 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return Task.FromResult(ToFolder(RootFolder()));
         }
 
-        public List<Folder<string>> GetFolders(string parentId)
-        {
-            return GetFoldersAsync(parentId).ToListAsync().Result;
-        }
-
         public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
         {
             var parentFolder = ProviderInfo.Storage.GetFolder(MakePath(parentId));
             return parentFolder.OfType<ICloudDirectoryEntry>().Select(ToFolder).ToAsyncEnumerable();
-        }
-
-        public List<Folder<string>> GetFolders(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
-        {
-            return GetFoldersAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, withSubfolders).ToListAsync().Result;
         }
 
         public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
@@ -175,11 +145,6 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return folders;
         }
 
-        public List<Folder<string>> GetFolders(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
-        {
-            return GetFoldersAsync(folderIds, filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare).ToListAsync().Result;
-        }
-
         public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
         {
             if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
@@ -202,12 +167,6 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
             return folders;
         }
-
-        public List<Folder<string>> GetParentFolders(string folderId)
-        {
-            return GetParentFoldersAsync(folderId).Result;
-        }
-
         public Task<List<Folder<string>>> GetParentFoldersAsync(string folderId)
         {
             var path = new List<Folder<string>>();
@@ -223,10 +182,6 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return Task.FromResult(path);
         }
 
-        public string SaveFolder(Folder<string> folder)
-        {
-            return SaveFolderAsync(folder).Result;
-        }
 
         public async Task<string> SaveFolderAsync(Folder<string> folder)
         {
@@ -265,11 +220,6 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 }
             }
             return null;
-        }
-
-        public void DeleteFolder(string folderId)
-        {
-            DeleteFolderAsync(folderId).Wait();
         }
 
         public async Task DeleteFolderAsync(string folderId)
@@ -317,11 +267,6 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 ProviderInfo.Storage.DeleteFileSystemEntry(folder);
         }
 
-        public bool IsExist(string title, ICloudDirectoryEntry folder)
-        {
-            return IsExistAsync(title, folder).Result;
-        }
-
         public Task<bool> IsExistAsync(string title, ICloudDirectoryEntry folder)
         {
             try
@@ -339,11 +284,6 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return Task.FromResult(false);
         }
 
-        public TTo MoveFolder<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
-        {
-            return MoveFolderAsync(folderId, toFolderId, cancellationToken).Result;
-        }
-
         public async Task<TTo> MoveFolderAsync<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
         {
             if (toFolderId is int tId)
@@ -359,11 +299,6 @@ namespace ASC.Files.Thirdparty.Sharpbox
             throw new NotImplementedException();
         }
 
-        public int MoveFolder(string folderId, int toFolderId, CancellationToken? cancellationToken)
-        {
-            return MoveFolderAsync(folderId, toFolderId, cancellationToken).Result;
-        }
-
         public async Task<int> MoveFolderAsync(string folderId, int toFolderId, CancellationToken? cancellationToken)
         {
             var moved = await CrossDao.PerformCrossDaoFolderCopyAsync(
@@ -373,11 +308,6 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 .ConfigureAwait(false);
 
             return moved.ID;
-        }
-
-        public string MoveFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
-        {
-            return MoveFolderAsync(folderId, toFolderId, cancellationToken).Result;
         }
 
         public async Task<string> MoveFolderAsync(string folderId, string toFolderId, CancellationToken? cancellationToken)
@@ -397,11 +327,6 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return newFolderId;
         }
 
-        public Folder<TTo> CopyFolder<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
-        {
-            return CopyFolderAsync(folderId, toFolderId, cancellationToken).Result;
-        }
-
         public async Task<Folder<TTo>> CopyFolderAsync<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
         {
             if (toFolderId is int tId)
@@ -417,11 +342,6 @@ namespace ASC.Files.Thirdparty.Sharpbox
             throw new NotImplementedException();
         }
 
-        public Folder<int> CopyFolder(string folderId, int toFolderId, CancellationToken? cancellationToken)
-        {
-            return CopyFolderAsync(folderId, toFolderId, cancellationToken).Result;
-        }
-
         public async Task<Folder<int>> CopyFolderAsync(string folderId, int toFolderId, CancellationToken? cancellationToken)
         {
             var moved = await CrossDao.PerformCrossDaoFolderCopyAsync(
@@ -433,11 +353,6 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return moved;
         }
 
-        public Folder<string> CopyFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
-        {
-            return CopyFolderAsync(folderId, toFolderId, cancellationToken).Result;
-        }
-
         public Task<Folder<string>> CopyFolderAsync(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
             var folder = GetFolderById(folderId);
@@ -445,21 +360,6 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 throw new Exception("Error while copying");
 
             return Task.FromResult(ToFolder(GetFolderById(toFolderId).OfType<ICloudDirectoryEntry>().FirstOrDefault(x => x.Name == folder.Name)));
-        }
-
-        public IDictionary<string, string> CanMoveOrCopy<TTo>(string[] folderIds, TTo to)
-        {
-            if (to is int tId)
-            {
-                return CanMoveOrCopy(folderIds, tId);
-            }
-
-            if (to is string tsId)
-            {
-                return CanMoveOrCopy(folderIds, tsId);
-            }
-
-            throw new NotImplementedException();
         }
 
         public async Task<IDictionary<string, string>> CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
@@ -477,29 +377,14 @@ namespace ASC.Files.Thirdparty.Sharpbox
             throw new NotImplementedException();
         }
 
-        public IDictionary<string, string> CanMoveOrCopy(string[] folderIds, string to)
-        {
-            return new Dictionary<string, string>();
-        }
-
         public Task<IDictionary<string, string>> CanMoveOrCopyAsync(string[] folderIds, string to)
         {
             return Task.FromResult((IDictionary<string, string>)new Dictionary<string, string>());
         }
 
-        public IDictionary<string, string> CanMoveOrCopy(string[] folderIds, int to)
-        {
-            return new Dictionary<string, string>();
-        }
-
         public Task<IDictionary<string, string>> CanMoveOrCopyAsync(string[] folderIds, int to)
         {
             return Task.FromResult((IDictionary<string, string>)new Dictionary<string, string>());
-        }
-
-        public string RenameFolder(Folder<string> folder, string newTitle)
-        {
-            return RenameFolderAsync(folder, newTitle).Result;
         }
 
         public async Task<string> RenameFolderAsync(Folder<string> folder, string newTitle)
@@ -535,19 +420,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return newId;
         }
 
-        public int GetItemsCount(string folderId)
-        {
-            return GetItemsCountAsync(folderId).Result;
-        }
-
         public Task<int> GetItemsCountAsync(string folderId)
         {
             throw new NotImplementedException();
-        }
-
-        public bool IsEmpty(string folderId)
-        {
-            return IsEmptyAsync(folderId).Result;
         }
 
         public Task<bool> IsEmptyAsync(string folderId)
@@ -579,11 +454,6 @@ namespace ASC.Files.Thirdparty.Sharpbox
         public bool CanCalculateSubitems(string entryId)
         {
             return false;
-        }
-
-        public long GetMaxUploadSize(string folderId, bool chunkedUpload)
-        {
-            return GetMaxUploadSizeAsync(folderId, chunkedUpload).Result;
         }
 
         public Task<long> GetMaxUploadSizeAsync(string folderId, bool chunkedUpload)

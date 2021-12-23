@@ -120,7 +120,7 @@ namespace ASC.Files.Core.Services.NotifyService
             var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
 
             var folderDao = daoFactory.GetFolderDao<T>();
-            if (fileEntry.FileEntryType == FileEntryType.File && folderDao.GetFolder(((File<T>)fileEntry).FolderID) == null) return;
+            if (fileEntry.FileEntryType == FileEntryType.File && folderDao.GetFolderAsync(((File<T>)fileEntry).FolderID).Result == null) return;
 
             var url = fileEntry.FileEntryType == FileEntryType.File
                           ? filesLinkUtility.GetFileWebPreviewUrl(fileUtility, fileEntry.Title, fileEntry.ID)

@@ -42,7 +42,6 @@ namespace ASC.Files.Core
         /// </summary>
         /// <param name="folderId">folder id</param>
         /// <returns>folder</returns>
-        Folder<T> GetFolder(T folderId);
         Task<Folder<T>> GetFolderAsync(T folderId);
 
         /// <summary>
@@ -51,14 +50,12 @@ namespace ASC.Files.Core
         /// <param name="title"></param>
         /// <param name="parentId"></param>
         /// <returns></returns>
-        Folder<T> GetFolder(string title, T parentId);
         Task<Folder<T>> GetFolderAsync(string title, T parentId);
         /// <summary>
         ///    Gets the root folder
         /// </summary>
         /// <param name="folderId">folder id</param>
         /// <returns>root folder</returns>
-        Folder<T> GetRootFolder(T folderId);
         Task<Folder<T>> GetRootFolderAsync(T folderId);
 
         /// <summary>
@@ -66,14 +63,12 @@ namespace ASC.Files.Core
         /// </summary>
         /// <param name="fileId">file id</param>
         /// <returns>root folder</returns>
-        Folder<T> GetRootFolderByFile(T fileId);
         Task<Folder<T>> GetRootFolderByFileAsync(T fileId);
 
         /// <summary>
         ///     Get a list of folders in current folder.
         /// </summary>
         /// <param name="parentId"></param>
-        List<Folder<T>> GetFolders(T parentId);
         IAsyncEnumerable<Folder<T>> GetFoldersAsync(T parentId);
         /// <summary>
         /// Get a list of folders.
@@ -86,7 +81,6 @@ namespace ASC.Files.Core
         /// <param name="searchText"></param>
         /// <param name="withSubfolders"></param>
         /// <returns></returns>
-        List<Folder<T>> GetFolders(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false);
         IAsyncEnumerable<Folder<T>> GetFoldersAsync(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false);
 
         /// <summary>
@@ -100,7 +94,6 @@ namespace ASC.Files.Core
         /// <param name="searchSubfolders"></param>
         /// <param name="checkShare"></param>
         /// <returns></returns>
-        List<Folder<T>> GetFolders(IEnumerable<T> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true);
         IAsyncEnumerable<Folder<T>> GetFoldersAsync(IEnumerable<T> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true);
 
         /// <summary>
@@ -108,20 +101,17 @@ namespace ASC.Files.Core
         /// </summary>
         /// <param name="folderId">folder id</param>
         /// <returns></returns>
-        List<Folder<T>> GetParentFolders(T folderId);
         Task<List<Folder<T>>> GetParentFoldersAsync(T folderId);
         /// <summary>
         ///     save or update folder
         /// </summary>
         /// <param name="folder"></param>
         /// <returns></returns>
-        T SaveFolder(Folder<T> folder);
         Task<T> SaveFolderAsync(Folder<T> folder);
         /// <summary>
         ///     delete folder
         /// </summary>
         /// <param name="folderId">folder id</param>
-        void DeleteFolder(T folderId);
         Task DeleteFolderAsync(T folderId);
         /// <summary>
         ///  move folder
@@ -129,13 +119,9 @@ namespace ASC.Files.Core
         /// <param name="folderId">folder id</param>
         /// <param name="toFolderId">destination folder id</param>
         /// <param name="cancellationToken"></param>
-        T MoveFolder(T folderId, T toFolderId, CancellationToken? cancellationToken);
         Task<T> MoveFolderAsync(T folderId, T toFolderId, CancellationToken? cancellationToken);
-        TTo MoveFolder<TTo>(T folderId, TTo toFolderId, CancellationToken? cancellationToken);
         Task<TTo> MoveFolderAsync<TTo>(T folderId, TTo toFolderId, CancellationToken? cancellationToken);
-        string MoveFolder(T folderId, string toFolderId, CancellationToken? cancellationToken);
         Task<string> MoveFolderAsync(T folderId, string toFolderId, CancellationToken? cancellationToken);
-        int MoveFolder(T folderId, int toFolderId, CancellationToken? cancellationToken);
         Task<int> MoveFolderAsync(T folderId, int toFolderId, CancellationToken? cancellationToken);
 
         /// <summary>
@@ -146,13 +132,9 @@ namespace ASC.Files.Core
         /// <param name="cancellationToken"></param>
         /// <returns> 
         /// </returns>
-        Folder<T> CopyFolder(T folderId, T toFolderId, CancellationToken? cancellationToken);
         Task<Folder<T>> CopyFolderAsync(T folderId, T toFolderId, CancellationToken? cancellationToken);
-        Folder<TTo> CopyFolder<TTo>(T folderId, TTo toFolderId, CancellationToken? cancellationToken);
         Task<Folder<TTo>> CopyFolderAsync<TTo>(T folderId, TTo toFolderId, CancellationToken? cancellationToken);
-        Folder<string> CopyFolder(T folderId, string toFolderId, CancellationToken? cancellationToken);
         Task<Folder<string>> CopyFolderAsync(T folderId, string toFolderId, CancellationToken? cancellationToken);
-        Folder<int> CopyFolder(T folderId, int toFolderId, CancellationToken? cancellationToken);
         Task<Folder<int>> CopyFolderAsync(T folderId, int toFolderId, CancellationToken? cancellationToken);
 
         /// <summary>
@@ -163,13 +145,9 @@ namespace ASC.Files.Core
         /// <returns>
         /// Returns pair of file ID, file name, in which the same name.
         /// </returns>
-        IDictionary<T, string> CanMoveOrCopy(T[] folderIds, T to);
         Task<IDictionary<T, string>> CanMoveOrCopyAsync(T[] folderIds, T to);
-        IDictionary<T, string> CanMoveOrCopy<TTo>(T[] folderIds, TTo to);
         Task<IDictionary<T, string>> CanMoveOrCopyAsync<TTo>(T[] folderIds, TTo to);
-        IDictionary<T, string> CanMoveOrCopy(T[] folderIds, string to);
         Task<IDictionary<T, string>> CanMoveOrCopyAsync(T[] folderIds, string to);
-        IDictionary<T, string> CanMoveOrCopy(T[] folderIds, int to);
         Task<IDictionary<T, string>> CanMoveOrCopyAsync(T[] folderIds, int to);
 
         /// <summary>
@@ -177,7 +155,6 @@ namespace ASC.Files.Core
         /// </summary>
         /// <param name="folder"></param>
         /// <param name="newTitle">new name</param>
-        T RenameFolder(Folder<T> folder, string newTitle);
         Task<T> RenameFolderAsync(Folder<T> folder, string newTitle);
 
         /// <summary>
@@ -185,7 +162,6 @@ namespace ASC.Files.Core
         /// </summary>
         /// <param name="folderId">folder id</param>
         /// <returns></returns>
-        int GetItemsCount(T folderId);
         Task<int> GetItemsCountAsync(T folderId);
 
         /// <summary>
@@ -193,7 +169,6 @@ namespace ASC.Files.Core
         /// </summary>
         /// <param name="folderId">folder id</param>
         /// <returns></returns>
-        bool IsEmpty(T folderId);
         Task<bool> IsEmptyAsync(T folderId);
         /// <summary>
         /// Check the need to use the trash before removing
@@ -226,7 +201,6 @@ namespace ASC.Files.Core
         /// <param name="folderId">Id of the folder</param>
         /// <param name="chunkedUpload">Determines whenever supposed upload will be chunked (true) or not (false)</param>
         /// <returns>Maximum size of file which can be uploaded to folder</returns>
-        long GetMaxUploadSize(T folderId, bool chunkedUpload = false);
         Task<long> GetMaxUploadSizeAsync(T folderId, bool chunkedUpload = false);
 
         #region Only for TMFolderDao
@@ -236,7 +210,8 @@ namespace ASC.Files.Core
         /// </summary>
         /// <param name="folderIds"></param>
         /// <param name="newOwnerId"></param>
-        void ReassignFolders(T[] folderIds, Guid newOwnerId);
+        Task ReassignFoldersAsync(T[] folderIds, Guid newOwnerId);
+
 
         /// <summary>
         /// Search the list of folders containing text in title
@@ -245,7 +220,7 @@ namespace ASC.Files.Core
         /// <param name="text"></param>
         /// <param name="bunch"></param>
         /// <returns></returns>
-        IEnumerable<Folder<T>> SearchFolders(string text, bool bunch = false);
+        Task<IEnumerable<Folder<T>>> SearchFoldersAsync(string text, bool bunch = false);
 
         /// <summary>
         /// Only in TMFolderDao
@@ -255,10 +230,8 @@ namespace ASC.Files.Core
         /// <param name="data"></param>
         /// <param name="createIfNotExists"></param>
         /// <returns></returns>
-        T GetFolderID(string module, string bunch, string data, bool createIfNotExists);
         Task<T> GetFolderIDAsync(string module, string bunch, string data, bool createIfNotExists);
 
-        IEnumerable<T> GetFolderIDs(string module, string bunch, IEnumerable<string> data, bool createIfNotExists);
         Task<IEnumerable<T>> GetFolderIDsAsync(string module, string bunch, IEnumerable<string> data, bool createIfNotExists);
 
         /// <summary>
@@ -266,7 +239,6 @@ namespace ASC.Files.Core
         /// Only in TMFolderDao
         /// </summary>
         /// <returns></returns>
-        T GetFolderIDCommon(bool createIfNotExists);
         Task<T> GetFolderIDCommonAsync(bool createIfNotExists);
 
         /// <summary>
@@ -276,7 +248,6 @@ namespace ASC.Files.Core
         /// <param name="createIfNotExists"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        T GetFolderIDUser(bool createIfNotExists, Guid? userId = null);
         Task<T> GetFolderIDUserAsync(bool createIfNotExists, Guid? userId = null);
 
         /// <summary>
@@ -285,7 +256,6 @@ namespace ASC.Files.Core
         /// </summary>
         /// <param name="createIfNotExists"></param>
         /// <returns></returns>
-        T GetFolderIDShare(bool createIfNotExists);
         Task<T> GetFolderIDShareAsync(bool createIfNotExists);
 
         /// <summary>
@@ -294,7 +264,6 @@ namespace ASC.Files.Core
         /// </summary>
         /// <param name="createIfNotExists"></param>
         /// <returns></returns>
-        T GetFolderIDRecent(bool createIfNotExists);
         Task<T> GetFolderIDRecentAsync(bool createIfNotExists);
 
         /// <summary>
@@ -305,7 +274,6 @@ namespace ASC.Files.Core
         /// </summary>
         /// <param name="createIfNotExists"></param>
         /// <returns></returns>
-        T GetFolderIDFavorites(bool createIfNotExists);
         Task<T> GetFolderIDFavoritesAsync(bool createIfNotExists);
 
         /// <summary>
@@ -314,7 +282,6 @@ namespace ASC.Files.Core
         /// </summary>
         /// <param name="createIfNotExists"></param>
         /// <returns></returns>
-        T GetFolderIDTemplates(bool createIfNotExists);
         Task<T> GetFolderIDTemplatesAsync(bool createIfNotExists);
 
         /// <summary>
@@ -323,7 +290,6 @@ namespace ASC.Files.Core
         /// </summary>
         /// <param name="createIfNotExists"></param>
         /// <returns></returns>
-        T GetFolderIDPrivacy(bool createIfNotExists, Guid? userId = null);
         Task<T> GetFolderIDPrivacyAsync(bool createIfNotExists, Guid? userId = null);
 
         /// <summary>
@@ -333,7 +299,6 @@ namespace ASC.Files.Core
         /// <param name="createIfNotExists"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        T GetFolderIDTrash(bool createIfNotExists, Guid? userId = null);
         Task<T> GetFolderIDTrashAsync(bool createIfNotExists, Guid? userId = null);
 
         /// <summary>
@@ -342,7 +307,6 @@ namespace ASC.Files.Core
         /// </summary>
         /// <param name="createIfNotExists"></param>
         /// <returns></returns>
-        T GetFolderIDProjects(bool createIfNotExists);
         Task<T> GetFolderIDProjectsAsync(bool createIfNotExists);
 
 
@@ -352,7 +316,6 @@ namespace ASC.Files.Core
         /// </summary>
         /// <param name="folderID"></param>
         /// <returns></returns>
-        string GetBunchObjectID(T folderID);
         Task<string> GetBunchObjectIDAsync(T folderID);
 
         /// <summary>
@@ -361,12 +324,10 @@ namespace ASC.Files.Core
         /// </summary>
         /// <param name="folderIDs"></param>
         /// <returns></returns>
-        Dictionary<string, string> GetBunchObjectIDs(List<T> folderIDs);
         Task<Dictionary<string, string>> GetBunchObjectIDsAsync(List<T> folderIDs);
 
-        IEnumerable<(Folder<T>, SmallShareRecord)> GetFeedsForFolders(int tenant, DateTime from, DateTime to);
+        Task<IEnumerable<(Folder<T>, SmallShareRecord)>> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to);
 
-        IEnumerable<T> GetTenantsWithFeedsForFolders(DateTime fromTime);
         Task<IEnumerable<T>> GetTenantsWithFeedsForFoldersAsync(DateTime fromTime);
 
         #endregion

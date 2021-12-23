@@ -235,8 +235,8 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         protected override IEnumerable<string> GetChildren(string folderId)
         {
-            var subFolders = ProviderInfo.GetFolderFolders(folderId).Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
-            var files = ProviderInfo.GetFolderFiles(folderId).Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
+            var subFolders = ProviderInfo.GetFolderFoldersAsync(folderId).Result.Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
+            var files = ProviderInfo.GetFolderFilesAsync(folderId).Result.Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
             return subFolders.Concat(files);
         }
 

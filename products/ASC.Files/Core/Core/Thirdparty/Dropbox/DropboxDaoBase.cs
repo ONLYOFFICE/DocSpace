@@ -190,10 +190,6 @@ namespace ASC.Files.Thirdparty.Dropbox
             return file;
         }
 
-        public Folder<string> GetRootFolder(string folderId)
-        {
-            return ToFolder(GetDropboxFolder(string.Empty));
-        }
         public async Task<Folder<string>> GetRootFolderAsync(string folderId)
         {
             return ToFolder(await GetDropboxFolderAsync(string.Empty));
@@ -204,7 +200,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             var dropboxFolderPath = MakeDropboxPath(folderId);
             try
             {
-                var folder = ProviderInfo.GetDropboxFolder(dropboxFolderPath);
+                var folder = ProviderInfo.GetDropboxFolderAsync(dropboxFolderPath).Result;
                 return folder;
             }
             catch (Exception ex)
@@ -232,7 +228,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             var dropboxFilePath = MakeDropboxPath(fileId);
             try
             {
-                var file = ProviderInfo.GetDropboxFile(dropboxFilePath);
+                var file = ProviderInfo.GetDropboxFileAsync(dropboxFilePath).Result;
                 return file;
             }
             catch (Exception ex)
@@ -269,7 +265,7 @@ namespace ASC.Files.Thirdparty.Dropbox
         protected List<Metadata> GetDropboxItems(object parentId, bool? folder = null)
         {
             var dropboxFolderPath = MakeDropboxPath(parentId);
-            var items = ProviderInfo.GetDropboxItems(dropboxFolderPath);
+            var items = ProviderInfo.GetDropboxItemsAsync(dropboxFolderPath).Result;
 
             if (folder.HasValue)
             {

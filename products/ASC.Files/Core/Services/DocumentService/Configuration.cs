@@ -493,7 +493,7 @@ namespace ASC.Web.Files.Services.DocumentService
                              select
                                  new RecentConfig
                                  {
-                                     Folder = folderDao.GetFolder(file.FolderID).Title,
+                                     Folder = folderDao.GetFolderAsync(file.FolderID).Result.Title,
                                      Title = file.Title,
                                      Url = BaseCommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.GetFileWebEditorUrl(file.ID))
                                  };
@@ -747,7 +747,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 var folderDao = DaoFactory.GetFolderDao<T>();
                 try
                 {
-                    var parent = folderDao.GetFolder(_configuration.Document.Info.GetFile().FolderID);
+                    var parent = folderDao.GetFolderAsync(_configuration.Document.Info.GetFile().FolderID).Result;
                     var fileSecurity = FileSecurity;
                     if (_configuration.Document.Info.GetFile().RootFolderType == FolderType.USER
                         && !Equals(_configuration.Document.Info.GetFile().RootFolderId, GlobalFolderHelper.FolderMy)

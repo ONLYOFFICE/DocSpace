@@ -129,7 +129,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             var folderDao = selector.GetFolderDao(folderId);
             if (folderDao == null) return;
 
-            var folder = folderDao.GetFolder(selector.ConvertId(folderId));
+            var folder = folderDao.GetFolderAsync(selector.ConvertId(folderId)).Result;
             if (folder != null) folders.Add(folder);
         }
 
@@ -145,7 +145,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
                 var folderDao = selector.GetFolderDao(folder.ID);
                 if (folderDao == null) continue;
 
-                var parentFolders = folderDao.GetParentFolders(selector.ConvertId(folder.ID));
+                var parentFolders = folderDao.GetParentFoldersAsync(selector.ConvertId(folder.ID)).Result;
                 if (parentFolders == null || !parentFolders.Any()) continue;
 
                 parentFolders.Reverse();
