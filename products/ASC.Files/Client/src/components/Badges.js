@@ -48,6 +48,8 @@ const Badges = ({
 
   const lineHeightBadge = tabletViewBadge ? "16px" : "12px";
 
+  const paddingBadge = tabletViewBadge ? "0 5px" : "0 3px";
+
   return fileExst ? (
     <div className="badges additional-badges">
       {canWebEdit &&
@@ -85,7 +87,7 @@ const Badges = ({
           label={t("VersionBadge:Version", { version: countVersions })}
           maxWidth="50px"
           onClick={onShowVersionHistory}
-          padding="0 3px"
+          padding={paddingBadge}
           lineHeight={lineHeightBadge}
           data-id={id}
         />
@@ -101,7 +103,7 @@ const Badges = ({
           label={t("New")}
           maxWidth="50px"
           onClick={onBadgeClick}
-          padding="0 3px"
+          padding={paddingBadge}
           lineHeight={lineHeightBadge}
           data-id={id}
         />
@@ -119,7 +121,7 @@ const Badges = ({
         label={contentNewItems}
         maxWidth="50px"
         onClick={onBadgeClick}
-        padding="0 3px"
+        padding={paddingBadge}
         lineHeight={lineHeightBadge}
         data-id={id}
       />
