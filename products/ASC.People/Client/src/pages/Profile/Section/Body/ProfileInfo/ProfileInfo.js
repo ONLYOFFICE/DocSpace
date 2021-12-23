@@ -224,11 +224,16 @@ class ProfileInfo extends React.PureComponent {
     } = profile;
 
     const type = isVisitor ? guestCaption : userCaption;
-    const language = cultureName || currentCulture || culture;
+    let language = cultureName || currentCulture || culture;
+    language = language == "en-US" ? "en" : language;
     //const languages = this.getLanguages();
-    const selectedLanguage =
-      cultureNames.find((item) => item.key === language) ||
-      cultureNames.find((item) => item.key === culture);
+    const selectedLanguage = cultureNames.find(
+      (item) => item.key === language
+    ) ||
+      cultureNames.find((item) => item.key === culture) || {
+        key: language,
+        label: "",
+      };
 
     const workFromDate = new Date(workFrom).toLocaleDateString(language);
     const birthDayDate = new Date(birthday).toLocaleDateString(language);
@@ -349,7 +354,7 @@ class ProfileInfo extends React.PureComponent {
           <InfoItem>
             <InfoItemLabel>{t("Common:Language")}:</InfoItemLabel>
             <InfoItemValue>
-              {cultureNames && selectedLanguage ? (
+              {cultureNames ? (
                 <>
                   <ComboBox
                     options={cultureNames}
