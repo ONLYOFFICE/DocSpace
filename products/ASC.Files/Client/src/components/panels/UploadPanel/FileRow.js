@@ -13,12 +13,17 @@ import { isMobile } from "react-device-detect";
 
 const StyledFileRow = styled(Row)`
   /* margin: 0 16px; */
-  /* width: calc(100% - 16px); */
+  width: calc(100% - 16px);
   box-sizing: border-box;
   /* font-weight: 600; */
-  width: 100%;
-  padding-right: 16px;
+  /* padding-right: 16px; */
   padding-left: 16px;
+  max-width: 484px;
+
+  ::after {
+    max-width: 468px;
+    width: calc(100% - 16px);
+  }
 
   ${!isMobile && "min-height: 40px;"}
 
@@ -37,7 +42,7 @@ const StyledFileRow = styled(Row)`
     top: 44px;
     left: 16px;
     max-width: 470px;
-    width: calc(100% - 32px);
+    width: calc(100% - 16px);
     .conversation-password-wrapper {
       max-width: 470px;
       width: 100%;
