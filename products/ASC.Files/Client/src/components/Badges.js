@@ -38,8 +38,7 @@ const Badges = ({
     ? "/static/images/file.actions.convert.edit.doc.react.svg"
     : "/static/images/access.edit.react.svg";
 
-  const contentBadgeVersion =
-    `V.${versionGroup}` > 999 ? "V.999+" : `V.${versionGroup}`;
+  const countVersions = versionGroup > 999 ? "999+" : versionGroup;
 
   const contentNewItems = newItems > 999 ? "999+" : newItems;
 
@@ -83,7 +82,7 @@ const Badges = ({
           color="#FFFFFF"
           fontSize="9px"
           fontWeight={800}
-          label={contentBadgeVersion}
+          label={t("VersionBadge:Version", { version: countVersions })}
           maxWidth="50px"
           onClick={onShowVersionHistory}
           padding="0 3px"
