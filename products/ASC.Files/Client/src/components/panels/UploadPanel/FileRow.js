@@ -10,6 +10,7 @@ import PasswordInput from "./PasswordInput";
 import ErrorFileUpload from "./ErrorFileUpload.js";
 import ActionsUploadedFile from "./ActionsUploadedFile";
 import { isMobile } from "react-device-detect";
+import NoUserSelect from "@appserver/components/utils/commonStyles";
 
 const StyledFileRow = styled(Row)`
   /* margin: 0 16px; */
@@ -50,6 +51,7 @@ const StyledFileRow = styled(Row)`
     white-space: nowrap;
     max-width: 97px;
     overflow: hidden;
+    ${NoUserSelect}
   }
   .password-input {
     position: absolute;
