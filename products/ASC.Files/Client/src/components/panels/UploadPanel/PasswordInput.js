@@ -18,6 +18,7 @@ const StyledBody = styled.div`
   #conversion-password {
     max-width: 382px;
     width: 100%;
+    margin: 0;
   }
   .conversion-input {
     width: 100%;

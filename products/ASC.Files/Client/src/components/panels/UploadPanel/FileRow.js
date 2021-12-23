@@ -34,7 +34,7 @@ const StyledFileRow = styled(Row)`
     ${(props) =>
       props.showPasswordInput &&
       css`
-        margin-top: ${isMobile ? "-45px" : "-49px"};
+        margin-top: ${isMobile ? "-44px" : "-48px"};
       `}
   }
   .password-input {
@@ -172,8 +172,6 @@ class FileRow extends Component {
     } = this.props;
     const { showPasswordInput } = this.state;
 
-    console.log("render file row", index, "item", item);
-
     return (
       <>
         <StyledFileRow
@@ -268,7 +266,6 @@ export default inject(
       splitted = item.fileInfo.title.split(".");
       name = splitted[0];
     }
-
     const { personal } = auth.settingsStore;
     const {
       iconFormatsStore,
