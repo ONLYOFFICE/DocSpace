@@ -263,6 +263,7 @@ class AvatarEditorBody extends React.Component {
   onSaveImage() {
     var img = new Image();
     var _this = this;
+    img.crossOrigin = "Anonymous";
     img.src = this.state.image;
     if (!this.state.image) _this.props.onLoadFile(null);
     img.onload = () => {
