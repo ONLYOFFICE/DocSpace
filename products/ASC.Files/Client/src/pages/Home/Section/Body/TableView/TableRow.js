@@ -308,7 +308,7 @@ const FilesTableRow = (props) => {
   );
 };
 
-export default withTranslation("Home")(
+export default withTranslation(["Home", "VersionBadge"])(
   withFileActions(
     withRouter(
       withContextOptions(
