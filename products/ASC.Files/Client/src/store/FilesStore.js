@@ -628,6 +628,7 @@ class FilesStore {
 
       if (isFavoritesFolder || isRecentFolder) {
         fileOptions = this.removeOptions(fileOptions, [
+          "make-form",
           "copy",
           "move-to",
           //"sharing-settings",
