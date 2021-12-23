@@ -37,6 +37,20 @@ const StyledFileRow = styled(Row)`
         margin-top: ${isMobile ? "-44px" : "-48px"};
       `}
   }
+
+  .upload-panel_file-name {
+    max-width: 412px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    align-items: center;
+    display: flex;
+  }
+
+  .enter-password {
+    white-space: nowrap;
+    max-width: 97px;
+    overflow: hidden;
+  }
   .password-input {
     position: absolute;
     top: 44px;
@@ -168,9 +182,16 @@ class FileRow extends Component {
       isPersonal,
       isMediaActive,
       downloadInCurrentTab,
-      index,
     } = this.props;
     const { showPasswordInput } = this.state;
+
+    const fileExtension = ext ? (
+      <Text as="span" fontWeight="600" color="#A3A9AE">
+        {ext}
+      </Text>
+    ) : (
+      <></>
+    );
 
     return (
       <>
@@ -197,28 +218,28 @@ class FileRow extends Component {
                   {name}
                 </Link>
               ) : (
-                <Link
-                  fontWeight="600"
-                  color={item.error && "#A3A9AE"}
-                  truncate
-                  href={item.fileInfo ? item.fileInfo.webUrl : ""}
-                  target={downloadInCurrentTab ? "_self" : "_blank"}
-                >
-                  {name}
-                </Link>
+                <div className="upload-panel_file-name">
+                  <Link
+                    fontWeight="600"
+                    color={item.error && "#A3A9AE"}
+                    truncate
+                    href={item.fileInfo ? item.fileInfo.webUrl : ""}
+                    target={downloadInCurrentTab ? "_self" : "_blank"}
+                  >
+                    {name}
+                    {fileExtension}
+                  </Link>
+                </div>
               )
             ) : (
-              <Text fontWeight="600" color={item.error && "#A3A9AE"} truncate>
-                {name}
-              </Text>
+              <div className="upload-panel_file-name">
+                <Text fontWeight="600" color={item.error && "#A3A9AE"} truncate>
+                  {name}
+                  {fileExtension}
+                </Text>
+              </div>
             )}
-            {ext ? (
-              <Text fontWeight="600" color="#A3A9AE">
-                {ext}
-              </Text>
-            ) : (
-              <></>
-            )}
+
             {item.fileId && !item.error ? (
               <ActionsUploadedFile
                 item={item}
