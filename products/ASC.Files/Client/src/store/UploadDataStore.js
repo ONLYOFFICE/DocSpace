@@ -41,6 +41,9 @@ class UploadDataStore {
   uploadPanelVisible = false;
   selectedUploadFile = [];
 
+  isUploading = false;
+  isUploadingAndConversion = false;
+
   constructor(
     formatsStore,
     treeFoldersStore,
@@ -100,6 +103,9 @@ class UploadDataStore {
     this.conversionPercent = 0;
     this.uploaded = true;
     this.converted = true;
+
+    this.isUploadingAndConversion = false;
+    this.isUploading = false;
   };
   removeFileFromList = (id) => {
     this.files = this.files.filter((obj) => {
@@ -114,6 +120,9 @@ class UploadDataStore {
       percent: 0,
       files: this.files.filter((x) => x.action !== "uploaded"),
     };
+
+    this.isUploadingAndConversion = false;
+    this.isUploading = false;
 
     this.setUploadData(uploadData);
   };
@@ -451,11 +460,19 @@ class UploadDataStore {
       convertSize += file.size;
     }
 
+    const countUploadingFiles = newFiles.length;
+    const countConversionFiles = this.tempConversionFiles.length;
+
+    if (countUploadingFiles && !countConversionFiles) {
+      this.isUploading = true;
+    } else {
+      this.isUploadingAndConversion = true;
+    }
     this.convertFilesSize = convertSize;
 
     //console.log("this.tempConversionFiles", this.tempConversionFiles);
 
-    if (this.tempConversionFiles.length)
+    if (countConversionFiles)
       this.settingsStore.hideConfirmConvertSave
         ? this.convertUploadedFiles(t)
         : this.dialogsStore.setConvertDialogVisible(true);
@@ -469,7 +486,7 @@ class UploadDataStore {
       converted: !!this.tempConversionFiles.length,
     };
 
-    if (this.uploaded && newFiles.length) {
+    if (this.uploaded && countUploadingFiles) {
       this.setUploadData(newUploadData);
       this.startUploadFiles(t);
     }
@@ -853,6 +870,8 @@ class UploadDataStore {
       } else {
         uploadData.files = [];
         uploadData.filesToConversion = [];
+        this.isUploadingAndConversion = false;
+        this.isUploading = false;
       }
 
       this.setUploadData(uploadData);
