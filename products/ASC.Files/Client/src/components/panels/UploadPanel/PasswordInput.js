@@ -28,7 +28,7 @@ const PasswordComponent = ({
   item,
   convertFile,
   removeFileFromList,
-  onHideInput,
+  hideInput,
   uploadedFiles,
 }) => {
   const [password, setPassword] = useState("");
@@ -36,8 +36,6 @@ const PasswordComponent = ({
 
   const { t } = useTranslation("UploadPanel");
   const onClick = () => {
-    console.log("on click", item);
-
     let hasError = false;
 
     const pass = password.trim();
@@ -63,7 +61,7 @@ const PasswordComponent = ({
       index,
     };
 
-    onHideInput();
+    hideInput();
     removeFileFromList(item.fileId);
     convertFile(newItem);
   };

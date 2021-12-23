@@ -320,7 +320,6 @@ class UploadDataStore {
         let error = null;
 
         while (progress < 100) {
-          console.log("getConversationProgress");
           const res = await this.getConversationProgress(fileId);
           progress = res && res[0] && res[0].progress;
           fileInfo = res && res[0].result;
@@ -340,10 +339,7 @@ class UploadDataStore {
               if (file) {
                 file.error = error;
                 file.inConversion = false;
-                if (fileInfo === "password") {
-                  file.needPassword = true;
-                  // console.log("this.files", this.files);
-                }
+                if (fileInfo === "password") file.needPassword = true;
               }
             });
 

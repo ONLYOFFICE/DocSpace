@@ -264,7 +264,7 @@ class FileRow extends Component {
             )}
             {showPasswordInput && (
               <div className="password-input">
-                <PasswordInput item={item} onHideInput={this.onTextClick} />
+                <PasswordInput item={item} hideInput={this.onTextClick} />
               </div>
             )}
           </>
