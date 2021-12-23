@@ -17,7 +17,11 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Linq;
+using System.Threading.Tasks;
+
 using Google.Protobuf;
+
 using StackExchange.Redis.Extensions.Core.Abstractions;
 
 namespace ASC.Common.Caching;
@@ -36,17 +40,70 @@ public class RedisCache<T> : ICacheNotify<T> where T : IMessage<T>, new()
 
     public void Publish(T obj, CacheNotifyAction action)
     {
-        throw new NotImplementedException();
+        Task.Run(() => _redis.PublishAsync("asc:channel:" + typeof(T).FullName, new RedisCachePubSubItem<T>() { CacheId = CacheId, Object = obj, Action = action }))
+            .GetAwaiter()
+            .GetResult();
+
+        ConcurrentBag<Action<object, CacheNotifyAction>> onchange;
+        actions.TryGetValue(typeof(T), out onchange);
+
+        if (onchange != null)
+        {
+            onchange.ToList().ForEach(r => r(obj, action));
+        }
     }
 
     public void Subscribe(Action<T> onchange, CacheNotifyAction action)
     {
-        throw new NotImplementedException();
+        Task.Run(() => _redis.SubscribeAsync<RedisCachePubSubItem<T>>("asc:channel:" + typeof(T).FullName, (i) =>
+        {
+            if (i.CacheId != CacheId)
+            {
+                onchange(i.Object);
+            }
+
+            return Task.FromResult(true);
+        })).GetAwaiter()
+          .GetResult();
+
+
+        if (onchange != null)
+        {
+            Action<object, CacheNotifyAction> _action = (o, a) => onchange((T)o);
+
+            actions.AddOrUpdate(typeof(T),
+                new ConcurrentBag<Action<object, CacheNotifyAction>> { _action },
+                (type, bag) =>
+                {
+                    bag.Add(_action);
+                    return bag;
+                });
+        }
+        else
+        {
+            ConcurrentBag<Action<object, CacheNotifyAction>> removed;
+            actions.TryRemove(typeof(T), out removed);
+        }
     }
 
     public void Unsubscribe(CacheNotifyAction action)
     {
-        throw new NotImplementedException();
+        Task.Run(() => _redis.UnsubscribeAsync<RedisCachePubSubItem<T>>("asc:channel:" + typeof(T).FullName, (i) =>
+        {
+            return Task.FromResult(true);
+        })).GetAwaiter()
+          .GetResult();
     }
 
+    class RedisCachePubSubItem<T0>
+    {
+        public string CacheId { get; set; }
+
+        public T0 Object { get; set; }
+
+        public CacheNotifyAction Action { get; set; }
+    }
 }
+
+
+

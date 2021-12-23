@@ -83,8 +83,8 @@ namespace ASC.Core
         {
             var result = new UserGroupRef
             {
-                UserId = cache.UserId.FromByteString(),
-                GroupId = cache.GroupId.FromByteString()
+                UserId = new Guid(cache.UserId),
+                GroupId = new Guid(cache.GroupId)
             };
 
             if (Enum.TryParse<UserGroupRefType>(cache.RefType, out var refType))
@@ -103,8 +103,8 @@ namespace ASC.Core
         {
             return new UserGroupRefCacheItem
             {
-                GroupId = cache.GroupId.ToByteString(),
-                UserId = cache.UserId.ToByteString(),
+                GroupId = cache.GroupId.ToString(),
+                UserId = cache.UserId.ToString(),
                 RefType = cache.RefType.ToString(),
                 LastModified = cache.LastModified.Ticks,
                 Removed = cache.Removed,

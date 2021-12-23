@@ -3,7 +3,7 @@
 package ASC.Web.Core.Users;
 
 message UserPhotoManagerCacheItem {
-    bytes UserID  = 1;
+    string UserID  = 1;
 
     CacheSize Size  = 2;
 

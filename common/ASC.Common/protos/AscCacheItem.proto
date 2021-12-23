@@ -3,5 +3,5 @@
 package ASC.Common;
 
 message AscCacheItem {
-    bytes Id = 1;
+    string Id = 1;
 }

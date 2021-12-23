@@ -117,13 +117,13 @@ namespace ASC.Web.Core.Users
 
                 CacheNotify.Subscribe((data) =>
                 {
-                    var userId = new Guid(data.UserID.ToByteArray());
+                    var userId = new Guid(data.UserID);
                     Photofiles.GetOrAdd(data.Size, (r) => new ConcurrentDictionary<Guid, string>())[userId] = data.FileName;
                 }, CacheNotifyAction.InsertOrUpdate);
 
                 CacheNotify.Subscribe((data) =>
                 {
-                    var userId = new Guid(data.UserID.ToByteArray());
+                    var userId = new Guid(data.UserID);
 
                     try
                     {
@@ -157,7 +157,7 @@ namespace ASC.Web.Core.Users
         {
             if (CacheNotify != null)
             {
-                CacheNotify.Publish(new UserPhotoManagerCacheItem { UserID = Google.Protobuf.ByteString.CopyFrom(userID.ToByteArray()) }, CacheNotifyAction.Remove);
+                CacheNotify.Publish(new UserPhotoManagerCacheItem { UserID = userID.ToString() }, CacheNotifyAction.Remove);
             }
         }
 
@@ -165,7 +165,7 @@ namespace ASC.Web.Core.Users
         {
             if (CacheNotify != null)
             {
-                CacheNotify.Publish(new UserPhotoManagerCacheItem { UserID = Google.Protobuf.ByteString.CopyFrom(userID.ToByteArray()), Size = UserPhotoManager.ToCache(size), FileName = fileName }, CacheNotifyAction.InsertOrUpdate);
+                CacheNotify.Publish(new UserPhotoManagerCacheItem { UserID = userID.ToString(), Size = UserPhotoManager.ToCache(size), FileName = fileName }, CacheNotifyAction.InsertOrUpdate);
             }
         }
 
