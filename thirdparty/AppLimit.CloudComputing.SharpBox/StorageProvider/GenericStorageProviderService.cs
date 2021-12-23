@@ -146,7 +146,7 @@ namespace AppLimit.CloudComputing.SharpBox.StorageProvider
         public virtual string GetResourceUrl(IStorageProviderSession session, ICloudFileSystemEntry fileSystemEntry, string additionalPath)
         {
             additionalPath = !string.IsNullOrEmpty(additionalPath) ? additionalPath.Trim('/') : string.Empty;
-            var url = session.ServiceConfiguration.ServiceLocator.ToString().Trim('/');
+            var url = session.ServiceConfiguration.ServiceLocator.AbsoluteUri.Trim('/');
             var entryPath = fileSystemEntry != null ? GenericHelper.GetResourcePath(fileSystemEntry).Trim('/') : string.Empty;
             if (!string.IsNullOrEmpty(entryPath))
             {

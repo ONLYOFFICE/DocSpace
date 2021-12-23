@@ -27,7 +27,6 @@
 using System;
 
 using ASC.Common.Mapping;
-using ASC.CRM.ApiModels;
 using ASC.CRM.Classes;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Enums;

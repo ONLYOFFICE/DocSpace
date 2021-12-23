@@ -2,11 +2,10 @@ import React from "react";
 import TableHeader from "@appserver/components/table-container/TableHeader";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
-import { FilterType } from "@appserver/common/constants";
-import DropDownItem from "@appserver/components/drop-down-item";
 
-const TABLE_COLUMNS = "filesTableColumns";
-const COLUMNS_SIZE = "filesColumnsSize";
+const TABLE_VERSION = "2";
+const TABLE_COLUMNS = `filesTableColumns_ver-${TABLE_VERSION}`;
+const COLUMNS_SIZE = `filesColumnsSize_ver-${TABLE_VERSION}`;
 
 class FilesTableHeader extends React.Component {
   constructor(props) {

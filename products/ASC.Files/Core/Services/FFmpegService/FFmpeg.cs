@@ -94,7 +94,7 @@ namespace ASC.Web.Files.Services.FFmpegService
 
         private ProcessStartInfo PrepareFFmpeg(string inputFormat)
         {
-            if (!ConvertableMedia.Contains(inputFormat.TrimStart('.'))) throw new ArgumentException();
+            if (!ConvertableMedia.Contains(inputFormat.TrimStart('.'))) throw new ArgumentException("input format");
 
             var startInfo = new ProcessStartInfo();
 

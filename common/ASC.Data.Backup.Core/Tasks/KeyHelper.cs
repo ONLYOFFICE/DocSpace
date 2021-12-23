@@ -24,8 +24,6 @@
 */
 
 
-using System.IO;
-
 using ASC.Common.Utils;
 using ASC.Data.Backup.Tasks.Modules;
 

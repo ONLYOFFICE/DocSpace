@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.Linq;
 using ASC.Common.Utils;
 using ASC.Web.Core.Calendars;
-using System.Globalization;
 using ASC.Core;
 
 namespace ASC.Calendar.iCalParser
