@@ -109,6 +109,7 @@ const StyledSimpleFilesRow = styled(Row)`
 
   .favorite {
     cursor: pointer;
+    margin-top: 1px;
   }
 
   .expandButton {

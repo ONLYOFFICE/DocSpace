@@ -179,6 +179,10 @@ const StyledQuickButtonsContainer = styled.div`
     }
   }
 
+  .favorite {
+    margin-top: 1px;
+  }
+
   .share-button-icon:hover {
     cursor: pointer;
     path {
