@@ -13,7 +13,7 @@ import { inject, observer } from "mobx-react";
 import { showLoader, hideLoader } from "@appserver/common/utils";
 import { withRouter } from "react-router";
 import { AppServerConfig } from "@appserver/common/constants";
-import { combineUrl } from "@appserver/common/utils";
+import { combineUrl, convertLanguage } from "@appserver/common/utils";
 import withCultureNames from "@appserver/common/hoc/withCultureNames";
 import config from "../../../../../../package.json";
 import NoUserSelect from "@appserver/components/utils/commonStyles";
@@ -224,11 +224,16 @@ class ProfileInfo extends React.PureComponent {
     } = profile;
 
     const type = isVisitor ? guestCaption : userCaption;
-    const language = cultureName || currentCulture || culture;
+    const language = convertLanguage(cultureName || currentCulture || culture);
+
     //const languages = this.getLanguages();
-    const selectedLanguage =
-      cultureNames.find((item) => item.key === language) ||
-      cultureNames.find((item) => item.key === culture);
+    const selectedLanguage = cultureNames.find(
+      (item) => item.key === language
+    ) ||
+      cultureNames.find((item) => item.key === culture) || {
+        key: language,
+        label: "",
+      };
 
     const workFromDate = new Date(workFrom).toLocaleDateString(language);
     const birthDayDate = new Date(birthday).toLocaleDateString(language);
@@ -349,7 +354,7 @@ class ProfileInfo extends React.PureComponent {
           <InfoItem>
             <InfoItemLabel>{t("Common:Language")}:</InfoItemLabel>
             <InfoItemValue>
-              {cultureNames && selectedLanguage ? (
+              {cultureNames ? (
                 <>
                   <ComboBox
                     options={cultureNames}
@@ -362,6 +367,7 @@ class ProfileInfo extends React.PureComponent {
                     size="content"
                     className="language-combo"
                     showDisabledItems={true}
+                    dropDownMaxHeight={364}
                   />
                   <HelpButton
                     place="bottom"
