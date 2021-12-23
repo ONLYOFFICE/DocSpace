@@ -103,7 +103,7 @@ namespace ASC.Api.Core
             DIHelper.TryAdd<CookieAuthHandler>();
             DIHelper.TryAdd<WebhooksGlobalFilterAttribute>();
 
-            DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+            DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
             DIHelper.TryAdd(typeof(IWebhookPublisher), typeof(WebhookPublisher));
 
             if (LoadProducts)

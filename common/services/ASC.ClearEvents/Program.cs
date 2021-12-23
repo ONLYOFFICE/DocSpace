@@ -83,7 +83,7 @@ namespace ASC.Thumbnails.Svc
                     services.AddMemoryCache();
                     var diHelper = new DIHelper(services);
 
-                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
                     services.AddHostedService<ClearEventsServiceLauncher>();
                     diHelper.TryAdd<ClearEventsServiceLauncher>();
                 })

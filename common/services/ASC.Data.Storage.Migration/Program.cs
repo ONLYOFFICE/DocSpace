@@ -69,7 +69,7 @@ namespace ASC.Data.Storage.Migration
                 {
                     services.AddMemoryCache();
                     var diHelper = new DIHelper(services);
-                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
 
                     diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
 

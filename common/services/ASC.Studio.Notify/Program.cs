@@ -72,7 +72,7 @@ namespace ASC.Studio.Notify
                 {
                     services.AddMemoryCache();
                     var diHelper = new DIHelper(services);
-                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
                     diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
                     services.AddHostedService<ServiceLauncher>();
                     diHelper.TryAdd<ServiceLauncher>();

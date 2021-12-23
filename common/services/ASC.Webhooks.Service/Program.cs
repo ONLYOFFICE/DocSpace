@@ -70,7 +70,7 @@ namespace ASC.Webhooks.Service
 
                     var diHelper = new DIHelper(services);
 
-                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
 
                     diHelper.TryAdd<DbWorker>();
 

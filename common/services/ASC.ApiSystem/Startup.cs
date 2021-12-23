@@ -75,7 +75,7 @@ namespace ASC.ApiSystem
 
             services.AddMemoryCache();
 
-            diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+            diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
             diHelper.TryAdd<AuthHandler>();
             diHelper.TryAdd<CalDavController>();
             diHelper.TryAdd<PortalController>();
