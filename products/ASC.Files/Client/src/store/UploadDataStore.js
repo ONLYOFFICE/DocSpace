@@ -214,7 +214,7 @@ class UploadDataStore {
   convertFile = (file) => {
     this.dialogsStore.setConvertItem(null);
 
-    const convertWithPassword = file.hasOwnProperty("password");
+    const secondConvertingWithPassword = file.hasOwnProperty("password");
     const conversionPositionIndex = file.hasOwnProperty("index");
 
     const alreadyConverting = this.files.some(
@@ -224,14 +224,14 @@ class UploadDataStore {
     if (this.converted) {
       this.filesToConversion = [];
       this.convertFilesSize = 0;
-      if (!convertWithPassword)
+      if (!secondConvertingWithPassword)
         this.files = this.files.filter((f) => f.action === "converted");
 
       this.primaryProgressDataStore.clearPrimaryProgressData();
     }
 
     if (!alreadyConverting) {
-      if (convertWithPassword && conversionPositionIndex) {
+      if (secondConvertingWithPassword && conversionPositionIndex) {
         this.files.splice(file.index, 0, file);
       } else {
         this.files.push(file);
