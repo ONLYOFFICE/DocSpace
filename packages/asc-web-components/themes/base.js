@@ -1742,6 +1742,17 @@ const Base = {
     pinBorderColor: "#eceef1",
   },
 
+  section: {
+    toggler: {
+      background: "#fff",
+      boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
+    },
+
+    header: {
+      backgroundColor: "#fff",
+    },
+  },
+
   filesArticleBody: {
     background: "#dfe2e3",
     fill: "#657077",

@@ -1742,6 +1742,17 @@ const Dark = {
     pinBorderColor: "#474747",
   },
 
+  section: {
+    toggler: {
+      background: "#fff",
+      boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
+    },
+
+    header: {
+      backgroundColor: "#333333",
+    },
+  },
+
   filesArticleBody: {
     background: "#333333",
     fill: "#C4C4C4",
