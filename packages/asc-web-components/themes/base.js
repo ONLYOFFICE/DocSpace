@@ -1994,6 +1994,14 @@ const Base = {
       background: "rgba(200, 200, 200, 0.2)",
     },
   },
+
+  filesThirdPartyDialog: {
+    border: "1px solid #d1d1d1",
+  },
+
+  filesModalDialog: {
+    border: `1px solid lightgray`,
+  },
 };
 
 export default Base;

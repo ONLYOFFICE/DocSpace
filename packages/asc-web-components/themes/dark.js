@@ -1994,6 +1994,14 @@ const Dark = {
       background: "rgba(200, 200, 200, 0.2)",
     },
   },
+
+  filesThirdPartyDialog: {
+    border: "1px solid #474747",
+  },
+
+  filesModalDialog: {
+    border: `1px solid #474747`,
+  },
 };
 
 export default Dark;

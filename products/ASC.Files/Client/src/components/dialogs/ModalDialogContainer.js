@@ -1,6 +1,7 @@
-import styled from "styled-components";
-import { tablet } from "@appserver/components/utils/device";
-import ModalDialog from "@appserver/components/modal-dialog";
+import styled from 'styled-components';
+import { tablet } from '@appserver/components/utils/device';
+import ModalDialog from '@appserver/components/modal-dialog';
+import { Base } from '@appserver/components/themes';
 
 const ModalDialogContainer = styled(ModalDialog)`
   .flex {
@@ -68,7 +69,7 @@ const ModalDialogContainer = styled(ModalDialog)`
 
   .modal-dialog-content {
     padding: 8px 16px;
-    border: 1px solid lightgray;
+    border: ${(props) => props.theme.filesModelDialog.border};
 
     @media ${tablet} {
       padding: 0;
@@ -143,5 +144,7 @@ const ModalDialogContainer = styled(ModalDialog)`
     }
   }
 `;
+
+ModalDialogContainer.defaultProps = { theme: Base };
 
 export default ModalDialogContainer;
