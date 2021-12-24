@@ -2002,6 +2002,12 @@ const Dark = {
   filesModalDialog: {
     border: `1px solid #474747`,
   },
+
+  filesDragTooltip: {
+    background: "#333",
+    boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
+    color: "#eeeeee",
+  },
 };
 
 export default Dark;

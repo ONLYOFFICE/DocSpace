@@ -2002,6 +2002,12 @@ const Base = {
   filesModalDialog: {
     border: `1px solid lightgray`,
   },
+
+  filesDragTooltip: {
+    background: "#fff",
+    boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
+    color: "#a3a9ae",
+  },
 };
 
 export default Base;
