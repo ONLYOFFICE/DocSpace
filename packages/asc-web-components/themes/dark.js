@@ -1141,8 +1141,8 @@ const Dark = {
   treeNode: {
     dragging: {
       draggable: {
-        background: lightCumulus,
-        hoverBackgroundColor: lightMediumGoldenrod,
+        background: "rgba(230, 211, 138, 0.12)",
+        hoverBackgroundColor: "rgba(204, 184, 102, 0.2)",
         borderRadius: "3px",
       },
 
@@ -1643,8 +1643,8 @@ const Dark = {
     height: "100%",
     border: `1px solid ${globalColors.darkSilver}`,
     transparentBorder: "1px solid transparent",
-    acceptBackground: lightMediumGoldenrod,
-    background: lightCumulus,
+    acceptBackground: "rgba(204, 184, 102, 0.2)",
+    background: "rgba(230, 211, 138, 0.12)",
   },
 
   // phoneInput: {
@@ -1830,7 +1830,7 @@ const Dark = {
 
   tableContainer: {
     borderRight: "2px solid #474747",
-    hoverBorderColor: "#eeeeee",
+    hoverBorderColor: "#474747",
     tableCellBorder: "1px solid #474747",
 
     groupMenu: {
@@ -1854,6 +1854,72 @@ const Dark = {
 
     tableCell: {
       border: "1px solid #474747",
+    },
+  },
+  filesSection: {
+    rowView: {
+      checkedBackground: "#3D3D3D",
+
+      draggingBackground: "rgba(230, 211, 138, 0.12)",
+      draggingHoverBackground: "rgba(204, 184, 102, 0.2)2",
+
+      shareButton: {
+        color: "#858585",
+        fill: "#858585",
+      },
+
+      sideColor: "#858585",
+      linkColor: "#eeeeee",
+      textColor: "#858585",
+    },
+
+    tableView: {
+      fileName: {
+        linkColor: "#eeeeee",
+        textColor: "#858585",
+      },
+
+      row: {
+        checkboxChecked:
+          "linear-gradient(to right, #333333 24px, #474747 24px)",
+        checkboxDragging:
+          "linear-gradient(to right, rgba(230, 211, 138, 0.12) 24px, #474747 24px)",
+        checkboxDraggingHover:
+          "inear-gradient(to right,rgba(204, 184, 102, 0.2) 24px, #474747 24px)",
+
+        contextMenuWrapperChecked:
+          "linear-gradient(to left, #333333 24px, #474747 24px)",
+        contextMenuWrapperDragging:
+          "border-image-source: linear-gradient(to left, rgba(230, 211, 138, 0.12) 24px, #474747 24px)",
+        contextMenuWrapperDraggingHover:
+          "linear-gradient(to left,rgba(204, 184, 102, 0.2) 24px, #474747 24px)",
+
+        backgroundActive: "#3D3D3D",
+
+        borderImageCheckbox:
+          "linear-gradient(to right, #474747 24px, #474747 24px)",
+        borderImageContextMenu:
+          "linear-gradient(to left, #474747 24px, #474747 24px)",
+
+        borderHover: "#474747",
+        sideColor: gray,
+      },
+    },
+
+    tilesView: {
+      tile: {
+        draggingColor: "rgba(230, 211, 138, 0.12)",
+        draggingHoverColor: "rgba(204, 184, 102, 0.2)",
+        checkedColor: "#3D3D3D",
+        border: "1px solid #474747",
+        backgroundColor: "#333333",
+
+        backgroundColorTop: "#292929",
+      },
+
+      sideColor: "#eeeeee",
+      color: "#eeeeee",
+      textColor: "#858585",
     },
   },
 };

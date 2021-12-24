@@ -1,24 +1,31 @@
-import React, { useCallback } from "react";
-import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
-import styled from "styled-components";
-import { isMobile } from "react-device-detect";
+import React, { useCallback } from 'react';
+import { inject, observer } from 'mobx-react';
+import { withRouter } from 'react-router';
+import { withTranslation } from 'react-i18next';
+import styled from 'styled-components';
+import { isMobile } from 'react-device-detect';
 
-import Link from "@appserver/components/link";
-import Text from "@appserver/components/text";
-import RowContent from "@appserver/components/row-content";
+import Link from '@appserver/components/link';
+import Text from '@appserver/components/text';
+import RowContent from '@appserver/components/row-content';
 
-import withContent from "../../../../../HOCs/withContent";
-import withBadges from "../../../../../HOCs/withBadges";
-
-const sideColor = "#A3A9AE";
+import withContent from '../../../../../HOCs/withContent';
+import withBadges from '../../../../../HOCs/withBadges';
+import { Base } from '@appserver/components/themes';
 
 const SimpleFilesRowContent = styled(RowContent)`
   .row-main-container-wrapper {
     width: 100%;
   }
+  .row-content-link {
+    color: ${(props) => props.theme.filesSection.linkColor};
+  }
+  .row-content-text {
+    ${(props) => props.theme.filesSection.sideColor}
+  }
   .badge-ext {
     margin-right: 8px;
+    color: ${(props) => props.theme.filesSection.textColor};
   }
 
   .badge {
@@ -27,7 +34,7 @@ const SimpleFilesRowContent = styled(RowContent)`
     margin-right: 6px;
   }
   .lock-file {
-    cursor: ${(props) => (props.withAccess ? "pointer" : "default")};
+    cursor: ${(props) => (props.withAccess ? 'pointer' : 'default')};
   }
   .badges {
     display: flex;
@@ -51,6 +58,8 @@ const SimpleFilesRowContent = styled(RowContent)`
   }
 `;
 
+SimpleFilesRowContent.defaultProps = { theme: Base };
+
 const FilesRowContent = ({
   t,
   item,
@@ -61,29 +70,21 @@ const FilesRowContent = ({
   linkStyles,
   badgesComponent,
   isAdmin,
+  theme,
 }) => {
-  const {
-    contentLength,
-    fileExst,
-    filesCount,
-    foldersCount,
-    providerKey,
-    access,
-    title,
-  } = item;
+  const { contentLength, fileExst, filesCount, foldersCount, providerKey, access, title } = item;
 
   const withAccess = isAdmin || access === 0;
-
   return (
     <>
       <SimpleFilesRowContent
         sectionWidth={sectionWidth}
         isMobile={isMobile}
-        sideColor={sideColor}
         isFile={fileExst || contentLength}
-        withAccess={withAccess}
-      >
+        sideColor={theme.filesSection.rowView.sideColor}
+        withAccess={withAccess}>
         <Link
+          className="row-content-link"
           containerWidth="55%"
           type="page"
           title={title}
@@ -91,19 +92,10 @@ const FilesRowContent = ({
           fontSize="15px"
           target="_blank"
           {...linkStyles}
-          color="#333"
-          isTextOverflow={true}
-        >
+          isTextOverflow={true}>
           {titleWithoutExt}
           {fileExst && (
-            <Text
-              className="badge-ext"
-              as="span"
-              color="#A3A9AE"
-              fontSize="15px"
-              fontWeight={600}
-              truncate={true}
-            >
+            <Text className="badge-ext" as="span" fontSize="15px" fontWeight={600} truncate={true}>
               {fileExst}
             </Text>
           )}
@@ -113,12 +105,11 @@ const FilesRowContent = ({
           containerMinWidth="120px"
           containerWidth="15%"
           as="div"
-          color={sideColor}
+          className="row-content-text"
           fontSize="12px"
           fontWeight={400}
           title={fileOwner}
-          truncate={true}
-        >
+          truncate={true}>
           {fileOwner}
         </Text>
         <Text
@@ -127,36 +118,33 @@ const FilesRowContent = ({
           title={updatedDate}
           fontSize="12px"
           fontWeight={400}
-          color={sideColor}
-          className="row_update-text"
-        >
+          className="row_update-text row-content-text">
           {updatedDate && updatedDate}
         </Text>
         <Text
           containerMinWidth="90px"
           containerWidth="10%"
           as="div"
-          color={sideColor}
+          className="row-content-text"
           fontSize="12px"
           fontWeight={400}
           title=""
-          truncate={true}
-        >
+          truncate={true}>
           {fileExst || contentLength
             ? contentLength
             : !providerKey
-            ? `${t("TitleDocuments")}: ${filesCount} | ${t(
-                "TitleSubfolders"
-              )}: ${foldersCount}`
-            : ""}
+            ? `${t('TitleDocuments')}: ${filesCount} | ${t('TitleSubfolders')}: ${foldersCount}`
+            : ''}
         </Text>
       </SimpleFilesRowContent>
     </>
   );
 };
 
-export default withRouter(
-  withTranslation(["Home", "Translations"])(
-    withContent(withBadges(FilesRowContent))
-  )
+export default inject(({ auth }) => {
+  return { theme: auth.settingsStore.theme };
+})(
+  observer(
+    withRouter(withTranslation(['Home', 'Translations'])(withContent(withBadges(FilesRowContent)))),
+  ),
 );

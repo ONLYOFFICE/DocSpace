@@ -1,16 +1,16 @@
-import React from "react";
-import { inject, observer } from "mobx-react";
-import { withTranslation } from "react-i18next";
-import DragAndDrop from "@appserver/components/drag-and-drop";
+import React from 'react';
+import { inject, observer } from 'mobx-react';
+import { withTranslation } from 'react-i18next';
+import DragAndDrop from '@appserver/components/drag-and-drop';
 
-import Tile from "./sub-components/Tile";
-import FilesTileContent from "./FilesTileContent";
-import { withRouter } from "react-router-dom";
+import Tile from './sub-components/Tile';
+import FilesTileContent from './FilesTileContent';
+import { withRouter } from 'react-router-dom';
 
-import withFileActions from "../../../../../HOCs/withFileActions";
-import withContextOptions from "../../../../../HOCs/withContextOptions";
-import ItemIcon from "../../../../../components/ItemIcon";
-import SharedButton from "../../../../../components/SharedButton";
+import withFileActions from '../../../../../HOCs/withFileActions';
+import withContextOptions from '../../../../../HOCs/withContextOptions';
+import ItemIcon from '../../../../../components/ItemIcon';
+import SharedButton from '../../../../../components/SharedButton';
 
 const FilesTile = (props) => {
   const {
@@ -39,29 +39,16 @@ const FilesTile = (props) => {
     isEdit,
   } = props;
 
-  const temporaryExtension =
-    item.id === -1 ? `.${item.fileExst}` : item.fileExst;
+  const temporaryExtension = item.id === -1 ? `.${item.fileExst}` : item.fileExst;
 
-  const temporaryIcon = getIcon(
-    96,
-    temporaryExtension,
-    item.providerKey,
-    item.contentLength
-  );
+  const temporaryIcon = getIcon(96, temporaryExtension, item.providerKey, item.contentLength);
 
   const { thumbnailUrl } = item;
   const sharedButton =
     item.canShare && showShare ? (
-      <SharedButton
-        t={t}
-        id={item.id}
-        shared={item.shared}
-        isFolder={item.isFolder}
-      />
+      <SharedButton t={t} id={item.id} shared={item.shared} isFolder={item.isFolder} />
     ) : null;
-  const element = (
-    <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
-  );
+  const element = <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />;
 
   return (
     <div ref={props.selectableRef}>
@@ -72,8 +59,7 @@ const FilesTile = (props) => {
         onDrop={onDrop}
         onMouseDown={onMouseDown}
         dragging={dragging && isDragging}
-        {...contextOptionsProps}
-      >
+        {...contextOptionsProps}>
         <Tile
           key={item.id}
           item={item}
@@ -93,13 +79,8 @@ const FilesTile = (props) => {
           {...contextOptionsProps}
           contextButtonSpacerWidth={displayShareButton}
           isActive={isActive}
-          isEdit={isEdit}
-        >
-          <FilesTileContent
-            item={item}
-            sectionWidth={sectionWidth}
-            onFilesClick={onFilesClick}
-          />
+          isEdit={isEdit}>
+          <FilesTileContent item={item} sectionWidth={sectionWidth} onFilesClick={onFilesClick} />
         </Tile>
       </DragAndDrop>
     </div>
@@ -109,8 +90,4 @@ const FilesTile = (props) => {
 export default inject(({ formatsStore }) => {
   const { getIcon } = formatsStore.iconFormatsStore;
   return { getIcon };
-})(
-  withTranslation("Home")(
-    withFileActions(withContextOptions(withRouter(observer(FilesTile))))
-  )
-);
+})(withTranslation('Home')(withFileActions(withContextOptions(withRouter(observer(FilesTile))))));

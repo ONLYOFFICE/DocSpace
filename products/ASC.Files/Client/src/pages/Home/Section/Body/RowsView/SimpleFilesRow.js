@@ -1,18 +1,19 @@
-import React from "react";
-import styled, { css } from "styled-components";
-import { withTranslation } from "react-i18next";
-import DragAndDrop from "@appserver/components/drag-and-drop";
-import Row from "@appserver/components/row";
-import FilesRowContent from "./FilesRowContent";
-import { withRouter } from "react-router-dom";
+import React from 'react';
+import styled, { css } from 'styled-components';
+import { withTranslation } from 'react-i18next';
+import DragAndDrop from '@appserver/components/drag-and-drop';
+import Row from '@appserver/components/row';
+import FilesRowContent from './FilesRowContent';
+import { withRouter } from 'react-router-dom';
 
-import withFileActions from "../../../../../HOCs/withFileActions";
-import withContextOptions from "../../../../../HOCs/withContextOptions";
-import SharedButton from "../../../../../components/SharedButton";
-import ItemIcon from "../../../../../components/ItemIcon";
+import withFileActions from '../../../../../HOCs/withFileActions';
+import withContextOptions from '../../../../../HOCs/withContextOptions';
+import SharedButton from '../../../../../components/SharedButton';
+import ItemIcon from '../../../../../components/ItemIcon';
+import { Base } from '@appserver/components/themes';
 
 const checkedStyle = css`
-  background: #f3f4f4;
+  background: ${(props) => props.theme.filesSection.rowView.checkedBackground};
   margin-left: -24px;
   margin-right: -24px;
   padding-left: 24px;
@@ -27,9 +28,9 @@ const checkedStyle = css`
 `;
 
 const draggingStyle = css`
-  background: #f8f7bf;
+  background: ${(props) => props.theme.filesSection.rowView.draggingBackground};
   &:hover {
-    background: #efefb2;
+    background: ${(props) => props.theme.filesSection.rowView.draggingHoverBackground};
   }
   margin-left: -24px;
   margin-right: -24px;
@@ -59,7 +60,7 @@ const StyledSimpleFilesRow = styled(Row)`
   cursor: ${(props) =>
     !props.isThirdPartyFolder &&
     (props.checked || props.isActive) &&
-    "url(images/cursor.palm.svg), auto"};
+    'url(images/cursor.palm.svg), auto'};
   margin-top: -2px;
 
   ${(props) =>
@@ -77,9 +78,9 @@ const StyledSimpleFilesRow = styled(Row)`
   .share-button:hover,
   .share-button-icon:hover {
     cursor: pointer;
-    color: #657077;
+    color: ${(props) => props.theme.filesSection.rowView.shareButton.color};
     path {
-      fill: #657077;
+      fill: ${(props) => props.theme.filesSection.rowView.shareButton.fill};
     }
   }
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -92,10 +93,12 @@ const StyledSimpleFilesRow = styled(Row)`
 
   .styled-element {
     height: 32px;
-    /* width: ${(props) => (props.isEdit ? "52px" : "24px")}; */
+    /* width: ${(props) => (props.isEdit ? '52px' : '24px')}; */
     margin-right: 7px;
   }
 `;
+
+StyledSimpleFilesRow.defaultProps = { theme: Base };
 
 const SimpleFilesRow = (props) => {
   const {
@@ -123,17 +126,10 @@ const SimpleFilesRow = (props) => {
 
   const sharedButton =
     item.canShare && showShare ? (
-      <SharedButton
-        t={t}
-        id={item.id}
-        shared={item.shared}
-        isFolder={item.isFolder}
-      />
+      <SharedButton t={t} id={item.id} shared={item.shared} isFolder={item.isFolder} />
     ) : null;
 
-  const element = (
-    <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
-  );
+  const element = <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />;
 
   return (
     <StyledWrapper>
@@ -143,8 +139,7 @@ const SimpleFilesRow = (props) => {
         className={`files-item ${className}`}
         onDrop={onDrop}
         onMouseDown={onMouseDown}
-        dragging={dragging && isDragging}
-      >
+        dragging={dragging && isDragging}>
         <StyledSimpleFilesRow
           key={item.id}
           data={item}
@@ -162,19 +157,14 @@ const SimpleFilesRow = (props) => {
           contextButtonSpacerWidth={displayShareButton}
           dragging={dragging && isDragging}
           isActive={isActive}
-          isThirdPartyFolder={item.isThirdPartyFolder}
-        >
-          <FilesRowContent
-            item={item}
-            sectionWidth={sectionWidth}
-            onFilesClick={onFilesClick}
-          />
+          isThirdPartyFolder={item.isThirdPartyFolder}>
+          <FilesRowContent item={item} sectionWidth={sectionWidth} onFilesClick={onFilesClick} />
         </StyledSimpleFilesRow>
       </DragAndDrop>
     </StyledWrapper>
   );
 };
 
-export default withTranslation(["Home", "Translations"])(
-  withFileActions(withRouter(withContextOptions(SimpleFilesRow)))
+export default withTranslation(['Home', 'Translations'])(
+  withFileActions(withRouter(withContextOptions(SimpleFilesRow))),
 );

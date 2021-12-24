@@ -1,15 +1,16 @@
-import React from "react";
-import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
-import styled from "styled-components";
+import React from 'react';
+import { inject, observer } from 'mobx-react';
+import { withRouter } from 'react-router';
+import { withTranslation } from 'react-i18next';
+import styled from 'styled-components';
 
-import Link from "@appserver/components/link";
-import Text from "@appserver/components/text";
+import Link from '@appserver/components/link';
+import Text from '@appserver/components/text';
 
-import TileContent from "./sub-components/TileContent";
-import withContent from "../../../../../HOCs/withContent";
-import withBadges from "../../../../../HOCs/withBadges";
-import { isMobile } from "react-device-detect";
+import TileContent from './sub-components/TileContent';
+import withContent from '../../../../../HOCs/withContent';
+import withBadges from '../../../../../HOCs/withBadges';
+import { isMobile } from 'react-device-detect';
 
 const SimpleFilesTileContent = styled(TileContent)`
   .row-main-container {
@@ -55,7 +56,7 @@ const SimpleFilesTileContent = styled(TileContent)`
   }
 
   .title-link {
-    font-size: ${isMobile ? "15px" : "13px"};
+    font-size: ${isMobile ? '15px' : '13px'};
     margin-top: 2px;
   }
 
@@ -75,39 +76,32 @@ const SimpleFilesTileContent = styled(TileContent)`
   }
 `;
 
-const FilesTileContent = ({
-  item,
-  titleWithoutExt,
-  linkStyles,
-  badgesComponent,
-}) => {
+const FilesTileContent = ({ item, titleWithoutExt, linkStyles, badgesComponent, theme }) => {
   const { fileExst, title } = item;
 
   return (
     <>
-      <SimpleFilesTileContent sideColor="#333" isFile={fileExst}>
+      <SimpleFilesTileContent sideColor={theme.filesSection.tilesView.sideColor} isFile={fileExst}>
         <Link
           className="title-link item-file-name"
           containerWidth="100%"
           type="page"
           title={title}
           fontWeight="600"
-          fontSize={isMobile ? "15px" : "13px"}
+          fontSize={isMobile ? '15px' : '13px'}
           target="_blank"
           {...linkStyles}
-          color="#333"
-          isTextOverflow
-        >
+          color={theme.filesSection.tilesView.color}
+          isTextOverflow>
           {titleWithoutExt}
           {fileExst ? (
             <Text
               className="badge-ext"
               as="span"
-              color="#A3A9AE"
-              fontSize={isMobile ? "15px" : "13px"}
+              color={theme.filesSection.tilesView.textColor}
+              fontSize={isMobile ? '15px' : '13px'}
               fontWeight={600}
-              truncate={true}
-            >
+              truncate={true}>
               {fileExst}
             </Text>
           ) : null}
@@ -119,8 +113,12 @@ const FilesTileContent = ({
   );
 };
 
-export default withRouter(
-  withTranslation(["Home", "Translations"])(
-    withContent(withBadges(FilesTileContent))
-  )
+export default inject(({ auth }) => {
+  return { theme: auth.settingsStore.theme };
+})(
+  observer(
+    withRouter(
+      withTranslation(['Home', 'Translations'])(withContent(withBadges(FilesTileContent))),
+    ),
+  ),
 );

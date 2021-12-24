@@ -1855,6 +1855,73 @@ const Base = {
       border: "1px solid #eceef1",
     },
   },
+
+  filesSection: {
+    rowView: {
+      checkedBackground: "#f3f4f4",
+
+      draggingBackground: "#f8f7bf",
+      draggingHoverBackground: "#efefb2",
+
+      shareButton: {
+        color: "#657077",
+        fill: "#657077",
+      },
+
+      sideColor: "#A3A9AE",
+      linkColor: "#333333",
+      textColor: "#A3A9AE",
+    },
+
+    tableView: {
+      fileName: {
+        linkColor: "#333",
+        textColor: "#A3A9AE",
+      },
+
+      row: {
+        checkboxChecked:
+          "linear-gradient(to right, #f3f4f4 24px, #eceef1 24px)",
+        checkboxDragging:
+          "linear-gradient(to right, #f8f7bf 24px, #eceef1 24px)",
+        checkboxDraggingHover:
+          "inear-gradient(to right,rgb(239, 239, 178) 24px, #eceef1 24px)",
+
+        contextMenuWrapperChecked:
+          "linear-gradient(to left, #f3f4f4 24px, #eceef1 24px)",
+        contextMenuWrapperDragging:
+          "border-image-source: linear-gradient(to left, #f8f7bf 24px, #eceef1 24px)",
+        contextMenuWrapperDraggingHover:
+          "linear-gradient(to left,rgb(239, 239, 178) 24px,#eceef1 24px)",
+
+        backgroundActive: "#F3F4F4",
+
+        borderImageCheckbox:
+          "linear-gradient(to right, #ffffff 24px, #eceef1 24px)",
+        borderImageContextMenu:
+          "linear-gradient(to left, #ffffff 24px, #eceef1 24px)",
+
+        borderHover: "#a3a9ae",
+        sideColor: gray,
+      },
+    },
+
+    tilesView: {
+      tile: {
+        draggingColor: "#f8f7bf",
+        draggingHoverColor: "#efefb2",
+        checkedColor: "#f3f4f4",
+        border: "1px solid #d0d5da",
+        backgroundColor: "#fff",
+
+        backgroundColorTop: "#f8f9f9",
+      },
+
+      sideColor: "#333",
+      color: "#333",
+      textColor: "#A3A9AE",
+    },
+  },
 };
 
 export default Base;

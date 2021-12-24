@@ -1,8 +1,8 @@
-import React from "react";
-import Link from "@appserver/components/link";
-import Text from "@appserver/components/text";
-import Checkbox from "@appserver/components/checkbox";
-import TableCell from "@appserver/components/table-container/TableCell";
+import React from 'react';
+import Link from '@appserver/components/link';
+import Text from '@appserver/components/text';
+import Checkbox from '@appserver/components/checkbox';
+import TableCell from '@appserver/components/table-container/TableCell';
 
 const FileNameCell = ({
   item,
@@ -12,6 +12,7 @@ const FileNameCell = ({
   onContentSelect,
   checked,
   selectionProp,
+  theme,
 }) => {
   const { fileExst, title } = item;
 
@@ -25,8 +26,7 @@ const FileNameCell = ({
         hasAccess={true}
         checked={checked}
         {...selectionProp}
-        className={`${selectionProp?.className} table-container_row-checkbox-wrapper`}
-      >
+        className={`${selectionProp?.className} table-container_row-checkbox-wrapper`}>
         <div className="table-container_element">{element}</div>
         <Checkbox
           className="table-container_row-checkbox"
@@ -41,20 +41,18 @@ const FileNameCell = ({
         fontWeight="600"
         fontSize="13px"
         {...linkStyles}
-        color="#333"
+        color={theme.filesSection.tableView.fileName.linkColor}
         isTextOverflow
-        className="item-file-name"
-      >
+        className="item-file-name">
         {titleWithoutExt}
         {fileExst ? (
           <Text
             className="badge-ext"
             as="span"
-            color="#A3A9AE"
+            color={theme.filesSection.tableView.fileName.textColor}
             fontSize="13px"
             fontWeight={600}
-            truncate={true}
-          >
+            truncate={true}>
             {fileExst}
           </Text>
         ) : null}
