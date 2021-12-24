@@ -1922,6 +1922,20 @@ const Base = {
       textColor: "#A3A9AE",
     },
   },
+
+  advancedSelector: {
+    footerBorder: "1px solid #eceef1",
+
+    hoverBackgroundColor: "#eceef1",
+    selectedBackgroundColor: "#eceef1",
+    borderLeft: "1px solid #eceef1",
+
+    searcher: {
+      hoverBorderColor: "#d0d5da",
+      focusBorderColor: "#2da7db",
+      placeholderColor: "#a3a9ae",
+    },
+  },
 };
 
 export default Base;

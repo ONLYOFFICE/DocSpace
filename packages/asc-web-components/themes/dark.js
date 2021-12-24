@@ -1922,6 +1922,20 @@ const Dark = {
       textColor: "#858585",
     },
   },
+
+  advancedSelector: {
+    footerBorder: "1px solid #474747",
+
+    hoverBackgroundColor: "#474747",
+    selectedBackgroundColor: "#474747",
+    borderLeft: "1px solid #474747",
+
+    searcher: {
+      hoverBorderColor: "#858585",
+      focusBorderColor: "#eeeeee",
+      placeholderColor: "#474747",
+    },
+  },
 };
 
 export default Dark;
