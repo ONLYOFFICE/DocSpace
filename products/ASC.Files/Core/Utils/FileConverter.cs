@@ -664,9 +664,9 @@ namespace ASC.Web.Files.Utils
             return Exec(file, FileUtility.GetInternalExtension(file.Title));
         }
 
-        public async Task<Stream> ExecAsync<T>(File<T> file)
+        public Task<Stream> ExecAsync<T>(File<T> file)
         {
-            return await ExecAsync(file, FileUtility.GetInternalExtension(file.Title));
+            return ExecAsync(file, FileUtility.GetInternalExtension(file.Title));
         }
 
         public Stream Exec<T>(File<T> file, string toExtension)

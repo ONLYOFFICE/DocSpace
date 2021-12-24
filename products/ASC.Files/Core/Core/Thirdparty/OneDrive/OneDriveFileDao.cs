@@ -85,9 +85,9 @@ namespace ASC.Files.Thirdparty.OneDrive
             if (parentId != null) await ProviderInfo.CacheResetAsync(parentId).ConfigureAwait(false);
         }
 
-        public async Task<File<string>> GetFileAsync(string fileId)
+        public Task<File<string>> GetFileAsync(string fileId)
         {
-            return await GetFileAsync(fileId, 1).ConfigureAwait(false);
+            return GetFileAsync(fileId, 1);
         }
 
         public async Task<File<string>> GetFileAsync(string fileId, int fileVersion)
@@ -250,9 +250,9 @@ namespace ASC.Files.Thirdparty.OneDrive
             }
         }
 
-        public override async Task<Stream> GetFileStreamAsync(File<string> file)
+        public override Task<Stream> GetFileStreamAsync(File<string> file)
         {
-            return await GetFileStreamAsync(file, 0).ConfigureAwait(false);
+            return GetFileStreamAsync(file, 0);
         }
 
         public async Task<Stream> GetFileStreamAsync(File<string> file, long offset)
@@ -310,9 +310,9 @@ namespace ASC.Files.Thirdparty.OneDrive
             return ToFile(newOneDriveFile);
         }
 
-        public async Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
+        public Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
         {
-            return await SaveFileAsync(file, fileStream).ConfigureAwait(false);
+            return SaveFileAsync(file, fileStream);
         }
 
         public async Task DeleteFileAsync(string fileId)

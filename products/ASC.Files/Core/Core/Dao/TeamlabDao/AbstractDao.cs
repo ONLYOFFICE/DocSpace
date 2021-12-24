@@ -209,7 +209,7 @@ namespace ASC.Files.Core.Data
             return result;
         }
 
-        protected async Task<object> MappingIDAsync(object id, bool saveIfNotExist)
+        protected async ValueTask<object> MappingIDAsync(object id, bool saveIfNotExist = false)
         {
             if (id == null) return null;
 
@@ -260,10 +260,6 @@ namespace ASC.Files.Core.Data
         protected object MappingID(object id)
         {
             return MappingID(id, false);
-        }
-        protected async Task<object> MappingIDAsync(object id)
-        {
-            return await MappingIDAsync(id, false);
         }
 
         internal static IQueryable<T> BuildSearch<T>(IQueryable<T> query, string text, SearhTypeEnum searhTypeEnum) where T : IDbSearch

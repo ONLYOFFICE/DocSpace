@@ -91,9 +91,9 @@ namespace ASC.Files.Thirdparty.Box
             return ToFolder(items.FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase)) as BoxFolder);
         }
 
-        public async Task<Folder<string>> GetRootFolderByFileAsync(string fileId)
+        public Task<Folder<string>> GetRootFolderByFileAsync(string fileId)
         {
-            return await GetRootFolderAsync(fileId).ConfigureAwait(false);
+            return GetRootFolderAsync(fileId);
         }
 
         public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
@@ -359,16 +359,16 @@ namespace ASC.Files.Thirdparty.Box
             return moved;
         }
 
-        public async Task<IDictionary<string, string>> CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
+        public Task<IDictionary<string, string>> CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
         {
             if (to is int tId)
             {
-                return await CanMoveOrCopyAsync(folderIds, tId).ConfigureAwait(false);
+                return CanMoveOrCopyAsync(folderIds, tId);
             }
 
             if (to is string tsId)
             {
-                return await CanMoveOrCopyAsync(folderIds, tsId).ConfigureAwait(false);
+                return CanMoveOrCopyAsync(folderIds, tsId);
             }
 
             throw new NotImplementedException();

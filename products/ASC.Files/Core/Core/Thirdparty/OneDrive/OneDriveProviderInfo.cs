@@ -111,14 +111,14 @@ namespace ASC.Files.Thirdparty.OneDrive
             }
         }
 
-        public async Task InvalidateStorageAsync()
+        public Task InvalidateStorageAsync()
         {
             if (Wrapper != null)
             {
                 Wrapper.Dispose();
             }
 
-            await CacheResetAsync().ConfigureAwait(false);
+            return CacheResetAsync();
         }
 
         public void UpdateTitle(string newtitle)
@@ -126,19 +126,19 @@ namespace ASC.Files.Thirdparty.OneDrive
             CustomerTitle = newtitle;
         }
 
-        internal async Task<Item> GetOneDriveItemAsync(string itemId)
+        internal Task<Item> GetOneDriveItemAsync(string itemId)
         {
-            return await OneDriveProviderInfoHelper.GetOneDriveItemAsync(Storage, ID, itemId).ConfigureAwait(false);
+            return OneDriveProviderInfoHelper.GetOneDriveItemAsync(Storage, ID, itemId);
         }
 
-        internal async Task<List<Item>> GetOneDriveItemsAsync(string onedriveFolderId)
+        internal Task<List<Item>> GetOneDriveItemsAsync(string onedriveFolderId)
         {
-            return await OneDriveProviderInfoHelper.GetOneDriveItemsAsync(Storage, ID, onedriveFolderId).ConfigureAwait(false);
+            return OneDriveProviderInfoHelper.GetOneDriveItemsAsync(Storage, ID, onedriveFolderId);
         }
 
-        internal async Task CacheResetAsync(string onedriveId = null)
+        internal Task CacheResetAsync(string onedriveId = null)
         {
-            await OneDriveProviderInfoHelper.CacheResetAsync(ID, onedriveId).ConfigureAwait(false);
+            return OneDriveProviderInfoHelper.CacheResetAsync(ID, onedriveId);
         }
     }
 

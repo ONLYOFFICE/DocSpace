@@ -238,7 +238,7 @@ namespace ASC.Files.Thirdparty.Box
             return _boxClient.FoldersManager.CreateAsync(boxFolderRequest, _boxFields).Result;
         }
 
-        public async Task<BoxFolder> CreateFolderAsync(string title, string parentId)
+        public Task<BoxFolder> CreateFolderAsync(string title, string parentId)
         {
             var boxFolderRequest = new BoxFolderRequest
             {
@@ -248,7 +248,7 @@ namespace ASC.Files.Thirdparty.Box
                     Id = parentId
                 }
             };
-            return await _boxClient.FoldersManager.CreateAsync(boxFolderRequest, _boxFields);
+            return _boxClient.FoldersManager.CreateAsync(boxFolderRequest, _boxFields);
         }
 
         public BoxFile CreateFile(Stream fileStream, string title, string parentId)
@@ -264,7 +264,7 @@ namespace ASC.Files.Thirdparty.Box
             return _boxClient.FilesManager.UploadAsync(boxFileRequest, fileStream, _boxFields, setStreamPositionToZero: false).Result;
         }
 
-        public async Task<BoxFile> CreateFileAsync(Stream fileStream, string title, string parentId)
+        public Task<BoxFile> CreateFileAsync(Stream fileStream, string title, string parentId)
         {
             var boxFileRequest = new BoxFileRequest
             {
@@ -274,7 +274,7 @@ namespace ASC.Files.Thirdparty.Box
                     Id = parentId
                 }
             };
-            return await _boxClient.FilesManager.UploadAsync(boxFileRequest, fileStream, _boxFields, setStreamPositionToZero: false);
+            return _boxClient.FilesManager.UploadAsync(boxFileRequest, fileStream, _boxFields, setStreamPositionToZero: false);
         }
 
         public void DeleteItem(BoxItem boxItem)
@@ -315,7 +315,7 @@ namespace ASC.Files.Thirdparty.Box
             return _boxClient.FoldersManager.UpdateInformationAsync(boxFolderRequest, _boxFields).Result;
         }
 
-        public async Task<BoxFolder> MoveFolderAsync(string boxFolderId, string newFolderName, string toFolderId)
+        public Task<BoxFolder> MoveFolderAsync(string boxFolderId, string newFolderName, string toFolderId)
         {
             var boxFolderRequest = new BoxFolderRequest
             {
@@ -326,7 +326,7 @@ namespace ASC.Files.Thirdparty.Box
                     Id = toFolderId
                 }
             };
-            return await _boxClient.FoldersManager.UpdateInformationAsync(boxFolderRequest, _boxFields);
+            return _boxClient.FoldersManager.UpdateInformationAsync(boxFolderRequest, _boxFields);
         }
 
         public BoxFile MoveFile(string boxFileId, string newFileName, string toFolderId)
@@ -343,7 +343,7 @@ namespace ASC.Files.Thirdparty.Box
             return _boxClient.FilesManager.UpdateInformationAsync(boxFileRequest, null, _boxFields).Result;
         }
 
-        public async Task<BoxFile> MoveFileAsync(string boxFileId, string newFileName, string toFolderId)
+        public Task<BoxFile> MoveFileAsync(string boxFileId, string newFileName, string toFolderId)
         {
             var boxFileRequest = new BoxFileRequest
             {
@@ -354,7 +354,7 @@ namespace ASC.Files.Thirdparty.Box
                     Id = toFolderId
                 }
             };
-            return await _boxClient.FilesManager.UpdateInformationAsync(boxFileRequest, null, _boxFields);
+            return _boxClient.FilesManager.UpdateInformationAsync(boxFileRequest, null, _boxFields);
         }
 
         public BoxFolder CopyFolder(string boxFolderId, string newFolderName, string toFolderId)
@@ -371,7 +371,7 @@ namespace ASC.Files.Thirdparty.Box
             return _boxClient.FoldersManager.CopyAsync(boxFolderRequest, _boxFields).Result;
         }
 
-        public async Task<BoxFolder> CopyFolderAsync(string boxFolderId, string newFolderName, string toFolderId)
+        public Task<BoxFolder> CopyFolderAsync(string boxFolderId, string newFolderName, string toFolderId)
         {
             var boxFolderRequest = new BoxFolderRequest
             {
@@ -382,7 +382,7 @@ namespace ASC.Files.Thirdparty.Box
                     Id = toFolderId
                 }
             };
-            return await _boxClient.FoldersManager.CopyAsync(boxFolderRequest, _boxFields);
+            return _boxClient.FoldersManager.CopyAsync(boxFolderRequest, _boxFields);
         }
 
         public BoxFile CopyFile(string boxFileId, string newFileName, string toFolderId)
@@ -399,7 +399,7 @@ namespace ASC.Files.Thirdparty.Box
             return _boxClient.FilesManager.CopyAsync(boxFileRequest, _boxFields).Result;
         }
 
-        public async Task<BoxFile> CopyFileAsync(string boxFileId, string newFileName, string toFolderId)
+        public Task<BoxFile> CopyFileAsync(string boxFileId, string newFileName, string toFolderId)
         {
             var boxFileRequest = new BoxFileRequest
             {
@@ -410,7 +410,7 @@ namespace ASC.Files.Thirdparty.Box
                     Id = toFolderId
                 }
             };
-            return await _boxClient.FilesManager.CopyAsync(boxFileRequest, _boxFields);
+            return _boxClient.FilesManager.CopyAsync(boxFileRequest, _boxFields);
         }
 
         public BoxFolder RenameFolder(string boxFolderId, string newName)
@@ -419,10 +419,10 @@ namespace ASC.Files.Thirdparty.Box
             return _boxClient.FoldersManager.UpdateInformationAsync(boxFolderRequest, _boxFields).Result;
         }
 
-        public async Task<BoxFolder> RenameFolderAsync(string boxFolderId, string newName)
+        public Task<BoxFolder> RenameFolderAsync(string boxFolderId, string newName)
         {
             var boxFolderRequest = new BoxFolderRequest { Id = boxFolderId, Name = newName };
-            return await _boxClient.FoldersManager.UpdateInformationAsync(boxFolderRequest, _boxFields);
+            return _boxClient.FoldersManager.UpdateInformationAsync(boxFolderRequest, _boxFields);
         }
 
         public BoxFile RenameFile(string boxFileId, string newName)
@@ -431,10 +431,10 @@ namespace ASC.Files.Thirdparty.Box
             return _boxClient.FilesManager.UpdateInformationAsync(boxFileRequest, null, _boxFields).Result;
         }
 
-        public async Task<BoxFile> RenameFileAsync(string boxFileId, string newName)
+        public Task<BoxFile> RenameFileAsync(string boxFileId, string newName)
         {
             var boxFileRequest = new BoxFileRequest { Id = boxFileId, Name = newName };
-            return await _boxClient.FilesManager.UpdateInformationAsync(boxFileRequest, null, _boxFields);
+            return _boxClient.FilesManager.UpdateInformationAsync(boxFileRequest, null, _boxFields);
         }
 
         public BoxFile SaveStream(string fileId, Stream fileStream)
@@ -442,9 +442,9 @@ namespace ASC.Files.Thirdparty.Box
             return _boxClient.FilesManager.UploadNewVersionAsync(null, fileId, fileStream, fields: _boxFields, setStreamPositionToZero: false).Result;
         }
 
-        public async Task<BoxFile> SaveStreamAsync(string fileId, Stream fileStream)
+        public Task<BoxFile> SaveStreamAsync(string fileId, Stream fileStream)
         {
-            return await _boxClient.FilesManager.UploadNewVersionAsync(null, fileId, fileStream, fields: _boxFields, setStreamPositionToZero: false);
+            return _boxClient.FilesManager.UploadNewVersionAsync(null, fileId, fileStream, fields: _boxFields, setStreamPositionToZero: false);
         }
 
         public long GetMaxUploadSize()

@@ -1293,7 +1293,7 @@ namespace ASC.Web.Files.Services.WCFService
                     && !Equals(file.RootFolderCreator, AuthContext.CurrentAccount.ID))
                 {
                     var folderDao = GetFolderDao();
-                    if (!FileSecurity.CanRead(folderDao.GetFolderAsync(file.FolderID).Result))
+                    if (!FileSecurity.CanRead(await folderDao.GetFolderAsync(file.FolderID)))
                     {
                         file.FolderIdDisplay = GlobalFolderHelper.GetFolderShare<T>();
                     }
@@ -2003,7 +2003,7 @@ namespace ASC.Web.Files.Services.WCFService
             }
 
             var provider = await providerDao.GetProviderInfoAsync(curProviderId);
-            provider.InvalidateStorageAsync().Wait();
+            await provider.InvalidateStorageAsync();
 
             var folderDao1 = GetFolderDao();
             var folder = await folderDao1.GetFolderAsync((T)Convert.ChangeType(provider.RootFolderId, typeof(T)));
@@ -2304,7 +2304,7 @@ namespace ASC.Web.Files.Services.WCFService
             }
             try
             {
-                foreach (var pair in folderDao.CanMoveOrCopyAsync(foldersId.ToArray(), toFolder.ID).Result)
+                foreach (var pair in await folderDao.CanMoveOrCopyAsync(foldersId.ToArray(), toFolder.ID))
                 {
                     checkedFolders.Add(pair.Key);
                 }
@@ -2820,9 +2820,9 @@ namespace ASC.Web.Files.Services.WCFService
             return FileSharing.GetSharedInfo(fileIds, folderIds);
         }
 
-        public async Task<List<AceWrapper>> GetSharedInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
+        public Task<List<AceWrapper>> GetSharedInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
         {
-            return await FileSharing.GetSharedInfoAsync(fileIds, folderIds);
+            return FileSharing.GetSharedInfoAsync(fileIds, folderIds);
         }
 
         public List<AceShortWrapper> GetSharedInfoShortFile(T fileId)
@@ -2920,7 +2920,7 @@ namespace ASC.Web.Files.Services.WCFService
             FileSharingAceHelper.RemoveAce(entries);
         }
 
-        public async Task RemoveAceAsync(List<T> filesId, List<T> foldersId)
+        public Task RemoveAceAsync(List<T> filesId, List<T> foldersId)
         {
             ErrorIf(!AuthContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
             var entries = AsyncEnumerable.Empty<FileEntry<T>>();
@@ -2931,7 +2931,7 @@ namespace ASC.Web.Files.Services.WCFService
             entries.Concat(foldersId.ToAsyncEnumerable().SelectAwait(async e => await folderDao.GetFolderAsync(e)));
 
 
-            await FileSharingAceHelper.RemoveAceAsync(entries);
+            return FileSharingAceHelper.RemoveAceAsync(entries);
         }
 
         public string GetShortenLink(T fileId)

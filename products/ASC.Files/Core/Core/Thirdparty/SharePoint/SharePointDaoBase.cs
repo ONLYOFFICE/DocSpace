@@ -223,9 +223,9 @@ namespace ASC.Files.Thirdparty.SharePoint
             return MappingID(id, false);
         }
 
-        protected async Task<string> MappingIDAsync(string id)
+        protected Task<string> MappingIDAsync(string id)
         {
-            return await MappingIDAsync(id, false);
+            return MappingIDAsync(id, false);
         }
 
         protected override string MakeId(string path = null)

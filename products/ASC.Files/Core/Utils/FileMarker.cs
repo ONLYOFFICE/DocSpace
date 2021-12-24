@@ -355,7 +355,7 @@ namespace ASC.Web.Files.Utils
             if (fileEntry.RootFolderType == FolderType.BUNCH && !userIDs.Any())
             {
                 var folderDao = DaoFactory.GetFolderDao<T>();
-                var path = folderDao.GetBunchObjectIDAsync(fileEntry.RootFolderId).Result;
+                var path = await folderDao.GetBunchObjectIDAsync(fileEntry.RootFolderId);
 
                 var projectID = path.Split('/').Last();
                 if (string.IsNullOrEmpty(projectID)) return;
@@ -523,8 +523,8 @@ namespace ASC.Web.Files.Utils
 
             T folderID;
             int valueNew;
-            var userFolderId = internalFolderDao.GetFolderIDUserAsync(false, userID).Result;
-            var privacyFolderId = internalFolderDao.GetFolderIDPrivacyAsync(false, userID).Result;
+            var userFolderId = await internalFolderDao.GetFolderIDUserAsync(false, userID);
+            var privacyFolderId = await internalFolderDao.GetFolderIDPrivacyAsync(false, userID);
 
             var removeTags = new List<Tag>();
 
@@ -1176,14 +1176,14 @@ namespace ASC.Web.Files.Utils
                     }
                 }
 
-                await SetTagsNew(entries.OfType<FileEntry<int>>().ToList());
-                await SetTagsNew(entries.OfType<FileEntry<string>>().ToList());
-            }
-
-            async Task SetTagsNew<T1>(List<FileEntry<T1>> fileEntries)
-            {
                 var tags = await totalTags.ToListAsync();
 
+                SetTagsNew(tags, entries.OfType<FileEntry<int>>().ToList());
+                SetTagsNew(tags, entries.OfType<FileEntry<string>>().ToList());
+            }
+
+            void SetTagsNew<T1>(List<Tag> tags, List<FileEntry<T1>> fileEntries)
+            {
                 fileEntries
                     .ForEach(
                     entry =>

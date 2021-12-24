@@ -125,9 +125,9 @@ namespace ASC.Web.Files.Utils
             return CommonSessionHolder().UploadSingleChunk(uploadSession, stream, chunkLength);
         }
 
-        public async Task<Stream> UploadSingleChunkAsync<T>(ChunkedUploadSession<T> uploadSession, Stream stream, long chunkLength)
+        public Task<Stream> UploadSingleChunkAsync<T>(ChunkedUploadSession<T> uploadSession, Stream stream, long chunkLength)
         {
-            return await CommonSessionHolder().UploadSingleChunkAsync(uploadSession, stream, chunkLength);
+            return CommonSessionHolder().UploadSingleChunkAsync(uploadSession, stream, chunkLength);
         }
 
         private CommonChunkedUploadSessionHolder CommonSessionHolder(bool currentTenant = true)

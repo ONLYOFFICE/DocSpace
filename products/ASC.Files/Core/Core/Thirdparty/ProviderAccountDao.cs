@@ -116,10 +116,10 @@ namespace ASC.Files.Thirdparty
             ThirdpartyConfiguration = thirdpartyConfiguration;
         }
 
-        public virtual async Task<IProviderInfo> GetProviderInfoAsync(int linkId)
+        public virtual Task<IProviderInfo> GetProviderInfoAsync(int linkId)
         {
             var providersInfo = GetProvidersInfoInternalAsync(linkId);
-            return await providersInfo.SingleAsync().ConfigureAwait(false);
+            return providersInfo.SingleAsync().AsTask();
         }
 
         public virtual IAsyncEnumerable<IProviderInfo> GetProvidersInfoAsync()

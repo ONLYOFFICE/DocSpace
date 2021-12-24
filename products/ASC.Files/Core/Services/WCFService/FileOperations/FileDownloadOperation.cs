@@ -573,7 +573,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                 }
                                 else
                                 {
-                                    using (var readStream = FileDao.GetFileStreamAsync(file).Result)
+                                    using (var readStream = await FileDao.GetFileStreamAsync(file))
                                     {
                                         compressTo.PutStream(readStream);
 

@@ -110,14 +110,14 @@ namespace ASC.Files.Thirdparty.Dropbox
             return true;
         }
 
-        public async Task InvalidateStorageAsync()
+        public Task InvalidateStorageAsync()
         {
             if (Wrapper != null)
             {
                 Wrapper.Dispose();
             }
 
-            await CacheResetAsync().ConfigureAwait(false);
+            return CacheResetAsync();
         }
 
         public void UpdateTitle(string newtitle)
@@ -125,28 +125,28 @@ namespace ASC.Files.Thirdparty.Dropbox
             CustomerTitle = newtitle;
         }
 
-        internal async Task<FolderMetadata> GetDropboxFolderAsync(string dropboxFolderPath)
+        internal Task<FolderMetadata> GetDropboxFolderAsync(string dropboxFolderPath)
         {
-            return await DropboxProviderInfoHelper.GetDropboxFolderAsync(Storage, ID, dropboxFolderPath).ConfigureAwait(false);
+            return DropboxProviderInfoHelper.GetDropboxFolderAsync(Storage, ID, dropboxFolderPath);
         }
 
-        internal async Task<FileMetadata> GetDropboxFileAsync(string dropboxFilePath)
+        internal Task<FileMetadata> GetDropboxFileAsync(string dropboxFilePath)
         {
-            return await DropboxProviderInfoHelper.GetDropboxFileAsync(Storage, ID, dropboxFilePath).ConfigureAwait(false);
+            return DropboxProviderInfoHelper.GetDropboxFileAsync(Storage, ID, dropboxFilePath);
         }
 
-        internal async Task<List<Metadata>> GetDropboxItemsAsync(string dropboxFolderPath)
+        internal Task<List<Metadata>> GetDropboxItemsAsync(string dropboxFolderPath)
         {
-            return await DropboxProviderInfoHelper.GetDropboxItemsAsync(Storage, ID, dropboxFolderPath).ConfigureAwait(false);
+            return DropboxProviderInfoHelper.GetDropboxItemsAsync(Storage, ID, dropboxFolderPath);
         }
-        internal async Task CacheResetAsync(Metadata dropboxItem)
+        internal Task CacheResetAsync(Metadata dropboxItem)
         {
-            await DropboxProviderInfoHelper.CacheResetAsync(ID, dropboxItem).ConfigureAwait(false);
+            return DropboxProviderInfoHelper.CacheResetAsync(ID, dropboxItem);
         }
 
-        internal async Task CacheResetAsync(string dropboxPath = null, bool? isFile = null)
+        internal Task CacheResetAsync(string dropboxPath = null, bool? isFile = null)
         {
-            await DropboxProviderInfoHelper.CacheResetAsync(ID, dropboxPath, isFile).ConfigureAwait(false);
+            return DropboxProviderInfoHelper.CacheResetAsync(ID, dropboxPath, isFile);
         }
     }
 

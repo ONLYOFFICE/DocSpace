@@ -160,9 +160,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return MappingID(id, false);
         }
 
-        protected async Task<string> MappingIDAsync(string id)
+        protected Task<string> MappingIDAsync(string id)
         {
-            return await MappingIDAsync(id, false);
+            return MappingIDAsync(id, false);
         }
 
         protected void UpdatePathInDB(string oldValue, string newValue)

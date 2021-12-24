@@ -397,9 +397,9 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             _driveService.Files.Delete(entryId).Execute();
         }
 
-        public async Task DeleteEntryAsync(string entryId)
+        public Task DeleteEntryAsync(string entryId)
         {
-            await _driveService.Files.Delete(entryId).ExecuteAsync();
+            return _driveService.Files.Delete(entryId).ExecuteAsync();
         }
 
         public DriveFile InsertEntryIntoFolder(DriveFile entry, string folderId)
@@ -410,12 +410,12 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             return request.Execute();
         }
 
-        public async Task<DriveFile> InsertEntryIntoFolderAsync(DriveFile entry, string folderId)
+        public Task<DriveFile> InsertEntryIntoFolderAsync(DriveFile entry, string folderId)
         {
             var request = _driveService.Files.Update(FileConstructor(), entry.Id);
             request.AddParents = folderId;
             request.Fields = GoogleLoginProvider.FilesFields;
-            return await request.ExecuteAsync();
+            return request.ExecuteAsync();
         }
 
         public DriveFile RemoveEntryFromFolder(DriveFile entry, string folderId)
@@ -426,12 +426,12 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             return request.Execute();
         }
 
-        public async Task<DriveFile> RemoveEntryFromFolderAsync(DriveFile entry, string folderId)
+        public Task<DriveFile> RemoveEntryFromFolderAsync(DriveFile entry, string folderId)
         {
             var request = _driveService.Files.Update(FileConstructor(), entry.Id);
             request.RemoveParents = folderId;
             request.Fields = GoogleLoginProvider.FilesFields;
-            return await request.ExecuteAsync();
+            return request.ExecuteAsync();
         }
 
         public DriveFile CopyEntry(string toFolderId, string originEntryId)
@@ -479,11 +479,11 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             return request.Execute();
         }
 
-        public async Task<DriveFile> RenameEntryAsync(string fileId, string newTitle)
+        public Task<DriveFile> RenameEntryAsync(string fileId, string newTitle)
         {
             var request = _driveService.Files.Update(FileConstructor(newTitle), fileId);
             request.Fields = GoogleLoginProvider.FilesFields;
-            return await request.ExecuteAsync();
+            return request.ExecuteAsync();
         }
 
         public DriveFile SaveStream(string fileId, Stream fileStream, string fileTitle)
@@ -605,7 +605,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
 
             var requestStream = await request.GetRequestStreamAsync();
-            requestStream.Write(bytes, 0, bytes.Length);
+            await requestStream.WriteAsync(bytes, 0, bytes.Length);
 
             var uploadSession = new ResumableUploadSession(driveFile.Id, folderId, contentLength);
             using (var response = await request.GetResponseAsync())

@@ -362,16 +362,16 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return Task.FromResult(ToFolder(GetFolderById(toFolderId).OfType<ICloudDirectoryEntry>().FirstOrDefault(x => x.Name == folder.Name)));
         }
 
-        public async Task<IDictionary<string, string>> CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
+        public Task<IDictionary<string, string>> CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
         {
             if (to is int tId)
             {
-                return await CanMoveOrCopyAsync(folderIds, tId).ConfigureAwait(false);
+                return CanMoveOrCopyAsync(folderIds, tId);
             }
 
             if (to is string tsId)
             {
-                return await CanMoveOrCopyAsync(folderIds, tsId).ConfigureAwait(false);
+                return CanMoveOrCopyAsync(folderIds, tsId);
             }
 
             throw new NotImplementedException();

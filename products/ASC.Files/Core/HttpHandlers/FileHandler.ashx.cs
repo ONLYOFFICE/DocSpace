@@ -389,7 +389,7 @@ namespace ASC.Web.Files
                                 var store = GlobalStore.GetStore();
                                 if (!store.IsFile(mp4Path))
                                 {
-                                    fileStream = fileDao.GetFileStreamAsync(file).Result;
+                                    fileStream = await fileDao.GetFileStreamAsync(file);
 
                                     Logger.InfoFormat("Converting {0} (fileId: {1}) to mp4", file.Title, file.ID);
                                     var stream = await FFmpegService.Convert(fileStream, ext);
@@ -407,14 +407,14 @@ namespace ASC.Web.Files
                             {
                                 if (!FileConverter.EnableConvert(file, ext))
                                 {
-                                    if (!readLink && fileDao.IsSupportedPreSignedUriAsync(file).Result)
+                                    if (!readLink && await fileDao.IsSupportedPreSignedUriAsync(file))
                                     {
-                                        context.Response.Redirect(fileDao.GetPreSignedUriAsync(file, TimeSpan.FromHours(1)).Result.ToString(), false);
+                                        context.Response.Redirect((await fileDao.GetPreSignedUriAsync(file, TimeSpan.FromHours(1))).ToString(), false);
 
                                         return;
                                     }
 
-                                    fileStream = fileDao.GetFileStreamAsync(file).Result; // getStream to fix file.ContentLength
+                                    fileStream = await fileDao.GetFileStreamAsync(file); // getStream to fix file.ContentLength
 
                                     if (fileStream.CanSeek)
                                     {
@@ -440,14 +440,14 @@ namespace ASC.Web.Files
                         }
                         else
                         {
-                            if (!readLink && fileDao.IsSupportedPreSignedUriAsync(file).Result)
+                            if (!readLink && await fileDao.IsSupportedPreSignedUriAsync(file))
                             {
-                                context.Response.Redirect(fileDao.GetPreSignedUriAsync(file, TimeSpan.FromHours(1)).Result.ToString(), true);
+                                context.Response.Redirect((await fileDao.GetPreSignedUriAsync(file, TimeSpan.FromHours(1))).ToString(), true);
 
                                 return;
                             }
 
-                            fileStream = fileDao.GetFileStreamAsync(file).Result; // getStream to fix file.ContentLength
+                            fileStream = await fileDao.GetFileStreamAsync(file); // getStream to fix file.ContentLength
 
                             long offset = 0;
                             var length = file.ContentLength;
@@ -660,8 +660,8 @@ namespace ASC.Web.Files
                     || version > 0 && file.Version != version)
                 {
                     file = version > 0
-                               ? fileDao.GetFileAsync(id, version).Result
-                               : fileDao.GetFileAsync(id).Result;
+                               ? await fileDao.GetFileAsync(id, version)
+                               : await fileDao.GetFileAsync(id);
                 }
 
                 if (file == null)
@@ -686,7 +686,7 @@ namespace ASC.Web.Files
                 context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue(file.Title));
                 context.Response.ContentType = MimeMapping.GetMimeMapping(file.Title);
 
-                using var stream = fileDao.GetFileStreamAsync(file).Result;
+                using var stream = await fileDao.GetFileStreamAsync(file);
                 context.Response.Headers.Add("Content-Length",
                     stream.CanSeek
                     ? stream.Length.ToString(CultureInfo.InvariantCulture)
@@ -974,8 +974,8 @@ namespace ASC.Web.Files
             {
                 var fileDao = DaoFactory.GetFileDao<T>();
                 var file = int.TryParse(context.Request.Query[FilesLinkUtility.Version], out var version) && version > 0
-                   ? fileDao.GetFileAsync(id, version).Result
-                   : fileDao.GetFileAsync(id).Result;
+                   ? await fileDao.GetFileAsync(id, version)
+                   : await fileDao.GetFileAsync(id);
 
                 if (file == null)
                 {
@@ -1078,7 +1078,7 @@ namespace ASC.Web.Files
             Folder<T> folder;
 
             var folderDao = DaoFactory.GetFolderDao<T>();
-            folder = folderDao.GetFolderAsync(folderId).Result;
+            folder = await folderDao.GetFolderAsync(folderId);
 
             if (folder == null) throw new HttpException((int)HttpStatusCode.NotFound, FilesCommonResource.ErrorMassage_FolderNotFound);
             if (!FileSecurity.CanCreate(folder)) throw new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException_Create);

@@ -127,7 +127,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         protected override async Task DoAsync(IServiceScope scope)
         {
             var folderDao = scope.ServiceProvider.GetService<IFolderDao<int>>();
-            _trashId = folderDao.GetFolderIDTrashAsync(true).Result;
+            _trashId = await folderDao.GetFolderIDTrashAsync(true);
 
             Folder<T> root = null;
             if (0 < Folders.Count)
@@ -281,7 +281,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             var folders = await FolderDao.GetFoldersAsync(folder.ID).ToListAsync();
                             await DeleteFoldersAsync(folders.Select(f => f.ID).ToList(), scope);
 
-                            if (FolderDao.IsEmptyAsync(folder.ID).Result)
+                            if (await FolderDao.IsEmptyAsync(folder.ID))
                             {
                                 await FolderDao.DeleteFolderAsync(folder.ID);
                                 filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
@@ -396,7 +396,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         if (file.ThumbnailStatus == Thumbnail.Waiting)
                         {
                             file.ThumbnailStatus = Thumbnail.NotRequired;
-                            FileDao.SaveThumbnailAsync(file, null).Wait();
+                            await FileDao.SaveThumbnailAsync(file, null);
                         }
                     }
                     else

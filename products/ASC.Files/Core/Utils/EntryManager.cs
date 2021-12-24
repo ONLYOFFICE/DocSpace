@@ -142,10 +142,10 @@ namespace ASC.Web.Files.Utils
             return GetBreadCrumbs(folderId, folderDao);
         }
 
-        public async Task<List<FileEntry>> GetBreadCrumbsAsync<T>(T folderId)
+        public Task<List<FileEntry>> GetBreadCrumbsAsync<T>(T folderId)
         {
             var folderDao = DaoFactory.GetFolderDao<T>();
-            return await GetBreadCrumbsAsync(folderId, folderDao);
+            return GetBreadCrumbsAsync(folderId, folderDao);
         }
 
         public List<FileEntry> GetBreadCrumbs<T>(T folderId, IFolderDao<T> folderDao)
@@ -1372,9 +1372,9 @@ namespace ASC.Web.Files.Utils
             return BreadCrumbsManager.GetBreadCrumbs(folderId);
         }
 
-        public async Task<List<FileEntry>> GetBreadCrumbsAsync<T>(T folderId)
+        public Task<List<FileEntry>> GetBreadCrumbsAsync<T>(T folderId)
         {
-            return await BreadCrumbsManager.GetBreadCrumbsAsync(folderId);
+            return BreadCrumbsManager.GetBreadCrumbsAsync(folderId);
         }
 
         public List<FileEntry> GetBreadCrumbs<T>(T folderId, IFolderDao<T> folderDao)
@@ -1382,9 +1382,9 @@ namespace ASC.Web.Files.Utils
             return BreadCrumbsManager.GetBreadCrumbs(folderId, folderDao);
         }
 
-        public async Task<List<FileEntry>> GetBreadCrumbsAsync<T>(T folderId, IFolderDao<T> folderDao)
+        public Task<List<FileEntry>> GetBreadCrumbsAsync<T>(T folderId, IFolderDao<T> folderDao)
         {
-            return await BreadCrumbsManager.GetBreadCrumbsAsync(folderId, folderDao);
+            return BreadCrumbsManager.GetBreadCrumbsAsync(folderId, folderDao);
         }
 
         public void CheckFolderId<T>(IFolderDao<T> folderDao, IEnumerable<FileEntry<T>> entries)
@@ -1426,9 +1426,9 @@ namespace ASC.Web.Files.Utils
             return LockerManager.FileLockedForMe(fileId, userId);
         }
 
-        public async Task<bool> FileLockedForMeAsync<T>(T fileId, Guid userId = default)
+        public Task<bool> FileLockedForMeAsync<T>(T fileId, Guid userId = default)
         {
-            return await LockerManager.FileLockedForMeAsync(fileId, userId);
+            return LockerManager.FileLockedForMeAsync(fileId, userId);
         }
 
         public Guid FileLockedBy<T>(T fileId, ITagDao<T> tagDao)
@@ -1701,7 +1701,7 @@ namespace ASC.Web.Files.Utils
                     request.RequestUri = new Uri(downloadUri);
 
                     using var httpClient = new HttpClient();
-                    using var response = httpClient.Send(request);
+                    using var response = await httpClient.SendAsync(request);
                     using var editedFileStream = new ResponseStream(response);
                     await editedFileStream.CopyToAsync(tmpStream);
                 }
@@ -2063,7 +2063,7 @@ namespace ASC.Web.Files.Utils
                         lastVersionFile = await UpdateToVersionFileAsync(fileVersion.ID, fileVersion.Version, null, checkRight);
                     }
 
-                    fileDao.CompleteVersionAsync(fileVersion.ID, fileVersion.Version).Wait();
+                    await fileDao.CompleteVersionAsync(fileVersion.ID, fileVersion.Version);
                     lastVersionFile.VersionGroup++;
                 }
             }

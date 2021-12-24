@@ -44,7 +44,6 @@ using ASC.Web.Studio.Core;
 
 using Box.V2.Models;
 
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Box
@@ -85,9 +84,9 @@ namespace ASC.Files.Thirdparty.Box
             if (parentPath != null) await ProviderInfo.CacheResetAsync(parentPath).ConfigureAwait(false);
         }
 
-        public async Task<File<string>> GetFileAsync(string fileId)
+        public Task<File<string>> GetFileAsync(string fileId)
         {
-            return await GetFileAsync(fileId, 1).ConfigureAwait(false);
+            return GetFileAsync(fileId, 1);
         }
 
         public async Task<File<string>> GetFileAsync(string fileId, int fileVersion)
@@ -248,9 +247,9 @@ namespace ASC.Files.Thirdparty.Box
             }
         }
 
-        public override async Task<Stream> GetFileStreamAsync(File<string> file)
+        public override Task<Stream> GetFileStreamAsync(File<string> file)
         {
-            return await GetFileStreamAsync(file, 0).ConfigureAwait(false);
+            return GetFileStreamAsync(file, 0);
         }
 
         public async Task<Stream> GetFileStreamAsync(File<string> file, long offset)
@@ -310,9 +309,9 @@ namespace ASC.Files.Thirdparty.Box
             return ToFile(newBoxFile);
         }
 
-        public async Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
+        public Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
         {
-            return await SaveFileAsync(file, fileStream).ConfigureAwait(false);
+            return SaveFileAsync(file, fileStream);
         }
 
         public async Task DeleteFileAsync(string fileId)

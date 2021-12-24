@@ -140,14 +140,14 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             }
         }
 
-        public async Task InvalidateStorageAsync()
+        public Task InvalidateStorageAsync()
         {
             if (Wrapper != null)
             {
                 Wrapper.Dispose();
             }
 
-            await CacheResetAsync().ConfigureAwait(false);
+            return CacheResetAsync();
         }
 
         public void UpdateTitle(string newtitle)
@@ -155,29 +155,29 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             CustomerTitle = newtitle;
         }
 
-        internal async Task<DriveFile> GetDriveEntryAsync(string driveId)
+        internal Task<DriveFile> GetDriveEntryAsync(string driveId)
         {
-            return await GoogleDriveProviderInfoHelper.GetDriveEntryAsync(Storage, ID, driveId).ConfigureAwait(false);
+            return GoogleDriveProviderInfoHelper.GetDriveEntryAsync(Storage, ID, driveId);
         }
 
-        internal async Task<List<DriveFile>> GetDriveEntriesAsync(string parentDriveId, bool? folder = null)
+        internal Task<List<DriveFile>> GetDriveEntriesAsync(string parentDriveId, bool? folder = null)
         {
-            return await GoogleDriveProviderInfoHelper.GetDriveEntriesAsync(Storage, ID, parentDriveId, folder).ConfigureAwait(false);
+            return GoogleDriveProviderInfoHelper.GetDriveEntriesAsync(Storage, ID, parentDriveId, folder);
         }
 
-        internal async Task CacheResetAsync(DriveFile driveEntry)
+        internal Task CacheResetAsync(DriveFile driveEntry)
         {
-            await GoogleDriveProviderInfoHelper.CacheResetAsync(driveEntry, ID).ConfigureAwait(false);
+            return GoogleDriveProviderInfoHelper.CacheResetAsync(driveEntry, ID);
         }
 
-        internal async Task CacheResetAsync(string driveId = null, bool? childFolder = null)
+        internal Task CacheResetAsync(string driveId = null, bool? childFolder = null)
         {
-            await GoogleDriveProviderInfoHelper.CacheResetAsync(DriveRootId, ID, driveId, childFolder).ConfigureAwait(false);
+            return GoogleDriveProviderInfoHelper.CacheResetAsync(DriveRootId, ID, driveId, childFolder);
         }
 
-        internal async Task CacheResetChildsAsync(string parentDriveId, bool? childFolder = null)
+        internal Task CacheResetChildsAsync(string parentDriveId, bool? childFolder = null)
         {
-            await GoogleDriveProviderInfoHelper.CacheResetChildsAsync(ID, parentDriveId, childFolder).ConfigureAwait(false);
+            return GoogleDriveProviderInfoHelper.CacheResetChildsAsync(ID, parentDriveId, childFolder);
         }
     }
 
@@ -361,9 +361,9 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             }
         }
 
-        internal async Task CacheResetChildsAsync(int id, string parentDriveId, bool? childFolder = null)
+        internal Task CacheResetChildsAsync(int id, string parentDriveId, bool? childFolder = null)
         {
-            await CacheNotify.PublishAsync(new GoogleDriveCacheItem { ResetChilds = true, Key = id + "-" + parentDriveId, ChildFolder = childFolder ?? false, ChildFolderExist = childFolder.HasValue }, CacheNotifyAction.Remove).ConfigureAwait(false);
+            return CacheNotify.PublishAsync(new GoogleDriveCacheItem { ResetChilds = true, Key = id + "-" + parentDriveId, ChildFolder = childFolder ?? false, ChildFolderExist = childFolder.HasValue }, CacheNotifyAction.Remove);
         }
     }
 

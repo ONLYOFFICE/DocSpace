@@ -82,14 +82,14 @@ namespace ASC.Files.Thirdparty.Sharpbox
             FileDao = fileDao;
         }
 
-        public async Task InvalidateCacheAsync(string fileId)
+        public Task InvalidateCacheAsync(string fileId)
         {
-            await ProviderInfo.InvalidateStorageAsync();
+            return ProviderInfo.InvalidateStorageAsync();
         }
 
-        public async Task<File<string>> GetFileAsync(string fileId)
+        public Task<File<string>> GetFileAsync(string fileId)
         {
-            return await GetFileAsync(fileId, 1).ConfigureAwait(false);
+            return GetFileAsync(fileId, 1);
         }
 
         public Task<File<string>> GetFileAsync(string fileId, int fileVersion)
@@ -288,9 +288,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return Task.FromResult(false);
         }
 
-        public override async Task<Stream> GetFileStreamAsync(File<string> file)
+        public override Task<Stream> GetFileStreamAsync(File<string> file)
         {
-            return await GetFileStreamAsync(file, 0).ConfigureAwait(false);
+            return GetFileStreamAsync(file, 0);
         }
 
         public async Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
@@ -343,9 +343,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return ToFile(entry);
         }
 
-        public async Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
+        public Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
         {
-            return await SaveFileAsync(file, fileStream).ConfigureAwait(false);
+            return SaveFileAsync(file, fileStream);
         }
 
         public async Task DeleteFileAsync(string fileId)
@@ -394,10 +394,10 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 ProviderInfo.Storage.DeleteFileSystemEntry(file);
         }
 
-        public async Task<bool> IsExistAsync(string title, object folderId)
+        public Task<bool> IsExistAsync(string title, object folderId)
         {
             var folder = ProviderInfo.Storage.GetFolder(MakePath(folderId));
-            return await IsExistAsync(title, folder).ConfigureAwait(false);
+            return IsExistAsync(title, folder);
         }
 
         public Task<bool> IsExistAsync(string title, ICloudDirectoryEntry folder)
