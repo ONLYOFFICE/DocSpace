@@ -182,7 +182,7 @@ namespace ASC.Api.Documents
             {
                 var folderDao = DaoFactory.GetFolderDao<T1>();
                 var folders = folderDao.GetFoldersAsync(folderItems.Entries.OfType<FileEntry<T1>>().Select(r => r.FolderID).Distinct().ToList()).ToListAsync().Result;
-                return FileSecurity.CanRead(folders);
+                return FileSecurity.CanReadAsync(folders).Result;
             }
         }
 
@@ -246,7 +246,7 @@ namespace ASC.Api.Documents
             {
                 var folderDao = DaoFactory.GetFolderDao<T1>();
                 var folders = await folderDao.GetFoldersAsync(folderItems.Entries.OfType<FileEntry<T1>>().Select(r => r.FolderID).Distinct()).ToListAsync();
-                return FileSecurity.CanRead(folders);
+                return await FileSecurity.CanReadAsync(folders);
             }
         }
     }

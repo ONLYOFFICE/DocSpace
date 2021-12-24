@@ -203,7 +203,7 @@ namespace ASC.Api.Documents
                 else
                 {
                     parentFolder = folderDao.GetFolderAsync(file.FolderID).Result;
-                    if (!FileSecurity.CanRead(parentFolder))
+                    if (!FileSecurity.CanReadAsync(parentFolder).Result)
                     {
                         result.FolderId = GlobalFolderHelper.GetFolderShare<T>();
                     }
@@ -237,7 +237,7 @@ namespace ASC.Api.Documents
                 else
                 {
                     parentFolder = await folderDao.GetFolderAsync(file.FolderID);
-                    if (!FileSecurity.CanRead(parentFolder))
+                    if (!await FileSecurity.CanReadAsync(parentFolder))
                     {
                         result.FolderId = GlobalFolderHelper.GetFolderShare<T>();
                     }

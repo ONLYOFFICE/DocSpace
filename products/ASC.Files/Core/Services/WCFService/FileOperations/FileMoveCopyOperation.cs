@@ -166,7 +166,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             //TODO: check on each iteration?
             var toFolder = folderDao.GetFolderAsync(tto).Result;
             if (toFolder == null) return;
-            if (!FilesSecurity.CanCreate(toFolder)) throw new System.Security.SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
+            if (!FilesSecurity.CanCreateAsync(toFolder).Result) throw new System.Security.SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
 
             if (folderDao.GetParentFoldersAsync(toFolder.ID).Result.Any(parent => Folders.Any(r => r.ToString() == parent.ID.ToString())))
             {
@@ -201,7 +201,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             //TODO: check on each iteration?
             var toFolder = await folderDao.GetFolderAsync(tto);
             if (toFolder == null) return;
-            if (!FilesSecurity.CanCreate(toFolder)) throw new System.Security.SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
+            if (!await FilesSecurity.CanCreateAsync(toFolder)) throw new System.Security.SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
 
             var parentFolders = await folderDao.GetParentFoldersAsync(toFolder.ID);
             if (parentFolders.Any(parent => Folders.Any(r => r.ToString() == parent.ID.ToString())))
@@ -250,7 +250,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 {
                     Error = FilesCommonResource.ErrorMassage_FolderNotFound;
                 }
-                else if (!FilesSecurity.CanRead(folder))
+                else if (!FilesSecurity.CanReadAsync(folder).Result)
                 {
                     Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFolder;
                 }
@@ -439,7 +439,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 {
                     Error = FilesCommonResource.ErrorMassage_FolderNotFound;
                 }
-                else if (!FilesSecurity.CanRead(folder))
+                else if (!FilesSecurity.CanReadAsync(folder).Result)
                 {
                     Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFolder;
                 }
@@ -626,7 +626,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 {
                     Error = FilesCommonResource.ErrorMassage_FileNotFound;
                 }
-                else if (!FilesSecurity.CanRead(file))
+                else if (!FilesSecurity.CanReadAsync(file).Result)
                 {
                     Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFile;
                 }
@@ -848,7 +848,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 {
                     Error = FilesCommonResource.ErrorMassage_FileNotFound;
                 }
-                else if (!FilesSecurity.CanRead(file))
+                else if (!await FilesSecurity.CanReadAsync(file))
                 {
                     Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFile;
                 }

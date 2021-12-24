@@ -73,7 +73,7 @@ namespace ASC.Files.Service.Core
                 targetCond = true;
             }
 
-            return targetCond && FileSecurity.CanRead(folder, userId);
+            return targetCond && FileSecurity.CanReadAsync(folder, userId).Result;
         }
 
         public override IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)

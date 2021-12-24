@@ -168,7 +168,7 @@ namespace ASC.Web.Files.Utils
 
                 if (!userIDs.Any())
                 {
-                    userIDs = filesSecurity.WhoCanRead(obj.FileEntry).Where(x => x != obj.CurrentAccountId).ToList();
+                    userIDs = filesSecurity.WhoCanReadAsync(obj.FileEntry).Result.Where(x => x != obj.CurrentAccountId).ToList();
                 }
                 if (obj.FileEntry.ProviderEntry)
                 {
@@ -177,7 +177,7 @@ namespace ASC.Web.Files.Utils
 
                 parentFolders.ForEach(parentFolder =>
                                       filesSecurity
-                                          .WhoCanRead(parentFolder)
+                                          .WhoCanReadAsync(parentFolder).Result
                                           .Where(userID => userIDs.Contains(userID) && userID != obj.CurrentAccountId)
                                           .ToList()
                                           .ForEach(userID =>
@@ -330,7 +330,7 @@ namespace ASC.Web.Files.Utils
                 var projectID = path.Split('/').Last();
                 if (string.IsNullOrEmpty(projectID)) return;
 
-                var projectTeam = FileSecurity.WhoCanRead(fileEntry)
+                var projectTeam = FileSecurity.WhoCanReadAsync(fileEntry).Result
                                         .Where(x => x != AuthContext.CurrentAccount.ID).ToList();
 
                 if (!projectTeam.Any()) return;
@@ -720,7 +720,7 @@ namespace ASC.Web.Files.Utils
         public List<FileEntry> MarkedItems<T>(Folder<T> folder)
         {
             if (folder == null) throw new ArgumentNullException("folder", FilesCommonResource.ErrorMassage_FolderNotFound);
-            if (!FileSecurity.CanRead(folder)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ViewFolder);
+            if (!FileSecurity.CanReadAsync(folder).Result) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ViewFolder);
             if (folder.RootFolderType == FolderType.TRASH && !Equals(folder.ID, GlobalFolder.GetFolderTrash<T>(DaoFactory))) throw new SecurityException(FilesCommonResource.ErrorMassage_ViewTrashItem);
 
             var tagDao = DaoFactory.GetTagDao<T>();
@@ -823,7 +823,7 @@ namespace ASC.Web.Files.Utils
         public async Task<List<FileEntry>> MarkedItemsAsync<T>(Folder<T> folder)
         {
             if (folder == null) throw new ArgumentNullException("folder", FilesCommonResource.ErrorMassage_FolderNotFound);
-            if (!FileSecurity.CanRead(folder)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ViewFolder);
+            if (!await FileSecurity.CanReadAsync(folder)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ViewFolder);
             if (folder.RootFolderType == FolderType.TRASH && !Equals(folder.ID, GlobalFolder.GetFolderTrash<T>(DaoFactory))) throw new SecurityException(FilesCommonResource.ErrorMassage_ViewTrashItem);
 
             var tagDao = DaoFactory.GetTagDao<T>();
@@ -1036,7 +1036,7 @@ namespace ASC.Web.Files.Utils
 
                                 if (parentTreeTag == null)
                                 {
-                                    if (fileSecurity.CanRead(folderFromList))
+                                    if (fileSecurity.CanReadAsync(folderFromList).Result)
                                     {
                                         tagDao.SaveTags(Tag.New(AuthContext.CurrentAccount.ID, folderFromList, -diff));
                                     }
@@ -1152,7 +1152,7 @@ namespace ASC.Web.Files.Utils
 
                                 if (parentTreeTag == null)
                                 {
-                                    if (fileSecurity.CanRead(folderFromList))
+                                    if (await fileSecurity.CanReadAsync(folderFromList))
                                     {
                                         tagDao.SaveTags(Tag.New(AuthContext.CurrentAccount.ID, folderFromList, -diff));
                                     }

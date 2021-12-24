@@ -324,7 +324,7 @@ namespace ASC.Web.Files
                     return;
                 }
 
-                if (!readLink && !FileSecurity.CanRead(file))
+                if (!readLink && !FileSecurity.CanReadAsync(file).Result)
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                     return;
@@ -670,7 +670,7 @@ namespace ASC.Web.Files
                     return;
                 }
 
-                if (linkRight == FileShare.Restrict && SecurityContext.IsAuthenticated && !FileSecurity.CanRead(file))
+                if (linkRight == FileShare.Restrict && SecurityContext.IsAuthenticated && !FileSecurity.CanReadAsync(file).Result)
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                     return;
@@ -914,7 +914,7 @@ namespace ASC.Web.Files
                     return;
                 }
 
-                if (linkRight == FileShare.Restrict && SecurityContext.IsAuthenticated && !FileSecurity.CanRead(file))
+                if (linkRight == FileShare.Restrict && SecurityContext.IsAuthenticated && !FileSecurity.CanReadAsync(file).Result)
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                     return;
@@ -983,7 +983,7 @@ namespace ASC.Web.Files
                     return;
                 }
 
-                if (!FileSecurity.CanRead(file))
+                if (!await FileSecurity.CanReadAsync(file))
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                     return;
@@ -1081,7 +1081,7 @@ namespace ASC.Web.Files
             folder = folderDao.GetFolderAsync(folderId).Result;
 
             if (folder == null) throw new HttpException((int)HttpStatusCode.NotFound, FilesCommonResource.ErrorMassage_FolderNotFound);
-            if (!FileSecurity.CanCreate(folder)) throw new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException_Create);
+            if (!FileSecurity.CanCreateAsync(folder).Result) throw new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException_Create);
 
             File<T> file;
             var fileUri = context.Request.Query[FilesLinkUtility.FileUri];

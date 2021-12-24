@@ -272,7 +272,7 @@ namespace ASC.Web.Files.Utils
             if (folder == null)
                 throw new DirectoryNotFoundException(FilesCommonResource.ErrorMassage_FolderNotFound);
 
-            if (!FileSecurity.CanCreate(folder))
+            if (!FileSecurity.CanCreateAsync(folder).Result)
                 throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
 
             if (relativePath != null && relativePath.Any())
@@ -313,7 +313,7 @@ namespace ASC.Web.Files.Utils
             if (folder == null)
                 throw new DirectoryNotFoundException(FilesCommonResource.ErrorMassage_FolderNotFound);
 
-            if (!FileSecurity.CanCreate(folder))
+            if (!await FileSecurity.CanCreateAsync(folder))
                 throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
 
             if (relativePath != null && relativePath.Any())

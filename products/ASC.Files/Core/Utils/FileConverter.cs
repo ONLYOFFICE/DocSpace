@@ -123,7 +123,7 @@ namespace ASC.Web.Files.Utils
             var file = pair.Key;
             var key = GetKey(file);
             var operation = cache.Get<ConvertFileOperationResult>(key);
-            if (operation != null && (pair.Value || fileSecurity.CanRead(file)))
+            if (operation != null && (pair.Value || fileSecurity.CanReadAsync(file).Result))
             {
                 lock (locker)
                 {
@@ -245,7 +245,7 @@ namespace ASC.Web.Files.Utils
                             Thread.CurrentThread.CurrentCulture = culture;
                             Thread.CurrentThread.CurrentUICulture = culture;
 
-                            if (!fileSecurity.CanRead(file) && file.RootFolderType != FolderType.BUNCH)
+                            if (!fileSecurity.CanReadAsync(file).Result && file.RootFolderType != FolderType.BUNCH)
                             {
                                 //No rights in CRM after upload before attach
                                 throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
@@ -354,7 +354,7 @@ namespace ASC.Web.Files.Utils
                                         {
                                             var folderDao = daoFactory.GetFolderDao<T>();
                                             var folder = folderDao.GetFolderAsync(newFile.FolderID).Result;
-                                            var folderTitle = fileSecurity.CanRead(folder) ? folder.Title : null;
+                                            var folderTitle = fileSecurity.CanReadAsync(folder).Result ? folder.Title : null;
                                             operationResult.Result = FileJsonSerializer(entryManager, newFile, folderTitle);
                                         }
 
@@ -734,7 +734,7 @@ namespace ASC.Web.Files.Utils
         {
             var fileDao = DaoFactory.GetFileDao<T>();
             var fileSecurity = FileSecurity;
-            if (!fileSecurity.CanRead(file))
+            if (!fileSecurity.CanReadAsync(file).Result)
             {
                 var readLink = FileShareLink.Check(doc, true, fileDao, out file);
                 if (file == null)
@@ -780,7 +780,7 @@ namespace ASC.Web.Files.Utils
             {
                 var folderDao = DaoFactory.GetFolderDao<T>();
                 var folder = folderDao.GetFolderAsync(newFile.FolderID).Result;
-                var folderTitle = fileSecurity.CanRead(folder) ? folder.Title : null;
+                var folderTitle = fileSecurity.CanReadAsync(folder).Result ? folder.Title : null;
                 operationResult.Result = GetFileConverter<T>().FileJsonSerializer(EntryStatusManager, newFile, folderTitle);
             }
 
@@ -858,7 +858,7 @@ namespace ASC.Web.Files.Utils
 
                 var parent = folderDao.GetFolderAsync(file.FolderID).Result;
                 if (parent != null
-                    && fileSecurity.CanCreate(parent))
+                    && fileSecurity.CanCreateAsync(parent).Result)
                 {
                     folderId = parent.ID;
                 }

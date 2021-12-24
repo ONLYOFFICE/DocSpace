@@ -716,27 +716,6 @@ namespace ASC.Files.Helpers
                     .ToList();
         }
 
-        public IEnumerable<FileEntryWrapper> MoveOrCopyBatchCheck(BatchModel batchModel)
-        {
-            var checkedFiles = new List<object>();
-            var checkedFolders = new List<object>();
-
-            if (batchModel.DestFolderId.ValueKind == JsonValueKind.Number)
-            {
-                (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds.ToList(), batchModel.FolderIds.ToList(), batchModel.DestFolderId.GetInt32());
-            }
-            else
-            {
-                (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds.ToList(), batchModel.FolderIds.ToList(), batchModel.DestFolderId.GetString());
-            }
-
-            var entries = FileStorageService.GetItems(checkedFiles.OfType<int>().Select(Convert.ToInt32), checkedFiles.OfType<int>().Select(Convert.ToInt32), FilterType.FilesOnly, false, "", "");
-
-            entries.AddRange(FileStorageService.GetItems(checkedFiles.OfType<string>(), checkedFiles.OfType<string>(), FilterType.FilesOnly, false, "", ""));
-
-            return entries.Select(GetFileEntryWrapper).ToList();
-        }
-
         public async IAsyncEnumerable<FileEntryWrapper> MoveOrCopyBatchCheckAsync(BatchModel batchModel)
         {
             var checkedFiles = new List<object>();

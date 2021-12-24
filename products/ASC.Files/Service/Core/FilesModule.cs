@@ -76,7 +76,7 @@ namespace ASC.Files.Service.Core
                 targetCond = true;
             }
 
-            return targetCond && FileSecurity.CanRead(file, userId);
+            return targetCond && FileSecurity.CanReadAsync(file, userId).Result;
         }
 
         public override void VisibleFor(List<Tuple<FeedRow, object>> feed, Guid userId)
@@ -101,7 +101,7 @@ namespace ASC.Files.Service.Core
                 }
             }
 
-            var canRead = FileSecurity.CanRead(files, userId).Where(r => r.Item2).ToList();
+            var canRead = FileSecurity.CanReadAsync(files, userId).Result.Where(r => r.Item2).ToList();
 
             foreach (var f in feed1)
             {

@@ -256,7 +256,7 @@ namespace ASC.Web.Files.Helpers
             var fileDao = DaoFactory.GetFileDao<T>();
             file = fileDao.GetFileAsync(fileId).Result;
             if (file == null) throw new Exception(FilesCommonResource.ErrorMassage_FileNotFound);
-            if (!FileSecurity.CanRead(file)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
+            if (!FileSecurity.CanReadAsync(file).Result) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
             if (!SupportedFormats.Contains(FileUtility.GetFileExtension(file.Title))) throw new ArgumentException(FilesCommonResource.ErrorMassage_NotSupportedFormat);
             if (file.ContentLength > MaxFileSize) throw new Exception(FileSizeComment.GetFileSizeExceptionString(MaxFileSize));
 
@@ -395,7 +395,7 @@ namespace ASC.Web.Files.Helpers
             if (folderId == null
                 || (folder = folderDao.GetFolderAsync(folderId).Result) == null
                 || folder.RootFolderType == FolderType.TRASH
-                || !FileSecurity.CanCreate(folder))
+                || !FileSecurity.CanCreateAsync(folder).Result)
             {
                 if (GlobalFolderHelper.FolderMy != 0)
                 {

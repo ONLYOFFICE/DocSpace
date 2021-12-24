@@ -751,9 +751,9 @@ namespace ASC.Web.Files.Services.DocumentService
                     var fileSecurity = FileSecurity;
                     if (_configuration.Document.Info.GetFile().RootFolderType == FolderType.USER
                         && !Equals(_configuration.Document.Info.GetFile().RootFolderId, GlobalFolderHelper.FolderMy)
-                        && !fileSecurity.CanRead(parent))
+                        && !fileSecurity.CanReadAsync(parent).Result)
                     {
-                        if (fileSecurity.CanRead(_configuration.Document.Info.GetFile()))
+                        if (fileSecurity.CanReadAsync(_configuration.Document.Info.GetFile()).Result)
                         {
                             return new GobackConfig
                             {

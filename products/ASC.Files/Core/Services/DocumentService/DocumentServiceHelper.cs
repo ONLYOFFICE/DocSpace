@@ -180,7 +180,7 @@ namespace ASC.Web.Files.Services.DocumentService
             var fileSecurity = FileSecurity;
             rightToEdit = rightToEdit
                           && (linkRight == FileShare.ReadWrite || linkRight == FileShare.CustomFilter
-                              || fileSecurity.CanEdit(file) || fileSecurity.CanCustomFilterEdit(file));
+                              || fileSecurity.CanEdit(file) || fileSecurity.CanCustomFilterEditAsync(file).Result);
             if (editPossible && !rightToEdit)
             {
                 editPossible = false;
@@ -194,7 +194,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             rightToReview = rightToReview
                             && (linkRight == FileShare.Review || linkRight == FileShare.ReadWrite
-                                || fileSecurity.CanReview(file));
+                                || fileSecurity.CanReviewAsync(file).Result);
             if (reviewPossible && !rightToReview)
             {
                 reviewPossible = false;
@@ -202,7 +202,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             rightToFillForms = rightToFillForms
                                && (linkRight == FileShare.FillForms || linkRight == FileShare.Review || linkRight == FileShare.ReadWrite
-                                   || fileSecurity.CanFillForms(file));
+                                   || fileSecurity.CanFillFormsAsync(file).Result);
             if (fillFormsPossible && !rightToFillForms)
             {
                 fillFormsPossible = false;
@@ -210,7 +210,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             rightToComment = rightToComment
                              && (linkRight == FileShare.Comment || linkRight == FileShare.Review || linkRight == FileShare.ReadWrite
-                                 || fileSecurity.CanComment(file));
+                                 || fileSecurity.CanCommentAsync(file).Result);
             if (commentPossible && !rightToComment)
             {
                 commentPossible = false;
@@ -218,7 +218,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             if (linkRight == FileShare.Restrict
                 && !(editPossible || reviewPossible || fillFormsPossible || commentPossible)
-                && !fileSecurity.CanRead(file)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
+                && !fileSecurity.CanReadAsync(file).Result) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
             if (file.RootFolderType == FolderType.TRASH) throw new Exception(FilesCommonResource.ErrorMassage_ViewTrashItem);
 
@@ -371,7 +371,7 @@ namespace ASC.Web.Files.Services.DocumentService
             var fileSecurity = FileSecurity;
             rightToEdit = rightToEdit
                           && (linkRight == FileShare.ReadWrite || linkRight == FileShare.CustomFilter
-                              || fileSecurity.CanEdit(file) || fileSecurity.CanCustomFilterEdit(file));
+                              || fileSecurity.CanEdit(file) || await fileSecurity.CanCustomFilterEditAsync(file));
             if (editPossible && !rightToEdit)
             {
                 editPossible = false;
@@ -385,7 +385,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             rightToReview = rightToReview
                             && (linkRight == FileShare.Review || linkRight == FileShare.ReadWrite
-                                || fileSecurity.CanReview(file));
+                                || await fileSecurity.CanReviewAsync(file));
             if (reviewPossible && !rightToReview)
             {
                 reviewPossible = false;
@@ -393,7 +393,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             rightToFillForms = rightToFillForms
                                && (linkRight == FileShare.FillForms || linkRight == FileShare.Review || linkRight == FileShare.ReadWrite
-                                   || fileSecurity.CanFillForms(file));
+                                   || await fileSecurity.CanFillFormsAsync(file));
             if (fillFormsPossible && !rightToFillForms)
             {
                 fillFormsPossible = false;
@@ -401,7 +401,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             rightToComment = rightToComment
                              && (linkRight == FileShare.Comment || linkRight == FileShare.Review || linkRight == FileShare.ReadWrite
-                                 || fileSecurity.CanComment(file));
+                                 || await fileSecurity.CanCommentAsync(file));
             if (commentPossible && !rightToComment)
             {
                 commentPossible = false;
@@ -409,7 +409,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             if (linkRight == FileShare.Restrict
                 && !(editPossible || reviewPossible || fillFormsPossible || commentPossible)
-                && !fileSecurity.CanRead(file)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
+                && !await fileSecurity.CanReadAsync(file)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
             if (file.RootFolderType == FolderType.TRASH) throw new Exception(FilesCommonResource.ErrorMassage_ViewTrashItem);
 
@@ -570,11 +570,11 @@ namespace ASC.Web.Files.Services.DocumentService
         {
             var fileSecurity = FileSecurity;
             var sharedLink =
-                fileSecurity.CanEdit(file, FileConstant.ShareLinkId)
-                || fileSecurity.CanCustomFilterEdit(file, FileConstant.ShareLinkId)
-                || fileSecurity.CanReview(file, FileConstant.ShareLinkId)
-                || fileSecurity.CanFillForms(file, FileConstant.ShareLinkId)
-                || fileSecurity.CanComment(file, FileConstant.ShareLinkId);
+                fileSecurity.CanEditAsync(file, FileConstant.ShareLinkId).Result
+                || fileSecurity.CanCustomFilterEditAsync(file, FileConstant.ShareLinkId).Result
+                || fileSecurity.CanReviewAsync(file, FileConstant.ShareLinkId).Result
+                || fileSecurity.CanFillFormsAsync(file, FileConstant.ShareLinkId).Result
+                || fileSecurity.CanCommentAsync(file, FileConstant.ShareLinkId).Result;
 
             var usersDrop = FileTracker.GetEditingBy(file.ID)
                                        .Where(uid =>
@@ -584,11 +584,11 @@ namespace ASC.Web.Files.Services.DocumentService
                                                    return !sharedLink;
                                                }
                                                return
-                                                    !fileSecurity.CanEdit(file, uid)
-                                                    && !fileSecurity.CanCustomFilterEdit(file, uid)
-                                                    && !fileSecurity.CanReview(file, uid)
-                                                    && !fileSecurity.CanFillForms(file, uid)
-                                                    && !fileSecurity.CanComment(file, uid);
+                                                    !fileSecurity.CanEditAsync(file, uid).Result
+                                                    && !fileSecurity.CanCustomFilterEditAsync(file, uid).Result
+                                                    && !fileSecurity.CanReviewAsync(file, uid).Result
+                                                    && !fileSecurity.CanFillFormsAsync(file, uid).Result
+                                                    && !fileSecurity.CanCommentAsync(file, uid).Result;
                                            })
                                        .Select(u => u.ToString()).ToArray();
 
@@ -609,11 +609,11 @@ namespace ASC.Web.Files.Services.DocumentService
         {
             var fileSecurity = FileSecurity;
             var sharedLink =
-                fileSecurity.CanEdit(file, FileConstant.ShareLinkId)
-                || fileSecurity.CanCustomFilterEdit(file, FileConstant.ShareLinkId)
-                || fileSecurity.CanReview(file, FileConstant.ShareLinkId)
-                || fileSecurity.CanFillForms(file, FileConstant.ShareLinkId)
-                || fileSecurity.CanComment(file, FileConstant.ShareLinkId);
+                await fileSecurity.CanEditAsync(file, FileConstant.ShareLinkId)
+                || await fileSecurity.CanCustomFilterEditAsync(file, FileConstant.ShareLinkId)
+                || await fileSecurity.CanReviewAsync(file, FileConstant.ShareLinkId)
+                || await fileSecurity.CanFillFormsAsync(file, FileConstant.ShareLinkId)
+                || await fileSecurity.CanCommentAsync(file, FileConstant.ShareLinkId);
 
             var usersDrop = FileTracker.GetEditingBy(file.ID)
                                        .Where(uid =>
@@ -623,11 +623,11 @@ namespace ASC.Web.Files.Services.DocumentService
                                                return !sharedLink;
                                            }
                                            return
-                                                !fileSecurity.CanEdit(file, uid)
-                                                && !fileSecurity.CanCustomFilterEdit(file, uid)
-                                                && !fileSecurity.CanReview(file, uid)
-                                                && !fileSecurity.CanFillForms(file, uid)
-                                                && !fileSecurity.CanComment(file, uid);
+                                                !fileSecurity.CanEditAsync(file, uid).Result
+                                                && !fileSecurity.CanCustomFilterEditAsync(file, uid).Result
+                                                && !fileSecurity.CanReviewAsync(file, uid).Result
+                                                && !fileSecurity.CanFillFormsAsync(file, uid).Result
+                                                && !fileSecurity.CanCommentAsync(file, uid).Result;
                                        })
                                        .Select(u => u.ToString()).ToArray();
 

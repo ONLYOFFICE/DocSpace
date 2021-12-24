@@ -311,7 +311,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             if (0 < Files.Count)
             {
                 var files = await FileDao.GetFilesAsync(Files).ToListAsync();
-                files = FilesSecurity.FilterRead(files).ToList();
+                files = (await FilesSecurity.FilterReadAsync(files)).ToList();
                 files.ForEach(file => entriesPathId.Add(ExecPathFromFile(scope, file, string.Empty)));
             }
             if (0 < Folders.Count)
@@ -337,7 +337,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 CancellationToken.ThrowIfCancellationRequested();
 
                 var folder = FolderDao.GetFolderAsync(folderId).Result;
-                if (folder == null || !FilesSecurity.CanRead(folder)) continue;
+                if (folder == null || !FilesSecurity.CanReadAsync(folder).Result) continue;
                 var folderPath = path + folder.Title + "/";
 
                 var files = FileDao.GetFilesAsync(folder.ID, null, FilterType.None, false, Guid.Empty, string.Empty, true).ToListAsync().Result;

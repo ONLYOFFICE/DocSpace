@@ -126,12 +126,12 @@ namespace ASC.Web.Files.Utils
             if (file == null) return FileShare.Restrict;
 
             var filesSecurity = FileSecurity;
-            if (filesSecurity.CanEdit(file, FileConstant.ShareLinkId)) return FileShare.ReadWrite;
-            if (filesSecurity.CanCustomFilterEdit(file, FileConstant.ShareLinkId)) return FileShare.CustomFilter;
-            if (filesSecurity.CanReview(file, FileConstant.ShareLinkId)) return FileShare.Review;
-            if (filesSecurity.CanFillForms(file, FileConstant.ShareLinkId)) return FileShare.FillForms;
-            if (filesSecurity.CanComment(file, FileConstant.ShareLinkId)) return FileShare.Comment;
-            if (filesSecurity.CanRead(file, FileConstant.ShareLinkId)) return FileShare.Read;
+            if (filesSecurity.CanEditAsync(file, FileConstant.ShareLinkId).Result) return FileShare.ReadWrite;
+            if (filesSecurity.CanCustomFilterEditAsync(file, FileConstant.ShareLinkId).Result) return FileShare.CustomFilter;
+            if (filesSecurity.CanReviewAsync(file, FileConstant.ShareLinkId).Result) return FileShare.Review;
+            if (filesSecurity.CanFillFormsAsync(file, FileConstant.ShareLinkId).Result) return FileShare.FillForms;
+            if (filesSecurity.CanCommentAsync(file, FileConstant.ShareLinkId).Result) return FileShare.Comment;
+            if (filesSecurity.CanReadAsync(file, FileConstant.ShareLinkId).Result) return FileShare.Read;
             return FileShare.Restrict;
         }
 
@@ -143,12 +143,12 @@ namespace ASC.Web.Files.Utils
             if (file == null) return (FileShare.Restrict, file);
 
             var filesSecurity = FileSecurity;
-            if (filesSecurity.CanEdit(file, FileConstant.ShareLinkId)) return (FileShare.ReadWrite, file);
-            if (filesSecurity.CanCustomFilterEdit(file, FileConstant.ShareLinkId)) return (FileShare.CustomFilter, file);
-            if (filesSecurity.CanReview(file, FileConstant.ShareLinkId)) return (FileShare.Review, file);
-            if (filesSecurity.CanFillForms(file, FileConstant.ShareLinkId)) return (FileShare.FillForms, file);
-            if (filesSecurity.CanComment(file, FileConstant.ShareLinkId)) return (FileShare.Comment, file);
-            if (filesSecurity.CanRead(file, FileConstant.ShareLinkId)) return (FileShare.Read, file);
+            if (await filesSecurity.CanEditAsync(file, FileConstant.ShareLinkId)) return (FileShare.ReadWrite, file);
+            if (await filesSecurity.CanCustomFilterEditAsync(file, FileConstant.ShareLinkId)) return (FileShare.CustomFilter, file);
+            if (await filesSecurity.CanReviewAsync(file, FileConstant.ShareLinkId)) return (FileShare.Review, file);
+            if (await filesSecurity.CanFillFormsAsync(file, FileConstant.ShareLinkId)) return (FileShare.FillForms, file);
+            if (await filesSecurity.CanCommentAsync(file, FileConstant.ShareLinkId)) return (FileShare.Comment, file);
+            if (await filesSecurity.CanReadAsync(file, FileConstant.ShareLinkId)) return (FileShare.Read, file);
             return (FileShare.Restrict, file);
         }
     }

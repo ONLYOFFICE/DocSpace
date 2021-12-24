@@ -572,7 +572,7 @@ namespace ASC.Web.Files.Utils
             else if (parent.FolderType == FolderType.SHARE)
             {
                 //share
-                var shared = fileSecurity.GetSharesForMe(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
+                var shared = fileSecurity.GetSharesForMeAsync(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders).Result;
 
                 entries = entries.Concat(shared);
 
@@ -617,7 +617,7 @@ namespace ASC.Web.Files.Utils
                 entries = entries.Concat(fileSecurity.FilterRead(files));
 
                 //share
-                var shared = fileSecurity.GetPrivacyForMe(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
+                var shared = fileSecurity.GetPrivacyForMeAsync(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders).Result;
 
                 entries = entries.Concat(shared);
 
@@ -805,7 +805,7 @@ namespace ASC.Web.Files.Utils
             else if (parent.FolderType == FolderType.SHARE)
             {
                 //share
-                var shared = fileSecurity.GetSharesForMe(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
+                var shared = fileSecurity.GetSharesForMeAsync(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders).Result;
 
                 entries = entries.Concat(shared);
 
@@ -850,7 +850,7 @@ namespace ASC.Web.Files.Utils
                 entries = entries.Concat(fileSecurity.FilterRead(files));
 
                 //share
-                var shared = fileSecurity.GetPrivacyForMe(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
+                var shared = fileSecurity.GetPrivacyForMeAsync(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders).Result;
 
                 entries = entries.Concat(shared);
 
@@ -971,7 +971,7 @@ namespace ASC.Web.Files.Utils
                 var providers = providerDao.GetProvidersInfoAsync(parent.RootFolderType, searchText).ToListAsync().Result;
                 folderList = providers
                     .Select(providerInfo => GetFakeThirdpartyFolder<T>(providerInfo, parent.ID.ToString()))
-                    .Where(r => fileSecurity.CanRead(r)).ToList();
+                    .Where(r => fileSecurity.CanReadAsync(r).Result).ToList();
 
                 if (folderList.Any())
                 {
@@ -1006,7 +1006,7 @@ namespace ASC.Web.Files.Utils
                 var providers = await providerDao.GetProvidersInfoAsync(parent.RootFolderType, searchText).ToListAsync();
                 folderList = providers
                     .Select(providerInfo => GetFakeThirdpartyFolder<T>(providerInfo, parent.ID.ToString()))
-                    .Where(r => fileSecurity.CanRead(r)).ToList();
+                    .Where(r => fileSecurity.CanReadAsync(r).Result).ToList();
 
                 if (folderList.Any())
                 {
@@ -1396,7 +1396,7 @@ namespace ASC.Web.Files.Utils
                 {
                     var folderId = entry.FolderID;
                     var folder = folderDao.GetFolderAsync(folderId).Result;
-                    if (!FileSecurity.CanRead(folder))
+                    if (!FileSecurity.CanReadAsync(folder).Result)
                     {
                         entry.FolderIdDisplay = GlobalFolderHelper.GetFolderShare<T>();
                     }
@@ -1413,7 +1413,7 @@ namespace ASC.Web.Files.Utils
                 {
                     var folderId = entry.FolderID;
                     var folder = await folderDao.GetFolderAsync(folderId);
-                    if (!FileSecurity.CanRead(folder))
+                    if (!await FileSecurity.CanReadAsync(folder))
                     {
                         entry.FolderIdDisplay = GlobalFolderHelper.GetFolderShare<T>();
                     }
@@ -1742,11 +1742,11 @@ namespace ASC.Web.Files.Utils
             if (file == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
             var fileSecurity = FileSecurity;
             if (!editLink
-                && (!fileSecurity.CanEdit(file, userId)
-                    && !fileSecurity.CanCustomFilterEdit(file, userId)
-                    && !fileSecurity.CanReview(file, userId)
-                    && !fileSecurity.CanFillForms(file, userId)
-                    && !fileSecurity.CanComment(file, userId)
+                && (!fileSecurity.CanEditAsync(file, userId).Result
+                    && !fileSecurity.CanCustomFilterEditAsync(file, userId).Result
+                    && !fileSecurity.CanReviewAsync(file, userId).Result
+                    && !fileSecurity.CanFillFormsAsync(file, userId).Result
+                    && !fileSecurity.CanCommentAsync(file, userId).Result
                     || UserManager.GetUsers(userId).IsVisitor(UserManager)))
             {
                 throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
@@ -1780,11 +1780,11 @@ namespace ASC.Web.Files.Utils
             if (file == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
             var fileSecurity = FileSecurity;
             if (!editLink
-                && (!fileSecurity.CanEdit(file, userId)
-                    && !fileSecurity.CanCustomFilterEdit(file, userId)
-                    && !fileSecurity.CanReview(file, userId)
-                    && !fileSecurity.CanFillForms(file, userId)
-                    && !fileSecurity.CanComment(file, userId)
+                && (!fileSecurity.CanEditAsync(file, userId).Result
+                    && !fileSecurity.CanCustomFilterEditAsync(file, userId).Result
+                    && !fileSecurity.CanReviewAsync(file, userId).Result
+                    && !fileSecurity.CanFillFormsAsync(file, userId).Result
+                    && !fileSecurity.CanCommentAsync(file, userId).Result
                     || UserManager.GetUsers(userId).IsVisitor(UserManager)))
             {
                 throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);

@@ -99,7 +99,7 @@ namespace ASC.Web.Files.Configuration
         {
             var security = FileSecurity;
             var fileDao = DaoFactory.GetFileDao<int>();
-            return fileDao.SearchAsync(text).Result.Where(security.CanRead);
+            return fileDao.SearchAsync(text).Result.Where(e => security.CanReadAsync(e).Result);
         }
 
         public IEnumerable<Folder<int>> SearchFolders(string text)
@@ -107,7 +107,7 @@ namespace ASC.Web.Files.Configuration
             var security = FileSecurity;
             IEnumerable<Folder<int>> result;
             var folderDao = DaoFactory.GetFolderDao<int>();
-            result = folderDao.SearchFoldersAsync(text).Result.Where(security.CanRead);
+            result = folderDao.SearchFoldersAsync(text).Result.Where(e => security.CanReadAsync(e).Result);
 
             if (ThirdpartyConfiguration.SupportInclusion(DaoFactory)
                 && FilesSettingsHelper.EnableThirdParty)
