@@ -45,9 +45,14 @@ namespace ASC.Web.Files.Utils
 
         private TenantManager TenantManager { get; }
 
-        public void FilesChangeEditors(object fileId, bool finish = false)
+        public void StartEdit<T>(T fileId)
         {
-            _signalrServiceClient.FilesChangeEditors(TenantManager.GetCurrentTenant().TenantId, fileId.ToString(), finish);
+            _signalrServiceClient.StartEdit(TenantManager.GetCurrentTenant().TenantId, fileId);
+        }
+
+        public void StopEdit<T>(T fileId)
+        {
+            _signalrServiceClient.StopEdit(TenantManager.GetCurrentTenant().TenantId, fileId);
         }
     }
 }

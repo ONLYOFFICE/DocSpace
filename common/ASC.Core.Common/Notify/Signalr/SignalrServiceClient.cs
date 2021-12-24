@@ -309,11 +309,23 @@ namespace ASC.Core.Notify.Signalr
             }
         }
 
-        public void FilesChangeEditors(int tenantId, string fileId, bool finish)
+        public void StartEdit<T>(int tenantId, T fileId)
         {
             try
             {
-                MakeRequest("changeEditors", new { tenantId, fileId, finish });
+                MakeRequest("start-edit", new { tenantId, fileId });
+            }
+            catch (Exception error)
+            {
+                ProcessError(error);
+            }
+        }
+
+        public void StopEdit<T>(int tenantId, T fileId)
+        {
+            try
+            {
+                MakeRequest("stop-edit", new { tenantId, fileId });
             }
             catch (Exception error)
             {

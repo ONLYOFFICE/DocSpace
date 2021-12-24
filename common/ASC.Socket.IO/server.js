@@ -81,45 +81,13 @@ io.use(sharedsession(session, secretCookieParser, { autoSave: true }))
     auth(socket, next);
   });
 
-io.on("connection", (socket) => {
-  const session = socket.handshake.session;
-
-  if (!session || !session.user || !session.portal) {
-    console.log("Invalid session");
-    return;
-  }
-
-  const userId = session.user.id;
-  const tenantId = session.portal.tenantId;
-
-  console.log(
-    `Connected user='${userId}' on tenant='${tenantId}' socketId='${socket.id}'`
-  );
-
-  const room = tenantId;
-
-  socket.join(room);
-
-  socket.on("c:start-edit-file", (fileId) => {
-    //const file = { id: fileId, name: "some file", fileStatus: 1 };
-    console.log("Call of start-edit-file", fileId);
-    socket.to(room).emit("s:start-edit-file", fileId);
-  });
-
-  socket.on("c:stop-edit-file", (fileId) => {
-    //const file = { id: fileId, name: "some file", fileStatus: 0 };
-    console.log("Call of stop-edit-file", fileId);
-    socket.to(room).emit("s:stop-edit-file", fileId);
-  });
-
-  socket.on("c:refresh-folder", (folderId) => {
-    socket.to(room).emit("s:refresh-folder", folderId);
-  });
-});
-
 app.get("/", (req, res) => {
   res.send("<h1>Invalid Endpoint</h1>");
 });
+
+const filesHub = require("./app/hubs/files.js")(io);
+
+app.use("/controller", require("./app/controllers")(filesHub));
 
 httpServer.listen(port, () => console.log(`Server started on port: ${port}`));
 

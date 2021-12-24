@@ -532,8 +532,6 @@ const Editor = () => {
     if (tempElm) {
       tempElm.outerHTML = "";
     }
-
-    socket.emit("c:start-edit-file", fileInfo.id);
   };
 
   const onSDKInfo = (event) => {

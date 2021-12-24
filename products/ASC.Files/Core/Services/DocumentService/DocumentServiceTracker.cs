@@ -250,11 +250,12 @@ namespace ASC.Web.Files.Services.DocumentService
                 case TrackerStatus.NotFound:
                 case TrackerStatus.Closed:
                     FileTracker.Remove(fileId);
-                    SocketManager.FilesChangeEditors(fileId, true);
+                    SocketManager.StopEdit(fileId);
                     break;
 
                 case TrackerStatus.Editing:
                     ProcessEdit(fileId, fileData);
+                    SocketManager.StartEdit(fileId);
                     break;
 
                 case TrackerStatus.MustSave:
@@ -334,7 +335,6 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 FileTracker.Remove(fileId, userId: removeUserId);
             }
-            SocketManager.FilesChangeEditors(fileId);
         }
 
         private TrackResponse ProcessSave<T>(T fileId, TrackerData fileData)
@@ -459,8 +459,6 @@ namespace ASC.Web.Files.Services.DocumentService
                 if (!forcesave)
                     SaveHistory(file, (fileData.History ?? "").ToString(), DocumentServiceConnector.ReplaceDocumentAdress(fileData.ChangesUrl));
             }
-
-            SocketManager.FilesChangeEditors(fileId, !forcesave);
 
             var result = new TrackResponse { Message = saveMessage };
             return result;
