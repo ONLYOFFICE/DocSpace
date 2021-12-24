@@ -1943,6 +1943,46 @@ const Dark = {
     boxShadow: "0px 12px 24px rgba(0, 0, 0, 0.12)",
     fill: "#292929",
   },
+
+  mediaViewer: {
+    color: "#d1d1d1",
+    background: "rgba(17, 17, 17, 0.867)",
+    backgroundColor: "rgba(11, 11, 11, 0.7)",
+    fill: "#fff",
+    titleColor: "#fff",
+    iconColor: "#fff",
+
+    controlBtn: {
+      backgroundColor: "rgba(200, 200, 200, 0.2)",
+    },
+
+    imageViewer: {
+      backgroundColor: "rgba(200, 200, 200, 0.2)",
+      inactiveBackgroundColor: "rgba(11,11,11,0.7)",
+      fill: "#fff",
+    },
+
+    progressBar: {
+      background: "#d1d1d1",
+      backgroundColor: "rgba(200, 200, 200, 0.2)",
+    },
+
+    scrollButton: {
+      backgroundColor: "rgba(11, 11, 11, 0.7)",
+      background: "rgba(200, 200, 200, 0.2)",
+      border: "solid #fff",
+    },
+
+    videoViewer: {
+      fill: "#fff",
+      stroke: "#fff",
+      color: "#d1d1d1",
+      colorError: "#fff",
+      backgroundColorError: "#000",
+      backgroundColor: "rgba(11, 11, 11, 0.7)",
+      background: "rgba(200, 200, 200, 0.2)",
+    },
+  },
 };
 
 export default Dark;

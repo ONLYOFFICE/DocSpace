@@ -1,24 +1,25 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
-import { findDOMNode } from "react-dom";
-import screenfull from "screenfull";
-import ReactPlayer from "react-player";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import styled, { css } from 'styled-components';
+import { findDOMNode } from 'react-dom';
+import screenfull from 'screenfull';
+import ReactPlayer from 'react-player';
 
-import Duration from "./duration";
-import Progress from "./progress";
-import MediaPauseIcon from "../../../../../public/images/media.pause.react.svg";
-import MediaPlayIcon from "../../../../../public/images/media.play.react.svg";
-import MediaFullScreenIcon from "../../../../../public/images/media.fullscreen.video.react.svg";
-import MediaMuteIcon from "../../../../../public/images/media.mute.react.svg";
-import MediaMuteOffIcon from "../../../../../public/images/media.muteoff.react.svg";
-import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import Duration from './duration';
+import Progress from './progress';
+import MediaPauseIcon from '../../../../../public/images/media.pause.react.svg';
+import MediaPlayIcon from '../../../../../public/images/media.play.react.svg';
+import MediaFullScreenIcon from '../../../../../public/images/media.fullscreen.video.react.svg';
+import MediaMuteIcon from '../../../../../public/images/media.mute.react.svg';
+import MediaMuteOffIcon from '../../../../../public/images/media.muteoff.react.svg';
+import commonIconsStyles from '@appserver/components/utils/common-icons-style';
+import { Base } from '@appserver/components/themes';
 
 const iconsStyles = css`
   path,
   stroke,
   rect {
-    fill: #fff;
+    fill: ${(props) => props.theme.mediaViewer.videoViewer.fill};
   }
 `;
 
@@ -28,10 +29,13 @@ const StyledControls = styled.div`
   display: block;
   position: fixed;
   z-index: 301;
-  ${(props) => !props.isVideo && "background-color: rgba(11,11,11,0.7);"}
+  ${(props) =>
+    !props.isVideo && `background-color: ${props.theme.mediaViewer.videoViewer.backgroundColor};`}
   top: calc(50% + ${(props) => props.top}px);
   left: ${(props) => props.left}px;
 `;
+
+StyledControls.defaultProps = { theme: Base };
 const StyledVideoControlBtn = styled.div`
   display: inline-block;
   height: 26px;
@@ -43,7 +47,7 @@ const StyledVideoControlBtn = styled.div`
   text-align: center;
   vertical-align: top;
   &:hover {
-    background-color: rgba(200, 200, 200, 0.2);
+    background-color: ${(props) => props.theme.mediaViewer.videoViewer.background};
   }
 
   .playBtnContainer {
@@ -74,40 +78,45 @@ const StyledVideoControlBtn = styled.div`
     line-height: 19px;
   }
 `;
+
+StyledVideoControlBtn.defaultProps = { theme: Base };
 const StyledMediaPauseIcon = styled(MediaPauseIcon)`
   ${commonIconsStyles}
   ${iconsStyles}
 `;
+StyledMediaPauseIcon.defaultProps = { theme: Base };
 const StyledMediaPlayIcon = styled(MediaPlayIcon)`
   ${commonIconsStyles}
   ${iconsStyles}
 `;
+StyledMediaPlayIcon.defaultProps = { theme: Base };
 const StyledMediaFullScreenIcon = styled(MediaFullScreenIcon)`
   ${commonIconsStyles}
   ${iconsStyles}
 `;
+StyledMediaFullScreenIcon.defaultProps = { theme: Base };
 const StyledMediaMuteIcon = styled(MediaMuteIcon)`
   ${commonIconsStyles}
 
   path:first-child {
-    stroke: #fff;
+    stroke: ${(props) => props.theme.mediaViewer.videoViewer.stroke};
   }
 
   path:last-child {
-    fill: #fff;
+    fill: ${(props) => props.theme.mediaViewer.videoViewer.fill};
   }
 `;
 const StyledMediaMuteOffIcon = styled(MediaMuteOffIcon)`
   ${commonIconsStyles}
 
   path, rect {
-    fill: #fff;
+    fill: ${(props) => props.theme.mediaViewer.videoViewer.fill};
   }
 `;
+
+StyledMediaMuteIcon.defaultProps = { theme: Base };
 const VideoControlBtn = (props) => {
-  return (
-    <StyledVideoControlBtn {...props}>{props.children}</StyledVideoControlBtn>
-  );
+  return <StyledVideoControlBtn {...props}>{props.children}</StyledVideoControlBtn>;
 };
 VideoControlBtn.propTypes = {
   children: PropTypes.any,
@@ -189,14 +198,16 @@ const StyledDuration = styled.div`
   cursor: pointer;
 
   &:hover {
-    background-color: rgba(200, 200, 200, 0.2);
+    background-color: ${(props) => props.theme.mediaViewer.videoViewer.background};
   }
 `;
+
+StyledValumeContainer.defaultProps = { theme: Base };
 const StyledVideoViewer = styled.div`
-  color: #d1d1d1;
+  color: ${(props) => props.theme.mediaViewer.videoViewer.color};
 
   .playerWrapper {
-    display: ${(props) => (props.isVideo ? "block" : "none")};
+    display: ${(props) => (props.isVideo ? 'block' : 'none')};
     width: ${(props) => props.width}px;
     height: ${(props) => props.height}px;
     left: ${(props) => props.left}px;
@@ -204,7 +215,7 @@ const StyledVideoViewer = styled.div`
     z-index: 301;
     position: fixed;
     padding-bottom: 40px;
-    background-color: rgba(11, 11, 11, 0.7);
+    background-color: ${(props) => props.theme.mediaViewer.videoViewer.backgroundColor};
 
     video {
       z-index: 300;
@@ -212,18 +223,22 @@ const StyledVideoViewer = styled.div`
   }
 `;
 
+StyledVideoViewer.defaultProps = { theme: Base };
+
 const ErrorContainer = styled.div`
   z-index: 301;
   display: block;
   position: fixed;
   left: calc(50% - 110px);
   top: calc(50% - 40px);
-  background-color: #000;
-  color: #fff;
+  background-color: ${(props) => props.theme.mediaViewer.videoViewer.backgroundColorError};
+  color: ${(props) => props.theme.mediaViewer.videoViewer.colorError};
   border-radius: 10px;
   padding: 20px;
   text-align: center;
 `;
+
+ErrorContainer.defaultProps = { theme: Base };
 
 class ValumeBtn extends Component {
   constructor(props) {
@@ -287,11 +302,11 @@ class VideoViewer extends Component {
   };
 
   componentDidMount() {
-    document.addEventListener("keydown", this.onKeydown, false);
+    document.addEventListener('keydown', this.onKeydown, false);
   }
 
   componentWillUnmount() {
-    document.removeEventListener("keydown", this.onKeydown, false);
+    document.removeEventListener('keydown', this.onKeydown, false);
   }
 
   componentDidUpdate(prevProps) {
@@ -400,7 +415,7 @@ class VideoViewer extends Component {
   };
 
   onError = (e) => {
-    console.log("onError", e);
+    console.log('onError', e);
     this.setState({ error: true });
   };
 
@@ -440,11 +455,9 @@ class VideoViewer extends Component {
     let centerAreaOx = screenSize.w / 2 + document.documentElement.scrollLeft;
     let centerAreaOy = screenSize.h / 2 + document.documentElement.scrollTop;
 
-    let videoElement = document.getElementsByTagName("video")[0];
+    let videoElement = document.getElementsByTagName('video')[0];
     if (videoElement) {
-      width = this.props.isVideo
-        ? videoElement.videoWidth || 480
-        : screenSize.w - 150;
+      width = this.props.isVideo ? videoElement.videoWidth || 480 : screenSize.w - 150;
       height = this.props.isVideo ? videoElement.videoHeight || 270 : 0;
 
       let resize = this.resizePlayer(
@@ -452,15 +465,13 @@ class VideoViewer extends Component {
           w: width,
           h: height,
         },
-        screenSize
+        screenSize,
       );
       width = resize.width;
       height = resize.height;
     }
 
-    let left = this.props.isVideo
-      ? centerAreaOx - width / 2
-      : centerAreaOx - width / 2;
+    let left = this.props.isVideo ? centerAreaOx - width / 2 : centerAreaOx - width / 2;
 
     const videoControlBtnWidth = 220;
     const audioControlBtnWidth = 170;
@@ -482,8 +493,7 @@ class VideoViewer extends Component {
         width={width}
         height={height}
         left={left}
-        top={height + controlsHeight}
-      >
+        top={height + controlsHeight}>
         <div>
           <div className="playerWrapper" onClick={this.handlePlayPause}>
             <ReactPlayer
@@ -516,8 +526,7 @@ class VideoViewer extends Component {
             height={controlsHeight}
             left={left}
             top={height / 2 - controlsHeight / 2}
-            isVideo={this.props.isVideo}
-          >
+            isVideo={this.props.isVideo}>
             <PlayBtn onClick={this.handlePlayPause} playing={playing} />
             <Progress
               value={played}
@@ -537,9 +546,7 @@ class VideoViewer extends Component {
               onChangeMute={this.handleToggleMuted}
               onChange={this.handleVolumeChange}
             />
-            {this.props.isVideo && (
-              <FullScreenBtn onClick={this.handleClickFullscreen} />
-            )}
+            {this.props.isVideo && <FullScreenBtn onClick={this.handleClickFullscreen} />}
           </Controls>
         </div>
       </StyledVideoViewer>
