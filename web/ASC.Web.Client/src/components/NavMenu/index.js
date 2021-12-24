@@ -1,27 +1,26 @@
-import React from "react";
-import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
-import Backdrop from "@appserver/components/backdrop";
-import Toast from "@appserver/components/toast";
-import Aside from "@appserver/components/aside";
+import React from 'react';
+import PropTypes from 'prop-types';
+import styled, { css } from 'styled-components';
+import Backdrop from '@appserver/components/backdrop';
+import Toast from '@appserver/components/toast';
+import Aside from '@appserver/components/aside';
 
-import Header from "./sub-components/header";
-import HeaderNav from "./sub-components/header-nav";
-import HeaderUnAuth from "./sub-components/header-unauth";
-import { I18nextProvider, withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
+import Header from './sub-components/header';
+import HeaderNav from './sub-components/header-nav';
+import HeaderUnAuth from './sub-components/header-unauth';
+import { I18nextProvider, withTranslation } from 'react-i18next';
+import { withRouter } from 'react-router';
 
-import Loaders from "@appserver/common/components/Loaders";
-import { LayoutContextConsumer } from "../Layout/context";
-import { isMobile } from "react-device-detect";
-import { inject, observer } from "mobx-react";
-import i18n from "./i18n";
-
-const backgroundColor = "#0F4071";
+import Loaders from '@appserver/common/components/Loaders';
+import { LayoutContextConsumer } from '../Layout/context';
+import { isMobile } from 'react-device-detect';
+import { inject, observer } from 'mobx-react';
+import i18n from './i18n';
+import { Base } from '@appserver/components/themes';
 
 const StyledContainer = styled.header`
   align-items: center;
-  background-color: ${backgroundColor};
+  background-color: ${(props) => props.theme.header.backgroundColor};
 
   ${(props) =>
     !props.isLoaded
@@ -39,7 +38,7 @@ const StyledContainer = styled.header`
           .navMenuHeaderUnAuth {
             position: fixed;
             z-index: 160;
-            top: ${(props) => (props.isVisible ? "0" : "-48px")};
+            top: ${(props) => (props.isVisible ? '0' : '-48px')};
 
             transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
             -moz-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
@@ -54,7 +53,7 @@ const StyledContainer = styled.header`
   #ipl-progress-indicator {
     position: fixed;
     z-index: 190;
-    top: ${(props) => (props.isDesktop ? "0" : "48px")};
+    top: ${(props) => (props.isDesktop ? '0' : '48px')};
     left: -6px;
     width: 0%;
     height: 3px;
@@ -65,17 +64,14 @@ const StyledContainer = styled.header`
   }
 `;
 
+StyledContainer.defaultProps = { theme: Base };
+
 class NavMenu extends React.Component {
   constructor(props) {
     super(props);
     this.timeout = null;
 
-    const {
-      isBackdropVisible,
-      isNavHoverEnabled,
-      isNavOpened,
-      isAsideVisible,
-    } = props;
+    const { isBackdropVisible, isNavHoverEnabled, isNavOpened, isAsideVisible } = props;
 
     this.state = {
       isBackdropVisible,
@@ -143,28 +139,17 @@ class NavMenu extends React.Component {
   render() {
     const { isBackdropVisible, isNavOpened, isAsideVisible } = this.state;
 
-    const {
-      isAuthenticated,
-      isLoaded,
-      asideContent,
-      history,
-      isDesktop,
-    } = this.props;
+    const { isAuthenticated, isLoaded, asideContent, history, isDesktop } = this.props;
 
     const isAsideAvailable = !!asideContent;
-    const hideHeader =
-      isDesktop || history.location.pathname === "/products/files/private";
+    const hideHeader = isDesktop || history.location.pathname === '/products/files/private';
 
     //console.log("NavMenu render", this.state, this.props);
 
     return (
       <LayoutContextConsumer>
         {(value) => (
-          <StyledContainer
-            isLoaded={isLoaded}
-            isVisible={value.isVisible}
-            isDesktop={hideHeader}
-          >
+          <StyledContainer isLoaded={isLoaded} isVisible={value.isVisible} isDesktop={hideHeader}>
             <Toast />
 
             <Backdrop
@@ -213,10 +198,7 @@ NavMenu.propTypes = {
   isAsideVisible: PropTypes.bool,
   isDesktop: PropTypes.bool,
 
-  asideContent: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
-  ]),
+  asideContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 
   isAuthenticated: PropTypes.bool,
   isLoaded: PropTypes.bool,
@@ -239,7 +221,7 @@ const NavMenuWrapper = inject(({ auth }) => {
     isDesktop,
     language,
   };
-})(observer(withTranslation(["NavMenu", "Common"])(withRouter(NavMenu))));
+})(observer(withTranslation(['NavMenu', 'Common'])(withRouter(NavMenu))));
 
 export default () => (
   <I18nextProvider i18n={i18n}>
