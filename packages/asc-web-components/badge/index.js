@@ -85,7 +85,7 @@ Badge.defaultProps = {
   borderRadius: "11px",
   padding: "0 5px",
   maxWidth: "50px",
-  lineHeight: "12px",
+  lineHeight: "16px",
 };
 
 export default Badge;
