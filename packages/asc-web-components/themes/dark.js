@@ -1936,6 +1936,13 @@ const Dark = {
       placeholderColor: "#474747",
     },
   },
+
+  floatingButton: {
+    backgroundColor: "#e5e5e5",
+    color: "#292929",
+    boxShadow: "0px 12px 24px rgba(0, 0, 0, 0.12)",
+    fill: "#292929",
+  },
 };
 
 export default Dark;

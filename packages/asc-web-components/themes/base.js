@@ -1936,6 +1936,13 @@ const Base = {
       placeholderColor: "#a3a9ae",
     },
   },
+
+  floatingButton: {
+    backgroundColor: "#fff",
+    color: "#2DA7DB",
+    boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
+    fill: "#A3A9AE",
+  },
 };
 
 export default Base;
