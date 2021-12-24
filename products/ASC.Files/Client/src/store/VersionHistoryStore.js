@@ -17,7 +17,7 @@ class VersionHistoryStore {
     this.filesStore = filesStore;
 
     const isTabletView = window.innerWidth <= size.tablet;
-    if (isTabletView) {
+    if (isTabletView && this.versions) {
       //TODO: Files store in not initialized on versionHistory page. Need socket.
       socket.on("s:start-edit-file", (id) => {
         console.log(`VERSION STORE Call s:start-edit-file (id=${id})`);
