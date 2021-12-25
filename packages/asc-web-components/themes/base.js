@@ -2008,6 +2008,13 @@ const Base = {
     boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
     color: "#a3a9ae",
   },
+
+  filesEmptyContainer: {
+    linkColor: "#555f65",
+    privateRoom: {
+      linkColor: "#116d9d",
+    },
+  },
 };
 
 export default Base;

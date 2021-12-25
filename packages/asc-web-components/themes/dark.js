@@ -2008,6 +2008,13 @@ const Dark = {
     boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
     color: "#eeeeee",
   },
+
+  filesEmptyContainer: {
+    linkColor: "#adadad",
+    privateRoom: {
+      linkColor: "#116d9d",
+    },
+  },
 };
 
 export default Dark;
