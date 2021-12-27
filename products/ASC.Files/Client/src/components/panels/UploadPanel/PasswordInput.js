@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import PasswordInput from "@appserver/components/password-input";
 import Button from "@appserver/components/button";
 import styled, { css } from "styled-components";
 import { inject, observer } from "mobx-react";
+import InputBlock from "@appserver/components/input-block";
+import globalColors from "@appserver/components/utils/globalColors";
+
+const iconColor = globalColors.gray;
 
 const StyledBody = styled.div`
   display: flex;
@@ -34,6 +37,8 @@ const PasswordComponent = ({
   const [password, setPassword] = useState("");
   const [passwordValid, setPasswordValid] = useState(true);
 
+  const [cursorPosition, setCursorPosition] = useState();
+  const [inputType, setInputType] = useState("password");
   const { t } = useTranslation("UploadPanel");
   const onClick = () => {
     let hasError = false;
@@ -45,7 +50,6 @@ const PasswordComponent = ({
     }
 
     if (hasError) return;
-
     let index;
 
     uploadedFiles.reduce((acc, rec, id) => {
@@ -66,30 +70,95 @@ const PasswordComponent = ({
     convertFile(newItem);
   };
 
-  const onChangePassword = (e) => {
-    setPassword(e.target.value);
+  const setPasswordSettings = (newPassword) => {
+    const cursorPosition = document.getElementById("conversion-password")
+      .selectionStart;
+
+    setCursorPosition(cursorPosition);
+
+    const copyPassword = password;
+    const passwordLength = password.length;
+    const newPasswordLength = newPassword.length;
+
+    if (passwordLength < newPasswordLength) {
+      if (cursorPosition === newPasswordLength) {
+        setPassword(password + newPassword.slice(-1));
+      } else {
+        const passwordConversion = copyPassword.split("");
+        const newPasswordConversion = newPassword.split("");
+        const newSymbol = newPasswordConversion[cursorPosition - 1];
+
+        passwordConversion.splice(cursorPosition - 1, 0, newSymbol);
+
+        setPassword(passwordConversion.join(""));
+      }
+    } else {
+      const itemsCountRemoved = passwordLength - newPasswordLength;
+      const passwordConversion = copyPassword.split("");
+
+      passwordConversion.splice(cursorPosition, itemsCountRemoved);
+
+      setPassword(passwordConversion.join(""));
+    }
   };
 
+  const onChangePassword = (e) => {
+    const newPassword = e.target.value;
+
+    inputType == "password"
+      ? setPasswordSettings(newPassword)
+      : setPassword(newPassword);
+  };
+
+  const onChangeInputType = () => {
+    setInputType(inputType === "password" ? "text" : "password");
+  };
+
+  console.log("password", password);
+  const copyPassword = password;
+  const bullets = copyPassword.replace(/(.)/g, "•");
+
+  const iconName =
+    inputType === "password"
+      ? "/static/images/eye.off.react.svg"
+      : "/static/images/eye.react.svg";
+
+  useEffect(() => {
+    cursorPosition &&
+      inputType === "password" &&
+      document
+        .getElementById("conversion-password")
+        .setSelectionRange(cursorPosition, cursorPosition);
+  }, [password]);
+
+  console.log("passwordValid", passwordValid);
   return (
     <StyledBody className="conversation-password-wrapper">
-      <PasswordInput
-        simpleView
-        id="conversion-password"
-        className="conversion-input"
-        type="password"
-        inputValue={password}
-        onChange={onChangePassword}
-        placeholder={t("EnterPassword")}
-        hasError={!passwordValid}
-      />
-      <Button
-        id="conversion-button"
-        size="medium"
-        scale
-        primary
-        label={t("Ready")}
-        onClick={onClick}
-      />
+      <>
+        <InputBlock
+          id="conversion-password"
+          className="conversion-input"
+          type="text"
+          hasError={!passwordValid}
+          iconName={iconName}
+          value={inputType === "password" ? bullets : password}
+          onIconClick={onChangeInputType}
+          onChange={onChangePassword}
+          scale
+          iconSize={16}
+          iconColor={iconColor}
+          hoverColor={iconColor}
+          placeholder={t("EnterPassword")}
+        ></InputBlock>
+        <Button
+          id="conversion-button"
+          size="medium"
+          scale
+          primary
+          label={t("Ready")}
+          onClick={onClick}
+        />
+      </>
     </StyledBody>
   );
 };
