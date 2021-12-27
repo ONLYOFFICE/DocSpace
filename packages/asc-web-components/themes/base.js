@@ -2119,6 +2119,17 @@ const Base = {
       },
     },
   },
+
+  filesBadges: {
+    iconColor: "#A3A9AE",
+    hoverIconColor: "#3B72A7",
+
+    color: "#ffffff",
+    backgroundColor: "#A3A9AE",
+
+    badgeColor: "#ffffff",
+    badgeBackgroundColor: "#ed7309",
+  },
 };
 
 export default Base;

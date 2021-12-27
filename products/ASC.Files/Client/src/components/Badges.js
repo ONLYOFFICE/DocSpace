@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from "react";
-import Badge from "@appserver/components/badge";
-import IconButton from "@appserver/components/icon-button";
+import React, { useState, useEffect } from 'react';
+import Badge from '@appserver/components/badge';
+import IconButton from '@appserver/components/icon-button';
 import {
   StyledFavoriteIcon,
   StyledFileActionsConvertEditDocIcon,
   StyledFileActionsLockedIcon,
-} from "./Icons";
+} from './Icons';
 
 const Badges = ({
   t,
+  theme,
   newItems,
   item,
   canWebEdit,
@@ -25,15 +26,7 @@ const Badges = ({
   onBadgeClick,
   setConvertDialogVisible,
 }) => {
-  const {
-    id,
-    locked,
-    fileStatus,
-    version,
-    versionGroup,
-    title,
-    fileExst,
-  } = item;
+  const { id, locked, fileStatus, version, versionGroup, title, fileExst } = item;
 
   const isFavorite = fileStatus === 32;
   const isEditing = fileStatus === 1;
@@ -51,8 +44,8 @@ const Badges = ({
           className="badge icons-group can-convert"
           size="small"
           isfill={true}
-          color="#A3A9AE"
-          hoverColor="#3B72A7"
+          color={theme.filesBadges.iconColor}
+          hoverColor={theme.filesBadges.hoverIconColor}
         />
       )}
       {canWebEdit &&
@@ -69,8 +62,8 @@ const Badges = ({
             className="badge icons-group"
             size="small"
             isfill={true}
-            color="#A3A9AE"
-            hoverColor="#3B72A7"
+            color={theme.filesBadges.iconColor}
+            hoverColor={theme.filesBadges.hoverIconColor}
           />
         )}
       {(isEditing || isEditingWithFav) && (
@@ -102,9 +95,9 @@ const Badges = ({
       {version > 1 && (
         <Badge
           className="badge-version icons-group"
-          backgroundColor="#A3A9AE"
+          backgroundColor={theme.filesBadges.backgroundColor}
           borderRadius="11px"
-          color="#FFFFFF"
+          color={theme.filesBadges.color}
           fontSize="10px"
           fontWeight={800}
           label={`Ver.${versionGroup}`}
@@ -117,12 +110,12 @@ const Badges = ({
       {(showNew || isNewWithFav) && (
         <Badge
           className="badge-version icons-group"
-          backgroundColor="#ED7309"
+          backgroundColor={theme.filesBadges.badgeBackgroundColor}
           borderRadius="11px"
-          color="#FFFFFF"
+          color={theme.filesBadges.badgeColor}
           fontSize="10px"
           fontWeight={800}
-          label={t("New")}
+          label={t('New')}
           maxWidth="50px"
           onClick={onBadgeClick}
           padding="0 5px"
@@ -134,9 +127,9 @@ const Badges = ({
     showNew && (
       <Badge
         className="new-items"
-        backgroundColor="#ED7309"
+        backgroundColor={theme.filesBadges.badgeBackgroundColor}
         borderRadius="11px"
-        color="#FFFFFF"
+        color={theme.filesBadges.badgeColor}
         fontSize="10px"
         fontWeight={800}
         label={newItems}

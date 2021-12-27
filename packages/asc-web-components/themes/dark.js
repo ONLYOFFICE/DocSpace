@@ -2120,6 +2120,17 @@ const Dark = {
       },
     },
   },
+
+  filesBadges: {
+    iconColor: "#858585",
+    hoverIconColor: "#eeeeee",
+
+    color: "#333333",
+    backgroundColor: "#858585",
+
+    badgeColor: "#333333",
+    badgeBackgroundColor: "#F58D31",
+  },
 };
 
 export default Dark;
