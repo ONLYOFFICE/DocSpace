@@ -1,0 +1,11 @@
+﻿{
+    "FileLocation": "Άνοιγμα τοποθεσίας αρχείου",
+    "FileName": "Όνομα αρχείου",
+    "FolderForSave": "Φάκελος για αποθήκευση",
+    "OpenSavedDocument": "Άνοιγμα αποθηκευμένου εγγράφου σε νέα καρτέλα",
+    "SelectFilesType": "Επιλέξτε αρχεία τύπου: {{fileType}}",
+    "ImageFileType": "Εικόνες",
+    "DocumentsFileType": "Έγγραφα",
+    "MailMergeFileType": "Επιλέξτε το αρχείο σε μορφή XLSX",
+    "SelectFileTitle": "Επιλογή Πηγής Δεδομένων"
+}

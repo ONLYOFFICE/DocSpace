@@ -87,9 +87,7 @@ export default inject(
     const { filter, isLoading } = filesStore;
     const { expandedPanelKeys } = treeFoldersStore;
     return {
-      expandedKeys: expandedPanelKeys
-        ? expandedPanelKeys
-        : selectedFolderStore.pathParts,
+      expandedKeys: expandedPanelKeys ? expandedPanelKeys : null,
       filter,
       isLoading,
     };

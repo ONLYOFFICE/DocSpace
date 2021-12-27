@@ -458,6 +458,7 @@ const Dark = {
     content: {
       backgroundColor: white,
       padding: "0 16px 16px",
+      modalBorderRadius: "6px",
 
       heading: {
         maxWidth: "500px",
@@ -472,13 +473,13 @@ const Dark = {
     },
 
     closeButton: {
-      width: "17px",
-      height: "17px",
-      minWidth: "17px",
-      minHeight: "17px",
+      width: "14px",
+      height: "14px",
+      minWidth: "14px",
+      minHeight: "14px",
 
       right: "16px",
-      top: "19px",
+      top: "13px",
       hoverColor: grayMain,
     },
   },
@@ -719,10 +720,10 @@ const Dark = {
     span: { maxWidth: "300px" },
 
     caret: {
-      width: "8px",
-      minWidth: "8px",
-      height: "8px",
-      minHeight: "8px",
+      width: "5px",
+      minWidth: "5px",
+      height: "4px",
+      minHeight: "4px",
       marginLeft: "5px",
       marginTop: "-4px",
       right: "6px",
