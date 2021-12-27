@@ -208,9 +208,9 @@ namespace ASC.Files.Core.Security
             return await CanDeleteAsync(entry, AuthContext.CurrentAccount.ID);
         }
 
-        public async Task<IEnumerable<Guid>> WhoCanReadAsync<T>(FileEntry<T> entry)
+        public Task<IEnumerable<Guid>> WhoCanReadAsync<T>(FileEntry<T> entry)
         {
-            return await WhoCanAsync(entry, FilesSecurityActions.Read);
+            return WhoCanAsync(entry, FilesSecurityActions.Read);
         }
 
         private async Task<IEnumerable<Guid>> WhoCanAsync<T>(FileEntry<T> entry, FilesSecurityActions action)
@@ -292,7 +292,7 @@ namespace ASC.Files.Core.Security
                         var root = await folderDao.GetFolderAsync(entry.RootFolderId);
                         if (root != null)
                         {
-                            var path = folderDao.GetBunchObjectIDAsync(root.ID).Result;
+                            var path = await folderDao.GetBunchObjectIDAsync(root.ID);
 
                             var adapter = FilesIntegration.GetFileSecurity(path);
 

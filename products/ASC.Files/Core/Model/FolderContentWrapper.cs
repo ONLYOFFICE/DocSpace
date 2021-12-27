@@ -242,11 +242,16 @@ namespace ASC.Api.Documents
             return result;
 
 
-            async Task<List<Tuple<FileEntry<T1>, bool>>> GetFoldersIntWithRightsAsync<T1>()
+            async ValueTask<List<Tuple<FileEntry<T1>, bool>>> GetFoldersIntWithRightsAsync<T1>()
             {
-                var folderDao = DaoFactory.GetFolderDao<T1>();
-                var folders = await folderDao.GetFoldersAsync(folderItems.Entries.OfType<FileEntry<T1>>().Select(r => r.FolderID).Distinct()).ToListAsync();
-                return await FileSecurity.CanReadAsync(folders);
+                var ids = folderItems.Entries.OfType<FileEntry<T1>>().Select(r => r.FolderID).Distinct();
+                if (ids.Any())
+                {
+                    var folderDao = DaoFactory.GetFolderDao<T1>();
+                    var folders = await folderDao.GetFoldersAsync(ids).ToListAsync();
+                    return await FileSecurity.CanReadAsync(folders);
+                }
+                return new List<Tuple<FileEntry<T1>, bool>>();
             }
         }
     }
