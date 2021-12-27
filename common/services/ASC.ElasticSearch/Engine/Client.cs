@@ -29,7 +29,6 @@ using System.Text;
 
 using ASC.Common;
 using ASC.Common.Logging;
-using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.ElasticSearch.Service;
@@ -54,11 +53,11 @@ namespace ASC.ElasticSearch
         private CoreConfiguration CoreConfiguration { get; }
         private Settings Settings { get; }
 
-        public Client(IOptionsMonitor<ILog> option, CoreConfiguration coreConfiguration, ConfigurationExtension configurationExtension)
+        public Client(IOptionsMonitor<ILog> option, CoreConfiguration coreConfiguration, SettingsHelper settingsHelper)
         {
             Log = option.Get("ASC.Indexer");
             CoreConfiguration = coreConfiguration;
-            Settings = Settings.GetInstance(configurationExtension);
+            Settings = settingsHelper.Settings;
         }
 
         public ElasticClient Instance
