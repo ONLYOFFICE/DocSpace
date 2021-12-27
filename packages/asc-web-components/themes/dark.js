@@ -2140,6 +2140,11 @@ const Dark = {
     fill: "#858585",
     hoverFill: "#eeeeee",
   },
+
+  filesIcons: {
+    fill: "#858585",
+    hoverFill: "#eeeeee",
+  },
 };
 
 export default Dark;

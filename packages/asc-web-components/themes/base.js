@@ -2139,6 +2139,11 @@ const Base = {
     fill: "#a3a9ae",
     hoverFill: "#657077",
   },
+
+  filesIcons: {
+    fill: "#3b72a7",
+    hoverFill: "#3b72a7",
+  },
 };
 
 export default Base;
