@@ -1,20 +1,15 @@
-import React from "react";
-import IconButton from "@appserver/components/icon-button";
-import Backdrop from "@appserver/components/backdrop";
-import Heading from "@appserver/components/heading";
-import Aside from "@appserver/components/aside";
-import { withTranslation } from "react-i18next";
-import SharingPanel from "../SharingPanel";
-import {
-  StyledAsidePanel,
-  StyledContent,
-  StyledHeaderContent,
-  StyledBody,
-} from "../StyledPanels";
-import FileList from "./FileList";
-import { inject, observer } from "mobx-react";
-import Loaders from "@appserver/common/components/Loaders";
-import withLoader from "../../../HOCs/withLoader";
+import React from 'react';
+import IconButton from '@appserver/components/icon-button';
+import Backdrop from '@appserver/components/backdrop';
+import Heading from '@appserver/components/heading';
+import Aside from '@appserver/components/aside';
+import { withTranslation } from 'react-i18next';
+import SharingPanel from '../SharingPanel';
+import { StyledAsidePanel, StyledContent, StyledHeaderContent, StyledBody } from '../StyledPanels';
+import FileList from './FileList';
+import { inject, observer } from 'mobx-react';
+import Loaders from '@appserver/common/components/Loaders';
+import withLoader from '../../../HOCs/withLoader';
 
 class UploadPanelComponent extends React.Component {
   constructor(props) {
@@ -47,14 +42,14 @@ class UploadPanelComponent extends React.Component {
     }
   };
   componentDidMount() {
-    document.addEventListener("keyup", this.onKeyPress);
+    document.addEventListener('keyup', this.onKeyPress);
   }
   componentWillUnmount() {
-    document.removeEventListener("keyup", this.onKeyPress);
+    document.removeEventListener('keyup', this.onKeyPress);
   }
 
   onKeyPress = (event) => {
-    if (event.key === "Esc" || event.key === "Escape") {
+    if (event.key === 'Esc' || event.key === 'Escape') {
       this.onClose();
     }
   };
@@ -74,6 +69,7 @@ class UploadPanelComponent extends React.Component {
       uploadDataFiles,
       cancelUpload,
       cancelConversion,
+      theme,
     } = this.props;
 
     const visible = uploadPanelVisible;
@@ -81,21 +77,12 @@ class UploadPanelComponent extends React.Component {
 
     return (
       <StyledAsidePanel visible={visible}>
-        <Backdrop
-          onClick={this.onClose}
-          visible={visible}
-          zIndex={zIndex}
-          isAside={true}
-        />
-        <Aside
-          className="header_aside-panel"
-          visible={visible}
-          withoutBodyScroll
-        >
+        <Backdrop onClick={this.onClose} visible={visible} zIndex={zIndex} isAside={true} />
+        <Aside className="header_aside-panel" visible={visible} withoutBodyScroll>
           <StyledContent>
             <StyledHeaderContent className="upload-panel_header-content">
               <Heading className="upload_panel-header" size="medium" truncate>
-                {t("Uploads")}
+                {t('Uploads')}
               </Heading>
               <div className="upload_panel-icons-container">
                 <div className="upload_panel-remove-icon">
@@ -103,7 +90,7 @@ class UploadPanelComponent extends React.Component {
                     <IconButton
                       size="20"
                       iconName="images/clear.active.react.svg"
-                      color="#A3A9AE"
+                      // color={theme.filesPanels.upload.color}
                       isClickable
                       onClick={this.clearUploadPanel}
                     />
@@ -111,7 +98,7 @@ class UploadPanelComponent extends React.Component {
                     <IconButton
                       size="20"
                       iconName="images/button.cancel.react.svg"
-                      color={"#A3A9AE"}
+                      // color={theme.filesPanels.upload.color}
                       isClickable
                       onClick={uploaded ? cancelConversion : cancelUpload}
                     />
@@ -129,8 +116,7 @@ class UploadPanelComponent extends React.Component {
             <StyledBody
               stype="mediumBlack"
               className="upload-panel_body"
-              style={{ height: `calc(100vh - 64px)` }}
-            >
+              style={{ height: `calc(100vh - 64px)` }}>
               <FileList />
             </StyledBody>
           </StyledContent>
@@ -141,11 +127,11 @@ class UploadPanelComponent extends React.Component {
   }
 }
 
-const UploadPanel = withTranslation("UploadPanel")(
-  withLoader(UploadPanelComponent)(<Loaders.DialogAsideLoader isPanel />)
+const UploadPanel = withTranslation('UploadPanel')(
+  withLoader(UploadPanelComponent)(<Loaders.DialogAsideLoader isPanel />),
 );
 
-export default inject(({ /* dialogsStore, */ uploadDataStore }) => {
+export default inject(({ /* dialogsStore, */ auth, uploadDataStore }) => {
   //const { sharingPanelVisible } = dialogsStore;
 
   const {
@@ -176,5 +162,7 @@ export default inject(({ /* dialogsStore, */ uploadDataStore }) => {
     clearUploadedFiles,
     uploadDataFiles: files,
     clearPrimaryProgressData,
+
+    theme: auth.settingsStore.theme,
   };
 })(observer(UploadPanel));

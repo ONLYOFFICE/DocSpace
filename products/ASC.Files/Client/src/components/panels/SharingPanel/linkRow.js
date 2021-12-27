@@ -1,20 +1,23 @@
-import React from "react";
-import styled from "styled-components";
-import Row from "@appserver/components/row";
-import LinkWithDropdown from "@appserver/components/link-with-dropdown";
-import ToggleButton from "@appserver/components/toggle-button";
-import { StyledLinkRow } from "../StyledPanels";
-import AccessComboBox from "./AccessComboBox";
-import { ShareAccessRights } from "@appserver/common/constants";
-import AccessEditIcon from "../../../../../../../public/images/access.edit.react.svg";
-import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import React from 'react';
+import styled from 'styled-components';
+import Row from '@appserver/components/row';
+import LinkWithDropdown from '@appserver/components/link-with-dropdown';
+import ToggleButton from '@appserver/components/toggle-button';
+import { StyledLinkRow } from '../StyledPanels';
+import AccessComboBox from './AccessComboBox';
+import { ShareAccessRights } from '@appserver/common/constants';
+import AccessEditIcon from '../../../../../../../public/images/access.edit.react.svg';
+import commonIconsStyles from '@appserver/components/utils/common-icons-style';
+import { Base } from '@appserver/components/themes';
 
 const StyledAccessEditIcon = styled(AccessEditIcon)`
   ${commonIconsStyles}
   path {
-    fill: "#A3A9AE";
+    fill: ${(props) => props.theme.filesPanels.sharing.fill};
   }
 `;
+
+StyledAccessEditIcon.defaultProps = { theme: Base };
 
 class LinkRow extends React.Component {
   onToggleButtonChange = () => {
@@ -34,6 +37,7 @@ class LinkRow extends React.Component {
       externalAccessOptions,
       onChangeItemAccess,
       isLoading,
+      theme,
     } = this.props;
 
     const isChecked = item.access !== ShareAccessRights.DenyAccess;
@@ -44,11 +48,10 @@ class LinkRow extends React.Component {
       <StyledLinkRow
         withToggle={withToggle}
         isDisabled={isDisabled}
-        className="link-row__container"
-      >
+        className="link-row__container">
         <Row
           className="link-row"
-          key={`${linkText.replace(" ", "-")}-key_${index}`}
+          key={`${linkText.replace(' ', '-')}-key_${index}`}
           element={
             withToggle ? (
               <AccessComboBox
@@ -62,24 +65,19 @@ class LinkRow extends React.Component {
                 disableLink={disableLink}
               />
             ) : (
-              <StyledAccessEditIcon
-                size="medium"
-                className="sharing_panel-owner-icon"
-              />
+              <StyledAccessEditIcon size="medium" className="sharing_panel-owner-icon" />
             )
           }
-          contextButtonSpacerWidth="0px"
-        >
+          contextButtonSpacerWidth="0px">
           <>
             <LinkWithDropdown
               className="sharing_panel-link"
-              color="#333"
+              color={theme.filesPanels.sharing.dropdownColor}
               dropdownType="alwaysDashed"
               data={options}
               fontSize="14px"
               fontWeight={600}
-              isDisabled={isDisabled}
-            >
+              isDisabled={isDisabled}>
               {linkText}
             </LinkWithDropdown>
             {withToggle && (

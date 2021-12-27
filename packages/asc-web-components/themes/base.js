@@ -2015,6 +2015,110 @@ const Base = {
       linkColor: "#116d9d",
     },
   },
+
+  filesPanels: {
+    color: "#333",
+
+    aside: {
+      backgroundColor: "#fff",
+    },
+
+    addGroups: {
+      iconColor: "#A3A9AE",
+      arrowColor: "#000000",
+    },
+
+    addUsers: {
+      iconColor: "#A3A9AE",
+      arrowColor: "#000000",
+    },
+
+    changeOwner: {
+      iconColor: "#A3A9AE",
+      arrowColor: "#000000",
+    },
+
+    embedding: {
+      textAreaColor: "#AEAEAE",
+      iconColor: "#333",
+      color: "#A3A9AE",
+    },
+
+    versionHistory: {
+      borderTop: "1px solid #eceef1",
+    },
+
+    content: {
+      backgroundColor: "#fff",
+      fill: "#A3A9AE",
+      disabledFill: "#D0D5DA",
+    },
+
+    body: {
+      backgroundColor: "#eceef1",
+      fill: "#333",
+    },
+
+    footer: {
+      backgroundColor: "#fff",
+      borderTop: "1px solid #eceef1",
+    },
+
+    linkRow: {
+      backgroundColor: "#f8f9f9",
+      fill: "#A3A9AE",
+      disabledFill: "#D0D5DA",
+    },
+
+    selectFolder: {
+      color: "#a3a9ae",
+    },
+
+    selectFile: {
+      borderBottom: "1px solid #eceef1",
+      borderRight: "1px solid #dee2e6",
+    },
+
+    filesList: {
+      color: "#a3a9ae",
+      backgroundColor: "#eceef1",
+      borderBottom: "1px solid #eceef1",
+    },
+
+    modalRow: {
+      backgroundColor: "#eceef1",
+      fill: "#A3A9AE",
+      disabledFill: "#D0D5DA",
+    },
+
+    sharing: {
+      color: "#a3a9ae",
+      fill: "#A3A9AE",
+      loadingFill: "#D0D5DA",
+
+      dropdownColor: "#333",
+
+      loader: {
+        foregroundColor: "#f8f9f9",
+        backgroundColor: "#f8f9f9",
+      },
+    },
+
+    upload: {
+      color: "#a3a9ae",
+      tooltipColor: "#f8f7bf",
+
+      shareButton: {
+        color: "#a3a9ae",
+        sharedColor: "#657077",
+      },
+
+      loadingButton: {
+        color: blueMain,
+        background: "#fff",
+      },
+    },
+  },
 };
 
 export default Base;

@@ -1,36 +1,24 @@
-import React from "react";
-import PeopleSelector from "people/PeopleSelector";
-import Aside from "@appserver/components/aside";
-import Backdrop from "@appserver/components/backdrop";
-import Heading from "@appserver/components/heading";
-import IconButton from "@appserver/components/icon-button";
+import React from 'react';
+import PeopleSelector from 'people/PeopleSelector';
+import Aside from '@appserver/components/aside';
+import Backdrop from '@appserver/components/backdrop';
+import Heading from '@appserver/components/heading';
+import IconButton from '@appserver/components/icon-button';
 import {
   StyledAddUsersPanelPanel,
   StyledContent,
   StyledHeaderContent,
   StyledBody,
-} from "../StyledPanels";
+} from '../StyledPanels';
 
 const OwnerSelector = (props) => {
-  const {
-    ownerLabel,
-    isOpen,
-    groupsCaption,
-    onOwnerSelect,
-    onClose,
-    onClosePanel,
-  } = props;
+  const { ownerLabel, isOpen, groupsCaption, onOwnerSelect, onClose, onClosePanel, theme } = props;
 
   const zIndex = 310;
 
   return (
     <StyledAddUsersPanelPanel visible={isOpen}>
-      <Backdrop
-        onClick={onClose}
-        visible={isOpen}
-        zIndex={zIndex}
-        isAside={true}
-      />
+      <Backdrop onClick={onClose} visible={isOpen} zIndex={zIndex} isAside={true} />
       <Aside className="header_aside-panel">
         <StyledContent>
           <StyledHeaderContent>
@@ -38,13 +26,9 @@ const OwnerSelector = (props) => {
               size="16"
               iconName="/static/images/arrow.path.react.svg"
               onClick={onClosePanel}
-              color="#A3A9AE"
+              // color={theme.filesPanels.changeOwner.iconColor}
             />
-            <Heading
-              className="header_aside-panel-header"
-              size="medium"
-              truncate
-            >
+            <Heading className="header_aside-panel-header" size="medium" truncate>
               {ownerLabel}
             </Heading>
           </StyledHeaderContent>

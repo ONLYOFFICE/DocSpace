@@ -1,41 +1,37 @@
-import React from "react";
-import { inject, observer, Provider as MobxProvider } from "mobx-react";
-import { I18nextProvider } from "react-i18next";
-import { withTranslation } from "react-i18next";
-import PropTypes from "prop-types";
-import throttle from "lodash/throttle";
+import React from 'react';
+import { inject, observer, Provider as MobxProvider } from 'mobx-react';
+import { I18nextProvider } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
+import throttle from 'lodash/throttle';
 
-import { getCommonThirdPartyList } from "@appserver/common/api/settings";
+import { getCommonThirdPartyList } from '@appserver/common/api/settings';
 import {
   getCommonFolderList,
   getFolder,
   getFolderPath,
   getFoldersTree,
-} from "@appserver/common/api/files";
+} from '@appserver/common/api/files';
 
-import SelectFolderInput from "../SelectFolderInput";
-import i18n from "./i18n";
-import SelectFolderDialogAsideView from "./AsideView";
-import SelectFolderDialogModalView from "./ModalView";
-import stores from "../../../store/index";
-import utils from "@appserver/components/utils";
-import { FolderType } from "@appserver/common/constants";
-import { isArrayEqual } from "@appserver/components/utils/array";
-import store from "studio/store";
-import toastr from "studio/toastr";
+import SelectFolderInput from '../SelectFolderInput';
+import i18n from './i18n';
+import SelectFolderDialogAsideView from './AsideView';
+import SelectFolderDialogModalView from './ModalView';
+import stores from '../../../store/index';
+import utils from '@appserver/components/utils';
+import { FolderType } from '@appserver/common/constants';
+import { isArrayEqual } from '@appserver/components/utils/array';
+import store from 'studio/store';
+import toastr from 'studio/toastr';
 
 const { auth: authStore } = store;
 
 const { desktop } = utils.device;
 
-let pathName = "";
+let pathName = '';
 let folderList;
 
-const exceptSortedByTagsFolders = [
-  FolderType.Recent,
-  FolderType.TRASH,
-  FolderType.Favorites,
-];
+const exceptSortedByTagsFolders = [FolderType.Recent, FolderType.TRASH, FolderType.Favorites];
 
 const exceptTrashFolder = [FolderType.TRASH];
 class SelectFolderModalDialog extends React.Component {
@@ -48,13 +44,13 @@ class SelectFolderModalDialog extends React.Component {
       isLoading: false,
       isAvailable: true,
       certainFolders: true,
-      folderId: "",
+      folderId: '',
       displayType: displayType || this.getDisplayType(),
       isSetFolderImmediately: isNeedFolder,
       canCreate: true,
     };
     this.throttledResize = throttle(this.setDisplayType, 300);
-    this.folderTitle = "";
+    this.folderTitle = '';
   }
 
   componentDidMount() {
@@ -62,7 +58,7 @@ class SelectFolderModalDialog extends React.Component {
 
     authStore.init(true); // it will work if authStore is not initialized
 
-    !displayType && window.addEventListener("resize", this.throttledResize);
+    !displayType && window.addEventListener('resize', this.throttledResize);
     this.setState({ isLoadingData: true }, function () {
       onSetLoadingData && onSetLoadingData(true);
       onSetLoadingInput && onSetLoadingInput(true);
@@ -89,33 +85,27 @@ class SelectFolderModalDialog extends React.Component {
       selectedFolderId,
     } = this.props;
     switch (foldersType) {
-      case "exceptSortedByTags":
+      case 'exceptSortedByTags':
         try {
           const foldersTree = await getFoldersTree();
-          folderList = SelectFolderDialog.convertFolders(
-            foldersTree,
-            exceptSortedByTagsFolders
-          );
+          folderList = SelectFolderDialog.convertFolders(foldersTree, exceptSortedByTagsFolders);
           this.setBaseSettings();
         } catch (err) {
-          console.error("error", err);
+          console.error('error', err);
           this.loadersCompletes();
         }
         break;
-      case "exceptTrashFolder":
+      case 'exceptTrashFolder':
         try {
           const foldersTree = await getFoldersTree();
-          folderList = SelectFolderDialog.convertFolders(
-            foldersTree,
-            exceptTrashFolder
-          );
+          folderList = SelectFolderDialog.convertFolders(foldersTree, exceptTrashFolder);
           this.setBaseSettings();
         } catch (err) {
           console.error(err);
           this.loadersCompletes();
         }
         break;
-      case "common":
+      case 'common':
         try {
           folderList = await SelectFolderDialog.getCommonFolders();
           folderPath.length === 0 &&
@@ -124,9 +114,7 @@ class SelectFolderModalDialog extends React.Component {
             onSelectFolder(`${id ? id : folderList[0].id}`);
 
           this.setState({
-            folderId: `${
-              selectedFolderId ? selectedFolderId : id ? id : folderList[0].id
-            }`,
+            folderId: `${selectedFolderId ? selectedFolderId : id ? id : folderList[0].id}`,
           });
 
           !id &&
@@ -142,7 +130,7 @@ class SelectFolderModalDialog extends React.Component {
 
         break;
 
-      case "third-party":
+      case 'third-party':
         try {
           folderList = await SelectFolderDialog.getCommonThirdPartyList();
 
@@ -172,13 +160,7 @@ class SelectFolderModalDialog extends React.Component {
   };
   setBaseSettings = async () => {
     const { isSetFolderImmediately } = this.state;
-    const {
-      onSelectFolder,
-      onSetBaseFolderPath,
-      id,
-      selectedFolderId,
-      showButtons,
-    } = this.props;
+    const { onSelectFolder, onSetBaseFolderPath, id, selectedFolderId, showButtons } = this.props;
 
     if (folderList.length === 0) {
       this.setState({ isAvailable: false });
@@ -192,27 +174,18 @@ class SelectFolderModalDialog extends React.Component {
     isSetFolderImmediately &&
       !selectedFolderId &&
       onSelectFolder &&
-      onSelectFolder(
-        `${selectedFolderId ? selectedFolderId : id ? id : folderList[0].id}`
-      );
+      onSelectFolder(`${selectedFolderId ? selectedFolderId : id ? id : folderList[0].id}`);
 
     isSetFolderImmediately &&
       this.setState({
-        folderId: `${
-          selectedFolderId ? selectedFolderId : id ? id : folderList[0].id
-        }`,
+        folderId: `${selectedFolderId ? selectedFolderId : id ? id : folderList[0].id}`,
       });
 
     if (onSetBaseFolderPath) {
       try {
-        this.folderTitle = await SelectFolderDialog.getFolderPath(
-          id ? id : folderList[0].id
-        );
+        this.folderTitle = await SelectFolderDialog.getFolderPath(id ? id : folderList[0].id);
 
-        !id &&
-          !selectedFolderId &&
-          isSetFolderImmediately &&
-          onSetBaseFolderPath(this.folderTitle);
+        !id && !selectedFolderId && isSetFolderImmediately && onSetBaseFolderPath(this.folderTitle);
       } catch (err) {
         console.error(err);
       }
@@ -239,9 +212,7 @@ class SelectFolderModalDialog extends React.Component {
     }
 
     if (selectedFolderId) {
-      onSetBaseFolderPath
-        ? this.setBaseFolderPath(selectedFolderId)
-        : this.loadersCompletes();
+      onSetBaseFolderPath ? this.setBaseFolderPath(selectedFolderId) : this.loadersCompletes();
     }
 
     if (id && !selectedFolderId) {
@@ -258,7 +229,7 @@ class SelectFolderModalDialog extends React.Component {
     SelectFolderDialog.getFolderPath(selectedFolderId)
       .then((folderPath) => (this.folderTitle = folderPath))
       .then(() => onSetBaseFolderPath(this.folderTitle))
-      .catch((error) => console.log("error", error))
+      .catch((error) => console.log('error', error))
       .finally(() => {
         this.loadersCompletes();
       });
@@ -297,13 +268,13 @@ class SelectFolderModalDialog extends React.Component {
       .then((data) => {
         this.setFolderObjectToTree(id, data);
       })
-      .catch((error) => console.log("error", error));
+      .catch((error) => console.log('error', error));
   };
 
   setFolderObjectToTree = (id, data) => {
     const { setSelectedNode, setSelectedFolder } = this.props;
 
-    setSelectedNode([id + ""]);
+    setSelectedNode([id + '']);
 
     const newPathParts = SelectFolderDialog.convertPathParts(data.pathParts);
     setSelectedFolder({
@@ -325,7 +296,7 @@ class SelectFolderModalDialog extends React.Component {
     } = this.props;
     if (this.throttledResize) {
       this.throttledResize && this.throttledResize.cancel();
-      window.removeEventListener("resize", this.throttledResize);
+      window.removeEventListener('resize', this.throttledResize);
     }
 
     if (resetTreeFolders && !dialogWithFiles) {
@@ -334,8 +305,7 @@ class SelectFolderModalDialog extends React.Component {
     }
   }
   getDisplayType = () => {
-    const displayType =
-      window.innerWidth < desktop.match(/\d+/)[0] ? "aside" : "modal";
+    const displayType = window.innerWidth < desktop.match(/\d+/)[0] ? 'aside' : 'modal';
 
     return displayType;
   };
@@ -417,6 +387,7 @@ class SelectFolderModalDialog extends React.Component {
   render() {
     const {
       t,
+      theme,
       isPanelVisible,
       zIndex,
       onClose,
@@ -439,8 +410,9 @@ class SelectFolderModalDialog extends React.Component {
       isLoading,
     } = this.state;
 
-    return displayType === "aside" ? (
+    return displayType === 'aside' ? (
       <SelectFolderDialogAsideView
+        theme={theme}
         t={t}
         isPanelVisible={isPanelVisible}
         zIndex={zIndex}
@@ -465,6 +437,7 @@ class SelectFolderModalDialog extends React.Component {
     ) : (
       <SelectFolderDialogModalView
         t={t}
+        theme={theme}
         isPanelVisible={isPanelVisible}
         zIndex={zIndex}
         onClose={onClose}
@@ -493,12 +466,12 @@ SelectFolderModalDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   isPanelVisible: PropTypes.bool.isRequired,
   foldersType: PropTypes.oneOf([
-    "common",
-    "third-party",
-    "exceptSortedByTags",
-    "exceptTrashFolder",
+    'common',
+    'third-party',
+    'exceptSortedByTags',
+    'exceptTrashFolder',
   ]),
-  displayType: PropTypes.oneOf(["aside", "modal"]),
+  displayType: PropTypes.oneOf(['aside', 'modal']),
   id: PropTypes.string,
   zIndex: PropTypes.number,
   withoutProvider: PropTypes.bool,
@@ -512,30 +485,22 @@ SelectFolderModalDialog.defaultProps = {
   isSetFolderImmediately: false,
   dialogWithFiles: false,
   isNeedArrowIcon: false,
-  id: "",
-  modalHeightContent: "325px",
-  asideHeightContent: "100%",
+  id: '',
+  modalHeightContent: '325px',
+  asideHeightContent: '100%',
   zIndex: 310,
   withoutProvider: false,
-  folderPath: "",
+  folderPath: '',
 };
 
 const SelectFolderDialogWrapper = inject(
-  ({
-    treeFoldersStore,
-    selectedFolderStore,
-    selectedFilesStore,
-    filesStore,
-  }) => {
+  ({ treeFoldersStore, selectedFolderStore, selectedFilesStore, filesStore, auth }) => {
     const { setSelectedNode, setExpandedPanelKeys } = treeFoldersStore;
     const { canCreate } = filesStore;
-    const {
-      setSelectedFolder,
-      id,
-      toDefault: setDefaultSelectedFolder,
-    } = selectedFolderStore;
+    const { setSelectedFolder, id, toDefault: setDefaultSelectedFolder } = selectedFolderStore;
     const { setFolderId, setFile } = selectedFilesStore;
     return {
+      theme: auth.settingsStore.theme,
       setSelectedFolder,
       setSelectedNode,
       canCreate,
@@ -545,14 +510,8 @@ const SelectFolderDialogWrapper = inject(
       setFolderId,
       setFile,
     };
-  }
-)(
-  observer(
-    withTranslation(["SelectFolder", "Common", "Translations"])(
-      SelectFolderModalDialog
-    )
-  )
-);
+  },
+)(observer(withTranslation(['SelectFolder', 'Common', 'Translations'])(SelectFolderModalDialog)));
 
 class SelectFolderDialog extends React.Component {
   static getCommonThirdPartyList = async () => {
@@ -574,7 +533,7 @@ class SelectFolderDialog extends React.Component {
       parentId: commonFolders.current.parentId,
       title: commonFolders.current.title,
       rootFolderType: +commonFolders.current.rootFolderType,
-      rootFolderName: "@common",
+      rootFolderName: '@common',
       folders: commonFolders.folders.map((folder) => {
         return {
           id: folder.id,
@@ -596,16 +555,14 @@ class SelectFolderDialog extends React.Component {
 
   static getFolderPath = async (folderId) => {
     const foldersArray = await getFolderPath(folderId);
-    const convertFoldersArray = SelectFolderInput.setFullFolderPath(
-      foldersArray
-    );
+    const convertFoldersArray = SelectFolderInput.setFullFolderPath(foldersArray);
 
     return convertFoldersArray;
   };
   static convertPathParts = (pathParts) => {
     let newPathParts = [];
     for (let i = 0; i < pathParts.length - 1; i++) {
-      if (typeof pathParts[i] === "number") {
+      if (typeof pathParts[i] === 'number') {
         newPathParts.push(String(pathParts[i]));
       } else {
         newPathParts.push(pathParts[i]);
@@ -617,8 +574,7 @@ class SelectFolderDialog extends React.Component {
     let newArray = [];
 
     for (let i = 0; i < folders.length; i++) {
-      !arrayOfExceptions.includes(folders[i].rootFolderType) &&
-        newArray.push(folders[i]);
+      !arrayOfExceptions.includes(folders[i].rootFolderType) && newArray.push(folders[i]);
     }
     return newArray;
   };

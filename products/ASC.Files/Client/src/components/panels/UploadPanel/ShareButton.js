@@ -1,15 +1,13 @@
-import React from "react";
-import IconButton from "@appserver/components/icon-button";
-import { inject, observer } from "mobx-react";
+import React from 'react';
+import IconButton from '@appserver/components/icon-button';
+import { inject, observer } from 'mobx-react';
 
 const ShareButton = (props) => {
   //console.log("Share button render");
-  const { uploadedFile } = props;
-  const isShared = uploadedFile[0].fileInfo
-    ? uploadedFile[0].fileInfo.shared
-    : false;
-  let color = "#A3A9AE";
-  if (isShared) color = "#657077";
+  const { uploadedFile, theme } = props;
+  const isShared = uploadedFile[0].fileInfo ? uploadedFile[0].fileInfo.shared : false;
+  let color = theme.filesPanels.upload.shareButton.color;
+  if (isShared) color = theme.filesPanels.upload.shareButton.sharedColor;
 
   const onOpenSharingPanel = () => {
     const { setSharingPanelVisible, selectUploadedFile, uploadedFile } = props;
@@ -30,7 +28,7 @@ const ShareButton = (props) => {
   );
 };
 
-export default inject(({ dialogsStore, uploadDataStore }, { uniqueId }) => {
+export default inject(({ auth, dialogsStore, uploadDataStore }, { uniqueId }) => {
   const { setSharingPanelVisible } = dialogsStore;
   const { selectUploadedFile, getUploadedFile } = uploadDataStore;
 
@@ -38,6 +36,8 @@ export default inject(({ dialogsStore, uploadDataStore }, { uniqueId }) => {
 
   return {
     uploadedFile,
+
+    theme: auth.settingsStore.theme,
 
     setSharingPanelVisible,
     selectUploadedFile,

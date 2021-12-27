@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import styled, { css, keyframes } from "styled-components";
-import globalColors from "@appserver/components/utils/globalColors";
+import React, { useState, useEffect } from 'react';
+import styled, { css, keyframes } from 'styled-components';
+import globalColors from '@appserver/components/utils/globalColors';
+import { Base } from '@appserver/components/themes';
 
-const backgroundColor = "none";
-const color = globalColors.blueMain;
+const backgroundColor = 'none';
 
 const StyledCircleWrap = styled.div`
   width: 16px;
@@ -52,7 +52,7 @@ const StyledCircle = styled.div`
 
   .circle__mask .circle__fill {
     clip: rect(0px, 8px, 16px, 0px);
-    background-color: ${color};
+    background-color: ${(props) => props.theme.filesPanels.upload.loadingButton.color};
   }
 
   .circle__mask.circle__full {
@@ -70,19 +70,23 @@ const StyledCircle = styled.div`
   }
 `;
 
+StyledCircleWrap.defaultProps = { theme: Base };
+
 const StyledLoadingButton = styled.div`
   width: 12px;
   height: 12px;
   border-radius: 50%;
   text-align: center;
   line-height: 12px;
-  background: #fff;
+  background: ${(props) => props.theme.filesPanels.upload.loadingButton.background};
   position: absolute;
   margin: 2px;
-  color: ${color};
+  color: ${(props) => props.theme.filesPanels.upload.loadingButton.color};
   font-size: 16px;
   font-weight: bold;
 `;
+
+StyledLoadingButton.defaultProps = { theme: Base };
 
 const LoadingButton = ({ id, className, style, ...rest }) => {
   const { percent, onClick, isConversion, inConversion } = rest;
@@ -101,17 +105,8 @@ const LoadingButton = ({ id, className, style, ...rest }) => {
   }, [isAnimation]);
 
   return (
-    <StyledCircleWrap
-      id={id}
-      className={className}
-      style={style}
-      onClick={onClick}
-    >
-      <StyledCircle
-        percent={percent}
-        inConversion={inConversion}
-        isAnimation={isAnimation}
-      >
+    <StyledCircleWrap id={id} className={className} style={style} onClick={onClick}>
+      <StyledCircle percent={percent} inConversion={inConversion} isAnimation={isAnimation}>
         <div className="circle__mask circle__full">
           <div className="circle__fill"></div>
         </div>

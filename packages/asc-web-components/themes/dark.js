@@ -216,7 +216,7 @@ const Dark = {
     arrowDropdown: {
       borderLeft: "4px solid transparent",
       borderRight: "4px solid transparent",
-      borderTop: "4px solid white",
+      borderTop: "4px solid #333333",
       right: "10px",
       top: "50%",
       width: "0",
@@ -2013,6 +2013,111 @@ const Dark = {
     linkColor: "#adadad",
     privateRoom: {
       linkColor: "#116d9d",
+    },
+  },
+
+  filesPanels: {
+    color: "#eeeeee",
+
+    aside: {
+      backgroundColor: "#333333",
+    },
+
+    addGroups: {
+      iconColor: "#A3A9AE",
+      arrowColor: "#000000",
+    },
+
+    addUsers: {
+      iconColor: "#A3A9AE",
+      arrowColor: "#000000",
+    },
+
+    changeOwner: {
+      iconColor: "#A3A9AE",
+      arrowColor: "#000000",
+    },
+
+    embedding: {
+      textAreaColor: "#858585",
+      iconColor: "#eeeeee",
+      color: "#A3A9AE",
+    },
+
+    versionHistory: {
+      borderTop: "1px solid #474747",
+    },
+
+    content: {
+      backgroundColor: "#333333",
+      fill: "#eeeeee",
+      disabledFill: "#5c5c5c",
+    },
+
+    body: {
+      backgroundColor: "#333333",
+      fill: "#eeeeee",
+    },
+
+    footer: {
+      backgroundColor: "#333333",
+      borderTop: "1px solid #474747",
+    },
+
+    linkRow: {
+      backgroundColor: "#333333",
+      fill: "#eeeeee",
+      disabledFill: "#5c5c5c",
+    },
+
+    selectFolder: {
+      color: "#a3a9ae",
+    },
+
+    selectFile: {
+      borderBottom: "1px solid #474747",
+      borderRight: "1px solid #474747",
+    },
+
+    filesList: {
+      color: "#eeeeee",
+      backgroundColor: "#333333",
+      borderBottom: "1px solid #474747",
+    },
+
+    modalRow: {
+      backgroundColor: "#333333",
+      fill: "#A3A9AE",
+      disabledFill: "#5c5c5c",
+    },
+
+    sharing: {
+      color: "#eeeeee",
+
+      fill: "#eeeeee",
+      loadingFill: "#eeeeee",
+
+      dropdownColor: "#eeeeee",
+
+      loader: {
+        foregroundColor: "#333333",
+        backgroundColor: "#333333",
+      },
+    },
+
+    upload: {
+      color: "#333333",
+      tooltipColor: "#F5E9BA",
+
+      shareButton: {
+        color: "#a3a9ae",
+        sharedColor: "#657077",
+      },
+
+      loadingButton: {
+        color: blueMain,
+        background: "#fff",
+      },
     },
   },
 };

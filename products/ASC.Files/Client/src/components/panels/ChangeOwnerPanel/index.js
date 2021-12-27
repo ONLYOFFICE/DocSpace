@@ -1,24 +1,24 @@
-import React from "react";
-import { withRouter } from "react-router";
-import Backdrop from "@appserver/components/backdrop";
-import Heading from "@appserver/components/heading";
-import Aside from "@appserver/components/aside";
-import Button from "@appserver/components/button";
-import Text from "@appserver/components/text";
-import Link from "@appserver/components/link";
-import { withTranslation } from "react-i18next";
-import toastr from "studio/toastr";
-import OwnerSelector from "./OwnerSelector";
+import React from 'react';
+import { withRouter } from 'react-router';
+import Backdrop from '@appserver/components/backdrop';
+import Heading from '@appserver/components/heading';
+import Aside from '@appserver/components/aside';
+import Button from '@appserver/components/button';
+import Text from '@appserver/components/text';
+import Link from '@appserver/components/link';
+import { withTranslation } from 'react-i18next';
+import toastr from 'studio/toastr';
+import OwnerSelector from './OwnerSelector';
 import {
   StyledAsidePanel,
   StyledContent,
   StyledFooter,
   StyledHeaderContent,
   StyledBody,
-} from "../StyledPanels";
-import { inject, observer } from "mobx-react";
-import Loaders from "@appserver/common/components/Loaders";
-import withLoader from "../../../HOCs/withLoader";
+} from '../StyledPanels';
+import { inject, observer } from 'mobx-react';
+import Loaders from '@appserver/common/components/Loaders';
+import withLoader from '../../../HOCs/withLoader';
 
 class ChangeOwnerComponent extends React.Component {
   constructor(props) {
@@ -30,13 +30,7 @@ class ChangeOwnerComponent extends React.Component {
 
   onOwnerChange = () => {
     const { owner } = this.state;
-    const {
-      selection,
-      setFolder,
-      setFile,
-      setIsLoading,
-      setFilesOwner,
-    } = this.props;
+    const { selection, setFolder, setFile, setIsLoading, setFilesOwner } = this.props;
     const folderIds = [];
     const fileIds = [];
     const selectedItem = selection[0];
@@ -75,7 +69,7 @@ class ChangeOwnerComponent extends React.Component {
   };
 
   render() {
-    const { visible, t, selection, groupsCaption, isLoading } = this.props;
+    const { visible, t, selection, groupsCaption, isLoading, theme } = this.props;
     const { showPeopleSelector, owner } = this.state;
 
     const ownerName = owner.displayName ? owner.displayName : owner.label;
@@ -86,17 +80,12 @@ class ChangeOwnerComponent extends React.Component {
 
     return (
       <StyledAsidePanel visible={visible}>
-        <Backdrop
-          onClick={this.onClose}
-          visible={visible}
-          zIndex={zIndex}
-          isAside
-        />
+        <Backdrop onClick={this.onClose} visible={visible} zIndex={zIndex} isAside />
         <Aside className="header_aside-panel">
           <StyledContent>
             <StyledHeaderContent>
               <Heading className="sharing_panel-header" size="medium" truncate>
-                {t("ChangeOwner", { fileName })}
+                {t('ChangeOwner', { fileName })}
               </Heading>
             </StyledHeaderContent>
             <StyledBody>
@@ -105,16 +94,15 @@ class ChangeOwnerComponent extends React.Component {
                   className="change-owner_owner-label"
                   isHovered
                   type="action"
-                  onClick={this.onShowPeopleSelector}
-                >
+                  onClick={this.onShowPeopleSelector}>
                   {ownerName}
                 </Link>
-                <Text>{t("ChangeOwnerDescription")}</Text>
+                <Text>{t('ChangeOwnerDescription')}</Text>
               </div>
             </StyledBody>
             <StyledFooter>
               <Button
-                label={t("Common:SaveButton")}
+                label={t('Common:SaveButton')}
                 size="medium"
                 scale
                 primary
@@ -126,6 +114,7 @@ class ChangeOwnerComponent extends React.Component {
         </Aside>
         {showPeopleSelector && (
           <OwnerSelector
+            theme={theme}
             ownerLabel={ownerName}
             isOpen={showPeopleSelector}
             groupsCaption={groupsCaption}
@@ -139,8 +128,8 @@ class ChangeOwnerComponent extends React.Component {
   }
 }
 
-const ChangeOwnerPanel = withTranslation(["ChangeOwnerPanel", "Common"])(
-  withLoader(ChangeOwnerComponent)(<Loaders.DialogAsideLoader isPanel />)
+const ChangeOwnerPanel = withTranslation(['ChangeOwnerPanel', 'Common'])(
+  withLoader(ChangeOwnerComponent)(<Loaders.DialogAsideLoader isPanel />),
 );
 
 export default inject(({ auth, filesStore, dialogsStore }) => {
@@ -158,6 +147,7 @@ export default inject(({ auth, filesStore, dialogsStore }) => {
 
   return {
     groupsCaption: auth.settingsStore.customNames.groupsCaption,
+    theme: auth.settingsStore.theme,
     selection: selection.length ? selection : [bufferSelection],
     isLoading,
     visible: ownerPanelVisible,

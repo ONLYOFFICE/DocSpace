@@ -1,21 +1,22 @@
-import React from "react";
-import PropTypes from "prop-types";
-import Backdrop from "@appserver/components/backdrop";
-import Heading from "@appserver/components/heading";
-import Aside from "@appserver/components/aside";
-import IconButton from "@appserver/components/icon-button";
-import { ShareAccessRights } from "@appserver/common/constants";
-import GroupSelector from "people/GroupSelector";
-import { withTranslation } from "react-i18next";
+import React from 'react';
+import { inject, observer } from 'mobx-react';
+import PropTypes from 'prop-types';
+import Backdrop from '@appserver/components/backdrop';
+import Heading from '@appserver/components/heading';
+import Aside from '@appserver/components/aside';
+import IconButton from '@appserver/components/icon-button';
+import { ShareAccessRights } from '@appserver/common/constants';
+import GroupSelector from 'people/GroupSelector';
+import { withTranslation } from 'react-i18next';
 import {
   StyledAddGroupsPanel,
   StyledContent,
   StyledHeaderContent,
   StyledBody,
-} from "../StyledPanels";
-import AccessComboBox from "../SharingPanel/AccessComboBox";
-import Loaders from "@appserver/common/components/Loaders";
-import withLoader from "../../../HOCs/withLoader";
+} from '../StyledPanels';
+import AccessComboBox from '../SharingPanel/AccessComboBox';
+import Loaders from '@appserver/common/components/Loaders';
+import withLoader from '../../../HOCs/withLoader';
 
 class AddGroupsPanelComponent extends React.Component {
   constructor(props) {
@@ -28,8 +29,7 @@ class AddGroupsPanelComponent extends React.Component {
     this.scrollRef = React.createRef();
   }
 
-  onPlusClick = () =>
-    this.setState({ showActionPanel: !this.state.showActionPanel });
+  onPlusClick = () => this.setState({ showActionPanel: !this.state.showActionPanel });
 
   onArrowClick = () => this.props.onClose();
 
@@ -63,7 +63,7 @@ class AddGroupsPanelComponent extends React.Component {
   };
 
   onKeyPress = (event) => {
-    if (event.key === "Esc" || event.key === "Escape") {
+    if (event.key === 'Esc' || event.key === 'Escape') {
       this.props.onClose();
     }
   };
@@ -76,13 +76,13 @@ class AddGroupsPanelComponent extends React.Component {
   //onPLusClick = () => console.log("onPlusClick");
 
   componentDidMount() {
-    const scroll = this.scrollRef.current.getElementsByClassName("scroll-body");
+    const scroll = this.scrollRef.current.getElementsByClassName('scroll-body');
     setTimeout(() => scroll[1] && scroll[1].focus(), 2000);
-    window.addEventListener("keyup", this.onKeyPress);
+    window.addEventListener('keyup', this.onKeyPress);
   }
 
   componentWillUnmount() {
-    window.removeEventListener("keyup", this.onKeyPress);
+    window.removeEventListener('keyup', this.onKeyPress);
   }
   // shouldComponentUpdate(nextProps, nextState) {
   //   const { showActionPanel, accessRight } = this.state;
@@ -104,7 +104,7 @@ class AddGroupsPanelComponent extends React.Component {
   // }
 
   render() {
-    const { t, visible, accessOptions } = this.props;
+    const { t, visible, accessOptions, theme } = this.props;
     const { accessRight } = this.state;
 
     const zIndex = 310;
@@ -112,12 +112,7 @@ class AddGroupsPanelComponent extends React.Component {
     //console.log("AddGroupsPanel render");
     return (
       <StyledAddGroupsPanel visible={visible}>
-        <Backdrop
-          onClick={this.onClosePanels}
-          visible={visible}
-          zIndex={zIndex}
-          isAside={true}
-        />
+        <Backdrop onClick={this.onClosePanels} visible={visible} zIndex={zIndex} isAside={true} />
         <Aside className="header_aside-panel">
           <StyledContent>
             <StyledHeaderContent>
@@ -125,14 +120,10 @@ class AddGroupsPanelComponent extends React.Component {
                 size="16"
                 iconName="/static/images/arrow.path.react.svg"
                 onClick={this.onArrowClick}
-                color="A3A9AE"
+                // color={theme.filesPanels.addGroups.iconColor}
               />
-              <Heading
-                className="header_aside-panel-header"
-                size="medium"
-                truncate
-              >
-                {t("AddGroupsForSharingButton")}
+              <Heading className="header_aside-panel-header" size="medium" truncate>
+                {t('AddGroupsForSharingButton')}
               </Heading>
               {/*<IconButton
                 size="16"
@@ -157,7 +148,7 @@ class AddGroupsPanelComponent extends React.Component {
                     directionX="right"
                     onAccessChange={this.onAccessChange}
                     accessOptions={accessOptions}
-                    arrowIconColor="#000000"
+                    arrowIconColor={theme.filesPanels.addGroups.arrowColor}
                   />
                 }
                 showCounter
@@ -176,6 +167,12 @@ AddGroupsPanelComponent.propTypes = {
   onClose: PropTypes.func,
 };
 
-export default withTranslation("SharingPanel")(
-  withLoader(AddGroupsPanelComponent)(<Loaders.DialogAsideLoader isPanel />)
+export default inject(({ auth }) => {
+  return { theme: auth.settingsStore.theme };
+})(
+  observer(
+    withTranslation('SharingPanel')(
+      withLoader(AddGroupsPanelComponent)(<Loaders.DialogAsideLoader isPanel />),
+    ),
+  ),
 );
