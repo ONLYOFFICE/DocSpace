@@ -225,10 +225,10 @@ namespace ASC.Files.Thirdparty.Dropbox
             return dropboxClient.Files.UploadAsync(path, WriteMode.Add.Instance, true, body: fileStream).Result;
         }
 
-        public async Task<FileMetadata> CreateFileAsync(Stream fileStream, string title, string parentPath)
+        public Task<FileMetadata> CreateFileAsync(Stream fileStream, string title, string parentPath)
         {
             var path = MakeDropboxPath(parentPath, title);
-            return await dropboxClient.Files.UploadAsync(path, WriteMode.Add.Instance, true, body: fileStream);
+            return dropboxClient.Files.UploadAsync(path, WriteMode.Add.Instance, true, body: fileStream);
         }
 
         public void DeleteItem(Metadata dropboxItem)
@@ -236,9 +236,9 @@ namespace ASC.Files.Thirdparty.Dropbox
             dropboxClient.Files.DeleteV2Async(dropboxItem.PathDisplay).Wait();
         }
 
-        public async Task DeleteItemAsync(Metadata dropboxItem)
+        public Task DeleteItemAsync(Metadata dropboxItem)
         {
-            await dropboxClient.Files.DeleteV2Async(dropboxItem.PathDisplay);
+            return dropboxClient.Files.DeleteV2Async(dropboxItem.PathDisplay);
         }
 
         public FolderMetadata MoveFolder(string dropboxFolderPath, string dropboxFolderPathTo, string folderName)
@@ -324,9 +324,9 @@ namespace ASC.Files.Thirdparty.Dropbox
             dropboxClient.Files.UploadSessionAppendV2Async(new UploadSessionCursor(dropboxSession, (ulong)offset), body: stream).Wait();
         }
 
-        public async Task TransferAsync(string dropboxSession, long offset, Stream stream)
+        public Task TransferAsync(string dropboxSession, long offset, Stream stream)
         {
-            await dropboxClient.Files.UploadSessionAppendV2Async(new UploadSessionCursor(dropboxSession, (ulong)offset), body: stream);
+            return dropboxClient.Files.UploadSessionAppendV2Async(new UploadSessionCursor(dropboxSession, (ulong)offset), body: stream);
         }
 
         public Metadata FinishResumableSession(string dropboxSession, string dropboxFolderPath, string fileName, long offset)
@@ -335,10 +335,10 @@ namespace ASC.Files.Thirdparty.Dropbox
             return FinishResumableSession(dropboxSession, dropboxFilePath, offset);
         }
 
-        public async Task<Metadata> FinishResumableSessionAsync(string dropboxSession, string dropboxFolderPath, string fileName, long offset)
+        public Task<Metadata> FinishResumableSessionAsync(string dropboxSession, string dropboxFolderPath, string fileName, long offset)
         {
             var dropboxFilePath = MakeDropboxPath(dropboxFolderPath, fileName);
-            return await FinishResumableSessionAsync(dropboxSession, dropboxFilePath, offset);
+            return FinishResumableSessionAsync(dropboxSession, dropboxFilePath, offset);
         }
 
         public Metadata FinishResumableSession(string dropboxSession, string dropboxFilePath, long offset)

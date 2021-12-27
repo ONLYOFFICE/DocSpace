@@ -293,9 +293,9 @@ namespace ASC.Files.Core.Data
             return query.ConvertAll(e => ToFolder(e));
         }
 
-        public async Task<int> SaveFolderAsync(Folder<int> folder)
+        public Task<int> SaveFolderAsync(Folder<int> folder)
         {
-            return await SaveFolderAsync(folder, null).ConfigureAwait(false);
+            return SaveFolderAsync(folder, null);
         }
 
         public async Task<int> SaveFolderAsync(Folder<int> folder, IDbContextTransaction transaction)
@@ -404,10 +404,10 @@ namespace ASC.Files.Core.Data
             return folder.ID;
         }
 
-        private async Task<bool> IsExistAsync(int folderId)
+        private Task<bool> IsExistAsync(int folderId)
         {
-            return await Query(FilesDbContext.Folders).AsNoTracking()
-                .AnyAsync(r => r.Id == folderId).ConfigureAwait(false);
+            return Query(FilesDbContext.Folders).AsNoTracking()
+                .AnyAsync(r => r.Id == folderId);
         }
 
         public async Task DeleteFolderAsync(int id)
@@ -623,16 +623,16 @@ namespace ASC.Files.Core.Data
             return moved;
         }
 
-        public async Task<IDictionary<int, string>> CanMoveOrCopyAsync<TTo>(int[] folderIds, TTo to)
+        public Task<IDictionary<int, string>> CanMoveOrCopyAsync<TTo>(int[] folderIds, TTo to)
         {
             if (to is int tId)
             {
-                return await CanMoveOrCopyAsync(folderIds, tId).ConfigureAwait(false);
+                return CanMoveOrCopyAsync(folderIds, tId);
             }
 
             if (to is string tsId)
             {
-                return await CanMoveOrCopyAsync(folderIds, tsId).ConfigureAwait(false);
+                return CanMoveOrCopyAsync(folderIds, tsId);
             }
 
             throw new NotImplementedException();
@@ -809,7 +809,7 @@ namespace ASC.Files.Core.Data
 
         #region Only for TMFolderDao
 
-        public async Task ReassignFoldersAsync(int[] folderIds, Guid newOwnerId)
+        public Task ReassignFoldersAsync(int[] folderIds, Guid newOwnerId)
         {
             var toUpdate = Query(FilesDbContext.Folders)
                 .Where(r => folderIds.Contains(r.Id));
@@ -819,7 +819,7 @@ namespace ASC.Files.Core.Data
                 f.CreateBy = newOwnerId;
             }
 
-            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+            return FilesDbContext.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Folder<int>>> SearchFoldersAsync(string text, bool bunch)
@@ -1018,49 +1018,49 @@ namespace ASC.Files.Core.Data
             return newFolderId;
         }
 
-        async Task<int> IFolderDao<int>.GetFolderIDProjectsAsync(bool createIfNotExists)
+        Task<int> IFolderDao<int>.GetFolderIDProjectsAsync(bool createIfNotExists)
         {
-            return await (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, projects, null, createIfNotExists).ConfigureAwait(false);
+            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, projects, null, createIfNotExists);
         }
 
-        public async Task<int> GetFolderIDTrashAsync(bool createIfNotExists, Guid? userId = null)
+        public Task<int> GetFolderIDTrashAsync(bool createIfNotExists, Guid? userId = null)
         {
-            return await (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, trash, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists).ConfigureAwait(false);
+            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, trash, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
         }
 
-        public async Task<int> GetFolderIDCommonAsync(bool createIfNotExists)
+        public Task<int> GetFolderIDCommonAsync(bool createIfNotExists)
         {
-            return await (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, common, null, createIfNotExists).ConfigureAwait(false);
+            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, common, null, createIfNotExists);
         }
 
-        public async Task<int> GetFolderIDUserAsync(bool createIfNotExists, Guid? userId = null)
+        public Task<int> GetFolderIDUserAsync(bool createIfNotExists, Guid? userId = null)
         {
-            return await (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, my, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists).ConfigureAwait(false);
+            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, my, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
         }
 
-        public async Task<int> GetFolderIDShareAsync(bool createIfNotExists)
+        public Task<int> GetFolderIDShareAsync(bool createIfNotExists)
         {
-            return await (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, share, null, createIfNotExists).ConfigureAwait(false);
+            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, share, null, createIfNotExists);
         }
 
-        public async Task<int> GetFolderIDRecentAsync(bool createIfNotExists)
+        public Task<int> GetFolderIDRecentAsync(bool createIfNotExists)
         {
-            return await (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, recent, null, createIfNotExists).ConfigureAwait(false);
+            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, recent, null, createIfNotExists);
         }
 
-        public async Task<int> GetFolderIDFavoritesAsync(bool createIfNotExists)
+        public Task<int> GetFolderIDFavoritesAsync(bool createIfNotExists)
         {
-            return await (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, favorites, null, createIfNotExists).ConfigureAwait(false);
+            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, favorites, null, createIfNotExists);
         }
 
-        public async Task<int> GetFolderIDTemplatesAsync(bool createIfNotExists)
+        public Task<int> GetFolderIDTemplatesAsync(bool createIfNotExists)
         {
-            return await (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, templates, null, createIfNotExists).ConfigureAwait(false);
+            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, templates, null, createIfNotExists);
         }
 
-        public async Task<int> GetFolderIDPrivacyAsync(bool createIfNotExists, Guid? userId = null)
+        public Task<int> GetFolderIDPrivacyAsync(bool createIfNotExists, Guid? userId = null)
         {
-            return await (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, privacy, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists).ConfigureAwait(false);
+            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, privacy, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
         }
 
 
@@ -1200,23 +1200,23 @@ namespace ASC.Files.Core.Data
             return (file, record);
         }
 
-        public async Task<string> GetBunchObjectIDAsync(int folderID)
+        public Task<string> GetBunchObjectIDAsync(int folderID)
         {
-            return await Query(FilesDbContext.BunchObjects)
+            return Query(FilesDbContext.BunchObjects)
                 .Where(r => r.LeftNode == (folderID).ToString())
                 .Select(r => r.RightNode)
                 .FirstOrDefaultAsync()
-                .ConfigureAwait(false);
+;
         }
 
-        public async Task<Dictionary<string, string>> GetBunchObjectIDsAsync(List<int> folderIDs)
+        public Task<Dictionary<string, string>> GetBunchObjectIDsAsync(List<int> folderIDs)
         {
             var folderSIds = folderIDs.Select(r => r.ToString()).ToList();
 
-            return await Query(FilesDbContext.BunchObjects)
+            return Query(FilesDbContext.BunchObjects)
                 .Where(r => folderSIds.Any(a => a == r.LeftNode))
                 .ToDictionaryAsync(r => r.LeftNode, r => r.RightNode)
-                .ConfigureAwait(false);
+;
         }
 
         public async Task<IEnumerable<(Folder<int>, SmallShareRecord)>> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to)

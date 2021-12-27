@@ -152,11 +152,11 @@ namespace ASC.Api.Documents
         }
 
         [Read("accessAsync/{fileId}")]
-        public async Task<IEnumerable<EncryptionKeyPair>> GetPublicKeysWithAccessAsync(string fileId)
+        public Task<IEnumerable<EncryptionKeyPair>> GetPublicKeysWithAccessAsync(string fileId)
         {
             if (!PrivacyRoomSettings.GetEnabled(SettingsManager)) throw new System.Security.SecurityException();
 
-            return await EncryptionKeyPairHelper.GetKeyPairAsync(fileId, FileStorageService);
+            return EncryptionKeyPairHelper.GetKeyPairAsync(fileId, FileStorageService);
         }
 
         [Read("access/{fileId:int}")]
@@ -168,11 +168,11 @@ namespace ASC.Api.Documents
         }
 
         [Read("accessAsync/{fileId:int}")]
-        public async Task<IEnumerable<EncryptionKeyPair>> GetPublicKeysWithAccessAsync(int fileId)
+        public Task<IEnumerable<EncryptionKeyPair>> GetPublicKeysWithAccessAsync(int fileId)
         {
             if (!PrivacyRoomSettings.GetEnabled(SettingsManager)) throw new System.Security.SecurityException();
 
-            return await EncryptionKeyPairHelper.GetKeyPairAsync(fileId, FileStorageServiceInt);
+            return EncryptionKeyPairHelper.GetKeyPairAsync(fileId, FileStorageServiceInt);
         }
 
 

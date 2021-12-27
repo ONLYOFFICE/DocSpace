@@ -73,14 +73,14 @@ namespace ASC.Files.Thirdparty.SharePoint
             FileDao = fileDao;
         }
 
-        public async Task InvalidateCacheAsync(string fileId)
+        public Task InvalidateCacheAsync(string fileId)
         {
-            await ProviderInfo.InvalidateStorageAsync().ConfigureAwait(false);
+            return ProviderInfo.InvalidateStorageAsync();
         }
 
-        public async Task<File<string>> GetFileAsync(string fileId)
+        public Task<File<string>> GetFileAsync(string fileId)
         {
-            return await GetFileAsync(fileId, 1).ConfigureAwait(false);
+            return GetFileAsync(fileId, 1);
         }
 
         public async Task<File<string>> GetFileAsync(string fileId, int fileVersion)
@@ -241,9 +241,9 @@ namespace ASC.Files.Thirdparty.SharePoint
             }
         }
 
-        public override async Task<Stream> GetFileStreamAsync(File<string> file)
+        public override Task<Stream> GetFileStreamAsync(File<string> file)
         {
-            return await GetFileStreamAsync(file, 0).ConfigureAwait(false);
+            return GetFileStreamAsync(file, 0);
         }
 
         public async Task<Stream> GetFileStreamAsync(File<string> file, long offset)
@@ -297,14 +297,14 @@ namespace ASC.Files.Thirdparty.SharePoint
             return null;
         }
 
-        public async Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
+        public Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
         {
-            return await SaveFileAsync(file, fileStream).ConfigureAwait(false);
+            return SaveFileAsync(file, fileStream);
         }
 
-        public async Task DeleteFileAsync(string fileId)
+        public Task DeleteFileAsync(string fileId)
         {
-            await ProviderInfo.DeleteFileAsync(fileId).ConfigureAwait(false);
+            return ProviderInfo.DeleteFileAsync(fileId);
         }
 
         public async Task<bool> IsExistAsync(string title, object folderId)

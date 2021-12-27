@@ -214,7 +214,7 @@ namespace ASC.Api.Documents
             return result;
         }
 
-        public async Task<FileWrapper<T>> GetAsync<T>(File<T> file, List<Tuple<FileEntry<T>, bool>> folders = null)
+        public async ValueTask<FileWrapper<T>> GetAsync<T>(File<T> file, List<Tuple<FileEntry<T>, bool>> folders = null)
         {
             var result = GetFileWrapper(file);
 

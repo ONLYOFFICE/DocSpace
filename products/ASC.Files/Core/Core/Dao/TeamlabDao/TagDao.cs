@@ -884,7 +884,7 @@ ctx.Tag
             }
         }
 
-        private async Task<Tag> ToTagAsync(TagLinkData r)
+        private async ValueTask<Tag> ToTagAsync(TagLinkData r)
         {
             var result = new Tag(r.Tag.Name, r.Tag.Flag, r.Tag.Owner, r.Link.TagCount)
             {

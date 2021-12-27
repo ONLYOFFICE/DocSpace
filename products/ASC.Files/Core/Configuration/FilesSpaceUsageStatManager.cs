@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Core;
@@ -111,7 +112,7 @@ namespace ASC.Web.Files
                     {
                         item.Name = FilesUCResource.CorporateFiles;
                         item.ImgUrl = PathProvider.GetImagePath("corporatefiles_big.png");
-                        item.Url = PathProvider.GetFolderUrlById(GlobalFolderHelper.FolderCommon);
+                        item.Url = PathProvider.GetFolderUrlById(GlobalFolderHelper.FolderCommonAsync.Result);
                     }
                     else
                     {

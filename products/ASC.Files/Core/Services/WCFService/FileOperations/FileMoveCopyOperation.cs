@@ -483,7 +483,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                             if (FolderDao.UseRecursiveOperation(folder.ID, toFolderId))
                             {
-                                await MoveOrCopyFilesAsync(scope, FileDao.GetFilesAsync(folder.ID).Result, newFolder, copy);
+                                await MoveOrCopyFilesAsync(scope, await FileDao.GetFilesAsync(folder.ID), newFolder, copy);
                                 await MoveOrCopyFoldersAsync(scope, await FolderDao.GetFoldersAsync(folder.ID).Select(f => f.ID).ToListAsync(), newFolder, copy);
 
                                 if (!copy)
@@ -492,7 +492,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                     {
                                         Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                                     }
-                                    else if (FolderDao.IsEmptyAsync(folder.ID).Result)
+                                    else if (await FolderDao.IsEmptyAsync(folder.ID))
                                     {
                                         await FolderDao.DeleteFolderAsync(folder.ID);
                                         if (ProcessedFolder(folderId))
@@ -925,7 +925,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                     if (file.RootFolderType == FolderType.TRASH && newFile.ThumbnailStatus == Thumbnail.NotRequired)
                                     {
                                         newFile.ThumbnailStatus = Thumbnail.Waiting;
-                                        fileDao.SaveThumbnailAsync(newFile, null).Wait();
+                                        await fileDao.SaveThumbnailAsync(newFile, null);
                                     }
 
 
@@ -977,9 +977,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                                     if (file.ThumbnailStatus == Thumbnail.Created)
                                     {
-                                        using (var thumbnail = FileDao.GetThumbnailAsync(file).Result)
+                                        using (var thumbnail = await FileDao.GetThumbnailAsync(file))
                                         {
-                                            fileDao.SaveThumbnailAsync(newFile, thumbnail).Wait();
+                                            await fileDao.SaveThumbnailAsync(newFile, thumbnail);
                                         }
                                         newFile.ThumbnailStatus = Thumbnail.Created;
                                     }

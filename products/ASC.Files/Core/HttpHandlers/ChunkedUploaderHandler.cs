@@ -159,7 +159,7 @@ namespace ASC.Web.Files.HttpHandlers
 
                     case ChunkedRequestType.Initiate:
                         var createdSession = FileUploader.InitiateUpload(request.FolderId, request.FileId, request.FileName, request.FileSize, request.Encrypted);
-                        await WriteSuccess(context, ChunkedUploadSessionHelper.ToResponseObject(createdSession, true));
+                        await WriteSuccess(context, await ChunkedUploadSessionHelper.ToResponseObjectAsync(createdSession, true));
                         return;
 
                     case ChunkedRequestType.Upload:
@@ -172,7 +172,7 @@ namespace ASC.Web.Files.HttpHandlers
                         }
                         else
                         {
-                            await WriteSuccess(context, ChunkedUploadSessionHelper.ToResponseObject(resumedSession));
+                            await WriteSuccess(context, await ChunkedUploadSessionHelper.ToResponseObjectAsync(resumedSession));
                         }
                         return;
 
@@ -222,21 +222,21 @@ namespace ASC.Web.Files.HttpHandlers
             return false;
         }
 
-        private static async Task WriteError(HttpContext context, string message)
+        private static Task WriteError(HttpContext context, string message)
         {
-            await WriteResponse(context, false, null, message, (int)HttpStatusCode.OK);
+            return WriteResponse(context, false, null, message, (int)HttpStatusCode.OK);
         }
 
-        private static async Task WriteSuccess(HttpContext context, object data, int statusCode = (int)HttpStatusCode.OK)
+        private static Task WriteSuccess(HttpContext context, object data, int statusCode = (int)HttpStatusCode.OK)
         {
-            await WriteResponse(context, true, data, string.Empty, statusCode);
+            return WriteResponse(context, true, data, string.Empty, statusCode);
         }
 
-        private static async Task WriteResponse(HttpContext context, bool success, object data, string message, int statusCode)
+        private static Task WriteResponse(HttpContext context, bool success, object data, string message, int statusCode)
         {
             context.Response.StatusCode = statusCode;
             context.Response.ContentType = "application/json";
-            await context.Response.WriteAsync(JsonConvert.SerializeObject(new { success, data, message }));
+            return context.Response.WriteAsync(JsonConvert.SerializeObject(new { success, data, message }));
         }
 
         private static object ToResponseObject<T>(File<T> file)

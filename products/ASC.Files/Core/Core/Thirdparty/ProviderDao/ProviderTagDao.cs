@@ -131,9 +131,9 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return TagDao.GetTagsAsync(entryID, entryType, tagType);
         }
 
-        public async Task<IDictionary<object, IEnumerable<Tag>>> GetTagsAsync(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<string>> fileEntries)
+        public Task<IDictionary<object, IEnumerable<Tag>>> GetTagsAsync(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<string>> fileEntries)
         {
-            return await TagDao.GetTagsAsync(subject, tagType, fileEntries).ConfigureAwait(false);
+            return TagDao.GetTagsAsync(subject, tagType, fileEntries);
         }
 
         #endregion

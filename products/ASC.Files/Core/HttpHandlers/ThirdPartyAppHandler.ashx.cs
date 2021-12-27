@@ -56,12 +56,12 @@ namespace ASC.Web.Files.HttpHandlers
             ServiceProvider = serviceProvider;
         }
 
-        public async Task Invoke(HttpContext context)
+        public Task Invoke(HttpContext context)
         {
             using var scope = ServiceProvider.CreateScope();
             var thirdPartyAppHandlerService = scope.ServiceProvider.GetService<ThirdPartyAppHandlerService>();
             thirdPartyAppHandlerService.Invoke(context);
-            await Next.Invoke(context);
+            return Next.Invoke(context);
         }
     }
 

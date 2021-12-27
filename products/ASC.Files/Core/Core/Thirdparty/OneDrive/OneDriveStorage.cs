@@ -215,7 +215,7 @@ namespace ASC.Files.Thirdparty.OneDrive
                 .Result;
         }
 
-        public async Task<Item> CreateFolderAsync(string title, string parentId)
+        public Task<Item> CreateFolderAsync(string title, string parentId)
         {
             var newFolderItem = new Item
             {
@@ -223,7 +223,7 @@ namespace ASC.Files.Thirdparty.OneDrive
                 Name = title
             };
 
-            return await GetItemRequest(parentId)
+            return GetItemRequest(parentId)
                 .Children
                 .Request()
                 .AddAsync(newFolderItem);
@@ -241,9 +241,9 @@ namespace ASC.Files.Thirdparty.OneDrive
                 .Result;
         }
 
-        public async Task<Item> CreateFileAsync(Stream fileStream, string title, string parentPath)
+        public Task<Item> CreateFileAsync(Stream fileStream, string title, string parentPath)
         {
-            return await OnedriveClient
+            return OnedriveClient
                 .Drive
                 .Root
                 .ItemWithPath(MakeOneDrivePath(parentPath, title))
@@ -261,9 +261,9 @@ namespace ASC.Files.Thirdparty.OneDrive
                 .DeleteAsync();
         }
 
-        public async Task DeleteItemAsync(Item item)
+        public Task DeleteItemAsync(Item item)
         {
-            await OnedriveClient
+            return OnedriveClient
                 .Drive
                 .Items[item.Id]
                 .Request()
@@ -282,11 +282,11 @@ namespace ASC.Files.Thirdparty.OneDrive
                 .Result;
         }
 
-        public async Task<Item> MoveItemAsync(string itemId, string newItemName, string toFolderId)
+        public Task<Item> MoveItemAsync(string itemId, string newItemName, string toFolderId)
         {
             var updateItem = new Item { ParentReference = new ItemReference { Id = toFolderId }, Name = newItemName };
 
-            return await OnedriveClient
+            return OnedriveClient
                 .Drive
                 .Items[itemId]
                 .Request()
@@ -315,7 +315,7 @@ namespace ASC.Files.Thirdparty.OneDrive
                 .Request()
                 .PostAsync();
 
-            return copyMonitor.PollForOperationCompletionAsync(null, CancellationToken.None).Result;
+            return await copyMonitor.PollForOperationCompletionAsync(null, CancellationToken.None);
         }
 
         public Item RenameItem(string itemId, string newName)
@@ -329,10 +329,10 @@ namespace ASC.Files.Thirdparty.OneDrive
                 .Result;
         }
 
-        public async Task<Item> RenameItemAsync(string itemId, string newName)
+        public Task<Item> RenameItemAsync(string itemId, string newName)
         {
             var updateItem = new Item { Name = newName };
-            return await OnedriveClient
+            return OnedriveClient
                 .Drive
                 .Items[itemId]
                 .Request()
@@ -350,9 +350,9 @@ namespace ASC.Files.Thirdparty.OneDrive
                 .Result;
         }
 
-        public async Task<Item> SaveStreamAsync(string fileId, Stream fileStream)
+        public Task<Item> SaveStreamAsync(string fileId, Stream fileStream)
         {
-            return await OnedriveClient
+            return OnedriveClient
                 .Drive
                 .Items[fileId]
                 .Content

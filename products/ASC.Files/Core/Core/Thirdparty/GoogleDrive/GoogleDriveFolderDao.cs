@@ -88,9 +88,9 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             return ToFolder(entries.FirstOrDefault(folder => folder.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase)));
         }
 
-        public async Task<Folder<string>> GetRootFolderByFileAsync(string fileId)
+        public Task<Folder<string>> GetRootFolderByFileAsync(string fileId)
         {
-            return await GetRootFolderAsync("").ConfigureAwait(false);
+            return GetRootFolderAsync("");
         }
 
         public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
@@ -348,16 +348,16 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             return ToFolder(newDriveFolder);
         }
 
-        public async Task<IDictionary<string, string>> CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
+        public Task<IDictionary<string, string>> CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
         {
             if (to is int tId)
             {
-                return await CanMoveOrCopyAsync(folderIds, tId).ConfigureAwait(false);
+                return CanMoveOrCopyAsync(folderIds, tId);
             }
 
             if (to is string tsId)
             {
-                return await CanMoveOrCopyAsync(folderIds, tsId).ConfigureAwait(false);
+                return CanMoveOrCopyAsync(folderIds, tsId);
             }
 
             throw new NotImplementedException();

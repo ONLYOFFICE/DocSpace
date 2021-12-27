@@ -30,6 +30,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Security;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -375,7 +376,7 @@ namespace ASC.Web.Files.Helpers
             return url.Url;
         }
 
-        public File<T> SaveDocument<T>(string envelopeId, string documentId, string documentName, T folderId)
+        public async Task<File<T>> SaveDocumentAsync<T>(string envelopeId, string documentId, string documentName, T folderId)
         {
             if (string.IsNullOrEmpty(envelopeId)) throw new ArgumentNullException("envelopeId");
             if (string.IsNullOrEmpty(documentId)) throw new ArgumentNullException("documentId");
@@ -393,9 +394,9 @@ namespace ASC.Web.Files.Helpers
 
             Folder<T> folder;
             if (folderId == null
-                || (folder = folderDao.GetFolderAsync(folderId).Result) == null
+                || (folder = await folderDao.GetFolderAsync(folderId)) == null
                 || folder.RootFolderType == FolderType.TRASH
-                || !FileSecurity.CanCreateAsync(folder).Result)
+                || !await FileSecurity.CanCreateAsync(folder))
             {
                 if (GlobalFolderHelper.FolderMy != 0)
                 {
@@ -414,15 +415,15 @@ namespace ASC.Web.Files.Helpers
 
             var envelopesApi = new EnvelopesApi(configuration);
             Log.Info("DocuSign webhook get stream: " + documentId);
-            using (var stream = envelopesApi.GetDocument(account.AccountId, envelopeId, documentId))
+            using (var stream = await envelopesApi.GetDocumentAsync(account.AccountId, envelopeId, documentId))
             {
                 file.ContentLength = stream.Length;
-                file = fileDao.SaveFileAsync(file, stream).Result;
+                file = await fileDao.SaveFileAsync(file, stream);
             }
 
             FilesMessageService.Send(file, MessageInitiator.ThirdPartyProvider, MessageAction.DocumentSignComplete, "DocuSign", file.Title);
 
-            FileMarker.MarkAsNew(file);
+            await FileMarker.MarkAsNewAsync(file);
 
             return file;
         }

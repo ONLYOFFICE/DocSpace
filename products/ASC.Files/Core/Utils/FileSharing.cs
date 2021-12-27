@@ -318,11 +318,11 @@ namespace ASC.Web.Files.Utils
                 });
         }
 
-        public async Task RemoveAceAsync(IAsyncEnumerable<FileEntry<T>> entries)
+        public Task RemoveAceAsync(IAsyncEnumerable<FileEntry<T>> entries)
         {
             var fileSecurity = FileSecurity;
 
-            await entries.ForEachAwaitAsync(
+            return entries.ForEachAwaitAsync(
                 async entry =>
                 {
                     if (entry.RootFolderType != FolderType.USER && entry.RootFolderType != FolderType.Privacy

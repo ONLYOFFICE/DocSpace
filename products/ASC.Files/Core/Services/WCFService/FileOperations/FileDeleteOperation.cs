@@ -120,14 +120,14 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 Result += string.Format("folder_{0}{1}", root.ID, SPLIT_CHAR);
             }
 
-            DeleteFiles(Files, scope);
-            DeleteFolders(Folders, scope);
+            DeleteFilesAsync(Files, scope).Wait();
+            DeleteFoldersAsync(Folders, scope).Wait();
         }
 
         protected override async Task DoAsync(IServiceScope scope)
         {
             var folderDao = scope.ServiceProvider.GetService<IFolderDao<int>>();
-            _trashId = folderDao.GetFolderIDTrashAsync(true).Result;
+            _trashId = await folderDao.GetFolderIDTrashAsync(true);
 
             Folder<T> root = null;
             if (0 < Folders.Count)
@@ -145,91 +145,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             await DeleteFilesAsync(Files, scope);
             await DeleteFoldersAsync(Folders, scope);
-        }
-
-        private void DeleteFolders(IEnumerable<T> folderIds, IServiceScope scope)
-        {
-            var scopeClass = scope.ServiceProvider.GetService<FileDeleteOperationScope>();
-            var (fileMarker, filesMessageService) = scopeClass;
-            foreach (var folderId in folderIds)
-            {
-                CancellationToken.ThrowIfCancellationRequested();
-
-                var folder = FolderDao.GetFolderAsync(folderId).Result;
-                T canCalculate = default;
-                if (folder == null)
-                {
-                    Error = FilesCommonResource.ErrorMassage_FolderNotFound;
-                }
-                else if (folder.FolderType != FolderType.DEFAULT && folder.FolderType != FolderType.BUNCH)
-                {
-                    Error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder;
-                }
-                else if (!_ignoreException && !FilesSecurity.CanDelete(folder))
-                {
-                    canCalculate = FolderDao.CanCalculateSubitems(folderId) ? default : folderId;
-
-                    Error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder;
-                }
-                else
-                {
-                    canCalculate = FolderDao.CanCalculateSubitems(folderId) ? default : folderId;
-
-                    fileMarker.RemoveMarkAsNewForAll(folder);
-                    if (folder.ProviderEntry && folder.ID.Equals(folder.RootFolderId))
-                    {
-                        if (ProviderDao != null)
-                        {
-                            ProviderDao.RemoveProviderInfoAsync(folder.ProviderId).Wait();
-                            filesMessageService.Send(folder, _headers, MessageAction.ThirdPartyDeleted, folder.ID.ToString(), folder.ProviderKey);
-                        }
-
-                        ProcessedFolder(folderId);
-                    }
-                    else
-                    {
-                        var immediately = _immediately || !FolderDao.UseTrashForRemove(folder);
-                        if (immediately && FolderDao.UseRecursiveOperation(folder.ID, default(T)))
-                        {
-                            DeleteFiles(FileDao.GetFilesAsync(folder.ID).Result, scope);
-                            DeleteFolders(FolderDao.GetFoldersAsync(folder.ID).Select(f => f.ID).ToListAsync().Result, scope);
-
-                            if (FolderDao.IsEmptyAsync(folder.ID).Result)
-                            {
-                                FolderDao.DeleteFolderAsync(folder.ID).Wait();
-                                filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
-
-                                ProcessedFolder(folderId);
-                            }
-                        }
-                        else
-                        {
-                            var files = FileDao.GetFilesAsync(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync().Result;
-                            if (!_ignoreException && WithError(scope, files, true, out var tmpError))
-                            {
-                                Error = tmpError;
-                            }
-                            else
-                            {
-                                if (immediately)
-                                {
-                                    FolderDao.DeleteFolderAsync(folder.ID).Wait();
-                                    filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
-                                }
-                                else
-                                {
-                                    FolderDao.MoveFolderAsync(folder.ID, _trashId, CancellationToken).Wait();
-                                    filesMessageService.Send(folder, _headers, MessageAction.FolderMovedToTrash, folder.Title);
-                                }
-
-                                ProcessedFolder(folderId);
-                            }
-                        }
-                    }
-                }
-                ProgressStep(canCalculate);
-            }
-        }
+        }       
 
         private async Task DeleteFoldersAsync(IEnumerable<T> folderIds, IServiceScope scope)
         {
@@ -281,7 +197,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             var folders = await FolderDao.GetFoldersAsync(folder.ID).ToListAsync();
                             await DeleteFoldersAsync(folders.Select(f => f.ID).ToList(), scope);
 
-                            if (FolderDao.IsEmptyAsync(folder.ID).Result)
+                            if (await FolderDao.IsEmptyAsync(folder.ID))
                             {
                                 await FolderDao.DeleteFolderAsync(folder.ID);
                                 filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
@@ -292,9 +208,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         else
                         {
                             var files = await FileDao.GetFilesAsync(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync();
-                            if (!_ignoreException && WithError(scope, files, true, out var tmpError))
+                            var (isError, message) = await WithErrorAsync(scope, files, true);
+                            if (!_ignoreException && isError)
                             {
-                                Error = tmpError;
+                                Error = message;
                             }
                             else
                             {
@@ -315,56 +232,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     }
                 }
                 ProgressStep(canCalculate);
-            }
-        }
-
-        private void DeleteFiles(IEnumerable<T> fileIds, IServiceScope scope)
-        {
-            var scopeClass = scope.ServiceProvider.GetService<FileDeleteOperationScope>();
-            var (fileMarker, filesMessageService) = scopeClass;
-            foreach (var fileId in fileIds)
-            {
-                CancellationToken.ThrowIfCancellationRequested();
-
-                var file = FileDao.GetFileAsync(fileId).Result;
-                if (file == null)
-                {
-                    Error = FilesCommonResource.ErrorMassage_FileNotFound;
-                }
-                else if (!_ignoreException && WithError(scope, new[] { file }, false, out var tmpError))
-                {
-                    Error = tmpError;
-                }
-                else
-                {
-                    fileMarker.RemoveMarkAsNewForAll(file);
-                    if (!_immediately && FileDao.UseTrashForRemove(file))
-                    {
-                        FileDao.MoveFileAsync(file.ID, _trashId).Wait();
-                        filesMessageService.Send(file, _headers, MessageAction.FileMovedToTrash, file.Title);
-
-                        if (file.ThumbnailStatus == Thumbnail.Waiting)
-                        {
-                            file.ThumbnailStatus = Thumbnail.NotRequired;
-                            FileDao.SaveThumbnailAsync(file, null).Wait();
-                        }
-                    }
-                    else
-                    {
-                        try
-                        {
-                            FileDao.DeleteFileAsync(file.ID).Wait();
-                            filesMessageService.Send(file, _headers, MessageAction.FileDeleted, file.Title);
-                        }
-                        catch (Exception ex)
-                        {
-                            Error = ex.Message;
-                            Logger.Error(Error, ex);
-                        }
-                    }
-                    ProcessedFile(fileId);
-                }
-                ProgressStep(fileId: FolderDao.CanCalculateSubitems(fileId) ? default : fileId);
             }
         }
 
@@ -396,7 +263,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         if (file.ThumbnailStatus == Thumbnail.Waiting)
                         {
                             file.ThumbnailStatus = Thumbnail.NotRequired;
-                            FileDao.SaveThumbnailAsync(file, null).Wait();
+                            await FileDao.SaveThumbnailAsync(file, null);
                         }
                     }
                     else
@@ -443,6 +310,33 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 }
             }
             return false;
+        }
+
+        private async Task<(bool isError, string message)> WithErrorAsync(IServiceScope scope, IEnumerable<File<T>> files, bool folder)
+        {
+            var entryManager = scope.ServiceProvider.GetService<EntryManager>();
+            var fileTracker = scope.ServiceProvider.GetService<FileTrackerHelper>();
+
+            string error = null;
+            foreach (var file in files)
+            {
+                if (!FilesSecurity.CanDelete(file))
+                {
+                    error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFile;
+                    return (true, error);
+                }
+                if (entryManager.FileLockedForMe(file.ID))
+                {
+                    error = FilesCommonResource.ErrorMassage_LockedFile;
+                    return (true, error);
+                }
+                if (fileTracker.IsEditing(file.ID))
+                {
+                    error = folder ? FilesCommonResource.ErrorMassage_SecurityException_DeleteEditingFolder : FilesCommonResource.ErrorMassage_SecurityException_DeleteEditingFile;
+                    return (true, error);
+                }
+            }
+            return (false, error);
         }
     }
 

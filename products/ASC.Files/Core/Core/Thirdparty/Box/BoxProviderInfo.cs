@@ -127,14 +127,14 @@ namespace ASC.Files.Thirdparty.Box
             }
         }
 
-        public async Task InvalidateStorageAsync()
+        public Task InvalidateStorageAsync()
         {
             if (Wrapper != null)
             {
                 Wrapper.Dispose();
             }
 
-            await CacheResetAsync().ConfigureAwait(false);
+            return CacheResetAsync();
         }
 
         public void UpdateTitle(string newtitle)
@@ -142,29 +142,29 @@ namespace ASC.Files.Thirdparty.Box
             CustomerTitle = newtitle;
         }
 
-        internal async Task<BoxFolder> GetBoxFolderAsync(string dropboxFolderPath)
+        internal Task<BoxFolder> GetBoxFolderAsync(string dropboxFolderPath)
         {
-            return await BoxProviderInfoHelper.GetBoxFolderAsync(Storage, ID, dropboxFolderPath).ConfigureAwait(false);
+            return BoxProviderInfoHelper.GetBoxFolderAsync(Storage, ID, dropboxFolderPath);
         }
 
-        internal async Task<BoxFile> GetBoxFileAsync(string dropboxFilePath)
+        internal Task<BoxFile> GetBoxFileAsync(string dropboxFilePath)
         {
-            return await BoxProviderInfoHelper.GetBoxFileAsync(Storage, ID, dropboxFilePath).ConfigureAwait(false);
+            return BoxProviderInfoHelper.GetBoxFileAsync(Storage, ID, dropboxFilePath);
         }
 
-        internal async Task<List<BoxItem>> GetBoxItemsAsync(string dropboxFolderPath)
+        internal Task<List<BoxItem>> GetBoxItemsAsync(string dropboxFolderPath)
         {
-            return await BoxProviderInfoHelper.GetBoxItemsAsync(Storage, ID, dropboxFolderPath).ConfigureAwait(false);
+            return BoxProviderInfoHelper.GetBoxItemsAsync(Storage, ID, dropboxFolderPath);
         }
 
-        internal async Task CacheResetAsync(BoxItem boxItem)
+        internal Task CacheResetAsync(BoxItem boxItem)
         {
-            await BoxProviderInfoHelper.CacheResetAsync(ID, boxItem).ConfigureAwait(false);
+            return BoxProviderInfoHelper.CacheResetAsync(ID, boxItem);
         }
 
-        internal async Task CacheResetAsync(string boxPath = null, bool? isFile = null)
+        internal Task CacheResetAsync(string boxPath = null, bool? isFile = null)
         {
-            await BoxProviderInfoHelper.CacheResetAsync(BoxRootId, ID, boxPath, isFile).ConfigureAwait(false);
+            return BoxProviderInfoHelper.CacheResetAsync(BoxRootId, ID, boxPath, isFile);
         }
     }
 

@@ -29,6 +29,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -335,7 +336,7 @@ namespace ASC.Web.Files.Classes
 
             var cacheKey = string.Format("my/{0}/{1}", TenantManager.GetCurrentTenant().TenantId, AuthContext.CurrentAccount.ID);
 
-            var myFolderId = UserRootFolderCache.GetOrAdd(cacheKey, (a) => new Lazy<int>(() => GetFolderIdAndProccessFirstVisit(fileMarker, daoFactory, true)));
+            var myFolderId = UserRootFolderCache.GetOrAdd(cacheKey, (a) => new Lazy<int>(() => GetFolderIdAndProccessFirstVisitAsync(fileMarker, daoFactory, true).Result));
             return myFolderId.Value;
         }
 
@@ -366,9 +367,9 @@ namespace ASC.Web.Files.Classes
         internal static readonly IDictionary<int, int> CommonFolderCache =
                 new ConcurrentDictionary<int, int>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
-        public T GetFolderCommon<T>(FileMarker fileMarker, IDaoFactory daoFactory)
+        public async Task<T> GetFolderCommonAsync<T>(FileMarker fileMarker, IDaoFactory daoFactory)
         {
-            return (T)Convert.ChangeType(GetFolderCommon(fileMarker, daoFactory), typeof(T));
+            return (T)Convert.ChangeType(await GetFolderCommonAsync(fileMarker, daoFactory), typeof(T));
         }
 
         public int GetFolderCommon(FileMarker fileMarker, IDaoFactory daoFactory)
@@ -378,6 +379,19 @@ namespace ASC.Web.Files.Classes
             if (!CommonFolderCache.TryGetValue(TenantManager.GetCurrentTenant().TenantId, out var commonFolderId))
             {
                 commonFolderId = GetFolderIdAndProccessFirstVisit(fileMarker, daoFactory, false);
+                if (!Equals(commonFolderId, 0))
+                    CommonFolderCache[TenantManager.GetCurrentTenant().TenantId] = commonFolderId;
+            }
+            return commonFolderId;
+        }
+
+        public async Task<int> GetFolderCommonAsync(FileMarker fileMarker, IDaoFactory daoFactory)
+        {
+            if (CoreBaseSettings.Personal) return default;
+
+            if (!CommonFolderCache.TryGetValue(TenantManager.GetCurrentTenant().TenantId, out var commonFolderId))
+            {
+                commonFolderId = await GetFolderIdAndProccessFirstVisitAsync(fileMarker, daoFactory, false);
                 if (!Equals(commonFolderId, 0))
                     CommonFolderCache[TenantManager.GetCurrentTenant().TenantId] = commonFolderId;
             }
@@ -559,6 +573,43 @@ namespace ASC.Web.Files.Classes
             return id;
         }
 
+        private async Task<int> GetFolderIdAndProccessFirstVisitAsync(FileMarker fileMarker, IDaoFactory daoFactory, bool my)
+        {
+            var folderDao = (FolderDao)daoFactory.GetFolderDao<int>();
+            var fileDao = (FileDao)daoFactory.GetFileDao<int>();
+
+            var id = my ? await folderDao.GetFolderIDUserAsync(false): await folderDao.GetFolderIDCommonAsync(false);
+
+            if (Equals(id, 0)) //TODO: think about 'null'
+            {
+                id = my ? await folderDao.GetFolderIDUserAsync(true) : await folderDao.GetFolderIDCommonAsync(true);
+
+                //Copy start document
+                if (SettingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>().StartDocsEnabled)
+                {
+                    try
+                    {
+                        var storeTemplate = GlobalStore.GetStoreTemplate();
+
+                        var culture = my ? UserManager.GetUsers(AuthContext.CurrentAccount.ID).GetCulture() : TenantManager.GetCurrentTenant().GetCulture();
+                        var path = FileConstant.StartDocPath + culture + "/";
+
+                        if (!storeTemplate.IsDirectory(path))
+                            path = FileConstant.StartDocPath + "en-US/";
+                        path += my ? "my/" : "corporate/";
+
+                        await SaveStartDocumentAsync(fileMarker, folderDao, fileDao, id, path, storeTemplate);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error(ex);
+                    }
+                }
+            }
+
+            return id;
+        }
+
         private void SaveStartDocument(FileMarker fileMarker, FolderDao folderDao, FileDao fileDao, int folderId, string path, IDataStore storeTemplate)
         {
             foreach (var file in storeTemplate.ListFilesRelative("", path, "*", false))
@@ -575,6 +626,25 @@ namespace ASC.Web.Files.Classes
                 var subFolderId = folderDao.SaveFolderAsync(folder).Result;
 
                 SaveStartDocument(fileMarker, folderDao, fileDao, subFolderId, path + folderName + "/", storeTemplate);
+            }
+        }
+
+        private async Task SaveStartDocumentAsync(FileMarker fileMarker, FolderDao folderDao, FileDao fileDao, int folderId, string path, IDataStore storeTemplate)
+        {
+            foreach (var file in storeTemplate.ListFilesRelative("", path, "*", false))
+            {
+                await SaveFileAsync(fileMarker, fileDao, folderId, path + file, storeTemplate);
+            }
+
+            foreach (var folderName in storeTemplate.ListDirectoriesRelative(path, false))
+            {
+                var folder = ServiceProvider.GetService<Folder<int>>();
+                folder.Title = folderName;
+                folder.FolderID = folderId;
+
+                var subFolderId = await folderDao.SaveFolderAsync(folder);
+
+                await SaveStartDocumentAsync(fileMarker, folderDao, fileDao, subFolderId, path + folderName + "/", storeTemplate);
             }
         }
 
@@ -617,6 +687,45 @@ namespace ASC.Web.Files.Classes
             }
         }
 
+        private async Task SaveFileAsync(FileMarker fileMarker, FileDao fileDao, int folder, string filePath, IDataStore storeTemp)
+        {
+            try
+            {
+                if (FileUtility.GetFileExtension(filePath) == "." + Global.ThumbnailExtension
+                    && storeTemp.IsFile("", Regex.Replace(filePath, "\\." + Global.ThumbnailExtension + "$", "")))
+                    return;
+
+                var fileName = Path.GetFileName(filePath);
+                var file = ServiceProvider.GetService<File<int>>();
+
+                file.Title = fileName;
+                file.FolderID = folder;
+                file.Comment = FilesCommonResource.CommentCreate;
+
+                using (var stream = storeTemp.GetReadStream("", filePath))
+                {
+                    file.ContentLength = stream.CanSeek ? stream.Length : storeTemp.GetFileSize("", filePath);
+                    file = await fileDao.SaveFileAsync(file, stream, false);
+                }
+
+                var pathThumb = filePath + "." + Global.ThumbnailExtension;
+                if (storeTemp.IsFile("", pathThumb))
+                {
+                    using (var streamThumb = storeTemp.GetReadStream("", pathThumb))
+                    {
+                        await fileDao.SaveThumbnailAsync(file, streamThumb);
+                    }
+                    file.ThumbnailStatus = Thumbnail.Created;
+                }
+
+                await fileMarker.MarkAsNewAsync(file);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+            }
+        }
+
         public bool IsOutsider
         {
             get { return UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsOutsider(UserManager); }
@@ -639,6 +748,7 @@ namespace ASC.Web.Files.Classes
 
         public int FolderProjects => GlobalFolder.GetFolderProjects(DaoFactory);
         public int FolderCommon => GlobalFolder.GetFolderCommon(FileMarker, DaoFactory);
+        public Task<int> FolderCommonAsync => GlobalFolder.GetFolderCommonAsync(FileMarker, DaoFactory);
         public int FolderMy => GlobalFolder.GetFolderMy(FileMarker, DaoFactory);
         public int FolderPrivacy => GlobalFolder.GetFolderPrivacy(DaoFactory);
         public int FolderRecent => GlobalFolder.GetFolderRecent(DaoFactory);
@@ -653,6 +763,11 @@ namespace ASC.Web.Files.Classes
         public T GetFolderCommon<T>()
         {
             return (T)Convert.ChangeType(FolderCommon, typeof(T));
+        }
+
+        public async Task<T> GetFolderCommonAsync<T>()
+        {
+            return (T)Convert.ChangeType(await FolderCommonAsync, typeof(T));
         }
 
         public T GetFolderProjects<T>()

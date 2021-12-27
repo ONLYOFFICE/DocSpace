@@ -120,9 +120,9 @@ namespace ASC.Web.Files.Utils
             return Exec(folderId, title, contentLength, data, !FilesSettingsHelper.UpdateIfExist);
         }
 
-        public async Task<File<T>> ExecAsync<T>(T folderId, string title, long contentLength, Stream data)
+        public Task<File<T>> ExecAsync<T>(T folderId, string title, long contentLength, Stream data)
         {
-            return await ExecAsync(folderId, title, contentLength, data, !FilesSettingsHelper.UpdateIfExist);
+            return ExecAsync(folderId, title, contentLength, data, !FilesSettingsHelper.UpdateIfExist);
         }
 
         public File<T> Exec<T>(T folderId, string title, long contentLength, Stream data, bool createNewIfExist, bool deleteConvertStatus = true)

@@ -31,6 +31,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Common;
@@ -237,7 +238,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 {
                     const string crumbsSeporator = " \\ ";
 
-                    var breadCrumbsList = BreadCrumbsManager.GetBreadCrumbs(File.FolderID);
+                    var breadCrumbsList = BreadCrumbsManager.GetBreadCrumbsAsync(File.FolderID).Result;
                     _breadCrumbs = string.Join(crumbsSeporator, breadCrumbsList.Select(folder => folder.Title).ToArray());
                 }
 
@@ -381,7 +382,7 @@ namespace ASC.Web.Files.Services.DocumentService
         }
 
 
-        public List<TemplatesConfig> GetTemplates(EntryManager entryManager)
+        public async Task<List<TemplatesConfig>> GetTemplatesAsync(EntryManager entryManager)
         {
             if (!AuthContext.IsAuthenticated || UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) return null;
             if (!FilesSettingsHelper.TemplatesSection) return null;
@@ -403,7 +404,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             var folderDao = DaoFactory.GetFolderDao<int>();
             var fileDao = DaoFactory.GetFileDao<int>();
-            var files = entryManager.GetTemplates(folderDao, fileDao, filter, false, Guid.Empty, string.Empty, false);
+            var files = await entryManager.GetTemplatesAsync(folderDao, fileDao, filter, false, Guid.Empty, string.Empty, false);
             var listTemplates = from file in files
                                 select
                                     new TemplatesConfig
