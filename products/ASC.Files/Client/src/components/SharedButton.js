@@ -1,7 +1,7 @@
-import React from "react";
-import Text from "@appserver/components/text";
-import IconButton from "@appserver/components/icon-button";
-import { inject, observer } from "mobx-react";
+import React from 'react';
+import Text from '@appserver/components/text';
+import IconButton from '@appserver/components/icon-button';
+import { inject, observer } from 'mobx-react';
 
 const SharedButton = ({
   t,
@@ -11,8 +11,9 @@ const SharedButton = ({
   onSelectItem,
   setSharingPanelVisible,
   isSmallIcon = false,
+  theme,
 }) => {
-  const color = shared ? "#657077" : "#a3a9ae";
+  const color = shared ? theme.filesSharedButton.sharedColor : theme.filesSharedButton.color;
 
   const onClickShare = () => {
     onSelectItem({ id, isFolder });
@@ -20,34 +21,34 @@ const SharedButton = ({
   };
 
   const icon = isSmallIcon
-    ? "/static/images/catalog.share.small.react.svg"
-    : "/static/images/catalog.share.react.svg";
+    ? '/static/images/catalog.share.small.react.svg'
+    : '/static/images/catalog.share.react.svg';
 
   return (
     <Text
       className="share-button"
       as="span"
-      title={t("Share")}
+      title={t('Share')}
       fontSize="12px"
       fontWeight={600}
       color={color}
       display="inline-flex"
-      onClick={onClickShare}
-    >
+      onClick={onClickShare}>
       <IconButton
         className="share-button-icon"
         color={color}
-        hoverColor="#657077"
+        hoverColor={theme.filesSharedButton.sharedColor}
         size={isSmallIcon ? 12 : 16}
         iconName={icon}
       />
-      {t("Share")}
+      {t('Share')}
     </Text>
   );
 };
 
-export default inject(({ filesActionsStore, dialogsStore }) => {
+export default inject(({ auth, filesActionsStore, dialogsStore }) => {
   return {
+    theme: auth.settingsStore.theme,
     onSelectItem: filesActionsStore.onSelectItem,
     setSharingPanelVisible: dialogsStore.setSharingPanelVisible,
   };

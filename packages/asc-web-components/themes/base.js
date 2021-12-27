@@ -2144,6 +2144,11 @@ const Base = {
     fill: "#3b72a7",
     hoverFill: "#3b72a7",
   },
+
+  filesSharedButton: {
+    color: "#a3a9ae",
+    sharedColor: "#657077",
+  },
 };
 
 export default Base;

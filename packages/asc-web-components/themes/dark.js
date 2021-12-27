@@ -2145,6 +2145,11 @@ const Dark = {
     fill: "#858585",
     hoverFill: "#eeeeee",
   },
+
+  filesSharedButton: {
+    color: "#858585",
+    sharedColor: "#eeeeee",
+  },
 };
 
 export default Dark;
