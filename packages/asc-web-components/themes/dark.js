@@ -2131,6 +2131,15 @@ const Dark = {
     badgeColor: "#333333",
     badgeBackgroundColor: "#F58D31",
   },
+
+  filesEditingWrapper: {
+    color: "#eeeeee",
+    border: "1px solid #474747",
+    borderBottom: "1px solid #474747",
+
+    fill: "#858585",
+    hoverFill: "#eeeeee",
+  },
 };
 
 export default Dark;

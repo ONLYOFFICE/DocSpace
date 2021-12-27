@@ -1,36 +1,39 @@
-import React, { useState } from "react";
-import styled, { css } from "styled-components";
-import Button from "@appserver/components/button";
-import TextInput from "@appserver/components/text-input";
-import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import React, { useState } from 'react';
+import styled, { css } from 'styled-components';
+import Button from '@appserver/components/button';
+import TextInput from '@appserver/components/text-input';
+import commonIconsStyles from '@appserver/components/utils/common-icons-style';
 
-import CheckIcon from "../../public/images/check.react.svg";
-import CrossIcon from "../../../../../public/images/cross.react.svg";
+import CheckIcon from '../../public/images/check.react.svg';
+import CrossIcon from '../../../../../public/images/cross.react.svg';
+import { Base } from '@appserver/components/themes';
 
 const StyledCheckIcon = styled(CheckIcon)`
   ${commonIconsStyles}
   path {
-    fill: #a3a9ae;
+    fill: ${(props) => props.theme.filesEditingWrapper.fill};
   }
   :hover {
-    fill: #657077;
+    fill: ${(props) => props.theme.filesEditingWrapper.hoverFill};
   }
 `;
+
+StyledCheckIcon.defaultProps = { theme: Base };
 
 const StyledCrossIcon = styled(CrossIcon)`
   ${commonIconsStyles}
   path {
-    fill: #a3a9ae;
+    fill: ${(props) => props.theme.filesEditingWrapper.fill};
   }
   :hover {
-    fill: #657077;
+    fill: ${(props) => props.theme.filesEditingWrapper.hoverFill};
   }
 `;
 
+StyledCrossIcon.defaultProps = { theme: Base };
+
 export const okIcon = <StyledCheckIcon className="edit-ok-icon" size="scale" />;
-export const cancelIcon = (
-  <StyledCrossIcon className="edit-cancel-icon" size="scale" />
-);
+export const cancelIcon = <StyledCrossIcon className="edit-cancel-icon" size="scale" />;
 
 const EditingWrapper = styled.div`
   width: 100%;
@@ -38,21 +41,19 @@ const EditingWrapper = styled.div`
   align-items: center;
 
   ${(props) =>
-    props.viewAs === "table" &&
+    props.viewAs === 'table' &&
     css`
       grid-column-start: 1;
       grid-column-end: -1;
 
-      border-bottom: 1px solid #eceef1;
+      border-bottom: ${(props) => props.theme.filesEditingWrapper.borderBottom};
       padding-bottom: 4px;
       margin-top: 4px;
 
       /* margin-left: -4px; */
     `}
 
-  ${(props) =>
-    props.viewAs === "tile" &&
-    `margin-right: 12px !important; margin-left: -4px;`}
+  ${(props) => props.viewAs === 'tile' && `margin-right: 12px !important; margin-left: -4px;`}
 
   @media (max-width: 1024px) {
     height: 56px;
@@ -60,17 +61,13 @@ const EditingWrapper = styled.div`
   .edit-text {
     height: 32px;
     font-size: ${(props) =>
-      props.viewAs === "table"
-        ? "13px"
-        : props.viewAs === "tile"
-        ? "14px"
-        : "15px"};
+      props.viewAs === 'table' ? '13px' : props.viewAs === 'tile' ? '14px' : '15px'};
     outline: 0 !important;
     font-weight: 600;
     margin: 0;
-    font-family: "Open Sans", sans-serif, Arial;
+    font-family: 'Open Sans', sans-serif, Arial;
     text-align: left;
-    color: #333333;
+    color: ${(props) => props.theme.filesEditingWrapper.color};
     margin-left: 6px;
   }
   .edit-button {
@@ -79,7 +76,7 @@ const EditingWrapper = styled.div`
     padding: 8px 7px 7px 7px;
 
     ${(props) =>
-      props.viewAs === "table" &&
+      props.viewAs === 'table' &&
       css`
         width: 24px;
         height: 24px;
@@ -87,7 +84,7 @@ const EditingWrapper = styled.div`
         padding: 4px 0 0 0;
 
         :hover {
-          border: 1px solid #d0d5da;
+          border: ${(props) => props.theme.filesEditingWrapper.border};
         }
       `}
 
@@ -113,6 +110,8 @@ const EditingWrapper = styled.div`
   }
 `;
 
+EditingWrapper.defaultProps = { theme: Base };
+
 const EditingWrapperComponent = (props) => {
   const {
     itemTitle,
@@ -125,7 +124,7 @@ const EditingWrapperComponent = (props) => {
     elementIcon,
   } = props;
 
-  const isTable = viewAs === "table";
+  const isTable = viewAs === 'table';
 
   const [OkIconIsHovered, setIsHoveredOk] = useState(false);
   const [CancelIconIsHovered, setIsHoveredCancel] = useState(false);
@@ -156,8 +155,7 @@ const EditingWrapperComponent = (props) => {
 
   const onFocus = (e) => e.target.select();
   const onBlur = (e) => {
-    if (e.relatedTarget && e.relatedTarget.classList.contains("edit-button"))
-      return false;
+    if (e.relatedTarget && e.relatedTarget.classList.contains('edit-button')) return false;
     onClickUpdateItem(e, false);
   };
 

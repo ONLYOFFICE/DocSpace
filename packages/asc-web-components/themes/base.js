@@ -2130,6 +2130,15 @@ const Base = {
     badgeColor: "#ffffff",
     badgeBackgroundColor: "#ed7309",
   },
+
+  filesEditingWrapper: {
+    color: "#333333",
+    border: "1px solid #d0d5da",
+    borderBottom: "1px solid #eceef1",
+
+    fill: "#a3a9ae",
+    hoverFill: "#657077",
+  },
 };
 
 export default Base;
