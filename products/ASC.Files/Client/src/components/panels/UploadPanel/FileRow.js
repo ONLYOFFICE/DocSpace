@@ -6,7 +6,7 @@ import Link from "@appserver/components/link";
 import LoadingButton from "./LoadingButton";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
-import PasswordInput from "./PasswordInput";
+import SimulatePassword from "./SimulatePassword";
 import ErrorFileUpload from "./ErrorFileUpload.js";
 import ActionsUploadedFile from "./ActionsUploadedFile";
 import { isMobile } from "react-device-detect";
@@ -266,7 +266,7 @@ class FileRow extends Component {
             )}
             {showPasswordInput && (
               <div className="password-input">
-                <PasswordInput item={item} hideInput={this.onTextClick} />
+                <SimulatePassword item={item} hideInput={this.onTextClick} />
               </div>
             )}
           </>

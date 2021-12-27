@@ -27,7 +27,7 @@ const StyledBody = styled.div`
     width: 100%;
   }
 `;
-const PasswordComponent = ({
+const SimulatePassword = ({
   item,
   convertFile,
   removeFileFromList,
@@ -175,4 +175,4 @@ export default inject(({ uploadDataStore }) => {
     removeFileFromList,
     convertFile,
   };
-})(observer(PasswordComponent));
+})(observer(SimulatePassword));
