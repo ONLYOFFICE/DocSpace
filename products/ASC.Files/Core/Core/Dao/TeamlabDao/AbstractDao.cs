@@ -82,7 +82,7 @@ namespace ASC.Files.Core.Data
             CoreConfiguration coreConfiguration,
             SettingsManager settingsManager,
             AuthContext authContext,
-            IServiceProvider serviceProvider, 
+            IServiceProvider serviceProvider,
             ICache cache)
         {
             this.cache = cache;
@@ -128,7 +128,7 @@ namespace ASC.Files.Core.Data
                     .Join(FilesDbContext.Tree, a => a.FolderId, b => b.FolderId, (file, tree) => new { file, tree })
                     .Where(r => r.file.TenantId == f.TenantId)
                     .Where(r => r.tree.ParentId == f.Id)
-                    .Select(r=> r.file.Id)
+                    .Select(r => r.file.Id)
                     .Distinct()
                     .Count();
 
@@ -191,7 +191,7 @@ namespace ASC.Files.Core.Data
 
         internal static IQueryable<T> BuildSearch<T>(IQueryable<T> query, string text, SearhTypeEnum searhTypeEnum) where T : IDbSearch
         {
-            var lowerText = text.ToLower().Trim().Replace("%", "\\%").Replace("_", "\\_");
+            var lowerText = GetSearchText(text);
 
             return searhTypeEnum switch
             {
@@ -201,6 +201,8 @@ namespace ASC.Files.Core.Data
                 _ => query,
             };
         }
+
+        internal static string GetSearchText(string text) => (text ?? "").ToLower().Trim().Replace("%", "\\%").Replace("_", "\\_");
 
         internal enum SearhTypeEnum
         {

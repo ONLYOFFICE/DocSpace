@@ -36,11 +36,11 @@ namespace ASC.Security.Cryptography
     [Singletone]
     public class InstanceCrypto
     {
-        private MachinePseudoKeys MachinePseudoKeys { get; }
+        private byte[] EKey { get; }
 
         public InstanceCrypto(MachinePseudoKeys machinePseudoKeys)
         {
-            MachinePseudoKeys = machinePseudoKeys;
+            EKey = machinePseudoKeys.GetMachineConstant(32);
         }
 
         public string Encrypt(string data)
@@ -50,8 +50,8 @@ namespace ASC.Security.Cryptography
 
         public byte[] Encrypt(byte[] data)
         {
-            var hasher = Aes.Create();
-            hasher.Key = EKey();
+            using var hasher = Aes.Create();
+            hasher.Key = EKey;
             hasher.IV = new byte[hasher.BlockSize >> 3];
 
             using var ms = new MemoryStream();
@@ -70,24 +70,17 @@ namespace ASC.Security.Cryptography
 
         public string Decrypt(byte[] data)
         {
-            var hasher = Aes.Create();
-            hasher.Key = EKey();
+            using var hasher = Aes.Create();
+            hasher.Key = EKey;
             hasher.IV = new byte[hasher.BlockSize >> 3];
 
-            using (MemoryStream msDecrypt = new MemoryStream(data))
-            using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, hasher.CreateDecryptor(), CryptoStreamMode.Read))
-            using (StreamReader srDecrypt = new StreamReader(csDecrypt))
-            {
+            using var msDecrypt = new MemoryStream(data);
+            using var csDecrypt = new CryptoStream(msDecrypt, hasher.CreateDecryptor(), CryptoStreamMode.Read);
+            using var srDecrypt = new StreamReader(csDecrypt);
 
-                // Read the decrypted bytes from the decrypting stream
-                // and place them in a string.
-                return srDecrypt.ReadToEnd();
-            }
-        }
-
-        private byte[] EKey()
-        {
-            return MachinePseudoKeys.GetMachineConstant(32);
+            // Read the decrypted bytes from the decrypting stream
+            // and place them in a string.
+            return srDecrypt.ReadToEnd();
         }
     }
 }

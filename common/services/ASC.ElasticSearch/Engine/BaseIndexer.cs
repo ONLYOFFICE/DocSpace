@@ -36,7 +36,6 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
-using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
@@ -103,14 +102,14 @@ namespace ASC.ElasticSearch
             DbContextManager<WebstudioDbContext> dbContextManager,
             TenantManager tenantManager,
             BaseIndexerHelper baseIndexerHelper,
-            ConfigurationExtension configurationExtension,
+            SettingsHelper settingsHelper,
             IServiceProvider serviceProvider)
         {
             Client = client;
             Log = log.CurrentValue;
             TenantManager = tenantManager;
             BaseIndexerHelper = baseIndexerHelper;
-            Settings = Settings.GetInstance(configurationExtension);
+            Settings = settingsHelper.Settings;
             ServiceProvider = serviceProvider;
             LazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => dbContextManager.Value);
         }
