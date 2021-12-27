@@ -49,7 +49,7 @@ const withLoader = (WrappedComponent) => (Loader) => {
       Loader ? (
         Loader
       ) : viewAs === "tile" ? (
-        <Loaders.Tiles sectionWidth={sectionWidth} />
+        <Loaders.Tiles />
       ) : (
         <Loaders.Rows />
       )

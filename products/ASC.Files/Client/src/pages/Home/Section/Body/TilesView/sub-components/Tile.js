@@ -54,7 +54,7 @@ const StyledTile = styled.div`
   box-sizing: border-box;
   width: 100%;
   border: 1px solid #d0d5da;
-  border-radius: 3px;
+  border-radius: 6px;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   ${(props) => props.isFolder && FlexBoxStyles}
@@ -79,7 +79,6 @@ const StyledTile = styled.div`
     display: flex;
     opacity: ${(props) => (props.checked ? 1 : 0)};
     flex: 0 0 16px;
-    margin-right: 4px;
     justify-content: center;
 
     @media ${tablet} {
@@ -91,37 +90,25 @@ const StyledTile = styled.div`
     display: ${(props) => (props.checked ? "flex" : "none")};
     flex: 0 0 16px;
     margin-top: 8px;
-    margin-left: 12px;
+    margin-left: ${(props) => (props.isFolder ? "8px" : "7px")};
   }
 
   .file-icon {
     display: ${(props) => (props.checked ? "none" : "flex")};
     flex: 0 0 auto;
-    margin-left: 5px;
     user-select: none;
-    margin-top: ${(props) => (props.isFolder ? "-3px" : "-4px")};
-
-    height: 31px;
-    width: 31px;
-
-    img {
-      height: 30px;
-      width: 30px;
-    }
+    margin-top: ${(props) => (props.isFolder ? "0" : "-2px")};
   }
 
   .file-icon_container {
     width: 32px;
     height: 32px;
-    margin-left: 12px;
+    margin-left: ${(props) => (props.isFolder ? "15px" : "16px")};
+    margin-right: ${(props) => (props.isFolder ? "7px" : "8px")};
   }
 
   .tile-folder-loader {
     padding-top: 4px;
-  }
-
-  .styled-content {
-    margin-left: ${(props) => (props.isFolder ? "12px" : "14px")};
   }
 
   :hover {
@@ -147,23 +134,23 @@ const StyledFileTileTop = styled.div`
   ${FlexBoxStyles};
   justify-content: space-between;
   align-items: baseline;
-  background-color: #f8f9f9;
-  height: 154px;
+  height: 156px;
   position: relative;
 
-  .thumbnail-image,
-  .temporary-icon > .injected-svg {
+  .thumbnail-image {
     pointer-events: none;
     position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 6px 6px 0 0;
     z-index: 0;
   }
 
   .temporary-icon > .injected-svg {
-    margin-bottom: 16px;
+    position: absolute;
+    width: 100%;
+    top: 25%;
   }
 `;
 
@@ -366,7 +353,6 @@ class Tile extends React.PureComponent {
               </>
             )}
             <StyledContent
-              className="styled-content"
               isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
             >
               {children}
@@ -418,7 +404,6 @@ class Tile extends React.PureComponent {
                 </>
               )}
               <StyledContent
-                className="styled-content"
                 isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
               >
                 {children}

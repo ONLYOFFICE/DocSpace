@@ -103,7 +103,7 @@ const TileLoader = ({
           <RectangleLoader
             className="second-content"
             title={title}
-            width="50%"
+            width="100%"
             borderRadius={borderRadius}
             backgroundColor={backgroundColor}
             foregroundColor={foregroundColor}

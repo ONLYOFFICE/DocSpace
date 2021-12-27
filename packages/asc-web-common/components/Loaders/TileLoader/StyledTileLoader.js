@@ -6,7 +6,6 @@ const StyledTile = styled.div`
   display: grid;
   width: 100%;
   height: ${(props) => (props.isFolder ? "32px" : "220px")};
-  border-radius: 3px;
 
   @media ${mobile} {
     &:nth-of-type(n + 3) {
@@ -56,12 +55,15 @@ const StyledBottom = styled.div`
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-end;
-    width: 100%;
     margin-left: 8px;
 
     .second-content {
       &:last-of-type {
         height: 12px;
+        margin-right: auto;
+        margin-left: 0;
+        width: 50%;
+        border-radius: 3px;
       }
     }
   }
@@ -71,6 +73,7 @@ const StyledBottom = styled.div`
     width: 16px;
     min-width: 16px;
     margin-left: 8px;
+    border-radius: 6px;
   }
 `;
 
