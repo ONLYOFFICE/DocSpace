@@ -2150,6 +2150,12 @@ const Dark = {
     color: "#858585",
     sharedColor: "#eeeeee",
   },
+
+  filesPrivateRoom: {
+    borderBottom: "1px solid #d3d3d3",
+    linkColor: "#116d9d",
+    textColor: "#83888D",
+  },
 };
 
 export default Dark;

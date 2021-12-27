@@ -2149,6 +2149,12 @@ const Base = {
     color: "#a3a9ae",
     sharedColor: "#657077",
   },
+
+  filesPrivateRoom: {
+    borderBottom: "1px solid #d3d3d3",
+    linkColor: "#116d9d",
+    textColor: "#83888D",
+  },
 };
 
 export default Base;
