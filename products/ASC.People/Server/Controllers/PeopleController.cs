@@ -892,26 +892,14 @@ namespace ASC.Employee.Core.Controllers
         [Update("{userid}/contacts")]
         public EmployeeWraperFull UpdateMemberContactsFromBody(string userid, [FromBody] UpdateMemberModel memberModel)
         {
-            return UpdateMemberContacts(userid, memberModel);
+            return SetMemberContacts(userid, memberModel);
         }
 
         [Update("{userid}/contacts")]
         [Consumes("application/x-www-form-urlencoded")]
         public EmployeeWraperFull UpdateMemberContactsFromForm(string userid, [FromForm] UpdateMemberModel memberModel)
         {
-            return UpdateMemberContacts(userid, memberModel);
-        }
-
-        private EmployeeWraperFull UpdateMemberContacts(string userid, UpdateMemberModel memberModel)
-        {
-            var user = GetUserInfo(userid);
-
-            if (UserManager.IsSystemUser(user.ID))
-                throw new SecurityException();
-
-            UpdateContacts(memberModel.Contacts, user);
-            UserManager.SaveUserInfo(user);
-            return EmployeeWraperFullHelper.GetFull(user);
+            return SetMemberContacts(userid, memberModel);
         }
 
         [Create("{userid}/contacts")]
