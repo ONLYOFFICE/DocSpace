@@ -265,8 +265,7 @@ namespace ASC.Web.Files.Utils
                         }
                         catch (Exception exception)
                         {
-                            var password = exception.InnerException != null
-                                           && (exception.InnerException is DocumentService.DocumentServiceException documentServiceException)
+                            var password = exception.InnerException is DocumentService.DocumentServiceException documentServiceException
                                            && documentServiceException.Code == DocumentService.DocumentServiceException.ErrorCode.ConvertPassword;
 
                             logger.Error(string.Format("Error convert {0} with url {1}", file.ID, fileUri), exception);

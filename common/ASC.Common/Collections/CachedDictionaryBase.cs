@@ -106,7 +106,7 @@ namespace ASC.Collections
 
         protected virtual bool FitsCondition(object cached)
         {
-            return cached != null && cached is T;
+            return cached is T;
         }
 
         public virtual T Get(string rootkey, string key, Func<T> defaults)
