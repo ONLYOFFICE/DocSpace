@@ -1,21 +1,21 @@
-import React, { memo } from "react";
-import { withRouter } from "react-router";
-import PropTypes from "prop-types";
+import React, { memo } from 'react';
+import { withRouter } from 'react-router';
+import PropTypes from 'prop-types';
 
-import Button from "@appserver/components/button";
-import ModalDialog from "@appserver/components/modal-dialog";
-import Text from "@appserver/components/text";
-import ToggleContent from "@appserver/components/toggle-content";
-import Checkbox from "@appserver/components/checkbox";
-import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-scrollbars-virtual-list";
+import Button from '@appserver/components/button';
+import ModalDialog from '@appserver/components/modal-dialog';
+import Text from '@appserver/components/text';
+import ToggleContent from '@appserver/components/toggle-content';
+import Checkbox from '@appserver/components/checkbox';
+import CustomScrollbarsVirtualList from '@appserver/components/scrollbar/custom-scrollbars-virtual-list';
 
-import { FixedSizeList as List, areEqual } from "react-window";
-import AutoSizer from "react-virtualized-auto-sizer";
-import { withTranslation } from "react-i18next";
-import Filter from "@appserver/common/api/people/filter";
-import toastr from "studio/toastr";
-import ModalDialogContainer from "../ModalDialogContainer";
-import { inject, observer } from "mobx-react";
+import { FixedSizeList as List, areEqual } from 'react-window';
+import AutoSizer from 'react-virtualized-auto-sizer';
+import { withTranslation } from 'react-i18next';
+import Filter from '@appserver/common/api/people/filter';
+import toastr from 'studio/toastr';
+import ModalDialogContainer from '../ModalDialogContainer';
+import { inject, observer } from 'mobx-react';
 
 class DeleteGroupUsersDialogComponent extends React.Component {
   constructor(props) {
@@ -41,12 +41,12 @@ class DeleteGroupUsersDialogComponent extends React.Component {
     this.setState({ isRequestRunning: true }, () => {
       removeUser(userIds, filter)
         .then(() => {
-          toastr.success(t("DeleteGroupUsersSuccessMessage"));
+          toastr.success(t('DeleteGroupUsersSuccessMessage'));
         })
         .catch((error) => toastr.error(error))
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => {
-            setSelected("close");
+            setSelected('close');
             onClose();
           });
         });
@@ -54,9 +54,7 @@ class DeleteGroupUsersDialogComponent extends React.Component {
   };
 
   onChange = (e) => {
-    const userIndex = this.state.listUsers.findIndex(
-      (x) => x.id === e.target.value
-    );
+    const userIndex = this.state.listUsers.findIndex((x) => x.id === e.target.value);
     const newUsersList = this.state.listUsers;
     newUsersList[userIndex].checked = !newUsersList[userIndex].checked;
 
@@ -72,7 +70,7 @@ class DeleteGroupUsersDialogComponent extends React.Component {
   };
 
   render() {
-    const { t, tReady, onClose, visible } = this.props;
+    const { t, tReady, onClose, visible, theme } = this.props;
     const { isRequestRunning, userIds, listUsers } = this.state;
     const itemSize = 25;
     const containerStyles = { height: listUsers.length * 25, maxHeight: 220 };
@@ -101,35 +99,25 @@ class DeleteGroupUsersDialogComponent extends React.Component {
         itemSize={itemSize}
         itemCount={listUsers.length}
         itemData={listUsers}
-        outerElementType={CustomScrollbarsVirtualList}
-      >
+        outerElementType={CustomScrollbarsVirtualList}>
         {renderItems}
       </List>
     );
 
     //console.log("DeleteGroupUsersDialog render");
     return (
-      <ModalDialogContainer
-        isLoading={!tReady}
-        visible={visible}
-        onClose={onClose}
-      >
-        <ModalDialog.Header>
-          {t("DeleteGroupUsersMessageHeader")}
-        </ModalDialog.Header>
+      <ModalDialogContainer isLoading={!tReady} visible={visible} onClose={onClose}>
+        <ModalDialog.Header>{t('DeleteGroupUsersMessageHeader')}</ModalDialog.Header>
         <ModalDialog.Body>
-          <Text>{t("DeleteGroupUsersMessage")}</Text>
-          <Text>{t("Translations:NotBeUndone")}</Text>
+          <Text>{t('DeleteGroupUsersMessage')}</Text>
+          <Text>{t('Translations:NotBeUndone')}</Text>
           <br />
-          <Text color="#c30" fontSize="18px">
-            {t("Common:Warning")}!
+          <Text color={theme.peopleDialogs.deleteUser.textColor} fontSize="18px">
+            {t('Common:Warning')}!
           </Text>
           <br />
-          <Text>{t("DeleteUserDataConfirmation")}</Text>
-          <ToggleContent
-            className="toggle-content-dialog"
-            label={t("Common:ShowUsersList")}
-          >
+          <Text>{t('DeleteUserDataConfirmation')}</Text>
+          <ToggleContent className="toggle-content-dialog" label={t('Common:ShowUsersList')}>
             <div style={containerStyles} className="modal-dialog-content">
               <AutoSizer>{renderList}</AutoSizer>
             </div>
@@ -137,7 +125,7 @@ class DeleteGroupUsersDialogComponent extends React.Component {
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
-            label={t("Common:OKButton")}
+            label={t('Common:OKButton')}
             size="medium"
             primary
             onClick={this.onDeleteGroupUsers}
@@ -146,7 +134,7 @@ class DeleteGroupUsersDialogComponent extends React.Component {
           />
           <Button
             className="button-dialog"
-            label={t("Common:CancelButton")}
+            label={t('Common:CancelButton')}
             size="medium"
             onClick={onClose}
             isDisabled={isRequestRunning}
@@ -157,11 +145,9 @@ class DeleteGroupUsersDialogComponent extends React.Component {
   }
 }
 
-const DeleteUsersDialog = withTranslation([
-  "DeleteUsersDialog",
-  "Common",
-  "Translations",
-])(DeleteGroupUsersDialogComponent);
+const DeleteUsersDialog = withTranslation(['DeleteUsersDialog', 'Common', 'Translations'])(
+  DeleteGroupUsersDialogComponent,
+);
 
 DeleteUsersDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
@@ -176,11 +162,12 @@ DeleteUsersDialog.propTypes = {
 };
 
 export default withRouter(
-  inject(({ peopleStore }) => ({
+  inject(({ peopleStore, auth }) => ({
     filter: peopleStore.filterStore.filter,
     removeUser: peopleStore.usersStore.removeUser,
     selectedUsers: peopleStore.selectionStore.selection,
     setSelected: peopleStore.selectionStore.setSelected,
     userIds: peopleStore.selectionStore.getUsersToRemoveIds,
-  }))(observer(DeleteUsersDialog))
+    theme: auth.settingsStore.theme,
+  }))(observer(DeleteUsersDialog)),
 );

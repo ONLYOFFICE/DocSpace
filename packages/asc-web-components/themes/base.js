@@ -2205,6 +2205,24 @@ const Base = {
     color: "#A3A9AE",
     pendingColor: "#D0D5DA",
   },
+
+  peopleDialogs: {
+    modal: {
+      border: "1px solid #A3A9AE",
+    },
+
+    deleteUser: {
+      textColor: "#c30",
+    },
+
+    deleteSelf: {
+      linkColor: "#316DAA",
+    },
+
+    changePassword: {
+      linkColor: "#316DAA",
+    },
+  },
 };
 
 export default Base;

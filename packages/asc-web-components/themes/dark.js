@@ -2206,6 +2206,24 @@ const Dark = {
     color: "#858585",
     pendingColor: "#474747",
   },
+
+  peopleDialogs: {
+    modal: {
+      border: "1px solid #474747",
+    },
+
+    deleteUser: {
+      textColor: "#c30",
+    },
+
+    deleteSelf: {
+      linkColor: "#e06a1b",
+    },
+
+    changePassword: {
+      linkColor: "#e06a1b",
+    },
+  },
 };
 
 export default Dark;
