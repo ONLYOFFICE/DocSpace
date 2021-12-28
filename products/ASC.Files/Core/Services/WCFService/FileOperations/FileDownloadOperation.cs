@@ -87,7 +87,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             using var scope = ThirdPartyOperation.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
             var (globalStore, filesLinkUtility, _, _, _) = scopeClass;
-            var stream = TempStream.Create();
+            using var stream = TempStream.Create();
 
             (ThirdPartyOperation as FileDownloadOperation<string>).CompressToZip(stream, scope);
             (DaoOperation as FileDownloadOperation<int>).CompressToZip(stream, scope);
@@ -294,8 +294,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     {
                         if (CancellationToken.IsCancellationRequested)
                         {
-                            compressTo.Dispose();
-                            stream.Dispose();
                             CancellationToken.ThrowIfCancellationRequested();
                         }
 
