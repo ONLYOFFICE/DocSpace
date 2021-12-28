@@ -13,7 +13,7 @@ import toastr from 'studio/toastr';
 import { combineUrl, updateTempContent } from '@appserver/common/utils';
 import { Provider as MobxProvider } from 'mobx-react';
 import ThemeProvider from '@appserver/components/theme-provider';
-import { Base, Dark } from '@appserver/components/themes';
+
 import store from 'studio/store';
 import config from '../package.json';
 import { I18nextProvider, useTranslation } from 'react-i18next';
@@ -139,8 +139,30 @@ const MyProfileRoute = (props) => (
 
 const RedirectToHome = () => <Redirect to={PROXY_HOMEPAGE_URL} />;
 
+const checkTheme = () => {
+  const theme = localStorage.getItem('theme');
+
+  if (theme) return theme;
+  console.log(theme);
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    console.log(window.matchMedia('(prefers-color-scheme: light)').matches);
+    return 'Dark';
+  }
+
+  return 'Base';
+};
+
 const Shell = ({ items = [], page = 'home', ...rest }) => {
-  const { isLoaded, loadBaseInfo, modules, isDesktop, language, FirebaseHelper, personal } = rest;
+  const {
+    isLoaded,
+    loadBaseInfo,
+    modules,
+    isDesktop,
+    language,
+    FirebaseHelper,
+    personal,
+    setTheme,
+  } = rest;
 
   useEffect(() => {
     try {
@@ -326,6 +348,10 @@ const Shell = ({ items = [], page = 'home', ...rest }) => {
     console.log('Current page ', page);
   }, [page]);
 
+  useEffect(() => {
+    setTheme(checkTheme());
+  }, []);
+
   const pathname = window.location.pathname.toLowerCase();
   const isEditor = pathname.indexOf('doceditor') !== -1;
 
@@ -413,7 +439,7 @@ const Shell = ({ items = [], page = 'home', ...rest }) => {
 
 const ShellWrapper = inject(({ auth }) => {
   const { init, isLoaded, settingsStore, setProductVersion, language } = auth;
-  const { personal, isDesktopClient, firebaseHelper, setModuleInfo } = settingsStore;
+  const { personal, isDesktopClient, firebaseHelper, setModuleInfo, setTheme } = settingsStore;
 
   return {
     loadBaseInfo: () => {
@@ -431,6 +457,7 @@ const ShellWrapper = inject(({ auth }) => {
     isDesktop: isDesktopClient,
     FirebaseHelper: firebaseHelper,
     personal,
+    setTheme,
   };
 })(observer(Shell));
 

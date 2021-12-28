@@ -356,7 +356,16 @@ class SettingsStore {
 
   changeTheme = () => {
     const currentTheme = JSON.stringify(this.theme) === JSON.stringify(Base) ? Dark : Base;
+    localStorage.setItem(
+      'theme',
+      JSON.stringify(this.theme) === JSON.stringify(Base) ? 'Dark' : 'Base',
+    );
     this.theme = currentTheme;
+  };
+
+  setTheme = (theme) => {
+    this.theme = theme === 'Base' ? Base : Dark;
+    localStorage.setItem('theme', theme);
   };
 }
 

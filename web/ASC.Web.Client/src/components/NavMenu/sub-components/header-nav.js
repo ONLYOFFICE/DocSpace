@@ -115,6 +115,10 @@ const HeaderNav = ({
         }),
       },
       {
+        key: 'ChangeTheme',
+        ...(!isPersonal && { label: 'Change theme', onClick: changeTheme }),
+      },
+      {
         key: 'AboutBtn',
         label: t('AboutCompanyTitle'),
         onClick: onAboutClick,
@@ -124,11 +128,6 @@ const HeaderNav = ({
         key: 'LogoutBtn',
         label: t('LogoutButton'),
         onClick: onLogoutClick,
-      },
-      {
-        key: 'ChangeTheme',
-        label: 'Change theme',
-        onClick: changeTheme,
       },
     ];
 
