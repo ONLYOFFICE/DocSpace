@@ -44,7 +44,6 @@ class Tooltip extends Component {
           id={id}
           ref={reference}
           getContent={getContent}
-          type="dark"
           effect={effect}
           place={place}
           offset={{

@@ -17,6 +17,10 @@ const StyledTooltip = styled.div`
     max-width: ${(props) =>
       props.maxWidth ? props.maxWidth : props.theme.tooltip.maxWidth};
 
+    p {
+      color: ${(props) => props.theme.tooltip.textColor} !important;
+    }
+
     &:before {
       border: ${(props) => props.theme.tooltip.before.border};
     }
