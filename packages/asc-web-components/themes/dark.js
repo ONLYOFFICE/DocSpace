@@ -2177,6 +2177,26 @@ const Dark = {
       color: "#eeeeee",
     },
   },
+
+  login: {
+    linkColor: "#E06A1B",
+    textColor: "#858585",
+
+    register: {
+      backgroundColor: "#292929",
+      textColor: "#E06A1B",
+    },
+
+    container: {
+      backgroundColor: "#474747",
+    },
+  },
+
+  facebookButton: {
+    background: "#333333",
+    border: "1px solid #474747",
+    color: "#eeeeee",
+  },
 };
 
 export default Dark;

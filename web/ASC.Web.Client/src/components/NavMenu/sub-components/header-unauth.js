@@ -11,7 +11,7 @@ import { Base } from '@appserver/components/themes';
 
 const Header = styled.header`
   align-items: left;
-  background-color: ${(props) => props.theme.header.backgroundColor}
+  background-color: ${(props) => props.theme.header.backgroundColor};
   display: flex;
   width: calc(100vw - 64px);
   height: 48px;

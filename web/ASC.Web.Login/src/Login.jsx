@@ -1,37 +1,31 @@
-import React, { useCallback, useEffect, useState } from "react";
-import styled, { css } from "styled-components";
-import PropTypes from "prop-types";
-import { withRouter } from "react-router";
-import Box from "@appserver/components/box";
-import Button from "@appserver/components/button";
-import Text from "@appserver/components/text";
-import TextInput from "@appserver/components/text-input";
-import Link from "@appserver/components/link";
-import Checkbox from "@appserver/components/checkbox";
-import Toast from "@appserver/components/toast";
-import HelpButton from "@appserver/components/help-button";
-import PasswordInput from "@appserver/components/password-input";
-import FieldContainer from "@appserver/components/field-container";
-import SocialButton from "@appserver/components/social-button";
-import FacebookButton from "@appserver/components/facebook-button";
-import PageLayout from "@appserver/common/components/PageLayout";
-import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
-import Register from "./sub-components/register-container";
-import { getAuthProviders } from "@appserver/common/api/settings";
-import { checkPwd } from "@appserver/common/desktop";
-import {
-  createPasswordHash,
-  getProviderTranslation,
-} from "@appserver/common/utils";
-import { providersData } from "@appserver/common/constants";
-import { inject, observer } from "mobx-react";
-import i18n from "./i18n";
-import {
-  I18nextProvider,
-  useTranslation,
-  withTranslation,
-} from "react-i18next";
-import toastr from "@appserver/components/toast/toastr";
+import React, { useCallback, useEffect, useState } from 'react';
+import styled, { css } from 'styled-components';
+import PropTypes from 'prop-types';
+import { withRouter } from 'react-router';
+import Box from '@appserver/components/box';
+import Button from '@appserver/components/button';
+import Text from '@appserver/components/text';
+import TextInput from '@appserver/components/text-input';
+import Link from '@appserver/components/link';
+import Checkbox from '@appserver/components/checkbox';
+import Toast from '@appserver/components/toast';
+import HelpButton from '@appserver/components/help-button';
+import PasswordInput from '@appserver/components/password-input';
+import FieldContainer from '@appserver/components/field-container';
+import SocialButton from '@appserver/components/social-button';
+import FacebookButton from '@appserver/components/facebook-button';
+import PageLayout from '@appserver/common/components/PageLayout';
+import ForgotPasswordModalDialog from './sub-components/forgot-password-modal-dialog';
+import Register from './sub-components/register-container';
+import { getAuthProviders } from '@appserver/common/api/settings';
+import { checkPwd } from '@appserver/common/desktop';
+import { createPasswordHash, getProviderTranslation } from '@appserver/common/utils';
+import { providersData } from '@appserver/common/constants';
+import { inject, observer } from 'mobx-react';
+import i18n from './i18n';
+import { I18nextProvider, useTranslation, withTranslation } from 'react-i18next';
+import toastr from '@appserver/components/toast/toastr';
+import { Base } from '@appserver/components/themes';
 
 const ButtonsWrapper = styled.div`
   display: table;
@@ -57,7 +51,7 @@ const LoginContainer = styled.div`
 
   .line {
     height: 1px;
-    background-color: #eceef1;
+    background-color: ${(props) => props.theme.login.container.backgroundColor};
     flex-basis: 100%;
     margin: 0 8px;
   }
@@ -127,7 +121,7 @@ const LoginContainer = styled.div`
     .login-bottom-border {
       width: 100%;
       height: 1px;
-      background: #eceef1;
+      background: ${(props) => props.theme.login.container.backgroundColor};
     }
 
     .login-bottom-text {
@@ -136,14 +130,12 @@ const LoginContainer = styled.div`
   }
 `;
 
+LoginContainer.defaultProps = { theme: Base };
+
 const LoginFormWrapper = styled.div`
   display: grid;
   grid-template-rows: ${(props) =>
-    props.enabledJoin
-      ? props.isDesktop
-        ? css`1fr 10px`
-        : css`1fr 66px`
-      : css`1fr`};
+    props.enabledJoin ? (props.isDesktop ? css`1fr 10px` : css`1fr 66px`) : css`1fr`};
   width: 100%;
   height: calc(100vh-48px);
 `;
@@ -159,18 +151,18 @@ const Form = (props) => {
   const inputRef = React.useRef(null);
 
   const [identifierValid, setIdentifierValid] = useState(true);
-  const [identifier, setIdentifier] = useState("");
+  const [identifier, setIdentifier] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
 
   const [passwordValid, setPasswordValid] = useState(true);
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState('');
   const [isChecked, setIsChecked] = useState(false);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
 
-  const [errorText, setErrorText] = useState("");
+  const [errorText, setErrorText] = useState('');
 
-  const { t } = useTranslation("Login");
+  const { t } = useTranslation('Login');
 
   const {
     login,
@@ -182,6 +174,7 @@ const Form = (props) => {
     history,
     thirdPartyLogin,
     providers,
+    theme,
   } = props;
 
   const { error, confirmedEmail } = match.params;
@@ -190,26 +183,22 @@ const Form = (props) => {
     try {
       await thirdPartyLogin(profile);
 
-      const redirectPath = localStorage.getItem("redirectPath");
+      const redirectPath = localStorage.getItem('redirectPath');
 
       if (redirectPath) {
-        localStorage.removeItem("redirectPath");
+        localStorage.removeItem('redirectPath');
         window.location.href = redirectPath;
       }
-    }
-    catch(e) {
-      toastr.error(
-        t("Common:ProviderNotConnected"),
-        t("Common:ProviderLoginError")
-      );
+    } catch (e) {
+      toastr.error(t('Common:ProviderNotConnected'), t('Common:ProviderLoginError'));
     }
 
-    localStorage.removeItem("profile");
-    localStorage.removeItem("code");
+    localStorage.removeItem('profile');
+    localStorage.removeItem('code');
   };
 
   useEffect(() => {
-    const profile = localStorage.getItem("profile");
+    const profile = localStorage.getItem('profile');
     if (!profile) return;
 
     oAuthLogin(profile);
@@ -217,7 +206,7 @@ const Form = (props) => {
 
   const onKeyDown = (e) => {
     //console.log("onKeyDown", e.key);
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       onClearErrors(e);
       !isDisabled && onSubmit(e);
       e.preventDefault();
@@ -228,7 +217,7 @@ const Form = (props) => {
     //console.log("onClearErrors", e);
     !identifierValid && setIdentifierValid(true);
     !passwordValid && setPasswordValid(true);
-    errorText && setErrorText("");
+    errorText && setErrorText('');
   };
 
   //const throttledKeyPress = throttle(onKeyPress, 500);
@@ -250,7 +239,7 @@ const Form = (props) => {
   };
 
   useEffect(async () => {
-    document.title = `${t("Authorization")} – ${organizationName}`; //TODO: implement the setDocumentTitle() utility in ASC.Web.Common
+    document.title = `${t('Authorization')} – ${organizationName}`; //TODO: implement the setDocumentTitle() utility in ASC.Web.Common
 
     error && setErrorText(error);
     confirmedEmail && setIdentifier(confirmedEmail);
@@ -299,7 +288,7 @@ const Form = (props) => {
   };
 
   const onSubmit = () => {
-    errorText && setErrorText("");
+    errorText && setErrorText('');
     let hasError = false;
 
     const userName = identifier.trim();
@@ -325,10 +314,10 @@ const Form = (props) => {
     login(userName, hash)
       .then((res) => {
         const { url, user, hash } = res;
-        const redirectPath = localStorage.getItem("redirectPath");
+        const redirectPath = localStorage.getItem('redirectPath');
 
         if (redirectPath) {
-          localStorage.removeItem("redirectPath");
+          localStorage.removeItem('redirectPath');
           window.location.href = redirectPath;
         } else history.push(url, { user, hash });
       })
@@ -352,17 +341,17 @@ const Form = (props) => {
         ? (window.location.href = url)
         : window.open(
             url,
-            "login",
-            "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
+            'login',
+            'width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no',
           );
 
       getOAuthToken(tokenGetterWin).then((code) => {
         const token = window.btoa(
           JSON.stringify({
             auth: providerName,
-            mode: "popup",
-            callback: "authCallback",
-          })
+            mode: 'popup',
+            callback: 'authCallback',
+          }),
         );
 
         tokenGetterWin.location.href = getLoginLink(token, code);
@@ -376,10 +365,7 @@ const Form = (props) => {
     const faceBookData = providers[facebookIndex];
     const { icon, label, iconOptions } = providersData[faceBookData.provider];
     providerButtons.unshift(
-      <div
-        className="buttonWrapper"
-        key={`${faceBookData.provider}ProviderItem`}
-      >
+      <div className="buttonWrapper" key={`${faceBookData.provider}ProviderItem`}>
         <FacebookButton
           iconName={icon}
           label={getProviderTranslation(label, t)}
@@ -389,7 +375,7 @@ const Form = (props) => {
           data-providername={faceBookData.provider}
           onClick={onSocialButtonClick}
         />
-      </div>
+      </div>,
     );
   };
 
@@ -401,11 +387,9 @@ const Form = (props) => {
       providers.map((item, index) => {
         if (!providersData[item.provider]) return;
 
-        const { icon, label, iconOptions, className } = providersData[
-          item.provider
-        ];
+        const { icon, label, iconOptions, className } = providersData[item.provider];
 
-        if (item.provider === "facebook") {
+        if (item.provider === 'facebook') {
           facebookIndex = index;
           return;
         }
@@ -414,7 +398,7 @@ const Form = (props) => {
             <SocialButton
               iconName={icon}
               label={getProviderTranslation(label, t)}
-              className={`socialButton ${className ? className : ""}`}
+              className={`socialButton ${className ? className : ''}`}
               $iconOptions={iconOptions}
               data-url={item.url}
               data-providername={item.provider}
@@ -444,12 +428,7 @@ const Form = (props) => {
 
   return (
     <LoginContainer>
-      <Text
-        fontSize="32px"
-        fontWeight={600}
-        textAlign="center"
-        className="greeting-title"
-      >
+      <Text fontSize="32px" fontWeight={600} textAlign="center" className="greeting-title">
         {greetingTitle}
       </Text>
 
@@ -458,7 +437,7 @@ const Form = (props) => {
           isVertical={true}
           labelVisible={false}
           hasError={!identifierValid}
-          errorMessage={errorText ? errorText : t("Common:RequiredField")} //TODO: Add wrong login server error
+          errorMessage={errorText ? errorText : t('Common:RequiredField')} //TODO: Add wrong login server error
         >
           <TextInput
             id="login"
@@ -466,7 +445,7 @@ const Form = (props) => {
             type="email"
             hasError={!identifierValid}
             value={identifier}
-            placeholder={t("RegistrationEmailWatermark")}
+            placeholder={t('RegistrationEmailWatermark')}
             size="large"
             scale={true}
             isAutoFocussed={true}
@@ -482,14 +461,14 @@ const Form = (props) => {
           isVertical={true}
           labelVisible={false}
           hasError={!passwordValid}
-          errorMessage={errorText ? "" : t("Common:RequiredField")} //TODO: Add wrong password server error
+          errorMessage={errorText ? '' : t('Common:RequiredField')} //TODO: Add wrong password server error
         >
           <PasswordInput
             simpleView={true}
             passwordSettings={settings}
             id="password"
             inputName="password"
-            placeholder={t("Common:Password")}
+            placeholder={t('Common:Password')}
             type="password"
             hasError={!passwordValid}
             inputValue={password}
@@ -508,24 +487,21 @@ const Form = (props) => {
               className="login-checkbox"
               isChecked={isChecked}
               onChange={onChangeCheckbox}
-              label={<Text fontSize="13px">{t("Remember")}</Text>}
+              label={<Text fontSize="13px">{t('Remember')}</Text>}
             />
             <HelpButton
               className="login-tooltip"
-              helpButtonHeaderContent={t("CookieSettingsTitle")}
-              tooltipContent={
-                <Text fontSize="12px">{t("RememberHelper")}</Text>
-              }
+              helpButtonHeaderContent={t('CookieSettingsTitle')}
+              tooltipContent={<Text fontSize="12px">{t('RememberHelper')}</Text>}
             />
             <Link
               fontSize="13px"
-              color="#316DAA"
+              color={theme.login.linkColor}
               className="login-link"
               type="page"
               isHovered={false}
-              onClick={onClick}
-            >
-              {t("ForgotPassword")}
+              onClick={onClick}>
+              {t('ForgotPassword')}
             </Link>
           </div>
         </div>
@@ -544,7 +520,7 @@ const Form = (props) => {
           primary
           size="large"
           scale={true}
-          label={isLoading ? t("Common:LoadingProcessing") : t("LoginButton")}
+          label={isLoading ? t('Common:LoadingProcessing') : t('LoginButton')}
           tabIndex={1}
           isDisabled={isLoading}
           isLoading={isLoading}
@@ -553,7 +529,7 @@ const Form = (props) => {
 
         {confirmedEmail && (
           <Text isBold={true} fontSize="16px">
-            {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
+            {t('MessageEmailConfirmed')} {t('MessageAuthorize')}
           </Text>
         )}
 
@@ -561,8 +537,8 @@ const Form = (props) => {
           <>
             <Box displayProp="flex" alignItems="center" marginProp="0 0 16px 0">
               <div className="login-bottom-border"></div>
-              <Text className="login-bottom-text" color="#A3A9AE">
-                {t("Or")}
+              <Text className="login-bottom-text" color={theme.login.textColor}>
+                {t('Or')}
               </Text>
               <div className="login-bottom-border"></div>
             </Box>
@@ -588,9 +564,9 @@ Form.propTypes = {
 };
 
 Form.defaultProps = {
-  identifier: "",
-  password: "",
-  email: "",
+  identifier: '',
+  password: '',
+  email: '',
 };
 
 const LoginForm = (props) => {
@@ -633,6 +609,7 @@ const Login = inject(({ auth }) => {
     isDesktopClient: isDesktop,
     getOAuthToken,
     getLoginLink,
+    theme,
   } = settingsStore;
 
   return {
@@ -650,8 +627,9 @@ const Login = inject(({ auth }) => {
     getLoginLink,
     setProviders,
     providers,
+    theme,
   };
-})(withRouter(observer(withTranslation(["Login", "Common"])(LoginForm))));
+})(withRouter(observer(withTranslation(['Login', 'Common'])(LoginForm))));
 
 export default (props) => (
   <I18nextProvider i18n={i18n}>

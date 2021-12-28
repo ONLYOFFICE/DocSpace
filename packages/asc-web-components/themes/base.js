@@ -2176,6 +2176,26 @@ const Base = {
       color: "#d0d5da",
     },
   },
+
+  login: {
+    linkColor: "#316DAA",
+    textColor: "#A3A9AE",
+
+    register: {
+      backgroundColor: "#f8f9f9",
+      textColor: "#316daa",
+    },
+
+    container: {
+      backgroundColor: "#eceef1",
+    },
+  },
+
+  facebookButton: {
+    background: "#ffffff",
+    border: "1px solid #1877f2",
+    color: "#1877f2",
+  },
 };
 
 export default Base;
