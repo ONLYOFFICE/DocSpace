@@ -31,14 +31,12 @@ namespace ASC.Data.Backup
         private readonly bool mysql;
         private readonly IDictionary<string, string> whereExceptions = new Dictionary<string, string>();
         private readonly ILog log;
-        private readonly BackupsContext backupsContext;
         private readonly TenantDbContext tenantDbContext;
         private readonly CoreDbContext coreDbContext;
 
-        public DbHelper(IOptionsMonitor<ILog> options, ConnectionStringSettings connectionString, BackupsContext backupsContext, TenantDbContext tenantDbContext, CoreDbContext coreDbContext)
+        public DbHelper(IOptionsMonitor<ILog> options, ConnectionStringSettings connectionString, TenantDbContext tenantDbContext, CoreDbContext coreDbContext)
         {
             log = options.CurrentValue;
-            this.backupsContext = backupsContext;
             this.tenantDbContext = tenantDbContext;
             this.coreDbContext = coreDbContext;
             var file = connectionString.ElementInformation.Source;
