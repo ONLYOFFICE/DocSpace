@@ -1,9 +1,9 @@
-import React from "react";
-import styled, { css } from "styled-components";
-import { withRouter } from "react-router";
-import Headline from "@appserver/common/components/Headline";
-import IconButton from "@appserver/components/icon-button";
-import { desktop } from "@appserver/components/utils/device";
+import React from 'react';
+import styled, { css } from 'styled-components';
+import { withRouter } from 'react-router';
+import Headline from '@appserver/common/components/Headline';
+import IconButton from '@appserver/components/icon-button';
+import { desktop } from '@appserver/components/utils/device';
 
 const StyledContainer = styled.div`
   display: grid;
@@ -36,8 +36,8 @@ const SectionHeaderContent = (props) => {
       <IconButton
         iconName="/static/images/arrow.path.react.svg"
         size="17"
-        color="#A3A9AE"
-        hoverColor="#657077"
+        // color="#A3A9AE"
+        // hoverColor="#657077"
         isFill={true}
         onClick={onClickBack}
         className="arrow-button"

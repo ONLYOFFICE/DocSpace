@@ -2156,6 +2156,27 @@ const Dark = {
     linkColor: "#116d9d",
     textColor: "#83888D",
   },
+
+  filesVersionHistory: {
+    row: {
+      color: "#eeeeee",
+      fill: "#eeeeee",
+    },
+
+    badge: {
+      color: "#333333",
+      stroke: "#474747",
+      fill: "#858585",
+      defaultFill: "#333333",
+      badgeFill: "#F58D31",
+    },
+
+    versionList: {
+      fill: "#eeeeee",
+      stroke: "#eeeeee",
+      color: "#eeeeee",
+    },
+  },
 };
 
 export default Dark;

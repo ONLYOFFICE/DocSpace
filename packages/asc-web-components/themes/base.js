@@ -2155,6 +2155,27 @@ const Base = {
     linkColor: "#116d9d",
     textColor: "#83888D",
   },
+
+  filesVersionHistory: {
+    row: {
+      color: "#A3A9AE",
+      fill: "#333333",
+    },
+
+    badge: {
+      color: "#FFFFFF",
+      stroke: "#A3A9AE",
+      fill: "#A3A9AE",
+      defaultFill: "#ffffff",
+      badgeFill: "#ED7309",
+    },
+
+    versionList: {
+      fill: "#d0d5da",
+      stroke: "#d0d5da",
+      color: "#d0d5da",
+    },
+  },
 };
 
 export default Base;
