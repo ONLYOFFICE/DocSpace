@@ -10,6 +10,11 @@ import { Dark, Base } from '@appserver/components/themes';
 
 const { proxyURL } = AppServerConfig;
 
+const themes = {
+  Dark: Dark,
+  Base: Base,
+};
+
 class SettingsStore {
   isLoading = false;
   isLoaded = false;
@@ -364,7 +369,7 @@ class SettingsStore {
   };
 
   setTheme = (theme) => {
-    this.theme = theme === 'Base' ? Base : Dark;
+    this.theme = themes[theme];
     localStorage.setItem('theme', theme);
   };
 }
