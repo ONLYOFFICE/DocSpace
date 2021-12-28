@@ -106,7 +106,7 @@ namespace ASC.Core.Notify.Signalr
     [Scope(typeof(ConfigureSignalrServiceClient))]
     public class SignalrServiceClient
     {
-        private static readonly TimeSpan Timeout;
+        private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(1);
         internal ILog Log;
         private static DateTime lastErrorTime;
         public bool EnableSignalr;
@@ -120,11 +120,6 @@ namespace ASC.Core.Notify.Signalr
 
         internal TenantManager TenantManager { get; set; }
         internal CoreSettings CoreSettings { get; set; }
-
-        static SignalrServiceClient()
-        {
-            Timeout = TimeSpan.FromSeconds(1);
-        }
 
         public SignalrServiceClient()
         {
