@@ -1004,11 +1004,6 @@ namespace ASC.Web.Files.Utils
                 }
                 else
                 {
-                    // hack. http://ubuntuforums.org/showthread.php?t=1841740
-                    if (WorkContext.IsMono)
-                    {
-                        ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
-                    }
                     var request = new HttpRequestMessage();
                     request.RequestUri = new Uri(downloadUri);
 

@@ -1179,14 +1179,6 @@ namespace ASC.Web.Files
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(fileUri);
 
-            // hack. http://ubuntuforums.org/showthread.php?t=1841740
-            if (WorkContext.IsMono)
-            {
-                ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
-            }
-
-
-
             var fileDao = DaoFactory.GetFileDao<T>();
             using var httpClient = new HttpClient();
             using var response = httpClient.Send(request);

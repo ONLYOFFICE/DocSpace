@@ -289,9 +289,6 @@ namespace ASC.Core.Notify.Senders
                 Timeout = NETWORK_TIMEOUT
             };
 
-            if (sslCertificatePermit)
-                smtpClient.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
-
             return smtpClient;
         }
 

@@ -681,10 +681,6 @@ namespace ASC.Web.Files.Utils
             fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
             DocumentServiceConnector.GetConvertedUri(fileUri, file.ConvertedExtension, toExtension, docKey, null, null, null, false, out var convertUri);
 
-            if (WorkContext.IsMono && ServicePointManager.ServerCertificateValidationCallback == null)
-            {
-                ServicePointManager.ServerCertificateValidationCallback += (s, c, n, p) => true; //HACK: http://ubuntuforums.org/showthread.php?t=1841740
-            }
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(convertUri);
 
@@ -857,11 +853,6 @@ namespace ASC.Web.Files.Utils
             request.RequestUri = new Uri(convertedFileUrl);
 
             using var httpClient = new HttpClient();
-
-            if (WorkContext.IsMono && ServicePointManager.ServerCertificateValidationCallback == null)
-            {
-                ServicePointManager.ServerCertificateValidationCallback += (s, c, n, p) => true; //HACK: http://ubuntuforums.org/showthread.php?t=1841740
-            }
 
             try
             {

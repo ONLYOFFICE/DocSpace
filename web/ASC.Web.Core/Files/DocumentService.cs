@@ -171,12 +171,6 @@ namespace ASC.Web.Core.Files
 
             request.Content = new StringContent(bodyString, Encoding.UTF8, "application/json");
 
-            // hack. http://ubuntuforums.org/showthread.php?t=1841740
-            if (WorkContext.IsMono)
-            {
-                ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
-            }
-
             string dataResponse;
             HttpResponseMessage response = null;
             Stream responseStream = null;
@@ -279,12 +273,6 @@ namespace ASC.Web.Core.Files
 
             request.Content = new StringContent(bodyString, Encoding.UTF8, "application/json");
 
-            // hack. http://ubuntuforums.org/showthread.php?t=1841740
-            if (WorkContext.IsMono)
-            {
-                ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
-            }
-
             string dataResponse;
             using (var response = httpClient.Send(request))
             using (var stream = response.Content.ReadAsStream())
@@ -360,12 +348,6 @@ namespace ASC.Web.Core.Files
             });
 
             request.Content = new StringContent(bodyString, Encoding.UTF8, "application/json");
-
-            // hack. http://ubuntuforums.org/showthread.php?t=1841740
-            if (WorkContext.IsMono)
-            {
-                ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
-            }
 
             string dataResponse = null;
 

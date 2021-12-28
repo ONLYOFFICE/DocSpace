@@ -140,12 +140,6 @@ namespace ASC.Web.Files.Utils
             request.Headers.Add("Content-Type", MimeMapping.GetMimeMapping(mailMergeTask.AttachTitle));
             request.Content = new StreamContent(mailMergeTask.Attach);
 
-            // hack. http://ubuntuforums.org/showthread.php?t=1841740
-            if (WorkContext.IsMono)
-            {
-                ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
-            }
-
             string responseAttachString;
             using var httpClient = new HttpClient();
             using var response = httpClient.Send(request);

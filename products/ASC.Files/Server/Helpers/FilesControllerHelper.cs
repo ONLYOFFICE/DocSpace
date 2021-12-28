@@ -270,12 +270,6 @@ namespace ASC.Files.Helpers
                 request.Headers.Add(HttpRequestExtensions.UrlRewriterHeader, rewriterHeader.ToString());
             }
 
-            // hack. http://ubuntuforums.org/showthread.php?t=1841740
-            if (WorkContext.IsMono)
-            {
-                ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
-            }
-
             using var response = httpClient.Send(request);
             using var responseStream = response.Content.ReadAsStream();
             using var streamReader = new StreamReader(responseStream);

@@ -499,12 +499,6 @@ namespace ASC.Web.Files.Services.DocumentService
                         var requestDownload = new HttpRequestMessage();
                         requestDownload.RequestUri = new Uri(DocumentServiceConnector.ReplaceDocumentAdress(fileData.Url));
 
-                        // hack. http://ubuntuforums.org/showthread.php?t=1841740
-                        if (WorkContext.IsMono)
-                        {
-                            ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
-                        }
-
                         using (var responseDownload = httpClient.Send(requestDownload))
                         using (var streamDownload = responseDownload.Content.ReadAsStream())
                         using (var downloadStream = new ResponseStream(streamDownload, streamDownload.Length))
@@ -537,13 +531,6 @@ namespace ASC.Web.Files.Services.DocumentService
                     case MailMergeType.Html:
                         var httpRequest = new HttpRequestMessage();
                         httpRequest.RequestUri = new Uri(DocumentServiceConnector.ReplaceDocumentAdress(fileData.Url));
-
-                        // hack. http://ubuntuforums.org/showthread.php?t=1841740
-                        if (WorkContext.IsMono)
-                        {
-                            ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
-                        }
-
 
                         using (var httpResponse = httpClient.Send(httpRequest))
                         using (var stream = httpResponse.Content.ReadAsStream())
@@ -611,12 +598,6 @@ namespace ASC.Web.Files.Services.DocumentService
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(downloadUri);
 
-                // hack. http://ubuntuforums.org/showthread.php?t=1841740
-                if (WorkContext.IsMono)
-                {
-                    ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
-                }
-
                 using (var httpClient = new HttpClient())
                 using (var response = httpClient.Send(request))
                 using (var stream = response.Content.ReadAsStream())
@@ -643,12 +624,6 @@ namespace ASC.Web.Files.Services.DocumentService
                 var fileDao = DaoFactory.GetFileDao<T>();
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(differenceUrl);
-
-                // hack. http://ubuntuforums.org/showthread.php?t=1841740
-                if (WorkContext.IsMono)
-                {
-                    ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
-                }
 
                 using var httpClient = new HttpClient();
                 using var response = httpClient.Send(request);

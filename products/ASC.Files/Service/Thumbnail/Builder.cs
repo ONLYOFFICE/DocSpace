@@ -289,12 +289,6 @@ namespace ASC.Files.ThumbnailBuilder
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(thumbnailUrl);
 
-            //HACK: http://ubuntuforums.org/showthread.php?t=1841740
-            if (WorkContext.IsMono && ServicePointManager.ServerCertificateValidationCallback == null)
-            {
-                ServicePointManager.ServerCertificateValidationCallback += (s, c, n, p) => true;
-            }
-
             using var httpClient = new HttpClient();
             using var response = httpClient.Send(request);
             using (var stream = new ResponseStream(response))

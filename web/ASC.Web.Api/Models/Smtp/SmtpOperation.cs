@@ -229,9 +229,6 @@ namespace ASC.Api.Settings.Smtp
                 Timeout = (int)TimeSpan.FromSeconds(30).TotalMilliseconds
             };
 
-            if (sslCertificatePermit)
-                client.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
-
             return client;
         }
 
