@@ -1745,6 +1745,7 @@ const Base = {
   section: {
     toggler: {
       background: "#fff",
+      fill: "#A3A9AE",
       boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
     },
 

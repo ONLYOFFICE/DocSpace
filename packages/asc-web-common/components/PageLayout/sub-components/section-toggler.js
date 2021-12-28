@@ -27,6 +27,11 @@ const StyledSectionToggler = styled.div`
     background: ${(props) => props.theme.section.toggler.background};
     box-sizing: border-box;
     line-height: 14px;
+    svg {
+      path {
+        fill: ${(props) => props.theme.section.toggler.background};
+      }
+    }
   }
 `;
 
