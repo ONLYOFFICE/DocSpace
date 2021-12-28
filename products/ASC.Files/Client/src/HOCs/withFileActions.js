@@ -153,7 +153,10 @@ export default function withFileActions(WrappedFileItem) {
       if (encrypted && isPrivacy) return checkProtocol(item.id, true);
 
       if (isTrashFolder) return;
-      if ((e && e.target.tagName === "INPUT") || !!e.target.closest(".badges"))
+      if (
+        (e && e.target.tagName === "INPUT") ||
+        !!e.target.closest(".lock-file")
+      )
         return;
 
       e.preventDefault();

@@ -271,7 +271,7 @@ const StyledHeaderContent = styled.div`
 
 const StyledBody = styled.div`
   &.files-operations-body {
-    padding: 0 16px;
+    padding: 0 0 0 16px;
     box-sizing: border-box;
     width: 100%;
     height: calc(100vh - 125px);
