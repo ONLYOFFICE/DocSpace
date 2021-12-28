@@ -2200,6 +2200,11 @@ const Base = {
   peopleSelector: {
     textColor: "#a3a9ae",
   },
+
+  peopleWithContent: {
+    color: "#A3A9AE",
+    pendingColor: "#D0D5DA",
+  },
 };
 
 export default Base;

@@ -1,12 +1,12 @@
-import React, { useCallback } from "react";
-import { inject, observer } from "mobx-react";
-import Link from "@appserver/components/link";
-import LinkWithDropdown from "@appserver/components/link-with-dropdown";
-import Avatar from "@appserver/components/avatar";
+import React, { useCallback } from 'react';
+import { inject, observer } from 'mobx-react';
+import Link from '@appserver/components/link';
+import LinkWithDropdown from '@appserver/components/link-with-dropdown';
+import Avatar from '@appserver/components/avatar';
 
-import config from "../../package.json";
-import { combineUrl } from "@appserver/common/utils";
-import { AppServerConfig } from "@appserver/common/constants";
+import config from '../../package.json';
+import { combineUrl } from '@appserver/common/utils';
+import { AppServerConfig } from '@appserver/common/constants';
 
 export default function withContent(WrappedContent) {
   const WithContent = (props) => {
@@ -19,24 +19,25 @@ export default function withContent(WrappedContent) {
       selectUser,
       deselectUser,
       isAdmin,
+      theme,
     } = props;
     const { userName, mobilePhone, email, role, displayName, avatar } = item;
 
-    const onContentRowSelect = (checked, user) =>
-      checked ? selectUser(user) : deselectUser(user);
+    const onContentRowSelect = (checked, user) => (checked ? selectUser(user) : deselectUser(user));
 
     const checkedProps = isAdmin ? { checked } : {};
 
-    const element = (
-      <Avatar size="min" role={role} userName={displayName} source={avatar} />
-    );
+    const element = <Avatar size="min" role={role} userName={displayName} source={avatar} />;
 
     const getFormattedGroups = () => {
       let temp = [];
       const groups = item.groups;
-      const linkColor = item.statusType === "pending" ? "#D0D5DA" : "#A3A9AE";
+      const linkColor =
+        item.statusType === 'pending'
+          ? theme.peopleWithContent.pendingColor
+          : theme.peopleWithContent.color;
 
-      if (!groups) temp.push({ key: 0, label: "" });
+      if (!groups) temp.push({ key: 0, label: '' });
 
       groups &&
         groups.map((group) =>
@@ -44,7 +45,7 @@ export default function withContent(WrappedContent) {
             key: group.id,
             label: group.name,
             onClick: () => selectGroup(group.id),
-          })
+          }),
         );
 
       if (temp.length <= 1) {
@@ -58,8 +59,7 @@ export default function withContent(WrappedContent) {
             fontSize="12px"
             fontWeight={400}
             color={linkColor}
-            onClick={temp[0].onClick}
-          >
+            onClick={temp[0].onClick}>
             {temp[0].label}
           </Link>
         );
@@ -73,8 +73,7 @@ export default function withContent(WrappedContent) {
             fontSize="12px"
             fontWeight={400}
             color={linkColor}
-            data={temp}
-          >
+            data={temp}>
             {temp[0].label}
           </LinkWithDropdown>
         );
@@ -84,13 +83,7 @@ export default function withContent(WrappedContent) {
     const groups = getFormattedGroups();
 
     const redirectToProfile = () => {
-      history.push(
-        combineUrl(
-          AppServerConfig.proxyURL,
-          config.homepage,
-          `/view/${userName}`
-        )
-      );
+      history.push(combineUrl(AppServerConfig.proxyURL, config.homepage, `/view/${userName}`));
     };
 
     const onUserNameClick = useCallback(
@@ -100,16 +93,13 @@ export default function withContent(WrappedContent) {
         fetchProfile(userName).finally(() => {
           clearTimeout(timer);
           if (
-            combineUrl(
-              AppServerConfig.proxyURL,
-              config.homepage,
-              `/view/${userName}`
-            ) !== window.location.pathname
+            combineUrl(AppServerConfig.proxyURL, config.homepage, `/view/${userName}`) !==
+            window.location.pathname
           )
             redirectToProfile();
         });
       },
-      [history, userName]
+      [history, userName],
     );
 
     const onPhoneClick = () => window.open(`sms:${mobilePhone}`);
@@ -140,6 +130,7 @@ export default function withContent(WrappedContent) {
     const { selection, selectUser, deselectUser } = selectionStore;
 
     return {
+      theme: auth.settingsStore.theme,
       isAdmin,
       currentUserId: userStore.user.id,
       selectGroup,

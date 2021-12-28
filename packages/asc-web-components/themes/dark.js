@@ -2201,6 +2201,11 @@ const Dark = {
   peopleSelector: {
     textColor: "#eeeeee",
   },
+
+  peopleWithContent: {
+    color: "#858585",
+    pendingColor: "#474747",
+  },
 };
 
 export default Dark;
