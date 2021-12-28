@@ -88,9 +88,6 @@ const Editor = () => {
   const isDesktop = window["AscDesktopEditor"] !== undefined;
   const view = url.indexOf("action=view") !== -1;
 
-  let fileId = encodeURIComponent(decodedId);
-  let version = urlParams ? urlParams.version || null : null;
-
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [titleSelectorFolder, setTitleSelectorFolder] = useState("");
@@ -811,13 +808,13 @@ const Editor = () => {
   const selectFilesListTitle = () => {
     return (
       <>
-          {filesType === mailMergeAction ? (
-            getFileTypeTranslation()
-          ) : (
-            <Trans i18n={i18n} i18nKey="SelectFilesType" ns="Editor">
-              Select files of type: {{ fileType: getFileTypeTranslation() }}
-            </Trans>
-          )}
+        {filesType === mailMergeAction ? (
+          getFileTypeTranslation()
+        ) : (
+          <Trans i18n={i18n} i18nKey="SelectFilesType" ns="Editor">
+            Select files of type: {{ fileType: getFileTypeTranslation() }}
+          </Trans>
+        )}
       </>
     );
   };

@@ -59,14 +59,11 @@ const MainButton = (props) => {
 
   const sideIcon = <ReactSVG src={iconName} width="16px" height="16px" />;
 
-    const dropDownManualWidthProp = this.ref.current
-      ? { manualWidth: this.ref.current.clientWidth + "px" }
-      : {};
-    return (
+  return (
     <GroupMainButton {...props} ref={ref}>
       <StyledMainButton {...props} onClick={onMainButtonClick}>
         <Text className="main-button_text">{text}</Text>
-        </StyledMainButton>
+      </StyledMainButton>
       {isDropdown ? (
         <ContextMenu
           model={model}
@@ -74,14 +71,14 @@ const MainButton = (props) => {
           ref={menuRef}
           onHide={onHide}
           scaled={true}
-          />
-        ) : (
+        />
+      ) : (
         <StyledSecondaryButton {...props} onClick={onSecondaryButtonClick}>
           {iconName && sideIcon}
-          </StyledSecondaryButton>
-        )}
-      </GroupMainButton>
-    );
+        </StyledSecondaryButton>
+      )}
+    </GroupMainButton>
+  );
 };
 
 MainButton.propTypes = {
