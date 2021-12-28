@@ -138,6 +138,12 @@ namespace ASC.Web.Core.Files
             get => extsCoAuthoring ??= (Configuration.GetSection("files:docservice:coauthor-docs").Get<string[]>() ?? new string[] { }).ToList();
         }
 
+        private string masterFormExtension;
+        public string MasterFormExtension
+        {
+            get => masterFormExtension ??= Configuration["files:docservice:internal-form"] ?? ".docxf";
+        }
+
         public Dictionary<FileType, string> InternalExtension
         {
             get => new Dictionary<FileType, string>
@@ -553,7 +559,7 @@ namespace ASC.Web.Core.Files
             };
         public Dictionary<FileType, string> InternalExtension => FileUtilityConfiguration.InternalExtension;
 
-        public string MasterFormExtension { get => Configuration["files:docservice:internal-form"] ?? ".docxf"; }
+        public string MasterFormExtension { get => FileUtilityConfiguration.MasterFormExtension; }
         public enum CsvDelimiter
         {
             None = 0,
