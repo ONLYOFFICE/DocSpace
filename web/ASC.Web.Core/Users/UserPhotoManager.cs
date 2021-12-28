@@ -50,7 +50,7 @@ using SixLabors.ImageSharp.Processing;
 namespace ASC.Web.Core.Users
 {
     [Transient]
-    public class ResizeWorkerItem : DistributedTask
+    public sealed class ResizeWorkerItem : DistributedTask
     {
         public ResizeWorkerItem()
         {

@@ -90,7 +90,7 @@ namespace ASC.VoipService
         }
     }
 
-    public class WorkingHours
+    public sealed class WorkingHours
     {
         public bool Enabled { get; set; }
         public TimeSpan? From { get; set; }

@@ -155,7 +155,7 @@ namespace ASC.Files.Core
             return obj is FileEntry<T> f && Equals(f.ID, ID);
         }
 
-        public bool Equals(FileEntry<T> obj)
+        public virtual bool Equals(FileEntry<T> obj)
         {
             return Equals(obj.ID, ID);
         }

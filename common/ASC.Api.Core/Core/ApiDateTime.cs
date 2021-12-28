@@ -37,7 +37,7 @@ using ASC.Core;
 namespace ASC.Api.Core
 {
     [TypeConverter(typeof(ApiDateTimeTypeConverter))]
-    public class ApiDateTime : IComparable<ApiDateTime>, IComparable
+    public sealed class ApiDateTime : IComparable<ApiDateTime>, IComparable
     {
         internal static readonly string[] Formats = new[]
                                                        {
