@@ -82,7 +82,7 @@ namespace ASC.Files.Thirdparty
 
         public Task<Stream> GetThumbnailAsync(File<string> file)
         {
-            return null;
+            return Task.FromResult<Stream>(null);
         }
 
         public virtual Stream GetFileStream(File<string> file)
