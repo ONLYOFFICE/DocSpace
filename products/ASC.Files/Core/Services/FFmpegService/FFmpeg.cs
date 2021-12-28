@@ -33,11 +33,16 @@ namespace ASC.Web.Files.Services.FFmpegService
             return MustConvertable.Contains(extension.TrimStart('.'));
         }
 
-        public async Task<Stream> Convert(Stream inputStream, string inputFormat)
+        public Task<Stream> Convert(Stream inputStream, string inputFormat)
         {
             if (inputStream == null) throw new ArgumentException();
             if (string.IsNullOrEmpty(inputFormat)) throw new ArgumentException();
 
+            return ConvertInternal(inputStream, inputFormat);
+        }
+
+        private async Task<Stream> ConvertInternal(Stream inputStream, string inputFormat)
+        {
             var startInfo = PrepareFFmpeg(inputFormat);
 
             Process process;
@@ -116,12 +121,17 @@ namespace ASC.Web.Files.Services.FFmpegService
             return startInfo;
         }
 
-        private static async Task<int> StreamCopyToAsync(Stream srcStream, Stream dstStream, bool closeSrc = false, bool closeDst = false)
+        private static Task<int> StreamCopyToAsync(Stream srcStream, Stream dstStream, bool closeSrc = false, bool closeDst = false)
         {
-            const int bufs = 2048 * 4;
-
             if (srcStream == null) throw new ArgumentNullException("srcStream");
             if (dstStream == null) throw new ArgumentNullException("dstStream");
+
+            return StreamCopyToAsyncInternal(srcStream, dstStream, closeSrc, closeDst);
+        }
+
+        private static async Task<int> StreamCopyToAsyncInternal(Stream srcStream, Stream dstStream, bool closeSrc, bool closeDst)
+        {
+            const int bufs = 2048 * 4;
 
             var buffer = new byte[bufs];
             int readed;
