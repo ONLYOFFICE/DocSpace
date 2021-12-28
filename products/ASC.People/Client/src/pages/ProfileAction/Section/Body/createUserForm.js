@@ -495,6 +495,7 @@ class CreateUserForm extends React.Component {
               unknownError={t("Common:Error")}
               saveButtonLabel={t("Common:SaveButton")}
               saveButtonLoading={this.state.isLoading}
+              maxSizeLabel={t("Translations:MaxSizeLabel")}
             />
           </AvatarContainer>
           <MainFieldsContainer

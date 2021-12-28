@@ -1,0 +1,11 @@
+﻿{
+    "FileLocation": "Đi tới Tài liệu",
+    "FileName": "Tên file",
+    "FolderForSave": "Thư mục để lưu",
+    "OpenSavedDocument": "Mở tài liệu đã lưu trong tab mới",
+    "SelectFilesType": "Chọn tệp tin loại: {{fileType}}",
+    "ImageFileType": "hình ảnh",
+    "DocumentsFileType": "tài liệu",
+    "MailMergeFileType": "Chọn tệp tin trong định dạng XLSX",
+    "SelectFileTitle": "Chọn nguồn dữ liệu"
+}

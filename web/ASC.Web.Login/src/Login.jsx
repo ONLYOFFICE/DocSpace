@@ -196,8 +196,7 @@ const Form = (props) => {
         localStorage.removeItem("redirectPath");
         window.location.href = redirectPath;
       }
-    }
-    catch(e) {
+    } catch (e) {
       toastr.error(
         t("Common:ProviderNotConnected"),
         t("Common:ProviderLoginError")
@@ -322,7 +321,8 @@ const Form = (props) => {
     const hash = createPasswordHash(pass, hashSettings);
 
     isDesktop && checkPwd();
-    login(userName, hash)
+    const session = !isChecked;
+    login(userName, hash, session)
       .then((res) => {
         const { url, user, hash } = res;
         const redirectPath = localStorage.getItem("redirectPath");
