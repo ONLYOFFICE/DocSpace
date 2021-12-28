@@ -2196,6 +2196,10 @@ const Base = {
     border: "1px solid #1877f2",
     color: "#1877f2",
   },
+
+  peopleSelector: {
+    textColor: "#a3a9ae",
+  },
 };
 
 export default Base;

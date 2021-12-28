@@ -2197,6 +2197,10 @@ const Dark = {
     border: "1px solid #474747",
     color: "#eeeeee",
   },
+
+  peopleSelector: {
+    textColor: "#eeeeee",
+  },
 };
 
 export default Dark;
