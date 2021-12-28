@@ -109,7 +109,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         public abstract void RunJob(DistributedTask _, CancellationToken cancellationToken);
         public abstract Task RunJobAsync(DistributedTask _, CancellationToken cancellationToken);
-        protected abstract void Do(IServiceScope serviceScope);
         protected abstract Task DoAsync(IServiceScope serviceScope);
 
     }
@@ -223,11 +222,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             TaskInfo.PublishChanges();
         }
 
-        protected override void Do(IServiceScope serviceScope)
-        {
-            throw new NotImplementedException();
-        }
-
         protected override Task DoAsync(IServiceScope serviceScope)
         {
             throw new NotImplementedException();
@@ -321,7 +315,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                 Logger = options.CurrentValue;
 
-                Do(scope);
+                DoAsync(scope).Wait();
             }
             catch (AuthorizingException authError)
             {

@@ -1337,10 +1337,11 @@ namespace ASC.Api.Documents
         /// <short>Finish all</short>
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
+
         [Update("fileops/terminate")]
         public IEnumerable<FileOperationWraper> TerminateTasks()
         {
-            return FileStorageService.TerminateTasks().Select(FileOperationWraperHelper.Get);
+            return FileStorageService.TerminateTasks().Select(e => FileOperationWraperHelper.GetAsync(e).Result);
         }
 
 
@@ -1353,7 +1354,7 @@ namespace ASC.Api.Documents
         [Read("fileops")]
         public IEnumerable<FileOperationWraper> GetOperationStatuses()
         {
-            return FileStorageService.GetTasksStatuses().Select(FileOperationWraperHelper.Get);
+            return FileStorageService.GetTasksStatuses().Select(e => FileOperationWraperHelper.GetAsync(e).Result);
         }
 
         /// <summary>
@@ -1392,7 +1393,7 @@ namespace ASC.Api.Documents
         public IEnumerable<FileOperationWraper> DeleteBatchItemsFromBody([FromBody] DeleteBatchModel batch)
         {
             return FileStorageService.DeleteItems("delete", batch.FileIds.ToList(), batch.FolderIds.ToList(), false, batch.DeleteAfter, batch.Immediately)
-                .Select(FileOperationWraperHelper.Get);
+                .Select(e => FileOperationWraperHelper.GetAsync(e).Result);
         }
 
         [Update("fileops/delete")]
@@ -1400,7 +1401,7 @@ namespace ASC.Api.Documents
         public IEnumerable<FileOperationWraper> DeleteBatchItemsFromForm([FromForm][ModelBinder(BinderType = typeof(DeleteBatchModelBinder))] DeleteBatchModel batch)
         {
             return FileStorageService.DeleteItems("delete", batch.FileIds.ToList(), batch.FolderIds.ToList(), false, batch.DeleteAfter, batch.Immediately)
-                .Select(FileOperationWraperHelper.Get);
+                .Select(e => FileOperationWraperHelper.GetAsync(e).Result);
         }
 
         /// <summary>
@@ -1864,7 +1865,7 @@ namespace ASC.Api.Documents
         {
             var parent = FileStorageServiceInt.GetFolder(GlobalFolderHelper.FolderCommon);
             var thirdpartyFolders = await EntryManager.GetThirpartyFoldersAsync(parent);
-            return thirdpartyFolders.Select(r => FolderWrapperHelper.Get(r)).ToList();
+            return thirdpartyFolders.Select(r => FolderWrapperHelper.GetAsync(r).Result).ToList();
         }
 
         /// <summary>

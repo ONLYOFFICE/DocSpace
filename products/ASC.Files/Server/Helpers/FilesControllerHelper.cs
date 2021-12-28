@@ -173,7 +173,7 @@ namespace ASC.Files.Helpers
             try
             {
                 var resultFile = await FileUploader.ExecAsync(folderId, title, file.Length, file, createNewIfExist ?? !FilesSettingsHelper.UpdateIfExist, !keepConvertStatus);
-                return FileWrapperHelper.Get(resultFile);
+                return await FileWrapperHelper.GetAsync(resultFile);
             }
             catch (FileNotFoundException e)
             {
@@ -200,17 +200,12 @@ namespace ASC.Files.Helpers
 
         public async Task<FileWrapper<T>> SaveEditingAsync(T fileId, string fileExtension, string downloadUri, Stream stream, string doc, bool forcesave)
         {
-            return FileWrapperHelper.Get(await FileStorageService.SaveEditingAsync(fileId, fileExtension, downloadUri, stream, doc, forcesave));
+            return await FileWrapperHelper.GetAsync(await FileStorageService.SaveEditingAsync(fileId, fileExtension, downloadUri, stream, doc, forcesave));
         }
 
         public Task<string> StartEditAsync(T fileId, bool editingAlone, string doc)
         {
             return FileStorageService.StartEditAsync(fileId, editingAlone, doc);
-        }
-
-        public KeyValuePair<bool, string> TrackEditFile(T fileId, Guid tabId, string docKeyForTrack, string doc, bool isFinish)
-        {
-            return FileStorageService.TrackEditFile(fileId, tabId, docKeyForTrack, doc, isFinish);
         }
 
         public Task<KeyValuePair<bool, string>> TrackEditFileAsync(T fileId, Guid tabId, string docKeyForTrack, string doc, bool isFinish)
@@ -321,19 +316,19 @@ namespace ASC.Files.Helpers
         public async Task<FolderWrapper<T>> CreateFolderAsync(T folderId, string title)
         {
             var folder = await FileStorageService.CreateNewFolderAsync(folderId, title);
-            return FolderWrapperHelper.Get(folder);
+            return await FolderWrapperHelper.GetAsync(folder);
         }
 
         public async Task<FileWrapper<T>> CreateFileAsync(T folderId, string title, T templateId, bool enableExternalExt = false)
         {
             var file = await FileStorageService.CreateNewFileAsync(new FileModel<T> { ParentId = folderId, Title = title, TemplateId = templateId }, enableExternalExt);
-            return FileWrapperHelper.Get(file);
+            return await FileWrapperHelper.GetAsync(file);
         }
 
         public async Task<FolderWrapper<T>> RenameFolderAsync(T folderId, string title)
         {
             var folder = await FileStorageService.FolderRenameAsync(folderId, title);
-            return FolderWrapperHelper.Get(folder);
+            return await FolderWrapperHelper.GetAsync(folder);
         }
 
         public async Task<FolderWrapper<T>> GetFolderInfoAsync(T folderId)
@@ -370,7 +365,7 @@ namespace ASC.Files.Helpers
         public async Task<List<FileEntryWrapper>> GetNewItemsAsync(T folderId)
         {
             var newItems = await FileStorageService.GetNewItemsAsync(folderId);
-            return newItems.Select(GetFileEntryWrapper).ToList();
+            return newItems.Select(e => GetFileEntryWrapperAsync(e).Result).ToList();
         }
 
         public async Task<FileWrapper<T>> UpdateFileAsync(T fileId, string title, int lastVersion)
@@ -387,7 +382,7 @@ namespace ASC.Files.Helpers
         public IEnumerable<FileOperationWraper> DeleteFile(T fileId, bool deleteAfter, bool immediately)
         {
             return FileStorageService.DeleteFile("delete", fileId, false, deleteAfter, immediately)
-                .Select(FileOperationWraperHelper.Get);
+                .Select(e => FileOperationWraperHelper.GetAsync(e).Result);
         }
 
         public IAsyncEnumerable<ConversationResult<T>> StartConversionAsync(T fileId, bool sync = false)
@@ -438,7 +433,7 @@ namespace ASC.Files.Helpers
         public IEnumerable<FileOperationWraper> DeleteFolder(T folderId, bool deleteAfter, bool immediately)
         {
             return FileStorageService.DeleteFolder("delete", folderId, false, deleteAfter, immediately)
-                    .Select(FileOperationWraperHelper.Get)
+                    .Select(e => FileOperationWraperHelper.GetAsync(e).Result)
                     .ToList();
         }
 
@@ -469,30 +464,30 @@ namespace ASC.Files.Helpers
         public IEnumerable<FileOperationWraper> MoveBatchItems(BatchModel batchModel)
         {
             return FileStorageService.MoveOrCopyItems(batchModel.FolderIds.ToList(), batchModel.FileIds.ToList(), batchModel.DestFolderId, batchModel.ConflictResolveType, false, batchModel.DeleteAfter)
-                .Select(FileOperationWraperHelper.Get)
+                .Select(e => FileOperationWraperHelper.GetAsync(e).Result)
                 .ToList();
         }
 
         public IEnumerable<FileOperationWraper> CopyBatchItems(BatchModel batchModel)
         {
             return FileStorageService.MoveOrCopyItems(batchModel.FolderIds.ToList(), batchModel.FileIds.ToList(), batchModel.DestFolderId, batchModel.ConflictResolveType, true, batchModel.DeleteAfter)
-                .Select(FileOperationWraperHelper.Get)
+                .Select(e => FileOperationWraperHelper.GetAsync(e).Result)
                 .ToList();
         }
 
         public IEnumerable<FileOperationWraper> MarkAsRead(BaseBatchModel model)
         {
-            return FileStorageService.MarkAsRead(model.FolderIds.ToList(), model.FileIds.ToList()).Select(FileOperationWraperHelper.Get).ToList();
+            return FileStorageService.MarkAsRead(model.FolderIds.ToList(), model.FileIds.ToList()).Select(e => FileOperationWraperHelper.GetAsync(e).Result).ToList();
         }
 
         public IEnumerable<FileOperationWraper> TerminateTasks()
         {
-            return FileStorageService.TerminateTasks().Select(FileOperationWraperHelper.Get);
+            return FileStorageService.TerminateTasks().Select(e => FileOperationWraperHelper.GetAsync(e).Result);
         }
 
         public IEnumerable<FileOperationWraper> GetOperationStatuses()
         {
-            return FileStorageService.GetTasksStatuses().Select(FileOperationWraperHelper.Get);
+            return FileStorageService.GetTasksStatuses().Select(e => FileOperationWraperHelper.GetAsync(e).Result);
         }
 
         public IEnumerable<FileOperationWraper> BulkDownload(DownloadModel model)
@@ -515,25 +510,25 @@ namespace ASC.Files.Helpers
                 folders.Add(folderId, string.Empty);
             }
 
-            return FileStorageService.BulkDownload(folders, files).Select(FileOperationWraperHelper.Get).ToList();
+            return FileStorageService.BulkDownload(folders, files).Select(e => FileOperationWraperHelper.GetAsync(e).Result).ToList();
         }
 
         public IEnumerable<FileOperationWraper> EmptyTrash()
         {
-            return FileStorageService.EmptyTrash().Select(FileOperationWraperHelper.Get).ToList();
+            return FileStorageService.EmptyTrash().Select(e => FileOperationWraperHelper.GetAsync(e).Result).ToList();
         }
 
         public async Task<IEnumerable<FileWrapper<T>>> GetFileVersionInfoAsync(T fileId)
         {
             var files = await FileStorageService.GetFileHistoryAsync(fileId);
-            return files.Select(r => FileWrapperHelper.Get(r)).ToList();
+            return files.Select(r => FileWrapperHelper.GetAsync(r).Result).ToList();
         }
 
         public async Task<IEnumerable<FileWrapper<T>>> ChangeHistoryAsync(T fileId, int version, bool continueVersion)
         {
             var pair = await FileStorageService.CompleteVersionAsync(fileId, version, continueVersion);
             var history = pair.Value;
-            return history.Select(r => FileWrapperHelper.Get(r)).ToList();
+            return history.Select(r => FileWrapperHelper.GetAsync(r).Result).ToList();
         }
 
         public async Task<FileWrapper<T>> LockFileAsync(T fileId, bool lockFile)
@@ -569,12 +564,6 @@ namespace ASC.Files.Helpers
             {
                 yield return await GetFileEntryWrapperAsync(folder);
             }
-        }
-
-        public IEnumerable<FileShareWrapper> GetSecurityInfo(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
-        {
-            var fileShares = FileStorageService.GetSharedInfo(fileIds, folderIds);
-            return fileShares.Select(FileShareWrapperHelper.Get).ToList();
         }
 
         public async Task<IEnumerable<FileShareWrapper>> GetSecurityInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
@@ -622,7 +611,9 @@ namespace ASC.Files.Helpers
         {
             var file = await GetFileInfoAsync(fileId);
 
-            var sharedInfo = FileStorageService.GetSharedInfo(new List<T> { fileId }, new List<T> { }).Find(r => r.SubjectId == FileConstant.ShareLinkId);
+            var tmpInfo = await FileStorageService.GetSharedInfoAsync(new List<T> { fileId }, new List<T> { });
+            var sharedInfo = tmpInfo.Find(r => r.SubjectId == FileConstant.ShareLinkId);
+
             if (sharedInfo == null || sharedInfo.Share != share)
             {
                 var list = new List<AceWrapper>
@@ -639,8 +630,10 @@ namespace ASC.Files.Helpers
                     Files = new List<T> { fileId },
                     Aces = list
                 };
-                FileStorageService.SetAceObject(aceCollection, false);
-                sharedInfo = FileStorageService.GetSharedInfo(new List<T> { fileId }, new List<T> { }).Find(r => r.SubjectId == FileConstant.ShareLinkId);
+                await FileStorageService.SetAceObjectAsync(aceCollection, false);
+
+                tmpInfo = await FileStorageService.GetSharedInfoAsync(new List<T> { fileId }, new List<T> { });
+                sharedInfo = tmpInfo.Find(r => r.SubjectId == FileConstant.ShareLinkId);
             }
 
             return sharedInfo.Link;
@@ -686,29 +679,6 @@ namespace ASC.Files.Helpers
                                                                                withSubFolders,
                                                                                orderBy);
             return await FolderContentWrapperHelper.GetAsync(items, startIndex);
-        }
-
-        internal FileEntryWrapper GetFileEntryWrapper(FileEntry r)
-        {
-            FileEntryWrapper wrapper = null;
-            if (r is Folder<int> fol1)
-            {
-                wrapper = FolderWrapperHelper.Get(fol1);
-            }
-            else if (r is Folder<string> fol2)
-            {
-                wrapper = FolderWrapperHelper.Get(fol2);
-            }
-            else if (r is File<int> file1)
-            {
-                wrapper = FileWrapperHelper.Get(file1);
-            }
-            else if (r is File<string> file2)
-            {
-                wrapper = FileWrapperHelper.Get(file2);
-            }
-
-            return wrapper;
         }
 
         internal async Task<FileEntryWrapper> GetFileEntryWrapperAsync(FileEntry r)

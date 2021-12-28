@@ -144,31 +144,16 @@ namespace ASC.Api.Documents
         /// </summary>
         /// <visible>false</visible>
         [Read("access/{fileId}")]
-        public IEnumerable<EncryptionKeyPair> GetPublicKeysWithAccess(string fileId)
-        {
-            if (!PrivacyRoomSettings.GetEnabled(SettingsManager)) throw new System.Security.SecurityException();
-
-            return EncryptionKeyPairHelper.GetKeyPair(fileId, FileStorageService);
-        }
-
-        [Read("accessAsync/{fileId}")]
-        public Task<IEnumerable<EncryptionKeyPair>> GetPublicKeysWithAccessAsync(string fileId)
+        public Task<IEnumerable<EncryptionKeyPair>> GetPublicKeysWithAccess(string fileId)
         {
             if (!PrivacyRoomSettings.GetEnabled(SettingsManager)) throw new System.Security.SecurityException();
 
             return EncryptionKeyPairHelper.GetKeyPairAsync(fileId, FileStorageService);
         }
 
+
         [Read("access/{fileId:int}")]
-        public IEnumerable<EncryptionKeyPair> GetPublicKeysWithAccess(int fileId)
-        {
-            if (!PrivacyRoomSettings.GetEnabled(SettingsManager)) throw new System.Security.SecurityException();
-
-            return EncryptionKeyPairHelper.GetKeyPair(fileId, FileStorageServiceInt);
-        }
-
-        [Read("accessAsync/{fileId:int}")]
-        public Task<IEnumerable<EncryptionKeyPair>> GetPublicKeysWithAccessAsync(int fileId)
+        public Task<IEnumerable<EncryptionKeyPair>> GetPublicKeysWithAccess(int fileId)
         {
             if (!PrivacyRoomSettings.GetEnabled(SettingsManager)) throw new System.Security.SecurityException();
 

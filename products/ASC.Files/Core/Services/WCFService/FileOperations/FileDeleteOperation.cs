@@ -100,30 +100,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             _headers = fileOperationData.Headers;
         }
 
-
-        protected override void Do(IServiceScope scope)
-        {
-            var folderDao = scope.ServiceProvider.GetService<IFolderDao<int>>();
-            _trashId = folderDao.GetFolderIDTrashAsync(true).Result;
-
-            Folder<T> root = null;
-            if (0 < Folders.Count)
-            {
-                root = FolderDao.GetRootFolderAsync(Folders[0]).Result;
-            }
-            else if (0 < Files.Count)
-            {
-                root = FolderDao.GetRootFolderByFileAsync(Files[0]).Result;
-            }
-            if (root != null)
-            {
-                Result += string.Format("folder_{0}{1}", root.ID, SPLIT_CHAR);
-            }
-
-            DeleteFilesAsync(Files, scope).Wait();
-            DeleteFoldersAsync(Folders, scope).Wait();
-        }
-
         protected override async Task DoAsync(IServiceScope scope)
         {
             var folderDao = scope.ServiceProvider.GetService<IFolderDao<int>>();
@@ -165,7 +141,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 {
                     Error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder;
                 }
-                else if (!_ignoreException && !FilesSecurity.CanDelete(folder))
+                else if (!_ignoreException && !await FilesSecurity.CanDeleteAsync(folder))
                 {
                     canCalculate = FolderDao.CanCalculateSubitems(folderId) ? default : folderId;
 
@@ -175,7 +151,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 {
                     canCalculate = FolderDao.CanCalculateSubitems(folderId) ? default : folderId;
 
-                    fileMarker.RemoveMarkAsNewForAll(folder);
+                    await fileMarker.RemoveMarkAsNewForAllAsync(folder);
                     if (folder.ProviderEntry && folder.ID.Equals(folder.RootFolderId))
                     {
                         if (ProviderDao != null)
@@ -244,17 +220,18 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 CancellationToken.ThrowIfCancellationRequested();
 
                 var file = await FileDao.GetFileAsync(fileId);
+                var tmp = WithErrorAsync(scope, new[] { file }, false);
                 if (file == null)
                 {
                     Error = FilesCommonResource.ErrorMassage_FileNotFound;
                 }
-                else if (!_ignoreException && WithError(scope, new[] { file }, false, out var tmpError))
+                else if (!_ignoreException && (await tmp).isError)
                 {
-                    Error = tmpError;
+                    Error = (await tmp).message;
                 }
                 else
                 {
-                    fileMarker.RemoveMarkAsNewForAll(file);
+                    await fileMarker.RemoveMarkAsNewForAllAsync(file);
                     if (!_immediately && FileDao.UseTrashForRemove(file))
                     {
                         await FileDao.MoveFileAsync(file.ID, _trashId);
@@ -285,33 +262,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
         }
 
-        private bool WithError(IServiceScope scope, IEnumerable<File<T>> files, bool folder, out string error)
-        {
-            var entryManager = scope.ServiceProvider.GetService<EntryManager>();
-            var fileTracker = scope.ServiceProvider.GetService<FileTrackerHelper>();
-
-            error = null;
-            foreach (var file in files)
-            {
-                if (!FilesSecurity.CanDelete(file))
-                {
-                    error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFile;
-                    return true;
-                }
-                if (entryManager.FileLockedForMe(file.ID))
-                {
-                    error = FilesCommonResource.ErrorMassage_LockedFile;
-                    return true;
-                }
-                if (fileTracker.IsEditing(file.ID))
-                {
-                    error = folder ? FilesCommonResource.ErrorMassage_SecurityException_DeleteEditingFolder : FilesCommonResource.ErrorMassage_SecurityException_DeleteEditingFile;
-                    return true;
-                }
-            }
-            return false;
-        }
-
         private async Task<(bool isError, string message)> WithErrorAsync(IServiceScope scope, IEnumerable<File<T>> files, bool folder)
         {
             var entryManager = scope.ServiceProvider.GetService<EntryManager>();
@@ -320,12 +270,12 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             string error = null;
             foreach (var file in files)
             {
-                if (!FilesSecurity.CanDelete(file))
+                if (!await FilesSecurity.CanDeleteAsync(file))
                 {
                     error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFile;
                     return (true, error);
                 }
-                if (entryManager.FileLockedForMe(file.ID))
+                if (await entryManager.FileLockedForMeAsync(file.ID))
                 {
                     error = FilesCommonResource.ErrorMassage_LockedFile;
                     return (true, error);

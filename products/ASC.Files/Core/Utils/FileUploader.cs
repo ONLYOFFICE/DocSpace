@@ -115,32 +115,9 @@ namespace ASC.Web.Files.Utils
             FileTracker = fileTracker;
         }
 
-        public File<T> Exec<T>(T folderId, string title, long contentLength, Stream data)
-        {
-            return Exec(folderId, title, contentLength, data, !FilesSettingsHelper.UpdateIfExist);
-        }
-
         public Task<File<T>> ExecAsync<T>(T folderId, string title, long contentLength, Stream data)
         {
             return ExecAsync(folderId, title, contentLength, data, !FilesSettingsHelper.UpdateIfExist);
-        }
-
-        public File<T> Exec<T>(T folderId, string title, long contentLength, Stream data, bool createNewIfExist, bool deleteConvertStatus = true)
-        {
-            if (contentLength <= 0)
-                throw new Exception(FilesCommonResource.ErrorMassage_EmptyFile);
-
-            var file = VerifyFileUpload(folderId, title, contentLength, !createNewIfExist);
-
-            var dao = DaoFactory.GetFileDao<T>();
-            file = dao.SaveFileAsync(file, data).Result;
-
-            FileMarker.MarkAsNew(file);
-
-            if (FileConverter.EnableAsUploaded && FileConverter.MustConvert(file))
-                FileConverter.ExecAsync(file, deleteConvertStatus);
-
-            return file;
         }
 
         public async Task<File<T>> ExecAsync<T>(T folderId, string title, long contentLength, Stream data, bool createNewIfExist, bool deleteConvertStatus = true)
@@ -153,45 +130,13 @@ namespace ASC.Web.Files.Utils
             var dao = DaoFactory.GetFileDao<T>();
             file = await dao.SaveFileAsync(file, data);
 
-            FileMarker.MarkAsNew(file);
+            await FileMarker.MarkAsNewAsync(file);
 
             if (FileConverter.EnableAsUploaded && FileConverter.MustConvert(file))
-                FileConverter.ExecAsync(file, deleteConvertStatus);
+                await FileConverter.ExecAsynchronouslyAsync(file, deleteConvertStatus);
 
             return file;
         }
-
-        public File<T> VerifyFileUpload<T>(T folderId, string fileName, bool updateIfExists, string relativePath = null)
-        {
-            fileName = Global.ReplaceInvalidCharsAndTruncate(fileName);
-
-            if (Global.EnableUploadFilter && !FileUtility.ExtsUploadable.Contains(FileUtility.GetFileExtension(fileName)))
-                throw new NotSupportedException(FilesCommonResource.ErrorMassage_NotSupportedFormat);
-
-            folderId = GetFolderId(folderId, string.IsNullOrEmpty(relativePath) ? null : relativePath.Split('/').ToList());
-
-            var fileDao = DaoFactory.GetFileDao<T>();
-            var file = fileDao.GetFileAsync(folderId, fileName).Result;
-
-            if (updateIfExists && CanEdit(file))
-            {
-                file.Title = fileName;
-                file.ConvertedType = null;
-                file.Comment = FilesCommonResource.CommentUpload;
-                file.Version++;
-                file.VersionGroup++;
-                file.Encrypted = false;
-                file.ThumbnailStatus = Thumbnail.Waiting;
-
-                return file;
-            }
-
-            var newFile = ServiceProvider.GetService<File<T>>();
-            newFile.FolderID = folderId;
-            newFile.Title = fileName;
-            return newFile;
-        }
-
 
         public async Task<File<T>> VerifyFileUploadAsync<T>(T folderId, string fileName, bool updateIfExists, string relativePath = null)
         {
@@ -205,7 +150,7 @@ namespace ASC.Web.Files.Utils
             var fileDao = DaoFactory.GetFileDao<T>();
             var file = await fileDao.GetFileAsync(folderId, fileName);
 
-            if (updateIfExists && CanEdit(file))
+            if (updateIfExists && await CanEditAsync(file))
             {
                 file.Title = fileName;
                 file.ConvertedType = null;
@@ -222,20 +167,6 @@ namespace ASC.Web.Files.Utils
             newFile.FolderID = folderId;
             newFile.Title = fileName;
             return newFile;
-        }
-        public File<T> VerifyFileUpload<T>(T folderId, string fileName, long fileSize, bool updateIfExists)
-        {
-            if (fileSize <= 0)
-                throw new Exception(FilesCommonResource.ErrorMassage_EmptyFile);
-
-            var maxUploadSize = GetMaxFileSize(folderId);
-
-            if (fileSize > maxUploadSize)
-                throw FileSizeComment.GetFileSizeException(maxUploadSize);
-
-            var file = VerifyFileUpload(folderId, fileName, updateIfExists);
-            file.ContentLength = fileSize;
-            return file;
         }
 
         public async Task<File<T>> VerifyFileUploadAsync<T>(T folderId, string fileName, long fileSize, bool updateIfExists)
@@ -253,12 +184,12 @@ namespace ASC.Web.Files.Utils
             return file;
         }
 
-        private bool CanEdit<T>(File<T> file)
+        private async Task<bool> CanEditAsync<T>(File<T> file)
         {
             return file != null
-                   && FileSecurity.CanEdit(file)
+                   && await FileSecurity.CanEditAsync(file)
                    && !UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)
-                   && !EntryManager.FileLockedForMe(file.ID)
+                   && !await EntryManager.FileLockedForMeAsync(file.ID)
                    && !FileTracker.IsEditing(file.ID)
                    && file.RootFolderType != FolderType.TRASH
                    && !file.Encrypted;
@@ -347,19 +278,6 @@ namespace ASC.Web.Files.Utils
         }
 
         #region chunked upload
-
-        public File<T> VerifyChunkedUpload<T>(T folderId, string fileName, long fileSize, bool updateIfExists, string relativePath = null)
-        {
-            var maxUploadSize = GetMaxFileSize(folderId, true);
-
-            if (fileSize > maxUploadSize)
-                throw FileSizeComment.GetFileSizeException(maxUploadSize);
-
-            var file = VerifyFileUpload(folderId, fileName, updateIfExists, relativePath);
-            file.ContentLength = fileSize;
-
-            return file;
-        }
 
         public async Task<File<T>> VerifyChunkedUploadAsync<T>(T folderId, string fileName, long fileSize, bool updateIfExists, string relativePath = null)
         {

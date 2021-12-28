@@ -314,7 +314,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     try
                     {
                         var doc = FileShareLink.CreateKey(fileId);
-                        EntryManager.TrackEditing(fileId, userId, userId, doc);
+                        await EntryManager.TrackEditingAsync(fileId, userId, userId, doc);
                     }
                     catch (Exception e)
                     {

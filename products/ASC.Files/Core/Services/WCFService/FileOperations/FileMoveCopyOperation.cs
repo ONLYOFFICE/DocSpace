@@ -128,19 +128,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             _headers = data.Headers;
         }
 
-        protected override void Do(IServiceScope scope)
-        {
-            if (DaoFolderId != 0)
-            {
-                Do(scope, DaoFolderId);
-            }
-
-            if (!string.IsNullOrEmpty(ThirdpartyFolderId))
-            {
-                Do(scope, ThirdpartyFolderId);
-            }
-        }
-
         protected override async Task DoAsync(IServiceScope scope)
         {
             if (DaoFolderId != 0)
@@ -152,43 +139,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 await DoAsync(scope, ThirdpartyFolderId);
             }
-        }
-
-        private void Do<TTo>(IServiceScope scope, TTo tto)
-        {
-            if (Folders.Count == 0 && Files.Count == 0) return;
-
-            var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
-            var folderDao = scope.ServiceProvider.GetService<IFolderDao<TTo>>();
-
-            Result += string.Format("folder_{0}{1}", DaoFolderId, SPLIT_CHAR);
-
-            //TODO: check on each iteration?
-            var toFolder = folderDao.GetFolderAsync(tto).Result;
-            if (toFolder == null) return;
-            if (!FilesSecurity.CanCreateAsync(toFolder).Result) throw new System.Security.SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
-
-            if (folderDao.GetParentFoldersAsync(toFolder.ID).Result.Any(parent => Folders.Any(r => r.ToString() == parent.ID.ToString())))
-            {
-                Error = FilesCommonResource.ErrorMassage_FolderCopyError;
-                return;
-            }
-
-            if (_copy)
-            {
-                Folder<T> rootFrom = null;
-                if (0 < Folders.Count) rootFrom = FolderDao.GetRootFolderAsync(Folders[0]).Result;
-                if (0 < Files.Count) rootFrom = FolderDao.GetRootFolderByFileAsync(Files[0]).Result;
-                if (rootFrom != null && rootFrom.FolderType == FolderType.TRASH) throw new InvalidOperationException("Can not copy from Trash.");
-                if (toFolder.RootFolderType == FolderType.TRASH) throw new InvalidOperationException("Can not copy to Trash.");
-            }
-
-            var needToMark = new List<FileEntry<TTo>>();
-
-            needToMark.AddRange(MoveOrCopyFolders(scope, Folders, toFolder, _copy));
-            needToMark.AddRange(MoveOrCopyFiles(scope, Files, toFolder, _copy));
-
-            needToMark.Distinct().ToList().ForEach(x => fileMarker.MarkAsNew(x));
         }
 
         private async Task DoAsync<TTo>(IServiceScope scope, TTo tto)
@@ -227,195 +177,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             needToMark.Distinct().ToList().ForEach(x => fileMarker.MarkAsNew(x));
         }
 
-        private List<FileEntry<TTo>> MoveOrCopyFolders<TTo>(IServiceScope scope, List<T> folderIds, Folder<TTo> toFolder, bool copy)
-        {
-            var needToMark = new List<FileEntry<TTo>>();
-
-            if (folderIds.Count == 0) return needToMark;
-
-            var scopeClass = scope.ServiceProvider.GetService<FileMoveCopyOperationScope>();
-            var (filesMessageService, fileMarker, _, _, _) = scopeClass;
-            var folderDao = scope.ServiceProvider.GetService<IFolderDao<TTo>>();
-
-            var toFolderId = toFolder.ID;
-            var isToFolder = Equals(toFolderId, DaoFolderId);
-
-
-            foreach (var folderId in folderIds)
-            {
-                CancellationToken.ThrowIfCancellationRequested();
-
-                var folder = FolderDao.GetFolderAsync(folderId).Result;
-                if (folder == null)
-                {
-                    Error = FilesCommonResource.ErrorMassage_FolderNotFound;
-                }
-                else if (!FilesSecurity.CanReadAsync(folder).Result)
-                {
-                    Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFolder;
-                }
-                else if (folder.RootFolderType == FolderType.Privacy
-                    && (copy || toFolder.RootFolderType != FolderType.Privacy))
-                {
-                    Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
-                }
-                else if (!Equals(folder.FolderID ?? default, toFolderId) || _resolveType == FileConflictResolveType.Duplicate)
-                {
-                    try
-                    {
-                        //if destination folder contains folder with same name then merge folders
-                        var conflictFolder = folder.RootFolderType == FolderType.Privacy
-                            ? null
-                            : folderDao.GetFolderAsync(folder.Title, toFolderId).Result;
-                        Folder<TTo> newFolder;
-
-                        if (copy || conflictFolder != null)
-                        {
-                            if (conflictFolder != null)
-                            {
-                                newFolder = conflictFolder;
-
-                                if (isToFolder)
-                                    needToMark.Add(conflictFolder);
-                            }
-                            else
-                            {
-                                newFolder = FolderDao.CopyFolderAsync(folder.ID, toFolderId, CancellationToken).Result;
-                                filesMessageService.Send(newFolder, toFolder, _headers, MessageAction.FolderCopied, newFolder.Title, toFolder.Title);
-
-                                if (isToFolder)
-                                    needToMark.Add(newFolder);
-
-                                if (ProcessedFolder(folderId))
-                                {
-                                    Result += string.Format("folder_{0}{1}", newFolder.ID, SPLIT_CHAR);
-                                }
-                            }
-
-                            if (FolderDao.UseRecursiveOperation(folder.ID, toFolderId))
-                            {
-                                MoveOrCopyFiles(scope, FileDao.GetFilesAsync(folder.ID).Result, newFolder, copy);
-                                MoveOrCopyFolders(scope, FolderDao.GetFoldersAsync(folder.ID).Select(f => f.ID).ToListAsync().Result, newFolder, copy);
-
-                                if (!copy)
-                                {
-                                    if (!FilesSecurity.CanDelete(folder))
-                                    {
-                                        Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
-                                    }
-                                    else if (FolderDao.IsEmptyAsync(folder.ID).Result)
-                                    {
-                                        FolderDao.DeleteFolderAsync(folder.ID).Wait();
-                                        if (ProcessedFolder(folderId))
-                                        {
-                                            Result += string.Format("folder_{0}{1}", newFolder.ID, SPLIT_CHAR);
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (conflictFolder != null)
-                                {
-                                    TTo newFolderId;
-                                    if (copy)
-                                    {
-                                        newFolder = FolderDao.CopyFolderAsync(folder.ID, toFolderId, CancellationToken).Result;
-                                        newFolderId = newFolder.ID;
-                                        filesMessageService.Send(newFolder, toFolder, _headers, MessageAction.FolderCopiedWithOverwriting, newFolder.Title, toFolder.Title);
-
-                                        if (isToFolder)
-                                            needToMark.Add(newFolder);
-
-                                        if (ProcessedFolder(folderId))
-                                        {
-                                            Result += string.Format("folder_{0}{1}", newFolderId, SPLIT_CHAR);
-                                        }
-                                    }
-                                    else if (!FilesSecurity.CanDelete(folder))
-                                    {
-                                        Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
-                                    }
-                                    else if (WithError(scope, FileDao.GetFilesAsync(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync().Result, out var tmpError))
-                                    {
-                                        Error = tmpError;
-                                    }
-                                    else
-                                    {
-                                        fileMarker.RemoveMarkAsNewForAll(folder);
-
-                                        newFolderId = FolderDao.MoveFolderAsync(folder.ID, toFolderId, CancellationToken).Result;
-                                        newFolder = folderDao.GetFolderAsync(newFolderId).Result;
-
-                                        if (folder.RootFolderType != FolderType.USER)
-                                        {
-                                            filesMessageService.Send(folder, toFolder, _headers, MessageAction.FolderMovedWithOverwriting, folder.Title, toFolder.Title);
-                                        }
-                                        else
-                                        {
-                                            filesMessageService.Send(newFolder, toFolder, _headers, MessageAction.FolderMovedWithOverwriting, folder.Title, toFolder.Title);
-                                        }
-
-                                        if (isToFolder)
-                                            needToMark.Add(newFolder);
-
-                                        if (ProcessedFolder(folderId))
-                                        {
-                                            Result += string.Format("folder_{0}{1}", newFolderId, SPLIT_CHAR);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (!FilesSecurity.CanDelete(folder))
-                            {
-                                Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
-                            }
-                            else if (WithError(scope, FileDao.GetFilesAsync(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync().Result, out var tmpError))
-                            {
-                                Error = tmpError;
-                            }
-                            else
-                            {
-                                fileMarker.RemoveMarkAsNewForAll(folder);
-
-                                var newFolderId = FolderDao.MoveFolderAsync(folder.ID, toFolderId, CancellationToken).Result;
-                                newFolder = folderDao.GetFolderAsync(newFolderId).Result;
-
-                                if (folder.RootFolderType != FolderType.USER)
-                                {
-                                    filesMessageService.Send(folder, toFolder, _headers, MessageAction.FolderMoved, folder.Title, toFolder.Title);
-                                }
-                                else
-                                {
-                                    filesMessageService.Send(newFolder, toFolder, _headers, MessageAction.FolderMoved, folder.Title, toFolder.Title);
-                                }
-
-                                if (isToFolder)
-                                    needToMark.Add(newFolder);
-
-                                if (ProcessedFolder(folderId))
-                                {
-                                    Result += string.Format("folder_{0}{1}", newFolderId, SPLIT_CHAR);
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Error = ex.Message;
-
-                        Logger.Error(Error, ex);
-                    }
-                }
-                ProgressStep(FolderDao.CanCalculateSubitems(folderId) ? default : folderId);
-            }
-
-            return needToMark;
-        }
-
         private async Task<List<FileEntry<TTo>>> MoveOrCopyFoldersAsync<TTo>(IServiceScope scope, List<T> folderIds, Folder<TTo> toFolder, bool copy)
         {
             var needToMark = new List<FileEntry<TTo>>();
@@ -435,6 +196,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 CancellationToken.ThrowIfCancellationRequested();
 
                 var folder = await FolderDao.GetFolderAsync(folderId);
+                var taskError = WithErrorAsync(scope, await FileDao.GetFilesAsync(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync());
+
                 if (folder == null)
                 {
                     Error = FilesCommonResource.ErrorMassage_FolderNotFound;
@@ -488,7 +251,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                                 if (!copy)
                                 {
-                                    if (!FilesSecurity.CanDelete(folder))
+                                    if (!await FilesSecurity.CanDeleteAsync(folder))
                                     {
                                         Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                                     }
@@ -521,17 +284,17 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                             Result += string.Format("folder_{0}{1}", newFolderId, SPLIT_CHAR);
                                         }
                                     }
-                                    else if (!FilesSecurity.CanDelete(folder))
+                                    else if (!await FilesSecurity.CanDeleteAsync(folder))
                                     {
                                         Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                                     }
-                                    else if (WithError(scope, await FileDao.GetFilesAsync(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync(), out var tmpError))
+                                    else if ((await taskError).isError)
                                     {
-                                        Error = tmpError;
+                                        Error = (await taskError).message;
                                     }
                                     else
                                     {
-                                        fileMarker.RemoveMarkAsNewForAll(folder);
+                                        await fileMarker.RemoveMarkAsNewForAllAsync(folder);
 
                                         newFolderId = await FolderDao.MoveFolderAsync(folder.ID, toFolderId, CancellationToken);
                                         newFolder = await folderDao.GetFolderAsync(newFolderId);
@@ -558,17 +321,17 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         }
                         else
                         {
-                            if (!FilesSecurity.CanDelete(folder))
+                            if (!await FilesSecurity.CanDeleteAsync(folder))
                             {
                                 Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                             }
-                            else if (WithError(scope, await FileDao.GetFilesAsync(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync(), out var tmpError))
+                            else if ((await taskError).isError)
                             {
-                                Error = tmpError;
+                                Error = (await taskError).message;
                             }
                             else
                             {
-                                fileMarker.RemoveMarkAsNewForAll(folder);
+                                await fileMarker.RemoveMarkAsNewForAllAsync(folder);
 
                                 var newFolderId = await FolderDao.MoveFolderAsync(folder.ID, toFolderId, CancellationToken);
                                 newFolder = await folderDao.GetFolderAsync(newFolderId);
@@ -605,228 +368,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             return needToMark;
         }
 
-        private List<FileEntry<TTo>> MoveOrCopyFiles<TTo>(IServiceScope scope, List<T> fileIds, Folder<TTo> toFolder, bool copy)
-        {
-            var needToMark = new List<FileEntry<TTo>>();
-
-            if (fileIds.Count == 0) return needToMark;
-
-            var scopeClass = scope.ServiceProvider.GetService<FileMoveCopyOperationScope>();
-            var (filesMessageService, fileMarker, fileUtility, global, entryManager) = scopeClass;
-            var fileDao = scope.ServiceProvider.GetService<IFileDao<TTo>>();
-            var fileTracker = scope.ServiceProvider.GetService<FileTrackerHelper>();
-
-            var toFolderId = toFolder.ID;
-            foreach (var fileId in fileIds)
-            {
-                CancellationToken.ThrowIfCancellationRequested();
-
-                var file = FileDao.GetFileAsync(fileId).Result;
-                if (file == null)
-                {
-                    Error = FilesCommonResource.ErrorMassage_FileNotFound;
-                }
-                else if (!FilesSecurity.CanReadAsync(file).Result)
-                {
-                    Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFile;
-                }
-                else if (file.RootFolderType == FolderType.Privacy
-                    && (copy || toFolder.RootFolderType != FolderType.Privacy))
-                {
-                    Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
-                }
-                else if (global.EnableUploadFilter
-                         && !fileUtility.ExtsUploadable.Contains(FileUtility.GetFileExtension(file.Title)))
-                {
-                    Error = FilesCommonResource.ErrorMassage_NotSupportedFormat;
-                }
-                else
-                {
-                    var parentFolder = FolderDao.GetFolderAsync(file.FolderID).Result;
-                    try
-                    {
-                        var conflict = _resolveType == FileConflictResolveType.Duplicate
-                            || file.RootFolderType == FolderType.Privacy
-                                           ? null
-                                           : fileDao.GetFileAsync(toFolderId, file.Title).Result;
-                        if (conflict == null)
-                        {
-                            File<TTo> newFile = null;
-                            if (copy)
-                            {
-                                try
-                                {
-                                    newFile = FileDao.CopyFileAsync(file.ID, toFolderId).Result; //Stream copy will occur inside dao
-                                    filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileCopied, newFile.Title, parentFolder.Title, toFolder.Title);
-
-                                    if (Equals(newFile.FolderID.ToString(), DaoFolderId))
-                                    {
-                                        needToMark.Add(newFile);
-                                    }
-
-                                    if (ProcessedFile(fileId))
-                                    {
-                                        Result += string.Format("file_{0}{1}", newFile.ID, SPLIT_CHAR);
-                                    }
-                                }
-                                catch
-                                {
-                                    if (newFile != null)
-                                    {
-                                        fileDao.DeleteFileAsync(newFile.ID).Wait();
-                                    }
-                                    throw;
-                                }
-                            }
-                            else
-                            {
-                                if (WithError(scope, new[] { file }, out var tmpError))
-                                {
-                                    Error = tmpError;
-                                }
-                                else
-                                {
-                                    fileMarker.RemoveMarkAsNewForAll(file);
-
-                                    var newFileId = FileDao.MoveFileAsync(file.ID, toFolderId).Result;
-                                    newFile = fileDao.GetFileAsync(newFileId).Result;
-
-                                    if (file.RootFolderType != FolderType.USER)
-                                    {
-                                        filesMessageService.Send(file, toFolder, _headers, MessageAction.FileMoved, file.Title, parentFolder.Title, toFolder.Title);
-                                    }
-                                    else
-                                    {
-                                        filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileMoved, file.Title, parentFolder.Title, toFolder.Title);
-                                    }
-
-                                    if (file.RootFolderType == FolderType.TRASH && newFile.ThumbnailStatus == Thumbnail.NotRequired)
-                                    {
-                                        newFile.ThumbnailStatus = Thumbnail.Waiting;
-                                        fileDao.SaveThumbnailAsync(newFile, null).Wait();
-                                    }
-
-
-                                    if (Equals(toFolderId.ToString(), DaoFolderId))
-                                    {
-                                        needToMark.Add(newFile);
-                                    }
-
-                                    if (ProcessedFile(fileId))
-                                    {
-                                        Result += string.Format("file_{0}{1}", newFileId, SPLIT_CHAR);
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (_resolveType == FileConflictResolveType.Overwrite)
-                            {
-                                if (!FilesSecurity.CanEdit(conflict))
-                                {
-                                    Error = FilesCommonResource.ErrorMassage_SecurityException;
-                                }
-                                else if (entryManager.FileLockedForMe(conflict.ID))
-                                {
-                                    Error = FilesCommonResource.ErrorMassage_LockedFile;
-                                }
-                                else if (fileTracker.IsEditing(conflict.ID))
-                                {
-                                    Error = FilesCommonResource.ErrorMassage_SecurityException_UpdateEditingFile;
-                                }
-                                else
-                                {
-                                    var newFile = conflict;
-                                    newFile.Version++;
-                                    newFile.VersionGroup++;
-                                    newFile.PureTitle = file.PureTitle;
-                                    newFile.ConvertedType = file.ConvertedType;
-                                    newFile.Comment = FilesCommonResource.CommentOverwrite;
-                                    newFile.Encrypted = file.Encrypted;
-                                    newFile.ThumbnailStatus = Thumbnail.Waiting;
-
-                                    using (var stream = FileDao.GetFileStreamAsync(file).Result)
-                                    {
-                                        newFile.ContentLength = stream.CanSeek ? stream.Length : file.ContentLength;
-
-                                        newFile = fileDao.SaveFileAsync(newFile, stream).Result;
-                                    }
-
-                                    if (file.ThumbnailStatus == Thumbnail.Created)
-                                    {
-                                        using (var thumbnail = FileDao.GetThumbnailAsync(file).Result)
-                                        {
-                                            fileDao.SaveThumbnailAsync(newFile, thumbnail).Wait();
-                                        }
-                                        newFile.ThumbnailStatus = Thumbnail.Created;
-                                    }
-
-                                    needToMark.Add(newFile);
-
-                                    if (copy)
-                                    {
-                                        filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileCopiedWithOverwriting, newFile.Title, parentFolder.Title, toFolder.Title);
-                                        if (ProcessedFile(fileId))
-                                        {
-                                            Result += string.Format("file_{0}{1}", newFile.ID, SPLIT_CHAR);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (Equals(file.FolderID.ToString(), toFolderId.ToString()))
-                                        {
-                                            if (ProcessedFile(fileId))
-                                            {
-                                                Result += string.Format("file_{0}{1}", newFile.ID, SPLIT_CHAR);
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (WithError(scope, new[] { file }, out var tmpError))
-                                            {
-                                                Error = tmpError;
-                                            }
-                                            else
-                                            {
-                                                FileDao.DeleteFileAsync(file.ID).Wait();
-
-                                                if (file.RootFolderType != FolderType.USER)
-                                                {
-                                                    filesMessageService.Send(file, toFolder, _headers, MessageAction.FileMovedWithOverwriting, file.Title, parentFolder.Title, toFolder.Title);
-                                                }
-                                                else
-                                                {
-                                                    filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileMovedWithOverwriting, file.Title, parentFolder.Title, toFolder.Title);
-                                                }
-
-                                                if (ProcessedFile(fileId))
-                                                {
-                                                    Result += string.Format("file_{0}{1}", newFile.ID, SPLIT_CHAR);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            else if (_resolveType == FileConflictResolveType.Skip)
-                            {
-                                //nothing
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Error = ex.Message;
-                        Logger.Error(Error, ex);
-                    }
-                }
-                ProgressStep(fileId: FolderDao.CanCalculateSubitems(fileId) ? default : fileId);
-            }
-
-            return needToMark;
-        }
-
         private async Task<List<FileEntry<TTo>>> MoveOrCopyFilesAsync<TTo>(IServiceScope scope, List<T> fileIds, Folder<TTo> toFolder, bool copy)
         {
             var needToMark = new List<FileEntry<TTo>>();
@@ -844,6 +385,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 CancellationToken.ThrowIfCancellationRequested();
 
                 var file = await FileDao.GetFileAsync(fileId);
+                var taskError = WithErrorAsync(scope, new[] { file });
+
                 if (file == null)
                 {
                     Error = FilesCommonResource.ErrorMassage_FileNotFound;
@@ -902,13 +445,13 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             }
                             else
                             {
-                                if (WithError(scope, new[] { file }, out var tmpError))
+                                if ((await taskError).isError)
                                 {
-                                    Error = tmpError;
+                                    Error = (await taskError).message;
                                 }
                                 else
                                 {
-                                    fileMarker.RemoveMarkAsNewForAll(file);
+                                    await fileMarker.RemoveMarkAsNewForAllAsync(file);
 
                                     var newFileId = await FileDao.MoveFileAsync(file.ID, toFolderId);
                                     newFile = await fileDao.GetFileAsync(newFileId);
@@ -945,11 +488,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         {
                             if (_resolveType == FileConflictResolveType.Overwrite)
                             {
-                                if (!FilesSecurity.CanEdit(conflict))
+                                if (!await FilesSecurity.CanEditAsync(conflict))
                                 {
                                     Error = FilesCommonResource.ErrorMassage_SecurityException;
                                 }
-                                else if (entryManager.FileLockedForMe(conflict.ID))
+                                else if (await entryManager.FileLockedForMeAsync(conflict.ID))
                                 {
                                     Error = FilesCommonResource.ErrorMassage_LockedFile;
                                 }
@@ -1005,9 +548,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                         }
                                         else
                                         {
-                                            if (WithError(scope, new[] { file }, out var tmpError))
+                                            if ((await taskError).isError)
                                             {
-                                                Error = tmpError;
+                                                Error = (await taskError).message;
                                             }
                                             else
                                             {
@@ -1049,30 +592,30 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             return needToMark;
         }
 
-        private bool WithError(IServiceScope scope, IEnumerable<File<T>> files, out string error)
+        private async Task<(bool isError, string message)> WithErrorAsync(IServiceScope scope, IEnumerable<File<T>> files)
         {
             var entryManager = scope.ServiceProvider.GetService<EntryManager>();
             var fileTracker = scope.ServiceProvider.GetService<FileTrackerHelper>();
-            error = null;
+            string error = null;
             foreach (var file in files)
             {
-                if (!FilesSecurity.CanDelete(file))
+                if (!await FilesSecurity.CanDeleteAsync(file))
                 {
                     error = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
-                    return true;
+                    return (true, error);
                 }
-                if (entryManager.FileLockedForMe(file.ID))
+                if (await entryManager.FileLockedForMeAsync(file.ID))
                 {
                     error = FilesCommonResource.ErrorMassage_LockedFile;
-                    return true;
+                    return (true, error);
                 }
                 if (fileTracker.IsEditing(file.ID))
                 {
                     error = FilesCommonResource.ErrorMassage_SecurityException_UpdateEditingFile;
-                    return true;
+                    return (true, error);
                 }
             }
-            return false;
+            return (false, error);
         }
     }
 

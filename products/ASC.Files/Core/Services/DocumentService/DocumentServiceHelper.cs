@@ -153,7 +153,7 @@ namespace ASC.Web.Files.Services.DocumentService
             var fileSecurity = FileSecurity;
             rightToEdit = rightToEdit
                           && (linkRight == FileShare.ReadWrite || linkRight == FileShare.CustomFilter
-                              || fileSecurity.CanEdit(file) || await fileSecurity.CanCustomFilterEditAsync(file));
+                              || await fileSecurity.CanEditAsync(file) || await fileSecurity.CanCustomFilterEditAsync(file));
             if (editPossible && !rightToEdit)
             {
                 editPossible = false;
@@ -161,9 +161,9 @@ namespace ASC.Web.Files.Services.DocumentService
 
             rightModifyFilter = rightModifyFilter
                 && (linkRight == FileShare.ReadWrite
-                    || fileSecurity.CanEdit(file));
+                    || await fileSecurity.CanEditAsync(file));
 
-            rightToRename = rightToRename && rightToEdit && fileSecurity.CanEdit(file);
+            rightToRename = rightToRename && rightToEdit && await fileSecurity.CanEditAsync(file);
 
             rightToReview = rightToReview
                             && (linkRight == FileShare.Review || linkRight == FileShare.ReadWrite
@@ -199,7 +199,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             string strError = null;
             if ((editPossible || reviewPossible || fillFormsPossible || commentPossible)
-                && LockerManager.FileLockedForMe(file.ID))
+                && await LockerManager.FileLockedForMeAsync(file.ID))
             {
                 if (tryEdit)
                 {

@@ -188,19 +188,9 @@ namespace ASC.Files.Core.Security
             return await CanCreateAsync(entry, AuthContext.CurrentAccount.ID);
         }
 
-        public bool CanEdit<T>(FileEntry<T> entry)
-        {
-            return CanEditAsync(entry, AuthContext.CurrentAccount.ID).Result;
-        }
-
         public async Task<bool> CanEditAsync<T>(FileEntry<T> entry)
         {
             return await CanEditAsync(entry, AuthContext.CurrentAccount.ID);
-        }
-
-        public bool CanDelete<T>(FileEntry<T> entry)
-        {
-            return CanDeleteAsync(entry, AuthContext.CurrentAccount.ID).Result;
         }
 
         public async Task<bool> CanDeleteAsync<T>(FileEntry<T> entry)
@@ -332,19 +322,9 @@ namespace ASC.Files.Core.Security
                          .ToList();
         }
 
-        public IEnumerable<File<T>> FilterRead<T>(IEnumerable<File<T>> entries)
-        {
-            return FilterAsync(entries, FilesSecurityActions.Read, AuthContext.CurrentAccount.ID).Result.Cast<File<T>>();
-        }
-
         public async Task<IEnumerable<File<T>>> FilterReadAsync<T>(IEnumerable<File<T>> entries)
         {
             return (IEnumerable<File<T>>)await FilterAsync(entries, FilesSecurityActions.Read, AuthContext.CurrentAccount.ID);
-        }
-
-        public IEnumerable<Folder<T>> FilterRead<T>(IEnumerable<Folder<T>> entries)
-        {
-            return FilterAsync(entries, FilesSecurityActions.Read, AuthContext.CurrentAccount.ID).Result.Cast<Folder<T>>();
         }
 
         public async Task<IEnumerable<Folder<T>>> FilterReadAsync<T>(IEnumerable<Folder<T>> entries)

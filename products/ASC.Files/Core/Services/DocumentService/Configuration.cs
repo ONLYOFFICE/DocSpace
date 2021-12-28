@@ -265,11 +265,11 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 if (Type == EditorType.Embedded
                     || Type == EditorType.External
-                    || !FileSharing.CanSetAccess(File)) return null;
+                    || !FileSharing.CanSetAccessAsync(File).Result) return null;
 
                 try
                 {
-                    return FileSharing.GetSharedInfoShortFile(File.ID);
+                    return FileSharing.GetSharedInfoShortFileAsync(File.ID).Result;
                 }
                 catch
                 {
@@ -467,7 +467,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public string SaveAsUrl { get; set; }
 
-        public List<RecentConfig> GetRecent(EntryManager entryManager)
+        public async Task<List<RecentConfig>> GetRecentAsync(EntryManager entryManager)
         {
             if (!AuthContext.IsAuthenticated || UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) return null;
             if (!FilesSettingsHelper.RecentSection) return null;
@@ -487,7 +487,8 @@ namespace ASC.Web.Files.Services.DocumentService
             }
 
             var folderDao = DaoFactory.GetFolderDao<int>();
-            var files = entryManager.GetRecent(filter, false, Guid.Empty, string.Empty, false).Cast<File<int>>();
+            var filesEntry = await entryManager.GetRecentAsync(filter, false, Guid.Empty, string.Empty, false);
+            var files = filesEntry.Cast<File<int>>();
 
             var listRecent = from file in files
                              where !Equals(_configuration.Document.Info.GetFile().ID, file.ID)
@@ -786,7 +787,7 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 return AuthContext.IsAuthenticated
                        && !_configuration.Document.Info.GetFile().Encrypted
-                       && FileSharing.CanSetAccess(_configuration.Document.Info.GetFile());
+                       && FileSharing.CanSetAccessAsync(_configuration.Document.Info.GetFile()).Result;
             }
         }
 

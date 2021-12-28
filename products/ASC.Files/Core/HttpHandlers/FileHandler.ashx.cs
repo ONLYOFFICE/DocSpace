@@ -430,7 +430,7 @@ namespace ASC.Web.Files
                                 else
                                 {
                                     title = FileUtility.ReplaceFileExtension(title, ext);
-                                    fileStream = FileConverter.Exec(file, ext);
+                                    fileStream = await FileConverter.ExecAsync(file, ext);
 
                                     length = fileStream.Length;
                                 }

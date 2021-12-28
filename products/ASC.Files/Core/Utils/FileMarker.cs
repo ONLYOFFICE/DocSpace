@@ -647,20 +647,6 @@ namespace ASC.Web.Files.Utils
             }
         }
 
-        public void RemoveMarkAsNewForAll<T>(FileEntry<T> fileEntry)
-        {
-            List<Guid> userIDs;
-
-            var tagDao = DaoFactory.GetTagDao<T>();
-            var tags = tagDao.GetTagsAsync(fileEntry.ID, fileEntry.FileEntryType == FileEntryType.File ? FileEntryType.File : FileEntryType.Folder, TagType.New).ToListAsync().Result;
-            userIDs = tags.Select(tag => tag.Owner).Distinct().ToList();
-
-            foreach (var userID in userIDs)
-            {
-                RemoveMarkAsNew(fileEntry, userID);
-            }
-        }
-
         public async Task RemoveMarkAsNewForAllAsync<T>(FileEntry<T> fileEntry)
         {
             IAsyncEnumerable<Guid> userIDs;
