@@ -11,10 +11,10 @@ import { Base } from '@appserver/components/themes';
 const StyledCheckIcon = styled(CheckIcon)`
   ${commonIconsStyles}
   path {
-    fill: ${(props) => props.theme.filesEditingWrapper.fill};
+    fill: ${(props) => props.theme.filesEditingWrapper.fill} !important;
   }
   :hover {
-    fill: ${(props) => props.theme.filesEditingWrapper.hoverFill};
+    fill: ${(props) => props.theme.filesEditingWrapper.hoverFill} !important;
   }
 `;
 
@@ -23,10 +23,10 @@ StyledCheckIcon.defaultProps = { theme: Base };
 const StyledCrossIcon = styled(CrossIcon)`
   ${commonIconsStyles}
   path {
-    fill: ${(props) => props.theme.filesEditingWrapper.fill};
+    fill: ${(props) => props.theme.filesEditingWrapper.fill} !important;
   }
   :hover {
-    fill: ${(props) => props.theme.filesEditingWrapper.hoverFill};
+    fill: ${(props) => props.theme.filesEditingWrapper.hoverFill} !important;
   }
 `;
 
