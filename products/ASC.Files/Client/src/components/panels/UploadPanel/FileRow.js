@@ -148,7 +148,7 @@ class FileRow extends Component {
     const newState = !showPasswordInput;
 
     this.setState({ showPasswordInput: newState }, () => {
-      updateRowsHeight(index, newState);
+      updateRowsHeight && updateRowsHeight(index, newState);
     });
   };
 

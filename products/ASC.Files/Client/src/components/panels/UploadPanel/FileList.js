@@ -12,19 +12,30 @@ const CustomScrollbarsVirtualList = React.forwardRef((props, ref) => (
 
 const mobileRowHeight = 48;
 const desktopRowHeight = 40;
+const mobileRowIncreasedHeight = 92;
+const desktopRowIncreasedHeight = 88;
+
 const FileList = ({ uploadDataFiles }) => {
   const [rowSizes, setRowSizes] = useState({});
   const listRef = useRef(null);
+
   const onUpdateHeight = (i, showInput) => {
-    const mobileHeight = showInput ? 92 : mobileRowHeight;
-    const desktopHeight = showInput ? 88 : desktopRowHeight;
+    const mobileHeight = showInput ? mobileRowIncreasedHeight : mobileRowHeight;
+    const desktopHeight = showInput
+      ? desktopRowIncreasedHeight
+      : desktopRowHeight;
 
     if (listRef.current) {
-      listRef.current.resetAfterIndex(i);
+      listRef.current.resetAfterIndex(i, false);
     }
+
+    const updatedValues = {
+      [i]: isMobile ? mobileHeight : desktopHeight,
+    };
+
     setRowSizes((prevState) => ({
       ...prevState,
-      [i]: isMobile ? mobileHeight : desktopHeight,
+      ...updatedValues,
     }));
   };
 
