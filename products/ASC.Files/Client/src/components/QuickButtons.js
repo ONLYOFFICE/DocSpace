@@ -17,14 +17,14 @@ const QuickButtons = ({
   onClickFavorite,
   onClickShare,
 }) => {
-  const { id, locked, fileStatus, title, fileExst } = item;
+  const { id, locked, fileStatus, title, fileExst, shared } = item;
 
   const isFavorite = fileStatus === 32;
   const isNewWithFav = fileStatus === 34;
   const isEditingWithFav = fileStatus === 33;
   const showFavorite = isFavorite || isNewWithFav || isEditingWithFav;
 
-  const colorSharedButton = item.shared ? "#3B72A7" : "#a3a9ae";
+  const colorSharedButton = shared ? "#3B72A7" : "#a3a9ae";
 
   const iconShare = "/static/images/catalog.share.react.svg";
 

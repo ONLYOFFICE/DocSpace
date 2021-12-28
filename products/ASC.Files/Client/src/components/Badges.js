@@ -38,6 +38,8 @@ const Badges = ({
     ? "/static/images/file.actions.convert.edit.doc.react.svg"
     : "/static/images/access.edit.react.svg";
 
+  const iconRefresh = "/static/images/refresh.react.svg";
+
   const countVersions = versionGroup > 999 ? "999+" : versionGroup;
 
   const contentNewItems = newItems > 999 ? "999+" : newItems;
@@ -69,10 +71,9 @@ const Badges = ({
       {canConvert && !isTrashFolder && (
         <StyledIcon
           onClick={setConvertDialogVisible}
-          iconName="/static/images/refresh.react.svg"
-          className="badge tablet-refresh tablet-badge icons-group can-convert"
+          iconName={iconRefresh}
+          className="badge tablet-badge icons-group can-convert"
           size={sizeBadge}
-          color="#A3A9AE"
           hoverColor="#3B72A7"
         />
       )}

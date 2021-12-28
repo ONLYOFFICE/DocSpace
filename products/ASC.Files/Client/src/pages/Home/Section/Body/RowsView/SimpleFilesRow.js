@@ -83,12 +83,6 @@ const StyledSimpleFilesRow = styled(Row)`
     margin-right: 7px;
   }
 
-  .can-convert:hover {
-    path {
-      fill: #3b72a7;
-    }
-  }
-
   .badges {
     display: flex;
     align-items: center;

@@ -119,12 +119,6 @@ const StyledDragAndDrop = styled(DragAndDrop)`
 const StyledBadgesContainer = styled.div`
   margin-left: 8px;
 
-  .can-convert:hover {
-    path {
-      fill: #3b72a7;
-    }
-  }
-
   .badges {
     display: flex;
     align-items: center;

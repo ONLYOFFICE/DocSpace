@@ -53,7 +53,7 @@ const SimpleFilesRowContent = styled(RowContent)`
     }
 
     .tablet-edit,
-    .tablet-refresh {
+    .can-convert {
      margin-top: 6px;
      margin-right: 24px !important;
     }
