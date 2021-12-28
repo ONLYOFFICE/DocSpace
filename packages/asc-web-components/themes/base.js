@@ -1784,8 +1784,11 @@ const Base = {
 
   filterInput: {
     filterButton: {
-      stroke: "#a3a9ae",
-      fill: "#eceef1",
+      stoke: "#eceef1",
+
+      fill: "#F8F9F9",
+
+      fillSecond: "#979797",
     },
 
     comboButtonLabelColor: "#333333",

@@ -1786,8 +1786,11 @@ const Dark = {
 
   filterInput: {
     filterButton: {
-      stroke: "#000000",
+      stroke: "#474747",
+
       fill: "#333333",
+
+      fillSecond: "#eeeeee",
     },
 
     comboButtonLabelColor: "#eeeeee",

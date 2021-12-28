@@ -30,12 +30,23 @@ const StyledFilterInput = styled.div`
     #filter-button {
       svg {
         height: 25px;
-        path:not(:first-child) {
-          stroke: ${(props) => props.theme.filterInput.filterButton.stroke};
+
+        path:first-child {
+          fill: ${(props) => props.theme.filterInput.filterButton.fill} !important;
+          stroke: ${(props) => props.theme.filterInput.filterButton.stroke} !important;
         }
+
+        path:not(:first-child) {
+          fill: ${(props) => props.theme.filterInput.filterButton.fillSecond} !important;
+          /* stroke: ${(props) => props.theme.filterInput.filterButton.stroke} !important; */
+        }
+
+        /* path:not(:first-child) {
+          stroke: ${(props) => props.theme.filterInput.filterButton.stroke};
+        } */
       }
 
-      stroke: ${(props) => props.theme.filterInput.filterButton.stroke};
+      /* stroke: ${(props) => props.theme.filterInput.filterButton.stroke};
       div:active {
         svg path:first-child {
           fill: ${(props) => props.theme.filterInput.filterButton.fill};
@@ -46,7 +57,7 @@ const StyledFilterInput = styled.div`
         svg path:not(:first-child) {
           stroke: ${(props) => props.theme.filterInput.filterButton.stroke};
         }
-      }
+      } */
     }
   }
 
