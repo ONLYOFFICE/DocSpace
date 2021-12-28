@@ -1772,6 +1772,8 @@ const Base = {
   },
 
   peopleTableRow: {
+    fill: "#3b72a7",
+
     nameColor: "#333333",
     pendingNameColor: "#A3A9AE",
 

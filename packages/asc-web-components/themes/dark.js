@@ -1774,6 +1774,8 @@ const Dark = {
   },
 
   peopleTableRow: {
+    fill: "#D8D8D8",
+
     nameColor: "#eeeeee",
     pendingNameColor: "#595959",
 
