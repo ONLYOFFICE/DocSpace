@@ -155,7 +155,7 @@ const SimulatePassword = ({
           size="medium"
           scale
           primary
-          label={t("Ready")}
+          label={t("Done")}
           onClick={onClick}
         />
       </>
