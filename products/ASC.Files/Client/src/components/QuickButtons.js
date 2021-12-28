@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import IconButton from "@appserver/components/icon-button";
-import SharedButton from "@appserver/files/src/components/SharedButton";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
 export const StyledIcon = styled(IconButton)`
@@ -9,7 +8,6 @@ export const StyledIcon = styled(IconButton)`
 `;
 
 const QuickButtons = ({
-  t,
   item,
   sectionWidth,
   isTrashFolder,
@@ -17,6 +15,7 @@ const QuickButtons = ({
   showShare,
   onClickLock,
   onClickFavorite,
+  onClickShare,
 }) => {
   const { id, locked, fileStatus, title, fileExst } = item;
 
@@ -24,6 +23,10 @@ const QuickButtons = ({
   const isNewWithFav = fileStatus === 34;
   const isEditingWithFav = fileStatus === 33;
   const showFavorite = isFavorite || isNewWithFav || isEditingWithFav;
+
+  const colorSharedButton = item.shared ? "#3B72A7" : "#a3a9ae";
+
+  const iconShare = "/static/images/catalog.share.react.svg";
 
   const iconLock = locked
     ? "/static/images/file.actions.locked.react.svg"
@@ -39,12 +42,12 @@ const QuickButtons = ({
   return (
     <div className="badges additional-badges">
       {item.canShare && showShare && (
-        <SharedButton
-          t={t}
-          id={item.id}
-          shared={item.shared}
-          isFolder={item.isFolder}
-          isSmallIcon={!tabletViewQuickButton}
+        <StyledIcon
+          iconName={iconShare}
+          className="badge share-button-icon"
+          size={sizeQuickButton}
+          onClick={onClickShare}
+          color={colorSharedButton}
         />
       )}
       {fileExst && accessToEdit && !isTrashFolder && (

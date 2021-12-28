@@ -35,6 +35,14 @@ export default function withQuickButtons(WrappedComponent) {
         .catch((err) => toastr.error(err));
     };
 
+    onClickShare = () => {
+      const { item, onSelectItem, setSharingPanelVisible } = this.props;
+      const { id, isFolder } = item;
+
+      onSelectItem({ id, isFolder });
+      setSharingPanelVisible(true);
+    };
+
     render() {
       const {
         t,
@@ -65,6 +73,7 @@ export default function withQuickButtons(WrappedComponent) {
           accessToEdit={accessToEdit}
           onClickLock={this.onClickLock}
           onClickFavorite={this.onClickFavorite}
+          onClickShare={this.onClickShare}
         />
       ) : null;
 
@@ -77,22 +86,38 @@ export default function withQuickButtons(WrappedComponent) {
     }
   }
 
-  return inject(({ auth, treeFoldersStore, filesActionsStore, filesStore }) => {
-    const { isRecycleBinFolder } = treeFoldersStore;
-    const { lockFileAction, setFavoriteAction } = filesActionsStore;
-    const { setIsLoading } = filesStore;
-    const {
-      extension: fileActionExt,
-      id: fileActionId,
-    } = filesStore.fileActionStore;
-    return {
-      isAdmin: auth.isAdmin,
-      isTrashFolder: isRecycleBinFolder,
-      lockFileAction,
-      setFavoriteAction,
-      setIsLoading,
-      fileActionExt,
-      fileActionId,
-    };
-  })(observer(WithQuickButtons));
+  return inject(
+    ({
+      auth,
+      treeFoldersStore,
+      filesActionsStore,
+      filesStore,
+      dialogsStore,
+    }) => {
+      const { isRecycleBinFolder } = treeFoldersStore;
+      const {
+        lockFileAction,
+        setFavoriteAction,
+        onSelectItem,
+      } = filesActionsStore;
+
+      const { setIsLoading } = filesStore;
+      const {
+        extension: fileActionExt,
+        id: fileActionId,
+      } = filesStore.fileActionStore;
+      const { setSharingPanelVisible } = dialogsStore;
+      return {
+        isAdmin: auth.isAdmin,
+        isTrashFolder: isRecycleBinFolder,
+        lockFileAction,
+        setFavoriteAction,
+        setIsLoading,
+        fileActionExt,
+        fileActionId,
+        onSelectItem,
+        setSharingPanelVisible,
+      };
+    }
+  )(observer(WithQuickButtons));
 }

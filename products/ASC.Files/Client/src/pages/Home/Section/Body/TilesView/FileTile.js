@@ -9,8 +9,8 @@ import { withRouter } from "react-router-dom";
 
 import withFileActions from "../../../../../HOCs/withFileActions";
 import withContextOptions from "../../../../../HOCs/withContextOptions";
+import withQuickButtons from "../../../../../HOCs/withQuickButtons";
 import ItemIcon from "../../../../../components/ItemIcon";
-import SharedButton from "../../../../../components/SharedButton";
 
 const FilesTile = (props) => {
   const {
@@ -37,6 +37,7 @@ const FilesTile = (props) => {
     showShare,
     isActive,
     isEdit,
+    quickButtonsComponent,
   } = props;
 
   const temporaryExtension =
@@ -50,15 +51,6 @@ const FilesTile = (props) => {
   );
 
   const { thumbnailUrl } = item;
-  const sharedButton =
-    item.canShare && showShare ? (
-      <SharedButton
-        t={t}
-        id={item.id}
-        shared={item.shared}
-        isFolder={item.isFolder}
-      />
-    ) : null;
   const element = (
     <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
   );
@@ -81,7 +73,7 @@ const FilesTile = (props) => {
           thumbnail={thumbnailUrl}
           element={element}
           sectionWidth={sectionWidth}
-          contentElement={sharedButton}
+          contentElement={quickButtonsComponent}
           onSelect={onContentFileSelect}
           tileContextClick={fileContextClick}
           isPrivacy={isPrivacy}
@@ -111,6 +103,8 @@ export default inject(({ formatsStore }) => {
   return { getIcon };
 })(
   withTranslation("Home")(
-    withFileActions(withContextOptions(withRouter(observer(FilesTile))))
+    withFileActions(
+      withContextOptions(withRouter(withQuickButtons(observer(FilesTile))))
+    )
   )
 );
