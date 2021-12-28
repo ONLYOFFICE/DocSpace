@@ -86,7 +86,8 @@ const StyledContextMenu = styled.div`
     cursor: default;
     padding: 0px 16px;
     margin: 4px 16px 4px;
-    border-bottom: 1px solid #eceef1;
+    border-bottom: ${(props) =>
+      props.theme.dropDownItem.separator.borderBottom};
     width: calc(90%-32px);
 
     &:hover {
