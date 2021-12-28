@@ -264,7 +264,7 @@ class FilterItem extends React.Component {
           isDisabled={isDisabled}
           isClickable={true}
         >
-          <CloseButton isDisabled={isDisabled} onClick={this.onClick} />
+          <CloseButton isDisabled={isDisabled} isClickable />
         </StyledCloseButtonBlock>
       </StyledFilterItem>
     );

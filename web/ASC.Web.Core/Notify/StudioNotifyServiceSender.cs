@@ -127,7 +127,10 @@ namespace ASC.Web.Studio.Core.Notify
                 {
                     if (coreBaseSettings.Personal)
                     {
-                        WorkContext.RegisterSendMethod(SendLettersPersonal, cron);
+                        if (!coreBaseSettings.CustomMode)
+                        {
+                            WorkContext.RegisterSendMethod(SendLettersPersonal, cron);
+                        }
                     }
                     else
                     {

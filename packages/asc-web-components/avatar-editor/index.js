@@ -113,6 +113,7 @@ class AvatarEditor extends React.Component {
       saveButtonLoading,
       useModalDialog,
       cancelButtonLabel,
+      maxSizeLabel,
     } = this.props;
 
     return useModalDialog ? (
@@ -146,6 +147,7 @@ class AvatarEditor extends React.Component {
             unknownTypeError={unknownTypeError}
             maxSizeFileError={maxSizeFileError}
             unknownError={unknownError}
+            maxSizeLabel={maxSizeLabel}
             isLoading={saveButtonLoading}
           />
         </ModalDialog.Body>
@@ -180,6 +182,7 @@ class AvatarEditor extends React.Component {
           maxSizeFileError={maxSizeFileError}
           unknownError={unknownError}
           useModalDialog={false}
+          maxSizeLabel={maxSizeLabel}
           isLoading={saveButtonLoading}
         />
         <StyledButtonsWrapper>
@@ -253,6 +256,7 @@ AvatarEditor.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   /** Use for the view of the modal dialog or not */
   useModalDialog: PropTypes.bool,
+  maxSizeLabel: PropTypes.string,
 };
 
 AvatarEditor.defaultProps = {
