@@ -86,6 +86,11 @@ namespace ASC.Data.Backup.Extensions
             if (partLength <= 0)
                 throw new ArgumentOutOfRangeException("partLength", partLength, "Length must be positive integer");
 
+            return MakePartsIterator(collection, partLength);
+        }
+
+        private static IEnumerable<IEnumerable<TEntry>> MakePartsIterator<TEntry>(this IEnumerable<TEntry> collection, int partLength)
+        {
             var part = new List<TEntry>(partLength);
 
             foreach (var entry in collection)
