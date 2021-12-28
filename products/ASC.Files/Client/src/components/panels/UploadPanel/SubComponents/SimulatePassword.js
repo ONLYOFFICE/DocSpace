@@ -114,7 +114,6 @@ const SimulatePassword = ({
     setInputType(inputType === "password" ? "text" : "password");
   };
 
-  console.log("password", password);
   const copyPassword = password;
   const bullets = copyPassword.replace(/(.)/g, "•");
 
@@ -131,7 +130,6 @@ const SimulatePassword = ({
         .setSelectionRange(cursorPosition, cursorPosition);
   }, [password]);
 
-  console.log("passwordValid", passwordValid);
   return (
     <StyledBody className="conversation-password-wrapper">
       <>
