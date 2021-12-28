@@ -40,7 +40,7 @@ namespace ASC.Core
     [Scope(typeof(ConfigureEFUserService), typeof(ConfigureCachedUserService))]
     public interface IUserService
     {
-        IDictionary<Guid, UserInfo> GetUsers(int tenant, DateTime from);
+        IEnumerable<UserInfo> GetUsers(int tenant);
 
         IQueryable<UserInfo> GetUsers(int tenant, bool isAdmin,
             EmployeeStatus? employeeStatus,
@@ -78,7 +78,7 @@ namespace ASC.Core
         void SetUserPasswordHash(int tenant, Guid id, string passwordHash);
 
 
-        IDictionary<Guid, Group> GetGroups(int tenant, DateTime from);
+        IEnumerable<Group> GetGroups(int tenant);
 
         Group GetGroup(int tenant, Guid id);
 
@@ -86,8 +86,8 @@ namespace ASC.Core
 
         void RemoveGroup(int tenant, Guid id);
 
-
-        IDictionary<string, UserGroupRef> GetUserGroupRefs(int tenant, DateTime from);
+        UserGroupRef GetUserGroupRef(int tenant, Guid groupId, UserGroupRefType refType);
+        IDictionary<string, UserGroupRef> GetUserGroupRefs(int tenant);
 
         UserGroupRef SaveUserGroupRef(int tenant, UserGroupRef r);
 

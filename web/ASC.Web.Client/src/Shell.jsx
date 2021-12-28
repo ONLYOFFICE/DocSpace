@@ -143,9 +143,8 @@ const checkTheme = () => {
   const theme = localStorage.getItem('theme');
 
   if (theme) return theme;
-  console.log(theme);
+
   if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    console.log(window.matchMedia('(prefers-color-scheme: light)').matches);
     return 'Dark';
   }
 
