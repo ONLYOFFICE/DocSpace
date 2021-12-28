@@ -1,27 +1,27 @@
-import React, { Component } from "react";
-import { withRouter } from "react-router";
-import styled from "styled-components";
-import { withTranslation } from "react-i18next";
-import PropTypes from "prop-types";
-import axios from "axios";
+import React, { Component } from 'react';
+import { withRouter } from 'react-router';
+import styled from 'styled-components';
+import { withTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
+import axios from 'axios';
 
-import PageLayout from "@appserver/common/components/PageLayout";
-import ErrorContainer from "@appserver/common/components/ErrorContainer";
-import history from "@appserver/common/history";
-import { combineUrl, createPasswordHash } from "@appserver/common/utils";
-import Loader from "@appserver/components/loader";
-import { tablet } from "@appserver/components/utils/device";
-import { EmailSettings } from "@appserver/components/utils/email";
-import HeaderContainer from "./sub-components/header-container";
-import ButtonContainer from "./sub-components/button-container";
-import SettingsContainer from "./sub-components/settings-container";
-import InputContainer from "./sub-components/input-container";
-import ModalContainer from "./sub-components/modal-dialog-container";
+import PageLayout from '@appserver/common/components/PageLayout';
+import ErrorContainer from '@appserver/common/components/ErrorContainer';
+import history from '@appserver/common/history';
+import { combineUrl, createPasswordHash } from '@appserver/common/utils';
+import Loader from '@appserver/components/loader';
+import { tablet } from '@appserver/components/utils/device';
+import { EmailSettings } from '@appserver/components/utils/email';
+import HeaderContainer from './sub-components/header-container';
+import ButtonContainer from './sub-components/button-container';
+import SettingsContainer from './sub-components/settings-container';
+import InputContainer from './sub-components/input-container';
+import ModalContainer from './sub-components/modal-dialog-container';
 
-import { setDocumentTitle } from "../../../helpers/utils";
-import { inject, observer } from "mobx-react";
-import { AppServerConfig } from "@appserver/common/constants";
-import withCultureNames from "@appserver/common/hoc/withCultureNames";
+import { setDocumentTitle } from '../../../helpers/utils';
+import { inject, observer } from 'mobx-react';
+import { AppServerConfig } from '@appserver/common/constants';
+import withCultureNames from '@appserver/common/hoc/withCultureNames';
 
 const emailSettings = new EmailSettings();
 emailSettings.allowDomainPunycode = true;
@@ -53,7 +53,7 @@ class Body extends Component {
     super(props);
 
     this.state = {
-      password: "",
+      password: '',
       isValidPass: false,
       errorLoading: false,
       errorMessage: null,
@@ -61,15 +61,15 @@ class Body extends Component {
       sending: false,
       visibleModal: false,
       emailValid: false,
-      email: "",
-      changeEmail: "",
+      email: '',
+      changeEmail: '',
       license: false,
       timezones: null,
       selectLanguage: null,
       selectTimezone: null,
 
       emailNeeded: true,
-      emailOwner: "fake@mail.com",
+      emailOwner: 'fake@mail.com',
 
       hasErrorEmail: false,
       hasErrorPass: false,
@@ -95,10 +95,10 @@ class Body extends Component {
       culture,
     } = this.props;
 
-    window.addEventListener("keyup", this.onKeyPressHandler);
+    window.addEventListener('keyup', this.onKeyPressHandler);
 
     if (!wizardToken) {
-      history.push(combineUrl(AppServerConfig.proxyURL, "/"));
+      history.push(combineUrl(AppServerConfig.proxyURL, '/'));
     } else {
       await axios
         .all([
@@ -120,8 +120,7 @@ class Body extends Component {
         ])
         .then(() => {
           let select = cultureNames.filter((lang) => lang.key === culture);
-          if (!select.length)
-            select = cultureNames.filter((lang) => lang.key === "en-US");
+          if (!select.length) select = cultureNames.filter((lang) => lang.key === 'en-US');
 
           this.setState({
             selectLanguage: {
@@ -130,7 +129,7 @@ class Body extends Component {
             },
           });
           setIsWizardLoaded(true);
-          setDocumentTitle(t("WizardTitle"));
+          setDocumentTitle(t('WizardTitle'));
         })
         .catch((e) => {
           console.error(e);
@@ -142,10 +141,7 @@ class Body extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (
-      nextProps.isWizardLoaded === true ||
-      nextState.errorInitWizard !== null
-    ) {
+    if (nextProps.isWizardLoaded === true || nextState.errorInitWizard !== null) {
       return true;
     } else {
       return false;
@@ -153,7 +149,7 @@ class Body extends Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener("keyup", this.onKeyPressHandler);
+    window.removeEventListener('keyup', this.onKeyPressHandler);
   }
 
   mapTimezonesToArray = (timezones) => {
@@ -163,13 +159,12 @@ class Body extends Component {
   };
 
   onKeyPressHandler = (e) => {
-    if (e.key === "Enter") this.onContinueHandler();
+    if (e.key === 'Enter') this.onContinueHandler();
   };
 
   isValidPassHandler = (val) => this.setState({ isValidPass: val });
 
-  onChangePassword = (e) =>
-    this.setState({ password: e.target.value, hasErrorPass: false });
+  onChangePassword = (e) => this.setState({ password: e.target.value, hasErrorPass: false });
 
   onClickChangeEmail = () => this.setState({ visibleModal: true });
 
@@ -202,13 +197,7 @@ class Body extends Component {
         setWizardComplete,
       } = this.props;
 
-      const {
-        password,
-        email,
-        selectLanguage,
-        selectTimezone,
-        emailOwner,
-      } = this.state;
+      const { password, email, selectLanguage, selectTimezone, emailOwner } = this.state;
 
       this.setState({ sending: true });
 
@@ -224,21 +213,19 @@ class Body extends Component {
         selectLanguage.key,
         selectTimezone.key,
         wizardToken,
-        analytics
+        analytics,
       )
         .then(() => {
           setWizardComplete();
           getPortalSettings();
         })
-        .then(() =>
-          history.push(combineUrl(AppServerConfig.proxyURL, "/login"))
-        )
+        .then(() => history.push(combineUrl(AppServerConfig.proxyURL, '/login')))
         .catch((e) =>
           this.setState({
             errorLoading: true,
             sending: false,
             errorMessage: e,
-          })
+          }),
         );
     } else {
       this.setState({ visibleModal: true });
@@ -251,17 +238,17 @@ class Body extends Component {
 
     let checkingMessages = [];
     if (!isValidPass) {
-      checkingMessages.push(t("ErrorPassword"));
+      checkingMessages.push(t('ErrorPassword'));
       this.setState({ hasErrorPass: true, checkingMessages: checkingMessages });
     }
     if (!license) {
-      checkingMessages.push(t("ErrorLicenseRead"));
+      checkingMessages.push(t('ErrorLicenseRead'));
       this.setState({ checkingMessages: checkingMessages });
     }
 
     if (emailNeeded && !isLicenseRequired) {
       if (!emailValid) {
-        checkingMessages.push(t("ErrorEmail"));
+        checkingMessages.push(t('ErrorEmail'));
         this.setState({
           hasErrorEmail: true,
           checkingMessages: checkingMessages,
@@ -275,7 +262,7 @@ class Body extends Component {
 
     if (emailNeeded && isLicenseRequired) {
       if (!emailValid) {
-        checkingMessages.push(t("ErrorEmail"));
+        checkingMessages.push(t('ErrorEmail'));
         this.setState({
           hasErrorEmail: true,
           checkingMessages: checkingMessages,
@@ -283,7 +270,7 @@ class Body extends Component {
       }
 
       if (!licenseUpload) {
-        checkingMessages.push(t("ErrorUploadLicenseFile"));
+        checkingMessages.push(t('ErrorUploadLicenseFile'));
         this.setState({
           hasErrorLicense: true,
           checkingMessages: checkingMessages,
@@ -297,7 +284,7 @@ class Body extends Component {
 
     if (!emailNeeded && isLicenseRequired) {
       if (!licenseUpload) {
-        checkingMessages.push(t("ErrorUploadLicenseFile"));
+        checkingMessages.push(t('ErrorUploadLicenseFile'));
         this.setState({
           hasErrorLicense: true,
           checkingMessages: checkingMessages,
@@ -339,26 +326,21 @@ class Body extends Component {
     });
 
   onInputFileHandler = (file) => {
-    const {
-      setLicense,
-      wizardToken,
-      licenseUpload,
-      resetLicenseUploaded,
-    } = this.props;
+    const { setLicense, wizardToken, licenseUpload, resetLicenseUploaded } = this.props;
 
     if (licenseUpload) resetLicenseUploaded();
 
     this.setState({ hasErrorLicense: false });
 
     let fd = new FormData();
-    fd.append("files", file);
+    fd.append('files', file);
 
     setLicense(wizardToken, fd).catch((e) =>
       this.setState({
         errorLoading: true,
         errorMessage: e,
         hasErrorLicense: true,
-      })
+      }),
     );
   };
 
@@ -372,6 +354,7 @@ class Body extends Component {
       isLicenseRequired,
       urlLicense,
       cultureNames,
+      theme,
     } = this.props;
 
     const {
@@ -395,14 +378,14 @@ class Body extends Component {
       checkingMessages,
     } = this.state;
 
-    console.log("wizard render");
+    console.log('wizard render');
 
     if (errorInitWizard) {
       return (
         <ErrorContainer
-          headerText={t("Common:SomethingWentWrong")}
-          bodyText={t("ErrorInitWizard")}
-          buttonText={t("ErrorInitWizardButton")}
+          headerText={t('Common:SomethingWentWrong')}
+          bodyText={t('ErrorInitWizard')}
+          buttonText={t('ErrorInitWizardButton')}
           buttonUrl="/"
         />
       );
@@ -426,6 +409,7 @@ class Body extends Component {
 
           <form className="wizard-form">
             <InputContainer
+              theme={theme}
               t={t}
               settingsPassword={passwordSettings}
               emailNeeded={emailNeeded}
@@ -460,11 +444,7 @@ class Body extends Component {
               onSelectTimezoneHandler={this.onSelectTimezoneHandler}
             />
 
-            <ButtonContainer
-              t={t}
-              sending={sending}
-              onContinueHandler={this.onContinueHandler}
-            />
+            <ButtonContainer t={t} sending={sending} onContinueHandler={this.onContinueHandler} />
           </form>
         </WizardContainer>
       );
@@ -486,7 +466,7 @@ Body.propTypes = {
   licenseUpload: PropTypes.string,
 };
 
-const WizardWrapper = withTranslation(["Wizard", "Common"])(Body);
+const WizardWrapper = withTranslation(['Wizard', 'Common'])(Body);
 
 const WizardPage = (props) => {
   const { isLoaded } = props;
@@ -519,6 +499,7 @@ export default inject(({ auth, wizard }) => {
     setWizardComplete,
     getPortalTimezones,
     getPortalPasswordSettings,
+    theme,
   } = auth.settingsStore;
 
   const { language } = auth;
@@ -536,6 +517,7 @@ export default inject(({ auth, wizard }) => {
   } = wizard;
 
   return {
+    theme,
     isLoaded: auth.isLoaded,
     culture: language,
     wizardToken,

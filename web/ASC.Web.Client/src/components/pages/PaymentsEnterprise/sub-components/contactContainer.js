@@ -1,12 +1,12 @@
-import React from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { withRouter } from "react-router";
-import { useTranslation } from "react-i18next";
-import { inject, observer } from "mobx-react";
+import React from 'react';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
+import { withRouter } from 'react-router';
+import { useTranslation } from 'react-i18next';
+import { inject, observer } from 'mobx-react';
 
-import Text from "@appserver/components/text";
-import Link from "@appserver/components/link";
+import Text from '@appserver/components/text';
+import Link from '@appserver/components/link';
 
 const StyledContactContainer = styled.div`
   display: grid;
@@ -15,20 +15,20 @@ const StyledContactContainer = styled.div`
   grid-row-gap: 11px;
 `;
 
-const ContactContainer = ({ salesEmail, helpUrl }) => {
-  const { t } = useTranslation("PaymentsEnterprise");
+const ContactContainer = ({ salesEmail, helpUrl, theme }) => {
+  const { t } = useTranslation('PaymentsEnterprise');
   return (
     <StyledContactContainer>
       <Text>
-        {t("ContactEmail")}{" "}
-        <Link href={`mailto:${salesEmail}`} color="#316daa">
+        {t('ContactEmail')}{' '}
+        <Link href={`mailto:${salesEmail}`} color={theme.studio.paymentsEnterprise.linkColor}>
           {salesEmail}
         </Link>
       </Text>
 
       <Text>
-        {t("ContactUrl")}{" "}
-        <Link target="_blank" href={`${helpUrl}`} color="#316daa">
+        {t('ContactUrl')}{' '}
+        <Link target="_blank" href={`${helpUrl}`} color={theme.studio.paymentsEnterprise.linkColor}>
           {helpUrl}
         </Link>
       </Text>
@@ -41,10 +41,11 @@ ContactContainer.propTypes = {
   helpUrl: PropTypes.string,
 };
 
-export default inject(({ payments }) => {
+export default inject(({ payments, auth }) => {
   const { salesEmail, helpUrl } = payments;
   return {
     salesEmail,
     helpUrl,
+    theme: auth.settingsStore.theme,
   };
 })(withRouter(observer(ContactContainer)));

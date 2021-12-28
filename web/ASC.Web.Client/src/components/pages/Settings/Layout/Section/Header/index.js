@@ -1,24 +1,19 @@
-import React from "react";
-import { inject, observer } from "mobx-react";
-import styled, { css } from "styled-components";
-import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
-import Headline from "@appserver/common/components/Headline";
-import IconButton from "@appserver/components/icon-button";
-import GroupButtonsMenu from "@appserver/components/group-buttons-menu";
-import DropDownItem from "@appserver/components/drop-down-item";
+import React from 'react';
+import { inject, observer } from 'mobx-react';
+import styled, { css } from 'styled-components';
+import { withRouter } from 'react-router';
+import { withTranslation } from 'react-i18next';
+import Headline from '@appserver/common/components/Headline';
+import IconButton from '@appserver/components/icon-button';
+import GroupButtonsMenu from '@appserver/components/group-buttons-menu';
+import DropDownItem from '@appserver/components/drop-down-item';
 
-import { tablet, desktop } from "@appserver/components/utils/device";
+import { tablet, desktop } from '@appserver/components/utils/device';
 
-import {
-  getKeyByLink,
-  settingsTree,
-  getTKeyByKey,
-  checkPropertyByLink,
-} from "../../../utils";
-import { combineUrl } from "@appserver/common/utils";
-import { AppServerConfig } from "@appserver/common/constants";
-import { isMobile } from "react-device-detect";
+import { getKeyByLink, settingsTree, getTKeyByKey, checkPropertyByLink } from '../../../utils';
+import { combineUrl } from '@appserver/common/utils';
+import { AppServerConfig } from '@appserver/common/constants';
+import { isMobile } from 'react-device-detect';
 
 const HeaderContainer = styled.div`
   position: relative;
@@ -59,12 +54,12 @@ const StyledContainer = styled.div`
         ? props.width &&
           isMobile &&
           css`
-            width: ${props.width + 40 + "px"};
+            width: ${props.width + 40 + 'px'};
           `
         : props.width &&
           isMobile &&
           css`
-            width: ${props.width + 32 + "px"};
+            width: ${props.width + 32 + 'px'};
           `}
 
     @media ${tablet} {
@@ -78,7 +73,7 @@ const StyledContainer = styled.div`
           !isMobile &&
           props.width &&
           css`
-            width: ${props.width + 16 + "px"};
+            width: ${props.width + 16 + 'px'};
           `}
 
         position: absolute;
@@ -108,20 +103,12 @@ class SectionHeaderContent extends React.Component {
     const fullSettingsUrlLength = fullSettingsUrl.length;
 
     const resultPath = locationPathname.slice(fullSettingsUrlLength + 1);
-    const arrayOfParams = resultPath.split("/");
+    const arrayOfParams = resultPath.split('/');
 
     const key = getKeyByLink(arrayOfParams, settingsTree);
     const header = getTKeyByKey(key, settingsTree);
-    const isCategory = checkPropertyByLink(
-      arrayOfParams,
-      settingsTree,
-      "isCategory"
-    );
-    const isHeader = checkPropertyByLink(
-      arrayOfParams,
-      settingsTree,
-      "isHeader"
-    );
+    const isCategory = checkPropertyByLink(arrayOfParams, settingsTree, 'isCategory');
+    const isHeader = checkPropertyByLink(arrayOfParams, settingsTree, 'isHeader');
     this.state = {
       header,
       isCategoryOrHeader: isCategory || isHeader,
@@ -135,27 +122,18 @@ class SectionHeaderContent extends React.Component {
 
     const key = getKeyByLink(arrayOfParams, settingsTree);
     const header = getTKeyByKey(key, settingsTree);
-    const isCategory = checkPropertyByLink(
-      arrayOfParams,
-      settingsTree,
-      "isCategory"
-    );
-    const isHeader = checkPropertyByLink(
-      arrayOfParams,
-      settingsTree,
-      "isHeader"
-    );
+    const isCategory = checkPropertyByLink(arrayOfParams, settingsTree, 'isCategory');
+    const isHeader = checkPropertyByLink(arrayOfParams, settingsTree, 'isHeader');
     const isCategoryOrHeader = isCategory || isHeader;
 
     header !== this.state.header && this.setState({ header });
-    isCategoryOrHeader !== this.state.isCategoryOrHeader &&
-      this.setState({ isCategoryOrHeader });
+    isCategoryOrHeader !== this.state.isCategoryOrHeader && this.setState({ isCategoryOrHeader });
   }
 
   onBackToParent = () => {
     let newArrayOfParams = this.getArrayOfParams();
     newArrayOfParams.splice(-1, 1);
-    const newPath = "/settings/" + newArrayOfParams.join("/");
+    const newPath = '/settings/' + newArrayOfParams.join('/');
     this.props.history.push(combineUrl(AppServerConfig.proxyURL, newPath));
   };
 
@@ -166,8 +144,8 @@ class SectionHeaderContent extends React.Component {
 
     const fullSettingsUrlLength = fullSettingsUrl.length;
     const resultPath = locationPathname.slice(fullSettingsUrlLength + 1);
-    const arrayOfParams = resultPath.split("/").filter((param) => {
-      return param !== "filter";
+    const arrayOfParams = resultPath.split('/').filter((param) => {
+      return param !== 'filter';
     });
     return arrayOfParams;
   };
@@ -190,12 +168,12 @@ class SectionHeaderContent extends React.Component {
 
   onCheck = (checked) => {
     const { setSelected } = this.props;
-    setSelected(checked ? "all" : "close");
+    setSelected(checked ? 'all' : 'close');
   };
 
   onSelectAll = () => {
     const { setSelected } = this.props;
-    setSelected("all");
+    setSelected('all');
   };
 
   removeAdmins = () => {
@@ -218,22 +196,22 @@ class SectionHeaderContent extends React.Component {
 
     const menuItems = [
       {
-        label: t("Common:Select"),
+        label: t('Common:Select'),
         isDropdown: true,
         isSeparator: true,
         isSelect: true,
-        fontWeight: "bold",
+        fontWeight: 'bold',
         children: [
           <DropDownItem
             key="all"
-            label={t("Common:SelectAll")}
+            label={t('Common:SelectAll')}
             data-index={0}
             onClick={this.onSelectAll}
           />,
         ],
       },
       {
-        label: t("Common:Delete"),
+        label: t('Common:Delete'),
         disabled: !selection || !selection.length > 0,
         onClick: this.removeAdmins,
       },
@@ -249,8 +227,8 @@ class SectionHeaderContent extends React.Component {
               onChange={this.onCheck}
               menuItems={menuItems}
               visible={true}
-              moreLabel={t("Common:More")}
-              closeTitle={t("Common:CloseButton")}
+              moreLabel={t('Common:More')}
+              closeTitle={t('Common:CloseButton')}
               onClose={this.onClose}
               selected={menuItems[0].label}
             />
@@ -261,8 +239,6 @@ class SectionHeaderContent extends React.Component {
               <IconButton
                 iconName="/static/images/arrow.path.react.svg"
                 size="17"
-                color="#A3A9AE"
-                hoverColor="#657077"
                 isFill={true}
                 onClick={this.onBackToParent}
                 className="arrow-button"
@@ -276,8 +252,6 @@ class SectionHeaderContent extends React.Component {
                 <IconButton
                   iconName="/static/images/actions.header.touch.react.svg"
                   size="17"
-                  color="#A3A9AE"
-                  hoverColor="#657077"
                   isFill={true}
                   onClick={this.onToggleSelector}
                   className="action-button"
@@ -323,8 +297,4 @@ export default inject(({ auth, setup }) => {
     selectorIsOpen,
     selection,
   };
-})(
-  withRouter(
-    withTranslation(["Settings", "Common"])(observer(SectionHeaderContent))
-  )
-);
+})(withRouter(withTranslation(['Settings', 'Common'])(observer(SectionHeaderContent))));

@@ -1,16 +1,17 @@
-import React from "react";
+import React from 'react';
 
-import { withTranslation, Trans } from "react-i18next";
-import styled from "styled-components";
-import FieldContainer from "@appserver/components/field-container";
-import Text from "@appserver/components/text";
-import Loader from "@appserver/components/loader";
-import Button from "@appserver/components/button";
-import toastr from "@appserver/components/toast/toastr";
-import Link from "@appserver/components/link";
-import TextInput from "@appserver/components/text-input";
+import { withTranslation, Trans } from 'react-i18next';
+import styled from 'styled-components';
+import FieldContainer from '@appserver/components/field-container';
+import Text from '@appserver/components/text';
+import Loader from '@appserver/components/loader';
+import Button from '@appserver/components/button';
+import toastr from '@appserver/components/toast/toastr';
+import Link from '@appserver/components/link';
+import TextInput from '@appserver/components/text-input';
 
-import { inject, observer } from "mobx-react";
+import { inject, observer } from 'mobx-react';
+import { Base } from '@appserver/components/themes';
 
 const StyledComponent = styled.div`
   .margin-top {
@@ -34,7 +35,7 @@ const StyledComponent = styled.div`
   }
 
   .border-img {
-    border: solid 1px #d1d1d1;
+    border: ${(props) => props.theme.studio.settings.common.whiteLabel.borderImg};
     box-sizing: content-box;
   }
 
@@ -42,7 +43,7 @@ const StyledComponent = styled.div`
     width: 142px;
     height: 23px;
     padding: 10px;
-    background-color: #0f4071;
+    background-color: ${(props) => props.theme.studio.settings.common.whiteLabel.backgroundColor};
   }
 
   .logo-dark {
@@ -63,17 +64,22 @@ const StyledComponent = styled.div`
   }
 
   .background-green {
-    background-color: #7e983f;
+    background-color: ${(props) =>
+      props.theme.studio.settings.common.whiteLabel.greenBackgroundColor};
   }
 
   .background-blue {
-    background-color: #5170b5;
+    background-color: ${(props) =>
+      props.theme.studio.settings.common.whiteLabel.blueBackgroundColor};
   }
 
   .background-orange {
-    background-color: #e86e2e;
+    background-color: ${(props) =>
+      props.theme.studio.settings.common.whiteLabel.orangeBackgroundColor};
   }
 `;
+
+StyledComponent.defaultProps = { theme: Base };
 
 const mapSizesToArray = (sizes) => {
   return sizes.map((size) => {
@@ -84,17 +90,17 @@ const mapSizesToArray = (sizes) => {
 const generateLabelsForLogos = (sizes, t) => {
   const isSizesExist = sizes.length;
   const portalHeaderLabel = isSizesExist
-    ? `${t("LogoLightSmall")} (${sizes[0].width}x${sizes[0].height}):`
-    : "";
+    ? `${t('LogoLightSmall')} (${sizes[0].width}x${sizes[0].height}):`
+    : '';
   const loginPageLabel = isSizesExist
-    ? `${t("LogoDark")} (${sizes[1].width}x${sizes[1].height}):`
-    : "";
+    ? `${t('LogoDark')} (${sizes[1].width}x${sizes[1].height}):`
+    : '';
   const faviconLabel = isSizesExist
-    ? `${t("LogoFavicon")} (${sizes[2].width}x${sizes[2].height}):`
-    : "";
+    ? `${t('LogoFavicon')} (${sizes[2].width}x${sizes[2].height}):`
+    : '';
   const editorsHeaderLabel = isSizesExist
-    ? `${t("LogoDocsEditor")} (${sizes[3].width}x${sizes[3].height}):`
-    : "";
+    ? `${t('LogoDocsEditor')} (${sizes[3].width}x${sizes[3].height}):`
+    : '';
   return {
     portalHeaderLabel,
     loginPageLabel,
@@ -122,18 +128,11 @@ class WhiteLabel extends React.Component {
   }
 
   componentDidMount() {
-    const {
-      getWhiteLabelLogoText,
-      getWhiteLabelLogoSizes,
-      getWhiteLabelLogoUrls,
-      t,
-    } = this.props;
+    const { getWhiteLabelLogoText, getWhiteLabelLogoSizes, getWhiteLabelLogoUrls, t } = this.props;
     const { logoText, logoSizes, logoUrls } = this.state;
 
     if (!logoText) {
-      getWhiteLabelLogoText().then(() =>
-        this.setState({ logoText: this.props.logoText })
-      );
+      getWhiteLabelLogoText().then(() => this.setState({ logoText: this.props.logoText }));
     }
 
     if (!logoSizes.length) {
@@ -153,12 +152,7 @@ class WhiteLabel extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { logoText, logoSizes, logoUrls } = this.state;
-    if (
-      logoText &&
-      logoSizes.length &&
-      logoUrls.length &&
-      !prevState.isLoadedData
-    ) {
+    if (logoText && logoSizes.length && logoUrls.length && !prevState.isLoadedData) {
       this.setState({ isLoadedData: true });
     }
   }
@@ -170,53 +164,53 @@ class WhiteLabel extends React.Component {
 
   onUseTextAsLogo = () => {
     this.setState({ isCanvasProcessing: true }, function () {
-      const canvas = document.querySelectorAll("[id^=canvas_logo_]");
+      const canvas = document.querySelectorAll('[id^=canvas_logo_]');
       const canvasLength = canvas.length;
       const text = this.state.logoText;
 
       for (let i = 0; i < canvasLength; i++) {
         const cnv = canvas[i];
-        const fontsize = cnv.getAttribute("data-fontsize");
-        const fontcolor = cnv.getAttribute("data-fontcolor");
-        let logotype = cnv.getAttribute("id").replace("canvas_logo_", "");
+        const fontsize = cnv.getAttribute('data-fontsize');
+        const fontcolor = cnv.getAttribute('data-fontcolor');
+        let logotype = cnv.getAttribute('id').replace('canvas_logo_', '');
         const x = parseInt(logotype) === 3 ? cnv.width / 2 : 0;
         let firstChar = text.trim().charAt(0);
         const firstCharCode = firstChar.charCodeAt(0);
-        const ctx = cnv.getContext("2d");
+        const ctx = cnv.getContext('2d');
 
-        if (logotype.indexOf("_") !== -1) logotype = logotype.split("_")[0]; // for docs editor
+        if (logotype.indexOf('_') !== -1) logotype = logotype.split('_')[0]; // for docs editor
 
         if (firstCharCode >= 0xd800 && firstCharCode <= 0xdbff)
           firstChar = text.trim().substr(0, 2); // Note: for surrogates pairs only
 
-        ctx.fillStyle = "transparent";
+        ctx.fillStyle = 'transparent';
         ctx.clearRect(0, 0, cnv.width, cnv.height);
         ctx.fillStyle = fontcolor;
-        ctx.textAlign = parseInt(logotype) === 3 ? "center" : "start";
-        ctx.textBaseline = "top";
+        ctx.textAlign = parseInt(logotype) === 3 ? 'center' : 'start';
+        ctx.textBaseline = 'top';
 
-        ctx.font = fontsize + "px Arial";
+        ctx.font = fontsize + 'px Arial';
 
         ctx.fillText(
           parseInt(logotype) === 3 ? firstChar : text,
           x,
-          (cnv.height - parseInt(fontsize)) / 2
+          (cnv.height - parseInt(fontsize)) / 2,
         );
       }
     });
   };
 
   onChangeLogo = () => {
-    console.log("Click to Change logo button");
+    console.log('Click to Change logo button');
   };
 
   onRestoreLogo = () => {
-    console.log("restore button action");
+    console.log('restore button action');
     this.setState({ isCanvasProcessing: false });
   };
 
   render() {
-    const { t } = this.props;
+    const { t, theme } = this.props;
     const {
       isLoadedData,
       isPortalPaid,
@@ -228,27 +222,26 @@ class WhiteLabel extends React.Component {
       logoUrls,
       isCanvasProcessing,
     } = this.state;
-    console.log("WhiteLabelSettings render");
+    console.log('WhiteLabelSettings render');
     return !isLoadedData ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <>
         <StyledComponent>
           <div className="settings-block">
-            <Text fontSize="16px">{t("LogoSettings")}</Text>
+            <Text fontSize="16px">{t('LogoSettings')}</Text>
             <Text className="margin-top" fontSize="14px">
               <Trans t={t} i18nKey="LogoUploadRecommendation" ns="Settings">
-                We recommended that you use images in <strong>PNG</strong>{" "}
-                format with transparent background
+                We recommended that you use images in <strong>PNG</strong> format with transparent
+                background
               </Trans>
             </Text>
 
             <FieldContainer
               id="fieldContainerCompanyName"
               className="field-container"
-              labelText={`${t("CompanyNameForCanvasLogo")}:`}
-              isVertical={true}
-            >
+              labelText={`${t('CompanyNameForCanvasLogo')}:`}
+              isVertical={true}>
               <TextInput
                 className="input-width"
                 value={logoText}
@@ -264,7 +257,7 @@ class WhiteLabel extends React.Component {
                   id="btnUseAsLogo"
                   className="margin-top"
                   size="medium"
-                  label={t("UseAsLogoButton")}
+                  label={t('UseAsLogoButton')}
                   onClick={this.onUseTextAsLogo}
                   tabIndex={2}
                 />
@@ -275,8 +268,7 @@ class WhiteLabel extends React.Component {
               id="fieldContainerLogoLightSmall"
               className="field-container"
               labelText={portalHeaderLabel}
-              isVertical={true}
-            >
+              isVertical={true}>
               <div>
                 {isCanvasProcessing ? (
                   <canvas
@@ -285,21 +277,20 @@ class WhiteLabel extends React.Component {
                     width="284"
                     height="46"
                     data-fontsize="36"
-                    data-fontcolor="#fff"
-                  >
-                    {t("BrowserNoCanvasSupport")}
+                    data-fontcolor={theme.studio.settings.common.whiteLabel.dataFontColor}>
+                    {t('BrowserNoCanvasSupport')}
                   </canvas>
                 ) : (
                   <img
                     className="border-img logo-light-small"
                     src={logoUrls[0]}
-                    alt={t("LogoLightSmall")}
+                    alt={t('LogoLightSmall')}
                   />
                 )}
               </div>
               {isPortalPaid && (
                 <Link type="action" isHovered onClick={this.onChangeLogo}>
-                  {t("ChangeLogoButton")}
+                  {t('ChangeLogoButton')}
                 </Link>
               )}
             </FieldContainer>
@@ -308,8 +299,7 @@ class WhiteLabel extends React.Component {
               id="fieldContainerLogoDark"
               className="field-container"
               labelText={loginPageLabel}
-              isVertical={true}
-            >
+              isVertical={true}>
               <div>
                 {isCanvasProcessing ? (
                   <canvas
@@ -318,21 +308,16 @@ class WhiteLabel extends React.Component {
                     width="432"
                     height="70"
                     data-fontsize="54"
-                    data-fontcolor="#333"
-                  >
-                    {t("BrowserNoCanvasSupport")}
+                    data-fontcolor={theme.studio.settings.common.whiteLabel.dataFontColorBlack}>
+                    {t('BrowserNoCanvasSupport')}
                   </canvas>
                 ) : (
-                  <img
-                    className="border-img logo-dark"
-                    src={logoUrls[1]}
-                    alt={t("LogoDark")}
-                  />
+                  <img className="border-img logo-dark" src={logoUrls[1]} alt={t('LogoDark')} />
                 )}
               </div>
               {isPortalPaid && (
                 <Link type="action" isHovered onClick={this.onChangeLogo}>
-                  {t("ChangeLogoButton")}
+                  {t('ChangeLogoButton')}
                 </Link>
               )}
             </FieldContainer>
@@ -340,8 +325,7 @@ class WhiteLabel extends React.Component {
               id="fieldContainerLogoFavicon"
               className="field-container"
               labelText={faviconLabel}
-              isVertical={true}
-            >
+              isVertical={true}>
               <div>
                 {isCanvasProcessing ? (
                   <canvas
@@ -350,21 +334,20 @@ class WhiteLabel extends React.Component {
                     width="32"
                     height="32"
                     data-fontsize="28"
-                    data-fontcolor="#333"
-                  >
-                    {t("BrowserNoCanvasSupport")}
+                    data-fontcolor={theme.studio.settings.common.whiteLabel.dataFontColorBlack}>
+                    {t('BrowserNoCanvasSupport')}
                   </canvas>
                 ) : (
                   <img
                     className="border-img logo-favicon"
                     src={logoUrls[2]}
-                    alt={t("LogoFavicon")}
+                    alt={t('LogoFavicon')}
                   />
                 )}
               </div>
               {isPortalPaid && (
                 <Link type="action" isHovered onClick={this.onChangeLogo}>
-                  {t("ChangeLogoButton")}
+                  {t('ChangeLogoButton')}
                 </Link>
               )}
             </FieldContainer>
@@ -373,8 +356,7 @@ class WhiteLabel extends React.Component {
               id="fieldContainerEditorHeaderLogo"
               className="field-container"
               labelText={editorsHeaderLabel}
-              isVertical={true}
-            >
+              isVertical={true}>
               <div>
                 {isCanvasProcessing ? (
                   <>
@@ -384,9 +366,8 @@ class WhiteLabel extends React.Component {
                       width="172"
                       height="40"
                       data-fontsize="22"
-                      data-fontcolor="#fff"
-                    >
-                      {t("BrowserNoCanvasSupport")}
+                      data-fontcolor={theme.studio.settings.common.whiteLabel.dataFontColor}>
+                      {t('BrowserNoCanvasSupport')}
                     </canvas>
                     <canvas
                       id="canvas_logo_4_2"
@@ -394,9 +375,8 @@ class WhiteLabel extends React.Component {
                       width="172"
                       height="40"
                       data-fontsize="22"
-                      data-fontcolor="#fff"
-                    >
-                      {t("BrowserNoCanvasSupport")}
+                      data-fontcolor={theme.studio.settings.common.whiteLabel.dataFontColor}>
+                      {t('BrowserNoCanvasSupport')}
                     </canvas>
                     <canvas
                       id="canvas_logo_4_3"
@@ -404,9 +384,8 @@ class WhiteLabel extends React.Component {
                       width="172"
                       height="40"
                       data-fontsize="22"
-                      data-fontcolor="#fff"
-                    >
-                      {t("BrowserNoCanvasSupport")}
+                      data-fontcolor={theme.studio.settings.common.whiteLabel.dataFontColor}>
+                      {t('BrowserNoCanvasSupport')}
                     </canvas>
                   </>
                 ) : (
@@ -414,17 +393,17 @@ class WhiteLabel extends React.Component {
                     <img
                       className="border-img logo-docs-editor background-green"
                       src={logoUrls[3]}
-                      alt={t("LogoDocsEditor")}
+                      alt={t('LogoDocsEditor')}
                     />
                     <img
                       className="border-img logo-docs-editor background-blue"
                       src={logoUrls[3]}
-                      alt={t("LogoDocsEditor")}
+                      alt={t('LogoDocsEditor')}
                     />
                     <img
                       className="border-img logo-docs-editor background-orange"
                       src={logoUrls[3]}
-                      alt={t("LogoDocsEditor")}
+                      alt={t('LogoDocsEditor')}
                     />
                   </>
                 )}
@@ -432,7 +411,7 @@ class WhiteLabel extends React.Component {
 
               {isPortalPaid && (
                 <Link type="action" isHovered onClick={this.onChangeLogo}>
-                  {t("ChangeLogoButton")}
+                  {t('ChangeLogoButton')}
                 </Link>
               )}
             </FieldContainer>
@@ -442,17 +421,17 @@ class WhiteLabel extends React.Component {
               className="margin-top"
               primary={true}
               size="medium"
-              label={t("Common:SaveButton")}
+              label={t('Common:SaveButton')}
               isLoading={false}
               isDisabled={false}
-              onClick={() => console.log("Save button action")}
+              onClick={() => console.log('Save button action')}
             />
 
             <Button
               id="btnRestoreToDefault"
               className="margin-top margin-left"
               size="medium"
-              label={t("RestoreDefaultButton")}
+              label={t('RestoreDefaultButton')}
               isLoading={false}
               isDisabled={false}
               onClick={this.onRestoreLogo}
@@ -464,17 +443,13 @@ class WhiteLabel extends React.Component {
   }
 }
 
-export default inject(({ setup }) => {
-  const {
-    common,
-    getWhiteLabelLogoText,
-    getWhiteLabelLogoSizes,
-    getWhiteLabelLogoUrls,
-  } = setup;
+export default inject(({ setup, auth }) => {
+  const { common, getWhiteLabelLogoText, getWhiteLabelLogoSizes, getWhiteLabelLogoUrls } = setup;
 
   const { logoText, logoSizes: rawSizes, logoUrls } = common.whiteLabel;
 
   return {
+    theme: auth.settingsStore.theme,
     logoText,
     rawSizes,
     logoUrls,
@@ -482,4 +457,4 @@ export default inject(({ setup }) => {
     getWhiteLabelLogoSizes,
     getWhiteLabelLogoUrls,
   };
-})(withTranslation(["Settings", "Common"])(observer(WhiteLabel)));
+})(withTranslation(['Settings', 'Common'])(observer(WhiteLabel)));

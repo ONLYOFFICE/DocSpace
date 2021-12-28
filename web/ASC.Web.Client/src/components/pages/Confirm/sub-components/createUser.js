@@ -1,35 +1,29 @@
-import React from "react";
-import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import axios from "axios";
-import { createUser, signupOAuth } from "@appserver/common/api/people";
-import { inject, observer } from "mobx-react";
-import Button from "@appserver/components/button";
-import TextInput from "@appserver/components/text-input";
-import Box from "@appserver/components/box";
-import Text from "@appserver/components/text";
-import PasswordInput from "@appserver/components/password-input";
-import toastr from "@appserver/components/toast/toastr";
-import SocialButton from "@appserver/components/social-button";
-import FacebookButton from "@appserver/components/facebook-button";
-import EmailInput from "@appserver/components/email-input";
-import { getAuthProviders } from "@appserver/common/api/settings";
-import PageLayout from "@appserver/common/components/PageLayout";
-import {
-  createPasswordHash,
-  getProviderTranslation,
-} from "@appserver/common/utils";
-import {
-  providersData,
-  PasswordLimitSpecialCharacters,
-} from "@appserver/common/constants";
-import { isMobile } from "react-device-detect";
-import { desktop } from "@appserver/components/utils/device";
-import withLoader from "../withLoader";
+import React from 'react';
+import { withRouter } from 'react-router';
+import { withTranslation } from 'react-i18next';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import axios from 'axios';
+import { createUser, signupOAuth } from '@appserver/common/api/people';
+import { inject, observer } from 'mobx-react';
+import Button from '@appserver/components/button';
+import TextInput from '@appserver/components/text-input';
+import Box from '@appserver/components/box';
+import Text from '@appserver/components/text';
+import PasswordInput from '@appserver/components/password-input';
+import toastr from '@appserver/components/toast/toastr';
+import SocialButton from '@appserver/components/social-button';
+import FacebookButton from '@appserver/components/facebook-button';
+import EmailInput from '@appserver/components/email-input';
+import { getAuthProviders } from '@appserver/common/api/settings';
+import PageLayout from '@appserver/common/components/PageLayout';
+import { createPasswordHash, getProviderTranslation } from '@appserver/common/utils';
+import { providersData, PasswordLimitSpecialCharacters } from '@appserver/common/constants';
+import { isMobile } from 'react-device-detect';
+import { desktop } from '@appserver/components/utils/device';
+import withLoader from '../withLoader';
 
-const inputWidth = "400px";
+const inputWidth = '400px';
 
 const ButtonsWrapper = styled.div`
   display: table;
@@ -79,10 +73,10 @@ const ConfirmContainer = styled.div`
   }
 `;
 
-const emailInputName = "email";
-const passwordInputName = "password";
+const emailInputName = 'email';
+const passwordInputName = 'password';
 
-const emailRegex = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$";
+const emailRegex = '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$';
 const validationEmail = new RegExp(emailRegex);
 
 class Confirm extends React.PureComponent {
@@ -90,15 +84,15 @@ class Confirm extends React.PureComponent {
     super(props);
 
     this.state = {
-      email: "",
+      email: '',
       emailValid: true,
-      firstName: "",
+      firstName: '',
       firstNameValid: true,
-      lastName: "",
+      lastName: '',
       lastNameValid: true,
-      password: "",
+      password: '',
       passwordValid: true,
-      errorText: "",
+      errorText: '',
       isLoading: false,
       passwordEmpty: false,
       key: props.linkData.confirmHeader,
@@ -118,7 +112,7 @@ class Confirm extends React.PureComponent {
       const { defaultPage, linkData, hashSettings } = this.props;
       const isVisitor = parseInt(linkData.emplType) === 2;
 
-      this.setState({ errorText: "" });
+      this.setState({ errorText: '' });
 
       let hasError = false;
 
@@ -168,7 +162,7 @@ class Confirm extends React.PureComponent {
       this.createConfirmUser(registerData, loginData, this.state.key)
         .then(() => window.location.replace(defaultPage))
         .catch((error) => {
-          console.error("confirm error", error);
+          console.error('confirm error', error);
           this.setState({
             errorText: error,
             isLoading: false,
@@ -182,10 +176,7 @@ class Confirm extends React.PureComponent {
     const faceBookData = providers[facebookIndex];
     const { icon, label, iconOptions } = providersData[faceBookData.provider];
     providerButtons.unshift(
-      <div
-        className="buttonWrapper"
-        key={`${faceBookData.provider}ProviderItem`}
-      >
+      <div className="buttonWrapper" key={`${faceBookData.provider}ProviderItem`}>
         <FacebookButton
           iconName={icon}
           label={getProviderTranslation(label, t)}
@@ -195,7 +186,7 @@ class Confirm extends React.PureComponent {
           data-providername={faceBookData.provider}
           onClick={this.onSocialButtonClick}
         />
-      </div>
+      </div>,
     );
   };
 
@@ -207,11 +198,9 @@ class Confirm extends React.PureComponent {
       providers &&
       providers.map((item, index) => {
         if (!providersData[item.provider]) return;
-        const { icon, label, iconOptions, className } = providersData[
-          item.provider
-        ];
+        const { icon, label, iconOptions, className } = providersData[item.provider];
 
-        if (item.provider === "Facebook") {
+        if (item.provider === 'Facebook') {
           facebookIndex = index;
           return;
         }
@@ -220,7 +209,7 @@ class Confirm extends React.PureComponent {
             <SocialButton
               iconName={icon}
               label={getProviderTranslation(label, t)}
-              className={`socialButton ${className ? className : ""}`}
+              className={`socialButton ${className ? className : ''}`}
               $iconOptions={iconOptions}
               data-url={item.url}
               data-providername={item.provider}
@@ -259,7 +248,7 @@ class Confirm extends React.PureComponent {
       FirstName: FirstName,
       LastName: LastName,
       Email: EMail,
-      PasswordHash: "",
+      PasswordHash: '',
       SerializedProfile: Serialized,
     };
 
@@ -285,22 +274,18 @@ class Confirm extends React.PureComponent {
   };
 
   createConfirmUser = async (registerData, loginData, key) => {
-    const data = Object.assign(
-      { fromInviteLink: true },
-      registerData,
-      loginData
-    );
+    const data = Object.assign({ fromInviteLink: true }, registerData, loginData);
 
     const user = await createUser(data, key);
 
-    console.log("Created user", user);
+    console.log('Created user', user);
 
     const { login } = this.props;
     const { userName, passwordHash } = loginData;
 
     const response = await login(userName, passwordHash);
 
-    console.log("Login", response);
+    console.log('Login', response);
 
     return user;
   };
@@ -314,17 +299,17 @@ class Confirm extends React.PureComponent {
     try {
       const tokenGetterWin = window.open(
         url,
-        "login",
-        "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
+        'login',
+        'width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no',
       );
 
       getOAuthToken(tokenGetterWin).then((code) => {
         const token = window.btoa(
           JSON.stringify({
             auth: providerName,
-            mode: "popup",
-            callback: "authCallback",
-          })
+            mode: 'popup',
+            callback: 'authCallback',
+          }),
         );
 
         tokenGetterWin.location.href = getLoginLink(token, code);
@@ -335,45 +320,43 @@ class Confirm extends React.PureComponent {
   };
 
   onKeyPress = (event) => {
-    if (event.key === "Enter") {
+    if (event.key === 'Enter') {
       this.onSubmit();
     }
   };
 
-  onCopyToClipboard = () =>
-    toastr.success(this.props.t("EmailAndPasswordCopiedToClipboard"));
+  onCopyToClipboard = () => toastr.success(this.props.t('EmailAndPasswordCopiedToClipboard'));
   validatePassword = (value) => this.setState({ passwordValid: value });
 
   componentDidMount() {
     this.setProviders();
     window.authCallback = this.authCallback;
 
-    window.addEventListener("keydown", this.onKeyPress);
-    window.addEventListener("keyup", this.onKeyPress);
+    window.addEventListener('keydown', this.onKeyPress);
+    window.addEventListener('keyup', this.onKeyPress);
   }
 
   componentWillUnmount() {
-    window.removeEventListener("keydown", this.onKeyPress);
-    window.removeEventListener("keyup", this.onKeyPress);
+    window.removeEventListener('keydown', this.onKeyPress);
+    window.removeEventListener('keyup', this.onKeyPress);
   }
 
   onChangeName = (event) => {
     this.setState({ firstName: event.target.value });
-    !this.state.firstNameValid &&
-      this.setState({ firstNameValid: event.target.value });
-    this.state.errorText && this.setState({ errorText: "" });
+    !this.state.firstNameValid && this.setState({ firstNameValid: event.target.value });
+    this.state.errorText && this.setState({ errorText: '' });
   };
 
   onChangeSurname = (event) => {
     this.setState({ lastName: event.target.value });
     !this.state.lastNameValid && this.setState({ lastNameValid: true });
-    this.state.errorText && this.setState({ errorText: "" });
+    this.state.errorText && this.setState({ errorText: '' });
   };
 
   onChangeEmail = (event) => {
     this.setState({ email: event.target.value });
     // !this.state.emailValid && this.setState({ emailValid: true });
-    this.state.errorText && this.setState({ errorText: "" });
+    this.state.errorText && this.setState({ errorText: '' });
   };
 
   onValidateEmail = (value) => this.setState({ emailValid: value.isValid });
@@ -382,14 +365,14 @@ class Confirm extends React.PureComponent {
     this.setState({ password: event.target.value });
     !this.state.passwordValid && this.setState({ passwordValid: true });
     event.target.value.trim() && this.setState({ passwordEmpty: false });
-    this.state.errorText && this.setState({ errorText: "" });
+    this.state.errorText && this.setState({ errorText: '' });
     this.onKeyPress(event);
   };
 
   render() {
     //console.log("createUser render");
 
-    const { settings, t, greetingTitle, providers } = this.props;
+    const { settings, t, greetingTitle, providers, theme } = this.props;
     const { email, password } = this.state;
     const showCopyLink = !!email.trim() || !!password.trim();
 
@@ -398,14 +381,14 @@ class Confirm extends React.PureComponent {
         <div className="start-basis">
           <div className="margin-left">
             <Text className="confirm-row" as="p" fontSize="18px">
-              {t("InviteTitle")}
+              {t('InviteTitle')}
             </Text>
 
             <div className="confirm-row full-width break-word">
               <a href="/login">
                 <img src="images/dark_general.png" alt="Logo" />
               </a>
-              <Text as="p" fontSize="24px" color="#116d9d">
+              <Text as="p" fontSize="24px" color={theme.studio.confirm.activateUser.textColor}>
                 {greetingTitle}
               </Text>
             </div>
@@ -418,7 +401,7 @@ class Confirm extends React.PureComponent {
                 id="name"
                 name="name"
                 value={this.state.firstName}
-                placeholder={t("FirstName")}
+                placeholder={t('FirstName')}
                 size="huge"
                 scale={true}
                 tabIndex={1}
@@ -435,7 +418,7 @@ class Confirm extends React.PureComponent {
                 id="surname"
                 name="surname"
                 value={this.state.lastName}
-                placeholder={t("Common:LastName")}
+                placeholder={t('Common:LastName')}
                 size="huge"
                 scale={true}
                 tabIndex={2}
@@ -451,7 +434,7 @@ class Confirm extends React.PureComponent {
                 id="email"
                 name={emailInputName}
                 value={this.state.email}
-                placeholder={t("Common:Email")}
+                placeholder={t('Common:Email')}
                 size="huge"
                 scale={true}
                 tabIndex={3}
@@ -470,7 +453,7 @@ class Confirm extends React.PureComponent {
               inputName={passwordInputName}
               emailInputName={emailInputName}
               inputValue={this.state.password}
-              placeholder={t("Common:Password")}
+              placeholder={t('Common:Password')}
               size="huge"
               scale={true}
               tabIndex={4}
@@ -480,18 +463,18 @@ class Confirm extends React.PureComponent {
               onChange={this.onChangePassword}
               onCopyToClipboard={this.onCopyToClipboard}
               onValidateInput={this.validatePassword}
-              clipActionResource={t("Common:CopyEmailAndPassword")}
-              clipEmailResource={`${t("Common:Email")}: `}
-              clipPasswordResource={`${t("Common:Password")}: `}
-              tooltipPasswordTitle={`${t("Common:PasswordLimitMessage")}:`}
-              tooltipPasswordLength={`${t("Common:PasswordLimitLength", {
+              clipActionResource={t('Common:CopyEmailAndPassword')}
+              clipEmailResource={`${t('Common:Email')}: `}
+              clipPasswordResource={`${t('Common:Password')}: `}
+              tooltipPasswordTitle={`${t('Common:PasswordLimitMessage')}:`}
+              tooltipPasswordLength={`${t('Common:PasswordLimitLength', {
                 fromNumber: settings ? settings.minLength : 8,
                 toNumber: 30,
               })}:`}
-              tooltipPasswordDigits={t("Common:PasswordLimitDigits")}
-              tooltipPasswordCapital={t("Common:PasswordLimitUpperCase")}
+              tooltipPasswordDigits={t('Common:PasswordLimitDigits')}
+              tooltipPasswordCapital={t('Common:PasswordLimitUpperCase')}
               tooltipPasswordSpecial={`${t(
-                "Common:PasswordLimitSpecialSymbols"
+                'Common:PasswordLimitSpecialSymbols',
               )} (${PasswordLimitSpecialCharacters})`}
               generatorSpecial={PasswordLimitSpecialCharacters}
               passwordSettings={settings}
@@ -504,7 +487,7 @@ class Confirm extends React.PureComponent {
               className="confirm-row"
               primary
               size="big"
-              label={t("LoginRegistryButton")}
+              label={t('LoginRegistryButton')}
               tabIndex={5}
               isLoading={this.state.isLoading}
               onClick={this.onSubmit}
@@ -522,7 +505,10 @@ class Confirm extends React.PureComponent {
 
             </Row>
  */}
-          <Text className="confirm-row" fontSize="14px" color="#c30">
+          <Text
+            className="confirm-row"
+            fontSize="14px"
+            color={theme.studio.confirm.activateUser.textColorError}>
             {this.state.errorText}
           </Text>
         </div>
@@ -562,9 +548,11 @@ export default inject(({ auth }) => {
     getPortalPasswordSettings,
     getOAuthToken,
     getLoginLink,
+    theme,
   } = settingsStore;
 
   return {
+    theme,
     settings: passwordSettings,
     greetingTitle: greetingSettings,
     hashSettings,
@@ -580,8 +568,4 @@ export default inject(({ auth }) => {
     setProviders,
     providers,
   };
-})(
-  withRouter(
-    withTranslation(["Confirm", "Common"])(withLoader(observer(CreateUserForm)))
-  )
-);
+})(withRouter(withTranslation(['Confirm', 'Common'])(withLoader(observer(CreateUserForm)))));

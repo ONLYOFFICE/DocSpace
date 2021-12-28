@@ -1,56 +1,54 @@
-import React, { Component } from "react";
-import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import HelpButton from "@appserver/components/help-button";
-import api from "@appserver/common/api";
+import React, { Component } from 'react';
+import { withRouter } from 'react-router';
+import { withTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
+import HelpButton from '@appserver/components/help-button';
+import api from '@appserver/common/api';
 const { Filter } = api;
 
-import ToggleButton from "@appserver/components/toggle-button";
-import ModalDialog from "@appserver/components/modal-dialog";
-import Text from "@appserver/components/text";
-import Avatar from "@appserver/components/avatar";
-import Row from "@appserver/components/row";
-import RowContainer from "@appserver/components/row-container";
-import Link from "@appserver/components/link";
-import IconButton from "@appserver/components/icon-button";
-import toastr from "@appserver/components/toast/toastr";
-import SearchInput from "@appserver/components/search-input";
-import RequestLoader from "@appserver/components/request-loader";
-import Loaders from "@appserver/common/components/Loaders";
-import EmptyScreenContainer from "@appserver/components/empty-screen-container";
-import PeopleSelector from "people/PeopleSelector";
+import ToggleButton from '@appserver/components/toggle-button';
+import ModalDialog from '@appserver/components/modal-dialog';
+import Text from '@appserver/components/text';
+import Avatar from '@appserver/components/avatar';
+import Row from '@appserver/components/row';
+import RowContainer from '@appserver/components/row-container';
+import Link from '@appserver/components/link';
+import IconButton from '@appserver/components/icon-button';
+import toastr from '@appserver/components/toast/toastr';
+import SearchInput from '@appserver/components/search-input';
+import RequestLoader from '@appserver/components/request-loader';
+import Loaders from '@appserver/common/components/Loaders';
+import EmptyScreenContainer from '@appserver/components/empty-screen-container';
+import PeopleSelector from 'people/PeopleSelector';
 
-import { inject, observer } from "mobx-react";
+import { inject, observer } from 'mobx-react';
 
-import { getUserRole } from "@appserver/people/src/helpers/people-helpers";
-import { getNewModulesList } from "../../../utils";
+import { getUserRole } from '@appserver/people/src/helpers/people-helpers';
+import { getNewModulesList } from '../../../utils';
 
-import isEmpty from "lodash/isEmpty";
+import isEmpty from 'lodash/isEmpty';
 
-import {
-  EmployeeStatus,
-  EmployeeActivationStatus,
-} from "@appserver/common/constants";
+import { EmployeeStatus, EmployeeActivationStatus } from '@appserver/common/constants';
 
-import { tablet } from "@appserver/components/utils/device";
+import { tablet } from '@appserver/components/utils/device';
+import { Base } from '@appserver/components/themes';
 
 const getUserStatus = (user) => {
   if (
     user.status === EmployeeStatus.Active &&
     user.activationStatus === EmployeeActivationStatus.Activated
   ) {
-    return "normal";
+    return 'normal';
   } else if (
     user.status === EmployeeStatus.Active &&
     user.activationStatus === EmployeeActivationStatus.Pending
   ) {
-    return "pending";
+    return 'pending';
   } else if (user.status === EmployeeStatus.Disabled) {
-    return "disabled";
+    return 'disabled';
   } else {
-    return "unknown";
+    return 'unknown';
   }
 };
 
@@ -118,10 +116,10 @@ const StyledModalBody = styled.div`
     text-transform: lowercase;
 
     &:before {
-      content: "";
+      content: '';
       width: 3px;
       height: 3px;
-      background-color: #333333;
+      background-color: ${(props) => props.theme.studio.settings.security.admins.backgroundColor};
       border-radius: 2px;
       position: absolute;
       left: 0;
@@ -131,6 +129,8 @@ const StyledModalBody = styled.div`
     }
   }
 `;
+
+StyledModalBody.defaultProps = { theme: Base };
 
 const ToggleContentContainer = styled.div`
   .buttons_container {
@@ -189,7 +189,7 @@ const ToggleContentContainer = styled.div`
   .userRole {
     text-transform: capitalize;
     font-size: 12px;
-    color: #d0d5da;
+    color: ${(props) => props.theme.studio.settings.security.admins.roleColor};
   }
 
   .styled-element {
@@ -220,7 +220,8 @@ const ToggleContentContainer = styled.div`
       display: flex;
       align-items: center;
       padding: 0px 5px;
-      background-color: #2da7db;
+      background-color: ${(props) =>
+        props.theme.studio.settings.security.admins.backgroundColorWrapper};
       border-radius: 9px;
     }
 
@@ -265,7 +266,9 @@ const ToggleContentContainer = styled.div`
   }
 `;
 
-const fullAccessId = "00000000-0000-0000-0000-000000000000";
+ToggleContentContainer.defaultProps = { theme: Base };
+
+const fullAccessId = '00000000-0000-0000-0000-000000000000';
 
 class PortalAdmins extends Component {
   constructor(props) {
@@ -276,7 +279,7 @@ class PortalAdmins extends Component {
       isLoading: false,
       showLoader: true,
       selectedOptions: [],
-      searchValue: "",
+      searchValue: '',
       selectedUser: null,
       request: {
         pending: false,
@@ -300,13 +303,12 @@ class PortalAdmins extends Component {
 
     let filter = {};
 
-    if (pathname.indexOf("/admins/filter") > -1) {
+    if (pathname.indexOf('/admins/filter') > -1) {
       filter = Filter.getFilter(location);
       filter.page += 1;
     }
 
-    const currentFilter =
-      Object.keys(filter).length > 0 ? filter : this.props.filter;
+    const currentFilter = Object.keys(filter).length > 0 ? filter : this.props.filter;
 
     setAddUsers(this.addUsers);
     setRemoveAdmins(this.removeAdmins);
@@ -332,9 +334,9 @@ class PortalAdmins extends Component {
 
   componentWillUnmount() {
     const { setAddUsers, setRemoveAdmins, setSelected } = this.props;
-    setAddUsers("");
-    setRemoveAdmins("");
-    setSelected("none");
+    setAddUsers('');
+    setRemoveAdmins('');
+    setSelected('none');
   }
 
   onAdminsFilter = () => {
@@ -342,7 +344,7 @@ class PortalAdmins extends Component {
 
     const newFilter = filter.clone();
     newFilter.page = 0;
-    newFilter.role = "admin";
+    newFilter.role = 'admin';
 
     return newFilter;
   };
@@ -386,7 +388,7 @@ class PortalAdmins extends Component {
     changeAdmins(userIds, fullAccessId, true).then(async () => {
       try {
         await updateListAdmins(filter, true);
-        toastr.success(t("AdministratorsAddedSuccessfully"));
+        toastr.success(t('AdministratorsAddedSuccessfully'));
       } catch (e) {
         console.log(e);
       }
@@ -394,14 +396,7 @@ class PortalAdmins extends Component {
   };
 
   removeAdmins = () => {
-    const {
-      selection,
-      setSelected,
-      t,
-      changeAdmins,
-      updateListAdmins,
-      filter,
-    } = this.props;
+    const { selection, setSelected, t, changeAdmins, updateListAdmins, filter } = this.props;
 
     if (!selection && selection.length === 0) return;
     const userIds = selection.map((user) => {
@@ -410,8 +405,8 @@ class PortalAdmins extends Component {
 
     changeAdmins(userIds, fullAccessId, false).then(async () => {
       await updateListAdmins(filter, true);
-      setSelected("none");
-      toastr.success(t("AdministratorsRemovedSuccessfully"));
+      setSelected('none');
+      toastr.success(t('AdministratorsRemovedSuccessfully'));
     });
   };
 
@@ -430,12 +425,10 @@ class PortalAdmins extends Component {
     const { t } = this.props;
     return (
       <>
-        <Text>{t("FullAccessTooltip")}</Text>
+        <Text>{t('FullAccessTooltip')}</Text>
         <br />
-        <Text className="listOfFullAccess">{t("ChangeOwner")}</Text>
-        <Text className="listOfFullAccess">
-          {t("DeactivateOrDeletePortal")}
-        </Text>
+        <Text className="listOfFullAccess">{t('ChangeOwner')}</Text>
+        <Text className="listOfFullAccess">{t('DeactivateOrDeletePortal')}</Text>
       </>
     );
   };
@@ -444,9 +437,9 @@ class PortalAdmins extends Component {
     const { t } = this.props;
     return (
       <div>
-        <Text>{t("DocumentsAdministratorsCan")}</Text>
+        <Text>{t('DocumentsAdministratorsCan')}</Text>
         <br />
-        <Text>{t("PeopleAdministratorsCan")}</Text>
+        <Text>{t('PeopleAdministratorsCan')}</Text>
       </div>
     );
   };
@@ -591,18 +584,16 @@ class PortalAdmins extends Component {
             if (!updatedAdmin.listAdminModules) {
               updatedAdmin.listAdminModules = [module.appName];
             } else if (!access) {
-              const moduleIndex = updatedAdmin.listAdminModules.findIndex(
-                (adminModule) => {
-                  return module.appName === adminModule;
-                }
-              );
+              const moduleIndex = updatedAdmin.listAdminModules.findIndex((adminModule) => {
+                return module.appName === adminModule;
+              });
 
               updatedAdmin.listAdminModules.splice(moduleIndex, 1);
             } else if (access) {
               const newModuleList = getNewModulesList(
                 module,
                 updatedAdmin.listAdminModules,
-                modules
+                modules,
               );
 
               updatedAdmin.listAdminModules = newModuleList;
@@ -642,11 +633,7 @@ class PortalAdmins extends Component {
 
   getFilteredAdmins = (admins, searchValue) => {
     const filteredAdmins = admins.filter((admin) => {
-      if (
-        admin.displayName.toLowerCase().indexOf(searchValue.toLowerCase()) !==
-        -1
-      )
-        return true;
+      if (admin.displayName.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) return true;
       return false;
     });
 
@@ -659,25 +646,10 @@ class PortalAdmins extends Component {
   };
 
   render() {
-    const {
-      t,
-      admins,
-      isUserSelected,
-      selectorIsOpen,
-      groupsCaption,
-      modules,
-    } = this.props;
-    const {
-      isLoading,
-      showLoader,
-      searchValue,
-      modalIsVisible,
-      selectedUser,
-    } = this.state;
+    const { t, admins, isUserSelected, selectorIsOpen, groupsCaption, modules, theme } = this.props;
+    const { isLoading, showLoader, searchValue, modalIsVisible, selectedUser } = this.state;
 
-    const filteredAdmins = searchValue
-      ? this.getFilteredAdmins(admins, searchValue)
-      : admins;
+    const filteredAdmins = searchValue ? this.getFilteredAdmins(admins, searchValue) : admins;
 
     const fullAccessIsLoading = this.toggleIsLoading(fullAccessId);
 
@@ -690,7 +662,7 @@ class PortalAdmins extends Component {
             <ToggleContentContainer>
               <SearchInput
                 className="filter_container"
-                placeholder={t("Common:Search")}
+                placeholder={t('Common:Search')}
                 onChange={this.onSearchChange}
                 onClearSearch={this.onSearchChange}
                 value={searchValue}
@@ -704,12 +676,8 @@ class PortalAdmins extends Component {
                 onCancel={this.onCancelSelector}
               />
               {selectedUser && (
-                <ModalDialog
-                  visible={modalIsVisible}
-                  zIndex={310}
-                  onClose={this.closeModal}
-                >
-                  <ModalDialog.Header>{t("AccessSettings")}</ModalDialog.Header>
+                <ModalDialog visible={modalIsVisible} zIndex={310} onClose={this.closeModal}>
+                  <ModalDialog.Header>{t('AccessSettings')}</ModalDialog.Header>
                   <ModalDialog.Body>
                     <StyledModalBody>
                       <div className="user-info">
@@ -722,20 +690,18 @@ class PortalAdmins extends Component {
                         />
                         <div className="user-info-wrapper">
                           <Text
-                            color="#316DAA"
+                            color={theme.studio.settings.security.admins.color}
                             fontWeight={600}
                             fontSize="19px"
-                            truncate={true}
-                          >
+                            truncate={true}>
                             {selectedUser.displayName}
                           </Text>
                           {selectedUser.department && (
                             <Text
-                              color="#A3A9AE"
+                              color={theme.studio.settings.security.admins.departmentColor}
                               fontWeight={400}
                               fontSize="13px"
-                              truncate={true}
-                            >
+                              truncate={true}>
                               {selectedUser.department}
                             </Text>
                           )}
@@ -745,26 +711,22 @@ class PortalAdmins extends Component {
                         <div className="full-access-wrapper">
                           <div className="help-button-wrapper">
                             <Text as="p" fontWeight={600} fontSize="15px">
-                              {t("Common:FullAccess")}
+                              {t('Common:FullAccess')}
                             </Text>
                             <HelpButton
                               displayType="dropdown"
                               place="top"
                               offsetRight={0}
                               tooltipContent={this.fullAccessTooltip()}
-                              tooltipColor="#F8F7BF"
+                              tooltipColor={theme.studio.settings.security.admins.tooltipColor}
                             />
                           </div>
                           <ToggleButton
                             className="toggle-btn"
                             isChecked={
-                              fullAccessIsLoading
-                                ? !selectedUser.isAdmin
-                                : selectedUser.isAdmin
+                              fullAccessIsLoading ? !selectedUser.isAdmin : selectedUser.isAdmin
                             }
-                            onChange={() =>
-                              this.onFullAccessClick(!selectedUser.isAdmin)
-                            }
+                            onChange={() => this.onFullAccessClick(!selectedUser.isAdmin)}
                             isLoading={fullAccessIsLoading}
                             isDisabled={false}
                           />
@@ -773,14 +735,14 @@ class PortalAdmins extends Component {
                           <>
                             <div className="help-button-wrapper modules">
                               <Text as="p" fontWeight={600} fontSize="15px">
-                                {t("AdminInModules")}
+                                {t('AdminInModules')}
                               </Text>
                               <HelpButton
                                 displayType="dropdown"
                                 place="bottom"
                                 offsetRight={0}
                                 tooltipContent={this.modulesTooltip()}
-                                tooltipColor="#F8F7BF"
+                                tooltipColor={theme.studio.settings.security.admins.color}
                               />
                             </div>
 
@@ -789,35 +751,21 @@ class PortalAdmins extends Component {
                                 {modules.map((module) => {
                                   const isModuleAdmin = this.isModuleAdmin(
                                     selectedUser,
-                                    module.appName
+                                    module.appName,
                                   );
 
-                                  const toggleIsLoading = this.toggleIsLoading(
-                                    module.id
-                                  );
+                                  const toggleIsLoading = this.toggleIsLoading(module.id);
 
                                   return (
-                                    <div
-                                      key={module.appName}
-                                      className="setting-wrapper"
-                                    >
+                                    <div key={module.appName} className="setting-wrapper">
                                       <Text fontWeight={400} fontSize="13px">
                                         {module.title}
                                       </Text>
                                       <ToggleButton
                                         className="toggle-btn"
-                                        isChecked={
-                                          toggleIsLoading
-                                            ? !isModuleAdmin
-                                            : isModuleAdmin
-                                        }
+                                        isChecked={toggleIsLoading ? !isModuleAdmin : isModuleAdmin}
                                         isLoading={toggleIsLoading}
-                                        onChange={() =>
-                                          this.onModuleToggle(
-                                            module,
-                                            !isModuleAdmin
-                                          )
-                                        }
+                                        onChange={() => this.onModuleToggle(module, !isModuleAdmin)}
                                         isDisabled={selectedUser.isAdmin}
                                       />
                                     </div>
@@ -840,7 +788,7 @@ class PortalAdmins extends Component {
                       {filteredAdmins.map((user) => {
                         const userRole = getUserRole(user);
 
-                        if (userRole === "owner") return;
+                        if (userRole === 'owner') return;
                         const element = (
                           <Avatar
                             size="min"
@@ -851,9 +799,9 @@ class PortalAdmins extends Component {
                         );
 
                         const nameColor =
-                          getUserStatus(user) === "pending"
-                            ? "#A3A9AE"
-                            : "#333333";
+                          getUserStatus(user) === 'pending'
+                            ? theme.studio.settings.security.admins.pendingNameColor
+                            : theme.studio.settings.security.admins.nameColor;
 
                         const checked = isUserSelected(user.id);
 
@@ -866,9 +814,8 @@ class PortalAdmins extends Component {
                             element={element}
                             checkbox={true}
                             checked={checked}
-                            contextButtonSpacerWidth={"0px"}
-                            onRowClick={() => this.onRowClick(user)}
-                          >
+                            contextButtonSpacerWidth={'0px'}
+                            onRowClick={() => this.onRowClick(user)}>
                             <>
                               <div className="userData">
                                 <div className="nameAndStatus">
@@ -876,8 +823,7 @@ class PortalAdmins extends Component {
                                     fontSize="15px"
                                     fontWeight="600"
                                     color={nameColor}
-                                    truncate={true}
-                                  >
+                                    truncate={true}>
                                     {user.displayName}
                                   </Text>
                                 </div>
@@ -887,11 +833,10 @@ class PortalAdmins extends Component {
                                   <div className="fullAccessWrapper">
                                     <Text
                                       truncate={true}
-                                      color="#FFFFFF"
+                                      color={theme.studio.settings.security.admins.textColor}
                                       fontSize="9px"
-                                      fontWeight={600}
-                                    >
-                                      {t("Common:FullAccess")}
+                                      fontWeight={600}>
+                                      {t('Common:FullAccess')}
                                     </Text>
                                   </div>
                                 ) : user.listAdminModules ? (
@@ -903,14 +848,11 @@ class PortalAdmins extends Component {
                                       });
 
                                       return (
-                                        <div
-                                          key={`key-${moduleName}`}
-                                          className="iconWrapper"
-                                        >
+                                        <div key={`key-${moduleName}`} className="iconWrapper">
                                           <IconButton
                                             iconName={module.iconUrl}
                                             size={14}
-                                            color="#2DA7DB"
+                                            color={theme.studio.settings.security.admins.iconColor}
                                             isfill={true}
                                             isClickable={true} // TODO: temporary solution for desktop. Layouts for desktops will be different
                                           />
@@ -933,16 +875,15 @@ class PortalAdmins extends Component {
                 <EmptyScreenContainer
                   imageSrc="products/people/images/empty_screen_filter.png"
                   imageAlt="Empty Screen Filter image"
-                  headerText={t("NotFoundTitle")}
-                  descriptionText={t("NotFoundDescription")}
+                  headerText={t('NotFoundTitle')}
+                  descriptionText={t('NotFoundDescription')}
                   buttons={
                     <>
                       <Link
                         type="action"
                         isHovered={true}
-                        onClick={this.onSearchChange.bind(this, "")}
-                      >
-                        {t("Common:ClearButton")}
+                        onClick={this.onSearchChange.bind(this, '')}>
+                        {t('Common:ClearButton')}
                       </Link>
                     </>
                   }
@@ -951,16 +892,12 @@ class PortalAdmins extends Component {
                 <EmptyScreenContainer
                   imageSrc="images/people_logolarge.png"
                   imageAlt="Empty Screen Admins image"
-                  headerText={t("NoAdmins")}
-                  descriptionText={t("NoAdminsDescription")}
+                  headerText={t('NoAdmins')}
+                  descriptionText={t('NoAdminsDescription')}
                   buttons={
                     <>
-                      <Link
-                        type="action"
-                        isHovered={true}
-                        onClick={this.onToggleSelector}
-                      >
-                        {t("AddAdmins")}
+                      <Link type="action" isHovered={true} onClick={this.onToggleSelector}>
+                        {t('AddAdmins')}
                       </Link>
                     </>
                   }
@@ -976,7 +913,7 @@ class PortalAdmins extends Component {
 
 PortalAdmins.defaultProps = {
   admins: [],
-  productId: "",
+  productId: '',
   owner: {},
 };
 
@@ -992,22 +929,11 @@ export default inject(({ auth, setup }) => {
   const { admins, owner, filter, selectorIsOpen } = setup.security.accessRight;
   const { user: me } = auth.userStore;
   const { modules } = auth.moduleStore;
-  const {
-    setAddUsers,
-    setRemoveAdmins,
-    toggleSelector,
-    setAdmins,
-    getUsersByIds,
-  } = setup;
-  const {
-    selectUser,
-    deselectUser,
-    selection,
-    isUserSelected,
-    setSelected,
-  } = setup.selectionStore;
+  const { setAddUsers, setRemoveAdmins, toggleSelector, setAdmins, getUsersByIds } = setup;
+  const { selectUser, deselectUser, selection, isUserSelected, setSelected } = setup.selectionStore;
 
   return {
+    theme: auth.settingsStore.theme,
     groupsCaption: auth.settingsStore.customNames.groupsCaption,
     changeAdmins: setup.changeAdmins,
     fetchPeople: setup.fetchPeople,
@@ -1031,4 +957,4 @@ export default inject(({ auth, setup }) => {
     setAdmins,
     getUsersByIds,
   };
-})(withTranslation(["Settings", "Common"])(withRouter(observer(PortalAdmins))));
+})(withTranslation(['Settings', 'Common'])(withRouter(observer(PortalAdmins))));

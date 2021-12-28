@@ -1,19 +1,19 @@
-import React from "react";
-import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
-import axios from "axios";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import Button from "@appserver/components/button";
-import Text from "@appserver/components/text";
-import PasswordInput from "@appserver/components/password-input";
-import toastr from "@appserver/components/toast/toastr";
-import Heading from "@appserver/components/heading";
-import PageLayout from "@appserver/common/components/PageLayout";
-import { createPasswordHash, tryRedirectTo } from "@appserver/common/utils";
-import { PasswordLimitSpecialCharacters } from "@appserver/common/constants";
-import { inject, observer } from "mobx-react";
-import withLoader from "../withLoader";
+import React from 'react';
+import { withRouter } from 'react-router';
+import { withTranslation } from 'react-i18next';
+import axios from 'axios';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
+import Button from '@appserver/components/button';
+import Text from '@appserver/components/text';
+import PasswordInput from '@appserver/components/password-input';
+import toastr from '@appserver/components/toast/toastr';
+import Heading from '@appserver/components/heading';
+import PageLayout from '@appserver/common/components/PageLayout';
+import { createPasswordHash, tryRedirectTo } from '@appserver/common/utils';
+import { PasswordLimitSpecialCharacters } from '@appserver/common/constants';
+import { inject, observer } from 'mobx-react';
+import withLoader from '../withLoader';
 
 const BodyStyle = styled.form`
   margin: 70px auto 0 auto;
@@ -48,7 +48,7 @@ class Form extends React.PureComponent {
     const { linkData } = props;
 
     this.state = {
-      password: "",
+      password: '',
       passwordValid: true,
       // isValidConfirmLink: false,
       isLoading: false,
@@ -59,7 +59,7 @@ class Form extends React.PureComponent {
   }
 
   onKeyPress = (target) => {
-    if (target.key === "Enter") {
+    if (target.key === 'Enter') {
       this.onSubmit();
     }
   };
@@ -74,13 +74,7 @@ class Form extends React.PureComponent {
   onSubmit = (e) => {
     this.setState({ isLoading: true }, function () {
       const { userId, password, key } = this.state;
-      const {
-        t,
-        hashSettings,
-        defaultPage,
-        logout,
-        changePassword,
-      } = this.props;
+      const { t, hashSettings, defaultPage, logout, changePassword } = this.props;
       let hasError = false;
 
       if (!this.state.passwordValid) {
@@ -99,7 +93,7 @@ class Form extends React.PureComponent {
       changePassword(userId, hash, key)
         .then(() => logout())
         .then(() => {
-          toastr.success(t("ChangePasswordSuccess"));
+          toastr.success(t('ChangePasswordSuccess'));
           tryRedirectTo(defaultPage);
         })
         .catch((error) => {
@@ -110,35 +104,31 @@ class Form extends React.PureComponent {
   };
 
   componentDidMount() {
-    window.addEventListener("keydown", this.onKeyPress);
-    window.addEventListener("keyup", this.onKeyPress);
+    window.addEventListener('keydown', this.onKeyPress);
+    window.addEventListener('keyup', this.onKeyPress);
   }
 
   componentWillUnmount() {
-    window.removeEventListener("keydown", this.onKeyPress);
-    window.removeEventListener("keyup", this.onKeyPress);
+    window.removeEventListener('keydown', this.onKeyPress);
+    window.removeEventListener('keyup', this.onKeyPress);
   }
 
   validatePassword = (value) => this.setState({ passwordValid: value });
 
   render() {
-    const { settings, t, greetingTitle } = this.props;
+    const { settings, t, greetingTitle, theme } = this.props;
     const { isLoading, password, passwordEmpty } = this.state;
 
     return (
       <BodyStyle>
         <div className="password-header">
-          <img
-            className="password-logo"
-            src="images/dark_general.png"
-            alt="Logo"
-          />
-          <Heading className="password-title" color="#116d9d">
+          <img className="password-logo" src="images/dark_general.png" alt="Logo" />
+          <Heading className="password-title" color={theme.studio.confirm.change.titleColor}>
             {greetingTitle}
           </Heading>
         </div>
         <Text className="password-text" fontSize="14px">
-          {t("PassworResetTitle")}
+          {t('PassworResetTitle')}
         </Text>
         <PasswordInput
           id="password"
@@ -159,11 +149,11 @@ class Form extends React.PureComponent {
           emailInputName="E-mail"
           passwordSettings={settings}
           tooltipPasswordTitle="Password must contain:"
-          tooltipPasswordLength={`${t("Common:PasswordLimitLength", {
+          tooltipPasswordLength={`${t('Common:PasswordLimitLength', {
             fromNumber: settings ? settings.minLength : 8,
             toNumber: 30,
           })}:`}
-          placeholder={t("Common:Password")}
+          placeholder={t('Common:Password')}
           maxLength={30}
           onKeyDown={this.onKeyPress}
           isAutoFocussed={true}
@@ -175,9 +165,7 @@ class Form extends React.PureComponent {
           primary
           size="big"
           tabIndex={2}
-          label={
-            isLoading ? t("Common:LoadingProcessing") : t("Common:OKButton")
-          }
+          label={isLoading ? t('Common:LoadingProcessing') : t('Common:OKButton')}
           isDisabled={isLoading}
           isLoading={isLoading}
           onClick={this.onSubmit}
@@ -194,7 +182,7 @@ Form.propTypes = {
 };
 
 Form.defaultProps = {
-  password: "",
+  password: '',
 };
 
 const ChangePasswordForm = (props) => (
@@ -214,10 +202,12 @@ export default inject(({ auth, setup }) => {
     passwordSettings,
     getSettings,
     getPortalPasswordSettings,
+    theme,
   } = settingsStore;
   const { changePassword } = setup;
 
   return {
+    theme,
     settings: passwordSettings,
     hashSettings,
     greetingTitle: greetingSettings,
@@ -228,10 +218,4 @@ export default inject(({ auth, setup }) => {
     getPortalPasswordSettings,
     changePassword,
   };
-})(
-  withRouter(
-    withTranslation(["Confirm", "Common"])(
-      withLoader(observer(ChangePasswordForm))
-    )
-  )
-);
+})(withRouter(withTranslation(['Confirm', 'Common'])(withLoader(observer(ChangePasswordForm)))));

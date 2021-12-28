@@ -815,6 +815,7 @@ const Base = {
     pointerEvents: "auto",
     maxWidth: "340px",
     color: "#f8f7bf",
+    textColor: "#333333",
 
     before: {
       border: "none",
@@ -2227,6 +2228,108 @@ const Base = {
 
     changePassword: {
       linkColor: "#316DAA",
+    },
+  },
+
+  studio: {
+    about: {
+      linkColor: "#2DA7DB",
+      border: "1px solid lightgray",
+    },
+
+    comingSoon: {
+      linkColor: "#555f65",
+      linkIconColor: "#333333",
+      backgroundColor: "#fff",
+      foregroundColor: "#fff",
+    },
+
+    confirm: {
+      activateUser: {
+        textColor: "#116d9d",
+        textColorError: "#c30",
+      },
+      change: {
+        titleColor: "#116d9d",
+      },
+    },
+
+    home: {
+      textColorError: "#c30",
+    },
+
+    paymentsEnterprise: {
+      background: "#f8f9f9",
+
+      buttonBackground: "#edf2f7",
+
+      linkColor: "#316daa",
+      headerColor: "#c96c27",
+    },
+
+    settings: {
+      article: {
+        titleColor: "#657077",
+        fillIcon: "dimgray",
+        expanderColor: "dimgray",
+      },
+
+      security: {
+        arrowFill: "#333333",
+        descriptionColor: "#555f65",
+
+        admins: {
+          backgroundColor: "#333333",
+          backgroundColorWrapper: "#2da7db",
+          roleColor: "#d0d5da",
+
+          color: "#316daa",
+          departmentColor: "#A3a9ae",
+
+          tooltipColor: "#F8F7BF",
+
+          nameColor: "#333333",
+          pendingNameColor: "#a3a9ae",
+
+          textColor: "#ffffff",
+          iconColor: "#2da7db",
+        },
+
+        owner: {
+          backgroundColor: "#f8f9f9",
+          linkColor: "#316DAA",
+          departmentColor: "#A3a9ae",
+          tooltipColor: "#F8F7BF",
+        },
+      },
+
+      common: {
+        linkColor: "#a3a9ae",
+        linkColorHelp: "#316daa",
+        arrowColor: "#333333",
+        descriptionColor: "#555f65",
+
+        whiteLabel: {
+          borderImg: "1px solid #d1d1d1",
+
+          backgroundColor: "#0f4071",
+          greenBackgroundColor: "#7e983f",
+          blueBackgroundColor: "#5170b5",
+          orangeBackgroundColor: "#e86e2e",
+
+          dataFontColor: "#ffffff",
+          dataFontColorBlack: "#333333",
+        },
+      },
+
+      integration: {
+        separatorBorder: "1px soled #eceef1",
+        linkColor: "#316daa",
+      },
+    },
+
+    wizard: {
+      linkColor: "#116d9d",
     },
   },
 };

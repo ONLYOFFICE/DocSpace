@@ -1,15 +1,15 @@
-import React from "react";
-import { withRouter } from "react-router";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import { withTranslation } from "react-i18next";
+import React from 'react';
+import { withRouter } from 'react-router';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 
-import { inject, observer } from "mobx-react";
-import Button from "@appserver/components/button";
-import Text from "@appserver/components/text";
-import PageLayout from "@appserver/common/components/PageLayout";
-import { deleteSelf } from "@appserver/common/api/people"; //TODO: Move inside UserStore
-import withLoader from "../withLoader";
+import { inject, observer } from 'mobx-react';
+import Button from '@appserver/components/button';
+import Text from '@appserver/components/text';
+import PageLayout from '@appserver/common/components/PageLayout';
+import { deleteSelf } from '@appserver/common/api/people'; //TODO: Move inside UserStore
+import withLoader from '../withLoader';
 
 const ProfileRemoveContainer = styled.div`
   display: flex;
@@ -47,19 +47,19 @@ class ProfileRemove extends React.PureComponent {
             isLoading: false,
             isProfileDeleted: true,
           });
-          console.log("success delete", res);
+          console.log('success delete', res);
           return logout();
         })
         .catch((e) => {
           this.setState({ isLoading: false });
-          console.log("error delete", e);
+          console.log('error delete', e);
         });
     });
   };
 
   render() {
-    console.log("profileRemove render");
-    const { t, greetingTitle } = this.props;
+    console.log('profileRemove render');
+    const { t, greetingTitle, theme } = this.props;
     const { isProfileDeleted } = this.state;
     return (
       <ProfileRemoveContainer>
@@ -68,7 +68,7 @@ class ProfileRemove extends React.PureComponent {
             <a href="/login">
               <img src="images/dark_general.png" alt="Logo" />
             </a>
-            <Text as="p" fontSize="24px" color="#116d9d">
+            <Text as="p" fontSize="24px" color={theme.studio.confirm.change.titleColor}>
               {greetingTitle}
             </Text>
           </div>
@@ -76,17 +76,17 @@ class ProfileRemove extends React.PureComponent {
           {!isProfileDeleted ? (
             <>
               <Text className="confirm-row" as="p" fontSize="18px">
-                {t("DeleteProfileConfirmation")}
+                {t('DeleteProfileConfirmation')}
               </Text>
               <Text className="confirm-row" as="p" fontSize="16px">
-                {t("DeleteProfileConfirmationInfo")}
+                {t('DeleteProfileConfirmationInfo')}
               </Text>
 
               <Button
                 className="confirm-row"
                 primary
                 size="big"
-                label={t("DeleteProfileBtn")}
+                label={t('DeleteProfileBtn')}
                 tabIndex={1}
                 isLoading={this.state.isLoading}
                 onClick={this.onDeleteProfile}
@@ -95,10 +95,10 @@ class ProfileRemove extends React.PureComponent {
           ) : (
             <>
               <Text className="confirm-row" as="p" fontSize="18px">
-                {t("DeleteProfileSuccessMessage")}
+                {t('DeleteProfileSuccessMessage')}
               </Text>
               <Text className="confirm-row" as="p" fontSize="16px">
-                {t("DeleteProfileSuccessMessageInfo")}
+                {t('DeleteProfileSuccessMessageInfo')}
               </Text>
             </>
           )}
@@ -121,9 +121,6 @@ const ProfileRemoveForm = (props) => (
 
 export default inject(({ auth }) => ({
   greetingTitle: auth.settingsStore.greetingSettings,
+  theme: auth.settingsStore.theme,
   logout: auth.logout,
-}))(
-  withRouter(
-    withTranslation("Confirm")(withLoader(observer(ProfileRemoveForm)))
-  )
-);
+}))(withRouter(withTranslation('Confirm')(withLoader(observer(ProfileRemoveForm)))));

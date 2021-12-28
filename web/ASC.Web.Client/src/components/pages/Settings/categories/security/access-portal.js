@@ -1,28 +1,31 @@
-import React, { PureComponent } from "react";
-import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
-import styled from "styled-components";
+import React, { PureComponent } from 'react';
+import { withRouter } from 'react-router';
+import { withTranslation } from 'react-i18next';
+import styled from 'styled-components';
 
-import OwnerSettings from "./sub-components/owner";
+import OwnerSettings from './sub-components/owner';
 // import ModulesSettings from "./sub-components/modules";
 
-import { setDocumentTitle } from "../../../../../helpers/utils";
-import Link from "@appserver/components/link";
-import Text from "@appserver/components/text";
-import toastr from "@appserver/components/toast/toastr";
-import { inject } from "mobx-react";
-import isEmpty from "lodash/isEmpty";
-import { combineUrl, showLoader, hideLoader } from "@appserver/common/utils";
-import { AppServerConfig } from "@appserver/common/constants";
-import commonIconsStyles from "@appserver/components/utils/common-icons-style";
-import ArrowRightIcon from "@appserver/studio/public/images/arrow.right.react.svg";
+import { setDocumentTitle } from '../../../../../helpers/utils';
+import Link from '@appserver/components/link';
+import Text from '@appserver/components/text';
+import toastr from '@appserver/components/toast/toastr';
+import { inject } from 'mobx-react';
+import isEmpty from 'lodash/isEmpty';
+import { combineUrl, showLoader, hideLoader } from '@appserver/common/utils';
+import { AppServerConfig } from '@appserver/common/constants';
+import commonIconsStyles from '@appserver/components/utils/common-icons-style';
+import ArrowRightIcon from '@appserver/studio/public/images/arrow.right.react.svg';
+import { Base } from '@appserver/components/themes';
 
 const StyledArrowRightIcon = styled(ArrowRightIcon)`
   ${commonIconsStyles}
   path {
-    fill: ${(props) => props.color};
+    fill: ${(props) => props.theme.studio.settings.security.arrowFill};
   }
 `;
+
+StyledArrowRightIcon.defaultProps = { theme: Base };
 
 const MainContainer = styled.div`
   width: 100%;
@@ -52,7 +55,7 @@ const MainContainer = styled.div`
     }
 
     .category-item-description {
-      color: #555f65;
+      color: ${(props) => props.theme.studio.settings.security.descriptionColor}
       font-size: 12px;
       max-width: 1024px;
     }
@@ -69,13 +72,14 @@ const MainContainer = styled.div`
   }
 `;
 
+MainContainer.defaultProps = { theme: Base };
 class AccessPortal extends PureComponent {
   constructor(props) {
     super(props);
 
     const { t } = props;
 
-    setDocumentTitle(t("PortalAccess"));
+    setDocumentTitle(t('PortalAccess'));
   }
 
   componentDidMount() {
@@ -99,18 +103,12 @@ class AccessPortal extends PureComponent {
               className="inherit-title-link header"
               onClick={this.onClickLink}
               truncate={true}
-              href={combineUrl(
-                AppServerConfig.proxyURL,
-                "/settings/security/access-portal/tfa"
-              )}
-            >
-              {t("TwoFactorAuth")}
+              href={combineUrl(AppServerConfig.proxyURL, '/settings/security/access-portal/tfa')}>
+              {t('TwoFactorAuth')}
             </Link>
-            <StyledArrowRightIcon size="small" color="#333333" />
+            <StyledArrowRightIcon size="small" />
           </div>
-          <Text className="category-item-description">
-            {t("TwoFactorAuthDescription")}
-          </Text>
+          <Text className="category-item-description">{t('TwoFactorAuthDescription')}</Text>
         </div>
       </MainContainer>
     );
@@ -121,4 +119,4 @@ export default inject(({ auth }) => {
   return {
     organizationName: auth.settingsStore.organizationName,
   };
-})(withTranslation("Settings")(withRouter(AccessPortal)));
+})(withTranslation('Settings')(withRouter(AccessPortal)));

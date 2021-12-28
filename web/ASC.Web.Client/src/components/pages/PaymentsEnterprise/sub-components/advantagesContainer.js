@@ -1,11 +1,12 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
-import Text from "@appserver/components/text";
-import Box from "@appserver/components/box";
-import { tablet } from "@appserver/components/utils/device";
-import { useTranslation, Trans } from "react-i18next";
-import { inject } from "mobx-react";
+import Text from '@appserver/components/text';
+import Box from '@appserver/components/box';
+import { tablet } from '@appserver/components/utils/device';
+import { useTranslation, Trans } from 'react-i18next';
+import { inject } from 'mobx-react';
+import { Base } from '@appserver/components/themes';
 
 const StyledBodyAdvantages = styled.div`
   display: grid;
@@ -15,8 +16,8 @@ const StyledBodyAdvantages = styled.div`
   grid-template-rows: repeat(4, min-content);
   grid-row-gap: 18px;
 
-  background: url("images/payments_enterprise.svg") #f8f9f9 bottom 32px right
-    32px no-repeat;
+  background: url('images/payments_enterprise.svg')
+    ${(props) => props.theme.studio.paymentsEnterprise.background} bottom 32px right 32px no-repeat;
 
   .header-advantages {
     line-height: 30px;
@@ -31,16 +32,18 @@ const StyledBodyAdvantages = styled.div`
   }
 
   @media ${tablet} {
-    background: #f8f9f9;
+    background: ${(props) => props.theme.studio.paymentsEnterprise.background};
   }
 `;
 
+StyledBodyAdvantages.defaultProps = { theme: Base };
+
 const AdvantagesContainer = ({ organizationName }) => {
-  const { t } = useTranslation("PaymentsEnterprise");
+  const { t } = useTranslation('PaymentsEnterprise');
   return (
     <StyledBodyAdvantages>
       <Text className="header-advantages" fontSize="22px" isBold={true}>
-        {t("SubscriptionRenewedLicense")}
+        {t('SubscriptionRenewedLicense')}
       </Text>
 
       <Box className="row-advantages">
@@ -60,14 +63,9 @@ const AdvantagesContainer = ({ organizationName }) => {
       </Box>
 
       <Box className="row-advantages">
-        <img
-          src="images/payments_enterprise_lock.svg"
-          width="24px"
-          height="23px"
-          alt="Icon_lock"
-        />
+        <img src="images/payments_enterprise_lock.svg" width="24px" height="23px" alt="Icon_lock" />
         <Box className="wrapper" marginProp="0 0 0 8px">
-          <Text isBold={true}>{t("AdvantagePrivateRooom")}</Text>
+          <Text isBold={true}>{t('AdvantagePrivateRooom')}</Text>
         </Box>
       </Box>
 
@@ -79,7 +77,7 @@ const AdvantagesContainer = ({ organizationName }) => {
           alt="Icon_smartphone"
         />
         <Box className="wrapper" marginProp="0 0 0 8px">
-          <Text isBold={true}>{t("AdvantageWebEditors")}</Text>
+          <Text isBold={true}>{t('AdvantageWebEditors')}</Text>
         </Box>
       </Box>
 
@@ -91,19 +89,14 @@ const AdvantagesContainer = ({ organizationName }) => {
           alt="Icon_update"
         />
         <Box className="wrapper" marginProp="0 0 0 8px">
-          <Text isBold={true}>{t("AdvantageUpdates")}</Text>
+          <Text isBold={true}>{t('AdvantageUpdates')}</Text>
         </Box>
       </Box>
 
       <Box className="row-advantages">
-        <img
-          src="images/payments_enterprise_help.svg"
-          width="24px"
-          height="23px"
-          alt="Icon_help"
-        />
+        <img src="images/payments_enterprise_help.svg" width="24px" height="23px" alt="Icon_help" />
         <Box className="wrapper" marginProp="0 0 0 8px">
-          <Text isBold={true}>{t("AdvantageProfessionalTechSupport")}</Text>
+          <Text isBold={true}>{t('AdvantageProfessionalTechSupport')}</Text>
         </Box>
       </Box>
     </StyledBodyAdvantages>

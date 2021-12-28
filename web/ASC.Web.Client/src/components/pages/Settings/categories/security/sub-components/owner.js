@@ -1,19 +1,20 @@
-import React, { Component } from "react";
-import { ReactSVG } from "react-svg";
-import PropTypes from "prop-types";
-import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
-import styled from "styled-components";
-import Text from "@appserver/components/text";
-import Avatar from "@appserver/components/avatar";
-import Link from "@appserver/components/link";
-import toastr from "@appserver/components/toast/toastr";
-import HelpButton from "@appserver/components/help-button";
-import PeopleSelector from "@appserver/people/src/components/PeopleSelector";
-import isEmpty from "lodash/isEmpty";
-import { inject } from "mobx-react";
-import { combineUrl } from "@appserver/common/utils";
-import { AppServerConfig } from "@appserver/common/constants";
+import React, { Component } from 'react';
+import { ReactSVG } from 'react-svg';
+import PropTypes from 'prop-types';
+import { withRouter } from 'react-router';
+import { withTranslation } from 'react-i18next';
+import styled from 'styled-components';
+import Text from '@appserver/components/text';
+import Avatar from '@appserver/components/avatar';
+import Link from '@appserver/components/link';
+import toastr from '@appserver/components/toast/toastr';
+import HelpButton from '@appserver/components/help-button';
+import PeopleSelector from '@appserver/people/src/components/PeopleSelector';
+import isEmpty from 'lodash/isEmpty';
+import { inject } from 'mobx-react';
+import { combineUrl } from '@appserver/common/utils';
+import { AppServerConfig } from '@appserver/common/constants';
+import { Base } from '@appserver/components/themes';
 
 const StyledWrapper = styled.div`
   .portal-owner-description {
@@ -38,7 +39,7 @@ const OwnerContainer = styled.div`
   .owner-content-wrapper {
     display: flex;
     padding: 16px;
-    background-color: #f8f9f9;
+    background-color: ${(props) => props.theme.studio.settings.security.owner.backgroundColor};
     border-radius: 12px;
 
     .avatar_wrapper {
@@ -76,6 +77,8 @@ const OwnerContainer = styled.div`
   }
 `;
 
+OwnerContainer.defaultProps = { theme: Base };
+
 const getFormattedDepartments = (departments) => {
   const formattedDepartments = departments.map((department, index) => {
     return (
@@ -83,7 +86,7 @@ const getFormattedDepartments = (departments) => {
         <Link href={getGroupLink(department)} type="page" fontSize="12px">
           {department.name}
         </Link>
-        {departments.length - 1 !== index ? ", " : ""}
+        {departments.length - 1 !== index ? ', ' : ''}
       </span>
     );
   });
@@ -92,11 +95,7 @@ const getFormattedDepartments = (departments) => {
 };
 
 const getGroupLink = (department) => {
-  return combineUrl(
-    AppServerConfig.proxyURL,
-    "/products/people/filter?group=",
-    department.id
-  );
+  return combineUrl(AppServerConfig.proxyURL, '/products/people/filter?group=', department.id);
 };
 
 class OwnerSettings extends Component {
@@ -123,18 +122,12 @@ class OwnerSettings extends Component {
     }
   }
 
-  ownerInfo = () => (
-    <Text>{this.props.t("AccessRightsOwnerOpportunities")}</Text>
-  );
+  ownerInfo = () => <Text>{this.props.t('AccessRightsOwnerOpportunities')}</Text>;
 
   changeOwner = (selectedOwner) => {
     const { sendOwnerChange, t, owner } = this.props;
     sendOwnerChange(selectedOwner.key)
-      .then(() =>
-        toastr.success(
-          t("ConfirmEmailSended", { ownerName: owner.displayName })
-        )
-      )
+      .then(() => toastr.success(t('ConfirmEmailSended', { ownerName: owner.displayName })))
       .catch((err) => toastr.error(err));
   };
 
@@ -157,16 +150,10 @@ class OwnerSettings extends Component {
   };
 
   render() {
-    const { t, owner, me, groupsCaption } = this.props;
-    const {
-      isLoading,
-      showSelector,
-      selectedOwner,
-      selectorIsLoaded,
-    } = this.state;
+    const { t, owner, me, groupsCaption, theme } = this.props;
+    const { isLoading, showSelector, selectedOwner, selectorIsLoaded } = this.state;
 
-    const formattedDepartments =
-      owner.department && getFormattedDepartments(owner.groups);
+    const formattedDepartments = owner.department && getFormattedDepartments(owner.groups);
 
     return (
       <StyledWrapper>
@@ -189,16 +176,13 @@ class OwnerSettings extends Component {
                   fontSize="16px"
                   fontWeight={600}
                   isBold={true}
-                  color="#316DAA"
-                  href={owner.profileUrl}
-                >
+                  color={theme.studio.settings.security.owner.linkColor}
+                  href={owner.profileUrl}>
                   {owner.displayName}
                 </Link>
 
                 <div className="group-wrapper">
-                  <Text fontSize="16px" as="span">{`(${t(
-                    "PortalOwner"
-                  )})`}</Text>
+                  <Text fontSize="16px" as="span">{`(${t('PortalOwner')})`}</Text>
                 </div>
                 <HelpButton
                   displayType="dropdown"
@@ -206,7 +190,7 @@ class OwnerSettings extends Component {
                   className="option-info"
                   offsetRight={0}
                   tooltipContent={this.ownerInfo()}
-                  tooltipColor="#F8F7BF"
+                  tooltipColor={theme.studio.settings.security.owner.tooltipColor}
                 />
               </div>
               <div className="chooseOwnerWrap">
@@ -215,12 +199,14 @@ class OwnerSettings extends Component {
                   isHovered={true}
                   onClick={this.onToggleSelector}
                   fontSize="12px"
-                  type="action"
-                >
-                  {selectedOwner ? selectedOwner.label : t("ChooseOwner")}
+                  type="action">
+                  {selectedOwner ? selectedOwner.label : t('ChooseOwner')}
                 </Link>
-                <Text as="span" fontSize="12px" color="#A3A9AE">
-                  {t("AccessRightsChangeOwnerConfirmText")}
+                <Text
+                  as="span"
+                  fontSize="12px"
+                  color={theme.studio.settings.security.owner.departmentColor}>
+                  {t('AccessRightsChangeOwnerConfirmText')}
                 </Text>
               </div>
             </div>
@@ -229,11 +215,11 @@ class OwnerSettings extends Component {
             <div className="advanced-selector">
               <PeopleSelector
                 isOpen={showSelector}
-                size={"full"}
+                size={'full'}
                 onSelect={this.onSelect}
                 onCancel={this.onCancelSelector}
                 defaultOption={me}
-                defaultOptionLabel={t("Common:MeLabel")}
+                defaultOptionLabel={t('Common:MeLabel')}
                 groupsCaption={groupsCaption}
               />
             </div>
@@ -253,13 +239,14 @@ OwnerSettings.propTypes = {
 };
 
 export default inject(({ auth, setup }) => {
-  const { customNames, getPortalOwner, owner } = auth.settingsStore;
+  const { customNames, getPortalOwner, owner, theme } = auth.settingsStore;
   const { sendOwnerChange } = setup;
   return {
+    theme,
     groupsCaption: customNames.groupsCaption,
     getPortalOwner,
     owner,
     me: auth.userStore.user,
     sendOwnerChange,
   };
-})(withTranslation("Settings")(withRouter(OwnerSettings)));
+})(withTranslation('Settings')(withRouter(OwnerSettings)));

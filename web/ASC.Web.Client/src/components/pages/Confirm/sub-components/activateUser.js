@@ -1,30 +1,26 @@
-import React from "react";
-import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import axios from "axios";
-import {
-  changePassword,
-  updateActivationStatus,
-  updateUser,
-} from "@appserver/common/api/people";
-import { inject, observer } from "mobx-react";
-import Button from "@appserver/components/button";
-import TextInput from "@appserver/components/text-input";
-import Text from "@appserver/components/text";
-import PasswordInput from "@appserver/components/password-input";
-import toastr from "@appserver/components/toast/toastr";
-import Loader from "@appserver/components/loader";
-import PageLayout from "@appserver/common/components/PageLayout";
+import React from 'react';
+import { withRouter } from 'react-router';
+import { withTranslation } from 'react-i18next';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import axios from 'axios';
+import { changePassword, updateActivationStatus, updateUser } from '@appserver/common/api/people';
+import { inject, observer } from 'mobx-react';
+import Button from '@appserver/components/button';
+import TextInput from '@appserver/components/text-input';
+import Text from '@appserver/components/text';
+import PasswordInput from '@appserver/components/password-input';
+import toastr from '@appserver/components/toast/toastr';
+import Loader from '@appserver/components/loader';
+import PageLayout from '@appserver/common/components/PageLayout';
 import {
   AppServerConfig,
   EmployeeActivationStatus,
   PasswordLimitSpecialCharacters,
-} from "@appserver/common/constants";
-import { combineUrl, createPasswordHash } from "@appserver/common/utils";
+} from '@appserver/common/constants';
+import { combineUrl, createPasswordHash } from '@appserver/common/utils';
 
-const inputWidth = "400px";
+const inputWidth = '400px';
 
 const ConfirmContainer = styled.div`
   display: flex;
@@ -61,7 +57,7 @@ const ConfirmContainer = styled.div`
   }
 `;
 
-const emailInputName = "email";
+const emailInputName = 'email';
 
 class Confirm extends React.PureComponent {
   constructor(props) {
@@ -73,9 +69,9 @@ class Confirm extends React.PureComponent {
       firstNameValid: true,
       lastName: props.linkData.lastname,
       lastNameValid: true,
-      password: "",
+      password: '',
       passwordValid: true,
-      errorText: "",
+      errorText: '',
       isLoading: false,
       passwordEmpty: false,
       key: props.linkData.confirmHeader,
@@ -88,7 +84,7 @@ class Confirm extends React.PureComponent {
     this.setState({ isLoading: true }, function () {
       const { hashSettings, defaultPage } = this.props;
 
-      this.setState({ errorText: "" });
+      this.setState({ errorText: '' });
 
       let hasError = false;
 
@@ -134,11 +130,11 @@ class Confirm extends React.PureComponent {
         loginData,
         this.state.key,
         this.state.userId,
-        EmployeeActivationStatus.Activated
+        EmployeeActivationStatus.Activated,
       )
         .then(() => window.location.replace(defaultPage))
         .catch((error) => {
-          console.error("activate error", error);
+          console.error('activate error', error);
           this.setState({
             errorText: error,
             isLoading: false,
@@ -147,13 +143,7 @@ class Confirm extends React.PureComponent {
     });
   };
 
-  activateConfirmUser = async (
-    personalData,
-    loginData,
-    key,
-    userId,
-    activationStatus
-  ) => {
+  activateConfirmUser = async (personalData, loginData, key, userId, activationStatus) => {
     const changedData = {
       id: userId,
       FirstName: personalData.firstname,
@@ -162,32 +152,31 @@ class Confirm extends React.PureComponent {
 
     const res1 = await changePassword(userId, loginData.passwordHash, key);
 
-    console.log("changePassword", res1);
+    console.log('changePassword', res1);
 
     const res2 = await updateActivationStatus(activationStatus, userId, key);
 
-    console.log("updateActivationStatus", res2);
+    console.log('updateActivationStatus', res2);
 
     const { login } = this.props;
     const { userName, passwordHash } = loginData;
 
     const res3 = await login(userName, passwordHash);
 
-    console.log("Login", res3);
+    console.log('Login', res3);
 
     const res4 = await updateUser(changedData);
 
-    console.log("updateUser", res4);
+    console.log('updateUser', res4);
   };
 
   onKeyPress = (event) => {
-    if (event.key === "Enter") {
+    if (event.key === 'Enter') {
       this.onSubmit();
     }
   };
 
-  onCopyToClipboard = () =>
-    toastr.success(this.props.t("EmailAndPasswordCopiedToClipboard"));
+  onCopyToClipboard = () => toastr.success(this.props.t('EmailAndPasswordCopiedToClipboard'));
   validatePassword = (value) => this.setState({ passwordValid: value });
 
   componentDidMount() {
@@ -195,43 +184,42 @@ class Confirm extends React.PureComponent {
     const requests = [getSettings(), getPortalPasswordSettings(this.state.key)];
 
     axios.all(requests).catch((e) => {
-      console.error("get settings error", e);
+      console.error('get settings error', e);
       history.push(combineUrl(AppServerConfig.proxyURL, `/login/error=${e}`));
     });
 
-    window.addEventListener("keydown", this.onKeyPress);
-    window.addEventListener("keyup", this.onKeyPress);
+    window.addEventListener('keydown', this.onKeyPress);
+    window.addEventListener('keyup', this.onKeyPress);
   }
 
   componentWillUnmount() {
-    window.removeEventListener("keydown", this.onKeyPress);
-    window.removeEventListener("keyup", this.onKeyPress);
+    window.removeEventListener('keydown', this.onKeyPress);
+    window.removeEventListener('keyup', this.onKeyPress);
   }
 
   onChangeName = (event) => {
     this.setState({ firstName: event.target.value });
-    !this.state.firstNameValid &&
-      this.setState({ firstNameValid: event.target.value });
-    this.state.errorText && this.setState({ errorText: "" });
+    !this.state.firstNameValid && this.setState({ firstNameValid: event.target.value });
+    this.state.errorText && this.setState({ errorText: '' });
   };
 
   onChangeSurname = (event) => {
     this.setState({ lastName: event.target.value });
     !this.state.lastNameValid && this.setState({ lastNameValid: true });
-    this.state.errorText && this.setState({ errorText: "" });
+    this.state.errorText && this.setState({ errorText: '' });
   };
 
   onChangePassword = (event) => {
     this.setState({ password: event.target.value });
     !this.state.passwordValid && this.setState({ passwordValid: true });
     event.target.value.trim() && this.setState({ passwordEmpty: false });
-    this.state.errorText && this.setState({ errorText: "" });
+    this.state.errorText && this.setState({ errorText: '' });
     this.onKeyPress(event);
   };
 
   render() {
-    console.log("ActivateUser render");
-    const { settings, t, greetingTitle } = this.props;
+    console.log('ActivateUser render');
+    const { settings, t, greetingTitle, theme } = this.props;
     return !settings ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
@@ -239,14 +227,14 @@ class Confirm extends React.PureComponent {
         <div className="start-basis">
           <div className="margin-left">
             <Text className="confirm-row" as="p" fontSize="18px">
-              {t("InviteTitle")}
+              {t('InviteTitle')}
             </Text>
 
             <div className="confirm-row full-width break-word">
               <a href="/login">
                 <img src="images/dark_general.png" alt="Logo" />
               </a>
-              <Text as="p" fontSize="24px" color="#116d9d">
+              <Text as="p" fontSize="24px" color={theme.studio.confirm.activateUser.textColor}>
                 {greetingTitle}
               </Text>
             </div>
@@ -259,7 +247,7 @@ class Confirm extends React.PureComponent {
                 id="name"
                 name="name"
                 value={this.state.firstName}
-                placeholder={t("FirstName")}
+                placeholder={t('FirstName')}
                 size="huge"
                 scale={true}
                 tabIndex={1}
@@ -276,7 +264,7 @@ class Confirm extends React.PureComponent {
                 id="surname"
                 name="surname"
                 value={this.state.lastName}
-                placeholder={t("Common:LastName")}
+                placeholder={t('Common:LastName')}
                 size="huge"
                 scale={true}
                 tabIndex={2}
@@ -304,7 +292,7 @@ class Confirm extends React.PureComponent {
               inputName="password"
               emailInputName={emailInputName}
               inputValue={this.state.password}
-              placeholder={t("Common:Password")}
+              placeholder={t('Common:Password')}
               size="huge"
               scale={true}
               tabIndex={4}
@@ -314,18 +302,18 @@ class Confirm extends React.PureComponent {
               onChange={this.onChangePassword}
               onCopyToClipboard={this.onCopyToClipboard}
               onValidateInput={this.validatePassword}
-              clipActionResource={t("Common:CopyEmailAndPassword")}
-              clipEmailResource={`${t("Common:Email")}: `}
-              clipPasswordResource={`${t("Common:Password")}: `}
-              tooltipPasswordTitle={`${t("Common:PasswordLimitMessage")}:`}
-              tooltipPasswordLength={`${t("Common:PasswordLimitLength", {
+              clipActionResource={t('Common:CopyEmailAndPassword')}
+              clipEmailResource={`${t('Common:Email')}: `}
+              clipPasswordResource={`${t('Common:Password')}: `}
+              tooltipPasswordTitle={`${t('Common:PasswordLimitMessage')}:`}
+              tooltipPasswordLength={`${t('Common:PasswordLimitLength', {
                 fromNumber: settings ? settings.minLength : 8,
                 toNumber: 30,
               })}:`}
-              tooltipPasswordDigits={t("Common:PasswordLimitDigits")}
-              tooltipPasswordCapital={t("Common:PasswordLimitUpperCase")}
+              tooltipPasswordDigits={t('Common:PasswordLimitDigits')}
+              tooltipPasswordCapital={t('Common:PasswordLimitUpperCase')}
               tooltipPasswordSpecial={`${t(
-                "Common:PasswordLimitSpecialSymbols"
+                'Common:PasswordLimitSpecialSymbols',
               )} (${PasswordLimitSpecialCharacters})`}
               generatorSpecial={PasswordLimitSpecialCharacters}
               passwordSettings={settings}
@@ -337,7 +325,7 @@ class Confirm extends React.PureComponent {
               className="confirm-row"
               primary
               size="big"
-              label={t("LoginRegistryButton")}
+              label={t('LoginRegistryButton')}
               tabIndex={5}
               isLoading={this.state.isLoading}
               onClick={this.onSubmit}
@@ -350,7 +338,10 @@ class Confirm extends React.PureComponent {
 
             </Row>
  */}
-          <Text className="confirm-row" fontSize="14px" color="#c30">
+          <Text
+            className="confirm-row"
+            fontSize="14px"
+            color={theme.studio.confirm.activateUser.textColorError}>
             {this.state.errorText}
           </Text>
         </div>
@@ -379,9 +370,11 @@ export default inject(({ auth }) => {
     passwordSettings,
     getSettings,
     getPortalPasswordSettings,
+    theme,
   } = auth.settingsStore;
 
   return {
+    theme,
     settings: passwordSettings,
     greetingTitle: greetingSettings,
     hashSettings,
@@ -390,6 +383,4 @@ export default inject(({ auth }) => {
     getPortalPasswordSettings,
     login: auth.login,
   };
-})(
-  withRouter(withTranslation(["Confirm", "Common"])(observer(ActivateUserForm)))
-);
+})(withRouter(withTranslation(['Confirm', 'Common'])(observer(ActivateUserForm))));

@@ -810,6 +810,7 @@ const Dark = {
     pointerEvents: "auto",
     maxWidth: "340px",
     color: "#F5E9BA",
+    textColor: "#333333",
 
     before: {
       border: "none",
@@ -2228,6 +2229,108 @@ const Dark = {
 
     changePassword: {
       linkColor: "#e06a1b",
+    },
+  },
+
+  studio: {
+    about: {
+      linkColor: "#2DA7DB",
+      border: "1px solid #474747",
+    },
+
+    comingSoon: {
+      linkColor: "#858585",
+      linkIconColor: "#333333",
+      backgroundColor: "#333333",
+      foregroundColor: "#333333",
+    },
+
+    confirm: {
+      activateUser: {
+        textColor: "#116d9d",
+        textColorError: "#c30",
+      },
+      change: {
+        titleColor: "#116d9d",
+      },
+    },
+
+    home: {
+      textColorError: "#c30",
+    },
+
+    paymentsEnterprise: {
+      background: "#333333",
+
+      buttonBackground: "#292929",
+
+      linkColor: "#316daa",
+      headerColor: "#c96c27",
+    },
+
+    settings: {
+      article: {
+        titleColor: "#c4c4c4",
+        fillIcon: "#c4c4c4",
+        expanderColor: "#c4c4c4",
+      },
+
+      security: {
+        arrowFill: "#333333",
+        descriptionColor: "#858585",
+
+        admins: {
+          backgroundColor: "#333333",
+          backgroundColorWrapper: "#2da7db",
+          roleColor: "#d0d5da",
+
+          color: "#316daa",
+          departmentColor: "#858585",
+
+          tooltipColor: "#F5E9BA",
+
+          nameColor: "#eeeeee",
+          pendingNameColor: "#858585",
+
+          textColor: "#333333",
+          iconColor: "#2da7db",
+        },
+
+        owner: {
+          backgroundColor: "#333333",
+          linkColor: "#316DAA",
+          departmentColor: "#858585",
+          tooltipColor: "#F5E9BA",
+        },
+      },
+
+      common: {
+        linkColor: "#858585",
+        linkColorHelp: "#316daa",
+        arrowColor: "#333333",
+        descriptionColor: "#858585",
+
+        whiteLabel: {
+          borderImg: "1px solid #d1d1d1",
+
+          backgroundColor: "#0f4071",
+          greenBackgroundColor: "#7e983f",
+          blueBackgroundColor: "#5170b5",
+          orangeBackgroundColor: "#e86e2e",
+
+          dataFontColor: "#ffffff",
+          dataFontColorBlack: "#333333",
+        },
+      },
+
+      integration: {
+        separatorBorder: "1px soled #474747",
+        linkColor: "#316daa",
+      },
+    },
+
+    wizard: {
+      linkColor: "#116d9d",
     },
   },
 };

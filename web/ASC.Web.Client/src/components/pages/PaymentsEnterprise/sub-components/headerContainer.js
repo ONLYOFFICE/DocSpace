@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { withRouter } from "react-router";
-import Text from "@appserver/components/text";
-import { useTranslation, Trans } from "react-i18next";
-import moment from "moment";
-import { inject, observer } from "mobx-react";
+import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
+import { withRouter } from 'react-router';
+import Text from '@appserver/components/text';
+import { useTranslation, Trans } from 'react-i18next';
+import moment from 'moment';
+import { inject, observer } from 'mobx-react';
 
 const StyledHeader = styled.div`
   display: grid;
@@ -27,26 +27,21 @@ const StyledHeader = styled.div`
   }
 `;
 
-const HeaderContainer = ({
-  culture,
-  trialMode,
-  expiresDate,
-  organizationName,
-}) => {
+const HeaderContainer = ({ theme, culture, trialMode, expiresDate, organizationName }) => {
   useEffect(() => {
-    const moment = require("moment");
-    require("moment/min/locales.min");
+    const moment = require('moment');
+    require('moment/min/locales.min');
     culture && moment.locale(culture);
   }, [culture]);
 
-  const { t } = useTranslation("PaymentsEnterprise");
+  const { t } = useTranslation('PaymentsEnterprise');
 
   const now = moment();
 
   const licenseDate = moment(expiresDate);
-  const licenseDateString = licenseDate.startOf("day").format("D MMMM, YYYY");
+  const licenseDateString = licenseDate.startOf('day').format('D MMMM, YYYY');
 
-  return licenseDate.isAfter(now, "day") ? (
+  return licenseDate.isAfter(now, 'day') ? (
     <StyledHeader>
       <Text className="payments-header" fontSize="27px" isBold={true}>
         <Trans t={t} i18nKey="HeaderLicense" ns="PaymentsEnterprise">
@@ -54,8 +49,8 @@ const HeaderContainer = ({
         </Trans>
       </Text>
       <Text className="payments-header-additional_support">
-        {t("AccessSubscription")} {licenseDateString}
-        {"."}
+        {t('AccessSubscription')} {licenseDateString}
+        {'.'}
       </Text>
     </StyledHeader>
   ) : !trialMode ? (
@@ -67,18 +62,17 @@ const HeaderContainer = ({
       </Text>
       <Text
         className="payments-header-additional_support"
-        color="#C96C27"
-        fontWeight="600"
-      >
-        {t("ExpiryPaidLicense")} {licenseDateString}
-        {". "}
-        {t("RenewalLicense")}
+        color={theme.studio.paymentsEnterprise.headerColor}
+        fontWeight="600">
+        {t('ExpiryPaidLicense')} {licenseDateString}
+        {'. '}
+        {t('RenewalLicense')}
       </Text>
     </StyledHeader>
   ) : (
     <StyledHeader>
       <Text className="payments-header" fontSize="27px" isBold={true}>
-        {t("HeaderExpiredTrialLicense")}
+        {t('HeaderExpiredTrialLicense')}
       </Text>
       <Text className="payments-header-additional_support">
         <Trans t={t} i18nKey="ExpiryTrialLicense" ns="PaymentsEnterprise">
@@ -96,9 +90,10 @@ HeaderContainer.propTypes = {
 };
 
 export default inject(({ auth, payments }) => {
-  const { organizationName, culture } = auth.settingsStore;
+  const { organizationName, culture, theme } = auth.settingsStore;
   const { expiresDate, trialMode } = payments;
   return {
+    theme,
     organizationName,
     culture,
     expiresDate,

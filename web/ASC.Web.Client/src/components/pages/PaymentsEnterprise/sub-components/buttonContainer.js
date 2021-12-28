@@ -1,15 +1,16 @@
-import React, { createRef } from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import { withTranslation } from "react-i18next";
-import { inject, observer } from "mobx-react";
-import Button from "@appserver/components/button";
-import { tablet } from "@appserver/components/utils/device";
-import toastr from "@appserver/components/toast/toastr";
-import { withRouter } from "react-router";
+import React, { createRef } from 'react';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
+import { inject, observer } from 'mobx-react';
+import Button from '@appserver/components/button';
+import { tablet } from '@appserver/components/utils/device';
+import toastr from '@appserver/components/toast/toastr';
+import { withRouter } from 'react-router';
+import { Base } from '@appserver/components/themes';
 
 const StyledButtonContainer = styled.div`
-  background: #edf2f7;
+  background: ${(props) => props.theme.studio.paymentsEnterprise.buttonBackground};
   margin-bottom: 16px;
   display: grid;
   padding: 32px;
@@ -27,6 +28,8 @@ const StyledButtonContainer = styled.div`
   }
 `;
 
+StyledButtonContainer.defaultProps = { theme: Base };
+
 class Body extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -42,20 +45,20 @@ class Body extends React.PureComponent {
     const { setPaymentsLicense, t } = this.props;
 
     let fd = new FormData();
-    fd.append("files", e.currentTarget.files[0]);
+    fd.append('files', e.currentTarget.files[0]);
 
     setPaymentsLicense(null, fd)
       .then(() => {
-        toastr.success(t("SuccessLoadingLicense"), "");
+        toastr.success(t('SuccessLoadingLicense'), '');
       })
       .catch((error) => {
-        toastr.error(t("ErrorLoadingLicense"), "LicenseIsNotValid", 0, true);
+        toastr.error(t('ErrorLoadingLicense'), 'LicenseIsNotValid', 0, true);
         console.log(error);
       });
   };
 
   onClickBuy = (e) => {
-    window.open(e.target.value, "_blank");
+    window.open(e.target.value, '_blank');
   };
 
   render() {
@@ -65,7 +68,7 @@ class Body extends React.PureComponent {
     return (
       <StyledButtonContainer>
         <Button
-          label={t("ButtonBuyLicense")}
+          label={t('ButtonBuyLicense')}
           value={`${buyUrl}`}
           size="large"
           primary={true}
@@ -81,7 +84,7 @@ class Body extends React.PureComponent {
 
         <Button
           type="submit"
-          label={t("ButtonUploadLicense")}
+          label={t('ButtonUploadLicense')}
           size="large"
           primary={true}
           onClick={this.onClickSubmit}
@@ -91,7 +94,7 @@ class Body extends React.PureComponent {
   }
 }
 
-const ButtonContainer = withTranslation("PaymentsEnterprise")(Body);
+const ButtonContainer = withTranslation('PaymentsEnterprise')(Body);
 
 ButtonContainer.propTypes = {
   buyUrl: PropTypes.string,
