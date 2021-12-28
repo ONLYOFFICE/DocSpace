@@ -118,7 +118,7 @@ export default function withBadges(WrappedComponent) {
         isTrashFolder,
         isPrivacyFolder,
         canConvert,
-        onFilesClick, // from withFileAction HOC
+        onFilesClick,
         isAdmin,
         isDesktopClient,
         sectionWidth,

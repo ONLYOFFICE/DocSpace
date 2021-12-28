@@ -132,7 +132,6 @@ const StyledSimpleFilesRow = styled(Row)`
 
 const SimpleFilesRow = (props) => {
   const {
-    t,
     item,
     sectionWidth,
     dragging,
