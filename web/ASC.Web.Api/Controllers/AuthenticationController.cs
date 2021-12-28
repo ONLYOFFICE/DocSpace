@@ -178,8 +178,13 @@ namespace ASC.Web.Api.Controllers
         [Read("logout")]// temp fix
         public void Logout()
         {
+            if (SecurityContext.IsAuthenticated)
+                CookiesManager.ResetUserCookie(SecurityContext.CurrentAccount.ID);
+
             CookiesManager.ClearCookies(CookiesType.AuthKey);
             CookiesManager.ClearCookies(CookiesType.SocketIO);
+
+            SecurityContext.Logout();
         }
 
         [Create("confirm", false)]
@@ -296,7 +301,7 @@ namespace ASC.Web.Api.Controllers
             try
             {
                 var token = SecurityContext.AuthenticateMe(user.ID);
-                CookiesManager.SetCookies(CookiesType.AuthKey, token);
+                CookiesManager.SetCookies(CookiesType.AuthKey, token, auth.Session);
 
                 MessageService.Send(viaEmail ? MessageAction.LoginSuccessViaApi : MessageAction.LoginSuccessViaApiSocialAccount);
 
@@ -431,6 +436,8 @@ namespace ASC.Web.Api.Controllers
                     {
                         throw new Exception("user not found");
                     }
+
+                    Cache.Insert("loginsec/" + memberModel.UserName, (--counter).ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
                 }
                 else
                 {

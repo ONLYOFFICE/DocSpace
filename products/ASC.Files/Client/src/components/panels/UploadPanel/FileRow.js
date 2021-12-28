@@ -12,10 +12,13 @@ import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
 const StyledFileRow = styled(Row)`
-  margin: 0 16px;
-  width: calc(100% - 16px);
+  padding: 0 16px;
   box-sizing: border-box;
   font-weight: 600;
+
+  .row_context-menu-wrapper {
+    width: auto;
+  }
 
   .row_content > a,
   .row_content > p {

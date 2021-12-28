@@ -61,7 +61,7 @@ if [ "$(ls -A "$PRODUCT_DIR/services/kafka" 2> /dev/null)" == "" ]; then
 		adduser --quiet --home ${PRODUCT_DIR}/services/kafka --system kafka
 	fi
 	cd ${PRODUCT_DIR}/services/kafka
-	curl https://downloads.apache.org/kafka/2.7.1/kafka_2.13-2.7.1.tgz -O
+	curl https://downloads.apache.org/kafka/2.7.2/kafka_2.13-2.7.2.tgz -O
 	tar xzf kafka_*.tgz --strip 1 && rm -rf kafka_*.tgz
 	chown -R kafka ${PRODUCT_DIR}/services/kafka
 	cd -

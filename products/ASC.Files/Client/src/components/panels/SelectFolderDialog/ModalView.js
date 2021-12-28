@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import ModalDialog from "@appserver/components/modal-dialog";
 import { StyledAsidePanel, StyledSelectFolderPanel } from "../StyledPanels";
@@ -26,6 +26,8 @@ const SelectFolderDialogModalView = ({
   onSave,
   canCreate,
   isLoading,
+  primaryButtonName,
+  noTreeSwitcher,
 }) => {
   return (
     <StyledAsidePanel visible={isPanelVisible}>
@@ -37,11 +39,14 @@ const SelectFolderDialogModalView = ({
         {...(!header && !footer && !showButtons && { contentHeight: "416px" })}
       >
         <ModalDialog.Header>
-          {headerName ? headerName : t("Translations:SelectFolder")}
+          {headerName ? headerName : t("Translations:FolderSelection")}
         </ModalDialog.Header>
 
         <ModalDialog.Body>
-          <StyledSelectFolderPanel isNeedArrowIcon={isNeedArrowIcon}>
+          <StyledSelectFolderPanel
+            isNeedArrowIcon={isNeedArrowIcon}
+            noTreeSwitcher={noTreeSwitcher}
+          >
             <div className="select-folder-modal-dialog-header">{header} </div>
             <FolderTreeBody
               isLoadingData={isLoadingData}
@@ -64,13 +69,13 @@ const SelectFolderDialogModalView = ({
                   className="select-folder-dialog-buttons-save"
                   primary
                   size="medium"
-                  label={t("Common:SaveButton")}
+                  label={primaryButtonName}
                   onClick={onSave}
                   isDisabled={isLoadingData || !isAvailable || !canCreate}
                 />
                 <Button
                   size="medium"
-                  label={t("Common:CloseButton")}
+                  label={t("Common:CancelButton")}
                   onClick={onClose}
                   isDisabled={isLoadingData || isLoading}
                 />
