@@ -54,16 +54,6 @@ namespace ASC.Files.Core
             Global = global;
         }
 
-        internal string GetCreateByString(FileEntry fileEntry)
-        {
-            return !fileEntry.CreateBy.Equals(Guid.Empty) ? Global.GetUserName(fileEntry.CreateBy) : fileEntry._createByString;
-        }
-
-        internal string GetModifiedByString(FileEntry fileEntry)
-        {
-            return !fileEntry.ModifiedBy.Equals(Guid.Empty) ? Global.GetUserName(fileEntry.ModifiedBy) : fileEntry._modifiedByString;
-        }
-
         internal string GetTitle<T>(File<T> file)
         {
             return string.IsNullOrEmpty(file.ConvertedType)

@@ -44,6 +44,7 @@ namespace ASC.Core
     public class CoreBaseSettings
     {
         private bool? standalone;
+        private string basedomain;
         private bool? personal;
         private bool? customMode;
 
@@ -52,6 +53,17 @@ namespace ASC.Core
         public CoreBaseSettings(IConfiguration configuration)
         {
             Configuration = configuration;
+        }
+        public string Basedomain
+        {
+            get 
+            {
+                if (basedomain == null)
+                {
+                    basedomain = Configuration["core:base-domain"] ?? string.Empty;
+                }
+                return basedomain;
+            }
         }
 
         public bool Standalone
@@ -108,31 +120,24 @@ namespace ASC.Core
     [Scope(typeof(ConfigureCoreSettings))]
     public class CoreSettings
     {
-        private string basedomain;
-
         public string BaseDomain
         {
             get
             {
-                if (basedomain == null)
-                {
-                    basedomain = Configuration["core:base-domain"] ?? string.Empty;
-                }
-
                 string result;
-                if (CoreBaseSettings.Standalone || string.IsNullOrEmpty(basedomain))
+                if (CoreBaseSettings.Standalone || string.IsNullOrEmpty(CoreBaseSettings.Basedomain))
                 {
-                    result = GetSetting("BaseDomain") ?? basedomain;
+                    result = GetSetting("BaseDomain") ?? CoreBaseSettings.Basedomain;
                 }
                 else
                 {
-                    result = basedomain;
+                    result = CoreBaseSettings.Basedomain;
                 }
                 return result;
             }
             set
             {
-                if (CoreBaseSettings.Standalone || string.IsNullOrEmpty(basedomain))
+                if (CoreBaseSettings.Standalone || string.IsNullOrEmpty(CoreBaseSettings.Basedomain))
                 {
                     SaveSetting("BaseDomain", value);
                 }
