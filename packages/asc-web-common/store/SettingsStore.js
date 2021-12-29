@@ -22,7 +22,7 @@ class SettingsStore {
   currentProductId = '';
   culture = 'en-US';
   cultures = [];
-  theme = Base;
+  theme = !!localStorage.getItem('theme') ? themes[localStorage.getItem('theme')] : Base;
   trustedDomains = [];
   trustedDomainsType = 0;
   trustedDomains = [];
