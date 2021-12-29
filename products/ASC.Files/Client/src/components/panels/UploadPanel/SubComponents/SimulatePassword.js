@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "@appserver/components/button";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import InputBlock from "@appserver/components/input-block";
 import globalColors from "@appserver/components/utils/globalColors";
 
 const iconColor = globalColors.gray;
+const bulletsFont = "•";
 
 const StyledBody = styled.div`
   display: flex;
@@ -52,21 +53,23 @@ const SimulatePassword = ({
     if (hasError) return;
     let index;
 
+    const { fileId, toFolderId, fileInfo } = item;
+
     uploadedFiles.reduce((acc, rec, id) => {
-      if (rec.fileId === item.fileId) index = id;
+      if (rec.fileId === fileId) index = id;
     }, []);
 
     const newItem = {
-      fileId: item.fileId,
-      toFolderId: item.toFolderId,
+      fileId,
+      toFolderId,
       action: "convert",
-      fileInfo: item.fileInfo,
+      fileInfo,
       password: password,
       index,
     };
 
     hideInput();
-    removeFileFromList(item.fileId);
+    removeFileFromList(fileId);
     convertFile(newItem);
   };
 
@@ -83,7 +86,7 @@ const SimulatePassword = ({
 
     const unchangedStartCharacters = newCharactersUntilCaret
       .split("")
-      .filter((el) => el === "•").length;
+      .filter((el) => el === bulletsFont).length;
 
     const unchangedEndingCharacters = newPassword.substring(caretPosition)
       .length;
@@ -120,7 +123,7 @@ const SimulatePassword = ({
   };
 
   const copyPassword = password;
-  const bullets = copyPassword.replace(/(.)/g, "•");
+  const bullets = copyPassword.replace(/(.)/g, bulletsFont);
 
   const iconName =
     inputType === "password"
