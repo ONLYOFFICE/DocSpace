@@ -67,6 +67,13 @@ const SimpleFilesRowContent = styled(RowContent)`
       margin: 7px 22px 0 0;
     }
   `}
+
+  .edit {
+    svg:not(:root) {
+      width: 12px;
+      height: 12px;
+    }
+  }
 `;
 
 const FilesRowContent = ({

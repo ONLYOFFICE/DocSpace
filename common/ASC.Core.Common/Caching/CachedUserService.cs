@@ -267,6 +267,10 @@ namespace ASC.Core.Caching
         {
             return Service.GetUserByPasswordHash(tenant, login, passwordHash);
         }
+        public IEnumerable<UserInfo> GetUsersAllTenants(IEnumerable<Guid> userIds)
+        {
+            return Service.GetUsersAllTenants(userIds);
+        }
 
         public UserInfo SaveUser(int tenant, UserInfo user)
         {

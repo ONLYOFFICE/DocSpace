@@ -16,12 +16,18 @@ import withLoader from "../../../HOCs/withLoader";
 class ArticleMainButtonContent extends React.Component {
   onCreate = (e) => {
     // this.goToHomePage();
-    const format = e.currentTarget.dataset.format || null;
+    const format = e.action || null;
     this.props.setAction({
       type: FileAction.Create,
       extension: format,
       id: -1,
     });
+  };
+
+  onShowSelectFileDialog = () => {
+    const { setSelectFileDialogVisible, hideArticle } = this.props;
+    hideArticle();
+    setSelectFileDialogVisible(true);
   };
 
   onUploadFileClick = () => {
@@ -74,56 +80,106 @@ class ArticleMainButtonContent extends React.Component {
       isPrivacy,
     } = this.props;
 
+    const folderUpload = !isMobile
+      ? [
+          {
+            className: "main-button_drop-down",
+            icon: "images/actions.upload.react.svg",
+            label: t("UploadFolder"),
+            disabled: isPrivacy,
+            onClick: this.onUploadFolderClick,
+          },
+        ]
+      : [];
+
+    const formActions = !isMobile
+      ? [
+          {
+            className: "main-button_drop-down",
+            icon: "images/form.react.svg",
+            label: t("Translations:NewForm"),
+            items: [
+              {
+                className: "main-button_drop-down_sub",
+                label: t("Translations:SubNewForm"),
+                onClick: this.onCreate,
+                action: "docxf",
+              },
+              {
+                className: "main-button_drop-down_sub",
+                label: t("Translations:SubNewFormFile"),
+                onClick: this.onShowSelectFileDialog,
+                disabled: isPrivacy,
+              },
+            ],
+          },
+        ]
+      : [
+          {
+            className: "main-button_drop-down_sub",
+            icon: "images/form.react.svg",
+            label: t("Translations:NewForm"),
+            onClick: this.onCreate,
+            action: "docxf",
+          },
+          {
+            className: "main-button_drop-down_sub",
+            icon: "images/form.file.react.svg",
+            label: t("Translations:NewFormFile"),
+            onClick: this.onShowSelectFileDialog,
+            disabled: isPrivacy,
+          },
+        ];
+
+    const menuModel = [
+      {
+        className: "main-button_drop-down",
+        icon: "images/actions.documents.react.svg",
+        label: t("NewDocument"),
+        onClick: this.onCreate,
+        action: "docx",
+      },
+      {
+        className: "main-button_drop-down",
+        icon: "images/spreadsheet.react.svg",
+        label: t("NewSpreadsheet"),
+        onClick: this.onCreate,
+        action: "xlsx",
+      },
+      {
+        className: "main-button_drop-down",
+        icon: "images/actions.presentation.react.svg",
+        label: t("NewPresentation"),
+        onClick: this.onCreate,
+        action: "pptx",
+      },
+      ...formActions,
+      {
+        className: "main-button_drop-down",
+        icon: "images/catalog.folder.react.svg",
+        label: t("NewFolder"),
+        onClick: this.onCreate,
+      },
+      {
+        isSeparator: true,
+      },
+      {
+        className: "main-button_drop-down",
+        icon: "images/actions.upload.react.svg",
+        label: t("UploadFiles"),
+        onClick: this.onUploadFileClick,
+      },
+      ...folderUpload,
+    ];
+
     return (
-      <MainButton
-        isDisabled={isDisabled ? isDisabled : !canCreate}
-        isDropdown={true}
-        text={t("Common:Actions")}
-        className="files_main-button"
-      >
-        <DropDownItem
-          className="main-button_drop-down main-button_new-document"
-          icon="images/actions.documents.react.svg"
-          label={t("NewDocument")}
-          onClick={this.onCreate}
-          data-format="docx"
+      <>
+        <MainButton
+          isDisabled={isDisabled ? isDisabled : !canCreate}
+          isDropdown={true}
+          text={t("Common:Actions")}
+          model={menuModel}
         />
-        <DropDownItem
-          className="main-button_drop-down main-button_new-spreadsheet"
-          icon="images/spreadsheet.react.svg"
-          label={t("NewSpreadsheet")}
-          onClick={this.onCreate}
-          data-format="xlsx"
-        />
-        <DropDownItem
-          className="main-button_drop-down main-button_new-presentation"
-          icon="images/actions.presentation.react.svg"
-          label={t("NewPresentation")}
-          onClick={this.onCreate}
-          data-format="pptx"
-        />
-        <DropDownItem
-          className="main-button_drop-down main-button_new-folder"
-          icon="images/catalog.folder.react.svg"
-          label={t("NewFolder")}
-          onClick={this.onCreate}
-        />
-        <DropDownItem isSeparator />
-        <DropDownItem
-          className="main-button_drop-down main-button_upload-files"
-          icon="images/actions.upload.react.svg"
-          label={t("UploadFiles")}
-          onClick={this.onUploadFileClick}
-        />
-        {!isMobile && (
-          <DropDownItem
-            className="main-button_drop-down main-button_upload-folders"
-            icon="images/actions.upload.react.svg"
-            label={t("UploadFolder")}
-            disabled={isPrivacy}
-            onClick={this.onUploadFolderClick}
-          />
-        )}
         <input
           id="customFileInput"
           className="custom-file-input"
@@ -145,7 +201,7 @@ class ArticleMainButtonContent extends React.Component {
           ref={(input) => (this.inputFolderElement = input)}
           style={{ display: "none" }}
         />
-      </MainButton>
+      </>
     );
   }
 }
@@ -154,24 +210,29 @@ ArticleMainButtonContent.propTypes = {
   history: PropTypes.object.isRequired,
 };
 
-export default inject(({ filesStore, uploadDataStore, treeFoldersStore }) => {
-  const { firstLoad, fileActionStore, filter, canCreate } = filesStore;
-  const { isPrivacyFolder } = treeFoldersStore;
-  const { startUpload } = uploadDataStore;
+export default inject(
+  ({ auth, filesStore, uploadDataStore, treeFoldersStore, dialogsStore }) => {
+    const { firstLoad, fileActionStore, filter, canCreate } = filesStore;
+    const { isPrivacyFolder } = treeFoldersStore;
+    const { startUpload } = uploadDataStore;
+    const { setSelectFileDialogVisible } = dialogsStore;
+    const { hideArticle } = auth.settingsStore;
+    return {
+      homepage: config.homepage,
+      firstLoad,
+      isPrivacy: isPrivacyFolder,
+      filter,
+      canCreate,
 
-  return {
-    homepage: config.homepage,
-    firstLoad,
-    isPrivacy: isPrivacyFolder,
-    filter,
-    canCreate,
-
-    setAction: fileActionStore.setAction,
-    startUpload,
-  };
-})(
+      setAction: fileActionStore.setAction,
+      startUpload,
+      setSelectFileDialogVisible,
+      hideArticle,
+    };
+  }
+)(
   withRouter(
-    withTranslation(["Article", "Common"])(
+    withTranslation(["Article", "Common", "Translations"])(
       withLoader(observer(ArticleMainButtonContent))(<Loaders.MainButton />)
     )
   )

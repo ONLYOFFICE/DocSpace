@@ -32,6 +32,7 @@ const Badges = ({
   const isEditingWithFav = fileStatus === 33;
   const showEditBadge = !locked || item.access === 0;
   const isPrivacy = isPrivacyFolder && isDesktopClient;
+  const isForm = fileExst === ".oform";
   const showActionsEdit = isEditing || isEditingWithFav;
 
   const iconEdit = showActionsEdit
@@ -65,8 +66,28 @@ const Badges = ({
             className="badge tablet-edit tablet-badge icons-group"
             size={sizeBadge}
             onClick={onFilesClick}
+            iconName={
+              isForm
+                ? "/static/images/access.edit.form.react.svg"
+                : "/static/images/access.edit.react.svg"
+            }
+            className="badge icons-group edit"
+            size="small"
+            isfill={true}
+            color="#A3A9AE"
             hoverColor="#3B72A7"
           />
+        )}
+      {(isEditing || isEditingWithFav) &&
+        React.createElement(
+          isForm
+            ? StyledFileActionsEditFormIcon
+            : StyledFileActionsConvertEditDocIcon,
+          {
+            onClick: onFilesClick,
+            className: "badge icons-group is-editing",
+            size: "small",
+          }
         )}
       {canConvert && !isTrashFolder && (
         <StyledIcon

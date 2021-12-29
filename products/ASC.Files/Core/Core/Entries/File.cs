@@ -51,13 +51,15 @@ namespace ASC.Files.Core
 
         IsFavorite = 0x20,
 
-        IsTemplate = 0x40
+        IsTemplate = 0x40,
+
+        IsFillFormDraft = 0x80
     }
 
     [Transient]
     [Serializable]
     [DebuggerDisplay("{Title} ({ID} v{Version})")]
-    public class File<T> : FileEntry<T>
+    public class File<T> : FileEntry<T>, IFileEntry<T>
     {
         private FileStatus _status;
 
@@ -68,7 +70,7 @@ namespace ASC.Files.Core
             FileEntryType = FileEntryType.File;
         }
 
-        public File(FileHelper fileHelper): this()
+        public File(FileHelper fileHelper) : this()
         {
             FileHelper = fileHelper;
         }
@@ -180,6 +182,18 @@ namespace ASC.Files.Core
             }
         }
 
+        [JsonIgnore]
+        public bool IsFillFormDraft
+        {
+            get { return (_status & FileStatus.IsFillFormDraft) == FileStatus.IsFillFormDraft; }
+            set
+            {
+                if (value)
+                    _status |= FileStatus.IsFillFormDraft;
+                else
+                    _status &= ~FileStatus.IsFillFormDraft;
+            }
+        }
         public bool Encrypted { get; set; }
 
         public Thumbnail ThumbnailStatus { get; set; }
