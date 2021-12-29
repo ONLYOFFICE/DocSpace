@@ -39,6 +39,12 @@ const SimpleFilesRowContent = styled(RowContent)`
     width: max-content;
   }
 
+  .is-editing {
+    path {
+      fill: #3b72a7;
+    }
+  }
+
   ${(props) =>
     props.sectionWidth <= 1024 &&
     props.sectionWidth > 500 &&
@@ -67,12 +73,6 @@ const SimpleFilesRowContent = styled(RowContent)`
       margin: 7px 22px 0 0;
     }
   `}
-  .edit {
-    svg:not(:root) {
-      width: 12px;
-      height: 12px;
-    }
-  }
 `;
 
 const FilesRowContent = ({

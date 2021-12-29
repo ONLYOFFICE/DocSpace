@@ -32,11 +32,13 @@ const Badges = ({
   const isEditingWithFav = fileStatus === 33;
   const showEditBadge = !locked || item.access === 0;
   const isPrivacy = isPrivacyFolder && isDesktopClient;
-  const showActionsEdit = isEditing || isEditingWithFav;
+  const isForm = fileExst === ".oform";
 
-  const iconEdit = showActionsEdit
-    ? "/static/images/file.actions.convert.edit.doc.react.svg"
-    : "/static/images/access.edit.react.svg";
+  const iconEdit = isForm
+    ? "/static/images/access.edit.form.react.svg"
+    : "/static/images/file.actions.convert.edit.doc.react.svg";
+
+  const iconForm = "/static/images/access.edit.form.react.svg";
 
   const iconRefresh = "/static/images/refresh.react.svg";
 
@@ -48,11 +50,9 @@ const Badges = ({
 
   const sizeBadge = tabletViewBadge ? "medium" : "small";
 
-  const lineHeightBadge = tabletViewBadge ? "16px" : "12px";
+  const lineHeightBadge = tabletViewBadge ? "1.78" : "1.34";
 
   const paddingBadge = tabletViewBadge ? "0 5px" : "0 3px";
-
-  const isForm = fileExst === ".oform";
 
   return fileExst ? (
     <div className="badges additional-badges">
@@ -63,20 +63,25 @@ const Badges = ({
         !isPrivacy &&
         accessToEdit &&
         showEditBadge &&
-        !canConvert && (
+        !canConvert &&
+        isForm && (
           <StyledIcon
-            //iconName={iconEdit}
-            iconName={
-              isForm
-                ? "/static/images/access.edit.form.react.svg"
-                : "/static/images/access.edit.react.svg"
-            }
-            className="badge tablet-edit tablet-badge icons-group edit"
+            iconName={iconForm}
+            className="badge tablet-badge icons-group tablet-edit edit"
             size={sizeBadge}
             onClick={onFilesClick}
             hoverColor="#3B72A7"
           />
         )}
+      {(isEditing || isEditingWithFav) && (
+        <StyledIcon
+          iconName={iconEdit}
+          className="badge icons-group is-editing tablet-badge tablet-edit"
+          size={sizeBadge}
+          onClick={onFilesClick}
+          hoverColor="#3B72A7"
+        />
+      )}
       {canConvert && !isTrashFolder && (
         <StyledIcon
           onClick={setConvertDialogVisible}
@@ -86,17 +91,6 @@ const Badges = ({
           hoverColor="#3B72A7"
         />
       )}
-      {(isEditing || isEditingWithFav) &&
-        React.createElement(
-          isForm
-            ? "/static/images/access.edit.form.react.svg"
-            : "/static/images/file.actions.convert.edit.doc.react.svg",
-          {
-            onClick: onFilesClick,
-            className: "badge icons-group is-editing",
-            size: "small",
-          }
-        )}
       {version > 1 && (
         <Badge
           className="badge-version tablet-badge icons-group"
