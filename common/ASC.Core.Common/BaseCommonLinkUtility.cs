@@ -90,6 +90,9 @@ namespace ASC.Core.Common
                     if (HttpContextAccessor?.HttpContext?.Request != null)
                     {
                         var u = HttpContextAccessor?.HttpContext.Request.GetUrlRewriter();
+
+                        if (u == null) throw new ArgumentNullException("u");
+
                         uriBuilder = new UriBuilder(u.Scheme, LOCALHOST, u.Port);
                     }
                     _serverRoot = uriBuilder;
@@ -125,6 +128,9 @@ namespace ASC.Core.Common
                 if (HttpContextAccessor?.HttpContext?.Request != null)
                 {
                     var u = HttpContextAccessor?.HttpContext?.Request.GetUrlRewriter();
+
+                    if (u == null) throw new ArgumentNullException("u");
+
                     result = new UriBuilder(u.Scheme, u.Host, u.Port);
 
                     if (CoreBaseSettings.Standalone && !result.Uri.IsLoopback)
