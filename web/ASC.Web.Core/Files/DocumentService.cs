@@ -42,7 +42,9 @@ using System.Text.RegularExpressions;
 
 using ASC.Common.Web;
 using ASC.Core;
+using ASC.Core.Billing;
 
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace ASC.Web.Core.Files
@@ -229,15 +231,14 @@ namespace ASC.Web.Core.Files
         /// <param name="signatureSecret">Secret key to generate the token</param>
         /// <param name="version">server version</param>
         /// <returns>Response</returns>
-        public static CommandResultTypes CommandRequest(FileUtility fileUtility,
+        public static CommandResponse CommandRequest(FileUtility fileUtility,
             string documentTrackerUrl,
             CommandMethod method,
             string documentRevisionId,
             string callbackUrl,
             string[] users,
             MetaData meta,
-            string signatureSecret,
-            out string version)
+            string signatureSecret)
         {
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(documentTrackerUrl);
@@ -295,18 +296,20 @@ namespace ASC.Web.Core.Files
                 dataResponse = reader.ReadToEnd();
             }
 
-            var jResponse = JObject.Parse(dataResponse);
 
             try
             {
-                version = jResponse.Value<string>("version");
+                var commandResponse = JsonConvert.DeserializeObject<CommandResponse>(dataResponse);
+                return commandResponse;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                version = "0";
+                return new CommandResponse
+                {
+                    Error = CommandResponse.ErrorTypes.ParseError,
+                    ErrorString = ex.Message
+                };
             }
-
-            return (CommandResultTypes)jResponse.Value<int>("error");
         }
 
         public static string DocbuilderRequest(
@@ -433,18 +436,109 @@ namespace ASC.Web.Core.Files
             Version,
             ForceSave, //not used
             Meta,
+            License
         }
 
-        public enum CommandResultTypes
+        [Serializable]
+        [DebuggerDisplay("{Key}")]
+        public class CommandResponse
         {
-            NoError = 0,
-            DocumentIdError = 1,
-            ParseError = 2,
-            UnknownError = 3,
-            NotModify = 4,
-            UnknownCommand = 5,
-            Token = 6,
-            TokenExpire = 7,
+            [JsonPropertyName("error")]
+            public ErrorTypes Error { get; set; }
+
+            [JsonPropertyName("errorString")]
+            public string ErrorString { get; set; }
+
+            [JsonPropertyName("key")]
+            public string Key { get; set; }
+
+            [JsonPropertyName("license")]
+            public License License { get; set; }
+
+            [JsonPropertyName("server")]
+            public ServerInfo Server { get; set; }
+
+            [JsonPropertyName("quota")]
+            public QuotaInfo Quota { get; set; }
+
+            [JsonPropertyName("version")]
+            public string Version { get; set; }
+
+            public enum ErrorTypes
+            {
+                NoError = 0,
+                DocumentIdError = 1,
+                ParseError = 2,
+                UnknownError = 3,
+                NotModify = 4,
+                UnknownCommand = 5,
+                Token = 6,
+                TokenExpire = 7,
+            }
+
+            [Serializable]
+            [DebuggerDisplay("{BuildVersion}")]
+            public class ServerInfo
+            {
+                [JsonPropertyName("buildDate")]
+                public DateTime BuildDate { get; set; }
+
+                [JsonPropertyName("buildNumber")]
+                public int buildNumber { get; set; }
+
+                [JsonPropertyName("buildVersion")]
+                public string BuildVersion { get; set; }
+
+                [JsonPropertyName("packageType")]
+                public PackageTypes PackageType { get; set; }
+
+                [JsonPropertyName("resultType")]
+                public ResultTypes ResultType { get; set; }
+
+                [JsonPropertyName("workersCount")]
+                public int WorkersCount { get; set; }
+
+                public enum PackageTypes
+                {
+                    OpenSource = 0,
+                    IntegrationEdition = 1,
+                    DeveloperEdition = 2
+                }
+
+                public enum ResultTypes
+                {
+                    Error = 1,
+                    Expired = 2,
+                    Success = 3,
+                    UnknownUser = 4,
+                    Connections = 5,
+                    ExpiredTrial = 6,
+                    SuccessLimit = 7,
+                    UsersCount = 8,
+                    ConnectionsOS = 9,
+                    UsersCountOS = 10,
+                    ExpiredLimited = 11
+                }
+            }
+
+            [Serializable]
+            [DataContract(Name = "Quota", Namespace = "")]
+            public class QuotaInfo
+            {
+                [JsonPropertyName("users")]
+                public List<User> Users { get; set; }
+
+                [Serializable]
+                [DebuggerDisplay("{UserId} ({Expire})")]
+                public class User
+                {
+                    [JsonPropertyName("userid")]
+                    public string UserId { get; set; }
+
+                    [JsonPropertyName("expire")]
+                    public DateTime Expire { get; set; }
+                }
+            }
         }
 
         [Serializable]
@@ -529,38 +623,39 @@ namespace ASC.Web.Core.Files
             public bool GridLines { get; set; }
 
             [JsonPropertyName("margins")]
-            public Margins Margins { get; set; }
+            public LayoutMargins Margins { get; set; }
 
             [JsonPropertyName("pageSize")]
-            public PageSize PageSize { get; set; }
-        }
+            public LayoutPageSize PageSize { get; set; }
 
-        [Serializable]
-        [DebuggerDisplay("Margins {Top} {Right} {Bottom} {Left}")]
-        public class Margins
-        {
-            [JsonPropertyName("left")]
-            public string Left { get; set; }
 
-            [JsonPropertyName("right")]
-            public string Right { get; set; }
+            [Serializable]
+            [DebuggerDisplay("Margins {Top} {Right} {Bottom} {Left}")]
+            public class LayoutMargins
+            {
+                [JsonPropertyName("left")]
+                public string Left { get; set; }
 
-            [JsonPropertyName("top")]
-            public string Top { get; set; }
+                [JsonPropertyName("right")]
+                public string Right { get; set; }
 
-            [JsonPropertyName("bottom")]
-            public string Bottom { get; set; }
-        }
+                [JsonPropertyName("top")]
+                public string Top { get; set; }
 
-        [Serializable]
-        [DebuggerDisplay("PageSize {Width} {Height}")]
-        public class PageSize
-        {
-            [JsonPropertyName("height")]
-            public string Height { get; set; }
+                [JsonPropertyName("bottom")]
+                public string Bottom { get; set; }
+            }
 
-            [JsonPropertyName("width")]
-            public string Width { get; set; }
+            [Serializable]
+            [DebuggerDisplay("PageSize {Width} {Height}")]
+            public class LayoutPageSize
+            {
+                [JsonPropertyName("height")]
+                public string Height { get; set; }
+
+                [JsonPropertyName("width")]
+                public string Width { get; set; }
+            }
         }
 
         [Serializable]

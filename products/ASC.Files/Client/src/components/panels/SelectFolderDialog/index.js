@@ -23,6 +23,7 @@ import { FolderType } from '@appserver/common/constants';
 import { isArrayEqual } from '@appserver/components/utils/array';
 import store from 'studio/store';
 import toastr from 'studio/toastr';
+import { exceptSortedByTagsFolders, exceptPrivacyTrashFolders } from './ExceptionFoldersConstants';
 
 const { auth: authStore } = store;
 
@@ -31,14 +32,14 @@ const { desktop } = utils.device;
 let pathName = '';
 let folderList;
 
-const exceptSortedByTagsFolders = [FolderType.Recent, FolderType.TRASH, FolderType.Favorites];
-
-const exceptTrashFolder = [FolderType.TRASH];
 class SelectFolderModalDialog extends React.Component {
   constructor(props) {
     super(props);
-    const { isSetFolderImmediately, id, displayType } = this.props;
+    const { isSetFolderImmediately, id, displayType, selectionButtonPrimary, t } = this.props;
+
     const isNeedFolder = id ? true : isSetFolderImmediately;
+    this.buttonName = selectionButtonPrimary ? t('Common:Select') : t('Common:SaveButton');
+
     this.state = {
       isLoadingData: false,
       isLoading: false,
@@ -51,6 +52,7 @@ class SelectFolderModalDialog extends React.Component {
     };
     this.throttledResize = throttle(this.setDisplayType, 300);
     this.folderTitle = '';
+    this.noTreeSwitcher = false;
   }
 
   componentDidMount() {
@@ -67,8 +69,9 @@ class SelectFolderModalDialog extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { storeFolderId, canCreate, showButtons } = this.props;
-    if (showButtons && storeFolderId !== prevProps.storeFolderId) {
+    const { storeFolderId, canCreate, showButtons, selectionButtonPrimary } = this.props;
+
+    if (showButtons && !selectionButtonPrimary && storeFolderId !== prevProps.storeFolderId) {
       this.setState({
         canCreate: canCreate,
         isLoading: false,
@@ -84,27 +87,36 @@ class SelectFolderModalDialog extends React.Component {
       id,
       selectedFolderId,
     } = this.props;
+
     switch (foldersType) {
       case 'exceptSortedByTags':
         try {
           const foldersTree = await getFoldersTree();
-          folderList = SelectFolderDialog.convertFolders(foldersTree, exceptSortedByTagsFolders);
+
+          [folderList, this.noTreeSwitcher] = SelectFolderDialog.convertFolders(
+            foldersTree,
+            exceptSortedByTagsFolders,
+          );
           this.setBaseSettings();
         } catch (err) {
           console.error('error', err);
           this.loadersCompletes();
         }
         break;
-      case 'exceptTrashFolder':
+      case 'exceptPrivacyTrashFolders':
         try {
           const foldersTree = await getFoldersTree();
-          folderList = SelectFolderDialog.convertFolders(foldersTree, exceptTrashFolder);
+          [folderList, this.noTreeSwitcher] = SelectFolderDialog.convertFolders(
+            foldersTree,
+            exceptPrivacyTrashFolders,
+          );
           this.setBaseSettings();
         } catch (err) {
           console.error(err);
           this.loadersCompletes();
         }
         break;
+
       case 'common':
         try {
           folderList = await SelectFolderDialog.getCommonFolders();
@@ -272,26 +284,32 @@ class SelectFolderModalDialog extends React.Component {
   };
 
   setFolderObjectToTree = (id, data) => {
-    const { setSelectedNode, setSelectedFolder } = this.props;
+    const {
+      setSelectedNode,
+      setSelectedFolder,
+      selectionButtonPrimary,
+      //setExpandedPanelKeys
+    } = this.props;
+    if (!selectionButtonPrimary) {
+      //TODO:  it need for canCreate function now, will need when passed the folder id - need to come up with a different solution.
+      setSelectedNode([id + '']);
+      const newPathParts = SelectFolderDialog.convertPathParts(data.pathParts);
 
-    setSelectedNode([id + '']);
-
-    const newPathParts = SelectFolderDialog.convertPathParts(data.pathParts);
-    setSelectedFolder({
-      folders: data.folders,
-      ...data.current,
-      pathParts: newPathParts,
-      ...{ new: data.new },
-    });
+      // setExpandedPanelKeys(newPathParts)
+      setSelectedFolder({
+        folders: data.folders,
+        ...data.current,
+        pathParts: newPathParts,
+        ...{ new: data.new },
+      });
+    }
   };
 
   componentWillUnmount() {
     const {
       setExpandedPanelKeys,
-      setDefaultSelectedFolder,
-
       resetTreeFolders,
-
+      setSelectedFolder,
       dialogWithFiles,
     } = this.props;
     if (this.throttledResize) {
@@ -301,7 +319,7 @@ class SelectFolderModalDialog extends React.Component {
 
     if (resetTreeFolders && !dialogWithFiles) {
       setExpandedPanelKeys(null);
-      setDefaultSelectedFolder();
+      setSelectedFolder(null);
     }
   }
   getDisplayType = () => {
@@ -317,7 +335,13 @@ class SelectFolderModalDialog extends React.Component {
   };
 
   onSelect = async (folder) => {
-    const { onSelectFolder, onClose, showButtons, onSetFullPath } = this.props;
+    const {
+      onSelectFolder,
+      onClose,
+      showButtons,
+      onSetFullPath,
+      selectionButtonPrimary,
+    } = this.props;
     const { folderId } = this.state;
 
     let requests = [];
@@ -332,7 +356,7 @@ class SelectFolderModalDialog extends React.Component {
 
     let folderInfo, folderPath;
 
-    if (showButtons) {
+    if (showButtons && !selectionButtonPrimary) {
       this.setState({
         isLoading: true,
         canCreate: false,
@@ -433,6 +457,8 @@ class SelectFolderModalDialog extends React.Component {
         isLoadingData={isLoadingData}
         canCreate={canCreate}
         isLoading={isLoading}
+        primaryButtonName={this.buttonName}
+        noTreeSwitcher={this.noTreeSwitcher}
       />
     ) : (
       <SelectFolderDialogModalView
@@ -456,6 +482,8 @@ class SelectFolderModalDialog extends React.Component {
         canCreate={canCreate}
         isLoadingData={isLoadingData}
         isLoading={isLoading}
+        primaryButtonName={this.buttonName}
+        noTreeSwitcher={this.noTreeSwitcher}
       />
     );
   }
@@ -469,7 +497,7 @@ SelectFolderModalDialog.propTypes = {
     'common',
     'third-party',
     'exceptSortedByTags',
-    'exceptTrashFolder',
+    'exceptPrivacyTrashFolders',
   ]),
   displayType: PropTypes.oneOf(['aside', 'modal']),
   id: PropTypes.string,
@@ -478,6 +506,7 @@ SelectFolderModalDialog.propTypes = {
   isNeedArrowIcon: PropTypes.bool,
   dialogWithFiles: PropTypes.bool,
   showButtons: PropTypes.bool,
+  selectionButtonPrimary: PropTypes.bool,
   modalHeightContent: PropTypes.string,
   asideHeightContent: PropTypes.string,
 };
@@ -486,18 +515,20 @@ SelectFolderModalDialog.defaultProps = {
   dialogWithFiles: false,
   isNeedArrowIcon: false,
   id: '',
-  modalHeightContent: '325px',
+  modalHeightContent: '291px',
   asideHeightContent: '100%',
   zIndex: 310,
   withoutProvider: false,
   folderPath: '',
+  showButtons: false,
+  selectionButtonPrimary: false,
 };
 
 const SelectFolderDialogWrapper = inject(
   ({ treeFoldersStore, selectedFolderStore, selectedFilesStore, filesStore, auth }) => {
     const { setSelectedNode, setExpandedPanelKeys } = treeFoldersStore;
     const { canCreate } = filesStore;
-    const { setSelectedFolder, id, toDefault: setDefaultSelectedFolder } = selectedFolderStore;
+    const { setSelectedFolder, id } = selectedFolderStore;
     const { setFolderId, setFile } = selectedFilesStore;
     return {
       theme: auth.settingsStore.theme,
@@ -506,7 +537,6 @@ const SelectFolderDialogWrapper = inject(
       canCreate,
       storeFolderId: id,
       setExpandedPanelKeys,
-      setDefaultSelectedFolder,
       setFolderId,
       setFile,
     };
@@ -573,10 +603,22 @@ class SelectFolderDialog extends React.Component {
   static convertFolders = (folders, arrayOfExceptions) => {
     let newArray = [];
 
+    let noSubfoldersCount = 0;
+    let needHideSwitcher = false;
     for (let i = 0; i < folders.length; i++) {
-      !arrayOfExceptions.includes(folders[i].rootFolderType) && newArray.push(folders[i]);
+      if (!arrayOfExceptions.includes(folders[i].rootFolderType)) {
+        newArray.push(folders[i]);
+
+        if (folders[i].foldersCount === 0 || folders[i].rootFolderType === FolderType.Privacy) {
+          noSubfoldersCount += 1;
+        }
+      }
     }
-    return newArray;
+
+    if (newArray.length === noSubfoldersCount) {
+      needHideSwitcher = true;
+    }
+    return [newArray, needHideSwitcher];
   };
   render() {
     return (

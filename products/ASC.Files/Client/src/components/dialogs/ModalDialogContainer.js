@@ -4,6 +4,10 @@ import ModalDialog from '@appserver/components/modal-dialog';
 import { Base } from '@appserver/components/themes';
 
 const ModalDialogContainer = styled(ModalDialog)`
+  .row-main-container-wrapper {
+    width: 100%;
+  }
+
   .flex {
     display: flex;
     justify-content: space-between;
@@ -15,6 +19,10 @@ const ModalDialogContainer = styled(ModalDialog)`
 
   .input-dialog {
     margin-top: 16px;
+  }
+
+  .link-other-formats {
+    pointer-events: none;
   }
 
   .button-dialog {

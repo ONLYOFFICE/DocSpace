@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Badge from '@appserver/components/badge';
 import IconButton from '@appserver/components/icon-button';
 import {
   StyledFavoriteIcon,
   StyledFileActionsConvertEditDocIcon,
+  StyledFileActionsEditFormIcon,
   StyledFileActionsLockedIcon,
 } from './Icons';
 
@@ -34,6 +35,7 @@ const Badges = ({
   const isEditingWithFav = fileStatus === 33;
   const showEditBadge = !locked || item.access === 0;
   const isPrivacy = isPrivacyFolder && isDesktopClient;
+  const isForm = fileExst === '.oform';
 
   return fileExst ? (
     <div className="badges additional-badges">
@@ -58,21 +60,27 @@ const Badges = ({
         !canConvert && (
           <IconButton
             onClick={onFilesClick}
-            iconName="/static/images/access.edit.react.svg"
-            className="badge icons-group"
+            iconName={
+              isForm
+                ? '/static/images/access.edit.form.react.svg'
+                : '/static/images/access.edit.react.svg'
+            }
+            className="badge icons-group edit"
             size="small"
             isfill={true}
             color={theme.filesBadges.iconColor}
             hoverColor={theme.filesBadges.hoverIconColor}
           />
         )}
-      {(isEditing || isEditingWithFav) && (
-        <StyledFileActionsConvertEditDocIcon
-          onClick={onFilesClick}
-          className="badge icons-group is-editing"
-          size="small"
-        />
-      )}
+      {(isEditing || isEditingWithFav) &&
+        React.createElement(
+          isForm ? StyledFileActionsEditFormIcon : StyledFileActionsConvertEditDocIcon,
+          {
+            onClick: onFilesClick,
+            className: 'badge icons-group is-editing',
+            size: 'small',
+          },
+        )}
       {locked && accessToEdit && !isTrashFolder && (
         <StyledFileActionsLockedIcon
           className="badge lock-file icons-group"

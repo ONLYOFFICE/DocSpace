@@ -20,13 +20,15 @@ import {
   setEncryptionKeys,
   getEncryptionAccess,
   getFileInfo,
-  getRecentFolderList,
-  getFolderInfo,
   updateFile,
   removeFromFavorite,
   markAsFavorite,
   getPresignedUri,
   convertFile,
+  checkFillFormDraft,
+  getEditHistory,
+  getEditDiff,
+  restoreDocumentsVersion,
 } from "@appserver/common/api/files";
 import FilesFilter from "@appserver/common/api/files/filter";
 
@@ -34,12 +36,12 @@ import throttle from "lodash/throttle";
 import { isIOS, deviceType } from "react-device-detect";
 import { homepage } from "../package.json";
 
-import { AppServerConfig, FolderType } from "@appserver/common/constants";
+import { AppServerConfig } from "@appserver/common/constants";
 import SharingDialog from "files/SharingDialog";
 import { getDefaultFileName, SaveAs, canConvert } from "files/utils";
 import SelectFileDialog from "files/SelectFileDialog";
 import SelectFolderDialog from "files/SelectFolderDialog";
-import { StyledSelectFolder, StyledSelectFile } from "./StyledEditor";
+import { StyledSelectFolder } from "./StyledEditor";
 import i18n from "./i18n";
 import Text from "@appserver/components/text";
 import TextInput from "@appserver/components/text-input";
@@ -67,8 +69,10 @@ let successAuth;
 let isSharingAccess;
 let user = null;
 let personal;
-const url = window.location.href;
+let url = window.location.href;
+let config;
 const filesUrl = url.substring(0, url.indexOf("/doceditor"));
+const doc = url.indexOf("doc=") !== -1 ? url.split("doc=")[1] : null;
 
 toast.configure();
 
@@ -77,7 +81,8 @@ const Editor = () => {
   const decodedId = urlParams
     ? urlParams.fileId || urlParams.fileid || null
     : null;
-  const fileId = encodeURIComponent(decodedId);
+  const fileId =
+    typeof decodedId === "string" ? encodeURIComponent(decodedId) : decodedId;
   const version = urlParams ? urlParams.version || null : null;
   const doc = urlParams ? urlParams.doc || null : null;
   const isDesktop = window["AscDesktopEditor"] !== undefined;
@@ -142,63 +147,13 @@ const Editor = () => {
     docEditor.setFavorite(favorite);
   };
 
-  const getRecent = async (config) => {
-    try {
-      const recentFolderList = await getRecentFolderList();
-
-      const filesArray = recentFolderList.files.slice(0, 25);
-
-      const recentFiles = filesArray.filter(
-        (file) =>
-          file.rootFolderType !== FolderType.SHARE &&
-          ((config.documentType === text && file.fileType === 7) ||
-            (config.documentType === spreadSheet && file.fileType === 5) ||
-            (config.documentType === presentation && file.fileType === 6))
-      );
-
-      const groupedByFolder = recentFiles.reduce((r, a) => {
-        r[a.folderId] = [...(r[a.folderId] || []), a];
-        return r;
-      }, {});
-
-      const requests = Object.entries(groupedByFolder).map((item) =>
-        getFolderInfo(item[0])
-          .then((folderInfo) =>
-            Promise.resolve({
-              files: item[1],
-              folderInfo: folderInfo,
-            })
-          )
-          .catch((e) => console.error(e))
-      );
-
-      let recent = [];
-
-      let responses = await Promise.all(requests);
-
-      for (let res of responses) {
-        res.files.forEach((file) => {
-          const convertedData = convertRecentData(file, res.folderInfo);
-          if (Object.keys(convertedData).length !== 0)
-            recent.push(convertedData);
-        });
-      }
-
-      return recent;
-    } catch (e) {
-      console.error(e);
-    }
-
-    return null;
-  };
-
-  const initDesktop = (config) => {
-    const isEncryption = config?.editorConfig["encryptionKeys"] !== undefined;
+  const initDesktop = (cfg) => {
+    const encryptionKeys = cfg?.editorConfig?.encryptionKeys;
 
     regDesktop(
       user,
-      isEncryption,
-      config?.editorConfig.encryptionKeys,
+      !!encryptionKeys,
+      encryptionKeys,
       (keys) => {
         setEncryptionKeys(keys);
       },
@@ -287,23 +242,28 @@ const Editor = () => {
         setIsAuthenticated(successAuth);
       }
 
-      const config = await openEdit(fileId, version, doc, view);
+      config = await openEdit(fileId, version, doc, view);
+
+      if (
+        !view &&
+        fileInfo &&
+        fileInfo.canWebRestrictedEditing &&
+        fileInfo.canFillForms &&
+        !fileInfo.canEdit
+      ) {
+        try {
+          const formUrl = await checkFillFormDraft(fileId);
+          history.pushState({}, null, formUrl);
+          url = window.location.href;
+        } catch (err) {
+          console.error(err);
+        }
+      }
 
       actionLink = config?.editorConfig?.actionLink;
 
       if (isDesktop) {
-        initDesktop();
-      }
-
-      if (successAuth) {
-        const recent = await getRecent(config); //TODO: too slow for 1st loading
-
-        if (recent) {
-          config.editorConfig = {
-            ...config.editorConfig,
-            recent: recent,
-          };
-        }
+        initDesktop(config);
       }
 
       isSharingAccess = fileInfo && fileInfo.canShare;
@@ -314,7 +274,7 @@ const Editor = () => {
 
       setIsLoading(false);
 
-      loadScript(docApiUrl, "scripDocServiceAddress", () => onLoad(config));
+      loadScript(docApiUrl, "scripDocServiceAddress", () => onLoad());
     } catch (error) {
       console.log(error);
       toastr.error(
@@ -324,20 +284,6 @@ const Editor = () => {
         true
       );
     }
-  };
-
-  const convertRecentData = (file, folder) => {
-    let obj = {};
-    const folderName = folder.title;
-    const fileName = file.title;
-
-    if (+fileId !== file.id)
-      obj = {
-        folder: folderName,
-        title: fileName,
-        url: file.webUrl,
-      };
-    return obj;
   };
 
   const isIPad = () => {
@@ -391,7 +337,7 @@ const Editor = () => {
     document.title = title;
   };
 
-  const onLoad = (config) => {
+  const onLoad = () => {
     try {
       if (!window.DocsAPI) throw new Error("DocsAPI is not defined");
 
@@ -467,7 +413,8 @@ const Editor = () => {
         onRequestSaveAs,
         onRequestInsertImage,
         onRequestMailMergeRecipients,
-        onRequestCompareFile;
+        onRequestCompareFile,
+        onRequestRestore;
 
       if (isSharingAccess) {
         onRequestSharingSettings = onSDKRequestSharingSettings;
@@ -484,6 +431,9 @@ const Editor = () => {
         onRequestCompareFile = onSDKRequestCompareFile;
       }
 
+      if (!!config.document.permissions.changeHistory) {
+        onRequestRestore = onSDKRequestRestore;
+      }
       const events = {
         events: {
           onAppReady: onSDKAppReady,
@@ -501,6 +451,10 @@ const Editor = () => {
           onRequestMailMergeRecipients,
           onRequestCompareFile,
           onRequestEditRights: onSDKRequestEditRights,
+          onRequestHistory: onSDKRequestHistory,
+          onRequestHistoryClose: onSDKRequestHistoryClose,
+          onRequestHistoryData: onSDKRequestHistoryData,
+          onRequestRestore,
         },
       };
 
@@ -510,6 +464,114 @@ const Editor = () => {
     } catch (error) {
       console.log(error);
       toastr.error(error.message, null, 0, true);
+    }
+  };
+
+  const onSDKRequestHistoryData = async (event) => {
+    const version = event.data;
+
+    try {
+      const versionDifference = await getEditDiff(fileId, version, doc);
+      const changesUrl = versionDifference.changesUrl;
+      const previous = versionDifference.previous;
+      const token = versionDifference.token;
+
+      docEditor.setHistoryData({
+        ...(changesUrl && { changesUrl }),
+        key: versionDifference.key,
+        fileType: versionDifference.fileType,
+        ...(previous && {
+          previous: {
+            fileType: previous.fileType,
+            key: previous.key,
+            url: previous.url,
+          },
+        }),
+        ...(token && { token }),
+        url: versionDifference.url,
+        version,
+      });
+    } catch (e) {
+      docEditor.setHistoryData({
+        error: `${e}`, //TODO: maybe need to display something else.
+        version,
+      });
+    }
+  };
+
+  const onSDKRequestHistoryClose = () => {
+    document.location.reload();
+  };
+
+  const getDocumentHistory = (fileHistory, historyLength) => {
+    let result = [];
+
+    for (let i = 0; i < historyLength; i++) {
+      const changes = fileHistory[i].changes;
+      const serverVersion = fileHistory[i].serverVersion;
+      const version = fileHistory[i].version;
+      const versionGroup = fileHistory[i].versionGroup;
+
+      let obj = {
+        ...(changes.length !== 0 && { changes }),
+        created: `${new Date(fileHistory[i].created).toLocaleString(
+          config.editorConfig.lang
+        )}`,
+        ...(serverVersion && { serverVersion }),
+        key: fileHistory[i].key,
+        user: {
+          id: fileHistory[i].user.id,
+          name: fileHistory[i].user.name,
+        },
+        version,
+        versionGroup,
+      };
+
+      result.push(obj);
+    }
+    return result;
+  };
+  const getCurrentDocumentVersion = (fileHistory, historyLength) => {
+    return url.indexOf("&version=") !== -1
+      ? +url.split("&version=")[1]
+      : fileHistory[historyLength - 1].version;
+  };
+  const onSDKRequestHistory = async () => {
+    try {
+      const fileHistory = await getEditHistory(fileId, doc);
+      const historyLength = fileHistory.length;
+
+      docEditor.refreshHistory({
+        currentVersion: getCurrentDocumentVersion(fileHistory, historyLength),
+        history: getDocumentHistory(fileHistory, historyLength),
+      });
+    } catch (e) {
+      docEditor.refreshHistory({
+        error: `${e}`, //TODO: maybe need to display something else.
+      });
+    }
+  };
+
+  const onSDKRequestRestore = async (event) => {
+    const restoreVersion = event.data.version;
+    try {
+      const updateVersions = await restoreDocumentsVersion(
+        fileId,
+        restoreVersion,
+        doc
+      );
+      const historyLength = updateVersions.length;
+      docEditor.refreshHistory({
+        currentVersion: getCurrentDocumentVersion(
+          updateVersions,
+          historyLength
+        ),
+        history: getDocumentHistory(updateVersions, historyLength),
+      });
+    } catch (e) {
+      docEditor.refreshHistory({
+        error: `${e}`, //TODO: maybe need to display something else.
+      });
     }
   };
 
@@ -734,19 +796,17 @@ const Editor = () => {
         return i18n.t("DocumentsFileType");
     }
   };
-  const SelectFileHeader = () => {
+  const selectFilesListTitle = () => {
     return (
-      <StyledSelectFile>
-        <Text className="editor-select-file_text">
-          {filesType === mailMergeAction ? (
-            getFileTypeTranslation()
-          ) : (
-            <Trans i18n={i18n} i18nKey="SelectFilesType" ns="Editor">
-              Select files of type: {{ fileType: getFileTypeTranslation() }}
-            </Trans>
-          )}
-        </Text>
-      </StyledSelectFile>
+      <>
+        {filesType === mailMergeAction ? (
+          getFileTypeTranslation()
+        ) : (
+          <Trans i18n={i18n} i18nKey="SelectFilesType" ns="Editor">
+            Select files of type: {{ fileType: getFileTypeTranslation() }}
+          </Trans>
+        )}
+      </>
     );
   };
 
@@ -756,7 +816,7 @@ const Editor = () => {
 
   const mailMergeActionProps = {
     isTablesOnly: true,
-    searchParam: "xlsx",
+    searchParam: ".xlsx",
   };
   const compareFilesActionProps = {
     isDocumentsOnly: true,
@@ -799,9 +859,9 @@ const Editor = () => {
               onSelectFile={onSelectFile}
               isPanelVisible={isFileDialogVisible}
               onClose={onCloseFileDialog}
-              foldersType="exceptTrashFolder"
+              foldersType="exceptPrivacyTrashFolders"
               {...fileTypeDetection()}
-              header={<SelectFileHeader />}
+              titleFilesList={selectFilesListTitle()}
               headerName={i18n.t("SelectFileTitle")}
             />
           )}

@@ -29,6 +29,8 @@ const SelectFolderDialogAsideView = ({
   header,
   canCreate,
   isLoading,
+  primaryButtonName,
+  noTreeSwitcher,
 }) => {
   return (
     <StyledAsidePanel visible={isPanelVisible}>
@@ -36,7 +38,7 @@ const SelectFolderDialogAsideView = ({
         visible={isPanelVisible}
         zIndex={zIndex}
         contentHeight="100%"
-        contentPaddingBottom={!footer && !showButtons ? '0px' : '80px'}
+        contentPaddingBottom={footer && showButtons ? '100px' : '40px'}
         onClose={onClose}
         removeScroll
         displayType="aside">
@@ -52,12 +54,16 @@ const SelectFolderDialogAsideView = ({
                   // color={theme.filesPanels.selectFolder.color}
                 />
               )}
-              {headerName ? headerName : t('Translations:SelectFolder')}
+              {headerName ? headerName : t('Translations:FolderSelection')}
             </div>
           </StyledSelectFolderPanel>
         </ModalDialog.Header>
         <ModalDialog.Body>
-          <StyledSelectFolderPanel displayType={DISPLAY_TYPE} showButtons={showButtons}>
+          <StyledSelectFolderPanel
+            displayType={DISPLAY_TYPE}
+            showButtons={showButtons}
+            isFooter={!!footer}
+            noTreeSwitcher={noTreeSwitcher}>
             <div className="select-folder-dialog_aside_body">
               <div>{header} </div>
 
@@ -84,13 +90,13 @@ const SelectFolderDialogAsideView = ({
                   className="select-folder-dialog-buttons-save"
                   primary
                   size="big"
-                  label={t('Common:SaveButton')}
+                  label={primaryButtonName}
                   onClick={onSave}
                   isDisabled={isLoadingData || !isAvailable || !canCreate}
                 />
                 <Button
                   size="big"
-                  label={t('Common:CloseButton')}
+                  label={t('Common:CancelButton')}
                   onClick={onClose}
                   isDisabled={isLoadingData || isLoading}
                 />

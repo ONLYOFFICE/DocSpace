@@ -367,7 +367,7 @@ class TreeFolders extends React.Component {
         const treeData = certainFolders ? incomingDate : [...this.props.treeFolders];
 
         this.getNewTreeData(treeData, listIds, data.folders, data.level);
-        this.props.setTreeFolders(treeData);
+        !certainFolders && this.props.setTreeFolders(treeData);
       })
       .catch((err) => console.log('err', err))
       .finally(() => {

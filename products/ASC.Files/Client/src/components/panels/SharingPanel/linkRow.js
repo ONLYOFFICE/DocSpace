@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import Row from '@appserver/components/row';
 import LinkWithDropdown from '@appserver/components/link-with-dropdown';
 import ToggleButton from '@appserver/components/toggle-button';
@@ -7,6 +7,7 @@ import { StyledLinkRow } from '../StyledPanels';
 import AccessComboBox from './AccessComboBox';
 import { ShareAccessRights } from '@appserver/common/constants';
 import AccessEditIcon from '../../../../../../../public/images/access.edit.react.svg';
+import CopyIcon from '../../../../../../../public/images/copy.react.svg';
 import commonIconsStyles from '@appserver/components/utils/common-icons-style';
 import { Base } from '@appserver/components/themes';
 
@@ -18,6 +19,18 @@ const StyledAccessEditIcon = styled(AccessEditIcon)`
 `;
 
 StyledAccessEditIcon.defaultProps = { theme: Base };
+const StyledCopyIcon = styled(CopyIcon)`
+  ${commonIconsStyles}
+
+  cursor: pointer;
+
+  ${(props) =>
+    props.isDisabled &&
+    css`
+      cursor: default;
+      pointer-events: none;
+    `}
+`;
 
 class LinkRow extends React.Component {
   onToggleButtonChange = () => {
@@ -38,6 +51,7 @@ class LinkRow extends React.Component {
       onChangeItemAccess,
       isLoading,
       theme,
+      onCopyLink,
     } = this.props;
 
     const isChecked = item.access !== ShareAccessRights.DenyAccess;
@@ -70,16 +84,26 @@ class LinkRow extends React.Component {
           }
           contextButtonSpacerWidth="0px">
           <>
-            <LinkWithDropdown
-              className="sharing_panel-link"
-              color={theme.filesPanels.sharing.dropdownColor}
-              dropdownType="alwaysDashed"
-              data={options}
-              fontSize="14px"
-              fontWeight={600}
-              isDisabled={isDisabled}>
-              {linkText}
-            </LinkWithDropdown>
+            <div className="sharing_panel-link-container">
+              <LinkWithDropdown
+                className="sharing_panel-link"
+                color={theme.filesPanels.sharing.dropdownColor}
+                dropdownType="alwaysDashed"
+                data={options}
+                fontSize="13px"
+                fontWeight={600}
+                isDisabled={isDisabled}>
+                {linkText}
+              </LinkWithDropdown>
+              {onCopyLink && (
+                <StyledCopyIcon
+                  isDisabled={isDisabled}
+                  size="medium"
+                  onClick={onCopyLink}
+                  title={t('CopyExternalLink')}
+                />
+              )}
+            </div>
             {withToggle && (
               <div>
                 <ToggleButton

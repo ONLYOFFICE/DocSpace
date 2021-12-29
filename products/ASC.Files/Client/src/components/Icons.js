@@ -5,6 +5,7 @@ import commonIconsStyles from '@appserver/components/utils/common-icons-style';
 import FavoriteIcon from '../../public/images/favorite.react.svg';
 import FileActionsConvertEditDocIcon from '../../public/images/file.actions.convert.edit.doc.react.svg';
 import FileActionsLockedIcon from '../../public/images/file.actions.locked.react.svg';
+import EditFormIcon from '../../public/images/file.actions.edit.form.react.svg';
 import Base from '@appserver/components/themes/base';
 
 export const EncryptedFileIcon = styled.div`
@@ -13,7 +14,7 @@ export const EncryptedFileIcon = styled.div`
   position: absolute;
   width: 16px;
   margin-top: 14px;
-  margin-left: ${(props) => (props.isEdit ? '40px' : '12px')};
+  margin-left: 12px;
 `;
 
 export const StyledFavoriteIcon = styled(FavoriteIcon)`
@@ -49,3 +50,9 @@ export const StyledFileActionsLockedIcon = styled(FileActionsLockedIcon)`
 `;
 
 StyledFileActionsLockedIcon.defaultProps = { theme: Base };
+export const StyledFileActionsEditFormIcon = styled(EditFormIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: #3b72a7;
+  }
+`;

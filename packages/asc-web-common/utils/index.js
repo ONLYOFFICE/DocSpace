@@ -305,3 +305,20 @@ export function isRetina() {
   if (window.matchMedia && window.matchMedia(mediaQuery).matches) return true;
   return false;
 }
+
+export function convertLanguage(key) {
+  switch (key) {
+    case "en-US":
+      return "en";
+    case "ru-RU":
+      return "ru";
+    case "de-DE":
+      return "de";
+    case "it-IT":
+      return "it";
+    case "fr-FR":
+      return "fr";
+  }
+
+  return key;
+}

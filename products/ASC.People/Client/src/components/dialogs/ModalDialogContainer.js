@@ -18,6 +18,10 @@ const ModalDialogContainer = styled(ModalDialog)`
     margin: 16px 0;
   }
 
+  .text-body {
+    margin-bottom: ${(props) => (props.isTabletView ? "16px" : "12px")};
+  }
+
   .input-dialog {
     margin-top: 16px;
   }

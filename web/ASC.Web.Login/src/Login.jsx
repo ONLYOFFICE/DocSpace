@@ -311,7 +311,8 @@ const Form = (props) => {
     const hash = createPasswordHash(pass, hashSettings);
 
     isDesktop && checkPwd();
-    login(userName, hash)
+    const session = !isChecked;
+    login(userName, hash, session)
       .then((res) => {
         const { url, user, hash } = res;
         const redirectPath = localStorage.getItem('redirectPath');

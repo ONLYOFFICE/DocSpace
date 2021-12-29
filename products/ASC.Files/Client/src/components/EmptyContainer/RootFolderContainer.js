@@ -141,6 +141,9 @@ const RootFolderContainer = (props) => {
           <Link data-format="pptx" onClick={onCreate} {...linkStyles}>
             {t('Presentation')}
           </Link>
+          <Link data-format="docxf" onClick={onCreate} {...linkStyles}>
+            {t("Translations:NewForm")}
+          </Link>
         </Box>
       </div>
 
