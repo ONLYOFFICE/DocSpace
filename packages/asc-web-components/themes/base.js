@@ -1789,7 +1789,7 @@ const Base = {
 
   filterInput: {
     filterButton: {
-      stoke: "#eceef1",
+      stroke: "#eceef1",
 
       fill: "#F8F9F9",
 
@@ -2327,7 +2327,7 @@ const Base = {
       },
 
       integration: {
-        separatorBorder: "1px soled #eceef1",
+        separatorBorder: "1px solid #eceef1",
         linkColor: "#316daa",
       },
     },
