@@ -110,6 +110,13 @@ const StyledTableRow = styled(TableRow)`
     ${(props) => props.checked && contextMenuWrapperCheckedStyle};
     ${(props) => props.dragging && contextMenuWrapperDraggingStyle};
   }
+
+  .edit {
+    svg:not(:root) {
+      width: 12px;
+      height: 12px;
+    }
+  }
 `;
 
 const StyledDragAndDrop = styled(DragAndDrop)`

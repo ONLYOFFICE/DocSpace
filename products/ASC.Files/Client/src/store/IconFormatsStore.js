@@ -118,6 +118,8 @@ class IconFormatsStore {
     ".doct",
     ".docy",
     ".gdoc",
+    ".docxf",
+    ".oform",
   ];
   presentation = [
     ".pps",

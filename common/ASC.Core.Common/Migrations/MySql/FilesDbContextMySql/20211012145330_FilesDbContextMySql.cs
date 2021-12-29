@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ASC.Core.Common.Migrations.MySql.FilesDbContextMySql
 {
@@ -122,6 +122,18 @@ namespace ASC.Core.Common.Migrations.MySql.FilesDbContextMySql
                     { ".dot", ".docx" },
                     { ".docx", ".txt" },
                     { ".docx", ".rtf" },
+                    { ".docx", ".docxf" },
+                    { ".docxf",".docx" },
+                    { ".docxf",".dotx" },
+                    { ".docxf",".epub" },
+                    { ".docxf",".fb2" },
+                    { ".docxf",".html" },
+                    { ".docxf",".odt" },
+                    { ".docxf",".oform" },
+                    { ".docxf",".ott" },
+                    { ".docxf",".pdf" },
+                    { ".docxf",".rtf" },
+                    { ".docxf",".txt" },
                     { ".csv", ".pdf" },
                     { ".csv", ".xlsx" },
                     { ".doc", ".docx" },

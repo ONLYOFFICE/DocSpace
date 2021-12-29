@@ -1,1 +1,11 @@
-{}
+{
+  "FileLocation": "Ouvrir l'emplacement du fichier",
+  "FileName": "Nom du fichier",
+  "FolderForSave": "Dossier pour enregistrement",
+  "OpenSavedDocument": "Ouvrir le document enregistré dans un nouvel onglet",
+  "SelectFilesType": "Sélectionner les fichiers de type: {{fileType}}",
+  "ImageFileType": "images",
+  "DocumentsFileType": "documents",
+  "MailMergeFileType": "Sélectionner le fichier au format XLSX",
+  "SelectFileTitle": "Sélectionner la source de données"
+}

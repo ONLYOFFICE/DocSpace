@@ -30,7 +30,7 @@ class ArticleBodyContent extends React.Component {
     } = this.props;
 
     setSelectedNode(data);
-    hideArticle(false);
+    hideArticle();
     setIsLoading(true);
     // const selectedFolderTitle =
     //   (e.node && e.node.props && e.node.props.title) || null;

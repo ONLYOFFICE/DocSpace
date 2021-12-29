@@ -2,7 +2,7 @@ import React from "react";
 import Loaders from "../../Loaders";
 import StyledDialogLoader from "./StyledDialogLoader";
 
-const DialogLoader = () => {
+const DialogLoader = ({ bodyHeight = "150px" }) => {
   return (
     <StyledDialogLoader>
       <div className="dialog-loader-header">
@@ -14,7 +14,7 @@ const DialogLoader = () => {
         />
       </div>
       <div className="dialog-loader-body">
-        <Loaders.Rectangle height="150px" />
+        <Loaders.Rectangle height={bodyHeight} />
       </div>
 
       <div className="dialog-loader-footer">

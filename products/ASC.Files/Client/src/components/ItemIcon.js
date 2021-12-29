@@ -14,7 +14,7 @@ const EncryptedFileIcon = styled.div`
   position: absolute;
   width: 16px;
   margin-top: 14px;
-  margin-left: ${(props) => (props.isEdit ? "40px" : "12px")};
+  margin-left: 12px;
 `;
 
 const ItemIcon = ({

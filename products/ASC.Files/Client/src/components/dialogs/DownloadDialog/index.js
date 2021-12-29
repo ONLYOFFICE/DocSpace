@@ -4,6 +4,7 @@ import ModalDialogContainer from "../ModalDialogContainer";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
+import LinkWithDropdown from "@appserver/components/link-with-dropdown";
 import Row from "@appserver/components/row";
 import RowContent from "@appserver/components/row-content";
 import RowContainer from "@appserver/components/row-container";
@@ -451,9 +452,17 @@ class DownloadDialogComponent extends React.Component {
                           {folder.title}
                         </Text>
                         <></>
-                        <Text fontSize="12px" containerWidth="auto" noSelect>
+                        <LinkWithDropdown
+                          className="link-other-formats"
+                          containerMinWidth="fit-content"
+                          data={[]}
+                          directionX="left"
+                          directionY="bottom"
+                          dropdownType="appearDashedAfterHover"
+                          fontSize="12px"
+                        >
                           {folder.fileExst && t("OriginalFormat")}
-                        </Text>
+                        </LinkWithDropdown>
                       </RowContent>
                     </Row>
                   );

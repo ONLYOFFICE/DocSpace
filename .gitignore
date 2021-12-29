@@ -16,3 +16,4 @@ Logs/
 .eslintcache
 build/deploy/
 /public/debuginfo.md
+TestsResults/

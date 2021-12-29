@@ -54,13 +54,7 @@ namespace ASC.Web.Core.WhiteLabel
         public string Phone { get; set; }
 
         [JsonPropertyName("IsLicensor")]
-        public bool IsLicensorSetting { get; set; }
-
-        public bool GetIsLicensor(TenantManager tenantManager, CoreSettings coreSettings)
-        {
-            return IsLicensorSetting
-                && (IsDefault(coreSettings) || tenantManager.GetTenantQuota(tenantManager.GetCurrentTenant().TenantId).Branding);
-        }
+        public bool IsLicensor { get; set; }
 
 
         public bool IsDefault(CoreSettings coreSettings)
@@ -72,7 +66,7 @@ namespace ASC.Web.Core.WhiteLabel
                     Email == defaultSettings.Email &&
                     Address == defaultSettings.Address &&
                     Phone == defaultSettings.Phone &&
-                    IsLicensorSetting == defaultSettings.IsLicensorSetting;
+                    IsLicensor == defaultSettings.IsLicensor;
         }
 
         #region ISettings Members
