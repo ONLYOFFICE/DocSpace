@@ -153,7 +153,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             base.FillDistributedTask();
 
-            TaskInfo.SetProperty(PROGRESS, progress < 100 ? progress : progress);
+            TaskInfo.SetProperty(PROGRESS, progress);
             TaskInfo.PublishChanges();
         }
     }
