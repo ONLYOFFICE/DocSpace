@@ -8,13 +8,6 @@ export const StyledIcon = styled(IconButton)`
   ${commonIconsStyles}
 `;
 
-import {
-  StyledFavoriteIcon,
-  StyledFileActionsConvertEditDocIcon,
-  StyledFileActionsEditFormIcon,
-  StyledFileActionsLockedIcon,
-} from "./Icons";
-
 const Badges = ({
   t,
   newItems,
@@ -39,7 +32,6 @@ const Badges = ({
   const isEditingWithFav = fileStatus === 33;
   const showEditBadge = !locked || item.access === 0;
   const isPrivacy = isPrivacyFolder && isDesktopClient;
-
   const showActionsEdit = isEditing || isEditingWithFav;
 
   const iconEdit = showActionsEdit
