@@ -37,7 +37,7 @@ const SimulatePassword = ({
   const [password, setPassword] = useState("");
   const [passwordValid, setPasswordValid] = useState(true);
 
-  const [cursorPosition, setCursorPosition] = useState();
+  const [caretPosition, setCaretPosition] = useState();
   const [inputType, setInputType] = useState("password");
   const { t } = useTranslation("UploadPanel");
   const onClick = () => {
@@ -71,35 +71,40 @@ const SimulatePassword = ({
   };
 
   const setPasswordSettings = (newPassword) => {
-    const cursorPosition = document.getElementById("conversion-password")
+    let newValue;
+
+    const oldPassword = password;
+    const oldPasswordLength = oldPassword.length;
+    const caretPosition = document.getElementById("conversion-password")
       .selectionStart;
 
-    setCursorPosition(cursorPosition);
+    setCaretPosition(caretPosition);
+    const newCharactersUntilCaret = newPassword.substring(0, caretPosition);
 
-    const copyPassword = password;
-    const passwordLength = password.length;
-    const newPasswordLength = newPassword.length;
+    const unchangedStartCharacters = newCharactersUntilCaret
+      .split("")
+      .filter((el) => el === "•").length;
 
-    if (passwordLength < newPasswordLength) {
-      if (cursorPosition === newPasswordLength) {
-        setPassword(password + newPassword.slice(-1));
-      } else {
-        const passwordConversion = copyPassword.split("");
-        const newPasswordConversion = newPassword.split("");
-        const newSymbol = newPasswordConversion[cursorPosition - 1];
+    const unchangedEndingCharacters = newPassword.substring(caretPosition)
+      .length;
+    const addedCharacters = newCharactersUntilCaret.substring(
+      unchangedStartCharacters
+    );
 
-        passwordConversion.splice(cursorPosition - 1, 0, newSymbol);
+    const startingPartOldPassword = oldPassword.substring(
+      0,
+      unchangedStartCharacters
+    );
+    const countOfCharacters = oldPasswordLength - unchangedEndingCharacters;
+    const endingPartOldPassword = oldPassword.substring(countOfCharacters);
 
-        setPassword(passwordConversion.join(""));
-      }
-    } else {
-      const itemsCountRemoved = passwordLength - newPasswordLength;
-      const passwordConversion = copyPassword.split("");
+    newValue = startingPartOldPassword + addedCharacters;
 
-      passwordConversion.splice(cursorPosition, itemsCountRemoved);
-
-      setPassword(passwordConversion.join(""));
+    if (unchangedEndingCharacters) {
+      newValue += endingPartOldPassword;
     }
+
+    setPassword(newValue);
   };
 
   const onChangePassword = (e) => {
@@ -123,11 +128,11 @@ const SimulatePassword = ({
       : "/static/images/eye.react.svg";
 
   useEffect(() => {
-    cursorPosition &&
+    caretPosition &&
       inputType === "password" &&
       document
         .getElementById("conversion-password")
-        .setSelectionRange(cursorPosition, cursorPosition);
+        .setSelectionRange(caretPosition, caretPosition);
   }, [password]);
 
   return (
@@ -148,6 +153,7 @@ const SimulatePassword = ({
           hoverColor={iconColor}
           placeholder={t("EnterPassword")}
         ></InputBlock>
+
         <Button
           id="conversion-button"
           size="medium"
