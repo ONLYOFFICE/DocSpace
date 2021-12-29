@@ -285,7 +285,7 @@ class PureHome extends React.Component {
           hideAside={
             !!fileActionId ||
             primaryProgressDataVisible ||
-            secondaryProgressDataStoreVisible
+            secondaryProgressDataStoreVisible //TODO: use hideArticle action
           }
           isLoaded={!firstLoad}
           isHeaderVisible={isHeaderVisible}
