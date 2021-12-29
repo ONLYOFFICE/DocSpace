@@ -53,8 +53,9 @@ const EditingWrapper = styled.div`
 
   ${(props) =>
     props.viewAs === "tile" &&
-    `margin-right: 12px !important; margin-left: -4px;`}
-
+    `margin-right: 10px !important; margin-left: 8px;`}
+  
+  
   @media ${tablet} {
     height: 56px;
   }
@@ -98,7 +99,7 @@ const EditingWrapper = styled.div`
       `}
 
     &:last-child {
-      margin-left: 4px;
+      margin-left: 2px;
     }
   }
 
