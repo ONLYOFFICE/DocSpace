@@ -57,7 +57,7 @@ export const getLink = (link) => {
   return `${protocol}//${communityHostname}${link}?desktop_view=true`;
 };
 
-export const onItemClick = (e, backdropClick = undefined) => {
+export const onItemClick = (e) => {
   if (!e) return;
   e.preventDefault();
 
@@ -68,7 +68,4 @@ export const onItemClick = (e, backdropClick = undefined) => {
   }
 
   history.push(link);
-  if (backdropClick) {
-    backdropClick();
-  }
 };

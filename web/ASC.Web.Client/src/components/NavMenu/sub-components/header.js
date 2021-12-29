@@ -172,6 +172,11 @@ const HeaderComponent = ({
     if (item) item.onBadgeClick(e);
   };
 
+  const handleItemClick = (e) => {
+    onItemClick(e);
+    backdropClick();
+  }
+
   const numberOfModules = mainModules.filter((item) => !item.separator).length;
   const needNavMenu = currentProductId !== "home";
 
@@ -190,7 +195,7 @@ const HeaderComponent = ({
           active={id == currentProductId}
           iconUrl={iconUrl}
           badgeNumber={notifications}
-          onClick={onItemClick}
+          onClick={handleItemClick}
           onBadgeClick={onBadgeClick}
           url={itemLink}
           dashed={dashed}
