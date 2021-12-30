@@ -231,9 +231,8 @@ namespace ASC.Core.Data
 
                 //new password
                 result = result.Concat(q.Select(FromTenantUserToTenant)).ToList();
-                result.Distinct();
 
-                return result;
+                return result.Distinct();
             }
         }
 
