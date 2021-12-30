@@ -1,7 +1,8 @@
 {
 	"Redis": {
 		"Ssl": false,
-		"ConnectTimeout": 60000,
+		"ConnectTimeout": 5000,
+		"SyncTimeout": 60000,		
 		"ConnectRetry": 2,
 		"Database": 0,
 		"Hosts": [
