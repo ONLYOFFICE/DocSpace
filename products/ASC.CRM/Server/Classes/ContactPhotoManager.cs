@@ -349,14 +349,11 @@ namespace ASC.Web.CRM.Classes
 
             lock (locker)
             {
-                _resizeQueue.GetTasks<ResizeWorkerItem>().Where(item => item.ContactID == contactID)
-                           .All(item =>
-                               {
-                                   _resizeQueue.RemoveTask(item.Id);
-
-                                   return true;
-                               });
-
+                foreach(var item in _resizeQueue.GetTasks<ResizeWorkerItem>().Where(item => item.ContactID == contactID))
+                {
+                    _resizeQueue.RemoveTask(item.Id);
+                }
+                           
                 var photoDirectory = !isTmpDir
                                          ? BuildFileDirectory(contactID)
                                          : (String.IsNullOrEmpty(tmpDirName) ? BuildFileTmpDirectory(contactID) : BuildFileTmpDirectory(tmpDirName));
