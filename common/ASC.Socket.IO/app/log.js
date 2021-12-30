@@ -13,21 +13,42 @@ if (!fs.existsSync(dirName)) {
   fs.mkdirSync(dirName);
 }
 
-const fileTransport = new winston.transports.DailyRotateFile({
-  filename: fileName,
-  datePattern: "MM-DD",
-  handleExceptions: true,
-  humanReadableUnhandledException: true,
-  zippedArchive: true,
-  maxSize: "50m",
-  maxFiles: "30d",
-});
+var options = {
+  file: {
+    filename: fileName,
+    datePattern: "MM-DD",
+    handleExceptions: true,
+    humanReadableUnhandledException: true,
+    zippedArchive: true,
+    maxSize: "50m",
+    maxFiles: "30d",
+    json: true,
+  },
+  console: {
+    level: "debug",
+    handleExceptions: true,
+    json: false,
+    colorize: true,
+  },
+};
 
-const transports = [new winston.transports.Console(), fileTransport];
+//const fileTransport = new winston.transports.DailyRotateFile(options.file);
 
-winston.exceptions.handle(fileTransport);
+const transports = [
+  new winston.transports.Console(options.console),
+  new winston.transports.DailyRotateFile(options.file),
+];
+
+//winston.exceptions.handle(fileTransport);
 
 module.exports = new winston.createLogger({
+  //defaultMeta: { component: "socket.io-server" },
+  format: winston.format.combine(
+    winston.format.timestamp({
+      format: "YYYY-MM-DD HH:mm:ss",
+    }),
+    winston.format.json()
+  ),
   transports: transports,
   exitOnError: false,
 });

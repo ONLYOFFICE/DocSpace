@@ -89,6 +89,6 @@ const filesHub = require("./app/hubs/files.js")(io);
 
 app.use("/controller", require("./app/controllers")(filesHub));
 
-httpServer.listen(port, () => console.log(`Server started on port: ${port}`));
+httpServer.listen(port, () => winston.info(`Server started on port: ${port}`));
 
 module.exports = io;
