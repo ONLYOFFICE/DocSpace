@@ -1484,8 +1484,6 @@ namespace ASC.Employee.Core.Controllers
                 if (user.IsActive) continue;
                 var viewer = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
 
-                if (user == null) throw new Exception(Resource.ErrorUserNotFound);
-
                 if (viewer == null) throw new Exception(Resource.ErrorAccessDenied);
 
                 if (viewer.IsAdmin(UserManager) || viewer.ID == user.ID)

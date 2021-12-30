@@ -929,7 +929,7 @@ namespace ASC.CRM.Core.Dao
                 }
             }
 
-            return GetContacts(title, null, -1, -1, isCompany ? ContactListViewType.Company : ContactListViewType.Person, DateTime.MinValue, DateTime.MinValue, 0, 0, null);
+            return GetContacts(title, null, -1, -1, ContactListViewType.Person, DateTime.MinValue, DateTime.MinValue, 0, 0, null);
         }
 
         public void RemoveMember(int[] peopleID)
