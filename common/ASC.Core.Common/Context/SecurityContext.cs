@@ -134,6 +134,9 @@ namespace ASC.Core
                     if (HttpContextAccessor?.HttpContext != null)
                     {
                         var request = HttpContextAccessor?.HttpContext.Request;
+
+                        if (request == null) throw new ArgumentNullException("request");
+
                         ipFrom = "from " + (request.Headers["X-Forwarded-For"].ToString() ?? request.GetUserHostAddress());
                         address = "for " + request.GetUrlRewriter();
                     }
@@ -189,6 +192,9 @@ namespace ASC.Core
                     if (HttpContextAccessor?.HttpContext != null)
                     {
                         var request = HttpContextAccessor?.HttpContext.Request;
+
+                        if (request == null) throw new ArgumentNullException("request");
+
                         address = "for " + request.GetUrlRewriter();
                         ipFrom = "from " + (request.Headers["X-Forwarded-For"].ToString() ?? request.GetUserHostAddress());
                     }
