@@ -19,12 +19,12 @@ const StyledWrapper = styled.div`
   grid-gap: 16px;
 
   .folders {
-    margin-top: 20px;
-    margin-bottom: 16px;
+    margin-top: -1px;
+    margin-bottom: 12px;
   }
 
   .files {
-    margin-top: 37px;
+    margin-top: 25px;
   }
 
   margin-right: 3px;

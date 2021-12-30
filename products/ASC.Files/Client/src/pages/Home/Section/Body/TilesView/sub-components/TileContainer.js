@@ -24,7 +24,7 @@ const StyledGridWrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(216px, 1fr));
   width: 100%;
-  margin-bottom: ${(props) => (props.isFolders ? "29px" : 0)};
+  margin-bottom: ${(props) => (props.isFolders ? "23px" : 0)};
   box-sizing: border-box;
   ${paddingCss};
 
@@ -52,12 +52,8 @@ const StyledTileContainer = styled.div`
 
   .tile-items-heading {
     margin: 0;
-    padding-bottom: 11px;
+    margin-bottom: 15px;
     pointer-events: none;
-
-    &.files {
-      padding-top: 8px;
-    }
   }
 
   @media ${tablet} {
