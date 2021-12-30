@@ -250,12 +250,18 @@ namespace ASC.Web.Files.Services.DocumentService
                 case TrackerStatus.NotFound:
                 case TrackerStatus.Closed:
                     FileTracker.Remove(fileId);
-                    SocketManager.StopEdit(fileId);
+                    var fileStable = DaoFactory.GetFileDao<T>().GetFileStable(fileId);
+
+                    var roomFile = DocumentServiceHelper.GetSocketRoom(fileStable);
+                    var roomDir = DocumentServiceHelper.GetSocketRoom(fileStable, false);
+
+                    SocketManager.StopEdit(fileId, roomFile);
+                    SocketManager.StopEdit(fileId, roomDir);
+
                     break;
 
                 case TrackerStatus.Editing:
                     ProcessEdit(fileId, fileData);
-                    SocketManager.StartEdit(fileId);
                     break;
 
                 case TrackerStatus.MustSave:
@@ -280,13 +286,12 @@ namespace ASC.Web.Files.Services.DocumentService
             var users = FileTracker.GetEditingBy(fileId);
             var usersDrop = new List<string>();
 
+            var fileStable = DaoFactory.GetFileDao<T>().GetFileStable(fileId);
+
             string docKey;
             var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
             if (app == null)
             {
-                File<T> fileStable;
-                fileStable = DaoFactory.GetFileDao<T>().GetFileStable(fileId);
-
                 docKey = DocumentServiceHelper.GetDocKey(fileStable);
             }
             else
@@ -335,6 +340,12 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 FileTracker.Remove(fileId, userId: removeUserId);
             }
+
+            var roomFile = DocumentServiceHelper.GetSocketRoom(fileStable);
+            var roomDir = DocumentServiceHelper.GetSocketRoom(fileStable, false);
+
+            SocketManager.StartEdit(fileId, roomFile);
+            SocketManager.StartEdit(fileId, roomDir);
         }
 
         private TrackResponse ProcessSave<T>(T fileId, TrackerData fileData)

@@ -703,7 +703,13 @@ namespace ASC.Web.Files.Services.WCFService
                 if (isFinish)
                 {
                     FileTracker.Remove(id, tabId);
-                    SocketManager.StopEdit(id);
+                    var fileStable = DaoFactory.GetFileDao<T>().GetFileStable(id);
+
+                    var roomFile = DocumentServiceHelper.GetSocketRoom(fileStable);
+                    var roomDir = DocumentServiceHelper.GetSocketRoom(fileStable, false);
+
+                    SocketManager.StopEdit(id, roomFile);
+                    SocketManager.StopEdit(id, roomDir);
                 }
                 else
                 {

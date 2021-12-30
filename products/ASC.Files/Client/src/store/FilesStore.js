@@ -223,7 +223,35 @@ class FilesStore {
   };
 
   setFiles = (files) => {
+    if (
+      this.files &&
+      this.selectedFolderStore.parentId === 0 &&
+      (this.selectedFolderStore.rootFolderType === FolderType.SHARE ||
+        this.selectedFolderStore.rootFolderType === FolderType.COMMON ||
+        this.selectedFolderStore.rootFolderType === FolderType.Recent ||
+        this.selectedFolderStore.rootFolderType === FolderType.Favorites)
+    ) {
+      socket.emit(
+        "unsubscribe",
+        this.files.map((f) => `FILE-${f.id}`)
+      );
+    }
+
     this.files = files;
+
+    if (
+      this.files &&
+      this.selectedFolderStore.parentId === 0 &&
+      (this.selectedFolderStore.rootFolderType === FolderType.SHARE ||
+        this.selectedFolderStore.rootFolderType === FolderType.COMMON ||
+        this.selectedFolderStore.rootFolderType === FolderType.Recent ||
+        this.selectedFolderStore.rootFolderType === FolderType.Favorites)
+    ) {
+      socket.emit(
+        "subscribe",
+        this.files.map((f) => `FILE-${f.id}`)
+      );
+    }
   };
 
   setFolders = (folders) => {

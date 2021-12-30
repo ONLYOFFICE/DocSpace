@@ -1,4 +1,5 @@
 import { makeAutoObservable } from "mobx";
+import socket from "../helpers/socket";
 
 class SelectedFolderStore {
   folders = null;
@@ -48,6 +49,14 @@ class SelectedFolderStore {
   };
 
   setSelectedFolder = (selectedFolder) => {
+    if (this.id !== null) {
+      socket.emit("unsubscribe", `DIR-${this.id}`);
+    }
+
+    if (selectedFolder) {
+      socket.emit("subscribe", `DIR-${selectedFolder.id}`);
+    }
+
     if (!selectedFolder) {
       this.toDefault();
     } else {

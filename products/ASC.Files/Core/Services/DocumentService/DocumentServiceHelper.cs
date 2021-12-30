@@ -63,6 +63,8 @@ namespace ASC.Web.Files.Services.DocumentService
         private FileTrackerHelper FileTracker { get; }
         private EntryStatusManager EntryStatusManager { get; }
         private IServiceProvider ServiceProvider { get; }
+        public GlobalFolderHelper GlobalFolderHelper { get; }
+        public TenantManager TenantManager { get; }
 
         public DocumentServiceHelper(
             IDaoFactory daoFactory,
@@ -78,7 +80,9 @@ namespace ASC.Web.Files.Services.DocumentService
             LockerManager lockerManager,
             FileTrackerHelper fileTracker,
             EntryStatusManager entryStatusManager,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            GlobalFolderHelper globalFolderHelper,
+            TenantManager tenantManager)
         {
             DaoFactory = daoFactory;
             FileShareLink = fileShareLink;
@@ -94,6 +98,8 @@ namespace ASC.Web.Files.Services.DocumentService
             FileTracker = fileTracker;
             EntryStatusManager = entryStatusManager;
             ServiceProvider = serviceProvider;
+            GlobalFolderHelper = globalFolderHelper;
+            TenantManager = tenantManager;
         }
 
         public File<T> GetParams<T>(T fileId, int version, string doc, bool editPossible, bool tryEdit, bool tryCoauth, out Configuration<T> configuration)
@@ -404,6 +410,17 @@ namespace ASC.Web.Files.Services.DocumentService
 
             var meta = new Web.Core.Files.DocumentService.MetaData { Title = file.Title };
             return DocumentServiceConnector.Command(Web.Core.Files.DocumentService.CommandMethod.Meta, docKeyForTrack, file.ID, meta: meta);
+        }
+
+        public string GetSocketRoom<T>(File<T> file, bool forFile = true)
+        {
+            var tenantId = TenantManager.GetCurrentTenant().TenantId;
+
+            var room = forFile
+                        ? $"{tenantId}-FILE-{file.ID}"
+                        : $"{tenantId}-DIR-{file.FolderID}";
+
+            return room;
         }
     }
 }

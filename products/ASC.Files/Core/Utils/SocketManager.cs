@@ -37,22 +37,19 @@ namespace ASC.Web.Files.Utils
     {
         private readonly SignalrServiceClient _signalrServiceClient;
 
-        public SocketManager(IOptionsSnapshot<SignalrServiceClient> optionsSnapshot, TenantManager tenantManager)
+        public SocketManager(IOptionsSnapshot<SignalrServiceClient> optionsSnapshot)
         {
             _signalrServiceClient = optionsSnapshot.Get("files");
-            TenantManager = tenantManager;
         }
 
-        private TenantManager TenantManager { get; }
-
-        public void StartEdit<T>(T fileId)
+        public void StartEdit<T>(T fileId, string room)
         {
-            _signalrServiceClient.StartEdit(TenantManager.GetCurrentTenant().TenantId, fileId);
+            _signalrServiceClient.StartEdit(fileId, room);
         }
 
-        public void StopEdit<T>(T fileId)
+        public void StopEdit<T>(T fileId, string room)
         {
-            _signalrServiceClient.StopEdit(TenantManager.GetCurrentTenant().TenantId, fileId);
+            _signalrServiceClient.StopEdit(fileId, room);
         }
     }
 }

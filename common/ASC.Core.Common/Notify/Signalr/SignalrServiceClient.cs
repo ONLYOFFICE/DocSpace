@@ -309,11 +309,11 @@ namespace ASC.Core.Notify.Signalr
             }
         }
 
-        public void StartEdit<T>(int tenantId, T fileId)
+        public void StartEdit<T>(T fileId, string room)
         {
             try
             {
-                MakeRequest("start-edit", new { tenantId, fileId });
+                MakeRequest("start-edit", new { room, fileId });
             }
             catch (Exception error)
             {
@@ -321,11 +321,11 @@ namespace ASC.Core.Notify.Signalr
             }
         }
 
-        public void StopEdit<T>(int tenantId, T fileId)
+        public void StopEdit<T>(T fileId, string room)
         {
             try
             {
-                MakeRequest("stop-edit", new { tenantId, fileId });
+                MakeRequest("stop-edit", new { room, fileId });
             }
             catch (Exception error)
             {
