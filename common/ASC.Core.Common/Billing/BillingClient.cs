@@ -272,7 +272,7 @@ namespace ASC.Core.Billing
                 return result;
             }
 
-            var @params = (parameters ?? Enumerable.Empty<Tuple<string, string>>()).Select(p => string.Format("{0}: {1}", p.Item1, p.Item2));
+            var @params = parameters.Select(p => string.Format("{0}: {1}", p.Item1, p.Item2));
             var info = new { Method = method, PortalId = portalId, Params = string.Join(", ", @params) };
             if (result.Contains("{\"Message\":\"error: cannot find "))
             {
