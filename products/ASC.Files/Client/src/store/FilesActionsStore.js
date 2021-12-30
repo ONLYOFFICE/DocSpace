@@ -61,11 +61,36 @@ class FilesActionStore {
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
-    const { filter, fetchFiles } = this.filesStore;
-    fetchFiles(this.selectedFolderStore.id, filter, true, true).finally(() => {
+    const {
+      filter,
+      fetchFiles,
+      isEmptyLastPageAfterOperation,
+      resetFilterPage,
+    } = this.filesStore;
+    let newFilter;
+
+    const selectionFilesLength =
+      fileIds && folderIds
+        ? fileIds.length + folderIds.length
+        : fileIds?.length || folderIds?.length;
+
+    if (
+      selectionFilesLength &&
+      isEmptyLastPageAfterOperation(selectionFilesLength)
+    ) {
+      newFilter = resetFilterPage();
+    }
+
+    fetchFiles(
+      this.selectedFolderStore.id,
+      newFilter ? newFilter : filter,
+      true,
+      true
+    ).finally(() => {
       this.uploadDataStore.clearActiveOperations(fileIds, folderIds);
       setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-    });  };
+    });
+  };
 
   deleteAction = async (translations, newSelection = null) => {
     const { isRecycleBinFolder, isPrivacyFolder } = this.treeFoldersStore;
