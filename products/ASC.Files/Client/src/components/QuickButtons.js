@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import IconButton from "@appserver/components/icon-button";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import { isMobile } from "react-device-detect";
 
 export const StyledIcon = styled(IconButton)`
   ${commonIconsStyles}
@@ -16,6 +17,7 @@ const QuickButtons = ({
   onClickLock,
   onClickFavorite,
   onClickShare,
+  viewAs,
 }) => {
   const { id, locked, fileStatus, title, fileExst, shared } = item;
 
@@ -39,9 +41,11 @@ const QuickButtons = ({
   const tabletViewQuickButton = sectionWidth > 500 && sectionWidth <= 1024;
   const sizeQuickButton = tabletViewQuickButton ? "medium" : "small";
 
+  const displayShare = viewAs === "row" && (isMobile || sectionWidth <= 500);
+
   return (
     <div className="badges additional-badges">
-      {item.canShare && showShare && (
+      {item.canShare && showShare && !displayShare && (
         <StyledIcon
           iconName={iconShare}
           className="badge share-button-icon"
