@@ -357,8 +357,6 @@ namespace ASC.ElasticSearch
 
                 lock (Locker)
                 {
-                    if (isExist) return true;
-
                     isExist = Client.Instance.Indices.Exists(data.IndexName).Exists;
 
                     BaseIndexerHelper.IsExist.TryUpdate(data.IndexName, IsExist, false);
