@@ -41,6 +41,8 @@ namespace ASC.Files.Core
 
         ISecurityDao<T> GetSecurityDao<T>();
 
+        ILinkDao GetLinkDao();
+
         IProviderDao ProviderDao { get; }
     }
 }

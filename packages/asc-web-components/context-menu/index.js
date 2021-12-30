@@ -1,266 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import DomHelpers from "../utils/domHelpers";
-import ObjectUtils from "../utils/objectUtils";
 import { classNames } from "../utils/classNames";
 import { CSSTransition } from "react-transition-group";
-import { ReactSVG } from "react-svg";
 import Portal from "../portal";
 import StyledContextMenu from "./styled-context-menu";
-import ArrowIcon from "./svg/arrow.right.react.svg";
-
-class ContextMenuSub extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      activeItem: null,
-    };
-
-    this.onEnter = this.onEnter.bind(this);
-
-    this.submenuRef = React.createRef();
-  }
-
-  onItemMouseEnter(e, item) {
-    if (item.disabled) {
-      e.preventDefault();
-      return;
-    }
-
-    this.setState({
-      activeItem: item,
-    });
-  }
-
-  onItemClick(item, e) {
-    if (item.disabled) {
-      e.preventDefault();
-      return;
-    }
-
-    if (!item.url) {
-      e.preventDefault();
-    }
-
-    if (item.onClick) {
-      item.onClick({
-        originalEvent: e,
-        action: item.action,
-      });
-    }
-
-    if (!item.items) {
-      this.props.onLeafClick(e);
-    }
-  }
-
-  position() {
-    const parentItem = this.submenuRef.current.parentElement;
-    const containerOffset = DomHelpers.getOffset(
-      this.submenuRef.current.parentElement
-    );
-    const viewport = DomHelpers.getViewport();
-    const sublistWidth = this.submenuRef.current.offsetParent
-      ? this.submenuRef.current.offsetWidth
-      : DomHelpers.getHiddenElementOuterWidth(this.submenuRef.current);
-    const itemOuterWidth = DomHelpers.getOuterWidth(parentItem.children[0]);
-
-    this.submenuRef.current.style.top = "0px";
-
-    if (
-      parseInt(containerOffset.left, 10) + itemOuterWidth + sublistWidth >
-      viewport.width - DomHelpers.calculateScrollbarWidth()
-    ) {
-      this.submenuRef.current.style.left = -1 * sublistWidth + "px";
-    } else {
-      this.submenuRef.current.style.left = itemOuterWidth + "px";
-    }
-  }
-
-  onEnter() {
-    this.position();
-  }
-
-  isActive() {
-    return this.props.root || !this.props.resetMenu;
-  }
-
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.resetMenu === true) {
-      return {
-        activeItem: null,
-      };
-    }
-
-    return null;
-  }
-
-  componentDidUpdate() {
-    if (this.isActive()) {
-      this.position();
-    }
-  }
-
-  renderSeparator(index) {
-    return (
-      <li
-        key={"separator_" + index}
-        className="p-menu-separator not-selectable"
-        role="separator"
-      ></li>
-    );
-  }
-
-  renderSubmenu(item) {
-    if (item.items) {
-      return (
-        <ContextMenuSub
-          model={item.items}
-          resetMenu={item !== this.state.activeItem}
-          onLeafClick={this.props.onLeafClick}
-        />
-      );
-    }
-
-    return null;
-  }
-
-  renderMenuitem(item, index) {
-    if (item.disabled) return; //TODO: Not render disabled items
-    const active = this.state.activeItem === item;
-    const className = classNames(
-      "p-menuitem",
-      { "p-menuitem-active": active },
-      item.className
-    );
-    const linkClassName = classNames("p-menuitem-link", "not-selectable", {
-      "p-disabled": item.disabled,
-    });
-    const iconClassName = classNames("p-menuitem-icon", {
-      "p-disabled": item.disabled,
-    });
-    const submenuIconClassName = "p-submenu-icon";
-    const icon = item.icon && (
-      <ReactSVG
-        wrapper="span"
-        className={iconClassName}
-        src={item.icon}
-      ></ReactSVG>
-    );
-    const label = item.label && (
-      <span className="p-menuitem-text not-selectable">{item.label}</span>
-    );
-    const submenuIcon = item.items && (
-      <ArrowIcon className={submenuIconClassName} />
-    );
-    const submenu = this.renderSubmenu(item);
-    const dataKeys = Object.fromEntries(
-      Object.entries(item).filter((el) => el[0].indexOf("data-") === 0)
-    );
-    const onClick = (e) => {
-      this.onItemClick(item, e);
-    };
-    let content = (
-      <a
-        href={item.url || "#"}
-        className={linkClassName}
-        target={item.target}
-        {...dataKeys}
-        onClick={onClick}
-        role="menuitem"
-      >
-        {icon}
-        {label}
-        {submenuIcon}
-      </a>
-    );
-
-    if (item.template) {
-      const defaultContentOptions = {
-        onClick,
-        className: linkClassName,
-        labelClassName: "p-menuitem-text",
-        iconClassName,
-        submenuIconClassName,
-        element: content,
-        props: this.props,
-        active,
-      };
-
-      content = ObjectUtils.getJSXElement(
-        item.template,
-        item,
-        defaultContentOptions
-      );
-    }
-
-    return (
-      <li
-        key={item.label + "_" + index}
-        role="none"
-        className={className}
-        style={item.style}
-        onMouseEnter={(event) => this.onItemMouseEnter(event, item)}
-      >
-        {content}
-        {submenu}
-      </li>
-    );
-  }
-
-  renderItem(item, index) {
-    if (!item) return null;
-    if (item.isSeparator) return this.renderSeparator(index);
-    else return this.renderMenuitem(item, index);
-  }
-
-  renderMenu() {
-    if (this.props.model) {
-      return this.props.model.map((item, index) => {
-        return this.renderItem(item, index);
-      });
-    }
-
-    return null;
-  }
-
-  render() {
-    const className = classNames({ "p-submenu-list": !this.props.root });
-    const submenu = this.renderMenu();
-    const isActive = this.isActive();
-
-    return (
-      <CSSTransition
-        nodeRef={this.submenuRef}
-        classNames="p-contextmenusub"
-        in={isActive}
-        timeout={{ enter: 0, exit: 0 }}
-        unmountOnExit={true}
-        onEnter={this.onEnter}
-      >
-        <ul ref={this.submenuRef} className={`${className} not-selectable`}>
-          {submenu}
-        </ul>
-      </CSSTransition>
-    );
-  }
-}
-
-ContextMenuSub.propTypes = {
-  model: PropTypes.any,
-  root: PropTypes.bool,
-  className: PropTypes.string,
-  resetMenu: PropTypes.bool,
-  onLeafClick: PropTypes.func,
-};
-
-ContextMenuSub.defaultProps = {
-  model: null,
-  root: false,
-  className: null,
-  resetMenu: false,
-  onLeafClick: null,
-};
+import SubMenu from "./sub-components/sub-menu";
 
 class ContextMenu extends Component {
   constructor(props) {
@@ -272,34 +17,22 @@ class ContextMenu extends Component {
       resetMenu: false,
     };
 
-    this.onMenuClick = this.onMenuClick.bind(this);
-    this.onLeafClick = this.onLeafClick.bind(this);
-    this.onMenuMouseEnter = this.onMenuMouseEnter.bind(this);
-    this.onEnter = this.onEnter.bind(this);
-    this.onEntered = this.onEntered.bind(this);
-    this.onExit = this.onExit.bind(this);
-    this.onExited = this.onExited.bind(this);
-
     this.menuRef = React.createRef();
   }
 
-  onMenuClick() {
+  onMenuClick = () => {
     this.setState({
       resetMenu: false,
     });
-  }
+  };
 
-  onMenuMouseEnter() {
+  onMenuMouseEnter = () => {
     this.setState({
       resetMenu: false,
     });
-  }
+  };
 
-  show(e) {
-    if (!(e instanceof Event)) {
-      e.persist();
-    }
-
+  show = (e) => {
     e.stopPropagation();
     e.preventDefault();
 
@@ -314,7 +47,7 @@ class ContextMenu extends Component {
         }
       });
     }
-  }
+  };
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.visible && prevState.reshow !== this.state.reshow) {
@@ -323,7 +56,6 @@ class ContextMenu extends Component {
         {
           visible: false,
           reshow: false,
-          rePosition: false,
           resetMenu: true,
         },
         () => this.show(event)
@@ -331,20 +63,16 @@ class ContextMenu extends Component {
     }
   }
 
-  hide(e) {
-    if (!(e instanceof Event)) {
-      e.persist();
-    }
-
+  hide = (e) => {
     this.currentEvent = e;
     this.setState({ visible: false, reshow: false }, () => {
       if (this.props.onHide) {
         this.props.onHide(this.currentEvent);
       }
     });
-  }
+  };
 
-  onEnter() {
+  onEnter = () => {
     if (this.props.autoZIndex) {
       this.menuRef.current.style.zIndex = String(
         this.props.baseZIndex + DomHelpers.generateZIndex()
@@ -352,25 +80,27 @@ class ContextMenu extends Component {
     }
 
     this.position(this.currentEvent);
-  }
+  };
 
-  onEntered() {
+  onEntered = () => {
     this.bindDocumentListeners();
-  }
+  };
 
-  onExit() {
+  onExit = () => {
     this.currentEvent = null;
     this.unbindDocumentListeners();
-  }
+  };
 
-  onExited() {
+  onExited = () => {
     DomHelpers.revertZIndex();
-  }
+  };
 
-  position(event) {
+  position = (event) => {
     if (event) {
-      let left = event.pageX + 1;
-      let top = event.pageY + 1;
+      const rects = this.props.containerRef?.current.getBoundingClientRect();
+
+      let left = rects ? rects.left : event.pageX + 1;
+      let top = rects ? rects.top : event.pageY + 1;
       let width = this.menuRef.current.offsetParent
         ? this.menuRef.current.offsetWidth
         : DomHelpers.getHiddenElementOuterWidth(this.menuRef.current);
@@ -399,12 +129,20 @@ class ContextMenu extends Component {
         top = document.body.scrollTop;
       }
 
+      if (this.props.containerRef) {
+        top += rects.height + 4;
+
+        if (this.props.scaled) {
+          this.menuRef.current.style.width = rects.width + "px";
+        }
+      }
+
       this.menuRef.current.style.left = left + "px";
       this.menuRef.current.style.top = top + "px";
     }
-  }
+  };
 
-  onLeafClick(e) {
+  onLeafClick = (e) => {
     this.setState({
       resetMenu: true,
     });
@@ -412,9 +150,9 @@ class ContextMenu extends Component {
     this.hide(e);
 
     e.stopPropagation();
-  }
+  };
 
-  isOutsideClicked(e) {
+  isOutsideClicked = (e) => {
     return (
       this.menuRef &&
       this.menuRef.current &&
@@ -423,19 +161,19 @@ class ContextMenu extends Component {
         this.menuRef.current.contains(e.target)
       )
     );
-  }
+  };
 
-  bindDocumentListeners() {
+  bindDocumentListeners = () => {
     this.bindDocumentResizeListener();
     this.bindDocumentClickListener();
-  }
+  };
 
-  unbindDocumentListeners() {
+  unbindDocumentListeners = () => {
     this.unbindDocumentResizeListener();
     this.unbindDocumentClickListener();
-  }
+  };
 
-  bindDocumentClickListener() {
+  bindDocumentClickListener = () => {
     if (!this.documentClickListener) {
       this.documentClickListener = (e) => {
         if (this.isOutsideClicked(e)) {
@@ -451,9 +189,9 @@ class ContextMenu extends Component {
       document.addEventListener("click", this.documentClickListener);
       document.addEventListener("mousedown", this.documentClickListener);
     }
-  }
+  };
 
-  bindDocumentContextMenuListener() {
+  bindDocumentContextMenuListener = () => {
     if (!this.documentContextMenuListener) {
       this.documentContextMenuListener = (e) => {
         this.show(e);
@@ -464,9 +202,9 @@ class ContextMenu extends Component {
         this.documentContextMenuListener
       );
     }
-  }
+  };
 
-  bindDocumentResizeListener() {
+  bindDocumentResizeListener = () => {
     if (!this.documentResizeListener) {
       this.documentResizeListener = (e) => {
         if (this.state.visible) {
@@ -476,17 +214,17 @@ class ContextMenu extends Component {
 
       window.addEventListener("resize", this.documentResizeListener);
     }
-  }
+  };
 
-  unbindDocumentClickListener() {
+  unbindDocumentClickListener = () => {
     if (this.documentClickListener) {
       document.removeEventListener("click", this.documentClickListener);
       document.removeEventListener("mousedown", this.documentClickListener);
       this.documentClickListener = null;
     }
-  }
+  };
 
-  unbindDocumentContextMenuListener() {
+  unbindDocumentContextMenuListener = () => {
     if (this.documentContextMenuListener) {
       document.removeEventListener(
         "contextmenu",
@@ -494,14 +232,14 @@ class ContextMenu extends Component {
       );
       this.documentContextMenuListener = null;
     }
-  }
+  };
 
-  unbindDocumentResizeListener() {
+  unbindDocumentResizeListener = () => {
     if (this.documentResizeListener) {
       window.removeEventListener("resize", this.documentResizeListener);
       this.documentResizeListener = null;
     }
-  }
+  };
 
   componentDidMount() {
     if (this.props.global) {
@@ -516,7 +254,7 @@ class ContextMenu extends Component {
     DomHelpers.revertZIndex();
   }
 
-  renderContextMenu() {
+  renderContextMenu = () => {
     const className = classNames(
       "p-contextmenu p-component",
       this.props.className
@@ -543,7 +281,7 @@ class ContextMenu extends Component {
             onClick={this.onMenuClick}
             onMouseEnter={this.onMenuMouseEnter}
           >
-            <ContextMenuSub
+            <SubMenu
               model={this.props.model}
               root
               resetMenu={this.state.resetMenu}
@@ -553,7 +291,7 @@ class ContextMenu extends Component {
         </CSSTransition>
       </StyledContextMenu>
     );
-  }
+  };
 
   render() {
     const element = this.renderContextMenu();
@@ -583,6 +321,10 @@ ContextMenu.propTypes = {
   onShow: PropTypes.func,
   /** Callback to invoke when a popup menu is hidden */
   onHide: PropTypes.func,
+  /** If you want to display relative to another component */
+  containerRef: PropTypes.any,
+  /** Scale with by container component*/
+  scaled: PropTypes.bool,
 };
 
 ContextMenu.defaultProps = {
@@ -596,6 +338,8 @@ ContextMenu.defaultProps = {
   appendTo: null,
   onShow: null,
   onHide: null,
+  scaled: false,
+  containerRef: null,
 };
 
 export default ContextMenu;

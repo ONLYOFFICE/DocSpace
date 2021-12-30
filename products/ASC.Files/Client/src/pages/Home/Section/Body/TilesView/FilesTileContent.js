@@ -60,9 +60,12 @@ const SimpleFilesTileContent = styled(TileContent)`
   }
 
   .favorite,
-  .can-convert {
-    height: 14px;
-    width: 14px;
+  .can-convert,
+  .edit {
+    svg:not(:root) {
+      width: 14px;
+      height: 14px;
+    }
   }
 
   @media (max-width: 1024px) {

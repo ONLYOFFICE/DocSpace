@@ -87,6 +87,20 @@ const StyledContainer = styled.div`
         }
       }
     }
+
+    .trash-button {
+      margin-bottom: -1px;
+
+      @media (min-width: 1024px) {
+        margin-left: 8px;
+      }
+
+      @media ${tablet} {
+        & > div:first-child {
+          margin-right: -8px;
+        }
+      }
+    }
   }
 
   .group-button-menu-container {
@@ -160,12 +174,19 @@ class SectionHeaderContent extends React.Component {
 
   createPresentation = () => this.onCreate("pptx");
 
+  createForm = () => this.onCreate("docxf");
+
+  createFormFromFile = () => {
+    const { setSelectFileDialogVisible } = this.props;
+    setSelectFileDialogVisible(true);
+  };
+
   createFolder = () => this.onCreate();
 
   uploadToFolder = () => console.log("Upload To Folder click");
 
   getContextOptionsPlus = () => {
-    const { t } = this.props;
+    const { t, isPrivacyFolder } = this.props;
 
     return [
       {
@@ -182,6 +203,15 @@ class SectionHeaderContent extends React.Component {
         key: "new-presentation",
         label: t("NewPresentation"),
         onClick: this.createPresentation,
+      },
+      {
+        label: t("Translations:NewForm"),
+        onClick: this.createForm,
+      },
+      {
+        label: t("Translations:NewFormFile"),
+        onClick: this.createFormFromFile,
+        disabled: isPrivacyFolder,
       },
       {
         key: "new-folder",
@@ -352,6 +382,8 @@ class SectionHeaderContent extends React.Component {
       isTabletView,
       personal,
       viewAs,
+      isRecycleBinFolder,
+      isEmptyFilesList,
     } = this.props;
 
     const menuItems = this.getMenuItems();
@@ -449,6 +481,19 @@ class SectionHeaderContent extends React.Component {
                         />
                       )
                     )}
+                    {isRecycleBinFolder && !isEmptyFilesList && (
+                      <span title={t("EmptyRecycleBin")}>
+                        <IconButton
+                          iconName="images/clear.active.react.svg"
+                          size="15"
+                          color="#A3A9AE"
+                          hoverColor="#657077"
+                          isFill={true}
+                          onClick={this.onEmptyTrashAction}
+                          className="trash-button"
+                        />
+                      </span>
+                    )}
                   </>
                 )}
               </div>
@@ -468,6 +513,7 @@ export default inject(
     selectedFolderStore,
     filesActionsStore,
     settingsStore,
+    treeFoldersStore,
   }) => {
     const {
       setSelected,
@@ -483,6 +529,7 @@ export default inject(
       viewAs,
       cbMenuItems,
       getCheckboxItemLabel,
+      isEmptyFilesList,
     } = filesStore;
     const { setAction } = fileActionStore;
     const {
@@ -490,8 +537,11 @@ export default inject(
       setMoveToPanelVisible,
       setCopyPanelVisible,
       setDeleteDialogVisible,
+      setEmptyTrashDialogVisible,
+      setSelectFileDialogVisible,
     } = dialogsStore;
 
+    const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
     const { deleteAction, downloadAction, getHeaderMenu } = filesActionsStore;
 
     return {
@@ -524,6 +574,12 @@ export default inject(
       downloadAction,
       getHeaderMenu,
       getCheckboxItemLabel,
+      setSelectFileDialogVisible,
+
+      isRecycleBinFolder,
+      setEmptyTrashDialogVisible,
+      isEmptyFilesList,
+      isPrivacyFolder,
     };
   }
 )(

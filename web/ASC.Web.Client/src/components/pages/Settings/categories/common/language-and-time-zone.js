@@ -13,6 +13,7 @@ import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
 import { setDocumentTitle } from "../../../../../helpers/utils";
 import { inject, observer } from "mobx-react";
 import { LANGUAGE } from "@appserver/common/constants";
+import { convertLanguage } from "@appserver/common/utils";
 import withCultureNames from "@appserver/common/hoc/withCultureNames";
 
 const mapTimezonesToArray = (timezones) => {
@@ -69,7 +70,7 @@ class LanguageAndTimeZone extends React.Component {
     const timezones = mapTimezonesToArray(rawTimezones);
     const language = findSelectedItemByKey(
       cultureNames,
-      portalLanguage || cultureNames[0]
+      convertLanguage(portalLanguage || cultureNames[0])
     );
     const timezone = findSelectedItemByKey(
       timezones,

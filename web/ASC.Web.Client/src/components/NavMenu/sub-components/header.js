@@ -19,10 +19,17 @@ import i18n from "../i18n";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import NoUserSelect from "@appserver/components/utils/commonStyles";
+import {
+  getLink,
+  checkIfModuleOld,
+  onItemClick,
+} from "@appserver/studio/src/helpers/utils";
+import StyledExternalLinkIcon from "@appserver/studio/src/components/StyledExternalLinkIcon";
 
 const { proxyURL } = AppServerConfig;
 
 const backgroundColor = "#0F4071";
+const linkColor = "#7a95b0";
 
 const Header = styled.header`
   align-items: center;
@@ -84,6 +91,7 @@ const Header = styled.header`
     height: 24px;
     position: relative;
     padding: ${(props) => (!props.isPersonal ? "0 20px 0 6px" : "0")};
+    margin-left: ${(props) => (props.needNavMenu ? "0" : "10px")};
     cursor: pointer;
 
     @media ${tablet} {
@@ -107,7 +115,7 @@ const Header = styled.header`
 const StyledLink = styled.div`
   display: inline;
   .nav-menu-header_link {
-    color: #7a95b0;
+    color: ${linkColor};
     font-size: 13px;
   }
 
@@ -115,14 +123,14 @@ const StyledLink = styled.div`
     text-decoration: none;
   }
   :hover {
-    color: #7a95b0;
+    color: ${linkColor};
     -webkit-text-decoration: underline;
     text-decoration: underline;
   }
 `;
 
 const versionBadgeProps = {
-  color: "#7A95B0",
+  color: linkColor,
   fontWeight: "600",
   fontSize: "13px",
 };
@@ -164,15 +172,39 @@ const HeaderComponent = ({
     if (item) item.onBadgeClick(e);
   };
 
-  const onItemClick = (e) => {
-    if (!e) return;
-    const link = e.currentTarget.dataset.link;
-    history.push(link);
+  const handleItemClick = (e) => {
+    onItemClick(e);
     backdropClick();
-    e.preventDefault();
-  };
+  }
 
   const numberOfModules = mainModules.filter((item) => !item.separator).length;
+  const needNavMenu = currentProductId !== "home";
+
+  const navItems = mainModules
+    .filter((module) => module.id !== "settings")
+    .map(({ id, separator, iconUrl, notifications, link, title, dashed }) => {
+      const itemLink = getLink(link);
+      const shouldRenderIcon = checkIfModuleOld(link);
+      return (
+        <NavItem
+          separator={!!separator}
+          key={id}
+          data-id={id}
+          data-link={itemLink}
+          opened={isNavOpened}
+          active={id == currentProductId}
+          iconUrl={iconUrl}
+          badgeNumber={notifications}
+          onClick={handleItemClick}
+          onBadgeClick={onBadgeClick}
+          url={itemLink}
+          dashed={dashed}
+        >
+          {title}
+          {shouldRenderIcon && <StyledExternalLinkIcon color={linkColor} />}
+        </NavItem>
+      );
+    });
 
   return (
     <>
@@ -182,8 +214,9 @@ const HeaderComponent = ({
         isPersonal={isPersonal}
         isAuthenticated={isAuthenticated}
         className="navMenuHeader hidingHeader"
+        needNavMenu={needNavMenu}
       >
-        {!isPersonal && (
+        {!isPersonal && needNavMenu && (
           <NavItem
             badgeNumber={totalNotifications}
             onClick={onClick}
@@ -239,35 +272,7 @@ const HeaderComponent = ({
             key={"nav-products-separator"}
             data-id={"nav-products-separator"}
           />
-          {mainModules.map(
-            ({
-              id,
-              separator, //iconName,
-              iconUrl,
-              notifications,
-              link,
-              title,
-              dashed,
-            }) => (
-              <NavItem
-                separator={!!separator}
-                key={id}
-                data-id={id}
-                data-link={link}
-                opened={isNavOpened}
-                active={id == currentProductId}
-                //iconName={iconName}
-                iconUrl={iconUrl}
-                badgeNumber={notifications}
-                onClick={onItemClick}
-                onBadgeClick={onBadgeClick}
-                url={link}
-                dashed={dashed}
-              >
-                {id === "settings" ? i18n.t("Common:Settings") : title}
-              </NavItem>
-            )
-          )}
+          {navItems}
           <Box className="version-box">
             <Link
               as="a"
@@ -314,6 +319,7 @@ HeaderComponent.propTypes = {
   version: PropTypes.string,
   isAuthenticated: PropTypes.bool,
   isAdmin: PropTypes.bool,
+  needNavMenu: PropTypes.bool,
 };
 
 export default inject(({ auth }) => {

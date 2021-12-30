@@ -13,6 +13,7 @@ import { isMobile } from "react-device-detect";
 import NoUserSelect from "@appserver/components/utils/commonStyles";
 
 const StyledFileRow = styled(Row)`
+  padding: 0 16px;
   /* margin: 0 16px; */
   width: calc(100% - 16px);
   box-sizing: border-box;
@@ -21,6 +22,10 @@ const StyledFileRow = styled(Row)`
   padding-left: 16px;
   max-width: 484px;
 
+  .row_context-menu-wrapper {
+    width: auto;
+    display: none;
+  }
   ::after {
     max-width: 468px;
     width: calc(100% - 16px);
@@ -71,9 +76,6 @@ const StyledFileRow = styled(Row)`
     line-height: 16px;
   }
 
-  .row_context-menu-wrapper {
-    display: none;
-  }
   .upload_panel-icon {
     margin-left: auto;
     padding-left: 16px;

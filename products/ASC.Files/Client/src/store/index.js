@@ -45,6 +45,7 @@ const secondaryProgressDataStore = new SecondaryProgressDataStore();
 const primaryProgressDataStore = new PrimaryProgressDataStore();
 
 const dialogsStore = new DialogsStore(
+  store.auth,
   treeFoldersStore,
   filesStore,
   selectedFolderStore

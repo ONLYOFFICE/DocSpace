@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Backdrop from "@appserver/components/backdrop";
-import { size } from "@appserver/components/utils/device";
+import { desktop, size, tablet } from "@appserver/components/utils/device";
 import { Provider } from "@appserver/components/utils/context";
 import { isMobile, isFirefox, isMobileOnly } from "react-device-detect";
 import Article from "./sub-components/article";
@@ -20,12 +20,32 @@ import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
 import { inject, observer } from "mobx-react";
 import Selecto from "react-selecto";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 const StyledSelectoWrapper = styled.div`
   .selecto-selection {
     z-index: 200;
   }
+`;
+
+const StyledMainBar = styled.div`
+  box-sizing: border-box;
+
+  ${!isMobile
+    ? css`
+        padding-right: 24px;
+        @media ${tablet} {
+          padding-right: 16px;
+        }
+      `
+    : css`
+        margin-top: 10px;
+        padding-right: 0px;
+
+        @media ${desktop} {
+          padding-right: 10px;
+        }
+      `}
 `;
 
 function ArticleHeader() {
@@ -210,6 +230,7 @@ class PageLayout extends React.Component {
       isBackdropVisible,
       isArticlePinned,
       isDesktop,
+      isHomepage,
     } = this.props;
     let articleHeaderContent = null;
     let articleMainButtonContent = null;
@@ -351,13 +372,7 @@ class PageLayout extends React.Component {
 
                     {isSectionFilterAvailable && (
                       <>
-                        <div
-                          id="main-bar"
-                          style={{
-                            display: "grid",
-                            paddingRight: "20px",
-                          }}
-                        ></div>
+                        <StyledMainBar id="main-bar" />
                         <SubSectionFilter
                           className="section-header_filter"
                           viewAs={viewAs}
@@ -377,6 +392,7 @@ class PageLayout extends React.Component {
                           autoFocus={isMobile || isTabletView ? false : true}
                           pinned={isArticlePinned}
                           viewAs={viewAs}
+                          isHomepage={isHomepage}
                         >
                           {isSectionFilterAvailable && (
                             <SubSectionFilter className="section-body_filter">
@@ -508,6 +524,7 @@ PageLayout.propTypes = {
   isTabletView: PropTypes.bool,
   isHeaderVisible: PropTypes.bool,
   firstLoad: PropTypes.bool,
+  isHomepage: PropTypes.bool,
 };
 
 PageLayout.defaultProps = {

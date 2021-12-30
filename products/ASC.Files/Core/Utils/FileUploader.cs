@@ -130,6 +130,9 @@ namespace ASC.Web.Files.Utils
             var dao = DaoFactory.GetFileDao<T>();
             file = dao.SaveFile(file, data);
 
+            var linkDao = DaoFactory.GetLinkDao();
+            linkDao.DeleteAllLink(file.ID.ToString());
+
             FileMarker.MarkAsNew(file);
 
             if (FileConverter.EnableAsUploaded && FileConverter.MustConvert(file))
@@ -308,6 +311,9 @@ namespace ASC.Web.Files.Utils
 
             if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
             {
+                var linkDao = DaoFactory.GetLinkDao();
+                linkDao.DeleteAllLink(uploadSession.File.ID.ToString());
+
                 FileMarker.MarkAsNew(uploadSession.File);
                 ChunkedUploadSessionHolder.RemoveSession(uploadSession);
             }

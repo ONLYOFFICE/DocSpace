@@ -277,8 +277,8 @@ export function deleteFolder(folderId, deleteAfter, immediately) {
   return request(options);
 }
 
-export function createFile(folderId, title) {
-  const data = { title };
+export function createFile(folderId, title, templateId) {
+  const data = { title, templateId };
   const options = {
     method: "post",
     url: `/files/${folderId}/file`,
@@ -706,6 +706,8 @@ export function setEncryptionKeys(keys) {
   const data = {
     publicKey: keys.publicKey,
     privateKeyEnc: keys.privateKeyEnc,
+    enable: keys.enable,
+    update: keys.update,
   };
   return request({
     method: "put",
@@ -788,4 +790,47 @@ export function getPresignedUri(fileId) {
     method: "get",
     url: `files/file/${fileId}/presigned`,
   });
+}
+
+export function checkFillFormDraft(fileId) {
+  return request({
+    method: "post",
+    url: `files/masterform/${fileId}/checkfillformdraft`,
+    data: { fileId },
+  });
+}
+
+export function fileCopyAs(fileId, destTitle, destFolderId, enableExternalExt) {
+  return request({
+    method: "post",
+    url: `files/file/${fileId}/copyas`,
+    data: {
+      destTitle,
+      destFolderId,
+      enableExternalExt,
+    },
+  });
+}
+
+export function getEditHistory(fileId, doc) {
+  return request({
+    method: "get",
+    url: `files/file/${fileId}/edit/history?doc=${doc}`,
+  });
+}
+
+export function getEditDiff(fileId, version, doc) {
+  return request({
+    method: "get",
+    url: `files/file/${fileId}/edit/diff?version=${version}&doc=${doc}`,
+  });
+}
+
+export function restoreDocumentsVersion(fileId, version, doc) {
+  const options = {
+    method: "get",
+    url: `files/file/${fileId}/restoreversion?version=${version}&doc=${doc}`,
+  };
+
+  return request(options);
 }

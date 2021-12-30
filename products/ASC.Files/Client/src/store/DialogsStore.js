@@ -1,7 +1,9 @@
 import { getNewFiles } from "@appserver/common/api/files";
+import { FileAction } from "@appserver/common/constants";
 import { makeAutoObservable } from "mobx";
 
 class DialogsStore {
+  authStore;
   treeFoldersStore;
   filesStore;
   selectedFolderStore;
@@ -20,6 +22,7 @@ class DialogsStore {
   newFilesPanelVisible = false;
   conflictResolveDialogVisible = false;
   convertDialogVisible = false;
+  selectFileDialogVisible = false;
 
   removeItem = null;
   connectItem = null;
@@ -32,12 +35,13 @@ class DialogsStore {
   unsubscribe = null;
   convertItem = null;
 
-  constructor(treeFoldersStore, filesStore, selectedFolderStore) {
+  constructor(authStore, treeFoldersStore, filesStore, selectedFolderStore) {
     makeAutoObservable(this);
 
     this.treeFoldersStore = treeFoldersStore;
     this.filesStore = filesStore;
     this.selectedFolderStore = selectedFolderStore;
+    this.authStore = authStore;
   }
 
   setSharingPanelVisible = (sharingPanelVisible) => {
@@ -132,6 +136,7 @@ class DialogsStore {
       this.setNewFilesIds(null);
     }
 
+    this.authStore.settingsStore.hideArticle();
     this.newFilesPanelVisible = newFilesPanelVisible;
   };
 
@@ -169,6 +174,25 @@ class DialogsStore {
 
   setConvertItem = (item) => {
     this.convertItem = item;
+  };
+
+  setSelectFileDialogVisible = (visible) => {
+    this.selectFileDialogVisible = visible;
+  };
+
+  createMasterForm = async (fileInfo) => {
+    const { setAction } = this.filesStore.fileActionStore;
+
+    let newTitle = fileInfo.title;
+    newTitle = newTitle.substring(0, newTitle.lastIndexOf("."));
+
+    setAction({
+      type: FileAction.Create,
+      extension: "docxf",
+      id: -1,
+      title: `${newTitle}.docxf`,
+      templateId: fileInfo.id,
+    });
   };
 }
 
