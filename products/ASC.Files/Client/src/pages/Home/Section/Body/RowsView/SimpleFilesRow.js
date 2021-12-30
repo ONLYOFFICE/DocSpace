@@ -5,6 +5,7 @@ import DragAndDrop from "@appserver/components/drag-and-drop";
 import Row from "@appserver/components/row";
 import FilesRowContent from "./FilesRowContent";
 import { withRouter } from "react-router-dom";
+import { isTablet } from "react-device-detect";
 
 import withFileActions from "../../../../../HOCs/withFileActions";
 import withContextOptions from "../../../../../HOCs/withContextOptions";
@@ -111,8 +112,7 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   ${(props) =>
-    props.sectionWidth <= 1024 &&
-    props.sectionWidth > 500 &&
+    ((props.sectionWidth <= 1024 && props.sectionWidth > 500) || isTablet) &&
     `
     .row_context-menu-wrapper{
       width: min-content;

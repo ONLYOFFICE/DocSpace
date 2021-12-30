@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { isMobile } from "react-device-detect";
+import { isMobile, isTablet } from "react-device-detect";
 import moment from "moment";
 
 import Link from "@appserver/components/link";
@@ -44,10 +44,8 @@ const SimpleFilesRowContent = styled(RowContent)`
       fill: #3b72a7;
     }
   }
-
   ${(props) =>
-    props.sectionWidth <= 1024 &&
-    props.sectionWidth > 500 &&
+    ((props.sectionWidth <= 1024 && props.sectionWidth > 500) || isTablet) &&
     `
     .row-main-container-wrapper {
       display: flex;
