@@ -111,6 +111,9 @@ const StyledSimpleFilesRow = styled(Row)`
 
   .lock-file {
     cursor: ${(props) => (props.withAccess ? "pointer" : "default")};
+    svg {
+      height: 12px;
+    }
   }
 
   .favorite {
@@ -120,6 +123,7 @@ const StyledSimpleFilesRow = styled(Row)`
 
   .expandButton {
     margin-left: 12px;
+    padding-top: 8px;
   }
 
   ${(props) =>

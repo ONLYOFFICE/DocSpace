@@ -18,6 +18,7 @@ const SimpleFilesRowContent = styled(RowContent)`
   .row-main-container-wrapper {
     width: 100%;
     max-width: min-content;
+    min-width: inherit;
     margin-right: 0px;
   }
 
