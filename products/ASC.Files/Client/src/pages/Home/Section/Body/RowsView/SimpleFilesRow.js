@@ -84,10 +84,21 @@ const StyledSimpleFilesRow = styled(Row)`
     margin-right: 7px;
   }
 
+  .row_context-menu-wrapper {
+    width: inherit;
+    justify-content: space-between;
+  }
+
+  .row_content {
+    max-width: min-content;
+    min-width: inherit;
+  }
+
   .badges {
     display: flex;
     align-items: center;
     margin-top: 2px;
+    margin-bottom: 26px;
   }
 
   .badge {
@@ -116,7 +127,16 @@ const StyledSimpleFilesRow = styled(Row)`
     `
     .row_context-menu-wrapper{
       width: min-content;
+      justify-content: space-between;
     } 
+
+    .row_content {
+      max-width: none;
+    } 
+
+    .badges {
+      margin-bottom: 0px;
+    }
 
     .badge {
       margin-right: 24px;

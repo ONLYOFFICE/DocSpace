@@ -17,6 +17,8 @@ const sideColor = "#A3A9AE";
 const SimpleFilesRowContent = styled(RowContent)`
   .row-main-container-wrapper {
     width: 100%;
+    max-width: min-content;
+    margin-right: 0px;
   }
 
   .row_update-text {
@@ -50,6 +52,7 @@ const SimpleFilesRowContent = styled(RowContent)`
     .row-main-container-wrapper {
       display: flex;
       justify-content: space-between;
+      max-width: inherit;
     }
 
     .tablet-badge {
