@@ -151,6 +151,10 @@ const StyledSimpleFilesRow = styled(Row)`
         height: 16px;
       }
     }
+
+    .expandButton {
+      padding-top: 0px;
+    }
   `}
 `;
 

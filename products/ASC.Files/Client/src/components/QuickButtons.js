@@ -42,6 +42,8 @@ const QuickButtons = ({
   const sizeQuickButton = tabletViewQuickButton ? "medium" : "small";
 
   const displayShare = viewAs === "row" && (isMobile || sectionWidth <= 500);
+  const displayLock = !locked && (isMobile || sectionWidth <= 500);
+  const displayFavorite = !showFavorite && (isMobile || sectionWidth <= 500);
 
   return (
     <div className="badges additional-badges">
@@ -54,7 +56,7 @@ const QuickButtons = ({
           color={colorSharedButton}
         />
       )}
-      {fileExst && accessToEdit && !isTrashFolder && (
+      {fileExst && accessToEdit && !isTrashFolder && !displayLock && (
         <StyledIcon
           iconName={iconLock}
           className="badge lock-file icons-group"
@@ -65,7 +67,7 @@ const QuickButtons = ({
           hoverColor="#3B72A7"
         />
       )}
-      {fileExst && !isTrashFolder && (
+      {fileExst && !isTrashFolder && !displayFavorite && (
         <StyledIcon
           iconName={iconFavorite}
           className="favorite badge icons-group"
