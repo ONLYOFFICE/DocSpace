@@ -354,9 +354,9 @@ namespace ASC.Files.Core.Data
         {
             return GetFileStream(file, 0);
         }
-        public async Task<Stream> GetFileStreamAsync(File<int> file)
+        public Task<Stream> GetFileStreamAsync(File<int> file)
         {
-            return await GlobalStore.GetStore().GetReadStreamAsync(string.Empty, GetUniqFilePath(file), 0);
+            return GlobalStore.GetStore().GetReadStreamAsync(string.Empty, GetUniqFilePath(file), 0);
         }
 
         public File<int> SaveFile(File<int> file, Stream fileStream)
@@ -1157,9 +1157,9 @@ namespace ASC.Files.Core.Data
             return GlobalStore.GetStore().IsFile(GetUniqFilePath(file));
         }
 
-        public async Task<bool> IsExistOnStorageAsync(File<int> file)
+        public Task<bool> IsExistOnStorageAsync(File<int> file)
         {
-            return await GlobalStore.GetStore().IsFileAsync(string.Empty, GetUniqFilePath(file));
+            return GlobalStore.GetStore().IsFileAsync(string.Empty, GetUniqFilePath(file));
         }
 
         private const string DiffTitle = "diff.zip";

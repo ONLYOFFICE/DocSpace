@@ -546,9 +546,9 @@ namespace ASC.ElasticSearch
             }
         }
 
-        public async Task<bool> SupportAsync(T t)
+        public Task<bool> SupportAsync(T t)
         {
-            return await FactoryIndexerCommon.CheckStateAsync();
+            return FactoryIndexerCommon.CheckStateAsync();
         }
     }
 
