@@ -71,7 +71,7 @@ namespace ASC.Notify.Patterns
             base.AfterFormat(message);
         }
 
-        private static void EventCartridgeReferenceInsertion(object sender, ReferenceInsertionEventArgs e)
+        private void EventCartridgeReferenceInsertion(object sender, ReferenceInsertionEventArgs e)
         {
             if (!(e.OriginalValue is string originalString)) return;
             var lines = originalString.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);

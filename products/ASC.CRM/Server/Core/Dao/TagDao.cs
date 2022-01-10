@@ -429,7 +429,7 @@ namespace ASC.CRM.Core.Dao
             tx.Commit();
         }
 
-        private static string CorrectTag(string tag)
+        private string CorrectTag(string tag)
         {
             return tag == null
                        ? null

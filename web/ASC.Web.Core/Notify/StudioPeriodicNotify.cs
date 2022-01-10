@@ -119,7 +119,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                     Func<string> greenButtonText = () => string.Empty;
 
-                    static string blueButtonText() => WebstudioNotifyPatternResource.ButtonRequestCallButton;
+                    string blueButtonText() => WebstudioNotifyPatternResource.ButtonRequestCallButton;
                     var greenButtonUrl = string.Empty;
 
                     Func<string> tableItemText1 = () => string.Empty;
@@ -156,17 +156,17 @@ namespace ASC.Web.Studio.Core.Notify
 
                     Func<string> tableItemLearnMoreText1 = () => string.Empty;
 
-                    static string tableItemLearnMoreText2() => string.Empty;
+                    string tableItemLearnMoreText2() => string.Empty;
 
-                    static string tableItemLearnMoreText3() => string.Empty;
+                    string tableItemLearnMoreText3() => string.Empty;
 
-                    static string tableItemLearnMoreText4() => string.Empty;
+                    string tableItemLearnMoreText4() => string.Empty;
 
-                    static string tableItemLearnMoreText5() => string.Empty;
+                    string tableItemLearnMoreText5() => string.Empty;
 
-                    static string tableItemLearnMoreText6() => string.Empty;
+                    string tableItemLearnMoreText6() => string.Empty;
 
-                    static string tableItemLearnMoreText7() => string.Empty;
+                    string tableItemLearnMoreText7() => string.Empty;
 
                     var tableItemLearnMoreUrl1 = string.Empty;
                     var tableItemLearnMoreUrl2 = string.Empty;
@@ -518,7 +518,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                     Func<string> greenButtonText = () => string.Empty;
 
-                    static string blueButtonText() => WebstudioNotifyPatternResource.ButtonRequestCallButton;
+                    string blueButtonText() => WebstudioNotifyPatternResource.ButtonRequestCallButton;
                     var greenButtonUrl = string.Empty;
 
                     Func<string> tableItemText1 = () => string.Empty;
@@ -555,17 +555,17 @@ namespace ASC.Web.Studio.Core.Notify
 
                     Func<string> tableItemLearnMoreText1 = () => string.Empty;
 
-                    static string tableItemLearnMoreText2() => string.Empty;
+                    string tableItemLearnMoreText2() => string.Empty;
 
-                    static string tableItemLearnMoreText3() => string.Empty;
+                    string tableItemLearnMoreText3() => string.Empty;
 
-                    static string tableItemLearnMoreText4() => string.Empty;
+                    string tableItemLearnMoreText4() => string.Empty;
 
-                    static string tableItemLearnMoreText5() => string.Empty;
+                    string tableItemLearnMoreText5() => string.Empty;
 
-                    static string tableItemLearnMoreText6() => string.Empty;
+                    string tableItemLearnMoreText6() => string.Empty;
 
-                    static string tableItemLearnMoreText7() => string.Empty;
+                    string tableItemLearnMoreText7() => string.Empty;
 
                     var tableItemLearnMoreUrl1 = string.Empty;
                     var tableItemLearnMoreUrl2 = string.Empty;

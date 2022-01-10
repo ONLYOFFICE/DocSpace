@@ -88,7 +88,7 @@ namespace ASC.Web.Studio.Core.Notify
             }
         }
 
-        private static void NotifyClientRegisterCallback(Context context, INotifyClient client)
+        private void NotifyClientRegisterCallback(Context context, INotifyClient client)
         {
             #region url correction
 
@@ -250,7 +250,7 @@ namespace ASC.Web.Studio.Core.Notify
             #endregion
         }
 
-        private static void BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope scope)
+        private void BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope scope)
         {
             var aid = Guid.Empty;
             var aname = string.Empty;

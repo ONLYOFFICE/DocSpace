@@ -72,7 +72,7 @@ namespace ASC.Notify.Textile
             message.Body = body;
         }
 
-        private static string EvalLink(Match match)
+        private string EvalLink(Match match)
         {
             if (match.Success)
             {
@@ -88,7 +88,7 @@ namespace ASC.Notify.Textile
             return match.Value;
         }
 
-        private static string ArgMatchReplace(Match match)
+        private string ArgMatchReplace(Match match)
         {
             return match.Result("${arg}");
         }
