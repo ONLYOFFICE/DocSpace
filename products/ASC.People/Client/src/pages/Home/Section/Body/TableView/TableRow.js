@@ -7,6 +7,7 @@ import withContent from "../../../../../HOCs/withContent";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 import styled from "styled-components";
+import Badges from "../../../../../components/Badges";
 
 const StyledPeopleRow = styled(TableRow)`
   .table-container_cell {
@@ -73,6 +74,7 @@ const PeopleTableRow = (props) => {
         >
           {displayName}
         </Link>
+        <Badges statusType={statusType} />
       </TableCell>
       <TableCell>{groups}</TableCell>
       <TableCell>
