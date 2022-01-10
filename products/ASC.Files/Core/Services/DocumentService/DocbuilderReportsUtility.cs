@@ -63,13 +63,13 @@ namespace ASC.Web.Files.Services.DocumentService
         public string Script { get; }
         public int ReportType { get; }
         public ReportOrigin Origin { get; }
-        public Action<ReportState, string> SaveFileAction { get; }
+        public Func<ReportState, string, Task> SaveFileAction { get; }
         public object Obj { get; }
         public int TenantId { get; }
         public Guid UserId { get; }
 
         public ReportStateData(string fileName, string tmpFileName, string script, int reportType, ReportOrigin origin,
-            Action<ReportState, string> saveFileAction, object obj,
+            Func<ReportState, string, Task> saveFileAction, object obj,
             int tenantId, Guid userId)
         {
             FileName = fileName;
@@ -98,7 +98,7 @@ namespace ASC.Web.Files.Services.DocumentService
         internal string BuilderKey { get; set; }
         internal string Script { get; set; }
         internal string TmpFileName { get; set; }
-        internal Action<ReportState, string> SaveFileAction { get; set; }
+        internal Func<ReportState, string, Task> SaveFileAction { get; set; }
 
         internal int TenantId { get; set; }
         internal Guid UserId { get; set; }
