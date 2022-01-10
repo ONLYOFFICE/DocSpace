@@ -52,7 +52,7 @@ const Badges = ({
 
   const sizeBadge = tabletViewBadge ? "medium" : "small";
 
-  const lineHeightBadge = tabletViewBadge ? "1.78" : "1.34";
+  const lineHeightBadge = tabletViewBadge ? "1.46" : "1.34";
 
   const paddingBadge = tabletViewBadge ? "0 5px" : "0 3px";
 
