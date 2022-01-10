@@ -172,16 +172,15 @@ namespace ASC.Core.Encryption
 
             if (num < numberOfNonAlphanumericCharacters)
             {
-                var random = new Random();
                 for (var j = 0; j < numberOfNonAlphanumericCharacters - num; j++)
                 {
                     int num3;
                     do
                     {
-                        num3 = random.Next(0, length);
+                        num3 = RandomNumberGenerator.GetInt32(0, length);
                     }
                     while (!char.IsLetterOrDigit(array2[num3]));
-                    array2[num3] = punctuations[random.Next(0, punctuations.Length)];
+                    array2[num3] = punctuations[RandomNumberGenerator.GetInt32(0, punctuations.Length)];
                 }
             }
 

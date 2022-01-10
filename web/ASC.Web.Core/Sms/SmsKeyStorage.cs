@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Security.Cryptography;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -120,7 +121,7 @@ namespace ASC.Web.Core.Sms
                     return false;
                 }
 
-                key = new Random().Next((int)Math.Pow(10, KeyLength - 1), (int)Math.Pow(10, KeyLength)).ToString(CultureInfo.InvariantCulture);
+                key = RandomNumberGenerator.GetInt32((int)Math.Pow(10, KeyLength - 1), (int)Math.Pow(10, KeyLength)).ToString(CultureInfo.InvariantCulture);
                 phoneKeys[key] = DateTime.UtcNow;
 
                 KeyCache.Insert(cacheKey, phoneKeys, DateTime.UtcNow.Add(StoreInterval));

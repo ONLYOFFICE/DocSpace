@@ -27,6 +27,7 @@
 using System;
 using System.Globalization;
 using System.Net.Mail;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -294,16 +295,14 @@ namespace ASC.Web.Core.Users
             return Guid.NewGuid().ToString();
         }
 
-        private static readonly Random Rnd = new Random();
-
         internal static string GeneratePassword(int minLength, int maxLength, string noise)
         {
-            var length = Rnd.Next(minLength, maxLength + 1);
+            var length = RandomNumberGenerator.GetInt32(minLength, maxLength + 1);
 
             var pwd = string.Empty;
             while (length-- > 0)
             {
-                pwd += noise.Substring(Rnd.Next(noise.Length - 1), 1);
+                pwd += noise.Substring(RandomNumberGenerator.GetInt32(noise.Length - 1), 1);
             }
             return pwd;
         }

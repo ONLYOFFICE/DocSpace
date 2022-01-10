@@ -32,6 +32,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -776,9 +777,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
             for (var i = 0; i < MAX_RETRIES; i++)
             {
-                var random = new Random();
-
-                millisecondsTimeout = Math.Min(Convert.ToInt32(Math.Pow(2, i)) + random.Next(0, 1000), 32 * 1000);
+                millisecondsTimeout = Math.Min(Convert.ToInt32(Math.Pow(2, i)) + RandomNumberGenerator.GetInt32(1000), 32 * 1000);
 
                 try
                 {
