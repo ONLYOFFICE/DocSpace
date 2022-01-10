@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import IconButton from "@appserver/components/icon-button";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
-import { isMobile } from "react-device-detect";
+import { isMobile, isTablet } from "react-device-detect";
 
 export const StyledIcon = styled(IconButton)`
   ${commonIconsStyles}
@@ -38,7 +38,8 @@ const QuickButtons = ({
     ? "/static/images/file.actions.favorite.react.svg"
     : "/static/images/favorite.react.svg";
 
-  const tabletViewQuickButton = sectionWidth > 500 && sectionWidth <= 1024;
+  const tabletViewQuickButton =
+    (sectionWidth > 500 && sectionWidth <= 1024) || isTablet;
   const sizeQuickButton = tabletViewQuickButton ? "medium" : "small";
 
   const displayShare = viewAs === "row" && (isMobile || sectionWidth <= 500);

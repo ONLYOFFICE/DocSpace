@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Badge from "@appserver/components/badge";
 import IconButton from "@appserver/components/icon-button";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import { isTablet } from "react-device-detect";
 
 export const StyledIcon = styled(IconButton)`
   ${commonIconsStyles}
@@ -46,13 +47,16 @@ const Badges = ({
 
   const contentNewItems = newItems > 999 ? "999+" : newItems;
 
-  const tabletViewBadge = sectionWidth > 500 && sectionWidth <= 1024;
+  const tabletViewBadge =
+    (sectionWidth > 500 && sectionWidth <= 1024) || isTablet;
 
   const sizeBadge = tabletViewBadge ? "medium" : "small";
 
   const lineHeightBadge = tabletViewBadge ? "1.78" : "1.34";
 
   const paddingBadge = tabletViewBadge ? "0 5px" : "0 3px";
+
+  const fontSizeBadge = tabletViewBadge ? "11px" : "9px";
 
   return fileExst ? (
     <div className="badges additional-badges">
@@ -97,7 +101,7 @@ const Badges = ({
           backgroundColor="#A3A9AE"
           borderRadius="11px"
           color="#FFFFFF"
-          fontSize="9px"
+          fontSize={fontSizeBadge}
           fontWeight={800}
           label={t("VersionBadge:Version", { version: countVersions })}
           maxWidth="50px"
@@ -113,7 +117,7 @@ const Badges = ({
           backgroundColor="#ED7309"
           borderRadius="11px"
           color="#FFFFFF"
-          fontSize="9px"
+          fontSize={fontSizeBadge}
           fontWeight={800}
           label={t("New")}
           maxWidth="50px"
@@ -131,7 +135,7 @@ const Badges = ({
         backgroundColor="#ED7309"
         borderRadius="11px"
         color="#FFFFFF"
-        fontSize="9px"
+        fontSize={fontSizeBadge}
         fontWeight={800}
         label={contentNewItems}
         maxWidth="50px"
