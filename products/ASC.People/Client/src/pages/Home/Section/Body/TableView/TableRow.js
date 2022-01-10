@@ -21,6 +21,14 @@ const StyledPeopleRow = styled(TableRow)`
       margin-left: -4px;
     }
   }
+
+  .link-with-dropdown-group {
+    margin-right: 12px;
+  }
+
+  .table-cell_username {
+    margin-right: 12px;
+  }
 `;
 
 const PeopleTableRow = (props) => {
@@ -76,6 +84,7 @@ const PeopleTableRow = (props) => {
           isTextOverflow
           href={`/products/people/view/${userName}`}
           onClick={onUserNameClick}
+          className="table-cell_username"
         >
           {displayName}
         </Link>

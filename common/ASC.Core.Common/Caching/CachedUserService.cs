@@ -61,7 +61,7 @@ namespace ASC.Core.Caching
             ICacheNotify<UserInfoCacheItem> cacheUserInfoItem,
             ICacheNotify<UserPhotoCacheItem> cacheUserPhotoItem,
             ICacheNotify<GroupCacheItem> cacheGroupCacheItem,
-            ICacheNotify<UserGroupRefCacheItem> cacheUserGroupRefItem, 
+            ICacheNotify<UserGroupRefCacheItem> cacheUserGroupRefItem,
             ICache cache)
         {
             TrustInterval = new TrustInterval();
@@ -302,6 +302,10 @@ namespace ASC.Core.Caching
         public UserInfo GetUserByPasswordHash(int tenant, string login, string passwordHash)
         {
             return Service.GetUserByPasswordHash(tenant, login, passwordHash);
+        }
+        public IEnumerable<UserInfo> GetUsersAllTenants(IEnumerable<Guid> userIds)
+        {
+            return Service.GetUsersAllTenants(userIds);
         }
 
         public UserInfo SaveUser(int tenant, UserInfo user)

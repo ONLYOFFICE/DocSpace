@@ -61,8 +61,32 @@ class FilesActionStore {
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
-    const { filter, fetchFiles } = this.filesStore;
-    fetchFiles(this.selectedFolderStore.id, filter, true, true).finally(() => {
+    const {
+      filter,
+      fetchFiles,
+      isEmptyLastPageAfterOperation,
+      resetFilterPage,
+    } = this.filesStore;
+    let newFilter;
+
+    const selectionFilesLength =
+      fileIds && folderIds
+        ? fileIds.length + folderIds.length
+        : fileIds?.length || folderIds?.length;
+
+    if (
+      selectionFilesLength &&
+      isEmptyLastPageAfterOperation(selectionFilesLength)
+    ) {
+      newFilter = resetFilterPage();
+    }
+
+    fetchFiles(
+      this.selectedFolderStore.id,
+      newFilter ? newFilter : filter,
+      true,
+      true
+    ).finally(() => {
       this.uploadDataStore.clearActiveOperations(fileIds, folderIds);
       setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
     });
@@ -312,7 +336,13 @@ class FilesActionStore {
           setTreeFolders(treeFolders);
         }
       }
-      setAction({ type: null, id: null, extension: null });
+      setAction({
+        type: null,
+        id: null,
+        extension: null,
+        title: "",
+        templateId: null,
+      });
       setIsLoading(false);
       type === FileAction.Rename &&
         this.onSelectItem({
@@ -916,11 +946,7 @@ class FilesActionStore {
         label: t("Translations:Restore"),
         onClick: () => setMoveToPanelVisible(true),
       })
-      .set("delete", deleteOption)
-      .set("emptyRecycleBin", {
-        label: t("EmptyRecycleBin"),
-        onClick: () => setEmptyTrashDialogVisible(true),
-      });
+      .set("delete", deleteOption);
     return this.convertToArray(itemsCollection);
   };
   getHeaderMenu = (t) => {
