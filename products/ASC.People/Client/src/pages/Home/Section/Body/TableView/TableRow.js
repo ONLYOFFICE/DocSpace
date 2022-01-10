@@ -44,22 +44,7 @@ const PeopleTableRow = (props) => {
     onUserNameClick,
     isAdmin,
   } = props;
-  const { displayName, email, role, statusType, userName } = item;
-
-  const getRoleTranslation = () => {
-    switch (role) {
-      case "owner":
-        return t("Common:Owner");
-      case "admin":
-        return t("Administrator");
-      case "guest":
-        return t("Common:Guest");
-      default:
-        return t("Common:User");
-    }
-  };
-
-  const userRole = getRoleTranslation();
+  const { displayName, email, statusType, userName, position } = item;
 
   const nameColor = statusType === "pending" ? "#A3A9AE" : "#333333";
   const sideInfoColor = statusType === "pending" ? "#D0D5DA" : "#A3A9AE";
@@ -93,20 +78,20 @@ const PeopleTableRow = (props) => {
       <TableCell>
         <Text
           type="page"
-          title={userRole}
+          title={position}
           fontSize="12px"
           fontWeight={400}
           color={sideInfoColor}
           truncate
         >
-          {userRole}
+          {position}
         </Text>
       </TableCell>
       <TableCell>
         <Text
           style={{ display: "none" }} //TODO:
           type="page"
-          title={userRole}
+          //title={userRole}
           fontSize="12px"
           fontWeight={400}
           color={sideInfoColor}
