@@ -56,6 +56,10 @@ const SimpleFilesRowContent = styled(RowContent)`
       max-width: inherit;
     }
 
+    .badges {
+      flex-direction: row-reverse;
+    }
+
     .tablet-badge {
       margin-top: 5px;
     }

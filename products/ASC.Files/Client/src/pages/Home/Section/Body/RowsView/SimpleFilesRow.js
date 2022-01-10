@@ -85,8 +85,9 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .row_context-menu-wrapper {
-    width: inherit;
+    width: fit-content;
     justify-content: space-between;
+    flex: 1 1 auto;
   }
 
   .row_content {
@@ -123,7 +124,7 @@ const StyledSimpleFilesRow = styled(Row)`
 
   .expandButton {
     margin-left: 12px;
-    padding-top: 8px;
+    padding-top: 7px;
   }
 
   ${(props) =>
@@ -132,10 +133,12 @@ const StyledSimpleFilesRow = styled(Row)`
     .row_context-menu-wrapper{
       width: min-content;
       justify-content: space-between;
+      flex: 0 1 auto;
     } 
 
     .row_content {
       max-width: none;
+      min-width: 0;
     } 
 
     .badges {
