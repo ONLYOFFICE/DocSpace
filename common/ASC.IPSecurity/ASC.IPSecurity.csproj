@@ -24,6 +24,6 @@
     <ProjectReference Include="..\ASC.Core.Common\ASC.Core.Common.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Protobuf Include="protos\IPRestrictionItem.proto" />
+    <Protobuf Include="protos\ip_restriction_item.proto" />
   </ItemGroup>
 </Project>

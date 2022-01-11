@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="proto\WebhookRequest.proto" />
+    <None Remove="proto\webhook_request.proto" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="proto\WebhookRequest.proto" />
+    <Protobuf Include="proto\webhook_request.proto" />
   </ItemGroup>
 
 </Project>

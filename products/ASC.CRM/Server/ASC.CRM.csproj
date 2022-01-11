@@ -181,7 +181,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="proto\ContactPhotoManagerCacheItem.proto" />
+    <Protobuf Include="proto\contact_photo_manager_cache_item.proto" />
   </ItemGroup>
 
   <ItemGroup>

@@ -8,13 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="proto\BoxCacheItem.proto" />
-    <None Remove="proto\DropboxCacheItem.proto" />
-    <None Remove="proto\GoogleDriveCacheItem.proto" />
-    <None Remove="proto\OneDriveCacheItem.proto" />
-    <None Remove="proto\ProviderAccountCacheItem.proto" />
-    <None Remove="proto\SharePointProviderCacheItem.proto" />
-    <None Remove="proto\ThumbnailRequest.proto" />
+    <None Remove="proto\box_cache_item.proto" />
+    <None Remove="proto\dropbox_cache_item.proto" />
+    <None Remove="proto\google_drive_cache_item.proto" />
+    <None Remove="proto\one_drive_cache_item.proto" />
+    <None Remove="proto\provider_account_cache_item.proto" />
+    <None Remove="proto\share_point_provider_cache_item.proto" />
+    <None Remove="proto\thumbnail_request.proto" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,13 +38,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="proto\ThumbnailRequest.proto" />
-    <Protobuf Include="proto\BoxCacheItem.proto" />
-    <Protobuf Include="proto\DropboxCacheItem.proto" />
-    <Protobuf Include="proto\GoogleDriveCacheItem.proto" />
-    <Protobuf Include="proto\OneDriveCacheItem.proto" />
-    <Protobuf Include="proto\ProviderAccountCacheItem.proto" />
-    <Protobuf Include="proto\SharePointProviderCacheItem.proto" />
+    <Protobuf Include="proto\thumbnail_request.proto" />
+    <Protobuf Include="proto\box_cache_item.proto" />
+    <Protobuf Include="proto\dropbox_cache_item.proto" />
+    <Protobuf Include="proto\google_drive_cache_item.proto" />
+    <Protobuf Include="proto\one_drive_cache_item.proto" />
+    <Protobuf Include="proto\provider_account_cache_item.proto" />
+    <Protobuf Include="proto\share_point_provider_cache_item.proto" />
   </ItemGroup>
 
   <ItemGroup>

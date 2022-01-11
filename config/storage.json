@@ -13,7 +13,7 @@
         "property": [
           {
             "name": "$STORAGE_ROOT",
-            "value": "..\\Data\\"
+            "value": "C:\\Works\\Data\\"
           }
         ]
       }
