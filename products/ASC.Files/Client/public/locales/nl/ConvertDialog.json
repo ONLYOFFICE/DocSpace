@@ -5,5 +5,6 @@
   "ConvertAndOpenTitle": "Converteren en document openen",
   "HideMessage": "Laat dit bericht niet meer zien",
   "SaveOriginalFormatMessage": "Bewaar de bestandskopie in het oorspronkelijke formaat",
-  "FileDestination": "De kopie van het bestand zal worden aangemaakt in de <bold>{{folderTitle}}</bold>"
+  "FileDestination": "De kopie van het bestand zal worden aangemaakt in de <bold>{{folderTitle}}</bold>",
+  "FileConversionCompleted": "Het nieuwe bestand '{{fileTitle}}' is aangemaakt in '{{folderTitle}}'"
 }

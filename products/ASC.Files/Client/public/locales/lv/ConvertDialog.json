@@ -4,5 +4,6 @@
   "ConversionTitle": "Dokumenta augšupielāde",
   "ConvertAndOpenTitle": "Konvertējiet un atveriet dokumentu",
   "HideMessage": "Nerādīt šo ziņojumu vēlreiz",
-  "SaveOriginalFormatMessage": "Saglabājiet faila kopiju sākotnējā formātā"
+  "SaveOriginalFormatMessage": "Saglabājiet faila kopiju sākotnējā formātā",
+  "FileConversionCompleted": "Jauns '{{fileTitle}}' fails ir izveidots '{{folderTitle}}'"
 }

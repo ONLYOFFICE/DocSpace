@@ -5,5 +5,6 @@
   "ConvertAndOpenTitle": "Konverzija in odpiranje dokumenta",
   "HideMessage": "Ne prikazuj več tega sporočila",
   "SaveOriginalFormatMessage": "Shranite kopijo datoteke v izvirni obliki",
-  "FileDestination": "Kopija datoteke bo ustvarjena v mapi <bold>{{folderTitle}}</bold>"
+  "FileDestination": "Kopija datoteke bo ustvarjena v mapi <bold>{{folderTitle}}</bold>",
+  "FileConversionCompleted": "Nova '{{fileTitle}}' datoteka je ustvarjena v '{{folderTitle}}'"
 }

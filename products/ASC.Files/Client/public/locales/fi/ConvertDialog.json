@@ -5,5 +5,6 @@
   "ConvertAndOpenTitle": "Muunna ja avaa asiakirja",
   "HideMessage": "Älä näytä tätä viestiä enää",
   "SaveOriginalFormatMessage": "Tallenna kopio tiedostosta alkuperäisessä muodossa",
-  "FileDestination": "Tiedoston kopio luodaan <bold>{{folderTitle}}</bold> kansioon"
+  "FileDestination": "Tiedoston kopio luodaan <bold>{{folderTitle}}</bold> kansioon",
+  "FileConversionCompleted": "Uusi tiedosto '{{fileTitle}}' on luotu kohteeseen '{{folderTitle}}'"
 }
