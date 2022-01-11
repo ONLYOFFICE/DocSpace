@@ -277,6 +277,18 @@ class UploadDataStore {
   };
 
   startConversion = async () => {
+    const {
+      isRecentFolder,
+      isFavoritesFolder,
+      isShareFolder,
+    } = this.treeFoldersStore;
+
+    const { storeOriginalFiles } = this.settingsStore;
+
+    const needToRefreshFilesList =
+      (!isRecentFolder && !isFavoritesFolder && !isShareFolder) ||
+      !storeOriginalFiles;
+
     runInAction(() => (this.converted = false));
     this.setConversionPercent(0);
 
@@ -339,10 +351,11 @@ class UploadDataStore {
             }
           });
 
-          this.settingsStore.storeOriginalFiles && this.refreshFiles(file);
+          storeOriginalFiles && this.refreshFiles(file);
+
           if (fileInfo) {
             file.fileInfo = fileInfo;
-            this.refreshFiles(file);
+            needToRefreshFilesList && this.refreshFiles(file);
           }
           const percent = this.getConversationPercent(index + 1);
           this.setConversionPercent(percent, !!error);
