@@ -40,6 +40,7 @@ const Header = styled.header`
 
   .header-logo-wrapper {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    height: 26px;
 
     ${NoUserSelect}
     ${(props) =>
@@ -87,25 +88,12 @@ const Header = styled.header`
 
   .header-logo-icon {
     width: ${(props) => (props.isPersonal ? "220px" : "146px")};
-    ${(props) => props.isPersonal && `margin-left: 20px;`}
     height: 24px;
     position: relative;
-    padding: ${(props) => (!props.isPersonal ? "0 20px 0 6px" : "0")};
-    margin-left: ${(props) => (props.needNavMenu ? "0" : "10px")};
+    padding-right: 20px;
+    padding-left: ${(props) =>
+      !props.needNavMenu || props.isPersonal ? "20px" : "4px"};
     cursor: pointer;
-
-    @media ${tablet} {
-      ${(props) => props.isPersonal && `margin-left: 16px;`}
-    }
-
-    @media (max-width: 620px) {
-      ${(props) =>
-        !props.isPersonal &&
-        css`
-          display: ${(props) => (props.module ? "none" : "block")};
-          padding: 3px 20px 0 6px;
-        `}
-    }
   }
   .mobile-short-logo {
     width: 146px;
@@ -175,7 +163,7 @@ const HeaderComponent = ({
   const handleItemClick = (e) => {
     onItemClick(e);
     backdropClick();
-  }
+  };
 
   const numberOfModules = mainModules.filter((item) => !item.separator).length;
   const needNavMenu = currentProductId !== "home";

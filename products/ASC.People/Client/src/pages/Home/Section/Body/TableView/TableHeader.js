@@ -43,7 +43,7 @@ class PeopleTableHeader extends React.Component {
       {
         key: "Phone",
         title: t("Common:Phone"),
-        enable: true,
+        enable: false,
         resizable: true,
         onChange: this.onColumnChange,
       },
