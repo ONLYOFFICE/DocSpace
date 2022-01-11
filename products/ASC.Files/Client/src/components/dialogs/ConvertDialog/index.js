@@ -55,7 +55,7 @@ const ConvertDialogComponent = (props) => {
         action: "convert",
       };
       item.fileInfo = convertItem;
-      convertFile(item);
+      convertFile(item, t);
     } else {
       hideMessage && hideConfirmConvert();
       convertUploadedFiles(t);
