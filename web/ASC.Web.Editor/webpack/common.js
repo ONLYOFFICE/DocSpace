@@ -9,6 +9,7 @@ module.exports = {
     filename: "static/js/[name].[contenthash].bundle.js",
     publicPath: "auto",
     chunkFilename: "static/js/[id].[contenthash].js",
+    //assetModuleFilename: "static/images/[hash][ext][query]",
   },
   resolve: { ...resolvers },
   plugins: [...plugins.client],
