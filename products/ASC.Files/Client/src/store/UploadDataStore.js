@@ -285,9 +285,8 @@ class UploadDataStore {
 
     const { storeOriginalFiles } = this.settingsStore;
 
-    const needToRefreshFilesList =
-      (!isRecentFolder && !isFavoritesFolder && !isShareFolder) ||
-      !storeOriginalFiles;
+    const isSortedFolder = isRecentFolder || isFavoritesFolder || isShareFolder;
+    const needToRefreshFilesList = !isSortedFolder || !storeOriginalFiles;
 
     runInAction(() => (this.converted = false));
     this.setConversionPercent(0);
@@ -359,19 +358,23 @@ class UploadDataStore {
             needToRefreshFilesList && this.refreshFiles(file);
           }
 
-          if (file && (isRecentFolder || isFavoritesFolder || isShareFolder)) {
+          if (file && isSortedFolder) {
             const folderId = file.fileInfo?.folderId;
             const fileTitle = file.fileInfo?.title;
 
             folderId &&
-              getFolderInfo(folderId).then((folderInfo) =>
-                toastr.success(
-                  t("FileConversionCompleted", {
-                    fileTitle,
-                    folderTitle: folderInfo.title,
-                  })
+              getFolderInfo(folderId)
+                .then((folderInfo) =>
+                  toastr.success(
+                    t("FileConversionCompleted", {
+                      fileTitle,
+                      folderTitle: folderInfo.title,
+                    })
+                  )
                 )
-              );
+                .catch((error) =>
+                  console.log("error getting folder information", error)
+                );
           }
           const percent = this.getConversationPercent(index + 1);
           this.setConversionPercent(percent, !!error);
@@ -1067,8 +1070,8 @@ class UploadDataStore {
           true,
           true
         ).finally(() => {
-            this.clearActiveOperations(fileIds, folderIds);
-            setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+          this.clearActiveOperations(fileIds, folderIds);
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         });
       } else {
         this.clearActiveOperations(fileIds, folderIds);
