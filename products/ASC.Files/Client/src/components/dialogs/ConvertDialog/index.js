@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router";
 import ModalDialogContainer from "../ModalDialogContainer";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
 import Checkbox from "@appserver/components/checkbox";
-import { withTranslation } from "react-i18next";
+import { withTranslation, Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import Loaders from "@appserver/common/components/Loaders";
 
@@ -22,9 +22,22 @@ const ConvertDialogComponent = (props) => {
     storeOriginalFiles,
     convertUploadedFiles,
     setConvertDialogVisible,
+    rootFoldersTitle,
+    isRecentFolder,
+    isFavoritesFolder,
+    isShareFolder,
   } = props;
 
+  let rootFolderTitle = "";
   const convertSingleFile = !!convertItem;
+
+  if (
+    convertSingleFile &&
+    (isRecentFolder || isFavoritesFolder || isShareFolder)
+  ) {
+    rootFolderTitle = rootFoldersTitle[convertItem.rootFolderType];
+  }
+
   const [hideMessage, setHideMessage] = useState(false);
 
   const onChangeFormat = () =>
@@ -77,6 +90,16 @@ const ConvertDialogComponent = (props) => {
               isChecked={storeOriginalFiles}
               onChange={onChangeFormat}
             />
+            {convertSingleFile && rootFolderTitle && (
+              <div className="convert_dialog_file-destination">
+                <Trans
+                  i18nKey="FileDestination"
+                  ns="ConvertDialog"
+                  values={{ folderTitle: rootFolderTitle }}
+                  components={{ bold: <strong /> }}
+                />
+              </div>
+            )}
             {!convertSingleFile && (
               <Checkbox
                 className="convert_dialog_checkbox"
@@ -123,7 +146,13 @@ export default inject(
     settingsStore,
     selectedFolderStore,
   }) => {
-    const { setTreeFolders } = treeFoldersStore;
+    const {
+      setTreeFolders,
+      rootFoldersTitle,
+      isRecentFolder,
+      isFavoritesFolder,
+      isShareFolder,
+    } = treeFoldersStore;
     const { convertUploadedFiles, convertFile } = uploadDataStore;
     const {
       storeOriginalFiles,
@@ -148,6 +177,10 @@ export default inject(
       storeOriginalFiles,
       convertUploadedFiles,
       setConvertDialogVisible,
+      rootFoldersTitle,
+      isRecentFolder,
+      isFavoritesFolder,
+      isShareFolder,
     };
   }
 )(withRouter(observer(ConvertDialog)));

@@ -111,7 +111,8 @@ const ModalDialogContainer = styled(ModalDialog)`
         white-space: normal;
       }
 
-      .convert_dialog_checkbox {
+      .convert_dialog_checkbox,
+      .convert_dialog_file-destination {
         padding-top: 16px;
       }
     }
