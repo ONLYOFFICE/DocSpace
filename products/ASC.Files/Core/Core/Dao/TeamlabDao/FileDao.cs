@@ -1507,7 +1507,7 @@ namespace ASC.Files.Core.Data
             return dbFile;
         }
 
-        internal protected async Task<DbFile> InitDocumentAsync(DbFile dbFile)
+        internal protected Task<DbFile> InitDocumentAsync(DbFile dbFile)
         {
             if (!FactoryIndexer.CanIndexByContent(dbFile))
             {
@@ -1515,9 +1515,14 @@ namespace ASC.Files.Core.Data
                 {
                     Data = Convert.ToBase64String(Encoding.UTF8.GetBytes(""))
                 };
-                return dbFile;
+                return Task.FromResult(dbFile);
             }
 
+            return InernalInitDocumentAsync(dbFile);
+        }
+
+        private async Task<DbFile> InernalInitDocumentAsync(DbFile dbFile)
+        {
             var file = ServiceProvider.GetService<File<int>>();
             file.ID = dbFile.Id;
             file.Title = dbFile.Title;

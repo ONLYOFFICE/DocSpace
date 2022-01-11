@@ -273,11 +273,16 @@ namespace ASC.ElasticSearch
             }
         }
 
-        public async Task IndexAsync(List<T> data, bool immediately = true, int retry = 0)
+        public Task IndexAsync(List<T> data, bool immediately = true, int retry = 0)
         {
             var t = ServiceProvider.GetService<T>();
-            if (!Support(t) || !data.Any()) return;
+            if (!Support(t) || !data.Any()) return Task.CompletedTask;
 
+            return InternalIndexAsync(data, immediately, retry);
+        }
+
+        private async Task InternalIndexAsync(List<T> data, bool immediately, int retry)
+        {
             try
             {
                 await Indexer.IndexAsync(data, immediately).ConfigureAwait(false);
@@ -628,7 +633,7 @@ namespace ASC.ElasticSearch
             }
         }
 
-        public async Task<bool> CheckStateAsync(bool cacheState = true)
+        public Task<bool> CheckStateAsync(bool cacheState = true)
         {
             const string key = "elasticsearch";
 
@@ -637,10 +642,15 @@ namespace ASC.ElasticSearch
                 var cacheValue = cache.Get<string>(key);
                 if (!string.IsNullOrEmpty(cacheValue))
                 {
-                    return Convert.ToBoolean(cacheValue);
+                    return Task.FromResult(Convert.ToBoolean(cacheValue));
                 }
             }
 
+            return InternalCheckStateAsync(cacheState, key);
+        }
+
+        private async Task<bool> InternalCheckStateAsync(bool cacheState, string key)
+        {
             var cacheTime = DateTime.UtcNow.AddMinutes(15);
 
             try

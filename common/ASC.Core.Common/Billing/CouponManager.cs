@@ -114,10 +114,14 @@ namespace ASC.Core.Common.Billing
             }
         }
 
-        internal async Task<IEnumerable<AvangateProduct>> GetProducts()
+        internal Task<IEnumerable<AvangateProduct>> GetProducts()
         {
-            if (Products != null) return Products;
+            if (Products != null) return Task.FromResult(Products);
+            return InternalGetProducts();
+        }
 
+        private async Task<IEnumerable<AvangateProduct>> InternalGetProducts()
+        {
             await SemaphoreSlim.WaitAsync();
 
             if (Products != null)

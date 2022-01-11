@@ -133,10 +133,16 @@ namespace ASC.Core.Common.EF
                 }
             }
         }
-        public async ValueTask DisposeAsync()
-        {
-            if (Context == null) return;
 
+        public ValueTask DisposeAsync()
+        {
+            if (Context == null) return ValueTask.CompletedTask;
+
+            return InternalDisposeAsync();
+        }
+
+        private async ValueTask InternalDisposeAsync()
+        {
             foreach (var c in Context)
             {
                 if (c != null)

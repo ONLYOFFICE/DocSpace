@@ -280,11 +280,15 @@ namespace ASC.Data.Backup.Tasks
             Logger.DebugFormat("complete mysql file {0}", file);
         }
 
-        protected async Task RunMysqlFile(Stream stream, string delimiter = ";")
+        protected Task RunMysqlFile(Stream stream, string delimiter = ";")
         {
+            if (stream == null) return Task.CompletedTask;
 
-            if (stream == null) return;
+            return InternalRunMysqlFile(stream, delimiter);
+        }
 
+        private async Task InternalRunMysqlFile(Stream stream, string delimiter)
+        {
             using var reader = new StreamReader(stream, Encoding.UTF8);
             string commandText;
 
