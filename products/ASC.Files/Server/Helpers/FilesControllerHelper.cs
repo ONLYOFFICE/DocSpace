@@ -370,7 +370,8 @@ namespace ASC.Files.Helpers
             var file = FileStorageService.GetFile(fileId, version).NotFoundIfNull("File not found");
             return FileWrapperHelper.Get(file);
         }
-        public FileWrapper<T> CopyFileAs(T fileId, T destFolderId, string destTitle)
+
+        public FileWrapper<T> CopyFileAs(T fileId, T destFolderId, string destTitle, string password = null)
         {
             var file = FileStorageService.GetFile(fileId, -1);
             var ext = FileUtility.GetFileExtension(file.Title);
@@ -382,7 +383,7 @@ namespace ASC.Files.Helpers
                 return FileWrapperHelper.Get(newFile);
             }
 
-            using (var fileStream = FileConverter.Exec(file, destExt))
+            using (var fileStream = FileConverter.Exec(file, destExt, password))
             {
                 return InsertFile(destFolderId, fileStream, destTitle, true);
             }

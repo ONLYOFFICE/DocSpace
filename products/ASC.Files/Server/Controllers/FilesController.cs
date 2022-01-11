@@ -1121,27 +1121,27 @@ namespace ASC.Api.Documents
         [Create("file/{fileId:int}/copyas", order: int.MaxValue - 1)]
         public FileWrapper<int> CopyFileAsFromBody(int fileId, [FromBody] CopyAsModel<int> model)
         {
-            return FilesControllerHelperInt.CopyFileAs(fileId, model.DestFolderId, model.DestTitle);
+            return FilesControllerHelperInt.CopyFileAs(fileId, model.DestFolderId, model.DestTitle, model.Password);
         }
 
         [Create("file/{fileId:int}/copyas", order: int.MaxValue - 1)]
         [Consumes("application/x-www-form-urlencoded")]
         public FileWrapper<int> CopyFileAsFromForm(int fileId, [FromForm] CopyAsModel<int> model)
         {
-            return FilesControllerHelperInt.CopyFileAs(fileId, model.DestFolderId, model.DestTitle);
+            return FilesControllerHelperInt.CopyFileAs(fileId, model.DestFolderId, model.DestTitle, model.Password);
         }
 
         [Create("file/{fileId}/copyas", order: int.MaxValue)]
         public FileWrapper<string> CopyFileAsFromBody(string fileId, [FromBody] CopyAsModel<string> model)
         {
-            return FilesControllerHelperString.CopyFileAs(fileId, model.DestFolderId, model.DestTitle);
+            return FilesControllerHelperString.CopyFileAs(fileId, model.DestFolderId, model.DestTitle, model.Password);
         }
 
         [Create("file/{fileId}/copyas", order: int.MaxValue)]
         [Consumes("application/x-www-form-urlencoded")]
         public FileWrapper<string> CopyFileAsFromForm(string fileId, [FromBody] CopyAsModel<string> model)
         {
-            return FilesControllerHelperString.CopyFileAs(fileId, model.DestFolderId, model.DestTitle);
+            return FilesControllerHelperString.CopyFileAs(fileId, model.DestFolderId, model.DestTitle, model.Password);
         }
 
         /// <summary>
