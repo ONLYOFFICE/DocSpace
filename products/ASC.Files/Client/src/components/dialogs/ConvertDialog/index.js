@@ -22,7 +22,7 @@ const ConvertDialogComponent = (props) => {
     storeOriginalFiles,
     convertUploadedFiles,
     setConvertDialogVisible,
-    rootFoldersTitle,
+    rootFoldersTitles,
     isRecentFolder,
     isFavoritesFolder,
     isShareFolder,
@@ -35,7 +35,7 @@ const ConvertDialogComponent = (props) => {
     convertSingleFile &&
     (isRecentFolder || isFavoritesFolder || isShareFolder)
   ) {
-    rootFolderTitle = rootFoldersTitle[convertItem.rootFolderType];
+    rootFolderTitle = rootFoldersTitles[convertItem.rootFolderType];
   }
 
   const [hideMessage, setHideMessage] = useState(false);
@@ -148,7 +148,7 @@ export default inject(
   }) => {
     const {
       setTreeFolders,
-      rootFoldersTitle,
+      rootFoldersTitles,
       isRecentFolder,
       isFavoritesFolder,
       isShareFolder,
@@ -177,7 +177,7 @@ export default inject(
       storeOriginalFiles,
       convertUploadedFiles,
       setConvertDialogVisible,
-      rootFoldersTitle,
+      rootFoldersTitles,
       isRecentFolder,
       isFavoritesFolder,
       isShareFolder,
