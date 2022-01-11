@@ -90,13 +90,10 @@ const Header = styled.header`
     width: ${(props) => (props.isPersonal ? "220px" : "146px")};
     height: 24px;
     position: relative;
-    padding: 0 20px 0 6px;
-    margin-left: 14px;
+    padding-right: 20px;
+    padding-left: ${(props) =>
+      !props.needNavMenu || props.isPersonal ? "20px" : "4px"};
     cursor: pointer;
-
-    @media ${tablet} {
-      margin-left: 10px;
-    }
   }
   .mobile-short-logo {
     width: 146px;
