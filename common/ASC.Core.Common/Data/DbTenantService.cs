@@ -156,6 +156,13 @@ namespace ASC.Core.Data
             return q.Select(FromDbTenantToTenant).ToList();
         }
 
+        public IEnumerable<Tenant> GetTenants(List<int> ids)
+        {
+            var q = TenantsQuery();
+
+            return q.Where(r => ids.Contains(r.Id) && r.Status == TenantStatus.Active).Select(FromDbTenantToTenant).ToList();
+        }
+
         public IEnumerable<Tenant> GetTenants(string login, string passwordHash)
         {
             if (string.IsNullOrEmpty(login)) throw new ArgumentNullException("login");
@@ -248,7 +255,7 @@ namespace ASC.Core.Data
         public Tenant GetTenant(string domain)
         {
             if (string.IsNullOrEmpty(domain)) throw new ArgumentNullException("domain");
-            
+
             domain = domain.ToLowerInvariant();
 
             return TenantsQuery()

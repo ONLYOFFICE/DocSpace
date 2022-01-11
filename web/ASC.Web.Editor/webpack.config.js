@@ -7,8 +7,8 @@ const sharedDeps = require("@appserver/common/constants/sharedDependencies");
 
 const { proxyURL } = AppServerConfig;
 
-const path = require("path");
-const pkg = require("./package.json");
+const path = require('path');
+const pkg = require('./package.json');
 const deps = pkg.dependencies || {};
 const homepage = pkg.homepage; // combineUrl(AppServerConfig.proxyURL, pkg.homepage);
 
@@ -25,7 +25,7 @@ const config = merge(common, {
       publicPath: homepage,
     },
     static: {
-      directory: path.join(__dirname, "dist"),
+      directory: path.join(__dirname, 'dist'),
       publicPath: homepage,
     },
     port: 5013,
@@ -37,10 +37,9 @@ const config = merge(common, {
     },
     hot: false,
     headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
-      "Access-Control-Allow-Headers":
-        "X-Requested-With, content-type, Authorization",
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+      'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization',
     },
   },
 
@@ -55,17 +54,14 @@ const config = merge(common, {
 
   plugins: [
     new ModuleFederationPlugin({
-      name: "editor",
-      filename: "remoteEntry.js",
+      name: 'editor',
+      filename: 'remoteEntry.js',
       remotes: {
-        studio: `studio@${combineUrl(proxyURL, "/remoteEntry.js")}`,
-        files: `files@${combineUrl(
-          proxyURL,
-          "/products/files/remoteEntry.js"
-        )}`,
+        studio: `studio@${combineUrl(proxyURL, '/remoteEntry.js')}`,
+        files: `files@${combineUrl(proxyURL, '/products/files/remoteEntry.js')}`,
       },
       exposes: {
-        "./app": "./src/Editor.jsx",
+        './app': './src/Editor.jsx',
       },
       shared: {
         ...deps,
@@ -76,15 +72,15 @@ const config = merge(common, {
 });
 
 module.exports = (env, argv) => {
-  if (argv.mode === "production") {
-    config.mode = "production";
+  if (argv.mode === 'production') {
+    config.mode = 'production';
     config.optimization = {
-      splitChunks: { chunks: "all" },
-      minimize: true,
+      splitChunks: { chunks: 'all' },
+      minimize: !env.minimize,
       minimizer: [new TerserPlugin()],
     };
   } else {
-    config.devtool = "cheap-module-source-map";
+    config.devtool = 'cheap-module-source-map';
   }
 
   return config;
