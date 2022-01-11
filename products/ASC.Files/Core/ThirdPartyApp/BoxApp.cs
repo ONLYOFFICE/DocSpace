@@ -197,11 +197,11 @@ namespace ASC.Web.Files.ThirdPartyApp
         public File<string> GetFile(string fileId, out bool editable)
         {
             Logger.Debug("BoxApp: get file " + fileId);
-            fileId = ThirdPartySelector.GetFileId(fileId.ToString());
+            fileId = ThirdPartySelector.GetFileId(fileId);
 
             var token = TokenHelper.GetToken(AppAttr);
 
-            var boxFile = GetBoxFile(fileId.ToString(), token);
+            var boxFile = GetBoxFile(fileId, token);
             editable = true;
 
             if (boxFile == null) return null;
@@ -274,11 +274,11 @@ namespace ASC.Web.Files.ThirdPartyApp
                                 (stream == null
                                      ? " from - " + downloadUrl
                                      : " from stream"));
-            fileId = ThirdPartySelector.GetFileId(fileId.ToString());
+            fileId = ThirdPartySelector.GetFileId(fileId);
 
             var token = TokenHelper.GetToken(AppAttr);
 
-            var boxFile = GetBoxFile(fileId.ToString(), token);
+            var boxFile = GetBoxFile(fileId, token);
             if (boxFile == null)
             {
                 Logger.Error("BoxApp: file is null");

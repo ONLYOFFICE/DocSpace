@@ -112,7 +112,7 @@ namespace ASC.Web.CRM.HttpHandlers
             }
 
             var uploadOnly = Convert.ToBoolean(context.Request.Form["uploadOnly"]);
-            var tmpDirName = Convert.ToString(context.Request.Form["tmpDirName"]);
+            var tmpDirName = context.Request.Form["tmpDirName"];
 
             try
             {

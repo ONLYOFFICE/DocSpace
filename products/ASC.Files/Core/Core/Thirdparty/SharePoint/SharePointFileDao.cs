@@ -267,7 +267,7 @@ namespace ASC.Files.Thirdparty.SharePoint
                     var folder = ProviderInfo.GetFolderById(file.FolderID);
                     file.Title = GetAvailableTitle(file.Title, folder, IsExist);
 
-                    var id = ProviderInfo.RenameFile(DaoSelector.ConvertId(resultFile.ID).ToString(), file.Title);
+                    var id = ProviderInfo.RenameFile(DaoSelector.ConvertId(resultFile.ID), file.Title);
                     return GetFile(DaoSelector.ConvertId(id));
                 }
                 return resultFile;

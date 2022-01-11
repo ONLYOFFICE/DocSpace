@@ -1319,7 +1319,7 @@ namespace ASC.Web.Files.Services.WCFService
             }
 
             providerDao.RemoveProviderInfo(folder.ProviderId);
-            FilesMessageService.Send(folder, GetHttpHeaders(), MessageAction.ThirdPartyDeleted, folder.ID.ToString(), providerInfo.ProviderKey);
+            FilesMessageService.Send(folder, GetHttpHeaders(), MessageAction.ThirdPartyDeleted, folder.ID, providerInfo.ProviderKey);
 
             return folder.ID;
         }

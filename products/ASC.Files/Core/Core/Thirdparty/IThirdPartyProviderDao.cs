@@ -270,7 +270,7 @@ namespace ASC.Files.Thirdparty
             string result;
             if (id.StartsWith(Id))
             {
-                result = Regex.Replace(BitConverter.ToString(Hasher.Hash(id.ToString(), HashAlg.MD5)), "-", "").ToLower();
+                result = Regex.Replace(BitConverter.ToString(Hasher.Hash(id, HashAlg.MD5)), "-", "").ToLower();
             }
             else
             {

@@ -126,7 +126,7 @@ namespace ASC.Web.Files.Utils
 
         internal void ExecMarkFileAsNew<T>(AsyncTaskData<T> obj)
         {
-            TenantManager.SetCurrentTenant(Convert.ToInt32(obj.TenantID));
+            TenantManager.SetCurrentTenant(obj.TenantID);
 
             var folderDao = DaoFactory.GetFolderDao<T>();
             T parentFolderId;

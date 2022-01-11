@@ -318,7 +318,7 @@ namespace ASC.Files.Thirdparty
         public virtual void RemoveProviderInfo(int linkId)
         {
             using var tx = FilesDbContext.Database.BeginTransaction();
-            var folderId = GetProviderInfo(linkId).RootFolderId.ToString();
+            var folderId = GetProviderInfo(linkId).RootFolderId;
 
             var entryIDs = FilesDbContext.ThirdpartyIdMapping
                 .Where(r => r.TenantId == TenantID)

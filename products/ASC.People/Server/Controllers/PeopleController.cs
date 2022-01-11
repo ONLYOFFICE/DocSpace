@@ -562,8 +562,8 @@ namespace ASC.Employee.Core.Controllers
                            ? true
                            : ("female".Equals(memberModel.Sex, StringComparison.OrdinalIgnoreCase) ? (bool?)false : null);
 
-            user.BirthDate = memberModel.Birthday != null && memberModel.Birthday != DateTime.MinValue ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Birthday)) : null;
-            user.WorkFromDate = memberModel.Worksfrom != null && memberModel.Worksfrom != DateTime.MinValue ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Worksfrom)) : DateTime.UtcNow.Date;
+            user.BirthDate = memberModel.Birthday != null && memberModel.Birthday != DateTime.MinValue ? TenantUtil.DateTimeFromUtc(memberModel.Birthday) : null;
+            user.WorkFromDate = memberModel.Worksfrom != null && memberModel.Worksfrom != DateTime.MinValue ? TenantUtil.DateTimeFromUtc(memberModel.Worksfrom) : DateTime.UtcNow.Date;
 
             UpdateContacts(memberModel.Contacts, user);
 
@@ -631,8 +631,8 @@ namespace ASC.Employee.Core.Controllers
                            ? true
                            : ("female".Equals(memberModel.Sex, StringComparison.OrdinalIgnoreCase) ? (bool?)false : null);
 
-            user.BirthDate = memberModel.Birthday != null ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Birthday)) : null;
-            user.WorkFromDate = memberModel.Worksfrom != null ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Worksfrom)) : DateTime.UtcNow.Date;
+            user.BirthDate = memberModel.Birthday != null ? TenantUtil.DateTimeFromUtc(memberModel.Birthday) : null;
+            user.WorkFromDate = memberModel.Worksfrom != null ? TenantUtil.DateTimeFromUtc(memberModel.Worksfrom) : DateTime.UtcNow.Date;
 
             UpdateContacts(memberModel.Contacts, user);
 
@@ -751,14 +751,14 @@ namespace ASC.Employee.Core.Controllers
                             ? true
                             : ("female".Equals(memberModel.Sex, StringComparison.OrdinalIgnoreCase) ? (bool?)false : null)) ?? user.Sex;
 
-            user.BirthDate = memberModel.Birthday != null ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Birthday)) : user.BirthDate;
+            user.BirthDate = memberModel.Birthday != null ? TenantUtil.DateTimeFromUtc(memberModel.Birthday) : user.BirthDate;
 
             if (user.BirthDate == resetDate)
             {
                 user.BirthDate = null;
             }
 
-            user.WorkFromDate = memberModel.Worksfrom != null ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Worksfrom)) : user.WorkFromDate;
+            user.WorkFromDate = memberModel.Worksfrom != null ? TenantUtil.DateTimeFromUtc(memberModel.Worksfrom) : user.WorkFromDate;
 
             if (user.WorkFromDate == resetDate)
             {

@@ -124,8 +124,8 @@ namespace ASC.Calendar.BusinessObjects
                 options.Add(new UserViewSettings()
                 {
                     CalendarId =
-                            Convert.ToInt32(r.CalendarId) == 0
-                                ? Convert.ToString(r.ExtCalendarId)
+                            r.CalendarId == 0
+                                ? r.ExtCalendarId
                                 : Convert.ToString(r.CalendarId),
                     UserId = r.UserId,
                     IsHideEvents = Convert.ToBoolean(r.HideEvents),
@@ -751,7 +751,7 @@ namespace ASC.Calendar.BusinessObjects
                 var dataCaldavGuid = CalendarDb.CalendarCalendars.Where(p => p.Id == calendarId).Select(s => s.CaldavGuid).ToArray();
 
                 if (dataCaldavGuid[0] != null) 
-                    caldavGuid = Guid.Parse(dataCaldavGuid[0].ToString());             
+                    caldavGuid = Guid.Parse(dataCaldavGuid[0]);             
             }
             catch (Exception ex)
             {
@@ -947,11 +947,11 @@ namespace ASC.Calendar.BusinessObjects
                     var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
                     todoList = data.ConvertAll(r => new Todo(AuthContext, TimeZoneConverter, icalendar, this)
                     {
-                        Id = r.Id.ToString(),
+                        Id = r.Id,
                         Name = r.Name,
                         Description = r.Description,
                         TenantId = r.TenantId,
-                        CalendarId = r.CalendarId.ToString(),
+                        CalendarId = r.CalendarId,
                         UtcStartDate = r.UtcStartDate ?? DateTime.MinValue,
                         Completed = r.Completed ?? DateTime.MinValue,
                         OwnerId = r.OwnerId,
@@ -979,11 +979,11 @@ namespace ASC.Calendar.BusinessObjects
                     var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
                     todoList = data.ConvertAll(r => new Todo(AuthContext, TimeZoneConverter, icalendar, this)
                     {
-                        Id = r.Id.ToString(),
+                        Id = r.Id,
                         Name = r.Name,
                         Description = r.Description,
                         TenantId = r.TenantId,
-                        CalendarId = r.CalendarId.ToString(),
+                        CalendarId = r.CalendarId,
                         UtcStartDate = r.UtcStartDate ?? DateTime.MinValue,
                         Completed = r.Completed ?? DateTime.MinValue,
                         OwnerId = r.OwnerId,
@@ -1703,7 +1703,7 @@ namespace ASC.Calendar.BusinessObjects
                 };
 
             var calendarAlertType = (EventAlertType)calendarData.FirstOrDefault().alertType;
-            var calendarOwner = Convert.ToString(calendarData.FirstOrDefault().ownerId);
+            var calendarOwner = calendarData.FirstOrDefault().ownerId;
             var calendarTimeZone = TimeZoneConverter.GetTimeZone(calendarData.FirstOrDefault().timeZone);
 
             var eventUsers = new List<UserAlertType>();
@@ -1782,7 +1782,7 @@ namespace ASC.Calendar.BusinessObjects
                             u.TimeZone = r.timeZone == null ? calendarTimeZone : TimeZoneConverter.GetTimeZone(Convert.ToString(r.isAccepted));
 
                         if (u.AlertType == EventAlertType.Default && u.UserId.Equals(r.userId))
-                            u.AlertType = (EventAlertType)Convert.ToInt32(r.alertType);
+                            u.AlertType = (EventAlertType)r.alertType;
                     });
                 }
 
@@ -1837,7 +1837,7 @@ namespace ASC.Calendar.BusinessObjects
                     eventUsers.ForEach(u =>
                    {
                        if (u.UserId.Equals(r.userIdCol))
-                           u.AlertType = (EventAlertType)(Convert.ToInt32(r.alertTypeCol));
+                           u.AlertType = (EventAlertType)r.alertTypeCol;
                    });
 
                 }
@@ -1869,7 +1869,7 @@ namespace ASC.Calendar.BusinessObjects
                             u.TimeZone = r.timeZone == null ? calendarTimeZone : TimeZoneConverter.GetTimeZone(r.timeZone);
 
                         if (u.AlertType == EventAlertType.Default && u.UserId.Equals(r.userId))
-                            u.AlertType = (EventAlertType)Convert.ToInt32(r.alertType);
+                            u.AlertType = (EventAlertType)r.alertType;
                     });
                 }
 

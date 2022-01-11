@@ -217,7 +217,7 @@ namespace ASC.Core.Common
 
             if (string.IsNullOrEmpty(lang))
             {
-                url = matches.Cast<Match>().Aggregate(url, (current, match) => current.Replace(match.Value, string.Empty));
+                url = matches.Aggregate(url, (current, match) => current.Replace(match.Value, string.Empty));
             }
             else
             {

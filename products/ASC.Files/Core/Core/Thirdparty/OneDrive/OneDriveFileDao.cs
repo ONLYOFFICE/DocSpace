@@ -480,10 +480,10 @@ namespace ASC.Files.Thirdparty.OneDrive
             if (file == null) return null;
 
             if (file.ID != null)
-                file.ID = MakeId(file.ID.ToString());
+                file.ID = MakeId(file.ID);
 
             if (file.FolderID != null)
-                file.FolderID = MakeId(file.FolderID.ToString());
+                file.FolderID = MakeId(file.FolderID);
 
             return file;
         }

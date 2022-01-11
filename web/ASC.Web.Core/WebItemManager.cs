@@ -261,9 +261,7 @@ namespace ASC.Web.Core
 
         public List<IWebItem> GetSubItems(Guid parentItemID, ItemAvailableState avaliableState)
         {
-            return GetItems(WebZoneType.All, avaliableState).OfType<IModule>()
-                                                            .Where(p => p.ProjectId == parentItemID)
-                                                            .Cast<IWebItem>()
+            return GetItems(WebZoneType.All, avaliableState).Where(p => ((IModule)p).ProjectId == parentItemID)
                                                             .ToList();
         }
     }

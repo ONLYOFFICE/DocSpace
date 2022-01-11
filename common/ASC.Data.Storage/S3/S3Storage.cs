@@ -543,7 +543,7 @@ namespace ASC.Data.Storage.S3
 
                 client.DeleteObjectAsync(deleteRequest).Wait();
 
-                QuotaUsedDelete(domain, Convert.ToInt64(s3Object.Size));
+                QuotaUsedDelete(domain, s3Object.Size);
             }
         }
 
@@ -565,7 +565,7 @@ namespace ASC.Data.Storage.S3
 
                 client.DeleteObjectAsync(deleteRequest).Wait();
 
-                QuotaUsedDelete(domain, Convert.ToInt64(s3Object.Size));
+                QuotaUsedDelete(domain, s3Object.Size);
             }
         }
 

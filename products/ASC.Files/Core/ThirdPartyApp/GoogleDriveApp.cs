@@ -251,7 +251,7 @@ namespace ASC.Web.Files.ThirdPartyApp
         {
             if (file == null) return string.Empty;
 
-            var fileId = ThirdPartySelector.GetFileId(file.ID.ToString());
+            var fileId = ThirdPartySelector.GetFileId(file.ID);
             return GetFileStreamUrl(fileId);
         }
 

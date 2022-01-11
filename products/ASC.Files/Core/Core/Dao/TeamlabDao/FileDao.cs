@@ -947,7 +947,7 @@ namespace ASC.Files.Core.Data
         public string GetUniqFileDirectory(int fileId)
         {
             if (fileId == 0) throw new ArgumentNullException("fileIdObject");
-            return string.Format("folder_{0}/file_{1}", (Convert.ToInt32(fileId) / 1000 + 1) * 1000, fileId);
+            return string.Format("folder_{0}/file_{1}", (fileId / 1000 + 1) * 1000, fileId);
         }
 
         public string GetUniqFilePath(File<int> file)

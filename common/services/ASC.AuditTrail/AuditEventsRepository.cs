@@ -132,7 +132,7 @@ namespace ASC.AuditTrail
                 if (query.AuditEvent.Description != null)
                 {
                     evt.Description = JsonConvert.DeserializeObject<IList<string>>(
-                        Convert.ToString(query.AuditEvent.Description),
+                        query.AuditEvent.Description,
                         new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Utc });
                 }
 

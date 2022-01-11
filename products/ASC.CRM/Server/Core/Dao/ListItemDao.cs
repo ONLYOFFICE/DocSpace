@@ -218,7 +218,7 @@ namespace ASC.CRM.Core.Dao
                            .Where(x => x.ListType == listType)
                            .Select(x => new { x.Id, x.Color })
                            .ToList()
-                           .ForEach(x => result.Add(x.Id.ToString(), x.Color.ToString()));
+                           .ForEach(x => result.Add(x.Id.ToString(), x.Color));
 
             return result;
 

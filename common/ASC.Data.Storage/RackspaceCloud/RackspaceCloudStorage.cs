@@ -566,7 +566,7 @@ namespace ASC.Data.Storage.RackspaceCloud
             foreach (var obj in objToDel)
             {
                 client.DeleteObject(_private_container, obj.Name);
-                QuotaUsedDelete(domain, Convert.ToInt64(obj.Bytes));
+                QuotaUsedDelete(domain, obj.Bytes);
             }
         }
 

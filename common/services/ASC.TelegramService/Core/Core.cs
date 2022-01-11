@@ -107,7 +107,7 @@ namespace ASC.TelegramService.Core
             var reg = cmdReg.Match(msg.Text);
             var args = argsReg.Matches(reg.Groups[2].Value);
 
-            return new TelegramCommand(msg, reg.Groups[1].Value.ToLowerInvariant(), args.Count > 0 ? args.Cast<Match>().Select(a => a.Value).ToArray() : null);
+            return new TelegramCommand(msg, reg.Groups[1].Value.ToLowerInvariant(), args.Count > 0 ? args.Select(a => a.Value).ToArray() : null);
         }
 
         private object[] ParseParams(MethodInfo cmd, string[] args)
