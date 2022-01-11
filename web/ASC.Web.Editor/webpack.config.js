@@ -1,9 +1,5 @@
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
-const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const combineUrl = require("@appserver/common/utils/combineUrl");
 const AppServerConfig = require("@appserver/common/constants/AppServerConfig");
@@ -15,11 +11,13 @@ const path = require("path");
 const pkg = require("./package.json");
 const deps = pkg.dependencies || {};
 const homepage = pkg.homepage; // combineUrl(AppServerConfig.proxyURL, pkg.homepage);
-const title = pkg.title;
 
-const config = {
+const { merge } = require("webpack-merge");
+const common = require("./webpack/common");
+const { client: clientLoaders } = require("./webpack/loaders");
+
+const config = merge(common, {
   entry: "./src/index",
-  target: "web",
   mode: "development",
 
   devServer: {
@@ -46,111 +44,16 @@ const config = {
     },
   },
 
-  resolve: {
-    extensions: [".jsx", ".js", ".json"],
-    fallback: {
-      crypto: false,
-    },
-  },
-
-  output: {
-    publicPath: "auto",
-    chunkFilename: "static/js/[id].[contenthash].js",
-    //assetModuleFilename: "static/images/[hash][ext][query]",
-    path: path.resolve(process.cwd(), "dist"),
-    filename: "static/js/[name].[contenthash].bundle.js",
-  },
-
   performance: {
     maxEntrypointSize: 512000,
     maxAssetSize: 512000,
   },
 
   module: {
-    rules: [
-      {
-        test: /\.(png|jpe?g|gif|ico)$/i,
-        type: "asset/resource",
-        generator: {
-          filename: "static/images/[hash][ext][query]",
-        },
-      },
-      {
-        test: /\.m?js/,
-        type: "javascript/auto",
-        resolve: {
-          fullySpecified: false,
-        },
-      },
-      {
-        test: /\.react.svg$/,
-        use: [
-          {
-            loader: "@svgr/webpack",
-            options: {
-              svgoConfig: {
-                plugins: [{ removeViewBox: false }],
-              },
-            },
-          },
-        ],
-      },
-      { test: /\.json$/, loader: "json-loader" },
-      {
-        test: /\.css$/i,
-        use: ["style-loader", "css-loader"],
-      },
-      {
-        test: /\.s[ac]ss$/i,
-        use: [
-          // Creates `style` nodes from JS strings
-          "style-loader",
-          // Translates CSS into CommonJS
-          {
-            loader: "css-loader",
-            options: {
-              url: {
-                filter: (url, resourcePath) => {
-                  // resourcePath - path to css file
-
-                  // Don't handle `/static` urls
-                  if (url.startsWith("/static") || url.startsWith("data:")) {
-                    return false;
-                  }
-
-                  return true;
-                },
-              },
-            },
-          },
-          // Compiles Sass to CSS
-          "sass-loader",
-        ],
-      },
-
-      {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: [
-          {
-            loader: "babel-loader",
-            options: {
-              presets: ["@babel/preset-react", "@babel/preset-env"],
-              plugins: [
-                "@babel/plugin-transform-runtime",
-                "@babel/plugin-proposal-class-properties",
-                "@babel/plugin-proposal-export-default-from",
-              ],
-            },
-          },
-          "source-map-loader",
-        ],
-      },
-    ],
+    rules: clientLoaders,
   },
 
   plugins: [
-    new CleanWebpackPlugin(),
     new ModuleFederationPlugin({
       name: "editor",
       filename: "remoteEntry.js",
@@ -169,27 +72,8 @@ const config = {
         ...sharedDeps,
       },
     }),
-    new ExternalTemplateRemotesPlugin(),
-    new HtmlWebpackPlugin({
-      template: "./public/index.html",
-      publicPath: homepage,
-      title: title,
-      base: `${homepage}/`,
-    }),
-    new CopyPlugin({
-      patterns: [
-        {
-          from: "public",
-          globOptions: {
-            dot: true,
-            gitignore: true,
-            ignore: ["**/index.html"],
-          },
-        },
-      ],
-    }),
   ],
-};
+});
 
 module.exports = (env, argv) => {
   if (argv.mode === "production") {
