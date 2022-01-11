@@ -6,7 +6,7 @@ const config = require("../config");
 const fs = require("fs");
 const fileName =
   config.get("logPath") ||
-  path.join(__dirname, "..", "..", "Logs", "web.socketio.%DATE%.log");
+  path.join(__dirname, "..", "..", "..", "Logs", "socket-io.%DATE%.log");
 const dirName = path.dirname(fileName);
 
 if (!fs.existsSync(dirName)) {

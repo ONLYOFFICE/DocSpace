@@ -17,7 +17,7 @@ winston.stream = {
   write: (message) => winston.info(message),
 };
 
-const port = config.get("port") || 3000;
+const port = config.get("port") || 9899;
 const app = express();
 
 const secret = config.get("core.machinekey") + new Date().getTime();
@@ -56,18 +56,23 @@ const httpServer = createServer(app);
 
 const options = {
   cors: {
-    "Content-Type": "text/html",
+    //origin: "http://localhost:8092",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Authorization"],
+    //credentials: true,
   },
-  allowRequest: (req, fn) => {
-    var cookies = baseCookieParser(req, null, () => {});
-    if (
-      !req.cookies ||
-      (!req.cookies["asc_auth_key"] && !req.cookies["authorization"])
-    ) {
-      return fn("auth", false);
+  allowRequest: (req, cb) => {
+    baseCookieParser(req, null, () => {});
+    const token =
+      req?.headers?.authorization ||
+      req?.cookies?.authorization ||
+      req?.cookies?.asc_auth_key;
+
+    if (!token) {
+      winston.info(`not allowed request: empty token`);
+      return cb("auth", false);
     }
-    return fn("auth", true);
-    //return io2.checkRequest(req, fn);
+    return cb("auth", true);
   },
 };
 

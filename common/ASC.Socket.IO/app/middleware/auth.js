@@ -1,22 +1,26 @@
 ﻿const request = require("../requestManager.js");
-const authService = require("./authService.js");
+const check = require("./authService.js");
 const portalManager = require("../portalManager.js");
 
 module.exports = (socket, next) => {
   const req = socket.client.request;
   const session = socket.handshake.session;
-  const cookie = req.cookies["asc_auth_key"] || req.cookies["authorization"] || req.headers["authorization"];
 
-  if (!req.cookies || !cookie) {
+  const cookie = req?.cookies?.authorization || req?.cookies?.asc_auth_key;
+  const token = req?.headers?.authorization;
+
+  if (!cookie && !token) {
     socket.disconnect("unauthorized");
     next(new Error("Authentication error"));
     return;
   }
 
-  if (req.cookies["authorization"]) {
-    if (!authService(req)) {
+  if (token) {
+    if (!check(token)) {
       next(new Error("Authentication error"));
     } else {
+      session.system = true;
+      session.save();
       next();
     }
     return;
