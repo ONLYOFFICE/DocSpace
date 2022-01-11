@@ -622,7 +622,7 @@ namespace ASC.Web.Files.Utils
                 if (folderList.Any())
                 {
                     var securityDao = DaoFactory.GetSecurityDao<string>();
-                    securityDao.GetPureShareRecords(folderList)
+                    (await securityDao.GetPureShareRecordsAsync(folderList))
                     //.Where(x => x.Owner == SecurityContext.CurrentAccount.ID)
                     .Select(x => x.EntryId).Distinct().ToList()
                     .ForEach(id =>

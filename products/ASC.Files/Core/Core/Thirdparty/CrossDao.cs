@@ -53,11 +53,11 @@ namespace ASC.Files.Core.Thirdparty
             var securityDao = ServiceProvider.GetService<ISecurityDao<TFrom>>();
             var tagDao = ServiceProvider.GetService<ITagDao<TFrom>>();
 
-            var fromFileShareRecords = securityDao.GetPureShareRecords(fromFile).Where(x => x.EntryType == FileEntryType.File);
-            var fromFileNewTags = tagDao.GetNewTagsAsync(Guid.Empty, fromFile).ToListAsync().Result;
-            var fromFileLockTag = tagDao.GetTagsAsync(fromFile.ID, FileEntryType.File, TagType.Locked).ToListAsync().Result.FirstOrDefault();
-            var fromFileFavoriteTag = tagDao.GetTagsAsync(fromFile.ID, FileEntryType.File, TagType.Favorite).ToListAsync().Result;
-            var fromFileTemplateTag = tagDao.GetTagsAsync(fromFile.ID, FileEntryType.File, TagType.Template).ToListAsync().Result;
+            var fromFileShareRecords = (await securityDao.GetPureShareRecordsAsync(fromFile)).Where(x => x.EntryType == FileEntryType.File);
+            var fromFileNewTags = await tagDao.GetNewTagsAsync(Guid.Empty, fromFile).ToListAsync();
+            var fromFileLockTag = (await tagDao.GetTagsAsync(fromFile.ID, FileEntryType.File, TagType.Locked).ToListAsync()).FirstOrDefault();
+            var fromFileFavoriteTag = await tagDao.GetTagsAsync(fromFile.ID, FileEntryType.File, TagType.Favorite).ToListAsync();
+            var fromFileTemplateTag = await tagDao.GetTagsAsync(fromFile.ID, FileEntryType.File, TagType.Template).ToListAsync();
 
             var toFile = ServiceProvider.GetService<File<TTo>>();
 
@@ -91,7 +91,7 @@ namespace ASC.Files.Core.Thirdparty
                     fromFileShareRecords.ToList().ForEach(x =>
                     {
                         x.EntryId = toFile.ID;
-                        securityDao.SetShare(x);
+                        securityDao.SetShareAsync(x).Wait();
                     });
 
                 var fromFileTags = fromFileNewTags;
@@ -164,7 +164,7 @@ namespace ASC.Files.Core.Thirdparty
             if (deleteSourceFolder)
             {
                 var securityDao = ServiceProvider.GetService<ISecurityDao<TFrom>>();
-                var fromFileShareRecords = securityDao.GetPureShareRecords(fromFolder)
+                var fromFileShareRecords = (await securityDao.GetPureShareRecordsAsync(fromFolder))
                     .Where(x => x.EntryType == FileEntryType.Folder);
 
                 if (fromFileShareRecords.Any())
@@ -172,7 +172,7 @@ namespace ASC.Files.Core.Thirdparty
                     fromFileShareRecords.ToList().ForEach(x =>
                     {
                         x.EntryId = toFolderId;
-                        securityDao.SetShare(x);
+                        securityDao.SetShareAsync(x).Wait();
                     });
                 }
 

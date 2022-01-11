@@ -679,7 +679,7 @@ namespace ASC.Files.Core.Security
             return result;
         }
 
-        public void Share<T>(T entryId, FileEntryType entryType, Guid @for, FileShare share)
+        public async Task ShareAsync<T>(T entryId, FileEntryType entryType, Guid @for, FileShare share)
         {
             var securityDao = daoFactory.GetSecurityDao<T>();
             var r = new FileShareRecord
@@ -691,24 +691,34 @@ namespace ASC.Files.Core.Security
                 Owner = AuthContext.CurrentAccount.ID,
                 Share = share,
             };
-            securityDao.SetShare(r);
+            await securityDao.SetShareAsync(r);
         }
 
         public IEnumerable<FileShareRecord> GetShares<T>(IEnumerable<FileEntry<T>> entries)
         {
-            return daoFactory.GetSecurityDao<T>().GetShares(entries);
+            return daoFactory.GetSecurityDao<T>().GetSharesAsync(entries).Result;
+        }
+
+        public async Task<IEnumerable<FileShareRecord>> GetSharesAsync<T>(IEnumerable<FileEntry<T>> entries)
+        {
+            return await daoFactory.GetSecurityDao<T>().GetSharesAsync(entries);
         }
 
         public IEnumerable<FileShareRecord> GetShares<T>(FileEntry<T> entry)
         {
-            return daoFactory.GetSecurityDao<T>().GetShares(entry);
+            return daoFactory.GetSecurityDao<T>().GetSharesAsync(entry).Result;
+        }
+
+        public async Task<IEnumerable<FileShareRecord>> GetSharesAsync<T>(FileEntry<T> entry)
+        {
+            return await daoFactory.GetSecurityDao<T>().GetSharesAsync(entry);
         }
 
         public async Task<List<FileEntry>> GetSharesForMeAsync(FilterType filterType, bool subjectGroup, Guid subjectID, string searchText = "", bool searchInContent = false, bool withSubfolders = false)
         {
             var securityDao = daoFactory.GetSecurityDao<int>();
             var subjects = GetUserSubjects(AuthContext.CurrentAccount.ID);
-            var records = securityDao.GetShares(subjects);
+            IEnumerable<FileShareRecord> records = await securityDao.GetSharesAsync(subjects);
 
             var result = new List<FileEntry>();
             result.AddRange(await GetSharesForMeAsync<int>(records.Where(r => r.EntryId.GetType() == typeof(int)), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
@@ -819,7 +829,7 @@ namespace ASC.Files.Core.Security
 
             if (failedRecords.Any())
             {
-                securityDao.DeleteShareRecords(failedRecords);
+                await securityDao.DeleteShareRecordsAsync(failedRecords);
             }
 
             return entries.Where(x => string.IsNullOrEmpty(x.Error)).Cast<FileEntry>().ToList();
@@ -829,7 +839,7 @@ namespace ASC.Files.Core.Security
         {
             var securityDao = daoFactory.GetSecurityDao<int>();
             var subjects = GetUserSubjects(AuthContext.CurrentAccount.ID);
-            var records = securityDao.GetShares(subjects);
+            IEnumerable<FileShareRecord> records = await securityDao.GetSharesAsync(subjects);
 
             var result = new List<FileEntry>();
             result.AddRange(await GetPrivacyForMeAsync<int>(records.Where(r => r.EntryId.GetType() == typeof(int)), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
@@ -921,10 +931,9 @@ namespace ASC.Files.Core.Security
             return entries;
         }
 
-
-        public void RemoveSubject<T>(Guid subject)
+        public async Task RemoveSubjectAsync<T>(Guid subject)
         {
-            daoFactory.GetSecurityDao<T>().RemoveSubject(subject);
+            await daoFactory.GetSecurityDao<T>().RemoveSubjectAsync(subject);
         }
 
         public List<Guid> GetUserSubjects(Guid userId)

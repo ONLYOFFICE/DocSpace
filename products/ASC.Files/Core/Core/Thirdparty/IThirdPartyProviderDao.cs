@@ -389,45 +389,48 @@ namespace ASC.Files.Thirdparty
 
 
         #region SecurityDao
-
-        public void SetShare(FileShareRecord r)
+        public Task SetShareAsync(FileShareRecord r)
         {
+            return Task.CompletedTask;
         }
 
-        public IEnumerable<FileShareRecord> GetShares(IEnumerable<Guid> subjects)
+        public ValueTask<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects)
         {
-            return null;
+            List<FileShareRecord> result = null;
+            return new ValueTask<List<FileShareRecord>>(result);
         }
 
-        public IEnumerable<FileShareRecord> GetShares(IEnumerable<FileEntry<string>> entry)
-        {
-            return null;
-        }
-
-        public IEnumerable<FileShareRecord> GetShares(FileEntry<string> entry)
+        public Task<IEnumerable<FileShareRecord>> GetSharesAsync(IEnumerable<FileEntry<string>> entry)
         {
             return null;
         }
 
-        public void RemoveSubject(Guid subject)
-        {
-        }
-
-        public IEnumerable<FileShareRecord> GetPureShareRecords(IEnumerable<FileEntry<string>> entries)
+        public Task<IEnumerable<FileShareRecord>> GetSharesAsync(FileEntry<string> entry)
         {
             return null;
         }
 
-        public IEnumerable<FileShareRecord> GetPureShareRecords(FileEntry<string> entry)
+        public Task RemoveSubjectAsync(Guid subject)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(IEnumerable<FileEntry<string>> entries)
         {
             return null;
         }
 
-        public void DeleteShareRecords(IEnumerable<FileShareRecord> records)
+        public Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(FileEntry<string> entry)
         {
+            return null;
         }
 
-        public bool IsShared(object entryId, FileEntryType type)
+        public Task DeleteShareRecordsAsync(IEnumerable<FileShareRecord> records)
+        {
+            return Task.CompletedTask;
+        }
+
+        public ValueTask<bool> IsSharedAsync(object entryId, FileEntryType type)
         {
             throw new NotImplementedException();
         }

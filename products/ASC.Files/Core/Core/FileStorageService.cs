@@ -2001,25 +2001,12 @@ namespace ASC.Web.Files.Services.WCFService
                 }
 
                 var securityDao = GetSecurityDao();
-                if (securityDao.IsShared(entry.ID, entry.FileEntryType))
+                if (await securityDao.IsSharedAsync(entry.ID, entry.FileEntryType))
                 {
                     result.Add(entry.ID);
                 }
             }
             return result;
-        }
-
-        public void RemoveAce(List<T> filesId, List<T> foldersId)
-        {
-            ErrorIf(!AuthContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
-            var entries = new List<FileEntry<T>>();
-
-            var fileDao = GetFileDao();
-            var folderDao = GetFolderDao();
-            entries.AddRange(filesId.Select(fileId => fileDao.GetFileAsync(fileId).Result));
-            entries.AddRange(foldersId.Select(e => folderDao.GetFolderAsync(e).Result));
-
-            FileSharingAceHelper.RemoveAce(entries);
         }
 
         public Task RemoveAceAsync(List<T> filesId, List<T> foldersId)
@@ -2084,7 +2071,7 @@ namespace ASC.Web.Files.Services.WCFService
             }
 
             var securityDao = GetSecurityDao();
-            return securityDao.IsShared(file.ID, FileEntryType.File);
+            return await securityDao.IsSharedAsync(file.ID, FileEntryType.File);
         }
 
         public async Task<List<MentionWrapper>> SharedUsersAsync(T fileId)

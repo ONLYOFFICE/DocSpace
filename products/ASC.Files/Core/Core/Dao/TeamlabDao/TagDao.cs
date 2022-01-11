@@ -178,7 +178,7 @@ ctx.Tag
                 .Join(FilesDbContext.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
                 .Where(r => r.Link.TenantId == r.Tag.TenantId)
                 .Where(r => r.Link.EntryType == entryType)
-                .Where(r => r.Link.EntryId == MappingID(entryID).ToString())
+                .Where(r => r.Link.EntryId == MappingIDAsync(entryID).Result.ToString())
                 .Where(r => r.Tag.Flag == tagType);
 
             await foreach (var e in FromQueryAsync(q).ConfigureAwait(false))
@@ -250,7 +250,7 @@ ctx.Tag
                 var createOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow());
                 var cacheTagId = new Dictionary<string, int>();
 
-                result.AddRange(tags.Select(t => SaveTag(t, cacheTagId, createOn)));
+                result.AddRange(tags.Select(t => SaveTagAsync(t, cacheTagId, createOn).Result));
 
                 tx.Commit();
             }
@@ -274,7 +274,7 @@ ctx.Tag
                 var createOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow());
                 var cacheTagId = new Dictionary<string, int>();
 
-                result.Add(SaveTag(tag, cacheTagId, createOn));
+                result.Add(SaveTagAsync(tag, cacheTagId, createOn).Result);
 
                 tx.Commit();
             }
@@ -308,21 +308,21 @@ ctx.Tag
 
             FilesDbContext.Tag.RemoveRange(tagsToRemove);
             FilesDbContext.SaveChanges();
-        }
+        }     
 
-        private Tag SaveTag(Tag t, Dictionary<string, int> cacheTagId, DateTime createOn)
+        private async Task<Tag> SaveTagAsync(Tag t, Dictionary<string, int> cacheTagId, DateTime createOn)
         {
             var cacheTagIdKey = string.Join("/", new[] { TenantID.ToString(), t.Owner.ToString(), t.TagName, ((int)t.TagType).ToString(CultureInfo.InvariantCulture) });
 
             if (!cacheTagId.TryGetValue(cacheTagIdKey, out var id))
             {
-                id = FilesDbContext.Tag
+                id = await FilesDbContext.Tag
                     .AsQueryable()
                     .Where(r => r.Owner == t.Owner)
                     .Where(r => r.Name == t.TagName)
                     .Where(r => r.Flag == t.TagType)
                     .Select(r => r.Id)
-                    .FirstOrDefault();
+                    .FirstOrDefaultAsync();
 
                 if (id == 0)
                 {
@@ -336,7 +336,7 @@ ctx.Tag
                     };
 
                     toAdd = FilesDbContext.Tag.Add(toAdd).Entity;
-                    FilesDbContext.SaveChanges();
+                    await FilesDbContext.SaveChangesAsync();
                     id = toAdd.Id;
                 }
 
@@ -349,15 +349,15 @@ ctx.Tag
             {
                 TenantId = TenantID,
                 TagId = id,
-                EntryId = MappingID(t.EntryId, true).ToString(),
+                EntryId = (await MappingIDAsync(t.EntryId, true)).ToString(),
                 EntryType = t.EntryType,
                 CreateBy = AuthContext.CurrentAccount.ID,
                 CreateOn = createOn,
                 TagCount = t.Count
             };
 
-            FilesDbContext.AddOrUpdate(r => r.TagLink, linkToInsert);
-            FilesDbContext.SaveChanges();
+            await FilesDbContext.AddOrUpdateAsync(r => r.TagLink, linkToInsert);
+            await FilesDbContext.SaveChangesAsync();
 
             return t;
         }
@@ -373,7 +373,7 @@ ctx.Tag
 
                 foreach (var tag in tags)
                 {
-                    UpdateNewTagsInDb(tag, createOn);
+                    UpdateNewTagsInDbAsync(tag, createOn).Wait();
                 }
                 tx.Commit();
             }
@@ -387,18 +387,18 @@ ctx.Tag
             {
                 var createOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow());
 
-                UpdateNewTagsInDb(tag, createOn);
+                UpdateNewTagsInDbAsync(tag, createOn).Wait();
             }
         }
 
-        private void UpdateNewTagsInDb(Tag tag, DateTime createOn)
+        private async Task UpdateNewTagsInDbAsync(Tag tag, DateTime createOn)
         {
             if (tag == null) return;
 
             var forUpdate = Query(FilesDbContext.TagLink)
                 .Where(r => r.TagId == tag.Id)
                 .Where(r => r.EntryType == tag.EntryType)
-                .Where(r => r.EntryId == MappingID(tag.EntryId).ToString());
+                .Where(r => r.EntryId == MappingIDAsync(tag.EntryId).Result.ToString());
 
             foreach (var f in forUpdate)
             {
@@ -407,7 +407,7 @@ ctx.Tag
                 f.TagCount = tag.Count;
             }
 
-            FilesDbContext.SaveChanges();
+            await FilesDbContext.SaveChangesAsync();
         }
 
         public void RemoveTags(IEnumerable<Tag> tags)
@@ -419,7 +419,7 @@ ctx.Tag
                 using var tx = FilesDbContext.Database.BeginTransaction();
                 foreach (var t in tags)
                 {
-                    RemoveTagInDb(t);
+                    RemoveTagInDbAsync(t).Wait();
                 }
                 tx.Commit();
             }
@@ -432,43 +432,11 @@ ctx.Tag
             lock (syncRoot)
             {
                 using var tx = FilesDbContext.Database.BeginTransaction();
-                RemoveTagInDb(tag);
+                RemoveTagInDbAsync(tag).Wait();
 
                 tx.Commit();
             }
-        }
-
-        private void RemoveTagInDb(Tag tag)
-        {
-            if (tag == null) return;
-
-            var id = Query(FilesDbContext.Tag)
-                .Where(r => r.Name == tag.TagName &&
-                            r.Owner == tag.Owner &&
-                            r.Flag == tag.TagType)
-                .Select(r => r.Id)
-                .FirstOrDefault();
-
-            if (id != 0)
-            {
-                var entryId = MappingID(tag.EntryId).ToString();
-                var toDelete = Query(FilesDbContext.TagLink)
-                    .Where(r => r.TagId == id &&
-                                r.EntryId == entryId &&
-                                r.EntryType == tag.EntryType);
-
-                FilesDbContext.TagLink.RemoveRange(toDelete);
-                FilesDbContext.SaveChanges();
-
-                var count = Query(FilesDbContext.TagLink).Count(r => r.TagId == id);
-                if (count == 0)
-                {
-                    var tagToDelete = Query(FilesDbContext.Tag).Where(r => r.Id == id);
-                    FilesDbContext.Tag.RemoveRange(tagToDelete);
-                    FilesDbContext.SaveChanges();
-                }
-            }
-        }
+        }     
 
         private async Task RemoveTagInDbAsync(Tag tag)
         {

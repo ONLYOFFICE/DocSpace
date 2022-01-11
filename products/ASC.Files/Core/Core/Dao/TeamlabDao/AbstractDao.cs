@@ -115,32 +115,6 @@ namespace ASC.Files.Core.Data
                 .Where(where);
         }
 
-        protected void GetRecalculateFilesCountUpdate(int folderId)
-        {
-            var folders = FilesDbContext.Folders
-                .AsQueryable()
-                .Where(r => r.TenantId == TenantID)
-                .Where(r => FilesDbContext.Tree.AsQueryable().Where(r => r.FolderId == folderId).Select(r => r.ParentId).Any(a => a == r.Id))
-                .ToList();
-
-            foreach (var f in folders)
-            {
-                var filesCount =
-                    FilesDbContext.Files
-                    .AsQueryable()
-                    .Join(FilesDbContext.Tree, a => a.FolderId, b => b.FolderId, (file, tree) => new { file, tree })
-                    .Where(r => r.file.TenantId == f.TenantId)
-                    .Where(r => r.tree.ParentId == f.Id)
-                    .Select(r => r.file.Id)
-                    .Distinct()
-                    .Count();
-
-                f.FilesCount = filesCount;
-            }
-
-            FilesDbContext.SaveChanges();
-        }
-
         protected async Task GetRecalculateFilesCountUpdateAsync(int folderId)
         {
             var folders = await FilesDbContext.Folders
@@ -151,7 +125,7 @@ namespace ASC.Files.Core.Data
 
             foreach (var f in folders)
             {
-                var filesCount =
+                f.FilesCount = await
                     FilesDbContext.Files
                     .AsQueryable()
                     .Join(FilesDbContext.Tree, a => a.FolderId, b => b.FolderId, (file, tree) => new { file, tree })
@@ -160,54 +134,10 @@ namespace ASC.Files.Core.Data
                     .Select(r => r.file.Id)
                     .Distinct()
                     .CountAsync();
-
-                f.FilesCount = await filesCount;
             }
 
-            FilesDbContext.SaveChanges();
-        }
-
-        protected object MappingID(object id, bool saveIfNotExist)
-        {
-            if (id == null) return null;
-
-            var isNumeric = int.TryParse(id.ToString(), out var n);
-
-            if (isNumeric) return n;
-
-            object result;
-
-            if (id.ToString().StartsWith("sbox")
-                || id.ToString().StartsWith("box")
-                || id.ToString().StartsWith("dropbox")
-                || id.ToString().StartsWith("spoint")
-                || id.ToString().StartsWith("drive")
-                || id.ToString().StartsWith("onedrive"))
-            {
-                result = Regex.Replace(BitConverter.ToString(Hasher.Hash(id.ToString(), HashAlg.MD5)), "-", "").ToLower();
-            }
-            else
-            {
-                result = Query(FilesDbContext.ThirdpartyIdMapping)
-                    .Where(r => r.HashId == id.ToString())
-                    .Select(r => r.Id)
-                    .FirstOrDefault();
-            }
-
-            if (saveIfNotExist)
-            {
-                var newItem = new DbFilesThirdpartyIdMapping
-                {
-                    Id = id.ToString(),
-                    HashId = result.ToString(),
-                    TenantId = TenantID
-                };
-
-                FilesDbContext.AddOrUpdate(r => r.ThirdpartyIdMapping, newItem);
-            }
-
-            return result;
-        }
+            await FilesDbContext.SaveChangesAsync();
+        }   
 
         protected async ValueTask<object> MappingIDAsync(object id, bool saveIfNotExist = false)
         {
@@ -251,15 +181,9 @@ namespace ASC.Files.Core.Data
             return result;
         }
 
-
-
-        protected int MappingID(int id)
+        protected ValueTask<object> MappingIDAsync(object id)
         {
-            return id;
-        }
-        protected object MappingID(object id)
-        {
-            return MappingID(id, false);
+            return MappingIDAsync(id, false);
         }
 
         internal static IQueryable<T> BuildSearch<T>(IQueryable<T> query, string text, SearhTypeEnum searhTypeEnum) where T : IDbSearch

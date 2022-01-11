@@ -119,7 +119,7 @@ namespace ASC.Web.Files.Utils
                     share = w.Share == FileShare.Restrict ? FileShare.None : w.Share;
                 }
 
-                fileSecurity.Share(entry.ID, entryType, w.SubjectId, share);
+                await fileSecurity.ShareAsync(entry.ID, entryType, w.SubjectId, share);
                 changed = true;
 
                 if (w.SubjectId == FileConstant.ShareLinkId)
@@ -188,34 +188,7 @@ namespace ASC.Web.Files.Utils
             await usersWithoutRight.ToAsyncEnumerable().ForEachAwaitAsync(async userId => await FileMarker.RemoveMarkAsNewAsync(entry, userId));
 
             return changed;
-        }
-
-        public void RemoveAce(List<FileEntry<T>> entries)
-        {
-            var fileSecurity = FileSecurity;
-
-            entries.ForEach(
-                entry =>
-                {
-                    if (entry.RootFolderType != FolderType.USER && entry.RootFolderType != FolderType.Privacy
-                            || Equals(entry.RootFolderId, GlobalFolderHelper.FolderMy)
-                            || Equals(entry.RootFolderId, GlobalFolderHelper.FolderPrivacy))
-                        return;
-
-                    var entryType = entry.FileEntryType;
-                    fileSecurity.Share(entry.ID, entryType, AuthContext.CurrentAccount.ID,
-                         entry.RootFolderType == FolderType.USER
-                            ? fileSecurity.DefaultMyShare
-                            : fileSecurity.DefaultPrivacyShare);
-
-                    if (entryType == FileEntryType.File)
-                    {
-                        DocumentServiceHelper.CheckUsersForDrop((File<T>)entry);
-                    }
-
-                    FileMarker.RemoveMarkAsNew(entry);
-                });
-        }
+        }      
 
         public Task RemoveAceAsync(IAsyncEnumerable<FileEntry<T>> entries)
         {
@@ -230,7 +203,7 @@ namespace ASC.Web.Files.Utils
                         return;
 
                     var entryType = entry.FileEntryType;
-                    fileSecurity.Share(entry.ID, entryType, AuthContext.CurrentAccount.ID,
+                    await fileSecurity.ShareAsync(entry.ID, entryType, AuthContext.CurrentAccount.ID,
                          entry.RootFolderType == FolderType.USER
                             ? fileSecurity.DefaultMyShare
                             : fileSecurity.DefaultPrivacyShare);
@@ -369,7 +342,7 @@ namespace ASC.Web.Files.Utils
 
                     if (g.ID == Constants.LostGroupInfo.ID)
                     {
-                        fileSecurity.RemoveSubject<T>(r.Subject);
+                        await fileSecurity.RemoveSubjectAsync<T>(r.Subject);
                         continue;
                     }
                 }
