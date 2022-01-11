@@ -337,7 +337,7 @@ class TableHeader extends React.Component {
 
       str = gridTemplateColumns.join(" ");
     } else {
-      this.resetColumns();
+      this.resetColumns(true);
     }
     if (str) {
       container.style.gridTemplateColumns = str;
@@ -350,8 +350,13 @@ class TableHeader extends React.Component {
     }
   };
 
-  resetColumns = () => {
-    const { containerRef, checkboxSize, columnStorageName } = this.props;
+  resetColumns = (resetToDefault = false) => {
+    const {
+      containerRef,
+      checkboxSize,
+      columnStorageName,
+      columns,
+    } = this.props;
     const defaultSize = this.props.columns.find((col) => col.defaultSize)
       ?.defaultSize;
 
@@ -366,23 +371,42 @@ class TableHeader extends React.Component {
       : document.getElementById("table-container");
     const containerWidth = +container.clientWidth;
 
-    const percent = 100 / enableColumns.length;
-    const newContainerWidth =
-      containerWidth -
-      this.getSubstring(checkboxSize) -
-      containerMargin -
-      (defaultSize || 0);
-    const otherColumns = (newContainerWidth * percent) / 100 + "px";
+    if (resetToDefault) {
+      const firstColumnPercent = 40;
+      const percent = 60 / enableColumns.length;
 
-    str = `${checkboxSize} `;
-    for (let col of this.props.columns) {
-      str += col.enable
-        ? /*  col.minWidth
-          ? `${col.minWidth}px `
-          :  */ col.defaultSize
-          ? `${col.defaultSize}px `
-          : `${otherColumns} `
-        : "0px ";
+      const firstColumnSize =
+        (containerWidth * firstColumnPercent) / 100 + "px";
+      const otherColumns = (containerWidth * percent) / 100 + "px";
+
+      str = `${checkboxSize} ${firstColumnSize} `;
+      for (let col of columns) {
+        if (!col.default)
+          str += col.enable
+            ? col.defaultSize
+              ? `${col.defaultSize}px `
+              : `${otherColumns} `
+            : "0px ";
+      }
+    } else {
+      const percent = 100 / enableColumns.length;
+      const newContainerWidth =
+        containerWidth -
+        this.getSubstring(checkboxSize) -
+        containerMargin -
+        (defaultSize || 0);
+      const otherColumns = (newContainerWidth * percent) / 100 + "px";
+
+      str = `${checkboxSize} `;
+      for (let col of this.props.columns) {
+        str += col.enable
+          ? /*  col.minWidth
+            ? `${col.minWidth}px `
+            :  */ col.defaultSize
+            ? `${col.defaultSize}px `
+            : `${otherColumns} `
+          : "0px ";
+      }
     }
 
     str += `${settingsSize}px`;
