@@ -4,5 +4,6 @@
   "ConversionTitle": "Belge yükleme",
   "ConvertAndOpenTitle": "Belgeyi dönüştür ve aç",
   "HideMessage": "Bu mesajı tekrar gösterme",
-  "SaveOriginalFormatMessage": "Dosya kopyasını orijinal türünde kaydet"
+  "SaveOriginalFormatMessage": "Dosya kopyasını orijinal türünde kaydet",
+  "FileDestination": "Dosya kopyası <bold>{{folderTitle}}</bold> klasöründe oluşturulacaktır"
 }

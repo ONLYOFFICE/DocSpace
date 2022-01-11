@@ -4,5 +4,6 @@
   "ConversionTitle": "Asiakirjaa ladataan",
   "ConvertAndOpenTitle": "Muunna ja avaa asiakirja",
   "HideMessage": "Älä näytä tätä viestiä enää",
-  "SaveOriginalFormatMessage": "Tallenna kopio tiedostosta alkuperäisessä muodossa"
+  "SaveOriginalFormatMessage": "Tallenna kopio tiedostosta alkuperäisessä muodossa",
+  "FileDestination": "Tiedoston kopio luodaan <bold>{{folderTitle}}</bold> kansioon"
 }

@@ -4,5 +4,6 @@
   "ConversionTitle": "Document uploading",
   "ConvertAndOpenTitle": "Convert and open document",
   "HideMessage": "Do not show this message again",
-  "SaveOriginalFormatMessage": "Save the file copy in the original format"
+  "SaveOriginalFormatMessage": "Save the file copy in the original format",
+  "FileDestination": "The file copy will be created in the <bold>{{folderTitle}}</bold> folder"
 }

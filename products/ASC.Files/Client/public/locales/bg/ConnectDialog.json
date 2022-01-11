@@ -4,5 +4,6 @@
   "ConnectionUrl": "Свързващ url",
   "ConnectMakeShared": "Сподели и постави в папка 'Често срещани'",
   "Login": "Вписване",
-  "Reconnect": "Повторно свързване"
+  "Reconnect": "Повторно свързване",
+  "FileDestination": "Копие на файла ще бъде създадено в папката <bold>{{folderTitle}}</bold>"
 }

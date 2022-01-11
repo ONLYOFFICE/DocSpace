@@ -4,5 +4,6 @@
   "ConversionTitle": "Carga de dodocumentos",
   "ConvertAndOpenTitle": "Convertir y abrir documento",
   "HideMessage": "No volver a mostrar este mensaje",
-  "SaveOriginalFormatMessage": "Guardar la copia del archivo en el formato original"
+  "SaveOriginalFormatMessage": "Guardar la copia del archivo en el formato original",
+  "FileDestination": "La copia del archivo se creará en la carpeta <bold>{{folderTitle}}</bold>"
 }

@@ -4,5 +4,6 @@
   "ConnectionUrl": "Savienojuma vietrādis URL",
   "ConnectMakeShared": "Kopīgojiet un ievietojiet mapē Kopēji",
   "Login": "Piesakieties",
-  "Reconnect": "Atkārtoti izveidojiet savienojumu"
+  "Reconnect": "Atkārtoti izveidojiet savienojumu",
+  "FileDestination": "Faila kopija tiks izveidota mapē <bold>{{folderTitle}}</bold>"
 }

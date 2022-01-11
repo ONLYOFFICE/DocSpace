@@ -4,5 +4,6 @@
   "ConversionTitle": "Nahrávání dokumentů",
   "ConvertAndOpenTitle": "Převést a otevřít dokument",
   "HideMessage": "Tuto zprávu již nezobrazovat",
-  "SaveOriginalFormatMessage": "Uložit kopii souboru v původním formátu"
+  "SaveOriginalFormatMessage": "Uložit kopii souboru v původním formátu",
+  "FileDestination": "Kopie souboru bude vytvořena v {{folderTitle}}složce"
 }
