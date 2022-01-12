@@ -136,7 +136,7 @@ namespace ASC.Core.Notify.Signalr
                 var tenant = tenantId == -1
                     ? TenantManager.GetTenant(domain)
                     : TenantManager.GetTenant(tenantId);
-                var isTenantUser = callerUserName == string.Empty;
+                var isTenantUser = callerUserName.Length == 0;
                 var message = new MessageClass
                 {
                     UserName = isTenantUser ? tenant.GetTenantDomain(CoreSettings) : callerUserName,

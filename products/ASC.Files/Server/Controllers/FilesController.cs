@@ -2343,7 +2343,7 @@ namespace ASC.Api.Documents
 
         private object WordpressSave(WordpressSaveModel model)
         {
-            if (model.Code == "")
+            if (model.Code.Length == 0)
             {
                 return new
                 {

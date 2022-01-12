@@ -106,7 +106,7 @@ namespace ASC.Data.Backup
             {
                 var map = new ExeConfigurationFileMap
                 {
-                    ExeConfigFilename = string.Compare(Path.GetExtension(config), ".config", true) == 0 ? config : CrossPlatform.PathCombine(config, "Web.config")
+                    ExeConfigFilename = string.Equals(Path.GetExtension(config), ".config", StringComparison.OrdinalIgnoreCase) ? config : CrossPlatform.PathCombine(config, "Web.config")
                 };
                 return ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
             }
@@ -194,11 +194,11 @@ namespace ASC.Data.Backup
         private void RestoreDatabase(ConnectionStringSettings connectionString, IEnumerable<XElement> elements, IDataReadOperator reader)
         {
             var dbName = connectionString.Name;
-            var dbElement = elements.SingleOrDefault(e => string.Compare(e.Name.LocalName, connectionString.Name, true) == 0);
+            var dbElement = elements.SingleOrDefault(e => string.Equals(e.Name.LocalName, connectionString.Name, StringComparison.OrdinalIgnoreCase));
             if (dbElement != null && dbElement.Attribute("ref") != null)
             {
                 dbName = dbElement.Attribute("ref").Value;
-                dbElement = elements.Single(e => string.Compare(e.Name.LocalName, dbElement.Attribute("ref").Value, true) == 0);
+                dbElement = elements.Single(e => string.Equals(e.Name.LocalName, dbElement.Attribute("ref").Value, StringComparison.OrdinalIgnoreCase));
             }
             if (dbElement == null) return;
 

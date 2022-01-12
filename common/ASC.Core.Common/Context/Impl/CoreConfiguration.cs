@@ -76,13 +76,13 @@ namespace ASC.Core
             get
             {
                 //TODO:if (CustomMode && HttpContext.Current != null && HttpContext.Current.Request.SailfishApp()) return true;
-                return personal ?? (bool)(personal = string.Compare(Configuration["core:personal"], "true", true) == 0);
+                return personal ?? (bool)(personal = Configuration["core:personal"].Equals("true", StringComparison.OrdinalIgnoreCase));
             }
         }
 
         public bool CustomMode
         {
-            get { return customMode ?? (bool)(customMode = string.Compare(Configuration["core:custom-mode"], "true", true) == 0); }
+            get { return customMode ?? (bool)(customMode = Configuration["core:custom-mode"].Equals("true", StringComparison.OrdinalIgnoreCase)); }
         }
     }
 

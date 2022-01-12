@@ -142,7 +142,7 @@ namespace ASC.Web.CRM.Classes
 
         public bool IsConvertable(String abbreviation)
         {
-            var findedItem = _currencies.Keys.ToList().Find(item => String.Compare(abbreviation, item) == 0);
+            var findedItem = _currencies.Keys.ToList().Find(item => string.Equals(abbreviation, item));
 
             if (findedItem == null)
                 throw new ArgumentException(abbreviation);
@@ -152,7 +152,7 @@ namespace ASC.Web.CRM.Classes
 
         public Decimal MoneyConvert(decimal amount, string from, string to)
         {
-            if (string.IsNullOrEmpty(from) || string.IsNullOrEmpty(to) || string.Compare(from, to, true) == 0) return amount;
+            if (string.IsNullOrEmpty(from) || string.IsNullOrEmpty(to) || string.Equals(from, to, StringComparison.OrdinalIgnoreCase)) return amount;
 
             var rates = GetExchangeRates();
 

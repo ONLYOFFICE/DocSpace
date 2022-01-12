@@ -52,7 +52,7 @@ namespace ASC.Data.Backup
             connect.ConnectionString = connectionString.ConnectionString;
             connect.Open();
 
-            mysql = connectionString.ProviderName.ToLower().Contains("mysql");
+            mysql = connectionString.ProviderName.Contains("mysql", StringComparison.OrdinalIgnoreCase);
             if (mysql)
             {
                 CreateCommand("set @@session.sql_mode = concat(@@session.sql_mode, ',NO_AUTO_VALUE_ON_ZERO')").ExecuteNonQuery();
@@ -268,7 +268,7 @@ namespace ASC.Data.Backup
             {
                 return string.Format(whereExceptions[tableName.ToLower()], tenant);
             }
-            var tenantColumn = GetColumnsFrom(tableName).FirstOrDefault(c => c.ToLower().StartsWith("tenant"));
+            var tenantColumn = GetColumnsFrom(tableName).FirstOrDefault(c => c.StartsWith("tenant", StringComparison.OrdinalIgnoreCase));
             return tenantColumn != null ?
                 " where " + Quote(tenantColumn) + " = " + tenant :
                 " where 1 = 0";

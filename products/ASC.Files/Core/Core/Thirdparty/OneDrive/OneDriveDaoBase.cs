@@ -85,8 +85,7 @@ namespace ASC.Files.Thirdparty.OneDrive
         protected override string MakeId(string id = null)
         {
             return string.Format("{0}{1}", PathPrefix,
-                                 string.IsNullOrEmpty(id) || id == ""
-                                     ? "" : ("-|" + id.TrimStart('/')));
+                                 string.IsNullOrEmpty(id) ? "" : ("-|" + id.TrimStart('/')));
         }
 
         public string MakeOneDrivePath(Item onedriveItem)

@@ -313,7 +313,7 @@ namespace ASC.Web.CRM.HttpHandlers
                             IsPrimary = true
                         });
                     }
-                    else if (String.Compare(key, "tag", true) == 0)
+                    else if (string.Equals(key, "tag", StringComparison.OrdinalIgnoreCase))
                     {
                         var tags = _context.Request.Form["tag"];
 

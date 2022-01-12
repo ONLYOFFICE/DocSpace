@@ -106,7 +106,7 @@ namespace ASC.Core.Common.Notify
         public string CurrentRegistrationLink(Guid userId, int tenantId)
         {
             var token = GetCurrentToken(userId, tenantId);
-            if (token == null || token == "") return "";
+            if (token == null || token.Length == 0) return "";
 
             return GetLink(token);
         }

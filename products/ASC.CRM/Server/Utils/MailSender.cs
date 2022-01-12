@@ -693,7 +693,7 @@ namespace ASC.Web.CRM.Classes
 
             foreach (Match match in _regex.Matches(template))
             {
-                var findedTag = tags.Find(item => String.Compare(item.Name, match.Value) == 0);
+                var findedTag = tags.Find(item => string.Equals(item.Name, match.Value));
 
                 if (findedTag == null) continue;
 

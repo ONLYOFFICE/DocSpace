@@ -136,7 +136,7 @@ namespace ASC.Calendar.iCalParser
                 || _curPropToken.TokenVal == TokenValue.Texdate)
             {
 
-                if (iprop != null && iprop.TokenText.ToLowerInvariant() == "date")
+                if (iprop != null && iprop.TokenText.Equals("date", StringComparison.OrdinalIgnoreCase))
                     dateTime = Token.ParseDate(t.TokenText);
 
                 else

@@ -751,7 +751,7 @@ namespace ASC.Web.Files.Utils
 
             if ((!searchInContent || filter == FilterType.ByExtension) && !string.IsNullOrEmpty(searchText = (searchText ?? string.Empty).ToLower().Trim()))
             {
-                entries = entries.Where(f => f.Title.ToLower().Contains(searchText)).ToList();
+                entries = entries.Where(f => f.Title.Contains(searchText, StringComparison.InvariantCultureIgnoreCase)).ToList();
             }
             return entries;
         }
@@ -1219,7 +1219,7 @@ namespace ASC.Web.Files.Utils
             title = Global.ReplaceInvalidCharsAndTruncate(title);
 
             var ext = FileUtility.GetFileExtension(file.Title);
-            if (string.Compare(ext, FileUtility.GetFileExtension(title), true) != 0)
+            if (!string.Equals(ext, FileUtility.GetFileExtension(title), StringComparison.InvariantCultureIgnoreCase))
             {
                 title += ext;
             }
@@ -1227,7 +1227,7 @@ namespace ASC.Web.Files.Utils
             var fileAccess = file.Access;
 
             var renamed = false;
-            if (string.Compare(file.Title, title, false) != 0)
+            if (!string.Equals(file.Title, title))
             {
                 var newFileID = fileDao.FileRename(file, title);
 

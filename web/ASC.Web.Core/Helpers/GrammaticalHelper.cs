@@ -33,9 +33,7 @@ namespace ASC.Web.Core.Helpers
         public static string ChooseNumeralCase(int number, string nominative, string genitiveSingular, string genitivePlural)
         {
             if (
-                string.Compare(
-                    System.Threading.Thread.CurrentThread.CurrentUICulture.ThreeLetterISOLanguageName,
-                    "rus", true) == 0)
+                System.Threading.Thread.CurrentThread.CurrentUICulture.ThreeLetterISOLanguageName.Equals("rus", StringComparison.InvariantCultureIgnoreCase))
             {
                 int[] formsTable = { 2, 0, 1, 1, 1, 2, 2, 2, 2, 2 };
 

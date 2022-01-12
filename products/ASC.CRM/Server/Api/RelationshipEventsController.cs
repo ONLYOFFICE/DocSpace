@@ -387,8 +387,8 @@ namespace ASC.CRM.Api
 
             if (!string.IsNullOrEmpty(entityType) &&
                 !(
-                     string.Compare(entityType, "opportunity", StringComparison.OrdinalIgnoreCase) == 0 ||
-                     string.Compare(entityType, "case", StringComparison.OrdinalIgnoreCase) == 0)
+                     string.Equals(entityType, "opportunity", StringComparison.OrdinalIgnoreCase) ||
+                     string.Equals(entityType, "case", StringComparison.OrdinalIgnoreCase))
                 )
                 throw new ArgumentException();
 

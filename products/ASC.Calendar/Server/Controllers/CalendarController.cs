@@ -541,7 +541,7 @@ namespace ASC.Calendar.Controllers
 
                             var sharedCalUrl = new Uri(new Uri(calDavServerUrl), "/caldav/" + curCaldavUserName + "/" + caldavGuid).ToString();
                             var calendar = GetUserCaldavCalendar(sharedCalUrl, userName);
-                            if (calendar != "")
+                            if (calendar.Length != 0)
                             {
                                 if (calendar == "NotFound")
                                 {
@@ -578,7 +578,7 @@ namespace ASC.Calendar.Controllers
                 {
                     var sharedCalUrl = new Uri(new Uri(calDavServerUrl), "/caldav/" + curCaldavUserName + "/" + todoCalendars[0].calDavGuid).ToString();
                     var calendar = GetUserCaldavCalendar(sharedCalUrl, userName);
-                    if (calendar != "")
+                    if (calendar.Length != 0)
                     {
                         if (calendar == "NotFound")
                         {
@@ -616,7 +616,7 @@ namespace ASC.Calendar.Controllers
 
                     var calendar = GetUserCaldavCalendar(sharedCalUrl, userName);
 
-                    if (calendar != "")
+                    if (calendar.Length != 0)
                     {
                         if (calendar == "NotFound")
                         {
@@ -631,7 +631,7 @@ namespace ASC.Calendar.Controllers
                                 true
                                 );
                         }
-                        if (sharedCalUrl != "")
+                        if (sharedCalUrl.Length != 0)
                         {
                             var calendarIcs = GetCalendariCalString(calendarId, true);
 
@@ -653,7 +653,7 @@ namespace ASC.Calendar.Controllers
 
             var isShared = ownerId != SecurityContext.CurrentAccount.ID;
             var calDavGuid = cal.calDavGuid;
-            if (calDavGuid == "" || calDavGuid == Guid.Empty.ToString())
+            if (calDavGuid.Length == 0 || calDavGuid == Guid.Empty.ToString())
             {
                 calDavGuid = Guid.NewGuid().ToString();
                 DataProvider.UpdateCalendarGuid(Convert.ToInt32(cal.Id), Guid.Parse(calDavGuid));
@@ -665,7 +665,7 @@ namespace ASC.Calendar.Controllers
 
             var caldavCalendar = GetUserCaldavCalendar(calUrl, userName);
 
-            if (caldavCalendar != "")
+            if (caldavCalendar.Length != 0)
             {
                 if (caldavCalendar == "NotFound")
                 {
@@ -1746,7 +1746,7 @@ namespace ASC.Calendar.Controllers
                     сaldavGuid = calendarId;
                 }
 
-                if (сaldavGuid != "")
+                if (сaldavGuid.Length != 0)
                 {
                     var calDavServerUrl = myUri.Scheme + "://" + myUri.Host + "/caldav";
 
@@ -3554,10 +3554,10 @@ namespace ASC.Calendar.Controllers
                         var date = periodList.ToString();
 
                         //has time
-                        if (date.ToLowerInvariant().IndexOf('t') >= 0)
+                        if (date.IndexOf('t', StringComparison.OrdinalIgnoreCase) >= 0)
                         {
                             //is utc time
-                            if (date.ToLowerInvariant().IndexOf('z') >= 0)
+                            if (date.IndexOf('z', StringComparison.OrdinalIgnoreCase) >= 0)
                             {
                                 rrule += date;
                             }
@@ -3581,7 +3581,7 @@ namespace ASC.Calendar.Controllers
                             }
                         }
                         //for yyyyMMdd/P1D date. Bug in the ical.net
-                        else if (date.ToLowerInvariant().IndexOf("/p") >= 0)
+                        else if (date.IndexOf("/p", StringComparison.OrdinalIgnoreCase) >= 0)
                         {
                             try
                             {
@@ -3993,7 +3993,7 @@ namespace ASC.Calendar.Controllers
             {
                 try
                 {
-                    if (guid != null && guid != "")
+                    if (guid != null && guid.Length != 0)
                     {
 
                         var calDavServerUrl = myUri.Scheme + "://" + myUri.Host + "/caldav";
@@ -4647,7 +4647,7 @@ namespace ASC.Calendar.Controllers
                             TimeZoneInfo calendarTimeZone = null,
                             string calGuid = null)
         {
-            if (calGuid != "" && myUri != null && user != null)
+            if (calGuid.Length != 0 && myUri != null && user != null)
             {
                 string eventUid = guid,
                     oldEventUid = guid;

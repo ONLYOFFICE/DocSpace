@@ -963,7 +963,7 @@ namespace ASC.Web.Core.Calendars
                         foreach (var date in val.Split(','))
                         {
                             if (DateTime.TryParseExact(date.ToUpper(), _dateTimeFormats, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out var dt))
-                                rr.ExDates.Add(new ExDate() { Date = dt, IsDateTime = (date.ToLower().IndexOf('t') >= 0) });
+                                rr.ExDates.Add(new ExDate() { Date = dt, IsDateTime = (date.IndexOf('t', StringComparison.InvariantCultureIgnoreCase) >= 0) });
 
                         }
                         break;

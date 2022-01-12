@@ -375,7 +375,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         private Folder GetFolder(object id)
         {
-            if ((string)id == "") id = SpRootFolderId;
+            if (((string)id).Length == 0) id = SpRootFolderId;
             var folder = clientContext.Web.GetFolderByServerRelativeUrl((string)id);
             clientContext.Load(folder);
             clientContext.Load(folder.Files, collection => collection.IncludeWithDefaultProperties(r => r.ListItemAllFields));

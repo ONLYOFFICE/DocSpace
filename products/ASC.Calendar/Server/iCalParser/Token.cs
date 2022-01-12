@@ -181,8 +181,8 @@ namespace ASC.Calendar.iCalParser
 
             
             
-            isUTC= icalDate.ToLowerInvariant().EndsWith("z");
-            isDate = !icalDate.ToLowerInvariant().Contains("t");
+            isUTC= icalDate.EndsWith("z", StringComparison.OrdinalIgnoreCase);
+            isDate = icalDate.IndexOf("t", StringComparison.OrdinalIgnoreCase) == -1;
 
 
             DateTime dateTime ;

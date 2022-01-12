@@ -195,7 +195,7 @@ namespace ASC.Core.Data
                 .Where(r => r.Source == sourceId)
                 .Where(r => r.Action == actionId);
 
-            if (objectId != string.Empty)
+            if (objectId.Length != 0)
             {
                 q = q.Where(r => r.Object == (objectId ?? string.Empty));
             }
