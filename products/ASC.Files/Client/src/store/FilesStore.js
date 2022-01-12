@@ -13,7 +13,6 @@ import config from "../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { updateTempContent } from "@appserver/common/utils";
 import { thumbnailStatuses } from "../helpers/constants";
-import socket from "../helpers/socket";
 import { isMobile } from "react-device-detect";
 import { openDocEditor as openEditor } from "../helpers/utils";
 import toastr from "studio/toastr";
@@ -67,13 +66,15 @@ class FilesStore {
     const pathname = window.location.pathname.toLowerCase();
     this.isEditor = pathname.indexOf("doceditor") !== -1;
 
-    socket.on("s:refresh-folder", (folderId) => {
+    const { socketHelper } = authStore.settingsStore;
+
+    socketHelper.on("s:refresh-folder", (folderId) => {
       console.log("Call s:refresh-folder");
       selectedFolderStore.id === folderId && this.fetchFiles(folderId);
     });
 
     //WAIT FOR RESPONSES OF EDITING FILE
-    socket.on("s:start-edit-file", (id) => {
+    socketHelper.on("s:start-edit-file", (id) => {
       console.log(`Call s:start-edit-file (id=${id})`);
       const foundIndex = this.files.findIndex((x) => x.id === id);
       if (foundIndex == -1) return;
@@ -81,7 +82,7 @@ class FilesStore {
       this.updateFileStatus(foundIndex, 1);
     });
 
-    socket.on("s:stop-edit-file", (id) => {
+    socketHelper.on("s:stop-edit-file", (id) => {
       console.log(`Call s:stop-edit-file (id=${id})`);
       const foundIndex = this.files.findIndex((x) => x.id === id);
       if (foundIndex == -1) return;
@@ -223,6 +224,8 @@ class FilesStore {
   };
 
   setFiles = (files) => {
+    const { socketHelper } = this.settingsStore;
+
     if (
       this.files &&
       this.selectedFolderStore.parentId === 0 &&
@@ -231,10 +234,10 @@ class FilesStore {
         this.selectedFolderStore.rootFolderType === FolderType.Recent ||
         this.selectedFolderStore.rootFolderType === FolderType.Favorites)
     ) {
-      socket.emit(
-        "unsubscribe",
-        this.files.map((f) => `FILE-${f.id}`)
-      );
+      socketHelper.emit({
+        command: "unsubscribe",
+        data: this.files.map((f) => `FILE-${f.id}`),
+      });
     }
 
     this.files = files;
@@ -247,10 +250,10 @@ class FilesStore {
         this.selectedFolderStore.rootFolderType === FolderType.Recent ||
         this.selectedFolderStore.rootFolderType === FolderType.Favorites)
     ) {
-      socket.emit(
-        "subscribe",
-        this.files.map((f) => `FILE-${f.id}`)
-      );
+      socketHelper.emit({
+        command: "subscribe",
+        data: this.files.map((f) => `FILE-${f.id}`),
+      });
     }
   };
 
@@ -1749,13 +1752,6 @@ class FilesStore {
   };
 
   openDocEditor = (id, providerKey = null, tab = null, url = null) => {
-    //TODO: Need to call stop-edit-file on Server side
-    // if (tab) {
-    //   tab.onbeforeunload = function () {
-    //     socket.emit("stop-edit-file", id);
-    //   };
-    // }
-
     return openEditor(id, providerKey, tab, url);
   };
 

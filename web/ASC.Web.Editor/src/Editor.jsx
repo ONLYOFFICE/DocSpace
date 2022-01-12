@@ -48,7 +48,6 @@ import TextInput from "@appserver/components/text-input";
 import Checkbox from "@appserver/components/checkbox";
 import { isMobile } from "react-device-detect";
 import store from "studio/store";
-import socket from "files/socket";
 
 const { auth: authStore } = store;
 
@@ -769,7 +768,12 @@ const Editor = () => {
     );
 
     if (savingInfo) {
-      fileInfo && socket.emit("c:refresh-folder", fileInfo.folderId);
+      const { socketHelper } = authStore.settingsStore;
+      fileInfo &&
+        socketHelper.emit({
+          command: "c:refresh-folder",
+          data: fileInfo.folderId,
+        });
 
       const convertedInfo = savingInfo.split(": ").pop();
       docEditor.showMessage(convertedInfo);

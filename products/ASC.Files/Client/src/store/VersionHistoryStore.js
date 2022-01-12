@@ -1,6 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import api from "@appserver/common/api";
-import socket from "../helpers/socket";
 import { size } from "@appserver/components/utils/device";
 
 class VersionHistoryStore {
@@ -19,7 +18,10 @@ class VersionHistoryStore {
     const isTabletView = window.innerWidth <= size.tablet;
     if (isTabletView && this.versions) {
       //TODO: Files store in not initialized on versionHistory page. Need socket.
-      socket.on("s:start-edit-file", (id) => {
+
+      const { socketHelper } = this.filesStore.settingsStore;
+
+      socketHelper.on("s:start-edit-file", (id) => {
         console.log(`VERSION STORE Call s:start-edit-file (id=${id})`);
         const verIndex = this.versions.findIndex((x) => x.id == id);
         if (verIndex == -1) return;
@@ -27,7 +29,7 @@ class VersionHistoryStore {
         runInAction(() => (this.isEditing = true));
       });
 
-      socket.on("s:stop-edit-file", (id) => {
+      socketHelper.on("s:stop-edit-file", (id) => {
         console.log(`VERSION STORE Call s:stop-edit-file (id=${id})`);
         const verIndex = this.files.findIndex((x) => x.id === id);
         if (verIndex == -1) return;

@@ -5,6 +5,7 @@ import { combineUrl } from "../utils";
 import FirebaseHelper from "../utils/firebase";
 import { AppServerConfig } from "../constants";
 import { version } from "../package.json";
+import SocketIOHelper from "../utils/socket";
 const { proxyURL } = AppServerConfig;
 
 class SettingsStore {
@@ -91,6 +92,7 @@ class SettingsStore {
     documentServer: "6.4.1",
   };
   debugInfo = false;
+  socketUrl = "";
 
   userFormValidation = /^[\p{L}\p{M}'\-]+$/gu;
   folderFormValidation = new RegExp('[*+:"<>?|\\\\/]', "gim");
@@ -337,6 +339,10 @@ class SettingsStore {
   get firebaseHelper() {
     window.firebaseHelper = new FirebaseHelper(this.firebase);
     return window.firebaseHelper;
+  }
+
+  get socketHelper() {
+    return new SocketIOHelper(this.socketUrl);
   }
 
   getBuildVersionInfo = async () => {
