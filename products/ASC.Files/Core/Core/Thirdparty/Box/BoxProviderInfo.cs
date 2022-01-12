@@ -147,7 +147,7 @@ namespace ASC.Files.Thirdparty.Box
             return BoxProviderInfoHelper.GetBoxFolderAsync(Storage, ID, dropboxFolderPath);
         }
 
-        internal Task<BoxFile> GetBoxFileAsync(string dropboxFilePath)
+        internal ValueTask<BoxFile> GetBoxFileAsync(string dropboxFilePath)
         {
             return BoxProviderInfoHelper.GetBoxFileAsync(Storage, ID, dropboxFilePath);
         }
@@ -272,7 +272,7 @@ namespace ASC.Files.Thirdparty.Box
             return folder;
         }
 
-        internal async Task<BoxFile> GetBoxFileAsync(BoxStorage storage, int id, string boxFileId)
+        internal async ValueTask<BoxFile> GetBoxFileAsync(BoxStorage storage, int id, string boxFileId)
         {
             var file = CacheFile.Get<BoxFile>("boxf-" + id + "-" + boxFileId);
             if (file == null)

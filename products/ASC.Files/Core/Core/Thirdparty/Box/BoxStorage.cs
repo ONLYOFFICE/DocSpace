@@ -142,25 +142,20 @@ namespace ASC.Files.Thirdparty.Box
             }
         }
 
-        public async Task<BoxFile> GetFileAsync(string fileId)
+        public ValueTask<BoxFile> GetFileAsync(string fileId)
         {
             try
             {
-                return await _boxClient.FilesManager.GetInformationAsync(fileId, _boxFields);
+                return  new ValueTask<BoxFile>(_boxClient.FilesManager.GetInformationAsync(fileId, _boxFields));
             }
             catch (Exception ex)
             {
                 if (ex.InnerException is BoxSDK.Exceptions.BoxException boxException && boxException.Error.Status == ((int)HttpStatusCode.NotFound).ToString())
                 {
-                    return null;
+                    return ValueTask.FromResult<BoxFile>(null);
                 }
                 throw;
             }
-        }
-
-        public List<BoxItem> GetItems(string folderId, int limit = 500)
-        {
-            return _boxClient.FoldersManager.GetFolderItemsAsync(folderId, limit, 0, _boxFields).Result.Entries;
         }
 
         public async Task<List<BoxItem>> GetItemsAsync(string folderId, int limit = 500)

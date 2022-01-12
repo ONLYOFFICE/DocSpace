@@ -1293,22 +1293,22 @@ namespace ASC.Web.Files.Utils
 
 
         //Long operation
-        public void DeleteSubitems<T>(T parentId, IFolderDao<T> folderDao, IFileDao<T> fileDao)
+        public async Task DeleteSubitemsAsync<T>(T parentId, IFolderDao<T> folderDao, IFileDao<T> fileDao)
         {
-            var folders = folderDao.GetFoldersAsync(parentId).ToListAsync().Result;
-            foreach (var folder in folders)
+            var folders = folderDao.GetFoldersAsync(parentId);
+            await foreach (var folder in folders)
             {
-                DeleteSubitems(folder.ID, folderDao, fileDao);
+                await DeleteSubitemsAsync(folder.ID, folderDao, fileDao);
 
                 Logger.InfoFormat("Delete folder {0} in {1}", folder.ID, parentId);
-                folderDao.DeleteFolderAsync(folder.ID).Wait();
+                await folderDao.DeleteFolderAsync(folder.ID);
             }
 
-            var files = fileDao.GetFilesAsync(parentId, null, FilterType.None, false, Guid.Empty, string.Empty, true).ToListAsync().Result;
-            foreach (var file in files)
+            var files = fileDao.GetFilesAsync(parentId, null, FilterType.None, false, Guid.Empty, string.Empty, true);
+            await foreach (var file in files)
             {
                 Logger.InfoFormat("Delete file {0} in {1}", file.ID, parentId);
-                fileDao.DeleteFileAsync(file.ID).Wait();
+                await fileDao.DeleteFileAsync(file.ID);
             }
         }
 

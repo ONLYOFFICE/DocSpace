@@ -1090,12 +1090,12 @@ namespace ASC.Web.Files
             {
                 if (!string.IsNullOrEmpty(fileUri))
                 {
-                    file = CreateFileFromUri(folder, fileUri, fileTitle);
+                    file = await CreateFileFromUriAsync(folder, fileUri, fileTitle);
                 }
                 else
                 {
                     var docType = context.Request.Query["doctype"];
-                    file = CreateFileFromTemplate(folder, fileTitle, docType);
+                    file = await CreateFileFromTemplateAsync(folder, fileTitle, docType);
                 }
             }
             catch (Exception ex)
@@ -1122,9 +1122,9 @@ namespace ASC.Web.Files
                 (context.Request.Query["openfolder"].FirstOrDefault() ?? "").Equals("true")
                     ? PathProvider.GetFolderUrlById(file.FolderID)
                     : (FilesLinkUtility.GetFileWebEditorUrl(file.ID) + "#message/" + HttpUtility.UrlEncode(string.Format(FilesCommonResource.MessageFileCreated, folder.Title))));
-        }
+        }      
 
-        private File<T> CreateFileFromTemplate<T>(Folder<T> folder, string fileTitle, string docType)
+        private async Task<File<T>> CreateFileFromTemplateAsync<T>(Folder<T> folder, string fileTitle, string docType)
         {
             var storeTemplate = GlobalStore.GetStoreTemplate();
 
@@ -1161,12 +1161,12 @@ namespace ASC.Web.Files
             file.Comment = FilesCommonResource.CommentCreate;
 
             var fileDao = DaoFactory.GetFileDao<T>();
-            var stream = storeTemplate.GetReadStream("", templatePath);
+            var stream = await storeTemplate.GetReadStreamAsync("", templatePath, 0);
             file.ContentLength = stream.CanSeek ? stream.Length : storeTemplate.GetFileSize(templatePath);
-            return fileDao.SaveFileAsync(file, stream).Result;
+            return await fileDao.SaveFileAsync(file, stream);
         }
 
-        private File<T> CreateFileFromUri<T>(Folder<T> folder, string fileUri, string fileTitle)
+        private Task<File<T>> CreateFileFromUriAsync<T>(Folder<T> folder, string fileUri, string fileTitle)
         {
             if (string.IsNullOrEmpty(fileTitle))
                 fileTitle = Path.GetFileName(HttpUtility.UrlDecode(fileUri));
@@ -1195,13 +1195,13 @@ namespace ASC.Web.Files
             if (fileStream.CanSeek)
             {
                 file.ContentLength = fileStream.Length;
-                return fileDao.SaveFileAsync(file, fileStream).Result;
+                return fileDao.SaveFileAsync(file, fileStream);
             }
             else
             {
                 using var buffered = TempStream.GetBuffered(fileStream);
                 file.ContentLength = buffered.Length;
-                return fileDao.SaveFileAsync(file, buffered).Result;
+                return fileDao.SaveFileAsync(file, buffered);
             }
 
 

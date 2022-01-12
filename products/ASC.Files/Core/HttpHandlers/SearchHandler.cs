@@ -96,21 +96,20 @@ namespace ASC.Web.Files.Configuration
             ThirdpartyConfiguration = thirdpartyConfiguration;
         }
 
-        public async Task<IEnumerable<File<int>>> SearchFilesAsync(string text)
+        public IAsyncEnumerable<File<int>> SearchFilesAsync(string text)
         {
             var security = FileSecurity;
             var fileDao = DaoFactory.GetFileDao<int>();
-            var files = await fileDao.SearchAsync(text);
-            return files.Where(e => security.CanReadAsync(e).Result);
+            var files = fileDao.SearchAsync(text);
+            return files.WhereAwait(async e => await security.CanReadAsync(e));
         }
 
-        public async Task<IEnumerable<Folder<int>>> SearchFoldersAsync(string text)
+        public IAsyncEnumerable<Folder<int>> SearchFoldersAsync(string text)
         {
             var security = FileSecurity;
-            IEnumerable<Folder<int>> result;
             var folderDao = DaoFactory.GetFolderDao<int>();
-            var folders = await folderDao.SearchFoldersAsync(text);
-            result = folders.Where(e => security.CanReadAsync(e).Result);
+            var folders = folderDao.SearchFoldersAsync(text);
+            var result = folders.WhereAwait(async e => await security.CanReadAsync(e));
 
             if (ThirdpartyConfiguration.SupportInclusion(DaoFactory)
                 && FilesSettingsHelper.EnableThirdParty)
@@ -118,12 +117,12 @@ namespace ASC.Web.Files.Configuration
                 var id = GlobalFolderHelper.FolderMy;
                 if (!Equals(id, 0))
                 {
-                    var folderMy = await folderDao.GetFolderAsync(id);
+                    //var folderMy = await folderDao.GetFolderAsync(id);
                     //result = result.Concat(EntryManager.GetThirpartyFolders(folderMy, text));
                 }
 
                 id = GlobalFolderHelper.FolderCommon;
-                var folderCommon = await folderDao.GetFolderAsync(id);
+                //var folderCommon = await folderDao.GetFolderAsync(id);
                 //result = result.Concat(EntryManager.GetThirpartyFolders(folderCommon, text));
             }
 
@@ -133,9 +132,9 @@ namespace ASC.Web.Files.Configuration
         public async Task<SearchResultItem[]> SearchAsync(string text)
         {
             var folderDao = DaoFactory.GetFolderDao<int>();
-            var files = await SearchFilesAsync(text);
+            var files = SearchFilesAsync(text);
             List<SearchResultItem> list = new List<SearchResultItem>();
-            foreach (var file in files)
+            await foreach (var file in files)
             {
                 var searchResultItem = new SearchResultItem
                 {
@@ -153,8 +152,8 @@ namespace ASC.Web.Files.Configuration
                 list.Add(searchResultItem);
             }
 
-            var folders = await SearchFoldersAsync(text);
-            foreach (var folder in folders)
+            var folders = SearchFoldersAsync(text);
+            await foreach (var folder in folders)
             {
                 var searchResultItem = new SearchResultItem
                 {

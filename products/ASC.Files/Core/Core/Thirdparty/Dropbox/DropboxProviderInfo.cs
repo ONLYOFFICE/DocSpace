@@ -130,7 +130,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             return DropboxProviderInfoHelper.GetDropboxFolderAsync(Storage, ID, dropboxFolderPath);
         }
 
-        internal Task<FileMetadata> GetDropboxFileAsync(string dropboxFilePath)
+        internal ValueTask<FileMetadata> GetDropboxFileAsync(string dropboxFilePath)
         {
             return DropboxProviderInfoHelper.GetDropboxFileAsync(Storage, ID, dropboxFilePath);
         }
@@ -235,7 +235,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             return folder;
         }
 
-        internal async Task<FileMetadata> GetDropboxFileAsync(DropboxStorage storage, int id, string dropboxFilePath)
+        internal async ValueTask<FileMetadata> GetDropboxFileAsync(DropboxStorage storage, int id, string dropboxFilePath)
         {
             var file = CacheFile.Get<FileMetadata>("dropboxf-" + id + "-" + dropboxFilePath);
             if (file == null)

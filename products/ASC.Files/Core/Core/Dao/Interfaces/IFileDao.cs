@@ -275,7 +275,7 @@ namespace ASC.Files.Core
         /// <param name="text">search text</param>
         /// <param name="bunch"></param>
         /// <returns>list of files</returns>
-        Task<IEnumerable<File<T>>> SearchAsync(string text, bool bunch = false);
+        IAsyncEnumerable<File<T>> SearchAsync(string text, bool bunch = false);
         /// <summary>
         ///   Checks whether file exists on storage
         /// </summary>

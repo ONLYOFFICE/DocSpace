@@ -41,7 +41,7 @@ namespace ASC.Files.Thirdparty
             return Task.FromResult(new List<File<string>>());
         }
 
-        public Task<IEnumerable<File<string>>> SearchAsync(string text, bool bunch)
+        public IAsyncEnumerable<File<string>> SearchAsync(string text, bool bunch)
         {
             return null;
         }
@@ -111,7 +111,7 @@ namespace ASC.Files.Thirdparty
             return Task.CompletedTask;
         }
 
-        public Task<IEnumerable<Folder<string>>> SearchFoldersAsync(string text, bool bunch)
+        public IAsyncEnumerable<Folder<string>> SearchFoldersAsync(string text, bool bunch)
         {
             return null;
         }
@@ -253,39 +253,7 @@ namespace ASC.Files.Thirdparty
         protected IQueryable<TSet> Query<TSet>(DbSet<TSet> set) where TSet : class, IDbFile
         {
             return set.AsQueryable().Where(r => r.TenantId == TenantID);
-        }
-
-        protected string MappingID(string id, bool saveIfNotExist = false)
-        {
-            if (id == null) return null;
-
-            string result;
-            if (id.StartsWith(Id))
-            {
-                result = Regex.Replace(BitConverter.ToString(Hasher.Hash(id.ToString(), HashAlg.MD5)), "-", "").ToLower();
-            }
-            else
-            {
-                result = FilesDbContext.ThirdpartyIdMapping
-                        .AsQueryable()
-                        .Where(r => r.HashId == id)
-                        .Select(r => r.Id)
-                        .FirstOrDefault();
-            }
-            if (saveIfNotExist)
-            {
-                var newMapping = new DbFilesThirdpartyIdMapping
-                {
-                    Id = id,
-                    HashId = result,
-                    TenantId = TenantID
-                };
-
-                FilesDbContext.ThirdpartyIdMapping.Add(newMapping);
-                FilesDbContext.SaveChanges();
-            }
-            return result;
-        }
+        }     
 
         protected async Task<string> MappingIDAsync(string id, bool saveIfNotExist = false)
         {

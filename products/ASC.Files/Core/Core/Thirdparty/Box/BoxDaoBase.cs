@@ -217,17 +217,17 @@ namespace ASC.Files.Thirdparty.Box
             }
         }
 
-        protected async Task<BoxFile> GetBoxFileAsync(string fileId)
+        protected ValueTask<BoxFile> GetBoxFileAsync(string fileId)
         {
             var boxFileId = MakeBoxId(fileId);
             try
             {
-                var file = await ProviderInfo.GetBoxFileAsync(boxFileId);
+                var file = ProviderInfo.GetBoxFileAsync(boxFileId);
                 return file;
             }
             catch (Exception ex)
             {
-                return new ErrorFile(ex, boxFileId);
+                return ValueTask.FromResult<BoxFile>(new ErrorFile(ex, boxFileId));
             }
         }
 

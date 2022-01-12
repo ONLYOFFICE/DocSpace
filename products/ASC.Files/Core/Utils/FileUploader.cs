@@ -292,30 +292,6 @@ namespace ASC.Web.Files.Utils
             return file;
         }
 
-        public ChunkedUploadSession<T> InitiateUpload<T>(T folderId, T fileId, string fileName, long contentLength, bool encrypted)
-        {
-            var file = ServiceProvider.GetService<File<T>>();
-            file.ID = fileId;
-            file.FolderID = folderId;
-            file.Title = fileName;
-            file.ContentLength = contentLength;
-
-            var dao = DaoFactory.GetFileDao<T>();
-            var uploadSession = dao.CreateUploadSessionAsync(file, contentLength).Result;
-
-            uploadSession.Expired = uploadSession.Created + ChunkedUploadSessionHolder.SlidingExpiration;
-            uploadSession.Location = FilesLinkUtility.GetUploadChunkLocationUrl(uploadSession.Id);
-            uploadSession.TenantId = TenantManager.GetCurrentTenant().TenantId;
-            uploadSession.UserId = AuthContext.CurrentAccount.ID;
-            uploadSession.FolderId = folderId;
-            uploadSession.CultureName = Thread.CurrentThread.CurrentUICulture.Name;
-            uploadSession.Encrypted = encrypted;
-
-            ChunkedUploadSessionHolder.StoreSession(uploadSession);
-
-            return uploadSession;
-        }
-
         public async Task<ChunkedUploadSession<T>> InitiateUploadAsync<T>(T folderId, T fileId, string fileName, long contentLength, bool encrypted)
         {
             var file = ServiceProvider.GetService<File<T>>();
@@ -340,7 +316,7 @@ namespace ASC.Web.Files.Utils
             return uploadSession;
         }
 
-        public ChunkedUploadSession<T> UploadChunk<T>(string uploadId, Stream stream, long chunkLength)
+        public async Task<ChunkedUploadSession<T>> UploadChunkAsync<T>(string uploadId, Stream stream, long chunkLength)
         {
             var uploadSession = ChunkedUploadSessionHolder.GetSession<T>(uploadId);
             uploadSession.Expired = DateTime.UtcNow + ChunkedUploadSessionHolder.SlidingExpiration;
@@ -359,12 +335,12 @@ namespace ASC.Web.Files.Utils
 
             if (uploadSession.BytesUploaded + chunkLength > maxUploadSize)
             {
-                AbortUpload(uploadSession);
+                await AbortUploadAsync(uploadSession);
                 throw FileSizeComment.GetFileSizeException(maxUploadSize);
             }
 
             var dao = DaoFactory.GetFileDao<T>();
-            dao.UploadChunkAsync(uploadSession, stream, chunkLength).Wait();
+            await dao.UploadChunkAsync(uploadSession, stream, chunkLength);
 
             if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
             {
@@ -379,14 +355,14 @@ namespace ASC.Web.Files.Utils
             return uploadSession;
         }
 
-        public void AbortUpload<T>(string uploadId)
+        public async Task AbortUploadAsync<T>(string uploadId)
         {
-            AbortUpload(ChunkedUploadSessionHolder.GetSession<T>(uploadId));
+            await AbortUploadAsync(ChunkedUploadSessionHolder.GetSession<T>(uploadId));
         }
 
-        private void AbortUpload<T>(ChunkedUploadSession<T> uploadSession)
+        private async Task  AbortUploadAsync<T>(ChunkedUploadSession<T> uploadSession)
         {
-            DaoFactory.GetFileDao<T>().AbortUploadSessionAsync(uploadSession).Wait();
+            await DaoFactory.GetFileDao<T>().AbortUploadSessionAsync(uploadSession);
 
             ChunkedUploadSessionHolder.RemoveSession(uploadSession);
         }

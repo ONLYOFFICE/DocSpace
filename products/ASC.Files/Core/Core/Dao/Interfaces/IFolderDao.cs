@@ -220,7 +220,7 @@ namespace ASC.Files.Core
         /// <param name="text"></param>
         /// <param name="bunch"></param>
         /// <returns></returns>
-        Task<IEnumerable<Folder<T>>> SearchFoldersAsync(string text, bool bunch = false);
+        IAsyncEnumerable<Folder<T>> SearchFoldersAsync(string text, bool bunch = false);
 
         /// <summary>
         /// Only in TMFolderDao

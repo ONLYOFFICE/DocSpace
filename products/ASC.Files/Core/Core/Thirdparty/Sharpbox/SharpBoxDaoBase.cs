@@ -155,68 +155,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
             }
         }
 
-        protected string MappingID(string id)
-        {
-            return MappingID(id, false);
-        }
-
         protected Task<string> MappingIDAsync(string id)
         {
             return MappingIDAsync(id, false);
-        }
-
-        protected void UpdatePathInDB(string oldValue, string newValue)
-        {
-            if (oldValue.Equals(newValue)) return;
-
-            using var tx = FilesDbContext.Database.BeginTransaction();
-            var oldIDs = Query(FilesDbContext.ThirdpartyIdMapping)
-                .Where(r => r.Id.StartsWith(oldValue))
-                .Select(r => r.Id)
-                .ToList();
-
-            foreach (var oldID in oldIDs)
-            {
-                var oldHashID = MappingID(oldID);
-                var newID = oldID.Replace(oldValue, newValue);
-                var newHashID = MappingID(newID);
-
-                var mappingForUpdate = Query(FilesDbContext.ThirdpartyIdMapping)
-                    .Where(r => r.HashId == oldHashID)
-                    .ToList();
-
-                foreach (var m in mappingForUpdate)
-                {
-                    m.Id = newID;
-                    m.HashId = newHashID;
-                }
-
-                FilesDbContext.SaveChanges();
-
-                var securityForUpdate = Query(FilesDbContext.Security)
-                    .Where(r => r.EntryId == oldHashID)
-                    .ToList();
-
-                foreach (var s in securityForUpdate)
-                {
-                    s.EntryId = newHashID;
-                }
-
-                FilesDbContext.SaveChanges();
-
-                var linkForUpdate = Query(FilesDbContext.TagLink)
-                    .Where(r => r.EntryId == oldHashID)
-                    .ToList();
-
-                foreach (var l in linkForUpdate)
-                {
-                    l.EntryId = newHashID;
-                }
-
-                FilesDbContext.SaveChanges();
-            }
-
-            tx.Commit();
         }
 
         protected async Task UpdatePathInDBAsync(string oldValue, string newValue)
@@ -245,7 +186,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                     m.HashId = newHashID;
                 }
 
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync();
 
                 var securityForUpdate = await Query(FilesDbContext.Security)
                     .Where(r => r.EntryId == oldHashID)
@@ -256,7 +197,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                     s.EntryId = newHashID;
                 }
 
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync();
 
                 var linkForUpdate = await Query(FilesDbContext.TagLink)
                     .Where(r => r.EntryId == oldHashID)
@@ -267,10 +208,10 @@ namespace ASC.Files.Thirdparty.Sharpbox
                     l.EntryId = newHashID;
                 }
 
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync();
             }
 
-            tx.Commit();
+            await tx.CommitAsync();
         }
 
         protected string MakePath(object entryId)

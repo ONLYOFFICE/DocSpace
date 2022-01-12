@@ -702,7 +702,7 @@ namespace ASC.Files.Core.Data
 
             await tx.CommitAsync().ConfigureAwait(false);
 
-            await fromFolders.ForEachAwaitAsync(async folderId => await RecalculateFilesCountAsync(folderId).ConfigureAwait(false)).ConfigureAwait(false);
+            var forEachTask = fromFolders.ForEachAwaitAsync(async folderId => await RecalculateFilesCountAsync(folderId).ConfigureAwait(false)).ConfigureAwait(false);
 
             if (deleteFolder)
                 DeleteFolder(fileId);
@@ -712,6 +712,8 @@ namespace ASC.Files.Core.Data
             {
                 await FactoryIndexer.DeleteAsync(toDeleteFile).ConfigureAwait(false);
             }
+
+            await forEachTask;
         }
 
         public Task<bool> IsExistAsync(string title, object folderId)
@@ -785,7 +787,7 @@ namespace ASC.Files.Core.Data
                 await RecalculateFilesCountAsync(toFolderId).ConfigureAwait(false);
             }
 
-            var parentFolders = await
+            var parentFoldersTask = 
                 FilesDbContext.Tree
                 .AsQueryable()
                 .Where(r => r.FolderId == toFolderId)
@@ -797,7 +799,7 @@ namespace ASC.Files.Core.Data
 
             if (toUpdateFile != null)
             {
-                toUpdateFile.Folders = parentFolders;
+                toUpdateFile.Folders = await parentFoldersTask;
                 FactoryIndexer.Update(toUpdateFile, UpdateAction.Replace, w => w.Folders);
             }
 
@@ -1142,28 +1144,28 @@ namespace ASC.Files.Core.Data
             return query.ConvertAll(e => ToFile(e));
         }
 
-        public async Task<IEnumerable<File<int>>> SearchAsync(string searchText, bool bunch)
+        public IAsyncEnumerable<File<int>> SearchAsync(string searchText, bool bunch)
         {
             if (FactoryIndexer.TrySelectIds(s => s.MatchAll(searchText), out var ids))
             {
                 var query = GetFileQuery(r => r.CurrentVersion && ids.Contains(r.Id)).AsNoTracking();
-                return await FromQueryWithShared(query).Select(e => ToFile(e))
+                return FromQueryWithShared(query).Select(e => ToFile(e))
                     .Where(
                         f =>
                         bunch
                             ? f.RootFolderType == FolderType.BUNCH
                             : f.RootFolderType == FolderType.USER || f.RootFolderType == FolderType.COMMON)
-                    .ToListAsync().ConfigureAwait(false);
+                    .AsAsyncEnumerable();
             }
             else
             {
                 var query = BuildSearch(GetFileQuery(r => r.CurrentVersion).AsNoTracking(), searchText, SearhTypeEnum.Any);
-                return await FromQueryWithShared(query).Select(e => ToFile(e))
+                return FromQueryWithShared(query).Select(e => ToFile(e))
                     .Where(f =>
                            bunch
                                 ? f.RootFolderType == FolderType.BUNCH
                                 : f.RootFolderType == FolderType.USER || f.RootFolderType == FolderType.COMMON)
-                    .ToListAsync().ConfigureAwait(false);
+                    .AsAsyncEnumerable();
             }
         }
         private void DeleteFolder(int fileId)
@@ -1184,13 +1186,15 @@ namespace ASC.Files.Core.Data
             if (string.IsNullOrEmpty(changes)) throw new ArgumentNullException("changes");
             if (differenceStream == null) throw new ArgumentNullException("differenceStream");
 
+            var toUpdateTask = Query(FilesDbContext.Files)
+                .Where(r => r.Id == file.ID)
+                .Where(r => r.Version == file.Version)
+                .ToListAsync()
+                .ConfigureAwait(false);
+
             changes = changes.Trim();
 
-            var toUpdate = Query(FilesDbContext.Files)
-                .Where(r => r.Id == file.ID)
-                .Where(r => r.Version == file.Version);
-
-            foreach (var f in toUpdate)
+            foreach (var f in await toUpdateTask)
             {
                 f.Changes = changes;
             }
@@ -1212,9 +1216,9 @@ namespace ASC.Files.Core.Data
             }
 
             query = query.OrderBy(r => r.Version);
+            var dbFiles = await query.ToListAsync().ConfigureAwait(false);
 
-            return (await query
-                    .ToListAsync().ConfigureAwait(false))
+            return dbFiles
                     .Select(r =>
                     {
                         var item = ServiceProvider.GetService<EditHistory>();
@@ -1264,21 +1268,23 @@ namespace ASC.Files.Core.Data
                 .Where(r => r.TenantId == tenant)
                 .Where(r => r.CurrentVersion);
 
-            var q4 = FromQuery(q3)
+            var q4Task = FromQuery(q3)
                 .Join(FilesDbContext.Security.AsQueryable().DefaultIfEmpty(), r => r.File.Id.ToString(), s => s.EntryId, (f, s) => new DbFileQueryWithSecurity { DbFileQuery = f, Security = s })
                 .Where(r => r.Security.TenantId == tenant)
                 .Where(r => r.Security.EntryType == FileEntryType.File)
                 .Where(r => r.Security.Security == Security.FileShare.Restrict)
-                .Where(r => r.Security.TimeStamp >= from && r.Security.TimeStamp <= to);
+                .Where(r => r.Security.TimeStamp >= from && r.Security.TimeStamp <= to)
+                .ToListAsync();
 
             var fileWithShare = await q2.Select(e => ToFileWithShare(e)).ToListAsync().ConfigureAwait(false);
+            var q4 = await q4Task.ConfigureAwait(false);
 
-            return fileWithShare.Union(q4.Select(ToFileWithShare).ToList());
+            return fileWithShare.Union(q4.Select(ToFileWithShare));
         }
 
         public async Task<IEnumerable<int>> GetTenantsWithFeedsAsync(DateTime fromTime)
         {
-            var q1 = await FilesDbContext.Files
+            var q1Task = FilesDbContext.Files
                 .AsQueryable()
                 .Where(r => r.ModifiedOn > fromTime)
                 .GroupBy(r => r.TenantId)
@@ -1287,7 +1293,7 @@ namespace ASC.Files.Core.Data
                 .ToListAsync()
                 .ConfigureAwait(false);
 
-            var q2 = await FilesDbContext.Security
+            var q2Task = FilesDbContext.Security
                 .AsQueryable()
                 .Where(r => r.TimeStamp > fromTime)
                 .GroupBy(r => r.TenantId)
@@ -1295,6 +1301,9 @@ namespace ASC.Files.Core.Data
                 .Select(r => r.Key)
                 .ToListAsync()
                 .ConfigureAwait(false);
+
+            var q1 = await q1Task;
+            var q2 = await q2Task;
 
             return q1.Union(q2);
         }

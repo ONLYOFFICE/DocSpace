@@ -223,31 +223,17 @@ namespace ASC.Files.Thirdparty.Dropbox
             }
         }
 
-        protected FileMetadata GetDropboxFile(object fileId)
+        protected ValueTask<FileMetadata> GetDropboxFileAsync(object fileId)
         {
             var dropboxFilePath = MakeDropboxPath(fileId);
             try
             {
-                var file = ProviderInfo.GetDropboxFileAsync(dropboxFilePath).Result;
+                var file = ProviderInfo.GetDropboxFileAsync(dropboxFilePath);
                 return file;
             }
             catch (Exception ex)
             {
-                return new ErrorFile(ex, dropboxFilePath);
-            }
-        }
-
-        protected async Task<FileMetadata> GetDropboxFileAsync(object fileId)
-        {
-            var dropboxFilePath = MakeDropboxPath(fileId);
-            try
-            {
-                var file = await ProviderInfo.GetDropboxFileAsync(dropboxFilePath);
-                return file;
-            }
-            catch (Exception ex)
-            {
-                return new ErrorFile(ex, dropboxFilePath);
+                return ValueTask.FromResult<FileMetadata>(new ErrorFile(ex, dropboxFilePath));
             }
         }
 

@@ -153,17 +153,17 @@ namespace ASC.Web.Files.HttpHandlers
                 switch (request.Type(InstanceCrypto))
                 {
                     case ChunkedRequestType.Abort:
-                        FileUploader.AbortUpload<T>(request.UploadId);
+                        await FileUploader.AbortUploadAsync<T>(request.UploadId);
                         await WriteSuccess(context, null);
                         return;
 
                     case ChunkedRequestType.Initiate:
-                        var createdSession = FileUploader.InitiateUpload(request.FolderId, request.FileId, request.FileName, request.FileSize, request.Encrypted);
+                        var createdSession = await FileUploader.InitiateUploadAsync(request.FolderId, request.FileId, request.FileName, request.FileSize, request.Encrypted);
                         await WriteSuccess(context, await ChunkedUploadSessionHelper.ToResponseObjectAsync(createdSession, true));
                         return;
 
                     case ChunkedRequestType.Upload:
-                        var resumedSession = FileUploader.UploadChunk<T>(request.UploadId, request.ChunkStream, request.ChunkSize);
+                        var resumedSession = await FileUploader.UploadChunkAsync<T>(request.UploadId, request.ChunkStream, request.ChunkSize);
 
                         if (resumedSession.BytesUploaded == resumedSession.BytesTotal)
                         {

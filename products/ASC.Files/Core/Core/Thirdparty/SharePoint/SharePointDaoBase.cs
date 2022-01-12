@@ -110,60 +110,6 @@ namespace ASC.Files.Thirdparty.SharePoint
             return string.Format(" ({0}){1}", index + 1, staticText);
         }
 
-        protected void UpdatePathInDB(string oldValue, string newValue)
-        {
-            if (oldValue.Equals(newValue)) return;
-
-            using var tx = FilesDbContext.Database.BeginTransaction();
-            var oldIDs = Query(FilesDbContext.ThirdpartyIdMapping)
-                .Where(r => r.Id.StartsWith(oldValue))
-                .Select(r => r.Id)
-                .ToList();
-
-            foreach (var oldID in oldIDs)
-            {
-                var oldHashID = MappingID(oldID);
-                var newID = oldID.Replace(oldValue, newValue);
-                var newHashID = MappingID(newID);
-
-                var mappingForUpdate = Query(FilesDbContext.ThirdpartyIdMapping)
-                    .Where(r => r.HashId == oldHashID)
-                    .ToList();
-
-                foreach (var m in mappingForUpdate)
-                {
-                    m.Id = newID;
-                    m.HashId = newHashID;
-                }
-
-                FilesDbContext.SaveChanges();
-
-                var securityForUpdate = Query(FilesDbContext.Security)
-                    .Where(r => r.EntryId == oldHashID)
-                    .ToList();
-
-                foreach (var s in securityForUpdate)
-                {
-                    s.EntryId = newHashID;
-                }
-
-                FilesDbContext.SaveChanges();
-
-                var linkForUpdate = Query(FilesDbContext.TagLink)
-                    .Where(r => r.EntryId == oldHashID)
-                    .ToList();
-
-                foreach (var l in linkForUpdate)
-                {
-                    l.EntryId = newHashID;
-                }
-
-                FilesDbContext.SaveChanges();
-            }
-
-            tx.Commit();
-        }
-
         protected async Task UpdatePathInDBAsync(string oldValue, string newValue)
         {
             if (oldValue.Equals(newValue)) return;
@@ -190,7 +136,7 @@ namespace ASC.Files.Thirdparty.SharePoint
                     m.HashId = newHashID;
                 }
 
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync();
 
                 var securityForUpdate = await Query(FilesDbContext.Security)
                     .Where(r => r.EntryId == oldHashID)
@@ -201,7 +147,7 @@ namespace ASC.Files.Thirdparty.SharePoint
                     s.EntryId = newHashID;
                 }
 
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync();
 
                 var linkForUpdate = await Query(FilesDbContext.TagLink)
                     .Where(r => r.EntryId == oldHashID)
@@ -212,15 +158,10 @@ namespace ASC.Files.Thirdparty.SharePoint
                     l.EntryId = newHashID;
                 }
 
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync();
             }
 
-            tx.Commit();
-        }
-
-        protected string MappingID(string id)
-        {
-            return MappingID(id, false);
+            await tx.CommitAsync();
         }
 
         protected Task<string> MappingIDAsync(string id)

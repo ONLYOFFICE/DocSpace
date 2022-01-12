@@ -1424,42 +1424,6 @@ namespace ASC.Web.Files.Services.WCFService
             return FileOperationsManager.Download(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), folders, files, GetHttpHeaders());
         }
 
-
-        public (List<object>, List<object>) MoveOrCopyFilesCheck<T1>(List<JsonElement> filesId, List<JsonElement> foldersId, T1 destFolderId)
-        {
-            var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(foldersId);
-            var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(filesId);
-
-            var checkedFiles = new List<object>();
-            var checkedFolders = new List<object>();
-
-            var (filesInts, folderInts) = MoveOrCopyFilesCheck(fileIntIds, folderIntIds, destFolderId);
-
-            foreach (var i in filesInts)
-            {
-                checkedFiles.Add(i);
-            }
-
-            foreach (var i in folderInts)
-            {
-                checkedFolders.Add(i);
-            }
-
-            var (filesStrings, folderStrings) = MoveOrCopyFilesCheck(fileStringIds, folderStringIds, destFolderId);
-
-            foreach (var i in filesStrings)
-            {
-                checkedFiles.Add(i);
-            }
-
-            foreach (var i in folderStrings)
-            {
-                checkedFolders.Add(i);
-            }
-
-            return (checkedFiles, checkedFolders);
-        }
-
         public async Task<(List<object>, List<object>)> MoveOrCopyFilesCheckAsync<T1>(List<JsonElement> filesId, List<JsonElement> foldersId, T1 destFolderId)
         {
             var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(foldersId);
@@ -1494,65 +1458,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             return (checkedFiles, checkedFolders);
         }
-
-        private (List<TFrom>, List<TFrom>) MoveOrCopyFilesCheck<TFrom, TTo>(IEnumerable<TFrom> filesId, IEnumerable<TFrom> foldersId, TTo destFolderId)
-        {
-            var checkedFiles = new List<TFrom>();
-            var checkedFolders = new List<TFrom>();
-            var folderDao = DaoFactory.GetFolderDao<TFrom>();
-            var fileDao = DaoFactory.GetFileDao<TFrom>();
-            var destFolderDao = DaoFactory.GetFolderDao<TTo>();
-            var destFileDao = DaoFactory.GetFileDao<TTo>();
-
-            var toFolder = destFolderDao.GetFolderAsync(destFolderId).Result;
-            ErrorIf(toFolder == null, FilesCommonResource.ErrorMassage_FolderNotFound);
-            ErrorIf(!FileSecurity.CanCreateAsync(toFolder).Result, FilesCommonResource.ErrorMassage_SecurityException_Create);
-
-            foreach (var id in filesId)
-            {
-                var file = fileDao.GetFileAsync(id).Result;
-                if (file != null
-                    && !file.Encrypted
-                    && destFileDao.IsExistAsync(file.Title, toFolder.ID).Result)
-                {
-                    checkedFiles.Add(id);
-                }
-            }
-
-            var folders = folderDao.GetFoldersAsync(foldersId).ToListAsync().Result;
-            var foldersProject = folders.Where(folder => folder.FolderType == FolderType.BUNCH).ToList();
-            if (foldersProject.Any())
-            {
-                var toSubfolders = destFolderDao.GetFoldersAsync(toFolder.ID).ToListAsync().Result;
-
-                foreach (var folderProject in foldersProject)
-                {
-                    var toSub = toSubfolders.FirstOrDefault(to => Equals(to.Title, folderProject.Title));
-                    if (toSub == null) continue;
-
-                    var filesPr = fileDao.GetFilesAsync(folderProject.ID).Result;
-                    var foldersPr = folderDao.GetFoldersAsync(folderProject.ID).Select(d => d.ID).ToListAsync().Result;
-
-                    var (cFiles, cFolders) = MoveOrCopyFilesCheck(filesPr, foldersPr, toSub.ID);
-                    checkedFiles.AddRange(cFiles);
-                    checkedFolders.AddRange(cFolders);
-                }
-            }
-            try
-            {
-                foreach (var pair in folderDao.CanMoveOrCopyAsync(foldersId.ToArray(), toFolder.ID).Result)
-                {
-                    checkedFolders.Add(pair.Key);
-                }
-            }
-            catch (Exception e)
-            {
-                throw GenerateException(e);
-            }
-
-            return (checkedFiles, checkedFolders);
-        }
-
+        
         private async Task<(List<TFrom>, List<TFrom>)> MoveOrCopyFilesCheckAsync<TFrom, TTo>(IEnumerable<TFrom> filesId, IEnumerable<TFrom> foldersId, TTo destFolderId)
         {
             var checkedFiles = new List<TFrom>();
@@ -1767,7 +1673,7 @@ namespace ASC.Web.Files.Services.WCFService
             await EntryManager.ReassignItemsAsync(GlobalFolderHelper.GetFolderCommon<T>(), userFrom.ID, userTo.ID, folderDao, fileDao);
         }
 
-        public async Task DeleteStorage(Guid userId)
+        public async Task DeleteStorageAsync(Guid userId)
         {
             //check current user have access
             ErrorIf(!Global.IsAdministrator, FilesCommonResource.ErrorMassage_SecurityException);
@@ -1814,7 +1720,7 @@ namespace ASC.Web.Files.Services.WCFService
             //delete all from My
             if (!Equals(folderIdFromMy, 0))
             {
-                EntryManager.DeleteSubitems(folderIdFromMy, folderDao, fileDao);
+                await EntryManager.DeleteSubitemsAsync(folderIdFromMy, folderDao, fileDao);
 
                 //delete My userFrom folder
                 await folderDao.DeleteFolderAsync(folderIdFromMy);
@@ -1825,7 +1731,7 @@ namespace ASC.Web.Files.Services.WCFService
             var folderIdFromTrash = await folderDao.GetFolderIDTrashAsync(false, userId);
             if (!Equals(folderIdFromTrash, 0))
             {
-                EntryManager.DeleteSubitems(folderIdFromTrash, folderDao, fileDao);
+                await EntryManager.DeleteSubitemsAsync(folderIdFromTrash, folderDao, fileDao);
                 await folderDao.DeleteFolderAsync(folderIdFromTrash);
                 GlobalFolderHelper.FolderTrash = userId;
             }

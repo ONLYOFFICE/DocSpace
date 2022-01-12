@@ -822,26 +822,27 @@ namespace ASC.Files.Core.Data
             return FilesDbContext.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Folder<int>>> SearchFoldersAsync(string text, bool bunch)
+        public IAsyncEnumerable<Folder<int>> SearchFoldersAsync(string text, bool bunch)
         {
-            return (await SearchAsync(text)).Where(f => bunch
-                                               ? f.RootFolderType == FolderType.BUNCH
-                                               : (f.RootFolderType == FolderType.USER || f.RootFolderType == FolderType.COMMON)).ToList();
+            var folders = SearchAsync(text);
+            return folders.Where(f => bunch
+                                           ? f.RootFolderType == FolderType.BUNCH
+                                           : (f.RootFolderType == FolderType.USER || f.RootFolderType == FolderType.COMMON));
         }
 
-        private async Task<IEnumerable<Folder<int>>> SearchAsync(string text)
+        private IAsyncEnumerable<Folder<int>> SearchAsync(string text)
         {
-            if (string.IsNullOrEmpty(text)) return new List<Folder<int>>();
+            if (string.IsNullOrEmpty(text)) return AsyncEnumerable.Empty<Folder<int>>();
 
             if (FactoryIndexer.TrySelectIds(s => s.MatchAll(text), out var ids))
             {
                 var q1 = GetFolderQuery(r => ids.Contains(r.Id));
-                var fromQuery1 = await FromQueryWithShared(q1).ToListAsync().ConfigureAwait(false);
+                var fromQuery1 = FromQueryWithShared(q1).AsAsyncEnumerable();
                 return fromQuery1.Select(ToFolder);
             }
 
             var q = BuildSearch(GetFolderQuery(), text, SearhTypeEnum.Any);
-            var fromQuery = await FromQueryWithShared(q).ToListAsync().ConfigureAwait(false);
+            var fromQuery = FromQueryWithShared(q).AsAsyncEnumerable();
             return fromQuery.Select(ToFolder);
         }
 

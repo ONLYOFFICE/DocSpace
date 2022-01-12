@@ -112,8 +112,6 @@ namespace ASC.Files.Thirdparty.Box
 
         public IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> fileIds)
         {
-            var list = new List<File<string>>();
-
             if (fileIds == null || !fileIds.Any()) return AsyncEnumerable.Empty<File<string>>();
 
             var result = fileIds.ToAsyncEnumerable().SelectAwait(async e => ToFile(await GetBoxFileAsync(e).ConfigureAwait(false)));
@@ -446,13 +444,12 @@ namespace ASC.Files.Thirdparty.Box
             return ToFile(newBoxFile);
         }
 
-        public async Task<File<int>> CopyFileAsync(string fileId, int toFolderId)
+        public Task<File<int>> CopyFileAsync(string fileId, int toFolderId)
         {
-            var moved = await CrossDao.PerformCrossDaoFileCopyAsync(
+            var moved = CrossDao.PerformCrossDaoFileCopyAsync(
                 fileId, this, BoxDaoSelector.ConvertId,
                 toFolderId, FileDao, r => r,
-                false)
-                .ConfigureAwait(false);
+                false);
 
             return moved;
         }

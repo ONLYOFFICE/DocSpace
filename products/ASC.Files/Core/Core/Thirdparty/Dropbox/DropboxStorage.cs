@@ -154,7 +154,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             }
         }
 
-        public async Task<FileMetadata> GetFileAsync(string filePath)
+        public async ValueTask<FileMetadata> GetFileAsync(string filePath)
         {
             if (string.IsNullOrEmpty(filePath) || filePath == "/")
             {
@@ -187,29 +187,22 @@ namespace ASC.Files.Thirdparty.Dropbox
             return new List<Metadata>(data.Entries);
         }
 
-        public Stream DownloadStream(string filePath, int offset = 0)
+        public async Task<Stream> DownloadStreamAsync(string filePath, int offset = 0)
         {
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException("file");
 
-            using var response = dropboxClient.Files.DownloadAsync(filePath).Result;
+            using var response = await dropboxClient.Files.DownloadAsync(filePath);
             var tempBuffer = TempStream.Create();
-            using (var str = response.GetContentAsStreamAsync().Result)
+            using (var str = await response.GetContentAsStreamAsync())
             {
                 if (str != null)
                 {
-                    str.CopyTo(tempBuffer);
-                    tempBuffer.Flush();
+                    await str.CopyToAsync(tempBuffer);
+                    await tempBuffer.FlushAsync();
                     tempBuffer.Seek(offset, SeekOrigin.Begin);
                 }
             }
             return tempBuffer;
-        }
-
-        public FolderMetadata CreateFolder(string title, string parentPath)
-        {
-            var path = MakeDropboxPath(parentPath, title);
-            var result = dropboxClient.Files.CreateFolderV2Async(path, true).Result;
-            return result.Metadata;
         }
 
         public async Task<FolderMetadata> CreateFolderAsync(string title, string parentPath)
@@ -217,12 +210,6 @@ namespace ASC.Files.Thirdparty.Dropbox
             var path = MakeDropboxPath(parentPath, title);
             var result = await dropboxClient.Files.CreateFolderV2Async(path, true);
             return result.Metadata;
-        }
-
-        public FileMetadata CreateFile(Stream fileStream, string title, string parentPath)
-        {
-            var path = MakeDropboxPath(parentPath, title);
-            return dropboxClient.Files.UploadAsync(path, WriteMode.Add.Instance, true, body: fileStream).Result;
         }
 
         public Task<FileMetadata> CreateFileAsync(Stream fileStream, string title, string parentPath)

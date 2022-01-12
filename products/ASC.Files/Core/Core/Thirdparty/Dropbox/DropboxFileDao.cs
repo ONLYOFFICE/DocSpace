@@ -264,7 +264,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             if (dropboxFile == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
             if (dropboxFile is ErrorFile errorFile) throw new Exception(errorFile.Error);
 
-            var fileStream = ProviderInfo.Storage.DownloadStream(MakeDropboxPath(dropboxFile), (int)offset);
+            var fileStream = await ProviderInfo.Storage.DownloadStreamAsync(MakeDropboxPath(dropboxFile), (int)offset);
 
             return fileStream;
         }
@@ -322,7 +322,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             if (dropboxFile == null) return;
             var id = MakeId(dropboxFile);
 
-            using (var tx = FilesDbContext.Database.BeginTransaction())
+            using (var tx = await FilesDbContext.Database.BeginTransactionAsync())
             {
                 var hashIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
                     .Where(r => r.Id.StartsWith(id))
@@ -434,13 +434,12 @@ namespace ASC.Files.Thirdparty.Dropbox
             throw new NotImplementedException();
         }
 
-        public async Task<File<int>> CopyFileAsync(string fileId, int toFolderId)
+        public Task<File<int>> CopyFileAsync(string fileId, int toFolderId)
         {
-            var moved = await CrossDao.PerformCrossDaoFileCopyAsync(
+            var moved = CrossDao.PerformCrossDaoFileCopyAsync(
                 fileId, this, DropboxDaoSelector.ConvertId,
                 toFolderId, FileDao, r => r,
-                false)
-                .ConfigureAwait(false);
+                false);
 
             return moved;
         }
