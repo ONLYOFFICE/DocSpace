@@ -62,12 +62,18 @@ namespace ASC.TelegramService
             ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
         }
 
-        public async Task SendMessage(NotifyMessage msg)
+        public Task SendMessage(NotifyMessage msg)
+        {
+            if (string.IsNullOrEmpty(msg.To)) return Task.CompletedTask;
+            if (!Clients.ContainsKey(msg.Tenant)) return Task.CompletedTask;
+
+            return InternalSendMessage(msg);
+        }
+
+        private async Task InternalSendMessage(NotifyMessage msg)
         {
             var scope = ServiceProvider.CreateScope();
             var cachedTelegramDao = scope.ServiceProvider.GetService<IOptionsSnapshot<CachedTelegramDao>>().Value;
-            if (string.IsNullOrEmpty(msg.To)) return;
-            if (!Clients.ContainsKey(msg.Tenant)) return;
 
             var client = Clients[msg.Tenant].Client;
 
@@ -156,10 +162,14 @@ namespace ASC.TelegramService
             MemoryCache.Default.Set(token, userKey, dateExpires);
         }
 
-
-        private async Task OnMessage(object sender, MessageEventArgs e, TelegramBotClient client, int tenantId)
+        private Task OnMessage(object sender, MessageEventArgs e, TelegramBotClient client, int tenantId)
         {
-            if (string.IsNullOrEmpty(e.Message.Text) || e.Message.Text[0] != '/') return;
+            if (string.IsNullOrEmpty(e.Message.Text) || e.Message.Text[0] != '/') return Task.CompletedTask;
+            return InternalOnMessage(sender, e, client, tenantId);
+        }
+
+        private async Task InternalOnMessage(object sender, MessageEventArgs e, TelegramBotClient client, int tenantId)
+        {
             await Command.HandleCommand(e.Message, client, tenantId);
         }
 
