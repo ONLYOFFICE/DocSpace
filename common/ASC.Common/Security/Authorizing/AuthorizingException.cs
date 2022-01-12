@@ -98,15 +98,19 @@ namespace ASC.Common.Security.Authorizing
             var reasons = "";
             for (var i = 0; i < actions.Length; i++)
             {
+                var action = actions[i];
+                var denyAction = denyActions[i];
+                var denySubject = denySubjects[i];
+
                 var reason = "";
-                if (denySubjects[i] != null && denyActions[i] != null)
+                if (denySubject != null && denyAction != null)
                     reason = string.Format("{0}:{1} access denied {2}.",
-                                           actions[i].Name,
-                                           (denySubjects[i] is IRole ? "role:" : "") + denySubjects[i].Name,
-                                           denyActions[i].Name
+                                           action.Name,
+                                           (denySubject is IRole ? "role:" : "") + denySubject.Name,
+                                           denyAction.Name
                         );
                 else
-                    reason = string.Format("{0}: access denied.", actions[i].Name);
+                    reason = string.Format("{0}: access denied.", action.Name);
                 if (i != actions.Length - 1)
                     reason += ", ";
                 reasons += reason;

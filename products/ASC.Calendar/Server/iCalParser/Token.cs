@@ -139,7 +139,9 @@ namespace ASC.Calendar.iCalParser
 
             for (int i = 0; i < lstr.Length; ++i)
             {
-                if (lstr[i] == '-')
+                var c = lstr[i];
+
+                if (c == '-')
                 {
                     upper = true;
                 }
@@ -147,12 +149,12 @@ namespace ASC.Calendar.iCalParser
                 {
                     if (upper)
                     {
-                        buff.Append(Char.ToUpper(lstr[i]));
+                        buff.Append(Char.ToUpper(c));
                         upper = false;
                     }
                     else
                     {
-                        buff.Append(lstr[i]);
+                        buff.Append(c);
                     }
                 }
             }

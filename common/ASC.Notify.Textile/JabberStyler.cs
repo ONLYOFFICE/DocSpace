@@ -58,12 +58,15 @@ namespace ASC.Notify.Textile
             var lines = message.Body.Split(new[] { Environment.NewLine, "\n" }, StringSplitOptions.None);
             for (var i = 0; i < lines.Length - 1; i++)
             {
-                if (string.IsNullOrEmpty(lines[i])) { body += Environment.NewLine; continue; }
-                lines[i] = VelocityArguments.Replace(lines[i], ArgMatchReplace);
-                body += LinkReplacer.Replace(lines[i], EvalLink) + Environment.NewLine;
+                ref var line = ref lines[i];
+                if (string.IsNullOrEmpty(line)) { body += Environment.NewLine; continue; }
+                line = VelocityArguments.Replace(line, ArgMatchReplace);
+                body += LinkReplacer.Replace(line, EvalLink) + Environment.NewLine;
             }
-            lines[^1] = VelocityArguments.Replace(lines[^1], ArgMatchReplace);
-            body += LinkReplacer.Replace(lines[^1], EvalLink);
+
+            ref var lastLine = ref lines[^1];
+            lastLine = VelocityArguments.Replace(lastLine, ArgMatchReplace);
+            body += LinkReplacer.Replace(lastLine, EvalLink);
             body = TextileReplacer.Replace(HttpUtility.HtmlDecode(body), ""); //Kill textile markup
             body = BrReplacer.Replace(body, Environment.NewLine);
             body = ClosedTagsReplacer.Replace(body, Environment.NewLine);

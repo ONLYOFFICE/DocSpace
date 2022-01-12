@@ -519,11 +519,12 @@ namespace ASC.ElasticSearch
 
             for (var i = 0; i < fields.Length; i++)
             {
-                var func = fields[i].Compile();
+                var field = fields[i];
+                var func = field.Compile();
                 var newValue = func(data);
                 string name;
 
-                var expression = fields[i].Body;
+                var expression = field.Body;
                 var isList = expression.Type.IsGenericType && expression.Type.GetGenericTypeDefinition() == typeof(List<>);
 
 

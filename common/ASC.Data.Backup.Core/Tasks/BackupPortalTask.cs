@@ -410,7 +410,8 @@ namespace ASC.Data.Backup.Tasks
 
                         for (var i = 0; i < obj.Length; i++)
                         {
-                            if (obj[i] is byte[] byteArray)
+                            var value = obj[i]; 
+                            if (value is byte[] byteArray)
                             {
                                 sw.Write("0x");
                                 foreach (var b in byteArray)
@@ -419,7 +420,7 @@ namespace ASC.Data.Backup.Tasks
                             else
                             {
                                 var ser = new JsonSerializer();
-                                ser.Serialize(writer, obj[i]);
+                                ser.Serialize(writer, value);
                             }
                             if (i != obj.Length - 1)
                             {
