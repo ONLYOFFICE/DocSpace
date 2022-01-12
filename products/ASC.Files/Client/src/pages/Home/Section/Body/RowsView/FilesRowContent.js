@@ -3,7 +3,6 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { isMobile, isTablet } from "react-device-detect";
-import moment from "moment";
 
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
@@ -98,8 +97,6 @@ const FilesRowContent = ({
     providerKey,
     title,
   } = item;
-
-  updatedDate = moment(new Date(updatedDate)).format("MM/D/YYYY	hh:mm A");
 
   return (
     <>
