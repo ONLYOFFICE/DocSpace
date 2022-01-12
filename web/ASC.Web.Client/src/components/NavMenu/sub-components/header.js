@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next";
 
 import Box from "@appserver/components/box";
 import Text from "@appserver/components/text";
-import { desktop, tablet } from "@appserver/components/utils/device";
+import { desktop, isDesktop, tablet } from "@appserver/components/utils/device";
 import i18n from "../i18n";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
@@ -25,6 +25,7 @@ import {
   onItemClick,
 } from "@appserver/studio/src/helpers/utils";
 import StyledExternalLinkIcon from "@appserver/studio/src/components/StyledExternalLinkIcon";
+import NavDesktopItem from "./nav-desktop-item";
 
 const { proxyURL } = AppServerConfig;
 
@@ -48,7 +49,7 @@ const Header = styled.header`
       !props.isPersonal &&
       css`
         @media ${tablet} {
-          display: none;
+          padding-left: 4px;
         }
       `}
   }
@@ -97,6 +98,11 @@ const Header = styled.header`
   }
   .mobile-short-logo {
     width: 146px;
+  }
+
+  .header-items-wrapper {
+    display: flex;
+    margin-left: 82px;
   }
 `;
 
@@ -167,10 +173,12 @@ const HeaderComponent = ({
 
   const numberOfModules = mainModules.filter((item) => !item.separator).length;
   const needNavMenu = currentProductId !== "home";
+  const mainModulesWithoutSettings = mainModules.filter(
+    (module) => module.id !== "settings"
+  );
 
-  const navItems = mainModules
-    .filter((module) => module.id !== "settings")
-    .map(({ id, separator, iconUrl, notifications, link, title, dashed }) => {
+  const navItems = mainModulesWithoutSettings.map(
+    ({ id, separator, iconUrl, notifications, link, title, dashed }) => {
       const itemLink = getLink(link);
       const shouldRenderIcon = checkIfModuleOld(link);
       return (
@@ -192,7 +200,20 @@ const HeaderComponent = ({
           {shouldRenderIcon && <StyledExternalLinkIcon color={linkColor} />}
         </NavItem>
       );
-    });
+    }
+  );
+
+  const [isDesktopView, setIsDesktopView] = useState(isDesktop());
+
+  const onResize = () => {
+    const isDesktopView = isDesktop();
+    if (isDesktopView === isDesktopView) setIsDesktopView(isDesktopView);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  });
 
   return (
     <>
@@ -204,7 +225,7 @@ const HeaderComponent = ({
         className="navMenuHeader hidingHeader"
         needNavMenu={needNavMenu}
       >
-        {!isPersonal && needNavMenu && (
+        {!isPersonal && needNavMenu && !isDesktopView && (
           <NavItem
             badgeNumber={totalNotifications}
             onClick={onClick}
@@ -245,9 +266,21 @@ const HeaderComponent = ({
             {currentProductName}
           </Headline>
         )}
+
+        {isNavAvailable && isDesktopView && !isPersonal && (
+          <div className="header-items-wrapper not-selectable">
+            {mainModulesWithoutSettings.map((module) => (
+              <NavDesktopItem
+                isActive={module.id == currentProductId}
+                key={module.id}
+                module={module}
+              />
+            ))}
+          </div>
+        )}
       </Header>
 
-      {isNavAvailable && (
+      {isNavAvailable && !isDesktopView && (
         <Nav
           opened={isNavOpened}
           onMouseEnter={onNavMouseEnter}
