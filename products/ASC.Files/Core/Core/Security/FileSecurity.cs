@@ -324,22 +324,22 @@ namespace ASC.Files.Core.Security
 
         public async Task<IEnumerable<File<T>>> FilterReadAsync<T>(IEnumerable<File<T>> entries)
         {
-            return (IEnumerable<File<T>>)await FilterAsync(entries, FilesSecurityActions.Read, AuthContext.CurrentAccount.ID);
+            return (await FilterAsync(entries, FilesSecurityActions.Read, AuthContext.CurrentAccount.ID)).Cast<File<T>>();
         }
 
         public async Task<IEnumerable<Folder<T>>> FilterReadAsync<T>(IEnumerable<Folder<T>> entries)
         {
-            return (IEnumerable<Folder<T>>)await FilterAsync(entries, FilesSecurityActions.Read, AuthContext.CurrentAccount.ID);
+            return (await FilterAsync(entries, FilesSecurityActions.Read, AuthContext.CurrentAccount.ID)).Cast<Folder<T>>();
         }
 
         public async Task<IEnumerable<File<T>>> FilterEditAsync<T>(IEnumerable<File<T>> entries)
         {
-            return (IEnumerable<File<T>>)await FilterAsync(entries.Cast<FileEntry<T>>(), FilesSecurityActions.Edit, AuthContext.CurrentAccount.ID);
+            return (await FilterAsync(entries.Cast<FileEntry<T>>(), FilesSecurityActions.Edit, AuthContext.CurrentAccount.ID)).Cast<File<T>>();
         }
 
         public async Task<IEnumerable<Folder<T>>> FilterEditAsync<T>(IEnumerable<Folder<T>> entries)
         {
-            return (IEnumerable<Folder<T>>)await FilterAsync(entries.Cast<FileEntry<T>>(), FilesSecurityActions.Edit, AuthContext.CurrentAccount.ID);
+            return (await FilterAsync(entries.Cast<FileEntry<T>>(), FilesSecurityActions.Edit, AuthContext.CurrentAccount.ID)).Cast<Folder<T>>();
         }
 
         private async Task<bool> CanAsync<T>(FileEntry<T> entry, Guid userId, FilesSecurityActions action, IEnumerable<FileShareRecord> shares = null)
@@ -351,7 +351,7 @@ namespace ASC.Files.Core.Security
         {
             var filtres = await FilterAsync(entry, action, userId);
             return entry.Select(r => new Tuple<FileEntry<T>, bool>(r, filtres.Any(a => a.ID.Equals(r.ID)))).ToList();
-        }       
+        }
 
         private async Task<IEnumerable<FileEntry<T>>> FilterAsync<T>(IEnumerable<FileEntry<T>> entries, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares = null)
         {
