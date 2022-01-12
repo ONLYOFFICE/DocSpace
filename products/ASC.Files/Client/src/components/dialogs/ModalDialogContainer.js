@@ -115,6 +115,12 @@ const ModalDialogContainer = styled(ModalDialog)`
       .convert_dialog_file-destination {
         padding-top: 16px;
       }
+      .convert_dialog_file-destination {
+        opacity: 0;
+      }
+      .file-destination_visible {
+        opacity: 1;
+      }
     }
   }
   .convert_dialog_footer {

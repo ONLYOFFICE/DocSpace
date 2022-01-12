@@ -8,6 +8,7 @@ import Checkbox from "@appserver/components/checkbox";
 import { withTranslation, Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import Loaders from "@appserver/common/components/Loaders";
+import { FolderType } from "@appserver/common/constants";
 
 const ConvertDialogComponent = (props) => {
   const {
@@ -30,12 +31,12 @@ const ConvertDialogComponent = (props) => {
 
   let rootFolderTitle = "";
   const convertSingleFile = !!convertItem;
+  const sortedFolder = isRecentFolder || isFavoritesFolder || isShareFolder;
 
-  if (
-    convertSingleFile &&
-    (isRecentFolder || isFavoritesFolder || isShareFolder)
-  ) {
-    rootFolderTitle = rootFoldersTitles[convertItem.rootFolderType];
+  if (convertSingleFile && sortedFolder) {
+    rootFolderTitle = isShareFolder
+      ? rootFoldersTitles[FolderType.USER]
+      : rootFoldersTitles[convertItem.rootFolderType];
   }
 
   const [hideMessage, setHideMessage] = useState(false);
@@ -90,8 +91,12 @@ const ConvertDialogComponent = (props) => {
               isChecked={storeOriginalFiles}
               onChange={onChangeFormat}
             />
-            {convertSingleFile && rootFolderTitle && (
-              <div className="convert_dialog_file-destination">
+            {convertSingleFile && sortedFolder && (
+              <div
+                className={`convert_dialog_file-destination ${
+                  storeOriginalFiles ? "file-destination_visible" : ""
+                }`}
+              >
                 <Trans
                   i18nKey="FileDestination"
                   ns="ConvertDialog"
