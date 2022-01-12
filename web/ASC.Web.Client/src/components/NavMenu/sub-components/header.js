@@ -93,7 +93,9 @@ const Header = styled.header`
     position: relative;
     padding-right: 20px;
     padding-left: ${(props) =>
-      !props.needNavMenu || props.isPersonal ? "20px" : "4px"};
+      !props.needNavMenu || props.isPersonal || props.isDesktopView
+        ? "20px"
+        : "4px"};
     cursor: pointer;
   }
   .mobile-short-logo {
@@ -224,6 +226,7 @@ const HeaderComponent = ({
         isAuthenticated={isAuthenticated}
         className="navMenuHeader hidingHeader"
         needNavMenu={needNavMenu}
+        isDesktopView={isDesktopView}
       >
         {!isPersonal && needNavMenu && !isDesktopView && (
           <NavItem
