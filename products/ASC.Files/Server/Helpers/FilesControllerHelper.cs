@@ -23,6 +23,7 @@ using ASC.Files.Core;
 using ASC.Files.Core.Model;
 using ASC.Files.Model;
 using ASC.Web.Core.Files;
+using ASC.Web.Core.Users;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Core.Entries;
 using ASC.Web.Files.Services.DocumentService;
@@ -67,6 +68,10 @@ namespace ASC.Files.Helpers
         private SettingsManager SettingsManager { get; }
         private EncryptionKeyPairHelper EncryptionKeyPairHelper { get; }
         private IHttpContextAccessor HttpContextAccessor { get; }
+        private FileConverter FileConverter { get; }
+        private ApiDateTimeHelper ApiDateTimeHelper { get; }
+        private UserManager UserManager { get; }
+        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
         private ILog Logger { get; set; }
 
         /// <summary>
@@ -94,7 +99,11 @@ namespace ASC.Files.Helpers
             IOptionsMonitor<ILog> optionMonitor,
             SettingsManager settingsManager,
             EncryptionKeyPairHelper encryptionKeyPairHelper,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            FileConverter fileConverter,
+            ApiDateTimeHelper apiDateTimeHelper,
+            UserManager userManager,
+            DisplayUserSettingsHelper displayUserSettingsHelper)
         {
             ApiContext = context;
             FileStorageService = fileStorageService;
@@ -115,7 +124,11 @@ namespace ASC.Files.Helpers
             DocumentServiceTracker = documentServiceTracker;
             SettingsManager = settingsManager;
             EncryptionKeyPairHelper = encryptionKeyPairHelper;
+            ApiDateTimeHelper = apiDateTimeHelper;
+            UserManager = userManager;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
             HttpContextAccessor = httpContextAccessor;
+            FileConverter = fileConverter;
             Logger = optionMonitor.Get("ASC.Files");
         }
 
@@ -185,11 +198,11 @@ namespace ASC.Files.Helpers
             }
         }
 
-        public async Task<FileWrapper<T>> UpdateFileStreamAsync(Stream file, T fileId, bool encrypted = false, bool forcesave = false)
+        public async Task<FileWrapper<T>> UpdateFileStreamAsync(Stream file, T fileId, string fileExtension, bool encrypted = false, bool forcesave = false)
         {
             try
             {
-                var resultFile = await FileStorageService.UpdateFileStreamAsync(fileId, file, encrypted, forcesave);
+                var resultFile = await FileStorageService.UpdateFileStreamAsync(fileId, file,fileExtension, encrypted, forcesave);
                 return await FileWrapperHelper.GetAsync(resultFile);
             }
             catch (FileNotFoundException e)
@@ -319,9 +332,23 @@ namespace ASC.Files.Helpers
             return await FolderWrapperHelper.GetAsync(folder);
         }
 
-        public async Task<FileWrapper<T>> CreateFileAsync(T folderId, string title, T templateId, bool enableExternalExt = false)
+        public async Task<FileWrapper<T>> CreateFileAsync(T folderId, string title, JsonElement templateId, bool enableExternalExt = false)
         {
-            var file = await FileStorageService.CreateNewFileAsync(new FileModel<T> { ParentId = folderId, Title = title, TemplateId = templateId }, enableExternalExt);
+            File<T> file;
+
+            if (templateId.ValueKind == JsonValueKind.Number)
+            {
+                file = await FileStorageService.CreateNewFileAsync(new FileModel<T, int> { ParentId = folderId, Title = title, TemplateId = templateId.GetInt32() }, enableExternalExt);
+            }
+            else if (templateId.ValueKind == JsonValueKind.String)
+            {
+                file = await FileStorageService.CreateNewFileAsync(new FileModel<T, string> { ParentId = folderId, Title = title, TemplateId = templateId.GetString() }, enableExternalExt);
+            }
+            else
+            {
+                file = await FileStorageService.CreateNewFileAsync(new FileModel<T, int> { ParentId = folderId, Title = title, TemplateId = 0 }, enableExternalExt);
+            }
+
             return await FileWrapperHelper.GetAsync(file);
         }
 
@@ -353,6 +380,24 @@ namespace ASC.Files.Helpers
             var file = await FileStorageService.GetFileAsync(fileId, version);
             file = file.NotFoundIfNull("File not found");
             return await FileWrapperHelper.GetAsync(file);
+        }
+
+        public async Task<FileWrapper<T>> CopyFileAsAsync(T fileId, T destFolderId, string destTitle)
+        {
+            var file = await FileStorageService.GetFileAsync(fileId, -1);
+            var ext = FileUtility.GetFileExtension(file.Title);
+            var destExt = FileUtility.GetFileExtension(destTitle);
+
+            if (ext == destExt)
+            {
+                var newFile = await FileStorageService.CreateNewFileAsync(new FileModel<T, T> { ParentId = destFolderId, Title = destTitle, TemplateId = fileId }, false);
+                return await FileWrapperHelper.GetAsync(newFile);
+            }
+
+            using (var fileStream = await FileConverter.ExecAsync(file, destExt))
+            {
+                return await InsertFileAsync(destFolderId, fileStream, destTitle, true);
+            }
         }
 
         public async Task<FileWrapper<T>> AddToRecentAsync(T fileId, int version = -1)
@@ -428,6 +473,11 @@ namespace ASC.Files.Helpers
                 }
                 yield return o;
             }
+        }
+
+        public Task<string> CheckFillFormDraftAsync(T fileId, int version, string doc, bool editPossible, bool view)
+        {
+            return FileStorageService.CheckFillFormDraftAsync(fileId, version, doc, editPossible, view);
         }
 
         public IEnumerable<FileOperationWraper> DeleteFolder(T folderId, bool deleteAfter, bool immediately)
@@ -540,6 +590,23 @@ namespace ASC.Files.Helpers
         public Task<DocumentService.FileLink> GetPresignedUriAsync(T fileId)
         {
             return FileStorageService.GetPresignedUriAsync(fileId);
+        }
+
+        public async Task<List<EditHistoryWrapper>> GetEditHistoryAsync(T fileId, string doc = null)
+        {
+            var result = await FileStorageService.GetEditHistoryAsync(fileId, doc);
+            return result.Select(r => new EditHistoryWrapper(r, ApiDateTimeHelper, UserManager, DisplayUserSettingsHelper)).ToList();
+        }
+
+        public Task<EditHistoryData> GetEditDiffUrlAsync(T fileId, int version = 0, string doc = null)
+        {
+            return FileStorageService.GetEditDiffUrlAsync(fileId, version, doc);
+        }
+
+        public async Task<List<EditHistoryWrapper>> RestoreVersionAsync(T fileId, int version = 0, string url = null, string doc = null)
+        {
+            var result = await FileStorageService.RestoreVersionAsync(fileId, version, url, doc);
+            return result.Select(r => new EditHistoryWrapper(r, ApiDateTimeHelper, UserManager, DisplayUserSettingsHelper)).ToList();
         }
 
         public Task<string> UpdateCommentAsync(T fileId, int version, string comment)

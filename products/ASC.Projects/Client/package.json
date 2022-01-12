@@ -1,12 +1,14 @@
 {
   "name": "@appserver/projects",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "private": true,
   "homepage": "/products/projects",
   "scripts": {
     "build": "webpack --mode production",
+    "build:test": "webpack --env minimize=false --mode production",
+    "build:test.translation": "webpack --env minimize=false hideText=true --mode production",
     "clean": "shx rm -rf dist",
-    "deploy": "shx mkdir -p ../../../build/deploy/products/ASC.Projects/client && shx cp -r dist/* ../../../build/deploy/products/ASC.Projects/client",
+    "deploy": "shx --silent mkdir -p ../../../build/deploy/products/ASC.Projects/client && shx cp -r dist/* ../../../build/deploy/products/ASC.Projects/client",
     "serve": "serve dist -p 5015",
     "start": "webpack-cli serve",
     "start-prod": "webpack --mode production && serve dist -p 5015"

@@ -244,7 +244,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                 }
                             }
 
-                            if (FolderDao.UseRecursiveOperation(folder.ID, toFolderId))
+                            if (toFolder.ProviderId == folder.ProviderId // crossDao operation is always recursive
+                                && FolderDao.UseRecursiveOperation(folder.ID, toFolderId))
                             {
                                 await MoveOrCopyFilesAsync(scope, await FileDao.GetFilesAsync(folder.ID), newFolder, copy);
                                 await MoveOrCopyFoldersAsync(scope, await FolderDao.GetFoldersAsync(folder.ID).Select(f => f.ID).ToListAsync(), newFolder, copy);
@@ -471,6 +472,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                         await fileDao.SaveThumbnailAsync(newFile, null);
                                     }
 
+                                    if (newFile.ProviderEntry)
+                                    {
+                                        LinkDao.DeleteAllLink(file.ID.ToString());
+                                    }
 
                                     if (Equals(toFolderId.ToString(), DaoFolderId))
                                     {
@@ -527,6 +532,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                         newFile.ThumbnailStatus = Thumbnail.Created;
                                     }
 
+                                    LinkDao.DeleteAllLink(newFile.ID.ToString());
+
                                     needToMark.Add(newFile);
 
                                     if (copy)
@@ -555,6 +562,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                             else
                                             {
                                                 await FileDao.DeleteFileAsync(file.ID);
+
+                                                LinkDao.DeleteAllLink(file.ID.ToString());
 
                                                 if (file.RootFolderType != FolderType.USER)
                                                 {

@@ -57,6 +57,7 @@ using ASC.Web.Core.Files;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Users;
 using ASC.Web.Files.Classes;
+using ASC.Web.Files.Core.Compress;
 using ASC.Web.Files.Core.Entries;
 using ASC.Web.Files.Helpers;
 using ASC.Web.Files.Services.DocumentService;
@@ -120,6 +121,7 @@ namespace ASC.Web.Files.Services.WCFService
         private FileTrackerHelper FileTracker { get; }
         private ICacheNotify<ThumbnailRequest> ThumbnailNotify { get; }
         private EntryStatusManager EntryStatusManager { get; }
+        public CompressToArchive CompressToArchive { get; }
         private ILog Logger { get; set; }
 
         public FileStorageService(
@@ -164,7 +166,8 @@ namespace ASC.Web.Files.Services.WCFService
             TenantManager tenantManager,
             FileTrackerHelper fileTracker,
             ICacheNotify<ThumbnailRequest> thumbnailNotify,
-            EntryStatusManager entryStatusManager)
+            EntryStatusManager entryStatusManager,
+            CompressToArchive compressToArchive)
         {
             Global = global;
             GlobalStore = globalStore;
@@ -208,6 +211,7 @@ namespace ASC.Web.Files.Services.WCFService
             FileTracker = fileTracker;
             ThumbnailNotify = thumbnailNotify;
             EntryStatusManager = entryStatusManager;
+            CompressToArchive = compressToArchive;
         }
 
         public Folder<T> GetFolder(T folderId)
@@ -594,7 +598,7 @@ namespace ASC.Web.Files.Services.WCFService
             return new List<File<T>>(result);
         }       
 
-        public async Task<File<T>> CreateNewFileAsync(FileModel<T> fileWrapper, bool enableExternalExt = false)
+        public async Task<File<T>> CreateNewFileAsync<TTemplate>(FileModel<T, TTemplate> fileWrapper, bool enableExternalExt = false)
         {
             if (string.IsNullOrEmpty(fileWrapper.Title) || fileWrapper.ParentId == null) throw new ArgumentException();
 
@@ -627,27 +631,27 @@ namespace ASC.Web.Files.Services.WCFService
             }
 
             var externalExt = false;
-
-            var fileExt = !enableExternalExt ? FileUtility.GetInternalExtension(fileWrapper.Title) : FileUtility.GetFileExtension(fileWrapper.Title);
-            if (!FileUtility.InternalExtension.Values.Contains(fileExt))
+            var title = fileWrapper.Title;
+            var fileExt = FileUtility.GetFileExtension(title);
+            if (fileExt != FileUtility.MasterFormExtension)
             {
-                if (!enableExternalExt)
+                fileExt = FileUtility.GetInternalExtension(title);
+                if (!FileUtility.InternalExtension.Values.Contains(fileExt))
                 {
                     fileExt = FileUtility.InternalExtension[FileType.Document];
-                    file.Title = fileWrapper.Title + fileExt;
+                    file.Title = title + fileExt;
                 }
                 else
                 {
-                    externalExt = true;
-                    file.Title = fileWrapper.Title;
+                    file.Title = FileUtility.ReplaceFileExtension(title, fileExt);
                 }
             }
             else
             {
-                file.Title = FileUtility.ReplaceFileExtension(fileWrapper.Title, fileExt);
+                file.Title = FileUtility.ReplaceFileExtension(title, fileExt);
             }
 
-            if (EqualityComparer<T>.Default.Equals(fileWrapper.TemplateId, default(T)))
+            if (EqualityComparer<TTemplate>.Default.Equals(fileWrapper.TemplateId, default(TTemplate)))
             {
                 var culture = UserManager.GetUsers(AuthContext.CurrentAccount.ID).GetCulture();
                 var storeTemplate = GetStoreTemplate();
@@ -691,13 +695,14 @@ namespace ASC.Web.Files.Services.WCFService
             }
             else
             {
-                var template = await fileDao.GetFileAsync(fileWrapper.TemplateId);
+                var fileTemlateDao = DaoFactory.GetFileDao<TTemplate>();
+                var template = await fileTemlateDao.GetFileAsync(fileWrapper.TemplateId);
                 ErrorIf(template == null, FilesCommonResource.ErrorMassage_FileNotFound);
                 ErrorIf(!await FileSecurity.CanReadAsync(template), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
                 try
                 {
-                    using (var stream = await fileDao.GetFileStreamAsync(template))
+                    using (var stream = await fileTemlateDao.GetFileStreamAsync(template))
                     {
                         file.ContentLength = template.ContentLength;
                         file = await fileDao.SaveFileAsync(file, stream);
@@ -705,7 +710,7 @@ namespace ASC.Web.Files.Services.WCFService
 
                     if (template.ThumbnailStatus == Thumbnail.Created)
                     {
-                        using (var thumb = await fileDao.GetThumbnailAsync(template))
+                        using (var thumb = await fileTemlateDao.GetThumbnailAsync(template))
                         {
                             await fileDao.SaveThumbnailAsync(file, thumb);
                         }
@@ -791,7 +796,7 @@ namespace ASC.Web.Files.Services.WCFService
                     FileTracker.Remove(fileId);
                 }
 
-                var file = await EntryManager.SaveEditingAsync(fileId, fileExtension, fileuri, stream, doc, forcesave: forcesave ? ForcesaveType.User : ForcesaveType.None);
+                var file = await EntryManager.SaveEditingAsync(fileId, fileExtension, fileuri, stream, doc, forcesave: forcesave ? ForcesaveType.User : ForcesaveType.None, keepLink: true);
 
                 if (file != null)
                     FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdated, file.Title);
@@ -805,7 +810,7 @@ namespace ASC.Web.Files.Services.WCFService
             }
         }
 
-        public async Task<File<T>> UpdateFileStreamAsync(T fileId, Stream stream, bool encrypted, bool forcesave)
+        public async Task<File<T>> UpdateFileStreamAsync(T fileId, Stream stream, string fileExtension, bool encrypted, bool forcesave)
         {
             try
             {
@@ -815,7 +820,7 @@ namespace ASC.Web.Files.Services.WCFService
                 }
 
                 var file = await EntryManager.SaveEditingAsync(fileId,
-                    null,
+                    fileExtension,
                     null,
                     stream,
                     null,
@@ -1100,12 +1105,15 @@ namespace ASC.Web.Files.Services.WCFService
                 Key = DocumentServiceHelper.GetDocKey(file),
                 Url = DocumentServiceConnector.ReplaceCommunityAdress(PathProvider.GetFileStreamUrl(file, doc)),
                 Version = version,
+                FileType = GetFileExtensionWithoutDot(FileUtility.GetFileExtension(file.Title))
             };
 
             if (await fileDao.ContainChangesAsync(file.ID, file.Version))
             {
                 string previouseKey;
                 string sourceFileUrl;
+                string previousFileExt;
+
                 if (file.Version > 1)
                 {
                     var previousFileStable = await fileDao.GetFileStableAsync(file.ID, file.Version - 1);
@@ -1114,6 +1122,7 @@ namespace ASC.Web.Files.Services.WCFService
                     sourceFileUrl = PathProvider.GetFileStreamUrl(previousFileStable, doc);
 
                     previouseKey = DocumentServiceHelper.GetDocKey(previousFileStable);
+                    previousFileExt = FileUtility.GetFileExtension(previousFileStable.Title);
                 }
                 else
                 {
@@ -1134,12 +1143,14 @@ namespace ASC.Web.Files.Services.WCFService
                     sourceFileUrl = BaseCommonLinkUtility.GetFullAbsolutePath(sourceFileUrl);
 
                     previouseKey = DocumentServiceConnector.GenerateRevisionId(Guid.NewGuid().ToString());
+                    previousFileExt = fileExt;
                 }
 
                 result.Previous = new EditHistoryUrl
                 {
                     Key = previouseKey,
                     Url = DocumentServiceConnector.ReplaceCommunityAdress(sourceFileUrl),
+                    FileType = GetFileExtensionWithoutDot(previousFileExt)
                 };
                 result.ChangesUrl = PathProvider.GetFileChangesUrl(file, doc);
             }
@@ -1147,6 +1158,11 @@ namespace ASC.Web.Files.Services.WCFService
             result.Token = DocumentServiceHelper.GetSignature(result);
 
             return result;
+
+            string GetFileExtensionWithoutDot(string ext)
+            {
+                return ext.Substring(ext.IndexOf('.') + 1);
+            }
         }
 
         public async Task<List<EditHistory>> RestoreVersionAsync(T fileId, int version, string url = null, string doc = null)
@@ -1618,6 +1634,54 @@ namespace ASC.Web.Files.Services.WCFService
             }
         }
 
+        public async Task<string> CheckFillFormDraftAsync(T fileId, int version, string doc, bool editPossible, bool view)
+        {
+            var (file, _configuration) = await DocumentServiceHelper.GetParamsAsync(fileId, version, doc, editPossible, !view, true);
+            var _valideShareLink = !string.IsNullOrEmpty(FileShareLink.Parse(doc));
+
+            if (_valideShareLink)
+            {
+                _configuration.Document.SharedLinkKey += doc;
+            }
+
+            if (_configuration.EditorConfig.ModeWrite
+                && FileUtility.CanWebRestrictedEditing(file.Title)
+                && await FileSecurity.CanFillFormsAsync(file)
+                && !await FileSecurity.CanEditAsync(file))
+            {
+                if (!file.IsFillFormDraft)
+                {
+                    FileMarker.RemoveMarkAsNew(file);
+
+                    Folder<int> folderIfNew;
+                    File<int> form;
+                    try
+                    {
+                        (form, folderIfNew) = await EntryManager.GetFillFormDraftAsync(file);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error("DocEditor", ex);
+                        throw;
+                    }
+
+                    var comment = folderIfNew == null
+                        ? string.Empty
+                        : "#message/" + HttpUtility.UrlEncode(string.Format(FilesCommonResource.MessageFillFormDraftCreated, folderIfNew.Title));
+
+                    return FilesLinkUtility.GetFileWebEditorUrl(form.ID) + comment;
+                }
+                else if (!await EntryManager.CheckFillFormDraftAsync(file))
+                {
+                    var comment = "#message/" + HttpUtility.UrlEncode(FilesCommonResource.MessageFillFormDraftDiscard);
+
+                    return FilesLinkUtility.GetFileWebEditorUrl(file.ID) + comment;
+                }
+            }
+
+            return FilesLinkUtility.GetFileWebEditorUrl(file.ID);
+        }
+
         public async Task ReassignStorageAsync(Guid userFromId, Guid userToId)
         {
             //check current user have access
@@ -1696,6 +1760,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             var folderDao = GetFolderDao();
             var fileDao = GetFileDao();
+            var linkDao = GetLinkDao();
 
             //delete all markAsNew
             var rootFoldersId = new List<T>
@@ -1720,7 +1785,7 @@ namespace ASC.Web.Files.Services.WCFService
             //delete all from My
             if (!Equals(folderIdFromMy, 0))
             {
-                await EntryManager.DeleteSubitemsAsync(folderIdFromMy, folderDao, fileDao);
+                await EntryManager.DeleteSubitemsAsync(folderIdFromMy, folderDao, fileDao, linkDao);
 
                 //delete My userFrom folder
                 await folderDao.DeleteFolderAsync(folderIdFromMy);
@@ -1731,7 +1796,7 @@ namespace ASC.Web.Files.Services.WCFService
             var folderIdFromTrash = await folderDao.GetFolderIDTrashAsync(false, userId);
             if (!Equals(folderIdFromTrash, 0))
             {
-                await EntryManager.DeleteSubitemsAsync(folderIdFromTrash, folderDao, fileDao);
+                await EntryManager.DeleteSubitemsAsync(folderIdFromTrash, folderDao, fileDao, linkDao);
                 await folderDao.DeleteFolderAsync(folderIdFromTrash);
                 GlobalFolderHelper.FolderTrash = userId;
             }
@@ -2310,11 +2375,11 @@ namespace ASC.Web.Files.Services.WCFService
             return FilesSettingsHelper.TemplatesSection;
         }
 
-        public bool ChangeDownloadTarGz(bool set)
+        public ICompress ChangeDownloadTarGz(bool set)
         {
             FilesSettingsHelper.DownloadTarGz = set;
 
-            return FilesSettingsHelper.DownloadTarGz;
+            return CompressToArchive;
         }
 
         public bool ChangeDeleteConfrim(bool set)
@@ -2413,6 +2478,11 @@ namespace ASC.Web.Files.Services.WCFService
             return DaoFactory.GetSecurityDao<T>();
         }
 
+        private ILinkDao GetLinkDao()
+        {
+            return DaoFactory.GetLinkDao();
+        }
+
         private static void ErrorIf(bool condition, string errorMessage)
         {
             if (condition) throw new InvalidOperationException(errorMessage);
@@ -2437,10 +2507,10 @@ namespace ASC.Web.Files.Services.WCFService
         }
     }
 
-    public class FileModel<T>
+    public class FileModel<T, TTempate>
     {
         public T ParentId { get; set; }
         public string Title { get; set; }
-        public T TemplateId { get; set; }
+        public TTempate TemplateId { get; set; }
     }
 }

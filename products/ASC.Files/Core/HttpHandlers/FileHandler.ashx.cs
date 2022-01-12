@@ -1114,7 +1114,11 @@ namespace ASC.Web.Files
 
             if (responseMessage)
             {
-                await context.Response.WriteAsync("ok: " + string.Format(FilesCommonResource.MessageFileCreated, folder.Title));
+                var message = string.Format(FilesCommonResource.MessageFileCreated, folder.Title);
+                if (FileUtility.CanWebRestrictedEditing(file.Title))
+                    message = string.Format(FilesCommonResource.MessageFileCreatedForm, folder.Title);
+
+                await context.Response.WriteAsync("ok: " + message);
                 return;
             }
 

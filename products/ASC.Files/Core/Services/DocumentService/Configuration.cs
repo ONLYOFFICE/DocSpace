@@ -321,7 +321,8 @@ namespace ASC.Web.Files.Services.DocumentService
             EmbeddedConfig embeddedConfig,
             CustomizationConfig<T> customizationConfig,
             FilesSettingsHelper filesSettingsHelper,
-            IDaoFactory daoFactory)
+            IDaoFactory daoFactory,
+            EntryManager entryManager)
         {
             UserManager = userManager;
             AuthContext = authContext;
@@ -331,6 +332,7 @@ namespace ASC.Web.Files.Services.DocumentService
             Customization = customizationConfig;
             FilesSettingsHelper = filesSettingsHelper;
             DaoFactory = daoFactory;
+            EntryManager = entryManager;
             Plugins = pluginsConfig;
             Embedded = embeddedConfig;
             _userInfo = userManager.GetUsers(authContext.CurrentAccount.ID);
@@ -382,39 +384,43 @@ namespace ASC.Web.Files.Services.DocumentService
         }
 
 
-        public async Task<List<TemplatesConfig>> GetTemplatesAsync(EntryManager entryManager)
+        public List<TemplatesConfig> Templates
         {
-            if (!AuthContext.IsAuthenticated || UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) return null;
-            if (!FilesSettingsHelper.TemplatesSection) return null;
-
-            var extension = FileUtility.GetInternalExtension(_configuration.Document.Title).TrimStart('.');
-            var filter = FilterType.FilesOnly;
-            switch (_configuration.GetFileType)
+            set { }
+            get
             {
-                case FileType.Document:
-                    filter = FilterType.DocumentsOnly;
-                    break;
-                case FileType.Spreadsheet:
-                    filter = FilterType.SpreadsheetsOnly;
-                    break;
-                case FileType.Presentation:
-                    filter = FilterType.PresentationsOnly;
-                    break;
-            }
+                if (!AuthContext.IsAuthenticated || UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) return null;
+                if (!FilesSettingsHelper.TemplatesSection) return null;
 
-            var folderDao = DaoFactory.GetFolderDao<int>();
-            var fileDao = DaoFactory.GetFileDao<int>();
-            var files = await entryManager.GetTemplatesAsync(folderDao, fileDao, filter, false, Guid.Empty, string.Empty, false);
-            var listTemplates = from file in files
-                                select
-                                    new TemplatesConfig
-                                    {
-                                        Image = BaseCommonLinkUtility.GetFullAbsolutePath("skins/default/images/filetype/thumb/" + extension + ".png"),
-                                        Name = file.Title,
-                                        Title = file.Title,
-                                        Url = BaseCommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.GetFileWebEditorUrl(file.ID))
-                                    };
-            return listTemplates.ToList();
+                var extension = FileUtility.GetInternalExtension(_configuration.Document.Title).TrimStart('.');
+                var filter = FilterType.FilesOnly;
+                switch (_configuration.GetFileType)
+                {
+                    case FileType.Document:
+                        filter = FilterType.DocumentsOnly;
+                        break;
+                    case FileType.Spreadsheet:
+                        filter = FilterType.SpreadsheetsOnly;
+                        break;
+                    case FileType.Presentation:
+                        filter = FilterType.PresentationsOnly;
+                        break;
+                }
+
+                var folderDao = DaoFactory.GetFolderDao<int>();
+                var fileDao = DaoFactory.GetFileDao<int>();
+                var files = EntryManager.GetTemplatesAsync(folderDao, fileDao, filter, false, Guid.Empty, string.Empty, false).Result;
+                var listTemplates = from file in files
+                                    select
+                                        new TemplatesConfig
+                                        {
+                                            Image = BaseCommonLinkUtility.GetFullAbsolutePath("skins/default/images/filetype/thumb/" + extension + ".png"),
+                                            Name = file.Title,
+                                            Title = file.Title,
+                                            Url = BaseCommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.GetFileWebEditorUrl(file.ID))
+                                        };
+                return listTemplates.ToList();
+            }
         }
 
         public string CallbackUrl { get; set; }
@@ -436,6 +442,7 @@ namespace ASC.Web.Files.Services.DocumentService
         public CustomizationConfig<T> Customization { get; set; }
         private FilesSettingsHelper FilesSettingsHelper { get; }
         private IDaoFactory DaoFactory { get; }
+        private EntryManager EntryManager { get; }
 
         public EmbeddedConfig Embedded
         {
@@ -466,40 +473,41 @@ namespace ASC.Web.Files.Services.DocumentService
         private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
 
         public string SaveAsUrl { get; set; }
-
-        public async Task<List<RecentConfig>> GetRecentAsync(EntryManager entryManager)
+        public List<RecentConfig> Recent
         {
-            if (!AuthContext.IsAuthenticated || UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) return null;
-            if (!FilesSettingsHelper.RecentSection) return null;
-
-            var filter = FilterType.FilesOnly;
-            switch (_configuration.GetFileType)
+            get
             {
-                case FileType.Document:
-                    filter = FilterType.DocumentsOnly;
-                    break;
-                case FileType.Spreadsheet:
-                    filter = FilterType.SpreadsheetsOnly;
-                    break;
-                case FileType.Presentation:
-                    filter = FilterType.PresentationsOnly;
-                    break;
+                if (!AuthContext.IsAuthenticated || UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) return null;
+                if (!FilesSettingsHelper.RecentSection) return null;
+
+                var filter = FilterType.FilesOnly;
+                switch (_configuration.GetFileType)
+                {
+                    case FileType.Document:
+                        filter = FilterType.DocumentsOnly;
+                        break;
+                    case FileType.Spreadsheet:
+                        filter = FilterType.SpreadsheetsOnly;
+                        break;
+                    case FileType.Presentation:
+                        filter = FilterType.PresentationsOnly;
+                        break;
+                }
+
+                var folderDao = DaoFactory.GetFolderDao<int>();
+                var files = EntryManager.GetRecentAsync(filter, false, Guid.Empty, string.Empty, false).Result.Cast<File<int>>();
+
+                var listRecent = from file in files
+                                 where !Equals(_configuration.Document.Info.GetFile().ID, file.ID)
+                                 select
+                                     new RecentConfig
+                                     {
+                                         Folder = folderDao.GetFolderAsync(file.FolderID).Result.Title,
+                                         Title = file.Title,
+                                         Url = BaseCommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.GetFileWebEditorUrl(file.ID))
+                                     };
+                return listRecent.ToList();
             }
-
-            var folderDao = DaoFactory.GetFolderDao<int>();
-            var filesEntry = await entryManager.GetRecentAsync(filter, false, Guid.Empty, string.Empty, false);
-            var files = filesEntry.Cast<File<int>>();
-
-            var listRecent = from file in files
-                             where !Equals(_configuration.Document.Info.GetFile().ID, file.ID)
-                             select
-                                 new RecentConfig
-                                 {
-                                     Folder = folderDao.GetFolderAsync(file.FolderID).Result.Title,
-                                     Title = file.Title,
-                                     Url = BaseCommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.GetFileWebEditorUrl(file.ID))
-                                 };
-            return listRecent.ToList();
         }
 
         public string SharingSettingsUrl { get; set; }
@@ -765,6 +773,13 @@ namespace ASC.Web.Files.Services.DocumentService
                         return null;
                     }
 
+                    if (_configuration.Document.Info.GetFile().Encrypted
+                        && _configuration.Document.Info.GetFile().RootFolderType == FolderType.Privacy
+                        && !fileSecurity.CanReadAsync(parent).Result)
+                    {
+                        parent = folderDao.GetFolderAsync(GlobalFolderHelper.GetFolderPrivacy<T>()).Result;
+                    }
+
                     return new GobackConfig
                     {
                         Url = PathProvider.GetFolderUrl(parent),
@@ -865,13 +880,13 @@ namespace ASC.Web.Files.Services.DocumentService
     public class LogoConfig<T>
     {
         public LogoConfig(
-            SettingsManager settingsManager,
-            BaseCommonLinkUtility baseCommonLinkUtility,
-            TenantLogoHelper tenantLogoHelper)
+            CommonLinkUtility commonLinkUtility,
+            TenantLogoHelper tenantLogoHelper,
+            FileUtility fileUtility)
         {
-            BaseCommonLinkUtility = baseCommonLinkUtility;
+            CommonLinkUtility = commonLinkUtility;
             TenantLogoHelper = tenantLogoHelper;
-            SettingsManager = settingsManager;
+            FileUtility = fileUtility;
         }
 
         private Configuration<T> _configuration;
@@ -885,10 +900,22 @@ namespace ASC.Web.Files.Services.DocumentService
             set { }
             get
             {
+                var fillingForm = FileUtility.CanWebRestrictedEditing(_configuration.Document.Title);
+
                 return
                     _configuration.EditorType == EditorType.Embedded
-                        ? null
-                        : BaseCommonLinkUtility.GetFullAbsolutePath(TenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.DocsEditor, !_configuration.EditorConfig.Customization.IsRetina));
+                    || fillingForm
+                        ? CommonLinkUtility.GetFullAbsolutePath(TenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.DocsEditorEmbed, !_configuration.EditorConfig.Customization.IsRetina))
+                        : CommonLinkUtility.GetFullAbsolutePath(TenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.DocsEditor, !_configuration.EditorConfig.Customization.IsRetina));
+            }
+        }
+
+        public string ImageDark
+        {
+            set { }
+            get
+            {
+                return CommonLinkUtility.GetFullAbsolutePath(TenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.DocsEditor, !_configuration.EditorConfig.Customization.IsRetina));
             }
         }
 
@@ -900,19 +927,19 @@ namespace ASC.Web.Files.Services.DocumentService
                 return
                     _configuration.EditorType != EditorType.Embedded
                         ? null
-                        : BaseCommonLinkUtility.GetFullAbsolutePath(TenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.Dark, !_configuration.EditorConfig.Customization.IsRetina));
+                        : CommonLinkUtility.GetFullAbsolutePath(TenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.DocsEditorEmbed, !_configuration.EditorConfig.Customization.IsRetina));
             }
         }
 
         public string Url
         {
             set { }
-            get { return CompanyWhiteLabelSettings.Instance(SettingsManager).Site; }
+            get { return CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetDefault()); }
         }
 
-        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
         private TenantLogoHelper TenantLogoHelper { get; }
-        private SettingsManager SettingsManager { get; }
+        private FileUtility FileUtility { get; }
     }
 
     public class RecentConfig

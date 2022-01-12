@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
+
 using Microsoft.EntityFrameworkCore;
 namespace ASC.Files.Core.EF
 {
@@ -22,6 +23,7 @@ namespace ASC.Files.Core.EF
         public DbSet<DbFilesTag> Tag { get; set; }
         public DbSet<DbFilesThirdpartyApp> ThirdpartyApp { get; set; }
 
+        public DbSet<DbFilesLink> FilesLink { get; set; }
         protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
         {
             get
@@ -46,7 +48,7 @@ namespace ASC.Files.Core.EF
                 .AddDbFilesThirdpartyIdMapping()
                 .AddDbFilesTagLink()
                 .AddDbFilesTag()
-                .AddDbDbFilesThirdpartyApp();
+                .AddDbDbFilesThirdpartyApp()                .AddDbFilesLink();
         }
     }
 
