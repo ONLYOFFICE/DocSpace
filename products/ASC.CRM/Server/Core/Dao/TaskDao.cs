@@ -333,7 +333,7 @@ namespace ASC.CRM.Core.Dao
                                        int entityId)
         {
 
-            int result = 0;
+            int result;
 
             _logger.DebugFormat("Starting GetTasksCount: {0}", DateTime.Now.ToString());
 

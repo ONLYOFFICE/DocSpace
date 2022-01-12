@@ -527,11 +527,9 @@ namespace ASC.Data.Storage.RackspaceCloud
 
         public override string[] ListFilesRelative(string domain, string path, string pattern, bool recursive)
         {
-            var paths = new List<string>();
-
             var client = GetClient();
 
-            paths = client.ListObjects(_private_container, null, null, null, MakePath(domain, path), _region).Select(x => x.Name).ToList();
+            var paths = client.ListObjects(_private_container, null, null, null, MakePath(domain, path), _region).Select(x => x.Name);
 
             return paths
                 .Where(x => Wildcard.IsMatch(pattern, Path.GetFileName(x)))

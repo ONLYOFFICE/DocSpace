@@ -63,7 +63,6 @@ namespace ASC.Data.Backup.Tasks.Data
             IdColumn = idColumn;
             IdType = idType;
             TenantColumn = tenantColumn;
-            UserIDColumns = new string[0];
             DateColumns = new Dictionary<string, bool>();
             InsertMethod = InsertMethod.Insert;
         }

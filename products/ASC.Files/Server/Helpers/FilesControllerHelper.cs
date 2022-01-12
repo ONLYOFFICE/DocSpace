@@ -431,8 +431,8 @@ namespace ASC.Files.Helpers
 
         public IEnumerable<FileEntryWrapper> MoveOrCopyBatchCheck(BatchModel batchModel)
         {
-            var checkedFiles = new List<object>();
-            var checkedFolders = new List<object>();
+            List<object> checkedFiles;
+            List<object> checkedFolders;
 
             if (batchModel.DestFolderId.ValueKind == JsonValueKind.Number)
             {

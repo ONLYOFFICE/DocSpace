@@ -57,8 +57,7 @@ namespace ASC.Core.Notify
             if (group == null) throw new ArgumentNullException("group");
 
             var result = new List<IRecipient>();
-            var groupID = Guid.Empty;
-            if (TryParseGuid(group.ID, out groupID))
+            if (TryParseGuid(group.ID, out var groupID))
             {
                 var coreGroup = UserManager.GetGroupInfo(groupID);
                 if (coreGroup.ID != Constants.LostGroupInfo.ID)

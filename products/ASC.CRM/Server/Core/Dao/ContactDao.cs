@@ -1138,7 +1138,7 @@ namespace ASC.CRM.Core.Dao
             String title;
             int companyID;
 
-            var displayName = String.Empty;
+            string displayName;
 
             if (contact is Company)
             {
@@ -1346,7 +1346,7 @@ namespace ASC.CRM.Core.Dao
             String title;
             int companyID;
 
-            var displayName = String.Empty;
+            string displayName;
 
             if (contact is Company)
             {

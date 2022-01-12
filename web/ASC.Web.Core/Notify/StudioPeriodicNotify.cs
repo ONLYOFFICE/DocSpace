@@ -941,7 +941,7 @@ namespace ASC.Web.Studio.Core.Notify
             Log.Info("Start SendLettersPersonal...");
 
 
-            var activeTenants = new List<Tenant>();
+            List<Tenant> activeTenants;
 
             using (var scope = ServiceProvider.CreateScope())
             {

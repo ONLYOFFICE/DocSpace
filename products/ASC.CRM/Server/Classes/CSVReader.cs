@@ -177,7 +177,7 @@ namespace ASC.Web.CRM.Classes
                 quoted = true;
 
             // Find the end of the next value
-            string nextObjectString = "";
+            string nextObjectString;
             int i = 0;
             int len = currentLine.Length;
             bool foundEnd = false;
@@ -231,7 +231,7 @@ namespace ASC.Web.CRM.Classes
         {
             // Read the CSV data into rows
             List<List<object>> rows = new List<List<object>>();
-            List<object> readRow = null;
+            List<object> readRow;
             while ((readRow = ReadRow()) != null)
                 rows.Add(readRow);
 

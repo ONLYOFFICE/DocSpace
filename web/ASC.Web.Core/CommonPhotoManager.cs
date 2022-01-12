@@ -51,9 +51,7 @@ namespace ASC.Web.Core
             var maxSide = realWidth > realHeight ? realWidth : realHeight;
             var minSide = realWidth < realHeight ? realWidth : realHeight;
             
-            var alignWidth = true;
-            if (crop) alignWidth = (minSide == realWidth);
-            else alignWidth = (maxSide == realWidth);
+            var alignWidth = crop ? (minSide == realWidth) : (maxSide == realWidth);
 
             var scaleFactor = (alignWidth) ? (realWidth / (1.0 * width)) : (realHeight / (1.0 * height));
 

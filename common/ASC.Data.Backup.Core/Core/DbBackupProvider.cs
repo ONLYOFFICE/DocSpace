@@ -160,7 +160,7 @@ namespace ASC.Data.Backup
                 }
 
                 xml.Add(new XElement(table));
-                DataTable dataTable = null;
+                DataTable dataTable;
                 while (true)
                 {
                     try

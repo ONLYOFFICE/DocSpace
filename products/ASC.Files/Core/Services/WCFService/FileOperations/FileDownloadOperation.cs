@@ -94,7 +94,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             if (stream != null)
             {
-                var archiveExtension = "";
+                string archiveExtension;
 
                 using(var zip = scope.ServiceProvider.GetService<CompressToArchive>())
                 {

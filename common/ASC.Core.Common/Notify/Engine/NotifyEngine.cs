@@ -254,7 +254,7 @@ namespace ASC.Notify.Engine
                 sendResponces.AddRange(SendGroupNotify(request, serviceScope));
             }
 
-            NotifyResult result = null;
+            NotifyResult result;
             if (sendResponces == null || sendResponces.Count == 0)
             {
                 result = new NotifyResult(SendResult.OK, sendResponces);

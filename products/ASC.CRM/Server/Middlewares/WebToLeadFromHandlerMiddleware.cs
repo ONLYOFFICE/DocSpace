@@ -152,7 +152,7 @@ namespace ASC.Web.CRM.HttpHandlers
 
                 var addressTemplateStr = JsonSerializer.Serialize(addressTemplate);
 
-                var isCompany = false;
+                bool isCompany;
 
                 var isCompanyString = GetValue("is_company");
                 var firstName = GetValue("firstName");

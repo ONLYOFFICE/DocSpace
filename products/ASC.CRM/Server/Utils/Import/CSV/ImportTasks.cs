@@ -152,9 +152,8 @@ namespace ASC.Web.CRM.Classes
                     }
 
                     var alertValue = GetPropertyValue("alertValue");
-                    int alertIntVal = 0;
 
-                    if (Int32.TryParse(alertValue, out alertIntVal))
+                    if (Int32.TryParse(alertValue, out var alertIntVal))
                         obj.AlertValue = alertIntVal;
                     else
                         obj.AlertValue = 0;

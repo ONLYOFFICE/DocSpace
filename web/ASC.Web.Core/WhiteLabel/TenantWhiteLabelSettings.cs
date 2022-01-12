@@ -385,7 +385,7 @@ namespace ASC.Web.Core.WhiteLabel
 
         public void SetLogoFromStream(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, string fileExt, Stream fileStream, IDataStore storage = null)
         {
-            byte[] data = null;
+            byte[] data;
             using (var memoryStream = new MemoryStream())
             {
                 fileStream.CopyTo(memoryStream);

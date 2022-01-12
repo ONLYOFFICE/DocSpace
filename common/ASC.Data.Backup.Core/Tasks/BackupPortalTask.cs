@@ -284,7 +284,7 @@ namespace ASC.Data.Backup.Tasks
                 }
 
                 Logger.DebugFormat("dump table data start {0}", t);
-                var searchWithPrimary = false;
+                bool searchWithPrimary;
                 string primaryIndex;
                 var primaryIndexStep = 0;
                 var primaryIndexStart = 0;

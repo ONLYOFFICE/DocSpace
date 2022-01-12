@@ -102,7 +102,7 @@ namespace ASC.Common.Security.Authorizing
                 var denyAction = denyActions[i];
                 var denySubject = denySubjects[i];
 
-                var reason = "";
+                string reason;
                 if (denySubject != null && denyAction != null)
                     reason = string.Format("{0}:{1} access denied {2}.",
                                            action.Name,

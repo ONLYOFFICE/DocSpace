@@ -233,7 +233,7 @@ namespace ASC.Common
                             }
                             else
                             {
-                                Type c = null;
+                                Type c;
                                 var a1 = a.GetGenericTypeDefinition();
                                 var b = a.GetGenericArguments().FirstOrDefault();
 
@@ -297,7 +297,7 @@ namespace ASC.Common
                             }
                             else
                             {
-                                Type c = null;
+                                Type c;
                                 var a1 = a.GetGenericTypeDefinition();
                                 var b = a.GetGenericArguments().FirstOrDefault();
 

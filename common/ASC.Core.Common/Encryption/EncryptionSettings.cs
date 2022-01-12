@@ -139,11 +139,10 @@ namespace ASC.Core.Encryption
                 throw new ArgumentException("min_required_non_alphanumeric_characters_incorrect", "numberOfNonAlphanumericCharacters");
             }
 
-            var array = new byte[length];
             var array2 = new char[length];
             var num = 0;
 
-            array = RandomNumberGenerator.GetBytes(length);
+            var array = RandomNumberGenerator.GetBytes(length);
 
             for (var i = 0; i < length; i++)
             {

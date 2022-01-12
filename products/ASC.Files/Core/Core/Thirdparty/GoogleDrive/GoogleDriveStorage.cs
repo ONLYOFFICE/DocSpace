@@ -403,7 +403,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                                                                googleDriveSession.BytesToTransfer));
             request.Content = new StreamContent(stream);
             using var httpClient = new HttpClient();
-            HttpResponseMessage response = null;
+            HttpResponseMessage response;
 
             try
             {

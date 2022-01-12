@@ -140,7 +140,7 @@ namespace ASC.Web.Core
         public bool IsAvailableForUser(Guid itemId, Guid @for)
         {
             var id = itemId.ToString();
-            var result = false;
+            bool result;
 
             var tenant = TenantManager.GetCurrentTenant();
             var dic = WebItemSecurityCache.GetOrInsert(tenant.TenantId);

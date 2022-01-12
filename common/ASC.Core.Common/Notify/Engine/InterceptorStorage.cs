@@ -119,7 +119,7 @@ namespace ASC.Notify.Engine
 
         private ISendInterceptor GetInternal(string name, Dictionary<string, ISendInterceptor> storage)
         {
-            ISendInterceptor interceptor = null;
+            ISendInterceptor interceptor;
             lock (syncRoot)
             {
                 storage.TryGetValue(name, out interceptor);
