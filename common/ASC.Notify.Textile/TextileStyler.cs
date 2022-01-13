@@ -152,7 +152,7 @@ namespace ASC.Notify.Textile
                 if (string.IsNullOrEmpty(logoImg))
                 {
                     var logo = message.GetArgument("LetterLogo");
-                    if (logo != null && (string)logo.Value != "")
+                    if (logo != null && ((string)logo.Value).Length != 0)
                     {
                         logoImg = (string)logo.Value;
                     }
@@ -173,7 +173,7 @@ namespace ASC.Notify.Textile
             if (string.IsNullOrEmpty(logoText))
             {
                 var llt = message.GetArgument("LetterLogoText");
-                if (llt != null && (string)llt.Value != "")
+                if (llt != null && ((string)llt.Value).Length != 0)
                 {
                     logoText = (string)llt.Value;
                 }

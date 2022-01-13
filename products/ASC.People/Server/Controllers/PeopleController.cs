@@ -1594,7 +1594,7 @@ namespace ASC.Employee.Core.Controllers
 
             foreach (var provider in ProviderManager.AuthProviders.Where(provider => string.IsNullOrEmpty(fromOnly) || fromOnly == provider || (provider == "google" && fromOnly == "openid")))
             {
-                if (inviteView && provider.ToLower() == "twitter") continue;
+                if (inviteView && provider.Equals("twitter", StringComparison.OrdinalIgnoreCase)) continue;
 
                 var loginProvider = ProviderManager.GetLoginProvider(provider);
                 if (loginProvider != null && loginProvider.IsEnabled)
