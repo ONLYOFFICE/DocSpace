@@ -25,7 +25,7 @@ const StyledInner = styled.div`
   max-width: ${(props) => props.maxWidth};
   text-align: center;
   user-select: none;
-  line-height: 1.5;
+  line-height: ${(props) => props.lineHeight};
 `;
 
 export { StyledBadge, StyledInner };

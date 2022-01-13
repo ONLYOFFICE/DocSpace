@@ -20,7 +20,7 @@ const SizeCell = ({ t, item, sideColor }) => {
       {fileExst || contentLength
         ? contentLength
         : !providerKey
-        ? `${t("TitleDocuments")}: ${filesCount} | ${t(
+        ? `${t("TitleDocuments")}: ${filesCount} / ${t(
             "TitleSubfolders"
           )}: ${foldersCount}`
         : ""}

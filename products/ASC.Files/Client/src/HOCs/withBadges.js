@@ -14,27 +14,6 @@ import config from "../../package.json";
 
 export default function withBadges(WrappedComponent) {
   class WithBadges extends React.Component {
-    onClickLock = () => {
-      const { item, lockFileAction, isAdmin, setIsLoading } = this.props;
-      const { locked, id, access } = item;
-
-      if (isAdmin || access === 0) {
-        setIsLoading(true);
-        return lockFileAction(id, !locked)
-          .catch((err) => toastr.error(err))
-          .finally(() => setIsLoading(false));
-      }
-      return;
-    };
-
-    onClickFavorite = () => {
-      const { t, item, setFavoriteAction } = this.props;
-
-      setFavoriteAction("remove", item.id)
-        .then(() => toastr.success(t("RemovedFromFavorites")))
-        .catch((err) => toastr.error(err));
-    };
-
     onShowVersionHistory = () => {
       const {
         homepage,
@@ -56,6 +35,7 @@ export default function withBadges(WrappedComponent) {
         );
       }
     };
+
     onBadgeClick = () => {
       const {
         item,
@@ -138,9 +118,10 @@ export default function withBadges(WrappedComponent) {
         isTrashFolder,
         isPrivacyFolder,
         canConvert,
-        onFilesClick, // from withFileAction HOC
+        onFilesClick,
         isAdmin,
         isDesktopClient,
+        sectionWidth,
       } = this.props;
       const { fileStatus, access } = item;
 
@@ -158,14 +139,13 @@ export default function withBadges(WrappedComponent) {
           isAdmin={isAdmin}
           showNew={showNew}
           newItems={newItems}
+          sectionWidth={sectionWidth}
           canWebEdit={canWebEdit}
           canConvert={canConvert}
           isTrashFolder={isTrashFolder}
           isPrivacyFolder={isPrivacyFolder}
           isDesktopClient={isDesktopClient}
           accessToEdit={accessToEdit}
-          onClickLock={this.onClickLock}
-          onClickFavorite={this.onClickFavorite}
           onShowVersionHistory={this.onShowVersionHistory}
           onBadgeClick={this.onBadgeClick}
           setConvertDialogVisible={this.setConvertDialogVisible}
@@ -200,11 +180,7 @@ export default function withBadges(WrappedComponent) {
         isPrivacyFolder,
         updateRootBadge,
       } = treeFoldersStore;
-      const {
-        lockFileAction,
-        setFavoriteAction,
-        markAsRead,
-      } = filesActionsStore;
+      const { markAsRead } = filesActionsStore;
       const { isTabletView, isDesktopClient } = auth.settingsStore;
       const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
       const {
@@ -228,8 +204,6 @@ export default function withBadges(WrappedComponent) {
         canConvert,
         isTrashFolder: isRecycleBinFolder,
         isPrivacyFolder,
-        lockFileAction,
-        setFavoriteAction,
         homepage: config.homepage,
         isTabletView,
         setIsVerHistoryPanel,

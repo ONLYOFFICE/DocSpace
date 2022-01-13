@@ -251,6 +251,7 @@ export default function withFileActions(WrappedFileItem) {
       const isShareable = allowShareIn && item.canShare;
 
       const isMobileView = sectionWidth < 500;
+
       const displayShareButton = isMobileView
         ? "26px"
         : !isShareable
