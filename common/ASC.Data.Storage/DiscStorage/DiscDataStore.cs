@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 using ASC.Common;
@@ -85,8 +86,9 @@ namespace ASC.Data.Storage.DiscStorage
             IHttpContextAccessor httpContextAccessor,
             IOptionsMonitor<ILog> options,
             EncryptionSettingsHelper encryptionSettingsHelper,
-            EncryptionFactory encryptionFactory)
-            : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
+            EncryptionFactory encryptionFactory,
+            IHttpClientFactory clientFactory)
+            : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options, clientFactory)
         {
             EncryptionSettingsHelper = encryptionSettingsHelper;
             EncryptionFactory = encryptionFactory;

@@ -49,11 +49,6 @@ namespace ASC.Files.Thirdparty.OneDrive
     [Scope]
     internal class OneDriveStorage
     {
-        public OneDriveStorage(ConsumerFactory consumerFactory)
-        {
-            ConsumerFactory = consumerFactory;
-        }
-
         private OAuth20Token _token;
 
         private string AccessToken
@@ -79,8 +74,15 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public bool IsOpened { get; private set; }
         private ConsumerFactory ConsumerFactory { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
         public long MaxChunkedUploadFileSize = 10L * 1024L * 1024L * 1024L;
+
+        public OneDriveStorage(ConsumerFactory consumerFactory, IHttpClientFactory clientFactory)
+        {
+            ConsumerFactory = consumerFactory;
+            ClientFactory = clientFactory;
+        }
 
         public void Open(OAuth20Token token)
         {
@@ -266,7 +268,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
             var uploadSession = new ResumableUploadSession(onedriveFile.Id, folderId, contentLength);
 
-            using (var httpClient = new HttpClient())
+            var httpClient = ClientFactory.CreateClient();
             using (var response = httpClient.Send(request))
             using (var responseStream = response.Content.ReadAsStream())
             {
@@ -302,7 +304,7 @@ namespace ASC.Files.Thirdparty.OneDrive
                                                                oneDriveSession.BytesToTransfer));
             request.Content = new StreamContent(stream);
 
-            using var httpClient = new HttpClient();
+            var httpClient = ClientFactory.CreateClient();
             using var response = httpClient.Send(request);
 
             if (response.StatusCode != HttpStatusCode.Created && response.StatusCode != HttpStatusCode.OK)
@@ -329,7 +331,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             request.RequestUri = new Uri(oneDriveSession.Location);
             request.Method = HttpMethod.Delete;
 
-            using var httpClient = new HttpClient();
+            var httpClient = ClientFactory.CreateClient();
             using var response = httpClient.Send(request);
         }
     }

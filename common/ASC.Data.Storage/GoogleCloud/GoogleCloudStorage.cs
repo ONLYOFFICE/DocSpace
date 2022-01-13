@@ -78,7 +78,8 @@ namespace ASC.Data.Storage.GoogleCloud
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> options) : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
+            IOptionsMonitor<ILog> options,
+            IHttpClientFactory clientFactory) : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options, clientFactory)
         {
         }
 
@@ -781,7 +782,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
                 try
                 {
-                    using var httpClient = new HttpClient();
+                    var httpClient = ClientFactory.CreateClient();
                     using var response = httpClient.Send(request);
                     var status = response.StatusCode;
 

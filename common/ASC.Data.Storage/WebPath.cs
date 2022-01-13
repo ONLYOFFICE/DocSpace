@@ -158,6 +158,7 @@ namespace ASC.Data.Storage
         public IHostEnvironment HostEnvironment { get; }
         private CoreBaseSettings CoreBaseSettings { get; }
         private IOptionsMonitor<ILog> Options { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
         public WebPath(
             WebPathSettings webPathSettings,
@@ -166,7 +167,8 @@ namespace ASC.Data.Storage
             StorageSettingsHelper storageSettingsHelper,
             IHostEnvironment hostEnvironment,
             CoreBaseSettings coreBaseSettings,
-            IOptionsMonitor<ILog> options)
+            IOptionsMonitor<ILog> options,
+            IHttpClientFactory clientFactory)
         {
             WebPathSettings = webPathSettings;
             ServiceProvider = serviceProvider;
@@ -175,6 +177,7 @@ namespace ASC.Data.Storage
             HostEnvironment = hostEnvironment;
             CoreBaseSettings = coreBaseSettings;
             Options = options;
+            ClientFactory = clientFactory;
         }
 
         public WebPath(
@@ -186,8 +189,9 @@ namespace ASC.Data.Storage
             IHttpContextAccessor httpContextAccessor,
             IHostEnvironment hostEnvironment,
             CoreBaseSettings coreBaseSettings,
-            IOptionsMonitor<ILog> options)
-            : this(webPathSettings, serviceProvider, settingsManager, storageSettingsHelper, hostEnvironment, coreBaseSettings, options)
+            IOptionsMonitor<ILog> options,
+            IHttpClientFactory clientFactory)
+            : this(webPathSettings, serviceProvider, settingsManager, storageSettingsHelper, hostEnvironment, coreBaseSettings, options, clientFactory)
         {
             HttpContextAccessor = httpContextAccessor;
         }
@@ -241,7 +245,7 @@ namespace ASC.Data.Storage
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(path);
                 request.Method = HttpMethod.Head;
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
                 using var response = httpClient.Send(request);
 
                 return response.StatusCode == HttpStatusCode.OK;

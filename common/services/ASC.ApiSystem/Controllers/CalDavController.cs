@@ -60,6 +60,7 @@ namespace ASC.ApiSystem.Controllers
         private CommonConstants CommonConstants { get; }
         public InstanceCrypto InstanceCrypto { get; }
         private ILog Log { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
         public CalDavController(
             CommonMethods commonMethods,
@@ -344,7 +345,7 @@ namespace ASC.ApiSystem.Controllers
             request.Method = new HttpMethod(httpMethod);
             request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
-            using var httpClient = new HttpClient();
+            var httpClient = ClientFactory.CreateClient();
 
             if (data != null)
             {

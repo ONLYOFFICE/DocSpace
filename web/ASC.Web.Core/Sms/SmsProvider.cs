@@ -118,7 +118,8 @@ namespace ASC.Web.Core.Sms
 
     public abstract class SmsProvider : Consumer
     {
-        protected readonly ILog Log;
+        protected ILog Log { get; }
+        protected IHttpClientFactory ClientFactory { get; }
         protected ICache MemoryCache { get; set; }
 
         protected virtual string SendMessageUrlFormat { get; set; }
@@ -139,12 +140,14 @@ namespace ASC.Web.Core.Sms
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
+            IHttpClientFactory clientFactory,
             ICache memCache,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
             : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)
         {
             MemoryCache = memCache;
             Log = options.CurrentValue;
+            ClientFactory = clientFactory;
         }
 
         public virtual bool Enable()
@@ -171,7 +174,7 @@ namespace ASC.Web.Core.Sms
                 request.RequestUri = new Uri(url);
                 request.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
 
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
                 httpClient.Timeout = TimeSpan.FromMilliseconds(15000);
 
                 using var response = httpClient.Send(request);
@@ -206,9 +209,10 @@ namespace ASC.Web.Core.Sms
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
+            IHttpClientFactory clientFactory,
             ICache memCache,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, clientFactory, memCache, name, order, props, additional)
         {
         }
 
@@ -265,7 +269,7 @@ namespace ASC.Web.Core.Sms
                     request.RequestUri = new Uri(url);
                     request.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
 
-                    using var httpClient = new HttpClient();
+                    var httpClient = ClientFactory.CreateClient();
                     httpClient.Timeout = TimeSpan.FromMilliseconds(1000);
 
                     using var response = httpClient.Send(request);
@@ -347,9 +351,10 @@ namespace ASC.Web.Core.Sms
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
+            IHttpClientFactory clientFactory,
             ICache memCache,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, clientFactory, memCache, name, order, props, additional)
         {
         }
     }
@@ -368,9 +373,10 @@ namespace ASC.Web.Core.Sms
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
+            IHttpClientFactory clientFactory,
             ICache memCache,
             string name, int order, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache, name, order, null, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, clientFactory, memCache, name, order, null, additional)
         {
         }
     }
@@ -450,9 +456,10 @@ namespace ASC.Web.Core.Sms
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
+            IHttpClientFactory clientFactory,
             ICache memCache,
             string name, int order, Dictionary<string, string> props)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache, name, order, props)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, clientFactory, memCache, name, order, props)
         {
             AuthContext = authContext;
             TenantUtil = tenantUtil;
@@ -501,9 +508,10 @@ namespace ASC.Web.Core.Sms
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
+            IHttpClientFactory clientFactory,
             ICache memCache,
             string name, int order)
-            : base(authContext, tenantUtil, securityContext, baseCommonLinkUtility, twilioProviderCleaner, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache, name, order, null)
+            : base(authContext, tenantUtil, securityContext, baseCommonLinkUtility, twilioProviderCleaner, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, clientFactory, memCache, name, order, null)
         {
         }
     }

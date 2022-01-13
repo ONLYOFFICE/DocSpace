@@ -48,6 +48,7 @@ namespace ASC.Core.Common.Billing
     public class CouponManager
     {
         private IEnumerable<AvangateProduct> Products { get; set; }
+        private IHttpClientFactory ClientFactory { get; }
         private IEnumerable<string> Groups { get; set; }
         private readonly int Percent;
         private readonly int Schedule;
@@ -57,11 +58,13 @@ namespace ASC.Core.Common.Billing
         private readonly string ApiVersion;
         private readonly SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1, 1);
         private readonly ILog Log;
+        
 
-        public CouponManager(IOptionsMonitor<ILog> option)
+        public CouponManager(IOptionsMonitor<ILog> option, IHttpClientFactory clientFactory)
         {
             SemaphoreSlim = new SemaphoreSlim(1, 1);
             Log = option.CurrentValue;
+            ClientFactory = clientFactory;
 
             try
             {
@@ -158,7 +161,11 @@ namespace ASC.Core.Common.Billing
         private HttpClient PrepaireClient()
         {
             const string applicationJson = "application/json";
-            var httpClient = new HttpClient { BaseAddress = BaseAddress, Timeout = TimeSpan.FromMinutes(3) };
+
+            var httpClient = ClientFactory.CreateClient();
+            httpClient.BaseAddress = BaseAddress;
+            httpClient.Timeout = TimeSpan.FromMinutes(3);
+
             httpClient.DefaultRequestHeaders.TryAddWithoutValidation("accept", applicationJson);
             httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", applicationJson);
             httpClient.DefaultRequestHeaders.TryAddWithoutValidation("X-Avangate-Authentication", CreateAuthHeader());

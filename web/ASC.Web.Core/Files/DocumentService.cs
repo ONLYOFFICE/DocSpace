@@ -110,6 +110,7 @@ namespace ASC.Web.Core.Files
             SpreadsheetLayout spreadsheetLayout,
             bool isAsync,
             string signatureSecret,
+            IHttpClientFactory clientFactory,
             out string convertedDocumentUri)
         {
             fromExtension = string.IsNullOrEmpty(fromExtension) ? Path.GetExtension(documentUri) : fromExtension;
@@ -129,7 +130,7 @@ namespace ASC.Web.Core.Files
             request.Method = HttpMethod.Post;
             request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
-            using var httpClient = new HttpClient();
+            var httpClient = clientFactory.CreateClient();
             httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
 
             var body = new ConvertionBody
@@ -231,13 +232,14 @@ namespace ASC.Web.Core.Files
             string[] users,
             MetaData meta,
             string signatureSecret,
+            IHttpClientFactory clientFactory,
             out string version)
         {
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(documentTrackerUrl);
             request.Method = HttpMethod.Post;
 
-            using var httpClient = new HttpClient();
+            var httpClient = clientFactory.CreateClient();
             httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
 
             var body = new CommandBody
@@ -304,6 +306,7 @@ namespace ASC.Web.Core.Files
             string scriptUrl,
             bool isAsync,
             string signatureSecret,
+            IHttpClientFactory clientFactory,
             out Dictionary<string, string> urls)
         {
             if (string.IsNullOrEmpty(docbuilderUrl))
@@ -316,7 +319,7 @@ namespace ASC.Web.Core.Files
             request.RequestUri = new Uri(docbuilderUrl);
             request.Method = HttpMethod.Post;
 
-            using var httpClient = new HttpClient();
+            var httpClient = clientFactory.CreateClient();
             httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
 
             var body = new BuilderBody
@@ -385,7 +388,7 @@ namespace ASC.Web.Core.Files
             return responseFromService.Value<string>("key");
         }
 
-        public static bool HealthcheckRequest(string healthcheckUrl)
+        public static bool HealthcheckRequest(string healthcheckUrl, IHttpClientFactory clientFactory)
         {
             if (string.IsNullOrEmpty(healthcheckUrl))
                 throw new ArgumentNullException("healthcheckUrl");
@@ -393,7 +396,7 @@ namespace ASC.Web.Core.Files
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(healthcheckUrl);
 
-            using var httpClient = new HttpClient();
+            var httpClient = clientFactory.CreateClient();
             httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
 
             using var response = httpClient.Send(request);

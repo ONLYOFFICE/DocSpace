@@ -47,6 +47,7 @@ namespace ASC.Web.CRM.Classes
     public class CurrencyProvider
     {
         private readonly ILog _log;
+        private readonly IHttpClientFactory _clientFactory;
         private readonly object _syncRoot = new object();
         private readonly Dictionary<String, CurrencyInfo> _currencies;
         private Dictionary<string, decimal> _exchangeRates;
@@ -56,7 +57,8 @@ namespace ASC.Web.CRM.Classes
         public CurrencyProvider(IOptionsMonitor<ILog> logger,
                                 IConfiguration configuration,
                                 SettingsManager settingsManager,
-                                DaoFactory daoFactory)
+                                DaoFactory daoFactory,
+                                IHttpClientFactory clientFactory)
         {
             _log = logger.Get("ASC");
             Configuration = configuration;
@@ -74,7 +76,7 @@ namespace ASC.Web.CRM.Classes
             }
 
             _currencies = currencies.ToDictionary(c => c.Abbreviation);
-
+            _clientFactory = clientFactory;
         }
 
         public IConfiguration Configuration { get; }
@@ -339,7 +341,8 @@ namespace ASC.Web.CRM.Classes
                 handler.MaxAutomaticRedirections = 2;
                 handler.UseDefaultCredentials = true;
 
-                var httpClient = new HttpClient(handler);
+                var httpClient = _clientFactory.CreateClient("DownloadCurrencyPage");
+                _clientFactory.CreateClient();
                 using var response = httpClient.Send(request);
                 using (var responseStream = new StreamReader(response.Content.ReadAsStream()))
                 {

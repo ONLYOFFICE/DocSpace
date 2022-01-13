@@ -56,6 +56,7 @@ namespace ASC.Web.Files.Services.DocumentService
         public ILog Logger { get; }
         private FilesLinkUtility FilesLinkUtility { get; }
         private FileUtility FileUtility { get; }
+        private IHttpClientFactory ClientFactory { get; }
         private GlobalStore GlobalStore { get; }
         private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
         private TenantManager TenantManager { get; }
@@ -72,7 +73,8 @@ namespace ASC.Web.Files.Services.DocumentService
             BaseCommonLinkUtility baseCommonLinkUtility,
             TenantManager tenantManager,
             TenantExtra tenantExtra,
-            CoreSettings coreSettings)
+            CoreSettings coreSettings,
+            IHttpClientFactory clientFactory)
         {
             Logger = optionsMonitor.CurrentValue;
             FilesLinkUtility = filesLinkUtility;
@@ -83,6 +85,7 @@ namespace ASC.Web.Files.Services.DocumentService
             TenantExtra = tenantExtra;
             CoreSettings = coreSettings;
             PathProvider = pathProvider;
+            ClientFactory = clientFactory;
         }
 
         public static string GenerateRevisionId(string expectedKey)
@@ -115,6 +118,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     spreadsheetLayout,
                     isAsync,
                     FileUtility.SignatureSecret,
+                    ClientFactory,
                     out convertedDocumentUri);
             }
             catch (Exception ex)
@@ -142,6 +146,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     users,
                     meta,
                     FileUtility.SignatureSecret,
+                    ClientFactory,
                     out var version);
 
                 if (result == Web.Core.Files.DocumentService.CommandResultTypes.NoError)
@@ -188,6 +193,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     scriptUrl,
                     isAsync,
                     FileUtility.SignatureSecret,
+                    ClientFactory,
                     out urls);
             }
             catch (Exception ex)
@@ -210,6 +216,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     null,
                     null,
                     FileUtility.SignatureSecret,
+                    ClientFactory,
                     out var version);
 
                 if (result == Web.Core.Files.DocumentService.CommandResultTypes.NoError)
@@ -232,7 +239,7 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 try
                 {
-                    if (!Web.Core.Files.DocumentService.HealthcheckRequest(FilesLinkUtility.DocServiceHealthcheckUrl))
+                    if (!Web.Core.Files.DocumentService.HealthcheckRequest(FilesLinkUtility.DocServiceHealthcheckUrl, ClientFactory))
                     {
                         throw new Exception("bad status");
                     }
@@ -256,7 +263,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     var fileUri = ReplaceCommunityAdress(url);
 
                     var key = GenerateRevisionId(Guid.NewGuid().ToString());
-                    Web.Core.Files.DocumentService.GetConvertedUri(FileUtility, FilesLinkUtility.DocServiceConverterUrl, fileUri, fileExtension, toExtension, key, null, null, null, false, FileUtility.SignatureSecret, out convertedFileUri);
+                    Web.Core.Files.DocumentService.GetConvertedUri(FileUtility, FilesLinkUtility.DocServiceConverterUrl, fileUri, fileExtension, toExtension, key, null, null, null, false, FileUtility.SignatureSecret, ClientFactory, out convertedFileUri);
                 }
                 catch (Exception ex)
                 {
@@ -269,7 +276,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     var request1 = new HttpRequestMessage();
                     request1.RequestUri = new Uri(convertedFileUri);
 
-                    using var httpClient = new HttpClient();
+                    using var httpClient = ClientFactory.CreateClient();
                     using var response = httpClient.Send(request1);
 
                     if (response.StatusCode != HttpStatusCode.OK)
@@ -289,7 +296,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 try
                 {
                     var key = GenerateRevisionId(Guid.NewGuid().ToString());
-                    Web.Core.Files.DocumentService.CommandRequest(FileUtility, FilesLinkUtility.DocServiceCommandUrl, CommandMethod.Version, key, null, null, null, FileUtility.SignatureSecret, out var version);
+                    Web.Core.Files.DocumentService.CommandRequest(FileUtility, FilesLinkUtility.DocServiceCommandUrl, CommandMethod.Version, key, null, null, null, FileUtility.SignatureSecret, ClientFactory, out var version);
                 }
                 catch (Exception ex)
                 {
@@ -307,7 +314,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     var scriptUrl = BaseCommonLinkUtility.GetFullAbsolutePath(scriptUri.ToString());
                     scriptUrl = ReplaceCommunityAdress(scriptUrl);
 
-                    Web.Core.Files.DocumentService.DocbuilderRequest(FileUtility, FilesLinkUtility.DocServiceDocbuilderUrl, null, scriptUrl, false, FileUtility.SignatureSecret, out var urls);
+                    Web.Core.Files.DocumentService.DocbuilderRequest(FileUtility, FilesLinkUtility.DocServiceDocbuilderUrl, null, scriptUrl, false, FileUtility.SignatureSecret, ClientFactory, out var urls);
                 }
                 catch (Exception ex)
                 {

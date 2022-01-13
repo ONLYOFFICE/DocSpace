@@ -81,6 +81,8 @@ namespace ASC.ApiSystem.Controllers
 
         private TenantManager TenantManager { get; }
 
+        private IHttpClientFactory ClientFactory { get; }
+
         public CommonMethods(
             IHttpContextAccessor httpContextAccessor,
             IConfiguration configuration,
@@ -92,7 +94,8 @@ namespace ASC.ApiSystem.Controllers
             IMemoryCache memoryCache,
             IOptionsSnapshot<HostedSolution> hostedSolutionOptions,
             CoreBaseSettings coreBaseSettings,
-            TenantManager tenantManager)
+            TenantManager tenantManager,
+            IHttpClientFactory clientFactory)
         {
             HttpContextAccessor = httpContextAccessor;
 
@@ -111,8 +114,13 @@ namespace ASC.ApiSystem.Controllers
             CommonConstants = commonConstants;
 
             MemoryCache = memoryCache;
+
             CoreBaseSettings = coreBaseSettings;
+
             TenantManager = tenantManager;
+
+            ClientFactory = clientFactory;
+
             HostedSolution = hostedSolutionOptions.Get(CommonConstants.BaseDbConnKeyString);
         }
 
@@ -176,7 +184,7 @@ namespace ASC.ApiSystem.Controllers
 
             try
             {
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
                 using var response = httpClient.Send(request);
                 using var stream = response.Content.ReadAsStream();
                 using var reader = new StreamReader(stream, Encoding.UTF8);
@@ -310,7 +318,7 @@ namespace ASC.ApiSystem.Controllers
                 request.Method = HttpMethod.Post;
                 request.Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
 
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
                 using var httpClientResponse = httpClient.Send(request);
                 using var stream = httpClientResponse.Content.ReadAsStream();
                 using var reader = new StreamReader(stream);

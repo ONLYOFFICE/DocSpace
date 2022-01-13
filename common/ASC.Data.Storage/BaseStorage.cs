@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -53,6 +54,7 @@ namespace ASC.Data.Storage
         protected EmailValidationKeyProvider EmailValidationKeyProvider { get; }
         protected IHttpContextAccessor HttpContextAccessor { get; }
         protected IOptionsMonitor<ILog> Options { get; }
+        protected IHttpClientFactory ClientFactory { get; }
             
         public BaseStorage(
             TempStream tempStream,
@@ -60,7 +62,8 @@ namespace ASC.Data.Storage
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> options)
+            IOptionsMonitor<ILog> options,
+            IHttpClientFactory clientFactory)
         {
 
             TempStream = tempStream;
@@ -70,6 +73,7 @@ namespace ASC.Data.Storage
             Options = options;
             Log = options.CurrentValue;
             HttpContextAccessor = httpContextAccessor;
+            ClientFactory = clientFactory;
         }
 
         #region IDataStore Members

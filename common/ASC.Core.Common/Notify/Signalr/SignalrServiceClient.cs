@@ -53,19 +53,22 @@ namespace ASC.Core.Notify.Signalr
         internal MachinePseudoKeys MachinePseudoKeys { get; }
         internal IConfiguration Configuration { get; }
         internal IOptionsMonitor<ILog> Options { get; }
+        internal IHttpClientFactory ClientFactory { get; }
 
         public ConfigureSignalrServiceClient(
             TenantManager tenantManager,
             CoreSettings coreSettings,
             MachinePseudoKeys machinePseudoKeys,
             IConfiguration configuration,
-            IOptionsMonitor<ILog> options)
+            IOptionsMonitor<ILog> options, 
+            IHttpClientFactory clientFactory)
         {
             TenantManager = tenantManager;
             CoreSettings = coreSettings;
             MachinePseudoKeys = machinePseudoKeys;
             Configuration = configuration;
             Options = options;
+            ClientFactory = clientFactory;
         }
 
         public void Configure(string name, SignalrServiceClient options)
@@ -74,6 +77,7 @@ namespace ASC.Core.Notify.Signalr
             options.hub = name.Trim('/');
             options.TenantManager = TenantManager;
             options.CoreSettings = CoreSettings;
+            options.ClientFactory = ClientFactory;
             options.SKey = MachinePseudoKeys.GetMachineConstant();
             options.Url = Configuration["web:hub:internal"];
             options.EnableSignalr = !string.IsNullOrEmpty(options.Url);
@@ -120,6 +124,7 @@ namespace ASC.Core.Notify.Signalr
 
         internal TenantManager TenantManager { get; set; }
         internal CoreSettings CoreSettings { get; set; }
+        internal IHttpClientFactory ClientFactory { get; set; }
 
         public SignalrServiceClient()
         {
@@ -369,7 +374,8 @@ namespace ASC.Core.Notify.Signalr
 
             request.Content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-            using (var httpClient = new HttpClient())
+            var httpClient = ClientFactory.CreateClient();
+
             using (var response = httpClient.Send(request))
             using (var stream = response.Content.ReadAsStream())
             using (var streamReader = new StreamReader(stream))

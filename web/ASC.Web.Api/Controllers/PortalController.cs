@@ -55,6 +55,7 @@ namespace ASC.Web.Api.Controllers
         public SetupInfo SetupInfo { get; }
         private TenantExtra TenantExtra { get; set; }
         public ILog Log { get; }
+        public IHttpClientFactory ClientFactory { get; }
 
 
         public PortalController(
@@ -74,7 +75,8 @@ namespace ASC.Web.Api.Controllers
             IConfiguration configuration,
             CoreBaseSettings coreBaseSettings,
             LicenseReader licenseReader,
-            SetupInfo setupInfo
+            SetupInfo setupInfo,
+            IHttpClientFactory clientFactory
             )
         {
             Log = options.CurrentValue;
@@ -94,6 +96,7 @@ namespace ASC.Web.Api.Controllers
             LicenseReader = licenseReader;
             SetupInfo = setupInfo;
             TenantExtra = tenantExtra;
+            ClientFactory = clientFactory;
         }
 
         [Read("")]
@@ -216,7 +219,7 @@ namespace ASC.Web.Api.Controllers
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(string.Format(Configuration["bookmarking:thumbnail-url"], url));
 
-            using var httpClient = new HttpClient();
+            var httpClient = ClientFactory.CreateClient();
             using var response = httpClient.Send(request);
             using var stream = response.Content.ReadAsStream();
             var bytes = new byte[stream.Length];

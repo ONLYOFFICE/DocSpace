@@ -172,6 +172,7 @@ namespace ASC.Api.Settings
         private PaymentManager PaymentManager { get; }
         private DbWorker WebhookDbWorker { get; }
         public Constants Constants { get; }
+        public IHttpClientFactory ClientFactory { get; }
 
         public SettingsController(
             IOptionsMonitor<ILog> option,
@@ -234,7 +235,8 @@ namespace ASC.Api.Settings
             PasswordHasher passwordHasher,
             PaymentManager paymentManager,
             DbWorker dbWorker,
-            Constants constants)
+            Constants constants,
+            IHttpClientFactory clientFactory)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
@@ -297,6 +299,7 @@ namespace ASC.Api.Settings
             PaymentManager = paymentManager;
             WebhookDbWorker = dbWorker;
             Constants = constants;
+            ClientFactory = clientFactory;
         }
 
         [Read("", Check = false)]
@@ -1377,7 +1380,7 @@ namespace ASC.Api.Settings
                     var body = JsonSerializer.Serialize(data);//todo check
                     request.Content = new StringContent(body);
 
-                    using var httpClient = new HttpClient();
+                    var httpClient = ClientFactory.CreateClient();
                     using var response = httpClient.Send(request);
 
                 }

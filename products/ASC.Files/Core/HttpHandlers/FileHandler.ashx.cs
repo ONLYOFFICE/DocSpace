@@ -121,6 +121,7 @@ namespace ASC.Web.Files
         public TempStream TempStream { get; }
         private UserManager UserManager { get; }
         private ILog Logger { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
         public FileHandlerService(
             FilesLinkUtility filesLinkUtility,
@@ -147,7 +148,8 @@ namespace ASC.Web.Files
             FileConverter fileConverter,
             FFmpegService fFmpegService,
             IServiceProvider serviceProvider,
-            TempStream tempStream)
+            TempStream tempStream,
+            IHttpClientFactory clientFactory)
         {
             FilesLinkUtility = filesLinkUtility;
             TenantExtra = tenantExtra;
@@ -173,6 +175,7 @@ namespace ASC.Web.Files
             TempStream = tempStream;
             UserManager = userManager;
             Logger = optionsMonitor.CurrentValue;
+            ClientFactory = clientFactory;
         }
 
         public Task Invoke(HttpContext context)
@@ -1208,7 +1211,7 @@ namespace ASC.Web.Files
             request.RequestUri = new Uri(fileUri);
 
             var fileDao = DaoFactory.GetFileDao<T>();
-            using var httpClient = new HttpClient();
+            var httpClient = ClientFactory.CreateClient();
             using var response = httpClient.Send(request);
             using var fileStream = httpClient.Send(request).Content.ReadAsStream();
 

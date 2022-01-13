@@ -112,6 +112,7 @@ namespace ASC.Calendar.Controllers
         private SetupInfo SetupInfo { get; }
         private InstanceCrypto InstanceCrypto { get; }
         private CalendarManager CalendarManager { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
         public CalendarController(
 
@@ -143,7 +144,8 @@ namespace ASC.Calendar.Controllers
             SetupInfo setupInfo,
             InstanceCrypto instanceCrypto,
             CalendarManager calendarManager,
-            ProductEntryPoint productEntryPoint)
+            ProductEntryPoint productEntryPoint,
+            IHttpClientFactory clientFactory)
         {
             AuthContext = authContext;
             Authentication = authentication;
@@ -173,6 +175,7 @@ namespace ASC.Calendar.Controllers
             InstanceCrypto = instanceCrypto;
             CalendarManager = calendarManager;
             ProductEntryPoint = productEntryPoint;
+            ClientFactory = clientFactory;
 
             CalendarManager.RegistryCalendar(new SharedEventsCalendar(AuthContext, TimeZoneConverter, TenantManager, DataProvider));
             var birthdayReminderCalendar = new BirthdayReminderCalendar(AuthContext, TimeZoneConverter, UserManager, DisplayUserSettingsHelper);
@@ -509,7 +512,7 @@ namespace ASC.Calendar.Controllers
                 var todoCalendars = DataProvider.LoadTodoCalendarsForUser(SecurityContext.CurrentAccount.ID);
                 var userTimeZone = TenantManager.GetCurrentTenant().TimeZone;
 
-                var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
+                var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager, ClientFactory);
                 var newCalendar = new BusinessObjects.Calendar(AuthContext, TimeZoneConverter, icalendar, DataProvider);
                 var todoCal = CalendarWrapperHelper.Get(newCalendar);
 
@@ -1035,7 +1038,7 @@ namespace ASC.Calendar.Controllers
 
             try
             {
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
                 using var response = httpClient.Send(request);
                 using (var reader = new StreamReader(response.Content.ReadAsStream()))
                 {
@@ -1096,7 +1099,7 @@ namespace ASC.Calendar.Controllers
 
                 request.Content = new StringContent(data, Encoding.UTF8, "text/xml");
 
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
                 using var response = httpClient.Send(request);
 
                 using (var reader = new StreamReader(response.Content.ReadAsStream()))
@@ -1267,7 +1270,7 @@ namespace ASC.Calendar.Controllers
                 {
                     var request = new HttpRequestMessage();
                     request.RequestUri = new Uri(calendar.ICalUrl);
-                    using var httpClient = new HttpClient();
+                    var httpClient = ClientFactory.CreateClient();
                     using var response = httpClient.Send(request);
 
                     using (var stream = response.Content.ReadAsStream())
@@ -1333,7 +1336,7 @@ namespace ASC.Calendar.Controllers
                     var request = new HttpRequestMessage();
                     request.RequestUri = new Uri(iCalUrl);
 
-                    using var httpClient = new HttpClient();
+                    var httpClient = ClientFactory.CreateClient();
                     using var response = httpClient.Send(request);
                     using (var stream = response.Content.ReadAsStream())
                     {
@@ -1765,7 +1768,7 @@ namespace ASC.Calendar.Controllers
                         var authorization = isShared ? DataProvider.GetSystemAuthorization() : DataProvider.GetUserAuthorization(email);
                         request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(authorization)));
 
-                        using var httpClient = new HttpClient();
+                        var httpClient = ClientFactory.CreateClient();
                         httpClient.Send(request);
                     }
                     catch (HttpRequestException ex)
@@ -2682,7 +2685,7 @@ namespace ASC.Calendar.Controllers
             var todoCalendars = DataProvider.LoadTodoCalendarsForUser(AuthContext.CurrentAccount.ID);
             var userTimeZone = TenantManager.GetCurrentTenant().TimeZone;
 
-            var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
+            var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager, ClientFactory);
             var newCalendar = new BusinessObjects.Calendar(AuthContext, TimeZoneConverter, icalendar, DataProvider);
             var todoCal = CalendarWrapperHelper.Get(newCalendar);
 
@@ -3158,7 +3161,7 @@ namespace ASC.Calendar.Controllers
             var textColor = сalendarUrl.TextColor;
             var backgroundColor = сalendarUrl.BackgroundColor;
 
-            var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
+            var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager, ClientFactory);
             var cal = icalendar.GetFromUrl(iCalUrl);
             if (cal.isEmptyName)
                 cal.Name = iCalUrl;
@@ -4068,7 +4071,7 @@ namespace ASC.Calendar.Controllers
 
                             request.Content = new StringContent(ics, Encoding.UTF8, "text/calendar");
 
-                            using var httpClient = new HttpClient();
+                            var httpClient = ClientFactory.CreateClient();
                             httpClient.Send(request);
                         }
                         catch (HttpRequestException ex)
@@ -4194,7 +4197,8 @@ namespace ASC.Calendar.Controllers
 
                     string ics = "";
 
-                    using (var httpClient = new HttpClient())
+                    var httpClient = ClientFactory.CreateClient();
+
                     using (var response = httpClient.Send(request))
                     using (var reader = new StreamReader(response.Content.ReadAsStream()))
                     {
@@ -4549,7 +4553,7 @@ namespace ASC.Calendar.Controllers
                 request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(authorization)));
                 request.Content = new StringContent(data, Encoding.UTF8, "text/calendar");
 
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
                 var response = httpClient.Send(request);
 
                 using (var reader = new StreamReader(response.Content.ReadAsStream()))
@@ -4685,7 +4689,7 @@ namespace ASC.Calendar.Controllers
                     request.Method = HttpMethod.Delete;
                     request.Headers.Add("Authorization", "Basic " + encoded);
 
-                    using var httpClient = new HttpClient();
+                    var httpClient = ClientFactory.CreateClient();
                     httpClient.Send(request);
                 }
                 catch (HttpRequestException ex)
@@ -4750,7 +4754,7 @@ namespace ASC.Calendar.Controllers
                 request.Method = HttpMethod.Delete;
                 request.Headers.Add("Authorization", "Basic " + encoded);
 
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
                 httpClient.Send(request);
             }
             catch (HttpRequestException ex)

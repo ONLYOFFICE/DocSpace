@@ -99,6 +99,7 @@ namespace ASC.Employee.Core.Controllers
         private Constants Constants { get; }
         private Recaptcha Recaptcha { get; }
         private ILog Log { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
         public PeopleController(
             MessageService messageService,
@@ -140,7 +141,8 @@ namespace ASC.Employee.Core.Controllers
             MobileDetector mobileDetector,
             ProviderManager providerManager,
             Constants constants,
-            Recaptcha recaptcha
+            Recaptcha recaptcha,
+            IHttpClientFactory clientFactory
             )
         {
             Log = option.Get("ASC.Api");
@@ -183,6 +185,7 @@ namespace ASC.Employee.Core.Controllers
             ProviderManager = providerManager;
             Constants = constants;
             Recaptcha = recaptcha;
+            ClientFactory = clientFactory;
         }
 
         [Read("info")]
@@ -1851,7 +1854,7 @@ namespace ASC.Employee.Core.Controllers
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(url);
 
-                using (var httpClient = new HttpClient())
+                var httpClient = ClientFactory.CreateClient();
                 using (var response = httpClient.Send(request))
                 using (var stream = response.Content.ReadAsStream())
                 {
@@ -2101,7 +2104,7 @@ namespace ASC.Employee.Core.Controllers
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(files);
 
-            using var httpClient = new HttpClient();
+            var httpClient = ClientFactory.CreateClient();
             using var response = httpClient.Send(request);
             using var inputStream = response.Content.ReadAsStream();
             using var br = new BinaryReader(inputStream);

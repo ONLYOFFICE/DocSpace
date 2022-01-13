@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -72,8 +73,9 @@ namespace ASC.Data.Storage.RackspaceCloud
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> options)
-            : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
+            IOptionsMonitor<ILog> options,
+            IHttpClientFactory httpClient)
+            : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options, httpClient)
         {
             _logger = options.Get("ASC.Data.Storage.Rackspace.RackspaceCloudStorage");
             TempPath = tempPath;

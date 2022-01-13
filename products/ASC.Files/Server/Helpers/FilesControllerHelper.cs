@@ -67,6 +67,7 @@ namespace ASC.Files.Helpers
         private EncryptionKeyPairHelper EncryptionKeyPairHelper { get; }
         private IHttpContextAccessor HttpContextAccessor { get; }
         private ILog Logger { get; set; }
+        private IHttpClientFactory ClientFactory { get; set; }
 
         /// <summary>
         /// </summary>
@@ -93,7 +94,8 @@ namespace ASC.Files.Helpers
             IOptionsMonitor<ILog> optionMonitor,
             SettingsManager settingsManager,
             EncryptionKeyPairHelper encryptionKeyPairHelper,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            IHttpClientFactory clientFactory)
         {
             ApiContext = context;
             FileStorageService = fileStorageService;
@@ -116,6 +118,7 @@ namespace ASC.Files.Helpers
             EncryptionKeyPairHelper = encryptionKeyPairHelper;
             HttpContextAccessor = httpContextAccessor;
             Logger = optionMonitor.Get("ASC.Files");
+            ClientFactory = clientFactory;
         }
 
         public FolderContentWrapper<T> GetFolder(T folderId, Guid userIdOrGroupId, FilterType filterType, bool withSubFolders)
@@ -257,7 +260,7 @@ namespace ASC.Files.Helpers
 
             var createSessionUrl = FilesLinkUtility.GetInitiateUploadSessionUrl(TenantManager.GetCurrentTenant().TenantId, file.FolderID, file.ID, file.Title, file.ContentLength, encrypted, SecurityContext);
 
-            using var httpClient = new HttpClient();
+            var httpClient = ClientFactory.CreateClient();
 
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(createSessionUrl);

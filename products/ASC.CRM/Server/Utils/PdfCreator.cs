@@ -58,6 +58,7 @@ namespace ASC.Web.CRM.Classes
         private OrganisationLogoManager _organisationLogoManager;
         private Files.Classes.PathProvider _filesPathProvider;
         private ILog _logger;
+        private IHttpClientFactory _clientFactory;
 
 
         public PdfCreator(IOptionsMonitor<ILog> logger,
@@ -66,7 +67,8 @@ namespace ASC.Web.CRM.Classes
                           IServiceProvider serviceProvider,
                           OrganisationLogoManager organisationLogoManager,
                           DaoFactory daoFactory,
-                          InvoiceFormattedData invoiceFormattedData)
+                          InvoiceFormattedData invoiceFormattedData,
+                          IHttpClientFactory clientFactory)
         {
             _filesPathProvider = filesPathProvider;
 
@@ -77,6 +79,7 @@ namespace ASC.Web.CRM.Classes
             _organisationLogoManager = organisationLogoManager;
             _daoFactory = daoFactory;
             _invoiceFormattedData = invoiceFormattedData;
+            _clientFactory = clientFactory;
         }
 
 
@@ -130,7 +133,7 @@ namespace ASC.Web.CRM.Classes
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(urlToFile);
 
-                using (var httpClient = new HttpClient())
+                var httpClient = _clientFactory.CreateClient();
                 using (var response = httpClient.Send(request))
                 using (var stream = response.Content.ReadAsStream())
                 {
@@ -249,7 +252,7 @@ namespace ASC.Web.CRM.Classes
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(url);
 
-            using var httpClient = new HttpClient();
+            var httpClient = _clientFactory.CreateClient();
 
             using (var stream = httpClient.Send(request).Content.ReadAsStream())
             {

@@ -51,18 +51,21 @@ namespace ASC.Web.Core.Helpers
     public class ApiSystemHelper
     {
         public string ApiSystemUrl { get; private set; }
-
         public string ApiCacheUrl { get; private set; }
-
         private static byte[] Skey { get; set; }
         private CommonLinkUtility CommonLinkUtility { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
-        public ApiSystemHelper(IConfiguration configuration, CommonLinkUtility commonLinkUtility, MachinePseudoKeys machinePseudoKeys)
+        public ApiSystemHelper(IConfiguration configuration,
+            CommonLinkUtility commonLinkUtility,
+            MachinePseudoKeys machinePseudoKeys, 
+            IHttpClientFactory clientFactory)
         {
             ApiSystemUrl = configuration["web:api-system"];
             ApiCacheUrl = configuration["web:api-cache"];
             CommonLinkUtility = commonLinkUtility;
             Skey = machinePseudoKeys.GetMachineConstant();
+            ClientFactory = clientFactory;
         }
 
 
@@ -163,7 +166,7 @@ namespace ASC.Web.Core.Helpers
                 request.Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
             }
 
-            using var httpClient = new HttpClient();
+            var httpClient = ClientFactory.CreateClient();
             using var response = httpClient.Send(request);
             using var stream = response.Content.ReadAsStream();
             using var reader = new StreamReader(stream, Encoding.UTF8);

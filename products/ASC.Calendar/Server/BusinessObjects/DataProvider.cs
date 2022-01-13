@@ -81,6 +81,7 @@ namespace ASC.Calendar.BusinessObjects
         protected DDayICalParser DDayICalParser { get; }
         public ILog Log { get; }
         public InstanceCrypto InstanceCrypto { get; }
+        public IHttpClientFactory ClientFactory { get; }
 
         public DataProvider(DbContextManager<CalendarDbContext> calendarDbContext,
             AuthManager authentication,
@@ -93,7 +94,8 @@ namespace ASC.Calendar.BusinessObjects
             UserManager userManager,
             DDayICalParser dDayICalParser,
             IOptionsMonitor<ILog> option,
-            InstanceCrypto instanceCrypto)
+            InstanceCrypto instanceCrypto,
+            IHttpClientFactory clientFactory)
         {
             Authentication = authentication;
             CalendarDb = calendarDbContext.Get("calendar");
@@ -107,7 +109,7 @@ namespace ASC.Calendar.BusinessObjects
             DDayICalParser = dDayICalParser;
             Log = option.Get("ASC.CalendarDataProvider");
             InstanceCrypto = instanceCrypto;
-
+            ClientFactory = clientFactory;
         }
 
         public List<UserViewSettings> GetUserViewSettings(Guid userId, List<string> calendarIds)
@@ -335,7 +337,7 @@ namespace ASC.Calendar.BusinessObjects
                         string.Equals(c.Id, r.calId.ToString(), StringComparison.InvariantCultureIgnoreCase));
                 if (calendar == null)
                 {
-                    var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
+                    var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager, ClientFactory);
                     calendar = new Calendar(AuthContext, TimeZoneConverter, icalendar, this)
                     {
                         Id = r.calId.ToString(),
@@ -808,7 +810,7 @@ namespace ASC.Calendar.BusinessObjects
                 request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(authorization)));
                 request.Headers.Add("Content-Type", "text/xml; charset=utf-8");
 
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
                 httpClient.Send(request);
             }
             catch (Exception ex)
@@ -944,7 +946,7 @@ namespace ASC.Calendar.BusinessObjects
                                      Uid = s.Uid
                                  })
                                  .ToList();
-                    var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
+                    var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager, ClientFactory);
                     todoList = data.ConvertAll(r => new Todo(AuthContext, TimeZoneConverter, icalendar, this)
                     {
                         Id = r.Id,
@@ -976,7 +978,7 @@ namespace ASC.Calendar.BusinessObjects
                                      Uid = s.Uid
                                  })
                                  .ToList();
-                    var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
+                    var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager, ClientFactory);
                     todoList = data.ConvertAll(r => new Todo(AuthContext, TimeZoneConverter, icalendar, this)
                     {
                         Id = r.Id,
@@ -1128,7 +1130,7 @@ namespace ASC.Calendar.BusinessObjects
                                 e => String.Equals(e.Id, r.Id, StringComparison.InvariantCultureIgnoreCase));
                         if (ev == null)
                         {
-                            var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
+                            var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager, ClientFactory);
                             ev = new Event(AuthContext, TimeZoneConverter, icalendar, this)
                             {
                                 Id = r.Id,
@@ -1194,7 +1196,7 @@ namespace ASC.Calendar.BusinessObjects
                                 e => String.Equals(e.Id, r.Id, StringComparison.InvariantCultureIgnoreCase));
                         if (ev == null)
                         {
-                            var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
+                            var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager, ClientFactory);
                             ev = new Event(AuthContext, TimeZoneConverter, icalendar, this)
                             {
                                 Id = r.Id,

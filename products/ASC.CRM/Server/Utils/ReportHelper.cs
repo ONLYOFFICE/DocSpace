@@ -58,6 +58,7 @@ namespace ASC.Web.CRM.Classes
         private SettingsManager _settingsManager;
         private TenantUtil _tenantUtil;
         private TenantManager _tenantManager;
+        private IHttpClientFactory _clientFactory;
 
         public ReportHelper(TenantManager tenantManager,
                             TenantUtil tenantUtil,
@@ -68,7 +69,8 @@ namespace ASC.Web.CRM.Classes
                             SecurityContext securityContext,
                             IServiceProvider serviceProvider,
                             IHttpContextAccessor httpContextAccessor,
-                            CurrencyProvider currencyProvider
+                            CurrencyProvider currencyProvider,
+                            IHttpClientFactory clientFactory
                           )
         {
             _tenantManager = tenantManager;
@@ -81,6 +83,7 @@ namespace ASC.Web.CRM.Classes
             _securityContext = securityContext;
             _httpContext = httpContextAccessor;
             _currencyProvider = currencyProvider;
+            _clientFactory = clientFactory;
         }
 
         private string GetFileName(ReportType reportType)
@@ -224,7 +227,7 @@ namespace ASC.Web.CRM.Classes
 
         private async Task SaveReportFile(ReportState state, string url)
         {
-            using var httpClient = new HttpClient();
+            var httpClient = _clientFactory.CreateClient();
             var responseData = await httpClient.GetByteArrayAsync(url);
 
             using (var stream = new System.IO.MemoryStream(responseData))
