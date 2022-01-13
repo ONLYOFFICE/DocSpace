@@ -35,7 +35,7 @@ namespace Textile.Blocks
             else if (modifier.Length == 2)
             {
                 if (modifier[0] != '\\')
-                    compressedModifier = modifier.Substring(0, 1);
+                    compressedModifier = modifier[0].ToString();
                 //else: compressedModifier = modifier;
             }
             //else: compressedModifier = modifier;

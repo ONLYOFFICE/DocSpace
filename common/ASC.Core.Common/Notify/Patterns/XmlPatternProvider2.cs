@@ -161,7 +161,7 @@ namespace ASC.Notify.Patterns
 
             static string ToUpper(string name)
             {
-                return name.Substring(0, 1).ToUpper() + name.Substring(1);
+                return name[0].ToString().ToUpper() + name.Substring(1);
             }
         }
     }

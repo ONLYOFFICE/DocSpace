@@ -141,7 +141,7 @@ namespace ASC.Data.Storage
 
                 var auth = EmailValidationKeyProvider.GetEmailKey(currentTenantId, path.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar) + "." + headerAttr + "." + expireString);
                 query = string.Format("{0}{1}={2}&{3}={4}",
-                                      path.Contains("?") ? "&" : "?",
+                                      path.IndexOf('?') >= 0 ? "&" : "?",
                                       Constants.QUERY_EXPIRE,
                                       expireString,
                                       Constants.QUERY_AUTH,
@@ -151,7 +151,7 @@ namespace ASC.Data.Storage
             if (!string.IsNullOrEmpty(headerAttr))
             {
                 query += string.Format("{0}{1}={2}",
-                                       query.Contains("?") ? "&" : "?",
+                                       query.IndexOf('?') >= 0 ? "&" : "?",
                                        Constants.QUERY_HEADER,
                                        HttpUtility.UrlEncode(headerAttr));
             }

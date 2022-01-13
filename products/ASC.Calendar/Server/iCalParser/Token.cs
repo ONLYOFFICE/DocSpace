@@ -123,7 +123,7 @@ namespace ASC.Calendar.iCalParser
         {
             if (str.Length > 0)
             {
-                return CamelCase(str.Substring(0, 1).ToUpper() + str.Substring(1));
+                return CamelCase(str[0].ToString().ToUpper() + str.Substring(1));
             }
             else
             {

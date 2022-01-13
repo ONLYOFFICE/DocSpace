@@ -63,9 +63,9 @@ namespace ASC.Files.Thirdparty.SharePoint
             if (!match.Success)
             {
                 var insertIndex = requestTitle.Length;
-                if (requestTitle.LastIndexOf(".", StringComparison.Ordinal) != -1)
+                if (requestTitle.LastIndexOf('.') != -1)
                 {
-                    insertIndex = requestTitle.LastIndexOf(".", StringComparison.Ordinal);
+                    insertIndex = requestTitle.LastIndexOf('.');
                 }
                 requestTitle = requestTitle.Insert(insertIndex, " (1)");
             }

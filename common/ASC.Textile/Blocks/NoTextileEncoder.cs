@@ -39,7 +39,7 @@ namespace Textile.Blocks
             string evaluator(Match m)
             {
                 var toEncode = m.Groups["notex"].Value;
-                if (toEncode == string.Empty)
+                if (toEncode.Length == 0)
                 {
                     return string.Empty;
                 }

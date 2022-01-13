@@ -167,7 +167,7 @@ namespace ASC.Core
         {
             var baseHost = BaseDomain;
 
-            if (string.IsNullOrEmpty(hostedRegion) || string.IsNullOrEmpty(baseHost) || !baseHost.Contains("."))
+            if (string.IsNullOrEmpty(hostedRegion) || string.IsNullOrEmpty(baseHost) || baseHost.IndexOf('.') < 0)
             {
                 return baseHost;
             }

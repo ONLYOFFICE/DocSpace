@@ -277,13 +277,13 @@ namespace ASC.Notify.Cron
                         break;
                     }
 
-                    if (exprOn == DayOfMonth && expr.IndexOf('L') != -1 && expr.Length > 1 && expr.IndexOf(",") >= 0)
+                    if (exprOn == DayOfMonth && expr.IndexOf('L') != -1 && expr.Length > 1 && expr.IndexOf(',') >= 0)
                     {
                         throw new FormatException(
                             "Support for specifying 'L' and 'LW' with other days of the month is not implemented");
                     }
 
-                    if (exprOn == DayOfWeek && expr.IndexOf('L') != -1 && expr.Length > 1 && expr.IndexOf(",") >= 0)
+                    if (exprOn == DayOfWeek && expr.IndexOf('L') != -1 && expr.Length > 1 && expr.IndexOf(',') >= 0)
                     {
                         throw new FormatException(
                             "Support for specifying 'L' with other days of the week is not implemented");

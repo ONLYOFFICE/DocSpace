@@ -299,7 +299,7 @@ namespace ASC.Notify.Textile
 
         private string GetSiteUnsubscribeLink(NoticeMessage message, MailWhiteLabelSettings settings)
         {
-            var mail = message.Recipient.Addresses.FirstOrDefault(r => r.Contains("@"));
+            var mail = message.Recipient.Addresses.FirstOrDefault(r => r.Contains('@'));
 
             if (string.IsNullOrEmpty(mail))
                 return string.Empty;

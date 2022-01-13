@@ -118,7 +118,7 @@ namespace ASC.Web.Core.Files
             if (string.IsNullOrEmpty(toExtension)) throw new ArgumentNullException("toExtension", "Extension for conversion is not known");
 
             var title = Path.GetFileName(documentUri ?? "");
-            title = string.IsNullOrEmpty(title) || title.Contains("?") ? Guid.NewGuid().ToString() : title;
+            title = string.IsNullOrEmpty(title) || title.Contains('?') ? Guid.NewGuid().ToString() : title;
 
             documentRevisionId = string.IsNullOrEmpty(documentRevisionId)
                                      ? documentUri

@@ -97,7 +97,7 @@ namespace ASC.Api.Core
             {
                 //Parse time   
                 var tzOffset = TimeSpan.Zero;
-                if (offsetPart.Contains(":") && TimeSpan.TryParse(offsetPart.TrimStart('+'), out tzOffset))
+                if (offsetPart.Contains(':') && TimeSpan.TryParse(offsetPart.TrimStart('+'), out tzOffset))
                 {
                     return new ApiDateTime(dateTime, tzOffset);
                 }

@@ -195,7 +195,7 @@ namespace ASC.Web.CRM.Classes
             }
             if (quoted)
             {
-                if (i > len || !currentLine.Substring(i, 1).StartsWith("\""))
+                if (i > len || currentLine[i] != '\"')
                     throw new FormatException("Invalid CSV format: " + currentLine.Substring(0, i));
                 i++;
             }

@@ -114,7 +114,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
             if (authData.Login.EndsWith("onmicrosoft.com"))
             {
-                var personalPath = string.Concat("/personal/", authData.Login.Replace("@", "_").Replace(".", "_").ToLower());
+                var personalPath = string.Concat("/personal/", authData.Login.Replace('@', '_').Replace('.', '_').ToLower());
                 SpRootFolderId = string.Concat(personalPath, "/Documents");
 
                 var ss = new SecureString();

@@ -302,7 +302,7 @@ namespace ASC.Web.Core.Users
             var pwd = string.Empty;
             while (length-- > 0)
             {
-                pwd += noise.Substring(RandomNumberGenerator.GetInt32(noise.Length - 1), 1);
+                pwd += noise[RandomNumberGenerator.GetInt32(noise.Length - 1)];
             }
             return pwd;
         }

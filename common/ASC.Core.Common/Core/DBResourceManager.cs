@@ -341,7 +341,7 @@ namespace TMResourceData
                     {
                         var newTextReplacement = newText;
 
-                        if (resourceValue.Contains("<") && resourceValue.Contains(">") || resourceName.StartsWith("pattern_"))
+                        if (resourceValue.IndexOf('<') >= 0 && resourceValue.IndexOf('>') >= 0 || resourceName.StartsWith("pattern_"))
                         {
                             newTextReplacement = HttpUtility.HtmlEncode(newTextReplacement);
                         }

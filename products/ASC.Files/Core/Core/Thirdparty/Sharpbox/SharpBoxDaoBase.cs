@@ -446,9 +446,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
             if (!match.Success)
             {
                 var insertIndex = requestTitle.Length;
-                if (requestTitle.LastIndexOf(".", StringComparison.InvariantCulture) != -1)
+                if (requestTitle.LastIndexOf('.') != -1)
                 {
-                    insertIndex = requestTitle.LastIndexOf(".", StringComparison.InvariantCulture);
+                    insertIndex = requestTitle.LastIndexOf('.');
                 }
                 requestTitle = requestTitle.Insert(insertIndex, " (1)");
             }
