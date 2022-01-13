@@ -4,6 +4,5 @@
   "ConnectionUrl": "URL di connessione",
   "ConnectMakeShared": "Condividi e metti nella cartella \"Comune\"",
   "Login": "Accedi",
-  "Reconnect": "Riconnetti",
-  "ConvertedFileDestination": "La copia di file viene creata nella cartella <bold>{{folderTitle}}</bold>"
+  "Reconnect": "Riconnetti"
 }
