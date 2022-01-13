@@ -240,7 +240,7 @@ class FilterInput extends React.Component {
       itemsState.map((item, index) => {
         if (item.group === "filter-group" && index !== -1) {
           const newGroup = filterValues.find((i) => i.group === "filter-group");
-          updatedValues.splice(index, 1, newGroup);
+          newGroup && updatedValues.splice(index, 1, newGroup);
         }
       });
     }

@@ -28,7 +28,7 @@ class FilesTableHeader extends React.Component {
       {
         key: "Author",
         title: t("ByAuthor"),
-        enable: true,
+        enable: false,
         resizable: true,
         sortBy: "Author",
         onClick: this.onFilter,
