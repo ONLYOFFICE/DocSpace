@@ -4,5 +4,7 @@
   "ConversionTitle": "Nahrávanie dokumentu",
   "ConvertAndOpenTitle": "Konvertovať a otvoriť dokument",
   "HideMessage": "Túto správu viac nezobrazovať",
-  "SaveOriginalFormatMessage": "Uložiť kópiu súboru v pôvodnom formáte"
+  "SaveOriginalFormatMessage": "Uložiť kópiu súboru v pôvodnom formáte",
+  "ConvertedFileDestination": "Kópia súboru sa vytvorí v priečinku <strong>{{folderTitle}}</strong>",
+  "InfoCreateFileIn": "Nový '{{fileTitle}}' súbor je vytvorený v '{{folderTitle}}'"
 }
