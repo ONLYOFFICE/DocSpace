@@ -172,6 +172,29 @@ class FileRow extends Component {
     setUploadPanelVisible(false);
   };
 
+  onClickActions = (password) => {
+    const { removeFileFromList, convertFile, item, uploadedFiles } = this.props;
+    const { fileId, toFolderId, fileInfo } = item;
+
+    let index;
+
+    uploadedFiles.reduce((acc, rec, id) => {
+      if (rec.fileId === fileId) index = id;
+    }, []);
+
+    const newItem = {
+      fileId,
+      toFolderId,
+      action: "convert",
+      fileInfo,
+      password,
+      index,
+    };
+
+    this.onTextClick();
+    removeFileFromList(fileId);
+    convertFile(newItem);
+  };
   render() {
     const {
       t,
@@ -268,7 +291,10 @@ class FileRow extends Component {
             )}
             {showPasswordInput && (
               <div className="password-input">
-                <SimulatePassword item={item} hideInput={this.onTextClick} />
+                <SimulatePassword
+                  item={item}
+                  onClickActions={this.onClickActions}
+                />
               </div>
             )}
           </>
@@ -304,6 +330,9 @@ export default inject(
       cancelCurrentUpload,
       cancelCurrentFileConversion,
       setUploadPanelVisible,
+      removeFileFromList,
+      convertFile,
+      files: uploadedFiles,
     } = uploadDataStore;
     const { playlist, setMediaViewerData } = mediaViewerDataStore;
     const { loadingFile: file } = primaryProgressDataStore;
@@ -335,6 +364,9 @@ export default inject(
       loadingFile,
       isMediaActive,
       downloadInCurrentTab,
+      removeFileFromList,
+      convertFile,
+      uploadedFiles,
 
       cancelCurrentUpload,
       cancelCurrentFileConversion,

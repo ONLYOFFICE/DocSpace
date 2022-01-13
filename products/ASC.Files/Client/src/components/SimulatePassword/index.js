@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "@appserver/components/button";
 import styled from "styled-components";
-import { inject, observer } from "mobx-react";
 import InputBlock from "@appserver/components/input-block";
 import globalColors from "@appserver/components/utils/globalColors";
 
@@ -28,13 +27,7 @@ const StyledBody = styled.div`
     width: 100%;
   }
 `;
-const SimulatePassword = ({
-  item,
-  convertFile,
-  removeFileFromList,
-  hideInput,
-  uploadedFiles,
-}) => {
+const SimulatePassword = ({ onClickActions }) => {
   const [password, setPassword] = useState("");
   const [passwordValid, setPasswordValid] = useState(true);
 
@@ -51,26 +44,8 @@ const SimulatePassword = ({
     }
 
     if (hasError) return;
-    let index;
 
-    const { fileId, toFolderId, fileInfo } = item;
-
-    uploadedFiles.reduce((acc, rec, id) => {
-      if (rec.fileId === fileId) index = id;
-    }, []);
-
-    const newItem = {
-      fileId,
-      toFolderId,
-      action: "convert",
-      fileInfo,
-      password: password,
-      index,
-    };
-
-    hideInput();
-    removeFileFromList(fileId);
-    convertFile(newItem);
+    onClickActions(password);
   };
 
   const setPasswordSettings = (newPassword) => {
@@ -170,16 +145,4 @@ const SimulatePassword = ({
   );
 };
 
-export default inject(({ uploadDataStore }) => {
-  const {
-    convertFile,
-    removeFileFromList,
-    files: uploadedFiles,
-  } = uploadDataStore;
-
-  return {
-    uploadedFiles,
-    removeFileFromList,
-    convertFile,
-  };
-})(observer(SimulatePassword));
+export default SimulatePassword;
