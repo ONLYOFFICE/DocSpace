@@ -34,7 +34,7 @@ const StyledContextMenu = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-left: 8px;
+    margin-left: 4px;
     margin-top: -4px;
   }
 

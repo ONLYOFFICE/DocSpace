@@ -285,10 +285,12 @@ namespace ASC.Files.Core.Data
 
             FilesDbContext.SaveChanges();
 
-            var tagsToRemove = Query(FilesDbContext.Tag)
-                .Where(r => !Query(FilesDbContext.TagLink).Any(a => a.TagId == r.Id));
+            var tagsToRemove = from ft in FilesDbContext.Tag
+                               join ftl in FilesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
+                               where ftl == null
+                               select ft;
 
-            FilesDbContext.Tag.RemoveRange(tagsToRemove);
+            FilesDbContext.Tag.RemoveRange(tagsToRemove.ToList());
             FilesDbContext.SaveChanges();
         }
 

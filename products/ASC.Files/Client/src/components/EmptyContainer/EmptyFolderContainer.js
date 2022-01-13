@@ -38,7 +38,10 @@ const EmptyFolderContainer = ({
             {t("Spreadsheet")},
           </Link>
           <Link data-format="pptx" onClick={onCreate} {...linkStyles}>
-            {t("Presentation")}
+            {t("Presentation")},
+          </Link>
+          <Link data-format="docxf" onClick={onCreate} {...linkStyles}>
+            {t("Translations:NewForm")}
           </Link>
         </Box>
       </div>
@@ -88,4 +91,4 @@ export default inject(({ filesStore, selectedFolderStore }) => {
     setIsLoading: filesStore.setIsLoading,
     parentId: selectedFolderStore.parentId,
   };
-})(withTranslation("Home")(observer(EmptyFolderContainer)));
+})(withTranslation(["Home", "Translations"])(observer(EmptyFolderContainer)));

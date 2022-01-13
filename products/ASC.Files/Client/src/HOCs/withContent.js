@@ -1,7 +1,6 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import { Trans } from "react-i18next";
-import { isMobile } from "react-device-detect";
 
 import toastr from "studio/toastr";
 import {
@@ -21,9 +20,13 @@ export default function withContent(WrappedContent) {
     constructor(props) {
       super(props);
 
-      const { item, fileActionId, fileActionExt } = props;
+      const { item, fileActionId, fileActionExt, fileActionTemplateId } = props;
       let titleWithoutExt = getTitleWithoutExst(item);
-      if (fileActionId === -1 && item.id === fileActionId) {
+      if (
+        fileActionId === -1 &&
+        item.id === fileActionId &&
+        fileActionTemplateId === null
+      ) {
         titleWithoutExt = getDefaultFileName(fileActionExt);
       }
 
@@ -119,18 +122,21 @@ export default function withContent(WrappedContent) {
     createItem = (e, open) => {
       const {
         createFile,
-        item,
-        setIsLoading,
-        isLoading,
-        openDocEditor,
-        isPrivacy,
-        isDesktop,
-        replaceFileStream,
-        t,
-        setEncryptionAccess,
         createFolder,
+        fileActionTemplateId,
+        isDesktop,
+        isLoading,
+        isPrivacy,
+        item,
+        openDocEditor,
+        replaceFileStream,
+        setEncryptionAccess,
+        setIsLoading,
+        t,
       } = this.props;
       const { itemTitle } = this.state;
+
+      let title = itemTitle;
 
       if (isLoading) return;
 
@@ -139,8 +145,14 @@ export default function withContent(WrappedContent) {
       const itemId = e.currentTarget.dataset.itemid;
 
       if (itemTitle.trim() === "") {
-        toastr.warning(t("CreateWithEmptyTitle"));
-        return this.completeAction(itemId);
+        title =
+          fileActionTemplateId === null
+            ? getDefaultFileName(item.fileExst)
+            : getTitleWithoutExst(item);
+
+        this.setState({
+          itemTitle: title,
+        });
       }
 
       let tab =
@@ -156,13 +168,17 @@ export default function withContent(WrappedContent) {
           : null;
 
       !item.fileExst && !item.contentLength
-        ? createFolder(item.parentId, itemTitle)
+        ? createFolder(item.parentId, title)
             .then(() => this.completeAction(itemId))
             .catch((e) => toastr.error(e))
             .finally(() => {
               return setIsLoading(false);
             })
-        : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
+        : createFile(
+            item.parentId,
+            `${title}.${item.fileExst}`,
+            fileActionTemplateId
+          )
             .then((file) => {
               if (isPrivacy) {
                 return setEncryptionAccess(file).then((encryptedFile) => {
@@ -196,70 +212,55 @@ export default function withContent(WrappedContent) {
       if (title.match(folderFormValidation)) {
         toastr.warning(t("ContainsSpecCharacter"));
       }
+
       title = title.replace(folderFormValidation, "_");
+
       return this.setState({ itemTitle: title });
     };
 
-    getStatusByDate = () => {
-      const { culture, t, item, sectionWidth, viewAs } = this.props;
-      const { created, updated, version, fileExst } = item;
+    getStatusByDate = (create) => {
+      const { culture, item } = this.props;
+      const { created, updated } = item;
 
-      const title =
-        version > 1
-          ? t("TitleModified")
-          : fileExst
-          ? t("TitleUploaded")
-          : t("TitleCreated");
-
-      const date = fileExst ? updated : created;
-      const dateLabel = new Date(date).toLocaleString(culture);
-      const mobile =
-        (sectionWidth && sectionWidth <= 375) || isMobile || viewAs === "table";
-
-      return mobile ? dateLabel : `${title}: ${dateLabel}`;
-    };
-
-    getTableStatusByDate = (create) => {
-      const { created, updated } = this.props.item;
+      const options = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "numeric",
+      };
 
       const date = create ? created : updated;
-      const dateLabel = new Date(date).toLocaleString(this.props.culture);
+
+      const dateLabel = new Date(date)
+        .toLocaleString(culture, options)
+        .replace(",", "");
+
       return dateLabel;
     };
 
     render() {
       const { itemTitle } = this.state;
       const {
-        item,
-        fileActionId,
-        fileActionExt,
-        viewer,
-        t,
-        isTrashFolder,
-        onFilesClick,
-        viewAs,
         element,
+        fileActionExt,
+        fileActionId,
         isDesktop,
+        isTrashFolder,
+        item,
+        onFilesClick,
+        t,
+        viewAs,
+        viewer,
       } = this.props;
-      const {
-        id,
-        fileExst,
-        updated,
-        createdBy,
-        access,
-        fileStatus,
-        href,
-      } = item;
+      const { access, createdBy, fileExst, fileStatus, href, icon, id } = item;
 
       const titleWithoutExt = getTitleWithoutExst(item);
 
       const isEdit = id === fileActionId && fileExst === fileActionExt;
 
-      const updatedDate =
-        viewAs === "table"
-          ? this.getTableStatusByDate(false)
-          : updated && this.getStatusByDate();
-      const createdDate = this.getTableStatusByDate(true);
+      const updatedDate = this.getStatusByDate(false);
+      const createdDate = this.getStatusByDate(true);
 
       const fileOwner =
         createdBy &&
@@ -275,7 +276,7 @@ export default function withContent(WrappedContent) {
         : { onClick: onFilesClick };
 
       if (!isDesktop && !isTrashFolder) {
-        linkStyles.href = item.href;
+        linkStyles.href = href;
       }
 
       const newItems = item.new || fileStatus === 2;
@@ -283,7 +284,7 @@ export default function withContent(WrappedContent) {
       const elementIcon = element ? (
         element
       ) : (
-        <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
+        <ItemIcon id={id} icon={icon} fileExst={fileExst} />
       );
 
       return isEdit ? (
@@ -319,51 +320,53 @@ export default function withContent(WrappedContent) {
     ({ filesActionsStore, filesStore, treeFoldersStore, auth }, {}) => {
       const { editCompleteAction } = filesActionsStore;
       const {
-        setIsLoading,
-        isLoading,
-        openDocEditor,
-        updateFile,
-        renameFolder,
         createFile,
         createFolder,
+        isLoading,
+        openDocEditor,
+        renameFolder,
+        setIsLoading,
+        updateFile,
         viewAs,
       } = filesStore;
       const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
 
       const {
-        type: fileActionType,
         extension: fileActionExt,
         id: fileActionId,
+        templateId: fileActionTemplateId,
+        type: fileActionType,
       } = filesStore.fileActionStore;
       const { replaceFileStream, setEncryptionAccess } = auth;
       const {
         culture,
-        isDesktopClient,
         folderFormValidation,
+        isDesktopClient,
       } = auth.settingsStore;
 
       return {
-        setIsLoading,
+        createFile,
+        createFolder,
+        culture,
+        editCompleteAction,
+        fileActionExt,
+        fileActionId,
+        fileActionTemplateId,
+        fileActionType,
+        folderFormValidation,
+        homepage: config.homepage,
+        isDesktop: isDesktopClient,
         isLoading,
+        isPrivacy: isPrivacyFolder,
         isTrashFolder: isRecycleBinFolder,
         openDocEditor,
-        updateFile,
         renameFolder,
-        fileActionId,
-        editCompleteAction,
-        fileActionType,
-        createFile,
-        isPrivacy: isPrivacyFolder,
-        isDesktop: isDesktopClient,
         replaceFileStream,
         setEncryptionAccess,
-        createFolder,
-        fileActionExt,
-        culture,
-        homepage: config.homepage,
-        viewer: auth.userStore.user,
+        setIsLoading,
+        updateFile,
         viewAs,
-        folderFormValidation,
+        viewer: auth.userStore.user,
       };
     }
   )(observer(WithContent));

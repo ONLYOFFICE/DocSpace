@@ -16,6 +16,20 @@ export default function withContextOptions(WrappedComponent) {
       openLocationAction(locationId, !fileExst);
     };
 
+    onClickLinkFillForm = () => {
+      return this.gotoDocEditor(false);
+    };
+
+    onClickMakeForm = () => {
+      const { copyAsAction, item, formfillingDocs } = this.props;
+      const { title, id, folderId, fileExst } = item;
+
+      const newTitle =
+        title.substring(0, title.length - fileExst.length) + formfillingDocs[0];
+
+      copyAsAction(id, newTitle, folderId).catch((err) => toastr.error(err));
+    };
+
     onOpenLocation = () => {
       const { item, openLocationAction } = this.props;
       const { parentId, folderId, fileExst } = item;
@@ -364,6 +378,22 @@ export default function withContextOptions(WrappedComponent) {
               onClick: this.onClickLinkForPortal,
               disabled: false,
             };
+          case "fill-form":
+            return {
+              key: option,
+              label: t("Common:FillFormButton"),
+              icon: "/static/images/form.fill.rect.svg",
+              onClick: this.onClickLinkFillForm,
+              disabled: false,
+            };
+          case "make-form":
+            return {
+              key: option,
+              label: t("Common:MakeForm"),
+              icon: "/static/images/form.plus.react.svg",
+              onClick: this.onClickMakeForm,
+              disabled: false,
+            };
           case "edit":
             return {
               key: option,
@@ -521,45 +551,48 @@ export default function withContextOptions(WrappedComponent) {
   return inject(
     (
       {
-        filesStore,
-        filesActionsStore,
         auth,
-        versionHistoryStore,
-        mediaViewerDataStore,
         dialogsStore,
+        filesActionsStore,
+        filesStore,
+        mediaViewerDataStore,
         treeFoldersStore,
+        uploadDataStore,
+        versionHistoryStore,
       },
       { item }
     ) => {
-      const { openDocEditor, fileActionStore } = filesStore;
+      const { openDocEditor, fileActionStore, formatsStore } = filesStore;
       const {
-        openLocationAction,
-        finalizeVersionAction,
-        setFavoriteAction,
-        lockFileAction,
+        deleteItemAction,
         downloadAction,
         duplicateAction,
-        setThirdpartyInfo,
-        onSelectItem,
-        deleteItemAction,
+        finalizeVersionAction,
+        lockFileAction,
         markAsRead,
+        onSelectItem,
+        openLocationAction,
+        setFavoriteAction,
+        setThirdpartyInfo,
         unsubscribeAction,
       } = filesActionsStore;
       const {
         setChangeOwnerPanelVisible,
-        setMoveToPanelVisible,
         setCopyPanelVisible,
-        setDownloadDialogVisible,
-        setRemoveItem,
-        setDeleteThirdPartyDialogVisible,
-        setSharingPanelVisible,
         setDeleteDialogVisible,
+        setDeleteThirdPartyDialogVisible,
+        setDownloadDialogVisible,
+        setMoveToPanelVisible,
+        setRemoveItem,
+        setSharingPanelVisible,
         setUnsubscribe,
       } = dialogsStore;
       const { isTabletView, isDesktopClient } = auth.settingsStore;
       const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
       const { setAction, type, extension, id } = fileActionStore;
       const { setMediaViewerData } = mediaViewerDataStore;
+      const { copyAsAction } = uploadDataStore;
+      const { formfillingDocs } = formatsStore.docserviceStore;
 
       const { isRecycleBinFolder, isShare } = treeFoldersStore;
       const isShareFolder = isShare(item.rootFolderType);
@@ -598,6 +631,8 @@ export default function withContextOptions(WrappedComponent) {
         setDeleteDialogVisible,
         setUnsubscribe,
         isDesktop: isDesktopClient,
+        copyAsAction,
+        formfillingDocs,
       };
     }
   )(observer(WithContextOptions));

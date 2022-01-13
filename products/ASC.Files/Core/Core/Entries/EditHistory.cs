@@ -28,8 +28,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text.Json.Serialization;
+using System.Text.Json;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Tenants;
@@ -39,13 +40,17 @@ using ASC.Web.Core.Users;
 
 using Microsoft.Extensions.Options;
 
-using Newtonsoft.Json.Linq;
-
 namespace ASC.Files.Core
 {
+    [Transient]
     [DebuggerDisplay("{ID} v{Version}")]
     public class EditHistory
     {
+        private ILog Logger { get; }
+        private TenantUtil TenantUtil { get; }
+        private UserManager UserManager { get; }
+        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+
         public EditHistory(
             IOptionsMonitor<ILog> options,
             TenantUtil tenantUtil,
@@ -63,11 +68,11 @@ namespace ASC.Files.Core
         public int Version { get; set; }
         public int VersionGroup { get; set; }
 
-        [JsonPropertyName("user")]
-        public EditHistoryAuthor ModifiedBy { get; set; }
-
-        [JsonPropertyName("changeshistory")]
+        public DateTime ModifiedOn { get; set; }
+        public Guid ModifiedBy { get; set; }
         public string ChangesString { get; set; }
+
+        public string ServerVersion { get; set; }
 
         public List<EditHistoryChanges> Changes
         {
@@ -78,29 +83,40 @@ namespace ASC.Files.Core
 
                 try
                 {
-                    var jObject = JObject.Parse(ChangesString);
-                    ServerVersion = jObject.Value<string>("serverVersion");
+                    var options = new JsonSerializerOptions
+                    {
+                        AllowTrailingCommas = true,
+                        PropertyNameCaseInsensitive = true
+                    };
+
+                    var jObject = JsonSerializer.Deserialize<ChangesDataList>(ChangesString, options);
+                    ServerVersion = jObject.ServerVersion;
 
                     if (string.IsNullOrEmpty(ServerVersion))
                         return changes;
 
-                    var jChanges = jObject.Value<JArray>("changes");
+                    changes = jObject.Changes.Select(r =>
+                    {
+                        var result = new EditHistoryChanges()
+                        {
+                            Author = new EditHistoryAuthor(UserManager, DisplayUserSettingsHelper)
+                            {
+                                Id = new Guid(r.User.Id ?? Guid.Empty.ToString()),
+                                Name = r.User.Name,
+                            }
+                        };
 
-                    changes = jChanges.Children()
-                                      .Select(jChange =>
-                                          {
-                                              var jUser = jChange.Value<JObject>("user");
-                                              return new EditHistoryChanges(TenantUtil)
-                                              {
-                                                  Date = jChange.Value<string>("created"),
-                                                  Author = new EditHistoryAuthor(UserManager, DisplayUserSettingsHelper)
-                                                  {
-                                                      Id = new Guid(jUser.Value<string>("id") ?? Guid.Empty.ToString()),
-                                                      Name = jUser.Value<string>("name"),
-                                                  },
-                                              };
-                                          })
-                                      .ToList();
+
+                        if (DateTime.TryParse(r.Created, out var _date))
+                        {
+                            _date = TenantUtil.DateTimeFromUtc(_date);
+                        }
+                        result.Date = _date;
+
+                        return result;
+                    })
+                    .ToList();
+
                     return changes;
                 }
                 catch (Exception ex)
@@ -112,24 +128,27 @@ namespace ASC.Files.Core
             }
             set { throw new NotImplementedException(); }
         }
-
-        public DateTime ModifiedOn;
-
-        [JsonPropertyName("created")]
-        public string ModifiedOnString
-        {
-            get { return ModifiedOn.Equals(default) ? null : ModifiedOn.ToString("g"); }
-            set { throw new NotImplementedException(); }
-        }
-
-        public ILog Logger { get; }
-        private TenantUtil TenantUtil { get; }
-        private UserManager UserManager { get; }
-        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-
-        public string ServerVersion;
     }
 
+    class ChangesDataList
+    {
+        public string ServerVersion { get; set; }
+        public ChangesData[] Changes { get; set; }
+    }
+
+    class ChangesData
+    {
+        public string Created { get; set; }
+        public ChangesUserData User { get; set; }
+    }
+
+    class ChangesUserData
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+    }
+
+    [Transient]
     [DebuggerDisplay("{Id} {Name}")]
     public class EditHistoryAuthor
     {
@@ -169,30 +188,11 @@ namespace ASC.Files.Core
     [DebuggerDisplay("{Author.Name}")]
     public class EditHistoryChanges
     {
-        public EditHistoryChanges(TenantUtil tenantUtil)
-        {
-            TenantUtil = tenantUtil;
-        }
-
-        [JsonPropertyName("user")]
         public EditHistoryAuthor Author { get; set; }
 
-        private DateTime _date;
+        public DateTime Date { get; set; }
 
-        [JsonPropertyName("created")]
-        public string Date
-        {
-            get { return _date.Equals(default) ? null : _date.ToString("g"); }
-            set
-            {
-                if (DateTime.TryParse(value, out _date))
-                {
-                    _date = TenantUtil.DateTimeFromUtc(_date);
-                }
-            }
-        }
 
-        private TenantUtil TenantUtil { get; }
     }
 
     [DebuggerDisplay("{Version}")]
@@ -209,6 +209,8 @@ namespace ASC.Files.Core
         public string Url { get; set; }
 
         public int Version { get; set; }
+
+        public string FileType { get; set; }
     }
 
     [DebuggerDisplay("{Key} - {Url}")]
@@ -217,5 +219,7 @@ namespace ASC.Files.Core
         public string Key { get; set; }
 
         public string Url { get; set; }
+
+        public string FileType { get; set; }
     }
 }

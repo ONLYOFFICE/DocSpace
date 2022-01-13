@@ -98,7 +98,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
         protected void SetSharedProperty(IEnumerable<FileEntry<string>> entries)
         {
-            SecurityDao.GetPureShareRecords(entries.ToArray())
+            SecurityDao.GetPureShareRecords(entries)
                 //.Where(x => x.Owner == SecurityContext.CurrentAccount.ID)
                 .Select(x => x.EntryId).Distinct().ToList()
                 .ForEach(id =>

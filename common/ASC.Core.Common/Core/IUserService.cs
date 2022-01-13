@@ -92,5 +92,7 @@ namespace ASC.Core
         UserGroupRef SaveUserGroupRef(int tenant, UserGroupRef r);
 
         void RemoveUserGroupRef(int tenant, Guid userId, Guid groupId, UserGroupRefType refType);
+
+        IEnumerable<UserInfo> GetUsersAllTenants(IEnumerable<Guid> userIds);
     }
 }

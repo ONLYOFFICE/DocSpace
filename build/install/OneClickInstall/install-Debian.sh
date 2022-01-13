@@ -37,6 +37,13 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+		-skiphc | --skiphardwarecheck )
+			if [ "$2" != "" ]; then
+				SKIP_HARDWARE_CHECK=$2
+				shift
+			fi
+		;;
+
 		-? | -h | --help )
 			echo "  Usage $0 [PARAMETER] [[PARAMETER], ...]"
 			echo "    Parameters:"
@@ -58,6 +65,10 @@ fi
 
 if [ -z "${LOCAL_SCRIPTS}" ]; then
    LOCAL_SCRIPTS="false";
+fi
+
+if [ -z "${SKIP_HARDWARE_CHECK}" ]; then
+   SKIP_HARDWARE_CHECK="false";
 fi
 
 if [ $(dpkg-query -W -f='${Status}' curl 2>/dev/null | grep -c "ok installed") -eq 0 ]; then

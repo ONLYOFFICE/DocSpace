@@ -46,9 +46,10 @@ class Row extends React.Component {
       "element"
     );
 
-    const renderContentElement =
-      Object.prototype.hasOwnProperty.call(this.props, "contentElement") &&
-      sectionWidth > 500;
+    const renderContentElement = Object.prototype.hasOwnProperty.call(
+      this.props,
+      "contentElement"
+    );
 
     const renderContext =
       Object.prototype.hasOwnProperty.call(this.props, "contextOptions") &&
