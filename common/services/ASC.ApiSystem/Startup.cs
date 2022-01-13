@@ -75,7 +75,17 @@ namespace ASC.ApiSystem
 
             services.AddMemoryCache();
 
-            diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+            var redisConfiguration = Configuration.GetSection("Redis").Get<RedisConfiguration>();
+
+            if (redisConfiguration != null)
+            {
+                diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+            }
+            else
+            {
+                diHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
+            }
+
             diHelper.TryAdd<AuthHandler>();
             diHelper.TryAdd<CalDavController>();
             diHelper.TryAdd<PortalController>();

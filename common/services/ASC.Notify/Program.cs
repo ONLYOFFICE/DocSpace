@@ -72,7 +72,17 @@ namespace ASC.Notify
                     services.AddMemoryCache();
                     var diHelper = new DIHelper(services);
 
-                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+                    var redisConfiguration = hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>();
+
+                    if (redisConfiguration != null)
+                    {
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+                    }
+                    else
+                    {
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
+                    }
+
                     diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
 
                     services.Configure<NotifyServiceCfg>(hostContext.Configuration.GetSection("notify"));

@@ -95,7 +95,17 @@ public class Program
                     services.AddMemoryCache();
                     var diHelper = new DIHelper(services);
 
-                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+                    var redisConfiguration = hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>();
+
+                    if (redisConfiguration != null)
+                    {
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+                    }
+                    else
+                    {
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
+                    }
+
                     services.AddHostedService<ThumbnailsServiceLauncher>();
                     diHelper.TryAdd<ThumbnailsServiceLauncher>();
 

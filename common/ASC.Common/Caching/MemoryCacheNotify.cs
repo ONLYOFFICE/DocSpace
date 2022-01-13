@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using Google.Protobuf;
 
@@ -20,10 +21,7 @@ namespace ASC.Common.Caching
         {
             if (_actions.TryGetValue(GetKey(action), out var onchange) && onchange != null)
             {
-                foreach (var a in onchange)
-                {
-                    a(obj);
-                }
+                Parallel.ForEach(onchange, a => a(obj));
             }
         }
 
@@ -44,7 +42,7 @@ namespace ASC.Common.Caching
 
         private string GetKey(CacheNotifyAction cacheNotifyAction)
         {
-            return $"{typeof(T).Name}{cacheNotifyAction}";
+            return $"asc:channel:{cacheNotifyAction}:{typeof(T).FullName}".ToLower();
         }
     }
 }
