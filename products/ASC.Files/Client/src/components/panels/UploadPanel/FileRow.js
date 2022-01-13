@@ -65,8 +65,8 @@ const StyledFileRow = styled(Row)`
     max-width: 470px;
     width: calc(100% - 16px);
     .conversation-password-wrapper {
-      max-width: 470px;
-      width: 100%;
+      /* max-width: 470px;
+      width: 100%; */
     }
   }
 
@@ -294,6 +294,7 @@ class FileRow extends Component {
                 <SimulatePassword
                   item={item}
                   onClickActions={this.onClickActions}
+                  showButton
                 />
               </div>
             )}

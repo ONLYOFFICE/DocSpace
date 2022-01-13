@@ -10,7 +10,9 @@ const bulletsFont = "•";
 
 const StyledBody = styled.div`
   display: flex;
-  width: 470px;
+  max-width: ${(props) =>
+    props.inputBlockMaxWidth ? props.inputBlockMaxWidth : "470px"};
+  width: 100%;
 
   #conversion-button {
     margin-left: 8px;
@@ -19,7 +21,8 @@ const StyledBody = styled.div`
     max-width: 78px;
   }
   #conversion-password {
-    max-width: 382px;
+    max-width: ${(props) =>
+      props.inputMaxWidth ? props.inputMaxWidth : "382px"};
     width: 100%;
     margin: 0;
   }
@@ -27,7 +30,12 @@ const StyledBody = styled.div`
     width: 100%;
   }
 `;
-const SimulatePassword = ({ onClickActions }) => {
+const SimulatePassword = ({
+  onClickActions,
+  inputBlockMaxWidth,
+  inputMaxWidth,
+  showButton = false,
+}) => {
   const [password, setPassword] = useState("");
   const [passwordValid, setPasswordValid] = useState(true);
 
@@ -114,7 +122,11 @@ const SimulatePassword = ({ onClickActions }) => {
   }, [password]);
 
   return (
-    <StyledBody className="conversation-password-wrapper">
+    <StyledBody
+      className="conversation-password-wrapper"
+      inputBlockMaxWidth={inputBlockMaxWidth}
+      inputMaxWidth={inputMaxWidth}
+    >
       <>
         <InputBlock
           id="conversion-password"
@@ -132,14 +144,16 @@ const SimulatePassword = ({ onClickActions }) => {
           placeholder={t("EnterPassword")}
         ></InputBlock>
 
-        <Button
-          id="conversion-button"
-          size="medium"
-          scale
-          primary
-          label={t("Done")}
-          onClick={onClick}
-        />
+        {showButton && (
+          <Button
+            id="conversion-button"
+            size="medium"
+            scale
+            primary
+            label={t("Done")}
+            onClick={onClick}
+          />
+        )}
       </>
     </StyledBody>
   );
