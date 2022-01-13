@@ -372,9 +372,7 @@ class UploadDataStore {
                     })
                   )
                 )
-                .catch((error) =>
-                  console.log("error getting folder information", error)
-                );
+                .catch((error) => toastr.error(error));
           }
           const percent = this.getConversationPercent(index + 1);
           this.setConversionPercent(percent, !!error);
