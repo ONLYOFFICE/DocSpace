@@ -53,7 +53,7 @@ const SimulatePassword = ({
 
     if (hasError) return;
 
-    onClickActions(password);
+    onClickActions && onClickActions(password);
   };
 
   const setPasswordSettings = (newPassword) => {
