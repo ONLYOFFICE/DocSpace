@@ -5,5 +5,5 @@
   "ConvertAndOpenTitle": "Convertire e aprire documento",
   "HideMessage": "Non mostrare nuovamente questo messaggio",
   "SaveOriginalFormatMessage": "Salva una copia del file in formato originale",
-  "FileConversionCompleted": "Il nuovo file '{{fileTitle}}' è creato in '{{folderTitle}}'"
+  "InfoCreateFileIn": "Il nuovo file '{{fileTitle}}' è creato in '{{folderTitle}}'"
 }

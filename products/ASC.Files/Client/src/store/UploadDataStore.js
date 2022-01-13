@@ -366,7 +366,7 @@ class UploadDataStore {
               getFolderInfo(folderId)
                 .then((folderInfo) =>
                   toastr.success(
-                    t("FileConversionCompleted", {
+                    t("InfoCreateFileIn", {
                       fileTitle,
                       folderTitle: folderInfo.title,
                     })

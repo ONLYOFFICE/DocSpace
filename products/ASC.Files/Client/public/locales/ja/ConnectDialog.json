@@ -5,5 +5,5 @@
   "ConnectMakeShared": "共有し、'Common' フォルダに入れます。",
   "Login": "ログイン",
   "Reconnect": "再接続",
-  "FileDestination": "ファイルコピーは<bold>{{folderTitle}}</bold>フォルダに作成されます"
+  "ConvertedFileDestination": "ファイルコピーは<bold>{{folderTitle}}</bold>フォルダに作成されます"
 }

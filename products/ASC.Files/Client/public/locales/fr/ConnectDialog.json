@@ -5,5 +5,5 @@
   "ConnectMakeShared": "Partager et mettre dans le dossier \"commun\".",
   "Login": "Identifiant",
   "Reconnect": "Reconnexion",
-  "FileDestination": "La copie du fichier sera créée dans le dossier <bold>{{folderTitle}}</bold>"
+  "ConvertedFileDestination": "La copie du fichier sera créée dans le dossier <bold>{{folderTitle}}</bold>"
 }

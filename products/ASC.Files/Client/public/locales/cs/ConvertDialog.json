@@ -5,6 +5,6 @@
   "ConvertAndOpenTitle": "Převést a otevřít dokument",
   "HideMessage": "Tuto zprávu již nezobrazovat",
   "SaveOriginalFormatMessage": "Uložit kopii souboru v původním formátu",
-  "FileDestination": "Kopie souboru bude vytvořena v <strong>{{folderTitle}}</strong>složce",
-  "FileConversionCompleted": "Nový '{{fileTitle}}' soubor je vytvořen v '{{folderTitle}}'"
+  "ConvertedFileDestination": "Kopie souboru bude vytvořena v <strong>{{folderTitle}}</strong>složce",
+  "InfoCreateFileIn": "Nový '{{fileTitle}}' soubor je vytvořen v '{{folderTitle}}'"
 }

@@ -97,7 +97,11 @@ const ConvertDialogComponent = (props) => {
                   storeOriginalFiles ? "file-destination_visible" : ""
                 }`}
               >
-                <Trans t={t} i18nKey="FileDestination" ns="ConvertDialog">
+                <Trans
+                  t={t}
+                  i18nKey="ConvertedFileDestination"
+                  ns="ConvertDialog"
+                >
                   The file copy will be created in the
                   {{ folderTitle: rootFolderTitle }} folder
                 </Trans>

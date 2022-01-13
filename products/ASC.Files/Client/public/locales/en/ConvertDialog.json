@@ -5,6 +5,6 @@
   "ConvertAndOpenTitle": "Convert and open document",
   "HideMessage": "Do not show this message again",
   "SaveOriginalFormatMessage": "Save the file copy in the original format",
-  "FileDestination": "The file copy will be created in the <strong>{{folderTitle}}</strong> folder",
-  "FileConversionCompleted": "The new '{{fileTitle}}' file is created in '{{folderTitle}}'"
+  "ConvertedFileDestination": "The file copy will be created in the <strong>{{folderTitle}}</strong> folder",
+  "InfoCreateFileIn": "The new '{{fileTitle}}' file is created in '{{folderTitle}}'"
 }
