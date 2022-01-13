@@ -6,7 +6,7 @@ import Link from "@appserver/components/link";
 import LoadingButton from "./SubComponents/LoadingButton";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
-import SimulatePassword from "./SubComponents/SimulatePassword";
+import SimulatePassword from "../../../components/SimulatePassword";
 import ErrorFileUpload from "./SubComponents/ErrorFileUpload.js";
 import ActionsUploadedFile from "./SubComponents/ActionsUploadedFile";
 import { isMobile } from "react-device-detect";
