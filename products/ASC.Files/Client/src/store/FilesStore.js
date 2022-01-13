@@ -126,7 +126,7 @@ class FilesStore {
   };
 
   setStartDrag = (startDrag) => {
-    this.selection = this.selection.filter((x) => !x.providerKey); // removed root thirdparty folders
+    this.selection = this.selection.filter((x) => !x.providerKey || x.id !== x.rootFolderId); // removed root thirdparty folders
     this.startDrag = startDrag;
   };
 
