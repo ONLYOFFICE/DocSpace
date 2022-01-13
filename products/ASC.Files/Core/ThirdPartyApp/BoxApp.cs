@@ -113,6 +113,7 @@ namespace ASC.Web.Files.ThirdPartyApp
         private ThirdPartyAppHandlerService ThirdPartyAppHandlerService { get; }
         private IServiceProvider ServiceProvider { get; }
         public ILog Logger { get; }
+        public IHttpClientFactory ClientFactory { get; }
 
         public BoxApp()
         {
@@ -146,6 +147,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
+            IHttpClientFactory clientFactory,
             string name, int order, Dictionary<string, string> additional)
             : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, additional)
         {
@@ -170,6 +172,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             ThirdPartyAppHandlerService = thirdPartyAppHandlerService;
             ServiceProvider = serviceProvider;
             Logger = option.CurrentValue;
+            ClientFactory = clientFactory;
         }
 
         public bool Request(HttpContext context)
@@ -310,7 +313,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                 }
             }
 
-            using var httpClient = new HttpClient();
+            var httpClient = ClientFactory.CreateClient();
 
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(BoxUrlUpload.Replace("{fileId}", fileId));
@@ -471,7 +474,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                 request.Method = HttpMethod.Get;
                 request.Headers.Add("Authorization", "Bearer " + token);
 
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
                 using var response = httpClient.Send(request);
                 using var stream = new ResponseStream(response);
                 stream.CopyTo(context.Response.Body);

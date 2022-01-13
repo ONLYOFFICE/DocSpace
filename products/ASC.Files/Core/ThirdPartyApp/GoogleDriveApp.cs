@@ -119,6 +119,7 @@ namespace ASC.Web.Files.ThirdPartyApp
         private DocumentServiceConnector DocumentServiceConnector { get; }
         private ThirdPartyAppHandlerService ThirdPartyAppHandlerService { get; }
         private IServiceProvider ServiceProvider { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
         public GoogleDriveApp()
         {
@@ -156,6 +157,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
+            IHttpClientFactory clientFactory,
             string name, int order, Dictionary<string, string> additional)
             : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, additional)
         {
@@ -184,6 +186,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             DocumentServiceConnector = documentServiceConnector;
             ThirdPartyAppHandlerService = thirdPartyAppHandlerService;
             ServiceProvider = serviceProvider;
+            ClientFactory = clientFactory;
         }
 
         public bool Request(HttpContext context)
@@ -315,7 +318,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                 }
             }
 
-            using var httpClient = new HttpClient();
+            var httpClient = ClientFactory.CreateClient();
 
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(GoogleLoginProvider.GoogleUrlFileUpload + "/{fileId}?uploadType=media".Replace("{fileId}", fileId));
@@ -522,7 +525,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                 request.Method = HttpMethod.Get;
                 request.Headers.Add("Authorization", "Bearer " + token);
 
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
                 using var response = httpClient.Send(request);
                 using var stream = new ResponseStream(response);
                 stream.CopyTo(context.Response.Body);
@@ -732,7 +735,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(contentUrl);
 
-            using var httpClient = new HttpClient();
+            var httpClient = ClientFactory.CreateClient();
             using var response = httpClient.Send(request);
             using var content = new ResponseStream(response);
             return CreateFile(content, fileName, folderId, token);
@@ -742,7 +745,7 @@ namespace ASC.Web.Files.ThirdPartyApp
         {
             Logger.Debug("GoogleDriveApp: create file");
 
-            using var httpClient = new HttpClient();
+            var httpClient = ClientFactory.CreateClient();
 
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(GoogleLoginProvider.GoogleUrlFileUpload + "?uploadType=multipart");
@@ -847,7 +850,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                                                   fileId,
                                                   HttpUtility.UrlEncode(requiredMimeType));
 
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
 
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(downloadUrl);

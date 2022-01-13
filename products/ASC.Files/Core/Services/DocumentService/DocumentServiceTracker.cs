@@ -185,6 +185,7 @@ namespace ASC.Web.Files.Services.DocumentService
         private MailMergeTaskRunner MailMergeTaskRunner { get; }
         private FileTrackerHelper FileTracker { get; }
         public ILog Logger { get; }
+        public IHttpClientFactory ClientFactory { get; }
 
         public DocumentServiceTrackerHelper(
             SecurityContext securityContext,
@@ -205,7 +206,8 @@ namespace ASC.Web.Files.Services.DocumentService
             DocumentServiceConnector documentServiceConnector,
             NotifyClient notifyClient,
             MailMergeTaskRunner mailMergeTaskRunner,
-            FileTrackerHelper fileTracker)
+            FileTrackerHelper fileTracker,
+            IHttpClientFactory clientFactory)
         {
             SecurityContext = securityContext;
             UserManager = userManager;
@@ -226,6 +228,7 @@ namespace ASC.Web.Files.Services.DocumentService
             MailMergeTaskRunner = mailMergeTaskRunner;
             FileTracker = fileTracker;
             Logger = options.CurrentValue;
+            ClientFactory = clientFactory;
         }
 
         public string GetCallbackUrl<T>(T fileId)
@@ -491,7 +494,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
                 var message = fileData.MailMerge.Message;
                 Stream attach = null;
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
                 switch (fileData.MailMerge.Type)
                 {
                     case MailMergeType.AttachDocx:
@@ -553,7 +556,7 @@ namespace ASC.Web.Files.Services.DocumentService
                         Attach = attach
                     })
                 {
-                    var response = MailMergeTaskRunner.Run(mailMergeTask);
+                    var response = MailMergeTaskRunner.Run(mailMergeTask, ClientFactory);
                     Logger.InfoFormat("DocService mailMerge {0}/{1} send: {2}",
                                              fileData.MailMerge.RecordIndex + 1, fileData.MailMerge.RecordCount, response);
                 }
@@ -598,7 +601,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(downloadUri);
 
-                using (var httpClient = new HttpClient())
+                var httpClient = ClientFactory.CreateClient();
                 using (var response = httpClient.Send(request))
                 using (var stream = response.Content.ReadAsStream())
                 using (var fileStream = new ResponseStream(stream, stream.Length))
@@ -625,7 +628,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(differenceUrl);
 
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
                 using var response = httpClient.Send(request);
                 using var stream = response.Content.ReadAsStream();
 

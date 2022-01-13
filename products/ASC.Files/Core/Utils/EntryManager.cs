@@ -268,6 +268,7 @@ namespace ASC.Web.Files.Utils
         private SettingsManager SettingsManager { get; }
         private IServiceProvider ServiceProvider { get; }
         private ILog Logger { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
         public EntryManager(
             IDaoFactory daoFactory,
@@ -295,7 +296,8 @@ namespace ASC.Web.Files.Utils
             IServiceProvider serviceProvider,
             ICache cache,
             FileTrackerHelper fileTracker,
-            EntryStatusManager entryStatusManager)
+            EntryStatusManager entryStatusManager,
+            IHttpClientFactory clientFactory)
         {
             DaoFactory = daoFactory;
             FileSecurity = fileSecurity;
@@ -323,6 +325,7 @@ namespace ASC.Web.Files.Utils
             Cache = cache;
             FileTracker = fileTracker;
             EntryStatusManager = entryStatusManager;
+            ClientFactory = clientFactory;
         }
 
         public IEnumerable<FileEntry> GetEntries<T>(Folder<T> parent, int from, int count, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy, out int total)
@@ -1007,7 +1010,7 @@ namespace ASC.Web.Files.Utils
                     var request = new HttpRequestMessage();
                     request.RequestUri = new Uri(downloadUri);
 
-                    using var httpClient = new HttpClient();
+                    var httpClient = ClientFactory.CreateClient();
                     using var response = httpClient.Send(request);
                     using var editedFileStream = new ResponseStream(response);
                     editedFileStream.CopyTo(tmpStream);

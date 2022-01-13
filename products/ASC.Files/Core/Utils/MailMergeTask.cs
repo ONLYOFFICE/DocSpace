@@ -86,14 +86,14 @@ namespace ASC.Web.Files.Utils
             BaseCommonLinkUtility = baseCommonLinkUtility;
         }
 
-        public string Run(MailMergeTask mailMergeTask)
+        public string Run(MailMergeTask mailMergeTask, IHttpClientFactory clientFactory)
         {
             if (string.IsNullOrEmpty(mailMergeTask.From)) throw new ArgumentException("From is null");
             if (string.IsNullOrEmpty(mailMergeTask.To)) throw new ArgumentException("To is null");
 
             CreateDraftMail(mailMergeTask);
 
-            var bodySendAttach = AttachToMail(mailMergeTask);
+            var bodySendAttach = AttachToMail(mailMergeTask, clientFactory);
 
             return SendMail(mailMergeTask, bodySendAttach);
         }
@@ -122,7 +122,7 @@ namespace ASC.Web.Files.Utils
             mailMergeTask.StreamId = responseCreate["response"]["streamId"].Value<string>();
         }
 
-        private string AttachToMail(MailMergeTask mailMergeTask)
+        private string AttachToMail(MailMergeTask mailMergeTask, IHttpClientFactory clientFactory)
         {
             if (mailMergeTask.Attach == null) return string.Empty;
 
@@ -141,7 +141,7 @@ namespace ASC.Web.Files.Utils
             request.Content = new StreamContent(mailMergeTask.Attach);
 
             string responseAttachString;
-            using var httpClient = new HttpClient();
+            var httpClient = clientFactory.CreateClient();
             using var response = httpClient.Send(request);
             using (var stream = response.Content.ReadAsStream())
             {

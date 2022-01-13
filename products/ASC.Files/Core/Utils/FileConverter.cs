@@ -543,6 +543,7 @@ namespace ASC.Web.Files.Utils
         private EntryStatusManager EntryStatusManager { get; }
         private IServiceProvider ServiceProvider { get; }
         private IHttpContextAccessor HttpContextAccesor { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
         public FileConverter(
             FileUtility fileUtility,
@@ -564,7 +565,8 @@ namespace ASC.Web.Files.Utils
             FileTrackerHelper fileTracker,
             BaseCommonLinkUtility baseCommonLinkUtility,
             EntryStatusManager entryStatusManager,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            IHttpClientFactory clientFactory)
         {
             FileUtility = fileUtility;
             FilesLinkUtility = filesLinkUtility;
@@ -586,6 +588,7 @@ namespace ASC.Web.Files.Utils
             BaseCommonLinkUtility = baseCommonLinkUtility;
             EntryStatusManager = entryStatusManager;
             ServiceProvider = serviceProvider;
+            ClientFactory = clientFactory;
         }
         public FileConverter(
             FileUtility fileUtility,
@@ -608,11 +611,12 @@ namespace ASC.Web.Files.Utils
             BaseCommonLinkUtility baseCommonLinkUtility,
             EntryStatusManager entryStatusManager,
             IServiceProvider serviceProvider,
-            IHttpContextAccessor httpContextAccesor)
+            IHttpContextAccessor httpContextAccesor,
+            IHttpClientFactory clientFactory)
             : this(fileUtility, filesLinkUtility, daoFactory, setupInfo, pathProvider, fileSecurity,
                   fileMarker, tenantManager, authContext, entryManager, filesSettingsHelper,
                   globalFolderHelper, filesMessageService, fileShareLink, documentServiceHelper, documentServiceConnector, fileTracker,
-                  baseCommonLinkUtility, entryStatusManager, serviceProvider)
+                  baseCommonLinkUtility, entryStatusManager, serviceProvider, clientFactory)
         {
             HttpContextAccesor = httpContextAccesor;
         }
@@ -683,7 +687,7 @@ namespace ASC.Web.Files.Utils
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(convertUri);
 
-            using var httpClient = new HttpClient();
+            using var httpClient = ClientFactory.CreateClient();
             using var response = httpClient.Send(request);
             return new ResponseStream(response);
         }
@@ -851,7 +855,7 @@ namespace ASC.Web.Files.Utils
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(convertedFileUrl);
 
-            using var httpClient = new HttpClient();
+            var httpClient = ClientFactory.CreateClient();
 
             try
             {
