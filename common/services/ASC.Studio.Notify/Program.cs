@@ -90,8 +90,7 @@ namespace ASC.Studio.Notify
                     NotifyConfigurationExtension.Register(diHelper);
                     diHelper.TryAdd<EmailSenderSink>();
 
-                    services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>());
-
+                    services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {

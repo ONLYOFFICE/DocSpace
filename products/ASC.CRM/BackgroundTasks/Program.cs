@@ -95,8 +95,7 @@ namespace ASC.CRM.BackgroundTasks
                     diHelper.TryAdd<FactoryIndexerInvoice>();
                     diHelper.TryAdd<FactoryIndexerTask>();
 
-                    services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>());
-
+                    services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {

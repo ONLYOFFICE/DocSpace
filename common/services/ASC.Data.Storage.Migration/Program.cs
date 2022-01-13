@@ -86,7 +86,7 @@ namespace ASC.Data.Storage.Migration
                     diHelper.TryAdd<MigrationServiceLauncher>();
                     services.AddHostedService<MigrationServiceLauncher>();
 
-                    services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>());
+                    services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
 
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>

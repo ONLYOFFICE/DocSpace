@@ -109,7 +109,7 @@ public class Program
                     services.AddHostedService<ThumbnailsServiceLauncher>();
                     diHelper.TryAdd<ThumbnailsServiceLauncher>();
 
-                    services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>());
+                    services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {

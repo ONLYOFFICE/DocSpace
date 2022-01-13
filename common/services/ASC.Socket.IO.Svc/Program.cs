@@ -111,7 +111,7 @@ public class Program
                     services.AddHostedService<SocketServiceLauncher>();
                     diHelper.TryAdd<SocketServiceLauncher>();
 
-                    services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>());
+                    services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {

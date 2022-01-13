@@ -86,7 +86,7 @@ namespace ASC.Webhooks.Service
                     services.AddHostedService<WebhookHostedService>();
                     diHelper.TryAdd<WebhookHostedService>();
 
-                    services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>());
+                    services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {

@@ -94,8 +94,7 @@ namespace ASC.Notify
                     diHelper.TryAdd<AWSSender>(); // fix private
 
                     services.AddHostedService<NotifyServiceLauncher>();
-                    services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>());
-
+                    services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
