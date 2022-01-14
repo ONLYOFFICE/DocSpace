@@ -42,10 +42,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using StackExchange.Redis.Extensions.Core.Configuration;
+using StackExchange.Redis.Extensions.Newtonsoft;
 
 namespace ASC.Thumbnails.Svc
 {
-    public class Program
+public class Program
     {
         public async static Task Main(string[] args)
         {
@@ -74,8 +76,10 @@ namespace ASC.Thumbnails.Svc
                         .AddJsonFile("appsettings.json")
                         .AddJsonFile("storage.json")
                         .AddJsonFile("kafka.json")
-                        .AddJsonFile("thumb.json")
                         .AddJsonFile($"kafka.{env}.json", true)
+                        .AddJsonFile("redis.json")
+                        .AddJsonFile($"redis.{env}.json", true)
+                        .AddJsonFile("thumb.json")
                         .AddJsonFile($"appsettings.{env}.json", true)
                         .AddJsonFile($"thumb.{env}.json", true)
                         .AddEnvironmentVariables()
@@ -91,9 +95,22 @@ namespace ASC.Thumbnails.Svc
                     services.AddMemoryCache();
                     var diHelper = new DIHelper(services);
 
-                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                    var redisConfiguration = hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>();
+
+                    if (redisConfiguration != null)
+                    {
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+
+                        services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
+                    }
+                    else
+                    {
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
+                    }
+
                     services.AddHostedService<ThumbnailsServiceLauncher>();
                     diHelper.TryAdd<ThumbnailsServiceLauncher>();
+
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {

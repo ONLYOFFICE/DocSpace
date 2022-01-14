@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,8 +23,6 @@ namespace ASC.Common.Caching
         private ILog Log { get; set; }
         private ConcurrentDictionary<string, CancellationTokenSource> Cts { get; set; }
         private ConcurrentDictionary<string, Action<T>> Actions { get; set; }
-        private MemoryCacheNotify<T> MemoryCacheNotify { get; set; }
-        private string ChannelName { get; } = $"ascchannel{typeof(T).Name}";
         private ProtobufSerializer<T> ValueSerializer { get; } = new ProtobufSerializer<T>();
         private ProtobufDeserializer<T> ValueDeserializer { get; } = new ProtobufDeserializer<T>();
         private ProtobufSerializer<AscCacheItem> KeySerializer { get; } = new ProtobufSerializer<AscCacheItem>();
@@ -41,26 +38,13 @@ namespace ASC.Common.Caching
             Key = Guid.NewGuid();
 
             var settings = configuration.GetSetting<KafkaSettings>("kafka");
-            if (settings != null && !string.IsNullOrEmpty(settings.BootstrapServers))
-            {
-                ClientConfig = new ClientConfig { BootstrapServers = settings.BootstrapServers };
-                AdminClientConfig = new AdminClientConfig { BootstrapServers = settings.BootstrapServers };
-            }
-            else
-            {
-                MemoryCacheNotify = new MemoryCacheNotify<T>();
-            }
 
+            ClientConfig = new ClientConfig { BootstrapServers = settings.BootstrapServers };
+            AdminClientConfig = new AdminClientConfig { BootstrapServers = settings.BootstrapServers };
         }
 
         public void Publish(T obj, CacheNotifyAction cacheNotifyAction)
         {
-            if (ClientConfig == null)
-            {
-                MemoryCacheNotify.Publish(obj, cacheNotifyAction);
-                return;
-            }
-
             try
             {
                 if (Producer == null)
@@ -84,7 +68,7 @@ namespace ASC.Common.Caching
                     Value = obj,
                     Key = new AscCacheItem
                     {
-                        Id = ByteString.CopyFrom(Key.ToByteArray())
+                        Id = Key.ToString()
                     }
                 };
 
@@ -102,12 +86,8 @@ namespace ASC.Common.Caching
 
         public void Subscribe(Action<T> onchange, CacheNotifyAction cacheNotifyAction)
         {
-            if (ClientConfig == null)
-            {
-                MemoryCacheNotify.Subscribe(onchange, cacheNotifyAction);
-                return;
-            }
             var channelName = GetChannelName(cacheNotifyAction);
+
             Cts[channelName] = new CancellationTokenSource();
             Actions[channelName] = onchange;
 
@@ -137,7 +117,7 @@ namespace ASC.Common.Caching
                                 }
                             }).Wait();
                     }
-                    catch(AggregateException)
+                    catch (AggregateException)
                     {
 
                     }
@@ -159,7 +139,7 @@ namespace ASC.Common.Caching
                         try
                         {
                             var cr = c.Consume(Cts[channelName].Token);
-                            if (cr != null && cr.Message != null && cr.Message.Value != null && !(new Guid(cr.Message.Key.Id.ToByteArray())).Equals(Key) && Actions.TryGetValue(channelName, out var act))
+                            if (cr != null && cr.Message != null && cr.Message.Value != null && !(new Guid(cr.Message.Key.Id)).Equals(Key) && Actions.TryGetValue(channelName, out var act))
                             {
                                 try
                                 {
@@ -189,7 +169,7 @@ namespace ASC.Common.Caching
 
         private string GetChannelName(CacheNotifyAction cacheNotifyAction)
         {
-            return $"{ChannelName}{cacheNotifyAction}";
+            return $"asc:channel:{cacheNotifyAction}:{typeof(T).FullName}".ToLower();
         }
 
         public void Unsubscribe(CacheNotifyAction action)
@@ -230,41 +210,5 @@ namespace ASC.Common.Caching
     public class KafkaSettings
     {
         public string BootstrapServers { get; set; }
-    }
-
-    public class MemoryCacheNotify<T> : ICacheNotify<T> where T : IMessage<T>, new()
-    {
-        private readonly Dictionary<string, List<Action<T>>> actions = new Dictionary<string, List<Action<T>>>();
-
-        public void Publish(T obj, CacheNotifyAction action)
-        {
-            if (actions.TryGetValue(GetKey(action), out var onchange) && onchange != null)
-            {
-                foreach (var a in onchange)
-                {
-                    a(obj);
-                }
-            }
-        }
-
-        public void Subscribe(Action<T> onchange, CacheNotifyAction notifyAction)
-        {
-            if (onchange != null)
-            {
-                var key = GetKey(notifyAction);
-                actions.TryAdd(key, new List<Action<T>>());
-                actions[key].Add(onchange);
-            }
-        }
-
-        public void Unsubscribe(CacheNotifyAction action)
-        {
-            actions.Remove(GetKey(action));
-        }
-
-        private string GetKey(CacheNotifyAction cacheNotifyAction)
-        {
-            return $"{typeof(T).Name}{cacheNotifyAction}";
-        }
     }
 }

@@ -203,16 +203,16 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Protobuf Include="protos\SmsKeyCacheKey.proto" />
-    <Protobuf Include="protos\TenantLogoCacheItem.proto" />
-    <Protobuf Include="protos\MailServiceHelperCache.proto" />
-    <Protobuf Include="protos\WebItemSecurityNotifier.proto" />
-    <Protobuf Include="protos\UserPhotoManagerCacheItem.proto" />
+    <Protobuf Include="protos\sms_key_cache_key.proto" />
+    <Protobuf Include="protos\tenant_logo_cache_item.proto" />
+    <Protobuf Include="protos\mail_service_helper_cache.proto" />
+    <Protobuf Include="protos\web_item_security_notifier.proto" />
+    <Protobuf Include="protos\user_photo_manager_cache_item.proto" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="GoogleAuthenticator" Version="2.0.1" />
-    <PackageReference Include="Grpc.Tools" Version="2.32.0">
+    <PackageReference Include="Grpc.Tools" Version="2.40.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

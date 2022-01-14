@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package ASC.Files.Thirdparty;
+
+message ProviderAccountCacheItem {
+    string key = 1;
+}
