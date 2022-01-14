@@ -69,7 +69,7 @@ namespace ASC.Notify.Model
 
         public override string ToString()
         {
-            return string.Format("action: {0}", ID);
+            return $"action: {ID}";
         }
     }
 }

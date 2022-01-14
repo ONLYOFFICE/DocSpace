@@ -100,7 +100,7 @@ namespace ASC.Web.Files.Utils
 
         private void CreateDraftMail(MailMergeTask mailMergeTask)
         {
-            var apiUrlCreate = string.Format("{0}mail/drafts/save.json", SetupInfo.WebApiBaseUrl);
+            var apiUrlCreate = $"{SetupInfo.WebApiBaseUrl}mail/drafts/save.json";
             var bodyCreate =
                 string.Format(
                     MailMergeTask.MessageBodyFormat,
@@ -172,7 +172,7 @@ namespace ASC.Web.Files.Utils
 
         private string SendMail(MailMergeTask mailMergeTask, string bodySendAttach)
         {
-            var apiUrlSend = string.Format("{0}mail/messages/send.json", SetupInfo.WebApiBaseUrl);
+            var apiUrlSend = $"{SetupInfo.WebApiBaseUrl}mail/messages/send.json";
 
             var bodySend =
                 string.Format(

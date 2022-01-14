@@ -499,7 +499,7 @@ namespace ASC.Employee.Core.Controllers
                     }
                     catch (Exception ex)
                     {
-                        Log.Debug(String.Format("ERROR write to template_unsubscribe {0}, email:{1}", ex.Message, model.Email.ToLowerInvariant()));
+                        Log.Debug($"ERROR write to template_unsubscribe {ex.Message}, email:{model.Email.ToLowerInvariant()}");
                     }
                 }
 

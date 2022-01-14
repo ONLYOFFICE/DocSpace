@@ -163,7 +163,7 @@ namespace ASC.FederatedLogin.Profile
 
         public string UniqueId
         {
-            get { return string.Format("{0}/{1}", Provider, Id); }
+            get { return $"{Provider}/{Id}"; }
         }
 
         public string HashId
@@ -306,8 +306,7 @@ namespace ASC.FederatedLogin.Profile
             var query = new StringBuilder();
             foreach (var key in queryString.AllKeys)
             {
-                query.AppendFormat("{0}={1}&", key,
-                                   queryString[key]);
+                query.Append($"{key}={queryString[key]}&");
             }
             var builder = new UriBuilder(uri) { Query = query.ToString().TrimEnd('&') };
             return builder.Uri;

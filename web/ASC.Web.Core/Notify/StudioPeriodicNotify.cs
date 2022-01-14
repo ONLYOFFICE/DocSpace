@@ -205,7 +205,7 @@ namespace ASC.Web.Studio.Core.Notify
                             toadmins = true;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
-                            greenButtonUrl = String.Format("{0}/", commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
+                            greenButtonUrl = $"{commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')}/";
                         }
 
                         #endregion
@@ -268,7 +268,7 @@ namespace ASC.Web.Studio.Core.Notify
                             tableItemComment7 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_differences;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
-                            greenButtonUrl = string.Format("{0}/products/files/", commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
+                            greenButtonUrl = $"{commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')}/products/files/";
                         }
 
                         #endregion
@@ -623,7 +623,7 @@ namespace ASC.Web.Studio.Core.Notify
                             toadmins = true;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonInviteRightNow;
-                            greenButtonUrl = string.Format("{0}/products/people/", commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
+                            greenButtonUrl = $"{commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')}/products/people/";
                         }
 
                         #endregion
@@ -696,7 +696,7 @@ namespace ASC.Web.Studio.Core.Notify
                             tableItemComment7 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_apps;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
-                            greenButtonUrl = string.Format("{0}/products/files/", commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
+                            greenButtonUrl = $"{commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')}/products/files/";
                         }
 
                         #endregion

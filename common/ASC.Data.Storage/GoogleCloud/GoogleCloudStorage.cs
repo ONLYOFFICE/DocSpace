@@ -113,12 +113,12 @@ namespace ASC.Data.Storage.GoogleCloud
 
             _bucketRoot = props.ContainsKey("cname") && Uri.IsWellFormedUriString(props["cname"], UriKind.Absolute)
                               ? new Uri(props["cname"], UriKind.Absolute)
-                              : new Uri(string.Format("https://storage.googleapis.com/{0}/", _bucket), UriKind.Absolute);
+                              : new Uri("https://storage.googleapis.com/" + _bucket + "/", UriKind.Absolute);
 
             _bucketSSlRoot = props.ContainsKey("cnamessl") &&
                              Uri.IsWellFormedUriString(props["cnamessl"], UriKind.Absolute)
                                  ? new Uri(props["cnamessl"], UriKind.Absolute)
-                                 : new Uri(string.Format("https://storage.googleapis.com/{0}/", _bucket), UriKind.Absolute);
+                                 : new Uri("https://storage.googleapis.com/" + _bucket + "/", UriKind.Absolute);
 
             if (props.ContainsKey("lower"))
             {
@@ -153,14 +153,10 @@ namespace ASC.Data.Storage.GoogleCloud
                 if (_subDir.Length == 1 && (_subDir[0] == '/' || _subDir[0] == '\\'))
                     result = path;
                 else
-                    result = string.Format("{0}/{1}", _subDir, path); // Ignory all, if _subDir is not null
+                    result = $"{_subDir}/{path}"; // Ignory all, if _subDir is not null
             }
             else//Key combined from module+domain+filename
-                result = string.Format("{0}/{1}/{2}/{3}",
-                                                         _tenant,
-                                                         _modulename,
-                                                         domain,
-                                                         path);
+                result = $"{_tenant}/{_modulename}/{domain}/{path}";
 
             result = result.Replace("//", "/").TrimStart('/');
             if (_lowerCasing)
@@ -260,12 +256,10 @@ namespace ASC.Data.Storage.GoogleCloud
 
         protected override Uri SaveWithAutoAttachment(string domain, string path, System.IO.Stream stream, string attachmentFileName)
         {
-            var contentDisposition = string.Format("attachment; filename={0};",
-                                                 HttpUtility.UrlPathEncode(attachmentFileName));
+            var contentDisposition = $"attachment; filename={HttpUtility.UrlPathEncode(attachmentFileName)};";
             if (attachmentFileName.Any(c => c >= 0 && c <= 127))
             {
-                contentDisposition = string.Format("attachment; filename*=utf-8''{0};",
-                                                   HttpUtility.UrlPathEncode(attachmentFileName));
+                contentDisposition = $"attachment; filename*=utf-8''{HttpUtility.UrlPathEncode(attachmentFileName)};";
             }
             return Save(domain, path, stream, null, contentDisposition);
         }
@@ -764,7 +758,7 @@ namespace ASC.Data.Storage.GoogleCloud
             if (chunkLength != defaultChunkSize)
                 totalBytes = Convert.ToString((chunkNumber - 1) * defaultChunkSize + chunkLength);
 
-            var contentRangeHeader = string.Format("bytes {0}-{1}/{2}", bytesRangeStart, bytesRangeEnd, totalBytes);
+            var contentRangeHeader = $"bytes {bytesRangeStart}-{bytesRangeEnd}/{totalBytes}";
 
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(uploadUri);

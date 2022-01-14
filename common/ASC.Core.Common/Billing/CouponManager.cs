@@ -101,7 +101,7 @@ namespace ASC.Core.Common.Billing
             {
                 using var httpClient = PrepaireClient();
                 using var content = new StringContent(await Promotion.GeneratePromotion(Log, this, tenantManager, Percent, Schedule), Encoding.Default, "application/json");
-                using var response = await httpClient.PostAsync(string.Format("{0}/promotions/", ApiVersion), content);
+                using var response = await httpClient.PostAsync($"{ApiVersion}/promotions/", content);
                 if (!response.IsSuccessStatusCode)
                     throw new Exception(response.ReasonPhrase);
 
@@ -136,7 +136,7 @@ namespace ASC.Core.Common.Billing
             try
             {
                 using var httpClient = PrepaireClient();
-                using var response = await httpClient.GetAsync(string.Format("{0}/products/?Limit=1000&Enabled=true", ApiVersion));
+                using var response = await httpClient.GetAsync($"{ApiVersion}/products/?Limit=1000&Enabled=true");
                 if (!response.IsSuccessStatusCode)
                     throw new Exception(response.ReasonPhrase);
 
@@ -186,9 +186,9 @@ namespace ASC.Core.Common.Billing
             }
 
             var stringBuilder = new StringBuilder();
-            stringBuilder.AppendFormat("code='{0}' ", VendorCode);
-            stringBuilder.AppendFormat("date='{0}' ", date);
-            stringBuilder.AppendFormat("hash='{0}'", sBuilder);
+            stringBuilder.Append($"code='{VendorCode}' ");
+            stringBuilder.Append($"date='{date}' ");
+            stringBuilder.Append($"hash='{sBuilder}'");
             return stringBuilder.ToString();
         }
     }

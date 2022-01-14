@@ -343,7 +343,7 @@ namespace ASC.VoipService.Dao
             {
                 call.ContactTitle = call.ContactIsCompany
                                         ? dbVoipCall.CrmContact.CompanyName
-                                        : dbVoipCall.CrmContact.FirstName == null || dbVoipCall.CrmContact.LastName == null ? null : string.Format("{0} {1}", dbVoipCall.CrmContact.FirstName, dbVoipCall.CrmContact.LastName);
+                                        : dbVoipCall.CrmContact.FirstName == null || dbVoipCall.CrmContact.LastName == null ? null : $"{dbVoipCall.CrmContact.FirstName} {dbVoipCall.CrmContact.LastName}";
             }
 
             return call;

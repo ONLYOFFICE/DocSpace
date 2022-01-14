@@ -85,7 +85,7 @@ namespace ASC.Notify.Textile
                     {
                         return " " + match.Groups["text"].Value + " ";
                     }
-                    return match.Groups["text"].Value + string.Format(" ( {0} )", match.Groups["link"].Value);
+                    return match.Groups["text"].Value + $" ( {match.Groups["link"].Value} )";
                 }
             }
             return match.Value;

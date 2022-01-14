@@ -267,7 +267,7 @@ namespace ASC.Web.CRM.HttpHandlers
                             .Cast<object>()
                             .Any(categoryEnum => (int)categoryEnum == category);
                         if (!categoryIsExists)
-                            throw new ArgumentException(String.Format("Category for {0} not found", nameParts[0]));
+                            throw new ArgumentException($"Category for {nameParts[0]} not found");
 
                         if (contactInfoType == ContactInfoType.Address)
                         {
@@ -355,8 +355,8 @@ namespace ASC.Web.CRM.HttpHandlers
                 context.Response.Headers.Add("Location", newURL);
 
                 await context.Response.WriteAsync("<HTML><Head>");
-                await context.Response.WriteAsync(String.Format("<META HTTP-EQUIV=Refresh CONTENT=\"0;URL={0}\">", newURL));
-                await context.Response.WriteAsync(String.Format("<Script>window.location='{0}';</Script>", newURL));
+                await context.Response.WriteAsync($"<META HTTP-EQUIV=Refresh CONTENT=\"0;URL={newURL}\">");
+                await context.Response.WriteAsync($"<Script>window.location='{newURL}';</Script>");
                 await context.Response.WriteAsync("</Head>");
                 await context.Response.WriteAsync("</HTML>");
             }

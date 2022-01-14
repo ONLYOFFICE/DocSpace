@@ -116,7 +116,7 @@ namespace ASC.UrlShortener.Svc
                 UseShellExecute = false,
                 FileName = "node",
                 WindowStyle = ProcessWindowStyle.Hidden,
-                Arguments = string.Format("\"{0}\"", Path.GetFullPath(CrossPlatform.PathCombine(hostEnvironment.ContentRootPath, path))),
+                Arguments = $"\"{Path.GetFullPath(CrossPlatform.PathCombine(hostEnvironment.ContentRootPath, path))}\"",
                 WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory
             };
 

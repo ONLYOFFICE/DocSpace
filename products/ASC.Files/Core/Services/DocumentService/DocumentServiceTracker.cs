@@ -592,10 +592,7 @@ namespace ASC.Web.Files.Services.DocumentService
             try
             {
                 var fileName = Global.ReplaceInvalidCharsAndTruncate(fileId + FileUtility.GetFileExtension(downloadUri));
-                var path = string.Format(@"save_crash\{0}\{1}_{2}",
-                                         DateTime.UtcNow.ToString("yyyy_MM_dd"),
-                                         userId,
-                                         fileName);
+                var path = $@"save_crash\{DateTime.UtcNow.ToString("yyyy_MM_dd")}\{userId}_{fileName}";
 
                 var store = GlobalStore.GetStore();
                 var request = new HttpRequestMessage();

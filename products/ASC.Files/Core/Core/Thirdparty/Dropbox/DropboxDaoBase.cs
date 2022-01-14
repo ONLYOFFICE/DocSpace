@@ -88,7 +88,8 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         protected override string MakeId(string path = null)
         {
-            return string.Format("{0}{1}", PathPrefix, string.IsNullOrEmpty(path) || path == "/" ? "" : ("-" + path.Replace('/', '|')));
+            var p = string.IsNullOrEmpty(path) || path == "/" ? "" : ("-" + path.Replace('/', '|'));
+            return $"{PathPrefix}{p}";
         }
 
         protected string MakeFolderTitle(FolderMetadata dropboxFolder)

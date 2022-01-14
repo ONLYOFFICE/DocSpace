@@ -135,7 +135,7 @@ namespace ASC.Core
             var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);
             var data = string.Join("\n", now, "/api/" + url.TrimStart('/')); //data: UTC DateTime (yyyy:MM:dd HH:mm:ss) + \n + url
             var hash = WebEncoders.Base64UrlEncode(hasher.ComputeHash(Encoding.UTF8.GetBytes(data)));
-            return string.Format("ASC :{0}:{1}", now, hash);
+            return $"ASC :{now}:{hash}";
         }
 
     }

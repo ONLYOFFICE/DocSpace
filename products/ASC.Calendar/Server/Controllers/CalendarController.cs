@@ -747,7 +747,7 @@ namespace ASC.Calendar.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(String.Format("Delete project caldav calendar: {0}", ex.Message));
+                Log.Error($"Delete project caldav calendar: {ex.Message}");
             }
 
         }
@@ -804,7 +804,7 @@ namespace ASC.Calendar.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(String.Format("Delete CRM caldav event: {0}", ex.Message));
+                Log.Error($"Delete CRM caldav event: {ex.Message}");
             }
 
         }
@@ -897,7 +897,7 @@ namespace ASC.Calendar.Controllers
                     }
                     catch (Exception ex)
                     {
-                        Log.Error(String.Format("Error: {0}", ex.Message));
+                        Log.Error($"Error: {ex.Message}");
                     }
                     finally
                     {
@@ -911,7 +911,7 @@ namespace ASC.Calendar.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(String.Format("Create/update CRM caldav event: {0}", ex.Message));
+                Log.Error($"Create/update CRM caldav event: {ex.Message}");
             }
 
         }
@@ -1289,7 +1289,7 @@ namespace ASC.Calendar.Controllers
                 }
                 catch (Exception ex)
                 {
-                    Log.Info(String.Format("Error import events to new calendar by ical url: {0}", ex.Message));
+                    Log.Info($"Error import events to new calendar by ical url: {ex.Message}");
                 }
 
             }
@@ -1354,7 +1354,7 @@ namespace ASC.Calendar.Controllers
                 }
                 catch (Exception ex)
                 {
-                    Log.Info(String.Format("Error import events to calendar by ical url: {0}", ex.Message));
+                    Log.Info($"Error import events to calendar by ical url: {ex.Message}");
                 }
 
             }
@@ -1859,7 +1859,7 @@ namespace ASC.Calendar.Controllers
                 return AddEvent(calendarId, eventModel);
             }
 
-            throw new Exception(string.Format("Can't parse {0} to int", calendar.Id));
+            throw new Exception($"Can't parse {calendar.Id} to int");
         }
 
         /// <summary>
@@ -1943,7 +1943,7 @@ namespace ASC.Calendar.Controllers
             {
                 var defaultCalendar = LoadInternalCalendars().First(x => (!x.IsSubscription && x.IsTodo != 1));
                 if (!int.TryParse(defaultCalendar.Id, out calId))
-                    throw new Exception(string.Format("Can't parse {0} to int", defaultCalendar.Id));
+                    throw new Exception($"Can't parse {defaultCalendar.Id} to int");
             }
 
             var calendars = DDayICalParser.DeserializeCalendar(ics);
@@ -1972,7 +1972,7 @@ namespace ASC.Calendar.Controllers
             if (eventObj.IsAllDay && utcStartDate.Date < utcEndDate.Date)
                 utcEndDate = utcEndDate.AddDays(-1);
 
-            eventUid = eventUid == null ? null : string.Format("{0}@onlyoffice.com", eventUid);
+            eventUid = eventUid == null ? null : $"{eventUid}@onlyoffice.com";
 
             var result = CreateEvent(calId,
                                      eventObj.Summary,
@@ -2711,7 +2711,7 @@ namespace ASC.Calendar.Controllers
             {
                 var defaultCalendar = LoadInternalCalendars().First(x => (!x.IsSubscription && x.IsTodo != 1));
                 if (!int.TryParse(defaultCalendar.Id, out calendarId))
-                    throw new Exception(string.Format("Can't parse {0} to int", defaultCalendar.Id));
+                    throw new Exception($"Can't parse {defaultCalendar.Id} to int");
             }
             var calendars = DDayICalParser.DeserializeCalendar(ics);
 
@@ -2734,7 +2734,7 @@ namespace ASC.Calendar.Controllers
 
             var utcStartDate = todoObj.Start != null ? DDayICalParser.ToUtc(todoObj.Start) : DateTime.MinValue;
 
-            todoUid = todoUid == null ? null : string.Format("{0}@onlyoffice.com", todoUid);
+            todoUid = todoUid == null ? null : $"{todoUid}@onlyoffice.com";
 
 
             var result = CreateTodo(calendarId,
@@ -3069,7 +3069,7 @@ namespace ASC.Calendar.Controllers
             if (int.TryParse(calendar.Id, out calendarId))
                 return ImportEvents(calendarId, uploadModel);
 
-            throw new Exception(string.Format("Can't parse {0} to int", calendar.Id));
+            throw new Exception($"Can't parse {calendar.Id} to int");
         }
 
         /// <summary>
@@ -3139,7 +3139,7 @@ namespace ASC.Calendar.Controllers
             }
 
 
-            throw new Exception(string.Format("Can't parse {0} to int", calendar.Id));
+            throw new Exception($"Can't parse {calendar.Id} to int");
         }
 
         /// <summary>
@@ -4193,7 +4193,7 @@ namespace ASC.Calendar.Controllers
                     request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(authorization)));
                     request.Headers.Add("Content-Type", "text/calendar; charset=utf-8");
 
-                    Log.Info(String.Format("UpdateCalDavEvent eventURl: {0}", eventURl));
+                    Log.Info($"UpdateCalDavEvent eventURl: {eventURl}");
 
                     string ics = "";
 
@@ -4204,7 +4204,7 @@ namespace ASC.Calendar.Controllers
                     {
                         ics = reader.ReadToEnd();
                     }
-                    Log.Info(String.Format("UpdateCalDavEvent: {0}", ics));
+                    Log.Info($"UpdateCalDavEvent: {ics}");
                     var existEvent = DataProvider.GetEventIdByUid(eventGuid + "%", calendarId);
                     var existCalendar = DataProvider.GetCalendarById(calendarId);
 

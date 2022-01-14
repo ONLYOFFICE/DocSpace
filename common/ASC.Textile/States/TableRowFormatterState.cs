@@ -18,7 +18,7 @@ namespace Textile.States
         {
             m_alignInfo = m.Groups["align"].Value;
             m_attsInfo = m.Groups["atts"].Value;
-            input = string.Format("|{0}|", m.Groups["content"].Value);
+            input = "|" + m.Groups["content"].Value + "|";
 
             if (!(this.Formatter.CurrentState is TableFormatterState))
             {

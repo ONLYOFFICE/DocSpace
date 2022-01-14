@@ -866,13 +866,13 @@ namespace ASC.Web.Files.Utils
             }
             catch (HttpRequestException e)
             {
-                var errorString = string.Format("HttpRequestException: {0}", e.StatusCode);
+                var errorString = $"HttpRequestException: {e.StatusCode}";
 
                 if (e.StatusCode != HttpStatusCode.NotFound)
                 {
                     if (e.Message != null)
                     {
-                        errorString += string.Format(" Error message: {0}", e.Message);
+                        errorString += $" Error message: {e.Message}";
                     }
                 }
 

@@ -627,8 +627,8 @@ namespace ASC.Web.Files.ThirdPartyApp
         private bool CurrentUser(string googleId)
         {
             var linker = Snapshot.Get("webstudio");
-            var linkedProfiles = linker.GetLinkedObjectsByHashId(HashHelper.MD5(string.Format("{0}/{1}", ProviderConstants.Google, googleId)));
-            linkedProfiles = linkedProfiles.Concat(linker.GetLinkedObjectsByHashId(HashHelper.MD5(string.Format("{0}/{1}", ProviderConstants.OpenId, googleId))));
+            var linkedProfiles = linker.GetLinkedObjectsByHashId(HashHelper.MD5($"{ProviderConstants.Google}/{googleId}"));
+            linkedProfiles = linkedProfiles.Concat(linker.GetLinkedObjectsByHashId(HashHelper.MD5($"{ProviderConstants.OpenId}/{googleId}")));
             return linkedProfiles.Any(profileId => Guid.TryParse(profileId, out var tmp) && tmp == AuthContext.CurrentAccount.ID);
         }
 
@@ -754,19 +754,19 @@ namespace ASC.Web.Files.ThirdPartyApp
             {
                 var boundary = DateTime.UtcNow.Ticks.ToString("x");
 
-                var folderdata = string.IsNullOrEmpty(folderId) ? "" : string.Format(",\"parents\":[\"{0}\"]", folderId);
-                var metadata = string.Format("{{\"name\":\"{0}\"{1}}}", fileName, folderdata);
-                var metadataPart = string.Format("\r\n--{0}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n{1}", boundary, metadata);
+                var folderdata = string.IsNullOrEmpty(folderId) ? "" : $",\"parents\":[\"{folderId}\"]";
+                var metadata = "{{\"name\":\"" + fileName + "\"" + folderdata + "}}";
+                var metadataPart = $"\r\n--{boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n{metadata}";
                 var bytes = Encoding.UTF8.GetBytes(metadataPart);
                 tmpStream.Write(bytes, 0, bytes.Length);
 
-                var mediaPartStart = string.Format("\r\n--{0}\r\nContent-Type: {1}\r\n\r\n", boundary, MimeMapping.GetMimeMapping(fileName));
+                var mediaPartStart = $"\r\n--{boundary}\r\nContent-Type: {MimeMapping.GetMimeMapping(fileName)}\r\n\r\n";
                 bytes = Encoding.UTF8.GetBytes(mediaPartStart);
                 tmpStream.Write(bytes, 0, bytes.Length);
 
                 content.CopyTo(tmpStream);
 
-                var mediaPartEnd = string.Format("\r\n--{0}--\r\n", boundary);
+                var mediaPartEnd = $"\r\n--{boundary}--\r\n";
                 bytes = Encoding.UTF8.GetBytes(mediaPartEnd);
                 tmpStream.Write(bytes, 0, bytes.Length);
 
@@ -845,10 +845,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                 fileName = FileUtility.ReplaceFileExtension(fileName, internalExt);
                 var requiredMimeType = MimeMapping.GetMimeMapping(internalExt);
 
-                var downloadUrl = GoogleLoginProvider.GoogleUrlFile
-                                  + string.Format("{0}/export?mimeType={1}",
-                                                  fileId,
-                                                  HttpUtility.UrlEncode(requiredMimeType));
+                var downloadUrl = GoogleLoginProvider.GoogleUrlFile + $"{fileId}/export?mimeType={HttpUtility.UrlEncode(requiredMimeType)}";
 
                 var httpClient = ClientFactory.CreateClient();
 

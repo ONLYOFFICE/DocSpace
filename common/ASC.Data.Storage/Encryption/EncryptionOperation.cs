@@ -147,7 +147,7 @@ namespace ASC.Data.Storage.Encryption
 
             foreach (var domain in domains)
             {
-                var logParent = string.Format("Tenant: {0}, Module: {1}, Domain: {2}", tenant.TenantAlias, module, domain);
+                var logParent = $"Tenant: {tenant.TenantAlias}, Module: {module}, Domain: {domain}";
 
                 var files = GetFiles(domains, progress, store, domain);
 
@@ -217,7 +217,7 @@ namespace ASC.Data.Storage.Encryption
         {
             foreach (var file in files)
             {
-                var logItem = string.Format("{0}, File: {1}", logParent, file);
+                var logItem = $"{logParent}, File: {file}";
 
                 log.Debug(logItem);
 

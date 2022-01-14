@@ -1370,7 +1370,7 @@ namespace ASC.Api.Settings
                 try
                 {
                     var request = new HttpRequestMessage();
-                    request.RequestUri = new Uri(string.Format("{0}/tips/deletereaded", SetupInfo.TipsAddress));
+                    request.RequestUri = new Uri($"{SetupInfo.TipsAddress}/tips/deletereaded");
 
                     var data = new NameValueCollection
                     {
@@ -1795,7 +1795,7 @@ namespace ASC.Api.Settings
 
             MessageService.Send(MessageAction.OwnerSentChangeOwnerInstructions, MessageTarget.Create(owner.ID), owner.DisplayUserName(false, DisplayUserSettingsHelper));
 
-            var emailLink = string.Format("<a href=\"mailto:{0}\">{0}</a>", owner.Email);
+            var emailLink = $"<a href=\"mailto:{owner.Email}\">{owner.Email}</a>";
             return new { Status = 1, Message = Resource.ChangePortalOwnerMsg.Replace(":email", emailLink) };
         }
 

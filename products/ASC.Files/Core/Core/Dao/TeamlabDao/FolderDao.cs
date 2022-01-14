@@ -824,7 +824,7 @@ namespace ASC.Files.Core.Data
             if (string.IsNullOrEmpty(module)) throw new ArgumentNullException("module");
             if (string.IsNullOrEmpty(bunch)) throw new ArgumentNullException("bunch");
 
-            var keys = data.Select(id => string.Format("{0}/{1}/{2}", module, bunch, id)).ToArray();
+            var keys = data.Select(id => $"{module}/{bunch}/{id}").ToArray();
 
             var folderIdsDictionary = Query(FilesDbContext.BunchObjects)
                 .AsNoTracking()
@@ -908,7 +908,7 @@ namespace ASC.Files.Core.Data
             if (string.IsNullOrEmpty(module)) throw new ArgumentNullException("module");
             if (string.IsNullOrEmpty(bunch)) throw new ArgumentNullException("bunch");
 
-            var key = string.Format("{0}/{1}/{2}", module, bunch, data);
+            var key = $"{module}/{bunch}/{data}";
             var folderId = Query(FilesDbContext.BunchObjects)
                 .Where(r => r.RightNode == key)
                 .Select(r => r.LeftNode)

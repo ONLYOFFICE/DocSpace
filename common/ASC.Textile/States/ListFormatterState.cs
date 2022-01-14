@@ -72,7 +72,7 @@ namespace Textile.States
             {
                 if (!m_firstItem)
                     Formatter.Output.WriteLine("</li>");
-                Formatter.Output.Write(string.Format("<li {0}>", FormattedStylesAndAlignment("li")));
+                Formatter.Output.Write("<li " + FormattedStylesAndAlignment("li") + ">");
                 m_firstItemLine = false;
             }
             else

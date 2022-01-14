@@ -141,7 +141,7 @@ namespace ASC.TelegramService.Core
             {
                 var cmd = ParseCommand(msg);
 
-                if (!commands.ContainsKey(cmd.CommandName)) throw new Exception(string.Format("No handler found for command '{0}'", cmd.CommandName));
+                if (!commands.ContainsKey(cmd.CommandName)) throw new Exception($"No handler found for command '{cmd.CommandName}'");
 
                 var command = commands[cmd.CommandName];
                 var context = (CommandContext)ServiceProvider.CreateScope().ServiceProvider.GetService(contexts[cmd.CommandName]);

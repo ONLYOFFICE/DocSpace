@@ -107,10 +107,7 @@ namespace ASC.FederatedLogin.Helpers
             if (string.IsNullOrEmpty(clientID)) throw new ArgumentNullException("clientID");
             if (string.IsNullOrEmpty(clientSecret)) throw new ArgumentNullException("clientSecret");
 
-            var data = string.Format("code={0}&client_id={1}&client_secret={2}",
-                                     HttpUtility.UrlEncode(authCode),
-                                     HttpUtility.UrlEncode(clientID),
-                                     HttpUtility.UrlEncode(clientSecret));
+            var data = $"code={HttpUtility.UrlEncode(authCode)}&client_id={HttpUtility.UrlEncode(clientID)}&client_secret={HttpUtility.UrlEncode(clientSecret)}";
 
             if (!string.IsNullOrEmpty(redirectUri))
                 data += "&redirect_uri=" + HttpUtility.UrlEncode(redirectUri);
@@ -147,10 +144,7 @@ namespace ASC.FederatedLogin.Helpers
         {
             if (token == null || !CanRefresh(token)) throw new ArgumentException("Can not refresh given token", "token");
 
-            var data = string.Format("client_id={0}&client_secret={1}&refresh_token={2}&grant_type=refresh_token",
-                                     HttpUtility.UrlEncode(token.ClientID),
-                                     HttpUtility.UrlEncode(token.ClientSecret),
-                                     HttpUtility.UrlEncode(token.RefreshToken));
+            var data = $"client_id={HttpUtility.UrlEncode(token.ClientID)}&client_secret={HttpUtility.UrlEncode(token.ClientSecret)}&refresh_token={HttpUtility.UrlEncode(token.RefreshToken)}&grant_type=refresh_token";
 
             var json = RequestHelper.PerformRequest(requestUrl, "application/x-www-form-urlencoded", "POST", data);
             if (json != null)

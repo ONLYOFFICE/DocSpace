@@ -389,7 +389,7 @@ namespace ASC.Web.Files.Services.DocumentService
         {
             var error = FilesCommonResource.ErrorMassage_DocServiceException;
             if (!string.IsNullOrEmpty(ex.Message))
-                error += string.Format(" ({0})", ex.Message);
+                error += $" ({ex.Message})";
 
             Logger.Error("DocService error", ex);
             return new Exception(error, ex);

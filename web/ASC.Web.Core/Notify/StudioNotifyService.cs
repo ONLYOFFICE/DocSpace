@@ -253,8 +253,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             if (!skipSettings)
             {
-                var link = string.Format("{0}/addons/mail/#accounts/changepwd={1}",
-                    CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'), address);
+                var link = $"{CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')}/addons/mail/#accounts/changepwd={address}";
 
                 tags.Add(new TagValue(Tags.MyStaffLink, link));
                 tags.Add(new TagValue(Tags.Server, server));

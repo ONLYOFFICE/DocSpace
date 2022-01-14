@@ -156,7 +156,7 @@ namespace ASC.Web.Core
                 }
                 catch (Exception exc)
                 {
-                    log.Error(string.Format("Couldn't load web item {0}", file), exc);
+                    log.Error($"Couldn't load web item {file}", exc);
                 }
             }
 

@@ -140,20 +140,12 @@ namespace ASC.Data.Storage
                 }
 
                 var auth = EmailValidationKeyProvider.GetEmailKey(currentTenantId, path.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar) + "." + headerAttr + "." + expireString);
-                query = string.Format("{0}{1}={2}&{3}={4}",
-                                      path.IndexOf('?') >= 0 ? "&" : "?",
-                                      Constants.QUERY_EXPIRE,
-                                      expireString,
-                                      Constants.QUERY_AUTH,
-                                      auth);
+                query = $"{(path.IndexOf('?') >= 0 ? "&" : "?")}{Constants.QUERY_EXPIRE}={expireString}&{Constants.QUERY_AUTH}={auth}";
             }
 
             if (!string.IsNullOrEmpty(headerAttr))
             {
-                query += string.Format("{0}{1}={2}",
-                                       query.IndexOf('?') >= 0 ? "&" : "?",
-                                       Constants.QUERY_HEADER,
-                                       HttpUtility.UrlEncode(headerAttr));
+                query += $"{(query.IndexOf('?') >= 0 ? "&" : "?")}{Constants.QUERY_HEADER}={HttpUtility.UrlEncode(headerAttr)}";
             }
 
             var tenant = _tenant.Trim('/');

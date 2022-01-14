@@ -544,12 +544,12 @@ namespace ASC.ElasticSearch
                 {
                     if (newValue == default(T))
                     {
-                        source.AppendFormat("ctx._source.remove('{0}');", sourceExprText.Substring(1));
+                        source.Append($"ctx._source.remove('{sourceExprText.Substring(1)}');");
                     }
                     else
                     {
                         var pkey = "p" + sourceExprText.Replace(".", "");
-                        source.AppendFormat("ctx._source{0} = params.{1};", sourceExprText, pkey);
+                        source.Append($"ctx._source{sourceExprText} = params.{pkey};");
                         parameters.Add(pkey, newValue);
                     }
                 }
@@ -606,18 +606,18 @@ namespace ASC.ElasticSearch
                     for (var i = 0; i < newValue.Count; i++)
                     {
                         parameters.Add(paramKey + i, newValue[i]);
-                        source.AppendFormat("if (!ctx._source{0}.contains(params.{1})){{ctx._source{0}.add(params.{1})}}", key, paramKey + i);
+                        source.Append($"if (!ctx._source{key}.contains(params.{paramKey + i})){{ctx._source{key}.add(params.{paramKey + i})}}");
                     }
                     break;
                 case UpdateAction.Replace:
                     parameters.Add(paramKey, newValue);
-                    source.AppendFormat("ctx._source{0} = params.{1};", key, paramKey);
+                    source.Append($"ctx._source{key} = params.{paramKey};");
                     break;
                 case UpdateAction.Remove:
                     for (var i = 0; i < newValue.Count; i++)
                     {
                         parameters.Add(paramKey + i, newValue[i]);
-                        source.AppendFormat("ctx._source{0}.removeIf(item -> item.id == params.{1}.id)", key, paramKey + i);
+                        source.Append($"ctx._source{key}.removeIf(item -> item.id == params.{paramKey + i}.id)");
                     }
                     break;
                 default:

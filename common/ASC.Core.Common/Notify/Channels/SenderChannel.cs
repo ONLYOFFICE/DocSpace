@@ -50,7 +50,7 @@ namespace ASC.Notify.Channels
             this.context = context ?? throw new ArgumentNullException("context");
             this.SenderName = senderName ?? throw new ArgumentNullException("senderName");
             this.firstSink = decorateSink;
-            this.senderSink = senderSink ?? throw new ApplicationException(string.Format("channel with tag {0} not created sender sink", senderName));
+            this.senderSink = senderSink ?? throw new ApplicationException($"channel with tag {senderName} not created sender sink");
 
             var dispatcherSink = new DispatchSink(SenderName, this.context.DispatchEngine);
             this.firstSink = AddSink(firstSink, dispatcherSink);

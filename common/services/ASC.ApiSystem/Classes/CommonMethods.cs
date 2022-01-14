@@ -147,16 +147,8 @@ namespace ASC.ApiSystem.Controllers
 
         public string CreateReference(string requestUriScheme, string tenantDomain, string email, bool first = false, string module = "", bool sms = false)
         {
-            return string.Format("{0}{1}{2}/{3}{4}{5}{6}",
-                                 requestUriScheme,
-                                 Uri.SchemeDelimiter,
-                                 tenantDomain,
-                                 CommonLinkUtility.GetConfirmationUrlRelative(email, ConfirmType.Auth, (first ? "true" : "") + module + (sms ? "true" : "")),
-                                 first ? "&first=true" : "",
-                                 string.IsNullOrEmpty(module) ? "" : "&module=" + module,
-                                 sms ? "&sms=true" : ""
-
-                );
+            var url = CommonLinkUtility.GetConfirmationUrlRelative(email, ConfirmType.Auth, (first ? "true" : "") + module + (sms ? "true" : ""));
+            return $"{requestUriScheme}{Uri.SchemeDelimiter}{tenantDomain}/{url}{(first ? "&first=true" : "")}{(string.IsNullOrEmpty(module) ? "" : "&module=" + module)}{(sms ? "&sms=true" : "")}";
         }
 
         public bool SendCongratulations(string requestUriScheme, Tenant tenant, bool skipWelcome, out string url)
@@ -310,7 +302,7 @@ namespace ASC.ApiSystem.Controllers
         {
             try
             {
-                var data = string.Format("secret={0}&remoteip={1}&response={2}", Configuration["recaptcha:private-key"], ip, response);
+                var data = $"secret={Configuration["recaptcha:private-key"]}&remoteip={ip}&response={response}";
                 var url = Configuration["recaptcha:verify-url"] ?? "https://www.recaptcha.net/recaptcha/api/siteverify";
 
                 var request = new HttpRequestMessage();

@@ -386,7 +386,7 @@ namespace ASC.Notify.Engine
                     }
                     else
                     {
-                        response = new SendResponse(request.NotifyAction, sendertag, request.Recipient, new NotifyException(string.Format("Not registered sender \"{0}\".", sendertag)));
+                        response = new SendResponse(request.NotifyAction, sendertag, request.Recipient, new NotifyException($"Not registered sender \"{sendertag}\"."));
                     }
                     responses.Add(response);
                 }
@@ -535,7 +535,7 @@ namespace ASC.Notify.Engine
                         pattern = apProvider.GetPattern(request.NotifyAction, senderName);
                     }
 
-                    request.Patterns[i] = pattern ?? throw new NotifyException(string.Format("For action \"{0}\" by sender \"{1}\" no one patterns getted.", request.NotifyAction.ID, senderName));
+                    request.Patterns[i] = pattern ?? throw new NotifyException($"For action \"{request.NotifyAction.ID}\" by sender \"{senderName}\" no one patterns getted.");
                 }
             }
         }

@@ -397,7 +397,7 @@ namespace ASC.Core.Notify.Signalr
 
         private string GetMethod(string method)
         {
-            return string.Format("{0}/controller/{1}/{2}", Url.TrimEnd('/'), hub, method);
+            return $"{Url.TrimEnd('/')}/controller/{hub}/{method}";
         }
 
         public string CreateAuthToken(string pkey = "socketio")
@@ -405,7 +405,7 @@ namespace ASC.Core.Notify.Signalr
             using var hasher = new HMACSHA1(SKey);
             var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
             var hash = Convert.ToBase64String(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
-            return string.Format("ASC {0}:{1}:{2}", pkey, now, hash);
+            return $"ASC {pkey}:{now}:{hash}";
         }
     }
 }

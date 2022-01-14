@@ -458,14 +458,14 @@ namespace ASC.CRM.Api
                         var extension = Path.GetExtension(file.Title);
                         if (extension == null) continue;
 
-                        var fileInfo = string.Format("{0} ({1})", file.Title, extension.ToUpper());
+                        var fileInfo = $"{file.Title} ({extension.ToUpper()})";
                         if (!fileListInfoHashtable.ContainsKey(fileInfo))
                         {
                             fileListInfoHashtable.Add(fileInfo, file.DownloadUrl);
                         }
                         else
                         {
-                            fileInfo = string.Format("{0} ({1}, {2})", file.Title, extension.ToUpper(), file.UniqID);
+                            fileInfo = $"{file.Title} ({extension.ToUpper()}, {file.UniqID})";
                             fileListInfoHashtable.Add(fileInfo, file.DownloadUrl);
                         }
                     }

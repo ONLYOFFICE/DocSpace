@@ -48,14 +48,6 @@ namespace ASC.Core.Notify.Senders
     [Singletone(Additional = typeof(SmtpSenderExtension))]
     public class SmtpSender : INotifySender
     {
-        private const string HTML_FORMAT =
-            @"<!DOCTYPE html PUBLIC ""-//W3C//DTD HTML 4.01 Transitional//EN"">
-<html>
-<head>
-<meta content=""text/html;charset=UTF-8"" http-equiv=""Content-Type"">
-</head>
-<body>{0}</body>
-</html>";
 
         protected ILog Log { get; set; }
         protected IConfiguration Configuration { get; }
@@ -276,7 +268,13 @@ namespace ASC.Core.Notify.Senders
 
         protected string GetHtmlView(string body)
         {
-            return string.Format(HTML_FORMAT, body);
+            return $@"<!DOCTYPE html PUBLIC ""-//W3C//DTD HTML 4.01 Transitional//EN"">
+<html>
+<head>
+<meta content=""text/html;charset=UTF-8"" http-equiv=""Content-Type"">
+</head>
+<body>{body}</body>
+</html>";
         }
 
         private MailKit.Net.Smtp.SmtpClient GetSmtpClient()

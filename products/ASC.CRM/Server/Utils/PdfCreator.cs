@@ -127,7 +127,7 @@ namespace ASC.Web.CRM.Classes
 
                 var file = _serviceProvider.GetService<File<int>>();
 
-                file.Title = string.Format("{0}{1}", invoice.Number, FormatPdf);
+                file.Title = $"{invoice.Number}{FormatPdf}";
                 file.FolderID = _daoFactory.GetFileDao().GetRoot();
 
                 var request = new HttpRequestMessage();
@@ -260,7 +260,7 @@ namespace ASC.Web.CRM.Classes
                 {
                     var document = _serviceProvider.GetService<File<int>>();
 
-                    document.Title = string.Format("{0}{1}", data.Number, FormatPdf);
+                    document.Title = $"{data.Number}{FormatPdf}";
                     document.FolderID = _daoFactory.GetFileDao().GetRoot();
                     document.ContentLength = stream.Length;
 

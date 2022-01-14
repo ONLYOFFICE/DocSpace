@@ -322,8 +322,8 @@ namespace ASC.Web.Files.ThirdPartyApp
             {
                 var boundary = DateTime.UtcNow.Ticks.ToString("x");
 
-                var metadata = string.Format("Content-Disposition: form-data; name=\"filename\"; filename=\"{0}\"\r\nContent-Type: application/octet-stream\r\n\r\n", title);
-                var metadataPart = string.Format("--{0}\r\n{1}", boundary, metadata);
+                var metadata = $"Content-Disposition: form-data; name=\"filename\"; filename=\"{title}\"\r\nContent-Type: application/octet-stream\r\n\r\n";
+                var metadataPart = $"--{boundary}\r\n{metadata}";
                 var bytes = Encoding.UTF8.GetBytes(metadataPart);
                 tmpStream.Write(bytes, 0, bytes.Length);
 
@@ -340,7 +340,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                     downloadStream.CopyTo(tmpStream);
                 }
 
-                var mediaPartEnd = string.Format("\r\n--{0}--\r\n", boundary);
+                var mediaPartEnd = $"\r\n--{boundary}--\r\n";
                 bytes = Encoding.UTF8.GetBytes(mediaPartEnd);
                 tmpStream.Write(bytes, 0, bytes.Length);
 
@@ -502,7 +502,7 @@ namespace ASC.Web.Files.ThirdPartyApp
         private bool CurrentUser(string boxUserId)
         {
             var linkedProfiles = Snapshot.Get("webstudio")
-                .GetLinkedObjectsByHashId(HashHelper.MD5(string.Format("{0}/{1}", ProviderConstants.Box, boxUserId)));
+                .GetLinkedObjectsByHashId(HashHelper.MD5($"{ProviderConstants.Box}/{boxUserId}"));
             return linkedProfiles.Any(profileId => Guid.TryParse(profileId, out var tmp) && tmp == AuthContext.CurrentAccount.ID);
         }
 

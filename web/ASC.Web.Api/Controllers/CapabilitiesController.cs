@@ -119,8 +119,7 @@ namespace ASC.Web.Api.Controllers
 
                     var configUrl = Configuration["web:sso:saml:login:url"] ?? "";
 
-                    result.SsoUrl = string.Format("{0}://{1}{2}{3}", uri.Scheme, uri.Host,
-                                                  (uri.Port == 80 || uri.Port == 443) ? "" : ":" + uri.Port, configUrl);
+                    result.SsoUrl = $"{uri.Scheme}://{uri.Host}{((uri.Port == 80 || uri.Port == 443) ? "" : ":" + uri.Port)}{configUrl}";
                     result.SsoLabel = string.Empty;
                     //    result.SsoLabel = settings.SpLoginLabel;
                     //}

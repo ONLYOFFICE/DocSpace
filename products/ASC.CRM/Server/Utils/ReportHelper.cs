@@ -127,10 +127,7 @@ namespace ASC.Web.CRM.Classes
                     break;
             }
 
-            return string.Format("{0} ({1} {2}).xlsx",
-                                 reportName,
-                                 _tenantUtil.DateTimeNow().ToShortDateString(),
-                                 _tenantUtil.DateTimeNow().ToShortTimeString());
+            return $"{reportName} ({_tenantUtil.DateTimeNow().ToShortDateString()} {_tenantUtil.DateTimeNow().ToShortTimeString()}).xlsx";
         }
 
         public bool CheckReportData(ReportType reportType, ReportTimePeriod timePeriod, Guid[] managers)

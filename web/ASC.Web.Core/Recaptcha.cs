@@ -40,7 +40,7 @@ namespace ASC.Web.Core
         {
             try
             {
-                var data = string.Format("secret={0}&remoteip={1}&response={2}", SetupInfo.RecaptchaPrivateKey, ip, response);
+                var data = $"secret={SetupInfo.RecaptchaPrivateKey}&remoteip={ip}&response={response}";
 
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(SetupInfo.RecaptchaVerifyUrl);

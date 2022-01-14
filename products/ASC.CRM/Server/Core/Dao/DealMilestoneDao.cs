@@ -158,7 +158,7 @@ namespace ASC.CRM.Core.Dao
         public void Edit(DealMilestone item)
         {
             if (HaveContactLink(item.ID))
-                throw new ArgumentException(String.Format("{0}. {1}.", CRMErrorsResource.BasicCannotBeEdited, CRMErrorsResource.DealMilestoneHasRelatedDeals));
+                throw new ArgumentException($"{CRMErrorsResource.BasicCannotBeEdited}. {CRMErrorsResource.DealMilestoneHasRelatedDeals}.");
 
             var dbEntity = CrmDbContext.DealMilestones.Find(item.ID);
 
@@ -183,7 +183,7 @@ namespace ASC.CRM.Core.Dao
         public void Delete(int id)
         {
             if (HaveContactLink(id))
-                throw new ArgumentException(String.Format("{0}. {1}.", CRMErrorsResource.BasicCannotBeDeleted, CRMErrorsResource.DealMilestoneHasRelatedDeals));
+                throw new ArgumentException($"{CRMErrorsResource.BasicCannotBeDeleted}. {CRMErrorsResource.DealMilestoneHasRelatedDeals}.");
 
             var dbEntity = CrmDbContext.DealMilestones.Find(id);
 

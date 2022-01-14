@@ -132,12 +132,12 @@ namespace ASC.Core.Notify
         {
             var subscriptionProvider = new DirectSubscriptionProvider(ID, SubscriptionManager, RecipientsProvider);
             return new TopSubscriptionProvider(RecipientsProvider, subscriptionProvider, WorkContext.DefaultClientSenders) ??
-                throw new NotifyException(string.Format("Provider {0} not instanced.", "ISubscriprionProvider"));
+                throw new NotifyException("Provider ISubscriprionProvider not instanced.");
         }
 
         protected virtual IRecipientProvider CreateRecipientsProvider()
         {
-            return new RecipientProviderImpl(UserManager) ?? throw new NotifyException(string.Format("Provider {0} not instanced.", "IRecipientsProvider"));
+            return new RecipientProviderImpl(UserManager) ?? throw new NotifyException("Provider IRecipientsProvider not instanced.");
         }
     }
 }

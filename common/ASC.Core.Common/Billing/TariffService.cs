@@ -239,7 +239,7 @@ namespace ASC.Core.Billing
                               var quota = QuotaService.GetTenantQuotas().SingleOrDefault(q => q.AvangateId == lastPayment.ProductId);
                               if (quota == null)
                               {
-                                  throw new InvalidOperationException(string.Format("Quota with id {0} not found for portal {1}.", lastPayment.ProductId, GetPortalId(tenantId)));
+                                  throw new InvalidOperationException($"Quota with id {lastPayment.ProductId} not found for portal {GetPortalId(tenantId)}.");
                               }
 
                               var asynctariff = Tariff.CreateDefault();
@@ -362,7 +362,7 @@ namespace ASC.Core.Billing
 
             var key = tenant.HasValue
                           ? GetBillingUrlCacheKey(tenant.Value)
-                          : string.Format("notenant{0}", !string.IsNullOrEmpty(affiliateId) ? "_" + affiliateId : "");
+                          : string.Format($"notenant{(!string.IsNullOrEmpty(affiliateId) ? "_" + affiliateId : "")}");
             key += quota.Visible ? "" : "0";
             if (!(Cache.Get<Dictionary<string, Tuple<Uri, Uri>>>(key) is IDictionary<string, Tuple<Uri, Uri>> urls))
             {

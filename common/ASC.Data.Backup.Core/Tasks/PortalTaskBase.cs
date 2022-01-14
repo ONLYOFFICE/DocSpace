@@ -243,16 +243,16 @@ namespace ASC.Data.Backup.Tasks
         {
             var connectionString = ParseConnectionString(DbFactory.ConnectionStringSettings.ConnectionString);
             var args = new StringBuilder()
-                .AppendFormat("-h {0} ", connectionString["server"])
-                .AppendFormat("-u {0} ", connectionString["user id"])
-                .AppendFormat("-p{0} ", connectionString["password"]);
+                .Append($"-h {connectionString["server"]} ")
+                .Append($"-u {connectionString["user id"]} ")
+                .Append($"-p{connectionString["password"]} ");
 
             if (db)
             {
-                args.AppendFormat("-D {0} ", connectionString["database"]);
+                args.Append($"-D {connectionString["database"]} ");
             }
 
-            args.AppendFormat("-e \" source {0}\"", file);
+            args.Append($"-e \" source {file}\"");
             Logger.DebugFormat("run mysql file {0} {1}", file, args.ToString());
 
             var startInfo = new ProcessStartInfo

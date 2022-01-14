@@ -76,7 +76,7 @@ namespace ASC.Web.Core.Calendars
 
         public static string ToShortString(this DateTime targetDateTime)
         {
-            return String.Format("{0} {1}", targetDateTime.ToShortDateString(), targetDateTime.ToShortTimeString());
+            return $"{targetDateTime.ToShortDateString()} {targetDateTime.ToShortTimeString()}";
         }
 
     }
@@ -738,23 +738,23 @@ namespace ASC.Web.Core.Calendars
 
             if (Until != DateTime.MinValue)
             {
-                sb.AppendFormat(";until={0}", Until.ToString("yyyyMMdd'T'HHmmss'Z'"));
+                sb.Append($";until={Until.ToString("yyyyMMdd'T'HHmmss'Z'")}");
             }
             else if (Count >= 0)
             {
-                sb.AppendFormat(";count={0}", Count);
+                sb.Append($";count={Count}");
             }
 
             if (Interval > 1)
             {
-                sb.AppendFormat(";interval={0}", Interval);
+                sb.Append($";interval={Interval}");
             }
 
             if (BySecond != null && BySecond.Length > 0)
             {
                 sb.Append(";bysecond=");
                 foreach (var s in BySecond)
-                    sb.AppendFormat("{0},", s);
+                    sb.Append($"{s},");
 
                 sb.Remove(sb.Length - 1, 1);
             }
@@ -833,11 +833,11 @@ namespace ASC.Web.Core.Calendars
             }
 
             if (WKST.DayOfWeek != DayOfWeek.Monday)
-                sb.AppendFormat(";wkst={0}", WKST.Id);
+                sb.Append($";wkst={WKST.Id}");
 
             if (!iCal && ExDates != null && ExDates.Count > 0)
             {
-                sb.AppendFormat(";exdates=");
+                sb.Append(";exdates=");
                 foreach (var d in this.ExDates)
                 {
                     if (d.IsDateTime)

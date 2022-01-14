@@ -350,8 +350,7 @@ namespace ASC.Notify.Cron
                     sval = GetMonthNumber(sub) + 1;
                     if (sval <= 0)
                     {
-                        throw new FormatException(string.Format(CultureInfo.InvariantCulture,
-                                                                "Invalid Month value: '{0}'", sub));
+                        throw new FormatException($"Invalid Month value: '{sub}'");
                     }
                     if (s.Length > i + 3)
                     {
@@ -363,8 +362,7 @@ namespace ASC.Notify.Cron
                             eval = GetMonthNumber(sub) + 1;
                             if (eval <= 0)
                             {
-                                throw new FormatException(
-                                    string.Format(CultureInfo.InvariantCulture, "Invalid Month value: '{0}'", sub));
+                                throw new FormatException($"Invalid Month value: '{sub}'");
                             }
                         }
                     }
@@ -374,8 +372,7 @@ namespace ASC.Notify.Cron
                     sval = GetDayOfWeekNumber(sub);
                     if (sval < 0)
                     {
-                        throw new FormatException(string.Format(CultureInfo.InvariantCulture,
-                                                                "Invalid Day-of-Week value: '{0}'", sub));
+                        throw new FormatException($"Invalid Day-of-Week value: '{sub}'");
                     }
                     if (s.Length > i + 3)
                     {
@@ -387,8 +384,7 @@ namespace ASC.Notify.Cron
                             eval = GetDayOfWeekNumber(sub);
                             if (eval < 0)
                             {
-                                throw new FormatException(
-                                    string.Format(CultureInfo.InvariantCulture, "Invalid Day-of-Week value: '{0}'", sub));
+                                throw new FormatException($"Invalid Day-of-Week value: '{sub}'");
                             }
                         }
                         else if (c == '#')
@@ -417,8 +413,7 @@ namespace ASC.Notify.Cron
                 }
                 else
                 {
-                    throw new FormatException(
-                        string.Format(CultureInfo.InvariantCulture, "Illegal characters for this position: '{0}'", sub));
+                    throw new FormatException($"Illegal characters for this position: '{sub}'");
                 }
                 if (eval != -1)
                 {

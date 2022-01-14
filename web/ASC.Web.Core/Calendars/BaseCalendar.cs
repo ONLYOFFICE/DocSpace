@@ -92,11 +92,11 @@ namespace ASC.Web.Core.Calendars
 
             sb.AppendLine("METHOD:PUBLISH");
             sb.AppendLine("CALSCALE:GREGORIAN");
-            sb.AppendLine(string.Format("X-WR-CALNAME:{0}", Name));
-            sb.AppendLine(string.Format("X-WR-TIMEZONE:{0}", TimeZoneConverter.WindowsTzId2OlsonTzId(TimeZone.Id)));
+            sb.AppendLine($"X-WR-CALNAME:{Name}");
+            sb.AppendLine($"X-WR-TIMEZONE:{TimeZoneConverter.WindowsTzId2OlsonTzId(TimeZone.Id)}");
             //tz
             sb.AppendLine("BEGIN:VTIMEZONE");
-            sb.AppendLine(string.Format("TZID:{0}", TimeZoneConverter.WindowsTzId2OlsonTzId(TimeZone.Id)));
+            sb.AppendLine($"TZID:{TimeZoneConverter.WindowsTzId2OlsonTzId(TimeZone.Id)}");
             sb.AppendLine("END:VTIMEZONE");
 
             //events

@@ -549,7 +549,8 @@ namespace ASC.Files.Thirdparty.SharePoint
         public string MakeId(string path = "")
         {
             path = path.Replace(SpRootFolderId, "");
-            return string.Format("{0}{1}", "spoint-" + ID, string.IsNullOrEmpty(path) || path == "/" || path == SpRootFolderId ? "" : ("-" + path.Replace('/', '|')));
+            var p = string.IsNullOrEmpty(path) || path == "/" || path == SpRootFolderId ? "" : ("-" + path.Replace('/', '|'));
+            return $"{ID}{p}";
         }
 
         private string MakeId(object path)

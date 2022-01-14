@@ -116,7 +116,7 @@ namespace ASC.CRM.Classes
         private string GetValueText(CultureInfo culture, object value)
         {
             Type type = value.GetType();
-            string resourceName = string.Format("{0}_{1}", type.Name, value.ToString());
+            string resourceName = $"{type.Name}_{value}";
             string result = _resourceManager.GetString(resourceName, culture);
             if (result == null)
                 result = resourceName;
@@ -174,7 +174,7 @@ namespace ASC.CRM.Classes
                         }
                         else
                         {
-                            result = string.Format("{0}, {1}", result, valueText);
+                            result = $"{result}, {valueText}";
                         }
                     }
                 }

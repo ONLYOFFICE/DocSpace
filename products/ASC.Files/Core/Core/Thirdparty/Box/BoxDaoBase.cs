@@ -93,7 +93,8 @@ namespace ASC.Files.Thirdparty.Box
 
         protected override string MakeId(string path = null)
         {
-            return string.Format("{0}{1}", PathPrefix, string.IsNullOrEmpty(path) || path == "0" ? "" : ("-|" + path.TrimStart('/')));
+            var p = string.IsNullOrEmpty(path) || path == "0" ? "" : ("-|" + path.TrimStart('/'));
+            return $"{PathPrefix}{p}";
         }
 
         protected string MakeFolderTitle(BoxFolder boxFolder)

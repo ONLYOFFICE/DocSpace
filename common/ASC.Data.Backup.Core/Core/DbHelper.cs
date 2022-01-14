@@ -185,13 +185,13 @@ namespace ASC.Data.Backup
                     .Intersect(table.Columns.Cast<DataColumn>().Select(c => c.ColumnName), StringComparer.InvariantCultureIgnoreCase)
                     .ToList();
 
-                tableColumns.ForEach(column => sql.AppendFormat("{0}, ", Quote(column)));
+                tableColumns.ForEach(column => sql.Append($"{Quote(column)}, "));
                 sql.Replace(", ", ") values (", sql.Length - 2, 2);
 
                 var insert = connect.CreateCommand();
                 tableColumns.ForEach(column =>
                 {
-                    sql.AppendFormat("@{0}, ", column);
+                    sql.Append($"@{column}, ");
                     var p = insert.CreateParameter();
                     p.ParameterName = "@" + column;
                     insert.Parameters.Add(p);
@@ -255,7 +255,7 @@ namespace ASC.Data.Backup
             }
             else
             {
-                return columns.Select(string.Format("TABLE_NAME = '{0}'", table))
+                return columns.Select($"TABLE_NAME = '{table}'")
                     .Select(r => r["COLUMN_NAME"].ToString());
             }
         }

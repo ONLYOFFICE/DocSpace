@@ -207,7 +207,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         {
             if (file == null) throw new ArgumentNullException("file");
 
-            var downloadArg = string.Format("{0}?alt=media", file.Id);
+            var downloadArg = $"{file.Id}?alt=media";
 
             var ext = MimeMapping.GetExtention(file.MimeType);
             if (GoogleLoginProvider.GoogleDriveExt.Contains(ext))
@@ -215,9 +215,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                 var internalExt = FileUtility.GetGoogleDownloadableExtension(ext);
                 var requiredMimeType = MimeMapping.GetMimeMapping(internalExt);
 
-                downloadArg = string.Format("{0}/export?mimeType={1}",
-                                            file.Id,
-                                            HttpUtility.UrlEncode(requiredMimeType));
+                downloadArg = $"{file.Id}/export?mimeType={HttpUtility.UrlEncode(requiredMimeType)}";
             }
 
             var request = new HttpRequestMessage();
@@ -363,10 +361,10 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             }
             else
             {
-                var titleData = !string.IsNullOrEmpty(driveFile.Name) ? string.Format("\"name\":\"{0}\"", driveFile.Name) : "";
-                var parentData = !string.IsNullOrEmpty(folderId) ? string.Format(",\"parents\":[\"{0}\"]", folderId) : "";
+                var titleData = !string.IsNullOrEmpty(driveFile.Name) ? $"\"name\":\"{driveFile.Name}\"" : "";
+                var parentData = !string.IsNullOrEmpty(folderId) ? $",\"parents\":[\"{folderId}\"]" : "";
 
-                body = !string.IsNullOrEmpty(titleData + parentData) ? string.Format("{{{0}{1}}}", titleData, parentData) : "";
+                body = !string.IsNullOrEmpty(titleData + parentData) ? "{{" + titleData + parentData + "}}" : "";
             }
 
             var request = new HttpRequestMessage();

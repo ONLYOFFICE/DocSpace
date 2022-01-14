@@ -104,25 +104,16 @@ namespace ASC.Common.Security.Authorizing
 
                 string reason;
                 if (denySubject != null && denyAction != null)
-                    reason = string.Format("{0}:{1} access denied {2}.",
-                                           action.Name,
-                                           (denySubject is IRole ? "role:" : "") + denySubject.Name,
-                                           denyAction.Name
-                        );
+                    reason = $"{action.Name}:{(denySubject is IRole ? "role:" : "") + denySubject.Name} access denied {denyAction.Name}.";
                 else
-                    reason = string.Format("{0}: access denied.", action.Name);
+                    reason = $"{action.Name}: access denied.";
                 if (i != actions.Length - 1)
                     reason += ", ";
                 reasons += reason;
             }
             var sactions = "";
             Array.ForEach(actions, action => { sactions += action.ToString() + ", "; });
-            var message = string.Format(
-                "\"{0}\" access denied \"{1}\". Cause: {2}.",
-                (subject is IRole ? "role:" : "") + subject.Name,
-                sactions,
-                reasons
-                );
+            var message = $"\"{(subject is IRole ? "role:" : "") + subject.Name}\" access denied \"{sactions}\". Cause: {reasons}.";
             return message;
         }
     }

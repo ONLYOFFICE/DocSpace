@@ -214,7 +214,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         protected string MakePath(object entryId)
         {
-            return string.Format("/{0}", Convert.ToString(entryId, CultureInfo.InvariantCulture).Trim('/'));
+            return $"/{Convert.ToString(entryId, CultureInfo.InvariantCulture).Trim('/')}";
         }
 
         protected override string MakeId(string path = null)
@@ -240,8 +240,8 @@ namespace ASC.Files.Thirdparty.Sharpbox
             {
                 path = entry.Id;
             }
-
-            return string.Format("{0}{1}", PathPrefix, string.IsNullOrEmpty(path) || path == "/" ? "" : ("-" + path.Replace('/', '|')));
+            var p = string.IsNullOrEmpty(path) || path == "/" ? "" : ("-" + path.Replace('/', '|'));
+            return $"{PathPrefix}{p}";
         }
 
         protected string MakeTitle(ICloudFileSystemEntry fsEntry)

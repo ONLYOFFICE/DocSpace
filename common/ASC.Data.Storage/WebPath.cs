@@ -65,7 +65,7 @@ namespace ASC.Data.Storage
         {
             if (!Uri.IsWellFormedUriString(absolutePath, UriKind.Absolute))
             {
-                throw new ArgumentException(string.Format("bad path format {0} is not absolute", absolutePath));
+                throw new ArgumentException($"bad path format {absolutePath} is not absolute");
             }
 
             var appender = Appenders.FirstOrDefault(x => absolutePath.Contains(x.Append) || (absolutePath.Contains(x.AppendSecure) && !string.IsNullOrEmpty(x.AppendSecure)));
@@ -82,7 +82,7 @@ namespace ASC.Data.Storage
         {
             if (!string.IsNullOrEmpty(relativePath) && relativePath.IndexOf('~') == 0)
             {
-                throw new ArgumentException(string.Format("bad path format {0} remove '~'", relativePath), "relativePath");
+                throw new ArgumentException($"bad path format {relativePath} remove '~'", "relativePath");
             }
 
             var result = relativePath;
@@ -123,7 +123,7 @@ namespace ASC.Data.Storage
                     //}
                     //else
                     //{
-                    result = string.Format("{0}/{1}{2}", appender.Append.TrimEnd('/').TrimStart('~'), relativePath.TrimStart('/'), query);
+                    result = $"{appender.Append.TrimEnd('/').TrimStart('~')}/{relativePath.TrimStart('/')}{query}";
                     //}
                 }
                 else
@@ -131,12 +131,12 @@ namespace ASC.Data.Storage
                     //TODO HostingEnvironment.IsHosted
                     if (SecureHelper.IsSecure(httpContext, options) && !string.IsNullOrEmpty(appender.AppendSecure))
                     {
-                        result = string.Format("{0}/{1}", appender.AppendSecure.TrimEnd('/'), relativePath.TrimStart('/'));
+                        result = $"{appender.AppendSecure.TrimEnd('/')}/{relativePath.TrimStart('/')}";
                     }
                     else
                     {
                         //Append directly
-                        result = string.Format("{0}/{1}", appender.Append.TrimEnd('/'), relativePath.TrimStart('/'));
+                        result = $"{appender.Append.TrimEnd('/')}/{relativePath.TrimStart('/')}";
                     }
                 }
             }
@@ -200,7 +200,7 @@ namespace ASC.Data.Storage
         {
             if (!string.IsNullOrEmpty(relativePath) && relativePath.IndexOf('~') == 0)
             {
-                throw new ArgumentException(string.Format("bad path format {0} remove '~'", relativePath), "relativePath");
+                throw new ArgumentException($"bad path format {relativePath} remove '~'", "relativePath");
             }
 
             if (CoreBaseSettings.Standalone && ServiceProvider.GetService<StaticUploader>().CanUpload()) //hack for skip resolve DistributedTaskQueueOptionsManager

@@ -134,7 +134,7 @@ namespace ASC.Web.Core.Utility
             using var hasher = new HMACSHA1(sKey);
             var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
             var hash = Convert.ToBase64String(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
-            return string.Format("ASC {0}:{1}:{2}", pkey, now, hash);
+            return $"ASC {pkey}:{now}:{hash}";
         }
     }
 

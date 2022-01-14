@@ -105,7 +105,7 @@ namespace ASC.Web.Core.Users
             var i = 0;
             while (!TestUniqueUserName(uniqueName))
             {
-                uniqueName = string.Format("{0}{1}", startUniqueName, (++i).ToString(CultureInfo.InvariantCulture));
+                uniqueName = $"{startUniqueName}{(++i).ToString(CultureInfo.InvariantCulture)}";
             }
             return uniqueName;
         }
@@ -311,14 +311,14 @@ namespace ASC.Web.Core.Users
         {
             var error = new StringBuilder();
 
-            error.AppendFormat("{0} ", Resource.ErrorPasswordMessage);
+            error.Append($"{Resource.ErrorPasswordMessage} ");
             error.AppendFormat(Resource.ErrorPasswordLength, passwordSettings.MinLength, PasswordSettings.MaxLength);
             if (passwordSettings.UpperCase)
-                error.AppendFormat(", {0}", Resource.ErrorPasswordNoUpperCase);
+                error.AppendFormat($", {Resource.ErrorPasswordNoUpperCase}");
             if (passwordSettings.Digits)
-                error.AppendFormat(", {0}", Resource.ErrorPasswordNoDigits);
+                error.Append($", {Resource.ErrorPasswordNoDigits}");
             if (passwordSettings.SpecSymbols)
-                error.AppendFormat(", {0}", Resource.ErrorPasswordNoSpecialSymbols);
+                error.Append($", {Resource.ErrorPasswordNoSpecialSymbols}");
 
             return error.ToString();
         }
@@ -327,14 +327,14 @@ namespace ASC.Web.Core.Users
         {
             var info = new StringBuilder();
             var passwordSettings = SettingsManager.Load<PasswordSettings>();
-            info.AppendFormat("{0} ", Resource.ErrorPasswordMessageStart);
+            info.Append($"{Resource.ErrorPasswordMessageStart} ");
             info.AppendFormat(Resource.ErrorPasswordLength, passwordSettings.MinLength, PasswordSettings.MaxLength);
             if (passwordSettings.UpperCase)
-                info.AppendFormat(", {0}", Resource.ErrorPasswordNoUpperCase);
+                info.Append($", {Resource.ErrorPasswordNoUpperCase}");
             if (passwordSettings.Digits)
-                info.AppendFormat(", {0}", Resource.ErrorPasswordNoDigits);
+                info.Append($", {Resource.ErrorPasswordNoDigits}");
             if (passwordSettings.SpecSymbols)
-                info.AppendFormat(", {0}", Resource.ErrorPasswordNoSpecialSymbols);
+                info.Append($", {Resource.ErrorPasswordNoSpecialSymbols}");
 
             return info.ToString();
         }

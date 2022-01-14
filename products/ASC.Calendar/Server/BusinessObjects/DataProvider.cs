@@ -1615,7 +1615,7 @@ namespace ASC.Calendar.BusinessObjects
             if (!string.IsNullOrEmpty(uid))
                 return uid;
 
-            return string.Format("{0}@onlyoffice.com", string.IsNullOrEmpty(id) ? Guid.NewGuid().ToString() : id);
+            return $"{(string.IsNullOrEmpty(id) ? Guid.NewGuid().ToString() : id)}@onlyoffice.com";
 
         }
 

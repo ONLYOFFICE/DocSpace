@@ -142,7 +142,7 @@ namespace ASC.AuditTrail.Mappers
         private string ToLimitedText(string text)
         {
             if (text == null) return null;
-            return text.Length < 50 ? text : string.Format("{0}...", text.Substring(0, 47));
+            return text.Length < 50 ? text : $"{text.Substring(0, 47)}...";
         }
     }
 }

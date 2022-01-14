@@ -251,14 +251,14 @@ namespace ASC.MessagingSystem.DbSender
         {
             return clientInfo == null
                        ? null
-                       : string.Format("{0} {1}", clientInfo.UA.Family, clientInfo.UA.Major);
+                       : $"{clientInfo.UA.Family} {clientInfo.UA.Major}";
         }
 
         private static string GetPlatform(ClientInfo clientInfo)
         {
             return clientInfo == null
                        ? null
-                       : string.Format("{0} {1}", clientInfo.OS.Family, clientInfo.OS.Major);
+                       : $"{clientInfo.OS.Family} {clientInfo.OS.Major}";
         }
 
         public void Dispose()

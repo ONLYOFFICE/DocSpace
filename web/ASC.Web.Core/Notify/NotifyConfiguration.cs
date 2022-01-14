@@ -236,7 +236,7 @@ namespace ASC.Web.Studio.Core.Notify
                          if (!string.IsNullOrEmpty(logoText))
                          {
                              r.CurrentMessage.Body = r.CurrentMessage.Body
-                                 .Replace(string.Format("${{{0}}}", CommonTags.LetterLogoText), logoText);
+                                 .Replace("${{"+ CommonTags.LetterLogoText + "}}", logoText);
                          }
                      }
                      catch (Exception error)

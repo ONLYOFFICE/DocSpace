@@ -183,7 +183,7 @@ namespace ASC.Data.Backup
                 using (var file = tempStream.Create())
                 {
                     dataTable.WriteXml(file, XmlWriteMode.WriteSchema);
-                    writer.WriteEntry(string.Format("{0}\\{1}\\{2}", Name, connectionString.Name, table).ToLower(), file);
+                    writer.WriteEntry($"{Name}\\{connectionString.Name}\\{table}".ToLower(), file);
                 }
 
                 processedTables.Add(table);
@@ -215,7 +215,7 @@ namespace ASC.Data.Backup
 
                 if (dbElement.Element(table) != null)
                 {
-                    using (var stream = reader.GetEntry(string.Format("{0}\\{1}\\{2}", Name, dbName, table).ToLower()))
+                    using (var stream = reader.GetEntry($"{Name}\\{dbName}\\{table}".ToLower()))
                     {
                         var data = new DataTable();
                         data.ReadXml(stream);

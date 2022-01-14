@@ -131,7 +131,7 @@ namespace ASC.Web.CRM.Classes
                     continue;
                 }
 
-                var key = String.Format("{1}/{0}", baseCurrency.Abbreviation, ci.Abbreviation);
+                var key = $"{ci.Abbreviation}/{baseCurrency.Abbreviation}";
 
                 if (!rates.ContainsKey(key))
                     continue;
@@ -160,7 +160,7 @@ namespace ASC.Web.CRM.Classes
 
             if (from.Contains('-')) from = new RegionInfo(from).ISOCurrencySymbol;
             if (to.Contains('-')) to = new RegionInfo(to).ISOCurrencySymbol;
-            var key = string.Format("{0}/{1}", to, from);
+            var key = $"{to}/{from}";
 
             return Math.Round(rates[key] * amount, 4, MidpointRounding.AwayFromZero);
         }
@@ -270,8 +270,7 @@ namespace ASC.Web.CRM.Classes
                     {
                         foreach (var curInfo in currencyInfos)
                         {
-                            _exchangeRates.Add(
-                                String.Format("{0}/{1}", (curInfo as Match).Groups["Currency"].Value.Trim(), curCI.Abbreviation),
+                            _exchangeRates.Add($"{(curInfo as Match).Groups["Currency"].Value.Trim()}/{curCI.Abbreviation}",
                                 Convert.ToDecimal((curInfo as Match).Groups["Rate"].Value.Trim(), CultureInfo.InvariantCulture.NumberFormat));
 
                             success = true;
@@ -329,7 +328,7 @@ namespace ASC.Web.CRM.Classes
                     Directory.CreateDirectory(dir);
                 }
 
-                var destinationURI = new Uri(String.Format("https://themoneyconverter.com/{0}/{0}.aspx", currency));
+                var destinationURI = new Uri("https://themoneyconverter.com/"+ currency + "/" + currency + ".aspx");
 
                 var request = new HttpRequestMessage();
                 request.RequestUri = destinationURI;

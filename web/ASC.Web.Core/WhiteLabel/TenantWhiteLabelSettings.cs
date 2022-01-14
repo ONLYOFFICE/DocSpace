@@ -500,7 +500,7 @@ namespace ASC.Web.Core.WhiteLabel
 
         public static string BuildLogoFileName(WhiteLabelLogoTypeEnum type, string fileExt, bool general)
         {
-            return string.Format("logo_{0}{2}.{1}", type.ToString().ToLowerInvariant(), fileExt, general ? "_general" : "");
+            return $"logo_{type.ToString().ToLowerInvariant()}{(general ? "_general" : "")}.{fileExt}";
         }
 
         public static Size GetSize(WhiteLabelLogoTypeEnum type, bool general)

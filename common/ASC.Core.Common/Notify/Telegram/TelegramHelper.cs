@@ -149,7 +149,7 @@ namespace ASC.Core.Common.Notify
             var botname = tgProvider == null ? default : tgProvider.TelegramBotName;
             if (string.IsNullOrEmpty(botname)) return null;
 
-            return string.Format("t.me/{0}?start={1}", botname, token);
+            return $"t.me/{botname}?start={token}";
         }
 
         public bool TestingClient(TelegramBotClient telegramBotClient)

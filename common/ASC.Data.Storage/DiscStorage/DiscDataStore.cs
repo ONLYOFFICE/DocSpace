@@ -329,7 +329,7 @@ namespace ASC.Data.Storage.DiscStorage
             }
             else
             {
-                throw new DirectoryNotFoundException(string.Format("Directory '{0}' not found", targetDir));
+                throw new DirectoryNotFoundException($"Directory '{targetDir}' not found");
             }
         }
 
@@ -355,7 +355,7 @@ namespace ASC.Data.Storage.DiscStorage
             }
             else
             {
-                throw new DirectoryNotFoundException(string.Format("Directory '{0}' not found", targetDir));
+                throw new DirectoryNotFoundException($"Directory '{targetDir}' not found");
             }
         }
 

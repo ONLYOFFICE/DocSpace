@@ -248,7 +248,7 @@ namespace TMResourceData
 
             private Dictionary<string, string> GetResources()
             {
-                var key = string.Format("{0}/{1}", filename, culture);
+                var key = $"{filename}/{culture}";
                 if (!(cache.Get(key) is Dictionary<string, string> dic))
                 {
                     lock (locker)

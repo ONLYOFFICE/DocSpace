@@ -212,7 +212,7 @@ namespace ASC.Core.Billing
             {
                 var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
                 var hash = WebEncoders.Base64UrlEncode(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
-                return string.Format("ASC {0}:{1}:{2}", pkey, now, hash);
+                return "ASC " + pkey + ":" + now + ":" + hash;
             }
         }
 
@@ -273,7 +273,7 @@ namespace ASC.Core.Billing
                 return result;
             }
 
-            var @params = parameters.Select(p => string.Format("{0}: {1}", p.Item1, p.Item2));
+            var @params = parameters.Select(p => p.Item1 + ": " + p.Item2);
             var info = new { Method = method, PortalId = portalId, Params = string.Join(", ", @params) };
             if (result.Contains("{\"Message\":\"error: cannot find "))
             {

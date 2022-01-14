@@ -960,7 +960,7 @@ namespace ASC.Files.Core.Data
         public string GetUniqFilePath(File<int> file, string fileTitle)
         {
             return file != null
-                       ? string.Format("{0}/{1}", GetUniqFileVersionPath(file.ID, file.Version), fileTitle)
+                       ? $"{GetUniqFileVersionPath(file.ID, file.Version)}/{fileTitle}"
                        : null;
         }
 

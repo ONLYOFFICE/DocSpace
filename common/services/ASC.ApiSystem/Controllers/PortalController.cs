@@ -673,7 +673,7 @@ namespace ASC.ApiSystem.Controllers
                     return true;
                 }
 
-                var data = string.Format("{0} {1} {2} {3} {4}", model.PortalName, model.FirstName, model.LastName, model.Email, model.Phone);
+                var data = $"{model.PortalName} {model.FirstName} {model.LastName} {model.Email} {model.Phone}";
 
                 /*** validate recaptcha ***/
                 if (!CommonMethods.ValidateRecaptcha(model.RecaptchaResponse, clientIP))
