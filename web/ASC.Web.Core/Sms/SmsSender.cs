@@ -107,12 +107,12 @@ namespace ASC.Web.Core.Sms
 
             var sb = new StringBuilder();
             sb.Append('+');
-            sb.Append(mobilePhone.Substring(0, startLen));
+            sb.Append(mobilePhone, 0, startLen);
             for (var i = startLen; i < mobilePhone.Length - endLen; i++)
             {
                 sb.Append('*');
             }
-            sb.Append(mobilePhone.Substring(mobilePhone.Length - endLen));
+            sb.Append(mobilePhone, mobilePhone.Length - endLen, mobilePhone.Length - (endLen +1));
             return sb.ToString();
         }
     }
