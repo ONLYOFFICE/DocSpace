@@ -29,36 +29,35 @@ using System.Text;
 
 using ASC.Common;
 using ASC.Common.Logging;
-using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.ElasticSearch.Service;
 
 using Elasticsearch.Net;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using Nest;
 
 namespace ASC.ElasticSearch
 {
-    [Scope]
+    [Singletone]
     public class Client
     {
         private static volatile ElasticClient client;
         private bool IsInit;
         private static readonly object Locker = new object();
 
-        public ILog Log { get; }
-
-        private CoreConfiguration CoreConfiguration { get; }
+        private ILog Log { get; }
         private Settings Settings { get; }
+        private IServiceProvider ServiceProvider { get; }
 
-        public Client(IOptionsMonitor<ILog> option, CoreConfiguration coreConfiguration, ConfigurationExtension configurationExtension)
+        public Client(IOptionsMonitor<ILog> option, IServiceProvider serviceProvider, Settings settings)
         {
             Log = option.Get("ASC.Indexer");
-            CoreConfiguration = coreConfiguration;
-            Settings = Settings.GetInstance(configurationExtension);
+            Settings = settings;
+            ServiceProvider = serviceProvider;
         }
 
         public ElasticClient Instance
@@ -71,6 +70,8 @@ namespace ASC.ElasticSearch
                 {
                     if (client != null) return client;
 
+                    using var scope = ServiceProvider.CreateScope();
+                    var CoreConfiguration = ServiceProvider.GetService<CoreConfiguration>();
                     var launchSettings = CoreConfiguration.GetSection<Settings>(Tenant.DEFAULT_TENANT) ?? Settings;
 
                     var uri = new Uri(string.Format("{0}://{1}:{2}", launchSettings.Scheme, launchSettings.Host, launchSettings.Port));
@@ -126,6 +127,19 @@ namespace ASC.ElasticSearch
                     return client;
                 }
             }
+        }
+
+        public bool Ping()
+        {
+            var instance = Instance;
+
+            if (!IsInit) return false;
+
+            var result = instance.Ping(new PingRequest());
+
+            Log.DebugFormat("CheckState ping {0}", result.DebugInformation);
+
+            return result.IsValid;
         }
     }
 }

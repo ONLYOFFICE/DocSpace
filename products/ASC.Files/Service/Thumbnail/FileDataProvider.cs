@@ -42,13 +42,13 @@ namespace ASC.Files.ThumbnailBuilder
         private readonly string cacheKey;
 
         public FileDataProvider(
-            Common.Utils.ConfigurationExtension configurationExtension,
+            ThumbnailSettings settings,
             ICache ascCache,
             DbContextManager<FilesDbContext> dbContextManager,
             DbContextManager<CoreDbContext> coredbContextManager
             )
         {
-            thumbnailSettings = ThumbnailSettings.GetInstance(configurationExtension);
+            thumbnailSettings = settings;
             cache = ascCache;
             LazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(thumbnailSettings.ConnectionStringName));
             LazyCoreDbContext = new Lazy<CoreDbContext>(() => coredbContextManager.Get(thumbnailSettings.ConnectionStringName));

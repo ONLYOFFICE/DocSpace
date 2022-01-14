@@ -603,11 +603,7 @@ namespace ASC.ElasticSearch
 
             try
             {
-                var result = Client.Instance.Ping(new PingRequest());
-
-                var isValid = result.IsValid;
-
-                Log.DebugFormat("CheckState ping {0}", result.DebugInformation);
+                var isValid = Client.Ping();
 
                 if (cacheState)
                 {
