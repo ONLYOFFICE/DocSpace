@@ -264,9 +264,6 @@ const StyledHeaderContent = styled.div`
     margin-left: auto;
     .upload_panel-vertical-dots-icon {
     }
-    .upload_panel-remove-icon {
-      padding-right: 16px;
-    }
   }
 
   .files-operations-header,

@@ -1,25 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 import { useTranslation } from "react-i18next";
-import Button from "@appserver/components/button";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 import InputBlock from "@appserver/components/input-block";
 import globalColors from "@appserver/components/utils/globalColors";
 
 const iconColor = globalColors.gray;
+
 const bulletsFont = "•";
 
 const StyledBody = styled.div`
-  display: flex;
-  max-width: ${(props) =>
-    props.inputBlockMaxWidth ? props.inputBlockMaxWidth : "470px"};
   width: 100%;
 
-  #conversion-button {
-    margin-left: 8px;
-    background-color: #a6dcf2;
-    width: 100%;
-    max-width: 78px;
-  }
   #conversion-password {
     max-width: ${(props) =>
       props.inputMaxWidth ? props.inputMaxWidth : "382px"};
@@ -30,109 +22,91 @@ const StyledBody = styled.div`
     width: 100%;
   }
 `;
-const SimulatePassword = ({
-  onClickActions,
-  inputBlockMaxWidth,
-  inputMaxWidth,
-  showButton = false,
-}) => {
-  const [password, setPassword] = useState("");
-  const [passwordValid, setPasswordValid] = useState(true);
+const SimulatePassword = memo(
+  ({ onChange, inputMaxWidth, hasError = false }) => {
+    const [password, setPassword] = useState("");
+    const [caretPosition, setCaretPosition] = useState();
+    const [inputType, setInputType] = useState("password");
 
-  const [caretPosition, setCaretPosition] = useState();
-  const [inputType, setInputType] = useState("password");
-  const { t } = useTranslation("UploadPanel");
-  const onClick = () => {
-    let hasError = false;
+    const { t } = useTranslation("UploadPanel");
 
-    const pass = password.trim();
-    if (!pass) {
-      hasError = true;
-      setPasswordValid(false);
-    }
+    const setPasswordSettings = (newPassword) => {
+      let newValue;
 
-    if (hasError) return;
+      const oldPassword = password;
+      const oldPasswordLength = oldPassword.length;
+      const caretPosition = document.getElementById("conversion-password")
+        .selectionStart;
 
-    onClickActions && onClickActions(password);
-  };
+      setCaretPosition(caretPosition);
+      const newCharactersUntilCaret = newPassword.substring(0, caretPosition);
 
-  const setPasswordSettings = (newPassword) => {
-    let newValue;
+      const unchangedStartCharacters = newCharactersUntilCaret
+        .split("")
+        .filter((el) => el === bulletsFont).length;
 
-    const oldPassword = password;
-    const oldPasswordLength = oldPassword.length;
-    const caretPosition = document.getElementById("conversion-password")
-      .selectionStart;
+      const unchangedEndingCharacters = newPassword.substring(caretPosition)
+        .length;
+      const addedCharacters = newCharactersUntilCaret.substring(
+        unchangedStartCharacters
+      );
 
-    setCaretPosition(caretPosition);
-    const newCharactersUntilCaret = newPassword.substring(0, caretPosition);
+      const startingPartOldPassword = oldPassword.substring(
+        0,
+        unchangedStartCharacters
+      );
+      const countOfCharacters = oldPasswordLength - unchangedEndingCharacters;
+      const endingPartOldPassword = oldPassword.substring(countOfCharacters);
 
-    const unchangedStartCharacters = newCharactersUntilCaret
-      .split("")
-      .filter((el) => el === bulletsFont).length;
+      newValue = startingPartOldPassword + addedCharacters;
 
-    const unchangedEndingCharacters = newPassword.substring(caretPosition)
-      .length;
-    const addedCharacters = newCharactersUntilCaret.substring(
-      unchangedStartCharacters
-    );
+      if (unchangedEndingCharacters) {
+        newValue += endingPartOldPassword;
+      }
 
-    const startingPartOldPassword = oldPassword.substring(
-      0,
-      unchangedStartCharacters
-    );
-    const countOfCharacters = oldPasswordLength - unchangedEndingCharacters;
-    const endingPartOldPassword = oldPassword.substring(countOfCharacters);
+      setPassword(newValue);
+    };
 
-    newValue = startingPartOldPassword + addedCharacters;
+    const onChangePassword = (e) => {
+      const newPassword = e.target.value;
 
-    if (unchangedEndingCharacters) {
-      newValue += endingPartOldPassword;
-    }
+      inputType == "password"
+        ? setPasswordSettings(newPassword)
+        : setPassword(newPassword);
+    };
 
-    setPassword(newValue);
-  };
+    const onChangeInputType = () => {
+      setInputType(inputType === "password" ? "text" : "password");
+    };
 
-  const onChangePassword = (e) => {
-    const newPassword = e.target.value;
+    const copyPassword = password;
+    const bullets = copyPassword.replace(/(.)/g, bulletsFont);
 
-    inputType == "password"
-      ? setPasswordSettings(newPassword)
-      : setPassword(newPassword);
-  };
+    const iconName =
+      inputType === "password"
+        ? "/static/images/eye.off.react.svg"
+        : "/static/images/eye.react.svg";
 
-  const onChangeInputType = () => {
-    setInputType(inputType === "password" ? "text" : "password");
-  };
+    useEffect(() => {
+      onChange && onChange(password);
 
-  const copyPassword = password;
-  const bullets = copyPassword.replace(/(.)/g, bulletsFont);
+      caretPosition &&
+        inputType === "password" &&
+        document
+          .getElementById("conversion-password")
+          .setSelectionRange(caretPosition, caretPosition);
+    }, [password]);
 
-  const iconName =
-    inputType === "password"
-      ? "/static/images/eye.off.react.svg"
-      : "/static/images/eye.react.svg";
-
-  useEffect(() => {
-    caretPosition &&
-      inputType === "password" &&
-      document
-        .getElementById("conversion-password")
-        .setSelectionRange(caretPosition, caretPosition);
-  }, [password]);
-
-  return (
-    <StyledBody
-      className="conversation-password-wrapper"
-      inputBlockMaxWidth={inputBlockMaxWidth}
-      inputMaxWidth={inputMaxWidth}
-    >
-      <>
+    return (
+      <StyledBody
+        className="conversation-password-wrapper"
+        inputMaxWidth={inputMaxWidth}
+      >
         <InputBlock
           id="conversion-password"
           className="conversion-input"
           type="text"
-          hasError={!passwordValid}
+          hasError={hasError}
           iconName={iconName}
           value={inputType === "password" ? bullets : password}
           onIconClick={onChangeInputType}
@@ -142,21 +116,15 @@ const SimulatePassword = ({
           iconColor={iconColor}
           hoverColor={iconColor}
           placeholder={t("EnterPassword")}
-        ></InputBlock>
+        />
+      </StyledBody>
+    );
+  }
+);
 
-        {showButton && (
-          <Button
-            id="conversion-button"
-            size="medium"
-            scale
-            primary
-            label={t("Done")}
-            onClick={onClick}
-          />
-        )}
-      </>
-    </StyledBody>
-  );
+SimulatePassword.propTypes = {
+  inputMaxWidth: PropTypes.string,
+  hasError: PropTypes.bool,
+  onChange: PropTypes.func,
 };
-
 export default SimulatePassword;

@@ -11,14 +11,14 @@ import ErrorFileUpload from "./SubComponents/ErrorFileUpload.js";
 import ActionsUploadedFile from "./SubComponents/ActionsUploadedFile";
 import { isMobile } from "react-device-detect";
 import NoUserSelect from "@appserver/components/utils/commonStyles";
+import Button from "@appserver/components/button";
+import globalColors from "@appserver/components/utils/globalColors";
+
+const buttonColor = globalColors.blueDisabled;
 
 const StyledFileRow = styled(Row)`
-  padding: 0 16px;
-  /* margin: 0 16px; */
   width: calc(100% - 16px);
   box-sizing: border-box;
-  /* font-weight: 600; */
-  /* padding-right: 16px; */
   padding-left: 16px;
   max-width: 484px;
 
@@ -64,12 +64,18 @@ const StyledFileRow = styled(Row)`
     left: 16px;
     max-width: 470px;
     width: calc(100% - 16px);
-    .conversation-password-wrapper {
-      /* max-width: 470px;
-      width: 100%; */
-    }
+    display: flex;
   }
 
+  .conversion-password_button {
+    background-color: ${buttonColor};
+  }
+  #conversion-button {
+    margin-left: 8px;
+
+    width: 100%;
+    max-width: 78px;
+  }
   .row_content > a,
   .row_content > p {
     margin: auto 0;
@@ -140,7 +146,11 @@ class FileRow extends Component {
 
     this.state = {
       showPasswordInput: false,
+      password: "",
+      passwordValid: true,
     };
+
+    this.onChangePassword = this.onChangePassword.bind(this);
   }
 
   onTextClick = () => {
@@ -165,11 +175,30 @@ class FileRow extends Component {
   };
 
   onMediaClick = (id) => {
-    const { setMediaViewerData, setUploadPanelVisible } = this.props;
+    const {
+      setMediaViewerData,
+      setUploadPanelVisible,
+      isMediaActive,
+    } = this.props;
     if (!isMediaActive) return;
     const item = { visible: true, id: id };
     setMediaViewerData(item);
     setUploadPanelVisible(false);
+  };
+
+  onButtonClick = () => {
+    const { password } = this.state;
+    let hasError = false;
+
+    const pass = password.trim();
+    if (!pass) {
+      hasError = true;
+      this.setState({ passwordValid: false });
+    }
+
+    if (hasError) return;
+
+    this.onClickActions(password);
   };
 
   onClickActions = (password) => {
@@ -195,6 +224,13 @@ class FileRow extends Component {
     removeFileFromList(fileId);
     convertFile(newItem);
   };
+
+  onChangePassword(password) {
+    this.setState({
+      password,
+      ...(!this.state.passwordValid && { passwordValid: true }),
+    });
+  }
   render() {
     const {
       t,
@@ -210,7 +246,7 @@ class FileRow extends Component {
       isMediaActive,
       downloadInCurrentTab,
     } = this.props;
-    const { showPasswordInput } = this.state;
+    const { showPasswordInput, password, passwordValid } = this.state;
 
     const fileExtension = ext ? (
       <Text as="span" fontWeight="600" color="#A3A9AE">
@@ -292,9 +328,17 @@ class FileRow extends Component {
             {showPasswordInput && (
               <div className="password-input">
                 <SimulatePassword
-                  item={item}
-                  onClickActions={this.onClickActions}
-                  showButton
+                  onChange={this.onChangePassword}
+                  hasError={!passwordValid}
+                />
+                <Button
+                  id="conversion-button"
+                  className="conversion-password_button"
+                  size={"medium"}
+                  scale
+                  primary
+                  label={t("Done")}
+                  onClick={this.onButtonClick}
                 />
               </div>
             )}
