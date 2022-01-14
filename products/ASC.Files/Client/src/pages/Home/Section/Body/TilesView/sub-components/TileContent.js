@@ -19,15 +19,6 @@ const commonCss = css`
 const StyledTileContent = styled.div`
   width: 100%;
   display: inline-flex;
-
-  ${(props) =>
-    !props.disableSideInfo &&
-    css`
-      @media (max-width: 1024px) {
-        display: block;
-        height: 56px;
-      }
-    `};
 `;
 
 const MainContainerWrapper = styled.div`
@@ -36,15 +27,6 @@ const MainContainerWrapper = styled.div`
   display: flex;
   align-self: center;
   margin-right: auto;
-
-  ${(props) =>
-    !props.disableSideInfo &&
-    css`
-      @media (max-width: 1024px) {
-        margin-right: 8px;
-        margin-top: 8px;
-      }
-    `};
 `;
 
 const MainContainer = styled.div`
@@ -82,87 +64,17 @@ const MainIcons = styled.div`
   }
 `;
 
-const SideContainerWrapper = styled.div`
-  ${commonCss};
-
-  @media (max-width: 1024px) {
-    ${truncateCss};
-  }
-
-  align-self: center;
-  align-items: center;
-
-  > a {
-    vertical-align: middle;
-  }
-
-  color: ${(props) => props.color && props.color};
-
-  ${(props) =>
-    !props.disableSideInfo &&
-    css`
-      @media (max-width: 1024px) {
-        display: none;
-      }
-    `};
-`;
-
-const TabletSideInfo = styled.div`
-  display: none;
-
-  @media (max-width: 1024px) {
-    display: block;
-    color: ${(props) => props.color && props.color};
-
-    ${commonCss};
-    ${truncateCss};
-  }
-`;
-
-const getSideInfo = (content) => {
-  let info = "";
-  const lastIndex = content.length - 1;
-
-  content.forEach((element, index) => {
-    if (element) {
-      const delimiter = index === lastIndex ? "" : " | ";
-      if (index > 1) {
-        info +=
-          element.props && element.props.children
-            ? element.props.children + delimiter
-            : "";
-      }
-    }
-  });
-
-  return info;
-};
-
 const TileContent = (props) => {
-  const {
-    children,
-    disableSideInfo,
-    id,
-    className,
-    style,
-    sideColor,
-    onClick,
-    badges,
-  } = props;
-
-  const sideInfo = getSideInfo(children);
+  const { children, id, className, style, onClick } = props;
 
   return (
     <StyledTileContent
-      disableSideInfo={disableSideInfo}
       id={id}
       className={className}
       style={style}
       onClick={onClick}
     >
-      {badges}
       <MainContainerWrapper
-        disableSideInfo={disableSideInfo}
         mainContainerWidth={
           children[0].props && children[0].props.containerWidth
         }
@@ -172,26 +84,6 @@ const TileContent = (props) => {
         </MainContainer>
         <MainIcons className="main-icons">{children[1]}</MainIcons>
       </MainContainerWrapper>
-      {children.map((element, index) => {
-        if (index > 1 && element) {
-          return (
-            <SideContainerWrapper
-              disableSideInfo={disableSideInfo}
-              key={"side-" + index}
-              containerWidth={element.props && element.props.containerWidth}
-              containerMinWidth={
-                element.props && element.props.containerMinWidth
-              }
-            >
-              {element}
-            </SideContainerWrapper>
-          );
-        }
-        return null;
-      })}
-      {!disableSideInfo && (
-        <TabletSideInfo color={sideColor}>{sideInfo}</TabletSideInfo>
-      )}
     </StyledTileContent>
   );
 };
@@ -199,15 +91,10 @@ const TileContent = (props) => {
 TileContent.propTypes = {
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
-  disableSideInfo: PropTypes.bool,
   id: PropTypes.string,
   onClick: PropTypes.func,
   sideColor: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-};
-
-TileContent.defaultProps = {
-  disableSideInfo: false,
 };
 
 export default TileContent;

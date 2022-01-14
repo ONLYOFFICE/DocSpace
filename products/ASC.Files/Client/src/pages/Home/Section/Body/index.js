@@ -230,8 +230,6 @@ export default inject(
       fileActionId: fileActionStore.id,
       isEmptyFilesList,
       setDragging,
-      startDrag,
-      setStartDrag,
       folderId: selectedFolderStore.id,
       setTooltipPosition,
       isRecycleBinFolder: treeFoldersStore.isRecycleBinFolder,
