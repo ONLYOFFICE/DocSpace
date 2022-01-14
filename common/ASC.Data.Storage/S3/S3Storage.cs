@@ -727,7 +727,7 @@ namespace ASC.Data.Storage.S3
             var policyBase64 = GetPolicyBase64(key, string.Empty, contentType, contentDisposition, maxUploadSize,
                                                   out var sign);
             var postBuilder = new StringBuilder();
-            postBuilder.Append("{");
+            postBuilder.Append('{');
             postBuilder.Append("\"key\":\"").Append(key).Append("${{filename}}\",");
             postBuilder.Append("\"acl\":\"public-read\",");
             postBuilder.Append($"\"key\":\"{key}\",");

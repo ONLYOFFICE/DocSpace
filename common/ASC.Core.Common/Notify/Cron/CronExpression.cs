@@ -737,43 +737,43 @@ namespace ASC.Notify.Cron
             var buf = new StringBuilder();
             buf.Append("seconds: ");
             buf.Append(GetExpressionSetSummary(seconds));
-            buf.Append("\n");
+            buf.Append('\n');
             buf.Append("minutes: ");
             buf.Append(GetExpressionSetSummary(minutes));
-            buf.Append("\n");
+            buf.Append('\n');
             buf.Append("hours: ");
             buf.Append(GetExpressionSetSummary(hours));
-            buf.Append("\n");
+            buf.Append('\n');
             buf.Append("daysOfMonth: ");
             buf.Append(GetExpressionSetSummary(daysOfMonth));
-            buf.Append("\n");
+            buf.Append('\n');
             buf.Append("months: ");
             buf.Append(GetExpressionSetSummary(months));
-            buf.Append("\n");
+            buf.Append('\n');
             buf.Append("daysOfWeek: ");
             buf.Append(GetExpressionSetSummary(daysOfWeek));
-            buf.Append("\n");
+            buf.Append('\n');
             buf.Append("lastdayOfWeek: ");
             buf.Append(lastdayOfWeek);
-            buf.Append("\n");
+            buf.Append('\n');
             buf.Append("nearestWeekday: ");
             buf.Append(nearestWeekday);
-            buf.Append("\n");
+            buf.Append('\n');
             buf.Append("NthDayOfWeek: ");
             buf.Append(nthdayOfWeek);
-            buf.Append("\n");
+            buf.Append('\n');
             buf.Append("lastdayOfMonth: ");
             buf.Append(lastdayOfMonth);
-            buf.Append("\n");
+            buf.Append('\n');
             buf.Append("calendardayOfWeek: ");
             buf.Append(calendardayOfWeek);
-            buf.Append("\n");
+            buf.Append('\n');
             buf.Append("calendardayOfMonth: ");
             buf.Append(calendardayOfMonth);
-            buf.Append("\n");
+            buf.Append('\n');
             buf.Append("years: ");
             buf.Append(GetExpressionSetSummary(years));
-            buf.Append("\n");
+            buf.Append('\n');
             return buf.ToString();
         }
 
@@ -794,7 +794,7 @@ namespace ASC.Notify.Cron
                 var val = iVal.ToString(CultureInfo.InvariantCulture);
                 if (!first)
                 {
-                    buf.Append(",");
+                    buf.Append(',');
                 }
                 buf.Append(val);
                 first = false;

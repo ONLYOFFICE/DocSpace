@@ -235,12 +235,12 @@ namespace ASC.Web.Core.Users
                 if (passwordSettings.SpecSymbols)
                     pwdBuilder.Append(@"(?=.*[\W])");
 
-                pwdBuilder.Append(@".");
+                pwdBuilder.Append('.');
             }
 
-            pwdBuilder.Append(@"{");
+            pwdBuilder.Append('{');
             pwdBuilder.Append(passwordSettings.MinLength);
-            pwdBuilder.Append(@",");
+            pwdBuilder.Append(',');
             pwdBuilder.Append(PasswordSettings.MaxLength);
             pwdBuilder.Append(@"}$");
 

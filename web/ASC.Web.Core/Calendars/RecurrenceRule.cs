@@ -989,7 +989,7 @@ namespace ASC.Web.Core.Calendars
                 if (!this.ExDates[0].IsDateTime)
                     sb.Append(";VALUE=DATE");
 
-                sb.Append(":");
+                sb.Append(':');
                 foreach (var d in this.ExDates)
                 {
                     if (d.IsDateTime)
@@ -997,7 +997,7 @@ namespace ASC.Web.Core.Calendars
                     else
                         sb.Append(d.Date.ToString("yyyyMMdd"));
 
-                    sb.Append(",");
+                    sb.Append(',');
                 }
                 sb.Remove(sb.Length - 1, 1);
             }

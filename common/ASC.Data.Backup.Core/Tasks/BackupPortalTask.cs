@@ -230,7 +230,7 @@ namespace ASC.Data.Backup.Tasks
                     creates.Append(createScheme
                             .Select(r => Convert.ToString(r[1]))
                             .FirstOrDefault());
-                    creates.Append(";");
+                    creates.Append(';');
 
                     var path = CrossPlatform.PathCombine(dir, t);
                     using (var stream = File.OpenWrite(path))

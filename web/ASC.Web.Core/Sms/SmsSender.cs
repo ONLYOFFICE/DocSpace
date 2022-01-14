@@ -106,11 +106,11 @@ namespace ASC.Web.Core.Sms
                 return mobilePhone;
 
             var sb = new StringBuilder();
-            sb.Append("+");
+            sb.Append('+');
             sb.Append(mobilePhone.Substring(0, startLen));
             for (var i = startLen; i < mobilePhone.Length - endLen; i++)
             {
-                sb.Append("*");
+                sb.Append('*');
             }
             sb.Append(mobilePhone.Substring(mobilePhone.Length - endLen));
             return sb.ToString();
