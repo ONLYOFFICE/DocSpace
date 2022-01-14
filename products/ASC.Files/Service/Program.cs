@@ -81,6 +81,8 @@ namespace ASC.Files.Service
                     if (redisConfiguration != null)
                     {
                         diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+
+                        services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
                     }
                     else
                     {
@@ -109,7 +111,6 @@ namespace ASC.Files.Service
                     services.AddHostedService<Launcher>();
                     diHelper.TryAdd<Launcher>();
 
-                    services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {

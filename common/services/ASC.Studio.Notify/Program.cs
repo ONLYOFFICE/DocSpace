@@ -78,6 +78,8 @@ namespace ASC.Studio.Notify
                     if (redisConfiguration != null)
                     {
                         diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+
+                        services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
                     }
                     else
                     {
@@ -90,7 +92,6 @@ namespace ASC.Studio.Notify
                     NotifyConfigurationExtension.Register(diHelper);
                     diHelper.TryAdd<EmailSenderSink>();
 
-                    services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {

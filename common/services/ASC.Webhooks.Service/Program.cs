@@ -75,6 +75,8 @@ namespace ASC.Webhooks.Service
                     if (redisConfiguration != null)
                     {
                         diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+
+                        services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
                     }
                     else
                     {
@@ -86,7 +88,6 @@ namespace ASC.Webhooks.Service
                     services.AddHostedService<WebhookHostedService>();
                     diHelper.TryAdd<WebhookHostedService>();
 
-                    services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {

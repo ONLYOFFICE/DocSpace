@@ -101,6 +101,8 @@ public class Program
                     if (redisConfiguration != null)
                     {
                         diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+
+                        services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
                     }
                     else
                     {
@@ -112,7 +114,6 @@ public class Program
                     services.AddHostedService<Launcher>();
                     diHelper.TryAdd<Launcher>();
 
-                    services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {

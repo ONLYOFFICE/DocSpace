@@ -76,6 +76,8 @@ namespace ASC.CRM.BackgroundTasks
                     if (redisConfiguration != null)
                     {
                         diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+
+                        services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
                     }
                     else
                     {
@@ -95,7 +97,6 @@ namespace ASC.CRM.BackgroundTasks
                     diHelper.TryAdd<FactoryIndexerInvoice>();
                     diHelper.TryAdd<FactoryIndexerTask>();
 
-                    services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {

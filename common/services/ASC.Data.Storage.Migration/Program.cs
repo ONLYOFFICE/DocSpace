@@ -75,6 +75,8 @@ namespace ASC.Data.Storage.Migration
                     if (redisConfiguration != null)
                     {
                         diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+
+                        services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
                     }
                     else
                     {
@@ -85,9 +87,6 @@ namespace ASC.Data.Storage.Migration
 
                     diHelper.TryAdd<MigrationServiceLauncher>();
                     services.AddHostedService<MigrationServiceLauncher>();
-
-                    services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
-
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
