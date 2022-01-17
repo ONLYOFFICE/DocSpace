@@ -2,9 +2,9 @@
 
 using ASC.Api.Collections;
 
-namespace ASC.Data.Backup.ModelApi
+namespace ASC.Data.Backup.ApiModels
 {
-    public class BackupSchedule
+    public class BackupScheduleDto
     {
         public string StorageType { get; set; }
         public IEnumerable<ItemKeyValuePair<object, object>> StorageParams { get; set; }
