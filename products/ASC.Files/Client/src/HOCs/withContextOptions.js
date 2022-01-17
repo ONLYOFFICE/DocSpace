@@ -21,13 +21,28 @@ export default function withContextOptions(WrappedComponent) {
     };
 
     onClickMakeForm = () => {
-      const { copyAsAction, item, formfillingDocs } = this.props;
+      const {
+        copyAsAction,
+        item,
+        formfillingDocs,
+        setConvertPasswordDialogVisible,
+        setFormCreationInfo,
+      } = this.props;
       const { title, id, folderId, fileExst } = item;
 
       const newTitle =
         title.substring(0, title.length - fileExst.length) + formfillingDocs[0];
 
-      copyAsAction(id, newTitle, folderId).catch((err) => toastr.error(err));
+      copyAsAction(id, newTitle, folderId).catch((err) => {
+        console.log("err", err);
+        setFormCreationInfo({
+          newTitle,
+          fromExst: fileExst,
+          toExst: formfillingDocs[0],
+          fileInfo: item,
+        });
+        setConvertPasswordDialogVisible(true);
+      });
     };
 
     onOpenLocation = () => {
@@ -586,6 +601,8 @@ export default function withContextOptions(WrappedComponent) {
         setRemoveItem,
         setSharingPanelVisible,
         setUnsubscribe,
+        setConvertPasswordDialogVisible,
+        setFormCreationInfo,
       } = dialogsStore;
       const { isTabletView, isDesktopClient } = auth.settingsStore;
       const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
@@ -618,6 +635,7 @@ export default function withContextOptions(WrappedComponent) {
         setMediaViewerData,
         setRemoveItem,
         setDeleteThirdPartyDialogVisible,
+        setConvertPasswordDialogVisible,
         deleteItemAction,
         onSelectItem,
         setSharingPanelVisible,
@@ -633,6 +651,7 @@ export default function withContextOptions(WrappedComponent) {
         isDesktop: isDesktopClient,
         copyAsAction,
         formfillingDocs,
+        setFormCreationInfo,
       };
     }
   )(observer(WithContextOptions));

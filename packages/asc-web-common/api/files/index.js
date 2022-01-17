@@ -800,7 +800,13 @@ export function checkFillFormDraft(fileId) {
   });
 }
 
-export function fileCopyAs(fileId, destTitle, destFolderId, enableExternalExt) {
+export function fileCopyAs(
+  fileId,
+  destTitle,
+  destFolderId,
+  enableExternalExt,
+  password
+) {
   return request({
     method: "post",
     url: `files/file/${fileId}/copyas`,
@@ -808,6 +814,7 @@ export function fileCopyAs(fileId, destTitle, destFolderId, enableExternalExt) {
       destTitle,
       destFolderId,
       enableExternalExt,
+      password,
     },
   });
 }

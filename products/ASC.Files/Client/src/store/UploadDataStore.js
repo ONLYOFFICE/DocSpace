@@ -981,10 +981,10 @@ class UploadDataStore {
       });
   };
 
-  copyAsAction = (fileId, title, folderId, enableExternalExt) => {
+  copyAsAction = (fileId, title, folderId, enableExternalExt, password) => {
     const { fetchFiles, filter } = this.filesStore;
 
-    return fileCopyAs(fileId, title, folderId, enableExternalExt)
+    return fileCopyAs(fileId, title, folderId, enableExternalExt, password)
       .then(() => {
         fetchFiles(folderId, filter, true, true);
       })
