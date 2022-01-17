@@ -204,7 +204,7 @@ namespace ASC.ApiSystem.Controllers
 
         public bool GetTenant(IModel model, out Tenant tenant)
         {
-            if (CoreBaseSettings.Standalone && model != null && !string.IsNullOrEmpty((model.PortalName ?? "").Trim()))
+            if (CoreBaseSettings.Standalone && model != null && !string.IsNullOrWhiteSpace((model.PortalName ?? "")))
             {
                 tenant = TenantManager.GetTenant((model.PortalName ?? "").Trim());
                 return true;
@@ -216,7 +216,7 @@ namespace ASC.ApiSystem.Controllers
                 return true;
             }
 
-            if (model != null && !string.IsNullOrEmpty((model.PortalName ?? "").Trim()))
+            if (model != null && !string.IsNullOrWhiteSpace((model.PortalName ?? "")))
             {
                 tenant = HostedSolution.GetTenant((model.PortalName ?? "").Trim());
                 return true;

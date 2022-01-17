@@ -477,13 +477,13 @@ namespace ASC.ApiSystem.Controllers
                 var tenants = new List<Tenant>();
                 var empty = true;
 
-                if (!string.IsNullOrEmpty((model.Email ?? "").Trim()))
+                if (!string.IsNullOrWhiteSpace((model.Email ?? "")))
                 {
                     empty = false;
                     tenants.AddRange(HostedSolution.FindTenants((model.Email ?? "").Trim()));
                 }
 
-                if (!string.IsNullOrEmpty((model.PortalName ?? "").Trim()))
+                if (!string.IsNullOrWhiteSpace((model.PortalName ?? "")))
                 {
                     empty = false;
                     var tenant = HostedSolution.GetTenant((model.PortalName ?? "").Trim());

@@ -231,7 +231,7 @@ namespace ASC.Data.Backup.Tasks
 
             foreach (var p in parsed)
             {
-                if (string.IsNullOrEmpty(p.Trim())) continue;
+                if (string.IsNullOrWhiteSpace(p)) continue;
                 var keyValue = p.Split('=');
                 result.Add(keyValue[0].ToLowerInvariant(), keyValue[1]);
             }
