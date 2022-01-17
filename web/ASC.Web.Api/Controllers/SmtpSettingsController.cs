@@ -231,7 +231,7 @@ namespace ASC.Api.Settings
 
         private static void CheckSmtpPermissions()
         {
-            if (!SetupInfo.IsVisibleSettings(ManagementType.SmtpSettings.ToString()))
+            if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.SmtpSettings)))
             {
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Smtp");
             }

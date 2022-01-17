@@ -426,21 +426,21 @@ namespace ASC.ElasticSearch
                         foreach (var c in Enum.GetNames(typeof(Analyzer)))
                         {
                             var c1 = c;
-                            b.Custom(c1 + "custom", ca => ca.Tokenizer(c1).Filters(Filter.lowercase.ToString()).CharFilters(CharFilter.io.ToString()));
+                            b.Custom(c1 + "custom", ca => ca.Tokenizer(c1).Filters(nameof(Filter.lowercase)).CharFilters(nameof(CharFilter.io)));
                         }
 
                         foreach (var c in Enum.GetNames(typeof(CharFilter)))
                         {
-                            if (c == CharFilter.io.ToString()) continue;
+                            if (c == nameof(CharFilter.io)) continue;
 
-                            var charFilters = new List<string>() { CharFilter.io.ToString(), c };
+                            var charFilters = new List<string>() { nameof(CharFilter.io), c };
                             var c1 = c;
-                            b.Custom(c1 + "custom", ca => ca.Tokenizer(Analyzer.whitespace.ToString()).Filters(Filter.lowercase.ToString()).CharFilters(charFilters));
+                            b.Custom(c1 + "custom", ca => ca.Tokenizer(nameof(Analyzer.whitespace)).Filters(nameof(Filter.lowercase)).CharFilters(charFilters));
                         }
 
                         if (data is ISearchItemDocument)
                         {
-                            b.Custom("document", ca => ca.Tokenizer(Analyzer.whitespace.ToString()).Filters(Filter.lowercase.ToString()).CharFilters(CharFilter.io.ToString()));
+                            b.Custom("document", ca => ca.Tokenizer(nameof(Analyzer.whitespace)).Filters(nameof(Filter.lowercase)).CharFilters(nameof(CharFilter.io)));
                         }
 
                         return b;
@@ -451,8 +451,8 @@ namespace ASC.ElasticSearch
                         c.Map<T>(m => m.AutoMap())
                         .Settings(r => r.Analysis(a =>
                                         a.Analyzers(analyzers)
-                                        .CharFilters(d => d.HtmlStrip(CharFilter.html.ToString())
-                                        .Mapping(CharFilter.io.ToString(), m => m.Mappings("ё => е", "Ё => Е"))))));
+                                        .CharFilters(d => d.HtmlStrip(nameof(CharFilter.html))
+                                        .Mapping(nameof(CharFilter.io), m => m.Mappings("ё => е", "Ё => Е"))))));
 
                     IsExist = true;
                 }

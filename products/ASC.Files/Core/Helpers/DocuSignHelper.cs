@@ -302,9 +302,9 @@ namespace ASC.Web.Files.Helpers
                         {
                             //new EnvelopeEvent {EnvelopeEventStatusCode = DocuSignStatus.Sent.ToString()},
                             //new EnvelopeEvent {EnvelopeEventStatusCode = DocuSignStatus.Delivered.ToString()},
-                            new EnvelopeEvent {EnvelopeEventStatusCode = DocuSignStatus.Completed.ToString()},
-                            new EnvelopeEvent {EnvelopeEventStatusCode = DocuSignStatus.Declined.ToString()},
-                            new EnvelopeEvent {EnvelopeEventStatusCode = DocuSignStatus.Voided.ToString()},
+                            new EnvelopeEvent {EnvelopeEventStatusCode = nameof(DocuSignStatus.Completed)},
+                            new EnvelopeEvent {EnvelopeEventStatusCode = nameof(DocuSignStatus.Declined)},
+                            new EnvelopeEvent {EnvelopeEventStatusCode = nameof(DocuSignStatus.Voided)},
                         },
                 IncludeDocumentFields = "true",
                 //RecipientEvents = new List<RecipientEvent>

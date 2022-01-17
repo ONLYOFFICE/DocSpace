@@ -926,7 +926,7 @@ namespace ASC.Calendar.Controllers
             {
                 evt.End = new CalDateTime(evt.End.AddDays(1));
             }
-            evt.Status = EventStatus.Confirmed.ToString();
+            evt.Status = nameof(EventStatus.Confirmed);
             if (alert > 0)
             {
                 evt.Alarms.Add(
@@ -3958,7 +3958,7 @@ namespace ASC.Calendar.Controllers
                         else if (calendarId == "crm_calendar" || calendarId.Contains("Project_"))
                         {
                             e.Created = null;
-                            e.Status = EventStatus.Confirmed.ToString();
+                            e.Status = nameof(EventStatus.Confirmed);
                         }
 
                         calendar.Events.Clear();
