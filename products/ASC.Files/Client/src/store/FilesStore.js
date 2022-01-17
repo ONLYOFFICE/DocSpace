@@ -126,7 +126,9 @@ class FilesStore {
   };
 
   setStartDrag = (startDrag) => {
-    this.selection = this.selection.filter((x) => !x.providerKey || x.id !== x.rootFolderId); // removed root thirdparty folders
+    this.selection = this.selection.filter(
+      (x) => !x.providerKey || x.id !== x.rootFolderId
+    ); // removed root thirdparty folders
     this.startDrag = startDrag;
   };
 
@@ -1684,7 +1686,8 @@ class FilesStore {
   };
 
   openDocEditor = (id, providerKey = null, tab = null, url = null) => {
-    return openEditor(id, providerKey, tab, url);
+    const isPrivacy = this.treeFoldersStore.isPrivacyFolder;
+    return openEditor(id, providerKey, tab, url, isPrivacy);
   };
 
   createThumbnails = () => {
