@@ -23,7 +23,7 @@ const StyledBody = styled.div`
   }
 `;
 const SimulatePassword = memo(
-  ({ onChange, inputMaxWidth, hasError = false }) => {
+  ({ onChange, inputMaxWidth, isDisabled = false, hasError = false }) => {
     const [password, setPassword] = useState("");
     const [caretPosition, setCaretPosition] = useState();
     const [inputType, setInputType] = useState("password");
@@ -97,6 +97,10 @@ const SimulatePassword = memo(
           .setSelectionRange(caretPosition, caretPosition);
     }, [password]);
 
+    useEffect(() => {
+      isDisabled && inputType !== "password" && setInputType("password");
+    }, [isDisabled]);
+
     return (
       <StyledBody
         className="conversation-password-wrapper"
@@ -107,6 +111,7 @@ const SimulatePassword = memo(
           className="conversion-input"
           type="text"
           hasError={hasError}
+          isDisabled={isDisabled}
           iconName={iconName}
           value={inputType === "password" ? bullets : password}
           onIconClick={onChangeInputType}
