@@ -37,63 +37,42 @@ using Microsoft.Extensions.Hosting;
 namespace ASC.Data.Backup.Service
 {
     [Singletone]
-    internal class BackupServiceLauncher : IHostedService
+    internal class BackupLauncherService : IHostedService
     {
-        private BackupCleanerService CleanerService { get; set; }
-        private BackupSchedulerService SchedulerService { get; set; }
-        private BackupWorker BackupWorker { get; set; }
-        private ConfigurationExtension Configuration { get; set; }
-        private BackupListener BackupListener { get; set; }
-        public NotifyConfiguration NotifyConfiguration { get; }
+        private BackupWorker _backupWorker;
+        private ConfigurationExtension _configuration;
+        private BackupListener _backupListener;
+        private NotifyConfiguration _notifyConfiguration;
 
-        public BackupServiceLauncher(
-            BackupCleanerService cleanerService,
-            BackupSchedulerService schedulerService,
+        public BackupLauncherService(
             BackupWorker backupWorker,
             ConfigurationExtension configuration,
             BackupListener backupListener,
             NotifyConfiguration notifyConfiguration)
         {
-            CleanerService = cleanerService;
-            SchedulerService = schedulerService;
-            BackupWorker = backupWorker;
-            Configuration = configuration;
-            BackupListener = backupListener;
-            NotifyConfiguration = notifyConfiguration;
+            _backupWorker = backupWorker;
+            _configuration = configuration;
+            _backupListener = backupListener;
+            _notifyConfiguration = notifyConfiguration;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            NotifyConfiguration.Configure();
+            _notifyConfiguration.Configure();
 
-            var settings = Configuration.GetSetting<BackupSettings>("backup");
+            var settings = _configuration.GetSetting<BackupSettings>("backup");
 
-            BackupWorker.Start(settings);
-            BackupListener.Start();
-
-            CleanerService.Period = settings.Cleaner.Period;
-            CleanerService.Start();
-
-            SchedulerService.Period = settings.Scheduler.Period;
-            SchedulerService.Start();
+            _backupWorker.Start(settings);
+            _backupListener.Start();
 
             return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            BackupWorker.Stop();
-            BackupListener.Stop();
-            if (CleanerService != null)
-            {
-                CleanerService.Stop();
-                CleanerService = null;
-            }
-            if (SchedulerService != null)
-            {
-                SchedulerService.Stop();
-                SchedulerService = null;
-            }
+            _backupWorker.Stop();
+            _backupListener.Stop();
+
             return Task.CompletedTask;
         }
     }

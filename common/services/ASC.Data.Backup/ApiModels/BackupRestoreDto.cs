@@ -2,9 +2,9 @@
 
 using ASC.Api.Collections;
 
-namespace ASC.Data.Backup.Models
+namespace ASC.Data.Backup.ApiModels
 {
-    public class BackupRestore
+    public class BackupRestoreDto
     {
         public string BackupId { get; set; }
         public object StorageType { get; set; }
