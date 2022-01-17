@@ -29,8 +29,8 @@ const ConvertPasswordDialogComponent = (props) => {
       : "";
 
   const onClose = () => {
-    setFormCreationInfo(null);
     setConvertPasswordDialogVisible(false);
+    setFormCreationInfo(null);
   };
   const onConvert = () => {
     let hasError = false;
@@ -52,12 +52,14 @@ const ConvertPasswordDialogComponent = (props) => {
 
     isLoading &&
       copyAsAction(id, newTitle, folderId, false, password)
-        .then(() => setFormCreationInfo(null))
+        .then(() => {
+          onClose();
+        })
         .catch((err) => {
           console.log("err", err);
           setPasswordValid(false);
-        })
-        .finally(() => setIsLoading(false));
+          setIsLoading(false);
+        });
   }, [isLoading]);
 
   const onChangePassword = useCallback(
