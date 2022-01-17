@@ -49,7 +49,6 @@ const ConvertPasswordDialogComponent = (props) => {
   useEffect(() => {
     const { newTitle, fileInfo } = formCreationInfo;
     const { id, folderId } = fileInfo;
-    console.log("formCreationInfo", formCreationInfo);
 
     isLoading &&
       copyAsAction(id, newTitle, folderId, false, password)
@@ -122,7 +121,7 @@ const ConvertPasswordDialog = withTranslation([
   "Common",
 ])(ConvertPasswordDialogComponent);
 
-export default inject(({ auth, dialogsStore, uploadDataStore, filesStore }) => {
+export default inject(({ auth, dialogsStore, uploadDataStore }) => {
   const {
     convertPasswordDialogVisible: visible,
     setConvertPasswordDialogVisible,
@@ -134,10 +133,6 @@ export default inject(({ auth, dialogsStore, uploadDataStore, filesStore }) => {
   const { settingsStore } = auth;
   const { isTabletView } = settingsStore;
 
-  const { formatsStore } = filesStore;
-  const { formfillingDocs } = formatsStore.docserviceStore;
-
-  console.log("convertItem", formCreationInfo);
   return {
     visible,
     setConvertPasswordDialogVisible,
@@ -145,6 +140,5 @@ export default inject(({ auth, dialogsStore, uploadDataStore, filesStore }) => {
     copyAsAction,
     formCreationInfo,
     setFormCreationInfo,
-    formfillingDocs,
   };
 })(observer(ConvertPasswordDialog));
