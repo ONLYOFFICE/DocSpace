@@ -257,6 +257,7 @@ class DeleteDialogComponent extends React.Component {
             primary
             onClick={unsubscribe ? this.onUnsubscribe : this.onDelete}
             isLoading={isLoading}
+            isDisabled={!checkedSelections.length}
           />
           <Button
             className="button-dialog"
