@@ -118,7 +118,7 @@ namespace ASC.ApiSystem.Classes
                     {
                         Log.DebugFormat("Auth failed: invalid token {0}.", header);
 
-                        return Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Unauthorizednameof())));
+                        return Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Unauthorized))));
                     }
 
                     var pkey = splitted[0];
