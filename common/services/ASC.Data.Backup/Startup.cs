@@ -59,12 +59,13 @@ namespace ASC.Data.Backup
 
             DIHelper.TryAdd<BackupCleanerService>();
             DIHelper.TryAdd<BackupSchedulerService>();
-           
+            DIHelper.TryAdd<Schedule>();
+
             DIHelper.TryAdd<BackupController>();
            
             NotifyConfigurationExtension.Register(DIHelper);
 
-          //  services.AddHostedService<BackupCleanerService>();
+            services.AddHostedService<BackupCleanerService>();
             services.AddHostedService<BackupSchedulerService>();
             
             services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(Configuration.GetSection("Redis").Get<RedisConfiguration>());

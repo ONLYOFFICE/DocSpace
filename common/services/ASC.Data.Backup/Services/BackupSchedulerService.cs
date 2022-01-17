@@ -36,6 +36,7 @@ using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Data.Backup.Storage;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
@@ -47,37 +48,25 @@ namespace ASC.Data.Backup.Service
         private readonly TimeSpan _period;
         private Timer _timer;
         private readonly ILog _logger;
-        private readonly PaymentManager _paymentManager;
-        private readonly BackupWorker _backupWorker;
-        private readonly BackupRepository _backupRepository;
-        private readonly Schedule _schedule;
-        private readonly TenantManager _tenantManager;
-        private readonly CoreBaseSettings _coreBaseSettings;
+
+        private IServiceScopeFactory _scopeFactory;
+        private IServiceScope _serviceScope;
 
         public BackupSchedulerService(
             IOptionsMonitor<ILog> options,
-            PaymentManager paymentManager,
-            BackupWorker backupWorker,
-            BackupRepository backupRepository,
-            Schedule schedule,
-            TenantManager tenantManager,
-            CoreBaseSettings coreBaseSettings,
+            IServiceScopeFactory scopeFactory,
             ConfigurationExtension configuration)
         {
-            _paymentManager = paymentManager;
-            _backupWorker = backupWorker;
-            _backupRepository = backupRepository;
-            _schedule = schedule;
-            _tenantManager = tenantManager;
-            _coreBaseSettings = coreBaseSettings;
             _logger = options.CurrentValue;
             _period = configuration.GetSetting<BackupSettings>("backup").Scheduler.Period;
+            _scopeFactory = scopeFactory;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.Info("starting backup scheduler service...");
 
+            _serviceScope = _scopeFactory.CreateScope();
             _timer = new Timer(ScheduleBackupTasks, null, TimeSpan.Zero, _period);
 
             _logger.Info("backup scheduler service started");
@@ -87,9 +76,16 @@ namespace ASC.Data.Backup.Service
 
         public void ScheduleBackupTasks(object state)
         {
+            var paymentManager = _serviceScope.ServiceProvider.GetRequiredService<PaymentManager>();
+            var backupWorker = _serviceScope.ServiceProvider.GetRequiredService<BackupWorker>();
+            var backupRepository = _serviceScope.ServiceProvider.GetRequiredService<BackupRepository>(); ;
+            var backupSchedule = _serviceScope.ServiceProvider.GetRequiredService<Schedule>();
+            var tenantManager = _serviceScope.ServiceProvider.GetRequiredService<TenantManager>();
+            var coreBaseSettings = _serviceScope.ServiceProvider.GetRequiredService<CoreBaseSettings>();
+
             _logger.DebugFormat("started to schedule backups");
 
-            var backupsToSchedule = _backupRepository.GetBackupSchedules().Where(schedule => _schedule.IsToBeProcessed(schedule)).ToList();
+            var backupsToSchedule = backupRepository.GetBackupSchedules().Where(schedule => backupSchedule.IsToBeProcessed(schedule)).ToList();
 
             _logger.DebugFormat("{0} backups are to schedule", backupsToSchedule.Count);
 
@@ -97,16 +93,16 @@ namespace ASC.Data.Backup.Service
             {
                 try
                 {
-                    if (_coreBaseSettings.Standalone || _tenantManager.GetTenantQuota(schedule.TenantId).AutoBackup)
+                    if (coreBaseSettings.Standalone || tenantManager.GetTenantQuota(schedule.TenantId).AutoBackup)
                     {
-                        var tariff = _paymentManager.GetTariff(schedule.TenantId);
+                        var tariff = paymentManager.GetTariff(schedule.TenantId);
                         if (tariff.State < TariffState.Delay)
                         {
                             schedule.LastBackupTime = DateTime.UtcNow;
-                            
-                            _backupRepository.SaveBackupSchedule(schedule);
+
+                            backupRepository.SaveBackupSchedule(schedule);
                             _logger.DebugFormat("Start scheduled backup: {0}, {1}, {2}, {3}", schedule.TenantId, schedule.BackupMail, schedule.StorageType, schedule.StorageBasePath);
-                            _backupWorker.StartScheduledBackup(schedule);
+                            backupWorker.StartScheduledBackup(schedule);
                         }
                         else
                         {
@@ -123,6 +119,7 @@ namespace ASC.Data.Backup.Service
                     _logger.Error("error while scheduling backups: {0}", error);
                 }
             }
+
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
@@ -138,6 +135,7 @@ namespace ASC.Data.Backup.Service
         public void Dispose()
         {
             _timer?.Dispose();
+            _serviceScope?.Dispose();
         }
     }
 }

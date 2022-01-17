@@ -39,10 +39,10 @@ namespace ASC.Data.Backup.Service
     [Singletone]
     internal class BackupLauncherService : IHostedService
     {
-        private BackupWorker _backupWorker;
-        private ConfigurationExtension _configuration;
-        private BackupListener _backupListener;
-        private NotifyConfiguration _notifyConfiguration;
+        private readonly BackupWorker _backupWorker;
+        private readonly ConfigurationExtension _configuration;
+        private readonly BackupListener _backupListener;
+        private readonly NotifyConfiguration _notifyConfiguration;
 
         public BackupLauncherService(
             BackupWorker backupWorker,

@@ -35,6 +35,7 @@ using ASC.Common.Utils;
 using ASC.Data.Backup.Storage;
 using ASC.Files.Core;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
@@ -45,18 +46,17 @@ namespace ASC.Data.Backup.Service
     {
         private Timer _timer;
         private readonly ILog _logger;
-        private readonly BackupRepository _backupRepository;
-        private readonly BackupStorageFactory _backupStorageFactory;
         private readonly TimeSpan _period;
 
-        public BackupCleanerService(
-            BackupRepository backupRepository,
-            BackupStorageFactory backupStorageFactory,
+        private IServiceScopeFactory _scopeFactory;
+        private IServiceScope _serviceScope;
+
+        public BackupCleanerService(         
             ConfigurationExtension configuration,
-            IOptionsMonitor<ILog> options)
+            IOptionsMonitor<ILog> options,
+            IServiceScopeFactory scopeFactory)
         {
-            _backupStorageFactory = backupStorageFactory;
-            _backupRepository = backupRepository;
+            _scopeFactory = scopeFactory;
             _logger = options.CurrentValue;
             _period = configuration.GetSetting<BackupSettings>("backup").Cleaner.Period;
         }
@@ -65,6 +65,7 @@ namespace ASC.Data.Backup.Service
         {
             _logger.Info("starting backup cleaner service...");
 
+            _serviceScope = _scopeFactory.CreateScope();
             _timer = new Timer(DeleteExpiredBackups, null, TimeSpan.Zero, _period);
 
             _logger.Info("backup cleaner service started");
@@ -74,16 +75,18 @@ namespace ASC.Data.Backup.Service
 
         public void DeleteExpiredBackups(object state)
         {
+            var backupRepository = _serviceScope.ServiceProvider.GetRequiredService<BackupRepository>(); 
+            var backupStorageFactory = _serviceScope.ServiceProvider.GetRequiredService<BackupStorageFactory>();
+
             _logger.Debug("started to clean expired backups");
 
-            var backupsToRemove = _backupRepository.GetExpiredBackupRecords();
+            var backupsToRemove = backupRepository.GetExpiredBackupRecords();
 
             _logger.DebugFormat("found {0} backups which are expired", backupsToRemove.Count);
 
-            foreach (var scheduledBackups in _backupRepository.GetScheduledBackupRecords().GroupBy(r => r.TenantId))
+            foreach (var scheduledBackups in backupRepository.GetScheduledBackupRecords().GroupBy(r => r.TenantId))
             {
-
-                var schedule = _backupRepository.GetBackupSchedule(scheduledBackups.Key);
+                var schedule = backupRepository.GetBackupSchedule(scheduledBackups.Key);
 
                 if (schedule != null)
                 {
@@ -104,12 +107,12 @@ namespace ASC.Data.Backup.Service
             {
                 try
                 {
-                    var backupStorage = _backupStorageFactory.GetBackupStorage(backupRecord);
+                    var backupStorage = backupStorageFactory.GetBackupStorage(backupRecord);
                     if (backupStorage == null) continue;
 
                     backupStorage.Delete(backupRecord.StoragePath);
 
-                    _backupRepository.DeleteBackupRecord(backupRecord.Id);
+                    backupRepository.DeleteBackupRecord(backupRecord.Id);
                 }
                 catch (ProviderInfoArgumentException error)
                 {
@@ -117,7 +120,7 @@ namespace ASC.Data.Backup.Service
          
                     if (DateTime.UtcNow > backupRecord.CreatedOn.AddMonths(6))
                     {
-                        _backupRepository.DeleteBackupRecord(backupRecord.Id);
+                        backupRepository.DeleteBackupRecord(backupRecord.Id);
                     }
                 }
                 catch (Exception error)
@@ -141,6 +144,7 @@ namespace ASC.Data.Backup.Service
         public void Dispose()
         {
             _timer?.Dispose();
+            _serviceScope?.Dispose();
         }
     }
 }
