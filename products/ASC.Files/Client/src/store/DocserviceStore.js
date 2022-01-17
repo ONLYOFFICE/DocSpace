@@ -82,7 +82,7 @@ class DocserviceStore {
     ".xltm",
     ".xltx",
   ];
-  encryptedDocs = [".docx", ".docxf", ".xlsx", ".pptx"];
+  encryptedDocs = [".docx", ".xlsx", ".pptx", ".docxf", ".oform"];
   formfillingDocs = [".oform"];
   customfilterDocs = [".xlsx"];
   reviewedDocs = [".docx", ".docxf"];

@@ -150,7 +150,9 @@ class FilesStore {
   };
 
   setStartDrag = (startDrag) => {
-    this.selection = this.selection.filter((x) => !x.providerKey); // removed root thirdparty folders
+    this.selection = this.selection.filter(
+      (x) => !x.providerKey || x.id !== x.rootFolderId
+    ); // removed root thirdparty folders
     this.startDrag = startDrag;
   };
 
@@ -1758,6 +1760,11 @@ class FilesStore {
   getFolderInfo = async (id) => {
     const folderInfo = await api.files.getFolderInfo(id);
     this.setFolder(folderInfo);
+  };
+
+  openDocEditor = (id, providerKey = null, tab = null, url = null) => {
+    const isPrivacy = this.treeFoldersStore.isPrivacyFolder;
+    return openEditor(id, providerKey, tab, url, isPrivacy);
   };
 
   createThumbnails = () => {

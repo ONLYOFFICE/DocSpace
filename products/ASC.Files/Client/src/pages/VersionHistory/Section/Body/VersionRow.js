@@ -272,7 +272,7 @@ const VersionRow = (props) => {
 export default inject(({ auth, versionHistoryStore }) => {
   const { user } = auth.userStore;
   const { culture, isTabletView } = auth.settingsStore;
-  const language = (user && user.cultureName) || culture || "en-US";
+  const language = (user && user.cultureName) || culture || "en";
 
   const {
     markAsVersion,

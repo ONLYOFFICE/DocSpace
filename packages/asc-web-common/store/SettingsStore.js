@@ -13,7 +13,7 @@ class SettingsStore {
   isLoaded = false;
 
   currentProductId = "";
-  culture = "en-US";
+  culture = "en";
   cultures = [];
   trustedDomains = [];
   trustedDomainsType = 0;
