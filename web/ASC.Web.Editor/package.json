@@ -21,7 +21,9 @@
     "@babel/preset-env": "^7.15.6",
     "@babel/preset-react": "^7.14.5",
     "@svgr/webpack": "^5.5.0",
+    "@telenko/node-mf": "^0.0.7",
     "babel-loader": "^8.2.2",
+    "bundle-loader": "^0.5.6",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^9.0.1",
     "css-loader": "^6.2.0",
@@ -41,5 +43,8 @@
     "webpack-dev-server": "4.3.1"
   },
   "id": "e67be73d-f9ae-4ce1-8fec-1880cb518cb4",
-  "title": "ONLYOFFICE"
+  "title": "ONLYOFFICE",
+  "dependencies": {
+    "next": "^12.0.8"
+  }
 }
