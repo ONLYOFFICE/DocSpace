@@ -52,15 +52,15 @@ namespace ASC.Files.Thirdparty.Box
 
         private string _rootId;
 
-        internal BoxStorage Storage
+        internal Task<BoxStorage> StorageAsync
         {
             get
             {
                 if (Wrapper.Storage == null || !Wrapper.Storage.IsOpened)
                 {
-                    return Wrapper.CreateStorageAsync(Token, ID).Result;
+                    return Wrapper.CreateStorageAsync(Token, ID);
                 }
-                return Wrapper.Storage;
+                return Task.FromResult(Wrapper.Storage);
             }
         }
 
@@ -92,7 +92,8 @@ namespace ASC.Files.Thirdparty.Box
             {
                 if (string.IsNullOrEmpty(_rootId))
                 {
-                    _rootId = Storage.GetRootFolderId();
+                    var storage = StorageAsync.Result;
+                    _rootId = storage.GetRootFolderIdAsync().Result;
                 }
                 return _rootId;
             }
@@ -111,8 +112,8 @@ namespace ASC.Files.Thirdparty.Box
 
         public void Dispose()
         {
-            if (StorageOpened)
-                Storage.Close();
+            if (StorageOpened) { }
+                StorageAsync.Result.Close();
         }
 
         public Task<bool> CheckAccessAsync()
@@ -142,19 +143,22 @@ namespace ASC.Files.Thirdparty.Box
             CustomerTitle = newtitle;
         }
 
-        internal Task<BoxFolder> GetBoxFolderAsync(string dropboxFolderPath)
+        internal async Task<BoxFolder> GetBoxFolderAsync(string dropboxFolderPath)
         {
-            return BoxProviderInfoHelper.GetBoxFolderAsync(Storage, ID, dropboxFolderPath);
+            var storage = await StorageAsync;
+            return await BoxProviderInfoHelper.GetBoxFolderAsync(storage, ID, dropboxFolderPath);
         }
 
-        internal ValueTask<BoxFile> GetBoxFileAsync(string dropboxFilePath)
+        internal async ValueTask<BoxFile> GetBoxFileAsync(string dropboxFilePath)
         {
-            return BoxProviderInfoHelper.GetBoxFileAsync(Storage, ID, dropboxFilePath);
+            var storage = await StorageAsync;
+            return await BoxProviderInfoHelper.GetBoxFileAsync(storage, ID, dropboxFilePath);
         }
 
-        internal Task<List<BoxItem>> GetBoxItemsAsync(string dropboxFolderPath)
+        internal async Task<List<BoxItem>> GetBoxItemsAsync(string dropboxFolderPath)
         {
-            return BoxProviderInfoHelper.GetBoxItemsAsync(Storage, ID, dropboxFolderPath);
+            var storage = await StorageAsync;
+            return await BoxProviderInfoHelper.GetBoxItemsAsync(storage, ID, dropboxFolderPath);
         }
 
         internal Task CacheResetAsync(BoxItem boxItem)

@@ -184,30 +184,30 @@ namespace ASC.Api.Documents
 
             if (!CoreBaseSettings.Personal && !UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsOutsider(UserManager))
             {
-                folders.Add(GlobalFolderHelper.FolderShare);
+                folders.Add(await GlobalFolderHelper.FolderShareAsync);
             }
 
             if (!IsVisitor && !withoutAdditionalFolder)
             {
                 if (FilesSettingsHelper.FavoritesSection)
                 {
-                    folders.Add(GlobalFolderHelper.FolderFavorites);
+                    folders.Add(await GlobalFolderHelper.FolderFavoritesAsync);
                 }
 
                 if (FilesSettingsHelper.RecentSection)
                 {
-                    folders.Add(GlobalFolderHelper.FolderRecent);
+                    folders.Add(await GlobalFolderHelper.FolderRecentAsync);
                 }
 
                 if (!CoreBaseSettings.Personal && PrivacyRoomSettings.IsAvailable(TenantManager))
                 {
-                    folders.Add(GlobalFolderHelper.FolderPrivacy);
+                    folders.Add(await GlobalFolderHelper.FolderPrivacyAsync);
                 }
             }
 
             if (!CoreBaseSettings.Personal)
             {
-                folders.Add(GlobalFolderHelper.FolderCommon);
+                folders.Add(await GlobalFolderHelper.FolderCommonAsync);
             }
 
             if (!IsVisitor
@@ -215,7 +215,7 @@ namespace ASC.Api.Documents
                && FileUtility.ExtsWebTemplate.Any()
                && FilesSettingsHelper.TemplatesSection)
             {
-                folders.Add(GlobalFolderHelper.FolderTemplates);
+                folders.Add(await GlobalFolderHelper.FolderTemplatesAsync);
             }
 
             if (!withoutTrash)
@@ -233,10 +233,10 @@ namespace ASC.Api.Documents
         }
 
         [Read("@privacy")]
-        public Task<FolderContentWrapper<int>> GetPrivacyFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public async Task<FolderContentWrapper<int>> GetPrivacyFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             if (!IsAvailablePrivacyRoomSettings()) throw new System.Security.SecurityException();
-            return FilesControllerHelperInt.GetFolderAsync(GlobalFolderHelper.FolderPrivacy, userIdOrGroupId, filterType, withsubfolders);
+            return await FilesControllerHelperInt.GetFolderAsync(await GlobalFolderHelper.FolderPrivacyAsync, userIdOrGroupId, filterType, withsubfolders);
         }
 
         [Read("@privacy/available")]
@@ -268,9 +268,9 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Projects folder contents</returns>
         [Read("@projects")]
-        public Task<FolderContentWrapper<string>> GetProjectsFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public async Task<FolderContentWrapper<string>> GetProjectsFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
-            return FilesControllerHelperString.GetFolderAsync(GlobalFolderHelper.GetFolderProjects<string>(), userIdOrGroupId, filterType, withsubfolders);
+            return await FilesControllerHelperString.GetFolderAsync(await GlobalFolderHelper.GetFolderProjectsAsync<string>(), userIdOrGroupId, filterType, withsubfolders);
         }
 
 
@@ -283,9 +283,9 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Common folder contents</returns>
         [Read("@common")]
-        public Task<FolderContentWrapper<int>> GetCommonFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public async Task<FolderContentWrapper<int>> GetCommonFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
-            return FilesControllerHelperInt.GetFolderAsync(GlobalFolderHelper.FolderCommon, userIdOrGroupId, filterType, withsubfolders);
+            return await FilesControllerHelperInt.GetFolderAsync(await GlobalFolderHelper.FolderCommonAsync, userIdOrGroupId, filterType, withsubfolders);
         }
 
         /// <summary>
@@ -297,9 +297,9 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Shared folder contents</returns>
         [Read("@share")]
-        public Task<FolderContentWrapper<int>> GetShareFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public async Task<FolderContentWrapper<int>> GetShareFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
-            return FilesControllerHelperInt.GetFolderAsync(GlobalFolderHelper.FolderShare, userIdOrGroupId, filterType, withsubfolders);
+            return await FilesControllerHelperInt.GetFolderAsync(await GlobalFolderHelper.FolderShareAsync, userIdOrGroupId, filterType, withsubfolders);
         }
 
         /// <summary>
@@ -309,9 +309,9 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Recent contents</returns>
         [Read("@recent")]
-        public Task<FolderContentWrapper<int>> GetRecentFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public async Task<FolderContentWrapper<int>> GetRecentFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
-            return FilesControllerHelperInt.GetFolderAsync(GlobalFolderHelper.FolderRecent, userIdOrGroupId, filterType, withsubfolders);
+            return await FilesControllerHelperInt.GetFolderAsync(await GlobalFolderHelper.FolderRecentAsync, userIdOrGroupId, filterType, withsubfolders);
         }
 
         [Create("file/{fileId}/recent", order: int.MaxValue)]
@@ -333,9 +333,9 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Favorites contents</returns>
         [Read("@favorites")]
-        public Task<FolderContentWrapper<int>> GetFavoritesFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public async Task<FolderContentWrapper<int>> GetFavoritesFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
-            return FilesControllerHelperInt.GetFolderAsync(GlobalFolderHelper.FolderFavorites, userIdOrGroupId, filterType, withsubfolders);
+            return await FilesControllerHelperInt.GetFolderAsync(await GlobalFolderHelper.FolderFavoritesAsync, userIdOrGroupId, filterType, withsubfolders);
         }
 
         /// <summary>
@@ -345,9 +345,9 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Templates contents</returns>
         [Read("@templates")]
-        public Task<FolderContentWrapper<int>> GetTemplatesFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public async Task<FolderContentWrapper<int>> GetTemplatesFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
-            return FilesControllerHelperInt.GetFolderAsync(GlobalFolderHelper.FolderTemplates, userIdOrGroupId, filterType, withsubfolders);
+            return await FilesControllerHelperInt.GetFolderAsync(await GlobalFolderHelper.FolderTemplatesAsync, userIdOrGroupId, filterType, withsubfolders);
         }
 
         /// <summary>
@@ -459,7 +459,7 @@ namespace ASC.Api.Documents
         public async Task<object> UploadFileToCommonAsync([ModelBinder(BinderType = typeof(UploadModelBinder))] UploadModel uploadModel)
         {
             uploadModel.CreateNewIfExist = false;
-            return await FilesControllerHelperInt.UploadFileAsync(GlobalFolderHelper.FolderCommon, uploadModel);
+            return await FilesControllerHelperInt.UploadFileAsync(await GlobalFolderHelper.FolderCommonAsync, uploadModel);
         }
 
         /// <summary>
@@ -523,7 +523,7 @@ namespace ASC.Api.Documents
         [Create("@common/insert")]
         public async Task<FileWrapper<int>> InsertFileToCommonFromBodyAsync([FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertFileModel model)
         {
-            return await InsertFileAsync(GlobalFolderHelper.FolderCommon, model);
+            return await InsertFileAsync(await GlobalFolderHelper.FolderCommonAsync, model);
         }
 
         /// <summary>
@@ -775,16 +775,16 @@ namespace ASC.Api.Documents
         /// <param name="content">File contents</param>
         /// <returns>Folder contents</returns>
         [Create("@common/text")]
-        public Task<FileWrapper<int>> CreateTextFileInCommonFromBodyAsync([FromBody] CreateTextOrHtmlFileModel model)
+        public async Task<FileWrapper<int>> CreateTextFileInCommonFromBodyAsync([FromBody] CreateTextOrHtmlFileModel model)
         {
-            return CreateTextFileAsync(GlobalFolderHelper.FolderCommon, model);
+            return await CreateTextFileAsync(await GlobalFolderHelper.FolderCommonAsync, model);
         }
 
         [Create("@common/text")]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<FileWrapper<int>> CreateTextFileInCommonFromFormAsync([FromForm] CreateTextOrHtmlFileModel model)
+        public async Task<FileWrapper<int>> CreateTextFileInCommonFromFormAsync([FromForm] CreateTextOrHtmlFileModel model)
         {
-            return CreateTextFileAsync(GlobalFolderHelper.FolderCommon, model);
+            return await CreateTextFileAsync(await GlobalFolderHelper.FolderCommonAsync, model);
         }
 
         /// <summary>
@@ -907,16 +907,16 @@ namespace ASC.Api.Documents
         /// <param name="content">File contents</param>
         /// <returns>Folder contents</returns>        
         [Create("@common/html")]
-        public Task<FileWrapper<int>> CreateHtmlFileInCommonFromBodyAsync([FromBody] CreateTextOrHtmlFileModel model)
+        public async Task<FileWrapper<int>> CreateHtmlFileInCommonFromBodyAsync([FromBody] CreateTextOrHtmlFileModel model)
         {
-            return CreateHtmlFileAsync(GlobalFolderHelper.FolderCommon, model);
+            return await CreateHtmlFileAsync(await GlobalFolderHelper.FolderCommonAsync, model);
         }
 
         [Create("@common/html")]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<FileWrapper<int>> CreateHtmlFileInCommonFromFormAsync([FromForm] CreateTextOrHtmlFileModel model)
+        public async Task<FileWrapper<int>> CreateHtmlFileInCommonFromFormAsync([FromForm] CreateTextOrHtmlFileModel model)
         {
-            return CreateHtmlFileAsync(GlobalFolderHelper.FolderCommon, model);
+            return await CreateHtmlFileAsync(await GlobalFolderHelper.FolderCommonAsync, model);
         }
 
         /// <summary>
@@ -1441,9 +1441,9 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Update("fileops/emptytrash")]
-        public IEnumerable<FileOperationWraper> EmptyTrash()
+        public Task<IEnumerable<FileOperationWraper>> EmptyTrashAsync()
         {
-            return FilesControllerHelperInt.EmptyTrash();
+            return FilesControllerHelperInt.EmptyTrashAsync();
         }
 
         /// <summary>
@@ -1935,7 +1935,7 @@ namespace ASC.Api.Documents
         [Read("thirdparty/common")]
         public async Task<IEnumerable<FolderWrapper<string>>> GetCommonThirdPartyFoldersAsync()
         {
-            var parent = FileStorageServiceInt.GetFolder(GlobalFolderHelper.FolderCommon);
+            var parent = await FileStorageServiceInt.GetFolderAsync(await GlobalFolderHelper.FolderCommonAsync);
             var thirdpartyFolders = await EntryManager.GetThirpartyFoldersAsync(parent);
             return thirdpartyFolders.Select(r => FolderWrapperHelper.GetAsync(r).Result).ToList();
         }

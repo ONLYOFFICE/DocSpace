@@ -200,7 +200,8 @@ namespace ASC.Files.Thirdparty.Box
 
                 folder.Title = await GetAvailableTitleAsync(folder.Title, boxFolderId, IsExistAsync).ConfigureAwait(false);
 
-                var boxFolder = await ProviderInfo.Storage.CreateFolderAsync(folder.Title, boxFolderId).ConfigureAwait(false);
+                var storage = await ProviderInfo.StorageAsync;
+                var boxFolder = await storage.CreateFolderAsync(folder.Title, boxFolderId).ConfigureAwait(false);
 
                 await ProviderInfo.CacheResetAsync(boxFolder).ConfigureAwait(false);
                 var parentFolderId = GetParentFolderId(boxFolder);
@@ -263,7 +264,8 @@ namespace ASC.Files.Thirdparty.Box
 
             if (!(boxFolder is ErrorFolder))
             {
-                await ProviderInfo.Storage.DeleteItemAsync(boxFolder).ConfigureAwait(false);
+                var storage = await ProviderInfo.StorageAsync;
+                await storage.DeleteItemAsync(boxFolder).ConfigureAwait(false);
             }
 
             await ProviderInfo.CacheResetAsync(boxFolder.Id, true).ConfigureAwait(false);
@@ -282,7 +284,8 @@ namespace ASC.Files.Thirdparty.Box
             var fromFolderId = GetParentFolderId(boxFolder);
 
             var newTitle = await GetAvailableTitleAsync(boxFolder.Name, toBoxFolder.Id, IsExistAsync).ConfigureAwait(false);
-            boxFolder = await ProviderInfo.Storage.MoveFolderAsync(boxFolder.Id, newTitle, toBoxFolder.Id).ConfigureAwait(false);
+            var storage = await ProviderInfo.StorageAsync;
+            boxFolder = await storage.MoveFolderAsync(boxFolder.Id, newTitle, toBoxFolder.Id).ConfigureAwait(false);
 
             await ProviderInfo.CacheResetAsync(boxFolder.Id, false).ConfigureAwait(false);
             await ProviderInfo.CacheResetAsync(fromFolderId).ConfigureAwait(false);
@@ -341,7 +344,8 @@ namespace ASC.Files.Thirdparty.Box
             if (toBoxFolder is ErrorFolder errorFolder1) throw new Exception(errorFolder1.Error);
 
             var newTitle = await GetAvailableTitleAsync(boxFolder.Name, toBoxFolder.Id, IsExistAsync).ConfigureAwait(false);
-            var newBoxFolder = await ProviderInfo.Storage.CopyFolderAsync(boxFolder.Id, newTitle, toBoxFolder.Id).ConfigureAwait(false);
+            var storage = await ProviderInfo.StorageAsync;
+            var newBoxFolder = await storage.CopyFolderAsync(boxFolder.Id, newTitle, toBoxFolder.Id).ConfigureAwait(false);
 
             await ProviderInfo.CacheResetAsync(newBoxFolder).ConfigureAwait(false);
             await ProviderInfo.CacheResetAsync(newBoxFolder.Id, false).ConfigureAwait(false);
@@ -402,7 +406,8 @@ namespace ASC.Files.Thirdparty.Box
                 newTitle = await GetAvailableTitleAsync(newTitle, parentFolderId, IsExistAsync).ConfigureAwait(false);
 
                 //rename folder
-                boxFolder = await ProviderInfo.Storage.RenameFolderAsync(boxFolder.Id, newTitle).ConfigureAwait(false);
+                var storage = await ProviderInfo.StorageAsync;
+                boxFolder = await storage.RenameFolderAsync(boxFolder.Id, newTitle).ConfigureAwait(false);
             }
 
             await ProviderInfo.CacheResetAsync(boxFolder).ConfigureAwait(false);
@@ -420,7 +425,8 @@ namespace ASC.Files.Thirdparty.Box
         {
             var boxFolderId = MakeBoxId(folderId);
             //note: without cache
-            var items = await ProviderInfo.Storage.GetItemsAsync(boxFolderId, 1).ConfigureAwait(false);
+            var storage = await ProviderInfo.StorageAsync;
+            var items = await storage.GetItemsAsync(boxFolderId, 1).ConfigureAwait(false);
             return items.Count == 0;
         }
 
@@ -451,7 +457,8 @@ namespace ASC.Files.Thirdparty.Box
 
         public async Task<long> GetMaxUploadSizeAsync(string folderId, bool chunkedUpload)
         {
-            var storageMaxUploadSize = await ProviderInfo.Storage.GetMaxUploadSizeAsync().ConfigureAwait(false);
+            var storage = await ProviderInfo.StorageAsync;
+            var storageMaxUploadSize = await storage.GetMaxUploadSizeAsync().ConfigureAwait(false);
 
             return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, SetupInfo.AvailableFileSize);
         }

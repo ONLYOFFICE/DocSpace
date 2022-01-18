@@ -537,8 +537,6 @@ namespace ASC.Files.Thirdparty
                 yield return e;
         }
 
-        protected abstract IEnumerable<string> GetChildren(string folderId);
-
         protected abstract Task<IEnumerable<string>> GetChildrenAsync(string folderId);
 
         #endregion

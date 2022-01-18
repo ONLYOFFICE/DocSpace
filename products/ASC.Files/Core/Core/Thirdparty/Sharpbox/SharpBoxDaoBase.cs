@@ -486,13 +486,6 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return requestTitle;
         }
 
-        protected override IEnumerable<string> GetChildren(string folderId)
-        {
-            var subFolders = GetFolderSubfolders(folderId).Select(x => MakeId(x));
-            var files = GetFolderFiles(folderId).Select(x => MakeId(x));
-            return subFolders.Concat(files);
-        }
-
         protected override Task<IEnumerable<string>> GetChildrenAsync(string folderId)
         {
             var subFolders = GetFolderSubfolders(folderId).Select(x => MakeId(x));

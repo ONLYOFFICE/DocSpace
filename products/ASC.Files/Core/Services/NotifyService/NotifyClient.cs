@@ -109,56 +109,6 @@ namespace ASC.Files.Core.Services.NotifyService
                 );
         }
 
-        public void SendShareNotice<T>(FileEntry<T> fileEntry, Dictionary<Guid, FileShare> recipients, string message)
-        {
-            if (fileEntry == null || recipients.Count == 0) return;
-
-            using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<NotifyClientScope>();
-            var (notifySource, _, filesLinkUtility, fileUtility, baseCommonLinkUtility, daoFactory, pathProvider, userManager, tenantManager) = scopeClass;
-            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
-            var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
-
-            var folderDao = daoFactory.GetFolderDao<T>();
-            if (fileEntry.FileEntryType == FileEntryType.File && folderDao.GetFolderAsync(((File<T>)fileEntry).FolderID).Result == null) return;
-
-            var url = fileEntry.FileEntryType == FileEntryType.File
-                          ? filesLinkUtility.GetFileWebPreviewUrl(fileUtility, fileEntry.Title, fileEntry.ID)
-                          : pathProvider.GetFolderUrl((Folder<T>)fileEntry);
-
-            var recipientsProvider = notifySource.GetRecipientsProvider();
-
-            var action = fileEntry.FileEntryType == FileEntryType.File
-            ? ((File<T>)fileEntry).Encrypted
-                ? NotifyConstants.Event_ShareEncryptedDocument
-                : NotifyConstants.Event_ShareDocument
-            : NotifyConstants.Event_ShareFolder;
-
-
-            foreach (var recipientPair in recipients)
-            {
-                var u = userManager.GetUsers(recipientPair.Key);
-                var culture = string.IsNullOrEmpty(u.CultureName)
-                                  ? tenantManager.GetCurrentTenant().GetCulture()
-                                  : CultureInfo.GetCultureInfo(u.CultureName);
-
-                var aceString = GetAccessString(recipientPair.Value, culture);
-                var recipient = recipientsProvider.GetRecipient(u.ID.ToString());
-
-                client.SendNoticeAsync(
-                    action,
-                    fileEntry.UniqID,
-                    recipient,
-                    true,
-                    new TagValue(NotifyConstants.Tag_DocumentTitle, fileEntry.Title),
-                    new TagValue(NotifyConstants.Tag_DocumentUrl, baseCommonLinkUtility.GetFullAbsolutePath(url)),
-                    new TagValue(NotifyConstants.Tag_AccessRights, aceString),
-                    new TagValue(NotifyConstants.Tag_Message, message.HtmlEncode()),
-                    TagValues.Image(studioNotifyHelper,0, "privacy.png")
-                    );
-            }
-        }
-
         public async Task SendShareNoticeAsync<T>(FileEntry<T> fileEntry, Dictionary<Guid, FileShare> recipients, string message)
         {
             if (fileEntry == null || recipients.Count == 0) return;
@@ -174,7 +124,7 @@ namespace ASC.Files.Core.Services.NotifyService
 
             var url = fileEntry.FileEntryType == FileEntryType.File
                           ? filesLinkUtility.GetFileWebPreviewUrl(fileUtility, fileEntry.Title, fileEntry.ID)
-                          : pathProvider.GetFolderUrl((Folder<T>)fileEntry);
+                          : await pathProvider.GetFolderUrlAsync((Folder<T>)fileEntry);
 
             var recipientsProvider = notifySource.GetRecipientsProvider();
 

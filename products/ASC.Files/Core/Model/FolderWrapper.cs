@@ -135,7 +135,7 @@ namespace ASC.Api.Documents
                     var folderWithRight = folders.FirstOrDefault(f => f.Item1.ID.Equals(folder.FolderID));
                     if (folderWithRight == null || !folderWithRight.Item2)
                     {
-                        result.ParentId = GlobalFolderHelper.GetFolderShare<T>();
+                        result.ParentId = await GlobalFolderHelper.GetFolderShareAsync<T>();
                     }
                 }
                 else
@@ -143,7 +143,7 @@ namespace ASC.Api.Documents
                     parentFolder = await folderDao.GetFolderAsync(folder.FolderID);
                     if (!FileSecurity.CanReadAsync(parentFolder).Result)
                     {
-                        result.ParentId = GlobalFolderHelper.GetFolderShare<T>();
+                        result.ParentId = await GlobalFolderHelper.GetFolderShareAsync<T>();
                     }
                 }
             }

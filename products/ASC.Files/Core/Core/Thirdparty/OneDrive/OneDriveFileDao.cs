@@ -270,7 +270,8 @@ namespace ASC.Files.Thirdparty.OneDrive
             if (onedriveFile == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
             if (onedriveFile is ErrorItem errorItem) throw new Exception(errorItem.Error);
 
-            var fileStream = await ProviderInfo.Storage.DownloadStreamAsync(onedriveFile, (int)offset).ConfigureAwait(false);
+            var storage = await ProviderInfo.StorageAsync;
+            var fileStream = await storage.DownloadStreamAsync(onedriveFile, (int)offset).ConfigureAwait(false);
 
             return fileStream;
         }
@@ -291,14 +292,15 @@ namespace ASC.Files.Thirdparty.OneDrive
             if (fileStream == null) throw new ArgumentNullException("fileStream");
 
             Item newOneDriveFile = null;
+            var storage = await ProviderInfo.StorageAsync;
 
             if (file.ID != null)
             {
-                newOneDriveFile = await ProviderInfo.Storage.SaveStreamAsync(MakeOneDriveId(file.ID), fileStream).ConfigureAwait(false);
+                newOneDriveFile = await storage.SaveStreamAsync(MakeOneDriveId(file.ID), fileStream).ConfigureAwait(false);
                 if (!newOneDriveFile.Name.Equals(file.Title))
                 {
                     file.Title = await GetAvailableTitleAsync(file.Title, GetParentFolderId(newOneDriveFile), IsExistAsync).ConfigureAwait(false);
-                    newOneDriveFile = await ProviderInfo.Storage.RenameItemAsync(newOneDriveFile.Id, file.Title).ConfigureAwait(false);
+                    newOneDriveFile = await storage.RenameItemAsync(newOneDriveFile.Id, file.Title).ConfigureAwait(false);
                 }
             }
             else if (file.FolderID != null)
@@ -306,7 +308,7 @@ namespace ASC.Files.Thirdparty.OneDrive
                 var folderId = MakeOneDriveId(file.FolderID);
                 var folder = await GetOneDriveItemAsync(folderId).ConfigureAwait(false);
                 file.Title = await GetAvailableTitleAsync(file.Title, folderId, IsExistAsync).ConfigureAwait(false);
-                newOneDriveFile = await ProviderInfo.Storage.CreateFileAsync(fileStream, file.Title, MakeOneDrivePath(folder)).ConfigureAwait(false);
+                newOneDriveFile = await storage.CreateFileAsync(fileStream, file.Title, MakeOneDrivePath(folder)).ConfigureAwait(false);
             }
 
             if (newOneDriveFile != null) await ProviderInfo.CacheResetAsync(newOneDriveFile.Id).ConfigureAwait(false);
@@ -366,7 +368,10 @@ namespace ASC.Files.Thirdparty.OneDrive
             }
 
             if (!(onedriveFile is ErrorItem))
-                ProviderInfo.Storage.DeleteItem(onedriveFile);
+            {
+                var storage = await ProviderInfo.StorageAsync;
+                storage.DeleteItem(onedriveFile);
+            }
 
             await ProviderInfo.CacheResetAsync(onedriveFile.Id).ConfigureAwait(false);
             var parentFolderId = GetParentFolderId(onedriveFile);
@@ -416,7 +421,8 @@ namespace ASC.Files.Thirdparty.OneDrive
             var fromFolderId = GetParentFolderId(onedriveFile);
 
             var newTitle = await GetAvailableTitleAsync(onedriveFile.Name, toOneDriveFolder.Id, IsExistAsync).ConfigureAwait(false);
-            onedriveFile = await ProviderInfo.Storage.MoveItemAsync(onedriveFile.Id, newTitle, toOneDriveFolder.Id).ConfigureAwait(false);
+            var storage = await ProviderInfo.StorageAsync;
+            onedriveFile = await storage.MoveItemAsync(onedriveFile.Id, newTitle, toOneDriveFolder.Id).ConfigureAwait(false);
 
             await ProviderInfo.CacheResetAsync(onedriveFile.Id).ConfigureAwait(false);
             await ProviderInfo.CacheResetAsync(fromFolderId).ConfigureAwait(false);
@@ -462,7 +468,8 @@ namespace ASC.Files.Thirdparty.OneDrive
             if (toOneDriveFolder is ErrorItem errorItem1) throw new Exception(errorItem1.Error);
 
             var newTitle = await GetAvailableTitleAsync(onedriveFile.Name, toOneDriveFolder.Id, IsExistAsync).ConfigureAwait(false);
-            var newOneDriveFile = await ProviderInfo.Storage.CopyItemAsync(onedriveFile.Id, newTitle, toOneDriveFolder.Id).ConfigureAwait(false);
+            var storage = await ProviderInfo.StorageAsync;
+            var newOneDriveFile = await storage.CopyItemAsync(onedriveFile.Id, newTitle, toOneDriveFolder.Id).ConfigureAwait(false);
 
             await ProviderInfo.CacheResetAsync(newOneDriveFile.Id).ConfigureAwait(false);
             await ProviderInfo.CacheResetAsync(toOneDriveFolder.Id).ConfigureAwait(false);
@@ -476,7 +483,8 @@ namespace ASC.Files.Thirdparty.OneDrive
             var onedriveFile = await GetOneDriveItemAsync(file.ID).ConfigureAwait(false);
             newTitle = await GetAvailableTitleAsync(newTitle, GetParentFolderId(onedriveFile), IsExistAsync).ConfigureAwait(false);
 
-            onedriveFile = await ProviderInfo.Storage.RenameItemAsync(onedriveFile.Id, newTitle).ConfigureAwait(false);
+            var storage = await ProviderInfo.StorageAsync;
+            onedriveFile = await storage.RenameItemAsync(onedriveFile.Id, newTitle).ConfigureAwait(false);
 
             await ProviderInfo.CacheResetAsync(onedriveFile.Id).ConfigureAwait(false);
             var parentId = GetParentFolderId(onedriveFile);
@@ -539,7 +547,8 @@ namespace ASC.Files.Thirdparty.OneDrive
                 onedriveFile = new Item { Name = file.Title, ParentReference = new ItemReference { Id = folder.Id } };
             }
 
-            var onedriveSession = await ProviderInfo.Storage.CreateResumableSessionAsync(onedriveFile, contentLength).ConfigureAwait(false);
+            var storage = await ProviderInfo.StorageAsync;
+            var onedriveSession = await storage.CreateResumableSessionAsync(onedriveFile, contentLength).ConfigureAwait(false);
             if (onedriveSession != null)
             {
                 uploadSession.Items["OneDriveSession"] = onedriveSession;
@@ -568,7 +577,8 @@ namespace ASC.Files.Thirdparty.OneDrive
             if (uploadSession.Items.ContainsKey("OneDriveSession"))
             {
                 var oneDriveSession = uploadSession.GetItemOrDefault<ResumableUploadSession>("OneDriveSession");
-                await ProviderInfo.Storage.TransferAsync(oneDriveSession, stream, chunkLength).ConfigureAwait(false);
+                var storage = await ProviderInfo.StorageAsync;
+                await storage.TransferAsync(oneDriveSession, stream, chunkLength).ConfigureAwait(false);
             }
             else
             {
@@ -615,7 +625,8 @@ namespace ASC.Files.Thirdparty.OneDrive
 
                 if (oneDriveSession.Status != ResumableUploadSessionStatus.Completed)
                 {
-                    await ProviderInfo.Storage.CancelTransferAsync(oneDriveSession).ConfigureAwait(false);
+                    var storage = await ProviderInfo.StorageAsync;
+                    await storage.CancelTransferAsync(oneDriveSession).ConfigureAwait(false);
 
                     oneDriveSession.Status = ResumableUploadSessionStatus.Aborted;
                 }

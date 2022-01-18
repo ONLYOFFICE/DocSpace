@@ -265,7 +265,8 @@ namespace ASC.Files.Thirdparty.Box
             if (boxFile == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
             if (boxFile is ErrorFile errorFile) throw new Exception(errorFile.Error);
 
-            var fileStream = await ProviderInfo.Storage.DownloadStreamAsync(boxFile, (int)offset).ConfigureAwait(false);
+            var storage = await ProviderInfo.StorageAsync;
+            var fileStream = await storage.DownloadStreamAsync(boxFile, (int)offset).ConfigureAwait(false);
 
             return fileStream;
         }
@@ -286,24 +287,25 @@ namespace ASC.Files.Thirdparty.Box
             if (fileStream == null) throw new ArgumentNullException("fileStream");
 
             BoxFile newBoxFile = null;
+            var storage = await ProviderInfo.StorageAsync;
 
             if (file.ID != null)
             {
                 var fileId = MakeBoxId(file.ID);
-                newBoxFile = await ProviderInfo.Storage.SaveStreamAsync(fileId, fileStream).ConfigureAwait(false);
+                newBoxFile = await storage.SaveStreamAsync(fileId, fileStream).ConfigureAwait(false);
 
                 if (!newBoxFile.Name.Equals(file.Title))
                 {
                     var folderId = GetParentFolderId(await GetBoxFileAsync(fileId).ConfigureAwait(false));
                     file.Title = await GetAvailableTitleAsync(file.Title, folderId, IsExistAsync).ConfigureAwait(false);
-                    newBoxFile = await ProviderInfo.Storage.RenameFileAsync(fileId, file.Title).ConfigureAwait(false);
+                    newBoxFile = await storage.RenameFileAsync(fileId, file.Title).ConfigureAwait(false);
                 }
             }
             else if (file.FolderID != null)
             {
                 var folderId = MakeBoxId(file.FolderID);
                 file.Title = await GetAvailableTitleAsync(file.Title, folderId, IsExistAsync).ConfigureAwait(false);
-                newBoxFile = await ProviderInfo.Storage.CreateFileAsync(fileStream, file.Title, folderId).ConfigureAwait(false);
+                newBoxFile = await storage.CreateFileAsync(fileStream, file.Title, folderId).ConfigureAwait(false);
             }
 
             await ProviderInfo.CacheResetAsync(newBoxFile).ConfigureAwait(false);
@@ -360,7 +362,8 @@ namespace ASC.Files.Thirdparty.Box
 
             if (!(boxFile is ErrorFile))
             {
-                ProviderInfo.Storage.DeleteItem(boxFile);
+                var storage = await ProviderInfo.StorageAsync;
+                await storage.DeleteItemAsync(boxFile);
             }
 
             await ProviderInfo.CacheResetAsync(boxFile.Id, true).ConfigureAwait(false);
@@ -411,7 +414,8 @@ namespace ASC.Files.Thirdparty.Box
             var fromFolderId = GetParentFolderId(boxFile);
 
             var newTitle = await GetAvailableTitleAsync(boxFile.Name, toBoxFolder.Id, IsExistAsync).ConfigureAwait(false);
-            boxFile = await ProviderInfo.Storage.MoveFileAsync(boxFile.Id, newTitle, toBoxFolder.Id).ConfigureAwait(false);
+            var storage = await ProviderInfo.StorageAsync;
+            boxFile = await storage.MoveFileAsync(boxFile.Id, newTitle, toBoxFolder.Id).ConfigureAwait(false);
 
             await ProviderInfo.CacheResetAsync(boxFile.Id, true).ConfigureAwait(false);
             await ProviderInfo.CacheResetAsync(fromFolderId).ConfigureAwait(false);
@@ -444,7 +448,8 @@ namespace ASC.Files.Thirdparty.Box
             if (toBoxFolder is ErrorFolder errorFolder) throw new Exception(errorFolder.Error);
 
             var newTitle = await GetAvailableTitleAsync(boxFile.Name, toBoxFolder.Id, IsExistAsync).ConfigureAwait(false);
-            var newBoxFile = ProviderInfo.Storage.CopyFile(boxFile.Id, newTitle, toBoxFolder.Id);
+            var storage = await ProviderInfo.StorageAsync;
+            var newBoxFile = await storage.CopyFileAsync(boxFile.Id, newTitle, toBoxFolder.Id);
 
             await ProviderInfo.CacheResetAsync(newBoxFile).ConfigureAwait(false);
             await ProviderInfo.CacheResetAsync(toBoxFolder.Id).ConfigureAwait(false);
@@ -467,7 +472,8 @@ namespace ASC.Files.Thirdparty.Box
             var boxFile = await GetBoxFileAsync(file.ID).ConfigureAwait(false);
             newTitle = await GetAvailableTitleAsync(newTitle, GetParentFolderId(boxFile), IsExistAsync).ConfigureAwait(false);
 
-            boxFile = await ProviderInfo.Storage.RenameFileAsync(boxFile.Id, newTitle).ConfigureAwait(false);
+            var storage = await ProviderInfo.StorageAsync;
+            boxFile = await storage.RenameFileAsync(boxFile.Id, newTitle).ConfigureAwait(false);
 
             await ProviderInfo.CacheResetAsync(boxFile).ConfigureAwait(false);
             var parentId = GetParentFolderId(boxFile);

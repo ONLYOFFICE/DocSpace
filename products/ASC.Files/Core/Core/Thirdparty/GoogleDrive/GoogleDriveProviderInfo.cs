@@ -54,15 +54,15 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         public OAuth20Token Token { get; set; }
         private string _driveRootId;
 
-        internal GoogleDriveStorage Storage
+        internal Task<GoogleDriveStorage> StorageAsync
         {
             get
             {
                 if (Wrapper.Storage == null || !Wrapper.Storage.IsOpened)
                 {
-                    return Wrapper.CreateStorageAsync(Token, ID).Result;
+                    return Wrapper.CreateStorageAsync(Token, ID);
                 }
-                return Wrapper.Storage;
+                return Task.FromResult(Wrapper.Storage);
             }
         }
 
@@ -96,7 +96,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                 {
                     try
                     {
-                        _driveRootId = Storage.GetRootFolderId();
+                        _driveRootId = StorageAsync.Result.GetRootFolderId();
                     }
                     catch (Exception ex)
                     {
@@ -125,7 +125,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         public void Dispose()
         {
             if (StorageOpened)
-                Storage.Close();
+                StorageAsync.Result.Close();
         }
 
         public Task<bool> CheckAccessAsync()
@@ -155,14 +155,16 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             CustomerTitle = newtitle;
         }
 
-        internal Task<DriveFile> GetDriveEntryAsync(string driveId)
+        internal async Task<DriveFile> GetDriveEntryAsync(string driveId)
         {
-            return GoogleDriveProviderInfoHelper.GetDriveEntryAsync(Storage, ID, driveId);
+            var storage = await StorageAsync;
+            return await GoogleDriveProviderInfoHelper.GetDriveEntryAsync(storage, ID, driveId);
         }
 
-        internal Task<List<DriveFile>> GetDriveEntriesAsync(string parentDriveId, bool? folder = null)
+        internal async Task<List<DriveFile>> GetDriveEntriesAsync(string parentDriveId, bool? folder = null)
         {
-            return GoogleDriveProviderInfoHelper.GetDriveEntriesAsync(Storage, ID, parentDriveId, folder);
+            var storage = await StorageAsync;
+            return await GoogleDriveProviderInfoHelper.GetDriveEntriesAsync(storage, ID, parentDriveId, folder);
         }
 
         internal Task CacheResetAsync(DriveFile driveEntry)

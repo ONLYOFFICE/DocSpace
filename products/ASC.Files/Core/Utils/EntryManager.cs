@@ -154,7 +154,7 @@ namespace ASC.Web.Files.Utils
             var rootId = 0;
             if (firstVisible == null)
             {
-                rootId = GlobalFolderHelper.FolderShare;
+                rootId = await GlobalFolderHelper.FolderShareAsync;
             }
             else
             {
@@ -163,7 +163,7 @@ namespace ASC.Web.Files.Utils
                     case FolderType.DEFAULT:
                         if (!firstVisible.ProviderEntry)
                         {
-                            rootId = GlobalFolderHelper.FolderShare;
+                            rootId = await GlobalFolderHelper.FolderShareAsync;
                         }
                         else
                         {
@@ -172,17 +172,17 @@ namespace ASC.Web.Files.Utils
                                 case FolderType.USER:
                                     rootId = AuthContext.CurrentAccount.ID == firstVisible.RootFolderCreator
                                         ? GlobalFolderHelper.FolderMy
-                                        : GlobalFolderHelper.FolderShare;
+                                        : await GlobalFolderHelper.FolderShareAsync;
                                     break;
                                 case FolderType.COMMON:
-                                    rootId = GlobalFolderHelper.FolderCommon;
+                                    rootId = await GlobalFolderHelper.FolderCommonAsync;
                                     break;
                             }
                         }
                         break;
 
                     case FolderType.BUNCH:
-                        rootId = GlobalFolderHelper.FolderProjects;
+                        rootId = await GlobalFolderHelper.FolderProjectsAsync;
                         break;
                 }
             }
@@ -362,7 +362,7 @@ namespace ASC.Web.Files.Utils
 
             searchInContent = searchInContent && filter != FilterType.ByExtension && !Equals(parent.ID, GlobalFolderHelper.FolderTrash);
 
-            if (parent.FolderType == FolderType.Projects && parent.ID.Equals(GlobalFolderHelper.FolderProjects))
+            if (parent.FolderType == FolderType.Projects && parent.ID.Equals(await GlobalFolderHelper.FolderProjectsAsync))
             {
                 //TODO
                 //var apiServer = new ASC.Api.ApiServer();
@@ -409,7 +409,7 @@ namespace ASC.Web.Files.Utils
                             if (projectInfo.TryGetValue("projectFolder", out var projectFolderIDjToken))
                                 projectFolderID = projectFolderIDjToken.Value<int>();
                             else
-                                projectFolderID = FilesIntegration.RegisterBunch<int>("projects", "project", projectID.ToString());
+                                projectFolderID = await FilesIntegration.RegisterBunchAsync<int>("projects", "project", projectID.ToString());
 
                             if (!folderIDProjectTitle.ContainsKey(projectFolderID))
                                 folderIDProjectTitle.Add(projectFolderID, new KeyValuePair<int, string>(projectID, projectTitle));
@@ -442,7 +442,7 @@ namespace ASC.Web.Files.Utils
                         folders.ForEach(x =>
                         {
                             x.Title = folderIDProjectTitle.ContainsKey(x.ID) ? folderIDProjectTitle[x.ID].Value : x.Title;
-                            x.FolderUrl = folderIDProjectTitle.ContainsKey(x.ID) ? PathProvider.GetFolderUrl(x, folderIDProjectTitle[x.ID].Key) : string.Empty;
+                            x.FolderUrl = folderIDProjectTitle.ContainsKey(x.ID) ? PathProvider.GetFolderUrlAsync(x, folderIDProjectTitle[x.ID].Key).Result : string.Empty;
                         });
 
                         if (withSubfolders)
@@ -604,7 +604,7 @@ namespace ASC.Web.Files.Utils
         {
             var folderList = new List<Folder<string>>();
 
-            if ((parent.ID.Equals(GlobalFolderHelper.FolderMy) || parent.ID.Equals(GlobalFolderHelper.FolderCommon))
+            if ((parent.ID.Equals(GlobalFolderHelper.FolderMy) || parent.ID.Equals(await GlobalFolderHelper.FolderCommonAsync))
                 && ThirdpartyConfiguration.SupportInclusion(DaoFactory)
                 && (FilesSettingsHelper.EnableThirdParty
                     || CoreBaseSettings.Personal))
@@ -901,7 +901,7 @@ namespace ASC.Web.Files.Utils
                     var folder = await folderDao.GetFolderAsync(folderId);
                     if (!await FileSecurity.CanReadAsync(folder))
                     {
-                        entry.FolderIdDisplay = GlobalFolderHelper.GetFolderShare<T>();
+                        entry.FolderIdDisplay = await GlobalFolderHelper.GetFolderShareAsync<T>();
                     }
                 }
             }
@@ -929,7 +929,7 @@ namespace ASC.Web.Files.Utils
 
             var fileSecurity = FileSecurity;
 
-            var linkedId = linkDao.GetLinked(sourceFile.ID.ToString());
+            var linkedId = await linkDao.GetLinkedAsync(sourceFile.ID.ToString());
             if (linkedId != null)
             {
                 linkedFile = await fileDao.GetFileAsync(int.Parse(linkedId));
@@ -938,7 +938,7 @@ namespace ASC.Web.Files.Utils
                     || await FileLockedForMeAsync(linkedFile.ID)
                     || linkedFile.RootFolderType == FolderType.TRASH)
                 {
-                    linkDao.DeleteLink(sourceFile.ID.ToString());
+                    await linkDao.DeleteLinkAsync(sourceFile.ID.ToString());
                     linkedFile = null;
                 }
             }
@@ -965,28 +965,28 @@ namespace ASC.Web.Files.Utils
                     linkedFile = await fileDao.SaveFileAsync(linkedFile, stream);
                 }
 
-                FileMarker.MarkAsNew(linkedFile);
+                await FileMarker.MarkAsNewAsync(linkedFile);
 
-                linkDao.AddLink(sourceFile.ID.ToString(), linkedFile.ID.ToString());
+                await linkDao.AddLinkAsync(sourceFile.ID.ToString(), linkedFile.ID.ToString());
             }
 
             return (linkedFile, folderIfNew);
         }
 
-        public Task<bool> CheckFillFormDraftAsync<T>(File<T> linkedFile)
+        public async Task<bool> CheckFillFormDraftAsync<T>(File<T> linkedFile)
         {
-            if (linkedFile == null) return Task.FromResult(false);
+            if (linkedFile == null) return false;
 
             var linkDao = DaoFactory.GetLinkDao();
-            var sourceId = linkDao.GetSource(linkedFile.ID.ToString());
+            var sourceId = await linkDao.GetSourceAsync(linkedFile.ID.ToString());
             var fileSecurity = FileSecurity;
 
             if (int.TryParse(sourceId, out var sId))
             {
-                return CheckAsync(sId);
+                return await CheckAsync(sId);
             }
 
-            return CheckAsync(sourceId);
+            return await CheckAsync(sourceId);
 
             async Task<bool> CheckAsync<T1>(T1 sourceId)
             {
@@ -996,7 +996,7 @@ namespace ASC.Web.Files.Utils
                     || !await fileSecurity.CanFillFormsAsync(sourceFile)
                     || sourceFile.Access != FileShare.FillForms)
                 {
-                    linkDao.DeleteLink(sourceId.ToString());
+                    await linkDao.DeleteLinkAsync(sourceId.ToString());
 
                     return false;
                 }
@@ -1153,7 +1153,7 @@ namespace ASC.Web.Files.Utils
                    || !file.IsFillFormDraft)
                 {
                     var linkDao = DaoFactory.GetLinkDao();
-                    linkDao.DeleteAllLink(file.ID.ToString());
+                    await linkDao.DeleteAllLinkAsync(file.ID.ToString());
                 }
             }
 
@@ -1268,7 +1268,7 @@ namespace ASC.Web.Files.Utils
                 }
 
                 var linkDao = DaoFactory.GetLinkDao();
-                linkDao.DeleteAllLink(newFile.ID.ToString());
+                await linkDao.DeleteAllLinkAsync(newFile.ID.ToString());
 
                 await FileMarker.MarkAsNewAsync(newFile);;
 
@@ -1413,7 +1413,7 @@ namespace ASC.Web.Files.Utils
                 Logger.InfoFormat("Delete file {0} in {1}", file.ID, parentId);
                 await fileDao.DeleteFileAsync(file.ID);
 
-                linkDao.DeleteAllLink(file.ID.ToString());
+                await linkDao.DeleteAllLinkAsync(file.ID.ToString());
             }
         }
 
@@ -1429,7 +1429,7 @@ namespace ASC.Web.Files.Utils
                 if (shared)
                 {
                     Logger.InfoFormat("Move shared folder {0} from {1} to {2}", folder.ID, parentId, toId);
-                    folderDao.MoveFolderAsync(folder.ID, toId, null).Wait();
+                    await folderDao.MoveFolderAsync(folder.ID, toId, null);
                 }
                 else
                 {

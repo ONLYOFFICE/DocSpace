@@ -779,14 +779,14 @@ namespace ASC.Files.Core.Data
             return true;
         }
 
-        public Task<long> GetMaxUploadSizeAsync(int folderId, bool chunkedUpload)
+        public async Task<long> GetMaxUploadSizeAsync(int folderId, bool chunkedUpload)
         {
             var tmp = long.MaxValue;
 
             if (CoreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
-                tmp = CoreConfiguration.PersonalMaxSpace(SettingsManager) - GlobalSpace.GetUserUsedSpace();
+                tmp = CoreConfiguration.PersonalMaxSpace(SettingsManager) - await GlobalSpace.GetUserUsedSpaceAsync();
 
-            return Task.FromResult(Math.Min(tmp, chunkedUpload ? SetupInfo.MaxChunkedUploadSize(TenantExtra, TenantStatisticProvider) : SetupInfo.MaxUploadSize(TenantExtra, TenantStatisticProvider)));
+            return Math.Min(tmp, chunkedUpload ? SetupInfo.MaxChunkedUploadSize(TenantExtra, TenantStatisticProvider) : SetupInfo.MaxUploadSize(TenantExtra, TenantStatisticProvider));
         }
 
         private async Task RecalculateFoldersCountAsync(int id)

@@ -206,14 +206,14 @@ namespace ASC.Web.Files.Helpers
             return true;
         }
 
-        public string SendDocuSign<T>(T fileId, DocuSignData docuSignData, IDictionary<string, StringValues> requestHeaders)
+        public async Task<string> SendDocuSignAsync<T>(T fileId, DocuSignData docuSignData, IDictionary<string, StringValues> requestHeaders)
         {
             if (docuSignData == null) throw new ArgumentNullException("docuSignData");
             var token = DocuSignToken.GetToken();
             var account = GetDocuSignAccount(token);
 
             var configuration = GetConfiguration(account, token);
-            var document = CreateDocument(fileId, docuSignData.Name, docuSignData.FolderId, out var sourceFile);
+            var (document, sourceFile) = await CreateDocumentAsync(fileId, docuSignData.Name, docuSignData.FolderId);
 
             var url = CreateEnvelope(account.AccountId, document, docuSignData, configuration);
 
@@ -252,24 +252,24 @@ namespace ASC.Web.Files.Helpers
             return configuration;
         }
 
-        private Document CreateDocument<T>(T fileId, string documentName, string folderId, out File<T> file)
+        private async Task<(Document document, File<T> file)> CreateDocumentAsync<T>(T fileId, string documentName, string folderId)
         {
             var fileDao = DaoFactory.GetFileDao<T>();
-            file = fileDao.GetFileAsync(fileId).Result;
+            var file = await fileDao.GetFileAsync(fileId);
             if (file == null) throw new Exception(FilesCommonResource.ErrorMassage_FileNotFound);
-            if (!FileSecurity.CanReadAsync(file).Result) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
+            if (!await FileSecurity.CanReadAsync(file)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
             if (!SupportedFormats.Contains(FileUtility.GetFileExtension(file.Title))) throw new ArgumentException(FilesCommonResource.ErrorMassage_NotSupportedFormat);
             if (file.ContentLength > MaxFileSize) throw new Exception(FileSizeComment.GetFileSizeExceptionString(MaxFileSize));
 
             byte[] fileBytes;
-            using (var stream = fileDao.GetFileStreamAsync(file).Result)
+            using (var stream = await fileDao.GetFileStreamAsync(file))
             {
                 var buffer = new byte[16 * 1024];
                 using var ms = new MemoryStream();
                 int read;
-                while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
+                while ((read = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
                 {
-                    ms.Write(buffer, 0, read);
+                    await ms.WriteAsync(buffer, 0, read);
                 }
                 fileBytes = ms.ToArray();
             }
@@ -292,7 +292,7 @@ namespace ASC.Web.Files.Helpers
                 Name = documentName,
             };
 
-            return document;
+            return (document, file);
         }
 
         private string CreateEnvelope(string accountId, Document document, DocuSignData docuSignData, DocuSign.eSign.Client.Configuration configuration)

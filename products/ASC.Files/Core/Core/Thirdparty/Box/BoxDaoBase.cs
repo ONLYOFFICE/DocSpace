@@ -231,11 +231,6 @@ namespace ASC.Files.Thirdparty.Box
             }
         }
 
-        protected override IEnumerable<string> GetChildren(string folderId)
-        {
-            return GetBoxItems(folderId).Select(entry => MakeId(entry.Id));
-        }
-
         protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
         {
             var items = await GetBoxItemsAsync(folderId);

@@ -382,7 +382,7 @@ namespace ASC.Files.Core.Data
             if (checkQuota && CoreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
             {
                 var personalMaxSpace = CoreConfiguration.PersonalMaxSpace(SettingsManager);
-                if (personalMaxSpace - GlobalSpace.GetUserUsedSpace(file.ID == default ? AuthContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
+                if (personalMaxSpace - await GlobalSpace.GetUserUsedSpaceAsync(file.ID == default ? AuthContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
                 {
                     throw FileSizeComment.GetPersonalFreeSpaceException(personalMaxSpace);
                 }
@@ -531,7 +531,7 @@ namespace ASC.Files.Core.Data
             if (CoreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
             {
                 var personalMaxSpace = CoreConfiguration.PersonalMaxSpace(SettingsManager);
-                if (personalMaxSpace - GlobalSpace.GetUserUsedSpace(file.ID == default ? AuthContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
+                if (personalMaxSpace - await GlobalSpace.GetUserUsedSpaceAsync(file.ID == default ? AuthContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
                 {
                     throw FileSizeComment.GetPersonalFreeSpaceException(personalMaxSpace);
                 }
@@ -754,7 +754,7 @@ namespace ASC.Files.Core.Data
 
             List<DbFile> toUpdate;
 
-            var trashId = GlobalFolder.GetFolderTrash<int>(DaoFactory);
+            var trashIdTask = GlobalFolder.GetFolderTrashAsync<int>(DaoFactory);
 
             using (var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
             {
@@ -773,6 +773,7 @@ namespace ASC.Files.Core.Data
                 {
                     f.FolderId = toFolderId;
 
+                    var trashId = await trashIdTask;
                     if (trashId.Equals(toFolderId))
                     {
                         f.ModifiedBy = AuthContext.CurrentAccount.ID;

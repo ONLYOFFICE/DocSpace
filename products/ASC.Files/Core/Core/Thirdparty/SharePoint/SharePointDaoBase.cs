@@ -174,13 +174,6 @@ namespace ASC.Files.Thirdparty.SharePoint
             return path;
         }
 
-        protected override IEnumerable<string> GetChildren(string folderId)
-        {
-            var subFolders = ProviderInfo.GetFolderFoldersAsync(folderId).Result.Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
-            var files = ProviderInfo.GetFolderFilesAsync(folderId).Result.Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
-            return subFolders.Concat(files);
-        }
-
         protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
         {
             var folders = await ProviderInfo.GetFolderFoldersAsync(folderId);

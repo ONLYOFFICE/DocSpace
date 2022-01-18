@@ -92,18 +92,6 @@ namespace ASC.Web.Files.Utils
             return Signature.Read<T>(doc ?? string.Empty, Global.GetDocDbKey());
         }
 
-        public bool Check<T>(string doc, bool checkRead, IFileDao<T> fileDao, out File<T> file)
-        {
-            var fileShare = Check(doc, fileDao, out file);
-            return (!checkRead
-                    && (fileShare == FileShare.ReadWrite
-                        || fileShare == FileShare.CustomFilter
-                        || fileShare == FileShare.Review
-                        || fileShare == FileShare.FillForms
-                        || fileShare == FileShare.Comment))
-                || (checkRead && fileShare != FileShare.Restrict);
-        }
-
         public async Task<(bool EditLink, File<T> File)> CheckAsync<T>(string doc, bool checkRead, IFileDao<T> fileDao)
         {
             var check = await CheckAsync(doc, fileDao);
@@ -115,24 +103,6 @@ namespace ASC.Web.Files.Utils
                         || fileShare == FileShare.FillForms
                         || fileShare == FileShare.Comment))
                 || (checkRead && fileShare != FileShare.Restrict), check.File);
-        }
-
-        public FileShare Check<T>(string doc, IFileDao<T> fileDao, out File<T> file)
-        {
-            file = null;
-            if (string.IsNullOrEmpty(doc)) return FileShare.Restrict;
-            var fileId = Parse<T>(doc);
-            file = fileDao.GetFileAsync(fileId).Result;
-            if (file == null) return FileShare.Restrict;
-
-            var filesSecurity = FileSecurity;
-            if (filesSecurity.CanEditAsync(file, FileConstant.ShareLinkId).Result) return FileShare.ReadWrite;
-            if (filesSecurity.CanCustomFilterEditAsync(file, FileConstant.ShareLinkId).Result) return FileShare.CustomFilter;
-            if (filesSecurity.CanReviewAsync(file, FileConstant.ShareLinkId).Result) return FileShare.Review;
-            if (filesSecurity.CanFillFormsAsync(file, FileConstant.ShareLinkId).Result) return FileShare.FillForms;
-            if (filesSecurity.CanCommentAsync(file, FileConstant.ShareLinkId).Result) return FileShare.Comment;
-            if (filesSecurity.CanReadAsync(file, FileConstant.ShareLinkId).Result) return FileShare.Read;
-            return FileShare.Restrict;
         }
 
         public async Task<(FileShare FileShare, File<T> File)> CheckAsync<T>(string doc, IFileDao<T> fileDao)

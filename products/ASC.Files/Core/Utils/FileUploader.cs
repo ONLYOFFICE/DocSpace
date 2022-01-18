@@ -131,7 +131,7 @@ namespace ASC.Web.Files.Utils
             file = await dao.SaveFileAsync(file, data);
 
             var linkDao = DaoFactory.GetLinkDao();
-            linkDao.DeleteAllLink(file.ID.ToString());
+            await linkDao.DeleteAllLinkAsync(file.ID.ToString());
 
             await FileMarker.MarkAsNewAsync(file);
 
@@ -177,7 +177,7 @@ namespace ASC.Web.Files.Utils
             if (fileSize <= 0)
                 throw new Exception(FilesCommonResource.ErrorMassage_EmptyFile);
 
-            var maxUploadSize = GetMaxFileSize(folderId);
+            var maxUploadSize = await GetMaxFileSizeAsync(folderId);
 
             if (fileSize > maxUploadSize)
                 throw FileSizeComment.GetFileSizeException(maxUploadSize);
@@ -196,48 +196,7 @@ namespace ASC.Web.Files.Utils
                    && !FileTracker.IsEditing(file.ID)
                    && file.RootFolderType != FolderType.TRASH
                    && !file.Encrypted;
-        }
-
-        private T GetFolderId<T>(T folderId, IList<string> relativePath)
-        {
-            var folderDao = DaoFactory.GetFolderDao<T>();
-            var folder = folderDao.GetFolderAsync(folderId).Result;
-
-            if (folder == null)
-                throw new DirectoryNotFoundException(FilesCommonResource.ErrorMassage_FolderNotFound);
-
-            if (!FileSecurity.CanCreateAsync(folder).Result)
-                throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
-
-            if (relativePath != null && relativePath.Any())
-            {
-                var subFolderTitle = Global.ReplaceInvalidCharsAndTruncate(relativePath.FirstOrDefault());
-
-                if (!string.IsNullOrEmpty(subFolderTitle))
-                {
-                    folder = folderDao.GetFolderAsync(subFolderTitle, folder.ID).Result;
-
-                    if (folder == null)
-                    {
-                        var newFolder = ServiceProvider.GetService<Folder<T>>();
-                        newFolder.Title = subFolderTitle;
-                        newFolder.FolderID = folderId;
-
-                        folderId = folderDao.SaveFolderAsync(newFolder).Result;
-
-                        folder = folderDao.GetFolderAsync(folderId).Result;
-                        FilesMessageService.Send(folder, MessageAction.FolderCreated, folder.Title);
-                    }
-
-                    folderId = folder.ID;
-
-                    relativePath.RemoveAt(0);
-                    folderId = GetFolderId(folderId, relativePath);
-                }
-            }
-
-            return folderId;
-        }
+        }      
 
         private async Task<T> GetFolderIdAsync<T>(T folderId, IList<string> relativePath)
         {
@@ -284,7 +243,7 @@ namespace ASC.Web.Files.Utils
 
         public async Task<File<T>> VerifyChunkedUploadAsync<T>(T folderId, string fileName, long fileSize, bool updateIfExists, string relativePath = null)
         {
-            var maxUploadSize = GetMaxFileSize(folderId, true);
+            var maxUploadSize = await GetMaxFileSizeAsync(folderId, true);
 
             if (fileSize > maxUploadSize)
                 throw FileSizeComment.GetFileSizeException(maxUploadSize);
@@ -334,7 +293,7 @@ namespace ASC.Web.Files.Utils
                 throw FileSizeComment.GetFileSizeException(SetupInfo.MaxUploadSize(TenantExtra, TenantStatisticsProvider));
             }
 
-            var maxUploadSize = GetMaxFileSize(uploadSession.FolderId, uploadSession.BytesTotal > 0);
+            var maxUploadSize = await GetMaxFileSizeAsync(uploadSession.FolderId, uploadSession.BytesTotal > 0);
 
             if (uploadSession.BytesUploaded + chunkLength > maxUploadSize)
             {
@@ -348,9 +307,9 @@ namespace ASC.Web.Files.Utils
             if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
             {
                 var linkDao = DaoFactory.GetLinkDao();
-                linkDao.DeleteAllLink(uploadSession.File.ID.ToString());
+                await linkDao.DeleteAllLinkAsync(uploadSession.File.ID.ToString());
 
-                FileMarker.MarkAsNew(uploadSession.File);
+                await FileMarker.MarkAsNewAsync(uploadSession.File);
                 ChunkedUploadSessionHolder.RemoveSession(uploadSession);
             }
             else
@@ -373,10 +332,10 @@ namespace ASC.Web.Files.Utils
             ChunkedUploadSessionHolder.RemoveSession(uploadSession);
         }
 
-        private long GetMaxFileSize<T>(T folderId, bool chunkedUpload = false)
+        private Task<long> GetMaxFileSizeAsync<T>(T folderId, bool chunkedUpload = false)
         {
             var folderDao = DaoFactory.GetFolderDao<T>();
-            return folderDao.GetMaxUploadSizeAsync(folderId, chunkedUpload).Result;
+            return folderDao.GetMaxUploadSizeAsync(folderId, chunkedUpload);
         }
 
         #endregion

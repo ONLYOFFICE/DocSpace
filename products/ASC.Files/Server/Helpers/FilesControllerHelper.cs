@@ -437,12 +437,12 @@ namespace ASC.Files.Helpers
 
         public async IAsyncEnumerable<ConversationResult<T>> CheckConversionAsync(T fileId, bool start, bool sync = false)
         {
-            var checkConversaion = await FileStorageService.CheckConversionAsync(new List<List<string>>
+            var checkConversaion = FileStorageService.CheckConversionAsync(new List<List<string>>
             {
                 new List<string> { fileId.ToString(), "0", start.ToString() }
             }, sync);
 
-            foreach (var r in checkConversaion)
+            await foreach (var r in checkConversaion)
             {
                 var o = new ConversationResult<T>
                 {
@@ -563,9 +563,10 @@ namespace ASC.Files.Helpers
             return FileStorageService.BulkDownload(folders, files).Select(e => FileOperationWraperHelper.GetAsync(e).Result).ToList();
         }
 
-        public IEnumerable<FileOperationWraper> EmptyTrash()
+        public async Task<IEnumerable<FileOperationWraper>> EmptyTrashAsync()
         {
-            return FileStorageService.EmptyTrash().Select(e => FileOperationWraperHelper.GetAsync(e).Result).ToList();
+            var emptyTrash = await FileStorageService.EmptyTrashAsync();
+            return emptyTrash.Select(e => FileOperationWraperHelper.GetAsync(e).Result);
         }
 
         public async Task<IEnumerable<FileWrapper<T>>> GetFileVersionInfoAsync(T fileId)

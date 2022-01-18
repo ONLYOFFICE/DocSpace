@@ -256,7 +256,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             Logger.Error(Error, ex);
                         }
 
-                        LinkDao.DeleteAllLink(file.ID.ToString());
+                        await LinkDao.DeleteAllLinkAsync(file.ID.ToString());
                     }
                     ProcessedFile(fileId);
                 }

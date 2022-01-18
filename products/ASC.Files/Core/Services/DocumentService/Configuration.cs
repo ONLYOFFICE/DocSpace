@@ -767,7 +767,7 @@ namespace ASC.Web.Files.Services.DocumentService
                         {
                             return new GobackConfig
                             {
-                                Url = PathProvider.GetFolderUrlById(GlobalFolderHelper.FolderShare),
+                                Url = PathProvider.GetFolderUrlByIdAsync(GlobalFolderHelper.FolderShareAsync.Result).Result,
                             };
                         }
                         return null;
@@ -777,12 +777,12 @@ namespace ASC.Web.Files.Services.DocumentService
                         && _configuration.Document.Info.GetFile().RootFolderType == FolderType.Privacy
                         && !fileSecurity.CanReadAsync(parent).Result)
                     {
-                        parent = folderDao.GetFolderAsync(GlobalFolderHelper.GetFolderPrivacy<T>()).Result;
+                        parent = folderDao.GetFolderAsync(GlobalFolderHelper.GetFolderPrivacyAsync<T>().Result).Result;
                     }
 
                     return new GobackConfig
                     {
-                        Url = PathProvider.GetFolderUrl(parent),
+                        Url = PathProvider.GetFolderUrlAsync(parent).Result,
                     };
                 }
                 catch (Exception)

@@ -207,7 +207,7 @@ namespace ASC.Web.Files
                         await CreateFile(context).ConfigureAwait(false);
                         break;
                     case "redirect":
-                        Redirect(context);
+                        await RedirectAsync(context).ConfigureAwait(false);
                         break;
                     case "diff":
                         await DifferenceFile(context).ConfigureAwait(false);
@@ -307,7 +307,7 @@ namespace ASC.Web.Files
                 var doc = context.Request.Query[FilesLinkUtility.DocShareKey].FirstOrDefault() ?? "";
 
                 var fileDao = DaoFactory.GetFileDao<T>();
-                var readLink = FileShareLink.Check(doc, true, fileDao, out var file);
+                var (readLink, file) = await FileShareLink.CheckAsync(doc, true, fileDao);
                 if (!readLink && file == null)
                 {
                     await fileDao.InvalidateCacheAsync(id);
@@ -340,7 +340,7 @@ namespace ASC.Web.Files
                     return;
                 }
 
-                FileMarker.RemoveMarkAsNew(file);
+               await  FileMarker.RemoveMarkAsNewAsync(file);
 
                 context.Response.Clear();
                 context.Response.Headers.Clear();
@@ -596,7 +596,7 @@ namespace ASC.Web.Files
 
                 await fileDao.InvalidateCacheAsync(id);
 
-                var linkRight = FileShareLink.Check(doc, fileDao, out var file);
+                var (linkRight, file) = await FileShareLink.CheckAsync(doc, fileDao);
                 if (linkRight == FileShare.Restrict && !SecurityContext.IsAuthenticated)
                 {
                     var auth = context.Request.Query[FilesLinkUtility.AuthKey];
@@ -881,7 +881,7 @@ namespace ASC.Web.Files
                 int.TryParse(context.Request.Query[FilesLinkUtility.Version].FirstOrDefault() ?? "", out var version);
                 var doc = context.Request.Query[FilesLinkUtility.DocShareKey];
 
-                var linkRight = FileShareLink.Check(doc, fileDao, out var file);
+                var (linkRight, file) = await FileShareLink.CheckAsync(doc, fileDao);
                 if (linkRight == FileShare.Restrict && !SecurityContext.IsAuthenticated)
                 {
                     var auth = context.Request.Query[FilesLinkUtility.AuthKey].FirstOrDefault();
@@ -1110,7 +1110,7 @@ namespace ASC.Web.Files
                 return;
             }
 
-            FileMarker.MarkAsNew(file);
+            await FileMarker.MarkAsNewAsync(file);
 
             if (responseMessage)
             {
@@ -1124,7 +1124,7 @@ namespace ASC.Web.Files
 
             context.Response.Redirect(
                 (context.Request.Query["openfolder"].FirstOrDefault() ?? "").Equals("true")
-                    ? PathProvider.GetFolderUrlById(file.FolderID)
+                    ? await PathProvider.GetFolderUrlByIdAsync(file.FolderID)
                     : (FilesLinkUtility.GetFileWebEditorUrl(file.ID) + "#message/" + HttpUtility.UrlEncode(string.Format(FilesCommonResource.MessageFileCreated, folder.Title))));
         }      
 
@@ -1211,22 +1211,22 @@ namespace ASC.Web.Files
 
         }
 
-        private void Redirect(HttpContext context)
+        private async Task RedirectAsync(HttpContext context)
         {
             var q = context.Request.Query[FilesLinkUtility.FileId];
             var q1 = context.Request.Query[FilesLinkUtility.FolderId];
 
             if (int.TryParse(q, out var fileId) && int.TryParse(q1, out var folderId))
             {
-                Redirect(context, fileId, folderId);
+                await RedirectAsync(context, fileId, folderId);
             }
             else
             {
-                Redirect(context, q.FirstOrDefault() ?? "", q1.FirstOrDefault() ?? "");
+                await RedirectAsync(context, q.FirstOrDefault() ?? "", q1.FirstOrDefault() ?? "");
             }
         }
 
-        private void Redirect<T>(HttpContext context, T folderId, T fileId)
+        private async Task RedirectAsync<T>(HttpContext context, T folderId, T fileId)
         {
             if (!SecurityContext.IsAuthenticated)
             {
@@ -1238,7 +1238,7 @@ namespace ASC.Web.Files
             {
                 try
                 {
-                    urlRedirect = PathProvider.GetFolderUrlById(folderId);
+                    urlRedirect = await PathProvider.GetFolderUrlByIdAsync(folderId);
                 }
                 catch (ArgumentNullException e)
                 {
@@ -1249,7 +1249,7 @@ namespace ASC.Web.Files
             if (fileId != null)
             {
                 var fileDao = DaoFactory.GetFileDao<T>();
-                var file = fileDao.GetFileAsync(fileId).Result;
+                var file = await fileDao.GetFileAsync(fileId);
                 if (file == null)
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.NotFound;

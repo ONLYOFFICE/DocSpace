@@ -42,6 +42,8 @@ using ASC.Web.Files.Classes;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Utility;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace ASC.Web.Files
 {
     [Scope]
@@ -75,9 +77,9 @@ namespace ASC.Web.Files
             CommonLinkUtility = commonLinkUtility;
             GlobalFolderHelper = globalFolderHelper;
             PathProvider = pathProvider;
-        }
+        }    
 
-        public override List<UsageSpaceStatItem> GetStatData()
+        public override async Task<List<UsageSpaceStatItem>> GetStatDataAsync()
         {
             var myFiles = FilesDbContext.Files
                 .AsQueryable()
@@ -99,20 +101,20 @@ namespace ASC.Web.Files
                 .GroupBy(r => Constants.LostUser.ID)
                 .Select(r => new { CreateBy = Constants.LostUser.ID, Size = r.Sum(a => a.file.ContentLength) });
 
-            return myFiles.Union(commonFiles)
-                .ToList()
-                .GroupBy(
-                r => r.CreateBy,
-                r => r.Size,
-                (userId, items) =>
+            return  await myFiles.Union(commonFiles)
+                .AsAsyncEnumerable()
+                .GroupByAwait(
+                async r => await Task.FromResult(r.CreateBy),
+                async r => await Task.FromResult(r.Size),
+                async (userId, items) =>
                 {
                     var user = UserManager.GetUsers(userId);
-                    var item = new UsageSpaceStatItem { SpaceUsage = items.Sum() };
+                    var item = new UsageSpaceStatItem { SpaceUsage = await items.SumAsync() };
                     if (user.Equals(Constants.LostUser))
                     {
                         item.Name = FilesUCResource.CorporateFiles;
                         item.ImgUrl = PathProvider.GetImagePath("corporatefiles_big.png");
-                        item.Url = PathProvider.GetFolderUrlById(GlobalFolderHelper.FolderCommonAsync.Result);
+                        item.Url = await PathProvider.GetFolderUrlByIdAsync(await GlobalFolderHelper.FolderCommonAsync);
                     }
                     else
                     {
@@ -124,7 +126,7 @@ namespace ASC.Web.Files
                     return item;
                 })
                 .OrderByDescending(i => i.SpaceUsage)
-                .ToList();
+                .ToListAsync();
 
         }
     }
@@ -153,16 +155,16 @@ namespace ASC.Web.Files
             DaoFactory = daoFactory;
         }
 
-        public long GetUserSpaceUsage(Guid userId)
+        public async Task<long> GetUserSpaceUsageAsync(Guid userId)
         {
             var tenantId = TenantManager.GetCurrentTenant().TenantId;
             var my = GlobalFolder.GetFolderMy(FileMarker, DaoFactory);
-            var trash = GlobalFolder.GetFolderTrash<int>(DaoFactory);
+            var trash = await GlobalFolder.GetFolderTrashAsync<int>(DaoFactory);
 
-            return FilesDbContext.Files
+            return await FilesDbContext.Files
                 .AsQueryable()
                 .Where(r => r.TenantId == tenantId && (r.FolderId == my || r.FolderId == trash))
-                .Sum(r => r.ContentLength);
+                .SumAsync(r => r.ContentLength);
         }
     }
 }

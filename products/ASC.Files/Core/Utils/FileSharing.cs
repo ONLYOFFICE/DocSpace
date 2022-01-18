@@ -199,7 +199,7 @@ namespace ASC.Web.Files.Utils
                 {
                     if (entry.RootFolderType != FolderType.USER && entry.RootFolderType != FolderType.Privacy
                             || Equals(entry.RootFolderId, GlobalFolderHelper.FolderMy)
-                            || Equals(entry.RootFolderId, GlobalFolderHelper.FolderPrivacy))
+                            || Equals(entry.RootFolderId, await GlobalFolderHelper.FolderPrivacyAsync))
                         return;
 
                     var entryType = entry.FileEntryType;
@@ -210,7 +210,7 @@ namespace ASC.Web.Files.Utils
 
                     if (entryType == FileEntryType.File)
                     {
-                        DocumentServiceHelper.CheckUsersForDrop((File<T>)entry);
+                        await DocumentServiceHelper.CheckUsersForDropAsync((File<T>)entry);
                     }
 
                     await FileMarker.RemoveMarkAsNewAsync(entry);
@@ -251,7 +251,7 @@ namespace ASC.Web.Files.Utils
                             && (Equals(entry.RootFolderId, GlobalFolderHelper.FolderMy) || await FileSecurity.CanEditAsync(entry))
                             || entry.RootFolderType == FolderType.Privacy
                                 && entry is File<T>
-                                && (Equals(entry.RootFolderId, GlobalFolderHelper.FolderPrivacy) || await FileSecurity.CanEditAsync(entry))));
+                                && (Equals(entry.RootFolderId, await GlobalFolderHelper.FolderPrivacyAsync) || await FileSecurity.CanEditAsync(entry))));
         }
     }
 

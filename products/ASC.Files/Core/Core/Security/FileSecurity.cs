@@ -787,7 +787,7 @@ namespace ASC.Files.Core.Security
                     if (fileIds.ContainsKey(x.ID))
                     {
                         x.Access = fileIds[x.ID];
-                        x.FolderIdDisplay = GlobalFolder.GetFolderShare<T>(daoFactory);
+                        x.FolderIdDisplay = GlobalFolder.GetFolderShareAsync<T>(daoFactory).Result;
                     }
                 });
 
@@ -808,7 +808,7 @@ namespace ASC.Files.Core.Security
                     if (folderIds.ContainsKey(x.ID))
                     {
                         x.Access = folderIds[x.ID];
-                        x.FolderIdDisplay = GlobalFolder.GetFolderShare<T>(daoFactory);
+                        x.FolderIdDisplay = GlobalFolder.GetFolderShareAsync<T>(daoFactory).Result;
                     }
                 });
 
@@ -907,7 +907,7 @@ namespace ASC.Files.Core.Security
                     if (fileIds.ContainsKey(x.ID))
                     {
                         x.Access = fileIds[x.ID];
-                        x.FolderIdDisplay = GlobalFolder.GetFolderPrivacy<T>(daoFactory);
+                        x.FolderIdDisplay = GlobalFolder.GetFolderPrivacyAsync<T>(daoFactory).Result;
                     }
                 });
 
@@ -928,7 +928,7 @@ namespace ASC.Files.Core.Security
                     if (folderIds.ContainsKey(x.ID))
                     {
                         x.Access = folderIds[x.ID];
-                        x.FolderIdDisplay = GlobalFolder.GetFolderPrivacy<T>(daoFactory);
+                        x.FolderIdDisplay = GlobalFolder.GetFolderPrivacyAsync<T>(daoFactory).Result;
                     }
                 });
 

@@ -347,46 +347,6 @@ namespace ASC.Web.Files.Services.DocumentService
             return DocumentServiceConnector.GenerateRevisionId(Hasher.Base64Hash(keyDoc, HashAlg.SHA256));
         }
 
-
-        public void CheckUsersForDrop<T>(File<T> file)
-        {
-            var fileSecurity = FileSecurity;
-            var sharedLink =
-                fileSecurity.CanEditAsync(file, FileConstant.ShareLinkId).Result
-                || fileSecurity.CanCustomFilterEditAsync(file, FileConstant.ShareLinkId).Result
-                || fileSecurity.CanReviewAsync(file, FileConstant.ShareLinkId).Result
-                || fileSecurity.CanFillFormsAsync(file, FileConstant.ShareLinkId).Result
-                || fileSecurity.CanCommentAsync(file, FileConstant.ShareLinkId).Result;
-
-            var usersDrop = FileTracker.GetEditingBy(file.ID)
-                                       .Where(uid =>
-                                           {
-                                               if (!UserManager.UserExists(uid))
-                                               {
-                                                   return !sharedLink;
-                                               }
-                                               return
-                                                    !fileSecurity.CanEditAsync(file, uid).Result
-                                                    && !fileSecurity.CanCustomFilterEditAsync(file, uid).Result
-                                                    && !fileSecurity.CanReviewAsync(file, uid).Result
-                                                    && !fileSecurity.CanFillFormsAsync(file, uid).Result
-                                                    && !fileSecurity.CanCommentAsync(file, uid).Result;
-                                           })
-                                       .Select(u => u.ToString()).ToArray();
-
-            if (!usersDrop.Any()) return;
-
-            var fileStable = file;
-            if (file.Forcesave != ForcesaveType.None)
-            {
-                var fileDao = DaoFactory.GetFileDao<T>();
-                fileStable = fileDao.GetFileStableAsync(file.ID, file.Version).Result;
-            }
-
-            var docKey = GetDocKey(fileStable);
-            DropUser(docKey, usersDrop, file.ID);
-        }
-
         public async Task CheckUsersForDropAsync<T>(File<T> file)
         {
             var fileSecurity = FileSecurity;
@@ -430,23 +390,6 @@ namespace ASC.Web.Files.Services.DocumentService
         public bool DropUser(string docKeyForTrack, string[] users, object fileId = null)
         {
             return DocumentServiceConnector.Command(Web.Core.Files.DocumentService.CommandMethod.Drop, docKeyForTrack, fileId, null, users);
-        }
-
-        public bool RenameFile<T>(File<T> file, IFileDao<T> fileDao)
-        {
-            if (!FileUtility.CanWebView(file.Title)
-                && !FileUtility.CanWebCustomFilterEditing(file.Title)
-                && !FileUtility.CanWebEdit(file.Title)
-                && !FileUtility.CanWebReview(file.Title)
-                && !FileUtility.CanWebRestrictedEditing(file.Title)
-                && !FileUtility.CanWebComment(file.Title))
-                return true;
-
-            var fileStable = file.Forcesave == ForcesaveType.None ? file : fileDao.GetFileStableAsync(file.ID, file.Version).Result;
-            var docKeyForTrack = GetDocKey(fileStable);
-
-            var meta = new Web.Core.Files.DocumentService.MetaData { Title = file.Title };
-            return DocumentServiceConnector.Command(Web.Core.Files.DocumentService.CommandMethod.Meta, docKeyForTrack, file.ID, meta: meta);
         }
 
         public async Task<bool> RenameFileAsync<T>(File<T> file, IFileDao<T> fileDao)

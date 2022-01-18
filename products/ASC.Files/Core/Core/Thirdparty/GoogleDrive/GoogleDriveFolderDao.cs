@@ -195,7 +195,8 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             {
                 var driveFolderId = MakeDriveId(folder.FolderID);
 
-                var driveFolder = await ProviderInfo.Storage.InsertEntryAsync(null, folder.Title, driveFolderId, true).ConfigureAwait(false);
+                var storage = await ProviderInfo.StorageAsync;
+                var driveFolder = await storage.InsertEntryAsync(null, folder.Title, driveFolderId, true).ConfigureAwait(false);
 
                 await ProviderInfo.CacheResetAsync(driveFolder).ConfigureAwait(false);
                 var parentDriveId = GetParentDriveId(driveFolder);
@@ -250,7 +251,10 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             }
 
             if (!(driveFolder is ErrorDriveEntry))
-                await ProviderInfo.Storage.DeleteEntryAsync(driveFolder.Id).ConfigureAwait(false);
+            {
+                var storage = await ProviderInfo.StorageAsync;
+                await storage.DeleteEntryAsync(driveFolder.Id).ConfigureAwait(false);
+            }
 
             await ProviderInfo.CacheResetAsync(driveFolder.Id).ConfigureAwait(false);
             var parentDriveId = GetParentDriveId(driveFolder);
@@ -294,10 +298,11 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
             var fromFolderDriveId = GetParentDriveId(driveFolder);
 
-            driveFolder = await ProviderInfo.Storage.InsertEntryIntoFolderAsync(driveFolder, toDriveFolder.Id).ConfigureAwait(false);
+            var storage = await ProviderInfo.StorageAsync;
+            driveFolder = await storage.InsertEntryIntoFolderAsync(driveFolder, toDriveFolder.Id).ConfigureAwait(false);
             if (fromFolderDriveId != null)
             {
-                await ProviderInfo.Storage.RemoveEntryFromFolderAsync(driveFolder, fromFolderDriveId).ConfigureAwait(false);
+                await storage.RemoveEntryFromFolderAsync(driveFolder, fromFolderDriveId).ConfigureAwait(false);
             }
 
             await ProviderInfo.CacheResetAsync(driveFolder.Id).ConfigureAwait(false);
@@ -341,7 +346,8 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             var toDriveFolder = await GetDriveEntryAsync(toFolderId).ConfigureAwait(false);
             if (toDriveFolder is ErrorDriveEntry errorDriveEntry1) throw new Exception(errorDriveEntry1.Error);
 
-            var newDriveFolder = await ProviderInfo.Storage.InsertEntryAsync(null, driveFolder.Name, toDriveFolder.Id, true).ConfigureAwait(false);
+            var storage = await ProviderInfo.StorageAsync;
+            var newDriveFolder = await storage.InsertEntryAsync(null, driveFolder.Name, toDriveFolder.Id, true).ConfigureAwait(false);
 
             await ProviderInfo.CacheResetAsync(newDriveFolder).ConfigureAwait(false);
             await ProviderInfo.CacheResetAsync(toDriveFolder.Id, true).ConfigureAwait(false);
@@ -389,7 +395,8 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             {
                 //rename folder
                 driveFolder.Name = newTitle;
-                driveFolder = await ProviderInfo.Storage.RenameEntryAsync(driveFolder.Id, driveFolder.Name).ConfigureAwait(false);
+                var storage = await ProviderInfo.StorageAsync;
+                driveFolder = await storage.RenameEntryAsync(driveFolder.Id, driveFolder.Name).ConfigureAwait(false);
             }
 
             await ProviderInfo.CacheResetAsync(driveFolder).ConfigureAwait(false);
@@ -408,7 +415,8 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         {
             var driveId = MakeDriveId(folderId);
             //note: without cache
-            var entries = await ProviderInfo.Storage.GetEntriesAsync(driveId).ConfigureAwait(false);
+            var storage = await ProviderInfo.StorageAsync;
+            var entries = await storage.GetEntriesAsync(driveId).ConfigureAwait(false);
             return entries.Count == 0;
         }
 
@@ -439,7 +447,8 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         public async Task<long> GetMaxUploadSizeAsync(string folderId, bool chunkedUpload)
         {
-            var storageMaxUploadSize = await ProviderInfo.Storage.GetMaxUploadSizeAsync().ConfigureAwait(false);
+            var storage = await ProviderInfo.StorageAsync.ConfigureAwait(false);
+            var storageMaxUploadSize = await storage.GetMaxUploadSizeAsync();
 
             return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, SetupInfo.AvailableFileSize);
         }

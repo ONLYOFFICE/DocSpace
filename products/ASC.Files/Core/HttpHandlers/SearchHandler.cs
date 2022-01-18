@@ -114,14 +114,14 @@ namespace ASC.Web.Files.Configuration
             if (ThirdpartyConfiguration.SupportInclusion(DaoFactory)
                 && FilesSettingsHelper.EnableThirdParty)
             {
-                var id = GlobalFolderHelper.FolderMy;
-                if (!Equals(id, 0))
-                {
+                //var id = GlobalFolderHelper.FolderMy;
+                //if (!Equals(id, 0))
+                //{
                     //var folderMy = await folderDao.GetFolderAsync(id);
                     //result = result.Concat(EntryManager.GetThirpartyFolders(folderMy, text));
-                }
+                //}
 
-                id = GlobalFolderHelper.FolderCommon;
+                //id = await GlobalFolderHelper.FolderCommonAsync;
                 //var folderCommon = await folderDao.GetFolderAsync(id);
                 //result = result.Concat(EntryManager.GetThirpartyFolders(folderCommon, text));
             }
@@ -159,7 +159,7 @@ namespace ASC.Web.Files.Configuration
                 {
                     Name = folder.Title ?? string.Empty,
                     Description = string.Empty,
-                    URL = PathProvider.GetFolderUrl(folder),
+                    URL = await PathProvider.GetFolderUrlAsync(folder),
                     Date = folder.ModifiedOn,
                     Additional = new Dictionary<string, object>
                                     {

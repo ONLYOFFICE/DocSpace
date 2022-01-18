@@ -148,13 +148,6 @@ namespace ASC.Files.Thirdparty
             throw new ArgumentException($"Id is not {Name} id");
         }
 
-        public void RenameProvider(T provider, string newTitle)
-        {
-            var dbDao = ServiceProvider.GetService<ProviderAccountDao>();
-            dbDao.UpdateProviderInfoAsync(provider.ID, newTitle, null, provider.RootFolderType).Wait();
-            provider.UpdateTitle(newTitle); //This will update cached version too
-        }
-
         public async Task RenameProviderAsync(T provider, string newTitle)
         {
             var dbDao = ServiceProvider.GetService<ProviderAccountDao>();

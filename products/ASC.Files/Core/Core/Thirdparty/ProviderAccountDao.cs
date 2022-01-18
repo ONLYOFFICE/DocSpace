@@ -191,7 +191,7 @@ namespace ASC.Files.Thirdparty
 
             authData = GetEncodedAccesToken(authData, prKey);
 
-            if (!CheckProviderInfo(ToProviderInfo(0, prKey, customerTitle, authData, SecurityContext.CurrentAccount.ID, folderType, TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()))))
+            if (!await CheckProviderInfoAsync(ToProviderInfo(0, prKey, customerTitle, authData, SecurityContext.CurrentAccount.ID, folderType, TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()))))
             {
                 throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, providerKey));
             }
@@ -215,9 +215,9 @@ namespace ASC.Files.Thirdparty
             return res.Id;
         }
 
-        public bool CheckProviderInfo(IProviderInfo providerInfo)
+        public async Task<bool> CheckProviderInfoAsync(IProviderInfo providerInfo)
         {
-            return providerInfo != null && providerInfo.CheckAccessAsync().Result;
+            return providerInfo != null && await providerInfo.CheckAccessAsync();
         }
 
         public virtual async Task<int> UpdateProviderInfoAsync(int linkId, AuthData authData)
@@ -280,7 +280,7 @@ namespace ASC.Files.Thirdparty
                     authData = GetEncodedAccesToken(authData, key);
                 }
 
-                if (!CheckProviderInfo(ToProviderInfo(0, key, customerTitle, authData, SecurityContext.CurrentAccount.ID, folderType, TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()))))
+                if (!await CheckProviderInfoAsync(ToProviderInfo(0, key, customerTitle, authData, SecurityContext.CurrentAccount.ID, folderType, TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()))).ConfigureAwait(false))
                     throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, key));
             }
 

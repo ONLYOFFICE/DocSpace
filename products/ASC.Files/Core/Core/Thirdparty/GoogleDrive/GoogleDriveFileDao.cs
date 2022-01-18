@@ -267,7 +267,8 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             if (driveFile == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
             if (driveFile is ErrorDriveEntry errorDriveEntry) throw new Exception(errorDriveEntry.Error);
 
-            var fileStream = await ProviderInfo.Storage.DownloadStreamAsync(driveFile, (int)offset).ConfigureAwait(false);
+            var storage = await ProviderInfo.StorageAsync;
+            var fileStream = await storage.DownloadStreamAsync(driveFile, (int)offset).ConfigureAwait(false);
 
             if (!driveFile.Size.HasValue && fileStream != null && fileStream.CanSeek)
             {
@@ -293,14 +294,15 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             if (fileStream == null) throw new ArgumentNullException("fileStream");
 
             DriveFile newDriveFile = null;
+            var storage = await ProviderInfo.StorageAsync;
 
             if (file.ID != null)
             {
-                newDriveFile = await ProviderInfo.Storage.SaveStreamAsync(MakeDriveId(file.ID), fileStream, file.Title).ConfigureAwait(false);
+                newDriveFile = await storage.SaveStreamAsync(MakeDriveId(file.ID), fileStream, file.Title).ConfigureAwait(false);
             }
             else if (file.FolderID != null)
             {
-                newDriveFile = await ProviderInfo.Storage.InsertEntryAsync(fileStream, file.Title, MakeDriveId(file.FolderID)).ConfigureAwait(false);
+                newDriveFile = await storage.InsertEntryAsync(fileStream, file.Title, MakeDriveId(file.FolderID)).ConfigureAwait(false);
             }
 
             await ProviderInfo.CacheResetAsync(newDriveFile).ConfigureAwait(false);
@@ -361,7 +363,8 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
             if (!(driveFile is ErrorDriveEntry))
             {
-                await ProviderInfo.Storage.DeleteEntryAsync(driveFile.Id).ConfigureAwait(false);
+                var storage = await ProviderInfo.StorageAsync;
+                await storage.DeleteEntryAsync(driveFile.Id).ConfigureAwait(false);
             }
 
             await ProviderInfo.CacheResetAsync(driveFile.Id).ConfigureAwait(false);
@@ -412,10 +415,11 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
             var fromFolderDriveId = GetParentDriveId(driveFile);
 
-            driveFile = await ProviderInfo.Storage.InsertEntryIntoFolderAsync(driveFile, toDriveFolder.Id).ConfigureAwait(false);
+            var storage = await ProviderInfo.StorageAsync;
+            driveFile = await storage.InsertEntryIntoFolderAsync(driveFile, toDriveFolder.Id).ConfigureAwait(false);
             if (fromFolderDriveId != null)
             {
-                await ProviderInfo.Storage.RemoveEntryFromFolderAsync(driveFile, fromFolderDriveId).ConfigureAwait(false);
+                await storage.RemoveEntryFromFolderAsync(driveFile, fromFolderDriveId).ConfigureAwait(false);
             }
 
             await ProviderInfo.CacheResetAsync(driveFile.Id).ConfigureAwait(false);
@@ -459,7 +463,8 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             var toDriveFolder = await GetDriveEntryAsync(toFolderId).ConfigureAwait(false);
             if (toDriveFolder is ErrorDriveEntry errorDriveEntry1) throw new Exception(errorDriveEntry1.Error);
 
-            var newDriveFile = await ProviderInfo.Storage.CopyEntryAsync(toDriveFolder.Id, driveFile.Id).ConfigureAwait(false);
+            var storage = await ProviderInfo.StorageAsync;
+            var newDriveFile = await storage.CopyEntryAsync(toDriveFolder.Id, driveFile.Id).ConfigureAwait(false);
 
             await ProviderInfo.CacheResetAsync(newDriveFile).ConfigureAwait(false);
             await ProviderInfo.CacheResetAsync(toDriveFolder.Id, false).ConfigureAwait(false);
@@ -472,7 +477,8 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             var driveFile = await GetDriveEntryAsync(file.ID).ConfigureAwait(false);
             driveFile.Name = newTitle;
 
-            driveFile = await ProviderInfo.Storage.RenameEntryAsync(driveFile.Id, driveFile.Name).ConfigureAwait(false);
+            var storage = await ProviderInfo.StorageAsync;
+            driveFile = await storage.RenameEntryAsync(driveFile.Id, driveFile.Name).ConfigureAwait(false);
 
             await ProviderInfo.CacheResetAsync(driveFile).ConfigureAwait(false);
             var parentDriveId = GetParentDriveId(driveFile);
@@ -524,6 +530,9 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             var uploadSession = new ChunkedUploadSession<string>(file, contentLength);
 
             DriveFile driveFile;
+            var storageTask = ProviderInfo.StorageAsync;
+            GoogleDriveStorage storage;
+
             if (file.ID != null)
             {
                 driveFile = await GetDriveEntryAsync(file.ID).ConfigureAwait(false);
@@ -531,10 +540,12 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             else
             {
                 var folder = await GetDriveEntryAsync(file.FolderID).ConfigureAwait(false);
-                driveFile = ProviderInfo.Storage.FileConstructor(file.Title, null, folder.Id);
+                storage = await storageTask;
+                driveFile = storage.FileConstructor(file.Title, null, folder.Id);
             }
 
-            var googleDriveSession = await ProviderInfo.Storage.CreateResumableSessionAsync(driveFile, contentLength).ConfigureAwait(false);
+            storage = await storageTask;
+            var googleDriveSession = await storage.CreateResumableSessionAsync(driveFile, contentLength).ConfigureAwait(false);
             if (googleDriveSession != null)
             {
                 uploadSession.Items["GoogleDriveSession"] = googleDriveSession;
@@ -563,7 +574,9 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             if (uploadSession.Items.ContainsKey("GoogleDriveSession"))
             {
                 var googleDriveSession = uploadSession.GetItemOrDefault<ResumableUploadSession>("GoogleDriveSession");
-                await ProviderInfo.Storage.TransferAsync(googleDriveSession, stream, chunkLength).ConfigureAwait(false);
+                var storage = await ProviderInfo.StorageAsync;
+                storage = await ProviderInfo.StorageAsync;
+                await storage.TransferAsync(googleDriveSession, stream, chunkLength).ConfigureAwait(false);
             }
             else
             {

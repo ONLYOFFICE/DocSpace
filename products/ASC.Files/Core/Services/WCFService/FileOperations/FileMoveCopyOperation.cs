@@ -171,10 +171,13 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             var needToMark = new List<FileEntry<TTo>>();
 
-            needToMark.AddRange(await MoveOrCopyFoldersAsync(scope, Folders, toFolder, _copy));
-            needToMark.AddRange(await MoveOrCopyFilesAsync(scope, Files, toFolder, _copy));
+            var moveOrCopyFoldersTask = MoveOrCopyFoldersAsync(scope, Folders, toFolder, _copy);
+            var moveOrCopyFilesTask = MoveOrCopyFilesAsync(scope, Files, toFolder, _copy);
 
-            needToMark.Distinct().ToList().ForEach(x => fileMarker.MarkAsNew(x));
+            needToMark.AddRange(await moveOrCopyFoldersTask);
+            needToMark.AddRange(await moveOrCopyFilesTask);
+
+            needToMark.Distinct().ToList().ForEach(x => fileMarker.MarkAsNewAsync(x).Wait());
         }
 
         private async Task<List<FileEntry<TTo>>> MoveOrCopyFoldersAsync<TTo>(IServiceScope scope, List<T> folderIds, Folder<TTo> toFolder, bool copy)
@@ -474,7 +477,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                                     if (newFile.ProviderEntry)
                                     {
-                                        LinkDao.DeleteAllLink(file.ID.ToString());
+                                        await LinkDao.DeleteAllLinkAsync(file.ID.ToString());
                                     }
 
                                     if (Equals(toFolderId.ToString(), DaoFolderId))
@@ -532,7 +535,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                         newFile.ThumbnailStatus = Thumbnail.Created;
                                     }
 
-                                    LinkDao.DeleteAllLink(newFile.ID.ToString());
+                                    await LinkDao.DeleteAllLinkAsync(newFile.ID.ToString());
 
                                     needToMark.Add(newFile);
 
@@ -563,7 +566,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                             {
                                                 await FileDao.DeleteFileAsync(file.ID);
 
-                                                LinkDao.DeleteAllLink(file.ID.ToString());
+                                                await LinkDao.DeleteAllLinkAsync(file.ID.ToString());
 
                                                 if (file.RootFolderType != FolderType.USER)
                                                 {

@@ -36,6 +36,7 @@ using System.Security;
 using System.ServiceModel.Security;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Api.Collections;
@@ -2150,7 +2151,7 @@ namespace ASC.Api.Settings
         }
 
         [Read("statistics/spaceusage/{id}")]
-        public List<UsageSpaceStatItemWrapper> GetSpaceUsageStatistics(Guid id)
+        public async Task<List<UsageSpaceStatItemWrapper>> GetSpaceUsageStatistics(Guid id)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -2163,8 +2164,9 @@ namespace ASC.Api.Settings
 
             if (webtem == null) return new List<UsageSpaceStatItemWrapper>();
 
-            return webtem.Context.SpaceUsageStatManager.GetStatData()
-                         .ConvertAll(it => new UsageSpaceStatItemWrapper
+            var statData = await webtem.Context.SpaceUsageStatManager.GetStatDataAsync();
+
+            return statData.ConvertAll(it => new UsageSpaceStatItemWrapper
                          {
                              Name = it.Name.HtmlEncode(),
                              Icon = it.ImgUrl,

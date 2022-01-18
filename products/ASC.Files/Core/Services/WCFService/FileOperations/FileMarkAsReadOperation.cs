@@ -91,20 +91,21 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         {
             var scopeClass = scope.ServiceProvider.GetService<FileMarkAsReadOperationScope>();
             var (fileMarker, globalFolder, daoFactory, settingsManager) = scopeClass;
-            var entries = new List<FileEntry<T>>();
+            var entries = AsyncEnumerable.Empty<FileEntry<T>>();
             if (Folders.Any())
             {
-                entries.AddRange(await FolderDao.GetFoldersAsync(Folders).ToListAsync());
+                entries.Concat(FolderDao.GetFoldersAsync(Folders));
             }
             if (Files.Any())
             {
-                entries.AddRange(await FileDao.GetFilesAsync(Files).ToListAsync());
+                entries.Concat(FileDao.GetFilesAsync(Files));
             }
-            entries.ForEach(x =>
+
+            await entries.ForEachAwaitAsync(async x =>
             {
                 CancellationToken.ThrowIfCancellationRequested();
 
-                fileMarker.RemoveMarkAsNew(x, ((IAccount)Thread.CurrentPrincipal.Identity).ID);
+                await fileMarker.RemoveMarkAsNewAsync(x, ((IAccount)Thread.CurrentPrincipal.Identity).ID);
 
                 if (x.FileEntryType == FileEntryType.File)
                 {
@@ -120,14 +121,14 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var rootIds = new List<int>
                 {
                     globalFolder.GetFolderMy(fileMarker, daoFactory),
-                    globalFolder.GetFolderCommon(fileMarker, daoFactory),
-                    globalFolder.GetFolderShare(daoFactory),
-                    globalFolder.GetFolderProjects(daoFactory),
+                    await globalFolder.GetFolderCommonAsync(fileMarker, daoFactory),
+                    await globalFolder.GetFolderShareAsync(daoFactory),
+                    await globalFolder.GetFolderProjectsAsync(daoFactory),
                 };
 
             if (PrivacyRoomSettings.GetEnabled(settingsManager))
             {
-                rootIds.Add(globalFolder.GetFolderPrivacy(daoFactory));
+                rootIds.Add(await globalFolder.GetFolderPrivacyAsync(daoFactory));
             }
 
             var newrootfolder =

@@ -237,10 +237,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             ReplaceLongPath(entriesPathId);
         }
 
-        private ItemNameValueCollection<T> ExecPathFromFile(IServiceScope scope, File<T> file, string path)
+        private async Task<ItemNameValueCollection<T>> ExecPathFromFileAsync(IServiceScope scope, File<T> file, string path)
         {
             var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
-            fileMarker.RemoveMarkAsNew(file);
+            await fileMarker.RemoveMarkAsNewAsync(file);
 
             var title = file.Title;
 
@@ -268,7 +268,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 var files = await FileDao.GetFilesAsync(Files).ToListAsync();
                 files = (await FilesSecurity.FilterReadAsync(files)).ToList();
-                files.ForEach(file => entriesPathId.Add(ExecPathFromFile(scope, file, string.Empty)));
+                files.ForEach(file => entriesPathId.Add(ExecPathFromFileAsync(scope, file, string.Empty).Result));
             }
             if (0 < Folders.Count)
             {
@@ -300,7 +300,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 var files = await FileDao.GetFilesAsync(folder.ID, null, FilterType.None, false, Guid.Empty, string.Empty, true).ToListAsync();
                 var filteredFiles = await FilesSecurity.FilterReadAsync(files);
                 files = filteredFiles.ToList();
-                files.ForEach(file => entriesPathId.Add(ExecPathFromFile(scope, file, folderPath)));
+                files.ForEach(file => entriesPathId.Add(ExecPathFromFileAsync(scope, file, folderPath).Result));
 
                 await fileMarker.RemoveMarkAsNewAsync(folder);
 

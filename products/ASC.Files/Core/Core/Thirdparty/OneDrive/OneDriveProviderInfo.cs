@@ -49,15 +49,15 @@ namespace ASC.Files.Thirdparty.OneDrive
     {
         public OAuth20Token Token { get; set; }
 
-        internal OneDriveStorage Storage
+        internal Task<OneDriveStorage> StorageAsync
         {
             get
             {
                 if (Wrapper.Storage == null || !Wrapper.Storage.IsOpened)
                 {
-                    return Wrapper.CreateStorage(Token, ID);
+                    return Wrapper.CreateStorageAsync(Token, ID);
                 }
-                return Wrapper.Storage;
+                return Task.FromResult(Wrapper.Storage);
             }
         }
 
@@ -96,14 +96,15 @@ namespace ASC.Files.Thirdparty.OneDrive
         public void Dispose()
         {
             if (StorageOpened)
-                Storage.Close();
+                StorageAsync.Result.Close();
         }
 
         public async Task<bool> CheckAccessAsync()
         {
             try
             {
-                return await Storage.CheckAccessAsync().ConfigureAwait(false);
+                var storage = await StorageAsync;
+                return await storage.CheckAccessAsync();
             }
             catch (AggregateException)
             {
@@ -126,14 +127,16 @@ namespace ASC.Files.Thirdparty.OneDrive
             CustomerTitle = newtitle;
         }
 
-        internal Task<Item> GetOneDriveItemAsync(string itemId)
+        internal async Task<Item> GetOneDriveItemAsync(string itemId)
         {
-            return OneDriveProviderInfoHelper.GetOneDriveItemAsync(Storage, ID, itemId);
+            var storage = await StorageAsync;
+            return await OneDriveProviderInfoHelper.GetOneDriveItemAsync(storage, ID, itemId);
         }
 
-        internal Task<List<Item>> GetOneDriveItemsAsync(string onedriveFolderId)
+        internal async Task<List<Item>> GetOneDriveItemsAsync(string onedriveFolderId)
         {
-            return OneDriveProviderInfoHelper.GetOneDriveItemsAsync(Storage, ID, onedriveFolderId);
+            var storage = await StorageAsync;
+            return await OneDriveProviderInfoHelper.GetOneDriveItemsAsync(storage, ID, onedriveFolderId);
         }
 
         internal Task CacheResetAsync(string onedriveId = null)
@@ -155,19 +158,19 @@ namespace ASC.Files.Thirdparty.OneDrive
             ServiceProvider = serviceProvider;
         }
 
-        public OneDriveStorage CreateStorage(OAuth20Token token, int id)
+        public async Task<OneDriveStorage> CreateStorageAsync(OAuth20Token token, int id)
         {
             if (Storage != null && Storage.IsOpened) return Storage;
 
             var onedriveStorage = ServiceProvider.GetService<OneDriveStorage>();
 
-            CheckToken(token, id);
+            await CheckTokenAsync(token, id);
 
             onedriveStorage.Open(token);
             return Storage = onedriveStorage;
         }
 
-        private void CheckToken(OAuth20Token token, int id)
+        private async Task CheckTokenAsync(OAuth20Token token, int id)
         {
             if (token == null) throw new UnauthorizedAccessException("Cannot create GoogleDrive session with given token");
             if (token.IsExpired)
@@ -176,7 +179,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
                 var dbDao = ServiceProvider.GetService<ProviderAccountDao>();
                 var authData = new AuthData(token: token.ToJson());
-                dbDao.UpdateProviderInfoAsync(id, authData).Wait();
+                await dbDao.UpdateProviderInfoAsync(id, authData);
             }
         }
 

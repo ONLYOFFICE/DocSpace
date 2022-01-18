@@ -139,6 +139,7 @@ namespace ASC.Files.Thirdparty.Dropbox
         {
             return DropboxProviderInfoHelper.GetDropboxItemsAsync(Storage, ID, dropboxFolderPath);
         }
+
         internal Task CacheResetAsync(Metadata dropboxItem)
         {
             return DropboxProviderInfoHelper.CacheResetAsync(ID, dropboxItem);

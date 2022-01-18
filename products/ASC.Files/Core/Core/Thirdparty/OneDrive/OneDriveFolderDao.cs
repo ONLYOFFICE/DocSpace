@@ -197,7 +197,8 @@ namespace ASC.Files.Thirdparty.OneDrive
 
                 folder.Title = await GetAvailableTitleAsync(folder.Title, onedriveFolderId, IsExistAsync).ConfigureAwait(false);
 
-                var onedriveFolder = await ProviderInfo.Storage.CreateFolderAsync(folder.Title, onedriveFolderId).ConfigureAwait(false);
+                var storage = await ProviderInfo.StorageAsync;
+                var onedriveFolder = await storage.CreateFolderAsync(folder.Title, onedriveFolderId).ConfigureAwait(false);
 
                 await ProviderInfo.CacheResetAsync(onedriveFolder.Id).ConfigureAwait(false);
                 var parentFolderId = GetParentFolderId(onedriveFolder);
@@ -257,7 +258,10 @@ namespace ASC.Files.Thirdparty.OneDrive
             }
 
             if (!(onedriveFolder is ErrorItem))
-                await ProviderInfo.Storage.DeleteItemAsync(onedriveFolder).ConfigureAwait(false);
+            {
+                var storage = await ProviderInfo.StorageAsync;
+                await storage.DeleteItemAsync(onedriveFolder).ConfigureAwait(false);
+            }
 
             await ProviderInfo.CacheResetAsync(onedriveFolder.Id).ConfigureAwait(false);
             var parentFolderId = GetParentFolderId(onedriveFolder);
@@ -301,7 +305,8 @@ namespace ASC.Files.Thirdparty.OneDrive
             var fromFolderId = GetParentFolderId(onedriveFolder);
 
             var newTitle = await GetAvailableTitleAsync(onedriveFolder.Name, toOneDriveFolder.Id, IsExistAsync).ConfigureAwait(false);
-            onedriveFolder = await ProviderInfo.Storage.MoveItemAsync(onedriveFolder.Id, newTitle, toOneDriveFolder.Id).ConfigureAwait(false);
+            var storage = await ProviderInfo.StorageAsync;
+            onedriveFolder = await storage.MoveItemAsync(onedriveFolder.Id, newTitle, toOneDriveFolder.Id).ConfigureAwait(false);
 
             await ProviderInfo.CacheResetAsync(onedriveFolder.Id).ConfigureAwait(false);
             await ProviderInfo.CacheResetAsync(fromFolderId).ConfigureAwait(false);
@@ -345,7 +350,8 @@ namespace ASC.Files.Thirdparty.OneDrive
             if (toOneDriveFolder is ErrorItem errorItem1) throw new Exception(errorItem1.Error);
 
             var newTitle = await GetAvailableTitleAsync(onedriveFolder.Name, toOneDriveFolder.Id, IsExistAsync).ConfigureAwait(false);
-            var newOneDriveFolder = await ProviderInfo.Storage.CopyItemAsync(onedriveFolder.Id, newTitle, toOneDriveFolder.Id).ConfigureAwait(false);
+            var storage = await ProviderInfo.StorageAsync;
+            var newOneDriveFolder = await storage.CopyItemAsync(onedriveFolder.Id, newTitle, toOneDriveFolder.Id).ConfigureAwait(false);
 
             await ProviderInfo.CacheResetAsync(newOneDriveFolder.Id).ConfigureAwait(false);
             await ProviderInfo.CacheResetAsync(toOneDriveFolder.Id).ConfigureAwait(false);
@@ -394,7 +400,8 @@ namespace ASC.Files.Thirdparty.OneDrive
                 newTitle = await GetAvailableTitleAsync(newTitle, parentFolderId, IsExistAsync).ConfigureAwait(false);
 
                 //rename folder
-                onedriveFolder = await ProviderInfo.Storage.RenameItemAsync(onedriveFolder.Id, newTitle).ConfigureAwait(false);
+                var storage = await ProviderInfo.StorageAsync;
+                onedriveFolder = await storage.RenameItemAsync(onedriveFolder.Id, newTitle).ConfigureAwait(false);
             }
 
             await ProviderInfo.CacheResetAsync(onedriveFolder.Id).ConfigureAwait(false);
@@ -446,11 +453,12 @@ namespace ASC.Files.Thirdparty.OneDrive
             return true;
         }
 
-        public Task<long> GetMaxUploadSizeAsync(string folderId, bool chunkedUpload)
+        public async Task<long> GetMaxUploadSizeAsync(string folderId, bool chunkedUpload)
         {
-            var storageMaxUploadSize = ProviderInfo.Storage.MaxChunkedUploadFileSize;
+            var storage = await ProviderInfo.StorageAsync;
+            var storageMaxUploadSize = storage.MaxChunkedUploadFileSize;
 
-            return Task.FromResult(chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, SetupInfo.AvailableFileSize));
+            return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, SetupInfo.AvailableFileSize);
         }
     }
 }

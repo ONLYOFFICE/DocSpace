@@ -217,11 +217,6 @@ namespace ASC.Files.Thirdparty.OneDrive
             }
         }
 
-        protected override IEnumerable<string> GetChildren(string folderId)
-        {
-            return GetOneDriveItems(folderId).Select(entry => MakeId(entry.Id));
-        }
-
         protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
         {
             var items = await GetOneDriveItemsAsync(folderId);

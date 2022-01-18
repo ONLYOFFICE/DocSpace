@@ -118,12 +118,12 @@ namespace ASC.Web.Files.Utils
             }
         }
 
-        public ConvertFileOperationResult GetStatus(KeyValuePair<File<T>, bool> pair, FileSecurity fileSecurity)
+        public async Task<ConvertFileOperationResult> GetStatusAsync(KeyValuePair<File<T>, bool> pair, FileSecurity fileSecurity)
         {
             var file = pair.Key;
             var key = GetKey(file);
             var operation = cache.Get<ConvertFileOperationResult>(key);
-            if (operation != null && (pair.Value || fileSecurity.CanReadAsync(file).Result))
+            if (operation != null && (pair.Value || await fileSecurity.CanReadAsync(file)))
             {
                 lock (locker)
                 {
@@ -785,19 +785,18 @@ namespace ASC.Web.Files.Utils
             return GetFileConverter<T>().IsConverting(file);
         }
 
-        public IEnumerable<FileOperationResult> GetStatus<T>(IEnumerable<KeyValuePair<File<T>, bool>> filesPair)
+        public async IAsyncEnumerable<FileOperationResult> GetStatusAsync<T>(IEnumerable<KeyValuePair<File<T>, bool>> filesPair)
         {
             var result = new List<FileOperationResult>();
             foreach (var pair in filesPair)
             {
-                var r = GetFileConverter<T>().GetStatus(pair, FileSecurity);
+                var r = await GetFileConverter<T>().GetStatusAsync(pair, FileSecurity);
 
                 if (r != null)
                 {
-                    result.Add(r);
+                    yield return r;
                 }
             }
-            return result;
         }
 
         public async Task<File<T>> SaveConvertedFileAsync<T>(File<T> file, string convertedFileUrl)
@@ -889,9 +888,9 @@ namespace ASC.Web.Files.Utils
             FilesMessageService.Send(newFile, MessageInitiator.DocsService, MessageAction.FileConverted, newFile.Title);
 
             var linkDao = DaoFactory.GetLinkDao();
-            linkDao.DeleteAllLink(file.ID.ToString());
+            await linkDao.DeleteAllLinkAsync(file.ID.ToString());
 
-            FileMarker.MarkAsNew(newFile);
+            await FileMarker.MarkAsNewAsync(newFile);
 
             var tagDao = DaoFactory.GetTagDao<T>();
             var tags = await tagDao.GetTagsAsync(file.ID, FileEntryType.File, TagType.System).ToListAsync();

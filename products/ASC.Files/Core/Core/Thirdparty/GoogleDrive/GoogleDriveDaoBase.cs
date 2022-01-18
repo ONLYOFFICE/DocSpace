@@ -243,11 +243,6 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             }
         }
 
-        protected override IEnumerable<string> GetChildren(string folderId)
-        {
-            return GetDriveEntries(folderId).Select(entry => MakeId(entry.Id));
-        }
-
         protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
         {
             var entries = await GetDriveEntriesAsync(folderId);

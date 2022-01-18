@@ -189,21 +189,21 @@ namespace ASC.Data.Reassigns
                 {
                     manager = item.Context.SpaceUsageStatManager as IUserSpaceUsage;
                     if (manager == null) continue;
-                    docsSpace = manager.GetUserSpaceUsage(FromUser);
+                    docsSpace = manager.GetUserSpaceUsageAsync(FromUser).Result;
                 }
 
                 if (item.ID == WebItemManager.MailProductID)
                 {
                     manager = item.Context.SpaceUsageStatManager as IUserSpaceUsage;
                     if (manager == null) continue;
-                    mailSpace = manager.GetUserSpaceUsage(FromUser);
+                    mailSpace = manager.GetUserSpaceUsageAsync(FromUser).Result;
                 }
 
                 if (item.ID == WebItemManager.TalkProductID)
                 {
                     manager = item.Context.SpaceUsageStatManager as IUserSpaceUsage;
                     if (manager == null) continue;
-                    talkSpace = manager.GetUserSpaceUsage(FromUser);
+                    talkSpace = manager.GetUserSpaceUsageAsync(FromUser).Result;
                 }
             }
         }
