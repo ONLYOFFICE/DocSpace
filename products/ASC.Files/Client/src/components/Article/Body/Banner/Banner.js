@@ -45,11 +45,7 @@ const Banner = () => {
       campaign,
       lng
     );
-
-    console.log(translationUrl);
-
     let obj = await (await fetch(translationUrl)).json();
-    console.log(obj);
 
     return obj;
   };
@@ -59,7 +55,6 @@ const Banner = () => {
       campaign.toLowerCase()
     );
 
-    console.log(imageUrl);
     return imageUrl;
   };
 
@@ -83,7 +78,7 @@ const Banner = () => {
   useEffect(() => {
     fetchBanners();
     getBanner();
-    const adsInterval = setInterval(getBanner, 5000);
+    const adsInterval = setInterval(getBanner, ADS_TIMEOUT);
 
     return function cleanup() {
       clearInterval(adsInterval);
