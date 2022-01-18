@@ -134,8 +134,13 @@ export default function withContent(WrappedContent) {
         setEncryptionAccess,
         setIsLoading,
         t,
+        copyAsAction,
+        setConvertPasswordDialogVisible,
+        setFormCreationInfo,
       } = this.props;
       const { itemTitle } = this.state;
+
+      const isMakeFormFromFile = fileActionTemplateId ? true : false;
 
       let title = itemTitle;
 
@@ -168,40 +173,69 @@ export default function withContent(WrappedContent) {
             )
           : null;
 
-      !item.fileExst && !item.contentLength
-        ? createFolder(item.parentId, title)
-            .then(() => this.completeAction(itemId))
-            .catch((e) => toastr.error(e))
-            .finally(() => {
-              return setIsLoading(false);
-            })
-        : createFile(
-            item.parentId,
+      const processingReceivedInformation = (file) => {
+        console.log("processingReceivedInformation", file);
+        if (isPrivacy) {
+          return setEncryptionAccess(file).then((encryptedFile) => {
+            if (!encryptedFile) return Promise.resolve();
+            toastr.info(t("Translations:EncryptedFileSaving"));
+            return replaceFileStream(file.id, encryptedFile, true, false).then(
+              () => open && openDocEditor(file.id, file.providerKey, tab)
+            );
+          });
+        }
+        return open && openDocEditor(file.id, file.providerKey, tab);
+      };
+
+      if (!item.fileExst && !item.contentLength) {
+        createFolder(item.parentId, title)
+          .then(() => this.completeAction(itemId))
+          .catch((e) => toastr.error(e))
+          .finally(() => {
+            return setIsLoading(false);
+          });
+      } else {
+        if (isMakeFormFromFile) {
+          copyAsAction(
+            fileActionTemplateId,
             `${title}.${item.fileExst}`,
-            fileActionTemplateId
+            item.parentId
           )
             .then((file) => {
-              if (isPrivacy) {
-                return setEncryptionAccess(file).then((encryptedFile) => {
-                  if (!encryptedFile) return Promise.resolve();
-                  toastr.info(t("Translations:EncryptedFileSaving"));
-                  return replaceFileStream(
-                    file.id,
-                    encryptedFile,
-                    true,
-                    false
-                  ).then(
-                    () => open && openDocEditor(file.id, file.providerKey, tab)
-                  );
-                });
-              }
-              return open && openDocEditor(file.id, file.providerKey, tab);
+              processingReceivedInformation(file);
+            })
+            .then(() => this.completeAction(itemId))
+            .catch((err) => {
+              console.log("err", err);
+
+              setFormCreationInfo({
+                newTitle: `${title}.${item.fileExst}`,
+                fromExst: ".docx",
+                toExst: item.fileExst,
+                fileInfo: {
+                  id: fileActionTemplateId,
+                  folderId: item.parentId,
+                },
+              });
+              setConvertPasswordDialogVisible(true);
+
+              open && openDocEditor(null, null, tab);
+            })
+            .finally(() => {
+              return setIsLoading(false);
+            });
+        } else {
+          createFile(item.parentId, `${title}.${item.fileExst}`)
+            .then((file) => {
+              processingReceivedInformation(file);
             })
             .then(() => this.completeAction(itemId))
             .catch((e) => toastr.error(e))
             .finally(() => {
               return setIsLoading(false);
             });
+        }
+      }
     };
 
     renameTitle = (e) => {
@@ -336,7 +370,17 @@ export default function withContent(WrappedContent) {
   }
 
   return inject(
-    ({ filesActionsStore, filesStore, treeFoldersStore, auth }, {}) => {
+    (
+      {
+        filesActionsStore,
+        filesStore,
+        treeFoldersStore,
+        auth,
+        uploadDataStore,
+        dialogsStore,
+      },
+      {}
+    ) => {
       const { editCompleteAction } = filesActionsStore;
       const {
         createFile,
@@ -348,6 +392,7 @@ export default function withContent(WrappedContent) {
         updateFile,
         viewAs,
       } = filesStore;
+      const { copyAsAction } = uploadDataStore;
       const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
 
       const {
@@ -362,6 +407,12 @@ export default function withContent(WrappedContent) {
         folderFormValidation,
         isDesktopClient,
       } = auth.settingsStore;
+
+      const {
+        setConvertPasswordDialogVisible,
+        setConvertItem,
+        setFormCreationInfo,
+      } = dialogsStore;
 
       return {
         createFile,
@@ -386,6 +437,10 @@ export default function withContent(WrappedContent) {
         updateFile,
         viewAs,
         viewer: auth.userStore.user,
+        copyAsAction,
+        setConvertPasswordDialogVisible,
+        setConvertItem,
+        setFormCreationInfo,
       };
     }
   )(observer(WithContent));
