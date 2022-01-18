@@ -245,10 +245,7 @@ namespace ASC.Core.Common.Configuration
 
             if (string.IsNullOrEmpty(value))
             {
-                if (AllProps.ContainsKey(name))
-                {
-                    value = AllProps[name];
-                }
+                AllProps.TryGetValue(name, out value);
             }
 
             return value;
@@ -354,9 +351,9 @@ namespace ASC.Core.Common.Configuration
 
             HandlerType = Type.GetType(additional[HandlerTypeKey]);
 
-            if (additional.ContainsKey(CdnKey))
+            if (additional.TryGetValue(CdnKey, out var value))
             {
-                Cdn = GetCdn(additional[CdnKey]);
+                Cdn = GetCdn(value);
             }
         }
 

@@ -120,17 +120,14 @@ namespace ASC.Data.Storage.GoogleCloud
                                  ? new Uri(props["cnamessl"], UriKind.Absolute)
                                  : new Uri("https://storage.googleapis.com/" + _bucket + "/", UriKind.Absolute);
 
-            if (props.ContainsKey("lower"))
+            if (props.TryGetValue("lower", out var value))
             {
-                bool.TryParse(props["lower"], out _lowerCasing);
+                bool.TryParse(value, out _lowerCasing);
             }
 
             _json = props["json"];
 
-            if (props.ContainsKey("subdir"))
-            {
-                _subDir = props["subdir"];
-            }
+            props.TryGetValue("subdir", out _subDir);
 
             return this;
         }
@@ -348,9 +345,9 @@ namespace ASC.Data.Storage.GoogleCloud
                 return PredefinedObjectAcl.Private;
             }
 
-            if (_domainsAcl.ContainsKey(domain))
+            if (_domainsAcl.TryGetValue(domain, out var value))
             {
-                return _domainsAcl[domain];
+                return value;
             }
             return _moduleAcl;
         }

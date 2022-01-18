@@ -179,9 +179,9 @@ namespace ASC.Feed.Data
                 feedsIteration = GetFeedsInternal(filter);
                 foreach (var feed in feedsIteration)
                 {
-                    if (feeds.ContainsKey(feed.GroupId))
+                    if (feeds.TryGetValue(feed.GroupId, out var value))
                     {
-                        feeds[feed.GroupId].Add(feed);
+                        value.Add(feed);
                     }
                     else
                     {

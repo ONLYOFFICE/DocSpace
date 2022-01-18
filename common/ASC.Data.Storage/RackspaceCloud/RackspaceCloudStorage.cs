@@ -146,15 +146,12 @@ namespace ASC.Data.Storage.RackspaceCloud
             _apiKey = props["apiKey"];
             _username = props["username"];
 
-            if (props.ContainsKey("lower"))
+            if (props.TryGetValue("lower", out var value))
             {
-                bool.TryParse(props["lower"], out _lowerCasing);
+                bool.TryParse(value, out _lowerCasing);
             }
 
-            if (props.ContainsKey("subdir"))
-            {
-                _subDir = props["subdir"];
-            }
+            props.TryGetValue("subdir", out _subDir);
 
             _public_container = props["public_container"];
 
@@ -193,13 +190,13 @@ namespace ASC.Data.Storage.RackspaceCloud
 
             var accounMetaData = client.GetAccountMetaData(_region);
             string secretKey;
-            if (accounMetaData.ContainsKey("Temp-Url-Key"))
+            if (accounMetaData.TryGetValue("Temp-Url-Key", out secretKey))
             {
-                secretKey = accounMetaData["Temp-Url-Key"];
+
             }
             else
             {
-                secretKey = ASC.Common.Utils.RandomString.Generate(64);
+                secretKey = Common.Utils.RandomString.Generate(64);
                 accounMetaData.Add("Temp-Url-Key", secretKey);
                 client.UpdateAccountMetadata(accounMetaData, _region);
             }
@@ -380,9 +377,9 @@ namespace ASC.Data.Storage.RackspaceCloud
                 return ACL.Auto;
             }
 
-            if (_domainsAcl.ContainsKey(domain))
+            if (_domainsAcl.TryGetValue(domain, out var value))
             {
-                return _domainsAcl[domain];
+                return value;
             }
             return _moduleAcl;
         }

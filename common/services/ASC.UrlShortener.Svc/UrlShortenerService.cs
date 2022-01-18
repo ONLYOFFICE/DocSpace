@@ -140,9 +140,9 @@ namespace ASC.UrlShortener.Svc
 
                 if (splited.Length < 2) continue;
 
-                if (dict.ContainsKey(splited[0]))
+                if (dict.TryGetValue(splited[0], out var value))
                 {
-                    startInfo.EnvironmentVariables.Add("sql:" + dict[splited[0]], splited[1]);
+                    startInfo.EnvironmentVariables.Add("sql:" + dict[value], splited[1]);
                 }
             }
 

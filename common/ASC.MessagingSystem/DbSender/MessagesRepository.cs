@@ -133,9 +133,9 @@ namespace ASC.MessagingSystem.DbSender
 
                         ClientInfo clientInfo;
 
-                        if (dict.ContainsKey(message.UAHeader))
+                        if (dict.TryGetValue(message.UAHeader, out clientInfo))
                         {
-                            clientInfo = dict[message.UAHeader];
+
                         }
                         else
                         {

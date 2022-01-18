@@ -53,10 +53,8 @@ namespace ASC.Common.Logging
 
             const string key = "cleanPeriod";
 
-            if (NLog.LogManager.Configuration.Variables.Keys.Contains(key))
+            if (LogManager.Configuration.Variables.TryGetValue(key, out var variable))
             {
-                var variable = NLog.LogManager.Configuration.Variables[key];
-
                 if (variable != null && !string.IsNullOrEmpty(variable.Text))
                 {
                     int.TryParse(variable.Text, out value);

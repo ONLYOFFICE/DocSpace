@@ -98,9 +98,9 @@ namespace ASC.Data.Storage.S3
                 return S3CannedACL.Private;
             }
 
-            if (_domainsAcl.ContainsKey(domain))
+            if (_domainsAcl.TryGetValue(domain, out var value))
             {
-                return _domainsAcl[domain];
+                return value;
             }
             return _moduleAcl;
         }
@@ -1116,40 +1116,37 @@ namespace ASC.Data.Storage.S3
             _secretAccessKeyId = props["secretaccesskey"];
             _bucket = props["bucket"];
 
-            if (props.ContainsKey("recycleDir"))
+            props.TryGetValue("recycleDir", out _recycleDir);
+
+            if (props.TryGetValue("region", out var region) && !string.IsNullOrEmpty(region))
             {
-                _recycleDir = props["recycleDir"];
+                _region = region;
             }
 
-            if (props.ContainsKey("region") && !string.IsNullOrEmpty(props["region"]))
+            if (props.TryGetValue("serviceurl", out var url) && !string.IsNullOrEmpty(url))
             {
-                _region = props["region"];
+                _serviceurl = url;
             }
 
-            if (props.ContainsKey("serviceurl") && !string.IsNullOrEmpty(props["serviceurl"]))
+            if (props.TryGetValue("forcepathstyle", out var style))
             {
-                _serviceurl = props["serviceurl"];
-            }
-
-            if (props.ContainsKey("forcepathstyle"))
-            {
-                if (bool.TryParse(props["forcepathstyle"], out var fps))
+                if (bool.TryParse(style, out var fps))
                 {
                     _forcepathstyle = fps;
                 }
             }
 
-            if (props.ContainsKey("usehttp"))
+            if (props.TryGetValue("usehttp", out var use))
             {
-                if (bool.TryParse(props["usehttp"], out var uh))
+                if (bool.TryParse(use, out var uh))
                 {
                     _useHttp = uh;
                 }
             }
 
-            if (props.ContainsKey("sse") && !string.IsNullOrEmpty(props["sse"]))
+            if (props.TryGetValue("sse", out var sse) && !string.IsNullOrEmpty(sse))
             {
-                _sse = (props["sse"].ToLower()) switch
+                _sse = sse.ToLower() switch
                 {
                     "none" => ServerSideEncryptionMethod.None,
                     "aes256" => ServerSideEncryptionMethod.AES256,
@@ -1166,23 +1163,17 @@ namespace ASC.Data.Storage.S3
                                  ? new Uri(props["cnamessl"], UriKind.Absolute)
                                  : new Uri($"https://s3.{_region}.amazonaws.com/{_bucket}/", UriKind.Absolute);
 
-            if (props.ContainsKey("lower"))
+            if (props.TryGetValue("lower", out var lower))
             {
-                bool.TryParse(props["lower"], out _lowerCasing);
+                bool.TryParse(lower, out _lowerCasing);
             }
-            if (props.ContainsKey("cloudfront"))
+            if (props.TryGetValue("cloudfront", out var front))
             {
-                bool.TryParse(props["cloudfront"], out _revalidateCloudFront);
-            }
-            if (props.ContainsKey("distribution"))
-            {
-                _distributionId = props["distribution"];
+                bool.TryParse(front, out _revalidateCloudFront);
             }
 
-            if (props.ContainsKey("subdir"))
-            {
-                _subDir = props["subdir"];
-            }
+            props.TryGetValue("distribution", out _distributionId);
+            props.TryGetValue("subdir", out _subDir);
 
             return this;
         }

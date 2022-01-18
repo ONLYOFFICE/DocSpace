@@ -99,7 +99,7 @@ namespace ASC.MessagingSystem
 
             var items = value.Split(',');
 
-            if (items.Count == 0) return null;
+            if (items.Length == 0) return null;
 
             return new MessageTarget(Option)
             {

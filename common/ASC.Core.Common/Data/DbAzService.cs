@@ -75,9 +75,8 @@ namespace ASC.Core.Data
             foreach (var a in tenantAces)
             {
                 var key = string.Concat(a.Tenant.ToString(), a.SubjectId.ToString(), a.ActionId.ToString(), a.ObjectId);
-                if (commonAces.ContainsKey(key))
+                if (commonAces.TryGetValue(key, out var common))
                 {
-                    var common = commonAces[key];
                     commonAces.Remove(key);
                     if (common.Reaction == a.Reaction)
                     {
