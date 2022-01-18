@@ -29,30 +29,26 @@ using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Utils;
-using ASC.Data.Backup.Listerners;
 using ASC.Web.Studio.Core.Notify;
 
 using Microsoft.Extensions.Hosting;
 
-namespace ASC.Data.Backup.Service
+namespace ASC.Data.Backup.Services
 {
     [Singletone]
-    internal sealed class BackupLauncherService : IHostedService
+    internal sealed class BackupWorkerService : IHostedService
     {
         private readonly BackupWorker _backupWorker;
         private readonly ConfigurationExtension _configuration;
-        private readonly BackupListener _backupListener;
         private readonly NotifyConfiguration _notifyConfiguration;
 
-        public BackupLauncherService(
+        public BackupWorkerService(
             BackupWorker backupWorker,
             ConfigurationExtension configuration,
-            BackupListener backupListener,
             NotifyConfiguration notifyConfiguration)
         {
             _backupWorker = backupWorker;
             _configuration = configuration;
-            _backupListener = backupListener;
             _notifyConfiguration = notifyConfiguration;
         }
 
@@ -63,7 +59,6 @@ namespace ASC.Data.Backup.Service
             var settings = _configuration.GetSetting<BackupSettings>("backup");
 
             _backupWorker.Start(settings);
-            _backupListener.Start();
 
             return Task.CompletedTask;
         }
@@ -71,7 +66,6 @@ namespace ASC.Data.Backup.Service
         public Task StopAsync(CancellationToken cancellationToken)
         {
             _backupWorker.Stop();
-            _backupListener.Stop();
 
             return Task.CompletedTask;
         }

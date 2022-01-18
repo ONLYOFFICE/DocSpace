@@ -33,13 +33,14 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Data.Backup.Storage;
+using ASC.ElasticSearch.Service;
 using ASC.Files.Core;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
-namespace ASC.Data.Backup.Service
+namespace ASC.Data.Backup.Services
 {
     [Singletone]
     internal sealed class BackupCleanerService : IHostedService, IDisposable
@@ -49,9 +50,8 @@ namespace ASC.Data.Backup.Service
         private readonly TimeSpan _period;
 
         private readonly IServiceScopeFactory _scopeFactory;
-        private IServiceScope _serviceScope;
 
-        public BackupCleanerService(         
+        public BackupCleanerService(
             ConfigurationExtension configuration,
             IOptionsMonitor<ILog> options,
             IServiceScopeFactory scopeFactory)
@@ -65,18 +65,19 @@ namespace ASC.Data.Backup.Service
         {
             _logger.Info("starting backup cleaner service...");
 
-            _serviceScope = _scopeFactory.CreateScope();
             _timer = new Timer(DeleteExpiredBackups, null, TimeSpan.Zero, _period);
 
             _logger.Info("backup cleaner service started");
-           
+
             return Task.CompletedTask;
         }
 
         public void DeleteExpiredBackups(object state)
         {
-            var backupRepository = _serviceScope.ServiceProvider.GetRequiredService<BackupRepository>(); 
-            var backupStorageFactory = _serviceScope.ServiceProvider.GetRequiredService<BackupStorageFactory>();
+            using var serviceScope = _scopeFactory.CreateScope();
+            
+            var backupRepository = serviceScope.ServiceProvider.GetRequiredService<BackupRepository>();
+            var backupStorageFactory = serviceScope.ServiceProvider.GetRequiredService<BackupStorageFactory>();
 
             _logger.Debug("started to clean expired backups");
 
@@ -117,7 +118,7 @@ namespace ASC.Data.Backup.Service
                 catch (ProviderInfoArgumentException error)
                 {
                     _logger.Warn("can't remove backup record " + backupRecord.Id, error);
-         
+
                     if (DateTime.UtcNow > backupRecord.CreatedOn.AddMonths(6))
                     {
                         backupRepository.DeleteBackupRecord(backupRecord.Id);
@@ -135,7 +136,6 @@ namespace ASC.Data.Backup.Service
             _logger.Info("stopping backup cleaner service...");
 
             _timer?.Change(Timeout.Infinite, 0);
-
             _logger.Info("backup cleaner service stopped");
 
             return Task.CompletedTask;
@@ -144,7 +144,6 @@ namespace ASC.Data.Backup.Service
         public void Dispose()
         {
             _timer?.Dispose();
-            _serviceScope?.Dispose();
         }
     }
 }

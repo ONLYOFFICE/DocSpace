@@ -35,12 +35,13 @@ using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Data.Backup.Storage;
+using ASC.ElasticSearch.Service;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
-namespace ASC.Data.Backup.Service
+namespace ASC.Data.Backup.Services
 {
     [Singletone]
     internal sealed class BackupSchedulerService : IHostedService, IDisposable
@@ -52,7 +53,6 @@ namespace ASC.Data.Backup.Service
         private readonly BackupWorker _backupWorker;
         private readonly CoreBaseSettings _coreBaseSettings;
         private readonly IServiceScopeFactory _scopeFactory;
-        private IServiceScope _serviceScope;
 
         public BackupSchedulerService(
             IOptionsMonitor<ILog> options,
@@ -72,7 +72,6 @@ namespace ASC.Data.Backup.Service
         {
             _logger.Info("starting backup scheduler service...");
 
-            _serviceScope = _scopeFactory.CreateScope();
             _timer = new Timer(ScheduleBackupTasks, null, TimeSpan.Zero, _period);
 
             _logger.Info("backup scheduler service started");
@@ -82,10 +81,12 @@ namespace ASC.Data.Backup.Service
 
         public void ScheduleBackupTasks(object state)
         {
-            var paymentManager = _serviceScope.ServiceProvider.GetRequiredService<PaymentManager>();
-            var backupRepository = _serviceScope.ServiceProvider.GetRequiredService<BackupRepository>(); ;
-            var backupSchedule = _serviceScope.ServiceProvider.GetRequiredService<Schedule>();
-            var tenantManager = _serviceScope.ServiceProvider.GetRequiredService<TenantManager>();
+            using var serviceScope = _scopeFactory.CreateScope();
+
+            var paymentManager = serviceScope.ServiceProvider.GetRequiredService<PaymentManager>();
+            var backupRepository = serviceScope.ServiceProvider.GetRequiredService<BackupRepository>(); ;
+            var backupSchedule = serviceScope.ServiceProvider.GetRequiredService<Schedule>();
+            var tenantManager = serviceScope.ServiceProvider.GetRequiredService<TenantManager>();
 
             _logger.DebugFormat("started to schedule backups");
 
@@ -106,7 +107,7 @@ namespace ASC.Data.Backup.Service
 
                             backupRepository.SaveBackupSchedule(schedule);
                             _logger.DebugFormat("Start scheduled backup: {0}, {1}, {2}, {3}", schedule.TenantId, schedule.BackupMail, schedule.StorageType, schedule.StorageBasePath);
-                            _backupWorker.StartScheduledBackup(schedule);
+                            _backupWorker.StartScheduledBackup(schedule);                            
                         }
                         else
                         {
@@ -131,7 +132,7 @@ namespace ASC.Data.Backup.Service
             _logger.Info("stopping backup cleaner service...");
 
             _timer?.Change(Timeout.Infinite, 0);
-
+      
             _logger.Info("backup cleaner service stopped");
 
             return Task.CompletedTask;
@@ -139,7 +140,6 @@ namespace ASC.Data.Backup.Service
         public void Dispose()
         {
             _timer?.Dispose();
-            _serviceScope?.Dispose();
         }
     }
 }
