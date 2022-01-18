@@ -152,6 +152,12 @@ export default function withFileActions(WrappedFileItem) {
       } = item;
       if (encrypted && isPrivacy) return checkProtocol(item.id, true);
 
+      if (item.fileExst === ".png") {
+        const url = "#preview/" + item.id;
+
+        window.history.pushState(null, null, url);
+      }
+
       if (isTrashFolder) return;
       if (
         (e && e.target.tagName === "INPUT") ||
