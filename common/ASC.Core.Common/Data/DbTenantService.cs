@@ -221,8 +221,7 @@ namespace ASC.Core.Data
                     .Where(r => r.Email == login)
                     .Where(r => r.Status == EmployeeStatus.Active)
                     .Where(r => !r.Removed)
-                    .Select(r => r.Id)
-                    .ToList();
+                    .Select(r => r.Id);
 
                 var passwordHashs = usersQuery.Select(r => GetPasswordHash(r, passwordHash)).ToList();
 

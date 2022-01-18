@@ -872,7 +872,6 @@ namespace ASC.Api.Settings
         {
             var EnabledModules = WebItemManagerSecurity.GetItems(WebZoneType.All, ItemAvailableState.Normal)
                                         .Where(item => !item.IsSubItem() && item.Visible)
-                                        .ToList()
                                         .Select(item => new
                                         {
                                             id = item.ProductClassName.HtmlEncode(),
@@ -2224,7 +2223,7 @@ namespace ASC.Api.Settings
             TenantExtra.DemandControlPanelPermission();
 
             var current = SettingsManager.Load<StorageSettings>();
-            var consumers = ConsumerFactory.GetAll<DataStoreConsumer>().ToList();
+            var consumers = ConsumerFactory.GetAll<DataStoreConsumer>();
             return consumers.Select(consumer => new StorageWrapper(consumer, current)).ToList();
         }
 
@@ -2522,7 +2521,7 @@ namespace ASC.Api.Settings
             TenantExtra.DemandControlPanelPermission();
 
             var current = SettingsManager.Load<CdnStorageSettings>();
-            var consumers = ConsumerFactory.GetAll<DataStoreConsumer>().Where(r => r.Cdn != null).ToList();
+            var consumers = ConsumerFactory.GetAll<DataStoreConsumer>().Where(r => r.Cdn != null);
             return consumers.Select(consumer => new StorageWrapper(consumer, current)).ToList();
         }
 
@@ -2600,7 +2599,7 @@ namespace ASC.Api.Settings
                 };
             }
 
-            var consumers = ConsumerFactory.GetAll<DataStoreConsumer>().ToList();
+            var consumers = ConsumerFactory.GetAll<DataStoreConsumer>();
             return consumers.Select(consumer => new StorageWrapper(consumer, current)).ToList();
         }
 
