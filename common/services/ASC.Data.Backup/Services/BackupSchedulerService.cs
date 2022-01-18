@@ -42,22 +42,28 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup.Service
 {
-    [Scope]
-    public class BackupSchedulerService : IHostedService, IDisposable
+    [Singletone]
+    internal sealed class BackupSchedulerService : IHostedService, IDisposable
     {
         private readonly TimeSpan _period;
         private Timer _timer;
         private readonly ILog _logger;
 
-        private IServiceScopeFactory _scopeFactory;
+        private readonly BackupWorker _backupWorker;
+        private readonly CoreBaseSettings _coreBaseSettings;
+        private readonly IServiceScopeFactory _scopeFactory;
         private IServiceScope _serviceScope;
 
         public BackupSchedulerService(
             IOptionsMonitor<ILog> options,
             IServiceScopeFactory scopeFactory,
-            ConfigurationExtension configuration)
+            ConfigurationExtension configuration,
+            CoreBaseSettings coreBaseSettings,
+            BackupWorker backupWorker)
         {
             _logger = options.CurrentValue;
+            _coreBaseSettings = coreBaseSettings;
+            _backupWorker = backupWorker;
             _period = configuration.GetSetting<BackupSettings>("backup").Scheduler.Period;
             _scopeFactory = scopeFactory;
         }
@@ -77,11 +83,9 @@ namespace ASC.Data.Backup.Service
         public void ScheduleBackupTasks(object state)
         {
             var paymentManager = _serviceScope.ServiceProvider.GetRequiredService<PaymentManager>();
-            var backupWorker = _serviceScope.ServiceProvider.GetRequiredService<BackupWorker>();
             var backupRepository = _serviceScope.ServiceProvider.GetRequiredService<BackupRepository>(); ;
             var backupSchedule = _serviceScope.ServiceProvider.GetRequiredService<Schedule>();
             var tenantManager = _serviceScope.ServiceProvider.GetRequiredService<TenantManager>();
-            var coreBaseSettings = _serviceScope.ServiceProvider.GetRequiredService<CoreBaseSettings>();
 
             _logger.DebugFormat("started to schedule backups");
 
@@ -93,7 +97,7 @@ namespace ASC.Data.Backup.Service
             {
                 try
                 {
-                    if (coreBaseSettings.Standalone || tenantManager.GetTenantQuota(schedule.TenantId).AutoBackup)
+                    if (_coreBaseSettings.Standalone || tenantManager.GetTenantQuota(schedule.TenantId).AutoBackup)
                     {
                         var tariff = paymentManager.GetTariff(schedule.TenantId);
                         if (tariff.State < TariffState.Delay)
@@ -102,7 +106,7 @@ namespace ASC.Data.Backup.Service
 
                             backupRepository.SaveBackupSchedule(schedule);
                             _logger.DebugFormat("Start scheduled backup: {0}, {1}, {2}, {3}", schedule.TenantId, schedule.BackupMail, schedule.StorageType, schedule.StorageBasePath);
-                            backupWorker.StartScheduledBackup(schedule);
+                            _backupWorker.StartScheduledBackup(schedule);
                         }
                         else
                         {

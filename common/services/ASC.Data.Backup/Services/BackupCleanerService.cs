@@ -41,14 +41,14 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup.Service
 {
-    [Scope]
-    public class BackupCleanerService : IHostedService, IDisposable
+    [Singletone]
+    internal sealed class BackupCleanerService : IHostedService, IDisposable
     {
         private Timer _timer;
         private readonly ILog _logger;
         private readonly TimeSpan _period;
 
-        private IServiceScopeFactory _scopeFactory;
+        private readonly IServiceScopeFactory _scopeFactory;
         private IServiceScope _serviceScope;
 
         public BackupCleanerService(         

@@ -37,7 +37,7 @@ using Microsoft.Extensions.Hosting;
 namespace ASC.Data.Backup.Service
 {
     [Singletone]
-    internal class BackupLauncherService : IHostedService
+    internal sealed class BackupLauncherService : IHostedService
     {
         private readonly BackupWorker _backupWorker;
         private readonly ConfigurationExtension _configuration;
