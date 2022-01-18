@@ -130,7 +130,7 @@ namespace ASC.Data.Backup.Tasks.Modules
             var p = command.CreateParameter();
             if (!string.IsNullOrEmpty(name))
             {
-                p.ParameterName = name.StartsWith("@") ? name : "@" + name;
+                p.ParameterName = name.StartsWith('@') ? name : "@" + name;
             }
 
             p.Value = GetParameterValue(value);

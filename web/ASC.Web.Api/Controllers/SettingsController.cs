@@ -2618,7 +2618,7 @@ namespace ASC.Api.Settings
             var hubUrl = Configuration["web:hub"] ?? string.Empty;
             if (hubUrl.Length != 0)
             {
-                if (!hubUrl.EndsWith("/"))
+                if (!hubUrl.EndsWith('/'))
                 {
                     hubUrl += "/";
                 }

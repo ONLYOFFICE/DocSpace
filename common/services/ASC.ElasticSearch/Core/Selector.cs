@@ -382,7 +382,7 @@ namespace ASC.ElasticSearch
 
         private bool IsExactly(string searchText)
         {
-            return searchText.StartsWith("\"") && searchText.EndsWith("\"");
+            return searchText.StartsWith('\"') && searchText.EndsWith('\"');
         }
 
         private QueryContainer MultiMatch(Fields fields, string value)

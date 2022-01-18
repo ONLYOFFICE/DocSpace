@@ -117,7 +117,7 @@ namespace ASC.FederatedLogin.Helpers
             var json = RequestHelper.PerformRequest(requestUrl, "application/x-www-form-urlencoded", "POST", data);
             if (json != null)
             {
-                if (!json.StartsWith("{"))
+                if (!json.StartsWith('{'))
                 {
                     json = "{\"" + json.Replace("=", "\":\"").Replace("&", "\",\"") + "\"}";
                 }

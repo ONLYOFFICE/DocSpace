@@ -98,7 +98,7 @@ namespace ASC.FederatedLogin.LoginProviders
             var json = RequestHelper.PerformRequest(AccessTokenUrl, "application/x-www-form-urlencoded", "POST", data, headers);
             if (json == null) throw new Exception("Can not get token");
 
-            if (!json.StartsWith("{"))
+            if (!json.StartsWith('{'))
             {
                 json = "{\"" + json.Replace("=", "\":\"").Replace("&", "\",\"") + "\"}";
             }

@@ -109,7 +109,7 @@ namespace ASC.Web.Core.Utility
             internalUrl = configuration["web:url-shortener:internal"];
             sKey = machinePseudoKeys.GetMachineConstant();
 
-            if (!url.EndsWith("/"))
+            if (!url.EndsWith('/'))
                 url += '/';
             CommonLinkUtility = commonLinkUtility;
             ClientFactory = clientFactory;

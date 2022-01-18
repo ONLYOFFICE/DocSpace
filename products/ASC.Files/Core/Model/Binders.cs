@@ -57,7 +57,7 @@ namespace ASC.Files.Model
                 return valueProviderResult.Select(ParseQueryParam).ToList();
             }
 
-            if (modelName.EndsWith("[]"))
+            if (modelName.EndsWith("[]", StringComparison.Ordinal))
             {
                 return new List<JsonElement>();
             }

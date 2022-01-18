@@ -418,7 +418,7 @@ namespace ASC.Web.Core.Sms
 
         public override bool SendMessage(string number, string message)
         {
-            if (!number.StartsWith("+")) number = "+" + number;
+            if (!number.StartsWith('+')) number = "+" + number;
             var twilioRestClient = new TwilioRestClient(Key, Secret);
 
             try
