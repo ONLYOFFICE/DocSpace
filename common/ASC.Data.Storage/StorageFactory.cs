@@ -56,8 +56,7 @@ namespace ASC.Data.Storage
         public IEnumerable<string> GetModuleList(string configpath, bool exceptDisabledMigration = false)
         {
             return Section.Module
-                .Where(x => x.Visible)
-                .Where(x => !exceptDisabledMigration || !x.DisableMigrate)
+                .Where(x => x.Visible && (!exceptDisabledMigration || !x.DisableMigrate))
                 .Select(x => x.Name);
         }
 
