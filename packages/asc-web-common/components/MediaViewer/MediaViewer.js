@@ -308,6 +308,11 @@ class MediaViewer extends React.Component {
     this.setState({
       playlistPos: currentPlaylistPos,
     });
+
+    const id = playlist[currentPlaylistPos].fileId;
+    const url = "#preview/" + id;
+
+    window.history.pushState(null, null, url);
   };
 
   nextMedia = () => {
@@ -319,6 +324,11 @@ class MediaViewer extends React.Component {
     this.setState({
       playlistPos: currentPlaylistPos,
     });
+
+    const id = playlist[currentPlaylistPos].fileId;
+    const url = "#preview/" + id;
+
+    window.history.pushState(null, null, url);
   };
 
   getOffset = () => {
