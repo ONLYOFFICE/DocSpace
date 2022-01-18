@@ -238,7 +238,7 @@ namespace ASC.Web.Core.Calendars
             if (ByMonthDay != null && !ByMonthDay.Contains(d.Day) && !ByMonthDay.Contains(d.Day - d.GetDaysInMonth() + 1))
                 return false;
 
-            if (ByDay != null && !ByDay.ToList().Exists(item => item.DayOfWeek == d.DayOfWeek))
+            if (ByDay != null && !ByDay.Any(item => item.DayOfWeek == d.DayOfWeek))
                 return false;
 
             return true;
@@ -387,7 +387,7 @@ namespace ASC.Web.Core.Calendars
                             dateRange.RemoveAll(date => (!ByMonthDay.Contains(date.Day) && !ByMonthDay.Contains(date.Day - (date.GetDaysInMonth() + 1))));
 
                         if (ByDay != null)
-                            dateRange.RemoveAll(date => !ByDay.ToList().Exists(wd => wd.DayOfWeek == date.DayOfWeek));
+                            dateRange.RemoveAll(date => !ByDay.Any(wd => wd.DayOfWeek == date.DayOfWeek));
 
                         if (ByDay == null && ByMonthDay == null && ByYearDay == null)
                             dateRange.RemoveAll(date => date.Day != d.Day);

@@ -174,7 +174,12 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             needToMark.AddRange(MoveOrCopyFolders(scope, Folders, toFolder, _copy));
             needToMark.AddRange(MoveOrCopyFiles(scope, Files, toFolder, _copy));
 
-            needToMark.Distinct().ToList().ForEach(x => fileMarker.MarkAsNew(x));
+            var ntm = needToMark.Distinct();
+
+            foreach(var n in ntm)
+            {
+                fileMarker.MarkAsNew(n);
+            }
         }
 
         private List<FileEntry<TTo>> MoveOrCopyFolders<TTo>(IServiceScope scope, List<T> folderIds, Folder<TTo> toFolder, bool copy)

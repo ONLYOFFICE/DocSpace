@@ -600,13 +600,14 @@ namespace ASC.Web.Files.Utils
                 if (folderList.Any())
                 {
                     var securityDao = DaoFactory.GetSecurityDao<string>();
-                    securityDao.GetPureShareRecords(folderList)
+                    var ids =  securityDao.GetPureShareRecords(folderList)
                     //.Where(x => x.Owner == SecurityContext.CurrentAccount.ID)
-                    .Select(x => x.EntryId).Distinct().ToList()
-                    .ForEach(id =>
+                    .Select(x => x.EntryId).Distinct();
+
+                    foreach(var id in ids)
                     {
                         folderList.First(y => y.ID.Equals(id)).Shared = true;
-                    });
+                    }
                 }
             }
 

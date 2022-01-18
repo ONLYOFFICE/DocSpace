@@ -170,15 +170,15 @@ namespace ASC.Web.Files.Utils
                     {
                         timer.Change(Timeout.Infinite, Timeout.Infinite);
 
-                        conversionQueue.Where(x => !string.IsNullOrEmpty(x.Value.Processed)
+                        var queues = conversionQueue.Where(x => !string.IsNullOrEmpty(x.Value.Processed)
                                                    && (x.Value.Progress == 100 && DateTime.UtcNow - x.Value.StopDateTime > TimeSpan.FromMinutes(1) ||
-                                                       DateTime.UtcNow - x.Value.StopDateTime > TimeSpan.FromMinutes(10)))
-                                       .ToList()
-                                       .ForEach(x =>
-                                       {
-                                           conversionQueue.Remove(x);
-                                           cache.Remove(GetKey(x.Key));
-                                       });
+                                                       DateTime.UtcNow - x.Value.StopDateTime > TimeSpan.FromMinutes(10)));
+
+                        foreach (var q in queues)
+                        {
+                            conversionQueue.Remove(q);
+                            cache.Remove(GetKey(q.Key));
+                        }
 
                         logger.DebugFormat("Run CheckConvertFilesStatus: count {0}", conversionQueue.Count);
 

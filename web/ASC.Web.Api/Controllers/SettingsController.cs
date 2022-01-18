@@ -1106,7 +1106,11 @@ namespace ASC.Api.Settings
             if (model.Logo != null)
             {
                 var logoDict = new Dictionary<int, string>();
-                model.Logo.ToList().ForEach(n => logoDict.Add(Int32.Parse(n.Key), n.Value));
+
+                foreach(var l in model.Logo)
+                {
+                    logoDict.Add(Int32.Parse(l.Key), l.Value);
+                }
 
                 TenantWhiteLabelSettingsHelper.SetLogo(settings, logoDict, storage);
             }

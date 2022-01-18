@@ -404,8 +404,11 @@ namespace ASC.Data.Storage.RackspaceCloud
                               .Where(x => Wildcard.IsMatch(pattern, Path.GetFileName(x.Name)));
 
             if (!files.Any()) return;
-
-            files.ToList().ForEach(x => client.DeleteObject(_private_container, x.Name));
+            
+            foreach(var file in files)
+            {
+                client.DeleteObject(_private_container, file.Name);
+            }
 
             if (QuotaController != null)
             {
@@ -462,7 +465,10 @@ namespace ASC.Data.Storage.RackspaceCloud
 
             if (!files.Any()) return;
 
-            files.ToList().ForEach(x => client.DeleteObject(_private_container, x.Name));
+            foreach(var file in files)
+            {
+                client.DeleteObject(_private_container, file.Name);
+            }
 
             if (QuotaController != null)
             {

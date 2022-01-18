@@ -456,16 +456,30 @@ namespace ASC.Files.Thirdparty.SharePoint
 
             if (delete)
             {
-                folder.Folders.ToList().ForEach(r => MoveFolder(r.ServerRelativeUrl, newUrl));
-                folder.Files.ToList().ForEach(r => MoveFile(r.ServerRelativeUrl, newUrl));
+                foreach (var f in folder.Folders)
+                {
+                    MoveFolder(f.ServerRelativeUrl, newUrl);
+                }
+
+                foreach (var f in folder.Files)
+                {
+                    MoveFile(f.ServerRelativeUrl, newUrl);
+                }
 
                 folder.DeleteObject();
                 clientContext.ExecuteQuery();
             }
             else
             {
-                folder.Folders.ToList().ForEach(r => CopyFolder(r.ServerRelativeUrl, newUrl));
-                folder.Files.ToList().ForEach(r => CopyFile(r.ServerRelativeUrl, newUrl));
+                foreach (var f in folder.Folders)
+                {
+                    CopyFolder(f.ServerRelativeUrl, newUrl);
+                }
+                
+                foreach(var f in folder.Files)
+                {
+                    CopyFile(f.ServerRelativeUrl, newUrl);
+                }
             }
 
             return newFolder;

@@ -174,20 +174,19 @@ namespace ASC.Web.Files.Utils
                     userIDs = userIDs.Where(u => !UserManager.GetUsers(u).IsVisitor(UserManager)).ToList();
                 }
 
-                parentFolders.ForEach(parentFolder =>
-                                      filesSecurity
-                                          .WhoCanRead(parentFolder)
-                                          .Where(userID => userIDs.Contains(userID) && userID != obj.CurrentAccountId)
-                                          .ToList()
-                                          .ForEach(userID =>
-                                                       {
-                                                           if (userEntriesData.ContainsKey(userID))
-                                                               userEntriesData[userID].Add(parentFolder);
-                                                           else
-                                                               userEntriesData.Add(userID, new List<FileEntry> { parentFolder });
-                                                       })
-                    );
-
+                foreach(var parentFolder in parentFolders)
+                {
+                    var ids = filesSecurity
+                        .WhoCanRead(parentFolder)
+                        .Where(userID => userIDs.Contains(userID) && userID != obj.CurrentAccountId);
+                    foreach (var id in ids)
+                    {
+                        if (userEntriesData.TryGetValue(id, out var value))
+                            value.Add(parentFolder);
+                        else
+                            userEntriesData.Add(id, new List<FileEntry> { parentFolder });
+                    }
+                }
 
 
                 if (obj.FileEntry.RootFolderType == FolderType.USER)

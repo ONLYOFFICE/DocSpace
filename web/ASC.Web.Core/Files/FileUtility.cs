@@ -330,19 +330,18 @@ namespace ASC.Web.Core.Files
                     var dbManager = FilesDbContext;
                     var list = dbManager.FilesConverts.Select(r => new { r.Input, r.Output }).ToList();
 
-
-                    list.ForEach(item =>
-                        {
-                            var input = item.Input;
-                            var output = item.Output;
-                            if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(output))
-                                return;
-                            input = input.ToLower().Trim();
-                            output = output.ToLower().Trim();
-                            if (!_extsConvertible.ContainsKey(input))
-                                _extsConvertible[input] = new List<string>();
-                            _extsConvertible[input].Add(output);
-                        });
+                    foreach (var item in list) 
+                    {
+                        var input = item.Input;
+                        var output = item.Output;
+                        if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(output))
+                            continue;
+                        input = input.ToLower().Trim();
+                        output = output.ToLower().Trim();
+                        if (!_extsConvertible.ContainsKey(input))
+                            _extsConvertible[input] = new List<string>();
+                        _extsConvertible[input].Add(output);
+                    }
                 }
                 return _extsConvertible;
             }

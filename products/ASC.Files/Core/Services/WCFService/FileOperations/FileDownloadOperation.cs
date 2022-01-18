@@ -233,8 +233,12 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
             if (0 < Folders.Count)
             {
-                FilesSecurity.FilterRead(FolderDao.GetFolders(Files)).Cast<FileEntry<T>>().ToList()
-                             .ForEach(folder => fileMarker.RemoveMarkAsNew(folder));
+                var folders = FilesSecurity.FilterRead(FolderDao.GetFolders(Files));
+
+                foreach(var folder in folders)
+                {
+                    fileMarker.RemoveMarkAsNew(folder);
+                }
 
                 var filesInFolder = GetFilesInFolders(scope, Folders, string.Empty);
                 entriesPathId.Add(filesInFolder);

@@ -169,16 +169,13 @@ namespace ASC.Web.Files.Utils
             var tracker = GetTracker(fileId);
             if (tracker != null)
             {
-
-                tracker.EditingBy.Values
-                       .ToList()
-                       .ForEach(i =>
-                       {
-                           if (i.UserId == userId || userId == Guid.Empty)
-                           {
-                               i.CheckRightTime = check ? DateTime.MinValue : DateTime.UtcNow;
-                           }
-                       });
+                foreach(var value in tracker.EditingBy.Values)
+                {
+                    if (value.UserId == userId || userId == Guid.Empty)
+                    {
+                        value.CheckRightTime = check ? DateTime.MinValue : DateTime.UtcNow;
+                    }
+                }
                 SetTracker(fileId, tracker);
             }
             else
