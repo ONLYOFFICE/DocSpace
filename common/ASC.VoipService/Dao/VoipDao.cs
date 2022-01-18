@@ -101,7 +101,7 @@ namespace ASC.VoipService.Dao
         {
             var numbers = VoipDbContext.VoipNumbers.Where(r => r.TenantId == TenantID);
 
-            if (ids.Any())
+            if (ids.Length > 0)
             {
                 numbers = numbers.Where(r => ids.Any(a => a == r.Number || a == r.Id));
             }

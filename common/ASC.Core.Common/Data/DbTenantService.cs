@@ -489,13 +489,13 @@ namespace ASC.Core.Data
             }
             if (!exists)
             {
-                exists = 0 < TenantDbContext.Tenants.Where(r => r.Alias == domain && r.Id != tenantId).Count();
+                exists = TenantDbContext.Tenants.Where(r => r.Alias == domain && r.Id != tenantId).Any();
             }
             if (!exists)
             {
-                exists = 0 < TenantDbContext.Tenants
+                exists = TenantDbContext.Tenants
                     .Where(r => r.MappedDomain == domain && r.Id != tenantId && !(r.Status == TenantStatus.RemovePending || r.Status == TenantStatus.Restoring))
-                    .Count();
+                    .Any();
             }
             if (exists)
             {

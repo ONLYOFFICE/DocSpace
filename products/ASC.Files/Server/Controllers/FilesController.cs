@@ -207,7 +207,7 @@ namespace ASC.Api.Documents
 
             if (!IsVisitor
                && !withoutAdditionalFolder
-               && FileUtility.ExtsWebTemplate.Any()
+               && FileUtility.ExtsWebTemplate.Count > 0
                && FilesSettingsHelper.TemplatesSection)
             {
                 result.Add(GlobalFolderHelper.FolderTemplates);

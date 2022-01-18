@@ -88,7 +88,7 @@ namespace ASC.Core.Common.Configuration
 
         public bool IsSet
         {
-            get { return Props.Any() && !Props.All(r => string.IsNullOrEmpty(this[r.Key])); }
+            get { return Props.Count > 0 && !Props.All(r => string.IsNullOrEmpty(this[r.Key])); }
         }
 
         static Consumer()
@@ -152,7 +152,7 @@ namespace ASC.Core.Common.Configuration
             Props = props ?? new Dictionary<string, string>();
             Additional = additional ?? new Dictionary<string, string>();
 
-            if (props != null && props.Any())
+            if (props != null && props.Count > 0)
             {
                 CanSet = props.All(r => string.IsNullOrEmpty(r.Value));
             }

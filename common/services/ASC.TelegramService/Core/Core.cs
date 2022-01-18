@@ -116,8 +116,8 @@ namespace ASC.TelegramService.Core
 
             var cmdArgs = cmd.GetParameters();
 
-            if (cmdArgs.Any() && args == null || cmdArgs.Count() != args.Count()) throw new Exception("Wrong parameters count");
-            for (var i = 0; i < cmdArgs.Count(); i++)
+            if (cmdArgs.Length > 0 && args == null || cmdArgs.Length != args.Length) throw new Exception("Wrong parameters count");
+            for (var i = 0; i < cmdArgs.Length; i++)
             {
                 var type = cmdArgs[i].ParameterType;
 

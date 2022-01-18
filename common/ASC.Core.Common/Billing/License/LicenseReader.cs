@@ -189,7 +189,7 @@ namespace ASC.Core.Billing
             {
                 license.PortalCount = TenantManager.GetTenantQuota(Tenant.DEFAULT_TENANT).CountPortals;
             }
-            var activePortals = TenantManager.GetTenants().Count();
+            var activePortals = TenantManager.GetTenants().Count;
             if (activePortals > 1 && license.PortalCount < activePortals)
             {
                 throw new LicensePortalException("License portal count", license.OriginalLicense);

@@ -390,7 +390,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
         public override void DeleteFiles(string domain, List<string> paths)
         {
-            if (!paths.Any()) return;
+            if (paths.Count == 0) return;
 
             var keysToDel = new List<string>();
 
@@ -416,7 +416,7 @@ namespace ASC.Data.Storage.GoogleCloud
                 }
             }
 
-            if (!keysToDel.Any()) return;
+            if (keysToDel.Count == 0) return;
 
             using var storage = GetStorage();
 
@@ -521,7 +521,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
             var objects = storage.ListObjects(_bucket, MakePath(domain, path), null);
 
-            return objects.Count() > 0;
+            return objects.Any();
         }
 
         public override async Task<bool> IsFileAsync(string domain, string path)
@@ -530,7 +530,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
             var objects = await storage.ListObjectsAsync(_bucket, MakePath(domain, path)).ReadPageAsync(1);
 
-            return objects.Count() > 0;
+            return objects.Any();
         }
 
         public override bool IsDirectory(string domain, string path)

@@ -191,7 +191,7 @@ namespace ASC.Data.Storage.Encryption
         {
             IEnumerable<string> files = targetStore.ListFilesRelative(targetDomain, "\\", "*.*", true);
 
-            if (progress.Any())
+            if (progress.Count > 0)
             {
                 files = files.Where(path => !progress.Contains(path));
             }

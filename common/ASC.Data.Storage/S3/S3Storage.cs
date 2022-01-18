@@ -328,7 +328,7 @@ namespace ASC.Data.Storage.S3
                     Paths = new Paths
                     {
                         Items = paths.ToList(),
-                        Quantity = paths.Count()
+                        Quantity = paths.Length
                     }
                 }
             };
@@ -472,7 +472,7 @@ namespace ASC.Data.Storage.S3
 
         public override void DeleteFiles(string domain, List<string> paths)
         {
-            if (!paths.Any()) return;
+            if (paths.Count == 0) return;
 
             var keysToDel = new List<string>();
 
@@ -501,7 +501,7 @@ namespace ASC.Data.Storage.S3
                 }
             }
 
-            if (!keysToDel.Any())
+            if (keysToDel.Count == 0)
                 return;
 
             using (var client = GetClient())

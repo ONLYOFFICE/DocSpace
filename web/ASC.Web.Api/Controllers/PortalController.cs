@@ -170,7 +170,7 @@ namespace ASC.Web.Api.Controllers
         [Read("userscount")]
         public long GetUsersCount()
         {
-            return UserManager.GetUserNames(EmployeeStatus.Active).Count();
+            return UserManager.GetUserNames(EmployeeStatus.Active).Length;
         }
 
         [Read("tariff")]

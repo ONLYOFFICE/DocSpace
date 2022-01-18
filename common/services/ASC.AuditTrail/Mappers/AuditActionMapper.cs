@@ -71,7 +71,7 @@ namespace ASC.AuditTrail.Mappers
             {
                 var actionText = Actions[(MessageAction)evt.Action].GetActionText();
 
-                if (evt.Description == null || !evt.Description.Any()) return actionText;
+                if (evt.Description == null || evt.Description.Count > 0) return actionText;
 
                 var description = evt.Description
                                      .Select(t => t.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
@@ -100,7 +100,7 @@ namespace ASC.AuditTrail.Mappers
             {
                 var actionText = Actions[(MessageAction)evt.Action].GetActionText();
 
-                if (evt.Description == null || !evt.Description.Any()) return actionText;
+                if (evt.Description == null || evt.Description.Count > 0) return actionText;
 
                 var description = evt.Description
                                      .Select(t => t.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))

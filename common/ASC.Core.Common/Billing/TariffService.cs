@@ -503,10 +503,10 @@ namespace ASC.Core.Billing
                 using var tx = CoreDbContext.Database.BeginTransaction();
 
                 // last record is not the same
-                var count = CoreDbContext.Tariffs
-                    .Count(r => r.Tenant == tenant && r.Tariff == tariffInfo.QuotaId && r.Stamp == tariffInfo.DueDate && r.Quantity == tariffInfo.Quantity);
+                var any = CoreDbContext.Tariffs
+                    .Any(r => r.Tenant == tenant && r.Tariff == tariffInfo.QuotaId && r.Stamp == tariffInfo.DueDate && r.Quantity == tariffInfo.Quantity);
 
-                if (tariffInfo.DueDate == DateTime.MaxValue || renewal || count == 0)
+                if (tariffInfo.DueDate == DateTime.MaxValue || renewal || any)
                 {
                     var efTariff = new DbTariff
                     {

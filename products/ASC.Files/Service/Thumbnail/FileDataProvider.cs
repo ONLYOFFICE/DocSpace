@@ -151,7 +151,7 @@ namespace ASC.Files.ThumbnailBuilder
 
             var premiumTenants = GetPremiumTenants();
 
-            if (premiumTenants.Any())
+            if (premiumTenants.Length > 0)
             {
                 result = GetFileData(r => premiumTenants.Contains(r.TenantId));
 

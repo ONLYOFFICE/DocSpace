@@ -788,7 +788,7 @@ namespace ASC.Employee.Core.Controllers
             }
 
             // change user type
-            var canBeGuestFlag = !user.IsOwner(Tenant) && !user.IsAdmin(UserManager) && !user.GetListAdminModules(WebItemSecurity).Any() && !user.IsMe(AuthContext);
+            var canBeGuestFlag = !user.IsOwner(Tenant) && !user.IsAdmin(UserManager) && user.GetListAdminModules(WebItemSecurity).Count == 0 && !user.IsMe(AuthContext);
 
             if (memberModel.IsVisitor && !user.IsVisitor(UserManager) && canBeGuestFlag)
             {
@@ -1378,7 +1378,7 @@ namespace ASC.Employee.Core.Controllers
 
             foreach (var user in users)
             {
-                if (user.IsOwner(Tenant) || user.IsAdmin(UserManager) || user.IsMe(AuthContext) || user.GetListAdminModules(WebItemSecurity).Any())
+                if (user.IsOwner(Tenant) || user.IsAdmin(UserManager) || user.IsMe(AuthContext) || user.GetListAdminModules(WebItemSecurity).Count > 0)
                     continue;
 
                 switch (type)

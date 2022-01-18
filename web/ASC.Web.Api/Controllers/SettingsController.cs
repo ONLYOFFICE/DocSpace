@@ -1128,7 +1128,7 @@ namespace ASC.Api.Settings
                 throw new BillingException(Resource.ErrorNotAllowedOption, "WhiteLabel");
             }
 
-            if (HttpContext.Request.Form?.Files == null || !HttpContext.Request.Form.Files.Any())
+            if (HttpContext.Request.Form?.Files == null || HttpContext.Request.Form.Files.Count == 0)
             {
                 throw new InvalidOperationException("No input files");
             }
@@ -2264,7 +2264,7 @@ namespace ASC.Api.Settings
             {
                 var activeTenants = TenantManager.GetTenants();
 
-                if (activeTenants.Any())
+                if (activeTenants.Count > 0)
                 {
                     StartEncryption(storageEncryption.NotifyUsers);
                 }

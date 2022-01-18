@@ -125,7 +125,7 @@ namespace TMResourceData
         private static bool Accept(Assembly a)
         {
             var n = a.GetName().Name;
-            return (n.StartsWith("ASC.") || n.StartsWith("App_GlobalResources")) && a.GetManifestResourceNames().Any();
+            return (n.StartsWith("ASC.") || n.StartsWith("App_GlobalResources")) && a.GetManifestResourceNames().Length > 0;
         }
 
 

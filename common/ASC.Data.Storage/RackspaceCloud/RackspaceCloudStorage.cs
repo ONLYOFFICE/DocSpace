@@ -419,7 +419,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
         public override void DeleteFiles(string domain, List<string> paths)
         {
-            if (!paths.Any()) return;
+            if (paths.Count == 0) return;
 
             var keysToDel = new List<string>();
 
@@ -444,7 +444,7 @@ namespace ASC.Data.Storage.RackspaceCloud
                 }
             }
 
-            if (!keysToDel.Any()) return;
+            if (keysToDel.Count == 0) return;
 
             var client = GetClient();
 
@@ -537,7 +537,7 @@ namespace ASC.Data.Storage.RackspaceCloud
             var client = GetClient();
             var objects = client.ListObjects(_private_container, null, null, null, MakePath(domain, path), _region);
 
-            return objects.Count() > 0;
+            return objects.Any();
         }
 
         public override Task<bool> IsFileAsync(string domain, string path)

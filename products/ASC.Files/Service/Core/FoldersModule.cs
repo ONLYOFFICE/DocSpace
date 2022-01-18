@@ -62,7 +62,7 @@ namespace ASC.Files.Service.Core
 
                 var owner = (Guid)feed.Target;
                 var groupUsers = UserManager.GetUsersByGroup(owner).Select(x => x.ID).ToList();
-                if (!groupUsers.Any())
+                if (groupUsers.Count == 0)
                 {
                     groupUsers.Add(owner);
                 }

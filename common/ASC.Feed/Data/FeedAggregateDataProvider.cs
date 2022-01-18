@@ -94,7 +94,7 @@ namespace ASC.Feed.Data
                 SaveFeedsPortion(feedsPortion, aggregatedDate);
                 feedsPortion.Clear();
             }
-            if (feedsPortion.Any())
+            if (feedsPortion.Count > 0)
             {
                 SaveFeedsPortion(feedsPortion, aggregatedDate);
             }

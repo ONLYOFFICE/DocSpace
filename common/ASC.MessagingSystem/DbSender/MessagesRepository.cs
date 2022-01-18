@@ -181,7 +181,7 @@ namespace ASC.MessagingSystem.DbSender
                 Action = (int)message.Action
             };
 
-            if (message.Description != null && message.Description.Any())
+            if (message.Description != null && message.Description.Count > 0)
             {
                 le.Description =
                     JsonConvert.SerializeObject(message.Description, new JsonSerializerSettings
@@ -210,7 +210,7 @@ namespace ASC.MessagingSystem.DbSender
                 Target = message.Target?.ToString()
             };
 
-            if (message.Description != null && message.Description.Any())
+            if (message.Description != null && message.Description.Count > 0)
             {
                 ae.Description =
                     JsonConvert.SerializeObject(GetSafeDescription(message.Description), new JsonSerializerSettings

@@ -92,7 +92,7 @@ namespace ASC.IPSecurity
             {
                 var restrictions = IPRestrictionsService.Get(tenant.TenantId).ToList();
 
-                if (!restrictions.Any()) return true;
+                if (restrictions.Count == 0) return true;
 
                 if (string.IsNullOrWhiteSpace(requestIps = CurrentIpForTest))
                 {
