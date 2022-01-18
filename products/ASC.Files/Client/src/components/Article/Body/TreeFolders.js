@@ -436,13 +436,13 @@ class TreeFolders extends React.Component {
     const {
       selectedKeys,
       isLoading,
-      setIsLoading,
       onSelect,
       dragging,
       expandedKeys,
       expandedPanelKeys,
       treeFolders,
       data,
+      disabled,
     } = this.props;
 
     return (
@@ -450,7 +450,7 @@ class TreeFolders extends React.Component {
         className="files-tree-menu"
         checkable={false}
         draggable={dragging}
-        disabled={isLoading}
+        disabled={isLoading || disabled}
         multiple={false}
         showIcon
         switcherIcon={this.switcherIcon}

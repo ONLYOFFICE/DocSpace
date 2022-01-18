@@ -150,7 +150,7 @@ class FilesActionStore {
             this.updateCurrentFolder(fileIds, folderIds);
             if (isRecycleBinFolder) {
               return toastr.success(translations.deleteFromTrash);
-          }
+            }
 
             if (selection.length > 1) {
               return toastr.success(translations.deleteSelectedElem);
@@ -207,7 +207,8 @@ class FilesActionStore {
         };
         await this.uploadDataStore.loopFilesOperations(data, pbData);
         toastr.success(translations.successOperation);
-        this.updateCurrentFolder(fileIds, folderIds);      });
+        this.updateCurrentFolder(fileIds, folderIds);
+      });
     } catch (err) {
       clearActiveOperations(fileIds, folderIds);
       setSecondaryProgressBarData({
@@ -662,13 +663,17 @@ class FilesActionStore {
     this.checkOperationConflict(operationData);
   };
 
+  checkFileConflicts = (destFolderId, folderIds, fileIds) =>
+    checkFileConflicts(destFolderId, folderIds, fileIds);
+
+  setConflictDialogData = (conflicts, operationData) => {
+    this.dialogsStore.setConflictResolveDialogItems(conflicts);
+    this.dialogsStore.setConflictResolveDialogData(operationData);
+    this.dialogsStore.setConflictResolveDialogVisible(true);
+  };
+
   checkOperationConflict = async (operationData) => {
     const { destFolderId, folderIds, fileIds } = operationData;
-    const {
-      setConflictResolveDialogData,
-      setConflictResolveDialogVisible,
-      setConflictResolveDialogItems,
-    } = this.dialogsStore;
     const { setBufferSelection, addActiveItems } = this.filesStore;
 
     addActiveItems(fileIds);
@@ -677,16 +682,18 @@ class FilesActionStore {
     let conflicts;
 
     try {
-      conflicts = await checkFileConflicts(destFolderId, folderIds, fileIds);
+      conflicts = await this.checkFileConflicts(
+        destFolderId,
+        folderIds,
+        fileIds
+      );
     } catch (err) {
       setBufferSelection(null);
       return toastr.error(err.message ? err.message : err);
     }
 
     if (conflicts.length) {
-      setConflictResolveDialogItems(conflicts);
-      setConflictResolveDialogData(operationData);
-      setConflictResolveDialogVisible(true);
+      this.setConflictDialogData(conflicts, operationData);
     } else {
       try {
         await this.uploadDataStore.itemOperationToFolder(operationData);
@@ -695,8 +702,6 @@ class FilesActionStore {
         return toastr.error(err.message ? err.message : err);
       }
     }
-
-    setBufferSelection(null);
   };
 
   isAvailableOption = (option) => {
