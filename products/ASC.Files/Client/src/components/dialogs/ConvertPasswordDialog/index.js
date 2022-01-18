@@ -16,6 +16,7 @@ const ConvertPasswordDialogComponent = (props) => {
     copyAsAction,
     formCreationInfo,
     setFormCreationInfo,
+    setPasswordEntryProcess,
   } = props;
 
   const [password, setPassword] = useState("");
@@ -61,6 +62,14 @@ const ConvertPasswordDialogComponent = (props) => {
           setIsLoading(false);
         });
   }, [isLoading]);
+
+  useEffect(() => {
+    setPasswordEntryProcess(true);
+
+    return () => {
+      setPasswordEntryProcess(false);
+    };
+  }, []);
 
   const onChangePassword = useCallback(
     (password) => {
@@ -123,7 +132,7 @@ const ConvertPasswordDialog = withTranslation([
   "Common",
 ])(ConvertPasswordDialogComponent);
 
-export default inject(({ auth, dialogsStore, uploadDataStore }) => {
+export default inject(({ filesStore, auth, dialogsStore, uploadDataStore }) => {
   const {
     convertPasswordDialogVisible: visible,
     setConvertPasswordDialogVisible,
@@ -131,7 +140,7 @@ export default inject(({ auth, dialogsStore, uploadDataStore }) => {
     formCreationInfo,
   } = dialogsStore;
   const { copyAsAction } = uploadDataStore;
-
+  const { setPasswordEntryProcess } = filesStore;
   const { settingsStore } = auth;
   const { isTabletView } = settingsStore;
 
@@ -142,5 +151,6 @@ export default inject(({ auth, dialogsStore, uploadDataStore }) => {
     copyAsAction,
     formCreationInfo,
     setFormCreationInfo,
+    setPasswordEntryProcess,
   };
 })(observer(ConvertPasswordDialog));

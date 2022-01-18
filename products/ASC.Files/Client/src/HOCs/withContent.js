@@ -35,10 +35,18 @@ export default function withContent(WrappedContent) {
     }
 
     componentDidUpdate(prevProps) {
-      const { fileActionId, fileActionExt } = this.props;
+      const {
+        fileActionId,
+        fileActionExt,
+        setIsUpdatingRowItem,
+        isUpdatingRowItem,
+      } = this.props;
       if (fileActionId === -1 && fileActionExt !== prevProps.fileActionExt) {
         const itemTitle = getDefaultFileName(fileActionExt);
         this.setState({ itemTitle });
+      }
+      if (fileActionId === null && prevProps.fileActionId !== fileActionId) {
+        isUpdatingRowItem && setIsUpdatingRowItem(false);
       }
     }
 
@@ -114,7 +122,8 @@ export default function withContent(WrappedContent) {
     };
 
     onClickUpdateItem = (e, open = true) => {
-      const { fileActionType } = this.props;
+      const { fileActionType, setIsUpdatingRowItem } = this.props;
+      setIsUpdatingRowItem(true);
       fileActionType === FileAction.Create
         ? this.createItem(e, open)
         : this.updateItem(e);
@@ -137,6 +146,7 @@ export default function withContent(WrappedContent) {
         copyAsAction,
         setConvertPasswordDialogVisible,
         setFormCreationInfo,
+        setIsUpdatingRowItem,
       } = this.props;
       const { itemTitle } = this.state;
 
@@ -207,6 +217,7 @@ export default function withContent(WrappedContent) {
             .then(() => this.completeAction(itemId))
             .catch((err) => {
               console.log("err", err);
+              setIsUpdatingRowItem(false);
 
               setFormCreationInfo({
                 newTitle: `${title}.${item.fileExst}`,
@@ -293,6 +304,8 @@ export default function withContent(WrappedContent) {
         t,
         viewAs,
         viewer,
+        isUpdatingRowItem,
+        passwordEntryProcess,
       } = this.props;
       const {
         access,
@@ -350,6 +363,8 @@ export default function withContent(WrappedContent) {
           renameTitle={this.renameTitle}
           onClickUpdateItem={this.onClickUpdateItem}
           cancelUpdateItem={this.cancelUpdateItem}
+          isUpdatingRowItem={isUpdatingRowItem}
+          passwordEntryProcess={passwordEntryProcess}
         />
       ) : (
         <WrappedContent
@@ -391,6 +406,9 @@ export default function withContent(WrappedContent) {
         setIsLoading,
         updateFile,
         viewAs,
+        setIsUpdatingRowItem,
+        isUpdatingRowItem,
+        passwordEntryProcess,
       } = filesStore;
       const { copyAsAction } = uploadDataStore;
       const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
@@ -441,6 +459,9 @@ export default function withContent(WrappedContent) {
         setConvertPasswordDialogVisible,
         setConvertItem,
         setFormCreationInfo,
+        setIsUpdatingRowItem,
+        isUpdatingRowItem,
+        passwordEntryProcess,
       };
     }
   )(observer(WithContent));

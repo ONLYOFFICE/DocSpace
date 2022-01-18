@@ -37,6 +37,8 @@ class FilesStore {
   dragging = false;
   privacyInstructions = "https://www.onlyoffice.com/private-rooms.aspx";
   isInit = false;
+  isUpdatingRowItem = false;
+  passwordEntryProcess = false;
 
   tooltipPageX = 0;
   tooltipPageY = 0;
@@ -78,6 +80,7 @@ class FilesStore {
   }
 
   addActiveItems = (files, folders) => {
+    console.log("addActiveItems", files, folders);
     if (folders && folders.length) {
       if (!this.activeFolders.length) {
         this.setActiveFolders(folders);
@@ -96,6 +99,7 @@ class FilesStore {
   };
 
   setActiveFiles = (activeFiles) => {
+    console.log("activeFiles", activeFiles);
     this.activeFiles = activeFiles;
   };
 
@@ -1698,6 +1702,14 @@ class FilesStore {
     });
 
     if (fileIds.length) return api.files.createThumbnails(fileIds);
+  };
+
+  setIsUpdatingRowItem = (updating) => {
+    this.isUpdatingRowItem = updating;
+  };
+
+  setPasswordEntryProcess = (process) => {
+    this.passwordEntryProcess = process;
   };
 }
 
