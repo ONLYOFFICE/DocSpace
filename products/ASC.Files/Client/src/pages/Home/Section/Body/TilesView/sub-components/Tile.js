@@ -150,7 +150,7 @@ const StyledFileTileTop = styled.div`
   .temporary-icon > .injected-svg {
     position: absolute;
     width: 100%;
-    top: 25%;
+    bottom: 16px;
   }
 `;
 
@@ -208,6 +208,105 @@ const StyledOptionButton = styled.div`
 
   .expandButton > div:first-child {
     padding: 8px 13px 8px 12px;
+  }
+`;
+
+const badgesPosition = css`
+  position: absolute;
+  top: 14px;
+  left: 16px;
+
+  .badges {
+    display: grid;
+    grid-template-columns: repeat(3, fit-content(50px));
+    grid-gap: 20px;
+
+    .badge-new-version {
+      order: 1;
+    }
+
+    .badge-version-current {
+      order: 2;
+    }
+
+    .is-editing,
+    .can-convert {
+      order: 3;
+      top: 2px;
+    }
+  }
+`;
+
+const quickButtonsPosition = css`
+  position: absolute;
+  right: 20px;
+  top: 16px;
+
+  .badges {
+    display: grid;
+    grid-template-rows: repeat(3, 32px);
+    grid-gap: 4px;
+  }
+`;
+
+const badgeOutlineStyles = ({ top, right, left, width }) => css`
+  position: relative;
+  overflow: visible;
+
+  &::before {
+    z-index: -1;
+    content: "";
+    position: absolute;
+    top: ${top};
+    ${right && `right: ${right}`};
+    ${left && `left: ${left}`};
+    height: 32px;
+    width: ${width};
+    border-radius: 4px;
+    background: white;
+  }
+
+  // this fixes hover
+  &::after {
+    content: "";
+    position: absolute;
+    top: ${top};
+    ${right && `right: ${right}`};
+    ${left && `left: ${left}`};
+    height: 32px;
+    width: ${width};
+  }
+`;
+
+const StyledIcons = styled.div`
+  ${(props) => props.isBadges && badgesPosition}
+  ${(props) => props.isQuickButtons && quickButtonsPosition}
+  filter: drop-shadow(0px 12px 40px rgba(4, 15, 27, 0.12));
+
+  .badge {
+    ${badgeOutlineStyles({
+      top: "-8px",
+      left: "-8px",
+      width: "32px",
+    })}
+
+    svg {
+      height: 16px;
+      width: 16px;
+    }
+  }
+
+  .badge-version {
+    ${badgeOutlineStyles({
+      top: "-7px",
+      left: "-9px",
+      width: "calc(100% + 18px)",
+    })}
+
+    p {
+      font-size: 11px;
+      line-height: 16px;
+    }
   }
 `;
 
@@ -278,6 +377,7 @@ class Tile extends React.PureComponent {
       isActive,
       inProgress,
       isEdit,
+      contentElement,
     } = this.props;
     const { isFolder, id, fileExst } = item;
 
@@ -289,6 +389,11 @@ class Tile extends React.PureComponent {
     const renderElement = Object.prototype.hasOwnProperty.call(
       this.props,
       "element"
+    );
+
+    const renderContentElement = Object.prototype.hasOwnProperty.call(
+      this.props,
+      "contentElement"
     );
 
     const renderContext =
@@ -309,6 +414,9 @@ class Tile extends React.PureComponent {
     };
 
     const icon = this.getIconFile();
+    const FilesTileContent = children[0];
+    const badges = children[1];
+    const quickButtons = contentElement;
 
     return (
       <StyledTile
@@ -355,7 +463,7 @@ class Tile extends React.PureComponent {
             <StyledContent
               isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
             >
-              {children}
+              {FilesTileContent}
             </StyledContent>
             <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
               {renderContext ? (
@@ -379,6 +487,13 @@ class Tile extends React.PureComponent {
             <StyledFileTileTop checked={checked} isActive={isActive}>
               {icon}
             </StyledFileTileTop>
+
+            <StyledIcons isBadges>{badges}</StyledIcons>
+
+            {renderContentElement && (
+              <StyledIcons isQuickButtons>{quickButtons}</StyledIcons>
+            )}
+
             <StyledFileTileBottom>
               {id !== -1 && !isEdit && (
                 <>
@@ -406,7 +521,7 @@ class Tile extends React.PureComponent {
               <StyledContent
                 isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
               >
-                {children}
+                {FilesTileContent}
               </StyledContent>
               <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
                 {renderContext ? (
@@ -434,7 +549,10 @@ class Tile extends React.PureComponent {
 
 Tile.propTypes = {
   checked: PropTypes.bool,
-  children: PropTypes.element,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.element),
+    PropTypes.element,
+  ]),
   className: PropTypes.string,
   contextButtonSpacerWidth: PropTypes.string,
   contextOptions: PropTypes.array,
@@ -447,6 +565,7 @@ Tile.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   viewAs: PropTypes.string,
   tileContextClick: PropTypes.func,
+  contentElement: PropTypes.element,
 };
 
 Tile.defaultProps = {

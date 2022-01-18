@@ -25,6 +25,7 @@ const Badges = ({
   onShowVersionHistory,
   onBadgeClick,
   setConvertDialogVisible,
+  viewAs,
 }) => {
   const { id, locked, fileStatus, version, versionGroup, fileExst } = item;
 
@@ -48,9 +49,10 @@ const Badges = ({
   const contentNewItems = newItems > 999 ? "999+" : newItems;
 
   const tabletViewBadge =
-    (sectionWidth > 500 && sectionWidth <= 1024) || isTablet;
+    viewAs !== "tile" &&
+    ((sectionWidth > 500 && sectionWidth <= 1024) || isTablet);
 
-  const sizeBadge = tabletViewBadge ? "medium" : "small";
+  const sizeBadge = viewAs === "tile" || tabletViewBadge ? "medium" : "small";
 
   const lineHeightBadge = tabletViewBadge ? "1.46" : "1.34";
 
@@ -97,7 +99,7 @@ const Badges = ({
       )}
       {version > 1 && (
         <Badge
-          className="badge-version tablet-badge icons-group"
+          className="badge-version badge-version-current tablet-badge icons-group"
           backgroundColor="#A3A9AE"
           borderRadius="11px"
           color="#FFFFFF"

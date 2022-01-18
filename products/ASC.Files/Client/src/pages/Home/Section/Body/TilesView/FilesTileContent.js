@@ -71,12 +71,7 @@ const SimpleFilesTileContent = styled(TileContent)`
   }
 `;
 
-const FilesTileContent = ({
-  item,
-  titleWithoutExt,
-  linkStyles,
-  badgesComponent,
-}) => {
+const FilesTileContent = ({ item, titleWithoutExt, linkStyles }) => {
   const { fileExst, title } = item;
 
   return (
@@ -96,8 +91,6 @@ const FilesTileContent = ({
         >
           {titleWithoutExt}
         </Link>
-
-        <div className="badges">{badgesComponent}</div>
       </SimpleFilesTileContent>
     </>
   );

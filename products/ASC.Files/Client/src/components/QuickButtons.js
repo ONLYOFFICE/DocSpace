@@ -39,7 +39,8 @@ const QuickButtons = ({
     : "/static/images/favorite.react.svg";
 
   const tabletViewQuickButton =
-    (sectionWidth > 500 && sectionWidth <= 1024) || isTablet;
+    viewAs !== "tile" &&
+    ((sectionWidth > 500 && sectionWidth <= 1024) || isTablet);
   const sizeQuickButton = tabletViewQuickButton ? "medium" : "small";
 
   const displayShare = viewAs === "row" && (isMobile || sectionWidth <= 500);
