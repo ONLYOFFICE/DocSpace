@@ -6,7 +6,12 @@ import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import SimulatePassword from "../../SimulatePassword";
 import StyledComponent from "./StyledConvertPasswordDialog";
-
+import { AppServerConfig } from "@appserver/common/constants";
+import config from "../../../../package.json";
+import { openDocEditor } from "../../../helpers/utils";
+import combineUrl from "@appserver/common/utils/combineUrl";
+import { fileCopyAs } from "@appserver/common/api/files";
+let tab, _isMounted;
 const ConvertPasswordDialogComponent = (props) => {
   const {
     t,
@@ -17,17 +22,19 @@ const ConvertPasswordDialogComponent = (props) => {
     formCreationInfo,
     setFormCreationInfo,
     setPasswordEntryProcess,
+    isDesktop,
+    editCompleteAction,
   } = props;
 
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [passwordValid, setPasswordValid] = useState(true);
 
-  const dialogHeading =
+  const makeForm =
     formCreationInfo.fromExst === ".docxf" &&
-    formCreationInfo.toExst === ".oform"
-      ? t("Common:MakeForm")
-      : "";
+    formCreationInfo.toExst === ".oform";
+
+  const dialogHeading = makeForm ? t("Common:MakeForm") : "";
 
   const onClose = () => {
     setConvertPasswordDialogVisible(false);
@@ -44,29 +51,61 @@ const ConvertPasswordDialogComponent = (props) => {
 
     if (hasError) return;
 
+    tab =
+      !isDesktop && formCreationInfo.fileInfo.fileExst && formCreationInfo.open
+        ? window.open(
+            combineUrl(AppServerConfig.proxyURL, config.homepage, "/doceditor"),
+            "_blank"
+          )
+        : null;
+
     setIsLoading(true);
   };
 
   useEffect(() => {
-    const { newTitle, fileInfo } = formCreationInfo;
+    const { newTitle, fileInfo, open, actionId } = formCreationInfo;
     const { id, folderId } = fileInfo;
 
-    isLoading &&
-      copyAsAction(id, newTitle, folderId, false, password)
-        .then(() => {
-          onClose();
-        })
-        .catch((err) => {
-          console.log("err", err);
-          setPasswordValid(false);
-          setIsLoading(false);
-        });
+    if (isLoading) {
+      if (makeForm) {
+        copyAsAction(id, newTitle, folderId, false, password)
+          .then(() => {
+            onClose();
+          })
+          .catch((err) => {
+            console.log("err", err);
+            if (_isMounted) {
+              setPasswordValid(false);
+              setIsLoading(false);
+            }
+          });
+      } else {
+        fileCopyAs(id, newTitle, folderId, false, password)
+          .then((file) => {
+            onClose();
+            open && openDocEditor(file.id, file.providerKey, tab);
+          })
+          .then(() => {
+            editCompleteAction(actionId, fileInfo, false);
+          })
+          .catch((err) => {
+            console.log("err", err);
+            open && openDocEditor(null, null, tab);
+            if (_isMounted) {
+              setPasswordValid(false);
+              setIsLoading(false);
+            }
+          });
+      }
+    }
   }, [isLoading]);
 
   useEffect(() => {
+    _isMounted = true;
     setPasswordEntryProcess(true);
 
     return () => {
+      _isMounted = false;
       setPasswordEntryProcess(false);
     };
   }, []);
@@ -132,25 +171,30 @@ const ConvertPasswordDialog = withTranslation([
   "Common",
 ])(ConvertPasswordDialogComponent);
 
-export default inject(({ filesStore, auth, dialogsStore, uploadDataStore }) => {
-  const {
-    convertPasswordDialogVisible: visible,
-    setConvertPasswordDialogVisible,
-    setFormCreationInfo,
-    formCreationInfo,
-  } = dialogsStore;
-  const { copyAsAction } = uploadDataStore;
-  const { setPasswordEntryProcess } = filesStore;
-  const { settingsStore } = auth;
-  const { isTabletView } = settingsStore;
+export default inject(
+  ({ filesStore, filesActionsStore, auth, dialogsStore, uploadDataStore }) => {
+    const {
+      convertPasswordDialogVisible: visible,
+      setConvertPasswordDialogVisible,
+      setFormCreationInfo,
+      formCreationInfo,
+    } = dialogsStore;
+    const { copyAsAction } = uploadDataStore;
+    const { setPasswordEntryProcess } = filesStore;
+    const { editCompleteAction } = filesActionsStore;
+    const { settingsStore } = auth;
+    const { isTabletView, isDesktopClient } = settingsStore;
 
-  return {
-    visible,
-    setConvertPasswordDialogVisible,
-    isTabletView,
-    copyAsAction,
-    formCreationInfo,
-    setFormCreationInfo,
-    setPasswordEntryProcess,
-  };
-})(observer(ConvertPasswordDialog));
+    return {
+      visible,
+      setConvertPasswordDialogVisible,
+      isTabletView,
+      copyAsAction,
+      formCreationInfo,
+      setFormCreationInfo,
+      setPasswordEntryProcess,
+      isDesktop: isDesktopClient,
+      editCompleteAction,
+    };
+  }
+)(observer(ConvertPasswordDialog));

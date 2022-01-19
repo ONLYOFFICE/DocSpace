@@ -16,6 +16,7 @@ import EditingWrapperComponent from "../components/EditingWrapperComponent";
 import { getTitleWithoutExst } from "../helpers/files-helpers";
 import { getDefaultFileName } from "../helpers/utils";
 import ItemIcon from "../components/ItemIcon";
+import { fileCopyAs } from "@appserver/common/api/files";
 export default function withContent(WrappedContent) {
   class WithContent extends React.Component {
     constructor(props) {
@@ -143,7 +144,6 @@ export default function withContent(WrappedContent) {
         setEncryptionAccess,
         setIsLoading,
         t,
-        copyAsAction,
         setConvertPasswordDialogVisible,
         setFormCreationInfo,
         setIsUpdatingRowItem,
@@ -183,20 +183,6 @@ export default function withContent(WrappedContent) {
             )
           : null;
 
-      const processingReceivedInformation = (file) => {
-        console.log("processingReceivedInformation", file);
-        if (isPrivacy) {
-          return setEncryptionAccess(file).then((encryptedFile) => {
-            if (!encryptedFile) return Promise.resolve();
-            toastr.info(t("Translations:EncryptedFileSaving"));
-            return replaceFileStream(file.id, encryptedFile, true, false).then(
-              () => open && openDocEditor(file.id, file.providerKey, tab)
-            );
-          });
-        }
-        return open && openDocEditor(file.id, file.providerKey, tab);
-      };
-
       if (!item.fileExst && !item.contentLength) {
         createFolder(item.parentId, title)
           .then(() => this.completeAction(itemId))
@@ -206,13 +192,13 @@ export default function withContent(WrappedContent) {
           });
       } else {
         if (isMakeFormFromFile) {
-          copyAsAction(
+          fileCopyAs(
             fileActionTemplateId,
             `${title}.${item.fileExst}`,
             item.parentId
           )
             .then((file) => {
-              processingReceivedInformation(file);
+              open && openDocEditor(file.id, file.providerKey, tab);
             })
             .then(() => this.completeAction(itemId))
             .catch((err) => {
@@ -223,9 +209,12 @@ export default function withContent(WrappedContent) {
                 newTitle: `${title}.${item.fileExst}`,
                 fromExst: ".docx",
                 toExst: item.fileExst,
+                open,
+                actionId: itemId,
                 fileInfo: {
                   id: fileActionTemplateId,
                   folderId: item.parentId,
+                  fileExst: item.fileExst,
                 },
               });
               setConvertPasswordDialogVisible(true);
@@ -238,7 +227,21 @@ export default function withContent(WrappedContent) {
         } else {
           createFile(item.parentId, `${title}.${item.fileExst}`)
             .then((file) => {
-              processingReceivedInformation(file);
+              if (isPrivacy) {
+                return setEncryptionAccess(file).then((encryptedFile) => {
+                  if (!encryptedFile) return Promise.resolve();
+                  toastr.info(t("Translations:EncryptedFileSaving"));
+                  return replaceFileStream(
+                    file.id,
+                    encryptedFile,
+                    true,
+                    false
+                  ).then(
+                    () => open && openDocEditor(file.id, file.providerKey, tab)
+                  );
+                });
+              }
+              return open && openDocEditor(file.id, file.providerKey, tab);
             })
             .then(() => this.completeAction(itemId))
             .catch((e) => toastr.error(e))
@@ -386,14 +389,7 @@ export default function withContent(WrappedContent) {
 
   return inject(
     (
-      {
-        filesActionsStore,
-        filesStore,
-        treeFoldersStore,
-        auth,
-        uploadDataStore,
-        dialogsStore,
-      },
+      { filesActionsStore, filesStore, treeFoldersStore, auth, dialogsStore },
       {}
     ) => {
       const { editCompleteAction } = filesActionsStore;
@@ -410,7 +406,6 @@ export default function withContent(WrappedContent) {
         isUpdatingRowItem,
         passwordEntryProcess,
       } = filesStore;
-      const { copyAsAction } = uploadDataStore;
       const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
 
       const {
@@ -455,7 +450,6 @@ export default function withContent(WrappedContent) {
         updateFile,
         viewAs,
         viewer: auth.userStore.user,
-        copyAsAction,
         setConvertPasswordDialogVisible,
         setConvertItem,
         setFormCreationInfo,
