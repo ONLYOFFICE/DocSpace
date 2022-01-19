@@ -378,7 +378,7 @@ namespace ASC.Web.Files.Utils
                     var folderTags = listTags.Where(tag => tag.EntryType == FileEntryType.Folder);
 
                     var providerFolderTags = folderTags.Select(tag => new KeyValuePair<Tag, Folder<T>>(tag, folderDao.GetFolder((T)tag.EntryId)))
-                                                       .Where(pair => pair.Value != null && pair.Value.ProviderEntry).ToList();
+                                                       .Where(pair => pair.Value != null && pair.Value.ProviderEntry);
 
                     foreach (var providerFolderTag in providerFolderTags)
                     {

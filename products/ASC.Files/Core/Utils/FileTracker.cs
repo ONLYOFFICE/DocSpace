@@ -97,8 +97,8 @@ namespace ASC.Web.Files.Utils
                 if (userId != default)
                 {
                     var listForRemove = tracker.EditingBy
-                                               .Where(b => tracker.EditingBy[b.Key].UserId == userId)
-                                               .ToList();
+                                               .Where(b => tracker.EditingBy[b.Key].UserId == userId);
+
                     foreach (var editTab in listForRemove)
                     {
                         tracker.EditingBy.Remove(editTab.Key);
@@ -117,8 +117,8 @@ namespace ASC.Web.Files.Utils
             if (tracker != null)
             {
                 var listForRemove = tracker.EditingBy
-                                           .Where(b => b.Value.UserId != userId)
-                                           .ToList();
+                                           .Where(b => b.Value.UserId != userId);
+
                 if (listForRemove.Count() != tracker.EditingBy.Count)
                 {
                     foreach (var forRemove in listForRemove)
@@ -138,8 +138,8 @@ namespace ASC.Web.Files.Utils
             if (tracker != null)
             {
                 var listForRemove = tracker.EditingBy
-                                           .Where(e => !e.Value.NewScheme && (DateTime.UtcNow - e.Value.TrackTime).Duration() > TrackTimeout)
-                                           .ToList();
+                                           .Where(e => !e.Value.NewScheme && (DateTime.UtcNow - e.Value.TrackTime).Duration() > TrackTimeout);
+
                 foreach (var editTab in listForRemove)
                 {
                     tracker.EditingBy.Remove(editTab.Key);
