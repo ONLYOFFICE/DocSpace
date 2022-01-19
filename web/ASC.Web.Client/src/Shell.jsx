@@ -302,6 +302,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   const fetchBanners = () => {
     if (!FirebaseHelper.isEnabled) return;
 
+    console.log("fetchBanners");
     FirebaseHelper.checkCampaigns()
       .then((campaigns) => {
         localStorage.setItem("campaigns", campaigns);
@@ -324,11 +325,13 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     fetchMaintenance();
     fetchBanners();
     fbInterval = setInterval(fetchMaintenance, 60000);
+    const bannerInterval = setInterval(fetchBanners, 60000 * 720); // get every 12 hours
 
     return () => {
       if (fbInterval) {
         clearInterval(fbInterval);
       }
+      clearInterval(bannerInterval);
       clearSnackBarTimer();
     };
   }, [isLoaded]);
