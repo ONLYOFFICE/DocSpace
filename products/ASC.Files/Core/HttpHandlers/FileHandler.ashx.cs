@@ -535,7 +535,7 @@ namespace ASC.Web.Files
 
             var range = context.Request.Headers["Range"].FirstOrDefault().Split(new[] { '=', '-' });
             offset = Convert.ToInt64(range[1]);
-            if (range.Count() > 2 && !string.IsNullOrEmpty(range[2]))
+            if (range.Length > 2 && !string.IsNullOrEmpty(range[2]))
             {
                 endOffset = Convert.ToInt64(range[2]);
             }

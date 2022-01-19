@@ -144,7 +144,7 @@ namespace ASC.Web.Files.Utils
 
             if (obj.FileEntry.RootFolderType == FolderType.BUNCH)
             {
-                if (!userIDs.Any()) return;
+                if (userIDs.Count == 0) return;
 
                 parentFolders.Add(folderDao.GetFolder(GlobalFolder.GetFolderProjects<T>(DaoFactory)));
 
@@ -165,7 +165,7 @@ namespace ASC.Web.Files.Utils
             {
                 var filesSecurity = FileSecurity;
 
-                if (!userIDs.Any())
+                if (userIDs.Count == 0)
                 {
                     userIDs = filesSecurity.WhoCanRead(obj.FileEntry).Where(x => x != obj.CurrentAccountId).ToList();
                 }
@@ -286,9 +286,9 @@ namespace ASC.Web.Files.Utils
                 GetNewTags(userID, entries.OfType<FileEntry<string>>().ToList());
             }
 
-            if (updateTags.Any())
+            if (updateTags.Count > 0)
                 tagDao.UpdateNewTags(updateTags);
-            if (newTags.Any())
+            if (newTags.Count > 0)
                 tagDao.SaveTags(newTags);
 
             void GetNewTags<T1>(Guid userID, List<FileEntry<T1>> entries)
@@ -320,7 +320,7 @@ namespace ASC.Web.Files.Utils
             taskData.FileEntry = (FileEntry<T>)fileEntry.Clone();
             taskData.UserIDs = userIDs;
 
-            if (fileEntry.RootFolderType == FolderType.BUNCH && !userIDs.Any())
+            if (fileEntry.RootFolderType == FolderType.BUNCH && userIDs.Count == 0)
             {
                 var folderDao = DaoFactory.GetFolderDao<T>();
                 var path = folderDao.GetBunchObjectID(fileEntry.RootFolderId);
@@ -331,7 +331,7 @@ namespace ASC.Web.Files.Utils
                 var projectTeam = FileSecurity.WhoCanRead(fileEntry)
                                         .Where(x => x != AuthContext.CurrentAccount.ID).ToList();
 
-                if (!projectTeam.Any()) return;
+                if (projectTeam.Count == 0) return;
 
                 taskData.UserIDs = projectTeam;
             }
@@ -449,9 +449,9 @@ namespace ASC.Web.Files.Utils
                 UpdateRemoveTags(parentFolder);
             }
 
-            if (updateTags.Any())
+            if (updateTags.Count > 0)
                 tagDao.UpdateNewTags(updateTags);
-            if (removeTags.Any())
+            if (removeTags.Count > 0)
                 tagDao.RemoveTags(removeTags);
 
             void UpdateRemoveTags<TFolder>(Folder<TFolder> folder)
@@ -524,7 +524,7 @@ namespace ASC.Web.Files.Utils
             var providerTagDao = DaoFactory.GetTagDao<string>();
             var tags = (tagDao.GetNewTags(AuthContext.CurrentAccount.ID, folder, true) ?? new List<Tag>()).ToList();
 
-            if (!tags.Any()) return new List<FileEntry>();
+            if (tags.Count == 0) return new List<FileEntry>();
 
             if (Equals(folder.ID, GlobalFolder.GetFolderMy(this, DaoFactory)) || 
                 Equals(folder.ID, GlobalFolder.GetFolderCommon(this, DaoFactory)) || 
@@ -645,7 +645,7 @@ namespace ASC.Web.Files.Utils
             var folderDao = DaoFactory.GetFolderDao<T>();
             var totalTags = tagDao.GetNewTags(AuthContext.CurrentAccount.ID, parent, false).ToList();
 
-            if (totalTags.Any())
+            if (totalTags.Count > 0)
             {
                 var parentFolderTag = Equals(GlobalFolder.GetFolderShare<T>(DaoFactory), parent.ID)
                                             ? tagDao.GetNewTags(AuthContext.CurrentAccount.ID, folderDao.GetFolder(GlobalFolder.GetFolderShare<T>(DaoFactory))).FirstOrDefault()
@@ -682,7 +682,7 @@ namespace ASC.Web.Files.Utils
                         parentsList.Reverse();
                         parentsList.Remove(parent);
 
-                        if (parentsList.Any())
+                        if (parentsList.Count > 0)
                         {
                             var rootFolder = parentsList.Last();
                             T rootFolderId = default;

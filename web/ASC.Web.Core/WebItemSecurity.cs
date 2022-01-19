@@ -253,7 +253,7 @@ namespace ASC.Web.Core
             {
                 WebItemId = id,
 
-                Enabled = !info.Any() || (!module && info.Any(i => i.Item2)) || (module && info.All(i => i.Item2)),
+                Enabled = info.Count == 0 || (!module && info.Any(i => i.Item2)) || (module && info.All(i => i.Item2)),
 
                 Users = info
                                .Select(i => UserManager.GetUsers(i.Item1))
@@ -273,7 +273,7 @@ namespace ASC.Web.Core
                 .GroupBy(a => a.SubjectId)
                 .Select(a => Tuple.Create(a.Key, a.First().Reaction == AceType.Allow))
                 .ToList();
-            if (!result.Any())
+            if (result.Count == 0)
             {
                 result.Add(Tuple.Create(ASC.Core.Users.Constants.GroupEveryone.ID, false));
             }

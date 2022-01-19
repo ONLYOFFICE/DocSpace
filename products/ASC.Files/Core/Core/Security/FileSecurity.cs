@@ -817,7 +817,7 @@ namespace ASC.Files.Core.Security
                 failedRecords.Add(failedRecord);
             }
 
-            if (failedRecords.Any())
+            if (failedRecords.Count > 0)
             {
                 securityDao.DeleteShareRecords(failedRecords);
             }

@@ -1219,14 +1219,14 @@ namespace ASC.Files.Core.Data
             var q1 = FilesDbContext.Files
                 .Where(r => r.ModifiedOn > fromTime)
                 .GroupBy(r => r.TenantId)
-                .Where(r => r.Count() > 0)
+                .Where(r => r.Any())
                 .Select(r => r.Key)
                 .ToList();
 
             var q2 = FilesDbContext.Security
                 .Where(r => r.TimeStamp > fromTime)
                 .GroupBy(r => r.TenantId)
-                .Where(r => r.Count() > 0)
+                .Where(r => r.Any())
                 .Select(r => r.Key)
                 .ToList();
 

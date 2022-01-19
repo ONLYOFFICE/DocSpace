@@ -107,7 +107,7 @@ namespace ASC.Core
                     error = exception;
                 }
             }
-            if (!result.Any() && error != null)
+            if (result.Count == 0 && error != null)
             {
                 throw error;
             }

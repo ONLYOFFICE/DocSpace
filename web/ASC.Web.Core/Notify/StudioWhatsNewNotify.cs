@@ -174,7 +174,7 @@ namespace ASC.Web.Studio.Core.Notify
                         foreach (var gr in groupByPrjs)
                         {
                             var grlist = gr.ToList();
-                            for (var i = 0; i < grlist.Count(); i++)
+                            for (var i = 0; i < grlist.Count; i++)
                             {
                                 var ls = grlist[i];
                                 whatsNewUserActivityGroupByPrjs.Add(

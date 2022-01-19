@@ -207,7 +207,7 @@ namespace ASC.ElasticSearch
         public void Index(List<T> data, bool immediately = true, int retry = 0)
         {
             var t = ServiceProvider.GetService<T>();
-            if (!Support(t) || !data.Any()) return;
+            if (!Support(t) || data.Count == 0) return;
 
             try
             {
@@ -276,7 +276,7 @@ namespace ASC.ElasticSearch
         public Task IndexAsync(List<T> data, bool immediately = true, int retry = 0)
         {
             var t = ServiceProvider.GetService<T>();
-            if (!Support(t) || !data.Any()) return Task.CompletedTask;
+            if (!Support(t) || data.Count == 0) return Task.CompletedTask;
 
             return InternalIndexAsync(data, immediately, retry);
         }

@@ -701,7 +701,7 @@ namespace ASC.Core.Data
 
             q = q.Where(r => !r.Removed);
 
-            if (includeGroups != null && includeGroups.Any())
+            if (includeGroups != null && includeGroups.Count > 0)
             {
                 Expression or = Expression.Empty();
 
@@ -711,7 +711,7 @@ namespace ASC.Core.Data
                 }
             }
 
-            if (excludeGroups != null && excludeGroups.Any())
+            if (excludeGroups != null && excludeGroups.Count > 0)
             {
                 foreach (var eg in excludeGroups)
                 {

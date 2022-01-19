@@ -177,7 +177,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         protected override void Do(IServiceScope scope)
         {
-            if (!Files.Any() && !Folders.Any()) return;
+            if (Files.Count == 0 && Folders.Count == 0) return;
 
             entriesPathId = GetEntriesPathId(scope);
 

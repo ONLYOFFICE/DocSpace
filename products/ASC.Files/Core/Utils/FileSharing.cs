@@ -167,7 +167,7 @@ namespace ASC.Web.Files.Utils
                 DocumentServiceHelper.CheckUsersForDrop((File<T>)entry);
             }
 
-            if (recipients.Any())
+            if (recipients.Count > 0)
             {
                 if (entryType == FileEntryType.File
                     || ((Folder<T>)entry).TotalSubFolders + ((Folder<T>)entry).TotalFiles > 0
@@ -467,7 +467,7 @@ namespace ASC.Web.Files.Utils
                     var duplicate = result.FirstOrDefault(ace => ace.SubjectId == aceForObject.SubjectId);
                     if (duplicate == null)
                     {
-                        if (result.Any())
+                        if (result.Count > 0)
                         {
                             aceForObject.Owner = false;
                             aceForObject.Share = FileShare.Varies;

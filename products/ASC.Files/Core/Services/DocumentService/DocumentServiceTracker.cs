@@ -326,7 +326,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 }
             }
 
-            if (usersDrop.Any())
+            if (usersDrop.Count > 0)
             {
                 if (!DocumentServiceHelper.DropUser(fileData.Key, usersDrop.ToArray(), fileId))
                 {

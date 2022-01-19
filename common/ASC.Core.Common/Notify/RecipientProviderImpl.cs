@@ -125,7 +125,7 @@ namespace ASC.Core.Notify
             if (recipient.CheckActivation)
             {
                 //It's direct email
-                if (recipient.Addresses != null && recipient.Addresses.Any())
+                if (recipient.Addresses != null && recipient.Addresses.Length > 0)
                 {
                     //Filtering only missing users and users who activated already
                     var filteredAddresses = from address in recipient.Addresses

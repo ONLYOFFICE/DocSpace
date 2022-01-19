@@ -100,7 +100,7 @@ namespace ASC.Files.Core.Thirdparty
                 if (fromFileFavoriteTag != null) fromFileTags.AddRange(fromFileFavoriteTag);
                 if (fromFileTemplateTag != null) fromFileTags.AddRange(fromFileTemplateTag);
 
-                if (fromFileTags.Any())
+                if (fromFileTags.Count > 0)
                 {
                     fromFileTags.ForEach(x => x.EntryId = toFile.ID);
 
@@ -179,7 +179,7 @@ namespace ASC.Files.Core.Thirdparty
                 var tagDao = ServiceProvider.GetService<ITagDao<TFrom>>();
                 var fromFileNewTags = tagDao.GetNewTags(Guid.Empty, fromFolder).ToList();
 
-                if (fromFileNewTags.Any())
+                if (fromFileNewTags.Count > 0)
                 {
                     fromFileNewTags.ForEach(x => x.EntryId = toFolderId);
 

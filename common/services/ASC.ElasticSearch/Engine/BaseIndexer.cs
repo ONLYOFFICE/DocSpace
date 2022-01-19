@@ -122,7 +122,7 @@ namespace ASC.ElasticSearch
 
         internal void Index(List<T> data, bool immediately = true)
         {
-            if (!data.Any()) return;
+            if (data.Count == 0) return;
 
             CreateIfNotExist(data[0]);
 
@@ -495,7 +495,7 @@ namespace ASC.ElasticSearch
         {
             var result = request.Index(IndexName);
 
-            if (fields.Any())
+            if (fields.Length > 0)
             {
                 result.Script(GetScriptUpdateByQuery(data, fields));
             }

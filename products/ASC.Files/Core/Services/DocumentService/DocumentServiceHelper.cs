@@ -371,7 +371,7 @@ namespace ASC.Web.Files.Services.DocumentService
                                            })
                                        .Select(u => u.ToString()).ToArray();
 
-            if (!usersDrop.Any()) return;
+            if (usersDrop.Length == 0) return;
 
             var fileStable = file;
             if (file.Forcesave != ForcesaveType.None)

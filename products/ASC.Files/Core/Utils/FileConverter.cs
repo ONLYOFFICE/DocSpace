@@ -619,7 +619,7 @@ namespace ASC.Web.Files.Utils
 
         public bool EnableAsUploaded
         {
-            get { return FileUtility.ExtsMustConvert.Any() && !string.IsNullOrEmpty(FilesLinkUtility.DocServiceConverterUrl); }
+            get { return FileUtility.ExtsMustConvert.Count > 0 && !string.IsNullOrEmpty(FilesLinkUtility.DocServiceConverterUrl); }
         }
 
         public bool MustConvert<T>(File<T> file)
@@ -880,7 +880,7 @@ namespace ASC.Web.Files.Utils
 
             var tagDao = DaoFactory.GetTagDao<T>();
             var tags = tagDao.GetTags(file.ID, FileEntryType.File, TagType.System).ToList();
-            if (tags.Any())
+            if (tags.Count > 0)
             {
                 tags.ForEach(r => r.EntryId = newFile.ID);
                 tagDao.SaveTags(tags);

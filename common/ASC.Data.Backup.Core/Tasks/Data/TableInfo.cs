@@ -74,7 +74,7 @@ namespace ASC.Data.Backup.Tasks.Data
 
         public bool HasDateColumns()
         {
-            return DateColumns.Any();
+            return DateColumns.Count > 0;
         }
 
         public bool HasTenantColumn()

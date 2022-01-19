@@ -437,7 +437,7 @@ namespace ASC.Web.Studio.Core.Notify
                             new[] { senderName },
                             new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
                             new TagValue(Tags.PricingPage, commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx")),
-                            new TagValue(Tags.ActiveUsers, userManager.GetUsers().Count()),
+                            new TagValue(Tags.ActiveUsers, userManager.GetUsers().Length),
                             new TagValue(Tags.Price, rquota.Price),
                             new TagValue(Tags.PricePeriod, rquota.Year3 ? UserControlsCommonResource.TariffPerYear3 : rquota.Year ? UserControlsCommonResource.TariffPerYear : UserControlsCommonResource.TariffPerMonth),
                             new TagValue(Tags.DueDate, dueDate.ToLongDateString()),
@@ -616,7 +616,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 4 days after registration to admins ENTERPRISE TRIAL + only 1 user + defaultRebranding
 
-                        else if (createdDate.AddDays(4) == nowDate && userManager.GetUsers().Count() == 1)
+                        else if (createdDate.AddDays(4) == nowDate && userManager.GetUsers().Length == 1)
                         {
                             action = Actions.EnterpriseAdminInviteTeammatesV10;
                             paymentMessage = false;
@@ -839,7 +839,7 @@ namespace ASC.Web.Studio.Core.Notify
                             new[] { senderName },
                             new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
                             new TagValue(Tags.PricingPage, commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx")),
-                            new TagValue(Tags.ActiveUsers, userManager.GetUsers().Count()),
+                            new TagValue(Tags.ActiveUsers, userManager.GetUsers().Length),
                             new TagValue(Tags.Price, rquota.Price),
                             new TagValue(Tags.PricePeriod, rquota.Year3 ? UserControlsCommonResource.TariffPerYear3 : rquota.Year ? UserControlsCommonResource.TariffPerYear : UserControlsCommonResource.TariffPerMonth),
                             new TagValue(Tags.DueDate, dueDate.ToLongDateString()),

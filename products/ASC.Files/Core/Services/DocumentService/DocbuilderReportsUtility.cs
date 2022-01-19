@@ -189,7 +189,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     if (builderKey == null)
                         throw new NullReferenceException();
 
-                    if (urls != null && !urls.Any()) throw new Exception("Empty response");
+                    if (urls != null && urls.Count > 0) throw new Exception("Empty response");
 
                     if (urls != null && urls.ContainsKey(TmpFileName))
                         break;

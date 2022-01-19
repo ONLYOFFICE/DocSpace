@@ -188,7 +188,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
                 .GetFiles(selector.ConvertId(parentId), orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders)
                 .Where(r => r != null).ToList();
 
-            if (!result.Any()) return new List<File<string>>();
+            if (result.Count > 0) return new List<File<string>>();
 
             SetSharedProperty(result);
 

@@ -145,7 +145,7 @@ namespace ASC.Data.Backup
                 .Where(u => notify ? u.ActivationStatus.HasFlag(EmployeeActivationStatus.Activated) : u.IsOwner(tenant))
                 .ToArray();
 
-            if (users.Any())
+            if (users.Length > 0)
             {
                 var args = CreateArgs(scope, region, url);
                 if (action == Actions.MigrationPortalSuccessV115)

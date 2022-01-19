@@ -597,7 +597,7 @@ namespace ASC.Web.Files.Utils
                     .Select(providerInfo => GetFakeThirdpartyFolder<T>(providerInfo, parent.ID.ToString()))
                     .Where(r => fileSecurity.CanRead(r)).ToList();
 
-                if (folderList.Any())
+                if (folderList.Count > 0)
                 {
                     var securityDao = DaoFactory.GetSecurityDao<string>();
                     var ids =  securityDao.GetPureShareRecords(folderList)

@@ -205,7 +205,7 @@ namespace ASC.Notify.Engine
                     NotifyRequest request = null;
                     lock (requests)
                     {
-                        if (requests.Any())
+                        if (requests.Count > 0)
                         {
                             request = requests.Dequeue();
                         }
@@ -425,7 +425,7 @@ namespace ASC.Notify.Engine
             var recipient = request.Recipient as IDirectRecipient;
 
             var addresses = recipient.Addresses;
-            if (addresses == null || !addresses.Any())
+            if (addresses == null || addresses.Length == 0)
             {
                 addresses = recipientProvider.GetRecipientAddresses(request.Recipient as IDirectRecipient, sender);
                 recipient = new DirectRecipient(request.Recipient.ID, request.Recipient.Name, addresses);

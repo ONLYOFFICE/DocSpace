@@ -306,7 +306,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             var breadCrumbs = EntryManager.GetBreadCrumbs(parentId, folderDao);
 
-            var prevVisible = breadCrumbs.ElementAtOrDefault(breadCrumbs.Count() - 2);
+            var prevVisible = breadCrumbs.ElementAtOrDefault(breadCrumbs.Count - 2);
             if (prevVisible != null)
             {
                 if (prevVisible is Folder<string> f1) parent.FolderID = (T)Convert.ChangeType(f1.ID, typeof(T));
@@ -985,7 +985,7 @@ namespace ASC.Web.Files.Services.WCFService
                 }
 
                 var usersDrop = FileTracker.GetEditingBy(file.ID).Where(uid => uid != AuthContext.CurrentAccount.ID).Select(u => u.ToString()).ToArray();
-                if (usersDrop.Any())
+                if (usersDrop.Length > 0)
                 {
                     var fileStable = file.Forcesave == ForcesaveType.None ? file : fileDao.GetFileStable(file.ID, file.Version);
                     var docKey = DocumentServiceHelper.GetDocKey(fileStable);
@@ -1164,7 +1164,7 @@ namespace ASC.Web.Files.Services.WCFService
 
                 result = new List<FileEntry>(EntryManager.SortEntries<T>(result, new OrderBy(SortedByType.DateAndTime, false)));
 
-                if (!result.Any())
+                if (result.Count == 0)
                 {
                     MarkAsRead(new List<JsonElement>() { JsonDocument.Parse(JsonSerializer.Serialize(folderId)).RootElement }, new List<JsonElement>() { }); //TODO
                 }
@@ -1180,7 +1180,7 @@ namespace ASC.Web.Files.Services.WCFService
 
         public List<FileOperationResult> MarkAsRead(List<JsonElement> foldersId, List<JsonElement> filesId)
         {
-            if (!foldersId.Any() && !filesId.Any()) return GetTasksStatuses();
+            if (foldersId.Count == 0 && filesId.Count == 0) return GetTasksStatuses();
             return FileOperationsManager.MarkAsRead(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), foldersId, filesId);
         }
 
@@ -1385,7 +1385,7 @@ namespace ASC.Web.Files.Services.WCFService
 
         public List<FileOperationResult> BulkDownload(Dictionary<JsonElement, string> folders, Dictionary<JsonElement, string> files)
         {
-            ErrorIf(!folders.Any() && !files.Any(), FilesCommonResource.ErrorMassage_BadRequest);
+            ErrorIf(folders.Count == 0 && files.Count == 0, FilesCommonResource.ErrorMassage_BadRequest);
 
             return FileOperationsManager.Download(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), folders, files, GetHttpHeaders());
         }
@@ -1452,7 +1452,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             var folders = folderDao.GetFolders(foldersId);
             var foldersProject = folders.Where(folder => folder.FolderType == FolderType.BUNCH).ToList();
-            if (foldersProject.Any())
+            if (foldersProject.Count > 0)
             {
                 var toSubfolders = destFolderDao.GetFolders(toFolder.ID);
 
@@ -1487,7 +1487,7 @@ namespace ASC.Web.Files.Services.WCFService
         public List<FileOperationResult> MoveOrCopyItems(List<JsonElement> foldersId, List<JsonElement> filesId, JsonElement destFolderId, FileConflictResolveType resolve, bool ic, bool deleteAfter = false)
         {
             List<FileOperationResult> result;
-            if (foldersId.Any() || filesId.Any())
+            if (foldersId.Count > 0 || filesId.Count > 0)
             {
                 result = FileOperationsManager.MoveOrCopy(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), foldersId, filesId, destFolderId, ic, resolve, !deleteAfter, GetHttpHeaders());
             }

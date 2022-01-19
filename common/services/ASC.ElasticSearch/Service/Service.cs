@@ -79,7 +79,7 @@ namespace ASC.ElasticSearch.Service
                 tasks.Add(instance.ReIndex());
             }
 
-            if (!tasks.Any()) return;
+            if (tasks.Count == 0) return;
 
             Task.WhenAll(tasks).ContinueWith(r =>
             {
