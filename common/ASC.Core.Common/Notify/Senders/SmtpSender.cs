@@ -80,11 +80,9 @@ namespace ASC.Core.Notify.Senders
                 Host = properties["host"];
                 Port = properties.ContainsKey("port") ? int.Parse(properties["port"]) : 25;
                 Ssl = properties.ContainsKey("enableSsl") && bool.Parse(properties["enableSsl"]);
-                if (properties.ContainsKey("userName"))
+                if (properties.TryGetValue("userName", out var property))
                 {
-                    Credentials = new NetworkCredential(
-                         properties["userName"],
-                         properties["password"]);
+                    Credentials = new NetworkCredential(property, properties["password"]);
                 }
             }
         }

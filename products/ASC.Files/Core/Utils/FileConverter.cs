@@ -271,9 +271,8 @@ namespace ASC.Web.Files.Utils
                             logger.Error(string.Format("Error convert {0} with url {1}", file.ID, fileUri), exception);
                             lock (locker)
                             {
-                                if (conversionQueue.Keys.Contains(file))
+                                if (conversionQueue.TryGetValue(file, out var operationResult))
                                 {
-                                    var operationResult = conversionQueue[file];
                                     if (operationResult.Delete)
                                     {
                                         conversionQueue.Remove(file);
@@ -297,10 +296,8 @@ namespace ASC.Web.Files.Utils
                         {
                             lock (locker)
                             {
-                                if (conversionQueue.Keys.Contains(file))
+                                if (conversionQueue.TryGetValue(file, out var operationResult))
                                 {
-                                    var operationResult = conversionQueue[file];
-
                                     if (DateTime.Now - operationResult.StartDateTime > TimeSpan.FromMinutes(10))
                                     {
                                         operationResult.StopDateTime = DateTime.UtcNow;
@@ -338,9 +335,8 @@ namespace ASC.Web.Files.Utils
                         {
                             lock (locker)
                             {
-                                if (conversionQueue.Keys.Contains(file))
+                                if (conversionQueue.TryGetValue(file, out var operationResult))
                                 {
-                                    var operationResult = conversionQueue[file];
                                     if (operationResult.Delete)
                                     {
                                         conversionQueue.Remove(file);

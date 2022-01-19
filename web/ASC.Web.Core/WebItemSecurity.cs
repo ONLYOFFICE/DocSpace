@@ -148,9 +148,9 @@ namespace ASC.Web.Core
             {
                 lock (dic)
                 {
-                    if (dic.ContainsKey(id + @for))
+                    if (dic.TryGetValue(id + @for, out var value))
                     {
-                        return dic[id + @for];
+                        return value;
                     }
                 }
             }

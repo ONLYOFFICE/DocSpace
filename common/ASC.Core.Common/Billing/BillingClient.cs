@@ -187,15 +187,13 @@ namespace ASC.Core.Billing
             var result = Request("GetProductsPrices", null, parameters.ToArray());
             var prices = JsonSerializer.Deserialize<Dictionary<int, Dictionary<string, Dictionary<string, decimal>>>>(result);
 
-            if (prices.ContainsKey(AvangatePaymentSystemId))
+            if (prices.TryGetValue(AvangatePaymentSystemId, out var pricesPaymentSystem))
             {
-                var pricesPaymentSystem = prices[AvangatePaymentSystemId];
-
                 return productIds.Select(productId =>
                 {
-                    if (pricesPaymentSystem.ContainsKey(productId))
+                    if (pricesPaymentSystem.TryGetValue(productId, out var prices))
                     {
-                        return new { ProductId = productId, Prices = pricesPaymentSystem[productId] };
+                        return new { ProductId = productId, Prices = prices };
                     }
                     return new { ProductId = productId, Prices = new Dictionary<string, decimal>() };
                 })

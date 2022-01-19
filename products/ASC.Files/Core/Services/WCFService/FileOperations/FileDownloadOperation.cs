@@ -205,10 +205,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             var title = file.Title;
 
-            if (files.ContainsKey(file.ID))
+            if (files.TryGetValue(file.ID, out var convertToExt))
             {
-                var convertToExt = files[file.ID];
-
                 if (!string.IsNullOrEmpty(convertToExt))
                 {
                     title = FileUtility.ReplaceFileExtension(title, convertToExt);
@@ -317,9 +315,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                 continue;
                             }
 
-                            if (files.ContainsKey(file.ID))
+                            if (files.TryGetValue(file.ID, out convertToExt))
                             {
-                                convertToExt = files[file.ID];
                                 if (!string.IsNullOrEmpty(convertToExt))
                                 {
                                     newtitle = FileUtility.ReplaceFileExtension(path, convertToExt);

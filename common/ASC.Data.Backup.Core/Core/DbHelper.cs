@@ -264,9 +264,9 @@ namespace ASC.Data.Backup
         {
             if (tenant == -1) return string.Empty;
 
-            if (whereExceptions.ContainsKey(tableName.ToLower()))
+            if (whereExceptions.TryGetValue(tableName.ToLower(), out var exc))
             {
-                return string.Format(whereExceptions[tableName.ToLower()], tenant);
+                return string.Format(exc, tenant);
             }
             var tenantColumn = GetColumnsFrom(tableName).FirstOrDefault(c => c.StartsWith("tenant", StringComparison.OrdinalIgnoreCase));
             return tenantColumn != null ?

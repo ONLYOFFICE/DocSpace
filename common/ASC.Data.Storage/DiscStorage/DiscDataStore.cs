@@ -666,9 +666,9 @@ namespace ASC.Data.Storage.DiscStorage
         private MappedPath GetPath(string domain)
         {
             if (domain != null)
-                if (_mappedPaths.ContainsKey(domain))
+                if (_mappedPaths.TryGetValue(domain, out var value))
                 {
-                    return _mappedPaths[domain];
+                    return value;
                 }
             return _mappedPaths[string.Empty].AppendDomain(domain);
         }

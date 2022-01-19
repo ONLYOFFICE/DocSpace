@@ -63,9 +63,9 @@ namespace ASC.Web.Files.Utils
             var tracker = GetTracker(fileId);
             if (tracker != null && IsEditing(fileId))
             {
-                if (tracker.EditingBy.Keys.Contains(tabId))
+                if (tracker.EditingBy.TryGetValue(tabId, out var trackInfo))
                 {
-                    tracker.EditingBy[tabId].TrackTime = DateTime.UtcNow;
+                    trackInfo.TrackTime = DateTime.UtcNow;
                     checkRight = (DateTime.UtcNow - tracker.EditingBy[tabId].CheckRightTime > CheckRightTimeout);
                 }
                 else

@@ -66,8 +66,7 @@ namespace ASC.FederatedLogin.LoginProviders
 
                         var realmUrlString = string.Empty;
 
-                        if (@params.ContainsKey("realmUrl"))
-                            realmUrlString = @params["realmUrl"];
+                        @params.TryGetValue("realmUrl", out realmUrlString);
 
                         if (!string.IsNullOrEmpty(realmUrlString))
                             request = Openid.CreateRequest(id, new Realm(realmUrlString));
@@ -123,8 +122,7 @@ namespace ASC.FederatedLogin.LoginProviders
                         var fetchprofile = response.GetExtension<FetchResponse>();
 
                         var realmUrlString = string.Empty;
-                        if (@params.ContainsKey("realmUrl"))
-                            realmUrlString = @params["realmUrl"];
+                        @params.TryGetValue("realmUrl", out realmUrlString);
 
                         var profile = ProfileFromOpenId(spprofile, fetchprofile, response.ClaimedIdentifier.ToString(), realmUrlString);
                         return profile;

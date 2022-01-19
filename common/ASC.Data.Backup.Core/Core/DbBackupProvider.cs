@@ -68,9 +68,9 @@ namespace ASC.Data.Backup
                 xml.Add(node);
 
                 var connectionKey = connectionString.ProviderName + connectionString.ConnectionString;
-                if (connectionKeys.ContainsKey(connectionKey))
+                if (connectionKeys.TryGetValue(connectionKey, out var value))
                 {
-                    node.Add(new XAttribute("ref", connectionKeys[connectionKey]));
+                    node.Add(new XAttribute("ref", value));
                 }
                 else
                 {

@@ -112,9 +112,8 @@ namespace ASC.TelegramService
             var telegramHelper = scope.ServiceProvider.GetService<TelegramHelper>();
             var newClient = telegramHelper.InitClient(token, proxy);
 
-            if (Clients.ContainsKey(tenantId))
+            if (Clients.TryGetValue(tenantId, out var client))
             {
-                var client = Clients[tenantId];
                 client.TokenLifeSpan = tokenLifespan;
 
                 if (token != client.Token || proxy != client.Proxy)

@@ -755,9 +755,9 @@ namespace ASC.Files.Core.Security
 
                 files.ForEach(x =>
                     {
-                        if (fileIds.ContainsKey(x.ID))
+                        if (fileIds.TryGetValue(x.ID, out var access))
                         {
-                            x.Access = fileIds[x.ID];
+                            x.Access = access;
                             x.FolderIdDisplay = GlobalFolder.GetFolderShare<T>(daoFactory);
                         }
                     });
@@ -775,9 +775,9 @@ namespace ASC.Files.Core.Security
                 }
                 folders.ForEach(x =>
                     {
-                        if (folderIds.ContainsKey(x.ID))
+                        if (folderIds.TryGetValue(x.ID, out var access))
                         {
-                            x.Access = folderIds[x.ID];
+                            x.Access = access;
                             x.FolderIdDisplay = GlobalFolder.GetFolderShare<T>(daoFactory);
                         }
                     });
@@ -874,9 +874,9 @@ namespace ASC.Files.Core.Security
 
                 files.ForEach(x =>
                 {
-                    if (fileIds.ContainsKey(x.ID))
+                    if (fileIds.TryGetValue(x.ID, out var access))
                     {
-                        x.Access = fileIds[x.ID];
+                        x.Access = access;
                         x.FolderIdDisplay = GlobalFolder.GetFolderPrivacy<T>(daoFactory);
                     }
                 });
@@ -894,9 +894,9 @@ namespace ASC.Files.Core.Security
                 }
                 folders.ForEach(x =>
                 {
-                    if (folderIds.ContainsKey(x.ID))
+                    if (folderIds.TryGetValue(x.ID, out var access))
                     {
-                        x.Access = folderIds[x.ID];
+                        x.Access = access;
                         x.FolderIdDisplay = GlobalFolder.GetFolderPrivacy<T>(daoFactory);
                     }
                 });

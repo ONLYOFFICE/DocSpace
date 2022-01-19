@@ -150,9 +150,9 @@ namespace ASC.Web.Core.Users.Import
                 foreach (var info in infos)
                 {
                     var propertyField = field.Trim();
-                    if (NameMapping != null && NameMapping.ContainsKey(propertyField))
+                    if (NameMapping != null)
                     {
-                        propertyField = NameMapping[propertyField];
+                        NameMapping.TryGetValue(propertyField, out propertyField);
                     }
                     if (!string.IsNullOrEmpty(propertyField) && !ExcludeList.Contains(propertyField) && propertyField.Equals(info.Name, StringComparison.OrdinalIgnoreCase))
                     {

@@ -153,8 +153,8 @@ namespace ASC.Web.Files.Utils
 
                 userIDs.ForEach(userID =>
                                         {
-                                            if (userEntriesData.ContainsKey(userID))
-                                                userEntriesData[userID].AddRange(entries);
+                                            if (userEntriesData.TryGetValue(userID, out var value))
+                                                value.AddRange(entries);
                                             else
                                                 userEntriesData.Add(userID, entries);
 
@@ -217,8 +217,8 @@ namespace ASC.Web.Files.Utils
 
                         if (rootFolder == null) continue;
 
-                        if (userEntriesData.ContainsKey(userID))
-                            userEntriesData[userID].Add(rootFolder);
+                        if (userEntriesData.TryGetValue(userID, out var value))
+                            value.Add(rootFolder);
                         else
                             userEntriesData.Add(userID, new List<FileEntry> { rootFolder });
 
@@ -234,8 +234,8 @@ namespace ASC.Web.Files.Utils
                         var commonFolder = folderDao.GetFolder(GlobalFolder.GetFolderCommon<T>(this, DaoFactory));
                         userIDs.ForEach(userID =>
                                             {
-                                                if (userEntriesData.ContainsKey(userID))
-                                                    userEntriesData[userID].Add(commonFolder);
+                                                if (userEntriesData.TryGetValue(userID, out var value))
+                                                    value.Add(commonFolder);
                                                 else
                                                     userEntriesData.Add(userID, new List<FileEntry> { commonFolder });
 
@@ -253,8 +253,8 @@ namespace ASC.Web.Files.Utils
                         var rootFolder = folderDao.GetFolder(privacyFolderId);
                         if (rootFolder == null) continue;
 
-                        if (userEntriesData.ContainsKey(userID))
-                            userEntriesData[userID].Add(rootFolder);
+                        if (userEntriesData.TryGetValue(userID, out var value))
+                            value.Add(rootFolder);
                         else
                             userEntriesData.Add(userID, new List<FileEntry> { rootFolder });
 
@@ -264,8 +264,8 @@ namespace ASC.Web.Files.Utils
 
                 userIDs.ForEach(userID =>
                                     {
-                                        if (userEntriesData.ContainsKey(userID))
-                                            userEntriesData[userID].Add(obj.FileEntry);
+                                        if (userEntriesData.TryGetValue(userID, out var value))
+                                            value.Add(obj.FileEntry);
                                         else
                                             userEntriesData.Add(userID, new List<FileEntry> { obj.FileEntry });
                                     });
