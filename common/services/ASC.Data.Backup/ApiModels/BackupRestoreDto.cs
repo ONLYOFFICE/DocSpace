@@ -1,14 +1,9 @@
-﻿using System.Collections.Generic;
+﻿namespace ASC.Data.Backup.ApiModels;
 
-using ASC.Api.Collections;
-
-namespace ASC.Data.Backup.ApiModels
+public class BackupRestoreDto
 {
-    public class BackupRestoreDto
-    {
-        public string BackupId { get; set; }
-        public object StorageType { get; set; }
-        public IEnumerable<ItemKeyValuePair<object, object>> StorageParams { get; set; }
-        public bool Notify { get; set; }
-    }
+    public string BackupId { get; set; }
+    public object StorageType { get; set; }
+    public IEnumerable<ItemKeyValuePair<object, object>> StorageParams { get; set; }
+    public bool Notify { get; set; }
 }
