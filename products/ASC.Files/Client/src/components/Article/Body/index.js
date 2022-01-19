@@ -8,7 +8,7 @@ import isEmpty from "lodash/isEmpty";
 import { setDocumentTitle } from "../../../helpers/utils";
 import ThirdPartyList from "./ThirdPartyList";
 import DownloadAppList from "./DownloadAppList";
-import Banner from "./Banner/Banner.js";
+import Banner from "./Banner";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router-dom";
 import config from "../../../../package.json";

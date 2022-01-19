@@ -1,5 +1,5 @@
 export const DBConfig = {
-  name: "AdsData",
+  name: "AdsDb",
   version: 1,
   objectStoresMeta: [
     {

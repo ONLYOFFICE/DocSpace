@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import CampaignsBanner from "@appserver/components/campaigns-banner";
-import { DBConfig } from "./DBConfig";
-import { ADS_TIMEOUT } from "../../../../helpers/constants";
+import { DBConfig } from "@appserver/common/utils/AdsDBConfig";
+import { ADS_TIMEOUT } from "../../../helpers/constants";
 import { LANGUAGE } from "@appserver/common/constants";
 import { getLanguage } from "@appserver/common/utils";
 import { initDB, useIndexedDB } from "react-indexed-db";
@@ -59,7 +59,7 @@ const Banner = () => {
   };
 
   const getBanner = () => {
-    console.log("getBanner");
+    //console.log("getBanner");
     let index = Number(localStorage.getItem("bannerIndex") || 0);
     const currentCampaign = campaigns[index];
     if (campaigns.length < 1 || index + 1 >= campaigns.length) {
@@ -78,7 +78,7 @@ const Banner = () => {
   useEffect(() => {
     fetchBanners();
     getBanner();
-    const adsInterval = setInterval(getBanner, ADS_TIMEOUT);
+    const adsInterval = setInterval(getBanner, 5000);
 
     return function cleanup() {
       clearInterval(adsInterval);
