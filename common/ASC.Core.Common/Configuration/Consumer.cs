@@ -50,13 +50,13 @@ namespace ASC.Core.Common.Configuration
         protected readonly Dictionary<string, string> Props;
         public IEnumerable<string> ManagedKeys
         {
-            get { return Props.Select(r => r.Key).ToList(); }
+            get { return Props.Select(r => r.Key); }
         }
 
         protected readonly Dictionary<string, string> Additional;
         public virtual IEnumerable<string> AdditionalKeys
         {
-            get { return Additional.Select(r => r.Key).ToList(); }
+            get { return Additional.Select(r => r.Key); }
         }
 
         public ICollection<string> Keys { get { return AllProps.Keys; } }
@@ -336,7 +336,7 @@ namespace ASC.Core.Common.Configuration
 
         public override IEnumerable<string> AdditionalKeys
         {
-            get { return base.AdditionalKeys.Where(r => r != HandlerTypeKey && r != "cdn").ToList(); }
+            get { return base.AdditionalKeys.Where(r => r != HandlerTypeKey && r != "cdn"); }
         }
 
         protected override string GetSettingsKey(string name)

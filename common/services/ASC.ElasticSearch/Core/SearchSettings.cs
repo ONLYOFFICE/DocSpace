@@ -120,12 +120,12 @@ namespace ASC.ElasticSearch.Core
             }).ToList();
         }
 
-        private List<IFactoryIndexer> allItems;
-        internal List<IFactoryIndexer> AllItems
+        private IEnumerable<IFactoryIndexer> allItems;
+        internal IEnumerable<IFactoryIndexer> AllItems
         {
             get
             {
-                return allItems ??= ServiceProvider.GetService<IEnumerable<IFactoryIndexer>>().ToList();
+                return allItems ??= ServiceProvider.GetService<IEnumerable<IFactoryIndexer>>();
             }
         }
 
