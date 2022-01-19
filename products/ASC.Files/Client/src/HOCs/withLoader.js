@@ -11,14 +11,7 @@ let loadTimeout = null;
 
 const withLoader = (WrappedComponent) => (Loader) => {
   const withLoader = (props) => {
-    const {
-      tReady,
-      firstLoad,
-      isLoaded,
-      isLoading,
-      viewAs,
-      sectionWidth,
-    } = props;
+    const { tReady, firstLoad, isLoaded, isLoading, viewAs } = props;
     const [inLoad, setInLoad] = useState(false);
 
     const cleanTimer = () => {
@@ -30,10 +23,12 @@ const withLoader = (WrappedComponent) => (Loader) => {
       if (isLoading) {
         cleanTimer();
         loadTimeout = setTimeout(() => {
+          //console.log('inLoad', true)
           setInLoad(true);
         }, 500);
       } else {
         cleanTimer();
+        //console.log('inLoad', false)
         setInLoad(false);
       }
 
