@@ -120,16 +120,16 @@ namespace ASC.TelegramService.Core
             for (var i = 0; i < cmdArgs.Length; i++)
             {
                 var type = cmdArgs[i].ParameterType;
-
+                var arg = args[i];
                 if (type == typeof(string))
                 {
-                    parsedParams.Add(args[i]);
+                    parsedParams.Add(arg);
                     continue;
                 }
 
                 if (!parsers.ContainsKey(type)) throw new Exception(string.Format("No parser found for type '{0}'", type));
 
-                parsedParams.Add(parsers[cmdArgs[i].ParameterType].FromString(args[i]));
+                parsedParams.Add(parsers[type].FromString(arg));
             }
 
             return parsedParams.ToArray();
