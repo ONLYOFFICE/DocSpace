@@ -112,9 +112,9 @@ namespace ASC.Web.Studio.Core.Notify
 
         public const string Culture = "Culture";
 
-        public static string Footer = "Footer";
+        public static readonly string Footer = "Footer";
 
-        public static string MasterTemplate = "MasterTemplate";
+        public static readonly string MasterTemplate = "MasterTemplate";
 
         public const string HelpLink = "__HelpLink";
 

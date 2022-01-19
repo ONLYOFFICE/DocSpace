@@ -54,7 +54,7 @@ namespace ASC.Core.Configuration
 
         public bool IsDefaultSettings { get; internal set; }
 
-        public static SmtpSettings Empty = new SmtpSettings();
+        public static readonly SmtpSettings Empty = new SmtpSettings();
 
         private SmtpSettings()
         {

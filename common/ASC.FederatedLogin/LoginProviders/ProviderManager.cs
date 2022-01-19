@@ -41,7 +41,7 @@ namespace ASC.FederatedLogin.LoginProviders
     [Scope]
     public class ProviderManager
     {
-        public static List<string> AuthProviders = new List<string>
+        public static readonly List<string> AuthProviders = new List<string>
             {
                 ProviderConstants.Google,
                 ProviderConstants.Facebook,

@@ -29,7 +29,7 @@ namespace ASC.Core.Common.EF
         public ConnectionStringSettings ConnectionStringSettings { get; set; }
         protected internal Provider Provider { get; set; }
 
-        public static ServerVersion ServerVersion = ServerVersion.Parse("8.0.25");
+        public static readonly ServerVersion ServerVersion = ServerVersion.Parse("8.0.25");
         protected virtual Dictionary<Provider, Func<BaseDbContext>> ProviderContext
         {
             get { return null; }

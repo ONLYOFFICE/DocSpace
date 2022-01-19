@@ -55,13 +55,13 @@ namespace ASC.Web.Core.Files
         /// <summary>
         /// Timeout to request conversion
         /// </summary>
-        public static int Timeout = 120000;
+        public static readonly int Timeout = 120000;
         //public static int Timeout = Convert.ToInt32(ConfigurationManagerExtension.AppSettings["files.docservice.timeout"] ?? "120000");
 
         /// <summary>
         /// Number of tries request conversion
         /// </summary>
-        public static int MaxTry = 3;
+        public static readonly int MaxTry = 3;
 
         /// <summary>
         /// Translation key to a supported form.

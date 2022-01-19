@@ -50,7 +50,7 @@ namespace TMResourceData
 {
     public class DBResourceManager : ResourceManager
     {
-        public static bool WhiteLableEnabled = false;
+        public static readonly bool WhiteLableEnabled = false;
         private readonly ConcurrentDictionary<string, ResourceSet> resourceSets = new ConcurrentDictionary<string, ResourceSet>();
 
         public DBResourceManager(string filename, Assembly assembly)
