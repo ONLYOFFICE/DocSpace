@@ -11,6 +11,7 @@ import config from "../../../../package.json";
 import { openDocEditor } from "../../../helpers/utils";
 import combineUrl from "@appserver/common/utils/combineUrl";
 import { fileCopyAs } from "@appserver/common/api/files";
+import toastr from "@appserver/components/toast/toastr";
 let tab, _isMounted;
 const ConvertPasswordDialogComponent = (props) => {
   const {
@@ -69,6 +70,9 @@ const ConvertPasswordDialogComponent = (props) => {
     if (isLoading) {
       if (makeForm) {
         copyAsAction(id, newTitle, folderId, false, password)
+          .then(() =>
+            toastr.success(t("SuccessfullyCreated", { fileTitle: newTitle }))
+          )
           .then(() => {
             onClose();
           })
@@ -82,6 +86,7 @@ const ConvertPasswordDialogComponent = (props) => {
       } else {
         fileCopyAs(id, newTitle, folderId, false, password)
           .then((file) => {
+            toastr.success(t("SuccessfullyCreated", { fileTitle: newTitle }));
             onClose();
             open && openDocEditor(file.id, file.providerKey, tab);
           })
