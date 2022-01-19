@@ -365,7 +365,7 @@ namespace ASC.Core.Data
                 .Select(r => r.Photo)
                 .FirstOrDefault();
 
-            return photo ?? new byte[0];
+            return photo ?? Array.Empty<byte>();
         }
 
         public IEnumerable<UserInfo> GetUsers(int tenant)

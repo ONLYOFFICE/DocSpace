@@ -64,7 +64,7 @@ namespace ASC.Web.Files.Services.FFmpegService
             FFmpegPath = configuration["files:ffmpeg:value"];
             FFmpegArgs = configuration["files:ffmpeg:args"] ?? "-i - -preset ultrafast -movflags frag_keyframe+empty_moov -f {0} -";
 
-            ConvertableMedia = (configuration.GetSection("files:ffmpeg:exts").Get<string[]>() ?? new string[] { }).ToList();
+            ConvertableMedia = (configuration.GetSection("files:ffmpeg:exts").Get<string[]>() ?? Array.Empty<string>()).ToList();
 
             if (string.IsNullOrEmpty(FFmpegPath))
             {

@@ -47,7 +47,7 @@ namespace ASC.Web.Files.Helpers
         {
             get
             {
-                return thirdPartyProviders ??= (Configuration.GetSection("files:thirdparty:enable").Get<string[]>() ?? new string[] { }).ToList();
+                return thirdPartyProviders ??= (Configuration.GetSection("files:thirdparty:enable").Get<string[]>() ?? Array.Empty<string>()).ToList();
             }
         }
         public ThirdpartyConfigurationData(IConfiguration configuration)

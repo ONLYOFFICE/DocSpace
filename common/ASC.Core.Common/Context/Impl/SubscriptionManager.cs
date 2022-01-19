@@ -117,7 +117,7 @@ namespace ASC.Core
                 m = methods.FirstOrDefault();
             }
 
-            return m != null ? m.Methods : new string[0];
+            return m != null ? m.Methods : Array.Empty<string>();
         }
 
         public string[] GetRecipients(string sourceID, string actionID, string objectID)

@@ -34,7 +34,7 @@ namespace ASC.Notify.Model
 {
     public class TopSubscriptionProvider : ISubscriptionProvider
     {
-        private readonly string[] defaultSenderMethods = new string[0];
+        private readonly string[] defaultSenderMethods = Array.Empty<string>();
         private readonly ISubscriptionProvider subscriptionProvider;
         private readonly IRecipientProvider recipientProvider;
 
@@ -165,12 +165,12 @@ namespace ASC.Notify.Model
             if (action == null) throw new ArgumentNullException("action");
 
             var objects = new List<string>();
-            var direct = subscriptionProvider.GetSubscriptions(action, recipient, checkSubscription) ?? new string[0];
+            var direct = subscriptionProvider.GetSubscriptions(action, recipient, checkSubscription) ?? Array.Empty<string>();
             MergeObjects(objects, direct);
             var parents = WalkUp(recipient);
             foreach (var parent in parents)
             {
-                direct = subscriptionProvider.GetSubscriptions(action, parent, checkSubscription) ?? new string[0];
+                direct = subscriptionProvider.GetSubscriptions(action, parent, checkSubscription) ?? Array.Empty<string>();
                 if (recipient is IDirectRecipient)
                 {
                     foreach (var groupsubscr in direct)

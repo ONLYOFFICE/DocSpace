@@ -101,7 +101,7 @@ namespace ASC.IPSecurity
                 }
 
                 var ips = string.IsNullOrWhiteSpace(requestIps)
-                              ? new string[] { }
+                              ? Array.Empty<string>()
                               : requestIps.Split(new[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries);
 
                 if (ips.Any(requestIp => restrictions.Any(restriction => MatchIPs(GetIpWithoutPort(requestIp), restriction.Ip))))

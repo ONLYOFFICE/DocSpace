@@ -98,7 +98,7 @@ namespace ASC.Notify.Patterns
 
         protected virtual string[] SearchTags(string text)
         {
-            if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(tagSearchPattern)) return new string[0];
+            if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(tagSearchPattern)) return Array.Empty<string>();
 
             var maches = RegEx.Matches(text);
             var findedTags = new List<string>(maches.Count);

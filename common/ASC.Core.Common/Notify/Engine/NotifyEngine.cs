@@ -507,7 +507,7 @@ namespace ASC.Notify.Engine
                 var subscriptionProvider = request.GetSubscriptionProvider(serviceScope);
 
                 var senderNames = new List<string>();
-                senderNames.AddRange(subscriptionProvider.GetSubscriptionMethod(request.NotifyAction, request.Recipient) ?? new string[0]);
+                senderNames.AddRange(subscriptionProvider.GetSubscriptionMethod(request.NotifyAction, request.Recipient) ?? Array.Empty<string>());
                 senderNames.AddRange(request.Arguments.OfType<AdditionalSenderTag>().Select(tag => (string)tag.Value));
 
                 request.SenderNames = senderNames.ToArray();
@@ -554,12 +554,12 @@ namespace ASC.Notify.Engine
                 {
                     throw new NotifyException(string.Format("For pattern \"{0}\" formatter not instanced.", pattern), exc);
                 }
-                var tags = new string[0];
+                var tags = Array.Empty<string>();
                 try
                 {
                     if (formatter != null)
                     {
-                        tags = formatter.GetTags(pattern) ?? new string[0];
+                        tags = formatter.GetTags(pattern) ?? Array.Empty<string>();
                     }
                 }
                 catch (Exception exc)

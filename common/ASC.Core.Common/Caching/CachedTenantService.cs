@@ -295,7 +295,8 @@ namespace ASC.Core.Caching
             if (data == null)
             {
                 data = Service.GetTenantSettings(tenant, key);
-                cache.Insert(cacheKey, data ?? new byte[0], DateTime.UtcNow + SettingsExpiration);
+
+                cache.Insert(cacheKey, data ?? Array.Empty<byte>(), DateTime.UtcNow + SettingsExpiration);
             }
             return data == null ? null : data.Length == 0 ? null : data;
         }

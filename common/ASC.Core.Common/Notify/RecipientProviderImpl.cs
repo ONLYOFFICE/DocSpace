@@ -111,7 +111,7 @@ namespace ASC.Core.Notify
                     if (senderName == ASC.Core.Configuration.Constants.NotifyTelegramSenderSysName) return new[] { user.ID.ToString() };
                 }
             }
-            return new string[0];
+            return Array.Empty<string>();
         }
 
         /// <summary>

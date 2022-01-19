@@ -142,7 +142,7 @@ namespace ASC.Web.Studio.Core.Notify
                                 UserAbsoluteURL = f.Author != null && f.Author.UserInfo != null ? commonLinkUtility.GetFullAbsolutePath(f.Author.UserInfo.GetUserProfilePageURL(commonLinkUtility)) : string.Empty,
                                 Title = HtmlUtil.GetText(f.Title, 512),
                                 URL = commonLinkUtility.GetFullAbsolutePath(f.ItemUrl),
-                                BreadCrumbs = new string[0],
+                                BreadCrumbs = Array.Empty<string>(),
                                 Action = GetWhatsNewActionText(f)
                             }).ToList());
 
@@ -165,7 +165,7 @@ namespace ASC.Web.Studio.Core.Notify
                                             UserAbsoluteURL = prawbc.Author != null && prawbc.Author.UserInfo != null ? commonLinkUtility.GetFullAbsolutePath(prawbc.Author.UserInfo.GetUserProfilePageURL(commonLinkUtility)) : string.Empty,
                                             Title = HtmlUtil.GetText(prawbc.Title, 512),
                                             URL = commonLinkUtility.GetFullAbsolutePath(prawbc.ItemUrl),
-                                            BreadCrumbs = new string[0],
+                                            BreadCrumbs = Array.Empty<string>(),
                                             Action = GetWhatsNewActionText(prawbc)
                                         });
                         }
@@ -185,7 +185,7 @@ namespace ASC.Web.Studio.Core.Notify
                                         UserAbsoluteURL = ls.Author != null && ls.Author.UserInfo != null ? commonLinkUtility.GetFullAbsolutePath(ls.Author.UserInfo.GetUserProfilePageURL(commonLinkUtility)) : string.Empty,
                                         Title = HtmlUtil.GetText(ls.Title, 512),
                                         URL = commonLinkUtility.GetFullAbsolutePath(ls.ItemUrl),
-                                        BreadCrumbs = i == 0 ? new string[1] { gr.Key } : new string[0],
+                                        BreadCrumbs = i == 0 ? new string[1] { gr.Key } : Array.Empty<string>(),
                                         Action = GetWhatsNewActionText(ls)
                                     });
                             }

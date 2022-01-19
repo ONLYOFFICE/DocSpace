@@ -102,7 +102,7 @@ namespace ASC.Data.Storage.DiscStorage
                 return Task.CompletedTask;
             }
 
-            var headers = header.Length > 0 ? header.Split('&').Select(HttpUtility.UrlDecode) : new string[] { };
+            var headers = header.Length > 0 ? header.Split('&').Select(HttpUtility.UrlDecode) : Array.Empty<string>();
 
             if (storage.IsSupportInternalUri)
             {

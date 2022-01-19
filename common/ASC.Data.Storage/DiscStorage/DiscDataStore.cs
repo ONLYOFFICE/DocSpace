@@ -543,7 +543,7 @@ namespace ASC.Data.Storage.DiscStorage
                     entries,
                     x => x.Substring(targetDir.Length));
             }
-            return new string[0];
+            return Array.Empty<string>();
         }
 
         public override string[] ListFilesRelative(string domain, string path, string pattern, bool recursive)
@@ -560,7 +560,7 @@ namespace ASC.Data.Storage.DiscStorage
                     entries,
                     x => x.Substring(targetDir.Length));
             }
-            return new string[0];
+            return Array.Empty<string>();
         }
 
         public override bool IsFile(string domain, string path)

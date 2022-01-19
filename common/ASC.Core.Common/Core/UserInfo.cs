@@ -138,7 +138,7 @@ namespace ASC.Core.Users
 
         string[] IDirectRecipient.Addresses
         {
-            get { return !string.IsNullOrEmpty(Email) ? new[] { Email } : new string[0]; }
+            get { return !string.IsNullOrEmpty(Email) ? new[] { Email } : Array.Empty<string>(); }
         }
 
         public bool CheckActivation

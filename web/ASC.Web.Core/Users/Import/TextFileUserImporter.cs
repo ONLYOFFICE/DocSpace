@@ -115,7 +115,7 @@ namespace ASC.Web.Core.Users.Import
                     var value = ConvertFromString(dataFields[j], propinfo.PropertyType);
                     if (value != null)
                     {
-                        propinfo.SetValue(exportedUser, value, new object[] { });
+                        propinfo.SetValue(exportedUser, value, Array.Empty<object>());
                     }
                 }
             }
