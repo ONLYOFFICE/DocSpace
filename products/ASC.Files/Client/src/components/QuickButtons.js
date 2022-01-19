@@ -26,6 +26,8 @@ const QuickButtons = ({
   const isEditingWithFav = fileStatus === 33;
   const showFavorite = isFavorite || isNewWithFav || isEditingWithFav;
 
+  const isTile = viewAs === "tile";
+
   const colorSharedButton = shared ? "#3B72A7" : "#a3a9ae";
 
   const iconShare = "/static/images/catalog.share.react.svg";
@@ -39,8 +41,7 @@ const QuickButtons = ({
     : "/static/images/favorite.react.svg";
 
   const tabletViewQuickButton =
-    viewAs !== "tile" &&
-    ((sectionWidth > 500 && sectionWidth <= 1024) || isTablet);
+    !isTile && ((sectionWidth > 500 && sectionWidth <= 1024) || isTablet);
   const sizeQuickButton = tabletViewQuickButton ? "medium" : "small";
 
   const displayShare = viewAs === "row" && (isMobile || sectionWidth <= 500);
@@ -49,7 +50,7 @@ const QuickButtons = ({
 
   return (
     <div className="badges additional-badges">
-      {item.canShare && showShare && !displayShare && (
+      {item.canShare && showShare && (!displayShare || isTile) && (
         <StyledIcon
           iconName={iconShare}
           className="badge share-button-icon"
@@ -58,18 +59,21 @@ const QuickButtons = ({
           color={colorSharedButton}
         />
       )}
-      {fileExst && accessToEdit && !isTrashFolder && !displayLock && (
-        <StyledIcon
-          iconName={iconLock}
-          className="badge lock-file icons-group"
-          size={sizeQuickButton}
-          data-id={id}
-          data-locked={locked ? true : false}
-          onClick={onClickLock}
-          hoverColor="#3B72A7"
-        />
-      )}
-      {fileExst && !isTrashFolder && !displayFavorite && (
+      {fileExst &&
+        accessToEdit &&
+        !isTrashFolder &&
+        (!displayLock || isTile) && (
+          <StyledIcon
+            iconName={iconLock}
+            className="badge lock-file icons-group"
+            size={sizeQuickButton}
+            data-id={id}
+            data-locked={locked ? true : false}
+            onClick={onClickLock}
+            hoverColor="#3B72A7"
+          />
+        )}
+      {fileExst && !isTrashFolder && (!displayFavorite || isTile) && (
         <StyledIcon
           iconName={iconFavorite}
           className="favorite badge icons-group"
