@@ -71,19 +71,32 @@ const EditingWrapper = styled.div`
     outline: 0 !important;
     font-weight: 600;
     margin: 0;
-    margin-left: 2px;
     font-family: "Open Sans", sans-serif, Arial;
     text-align: left;
     color: #333333;
-    border: none;
-    background: none;
+    ${(props) =>
+      props.viewAs === "tile" &&
+      css`
+        margin-right: 2px;
+        border: none;
+        background: none;
+      `};
   }
 
   .edit-button {
     height: 32px;
     padding: 8px 7px 7px 7px;
-    border: none;
-    background: none;
+
+    ${(props) =>
+      props.viewAs === "tile" &&
+      css`
+        border: none;
+        background: none;
+
+        &:last-child {
+          margin-left: 2px;
+        }
+      `};
 
     ${(props) =>
       props.viewAs === "table" &&
@@ -97,10 +110,6 @@ const EditingWrapper = styled.div`
           border: 1px solid #d0d5da;
         }
       `}
-
-    &:last-child {
-      margin-left: 2px;
-    }
   }
 
   .edit-ok-icon {
