@@ -105,7 +105,7 @@ namespace ASC.AuditTrail
 
             if (from.HasValue && to.HasValue)
             {
-                query = query.Where(a => a.Date >= from & a.Date <= to);
+                query = query.Where(a => a.Date >= from && a.Date <= to);
             }
 
             return query.Count();
