@@ -758,7 +758,7 @@ namespace ASC.Files.Core.Data
             return true;
         }
 
-        public long GetMaxUploadSize(int folderId, bool chunkedUpload)
+        public long GetMaxUploadSize(int folderId, bool chunkedUpload = false)
         {
             var tmp = long.MaxValue;
 
@@ -801,7 +801,7 @@ namespace ASC.Files.Core.Data
         }
 
 
-        public IEnumerable<Folder<int>> SearchFolders(string text, bool bunch)
+        public IEnumerable<Folder<int>> SearchFolders(string text, bool bunch = false)
         {
             return Search(text).Where(f => bunch
                                                ? f.RootFolderType == FolderType.BUNCH

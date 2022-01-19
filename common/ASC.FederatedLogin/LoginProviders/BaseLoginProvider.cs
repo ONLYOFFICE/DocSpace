@@ -113,7 +113,7 @@ namespace ASC.FederatedLogin.LoginProviders
             InstanceCrypto = instanceCrypto;
         }
 
-        public virtual LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs = null)
+        public virtual LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs)
         {
             try
             {

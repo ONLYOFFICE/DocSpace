@@ -103,7 +103,7 @@ namespace ASC.Files.Thirdparty.Dropbox
                        : ToFile(metadata.AsFile);
         }
 
-        public File<string> GetFileStable(string fileId, int fileVersion)
+        public File<string> GetFileStable(string fileId, int fileVersion = -1)
         {
             return ToFile(GetDropboxFile(fileId));
         }

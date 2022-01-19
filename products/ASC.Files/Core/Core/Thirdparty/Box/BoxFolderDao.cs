@@ -433,7 +433,7 @@ namespace ASC.Files.Thirdparty.Box
             return false;
         }
 
-        public long GetMaxUploadSize(string folderId, bool chunkedUpload)
+        public long GetMaxUploadSize(string folderId, bool chunkedUpload = false)
         {
             var storageMaxUploadSize = ProviderInfo.Storage.GetMaxUploadSize();
 

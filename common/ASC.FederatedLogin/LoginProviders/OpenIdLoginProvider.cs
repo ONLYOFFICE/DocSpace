@@ -53,7 +53,7 @@ namespace ASC.FederatedLogin.LoginProviders
             ConsumerFactory = consumerFactory;
         }
 
-        public LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs = null)
+        public LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs)
         {
             var response = Openid.GetResponse();
             if (response == null)

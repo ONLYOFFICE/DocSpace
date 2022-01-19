@@ -338,7 +338,7 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
             return folderDao.CanCalculateSubitems(entryId);
         }
 
-        public long GetMaxUploadSize(string folderId, bool chunkedUpload)
+        public long GetMaxUploadSize(string folderId, bool chunkedUpload = false)
         {
             var selector = GetSelector(folderId);
             var folderDao = selector.GetFolderDao(folderId);

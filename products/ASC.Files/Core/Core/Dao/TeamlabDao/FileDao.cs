@@ -1128,7 +1128,7 @@ namespace ASC.Files.Core.Data
             return FromQueryWithShared(q).Select(ToFile).ToList();
         }
 
-        public IEnumerable<File<int>> Search(string searchText, bool bunch)
+        public IEnumerable<File<int>> Search(string searchText, bool bunch = false)
         {
             if (FactoryIndexer.TrySelectIds(s => s.MatchAll(searchText), out var ids))
             {

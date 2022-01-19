@@ -100,7 +100,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                               .FirstOrDefault(file => file.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase)));
         }
 
-        public File<string> GetFileStable(string fileId, int fileVersion)
+        public File<string> GetFileStable(string fileId, int fileVersion = -1)
         {
             return ToFile(GetDriveEntry(fileId));
         }

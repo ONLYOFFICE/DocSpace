@@ -92,7 +92,7 @@ namespace ASC.Files.Thirdparty.SharePoint
             return ProviderInfo.ToFile(ProviderInfo.GetFolderFiles(parentId).FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase)));
         }
 
-        public File<string> GetFileStable(string fileId, int fileVersion)
+        public File<string> GetFileStable(string fileId, int fileVersion = -1)
         {
             return ProviderInfo.ToFile(ProviderInfo.GetFileById(fileId));
         }

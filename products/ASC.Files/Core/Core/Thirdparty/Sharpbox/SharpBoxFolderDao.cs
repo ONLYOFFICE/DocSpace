@@ -448,7 +448,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return false;
         }
 
-        public long GetMaxUploadSize(string folderId, bool chunkedUpload)
+        public long GetMaxUploadSize(string folderId, bool chunkedUpload = false)
         {
             var storageMaxUploadSize =
                 chunkedUpload
