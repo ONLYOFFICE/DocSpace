@@ -341,7 +341,7 @@ namespace ASC.ElasticSearch
 
             if (string.IsNullOrEmpty(path) &&
                 !string.IsNullOrEmpty(fieldSelector.Name) &&
-                fieldSelector.Name.IndexOf('.') > 0)
+                fieldSelector.Name.IndexOf('.') > -1)
             {
                 var splitted = fieldSelector.Name.Split(':')[1];
                 path = splitted.Split('.')[0];

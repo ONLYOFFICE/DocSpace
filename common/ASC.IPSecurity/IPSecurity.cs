@@ -122,7 +122,7 @@ namespace ASC.IPSecurity
         private static bool MatchIPs(string requestIp, string restrictionIp)
         {
             var dividerIdx = restrictionIp.IndexOf('-');
-            if (restrictionIp.IndexOf('-') > 0)
+            if (dividerIdx > -1)
             {
                 var lower = IPAddress.Parse(restrictionIp.Substring(0, dividerIdx).Trim());
                 var upper = IPAddress.Parse(restrictionIp.Substring(dividerIdx + 1).Trim());
