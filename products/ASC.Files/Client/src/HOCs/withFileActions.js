@@ -6,6 +6,7 @@ import { AppServerConfig } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
 import config from "../../package.json";
 import { isMobile } from "react-device-detect";
+import history from "@appserver/common/history";
 
 export default function withFileActions(WrappedFileItem) {
   class WithFileActions extends React.Component {
@@ -153,9 +154,10 @@ export default function withFileActions(WrappedFileItem) {
       if (encrypted && isPrivacy) return checkProtocol(item.id, true);
 
       if (item.fileExst === ".png") {
-        const url = "#preview/" + item.id;
+        const url = "/products/files/#preview/" + item.id;
 
-        window.history.pushState(null, null, url);
+        //window.history.pushState(null, null, url);
+        history.push(url);
       }
 
       if (isTrashFolder) return;

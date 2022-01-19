@@ -39,6 +39,10 @@ const FilesMediaViewer = (props) => {
     }
   }, [removeQuery, onMediaFileClick]);
 
+  useEffect(() => {
+    console.log("previewFile", previewFile);
+  }, [previewFile]);
+
   const removeQuery = (queryName) => {
     const queryParams = new URLSearchParams(location.search);
 
@@ -52,6 +56,7 @@ const FilesMediaViewer = (props) => {
 
   const onMediaFileClick = (id) => {
     //const itemId = typeof id !== "object" ? id : this.props.selection[0].id; TODO:
+
     if (typeof id !== "object") {
       const item = { visible: true, id };
       setMediaViewerData(item);
@@ -88,6 +93,8 @@ const FilesMediaViewer = (props) => {
     if (previewFile) {
       setIsLoading(true);
       setFirstLoad(true);
+
+      console.log("onMediaViewerClose");
 
       fetchFiles(previewFile.folderId)
         .then((data) => {
