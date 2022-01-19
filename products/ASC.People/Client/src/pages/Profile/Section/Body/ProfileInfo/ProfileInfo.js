@@ -17,6 +17,10 @@ import { combineUrl } from "@appserver/common/utils";
 import withCultureNames from "@appserver/common/hoc/withCultureNames";
 import config from "../../../../../../package.json";
 import NoUserSelect from "@appserver/components/utils/commonStyles";
+import { DBConfig } from "@appserver/common/utils/AdsDBConfig";
+import { initDB, useIndexedDB } from "react-indexed-db";
+
+initDB(DBConfig);
 
 const InfoContainer = styled.div`
   margin-bottom: 24px;
@@ -168,6 +172,7 @@ class ProfileInfo extends React.PureComponent {
       //i18n,
       setIsLoading,
     } = this.props;
+    const { clear } = useIndexedDB("ads");
 
     if (profile.cultureName === language.key) return;
 
@@ -177,7 +182,12 @@ class ProfileInfo extends React.PureComponent {
       //   console.log("changeLanguage to", language.key);
       //   i18n && i18n.changeLanguage(language.key);
       // })
-      .then(() => setIsLoading(false))
+      .then(() => {
+        setIsLoading(false);
+        clear().then(() => {
+          console.log("db clear!");
+        });
+      })
       .then(() => location.reload())
       .catch((error) => {
         toastr.error(error && error.message ? error.message : error);
