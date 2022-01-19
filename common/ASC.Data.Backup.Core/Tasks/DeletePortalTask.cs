@@ -89,7 +89,7 @@ namespace ASC.Data.Backup.Tasks
             foreach (var module in storageModules)
             {
                 var storage = StorageFactory.GetStorage(ConfigPath, TenantId.ToString(), module);
-                var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
+                var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module);
                 foreach (var domain in domains)
                 {
                     ActionInvoker.Try(state => storage.DeleteFiles((string)state, "\\", "*.*", true), domain, 5,

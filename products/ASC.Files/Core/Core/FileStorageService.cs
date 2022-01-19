@@ -1602,7 +1602,7 @@ namespace ASC.Web.Files.Services.WCFService
             if (providerDao != null)
             {
                 var providersInfo = providerDao.GetProvidersInfo(userFrom.ID);
-                var commonProvidersInfo = providersInfo.Where(provider => provider.RootFolderType == FolderType.COMMON).ToList();
+                var commonProvidersInfo = providersInfo.Where(provider => provider.RootFolderType == FolderType.COMMON);
 
                 //move common thirdparty storage userFrom
                 foreach (var commonProviderInfo in commonProvidersInfo)
