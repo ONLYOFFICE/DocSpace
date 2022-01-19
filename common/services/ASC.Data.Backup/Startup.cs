@@ -27,18 +27,22 @@ using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Threading;
 using ASC.Data.Backup.Controllers;
-using ASC.Data.Backup.Service;
+using ASC.Data.Backup.Services;
 using ASC.Web.Studio.Core.Notify;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using StackExchange.Redis.Extensions.Core.Configuration;
+using StackExchange.Redis.Extensions.Newtonsoft;
+
 namespace ASC.Data.Backup
 {
     public class Startup : BaseStartup
     {
-        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment) : base(configuration, hostEnvironment)
+        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment) 
+            : base(configuration, hostEnvironment)
         {
 
         }
@@ -53,11 +57,23 @@ namespace ASC.Data.Backup
             DIHelper.TryAdd<RestoreProgressItem>();
             DIHelper.TryAdd<TransferProgressItem>();
 
-            DIHelper.TryAdd<BackupServiceLauncher>();
+            DIHelper.TryAdd<Schedule>();
+
             DIHelper.TryAdd<BackupController>();
+
+            DIHelper.TryAdd<BackupCleanerService>();
+            DIHelper.TryAdd<BackupSchedulerService>();
+            DIHelper.TryAdd<BackupListenerService>();
+            DIHelper.TryAdd<BackupWorkerService>();
+           
             NotifyConfigurationExtension.Register(DIHelper);
 
-            services.AddHostedService<BackupServiceLauncher>();
+            services.AddHostedService<BackupCleanerService>();
+            services.AddHostedService<BackupSchedulerService>();
+            services.AddHostedService<BackupListenerService>();
+            services.AddHostedService<BackupWorkerService>();
+
+            services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(Configuration.GetSection("Redis").Get<RedisConfiguration>());
         }
     }
 }

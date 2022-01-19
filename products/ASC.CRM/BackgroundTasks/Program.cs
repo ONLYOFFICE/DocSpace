@@ -17,6 +17,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using StackExchange.Redis.Extensions.Core.Configuration;
+using StackExchange.Redis.Extensions.Newtonsoft;
 
 namespace ASC.CRM.BackgroundTasks
 {
@@ -58,6 +60,8 @@ namespace ASC.CRM.BackgroundTasks
                         .AddJsonFile($"notify.{env}.json", true)
                         .AddJsonFile("kafka.json")
                         .AddJsonFile($"kafka.{env}.json", true)
+                        .AddJsonFile("redis.json")
+                        .AddJsonFile($"redis.{env}.json", true)
                         .AddEnvironmentVariables()
                         .AddCommandLine(args);
                 })
@@ -67,7 +71,18 @@ namespace ASC.CRM.BackgroundTasks
 
                     var diHelper = new DIHelper(services);
 
-                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                    var redisConfiguration = hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>();
+
+                    if (redisConfiguration != null)
+                    {
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+
+                        services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
+                    }
+                    else
+                    {
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
+                    }
 
                     diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
 
@@ -81,6 +96,7 @@ namespace ASC.CRM.BackgroundTasks
                     diHelper.TryAdd<FactoryIndexerFieldValue>();
                     diHelper.TryAdd<FactoryIndexerInvoice>();
                     diHelper.TryAdd<FactoryIndexerTask>();
+
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {

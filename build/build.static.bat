@@ -1,6 +1,6 @@
 @echo off
 
-PUSHD %~dp0
+cd /D "%~dp0"
 call runasadmin.bat "%~dpnx0"
 
 if %errorlevel% == 0 (
