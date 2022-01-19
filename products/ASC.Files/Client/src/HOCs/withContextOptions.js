@@ -27,6 +27,7 @@ export default function withContextOptions(WrappedComponent) {
         formfillingDocs,
         setConvertPasswordDialogVisible,
         setFormCreationInfo,
+        t,
       } = this.props;
       const { title, id, folderId, fileExst } = item;
 
@@ -35,6 +36,7 @@ export default function withContextOptions(WrappedComponent) {
 
       copyAsAction(id, newTitle, folderId).catch((err) => {
         console.log("err", err);
+        toastr.error(t("Translations:FileProtected"), t("Common:Warning"));
         setFormCreationInfo({
           newTitle,
           fromExst: fileExst,

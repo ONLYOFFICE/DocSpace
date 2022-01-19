@@ -203,6 +203,10 @@ export default function withContent(WrappedContent) {
             .then(() => this.completeAction(itemId))
             .catch((err) => {
               console.log("err", err);
+              toastr.error(
+                t("Translations:FileProtected"),
+                t("Common:Warning")
+              );
               setIsUpdatingRowItem(false);
 
               setFormCreationInfo({
