@@ -249,12 +249,8 @@ const quickButtonsPosition = css`
   }
 `;
 
-const badgeOutlineStyles = ({ top, right, left, width }) => css`
-  position: relative;
-  overflow: visible;
-
-  &::before {
-    z-index: -1;
+const badgeOutlineStyles = ({ top, right, left, width }) => {
+  const commonCss = css`
     content: "";
     position: absolute;
     top: ${top};
@@ -262,21 +258,25 @@ const badgeOutlineStyles = ({ top, right, left, width }) => css`
     ${left && `left: ${left}`};
     height: 32px;
     width: ${width};
-    border-radius: 4px;
-    background: white;
-  }
+  `;
 
-  // this fixes hover
-  &::after {
-    content: "";
-    position: absolute;
-    top: ${top};
-    ${right && `right: ${right}`};
-    ${left && `left: ${left}`};
-    height: 32px;
-    width: ${width};
-  }
-`;
+  return css`
+    position: relative;
+    overflow: visible;
+
+    &::before {
+      ${commonCss};
+      z-index: -1;
+      border-radius: 4px;
+      background: white;
+    }
+
+    // this fixes hover
+    &::after {
+      ${commonCss};
+    }
+  `;
+};
 
 const StyledIcons = styled.div`
   ${(props) => props.isBadges && badgesPosition}
@@ -381,11 +381,6 @@ class Tile extends React.PureComponent {
     } = this.props;
     const { isFolder, id, fileExst } = item;
 
-    const renderCheckbox = Object.prototype.hasOwnProperty.call(
-      this.props,
-      "checked"
-    );
-
     const renderElement = Object.prototype.hasOwnProperty.call(
       this.props,
       "element"
@@ -414,8 +409,7 @@ class Tile extends React.PureComponent {
     };
 
     const icon = this.getIconFile();
-    const FilesTileContent = children[0];
-    const badges = children[1];
+    const [FilesTileContent, badges] = children;
     const quickButtons = contentElement;
 
     return (
