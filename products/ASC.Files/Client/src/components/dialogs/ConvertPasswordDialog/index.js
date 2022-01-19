@@ -130,7 +130,15 @@ const ConvertPasswordDialogComponent = (props) => {
         <StyledComponent>
           <div className="convert-password-dialog_content">
             <div className="convert-password-dialog_caption">
-              <Text>{t("ConversionPasswordCaption")}</Text>
+              <Text>
+                {makeForm
+                  ? t("ConversionPasswordMasterFormCaption", {
+                      passwordProtection: t("Translations:FileProtected"),
+                    })
+                  : t("ConversionPasswordFormCaption", {
+                      passwordProtection: t("Translations:FileProtected"),
+                    })}
+              </Text>
             </div>
             <div className="password-input">
               <SimulatePassword
@@ -174,6 +182,7 @@ const ConvertPasswordDialogComponent = (props) => {
 const ConvertPasswordDialog = withTranslation([
   "ConvertPasswordDialog",
   "Common",
+  "Translations",
 ])(ConvertPasswordDialogComponent);
 
 export default inject(
