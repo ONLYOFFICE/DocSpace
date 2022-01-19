@@ -14,6 +14,7 @@ import Hammer from "hammerjs";
 import IconButton from "@appserver/components/icon-button";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { isDesktop } from "react-device-detect";
+import history from "@appserver/common/history";
 
 const StyledVideoViewer = styled(VideoViewer)`
   z-index: 301;
@@ -310,9 +311,10 @@ class MediaViewer extends React.Component {
     });
 
     const id = playlist[currentPlaylistPos].fileId;
-    const url = "#preview/" + id;
+    const url = "/products/files/#preview/" + id;
 
-    window.history.pushState(null, null, url);
+    //window.history.pushState(null, null, url);
+    history.push(url);
   };
 
   nextMedia = () => {
@@ -326,9 +328,10 @@ class MediaViewer extends React.Component {
     });
 
     const id = playlist[currentPlaylistPos].fileId;
-    const url = "#preview/" + id;
+    const url = "/products/files/#preview/" + id;
 
-    window.history.pushState(null, null, url);
+    history.push(url);
+    //window.history.pushState(null, null, url);
   };
 
   getOffset = () => {
