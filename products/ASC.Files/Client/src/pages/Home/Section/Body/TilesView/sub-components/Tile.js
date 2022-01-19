@@ -159,11 +159,6 @@ const StyledFileTileBottom = styled.div`
   padding: 9px 0;
   height: 64px;
   box-sizing: border-box;
-
-  .tile-file-loader {
-    padding-top: 4px;
-    padding-left: 3px;
-  }
 `;
 
 const StyledContent = styled.div`
@@ -491,25 +486,17 @@ class Tile extends React.PureComponent {
             <StyledFileTileBottom>
               {id !== -1 && !isEdit && (
                 <>
-                  {!inProgress ? (
-                    <div className="file-icon_container">
-                      <div className="file-icon" onClick={this.onFileIconClick}>
-                        {element}
-                      </div>
-                      <Checkbox
-                        className="file-checkbox"
-                        isChecked={checked}
-                        isIndeterminate={indeterminate}
-                        onChange={this.changeCheckbox}
-                      />
+                  <div className="file-icon_container">
+                    <div className="file-icon" onClick={this.onFileIconClick}>
+                      {element}
                     </div>
-                  ) : (
-                    <Loader
-                      className="tile-file-loader"
-                      type="oval"
-                      size="16px"
+                    <Checkbox
+                      className="file-checkbox"
+                      isChecked={checked}
+                      isIndeterminate={indeterminate}
+                      onChange={this.changeCheckbox}
                     />
-                  )}
+                  </div>
                 </>
               )}
               <StyledContent

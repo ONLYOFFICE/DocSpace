@@ -8,7 +8,6 @@ const pathname = window.location.pathname.toLowerCase();
 const isEditor = pathname.indexOf("doceditor") !== -1;
 
 let loadTimeout = null;
-
 const withLoader = (WrappedComponent) => (Loader) => {
   const withLoader = (props) => {
     const { tReady, firstLoad, isLoaded, isLoading, viewAs } = props;
@@ -23,12 +22,12 @@ const withLoader = (WrappedComponent) => (Loader) => {
       if (isLoading) {
         cleanTimer();
         loadTimeout = setTimeout(() => {
-          //console.log('inLoad', true)
+          //console.log("inLoad", true);
           setInLoad(true);
         }, 500);
       } else {
         cleanTimer();
-        //console.log('inLoad', false)
+        //console.log("inLoad", false);
         setInLoad(false);
       }
 
