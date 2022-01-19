@@ -50,7 +50,7 @@ namespace ASC.MessagingSystem.DbSender
     [Singletone(Additional = typeof(MessagesRepositoryExtension))]
     public class MessagesRepository: IDisposable
     {
-        private static DateTime lastSave = DateTime.UtcNow;
+        private DateTime lastSave = DateTime.UtcNow;
         private readonly TimeSpan CacheTime;
         private readonly IDictionary<string, EventMessage> Cache;
         private Parser Parser { get; set; }
