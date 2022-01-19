@@ -166,6 +166,7 @@ const ConvertPasswordDialogComponent = (props) => {
               size="medium"
               primary
               onClick={onConvert}
+              isLoading={isLoading}
             />
             <Button
               className="convert-password-dialog_button"
