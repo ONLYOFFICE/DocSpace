@@ -87,11 +87,13 @@ namespace ASC.Files.Core.Thirdparty
             if (deleteSourceFile)
             {
                 if (fromFileShareRecords.Any())
-                    fromFileShareRecords.ToList().ForEach(x =>
+                {
+                    foreach (var record in fromFileShareRecords)
                     {
-                        x.EntryId = toFile.ID;
-                        securityDao.SetShare(x);
-                    });
+                        record.EntryId = toFile.ID;
+                        securityDao.SetShare(record);
+                    }
+                }
 
                 var fromFileTags = fromFileNewTags;
                 if (fromFileLockTag != null) fromFileTags.Add(fromFileLockTag);
@@ -168,11 +170,10 @@ namespace ASC.Files.Core.Thirdparty
 
                 if (fromFileShareRecords.Any())
                 {
-                    fromFileShareRecords.ToList().ForEach(x =>
-                    {
-                        x.EntryId = toFolderId;
-                        securityDao.SetShare(x);
-                    });
+                    foreach(var record in fromFileShareRecords){
+                        record.EntryId = toFolderId;
+                        securityDao.SetShare(record);
+                    }
                 }
 
                 var tagDao = ServiceProvider.GetService<ITagDao<TFrom>>();

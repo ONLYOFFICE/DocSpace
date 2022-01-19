@@ -693,7 +693,10 @@ namespace ASC.Files.Core.Data
 
             tx.Commit();
 
-            fromFolders.ForEach(folderId => RecalculateFilesCount(folderId));
+            foreach(var folderId in fromFolders)
+            {
+                RecalculateFilesCount(folderId);
+            }
 
             if (deleteFolder)
                 DeleteFolder(fileId);
@@ -770,7 +773,10 @@ namespace ASC.Files.Core.Data
                 FilesDbContext.SaveChanges();
                 tx.Commit();
 
-                fromFolders.ForEach(folderId => RecalculateFilesCount(folderId));
+                foreach(var folderId in fromFolders)
+                {
+                    RecalculateFilesCount(folderId);
+                }
                 RecalculateFilesCount(toFolderId);
             }
 

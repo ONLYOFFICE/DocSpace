@@ -657,14 +657,17 @@ namespace ASC.Files.Core.Data
 
                 if (conflict != 0)
                 {
-                    FilesDbContext.Files
+                    var files = FilesDbContext.Files
                         .AsNoTracking()
                         .Join(FilesDbContext.Files, f1 => f1.Title.ToLower(), f2 => f2.Title.ToLower(), (f1, f2) => new { f1, f2 })
                         .Where(r => r.f1.TenantId == TenantID && r.f1.CurrentVersion && r.f1.FolderId == folderId)
                         .Where(r => r.f2.TenantId == TenantID && r.f2.CurrentVersion && r.f2.FolderId == conflict)
-                        .Select(r => r.f1)
-                        .ToList()
-                        .ForEach(r => result[r.Id] = r.Title);
+                        .Select(r => r.f1);
+
+                    foreach (var file in files)
+                    {
+                        result[file.Id] = file.Title;
+                    }
 
                     var childs = Query(FilesDbContext.Folders)
                         .AsNoTracking()

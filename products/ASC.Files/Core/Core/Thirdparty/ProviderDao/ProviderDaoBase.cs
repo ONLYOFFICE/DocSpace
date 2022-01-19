@@ -98,16 +98,17 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
         protected void SetSharedProperty(IEnumerable<FileEntry<string>> entries)
         {
-            SecurityDao.GetPureShareRecords(entries.ToArray())
+            var ids = SecurityDao.GetPureShareRecords(entries.ToArray())
                 //.Where(x => x.Owner == SecurityContext.CurrentAccount.ID)
-                .Select(x => x.EntryId).Distinct().ToList()
-                .ForEach(id =>
-                {
-                    var firstEntry = entries.FirstOrDefault(y => y.ID.Equals(id));
+                .Select(x => x.EntryId).Distinct();
 
-                    if (firstEntry != null)
-                        firstEntry.Shared = true;
-                });
+            foreach(var id in ids)
+            {
+                var firstEntry = entries.FirstOrDefault(y => y.ID.Equals(id));
+
+                if (firstEntry != null)
+                    firstEntry.Shared = true;
+            }
         }
 
         protected IEnumerable<IDaoSelector> GetSelectors()
