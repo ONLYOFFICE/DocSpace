@@ -43,6 +43,11 @@ const checkedStyle = css`
   background: #f3f4f4 !important;
 `;
 
+const bottomFileBorder = css`
+  border-top-color: #d0d5da;
+  border-radius: 0 0 6px 6px;
+`;
+
 const StyledTile = styled.div`
   cursor: ${(props) => (!props.isRecycleBin ? "pointer" : "default")};
   ${(props) =>
@@ -59,6 +64,8 @@ const StyledTile = styled.div`
 
   ${(props) => props.isFolder && FlexBoxStyles}
   ${(props) => (props.isFolder ? FolderStyles : FileStyles)}
+  ${(props) =>
+    props.isFolder && (props.checked || props.isActive) && checkedStyle}
 
   &:before, 
   &:after {
@@ -156,8 +163,13 @@ const StyledFileTileTop = styled.div`
 
 const StyledFileTileBottom = styled.div`
   ${FlexBoxStyles};
+  ${(props) => (props.checked || props.isActive) && checkedStyle}
+
+  border-top: 1px solid transparent;
+  ${(props) => (props.checked || props.isActive) && bottomFileBorder}
+
   padding: 9px 0;
-  height: 64px;
+  height: 62px;
   box-sizing: border-box;
 `;
 
@@ -478,7 +490,7 @@ class Tile extends React.PureComponent {
               <StyledIcons isQuickButtons>{quickButtons}</StyledIcons>
             )}
 
-            <StyledFileTileBottom>
+            <StyledFileTileBottom checked={checked} isActive={isActive}>
               {id !== -1 && !isEdit && (
                 <>
                   <div className="file-icon_container">
