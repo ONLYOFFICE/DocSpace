@@ -1,17 +1,18 @@
-import React from "react";
-import styled, { css } from "styled-components";
-import equal from "fast-deep-equal/react";
-import { tablet, desktop } from "@appserver/components/utils/device";
+import React from 'react';
+import styled, { css } from 'styled-components';
+import equal from 'fast-deep-equal/react';
+import { tablet, desktop } from '@appserver/components/utils/device';
 
 const StyledSectionFilter = styled.div`
   margin: 11px 24px 0 0;
 
   @media ${desktop} {
     ${(props) =>
-      (props.viewAs === "table" || props.viewAs === "tile") &&
+      (props.viewAs === 'table' || props.viewAs === 'tile') &&
       css`
         margin-left: -4px;
-        margin-right: 20px;
+        /* margin-right: 20px; */
+        margin-right: 22px;
         margin-bottom: 9px;
       `};
   }
@@ -32,6 +33,6 @@ class SectionFilter extends React.Component {
   }
 }
 
-SectionFilter.displayName = "SectionFilter";
+SectionFilter.displayName = 'SectionFilter';
 
 export default SectionFilter;
