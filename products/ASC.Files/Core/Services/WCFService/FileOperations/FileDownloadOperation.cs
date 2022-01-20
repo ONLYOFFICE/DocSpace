@@ -330,7 +330,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                             if (!Equals(entryId, default(T)))
                             {
-                                newtitle = 0 < newtitle.IndexOf('.') ? newtitle.Insert(newtitle.LastIndexOf('.'), suffix) : newtitle + suffix;
+                                newtitle = newtitle.IndexOf('.') > -1 ? newtitle.Insert(newtitle.LastIndexOf('.'), suffix) : newtitle + suffix;
                             }
                             else
                             {
