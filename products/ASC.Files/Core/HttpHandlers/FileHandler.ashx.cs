@@ -1062,7 +1062,7 @@ namespace ASC.Web.Files
                 //var refererURL = context.Request.GetUrlRewriter().AbsoluteUri;
 
                 //context.Session["refererURL"] = refererURL;
-                var authUrl = "~/Auth.aspx";
+                const string authUrl = "~/Auth.aspx";
                 context.Response.Redirect(authUrl, true);
                 return Task.CompletedTask;
             }

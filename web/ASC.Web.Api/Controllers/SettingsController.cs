@@ -1942,7 +1942,7 @@ namespace ASC.Api.Settings
 
             TenantManager.SaveTenantQuota(quota);
 
-            var DEFAULT_TRIAL_PERIOD = 30;
+            const int DEFAULT_TRIAL_PERIOD = 30;
 
             var tariff = new Tariff
             {

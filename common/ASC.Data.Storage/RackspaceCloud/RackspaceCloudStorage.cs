@@ -709,7 +709,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
         public override string UploadChunk(string domain, string path, string filePath, Stream stream, long defaultChunkSize, int chunkNumber, long chunkLength)
         {
-            var BufferSize = 4096;
+            const int BufferSize = 4096;
 
             var mode = chunkNumber == 0 ? FileMode.Create : FileMode.Append;
 

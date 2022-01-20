@@ -347,7 +347,7 @@ namespace ASC.Web.Files.Utils
                 //var apiServer = new ASC.Api.ApiServer();
                 //var apiUrl = string.Format("{0}project/maxlastmodified.json", SetupInfo.WebApiBaseUrl);
 
-                string responseBody = null;// apiServer.GetApiResponse(apiUrl, "GET");
+                const string responseBody = null;// apiServer.GetApiResponse(apiUrl, "GET");
                 if (responseBody != null)
                 {
                     var responseApi = JObject.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(responseBody)));
@@ -367,7 +367,7 @@ namespace ASC.Web.Files.Utils
                         if (!(responseData is JArray)) return entries.ToList();
 
                         folderIDProjectTitle = new Dictionary<int, KeyValuePair<int, string>>();
-                        foreach (JObject projectInfo in responseData.Children())
+                        foreach (JObject projectInfo in responseData.Children().OfType<JObject>())
                         {
                             var projectID = projectInfo["id"].Value<int>();
                             var projectTitle = Global.ReplaceInvalidCharsAndTruncate(projectInfo["title"].Value<string>());

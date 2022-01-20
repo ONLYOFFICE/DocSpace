@@ -764,7 +764,7 @@ namespace ASC.Data.Storage.GoogleCloud
             request.Content = new StreamContent(stream);
 
 
-            long MAX_RETRIES = 100;
+            const int MAX_RETRIES = 100;
             int millisecondsTimeout;
 
             for (var i = 0; i < MAX_RETRIES; i++)

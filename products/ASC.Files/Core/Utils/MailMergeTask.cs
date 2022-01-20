@@ -110,7 +110,7 @@ namespace ASC.Web.Files.Utils
                     HttpUtility.UrlEncode(mailMergeTask.To),
                     HttpUtility.UrlEncode(mailMergeTask.Message));
 
-            string responseCreateString = null; //TODO: Encoding.UTF8.GetString(Convert.FromBase64String(Api.GetApiResponse(apiUrlCreate, "PUT", bodyCreate)));
+            const string responseCreateString = null; //TODO: Encoding.UTF8.GetString(Convert.FromBase64String(Api.GetApiResponse(apiUrlCreate, "PUT", bodyCreate)));
             var responseCreate = JObject.Parse(responseCreateString);
 
             if (responseCreate["statusCode"].Value<int>() != (int)HttpStatusCode.OK)
@@ -185,7 +185,7 @@ namespace ASC.Web.Files.Utils
 
             bodySend += bodySendAttach;
 
-            string responseSendString = null;//TODO: Encoding.UTF8.GetString(Convert.FromBase64String(Api.GetApiResponse(apiUrlSend, "PUT", bodySend)));
+            const string responseSendString = null;//TODO: Encoding.UTF8.GetString(Convert.FromBase64String(Api.GetApiResponse(apiUrlSend, "PUT", bodySend)));
             var responseSend = JObject.Parse(responseSendString);
 
             if (responseSend["statusCode"].Value<int>() != (int)HttpStatusCode.OK)
