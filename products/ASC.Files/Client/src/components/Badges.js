@@ -75,7 +75,7 @@ const Badges = ({
             size={sizeBadge}
             onClick={onFilesClick}
             hoverColor="#3B72A7"
-            title={t("Common:EditButton")}
+            title={t("Common:FillFormButton")}
           />
         )}
       {(isEditing || isEditingWithFav) && (
@@ -85,6 +85,7 @@ const Badges = ({
           size={sizeBadge}
           onClick={onFilesClick}
           hoverColor="#3B72A7"
+          title={t("Common:EditButton")}
         />
       )}
       {canConvert && !isTrashFolder && (
