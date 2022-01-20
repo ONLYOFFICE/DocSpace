@@ -242,6 +242,7 @@ const badgeOutlineStyles = ({ top, right, left, width }) => {
     ${left && `left: ${left}`};
     height: 32px;
     width: ${width};
+    border-radius: 4px;
   `;
 
   return css`
@@ -258,6 +259,7 @@ const badgeOutlineStyles = ({ top, right, left, width }) => {
     // this fixes hover
     &::after {
       ${commonCss};
+      box-shadow: 0px 2px 4px rgba(4, 15, 27, 0.16);
     }
   `;
 };
@@ -265,7 +267,6 @@ const badgeOutlineStyles = ({ top, right, left, width }) => {
 const StyledIcons = styled.div`
   ${(props) => props.isBadges && badgesPosition}
   ${(props) => props.isQuickButtons && quickButtonsPosition}
-  filter: drop-shadow(0px 12px 40px rgba(4, 15, 27, 0.12));
 
   .badge {
     ${badgeOutlineStyles({
