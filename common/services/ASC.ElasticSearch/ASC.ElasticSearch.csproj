@@ -24,11 +24,11 @@
     <None Remove="Properties\**" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="protos\SearchItem.proto" />
+    <None Remove="protos\search_item.proto" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Elasticsearch.Net" Version="7.7.1" />
-    <PackageReference Include="Grpc.Tools" Version="2.32.0">
+    <PackageReference Include="Grpc.Tools" Version="2.40.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -43,6 +43,6 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <Protobuf Include="protos\SearchItem.proto" />
+    <Protobuf Include="protos\search_item.proto" />
   </ItemGroup>
 </Project>

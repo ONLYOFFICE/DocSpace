@@ -10,10 +10,12 @@
   "DeleteOperation": "Löschen",
   "DeleteSelectedElem": "Die ausgewählten Elemente wurden gelöscht",
   "DeleteThirdParty": "Drittanbieterdienst deaktivieren",
+  "DownloadApps": "Apps herunterladen",
   "DownloadAs": "Herunterladen als",
   "EncryptedFileSaving": "Die verschlüsselte Datei wird gespeichert",
   "Files": "Dateien",
   "Folders": "Ordner",
+  "FolderSelection": "Ordnerauswahl",
   "FolderTitleBoxNet": "Box-Verzeichnis",
   "FolderTitleDocuSign": "DocuSign Konto",
   "FolderTitleDropBox": "Dropbox-Verzeichnis",
@@ -24,6 +26,7 @@
   "FolderTitleWebDav": "WebDAV Verzeichnis",
   "FolderTitleYandex": "Yandex Verzeichnis",
   "LinkCopySuccess": "Der Link wurde in die Zwischenablage kopiert",
+  "MediaLoadError": "Die Mediendatei konnte nicht geladen werden",
   "Move": "Verschieben",
   "MoveToOperation": "Wird verschoben",
   "MobileWin": "Download ONLYOFFICE Desktop Editors für Windows",
@@ -50,5 +53,10 @@
   "TypeTitleYandex": "Yandex.Disk",
   "TitleSelectFile": "Wählen",
   "TitleShowFolderActions": "Ordneraktionen anzeigen",
-  "TitleShowActions": "Dateiaktionen anzeigen"
+  "TitleShowActions": "Dateiaktionen anzeigen",
+  "NewForm": "Formularvorlage",
+  "NewFormFile": "Formular aus Textdatei",
+  "CreateMasterFormFromFile": "Formularvorlage aus Datei erstellen",
+  "SubNewForm": "Leer",
+  "SubNewFormFile": "Aus Textdatei"
 }

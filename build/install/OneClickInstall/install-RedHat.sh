@@ -47,6 +47,13 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+		-skiphc | --skiphardwarecheck )
+			if [ "$2" != "" ]; then
+				SKIP_HARDWARE_CHECK=$2
+				shift
+			fi
+		;;
+
 		-? | -h | --help )
 			echo "  Usage $0 [PARAMETER] [[PARAMETER], ...]"
 			echo "    Parameters:"
@@ -67,6 +74,10 @@ fi
 
 if [ -z "${LOCAL_SCRIPTS}" ]; then
    LOCAL_SCRIPTS="false";
+fi
+
+if [ -z "${SKIP_HARDWARE_CHECK}" ]; then
+   SKIP_HARDWARE_CHECK="false";
 fi
 
 cat > /etc/yum.repos.d/onlyoffice.repo <<END
@@ -91,11 +102,13 @@ END
 DOWNLOAD_URL_PREFIX="https://raw.githubusercontent.com/ONLYOFFICE/${product}/${GIT_BRANCH}/build/install/OneClickInstall/install-RedHat"
 
 if [ "$LOCAL_SCRIPTS" = "true" ]; then
+	source install-RedHat/tools.sh
 	source install-RedHat/bootstrap.sh
 	source install-RedHat/check-ports.sh
 	source install-RedHat/install-preq.sh
 	source install-RedHat/install-app.sh
 else
+	source <(curl ${DOWNLOAD_URL_PREFIX}/tools.sh)
 	source <(curl ${DOWNLOAD_URL_PREFIX}/bootstrap.sh)
 	source <(curl ${DOWNLOAD_URL_PREFIX}/check-ports.sh)
 	source <(curl ${DOWNLOAD_URL_PREFIX}/install-preq.sh)

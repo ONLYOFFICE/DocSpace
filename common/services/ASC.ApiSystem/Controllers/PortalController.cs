@@ -673,10 +673,10 @@ namespace ASC.ApiSystem.Controllers
                     return true;
                 }
 
-                var data = string.Format("{0} {1} {2} {3} {4}", model.PortalName, model.FirstName, model.LastName, model.Email, model.Phone);
+                var data = string.Format("{0} {1} {2} {3} {4} {5}", model.PortalName, model.FirstName, model.LastName, model.Email, model.Phone, model.RecaptchaType);
 
                 /*** validate recaptcha ***/
-                if (!CommonMethods.ValidateRecaptcha(model.RecaptchaResponse, clientIP))
+                if (!CommonMethods.ValidateRecaptcha(model.RecaptchaResponse, model.RecaptchaType, clientIP))
                 {
                     Log.DebugFormat("PortalName = {0}; Elapsed ms. ValidateRecaptcha error: {1} {2}", model.PortalName, sw.ElapsedMilliseconds, data);
                     sw.Stop();

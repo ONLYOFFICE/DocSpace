@@ -53,7 +53,8 @@ const ForgotPasswordModalDialog = (props) => {
   return (
     <ModalDialogContainer
       visible={visible}
-      bodyPadding="16px 0 0 0"
+      modalBodyPadding="12px 0 0 0"
+      asideBodyPadding="16px 0 0 0"
       onClose={onDialogClose}
     >
       <ModalDialog.Header>

@@ -15,6 +15,7 @@
   "EncryptedFileSaving": "Сохранение зашифрованного файла",
   "Files": "Файлы",
   "Folders": "Папки",
+  "FolderSelection": "Выбор папки",
   "FolderTitleBoxNet": "Каталог Box",
   "FolderTitleDocuSign": "Аккаунт DocuSign",
   "FolderTitleDropBox": "Каталог Dropbox",
@@ -53,5 +54,10 @@
   "TypeTitleYandex": "Яндекс.Диск",
   "TitleShowActions": "Показать действия над файлом",
   "TitleShowFolderActions": "Показать действия над папкой",
-  "TitleSelectFile": "Выделить"
+  "TitleSelectFile": "Выделить",
+  "NewForm": "Шаблон формы",
+  "NewFormFile": "Форма из текстового файла",
+  "CreateMasterFormFromFile": "Создать шаблон формы из файла",
+  "SubNewForm": "Пустая",
+  "SubNewFormFile": " Из текстового файла"
 }

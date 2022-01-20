@@ -10,10 +10,12 @@
   "DeleteOperation": "Suppression",
   "DeleteSelectedElem": "Les éléments sélectionnés ont été supprimés avec succès",
   "DeleteThirdParty": "Supprimer un tiers",
+  "DownloadApps": "Download applications",
   "DownloadAs": "Télécharger comme",
   "EncryptedFileSaving": "Enregistrement du fichier chiffré",
   "Files": "Fichiers",
   "Folders": "Dossiers",
+  "FolderSelection": "Folder selection",
   "FolderTitleBoxNet": "Répertoire de Box",
   "FolderTitleDocuSign": "Сompte DocuSign",
   "FolderTitleDropBox": "Répertoire de Dropbox",
@@ -24,6 +26,7 @@
   "FolderTitleWebDav": "Répertoire WebDAV",
   "FolderTitleYandex": "WebDAV Yandex",
   "LinkCopySuccess": "Le lien a été copié dans le Presse-papiers",
+  "MediaLoadError": "Media file could not be loaded",
   "Move": "Déplacer",
   "MoveToOperation": "Déplacement",
   "MobileWin": "Télécharger les applications de bureau ONLYOFFICE pour Windows",
@@ -50,5 +53,10 @@
   "TypeTitleYandex": "Yandex.Disk",
   "TitleShowActions": "Actions sur le fichier",
   "TitleShowFolderActions": "Actions sur le dossier",
-  "TitleSelectFile": "Sélectionner"
+  "TitleSelectFile": "Sélectionner",
+  "NewForm": "Modèle de formulaire",
+  "NewFormFile": "Formulaire à partir d'un fichier texte",
+  "CreateMasterFormFromFile": "Créer un modèle de formulaire à partir d'un fichier",
+  "SubNewForm": "Blanc",
+  "SubNewFormFile": "Depuis un fichier texte"
 }

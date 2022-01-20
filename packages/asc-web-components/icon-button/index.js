@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { Icons } from "../icons";
 import isEmpty from "lodash/isEmpty";
 import StyledOuter from "./styled-icon-button";
 import { ReactSVG } from "react-svg";
@@ -138,6 +137,7 @@ class IconButton extends React.PureComponent {
       style,
       dataTip,
       title,
+      ...rest
     } = this.props;
 
     return (
@@ -157,7 +157,7 @@ class IconButton extends React.PureComponent {
         data-for={id}
         style={style}
         color={this.state.currentIconColor}
-        //{...this.props}
+        {...rest}
       >
         {/* {React.createElement(Icons["CalendarIcon"], {
           size: "scale",

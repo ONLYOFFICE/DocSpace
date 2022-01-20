@@ -15,6 +15,7 @@
   "EncryptedFileSaving": "Saving encrypted file",
   "Files": "Files",
   "Folders": "Folders",
+  "FolderSelection": "Folder selection",
   "FolderTitleBoxNet": "Box directory",
   "FolderTitleDocuSign": "DocuSign account",
   "FolderTitleDropBox": "Dropbox directory",
@@ -53,5 +54,10 @@
   "TypeTitleYandex": "Yandex.Disk",
   "TitleShowActions": "Show File Actions",
   "TitleShowFolderActions": "Show Folder Actions",
-  "TitleSelectFile": "Select"
+  "TitleSelectFile": "Select",
+  "NewForm": "Form template",
+  "NewFormFile": "Form from text file",
+  "CreateMasterFormFromFile": "Create Form Template from file",
+  "SubNewForm": "Blank",
+  "SubNewFormFile": "From text file"
 }

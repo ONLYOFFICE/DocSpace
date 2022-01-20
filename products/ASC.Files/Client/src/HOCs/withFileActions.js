@@ -160,7 +160,9 @@ export default function withFileActions(WrappedFileItem) {
       if (encrypted && isPrivacy) return checkProtocol(item.id, true);
 
       if (isTrashFolder) return;
-      if (e && e.target.tagName === "INPUT") return;
+      if ((e && e.target.tagName === "INPUT") || e.target.closest(".badges"))
+        return;
+
       e.preventDefault();
 
       if (isFolder) {
@@ -249,6 +251,7 @@ export default function withFileActions(WrappedFileItem) {
       const isShareable = allowShareIn && item.canShare;
 
       const isMobileView = sectionWidth < 500;
+
       const displayShareButton = isMobileView
         ? "26px"
         : !isShareable

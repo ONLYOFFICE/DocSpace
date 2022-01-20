@@ -1,6 +1,5 @@
 import React from "react";
 import Link from "@appserver/components/link";
-import Text from "@appserver/components/text";
 import Checkbox from "@appserver/components/checkbox";
 import TableCell from "@appserver/components/table-container/TableCell";
 
@@ -14,7 +13,7 @@ const FileNameCell = ({
   selectionProp,
   t,
 }) => {
-  const { fileExst, title } = item;
+  const { title } = item;
 
   const onChange = (e) => {
     onContentSelect && onContentSelect(e.target.checked, item);
@@ -48,18 +47,6 @@ const FileNameCell = ({
         className="item-file-name"
       >
         {titleWithoutExt}
-        {fileExst ? (
-          <Text
-            className="badge-ext"
-            as="span"
-            color="#A3A9AE"
-            fontSize="13px"
-            fontWeight={600}
-            truncate={true}
-          >
-            {fileExst}
-          </Text>
-        ) : null}
       </Link>
     </>
   );

@@ -32,7 +32,7 @@ namespace ASC.Files.ThumbnailBuilder
             result.ServerRoot = cfg.ServerRoot ?? "http://localhost/";
             result.LaunchFrequency = cfg.LaunchFrequency != 0 ? cfg.LaunchFrequency : 1;
             result.ConnectionStringName = cfg.ConnectionStringName ?? "default";
-            result.Formats = cfg.Formats ?? ".pptx|.pptm|.ppt|.ppsx|.ppsm|.pps|.potx|.potm|.pot|.odp|.fodp|.otp|.gslides|.xlsx|.xlsm|.xls|.xltx|.xltm|.xlt|.ods|.fods|.ots|.gsheet|.csv|.docx|.docm|.doc|.dotx|.dotm|.dot|.odt|.fodt|.ott|.gdoc|.txt|.rtf|.mht|.html|.htm|.fb2|.epub|.pdf|.djvu|.xps|.bmp|.jpeg|.jpg|.png|.gif|.tiff|.tif|.ico";
+            result.Formats = cfg.Formats ?? ".pptx|.pptm|.ppt|.ppsx|.ppsm|.pps|.potx|.potm|.pot|.odp|.fodp|.otp|.gslides|.xlsx|.xlsm|.xls|.xltx|.xltm|.xlt|.ods|.fods|.ots|.gsheet|.csv|.docx|.docxf|.oform|.docm|.doc|.dotx|.dotm|.dot|.odt|.fodt|.ott|.gdoc|.txt|.rtf|.mht|.html|.htm|.fb2|.epub|.pdf|.djvu|.xps|.bmp|.jpeg|.jpg|.png|.gif|.tiff|.tif|.ico";
             result.SqlMaxResults = cfg.SqlMaxResults != 0 ? cfg.SqlMaxResults : 1000;
             result.MaxDegreeOfParallelism = cfg.MaxDegreeOfParallelism != 0 ? cfg.MaxDegreeOfParallelism : 10;
             result.AvailableFileSize = cfg.AvailableFileSize ?? 100L * 1024L * 1024L;

@@ -1,4 +1,10 @@
-{
+﻿{
+  "NewDocument": "Nový dokument",
+  "NewFolder": "Nový priečinok",
+  "NewPresentation": "Nová prezentácia",
+  "NewSpreadsheet": "Nová tabuľka",
+  "UploadFiles": "Nahrať súbory",
+  "UploadFolder": "Nahrať priečinok",
   "ButtonAddGoogle": "Pridať Google konto",
   "ButtonAddBoxNet": "Pridať Box konto",
   "ButtonAddDropBox": "Pridať Dropbox konto",

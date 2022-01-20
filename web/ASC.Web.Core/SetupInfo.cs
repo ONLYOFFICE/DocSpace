@@ -49,11 +49,14 @@ namespace ASC.Web.Studio.Core
 
         public string MetaImageURL { get; private set; }
         public string StatisticTrackURL { get; private set; }
+        public string DemoOrder { get; private set; }
+        public string RequestTraining { get; private set; }
+        public string ZendeskKey { get; private set; }
         public string UserVoiceURL { get; private set; }
         public string MainLogoURL { get; private set; }
         public string MainLogoMailTmplURL { get; private set; }
         public List<CultureInfo> EnabledCultures { get; private set; }
-        public List<CultureInfo> EnabledCulturesPersonal { get; set; }
+        private List<CultureInfo> EnabledCulturesPersonal { get; set; }
         public List<KeyValuePair<string, CultureInfo>> PersonalCultures { get; private set; }
         public decimal ExchangeRateRuble { get; private set; }
         public long MaxImageUploadSize { get; private set; }
@@ -130,6 +133,9 @@ namespace ASC.Web.Studio.Core
             MetaImageURL = GetAppSettings("web.meta-image-url", "https://download.onlyoffice.com/assets/fb/fb_icon_325x325.jpg");
             StatisticTrackURL = GetAppSettings("web.track-url", string.Empty);
             UserVoiceURL = GetAppSettings("web.uservoice", string.Empty);
+            DemoOrder = GetAppSettings("web.demo-order", string.Empty);
+            ZendeskKey = GetAppSettings("web.zendesk-key", string.Empty);
+            RequestTraining = GetAppSettings("web.request-training", string.Empty);
             MainLogoURL = GetAppSettings("web.logo.main", string.Empty);
             MainLogoMailTmplURL = GetAppSettings("web.logo.mail.tmpl", string.Empty);
             DownloadForDesktopUrl = GetAppSettings("web.download.for.desktop.url", "https://www.onlyoffice.com/desktop.aspx");
@@ -139,14 +145,15 @@ namespace ASC.Web.Studio.Core
 
             EnabledCultures = GetAppSettings("web:cultures", "en-US")
                 .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                .Distinct()
                 .Select(l => CultureInfo.GetCultureInfo(l.Trim()))
                 .OrderBy(l => l.DisplayName)
                 .ToList();
 
             EnabledCulturesPersonal = GetAppSettings("web:cultures:personal", GetAppSettings("web:cultures", "en-US"))
                 .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                .Distinct()
                 .Select(l => CultureInfo.GetCultureInfo(l.Trim()))
-                .OrderBy(l => l.DisplayName)
                 .ToList();
 
             PersonalCultures = GetPersonalCultures();
