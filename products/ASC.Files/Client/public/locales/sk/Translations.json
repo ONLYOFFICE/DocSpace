@@ -2,7 +2,6 @@
   "AddAccount": "Pridať účet",
   "ArchivingData": "Archivácia údajov",
   "ButtonShareAccess": "Nastavenie zdieľania",
-  "ButtonEdit": "Upraviť",
   "ConnectingAccount": "Pripojenie účtu",
   "Copy": "Kopírovať",
   "CopyOperation": "Kopírovanie",
@@ -26,7 +25,7 @@
   "FolderTitleWebDav": "Priečinok WebDAV",
   "FolderTitleYandex": "Priečinok Yandex",
   "LinkCopySuccess": "Odkaz bol skopírovaný do schránky",
-  "MainHeaderSelectAll": "Vybrať všetko"
+  "MainHeaderSelectAll": "Vybrať všetko",
   "MediaLoadError": "Nepodarilo sa načítať mediálny súbor",
   "Move": "Presunúť",
   "MoveToOperation": "Presúva sa",

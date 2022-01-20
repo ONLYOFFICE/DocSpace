@@ -75,7 +75,7 @@ const Badges = ({
             size={sizeBadge}
             onClick={onFilesClick}
             hoverColor="#3B72A7"
-            title={t("Translations:ButtonEdit")}
+            title={t("Common:EditButton")}
           />
         )}
       {(isEditing || isEditingWithFav) && (
