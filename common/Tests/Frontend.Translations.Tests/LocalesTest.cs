@@ -7,8 +7,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
-using Frontend.Translations.Tests.Models;
-
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -52,7 +50,7 @@ namespace Frontend.Translations.Tests
 
             var moduleWorkspaces = ((JArray)jsonPackage["workspaces"])
                 .Select(p => ((string)p).Replace("/", "\\"))
-                .Where(w => !w.Contains("asc-web-components"))
+                //.Where(w => !w.Contains("asc-web-components"))
                 .ToList();
 
             Workspaces = new List<string>();
