@@ -67,7 +67,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
     public class Configuration<T>
     {
-        internal static Dictionary<FileType, string> DocType = new Dictionary<FileType, string>
+        internal static readonly Dictionary<FileType, string> DocType = new Dictionary<FileType, string>
             {
                 { FileType.Document, "text" },
                 { FileType.Spreadsheet, "spreadsheet" },

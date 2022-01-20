@@ -109,8 +109,8 @@ namespace ASC.Files.Thirdparty.OneDrive
         }
 
 
-        public static string RootPath = "/drive/root:";
-        public static string ApiVersion = "v1.0";
+        public static readonly string RootPath = "/drive/root:";
+        public static readonly string ApiVersion = "v1.0";
 
         public static string MakeOneDrivePath(string parentPath, string name)
         {

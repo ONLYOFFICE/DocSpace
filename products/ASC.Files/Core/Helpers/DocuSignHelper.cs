@@ -149,9 +149,9 @@ namespace ASC.Web.Files.Helpers
                 ".csv", ".et", ".ett", ".xls", ".xlsm", ".xlsx", ".xlt"
             };
 
-        public static long MaxFileSize = 25L * 1024L * 1024L;
+        public static readonly long MaxFileSize = 25L * 1024L * 1024L;
 
-        public static int MaxEmailLength = 10000;
+        public static readonly int MaxEmailLength = 10000;
 
         private DocuSignToken DocuSignToken { get; }
         private FileSecurity FileSecurity { get; }
