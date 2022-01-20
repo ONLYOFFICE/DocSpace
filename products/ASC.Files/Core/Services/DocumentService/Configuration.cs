@@ -99,7 +99,6 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public string DocumentType
         {
-            set { }
             get
             {
                 DocType.TryGetValue(GetFileType, out var documentType);
@@ -119,7 +118,6 @@ namespace ASC.Web.Files.Services.DocumentService
 
         internal FileType GetFileType
         {
-            set { }
             get
             {
                 if (_fileTypeCache == FileType.Unknown)
@@ -160,7 +158,6 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public string FileType
         {
-            set { }
             get { return Info.GetFile().ConvertedExtension.Trim('.'); }
         }
 
@@ -218,7 +215,6 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public bool? Favorite
         {
-            set { }
             get
             {
                 if (!SecurityContext.IsAuthenticated || UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsVisitor(UserManager)) return null;
@@ -229,7 +225,6 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public string Folder
         {
-            set { }
             get
             {
                 if (Type == EditorType.Embedded || Type == EditorType.External) return null;
@@ -247,19 +242,16 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public string Owner
         {
-            set { }
             get { return File.CreateByString; }
         }
 
         public string Uploaded
         {
-            set { }
             get { return File.CreateOnString; }
         }
 
         public List<AceShortWrapper> SharingSettings
         {
-            set { }
             get
             {
                 if (Type == EditorType.Embedded
@@ -420,7 +412,6 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public string CreateUrl
         {
-            set { }
             get
             {
                 if (_configuration.Document.Info.Type != EditorType.Desktop) return null;
@@ -448,13 +439,11 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public string Lang
         {
-            set { }
             get { return _userInfo.GetCulture().Name; }
         }
 
         public string Mode
         {
-            set { }
             get { return ModeWrite ? "edit" : "view"; }
         }
 
@@ -559,19 +548,16 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public string EmbedUrl
         {
-            set { }
             get { return BaseCommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.FilesBaseAbsolutePath + FilesLinkUtility.EditorPage + "?" + FilesLinkUtility.Action + "=embedded" + ShareLinkParam); }
         }
 
         public string SaveUrl
         {
-            set { }
             get { return BaseCommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.FileHandlerPath + "?" + FilesLinkUtility.Action + "=download" + ShareLinkParam); }
         }
 
         public string ShareUrl
         {
-            set { }
             get { return BaseCommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.FilesBaseAbsolutePath + FilesLinkUtility.EditorPage + "?" + FilesLinkUtility.Action + "=view" + ShareLinkParam); }
         }
 
@@ -602,7 +588,6 @@ namespace ASC.Web.Files.Services.DocumentService
     {
         public string[] PluginsData
         {
-            set { }
             get
             {
                 var plugins = new List<string>();
@@ -693,7 +678,6 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public bool About
         {
-            set { }
             get { return !CoreBaseSettings.Standalone && !CoreBaseSettings.CustomMode; }
         }
 
@@ -701,7 +685,6 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public FeedbackConfig Feedback
         {
-            set { }
             get
             {
                 if (CoreBaseSettings.Standalone) return null;
@@ -719,7 +702,6 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public bool? Forcesave
         {
-            set { }
             get
             {
                 return FileUtility.CanForcesave
@@ -731,7 +713,6 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public GobackConfig Goback
         {
-            set { }
             get
             {
                 if (_configuration.EditorType == EditorType.Embedded || _configuration.EditorType == EditorType.External) return null;
@@ -780,7 +761,6 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public bool MentionShare
         {
-            set { }
             get
             {
                 return AuthContext.IsAuthenticated
@@ -791,7 +771,6 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public string ReviewDisplay
         {
-            set { }
             get { return _configuration.EditorConfig.ModeWrite ? null : "markup"; }
         }
 
@@ -828,13 +807,11 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public string Logo
         {
-            set { }
             get { return BaseCommonLinkUtility.GetFullAbsolutePath(TenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.Dark, !_configuration.EditorConfig.Customization.IsRetina)); }
         }
 
         public string Name
         {
-            set { }
             get
             {
                 return (SettingsManager.Load<TenantWhiteLabelSettings>().GetLogoText(SettingsManager) ?? "")
@@ -880,7 +857,6 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public string Image
         {
-            set { }
             get
             {
                 return
@@ -892,7 +868,6 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public string ImageEmbedded
         {
-            set { }
             get
             {
                 return
@@ -904,7 +879,6 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public string Url
         {
-            set { }
             get { return CompanyWhiteLabelSettings.Instance(SettingsManager).Site; }
         }
 

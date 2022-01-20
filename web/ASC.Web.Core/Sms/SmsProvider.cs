@@ -219,13 +219,11 @@ namespace ASC.Web.Core.Sms
         protected override string SendMessageUrlFormat
         {
             get { return "https://smsc.ru/sys/send.php?login={key}&psw={secret}&phones={phone}&mes={text}&fmt=3&sender={sender}&charset=utf-8"; }
-            set { }
         }
 
         protected override string GetBalanceUrlFormat
         {
             get { return "https://smsc.ru/sys/balance.php?login={key}&psw={secret}"; }
-            set { }
         }
 
         protected override string Key
@@ -319,19 +317,16 @@ namespace ASC.Web.Core.Sms
         protected override string SendMessageUrlFormat
         {
             get { return "https://platform.clickatell.com/messages/http/send?apiKey={secret}&to={phone}&content={text}&from={sender}"; }
-            set { }
         }
 
         protected override string Secret
         {
             get { return this["clickatellapiKey"]; }
-            set { }
         }
 
         protected override string Sender
         {
             get { return this["clickatellSender"]; }
-            set { }
         }
 
         public override bool Enable()
@@ -387,19 +382,16 @@ namespace ASC.Web.Core.Sms
         protected override string Key
         {
             get { return this["twilioAccountSid"]; }
-            set { }
         }
 
         protected override string Secret
         {
             get { return this["twilioAuthToken"]; }
-            set { }
         }
 
         protected override string Sender
         {
             get { return this["twiliosender"]; }
-            set { }
         }
 
         public AuthContext AuthContext { get; }

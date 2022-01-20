@@ -138,7 +138,6 @@ namespace ASC.Web.Files.Services.DocumentService
         {
             public int Error
             {
-                set { }
                 get
                 {
                     return string.IsNullOrEmpty(Message)
