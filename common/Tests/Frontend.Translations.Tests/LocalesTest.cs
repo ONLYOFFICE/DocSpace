@@ -151,15 +151,18 @@ namespace Frontend.Translations.Tests
             {
                 var jsFileText = File.ReadAllText(path);
 
-                var toastMatches = notTranslatedToastsRegex.Matches(jsFileText).ToList();
-
-                if (toastMatches.Any())
+                if (!path.Contains("asc-web-components"))
                 {
-                    foreach (var toastMatch in toastMatches)
+                    var toastMatches = notTranslatedToastsRegex.Matches(jsFileText).ToList();
+
+                    if (toastMatches.Any())
                     {
-                        var found = toastMatch.Value;
-                        if (!string.IsNullOrEmpty(found) && !NotTranslatedToasts.Exists(t => t.Value == found))
-                            NotTranslatedToasts.Add(new KeyValuePair<string, string>(path, found));
+                        foreach (var toastMatch in toastMatches)
+                        {
+                            var found = toastMatch.Value;
+                            if (!string.IsNullOrEmpty(found) && !NotTranslatedToasts.Exists(t => t.Value == found))
+                                NotTranslatedToasts.Add(new KeyValuePair<string, string>(path, found));
+                        }
                     }
                 }
 
@@ -202,7 +205,6 @@ namespace Frontend.Translations.Tests
                 {
                     ModulePath = g.Key,
                     Languages = g.ToList().Select(t => t.Language).ToList()
-                    .ToList()
                 })
                 .ToList();
 
@@ -221,17 +223,17 @@ namespace Frontend.Translations.Tests
                 })
                 .ToList();
 
-            foreach (var ws in moduleWorkspaces)
+            foreach (var wsPath in moduleWorkspaces)
             {
-                var t = moduleTranslations.FirstOrDefault(t => t.ModulePath == ws);
-                var j = moduleJsTranslatedFiles.FirstOrDefault(t => t.ModulePath == ws);
+                var t = moduleTranslations.FirstOrDefault(t => t.ModulePath == wsPath);
+                var j = moduleJsTranslatedFiles.FirstOrDefault(t => t.ModulePath == wsPath);
 
                 if (j == null && t == null)
                     continue;
 
                 ModuleFolders.Add(new ModuleFolder
                 {
-                    Path = ws,
+                    Path = wsPath,
                     AvailableLanguages = t?.Languages,
                     AppliedJsTranslationKeys = j?.TranslationKeys
                 });
@@ -624,13 +626,18 @@ namespace Frontend.Translations.Tests
 
             var message = $"Some i18n-keys are not found in js: \r\nKeys: \r\n\r\n";
 
+            var index = 0;
+
             for (int i = 0; i < ModuleFolders.Count; i++)
             {
                 var module = ModuleFolders[i];
 
+                if (module.Path == "packages\\asc-web-components")
+                    continue;
+
                 if (module.AppliedJsTranslationKeys == null && module.AvailableLanguages != null)
                 {
-                    message += $"{i}. 'ANY LANGUAGES' '{module.Path}' NOT USES";
+                    message += $"{++index}. 'ANY LANGUAGES' '{module.Path}' NOT USES";
 
                     var list = module.AvailableLanguages
                         .SelectMany(l => l.Translations.Select(t => t.Key).ToList())
@@ -643,12 +650,16 @@ namespace Frontend.Translations.Tests
 
                 var notCommonKeys = module.AppliedJsTranslationKeys
                     .Where(k => !k.StartsWith("Common:"))
+                    .OrderBy(t => t)
                     .ToList();
 
                 var onlyCommonKeys = module.AppliedJsTranslationKeys
                     .Except(notCommonKeys)
                     .Select(k => k.Replace("Common:", ""))
+                    .OrderBy(t => t)
                     .ToList();
+
+                notCommonKeys = notCommonKeys.Select(k => k.Substring(k.IndexOf(":") + 1)).ToList();
 
                 if (onlyCommonKeys.Any())
                 {
@@ -661,7 +672,7 @@ namespace Frontend.Translations.Tests
                         if (!list.Any())
                             continue;
 
-                        message += $"{i}. '{lng.Language}' '{module.Path}' \r\n {string.Join("\r\n", list)} \r\n";
+                        message += $"{++index}. '{lng.Language}' '{module.Path}' \r\n {string.Join("\r\n", list)} \r\n";
 
                         notFoundi18nKeys.Add(new KeyValuePair<string, List<string>>(lng.Language, list));
                     }
@@ -671,7 +682,7 @@ namespace Frontend.Translations.Tests
                 {
                     if (notCommonKeys.Any())
                     {
-                        message += $"{i}. 'ANY LANGUAGES' '{module.Path}' \r\n {string.Join("\r\n", notCommonKeys)} \r\n";
+                        message += $"{++index}. 'ANY LANGUAGES' '{module.Path}' \r\n {string.Join("\r\n", notCommonKeys)} \r\n";
 
                         notFoundi18nKeys.Add(new KeyValuePair<string, List<string>>("ANY LANGUAGES", notCommonKeys));
                     }
@@ -683,13 +694,13 @@ namespace Frontend.Translations.Tests
                 {
                     var list = lng.Translations
                          .Select(t => t.Key)
-                         .Except(notCommonKeys.Select(k => k.Substring(k.IndexOf(":") + 1)))
+                         .Except(notCommonKeys)
                          .ToList();
 
                     if (!list.Any())
                         continue;
 
-                    message += $"{i}. '{lng.Language}' '{module.Path}' \r\n {string.Join("\r\n", list)} \r\n";
+                    message += $"{++index}. '{lng.Language}' '{module.Path}' \r\n {string.Join("\r\n", list)} \r\n";
 
                     notFoundi18nKeys.Add(new KeyValuePair<string, List<string>>(lng.Language, list));
                 }
