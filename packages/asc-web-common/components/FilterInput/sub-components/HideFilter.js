@@ -7,13 +7,17 @@ import DropDown from '@appserver/components/drop-down';
 import ExpanderDownIcon from '../../../../../public/images/expander-down.react.svg';
 import { Caret, StyledHideFilterButton } from '../StyledFilterInput';
 import commonIconsStyles from '@appserver/components/utils/common-icons-style';
+import { Base } from '@appserver/components/themes';
 
 const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
   ${commonIconsStyles}
   path {
-    fill: '#A3A9AE';
+    fill: ${(props) => props.theme.filterInput.hideButton.expanderFill};
   }
 `;
+
+StyledExpanderDownIcon.defaultProps = { theme: Base };
+
 class HideFilter extends React.Component {
   constructor(props) {
     super(props);

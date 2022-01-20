@@ -1878,6 +1878,8 @@ const Base = {
     },
 
     hideButton: {
+      expanderFill: "#a3a9ae",
+
       border: "1px solid #eceef1",
       background: "#f8f9f9",
 

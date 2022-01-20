@@ -2010,9 +2010,9 @@ const Dark = {
 
   floatingButton: {
     backgroundColor: "#e5e5e5",
-    color: "#292929",
+    color: "#333333",
     boxShadow: "0px 12px 24px rgba(0, 0, 0, 0.12)",
-    fill: "#292929",
+    fill: "#333333",
   },
 
   mediaViewer: {
