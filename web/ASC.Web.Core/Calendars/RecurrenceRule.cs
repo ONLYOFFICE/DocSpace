@@ -160,7 +160,7 @@ namespace ASC.Web.Core.Calendars
                 return dates;
             }
 
-            public static WeekDay Parse(string iCalStrValue)
+            public static WeekDay ParseWeekDay(string iCalStrValue)
             {
                 var d = new WeekDay();
 
@@ -215,7 +215,7 @@ namespace ASC.Web.Core.Calendars
             this.Until = DateTime.MinValue;
             this.Count = -1;
             this.Interval = 1;
-            this.WKST = WeekDay.Parse("mo");
+            this.WKST = WeekDay.ParseWeekDay("mo");
             this.ExDates = new List<ExDate>();
         }
 
@@ -931,7 +931,7 @@ namespace ASC.Web.Core.Calendars
                         break;
 
                     case "byday":
-                        rr.ByDay = val.Split(',').Select(v => RecurrenceRule.WeekDay.Parse(v)).ToArray();
+                        rr.ByDay = val.Split(',').Select(v => RecurrenceRule.WeekDay.ParseWeekDay(v)).ToArray();
                         break;
 
                     case "bymonthday":
@@ -955,7 +955,7 @@ namespace ASC.Web.Core.Calendars
                         break;
 
                     case "wkst":
-                        rr.WKST = RecurrenceRule.WeekDay.Parse(val);
+                        rr.WKST = RecurrenceRule.WeekDay.ParseWeekDay(val);
                         break;
 
                     case "exdates":
@@ -1020,11 +1020,11 @@ namespace ASC.Web.Core.Calendars
             {
                 var days = new List<WeekDay>();
                 foreach (var d in ByDay)
-                    days.Add(WeekDay.Parse(d.ToString()));
+                    days.Add(WeekDay.ParseWeekDay(d.ToString()));
 
                 o.ByDay = days.ToArray();
             }
-            o.WKST = WeekDay.Parse(this.WKST.ToString());
+            o.WKST = WeekDay.ParseWeekDay(this.WKST.ToString());
             return o;
         }
 
