@@ -32,12 +32,10 @@ const ProgressBarMobile = ({
 
   return (
     <StyledProgressBarContainer isUploading={open}>
-      <Text onClick={onClick} className="progress-header" color="#657077">
+      <Text onClick={onClick} className="progress-header">
         {label}
       </Text>
-      <Text className="progress_count" color="#657077">
-        {status}
-      </Text>
+      <Text className="progress_count">{status}</Text>
       <IconButton onClick={onCancel} iconName={icon} size={14} />
       <StyledMobileProgressBar>
         <StyledBar uploadPercent={uploadPercent} error={error} />
@@ -197,7 +195,6 @@ const MainButtonMobile = (props) => {
         icon={isOpen ? "minus" : "plus"}
         onClick={onMainButtonClick}
         percent={percent}
-        color={"#ed7309"}
       />
       <StyledDropDown
         open={isOpen}

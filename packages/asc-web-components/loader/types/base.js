@@ -1,6 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { LoadingLabel, LoadingWrapper, DotWrapper, Dot } from "../styled-loader";
+import {
+  LoadingLabel,
+  LoadingWrapper,
+  DotWrapper,
+  Dot,
+} from "../styled-loader";
 
 const LoadingDots = (props) => {
   const { label } = props;
@@ -24,7 +29,6 @@ LoadingDots.propTypes = {
 };
 
 LoadingDots.defaultProps = {
-  color: "#63686a",
   size: 18,
   label: "Loading content, please wait",
 };

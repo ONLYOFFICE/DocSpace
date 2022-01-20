@@ -178,6 +178,50 @@ const Dark = {
     bodyPadding: "16px 0",
   },
 
+  mainButtonMobile: {
+    textColor: "#657077",
+
+    buttonColor: "#F58D31",
+    iconFill: "#333",
+
+    circleBackground: "#333",
+
+    mobileProgressBarBackground: "#F58D31",
+
+    bar: {
+      background: "#eeeeee",
+      errorBackground: "#C96C27",
+    },
+
+    buttonWrapper: {
+      background: "#242424",
+      uploadingBackground: "#242424",
+    },
+
+    buttonOptions: {
+      backgroundColor: "#242424",
+      color: "#ff0000",
+    },
+
+    dropDown: {
+      right: "15%",
+      bottom: "15%",
+      width: "400px",
+
+      separatorBackground: "#fff",
+
+      buttonColor: "#eeeeee",
+
+      hoverButtonColor: "#333333",
+
+      backgroundActionMobile: "#eeeeee",
+    },
+
+    dropDownItem: {
+      padding: "10px",
+    },
+  },
+
   mainButton: {
     backgroundColor: "#F59931",
     disableBackgroundColor: "#4C3B2D",
@@ -894,6 +938,10 @@ const Dark = {
         width: "13px",
         height: "13px",
       },
+    },
+
+    errorLabel: {
+      color: "#C96C27",
     },
   },
 
@@ -1621,7 +1669,7 @@ const Dark = {
     dropDownPadding: "16px 16px 16px 17px",
     contentPadding: "0 16px 16px",
     bodyPadding: "16px 0",
-    backgroundColor: white,
+    backgroundColor: black,
     inputBorder: blueMain,
     iconPadding: "8px 8px 7px 0px",
 
@@ -2337,6 +2385,14 @@ const Dark = {
     wizard: {
       linkColor: "#116d9d",
     },
+  },
+
+  campaignsBanner: {
+    border: "border: 1px solid #d1d1d1",
+    color: "#000",
+
+    btnColor: "#fff",
+    btnBackgroundActive: "#2da7db",
   },
 };
 

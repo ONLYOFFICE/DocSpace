@@ -179,10 +179,41 @@ const Base = {
   },
 
   mainButtonMobile: {
+    textColor: "#657077",
+
+    buttonColor: "#ed7309",
+    iconFill: "#fff",
+
+    circleBackground: "#fff",
+
+    mobileProgressBarBackground: "rgb(48%, 58%, 69%, 0.4)",
+
+    bar: {
+      background: "linear-gradient(225deg, #2274aa 0%, #0f4071 100%)",
+      errorBackground: "#C96C27",
+    },
+
+    buttonWrapper: {
+      background: "#fff",
+      uploadingBackground: "#eceef1",
+    },
+
+    buttonOptions: {
+      backgroundColor: " #265a8f",
+      color: "#fff",
+    },
+
     dropDown: {
       right: "15%",
       bottom: "15%",
       width: "400px",
+
+      separatorBackground: "#fff",
+
+      buttonColor: "#fff",
+      hoverButtonColor: "#3a6c9e",
+
+      backgroundActionMobile: "#265a8f",
     },
 
     dropDownItem: {
@@ -910,6 +941,10 @@ const Base = {
         width: "13px",
         height: "13px",
       },
+    },
+
+    errorLabel: {
+      color: "#C96C27",
     },
   },
 
@@ -2347,6 +2382,14 @@ const Base = {
     wizard: {
       linkColor: "#116d9d",
     },
+  },
+
+  campaignsBanner: {
+    border: "border: 1px solid #d1d1d1",
+    color: "#000",
+
+    btnColor: "#fff",
+    btnBackgroundActive: "#2da7db",
   },
 };
 
