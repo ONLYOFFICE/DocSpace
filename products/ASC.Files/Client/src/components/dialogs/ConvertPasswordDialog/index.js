@@ -78,11 +78,13 @@ const ConvertPasswordDialogComponent = (props) => {
           })
           .catch((err) => {
             console.log("err", err);
-            toastr.error(t("CreationError"), t("Common:Warning"));
-            if (_isMounted) {
-              setPasswordValid(false);
-              setIsLoading(false);
+
+            const isPasswordError = new RegExp(/\b(password)\b/);
+            if (isPasswordError.test(err)) {
+              toastr.error(t("CreationError"), t("Common:Warning"));
+              _isMounted && setPasswordValid(false);
             }
+            _isMounted && setIsLoading(false);
           });
       } else {
         fileCopyAs(id, newTitle, folderId, false, password)
@@ -96,12 +98,14 @@ const ConvertPasswordDialogComponent = (props) => {
           })
           .catch((err) => {
             console.log("err", err);
-            toastr.error(t("CreationError"), t("Common:Warning"));
-            open && openDocEditor(null, null, tab);
-            if (_isMounted) {
-              setPasswordValid(false);
-              setIsLoading(false);
+            const isPasswordError = new RegExp(/\b(password)\b/);
+
+            if (isPasswordError.test(err)) {
+              toastr.error(t("CreationError"), t("Common:Warning"));
+              open && openDocEditor(null, null, tab);
+              _isMounted && setPasswordValid(false);
             }
+            _isMounted && setIsLoading(false);
           });
       }
     }
