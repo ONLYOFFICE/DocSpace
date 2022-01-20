@@ -297,11 +297,6 @@ const StyledIcons = styled.div`
       left: "-9px",
       width: "calc(100% + 18px)",
     })}
-
-    p {
-      font-size: 11px;
-      line-height: 16px;
-    }
   }
 `;
 

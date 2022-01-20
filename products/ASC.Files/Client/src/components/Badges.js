@@ -35,6 +35,7 @@ const Badges = ({
   const showEditBadge = !locked || item.access === 0;
   const isPrivacy = isPrivacyFolder && isDesktopClient;
   const isForm = fileExst === ".oform";
+  const isTile = viewAs === "tile";
 
   const iconEdit = isForm
     ? "/static/images/access.edit.form.react.svg"
@@ -49,16 +50,15 @@ const Badges = ({
   const contentNewItems = newItems > 999 ? "999+" : newItems;
 
   const tabletViewBadge =
-    viewAs !== "tile" &&
-    ((sectionWidth > 500 && sectionWidth <= 1024) || isTablet);
+    !isTile && ((sectionWidth > 500 && sectionWidth <= 1024) || isTablet);
 
-  const sizeBadge = viewAs === "tile" || tabletViewBadge ? "medium" : "small";
+  const sizeBadge = isTile || tabletViewBadge ? "medium" : "small";
 
-  const lineHeightBadge = tabletViewBadge ? "1.46" : "1.34";
+  const lineHeightBadge = isTile || tabletViewBadge ? "1.46" : "1.34";
 
-  const paddingBadge = tabletViewBadge ? "0 5px" : "0 3px";
+  const paddingBadge = isTile || tabletViewBadge ? "0 5px" : "0 3px";
 
-  const fontSizeBadge = tabletViewBadge ? "11px" : "9px";
+  const fontSizeBadge = isTile || tabletViewBadge ? "11px" : "9px";
 
   return fileExst ? (
     <div className="badges additional-badges">
