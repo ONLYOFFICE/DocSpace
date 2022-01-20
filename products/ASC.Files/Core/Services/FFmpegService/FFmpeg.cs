@@ -24,7 +24,7 @@ namespace ASC.Web.Files.Services.FFmpegService
             get
             {
                 if (string.IsNullOrEmpty(FFmpegPath)) return new List<string>();
-                return ConvertableMedia.ToList();
+                return ConvertableMedia;
             }
         }
 
