@@ -23,51 +23,40 @@
  *
 */
 
+namespace ASC.Data.Backup.Services;
 
-using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Utils;
-using ASC.Web.Studio.Core.Notify;
-
-using Microsoft.Extensions.Hosting;
-
-namespace ASC.Data.Backup.Services
+[Singletone]
+internal sealed class BackupWorkerService : IHostedService
 {
-    [Singletone]
-    internal sealed class BackupWorkerService : IHostedService
+    private readonly BackupWorker _backupWorker;
+    private readonly ConfigurationExtension _configuration;
+    private readonly NotifyConfiguration _notifyConfiguration;
+
+    public BackupWorkerService(
+        BackupWorker backupWorker,
+        ConfigurationExtension configuration,
+        NotifyConfiguration notifyConfiguration)
     {
-        private readonly BackupWorker _backupWorker;
-        private readonly ConfigurationExtension _configuration;
-        private readonly NotifyConfiguration _notifyConfiguration;
+        _backupWorker = backupWorker;
+        _configuration = configuration;
+        _notifyConfiguration = notifyConfiguration;
+    }
 
-        public BackupWorkerService(
-            BackupWorker backupWorker,
-            ConfigurationExtension configuration,
-            NotifyConfiguration notifyConfiguration)
-        {
-            _backupWorker = backupWorker;
-            _configuration = configuration;
-            _notifyConfiguration = notifyConfiguration;
-        }
+    public Task StartAsync(CancellationToken cancellationToken)
+    {
+        _notifyConfiguration.Configure();
 
-        public Task StartAsync(CancellationToken cancellationToken)
-        {
-            _notifyConfiguration.Configure();
+        var settings = _configuration.GetSetting<BackupSettings>("backup");
 
-            var settings = _configuration.GetSetting<BackupSettings>("backup");
+        _backupWorker.Start(settings);
 
-            _backupWorker.Start(settings);
+        return Task.CompletedTask;
+    }
 
-            return Task.CompletedTask;
-        }
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        _backupWorker.Stop();
 
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            _backupWorker.Stop();
-
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
     }
 }
