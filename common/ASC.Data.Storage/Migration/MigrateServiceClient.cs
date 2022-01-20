@@ -102,7 +102,7 @@ namespace ASC.Data.Storage.Migration
 
         public void Migrate(int tenant, StorageSettings storageSettings)
         {
-            var storSettings = new StorSettings { ID = storageSettings.ID.ToString(), Module = storageSettings.Module };
+            var storSettings = new StorSettings { Id = storageSettings.ID.ToString(), Module = storageSettings.Module };
 
             CacheMigrationNotify.Publish(new MigrationCache
             {
@@ -114,7 +114,7 @@ namespace ASC.Data.Storage.Migration
 
         public void UploadCdn(int tenantId, string relativePath, string mappedPath, CdnStorageSettings settings = null)
         {
-            var cdnStorSettings = new CdnStorSettings { ID = settings.ID.ToString(), Module = settings.Module };
+            var cdnStorSettings = new CdnStorSettings { Id = settings.ID.ToString(), Module = settings.Module };
 
             UploadCdnMigrationNotify.Publish(new MigrationUploadCdn
             {

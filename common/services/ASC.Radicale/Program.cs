@@ -42,10 +42,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using StackExchange.Redis.Extensions.Core.Configuration;
+using StackExchange.Redis.Extensions.Newtonsoft;
+
 namespace ASC.Radicale
 {
-    public class Program
-    {
+public class Program
+{
         public static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
@@ -72,9 +75,11 @@ namespace ASC.Radicale
                         .AddJsonFile("appsettings.json")
                         .AddJsonFile("storage.json")
                         .AddJsonFile("kafka.json")
+                        .AddJsonFile($"kafka.{env}.json", true)
+                        .AddJsonFile("redis.json")
+                        .AddJsonFile($"redis.{env}.json", true)
                         .AddJsonFile($"appsettings.services.json", true)
                         //.AddJsonFile("radicale.json")
-                        .AddJsonFile($"kafka.{env}.json", true)
                         .AddJsonFile($"appsettings.{env}.json", true)
                         .AddJsonFile($"radicale.{env}.json", true)
                         .AddEnvironmentVariables()
@@ -89,11 +94,25 @@ namespace ASC.Radicale
                 {
                     services.AddMemoryCache();
                     var diHelper = new DIHelper(services);
-                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+
+                    var redisConfiguration = hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>();
+
+                    if (redisConfiguration != null)
+                    {
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+
+                        services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
+                    }
+                    else
+                    {
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
+                    }
+
                     diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
 
                     services.AddHostedService<RadicaleServiceLauncher>();
                     diHelper.TryAdd<RadicaleServiceLauncher>();
+
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {

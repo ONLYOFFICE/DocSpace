@@ -22,11 +22,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="protos\EncryptionStop.proto" />
-    <None Remove="protos\MigrationCache.proto" />
-    <None Remove="protos\MigrationProgress.proto" />
-    <None Remove="protos\MigrationUploadCdn.proto" />
-    <None Remove="protos\ProgressEncryption.proto" />
+    <None Remove="protos\encryption_stop.proto" />
+    <None Remove="protos\migration_cache.proto" />
+    <None Remove="protos\migration_progress.proto" />
+    <None Remove="protos\migration_upload_cdn.proto" />
+    <None Remove="protos\progress_encryption.proto" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,7 +38,7 @@
     <PackageReference Include="Google.Apis.Core" Version="1.49.0" />
     <PackageReference Include="Google.Apis.Storage.v1" Version="1.49.0.2102" />
     <PackageReference Include="Google.Cloud.Storage.V1" Version="3.3.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.32.0">
+    <PackageReference Include="Grpc.Tools" Version="2.40.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -50,12 +50,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="protos\DataStoreCacheItem.proto" />
-    <Protobuf Include="protos\EncryptionStop.proto" />
-    <Protobuf Include="protos\MigrationCache.proto" />
-    <Protobuf Include="protos\MigrationProgress.proto" />
-    <Protobuf Include="protos\MigrationUploadCdn.proto" />
-    <Protobuf Include="protos\ProgressEncryption.proto" />
+    <Protobuf Include="protos\data_store_cache_item.proto" />
+    <Protobuf Include="protos\encryption_stop.proto" />
+    <Protobuf Include="protos\migration_cache.proto" />
+    <Protobuf Include="protos\migration_progress.proto" />
+    <Protobuf Include="protos\migration_upload_cdn.proto" />
+    <Protobuf Include="protos\progress_encryption.proto" />
   </ItemGroup>
   
 </Project>

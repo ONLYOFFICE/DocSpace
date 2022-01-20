@@ -8,7 +8,7 @@ import axios from 'axios';
 import PageLayout from '@appserver/common/components/PageLayout';
 import ErrorContainer from '@appserver/common/components/ErrorContainer';
 import history from '@appserver/common/history';
-import { combineUrl, createPasswordHash } from '@appserver/common/utils';
+import { combineUrl, createPasswordHash, convertLanguage } from '@appserver/common/utils';
 import Loader from '@appserver/components/loader';
 import { tablet } from '@appserver/components/utils/device';
 import { EmailSettings } from '@appserver/components/utils/email';
@@ -95,6 +95,8 @@ class Body extends Component {
       culture,
     } = this.props;
 
+    const convertedCulture = convertLanguage(culture);
+
     window.addEventListener('keyup', this.onKeyPressHandler);
 
     if (!wizardToken) {
@@ -119,8 +121,8 @@ class Body extends Component {
           }),
         ])
         .then(() => {
-          let select = cultureNames.filter((lang) => lang.key === culture);
-          if (!select.length) select = cultureNames.filter((lang) => lang.key === 'en-US');
+          let select = cultureNames.filter((lang) => lang.key === convertedCulture);
+          if (!select.length) select = cultureNames.filter((lang) => lang.key === 'en');
 
           this.setState({
             selectLanguage: {
@@ -380,6 +382,8 @@ class Body extends Component {
 
     console.log('wizard render');
 
+    const convertedCulture = convertLanguage(culture);
+
     if (errorInitWizard) {
       return (
         <ErrorContainer
@@ -438,7 +442,7 @@ class Body extends Component {
               emailOwner={emailOwner}
               email={email}
               machineName={machineName}
-              portalCulture={culture}
+              portalCulture={convertedCulture}
               onClickChangeEmail={this.onClickChangeEmail}
               onSelectLanguageHandler={this.onSelectLanguageHandler}
               onSelectTimezoneHandler={this.onSelectTimezoneHandler}

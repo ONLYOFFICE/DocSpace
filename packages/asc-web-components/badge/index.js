@@ -1,7 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { StyledBadge, StyledInner, StyledText } from "./styled-badge";
+import Text from "../text";
+
+import { StyledBadge, StyledInner } from "./styled-badge";
 
 const Badge = (props) => {
   //console.log("Badge render");
@@ -21,6 +23,7 @@ const Badge = (props) => {
     borderRadius,
     padding,
     maxWidth,
+    lineHeight,
   } = props;
 
   return (
@@ -30,10 +33,16 @@ const Badge = (props) => {
         borderRadius={borderRadius}
         padding={padding}
         maxWidth={maxWidth}
+        lineHeight={lineHeight}
       >
-        <StyledText fontWeight={fontWeight} color={color} fontSize={fontSize}>
+        <Text
+          textAlign="center"
+          fontWeight={fontWeight}
+          color={color}
+          fontSize={fontSize}
+        >
           {props.label}
-        </StyledText>
+        </Text>
       </StyledInner>
     </StyledBadge>
   );
@@ -56,6 +65,8 @@ Badge.propTypes = {
   padding: PropTypes.string,
   /** CSS max-width */
   maxWidth: PropTypes.string,
+  /** CSS line-height */
+  lineHeight: PropTypes.string,
   /** onClick event */
   onClick: PropTypes.func,
   /** Accepts class */
@@ -73,6 +84,7 @@ Badge.defaultProps = {
   borderRadius: "11px",
   padding: "0 5px",
   maxWidth: "50px",
+  lineHeight: "1.78",
 };
 
 export default Badge;

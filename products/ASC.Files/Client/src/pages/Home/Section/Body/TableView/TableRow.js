@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { withRouter } from 'react-router';
 import withContent from '../../../../../HOCs/withContent';
 import withBadges from '../../../../../HOCs/withBadges';
+import withQuickButtons from '../../../../../HOCs/withQuickButtons';
 import withFileActions from '../../../../../HOCs/withFileActions';
 import withContextOptions from '../../../../../HOCs/withContextOptions';
 import ItemIcon from '../../../../../components/ItemIcon';
-import SharedButton from '../../../../../components/SharedButton';
 import { withTranslation } from 'react-i18next';
 import TableRow from '@appserver/components/table-container/TableRow';
 import TableCell from '@appserver/components/table-container/TableCell';
@@ -19,6 +19,8 @@ import globalColors from '@appserver/components/utils/globalColors';
 import styled, { css } from 'styled-components';
 import Base from '@appserver/components/themes/base';
 import { isSafari } from 'react-device-detect';
+const sideColor = globalColors.gray;
+const { acceptBackground, background } = Base.dragAndDrop;
 
 const rowCheckboxCheckedStyle = css`
   border-image-source: ${(props) => props.theme.filesSection.tableView.row.checkboxChecked};
@@ -118,48 +120,73 @@ const StyledDragAndDrop = styled(DragAndDrop)`
   display: contents;
 `;
 
-const StyledShare = styled.div`
-  cursor: pointer;
-  margin: 0 auto;
-
-  .share-button {
-    padding: 4px;
-    border: 1px solid transparent;
-    border-radius: 3px;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-
-    :hover {
-      border: ${(props) => props.theme.filesSection.tableView.row.borderHover};
-      svg {
-        cursor: pointer;
-      }
-    }
-
-    .share-button-icon {
-      margin-right: 4px;
-      padding-top: 3px;
-    }
-  }
-`;
-
 const StyledBadgesContainer = styled.div`
-  display: flex;
-  align-items: center;
-  height: 19px;
   margin-left: 8px;
 
   .badges {
     display: flex;
     align-items: center;
-    height: 19px;
     margin-right: 12px;
+  }
+
+  .badges:last-child {
+    margin-left: 0px;
   }
 
   .badge {
     cursor: pointer;
-    height: 14px;
-    width: 14px;
-    margin-right: 6px;
+    margin-right: 8px;
+  }
+
+  .new-items {
+    min-width: 12px;
+    width: max-content;
+    margin: 1px -2px -2px -2px;
+  }
+
+  .badge-version {
+    width: max-content;
+    margin: -2px 6px -2px -2px;
+  }
+
+  .badge-new-version {
+    width: max-content;
+  }
+`;
+
+const StyledQuickButtonsContainer = styled.div`
+  width: 100%;
+
+  .badges {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .badge {
+    margin-right: 14px;
+  }
+
+  .badge:last-child {
+    margin-right: 10px;
+  }
+
+  .lock-file {
+    svg {
+      height: 12px;
+    }
+  }
+
+  .favorite {
+    margin-top: 1px;
+  }
+
+  .share-button-icon:hover {
+    cursor: pointer;
+    path {
+      fill: #3b72a7;
+    }
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
 `;
 
@@ -179,25 +206,14 @@ const FilesTableRow = (props) => {
     isDragging,
     onDrop,
     onMouseDown,
-    showShare,
     personal,
     isActive,
     onHideContextMenu,
     onFilesClick,
     theme,
+    quickButtonsComponent,
   } = props;
   const { acceptBackground, background } = theme.dragAndDrop;
-
-  const sharedButton =
-    item.canShare && showShare ? (
-      <SharedButton
-        t={t}
-        id={item.id}
-        shared={item.shared}
-        isFolder={item.isFolder}
-        isSmallIcon={true}
-      />
-    ) : null;
 
   const element = <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />;
 
@@ -279,13 +295,15 @@ const FilesTableRow = (props) => {
         </TableCell>
 
         <TableCell {...dragStyles} {...selectionProp}>
-          <StyledShare>{sharedButton}</StyledShare>
+          <StyledQuickButtonsContainer>{quickButtonsComponent}</StyledQuickButtonsContainer>
         </TableCell>
       </StyledTableRow>
     </StyledDragAndDrop>
   );
 };
 
-export default withTranslation('Home')(
-  withFileActions(withRouter(withContextOptions(withContent(withBadges(FilesTableRow))))),
+export default withTranslation(['Home', 'VersionBadge'])(
+  withFileActions(
+    withRouter(withContextOptions(withContent(withQuickButtons(withBadges(FilesTableRow))))),
+  ),
 );

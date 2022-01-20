@@ -34,12 +34,21 @@ const StyledTableContainer = styled.div`
   .table-container_group-menu,
   .table-container_header {
     padding: 0 24px;
-    margin: 0 -24px;
 
     border-bottom: 1px solid;
     border-image-slice: 1;
+<<<<<<< HEAD
     border-image-source: ${(props) =>
       props.theme.tableContainer.header.borderImageSource};
+=======
+    border-image-source: linear-gradient(
+      to right,
+      #ffffff 21px,
+      #eceef1 21px,
+      #eceef1 calc(100% - 31px),
+      #ffffff calc(100% - 31px)
+    );
+>>>>>>> develop
     border-top: 0;
   }
 

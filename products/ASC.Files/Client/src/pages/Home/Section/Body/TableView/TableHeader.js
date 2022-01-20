@@ -11,7 +11,7 @@ class FilesTableHeader extends React.Component {
   constructor(props) {
     super(props);
 
-    const { t, withContent, personal, userId } = props;
+    const { t, personal, userId } = props;
 
     const defaultColumns = [
       {
@@ -27,7 +27,7 @@ class FilesTableHeader extends React.Component {
       {
         key: "Author",
         title: t("ByAuthor"),
-        enable: true,
+        enable: false,
         resizable: true,
         sortBy: "Author",
         onClick: this.onFilter,
@@ -36,7 +36,7 @@ class FilesTableHeader extends React.Component {
       {
         key: "Created",
         title: t("ByCreationDate"),
-        enable: false,
+        enable: true,
         resizable: true,
         sortBy: "DateAndTimeCreation",
         onClick: this.onFilter,
@@ -63,16 +63,16 @@ class FilesTableHeader extends React.Component {
       {
         key: "Type",
         title: t("Common:Type"),
-        enable: false,
+        enable: true,
         resizable: true,
         sortBy: "Type",
         onClick: this.onFilter,
         onChange: this.onColumnChange,
       },
       {
-        key: "Share",
+        key: "QuickButtons",
         title: "",
-        enable: withContent,
+        enable: true,
         defaultSize: 120,
         resizable: false,
       },
@@ -94,17 +94,6 @@ class FilesTableHeader extends React.Component {
   setTableColumns = (tableColumns) => {
     localStorage.setItem(`${TABLE_COLUMNS}=${this.props.userId}`, tableColumns);
   };
-
-  componentDidUpdate(prevProps) {
-    const { columns } = this.state;
-    if (this.props.withContent !== prevProps.withContent) {
-      const columnIndex = columns.findIndex((c) => c.key === "Share");
-      if (columnIndex === -1) return;
-
-      columns[columnIndex].enable = this.props.withContent;
-      this.setState({ columns });
-    }
-  }
 
   getColumns = (defaultColumns, splitColumns) => {
     const columns = [];
@@ -169,33 +158,21 @@ class FilesTableHeader extends React.Component {
   }
 }
 
-export default inject(
-  ({ auth, filesStore, selectedFolderStore, treeFoldersStore }) => {
-    const {
-      isHeaderVisible,
-      setIsLoading,
-      filter,
-      fetchFiles,
-      canShare,
-    } = filesStore;
-    const { isPrivacyFolder } = treeFoldersStore;
+export default inject(({ auth, filesStore, selectedFolderStore }) => {
+  const { isHeaderVisible, setIsLoading, filter, fetchFiles } = filesStore;
+  const { personal } = auth.settingsStore;
 
-    const withContent = canShare || (canShare && isPrivacyFolder && isDesktop);
-    const { personal } = auth.settingsStore;
+  return {
+    isHeaderVisible,
+    filter,
+    selectedFolderId: selectedFolderStore.id,
+    personal,
 
-    return {
-      isHeaderVisible,
-      filter,
-      selectedFolderId: selectedFolderStore.id,
-      withContent,
-      personal,
-
-      setIsLoading,
-      fetchFiles,
-      userId: auth.userStore.user.id,
-    };
-  }
-)(
+    setIsLoading,
+    fetchFiles,
+    userId: auth.userStore.user.id,
+  };
+})(
   withTranslation(["Home", "Common", "Translations"])(
     observer(FilesTableHeader)
   )
