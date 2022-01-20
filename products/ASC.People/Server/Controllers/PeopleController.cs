@@ -2099,7 +2099,7 @@ namespace ASC.Employee.Core.Controllers
 
             if (!files.StartsWith("http://") && !files.StartsWith("https://"))
             {
-                files = new Uri(ApiContext.HttpContextAccessor.HttpContext.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Scheme | UriPartial.Authority) + "/" + files.TrimStart('/');
+                files = new Uri(ApiContext.HttpContextAccessor.HttpContext.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Authority) + "/" + files.TrimStart('/');
             }
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(files);
