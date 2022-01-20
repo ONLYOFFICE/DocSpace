@@ -31,14 +31,6 @@ const FileStyles = css`
   height: 220px;
 `;
 
-const draggingStyle = css`
-  background-color: #f8f7bf;
-`;
-
-const draggingHoverStyle = css`
-  background-color: #efefb2;
-`;
-
 const checkedStyle = css`
   background: #f3f4f4 !important;
 `;
@@ -66,21 +58,6 @@ const StyledTile = styled.div`
   ${(props) => (props.isFolder ? FolderStyles : FileStyles)}
   ${(props) =>
     props.isFolder && (props.checked || props.isActive) && checkedStyle}
-
-  &:before, 
-  &:after {
-    ${(props) => props.isFolder && props.dragging && draggingStyle};
-  }
-
-  &:before,
-  &:after {
-    ${(props) => (props.checked || props.isActive) && checkedStyle};
-  }
-
-  &:hover:before,
-  &:hover:after {
-    ${(props) => props.isFolder && props.dragging && draggingHoverStyle};
-  }
 
   .checkbox {
     display: flex;
