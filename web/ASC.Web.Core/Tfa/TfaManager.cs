@@ -51,35 +51,26 @@ namespace ASC.Web.Studio.Core.TFA
     [Serializable]
     public class BackupCode
     {
-        private string code;
-        private InstanceCrypto InstanceCrypto { get; }
-        private Signature Signature { get; }
+        public bool IsUsed { get; set; }
 
-        public string Code
+        public string Code { get; set; }
+
+        public string GetEncryptedCode(InstanceCrypto InstanceCrypto, Signature Signature)
         {
-            get
-            {
                 try
                 {
-                    return InstanceCrypto.Decrypt(code);
+                return InstanceCrypto.Decrypt(Code);
                 }
                 catch
                 {
                     //support old scheme stored in the DB
-                    return Signature.Read<string>(code);
+                return Signature.Read<string>(Code);
                 }
             }
-            set { code = InstanceCrypto.Encrypt(value); }
-        }
 
-        public bool IsUsed { get; set; }
-
-        public BackupCode(InstanceCrypto instanceCrypto, Signature signature, string code)
+        public void SetEncryptedCode(InstanceCrypto InstanceCrypto, string code)
         {
-            InstanceCrypto = instanceCrypto;
-            Signature = signature;
-            Code = code;
-            IsUsed = false;
+            Code = InstanceCrypto.Encrypt(code);
         }
     }
 
@@ -145,9 +136,9 @@ namespace ASC.Web.Studio.Core.TFA
 
             if (!Tfa.ValidateTwoFactorPIN(GenerateAccessToken(user), code))
             {
-                if (checkBackup && TfaAppUserSettings.BackupCodesForUser(SettingsManager, user.ID).Any(x => x.Code == code && !x.IsUsed))
+                if (checkBackup && TfaAppUserSettings.BackupCodesForUser(SettingsManager, user.ID).Any(x => x.GetEncryptedCode(InstanceCrypto, Signature) == code && !x.IsUsed))
                 {
-                    TfaAppUserSettings.DisableCodeForUser(SettingsManager, user.ID, code);
+                    TfaAppUserSettings.DisableCodeForUser(SettingsManager, InstanceCrypto, Signature, user.ID, code);
                 }
                 else
                 {
@@ -193,7 +184,9 @@ namespace ASC.Web.Studio.Core.TFA
                     result.Append(alphabet[b % (alphabet.Length)]);
                 }
 
-                list.Add(new BackupCode(InstanceCrypto, Signature, result.ToString()));
+                    var code = new BackupCode();
+                    code.SetEncryptedCode(InstanceCrypto, result.ToString());
+                    list.Add(code);
             }
             var settings = SettingsManager.LoadForCurrentUser<TfaAppUserSettings>();
             settings.CodesSetting = list;

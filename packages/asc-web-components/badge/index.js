@@ -22,6 +22,7 @@ const Badge = (props) => {
     borderRadius,
     padding,
     maxWidth,
+    lineHeight,
   } = props;
 
   return (
@@ -31,8 +32,14 @@ const Badge = (props) => {
         borderRadius={borderRadius}
         padding={padding}
         maxWidth={maxWidth}
+        lineHeight={lineHeight}
       >
-        <Text fontWeight={fontWeight} color={color} fontSize={fontSize}>
+        <Text
+          textAlign="center"
+          fontWeight={fontWeight}
+          color={color}
+          fontSize={fontSize}
+        >
           {props.label}
         </Text>
       </StyledInner>
@@ -57,6 +64,8 @@ Badge.propTypes = {
   padding: PropTypes.string,
   /** CSS max-width */
   maxWidth: PropTypes.string,
+  /** CSS line-height */
+  lineHeight: PropTypes.string,
   /** onClick event */
   onClick: PropTypes.func,
   /** Accepts class */
@@ -76,6 +85,7 @@ Badge.defaultProps = {
   borderRadius: "11px",
   padding: "0 5px",
   maxWidth: "50px",
+  lineHeight: "1.78",
 };
 
 export default Badge;

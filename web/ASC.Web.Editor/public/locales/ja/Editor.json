@@ -1,0 +1,11 @@
+﻿{
+    "FileLocation": "ファイルの場所を開く",
+    "FileName": "ファイル名",
+    "FolderForSave": "保存先のフォルダー",
+    "OpenSavedDocument": "保存されたファイルを新しいタブで開く",
+    "SelectFilesType": " {{fileType}}タイプのファイルの選択",
+    "ImageFileType": "画像",
+    "DocumentsFileType": "ドキュメント",
+    "MailMergeFileType": "XLSX形式のファイルを選択する",
+    "SelectFileTitle": "データ ソースの選択"
+}

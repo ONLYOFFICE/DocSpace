@@ -41,10 +41,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using StackExchange.Redis.Extensions.Core.Configuration;
 
 namespace ASC.Thumbnails.Svc
 {
-    public class Program
+public class Program
     {
         public async static Task Main(string[] args)
         {
@@ -83,7 +84,17 @@ namespace ASC.Thumbnails.Svc
                     services.AddMemoryCache();
                     var diHelper = new DIHelper(services);
 
-                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                    var redisConfiguration = hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>();
+
+                    if (redisConfiguration != null)
+                    {
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+                    }
+                    else
+                    {
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
+                    }
+
                     services.AddHostedService<ClearEventsServiceLauncher>();
                     diHelper.TryAdd<ClearEventsServiceLauncher>();
                 })

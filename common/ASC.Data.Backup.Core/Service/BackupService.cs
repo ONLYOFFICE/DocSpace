@@ -42,7 +42,7 @@ using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
 
-namespace ASC.Data.Backup.Service
+namespace ASC.Data.Backup.Services
 {
     [Scope]
     public class BackupService : IBackupService

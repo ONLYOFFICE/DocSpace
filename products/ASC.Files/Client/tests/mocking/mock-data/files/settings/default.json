@@ -1,0 +1,22 @@
+{
+  "count": 1,
+  "response": {
+    "confirmDelete": false,
+    "enableThirdParty": true,
+    "storeOriginalFiles": false,
+    "updateIfExist": false,
+    "convertNotify": true,
+    "hideConfirmConvertSave": false,
+    "hideConfirmConvertOpen": false,
+    "defaultOrder": { "is_asc": false, "property": 0 },
+    "forcesave": false,
+    "storeForcesave": false,
+    "recentSection": true,
+    "favoritesSection": true,
+    "templatesSection": true,
+    "downloadTarGz": false,
+    "chunkUploadSize": 10485760
+  },
+  "status": 0,
+  "statusCode": 200
+}

@@ -7,9 +7,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using StackExchange.Redis.Extensions.Core.Configuration;
+using StackExchange.Redis.Extensions.Newtonsoft;
+
 namespace ASC.People
 {
-    public class Startup : BaseStartup
+public class Startup : BaseStartup
     {
         public override bool ConfirmAddScheme { get => true; }
 
@@ -23,6 +26,8 @@ namespace ASC.People
 
             DIHelper.TryAdd<PeopleController>();
             DIHelper.TryAdd<GroupController>();
+
+            services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(Configuration.GetSection("Redis").Get<RedisConfiguration>());
         }
     }
 }
