@@ -52,7 +52,7 @@ const ViewSelector = ({
               title={
                 value === "row"
                   ? t("Translations:SwitchViewToCompact")
-                  : t("Translations:switchToThumbnails")
+                  : t("Translations:SwitchToThumbnails")
               }
             >
               <ReactSVG src={icon} loading={loadingSVG} />
