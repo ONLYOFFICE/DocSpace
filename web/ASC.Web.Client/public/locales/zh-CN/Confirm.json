@@ -1,4 +1,4 @@
-{
+﻿{
   "ChangePasswordSuccess": "密码已成功更改",
   "ConfirmOwnerPortalSuccessMessage": "门户所有者已成功更改。10秒内您将被重定向至",
   "ConfirmOwnerPortalTitle": "请确认您是否想将门户所有者变更为{{newOwner}}",

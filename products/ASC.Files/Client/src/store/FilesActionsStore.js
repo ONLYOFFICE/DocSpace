@@ -151,7 +151,7 @@ class FilesActionStore {
             this.updateCurrentFolder(selection.length);
             if (isRecycleBinFolder) {
               return toastr.success(translations.deleteFromTrash);
-          }
+            }
 
             if (selection.length > 1) {
               return toastr.success(translations.deleteSelectedElem);
@@ -734,6 +734,7 @@ class FilesActionStore {
             label: t("Share"),
             onClick: () => setSharingPanelVisible(true),
             iconUrl: "/static/images/share.react.svg",
+            title: t("Translations:ButtonShareAccess"),
           };
 
       case "copy":

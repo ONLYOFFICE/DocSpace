@@ -1,4 +1,4 @@
-{
+﻿{
   "ChangePasswordSuccess": "Hasło zostało pomyślnie zmienione",
   "ConfirmOwnerPortalSuccessMessage": "Właściciel portalu został pomyślnie zmieniony. Przekierowanie nastąpi za 10 sekund",
   "ConfirmOwnerPortalTitle": "Potwierdź zmianę właściciela portalu na {{newOwner}}",

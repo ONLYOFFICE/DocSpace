@@ -1,4 +1,9 @@
-{
+﻿{
+  "ButtonAddBoxNet": "Add Box account",
+  "ButtonAddDropBox": "Add DropBox account",
+  "ButtonAddGoogle": "Add Google account",
+  "ButtonAddNextcloud": "Add Nextcloud account",
+  "ButtonAddSkyDrive": "Add OneDrive account",
   "NewDocument": "New Document",
   "NewFolder": "New Folder",
   "NewPresentation": "New Presentation",

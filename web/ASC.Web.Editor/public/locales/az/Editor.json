@@ -1,12 +1,11 @@
 ﻿{
-    "FileLocation": "Faylın yerləşdiyi yeri açın",
-    "FileName": "Fayl adı",
-    "FolderForSave": "Yadda saxlamaq üçün qovluq",
-    "OpenSavedDocument": "Yadda saxlanmış sənədi yeni tabda açın",
-    "SelectFilesType": "Bu növ faylları seçin: {{fileType}}",
-    "ImageFileType": "Şəkillər",
-    "DocumentsFileType": "Sənədlər",
-    "MailMergeFileType": "XLSX formatlı faylı seçin",
-    "SelectFileTitle": "Məlumat Mənbəyini seçin"
-
+  "DocumentsFileType": "Sənədlər",
+  "FileLocation": "Faylın yerləşdiyi yeri açın",
+  "FileName": "Fayl adı",
+  "FolderForSave": "Yadda saxlamaq üçün qovluq",
+  "ImageFileType": "Şəkillər",
+  "MailMergeFileType": "XLSX formatlı faylı seçin",
+  "OpenSavedDocument": "Yadda saxlanmış sənədi yeni tabda açın",
+  "SelectFilesType": "Bu növ faylları seçin: {{fileType}}",
+  "SelectFileTitle": "Məlumat Mənbəyini seçin"
 }
