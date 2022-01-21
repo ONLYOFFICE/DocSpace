@@ -84,7 +84,8 @@ namespace ASC.Web.Core
             var dic = Get(tenantId);
             if (dic == null)
             {
-                Cache.Insert(GetCacheKey(tenantId), dic = new Dictionary<string, bool>(), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
+                dic = new Dictionary<string, bool>();
+                Cache.Insert(GetCacheKey(tenantId), dic, DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
             }
 
             return dic;

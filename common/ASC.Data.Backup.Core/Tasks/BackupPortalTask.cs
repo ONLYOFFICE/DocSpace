@@ -392,8 +392,8 @@ namespace ASC.Data.Backup.Tasks
         private void SaveToFile(string path, string t, IReadOnlyCollection<string> columns, List<object[]> data)
         {
             Logger.DebugFormat("save to file {0}", t);
-            List<object[]> portion;
-            while ((portion = data.Take(BatchLimit).ToList()).Count > 0)
+            List<object[]> portion = data.Take(BatchLimit).ToList();
+            while (portion.Count > 0)
             {
                 using (var sw = new StreamWriter(path, true))
                 using (var writer = new JsonTextWriter(sw))

@@ -94,7 +94,9 @@ namespace ASC.IPSecurity
 
                 if (restrictions.Count == 0) return true;
 
-                if (string.IsNullOrWhiteSpace(requestIps = CurrentIpForTest))
+                requestIps = CurrentIpForTest;
+
+                if (string.IsNullOrWhiteSpace(requestIps))
                 {
                     var request = HttpContextAccessor.HttpContext.Request;
                     requestIps = request.Headers["X-Forwarded-For"].FirstOrDefault() ?? request.GetUserHostAddress();

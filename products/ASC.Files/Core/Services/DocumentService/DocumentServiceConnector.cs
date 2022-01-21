@@ -335,9 +335,9 @@ namespace ASC.Web.Files.Services.DocumentService
 
             if (string.IsNullOrEmpty(docServicePortalUrl))
             {
-                Tenant tenant;
+                Tenant tenant = TenantManager.GetCurrentTenant();
                 if (!TenantExtra.Saas
-                    || string.IsNullOrEmpty((tenant = TenantManager.GetCurrentTenant()).MappedDomain)
+                    || string.IsNullOrEmpty(tenant.MappedDomain)
                     || !url.StartsWith("https://" + tenant.MappedDomain))
                 {
                     return url;

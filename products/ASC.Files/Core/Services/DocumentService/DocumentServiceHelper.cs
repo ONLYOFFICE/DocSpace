@@ -251,10 +251,10 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 rightChangeHistory = false;
 
-                bool coauth;
+                bool coauth = FileUtility.CanCoAuhtoring(file.Title);
                 if ((editPossible || reviewPossible || fillFormsPossible || commentPossible)
                     && tryCoauth
-                    && (!(coauth = FileUtility.CanCoAuhtoring(file.Title)) || FileTracker.IsEditingAlone(file.ID)))
+                    && (!coauth || FileTracker.IsEditingAlone(file.ID)))
                 {
                     if (tryEdit)
                     {

@@ -753,7 +753,9 @@ namespace ASC.Web.Files.Utils
                 entries = entries.Where(where).ToList();
             }
 
-            if ((!searchInContent || filter == FilterType.ByExtension) && !string.IsNullOrEmpty(searchText = (searchText ?? string.Empty).ToLower().Trim()))
+            searchText = (searchText ?? string.Empty).ToLower().Trim();
+
+            if ((!searchInContent || filter == FilterType.ByExtension) && !string.IsNullOrEmpty(searchText))
             {
                 entries = entries.Where(f => f.Title.Contains(searchText, StringComparison.InvariantCultureIgnoreCase)).ToList();
             }

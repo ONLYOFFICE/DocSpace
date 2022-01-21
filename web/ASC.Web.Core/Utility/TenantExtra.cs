@@ -207,9 +207,9 @@ namespace ASC.Web.Studio.Utility
         {
             get
             {
-                DateTime licenseDay;
+                DateTime licenseDay = GetCurrentTariff().LicenseDate.Date;
                 return CoreBaseSettings.Standalone
-                       && (licenseDay = GetCurrentTariff().LicenseDate.Date) < DateTime.Today
+                       && licenseDay < DateTime.Today
                        && licenseDay < LicenseReader.VersionReleaseDate;
             }
         }
@@ -224,9 +224,9 @@ namespace ASC.Web.Studio.Utility
 
         public bool IsNotPaid()
         {
-            Tariff tariff;
+            Tariff tariff = GetCurrentTariff();
             return EnableTariffSettings
-                   && ((tariff = GetCurrentTariff()).State >= TariffState.NotPaid
+                   && (tariff.State >= TariffState.NotPaid
                        || Enterprise && !EnterprisePaid && tariff.LicenseDate == DateTime.MaxValue);
         }
 

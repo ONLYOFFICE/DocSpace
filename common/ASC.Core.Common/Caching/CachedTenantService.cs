@@ -74,7 +74,8 @@ namespace ASC.Core.Caching
             var store = Cache.Get<TenantStore>(KEY);
             if (store == null)
             {
-                Cache.Insert(KEY, store = new TenantStore(), DateTime.UtcNow.Add(CacheExpiration));
+                store = new TenantStore();
+                Cache.Insert(KEY, store, DateTime.UtcNow.Add(CacheExpiration));
             }
             return store;
         }

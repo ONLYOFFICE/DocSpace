@@ -161,13 +161,21 @@ namespace ASC.Core.Billing
                 string url;
                 var paymentUrl = (Uri)null;
                 var upgradeUrl = (Uri)null;
-                if (paymentUrls.TryGetValue(p, out url) && !string.IsNullOrEmpty(url = ToUrl(url)))
+                if (paymentUrls.TryGetValue(p, out url))
                 {
-                    paymentUrl = new Uri(url);
+                    url = ToUrl(url);
+                    if (!string.IsNullOrEmpty(url))
+                    {
+                        paymentUrl = new Uri(url);
+                    }
                 }
-                if (upgradeUrls.TryGetValue(p, out url) && !string.IsNullOrEmpty(url = ToUrl(url)))
+                if (upgradeUrls.TryGetValue(p, out url))
                 {
-                    upgradeUrl = new Uri(url);
+                    url = ToUrl(url);
+                    if (!string.IsNullOrEmpty(url))
+                    {
+                        upgradeUrl = new Uri(url);
+                    }
                 }
                 urls[p] = Tuple.Create(paymentUrl, upgradeUrl);
             }

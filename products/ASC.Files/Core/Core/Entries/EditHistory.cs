@@ -147,11 +147,11 @@ namespace ASC.Files.Core
         {
             get
             {
-                UserInfo user;
+                UserInfo user = UserManager.GetUsers(Id);
                 return
                     Id.Equals(Guid.Empty)
                           || Id.Equals(ASC.Core.Configuration.Constants.Guest.ID)
-                          || (user = UserManager.GetUsers(Id)).Equals(Constants.LostUser)
+                          || user.Equals(Constants.LostUser)
                               ? string.IsNullOrEmpty(_name)
                                     ? FilesCommonResource.Guest
                                     : _name

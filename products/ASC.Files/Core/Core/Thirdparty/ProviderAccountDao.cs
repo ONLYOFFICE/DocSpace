@@ -81,7 +81,14 @@ namespace ASC.Files.Thirdparty
     internal class ProviderAccountDao : IProviderDao
     {
         private int tenantID;
-        protected int TenantID { get => tenantID != 0 ? tenantID : (tenantID = TenantManager.GetCurrentTenant().TenantId); }
+        protected int TenantID 
+        { 
+            get 
+            {
+                if (tenantID == 0) tenantID = TenantManager.GetCurrentTenant().TenantId;
+                return tenantID; 
+            } 
+        }
         private Lazy<FilesDbContext> LazyFilesDbContext { get; }
         private FilesDbContext FilesDbContext { get => LazyFilesDbContext.Value; }
         public ILog Logger { get; }

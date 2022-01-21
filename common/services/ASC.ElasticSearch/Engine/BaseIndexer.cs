@@ -530,7 +530,8 @@ namespace ASC.ElasticSearch
 
                 var sourceExprText = "";
 
-                while (!string.IsNullOrEmpty(name = TryGetName(expression, out var member)))
+                name = TryGetName(expression, out var member);
+                while (!string.IsNullOrEmpty(name))
                 {
                     sourceExprText = "." + name + sourceExprText;
                     expression = member.Expression;
@@ -584,7 +585,8 @@ namespace ASC.ElasticSearch
 
             var sourceExprText = "";
 
-            while (!string.IsNullOrEmpty(name = TryGetName(expression, out var member)))
+            name = TryGetName(expression, out var member);
+            while (!string.IsNullOrEmpty(name))
             {
                 sourceExprText = "." + name + sourceExprText;
                 expression = member.Expression;

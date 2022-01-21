@@ -201,7 +201,8 @@ namespace ASC.Core.Caching
             {
                 var records = service.GetSubscriptions(tenant, sourceId, actionId);
                 var methods = service.GetSubscriptionMethods(tenant, sourceId, actionId, null);
-                cache.Insert(key, store = new SubsciptionsStore(records, methods), DateTime.UtcNow.Add(CacheExpiration));
+                store = new SubsciptionsStore(records, methods);
+                cache.Insert(key, store, DateTime.UtcNow.Add(CacheExpiration));
             }
             return store;
         }

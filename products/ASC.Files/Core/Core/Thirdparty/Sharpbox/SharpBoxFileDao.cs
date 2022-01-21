@@ -151,8 +151,8 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
                         {
-                            FileType fileType;
-                            return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
+                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                            return fileType == FileType.Audio || fileType == FileType.Video;
                         });
                     break;
                 case FilterType.ByExtension:
@@ -213,8 +213,8 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
                         {
-                            FileType fileType;
-                            return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
+                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                            return fileType == FileType.Audio || fileType == FileType.Video;
                         });
                     break;
                 case FilterType.ByExtension:

@@ -215,7 +215,8 @@ namespace ASC.Core
                         key = GetSetting("PortalId");
                         if (string.IsNullOrEmpty(key))
                         {
-                            SaveSetting("PortalId", key = Guid.NewGuid().ToString());
+                            key = Guid.NewGuid().ToString();
+                            SaveSetting("PortalId", key);
                         }
                     }
                 }

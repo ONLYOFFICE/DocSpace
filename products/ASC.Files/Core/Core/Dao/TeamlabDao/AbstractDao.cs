@@ -56,7 +56,13 @@ namespace ASC.Files.Core.Data
         public TenantDbContext TenantDbContext { get => LazyTenantDbContext.Value; }
 
         private int tenantID;
-        protected internal int TenantID { get => tenantID != 0 ? tenantID : (tenantID = TenantManager.GetCurrentTenant().TenantId); }
+        protected internal int TenantID { 
+            get 
+            {
+                if (tenantID == 0) tenantID = TenantManager.GetCurrentTenant().TenantId;
+                return tenantID; 
+            }
+        }
         protected UserManager UserManager { get; }
         protected TenantManager TenantManager { get; }
         protected TenantUtil TenantUtil { get; }

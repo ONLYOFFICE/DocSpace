@@ -176,7 +176,7 @@ namespace ASC.Core.Data
                     })
                     .Where(r => r.User.Status == EmployeeStatus.Active)
                     .Where(r => r.DbTenant.Status == TenantStatus.Active)
-                    .Where(r => r.User.Removed == false);
+                    .Where(r => !r.User.Removed);
 
             if (passwordHash == null)
             {
@@ -294,6 +294,8 @@ namespace ASC.Core.Data
                     .Select(r => r.Id)
                     .FirstOrDefault();
 
+                t.LastModified = DateTime.UtcNow;
+
                 var tenant = new DbTenant
                 {
                     Id = t.TenantId,
@@ -311,7 +313,7 @@ namespace ASC.Core.Data
                     Status = t.Status,
                     StatusChanged = t.StatusChangeDate,
                     PaymentId = t.PaymentId,
-                    LastModified = t.LastModified = DateTime.UtcNow,
+                    LastModified = t.LastModified,
                     Industry = t.Industry,
                     Spam = t.Spam,
                     Calls = t.Calls
@@ -413,7 +415,7 @@ namespace ASC.Core.Data
         public IEnumerable<TenantVersion> GetTenantVersions()
         {
             return TenantDbContext.TenantVersion
-                .Where(r => r.Visible == true)
+                .Where(r => r.Visible)
                 .Select(r => new TenantVersion(r.Id, r.Version))
                 .ToList();
         }

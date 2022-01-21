@@ -257,7 +257,8 @@ namespace TMResourceData
                         if (dic == null)
                         {
                             var policy = cacheTimeout == TimeSpan.Zero ? null : new CacheItemPolicy() { AbsoluteExpiration = DateTimeOffset.Now.Add(cacheTimeout) };
-                            cache.Set(key, dic = LoadResourceSet(filename, culture), policy);
+                            dic = LoadResourceSet(filename, culture);
+                            cache.Set(key, dic, policy);
                         }
                     }
                 }
@@ -283,7 +284,7 @@ namespace TMResourceData
     {
         private readonly ILog log;
         private readonly ConcurrentDictionary<int, string> whiteLabelDictionary;
-        public string DefaultLogoText { get; }
+        public string DefaultLogoText { get; set; }
 
         private IConfiguration Configuration { get; }
 

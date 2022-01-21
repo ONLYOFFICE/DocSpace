@@ -148,13 +148,21 @@ namespace ASC.Core.Data
         private int tenantID;
         private int TenantID
         {
-            get { return tenantID != 0 ? tenantID : (tenantID = TenantManager.GetCurrentTenant().TenantId); }
+            get 
+            {
+                if (tenantID == 0) tenantID = TenantManager.GetCurrentTenant().TenantId;
+                return tenantID;
+            }
         }
         //
         private Guid? currentUserID;
         private Guid CurrentUserID
         {
-            get { return ((Guid?)(currentUserID ??= AuthContext.CurrentAccount.ID)).Value; }
+            get 
+            {
+                currentUserID ??= AuthContext.CurrentAccount.ID;
+                return currentUserID.Value; 
+            }
         }
 
         public bool SaveSettings<T>(T settings, int tenantId) where T : ISettings

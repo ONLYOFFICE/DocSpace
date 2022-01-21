@@ -1175,8 +1175,8 @@ namespace ASC.Employee.Core.Controllers
 
         private object SendUserPassword(MemberModel memberModel)
         {
-            string error;
-            if (!string.IsNullOrEmpty(error = UserManagerWrapper.SendUserPassword(memberModel.Email)))
+            string error = UserManagerWrapper.SendUserPassword(memberModel.Email);
+            if (!string.IsNullOrEmpty(error))
             {
                 Log.ErrorFormat("Password recovery ({0}): {1}", memberModel.Email, error);
             }

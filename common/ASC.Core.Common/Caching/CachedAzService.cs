@@ -101,7 +101,8 @@ namespace ASC.Core.Caching
             if (aces == null)
             {
                 var records = service.GetAces(tenant, default);
-                Cache.Insert(key, aces = new AzRecordStore(records), DateTime.UtcNow.Add(CacheExpiration));
+                aces = new AzRecordStore(records);
+                Cache.Insert(key, aces, DateTime.UtcNow.Add(CacheExpiration));
             }
             return aces;
         }
