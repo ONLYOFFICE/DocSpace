@@ -201,6 +201,7 @@ class ProfileInfo extends React.PureComponent {
       isSelf,
       culture,
       personal,
+      theme,
     } = this.props;
 
     const {
@@ -244,12 +245,16 @@ class ProfileInfo extends React.PureComponent {
         <Trans t={t} i18nKey="NotFoundLanguage" ns="Common">
           "In case you cannot find your language in the list of the available ones, feel free to
           write to us at
-          <Link href={`mailto:${supportEmail}`} isHovered={true}>
+          <Link
+            href={`mailto:${supportEmail}`}
+            isHovered={true}
+            color={theme.profileInfo.tooltipLinkColor}>
             {{ supportEmail }}
           </Link>
           to take part in the translation and get up to 1 year free of charge."
         </Trans>{' '}
         <Link
+          color={theme.profileInfo.tooltipLinkColor}
           isHovered={true}
           href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx"
           target="_blank">
@@ -274,7 +279,7 @@ class ProfileInfo extends React.PureComponent {
                 {activationStatus === 2 && (isAdmin || isSelf) && (
                   <IconButtonWrapper isBefore={true} title={t('Translations:PendingTitle')}>
                     <IconButton
-                      color="#C96C27"
+                      color={theme.profileInfo.iconColor}
                       size={16}
                       iconName="images/danger.react.svg"
                       isFill={true}
@@ -379,7 +384,7 @@ class ProfileInfo extends React.PureComponent {
 export default withRouter(
   inject(({ auth, peopleStore }) => {
     const { settingsStore } = auth;
-    const { culture, customNames } = settingsStore;
+    const { culture, customNames, theme } = settingsStore;
     const {
       groupCaption,
       regDateCaption,
@@ -393,6 +398,7 @@ export default withRouter(
     const { setIsLoading, isLoading } = loadingStore;
     const { updateProfileCulture } = targetUserStore;
     return {
+      theme,
       culture,
       groupCaption,
       regDateCaption,

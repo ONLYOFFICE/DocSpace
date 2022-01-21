@@ -1897,6 +1897,9 @@ const Dark = {
     color: "#858585",
     iconButtonColor: grayMaxLight,
     linkColor: grayMaxLight,
+
+    tooltipLinkColor: "#e06a1b",
+    iconColor: "#C96C27",
   },
 
   tableContainer: {

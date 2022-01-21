@@ -1895,6 +1895,9 @@ const Base = {
     color: "#83888d",
     iconButtonColor: black,
     linkColor: gray,
+
+    tooltipLinkColor: black,
+    iconColor: "#C96C27",
   },
 
   tableContainer: {
