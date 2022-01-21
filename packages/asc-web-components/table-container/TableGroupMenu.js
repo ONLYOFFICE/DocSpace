@@ -21,7 +21,7 @@ const TableGroupMenu = (props) => {
     onChange && onChange(e.target && e.target.checked);
   };
 
-  const { t } = useTranslation();
+  const { t } = useTranslation("Common");
 
   return (
     <>
@@ -35,7 +35,7 @@ const TableGroupMenu = (props) => {
           onChange={onCheckboxChange}
           isChecked={isChecked}
           isIndeterminate={isIndeterminate}
-          title={t("Translations:MainHeaderSelectAll")}
+          title={t("Common:MainHeaderSelectAll")}
         />
         <ComboBox
           comboIcon="/static/images/triangle.navigation.down.react.svg"
@@ -46,7 +46,7 @@ const TableGroupMenu = (props) => {
           selectedOption={{}}
           manualY="42px"
           manualX="-32px"
-          title={t("Translations:TitleSelectFile")}
+          title={t("Common:TitleSelectFile")}
         />
         <div className="table-container_group-menu-separator" />
         <StyledScrollbar>

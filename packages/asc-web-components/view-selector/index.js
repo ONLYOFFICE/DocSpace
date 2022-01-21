@@ -27,7 +27,7 @@ const ViewSelector = ({
   const lastIndx = viewSettings && viewSettings.length - 1;
   const loadingSVG = () => <svg></svg>;
 
-  const { t } = useTranslation();
+  const { t } = useTranslation("Common");
 
   return (
     <StyledViewSelector
@@ -51,8 +51,8 @@ const ViewSelector = ({
               data-view={value}
               title={
                 value === "row"
-                  ? t("Translations:SwitchViewToCompact")
-                  : t("Translations:SwitchToThumbnails")
+                  ? t("Common:SwitchViewToCompact")
+                  : t("Common:SwitchToThumbnails")
               }
             >
               <ReactSVG src={icon} loading={loadingSVG} />

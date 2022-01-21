@@ -32,7 +32,7 @@ const FileNameCell = ({
           className="table-container_row-checkbox"
           onChange={onChange}
           isChecked={checked}
-          title={t("Translations:TitleSelectFile")}
+          title={t("Common:TitleSelectFile")}
         />
       </TableCell>
 

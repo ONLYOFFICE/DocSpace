@@ -318,7 +318,7 @@ const FilesTableRow = (props) => {
   );
 };
 
-export default withTranslation(["Home", "VersionBadge"])(
+export default withTranslation(["Home", "Common", "VersionBadge"])(
   withFileActions(
     withRouter(
       withContextOptions(

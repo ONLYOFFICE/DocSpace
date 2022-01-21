@@ -624,16 +624,13 @@ namespace Frontend.Translations.Tests
         {
             var notFoundi18nKeys = new List<KeyValuePair<string, List<string>>>();
 
-            var message = $"Some i18n-keys are not found in js: \r\nKeys: \r\n\r\n";
+            var message = $"Some i18n-keys are not found in Module or Common translations: \r\nKeys: \r\n\r\n";
 
             var index = 0;
 
             for (int i = 0; i < ModuleFolders.Count; i++)
             {
                 var module = ModuleFolders[i];
-
-                if (module.Path == "packages\\asc-web-components")
-                    continue;
 
                 if (module.AppliedJsTranslationKeys == null && module.AvailableLanguages != null)
                 {
