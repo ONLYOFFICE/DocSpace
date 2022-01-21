@@ -139,14 +139,14 @@ const StyledProgressBarContainer = styled.div`
 
   .progress-header {
     width: 50%;
-    color: ${(props) => props.theme.mainButtonMobile.textColor}
+    color: ${(props) => props.theme.mainButtonMobile.textColor};
     &:hover {
       cursor: pointer;
     }
   }
 
   .progress_count {
-    color: ${(props) => props.theme.mainButtonMobile.textColor}
+    color: ${(props) => props.theme.mainButtonMobile.textColor};
     width: 42%;
     text-align: right;
     margin-right: 6px;
@@ -158,7 +158,7 @@ StyledProgressBarContainer.defaultProps = { theme: Base };
 const StyledMobileProgressBar = styled.div`
   width: 100%;
   background-color: ${(props) =>
-    props.theme.mainButtonMobile.mobileProgressBarBackground}
+    props.theme.mainButtonMobile.mobileProgressBarBackground};
   border-radius: 2px;
   margin-top: 16px;
 `;
