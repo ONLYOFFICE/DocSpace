@@ -67,9 +67,6 @@ const StyledFileRow = styled(Row)`
     display: flex;
   }
 
-  .conversion-password_button {
-    background-color: ${buttonColor};
-  }
   #conversion-button {
     margin-left: 8px;
 
@@ -339,6 +336,7 @@ class FileRow extends Component {
                   primary
                   label={t("Done")}
                   onClick={this.onButtonClick}
+                  isDisabled={!password}
                 />
               </div>
             )}
