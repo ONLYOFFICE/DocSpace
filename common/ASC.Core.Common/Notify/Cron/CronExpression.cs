@@ -1004,10 +1004,11 @@ namespace ASC.Notify.Cron
         protected virtual ValueSet GetValue(int v, string s, int i)
         {
             var c = s[i];
-            var s1 = v.ToString(CultureInfo.InvariantCulture);
+            var sb = new StringBuilder();
+            sb.Append(v.ToString(CultureInfo.InvariantCulture));
             while (c >= '0' && c <= '9')
             {
-                s1 += c;
+                sb.Append(c);
                 i++;
                 if (i >= s.Length)
                 {
@@ -1024,7 +1025,7 @@ namespace ASC.Notify.Cron
             {
                 val.Pos = i + 1;
             }
-            val.TheValue = Convert.ToInt32(s1, CultureInfo.InvariantCulture);
+            val.TheValue = Convert.ToInt32(sb.ToString(), CultureInfo.InvariantCulture);
             return val;
         }
 

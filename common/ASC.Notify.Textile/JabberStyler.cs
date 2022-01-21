@@ -25,6 +25,7 @@
 
 
 using System;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 
@@ -48,25 +49,27 @@ namespace ASC.Notify.Textile
 
         public void ApplyFormating(NoticeMessage message)
         {
-            var body = string.Empty;
+            var sb = new StringBuilder();
             if (!string.IsNullOrEmpty(message.Subject))
             {
-                body += VelocityArguments.Replace(message.Subject, ArgMatchReplace) + Environment.NewLine;
+                sb.AppendLine(VelocityArguments.Replace(message.Subject, ArgMatchReplace));
                 message.Subject = string.Empty;
             }
             if (string.IsNullOrEmpty(message.Body)) return;
             var lines = message.Body.Split(new[] { Environment.NewLine, "\n" }, StringSplitOptions.None);
+
             for (var i = 0; i < lines.Length - 1; i++)
             {
                 ref var line = ref lines[i];
-                if (string.IsNullOrEmpty(line)) { body += Environment.NewLine; continue; }
+                if (string.IsNullOrEmpty(line)) { sb.AppendLine(); continue; }
                 line = VelocityArguments.Replace(line, ArgMatchReplace);
-                body += LinkReplacer.Replace(line, EvalLink) + Environment.NewLine;
+                sb.AppendLine(LinkReplacer.Replace(line, EvalLink));
             }
 
             ref var lastLine = ref lines[^1];
             lastLine = VelocityArguments.Replace(lastLine, ArgMatchReplace);
-            body += LinkReplacer.Replace(lastLine, EvalLink);
+            sb.Append(LinkReplacer.Replace(lastLine, EvalLink));
+            var body = sb.ToString();
             body = TextileReplacer.Replace(HttpUtility.HtmlDecode(body), ""); //Kill textile markup
             body = BrReplacer.Replace(body, Environment.NewLine);
             body = ClosedTagsReplacer.Replace(body, Environment.NewLine);

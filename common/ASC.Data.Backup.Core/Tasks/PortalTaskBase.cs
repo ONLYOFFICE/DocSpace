@@ -294,6 +294,7 @@ namespace ASC.Data.Backup.Tasks
 
             while ((commandText = await reader.ReadLineAsync()) != null)
             {
+                var sb = new StringBuilder(commandText);
                 while (!commandText.EndsWith(delimiter))
                 {
                     var newline = await reader.ReadLineAsync();
@@ -301,9 +302,9 @@ namespace ASC.Data.Backup.Tasks
                     {
                         break;
                     }
-                    commandText += newline;
+                    sb.Append(newline);
                 }
-
+                commandText = sb.ToString();
                 try
                 {
 

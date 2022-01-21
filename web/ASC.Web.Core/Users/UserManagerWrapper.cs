@@ -299,12 +299,12 @@ namespace ASC.Web.Core.Users
         {
             var length = RandomNumberGenerator.GetInt32(minLength, maxLength + 1);
 
-            var pwd = string.Empty;
+            var sb = new StringBuilder();
             while (length-- > 0)
             {
-                pwd += noise[RandomNumberGenerator.GetInt32(noise.Length - 1)];
+                sb.Append(noise[RandomNumberGenerator.GetInt32(noise.Length - 1)]);
             }
-            return pwd;
+            return sb.ToString();
         }
 
         internal static string GenerateErrorMessage(PasswordSettings passwordSettings)
