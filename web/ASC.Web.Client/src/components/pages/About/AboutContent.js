@@ -1,4 +1,5 @@
 import React from 'react';
+import { inject, observer } from 'mobx-react';
 import Text from '@appserver/components/text';
 import Link from '@appserver/components/link';
 import NoUserSelect from '@appserver/components/utils/commonStyles';
@@ -124,4 +125,6 @@ const AboutContent = ({ personal, buildVersionInfo, theme }) => {
   );
 };
 
-export default AboutContent;
+export default inject(({ auth }) => {
+  return { theme: auth.settingsStore.theme };
+})(observer(AboutContent));
