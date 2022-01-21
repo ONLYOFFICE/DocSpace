@@ -90,7 +90,6 @@ namespace ASC.Data.Storage
                             memstream.Seek(0, SeekOrigin.Begin);
                             holder.UploadChunk(session, memstream, chunksize);
                             memstream.Dispose();
-                            memstream = null;
                         }
                     }
                     finally

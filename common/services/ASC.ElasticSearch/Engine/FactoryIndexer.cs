@@ -230,7 +230,7 @@ namespace ASC.ElasticSearch
                         Thread.Sleep(60000);
                         if (retry < 5)
                         {
-                            Index(data, immediately, retry++);
+                            Index(data, immediately, retry + 1);
                             return;
                         }
 
@@ -259,7 +259,7 @@ namespace ASC.ElasticSearch
                         Thread.Sleep(60000);
                         if (retry < 5)
                         {
-                            Index(data, immediately, retry++);
+                            Index(data, immediately, retry + 1);
                             return;
                         }
 
@@ -304,7 +304,7 @@ namespace ASC.ElasticSearch
                         await Task.Delay(60000);
                         if (retry < 5)
                         {
-                            await IndexAsync(data, immediately, retry++);
+                            await IndexAsync(data, immediately, retry + 1);
                             return;
                         }
 
@@ -333,7 +333,7 @@ namespace ASC.ElasticSearch
                         await Task.Delay(60000);
                         if (retry < 5)
                         {
-                            await IndexAsync(data, immediately, retry++);
+                            await IndexAsync(data, immediately, retry + 1);
                             return;
                         }
 

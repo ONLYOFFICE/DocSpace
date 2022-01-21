@@ -261,7 +261,7 @@ namespace ASC.Notify.Engine
             }
             else
             {
-                result = new NotifyResult(sendResponces.Aggregate((SendResult)0, (s, r) => s |= r.Result), sendResponces);
+                result = new NotifyResult(sendResponces.Aggregate((SendResult)0, (s, r) => r.Result), sendResponces);
             }
             log.Debug(result);
             return result;

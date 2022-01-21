@@ -526,7 +526,6 @@ namespace ASC.ElasticSearch
                 while (!string.IsNullOrEmpty(name))
                 {
                     sourceExprText = "." + name + sourceExprText;
-                    expression = member.Expression;
                 }
 
                 if (isList)
@@ -581,7 +580,6 @@ namespace ASC.ElasticSearch
             while (!string.IsNullOrEmpty(name))
             {
                 sourceExprText = "." + name + sourceExprText;
-                expression = member.Expression;
             }
 
             var parameters = new Dictionary<string, object>();

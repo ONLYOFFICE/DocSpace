@@ -65,7 +65,7 @@ namespace ASC.Core.Common.EF
                     {
                         if (!string.IsNullOrEmpty(MigrateAssembly))
                         {
-                            r = r.MigrationsAssembly(MigrateAssembly);
+                            r.MigrationsAssembly(MigrateAssembly);
                         }
                     });
                     break;

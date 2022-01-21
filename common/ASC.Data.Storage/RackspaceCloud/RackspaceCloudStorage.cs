@@ -288,10 +288,6 @@ namespace ASC.Data.Storage.RackspaceCloud
                                  ? MimeMapping.GetMimeMapping(Path.GetFileName(path))
                                  : contentType;
 
-            if (mime == "application/octet-stream")
-            {
-                contentDisposition = "attachment";
-            }
 
             var customHeaders = new Dictionary<string, string>();
 
