@@ -25,37 +25,29 @@ namespace ASC.Files.ThumbnailBuilder
     [Singletone]
     public class ThumbnailSettings
     {
-        public static ThumbnailSettings GetInstance(ConfigurationExtension configuration)
+        public ThumbnailSettings(ConfigurationExtension configuration)
         {
-            var result = new ThumbnailSettings();
-            var cfg = configuration.GetSetting<ThumbnailSettings>("thumbnail");
-            result.ServerRoot = cfg.ServerRoot ?? "http://localhost/";
-            result.LaunchFrequency = cfg.LaunchFrequency != 0 ? cfg.LaunchFrequency : 1;
-            result.ConnectionStringName = cfg.ConnectionStringName ?? "default";
-            result.Formats = cfg.Formats ?? ".pptx|.pptm|.ppt|.ppsx|.ppsm|.pps|.potx|.potm|.pot|.odp|.fodp|.otp|.gslides|.xlsx|.xlsm|.xls|.xltx|.xltm|.xlt|.ods|.fods|.ots|.gsheet|.csv|.docx|.docm|.doc|.dotx|.dotm|.dot|.odt|.fodt|.ott|.gdoc|.txt|.rtf|.mht|.html|.htm|.fb2|.epub|.pdf|.djvu|.xps|.bmp|.jpeg|.jpg|.png|.gif|.tiff|.tif|.ico";
-            result.SqlMaxResults = cfg.SqlMaxResults != 0 ? cfg.SqlMaxResults : 1000;
-            result.MaxDegreeOfParallelism = cfg.MaxDegreeOfParallelism != 0 ? cfg.MaxDegreeOfParallelism : 10;
-            result.AvailableFileSize = cfg.AvailableFileSize ?? 100L * 1024L * 1024L;
-            result.AttemptsLimit = cfg.AttemptsLimit ?? 3;
-            result.AttemptWaitInterval = cfg.AttemptWaitInterval != 0 ? cfg.AttemptWaitInterval : 1000;
-            result.ThumbnaillHeight = cfg.ThumbnaillHeight != 0 ? cfg.ThumbnaillHeight : 128;
-            result.ThumbnaillWidth = cfg.ThumbnaillWidth != 0 ? cfg.ThumbnaillWidth : 192;
-            return result;
+            configuration.GetSetting("thumbnail", this);
         }
 
         #region worker settings
 
-        public string ServerRoot { get; set; }
+        private string serverRoot;
+        public string ServerRoot { get => serverRoot ?? "http://localhost/"; set { serverRoot = value; } }
 
-        public int LaunchFrequency { get; set; }
+        private int launchFrequency;
+        public int LaunchFrequency { get => launchFrequency != 0 ? launchFrequency : 1; set { launchFrequency = value; } }
 
         #endregion
 
 
         #region data privider settings
 
-        public string ConnectionStringName { get; set; }
-        public string Formats { get; set; }
+        private string connectionStringName;
+        public string ConnectionStringName { get => connectionStringName ?? "default"; set { connectionStringName = value; } }
+
+        private string formats;
+        public string Formats { get => formats ?? ".pptx|.pptm|.ppt|.ppsx|.ppsm|.pps|.potx|.potm|.pot|.odp|.fodp|.otp|.gslides|.xlsx|.xlsm|.xls|.xltx|.xltm|.xlt|.ods|.fods|.ots|.gsheet|.csv|.docx|.docxf|.oform|.docm|.doc|.dotx|.dotm|.dot|.odt|.fodt|.ott|.gdoc|.txt|.rtf|.mht|.html|.htm|.fb2|.epub|.pdf|.djvu|.xps|.bmp|.jpeg|.jpg|.png|.gif|.tiff|.tif|.ico"; set { formats = value; } }
 
         private string[] formatsArray;
 
@@ -72,24 +64,31 @@ namespace ASC.Files.ThumbnailBuilder
             }
         }
 
-        public int SqlMaxResults { get; set; }
+        private int sqlMaxResults;
+        public int SqlMaxResults { get => sqlMaxResults != 0 ? sqlMaxResults : 1000; set { sqlMaxResults = value; } }
 
         #endregion
 
 
         #region thumbnails generator settings
 
-        public int MaxDegreeOfParallelism { get; set; }
+        private int maxDegreeOfParallelism;
+        public int MaxDegreeOfParallelism { get => maxDegreeOfParallelism != 0 ? maxDegreeOfParallelism : 10; set { maxDegreeOfParallelism = value; } }
 
-        public long? AvailableFileSize { get; set; }
+        private long? availableFileSize;
+        public long? AvailableFileSize { get => availableFileSize ?? 100L * 1024L * 1024L; set { availableFileSize = value; } }
 
-        public int? AttemptsLimit { get; set; }
+        private int? attemptsLimit;
+        public int? AttemptsLimit { get => attemptsLimit ?? 3; set { attemptsLimit = value; } }
 
-        public int AttemptWaitInterval { get; set; }
+        private int attemptWaitInterval;
+        public int AttemptWaitInterval { get => attemptWaitInterval != 0 ? attemptWaitInterval : 1000; set { attemptWaitInterval = value; } }
 
-        public int ThumbnaillHeight { get; set; }
+        private int thumbnaillHeight;
+        public int ThumbnaillHeight { get => thumbnaillHeight != 0 ? thumbnaillHeight : 128; set { thumbnaillHeight = value; } }
 
-        public int ThumbnaillWidth { get; set; }
+        private int thumbnaillWidth;
+        public int ThumbnaillWidth { get => thumbnaillWidth != 0 ? thumbnaillWidth : 192; set { thumbnaillWidth = value; } }
 
         #endregion
     }

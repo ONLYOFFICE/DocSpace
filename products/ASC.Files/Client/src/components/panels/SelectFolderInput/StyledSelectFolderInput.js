@@ -2,8 +2,8 @@ import styled from "styled-components";
 
 const StyledComponent = styled.div`
   .input-with-folder-path {
-    margin: 16px 0;
-
+    margin-bottom: 16px;
+    margin-top: 3px;
     width: 100%;
     max-width: 820px;
   }

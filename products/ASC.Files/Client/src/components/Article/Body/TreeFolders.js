@@ -372,7 +372,7 @@ class TreeFolders extends React.Component {
           : [...this.props.treeFolders];
 
         this.getNewTreeData(treeData, listIds, data.folders, data.level);
-        this.props.setTreeFolders(treeData);
+        !certainFolders && this.props.setTreeFolders(treeData);
       })
       .catch((err) => console.log("err", err))
       .finally(() => {
@@ -436,13 +436,13 @@ class TreeFolders extends React.Component {
     const {
       selectedKeys,
       isLoading,
-      setIsLoading,
       onSelect,
       dragging,
       expandedKeys,
       expandedPanelKeys,
       treeFolders,
       data,
+      disabled,
     } = this.props;
 
     return (
@@ -450,7 +450,7 @@ class TreeFolders extends React.Component {
         className="files-tree-menu"
         checkable={false}
         draggable={dragging}
-        disabled={isLoading}
+        disabled={isLoading || disabled}
         multiple={false}
         showIcon
         switcherIcon={this.switcherIcon}

@@ -745,6 +745,7 @@ class UpdateUserForm extends React.Component {
                 isLoading ? t("UpdatingProcess") : t("Common:SaveButton")
               }
               saveButtonLoading={isLoading}
+              maxSizeLabel={t("Translations:MaxSizeLabel")}
             />
           </AvatarContainer>
           <MainFieldsContainer

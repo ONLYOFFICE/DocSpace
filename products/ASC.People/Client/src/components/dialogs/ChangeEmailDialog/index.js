@@ -10,7 +10,7 @@ import ModalDialogContainer from "../ModalDialogContainer";
 import { sendInstructionsToChangeEmail } from "@appserver/common/api/people";
 import toastr from "studio/toastr";
 import { errorKeys } from "@appserver/components/utils/constants";
-
+import { inject, observer } from "mobx-react";
 class ChangeEmailDialogComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -126,7 +126,7 @@ class ChangeEmailDialogComponent extends React.Component {
 
   render() {
     console.log("ChangeEmailDialog render");
-    const { t, tReady, visible, onClose } = this.props;
+    const { t, tReady, visible, onClose, isTabletView } = this.props;
     const { isRequestRunning, email, errorMessage, hasError } = this.state;
 
     return (
@@ -134,27 +134,31 @@ class ChangeEmailDialogComponent extends React.Component {
         isLoading={!tReady}
         visible={visible}
         onClose={onClose}
+        isTabletView={isTabletView}
       >
         <ModalDialog.Header>{t("EmailChangeTitle")}</ModalDialog.Header>
         <ModalDialog.Body>
-          <FieldContainer
-            isVertical
-            labelText={t("EnterEmail")}
-            errorMessage={errorMessage}
-            hasError={hasError}
-          >
-            <EmailInput
-              id="new-email"
-              scale={true}
-              isAutoFocussed={true}
-              value={email}
-              onChange={this.onChangeEmailInput}
-              onValidateInput={this.onValidateEmailInput}
-              onKeyUp={this.onKeyPress}
+          <>
+            <Text className="text-body">{t("EmailActivationDescription")}</Text>
+            <FieldContainer
+              isVertical
+              //labelText={t("EnterEmail")}
+              errorMessage={errorMessage}
               hasError={hasError}
-            />
-          </FieldContainer>
-          <Text className="text-dialog">{t("EmailActivationDescription")}</Text>
+              labelVisible={false}
+            >
+              <EmailInput
+                id="new-email"
+                scale={true}
+                isAutoFocussed={true}
+                value={email}
+                onChange={this.onChangeEmailInput}
+                onValidateInput={this.onValidateEmailInput}
+                onKeyUp={this.onKeyPress}
+                hasError={hasError}
+              />
+            </FieldContainer>
+          </>
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
@@ -181,4 +185,6 @@ ChangeEmailDialog.propTypes = {
   user: PropTypes.object.isRequired,
 };
 
-export default ChangeEmailDialog;
+export default inject(({ auth }) => ({
+  isTabletView: auth.settingsStore.isTabletView,
+}))(observer(ChangeEmailDialog));

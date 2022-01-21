@@ -46,7 +46,8 @@ const RegisterModalDialog = ({
   return (
     <ModalDialogContainer
       visible={visible}
-      bodyPadding="16px 0 0 0"
+      modalBodyPadding="12px 0 0 0"
+      asideBodyPadding="16px 0 0 0"
       onClose={onRegisterModalClose}
     >
       <ModalDialog.Header>

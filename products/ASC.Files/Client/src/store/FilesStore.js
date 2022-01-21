@@ -126,7 +126,9 @@ class FilesStore {
   };
 
   setStartDrag = (startDrag) => {
-    this.selection = this.selection.filter((x) => !x.providerKey); // removed root thirdparty folders
+    this.selection = this.selection.filter(
+      (x) => !x.providerKey || x.id !== x.rootFolderId
+    ); // removed root thirdparty folders
     this.startDrag = startDrag;
   };
 
@@ -504,7 +506,11 @@ class FilesStore {
       isMy,
     } = this.treeFoldersStore;
 
-    const { canWebEdit, canViewedDocs } = this.formatsStore.docserviceStore;
+    const {
+      canWebEdit,
+      canViewedDocs,
+      canFormFillingDocs,
+    } = this.formatsStore.docserviceStore;
 
     const isThirdPartyFolder =
       item.providerKey && item.id === item.rootFolderId;
@@ -516,13 +522,18 @@ class FilesStore {
     const { isDesktopClient } = this.authStore.settingsStore;
 
     if (isFile) {
-      const shouldEdit = canWebEdit(item.fileExst);
+      const shouldFillForm = canFormFillingDocs(item.fileExst);
+      const shouldEdit = !shouldFillForm && canWebEdit(item.fileExst);
       const shouldView = canViewedDocs(item.fileExst);
+      const isMasterForm = item.fileExst === ".docxf";
+
       let fileOptions = [
         //"open",
+        "fill-form",
         "edit",
         "preview",
         "view",
+        "make-form",
         "separator0",
         "sharing-settings",
         "external-link",
@@ -552,6 +563,12 @@ class FilesStore {
         "unsubscribe",
         "delete",
       ];
+
+      if (!isMasterForm)
+        fileOptions = this.removeOptions(fileOptions, ["make-form"]);
+
+      if (!shouldFillForm)
+        fileOptions = this.removeOptions(fileOptions, ["fill-form"]);
 
       if (personal) {
         fileOptions = this.removeOptions(fileOptions, [
@@ -624,6 +641,7 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, [
           "open",
           "edit",
+          "make-form",
           "link-for-portal-users",
           "external-link",
           "send-by-email",
@@ -646,6 +664,7 @@ class FilesStore {
 
       if (isFavoritesFolder || isRecentFolder) {
         fileOptions = this.removeOptions(fileOptions, [
+          "make-form",
           "copy",
           "move-to",
           //"sharing-settings",
@@ -656,11 +675,13 @@ class FilesStore {
 
       if (isRecycleBinFolder) {
         fileOptions = this.removeOptions(fileOptions, [
+          "fill-form",
           "open",
           "open-location",
           "view",
           "preview",
           "edit",
+          "make-form",
           "link-for-portal-users",
           "sharing-settings",
           "external-link",
@@ -974,8 +995,8 @@ class FilesStore {
     return api.files.addFileToRecentlyViewed(fileId);
   };
 
-  createFile = (folderId, title) => {
-    return api.files.createFile(folderId, title).then((file) => {
+  createFile = (folderId, title, templateId) => {
+    return api.files.createFile(folderId, title, templateId).then((file) => {
       return Promise.resolve(file);
     });
   };
@@ -1148,18 +1169,20 @@ class FilesStore {
 
   onCreateAddTempItem = (items) => {
     const { getFileIcon, getFolderIcon } = this.formatsStore.iconFormatsStore;
+    const { extension, title } = this.fileActionStore;
 
     if (items.length && items[0].id === -1) return; //TODO: if change media collection from state remove this;
+
     const iconSize = this.viewAs === "tile" && isMobile ? 32 : 24;
-    const icon = this.fileActionStore.extension
-      ? getFileIcon(`.${this.fileActionStore.extension}`, iconSize)
+    const icon = extension
+      ? getFileIcon(`.${extension}`, iconSize)
       : getFolderIcon(null, iconSize);
 
     items.unshift({
       id: -1,
-      title: "",
+      title: title,
       parentId: this.selectedFolderStore.id,
-      fileExst: this.fileActionStore.extension,
+      fileExst: extension,
       icon,
     });
   };
@@ -1539,7 +1562,7 @@ class FilesStore {
 
     if (webComment) AccessOptions.push("Comment");
     if (webReview) AccessOptions.push("Review");
-    if (formFillingDocs) AccessOptions.push("FormFilling");
+    if (formFillingDocs && !externalAccess) AccessOptions.push("FormFilling");
     if (webFilter) AccessOptions.push("FilterEditing");
 
     return AccessOptions;
@@ -1663,7 +1686,8 @@ class FilesStore {
   };
 
   openDocEditor = (id, providerKey = null, tab = null, url = null) => {
-    return openEditor(id, providerKey, tab, url);
+    const isPrivacy = this.treeFoldersStore.isPrivacyFolder;
+    return openEditor(id, providerKey, tab, url, isPrivacy);
   };
 
   createThumbnails = () => {

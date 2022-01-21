@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 import { withTranslation } from "react-i18next";
@@ -6,10 +6,16 @@ import ModalDialog from "@appserver/components/modal-dialog";
 import Text from "@appserver/components/text";
 import Button from "@appserver/components/button";
 import { inject, observer } from "mobx-react";
+import toastr from "@appserver/components/toast/toastr";
 
 const StyledOperationDialog = styled(ModalDialog)`
   .operation-button {
     margin-right: 8px;
+  }
+
+  .modal-dialog-aside-footer {
+    display: flex;
+    width: 90%;
   }
 `;
 
@@ -21,12 +27,15 @@ const PureThirdPartyMoveContainer = ({
   selection,
   destFolderId,
   setDestFolderId,
-  checkOperationConflict,
+  checkFileConflicts,
+  setConflictDialogData,
   setThirdPartyMoveDialogVisible,
   setBufferSelection,
 }) => {
   const zIndex = 310;
   const deleteAfter = false; // TODO: get from settings
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const onClose = () => {
     setBufferSelection(null);
@@ -59,8 +68,22 @@ const PureThirdPartyMoveContainer = ({
       },
     };
 
-    checkOperationConflict(data);
-    onClose();
+    setIsLoading(true);
+    checkFileConflicts(destFolderId, folderIds, fileIds)
+      .then(async (conflicts) => {
+        if (conflicts.length) {
+          setConflictDialogData(conflicts, data);
+          setIsLoading(false);
+        } else {
+          setIsLoading(false);
+          onClose();
+          await itemOperationToFolder(data);
+        }
+      })
+      .catch((err) => toastr.error(err))
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   return (
@@ -69,6 +92,7 @@ const PureThirdPartyMoveContainer = ({
       visible={visible}
       zIndex={zIndex}
       onClose={onClose}
+      displayType="aside"
     >
       <ModalDialog.Header>{t("MoveConfirmation")}</ModalDialog.Header>
       <ModalDialog.Body>
@@ -82,21 +106,30 @@ const PureThirdPartyMoveContainer = ({
           className="operation-button"
           label={t("Translations:Move")}
           size="big"
+          scale
           primary
           onClick={startOperation}
+          isLoading={isLoading}
+          isDisabled={isLoading}
         />
         <Button
           data-copy="copy"
           className="operation-button"
           label={t("Translations:Copy")}
           size="big"
+          scale
           onClick={startOperation}
+          isLoading={isLoading}
+          isDisabled={isLoading}
         />
         <Button
           className="operation-button"
           label={t("Common:CancelButton")}
           size="big"
+          scale
           onClick={onClose}
+          isLoading={isLoading}
+          isDisabled={isLoading}
         />
       </ModalDialog.Footer>
     </StyledOperationDialog>
@@ -111,7 +144,7 @@ export default inject(({ filesStore, dialogsStore, filesActionsStore }) => {
     setDestFolderId,
   } = dialogsStore;
   const { bufferSelection, setBufferSelection } = filesStore;
-  const { checkOperationConflict } = filesActionsStore;
+  const { checkFileConflicts, setConflictDialogData } = filesActionsStore;
 
   const selection = filesStore.selection.length
     ? filesStore.selection
@@ -123,9 +156,10 @@ export default inject(({ filesStore, dialogsStore, filesActionsStore }) => {
     destFolderId,
     setDestFolderId,
     provider: selection[0].providerKey,
-    checkOperationConflict,
+    checkFileConflicts,
     selection,
     setBufferSelection,
+    setConflictDialogData,
   };
 })(
   withTranslation(["ThirdPartyMoveDialog", "Common", "Translations"])(

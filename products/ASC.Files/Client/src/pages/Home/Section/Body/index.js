@@ -64,9 +64,12 @@ const SectionBodyContent = (props) => {
 
   const onMouseDown = (e) => {
     if (
-      e.target.closest(".scroll-body") &&
-      !e.target.closest(".files-item") &&
-      !e.target.closest(".not-selectable")
+      (e.target.closest(".scroll-body") &&
+        !e.target.closest(".files-item") &&
+        !e.target.closest(".not-selectable")) ||
+      e.target.closest(".files-main-button") ||
+      e.target.closest(".add-button") ||
+      e.target.closest(".search-input-block")
     ) {
       setSelection([]);
       setBufferSelection(null);

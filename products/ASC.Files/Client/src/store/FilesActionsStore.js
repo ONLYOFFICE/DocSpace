@@ -61,11 +61,36 @@ class FilesActionStore {
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
-    const { filter, fetchFiles } = this.filesStore;
-    fetchFiles(this.selectedFolderStore.id, filter, true, true).finally(() => {
+    const {
+      filter,
+      fetchFiles,
+      isEmptyLastPageAfterOperation,
+      resetFilterPage,
+    } = this.filesStore;
+    let newFilter;
+
+    const selectionFilesLength =
+      fileIds && folderIds
+        ? fileIds.length + folderIds.length
+        : fileIds?.length || folderIds?.length;
+
+    if (
+      selectionFilesLength &&
+      isEmptyLastPageAfterOperation(selectionFilesLength)
+    ) {
+      newFilter = resetFilterPage();
+    }
+
+    fetchFiles(
+      this.selectedFolderStore.id,
+      newFilter ? newFilter : filter,
+      true,
+      true
+    ).finally(() => {
       this.uploadDataStore.clearActiveOperations(fileIds, folderIds);
       setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-    });  };
+    });
+  };
 
   deleteAction = async (translations, newSelection = null) => {
     const { isRecycleBinFolder, isPrivacyFolder } = this.treeFoldersStore;
@@ -125,7 +150,7 @@ class FilesActionStore {
             this.updateCurrentFolder(fileIds, folderIds);
             if (isRecycleBinFolder) {
               return toastr.success(translations.deleteFromTrash);
-          }
+            }
 
             if (selection.length > 1) {
               return toastr.success(translations.deleteSelectedElem);
@@ -182,7 +207,8 @@ class FilesActionStore {
         };
         await this.uploadDataStore.loopFilesOperations(data, pbData);
         toastr.success(translations.successOperation);
-        this.updateCurrentFolder(fileIds, folderIds);      });
+        this.updateCurrentFolder(fileIds, folderIds);
+      });
     } catch (err) {
       clearActiveOperations(fileIds, folderIds);
       setSecondaryProgressBarData({
@@ -310,7 +336,13 @@ class FilesActionStore {
           setTreeFolders(treeFolders);
         }
       }
-      setAction({ type: null, id: null, extension: null });
+      setAction({
+        type: null,
+        id: null,
+        extension: null,
+        title: "",
+        templateId: null,
+      });
       setIsLoading(false);
       type === FileAction.Rename &&
         this.onSelectItem({
@@ -631,13 +663,17 @@ class FilesActionStore {
     this.checkOperationConflict(operationData);
   };
 
+  checkFileConflicts = (destFolderId, folderIds, fileIds) =>
+    checkFileConflicts(destFolderId, folderIds, fileIds);
+
+  setConflictDialogData = (conflicts, operationData) => {
+    this.dialogsStore.setConflictResolveDialogItems(conflicts);
+    this.dialogsStore.setConflictResolveDialogData(operationData);
+    this.dialogsStore.setConflictResolveDialogVisible(true);
+  };
+
   checkOperationConflict = async (operationData) => {
     const { destFolderId, folderIds, fileIds } = operationData;
-    const {
-      setConflictResolveDialogData,
-      setConflictResolveDialogVisible,
-      setConflictResolveDialogItems,
-    } = this.dialogsStore;
     const { setBufferSelection, addActiveItems } = this.filesStore;
 
     addActiveItems(fileIds);
@@ -646,16 +682,18 @@ class FilesActionStore {
     let conflicts;
 
     try {
-      conflicts = await checkFileConflicts(destFolderId, folderIds, fileIds);
+      conflicts = await this.checkFileConflicts(
+        destFolderId,
+        folderIds,
+        fileIds
+      );
     } catch (err) {
       setBufferSelection(null);
       return toastr.error(err.message ? err.message : err);
     }
 
     if (conflicts.length) {
-      setConflictResolveDialogItems(conflicts);
-      setConflictResolveDialogData(operationData);
-      setConflictResolveDialogVisible(true);
+      this.setConflictDialogData(conflicts, operationData);
     } else {
       try {
         await this.uploadDataStore.itemOperationToFolder(operationData);
@@ -664,8 +702,6 @@ class FilesActionStore {
         return toastr.error(err.message ? err.message : err);
       }
     }
-
-    setBufferSelection(null);
   };
 
   isAvailableOption = (option) => {
@@ -909,11 +945,7 @@ class FilesActionStore {
         label: t("Translations:Restore"),
         onClick: () => setMoveToPanelVisible(true),
       })
-      .set("delete", deleteOption)
-      .set("emptyRecycleBin", {
-        label: t("EmptyRecycleBin"),
-        onClick: () => setEmptyTrashDialogVisible(true),
-      });
+      .set("delete", deleteOption);
     return this.convertToArray(itemsCollection);
   };
   getHeaderMenu = (t) => {
