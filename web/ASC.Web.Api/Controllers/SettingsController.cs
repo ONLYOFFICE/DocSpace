@@ -2315,7 +2315,7 @@ namespace ASC.Api.Settings
             foreach (var tenant in tenants)
             {
                 var progress = BackupAjaxHandler.GetBackupProgress(tenant.TenantId);
-                if (progress != null && progress.IsCompleted == false)
+                if (progress != null && !progress.IsCompleted)
                 {
                     throw new Exception();
                 }

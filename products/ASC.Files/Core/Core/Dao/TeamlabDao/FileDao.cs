@@ -151,7 +151,7 @@ namespace ASC.Files.Core.Data
         {
             if (string.IsNullOrEmpty(title)) throw new ArgumentNullException(title);
 
-            var query = GetFileQuery(r => r.Title == title && r.CurrentVersion == true && r.FolderId == parentId)
+            var query = GetFileQuery(r => r.Title == title && r.CurrentVersion && r.FolderId == parentId)
                 .AsNoTracking()
                 .OrderBy(r => r.CreateOn);
 

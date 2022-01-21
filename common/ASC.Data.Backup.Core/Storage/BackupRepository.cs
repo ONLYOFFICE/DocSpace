@@ -73,7 +73,7 @@ namespace ASC.Data.Backup.Storage
 
         public List<BackupRecord> GetScheduledBackupRecords()
         {
-            return BackupContext.Backups.Where(b => b.IsScheduled == true).ToList();
+            return BackupContext.Backups.Where(b => b.IsScheduled).ToList();
         }
 
         public List<BackupRecord> GetBackupRecordsByTenantId(int tenantId)

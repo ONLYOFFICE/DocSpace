@@ -75,7 +75,7 @@ namespace Textile.Blocks
                     }
 
                     // do htmlspecial if between <code>
-                    if (codepre == true)
+                    if (codepre)
                     {
                         //TODO: htmlspecialchars(line)
                         //line = Regex.Replace(line, @"&lt;(\/?" + offtags + ")&gt;", "<$1>");
