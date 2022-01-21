@@ -104,8 +104,6 @@ namespace ASC.ElasticSearch
                         {
                             var result = client.Ping(new PingRequest());
 
-                            var isValid = result.IsValid;
-
                             if (result.IsValid)
                             {
                                 client.Ingest.PutPipeline("attachments", p => p

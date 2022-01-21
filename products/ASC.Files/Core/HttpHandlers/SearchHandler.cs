@@ -115,12 +115,12 @@ namespace ASC.Web.Files.Configuration
                 var id = GlobalFolderHelper.FolderMy;
                 if (!Equals(id, 0))
                 {
-                    var folderMy = folderDao.GetFolder(id);
+                    //var folderMy = folderDao.GetFolder(id);
                     //result = result.Concat(EntryManager.GetThirpartyFolders(folderMy, text));
                 }
 
                 id = GlobalFolderHelper.FolderCommon;
-                var folderCommon = folderDao.GetFolder(id);
+                //var folderCommon = folderDao.GetFolder(id);
                 //result = result.Concat(EntryManager.GetThirpartyFolders(folderCommon, text));
             }
 

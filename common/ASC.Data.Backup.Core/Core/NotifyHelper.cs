@@ -112,7 +112,6 @@ namespace ASC.Data.Backup
             var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper, authManager) = scopeClass;
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifySource, scope);
 
-            var owner = userManager.GetUsers(tenant.OwnerId);
             var users = notifyAllUsers
                 ? userManager.GetUsers(EmployeeStatus.Active)
                 : new[] { userManager.GetUsers(tenantManager.GetCurrentTenant().OwnerId) };

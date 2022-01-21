@@ -79,7 +79,6 @@ namespace ASC.IPSecurity
         public bool Verify()
         {
             var tenant = TenantManager.GetCurrentTenant();
-            var settings = SettingsManager.Load<IPRestrictionsSettings>();
 
             if (!IpSecurityEnabled) return true;
 

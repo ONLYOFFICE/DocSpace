@@ -277,9 +277,6 @@ namespace ASC.Core.Notify.Senders
 
         private MailKit.Net.Smtp.SmtpClient GetSmtpClient()
         {
-            var sslCertificatePermit = Configuration["mail:certificate-permit"] != null &&
-                                    Convert.ToBoolean(Configuration["mail:certificate-permit"]);
-
             var smtpClient = new MailKit.Net.Smtp.SmtpClient
             {
                 Timeout = NETWORK_TIMEOUT

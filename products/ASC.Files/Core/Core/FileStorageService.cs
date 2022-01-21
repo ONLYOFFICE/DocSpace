@@ -256,7 +256,6 @@ namespace ASC.Web.Files.Services.WCFService
             var subjectId = string.IsNullOrEmpty(ssubject) ? Guid.Empty : new Guid(ssubject);
 
             var folderDao = GetFolderDao();
-            var fileDao = GetFileDao();
 
             Folder<T> parent = null;
             try

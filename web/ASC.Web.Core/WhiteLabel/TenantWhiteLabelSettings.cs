@@ -327,7 +327,6 @@ namespace ASC.Web.Core.WhiteLabel
             using (var memory = new MemoryStream(data))
             using (var image = Image.Load(memory))
             {
-                var logoSize = image.Size();
                 var logoFileName = BuildLogoFileName(type, logoFileExt, false);
 
                 memory.Seek(0, SeekOrigin.Begin);
@@ -533,7 +532,7 @@ namespace ASC.Web.Core.WhiteLabel
             {
                 using var stream = new MemoryStream(data);
                 using var img = Image.Load(stream, out var format);
-                var imgFormat = format;
+
                 if (size != img.Size())
                 {
                     using var img2 = CommonPhotoManager.DoThumbnail(img, size, false, true, false);

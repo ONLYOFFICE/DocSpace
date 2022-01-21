@@ -598,8 +598,6 @@ namespace ASC.Files.Helpers
 
         public string GenerateSharedLink(T fileId, FileShare share)
         {
-            var file = GetFileInfo(fileId);
-
             var sharedInfo = FileStorageService.GetSharedInfo(new List<T> { fileId }, new List<T> { }).Find(r => r.SubjectId == FileConstant.ShareLinkId);
             if (sharedInfo == null || sharedInfo.Share != share)
             {

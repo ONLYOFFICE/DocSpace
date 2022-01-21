@@ -100,16 +100,6 @@ namespace ASC.Web.Files.Utils
 
         private void CreateDraftMail(MailMergeTask mailMergeTask)
         {
-            var apiUrlCreate = $"{SetupInfo.WebApiBaseUrl}mail/drafts/save.json";
-            var bodyCreate =
-                string.Format(
-                    MailMergeTask.MessageBodyFormat,
-                    mailMergeTask.MessageId,
-                    HttpUtility.UrlEncode(mailMergeTask.From),
-                    HttpUtility.UrlEncode(mailMergeTask.Subject),
-                    HttpUtility.UrlEncode(mailMergeTask.To),
-                    HttpUtility.UrlEncode(mailMergeTask.Message));
-
             const string responseCreateString = null; //TODO: Encoding.UTF8.GetString(Convert.FromBase64String(Api.GetApiResponse(apiUrlCreate, "PUT", bodyCreate)));
             var responseCreate = JObject.Parse(responseCreateString);
 
@@ -172,19 +162,6 @@ namespace ASC.Web.Files.Utils
 
         private string SendMail(MailMergeTask mailMergeTask, string bodySendAttach)
         {
-            var apiUrlSend = $"{SetupInfo.WebApiBaseUrl}mail/messages/send.json";
-
-            var bodySend =
-                string.Format(
-                    MailMergeTask.MessageBodyFormat,
-                    mailMergeTask.MessageId,
-                    HttpUtility.UrlEncode(mailMergeTask.From),
-                    HttpUtility.UrlEncode(mailMergeTask.Subject),
-                    HttpUtility.UrlEncode(mailMergeTask.To),
-                    HttpUtility.UrlEncode(mailMergeTask.Message));
-
-            bodySend += bodySendAttach;
-
             const string responseSendString = null;//TODO: Encoding.UTF8.GetString(Convert.FromBase64String(Api.GetApiResponse(apiUrlSend, "PUT", bodySend)));
             var responseSend = JObject.Parse(responseSendString);
 

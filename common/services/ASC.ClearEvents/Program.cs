@@ -67,7 +67,7 @@ namespace ASC.Thumbnails.Svc
                         path = Path.GetFullPath(CrossPlatform.PathCombine(hostContext.HostingEnvironment.ContentRootPath, path));
                     }
                     config.SetBasePath(path);
-                    var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
+
                     config
                         .AddJsonFile("appsettings.json")
                         .AddEnvironmentVariables()

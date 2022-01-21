@@ -518,8 +518,6 @@ namespace ASC.Web.Files.Utils
             if (folder.RootFolderType == FolderType.TRASH && !Equals(folder.ID, GlobalFolder.GetFolderTrash<T>(DaoFactory))) throw new SecurityException(FilesCommonResource.ErrorMassage_ViewTrashItem);
 
             var tagDao = DaoFactory.GetTagDao<T>();
-            var fileDao = DaoFactory.GetFileDao<T>();
-            var folderDao = DaoFactory.GetFolderDao<T>();
             var providerFolderDao = DaoFactory.GetFolderDao<string>();
             var providerTagDao = DaoFactory.GetTagDao<string>();
             var tags = (tagDao.GetNewTags(AuthContext.CurrentAccount.ID, folder, true) ?? new List<Tag>()).ToList();

@@ -352,8 +352,6 @@ namespace ASC.Web.Files.Utils
                 {
                     var responseApi = JObject.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(responseBody)));
 
-                    var projectLastModified = responseApi["response"].Value<string>();
-                    var projectListCacheKey = string.Format("documents/projectFolders/{0}", AuthContext.CurrentAccount.ID);
                     Dictionary<int, KeyValuePair<int, string>> folderIDProjectTitle = null;
 
                     if (folderIDProjectTitle == null)
@@ -461,9 +459,6 @@ namespace ASC.Web.Files.Utils
             }
             else if (parent.FolderType == FolderType.Favorites)
             {
-                var fileDao = DaoFactory.GetFileDao<T>();
-                var folderDao = DaoFactory.GetFolderDao<T>();
-
                 var (files, folders) = GetFavorites(filter, subjectGroup, subjectId, searchText, searchInContent);
 
                 entries = entries.Concat(folders);
@@ -660,7 +655,6 @@ namespace ASC.Web.Files.Utils
 
         public (IEnumerable<FileEntry>, IEnumerable<FileEntry>) GetFavorites(FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
         {
-            var fileSecurity = FileSecurity;
             var tagDao = DaoFactory.GetTagDao<int>();
             var tags = tagDao.GetTags(AuthContext.CurrentAccount.ID, TagType.Favorite);
 

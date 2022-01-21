@@ -43,8 +43,6 @@ namespace ASC.Files.Thirdparty.Box
 {
     internal class BoxStorage
     {
-        private OAuth20Token _token;
-
         private BoxClient _boxClient;
 
         private readonly List<string> _boxFields = new List<string> { "created_at", "modified_at", "name", "parent", "size" };
@@ -64,10 +62,8 @@ namespace ASC.Files.Thirdparty.Box
             if (IsOpened)
                 return;
 
-            _token = token;
-
-            var config = new BoxConfig(_token.ClientID, _token.ClientSecret, new Uri(_token.RedirectUri));
-            var session = new OAuthSession(_token.AccessToken, _token.RefreshToken, (int)_token.ExpiresIn, "bearer");
+            var config = new BoxConfig(token.ClientID, token.ClientSecret, new Uri(token.RedirectUri));
+            var session = new OAuthSession(token.AccessToken, token.RefreshToken, (int)token.ExpiresIn, "bearer");
             _boxClient = new BoxClient(config, session);
 
             IsOpened = true;

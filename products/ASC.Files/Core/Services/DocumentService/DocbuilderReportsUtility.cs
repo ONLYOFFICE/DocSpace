@@ -301,7 +301,6 @@ namespace ASC.Web.Files.Services.DocumentService
 
                 var result = ReportState.FromTask(task, httpContextAccessor, tenantId, userId);
                 var status = task.GetProperty<ReportStatus>("status");
-                var id = task.GetProperty<ReportStatus>("status");
 
                 if ((int)status > 1)
                 {

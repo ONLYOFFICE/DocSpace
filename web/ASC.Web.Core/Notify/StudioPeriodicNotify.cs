@@ -73,7 +73,6 @@ namespace ASC.Web.Studio.Core.Notify
             Log.Info("Start SendSaasTariffLetters");
 
             var activeTenants = new List<Tenant>();
-            var monthQuotasIds = new List<int>();
 
             using (var scope = ServiceProvider.CreateScope())
             {

@@ -446,14 +446,6 @@ namespace ASC.ElasticSearch
                         return b;
                     }
 
-                    var createIndexResponse = Client.Instance.Indices.Create(data.IndexName,
-                        c =>
-                        c.Map<T>(m => m.AutoMap())
-                        .Settings(r => r.Analysis(a =>
-                                        a.Analyzers(analyzers)
-                                        .CharFilters(d => d.HtmlStrip(nameof(CharFilter.html))
-                                        .Mapping(nameof(CharFilter.io), m => m.Mappings("ё => е", "Ё => Е"))))));
-
                     IsExist = true;
                 }
             }

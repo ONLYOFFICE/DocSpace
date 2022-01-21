@@ -626,9 +626,6 @@ namespace ASC.Data.Storage.GoogleCloud
         {
             using var storage = GetStorage();
 
-            var srcKey = MakePath(srcdomain, srcpath);
-            var dstKey = MakePath(newdomain, newpath);
-
             var size = GetFileSize(srcdomain, srcpath);
 
             var options = new CopyObjectOptions
@@ -651,9 +648,6 @@ namespace ASC.Data.Storage.GoogleCloud
 
             using var storage = GetStorage();
 
-
-            var options = new ListObjectsOptions();
-
             var objects = storage.ListObjects(_bucket, srckey);
 
             foreach (var obj in objects)
@@ -672,7 +666,6 @@ namespace ASC.Data.Storage.GoogleCloud
         {
             using var storage = GetStorage();
 
-            var objectKey = MakePath(domain, path);
             var buffered = TempStream.GetBuffered(stream);
 
             var uploadObjectOptions = new UploadObjectOptions
@@ -775,7 +768,6 @@ namespace ASC.Data.Storage.GoogleCloud
                 {
                     var httpClient = ClientFactory.CreateClient();
                     using var response = httpClient.Send(request);
-                    var status = response.StatusCode;
 
                     break;
                 }

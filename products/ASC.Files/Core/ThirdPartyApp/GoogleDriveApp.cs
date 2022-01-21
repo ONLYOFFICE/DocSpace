@@ -332,7 +332,6 @@ namespace ASC.Web.Files.ThirdPartyApp
             }
             else
             {
-                var downloadRequest = new HttpRequestMessage();
                 using var response = httpClient.Send(request);
                 using var downloadStream = new ResponseStream(response);
 

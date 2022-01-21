@@ -204,11 +204,10 @@ namespace ASC.Core
         private void Initialize()
         {
             var connectionStrings = ConfigurationExtension.GetConnectionStrings();
-            var dbConnectionStrings = ConfigurationExtension.GetConnectionStrings(dbid);
 
             if (Convert.ToBoolean(Configuraion["core.multi-hosted.config-only"] ?? "false"))
             {
-                foreach (var cs in ConfigurationExtension.GetConnectionStrings())
+                foreach (var cs in connectionStrings)
                 {
                     if (cs.Name.StartsWith(dbid + "."))
                     {

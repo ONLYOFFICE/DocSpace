@@ -703,8 +703,6 @@ namespace ASC.Core.Data
 
             if (includeGroups != null && includeGroups.Count > 0)
             {
-                Expression or = Expression.Empty();
-
                 foreach (var ig in includeGroups)
                 {
                     q = q.Where(r => r.Groups.Any(a => !a.Removed && a.Tenant == r.Tenant && a.UserId == r.Id && ig.Any(r => r == a.GroupId)));

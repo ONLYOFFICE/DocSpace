@@ -45,7 +45,6 @@ namespace Textile.Blocks
             var colspan = string.Empty;
             var rowspan = string.Empty;
             var id = string.Empty;
-            var atts = string.Empty;
 
             if (Styler != null)
             {

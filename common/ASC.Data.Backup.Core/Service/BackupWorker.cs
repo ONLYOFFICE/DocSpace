@@ -405,7 +405,6 @@ namespace ASC.Data.Backup.Service
             var scopeClass = scope.ServiceProvider.GetService<BackupWorkerScope>();
             var (tenantManager, backupStorageFactory, notifyHelper, backupRepository, backupWorker, backupPortalTask, _, _, coreBaseSettings) = scopeClass;
 
-            var tenant = tenantManager.GetTenant(TenantId);
             var dateTime = coreBaseSettings.Standalone ? DateTime.Now : DateTime.UtcNow;
             var backupName = string.Format("{0}_{1:yyyy-MM-dd_HH-mm-ss}.{2}", tenantManager.GetTenant(TenantId).TenantAlias, dateTime, ArchiveFormat);
 
