@@ -80,7 +80,6 @@ class FilesStore {
   }
 
   addActiveItems = (files, folders) => {
-    console.log("addActiveItems", files, folders);
     if (folders && folders.length) {
       if (!this.activeFolders.length) {
         this.setActiveFolders(folders);
