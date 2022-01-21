@@ -207,7 +207,7 @@ namespace ASC.ElasticSearch
             {
                 var t = ServiceProvider.GetService<T>();
                 var searchSettingsHelper = ServiceProvider.GetService<SearchSettingsHelper>();
-                return ((NewArrayExpression)(t.GetSearchContentFields(searchSettingsHelper)).Body).Expressions.ToArray();
+                return ((NewArrayExpression)t.GetSearchContentFields(searchSettingsHelper).Body).Expressions.ToArray();
             },
             value);
 

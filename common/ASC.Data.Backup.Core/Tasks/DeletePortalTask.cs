@@ -75,7 +75,7 @@ namespace ASC.Data.Backup.Tasks
                             var t = (TableInfo)state;
                             module.CreateDeleteCommand(connection.Fix(), TenantId, t).WithTimeout(120).ExecuteNonQuery();
                         }, table, 5, onFailure: error => { throw ThrowHelper.CantDeleteTable(table.Name, error); });
-                    SetCurrentStepProgress((int)((++tablesProcessed * 100) / (double)tablesCount));
+                    SetCurrentStepProgress((int)(++tablesProcessed * 100 / (double)tablesCount));
                 }
             }
             Logger.DebugFormat("end delete data for module ({0})", module.ModuleName);
@@ -96,7 +96,7 @@ namespace ASC.Data.Backup.Tasks
                                       onFailure: error => Logger.WarnFormat("Can't delete files for domain {0}: \r\n{1}", domain, error));
                 }
                 storage.DeleteFiles("\\", "*.*", true);
-                SetCurrentStepProgress((int)((++modulesProcessed * 100) / (double)storageModules.Count));
+                SetCurrentStepProgress((int)(++modulesProcessed * 100 / (double)storageModules.Count));
             }
             Logger.Debug("end delete storage");
         }

@@ -98,7 +98,7 @@ namespace ASC.Common.Utils
             while (i < pattern.Length && pattern[i] == '*')
                 ++i;
 
-            return (offsetInput == input.Length);
+            return offsetInput == input.Length;
         }
     }
 }

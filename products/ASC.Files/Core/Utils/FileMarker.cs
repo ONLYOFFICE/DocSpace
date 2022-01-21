@@ -549,8 +549,8 @@ namespace ASC.Web.Files.Utils
                 .ToList();
 
             //TODO: refactoring
-            var entryTagsProvider = GetEntryTags<string>(tags.Where(r=> (r.EntryId is string)));
-            var entryTagsInternal = GetEntryTags<int>(tags.Where(r=> (r.EntryId is int)));
+            var entryTagsProvider = GetEntryTags<string>(tags.Where(r=> r.EntryId is string));
+            var entryTagsInternal = GetEntryTags<int>(tags.Where(r=> r.EntryId is int));
 
             foreach (var entryTag in entryTagsInternal)
             {

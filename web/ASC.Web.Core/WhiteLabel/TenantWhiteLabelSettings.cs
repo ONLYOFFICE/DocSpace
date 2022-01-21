@@ -347,7 +347,7 @@ namespace ASC.Web.Core.WhiteLabel
 
             foreach (var currentLogo in logo)
             {
-                var currentLogoType = (WhiteLabelLogoTypeEnum)(currentLogo.Key);
+                var currentLogoType = (WhiteLabelLogoTypeEnum)currentLogo.Key;
                 var currentLogoPath = currentLogo.Value;
 
                 if (!string.IsNullOrEmpty(currentLogoPath))

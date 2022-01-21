@@ -159,7 +159,7 @@ namespace ASC.Common.Caching
                         try
                         {
                             var cr = c.Consume(Cts[channelName].Token);
-                            if (cr != null && cr.Message != null && cr.Message.Value != null && !(new Guid(cr.Message.Key.Id.ToByteArray())).Equals(Key) && Actions.TryGetValue(channelName, out var act))
+                            if (cr != null && cr.Message != null && cr.Message.Value != null && !new Guid(cr.Message.Key.Id.ToByteArray()).Equals(Key) && Actions.TryGetValue(channelName, out var act))
                             {
                                 try
                                 {

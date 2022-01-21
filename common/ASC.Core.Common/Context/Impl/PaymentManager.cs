@@ -59,7 +59,7 @@ namespace ASC.Core
             this.tariffService = tariffService;
             Configuration = configuration;
             partnerUrl = (Configuration["core:payment:partners"] ?? "https://partners.onlyoffice.com/api").TrimEnd('/');
-            partnerKey = (Configuration["core:machinekey"] ?? "C5C1F4E85A3A43F5B3202C24D97351DF");
+            partnerKey = Configuration["core:machinekey"] ?? "C5C1F4E85A3A43F5B3202C24D97351DF";
             ClientFactory = clientFactory;
         }
 

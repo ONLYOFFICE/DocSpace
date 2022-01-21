@@ -165,7 +165,7 @@ namespace ASC.Files.Thirdparty.SharePoint
             {
                 SharePointProviderInfoHelper.PublishFolder(MakeId(GetParentFolderId(id)));
                 var serverException = (ServerException)ex;
-                if (serverException.ServerErrorTypeName == (typeof(FileNotFoundException)).ToString())
+                if (serverException.ServerErrorTypeName == typeof(FileNotFoundException).ToString())
                 {
                     return null;
                 }
@@ -388,7 +388,7 @@ namespace ASC.Files.Thirdparty.SharePoint
             {
                 SharePointProviderInfoHelper.PublishFolder(MakeId(GetParentFolderId(id)));
                 var serverException = (ServerException)ex;
-                if (serverException.ServerErrorTypeName == (typeof(FileNotFoundException)).ToString())
+                if (serverException.ServerErrorTypeName == typeof(FileNotFoundException).ToString())
                 {
                     return null;
                 }

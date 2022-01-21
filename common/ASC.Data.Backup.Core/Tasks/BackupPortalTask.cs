@@ -605,7 +605,7 @@ namespace ASC.Data.Backup.Tasks
                         Logger.DebugFormat("end saving table {0}", table.Name);
                     }
 
-                    SetCurrentStepProgress((int)((++tablesProcessed * 100) / (double)tablesCount));
+                    SetCurrentStepProgress((int)(++tablesProcessed * 100 / (double)tablesCount));
                 }
             }
             Logger.DebugFormat("end saving data for module {0}", module.ModuleName);

@@ -151,12 +151,12 @@ namespace ASC.Data.Storage.S3
 
                 foreach (var h in headers)
                 {
-                    if (h.StartsWith("Content-Disposition")) headersOverrides.ContentDisposition = (h.Substring("Content-Disposition".Length + 1));
-                    else if (h.StartsWith("Cache-Control")) headersOverrides.CacheControl = (h.Substring("Cache-Control".Length + 1));
-                    else if (h.StartsWith("Content-Encoding")) headersOverrides.ContentEncoding = (h.Substring("Content-Encoding".Length + 1));
-                    else if (h.StartsWith("Content-Language")) headersOverrides.ContentLanguage = (h.Substring("Content-Language".Length + 1));
-                    else if (h.StartsWith("Content-Type")) headersOverrides.ContentType = (h.Substring("Content-Type".Length + 1));
-                    else if (h.StartsWith("Expires")) headersOverrides.Expires = (h.Substring("Expires".Length + 1));
+                    if (h.StartsWith("Content-Disposition")) headersOverrides.ContentDisposition = h.Substring("Content-Disposition".Length + 1);
+                    else if (h.StartsWith("Cache-Control")) headersOverrides.CacheControl = h.Substring("Cache-Control".Length + 1);
+                    else if (h.StartsWith("Content-Encoding")) headersOverrides.ContentEncoding = h.Substring("Content-Encoding".Length + 1);
+                    else if (h.StartsWith("Content-Language")) headersOverrides.ContentLanguage = h.Substring("Content-Language".Length + 1);
+                    else if (h.StartsWith("Content-Type")) headersOverrides.ContentType = h.Substring("Content-Type".Length + 1);
+                    else if (h.StartsWith("Expires")) headersOverrides.Expires = h.Substring("Expires".Length + 1);
                     else throw new FormatException($"Invalid header: {h}");
                 }
                 pUrlRequest.ResponseHeaderOverrides = headersOverrides;
@@ -951,7 +951,7 @@ namespace ASC.Data.Storage.S3
         {
             using (var client = GetClient())
             {
-                var request = new ListObjectsRequest { BucketName = _bucket, Prefix = (MakePath(domain, path)) };
+                var request = new ListObjectsRequest { BucketName = _bucket, Prefix = MakePath(domain, path) };
                 var response = client.ListObjectsAsync(request).Result;
                 return response.S3Objects.Count > 0;
             }
@@ -965,7 +965,7 @@ namespace ASC.Data.Storage.S3
         public override long GetFileSize(string domain, string path)
         {
             using var client = GetClient();
-            var request = new ListObjectsRequest { BucketName = _bucket, Prefix = (MakePath(domain, path)) };
+            var request = new ListObjectsRequest { BucketName = _bucket, Prefix = MakePath(domain, path) };
             var response = client.ListObjectsAsync(request).Result;
             if (response.S3Objects.Count > 0)
             {
@@ -1059,7 +1059,7 @@ namespace ASC.Data.Storage.S3
             {
                 BucketName = _bucket,
                 Prefix = path,
-                MaxKeys = (1000)
+                MaxKeys = 1000
             };
 
             var objects = new List<S3Object>();

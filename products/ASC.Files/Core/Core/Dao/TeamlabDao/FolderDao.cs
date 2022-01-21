@@ -1176,7 +1176,7 @@ namespace ASC.Files.Core.Data
         public string GetBunchObjectID(int folderID)
         {
             return Query(FilesDbContext.BunchObjects)
-                .Where(r => r.LeftNode == (folderID).ToString())
+                .Where(r => r.LeftNode == folderID.ToString())
                 .Select(r => r.RightNode)
                 .FirstOrDefault();
         }

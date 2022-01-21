@@ -205,7 +205,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 var webException = (WebException)e.InnerException;
                 if (webException != null)
                 {
-                    var response = ((HttpWebResponse)webException.Response);
+                    var response = (HttpWebResponse)webException.Response;
                     if (response != null)
                     {
                         if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden)

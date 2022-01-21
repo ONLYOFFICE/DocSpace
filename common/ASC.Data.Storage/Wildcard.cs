@@ -90,7 +90,7 @@ namespace ASC.Data.Storage
             }
             // final evaluation. The index should be pointing at the
             // end of the string.
-            return (offsetInput == input.Length);
+            return offsetInput == input.Length;
         }
     }
 }

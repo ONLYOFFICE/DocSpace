@@ -1168,7 +1168,7 @@ namespace ASC.Api.Settings
             foreach (var f in HttpContext.Request.Form.Files)
             {
                 var parts = f.FileName.Split('.');
-                var logoType = (WhiteLabelLogoTypeEnum)(Convert.ToInt32(parts[0]));
+                var logoType = (WhiteLabelLogoTypeEnum)Convert.ToInt32(parts[0]);
                 var fileExt = parts[1];
                 TenantWhiteLabelSettingsHelper.SetLogoFromStream(settings, logoType, fileExt, f.OpenReadStream(), storage);
             }
@@ -1983,9 +1983,9 @@ namespace ASC.Api.Settings
                 return dueDate >= DateTime.UtcNow.Date
                                      ? Resource.LicenseUploaded
                                      : string.Format(
-                                         (TenantExtra.GetTenantQuota().Update
+                                         TenantExtra.GetTenantQuota().Update
                                               ? Resource.LicenseUploadedOverdueSupport
-                                              : Resource.LicenseUploadedOverdue),
+                                              : Resource.LicenseUploadedOverdue,
                                                      "",
                                                      "",
                                                      dueDate.Date.ToLongDateString());

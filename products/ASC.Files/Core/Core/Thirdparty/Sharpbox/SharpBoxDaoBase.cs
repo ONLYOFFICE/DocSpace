@@ -433,7 +433,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         protected IEnumerable<ICloudFileSystemEntry> GetFolderSubfolders(ICloudDirectoryEntry folder)
         {
-            return folder.Where(x => (x is ICloudDirectoryEntry));
+            return folder.Where(x => x is ICloudDirectoryEntry);
         }
 
         protected string GetAvailableTitle(string requestTitle, ICloudDirectoryEntry parentFolder, Func<string, ICloudDirectoryEntry, bool> isExist)

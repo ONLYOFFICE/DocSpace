@@ -117,7 +117,7 @@ namespace ASC.Data.Backup
                 tables = connect
                     .GetSchema("Tables")
                     .Select(@"TABLE_TYPE <> 'SYSTEM_TABLE'")
-                    .Select(row => ((string)row["TABLE_NAME"]));
+                    .Select(row => (string)row["TABLE_NAME"]);
             }
 
             return tables

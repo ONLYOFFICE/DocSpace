@@ -88,8 +88,8 @@ namespace ASC.FederatedLogin.Helpers
                 query = additionalArgs.Keys.Where(additionalArg => additionalArg != null)
                                       .Aggregate(query, (current, additionalArg) =>
                                                         additionalArg != null ? current
-                                                                                + ("&" + HttpUtility.UrlEncode((additionalArg).Trim())
-                                                                                   + "=" + HttpUtility.UrlEncode((additionalArgs[additionalArg] ?? "").Trim())) : null);
+                                                                                + "&" + HttpUtility.UrlEncode(additionalArg.Trim())
+                                                                                   + "=" + HttpUtility.UrlEncode((additionalArgs[additionalArg] ?? "").Trim()) : null);
             }
 
             return uriBuilder.Uri + "?" + query;

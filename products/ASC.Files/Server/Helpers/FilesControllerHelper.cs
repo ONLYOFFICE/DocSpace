@@ -248,7 +248,7 @@ namespace ASC.Files.Helpers
 
             if (FilesLinkUtility.IsLocalFileUploader)
             {
-                var session = FileUploader.InitiateUpload(file.FolderID, (file.ID ?? default), file.Title, file.ContentLength, encrypted);
+                var session = FileUploader.InitiateUpload(file.FolderID, file.ID ?? default, file.Title, file.ContentLength, encrypted);
 
                 var responseObject = ChunkedUploadSessionHelper.ToResponseObject(session, true);
                 return new

@@ -106,7 +106,7 @@ namespace ASC.Web.Core.Helpers
             {
                 0 => false,
                 1 => true,
-                _ => ((value & (value - 1)) == 0),
+                _ => (value & (value - 1)) == 0,
             };
         }
 
@@ -216,7 +216,7 @@ namespace ASC.Web.Core.Helpers
         {
             if (value is string @string)
             {
-                var result = (_isFlagEnum) ?
+                var result = _isFlagEnum ?
                     GetFlagValue(culture, @string) : GetValue(culture, @string);
                 if (result == null)
                 {
@@ -242,7 +242,7 @@ namespace ASC.Web.Core.Helpers
         {
             if (value != null && destinationType == typeof(string))
             {
-                object result = (_isFlagEnum) ?
+                object result = _isFlagEnum ?
                     GetFlagValueText(culture, value) : GetValueText(culture, value);
                 return result;
             }

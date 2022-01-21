@@ -502,7 +502,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var quota = tenantManager.GetTenantQuota(tenant.TenantId);
                     var createdDate = tenant.CreatedDateTime.Date;
 
-                    var actualEndDate = (tariff.DueDate != DateTime.MaxValue ? tariff.DueDate : tariff.LicenseDate);
+                    var actualEndDate = tariff.DueDate != DateTime.MaxValue ? tariff.DueDate : tariff.LicenseDate;
                     var dueDateIsNotMax = actualEndDate != DateTime.MaxValue;
                     var dueDate = actualEndDate.Date;
 

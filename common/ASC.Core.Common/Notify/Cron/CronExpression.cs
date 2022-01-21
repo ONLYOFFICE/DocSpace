@@ -420,13 +420,13 @@ namespace ASC.Notify.Cron
                     incr = 1;
                 }
                 AddToSet(sval, eval, incr, type);
-                return (i + 3);
+                return i + 3;
             }
             if (c == '?')
             {
                 i++;
                 if ((i + 1) < s.Length
-                    && (s[i] != ' ' && s[i + 1] != '\t'))
+                    && s[i] != ' ' && s[i + 1] != '\t')
                 {
                     throw new FormatException("Illegal character after '?': "
                                               + s[i]);
@@ -669,7 +669,7 @@ namespace ASC.Notify.Cron
                     end = v1;
                     i = vs.Pos;
                 }
-                if (i < s.Length && ((s[i]) == '/'))
+                if (i < s.Length && (s[i] == '/'))
                 {
                     i++;
                     c = s[i];
@@ -1117,7 +1117,7 @@ namespace ASC.Notify.Cron
                 }
                 else
                 {
-                    sec = ((int)seconds.First());
+                    sec = (int)seconds.First();
                     d = d.AddMinutes(1);
                 }
                 d = new DateTime(d.Year, d.Month, d.Day, d.Hour, d.Minute, sec, d.Millisecond);
@@ -1129,7 +1129,7 @@ namespace ASC.Notify.Cron
                 if (st != null && st.Count != 0)
                 {
                     t = min;
-                    min = ((int)st.First());
+                    min = (int)st.First();
                 }
                 else
                 {
@@ -1249,7 +1249,7 @@ namespace ASC.Notify.Cron
                         tcal = new DateTime(tcal.Year, mon, day, hr, min, sec);
                         if (tcal.ToUniversalTime() < afterTimeUtc)
                         {
-                            day = ((int)daysOfMonth.First());
+                            day = (int)daysOfMonth.First();
                             mon++;
                         }
                     }
@@ -1267,7 +1267,7 @@ namespace ASC.Notify.Cron
                     }
                     else
                     {
-                        day = ((int)daysOfMonth.First());
+                        day = (int)daysOfMonth.First();
                         mon++;
                     }
                     if (day != t || mon != tmon)
@@ -1295,9 +1295,9 @@ namespace ASC.Notify.Cron
                 {
                     if (lastdayOfWeek)
                     {
-                        var dow = ((int)daysOfWeek.First());
+                        var dow = (int)daysOfWeek.First();
 
-                        var cDow = ((int)d.DayOfWeek);
+                        var cDow = (int)d.DayOfWeek;
                         var daysToAdd = 0;
                         if (cDow < dow)
                         {
@@ -1338,9 +1338,9 @@ namespace ASC.Notify.Cron
                     }
                     else if (nthdayOfWeek != 0)
                     {
-                        var dow = ((int)daysOfWeek.First());
+                        var dow = (int)daysOfWeek.First();
 
-                        var cDow = ((int)d.DayOfWeek);
+                        var cDow = (int)d.DayOfWeek;
                         var daysToAdd = 0;
                         if (cDow < dow)
                         {
@@ -1389,12 +1389,12 @@ namespace ASC.Notify.Cron
                     else
                     {
                         var cDow = ((int)d.DayOfWeek) + 1;
-                        var dow = ((int)daysOfWeek.First());
+                        var dow = (int)daysOfWeek.First();
 
                         st = daysOfWeek.TailSet(cDow);
                         if (st != null && st.Count > 0)
                         {
-                            dow = ((int)st.First());
+                            dow = (int)st.First();
                         }
                         var daysToAdd = 0;
                         if (cDow < dow)
@@ -1444,15 +1444,15 @@ namespace ASC.Notify.Cron
                     return null;
                 }
 
-                st = months.TailSet((mon));
+                st = months.TailSet(mon);
                 if (st != null && st.Count != 0)
                 {
                     t = mon;
-                    mon = ((int)st.First());
+                    mon = (int)st.First();
                 }
                 else
                 {
-                    mon = ((int)months.First());
+                    mon = (int)months.First();
                     year++;
                 }
                 if (mon != t)
@@ -1462,11 +1462,11 @@ namespace ASC.Notify.Cron
                 }
                 d = new DateTime(d.Year, mon, d.Day, d.Hour, d.Minute, d.Second);
                 year = d.Year;
-                st = years.TailSet((year));
+                st = years.TailSet(year);
                 if (st != null && st.Count != 0)
                 {
                     t = year;
-                    year = ((int)st.First());
+                    year = (int)st.First();
                 }
                 else
                 {

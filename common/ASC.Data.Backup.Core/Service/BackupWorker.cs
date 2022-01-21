@@ -559,14 +559,14 @@ namespace ASC.Data.Backup.Service
                 tenantManager.SaveTenant(tenant);
 
                 var columnMapper = new ColumnMapper();
-                columnMapper.SetMapping("tenants_tenants", "alias", tenant.TenantAlias, (Guid.Parse(Id)).ToString("N"));
+                columnMapper.SetMapping("tenants_tenants", "alias", tenant.TenantAlias, Guid.Parse(Id).ToString("N"));
                 columnMapper.Commit();
 
                 var restoreTask = restorePortalTask;
                 restoreTask.Init(ConfigPaths[CurrentRegion], tempFile, TenantId, columnMapper, UpgradesPath);
                 restoreTask.ProgressChanged += (sender, args) =>
                 {
-                    Percentage = Percentage = (10d + 0.65 * args.Progress);
+                    Percentage = Percentage = 10d + 0.65 * args.Progress;
                     PublishChanges();
                 };
                 restoreTask.RunJob();

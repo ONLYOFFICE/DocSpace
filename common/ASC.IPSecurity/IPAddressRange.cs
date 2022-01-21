@@ -66,8 +66,8 @@ namespace ASC.IPSecurity
                     return false;
                 }
 
-                lowerBoundary &= (addressByte == lowerByte);
-                upperBoundary &= (addressByte == upperByte);
+                lowerBoundary &= addressByte == lowerByte;
+                upperBoundary &= addressByte == upperByte;
             }
 
             return true;

@@ -92,9 +92,9 @@ namespace ASC.Files.Thirdparty.OneDrive
         {
             return onedriveItem == null || IsRoot(onedriveItem)
                        ? string.Empty
-                       : (OneDriveStorage.MakeOneDrivePath(
+                       : OneDriveStorage.MakeOneDrivePath(
                            new Regex("^" + OneDriveStorage.RootPath).Replace(onedriveItem.ParentReference.Path, ""),
-                           onedriveItem.Name));
+                           onedriveItem.Name);
         }
 
         protected string MakeItemTitle(Item onedriveItem)

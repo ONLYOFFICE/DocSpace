@@ -565,7 +565,7 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 Logger.Error(
                     string.Format("DocService mailMerge{0} error: userId - {1}, url - {2}",
-                                  (fileData.MailMerge == null ? "" : " " + fileData.MailMerge.RecordIndex + "/" + fileData.MailMerge.RecordCount),
+                                  fileData.MailMerge == null ? "" : " " + fileData.MailMerge.RecordIndex + "/" + fileData.MailMerge.RecordCount,
                                   userId, fileData.Url),
                     ex);
                 saveMessage = ex.Message;

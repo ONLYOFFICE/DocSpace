@@ -38,7 +38,7 @@ namespace ASC.Core.Notify
         private UserManager UserManager { get; }
 
         public RecipientProviderImpl(UserManager userManager) =>
-            (UserManager) = (userManager);
+            UserManager = userManager;
         public virtual IRecipient GetRecipient(string id)
         {
             if (TryParseGuid(id, out var recID))

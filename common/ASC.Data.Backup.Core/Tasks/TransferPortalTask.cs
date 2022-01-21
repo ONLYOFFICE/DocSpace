@@ -230,7 +230,7 @@ namespace ASC.Data.Backup.Tasks
                 $"where alias = '{alias}'";
 
             if (!string.IsNullOrEmpty(whereCondition))
-                commandText += (" and " + whereCondition);
+                commandText += " and " + whereCondition;
             var command = connection.CreateCommand();
             command.CommandText = commandText;
             command.WithTimeout(120).ExecuteNonQuery();

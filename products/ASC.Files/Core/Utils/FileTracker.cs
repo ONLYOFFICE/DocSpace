@@ -66,7 +66,7 @@ namespace ASC.Web.Files.Utils
                 if (tracker.EditingBy.TryGetValue(tabId, out var trackInfo))
                 {
                     trackInfo.TrackTime = DateTime.UtcNow;
-                    checkRight = (DateTime.UtcNow - tracker.EditingBy[tabId].CheckRightTime > CheckRightTimeout);
+                    checkRight = DateTime.UtcNow - tracker.EditingBy[tabId].CheckRightTime > CheckRightTimeout;
                 }
                 else
                 {

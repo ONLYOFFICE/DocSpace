@@ -53,7 +53,7 @@ namespace ASC.Web.Core
             
             var alignWidth = crop ? (minSide == realWidth) : (maxSide == realWidth);
 
-            var scaleFactor = (alignWidth) ? (realWidth / (1.0 * width)) : (realHeight / (1.0 * height));
+            var scaleFactor = alignWidth ? (realWidth / (1.0 * width)) : (realHeight / (1.0 * height));
 
             if (scaleFactor < 1) scaleFactor = 1;
 

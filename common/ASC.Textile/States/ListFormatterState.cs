@@ -86,7 +86,7 @@ namespace Textile.States
         public sealed override bool ShouldNestState(FormatterState other)
         {
             var listState = (ListFormatterState)other;
-            return (listState.NestingDepth > NestingDepth);
+            return listState.NestingDepth > NestingDepth;
         }
 
         public sealed override bool ShouldExit(string input)

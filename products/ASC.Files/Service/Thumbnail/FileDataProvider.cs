@@ -109,11 +109,11 @@ namespace ASC.Files.ThumbnailBuilder
                              !r.tariff.Comment.Contains("trial")
                             )
                         ) &&
-                        (
+                        
                             !r.quota.Features.Contains("free") &&
                             !r.quota.Features.Contains("non-profit") &&
                             !r.quota.Features.Contains("trial")
-                        )
+                        
                 )
                 .GroupBy(r => r.tariff.Tenant)
                 .Select(r => new { tenant = r.Key, stamp = r.Max(b => b.tariff.Stamp) })

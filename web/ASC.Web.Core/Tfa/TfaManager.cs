@@ -190,7 +190,7 @@ namespace ASC.Web.Studio.Core.TFA
                 var result = new StringBuilder(length);
                 foreach (var b in data)
                 {
-                    result.Append(alphabet[b % (alphabet.Length)]);
+                    result.Append(alphabet[b % alphabet.Length]);
                 }
 
                 list.Add(new BackupCode(InstanceCrypto, Signature, result.ToString()));

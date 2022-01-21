@@ -834,7 +834,7 @@ namespace ASC.Web.Core.Users
             var moduleID = Guid.Empty;
             var widening = CommonPhotoManager.GetImgFormatName(format);
             var size = img.Size();
-            var fileName = string.Format("{0}{1}_size_{2}-{3}.{4}", (moduleID == Guid.Empty ? "" : moduleID.ToString()), userID, img.Width, img.Height, widening);
+            var fileName = string.Format("{0}{1}_size_{2}-{3}.{4}", moduleID == Guid.Empty ? "" : moduleID.ToString(), userID, img.Width, img.Height, widening);
 
             var store = GetDataStore();
             string photoUrl;

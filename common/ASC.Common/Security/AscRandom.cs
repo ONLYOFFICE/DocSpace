@@ -51,7 +51,7 @@ namespace ASC.Common.Security
             var num3 = 1;
             for (var i = 1; i < seeds.Length - 1; i++)
             {
-                var index = (21 * i) % (seeds.Length - 1);
+                var index = 21 * i % (seeds.Length - 1);
                 seeds[index] = num3;
                 num3 = num2 - num3;
                 if (num3 < 0)
