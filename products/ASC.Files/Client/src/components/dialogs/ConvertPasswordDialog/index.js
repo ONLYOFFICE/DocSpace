@@ -35,7 +35,9 @@ const ConvertPasswordDialogComponent = (props) => {
     formCreationInfo.fromExst === ".docxf" &&
     formCreationInfo.toExst === ".oform";
 
-  const dialogHeading = makeForm ? t("Common:MakeForm") : "";
+  const dialogHeading = makeForm
+    ? t("Common:MakeForm")
+    : t("Translations:CreateMasterFormFromFile");
 
   const onClose = () => {
     setConvertPasswordDialogVisible(false);
