@@ -143,7 +143,7 @@ const FilesRowContent = ({
           truncate={true}
         >
           {!fileExst && !contentLength && !providerKey
-            ? `${foldersCount} ${t("folders")} | ${filesCount} ${t("files")}`
+            ? `${foldersCount} ${t("Folders")} | ${filesCount} ${t("Files")}`
             : ""}
         </Text>
       </SimpleFilesRowContent>

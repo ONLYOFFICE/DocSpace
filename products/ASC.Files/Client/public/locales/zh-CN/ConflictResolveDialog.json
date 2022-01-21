@@ -1,4 +1,4 @@
-{
+﻿{
   "ConflictResolveDescription": "{{folder}}文件夹中已有名称为{{file}}的文件。",
   "ConflictResolveDescriptionFiles": "‘{{folder}}’文件夹中已有{{filesCount}}个名称相同的文档。",
   "ConflictResolveSelectAction": "请选择操作：",

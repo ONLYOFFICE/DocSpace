@@ -86,6 +86,11 @@ const FilesTile = (props) => {
           contextButtonSpacerWidth={displayShareButton}
           isActive={isActive}
           isEdit={isEdit}
+          title={
+            item.isFolder
+              ? t("Translations:TitleShowFolderActions")
+              : t("Translations:TitleShowActions")
+          }
         >
           <FilesTileContent
             item={item}

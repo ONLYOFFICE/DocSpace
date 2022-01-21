@@ -1,11 +1,11 @@
 ﻿{
-    "FileLocation": "Otvoriť umiestnenie súboru",
-    "FileName": "Názov súboru",
-    "FolderForSave": "Priečinok na uloženie",
-    "OpenSavedDocument": "Otevřít uložený dokument na nové kartě",
-    "SelectFilesType": "Vybrat soubory typu: {{fileType}}",
-    "ImageFileType": "obrázky",
-    "DocumentsFileType": "dokumenty",
-    "MailMergeFileType": "Vybrat soubor ve formátu XLSX",
-    "SelectFileTitle": "Vybrat zdroj dat"
+  "DocumentsFileType": "dokumenty",
+  "FileLocation": "Otvoriť umiestnenie súboru",
+  "FileName": "Názov súboru",
+  "FolderForSave": "Priečinok na uloženie",
+  "ImageFileType": "obrázky",
+  "MailMergeFileType": "Vybrat soubor ve formátu XLSX",
+  "OpenSavedDocument": "Otevřít uložený dokument na nové kartě",
+  "SelectFilesType": "Vybrat soubory typu: {{fileType}}",
+  "SelectFileTitle": "Vybrat zdroj dat"
 }

@@ -273,6 +273,11 @@ const FilesTableRow = (props) => {
         isThirdPartyFolder={item.isThirdPartyFolder}
         onDoubleClick={onFilesClick}
         checked={checkedProps}
+        title={
+          item.isFolder
+            ? t("Translations:TitleShowFolderActions")
+            : t("Translations:TitleShowActions")
+        }
       >
         <TableCell {...dragStyles} {...selectionProp}>
           <FileNameCell
@@ -313,7 +318,7 @@ const FilesTableRow = (props) => {
   );
 };
 
-export default withTranslation(["Home", "VersionBadge"])(
+export default withTranslation(["Home", "Common", "VersionBadge"])(
   withFileActions(
     withRouter(
       withContextOptions(
