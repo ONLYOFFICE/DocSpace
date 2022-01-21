@@ -177,7 +177,7 @@ namespace ASC.Data.Backup.Service
         }
     }
 
-    public class BackupSchedulerServiceExtension
+    public static class BackupSchedulerServiceExtension
     {
         public static void Register(DIHelper services)
         {

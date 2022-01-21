@@ -378,7 +378,7 @@ namespace ASC.Data.Storage.Encryption
         }
     }
 
-    public class EncryptionOperationExtension
+    public static class EncryptionOperationExtension
     {
         public static void Register(DIHelper services)
         {

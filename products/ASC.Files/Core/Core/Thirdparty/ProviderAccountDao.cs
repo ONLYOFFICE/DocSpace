@@ -593,7 +593,7 @@ namespace ASC.Files.Thirdparty
         }
     }
 
-    public class ProviderAccountDaoExtension
+    public static class ProviderAccountDaoExtension
     {
         public static void Register(DIHelper services)
         {

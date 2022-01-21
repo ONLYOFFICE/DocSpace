@@ -798,7 +798,7 @@ namespace ASC.Web.Files.Utils
         public Guid CurrentAccountId { get; set; }
     }
 
-    public class FileMarkerExtention
+    public static class FileMarkerExtention
     {
         public static void Register(DIHelper services)
         {

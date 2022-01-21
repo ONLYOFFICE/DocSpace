@@ -17,7 +17,7 @@ using System.Text.RegularExpressions;
 
 namespace Textile.Blocks
 {
-    public class BlockAttributesParser
+    public static class BlockAttributesParser
     {
         public static StyleReader Styler { get; set; }
 

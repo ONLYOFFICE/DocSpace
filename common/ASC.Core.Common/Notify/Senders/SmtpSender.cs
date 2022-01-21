@@ -334,7 +334,7 @@ namespace ASC.Core.Notify.Senders
         }
     }
 
-    public class SmtpSenderExtension
+    public static class SmtpSenderExtension
     {
         public static void Register(DIHelper services)
         {

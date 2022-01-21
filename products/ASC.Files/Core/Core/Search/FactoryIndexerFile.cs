@@ -196,7 +196,7 @@ namespace ASC.Web.Files.Core.Search
         public DbFile DbFile { get; set; }
     }
 
-    public class FactoryIndexerFileExtension
+    public static class FactoryIndexerFileExtension
     {
         public static void Register(DIHelper services)
         {

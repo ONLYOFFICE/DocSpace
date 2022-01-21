@@ -20,7 +20,7 @@ namespace Textile
     /// <summary>
     /// A utility class for global things used by the TextileFormatter.
     /// </summary>
-    class Globals
+    static class Globals
     {
         #region Global Regex Patterns
 

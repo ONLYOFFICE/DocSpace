@@ -196,7 +196,7 @@ namespace ASC.Files.Core.Thirdparty
         }
     }
 
-    public class CrossDaoExtension
+    public static class CrossDaoExtension
     {
         public static void Register(DIHelper services)
         {

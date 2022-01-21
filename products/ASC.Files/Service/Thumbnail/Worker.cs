@@ -106,7 +106,7 @@ namespace ASC.Files.ThumbnailBuilder
         }
     }
 
-    public class WorkerExtension
+    public static class WorkerExtension
     {
         public static void Register(DIHelper services)
         {

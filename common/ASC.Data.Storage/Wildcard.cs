@@ -26,7 +26,7 @@
 
 namespace ASC.Data.Storage
 {
-    public class Wildcard
+    public static class Wildcard
     {
         public static bool IsMatch(string pattern, string input)
         {

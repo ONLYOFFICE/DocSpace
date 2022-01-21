@@ -238,7 +238,7 @@ namespace ASC.Data.Backup
         }
     }
 
-    public class NotifyHelperExtension
+    public static class NotifyHelperExtension
     {
         public static void Register(DIHelper services)
         {

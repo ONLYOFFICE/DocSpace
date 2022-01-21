@@ -249,7 +249,7 @@ namespace ASC.Data.Storage.Configuration
         }
     }
 
-    public class StorageSettingsExtension
+    public static class StorageSettingsExtension
     {
         public static void Register(DIHelper services)
         {

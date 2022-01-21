@@ -32,7 +32,7 @@ using System.Text;
 
 namespace ASC.FederatedLogin.Helpers
 {
-    public class RequestHelper
+    public static class RequestHelper
     {
         private static HttpClient HttpClient { get; } = new HttpClient();
 

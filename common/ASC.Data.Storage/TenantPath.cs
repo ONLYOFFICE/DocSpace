@@ -29,7 +29,7 @@ using System.Globalization;
 
 namespace ASC.Data.Storage
 {
-    public class TenantPath
+    public static class TenantPath
     {
         public static string CreatePath(string tenant)
         {

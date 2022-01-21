@@ -163,7 +163,7 @@ namespace ASC.FederatedLogin.LoginProviders
         public abstract LoginProfile GetLoginProfile(string accessToken);
     }
 
-    public class BaseLoginProviderExtension
+    public static class BaseLoginProviderExtension
     {
         public static void Register(DIHelper services)
         {

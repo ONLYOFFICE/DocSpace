@@ -881,7 +881,7 @@ namespace ASC.Data.Backup.Service
         }
     }
 
-    public class BackupWorkerExtension
+    public static class BackupWorkerExtension
     {
         public static void Register(DIHelper services)
         {
@@ -890,7 +890,7 @@ namespace ASC.Data.Backup.Service
         }
     }
 
-    public class FactoryProgressItemExtension
+    public static class FactoryProgressItemExtension
     {
         public static void Register(DIHelper services)
         {

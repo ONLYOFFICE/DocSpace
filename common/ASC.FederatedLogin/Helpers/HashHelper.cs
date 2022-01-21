@@ -28,7 +28,7 @@ using System.Text;
 
 namespace ASC.FederatedLogin.Helpers
 {
-    public class HashHelper
+    public static class HashHelper
     {
         public static int CombineHashCodes(int hash1, int hash2)
         {

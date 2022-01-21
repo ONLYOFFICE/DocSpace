@@ -15,7 +15,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace ASC.Data.Backup
 {
-    public class Program
+    public static class Program
     {
         public async static Task Main(string[] args)
         {

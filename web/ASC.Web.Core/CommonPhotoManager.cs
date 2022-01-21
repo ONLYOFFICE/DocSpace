@@ -36,7 +36,7 @@ using SixLabors.ImageSharp.Processing;
 
 namespace ASC.Web.Core
 {
-    public class CommonPhotoManager
+    public static class CommonPhotoManager
     {
 
         public static Image DoThumbnail(Image image, Size size, bool crop, bool transparent, bool rectangle)

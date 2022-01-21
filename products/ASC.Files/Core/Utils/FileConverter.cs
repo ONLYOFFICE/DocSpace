@@ -927,7 +927,7 @@ namespace ASC.Web.Files.Utils
         public string ServerRootPath { get; set; }
     }
 
-    public class FileConverterQueueExtension
+    public static class FileConverterQueueExtension
     {
         public static void Register(DIHelper services)
         {
@@ -935,7 +935,7 @@ namespace ASC.Web.Files.Utils
         }
     }
 
-    public class FileConverterExtension
+    public static class FileConverterExtension
     {
         public static void Register(DIHelper services)
         {

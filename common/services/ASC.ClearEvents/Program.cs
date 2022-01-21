@@ -44,7 +44,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace ASC.Thumbnails.Svc
 {
-    public class Program
+    public static class Program
     {
         public async static Task Main(string[] args)
         {

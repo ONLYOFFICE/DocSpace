@@ -120,7 +120,7 @@ namespace ASC.ElasticSearch.Service
         }
     }
 
-    internal class ServiceExtension
+    internal static class ServiceExtension
     {
         public static void Register(DIHelper services)
         {

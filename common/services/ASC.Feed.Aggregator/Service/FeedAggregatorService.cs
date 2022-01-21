@@ -337,7 +337,7 @@ namespace ASC.Feed.Aggregator
         }
     }
 
-    public class FeedAggregatorServiceExtension
+    public static class FeedAggregatorServiceExtension
     {
         public static void Register(DIHelper services)
         {

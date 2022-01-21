@@ -37,7 +37,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace ASC.Data.Reassigns
 {
-    public class QueueWorker
+    public static class QueueWorker
     {
         public static IDictionary<string, StringValues> GetHttpHeaders(HttpRequest httpRequest)
         {

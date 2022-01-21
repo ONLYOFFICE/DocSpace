@@ -1167,7 +1167,7 @@ namespace ASC.Web.Studio.Core.Notify
         }
     }
 
-    public class StudioPeriodicNotifyExtension
+    public static class StudioPeriodicNotifyExtension
     {
         public static void Register(DIHelper services)
         {

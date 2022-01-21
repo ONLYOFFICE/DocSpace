@@ -455,7 +455,7 @@ namespace ASC.Web.Studio.Core.Notify
         }
     }
 
-    public class NotifyConfigurationExtension
+    public static class NotifyConfigurationExtension
     {
         public static void Register(DIHelper services)
         {

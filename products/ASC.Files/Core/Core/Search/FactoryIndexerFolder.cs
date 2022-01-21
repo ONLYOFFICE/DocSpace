@@ -174,7 +174,7 @@ namespace ASC.Web.Files.Core.Search
         public DbFolder DbFolder { get; set; }
     }
 
-    public class FactoryIndexerFolderExtension
+    public static class FactoryIndexerFolderExtension
     {
         public static void Register(DIHelper services)
         {

@@ -185,7 +185,7 @@ namespace ASC.TelegramService
         }
     }
 
-    public class TelegramHandlerExtension
+    public static class TelegramHandlerExtension
     {
         public static void Register(DIHelper services)
         {

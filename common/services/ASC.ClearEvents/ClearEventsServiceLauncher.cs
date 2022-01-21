@@ -131,7 +131,7 @@ namespace ASC.Thumbnails.Svc
         public DbSet<DbWebstudioSettings> WebstudioSettings { get; }
     }
     
-public class MessagesRepositoryExtension
+    public static class MessagesRepositoryExtension
     {
         public static void Register(DIHelper services)
         {

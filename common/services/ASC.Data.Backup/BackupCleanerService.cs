@@ -182,7 +182,7 @@ namespace ASC.Data.Backup.Service
         }
     }
 
-    public class BackupCleanerServiceExtension
+    public static class BackupCleanerServiceExtension
     {
         public static void Register(DIHelper services)
         {

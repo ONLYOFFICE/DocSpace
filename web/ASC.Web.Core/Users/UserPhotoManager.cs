@@ -1025,7 +1025,7 @@ namespace ASC.Web.Core.Users
     }
     }
 
-    public class ResizeWorkerItemExtension
+    public static class ResizeWorkerItemExtension
     {
         public static void Register(DIHelper services)
         {

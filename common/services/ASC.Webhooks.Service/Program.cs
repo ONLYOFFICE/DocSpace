@@ -19,7 +19,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace ASC.Webhooks.Service
 {
-    public class Program
+    public static class Program
     {
         public async static Task Main(string[] args)
         {

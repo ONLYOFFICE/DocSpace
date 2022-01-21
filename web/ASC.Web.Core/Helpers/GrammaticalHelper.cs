@@ -28,7 +28,7 @@ using System;
 
 namespace ASC.Web.Core.Helpers
 {
-    public class GrammaticalHelper
+    public static class GrammaticalHelper
     {
         public static string ChooseNumeralCase(int number, string nominative, string genitiveSingular, string genitivePlural)
         {

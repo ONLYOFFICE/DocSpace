@@ -276,7 +276,7 @@ namespace ASC.MessagingSystem.DbSender
         public DbSet<DbTenant> Tenants { get; set; }
         public DbSet<DbWebstudioSettings> WebstudioSettings { get; set; }
     }
-    public class MessagesRepositoryExtension
+    public static class MessagesRepositoryExtension
     {
         public static void Register(DIHelper services)
         {

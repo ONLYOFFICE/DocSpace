@@ -29,7 +29,7 @@ using System.Reflection;
 
 namespace ASC.FederatedLogin.Helpers
 {
-    public class JsCallbackHelper
+    public static class JsCallbackHelper
     {
         public static string GetCallbackPage()
         {

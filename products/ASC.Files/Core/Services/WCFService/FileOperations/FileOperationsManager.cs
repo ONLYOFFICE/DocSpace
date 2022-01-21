@@ -254,7 +254,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
     }
 
-    public class FileOperationsManagerHelperExtention
+    public static class FileOperationsManagerHelperExtention
     {
         public static void Register(DIHelper services)
         {

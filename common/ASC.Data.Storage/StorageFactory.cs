@@ -259,7 +259,7 @@ namespace ASC.Data.Storage
         }
     }
 
-    public class StorageFactoryExtension
+    public static class StorageFactoryExtension
     {
         public static void Register(DIHelper services)
         {

@@ -82,7 +82,7 @@ namespace ASC.Web.Studio.Core.Notify
         public const string SmtpPort = "SmtpPort";
     }
 
-    public sealed class CommonTags
+    public static class CommonTags
     {
         public const string VirtualRootPath = "__VirtualRootPath";
 

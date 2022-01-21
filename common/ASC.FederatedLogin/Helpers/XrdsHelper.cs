@@ -30,7 +30,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ASC.FederatedLogin.Helpers
 {
-    public class XrdsHelper
+    public static class XrdsHelper
     {
         internal static async Task RenderXrds(HttpResponse responce, string location, string iconlink)
         {

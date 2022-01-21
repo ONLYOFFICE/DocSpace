@@ -273,7 +273,7 @@ namespace ASC.Data.Reassigns
         }
     }
 
-    public class ReassignProgressItemExtension
+    public static class ReassignProgressItemExtension
     {
         public static void Register(DIHelper services)
         {

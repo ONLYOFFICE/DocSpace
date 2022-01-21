@@ -112,7 +112,7 @@ namespace ASC.Api.Core.Auth
         }
     }
 
-    public class ConfirmAuthHandlerExtension
+    public static class ConfirmAuthHandlerExtension
     {
         public static void Register(DIHelper services)
         {
