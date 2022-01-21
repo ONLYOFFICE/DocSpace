@@ -24,13 +24,20 @@ const Banner = () => {
   };
 
   const getTranslation = async (campaign, lng) => {
-    const translationUrl = await window.firebaseHelper.getCampaignsTranslations(
+    let translationUrl = await window.firebaseHelper.getCampaignsTranslations(
       campaign,
       lng
     );
-    let obj = await (await fetch(translationUrl)).json();
 
-    return obj;
+    const res = await fetch(translationUrl);
+
+    if (!res.ok) {
+      translationUrl = await window.firebaseHelper.getCampaignsTranslations(
+        campaign,
+        "en"
+      );
+    }
+    return await (await fetch(translationUrl)).json();
   };
 
   const getBanner = async () => {
