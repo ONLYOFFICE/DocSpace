@@ -993,6 +993,9 @@ class UploadDataStore {
       });
   };
 
+  fileCopyAs = async (fileId, title, folderId, enableExternalExt, password) => {
+    return fileCopyAs(fileId, title, folderId, enableExternalExt, password);
+  };
   itemOperationToFolder = (data) => {
     const {
       destFolderId,

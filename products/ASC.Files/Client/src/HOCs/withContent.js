@@ -16,7 +16,7 @@ import EditingWrapperComponent from "../components/EditingWrapperComponent";
 import { getTitleWithoutExst } from "../helpers/files-helpers";
 import { getDefaultFileName } from "../helpers/utils";
 import ItemIcon from "../components/ItemIcon";
-import { fileCopyAs } from "@appserver/common/api/files";
+
 export default function withContent(WrappedContent) {
   class WithContent extends React.Component {
     constructor(props) {
@@ -184,6 +184,7 @@ export default function withContent(WrappedContent) {
         setIsUpdatingRowItem,
         clearActiveOperations,
         addActiveItems,
+        fileCopyAs,
       } = this.props;
       const { itemTitle } = this.state;
 
@@ -486,7 +487,7 @@ export default function withContent(WrappedContent) {
         passwordEntryProcess,
         addActiveItems,
       } = filesStore;
-      const { clearActiveOperations } = uploadDataStore;
+      const { clearActiveOperations, fileCopyAs } = uploadDataStore;
       const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
 
       const {
@@ -539,6 +540,7 @@ export default function withContent(WrappedContent) {
         passwordEntryProcess,
         addActiveItems,
         clearActiveOperations,
+        fileCopyAs,
       };
     }
   )(observer(WithContent));

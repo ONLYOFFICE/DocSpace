@@ -10,7 +10,6 @@ import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../package.json";
 import { openDocEditor } from "../../../helpers/utils";
 import combineUrl from "@appserver/common/utils/combineUrl";
-import { fileCopyAs } from "@appserver/common/api/files";
 import toastr from "@appserver/components/toast/toastr";
 let tab, _isMounted;
 const ConvertPasswordDialogComponent = (props) => {
@@ -25,6 +24,7 @@ const ConvertPasswordDialogComponent = (props) => {
     setPasswordEntryProcess,
     isDesktop,
     editCompleteAction,
+    fileCopyAs,
   } = props;
 
   const [password, setPassword] = useState("");
@@ -203,7 +203,7 @@ export default inject(
       setFormCreationInfo,
       formCreationInfo,
     } = dialogsStore;
-    const { copyAsAction } = uploadDataStore;
+    const { copyAsAction, fileCopyAs } = uploadDataStore;
     const { setPasswordEntryProcess } = filesStore;
     const { editCompleteAction } = filesActionsStore;
     const { settingsStore } = auth;
@@ -214,6 +214,7 @@ export default inject(
       setConvertPasswordDialogVisible,
       isTabletView,
       copyAsAction,
+      fileCopyAs,
       formCreationInfo,
       setFormCreationInfo,
       setPasswordEntryProcess,
