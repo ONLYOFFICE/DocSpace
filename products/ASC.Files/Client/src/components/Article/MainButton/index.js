@@ -179,6 +179,7 @@ class ArticleMainButtonContent extends React.Component {
           isDropdown={true}
           text={t("Common:Actions")}
           model={menuModel}
+          className="files-main-button"
         />
         <input
           id="customFileInput"

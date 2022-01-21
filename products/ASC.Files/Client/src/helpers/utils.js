@@ -55,9 +55,10 @@ export const openDocEditor = async (
   id,
   providerKey = null,
   tab = null,
-  url = null
+  url = null,
+  isPrivacy
 ) => {
-  if (!providerKey && id) {
+  if (!providerKey && id && !isPrivacy) {
     await addFileToRecent(id);
   }
 
