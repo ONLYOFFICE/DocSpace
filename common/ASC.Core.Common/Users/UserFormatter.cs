@@ -38,13 +38,13 @@ namespace ASC.Core.Users
     [Singletone]
     public class UserFormatter : IComparer<UserInfo>
     {
-        private readonly DisplayUserNameFormat format;
+        private readonly DisplayUserNameFormat _format;
         private static bool forceFormatChecked;
         private static string forceFormat;
 
         public UserFormatter(IConfiguration configuration)
         {
-            format = DisplayUserNameFormat.Default;
+            _format = DisplayUserNameFormat.Default;
             Configuration = configuration;
             UserNameRegex = new Regex(Configuration["core:username:regex"] ?? "");
         }
@@ -69,7 +69,7 @@ namespace ASC.Core.Users
 
         int IComparer<UserInfo>.Compare(UserInfo x, UserInfo y)
         {
-            return Compare(x, y, format);
+            return Compare(x, y, _format);
         }
 
         public static int Compare(UserInfo x, UserInfo y)

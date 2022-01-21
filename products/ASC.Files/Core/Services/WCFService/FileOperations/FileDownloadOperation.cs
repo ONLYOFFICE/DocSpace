@@ -160,9 +160,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
     class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
     {
-        private readonly Dictionary<T, string> files;
+        private readonly Dictionary<T, string> _files;
         private readonly IDictionary<string, StringValues> headers;
-        ItemNameValueCollection<T> entriesPathId;
+        private ItemNameValueCollection<T> _entriesPathId;
         public override FileOperationType OperationType
         {
             get { return FileOperationType.Download; }
@@ -171,7 +171,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         public FileDownloadOperation(IServiceProvider serviceProvider, FileDownloadOperationData<T> fileDownloadOperationData)
             : base(serviceProvider, fileDownloadOperationData)
         {
-            files = fileDownloadOperationData.FilesDownload;
+            _files = fileDownloadOperationData.FilesDownload;
             headers = fileDownloadOperationData.Headers;
         }
 
@@ -179,9 +179,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         {
             if (Files.Count == 0 && Folders.Count == 0) return;
 
-            entriesPathId = GetEntriesPathId(scope);
+            _entriesPathId = GetEntriesPathId(scope);
 
-            if (entriesPathId == null || entriesPathId.Count == 0)
+            if (_entriesPathId == null || _entriesPathId.Count == 0)
             {
                 if (Files.Count > 0)
                 {
@@ -191,9 +191,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 throw new DirectoryNotFoundException(FilesCommonResource.ErrorMassage_FolderNotFound);
             }
 
-            ReplaceLongPath(entriesPathId);
+            ReplaceLongPath(_entriesPathId);
 
-            Total = entriesPathId.Count;
+            Total = _entriesPathId.Count;
 
             TaskInfo.PublishChanges();
         }
@@ -205,7 +205,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             var title = file.Title;
 
-            if (files.TryGetValue(file.ID, out var convertToExt))
+            if (_files.TryGetValue(file.ID, out var convertToExt))
             {
                 if (!string.IsNullOrEmpty(convertToExt))
                 {
@@ -280,7 +280,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             
         internal void CompressToZip(Stream stream, IServiceScope scope)
         {
-            if (entriesPathId == null) return;
+            if (_entriesPathId == null) return;
             var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
             var (_, _, _, fileConverter, filesMessageService) = scopeClass;
             var FileDao = scope.ServiceProvider.GetService<IFileDao<T>>();
@@ -289,10 +289,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 compressTo.SetStream(stream);
 
-                foreach (var path in entriesPathId.AllKeys)
+                foreach (var path in _entriesPathId.AllKeys)
                 {
                     var counter = 0;
-                    foreach (var entryId in entriesPathId[path])
+                    foreach (var entryId in _entriesPathId[path])
                     {
                         if (CancellationToken.IsCancellationRequested)
                         {
@@ -315,7 +315,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                 continue;
                             }
 
-                            if (files.TryGetValue(file.ID, out convertToExt))
+                            if (_files.TryGetValue(file.ID, out convertToExt))
                             {
                                 if (!string.IsNullOrEmpty(convertToExt))
                                 {
