@@ -344,6 +344,7 @@ class Tile extends React.PureComponent {
       item,
       isActive,
       isEdit,
+      title,
     } = this.props;
     const { isFolder, id, fileExst } = item;
 
@@ -409,6 +410,7 @@ class Tile extends React.PureComponent {
                   getData={getOptions}
                   isNew={true}
                   onClick={onContextMenu}
+                  title={title}
                 />
               ) : (
                 <div className="expandButton"> </div>
@@ -448,6 +450,7 @@ class Tile extends React.PureComponent {
                     getData={getOptions}
                     isNew={true}
                     onClick={onContextMenu}
+                    title={title}
                   />
                 ) : (
                   <div className="expandButton"> </div>

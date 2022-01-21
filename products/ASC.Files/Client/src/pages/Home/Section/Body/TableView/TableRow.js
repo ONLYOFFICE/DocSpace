@@ -265,7 +265,12 @@ const FilesTableRow = (props) => {
         onHideContextMenu={onHideContextMenu}
         isThirdPartyFolder={item.isThirdPartyFolder}
         onDoubleClick={onFilesClick}
-        checked={checkedProps}>
+        checked={checkedProps}
+        title={
+          item.isFolder
+            ? t('Translations:TitleShowFolderActions')
+            : t('Translations:TitleShowActions')
+        }>
         <TableCell {...dragStyles} {...selectionProp}>
           <FileNameCell
             theme={theme}
@@ -304,7 +309,7 @@ const FilesTableRow = (props) => {
   );
 };
 
-export default withTranslation(['Home', 'VersionBadge'])(
+export default withTranslation(['Home', 'Common', 'VersionBadge'])(
   withFileActions(
     withRouter(withContextOptions(withContent(withQuickButtons(withBadges(FilesTableRow))))),
   ),

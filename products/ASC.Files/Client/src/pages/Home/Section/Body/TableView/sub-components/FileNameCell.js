@@ -12,6 +12,7 @@ const FileNameCell = ({
   checked,
   selectionProp,
   theme,
+  t,
 }) => {
   const { title } = item;
 
@@ -31,6 +32,7 @@ const FileNameCell = ({
           className="table-container_row-checkbox"
           onChange={onChange}
           isChecked={checked}
+          title={t('Common:TitleSelectFile')}
         />
       </TableCell>
 

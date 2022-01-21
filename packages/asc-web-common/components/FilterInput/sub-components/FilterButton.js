@@ -24,7 +24,6 @@ class FilterButton extends React.PureComponent {
         id={id}
         isDisabled={isDisabled}
         size={iconSize}
-        title="Actions"
         columnCount={columnCount}
         displayType={asideView ? "aside" : "auto"}
         asideHeader={asideHeader}

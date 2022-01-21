@@ -1,4 +1,4 @@
-{
+﻿{
   "ConflictResolveDescription": "{{file}} 이름의 파일이 {{folder}} 폴더에 이미 존재합니다.",
   "ConflictResolveDescriptionFiles": "같은 이름의 문서 {{filesCount}}개가 '{{folder}}' 폴더에 이미 존재합니다.",
   "ConflictResolveSelectAction": "작업 선택:",

@@ -4,6 +4,8 @@
     <TargetFramework>net6.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <Configurations>Debug;Release;SORT</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

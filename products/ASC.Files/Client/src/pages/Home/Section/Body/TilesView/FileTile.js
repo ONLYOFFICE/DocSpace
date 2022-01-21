@@ -76,7 +76,12 @@ const FilesTile = (props) => {
           {...contextOptionsProps}
           contextButtonSpacerWidth={displayShareButton}
           isActive={isActive}
-          isEdit={isEdit}>
+          isEdit={isEdit}
+          title={
+            item.isFolder
+              ? t('Translations:TitleShowFolderActions')
+              : t('Translations:TitleShowActions')
+          }>
           <FilesTileContent item={item} sectionWidth={sectionWidth} onFilesClick={onFilesClick} />
         </Tile>
       </DragAndDrop>

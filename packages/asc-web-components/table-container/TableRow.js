@@ -14,6 +14,8 @@ const TableRow = (props) => {
     className,
     style,
     selectionProp,
+    isFolder,
+    title,
     ...rest
   } = props;
 
@@ -63,6 +65,7 @@ const TableRow = (props) => {
               directionX="right"
               isNew={true}
               onClick={onContextMenu}
+              title={title}
             />
           ) : (
             <div className="expandButton"> </div>

@@ -45,6 +45,7 @@ const DownloadAppListContainer = ({ t }) => {
           size="25"
           isfill={true}
           hoverColor="#3785D3"
+          title={t("Translations:MobileWin")}
         />
         <IconButton
           onClick={() => window.open(desktopLink)}
@@ -53,6 +54,7 @@ const DownloadAppListContainer = ({ t }) => {
           size="25"
           isfill={true}
           hoverColor="#000000"
+          title={t("Translations:MobileMac")}
         />
         <IconButton
           onClick={() => window.open(desktopLink)}
@@ -61,6 +63,7 @@ const DownloadAppListContainer = ({ t }) => {
           size="25"
           isfill={true}
           hoverColor="#FFB800"
+          title={t("Translations:MobileLinux")}
         />
         <IconButton
           onClick={() => window.open(androidLink)}
@@ -69,6 +72,7 @@ const DownloadAppListContainer = ({ t }) => {
           size="25"
           isfill={true}
           hoverColor="#9BD71C"
+          title={t("Translations:MobileAndroid")}
         />
         <IconButton
           onClick={() => window.open(iosLink)}
@@ -77,6 +81,7 @@ const DownloadAppListContainer = ({ t }) => {
           size="25"
           isfill={true}
           hoverColor="#000000"
+          title={t("Translations:MobileIos")}
         />
       </div>
     </StyledDownloadAppList>

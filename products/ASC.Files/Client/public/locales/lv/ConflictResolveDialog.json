@@ -1,4 +1,4 @@
-{
+﻿{
   "ConflictResolveDescription": "Fails ar nosaukumu {{file}} jau pastāv mapē {{folder}}.",
   "ConflictResolveDescriptionFiles": "{{filesCount}} dokumenti ar tādu pašu nosaukumu jau pastāv mapē '{{folder}}'.",
   "ConflictResolveSelectAction": "Lūdzu, atlasiet darbību:",
