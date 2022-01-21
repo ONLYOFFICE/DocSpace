@@ -127,7 +127,7 @@ namespace ASC.Files.Core
     }
 
     [Serializable]
-    public abstract class FileEntry<T> : FileEntry, ICloneable
+    public abstract class FileEntry<T> : FileEntry
     {
         public T ID { get; set; }
 
