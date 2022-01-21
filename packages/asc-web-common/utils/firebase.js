@@ -94,11 +94,13 @@ class FirebaseHelper {
   }
 
   async getCampaignsImages(banner) {
-    return `https://${this.config["authDomain"]}/images/campaigns.${banner}.png`;
+    const domain = this.config["authDomain"];
+    return `https://${domain}/images/campaigns.${banner}.png`;
   }
 
   async getCampaignsTranslations(banner, lng) {
-    return `https://${this.config["authDomain"]}/locales/${lng}/CampaignPersonal${banner}.json`;
+    const domain = this.config["authDomain"];
+    return `https://${domain}/locales/${lng}/CampaignPersonal${banner}.json`;
   }
 }
 
