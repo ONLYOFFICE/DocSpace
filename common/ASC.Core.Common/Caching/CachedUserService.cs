@@ -318,7 +318,7 @@ namespace ASC.Core.Caching
                 group = Service.GetGroup(tenant, id);
 
                 if (group != null) Cache.Insert(key, group, CacheExpiration);
-            };
+            }
 
             return group;
         }

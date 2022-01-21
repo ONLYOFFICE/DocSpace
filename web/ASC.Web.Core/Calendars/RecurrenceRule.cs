@@ -513,7 +513,7 @@ namespace ASC.Web.Core.Calendars
                                 dateRange.RemoveAll(date =>
                                 {
                                     var weekOfYear = date.GetWeekOfYear(this.WKST.DayOfWeek);
-                                    return ((!ByWeekNo.Contains(weekOfYear) && !ByWeekNo.Contains(weekOfYear - (date.GetWeekOfYearCount(this.WKST.DayOfWeek) + 1))));
+                                    return !ByWeekNo.Contains(weekOfYear) && !ByWeekNo.Contains(weekOfYear - (date.GetWeekOfYearCount(this.WKST.DayOfWeek) + 1));
                                 });
                             }
                             isFirst = false;

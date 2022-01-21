@@ -808,7 +808,7 @@ namespace ASC.Web.Core.Users
                 var store = GetDataStore();
                 store.DeleteFiles(_tempDomainName, "", fileNameWithoutExt + "*.*", false);
             }
-            catch { };
+            catch { }
         }
 
 

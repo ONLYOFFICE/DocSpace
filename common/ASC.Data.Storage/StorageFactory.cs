@@ -251,7 +251,7 @@ namespace ASC.Data.Storage
                 props = handler.Property.ToDictionary(r => r.Name, r => r.Value);
             }
 
-            ;
+            
             return ((IDataStore)ActivatorUtilities.CreateInstance(ServiceProvider, instanceType))
                 .Configure(tenant, handler, moduleElement, props)
                 .SetQuotaController(moduleElement.Count ? controller : null

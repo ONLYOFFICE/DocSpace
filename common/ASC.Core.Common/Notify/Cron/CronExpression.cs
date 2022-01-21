@@ -806,7 +806,7 @@ namespace ASC.Notify.Cron
         {
             for (; i < s.Length && (s[i] == ' ' || s[i] == '\t'); i++)
             {
-                ;
+                
             }
             return i;
         }
@@ -815,7 +815,7 @@ namespace ASC.Notify.Cron
         {
             for (; i < s.Length && (s[i] != ' ' || s[i] != '\t'); i++)
             {
-                ;
+                
             }
             return i;
         }

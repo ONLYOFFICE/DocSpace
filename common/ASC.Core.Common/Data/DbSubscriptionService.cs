@@ -136,7 +136,7 @@ namespace ASC.Core.Data
             }
             else
             {
-                q = q = q.Where(r => r.Object == string.Empty);;
+                q = q = q.Where(r => r.Object == string.Empty);
             }
 
             return q.Any();
