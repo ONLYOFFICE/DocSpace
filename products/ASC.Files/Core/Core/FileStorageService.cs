@@ -1214,7 +1214,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             var folders = providersInfo.Select(providerInfo =>
                 {
-                    var folder = EntryManager.GetFakeThirdpartyFolder<T>(providerInfo);
+                    var folder = EntryManager.GetFakeThirdpartyFolder(providerInfo);
                     folder.NewForMe = folder.RootFolderType == FolderType.COMMON ? 1 : 0;
                     return folder;
                 });
@@ -1309,7 +1309,7 @@ namespace ASC.Web.Files.Services.WCFService
             var curProviderId = Convert.ToInt32(providerId);
             var providerInfo = providerDao.GetProviderInfo(curProviderId);
 
-            var folder = EntryManager.GetFakeThirdpartyFolder<T>(providerInfo);
+            var folder = EntryManager.GetFakeThirdpartyFolder(providerInfo);
             ErrorIf(!FileSecurity.CanDelete(folder), FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder);
 
             if (providerInfo.RootFolderType == FolderType.COMMON)

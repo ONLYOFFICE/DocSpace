@@ -589,7 +589,7 @@ namespace ASC.Web.Files.Utils
 
                 var providers = providerDao.GetProvidersInfo(parent.RootFolderType, searchText);
                 folderList = providers
-                    .Select(providerInfo => GetFakeThirdpartyFolder<T>(providerInfo, parent.ID.ToString()))
+                    .Select(providerInfo => GetFakeThirdpartyFolder(providerInfo, parent.ID.ToString()))
                     .Where(r => fileSecurity.CanRead(r)).ToList();
 
                 if (folderList.Count > 0)
@@ -829,7 +829,7 @@ namespace ASC.Web.Files.Utils
             return result;
         }
 
-        public Folder<string> GetFakeThirdpartyFolder<T>(IProviderInfo providerInfo, string parentFolderId = null)
+        public Folder<string> GetFakeThirdpartyFolder(IProviderInfo providerInfo, string parentFolderId = null)
         {
             //Fake folder. Don't send request to third party
             var folder = ServiceProvider.GetService<Folder<string>>();

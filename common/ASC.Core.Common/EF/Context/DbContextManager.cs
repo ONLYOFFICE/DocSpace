@@ -88,7 +88,7 @@ namespace ASC.Core.Common.EF
 
     public static class DbContextManagerExtension
     {
-        public static DIHelper AddDbContextManagerService<T>(this DIHelper services) where T : BaseDbContext, new()
+        public static DIHelper AddDbContextManagerService(this DIHelper services)
         {
             //TODO
             //services.TryAddScoped<MultiRegionalDbContextManager<T>>();
