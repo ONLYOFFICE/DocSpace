@@ -83,7 +83,7 @@ namespace ASC.Web.Core.Users
         {
             if (obj is null) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != typeof(ResizeWorkerItem)) return false;
+            if (!(obj is ResizeWorkerItem)) return false;
             return Equals((ResizeWorkerItem)obj);
         }
 

@@ -528,7 +528,7 @@ namespace ASC.Web.Files.Utils
                 Equals(folder.ID, GlobalFolder.GetFolderCommon(this, DaoFactory)) || 
                 Equals(folder.ID, GlobalFolder.GetFolderShare(DaoFactory)))
             {
-                var folderTags = tags.Where(tag => tag.EntryType == FileEntryType.Folder && tag.EntryId.GetType() == typeof(string));
+                var folderTags = tags.Where(tag => tag.EntryType == FileEntryType.Folder && (tag.EntryId is string));
 
                 var providerFolderTags = folderTags
                     .Select(tag => new KeyValuePair<Tag, Folder<string>>(tag, providerFolderDao.GetFolder(tag.EntryId.ToString())))
@@ -549,8 +549,8 @@ namespace ASC.Web.Files.Utils
                 .ToList();
 
             //TODO: refactoring
-            var entryTagsProvider = GetEntryTags<string>(tags.Where(r=> r.EntryId.GetType() == typeof(string)));
-            var entryTagsInternal = GetEntryTags<int>(tags.Where(r=> r.EntryId.GetType() == typeof(int)));
+            var entryTagsProvider = GetEntryTags<string>(tags.Where(r=> (r.EntryId is string)));
+            var entryTagsInternal = GetEntryTags<int>(tags.Where(r=> (r.EntryId is int)));
 
             foreach (var entryTag in entryTagsInternal)
             {

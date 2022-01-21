@@ -472,7 +472,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             Log.Info("Start SendTariffEnterpriseLetters");
 
-            var activeTenants = new List<Tenant>();
+            List<Tenant> activeTenants;
 
             using (var scope = ServiceProvider.CreateScope())
             {

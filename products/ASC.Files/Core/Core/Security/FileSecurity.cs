@@ -712,8 +712,8 @@ namespace ASC.Files.Core.Security
             var records = securityDao.GetShares(subjects);
 
             var result = new List<FileEntry>();
-            result.AddRange(GetSharesForMe<int>(records.Where(r => r.EntryId.GetType() == typeof(int)), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
-            result.AddRange(GetSharesForMe<string>(records.Where(r => r.EntryId.GetType() == typeof(string)), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
+            result.AddRange(GetSharesForMe<int>(records.Where(r => (r.EntryId is int)), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
+            result.AddRange(GetSharesForMe<string>(records.Where(r => (r.EntryId is string)), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
             return result;
         }
 
@@ -832,8 +832,8 @@ namespace ASC.Files.Core.Security
             var records = securityDao.GetShares(subjects);
 
             var result = new List<FileEntry>();
-            result.AddRange(GetPrivacyForMe<int>(records.Where(r => r.EntryId.GetType() == typeof(int)), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
-            result.AddRange(GetPrivacyForMe<string>(records.Where(r => r.EntryId.GetType() == typeof(string)), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
+            result.AddRange(GetPrivacyForMe<int>(records.Where(r => (r.EntryId is int)), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
+            result.AddRange(GetPrivacyForMe<string>(records.Where(r => (r.EntryId is string)), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
             return result;
         }
 
