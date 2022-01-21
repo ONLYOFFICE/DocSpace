@@ -254,7 +254,7 @@ export default function withContent(WrappedContent) {
             .then(() => this.completeAction(itemId))
             .catch((err) => {
               console.log("err", err);
-              const isPasswordError = new RegExp(/\b(password)\b/);
+              const isPasswordError = new RegExp(/\(password\)*$/);
 
               if (isPasswordError.test(err)) {
                 toastr.error(

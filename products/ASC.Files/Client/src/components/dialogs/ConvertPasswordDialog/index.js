@@ -79,7 +79,8 @@ const ConvertPasswordDialogComponent = (props) => {
           .catch((err) => {
             console.log("err", err);
 
-            const isPasswordError = new RegExp(/\b(password)\b/);
+            const isPasswordError = new RegExp(/\(password\)*$/);
+
             if (isPasswordError.test(err)) {
               toastr.error(t("CreationError"), t("Common:Warning"));
               _isMounted && setPasswordValid(false);
@@ -98,7 +99,7 @@ const ConvertPasswordDialogComponent = (props) => {
           })
           .catch((err) => {
             console.log("err", err);
-            const isPasswordError = new RegExp(/\b(password)\b/);
+            const isPasswordError = new RegExp(/\(password\)*$/);
 
             if (isPasswordError.test(err)) {
               toastr.error(t("CreationError"), t("Common:Warning"));
