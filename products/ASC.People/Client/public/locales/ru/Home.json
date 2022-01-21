@@ -1,10 +1,10 @@
-{
+﻿{
   "Administrator": "Администратор",
   "ChangeToGuest": "Изменить на {{guestCaption}}",
   "ChangeToUser": "Изменить на {{userCaption}}",
   "EmptyGroupDescription": "Вы можете добавить новых сотрудников вручную или пригласить их по ссылке.",
   "EmptyGroupTitle": "Здесь пока нет сотрудников",
-  "LblInviteAgain": "Выслать прилашение ещё раз",
+  "LblInviteAgain": "Выслать приглашение ещё раз",
   "LblInvited": "Приглашен",
   "LblOther": "Другое",
   "LblSendEmail": "Отправить email",

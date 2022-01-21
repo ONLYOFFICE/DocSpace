@@ -1,4 +1,4 @@
-{
+﻿{
   "ChangePasswordSuccess": "Пароль был успешно изменен",
   "ConfirmOwnerPortalSuccessMessage": "Владелец портала успешно изменен. Через 10 секунд Вы будете перенаправлены.",
   "ConfirmOwnerPortalTitle": "Пожалуйста, подтвердите, что Вы хотите изменить владельца портала на {{newOwner}}",

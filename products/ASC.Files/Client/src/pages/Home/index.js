@@ -281,7 +281,7 @@ class PureHome extends React.Component {
           showSecondaryButtonAlert={secondaryProgressDataStoreAlert}
           viewAs={viewAs}
           hideAside={
-            !!fileActionId || primaryProgressDataVisible || secondaryProgressDataStoreVisible
+            !!fileActionId || primaryProgressDataVisible || secondaryProgressDataStoreVisible //TODO: use hideArticle action
           }
           isLoaded={!firstLoad}
           isHeaderVisible={isHeaderVisible}

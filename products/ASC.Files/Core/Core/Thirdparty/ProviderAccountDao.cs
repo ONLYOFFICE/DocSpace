@@ -53,6 +53,7 @@ using ASC.Security.Cryptography;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Helpers;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -136,7 +137,7 @@ namespace ASC.Files.Thirdparty
                 return FilesDbContext.ThirdpartyAccount
                     .Where(r => r.TenantId == TenantID)
                     .Where(r => r.UserId == userId)
-                    .ToList()
+                    .AsEnumerable()
                     .Select(ToProviderInfo)
                     .ToList();
             }
@@ -147,33 +148,23 @@ namespace ASC.Files.Thirdparty
             }
         }
 
+        static Func<FilesDbContext, int, int, FolderType, Guid, string, IEnumerable<DbFilesThirdpartyAccount>> getProvidersInfoQuery =
+    EF.CompileQuery((FilesDbContext ctx, int tenantId, int linkId, FolderType folderType, Guid userId, string searchText) =>
+    ctx.ThirdpartyAccount
+    .AsNoTracking()
+    .Where(r => r.TenantId == tenantId)
+    .Where(r => !(folderType == FolderType.USER || folderType == FolderType.DEFAULT && linkId == -1) || r.UserId == userId)
+    .Where(r => linkId == -1 || r.Id == linkId)
+    .Where(r => folderType == FolderType.DEFAULT || r.FolderType == folderType)
+    .Where(r => searchText == "" || r.Title.ToLower().Contains(searchText))
+    );
+
         private List<IProviderInfo> GetProvidersInfoInternal(int linkId = -1, FolderType folderType = FolderType.DEFAULT, string searchText = null)
         {
-            var querySelect = FilesDbContext.ThirdpartyAccount.Where(r => r.TenantId == TenantID);
-
-            if (folderType == FolderType.USER || folderType == FolderType.DEFAULT && linkId == -1)
-            {
-                querySelect = querySelect.Where(r => r.UserId == SecurityContext.CurrentAccount.ID);
-            }
-
-            if (linkId != -1)
-            {
-                querySelect = querySelect.Where(r => r.Id == linkId);
-            }
-
-            if (folderType != FolderType.DEFAULT)
-            {
-                querySelect = querySelect.Where(r => r.FolderType == folderType);
-            }
-
-            if (!string.IsNullOrEmpty(searchText))
-            {
-                querySelect = BuildSearch(querySelect, searchText, SearhTypeEnum.Any);
-            }
-
             try
             {
-                return querySelect.ToList()
+                return getProvidersInfoQuery(FilesDbContext, TenantID, linkId, folderType, SecurityContext.CurrentAccount.ID, GetSearchText(searchText))
+                    .AsEnumerable()
                     .Select(ToProviderInfo)
                     .ToList();
             }

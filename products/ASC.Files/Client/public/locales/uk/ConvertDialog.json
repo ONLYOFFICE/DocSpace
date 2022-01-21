@@ -1,0 +1,8 @@
+﻿{
+  "ConversionFileMessage": "Файл буде конвертовано в формат OOXML (docx, xlsx або pptx) для більш швидкого перегляду та редагування.",
+  "ConversionMessage": "Усі документи, які ви передаєте, буде конвертовано в формат Office Open XML (docx, xlsx або pptx) для більш швидкого редагування.",
+  "ConversionTitle": "Передавання документів",
+  "ConvertAndOpenTitle": "Конвертувати та відкрити документ",
+  "HideMessage": "Більше не показувати це повідомлення",
+  "SaveOriginalFormatMessage": "Зберегти копію файлу в оригінальному форматі"
+}

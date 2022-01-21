@@ -886,6 +886,10 @@ namespace ASC.Web.Files.Utils
             }
 
             FilesMessageService.Send(newFile, MessageInitiator.DocsService, MessageAction.FileConverted, newFile.Title);
+
+            var linkDao = DaoFactory.GetLinkDao();
+            linkDao.DeleteAllLink(file.ID.ToString());
+
             FileMarker.MarkAsNew(newFile);
 
             var tagDao = DaoFactory.GetTagDao<T>();

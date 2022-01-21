@@ -95,6 +95,7 @@ class SelectFolderInputBody extends React.PureComponent {
       header,
       headerName,
       footer,
+      selectionButtonPrimary,
     } = this.props;
     const { isLoading, baseFolderPath, fullFolderPath } = this.state;
 
@@ -133,6 +134,7 @@ class SelectFolderInputBody extends React.PureComponent {
           header={header}
           headerName={headerName}
           footer={footer}
+          selectionButtonPrimary={selectionButtonPrimary}
         />
       </StyledComponent>
     );

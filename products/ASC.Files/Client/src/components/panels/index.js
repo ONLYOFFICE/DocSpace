@@ -7,6 +7,7 @@ import NewFilesPanel from "./NewFilesPanel";
 import VersionHistoryPanel from "./VersionHistoryPanel";
 import ChangeOwnerPanel from "./ChangeOwnerPanel";
 import UploadPanel from "./UploadPanel";
+import SelectFileDialog from "./SelectFileDialog";
 
 export {
   SharingPanel,
@@ -18,4 +19,5 @@ export {
   VersionHistoryPanel,
   ChangeOwnerPanel,
   UploadPanel,
+  SelectFileDialog,
 };

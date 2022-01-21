@@ -41,6 +41,9 @@ using ASC.Files.Core.EF;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
+
+using Microsoft.EntityFrameworkCore;
+
 namespace ASC.Files.Core.Data
 {
     [Scope]
@@ -113,6 +116,19 @@ namespace ASC.Files.Core.Data
             return FromQuery(q);
         }
 
+        static Func<EF.FilesDbContext, int, Guid, IEnumerable<TagType>, HashSet<string>, HashSet<string>, IEnumerable<TagLinkData>> getTagsQuery =
+    Microsoft.EntityFrameworkCore.EF.CompileQuery((EF.FilesDbContext ctx, int tenantId, Guid subject, IEnumerable<TagType> tagType, HashSet<string> filesId, HashSet<string> foldersId) =>
+    ctx.Tag
+    .AsNoTracking()
+    .Where(r => r.TenantId == tenantId)
+    .Where(r => tagType.Contains(r.Flag))
+    .Join(ctx.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
+    .Where(r => r.Link.TenantId == r.Tag.TenantId)
+    .Where(r => r.Link.EntryType == FileEntryType.File && filesId.Contains(r.Link.EntryId)
+    || r.Link.EntryType == FileEntryType.Folder && foldersId.Contains(r.Link.EntryId))
+    .Where(r => subject == Guid.Empty || r.Link.CreateBy == subject)
+    );
+
         public IDictionary<object, IEnumerable<Tag>> GetTags(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<T>> fileEntries)
         {
             var filesId = new HashSet<string>();
@@ -133,19 +149,7 @@ namespace ASC.Files.Core.Data
 
             if (fileEntries.Any())
             {
-                var q = Query(FilesDbContext.Tag)
-                    .Where(r => tagType.Contains(r.Flag))
-                    .Join(FilesDbContext.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
-                    .Where(r => r.Link.TenantId == r.Tag.TenantId)
-                    .Where(r => r.Link.EntryType == FileEntryType.File && filesId.Contains(r.Link.EntryId)
-                    || r.Link.EntryType == FileEntryType.Folder && foldersId.Contains(r.Link.EntryId));
-
-                if (subject != Guid.Empty)
-                {
-                    q = q.Where(r => r.Link.CreateBy == subject);
-                }
-
-                return FromQuery(q)
+                return FromQuery(getTagsQuery(FilesDbContext, TenantID, subject, tagType, filesId, foldersId))
                     .GroupBy(r => r.EntryId)
                     .ToDictionary(r => r.Key, r => r.AsEnumerable());
             }
@@ -281,10 +285,12 @@ namespace ASC.Files.Core.Data
 
             FilesDbContext.SaveChanges();
 
-            var tagsToRemove = Query(FilesDbContext.Tag)
-                .Where(r => !Query(FilesDbContext.TagLink).Any(a => a.TagId == r.Id));
+            var tagsToRemove = from ft in FilesDbContext.Tag
+                               join ftl in FilesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
+                               where ftl == null
+                               select ft;
 
-            FilesDbContext.Tag.RemoveRange(tagsToRemove);
+            FilesDbContext.Tag.RemoveRange(tagsToRemove.ToList());
             FilesDbContext.SaveChanges();
         }
 
@@ -496,6 +502,196 @@ namespace ASC.Files.Core.Data
             return result;
         }
 
+        static Func<EF.FilesDbContext, int, Guid, List<string>, IEnumerable<TagLinkData>> newTagsForFilesQuery =
+            Microsoft.EntityFrameworkCore.EF.CompileQuery((EF.FilesDbContext ctx, int tenantId, Guid subject, List<string> where) =>
+            ctx.Tag
+            .AsNoTracking()
+            .Where(r => r.TenantId == tenantId)
+            .Where(r => subject == Guid.Empty || r.Owner == subject)
+            .Where(r => r.Flag == TagType.New)
+            .Join(ctx.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData
+            {
+                Tag = tag,
+                Link = link
+            })
+            .Where(r => r.Link.TenantId == r.Tag.TenantId)
+            .Join(ctx.Files, r => Regex.IsMatch(r.Link.EntryId, "^[0-9]+$") ? Convert.ToInt32(r.Link.EntryId) : -1, r => r.Id, (tagLink, file) => new { tagLink, file })
+            .Where(r => r.file.TenantId == r.tagLink.Link.TenantId)
+            .Where(r => where.Contains(r.file.FolderId.ToString()))
+            .Where(r => r.tagLink.Link.EntryType == FileEntryType.File)
+            .Select(r => r.tagLink)
+            .Distinct()
+            );
+
+        static Func<EF.FilesDbContext, int, Guid, List<string>, IEnumerable<TagLinkData>> newTagsForFoldersQuery =
+            Microsoft.EntityFrameworkCore.EF.CompileQuery((EF.FilesDbContext ctx, int tenantId, Guid subject, List<string> monitorFolderIdsStrings) =>
+            ctx.Tag
+            .AsNoTracking()
+            .Where(r => r.TenantId == tenantId)
+            .Where(r => subject == Guid.Empty || r.Owner == subject)
+            .Where(r => r.Flag == TagType.New)
+            .Join(ctx.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData
+            {
+                Tag = tag,
+                Link = link
+            })
+            .Where(r => r.Link.TenantId == r.Tag.TenantId)
+            .Where(r => monitorFolderIdsStrings.Contains(r.Link.EntryId))
+            .Where(r => r.Link.EntryType == FileEntryType.Folder)
+            );
+
+        static Func<EF.FilesDbContext, int, Guid, FolderType, IEnumerable<TagLinkData>> tmpShareFileTagsQuery =
+            Microsoft.EntityFrameworkCore.EF.CompileQuery((EF.FilesDbContext ctx, int tenantId, Guid subject, FolderType folderType) =>
+            ctx.Tag
+            .AsNoTracking()
+            .Where(r => r.TenantId == tenantId)
+            .Where(r => subject == Guid.Empty || r.Owner == subject)
+            .Where(r => r.Flag == TagType.New)
+            .Join(ctx.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData
+            {
+                Tag = tag,
+                Link = link
+            })
+            .Where(r => r.Link.TenantId == r.Tag.TenantId)
+            .Where(r => ctx.Security.Any(a => a.TenantId == tenantId && a.EntryId == r.Link.EntryId && a.EntryType == r.Link.EntryType))
+            .Join(ctx.Files, r => Regex.IsMatch(r.Link.EntryId, "^[0-9]+$") ? Convert.ToInt32(r.Link.EntryId) : -1, f => f.Id, (tagLink, file) => new { tagLink, file })
+            .Where(r => r.file.TenantId == tenantId && r.file.CreateBy != subject && r.tagLink.Link.EntryType == FileEntryType.File)
+            .Select(r => new
+            {
+                r.tagLink,
+                root = ctx.Folders
+                    .Join(ctx.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
+                    .Where(x => x.folder.TenantId == tenantId && x.tree.FolderId == r.file.FolderId)
+                    .OrderByDescending(r => r.tree.Level)
+                    .Select(r => r.folder)
+                    .Take(1)
+                    .FirstOrDefault()
+            })
+            .Where(r => r.root.FolderType == folderType)
+            .Select(r => r.tagLink)
+            .Distinct()
+            );
+
+        static Func<EF.FilesDbContext, int, Guid, FolderType, IEnumerable<TagLinkData>> tmpShareFolderTagsQuery =
+    Microsoft.EntityFrameworkCore.EF.CompileQuery((EF.FilesDbContext ctx, int tenantId, Guid subject, FolderType folderType) =>
+                ctx.Tag
+                .AsNoTracking()
+                .Where(r => r.TenantId == tenantId)
+                .Where(r => subject == Guid.Empty || r.Owner == subject)
+                .Where(r => r.Flag == TagType.New)
+                .Join(ctx.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData
+                {
+                    Tag = tag,
+                    Link = link
+                })
+                .Where(r => r.Link.TenantId == r.Tag.TenantId)
+                .Where(r => ctx.Security.Any(a => a.TenantId == tenantId && a.EntryId == r.Link.EntryId && a.EntryType == r.Link.EntryType))
+                .Join(ctx.Folders, r => Regex.IsMatch(r.Link.EntryId, "^[0-9]+$") ? Convert.ToInt32(r.Link.EntryId) : -1, f => f.Id, (tagLink, folder) => new { tagLink, folder })
+                    .Where(r => r.folder.TenantId == tenantId && r.folder.CreateBy != subject && r.tagLink.Link.EntryType == FileEntryType.Folder)
+                    .Select(r => new
+                    {
+                        r.tagLink,
+                        root = ctx.Folders
+                            .Join(ctx.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
+                            .Where(x => x.folder.TenantId == tenantId)
+                            .Where(x => x.tree.FolderId == r.folder.ParentId)
+                            .OrderByDescending(r => r.tree.Level)
+                            .Select(r => r.folder)
+                            .Take(1)
+                            .FirstOrDefault()
+                    })
+                    .Where(r => r.root.FolderType == folderType)
+                    .Select(r => r.tagLink)
+                    .Distinct()
+                );
+
+        static Func<EF.FilesDbContext, int, Guid, IEnumerable<TagLinkData>> tmpShareSboxTagsQuery =
+    Microsoft.EntityFrameworkCore.EF.CompileQuery((EF.FilesDbContext ctx, int tenantId, Guid subject) =>
+                ctx.Tag
+                .AsNoTracking()
+                .Where(r => r.TenantId == tenantId)
+                .Where(r => subject == Guid.Empty || r.Owner == subject)
+                .Where(r => r.Flag == TagType.New)
+                .Join(ctx.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData
+                {
+                    Tag = tag,
+                    Link = link
+                })
+                .Where(r => r.Link.TenantId == r.Tag.TenantId)
+                .Where(r => ctx.Security.Any(a => a.TenantId == tenantId && a.EntryId == r.Link.EntryId && a.EntryType == r.Link.EntryType))
+                .Join(ctx.ThirdpartyIdMapping, r => r.Link.EntryId, r => r.HashId, (tagLink, mapping) => new { tagLink, mapping })
+                .Where(r => r.mapping.TenantId == r.tagLink.Link.TenantId)
+                .Join(ctx.ThirdpartyAccount, r => r.mapping.TenantId, r => r.TenantId, (tagLinkMapping, account) => new { tagLinkMapping.tagLink, tagLinkMapping.mapping, account })
+                .Where(r => r.account.UserId != subject &&
+                            r.account.FolderType == FolderType.USER &&
+                            (r.mapping.Id.StartsWith("sbox-" + r.account.Id) ||
+                            r.mapping.Id.StartsWith("box-" + r.account.Id) ||
+                            r.mapping.Id.StartsWith("dropbox-" + r.account.Id) ||
+                            r.mapping.Id.StartsWith("spoint-" + r.account.Id) ||
+                            r.mapping.Id.StartsWith("drive-" + r.account.Id) ||
+                            r.mapping.Id.StartsWith("onedrive-" + r.account.Id))
+                    )
+                    .Select(r => r.tagLink)
+                    .Distinct()
+                );
+
+        static Func<EF.FilesDbContext, int, Guid, IEnumerable<TagLinkData>> projectsQuery =
+    Microsoft.EntityFrameworkCore.EF.CompileQuery((EF.FilesDbContext ctx, int tenantId, Guid subject) =>
+                ctx.Tag
+                .AsNoTracking()
+                .Where(r => r.TenantId == tenantId)
+                .Where(r => subject == Guid.Empty || r.Owner == subject)
+                .Where(r => r.Flag == TagType.New)
+                .Join(ctx.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData
+                {
+                    Tag = tag,
+                    Link = link
+                })
+                .Where(r => r.Link.TenantId == r.Tag.TenantId)
+                .Join(ctx.BunchObjects, r => r.Link.TenantId, r => r.TenantId, (tagLink, bunch) => new { tagLink, bunch })
+                    .Where(r => r.bunch.LeftNode == r.tagLink.Link.EntryId &&
+                                r.tagLink.Link.EntryType == FileEntryType.Folder &&
+                                r.bunch.RightNode.StartsWith("projects/project/"))
+                    .Select(r => r.tagLink)
+                    .Distinct()
+                );
+
+        static Func<EF.FilesDbContext, int, Guid, List<string>, IEnumerable<TagLinkData>> newTagsForSBoxQuery =
+    Microsoft.EntityFrameworkCore.EF.CompileQuery((EF.FilesDbContext ctx, int tenantId, Guid subject, List<string> thirdpartyFolderIds) =>
+                ctx.Tag
+                .AsNoTracking()
+                .Where(r => r.TenantId == tenantId)
+                .Where(r => subject == Guid.Empty || r.Owner == subject)
+                .Where(r => r.Flag == TagType.New)
+                .Join(ctx.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData
+                {
+                    Tag = tag,
+                    Link = link
+                })
+                .Where(r => r.Link.TenantId == r.Tag.TenantId)
+                .Join(ctx.ThirdpartyIdMapping, r => r.Link.EntryId, r => r.HashId, (tagLink, mapping) => new { tagLink, mapping })
+                        .Where(r => r.mapping.TenantId == tenantId &&
+                                    thirdpartyFolderIds.Contains(r.mapping.Id) &&
+                                    r.tagLink.Tag.Owner == subject &&
+                                    r.tagLink.Link.EntryType == FileEntryType.Folder)
+                        .Select(r => r.tagLink)
+                        .Distinct()
+                );
+
+        static Func<EF.FilesDbContext, List<int>, bool, IEnumerable<int>> getFolderQuery = Microsoft.EntityFrameworkCore.EF.CompileQuery((EF.FilesDbContext ctx, List<int> monitorFolderIdsInt, bool deepSearch) =>
+              ctx.Tree
+                  .AsNoTracking()
+                  .Where(r => monitorFolderIdsInt.Contains(r.ParentId))
+                  .Where(r => deepSearch || r.Level == 1)
+                  .Select(r => r.FolderId));
+
+        static Func<EF.FilesDbContext, int, FolderType, Guid, IEnumerable<int>> getThirdpartyAccountQuery = Microsoft.EntityFrameworkCore.EF.CompileQuery((EF.FilesDbContext ctx, int tenantId, FolderType folderType, Guid subject) =>
+              ctx.ThirdpartyAccount
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.FolderType == folderType)
+                    .Where(r => folderType != FolderType.USER || r.UserId == subject)
+                    .Select(r => r.Id));
+
         public IEnumerable<Tag> GetNewTags(Guid subject, Folder<T> parentFolder, bool deepSearch)
         {
             if (parentFolder == null || EqualityComparer<T>.Default.Equals(parentFolder.ID, default(T)))
@@ -505,160 +701,24 @@ namespace ASC.Files.Core.Data
 
             var monitorFolderIds = new object[] { parentFolder.ID }.AsEnumerable();
 
-            var getBaseSqlQuery = new Func<IQueryable<TagLinkData>>(() =>
-            {
-                var fnResult = Query(FilesDbContext.Tag)
-                    .Join(FilesDbContext.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
-                    .Where(r => r.Link.TenantId == r.Tag.TenantId)
-                    .Where(r => r.Tag.Flag == TagType.New)
-                    .Distinct();
-
-                if (subject != Guid.Empty)
-                {
-                    fnResult = fnResult.Where(r => r.Tag.Owner == subject);
-                }
-
-                return fnResult;
-            });
+            var tenantId = TenantID;
 
             var tempTags = Enumerable.Empty<Tag>();
 
             if (parentFolder.FolderType == FolderType.SHARE)
             {
-                var shareQuery =
-                    new Func<IQueryable<TagLinkData>>(() => getBaseSqlQuery().Where(
-                        r => FilesDbContext.Security
-                        .Any(a => a.TenantId == TenantID && a.EntryId == r.Link.EntryId && a.EntryType == r.Link.EntryType)));
-
-                var tmpShareFileTags =
-                    shareQuery()
-                    .Join(FilesDbContext.Files, r => Regex.IsMatch(r.Link.EntryId, "^[0-9]+$") ? Convert.ToInt32(r.Link.EntryId) : -1, f => f.Id, (tagLink, file) => new { tagLink, file })
-                    .Where(r => r.file.TenantId == TenantID && r.file.CreateBy != subject && r.tagLink.Link.EntryType == FileEntryType.File)
-                    .Select(r => new
-                    {
-                        r.tagLink,
-                        root = FilesDbContext.Folders
-                            .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
-                            .Where(x => x.folder.TenantId == TenantID && x.tree.FolderId == r.file.FolderId)
-                            .OrderByDescending(r => r.tree.Level)
-                            .Select(r => r.folder)
-                            .Take(1)
-                            .FirstOrDefault()
-                    })
-                    .Where(r => r.root.FolderType == FolderType.USER)
-                    .Select(r => r.tagLink)
-                    .Distinct();
-
-                tempTags = tempTags.Concat(FromQuery(tmpShareFileTags));
-
-
-                var tmpShareFolderTags =
-                    shareQuery()
-                    .Join(FilesDbContext.Folders, r => Regex.IsMatch(r.Link.EntryId, "^[0-9]+$") ? Convert.ToInt32(r.Link.EntryId) : -1, f => f.Id, (tagLink, folder) => new { tagLink, folder })
-                    .Where(r => r.folder.TenantId == TenantID && r.folder.CreateBy != subject && r.tagLink.Link.EntryType == FileEntryType.Folder)
-                    .Select(r => new
-                    {
-                        r.tagLink,
-                        root = FilesDbContext.Folders
-                            .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
-                            .Where(x => x.folder.TenantId == TenantID)
-                            .Where(x => x.tree.FolderId == r.folder.ParentId)
-                            .OrderByDescending(r => r.tree.Level)
-                            .Select(r => r.folder)
-                            .Take(1)
-                            .FirstOrDefault()
-                    })
-                    .Where(r => r.root.FolderType == FolderType.USER)
-                    .Select(r => r.tagLink)
-                    .Distinct();
-
-                tempTags = tempTags.Concat(FromQuery(tmpShareFolderTags));
-
-                var tmpShareSboxTags =
-                    shareQuery()
-                    .Join(FilesDbContext.ThirdpartyIdMapping, r => r.Link.EntryId, r => r.HashId, (tagLink, mapping) => new { tagLink, mapping })
-                    .Where(r => r.mapping.TenantId == r.tagLink.Link.TenantId)
-                    .Join(FilesDbContext.ThirdpartyAccount, r => r.mapping.TenantId, r => r.TenantId, (tagLinkMapping, account) => new { tagLinkMapping.tagLink, tagLinkMapping.mapping, account })
-                    .Where(r => r.account.UserId != subject &&
-                                r.account.FolderType == FolderType.USER &&
-                                (r.mapping.Id.StartsWith("sbox-" + r.account.Id) ||
-                                r.mapping.Id.StartsWith("box-" + r.account.Id) ||
-                                r.mapping.Id.StartsWith("dropbox-" + r.account.Id) ||
-                                r.mapping.Id.StartsWith("spoint-" + r.account.Id) ||
-                                r.mapping.Id.StartsWith("drive-" + r.account.Id) ||
-                                r.mapping.Id.StartsWith("onedrive-" + r.account.Id))
-                    )
-                    .Select(r => r.tagLink)
-                    .Distinct();
-
-                tempTags = tempTags.Concat(FromQuery(tmpShareSboxTags));
+                tempTags = tempTags.Concat(FromQuery(tmpShareFileTagsQuery(FilesDbContext, tenantId, subject, FolderType.USER)));
+                tempTags = tempTags.Concat(FromQuery(tmpShareFolderTagsQuery(FilesDbContext, tenantId, subject, FolderType.USER)));
+                tempTags = tempTags.Concat(FromQuery(tmpShareSboxTagsQuery(FilesDbContext, tenantId, subject)));
             }
             else if (parentFolder.FolderType == FolderType.Privacy)
             {
-                var shareQuery =
-                    new Func<IQueryable<TagLinkData>>(() => getBaseSqlQuery().Where(
-                        r => FilesDbContext.Security
-                        .Any(a => a.TenantId == TenantID &&
-                                  a.EntryId == r.Link.EntryId &&
-                                  a.EntryType == r.Link.EntryType)));
-
-                var tmpShareFileTags =
-                    shareQuery()
-                    .Join(FilesDbContext.Files, r => Regex.IsMatch(r.Link.EntryId, "^[0-9]+$") ? Convert.ToInt32(r.Link.EntryId) : -1, f => f.Id, (tagLink, file) => new { tagLink, file })
-                    .Where(r => r.file.TenantId == TenantID &&
-                                r.file.CreateBy != subject &&
-                                r.tagLink.Link.EntryType == FileEntryType.File)
-                    .Select(r => new
-                    {
-                        r.tagLink,
-                        root = FilesDbContext.Folders
-                            .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
-                            .Where(x => x.folder.TenantId == TenantID && x.tree.FolderId == r.file.FolderId)
-                            .OrderByDescending(r => r.tree.Level)
-                            .Select(r => r.folder)
-                            .Take(1)
-                            .FirstOrDefault()
-                    })
-                    .Where(r => r.root.FolderType == FolderType.Privacy)
-                    .Select(r => r.tagLink)
-                    .Distinct();
-
-                tempTags = tempTags.Concat(FromQuery(tmpShareFileTags));
-
-
-                var tmpShareFolderTags =
-                                    shareQuery()
-                                    .Join(FilesDbContext.Folders, r => Regex.IsMatch(r.Link.EntryId, "^[0-9]+$") ? Convert.ToInt32(r.Link.EntryId) : -1, f => f.Id, (tagLink, folder) => new { tagLink, folder })
-                                    .Where(r => r.folder.TenantId == TenantID
-                                             && r.folder.CreateBy != subject
-                                             && r.tagLink.Link.EntryType == FileEntryType.Folder)
-                                    .Select(r => new
-                                    {
-                                        r.tagLink,
-                                        root = FilesDbContext.Folders
-                                            .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
-                                            .Where(x => x.folder.TenantId == TenantID && x.tree.FolderId == r.folder.ParentId)
-                                            .OrderByDescending(r => r.tree.Level)
-                                            .Select(r => r.folder)
-                                            .Take(1)
-                                            .FirstOrDefault()
-                                    })
-                                    .Where(r => r.root.FolderType == FolderType.Privacy)
-                                    .Select(r => r.tagLink)
-                                    .Distinct();
-
-                tempTags = tempTags.Concat(FromQuery(tmpShareFolderTags));
+                tempTags = tempTags.Concat(FromQuery(tmpShareFileTagsQuery(FilesDbContext, tenantId, subject, FolderType.Privacy)));
+                tempTags = tempTags.Concat(FromQuery(tmpShareFolderTagsQuery(FilesDbContext, tenantId, subject, FolderType.Privacy)));
             }
             else if (parentFolder.FolderType == FolderType.Projects)
             {
-                var q = getBaseSqlQuery()
-                    .Join(FilesDbContext.BunchObjects, r => r.Link.TenantId, r => r.TenantId, (tagLink, bunch) => new { tagLink, bunch })
-                    .Where(r => r.bunch.LeftNode == r.tagLink.Link.EntryId &&
-                                r.tagLink.Link.EntryType == FileEntryType.Folder &&
-                                r.bunch.RightNode.StartsWith("projects/project/"))
-                    .Select(r => r.tagLink)
-                    .Distinct();
-                tempTags = tempTags.Concat(FromQuery(q));
+                tempTags = tempTags.Concat(FromQuery(projectsQuery(FilesDbContext, tenantId, subject)));
             }
 
             if (tempTags.Any())
@@ -670,73 +730,32 @@ namespace ASC.Files.Core.Data
             }
 
             var monitorFolderIdsInt = monitorFolderIds.OfType<int>().ToList();
-            var subFoldersSqlQuery =
-                FilesDbContext.Tree
-                .Where(r => monitorFolderIdsInt.Contains(r.ParentId));
+            var subFoldersSqlQuery = getFolderQuery(FilesDbContext, monitorFolderIdsInt, deepSearch);
 
-            if (!deepSearch)
-            {
-                subFoldersSqlQuery = subFoldersSqlQuery.Where(r => r.Level == 1);
-            }
-
-            monitorFolderIds = monitorFolderIds.Concat(subFoldersSqlQuery.Select(r => r.FolderId).ToList().ConvertAll(r => (object)r));
+            monitorFolderIds = monitorFolderIds.Concat(subFoldersSqlQuery.ToList().ConvertAll(r => (object)r));
 
             var monitorFolderIdsStrings = monitorFolderIds.Select(r => r.ToString()).ToList();
 
-            var newTagsForFolders = getBaseSqlQuery()
-                .Where(r => monitorFolderIdsStrings.Contains(r.Link.EntryId))
-                .Where(r => r.Link.EntryType == FileEntryType.Folder);
+            result.AddRange(FromQuery(newTagsForFoldersQuery(FilesDbContext, tenantId, subject, monitorFolderIdsStrings)));
 
-            result.AddRange(FromQuery(newTagsForFolders));
+            var where = deepSearch ? monitorFolderIdsStrings : new List<string>() { parentFolder.ID.ToString() };
 
-            var where = (deepSearch ? monitorFolderIds.ToArray() : new object[] { parentFolder.ID })
-                .Select(r => r.ToString())
-                .ToList();
-
-            var newTagsForFiles =
-                getBaseSqlQuery()
-                .Join(FilesDbContext.Files, r => Regex.IsMatch(r.Link.EntryId, "^[0-9]+$") ? Convert.ToInt32(r.Link.EntryId) : -1, r => r.Id, (tagLink, file) => new { tagLink, file })
-                .Where(r => r.file.TenantId == r.tagLink.Link.TenantId)
-                .Where(r => where.Contains(r.file.FolderId.ToString()))
-                .Where(r => r.tagLink.Link.EntryType == FileEntryType.File)
-                .Select(r => r.tagLink)
-                .Distinct();
-
-            result.AddRange(FromQuery(newTagsForFiles));
+            result.AddRange(FromQuery(newTagsForFilesQuery(FilesDbContext, tenantId, subject, where)));
 
             if (parentFolder.FolderType == FolderType.USER || parentFolder.FolderType == FolderType.COMMON)
             {
-                var folderType = parentFolder.FolderType;
-
-                var querySelect = FilesDbContext.ThirdpartyAccount
-                    .Where(r => r.TenantId == TenantID)
-                    .Where(r => r.FolderType == folderType);
-
-                if (folderType == FolderType.USER)
-                {
-                    querySelect = querySelect.Where(r => r.UserId == subject);
-                }
-
-                var folderIds = querySelect.Select(r => r.Id).ToList();
+                var folderIds = getThirdpartyAccountQuery(FilesDbContext, tenantId, parentFolder.FolderType, subject).ToList();
                 var thirdpartyFolderIds = folderIds.ConvertAll(r => "sbox-" + r)
                                                     .Concat(folderIds.ConvertAll(r => $"box-{r}"))
                                                     .Concat(folderIds.ConvertAll(r => $"dropbox-{r}"))
                                                     .Concat(folderIds.ConvertAll(r => $"spoint-{r}"))
                                                     .Concat(folderIds.ConvertAll(r => $"drive-{r}"))
-                                                    .Concat(folderIds.ConvertAll(r => $"onedrive-{r}"));
+                                                    .Concat(folderIds.ConvertAll(r => $"onedrive-{r}"))
+                                                    .ToList();
 
                 if (thirdpartyFolderIds.Any())
                 {
-                    var newTagsForSBox = getBaseSqlQuery()
-                        .Join(FilesDbContext.ThirdpartyIdMapping, r => r.Link.EntryId, r => r.HashId, (tagLink, mapping) => new { tagLink, mapping })
-                        .Where(r => r.mapping.TenantId == TenantID &&
-                                    thirdpartyFolderIds.Contains(r.mapping.Id) &&
-                                    r.tagLink.Tag.Owner == subject &&
-                                    r.tagLink.Link.EntryType == FileEntryType.Folder)
-                        .Select(r => r.tagLink)
-                        .Distinct();
-
-                    result.AddRange(FromQuery(newTagsForSBox));
+                    result.AddRange(FromQuery(newTagsForSBoxQuery(FilesDbContext, tenantId, subject, thirdpartyFolderIds)));
                 }
             }
 
@@ -763,8 +782,32 @@ namespace ASC.Files.Core.Data
                     }
                 })
                 .AsEnumerable()
-                .ToList()
-                .ConvertAll(ToTag);
+                .Select(ToTag)
+                .ToList();
+        }
+
+        protected List<Tag> FromQuery(IEnumerable<TagLinkData> dbFilesTags)
+        {
+            return dbFilesTags
+                .Select(r => new TagLinkData()
+                {
+                    Tag = new DbFilesTag
+                    {
+                        Name = r.Tag.Name,
+                        Flag = r.Tag.Flag,
+                        Owner = r.Tag.Owner,
+                        Id = r.Tag.Id
+                    },
+                    Link = new DbFilesTagLink
+                    {
+                        TagCount = r.Link.TagCount,
+                        EntryId = r.Link.EntryId,
+                        EntryType = r.Link.EntryType
+                    }
+                })
+                .AsEnumerable()
+                .Select(ToTag)
+                .ToList();
         }
 
         private Tag ToTag(TagLinkData r)

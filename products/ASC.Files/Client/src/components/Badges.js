@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import styled from "styled-components";
 import Badge from "@appserver/components/badge";
 import IconButton from "@appserver/components/icon-button";
-import {
-  StyledFavoriteIcon,
-  StyledFileActionsConvertEditDocIcon,
-  StyledFileActionsLockedIcon,
-} from "./Icons";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import { isTablet } from "react-device-detect";
+
+export const StyledIcon = styled(IconButton)`
+  ${commonIconsStyles}
+`;
 
 const Badges = ({
   t,
   newItems,
+  sectionWidth,
   item,
   canWebEdit,
   isTrashFolder,
@@ -19,42 +22,44 @@ const Badges = ({
   accessToEdit,
   showNew,
   onFilesClick,
-  onClickLock,
-  onClickFavorite,
   onShowVersionHistory,
   onBadgeClick,
   setConvertDialogVisible,
 }) => {
-  const {
-    id,
-    locked,
-    fileStatus,
-    version,
-    versionGroup,
-    title,
-    fileExst,
-  } = item;
+  const { id, locked, fileStatus, version, versionGroup, fileExst } = item;
 
-  const isFavorite = fileStatus === 32;
   const isEditing = fileStatus === 1;
   const isNewWithFav = fileStatus === 34;
   const isEditingWithFav = fileStatus === 33;
   const showEditBadge = !locked || item.access === 0;
   const isPrivacy = isPrivacyFolder && isDesktopClient;
+  const isForm = fileExst === ".oform";
+
+  const iconEdit = isForm
+    ? "/static/images/access.edit.form.react.svg"
+    : "/static/images/file.actions.convert.edit.doc.react.svg";
+
+  const iconForm = "/static/images/access.edit.form.react.svg";
+
+  const iconRefresh = "/static/images/refresh.react.svg";
+
+  const countVersions = versionGroup > 999 ? "999+" : versionGroup;
+
+  const contentNewItems = newItems > 999 ? "999+" : newItems;
+
+  const tabletViewBadge =
+    (sectionWidth > 500 && sectionWidth <= 1024) || isTablet;
+
+  const sizeBadge = tabletViewBadge ? "medium" : "small";
+
+  const lineHeightBadge = tabletViewBadge ? "1.46" : "1.34";
+
+  const paddingBadge = tabletViewBadge ? "0 5px" : "0 3px";
+
+  const fontSizeBadge = tabletViewBadge ? "11px" : "9px";
 
   return fileExst ? (
     <div className="badges additional-badges">
-      {canConvert && !isTrashFolder && (
-        <IconButton
-          onClick={setConvertDialogVisible}
-          iconName="/static/images/refresh.react.svg"
-          className="badge icons-group can-convert"
-          size="small"
-          isfill={true}
-          color="#A3A9AE"
-          hoverColor="#3B72A7"
-        />
-      )}
       {canWebEdit &&
         !isEditing &&
         !isEditingWithFav &&
@@ -62,70 +67,65 @@ const Badges = ({
         !isPrivacy &&
         accessToEdit &&
         showEditBadge &&
-        !canConvert && (
-          <IconButton
+        !canConvert &&
+        isForm && (
+          <StyledIcon
+            iconName={iconForm}
+            className="badge tablet-badge icons-group tablet-edit edit"
+            size={sizeBadge}
             onClick={onFilesClick}
-            iconName="/static/images/access.edit.react.svg"
-            className="badge icons-group"
-            size="small"
-            isfill={true}
-            color="#A3A9AE"
             hoverColor="#3B72A7"
+            title={t("Common:FillFormButton")}
           />
         )}
       {(isEditing || isEditingWithFav) && (
-        <StyledFileActionsConvertEditDocIcon
+        <StyledIcon
+          iconName={iconEdit}
+          className="badge icons-group is-editing tablet-badge tablet-edit"
+          size={sizeBadge}
           onClick={onFilesClick}
-          className="badge icons-group is-editing"
-          size="small"
+          hoverColor="#3B72A7"
+          title={t("Common:EditButton")}
         />
       )}
-      {locked && accessToEdit && !isTrashFolder && (
-        <StyledFileActionsLockedIcon
-          className="badge lock-file icons-group"
-          size="small"
-          data-id={id}
-          data-locked={true}
-          onClick={onClickLock}
-        />
-      )}
-      {(isFavorite || isNewWithFav || isEditingWithFav) && !isTrashFolder && (
-        <StyledFavoriteIcon
-          className="favorite icons-group badge"
-          size="small"
-          data-action="remove"
-          data-id={id}
-          data-title={title}
-          onClick={onClickFavorite}
+      {canConvert && !isTrashFolder && (
+        <StyledIcon
+          onClick={setConvertDialogVisible}
+          iconName={iconRefresh}
+          className="badge tablet-badge icons-group can-convert"
+          size={sizeBadge}
+          hoverColor="#3B72A7"
         />
       )}
       {version > 1 && (
         <Badge
-          className="badge-version icons-group"
+          className="badge-version tablet-badge icons-group"
           backgroundColor="#A3A9AE"
           borderRadius="11px"
           color="#FFFFFF"
-          fontSize="10px"
+          fontSize={fontSizeBadge}
           fontWeight={800}
-          label={`Ver.${versionGroup}`}
+          label={t("VersionBadge:Version", { version: countVersions })}
           maxWidth="50px"
           onClick={onShowVersionHistory}
-          padding="0 5px"
+          padding={paddingBadge}
+          lineHeight={lineHeightBadge}
           data-id={id}
         />
       )}
       {(showNew || isNewWithFav) && (
         <Badge
-          className="badge-version icons-group"
+          className="badge-version badge-new-version tablet-badge icons-group"
           backgroundColor="#ED7309"
           borderRadius="11px"
           color="#FFFFFF"
-          fontSize="10px"
+          fontSize={fontSizeBadge}
           fontWeight={800}
           label={t("New")}
           maxWidth="50px"
           onClick={onBadgeClick}
-          padding="0 5px"
+          padding={paddingBadge}
+          lineHeight={lineHeightBadge}
           data-id={id}
         />
       )}
@@ -133,16 +133,17 @@ const Badges = ({
   ) : (
     showNew && (
       <Badge
-        className="new-items"
+        className="new-items tablet-badge"
         backgroundColor="#ED7309"
         borderRadius="11px"
         color="#FFFFFF"
-        fontSize="10px"
+        fontSize={fontSizeBadge}
         fontWeight={800}
-        label={newItems}
+        label={contentNewItems}
         maxWidth="50px"
         onClick={onBadgeClick}
-        padding="0 5px"
+        padding={paddingBadge}
+        lineHeight={lineHeightBadge}
         data-id={id}
       />
     )

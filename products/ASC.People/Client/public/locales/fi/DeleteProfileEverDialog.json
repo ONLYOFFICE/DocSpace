@@ -1,0 +1,5 @@
+﻿{
+  "DeleteUserConfirmation": "{{userCaption}} <strong> {{user}} </strong> poistetaan.",
+  "DeleteUserDataConfirmation": "Toisten kanssa jaetut käyttäjäasiakirjat poistetaan. Voit välttää tämän määrittämällä tiedot uudelleen.",
+  "SuccessfullyDeleteUserInfoMessage": "Käyttäjä on poistettu onnistuneesti"
+}

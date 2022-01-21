@@ -180,6 +180,7 @@ const SectionBodyContent = (props) => {
   };
 
   //console.log("Files Home SectionBodyContent render", props);
+
   return (
     <Consumer>
       {(context) =>
@@ -244,7 +245,7 @@ export default inject(
   }
 )(
   withRouter(
-    withTranslation(["Home", "Translations"])(
+    withTranslation(["Home", "Common", "Translations"])(
       withLoader(observer(SectionBodyContent))()
     )
   )

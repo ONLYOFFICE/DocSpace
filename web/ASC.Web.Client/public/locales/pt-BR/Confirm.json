@@ -1,4 +1,4 @@
-{
+﻿{
   "ChangePasswordSuccess": "A senha foi alterada com sucesso",
   "ConfirmOwnerPortalSuccessMessage": "Proprietário portal foi alterado com sucesso. Em 10 segundos você será redirecionado.",
   "ConfirmOwnerPortalTitle": "Por favor, confirme que você deseja mudar o proprietário do portal para {{newOwner}}",

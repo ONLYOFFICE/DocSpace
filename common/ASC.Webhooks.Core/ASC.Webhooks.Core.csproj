@@ -15,11 +15,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="proto\WebhookRequest.proto" />
+    <None Remove="proto\webhook_request.proto" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Grpc.Tools" Version="2.32.0">
+    <PackageReference Include="Grpc.Tools" Version="2.40.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="proto\WebhookRequest.proto" />
+    <Protobuf Include="proto\webhook_request.proto" />
   </ItemGroup>
 
 </Project>

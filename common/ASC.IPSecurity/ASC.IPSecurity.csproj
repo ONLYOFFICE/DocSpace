@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Grpc.Tools" Version="2.32.0">
+    <PackageReference Include="Grpc.Tools" Version="2.40.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -24,6 +24,6 @@
     <ProjectReference Include="..\ASC.Core.Common\ASC.Core.Common.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Protobuf Include="protos\IPRestrictionItem.proto" />
+    <Protobuf Include="protos\ip_restriction_item.proto" />
   </ItemGroup>
 </Project>

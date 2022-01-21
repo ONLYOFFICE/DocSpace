@@ -31,7 +31,6 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
-using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.EF.Model;
 using ASC.ElasticSearch;
@@ -60,11 +59,11 @@ namespace ASC.Web.Files.Core.Search
             IServiceProvider serviceProvider,
             IDaoFactory daoFactory,
             ICache cache,
-            ConfigurationExtension configurationExtension)
+            Settings settings)
             : base(options, tenantManager, searchSettingsHelper, factoryIndexer, baseIndexer, serviceProvider, cache)
         {
             DaoFactory = daoFactory;
-            Settings = Settings.GetInstance(configurationExtension);
+            Settings = settings;
         }
 
         public override void IndexAll()

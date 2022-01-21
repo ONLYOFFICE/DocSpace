@@ -37,12 +37,14 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.2.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.32.0">
+    <PackageReference Include="Grpc.Tools" Version="2.40.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="LumenWorksCsvReader" Version="4.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="6.0.0" />
+    <PackageReference Include="StackExchange.Redis.Extensions.AspNetCore" Version="7.2.1" />
+    <PackageReference Include="StackExchange.Redis.Extensions.Newtonsoft" Version="7.2.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -178,7 +180,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="proto\ContactPhotoManagerCacheItem.proto" />
+    <Protobuf Include="proto\contact_photo_manager_cache_item.proto" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,1 +1,8 @@
-{}
+﻿{
+  "ConversionFileMessage": "Súbor bude konvertovaný do formátu OOXML (docx, xlsx alebo pptx) pre rýchlejšie prezeranie a úpravy.",
+  "ConversionMessage": "Všetky vami nahrané dokumenty budú konvertované do formátu Office Open XML (docx, xlsx alebo pptx) pre rýchlejšie úpravy.",
+  "ConversionTitle": "Nahrávanie dokumentu",
+  "ConvertAndOpenTitle": "Konvertovať a otvoriť dokument",
+  "HideMessage": "Túto správu viac nezobrazovať",
+  "SaveOriginalFormatMessage": "Uložiť kópiu súboru v pôvodnom formáte"
+}

@@ -1,4 +1,4 @@
-{
+﻿{
   "AddMembers": "Add members",
   "Birthdate": "Date of birth",
   "Comments": "Comments",
@@ -14,6 +14,7 @@
   "Location": "Location",
   "MaleSexStatus": "Male",
   "maxSizeFileError": "Maximum file size exceeded",
+  "MaxSizeLabel": "(JPG or PNG, max 1 MB)",
   "NotBeUndone": "Note: this action can't be undone.",
   "orDropFileHereLabel": "or drop a file here",
   "PasswordChangeButton": "Change password",

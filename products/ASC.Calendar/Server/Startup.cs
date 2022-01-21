@@ -11,6 +11,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using StackExchange.Redis.Extensions.Core.Configuration;
+
+using StackExchange.Redis.Extensions.Newtonsoft;
+
 namespace ASC.Calendar
 {
     public class Startup : BaseStartup
@@ -39,6 +43,9 @@ namespace ASC.Calendar
             DIHelper.TryAdd<CalendarController>();
 
             NotifyConfigurationExtension.Register(DIHelper);
+            
+            services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(Configuration.GetSection("Redis").Get<RedisConfiguration>());
+
         }
 
         public override  void Configure(IApplicationBuilder app, IWebHostEnvironment env)

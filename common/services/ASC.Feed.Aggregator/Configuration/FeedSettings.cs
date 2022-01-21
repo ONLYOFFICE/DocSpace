@@ -1,44 +1,28 @@
 ﻿using System;
 
+using ASC.Common;
 using ASC.Common.Utils;
 
 namespace ASC.Feed.Configuration
 {
+    [Singletone]
     public class FeedSettings
     {
-        public string ServerRoot { get; set; }
+        private string serverRoot;
+        public string ServerRoot { get => serverRoot ?? "http://*/"; set { serverRoot = value; } }
 
-        public TimeSpan AggregatePeriod { get; set; }
+        private TimeSpan aggregatePeriod;
+        public TimeSpan AggregatePeriod { get => aggregatePeriod == TimeSpan.Zero ? TimeSpan.FromMinutes(5) : aggregatePeriod; set { aggregatePeriod = value; } }
 
-        public TimeSpan AggregateInterval { get; set; }
+        private TimeSpan aggregateInterval;
+        public TimeSpan AggregateInterval { get => aggregateInterval == TimeSpan.Zero ? TimeSpan.FromDays(14) : aggregateInterval; set { aggregateInterval = value; } }
 
-        public TimeSpan RemovePeriod { get; set; }
+        private TimeSpan removePeriod;
+        public TimeSpan RemovePeriod { get => removePeriod == TimeSpan.Zero ? TimeSpan.FromDays(1) : removePeriod; set { removePeriod = value; } }
 
-        public static FeedSettings GetInstance(ConfigurationExtension configuration)
+        public FeedSettings(ConfigurationExtension configuration)
         {
-            var result = configuration.GetSetting<FeedSettings>("feed");
-
-            if (string.IsNullOrEmpty(result.ServerRoot))
-            {
-                result.ServerRoot = "http://*/";
-            }
-
-            if (result.AggregatePeriod == TimeSpan.Zero)
-            {
-                result.AggregatePeriod = TimeSpan.FromMinutes(5);
-            }
-
-            if (result.AggregateInterval == TimeSpan.Zero)
-            {
-                result.AggregateInterval = TimeSpan.FromDays(14);
-            }
-
-            if (result.RemovePeriod == TimeSpan.Zero)
-            {
-                result.RemovePeriod = TimeSpan.FromDays(1);
-            }
-
-            return result;
+            configuration.GetSetting("feed", this);
         }
     }
 }

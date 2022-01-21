@@ -1,1 +1,5 @@
-{}
+﻿{
+  "DeleteUserConfirmation": "{{userCaption}} <strong>{{user}}</strong> bude odstránené.",
+  "DeleteUserDataConfirmation": "Dokumenty používateľov zdieľané s ostatnými budú odstránené. Aby ste tomu zabránili, znova priraďte údaje.",
+  "SuccessfullyDeleteUserInfoMessage": "Používateľ bol úspešne odstránený"
+}

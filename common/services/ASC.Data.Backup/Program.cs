@@ -1,85 +1,75 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
+﻿var builder = WebApplication.CreateBuilder(args);
 
-using ASC.Api.Core;
-using ASC.Common.Utils;
+builder.Host.UseSystemd();
+builder.Host.UseWindowsService();
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
-using Autofac.Extensions.DependencyInjection;
-
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-
-namespace ASC.Data.Backup
+builder.WebHost.ConfigureKestrel((hostingContext, serverOptions) =>
 {
-    public class Program
+    var kestrelConfig = hostingContext.Configuration.GetSection("Kestrel");
+
+    if (!kestrelConfig.Exists()) return;
+
+    var unixSocket = kestrelConfig.GetValue<string>("ListenUnixSocket");
+
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
     {
-        public async static Task Main(string[] args)
+        if (!string.IsNullOrWhiteSpace(unixSocket))
         {
-            var host = CreateHostBuilder(args).Build();
+            unixSocket = string.Format(unixSocket, hostingContext.HostingEnvironment.ApplicationName.Replace("ASC.", "").Replace(".", ""));
 
-            await host.RunAsync();
+            serverOptions.ListenUnixSocket(unixSocket);
         }
-
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .UseSystemd()
-                .UseWindowsService()
-                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    var builder = webBuilder.UseStartup<Startup>();
-
-                    builder.ConfigureKestrel((hostingContext, serverOptions) =>
-                    {
-                        var kestrelConfig = hostingContext.Configuration.GetSection("Kestrel");
-
-                        if (!kestrelConfig.Exists()) return;
-
-                        var unixSocket = kestrelConfig.GetValue<string>("ListenUnixSocket");
-
-                        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                        {
-                            if (!String.IsNullOrWhiteSpace(unixSocket))
-                            {
-                                unixSocket = String.Format(unixSocket, hostingContext.HostingEnvironment.ApplicationName.Replace("ASC.", "").Replace(".", ""));
-
-                                serverOptions.ListenUnixSocket(unixSocket);
-                            }
-                        }
-                    });
-                })
-                .ConfigureAppConfiguration((hostContext, config) =>
-                {
-                    var buided = config.Build();
-                    var path = buided["pathToConf"];
-                    if (!Path.IsPathRooted(path))
-                    {
-                        path = Path.GetFullPath(CrossPlatform.PathCombine(hostContext.HostingEnvironment.ContentRootPath, path));
-                    }
-                    config.SetBasePath(path);
-                    var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
-                    config
-                        .AddJsonFile("appsettings.json")
-                        .AddJsonFile($"appsettings.{env}.json", true)
-                        .AddJsonFile("storage.json")
-                        .AddJsonFile("notify.json")
-                        .AddJsonFile($"notify.{env}.json", true)
-                        .AddJsonFile("backup.json")
-                        .AddJsonFile("kafka.json")
-                        .AddJsonFile($"kafka.{env}.json", true)
-                        .AddEnvironmentVariables()
-                        .AddCommandLine(args)
-                        .AddInMemoryCollection(new Dictionary<string, string>
-                            {
-                                {"pathToConf", path }
-                            }
-                        );
-                })
-            .ConfigureNLogLogging();
-
     }
-}
+});
+
+builder.Host.ConfigureAppConfiguration((hostContext, config) =>
+{
+    var buided = config.Build();
+
+    var path = buided["pathToConf"];
+
+    if (!Path.IsPathRooted(path))
+    {
+        path = Path.GetFullPath(CrossPlatform.PathCombine(hostContext.HostingEnvironment.ContentRootPath, path));
+    }
+
+    config.SetBasePath(path);
+
+    var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
+    config
+        .AddJsonFile("appsettings.json")
+        .AddJsonFile($"appsettings.{env}.json", true)
+        .AddJsonFile("storage.json")
+        .AddJsonFile("notify.json")
+        .AddJsonFile($"notify.{env}.json", true)
+        .AddJsonFile("backup.json")
+        .AddJsonFile("kafka.json")
+        .AddJsonFile($"kafka.{env}.json", true)
+        .AddJsonFile("redis.json")
+        .AddJsonFile($"redis.{env}.json", true)
+        .AddEnvironmentVariables()
+        .AddCommandLine(args)
+        .AddInMemoryCollection(new Dictionary<string, string>
+            {
+                    {"pathToConf", path }
+            }
+        );
+});
+
+builder.Host.ConfigureNLogLogging();
+
+var startup = new Startup(builder.Configuration, builder.Environment);
+
+startup.ConfigureServices(builder.Services);
+
+builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
+{
+    startup.ConfigureContainer(containerBuilder);
+});
+
+var app = builder.Build();
+
+startup.Configure(app, app.Environment);
+
+app.Run();

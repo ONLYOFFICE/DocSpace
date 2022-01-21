@@ -30,6 +30,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using StackExchange.Redis.Extensions.Core.Configuration;
+using StackExchange.Redis.Extensions.Newtonsoft;
+
 namespace ASC.Data.Storage.Encryption
 {
     public class Startup : BaseStartup
@@ -46,6 +49,7 @@ namespace ASC.Data.Storage.Encryption
             DIHelper.TryAdd<EncryptionServiceLauncher>();
 
             services.AddHostedService<EncryptionServiceLauncher>();
+            services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(Configuration.GetSection("Redis").Get<RedisConfiguration>());
         }
     }
 }
