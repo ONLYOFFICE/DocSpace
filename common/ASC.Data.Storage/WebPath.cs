@@ -96,7 +96,7 @@ namespace ASC.Data.Storage
                 Appender appender;
                 if (avaliableAppendersCount > 1)
                 {
-                    appender = avaliableAppenders[(int)(relativePath.Length % avaliableAppendersCount)];
+                    appender = avaliableAppenders[(relativePath.Length % avaliableAppendersCount)];
                 }
                 else if (avaliableAppendersCount == 1)
                 {
