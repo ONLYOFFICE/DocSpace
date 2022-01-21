@@ -99,7 +99,7 @@ namespace ASC.Files.Core.Data
             ChunkedUploadSessionHolder chunkedUploadSessionHolder,
             ProviderFolderDao providerFolderDao,
             CrossDao crossDao,
-            SettingsHelper settingsHelper)
+            Settings settings)
             : base(
                   dbContextManager,
                   dbContextManager1,
@@ -125,7 +125,7 @@ namespace ASC.Files.Core.Data
             ChunkedUploadSessionHolder = chunkedUploadSessionHolder;
             ProviderFolderDao = providerFolderDao;
             CrossDao = crossDao;
-            Settings = settingsHelper.Settings;
+            Settings = settings;
         }
 
         public void InvalidateCache(int fileId)
