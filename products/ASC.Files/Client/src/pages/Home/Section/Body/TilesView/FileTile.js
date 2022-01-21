@@ -36,6 +36,7 @@ const FileTile = (props) => {
     isEdit,
     quickButtonsComponent,
     badgesComponent,
+    t,
   } = props;
 
   const temporaryExtension =
