@@ -3011,7 +3011,7 @@ namespace ASC.Api.Settings
                     throw new Exception(Resource.ErrorRequestLimitExceeded);
             }
 
-            MemoryCache.Set(key, ++count, TimeSpan.FromMinutes(expirationMinutes));
+            MemoryCache.Set(key, count + 1, TimeSpan.FromMinutes(expirationMinutes));
         }
     }
 }

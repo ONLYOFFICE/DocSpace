@@ -174,7 +174,7 @@ namespace ASC.Web.Core.Sms
                 if (createDate.Add(StoreInterval) < DateTime.UtcNow)
                     return Result.Timeout;
 
-                CheckCache.Insert(cacheCheck, (--counter).ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(StoreInterval));
+                CheckCache.Insert(cacheCheck, (counter - 1).ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(StoreInterval));
                 return Result.Ok;
             }
         }

@@ -72,7 +72,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             Log.Info("Start SendSaasTariffLetters");
 
-            var activeTenants = new List<Tenant>();
+            List<Tenant> activeTenants;
 
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -871,7 +871,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             Log.Info("Start SendOpensourceTariffLetters");
 
-            var activeTenants = new List<Tenant>();
+            List<Tenant> activeTenants;
 
             using (var scope = ServiceProvider.CreateScope())
             {

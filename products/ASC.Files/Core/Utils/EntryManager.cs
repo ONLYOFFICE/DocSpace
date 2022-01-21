@@ -350,7 +350,7 @@ namespace ASC.Web.Files.Utils
                 const string responseBody = null;// apiServer.GetApiResponse(apiUrl, "GET");
                 if (responseBody != null)
                 {
-                    var responseApi = JObject.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(responseBody)));
+                    JObject responseApi;
 
                     Dictionary<int, KeyValuePair<int, string>> folderIDProjectTitle = null;
 

@@ -119,7 +119,7 @@ namespace ASC.Web.Files.Configuration
                     //result = result.Concat(EntryManager.GetThirpartyFolders(folderMy, text));
                 }
 
-                id = GlobalFolderHelper.FolderCommon;
+                //id = GlobalFolderHelper.FolderCommon;
                 //var folderCommon = folderDao.GetFolder(id);
                 //result = result.Concat(EntryManager.GetThirpartyFolders(folderCommon, text));
             }

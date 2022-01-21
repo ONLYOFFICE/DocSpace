@@ -258,7 +258,6 @@ namespace ASC.ElasticSearch
                             {
                                 wwd.Document.Data = null;
                                 wwd.Document = null;
-                                wwd = null;
                                 GC.Collect();
                             }
                             continue;
@@ -288,7 +287,6 @@ namespace ASC.ElasticSearch
                                 doc.Document.Data = null;
                                 doc.Document = null;
                             }
-                            doc = null;
                         }
 
                         portionStart = i;
