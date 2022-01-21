@@ -1,0 +1,7 @@
+{
+  "projects": {
+    "default": "as-ads-test",
+    "asads": "as-ads-test"
+  },
+  "targets": {}
+}
