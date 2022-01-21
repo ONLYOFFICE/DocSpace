@@ -254,27 +254,31 @@ export default function withContent(WrappedContent) {
             .then(() => this.completeAction(itemId))
             .catch((err) => {
               console.log("err", err);
-              toastr.error(
-                t("Translations:FileProtected"),
-                t("Common:Warning")
-              );
-              setIsUpdatingRowItem(false);
+              const isPasswordError = new RegExp(/\b(password)\b/);
 
-              setFormCreationInfo({
-                newTitle: `${title}.${item.fileExst}`,
-                fromExst: ".docx",
-                toExst: item.fileExst,
-                open,
-                actionId: itemId,
-                fileInfo: {
-                  id: fileActionTemplateId,
-                  folderId: item.parentId,
-                  fileExst: item.fileExst,
-                },
-              });
-              setConvertPasswordDialogVisible(true);
+              if (isPasswordError.test(err)) {
+                toastr.error(
+                  t("Translations:FileProtected"),
+                  t("Common:Warning")
+                );
+                setIsUpdatingRowItem(false);
 
-              open && openDocEditor(null, null, tab);
+                setFormCreationInfo({
+                  newTitle: `${title}.${item.fileExst}`,
+                  fromExst: ".docx",
+                  toExst: item.fileExst,
+                  open,
+                  actionId: itemId,
+                  fileInfo: {
+                    id: fileActionTemplateId,
+                    folderId: item.parentId,
+                    fileExst: item.fileExst,
+                  },
+                });
+                setConvertPasswordDialogVisible(true);
+
+                open && openDocEditor(null, null, tab);
+              }
             })
             .finally(() => {
               const fileIds = [+itemId];

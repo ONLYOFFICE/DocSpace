@@ -36,14 +36,18 @@ export default function withContextOptions(WrappedComponent) {
 
       copyAsAction(id, newTitle, folderId).catch((err) => {
         console.log("err", err);
-        toastr.error(t("Translations:FileProtected"), t("Common:Warning"));
-        setFormCreationInfo({
-          newTitle,
-          fromExst: fileExst,
-          toExst: formfillingDocs[0],
-          fileInfo: item,
-        });
-        setConvertPasswordDialogVisible(true);
+        const isPasswordError = new RegExp(/\b(password)\b/);
+
+        if (isPasswordError.test(err)) {
+          toastr.error(t("Translations:FileProtected"), t("Common:Warning"));
+          setFormCreationInfo({
+            newTitle,
+            fromExst: fileExst,
+            toExst: formfillingDocs[0],
+            fileInfo: item,
+          });
+          setConvertPasswordDialogVisible(true);
+        }
       });
     };
 
