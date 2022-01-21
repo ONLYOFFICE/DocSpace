@@ -35,7 +35,6 @@ namespace ASC.Notify.Channels
     {
         private readonly ISink firstSink;
         private readonly ISink senderSink;
-        private readonly Context context;
 
 
         public string SenderName
@@ -47,12 +46,13 @@ namespace ASC.Notify.Channels
 
         public SenderChannel(Context context, string senderName, ISink decorateSink, ISink senderSink)
         {
-            this.context = context ?? throw new ArgumentNullException("context");
             this.SenderName = senderName ?? throw new ArgumentNullException("senderName");
             this.firstSink = decorateSink;
             this.senderSink = senderSink ?? throw new ApplicationException($"channel with tag {senderName} not created sender sink");
 
-            var dispatcherSink = new DispatchSink(SenderName, this.context.DispatchEngine);
+
+            context = context ?? throw new ArgumentNullException("context");
+            var dispatcherSink = new DispatchSink(SenderName, context.DispatchEngine);
             this.firstSink = AddSink(firstSink, dispatcherSink);
         }
 

@@ -50,7 +50,6 @@ namespace ASC.UrlShortener.Svc
 
         private readonly IHostEnvironment hostEnvironment;
         private readonly ConfigurationExtension configurationExtension;
-        private ProcessStartInfo processStartInfo;
 
         private Process process;
 
@@ -74,7 +73,7 @@ namespace ASC.UrlShortener.Svc
             {
                 Stop();
 
-                processStartInfo = GetProcessStartInfo();
+                var processStartInfo = GetProcessStartInfo();
                 process = Process.Start(processStartInfo);
             }
             catch (Exception e)
