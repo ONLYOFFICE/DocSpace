@@ -199,6 +199,8 @@ class ConnectClouds extends React.Component {
   render() {
     const { t, providers, tReady, theme } = this.props;
 
+    console.log(theme);
+
     linkStyles.color = theme.filesSettings.color;
 
     return (
@@ -286,7 +288,7 @@ class ConnectClouds extends React.Component {
   }
 }
 
-export default inject(({ filesStore, settingsStore, treeFoldersStore, dialogsStore }) => {
+export default inject(({ auth, filesStore, settingsStore, treeFoldersStore, dialogsStore }) => {
   const { providers, capabilities } = settingsStore.thirdPartyStore;
   const { filter, setFirstLoad } = filesStore;
   const { myFolder, commonFolder, getSubfolders } = treeFoldersStore;
@@ -299,7 +301,7 @@ export default inject(({ filesStore, settingsStore, treeFoldersStore, dialogsSto
   } = dialogsStore;
 
   return {
-    theme: settingsStore.theme,
+    theme: auth.settingsStore.theme,
     filter,
     providers,
     capabilities,
