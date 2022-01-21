@@ -2402,6 +2402,12 @@ const Base = {
     btnColor: white,
     btnBackgroundActive: blueMain,
   },
+
+  tileLoader: {
+    border: `1px solid ${grayMid}`,
+
+    background: white,
+  },
 };
 
 export default Base;

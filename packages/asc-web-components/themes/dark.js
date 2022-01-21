@@ -2411,6 +2411,12 @@ const Dark = {
     btnColor: white,
     btnBackgroundActive: blueMain,
   },
+
+  tileLoader: {
+    border: `none`,
+
+    background: "none",
+  },
 };
 
 export default Dark;
