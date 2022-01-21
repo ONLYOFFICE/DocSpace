@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Textile.States
@@ -50,17 +51,16 @@ namespace Textile.States
         {
             // can get: Align & Classes
 
-            var formattedLine = "";
-
+            var sb = new StringBuilder();
             var cellsInput = input.Split('|');
             for (var i = 1; i < cellsInput.Length - 1; i++)
             {
                 var cellInput = cellsInput[i];
                 var tcp = new TableCellParser(cellInput);
-                formattedLine += tcp.GetLineFragmentFormatting();
+                sb.Append(tcp.GetLineFragmentFormatting());
             }
 
-            Formatter.Output.WriteLine(formattedLine);
+            Formatter.Output.WriteLine(sb.ToString());
         }
 
         public override bool ShouldExit(string input)
