@@ -97,16 +97,12 @@ namespace ASC.ElasticSearch
                         });
                     }
 
-                    client = new ElasticClient(settings);
-
                     try
                     {
-                        var result = client.Ping(new PingRequest());
-
-                        var isValid = result.IsValid;
-
-                        if (result.IsValid)
+                        if (Ping(new ElasticClient(settings)))
                         {
+                            client = new ElasticClient(settings);
+
                             client.Ingest.PutPipeline("attachments", p => p
                             .Processors(pp => pp
                                 .Attachment<Attachment>(a => a.Field("document.data").TargetField("document.attachment"))
@@ -117,8 +113,9 @@ namespace ASC.ElasticSearch
                     catch (Exception e)
                     {
                         Log.Error(e);
-                        client = null;
                     }
+
+
 
                     return client;
                 }
@@ -127,11 +124,14 @@ namespace ASC.ElasticSearch
 
         public bool Ping()
         {
-            var instance = Instance;
+            return Ping(Instance);
+        }
 
-            if (instance == null) return false;
+        private bool Ping(ElasticClient elasticClient)
+        {
+            if (elasticClient == null) return false;
 
-            var result = instance.Ping(new PingRequest());
+            var result = elasticClient.Ping(new PingRequest());
 
             Log.DebugFormat("Ping {0}", result.DebugInformation);
 
