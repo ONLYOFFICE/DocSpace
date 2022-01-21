@@ -20,7 +20,6 @@ const Banner = () => {
       campaign.toLowerCase()
     );
 
-    console.log(imageUrl);
     return imageUrl;
   };
 
@@ -29,17 +28,12 @@ const Banner = () => {
       campaign,
       lng
     );
-
-    console.log(translationUrl);
-
     let obj = await (await fetch(translationUrl)).json();
-    console.log(obj);
 
     return obj;
   };
 
   const getBanner = async () => {
-    //console.log("getBanner");
     let index = Number(localStorage.getItem("bannerIndex") || 0);
     const currentCampaign = campaigns[index];
     if (campaigns.length < 1 || index + 1 >= campaigns.length) {
@@ -49,9 +43,9 @@ const Banner = () => {
     }
 
     const image = await getImage(currentCampaign);
-    setCampaignImage(image);
-
     const translate = await getTranslation(currentCampaign, language);
+
+    setCampaignImage(image);
     setCampaignTranslate(translate);
 
     localStorage.setItem("bannerIndex", index);
