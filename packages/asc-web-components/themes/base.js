@@ -1942,6 +1942,9 @@ const Base = {
       sideColor: "#A3A9AE",
       linkColor: "#333333",
       textColor: "#A3A9AE",
+
+      editingIconColor: "#3b72a7",
+      shareHoverColor: "#3b72a7",
     },
 
     tableView: {
@@ -1974,6 +1977,7 @@ const Base = {
 
         borderHover: "#a3a9ae",
         sideColor: gray,
+        shareHoverColor: "#3b72a7",
       },
     },
 
@@ -2135,6 +2139,8 @@ const Base = {
     },
 
     selectFile: {
+      color: "#a3a9ae",
+      background: "#f8f9f9",
       borderBottom: "1px solid #eceef1",
       borderRight: "1px solid #dee2e6",
     },
@@ -2180,6 +2186,12 @@ const Base = {
     },
   },
 
+  filesSettings: {
+    color: "#555f65",
+
+    linkColor: "#333",
+  },
+
   filesBadges: {
     iconColor: "#A3A9AE",
     hoverIconColor: "#3B72A7",
@@ -2203,6 +2215,12 @@ const Base = {
   filesIcons: {
     fill: "#3b72a7",
     hoverFill: "#3b72a7",
+  },
+
+  filesQuickButtons: {
+    color: "#a3a9ae",
+    sharedColor: "#3b72a7",
+    hoverColor: "#3b72a7",
   },
 
   filesSharedButton: {

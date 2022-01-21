@@ -767,7 +767,7 @@ const StyledSelectFilePanel = styled.div`
     margin-bottom: 12px;
     font-size: 12px;
     line-height: 16px;
-    color: #a3a9ae;
+    color: ${(props) => props.theme.filesPanels.selectFile.borderRight};
   }
   .select-file-dialog-modal_buttons {
     ${(props) => (props.isHeaderChildren ? 'margin-top: 20px' : 'margin-top:20px')};
@@ -790,7 +790,8 @@ const StyledSelectFilePanel = styled.div`
   .select-file-dialog_aside_body_files-list {
     margin-left: -17px;
     padding-left: 16px;
-    ${(props) => props.isChecked && `background: #f8f9f9;`}
+    ${(props) =>
+      props.isChecked && `background: ${(props) => props.theme.filesPanels.selectFile.background}`}
   }
 
   .file-name {
@@ -850,7 +851,9 @@ const StyledSelectFilePanel = styled.div`
     grid-template-areas: 'tree files-list';
     .modal-dialog_tree-body {
       padding-top: 0;
-      border-right: ${(props) => props.theme.filesPanels.selectFile.borderRight} span.rc-tree-title {
+      border-right: ${(props) => props.theme.filesPanels.selectFile.borderRight};
+
+      span.rc-tree-title {
         max-width: ${(props) => (props.displayType === 'aside' ? '243px' : '181px')};
       }
     }

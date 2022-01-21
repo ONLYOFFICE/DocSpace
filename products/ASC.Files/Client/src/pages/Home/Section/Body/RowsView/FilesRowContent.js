@@ -43,7 +43,7 @@ const SimpleFilesRowContent = styled(RowContent)`
 
   .is-editing {
     path {
-      fill: #3b72a7;
+      fill: ${(props) => props.theme.filesSection.rowView.editingIconColor};
     }
   }
   ${(props) =>

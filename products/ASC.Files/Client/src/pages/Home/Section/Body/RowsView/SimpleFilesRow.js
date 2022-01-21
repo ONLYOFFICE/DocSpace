@@ -75,7 +75,7 @@ const StyledSimpleFilesRow = styled(Row)`
   .share-button-icon:hover {
     cursor: pointer;
     path {
-      fill: #3b72a7;
+      fill: ${(props) => props.theme.filesSection.rowView.shareHoverColor};
     }
   }
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);

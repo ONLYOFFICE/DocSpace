@@ -1942,6 +1942,9 @@ const Dark = {
       sideColor: "#858585",
       linkColor: "#eeeeee",
       textColor: "#858585",
+
+      editingIconColor: "#3b72a7",
+      shareHoverColor: "#3b72a7",
     },
 
     tableView: {
@@ -1974,6 +1977,8 @@ const Dark = {
 
         borderHover: "#474747",
         sideColor: gray,
+
+        shareHoverColor: "#3b72a7",
       },
     },
 
@@ -2135,6 +2140,8 @@ const Dark = {
     },
 
     selectFile: {
+      color: "#a3a9ae",
+      background: "#333333",
       borderBottom: "1px solid #474747",
       borderRight: "1px solid #474747",
     },
@@ -2181,6 +2188,12 @@ const Dark = {
     },
   },
 
+  filesSettings: {
+    color: "#555f65",
+
+    linkColor: "#eee",
+  },
+
   filesBadges: {
     iconColor: "#858585",
     hoverIconColor: "#eeeeee",
@@ -2204,6 +2217,12 @@ const Dark = {
   filesIcons: {
     fill: "#858585",
     hoverFill: "#eeeeee",
+  },
+
+  filesQuickButtons: {
+    color: "#a3a9ae",
+    sharedColor: "#3b72a7",
+    hoverColor: "#3b72a7",
   },
 
   filesSharedButton: {

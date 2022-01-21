@@ -184,11 +184,13 @@ const StyledQuickButtonsContainer = styled.div`
   .share-button-icon:hover {
     cursor: pointer;
     path {
-      fill: #3b72a7;
+      fill: ${(props) => props.theme.filesSection.tableView.row.shareHoverColor};
     }
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
 `;
+
+StyledQuickButtonsContainer.defaultProps = { theme: Base };
 
 const FilesTableRow = (props) => {
   const {

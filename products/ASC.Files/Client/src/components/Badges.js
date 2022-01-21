@@ -74,7 +74,7 @@ const Badges = ({
             className="badge tablet-badge icons-group tablet-edit edit"
             size={sizeBadge}
             onClick={onFilesClick}
-            hoverColor="#3B72A7"
+            hoverColor={theme.filesBadges.hoverIconColor}
           />
         )}
       {(isEditing || isEditingWithFav) && (
@@ -83,7 +83,7 @@ const Badges = ({
           className="badge icons-group is-editing tablet-badge tablet-edit"
           size={sizeBadge}
           onClick={onFilesClick}
-          hoverColor="#3B72A7"
+          hoverColor={theme.filesBadges.hoverIconColor}
         />
       )}
       {canConvert && !isTrashFolder && (
@@ -92,15 +92,15 @@ const Badges = ({
           iconName={iconRefresh}
           className="badge tablet-badge icons-group can-convert"
           size={sizeBadge}
-          hoverColor="#3B72A7"
+          hoverColor={theme.filesBadges.hoverIconColor}
         />
       )}
       {version > 1 && (
         <Badge
           className="badge-version tablet-badge icons-group"
-          backgroundColor="#A3A9AE"
+          backgroundColor={theme.filesBadges.backgroundColor}
           borderRadius="11px"
-          color="#FFFFFF"
+          color={theme.filesBadges.color}
           fontSize={fontSizeBadge}
           fontWeight={800}
           label={t('VersionBadge:Version', { version: countVersions })}
@@ -114,9 +114,9 @@ const Badges = ({
       {(showNew || isNewWithFav) && (
         <Badge
           className="badge-version badge-new-version tablet-badge icons-group"
-          backgroundColor="#ED7309"
+          backgroundColor={theme.filesBadges.badgeBackgroundColor}
           borderRadius="11px"
-          color="#FFFFFF"
+          color={theme.filesBadges.badgeColor}
           fontSize={fontSizeBadge}
           fontWeight={800}
           label={t('New')}
@@ -132,9 +132,9 @@ const Badges = ({
     showNew && (
       <Badge
         className="new-items tablet-badge"
-        backgroundColor="#ED7309"
+        backgroundColor={theme.filesBadges.badgeBackgroundColor}
         borderRadius="11px"
-        color="#FFFFFF"
+        color={theme.filesBadges.badgeColor}
         fontSize={fontSizeBadge}
         fontWeight={800}
         label={contentNewItems}
