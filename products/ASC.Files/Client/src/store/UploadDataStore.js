@@ -312,7 +312,7 @@ class UploadDataStore {
 
     runInAction(() => (this.converted = false));
     this.setConversionPercent(0);
-    //debugger;
+
     let index = 0;
     let len = this.filesToConversion.length;
     let filesToConversion = this.filesToConversion;
