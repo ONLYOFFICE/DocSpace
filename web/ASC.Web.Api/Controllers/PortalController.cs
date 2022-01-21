@@ -208,7 +208,7 @@ namespace ASC.Web.Api.Controllers
         [Read("thumb")]
         public FileResult GetThumb(string url)
         {
-            if (!SecurityContext.IsAuthenticated || !(Configuration["bookmarking:thumbnail-url"] != null))
+            if (!SecurityContext.IsAuthenticated || Configuration["bookmarking:thumbnail-url"] == null)
             {
                 return null;
             }
