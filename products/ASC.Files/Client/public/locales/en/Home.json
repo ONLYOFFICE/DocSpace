@@ -1,4 +1,4 @@
-{
+﻿{
   "All": "All",
   "AllFiles": "All files",
   "Archives": "Archives",
@@ -41,6 +41,7 @@
   "New": "New",
   "NewDocument": "New document",
   "NewFolder": "New folder",
+  "NewMasterForm": "New form template",
   "NewPresentation": "New presentation",
   "NewSpreadsheet": "New spreadsheet",
   "NoSubfolders": "No subfolders",
@@ -75,6 +76,5 @@
   "UnblockVersion": "Unblock/Check-in",
   "UploadToFolder": "Upload to folder",
   "ViewList": "List",
-  "ViewTiles": "Tiles",
-  "NewMasterForm": "New form template"
+  "ViewTiles": "Tiles"
 }

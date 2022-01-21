@@ -1,4 +1,4 @@
-{
+﻿{
   "All": "すべて",
   "AllFiles": "すべてのファイル",
   "Archives": "アーカイブ",
@@ -31,8 +31,8 @@
   "Images": "画像",
   "LinkForPortalUsers": "ポータルサイトへのリンク",
   "MarkAsFavorite": "お気に入りに登録",
-  "MarkRead": "既読にする",
   "MarkedAsFavorite": "お気に入りに追加",
+  "MarkRead": "既読にする",
   "Media": "メディア",
   "MoveItem": "<strong>{{title}}</strong>を移動した",
   "MoveItems": "<strong>{{qty}}</strong>の要素が移動しました",
@@ -56,9 +56,9 @@
   "PrivateRoomHeader": "ONLYOFFICEプライベートルームへようこそ！入力されるすべての記号が暗号化します。",
   "PrivateRoomSupport": "プライベートルームでの作業は、{{organizationName}}デスクトップアプリで可能です。<3>操作方法</3",
   "RecentEmptyContainerDescription": "「最近」セクションでは、最後に閲覧または編集したファイルが表示されます。",
+  "RemovedFromFavorites": "お気に入りから削除",
   "RemoveFromFavorites": "お気に入りから削除",
   "RemoveFromList": "リストからの削除",
-  "RemovedFromFavorites": "お気に入りから削除",
   "Rename": "名前の変更",
   "SendByEmail": "メールで送信",
   "Share": "シェア",

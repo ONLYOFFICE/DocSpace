@@ -80,6 +80,10 @@ namespace Frontend.Translations.Tests
                             new JsonEncodingError(path, result.Detected));
                     }
 
+#if SORT
+
+                    JObject jsonSorted;
+#endif
                     using (var md5 = MD5.Create())
                     {
                         using (var stream = File.OpenRead(path))
@@ -98,20 +102,19 @@ namespace Frontend.Translations.Tests
                                     .ToList(), md5hash);
 
                                 TranslationFiles.Add(translationFile);
+
+#if SORT
+                                var orderedList = jsonTranslation.Properties().OrderBy(t => t.Name);
+                                jsonSorted = new JObject(orderedList);
+#endif
                             }
-
                         }
+#if SORT
+                        //   Re-write by order 
+                        var sortedJsonString = JsonConvert.SerializeObject(jsonSorted, Formatting.Indented);
+                        File.WriteAllText(path, sortedJsonString, Encoding.UTF8);
+#endif
                     }
-
-                    /*   Re-write by order */
-
-                    //var orderedList = jsonTranslation.Properties().OrderBy(t => t.Name);
-
-                    //var result = new JObject(orderedList);
-
-                    //var sortedJsonString = JsonConvert.SerializeObject(result, Formatting.Indented);
-
-                    //File.WriteAllText(path, sortedJsonString);
                 }
                 catch (Exception ex)
                 {
@@ -327,7 +330,7 @@ namespace Frontend.Translations.Tests
             }
 
             //string json = JsonConvert.SerializeObject(list, Formatting.Indented);
-            //File.WriteAllText("../../../spellcheck-excludes.json", json);
+            //File.WriteAllText("../../../spellcheck-excludes.json", json, Encoding.UTF8);
 
             Assert.AreEqual(0, errorsCount, message);
         }
@@ -337,8 +340,12 @@ namespace Frontend.Translations.Tests
         public void DublicatesFilesByMD5HashTest()
         {
             var skipHashes = new List<string>() {
-                "bcba174a8dadc0ff97f37f9a2d816d88",
-                "2a506ed97d0fbd0858192b755ae122d0",
+                "e6d664afaace71b3a22abb09fc124543",
+                "5a1d4d36141c7a8ca53f2540f3fd5940",
+                "6d3334459f062ba0f39de6a38225c564",
+                "b8e7630201c96d26c94d348447328276",
+                "3ad0e57ce636af715af3f629e364f1ed",
+                "dfb129715a0122a29afe233226c648d9",
                 "ec73989085d4e1b984c1c9dca10524da"
             };
 
@@ -446,7 +453,7 @@ namespace Frontend.Translations.Tests
             if (!Directory.Exists(fullPathOnly))
                 Directory.CreateDirectory(fullPathOnly);
 
-            File.WriteAllText(notExistJsonPath, sortedJsonString);
+            File.WriteAllText(notExistJsonPath, sortedJsonString, Encoding.UTF8);
         }
 
         [Test]
@@ -523,7 +530,7 @@ namespace Frontend.Translations.Tests
 
             var sortedJsonString = JsonConvert.SerializeObject(result, Formatting.Indented);
 
-            File.WriteAllText(pathToJson, sortedJsonString);
+            File.WriteAllText(pathToJson, sortedJsonString, Encoding.UTF8);
         }
 
         [Test]
@@ -767,7 +774,7 @@ namespace Frontend.Translations.Tests
 
             var sortedJsonString = JsonConvert.SerializeObject(result, Formatting.Indented);
 
-            File.WriteAllText(pathToJson, sortedJsonString);
+            File.WriteAllText(pathToJson, sortedJsonString, Encoding.UTF8);
         }
 
         public static void RemoveEmptyKeys(string pathToJson, List<string> emptyKeys)
@@ -783,7 +790,7 @@ namespace Frontend.Translations.Tests
 
             var sortedJsonString = JsonConvert.SerializeObject(result, Formatting.Indented);
 
-            File.WriteAllText(pathToJson, sortedJsonString);
+            File.WriteAllText(pathToJson, sortedJsonString, Encoding.UTF8);
         }
 
         public string GetWorkspace(string path)

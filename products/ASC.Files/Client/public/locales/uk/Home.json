@@ -1,4 +1,4 @@
-{
+﻿{
   "All": "Усі",
   "AllFiles": "Усі файли",
   "Archives": "Архіви",
@@ -31,8 +31,8 @@
   "Images": "Зображення",
   "LinkForPortalUsers": "Посилання для користувачів порталу",
   "MarkAsFavorite": "Додати до вподобань",
-  "MarkRead": "Позначити як прочитані",
   "MarkedAsFavorite": "Додано до вподобань",
+  "MarkRead": "Позначити як прочитані",
   "Media": "Медіа",
   "MoveItem": "<strong>{{title}}</strong> переміщено",
   "MoveItems": "<strong>{{qty}}</strong> елемент. переміщено",
@@ -56,9 +56,9 @@
   "PrivateRoomHeader": "Ласкаво просимо до приватної кімнати ONLYOFFICE, де шифрується кожен введений вами символ",
   "PrivateRoomSupport": "Робота у приватній кімнаті доступна через настільну програму {{organizationName}}. <3>Інструкції</3>",
   "RecentEmptyContainerDescription": "У розділі \"Нещодавні\" відображаються останні файли, які ви переглядали або редагували.",
+  "RemovedFromFavorites": "Видалено з вподобань",
   "RemoveFromFavorites": "Видалити з вподобань",
   "RemoveFromList": "Видалити зі списку",
-  "RemovedFromFavorites": "Видалено з вподобань",
   "Rename": "Перейменувати",
   "SendByEmail": "Надіслати ел. поштою",
   "Share": "Надати спільний доступ",

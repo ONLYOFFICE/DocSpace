@@ -1,9 +1,10 @@
-{
+﻿{
   "AddAccount": "Adaugă cont",
   "ArchivingData": "Se arhiveaza datele",
   "ConnectingAccount": "Conectare cont",
   "Copy": "Copiere",
   "CopyOperation": "Copiază",
+  "CreateMasterFormFromFile": "Crearea unui șablon formă din fișier",
   "DeleteFromTrash": "Elementele selectate au fost șterse cu succes din Coșul de gunoi",
   "DeleteOperation": "Ștergere în curs de desfășurare",
   "DeleteSelectedElem": "Elementele selectate au fost șterse cu succes",
@@ -27,10 +28,14 @@
   "MediaLoadError": "Media file could not be loaded",
   "Move": "Mută",
   "MoveToOperation": "Mutare",
+  "NewForm": "Șablon formă,",
+  "NewFormFile": "Forma din fișier text",
   "OwnerChange": "Schimbare proprietar",
   "Presentations": "Prezentări",
   "Restore": "Restabilire",
   "Spreadsheets": "Foi de calcul",
+  "SubNewForm": "Necompletat",
+  "SubNewFormFile": "Din fișier text",
   "ThirdPartyInfo": "Modificarea informațiilor despre servicii terțe",
   "TypeTitleBoxNet": "Box",
   "TypeTitleDocuSign": "DocuSign",
@@ -40,10 +45,5 @@
   "TypeTitleSharePoint": "SharePoint",
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
-  "TypeTitleYandex": "Yandex.Disk",
-  "NewForm": "Șablon formă,",
-  "NewFormFile": "Forma din fișier text",
-  "CreateMasterFormFromFile": "Crearea unui șablon formă din fișier",
-  "SubNewForm": "Necompletat",
-  "SubNewFormFile": "Din fișier text"
+  "TypeTitleYandex": "Yandex.Disk"
 }

@@ -1,4 +1,4 @@
-{
+﻿{
   "All": "Todos",
   "AllFiles": "Todos os arquivos",
   "Archives": "Arquivos",
@@ -31,8 +31,8 @@
   "Images": "Imagens",
   "LinkForPortalUsers": "Link para usuários do portal",
   "MarkAsFavorite": "Marcar como favorito",
-  "MarkRead": "Marcar como lido",
   "MarkedAsFavorite": "Adicionado aos favoritos",
+  "MarkRead": "Marcar como lido",
   "Media": "Média",
   "MoveItem": "<strong>{{title}}</strong> movido",
   "MoveItems": "<strong>{{qty}}</strong> elementos foram movidos",
@@ -56,9 +56,9 @@
   "PrivateRoomHeader": "Bem-vindo à sala privada ONLYOFFICE onde cada símbolo que você digita é criptografado",
   "PrivateRoomSupport": "O trabalho na Sala Privada está disponível através do aplicativo desktop {{organizationName}}. <3>Instruções</3>",
   "RecentEmptyContainerDescription": "A seção 'Recente' mostra os arquivos visualizados ou editados pela última vez.",
+  "RemovedFromFavorites": "Removido dos favoritos",
   "RemoveFromFavorites": "Remover dos Favoritos",
   "RemoveFromList": "Remover da lista",
-  "RemovedFromFavorites": "Removido dos favoritos",
   "Rename": "Renomear",
   "SendByEmail": "Enviar por e-mail",
   "Share": "Compartilhar",

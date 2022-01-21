@@ -1,14 +1,13 @@
 ﻿{
+  "ButtonAddBoxNet": "Adicionar Conta Box",
+  "ButtonAddDropBox": "Adicionar Conta Dropbox",
+  "ButtonAddGoogle": "Adicionar Conta do Google",
+  "ButtonAddNextcloud": "Adicionar conta do Nextcloud",
+  "ButtonAddSkyDrive": "Adicionar conta OneDrive",
   "NewDocument": "Novo Documento",
   "NewFolder": "Nova pasta",
   "NewPresentation": "Nova apresentação",
   "NewSpreadsheet": "Nova planilha",
   "UploadFiles": "Carregar arquivos",
-  "UploadFolder": "Carregar pasta",
-  "ButtonAddGoogle": "Adicionar Conta do Google",
-  "ButtonAddBoxNet": "Adicionar Conta Box",
-  "ButtonAddDropBox": "Adicionar Conta Dropbox",
-  "ButtonAddNextcloud": "Adicionar conta do Nextcloud",
-  "ButtonAddSkyDrive": "Adicionar conta OneDrive"
-
+  "UploadFolder": "Carregar pasta"
 }

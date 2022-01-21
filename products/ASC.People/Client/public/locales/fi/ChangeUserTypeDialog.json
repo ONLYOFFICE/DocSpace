@@ -1,4 +1,4 @@
-{
+﻿{
   "ChangeUserTypeButton": "Vaihda tyyppiä",
   "ChangeUserTypeHeader": "Muuta käyttäjän tyyppiä",
   "ChangeUserTypeMessage": "Käyttäjät, joiden tyyppi on ’{{firstType}}’, siirretään tyypiksi ’{{secondType}}’.",

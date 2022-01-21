@@ -1,4 +1,4 @@
-{
+﻿{
   "ConflictResolveDescription": "Fișierul cu numele {{file}} există deja în dosarul {{folder}}.",
   "ConflictResolveDescriptionFiles": "{{filesCount}} fișiere cu același nume exista deja în folderul'{{folder}}'.",
   "ConflictResolveSelectAction": "Selectați acțiune:",

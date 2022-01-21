@@ -1,4 +1,4 @@
-{
+﻿{
   "All": "Hepsi",
   "AllFiles": "Tüm Dosyalar",
   "Archives": "Arşivler",
@@ -31,8 +31,8 @@
   "Images": "Görüntüler",
   "LinkForPortalUsers": "Portal kullanıcıları için bağlantı",
   "MarkAsFavorite": "Favori olarak işaretle",
-  "MarkRead": "Okundu olarak işaretle",
   "MarkedAsFavorite": "Favorilere eklendi",
+  "MarkRead": "Okundu olarak işaretle",
   "Media": "Medya",
   "MoveItem": "<strong>{{title}}</strong> taşındı",
   "MoveItems": "<strong>{{qty}}</strong> öğeler taşındı",
@@ -56,9 +56,9 @@
   "PrivateRoomHeader": "Yazdığınız her sembolün şifrelendiği ONLYOFFICE özel odasına hoş geldiniz",
   "PrivateRoomSupport": "Özel Odada Çalışma, {{organizationName}} masaüstü uygulaması aracılığıyla kullanılabilir. <3>Kullanma Talimatları</3>",
   "RecentEmptyContainerDescription": "'Son kullanılanlar' bölümü, en son görüntülediğiniz veya düzenlediğiniz dosyaları gösterir.",
+  "RemovedFromFavorites": "Favorilerden kaldırıldı",
   "RemoveFromFavorites": "Favorilerden kaldır",
   "RemoveFromList": "Listeden kaldır",
-  "RemovedFromFavorites": "Favorilerden kaldırıldı",
   "Rename": "Yeniden adlandır",
   "SendByEmail": "E-posta ile gönder",
   "Share": "Paylaş",

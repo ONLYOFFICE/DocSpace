@@ -1,4 +1,4 @@
-{
+﻿{
   "All": "Kaikki",
   "AllFiles": "Kaikki tiedostot",
   "Archives": "Arkistot",
@@ -31,8 +31,8 @@
   "Images": "Kuvat",
   "LinkForPortalUsers": "Linkki portaalin käyttäjille\r\n",
   "MarkAsFavorite": "Merkitse suosikiksi",
-  "MarkRead": "Merkitse luetuksi",
   "MarkedAsFavorite": "Lisätty suosikkeihin",
+  "MarkRead": "Merkitse luetuksi",
   "Media": "Media",
   "MoveItem": "<strong> {{title}} </strong> siirretty",
   "MoveItems": "<strong> {{qty}} </strong> elementtiä on siirretty",
@@ -56,9 +56,9 @@
   "PrivateRoomHeader": "Tervetuloa ONLYOFFICEn yksityiseen huoneeseen, jossa jokainen kirjoittamasi symboli on salattu",
   "PrivateRoomSupport": "Työskentely yksityishuoneessa on saatavilla työpöytäsovelluksen {{organizationName}} kautta. <3>Ohjeet</3>",
   "RecentEmptyContainerDescription": "Viimeisimmät-osiossa näkyvät viimeksi katsotut tai muokatut tiedostot.\r\n",
+  "RemovedFromFavorites": "Poistettu suosikeista",
   "RemoveFromFavorites": "Poista suosikeista",
   "RemoveFromList": "Poista listalta",
-  "RemovedFromFavorites": "Poistettu suosikeista",
   "Rename": "Nimeä uudelleen",
   "SendByEmail": "Lähetä sähköpostitse",
   "Share": "Jaa",

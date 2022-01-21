@@ -1,4 +1,4 @@
-{
+﻿{
   "All": "Toate",
   "AllFiles": "Toate fișierele",
   "Archives": "Arhive",
@@ -31,8 +31,8 @@
   "Images": "Imagini",
   "LinkForPortalUsers": "Link-ul pentru utilizatorii portalului",
   "MarkAsFavorite": "Marcare ca preferat",
-  "MarkRead": "Marchează ca citit",
   "MarkedAsFavorite": "Adăugat la preferințe",
+  "MarkRead": "Marchează ca citit",
   "Media": "Media",
   "MoveItem": "<strong>{{title}}</strong> deplasat",
   "MoveItems": "<strong>{{qty}}</strong> elemente au fost deplasate",
@@ -56,9 +56,9 @@
   "PrivateRoomHeader": "Bune ați venit la Sala Privată ONLYOFFICE unde fiecare simbol introdus este criptat.",
   "PrivateRoomSupport": "Sala Privată este disponibilă prin intermediu aplicației de birou {{organizationName}}. <3>Instructions</3>",
   "RecentEmptyContainerDescription": "La secțiunea Recente puteți vedea fișierele recent vizualizate sau editate",
+  "RemovedFromFavorites": "Eliminat din Preferințe",
   "RemoveFromFavorites": "Eliminare din Preferințe",
   "RemoveFromList": "Șterge din lista",
-  "RemovedFromFavorites": "Eliminat din Preferințe",
   "Rename": "Redenumire",
   "SendByEmail": "Trimite prin email",
   "Share": "Partajează",

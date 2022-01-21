@@ -1,4 +1,4 @@
-{
+﻿{
   "ChangePasswordSuccess": "パスワードの変更に成功しました。",
   "ConfirmOwnerPortalSuccessMessage": "ポータルオーナーの変更が完了しました。10秒後にリダイレクトされます。",
   "ConfirmOwnerPortalTitle": "ポータルのオーナーを{{newOwner}}に変更するかご確認ください。",

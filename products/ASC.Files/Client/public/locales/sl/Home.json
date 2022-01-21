@@ -1,4 +1,4 @@
-{
+﻿{
   "All": "Vse",
   "AllFiles": "Vse datoteke",
   "Archives": "Arhivi",
@@ -31,8 +31,8 @@
   "Images": "Slike",
   "LinkForPortalUsers": "Povezava na uporabnike portala",
   "MarkAsFavorite": "Označi kot priljubljeno",
-  "MarkRead": "Označi kot prebrano",
   "MarkedAsFavorite": "Dodano med priljubljene",
+  "MarkRead": "Označi kot prebrano",
   "Media": "Medij",
   "MoveItem": "<strong>{{title}}</strong> premaknjen",
   "MoveItems": "<strong>{{qty}}</strong> elementov je bilo premaknjenih",
@@ -56,9 +56,9 @@
   "PrivateRoomHeader": "Dobrodošli v ONLYOFFICE zasebni sobi, kjer je vsak vaš natipkan znak šifriran",
   "PrivateRoomSupport": "Delo v zasebni sobi je na voljo preko {{organizationName}} namizne aplikacije. <3>Navodila</3>",
   "RecentEmptyContainerDescription": "'Nedavno' razdelek prikazuje zadnje ogledane ali urejene datoteke.",
+  "RemovedFromFavorites": "Odstranjeno iz priljubljenih",
   "RemoveFromFavorites": "Odstrani iz priljubljenih",
   "RemoveFromList": "Odstrani iz seznama",
-  "RemovedFromFavorites": "Odstranjeno iz priljubljenih",
   "Rename": "Preimenuj",
   "SendByEmail": "Pošlji po email",
   "Share": "Deli",

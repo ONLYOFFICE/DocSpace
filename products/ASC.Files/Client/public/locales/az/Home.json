@@ -1,4 +1,4 @@
-{
+﻿{
   "All": "Bütün",
   "AllFiles": "Bütün fayllar",
   "Archives": "Arxivlər",
@@ -31,8 +31,8 @@
   "Images": "Şəkillər",
   "LinkForPortalUsers": "Portal istifadəçiləri üçün link",
   "MarkAsFavorite": "Favorit kimi işarələ",
-  "MarkRead": "Oxunmuş kimi işarələ",
   "MarkedAsFavorite": "Çox istifadə olunan siyahısına əlavə olundu",
+  "MarkRead": "Oxunmuş kimi işarələ",
   "Media": "Media",
   "MoveItem": "<strong>{{title}}</strong> yerdəyişdirildi",
   "MoveItems": "<strong>{{qty}}</strong> elementlərin yeri dəyişdirildi",
@@ -56,9 +56,9 @@
   "PrivateRoomHeader": "Yazdığınız hər bir simvolun şifrələndiyi ONLYOFFICE şəxsi otağına xoş gəldiniz",
   "PrivateRoomSupport": "Şəxsi Otaqda işləmək {{organizationName}} masa üstü tətbiqi ilə mümkündür. <3> Təlimatlar </3> ",
   "RecentEmptyContainerDescription": "\"Ən son\" bölməsində ən son baxılan və ya redaktə edilən fayllar göstərilib.",
+  "RemovedFromFavorites": "Favoritlərdən sil",
   "RemoveFromFavorites": "Favoritlərdən sil",
   "RemoveFromList": "Siyahıdan sil",
-  "RemovedFromFavorites": "Favoritlərdən sil",
   "Rename": "Adını dəyiş",
   "SendByEmail": "Elektron poçt vasitəsi ilə göndər",
   "Share": "Paylaş",

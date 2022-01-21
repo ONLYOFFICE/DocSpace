@@ -1,11 +1,11 @@
 ﻿{
-    "FileLocation": "Siirry asiakirjoihin",
-    "FileName": "Tiedostonimi",
-    "FolderForSave": "Tallennuskansio",
-    "OpenSavedDocument": "Avaa tallennettu asiakirja uudessa välilehdessä",
-    "SelectFilesType": "Valitse tiedostot tyyppiä: {{fileType}}",
-    "ImageFileType": "kuvat",
-    "DocumentsFileType": "asiakirjat",
-    "MailMergeFileType": "Valitse tiedosto XLSX-muodossa",
-    "SelectFileTitle": "Valitse tietolähde"
+  "DocumentsFileType": "asiakirjat",
+  "FileLocation": "Siirry asiakirjoihin",
+  "FileName": "Tiedostonimi",
+  "FolderForSave": "Tallennuskansio",
+  "ImageFileType": "kuvat",
+  "MailMergeFileType": "Valitse tiedosto XLSX-muodossa",
+  "OpenSavedDocument": "Avaa tallennettu asiakirja uudessa välilehdessä",
+  "SelectFilesType": "Valitse tiedostot tyyppiä: {{fileType}}",
+  "SelectFileTitle": "Valitse tietolähde"
 }

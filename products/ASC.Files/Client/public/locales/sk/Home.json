@@ -1,4 +1,4 @@
-{
+﻿{
   "All": "Všetko",
   "AllFiles": "Všetky súbory",
   "Archives": "Archívy",
@@ -31,8 +31,8 @@
   "Images": "Obrázky",
   "LinkForPortalUsers": "Odkaz pre užívateľov portálu",
   "MarkAsFavorite": "Označiť ako obľúbené",
-  "MarkRead": "Označiť ako prečítané",
   "MarkedAsFavorite": "Pridané k obľúbeným",
+  "MarkRead": "Označiť ako prečítané",
   "Media": "Médiá",
   "MoveItem": "<strong> {{title}} </strong> bolo presunuté",
   "MoveItems": "<strong>{{qty}}</strong> prvkov bolo presunutých",
@@ -56,9 +56,9 @@
   "PrivateRoomHeader": "Vitajte v súkromnej miestnosti ONLYOFFICE, kde je každý vami zadaný symbol šifrovaný",
   "PrivateRoomSupport": "Práca v súkromnej miestnosti je k dispozícii prostredníctvom počítačovej aplikácie {{organizationName}}. <3>Pokyny</3>",
   "RecentEmptyContainerDescription": "Sekcia „Nedávne“ zobrazuje naposledy zobrazené alebo upravené súbory.",
+  "RemovedFromFavorites": "Odstránené z obľúbených",
   "RemoveFromFavorites": "Odstrániť z obľúbených",
   "RemoveFromList": "Odstrániť zo zoznamu",
-  "RemovedFromFavorites": "Odstránené z obľúbených",
   "Rename": "Premenovať",
   "SendByEmail": "Poslať e-mailom",
   "Share": "Zdieľať",

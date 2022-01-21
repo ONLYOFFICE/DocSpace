@@ -1,4 +1,4 @@
-{
+﻿{
   "All": "全部",
   "AllFiles": "所有文件",
   "Archives": "归档",
@@ -31,8 +31,8 @@
   "Images": "图像",
   "LinkForPortalUsers": "门户用户链接",
   "MarkAsFavorite": "标记为收藏",
-  "MarkRead": "标记为已读",
   "MarkedAsFavorite": "已添加至收藏",
+  "MarkRead": "标记为已读",
   "Media": "媒体",
   "MoveItem": "<strong>{{title}}</strong>已移动",
   "MoveItems": "<strong>{{qty}}</strong>元素已移动",
@@ -56,9 +56,9 @@
   "PrivateRoomHeader": "欢迎来到ONLYOFFICE私密房间，在这里您所输入的每一个字符都将被加密",
   "PrivateRoomSupport": "您可在{{organizationName}}桌面应用中使用私密房间。<3>操作指南</3>",
   "RecentEmptyContainerDescription": "‘最近’部分中将展示您最近查看或编辑的文件。",
+  "RemovedFromFavorites": "已从收藏中删除",
   "RemoveFromFavorites": "从收藏中移除",
   "RemoveFromList": "从列表中移除",
-  "RemovedFromFavorites": "已从收藏中删除",
   "Rename": "重命名",
   "SendByEmail": "通过邮件发送",
   "Share": "分享",
