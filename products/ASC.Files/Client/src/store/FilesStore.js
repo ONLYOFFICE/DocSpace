@@ -99,7 +99,6 @@ class FilesStore {
   };
 
   setActiveFiles = (activeFiles) => {
-    console.log("activeFiles", activeFiles);
     this.activeFiles = activeFiles;
   };
 

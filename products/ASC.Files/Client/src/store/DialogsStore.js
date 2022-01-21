@@ -175,7 +175,6 @@ class DialogsStore {
   };
 
   setConvertPasswordDialogVisible = (visible) => {
-    console.log("setConvertPasswordDialogVisible");
     this.convertPasswordDialogVisible = visible;
   };
 
