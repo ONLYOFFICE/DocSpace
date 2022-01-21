@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from "react";
 import CampaignsBanner from "@appserver/components/campaigns-banner";
-import { DBConfig } from "@appserver/common/utils/AdsDBConfig";
 import { ADS_TIMEOUT } from "../../../helpers/constants";
 import { LANGUAGE } from "@appserver/common/constants";
 import { getLanguage } from "@appserver/common/utils";
-import { initDB, useIndexedDB } from "react-indexed-db";
-
-initDB(DBConfig);
 
 const Banner = () => {
-  const { add, getByIndex, getAll } = useIndexedDB("ads");
-  const [campaign, setCampaign] = useState();
+  const [campaignImage, setCampaignImage] = useState();
+  const [campaignTranslate, setCampaignTranslate] = useState();
 
   const campaigns = (localStorage.getItem("campaigns") || "")
     .split(",")
@@ -19,25 +15,13 @@ const Banner = () => {
   const lng = localStorage.getItem(LANGUAGE) || "en";
   const language = getLanguage(lng instanceof Array ? lng[0] : lng);
 
-  const fetchBanners = async () => {
-    if (!campaigns) return;
-    const campaignsDB = await getAll();
+  const getImage = async (campaign) => {
+    const imageUrl = await window.firebaseHelper.getCampaignsImages(
+      campaign.toLowerCase()
+    );
 
-    campaigns.map(async (campaign) => {
-      if (campaignsDB.some((el) => el.campaign === campaign)) return;
-
-      const t = await getTranslation(campaign, language);
-      const i = await getImage(campaign);
-
-      add({ campaign: campaign, image: i, translate: t }).then(
-        (event) => {
-          console.log("ID Generated: ", event);
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-    });
+    console.log(imageUrl);
+    return imageUrl;
   };
 
   const getTranslation = async (campaign, lng) => {
@@ -45,20 +29,16 @@ const Banner = () => {
       campaign,
       lng
     );
+
+    console.log(translationUrl);
+
     let obj = await (await fetch(translationUrl)).json();
+    console.log(obj);
 
     return obj;
   };
 
-  const getImage = async (campaign) => {
-    const imageUrl = await window.firebaseHelper.getCampaignsImages(
-      campaign.toLowerCase()
-    );
-
-    return imageUrl;
-  };
-
-  const getBanner = () => {
+  const getBanner = async () => {
     //console.log("getBanner");
     let index = Number(localStorage.getItem("bannerIndex") || 0);
     const currentCampaign = campaigns[index];
@@ -68,15 +48,16 @@ const Banner = () => {
       index++;
     }
 
-    getByIndex("campaign", currentCampaign).then((campaignFromDB) => {
-      setCampaign(campaignFromDB);
-    });
+    const image = await getImage(currentCampaign);
+    setCampaignImage(image);
+
+    const translate = await getTranslation(currentCampaign, language);
+    setCampaignTranslate(translate);
 
     localStorage.setItem("bannerIndex", index);
   };
 
   useEffect(() => {
-    fetchBanners();
     getBanner();
     const adsInterval = setInterval(getBanner, ADS_TIMEOUT);
 
@@ -87,13 +68,13 @@ const Banner = () => {
 
   return (
     <>
-      {campaign && (
+      {campaignImage && campaignTranslate && (
         <CampaignsBanner
-          headerLabel={campaign.translate.Header}
-          subHeaderLabel={campaign.translate.SubHeader}
-          img={campaign.image}
-          btnLabel={campaign.translate.ButtonLabel}
-          link={campaign.translate.Link}
+          headerLabel={campaignTranslate.Header}
+          subHeaderLabel={campaignTranslate.SubHeader}
+          img={campaignImage}
+          btnLabel={campaignTranslate.ButtonLabel}
+          link={campaignTranslate.Link}
         />
       )}
     </>
