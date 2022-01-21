@@ -39,10 +39,6 @@ const FilesMediaViewer = (props) => {
     }
   }, [removeQuery, onMediaFileClick]);
 
-  useEffect(() => {
-    console.log("previewFile", previewFile);
-  }, [previewFile]);
-
   const removeQuery = (queryName) => {
     const queryParams = new URLSearchParams(location.search);
 
@@ -93,8 +89,6 @@ const FilesMediaViewer = (props) => {
     if (previewFile) {
       setIsLoading(true);
       setFirstLoad(true);
-
-      console.log("onMediaViewerClose");
 
       fetchFiles(previewFile.folderId)
         .then((data) => {

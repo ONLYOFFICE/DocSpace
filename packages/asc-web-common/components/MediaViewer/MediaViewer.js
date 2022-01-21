@@ -14,7 +14,7 @@ import Hammer from "hammerjs";
 import IconButton from "@appserver/components/icon-button";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { isDesktop } from "react-device-detect";
-import history from "@appserver/common/history";
+//import history from "@appserver/common/history";
 
 const StyledVideoViewer = styled(VideoViewer)`
   z-index: 301;
@@ -220,7 +220,7 @@ class MediaViewer extends React.Component {
     }
     document.removeEventListener("keydown", this.onKeydown, false);
     document.removeEventListener("keyup", this.onKeyup, false);
-    this.onClose();
+    //this.onClose();
   }
 
   mapSupplied = {
@@ -313,8 +313,7 @@ class MediaViewer extends React.Component {
     const id = playlist[currentPlaylistPos].fileId;
     const url = "/products/files/#preview/" + id;
 
-    //window.history.pushState(null, null, url);
-    history.push(url);
+    history.pushState({ id, type: "image" }, null, url);
   };
 
   nextMedia = () => {
@@ -330,8 +329,10 @@ class MediaViewer extends React.Component {
     const id = playlist[currentPlaylistPos].fileId;
     const url = "/products/files/#preview/" + id;
 
-    history.push(url);
-    //window.history.pushState(null, null, url);
+    history.pushState({ id, type: "image" }, null, url);
+
+    console.log("history.state", history.state);
+    console.log("history.length", history.length);
   };
 
   getOffset = () => {
@@ -433,6 +434,7 @@ class MediaViewer extends React.Component {
   };
 
   onClose = () => {
+    console.log("onClose");
     this.props.onClose();
     this.setState({ visible: false });
   };
@@ -488,6 +490,7 @@ class MediaViewer extends React.Component {
     if (this.canImageView(ext)) {
       isImage = true;
     } else {
+      console.log("isVideo");
       isImage = false;
       isVideo = this.mapSupplied[ext]
         ? this.mapSupplied[ext].type == mediaTypes.video
