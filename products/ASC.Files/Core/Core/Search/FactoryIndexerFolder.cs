@@ -60,11 +60,11 @@ namespace ASC.Web.Files.Core.Search
             IServiceProvider serviceProvider,
             IDaoFactory daoFactory,
             ICache cache,
-            SettingsHelper settingsHelper)
+            Settings settings)
             : base(options, tenantManager, searchSettingsHelper, factoryIndexer, baseIndexer, serviceProvider, cache)
         {
             DaoFactory = daoFactory;
-            Settings = settingsHelper.Settings;
+            Settings = settings;
         }
 
         public override void IndexAll()
