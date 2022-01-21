@@ -69,22 +69,33 @@ export default function withContent(WrappedContent) {
         setIsLoading,
         fileActionId,
         editCompleteAction,
+        addActiveItems,
+        clearActiveOperations,
       } = this.props;
 
       const { itemTitle } = this.state;
       const originalTitle = getTitleWithoutExst(item);
 
       setIsLoading(true);
+      let timerId;
+
       const isSameTitle =
         originalTitle.trim() === itemTitle.trim() || itemTitle.trim() === "";
+
+      const isFile = item.fileExst || item.contentLength;
+
       if (isSameTitle) {
         this.setState({
           itemTitle: originalTitle,
         });
         return editCompleteAction(fileActionId, item, isSameTitle);
+      } else {
+        timerId = setTimeout(() => {
+          isFile ? addActiveItems([item.id]) : addActiveItems(null, [item.id]);
+        }, 500);
       }
 
-      item.fileExst || item.contentLength
+      isFile
         ? updateFile(fileActionId, itemTitle)
             .then(() => this.completeAction(fileActionId))
             .then(() =>
@@ -96,7 +107,13 @@ export default function withContent(WrappedContent) {
               )
             )
             .catch((err) => toastr.error(err))
-            .finally(() => setIsLoading(false))
+            .finally(() => {
+              clearTimeout(timerId);
+              timerId = null;
+              clearActiveOperations([item.id]);
+
+              setIsLoading(false);
+            })
         : renameFolder(fileActionId, itemTitle)
             .then(() => this.completeAction(fileActionId))
             .then(() =>
@@ -108,7 +125,13 @@ export default function withContent(WrappedContent) {
               )
             )
             .catch((err) => toastr.error(err))
-            .finally(() => setIsLoading(false));
+            .finally(() => {
+              clearTimeout(timerId);
+              timerId = null;
+              clearActiveOperations(null, [item.id]);
+
+              setIsLoading(false);
+            });
     };
 
     cancelUpdateItem = (e) => {
@@ -123,11 +146,23 @@ export default function withContent(WrappedContent) {
     };
 
     onClickUpdateItem = (e, open = true) => {
-      const { fileActionType, setIsUpdatingRowItem } = this.props;
+      const {
+        fileActionType,
+        setIsUpdatingRowItem,
+        addActiveItems,
+        item,
+      } = this.props;
+
       setIsUpdatingRowItem(true);
-      fileActionType === FileAction.Create
-        ? this.createItem(e, open)
-        : this.updateItem(e);
+
+      if (fileActionType === FileAction.Create) {
+        !item.fileExst && !item.contentLength
+          ? addActiveItems(null, [item.id])
+          : addActiveItems([item.id]);
+        this.createItem(e, open);
+      } else {
+        this.updateItem(e);
+      }
     };
 
     createItem = (e, open) => {
@@ -147,6 +182,8 @@ export default function withContent(WrappedContent) {
         setConvertPasswordDialogVisible,
         setFormCreationInfo,
         setIsUpdatingRowItem,
+        clearActiveOperations,
+        addActiveItems,
       } = this.props;
       const { itemTitle } = this.state;
 
@@ -159,6 +196,8 @@ export default function withContent(WrappedContent) {
       setIsLoading(true);
 
       const itemId = e.currentTarget.dataset.itemid;
+
+      let createdFileId, createdFolderId;
 
       if (itemTitle.trim() === "") {
         title =
@@ -185,9 +224,18 @@ export default function withContent(WrappedContent) {
 
       if (!item.fileExst && !item.contentLength) {
         createFolder(item.parentId, title)
+          .then((folder) => {
+            createdFolderId = folder.id;
+            addActiveItems(null, [folder.id]);
+          })
           .then(() => this.completeAction(itemId))
           .catch((e) => toastr.error(e))
           .finally(() => {
+            const folderIds = [+itemId];
+            createdFolderId && folderIds.push(createdFolderId);
+
+            clearActiveOperations(null, folderIds);
+
             return setIsLoading(false);
           });
       } else {
@@ -198,6 +246,9 @@ export default function withContent(WrappedContent) {
             item.parentId
           )
             .then((file) => {
+              createdFileId = file.id;
+              addActiveItems([file.id]);
+
               open && openDocEditor(file.id, file.providerKey, tab);
             })
             .then(() => this.completeAction(itemId))
@@ -226,11 +277,19 @@ export default function withContent(WrappedContent) {
               open && openDocEditor(null, null, tab);
             })
             .finally(() => {
+              const fileIds = [+itemId];
+              createdFileId && fileIds.push(createdFileId);
+
+              clearActiveOperations(fileIds);
+
               return setIsLoading(false);
             });
         } else {
           createFile(item.parentId, `${title}.${item.fileExst}`)
             .then((file) => {
+              createdFileId = file.id;
+              addActiveItems([file.id]);
+
               if (isPrivacy) {
                 return setEncryptionAccess(file).then((encryptedFile) => {
                   if (!encryptedFile) return Promise.resolve();
@@ -250,6 +309,11 @@ export default function withContent(WrappedContent) {
             .then(() => this.completeAction(itemId))
             .catch((e) => toastr.error(e))
             .finally(() => {
+              const fileIds = [+itemId];
+              createdFileId && fileIds.push(createdFileId);
+
+              clearActiveOperations(fileIds);
+
               return setIsLoading(false);
             });
         }
@@ -393,7 +457,14 @@ export default function withContent(WrappedContent) {
 
   return inject(
     (
-      { filesActionsStore, filesStore, treeFoldersStore, auth, dialogsStore },
+      {
+        filesActionsStore,
+        filesStore,
+        treeFoldersStore,
+        auth,
+        dialogsStore,
+        uploadDataStore,
+      },
       {}
     ) => {
       const { editCompleteAction } = filesActionsStore;
@@ -409,7 +480,9 @@ export default function withContent(WrappedContent) {
         setIsUpdatingRowItem,
         isUpdatingRowItem,
         passwordEntryProcess,
+        addActiveItems,
       } = filesStore;
+      const { clearActiveOperations } = uploadDataStore;
       const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
 
       const {
@@ -460,6 +533,8 @@ export default function withContent(WrappedContent) {
         setIsUpdatingRowItem,
         isUpdatingRowItem,
         passwordEntryProcess,
+        addActiveItems,
+        clearActiveOperations,
       };
     }
   )(observer(WithContent));
