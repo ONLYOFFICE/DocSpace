@@ -547,8 +547,8 @@ namespace ASC.Notify.Cron
                     if (c >= '0' && c <= '9')
                     {
                         var vs = GetValue(val, s, i);
-                        val = vs.theValue;
-                        i = vs.pos;
+                        val = vs.TheValue;
+                        i = vs.Pos;
                     }
                     i = CheckNext(i, s, val, type);
                     return i;
@@ -665,9 +665,9 @@ namespace ASC.Notify.Cron
                 if (c >= '0' && c <= '9')
                 {
                     var vs = GetValue(v, s, i);
-                    var v1 = vs.theValue;
+                    var v1 = vs.TheValue;
                     end = v1;
-                    i = vs.pos;
+                    i = vs.Pos;
                 }
                 if (i < s.Length && ((s[i]) == '/'))
                 {
@@ -684,9 +684,9 @@ namespace ASC.Notify.Cron
                     if (c >= '0' && c <= '9')
                     {
                         var vs = GetValue(v2, s, i);
-                        var v3 = vs.theValue;
+                        var v3 = vs.TheValue;
                         AddToSet(val, end, v3, type);
-                        i = vs.pos;
+                        i = vs.Pos;
                         return i;
                     }
                     else
@@ -716,9 +716,9 @@ namespace ASC.Notify.Cron
                 if (c >= '0' && c <= '9')
                 {
                     var vs = GetValue(v2, s, i);
-                    var v3 = vs.theValue;
+                    var v3 = vs.TheValue;
                     AddToSet(val, end, v3, type);
-                    i = vs.pos;
+                    i = vs.Pos;
                     return i;
                 }
                 else
@@ -1018,13 +1018,13 @@ namespace ASC.Notify.Cron
             var val = new ValueSet();
             if (i < s.Length)
             {
-                val.pos = i;
+                val.Pos = i;
             }
             else
             {
-                val.pos = i + 1;
+                val.Pos = i + 1;
             }
-            val.theValue = Convert.ToInt32(s1, CultureInfo.InvariantCulture);
+            val.TheValue = Convert.ToInt32(s1, CultureInfo.InvariantCulture);
             return val;
         }
 
@@ -1526,7 +1526,7 @@ namespace ASC.Notify.Cron
 
     public class ValueSet
     {
-        public int pos;
-        public int theValue;
+        public int Pos { get; set; }
+        public int TheValue { get; set; }
     }
 }

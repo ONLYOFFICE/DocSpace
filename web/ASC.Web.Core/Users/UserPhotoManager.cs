@@ -233,10 +233,10 @@ namespace ASC.Web.Core.Users
             Log = options.Get("ASC.Web.Photo");
         }
 
-        public string defaultAbsoluteWebPath;
+        private string _defaultAbsoluteWebPath;
         public string GetDefaultPhotoAbsoluteWebPath()
         {
-            return defaultAbsoluteWebPath ??= WebImageSupplier.GetAbsoluteWebPath(_defaultAvatar);
+            return _defaultAbsoluteWebPath ??= WebImageSupplier.GetAbsoluteWebPath(_defaultAvatar);
         }
 
         public string GetRetinaPhotoURL(Guid userID)
@@ -296,34 +296,34 @@ namespace ASC.Web.Core.Users
         }
 
 
-        public string defaultSmallPhotoURL;
+        private string _defaultSmallPhotoURL;
         public string GetDefaultSmallPhotoURL()
         {
-            return defaultSmallPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(SmallFotoSize);
+            return _defaultSmallPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(SmallFotoSize);
         }
 
-        public string defaultMediumPhotoURL;
+        private string _defaultMediumPhotoURL;
         public string GetDefaultMediumPhotoURL()
         {
-            return defaultMediumPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(MediumFotoSize);
+            return _defaultMediumPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(MediumFotoSize);
         }
 
-        public string defaultBigPhotoURL;
+        private string _defaultBigPhotoURL;
         public string GetDefaultBigPhotoURL()
         {
-            return defaultBigPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(BigFotoSize);
+            return _defaultBigPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(BigFotoSize);
         }
 
-        public string defaultMaxPhotoURL;
+        private string _defaultMaxPhotoURL;
         public string GetDefaultMaxPhotoURL()
         {
-            return defaultMaxPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(MaxFotoSize);
+            return _defaultMaxPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(MaxFotoSize);
         }
 
-        public string defaultRetinaPhotoURL;
+        private string _defaultRetinaPhotoURL;
         public string GetDefaultRetinaPhotoURL()
         {
-            return defaultRetinaPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(RetinaFotoSize);
+            return _defaultRetinaPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(RetinaFotoSize);
         }
 
 

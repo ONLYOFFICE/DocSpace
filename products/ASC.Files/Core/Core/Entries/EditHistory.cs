@@ -79,9 +79,9 @@ namespace ASC.Files.Core
                 try
                 {
                     var jObject = JObject.Parse(ChangesString);
-                    ServerVersion = jObject.Value<string>("serverVersion");
+                    var serverVersion = jObject.Value<string>("serverVersion");
 
-                    if (string.IsNullOrEmpty(ServerVersion))
+                    if (string.IsNullOrEmpty(serverVersion))
                         return changes;
 
                     var jChanges = jObject.Value<JArray>("changes");
@@ -113,7 +113,7 @@ namespace ASC.Files.Core
             set { throw new NotImplementedException(); }
         }
 
-        public DateTime ModifiedOn;
+        public DateTime ModifiedOn { get; set; }
 
         [JsonPropertyName("created")]
         public string ModifiedOnString
@@ -126,8 +126,6 @@ namespace ASC.Files.Core
         private TenantUtil TenantUtil { get; }
         private UserManager UserManager { get; }
         private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-
-        public string ServerVersion;
     }
 
     [DebuggerDisplay("{Id} {Name}")]

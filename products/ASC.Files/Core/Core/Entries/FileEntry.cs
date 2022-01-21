@@ -110,7 +110,7 @@ namespace ASC.Files.Core
 
         public abstract bool IsNew { get; set; }
 
-        public FileEntryType FileEntryType;
+        public FileEntryType FileEntryType { get; set; }
 
         private string _modifiedByString;
         private string _createByString;

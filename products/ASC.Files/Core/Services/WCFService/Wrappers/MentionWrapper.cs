@@ -53,7 +53,7 @@ namespace ASC.Web.Files.Services.WCFService
 
         private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
 
-        public UserInfo User;
+        public UserInfo User { get; set; }
 
         public MentionWrapper(UserInfo user, DisplayUserSettingsHelper displayUserSettingsHelper)
         {

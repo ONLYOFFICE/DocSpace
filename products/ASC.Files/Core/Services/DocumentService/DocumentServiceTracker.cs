@@ -98,8 +98,8 @@ namespace ASC.Web.Files.Services.DocumentService
             [DebuggerDisplay("{Type} - {UserId}")]
             public class Action
             {
-                public string Type;
-                public string UserId;
+                public string Type { get; set; }
+                public string UserId { get; set; }
             }
 
             public enum ForceSaveInitiator

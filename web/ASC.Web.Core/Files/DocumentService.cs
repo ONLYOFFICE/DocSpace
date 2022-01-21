@@ -616,7 +616,7 @@ namespace ASC.Web.Core.Files
         [Serializable]
         public class DocumentServiceException : Exception
         {
-            public ErrorCode Code;
+            public ErrorCode Code { get; set; }
 
             public DocumentServiceException(ErrorCode errorCode, string message)
                 : base(message)

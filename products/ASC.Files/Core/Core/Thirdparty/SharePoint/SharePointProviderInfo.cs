@@ -60,8 +60,7 @@ namespace ASC.Files.Thirdparty.SharePoint
         public DateTime CreateOn { get; set; }
         public string CustomerTitle { get; set; }
         public string RootFolderId { get { return "spoint-" + ID; } }
-
-        public string SpRootFolderId = "/Shared Documents";
+        public string SpRootFolderId { get; set; } = "/Shared Documents";
 
         public SharePointProviderInfo(
             IOptionsMonitor<ILog> options,

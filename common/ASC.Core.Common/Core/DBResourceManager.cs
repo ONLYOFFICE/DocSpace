@@ -283,7 +283,7 @@ namespace TMResourceData
     {
         private readonly ILog log;
         private readonly ConcurrentDictionary<int, string> whiteLabelDictionary;
-        public string DefaultLogoText;
+        public string DefaultLogoText { get; }
 
         private IConfiguration Configuration { get; }
 

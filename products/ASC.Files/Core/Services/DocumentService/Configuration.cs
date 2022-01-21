@@ -141,7 +141,7 @@ namespace ASC.Web.Files.Services.DocumentService
     [Transient]
     public class DocumentConfig<T>
     {
-        public string SharedLinkKey;
+        private string _sharedLinkKey;
 
         public DocumentConfig(DocumentServiceConnector documentServiceConnector, PathProvider pathProvider, InfoConfig<T> infoConfig)
         {
@@ -185,7 +185,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 if (!string.IsNullOrEmpty(_fileUri))
                     return _fileUri;
                 var last = Permissions.Edit || Permissions.Review || Permissions.Comment;
-                _fileUri = DocumentServiceConnector.ReplaceCommunityAdress(PathProvider.GetFileStreamUrl(Info.GetFile(), SharedLinkKey, last));
+                _fileUri = DocumentServiceConnector.ReplaceCommunityAdress(PathProvider.GetFileStreamUrl(Info.GetFile(), _sharedLinkKey, last));
                 return _fileUri;
             }
         }
@@ -202,7 +202,7 @@ namespace ASC.Web.Files.Services.DocumentService
         public File<T> GetFile() => File;
         public void SetFile(File<T> file) => File = file;
 
-        public EditorType Type = EditorType.Desktop;
+        public EditorType Type { get; set; } = EditorType.Desktop;
         private string _breadCrumbs;
 
         public InfoConfig(BreadCrumbsManager breadCrumbsManager, FileSharing fileSharing, SecurityContext securityContext, UserManager userManager)
@@ -336,7 +336,7 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        public bool ModeWrite = false;
+        public bool ModeWrite { get; set; } = false;
 
         private Configuration<T> _configuration;
 
@@ -672,8 +672,8 @@ namespace ASC.Web.Files.Services.DocumentService
             Logo.SetConfiguration(_configuration);
         }
 
-        public string GobackUrl;
-        public bool IsRetina = false;
+        private string _gobackUrl;
+        public bool IsRetina { get; set; } = false;
 
 
         public bool About
@@ -717,11 +717,11 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 if (_configuration.EditorType == EditorType.Embedded || _configuration.EditorType == EditorType.External) return null;
                 if (!AuthContext.IsAuthenticated) return null;
-                if (GobackUrl != null)
+                if (_gobackUrl != null)
                 {
                     return new GobackConfig
                     {
-                        Url = GobackUrl,
+                        Url = _gobackUrl,
                     };
                 }
 

@@ -44,14 +44,14 @@ namespace ASC.Web.Files.Utils
     {
         internal const string MessageBodyFormat = "id={0}&from={1}&subject={2}&to%5B%5D={3}&body={4}&mimeReplyToId=";
 
-        public string From;
-        public string Subject;
-        public string To;
-        public string Message;
-        public string AttachTitle;
-        public Stream Attach;
-        public int MessageId;
-        public string StreamId;
+        public string From { get; set; }
+        public string Subject { get; set; }
+        public string To { get; set; }
+        public string Message { get; set; }
+        public string AttachTitle { get; set; }
+        public Stream Attach { get; set; }
+        public int MessageId { get; set; }
+        public string StreamId { get; set; }
 
         public MailMergeTask()
         {

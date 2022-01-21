@@ -135,7 +135,7 @@ namespace ASC.Core.Users
             return format.IndexOf("{0}") < format.IndexOf("{1}") ? DisplayUserNameFormat.FirstLast : DisplayUserNameFormat.LastFirst;
         }
 
-        public Regex UserNameRegex;
+        public Regex UserNameRegex { get; set; }
 
         private IConfiguration Configuration { get; }
 

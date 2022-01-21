@@ -113,7 +113,7 @@ namespace ASC.Core.Notify.Signalr
         private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(1);
         internal ILog Log;
         private static DateTime lastErrorTime;
-        public bool EnableSignalr;
+        public bool EnableSignalr { get; set; }
         internal byte[] SKey;
         internal string Url;
         internal bool JabberReplaceDomain;

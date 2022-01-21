@@ -17,7 +17,6 @@ namespace ASC.Core.Common.EF
 
     public class BaseDbContext : DbContext
     {
-        public string baseName;
         public BaseDbContext() { }
         public BaseDbContext(DbContextOptions options) : base(options)
         {
