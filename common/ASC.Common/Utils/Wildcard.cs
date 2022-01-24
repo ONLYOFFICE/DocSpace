@@ -51,8 +51,8 @@ namespace ASC.Common.Utils
         {
             var offsetInput = 0;
             var isAsterix = false;
-            int i;
-            for (i = 0; i < pattern.Length;)
+            int i = 0;
+            while (i < pattern.Length)
             {
                 switch (pattern[i])
                 {
