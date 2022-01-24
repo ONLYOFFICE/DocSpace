@@ -15,15 +15,17 @@ const StyledCrossIcon = styled(CrossIcon)`
 `;
 
 const StyledBarBanner = styled.div`
-  background: #e6eb96;
   width: 100%;
   height: 100%;
   display: ${(props) => (props.open ? "flex" : "none")};
   justify-content: space-between;
   align-items: flex-start;
+  position: relative;
 
   .action {
     padding: 4px;
+    position: absolute;
+    left: 98%;
   }
 `;
 
