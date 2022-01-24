@@ -1,27 +1,26 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 
 import { StyledBarBanner, StyledCrossIcon } from "./styled-bar-banner";
 
 const BarBanner = (props) => {
-  const { html } = props;
+  const { htmlLink } = props;
 
   const [open, setOpen] = useState(true);
 
   const onClose = () => setOpen(false);
 
   return (
-    <StyledBarBanner open={open}>
-      {html ? (
+    <StyledBarBanner {...props} open={open}>
+      {htmlLink ? (
         <iframe
           height="60px"
-          width="95%"
-          src={html}
+          width="100%"
+          src={htmlLink}
           frameBorder="0"
           align="left"
           scrolling="no"
-        >
-          test
-        </iframe>
+        ></iframe>
       ) : (
         ""
       )}
@@ -30,6 +29,19 @@ const BarBanner = (props) => {
       </div>
     </StyledBarBanner>
   );
+};
+
+BarBanner.propTypes = {
+  id: PropTypes.string,
+  className: PropTypes.string,
+  style: PropTypes.object,
+  htmlLink: PropTypes.string,
+};
+
+BarBanner.defaultProps = {
+  id: undefined,
+  className: undefined,
+  style: undefined,
 };
 
 export default BarBanner;
