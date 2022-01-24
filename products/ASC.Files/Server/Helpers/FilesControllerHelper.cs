@@ -370,7 +370,8 @@ namespace ASC.Files.Helpers
             var file = FileStorageService.GetFile(fileId, version).NotFoundIfNull("File not found");
             return FileWrapperHelper.Get(file);
         }
-        public FileWrapper<T> CopyFileAs(T fileId, T destFolderId, string destTitle)
+
+        public FileWrapper<T> CopyFileAs(T fileId, T destFolderId, string destTitle, string password = null)
         {
             var file = FileStorageService.GetFile(fileId, -1);
             var ext = FileUtility.GetFileExtension(file.Title);
@@ -382,7 +383,7 @@ namespace ASC.Files.Helpers
                 return FileWrapperHelper.Get(newFile);
             }
 
-            using (var fileStream = FileConverter.Exec(file, destExt))
+            using (var fileStream = FileConverter.Exec(file, destExt, password))
             {
                 return InsertFile(destFolderId, fileStream, destTitle, true);
             }
@@ -425,17 +426,15 @@ namespace ASC.Files.Helpers
                 .Select(FileOperationWraperHelper.Get);
         }
 
-        public IEnumerable<ConversationResult<T>> StartConversion(T fileId, bool sync = false)
+        public IEnumerable<ConversationResult<T>> StartConversion(CheckConversionModel<T> model)
         {
-            return CheckConversion(fileId, true, sync);
+            model.StartConvert = true;
+            return CheckConversion(model);
         }
 
-        public IEnumerable<ConversationResult<T>> CheckConversion(T fileId, bool start, bool sync = false)
+        public IEnumerable<ConversationResult<T>> CheckConversion(CheckConversionModel<T> model)
         {
-            return FileStorageService.CheckConversion(new List<List<string>>
-            {
-                new List<string> { fileId.ToString(), "0", start.ToString() }
-            }, sync)
+            return FileStorageService.CheckConversion(new List<CheckConversionModel<T>>() { model })
             .Select(r =>
             {
                 var o = new ConversationResult<T>
@@ -461,6 +460,7 @@ namespace ASC.Files.Helpers
                     }
                     catch (Exception e)
                     {
+                        o.File = r.Result;
                         Logger.Error(e);
                     }
                 }

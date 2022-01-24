@@ -363,7 +363,11 @@ export default function withFileActions(WrappedFileItem) {
 
       const inProgress =
         activeFiles.findIndex((x) => x === item.id) !== -1 ||
-        activeFolders.findIndex((x) => x === item.id && item.isFolder) !== -1;
+        activeFolders.findIndex(
+          (x) =>
+            x === item.id &&
+            (item.isFolder || (!item.fileExst && item.id === -1))
+        ) !== -1;
 
       const isActive =
         bufferSelection &&
