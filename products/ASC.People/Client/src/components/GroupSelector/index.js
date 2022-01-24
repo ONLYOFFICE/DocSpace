@@ -1,9 +1,9 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { I18nextProvider, withTranslation } from "react-i18next";
-import i18n from "./i18n";
-import AdvancedSelector from "@appserver/common/components/AdvancedSelector";
-import { getGroupList } from "@appserver/common/api/groups";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { I18nextProvider, withTranslation } from 'react-i18next';
+import i18n from './i18n';
+import AdvancedSelector from '@appserver/common/components/AdvancedSelector';
+import { getGroupList } from '@appserver/common/api/groups';
 
 class GroupSelector extends React.Component {
   constructor(props) {
@@ -20,8 +20,7 @@ class GroupSelector extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.isOpen !== prevProps.isOpen)
-      this.setState({ isOpen: this.props.isOpen });
+    if (this.props.isOpen !== prevProps.isOpen) this.setState({ isOpen: this.props.isOpen });
   }
 
   convertGroups = (groups) => {
@@ -37,9 +36,7 @@ class GroupSelector extends React.Component {
   };
 
   loadNextPage = ({ startIndex, searchValue }) => {
-    console.log(
-      `loadNextPage(startIndex=${startIndex}, searchValue="${searchValue}")`
-    );
+    console.log(`loadNextPage(startIndex=${startIndex}, searchValue="${searchValue}")`);
 
     this.setState({ isNextPageLoading: true }, () => {
       getGroupList(this.props.useFake, searchValue)
@@ -67,18 +64,12 @@ class GroupSelector extends React.Component {
 
   onSearchChanged = (value) => {
     //action("onSearchChanged")(value);
-    console.log("Search group", value);
+    console.log('Search group', value);
     this.setState({ options: [], hasNextPage: true });
   };
 
   render() {
-    const {
-      isOpen,
-      options,
-      selectedOptions,
-      hasNextPage,
-      isNextPageLoading,
-    } = this.state;
+    const { isOpen, options, selectedOptions, hasNextPage, isNextPageLoading } = this.state;
 
     const {
       id,
@@ -94,10 +85,12 @@ class GroupSelector extends React.Component {
       withoutAside,
       embeddedComponent,
       showCounter,
+      theme,
     } = this.props;
 
     return (
       <AdvancedSelector
+        theme={theme}
         id={id}
         className={className}
         style={style}
@@ -105,22 +98,18 @@ class GroupSelector extends React.Component {
         hasNextPage={hasNextPage}
         isNextPageLoading={isNextPageLoading}
         loadNextPage={this.loadNextPage}
-        size={"compact"}
+        size={'compact'}
         displayType={displayType}
         selectedOptions={selectedOptions}
         isOpen={isOpen}
         isMultiSelect={isMultiSelect}
         isDisabled={isDisabled}
-        searchPlaceHolderLabel={
-          searchPlaceHolderLabel || t("SearchPlaceholder")
-        }
-        selectButtonLabel={t("AddDepartmentsButtonLabel")}
-        selectAllLabel={t("Common:SelectAll")}
-        emptySearchOptionsLabel={t("EmptySearchOptionsLabel")}
-        emptyOptionsLabel={t("EmptyOptionsLabel")}
-        loadingLabel={`${t("Common:LoadingProcessing")} ${t(
-          "Common:LoadingDescription"
-        )}`}
+        searchPlaceHolderLabel={searchPlaceHolderLabel || t('SearchPlaceholder')}
+        selectButtonLabel={t('AddDepartmentsButtonLabel')}
+        selectAllLabel={t('Common:SelectAll')}
+        emptySearchOptionsLabel={t('EmptySearchOptionsLabel')}
+        emptyOptionsLabel={t('EmptyOptionsLabel')}
+        loadingLabel={`${t('Common:LoadingProcessing')} ${t('Common:LoadingDescription')}`}
         onSelect={onSelect}
         onSearchChanged={this.onSearchChanged}
         onCancel={onCancel}
@@ -145,20 +134,18 @@ GroupSelector.propTypes = {
   style: PropTypes.object,
   t: PropTypes.func,
   useFake: PropTypes.bool,
-  displayType: PropTypes.oneOf(["auto", "aside", "dropdown"]),
+  displayType: PropTypes.oneOf(['auto', 'aside', 'dropdown']),
   withoutAside: PropTypes.bool,
   embeddedComponent: PropTypes.any,
 };
 
 GroupSelector.defaultProps = {
   useFake: false,
-  displayType: "auto",
+  displayType: 'auto',
   withoutAside: false,
 };
 
-const ExtendedGroupSelector = withTranslation(["GroupSelector", "Common"])(
-  GroupSelector
-);
+const ExtendedGroupSelector = withTranslation(['GroupSelector', 'Common'])(GroupSelector);
 
 export default (props) => (
   <I18nextProvider i18n={i18n}>

@@ -219,6 +219,7 @@ class PeopleSelector extends React.Component {
       embeddedComponent,
       selectedOptions,
       showCounter,
+      theme,
     } = this.props;
 
     console.log('CustomAllGroups', t('CustomAllGroups', { groupsCaption }));
@@ -226,6 +227,7 @@ class PeopleSelector extends React.Component {
     console.log('PeopleSelector render');
     return (
       <AdvancedSelector
+        theme={theme}
         id={id}
         className={className}
         style={style}

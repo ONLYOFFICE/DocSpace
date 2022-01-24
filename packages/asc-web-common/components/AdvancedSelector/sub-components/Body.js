@@ -1,6 +1,6 @@
-import React from "react";
-import PropTypes from "prop-types";
-import StyledBody from "./StyledBody";
+import React from 'react';
+import PropTypes from 'prop-types';
+import StyledBody from './StyledBody';
 
 class Body extends React.Component {
   constructor(props) {
@@ -8,9 +8,9 @@ class Body extends React.Component {
   }
 
   render() {
-    const { children, displayType, className, style } = this.props;
+    const { children, displayType, className, style, theme } = this.props;
     return (
-      <StyledBody displayType={displayType} className={className} style={style}>
+      <StyledBody theme={theme} displayType={displayType} className={className} style={style}>
         {children}
       </StyledBody>
     );
@@ -21,7 +21,7 @@ Body.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
   style: PropTypes.object,
-  displayType: PropTypes.oneOf(["dropdown", "aside"]),
+  displayType: PropTypes.oneOf(['dropdown', 'aside']),
 };
 
 export default Body;

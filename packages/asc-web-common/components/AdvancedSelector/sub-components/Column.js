@@ -1,6 +1,6 @@
-import React from "react";
-import PropTypes from "prop-types";
-import StyledColumn from "./StyledColumn";
+import React from 'react';
+import PropTypes from 'prop-types';
+import StyledColumn from './StyledColumn';
 
 class Column extends React.Component {
   constructor(props) {
@@ -8,14 +8,14 @@ class Column extends React.Component {
   }
 
   render() {
-    const { children, displayType, className, style, size } = this.props;
+    const { children, displayType, className, style, size, theme } = this.props;
     return (
       <StyledColumn
+        theme={theme}
         displayType={displayType}
         className={className}
         style={style}
-        size={size}
-      >
+        size={size}>
         {children}
       </StyledColumn>
     );
@@ -26,8 +26,8 @@ Column.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
   style: PropTypes.object,
-  displayType: PropTypes.oneOf(["dropdown", "aside"]),
-  size: PropTypes.oneOf(["compact", "full"]),
+  displayType: PropTypes.oneOf(['dropdown', 'aside']),
+  size: PropTypes.oneOf(['compact', 'full']),
 };
 
 export default Column;

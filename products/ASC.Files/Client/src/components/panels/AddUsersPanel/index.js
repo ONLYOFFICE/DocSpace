@@ -110,6 +110,7 @@ class AddUsersPanelComponent extends React.Component {
       ? {
           embeddedComponent: (
             <AccessComboBox
+              theme={theme}
               t={t}
               access={accessRight}
               directionX="right"
@@ -123,18 +124,25 @@ class AddUsersPanelComponent extends React.Component {
 
     //console.log("AddUsersPanel render");
     return (
-      <StyledAddUsersPanelPanel visible={visible}>
-        <Backdrop onClick={this.onClosePanels} visible={visible} zIndex={zIndex} isAside={true} />
-        <Aside className="header_aside-panel">
-          <StyledContent>
-            <StyledHeaderContent>
+      <StyledAddUsersPanelPanel theme={theme} visible={visible}>
+        <Backdrop
+          theme={theme}
+          onClick={this.onClosePanels}
+          visible={visible}
+          zIndex={zIndex}
+          isAside={true}
+        />
+        <Aside theme={theme} className="header_aside-panel">
+          <StyledContent theme={theme}>
+            <StyledHeaderContent theme={theme}>
               <IconButton
+                theme={theme}
                 size="16"
                 iconName="/static/images/arrow.path.react.svg"
                 onClick={this.onArrowClick}
                 // color={theme.filesPanels.addUsers.iconColor}
               />
-              <Heading className="header_aside-panel-header" size="medium" truncate>
+              <Heading theme={theme} className="header_aside-panel-header" size="medium" truncate>
                 {isMultiSelect ? t('LinkText') : t('Translations:OwnerChange')}
               </Heading>
               {/*<IconButton
@@ -145,8 +153,9 @@ class AddUsersPanelComponent extends React.Component {
               />*/}
             </StyledHeaderContent>
 
-            <StyledBody ref={this.scrollRef}>
+            <StyledBody theme={theme} ref={this.scrollRef}>
               <PeopleSelector
+                theme={theme}
                 className="peopleSelector"
                 role={isMultiSelect ? null : 'user'}
                 employeeStatus={1}

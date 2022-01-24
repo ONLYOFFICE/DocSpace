@@ -35,12 +35,14 @@ class Tooltip extends Component {
 
     const renderTooltip = () => (
       <StyledTooltip
+        theme={this.props.theme}
         className={className}
         style={style}
         color={color}
         maxWidth={maxWidth}
       >
         <ReactTooltip
+          theme={this.props.theme}
           id={id}
           ref={reference}
           getContent={getContent}

@@ -70,10 +70,12 @@ class SearchInput extends React.Component {
 
     return (
       <StyledSearchInput
+        theme={this.props.theme}
         className={this.props.className}
         style={this.props.style}
       >
         <InputBlock
+          theme={this.props.theme}
           className="search-input-block"
           ref={this.input}
           id={this.props.id}
