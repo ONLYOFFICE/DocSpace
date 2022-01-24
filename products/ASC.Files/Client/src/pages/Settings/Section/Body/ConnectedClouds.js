@@ -199,8 +199,6 @@ class ConnectClouds extends React.Component {
   render() {
     const { t, providers, tReady, theme } = this.props;
 
-    console.log(theme);
-
     linkStyles.color = theme.filesSettings.color;
 
     return (
