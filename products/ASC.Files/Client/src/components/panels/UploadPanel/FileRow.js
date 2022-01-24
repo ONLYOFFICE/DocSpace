@@ -340,7 +340,7 @@ class FileRow extends Component {
                   size={"medium"}
                   scale
                   primary
-                  label={t("Done")}
+                  label={t("Ready")}
                   onClick={this.onButtonClick}
                   isDisabled={!password}
                 />
