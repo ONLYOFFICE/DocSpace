@@ -262,6 +262,7 @@ class PureHome extends React.Component {
 
       dragging,
       tReady,
+      personal,
     } = this.props;
     return (
       <>
@@ -310,7 +311,7 @@ class PureHome extends React.Component {
           </PageLayout.SectionHeader>
 
           <PageLayout.SectionBar>
-            <Bar firstLoad={firstLoad} />
+            <Bar firstLoad={firstLoad} personal={personal} />
           </PageLayout.SectionBar>
 
           <PageLayout.SectionFilter>
@@ -445,6 +446,7 @@ export default inject(
       startUpload,
       isHeaderVisible: auth.settingsStore.isHeaderVisible,
       setHeaderVisible: auth.settingsStore.setHeaderVisible,
+      personal: auth.settingsStore.personal,
       setToPreviewFile,
       mediaViewersFormatsStore,
       getFileInfo,
