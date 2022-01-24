@@ -2184,8 +2184,8 @@ const Dark = {
       },
 
       loadingButton: {
-        color: blueMain,
-        background: white,
+        color: "#eeeeee",
+        background: black,
       },
     },
   },
