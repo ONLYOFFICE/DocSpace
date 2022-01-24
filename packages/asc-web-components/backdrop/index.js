@@ -81,12 +81,13 @@ class Backdrop extends React.Component {
 
   render() {
     const { needBackdrop, needBackground } = this.state;
-    const { isAside, visible } = this.props;
+    const { isAside, visible, theme } = this.props;
 
     const modifiedClassName = this.modifyClassName();
 
     return visible && (needBackdrop || isAside) ? (
       <StyledBackdrop
+        theme={theme}
         {...this.props}
         ref={this.backdropRef}
         className={modifiedClassName}

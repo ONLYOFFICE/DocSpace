@@ -24,15 +24,21 @@ const StyledInfoToastIcon = styled(InfoToastIcon)`
 `;
 
 // eslint-disable-next-line react/prop-types
-const Icon = ({ type }) =>
+const Icon = ({ type, theme }) =>
   type === "success" ? (
-    <StyledCheckToastIcon className="toastr_icon toastr_success" />
+    <StyledCheckToastIcon
+      theme={theme}
+      className="toastr_icon toastr_success"
+    />
   ) : type === "error" ? (
-    <StyledDangerToastIcon className="toastr_icon toastr_error" />
+    <StyledDangerToastIcon theme={theme} className="toastr_icon toastr_error" />
   ) : type === "warning" ? (
-    <StyledDangerToastIcon className="toastr_icon toastr_warning" />
+    <StyledDangerToastIcon
+      theme={theme}
+      className="toastr_icon toastr_warning"
+    />
   ) : (
-    <StyledInfoToastIcon className="toastr_icon toastr_info" />
+    <StyledInfoToastIcon theme={theme} className="toastr_icon toastr_info" />
   );
 
 const toastr = {
@@ -43,9 +49,10 @@ const toastr = {
   warning: warning,
 };
 
-const CloseButton = ({ closeToast }) => (
+const CloseButton = ({ closeToast, theme }) => (
   <StyledCloseWrapper>
     <StyledIconButton
+      theme={theme}
       className="closeButton"
       onClick={closeToast}
       iconName="/static/images/cross.react.svg"
@@ -60,14 +67,15 @@ const notify = (
   title,
   timeout = 5000,
   withCross = false,
-  centerPosition = false
+  centerPosition = false,
+  theme
 ) => {
   return toast(
     <>
-      <IconWrapper>
-        <Icon size="medium" type={type} />
+      <IconWrapper theme={theme}>
+        <Icon theme={theme} size="medium" type={type} />
       </IconWrapper>
-      <StyledDiv type={type}>
+      <StyledDiv theme={theme} type={type}>
         {typeof data === "string" ? (
           <>
             {title && <Text className="toast-title">{title}</Text>}

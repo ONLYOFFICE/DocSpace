@@ -14,6 +14,7 @@ const DropDownItem = (props) => {
     disabled,
     onClick,
     className,
+    theme,
   } = props;
 
   const onClickAction = (e) => {
@@ -28,7 +29,7 @@ const DropDownItem = (props) => {
       disabled={disabled}
     >
       {icon && (
-        <IconWrapper>
+        <IconWrapper theme={theme}>
           <ReactSVG src={icon} className="drop-down-item_icon" />
         </IconWrapper>
       )}

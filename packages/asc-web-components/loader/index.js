@@ -7,7 +7,7 @@ import { Rombs } from "./types/rombs";
 import Text from "../text";
 
 const Loader = (props) => {
-  const { type, color, size, label, className, style, id } = props;
+  const { type, color, size, label, className, style, id, theme } = props;
 
   const svgRenderer = (type) => {
     switch (type) {
@@ -20,7 +20,7 @@ const Loader = (props) => {
       default:
         return (
           <span style={{ ...style }}>
-            <Text color={color} fontSize={size}>
+            <Text theme={theme} color={color} fontSize={size}>
               {label}
             </Text>
           </span>

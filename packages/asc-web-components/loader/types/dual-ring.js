@@ -1,8 +1,9 @@
 import React from "react";
 import { StyledDualRing } from "../styled-loader";
 // eslint-disable-next-line react/prop-types
-export const DualRing = ({ size, color, label }) => (
+export const DualRing = ({ size, color, label, theme }) => (
   <StyledDualRing
+    theme={theme}
     width={size}
     height={size}
     viewBox="0 0 100 100"

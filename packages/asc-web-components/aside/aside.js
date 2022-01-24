@@ -7,6 +7,7 @@ import StyledAside from "./styled-aside";
 const Aside = React.memo((props) => {
   //console.log("Aside render");
   const {
+    theme,
     visible,
     children,
     scale,
@@ -18,6 +19,7 @@ const Aside = React.memo((props) => {
 
   return (
     <StyledAside
+      theme={theme}
       visible={visible}
       scale={scale}
       zIndex={zIndex}
@@ -27,7 +29,9 @@ const Aside = React.memo((props) => {
       {withoutBodyScroll ? (
         children
       ) : (
-        <Scrollbar stype="mediumBlack">{children}</Scrollbar>
+        <Scrollbar theme={theme} stype="mediumBlack">
+          {children}
+        </Scrollbar>
       )}
     </StyledAside>
   );

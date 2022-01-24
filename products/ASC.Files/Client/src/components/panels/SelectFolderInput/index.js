@@ -1,14 +1,14 @@
-import React from "react";
-import { Provider as MobxProvider } from "mobx-react";
+import React from 'react';
+import { Provider as MobxProvider } from 'mobx-react';
 
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
-import stores from "../../../store/index";
-import SelectFolderDialog from "../SelectFolderDialog/index";
-import StyledComponent from "./StyledSelectFolderInput";
-import SimpleFileInput from "../../SimpleFileInput";
+import stores from '../../../store/index';
+import SelectFolderDialog from '../SelectFolderDialog/index';
+import StyledComponent from './StyledSelectFolderInput';
+import SimpleFileInput from '../../SimpleFileInput';
 
-let path = "";
+let path = '';
 
 class SelectFolderInputBody extends React.PureComponent {
   constructor(props) {
@@ -16,9 +16,9 @@ class SelectFolderInputBody extends React.PureComponent {
 
     this.state = {
       isLoading: false,
-      baseFolderPath: "",
-      fullFolderPath: "",
-      fullFolderPathDefault: "",
+      baseFolderPath: '',
+      fullFolderPath: '',
+      fullFolderPathDefault: '',
     };
   }
   componentDidMount() {
@@ -35,10 +35,7 @@ class SelectFolderInputBody extends React.PureComponent {
   componentDidUpdate(prevProps) {
     const { isSetDefaultFolderPath, folderPath } = this.props;
 
-    if (
-      isSetDefaultFolderPath &&
-      isSetDefaultFolderPath !== prevProps.isSetDefaultFolderPath
-    ) {
+    if (isSetDefaultFolderPath && isSetDefaultFolderPath !== prevProps.isSetDefaultFolderPath) {
       this.setState({
         fullFolderPath: this.state.fullFolderPathDefault,
       });
@@ -96,12 +93,14 @@ class SelectFolderInputBody extends React.PureComponent {
       headerName,
       footer,
       selectionButtonPrimary,
+      theme,
     } = this.props;
     const { isLoading, baseFolderPath, fullFolderPath } = this.state;
 
     return (
-      <StyledComponent>
+      <StyledComponent theme={theme}>
         <SimpleFileInput
+          theme={theme}
           name={name}
           className="input-with-folder-path"
           textField={fullFolderPath || baseFolderPath}
@@ -111,6 +110,7 @@ class SelectFolderInputBody extends React.PureComponent {
         />
 
         <SelectFolderDialog
+          theme={theme}
           zIndex={zIndex}
           isPanelVisible={isPanelVisible}
           onClose={onClose}
@@ -157,17 +157,17 @@ SelectFolderInputBody.defaultProps = {
   withoutProvider: false,
   isDisabled: false,
   isError: false,
-  folderPath: "",
+  folderPath: '',
 };
 
 class SelectFolderInput extends React.Component {
   static setFullFolderPath = (foldersArray) => {
-    path = "";
+    path = '';
     if (foldersArray.length > 1) {
       for (let item of foldersArray) {
         if (!path) {
           path = path + `${item.title}`;
-        } else path = path + " " + "/" + " " + `${item.title}`;
+        } else path = path + ' ' + '/' + ' ' + `${item.title}`;
       }
     } else {
       for (let item of foldersArray) {

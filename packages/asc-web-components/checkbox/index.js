@@ -8,7 +8,7 @@ import CheckboxCheckedIcon from "./svg/checkbox.checked.react.svg";
 import CheckboxIcon from "./svg/checkbox.react.svg";
 
 // eslint-disable-next-line react/prop-types
-const RenderCheckboxIcon = ({ isChecked, isIndeterminate }) => {
+const RenderCheckboxIcon = ({ isChecked, isIndeterminate, theme }) => {
   // let newProps = {
   //   size: "medium",
   //   className: "checkbox",
@@ -19,11 +19,17 @@ const RenderCheckboxIcon = ({ isChecked, isIndeterminate }) => {
   return (
     <>
       {isIndeterminate ? (
-        <CheckboxIndeterminateIcon className="checkbox not-selectable" />
+        <CheckboxIndeterminateIcon
+          theme={theme}
+          className="checkbox not-selectable"
+        />
       ) : isChecked ? (
-        <CheckboxCheckedIcon className="checkbox not-selectable" />
+        <CheckboxCheckedIcon
+          theme={theme}
+          className="checkbox not-selectable"
+        />
       ) : (
-        <CheckboxIcon className="checkbox not-selectable" />
+        <CheckboxIcon theme={theme} className="checkbox not-selectable" />
       )}
     </>
   );
@@ -73,10 +79,12 @@ class Checkbox extends React.Component {
       value,
       title,
       truncate,
+      theme,
     } = this.props;
 
     return (
       <StyledLabel
+        theme={theme}
         id={id}
         style={style}
         isDisabled={isDisabled}
@@ -85,6 +93,7 @@ class Checkbox extends React.Component {
         title={title}
       >
         <HiddenInput
+          theme={theme}
           type="checkbox"
           checked={this.state.checked}
           isDisabled={isDisabled}
@@ -92,9 +101,10 @@ class Checkbox extends React.Component {
           value={value}
           onChange={this.onInputChange}
         />
-        <RenderCheckboxIcon {...this.props} />
+        <RenderCheckboxIcon theme={theme} {...this.props} />
         {this.props.label && (
           <Text
+            theme={theme}
             as="span"
             title={title}
             isDisabled={isDisabled}

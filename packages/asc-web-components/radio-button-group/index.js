@@ -26,8 +26,10 @@ class RadioButtonGroup extends React.Component {
 
   render() {
     const options = this.props.options;
+    const theme = this.props.theme;
     return (
       <StyledDiv
+        theme={theme}
         id={this.props.id}
         className={this.props.className}
         style={this.props.style}
@@ -37,6 +39,7 @@ class RadioButtonGroup extends React.Component {
         {options.map((option) => {
           return (
             <RadioButton
+              theme={theme}
               key={option.value}
               name={this.props.name}
               value={option.value}

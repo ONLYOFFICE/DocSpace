@@ -92,6 +92,7 @@ class ComboBox extends React.Component {
       comboIcon,
       manualY,
       manualX,
+      theme,
     } = this.props;
     const { isOpen, selectedOption } = this.state;
 
@@ -124,6 +125,7 @@ class ComboBox extends React.Component {
         {...this.props}
       >
         <ComboButton
+          theme={theme}
           noBorder={noBorder}
           isDisabled={isDisabled}
           selectedOption={selectedOption}
@@ -139,6 +141,7 @@ class ComboBox extends React.Component {
         />
         {displayType !== "toggle" && (
           <DropDown
+            theme={theme}
             className="dropdown-container not-selectable"
             directionX={directionX}
             directionY={directionY}
@@ -154,6 +157,7 @@ class ComboBox extends React.Component {
               ? advancedOptions
               : options.map((option) => (
                   <DropDownItem
+                    theme={theme}
                     {...option}
                     textOverflow={textOverflow}
                     key={option.key}

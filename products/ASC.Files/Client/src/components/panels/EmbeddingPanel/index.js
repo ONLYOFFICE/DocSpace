@@ -30,22 +30,29 @@ class EmbeddingPanelComponent extends React.Component {
 
     //console.log("EmbeddingPanel render");
     return (
-      <StyledEmbeddingPanel visible={visible}>
-        <Backdrop onClick={this.onClosePanels} visible={visible} zIndex={zIndex} isAside={true} />
-        <Aside className="header_aside-panel">
-          <StyledContent>
-            <StyledHeaderContent>
+      <StyledEmbeddingPanel theme={theme} visible={visible}>
+        <Backdrop
+          theme={theme}
+          onClick={this.onClosePanels}
+          visible={visible}
+          zIndex={zIndex}
+          isAside={true}
+        />
+        <Aside theme={theme} className="header_aside-panel">
+          <StyledContent theme={theme}>
+            <StyledHeaderContent theme={theme}>
               <IconButton
+                theme={theme}
                 size="16"
                 iconName="/static/images/arrow.path.react.svg"
                 onClick={this.onArrowClick}
                 // color={theme.filesPanels.embedding.color}
               />
-              <Heading className="header_aside-panel-header" size="medium" truncate>
+              <Heading theme={theme} className="header_aside-panel-header" size="medium" truncate>
                 {t('EmbeddingDocument')}
               </Heading>
             </StyledHeaderContent>
-            <StyledBody>
+            <StyledBody theme={theme}>
               <EmbeddingBody theme={theme} />
             </StyledBody>
           </StyledContent>

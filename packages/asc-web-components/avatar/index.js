@@ -54,7 +54,7 @@ Initials.propTypes = {
 // eslint-disable-next-line react/display-name
 const Avatar = (props) => {
   //console.log("Avatar render");
-  const { size, source, userName, role, editing, editAction } = props;
+  const { size, source, userName, role, editing, editAction, theme } = props;
 
   const avatarContent = source ? (
     <StyledImage src={source} />
@@ -68,12 +68,13 @@ const Avatar = (props) => {
 
   return (
     <StyledAvatar {...props}>
-      <AvatarWrapper source={source} userName={userName}>
+      <AvatarWrapper theme={theme} source={source} userName={userName}>
         {avatarContent}
       </AvatarWrapper>
       {editing && size === "max" && (
-        <EditContainer>
+        <EditContainer theme={theme}>
           <IconButton
+            theme={theme}
             className="edit_icon"
             iconName="/static/images/pencil.react.svg"
             onClick={editAction}

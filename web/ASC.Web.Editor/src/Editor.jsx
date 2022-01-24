@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-import Toast from "@appserver/components/toast";
-import toastr from "studio/toastr";
-import { toast } from "react-toastify";
-import { Trans } from "react-i18next";
-import Box from "@appserver/components/box";
-import { regDesktop } from "@appserver/common/desktop";
+import Toast from '@appserver/components/toast';
+import toastr from 'studio/toastr';
+import { toast } from 'react-toastify';
+import { Trans } from 'react-i18next';
+import Box from '@appserver/components/box';
+import { regDesktop } from '@appserver/common/desktop';
 import {
   combineUrl,
   getObjectByLocation,
@@ -13,7 +13,7 @@ import {
   isRetina,
   getCookie,
   setCookie,
-} from "@appserver/common/utils";
+} from '@appserver/common/utils';
 import {
   getDocServiceUrl,
   openEdit,
@@ -29,36 +29,37 @@ import {
   getEditHistory,
   getEditDiff,
   restoreDocumentsVersion,
-} from "@appserver/common/api/files";
-import FilesFilter from "@appserver/common/api/files/filter";
+} from '@appserver/common/api/files';
+import FilesFilter from '@appserver/common/api/files/filter';
 
-import throttle from "lodash/throttle";
-import { isIOS, deviceType } from "react-device-detect";
-import { homepage } from "../package.json";
+import throttle from 'lodash/throttle';
+import { isIOS, deviceType } from 'react-device-detect';
+import { homepage } from '../package.json';
 
-import { AppServerConfig } from "@appserver/common/constants";
-import SharingDialog from "files/SharingDialog";
-import { getDefaultFileName, SaveAs, canConvert } from "files/utils";
-import SelectFileDialog from "files/SelectFileDialog";
-import SelectFolderDialog from "files/SelectFolderDialog";
-import { StyledSelectFolder } from "./StyledEditor";
-import i18n from "./i18n";
-import Text from "@appserver/components/text";
-import TextInput from "@appserver/components/text-input";
-import Checkbox from "@appserver/components/checkbox";
-import { isMobile } from "react-device-detect";
-import store from "studio/store";
+import { AppServerConfig } from '@appserver/common/constants';
+import SharingDialog from 'files/SharingDialog';
+import { getDefaultFileName, SaveAs, canConvert } from 'files/utils';
+import SelectFileDialog from 'files/SelectFileDialog';
+import SelectFolderDialog from 'files/SelectFolderDialog';
+import { StyledSelectFolder } from './StyledEditor';
+import i18n from './i18n';
+import Text from '@appserver/components/text';
+import TextInput from '@appserver/components/text-input';
+import Checkbox from '@appserver/components/checkbox';
+import { isMobile } from 'react-device-detect';
+import store from 'studio/store';
 
 const { auth: authStore } = store;
+const theme = store.auth.settingsStore.theme;
 
 let documentIsReady = false;
 
-const text = "text";
-const spreadSheet = "spreadsheet";
-const presentation = "presentation";
-const insertImageAction = "imageFileType";
-const mailMergeAction = "mailMergeFileType";
-const compareFilesAction = "documentsFileType";
+const text = 'text';
+const spreadSheet = 'spreadsheet';
+const presentation = 'presentation';
+const insertImageAction = 'imageFileType';
+const mailMergeAction = 'mailMergeFileType';
+const compareFilesAction = 'documentsFileType';
 
 let docTitle = null;
 let actionLink;
@@ -71,35 +72,32 @@ let user = null;
 let personal;
 let url = window.location.href;
 let config;
-const filesUrl = url.substring(0, url.indexOf("/doceditor"));
-const doc = url.indexOf("doc=") !== -1 ? url.split("doc=")[1] : null;
+const filesUrl = url.substring(0, url.indexOf('/doceditor'));
+const doc = url.indexOf('doc=') !== -1 ? url.split('doc=')[1] : null;
 
 toast.configure();
 
 const Editor = () => {
   const urlParams = getObjectByLocation(window.location);
-  const decodedId = urlParams
-    ? urlParams.fileId || urlParams.fileid || null
-    : null;
-  const fileId =
-    typeof decodedId === "string" ? encodeURIComponent(decodedId) : decodedId;
+  const decodedId = urlParams ? urlParams.fileId || urlParams.fileid || null : null;
+  const fileId = typeof decodedId === 'string' ? encodeURIComponent(decodedId) : decodedId;
   const version = urlParams ? urlParams.version || null : null;
   const doc = urlParams ? urlParams.doc || null : null;
-  const isDesktop = window["AscDesktopEditor"] !== undefined;
-  const view = url.indexOf("action=view") !== -1;
+  const isDesktop = window['AscDesktopEditor'] !== undefined;
+  const view = url.indexOf('action=view') !== -1;
 
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
-  const [titleSelectorFolder, setTitleSelectorFolder] = useState("");
+  const [titleSelectorFolder, setTitleSelectorFolder] = useState('');
   const [extension, setExtension] = useState();
-  const [urlSelectorFolder, setUrlSelectorFolder] = useState("");
+  const [urlSelectorFolder, setUrlSelectorFolder] = useState('');
   const [openNewTab, setNewOpenTab] = useState(false);
   const [typeInsertImageAction, setTypeInsertImageAction] = useState();
   const throttledChangeTitle = throttle(() => changeTitle(), 500);
 
   useEffect(() => {
-    if (isRetina() && getCookie("is_retina") == null) {
-      setCookie("is_retina", true, { path: "/" });
+    if (isRetina() && getCookie('is_retina') == null) {
+      setCookie('is_retina', true, { path: '/' });
     }
 
     init();
@@ -169,15 +167,10 @@ const Editor = () => {
           })
           .catch((error) => {
             console.log(error);
-            toastr.error(
-              typeof error === "string" ? error : error.message,
-              null,
-              0,
-              true
-            );
+            toastr.error(typeof error === 'string' ? error : error.message, null, 0, true);
           });
       },
-      i18n.t
+      i18n.t,
     );
   };
 
@@ -190,13 +183,11 @@ const Editor = () => {
     try {
       if (!fileId) return;
 
-      console.log(
-        `Editor componentDidMount fileId=${fileId}, version=${version}, doc=${doc}`
-      );
+      console.log(`Editor componentDidMount fileId=${fileId}, version=${version}, doc=${doc}`);
 
       if (isIPad()) {
         const vh = window.innerHeight * 0.01;
-        document.documentElement.style.setProperty("--vh", `${vh}px`);
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
       }
 
       //showLoader();
@@ -212,16 +203,13 @@ const Editor = () => {
       }
 
       if (!doc && !successAuth) {
-        localStorage.setItem("redirectPath", window.location.href);
+        localStorage.setItem('redirectPath', window.location.href);
 
         window.open(
-          combineUrl(
-            AppServerConfig.proxyURL,
-            personal ? "/sign-in" : "/login"
-          ),
-          "_self",
-          "",
-          true
+          combineUrl(AppServerConfig.proxyURL, personal ? '/sign-in' : '/login'),
+          '_self',
+          '',
+          true,
         );
         return;
       }
@@ -229,7 +217,7 @@ const Editor = () => {
         try {
           fileInfo = await getFileInfo(fileId);
 
-          if (url.indexOf("#message/") > -1) {
+          if (url.indexOf('#message/') > -1) {
             if (canConvert(fileInfo.fileExst)) {
               const url = await convertDocumentUrl();
               history.pushState({}, null, url);
@@ -269,40 +257,35 @@ const Editor = () => {
       isSharingAccess = fileInfo && fileInfo.canShare;
 
       if (view) {
-        config.editorConfig.mode = "view";
+        config.editorConfig.mode = 'view';
       }
 
       setIsLoading(false);
 
-      loadScript(docApiUrl, "scripDocServiceAddress", () => onLoad());
+      loadScript(docApiUrl, 'scripDocServiceAddress', () => onLoad());
     } catch (error) {
       console.log(error);
-      toastr.error(
-        typeof error === "string" ? error : error.message,
-        null,
-        0,
-        true
-      );
+      toastr.error(typeof error === 'string' ? error : error.message, null, 0, true);
     }
   };
 
   const isIPad = () => {
-    return isIOS && deviceType === "tablet";
+    return isIOS && deviceType === 'tablet';
   };
 
   const setFavicon = (documentType) => {
-    const favicon = document.getElementById("favicon");
+    const favicon = document.getElementById('favicon');
     if (!favicon) return;
     let icon = null;
     switch (documentType) {
-      case "text":
-        icon = "text.ico";
+      case 'text':
+        icon = 'text.ico';
         break;
-      case "presentation":
-        icon = "presentation.ico";
+      case 'presentation':
+        icon = 'presentation.ico';
         break;
-      case "spreadsheet":
-        icon = "spreadsheet.ico";
+      case 'spreadsheet':
+        icon = 'spreadsheet.ico';
         break;
       default:
         break;
@@ -318,18 +301,18 @@ const Editor = () => {
   const setDocumentTitle = (subTitle = null) => {
     //const { isAuthenticated, settingsStore, product: currentModule } = auth;
     //const { organizationName } = settingsStore;
-    const organizationName = "ONLYOFFICE"; //TODO: Replace to API variant
-    const moduleTitle = "Documents"; //TODO: Replace to API variant
+    const organizationName = 'ONLYOFFICE'; //TODO: Replace to API variant
+    const moduleTitle = 'Documents'; //TODO: Replace to API variant
 
     let title;
     if (subTitle) {
       if (isAuthenticated && moduleTitle) {
-        title = subTitle + " - " + moduleTitle;
+        title = subTitle + ' - ' + moduleTitle;
       } else {
-        title = subTitle + " - " + organizationName;
+        title = subTitle + ' - ' + organizationName;
       }
     } else if (moduleTitle && organizationName) {
-      title = moduleTitle + " - " + organizationName;
+      title = moduleTitle + ' - ' + organizationName;
     } else {
       title = organizationName;
     }
@@ -339,9 +322,9 @@ const Editor = () => {
 
   const onLoad = () => {
     try {
-      if (!window.DocsAPI) throw new Error("DocsAPI is not defined");
+      if (!window.DocsAPI) throw new Error('DocsAPI is not defined');
 
-      console.log("Editor config: ", config);
+      console.log('Editor config: ', config);
 
       docTitle = config.document.title;
 
@@ -349,7 +332,7 @@ const Editor = () => {
       setDocumentTitle(docTitle);
 
       if (isMobile) {
-        config.type = "mobile";
+        config.type = 'mobile';
       }
 
       let goBack;
@@ -362,7 +345,7 @@ const Editor = () => {
         goBack = {
           blank: true,
           requestClose: false,
-          text: i18n.t("FileLocation"),
+          text: i18n.t('FileLocation'),
           url: `${combineUrl(filesUrl, `/filter?${urlFilter}`)}`,
         };
       }
@@ -377,8 +360,8 @@ const Editor = () => {
         config.document.info.favorite = null;
       }
 
-      if (url.indexOf("anchor") !== -1) {
-        const splitUrl = url.split("anchor=");
+      if (url.indexOf('anchor') !== -1) {
+        const splitUrl = url.split('anchor=');
         const decodeURI = decodeURIComponent(splitUrl[1]);
         const obj = JSON.parse(decodeURI);
 
@@ -390,11 +373,7 @@ const Editor = () => {
       if (successAuth) {
         const documentType = config.documentType;
         const fileExt =
-          documentType === text
-            ? "docx"
-            : documentType === presentation
-            ? "pptx"
-            : "xlsx";
+          documentType === text ? 'docx' : documentType === presentation ? 'pptx' : 'xlsx';
 
         const defaultFileName = getDefaultFileName(fileExt);
 
@@ -402,10 +381,10 @@ const Editor = () => {
           config.editorConfig.createUrl = combineUrl(
             window.location.origin,
             AppServerConfig.proxyURL,
-            "products/files/",
+            'products/files/',
             `/httphandlers/filehandler.ashx?action=create&doctype=text&title=${encodeURIComponent(
-              defaultFileName
-            )}`
+              defaultFileName,
+            )}`,
           );
       }
       let onRequestSharingSettings,
@@ -460,7 +439,7 @@ const Editor = () => {
 
       const newConfig = Object.assign(config, events);
 
-      docEditor = window.DocsAPI.DocEditor("editor", newConfig);
+      docEditor = window.DocsAPI.DocEditor('editor', newConfig);
     } catch (error) {
       console.log(error);
       toastr.error(error.message, null, 0, true);
@@ -514,9 +493,7 @@ const Editor = () => {
 
       let obj = {
         ...(changes.length !== 0 && { changes }),
-        created: `${new Date(fileHistory[i].created).toLocaleString(
-          config.editorConfig.lang
-        )}`,
+        created: `${new Date(fileHistory[i].created).toLocaleString(config.editorConfig.lang)}`,
         ...(serverVersion && { serverVersion }),
         key: fileHistory[i].key,
         user: {
@@ -532,8 +509,8 @@ const Editor = () => {
     return result;
   };
   const getCurrentDocumentVersion = (fileHistory, historyLength) => {
-    return url.indexOf("&version=") !== -1
-      ? +url.split("&version=")[1]
+    return url.indexOf('&version=') !== -1
+      ? +url.split('&version=')[1]
       : fileHistory[historyLength - 1].version;
   };
   const onSDKRequestHistory = async () => {
@@ -555,17 +532,10 @@ const Editor = () => {
   const onSDKRequestRestore = async (event) => {
     const restoreVersion = event.data.version;
     try {
-      const updateVersions = await restoreDocumentsVersion(
-        fileId,
-        restoreVersion,
-        doc
-      );
+      const updateVersions = await restoreDocumentsVersion(fileId, restoreVersion, doc);
       const historyLength = updateVersions.length;
       docEditor.refreshHistory({
-        currentVersion: getCurrentDocumentVersion(
-          updateVersions,
-          historyLength
-        ),
+        currentVersion: getCurrentDocumentVersion(updateVersions, historyLength),
         history: getDocumentHistory(updateVersions, historyLength),
       });
     } catch (e) {
@@ -576,31 +546,29 @@ const Editor = () => {
   };
 
   const onSDKAppReady = () => {
-    console.log("ONLYOFFICE Document Editor is ready");
+    console.log('ONLYOFFICE Document Editor is ready');
 
-    const index = url.indexOf("#message/");
+    const index = url.indexOf('#message/');
     if (index > -1) {
-      const splitUrl = url.split("#message/");
-      const message = decodeURIComponent(splitUrl[1]).replaceAll("+", " ");
+      const splitUrl = url.split('#message/');
+      const message = decodeURIComponent(splitUrl[1]).replaceAll('+', ' ');
       history.pushState({}, null, url.substring(0, index));
       docEditor.showMessage(message);
     }
 
-    const tempElm = document.getElementById("loader");
+    const tempElm = document.getElementById('loader');
     if (tempElm) {
-      tempElm.outerHTML = "";
+      tempElm.outerHTML = '';
     }
   };
 
   const onSDKInfo = (event) => {
-    console.log(
-      "ONLYOFFICE Document Editor is opened in mode " + event.data.mode
-    );
+    console.log('ONLYOFFICE Document Editor is opened in mode ' + event.data.mode);
   };
 
   const onSDKRequestEditRights = async () => {
-    console.log("ONLYOFFICE Document Editor requests editing rights");
-    const index = url.indexOf("&action=view");
+    console.log('ONLYOFFICE Document Editor requests editing rights');
+    const index = url.indexOf('&action=view');
 
     if (index) {
       let convertUrl = url.substring(0, index);
@@ -617,7 +585,7 @@ const Editor = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isFileDialogVisible, setIsFileDialogVisible] = useState(false);
   const [isFolderDialogVisible, setIsFolderDialogVisible] = useState(false);
-  const [filesType, setFilesType] = useState("");
+  const [filesType, setFilesType] = useState('');
 
   const onSDKRequestSharingSettings = () => {
     setIsVisible(true);
@@ -633,7 +601,7 @@ const Editor = () => {
 
     const link = generateLink(ACTION_DATA);
 
-    const urlFormation = !actionLink ? url : url.split("&anchor=")[0];
+    const urlFormation = !actionLink ? url : url.split('&anchor=')[0];
 
     const linkFormation = `${urlFormation}&anchor=${link}`;
 
@@ -650,19 +618,19 @@ const Editor = () => {
 
   const onSDKWarning = (event) => {
     console.log(
-      "ONLYOFFICE Document Editor reports a warning: code " +
+      'ONLYOFFICE Document Editor reports a warning: code ' +
         event.data.warningCode +
-        ", description " +
-        event.data.warningDescription
+        ', description ' +
+        event.data.warningDescription,
     );
   };
 
   const onSDKError = (event) => {
     console.log(
-      "ONLYOFFICE Document Editor reports an error: code " +
+      'ONLYOFFICE Document Editor reports an error: code ' +
         event.data.errorCode +
-        ", description " +
-        event.data.errorDescription
+        ', description ' +
+        event.data.errorDescription,
     );
   };
 
@@ -691,7 +659,7 @@ const Editor = () => {
     }
 
     if (!newTitle) {
-      const onlyNumbers = new RegExp("^[0-9]+$");
+      const onlyNumbers = new RegExp('^[0-9]+$');
       const isFileWithoutProvider = onlyNumbers.test(fileId);
 
       const convertFileId = isFileWithoutProvider ? +fileId : fileId;
@@ -699,10 +667,10 @@ const Editor = () => {
       favorite
         ? markAsFavorite([convertFileId])
             .then(() => updateFavorite(favorite))
-            .catch((error) => console.log("error", error))
+            .catch((error) => console.log('error', error))
         : removeFromFavorite([convertFileId])
             .then(() => updateFavorite(favorite))
-            .catch((error) => console.log("error", error));
+            .catch((error) => console.log('error', error));
     }
   };
 
@@ -740,7 +708,7 @@ const Editor = () => {
   const onSDKRequestSaveAs = (event) => {
     setTitleSelectorFolder(event.data.title);
     setUrlSelectorFolder(event.data.url);
-    setExtension(event.data.title.split(".").pop());
+    setExtension(event.data.title.split('.').pop());
 
     setIsFolderDialogVisible(true);
   };
@@ -751,25 +719,18 @@ const Editor = () => {
   };
 
   const getSavingInfo = async (title, folderId) => {
-    const savingInfo = await SaveAs(
-      title,
-      urlSelectorFolder,
-      folderId,
-      openNewTab
-    );
+    const savingInfo = await SaveAs(title, urlSelectorFolder, folderId, openNewTab);
 
     if (savingInfo) {
-      const convertedInfo = savingInfo.split(": ").pop();
+      const convertedInfo = savingInfo.split(': ').pop();
       docEditor.showMessage(convertedInfo);
     }
   };
   const onClickSaveSelectFolder = (e, folderId) => {
-    const currentExst = titleSelectorFolder.split(".").pop();
+    const currentExst = titleSelectorFolder.split('.').pop();
 
     const title =
-      currentExst !== extension
-        ? titleSelectorFolder.concat(`.${extension}`)
-        : titleSelectorFolder;
+      currentExst !== extension ? titleSelectorFolder.concat(`.${extension}`) : titleSelectorFolder;
 
     if (openNewTab) {
       SaveAs(title, urlSelectorFolder, folderId, openNewTab);
@@ -789,11 +750,11 @@ const Editor = () => {
   const getFileTypeTranslation = () => {
     switch (filesType) {
       case mailMergeAction:
-        return i18n.t("MailMergeFileType");
+        return i18n.t('MailMergeFileType');
       case insertImageAction:
-        return i18n.t("ImageFileType");
+        return i18n.t('ImageFileType');
       case compareFilesAction:
-        return i18n.t("DocumentsFileType");
+        return i18n.t('DocumentsFileType');
     }
   };
   const selectFilesListTitle = () => {
@@ -816,7 +777,7 @@ const Editor = () => {
 
   const mailMergeActionProps = {
     isTablesOnly: true,
-    searchParam: ".xlsx",
+    searchParam: '.xlsx',
   };
   const compareFilesActionProps = {
     isDocumentsOnly: true,
@@ -836,20 +797,21 @@ const Editor = () => {
 
   return (
     <Box
+      theme={theme}
       widthProp="100vw"
-      heightProp={isIPad() ? "calc(var(--vh, 1vh) * 100)" : "100vh"}
-    >
-      <Toast />
+      heightProp={isIPad() ? 'calc(var(--vh, 1vh) * 100)' : '100vh'}>
+      <Toast theme={theme} />
 
       {!isLoading ? (
         <>
           <div id="editor"></div>
-          {isSharingAccess && (
+          {!isSharingAccess && (
             <SharingDialog
               isVisible={isVisible}
               sharingObject={fileInfo}
               onCancel={onCancel}
               onSuccess={loadUsersRightsList}
+              theme={theme}
             />
           )}
 
@@ -862,7 +824,8 @@ const Editor = () => {
               foldersType="exceptPrivacyTrashFolders"
               {...fileTypeDetection()}
               titleFilesList={selectFilesListTitle()}
-              headerName={i18n.t("SelectFileTitle")}
+              headerName={i18n.t('SelectFileTitle')}
+              theme={theme}
             />
           )}
 
@@ -878,26 +841,29 @@ const Editor = () => {
               onSave={onClickSaveSelectFolder}
               header={
                 <StyledSelectFolder>
-                  <Text className="editor-select-folder_text">
-                    {i18n.t("FileName")}
+                  <Text className="editor-select-folder_text" theme={theme}>
+                    {i18n.t('FileName')}
                   </Text>
                   <TextInput
                     className="editor-select-folder_text-input"
                     scale
                     onChange={onChangeInput}
+                    theme={theme}
                     value={titleSelectorFolder}
                   />
                 </StyledSelectFolder>
               }
-              headerName={i18n.t("FolderForSave")}
-              {...(extension !== "fb2" && {
+              theme={theme}
+              headerName={i18n.t('FolderForSave')}
+              {...(extension !== 'fb2' && {
                 footer: (
-                  <StyledSelectFolder>
+                  <StyledSelectFolder theme={theme}>
                     <Checkbox
                       className="editor-select-folder_checkbox"
-                      label={i18n.t("OpenSavedDocument")}
+                      label={i18n.t('OpenSavedDocument')}
                       onChange={onClickCheckbox}
                       isChecked={openNewTab}
+                      theme={theme}
                     />
                   </StyledSelectFolder>
                 ),

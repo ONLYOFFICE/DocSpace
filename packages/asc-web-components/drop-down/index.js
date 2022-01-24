@@ -124,7 +124,7 @@ class DropDown extends React.PureComponent {
   };
 
   render() {
-    const { maxHeight, children, showDisabledItems } = this.props;
+    const { maxHeight, children, showDisabledItems, theme } = this.props;
     const { directionX, directionY, width } = this.state;
     let cleanChildren;
 
@@ -144,6 +144,7 @@ class DropDown extends React.PureComponent {
 
     return (
       <StyledDropdown
+        theme={theme}
         ref={this.dropDownRef}
         {...this.props}
         directionX={directionX}

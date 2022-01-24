@@ -19,6 +19,7 @@ const StyledAccessEditIcon = styled(AccessEditIcon)`
 `;
 
 StyledAccessEditIcon.defaultProps = { theme: Base };
+
 const StyledCopyIcon = styled(CopyIcon)`
   ${commonIconsStyles}
 
@@ -60,15 +61,18 @@ class LinkRow extends React.Component {
 
     return (
       <StyledLinkRow
+        theme={theme}
         withToggle={withToggle}
         isDisabled={isDisabled}
         className="link-row__container">
         <Row
+          theme={theme}
           className="link-row"
           key={`${linkText.replace(' ', '-')}-key_${index}`}
           element={
             withToggle ? (
               <AccessComboBox
+                theme={theme}
                 t={t}
                 access={item.access}
                 directionX="left"
@@ -79,13 +83,18 @@ class LinkRow extends React.Component {
                 disableLink={disableLink}
               />
             ) : (
-              <StyledAccessEditIcon size="medium" className="sharing_panel-owner-icon" />
+              <StyledAccessEditIcon
+                theme={theme}
+                size="medium"
+                className="sharing_panel-owner-icon"
+              />
             )
           }
           contextButtonSpacerWidth="0px">
           <>
             <div className="sharing_panel-link-container">
               <LinkWithDropdown
+                theme={theme}
                 className="sharing_panel-link"
                 color={theme.filesPanels.sharing.dropdownColor}
                 dropdownType="alwaysDashed"
@@ -97,6 +106,7 @@ class LinkRow extends React.Component {
               </LinkWithDropdown>
               {onCopyLink && (
                 <StyledCopyIcon
+                  theme={theme}
                   isDisabled={isDisabled}
                   size="medium"
                   onClick={onCopyLink}
@@ -107,6 +117,7 @@ class LinkRow extends React.Component {
             {withToggle && (
               <div>
                 <ToggleButton
+                  theme={theme}
                   isChecked={isChecked}
                   onChange={this.onToggleButtonChange}
                   isDisabled={isLoading}

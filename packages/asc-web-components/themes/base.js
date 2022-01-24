@@ -2418,6 +2418,11 @@ const Base = {
   errorContainer: {
     background: white,
   },
+
+  editor: {
+    color: "#555f65",
+    background: white,
+  },
 };
 
 export default Base;

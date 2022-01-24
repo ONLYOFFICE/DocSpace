@@ -205,7 +205,7 @@ class TreeFolders extends React.Component {
   };
 
   getItems = (data) => {
-    const { withoutProvider } = this.props;
+    const { withoutProvider, theme } = this.props;
     return data.map((item) => {
       const dragging = this.props.dragging ? this.showDragItems(item) : false;
 
@@ -223,6 +223,7 @@ class TreeFolders extends React.Component {
       if ((item.folders && item.folders.length > 0) || serviceFolder) {
         return (
           <TreeNode
+            theme={theme}
             id={item.id}
             key={item.id}
             className={`tree-drag ${item.folderClassName}`}
@@ -249,6 +250,7 @@ class TreeFolders extends React.Component {
       }
       return (
         <TreeNode
+          theme={theme}
           id={item.id}
           key={item.id}
           className={`tree-drag ${item.folderClassName}`}
@@ -281,9 +283,9 @@ class TreeFolders extends React.Component {
       return null;
     }
     if (obj.expanded) {
-      return <StyledExpanderDownIcon size="scale" />;
+      return <StyledExpanderDownIcon theme={this.props.theme} size="scale" />;
     } else {
-      return <StyledExpanderRightIcon size="scale" />;
+      return <StyledExpanderRightIcon theme={this.props.theme} size="scale" />;
     }
   };
 
@@ -432,10 +434,12 @@ class TreeFolders extends React.Component {
       expandedPanelKeys,
       treeFolders,
       data,
+      theme,
     } = this.props;
 
     return (
       <StyledTreeMenu
+        theme={theme}
         className="files-tree-menu"
         checkable={false}
         draggable={dragging}

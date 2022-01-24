@@ -8,12 +8,12 @@ import {
 } from "../styled-loader";
 
 const LoadingDots = (props) => {
-  const { label } = props;
+  const { label, theme } = props;
 
   return (
     <LoadingWrapper {...props}>
-      <LoadingLabel>{label}</LoadingLabel>
-      <DotWrapper>
+      <LoadingLabel theme={theme}>{label}</LoadingLabel>
+      <DotWrapper theme={theme}>
         <Dot {...props} delay="0s" />
         <Dot {...props} delay=".2s" />
         <Dot {...props} delay=".4s" />

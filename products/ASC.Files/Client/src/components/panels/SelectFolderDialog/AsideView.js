@@ -33,8 +33,9 @@ const SelectFolderDialogAsideView = ({
   noTreeSwitcher,
 }) => {
   return (
-    <StyledAsidePanel visible={isPanelVisible}>
+    <StyledAsidePanel theme={theme} visible={isPanelVisible}>
       <ModalDialog
+        theme={theme}
         visible={isPanelVisible}
         zIndex={zIndex}
         contentHeight="100%"
@@ -42,11 +43,12 @@ const SelectFolderDialogAsideView = ({
         onClose={onClose}
         removeScroll
         displayType="aside">
-        <ModalDialog.Header>
-          <StyledSelectFolderPanel>
+        <ModalDialog.Header theme={theme}>
+          <StyledSelectFolderPanel theme={theme}>
             <div className="select-folder-dialog_header">
               {isNeedArrowIcon && (
                 <IconButton
+                  theme={theme}
                   className="select-folder-dialog_header-icon"
                   size="16"
                   iconName="/static/images/arrow.path.react.svg"
@@ -58,8 +60,9 @@ const SelectFolderDialogAsideView = ({
             </div>
           </StyledSelectFolderPanel>
         </ModalDialog.Header>
-        <ModalDialog.Body>
+        <ModalDialog.Body theme={theme}>
           <StyledSelectFolderPanel
+            theme={theme}
             displayType={DISPLAY_TYPE}
             showButtons={showButtons}
             isFooter={!!footer}
@@ -68,6 +71,7 @@ const SelectFolderDialogAsideView = ({
               <div>{header} </div>
 
               <FolderTreeBody
+                theme={theme}
                 isLoadingData={isLoadingData}
                 folderList={folderList}
                 onSelect={onSelect}
@@ -81,12 +85,13 @@ const SelectFolderDialogAsideView = ({
             </div>
           </StyledSelectFolderPanel>
         </ModalDialog.Body>
-        <ModalDialog.Footer>
-          <StyledSelectFolderPanel>
+        <ModalDialog.Footer theme={theme}>
+          <StyledSelectFolderPanel theme={theme}>
             {footer}
             {showButtons && (
               <div className="select-folder-dialog-modal_buttons">
                 <Button
+                  theme={theme}
                   className="select-folder-dialog-buttons-save"
                   primary
                   size="big"
@@ -95,6 +100,7 @@ const SelectFolderDialogAsideView = ({
                   isDisabled={isLoadingData || !isAvailable || !canCreate}
                 />
                 <Button
+                  theme={theme}
                   size="big"
                   label={t('Common:CancelButton')}
                   onClick={onClose}

@@ -2427,6 +2427,11 @@ const Dark = {
   errorContainer: {
     background: black,
   },
+
+  editor: {
+    color: "#858585",
+    background: black,
+  },
 };
 
 export default Dark;

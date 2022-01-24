@@ -137,11 +137,13 @@ class IconButton extends React.PureComponent {
       style,
       dataTip,
       title,
+      theme,
       ...rest
     } = this.props;
 
     return (
       <StyledOuter
+        theme={theme}
         className={className}
         size={size}
         title={title}

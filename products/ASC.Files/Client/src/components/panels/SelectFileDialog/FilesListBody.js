@@ -1,17 +1,17 @@
-import React, { useCallback, useEffect, useRef } from "react";
-import Loader from "@appserver/components/loader";
-import Text from "@appserver/components/text";
-import { useTranslation, withTranslation } from "react-i18next";
-import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-scrollbars-virtual-list";
-import InfiniteLoader from "react-window-infinite-loader";
-import AutoSizer from "react-virtualized-auto-sizer";
-import { FixedSizeList as List } from "react-window";
-import { inject, observer } from "mobx-react";
-import FilesListRow from "./FilesListRow";
-import EmptyContainer from "../../EmptyContainer/EmptyContainer";
-import i18n from "./i18n";
-import Loaders from "@appserver/common/components/Loaders";
-import { I18nextProvider } from "react-i18next";
+import React, { useCallback, useEffect, useRef } from 'react';
+import Loader from '@appserver/components/loader';
+import Text from '@appserver/components/text';
+import { useTranslation, withTranslation } from 'react-i18next';
+import CustomScrollbarsVirtualList from '@appserver/components/scrollbar/custom-scrollbars-virtual-list';
+import InfiniteLoader from 'react-window-infinite-loader';
+import AutoSizer from 'react-virtualized-auto-sizer';
+import { FixedSizeList as List } from 'react-window';
+import { inject, observer } from 'mobx-react';
+import FilesListRow from './FilesListRow';
+import EmptyContainer from '../../EmptyContainer/EmptyContainer';
+import i18n from './i18n';
+import Loaders from '@appserver/common/components/Loaders';
+import { I18nextProvider } from 'react-i18next';
 let countLoad;
 const FilesListBody = ({
   filesList,
@@ -27,8 +27,9 @@ const FilesListBody = ({
   selectedFolder,
   isMultiSelect,
   selectedFile,
+  theme,
 }) => {
-  const { t } = useTranslation(["SelectFile", "Common"]);
+  const { t } = useTranslation(['SelectFile', 'Common']);
   const filesListRef = useRef(null);
 
   useEffect(() => {
@@ -42,7 +43,7 @@ const FilesListBody = ({
     (index) => {
       return !hasNextPage || index < filesList.length;
     },
-    [filesList, hasNextPage]
+    [filesList, hasNextPage],
   );
   // If there are more items to be loaded then add an extra row to hold a loading indicator.
   const itemCount = hasNextPage ? filesList.length + 1 : filesList.length;
@@ -57,45 +58,42 @@ const FilesListBody = ({
     (style) => {
       return (
         <div style={style}>
-          <div
-            key="loader"
-            className="panel-loader-wrapper loader-wrapper_margin"
-          >
-            <Loader type="oval" size="16px" className="panel-loader" />
-            <Text as="span">{loadingText}</Text>
+          <div key="loader" className="panel-loader-wrapper loader-wrapper_margin">
+            <Loader theme={theme} type="oval" size="16px" className="panel-loader" />
+            <Text theme={theme} as="span">
+              {loadingText}
+            </Text>
           </div>
         </div>
       );
     },
-    [loadingText]
+    [loadingText],
   );
   const renderFirstLoader = useCallback(
     (style) => {
       return (
         <div style={style}>
-          <div
-            key="loader"
-            className="panel-loader-wrapper loader-wrapper_margin"
-          >
+          <div key="loader" className="panel-loader-wrapper loader-wrapper_margin">
             <Loaders.Rows
+              theme={theme}
               style={{
-                marginBottom: displayType === "aside" ? "24px" : "26px",
-                marginTop: displayType === "aside" ? "8px" : "10px",
+                marginBottom: displayType === 'aside' ? '24px' : '26px',
+                marginTop: displayType === 'aside' ? '8px' : '10px',
               }}
-              count={displayType === "aside" ? 12 : 5}
+              count={displayType === 'aside' ? 12 : 5}
             />
           </div>
         </div>
       );
     },
-    [loadingText]
+    [loadingText],
   );
   const isFileChecked = useCallback(
     (file) => {
       const checked = selectedFile ? file.id === selectedFile.id : false;
       return checked;
     },
-    [selectedFile]
+    [selectedFile],
   );
 
   const Item = useCallback(
@@ -110,21 +108,18 @@ const FilesListBody = ({
       const file = filesList[index];
       const fileName = file.title;
       const fileExst = file.fileExst;
-      const modifyFileName = fileName.substring(
-        0,
-        fileName.indexOf(`${fileExst}`)
-      );
+      const modifyFileName = fileName.substring(0, fileName.indexOf(`${fileExst}`));
 
       const fileOwner =
         file.createdBy &&
-        ((viewer.id === file.createdBy.id && t("Common:MeLabel")) ||
-          file.createdBy.displayName);
+        ((viewer.id === file.createdBy.id && t('Common:MeLabel')) || file.createdBy.displayName);
 
       const isChecked = isFileChecked(file);
 
       return (
         <div style={style}>
           <FilesListRow
+            theme={theme}
             displayType={displayType}
             needRowSelection={needRowSelection}
             index={index}
@@ -132,8 +127,7 @@ const FilesListBody = ({
             fileName={modifyFileName}
             fileExst={fileExst}
             isMultiSelect={isMultiSelect}
-            isChecked={isChecked}
-          >
+            isChecked={isChecked}>
             <Text data-index={index} className="files-list_file-owner">
               {fileOwner}
             </Text>
@@ -141,28 +135,28 @@ const FilesListBody = ({
         </div>
       );
     },
-    [filesList, selectedFile, displayType, renderFirstLoader, renderPageLoader]
+    [filesList, selectedFile, displayType, renderFirstLoader, renderPageLoader],
   );
   return (
     <div className="files-list-body">
       <AutoSizer>
         {({ width, height }) => (
           <InfiniteLoader
+            theme={theme}
             ref={filesListRef}
             isItemLoaded={isItemLoaded}
             itemCount={itemCount}
-            loadMoreItems={loadMoreItems}
-          >
+            loadMoreItems={loadMoreItems}>
             {({ onItemsRendered, ref }) => (
               <List
-                height={displayType === "aside" ? height : listHeight}
+                theme={theme}
+                height={displayType === 'aside' ? height : listHeight}
                 itemCount={itemCount}
-                itemSize={displayType === "aside" ? 56 : 50}
+                itemSize={displayType === 'aside' ? 56 : 50}
                 onItemsRendered={onItemsRendered}
                 ref={ref}
                 width={width + 8}
-                outerElementType={CustomScrollbarsVirtualList}
-              >
+                outerElementType={CustomScrollbarsVirtualList}>
                 {Item}
               </List>
             )}
@@ -173,7 +167,8 @@ const FilesListBody = ({
       {!hasNextPage && itemCount === 0 && (
         <div className="select-file-dialog_empty-container">
           <EmptyContainer
-            headerText={t("Home:EmptyFolderHeader")}
+            theme={theme}
+            headerText={t('Home:EmptyFolderHeader')}
             imageSrc="/static/images/empty_screen.png"
           />
         </div>
@@ -190,7 +185,7 @@ const FilesListBodyWrapper = inject(({ auth }) => {
   return {
     viewer: user,
   };
-})(observer(withTranslation(["Common", "Home"])(FilesListBody)));
+})(observer(withTranslation(['Common', 'Home'])(FilesListBody)));
 
 class FilesList extends React.Component {
   render() {

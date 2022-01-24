@@ -179,6 +179,7 @@ class SharingRow extends React.Component {
 
             {!shareLink && (
               <Row
+                theme={theme}
                 className="sharing-row"
                 key={`internal-link-key_${id}`}
                 element={
@@ -207,6 +208,7 @@ class SharingRow extends React.Component {
                   ) : (
                     <AccessComboBox
                       t={t}
+                      theme={theme}
                       access={access}
                       directionX="left"
                       onAccessChange={onChangeItemAccess}
@@ -220,23 +222,25 @@ class SharingRow extends React.Component {
                 <>
                   {!shareLink &&
                     (isOwner && canShareOwnerChange ? (
-                      <Link isHovered type="action" {...onShowChangeOwnerPanelProp}>
+                      <Link theme={theme} isHovered type="action" {...onShowChangeOwnerPanelProp}>
                         {label ? label : userName ? userName : displayName}
                       </Link>
                     ) : (
-                      <Text truncate className="sharing_panel-text">
+                      <Text theme={theme} truncate className="sharing_panel-text">
                         {label ? label : userName ? userName : displayName}
                       </Text>
                     ))}
                   {isOwner ? (
                     <Text
                       className="sharing_panel-remove-icon"
+                      theme={theme}
                       color={theme.filesPanels.sharing.color}>
                       {t('Common:Owner')}
                     </Text>
                   ) : id === isMyId ? (
                     <Text
                       className="sharing_panel-remove-icon"
+                      theme={theme}
                       //color="#A3A9AE"
                     >
                       {t('Common:FullAccess')}
@@ -246,6 +250,7 @@ class SharingRow extends React.Component {
                     !isLocked && (
                       <IconButton
                         iconName="/static/images/remove.react.svg"
+                        theme={theme}
                         id={id}
                         {...onRemoveUserProp}
                         className="sharing_panel-remove-icon"

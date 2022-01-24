@@ -192,6 +192,7 @@ const TreeMenu = React.forwardRef((props, ref) => {
     gapBetweenNodes,
     gapBetweenNodesTablet,
     isEmptyRootNode,
+    theme,
   } = props;
   const expandedKeysProp = expandedKeys ? { expandedKeys: expandedKeys } : {};
 
@@ -210,6 +211,7 @@ const TreeMenu = React.forwardRef((props, ref) => {
             <>
               {child.props.icon}
               <Badge
+                theme={theme}
                 data-id={child.props.id}
                 className="newItem"
                 key={child.props.id + "-badge"}
@@ -237,6 +239,7 @@ const TreeMenu = React.forwardRef((props, ref) => {
   return (
     <>
       <StyledTreeMenu
+        theme={theme}
         id={id}
         style={style}
         className={`${className} not-selectable`}

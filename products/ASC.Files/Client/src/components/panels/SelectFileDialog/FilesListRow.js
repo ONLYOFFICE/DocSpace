@@ -1,10 +1,10 @@
-import React from "react";
-import { StyledFilesList } from "../StyledPanels";
-import { ReactSVG } from "react-svg";
-import { inject, observer } from "mobx-react";
-import Text from "@appserver/components/text";
-import Checkbox from "@appserver/components/checkbox";
-import RadioButton from "@appserver/components/radio-button";
+import React from 'react';
+import { StyledFilesList } from '../StyledPanels';
+import { ReactSVG } from 'react-svg';
+import { inject, observer } from 'mobx-react';
+import Text from '@appserver/components/text';
+import Checkbox from '@appserver/components/checkbox';
+import RadioButton from '@appserver/components/radio-button';
 const FilesListRow = ({
   displayType,
   needRowSelection,
@@ -16,26 +16,25 @@ const FilesListRow = ({
   iconSrc,
   isMultiSelect, // it will be needed
   isChecked,
+  theme,
 }) => {
   return (
     <StyledFilesList
       displayType={displayType}
+      theme={theme}
       needRowSelection={needRowSelection}
-      isChecked={isChecked}
-    >
-      <div
-        data-index={index}
-        className="modal-dialog_file-name"
-        onClick={onSelectFile}
-      >
+      isChecked={isChecked}>
+      <div data-index={index} className="modal-dialog_file-name" onClick={onSelectFile}>
         {isMultiSelect ? ( //  it will be needed
           <Checkbox
+            theme={theme}
             label=""
             isChecked={isChecked}
             className="select-file-dialog_checked"
           />
         ) : (
           <RadioButton
+            theme={theme}
             fontSize="13px"
             fontWeight="400"
             name={`${index}`}
@@ -48,9 +47,9 @@ const FilesListRow = ({
         )}
         <ReactSVG src={iconSrc} className="select-file-dialog_icon" />
         <div data-index={index} className="files-list_full-name">
-          <Text data-index={index} className="entry-title">
+          <Text theme={theme} data-index={index} className="entry-title">
             {fileName}
-            <Text data-index={index} className="file-exst" as="span">
+            <Text theme={theme} data-index={index} className="file-exst" as="span">
               {fileExst}
             </Text>
           </Text>
