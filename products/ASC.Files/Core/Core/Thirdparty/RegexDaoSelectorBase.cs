@@ -130,7 +130,7 @@ namespace ASC.Files.Thirdparty
 
         internal BaseProviderInfo<T> GetInfo(string objectId)
         {
-            if (objectId == null) throw new ArgumentNullException("objectId");
+            if (objectId == null) throw new ArgumentNullException(nameof(objectId));
             var id = objectId;
             var match = Selector.Match(id);
             if (match.Success)

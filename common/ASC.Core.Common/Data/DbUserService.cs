@@ -239,7 +239,7 @@ namespace ASC.Core.Data
 
         public UserInfo GetUserByPasswordHash(int tenant, string login, string passwordHash)
         {
-            if (string.IsNullOrEmpty(login)) throw new ArgumentNullException("login");
+            if (string.IsNullOrEmpty(login)) throw new ArgumentNullException(nameof(login));
 
             if (Guid.TryParse(login, out var userId))
             {
@@ -548,7 +548,7 @@ namespace ASC.Core.Data
 
         public UserInfo SaveUser(int tenant, UserInfo user)
         {
-            if (user == null) throw new ArgumentNullException("user");
+            if (user == null) throw new ArgumentNullException(nameof(user));
             if (string.IsNullOrEmpty(user.UserName)) throw new ArgumentOutOfRangeException("Empty username.");
 
             if (user.ID == default) user.ID = Guid.NewGuid();

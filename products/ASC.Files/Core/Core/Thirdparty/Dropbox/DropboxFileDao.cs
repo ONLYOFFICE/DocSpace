@@ -250,7 +250,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             ProviderInfo.CacheReset(dropboxFilePath, true);
 
             var dropboxFile = GetDropboxFile(file.ID);
-            if (dropboxFile == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
+            if (dropboxFile == null) throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
             if (dropboxFile is ErrorFile errorFile) throw new Exception(errorFile.Error);
 
             var fileStream = ProviderInfo.Storage.DownloadStream(MakeDropboxPath(dropboxFile), (int)offset);
@@ -270,8 +270,8 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public File<string> SaveFile(File<string> file, Stream fileStream)
         {
-            if (file == null) throw new ArgumentNullException("file");
-            if (fileStream == null) throw new ArgumentNullException("fileStream");
+            if (file == null) throw new ArgumentNullException(nameof(file));
+            if (fileStream == null) throw new ArgumentNullException(nameof(fileStream));
 
             FileMetadata newDropboxFile = null;
 

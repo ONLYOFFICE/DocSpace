@@ -98,7 +98,7 @@ namespace ASC.Web.Core.Users
         private string MakeUniqueName(UserInfo userInfo)
         {
             if (string.IsNullOrEmpty(userInfo.Email))
-                throw new ArgumentException(Resource.ErrorEmailEmpty, "userInfo");
+                throw new ArgumentException(Resource.ErrorEmailEmpty, nameof(userInfo));
 
             var uniqueName = new MailAddress(userInfo.Email).User;
             var startUniqueName = uniqueName;
@@ -118,7 +118,7 @@ namespace ASC.Web.Core.Users
 
         public UserInfo AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, bool isVisitor = false, bool fromInviteLink = false, bool makeUniqueName = true)
         {
-            if (userInfo == null) throw new ArgumentNullException("userInfo");
+            if (userInfo == null) throw new ArgumentNullException(nameof(userInfo));
 
             if (!UserFormatter.IsValidUserName(userInfo.FirstName, userInfo.LastName))
                 throw new Exception(Resource.ErrorIncorrectUserName);
@@ -257,7 +257,7 @@ namespace ASC.Web.Core.Users
         public string SendUserPassword(string email)
         {
             email = (email ?? "").Trim();
-            if (!email.TestEmailRegex()) throw new ArgumentNullException("email", Resource.ErrorNotCorrectEmail);
+            if (!email.TestEmailRegex()) throw new ArgumentNullException(nameof(email), Resource.ErrorNotCorrectEmail);
 
             if (!IPSecurity.Verify())
             {

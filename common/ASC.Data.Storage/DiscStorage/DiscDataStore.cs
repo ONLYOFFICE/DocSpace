@@ -98,7 +98,7 @@ namespace ASC.Data.Storage.DiscStorage
         {
             if (path == null)
             {
-                throw new ArgumentNullException("path");
+                throw new ArgumentNullException(nameof(path));
             }
 
             var pathMap = GetPath(domain);
@@ -118,7 +118,7 @@ namespace ASC.Data.Storage.DiscStorage
 
         public Stream GetReadStream(string domain, string path, bool withDecription)
         {
-            if (path == null) throw new ArgumentNullException("path");
+            if (path == null) throw new ArgumentNullException(nameof(path));
             var target = GetTarget(domain, path);
 
             if (File.Exists(target))
@@ -135,7 +135,7 @@ namespace ASC.Data.Storage.DiscStorage
 
         public override Stream GetReadStream(string domain, string path, int offset)
         {
-            if (path == null) throw new ArgumentNullException("path");
+            if (path == null) throw new ArgumentNullException(nameof(path));
             var target = GetTarget(domain, path);
 
             if (File.Exists(target))
@@ -172,8 +172,8 @@ namespace ASC.Data.Storage.DiscStorage
                 QuotaController.QuotaUsedCheck(buffered.Length);
             }
 
-            if (path == null) throw new ArgumentNullException("path");
-            if (buffered == null) throw new ArgumentNullException("stream");
+            if (path == null) throw new ArgumentNullException(nameof(path));
+            if (buffered == null) throw new ArgumentNullException(nameof(stream));
 
             //Try seek to start
             if (buffered.CanSeek)
@@ -277,7 +277,7 @@ namespace ASC.Data.Storage.DiscStorage
 
         public override void Delete(string domain, string path)
         {
-            if (path == null) throw new ArgumentNullException("path");
+            if (path == null) throw new ArgumentNullException(nameof(path));
             var target = GetTarget(domain, path);
 
             if (File.Exists(target))
@@ -295,7 +295,7 @@ namespace ASC.Data.Storage.DiscStorage
 
         public override void DeleteFiles(string domain, List<string> paths)
         {
-            if (paths == null) throw new ArgumentNullException("paths");
+            if (paths == null) throw new ArgumentNullException(nameof(paths));
 
             foreach (var path in paths)
             {
@@ -313,7 +313,7 @@ namespace ASC.Data.Storage.DiscStorage
 
         public override void DeleteFiles(string domain, string folderPath, string pattern, bool recursive)
         {
-            if (folderPath == null) throw new ArgumentNullException("folderPath");
+            if (folderPath == null) throw new ArgumentNullException(nameof(folderPath));
 
             //Return dirs
             var targetDir = GetTarget(domain, folderPath);
@@ -335,7 +335,7 @@ namespace ASC.Data.Storage.DiscStorage
 
         public override void DeleteFiles(string domain, string folderPath, DateTime fromDate, DateTime toDate)
         {
-            if (folderPath == null) throw new ArgumentNullException("folderPath");
+            if (folderPath == null) throw new ArgumentNullException(nameof(folderPath));
 
             //Return dirs
             var targetDir = GetTarget(domain, folderPath);
@@ -374,8 +374,8 @@ namespace ASC.Data.Storage.DiscStorage
 
         public override Uri Move(string srcdomain, string srcpath, string newdomain, string newpath, bool quotaCheckFileSize = true)
         {
-            if (srcpath == null) throw new ArgumentNullException("srcpath");
-            if (newpath == null) throw new ArgumentNullException("srcpath");
+            if (srcpath == null) throw new ArgumentNullException(nameof(srcpath));
+            if (newpath == null) throw new ArgumentNullException(nameof(srcpath));
             var target = GetTarget(srcdomain, srcpath);
             var newtarget = GetTarget(newdomain, newpath);
 
@@ -407,7 +407,7 @@ namespace ASC.Data.Storage.DiscStorage
 
         public override bool IsDirectory(string domain, string path)
         {
-            if (path == null) throw new ArgumentNullException("path");
+            if (path == null) throw new ArgumentNullException(nameof(path));
 
             //Return dirs
             var targetDir = GetTarget(domain, path);
@@ -420,7 +420,7 @@ namespace ASC.Data.Storage.DiscStorage
 
         public override void DeleteDirectory(string domain, string path)
         {
-            if (path == null) throw new ArgumentNullException("path");
+            if (path == null) throw new ArgumentNullException(nameof(path));
 
             //Return dirs
             var targetDir = GetTarget(domain, path);
@@ -485,7 +485,7 @@ namespace ASC.Data.Storage.DiscStorage
 
         public override void DeleteExpired(string domain, string folderPath, TimeSpan oldThreshold)
         {
-            if (folderPath == null) throw new ArgumentNullException("folderPath");
+            if (folderPath == null) throw new ArgumentNullException(nameof(folderPath));
 
             //Return dirs
             var targetDir = GetTarget(domain, folderPath);
@@ -531,7 +531,7 @@ namespace ASC.Data.Storage.DiscStorage
 
         public override string[] ListDirectoriesRelative(string domain, string path, bool recursive)
         {
-            if (path == null) throw new ArgumentNullException("path");
+            if (path == null) throw new ArgumentNullException(nameof(path));
 
             //Return dirs
             var targetDir = GetTarget(domain, path);
@@ -548,7 +548,7 @@ namespace ASC.Data.Storage.DiscStorage
 
         public override string[] ListFilesRelative(string domain, string path, string pattern, bool recursive)
         {
-            if (path == null) throw new ArgumentNullException("path");
+            if (path == null) throw new ArgumentNullException(nameof(path));
 
             //Return dirs
             var targetDir = GetTarget(domain, path);
@@ -565,7 +565,7 @@ namespace ASC.Data.Storage.DiscStorage
 
         public override bool IsFile(string domain, string path)
         {
-            if (path == null) throw new ArgumentNullException("path");
+            if (path == null) throw new ArgumentNullException(nameof(path));
 
             //Return dirs
             var target = GetTarget(domain, path);
@@ -602,8 +602,8 @@ namespace ASC.Data.Storage.DiscStorage
 
         public override Uri Copy(string srcdomain, string srcpath, string newdomain, string newpath)
         {
-            if (srcpath == null) throw new ArgumentNullException("srcpath");
-            if (newpath == null) throw new ArgumentNullException("srcpath");
+            if (srcpath == null) throw new ArgumentNullException(nameof(srcpath));
+            if (newpath == null) throw new ArgumentNullException(nameof(srcpath));
             var target = GetTarget(srcdomain, srcpath);
             var newtarget = GetTarget(newdomain, newpath);
 
@@ -680,7 +680,7 @@ namespace ASC.Data.Storage.DiscStorage
 
         public Stream GetWriteStream(string domain, string path, FileMode fileMode)
         {
-            if (path == null) throw new ArgumentNullException("path");
+            if (path == null) throw new ArgumentNullException(nameof(path));
             var target = GetTarget(domain, path);
             CreateDirectory(target);
             return File.Open(target, fileMode);
@@ -716,7 +716,7 @@ namespace ASC.Data.Storage.DiscStorage
 
         public void Encrypt(string domain, string path)
         {
-            if (path == null) throw new ArgumentNullException("path");
+            if (path == null) throw new ArgumentNullException(nameof(path));
 
             var target = GetTarget(domain, path);
 
@@ -732,7 +732,7 @@ namespace ASC.Data.Storage.DiscStorage
 
         public void Decrypt(string domain, string path)
         {
-            if (path == null) throw new ArgumentNullException("path");
+            if (path == null) throw new ArgumentNullException(nameof(path));
 
             var target = GetTarget(domain, path);
 

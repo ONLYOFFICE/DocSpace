@@ -697,7 +697,7 @@ namespace ASC.Web.Files.Utils
                 var readLink = FileShareLink.Check(doc, true, fileDao, out file);
                 if (file == null)
                 {
-                    throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
+                    throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
                 }
                 if (!readLink)
                 {

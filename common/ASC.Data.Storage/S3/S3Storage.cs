@@ -1262,7 +1262,7 @@ namespace ASC.Data.Storage.S3
 
             public ResponseStreamWrapper(GetObjectResponse response)
             {
-                _response = response ?? throw new ArgumentNullException("response");
+                _response = response ?? throw new ArgumentNullException(nameof(response));
             }
 
 

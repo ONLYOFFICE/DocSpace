@@ -205,7 +205,7 @@ namespace ASC.Core.Caching
         public CachedTenantService(DbTenantService service, TenantServiceCache tenantServiceCache, ICache cache) : this()
         {
             this.cache = cache;
-            Service = service ?? throw new ArgumentNullException("service");
+            Service = service ?? throw new ArgumentNullException(nameof(service));
             TenantServiceCache = tenantServiceCache;
             CacheNotifyItem = tenantServiceCache.CacheNotifyItem;
             CacheNotifySettings = tenantServiceCache.CacheNotifySettings;

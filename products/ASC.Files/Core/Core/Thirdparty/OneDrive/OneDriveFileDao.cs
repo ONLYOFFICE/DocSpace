@@ -246,7 +246,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             ProviderInfo.CacheReset(onedriveFileId);
 
             var onedriveFile = GetOneDriveItem(file.ID);
-            if (onedriveFile == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
+            if (onedriveFile == null) throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
             if (onedriveFile is ErrorItem errorItem) throw new Exception(errorItem.Error);
 
             var fileStream = ProviderInfo.Storage.DownloadStream(onedriveFile, (int)offset);
@@ -266,8 +266,8 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public File<string> SaveFile(File<string> file, Stream fileStream)
         {
-            if (file == null) throw new ArgumentNullException("file");
-            if (fileStream == null) throw new ArgumentNullException("fileStream");
+            if (file == null) throw new ArgumentNullException(nameof(file));
+            if (fileStream == null) throw new ArgumentNullException(nameof(fileStream));
 
             Item newOneDriveFile = null;
 

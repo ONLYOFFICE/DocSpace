@@ -368,7 +368,7 @@ namespace ASC.Files.Core.Data
         {
             if (file == null)
             {
-                throw new ArgumentNullException("file");
+                throw new ArgumentNullException(nameof(file));
             }
 
             var maxChunkedUploadSize = SetupInfo.MaxChunkedUploadSize(TenantExtra, TenantStatisticProvider);
@@ -514,7 +514,7 @@ namespace ASC.Files.Core.Data
 
         public File<int> ReplaceFileVersion(File<int> file, Stream fileStream)
         {
-            if (file == null) throw new ArgumentNullException("file");
+            if (file == null) throw new ArgumentNullException(nameof(file));
             if (file.ID == default) throw new ArgumentException("No file id or folder id toFolderId determine provider");
 
             var maxChunkedUploadSize = SetupInfo.MaxChunkedUploadSize(TenantExtra, TenantStatisticProvider);
@@ -1171,9 +1171,9 @@ namespace ASC.Files.Core.Data
 
         public void SaveEditHistory(File<int> file, string changes, Stream differenceStream)
         {
-            if (file == null) throw new ArgumentNullException("file");
-            if (string.IsNullOrEmpty(changes)) throw new ArgumentNullException("changes");
-            if (differenceStream == null) throw new ArgumentNullException("differenceStream");
+            if (file == null) throw new ArgumentNullException(nameof(file));
+            if (string.IsNullOrEmpty(changes)) throw new ArgumentNullException(nameof(changes));
+            if (differenceStream == null) throw new ArgumentNullException(nameof(differenceStream));
 
             changes = changes.Trim();
 
@@ -1285,7 +1285,7 @@ namespace ASC.Files.Core.Data
 
         public void SaveThumbnail(File<int> file, Stream thumbnail)
         {
-            if (file == null) throw new ArgumentNullException("file");
+            if (file == null) throw new ArgumentNullException(nameof(file));
 
             var toUpdate = FilesDbContext.Files
                 .FirstOrDefault(r => r.Id == file.ID && r.Version == file.Version && r.TenantId == TenantID);

@@ -2743,7 +2743,7 @@ namespace ASC.Api.Settings
 
         private bool SaveMailWhiteLabelSettings(MailWhiteLabelSettings settings)
         {
-            if (settings == null) throw new ArgumentNullException("settings");
+            if (settings == null) throw new ArgumentNullException(nameof(settings));
 
             DemandRebrandingPermission();
 

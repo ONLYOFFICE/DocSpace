@@ -144,7 +144,7 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
 
         public string SaveFolder(Folder<string> folder)
         {
-            if (folder == null) throw new ArgumentNullException("folder");
+            if (folder == null) throw new ArgumentNullException(nameof(folder));
 
             if (folder.ID != null)
             {

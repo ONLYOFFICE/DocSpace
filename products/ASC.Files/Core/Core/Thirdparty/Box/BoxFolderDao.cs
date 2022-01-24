@@ -180,7 +180,7 @@ namespace ASC.Files.Thirdparty.Box
 
         public string SaveFolder(Folder<string> folder)
         {
-            if (folder == null) throw new ArgumentNullException("folder");
+            if (folder == null) throw new ArgumentNullException(nameof(folder));
             if (folder.ID != null)
             {
                 return RenameFolder(folder, folder.Title);

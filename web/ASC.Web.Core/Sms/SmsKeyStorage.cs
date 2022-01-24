@@ -108,7 +108,7 @@ namespace ASC.Web.Core.Sms
         {
             if (string.IsNullOrEmpty(phone))
             {
-                throw new ArgumentNullException("phone");
+                throw new ArgumentNullException(nameof(phone));
             }
 
             lock (KeyLocker)

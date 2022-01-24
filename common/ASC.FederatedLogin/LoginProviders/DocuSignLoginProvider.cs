@@ -88,7 +88,7 @@ namespace ASC.FederatedLogin.LoginProviders
 
         public OAuth20Token GetAccessToken(string authCode)
         {
-            if (string.IsNullOrEmpty(authCode)) throw new ArgumentNullException("authCode");
+            if (string.IsNullOrEmpty(authCode)) throw new ArgumentNullException(nameof(authCode));
             if (string.IsNullOrEmpty(ClientID)) throw new ArgumentException("clientID");
             if (string.IsNullOrEmpty(ClientSecret)) throw new ArgumentException("clientSecret");
 

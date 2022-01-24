@@ -88,7 +88,7 @@ namespace ASC.Api.Core
 
         public static ApiDateTime Parse(string data, TimeZoneInfo tz, TenantManager tenantManager, TimeZoneConverter timeZoneConverter)
         {
-            if (string.IsNullOrEmpty(data)) throw new ArgumentNullException("data");
+            if (string.IsNullOrEmpty(data)) throw new ArgumentNullException(nameof(data));
 
             if (data.Length < 7) throw new ArgumentException("invalid date time format");
 

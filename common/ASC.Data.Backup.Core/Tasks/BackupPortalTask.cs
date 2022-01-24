@@ -78,7 +78,7 @@ namespace ASC.Data.Backup.Tasks
         public void Init(int tenantId, string fromConfigPath, string toFilePath, int limit)
         {
             if (string.IsNullOrEmpty(toFilePath))
-                throw new ArgumentNullException("toFilePath");
+                throw new ArgumentNullException(nameof(toFilePath));
             BackupFilePath = toFilePath;
             Limit = limit;
             Init(tenantId, fromConfigPath);

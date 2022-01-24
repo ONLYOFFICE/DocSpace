@@ -205,7 +205,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         public Stream DownloadStream(DriveFile file, int offset = 0)
         {
-            if (file == null) throw new ArgumentNullException("file");
+            if (file == null) throw new ArgumentNullException(nameof(file));
 
             var downloadArg = $"{file.Id}?alt=media";
 
@@ -347,7 +347,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         public ResumableUploadSession CreateResumableSession(DriveFile driveFile, long contentLength)
         {
-            if (driveFile == null) throw new ArgumentNullException("driveFile");
+            if (driveFile == null) throw new ArgumentNullException(nameof(driveFile));
 
             var fileId = string.Empty;
             var method = "POST";
@@ -389,7 +389,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         public void Transfer(ResumableUploadSession googleDriveSession, Stream stream, long chunkLength)
         {
             if (stream == null)
-                throw new ArgumentNullException("stream");
+                throw new ArgumentNullException(nameof(stream));
 
             if (googleDriveSession.Status != ResumableUploadSessionStatus.Started)
                 throw new InvalidOperationException("Can't upload chunk for given upload session.");

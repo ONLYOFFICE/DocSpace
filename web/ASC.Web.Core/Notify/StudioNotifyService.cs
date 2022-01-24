@@ -125,22 +125,22 @@ namespace ASC.Web.Studio.Core.Notify
         public void SendRequestTariff(bool license, string fname, string lname, string title, string email, string phone, string ctitle, string csize, string site, string message)
         {
             fname = (fname ?? "").Trim();
-            if (string.IsNullOrEmpty(fname)) throw new ArgumentNullException("fname");
+            if (string.IsNullOrEmpty(fname)) throw new ArgumentNullException(nameof(fname));
             lname = (lname ?? "").Trim();
-            if (string.IsNullOrEmpty(lname)) throw new ArgumentNullException("lname");
+            if (string.IsNullOrEmpty(lname)) throw new ArgumentNullException(nameof(lname));
             title = (title ?? "").Trim();
             email = (email ?? "").Trim();
-            if (string.IsNullOrEmpty(email)) throw new ArgumentNullException("email");
+            if (string.IsNullOrEmpty(email)) throw new ArgumentNullException(nameof(email));
             phone = (phone ?? "").Trim();
-            if (string.IsNullOrEmpty(phone)) throw new ArgumentNullException("phone");
+            if (string.IsNullOrEmpty(phone)) throw new ArgumentNullException(nameof(phone));
             ctitle = (ctitle ?? "").Trim();
-            if (string.IsNullOrEmpty(ctitle)) throw new ArgumentNullException("ctitle");
+            if (string.IsNullOrEmpty(ctitle)) throw new ArgumentNullException(nameof(ctitle));
             csize = (csize ?? "").Trim();
-            if (string.IsNullOrEmpty(csize)) throw new ArgumentNullException("csize");
+            if (string.IsNullOrEmpty(csize)) throw new ArgumentNullException(nameof(csize));
             site = (site ?? "").Trim();
-            if (string.IsNullOrEmpty(site) && !CoreBaseSettings.CustomMode) throw new ArgumentNullException("site");
+            if (string.IsNullOrEmpty(site) && !CoreBaseSettings.CustomMode) throw new ArgumentNullException(nameof(site));
             message = (message ?? "").Trim();
-            if (string.IsNullOrEmpty(message) && !CoreBaseSettings.CustomMode) throw new ArgumentNullException("message");
+            if (string.IsNullOrEmpty(message) && !CoreBaseSettings.CustomMode) throw new ArgumentNullException(nameof(message));
 
             var salesEmail = SettingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>().SalesEmail ?? SetupInfo.SalesEmail;
 

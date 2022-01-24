@@ -236,7 +236,7 @@ namespace ASC.Files.Thirdparty.SharePoint
         {
             var fileToDownload = ProviderInfo.GetFileById(file.ID);
             if (fileToDownload == null)
-                throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
+                throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
 
             var fileStream = ProviderInfo.GetFileStream(fileToDownload.ServerRelativeUrl, (int)offset);
 
@@ -255,7 +255,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public File<string> SaveFile(File<string> file, Stream fileStream)
         {
-            if (fileStream == null) throw new ArgumentNullException("fileStream");
+            if (fileStream == null) throw new ArgumentNullException(nameof(fileStream));
 
             if (file.ID != null)
             {

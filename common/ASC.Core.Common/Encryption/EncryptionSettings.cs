@@ -131,12 +131,12 @@ namespace ASC.Core.Encryption
 
             if (length < 1 || length > 128)
             {
-                throw new ArgumentException("password_length_incorrect", "length");
+                throw new ArgumentException("password_length_incorrect", nameof(length));
             }
 
             if (numberOfNonAlphanumericCharacters > length || numberOfNonAlphanumericCharacters < 0)
             {
-                throw new ArgumentException("min_required_non_alphanumeric_characters_incorrect", "numberOfNonAlphanumericCharacters");
+                throw new ArgumentException("min_required_non_alphanumeric_characters_incorrect", nameof(numberOfNonAlphanumericCharacters));
             }
 
             var array2 = new char[length];

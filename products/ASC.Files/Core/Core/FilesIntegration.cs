@@ -55,7 +55,7 @@ namespace ASC.Web.Files.Api
         public IEnumerable<T> RegisterBunchFolders<T>(string module, string bunch, IEnumerable<string> data)
         {
             if (data == null)
-                throw new ArgumentNullException("data");
+                throw new ArgumentNullException(nameof(data));
 
             data = data.ToList();
             if (!data.Any())

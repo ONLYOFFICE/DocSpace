@@ -104,7 +104,7 @@ namespace ASC.Core
         {
             if (string.IsNullOrEmpty(key))
             {
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException(nameof(key));
             }
 
             var now = DateTime.UtcNow;

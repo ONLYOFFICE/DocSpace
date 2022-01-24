@@ -87,7 +87,7 @@ namespace ASC.Core.Caching
 
         public CachedAzService(DbAzService service, AzServiceCache azServiceCache)
         {
-            this.service = service ?? throw new ArgumentNullException("service");
+            this.service = service ?? throw new ArgumentNullException(nameof(service));
             Cache = azServiceCache.Cache;
             cacheNotify = azServiceCache.CacheNotify;
             CacheExpiration = TimeSpan.FromMinutes(10);

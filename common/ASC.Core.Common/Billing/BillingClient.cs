@@ -186,7 +186,7 @@ namespace ASC.Core.Billing
         {
             if (productIds == null)
             {
-                throw new ArgumentNullException("productIds");
+                throw new ArgumentNullException(nameof(productIds));
             }
 
             var parameters = productIds.Select(pid => Tuple.Create("ProductId", pid)).ToList();

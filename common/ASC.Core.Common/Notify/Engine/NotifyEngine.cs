@@ -76,7 +76,7 @@ namespace ASC.Notify.Engine
 
         public NotifyEngine(Context context, IServiceProvider serviceProvider)
         {
-            this.context = context ?? throw new ArgumentNullException("context");
+            this.context = context ?? throw new ArgumentNullException(nameof(context));
             log = serviceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify");
             ServiceProvider = serviceProvider;
             notifyScheduler = new Thread(NotifyScheduler) { IsBackground = true, Name = "NotifyScheduler" };
@@ -102,8 +102,8 @@ namespace ASC.Notify.Engine
 
         internal void RegisterSendMethod(Action<DateTime> method, string cron)
         {
-            if (method == null) throw new ArgumentNullException("method");
-            if (string.IsNullOrEmpty(cron)) throw new ArgumentNullException("cron");
+            if (method == null) throw new ArgumentNullException(nameof(method));
+            if (string.IsNullOrEmpty(cron)) throw new ArgumentNullException(nameof(cron));
 
             var w = new SendMethodWrapper(method, cron, log);
             lock (sendMethods)
@@ -121,7 +121,7 @@ namespace ASC.Notify.Engine
 
         internal void UnregisterSendMethod(Action<DateTime> method)
         {
-            if (method == null) throw new ArgumentNullException("method");
+            if (method == null) throw new ArgumentNullException(nameof(method));
 
             lock (sendMethods)
             {
@@ -346,7 +346,7 @@ namespace ASC.Notify.Engine
 
         private List<SendResponse> SendDirectNotify(NotifyRequest request, IServiceScope serviceScope)
         {
-            if (!(request.Recipient is IDirectRecipient)) throw new ArgumentException("request.Recipient not IDirectRecipient", "request");
+            if (!(request.Recipient is IDirectRecipient)) throw new ArgumentException("request.Recipient not IDirectRecipient", nameof(request));
 
             var responses = new List<SendResponse>();
             var response = CheckPreventInterceptors(request, InterceptorPlace.DirectSend, serviceScope, null);
@@ -401,7 +401,7 @@ namespace ASC.Notify.Engine
 
         private SendResponse SendDirectNotify(NotifyRequest request, ISenderChannel channel, IServiceScope serviceScope)
         {
-            if (!(request.Recipient is IDirectRecipient)) throw new ArgumentException("request.Recipient not IDirectRecipient", "request");
+            if (!(request.Recipient is IDirectRecipient)) throw new ArgumentException("request.Recipient not IDirectRecipient", nameof(request));
 
             request.CurrentSender = channel.SenderName;
 
@@ -419,7 +419,7 @@ namespace ASC.Notify.Engine
 
         private SendResponse CreateNoticeMessageFromNotifyRequest(NotifyRequest request, string sender, IServiceScope serviceScope, out NoticeMessage noticeMessage)
         {
-            if (request == null) throw new ArgumentNullException("request");
+            if (request == null) throw new ArgumentNullException(nameof(request));
 
             var recipientProvider = request.GetRecipientsProvider(serviceScope);
             var recipient = request.Recipient as IDirectRecipient;

@@ -153,7 +153,7 @@ namespace ASC.Core.Billing
 
         private static void SaveLicense(Stream licenseStream, string path)
         {
-            if (licenseStream == null) throw new ArgumentNullException("licenseStream");
+            if (licenseStream == null) throw new ArgumentNullException(nameof(licenseStream));
 
             if (licenseStream.CanSeek)
             {

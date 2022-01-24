@@ -103,7 +103,7 @@ namespace ASC.FederatedLogin.Helpers
             var clientSecret = loginProvider.ClientSecret;
             var redirectUri = loginProvider.RedirectUri;
 
-            if (string.IsNullOrEmpty(authCode)) throw new ArgumentNullException("authCode");
+            if (string.IsNullOrEmpty(authCode)) throw new ArgumentNullException(nameof(authCode));
             if (string.IsNullOrEmpty(clientID)) throw new ArgumentNullException("clientID");
             if (string.IsNullOrEmpty(clientSecret)) throw new ArgumentNullException("clientSecret");
 
@@ -142,7 +142,7 @@ namespace ASC.FederatedLogin.Helpers
 
         public static OAuth20Token RefreshToken(string requestUrl, OAuth20Token token)
         {
-            if (token == null || !CanRefresh(token)) throw new ArgumentException("Can not refresh given token", "token");
+            if (token == null || !CanRefresh(token)) throw new ArgumentException("Can not refresh given token", nameof(token));
 
             var data = $"client_id={HttpUtility.UrlEncode(token.ClientID)}&client_secret={HttpUtility.UrlEncode(token.ClientSecret)}&refresh_token={HttpUtility.UrlEncode(token.RefreshToken)}&grant_type=refresh_token";
 

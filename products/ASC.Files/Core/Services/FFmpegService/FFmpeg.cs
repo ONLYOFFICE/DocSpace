@@ -123,8 +123,8 @@ namespace ASC.Web.Files.Services.FFmpegService
 
         private static Task<int> StreamCopyToAsync(Stream srcStream, Stream dstStream, bool closeSrc = false, bool closeDst = false)
         {
-            if (srcStream == null) throw new ArgumentNullException("srcStream");
-            if (dstStream == null) throw new ArgumentNullException("dstStream");
+            if (srcStream == null) throw new ArgumentNullException(nameof(srcStream));
+            if (dstStream == null) throw new ArgumentNullException(nameof(dstStream));
 
             return StreamCopyToAsyncInternal(srcStream, dstStream, closeSrc, closeDst);
         }

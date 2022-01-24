@@ -121,7 +121,7 @@ namespace ASC.Files.Thirdparty.Box
 
         public Stream DownloadStream(BoxFile file, int offset = 0)
         {
-            if (file == null) throw new ArgumentNullException("file");
+            if (file == null) throw new ArgumentNullException(nameof(file));
 
             if (offset > 0 && file.Size.HasValue)
             {

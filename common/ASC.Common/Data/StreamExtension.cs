@@ -36,8 +36,8 @@ namespace ASC.Common.Data
 
         public static void StreamCopyTo(this Stream srcStream, Stream dstStream, int length)
         {
-            if (srcStream == null) throw new ArgumentNullException("srcStream");
-            if (dstStream == null) throw new ArgumentNullException("dstStream");
+            if (srcStream == null) throw new ArgumentNullException(nameof(srcStream));
+            if (dstStream == null) throw new ArgumentNullException(nameof(dstStream));
 
             var buffer = new byte[BufferSize];
             int totalRead = 0;

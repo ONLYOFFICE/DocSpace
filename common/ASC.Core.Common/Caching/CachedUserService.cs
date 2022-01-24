@@ -207,7 +207,7 @@ namespace ASC.Core.Caching
             UserServiceCache userServiceCache
             ) : this()
         {
-            Service = service ?? throw new ArgumentNullException("service");
+            Service = service ?? throw new ArgumentNullException(nameof(service));
             CoreBaseSettings = coreBaseSettings;
             UserServiceCache = userServiceCache;
             Cache = userServiceCache.Cache;

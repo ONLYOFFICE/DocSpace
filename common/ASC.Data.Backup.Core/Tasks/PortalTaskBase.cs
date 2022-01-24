@@ -167,7 +167,7 @@ namespace ASC.Data.Backup.Tasks
         {
             if (value <= 0)
             {
-                throw new ArgumentOutOfRangeException("value");
+                throw new ArgumentOutOfRangeException(nameof(value));
             }
             stepsCount = value;
             Logger.Debug("Steps: " + stepsCount);
@@ -191,7 +191,7 @@ namespace ASC.Data.Backup.Tasks
         {
             if (value < 0 || value > 100)
             {
-                throw new ArgumentOutOfRangeException("value");
+                throw new ArgumentOutOfRangeException(nameof(value));
             }
             if (value == 100)
             {
@@ -207,7 +207,7 @@ namespace ASC.Data.Backup.Tasks
         {
             if (value < 0 || value > 100)
             {
-                throw new ArgumentOutOfRangeException("value");
+                throw new ArgumentOutOfRangeException(nameof(value));
             }
             if (Progress != value)
             {

@@ -179,7 +179,7 @@ namespace ASC.Core
         {
             if (string.IsNullOrEmpty(key))
             {
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException(nameof(key));
             }
             byte[] bytes = null;
             if (value != null)
@@ -193,7 +193,7 @@ namespace ASC.Core
         {
             if (string.IsNullOrEmpty(key))
             {
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException(nameof(key));
             }
             var bytes = TenantService.GetTenantSettings(tenant, key);
 

@@ -75,9 +75,9 @@ namespace ASC.Notify.Engine
             RequaredTags = new List<string>();
             Interceptors = new List<ISendInterceptor>();
 
-            NotifySource = notifySource ?? throw new ArgumentNullException("notifySource");
-            Recipient = recipient ?? throw new ArgumentNullException("recipient");
-            NotifyAction = action ?? throw new ArgumentNullException("action");
+            NotifySource = notifySource ?? throw new ArgumentNullException(nameof(notifySource));
+            Recipient = recipient ?? throw new ArgumentNullException(nameof(recipient));
+            NotifyAction = action ?? throw new ArgumentNullException(nameof(action));
             ObjectID = objectID;
 
             IsNeedCheckSubscriptions = true;
@@ -125,7 +125,7 @@ namespace ASC.Notify.Engine
 
         internal NotifyRequest Split(IRecipient recipient)
         {
-            if (recipient == null) throw new ArgumentNullException("recipient");
+            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
             var newRequest = new NotifyRequest(NotifySource, NotifyAction, ObjectID, recipient)
             {
                 SenderNames = SenderNames,

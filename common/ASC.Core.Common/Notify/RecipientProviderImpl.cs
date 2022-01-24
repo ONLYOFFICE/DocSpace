@@ -54,7 +54,7 @@ namespace ASC.Core.Notify
 
         public virtual IRecipient[] GetGroupEntries(IRecipientsGroup group)
         {
-            if (group == null) throw new ArgumentNullException("group");
+            if (group == null) throw new ArgumentNullException(nameof(group));
 
             var result = new List<IRecipient>();
             if (TryParseGuid(group.ID, out var groupID))
@@ -71,7 +71,7 @@ namespace ASC.Core.Notify
 
         public virtual IRecipientsGroup[] GetGroups(IRecipient recipient)
         {
-            if (recipient == null) throw new ArgumentNullException("recipient");
+            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
 
             var result = new List<IRecipientsGroup>();
             if (TryParseGuid(recipient.ID, out var recID))
@@ -98,7 +98,7 @@ namespace ASC.Core.Notify
 
         public virtual string[] GetRecipientAddresses(IDirectRecipient recipient, string senderName)
         {
-            if (recipient == null) throw new ArgumentNullException("recipient");
+            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
 
             if (TryParseGuid(recipient.ID, out var userID))
             {

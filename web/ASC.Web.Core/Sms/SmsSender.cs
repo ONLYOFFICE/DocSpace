@@ -62,11 +62,11 @@ namespace ASC.Web.Core.Sms
         {
             if (string.IsNullOrEmpty(number))
             {
-                throw new ArgumentNullException("number");
+                throw new ArgumentNullException(nameof(number));
             }
             if (string.IsNullOrEmpty(message))
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             }
             if (!SmsProviderManager.Enabled())
             {

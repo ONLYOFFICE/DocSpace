@@ -332,7 +332,7 @@ namespace ASC.Web.Files.Utils
         {
             total = 0;
 
-            if (parent == null) throw new ArgumentNullException("parent", FilesCommonResource.ErrorMassage_FolderNotFound);
+            if (parent == null) throw new ArgumentNullException(nameof(parent), FilesCommonResource.ErrorMassage_FolderNotFound);
             if (parent.ProviderEntry && !FilesSettingsHelper.EnableThirdParty) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFolder);
             if (parent.RootFolderType == FolderType.Privacy && (!PrivacyRoomSettings.IsAvailable(TenantManager) || !PrivacyRoomSettings.GetEnabled(SettingsManager))) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFolder);
 
@@ -1071,7 +1071,7 @@ namespace ASC.Web.Files.Utils
         public File<T> UpdateToVersionFile<T>(T fileId, int version, string doc = null, bool checkRight = true)
         {
             var fileDao = DaoFactory.GetFileDao<T>();
-            if (version < 1) throw new ArgumentNullException("version");
+            if (version < 1) throw new ArgumentNullException(nameof(version));
 
             var editLink = FileShareLink.Check(doc, false, fileDao, out var fromFile);
 

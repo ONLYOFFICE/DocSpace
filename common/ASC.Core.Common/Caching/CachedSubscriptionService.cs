@@ -114,7 +114,7 @@ namespace ASC.Core.Caching
 
         public CachedSubscriptionService(DbSubscriptionService service, SubscriptionServiceCache subscriptionServiceCache)
         {
-            this.service = service ?? throw new ArgumentNullException("service");
+            this.service = service ?? throw new ArgumentNullException(nameof(service));
             cache = subscriptionServiceCache.Cache;
             notifyRecord = subscriptionServiceCache.NotifyRecord;
             notifyMethod = subscriptionServiceCache.NotifyMethod;

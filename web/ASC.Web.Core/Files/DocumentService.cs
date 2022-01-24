@@ -114,8 +114,8 @@ namespace ASC.Web.Core.Files
             out string convertedDocumentUri)
         {
             fromExtension = string.IsNullOrEmpty(fromExtension) ? Path.GetExtension(documentUri) : fromExtension;
-            if (string.IsNullOrEmpty(fromExtension)) throw new ArgumentNullException("fromExtension", "Document's extension for conversion is not known");
-            if (string.IsNullOrEmpty(toExtension)) throw new ArgumentNullException("toExtension", "Extension for conversion is not known");
+            if (string.IsNullOrEmpty(fromExtension)) throw new ArgumentNullException(nameof(fromExtension), "Document's extension for conversion is not known");
+            if (string.IsNullOrEmpty(toExtension)) throw new ArgumentNullException(nameof(toExtension), "Extension for conversion is not known");
 
             var title = Path.GetFileName(documentUri ?? "");
             title = string.IsNullOrEmpty(title) || title.Contains('?') ? Guid.NewGuid().ToString() : title;
@@ -310,7 +310,7 @@ namespace ASC.Web.Core.Files
             out Dictionary<string, string> urls)
         {
             if (string.IsNullOrEmpty(docbuilderUrl))
-                throw new ArgumentNullException("docbuilderUrl");
+                throw new ArgumentNullException(nameof(docbuilderUrl));
 
             if (string.IsNullOrEmpty(requestKey) && string.IsNullOrEmpty(scriptUrl))
                 throw new ArgumentException("requestKey or inputScript is empty");
@@ -391,7 +391,7 @@ namespace ASC.Web.Core.Files
         public static bool HealthcheckRequest(string healthcheckUrl, IHttpClientFactory clientFactory)
         {
             if (string.IsNullOrEmpty(healthcheckUrl))
-                throw new ArgumentNullException("healthcheckUrl");
+                throw new ArgumentNullException(nameof(healthcheckUrl));
 
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(healthcheckUrl);
@@ -694,7 +694,7 @@ namespace ASC.Web.Core.Files
         /// <returns>The percentage of completion of conversion</returns>
         private static int GetResponseUri(string jsonDocumentResponse, out string responseUri)
         {
-            if (string.IsNullOrEmpty(jsonDocumentResponse)) throw new ArgumentException("Invalid param", "jsonDocumentResponse");
+            if (string.IsNullOrEmpty(jsonDocumentResponse)) throw new ArgumentException("Invalid param", nameof(jsonDocumentResponse));
 
             var responseFromService = JObject.Parse(jsonDocumentResponse);
             if (responseFromService == null) throw new WebException("Invalid answer format");

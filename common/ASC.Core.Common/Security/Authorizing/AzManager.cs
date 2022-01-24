@@ -43,8 +43,8 @@ namespace ASC.Common.Security.Authorizing
         public AzManager(IRoleProvider roleProvider, IPermissionProvider permissionProvider)
             : this()
         {
-            this.roleProvider = roleProvider ?? throw new ArgumentNullException("roleProvider");
-            this.permissionProvider = permissionProvider ?? throw new ArgumentNullException("permissionProvider");
+            this.roleProvider = roleProvider ?? throw new ArgumentNullException(nameof(roleProvider));
+            this.permissionProvider = permissionProvider ?? throw new ArgumentNullException(nameof(permissionProvider));
         }
 
 
@@ -52,8 +52,8 @@ namespace ASC.Common.Security.Authorizing
                                     ISecurityObjectProvider securityObjProvider, out ISubject denySubject,
                                     out IAction denyAction)
         {
-            if (subject == null) throw new ArgumentNullException("subject");
-            if (action == null) throw new ArgumentNullException("action");
+            if (subject == null) throw new ArgumentNullException(nameof(subject));
+            if (action == null) throw new ArgumentNullException(nameof(action));
 
             var acl = GetAzManagerAcl(subject, action, objectId, securityObjProvider);
             denySubject = acl.DenySubject;

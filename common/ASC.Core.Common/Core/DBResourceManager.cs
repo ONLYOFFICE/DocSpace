@@ -174,11 +174,11 @@ namespace TMResourceData
             {
                 if (culture == null)
                 {
-                    throw new ArgumentNullException("culture");
+                    throw new ArgumentNullException(nameof(culture));
                 }
                 if (string.IsNullOrEmpty(filename))
                 {
-                    throw new ArgumentNullException("filename");
+                    throw new ArgumentNullException(nameof(filename));
                 }
 
                 DbContext = dbContext;

@@ -611,7 +611,7 @@ namespace ASC.ElasticSearch
                     }
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException("action", action, null);
+                    throw new ArgumentOutOfRangeException(nameof(action), action, null);
             }
         }
 

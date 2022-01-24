@@ -99,7 +99,7 @@ namespace ASC.Web.Files.Helpers
 
         public void SaveToken(OAuth20Token token)
         {
-            if (token == null) throw new ArgumentNullException("token");
+            if (token == null) throw new ArgumentNullException(nameof(token));
 
             TokenHelper.SaveToken(new Token(token, AppAttr));
         }
@@ -207,7 +207,7 @@ namespace ASC.Web.Files.Helpers
 
         public string SendDocuSign<T>(T fileId, DocuSignData docuSignData, IDictionary<string, StringValues> requestHeaders)
         {
-            if (docuSignData == null) throw new ArgumentNullException("docuSignData");
+            if (docuSignData == null) throw new ArgumentNullException(nameof(docuSignData));
             var token = DocuSignToken.GetToken();
             var account = GetDocuSignAccount(token);
 
@@ -223,7 +223,7 @@ namespace ASC.Web.Files.Helpers
 
         private DocuSignAccount GetDocuSignAccount(OAuth20Token token)
         {
-            if (token == null) throw new ArgumentNullException("token");
+            if (token == null) throw new ArgumentNullException(nameof(token));
 
             var userInfoString = RequestHelper.PerformRequest(ConsumerFactory.Get<DocuSignLoginProvider>().DocuSignHost + "/oauth/userinfo",
                                                               headers: new Dictionary<string, string> { { "Authorization", "Bearer " + DocuSignToken.GetRefreshedToken(token) } });
@@ -240,8 +240,8 @@ namespace ASC.Web.Files.Helpers
 
         private DocuSign.eSign.Client.Configuration GetConfiguration(DocuSignAccount account, OAuth20Token token)
         {
-            if (account == null) throw new ArgumentNullException("account");
-            if (token == null) throw new ArgumentNullException("token");
+            if (account == null) throw new ArgumentNullException(nameof(account));
+            if (token == null) throw new ArgumentNullException(nameof(token));
 
             var apiClient = new ApiClient(account.BaseUri + "/restapi");
 
@@ -377,8 +377,8 @@ namespace ASC.Web.Files.Helpers
 
         public File<T> SaveDocument<T>(string envelopeId, string documentId, string documentName, T folderId)
         {
-            if (string.IsNullOrEmpty(envelopeId)) throw new ArgumentNullException("envelopeId");
-            if (string.IsNullOrEmpty(documentId)) throw new ArgumentNullException("documentId");
+            if (string.IsNullOrEmpty(envelopeId)) throw new ArgumentNullException(nameof(envelopeId));
+            if (string.IsNullOrEmpty(documentId)) throw new ArgumentNullException(nameof(documentId));
 
             var token = DocuSignToken.GetToken();
             var account = GetDocuSignAccount(token);

@@ -100,7 +100,7 @@ namespace ASC.Api.Settings
             //TODO: Add validation check
 
             if (smtpSettings == null)
-                throw new ArgumentNullException("smtpSettings");
+                throw new ArgumentNullException(nameof(smtpSettings));
 
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 

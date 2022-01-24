@@ -48,7 +48,7 @@ namespace ASC.FederatedLogin
                 databaseId = string.Join(".", new[] { _baseDatabaseId, hostedRegion.Trim() });
 
             if (!_accountLinkers.ContainsKey(databaseId))
-                throw new ArgumentException($"Region {databaseId} is not defined", "hostedRegion");
+                throw new ArgumentException($"Region {databaseId} is not defined", nameof(hostedRegion));
 
             return databaseId;
         }

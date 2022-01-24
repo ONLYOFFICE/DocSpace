@@ -141,7 +141,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public Stream DownloadStream(Item file, int offset = 0)
         {
-            if (file == null || file.File == null) throw new ArgumentNullException("file");
+            if (file == null || file.File == null) throw new ArgumentNullException(nameof(file));
 
             var fileStream = OnedriveClient
                 .Drive
@@ -250,7 +250,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public ResumableUploadSession CreateResumableSession(Item onedriveFile, long contentLength)
         {
-            if (onedriveFile == null) throw new ArgumentNullException("onedriveFile");
+            if (onedriveFile == null) throw new ArgumentNullException(nameof(onedriveFile));
 
             var folderId = onedriveFile.ParentReference.Id;
             var fileName = onedriveFile.Name;
@@ -289,7 +289,7 @@ namespace ASC.Files.Thirdparty.OneDrive
         public void Transfer(ResumableUploadSession oneDriveSession, Stream stream, long chunkLength)
         {
             if (stream == null)
-                throw new ArgumentNullException("stream");
+                throw new ArgumentNullException(nameof(stream));
 
             if (oneDriveSession.Status != ResumableUploadSessionStatus.Started)
                 throw new InvalidOperationException("Can't upload chunk for given upload session.");

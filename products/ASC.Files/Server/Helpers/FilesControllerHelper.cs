@@ -281,7 +281,7 @@ namespace ASC.Files.Helpers
 
         public FileWrapper<T> CreateTextFile(T folderId, string title, string content)
         {
-            if (title == null) throw new ArgumentNullException("title");
+            if (title == null) throw new ArgumentNullException(nameof(title));
             //Try detect content
             var extension = ".txt";
             if (!string.IsNullOrEmpty(content))
@@ -305,7 +305,7 @@ namespace ASC.Files.Helpers
 
         public FileWrapper<T> CreateHtmlFile(T folderId, string title, string content)
         {
-            if (title == null) throw new ArgumentNullException("title");
+            if (title == null) throw new ArgumentNullException(nameof(title));
             return CreateFile(folderId, title, content, ".html");
         }
 

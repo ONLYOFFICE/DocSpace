@@ -82,7 +82,7 @@ namespace ASC.Data.Storage
         {
             if (!string.IsNullOrEmpty(relativePath) && relativePath.IndexOf('~') == 0)
             {
-                throw new ArgumentException($"bad path format {relativePath} remove '~'", "relativePath");
+                throw new ArgumentException($"bad path format {relativePath} remove '~'", nameof(relativePath));
             }
 
             var result = relativePath;
@@ -200,7 +200,7 @@ namespace ASC.Data.Storage
         {
             if (!string.IsNullOrEmpty(relativePath) && relativePath.IndexOf('~') == 0)
             {
-                throw new ArgumentException($"bad path format {relativePath} remove '~'", "relativePath");
+                throw new ArgumentException($"bad path format {relativePath} remove '~'", nameof(relativePath));
             }
 
             if (CoreBaseSettings.Standalone && ServiceProvider.GetService<StaticUploader>().CanUpload()) //hack for skip resolve DistributedTaskQueueOptionsManager

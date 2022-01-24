@@ -244,7 +244,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             var fileToDownload = GetFileById(file.ID);
 
             if (fileToDownload == null)
-                throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
+                throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
             if (fileToDownload is ErrorEntry errorEntry)
                 throw new Exception(errorEntry.Error);
 
@@ -287,7 +287,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public File<string> SaveFile(File<string> file, Stream fileStream)
         {
-            if (fileStream == null) throw new ArgumentNullException("fileStream");
+            if (fileStream == null) throw new ArgumentNullException(nameof(fileStream));
             ICloudFileSystemEntry entry = null;
             if (file.ID != null)
             {
@@ -486,7 +486,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             var entry = GetFileById(file.ID);
 
             if (entry == null)
-                throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
+                throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
 
             var oldFileId = MakeId(entry);
             var newFileId = oldFileId;

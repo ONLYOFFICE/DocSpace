@@ -83,7 +83,7 @@ namespace ASC.Data.Backup.Tasks
         public void Init(int tenantId, string fromConfigPath, string toConfigPath, int limit, string backupDirectory)
         {
             Limit = limit;
-            ToConfigPath = toConfigPath ?? throw new ArgumentNullException("toConfigPath");
+            ToConfigPath = toConfigPath ?? throw new ArgumentNullException(nameof(toConfigPath));
             Init(tenantId, fromConfigPath);
 
             BackupDirectory = backupDirectory;

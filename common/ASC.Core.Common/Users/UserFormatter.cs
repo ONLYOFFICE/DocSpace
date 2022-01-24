@@ -51,7 +51,7 @@ namespace ASC.Core.Users
 
         public string GetUserName(UserInfo userInfo, DisplayUserNameFormat format)
         {
-            if (userInfo == null) throw new ArgumentNullException("userInfo");
+            if (userInfo == null) throw new ArgumentNullException(nameof(userInfo));
             return string.Format(GetUserDisplayFormat(format), userInfo.FirstName, userInfo.LastName);
         }
 

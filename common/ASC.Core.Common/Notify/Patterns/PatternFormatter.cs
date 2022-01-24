@@ -65,7 +65,7 @@ namespace ASC.Notify.Patterns
 
         public string[] GetTags(IPattern pattern)
         {
-            if (pattern == null) throw new ArgumentNullException("pattern");
+            if (pattern == null) throw new ArgumentNullException(nameof(pattern));
 
             var findedTags = new List<string>(SearchTags(pattern.Body));
             Array.ForEach(SearchTags(pattern.Subject), tag => { if (!findedTags.Contains(tag)) findedTags.Add(tag); });
@@ -74,9 +74,9 @@ namespace ASC.Notify.Patterns
 
         public void FormatMessage(INoticeMessage message, ITagValue[] tagsValues)
         {
-            if (message == null) throw new ArgumentNullException("message");
+            if (message == null) throw new ArgumentNullException(nameof(message));
             if (message.Pattern == null) throw new ArgumentException("message");
-            if (tagsValues == null) throw new ArgumentNullException("tagsValues");
+            if (tagsValues == null) throw new ArgumentNullException(nameof(tagsValues));
 
             BeforeFormat(message, tagsValues);
 

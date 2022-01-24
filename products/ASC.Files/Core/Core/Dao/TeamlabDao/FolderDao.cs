@@ -297,7 +297,7 @@ namespace ASC.Files.Core.Data
 
         public int SaveFolder(Folder<int> folder, IDbContextTransaction transaction)
         {
-            if (folder == null) throw new ArgumentNullException("folder");
+            if (folder == null) throw new ArgumentNullException(nameof(folder));
 
             folder.Title = Global.ReplaceInvalidCharsAndTruncate(folder.Title);
 
@@ -486,7 +486,7 @@ namespace ASC.Files.Core.Data
                 var folder = GetFolder(folderId);
 
                 if (folder.FolderType != FolderType.DEFAULT)
-                    throw new ArgumentException("It is forbidden to move the System folder.", "folderId");
+                    throw new ArgumentException("It is forbidden to move the System folder.", nameof(folderId));
 
                 var recalcFolders = new List<int> { toFolderId };
                 var parent = FilesDbContext.Folders
@@ -824,8 +824,8 @@ namespace ASC.Files.Core.Data
 
         public IEnumerable<int> GetFolderIDs(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
         {
-            if (string.IsNullOrEmpty(module)) throw new ArgumentNullException("module");
-            if (string.IsNullOrEmpty(bunch)) throw new ArgumentNullException("bunch");
+            if (string.IsNullOrEmpty(module)) throw new ArgumentNullException(nameof(module));
+            if (string.IsNullOrEmpty(bunch)) throw new ArgumentNullException(nameof(bunch));
 
             var keys = data.Select(id => $"{module}/{bunch}/{id}").ToArray();
 
@@ -908,8 +908,8 @@ namespace ASC.Files.Core.Data
 
         public int GetFolderID(string module, string bunch, string data, bool createIfNotExists)
         {
-            if (string.IsNullOrEmpty(module)) throw new ArgumentNullException("module");
-            if (string.IsNullOrEmpty(bunch)) throw new ArgumentNullException("bunch");
+            if (string.IsNullOrEmpty(module)) throw new ArgumentNullException(nameof(module));
+            if (string.IsNullOrEmpty(bunch)) throw new ArgumentNullException(nameof(bunch));
 
             var key = $"{module}/{bunch}/{data}";
             var folderId = Query(FilesDbContext.BunchObjects)

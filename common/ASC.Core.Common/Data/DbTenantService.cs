@@ -158,7 +158,7 @@ namespace ASC.Core.Data
 
         public IEnumerable<Tenant> GetTenants(string login, string passwordHash)
         {
-            if (string.IsNullOrEmpty(login)) throw new ArgumentNullException("login");
+            if (string.IsNullOrEmpty(login)) throw new ArgumentNullException(nameof(login));
 
             IQueryable<TenantUserSecurity> query() => TenantsQuery()
                     .Where(r => r.Status == TenantStatus.Active)
@@ -245,7 +245,7 @@ namespace ASC.Core.Data
 
         public Tenant GetTenant(string domain)
         {
-            if (string.IsNullOrEmpty(domain)) throw new ArgumentNullException("domain");
+            if (string.IsNullOrEmpty(domain)) throw new ArgumentNullException(nameof(domain));
             
             domain = domain.ToLowerInvariant();
 

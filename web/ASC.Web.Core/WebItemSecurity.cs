@@ -399,7 +399,7 @@ namespace ASC.Web.Core
             {
                 if (string.IsNullOrEmpty(id))
                 {
-                    throw new ArgumentNullException("id");
+                    throw new ArgumentNullException(nameof(id));
                 }
 
                 var itemId = Guid.Empty;

@@ -177,7 +177,7 @@ namespace ASC.Files.Core.Data
 
         public IEnumerable<Tag> GetTags(string[] names, TagType tagType)
         {
-            if (names == null) throw new ArgumentNullException("names");
+            if (names == null) throw new ArgumentNullException(nameof(names));
 
             var q = Query(FilesDbContext.Tag)
                 .Join(FilesDbContext.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
@@ -191,7 +191,7 @@ namespace ASC.Files.Core.Data
 
         public IEnumerable<Tag> GetTags(string name, TagType tagType)
         {
-            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("name");
+            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
 
             return GetTags(new[] { name }, tagType);
         }

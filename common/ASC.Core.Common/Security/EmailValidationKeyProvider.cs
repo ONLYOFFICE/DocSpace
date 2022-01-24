@@ -85,7 +85,7 @@ namespace ASC.Security.Cryptography
 
         public string GetEmailKey(int tenantId, string email)
         {
-            if (string.IsNullOrEmpty(email)) throw new ArgumentNullException("email");
+            if (string.IsNullOrEmpty(email)) throw new ArgumentNullException(nameof(email));
 
             email = FormatEmail(tenantId, email);
 
@@ -96,7 +96,7 @@ namespace ASC.Security.Cryptography
 
         private string FormatEmail(int tenantId, string email)
         {
-            if (email == null) throw new ArgumentNullException("email");
+            if (email == null) throw new ArgumentNullException(nameof(email));
             try
             {
                 return string.Format("{0}|{1}|{2}", email.ToLowerInvariant(), tenantId, Encoding.UTF8.GetString(MachinePseudoKeys.GetMachineConstant()));
@@ -123,8 +123,8 @@ namespace ASC.Security.Cryptography
 
         private ValidationResult ValidateEmailKeyInternal(string email, string key, TimeSpan validInterval)
         {
-            if (string.IsNullOrEmpty(email)) throw new ArgumentNullException("email");
-            if (key == null) throw new ArgumentNullException("key");
+            if (string.IsNullOrEmpty(email)) throw new ArgumentNullException(nameof(email));
+            if (key == null) throw new ArgumentNullException(nameof(key));
 
             email = FormatEmail(TenantManager.GetCurrentTenant().TenantId, email);
             var parts = key.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);

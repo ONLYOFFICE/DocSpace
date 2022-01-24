@@ -246,7 +246,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             var driveId = MakeDriveId(file.ID);
             ProviderInfo.CacheReset(driveId, true);
             var driveFile = GetDriveEntry(file.ID);
-            if (driveFile == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
+            if (driveFile == null) throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
             if (driveFile is ErrorDriveEntry errorDriveEntry) throw new Exception(errorDriveEntry.Error);
 
             var fileStream = ProviderInfo.Storage.DownloadStream(driveFile, (int)offset);
@@ -271,8 +271,8 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         public File<string> SaveFile(File<string> file, Stream fileStream)
         {
-            if (file == null) throw new ArgumentNullException("file");
-            if (fileStream == null) throw new ArgumentNullException("fileStream");
+            if (file == null) throw new ArgumentNullException(nameof(file));
+            if (fileStream == null) throw new ArgumentNullException(nameof(fileStream));
 
             DriveFile newDriveFile = null;
 

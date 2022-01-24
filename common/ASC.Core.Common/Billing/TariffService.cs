@@ -279,7 +279,7 @@ namespace ASC.Core.Billing
         {
             if (tariff == null)
             {
-                throw new ArgumentNullException("tariff");
+                throw new ArgumentNullException(nameof(tariff));
             }
 
             var q = QuotaService.GetTenantQuota(tariff.QuotaId);
@@ -432,7 +432,7 @@ namespace ASC.Core.Billing
         {
             if (productIds == null)
             {
-                throw new ArgumentNullException("productIds");
+                throw new ArgumentNullException(nameof(productIds));
             }
             try
             {
