@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Badge from "@appserver/components/badge";
 import IconButton from "@appserver/components/icon-button";
@@ -8,6 +8,42 @@ import { isTablet } from "react-device-detect";
 export const StyledIcon = styled(IconButton)`
   ${commonIconsStyles}
 `;
+
+const StyledWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  padding: 6px;
+  border-radius: 4px;
+  box-shadow: 0px 2px 4px rgba(4, 15, 27, 0.16);
+`;
+
+const VersionBadgeWrapper = ({ handleClick, isTile, children: badge }) => {
+  if (!isTile) return badge;
+
+  const [isHovered, setIsHovered] = useState(false);
+
+  const onMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const onMouseLeave = () => {
+    setIsHovered(false);
+  };
+
+  const newBadge = React.cloneElement(badge, { isHovered: isHovered });
+
+  return (
+    <StyledWrapper
+      onClick={handleClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
+      {newBadge}
+    </StyledWrapper>
+  );
+};
 
 const Badges = ({
   t,
@@ -100,36 +136,40 @@ const Badges = ({
         />
       )}
       {version > 1 && (
-        <Badge
-          className="badge-version badge-version-current tablet-badge icons-group"
-          backgroundColor="#A3A9AE"
-          borderRadius="11px"
-          color="#FFFFFF"
-          fontSize={fontSizeBadge}
-          fontWeight={800}
-          label={t("VersionBadge:Version", { version: countVersions })}
-          maxWidth="50px"
-          onClick={onShowVersionHistory}
-          padding={paddingBadge}
-          lineHeight={lineHeightBadge}
-          data-id={id}
-        />
+        <VersionBadgeWrapper handleClick={onShowVersionHistory} isTile={isTile}>
+          <Badge
+            className="badge-version badge-version-current tablet-badge icons-group"
+            backgroundColor="#A3A9AE"
+            borderRadius="11px"
+            color="#FFFFFF"
+            fontSize={fontSizeBadge}
+            fontWeight={800}
+            label={t("VersionBadge:Version", { version: countVersions })}
+            maxWidth="50px"
+            onClick={onShowVersionHistory}
+            padding={paddingBadge}
+            lineHeight={lineHeightBadge}
+            data-id={id}
+          />
+        </VersionBadgeWrapper>
       )}
       {(showNew || isNewWithFav) && (
-        <Badge
-          className="badge-version badge-new-version tablet-badge icons-group"
-          backgroundColor="#ED7309"
-          borderRadius="11px"
-          color="#FFFFFF"
-          fontSize={fontSizeBadge}
-          fontWeight={800}
-          label={t("New")}
-          maxWidth="50px"
-          onClick={onBadgeClick}
-          padding={paddingBadge}
-          lineHeight={lineHeightBadge}
-          data-id={id}
-        />
+        <VersionBadgeWrapper handleClick={onBadgeClick} isTile={isTile}>
+          <Badge
+            className="badge-version badge-new-version tablet-badge icons-group"
+            backgroundColor="#ED7309"
+            borderRadius="11px"
+            color="#FFFFFF"
+            fontSize={fontSizeBadge}
+            fontWeight={800}
+            label={t("New")}
+            maxWidth="50px"
+            onClick={onBadgeClick}
+            padding={paddingBadge}
+            lineHeight={lineHeightBadge}
+            data-id={id}
+          />
+        </VersionBadgeWrapper>
       )}
     </div>
   ) : (

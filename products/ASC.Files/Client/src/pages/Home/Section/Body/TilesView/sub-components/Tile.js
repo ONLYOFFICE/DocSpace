@@ -196,14 +196,13 @@ const StyledOptionButton = styled.div`
 `;
 
 const badgesPosition = css`
-  position: absolute;
-  top: 14px;
-  left: 16px;
+  left: 9px;
 
   .badges {
     display: grid;
     grid-template-columns: repeat(3, fit-content(50px));
-    grid-gap: 20px;
+    grid-template-rows: 32px;
+    grid-gap: 7px;
 
     .badge-new-version {
       order: 1;
@@ -216,77 +215,36 @@ const badgesPosition = css`
     .is-editing,
     .can-convert {
       order: 3;
-      top: 2px;
     }
   }
 `;
 
 const quickButtonsPosition = css`
-  position: absolute;
-  right: 20px;
-  top: 16px;
+  right: 9px;
 
   .badges {
     display: grid;
+    grid-template-columns: 32px;
     grid-template-rows: repeat(3, 32px);
-    grid-gap: 4px;
+    grid-gap: 7px;
   }
 `;
 
-const badgeOutlineStyles = ({ top, right, left, width }) => {
-  const commonCss = css`
-    content: "";
-    position: absolute;
-    top: ${top};
-    ${right && `right: ${right}`};
-    ${left && `left: ${left}`};
-    height: 32px;
-    width: ${width};
-    border-radius: 4px;
-  `;
-
-  return css`
-    position: relative;
-    overflow: visible;
-
-    &::before {
-      ${commonCss};
-      z-index: -1;
-      border-radius: 4px;
-      background: white;
-    }
-
-    // this fixes hover
-    &::after {
-      ${commonCss};
-      box-shadow: 0px 2px 4px rgba(4, 15, 27, 0.16);
-    }
-  `;
-};
-
 const StyledIcons = styled.div`
+  position: absolute;
+  top: 8px;
+
   ${(props) => props.isBadges && badgesPosition}
   ${(props) => props.isQuickButtons && quickButtonsPosition}
-
+  
   .badge {
-    ${badgeOutlineStyles({
-      top: "-8px",
-      left: "-8px",
-      width: "32px",
-    })}
-
-    svg {
-      height: 16px;
-      width: 16px;
-    }
-  }
-
-  .badge-version {
-    ${badgeOutlineStyles({
-      top: "-7px",
-      left: "-9px",
-      width: "calc(100% + 18px)",
-    })}
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    background: rgb(255, 255, 255);
+    border-radius: 4px;
+    box-shadow: 0px 2px 4px rgba(4, 15, 27, 0.16);
   }
 `;
 

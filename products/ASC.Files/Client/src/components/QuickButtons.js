@@ -42,7 +42,7 @@ const QuickButtons = ({
 
   const tabletViewQuickButton =
     !isTile && ((sectionWidth > 500 && sectionWidth <= 1024) || isTablet);
-  const sizeQuickButton = tabletViewQuickButton ? "medium" : "small";
+  const sizeQuickButton = isTile || tabletViewQuickButton ? "medium" : "small";
 
   const displayShare = viewAs === "row" && (isMobile || sectionWidth <= 500);
   const displayLock = !locked && (isMobile || sectionWidth <= 500);
