@@ -85,7 +85,7 @@ class UploadPanelComponent extends React.Component {
       ? t("Uploads")
       : isUploadingAndConversion
       ? t("UploadAndConvert")
-      : t("Conversion");
+      : t("Home:Convert");
 
     return (
       <StyledAsidePanel visible={visible}>
@@ -145,7 +145,7 @@ class UploadPanelComponent extends React.Component {
   }
 }
 
-const UploadPanel = withTranslation("UploadPanel")(
+const UploadPanel = withTranslation(["UploadPanel", "Home"])(
   withLoader(UploadPanelComponent)(<Loaders.DialogAsideLoader isPanel />)
 );
 
