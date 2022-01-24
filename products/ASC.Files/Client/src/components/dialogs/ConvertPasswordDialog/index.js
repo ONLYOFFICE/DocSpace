@@ -65,6 +65,12 @@ const ConvertPasswordDialogComponent = (props) => {
     setIsLoading(true);
   };
 
+  const onKeyDown = (e) => {
+    if (e.key === "Enter") {
+      onConvert();
+    }
+  };
+
   useEffect(() => {
     const { newTitle, fileInfo, open, actionId } = formCreationInfo;
     const { id, folderId } = fileInfo;
@@ -154,6 +160,7 @@ const ConvertPasswordDialogComponent = (props) => {
                 inputMaxWidth={"512px"}
                 inputBlockMaxWidth={"536px"}
                 onChange={onChangePassword}
+                onKeyDown={onKeyDown}
                 hasError={!passwordValid}
                 isDisabled={isLoading}
               />
