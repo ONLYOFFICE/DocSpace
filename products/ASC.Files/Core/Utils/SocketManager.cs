@@ -25,7 +25,6 @@
 
 
 using ASC.Common;
-using ASC.Core;
 using ASC.Core.Notify.Signalr;
 
 using Microsoft.Extensions.Options;
@@ -50,6 +49,16 @@ namespace ASC.Web.Files.Utils
         public void StopEdit<T>(T fileId, string room)
         {
             _signalrServiceClient.StopEdit(fileId, room);
+        }
+
+        public void CreateFile<T>(T fileId, string room)
+        {
+            _signalrServiceClient.CreateFile(fileId, room);
+        }
+
+        public void DeleteFile<T>(T fileId, string room)
+        {
+            _signalrServiceClient.DeleteFile(fileId, room);
         }
     }
 }

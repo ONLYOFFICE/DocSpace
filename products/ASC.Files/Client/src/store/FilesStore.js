@@ -70,9 +70,29 @@ class FilesStore {
 
     const { socketHelper } = authStore.settingsStore;
 
-    socketHelper.on("s:refresh-folder", (folderId) => {
-      console.log("Call s:refresh-folder");
-      selectedFolderStore.id === folderId && this.fetchFiles(folderId);
+    socketHelper.on("s:modify-folder", async (opt) => {
+      console.log("Call s:modify-folder", opt);
+      //selectedFolderStore.id === folderId && this.fetchFiles(folderId);
+      switch (opt?.cmd) {
+        case "create":
+          if (opt?.type == "file" && opt?.id) {
+            const foundIndex = this.files.findIndex((x) => x.id === opt?.id);
+            if (foundIndex > -1) return;
+
+            const file = await api.files.getFileInfo(opt?.id);
+            this.setFiles([file, ...this.files]);
+          }
+          break;
+        case "delete":
+          if (opt?.type == "file" && opt?.id) {
+            const foundIndex = this.files.findIndex((x) => x.id === opt?.id);
+            if (foundIndex == -1) return;
+
+            const file = await api.files.getFileInfo(opt?.id);
+            this.setFiles(this.files.splice(foundIndex, 1));
+          }
+          break;
+      }
     });
 
     //WAIT FOR RESPONSES OF EDITING FILE
@@ -230,14 +250,7 @@ class FilesStore {
   setFiles = (files) => {
     const { socketHelper } = this.settingsStore;
 
-    if (
-      this.files &&
-      this.selectedFolderStore.parentId === 0 &&
-      (this.selectedFolderStore.rootFolderType === FolderType.SHARE ||
-        this.selectedFolderStore.rootFolderType === FolderType.COMMON ||
-        this.selectedFolderStore.rootFolderType === FolderType.Recent ||
-        this.selectedFolderStore.rootFolderType === FolderType.Favorites)
-    ) {
+    if (this.files?.length > 0) {
       socketHelper.emit({
         command: "unsubscribe",
         data: this.files.map((f) => `FILE-${f.id}`),
@@ -246,14 +259,7 @@ class FilesStore {
 
     this.files = files;
 
-    if (
-      this.files &&
-      this.selectedFolderStore.parentId === 0 &&
-      (this.selectedFolderStore.rootFolderType === FolderType.SHARE ||
-        this.selectedFolderStore.rootFolderType === FolderType.COMMON ||
-        this.selectedFolderStore.rootFolderType === FolderType.Recent ||
-        this.selectedFolderStore.rootFolderType === FolderType.Favorites)
-    ) {
+    if (this.files?.length > 0) {
       socketHelper.emit({
         command: "subscribe",
         data: this.files.map((f) => `FILE-${f.id}`),

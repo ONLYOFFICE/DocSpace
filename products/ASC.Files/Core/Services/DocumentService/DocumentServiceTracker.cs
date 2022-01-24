@@ -253,10 +253,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     var fileStable = DaoFactory.GetFileDao<T>().GetFileStable(fileId);
 
                     var roomFile = DocumentServiceHelper.GetSocketRoom(fileStable);
-                    var roomDir = DocumentServiceHelper.GetSocketRoom(fileStable, false);
-
                     SocketManager.StopEdit(fileId, roomFile);
-                    SocketManager.StopEdit(fileId, roomDir);
 
                     break;
 
@@ -342,10 +339,8 @@ namespace ASC.Web.Files.Services.DocumentService
             }
 
             var roomFile = DocumentServiceHelper.GetSocketRoom(fileStable);
-            var roomDir = DocumentServiceHelper.GetSocketRoom(fileStable, false);
 
             SocketManager.StartEdit(fileId, roomFile);
-            SocketManager.StartEdit(fileId, roomDir);
         }
 
         private TrackResponse ProcessSave<T>(T fileId, TrackerData fileData)

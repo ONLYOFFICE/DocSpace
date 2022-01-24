@@ -70,6 +70,7 @@ namespace ASC.Files.Helpers
         private ApiDateTimeHelper ApiDateTimeHelper { get; }
         private UserManager UserManager { get; }
         private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        public SocketManager SocketManager { get; }
         private ILog Logger { get; set; }
 
         /// <summary>
@@ -101,7 +102,8 @@ namespace ASC.Files.Helpers
             FileConverter fileConverter,
             ApiDateTimeHelper apiDateTimeHelper,
             UserManager userManager,
-            DisplayUserSettingsHelper displayUserSettingsHelper)
+            DisplayUserSettingsHelper displayUserSettingsHelper,
+            SocketManager socketManager)
         {
             ApiContext = context;
             FileStorageService = fileStorageService;
@@ -125,6 +127,7 @@ namespace ASC.Files.Helpers
             ApiDateTimeHelper = apiDateTimeHelper;
             UserManager = userManager;
             DisplayUserSettingsHelper = displayUserSettingsHelper;
+            SocketManager = socketManager;
             HttpContextAccessor = httpContextAccessor;
             FileConverter = fileConverter;
             Logger = optionMonitor.Get("ASC.Files");
@@ -183,6 +186,10 @@ namespace ASC.Files.Helpers
             try
             {
                 var resultFile = FileUploader.Exec(folderId, title, file.Length, file, createNewIfExist ?? !FilesSettingsHelper.UpdateIfExist, !keepConvertStatus);
+
+                var roomFile = DocumentServiceHelper.GetSocketRoom(resultFile, false);
+                SocketManager.CreateFile(resultFile.ID, roomFile);
+
                 return FileWrapperHelper.Get(resultFile);
             }
             catch (FileNotFoundException e)

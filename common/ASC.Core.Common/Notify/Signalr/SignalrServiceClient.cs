@@ -333,6 +333,30 @@ namespace ASC.Core.Notify.Signalr
             }
         }
 
+        public void CreateFile<T>(T fileId, string room)
+        {
+            try
+            {
+                MakeRequest("create-file", new { room, fileId });
+            }
+            catch (Exception error)
+            {
+                ProcessError(error);
+            }
+        }
+
+        public void DeleteFile<T>(T fileId, string room)
+        {
+            try
+            {
+                MakeRequest("delete-file", new { room, fileId });
+            }
+            catch (Exception error)
+            {
+                ProcessError(error);
+            }
+        }
+
         public T GetAgent<T>(string numberId, List<Guid> contactsResponsibles)
         {
             try

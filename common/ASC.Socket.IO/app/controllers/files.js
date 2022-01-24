@@ -11,5 +11,15 @@ module.exports = (files) => {
     res.end();
   });
 
+  router.post("/create-file", (req, res) => {
+    files.createFile(req.body);
+    res.end();
+  });
+
+  router.post("/delete-file", (req, res) => {
+    files.deleteFile(req.body);
+    res.end();
+  });
+
   return router;
 };

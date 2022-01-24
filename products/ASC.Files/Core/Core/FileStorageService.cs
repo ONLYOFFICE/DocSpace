@@ -689,6 +689,9 @@ namespace ASC.Web.Files.Services.WCFService
 
             FileMarker.MarkAsNew(file);
 
+            var roomFile = DocumentServiceHelper.GetSocketRoom(file, false);
+            SocketManager.CreateFile(file.ID, roomFile);
+
             return file;
         }
 
@@ -712,10 +715,7 @@ namespace ASC.Web.Files.Services.WCFService
                     var fileStable = DaoFactory.GetFileDao<T>().GetFileStable(id);
 
                     var roomFile = DocumentServiceHelper.GetSocketRoom(fileStable);
-                    var roomDir = DocumentServiceHelper.GetSocketRoom(fileStable, false);
-
                     SocketManager.StopEdit(id, roomFile);
-                    SocketManager.StopEdit(id, roomDir);
                 }
                 else
                 {

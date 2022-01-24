@@ -768,12 +768,12 @@ const Editor = () => {
     );
 
     if (savingInfo) {
-      const { socketHelper } = authStore.settingsStore;
-      fileInfo &&
-        socketHelper.emit({
-          command: "c:refresh-folder",
-          data: fileInfo.folderId,
-        });
+      // const { socketHelper } = authStore.settingsStore;
+      // fileInfo &&
+      //   socketHelper.emit({
+      //     command: "c:refresh-folder",
+      //     data: fileInfo.folderId,
+      //   });
 
       const convertedInfo = savingInfo.split(": ").pop();
       docEditor.showMessage(convertedInfo);
