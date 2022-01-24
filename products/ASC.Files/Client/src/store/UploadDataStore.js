@@ -222,7 +222,7 @@ class UploadDataStore {
       (item) => item.fileId === file.fileId
     );
 
-    if (this.converted) {
+    if (this.converted && !alreadyConverting) {
       this.filesToConversion = [];
       this.convertFilesSize = 0;
       if (!secondConvertingWithPassword)
