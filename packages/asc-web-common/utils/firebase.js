@@ -119,12 +119,6 @@ class FirebaseHelper {
     return `https://${domain}/images/campaigns.${banner}.png`;
   }
 
-  async getBarHtml(bar, lng) {
-    const storageRef = this.firebaseStorage.ref();
-    const tangRef = storageRef.child(`bar/${lng}/BarPersonal${bar}.html`);
-    return await tangRef.getDownloadURL();
-  }
-
   async getCampaignsTranslations(banner, lng) {
     const domain = this.config["authDomain"];
     return `https://${domain}/locales/${lng}/CampaignPersonal${banner}.json`;
