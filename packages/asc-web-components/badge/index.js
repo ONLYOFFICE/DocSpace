@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import Text from "../text";
 
-import { StyledBadge, StyledInner } from "./styled-badge";
+import { StyledBadge, StyledInner, StyledText } from "./styled-badge";
 
 const Badge = (props) => {
   //console.log("Badge render");
@@ -37,7 +37,7 @@ const Badge = (props) => {
         maxWidth={maxWidth}
         lineHeight={lineHeight}
       >
-        <Text
+        <StyledText
           theme={theme}
           textAlign="center"
           fontWeight={fontWeight}
@@ -45,7 +45,7 @@ const Badge = (props) => {
           fontSize={fontSize}
         >
           {props.label}
-        </Text>
+        </StyledText>
       </StyledInner>
     </StyledBadge>
   );

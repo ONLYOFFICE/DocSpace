@@ -40,7 +40,8 @@ const StyledInner = styled.div`
 StyledInner.defaultProps = { theme: Base };
 
 const StyledText = styled(Text)`
-  color: ${(props) => (props.color ? props.color : props.theme.badge.color)};
+  color: ${(props) =>
+    props.color ? props.color : props.theme.badge.color} !important;
 `;
 
 StyledText.defaultProps = { theme: Base };
