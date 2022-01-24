@@ -1,9 +1,13 @@
-import React from "react";
-import PropTypes from "prop-types";
-import StyledErrorContainer from "./StyledErrorContainer";
-import Headline from "../Headline";
-import Text from "@appserver/components/text";
-import Button from "@appserver/components/button";
+import React from 'react';
+import PropTypes from 'prop-types';
+import StyledErrorContainer from './StyledErrorContainer';
+import Headline from '../Headline';
+import Text from '@appserver/components/text';
+import Button from '@appserver/components/button';
+
+import store from 'studio/store';
+
+const theme = store.auth.settingsStore.theme;
 
 const ErrorContainer = (props) => {
   //console.log("ErrorContainer render");
@@ -11,7 +15,7 @@ const ErrorContainer = (props) => {
   const { headerText, bodyText, buttonText, buttonUrl, ...rest } = props;
 
   return (
-    <StyledErrorContainer {...rest}>
+    <StyledErrorContainer theme={theme} {...rest}>
       <div id="container">
         <svg
           id="background"
@@ -19,8 +23,7 @@ const ErrorContainer = (props) => {
           height="361"
           viewBox="0 0 753 361"
           fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+          xmlns="http://www.w3.org/2000/svg">
           <path
             d="M605.159 329.5L502.298 335.217C254.439 335.217 356.184 345.596 268.916 345.596C179.954 345.596 145.188 350.392 79.3741 349.916C17.1668 345.596 -36.4313 231.143 31.8546 171.934C109.509 90.4003 120.656 5.02279e-06 254.764 0C357.493 -3.84752e-06 383.499 65.6633 577.897 46.6555C712.51 33.4934 779.566 260.925 742.919 335.217C713.53 394.796 605.159 329.5 605.159 329.5Z"
             fill="#E9F7FF"
@@ -32,8 +35,7 @@ const ErrorContainer = (props) => {
           height="123"
           viewBox="0 0 263 123"
           fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+          xmlns="http://www.w3.org/2000/svg">
           <path
             d="M53.0374 0C52.4644 0 52 0.457978 52 1.02292C52 1.58787 52.4644 2.04584 53.0374 2.04584C57.1445 2.04584 60.1955 5.68928 61.3682 9.2816C61.5035 9.70858 61.9047 10 62.3585 10C62.8124 10 63.2137 9.70875 63.3489 9.28152L63.3492 9.28052C64.4188 5.99204 67.0823 2.04584 70.9626 2.04584C71.5356 2.04584 72 1.58787 72 1.02292C72 0.457978 71.5356 0 70.9626 0C66.9479 0 64.0346 3.08772 62.3445 6.38386C60.4819 2.8992 57.243 0 53.0374 0Z"
             fill="#BADAF4"
@@ -66,10 +68,7 @@ const ErrorContainer = (props) => {
             d="M256.696 118.957C257.687 117.599 259.39 116 261.942 116L256.696 118.957Z"
             fill="#BADAF4"
           />
-          <path
-            d="M261.942 116C262.526 116 263 116.436 263 116.974L261.942 116Z"
-            fill="#BADAF4"
-          />
+          <path d="M261.942 116C262.526 116 263 116.436 263 116.974L261.942 116Z" fill="#BADAF4" />
           <path
             d="M263 116.974C263 117.513 262.526 117.949 261.942 117.949L263 116.974Z"
             fill="#BADAF4"
@@ -90,14 +89,8 @@ const ErrorContainer = (props) => {
             d="M257.314 122.135C257.29 122.196 257.273 122.243 257.263 122.272L257.314 122.135Z"
             fill="#BADAF4"
           />
-          <path
-            d="M257.263 122.272L257.252 122.304L257.263 122.272Z"
-            fill="#BADAF4"
-          />
-          <path
-            d="M257.252 122.304L257.25 122.308L257.252 122.304Z"
-            fill="#BADAF4"
-          />
+          <path d="M257.263 122.272L257.252 122.304L257.263 122.272Z" fill="#BADAF4" />
+          <path d="M257.252 122.304L257.25 122.308L257.252 122.304Z" fill="#BADAF4" />
           <path
             d="M257.25 122.308C257.115 122.719 256.704 123 256.238 123L257.25 122.308Z"
             fill="#BADAF4"
@@ -117,8 +110,7 @@ const ErrorContainer = (props) => {
           height="130"
           viewBox="0 0 191 130"
           fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+          xmlns="http://www.w3.org/2000/svg">
           <path
             fillRule="evenodd"
             clipRule="evenodd"
@@ -142,8 +134,7 @@ const ErrorContainer = (props) => {
           height="162"
           viewBox="0 0 230 162"
           fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+          xmlns="http://www.w3.org/2000/svg">
           <path
             fillRule="evenodd"
             clipRule="evenodd"
@@ -167,8 +158,7 @@ const ErrorContainer = (props) => {
           height="242"
           viewBox="0 0 364 242"
           fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+          xmlns="http://www.w3.org/2000/svg">
           <path
             fillRule="evenodd"
             clipRule="evenodd"
@@ -192,8 +182,7 @@ const ErrorContainer = (props) => {
           height="27"
           viewBox="0 0 63 27"
           fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+          xmlns="http://www.w3.org/2000/svg">
           <path
             fillRule="evenodd"
             clipRule="evenodd"
@@ -207,8 +196,7 @@ const ErrorContainer = (props) => {
           height="33"
           viewBox="0 0 74 33"
           fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+          xmlns="http://www.w3.org/2000/svg">
           <path
             fillRule="evenodd"
             clipRule="evenodd"
@@ -222,8 +210,7 @@ const ErrorContainer = (props) => {
           height="80"
           viewBox="0 0 180 80"
           fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+          xmlns="http://www.w3.org/2000/svg">
           <path
             fillRule="evenodd"
             clipRule="evenodd"
@@ -237,8 +224,7 @@ const ErrorContainer = (props) => {
           height="70"
           viewBox="0 0 160 70"
           fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+          xmlns="http://www.w3.org/2000/svg">
           <path
             fillRule="evenodd"
             clipRule="evenodd"
@@ -252,8 +238,7 @@ const ErrorContainer = (props) => {
           height="24"
           viewBox="0 0 63 24"
           fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+          xmlns="http://www.w3.org/2000/svg">
           <path
             fillRule="evenodd"
             clipRule="evenodd"
@@ -267,8 +252,7 @@ const ErrorContainer = (props) => {
           height="33"
           viewBox="0 0 85 33"
           fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+          xmlns="http://www.w3.org/2000/svg">
           <path
             fillRule="evenodd"
             clipRule="evenodd"
@@ -282,8 +266,7 @@ const ErrorContainer = (props) => {
           height="139"
           viewBox="0 0 92 139"
           fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+          xmlns="http://www.w3.org/2000/svg">
           <path
             d="M4.75806 61.9671L46.4736 135.739M46.4736 135.739L22.9019 80.111M46.4736 135.739L27.6538 37.7754M46.4736 135.739L65.2374 37.7754M46.4736 135.739L70.4214 80.111M46.4736 135.739L88.5652 61.9671M46.4736 135.739V56.3512"
             stroke="#CBE4F6"
@@ -292,41 +275,17 @@ const ErrorContainer = (props) => {
             d="M40.1818 126.334H52.2776V135.43C52.2776 137.087 50.9345 138.43 49.2776 138.43H43.1818C41.5249 138.43 40.1818 137.087 40.1818 135.43V126.334Z"
             fill="#BCA7A7"
           />
-          <rect
-            x="39.3177"
-            y="125.47"
-            width="13.8239"
-            height="1.72798"
-            fill="#CBE4F6"
-          />
-          <rect
-            x="41.9097"
-            y="128.926"
-            width="1.72798"
-            height="6.91193"
-            fill="#E1C6C6"
-          />
-          <rect
-            x="45.3657"
-            y="128.926"
-            width="1.72798"
-            height="6.91193"
-            fill="#E1C6C6"
-          />
-          <rect
-            x="48.8217"
-            y="128.926"
-            width="1.72798"
-            height="6.91193"
-            fill="#E1C6C6"
-          />
+          <rect x="39.3177" y="125.47" width="13.8239" height="1.72798" fill="#CBE4F6" />
+          <rect x="41.9097" y="128.926" width="1.72798" height="6.91193" fill="#E1C6C6" />
+          <rect x="45.3657" y="128.926" width="1.72798" height="6.91193" fill="#E1C6C6" />
+          <rect x="48.8217" y="128.926" width="1.72798" height="6.91193" fill="#E1C6C6" />
           <circle cx="46" cy="46" r="46" fill="#D0E7F9" />
           <ellipse cx="46" cy="46" rx="30" ry="46" fill="#E9F7FF" />
           <ellipse cx="46" cy="46" rx="12" ry="46" fill="#D0E7F9" />
         </svg>
       </div>
       {headerText && (
-        <Headline id="header" type="header">
+        <Headline id="header" type="header" theme={theme}>
           {headerText}
         </Headline>
       )}

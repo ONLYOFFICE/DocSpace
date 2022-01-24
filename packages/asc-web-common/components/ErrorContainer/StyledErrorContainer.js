@@ -5,7 +5,7 @@ import { Base } from '@appserver/components/themes';
 const StyledErrorContainer = styled.div`
   background: ${(props) => props.theme.errorContainer.background};
   cursor: default;
-  height: 100%;
+  height: 100vh;
   width: 100%;
   min-height: 100%;
   overflow-x: hidden;
