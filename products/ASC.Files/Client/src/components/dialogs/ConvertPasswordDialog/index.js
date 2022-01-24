@@ -160,12 +160,14 @@ const ConvertPasswordDialogComponent = (props) => {
             <div className="convert-password-dialog_caption">
               <Text>
                 {makeForm
-                  ? t("ConversionPasswordMasterFormCaption", {
-                      passwordProtection: t("Translations:FileProtected"),
-                    })
-                  : t("ConversionPasswordFormCaption", {
-                      passwordProtection: t("Translations:FileProtected"),
-                    })}
+                  ? t("Translations:FileProtected").concat(
+                      ". ",
+                      t("ConversionPasswordMasterFormCaption")
+                    )
+                  : t("Translations:FileProtected").concat(
+                      ". ",
+                      t("ConversionPasswordFormCaption")
+                    )}
               </Text>
             </div>
             <div className="password-input">
