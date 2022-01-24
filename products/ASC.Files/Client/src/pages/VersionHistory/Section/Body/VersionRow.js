@@ -14,6 +14,7 @@ import ExternalLinkIcon from "../../../../../public/images/external.link.react.s
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { inject, observer } from "mobx-react";
 import toastr from "studio/toastr";
+import { Encoder } from "@appserver/common/utils/encoder";
 
 const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
   ${commonIconsStyles}
@@ -43,9 +44,9 @@ const VersionRow = (props) => {
 
   const canEdit = (info.access === 1 || info.access === 0) && !isEditing;
 
-  const title = `${new Date(info.updated).toLocaleString(culture)} ${
-    info.updatedBy.displayName
-  }`;
+  const title = `${new Date(info.updated).toLocaleString(
+    culture
+  )} ${Encoder.htmlDecode(info.updatedBy.displayName)}`;
 
   const linkStyles = { isHovered: true, type: "action" };
 

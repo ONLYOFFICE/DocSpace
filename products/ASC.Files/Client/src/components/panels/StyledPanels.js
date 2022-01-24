@@ -1,6 +1,7 @@
 import styled, { css } from "styled-components";
 import Scrollbar from "@appserver/components/scrollbar";
 import { desktop, tablet } from "@appserver/components/utils/device";
+import { isMobile } from "react-device-detect";
 
 const PanelStyles = css`
   .panel_combo-box {
@@ -59,9 +60,21 @@ const StyledAsidePanel = styled.div`
     left: 0;
     right: 0;
     background-color: #fff;
+    height: ${isMobile ? "55px" : "48px"};
+  }
+  .upload-panel_header-content::after {
+    position: absolute;
+    width: 100%;
+    max-width: 468px;
+    height: 1px;
+    background: #eceef1;
+    content: "";
+    top: 48px;
+    width: calc(100% - 32px);
   }
   .upload-panel_body {
-    padding-top: 64px;
+    padding-top: ${isMobile ? "55px" : "48px"};
+    height: ${isMobile ? "calc(100vh - 55px)" : "calc(100vh - 48px)"};
   }
   .modal-dialog-aside {
     padding: 0;
@@ -250,9 +263,6 @@ const StyledHeaderContent = styled.div`
     display: flex;
     margin-left: auto;
     .upload_panel-vertical-dots-icon {
-    }
-    .upload_panel-remove-icon {
-      margin-right: -1px;
     }
   }
 

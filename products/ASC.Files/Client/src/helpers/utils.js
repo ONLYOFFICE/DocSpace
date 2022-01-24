@@ -58,11 +58,11 @@ export const openDocEditor = async (
   url = null,
   isPrivacy
 ) => {
-  if (!providerKey && !isPrivacy) {
+  if (!providerKey && id && !isPrivacy) {
     await addFileToRecent(id);
   }
 
-  if (!url) {
+  if (!url && id) {
     url = combineUrl(
       AppServerConfig.proxyURL,
       config.homepage,
@@ -71,7 +71,7 @@ export const openDocEditor = async (
   }
 
   if (tab) {
-    tab.location = url;
+    url ? (tab.location = url) : tab.close();
   } else {
     window.open(url, "_blank");
   }

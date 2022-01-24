@@ -46,7 +46,6 @@ namespace ASC.ElasticSearch
     public class Client
     {
         private static volatile ElasticClient client;
-        private bool IsInit;
         private static readonly object Locker = new object();
 
         private ILog Log { get; }
@@ -98,31 +97,25 @@ namespace ASC.ElasticSearch
                         });
                     }
 
-                    client = new ElasticClient(settings);
-
-                    if (!IsInit)
+                    try
                     {
-                        try
+                        if (Ping(new ElasticClient(settings)))
                         {
-                            var result = client.Ping(new PingRequest());
+                            client = new ElasticClient(settings);
 
-                            var isValid = result.IsValid;
-
-                            if (result.IsValid)
-                            {
-                                client.Ingest.PutPipeline("attachments", p => p
-                                .Processors(pp => pp
-                                    .Attachment<Attachment>(a => a.Field("document.data").TargetField("document.attachment"))
-                                ));
-                            }
-
-                            IsInit = true;
+                            client.Ingest.PutPipeline("attachments", p => p
+                            .Processors(pp => pp
+                                .Attachment<Attachment>(a => a.Field("document.data").TargetField("document.attachment"))
+                            ));
                         }
-                        catch (Exception e)
-                        {
-                            Log.Error(e);
-                        }
+
                     }
+                    catch (Exception e)
+                    {
+                        Log.Error(e);
+                    }
+
+
 
                     return client;
                 }
@@ -131,13 +124,16 @@ namespace ASC.ElasticSearch
 
         public bool Ping()
         {
-            var instance = Instance;
+            return Ping(Instance);
+        }
 
-            if (!IsInit) return false;
+        private bool Ping(ElasticClient elasticClient)
+        {
+            if (elasticClient == null) return false;
 
-            var result = instance.Ping(new PingRequest());
+            var result = elasticClient.Ping(new PingRequest());
 
-            Log.DebugFormat("CheckState ping {0}", result.DebugInformation);
+            Log.DebugFormat("Ping {0}", result.DebugInformation);
 
             return result.IsValid;
         }

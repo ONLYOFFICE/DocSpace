@@ -23,6 +23,7 @@ class DialogsStore {
   conflictResolveDialogVisible = false;
   convertDialogVisible = false;
   selectFileDialogVisible = false;
+  convertPasswordDialogVisible = false;
 
   removeItem = null;
   connectItem = null;
@@ -34,6 +35,7 @@ class DialogsStore {
   removeMediaItem = null;
   unsubscribe = null;
   convertItem = null;
+  formCreationInfo = null;
 
   constructor(authStore, treeFoldersStore, filesStore, selectedFolderStore) {
     makeAutoObservable(this);
@@ -170,6 +172,14 @@ class DialogsStore {
 
   setConvertDialogVisible = (visible) => {
     this.convertDialogVisible = visible;
+  };
+
+  setConvertPasswordDialogVisible = (visible) => {
+    this.convertPasswordDialogVisible = visible;
+  };
+
+  setFormCreationInfo = (item) => {
+    this.formCreationInfo = item;
   };
 
   setConvertItem = (item) => {

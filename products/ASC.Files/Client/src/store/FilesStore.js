@@ -37,6 +37,8 @@ class FilesStore {
   dragging = false;
   privacyInstructions = "https://www.onlyoffice.com/private-rooms.aspx";
   isInit = false;
+  isUpdatingRowItem = false;
+  passwordEntryProcess = false;
 
   tooltipPageX = 0;
   tooltipPageY = 0;
@@ -1778,6 +1780,14 @@ class FilesStore {
     });
 
     if (fileIds.length) return api.files.createThumbnails(fileIds);
+  };
+
+  setIsUpdatingRowItem = (updating) => {
+    this.isUpdatingRowItem = updating;
+  };
+
+  setPasswordEntryProcess = (process) => {
+    this.passwordEntryProcess = process;
   };
 }
 

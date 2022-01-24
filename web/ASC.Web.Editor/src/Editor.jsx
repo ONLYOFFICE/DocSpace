@@ -182,7 +182,7 @@ const Editor = () => {
   };
 
   const convertDocumentUrl = async () => {
-    const convert = await convertFile(fileId, true);
+    const convert = await convertFile(fileId, null, true);
     return convert[0]?.result;
   };
 

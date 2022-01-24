@@ -47,8 +47,12 @@ const StyledInputGroup = styled(CustomInputGroup)`
     margin: ${(props) => props.theme.inputBlock.margin};
   }
 
-  ${commonInputStyle} :focus-within {
-    border-color: ${(props) => props.theme.inputBlock.borderColor};
+  ${commonInputStyle}
+
+  :focus-within {
+    border-color: ${(props) =>
+      (props.hasError && props.theme.input.focusErrorBorderColor) ||
+      props.theme.inputBlock.borderColor};
   }
 `;
 StyledInputGroup.defaultProps = { theme: Base };
