@@ -663,8 +663,11 @@ class FilesActionStore {
     this.checkOperationConflict(operationData);
   };
 
-  checkFileConflicts = (destFolderId, folderIds, fileIds) =>
-    checkFileConflicts(destFolderId, folderIds, fileIds);
+  checkFileConflicts = (destFolderId, folderIds, fileIds) => {
+    this.filesStore.addActiveItems(fileIds);
+    this.filesStore.addActiveItems(null, folderIds);
+    return checkFileConflicts(destFolderId, folderIds, fileIds);
+  };
 
   setConflictDialogData = (conflicts, operationData) => {
     this.dialogsStore.setConflictResolveDialogItems(conflicts);
@@ -674,10 +677,7 @@ class FilesActionStore {
 
   checkOperationConflict = async (operationData) => {
     const { destFolderId, folderIds, fileIds } = operationData;
-    const { setBufferSelection, addActiveItems } = this.filesStore;
-
-    addActiveItems(fileIds);
-    addActiveItems(null, folderIds);
+    const { setBufferSelection } = this.filesStore;
 
     let conflicts;
 
