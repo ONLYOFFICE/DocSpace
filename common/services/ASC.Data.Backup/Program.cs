@@ -1,7 +1,15 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using Microsoft.Extensions.Hosting.WindowsServices;
 
-builder.Host.UseSystemd();
+var options = new WebApplicationOptions
+{
+    Args = args,
+    ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
+};
+
+var builder = WebApplication.CreateBuilder(options);
+
 builder.Host.UseWindowsService();
+builder.Host.UseSystemd();
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 builder.WebHost.ConfigureKestrel((hostingContext, serverOptions) =>

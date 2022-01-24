@@ -169,7 +169,7 @@ namespace ASC.Common.Caching
 
         private string GetChannelName(CacheNotifyAction cacheNotifyAction)
         {
-            return $"asc:channel:{cacheNotifyAction}:{typeof(T).FullName}".ToLower();
+            return $"ascchannel{cacheNotifyAction}{typeof(T).FullName}".ToLower();
         }
 
         public void Unsubscribe(CacheNotifyAction action)
