@@ -2414,6 +2414,10 @@ const Base = {
 
     background: white,
   },
+
+  errorContainer: {
+    background: white,
+  },
 };
 
 export default Base;

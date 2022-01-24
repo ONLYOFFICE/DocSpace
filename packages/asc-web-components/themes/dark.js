@@ -2424,6 +2424,10 @@ const Dark = {
 
     background: "none",
   },
+
+  errorContainer: {
+    background: black,
+  },
 };
 
 export default Dark;
