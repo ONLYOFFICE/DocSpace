@@ -160,13 +160,13 @@ const StyledContent = styled.div`
     max-width: 400px;
     height: auto;
     margin: 0 auto;
-    font-size: 15px;
     line-height: 19px;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: normal;
+    word-break: break-word;
   }
 
   @media (max-width: 1024px) {

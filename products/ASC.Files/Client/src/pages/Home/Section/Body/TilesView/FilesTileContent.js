@@ -8,17 +8,13 @@ import Link from "@appserver/components/link";
 import TileContent from "./sub-components/TileContent";
 import withContent from "../../../../../HOCs/withContent";
 import withBadges from "../../../../../HOCs/withBadges";
-import { isMobile } from "react-device-detect";
+import { isDesktop } from "react-device-detect";
 
 const SimpleFilesTileContent = styled(TileContent)`
   .row-main-container {
     height: auto;
     max-width: 100%;
     align-self: flex-end;
-
-    a {
-      word-break: break-word;
-    }
   }
 
   .main-icons {
@@ -48,10 +44,6 @@ const SimpleFilesTileContent = styled(TileContent)`
     padding-right: 8px;
   }
 
-  .title-link {
-    font-size: 14px;
-  }
-
   .favorite,
   .can-convert,
   .edit {
@@ -78,12 +70,12 @@ const FilesTileContent = ({ item, titleWithoutExt, linkStyles }) => {
     <>
       <SimpleFilesTileContent sideColor="#333" isFile={fileExst}>
         <Link
-          className="title-link item-file-name"
+          className="item-file-name"
           containerWidth="100%"
           type="page"
           title={title}
           fontWeight="600"
-          fontSize={isMobile ? "15px" : "13px"}
+          fontSize={isDesktop ? "13px" : "14px"}
           target="_blank"
           {...linkStyles}
           color="#333"
