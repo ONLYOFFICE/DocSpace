@@ -29,6 +29,7 @@ const SimulatePassword = memo(
     inputMaxWidth,
     isDisabled = false,
     hasError = false,
+    forwardedRef,
   }) => {
     const [password, setPassword] = useState("");
     const [caretPosition, setCaretPosition] = useState();
@@ -134,6 +135,7 @@ const SimulatePassword = memo(
           iconColor={iconColor}
           hoverColor={iconColor}
           placeholder={t("EnterPassword")}
+          forwardedRef={forwardedRef}
           isAutoFocussed
         />
       </StyledBody>

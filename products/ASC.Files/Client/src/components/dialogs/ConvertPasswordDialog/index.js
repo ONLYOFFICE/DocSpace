@@ -26,6 +26,7 @@ const ConvertPasswordDialogComponent = (props) => {
     editCompleteAction,
     fileCopyAs,
   } = props;
+  const inputRef = React.useRef(null);
 
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -71,6 +72,12 @@ const ConvertPasswordDialogComponent = (props) => {
     }
   };
 
+  const focusInput = () => {
+    if (inputRef) {
+      inputRef.current.focus();
+    }
+  };
+
   useEffect(() => {
     const { newTitle, fileInfo, open, actionId } = formCreationInfo;
     const { id, folderId } = fileInfo;
@@ -91,7 +98,10 @@ const ConvertPasswordDialogComponent = (props) => {
 
             if (isPasswordError.test(err)) {
               toastr.error(t("CreationError"), t("Common:Warning"));
-              _isMounted && setPasswordValid(false);
+              if (_isMounted) {
+                setPasswordValid(false);
+                focusInput();
+              }
             }
             _isMounted && setIsLoading(false);
           });
@@ -112,7 +122,10 @@ const ConvertPasswordDialogComponent = (props) => {
             if (isPasswordError.test(err)) {
               toastr.error(t("CreationError"), t("Common:Warning"));
               open && openDocEditor(null, null, tab);
-              _isMounted && setPasswordValid(false);
+              if (_isMounted) {
+                setPasswordValid(false);
+                focusInput();
+              }
             }
             _isMounted && setIsLoading(false);
           });
@@ -163,6 +176,7 @@ const ConvertPasswordDialogComponent = (props) => {
                 onKeyDown={onKeyDown}
                 hasError={!passwordValid}
                 isDisabled={isLoading}
+                forwardedRef={inputRef}
               />
             </div>
           </div>
