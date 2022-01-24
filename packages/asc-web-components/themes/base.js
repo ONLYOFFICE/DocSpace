@@ -48,6 +48,7 @@ const {
 } = globalColors;
 
 const Base = {
+  isBase: true,
   color: black,
   backgroundColor: white,
   fontFamily: "Open Sans, sans-serif, Arial",

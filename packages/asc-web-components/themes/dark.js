@@ -48,6 +48,7 @@ const {
 } = globalColors;
 
 const Dark = {
+  isBase: false,
   color: grayMaxLight,
   backgroundColor: black,
   fontFamily: "Open Sans, sans-serif, Arial",

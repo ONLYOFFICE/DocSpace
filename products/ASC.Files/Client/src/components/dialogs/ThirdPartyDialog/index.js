@@ -67,6 +67,7 @@ const ServiceItem = (props) => {
 const ThirdPartyDialog = (props) => {
   const {
     t,
+    theme,
     i18n,
     tReady,
     isAdmin,
@@ -178,7 +179,11 @@ const ThirdPartyDialog = (props) => {
             <ServiceItem
               capability={sharePointConnectItem}
               onClick={onShowService}
-              src="images/services/logo_sharepoint.svg"
+              src={
+                theme.isBase
+                  ? 'images/services/logo_sharepoint.svg'
+                  : 'images/services/logo_sharepoint_dark.svg'
+              }
             />
           )}
 
@@ -194,7 +199,11 @@ const ThirdPartyDialog = (props) => {
             <ServiceItem
               capability={sharePointConnectItem}
               onClick={onShowService}
-              src="images/services/logo_onedrive-for-business.svg"
+              src={
+                theme.isBase
+                  ? 'images/services/logo_onedrive-for-business.svg'
+                  : 'images/services/logo_onedrive-for-business_dark.svg'
+              }
             />
           )}
 
@@ -218,7 +227,11 @@ const ThirdPartyDialog = (props) => {
             <ServiceItem
               capability={kDriveConnectItem}
               onClick={onShowService}
-              src="images/services/logo_kdrive.svg"
+              src={
+                theme.isBase
+                  ? 'images/services/logo_kdrive.svg'
+                  : 'images/services/logo_kdrive_dark.svg'
+              }
             />
           )}
           {yandexConnectItem && (
@@ -264,9 +277,10 @@ export default inject(({ auth, settingsStore, dialogsStore }) => {
     setConnectDialogVisible,
     setConnectItem,
   } = dialogsStore;
-  const { getOAuthToken } = auth.settingsStore;
+  const { getOAuthToken, theme } = auth.settingsStore;
 
   return {
+    theme: theme,
     visible,
     isAdmin: auth.isAdmin,
     googleConnectItem,
