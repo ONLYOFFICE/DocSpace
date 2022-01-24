@@ -232,7 +232,7 @@ namespace ASC.Common.Threading
                 using var scope = ServiceProvider.CreateScope();
                 var task = scope.ServiceProvider.GetService<T>();
                 task.DistributedTaskCache = cache;
-                if (task != null && task.Publication == null)
+                if (task.Publication == null)
                 {
                     task.Publication = GetPublication();
                 }
@@ -249,7 +249,7 @@ namespace ASC.Common.Threading
             {
                 var task = new DistributedTask();
                 task.DistributedTaskCache = cache;
-                if (task != null && task.Publication == null)
+                if (task.Publication == null)
                 {
                     task.Publication = GetPublication();
                 }

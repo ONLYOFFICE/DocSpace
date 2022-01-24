@@ -76,7 +76,7 @@ namespace ASC.Common.Security.Authorizing
                 var aceList = permissionProvider.GetAcl(s, action, objectId, securityObjProvider);
                 foreach (var ace in aceList)
                 {
-                    if (ace.Reaction == AceType.Deny && !exit)
+                    if (ace.Reaction == AceType.Deny)
                     {
                         acl.IsAllow = false;
                         acl.DenySubject = s;

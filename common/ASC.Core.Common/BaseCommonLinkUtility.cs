@@ -185,7 +185,7 @@ namespace ASC.Core.Common
                 virtualPath.StartsWith("https://", StringComparison.InvariantCultureIgnoreCase))
                 return virtualPath;
 
-            if (string.IsNullOrEmpty(virtualPath) || virtualPath.StartsWith('/'))
+            if (virtualPath.StartsWith('/'))
             {
                 return ServerRootPath + virtualPath;
             }

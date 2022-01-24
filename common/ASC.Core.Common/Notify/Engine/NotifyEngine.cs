@@ -255,7 +255,7 @@ namespace ASC.Notify.Engine
             }
 
             NotifyResult result;
-            if (sendResponces == null || sendResponces.Count == 0)
+            if (sendResponces.Count == 0)
             {
                 result = new NotifyResult(SendResult.OK, sendResponces);
             }

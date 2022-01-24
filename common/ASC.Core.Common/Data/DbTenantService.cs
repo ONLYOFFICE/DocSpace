@@ -479,15 +479,14 @@ namespace ASC.Core.Data
 
             // forbidden or exists
             var exists = false;
+
             domain = domain.ToLowerInvariant();
-            if (!exists)
+            if (forbiddenDomains == null)
             {
-                if (forbiddenDomains == null)
-                {
-                    forbiddenDomains = TenantDbContext.TenantForbiden.Select(r => r.Address).ToList();
-                }
-                exists = tenantId != 0 && forbiddenDomains.Contains(domain);
+                forbiddenDomains = TenantDbContext.TenantForbiden.Select(r => r.Address).ToList();
             }
+            exists = tenantId != 0 && forbiddenDomains.Contains(domain);
+
             if (!exists)
             {
                 exists = TenantDbContext.Tenants.Where(r => r.Alias == domain && r.Id != tenantId).Any();

@@ -427,7 +427,7 @@ namespace ASC.Data.Storage.DiscStorage
 
             if (string.IsNullOrEmpty(targetDir)) throw new Exception("targetDir is null");
 
-            if (!string.IsNullOrEmpty(targetDir) && !targetDir.EndsWith(Path.DirectorySeparatorChar.ToString()))
+            if (!targetDir.EndsWith(Path.DirectorySeparatorChar.ToString()))
             {
                 targetDir += Path.DirectorySeparatorChar;
             }
