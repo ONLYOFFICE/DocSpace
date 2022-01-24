@@ -68,13 +68,15 @@ StyledTableContainer.defaultProps = { theme: Base };
 const StyledTableGroupMenu = styled.div`
   position: relative;
   background: ${(props) => props.theme.tableContainer.groupMenu.background};
+  border-bottom: ${(props) =>
+    props.theme.tableContainer.groupMenu.borderBottom};
   display: flex;
   flex-direction: row;
   align-items: center;
   width: 100%;
   z-index: 199;
   height: 52px;
-  box-shadow: 0px 5px 20px rgba(4, 15, 27, 7%);
+  box-shadow: ${(props) => props.theme.tableContainer.groupMenu.boxShadow};
   border-radius: 0px 0px 6px 6px;
   margin: 0;
   width: 100%;

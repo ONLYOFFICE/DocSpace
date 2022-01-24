@@ -1908,7 +1908,9 @@ const Base = {
 
     groupMenu: {
       background: white,
+      borderBottom: "none",
       borderRight: `1px solid ${grayMid}`,
+      boxShadow: "0px 5px 20px rgba(4, 15, 27, 7%)",
     },
 
     header: {
