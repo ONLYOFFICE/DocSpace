@@ -33,7 +33,7 @@ namespace ASC.Web.Core.Calendars
     {
         public virtual TimeZoneInfo TimeZone { get; set; }
 
-        public BaseEvent()
+        protected BaseEvent()
         {
             this.Context = new EventContext();
             this.AlertType = EventAlertType.Never;

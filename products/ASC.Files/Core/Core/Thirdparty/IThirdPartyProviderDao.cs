@@ -229,7 +229,7 @@ namespace ASC.Files.Thirdparty
 
         protected abstract string Id { get; }
 
-        public ThirdPartyProviderDao(
+        protected ThirdPartyProviderDao(
             IServiceProvider serviceProvider,
             UserManager userManager,
             TenantManager tenantManager,

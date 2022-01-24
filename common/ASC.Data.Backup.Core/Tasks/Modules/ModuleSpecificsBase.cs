@@ -49,7 +49,7 @@ namespace ASC.Data.Backup.Tasks.Modules
         public abstract IEnumerable<TableInfo> Tables { get; }
         public abstract IEnumerable<RelationInfo> TableRelations { get; }
         private readonly Helpers helpers;
-        public ModuleSpecificsBase(Helpers helpers)
+        protected ModuleSpecificsBase(Helpers helpers)
         {
             this.helpers = helpers;
         }

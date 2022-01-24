@@ -334,7 +334,7 @@ namespace ASC.Data.Backup.Service
 
         protected IServiceProvider ServiceProvider { get; set; }
 
-        public BaseBackupProgressItem(IOptionsMonitor<ILog> options, IServiceProvider serviceProvider)
+        protected BaseBackupProgressItem(IOptionsMonitor<ILog> options, IServiceProvider serviceProvider)
         {
             Log = options.CurrentValue;
             ServiceProvider = serviceProvider;

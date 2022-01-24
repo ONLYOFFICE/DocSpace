@@ -33,7 +33,7 @@ namespace ASC.Web.Core.Calendars
     {
         internal TimeZoneInfo TimeZone { get; set; }
 
-        public BaseTodo()
+        protected BaseTodo()
         {
             this.Context = new TodoContext();
         }

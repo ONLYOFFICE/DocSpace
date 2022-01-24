@@ -35,7 +35,7 @@ namespace ASC.Web.Core.Calendars
 {
     public abstract class BaseCalendar : ICalendar, ICloneable
     {
-        public BaseCalendar(AuthContext authContext, TimeZoneConverter timeZoneConverter)
+        protected BaseCalendar(AuthContext authContext, TimeZoneConverter timeZoneConverter)
         {
             this.Context = new CalendarContext();
             this.SharingOptions = new SharingOptions();

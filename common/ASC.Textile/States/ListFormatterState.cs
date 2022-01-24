@@ -36,7 +36,7 @@ namespace Textile.States
             get { return m_tag.Length; }
         }
 
-        public ListFormatterState(TextileFormatter formatter)
+        protected ListFormatterState(TextileFormatter formatter)
             : base(formatter)
         {
         }

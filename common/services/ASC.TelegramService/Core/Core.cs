@@ -186,7 +186,7 @@ namespace ASC.TelegramService.Core
 
     public abstract class ParamParser<T> : ParamParser
     {
-        public ParamParser() : base(typeof(T)) { }
+        protected ParamParser() : base(typeof(T)) { }
 
         public override abstract object FromString(string arg);
         public override abstract string ToString(object arg);

@@ -575,7 +575,7 @@ namespace ASC.Notify.Engine
         }
 
 
-        private class SendMethodWrapper
+        private sealed class SendMethodWrapper
         {
             private readonly object locker = new object();
             private readonly CronExpression cronExpression;

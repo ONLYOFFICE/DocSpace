@@ -61,7 +61,7 @@ namespace ASC.AuditTrail.Data
             LazyMessagesContext = new Lazy<MessagesContext>(() => dbMessagesContext.Value);
         }
 
-        private class Query
+        private sealed class Query
         {
             public LoginEvents LoginEvents { get; set; }
             public User User { get; set; }

@@ -45,16 +45,16 @@ namespace ASC.Notify.Patterns
         }
 
 
-        public PatternFormatter()
+        protected PatternFormatter()
         {
         }
 
-        public PatternFormatter(string tagSearchRegExp)
+        protected PatternFormatter(string tagSearchRegExp)
             : this(tagSearchRegExp, false)
         {
         }
 
-        internal PatternFormatter(string tagSearchRegExp, bool formatMessage)
+        protected PatternFormatter(string tagSearchRegExp, bool formatMessage)
         {
             if (string.IsNullOrEmpty(tagSearchRegExp)) throw new ArgumentException("tagSearchRegExp");
 

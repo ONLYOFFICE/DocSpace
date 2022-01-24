@@ -51,7 +51,7 @@ namespace ASC.Files.Thirdparty.Box
     {
         protected override string Id { get => "box"; }
 
-        public BoxDaoBase(
+        protected BoxDaoBase(
             IServiceProvider serviceProvider,
             UserManager userManager,
             TenantManager tenantManager,

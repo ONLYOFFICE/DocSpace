@@ -67,7 +67,7 @@ namespace ASC.Core.Notify
         private UserManager UserManager { get; }
         private SubscriptionManager SubscriptionManager { get; }
 
-        public NotifySource(string id, UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
+        protected NotifySource(string id, UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
         {
             if (string.IsNullOrEmpty(id)) throw new ArgumentNullException("id");
 
@@ -77,7 +77,7 @@ namespace ASC.Core.Notify
             SubscriptionManager = subscriptionManager;
         }
 
-        public NotifySource(Guid id, UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
+        protected NotifySource(Guid id, UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
             : this(id.ToString(), userManager, recipientsProvider, subscriptionManager)
         {
         }

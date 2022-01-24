@@ -55,8 +55,8 @@ namespace ASC.Data.Storage
         protected IHttpContextAccessor HttpContextAccessor { get; }
         protected IOptionsMonitor<ILog> Options { get; }
         protected IHttpClientFactory ClientFactory { get; }
-            
-        public BaseStorage(
+
+        protected BaseStorage(
             TempStream tempStream,
             TenantManager tenantManager,
             PathUtils pathUtils,

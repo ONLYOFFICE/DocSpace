@@ -61,7 +61,7 @@ namespace Textile.Blocks
             return res;
         }
 
-        private class PhraseModifierMatchEvaluator
+        private sealed class PhraseModifierMatchEvaluator
         {
             readonly string m_tag;
 

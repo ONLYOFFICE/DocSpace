@@ -69,7 +69,7 @@ namespace ASC.AuditTrail
             return Get(tenant, from, to, null);
         }
 
-        private class Query
+        private sealed class Query
         {
             public Core.Common.EF.Model.AuditEvent AuditEvent { get; set; }
             public User User { get; set; }

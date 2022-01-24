@@ -942,7 +942,7 @@ namespace ASC.Files.Core.Security
             return result;
         }
 
-        private class SubjectComparer : IComparer<FileShareRecord>
+        private sealed class SubjectComparer : IComparer<FileShareRecord>
         {
             private readonly List<Guid> _subjects;
 

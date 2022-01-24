@@ -46,7 +46,7 @@ namespace ASC.Files.Core
 
         }
 
-        public FileEntry(FileHelper fileHelper, Global global)
+        protected FileEntry(FileHelper fileHelper, Global global)
         {
             FileHelper = fileHelper;
             Global = global;
