@@ -31,6 +31,8 @@ const PureThirdPartyMoveContainer = ({
   setConflictDialogData,
   setThirdPartyMoveDialogVisible,
   setBufferSelection,
+  itemOperationToFolder,
+  setMoveToPanelVisible,
 }) => {
   const zIndex = 310;
   const deleteAfter = false; // TODO: get from settings
@@ -38,9 +40,10 @@ const PureThirdPartyMoveContainer = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const onClose = () => {
-    setBufferSelection(null);
     setDestFolderId(false);
     setThirdPartyMoveDialogVisible(false);
+    setMoveToPanelVisible(false);
+    setBufferSelection(null);
   };
 
   const startOperation = (e) => {
@@ -136,32 +139,38 @@ const PureThirdPartyMoveContainer = ({
   );
 };
 
-export default inject(({ filesStore, dialogsStore, filesActionsStore }) => {
-  const {
-    thirdPartyMoveDialogVisible: visible,
-    setThirdPartyMoveDialogVisible,
-    destFolderId,
-    setDestFolderId,
-  } = dialogsStore;
-  const { bufferSelection, setBufferSelection } = filesStore;
-  const { checkFileConflicts, setConflictDialogData } = filesActionsStore;
+export default inject(
+  ({ filesStore, dialogsStore, filesActionsStore, uploadDataStore }) => {
+    const {
+      thirdPartyMoveDialogVisible: visible,
+      setThirdPartyMoveDialogVisible,
+      destFolderId,
+      setDestFolderId,
+      setMoveToPanelVisible,
+    } = dialogsStore;
+    const { bufferSelection, setBufferSelection } = filesStore;
+    const { checkFileConflicts, setConflictDialogData } = filesActionsStore;
+    const { itemOperationToFolder } = uploadDataStore;
 
-  const selection = filesStore.selection.length
-    ? filesStore.selection
-    : [bufferSelection];
+    const selection = filesStore.selection.length
+      ? filesStore.selection
+      : [bufferSelection];
 
-  return {
-    visible,
-    setThirdPartyMoveDialogVisible,
-    destFolderId,
-    setDestFolderId,
-    provider: selection[0].providerKey,
-    checkFileConflicts,
-    selection,
-    setBufferSelection,
-    setConflictDialogData,
-  };
-})(
+    return {
+      visible,
+      setThirdPartyMoveDialogVisible,
+      destFolderId,
+      setDestFolderId,
+      provider: selection[0].providerKey,
+      checkFileConflicts,
+      selection,
+      setBufferSelection,
+      setConflictDialogData,
+      itemOperationToFolder,
+      setMoveToPanelVisible,
+    };
+  }
+)(
   withTranslation(["ThirdPartyMoveDialog", "Common", "Translations"])(
     observer(PureThirdPartyMoveContainer)
   )
