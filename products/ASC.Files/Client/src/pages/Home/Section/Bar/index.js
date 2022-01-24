@@ -3,11 +3,9 @@ import { LANGUAGE } from "@appserver/common/constants";
 import { ADS_TIMEOUT } from "../../../../helpers/constants";
 import { getLanguage } from "@appserver/common/utils";
 import BarBanner from "@appserver/components/bar-banner";
-import Loaders from "@appserver/common/components/Loaders";
+import { isDesktop, isTablet } from "react-device-detect";
 
-let htmlUrl;
-
-const loadLanguagePath = async () => {
+const loadLanguagePath = () => {
   if (!window.firebaseHelper) return;
 
   const lng = localStorage.getItem(LANGUAGE) || "en";
@@ -20,48 +18,56 @@ const loadLanguagePath = async () => {
   let index = Number(localStorage.getItem("barIndex") || 0);
   const currentBar = bar[index];
 
-  try {
-    htmlUrl = await window.firebaseHelper.getBarHtml(currentBar, language);
-  } catch (e) {
-    htmlUrl = await window.firebaseHelper.getBarHtml(currentBar, "en");
-  }
+  const htmlUrl = `https://${window.firebaseHelper.config.authDomain}/${language}/${currentBar}/index.html`;
 
   return htmlUrl;
 };
 
 const bannerHOC = (props) => {
-  const { firstload } = props;
+  const { firstLoad, personal } = props;
 
-  const [html, setHtml] = useState();
+  const [htmlLink, setHtmlLink] = useState();
 
   const bar = (localStorage.getItem("bar") || "")
     .split(",")
     .filter((bar) => bar.length > 0);
 
-  const updateBanner = async () => {
-    let index = Number(localStorage.getItem("barIndex") || 0);
+  const updateBanner = () => {
+    window.firebaseHelper.checkMaintenance().then((campaign) => {
+      if (!campaign) {
+        let index = Number(localStorage.getItem("barIndex") || 0);
 
-    if (bar.length < 1 || index + 1 >= bar.length) {
-      index = 0;
-    } else {
-      index++;
-    }
+        if (bar.length < 1 || index + 1 >= bar.length) {
+          index = 0;
+        } else {
+          index++;
+        }
 
-    try {
-      const htmlUrl = await loadLanguagePath();
-      setHtml(htmlUrl);
-    } catch (e) {
-      updateBanner();
-    }
+        try {
+          const htmlUrl = loadLanguagePath();
+          setHtmlLink(htmlUrl);
+        } catch (e) {
+          updateBanner();
+        }
 
-    localStorage.setItem("barIndex", index);
+        localStorage.setItem("barIndex", index);
+        return;
+      }
+
+      return;
+    });
   };
 
   useEffect(() => {
     updateBanner();
     setInterval(updateBanner, ADS_TIMEOUT);
   }, []);
-  return html ? <BarBanner html={html} /> : <Loaders.Rectangle />;
+
+  return (isDesktop || isTablet) && personal && htmlLink && !firstLoad ? (
+    <BarBanner htmlLink={htmlLink} />
+  ) : (
+    ""
+  );
 };
 
 export default bannerHOC;
