@@ -56,7 +56,7 @@ namespace ASC.Core.Common.Billing
         private readonly byte[] Secret;
         private readonly Uri BaseAddress;
         private readonly string ApiVersion;
-        private readonly SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim SemaphoreSlim;
         private readonly ILog Log;
         
 
