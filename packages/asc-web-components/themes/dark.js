@@ -1912,8 +1912,7 @@ const Dark = {
       background: black,
       borderBottom: "1px solid #474747",
       borderRight: "1px solid #474747",
-      boxShadow:
-        "box-shadow: 0px 40px 60px rgba(0, 0, 0, 0.12), 0px 20.25px 26.1562px rgba(0, 0, 0, 0.081), 0px 8px 9.75px rgba(0, 0, 0, 0.06), 0px 1.75px 3.46875px rgba(0, 0, 0, 0.039);",
+      boxShadow: "0px 40px 60px rgba(0, 0, 0, 0.12)",
     },
 
     header: {
