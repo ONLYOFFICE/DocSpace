@@ -19,7 +19,7 @@ const StyledWrapper = styled.div`
   box-shadow: 0px 2px 4px rgba(4, 15, 27, 0.16);
 `;
 
-const VersionBadgeWrapper = ({ handleClick, isTile, children: badge }) => {
+const VersionBadgeWrapper = ({ onClick, isTile, children: badge }) => {
   if (!isTile) return badge;
 
   const [isHovered, setIsHovered] = useState(false);
@@ -36,7 +36,7 @@ const VersionBadgeWrapper = ({ handleClick, isTile, children: badge }) => {
 
   return (
     <StyledWrapper
-      onClick={handleClick}
+      onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
@@ -136,7 +136,7 @@ const Badges = ({
         />
       )}
       {version > 1 && (
-        <VersionBadgeWrapper handleClick={onShowVersionHistory} isTile={isTile}>
+        <VersionBadgeWrapper onClick={onShowVersionHistory} isTile={isTile}>
           <Badge
             className="badge-version badge-version-current tablet-badge icons-group"
             backgroundColor="#A3A9AE"
@@ -154,7 +154,7 @@ const Badges = ({
         </VersionBadgeWrapper>
       )}
       {(showNew || isNewWithFav) && (
-        <VersionBadgeWrapper handleClick={onBadgeClick} isTile={isTile}>
+        <VersionBadgeWrapper onClick={onBadgeClick} isTile={isTile}>
           <Badge
             className="badge-version badge-new-version tablet-badge icons-group"
             backgroundColor="#ED7309"
