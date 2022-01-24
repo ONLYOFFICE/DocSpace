@@ -23,7 +23,13 @@ const StyledBody = styled.div`
   }
 `;
 const SimulatePassword = memo(
-  ({ onChange, inputMaxWidth, isDisabled = false, hasError = false }) => {
+  ({
+    onChange,
+    onKeyDown,
+    inputMaxWidth,
+    isDisabled = false,
+    hasError = false,
+  }) => {
     const [password, setPassword] = useState("");
     const [caretPosition, setCaretPosition] = useState();
     const [inputType, setInputType] = useState("password");
@@ -75,6 +81,12 @@ const SimulatePassword = memo(
         : setPassword(newPassword);
     };
 
+    const onKeyDownAction = (e) => {
+      if (e.key === "Enter") {
+        onKeyDown && onKeyDown(e);
+      }
+    };
+
     const onChangeInputType = () => {
       setInputType(inputType === "password" ? "text" : "password");
     };
@@ -116,11 +128,13 @@ const SimulatePassword = memo(
           value={inputType === "password" ? bullets : password}
           onIconClick={onChangeInputType}
           onChange={onChangePassword}
+          onKeyDown={onKeyDownAction}
           scale
           iconSize={16}
           iconColor={iconColor}
           hoverColor={iconColor}
           placeholder={t("EnterPassword")}
+          isAutoFocussed
         />
       </StyledBody>
     );

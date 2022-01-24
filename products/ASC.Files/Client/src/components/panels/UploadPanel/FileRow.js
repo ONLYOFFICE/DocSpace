@@ -183,24 +183,23 @@ class FileRow extends Component {
     setUploadPanelVisible(false);
   };
 
-  onButtonClick = () => {
+  hasError = () => {
     const { password } = this.state;
-    let hasError = false;
-
     const pass = password.trim();
     if (!pass) {
-      hasError = true;
       this.setState({ passwordValid: false });
+      return true;
     }
 
-    if (hasError) return;
-
-    this.onClickActions(password);
+    return false;
   };
 
-  onClickActions = (password) => {
+  onButtonClick = () => {
+    const { password } = this.state;
     const { removeFileFromList, convertFile, item, uploadedFiles } = this.props;
     const { fileId, toFolderId, fileInfo } = item;
+
+    if (this.hasError()) return;
 
     let index;
 
@@ -228,6 +227,12 @@ class FileRow extends Component {
       ...(!this.state.passwordValid && { passwordValid: true }),
     });
   }
+
+  onKeyDown = (e) => {
+    if (e.key === "Enter") {
+      this.onButtonClick();
+    }
+  };
   render() {
     const {
       t,
@@ -326,6 +331,7 @@ class FileRow extends Component {
               <div className="password-input">
                 <SimulatePassword
                   onChange={this.onChangePassword}
+                  onKeyDown={this.onKeyDown}
                   hasError={!passwordValid}
                 />
                 <Button
