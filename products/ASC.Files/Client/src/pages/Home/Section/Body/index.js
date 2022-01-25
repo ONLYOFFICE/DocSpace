@@ -9,6 +9,7 @@ import EmptyContainer from "../../../../components/EmptyContainer";
 import withLoader from "../../../../HOCs/withLoader";
 import TableView from "./TableView/TableContainer";
 import { Consumer } from "@appserver/components/utils/context";
+import withHotkeys from "../../../../HOCs/withHotkeys";
 
 let currentDroppable = null;
 
@@ -246,7 +247,7 @@ export default inject(
 )(
   withRouter(
     withTranslation(["Home", "Common", "Translations"])(
-      withLoader(observer(SectionBodyContent))()
+      withLoader(withHotkeys(observer(SectionBodyContent)))()
     )
   )
 );

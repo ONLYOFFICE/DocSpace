@@ -336,8 +336,13 @@ class FilesActionStore {
     }
   };
 
-  onSelectItem = ({ id, isFolder }) => {
-    const { setBufferSelection, selected, setSelected } = this.filesStore;
+  onSelectItem = ({ id, isFolder }, isBuffer = false) => {
+    const {
+      setBufferSelection,
+      selected,
+      setSelected,
+      setSelection,
+    } = this.filesStore;
     /* selected === "close" &&  */ setSelected("none");
 
     if (!id) return;
@@ -348,7 +353,7 @@ class FilesActionStore {
 
     if (item) {
       item.isFolder = isFolder;
-      setBufferSelection(item);
+      isBuffer ? setBufferSelection(item) : setSelection([item]);
     }
   };
 
