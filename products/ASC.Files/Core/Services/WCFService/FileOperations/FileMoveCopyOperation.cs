@@ -37,6 +37,7 @@ using ASC.MessagingSystem;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Helpers;
+using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.Utils;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -477,6 +478,12 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                     {
                                         needToMark.Add(newFile);
                                     }
+
+                                    var documentServiceHelper = scope.ServiceProvider.GetService<DocumentServiceHelper>();
+                                    var socketManager = scope.ServiceProvider.GetService<SocketManager>();
+
+                                    var roomFile = documentServiceHelper.GetSocketRoom(file, false);
+                                    socketManager.DeleteFile(file.ID, roomFile);
 
                                     if (ProcessedFile(fileId))
                                     {

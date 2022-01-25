@@ -35,6 +35,7 @@ using ASC.Files.Core;
 using ASC.Files.Core.Resources;
 using ASC.MessagingSystem;
 using ASC.Web.Files.Helpers;
+using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.Utils;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -210,6 +211,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         private void DeleteFiles(IEnumerable<T> fileIds, IServiceScope scope)
         {
             var scopeClass = scope.ServiceProvider.GetService<FileDeleteOperationScope>();
+            var documentServiceHelper = scope.ServiceProvider.GetService<DocumentServiceHelper>();
+            var socketManager = scope.ServiceProvider.GetService<SocketManager>();
+
             var (fileMarker, filesMessageService) = scopeClass;
             foreach (var fileId in fileIds)
             {
@@ -237,6 +241,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             file.ThumbnailStatus = Thumbnail.NotRequired;
                             FileDao.SaveThumbnail(file, null);
                         }
+
+                        var roomFile = documentServiceHelper.GetSocketRoom(file, false);
+                        socketManager.DeleteFile(file.ID, roomFile);
                     }
                     else
                     {
@@ -244,6 +251,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         {
                             FileDao.DeleteFile(file.ID);
                             filesMessageService.Send(file, _headers, MessageAction.FileDeleted, file.Title);
+
+                            var roomFile = documentServiceHelper.GetSocketRoom(file, false);
+                            socketManager.DeleteFile(file.ID, roomFile);
                         }
                         catch (Exception ex)
                         {

@@ -90,8 +90,11 @@ class FilesStore {
             const foundIndex = this.files.findIndex((x) => x.id === opt?.id);
             if (foundIndex == -1) return;
 
-            const file = await api.files.getFileInfo(opt?.id);
-            this.setFiles(this.files.splice(foundIndex, 1));
+            this.setFiles(
+              this.files.filter((value, index) => {
+                return index !== foundIndex;
+              })
+            );
           }
           break;
       }
