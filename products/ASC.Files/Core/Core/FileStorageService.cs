@@ -690,7 +690,7 @@ namespace ASC.Web.Files.Services.WCFService
             FileMarker.MarkAsNew(file);
 
             var roomFile = DocumentServiceHelper.GetSocketRoom(file, false);
-            SocketManager.CreateFile(file.ID, roomFile);
+            SocketManager.CreateFile(file.ID, roomFile, file);
 
             return file;
         }

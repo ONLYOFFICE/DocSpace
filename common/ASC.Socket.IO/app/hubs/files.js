@@ -100,13 +100,13 @@ module.exports = (io) => {
     filesIO.to(room).emit("s:stop-edit-file", fileId);
   }
 
-  function modifyFolder(room, cmd, id, type) {
-    filesIO.to(room).emit("s:modify-folder", { cmd, id, type });
+  function modifyFolder(room, cmd, id, type, data) {
+    filesIO.to(room).emit("s:modify-folder", { cmd, id, type, data });
   }
 
-function createFile({ fileId, room } = {}) {
+function createFile({ fileId, room, data } = {}) {
     logger.info(`create new file ${fileId} in room ${room}`);
-    modifyFolder(room, "create", fileId, "file");
+    modifyFolder(room, "create", fileId, "file", data);
   }
   
   function deleteFile({ fileId, room } = {}) {

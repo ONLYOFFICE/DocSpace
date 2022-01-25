@@ -1104,7 +1104,7 @@ namespace ASC.Web.Files
                 }
 
                 var roomFile = DocumentServiceHelper.GetSocketRoom(file, false);
-                SocketManager.CreateFile(file.ID, roomFile);
+                SocketManager.CreateFile(file.ID, roomFile, file);
             }
             catch (Exception ex)
             {

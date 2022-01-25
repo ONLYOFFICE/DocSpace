@@ -24,10 +24,15 @@
 */
 
 
+using ASC.Api.Documents;
 using ASC.Common;
 using ASC.Core.Notify.Signalr;
+using ASC.Files.Core;
 
 using Microsoft.Extensions.Options;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace ASC.Web.Files.Utils
 {
@@ -35,10 +40,12 @@ namespace ASC.Web.Files.Utils
     public class SocketManager
     {
         private readonly SignalrServiceClient _signalrServiceClient;
+        private FileWrapperHelper FilesWrapperHelper { get; }
 
-        public SocketManager(IOptionsSnapshot<SignalrServiceClient> optionsSnapshot)
+        public SocketManager(IOptionsSnapshot<SignalrServiceClient> optionsSnapshot, FileWrapperHelper filesWrapperHelper)
         {
             _signalrServiceClient = optionsSnapshot.Get("files");
+            FilesWrapperHelper = filesWrapperHelper;
         }
 
         public void StartEdit<T>(T fileId, string room)
@@ -51,9 +58,11 @@ namespace ASC.Web.Files.Utils
             _signalrServiceClient.StopEdit(fileId, room);
         }
 
-        public void CreateFile<T>(T fileId, string room)
+        public void CreateFile<T>(T fileId, string room, File<T> file)
         {
-            _signalrServiceClient.CreateFile(fileId, room);
+            var serializerSettings = new JsonSerializerSettings();
+            serializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            _signalrServiceClient.CreateFile(fileId, room, JsonConvert.SerializeObject(FilesWrapperHelper.Get(file), Formatting.None, serializerSettings));
         }
 
         public void DeleteFile<T>(T fileId, string room)

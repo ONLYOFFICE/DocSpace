@@ -333,11 +333,11 @@ namespace ASC.Core.Notify.Signalr
             }
         }
 
-        public void CreateFile<T>(T fileId, string room)
+        public void CreateFile<T>(T fileId, string room, string data)
         {
             try
             {
-                MakeRequest("create-file", new { room, fileId });
+                MakeRequest("create-file", new { room, fileId, data });
             }
             catch (Exception error)
             {

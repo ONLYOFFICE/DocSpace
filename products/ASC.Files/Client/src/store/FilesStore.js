@@ -79,7 +79,9 @@ class FilesStore {
             const foundIndex = this.files.findIndex((x) => x.id === opt?.id);
             if (foundIndex > -1) return;
 
-            const file = await api.files.getFileInfo(opt?.id);
+            const file = opt?.data
+              ? JSON.parse(opt?.data)
+              : await api.files.getFileInfo(opt?.id);
             this.setFiles([file, ...this.files]);
           }
           break;
