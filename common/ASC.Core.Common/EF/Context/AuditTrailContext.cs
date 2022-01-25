@@ -14,12 +14,14 @@ namespace ASC.Core.Common.EF.Context
     public class AuditTrailContext : BaseDbContext
     {
         public DbSet<AuditEvent> AuditEvents { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             ModelBuilderWrapper
             .From(modelBuilder, Provider)
             .AddAuditEvent()
+            .AddUser()
             .AddDbFunction();
         }
 
