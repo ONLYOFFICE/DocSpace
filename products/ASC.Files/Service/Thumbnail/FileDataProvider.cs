@@ -38,25 +38,16 @@ namespace ASC.Files.ThumbnailBuilder
         private readonly ICache cache;
         private Lazy<Core.EF.FilesDbContext> LazyFilesDbContext { get; }
         private Core.EF.FilesDbContext filesDbContext { get => LazyFilesDbContext.Value; }
-        private Lazy<TenantDbContext> LazyTenantDbContext { get; }
-        private TenantDbContext TenantDbContext { get => LazyTenantDbContext.Value; }
-        private Lazy<CoreDbContext> LazyCoreDbContext { get; }
-        private CoreDbContext coreDbContext { get => LazyCoreDbContext.Value; }
         private readonly string cacheKey;
 
         public FileDataProvider(
             ThumbnailSettings settings,
             ICache ascCache,
-            DbContextManager<Core.EF.FilesDbContext> dbContextManager,
-            DbContextManager<TenantDbContext> tenantdbContextManager,
-            DbContextManager<CoreDbContext> coredbContextManager
-            )
+            DbContextManager<Core.EF.FilesDbContext> dbContextManager)
         {
             thumbnailSettings = settings;
             cache = ascCache;
             LazyFilesDbContext = new Lazy<Core.EF.FilesDbContext>(() => dbContextManager.Get(thumbnailSettings.ConnectionStringName));
-            LazyTenantDbContext = new Lazy<TenantDbContext>(() => tenantdbContextManager.Get(thumbnailSettings.ConnectionStringName));
-            LazyCoreDbContext = new Lazy<CoreDbContext>(() => coredbContextManager.Get(thumbnailSettings.ConnectionStringName));
             cacheKey = "PremiumTenants";
         }
 
@@ -97,8 +88,8 @@ namespace ASC.Files.ThumbnailBuilder
             */
 
             var search =
-                coreDbContext.Tariffs
-                .Join(coreDbContext.Quotas.DefaultIfEmpty(), a => a.Tariff, b => b.Tenant, (tariff, quota) => new { tariff, quota })
+                filesDbContext.Tariffs
+                .Join(filesDbContext.Quotas.DefaultIfEmpty(), a => a.Tariff, b => b.Tenant, (tariff, quota) => new { tariff, quota })
                 .Where(r =>
                         (
                             r.tariff.Comment == null ||
@@ -139,7 +130,7 @@ namespace ASC.Files.ThumbnailBuilder
             }
 
             return search
-                .Join(TenantDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FileTenant { DbFile = f, DbTenant = t })
+                .Join(filesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FileTenant { DbFile = f, DbTenant = t })
                 .Where(r => r.DbTenant.Status == TenantStatus.Active)
                 .Select(r => new FileData<int>(r.DbFile.TenantId, r.DbFile.Id, ""))
                 .ToList();
