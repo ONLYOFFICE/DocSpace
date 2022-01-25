@@ -12,10 +12,13 @@ class SocketIOHelper {
 
     if (client) return;
 
-    client = io(url, {
+    const origin = window.location.origin;
+
+    client = io(origin, {
       withCredentials: true,
       transports: ["websocket", "polling"],
       eio: 4,
+      path: url,
     });
 
     client.on("connect", () => console.log("socket is connected"));
