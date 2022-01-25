@@ -370,6 +370,14 @@ class PageLayout extends React.Component {
                     pinned={isArticlePinned}
                     visible={isArticleVisible}
                   >
+                    <div id="main-bar" style={{ marginLeft: "-24px" }}>
+                      <SubSectionBar>
+                        {sectionBarContent
+                          ? sectionBarContent.props.children
+                          : null}
+                      </SubSectionBar>
+                    </div>
+                    {/* <div style={{ padding: "0 0 0 24px" }}> */}
                     {isSectionHeaderAvailable && (
                       <SubSectionHeader
                         isHeaderVisible={isHeaderVisible}
@@ -384,20 +392,6 @@ class PageLayout extends React.Component {
 
                     {isSectionFilterAvailable && (
                       <>
-                        <div
-                          id="main-bar"
-                          style={{
-                            display: "grid",
-                            paddingRight: "20px",
-                            marginLeft: "-4px",
-                          }}
-                        >
-                          <SubSectionBar>
-                            {sectionBarContent
-                              ? sectionBarContent.props.children
-                              : null}
-                          </SubSectionBar>
-                        </div>
                         <SubSectionFilter
                           className="section-header_filter"
                           viewAs={viewAs}
