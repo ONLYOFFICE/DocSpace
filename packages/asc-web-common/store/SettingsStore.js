@@ -11,6 +11,7 @@ class SettingsStore {
   isLoading = false;
   isLoaded = false;
 
+  checkedMaintenance = false;
   currentProductId = "";
   culture = "en";
   cultures = [];
@@ -131,6 +132,10 @@ class SettingsStore {
 
   setValue = (key, value) => {
     this[key] = value;
+  };
+
+  setCheckedMaintenance = (checkedMaintenance) => {
+    this.checkedMaintenance = checkedMaintenance;
   };
 
   setDefaultPage = (defaultPage) => {
