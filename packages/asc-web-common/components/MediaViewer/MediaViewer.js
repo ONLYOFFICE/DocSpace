@@ -206,6 +206,7 @@ class MediaViewer extends React.Component {
 
     document.addEventListener("keydown", this.onKeydown, false);
     document.addEventListener("keyup", this.onKeyup, false);
+    localStorage.setItem("isMediaViewerOpen", true);
   }
 
   componentWillUnmount() {
@@ -220,6 +221,7 @@ class MediaViewer extends React.Component {
     document.removeEventListener("keydown", this.onKeydown, false);
     document.removeEventListener("keyup", this.onKeyup, false);
     this.onClose();
+    localStorage.setItem("isMediaViewerOpen", false);
   }
 
   mapSupplied = {
