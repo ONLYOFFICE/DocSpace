@@ -51,7 +51,6 @@ namespace ASC.CRM.Core.Dao
 
         public InvoiceTaxDao(
             DbContextManager<CrmDbContext> dbContextManager,
-             DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             SecurityContext securityContext,
             IOptionsMonitor<ILog> logger,
@@ -59,7 +58,6 @@ namespace ASC.CRM.Core.Dao
             IMapper mapper
             )
             : base(dbContextManager,
-                  dbContextManager1,
                  tenantManager,
                  securityContext,
                  logger,
