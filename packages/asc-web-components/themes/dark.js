@@ -1799,7 +1799,7 @@ const Dark = {
 
   section: {
     toggler: {
-      background: "#F58D31",
+      background: white,
       fill: black,
       boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
     },

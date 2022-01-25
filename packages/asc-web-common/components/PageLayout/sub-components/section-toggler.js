@@ -29,7 +29,7 @@ const StyledSectionToggler = styled.div`
     line-height: 14px;
     svg {
       path {
-        fill: ${(props) => props.theme.section.toggler.background};
+        fill: ${(props) => props.theme.section.toggler.fill};
       }
     }
   }
