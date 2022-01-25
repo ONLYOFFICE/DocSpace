@@ -1783,6 +1783,7 @@ const Base = {
   header: {
     backgroundColor: "#0F4071",
     linkColor: "#7a95b0",
+    productColor: white,
   },
 
   menuContainer: {

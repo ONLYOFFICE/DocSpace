@@ -1784,6 +1784,7 @@ const Dark = {
   header: {
     backgroundColor: "#1f1f1f ",
     linkColor: "#a9a9a9",
+    productColor: "#eeeeee",
   },
 
   menuContainer: {

@@ -147,6 +147,7 @@ const HeaderComponent = ({
   isAdmin,
   backdropClick,
   isPersonal,
+  theme,
   ...props
 }) => {
   const { t } = useTranslation('Common');
@@ -207,7 +208,11 @@ const HeaderComponent = ({
         </LinkWithoutRedirect>
 
         {!isPersonal && (
-          <Headline className="header-module-title" type="header" onClick={onClick}>
+          <Headline
+            className="header-module-title"
+            type="header"
+            color={theme.header.productColor}
+            onClick={onClick}>
             {currentProductName}
           </Headline>
         )}
@@ -302,12 +307,13 @@ export default inject(({ auth }) => {
     availableModules,
     version,
   } = auth;
-  const { logoUrl, defaultPage, currentProductId, personal: isPersonal } = settingsStore;
+  const { logoUrl, defaultPage, currentProductId, personal: isPersonal, theme } = settingsStore;
   const { totalNotifications } = moduleStore;
 
   //TODO: restore when chat will complete -> const mainModules = availableModules.filter((m) => !m.isolateMode);
 
   return {
+    theme,
     isPersonal,
     isAdmin,
     defaultPage,
