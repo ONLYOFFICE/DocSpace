@@ -12,26 +12,32 @@ import CheckboxIndeterminateIcon from "../../../../public/images/checkbox.indete
 import CheckboxIcon from "../../../../public/images/checkbox.react.svg";
 import commonIconsStyles from "../../utils/common-icons-style";
 
+import store from "studio/store";
+
+const theme = store.auth.settingsStore.theme;
+
+console.log(theme);
+
 const StyledCheckboxIcon = styled(CheckboxIcon)`
   color: ${(props) => props.theme.checkbox.fillColor};
   ${commonIconsStyles};
 `;
 
-StyledCheckboxIcon.defaultProps = { theme: Base };
+StyledCheckboxIcon.defaultProps = { theme: theme };
 
 const StyledCheckboxCheckedIcon = styled(CheckboxCheckedIcon)`
   color: ${(props) => props.theme.checkbox.arrowColor};
   ${commonIconsStyles}
 `;
 
-StyledCheckboxCheckedIcon.defaultProps = { theme: Base };
+StyledCheckboxCheckedIcon.defaultProps = { theme: theme };
 
 const StyledCheckboxIndeterminateIcon = styled(CheckboxIndeterminateIcon)`
   color: ${(props) => props.theme.checkbox.indeterminateColor};
   ${commonIconsStyles}
 `;
 
-StyledCheckboxIndeterminateIcon.defaultProps = { theme: Base };
+StyledCheckboxIndeterminateIcon.defaultProps = { theme: theme };
 
 var checkboxIcon,
   checkboxСheckedIcon,
