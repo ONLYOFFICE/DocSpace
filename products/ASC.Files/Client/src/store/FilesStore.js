@@ -98,10 +98,12 @@ class FilesStore {
   };
 
   setActiveFiles = (activeFiles) => {
+    this.setSelected("none");
     this.activeFiles = activeFiles;
   };
 
   setActiveFolders = (activeFolders) => {
+    this.setSelected("none");
     this.activeFolders = activeFolders;
   };
 
