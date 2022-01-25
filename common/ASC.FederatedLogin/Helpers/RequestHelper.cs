@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace ASC.FederatedLogin.Helpers
@@ -59,7 +60,7 @@ namespace ASC.FederatedLogin.Helpers
                 request.Content = new ByteArrayContent(bytes, 0, bytes.Length);
                 if (!string.IsNullOrEmpty(contentType))
                 {
-                    request.Headers.Add("Content-Type", contentType);
+                    request.Content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
                 }
             }
 
