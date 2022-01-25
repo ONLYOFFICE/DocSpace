@@ -174,7 +174,12 @@ class SharingRow extends React.Component {
         {!isPersonal && (
           <>
             {internalLinkVisible && (
-              <LinkRow linkText={t('InternalLink')} options={internalLinkData} {...this.props} />
+              <LinkRow
+                theme={theme}
+                linkText={t('InternalLink')}
+                options={internalLinkData}
+                {...this.props}
+              />
             )}
 
             {!shareLink && (

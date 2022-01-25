@@ -66,6 +66,7 @@ class ToggleButton extends Component {
       className,
       style,
       isLoading,
+      theme,
     } = this.props;
     const { gray } = globalColors;
     const colorProps = isDisabled ? { color: gray } : {};
@@ -74,6 +75,7 @@ class ToggleButton extends Component {
 
     return (
       <ToggleButtonContainer
+        theme={theme}
         id={id}
         className={className}
         style={style}
@@ -81,14 +83,24 @@ class ToggleButton extends Component {
         isChecked={this.state.checked}
       >
         <HiddenInput
+          theme={theme}
           type="checkbox"
           checked={this.state.checked}
           disabled={isDisabled}
           onChange={onChange}
         />
-        <ToggleIcon isChecked={this.state.checked} isLoading={isLoading} />
+        <ToggleIcon
+          theme={theme}
+          isChecked={this.state.checked}
+          isLoading={isLoading}
+        />
         {label && (
-          <Text className="toggle-button-text" as="span" {...colorProps}>
+          <Text
+            theme={theme}
+            className="toggle-button-text"
+            as="span"
+            {...colorProps}
+          >
             {label}
           </Text>
         )}

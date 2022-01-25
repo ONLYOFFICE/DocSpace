@@ -5,9 +5,10 @@ import Text from '@appserver/components/text';
 import StyledUserTooltip from './StyledUserTooltip';
 
 const UserTooltip = ({ avatarUrl, label, email, position, theme }) => (
-  <StyledUserTooltip>
+  <StyledUserTooltip theme={theme}>
     <div className="block-avatar">
       <Avatar
+        theme={theme}
         className="user-avatar"
         size="min"
         role="user"
@@ -18,10 +19,17 @@ const UserTooltip = ({ avatarUrl, label, email, position, theme }) => (
     </div>
 
     <div className="block-info">
-      <Text isBold={true} fontSize="13px" fontWeight={600} truncate={true} title={label}>
+      <Text
+        theme={theme}
+        isBold={true}
+        fontSize="13px"
+        fontWeight={600}
+        truncate={true}
+        title={label}>
         {label}
       </Text>
       <Text
+        theme={theme}
         color={theme.peopleSelector.textColor}
         fontSize="13px"
         className="email-text"
@@ -29,7 +37,7 @@ const UserTooltip = ({ avatarUrl, label, email, position, theme }) => (
         title={email}>
         {email}
       </Text>
-      <Text fontSize="13px" fontWeight={600} truncate={true} title={position}>
+      <Text theme={theme} fontSize="13px" fontWeight={600} truncate={true} title={position}>
         {position}
       </Text>
     </div>

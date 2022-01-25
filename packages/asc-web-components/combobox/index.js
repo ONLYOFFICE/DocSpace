@@ -115,6 +115,7 @@ class ComboBox extends React.Component {
 
     return (
       <StyledComboBox
+        theme={theme}
         ref={this.ref}
         isDisabled={isDisabled}
         scaled={scaled}

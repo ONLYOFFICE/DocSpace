@@ -11,7 +11,8 @@ import StyledDropdown from "./styled-drop-down";
 
 // eslint-disable-next-line react/display-name, react/prop-types
 const Row = memo(({ data, index, style }) => {
-  const option = data[index];
+  const option = data.children[index];
+
   // eslint-disable-next-line react/prop-types
   const separator = option.props.isSeparator
     ? { width: `calc(100% - 32px)`, height: `1px` }
@@ -20,6 +21,7 @@ const Row = memo(({ data, index, style }) => {
 
   return (
     <DropDownItem
+      theme={data.theme}
       // eslint-disable-next-line react/prop-types
       {...option.props}
       style={newStyle}
@@ -157,7 +159,7 @@ class DropDown extends React.PureComponent {
             width={width}
             itemSize={getItemSize}
             itemCount={children.length}
-            itemData={children}
+            itemData={{ children: children, theme: theme }}
             outerElementType={CustomScrollbarsVirtualList}
           >
             {Row}
@@ -179,15 +181,21 @@ class DropDownContainer extends React.Component {
     this.props.clickOutsideAction({}, !this.props.open);
   };
   render() {
-    const { withBackdrop = true, open } = this.props;
+    const { withBackdrop = true, open, theme } = this.props;
     const eventTypesProp = isMobile ? { eventTypes: ["touchend"] } : {};
 
     return (
       <>
         {withBackdrop ? (
-          <Backdrop visible={open} zIndex={199} onClick={this.toggleDropDown} />
+          <Backdrop
+            theme={theme}
+            visible={open}
+            zIndex={199}
+            onClick={this.toggleDropDown}
+          />
         ) : null}
         <EnhancedComponent
+          theme={theme}
           {...eventTypesProp}
           disableOnClickOutside={true}
           {...this.props}

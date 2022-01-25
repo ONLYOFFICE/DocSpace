@@ -578,9 +578,14 @@ class SharingPanelComponent extends React.Component {
                       open={showActionPanel}
                       manualY="30px"
                       clickOutsideAction={this.onCloseActionPanel}>
-                      <DropDownItem label={t('LinkText')} onClick={this.onShowUsersPanel} />
+                      <DropDownItem
+                        theme={theme}
+                        label={t('LinkText')}
+                        onClick={this.onShowUsersPanel}
+                      />
                       {!isEncrypted && (
                         <DropDownItem
+                          theme={theme}
                           label={t('AddGroupsForSharingButton')}
                           onClick={this.onShowGroupsPanel}
                         />
@@ -645,7 +650,7 @@ class SharingPanelComponent extends React.Component {
                 </div>
               )}
             </StyledSharingBody>
-            <StyledFooter>
+            <StyledFooter theme={theme}>
               {!isPersonal && (
                 <Checkbox
                   theme={theme}
