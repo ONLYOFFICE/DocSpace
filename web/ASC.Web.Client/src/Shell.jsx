@@ -148,6 +148,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     language,
     FirebaseHelper,
     personal,
+    setCheckedMaintenance,
   } = rest;
 
   useEffect(() => {
@@ -212,6 +213,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     const to = moment(toDate).local();
 
     const watchedCampaignDateStr = localStorage.getItem(LS_CAMPAIGN_DATE);
+
     const campaignDateStr = to.format(DATE_FORMAT);
     if (campaignDateStr == watchedCampaignDateStr) {
       console.log("Skip snackBar by already watched");
@@ -263,14 +265,11 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         targetDate: targetDate,
         productName: "ONLYOFFICE Personal",
       })} ${t("BarMaintenanceDisclaimer")}`,
-      onAction: () => {
+      clickAction: () => {
         Snackbar.close();
         localStorage.setItem(LS_CAMPAIGN_DATE, to.format(DATE_FORMAT));
       },
       opacity: 1,
-      style: {
-        marginTop: "10px",
-      },
     };
 
     Snackbar.show(barConfig);
@@ -283,6 +282,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       FirebaseHelper.checkMaintenance()
         .then((campaign) => {
           console.log("checkMaintenance", campaign);
+          setCheckedMaintenance(true);
           if (!campaign) {
             clearSnackBarTimer();
             Snackbar.close();
@@ -302,7 +302,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   const fetchBanners = () => {
     if (!FirebaseHelper.isEnabled) return;
 
-    console.log("fetchBanners");    FirebaseHelper.checkBar()
+    FirebaseHelper.checkBar()
       .then((bar) => {
         localStorage.setItem("bar", bar);
       })
@@ -462,6 +462,7 @@ const ShellWrapper = inject(({ auth }) => {
     isDesktopClient,
     firebaseHelper,
     setModuleInfo,
+    setCheckedMaintenance,
   } = settingsStore;
 
   return {
@@ -480,6 +481,7 @@ const ShellWrapper = inject(({ auth }) => {
     isDesktop: isDesktopClient,
     FirebaseHelper: firebaseHelper,
     personal,
+    setCheckedMaintenance,
   };
 })(observer(Shell));
 
