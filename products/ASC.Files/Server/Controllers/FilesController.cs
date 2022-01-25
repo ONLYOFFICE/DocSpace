@@ -2307,16 +2307,16 @@ namespace ASC.Api.Documents
         /// <param name="docServiceUrlPortal">Community Server Address</param>
         /// <returns></returns>
         [Update("docservice")]
-        public IEnumerable<string> CheckDocServiceUrlFromBody([FromBody] CheckDocServiceUrlModel model)
+        public Task<IEnumerable<string>> CheckDocServiceUrlFromBodyAsync([FromBody] CheckDocServiceUrlModel model)
         {
-            return CheckDocServiceUrl(model);
+            return CheckDocServiceUrlAsync(model);
         }
 
         [Update("docservice")]
         [Consumes("application/x-www-form-urlencoded")]
-        public IEnumerable<string> CheckDocServiceUrlFromForm([FromForm] CheckDocServiceUrlModel model)
+        public Task<IEnumerable<string>> CheckDocServiceUrlFromFormAsync([FromForm] CheckDocServiceUrlModel model)
         {
-            return CheckDocServiceUrl(model);
+            return CheckDocServiceUrlAsync(model);
         }
 
         /// <summary>
@@ -2367,7 +2367,7 @@ namespace ASC.Api.Documents
             return await FilesControllerHelperInt.CheckFillFormDraftAsync(fileId, model.Version, model.Doc, !model.RequestEmbedded, model.RequestView);
         }
 
-        public IEnumerable<string> CheckDocServiceUrl(CheckDocServiceUrlModel model)
+        public async Task<IEnumerable<string>> CheckDocServiceUrlAsync(CheckDocServiceUrlModel model)
         {
             FilesLinkUtility.DocServiceUrl = model.DocServiceUrl;
             FilesLinkUtility.DocServiceUrlInternal = model.DocServiceUrlInternal;
@@ -2382,7 +2382,7 @@ namespace ASC.Api.Documents
                 throw new Exception("Mixed Active Content is not allowed. HTTPS address for Document Server is required.");
             }
 
-            DocumentServiceConnector.CheckDocServiceUrl();
+            await DocumentServiceConnector.CheckDocServiceUrlAsync();
 
             return new[]
                 {

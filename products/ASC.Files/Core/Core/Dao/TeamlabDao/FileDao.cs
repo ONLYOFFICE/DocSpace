@@ -344,11 +344,11 @@ namespace ASC.Files.Core.Data
 
         public Task<Uri> GetPreSignedUriAsync(File<int> file, TimeSpan expires)
         {
-            return Task.FromResult(GlobalStore.GetStore().GetPreSignedUri(string.Empty, GetUniqFilePath(file), expires,
+            return GlobalStore.GetStore().GetPreSignedUriAsync(string.Empty, GetUniqFilePath(file), expires,
                                                      new List<string>
                                                          {
                                                              string.Concat("Content-Disposition:", ContentDispositionUtil.GetHeaderValue(file.Title, withoutBase: true))
-                                                         }));
+                                                         });
         }
 
         public Task<bool> IsSupportedPreSignedUriAsync(File<int> file)
@@ -487,7 +487,7 @@ namespace ASC.Files.Core.Data
             {
                 try
                 {
-                    SaveFileStream(file, fileStream);
+                    await SaveFileStreamAsync(file, fileStream);
                 }
                 catch (Exception saveException)
                 {
@@ -495,7 +495,7 @@ namespace ASC.Files.Core.Data
                     {
                         if (isNew)
                         {
-                            var stored = GlobalStore.GetStore().IsDirectory(GetUniqFileDirectory(file.ID));
+                            var stored = await GlobalStore.GetStore().IsDirectoryAsync(GetUniqFileDirectory(file.ID));
                             await DeleteFileAsync(file.ID, stored).ConfigureAwait(false);
                         }
                         else if (!await IsExistOnStorageAsync(file))
@@ -608,8 +608,8 @@ namespace ASC.Files.Core.Data
             {
                 try
                 {
-                    DeleteVersionStream(file);
-                    SaveFileStream(file, fileStream);
+                    await DeleteVersionStreamAsync(file);
+                    await SaveFileStreamAsync(file, fileStream);
                 }
                 catch
                 {
@@ -650,14 +650,14 @@ namespace ASC.Files.Core.Data
             await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
         }
 
-        private void DeleteVersionStream(File<int> file)
+        private async Task DeleteVersionStreamAsync(File<int> file)
         {
-            GlobalStore.GetStore().DeleteDirectory(GetUniqFileVersionPath(file.ID, file.Version));
+            await GlobalStore.GetStore().DeleteDirectoryAsync(GetUniqFileVersionPath(file.ID, file.Version));
         }
 
-        private void SaveFileStream(File<int> file, Stream stream)
+        private async Task  SaveFileStreamAsync(File<int> file, Stream stream)
         {
-            GlobalStore.GetStore().Save(string.Empty, GetUniqFilePath(file), stream, file.Title);
+            await GlobalStore.GetStore().SaveAsync(string.Empty, GetUniqFilePath(file), stream, file.Title);
         }
 
         public Task DeleteFileAsync(int fileId)
@@ -705,7 +705,7 @@ namespace ASC.Files.Core.Data
             var forEachTask = fromFolders.ForEachAwaitAsync(async folderId => await RecalculateFilesCountAsync(folderId).ConfigureAwait(false)).ConfigureAwait(false);
 
             if (deleteFolder)
-                DeleteFolder(fileId);
+                await DeleteFolderAsync(fileId);
 
             var toDeleteFile = await toDeleteFileTask;
             if (toDeleteFile != null)
@@ -1001,7 +1001,7 @@ namespace ASC.Files.Core.Data
 
         public Task<ChunkedUploadSession<int>> CreateUploadSessionAsync(File<int> file, long contentLength)
         {
-            return Task.FromResult(ChunkedUploadSessionHolder.CreateUploadSession(file, contentLength));
+            return ChunkedUploadSessionHolder.CreateUploadSessionAsync(file, contentLength);
         }
 
         public async Task<File<int>> UploadChunkAsync(ChunkedUploadSession<int> uploadSession, Stream stream, long chunkLength)
@@ -1017,7 +1017,7 @@ namespace ASC.Files.Core.Data
                 return uploadSession.File;
             }
 
-            ChunkedUploadSessionHolder.UploadChunk(uploadSession, stream, chunkLength);
+            await ChunkedUploadSessionHolder.UploadChunkAsync(uploadSession, stream, chunkLength);
 
             if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
             {
@@ -1029,19 +1029,18 @@ namespace ASC.Files.Core.Data
 
         private async Task<File<int>> FinalizeUploadSessionAsync(ChunkedUploadSession<int> uploadSession)
         {
-            ChunkedUploadSessionHolder.FinalizeUploadSession(uploadSession);
+            await ChunkedUploadSessionHolder.FinalizeUploadSessionAsync(uploadSession);
 
             var file = await GetFileForCommitAsync(uploadSession).ConfigureAwait(false);
             await SaveFileAsync(file, null, uploadSession.CheckQuota).ConfigureAwait(false);
-            ChunkedUploadSessionHolder.Move(uploadSession, GetUniqFilePath(file));
+            await ChunkedUploadSessionHolder.MoveAsync(uploadSession, GetUniqFilePath(file));
 
             return file;
         }
 
-        public Task AbortUploadSessionAsync(ChunkedUploadSession<int> uploadSession)
+        public async Task AbortUploadSessionAsync(ChunkedUploadSession<int> uploadSession)
         {
-            ChunkedUploadSessionHolder.AbortUploadSession(uploadSession);
-            return Task.CompletedTask;
+            await ChunkedUploadSessionHolder.AbortUploadSessionAsync(uploadSession);
         }
 
         private async Task<File<int>> GetFileForCommitAsync(ChunkedUploadSession<int> uploadSession)
@@ -1169,9 +1168,10 @@ namespace ASC.Files.Core.Data
                     .AsAsyncEnumerable();
             }
         }
-        private void DeleteFolder(int fileId)
+
+        private async Task DeleteFolderAsync(int fileId)
         {
-            GlobalStore.GetStore().DeleteDirectory(GetUniqFileDirectory(fileId));
+            await GlobalStore.GetStore().DeleteDirectoryAsync(GetUniqFileDirectory(fileId));
         }
 
         public Task<bool> IsExistOnStorageAsync(File<int> file)
@@ -1202,7 +1202,7 @@ namespace ASC.Files.Core.Data
 
             await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-            GlobalStore.GetStore().Save(string.Empty, GetUniqFilePath(file, DiffTitle), differenceStream, DiffTitle);
+            await GlobalStore.GetStore().SaveAsync(string.Empty, GetUniqFilePath(file, DiffTitle), differenceStream, DiffTitle);
         }
 
         public async Task<List<EditHistory>> GetEditHistoryAsync(DocumentServiceHelper documentServiceHelper, int fileId, int fileVersion = 0)
@@ -1327,7 +1327,7 @@ namespace ASC.Files.Core.Data
             if (thumbnail == null) return;
 
             var thumnailName = ThumbnailTitle + "." + Global.ThumbnailExtension;
-            GlobalStore.GetStore().Save(string.Empty, GetUniqFilePath(file, thumnailName), thumbnail, thumnailName);
+            await GlobalStore.GetStore().SaveAsync(string.Empty, GetUniqFilePath(file, thumnailName), thumbnail, thumnailName);
         }
 
         public async Task<Stream> GetThumbnailAsync(File<int> file)

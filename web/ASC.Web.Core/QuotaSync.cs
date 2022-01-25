@@ -61,12 +61,12 @@ namespace ASC.Web.Studio.Core.Quota
             foreach (var module in storageModules)
             {
                 var storage = storageFactory.GetStorage(TenantId.ToString(), module);
-                storage.ResetQuota("");
+                storage.ResetQuotaAsync("").Wait();
 
                 var domains = storageFactoryConfig.GetDomainList(string.Empty, module).ToList();
                 foreach (var domain in domains)
                 {
-                    storage.ResetQuota(domain);
+                    storage.ResetQuotaAsync(domain).Wait();
                 }
 
             }

@@ -621,7 +621,7 @@ namespace ASC.Web.Files.Services.WCFService
                 var storeTemplate = GetStoreTemplate();
 
                 var path = FileConstant.NewDocPath + culture + "/";
-                if (!storeTemplate.IsDirectory(path))
+                if (!await storeTemplate.IsDirectoryAsync(path))
                 {
                     path = FileConstant.NewDocPath + "en-US/";
                 }
@@ -633,7 +633,7 @@ namespace ASC.Web.Files.Services.WCFService
                         var pathNew = path + "new" + fileExt;
                         using (var stream = await storeTemplate.GetReadStreamAsync("", pathNew, 0))
                         {
-                            file.ContentLength = stream.CanSeek ? stream.Length : storeTemplate.GetFileSize(pathNew);
+                            file.ContentLength = stream.CanSeek ? stream.Length : await storeTemplate.GetFileSizeAsync(pathNew);
                             file = await fileDao.SaveFileAsync(file, stream);
                         }
                     }
@@ -643,7 +643,7 @@ namespace ASC.Web.Files.Services.WCFService
                     }
 
                     var pathThumb = path + fileExt.Trim('.') + "." + Global.ThumbnailExtension;
-                    if (storeTemplate.IsFile("", pathThumb))
+                    if (await storeTemplate.IsFileAsync("", pathThumb))
                     {
                         using (var streamThumb = await storeTemplate.GetReadStreamAsync("", pathThumb, 0))
                         {
@@ -1094,7 +1094,7 @@ namespace ASC.Web.Files.Services.WCFService
                     var storeTemplate = GetStoreTemplate();
 
                     var path = FileConstant.NewDocPath + culture + "/";
-                    if (!storeTemplate.IsDirectory(path))
+                    if (!await storeTemplate.IsDirectoryAsync(path))
                     {
                         path = FileConstant.NewDocPath + "en-US/";
                     }
@@ -1103,7 +1103,8 @@ namespace ASC.Web.Files.Services.WCFService
 
                     path += "new" + fileExt;
 
-                    sourceFileUrl = storeTemplate.GetUri("", path).ToString();
+                    var uri = await storeTemplate.GetUriAsync("", path);
+                    sourceFileUrl = uri.ToString();
                     sourceFileUrl = BaseCommonLinkUtility.GetFullAbsolutePath(sourceFileUrl);
 
                     previouseKey = DocumentServiceConnector.GenerateRevisionId(Guid.NewGuid().ToString());

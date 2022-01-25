@@ -241,7 +241,7 @@ namespace ASC.Web.Files
             var store = GlobalStore.GetStore();
             var path = string.Format(@"{0}\{1}{2}", SecurityContext.CurrentAccount.ID, FileConstant.DownloadTitle, ext);
 
-            if (!store.IsFile(FileConstant.StorageDomainTmp, path))
+            if (!await store.IsFileAsync(FileConstant.StorageDomainTmp, path))
             {
                 Logger.ErrorFormat("BulkDownload file error. File is not exist on storage. UserId: {0}.", AuthContext.CurrentAccount.ID);
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
@@ -250,7 +250,8 @@ namespace ASC.Web.Files
 
             if (store.IsSupportedPreSignedUri)
             {
-                var url = store.GetPreSignedUri(FileConstant.StorageDomainTmp, path, TimeSpan.FromHours(1), null).ToString();
+                var tmp = await store.GetPreSignedUriAsync(FileConstant.StorageDomainTmp, path, TimeSpan.FromHours(1), null);
+                var url = tmp.ToString();
                 context.Response.Redirect(url);
                 return;
             }
@@ -260,7 +261,7 @@ namespace ASC.Web.Files
             try
             {
                 var flushed = false;
-                using (var readStream = store.GetReadStream(FileConstant.StorageDomainTmp, path))
+                using (var readStream = await store.GetReadStreamAsync(FileConstant.StorageDomainTmp, path))
                 {
                     long offset = 0;
                     var length = readStream.Length;
@@ -387,19 +388,19 @@ namespace ASC.Web.Files
                                 const string mp4Name = "content.mp4";
                                 var mp4Path = fileDao.GetUniqFilePath(file, mp4Name);
                                 var store = GlobalStore.GetStore();
-                                if (!store.IsFile(mp4Path))
+                                if (!await store.IsFileAsync(mp4Path))
                                 {
                                     fileStream = await fileDao.GetFileStreamAsync(file);
 
                                     Logger.InfoFormat("Converting {0} (fileId: {1}) to mp4", file.Title, file.ID);
                                     var stream = await FFmpegService.Convert(fileStream, ext);
-                                    store.Save(string.Empty, mp4Path, stream, mp4Name);
+                                    await store.SaveAsync(string.Empty, mp4Path, stream, mp4Name);
                                 }
 
-                                var fullLength = store.GetFileSize(string.Empty, mp4Path);
+                                var fullLength = await store.GetFileSizeAsync(string.Empty, mp4Path);
 
                                 length = ProcessRangeHeader(context, fullLength, ref offset);
-                                fileStream = store.GetReadStream(string.Empty, mp4Path, (int)offset);
+                                fileStream = await store.GetReadStreamAsync(string.Empty, mp4Path, (int)offset);
 
                                 title = FileUtility.ReplaceFileExtension(title, ".mp4");
                             }
@@ -770,7 +771,7 @@ namespace ASC.Web.Files
                            + fileName;
 
                 var storeTemplate = GlobalStore.GetStoreTemplate();
-                if (!storeTemplate.IsFile("", path))
+                if (!await storeTemplate.IsFileAsync("", path))
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                     await context.Response.WriteAsync(FilesCommonResource.ErrorMassage_FileNotFound);
@@ -780,11 +781,11 @@ namespace ASC.Web.Files
                 context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue(fileName));
                 context.Response.ContentType = MimeMapping.GetMimeMapping(fileName);
 
-                using var stream = storeTemplate.GetReadStream("", path);
+                using var stream = await storeTemplate.GetReadStreamAsync("", path);
                 context.Response.Headers.Add("Content-Length",
                     stream.CanSeek
                     ? stream.Length.ToString(CultureInfo.InvariantCulture)
-                    : storeTemplate.GetFileSize("", path).ToString(CultureInfo.InvariantCulture));
+                    : (await storeTemplate.GetFileSizeAsync("", path)).ToString(CultureInfo.InvariantCulture));
                 await stream.CopyToAsync(context.Response.Body);
             }
             catch (Exception ex)
@@ -832,20 +833,20 @@ namespace ASC.Web.Files
 
             var path = CrossPlatform.PathCombine("temp_stream", fileName);
 
-            if (!store.IsFile(FileConstant.StorageDomainTmp, path))
+            if (!await store.IsFileAsync(FileConstant.StorageDomainTmp, path))
             {
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 await context.Response.WriteAsync(FilesCommonResource.ErrorMassage_FileNotFound);
                 return;
             }
 
-            using (var readStream = store.GetReadStream(FileConstant.StorageDomainTmp, path))
+            using (var readStream = await store.GetReadStreamAsync(FileConstant.StorageDomainTmp, path))
             {
                 context.Response.Headers.Add("Content-Length", readStream.Length.ToString(CultureInfo.InvariantCulture));
                 await readStream.CopyToAsync(context.Response.Body);
             }
 
-            store.Delete(FileConstant.StorageDomainTmp, path);
+            await store.DeleteAsync(FileConstant.StorageDomainTmp, path);
 
             try
             {
@@ -1146,7 +1147,7 @@ namespace ASC.Web.Files
             var templateName = "new" + fileExt;
 
             var templatePath = FileConstant.NewDocPath + lang + "/";
-            if (!storeTemplate.IsDirectory(templatePath))
+            if (!await storeTemplate.IsDirectoryAsync(templatePath))
                 templatePath = FileConstant.NewDocPath + "en-US/";
             templatePath += templateName;
 
@@ -1166,7 +1167,7 @@ namespace ASC.Web.Files
 
             var fileDao = DaoFactory.GetFileDao<T>();
             var stream = await storeTemplate.GetReadStreamAsync("", templatePath, 0);
-            file.ContentLength = stream.CanSeek ? stream.Length : storeTemplate.GetFileSize(templatePath);
+            file.ContentLength = stream.CanSeek ? stream.Length : await storeTemplate.GetFileSizeAsync(templatePath);
             return await fileDao.SaveFileAsync(file, stream);
         }
 

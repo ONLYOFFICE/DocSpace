@@ -224,9 +224,9 @@ namespace ASC.Data.Reassigns
 
             var storage = storageFactory.GetStorage(_tenantId.ToString(CultureInfo.InvariantCulture), "talk");
 
-            if (storage != null && storage.IsDirectory(md5Hash))
+            if (storage != null && storage.IsDirectoryAsync(md5Hash).Result)
             {
-                storage.DeleteDirectory(md5Hash);
+                storage.DeleteDirectoryAsync(md5Hash).Wait();
             }
         }
 

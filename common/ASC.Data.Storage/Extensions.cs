@@ -27,6 +27,7 @@
 using System;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 
 using ASC.Common;
 
@@ -36,15 +37,15 @@ namespace ASC.Data.Storage
     {
         private const int BufferSize = 2048;//NOTE: set to 2048 to fit in minimum tcp window
 
-        public static Stream IronReadStream(this IDataStore store, TempStream tempStream, string domain, string path, int tryCount)
+        public static async Task<Stream> IronReadStreamAsync(this IDataStore store, TempStream tempStream, string domain, string path, int tryCount)
         {
             var ms = tempStream.Create();
-            IronReadToStream(store, domain, path, tryCount, ms);
+            await IronReadToStreamAsync(store, domain, path, tryCount, ms);
             ms.Seek(0, SeekOrigin.Begin);
             return ms;
         }
 
-        public static void IronReadToStream(this IDataStore store, string domain, string path, int tryCount, Stream readTo)
+        public static async Task IronReadToStreamAsync(this IDataStore store, string domain, string path, int tryCount, Stream readTo)
         {
             if (tryCount < 1) throw new ArgumentOutOfRangeException("tryCount", "Must be greater or equal 1.");
             if (!readTo.CanWrite) throw new ArgumentException("stream cannot be written", "readTo");
@@ -57,12 +58,12 @@ namespace ASC.Data.Storage
                 try
                 {
                     tryCurrent++;
-                    using var stream = store.GetReadStream(domain, path, offset);
+                    using var stream = await store.GetReadStreamAsync(domain, path, offset);
                     var buffer = new byte[BufferSize];
                     var readed = 0;
-                    while ((readed = stream.Read(buffer, 0, BufferSize)) > 0)
+                    while ((readed = await stream.ReadAsync(buffer, 0, BufferSize)) > 0)
                     {
-                        readTo.Write(buffer, 0, readed);
+                        await readTo.WriteAsync(buffer, 0, readed);
                         offset += readed;
                     }
                     break;

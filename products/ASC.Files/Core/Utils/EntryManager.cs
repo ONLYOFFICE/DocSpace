@@ -1014,7 +1014,7 @@ namespace ASC.Web.Files.Utils
             var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
             if (app != null)
             {
-                app.SaveFile(fileId.ToString(), newExtension, downloadUri, stream);
+                await app.SaveFileAsync(fileId.ToString(), newExtension, downloadUri, stream);
                 return null;
             }
 
@@ -1060,7 +1060,7 @@ namespace ASC.Web.Files.Utils
                     var storeTemplate = GlobalStore.GetStoreTemplate();
 
                     var path = FileConstant.NewDocPath + Thread.CurrentThread.CurrentCulture + "/";
-                    if (!storeTemplate.IsDirectory(path))
+                    if (!await storeTemplate.IsDirectoryAsync(path))
                     {
                         path = FileConstant.NewDocPath + "en-US/";
                     }
@@ -1072,7 +1072,7 @@ namespace ASC.Web.Files.Utils
                     path += "new" + fileExt;
 
                     //todo: think about the criteria for saving after creation
-                    if (!storeTemplate.IsFile(path) || file.ContentLength != storeTemplate.GetFileSize("", path))
+                    if (!await storeTemplate.IsFileAsync(path) || file.ContentLength != await storeTemplate.GetFileSizeAsync("", path))
                     {
                         file.VersionGroup++;
                     }
@@ -1096,7 +1096,7 @@ namespace ASC.Web.Files.Utils
                 {
                     if (stream != null)
                     {
-                        downloadUri = PathProvider.GetTempUrl(stream, newExtension);
+                        downloadUri = await PathProvider.GetTempUrlAsync(stream, newExtension);
                         downloadUri = DocumentServiceConnector.ReplaceCommunityAdress(downloadUri);
                     }
 

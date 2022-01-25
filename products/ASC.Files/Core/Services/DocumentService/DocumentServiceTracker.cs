@@ -364,7 +364,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 {
                     Logger.ErrorFormat("DocService saving file {0} ({1}) with key {2}", fileId, docKey, fileData.Key);
 
-                    StoringFileAfterError(fileId, userId.ToString(), DocumentServiceConnector.ReplaceDocumentAdress(fileData.Url));
+                    await StoringFileAfterErrorAsync(fileId, userId.ToString(), DocumentServiceConnector.ReplaceDocumentAdress(fileData.Url));
                     return new TrackResponse { Message = "Expected key " + docKey };
                 }
             }
@@ -446,7 +446,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     Logger.Error(string.Format("DocService save error. File id: '{0}'. UserId: {1}. DocKey '{2}'. DownloadUri: {3}", fileId, userId, fileData.Key, fileData.Url), ex);
                     saveMessage = ex.Message;
 
-                    StoringFileAfterError(fileId, userId.ToString(), DocumentServiceConnector.ReplaceDocumentAdress(fileData.Url));
+                    await StoringFileAfterErrorAsync(fileId, userId.ToString(), DocumentServiceConnector.ReplaceDocumentAdress(fileData.Url));
                 }
             }
 
@@ -595,8 +595,7 @@ namespace ASC.Web.Files.Services.DocumentService
             return new TrackResponse { Message = saveMessage };
         }
 
-
-        private void StoringFileAfterError<T>(T fileId, string userId, string downloadUri)
+        private async Task StoringFileAfterErrorAsync<T>(T fileId, string userId, string downloadUri)
         {
             if (string.IsNullOrEmpty(downloadUri)) return;
 
@@ -619,11 +618,11 @@ namespace ASC.Web.Files.Services.DocumentService
                 }
 
                 using (var httpClient = new HttpClient())
-                using (var response = httpClient.Send(request))
-                using (var stream = response.Content.ReadAsStream())
+                using (var response = await httpClient.SendAsync(request))
+                using (var stream = await response.Content.ReadAsStreamAsync())
                 using (var fileStream = new ResponseStream(stream, stream.Length))
                 {
-                    store.Save(FileConstant.StorageDomainTmp, path, fileStream);
+                    await store.SaveAsync(FileConstant.StorageDomainTmp, path, fileStream);
                 }
                 Logger.DebugFormat("DocService storing to {0}", path);
             }
@@ -631,7 +630,7 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 Logger.Error("DocService Error on save file to temp store", ex);
             }
-        }     
+        }
 
         private async Task SaveHistoryAsync<T>(File<T> file, string changes, string differenceUrl)
         {

@@ -96,7 +96,7 @@ namespace ASC.Data.Storage.DiscStorage
                 }
             }
 
-            if (!storage.IsFile(_domain, path))
+            if (!await storage.IsFileAsync(_domain, path))
             {
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 return;
@@ -117,7 +117,7 @@ namespace ASC.Data.Storage.DiscStorage
             }
 
             string encoding = null;
-            if (storage is DiscDataStore && storage.IsFile(_domain, path + ".gz"))
+            if (storage is DiscDataStore && await storage.IsFileAsync(_domain, path + ".gz"))
             {
                 path += ".gz";
                 encoding = "gzip";
@@ -143,7 +143,7 @@ namespace ASC.Data.Storage.DiscStorage
             if (encoding != null)
                 context.Response.Headers["Content-Encoding"] = encoding;
 
-            using (var stream = storage.GetReadStream(_domain, path))
+            using (var stream = await storage.GetReadStreamAsync(_domain, path))
             {
                 await stream.CopyToAsync(context.Response.Body);
             }

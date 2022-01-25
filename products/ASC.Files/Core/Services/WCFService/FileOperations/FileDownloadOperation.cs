@@ -106,17 +106,17 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 var store = globalStore.GetStore();
                 var path = string.Format(@"{0}\{1}", ((IAccount)Thread.CurrentPrincipal.Identity).ID, fileName);
 
-                if (store.IsFile(FileConstant.StorageDomainTmp, path))
+                if (store.IsFileAsync(FileConstant.StorageDomainTmp, path).Result)
                 {
-                    store.Delete(FileConstant.StorageDomainTmp, path);
+                    store.DeleteAsync(FileConstant.StorageDomainTmp, path).Wait();
                 }
 
-                store.Save(
+                store.SaveAsync(
                     FileConstant.StorageDomainTmp,
                     path,
                     stream,
                     MimeMapping.GetMimeMapping(path),
-                    "attachment; filename=\"" + fileName + "\"");
+                    "attachment; filename=\"" + fileName + "\"").Wait();
                 Result = string.Format("{0}?{1}=bulk&ext={2}", filesLinkUtility.FileHandlerPath, FilesLinkUtility.Action, archiveExtension);
 
                 TaskInfo.SetProperty(PROGRESS, 100);
@@ -154,12 +154,12 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 var store = globalStore.GetStore();
                 var path = string.Format(@"{0}\{1}", ((IAccount)Thread.CurrentPrincipal.Identity).ID, fileName);
 
-                if (store.IsFile(FileConstant.StorageDomainTmp, path))
+                if (await store.IsFileAsync(FileConstant.StorageDomainTmp, path))
                 {
-                    store.Delete(FileConstant.StorageDomainTmp, path);
+                    await store.DeleteAsync(FileConstant.StorageDomainTmp, path);
                 }
 
-                store.Save(
+                await store.SaveAsync(
                     FileConstant.StorageDomainTmp,
                     path,
                     stream,

@@ -509,7 +509,7 @@ namespace ASC.Data.Backup.Tasks
                 filePath = @"\\?\" + filePath;
             }
 
-            using (var fileStream = storage.GetReadStream(file.Domain, file.Path))
+            using (var fileStream = await storage.GetReadStreamAsync(file.Domain, file.Path))
             using (var tmpFile = File.OpenWrite(filePath))
             {
                 await fileStream.CopyToAsync(tmpFile);
@@ -626,7 +626,7 @@ namespace ASC.Data.Backup.Tasks
                     ActionInvoker.Try(state =>
                     {
                         var f = (BackupFileInfo)state;
-                        using var fileStream = storage.GetReadStream(f.Domain, f.Path);
+                        using var fileStream = storage.GetReadStreamAsync(f.Domain, f.Path).Result;
                         writer.WriteEntry(file1.GetZipKey(), fileStream);
                     }, file, 5, error => Logger.WarnFormat("can't backup file ({0}:{1}): {2}", file1.Module, file1.Path, error));
 

@@ -220,42 +220,27 @@ namespace ASC.Data.Storage.RackspaceCloud
             return new Uri(string.Format("{0}{1}", SecureHelper.IsSecure(HttpContextAccessor?.HttpContext, Options) ? _cnameSSL : _cname, MakePath(domain, path)));
         }
 
-        public override Stream GetReadStream(string domain, string path)
+        public override Task<Stream> GetReadStreamAsync(string domain, string path)
         {
-            return GetReadStream(domain, path, 0);
-        }
-
-        public override Stream GetReadStream(string domain, string path, int offset)
-        {
-            var outputStream = TempStream.Create();
-
-            var client = GetClient();
-
-            client.GetObject(_private_container, MakePath(domain, path), outputStream);
-
-            outputStream.Position = 0;
-
-            if (0 < offset) outputStream.Seek(Convert.ToInt64(offset), SeekOrigin.Begin);
-
-            return outputStream;
+            return GetReadStreamAsync(domain, path, 0);
         }
 
         public override Task<Stream> GetReadStreamAsync(string domain, string path, int offset)
         {
-            return Task.FromResult(GetReadStream(domain, path, offset));
+            return GetReadStreamAsync(domain, path, offset);
         }
 
-        public override Uri Save(string domain, string path, Stream stream)
+        public override Task<Uri> SaveAsync(string domain, string path, Stream stream)
         {
-            return Save(domain, path, stream, string.Empty, string.Empty);
+            return SaveAsync(domain, path, stream, string.Empty, string.Empty);
         }
 
-        public override Uri Save(string domain, string path, Stream stream, ACL acl)
+        public override Task<Uri> SaveAsync(string domain, string path, Stream stream, ACL acl)
         {
-            return Save(domain, path, stream, null, null, acl);
+            return SaveAsync(domain, path, stream, null, null, acl);
         }
 
-        protected override Uri SaveWithAutoAttachment(string domain, string path, Stream stream, string attachmentFileName)
+        protected override Task<Uri> SaveWithAutoAttachmentAsync(string domain, string path, Stream stream, string attachmentFileName)
         {
             var contentDisposition = string.Format("attachment; filename={0};",
                                                 HttpUtility.UrlPathEncode(attachmentFileName));
@@ -265,20 +250,20 @@ namespace ASC.Data.Storage.RackspaceCloud
                                                    HttpUtility.UrlPathEncode(attachmentFileName));
             }
 
-            return Save(domain, path, stream, null, contentDisposition);
+            return SaveAsync(domain, path, stream, null, contentDisposition);
         }
 
-        public override Uri Save(string domain, string path, Stream stream, string contentType, string contentDisposition)
+        public override Task<Uri> SaveAsync(string domain, string path, Stream stream, string contentType, string contentDisposition)
         {
-            return Save(domain, path, stream, contentType, contentDisposition, ACL.Auto);
+            return SaveAsync(domain, path, stream, contentType, contentDisposition, ACL.Auto);
         }
 
-        public override Uri Save(string domain, string path, Stream stream, string contentEncoding, int cacheDays)
+        public override Task<Uri> SaveAsync(string domain, string path, Stream stream, string contentEncoding, int cacheDays)
         {
-            return Save(domain, path, stream, string.Empty, string.Empty, ACL.Auto, contentEncoding, cacheDays);
+            return SaveAsync(domain, path, stream, string.Empty, string.Empty, ACL.Auto, contentEncoding, cacheDays);
         }
 
-        public Uri Save(string domain, string path, Stream stream, string contentType,
+        public Task<Uri> SaveAsync(string domain, string path, Stream stream, string contentType,
                               string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5,
             DateTime? deleteAt = null, long? deleteAfter = null)
         {
@@ -373,7 +358,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
             QuotaUsedAdd(domain, buffered.Length);
 
-            return GetUri(domain, path);
+            return GetUriAsync(domain, path);
 
         }
 
@@ -391,11 +376,11 @@ namespace ASC.Data.Storage.RackspaceCloud
             return _moduleAcl;
         }
 
-        public override void Delete(string domain, string path)
+        public override async Task DeleteAsync(string domain, string path)
         {
             var client = GetClient();
             MakePath(domain, path);
-            var size = GetFileSize(domain, path);
+            var size = await GetFileSizeAsync(domain, path);
 
             client.DeleteObject(_private_container, MakePath(domain, path));
 
@@ -403,14 +388,14 @@ namespace ASC.Data.Storage.RackspaceCloud
 
         }
 
-        public override void DeleteFiles(string domain, string folderPath, string pattern, bool recursive)
+        public override Task DeleteFilesAsync(string domain, string folderPath, string pattern, bool recursive)
         {
             var client = GetClient();
 
             var files = client.ListObjects(_private_container, null, null, null, MakePath(domain, folderPath), _region)
                               .Where(x => Wildcard.IsMatch(pattern, Path.GetFileName(x.Name)));
 
-            if (!files.Any()) return;
+            if (!files.Any()) return Task.CompletedTask;
 
             files.ToList().ForEach(x => client.DeleteObject(_private_container, x.Name));
 
@@ -419,9 +404,10 @@ namespace ASC.Data.Storage.RackspaceCloud
                 QuotaUsedDelete(domain, files.Select(x => x.Bytes).Sum());
             }
 
+            return Task.CompletedTask;
         }
 
-        public override void DeleteFiles(string domain, List<string> paths)
+        public override async Task DeleteFilesAsync(string domain, List<string> paths)
         {
             if (!paths.Any()) return;
 
@@ -437,7 +423,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
                     if (QuotaController != null)
                     {
-                        quotaUsed += GetFileSize(domain, path);
+                        quotaUsed += await GetFileSizeAsync(domain, path);
                     }
 
                     keysToDel.Add(key);
@@ -460,14 +446,14 @@ namespace ASC.Data.Storage.RackspaceCloud
             }
         }
 
-        public override void DeleteFiles(string domain, string folderPath, DateTime fromDate, DateTime toDate)
+        public override Task DeleteFilesAsync(string domain, string folderPath, DateTime fromDate, DateTime toDate)
         {
             var client = GetClient();
 
             var files = client.ListObjects(_private_container, null, null, null, MakePath(domain, folderPath), _region)
                                .Where(x => x.LastModified >= fromDate && x.LastModified <= toDate);
 
-            if (!files.Any()) return;
+            if (!files.Any()) return Task.CompletedTask;
 
             files.ToList().ForEach(x => client.DeleteObject(_private_container, x.Name));
 
@@ -475,9 +461,11 @@ namespace ASC.Data.Storage.RackspaceCloud
             {
                 QuotaUsedDelete(domain, files.Select(x => x.Bytes).Sum());
             }
+
+            return Task.CompletedTask;
         }
 
-        public override void MoveDirectory(string srcdomain, string srcdir, string newdomain, string newdir)
+        public override Task MoveDirectoryAsync(string srcdomain, string srcdir, string newdomain, string newdir)
         {
             var client = GetClient();
             var srckey = MakePath(srcdomain, srcdir);
@@ -490,42 +478,44 @@ namespace ASC.Data.Storage.RackspaceCloud
                 client.CopyObject(_private_container, path, _private_container, path.Replace(srckey, dstkey));
                 client.DeleteObject(_private_container, path);
             }
+
+            return Task.CompletedTask;
         }
 
-        public override Uri Move(string srcdomain, string srcpath, string newdomain, string newpath, bool quotaCheckFileSize = true)
+        public override async Task<Uri> MoveAsync(string srcdomain, string srcpath, string newdomain, string newpath, bool quotaCheckFileSize = true)
         {
             var srcKey = MakePath(srcdomain, srcpath);
             var dstKey = MakePath(newdomain, newpath);
-            var size = GetFileSize(srcdomain, srcpath);
+            var size = await GetFileSizeAsync(srcdomain, srcpath);
 
             var client = GetClient();
 
             client.CopyObject(_private_container, srcKey, _private_container, dstKey);
 
-            Delete(srcdomain, srcpath);
+            await DeleteAsync(srcdomain, srcpath);
 
             QuotaUsedDelete(srcdomain, size);
             QuotaUsedAdd(newdomain, size, quotaCheckFileSize);
 
-            return GetUri(newdomain, newpath);
+            return await GetUriAsync(newdomain, newpath);
         }
 
-        public override Uri SaveTemp(string domain, out string assignedPath, Stream stream)
+        public override Task<Uri> SaveTempAsync(string domain, out string assignedPath, Stream stream)
         {
             assignedPath = Guid.NewGuid().ToString();
 
-            return Save(domain, assignedPath, stream);
+            return SaveAsync(domain, assignedPath, stream);
         }
 
-        public override string[] ListDirectoriesRelative(string domain, string path, bool recursive)
+        public override IAsyncEnumerable<string> ListDirectoriesRelativeAsync(string domain, string path, bool recursive)
         {
             var client = GetClient();
 
             return client.ListObjects(_private_container, null, null, null, MakePath(domain, path), _region)
-                  .Select(x => x.Name.Substring(MakePath(domain, path + "/").Length)).ToArray();
+                  .Select(x => x.Name.Substring(MakePath(domain, path + "/").Length)).ToAsyncEnumerable();
         }
 
-        public override string[] ListFilesRelative(string domain, string path, string pattern, bool recursive)
+        public override IAsyncEnumerable<string> ListFilesRelativeAsync(string domain, string path, string pattern, bool recursive)
         {
             var paths = new List<string>();
 
@@ -535,29 +525,24 @@ namespace ASC.Data.Storage.RackspaceCloud
 
             return paths
                 .Where(x => Wildcard.IsMatch(pattern, Path.GetFileName(x)))
-                .Select(x => x.Substring(MakePath(domain, path + "/").Length).TrimStart('/')).ToArray();
-        }
-
-        public override bool IsFile(string domain, string path)
-        {
-            var client = GetClient();
-            var objects = client.ListObjects(_private_container, null, null, null, MakePath(domain, path), _region);
-
-            return objects.Count() > 0;
+                .Select(x => x.Substring(MakePath(domain, path + "/").Length).TrimStart('/')).ToAsyncEnumerable();
         }
 
         public override Task<bool> IsFileAsync(string domain, string path)
         {
-            return Task.FromResult(IsFile(domain, path));
+            var client = GetClient();
+            var objects = client.ListObjects(_private_container, null, null, null, MakePath(domain, path), _region);
+
+            var result = objects.Count() > 0;
+            return Task.FromResult(result);
         }
 
-
-        public override bool IsDirectory(string domain, string path)
+        public override Task<bool> IsDirectoryAsync(string domain, string path)
         {
-            return IsFile(domain, path);
+            return IsFileAsync(domain, path);
         }
 
-        public override void DeleteDirectory(string domain, string path)
+        public override Task DeleteDirectoryAsync(string domain, string path)
         {
             var client = GetClient();
 
@@ -568,9 +553,10 @@ namespace ASC.Data.Storage.RackspaceCloud
                 client.DeleteObject(_private_container, obj.Name);
                 QuotaUsedDelete(domain, Convert.ToInt64(obj.Bytes));
             }
+            return Task.CompletedTask;
         }
 
-        public override long GetFileSize(string domain, string path)
+        public override Task<long> GetFileSizeAsync(string domain, string path)
         {
             var client = GetClient();
 
@@ -578,12 +564,12 @@ namespace ASC.Data.Storage.RackspaceCloud
                           .ListObjects(_private_container, null, null, null, MakePath(domain, path));
 
             if (obj.Any())
-                return obj.Single().Bytes;
+                return Task.FromResult(obj.Single().Bytes);
 
-            return 0;
+            return Task.FromResult<long>(0);
         }
 
-        public override long GetDirectorySize(string domain, string path)
+        public override Task<long> GetDirectorySizeAsync(string domain, string path)
         {
             var client = GetClient();
 
@@ -597,10 +583,10 @@ namespace ASC.Data.Storage.RackspaceCloud
                 result += obj.Bytes;
             }
 
-            return result;
+            return Task.FromResult(result);
         }
 
-        public override long ResetQuota(string domain)
+        public override Task<long> ResetQuotaAsync(string domain)
         {
             var client = GetClient();
 
@@ -618,13 +604,13 @@ namespace ASC.Data.Storage.RackspaceCloud
 
                 QuotaController.QuotaUsedSet(_modulename, domain, _dataList.GetData(domain), size);
 
-                return size;
+                return Task.FromResult(size);
             }
 
-            return 0;
+            return Task.FromResult <long>(0);
         }
 
-        public override long GetUsedQuota(string domain)
+        public override Task<long> GetUsedQuotaAsync(string domain)
         {
             var client = GetClient();
 
@@ -638,24 +624,24 @@ namespace ASC.Data.Storage.RackspaceCloud
                 result += obj.Bytes;
             }
 
-            return result;
+            return Task.FromResult(result);
         }
 
-        public override Uri Copy(string srcdomain, string path, string newdomain, string newpath)
+        public override async Task<Uri> CopyAsync(string srcdomain, string path, string newdomain, string newpath)
         {
             var srcKey = MakePath(srcdomain, path);
             var dstKey = MakePath(newdomain, newpath);
-            var size = GetFileSize(srcdomain, path);
+            var size = await GetFileSizeAsync(srcdomain, path);
             var client = GetClient();
 
             client.CopyObject(_private_container, srcKey, _private_container, dstKey);
 
             QuotaUsedAdd(newdomain, size);
 
-            return GetUri(newdomain, newpath);
+            return await GetUriAsync(newdomain, newpath);
         }
 
-        public override void CopyDirectory(string srcdomain, string dir, string newdomain, string newdir)
+        public override Task CopyDirectoryAsync(string srcdomain, string dir, string newdomain, string newdir)
         {
             var srckey = MakePath(srcdomain, dir);
             var dstkey = MakePath(newdomain, newdir);
@@ -669,17 +655,19 @@ namespace ASC.Data.Storage.RackspaceCloud
 
                 QuotaUsedAdd(newdomain, file.Bytes);
             }
+            return Task.CompletedTask;
         }
 
-        public override string SavePrivate(string domain, string path, Stream stream, DateTime expires)
+        public override async Task<string> SavePrivateAsync(string domain, string path, Stream stream, DateTime expires)
         {
-            var uri = Save(domain, path, stream, "application/octet-stream", "attachment", ACL.Auto, null, 5, expires);
+            var uri = await SaveAsync(domain, path, stream, "application/octet-stream", "attachment", ACL.Auto, null, 5, expires);
 
             return uri.ToString();
         }
 
-        public override void DeleteExpired(string domain, string path, TimeSpan oldThreshold)
+        public override Task DeleteExpiredAsync(string domain, string path, TimeSpan oldThreshold)
         {
+            return Task.CompletedTask;
             // When the file is saved is specified life time
         }
 
@@ -687,8 +675,7 @@ namespace ASC.Data.Storage.RackspaceCloud
         {
             throw new NotImplementedException();
         }
-
-        public override string GetUploadedUrl(string domain, string directoryPath)
+        public override Task<string> GetUploadedUrlAsync(string domain, string directoryPath)
         {
             throw new NotImplementedException();
         }
@@ -705,12 +692,12 @@ namespace ASC.Data.Storage.RackspaceCloud
 
         #region chunking
 
-        public override string InitiateChunkedUpload(string domain, string path)
+        public override Task<string> InitiateChunkedUploadAsync(string domain, string path)
         {
-            return TempPath.GetTempFileName();
+            return Task.FromResult(TempPath.GetTempFileName());
         }
 
-        public override string UploadChunk(string domain, string path, string filePath, Stream stream, long defaultChunkSize, int chunkNumber, long chunkLength)
+        public override async Task<string> UploadChunkAsync(string domain, string path, string filePath, Stream stream, long defaultChunkSize, int chunkNumber, long chunkLength)
         {
             var BufferSize = 4096;
 
@@ -720,24 +707,25 @@ namespace ASC.Data.Storage.RackspaceCloud
             {
                 var buffer = new byte[BufferSize];
                 int readed;
-                while ((readed = stream.Read(buffer, 0, BufferSize)) != 0)
+                while ((readed = await stream.ReadAsync(buffer, 0, BufferSize)) != 0)
                 {
-                    fs.Write(buffer, 0, readed);
+                    await fs.WriteAsync(buffer, 0, readed);
                 }
             }
 
             return string.Format("{0}_{1}", chunkNumber, filePath);
         }
 
-        public override void AbortChunkedUpload(string domain, string path, string filePath)
+        public override Task AbortChunkedUploadAsync(string domain, string path, string filePath)
         {
             if (File.Exists(filePath))
             {
                 File.Delete(filePath);
             }
+            return Task.CompletedTask;
         }
 
-        public override Uri FinalizeChunkedUpload(string domain, string path, string filePath, Dictionary<int, string> eTags)
+        public override async Task<Uri> FinalizeChunkedUploadAsync(string domain, string path, string filePath, Dictionary<int, string> eTags)
         {
             var client = GetClient();
 
@@ -750,12 +738,12 @@ namespace ASC.Data.Storage.RackspaceCloud
 
             if (QuotaController != null)
             {
-                var size = GetFileSize(domain, path);
+                var size = await GetFileSizeAsync(domain, path);
 
                 QuotaUsedAdd(domain, size);
             }
 
-            return GetUri(domain, path);
+            return await GetUriAsync(domain, path);
         }
 
         public override bool IsSupportChunking { get { return true; } }

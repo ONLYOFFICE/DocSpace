@@ -25,6 +25,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -174,8 +175,9 @@ namespace ASC.Web.Files.Services.DocumentService
 
                 tenantManager.SetCurrentTenant(TenantId);
                 securityContext.AuthenticateMeWithoutCookie(UserId);
+                Dictionary<string, string> urls = null;
 
-                BuilderKey = documentServiceConnector.DocbuilderRequest(null, Script, true, out var urls);
+                (BuilderKey, urls) = documentServiceConnector.DocbuilderRequestAsync(null, Script, true, urls).Result;
 
                 while (true)
                 {
@@ -185,7 +187,70 @@ namespace ASC.Web.Files.Services.DocumentService
                     }
 
                     Task.Delay(1500, cancellationToken).Wait(cancellationToken);
-                    var builderKey = documentServiceConnector.DocbuilderRequest(BuilderKey, null, true, out urls);
+                    (var builderKey, urls) = documentServiceConnector.DocbuilderRequestAsync(BuilderKey, null, true, urls).Result;
+                    if (builderKey == null)
+                        throw new NullReferenceException();
+
+                    if (urls != null && !urls.Any()) throw new Exception("Empty response");
+
+                    if (urls != null && urls.ContainsKey(TmpFileName))
+                        break;
+                }
+
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    throw new OperationCanceledException();
+                }
+
+                SaveFileAction(this, urls[TmpFileName]);
+
+                Status = ReportStatus.Done;
+            }
+            catch (Exception e)
+            {
+                logger.Error("DocbuilderReportsUtility error", e);
+                Exception = e.Message;
+                Status = ReportStatus.Failed;
+            }
+
+            PublishTaskInfo(logger);
+        }
+
+        public async Task GenerateReportAsync(DistributedTask task, CancellationToken cancellationToken)
+        {
+            using var scope = ServiceProvider.CreateScope();
+            var scopeClass = scope.ServiceProvider.GetService<ReportStateScope>();
+            var (options, tenantManager, authContext, securityContext, documentServiceConnector) = scopeClass;
+            var logger = options.CurrentValue;
+            try
+            {
+                tenantManager.SetCurrentTenant(TenantId);
+
+                Status = ReportStatus.Started;
+                PublishTaskInfo(logger);
+
+                //if (HttpContext.Current == null && !WorkContext.IsMono && !string.IsNullOrEmpty(ContextUrl))
+                //{
+                //    HttpContext.Current = new HttpContext(
+                //        new HttpRequest("hack", ContextUrl, string.Empty),
+                //        new HttpResponse(new System.IO.StringWriter()));
+                //}
+
+                tenantManager.SetCurrentTenant(TenantId);
+                securityContext.AuthenticateMeWithoutCookie(UserId);
+                Dictionary<string, string> urls = null;
+
+                (BuilderKey, urls) = await documentServiceConnector.DocbuilderRequestAsync(null, Script, true, urls);
+
+                while (true)
+                {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        throw new OperationCanceledException();
+                    }
+
+                    await Task.Delay(1500, cancellationToken);
+                    (var builderKey, urls) = await documentServiceConnector.DocbuilderRequestAsync(BuilderKey, null, true, urls);
                     if (builderKey == null)
                         throw new NullReferenceException();
 

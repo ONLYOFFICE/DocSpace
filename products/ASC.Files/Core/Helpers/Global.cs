@@ -545,7 +545,7 @@ namespace ASC.Web.Files.Classes
                         var culture = my ? UserManager.GetUsers(AuthContext.CurrentAccount.ID).GetCulture() : TenantManager.GetCurrentTenant().GetCulture();
                         var path = FileConstant.StartDocPath + culture + "/";
 
-                        if (!storeTemplate.IsDirectory(path))
+                        if (!await storeTemplate.IsDirectoryAsync(path))
                             path = FileConstant.StartDocPath + "en-US/";
                         path += my ? "my/" : "corporate/";
 
@@ -563,12 +563,12 @@ namespace ASC.Web.Files.Classes
 
         private async Task SaveStartDocumentAsync(FileMarker fileMarker, FolderDao folderDao, FileDao fileDao, int folderId, string path, IDataStore storeTemplate)
         {
-            foreach (var file in storeTemplate.ListFilesRelative("", path, "*", false))
+            await foreach (var file in storeTemplate.ListFilesRelativeAsync("", path, "*", false))
             {
                 await SaveFileAsync(fileMarker, fileDao, folderId, path + file, storeTemplate);
             }
 
-            foreach (var folderName in storeTemplate.ListDirectoriesRelative(path, false))
+            await foreach (var folderName in storeTemplate.ListDirectoriesRelativeAsync(path, false))
             {
                 var folder = ServiceProvider.GetService<Folder<int>>();
                 folder.Title = folderName;
@@ -585,7 +585,7 @@ namespace ASC.Web.Files.Classes
             try
             {
                 if (FileUtility.GetFileExtension(filePath) == "." + Global.ThumbnailExtension
-                    && storeTemp.IsFile("", Regex.Replace(filePath, "\\." + Global.ThumbnailExtension + "$", "")))
+                    && await storeTemp.IsFileAsync("", Regex.Replace(filePath, "\\." + Global.ThumbnailExtension + "$", "")))
                     return;
 
                 var fileName = Path.GetFileName(filePath);
@@ -595,16 +595,16 @@ namespace ASC.Web.Files.Classes
                 file.FolderID = folder;
                 file.Comment = FilesCommonResource.CommentCreate;
 
-                using (var stream = storeTemp.GetReadStream("", filePath))
+                using (var stream = await storeTemp.GetReadStreamAsync("", filePath))
                 {
-                    file.ContentLength = stream.CanSeek ? stream.Length : storeTemp.GetFileSize("", filePath);
+                    file.ContentLength = stream.CanSeek ? stream.Length : await storeTemp.GetFileSizeAsync("", filePath);
                     file = await fileDao.SaveFileAsync(file, stream, false);
                 }
 
                 var pathThumb = filePath + "." + Global.ThumbnailExtension;
-                if (storeTemp.IsFile("", pathThumb))
+                if (await storeTemp.IsFileAsync("", pathThumb))
                 {
-                    using (var streamThumb = storeTemp.GetReadStream("", pathThumb))
+                    using (var streamThumb = await storeTemp.GetReadStreamAsync("", pathThumb))
                     {
                         await fileDao.SaveThumbnailAsync(file, streamThumb);
                     }

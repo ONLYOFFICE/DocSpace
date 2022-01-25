@@ -114,7 +114,7 @@ namespace ASC.Web.Files.HttpHandlers
         {
             try
             {
-                var uploadSession = ChunkedUploadSessionHolder.GetSession<int>(context.Request.Query["uid"]);
+                var uploadSession = await ChunkedUploadSessionHolder.GetSessionAsync<int>(context.Request.Query["uid"]);
                 if (uploadSession != null)
                 {
                     await Invoke<int>(context);
@@ -138,7 +138,7 @@ namespace ASC.Web.Files.HttpHandlers
 
                 var request = new ChunkedRequestHelper<T>(context.Request);
 
-                if (!TryAuthorize(request))
+                if (!await TryAuthorizeAsync(request))
                 {
                     await WriteError(context, "Can't authorize given initiate session request or session with specified upload id already expired");
                     return;
@@ -193,7 +193,7 @@ namespace ASC.Web.Files.HttpHandlers
             }
         }
 
-        private bool TryAuthorize<T>(ChunkedRequestHelper<T> request)
+        private async Task<bool> TryAuthorizeAsync<T>(ChunkedRequestHelper<T> request)
         {
             if (request.Type(InstanceCrypto) == ChunkedRequestType.Initiate)
             {
@@ -207,7 +207,7 @@ namespace ASC.Web.Files.HttpHandlers
 
             if (!string.IsNullOrEmpty(request.UploadId))
             {
-                var uploadSession = ChunkedUploadSessionHolder.GetSession<T>(request.UploadId);
+                var uploadSession = await ChunkedUploadSessionHolder.GetSessionAsync<T>(request.UploadId);
                 if (uploadSession != null)
                 {
                     TenantManager.SetCurrentTenant(uploadSession.TenantId);

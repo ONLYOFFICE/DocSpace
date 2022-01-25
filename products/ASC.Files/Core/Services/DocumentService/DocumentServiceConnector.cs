@@ -30,6 +30,7 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Common;
@@ -157,12 +158,12 @@ namespace ASC.Web.Files.Services.DocumentService
                 Logger.Error("DocService command error", e);
             }
             return false;
-        }
+        }       
 
-        public string DocbuilderRequest(string requestKey,
+        public async Task<(string BuilderKey,Dictionary<string, string> Urls)> DocbuilderRequestAsync(string requestKey,
                                                string inputScript,
                                                bool isAsync,
-                                               out Dictionary<string, string> urls)
+                                               Dictionary<string, string> urls)
         {
             string scriptUrl = null;
             if (!string.IsNullOrEmpty(inputScript))
@@ -170,10 +171,10 @@ namespace ASC.Web.Files.Services.DocumentService
                 using (var stream = new MemoryStream())
                 using (var writer = new StreamWriter(stream))
                 {
-                    writer.Write(inputScript);
-                    writer.Flush();
+                    await writer.WriteAsync(inputScript);
+                    await writer.FlushAsync();
                     stream.Position = 0;
-                    scriptUrl = PathProvider.GetTempUrl(stream, ".docbuilder");
+                    scriptUrl = await PathProvider.GetTempUrlAsync(stream, ".docbuilder");
                 }
                 scriptUrl = ReplaceCommunityAdress(scriptUrl);
                 requestKey = null;
@@ -182,14 +183,14 @@ namespace ASC.Web.Files.Services.DocumentService
             Logger.DebugFormat("DocService builder requestKey {0} async {1}", requestKey, isAsync);
             try
             {
-                return Web.Core.Files.DocumentService.DocbuilderRequest(
+                return (Web.Core.Files.DocumentService.DocbuilderRequest(
                     FileUtility,
                     FilesLinkUtility.DocServiceDocbuilderUrl,
                     GenerateRevisionId(requestKey),
                     scriptUrl,
                     isAsync,
                     FileUtility.SignatureSecret,
-                    out urls);
+                    out urls), urls);
             }
             catch (Exception ex)
             {
@@ -230,9 +231,9 @@ namespace ASC.Web.Files.Services.DocumentService
                 Logger.Error("DocService command error", e);
             }
             return "4.1.5.1";
-        }
+        }      
 
-        public void CheckDocServiceUrl()
+        public async Task CheckDocServiceUrlAsync()
         {
             if (!string.IsNullOrEmpty(FilesLinkUtility.DocServiceHealthcheckUrl))
             {
@@ -309,7 +310,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 try
                 {
                     var storeTemplate = GlobalStore.GetStoreTemplate();
-                    var scriptUri = storeTemplate.GetUri("", "test.docbuilder");
+                    var scriptUri = await storeTemplate.GetUriAsync("", "test.docbuilder");
                     var scriptUrl = BaseCommonLinkUtility.GetFullAbsolutePath(scriptUri.ToString());
                     scriptUrl = ReplaceCommunityAdress(scriptUrl);
 

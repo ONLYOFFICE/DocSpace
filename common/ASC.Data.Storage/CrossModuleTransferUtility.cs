@@ -26,6 +26,7 @@
 
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -63,23 +64,23 @@ namespace ASC.Data.Storage
             chunksize = 5 * 1024 * 1024;
         }
 
-        public void CopyFile(string srcDomain, string srcPath, string destDomain, string destPath)
+        public async Task CopyFileAsync(string srcDomain, string srcPath, string destDomain, string destPath)
         {
             if (srcDomain == null) throw new ArgumentNullException("srcDomain");
             if (srcPath == null) throw new ArgumentNullException("srcPath");
             if (destDomain == null) throw new ArgumentNullException("destDomain");
             if (destPath == null) throw new ArgumentNullException("destPath");
 
-            using var stream = source.GetReadStream(srcDomain, srcPath);
+            using var stream = await source.GetReadStreamAsync(srcDomain, srcPath);
             if (stream.Length < maxChunkUploadSize)
             {
-                destination.Save(destDomain, destPath, stream);
+                await destination.SaveAsync(destDomain, destPath, stream);
             }
             else
             {
                 var session = new CommonChunkedUploadSession(stream.Length);
                 var holder = new CommonChunkedUploadSessionHolder(TempPath, Option, destination, destDomain);
-                holder.Init(session);
+                await holder.InitAsync(session);
                 try
                 {
                     Stream memstream = null;
@@ -88,8 +89,8 @@ namespace ASC.Data.Storage
                         while (GetStream(stream, out memstream))
                         {
                             memstream.Seek(0, SeekOrigin.Begin);
-                            holder.UploadChunk(session, memstream, chunksize);
-                            memstream.Dispose();
+                            await holder.UploadChunkAsync(session, memstream, chunksize);
+                            await memstream.DisposeAsync();
                             memstream = null;
                         }
                     }
@@ -97,17 +98,17 @@ namespace ASC.Data.Storage
                     {
                         if (memstream != null)
                         {
-                            memstream.Dispose();
+                            await memstream.DisposeAsync();
                         }
                     }
 
-                    holder.Finalize(session);
-                    destination.Move(destDomain, session.TempPath, destDomain, destPath);
+                    await holder.FinalizeAsync(session);
+                    await destination.MoveAsync(destDomain, session.TempPath, destDomain, destPath);
                 }
                 catch (Exception ex)
                 {
                     Log.Error("Copy File", ex);
-                    holder.Abort(session);
+                    await holder.AbortAsync(session);
                 }
             }
         }
