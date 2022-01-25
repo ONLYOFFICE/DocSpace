@@ -96,6 +96,17 @@ const Badges = ({
 
   const fontSizeBadge = isTile || tabletViewBadge ? "11px" : "9px";
 
+  const commonBadgeProps = {
+    borderRadius: "11px",
+    color: "#FFFFFF",
+    fontSize: fontSizeBadge,
+    fontWeight: 800,
+    maxWidth: "50px",
+    padding: paddingBadge,
+    lineHeight: lineHeightBadge,
+    "data-id": id,
+  };
+
   return fileExst ? (
     <div className="badges additional-badges">
       {canWebEdit &&
@@ -138,36 +149,22 @@ const Badges = ({
       {version > 1 && (
         <VersionBadgeWrapper onClick={onShowVersionHistory} isTile={isTile}>
           <Badge
+            {...commonBadgeProps}
             className="badge-version badge-version-current tablet-badge icons-group"
             backgroundColor="#A3A9AE"
-            borderRadius="11px"
-            color="#FFFFFF"
-            fontSize={fontSizeBadge}
-            fontWeight={800}
             label={t("VersionBadge:Version", { version: countVersions })}
-            maxWidth="50px"
             onClick={onShowVersionHistory}
-            padding={paddingBadge}
-            lineHeight={lineHeightBadge}
-            data-id={id}
           />
         </VersionBadgeWrapper>
       )}
       {(showNew || isNewWithFav) && (
         <VersionBadgeWrapper onClick={onBadgeClick} isTile={isTile}>
           <Badge
+            {...commonBadgeProps}
             className="badge-version badge-new-version tablet-badge icons-group"
             backgroundColor="#ED7309"
-            borderRadius="11px"
-            color="#FFFFFF"
-            fontSize={fontSizeBadge}
-            fontWeight={800}
             label={t("New")}
-            maxWidth="50px"
             onClick={onBadgeClick}
-            padding={paddingBadge}
-            lineHeight={lineHeightBadge}
-            data-id={id}
           />
         </VersionBadgeWrapper>
       )}
@@ -175,18 +172,11 @@ const Badges = ({
   ) : (
     showNew && (
       <Badge
+        {...commonBadgeProps}
         className="new-items tablet-badge"
         backgroundColor="#ED7309"
-        borderRadius="11px"
-        color="#FFFFFF"
-        fontSize={fontSizeBadge}
-        fontWeight={800}
         label={contentNewItems}
-        maxWidth="50px"
         onClick={onBadgeClick}
-        padding={paddingBadge}
-        lineHeight={lineHeightBadge}
-        data-id={id}
       />
     )
   );
