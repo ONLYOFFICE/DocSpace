@@ -44,10 +44,11 @@ class LinkWithDropdown extends React.Component {
       this.setIsOpen(this.props.isOpen);
     }
   }
-  // TODO: added new arg - _key
-  onClickDropDownItem = (e, _key) => {
+
+  onClickDropDownItem = (e) => {
     const { key } = e.target.dataset;
-    const item = this.props.data.find((x) => x.key === key || x.key === _key);
+    console.log(e);
+    const item = this.props.data.find((x) => x.key === key);
     this.setIsOpen(!this.state.isOpen);
     item && item.onClick && item.onClick(e);
   };
@@ -117,8 +118,7 @@ class LinkWithDropdown extends React.Component {
               className="drop-down-item"
               key={item.key}
               {...item}
-              // TODO: added item.key
-              onClick={(e) => this.onClickDropDownItem(e, item.key)}
+              onClick={(e) => this.onClickDropDownItem(e)}
               data-key={item.key}
             />
           ))}

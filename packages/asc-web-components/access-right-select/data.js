@@ -12,15 +12,20 @@ export const data = [
   {
     key: "key1",
     title: "Room administrator",
-    description:
-      "Администрирование комнат, архивирование комнат, приглашение и управление пользователями в комнатах.",
+    description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
+    eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, 
+    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.`,
     icon: CrownIcon,
   },
   {
     key: "key2",
     title: "Full access",
-    description:
-      "Редактирование, загрузка, создание, просмотр, скачивание, удаление файлов и папок",
+    description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
+      eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, 
+      quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
+      fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
+      culpa qui officia deserunt mollit anim id est laborum.`,
     icon: CheckRoundIcon,
   },
 
@@ -28,28 +33,39 @@ export const data = [
   {
     key: "key4",
     title: "Editing",
-    description:
-      "Редактирование, просмотр, скачивание файлов и папок, заполнение форм",
+    description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
+    eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, 
+    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+    `,
     icon: PencilIcon,
   },
   {
     key: "key5",
     title: "Review",
-    description:
-      "Рецензирование, просмотр, скачивание файлов и папок, заполнение форм",
+    description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
+    eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
     icon: ReviewIcon,
   },
   {
     key: "key6",
     title: "Comment",
-    description:
-      "Комментирование файлов, просмотр, скачивание файлов и папок, заполнение форм",
+    description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
+    eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, 
+    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
+    fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
+    culpa qui officia deserunt mollit anim id est laborum.`,
     icon: CommentIcon,
   },
   {
     key: "key7",
     title: "Read only",
-    description: "Просмотр, скачивание файлов и папок, заполнение форм",
+    description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
+    eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, 
+    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
+    fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
+    culpa qui officia deserunt mollit anim id est laborum.`,
     icon: EyeIcon,
   },
   {
