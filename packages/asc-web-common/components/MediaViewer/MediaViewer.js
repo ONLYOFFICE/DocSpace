@@ -14,7 +14,6 @@ import Hammer from "hammerjs";
 import IconButton from "@appserver/components/icon-button";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { isDesktop } from "react-device-detect";
-//import history from "@appserver/common/history";
 
 const StyledVideoViewer = styled(VideoViewer)`
   z-index: 301;
@@ -62,7 +61,7 @@ class MediaViewer extends React.Component {
       playlistPos,
       fileUrl: item.src,
     };
-
+    console.log("item.src", item.src);
     this.detailsContainer = React.createRef();
     this.viewerToolbox = React.createRef();
   }
@@ -220,7 +219,7 @@ class MediaViewer extends React.Component {
     }
     document.removeEventListener("keydown", this.onKeydown, false);
     document.removeEventListener("keyup", this.onKeyup, false);
-    //this.onClose();
+    this.onClose();
   }
 
   mapSupplied = {

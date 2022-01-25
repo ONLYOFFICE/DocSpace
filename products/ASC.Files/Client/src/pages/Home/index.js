@@ -71,6 +71,9 @@ class PureHome extends React.Component {
     }
 
     if (match && match.length > 0) {
+      if (window.location.href.indexOf("/files/#preview") > 1) {
+        return;
+      }
       filterObj = FilesFilter.getFilter(window.location);
 
       if (!filterObj) {

@@ -39,6 +39,22 @@ const FilesMediaViewer = (props) => {
     }
   }, [removeQuery, onMediaFileClick]);
 
+  const checkURLchange = () => {
+    if (window.location.href != oldURL) {
+      oldURL = window.location.href;
+      const hash = window.location.hash;
+      const id = +hash.slice(9);
+      if (!id) {
+        setMediaViewerData({ visible: false, id: null });
+        return;
+      }
+      setMediaViewerData({ visible: true, id });
+    }
+  };
+
+  let oldURL = window.location.href;
+  setInterval(checkURLchange, 1000);
+
   const removeQuery = (queryName) => {
     const queryParams = new URLSearchParams(location.search);
 

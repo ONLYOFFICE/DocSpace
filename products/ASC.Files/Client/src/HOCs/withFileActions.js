@@ -153,7 +153,7 @@ export default function withFileActions(WrappedFileItem) {
       } = item;
       if (encrypted && isPrivacy) return checkProtocol(item.id, true);
 
-      if (item.fileExst === ".png") {
+      if (item.fileExst === ".png" || item.fileExst === ".jpg") {
         const url = "/products/files/#preview/" + id;
 
         history.pushState({ id, type: "image" }, null, url);
