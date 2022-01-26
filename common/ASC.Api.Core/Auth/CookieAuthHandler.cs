@@ -1,18 +1,4 @@
-﻿using System.Net;
-using System.Security.Authentication;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Web.Core;
-using ASC.Web.Core.Helpers;
-
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-
-namespace ASC.Api.Core.Auth
+﻿namespace ASC.Api.Core.Auth
 {
     [Scope]
     public class CookieAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>

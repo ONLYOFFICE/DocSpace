@@ -23,17 +23,6 @@
  *
 */
 
-
-using System;
-using System.Linq;
-using System.Security.Claims;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Tenants;
-
-using Microsoft.AspNetCore.Http;
-
 namespace ASC.Api.Core
 {
     [Scope]

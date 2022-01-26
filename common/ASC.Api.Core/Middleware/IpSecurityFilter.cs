@@ -1,13 +1,6 @@
-﻿using System.Net;
+﻿using ASC.IPSecurity;
 
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.IPSecurity;
-
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Core.Middleware
 {

@@ -23,17 +23,11 @@
  *
 */
 
-
-using System;
-
-using ASC.Core;
-using ASC.Core.Users;
-
 namespace ASC.Web.Api.Models
 {
     public class GroupWrapperSummary
     {
-        public GroupWrapperSummary(GroupInfo group, UserManager userManager)
+        public GroupWrapperSummary(ASC.Core.Users.GroupInfo group, UserManager userManager)
         {
             Id = group.ID;
             Name = group.Name;

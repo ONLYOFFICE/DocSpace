@@ -1,11 +1,4 @@
-﻿using System;
-using System.Net;
-using System.Security;
-
-using ASC.Common.Web;
-
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
+﻿using System.Security;
 
 namespace ASC.Api.Core.Middleware
 {
