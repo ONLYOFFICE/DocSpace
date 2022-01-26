@@ -23,11 +23,6 @@
  *
 */
 
-
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace ASC.Core.Caching
 {
     class AzRecordStore : IEnumerable<AzRecord>

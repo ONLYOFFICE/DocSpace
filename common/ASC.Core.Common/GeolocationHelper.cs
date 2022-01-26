@@ -23,16 +23,6 @@
  *
 */
 
-
-using System;
-using System.Linq;
-
-using ASC.Common.Logging;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Geolocation
 {
     public class GeolocationHelper

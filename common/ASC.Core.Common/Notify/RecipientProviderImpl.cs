@@ -23,14 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Core.Users;
-using ASC.Notify.Recipients;
-
 namespace ASC.Core.Notify
 {
     public class RecipientProviderImpl : IRecipientProvider

@@ -23,13 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
-using ASC.Common.Module;
-using ASC.Core.Common.Notify.Jabber;
-
 namespace ASC.Core.Notify.Jabber
 {
     public class JabberServiceClientWcf : BaseWcfClient<IJabberService>, IJabberService, IDisposable

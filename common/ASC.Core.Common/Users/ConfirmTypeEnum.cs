@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace ASC.Web.Studio.Utility
+﻿namespace ASC.Web.Studio.Utility
 {
     //  emp-invite - confirm ivite by email
     //  portal-suspend - confirm portal suspending - Tenant.SetStatus(TenantStatus.Suspended)

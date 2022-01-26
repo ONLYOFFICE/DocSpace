@@ -23,22 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security;
-
-using ASC.Common;
-using ASC.Core.Billing;
-using ASC.Core.Caching;
-using ASC.Core.Data;
-using ASC.Core.Security.Authentication;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Core
 {
     [Scope]

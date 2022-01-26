@@ -24,13 +24,6 @@
 */
 
 
-#region usings
-
-using ASC.Notify.Patterns;
-using ASC.Notify.Recipients;
-
-#endregion
-
 namespace ASC.Notify.Model
 {
     public interface INotifySource

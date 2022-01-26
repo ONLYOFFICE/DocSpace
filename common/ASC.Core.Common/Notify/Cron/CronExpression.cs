@@ -24,16 +24,6 @@
 */
 
 
-#region usings
-
-using System;
-using System.Collections;
-using System.Globalization;
-using System.Runtime.Serialization;
-using System.Text;
-
-#endregion
-
 namespace ASC.Notify.Cron
 {
     [Serializable]

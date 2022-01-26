@@ -23,26 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Core.Caching;
-using ASC.Core.Common.EF;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Core.Billing
 {
     [Singletone]
@@ -180,7 +160,7 @@ namespace ASC.Core.Billing
             DbContextManager<CoreDbContext> coreDbContextManager,
             TariffServiceStorage tariffServiceStorage,
             IOptionsMonitor<ILog> options,
-            Constants constants,
+            Users.Constants constants,
             BillingClient billingClient)
             : this()
 
