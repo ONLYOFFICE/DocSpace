@@ -90,8 +90,12 @@ const EditingWrapper = styled.div`
     ${(props) =>
       props.viewAs === "tile" &&
       css`
-        border: none;
         background: none;
+        border: 1px solid transparent;
+
+        :hover {
+          border-color: #d0d5da;
+        }
 
         &:last-child {
           margin-left: 2px;
