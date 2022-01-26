@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Utils;
-
-using Microsoft.Extensions.DependencyInjection;
-
-namespace ASC.Data.Storage.Configuration
+﻿namespace ASC.Data.Storage.Configuration
 {
     public static class StorageConfigExtension
     {
