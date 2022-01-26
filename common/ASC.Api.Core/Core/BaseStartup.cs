@@ -1,4 +1,6 @@
-﻿namespace ASC.Api.Core
+﻿using JsonConverter = System.Text.Json.Serialization.JsonConverter;
+
+namespace ASC.Api.Core
 {
     public abstract class BaseStartup
     {

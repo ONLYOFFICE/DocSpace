@@ -310,7 +310,7 @@ namespace ASC.Api.Core
         }
     }
 
-    public class ApiDateTimeConverter : JsonConverter<ApiDateTime>
+    public class ApiDateTimeConverter : System.Text.Json.Serialization.JsonConverter<ApiDateTime>
     {
         public override ApiDateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
