@@ -19,7 +19,7 @@ const StyledWrapper = styled.div`
   box-shadow: 0px 2px 4px rgba(4, 15, 27, 0.16);
 `;
 
-const VersionBadgeWrapper = ({ onClick, isTile, children: badge }) => {
+const BadgeWrapper = ({ onClick, isTile, children: badge }) => {
   if (!isTile) return badge;
 
   const [isHovered, setIsHovered] = useState(false);
@@ -147,7 +147,7 @@ const Badges = ({
         />
       )}
       {version > 1 && (
-        <VersionBadgeWrapper onClick={onShowVersionHistory} isTile={isTile}>
+        <BadgeWrapper onClick={onShowVersionHistory} isTile={isTile}>
           <Badge
             {...commonBadgeProps}
             className="badge-version badge-version-current tablet-badge icons-group"
@@ -155,10 +155,10 @@ const Badges = ({
             label={t("VersionBadge:Version", { version: countVersions })}
             onClick={onShowVersionHistory}
           />
-        </VersionBadgeWrapper>
+        </BadgeWrapper>
       )}
       {(showNew || isNewWithFav) && (
-        <VersionBadgeWrapper onClick={onBadgeClick} isTile={isTile}>
+        <BadgeWrapper onClick={onBadgeClick} isTile={isTile}>
           <Badge
             {...commonBadgeProps}
             className="badge-version badge-new-version tablet-badge icons-group"
@@ -166,7 +166,7 @@ const Badges = ({
             label={t("New")}
             onClick={onBadgeClick}
           />
-        </VersionBadgeWrapper>
+        </BadgeWrapper>
       )}
     </div>
   ) : (
