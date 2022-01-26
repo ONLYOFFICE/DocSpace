@@ -436,7 +436,7 @@ class MediaViewer extends React.Component {
 
   onClose = () => {
     console.log("onClose");
-    this.props.onClose();
+    this.props.onClose(event);
     this.setState({ visible: false });
   };
 

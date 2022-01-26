@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
@@ -30,6 +30,9 @@ const FilesMediaViewer = (props) => {
     expandedKeys,
   } = props;
 
+  const [firstUrl, setFirstUrl] = useState(window.location.href);
+  console.log("firstUrl", firstUrl);
+
   useEffect(() => {
     const previewId = queryString.parse(location.search).preview;
 
@@ -40,6 +43,12 @@ const FilesMediaViewer = (props) => {
   }, [removeQuery, onMediaFileClick]);
 
   const checkURLchange = () => {
+    // При кнопке Назад url неверно заменяется. Из-за onClose?
+    console.log("сначала", !oldURL.includes("#preview"));
+    if (!oldURL.includes("#preview")) {
+      console.log('oldURL.includes("#preview")', oldURL.includes("#preview"));
+      setFirstUrl(oldURL);
+    }
     if (window.location.href != oldURL) {
       oldURL = window.location.href;
       const hash = window.location.hash;
@@ -101,7 +110,7 @@ const FilesMediaViewer = (props) => {
     }
   };
 
-  const onMediaViewerClose = () => {
+  const onMediaViewerClose = (event) => {
     if (previewFile) {
       setIsLoading(true);
       setFirstLoad(true);
@@ -118,6 +127,14 @@ const FilesMediaViewer = (props) => {
         });
     }
     setMediaViewerData({ visible: false, id: null });
+
+    if (event.currentTarget.closed === false) {
+      return;
+    }
+
+    if (event.currentTarget.getElementsByClassName("mediaPlayerClose")) {
+      window.history.replaceState(null, null, firstUrl);
+    }
   };
 
   return (
