@@ -76,13 +76,6 @@ const LoginContainer = styled.div`
   .greeting-title {
     width: 100%;
     padding-bottom: 32px;
-
-    @media (max-width: 768px) {
-      text-align: left;
-    }
-    @media (max-width: 375px) {
-      font-size: 23px;
-    }
   }
 
   .more-label {
@@ -463,8 +456,8 @@ const Form = (props) => {
   return (
     <LoginContainer>
       <Text
-        fontSize="32px"
-        fontWeight={600}
+        fontSize="23px"
+        fontWeight={700}
         textAlign="center"
         className="greeting-title"
       >
