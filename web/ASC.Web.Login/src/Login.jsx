@@ -32,6 +32,8 @@ import {
   withTranslation,
 } from "react-i18next";
 import toastr from "@appserver/components/toast/toastr";
+import MoreLoginModal from "./sub-components/more-login";
+import { Trans } from "react-i18next";
 
 const ButtonsWrapper = styled.div`
   display: table;
@@ -73,6 +75,7 @@ const LoginContainer = styled.div`
 
   .greeting-title {
     width: 100%;
+    padding-bottom: 32px;
 
     @media (max-width: 768px) {
       text-align: left;
@@ -80,6 +83,11 @@ const LoginContainer = styled.div`
     @media (max-width: 375px) {
       font-size: 23px;
     }
+  }
+
+  .more-label {
+    padding-top: 18px;
+    padding-bottom: 35px;
   }
 
   .auth-form-container {
@@ -167,6 +175,8 @@ const Form = (props) => {
   const [password, setPassword] = useState("");
   const [isChecked, setIsChecked] = useState(false);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
+
+  const [moreAuthVisible, setMoreAuthVisible] = useState(false);
 
   const [errorText, setErrorText] = useState("");
 
@@ -295,6 +305,14 @@ const Form = (props) => {
     setIsDialogVisible(false);
     setIsDisabled(false);
     setIsLoading(false);
+  };
+
+  const moreAuthOpen = () => {
+    setMoreAuthVisible(true);
+  };
+
+  const moreAuthClose = () => {
+    setMoreAuthVisible(false);
   };
 
   const onSubmit = () => {
@@ -453,6 +471,24 @@ const Form = (props) => {
         {greetingTitle}
       </Text>
 
+      {oauthDataExists() && (
+        <>
+          <ButtonsWrapper>{providerButtons()}</ButtonsWrapper>
+          <Link
+            isHovered
+            type="action"
+            fontSize="13px"
+            fontWeight="600"
+            color="#3B72A7"
+            className="more-label"
+            onClick={moreAuthOpen}
+          >
+            {t("ShowMore")}
+          </Link>
+          <Text color="#A3A9AE">{t("Or")}</Text>
+        </>
+      )}
+
       <form className="auth-form-container">
         <FieldContainer
           isVertical={true}
@@ -478,65 +514,6 @@ const Form = (props) => {
             forwardedRef={inputRef}
           />
         </FieldContainer>
-        <FieldContainer
-          isVertical={true}
-          labelVisible={false}
-          hasError={!passwordValid}
-          errorMessage={errorText ? "" : t("Common:RequiredField")} //TODO: Add wrong password server error
-        >
-          <PasswordInput
-            simpleView={true}
-            passwordSettings={settings}
-            id="password"
-            inputName="password"
-            placeholder={t("Common:Password")}
-            type="password"
-            hasError={!passwordValid}
-            inputValue={password}
-            size="large"
-            scale={true}
-            tabIndex={1}
-            isDisabled={isLoading}
-            autoComplete="current-password"
-            onChange={onChangePassword}
-            onKeyDown={onKeyDown}
-          />
-        </FieldContainer>
-        <div className="login-forgot-wrapper">
-          <div className="login-checkbox-wrapper">
-            <Checkbox
-              className="login-checkbox"
-              isChecked={isChecked}
-              onChange={onChangeCheckbox}
-              label={<Text fontSize="13px">{t("Remember")}</Text>}
-            />
-            <HelpButton
-              className="login-tooltip"
-              helpButtonHeaderContent={t("CookieSettingsTitle")}
-              tooltipContent={
-                <Text fontSize="12px">{t("RememberHelper")}</Text>
-              }
-            />
-            <Link
-              fontSize="13px"
-              color="#316DAA"
-              className="login-link"
-              type="page"
-              isHovered={false}
-              onClick={onClick}
-            >
-              {t("ForgotPassword")}
-            </Link>
-          </div>
-        </div>
-
-        {isDialogVisible && (
-          <ForgotPasswordModalDialog
-            visible={isDialogVisible}
-            email={identifier}
-            onDialogClose={onDialogClose}
-          />
-        )}
 
         <Button
           id="submit"
@@ -551,27 +528,30 @@ const Form = (props) => {
           onClick={onSubmit}
         />
 
+        <Text color="#A3A9AE" fontSize="12px">
+          <Trans t={t} i18nKey="LoginDescription" ns="Login">
+            We'll email you a magic code to sign in without a password. Or you
+            can
+            <Link color="#2DA7DB;" fontSize="12px" href="">
+              log in manually.
+            </Link>
+          </Trans>
+        </Text>
+
         {confirmedEmail && (
           <Text isBold={true} fontSize="16px">
             {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
           </Text>
         )}
-
-        {oauthDataExists() && (
-          <>
-            <Box displayProp="flex" alignItems="center" marginProp="0 0 16px 0">
-              <div className="login-bottom-border"></div>
-              <Text className="login-bottom-text" color="#A3A9AE">
-                {t("Or")}
-              </Text>
-              <div className="login-bottom-border"></div>
-            </Box>
-
-            <ButtonsWrapper>{providerButtons()}</ButtonsWrapper>
-          </>
-        )}
       </form>
       <Toast />
+
+      <MoreLoginModal
+        t={t}
+        visible={moreAuthVisible}
+        onClose={moreAuthClose}
+        providers={providers}
+      />
     </LoginContainer>
   );
 };
