@@ -174,6 +174,10 @@ dotnet_naming_rule.non_field_members_should_be_pascal_case.severity = warning
 dotnet_naming_rule.non_field_members_should_be_pascal_case.symbols = non_field_members
 dotnet_naming_rule.non_field_members_should_be_pascal_case.style = pascal_case
 
+dotnet_naming_rule.private_or_internal_field_should_be_begin_with__.severity = error
+dotnet_naming_rule.private_or_internal_field_should_be_begin_with__.symbols = private_or_internal_field
+dotnet_naming_rule.private_or_internal_field_should_be_begin_with__.style = begin_with__
+
 # Symbol specifications
 
 dotnet_naming_symbols.interface.applicable_kinds = interface
@@ -200,5 +204,10 @@ dotnet_naming_style.begins_with_i.required_suffix =
 dotnet_naming_style.begins_with_i.word_separator = 
 dotnet_naming_style.begins_with_i.capitalization = pascal_case
 
+dotnet_naming_style.begin_with__.required_prefix = _
+dotnet_naming_style.begin_with__.required_suffix = 
+dotnet_naming_style.begin_with__.word_separator = 
+dotnet_naming_style.begin_with__.capitalization = camel_case
+
 # Default severity for analyzer diagnostics with category 'Style'
-dotnet_analyzer_diagnostic.category-Style.severity = silent
+dotnet_analyzer_diagnostic.category-Style.severity = suggestion
