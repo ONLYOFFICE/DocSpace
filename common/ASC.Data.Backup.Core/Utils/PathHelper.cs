@@ -23,12 +23,6 @@
  *
 */
 
-
-using System.IO;
-using System.Reflection;
-
-using ASC.Common.Utils;
-
 namespace ASC.Data.Backup.Utils
 {
     internal static class PathHelper

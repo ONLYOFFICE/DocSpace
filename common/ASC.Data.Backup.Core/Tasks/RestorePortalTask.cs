@@ -23,27 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Common.Utils;
-using ASC.Core;
-using ASC.Core.Billing;
-using ASC.Core.Tenants;
-using ASC.Data.Backup.Extensions;
-using ASC.Data.Backup.Tasks.Modules;
-using ASC.Data.Storage;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Data.Backup.Tasks
 {
     [Scope]
