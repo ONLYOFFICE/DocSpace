@@ -23,16 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-
-using ASC.Common;
-
-using Microsoft.Extensions.Configuration;
-
 namespace ASC.ApiSystem.Classes
 {
     [Singletone]
