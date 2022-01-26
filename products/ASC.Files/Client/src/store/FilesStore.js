@@ -50,6 +50,7 @@ class FilesStore {
   selected = "close";
   filter = FilesFilter.getDefault(); //TODO: FILTER
   loadTimeout = null;
+  hotkeyCaret = null;
 
   constructor(
     authStore,
@@ -235,7 +236,12 @@ class FilesStore {
     this.selection = this.getFilesBySelected(files, selected);
   };
 
+  setHotkeyCaret = (hotkeyCaret) => {
+    this.hotkeyCaret = hotkeyCaret;
+  };
+
   setSelection = (selection) => {
+    if (selection.length === 1) this.setInitialSelectedFile(selection[0]);
     this.selection = selection;
   };
 

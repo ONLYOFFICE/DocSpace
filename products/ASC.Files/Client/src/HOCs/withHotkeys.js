@@ -4,7 +4,17 @@ import { observer, inject } from "mobx-react";
 
 const withHotkeys = (Component) => {
   const WithHotkeys = (props) => {
-    const { selection, setSelection, firstFile, nextFile, prevFile } = props;
+    const {
+      selection,
+      setSelection,
+      firstFile,
+      nextFile,
+      prevFile,
+      setSelected,
+      setHotkeyCaret,
+      deselectFile,
+      hotkeyCaret,
+    } = props;
 
     //Select item
     useHotkeys(
@@ -55,25 +65,109 @@ const withHotkeys = (Component) => {
       [nextFile, selection, firstFile]
     );
 
+    //Expand Selection DOWN
+    // TODO: tile view
+    useHotkeys(
+      "shift+DOWN",
+      () => {
+        if (!selection.length) setSelection([firstFile]);
+        else if (nextFile) {
+          if (selection.findIndex((f) => f.id === nextFile.id) !== -1) {
+            deselectFile(hotkeyCaret);
+          } else {
+            setSelection([...selection, ...[nextFile]]);
+          }
+          setHotkeyCaret(nextFile);
+        }
+      },
+      [nextFile, selection, firstFile]
+    );
+
+    //Expand Selection UP
+    // TODO: tile view
+    useHotkeys(
+      "shift+UP",
+      () => {
+        if (!selection.length) setSelection([firstFile]);
+        else if (prevFile) {
+          if (selection.findIndex((f) => f.id === prevFile.id) !== -1) {
+            deselectFile(hotkeyCaret);
+          } else {
+            setSelection([...[prevFile], ...selection]);
+          }
+
+          setHotkeyCaret(prevFile);
+        }
+      },
+      [prevFile, selection, firstFile]
+    );
+
+    //Expand Selection LEFT
+    // TODO: tile view
+    useHotkeys(
+      "shift+LEFT",
+      () => {
+        // if (!selection.length) setSelection([firstFile]);
+        // else if (nextFile) setSelection([nextFile]);
+      },
+      [
+        /* nextFile, selection, firstFile */
+      ]
+    );
+
+    //Expand Selection RIGHT
+    // TODO: tile view
+    useHotkeys(
+      "shift+RIGHT",
+      () => {
+        // if (!selection.length) setSelection([firstFile]);
+        // else if (nextFile) setSelection([nextFile]);
+      },
+      [
+        /* nextFile, selection, firstFile */
+      ]
+    );
+
+    //Select all files and folders
+    useHotkeys("shift+a", () => {
+      setSelected("all");
+    });
+
+    //Deselect all files and folders
+    useHotkeys("shift+n", () => {
+      setSelected("none");
+    });
+
     return <Component {...props} />;
   };
 
   return inject(({ filesStore }) => {
-    const { selection, setSelection, filesList } = filesStore;
+    const {
+      selection,
+      setSelection,
+      filesList,
+      setSelected,
+      hotkeyCaret,
+      setHotkeyCaret,
+      deselectFile,
+    } = filesStore;
 
-    const indexOfCurrentFile =
-      filesList &&
-      selection.length &&
-      filesList.findIndex((f) => f.id === selection[selection.length - 1].id);
+    let prevCaretIndex, nextCaretIndex, prevFile, nextFile;
 
-    const isValidIndex =
-      indexOfCurrentFile !== null && indexOfCurrentFile !== -1;
+    if (filesList && selection.length && hotkeyCaret) {
+      prevCaretIndex = filesList.findIndex((f) => f.id === hotkeyCaret.id);
+      nextCaretIndex = filesList.findIndex((f) => f.id === hotkeyCaret.id);
 
-    const nextIndex = isValidIndex ? indexOfCurrentFile + 1 : null;
-    const prevIndex = isValidIndex ? indexOfCurrentFile - 1 : null;
+      if (prevCaretIndex !== -1) {
+        prevCaretIndex -= 1;
+        prevFile = filesList[prevCaretIndex];
+      }
 
-    const nextFile = nextIndex !== null ? filesList[nextIndex] : null;
-    const prevFile = prevIndex !== null ? filesList[prevIndex] : null;
+      if (nextCaretIndex !== -1) {
+        nextCaretIndex += 1;
+        nextFile = filesList[nextCaretIndex];
+      }
+    }
 
     return {
       selection,
@@ -81,6 +175,10 @@ const withHotkeys = (Component) => {
       firstFile: filesList[0],
       nextFile,
       prevFile,
+      setSelected,
+      hotkeyCaret,
+      setHotkeyCaret,
+      deselectFile,
     };
   })(observer(WithHotkeys));
 };
