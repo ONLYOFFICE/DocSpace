@@ -28,9 +28,9 @@ const QuickButtons = ({
 
   const isTile = viewAs === "tile";
 
-  const colorSharedButton = shared ? "#3B72A7" : "#a3a9ae";
-
-  const iconShare = "/static/images/catalog.share.react.svg";
+  const iconShare = shared
+    ? "/static/images/file.actions.share.react.svg"
+    : "/static/images/catalog.share.react.svg";
 
   const iconLock = locked
     ? "/static/images/file.actions.locked.react.svg"
@@ -56,7 +56,7 @@ const QuickButtons = ({
           className="badge share-button-icon"
           size={sizeQuickButton}
           onClick={onClickShare}
-          color={colorSharedButton}
+          hoverColor="#3B72A7"
         />
       )}
       {fileExst &&
