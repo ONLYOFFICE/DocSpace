@@ -23,11 +23,6 @@
  *
 */
 
-
-using System;
-using System.Diagnostics;
-using System.Linq;
-
 namespace ASC.Collections
 {
     public abstract class CachedDictionaryBase<T>
