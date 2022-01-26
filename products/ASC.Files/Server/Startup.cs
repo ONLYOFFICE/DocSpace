@@ -1,21 +1,3 @@
-using System.Text;
-using System.Text.Json.Serialization;
-
-using ASC.Api.Core;
-using ASC.Api.Documents;
-using ASC.Web.Files;
-using ASC.Web.Files.HttpHandlers;
-using ASC.Web.Studio.Core.Notify;
-
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-
-using StackExchange.Redis.Extensions.Core.Configuration;
-using StackExchange.Redis.Extensions.Newtonsoft;
-
 namespace ASC.Files
 {
     public class Startup : BaseStartup
