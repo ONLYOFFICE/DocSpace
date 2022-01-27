@@ -15,6 +15,7 @@ const TableGroupMenu = (props) => {
     checkboxOptions,
     columnStorageName,
     checkboxMargin,
+    isLengthenHeader,
     ...rest
   } = props;
 
@@ -35,8 +36,11 @@ const TableGroupMenu = (props) => {
   return (
     <>
       <StyledTableGroupMenu
+        id="table-container_caption-header"
         width={width}
-        className="table-container_group-menu"
+        className={`${
+          isLengthenHeader ? "lengthen-header" : ""
+        } table-container_group-menu`}
         checkboxMargin={checkboxMargin}
         {...rest}
       >
@@ -74,6 +78,7 @@ const TableGroupMenu = (props) => {
 TableGroupMenu.propTypes = {
   isChecked: PropTypes.bool,
   isIndeterminate: PropTypes.bool,
+  isLengthenHeader: PropTypes.bool,
   headerMenu: PropTypes.arrayOf(PropTypes.object),
   checkboxOptions: PropTypes.any.isRequired,
   onClick: PropTypes.func,
