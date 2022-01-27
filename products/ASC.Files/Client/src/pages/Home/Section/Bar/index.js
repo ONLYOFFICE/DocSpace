@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { LANGUAGE } from "@appserver/common/constants";
 import { ADS_TIMEOUT } from "../../../../helpers/constants";
 import { getLanguage } from "@appserver/common/utils";
-import BarBanner from "@appserver/components/bar-banner";
-import { isDesktop, isTablet } from "react-device-detect";
+import SnackBar from "@appserver/components/snackbar";
 
 const loadLanguagePath = () => {
   if (!window.firebaseHelper) return;
@@ -24,7 +23,7 @@ const loadLanguagePath = () => {
 };
 
 const bannerHOC = (props) => {
-  const { firstLoad, personal } = props;
+  const { firstLoad, personal, setMaintenanceExist } = props;
 
   const [htmlLink, setHtmlLink] = useState();
 
@@ -33,29 +32,23 @@ const bannerHOC = (props) => {
     .filter((bar) => bar.length > 0);
 
   const updateBanner = () => {
-    window.firebaseHelper.checkMaintenance().then((campaign) => {
-      if (!campaign) {
-        let index = Number(localStorage.getItem("barIndex") || 0);
+    let index = Number(localStorage.getItem("barIndex") || 0);
 
-        if (bar.length < 1 || index + 1 >= bar.length) {
-          index = 0;
-        } else {
-          index++;
-        }
+    if (bar.length < 1 || index + 1 >= bar.length) {
+      index = 0;
+    } else {
+      index++;
+    }
 
-        try {
-          const htmlUrl = loadLanguagePath();
-          setHtmlLink(htmlUrl);
-        } catch (e) {
-          updateBanner();
-        }
+    try {
+      const htmlUrl = loadLanguagePath();
+      setHtmlLink(htmlUrl);
+    } catch (e) {
+      updateBanner();
+    }
 
-        localStorage.setItem("barIndex", index);
-        return;
-      }
-
-      return;
-    });
+    localStorage.setItem("barIndex", index);
+    return;
   };
 
   useEffect(() => {
@@ -63,11 +56,25 @@ const bannerHOC = (props) => {
     setInterval(updateBanner, ADS_TIMEOUT);
   }, []);
 
-  return (isDesktop || isTablet) && personal && htmlLink && !firstLoad ? (
-    <BarBanner htmlLink={htmlLink} />
-  ) : (
-    ""
-  );
+  const mainBar = document.getElementById("main-bar");
+  const mainBarExistNode = mainBar ? mainBar.hasChildNodes() : false;
+
+  const onClose = () => {
+    const bar = document.querySelector(`#main-bar`);
+    setMaintenanceExist(false);
+    bar.remove();
+  };
+
+  const onLoad = () => setMaintenanceExist(true);
+
+  return personal && !mainBarExistNode && htmlLink && !firstLoad ? (
+    <SnackBar
+      onLoad={onLoad}
+      clickAction={onClose}
+      isCampaings={true}
+      htmlContent={htmlLink}
+    />
+  ) : null;
 };
 
 export default bannerHOC;
