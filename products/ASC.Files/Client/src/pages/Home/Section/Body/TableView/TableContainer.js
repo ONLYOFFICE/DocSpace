@@ -9,13 +9,7 @@ import styled, { css } from "styled-components";
 
 const borderColor = "#ECEEF1";
 const colorBorderTransition = "#f3f4f4";
-const contentStyles = css`
-  position: absolute;
-  width: 100%;
-  height: 1px;
-  background: ${borderColor};
-  margin-left: -24px;
-`;
+
 const StyledTableContainer = styled(TableContainer)`
   .table-row-selected + .table-row-selected {
     .table-row {
@@ -34,15 +28,6 @@ const StyledTableContainer = styled(TableContainer)`
     }
   }
 
-  .table-row-selected + .files-item:not(.table-row-selected) {
-    .table-row {
-      .table-container_row-checkbox-wrapper:first-child:before {
-        ${contentStyles}
-        margin-top: -40px;
-      }
-    }
-  }
-
   .files-item:not(.table-row-selected) + .table-row-selected {
     .table-row {
       .table-container_row-checkbox-wrapper,
@@ -52,18 +37,15 @@ const StyledTableContainer = styled(TableContainer)`
       }
     }
   }
-
-  .table-row-selected:last-child {
-    .table-row {
-      .table-container_row-checkbox-wrapper:before {
-        ${contentStyles}
-        margin-top: 40px;
-      }
-    }
-  }
 `;
 
-const Table = ({ filesList, sectionWidth, viewAs, setViewAs }) => {
+const Table = ({
+  filesList,
+  sectionWidth,
+  viewAs,
+  setViewAs,
+  setFirsElemChecked,
+}) => {
   const ref = useRef(null);
 
   useEffect(() => {
@@ -80,8 +62,13 @@ const Table = ({ filesList, sectionWidth, viewAs, setViewAs }) => {
     <StyledTableContainer forwardedRef={ref}>
       <TableHeader sectionWidth={sectionWidth} containerRef={ref} />
       <TableBody>
-        {filesList.map((item) => (
-          <TableRow key={item.id} item={item} />
+        {filesList.map((item, index) => (
+          <TableRow
+            key={item.id}
+            item={item}
+            index={index}
+            setFirsElemChecked={setFirsElemChecked}
+          />
         ))}
       </TableBody>
     </StyledTableContainer>
@@ -89,11 +76,12 @@ const Table = ({ filesList, sectionWidth, viewAs, setViewAs }) => {
 };
 
 export default inject(({ filesStore }) => {
-  const { filesList, viewAs, setViewAs } = filesStore;
+  const { filesList, viewAs, setViewAs, setFirsElemChecked } = filesStore;
 
   return {
     filesList,
     viewAs,
     setViewAs,
+    setFirsElemChecked,
   };
 })(observer(Table));
