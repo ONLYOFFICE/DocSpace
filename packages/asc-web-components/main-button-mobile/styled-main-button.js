@@ -4,10 +4,25 @@ import DropDown from "../drop-down";
 import DropDownItem from "../drop-down-item";
 import FloatingButton from "@appserver/common/components/FloatingButton";
 
+import { isMobile } from "react-device-detect";
+import { mobile } from "../utils/device";
+
 const StyledFloatingButton = styled(FloatingButton)`
+  position: relative;
+  z-index: 1010;
+
   .circle__mask + div {
-    svg {
-      margin-top: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    div {
+      padding-top: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* svg {
+        ${(props) => props.isOpen && `margin-bottom: 4px;`}
+      } */
     }
   }
 
@@ -25,32 +40,46 @@ const StyledFloatingButton = styled(FloatingButton)`
       }
     `}
 
-  .circle__mask,
-  .circle__mask + div {
-    z-index: 250;
-  }
-
   .circle__mask .circle__fill {
     background-color: #fff;
   }
 `;
 
+const mobileDropDown = css`
+  width: ${(props) => props.theme.mainButtonMobile.dropDown.mobile.width};
+
+  right: ${(props) => props.theme.mainButtonMobile.dropDown.mobile.right};
+  bottom: ${(props) => props.theme.mainButtonMobile.dropDown.mobile.bottom};
+`;
+
 const StyledDropDown = styled(DropDown)`
-  bottom: ${(props) => props.theme.mainButtonMobile.dropDown.bottom};
+  position: ${(props) => props.theme.mainButtonMobile.dropDown.position};
+  width: ${(props) => props.theme.mainButtonMobile.dropDown.width};
+
   right: ${(props) => props.theme.mainButtonMobile.dropDown.right};
+  bottom: ${(props) => props.theme.mainButtonMobile.dropDown.bottom};
+
   z-index: ${(props) => props.theme.mainButtonMobile.dropDown.zIndex};
   height: ${(props) => (props.isMobile ? props.heightProp : "auto")};
+
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
   padding: 0px;
+
+  @media ${mobile} {
+    ${mobileDropDown}
+  }
+
+  ${isMobile && mobileDropDown}
 
   .section-scroll {
     padding-right: 0px !important;
   }
 
   .separator-wrapper {
-    padding: 23px;
+    padding: 12px 24px;
   }
 
   .is-separator {
@@ -82,42 +111,56 @@ const StyledDropDown = styled(DropDown)`
   }
 `;
 
+const StyledDropDownItem = styled(DropDownItem)`
+  padding: 6px 23px;
+`;
+
 const StyledButtonOptions = styled.div`
-  padding: ${(props) => (props.isOpenButton ? "23px 0px" : "0px")};
+  display: ${(props) => !props.isOpenButton && "none"};
+  padding: 16px 0;
   background-color: #265a8f;
   color: #fff;
 `;
 
 const StyledContainerAction = styled.div`
-  padding: 22px 0px 13px;
-`;
-
-const StyledProgressContainer = styled.div`
-  background-color: ${(props) => (props.isUploading ? "#ECEEF1" : "#fff")};
-  cursor: default;
-  padding: ${(props) => (props.isUploading ? "16px 23px 7px;" : "0px")};
+  padding: 16px 0px;
 `;
 
 const StyledButtonWrapper = styled.div`
-  padding: ${(props) => (props.isOpenButton ? "0px" : "16px 23px 34px")};
+  padding: 0 24px 34px;
   display: ${(props) => (props.isOpenButton ? "none" : "block")};
   background-color: ${(props) => (props.isUploading ? "#ECEEF1" : "#fff")};
 `;
 
+const StyledProgressContainer = styled.div`
+  display: ${(props) => (props.isUploading ? "flex" : "none")};
+  background-color: ${(props) => (props.isUploading ? "#ECEEF1" : "#fff")};
+  cursor: default;
+  padding: 0 24px 34px;
+`;
+
 const StyledProgressBarContainer = styled.div`
   display: ${(props) => (props.isUploading ? "flex" : "none")};
+
   flex-wrap: wrap;
+
   width: 100%;
-  padding-bottom: 24px;
+
+  box-sizing: border-box;
+
+  height: 60px;
+  padding-top: 26px;
 
   .progress-header {
     width: 50%;
+    line-height: 16px;
     &:hover {
       cursor: pointer;
     }
   }
 
   .progress_count {
+    line-height: 16px;
     width: 42%;
     text-align: right;
     margin-right: 6px;
@@ -126,9 +169,10 @@ const StyledProgressBarContainer = styled.div`
 
 const StyledMobileProgressBar = styled.div`
   width: 100%;
+  height: 4px;
   background-color: rgb(48%, 58%, 69%, 0.4);
   border-radius: 2px;
-  margin-top: 16px;
+  margin-top: 14px;
 `;
 
 const StyledBar = styled.div`
@@ -142,10 +186,6 @@ const StyledBar = styled.div`
 `;
 
 StyledDropDown.defaultProps = { theme: Base };
-
-const StyledDropDownItem = styled(DropDownItem)`
-  padding: 7px 23px;
-`;
 
 export {
   StyledFloatingButton,

@@ -169,9 +169,22 @@ const Base = {
 
   mainButtonMobile: {
     dropDown: {
-      right: "15%",
-      bottom: "15%",
+      position: "fixed",
+      right: "32px",
+      bottom: "32px",
+
       width: "400px",
+
+      zIndex: "202",
+
+      mobile: {
+        right: "24px",
+        bottom: "24px",
+
+        marginLeft: "24px",
+
+        width: "calc(100vw - 48px)",
+      },
     },
 
     dropDownItem: {

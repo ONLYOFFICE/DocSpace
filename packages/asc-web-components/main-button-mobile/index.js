@@ -17,6 +17,7 @@ import Button from "../button";
 import Text from "../text";
 import Scrollbar from "@appserver/components/scrollbar";
 import { isMobile, isTablet } from "react-device-detect";
+import Backdrop from "../backdrop";
 
 const ProgressBarMobile = ({
   label,
@@ -32,10 +33,15 @@ const ProgressBarMobile = ({
 
   return (
     <StyledProgressBarContainer isUploading={open}>
-      <Text onClick={onClick} className="progress-header" color="#657077">
+      <Text
+        onClick={onClick}
+        className="progress-header"
+        fontSize={`14`}
+        color="#657077"
+      >
         {label}
       </Text>
-      <Text className="progress_count" color="#657077">
+      <Text className="progress_count" fontSize={`13`} color="#657077">
         {status}
       </Text>
       <IconButton onClick={onCancel} iconName={icon} size={14} />
@@ -74,9 +80,11 @@ const MainButtonMobile = (props) => {
     manualWidth,
     isOpenButton,
     onClose,
+    sectionWidth,
   } = props;
 
   const [isOpen, setIsOpen] = useState(opened);
+  const [isUploading, setIsUploading] = useState(false);
   const [height, setHeight] = useState("90vh");
 
   const divRef = useRef();
@@ -90,14 +98,14 @@ const MainButtonMobile = (props) => {
   useEffect(() => {
     let height = divRef.current.getBoundingClientRect().height;
     height >= window.innerHeight ? setHeight("90vh") : setHeight(height + "px");
-  }, [isOpen, window.innerHeight]);
+  }, [isOpen, isOpenButton, window.innerHeight, isUploading]);
 
   const ref = useRef();
 
   const dropDownRef = useRef();
 
   const toggle = (isOpen) => {
-    if (isOpen && onClose) {
+    if (isOpenButton && onClose) {
       onClose();
     }
     return setIsOpen(isOpen);
@@ -113,26 +121,36 @@ const MainButtonMobile = (props) => {
     toggle(false);
   };
 
-  const isUploading = progressOptions
-    ? progressOptions.filter((option) => option.open)
-    : [];
+  React.useEffect(() => {
+    const openProgressOptions = progressOptions.filter((option) => option.open);
+
+    setIsUploading(openProgressOptions.length > 0);
+  }, [progressOptions]);
 
   const renderItems = () => {
     return (
       <div ref={divRef}>
         <StyledContainerAction>
-          {actionOptions.map((option) => (
-            <StyledDropDownItem
-              key={option.key}
-              label={option.label}
-              className={option.className}
-              onClick={option.onClick}
-              icon={option.icon ? option.icon : ""}
-            />
-          ))}
+          {actionOptions.map((option) => {
+            const optionOnClickAction = () => {
+              toggle(false);
+              option.onClick && option.onClick({ action: option.action });
+            };
+
+            return (
+              <StyledDropDownItem
+                key={option.key}
+                label={option.label}
+                className={option.className}
+                onClick={optionOnClickAction}
+                icon={option.icon ? option.icon : ""}
+                action={option.action}
+              />
+            );
+          })}
         </StyledContainerAction>
         <StyledProgressContainer
-          isUploading={isUploading.length > 0 ? true : false}
+          isUploading={isUploading}
           isOpenButton={isOpenButton}
         >
           {progressOptions &&
@@ -166,6 +184,7 @@ const MainButtonMobile = (props) => {
                     label={option.label}
                     onClick={option.onClick}
                     icon={option.icon ? option.icon : ""}
+                    action={option.action}
                   />
                 )
               )
@@ -173,7 +192,7 @@ const MainButtonMobile = (props) => {
         </StyledButtonOptions>
         {withButton && (
           <StyledButtonWrapper
-            isUploading={isUploading.length > 0 ? true : false}
+            isUploading={isUploading}
             isOpenButton={isOpenButton}
           >
             <Button
@@ -192,35 +211,40 @@ const MainButtonMobile = (props) => {
   const children = renderItems();
 
   return (
-    <div ref={ref} className={className} style={style}>
-      <StyledFloatingButton
-        icon={isOpen ? "minus" : "plus"}
-        onClick={onMainButtonClick}
-        percent={percent}
-        color={"#ed7309"}
-      />
-      <StyledDropDown
-        open={isOpen}
-        clickOutsideAction={outsideClick}
-        manualWidth={manualWidth || "400px"}
-        directionY="top"
-        directionX="right"
-        isMobile={isMobile || isTablet}
-        heightProp={height}
-      >
-        {isMobile || isTablet ? (
-          <Scrollbar
-            scrollclass="section-scroll"
-            stype="mediumBlack"
-            ref={dropDownRef}
-          >
-            {children}
-          </Scrollbar>
-        ) : (
-          children
-        )}
-      </StyledDropDown>
-    </div>
+    <>
+      <Backdrop zIndex={200} visible={isOpen} onClick={outsideClick} />
+      <div ref={ref} className={className} style={{ zIndex: "201", ...style }}>
+        <StyledFloatingButton
+          icon={isOpen ? "minus" : "plus"}
+          isOpen={isOpen}
+          onClick={onMainButtonClick}
+          percent={percent}
+          color={"#ed7309"}
+        />
+        <StyledDropDown
+          open={isOpen}
+          withBackdrop={false}
+          manualWidth={manualWidth || "400px"}
+          directionY="top"
+          directionX="right"
+          isMobile={isMobile || isTablet}
+          heightProp={height}
+          sectionWidth={sectionWidth}
+        >
+          {isMobile || isTablet ? (
+            <Scrollbar
+              scrollclass="section-scroll"
+              stype="mediumBlack"
+              ref={dropDownRef}
+            >
+              {children}
+            </Scrollbar>
+          ) : (
+            children
+          )}
+        </StyledDropDown>
+      </div>
+    </>
   );
 };
 
@@ -243,6 +267,8 @@ MainButtonMobile.propTypes = {
   title: PropTypes.string,
   /** Loading indicator */
   percent: PropTypes.number,
+  /** Section width */
+  sectionWidth: PropTypes.number,
   /** Required if you need to specify the exact width of the drop down component */
   manualWidth: PropTypes.string,
   className: PropTypes.string,
