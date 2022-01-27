@@ -149,6 +149,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     FirebaseHelper,
     personal,
     setCheckedMaintenance,
+    setMaintenanceExist,
   } = rest;
 
   useEffect(() => {
@@ -205,6 +206,8 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       `FB: 'bar/maintenance' desktop=${desktop} fromDate=${fromDate} toDate=${toDate}`
     );
 
+    setCheckedMaintenance(true);
+
     if (!campaign || !fromDate || !toDate) {
       console.log("Skip snackBar by empty campaign params");
       return;
@@ -250,8 +253,9 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     const campaignStr = JSON.stringify(campaign);
     let skipRender = lastCampaignStr === campaignStr;
 
-    skipRender =
-      skipRender && document.getElementById("main-bar").hasChildNodes();
+    const hasChild = document.getElementById("main-bar").hasChildNodes();
+
+    skipRender = skipRender && hasChild;
 
     if (skipRender) return;
 
@@ -259,6 +263,9 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
     const targetDate = to.locale(language).format("LL");
 
+    if (document.getElementById("bar-banner")) {
+      document.getElementById("main-bar").removeChild();
+    }
     const barConfig = {
       parentElementId: "main-bar",
       text: `${t("BarMaintenanceDescription", {
@@ -266,13 +273,18 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         productName: "ONLYOFFICE Personal",
       })} ${t("BarMaintenanceDisclaimer")}`,
       clickAction: () => {
+        setMaintenanceExist(false);
         Snackbar.close();
         localStorage.setItem(LS_CAMPAIGN_DATE, to.format(DATE_FORMAT));
       },
       opacity: 1,
+      style: {
+        height: "60px",
+      },
     };
 
     Snackbar.show(barConfig);
+    setMaintenanceExist(true);
   };
 
   const fetchMaintenance = () => {
@@ -282,8 +294,8 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       FirebaseHelper.checkMaintenance()
         .then((campaign) => {
           console.log("checkMaintenance", campaign);
-          setCheckedMaintenance(true);
           if (!campaign) {
+            setCheckedMaintenance(true);
             clearSnackBarTimer();
             Snackbar.close();
             return;
@@ -463,6 +475,7 @@ const ShellWrapper = inject(({ auth }) => {
     firebaseHelper,
     setModuleInfo,
     setCheckedMaintenance,
+    setMaintenanceExist,
   } = settingsStore;
 
   return {
@@ -482,6 +495,7 @@ const ShellWrapper = inject(({ auth }) => {
     FirebaseHelper: firebaseHelper,
     personal,
     setCheckedMaintenance,
+    setMaintenanceExist,
   };
 })(observer(Shell));
 
