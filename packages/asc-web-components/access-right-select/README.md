@@ -8,8 +8,16 @@ import AccessRightSelect from "@appserver/components/AccessRightSelect";
 
 ```jsx
 <AccessRightSelect
-  accessRightsList=[{...}, {...}, {...}]
-  quotaList=[{...}, {...}, {...}]
+  options={options}
+  onSelect={(option) => console.log("selected", option)}
+  selectedOption={{
+    key: "key1",
+    title: "Room administrator",
+    description: `Administration of rooms, archiving of rooms, inviting and managing users in rooms.`,
+    icon: CrownIcon,
+    quota: "free",
+    color: "#20D21F",
+  }}
 />
 ```
 
@@ -26,7 +34,7 @@ import AccessRightSelect from "@appserver/components/AccessRightSelect";
   {
     key: "key1",
     title: "Room administrator",
-    description: "Администрирование комнат, архивирование комнат, приглашение и управление пользователями в комнатах.",
+    description: "Administration of rooms, archiving of rooms, inviting and managing users in rooms.",
     icon: CrownIcon,
   }
 ```

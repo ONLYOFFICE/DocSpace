@@ -17,9 +17,15 @@ import {
 const AccessRightSelect = ({ options, onSelect, selectedOption, ...props }) => {
   const [currentItem, setCurrentItem] = useState(selectedOption);
 
-  function onSelectCurrentItem() {
-    setCurrentItem(this);
-    onSelect && onSelect(this);
+  function onSelectCurrentItem(e) {
+    const key = e.currentTarget.dataset.key;
+    const item = options.find((el) => {
+      return el.key === key;
+    });
+    if (item) {
+      setCurrentItem(item);
+      onSelect && onSelect(item);
+    }
   }
 
   const formatToAccessRightItem = (data) => {
@@ -29,7 +35,11 @@ const AccessRightSelect = ({ options, onSelect, selectedOption, ...props }) => {
           return it.isSeparator ? (
             <DropDownItem isSeparator />
           ) : (
-            <DropDownItem key={it.key} onClick={onSelectCurrentItem.bind(it)}>
+            <DropDownItem
+              key={it.key}
+              data-key={it.key}
+              onClick={onSelectCurrentItem}
+            >
               <StyledAccessRightItem>
                 <StyledAccessRightItemIcon src={it.icon} />
                 <StyledAccessRightItemContent>
@@ -68,7 +78,7 @@ const AccessRightSelect = ({ options, onSelect, selectedOption, ...props }) => {
         scaled={false}
         selectedOption={{
           default: true,
-          key: 0,
+          key: currentItem?.key,
           label: currentItem?.title,
         }}
         size="content"
