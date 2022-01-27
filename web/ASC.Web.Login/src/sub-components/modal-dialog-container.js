@@ -13,16 +13,9 @@ const ModalDialogContainer = styled(ModalDialog)`
     }
   }
 
-  .header_aside-panel {
-    transition: unset;
-    transform: translateX(${(props) => (props.visible ? "0" : "480px")});
-    width: 480px;
-    overflow-y: hidden;
-
-    @media (max-width: 550px) {
-      width: 320px;
-      transform: translateX(${(props) => (props.visible ? "0" : "320px")});
-    }
+  .modal-dialog-aside-body {
+    padding: 0;
+    margin: 0;
   }
 
   .modal-dialog-aside-footer {
