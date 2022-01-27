@@ -51,7 +51,8 @@ import AccessRightSelect from "@appserver/components/AccessRightSelect";
 
 ### Properties
 
-| Props              |      Type      | Required | Values | Default | Description    |
-| ------------------ | :------------: | :------: | :----: | :-----: | -------------- |
-| `accessRightsList` | `obj`, `array` |    ✅    |   -    |    -    | List of rights |
-| `quotaList`        | `obj`, `array` |    ✅    |   -    |    -    | List of quotas |
+| Props            |      Type      | Required | Values | Default | Description                                                        |
+| ---------------- | :------------: | :------: | :----: | :-----: | ------------------------------------------------------------------ |
+| `options`        | `obj`, `array` |    ✅    |   -    |    -    | List of rights                                                     |
+| `onSelect`       | `obj`, `array` |    -     |   -    |    -    | Will be triggered whenever an AccessRightSelect is selected option |
+| `selectedOption` |     `obj`      |    -     |   -    |    -    | The option that is selected by default                             |

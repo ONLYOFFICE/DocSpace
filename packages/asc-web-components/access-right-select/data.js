@@ -12,60 +12,43 @@ export const data = [
   {
     key: "key1",
     title: "Room administrator",
-    description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
-    eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, 
-    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.`,
+    description: `Administration of rooms, archiving of rooms, inviting and managing users in rooms.`,
     icon: CrownIcon,
+    quota: "free",
+    color: "#20D21F",
   },
   {
     key: "key2",
     title: "Full access",
-    description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
-      eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, 
-      quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
-      fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
-      culpa qui officia deserunt mollit anim id est laborum.`,
+    description: `Edit, upload, create, view, download, delete files and folders.`,
     icon: CheckRoundIcon,
+    quota: "paid",
+    color: "#EDC409",
   },
 
   { key: "key3", isSeparator: true },
   {
     key: "key4",
     title: "Editing",
-    description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
-    eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, 
-    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-    `,
+    description: `Editing, viewing, downloading files and folders, filling out forms.`,
     icon: PencilIcon,
   },
   {
     key: "key5",
     title: "Review",
-    description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
-    eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
+    description: `Reviewing, viewing, downloading files and folders, filling out forms.`,
     icon: ReviewIcon,
   },
   {
     key: "key6",
     title: "Comment",
-    description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
-    eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, 
-    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
-    fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
-    culpa qui officia deserunt mollit anim id est laborum.`,
+    description: `Commenting on files, viewing, downloading files and folders, filling out forms.`,
     icon: CommentIcon,
   },
   {
     key: "key7",
     title: "Read only",
-    description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
-    eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, 
-    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
-    fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
-    culpa qui officia deserunt mollit anim id est laborum.`,
+    description: `Viewing, downloading files and folders, filling out forms.`,
     icon: EyeIcon,
   },
   {
@@ -73,20 +56,5 @@ export const data = [
     title: "Deny access",
     description: "",
     icon: AccessNoneIcon,
-  },
-];
-
-export const quota = [
-  {
-    key: "key1",
-    accessRightKey: "key1",
-    quota: "free",
-    color: "#20D21F",
-  },
-  {
-    key: "key2",
-    accessRightKey: "key2",
-    quota: "paid",
-    color: "#EDC409",
   },
 ];

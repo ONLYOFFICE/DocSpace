@@ -3,7 +3,16 @@ import { Meta, Story, ArgsTable, Canvas } from "@storybook/addon-docs/blocks";
 import AccessRightSelect from "./";
 import * as stories from "./access-right-select.stories.js";
 
-<Meta title="Components/AccessRightSelect" component={AccessRightSelect} />
+<Meta
+  title="Components/AccessRightSelect"
+  component={AccessRightSelect}
+  argTypes={{
+    onSelect: {
+      action: "onSelect",
+    },
+    options: { required: true },
+  }}
+/>
 
 # AccessRightSelect
 
@@ -23,29 +32,12 @@ Custom access-right-select
 import AccessRightSelect from "@appserver/components/access-right-secelt";
 ```
 
-#### accessRightsList is an array of objects that contains the following fields:
+#### Options is an array of objects that contains the following fields:
 
 - key
 - title
 - description
 - icon
-
-##### Example:
-
-```js
-  {
-    key: "key1",
-    title: "Room administrator",
-    description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-    eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
-    icon: CrownIcon,
-  }
-```
-
-#### QuotaList is an array of objects that contains the following fields:
-
-- key
-- accessRightKey
 - quota
 - color
 
@@ -54,8 +46,10 @@ import AccessRightSelect from "@appserver/components/access-right-secelt";
 ```js
   {
     key: "key1",
-    accessRightKey: "key1",
+    title: "Room administrator",
+    description: `Administration of rooms, archiving of rooms, inviting and managing users in rooms.`,
+    icon: CrownIcon,
     quota: "free",
     color: "#20D21F",
-  },
+  }
 ```

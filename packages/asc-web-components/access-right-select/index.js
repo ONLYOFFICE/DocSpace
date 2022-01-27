@@ -14,29 +14,31 @@ import {
   StyledAccessRightItemTitleAndBadge,
 } from "./styled-accessright.js";
 
-const AccessRightSelect = ({ accessRightsList, quotaList, ...props }) => {
-  const [currentItem, setCurrentItem] = useState(accessRightsList[6]);
+const AccessRightSelect = ({ options, onSelect, selectedOption, ...props }) => {
+  const [currentItem, setCurrentItem] = useState(selectedOption);
+
+  function onSelectCurrentItem() {
+    setCurrentItem(this);
+    onSelect && onSelect(this);
+  }
 
   const formatToAccessRightItem = (data) => {
     return (
       <>
         {data.map((it) => {
-          const itQuota = quotaList.find(
-            (elem) => elem.accessRightKey == it.key
-          );
           return it.isSeparator ? (
             <DropDownItem isSeparator />
           ) : (
-            <DropDownItem key={it.key} onClick={() => setCurrentItem(it)}>
+            <DropDownItem key={it.key} onClick={onSelectCurrentItem.bind(it)}>
               <StyledAccessRightItem>
                 <StyledAccessRightItemIcon src={it.icon} />
                 <StyledAccessRightItemContent>
                   <StyledAccessRightItemTitleAndBadge>
                     {it.title}
-                    {itQuota && (
+                    {it.quota && (
                       <Badge
-                        label={itQuota.quota}
-                        backgroundColor={itQuota.color}
+                        label={it.quota}
+                        backgroundColor={it.color}
                         fontSize="8px"
                       />
                     )}
@@ -57,7 +59,7 @@ const AccessRightSelect = ({ accessRightsList, quotaList, ...props }) => {
     <StyledAccessRightWrapper>
       <StyledAccessRightIcon src={currentItem?.icon} />
       <ComboBox
-        advancedOptions={formatToAccessRightItem(accessRightsList)}
+        advancedOptions={formatToAccessRightItem(options)}
         directionX="left"
         directionY="bottom"
         opened
@@ -77,9 +79,11 @@ const AccessRightSelect = ({ accessRightsList, quotaList, ...props }) => {
 
 AccessRightSelect.propTypes = {
   /** List of rights */
-  accessRightsList: PropTypes.arrayOf(PropTypes.object),
-  /** List of quotas */
-  quotaList: PropTypes.arrayOf(PropTypes.object),
+  options: PropTypes.arrayOf(PropTypes.object).isRequired,
+  /** Will be triggered whenever an AccessRightSelect is selected option */
+  onSelect: PropTypes.func,
+  /** The option that is selected by default */
+  selectedOption: PropTypes.object,
 };
 
 export default AccessRightSelect;

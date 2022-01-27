@@ -1,7 +1,7 @@
 import React from "react";
 
 import AccessRightSelect from "./";
-import { data, quota } from "./data";
+import { data } from "./data";
 
 const Wrapper = (props) => (
   <div
@@ -13,7 +13,7 @@ const Wrapper = (props) => (
   </div>
 );
 
-const Template = ({ ...args }) => (
+const Template = (args) => (
   <Wrapper>
     <AccessRightSelect {...args} />
   </Wrapper>
@@ -21,6 +21,6 @@ const Template = ({ ...args }) => (
 
 export const Default = Template.bind({});
 Default.args = {
-  accessRightsList: data,
-  quotaList: quota,
+  options: data,
+  selectedOption: data[0],
 };

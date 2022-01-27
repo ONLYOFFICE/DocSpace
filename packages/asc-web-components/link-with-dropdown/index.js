@@ -47,7 +47,6 @@ class LinkWithDropdown extends React.Component {
 
   onClickDropDownItem = (e) => {
     const { key } = e.target.dataset;
-    console.log(e);
     const item = this.props.data.find((x) => x.key === key);
     this.setIsOpen(!this.state.isOpen);
     item && item.onClick && item.onClick(e);
@@ -118,7 +117,7 @@ class LinkWithDropdown extends React.Component {
               className="drop-down-item"
               key={item.key}
               {...item}
-              onClick={(e) => this.onClickDropDownItem(e)}
+              onClick={this.onClickDropDownItem}
               data-key={item.key}
             />
           ))}
