@@ -2201,7 +2201,7 @@ const Dark = {
 
   filesBadges: {
     iconColor: "#858585",
-    hoverIconColor: grayMaxLight,
+    hoverIconColor: "#3B72A7",
 
     color: black,
     backgroundColor: "#858585",

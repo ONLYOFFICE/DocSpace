@@ -57,6 +57,7 @@ const QuickButtons = ({
           className="badge share-button-icon"
           size={sizeQuickButton}
           onClick={onClickShare}
+          color={theme.filesQuickButtons.color}
           hoverColor={theme.filesQuickButtons.sharedColor}
         />
       )}
@@ -68,6 +69,7 @@ const QuickButtons = ({
           data-id={id}
           data-locked={locked ? true : false}
           onClick={onClickLock}
+          color={theme.filesQuickButtons.color}
           hoverColor={theme.filesQuickButtons.sharedColor}
         />
       )}
@@ -79,6 +81,7 @@ const QuickButtons = ({
           data-id={id}
           data-title={title}
           onClick={() => onClickFavorite(showFavorite)}
+          color={theme.filesQuickButtons.color}
           hoverColor={theme.filesQuickButtons.hoverColor}
         />
       )}
