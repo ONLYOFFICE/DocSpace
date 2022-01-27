@@ -7,9 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-using StackExchange.Redis.Extensions.Core.Configuration;
-using StackExchange.Redis.Extensions.Newtonsoft;
-
 namespace ASC.Web.Api
 {
     public class Startup : BaseStartup
@@ -34,8 +31,6 @@ namespace ASC.Web.Api
             DIHelper.TryAdd<SecurityController>();
             DIHelper.TryAdd<SmtpSettingsController>();
             DIHelper.TryAdd<ThirdPartyController>();
-
-            services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(Configuration.GetSection("Redis").Get<RedisConfiguration>());
         }
     }
 }
