@@ -2,10 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import MainButton from '@appserver/components/main-button';
-import DropDownItem from '@appserver/components/drop-down-item';
 import { withTranslation } from 'react-i18next';
 import { isMobile } from 'react-device-detect';
-import { isMobile as isMobileUtils } from '@appserver/components/utils/device';
+import {
+  isMobile as isMobileUtils,
+  isTablet as isTabletUtils,
+} from '@appserver/components/utils/device';
 import Loaders from '@appserver/common/components/Loaders';
 import { FileAction, AppServerConfig } from '@appserver/common/constants';
 import { encryptionUploadDialog } from '../../../helpers/desktop';
@@ -13,17 +15,24 @@ import { inject, observer } from 'mobx-react';
 import config from '../../../../package.json';
 import { combineUrl } from '@appserver/common/utils';
 import withLoader from '../../../HOCs/withLoader';
+import MobileView from './MobileView';
 
 class CatalogMainButtonContent extends React.Component {
   onCreate = (e) => {
     // this.goToHomePage();
-    const format = e.currentTarget.dataset.format || null;
+
+    const format = e.action || null;
     this.props.setAction({
       type: FileAction.Create,
       extension: format,
       id: -1,
     });
-    if (isMobile || isMobileUtils()) this.props.toggleShowText();
+  };
+
+  onShowSelectFileDialog = () => {
+    const { setSelectFileDialogVisible, hideArticle } = this.props;
+    hideArticle();
+    setSelectFileDialogVisible(true);
   };
 
   onUploadFileClick = () => {
@@ -34,7 +43,6 @@ class CatalogMainButtonContent extends React.Component {
         this.goToHomePage();
         startUpload([encryptedFile], null, t);
       });
-      if (isMobile || isMobileUtils()) this.props.toggleShowText();
     } else {
       this.inputFilesElement.click();
     }
@@ -46,14 +54,12 @@ class CatalogMainButtonContent extends React.Component {
     const { homepage, history, filter } = this.props;
     const urlFilter = filter.toUrlParams();
     history.push(combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`));
-    if (isMobile || isMobileUtils()) this.props.toggleShowText();
   };
 
   onFileChange = (e) => {
     const { startUpload, t } = this.props;
     //this.goToHomePage();
     startUpload(e.target.files, null, t);
-    if (isMobile || isMobileUtils()) this.props.toggleShowText();
   };
 
   onInputClick = (e) => (e.target.value = null);
@@ -68,56 +74,137 @@ class CatalogMainButtonContent extends React.Component {
 
   render() {
     //console.log("Files ArticleMainButtonContent render");
-    const { t, tReady, canCreate, isDisabled, firstLoad, isPrivacy } = this.props;
+    const { t, tReady, canCreate, isDisabled, firstLoad, isPrivacy, sectionWidth } = this.props;
+    const folderUpload = !isMobile
+      ? [
+          {
+            className: 'main-button_drop-down',
+            icon: 'images/actions.upload.react.svg',
+            label: t('UploadFolder'),
+            disabled: isPrivacy,
+            onClick: this.onUploadFolderClick,
+            key: 'upload-folder',
+          },
+        ]
+      : [];
+
+    const formActions = !isMobile
+      ? [
+          {
+            className: 'main-button_drop-down',
+            icon: 'images/form.react.svg',
+            label: t('Translations:NewForm'),
+            key: 'new-form',
+            items: [
+              {
+                className: 'main-button_drop-down_sub',
+                label: t('Translations:SubNewForm'),
+                onClick: this.onCreate,
+                action: 'docxf',
+                key: 'docxf',
+              },
+              {
+                className: 'main-button_drop-down_sub',
+                label: t('Translations:SubNewFormFile'),
+                onClick: this.onShowSelectFileDialog,
+                disabled: isPrivacy,
+                key: 'form-file',
+              },
+            ],
+          },
+        ]
+      : [
+          {
+            className: 'main-button_drop-down_sub',
+            icon: 'images/form.react.svg',
+            label: t('Translations:NewForm'),
+            onClick: this.onCreate,
+            action: 'docxf',
+            key: 'docxf',
+          },
+          {
+            className: 'main-button_drop-down_sub',
+            icon: 'images/form.file.react.svg',
+            label: t('Translations:NewFormFile'),
+            onClick: this.onShowSelectFileDialog,
+            disabled: isPrivacy,
+            key: 'form-file',
+          },
+        ];
+
+    const actions = [
+      {
+        className: 'main-button_drop-down',
+        icon: 'images/actions.documents.react.svg',
+        label: t('NewDocument'),
+        onClick: this.onCreate,
+        action: 'docx',
+        key: 'docx',
+      },
+      {
+        className: 'main-button_drop-down',
+        icon: 'images/spreadsheet.react.svg',
+        label: t('NewSpreadsheet'),
+        onClick: this.onCreate,
+        action: 'xlsx',
+        key: 'xlsx',
+      },
+      {
+        className: 'main-button_drop-down',
+        icon: 'images/actions.presentation.react.svg',
+        label: t('NewPresentation'),
+        onClick: this.onCreate,
+        action: 'pptx',
+        key: 'pptx',
+      },
+      ...formActions,
+      {
+        className: 'main-button_drop-down',
+        icon: 'images/catalog.folder.react.svg',
+        label: t('NewFolder'),
+        onClick: this.onCreate,
+        key: 'new-folder',
+      },
+    ];
+
+    const uploadActions = [
+      {
+        className: 'main-button_drop-down',
+        icon: 'images/actions.upload.react.svg',
+        label: t('UploadFiles'),
+        onClick: this.onUploadFileClick,
+        key: 'upload-files',
+      },
+      ...folderUpload,
+    ];
+
+    const menuModel = [
+      ...actions,
+      {
+        isSeparator: true,
+      },
+      ...uploadActions,
+    ];
 
     return (
-      <MainButton
-        isDisabled={isDisabled ? isDisabled : !canCreate}
-        isDropdown={true}
-        text={t('Common:Actions')}>
-        <DropDownItem
-          className="main-button_drop-down"
-          icon="images/actions.documents.react.svg"
-          label={t('NewDocument')}
-          onClick={this.onCreate}
-          data-format="docx"
-        />
-        <DropDownItem
-          className="main-button_drop-down"
-          icon="images/spreadsheet.react.svg"
-          label={t('NewSpreadsheet')}
-          onClick={this.onCreate}
-          data-format="xlsx"
-        />
-        <DropDownItem
-          className="main-button_drop-down"
-          icon="images/actions.presentation.react.svg"
-          label={t('NewPresentation')}
-          onClick={this.onCreate}
-          data-format="pptx"
-        />
-        <DropDownItem
-          className="main-button_drop-down"
-          icon="images/catalog.folder.react.svg"
-          label={t('NewFolder')}
-          onClick={this.onCreate}
-        />
-        <DropDownItem isSeparator />
-        <DropDownItem
-          className="main-button_drop-down"
-          icon="images/actions.upload.react.svg"
-          label={t('UploadFiles')}
-          onClick={this.onUploadFileClick}
-        />
-        {!isMobile && (
-          <DropDownItem
-            className="main-button_drop-down"
-            icon="images/actions.upload.react.svg"
-            label={t('UploadFolder')}
-            disabled={isPrivacy}
-            onClick={this.onUploadFolderClick}
+      <>
+        {isMobile || isMobileUtils() || isTabletUtils() ? (
+          <MobileView
+            actionOptions={actions}
+            buttonOptions={uploadActions}
+            sectionWidth={sectionWidth}
           />
+        ) : (
+          <>
+            <MainButton
+              isDisabled={isDisabled ? isDisabled : !canCreate}
+              isDropdown={true}
+              text={t('Common:Actions')}
+              model={menuModel}
+            />
+          </>
         )}
+
         <input
           id="customFileInput"
           className="custom-file-input"
@@ -139,7 +226,7 @@ class CatalogMainButtonContent extends React.Component {
           ref={(input) => (this.inputFolderElement = input)}
           style={{ display: 'none' }}
         />
-      </MainButton>
+      </>
     );
   }
 }
