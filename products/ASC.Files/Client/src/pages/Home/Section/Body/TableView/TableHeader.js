@@ -89,13 +89,42 @@ class FilesTableHeader extends React.Component {
     const tableColumns = columns.map((c) => c.enable && c.key);
     this.setTableColumns(tableColumns);
 
-    this.state = { columns, resetColumnsSize };
+    this.state = {
+      columns,
+      resetColumnsSize,
+      prevScrollPosition: 0,
+      isBeginScrolling: false,
+    };
   }
 
   setTableColumns = (tableColumns) => {
     localStorage.setItem(`${TABLE_COLUMNS}=${this.props.userId}`, tableColumns);
   };
 
+  componentDidMount() {
+    this.customScrollElm = document.getElementsByClassName("section-scroll")[0];
+
+    this.customScrollElm.addEventListener("scroll", this.onBeginScroll);
+  }
+
+  onBeginScroll = () => {
+    const { isBeginScrolling } = this.state;
+    const currentScrollPosition = this.customScrollElm.scrollTop;
+
+    if (currentScrollPosition === 0) {
+      isBeginScrolling &&
+        this.setState({
+          isBeginScrolling: false,
+        });
+
+      return;
+    }
+
+    !isBeginScrolling &&
+      this.setState({
+        isBeginScrolling: true,
+      });
+  };
   componentDidUpdate(prevProps) {
     const { columns } = this.state;
     if (this.props.withContent !== prevProps.withContent) {
@@ -107,6 +136,9 @@ class FilesTableHeader extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this.customScrollElm.removeEventListener("scroll", this.onBeginScroll);
+  }
   getColumns = (defaultColumns, splitColumns) => {
     const columns = [];
 
@@ -177,11 +209,12 @@ class FilesTableHeader extends React.Component {
       userId,
       cbMenuItems,
       getCheckboxItemLabel,
+      firstElemChecked,
     } = this.props;
 
     const { sortBy, sortOrder } = filter;
 
-    const { columns, resetColumnsSize } = this.state;
+    const { columns, resetColumnsSize, isBeginScrolling } = this.state;
 
     const checkboxOptions = (
       <>
@@ -201,6 +234,9 @@ class FilesTableHeader extends React.Component {
 
     return (
       <TableHeader
+        isLengthenHeader={
+          firstElemChecked || isBeginScrolling || isHeaderChecked
+        }
         checkboxSize="32px"
         sorted={sortOrder === "descending"}
         sortBy={sortBy}
@@ -240,6 +276,7 @@ export default inject(
       canShare,
       cbMenuItems,
       getCheckboxItemLabel,
+      firstElemChecked,
     } = filesStore;
     const { getHeaderMenu } = filesActionsStore;
     const { isPrivacyFolder } = treeFoldersStore;
@@ -263,6 +300,8 @@ export default inject(
       userId: auth.userStore.user.id,
       cbMenuItems,
       getCheckboxItemLabel,
+
+      firstElemChecked,
     };
   }
 )(

@@ -55,6 +55,8 @@ class FilesStore {
   activeFiles = [];
   activeFolders = [];
 
+  firstElemChecked = false;
+
   constructor(
     authStore,
     settingsStore,
@@ -1146,6 +1148,10 @@ class FilesStore {
     const items = [...this.files, ...this.folders];
     return this.isHeaderVisible && this.selection.length === items.length;
   }
+
+  setFirsElemChecked = (checked) => {
+    this.firstElemChecked = checked;
+  };
 
   get canCreate() {
     switch (this.selectedFolderStore.rootFolderType) {

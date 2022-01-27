@@ -63,7 +63,13 @@ const StyledTableContainer = styled(TableContainer)`
   }
 `;
 
-const Table = ({ filesList, sectionWidth, viewAs, setViewAs }) => {
+const Table = ({
+  filesList,
+  sectionWidth,
+  viewAs,
+  setViewAs,
+  setFirsElemChecked,
+}) => {
   const ref = useRef(null);
 
   useEffect(() => {
@@ -80,8 +86,13 @@ const Table = ({ filesList, sectionWidth, viewAs, setViewAs }) => {
     <StyledTableContainer forwardedRef={ref}>
       <TableHeader sectionWidth={sectionWidth} containerRef={ref} />
       <TableBody>
-        {filesList.map((item) => (
-          <TableRow key={item.id} item={item} />
+        {filesList.map((item, index) => (
+          <TableRow
+            key={item.id}
+            item={item}
+            index={index}
+            setFirsElemChecked={setFirsElemChecked}
+          />
         ))}
       </TableBody>
     </StyledTableContainer>
@@ -89,11 +100,12 @@ const Table = ({ filesList, sectionWidth, viewAs, setViewAs }) => {
 };
 
 export default inject(({ filesStore }) => {
-  const { filesList, viewAs, setViewAs } = filesStore;
+  const { filesList, viewAs, setViewAs, setFirsElemChecked } = filesStore;
 
   return {
     filesList,
     viewAs,
     setViewAs,
+    setFirsElemChecked,
   };
 })(observer(Table));

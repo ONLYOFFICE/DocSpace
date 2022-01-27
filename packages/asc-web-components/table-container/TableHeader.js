@@ -440,6 +440,7 @@ class TableHeader extends React.Component {
       headerMenu,
       columnStorageName,
       hasAccess,
+      isLengthenHeader,
       ...rest
     } = this.props;
 
@@ -453,6 +454,7 @@ class TableHeader extends React.Component {
             containerRef={containerRef}
             onChange={onChange}
             isChecked={isChecked}
+            isLengthenHeader={isLengthenHeader}
             isIndeterminate={isIndeterminate}
             headerMenu={headerMenu}
             columnStorageName={columnStorageName}
@@ -460,7 +462,9 @@ class TableHeader extends React.Component {
           />
         ) : (
           <StyledTableHeader
-            className="table-container_header"
+            className={`${
+              isLengthenHeader ? "lengthen-header" : ""
+            }table-container_header`}
             ref={this.headerRef}
             {...rest}
           >
@@ -527,6 +531,7 @@ TableHeader.propTypes = {
   onClick: PropTypes.func,
   hasAccess: PropTypes.bool,
   resetColumnsSize: PropTypes.bool,
+  isLengthenHeader: PropTypes.bool,
 };
 
 export default TableHeader;
