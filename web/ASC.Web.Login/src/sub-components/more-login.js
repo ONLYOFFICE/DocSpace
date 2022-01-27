@@ -19,9 +19,10 @@ const ProviderRow = styled.div`
   align-content: center;
   padding-top: 12px;
 
-  .provider-icon {
-    height: 18px;
-    width: 18px;
+  svg {
+    height: 24px;
+    width: 24px;
+    padding-top: 4px;
   }
 
   .provider-name {
@@ -40,7 +41,6 @@ const MoreLoginModal = (props) => {
   return (
     <ModalDialogContainer
       displayType="aside"
-      asideBodyPadding="16px 0 0 0"
       visible={visible}
       onClose={onClose}
     >
@@ -53,7 +53,7 @@ const MoreLoginModal = (props) => {
 
           return (
             <ProviderRow key={`ProviderItem${index}`}>
-              <ReactSVG src={icon} className="provider-icon" />
+              <ReactSVG src={icon} />
               <Text fontSize="14px" fontWeight="600" className="provider-name">
                 {getProviderTranslation(label, t)}
               </Text>
