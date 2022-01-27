@@ -32,6 +32,11 @@ const styleCss = css`
         css`
           display: ${(props) => props.display};
         `}
+  ${(props) =>
+    props.lineHeight &&
+    css`
+      line-height: ${props.lineHeight};
+    `}
 `;
 const StyledText = styled.p`
   ${styleCss};
