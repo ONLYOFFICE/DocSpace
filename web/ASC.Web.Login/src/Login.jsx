@@ -80,7 +80,10 @@ const LoginContainer = styled.div`
 
   .more-label {
     padding-top: 18px;
-    padding-bottom: 35px;
+  }
+
+  .or-label {
+    padding-top: 35px;
   }
 
   .auth-form-container {
@@ -411,6 +414,7 @@ const Form = (props) => {
       providers &&
       providers.map((item, index) => {
         if (!providersData[item.provider]) return;
+        if (index > 1) return;
 
         const { icon, label, iconOptions, className } = providersData[
           item.provider
@@ -467,18 +471,22 @@ const Form = (props) => {
       {oauthDataExists() && (
         <>
           <ButtonsWrapper>{providerButtons()}</ButtonsWrapper>
-          <Link
-            isHovered
-            type="action"
-            fontSize="13px"
-            fontWeight="600"
-            color="#3B72A7"
-            className="more-label"
-            onClick={moreAuthOpen}
-          >
-            {t("ShowMore")}
-          </Link>
-          <Text color="#A3A9AE">{t("Or")}</Text>
+          {providers && providers.length > 2 && (
+            <Link
+              isHovered
+              type="action"
+              fontSize="13px"
+              fontWeight="600"
+              color="#3B72A7"
+              className="more-label"
+              onClick={moreAuthOpen}
+            >
+              {t("ShowMore")}
+            </Link>
+          )}
+          <Text color="#A3A9AE" className="or-label">
+            {t("Or")}
+          </Text>
         </>
       )}
 
@@ -544,6 +552,7 @@ const Form = (props) => {
         visible={moreAuthVisible}
         onClose={moreAuthClose}
         providers={providers}
+        onSocialLoginClick={onSocialButtonClick}
       />
     </LoginContainer>
   );
