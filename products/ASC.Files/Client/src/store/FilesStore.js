@@ -57,6 +57,8 @@ class FilesStore {
 
   firstElemChecked = false;
 
+  isPrevSettingsModule = false;
+
   constructor(
     authStore,
     settingsStore,
@@ -80,6 +82,10 @@ class FilesStore {
     this.formatsStore = formatsStore;
     this.filesSettingsStore = filesSettingsStore;
   }
+
+  setIsPrevSettingsModule = (isSettings) => {
+    this.isPrevSettingsModule = isSettings;
+  };
 
   addActiveItems = (files, folders) => {
     if (folders && folders.length) {
@@ -284,12 +290,12 @@ class FilesStore {
   };
 
   //TODO: FILTER
-  setFilesFilter = (filter) => {
+  setFilesFilter = (filter, isPrefSettings) => {
     const key = `UserFilter=${this.userStore.user.id}`;
     const value = `${filter.sortBy},${filter.pageCount},${filter.sortOrder}`;
     localStorage.setItem(key, value);
 
-    this.setFilterUrl(filter);
+    !isPrefSettings && this.setFilterUrl(filter);
     this.filter = filter;
   };
 
@@ -342,7 +348,12 @@ class FilesStore {
       treeFolders,
       setSelectedNode,
       getSubfolders,
+      selectedTreeNode,
     } = this.treeFoldersStore;
+    const { id } = this.selectedFolderStore;
+
+    const isPrefSettings = isNaN(+selectedTreeNode) && !id;
+    isPrefSettings && this.setIsPrevSettingsModule(true);
 
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
@@ -383,7 +394,7 @@ class FilesStore {
             data.current.rootFolderType === FolderType.Privacy;
 
           filterData.total = data.total;
-          this.setFilesFilter(filterData); //TODO: FILTER
+          this.setFilesFilter(filterData, isPrefSettings); //TODO: FILTER
           this.setFolders(isPrivacyFolder && isMobile ? [] : data.folders);
           this.setFiles(isPrivacyFolder && isMobile ? [] : data.files);
 
