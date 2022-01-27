@@ -36,7 +36,7 @@ const ProviderRow = styled.div`
 `;
 
 const MoreLoginModal = (props) => {
-  const { t, visible, onClose, providers } = props;
+  const { t, visible, onClose, providers, onSocialLoginClick } = props;
 
   return (
     <ModalDialogContainer
@@ -61,6 +61,9 @@ const MoreLoginModal = (props) => {
                 label={t("LoginButton")}
                 className="signin-button"
                 size="medium"
+                data-url={item.url}
+                data-providername={item.provider}
+                onClick={onSocialLoginClick}
               />
             </ProviderRow>
           );
