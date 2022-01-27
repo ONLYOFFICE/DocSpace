@@ -161,7 +161,10 @@ const TooltipStyle = styled.div`
 
 const StyledTooltipContainer = styled(Text)`
   //margin: 8px 16px 16px 16px;
+  color: ${(props) => props.theme.passwordInput.tooltipTextColor} !important;
 `;
+
+StyledTooltipContainer.defaultProps = { theme: Base };
 
 const StyledTooltipItem = styled(Text)`
   margin-left: 8px;

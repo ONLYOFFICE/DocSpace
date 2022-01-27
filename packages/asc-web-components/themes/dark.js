@@ -686,6 +686,8 @@ const Dark = {
     color: "#858585",
     disableColor: "#858585",
 
+    tooltipTextColor: black,
+
     iconColor: "#646464",
     hoverIconColor: "#858585",
 

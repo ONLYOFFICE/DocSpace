@@ -696,6 +696,8 @@ const Base = {
 
     lineHeight: "32px",
 
+    tooltipTextColor: black,
+
     text: {
       lineHeight: "14px",
       marginTop: "-2px",
