@@ -153,14 +153,6 @@ export default function withFileActions(WrappedFileItem) {
       } = item;
       if (encrypted && isPrivacy) return checkProtocol(item.id, true);
 
-      if (item.fileExst === ".png" || item.fileExst === ".jpg") {
-        const url = "/products/files/#preview/" + id;
-
-        history.pushState({ id, type: "image" }, null, url);
-        console.log("history.state", history.state);
-        console.log("history.length", history.length);
-      }
-
       if (isTrashFolder) return;
       if (
         (e && e.target.tagName === "INPUT") ||
@@ -214,6 +206,9 @@ export default function withFileActions(WrappedFileItem) {
 
         if (isMediaOrImage) {
           setMediaViewerData({ visible: true, id });
+
+          const url = "/products/files/#preview/" + id;
+          history.pushState(null, null, url);
           return;
         }
 

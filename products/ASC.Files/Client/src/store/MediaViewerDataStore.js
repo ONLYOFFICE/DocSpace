@@ -17,7 +17,6 @@ class MediaViewerDataStore {
   setMediaViewerData = (mediaData) => {
     this.id = mediaData.id;
     this.visible = mediaData.visible;
-    console.log(" id MediaViewerDataStore", this.id);
   };
 
   setToPreviewFile = (file, visible) => {

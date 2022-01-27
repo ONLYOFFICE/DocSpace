@@ -30,8 +30,7 @@ const FilesMediaViewer = (props) => {
     expandedKeys,
   } = props;
 
-  const [firstUrl, setFirstUrl] = useState(window.location.href);
-  console.log("firstUrl", firstUrl);
+  const [firstUrl, setFirstUrl] = useState();
 
   useEffect(() => {
     const previewId = queryString.parse(location.search).preview;
@@ -43,26 +42,28 @@ const FilesMediaViewer = (props) => {
   }, [removeQuery, onMediaFileClick]);
 
   const checkURLchange = () => {
-    // При кнопке Назад url неверно заменяется. Из-за onClose?
-    console.log("сначала", !oldURL.includes("#preview"));
     if (!oldURL.includes("#preview")) {
-      console.log('oldURL.includes("#preview")', oldURL.includes("#preview"));
       setFirstUrl(oldURL);
-    }
-    if (window.location.href != oldURL) {
-      oldURL = window.location.href;
-      const hash = window.location.hash;
-      const id = +hash.slice(9);
-      if (!id) {
-        setMediaViewerData({ visible: false, id: null });
-        return;
-      }
-      setMediaViewerData({ visible: true, id });
     }
   };
 
   let oldURL = window.location.href;
   setInterval(checkURLchange, 1000);
+
+  window.onpopstate = function (event) {
+    const hash = window.location.hash;
+    const id = +hash.slice(9);
+    if (!id) {
+      setMediaViewerData({ visible: false, id: null });
+      return;
+    }
+    setMediaViewerData({ visible: true, id });
+  };
+
+  const onChangeUrl = (id) => {
+    const url = "/products/files/#preview/" + id;
+    window.history.pushState(null, null, url);
+  };
 
   const removeQuery = (queryName) => {
     const queryParams = new URLSearchParams(location.search);
@@ -130,9 +131,7 @@ const FilesMediaViewer = (props) => {
 
     if (event.currentTarget.closed === false) {
       return;
-    }
-
-    if (event.currentTarget.getElementsByClassName("mediaPlayerClose")) {
+    } else {
       window.history.replaceState(null, null, firstUrl);
     }
   };
@@ -156,6 +155,7 @@ const FilesMediaViewer = (props) => {
         extsImagePreviewed={mediaViewerImageFormats} //TODO:
         errorLabel={t("Translations:MediaLoadError")}
         previewFile={previewFile}
+        onChangeUrl={onChangeUrl}
       />
     )
   );
