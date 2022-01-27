@@ -16,8 +16,6 @@ import store from "studio/store";
 
 const theme = store.auth.settingsStore.theme;
 
-console.log(theme);
-
 const StyledCheckboxIcon = styled(CheckboxIcon)`
   color: ${(props) => props.theme.checkbox.fillColor};
   ${commonIconsStyles};
