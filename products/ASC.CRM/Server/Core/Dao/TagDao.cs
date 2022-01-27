@@ -50,13 +50,12 @@ namespace ASC.CRM.Core.Dao
     public class TagDao : AbstractDao
     {
         public TagDao(DbContextManager<CrmDbContext> dbContextManager,
-             DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             SecurityContext securityContext,
             IOptionsMonitor<ILog> logger,
             ICache ascCache,
             IMapper mapper) :
-                        base(dbContextManager,dbContextManager1,
+                        base(dbContextManager,
                                 tenantManager,
                                 securityContext,
                                 logger,

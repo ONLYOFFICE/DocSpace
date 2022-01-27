@@ -102,14 +102,14 @@ namespace ASC.ElasticSearch
             DbContextManager<WebstudioDbContext> dbContextManager,
             TenantManager tenantManager,
             BaseIndexerHelper baseIndexerHelper,
-            SettingsHelper settingsHelper,
+            Settings settings,
             IServiceProvider serviceProvider)
         {
             Client = client;
             Log = log.CurrentValue;
             TenantManager = tenantManager;
             BaseIndexerHelper = baseIndexerHelper;
-            Settings = settingsHelper.Settings;
+            Settings = settings;
             ServiceProvider = serviceProvider;
             LazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => dbContextManager.Value);
         }

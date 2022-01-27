@@ -1,4 +1,4 @@
-{
+﻿{
   "ConflictResolveDescription": "Het bestand met de naam {{file}} bestaat al in de map {{folder}}.",
   "ConflictResolveDescriptionFiles": "{{filesCount}} documenten met dezelfde naam al bestaan in de map '{{folder}}'.",
   "ConflictResolveSelectAction": "Kies de actie:",

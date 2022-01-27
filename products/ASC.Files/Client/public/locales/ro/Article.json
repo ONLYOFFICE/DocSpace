@@ -1,8 +1,12 @@
-{
-    "NewDocument": "Document nou",
-    "NewFolder": "Dosar nou",
-    "NewPresentation": "Prezentare nouă",
-    "NewSpreadsheet": "Foaie de calcul nouă",
-    "UploadFiles": "Încarcă fișiere",
-    "UploadFolder": "Încarcă dosarul"
+﻿{
+  "ButtonAddBoxNet": "Adaugă cont Box",
+  "ButtonAddDropBox": "Adaugă cont DropBox",
+  "ButtonAddGoogle": "Adaugă cont Google",
+  "ButtonAddSkyDrive": "Adaugă cont OneDrive",
+  "NewDocument": "Document nou",
+  "NewFolder": "Dosar nou",
+  "NewPresentation": "Prezentare nouă",
+  "NewSpreadsheet": "Foaie de calcul nouă",
+  "UploadFiles": "Încarcă fișiere",
+  "UploadFolder": "Încarcă dosarul"
 }

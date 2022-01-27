@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security;
 using System.Text;
 using System.Threading;
@@ -343,7 +344,7 @@ namespace ASC.Web.Files.ThirdPartyApp
 
                 request.Method = HttpMethod.Post;
                 request.Headers.Add("Authorization", "Bearer " + token);
-                request.Headers.Add("Content-Type", "multipart/form-data; boundary=" + boundary);
+                request.Content.Headers.ContentType = new MediaTypeHeaderValue("multipart/form-data; boundary=" + boundary);
                 Logger.Debug("BoxApp: save file totalSize - " + tmpStream.Length);
 
                 tmpStream.Seek(0, SeekOrigin.Begin);
