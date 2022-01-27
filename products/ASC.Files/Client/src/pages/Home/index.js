@@ -263,6 +263,8 @@ class PureHome extends React.Component {
       dragging,
       tReady,
       personal,
+      checkedMaintenance,
+      setMaintenanceExist,
     } = this.props;
     return (
       <>
@@ -311,7 +313,13 @@ class PureHome extends React.Component {
           </PageLayout.SectionHeader>
 
           <PageLayout.SectionBar>
-            <Bar firstLoad={firstLoad} personal={personal} />
+            {checkedMaintenance && (
+              <Bar
+                firstLoad={firstLoad}
+                personal={personal}
+                setMaintenanceExist={setMaintenanceExist}
+              />
+            )}
           </PageLayout.SectionBar>
 
           <PageLayout.SectionFilter>
@@ -419,6 +427,8 @@ export default inject(
       isRecycleBinFolder,
       isPrivacyFolder,
       isVisitor: auth.userStore.user.isVisitor,
+      checkedMaintenance: auth.settingsStore.checkedMaintenance,
+      setMaintenanceExist: auth.settingsStore.setMaintenanceExist,
       expandedKeys,
 
       primaryProgressDataVisible,
