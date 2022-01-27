@@ -37,7 +37,7 @@ const StyledContainer = styled.header`
           .navMenuHeader,
           .profileMenuIcon,
           .navMenuHeaderUnAuth {
-            position: ${(props) => (props.isFixed ? "fixed" : "none")};
+            position: ${(props) => (props.maintenanceExist ? "none" : "fixed")};
             z-index: 160;
             top: ${(props) => (props.isVisible ? "0" : "-48px")};
 
@@ -149,13 +149,12 @@ class NavMenu extends React.Component {
       asideContent,
       history,
       isDesktop,
+      maintenanceExist,
     } = this.props;
 
     const isAsideAvailable = !!asideContent;
     const hideHeader =
       isDesktop || history.location.pathname === "/products/files/private";
-
-    const isFixed = document.getElementById("main-bar") ? false : true;
 
     //console.log("NavMenu render", this.state, this.props);
 
@@ -166,7 +165,7 @@ class NavMenu extends React.Component {
             isLoaded={isLoaded}
             isVisible={value.isVisible}
             isDesktop={hideHeader}
-            isFixed={isFixed}
+            maintenanceExist={maintenanceExist}
           >
             <Toast />
 
@@ -235,9 +234,10 @@ NavMenu.defaultProps = {
 
 const NavMenuWrapper = inject(({ auth }) => {
   const { settingsStore, isAuthenticated, isLoaded, language } = auth;
-  const { isDesktopClient: isDesktop } = settingsStore;
+  const { isDesktopClient: isDesktop, maintenanceExist } = settingsStore;
   return {
     isAuthenticated,
+    maintenanceExist,
     isLoaded,
     isDesktop,
     language,
