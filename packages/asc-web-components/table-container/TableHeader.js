@@ -462,6 +462,7 @@ class TableHeader extends React.Component {
           />
         ) : (
           <StyledTableHeader
+            id="table-container_caption-header"
             className={`${
               isLengthenHeader ? "lengthen-header" : ""
             }table-container_header`}

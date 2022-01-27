@@ -92,9 +92,9 @@ class FilesTableHeader extends React.Component {
     this.state = {
       columns,
       resetColumnsSize,
-      prevScrollPosition: 0,
-      isBeginScrolling: false,
     };
+
+    this.isBeginScrolling = false;
   }
 
   setTableColumns = (tableColumns) => {
@@ -108,22 +108,26 @@ class FilesTableHeader extends React.Component {
   }
 
   onBeginScroll = () => {
-    const { isBeginScrolling } = this.state;
+    const { firstElemChecked } = this.props;
+
     const currentScrollPosition = this.customScrollElm.scrollTop;
 
     if (currentScrollPosition === 0) {
-      isBeginScrolling &&
-        this.setState({
-          isBeginScrolling: false,
-        });
+      this.isBeginScrolling = false;
 
+      !firstElemChecked &&
+        document
+          .getElementById("table-container_caption-header")
+          ?.classList?.remove("lengthen-header");
       return;
     }
 
-    !isBeginScrolling &&
-      this.setState({
-        isBeginScrolling: true,
-      });
+    !this.isBeginScrolling &&
+      document
+        .getElementById("table-container_caption-header")
+        ?.classList?.add("lengthen-header");
+
+    this.isBeginScrolling = true;
   };
   componentDidUpdate(prevProps) {
     const { columns } = this.state;
@@ -214,7 +218,7 @@ class FilesTableHeader extends React.Component {
 
     const { sortBy, sortOrder } = filter;
 
-    const { columns, resetColumnsSize, isBeginScrolling } = this.state;
+    const { columns, resetColumnsSize } = this.state;
 
     const checkboxOptions = (
       <>
@@ -234,9 +238,7 @@ class FilesTableHeader extends React.Component {
 
     return (
       <TableHeader
-        isLengthenHeader={
-          firstElemChecked || isBeginScrolling || isHeaderChecked
-        }
+        isLengthenHeader={firstElemChecked || isHeaderChecked}
         checkboxSize="32px"
         sorted={sortOrder === "descending"}
         sortBy={sortBy}

@@ -36,6 +36,7 @@ const TableGroupMenu = (props) => {
   return (
     <>
       <StyledTableGroupMenu
+        id="table-container_caption-header"
         width={width}
         className={`${
           isLengthenHeader ? "lengthen-header" : ""
@@ -77,6 +78,7 @@ const TableGroupMenu = (props) => {
 TableGroupMenu.propTypes = {
   isChecked: PropTypes.bool,
   isIndeterminate: PropTypes.bool,
+  isLengthenHeader: PropTypes.bool,
   headerMenu: PropTypes.arrayOf(PropTypes.object),
   checkboxOptions: PropTypes.any.isRequired,
   onClick: PropTypes.func,
