@@ -1,7 +1,16 @@
 {
-  "presets": ["@babel/preset-react", "@babel/preset-env"],
+  "presets": ["@babel/preset-react", "@babel/preset-env", "next/babel"],
   "plugins": [
     "@babel/plugin-transform-runtime",
-    "@babel/plugin-proposal-class-properties"
+    "@babel/plugin-proposal-class-properties",
+
+    [
+      "styled-components",
+      {
+        "ssr": true,
+        "displayName": true,
+        "preprocess": false
+      }
+    ]
   ]
 }
