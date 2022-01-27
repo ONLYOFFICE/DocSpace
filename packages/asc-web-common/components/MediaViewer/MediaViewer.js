@@ -61,7 +61,7 @@ class MediaViewer extends React.Component {
       playlistPos,
       fileUrl: item.src,
     };
-    console.log("item.src", item.src);
+
     this.detailsContainer = React.createRef();
     this.viewerToolbox = React.createRef();
   }
@@ -312,9 +312,7 @@ class MediaViewer extends React.Component {
     });
 
     const id = playlist[currentPlaylistPos].fileId;
-    const url = "/products/files/#preview/" + id;
-
-    history.pushState({ id, type: "image" }, null, url);
+    this.props.onChangeUrl(id);
   };
 
   nextMedia = () => {
@@ -328,12 +326,7 @@ class MediaViewer extends React.Component {
     });
 
     const id = playlist[currentPlaylistPos].fileId;
-    const url = "/products/files/#preview/" + id;
-
-    history.pushState({ id, type: "image" }, null, url);
-
-    console.log("history.state", history.state);
-    console.log("history.length", history.length);
+    this.props.onChangeUrl(id);
   };
 
   getOffset = () => {
@@ -603,6 +596,7 @@ MediaViewer.propTypes = {
   deleteDialogVisible: PropTypes.bool,
   errorLabel: PropTypes.string,
   previewFile: PropTypes.bool,
+  onChangeUrl: PropTypes.func,
 };
 
 MediaViewer.defaultProps = {
