@@ -53,21 +53,23 @@ const LoginContainer = styled.div`
   }
 
   .buttonWrapper {
-    margin: 6px;
-    min-width: 225px;
-  }
+    margin-bottom: 8px;
+    width: 320px;
 
-  .line {
-    height: 1px;
-    background-color: #eceef1;
-    flex-basis: 100%;
-    margin: 0 8px;
+    @media (max-width: 768px) {
+      width: 480px;
+    }
+
+    @media (max-width: 375px) {
+      width: 311px;
+    }
   }
 
   @media (max-width: 768px) {
     padding: 0 16px;
-    max-width: 475px;
+    max-width: 480px;
   }
+
   @media (max-width: 375px) {
     margin: 72px auto 0 auto;
     max-width: 311px;
@@ -88,7 +90,7 @@ const LoginContainer = styled.div`
 
   .auth-form-container {
     margin: 32px 213px 0 213px;
-    width: 311px;
+    width: 320px;
 
     @media (max-width: 768px) {
       margin: 32px 0 0 0;
