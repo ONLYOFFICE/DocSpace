@@ -204,6 +204,8 @@ const FilesTableRow = (props) => {
     onHideContextMenu,
     onFilesClick,
     inProgress,
+    index,
+    setFirsElemChecked,
   } = props;
 
   const sharedButton =
@@ -248,6 +250,14 @@ const FilesTableRow = (props) => {
   const onDragLeave = () => {
     setIsDragActive(false);
   };
+
+  React.useEffect(() => {
+    if (index === 0 && (checkedProps || isActive)) {
+      setFirsElemChecked(true);
+    } else {
+      index === 0 && setFirsElemChecked(false);
+    }
+  }, [checkedProps, isActive]);
 
   return (
     <StyledDragAndDrop

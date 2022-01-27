@@ -52,6 +52,10 @@ const StyledTableContainer = styled.div`
     );
     border-top: 0;
   }
+  .lengthen-header {
+    border-bottom: 1px solid #eceef1;
+    border-image-source: none;
+  }
 
   .content-container {
     overflow: hidden;
