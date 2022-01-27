@@ -9,13 +9,7 @@ import styled, { css } from "styled-components";
 
 const borderColor = "#ECEEF1";
 const colorBorderTransition = "#f3f4f4";
-const contentStyles = css`
-  position: absolute;
-  width: 100%;
-  height: 1px;
-  background: ${borderColor};
-  margin-left: -24px;
-`;
+
 const StyledTableContainer = styled(TableContainer)`
   .table-row-selected + .table-row-selected {
     .table-row {
@@ -34,30 +28,12 @@ const StyledTableContainer = styled(TableContainer)`
     }
   }
 
-  .table-row-selected + .files-item:not(.table-row-selected) {
-    .table-row {
-      .table-container_row-checkbox-wrapper:first-child:before {
-        ${contentStyles}
-        margin-top: -40px;
-      }
-    }
-  }
-
   .files-item:not(.table-row-selected) + .table-row-selected {
     .table-row {
       .table-container_row-checkbox-wrapper,
       .table-container_row-context-menu-wrapper {
         margin-top: -1px;
         border-top: ${`1px ${borderColor} solid`};
-      }
-    }
-  }
-
-  .table-row-selected:last-child {
-    .table-row {
-      .table-container_row-checkbox-wrapper:before {
-        ${contentStyles}
-        margin-top: 40px;
       }
     }
   }
