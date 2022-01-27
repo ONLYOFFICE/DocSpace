@@ -242,7 +242,7 @@ export default function withFileActions(WrappedFileItem) {
       if (draggable) className += " draggable";
 
       let value = !item.isFolder ? `file_${id}` : `folder_${id}`;
-      value += draggable ? "_draggable" : "";
+      value += draggable ? "_draggable" : `_${item.providerKey}`;
 
       const isShareable = allowShareIn && item.canShare;
 

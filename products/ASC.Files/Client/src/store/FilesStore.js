@@ -1589,10 +1589,12 @@ class FilesStore {
       const splitValue = value && value.split("_");
 
       const fileType = splitValue[0];
-      const id =
-        splitValue[splitValue.length - 1] === "draggable"
-          ? splitValue.slice(1, -1).join("_")
-          : splitValue.slice(1).join("_");
+      // const id =
+      //   splitValue[splitValue.length - 1] === "draggable"
+      //     ? splitValue.slice(1, -1).join("_")
+      //     : splitValue.slice(1, -1).join("_");
+
+      const id = splitValue.slice(1, -1).join("_");
 
       if (fileType === "file") {
         this.activeFiles.findIndex((f) => f == id) === -1 &&

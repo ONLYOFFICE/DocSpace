@@ -117,7 +117,7 @@ const ConflictResolveDialog = (props) => {
     try {
       await itemOperationToFolder(data);
     } catch (error) {
-      toastr.error(error.message);
+      toastr.error(error.message ? error.message : error);
     }
   };
 
