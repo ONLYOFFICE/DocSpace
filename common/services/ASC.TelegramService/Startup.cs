@@ -49,7 +49,6 @@ namespace ASC.TelegramService
             DIHelper.TryAdd<TelegramLauncher>();
 
             services.AddHostedService<TelegramLauncher>();
-            services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(Configuration.GetSection("Redis").Get<RedisConfiguration>());
         }
     }
 }
