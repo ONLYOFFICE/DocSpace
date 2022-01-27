@@ -44,8 +44,6 @@ namespace ASC.Files
             DIHelper.TryAdd<ThirdPartyAppHandlerService>();
 
             NotifyConfigurationExtension.Register(DIHelper);
-
-            services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(Configuration.GetSection("Redis").Get<RedisConfiguration>());
         }
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)

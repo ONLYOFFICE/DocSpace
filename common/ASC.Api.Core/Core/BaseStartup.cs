@@ -36,6 +36,7 @@ using NLog;
 using NLog.Extensions.Logging;
 
 using StackExchange.Redis.Extensions.Core.Configuration;
+using StackExchange.Redis.Extensions.Newtonsoft;
 
 namespace ASC.Api.Core
 {
@@ -105,10 +106,17 @@ namespace ASC.Api.Core
             DIHelper.TryAdd<WebhooksGlobalFilterAttribute>();
 
             var redisConfiguration = Configuration.GetSection("Redis").Get<RedisConfiguration>();
+            var kafkaConfiguration = Configuration.GetSection("kafka").Get<KafkaSettings>();
 
-            if (redisConfiguration != null)
+            if (kafkaConfiguration != null)
+            {
+                DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+            }
+            else if (redisConfiguration != null)
             {
                 DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+
+                services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
             }
             else
             {

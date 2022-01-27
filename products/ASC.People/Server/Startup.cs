@@ -26,8 +26,6 @@ public class Startup : BaseStartup
 
             DIHelper.TryAdd<PeopleController>();
             DIHelper.TryAdd<GroupController>();
-
-            services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(Configuration.GetSection("Redis").Get<RedisConfiguration>());
         }
     }
 }
