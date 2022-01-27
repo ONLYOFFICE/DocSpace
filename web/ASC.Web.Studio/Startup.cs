@@ -36,8 +36,6 @@ namespace ASC.Web.Studio
             DIHelper.TryAdd<GoogleLoginProvider>();
             DIHelper.TryAdd<FacebookLoginProvider>();
             DIHelper.TryAdd<LinkedInLoginProvider>();
-
-            services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(Configuration.GetSection("Redis").Get<RedisConfiguration>());
         }
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
