@@ -1,12 +1,11 @@
-import styled, { keyframes, css } from "styled-components";
+import styled, { keyframes, css } from 'styled-components';
 
-const backgroundColor = "none";
-const color = "#2DA7DB";
+const color = '#2DA7DB';
 
 const StyledCircleWrap = styled.div`
-  width: 54px;
-  height: 54px;
-  background: ${backgroundColor};
+  width: 48px;
+  height: 48px;
+  background: ${(props) => props.color};
   border-radius: 50%;
   cursor: pointer;
 `;
@@ -23,17 +22,22 @@ const rotate360 = keyframes`
 const StyledCircle = styled.div`
   .circle__mask,
   .circle__fill {
-    width: 54px;
-    height: 54px;
+    width: 44px;
+    height: 44px;
     position: absolute;
     border-radius: 50%;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
   }
 
   ${(props) =>
     props.percent > 0
       ? css`
           .circle__mask {
-            clip: rect(0px, 54px, 54px, 27px);
+            clip: rect(0px, 44px, 44px, 22px);
           }
 
           .circle__fill {
@@ -49,7 +53,7 @@ const StyledCircle = styled.div`
         `}
 
   .circle__mask .circle__fill {
-    clip: rect(0px, 27px, 54px, 0px);
+    clip: rect(0px, 22px, 44px, 0px);
     background-color: ${color};
   }
 
@@ -69,13 +73,13 @@ const StyledCircle = styled.div`
 `;
 
 const StyledFloatingButton = styled.div`
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background: ${(props) => (props.color ? props.color : "#fff")};
+  background: ${(props) => (props.color ? props.color : '#fff')};
   box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
   text-align: center;
-  margin: 3px;
+  margin: 4px;
   position: absolute;
 `;
 
@@ -91,10 +95,4 @@ const StyledAlertIcon = styled.div`
   top: -10px;
 `;
 
-export {
-  StyledCircleWrap,
-  StyledCircle,
-  StyledFloatingButton,
-  StyledAlertIcon,
-  IconBox,
-};
+export { StyledCircleWrap, StyledCircle, StyledFloatingButton, StyledAlertIcon, IconBox };
