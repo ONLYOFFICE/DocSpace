@@ -27,14 +27,12 @@ const FolderTreeBody = ({
       {!isLoadingData ? (
         isAvailable ? (
           <StyledSelectFolderPanel
-            theme={theme}
             heightContent={heightContent}
             displayType={displayType}
             isHeaderChildren={isHeaderChildren}>
             <div className="select-folder-dialog_tree-folder">
-              <Scrollbar theme={theme} id="folder-tree-scroll-bar">
+              <Scrollbar id="folder-tree-scroll-bar">
                 <TreeFolders
-                  theme={theme}
                   expandedPanelKeys={expandedKeys}
                   data={folderList}
                   filter={filter}
@@ -49,21 +47,17 @@ const FolderTreeBody = ({
           </StyledSelectFolderPanel>
         ) : (
           <StyledSelectFolderPanel
-            theme={theme}
             heightContent={heightContent}
             isHeaderChildren={isHeaderChildren}>
             <div className="tree-folder-empty-list select-folder-dialog_tree-folder">
-              <Text theme={theme} as="span">
-                {t('NotAvailableFolder')}
-              </Text>
+              <Text as="span">{t('NotAvailableFolder')}</Text>
             </div>
           </StyledSelectFolderPanel>
         )
       ) : (
-        <StyledSelectFolderPanel theme={theme} heightContent={heightContent}>
+        <StyledSelectFolderPanel heightContent={heightContent}>
           <div className="tree-folder-Loader" key="loader">
             <Loader
-              theme={theme}
               type="oval"
               size="16px"
               style={{
@@ -72,7 +66,7 @@ const FolderTreeBody = ({
                 marginTop: '16px',
               }}
             />
-            <Text theme={theme} as="span">{`${t('Common:LoadingProcessing')} ${t(
+            <Text as="span">{`${t('Common:LoadingProcessing')} ${t(
               'Common:LoadingDescription',
             )}`}</Text>
           </div>

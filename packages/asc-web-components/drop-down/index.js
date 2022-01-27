@@ -146,7 +146,6 @@ class DropDown extends React.PureComponent {
 
     return (
       <StyledDropdown
-        theme={theme}
         ref={this.dropDownRef}
         {...this.props}
         directionX={directionX}
@@ -187,15 +186,9 @@ class DropDownContainer extends React.Component {
     return (
       <>
         {withBackdrop ? (
-          <Backdrop
-            theme={theme}
-            visible={open}
-            zIndex={199}
-            onClick={this.toggleDropDown}
-          />
+          <Backdrop visible={open} zIndex={199} onClick={this.toggleDropDown} />
         ) : null}
         <EnhancedComponent
-          theme={theme}
           {...eventTypesProp}
           disableOnClickOutside={true}
           {...this.props}

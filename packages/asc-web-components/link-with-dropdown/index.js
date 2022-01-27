@@ -77,23 +77,15 @@ class LinkWithDropdown extends React.Component {
     } = this.props;
 
     return (
-      <StyledSpan
-        theme={theme}
-        className={className}
-        id={id}
-        style={style}
-        ref={this.ref}
-      >
+      <StyledSpan className={className} id={id} style={style} ref={this.ref}>
         <span onClick={this.onOpen}>
           <StyledLinkWithDropdown
-            theme={theme}
             isSemitransparent={isSemitransparent}
             dropdownType={dropdownType}
             color={color}
             isDisabled={isDisabled}
           >
             <StyledText
-              theme={theme}
               isTextOverflow={isTextOverflow}
               truncate={isTextOverflow}
               fontSize={fontSize}
@@ -107,7 +99,6 @@ class LinkWithDropdown extends React.Component {
               {this.props.children}
             </StyledText>
             <Caret
-              theme={theme}
               color={color}
               dropdownType={dropdownType}
               isOpen={this.state.isOpen}
@@ -116,7 +107,6 @@ class LinkWithDropdown extends React.Component {
           </StyledLinkWithDropdown>
         </span>
         <DropDown
-          theme={theme}
           className="fixed-max-width"
           open={this.state.isOpen}
           withArrow={false}
@@ -125,7 +115,6 @@ class LinkWithDropdown extends React.Component {
         >
           {data.map((item) => (
             <DropDownItem
-              theme={theme}
               className="drop-down-item"
               key={item.key}
               {...item}

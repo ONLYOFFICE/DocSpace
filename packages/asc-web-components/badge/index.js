@@ -30,7 +30,6 @@ const Badge = (props) => {
   return (
     <StyledBadge isHovered={isHovered} onClick={onClick} {...props}>
       <StyledInner
-        theme={theme}
         backgroundColor={backgroundColor}
         borderRadius={borderRadius}
         padding={padding}
@@ -38,7 +37,6 @@ const Badge = (props) => {
         lineHeight={lineHeight}
       >
         <StyledText
-          theme={theme}
           textAlign="center"
           fontWeight={fontWeight}
           color={color}

@@ -145,7 +145,6 @@ class IconButton extends React.PureComponent {
 
     return (
       <StyledOuter
-        theme={theme}
         className={className}
         size={size}
         title={title}

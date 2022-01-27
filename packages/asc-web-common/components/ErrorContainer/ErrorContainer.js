@@ -15,7 +15,7 @@ const ErrorContainer = (props) => {
   const { headerText, bodyText, buttonText, buttonUrl, ...rest } = props;
 
   return (
-    <StyledErrorContainer theme={theme} {...rest}>
+    <StyledErrorContainer {...rest}>
       <div id="container">
         <svg
           id="background"
@@ -285,7 +285,7 @@ const ErrorContainer = (props) => {
         </svg>
       </div>
       {headerText && (
-        <Headline id="header" type="header" theme={theme}>
+        <Headline id="header" type="header">
           {headerText}
         </Headline>
       )}

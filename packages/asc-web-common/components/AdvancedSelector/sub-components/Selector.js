@@ -297,7 +297,6 @@ const Selector = (props) => {
       return isMultiSelect ? (
         <div style={style} className="row-option" {...tooltipProps}>
           <Checkbox
-            theme={theme}
             id={option.key}
             value={`${index}`}
             label={option.label}
@@ -309,7 +308,6 @@ const Selector = (props) => {
           />
           {displayType === 'aside' && getOptionTooltipContent && (
             <HelpButton
-              theme={theme}
               id={`info-${option.key}`}
               className="option-info"
               iconName="/static/images/info.react.svg"
@@ -327,7 +325,6 @@ const Selector = (props) => {
         </div>
       ) : (
         <Link
-          theme={theme}
           key={option.key}
           data-index={index}
           isTextOverflow={true}
@@ -339,7 +336,6 @@ const Selector = (props) => {
           {option.label}
           {displayType === 'aside' && getOptionTooltipContent && (
             <HelpButton
-              theme={theme}
               id={`info-${option.key}`}
               className="option-info"
               iconName="/static/images/info.react.svg"
@@ -366,7 +362,6 @@ const Selector = (props) => {
         <div style={style} className="row-option">
           <div key="loader">
             <Loader
-              theme={theme}
               type="oval"
               size="16px"
               style={{
@@ -374,9 +369,7 @@ const Selector = (props) => {
                 marginRight: '10px',
               }}
             />
-            <Text theme={theme} as="span">
-              {loadingLabel}
-            </Text>
+            <Text as="span">{loadingLabel}</Text>
           </div>
         </div>
       );
@@ -495,7 +488,6 @@ const Selector = (props) => {
 
       return (
         <Link
-          theme={theme}
           key={group.key}
           data-index={index}
           isTextOverflow={true}
@@ -506,7 +498,6 @@ const Selector = (props) => {
           noHover>
           {isMultiSelect && allowGroupSelection && (
             <Checkbox
-              theme={theme}
               id={group.key}
               value={`${index}`}
               isChecked={isChecked}
@@ -553,7 +544,6 @@ const Selector = (props) => {
 
   return (
     <StyledSelector
-      theme={theme}
       displayType={displayType}
       options={options}
       groups={groups}
@@ -561,10 +551,9 @@ const Selector = (props) => {
       allowGroupSelection={allowGroupSelection}
       hasSelected={hasSelected()}
       className="selector-wrapper">
-      <Column theme={theme} className="column-options" displayType={displayType} size={size}>
-        <Header theme={theme} className="header-options">
+      <Column className="column-options" displayType={displayType} size={size}>
+        <Header className="header-options">
           <SearchInput
-            theme={theme}
             className="options_searcher"
             isDisabled={isDisabled}
             size="base"
@@ -578,7 +567,6 @@ const Selector = (props) => {
           {displayType === 'aside' && groups && groups.length > 0 && (
             <>
               <ComboBox
-                theme={theme}
                 className="options_group_selector"
                 isDisabled={isDisabled}
                 options={getSelectorGroups(groups)}
@@ -591,7 +579,6 @@ const Selector = (props) => {
               />
               {isMultiSelect && allowGroupSelection && options && options.length > 0 && (
                 <Checkbox
-                  theme={theme}
                   className="options_group_select_all"
                   label={selectAllLabel}
                   isChecked={selectedAll}
@@ -603,18 +590,16 @@ const Selector = (props) => {
             </>
           )}
         </Header>
-        <Body theme={theme} className="body-options">
-          <AutoSizer theme={theme}>
+        <Body className="body-options">
+          <AutoSizer>
             {({ width, height }) => (
               <InfiniteLoader
-                theme={theme}
                 ref={listOptionsRef}
                 isItemLoaded={isItemLoaded}
                 itemCount={itemCount}
                 loadMoreItems={loadMoreItems}>
                 {({ onItemsRendered, ref }) => (
                   <List
-                    theme={theme}
                     className="options_list"
                     height={height}
                     itemCount={itemCount}
@@ -632,35 +617,27 @@ const Selector = (props) => {
 
           {!hasNextPage && itemCount === 0 && (
             <div className="row-option">
-              <Text theme={theme}>
-                {!searchValue ? emptyOptionsLabel : emptySearchOptionsLabel}
-              </Text>
+              <Text>{!searchValue ? emptyOptionsLabel : emptySearchOptionsLabel}</Text>
             </div>
           )}
           {getOptionTooltipContent && (
-            <Tooltip
-              theme={theme}
-              id="user"
-              offsetRight={90}
-              getContent={getOptionTooltipContent}
-            />
+            <Tooltip id="user" offsetRight={90} getContent={getOptionTooltipContent} />
           )}
         </Body>
       </Column>
       {displayType === 'dropdown' && groups && groups.length > 0 && (
         <>
           <div className="splitter"></div>
-          <Column theme={theme} className="column-groups" displayType={displayType} size={size}>
-            <Header theme={theme} className="header-groups">
-              <Text theme={theme} as="p" className="group_header" fontSize="15px" fontWeight={600}>
+          <Column className="column-groups" displayType={displayType} size={size}>
+            <Header className="header-groups">
+              <Text as="p" className="group_header" fontSize="15px" fontWeight={600}>
                 {groupsHeaderLabel}
               </Text>
             </Header>
-            <Body theme={theme} className="body-groups">
-              <AutoSizer theme={theme}>
+            <Body className="body-groups">
+              <AutoSizer>
                 {({ height, width }) => (
                   <List
-                    theme={theme}
                     className="group_list"
                     height={height}
                     width={width + 8}
@@ -678,7 +655,6 @@ const Selector = (props) => {
         </>
       )}
       <Footer
-        theme={theme}
         className="footer"
         selectButtonLabel={selectButtonLabel}
         showCounter={showCounter}

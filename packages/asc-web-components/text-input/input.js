@@ -26,18 +26,12 @@ const Input = ({
 
   return props.mask != null ? (
     <MaskedInput
-      theme={theme}
       className={`${className} not-selectable`}
       keepCharPositions
       {...props}
     />
   ) : (
-    <input
-      theme={theme}
-      className={`${className} not-selectable`}
-      {...props}
-      {...rest}
-    />
+    <input className={`${className} not-selectable`} {...props} {...rest} />
   );
 };
 export default Input;

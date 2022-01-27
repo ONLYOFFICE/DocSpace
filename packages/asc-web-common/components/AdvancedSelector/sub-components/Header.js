@@ -10,7 +10,7 @@ class Header extends React.Component {
   render() {
     const { children, displayType, className, style, theme } = this.props;
     return (
-      <StyledHeader theme={theme} displayType={displayType} className={className} style={style}>
+      <StyledHeader displayType={displayType} className={className} style={style}>
         {children}
       </StyledHeader>
     );

@@ -29,7 +29,6 @@ class Textarea extends React.PureComponent {
 
     return (
       <StyledScrollbar
-        theme={theme}
         className={className}
         style={style}
         stype="preMediumBlack"
@@ -39,7 +38,6 @@ class Textarea extends React.PureComponent {
         heighttextarea={heightTextArea}
       >
         <StyledTextarea
-          theme={theme}
           id={id}
           placeholder={placeholder}
           onChange={(e) => onChange && onChange(e)}

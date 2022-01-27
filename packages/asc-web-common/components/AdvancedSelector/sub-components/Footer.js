@@ -18,12 +18,10 @@ const Footer = (props) => {
 
   return (
     <StyledFooter
-      theme={theme}
       withEmbeddedComponent={embeddedComponent}
       isVisible={isVisible}
       className={className}>
       <Button
-        theme={theme}
         className="add_members_btn"
         primary={true}
         size="big"

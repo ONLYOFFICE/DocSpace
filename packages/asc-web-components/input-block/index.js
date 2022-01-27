@@ -80,7 +80,6 @@ class InputBlock extends React.Component {
 
     return (
       <StyledInputGroup
-        theme={theme}
         hasError={hasError}
         hasWarning={hasWarning}
         isDisabled={isDisabled}
@@ -91,12 +90,11 @@ class InputBlock extends React.Component {
         color={iconColor}
       >
         <div className="prepend">
-          <StyledChildrenBlock theme={theme} className="prepend-children">
+          <StyledChildrenBlock className="prepend-children">
             {children}
           </StyledChildrenBlock>
         </div>
         <TextInput
-          theme={theme}
           id={id}
           name={name}
           type={type}
@@ -124,14 +122,12 @@ class InputBlock extends React.Component {
           //iconNames.includes(iconName) && (
           <div className="append">
             <StyledIconBlock
-              theme={theme}
               className="input-block-icon"
               isDisabled={isDisabled}
               onClick={this.onIconClick}
               isClickable={typeof onIconClick === "function"}
             >
               <IconButton
-                theme={theme}
                 size={iconButtonSize}
                 iconName={iconName}
                 isFill={isIconFill}

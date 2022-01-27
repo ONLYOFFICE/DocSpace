@@ -223,7 +223,6 @@ class TreeFolders extends React.Component {
       if ((item.folders && item.folders.length > 0) || serviceFolder) {
         return (
           <TreeNode
-            theme={theme}
             id={item.id}
             key={item.id}
             className={`tree-drag ${item.folderClassName}`}
@@ -250,7 +249,6 @@ class TreeFolders extends React.Component {
       }
       return (
         <TreeNode
-          theme={theme}
           id={item.id}
           key={item.id}
           className={`tree-drag ${item.folderClassName}`}
@@ -439,7 +437,6 @@ class TreeFolders extends React.Component {
 
     return (
       <StyledTreeMenu
-        theme={theme}
         className="files-tree-menu"
         checkable={false}
         draggable={dragging}

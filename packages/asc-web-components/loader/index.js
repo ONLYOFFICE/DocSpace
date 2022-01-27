@@ -20,7 +20,7 @@ const Loader = (props) => {
       default:
         return (
           <span style={{ ...style }}>
-            <Text theme={theme} color={color} fontSize={size}>
+            <Text color={color} fontSize={size}>
               {label}
             </Text>
           </span>

@@ -94,26 +94,16 @@ class AdvancedSelector extends React.Component {
     return (
       <div ref={this.ref} id={id} className={className} style={style}>
         {displayType === 'dropdown' ? (
-          <DropDown
-            theme={theme}
-            open={isOpen}
-            className="dropdown-container"
-            clickOutsideAction={this.onClose}>
-            <Selector theme={theme} {...this.props} displayType={displayType} />
+          <DropDown open={isOpen} className="dropdown-container" clickOutsideAction={this.onClose}>
+            <Selector {...this.props} displayType={displayType} />
           </DropDown>
         ) : withoutAside ? (
-          <Selector theme={theme} {...this.props} displayType={displayType} />
+          <Selector {...this.props} displayType={displayType} />
         ) : (
           <>
-            <Backdrop
-              theme={theme}
-              onClick={this.onClose}
-              visible={isOpen}
-              zIndex={310}
-              isAside={true}
-            />
-            <Aside theme={theme} visible={isOpen} scale={false} className="aside-container">
-              <Selector theme={theme} {...this.props} displayType={displayType} />
+            <Backdrop onClick={this.onClose} visible={isOpen} zIndex={310} isAside={true} />
+            <Aside visible={isOpen} scale={false} className="aside-container">
+              <Selector {...this.props} displayType={displayType} />
             </Aside>
           </>
         )}

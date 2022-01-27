@@ -141,64 +141,49 @@ class ModalDialog extends React.Component {
     const renderModal = () => {
       return this.state.displayType === "modal" ? (
         <Backdrop
-          theme={theme}
           visible={visible}
           zIndex={zIndex}
           withBackground={true}
           isModalDialog
         >
           <Dialog
-            theme={theme}
             className={`${className} not-selectable`}
             id={id}
             style={style}
           >
             <Content
-              theme={theme}
               contentHeight={contentHeight}
               contentWidth={contentWidth}
               displayType={this.state.displayType}
             >
               {isLoading ? (
-                <Loaders.DialogLoader
-                  theme={theme}
-                  bodyHeight={modalLoaderBodyHeight}
-                />
+                <Loaders.DialogLoader bodyHeight={modalLoaderBodyHeight} />
               ) : (
                 <>
                   <StyledHeader>
-                    <Heading
-                      theme={theme}
-                      className="heading"
-                      size="medium"
-                      truncate={true}
-                    >
+                    <Heading className="heading" size="medium" truncate={true}>
                       {header ? header.props.children : null}
                     </Heading>
-                    <CloseButton theme={theme} onClick={onClose}></CloseButton>
+                    <CloseButton onClick={onClose}></CloseButton>
                   </StyledHeader>
-                  <BodyBox theme={theme} paddingProp={modalBodyPadding}>
+                  <BodyBox paddingProp={modalBodyPadding}>
                     {body ? body.props.children : null}
                   </BodyBox>
-                  <Box theme={theme}>
-                    {footer ? footer.props.children : null}
-                  </Box>
+                  <Box>{footer ? footer.props.children : null}</Box>
                 </>
               )}
             </Content>
           </Dialog>
         </Backdrop>
       ) : (
-        <Box theme={theme} className={className} id={id} style={style}>
+        <Box className={className} id={id} style={style}>
           <Backdrop
-            theme={theme}
             visible={visible}
             onClick={onClose}
             zIndex={zIndex}
             isAside={true}
           />
           <Aside
-            theme={theme}
             visible={visible}
             scale={scale}
             zIndex={zIndex}
@@ -207,39 +192,29 @@ class ModalDialog extends React.Component {
             withoutBodyScroll={removeScroll}
           >
             <Content
-              theme={theme}
               contentHeight={contentHeight}
               contentWidth={contentWidth}
               removeScroll={removeScroll}
               displayType={this.state.displayType}
             >
               {isLoading ? (
-                <Loaders.DialogAsideLoader theme={theme} withoutAside />
+                <Loaders.DialogAsideLoader withoutAside />
               ) : (
                 <>
-                  <StyledHeader
-                    theme={theme}
-                    className="modal-dialog-aside-header"
-                  >
-                    <Heading
-                      theme={theme}
-                      className="heading"
-                      size="medium"
-                      truncate={true}
-                    >
+                  <StyledHeader className="modal-dialog-aside-header">
+                    <Heading className="heading" size="medium" truncate={true}>
                       {header ? header.props.children : null}
                     </Heading>
                     {scale ? <CloseButton onClick={onClose}></CloseButton> : ""}
                   </StyledHeader>
                   <BodyBox
-                    theme={theme}
                     className="modal-dialog-aside-body"
                     paddingProp={asideBodyPadding}
                     removeScroll={removeScroll}
                   >
                     {body ? body.props.children : null}
                   </BodyBox>
-                  <Box theme={theme} className="modal-dialog-aside-footer">
+                  <Box className="modal-dialog-aside-footer">
                     {footer ? footer.props.children : null}
                   </Box>
                 </>

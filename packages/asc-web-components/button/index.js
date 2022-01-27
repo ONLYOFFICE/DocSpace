@@ -41,7 +41,6 @@ const Button = React.forwardRef((props, ref) => {
       {isLoading || icon ? (
         isLoading ? (
           <Loader
-            theme={theme}
             type="oval"
             size={size === "large" ? "18px" : size === "big" ? "16px" : "14px"}
             className="loader"

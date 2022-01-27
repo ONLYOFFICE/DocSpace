@@ -21,7 +21,6 @@ const Label = (props) => {
 
   return (
     <Text
-      theme={theme}
       as="label"
       id={id}
       style={style}

@@ -62,53 +62,30 @@ const EmbeddingBody = ({ embeddingLink, t, theme }) => {
 
   return (
     <div className="embedding-panel_body">
-      <Text theme={theme} className="embedding-panel_text">
-        {t('Common:Size')}:
-      </Text>
+      <Text className="embedding-panel_text">{t('Common:Size')}:</Text>
       <div className="embedding-panel_links-container">
-        <Link
-          theme={theme}
-          isHovered
-          type="action"
-          className="embedding-panel_link"
-          onClick={onSelectSizeMiddle}>
+        <Link isHovered type="action" className="embedding-panel_link" onClick={onSelectSizeMiddle}>
           600 x 800 px
         </Link>
-        <Link
-          theme={theme}
-          isHovered
-          type="action"
-          className="embedding-panel_link"
-          onClick={onSelectSizeSmall}>
+        <Link isHovered type="action" className="embedding-panel_link" onClick={onSelectSizeSmall}>
           400 x 600 px
         </Link>
-        <Link
-          theme={theme}
-          isHovered
-          type="action"
-          className="embedding-panel_link"
-          onClick={onSelectSizeAuto}>
+        <Link isHovered type="action" className="embedding-panel_link" onClick={onSelectSizeAuto}>
           {t('Auto')}
         </Link>
       </div>
       <div className="embedding-panel_inputs-container">
         <div>
-          <Text theme={theme} className="embedding-panel_text">
-            {t('Width')}:
-          </Text>
+          <Text className="embedding-panel_text">{t('Width')}:</Text>
           <TextInput
-            theme={theme}
             className="embedding-panel_input"
             value={widthValue}
             onChange={onChangeWidth}
           />
         </div>
         <div>
-          <Text theme={theme} className="embedding-panel_text">
-            {t('Height')}:
-          </Text>
+          <Text className="embedding-panel_text">{t('Height')}:</Text>
           <TextInput
-            theme={theme}
             className="embedding-panel_input"
             value={heightValue}
             onChange={onChangeHeight}
@@ -116,23 +93,15 @@ const EmbeddingBody = ({ embeddingLink, t, theme }) => {
         </div>
       </div>
       <div className="embedding-panel_code-container">
-        <Text theme={theme} className="embedding-panel_text">
-          {t('EmbedCode')}:
-        </Text>
+        <Text className="embedding-panel_text">{t('EmbedCode')}:</Text>
         <IconButton
-          theme={theme}
           className="embedding-panel_copy-icon"
           size="16"
           iconName="/static/images/copy.react.svg"
           // color={theme.filesPanels.embedding.iconColor}
           onClick={onCopyLink}
         />
-        <Textarea
-          theme={theme}
-          color={theme.filesPanels.embedding.textAreaColor}
-          isReadOnly
-          value={link}
-        />
+        <Textarea color={theme.filesPanels.embedding.textAreaColor} isReadOnly value={link} />
       </div>
     </div>
   );

@@ -12,8 +12,8 @@ const LoadingDots = (props) => {
 
   return (
     <LoadingWrapper {...props}>
-      <LoadingLabel theme={theme}>{label}</LoadingLabel>
-      <DotWrapper theme={theme}>
+      <LoadingLabel>{label}</LoadingLabel>
+      <DotWrapper>
         <Dot {...props} delay="0s" />
         <Dot {...props} delay=".2s" />
         <Dot {...props} delay=".4s" />

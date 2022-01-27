@@ -46,19 +46,16 @@ const SelectFileDialogAsideView = ({
   const isHeaderChildren = !!titleFilesList;
 
   return (
-    <StyledAsidePanel theme={theme} visible={isPanelVisible}>
+    <StyledAsidePanel visible={isPanelVisible}>
       <ModalDialog
-        theme={theme}
         visible={isPanelVisible}
         zIndex={zIndex}
         onClose={onClose}
         contentHeight="100%"
         displayType={DISPLAY_TYPE}
         removeScroll>
-        <ModalDialog.Header theme={theme}>
-          {headerName ? headerName : t('SelectFile')}
-        </ModalDialog.Header>
-        <ModalDialog.Body theme={theme} className="select-file_body-modal-dialog">
+        <ModalDialog.Header>{headerName ? headerName : t('SelectFile')}</ModalDialog.Header>
+        <ModalDialog.Body className="select-file_body-modal-dialog">
           <StyledSelectFilePanel
             theme={theme}
             isHeaderChildren={isHeaderChildren}
@@ -87,9 +84,7 @@ const SelectFileDialogAsideView = ({
                   selectionButtonPrimary
                 />
                 {titleFilesList && (
-                  <Text theme={theme} className="modal-dialog-filter-title">
-                    {titleFilesList}
-                  </Text>
+                  <Text className="modal-dialog-filter-title">{titleFilesList}</Text>
                 )}
                 <div className="select-file-dialog_aside_body-files_list">
                   {selectedFolder && !isLoadingData ? (

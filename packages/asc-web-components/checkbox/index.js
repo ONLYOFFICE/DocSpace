@@ -19,17 +19,11 @@ const RenderCheckboxIcon = ({ isChecked, isIndeterminate, theme }) => {
   return (
     <>
       {isIndeterminate ? (
-        <CheckboxIndeterminateIcon
-          theme={theme}
-          className="checkbox not-selectable"
-        />
+        <CheckboxIndeterminateIcon className="checkbox not-selectable" />
       ) : isChecked ? (
-        <CheckboxCheckedIcon
-          theme={theme}
-          className="checkbox not-selectable"
-        />
+        <CheckboxCheckedIcon className="checkbox not-selectable" />
       ) : (
-        <CheckboxIcon theme={theme} className="checkbox not-selectable" />
+        <CheckboxIcon className="checkbox not-selectable" />
       )}
     </>
   );
@@ -84,7 +78,6 @@ class Checkbox extends React.Component {
 
     return (
       <StyledLabel
-        theme={theme}
         id={id}
         style={style}
         isDisabled={isDisabled}
@@ -93,7 +86,6 @@ class Checkbox extends React.Component {
         title={title}
       >
         <HiddenInput
-          theme={theme}
           type="checkbox"
           checked={this.state.checked}
           isDisabled={isDisabled}
@@ -101,10 +93,9 @@ class Checkbox extends React.Component {
           value={value}
           onChange={this.onInputChange}
         />
-        <RenderCheckboxIcon theme={theme} {...this.props} />
+        <RenderCheckboxIcon {...this.props} />
         {this.props.label && (
           <Text
-            theme={theme}
             as="span"
             title={title}
             isDisabled={isDisabled}

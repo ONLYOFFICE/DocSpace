@@ -10,12 +10,7 @@ class Column extends React.Component {
   render() {
     const { children, displayType, className, style, size, theme } = this.props;
     return (
-      <StyledColumn
-        theme={theme}
-        displayType={displayType}
-        className={className}
-        style={style}
-        size={size}>
+      <StyledColumn displayType={displayType} className={className} style={style} size={size}>
         {children}
       </StyledColumn>
     );

@@ -111,25 +111,18 @@ class AddGroupsPanelComponent extends React.Component {
 
     //console.log("AddGroupsPanel render");
     return (
-      <StyledAddGroupsPanel theme={theme} visible={visible}>
-        <Backdrop
-          theme={theme}
-          onClick={this.onClosePanels}
-          visible={visible}
-          zIndex={zIndex}
-          isAside={true}
-        />
-        <Aside theme={theme} className="header_aside-panel">
-          <StyledContent theme={theme}>
-            <StyledHeaderContent theme={theme}>
+      <StyledAddGroupsPanel visible={visible}>
+        <Backdrop onClick={this.onClosePanels} visible={visible} zIndex={zIndex} isAside={true} />
+        <Aside className="header_aside-panel">
+          <StyledContent>
+            <StyledHeaderContent>
               <IconButton
-                theme={theme}
                 size="16"
                 iconName="/static/images/arrow.path.react.svg"
                 onClick={this.onArrowClick}
                 // color={theme.filesPanels.addGroups.iconColor}
               />
-              <Heading theme={theme} className="header_aside-panel-header" size="medium" truncate>
+              <Heading className="header_aside-panel-header" size="medium" truncate>
                 {t('AddGroupsForSharingButton')}
               </Heading>
               {/*<IconButton
@@ -140,9 +133,8 @@ class AddGroupsPanelComponent extends React.Component {
               />*/}
             </StyledHeaderContent>
 
-            <StyledBody theme={theme} ref={this.scrollRef}>
+            <StyledBody ref={this.scrollRef}>
               <GroupSelector
-                theme={theme}
                 className="groupSelector"
                 isOpen={visible}
                 isMultiSelect
@@ -151,7 +143,6 @@ class AddGroupsPanelComponent extends React.Component {
                 onSelect={this.onSelectGroups}
                 embeddedComponent={
                   <AccessComboBox
-                    theme={theme}
                     t={t}
                     access={accessRight}
                     directionX="right"

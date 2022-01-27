@@ -68,13 +68,12 @@ const Avatar = (props) => {
 
   return (
     <StyledAvatar {...props}>
-      <AvatarWrapper theme={theme} source={source} userName={userName}>
+      <AvatarWrapper source={source} userName={userName}>
         {avatarContent}
       </AvatarWrapper>
       {editing && size === "max" && (
-        <EditContainer theme={theme}>
+        <EditContainer>
           <IconButton
-            theme={theme}
             className="edit_icon"
             iconName="/static/images/pencil.react.svg"
             onClick={editAction}

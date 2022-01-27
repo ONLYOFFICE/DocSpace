@@ -5,7 +5,6 @@ import { StyledOval } from "../styled-loader";
 // eslint-disable-next-line react/prop-types
 export const Oval = ({ size, color, label, theme }) => (
   <StyledOval
-    theme={theme}
     size={size}
     color={color}
     viewBox="0 0 38 38"
