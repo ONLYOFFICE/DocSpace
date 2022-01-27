@@ -422,5 +422,14 @@ namespace ASC.Web.Files.Services.DocumentService
 
             return room;
         }
+
+        public string GetSocketRoom<T>(T folderId)
+        {
+            var tenantId = TenantManager.GetCurrentTenant().TenantId;
+
+            var room = $"{tenantId}-DIR-{folderId}";
+
+            return room;
+        }
     }
 }

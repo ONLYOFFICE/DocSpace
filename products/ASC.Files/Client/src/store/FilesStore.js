@@ -83,6 +83,13 @@ class FilesStore {
               ? JSON.parse(opt?.data)
               : await api.files.getFileInfo(opt?.id);
             this.setFiles([file, ...this.files]);
+          } else if (opt?.type == "folder" && opt?.id) {
+            const foundIndex = this.files.findIndex((x) => x.id === opt?.id);
+            if (foundIndex > -1) return;
+
+            const folder = JSON.parse(opt?.data);
+
+            this.setFolders([folder, ...this.folders]);
           }
           break;
         case "delete":

@@ -104,7 +104,7 @@ module.exports = (io) => {
     filesIO.to(room).emit("s:modify-folder", { cmd, id, type, data });
   }
 
-function createFile({ fileId, room, data } = {}) {
+  function createFile({ fileId, room, data } = {}) {
     logger.info(`create new file ${fileId} in room ${room}`);
     modifyFolder(room, "create", fileId, "file", data);
   }
@@ -114,5 +114,15 @@ function createFile({ fileId, room, data } = {}) {
     modifyFolder(room, "delete", fileId, "file");
   }
 
-  return { startEdit, stopEdit, createFile, deleteFile };
+  function createFolder({ folderId, room, data } = {}) {
+    logger.info(`create new folder ${folderId} in room ${room}`);
+    modifyFolder(room, "create", folderId, "folder", data);
+  }
+  
+  function deleteFolder({ folderId, room } = {}) {
+    logger.info(`delete folder ${folderId} in room ${room}`);
+    modifyFolder(room, "delete", folderId, "folder");
+  }
+
+  return { startEdit, stopEdit, createFile, deleteFile, createFolder, deleteFolder };
 };

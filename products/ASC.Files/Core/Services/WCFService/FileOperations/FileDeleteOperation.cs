@@ -127,6 +127,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         private void DeleteFolders(IEnumerable<T> folderIds, IServiceScope scope)
         {
             var scopeClass = scope.ServiceProvider.GetService<FileDeleteOperationScope>();
+            var documentServiceHelper = scope.ServiceProvider.GetService<DocumentServiceHelper>();
+            var socketManager = scope.ServiceProvider.GetService<SocketManager>();
             var (fileMarker, filesMessageService) = scopeClass;
             foreach (var folderId in folderIds)
             {
@@ -176,6 +178,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                 FolderDao.DeleteFolder(folder.ID);
                                 filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
 
+                                var room = documentServiceHelper.GetSocketRoom(folderId);
+                                socketManager.DeleteFolder(folder.ID, room);
+
                                 ProcessedFolder(folderId);
                             }
                         }
@@ -198,6 +203,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                     FolderDao.MoveFolder(folder.ID, _trashId, CancellationToken);
                                     filesMessageService.Send(folder, _headers, MessageAction.FolderMovedToTrash, folder.Title);
                                 }
+
+                                var room = documentServiceHelper.GetSocketRoom(folderId);
+                                socketManager.DeleteFolder(folder.ID, room);
 
                                 ProcessedFolder(folderId);
                             }

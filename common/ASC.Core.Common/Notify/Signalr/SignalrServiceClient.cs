@@ -357,6 +357,30 @@ namespace ASC.Core.Notify.Signalr
             }
         }
 
+        public void CreateFolder<T>(T folderId, string room, string data)
+        {
+            try
+            {
+                MakeRequest("create-folder", new { room, folderId, data });
+            }
+            catch (Exception error)
+            {
+                ProcessError(error);
+            }
+        }
+
+        public void DeleteFolder<T>(T folderId, string room)
+        {
+            try
+            {
+                MakeRequest("delete-folder", new { room, folderId });
+            }
+            catch (Exception error)
+            {
+                ProcessError(error);
+            }
+        }
+
         public T GetAgent<T>(string numberId, List<Guid> contactsResponsibles)
         {
             try

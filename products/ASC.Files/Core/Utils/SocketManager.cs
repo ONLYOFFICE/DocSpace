@@ -41,11 +41,13 @@ namespace ASC.Web.Files.Utils
     {
         private readonly SignalrServiceClient _signalrServiceClient;
         private FileWrapperHelper FilesWrapperHelper { get; }
+        private FolderWrapperHelper FolderWrapperHelper { get; }
 
-        public SocketManager(IOptionsSnapshot<SignalrServiceClient> optionsSnapshot, FileWrapperHelper filesWrapperHelper)
+        public SocketManager(IOptionsSnapshot<SignalrServiceClient> optionsSnapshot, FileWrapperHelper filesWrapperHelper, FolderWrapperHelper folderWrapperHelper)
         {
             _signalrServiceClient = optionsSnapshot.Get("files");
             FilesWrapperHelper = filesWrapperHelper;
+            FolderWrapperHelper = folderWrapperHelper;
         }
 
         public void StartEdit<T>(T fileId, string room)
@@ -68,6 +70,18 @@ namespace ASC.Web.Files.Utils
         public void DeleteFile<T>(T fileId, string room)
         {
             _signalrServiceClient.DeleteFile(fileId, room);
+        }
+
+        public void CreateFolder<T>(T folderId, string room, Folder<T> folder)
+        {
+            var serializerSettings = new JsonSerializerSettings();
+            serializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            _signalrServiceClient.CreateFolder(folderId, room, JsonConvert.SerializeObject(FolderWrapperHelper.Get(folder), Formatting.None, serializerSettings));
+        }
+
+        public void DeleteFolder<T>(T folderId, string room)
+        {
+            _signalrServiceClient.DeleteFolder(folderId, room);
         }
     }
 }

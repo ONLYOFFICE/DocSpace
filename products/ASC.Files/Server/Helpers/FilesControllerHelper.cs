@@ -331,6 +331,10 @@ namespace ASC.Files.Helpers
         public FolderWrapper<T> CreateFolder(T folderId, string title)
         {
             var folder = FileStorageService.CreateNewFolder(folderId, title);
+
+            var room = DocumentServiceHelper.GetSocketRoom(folderId);
+            SocketManager.CreateFolder(folder.ID, room, folder);
+
             return FolderWrapperHelper.Get(folder);
         }
 

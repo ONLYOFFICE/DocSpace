@@ -21,5 +21,15 @@ module.exports = (files) => {
     res.end();
   });
 
+  router.post("/create-folder", (req, res) => {
+    files.createFolder(req.body);
+    res.end();
+  });
+
+  router.post("/delete-folder", (req, res) => {
+    files.deleteFolder(req.body);
+    res.end();
+  });
+
   return router;
 };
