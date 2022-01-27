@@ -23,13 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
-using ASC.Common;
-using ASC.Files.Thirdparty;
-
 namespace ASC.Files.Core
 {
     [Scope(typeof(ProviderAccountDao), Additional = typeof(ProviderAccountDaoExtension))]

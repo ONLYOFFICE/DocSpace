@@ -1,8 +1,3 @@
-using System;
-
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-
 namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
 {
     public partial class FilesDbContextMySql : Migration

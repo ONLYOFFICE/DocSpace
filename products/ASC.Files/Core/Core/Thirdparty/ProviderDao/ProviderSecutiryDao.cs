@@ -23,20 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Files.Core;
-using ASC.Files.Core.Data;
-using ASC.Files.Core.Security;
-using ASC.Files.Core.Thirdparty;
-
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Files.Thirdparty.ProviderDao
 {
     [Scope]

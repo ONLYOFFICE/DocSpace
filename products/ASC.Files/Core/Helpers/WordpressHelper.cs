@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core.Common.Configuration;
-using ASC.FederatedLogin;
-using ASC.FederatedLogin.Helpers;
-using ASC.FederatedLogin.LoginProviders;
-using ASC.Web.Files.ThirdPartyApp;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Web.Files.Helpers
 {
     [Scope]

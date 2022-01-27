@@ -23,23 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text.Json;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-using ASC.Files.Core.Resources;
-using ASC.Web.Core.Users;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Files.Core
 {
     [Transient]

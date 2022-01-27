@@ -24,25 +24,6 @@
 */
 
 
-using System;
-using System.IO;
-using System.Linq;
-using System.Security;
-using System.Text;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Users;
-using ASC.Files.Core;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
-using ASC.Security.Cryptography;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Core;
-
-using FileShare = ASC.Files.Core.Security.FileShare;
 
 namespace ASC.Web.Files.Services.DocumentService
 {
