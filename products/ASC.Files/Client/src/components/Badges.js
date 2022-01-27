@@ -1,13 +1,48 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import Badge from '@appserver/components/badge';
 import IconButton from '@appserver/components/icon-button';
 import commonIconsStyles from '@appserver/components/utils/common-icons-style';
 import { isTablet } from 'react-device-detect';
+import { Base } from '@appserver/components/themes';
 
 export const StyledIcon = styled(IconButton)`
   ${commonIconsStyles}
 `;
+
+const StyledWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: ${(props) => props.theme.filesBadges.color};
+  padding: 6px;
+  border-radius: 4px;
+  box-shadow: 0px 2px 4px rgba(4, 15, 27, 0.16);
+`;
+
+StyledWrapper.defaultProps = { theme: Base };
+
+const BadgeWrapper = ({ onClick, isTile, children: badge }) => {
+  if (!isTile) return badge;
+
+  const [isHovered, setIsHovered] = useState(false);
+
+  const onMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const onMouseLeave = () => {
+    setIsHovered(false);
+  };
+
+  const newBadge = React.cloneElement(badge, { isHovered: isHovered });
+
+  return (
+    <StyledWrapper onClick={onClick} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+      {newBadge}
+    </StyledWrapper>
+  );
+};
 
 const Badges = ({
   t,
@@ -26,6 +61,7 @@ const Badges = ({
   onShowVersionHistory,
   onBadgeClick,
   setConvertDialogVisible,
+  viewAs,
 }) => {
   const { id, locked, fileStatus, version, versionGroup, fileExst } = item;
 
@@ -35,6 +71,7 @@ const Badges = ({
   const showEditBadge = !locked || item.access === 0;
   const isPrivacy = isPrivacyFolder && isDesktopClient;
   const isForm = fileExst === '.oform';
+  const isTile = viewAs === 'tile';
 
   const iconEdit = isForm
     ? '/static/images/access.edit.form.react.svg'
@@ -48,15 +85,26 @@ const Badges = ({
 
   const contentNewItems = newItems > 999 ? '999+' : newItems;
 
-  const tabletViewBadge = (sectionWidth > 500 && sectionWidth <= 1024) || isTablet;
+  const tabletViewBadge = !isTile && ((sectionWidth > 500 && sectionWidth <= 1024) || isTablet);
 
-  const sizeBadge = tabletViewBadge ? 'medium' : 'small';
+  const sizeBadge = isTile || tabletViewBadge ? 'medium' : 'small';
 
-  const lineHeightBadge = tabletViewBadge ? '1.46' : '1.34';
+  const lineHeightBadge = isTile || tabletViewBadge ? '1.46' : '1.34';
 
-  const paddingBadge = tabletViewBadge ? '0 5px' : '0 3px';
+  const paddingBadge = isTile || tabletViewBadge ? '0 5px' : '0 3px';
 
-  const fontSizeBadge = tabletViewBadge ? '11px' : '9px';
+  const fontSizeBadge = isTile || tabletViewBadge ? '11px' : '9px';
+
+  const commonBadgeProps = {
+    borderRadius: '11px',
+    color: theme.filesBadges.color,
+    fontSize: fontSizeBadge,
+    fontWeight: 800,
+    maxWidth: '50px',
+    padding: paddingBadge,
+    lineHeight: lineHeightBadge,
+    'data-id': id,
+  };
 
   return fileExst ? (
     <div className="badges additional-badges">
@@ -98,53 +146,36 @@ const Badges = ({
         />
       )}
       {version > 1 && (
-        <Badge
-          className="badge-version tablet-badge icons-group"
-          backgroundColor={theme.filesBadges.backgroundColor}
-          borderRadius="11px"
-          color={theme.filesBadges.color}
-          fontSize={fontSizeBadge}
-          fontWeight={800}
-          label={t('VersionBadge:Version', { version: countVersions })}
-          maxWidth="50px"
-          onClick={onShowVersionHistory}
-          padding={paddingBadge}
-          lineHeight={lineHeightBadge}
-          data-id={id}
-        />
+        <BadgeWrapper onClick={onShowVersionHistory} isTile={isTile}>
+          <Badge
+            {...commonBadgeProps}
+            className="badge-version badge-version-current tablet-badge icons-group"
+            backgroundColor={theme.filesBadges.backgroundColor}
+            label={t('VersionBadge:Version', { version: countVersions })}
+            onClick={onShowVersionHistory}
+          />
+        </BadgeWrapper>
       )}
       {(showNew || isNewWithFav) && (
-        <Badge
-          className="badge-version badge-new-version tablet-badge icons-group"
-          backgroundColor={theme.filesBadges.badgeBackgroundColor}
-          borderRadius="11px"
-          color={theme.filesBadges.badgeColor}
-          fontSize={fontSizeBadge}
-          fontWeight={800}
-          label={t('New')}
-          maxWidth="50px"
-          onClick={onBadgeClick}
-          padding={paddingBadge}
-          lineHeight={lineHeightBadge}
-          data-id={id}
-        />
+        <BadgeWrapper onClick={onBadgeClick} isTile={isTile}>
+          <Badge
+            {...commonBadgeProps}
+            className="badge-version badge-new-version tablet-badge icons-group"
+            backgroundColor={theme.filesBadges.badgeBackgroundColor}
+            label={t('New')}
+            onClick={onBadgeClick}
+          />
+        </BadgeWrapper>
       )}
     </div>
   ) : (
     showNew && (
       <Badge
+        {...commonBadgeProps}
         className="new-items tablet-badge"
         backgroundColor={theme.filesBadges.badgeBackgroundColor}
-        borderRadius="11px"
-        color={theme.filesBadges.badgeColor}
-        fontSize={fontSizeBadge}
-        fontWeight={800}
         label={contentNewItems}
-        maxWidth="50px"
         onClick={onBadgeClick}
-        padding={paddingBadge}
-        lineHeight={lineHeightBadge}
-        data-id={id}
       />
     )
   );

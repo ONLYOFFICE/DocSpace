@@ -2225,7 +2225,7 @@ const Dark = {
   },
 
   filesQuickButtons: {
-    color: gray,
+    color: white,
     sharedColor: "#3b72a7",
     hoverColor: "#3b72a7",
   },

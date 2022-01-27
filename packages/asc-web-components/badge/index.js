@@ -1,8 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import Text from "../text";
-
 import { StyledBadge, StyledInner, StyledText } from "./styled-badge";
 
 const Badge = (props) => {
@@ -25,10 +23,12 @@ const Badge = (props) => {
     maxWidth,
     lineHeight,
     theme,
+    isHovered,
+    label,
   } = props;
 
   return (
-    <StyledBadge {...props} onClick={onClick}>
+    <StyledBadge isHovered={isHovered} onClick={onClick} {...props}>
       <StyledInner
         theme={theme}
         backgroundColor={backgroundColor}
@@ -44,7 +44,7 @@ const Badge = (props) => {
           color={color}
           fontSize={fontSize}
         >
-          {props.label}
+          {label}
         </StyledText>
       </StyledInner>
     </StyledBadge>
@@ -78,6 +78,10 @@ Badge.propTypes = {
   id: PropTypes.string,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Set hovered state and effects of link */
+  isHovered: PropTypes.bool,
+  /** Disabled hover styles */
+  noHover: PropTypes.bool,
 };
 
 Badge.defaultProps = {
@@ -88,6 +92,8 @@ Badge.defaultProps = {
   padding: "0 5px",
   maxWidth: "50px",
   lineHeight: "1.78",
+  isHovered: false,
+  noHover: false,
 };
 
 export default Badge;

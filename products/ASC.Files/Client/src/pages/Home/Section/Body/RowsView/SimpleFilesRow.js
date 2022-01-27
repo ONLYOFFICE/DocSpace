@@ -72,12 +72,6 @@ const StyledSimpleFilesRow = styled(Row)`
       }
   `}
 
-  .share-button-icon:hover {
-    cursor: pointer;
-    path {
-      fill: ${(props) => props.theme.filesSection.rowView.shareHoverColor};
-    }
-  }
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   .styled-element {

@@ -180,6 +180,7 @@ const StyledQuickButtonsContainer = styled.div`
   .favorite {
     margin-top: 1px;
   }
+<<<<<<< HEAD
 
   .share-button-icon:hover {
     cursor: pointer;
@@ -188,6 +189,8 @@ const StyledQuickButtonsContainer = styled.div`
     }
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
+=======
+>>>>>>> develop
 `;
 
 StyledQuickButtonsContainer.defaultProps = { theme: Base };
