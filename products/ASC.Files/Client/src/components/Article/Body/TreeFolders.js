@@ -27,7 +27,10 @@ const StyledTreeMenu = styled(TreeMenu)`
   }
 
   .rc-tree-node-selected {
-    background: ${(props) => props.theme.filesArticleBody.background} !important;
+    background: ${(props) =>
+      !props.isPanel
+        ? props.theme.filesArticleBody.background
+        : props.theme.filesArticleBody.panelBackground} !important;
   }
 
   .rc-tree-treenode-disabled > span:not(.rc-tree-switcher),
@@ -433,10 +436,12 @@ class TreeFolders extends React.Component {
       treeFolders,
       data,
       theme,
+      isPanel,
     } = this.props;
 
     return (
       <StyledTreeMenu
+        isPanel={isPanel}
         className="files-tree-menu"
         checkable={false}
         draggable={dragging}

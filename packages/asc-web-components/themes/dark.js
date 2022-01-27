@@ -1814,6 +1814,8 @@ const Dark = {
 
   filesArticleBody: {
     background: black,
+    panelBackground: "#474747",
+
     fill: "#C4C4C4",
     expanderColor: "#C4C4C4",
 

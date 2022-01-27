@@ -1812,6 +1812,8 @@ const Base = {
 
   filesArticleBody: {
     background: lightGrayishStrongBlue,
+    panelBackground: lightGrayishStrongBlue,
+
     fill: grayMain,
     expanderColor: "dimgray",
     downloadAppList: {

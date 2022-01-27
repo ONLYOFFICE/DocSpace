@@ -33,6 +33,7 @@ const FolderTreeBody = ({
             <div className="select-folder-dialog_tree-folder">
               <Scrollbar id="folder-tree-scroll-bar">
                 <TreeFolders
+                  isPanel={true}
                   expandedPanelKeys={expandedKeys}
                   data={folderList}
                   filter={filter}

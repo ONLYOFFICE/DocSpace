@@ -33,7 +33,6 @@ class ComboButton extends React.Component {
       scaled,
       size,
       comboIcon,
-      theme,
     } = this.props;
 
     const defaultOption = selectedOption.default;
@@ -41,7 +40,6 @@ class ComboButton extends React.Component {
 
     return (
       <StyledComboButton
-        theme={theme}
         isOpen={isOpen}
         isDisabled={isDisabled}
         noBorder={noBorder}
@@ -55,7 +53,6 @@ class ComboButton extends React.Component {
       >
         {innerContainer && (
           <StyledOptionalItem
-            theme={theme}
             className={innerContainerClassName}
             isDisabled={isDisabled}
             defaultOption={defaultOption}
@@ -65,7 +62,6 @@ class ComboButton extends React.Component {
         )}
         {selectedOption && selectedOption.icon && (
           <StyledIcon
-            theme={theme}
             className="forceColor"
             isDisabled={isDisabled}
             defaultOption={defaultOption}
@@ -78,7 +74,6 @@ class ComboButton extends React.Component {
           </StyledIcon>
         )}
         <Text
-          theme={theme}
           noBorder={noBorder}
           title={selectedOption.label}
           as="div"
@@ -89,7 +84,6 @@ class ComboButton extends React.Component {
           {selectedOption.label}
         </Text>
         <StyledArrowIcon
-          theme={theme}
           needDisplay={withOptions || withAdvancedOptions}
           noBorder={noBorder}
           isOpen={isOpen}
@@ -103,7 +97,6 @@ class ComboButton extends React.Component {
               />
             ) : (
               <StyledExpanderDownIcon
-                theme={theme}
                 size="scale"
                 className="combo-buttons_expander-icon"
               />

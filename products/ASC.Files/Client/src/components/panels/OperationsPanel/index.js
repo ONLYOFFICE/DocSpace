@@ -1,11 +1,11 @@
-import React from "react";
-import { withRouter } from "react-router";
-import ModalDialog from "@appserver/components/modal-dialog";
-import { withTranslation } from "react-i18next";
-import { StyledAsidePanel } from "../StyledPanels";
-import TreeFolders from "../../Article/Body/TreeFolders";
-import { inject, observer } from "mobx-react";
-import toastr from "studio/toastr";
+import React from 'react';
+import { withRouter } from 'react-router';
+import ModalDialog from '@appserver/components/modal-dialog';
+import { withTranslation } from 'react-i18next';
+import { StyledAsidePanel } from '../StyledPanels';
+import TreeFolders from '../../Article/Body/TreeFolders';
+import { inject, observer } from 'mobx-react';
+import toastr from 'studio/toastr';
 
 const OperationsPanelComponent = (props) => {
   const {
@@ -60,10 +60,7 @@ const OperationsPanelComponent = (props) => {
     if (isCopy) {
       startOperation(isCopy, destFolderId, folderTitle);
     } else {
-      if (
-        provider &&
-        treeNode.node.props.providerKey !== provider.providerKey
-      ) {
+      if (provider && treeNode.node.props.providerKey !== provider.providerKey) {
         setDestFolderId(destFolderId);
         setThirdPartyMoveDialogVisible(true);
       } else {
@@ -75,20 +72,16 @@ const OperationsPanelComponent = (props) => {
 
   const startOperation = (isCopy, destFolderId, folderTitle) => {
     const isProviderFolder = selection.find((x) => !x.providerKey);
-    const items =
-      isProviderFolder && !isCopy
-        ? selection.filter((x) => !x.providerKey)
-        : selection;
+    const items = isProviderFolder && !isCopy ? selection.filter((x) => !x.providerKey) : selection;
 
     let fileIds = [];
     let folderIds = [];
-
 
     for (let item of items) {
       if (item.fileExst || item.contentLength) {
         fileIds.push(item.id);
       } else if (item.id === destFolderId) {
-        toastr.error(t("MoveToFolderMessage"));
+        toastr.error(t('MoveToFolderMessage'));
       } else {
         folderIds.push(item.id);
       }
@@ -111,8 +104,8 @@ const OperationsPanelComponent = (props) => {
       isCopy,
       folderTitle,
       translations: {
-        copy: t("Translations:CopyOperation"),
-        move: t("Translations:MoveToOperation"),
+        copy: t('Translations:CopyOperation'),
+        move: t('Translations:MoveToOperation'),
       },
     });
   };
@@ -125,17 +118,17 @@ const OperationsPanelComponent = (props) => {
         displayType="aside"
         zIndex={zIndex}
         onClose={onClose}
-        isLoading={!tReady}
-      >
+        isLoading={!tReady}>
         <ModalDialog.Header>
           {isRecycleBin
-            ? t("Translations:Restore")
+            ? t('Translations:Restore')
             : isCopy
-            ? t("Translations:Copy")
-            : t("Translations:Move")}
+            ? t('Translations:Copy')
+            : t('Translations:Move')}
         </ModalDialog.Header>
         <ModalDialog.Body>
           <TreeFolders
+            isPanel={true}
             expandedPanelKeys={expandedKeys}
             data={operationsFolders}
             filter={filter}
@@ -148,18 +141,12 @@ const OperationsPanelComponent = (props) => {
   );
 };
 
-const OperationsPanel = withTranslation(["OperationsPanel", "Translations"])(
-  OperationsPanelComponent
+const OperationsPanel = withTranslation(['OperationsPanel', 'Translations'])(
+  OperationsPanelComponent,
 );
 
 export default inject(
-  ({
-    filesStore,
-    treeFoldersStore,
-    selectedFolderStore,
-    dialogsStore,
-    filesActionsStore,
-  }) => {
+  ({ filesStore, treeFoldersStore, selectedFolderStore, dialogsStore, filesActionsStore }) => {
     const { filter, selection, bufferSelection } = filesStore;
     const {
       isRecycleBinFolder,
@@ -185,9 +172,7 @@ export default inject(
     const provider = selections.find((x) => x.providerKey);
 
     return {
-      expandedKeys: expandedPanelKeys
-        ? expandedPanelKeys
-        : selectedFolderStore.pathParts,
+      expandedKeys: expandedPanelKeys ? expandedPanelKeys : selectedFolderStore.pathParts,
       currentFolderId: selectedFolderStore.id,
       parentFolderId: selectedFolderStore.parentId,
       isRecycleBin: isRecycleBinFolder,
@@ -206,5 +191,5 @@ export default inject(
       checkOperationConflict,
       setExpandedPanelKeys,
     };
-  }
+  },
 )(withRouter(observer(OperationsPanel)));
