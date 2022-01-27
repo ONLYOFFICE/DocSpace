@@ -89,8 +89,8 @@ const StyledTableRow = styled(TableRow)`
         border-bottom: 1px solid;
         border-image-source: linear-gradient(
           to right,
-          #ffffff 24px,
-          #eceef1 24px
+          #ffffff 17px,
+          #eceef1 31px
         );
       `};
 
@@ -114,8 +114,8 @@ const StyledTableRow = styled(TableRow)`
         border-image-slice: 1;
         border-image-source: linear-gradient(
           to left,
-          #ffffff 24px,
-          #eceef1 24px
+          #ffffff 17px,
+          #eceef1 31px
         );
       `};
 

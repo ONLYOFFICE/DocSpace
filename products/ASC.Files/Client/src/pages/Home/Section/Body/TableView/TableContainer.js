@@ -20,10 +20,10 @@ const StyledTableContainer = styled(TableContainer)`
         border-top: 1px solid;
       }
       .table-container_row-checkbox-wrapper {
-        border-image-source: ${`linear-gradient(to right, ${colorBorderTransition} 24px, ${borderColor} 24px)`};
+        border-image-source: ${`linear-gradient(to right, ${colorBorderTransition} 17px, ${borderColor} 31px)`};
       }
       .table-container_row-context-menu-wrapper {
-        border-image-source: ${`linear-gradient(to left, ${colorBorderTransition} 24px, ${borderColor} 24px)`};
+        border-image-source: ${`linear-gradient(to left, ${colorBorderTransition} 17px, ${borderColor} 31px)`};
       }
     }
   }

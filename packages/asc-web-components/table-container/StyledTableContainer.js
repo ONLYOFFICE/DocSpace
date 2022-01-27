@@ -45,10 +45,10 @@ const StyledTableContainer = styled.div`
     border-image-slice: 1;
     border-image-source: linear-gradient(
       to right,
-      #ffffff 24px,
-      #eceef1 24px,
-      #eceef1 calc(100% - 24px),
-      #ffffff calc(100% - 24px)
+      #ffffff 17px,
+      #eceef1 31px,
+      #eceef1 calc(100% - 31px),
+      #ffffff calc(100% - 17px)
     );
     border-top: 0;
   }
