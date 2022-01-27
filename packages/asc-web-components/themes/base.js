@@ -167,6 +167,18 @@ const Base = {
     bodyPadding: "16px 0",
   },
 
+  mainButtonMobile: {
+    dropDown: {
+      right: "15%",
+      bottom: "15%",
+      width: "400px",
+    },
+
+    dropDownItem: {
+      padding: "10px",
+    },
+  },
+
   mainButton: {
     backgroundColor: orangeMain,
     disableBackgroundColor: orangeDisabled,

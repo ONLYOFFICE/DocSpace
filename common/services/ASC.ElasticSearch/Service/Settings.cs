@@ -30,43 +30,35 @@ using ASC.Common.Utils;
 namespace ASC.ElasticSearch.Service
 {
     [Singletone]
-    public class SettingsHelper
-    {
-        public Settings Settings { get; set; }
-        public SettingsHelper(ConfigurationExtension configuration)
-        {
-            var cfg = configuration.GetSetting<Settings>("elastic");
-
-            Settings = new Settings
-            {
-                Scheme = cfg.Scheme ?? "http",
-                Host = cfg.Host ?? "localhost",
-                Port = cfg.Port ?? 9200,
-                Period = cfg.Period ?? 1,
-                MaxContentLength = cfg.MaxContentLength ?? 100 * 1024 * 1024L,
-                MaxFileSize = cfg.MaxFileSize ?? 10 * 1024 * 1024L,
-                Threads = cfg.Threads ?? 1,
-                HttpCompression = cfg.HttpCompression ?? true
-            };
-        }
-    }
-
     public class Settings
     {
-        public string Host { get; set; }
+        public Settings(ConfigurationExtension configuration)
+        {
+            configuration.GetSetting("elastic", this);
+        }
 
-        public int? Port { get; set; }
+        private string host;
+        public string Host { get => host ?? "localhost"; set { host = value; } }
 
-        public string Scheme { get; set; }
+        private int? port;
+        public int? Port { get => port ?? 9200; set { port = value; } }
 
-        public int? Period { get; set; }
+        private string scheme;
+        public string Scheme { get => scheme ?? "http"; set { scheme = value; } }
 
-        public long? MaxContentLength { get; set; }
+        private int? period;
+        public int? Period { get => period ?? 1; set { period = value; } }
 
-        public long? MaxFileSize { get; set; }
+        private long? maxContentLength;
+        public long? MaxContentLength { get => maxContentLength ?? 100 * 1024 * 1024L; set { maxContentLength = value; } }
 
-        public int? Threads { get; set; }
+        private long? maxFileSize;
+        public long? MaxFileSize { get => maxFileSize ?? 10 * 1024 * 1024L; set { maxFileSize = value; } }
 
-        public bool? HttpCompression { get; set; }
+        private int? threads;
+        public int? Threads { get => threads ?? 1; set { threads = value; } }
+
+        private bool? httpCompression;
+        public bool? HttpCompression { get => httpCompression ?? true; set { httpCompression = value; } }
     }
 }

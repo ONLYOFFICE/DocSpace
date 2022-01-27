@@ -183,14 +183,6 @@ const StyledQuickButtonsContainer = styled.div`
   .favorite {
     margin-top: 1px;
   }
-
-  .share-button-icon:hover {
-    cursor: pointer;
-    path {
-      fill: #3b72a7;
-    }
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  }
 `;
 
 const FilesTableRow = (props) => {
@@ -273,6 +265,11 @@ const FilesTableRow = (props) => {
         isThirdPartyFolder={item.isThirdPartyFolder}
         onDoubleClick={onFilesClick}
         checked={checkedProps}
+        title={
+          item.isFolder
+            ? t("Translations:TitleShowFolderActions")
+            : t("Translations:TitleShowActions")
+        }
       >
         <TableCell {...dragStyles} {...selectionProp}>
           <FileNameCell
@@ -313,7 +310,7 @@ const FilesTableRow = (props) => {
   );
 };
 
-export default withTranslation(["Home", "VersionBadge"])(
+export default withTranslation(["Home", "Common", "VersionBadge"])(
   withFileActions(
     withRouter(
       withContextOptions(

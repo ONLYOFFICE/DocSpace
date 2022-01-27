@@ -23,10 +23,12 @@ const Badge = (props) => {
     padding,
     maxWidth,
     lineHeight,
+    isHovered,
+    label,
   } = props;
 
   return (
-    <StyledBadge {...props} onClick={onClick}>
+    <StyledBadge isHovered={isHovered} onClick={onClick} {...props}>
       <StyledInner
         backgroundColor={backgroundColor}
         borderRadius={borderRadius}
@@ -40,7 +42,7 @@ const Badge = (props) => {
           color={color}
           fontSize={fontSize}
         >
-          {props.label}
+          {label}
         </Text>
       </StyledInner>
     </StyledBadge>
@@ -74,6 +76,10 @@ Badge.propTypes = {
   id: PropTypes.string,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Set hovered state and effects of link */
+  isHovered: PropTypes.bool,
+  /** Disabled hover styles */
+  noHover: PropTypes.bool,
 };
 
 Badge.defaultProps = {
@@ -86,6 +92,8 @@ Badge.defaultProps = {
   padding: "0 5px",
   maxWidth: "50px",
   lineHeight: "1.78",
+  isHovered: false,
+  noHover: false,
 };
 
 export default Badge;

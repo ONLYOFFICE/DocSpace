@@ -230,8 +230,6 @@ export default inject(
       fileActionId: fileActionStore.id,
       isEmptyFilesList,
       setDragging,
-      startDrag,
-      setStartDrag,
       folderId: selectedFolderStore.id,
       setTooltipPosition,
       isRecycleBinFolder: treeFoldersStore.isRecycleBinFolder,
@@ -245,7 +243,7 @@ export default inject(
   }
 )(
   withRouter(
-    withTranslation(["Home", "Translations"])(
+    withTranslation(["Home", "Common", "Translations"])(
       withLoader(observer(SectionBodyContent))()
     )
   )

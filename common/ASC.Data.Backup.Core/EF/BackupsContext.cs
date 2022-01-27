@@ -12,7 +12,7 @@ namespace ASC.Data.Backup.EF.Context
     {
         public DbSet<BackupRecord> Backups { get; set; }
         public DbSet<BackupSchedule> Schedules { get; set; }
-
+        public DbSet<DbTenant> Tenants { get; set; }
         public BackupsContext() { }
         public BackupsContext(DbContextOptions<BackupsContext> options)
             : base(options)
@@ -23,8 +23,7 @@ namespace ASC.Data.Backup.EF.Context
         {
             ModelBuilderWrapper
                 .From(modelBuilder, Provider)
-                .AddDbTenant()
-                .AddDbTariff();
+                .AddDbTenant();
         }
     }
 
