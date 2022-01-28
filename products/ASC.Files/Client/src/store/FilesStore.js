@@ -1555,6 +1555,7 @@ class FilesStore {
       canWebReview,
       canFormFillingDocs,
       canWebFilterEditing,
+      canConvert,
     } = this.formatsStore.docserviceStore;
 
     if (selection[0].encrypted) {
@@ -1577,7 +1578,10 @@ class FilesStore {
 
     const webFilter = selection.find((x) => canWebFilterEditing(x.fileExst));
 
-    if (webEdit || !externalAccess) AccessOptions.push("FullAccess");
+    const webNeedConvert = selection.find((x) => canConvert(x.fileExst));
+
+    if ((webEdit && !webNeedConvert) || !externalAccess)
+      AccessOptions.push("FullAccess");
 
     if (webComment) AccessOptions.push("Comment");
     if (webReview) AccessOptions.push("Review");
