@@ -85,7 +85,34 @@ const LoginContainer = styled.div`
   }
 
   .or-label {
+    margin: 0 8px;
+  }
+
+  .line {
+    display: flex;
+    width: 320px;
+    align-items: center;
+    color: #eceef1;
     padding-top: 35px;
+
+    @media (max-width: 768px) {
+      width: 480px;
+    }
+
+    @media (max-width: 375px) {
+      width: 311px;
+    }
+  }
+
+  .line:before,
+  .line:after {
+    content: "";
+    flex-grow: 1;
+    background: #eceef1;
+    height: 1px;
+    font-size: 0px;
+    line-height: 0px;
+    margin: 0px;
   }
 
   .auth-form-container {
@@ -486,10 +513,15 @@ const Form = (props) => {
               {t("ShowMore")}
             </Link>
           )}
+        </>
+      )}
+
+      {oauthDataExists() && (
+        <div className="line">
           <Text color="#A3A9AE" className="or-label">
             {t("Or")}
           </Text>
-        </>
+        </div>
       )}
 
       <form className="auth-form-container">
