@@ -129,10 +129,10 @@ const Dark = {
     },
 
     color: {
-      base: "#d6d6d6",
-      baseHover: grayMaxLight,
+      base: "#CCCCCC",
+      baseHover: "#FAFAFA",
       baseActive: "#858585",
-      baseDisabled: "#646464",
+      baseDisabled: "#545454",
       primary: black,
       primaryHover: black,
       primaryActive: "#292929",
@@ -140,25 +140,25 @@ const Dark = {
     },
 
     backgroundColor: {
-      base: black,
+      base: "transparent",
       baseHover: black,
       baseActive: "#292929",
-      baseDisabled: black,
-      primary: "#d6d6d6",
-      primaryHover: grayMaxLight,
+      baseDisabled: "#474747",
+      primary: "#CCCCCC",
+      primaryHover: "#FAFAFA",
       primaryActive: "#858585",
-      primaryDisabled: "#646464",
+      primaryDisabled: "#545454",
     },
 
     border: {
-      base: `1px solid #474747`,
-      baseHover: `1px solid ${grayMaxLight}`,
-      baseActive: `1px solid ${grayMaxLight}`,
-      baseDisabled: `1px solid #474747`,
-      primary: `1px solid #d6d6d6`,
-      primaryHover: `1px solid ${grayMaxLight}`,
-      primaryActive: `1px solid ${grayMaxLight}`,
-      primaryDisabled: `1px solid #646464`,
+      base: `1px solid #CCCCCC`,
+      baseHover: `1px solid #FAFAFA`,
+      baseActive: `1px solid #FAFAFA`,
+      baseDisabled: `1px solid #545454`,
+      primary: `1px solid #CCCCCC`,
+      primaryHover: `1px solid #FAFAFA`,
+      primaryActive: `1px solid #FAFAFA`,
+      primaryDisabled: `1px solid #545454`,
     },
 
     loader: {
