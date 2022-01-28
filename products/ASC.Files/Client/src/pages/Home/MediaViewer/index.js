@@ -30,8 +30,6 @@ const FilesMediaViewer = (props) => {
     expandedKeys,
   } = props;
 
-  const [firstUrl, setFirstUrl] = useState();
-
   useEffect(() => {
     const previewId = queryString.parse(location.search).preview;
 
@@ -41,16 +39,7 @@ const FilesMediaViewer = (props) => {
     }
   }, [removeQuery, onMediaFileClick]);
 
-  const checkURLchange = () => {
-    if (!oldURL.includes("#preview")) {
-      setFirstUrl(oldURL);
-    }
-  };
-
-  let oldURL = window.location.href;
-  setInterval(checkURLchange, 1000);
-
-  window.onpopstate = function (event) {
+  window.onpopstate = function (e) {
     const hash = window.location.hash;
     const id = +hash.slice(9);
     if (!id) {
@@ -111,7 +100,7 @@ const FilesMediaViewer = (props) => {
     }
   };
 
-  const onMediaViewerClose = (event) => {
+  const onMediaViewerClose = (e) => {
     if (previewFile) {
       setIsLoading(true);
       setFirstLoad(true);
@@ -129,11 +118,18 @@ const FilesMediaViewer = (props) => {
     }
     setMediaViewerData({ visible: false, id: null });
 
-    if (event.currentTarget.closed === false) {
-      return;
-    } else {
-      window.history.replaceState(null, null, firstUrl);
+    console.log("event", e);
+
+    if (e) {
+      const url = localStorage.getItem("isFirstUrl");
+
+      if (!url) {
+        return;
+      }
+
+      window.history.replaceState(null, null, url);
     }
+    localStorage.removeItem("isFirstUrl");
   };
 
   return (
