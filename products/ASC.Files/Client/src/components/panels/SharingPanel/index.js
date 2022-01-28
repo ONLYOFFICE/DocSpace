@@ -57,6 +57,7 @@ class SharingPanelComponent extends React.Component {
       showEmbeddingContent: false,
       isUpdated: false,
       isLoading: false,
+      baseExternalAccess: null,
     };
 
     this.ref = React.createRef();
@@ -71,18 +72,29 @@ class SharingPanelComponent extends React.Component {
     this.setState({ showActionPanel: !this.state.showActionPanel });
   };
 
+  isUpdateAccessInfo = (selectedAccess) => {
+    const { baseExternalAccess, isUpdated } = this.state;
+
+    if (+baseExternalAccess !== +selectedAccess) {
+      !isUpdated && this.setState({ isUpdated: true });
+    } else {
+      isUpdated && this.setState({ isUpdated: false });
+    }
+  };
   onToggleLink = (item) => {
-    const { shareDataItems, isUpdated } = this.state;
+    const { shareDataItems } = this.state;
+    const { isPersonal } = this.props;
     const { DenyAccess, ReadOnly } = ShareAccessRights;
 
     const rights = item.access !== DenyAccess ? DenyAccess : ReadOnly;
     const newDataItems = JSON.parse(JSON.stringify(shareDataItems));
-
     newDataItems[0].access = rights;
+
+    isPersonal && this.isUpdateAccessInfo(rights);
+
     this.setState({
       shareDataItems: newDataItems,
       showEmbeddingContent: false,
-      isUpdated: !isUpdated,
     });
   };
 
@@ -229,14 +241,17 @@ class SharingPanelComponent extends React.Component {
     });
 
   onChangeItemAccess = (e) => {
+    const { isPersonal } = this.props;
     const id = e.currentTarget.dataset.id;
     const access = e.currentTarget.dataset.access;
     const shareDataItems = this.state.shareDataItems;
     const elem = shareDataItems.find((x) => x.sharedTo.id === id && !x.isOwner);
 
     if (elem.access !== +access) {
+      isPersonal && this.isUpdateAccessInfo(access);
+
       elem.access = +access;
-      this.setState({ shareDataItems, isUpdated: true });
+      this.setState({ shareDataItems });
     }
   };
 
@@ -292,6 +307,7 @@ class SharingPanelComponent extends React.Component {
       getExternalAccessOption,
       selection,
       getShareUsers,
+      isPersonal,
     } = this.props;
 
     getShareUsers(folderId, fileId)
@@ -303,6 +319,10 @@ class SharingPanelComponent extends React.Component {
         const filesOwner = shareDataItems.find((x) => x.isOwner);
         const filesOwnerId = filesOwner ? filesOwner.sharedTo.id : null;
 
+        const baseExternalAccess = isPersonal
+          ? shareDataItems.find((x) => x.sharedTo.shareLink)?.access
+          : null;
+
         this.setState({
           baseShareData,
           shareDataItems,
@@ -310,6 +330,7 @@ class SharingPanelComponent extends React.Component {
           externalAccessOptions,
           //showPanel: true,
           filesOwnerId,
+          baseExternalAccess,
         });
       })
 
