@@ -1,8 +1,8 @@
-import React from 'react';
-import styled from 'styled-components';
-import IconButton from '@appserver/components/icon-button';
-import commonIconsStyles from '@appserver/components/utils/common-icons-style';
-import { isMobile, isTablet } from 'react-device-detect';
+import React from "react";
+import styled from "styled-components";
+import IconButton from "@appserver/components/icon-button";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import { isMobile, isTablet } from "react-device-detect";
 
 export const StyledIcon = styled(IconButton)`
   ${commonIconsStyles}
@@ -27,25 +27,37 @@ const QuickButtons = ({
   const isEditingWithFav = fileStatus === 33;
   const showFavorite = isFavorite || isNewWithFav || isEditingWithFav;
 
-  const isTile = viewAs === 'tile';
+  const isTile = viewAs === "tile";
 
   const iconShare = shared
-    ? '/static/images/file.actions.share.react.svg'
-    : '/static/images/catalog.share.react.svg';
+    ? "/static/images/file.actions.share.react.svg"
+    : "/static/images/catalog.share.react.svg";
+
+  const colorShare = shared
+    ? "/static/images/file.actions.locked.react.svg"
+    : "/static/images/locked.react.svg";
 
   const iconLock = locked
-    ? '/static/images/file.actions.locked.react.svg'
-    : '/static/images/locked.react.svg';
+    ? "/static/images/file.actions.locked.react.svg"
+    : "/static/images/locked.react.svg";
+
+  const colorLock = locked
+    ? theme.filesQuickButtons.sharedColor
+    : theme.filesQuickButtons.color;
 
   const iconFavorite = showFavorite
-    ? '/static/images/file.actions.favorite.react.svg'
-    : '/static/images/favorite.react.svg';
+    ? "/static/images/file.actions.favorite.react.svg"
+    : "/static/images/favorite.react.svg";
+
+  const colorFavorite = showFavorite
+    ? theme.filesQuickButtons.sharedColor
+    : theme.filesQuickButtons.color;
 
   const tabletViewQuickButton =
     !isTile && ((sectionWidth > 500 && sectionWidth <= 1024) || isTablet);
-  const sizeQuickButton = isTile || tabletViewQuickButton ? 'medium' : 'small';
+  const sizeQuickButton = isTile || tabletViewQuickButton ? "medium" : "small";
 
-  const displayShare = viewAs === 'row' && (isMobile || sectionWidth <= 500);
+  const displayShare = viewAs === "row" && (isMobile || sectionWidth <= 500);
   const displayLock = !locked && (isMobile || sectionWidth <= 500);
   const displayFavorite = !showFavorite && (isMobile || sectionWidth <= 500);
 
@@ -57,22 +69,25 @@ const QuickButtons = ({
           className="badge share-button-icon"
           size={sizeQuickButton}
           onClick={onClickShare}
-          color={theme.filesQuickButtons.color}
+          color={colorShare}
           hoverColor={theme.filesQuickButtons.sharedColor}
         />
       )}
-      {fileExst && accessToEdit && !isTrashFolder && (!displayLock || isTile) && (
-        <StyledIcon
-          iconName={iconLock}
-          className="badge lock-file icons-group"
-          size={sizeQuickButton}
-          data-id={id}
-          data-locked={locked ? true : false}
-          onClick={onClickLock}
-          color={theme.filesQuickButtons.color}
-          hoverColor={theme.filesQuickButtons.sharedColor}
-        />
-      )}
+      {fileExst &&
+        accessToEdit &&
+        !isTrashFolder &&
+        (!displayLock || isTile) && (
+          <StyledIcon
+            iconName={iconLock}
+            className="badge lock-file icons-group"
+            size={sizeQuickButton}
+            data-id={id}
+            data-locked={locked ? true : false}
+            onClick={onClickLock}
+            color={colorLock}
+            hoverColor={theme.filesQuickButtons.sharedColor}
+          />
+        )}
       {fileExst && !isTrashFolder && (!displayFavorite || isTile) && (
         <StyledIcon
           iconName={iconFavorite}
@@ -81,7 +96,7 @@ const QuickButtons = ({
           data-id={id}
           data-title={title}
           onClick={() => onClickFavorite(showFavorite)}
-          color={theme.filesQuickButtons.color}
+          color={colorFavorite}
           hoverColor={theme.filesQuickButtons.hoverColor}
         />
       )}
