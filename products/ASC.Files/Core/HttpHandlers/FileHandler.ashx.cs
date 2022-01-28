@@ -1103,8 +1103,8 @@ namespace ASC.Web.Files
                     file = CreateFileFromTemplate(folder, fileTitle, docType);
                 }
 
-                var roomFile = DocumentServiceHelper.GetSocketRoom(file, false);
-                SocketManager.CreateFile(file.ID, roomFile, file);
+                var room = DocumentServiceHelper.GetSocketFolderRoom(file.FolderID);
+                SocketManager.CreateFile(file.ID, room, file);
             }
             catch (Exception ex)
             {

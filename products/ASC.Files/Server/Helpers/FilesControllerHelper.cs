@@ -187,8 +187,8 @@ namespace ASC.Files.Helpers
             {
                 var resultFile = FileUploader.Exec(folderId, title, file.Length, file, createNewIfExist ?? !FilesSettingsHelper.UpdateIfExist, !keepConvertStatus);
 
-                var roomFile = DocumentServiceHelper.GetSocketRoom(resultFile, false);
-                SocketManager.CreateFile(resultFile.ID, roomFile, resultFile);
+                var room = DocumentServiceHelper.GetSocketFolderRoom(resultFile.FolderID);
+                SocketManager.CreateFile(resultFile.ID, room, resultFile);
 
                 return FileWrapperHelper.Get(resultFile);
             }
@@ -332,7 +332,7 @@ namespace ASC.Files.Helpers
         {
             var folder = FileStorageService.CreateNewFolder(folderId, title);
 
-            var room = DocumentServiceHelper.GetSocketRoom(folderId);
+            var room = DocumentServiceHelper.GetSocketFolderRoom(folderId);
             SocketManager.CreateFolder(folder.ID, room, folder);
 
             return FolderWrapperHelper.Get(folder);

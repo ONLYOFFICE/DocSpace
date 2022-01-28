@@ -252,7 +252,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     FileTracker.Remove(fileId);
                     var fileStable = DaoFactory.GetFileDao<T>().GetFileStable(fileId);
 
-                    var roomFile = DocumentServiceHelper.GetSocketRoom(fileStable);
+                    var roomFile = DocumentServiceHelper.GetSocketFileRoom(fileStable);
                     SocketManager.StopEdit(fileId, roomFile);
 
                     break;
@@ -338,7 +338,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 FileTracker.Remove(fileId, userId: removeUserId);
             }
 
-            var roomFile = DocumentServiceHelper.GetSocketRoom(fileStable);
+            var roomFile = DocumentServiceHelper.GetSocketFileRoom(fileStable);
 
             SocketManager.StartEdit(fileId, roomFile);
         }

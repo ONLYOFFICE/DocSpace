@@ -43,6 +43,7 @@ using ASC.MessagingSystem;
 using ASC.Security.Cryptography;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Helpers;
+using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
 
@@ -84,6 +85,8 @@ namespace ASC.Web.Files.HttpHandlers
         private InstanceCrypto InstanceCrypto { get; }
         private ChunkedUploadSessionHolder ChunkedUploadSessionHolder { get; }
         private ChunkedUploadSessionHelper ChunkedUploadSessionHelper { get; }
+        public SocketManager SocketManager { get; }
+        public DocumentServiceHelper DocumentServiceHelper { get; }
         public ILog Logger { get; }
 
         public ChunkedUploaderHandlerService(
@@ -96,7 +99,9 @@ namespace ASC.Web.Files.HttpHandlers
             SetupInfo setupInfo,
             InstanceCrypto instanceCrypto,
             ChunkedUploadSessionHolder chunkedUploadSessionHolder,
-            ChunkedUploadSessionHelper chunkedUploadSessionHelper)
+            ChunkedUploadSessionHelper chunkedUploadSessionHelper,
+            SocketManager socketManager,
+            DocumentServiceHelper documentServiceHelper)
         {
             TenantManager = tenantManager;
             FileUploader = fileUploader;
@@ -107,6 +112,8 @@ namespace ASC.Web.Files.HttpHandlers
             InstanceCrypto = instanceCrypto;
             ChunkedUploadSessionHolder = chunkedUploadSessionHolder;
             ChunkedUploadSessionHelper = chunkedUploadSessionHelper;
+            SocketManager = socketManager;
+            DocumentServiceHelper = documentServiceHelper;
             Logger = optionsMonitor.CurrentValue;
         }
 
@@ -169,6 +176,9 @@ namespace ASC.Web.Files.HttpHandlers
                         {
                             await WriteSuccess(context, ToResponseObject(resumedSession.File), (int)HttpStatusCode.Created);
                             FilesMessageService.Send(resumedSession.File, MessageAction.FileUploaded, resumedSession.File.Title);
+
+                            var room = DocumentServiceHelper.GetSocketFolderRoom(resumedSession.File.FolderID);
+                            SocketManager.CreateFile(resumedSession.File.ID, room, resumedSession.File);
                         }
                         else
                         {

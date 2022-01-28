@@ -482,8 +482,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                     var documentServiceHelper = scope.ServiceProvider.GetService<DocumentServiceHelper>();
                                     var socketManager = scope.ServiceProvider.GetService<SocketManager>();
 
-                                    var roomFile = documentServiceHelper.GetSocketRoom(file, false);
-                                    socketManager.DeleteFile(file.ID, roomFile);
+                                    var room = documentServiceHelper.GetSocketFolderRoom(file.FolderID);
+                                    socketManager.DeleteFile(file.ID, room);
 
                                     if (ProcessedFile(fileId))
                                     {

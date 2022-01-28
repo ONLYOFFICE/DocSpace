@@ -178,7 +178,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                 FolderDao.DeleteFolder(folder.ID);
                                 filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
 
-                                var room = documentServiceHelper.GetSocketRoom(folder.RootFolderId);
+                                var room = documentServiceHelper.GetSocketFolderRoom(folder.RootFolderId);
                                 socketManager.DeleteFolder(folder.ID, room);
 
                                 ProcessedFolder(folderId);
@@ -204,7 +204,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                     filesMessageService.Send(folder, _headers, MessageAction.FolderMovedToTrash, folder.Title);
                                 }
 
-                                var room = documentServiceHelper.GetSocketRoom(folder.RootFolderId);
+                                var room = documentServiceHelper.GetSocketFolderRoom(folder.RootFolderId);
                                 socketManager.DeleteFolder(folder.ID, room);
 
                                 ProcessedFolder(folderId);
@@ -250,8 +250,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             FileDao.SaveThumbnail(file, null);
                         }
 
-                        var roomFile = documentServiceHelper.GetSocketRoom(file, false);
-                        socketManager.DeleteFile(file.ID, roomFile);
+                        var room = documentServiceHelper.GetSocketFolderRoom(file.FolderID);
+                        socketManager.DeleteFile(file.ID, room);
                     }
                     else
                     {
@@ -260,8 +260,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             FileDao.DeleteFile(file.ID);
                             filesMessageService.Send(file, _headers, MessageAction.FileDeleted, file.Title);
 
-                            var roomFile = documentServiceHelper.GetSocketRoom(file, false);
-                            socketManager.DeleteFile(file.ID, roomFile);
+                            var room = documentServiceHelper.GetSocketFolderRoom(file.FolderID);
+                            socketManager.DeleteFile(file.ID, room);
                         }
                         catch (Exception ex)
                         {

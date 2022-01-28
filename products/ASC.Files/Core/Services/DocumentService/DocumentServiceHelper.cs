@@ -412,18 +412,16 @@ namespace ASC.Web.Files.Services.DocumentService
             return DocumentServiceConnector.Command(Web.Core.Files.DocumentService.CommandMethod.Meta, docKeyForTrack, file.ID, meta: meta);
         }
 
-        public string GetSocketRoom<T>(File<T> file, bool forFile = true)
+        public string GetSocketFileRoom<T>(File<T> file)
         {
             var tenantId = TenantManager.GetCurrentTenant().TenantId;
 
-            var room = forFile
-                        ? $"{tenantId}-FILE-{file.ID}"
-                        : $"{tenantId}-DIR-{file.FolderID}";
+            var room = $"{tenantId}-FILE-{file.ID}";
 
             return room;
         }
 
-        public string GetSocketRoom<T>(T folderId)
+        public string GetSocketFolderRoom<T>(T folderId)
         {
             var tenantId = TenantManager.GetCurrentTenant().TenantId;
 
