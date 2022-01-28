@@ -1,13 +1,13 @@
-import React from 'react';
-import { inject, observer } from 'mobx-react';
-import PropTypes from 'prop-types';
-import ModalDialog from '@appserver/components/modal-dialog';
-import Button from '@appserver/components/button';
-import Link from '@appserver/components/link';
-import Text from '@appserver/components/text';
-import { withTranslation, Trans } from 'react-i18next';
-import { sendInstructionsToChangePassword } from '@appserver/common/api/people';
-import toastr from 'studio/toastr';
+import React from "react";
+import { inject, observer } from "mobx-react";
+import PropTypes from "prop-types";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Button from "@appserver/components/button";
+import Link from "@appserver/components/link";
+import Text from "@appserver/components/text";
+import { withTranslation, Trans } from "react-i18next";
+import { sendInstructionsToChangePassword } from "@appserver/common/api/people";
+import toastr from "studio/toastr";
 
 class ChangePasswordDialogComponent extends React.Component {
   constructor() {
@@ -32,26 +32,28 @@ class ChangePasswordDialogComponent extends React.Component {
   };
 
   render() {
-    console.log('ChangePasswordDialog render');
+    console.log("ChangePasswordDialog render");
     const { t, tReady, visible, email, onClose } = this.props;
     const { isRequestRunning } = this.state;
 
     return (
       <ModalDialog isLoading={!tReady} visible={visible} onClose={onClose}>
-        <ModalDialog.Header>{t('PasswordChangeTitle')}</ModalDialog.Header>
+        <ModalDialog.Header>{t("PasswordChangeTitle")}</ModalDialog.Header>
         <ModalDialog.Body>
           <Text fontSize="13px">
             <Trans
               i18nKey="MessageSendPasswordChangeInstructionsOnEmail"
               ns="ChangePasswordDialog"
-              t={t}>
+              t={t}
+            >
               Send the password change instructions to the
               <Link
                 type="page"
                 href={`mailto:${email}`}
                 noHover
                 color={theme.peopleDialogs.changePassword.linkColor}
-                title={email}>
+                title={email}
+              >
                 {{ email }}
               </Link>
               email address
@@ -61,7 +63,7 @@ class ChangePasswordDialogComponent extends React.Component {
         <ModalDialog.Footer>
           <Button
             key="SendBtn"
-            label={t('Common:SendButton')}
+            label={t("Common:SendButton")}
             size="medium"
             primary={true}
             onClick={this.onSendPasswordChangeInstructions}
@@ -73,8 +75,14 @@ class ChangePasswordDialogComponent extends React.Component {
   }
 }
 
-const ChangePasswordDialog = inject(({ auth }) => ({ theme: auth.settingsStore.theme }))(
-  observer(withTranslation(['ChangePasswordDialog', 'Common'])(ChangePasswordDialogComponent)),
+const ChangePasswordDialog = inject(({ auth }) => ({
+  theme: auth.settingsStore.theme,
+}))(
+  observer(
+    withTranslation(["ChangePasswordDialog", "Common"])(
+      ChangePasswordDialogComponent
+    )
+  )
 );
 
 ChangePasswordDialog.propTypes = {

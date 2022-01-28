@@ -1,13 +1,13 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import Box from '@appserver/components/box';
-import RecoverAccess from './recover-access-container';
-import { useTranslation } from 'react-i18next';
-import { inject, observer } from 'mobx-react';
-import { combineUrl } from '@appserver/common/utils';
-import { AppServerConfig } from '@appserver/common/constants';
-import { Base } from '@appserver/components/themes';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import Box from "@appserver/components/box";
+import RecoverAccess from "./recover-access-container";
+import { useTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
+import { Base } from "@appserver/components/themes";
 
 const Header = styled.header`
   align-items: left;
@@ -51,7 +51,12 @@ const Header = styled.header`
 
 Header.defaultProps = { theme: Base };
 
-const HeaderUnAuth = ({ enableAdmMess, wizardToken, isAuthenticated, isLoaded }) => {
+const HeaderUnAuth = ({
+  enableAdmMess,
+  wizardToken,
+  isAuthenticated,
+  isLoaded,
+}) => {
   const { t } = useTranslation();
 
   return (
@@ -60,19 +65,23 @@ const HeaderUnAuth = ({ enableAdmMess, wizardToken, isAuthenticated, isLoaded })
         displayProp="flex"
         justifyContent="space-between"
         alignItems="center"
-        className="header-items-wrapper">
+        className="header-items-wrapper"
+      >
         {!isAuthenticated && isLoaded ? (
           <div>
             <a className="header-logo-wrapper" href="/">
               <img
                 className="header-logo-min_icon"
-                src={combineUrl(AppServerConfig.proxyURL, '/static/images/nav.logo.react.svg')}
+                src={combineUrl(
+                  AppServerConfig.proxyURL,
+                  "/static/images/nav.logo.react.svg"
+                )}
               />
               <img
                 className="header-logo-icon"
                 src={combineUrl(
                   AppServerConfig.proxyURL,
-                  '/static/images/nav.logo.opened.react.svg',
+                  "/static/images/nav.logo.opened.react.svg"
                 )}
               />
             </a>
@@ -87,7 +96,7 @@ const HeaderUnAuth = ({ enableAdmMess, wizardToken, isAuthenticated, isLoaded })
   );
 };
 
-HeaderUnAuth.displayName = 'Header';
+HeaderUnAuth.displayName = "Header";
 
 HeaderUnAuth.propTypes = {
   enableAdmMess: PropTypes.bool,
@@ -101,7 +110,7 @@ export default inject(({ auth }) => {
   const { enableAdmMess, wizardToken } = settingsStore;
   return {
     enableAdmMess,
-    wizardToken: wizardToken || '/',
+    wizardToken: wizardToken || "/",
     isAuthenticated,
     isLoaded,
   };

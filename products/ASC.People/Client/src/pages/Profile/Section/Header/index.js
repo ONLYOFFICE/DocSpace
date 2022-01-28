@@ -1,43 +1,47 @@
-import React from 'react';
-import IconButton from '@appserver/components/icon-button';
-import ContextMenuButton from '@appserver/components/context-menu-button';
-import AvatarEditor from '@appserver/components/avatar-editor';
-import Headline from '@appserver/common/components/Headline';
-import toastr from 'studio/toastr';
-import { withRouter } from 'react-router';
-import { withTranslation, Trans } from 'react-i18next';
-import styled from 'styled-components';
+import React from "react";
+import IconButton from "@appserver/components/icon-button";
+import ContextMenuButton from "@appserver/components/context-menu-button";
+import AvatarEditor from "@appserver/components/avatar-editor";
+import Headline from "@appserver/common/components/Headline";
+import toastr from "studio/toastr";
+import { withRouter } from "react-router";
+import { withTranslation, Trans } from "react-i18next";
+import styled from "styled-components";
 import {
   resendUserInvites,
   createThumbnailsAvatar,
   loadAvatar,
   deleteAvatar,
-} from '@appserver/common/api/people';
-import { AppServerConfig, EmployeeStatus } from '@appserver/common/constants';
+} from "@appserver/common/api/people";
+import { AppServerConfig, EmployeeStatus } from "@appserver/common/constants";
 import {
   DeleteSelfProfileDialog,
   ChangePasswordDialog,
   ChangeEmailDialog,
   DeleteProfileEverDialog,
-} from '../../../../components/dialogs';
-import { inject, observer } from 'mobx-react';
-import { getUserStatus, toEmployeeWrapper } from '../../../../helpers/people-helpers';
-import config from '../../../../../package.json';
-import { combineUrl } from '@appserver/common/utils';
+} from "../../../../components/dialogs";
+import { inject, observer } from "mobx-react";
+import {
+  getUserStatus,
+  toEmployeeWrapper,
+} from "../../../../helpers/people-helpers";
+import config from "../../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
 
-import Loaders from '@appserver/common/components/Loaders';
-import withLoader from '../../../../HOCs/withLoader';
+import Loaders from "@appserver/common/components/Loaders";
+import withLoader from "../../../../HOCs/withLoader";
 
 const StyledContainer = styled.div`
   position: relative;
 
   display: grid;
   grid-template-columns: ${(props) =>
-    props.showContextButton ? 'auto auto auto 1fr' : 'auto 1fr'};
+    props.showContextButton ? "auto auto auto 1fr" : "auto 1fr"};
   align-items: center;
 
   @media (max-width: 1024px) {
-    grid-template-columns: ${(props) => (props.showContextButton ? 'auto 1fr auto' : 'auto 1fr')};
+    grid-template-columns: ${(props) =>
+      props.showContextButton ? "auto 1fr auto" : "auto 1fr"};
   }
 
   .action-button {
@@ -74,7 +78,10 @@ class SectionHeaderContent extends React.PureComponent {
 
   componentDidUpdate(prevProps) {
     if (!this.props.profile && !prevProps.profile) return;
-    if (!prevProps.profile || this.props.profile.userName !== prevProps.profile.userName) {
+    if (
+      !prevProps.profile ||
+      this.props.profile.userName !== prevProps.profile.userName
+    ) {
       this.setState(this.mapPropsToState(this.props));
     }
   }
@@ -86,7 +93,7 @@ class SectionHeaderContent extends React.PureComponent {
       profile: profile,
       visibleAvatarEditor: false,
       avatar: {
-        tmpFile: '',
+        tmpFile: "",
         image: null,
         defaultWidth: 0,
         defaultHeight: 0,
@@ -113,7 +120,7 @@ class SectionHeaderContent extends React.PureComponent {
               defaultWidth: avatarDefaultSizes[1],
               defaultHeight: avatarDefaultSizes[2],
               image: userPhotoData.original
-                ? userPhotoData.original.indexOf('default_user_photo') !== -1
+                ? userPhotoData.original.indexOf("default_user_photo") !== -1
                   ? null
                   : userPhotoData.original
                 : null,
@@ -138,8 +145,8 @@ class SectionHeaderContent extends React.PureComponent {
   onLoadFileAvatar = (file, callback) => {
     let data = new FormData();
     let _this = this;
-    data.append('file', file);
-    data.append('Autosave', false);
+    data.append("file", file);
+    data.append("Autosave", false);
     loadAvatar(this.state.profile.id, data)
       .then((response) => {
         if (!response.success && response.message) {
@@ -155,7 +162,7 @@ class SectionHeaderContent extends React.PureComponent {
             defaultHeight: img.height,
           };
           _this.setState(stateCopy);
-          if (typeof callback === 'function') callback();
+          if (typeof callback === "function") callback();
         };
         img.src = response.data;
       })
@@ -165,8 +172,12 @@ class SectionHeaderContent extends React.PureComponent {
   onSaveAvatar = (isUpdate, result) => {
     if (isUpdate) {
       createThumbnailsAvatar(this.state.profile.id, {
-        x: Math.round(result.x * this.state.avatar.defaultWidth - result.width / 2),
-        y: Math.round(result.y * this.state.avatar.defaultHeight - result.height / 2),
+        x: Math.round(
+          result.x * this.state.avatar.defaultWidth - result.width / 2
+        ),
+        y: Math.round(
+          result.y * this.state.avatar.defaultHeight - result.height / 2
+        ),
         width: result.width,
         height: result.height,
         tmpFile: this.state.avatar.tmpFile,
@@ -174,10 +185,12 @@ class SectionHeaderContent extends React.PureComponent {
         .then((response) => {
           let stateCopy = Object.assign({}, this.state);
           stateCopy.visibleAvatarEditor = false;
-          stateCopy.avatar.tmpFile = '';
+          stateCopy.avatar.tmpFile = "";
           stateCopy.profile.avatarMax =
-            response.max + '?_=' + Math.floor(Math.random() * Math.floor(10000));
-          toastr.success(this.props.t('ChangesApplied'));
+            response.max +
+            "?_=" +
+            Math.floor(Math.random() * Math.floor(10000));
+          toastr.success(this.props.t("ChangesApplied"));
           this.setState(stateCopy);
         })
         .catch((error) => toastr.error(error))
@@ -189,7 +202,7 @@ class SectionHeaderContent extends React.PureComponent {
           let stateCopy = Object.assign({}, this.state);
           stateCopy.visibleAvatarEditor = false;
           stateCopy.profile.avatarMax = response.big;
-          toastr.success(this.props.t('ChangesApplied'));
+          toastr.success(this.props.t("ChangesApplied"));
           this.setState(stateCopy);
         })
         .catch((error) => toastr.error(error));
@@ -226,7 +239,7 @@ class SectionHeaderContent extends React.PureComponent {
       : combineUrl(
           AppServerConfig.proxyURL,
           config.homepage,
-          `/edit/${this.state.profile.userName}`,
+          `/edit/${this.state.profile.userName}`
         );
 
     history.push(editUrl);
@@ -238,23 +251,29 @@ class SectionHeaderContent extends React.PureComponent {
     updateUserStatus(status, new Array(userId))
       .then(() => this.props.updateProfile(this.props.profile))
       .then(() => fetchProfile(userId))
-      .then(() => toastr.success(t('Translations:SuccessChangeUserStatus')))
+      .then(() => toastr.success(t("Translations:SuccessChangeUserStatus")))
       .catch((error) => toastr.error(error));
   };
 
-  onDisableClick = () => this.onUpdateUserStatus(EmployeeStatus.Disabled, this.state.profile.id);
+  onDisableClick = () =>
+    this.onUpdateUserStatus(EmployeeStatus.Disabled, this.state.profile.id);
 
-  onEnableClick = () => this.onUpdateUserStatus(EmployeeStatus.Active, this.state.profile.id);
+  onEnableClick = () =>
+    this.onUpdateUserStatus(EmployeeStatus.Active, this.state.profile.id);
 
   onReassignDataClick = (user) => {
     const { history } = this.props;
     history.push(
-      combineUrl(AppServerConfig.proxyURL, config.homepage, `/reassign/${user.userName}`),
+      combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/reassign/${user.userName}`
+      )
     );
   };
 
   onDeletePersonalDataClick = () => {
-    console.log('Context action: Delete personal data');
+    console.log("Context action: Delete personal data");
   };
 
   toggleDeleteProfileEverDialog = () =>
@@ -281,17 +300,18 @@ class SectionHeaderContent extends React.PureComponent {
           <Trans
             i18nKey="MessageEmailActivationInstuctionsSentOnEmail"
             ns="Profile"
-            t={this.props.t}>
+            t={this.props.t}
+          >
             The email activation instructions have been sent to the
             <strong>{{ email: this.state.profile.email }}</strong> email address
-          </Trans>,
-        ),
+          </Trans>
+        )
       )
       .catch((error) => toastr.error(error));
   };
 
   getUserContextOptions = (user, viewer) => {
-    let status = '';
+    let status = "";
     const { t, isAdmin, isMe } = this.props;
 
     if (isAdmin || (!isAdmin && isMe)) {
@@ -299,88 +319,88 @@ class SectionHeaderContent extends React.PureComponent {
     }
 
     switch (status) {
-      case 'normal':
-      case 'unknown':
+      case "normal":
+      case "unknown":
         return [
           {
-            key: 'edit',
-            label: t('EditUser'),
+            key: "edit",
+            label: t("EditUser"),
             onClick: this.onEditClick,
           },
           {
-            key: 'change-password',
-            label: t('Translations:PasswordChangeButton'),
+            key: "change-password",
+            label: t("Translations:PasswordChangeButton"),
             onClick: this.toggleChangePasswordDialog,
           },
           {
-            key: 'change-email',
-            label: t('Translations:EmailChangeButton'),
+            key: "change-email",
+            label: t("Translations:EmailChangeButton"),
             onClick: this.toggleChangeEmailDialog,
           },
           isMe
             ? viewer.isOwner
               ? {}
               : {
-                  key: 'delete-profile',
-                  label: t('Translations:DeleteSelfProfile'),
+                  key: "delete-profile",
+                  label: t("Translations:DeleteSelfProfile"),
                   onClick: this.toggleDeleteSelfProfileDialog,
                 }
             : {
-                key: 'disable',
-                label: t('Translations:DisableUserButton'),
+                key: "disable",
+                label: t("Translations:DisableUserButton"),
                 onClick: this.onDisableClick,
               },
         ];
-      case 'disabled':
+      case "disabled":
         return [
           {
-            key: 'enable',
-            label: t('Translations:EnableUserButton'),
+            key: "enable",
+            label: t("Translations:EnableUserButton"),
             onClick: this.onEnableClick,
           },
           {
-            key: 'reassign-data',
-            label: t('Translations:ReassignData'),
+            key: "reassign-data",
+            label: t("Translations:ReassignData"),
             onClick: this.onReassignDataClick.bind(this, user),
           },
           {
-            key: 'delete-personal-data',
-            label: t('Translations:RemoveData'),
+            key: "delete-personal-data",
+            label: t("Translations:RemoveData"),
             onClick: this.onDeletePersonalDataClick,
           },
           {
-            key: 'delete-profile',
-            label: t('Translations:DeleteSelfProfile'),
+            key: "delete-profile",
+            label: t("Translations:DeleteSelfProfile"),
             onClick: this.toggleDeleteProfileEverDialog,
           },
         ];
-      case 'pending':
+      case "pending":
         return [
           {
-            key: 'edit',
-            label: t('Common:EditButton'),
+            key: "edit",
+            label: t("Common:EditButton"),
             onClick: this.onEditClick,
           },
           {
-            key: 'invite-again',
-            label: t('InviteAgainLbl'),
+            key: "invite-again",
+            label: t("InviteAgainLbl"),
             onClick: this.onInviteAgainClick,
           },
           !isMe &&
             (user.status === EmployeeStatus.Active
               ? {
-                  key: 'disable',
-                  label: t('Translations:DisableUserButton'),
+                  key: "disable",
+                  label: t("Translations:DisableUserButton"),
                   onClick: this.onDisableClick,
                 }
               : {
-                  key: 'enable',
-                  label: t('Translations:EnableUserButton'),
+                  key: "enable",
+                  label: t("Translations:EnableUserButton"),
                   onClick: this.onEnableClick,
                 }),
           isMe && {
-            key: 'delete-profile',
-            label: t('Translations:DeleteSelfProfile'),
+            key: "delete-profile",
+            label: t("Translations:DeleteSelfProfile"),
             onClick: this.toggleDeleteSelfProfileDialog,
           },
         ];
@@ -399,7 +419,11 @@ class SectionHeaderContent extends React.PureComponent {
     resetProfile();
 
     const url = filter.toUrlParams();
-    const backUrl = combineUrl(AppServerConfig.proxyURL, config.homepage, `filter?/${url}`);
+    const backUrl = combineUrl(
+      AppServerConfig.proxyURL,
+      config.homepage,
+      `filter?/${url}`
+    );
 
     history.push(backUrl, url);
     setFilter(filter);
@@ -412,7 +436,9 @@ class SectionHeaderContent extends React.PureComponent {
     const contextOptions = () => this.getUserContextOptions(profile, viewer);
 
     return (
-      <StyledContainer showContextButton={(isAdmin && !profile.isOwner) || isMe}>
+      <StyledContainer
+        showContextButton={(isAdmin && !profile.isOwner) || isMe}
+      >
         <IconButton
           iconName="/static/images/arrow.path.react.svg"
           size="17"
@@ -423,13 +449,13 @@ class SectionHeaderContent extends React.PureComponent {
 
         <Headline className="header-headline" type="content" truncate={true}>
           {profile.displayName}
-          {profile.isLDAP && ` (${t('Translations:LDAPLbl')})`}
+          {profile.isLDAP && ` (${t("Translations:LDAPLbl")})`}
         </Headline>
         {((isAdmin && !profile.isOwner) || isMe) && (
           <ContextMenuButton
             className="action-button"
             directionX="right"
-            title={t('Common:Actions')}
+            title={t("Common:Actions")}
             iconName="/static/images/vertical-dots.react.svg"
             size={17}
             getData={contextOptions}
@@ -443,14 +469,14 @@ class SectionHeaderContent extends React.PureComponent {
           onClose={this.onCloseAvatarEditor}
           onSave={this.onSaveAvatar}
           onLoadFile={this.onLoadFileAvatar}
-          headerLabel={t('Common:EditAvatar')}
-          selectNewPhotoLabel={t('Translations:selectNewPhotoLabel')}
-          orDropFileHereLabel={t('Translations:orDropFileHereLabel')}
-          unknownTypeError={t('Translations:ErrorUnknownFileImageType')}
-          maxSizeFileError={t('Translations:maxSizeFileError')}
-          unknownError={t('Common:Error')}
-          saveButtonLabel={t('Common:SaveButton')}
-          maxSizeLabel={t('Translations:MaxSizeLabel')}
+          headerLabel={t("Common:EditAvatar")}
+          selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
+          orDropFileHereLabel={t("Translations:orDropFileHereLabel")}
+          unknownTypeError={t("Translations:ErrorUnknownFileImageType")}
+          maxSizeFileError={t("Translations:maxSizeFileError")}
+          unknownError={t("Common:Error")}
+          saveButtonLabel={t("Common:SaveButton")}
+          maxSizeLabel={t("Translations:MaxSizeLabel")}
         />
 
         {dialogsVisible.deleteSelfProfile && (
@@ -510,9 +536,9 @@ export default withRouter(
     };
   })(
     observer(
-      withTranslation(['Profile', 'Common', 'Translations'])(
-        withLoader(SectionHeaderContent)(<Loaders.SectionHeader />),
-      ),
-    ),
-  ),
+      withTranslation(["Profile", "Common", "Translations"])(
+        withLoader(SectionHeaderContent)(<Loaders.SectionHeader />)
+      )
+    )
+  )
 );

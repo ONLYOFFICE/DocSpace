@@ -1,11 +1,11 @@
-import React from 'react';
-import { FolderType } from '@appserver/common/constants';
-import { inject, observer } from 'mobx-react';
-import { withTranslation, Trans } from 'react-i18next';
-import EmptyContainer from './EmptyContainer';
-import Link from '@appserver/components/link';
-import Text from '@appserver/components/text';
-import Box from '@appserver/components/box';
+import React from "react";
+import { FolderType } from "@appserver/common/constants";
+import { inject, observer } from "mobx-react";
+import { withTranslation, Trans } from "react-i18next";
+import EmptyContainer from "./EmptyContainer";
+import Link from "@appserver/components/link";
+import Text from "@appserver/components/text";
+import Box from "@appserver/components/box";
 
 const RootFolderContainer = (props) => {
   const {
@@ -25,21 +25,21 @@ const RootFolderContainer = (props) => {
     rootFolderType,
     linkStyles,
   } = props;
-  const subheadingText = t('SubheadingEmptyText');
-  const myDescription = t('MyEmptyContainerDescription');
-  const shareDescription = t('SharedEmptyContainerDescription');
-  const commonDescription = t('CommonEmptyContainerDescription');
-  const trashDescription = t('TrashEmptyContainerDescription');
-  const favoritesDescription = t('FavoritesEmptyContainerDescription');
-  const recentDescription = t('RecentEmptyContainerDescription');
+  const subheadingText = t("SubheadingEmptyText");
+  const myDescription = t("MyEmptyContainerDescription");
+  const shareDescription = t("SharedEmptyContainerDescription");
+  const commonDescription = t("CommonEmptyContainerDescription");
+  const trashDescription = t("TrashEmptyContainerDescription");
+  const favoritesDescription = t("FavoritesEmptyContainerDescription");
+  const recentDescription = t("RecentEmptyContainerDescription");
 
-  const privateRoomHeader = t('PrivateRoomHeader');
+  const privateRoomHeader = t("PrivateRoomHeader");
   const privacyIcon = <img alt="" src="images/privacy.svg" />;
   const privateRoomDescTranslations = [
-    t('PrivateRoomDescriptionSafest'),
-    t('PrivateRoomDescriptionSecure'),
-    t('PrivateRoomDescriptionEncrypted'),
-    t('PrivateRoomDescriptionUnbreakable'),
+    t("PrivateRoomDescriptionSafest"),
+    t("PrivateRoomDescriptionSecure"),
+    t("PrivateRoomDescriptionEncrypted"),
+    t("PrivateRoomDescriptionUnbreakable"),
   ];
 
   const onGoToMyDocuments = () => {
@@ -53,40 +53,40 @@ const RootFolderContainer = (props) => {
       case FolderType.USER:
         return {
           descriptionText: myDescription,
-          imageSrc: '/static/images/empty_screen.png',
+          imageSrc: "/static/images/empty_screen.png",
           buttons: commonButtons,
         };
       case FolderType.SHARE:
         return {
           descriptionText: shareDescription,
-          imageSrc: 'images/empty_screen_forme.png',
+          imageSrc: "images/empty_screen_forme.png",
         };
       case FolderType.COMMON:
         return {
           descriptionText: commonDescription,
-          imageSrc: 'images/empty_screen_corporate.png',
+          imageSrc: "images/empty_screen_corporate.png",
           buttons: commonButtons,
         };
       case FolderType.Favorites:
         return {
           descriptionText: favoritesDescription,
-          imageSrc: 'images/empty_screen_favorites.png',
+          imageSrc: "images/empty_screen_favorites.png",
         };
       case FolderType.Recent:
         return {
           descriptionText: recentDescription,
-          imageSrc: 'images/empty_screen_recent.png',
+          imageSrc: "images/empty_screen_recent.png",
         };
       case FolderType.Privacy:
         return {
           descriptionText: privateRoomDescription,
-          imageSrc: 'images/empty_screen_privacy.png',
+          imageSrc: "images/empty_screen_privacy.png",
           buttons: isDesktop && isEncryptionSupport && commonButtons,
         };
       case FolderType.TRASH:
         return {
           descriptionText: trashDescription,
-          imageSrc: 'images/empty_screen_trash.png',
+          imageSrc: "images/empty_screen_trash.png",
           buttons: trashButtons,
         };
       default:
@@ -98,7 +98,12 @@ const RootFolderContainer = (props) => {
     <>
       <Text fontSize="15px" as="div">
         {privateRoomDescTranslations.map((el) => (
-          <Box displayProp="flex" alignItems="center" paddingProp="0 0 13px 0" key={el}>
+          <Box
+            displayProp="flex"
+            alignItems="center"
+            paddingProp="0 0 13px 0"
+            key={el}
+          >
             <Box paddingProp="0 7px 0 0">{privacyIcon}</Box>
             <Box>{el}</Box>
           </Box>
@@ -107,12 +112,14 @@ const RootFolderContainer = (props) => {
       {!isDesktop && (
         <Text fontSize="12px">
           <Trans t={t} i18nKey="PrivateRoomSupport" ns="Home">
-            Work in Private Room is available via {{ organizationName }} desktop app.
+            Work in Private Room is available via {{ organizationName }} desktop
+            app.
             <Link
               isBold
               isHovered
               color={theme.filesEmptyContainer.privateRoom.linkColor}
-              href={privacyInstructions}>
+              href={privacyInstructions}
+            >
               Instructions
             </Link>
           </Trans>
@@ -133,13 +140,13 @@ const RootFolderContainer = (props) => {
         />
         <Box className="flex-wrapper_container">
           <Link data-format="docx" onClick={onCreate} {...linkStyles}>
-            {t('Document')},
+            {t("Document")},
           </Link>
           <Link data-format="xlsx" onClick={onCreate} {...linkStyles}>
-            {t('Spreadsheet')},
+            {t("Spreadsheet")},
           </Link>
           <Link data-format="pptx" onClick={onCreate} {...linkStyles}>
-            {t('Presentation')}
+            {t("Presentation")}
           </Link>
           <Link data-format="docxf" onClick={onCreate} {...linkStyles}>
             {t("Translations:NewForm")}
@@ -155,7 +162,7 @@ const RootFolderContainer = (props) => {
           alt="plus_icon"
         />
         <Link {...linkStyles} onClick={onCreate}>
-          {t('Folder')}
+          {t("Folder")}
         </Link>
       </div>
     </span>
@@ -171,7 +178,7 @@ const RootFolderContainer = (props) => {
         onClick={onGoToMyDocuments}
       />
       <Link onClick={onGoToMyDocuments} {...linkStyles}>
-        {t('GoToMyButton')}
+        {t("GoToMyButton")}
       </Link>
     </div>
   );
@@ -180,28 +187,46 @@ const RootFolderContainer = (props) => {
   const subheadingTextProp = isPrivacyFolder ? {} : { subheadingText };
   const emptyFolderProps = getEmptyFolderProps();
 
-  return <EmptyContainer headerText={headerText} {...subheadingTextProp} {...emptyFolderProps} />;
+  return (
+    <EmptyContainer
+      headerText={headerText}
+      {...subheadingTextProp}
+      {...emptyFolderProps}
+    />
+  );
 };
 
-export default inject(({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
-  const { isDesktopClient, isEncryptionSupport, organizationName, theme } = auth.settingsStore;
+export default inject(
+  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
+    const {
+      isDesktopClient,
+      isEncryptionSupport,
+      organizationName,
+      theme,
+    } = auth.settingsStore;
 
-  const { filter, fetchFiles, privacyInstructions, setIsLoading } = filesStore;
-  const { title, rootFolderType } = selectedFolderStore;
-  const { isPrivacyFolder, myFolderId } = treeFoldersStore;
+    const {
+      filter,
+      fetchFiles,
+      privacyInstructions,
+      setIsLoading,
+    } = filesStore;
+    const { title, rootFolderType } = selectedFolderStore;
+    const { isPrivacyFolder, myFolderId } = treeFoldersStore;
 
-  return {
-    theme,
-    isPrivacyFolder,
-    isDesktop: isDesktopClient,
-    isEncryptionSupport,
-    organizationName,
-    privacyInstructions,
-    title,
-    myFolderId,
-    filter,
-    fetchFiles,
-    setIsLoading,
-    rootFolderType,
-  };
-})(withTranslation('Home')(observer(RootFolderContainer)));
+    return {
+      theme,
+      isPrivacyFolder,
+      isDesktop: isDesktopClient,
+      isEncryptionSupport,
+      organizationName,
+      privacyInstructions,
+      title,
+      myFolderId,
+      filter,
+      fetchFiles,
+      setIsLoading,
+      rootFolderType,
+    };
+  }
+)(withTranslation("Home")(observer(RootFolderContainer)));

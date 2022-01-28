@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import styled, { css, keyframes } from 'styled-components';
-import globalColors from '@appserver/components/utils/globalColors';
-import { Base } from '@appserver/components/themes';
+import React, { useState, useEffect } from "react";
+import styled, { css, keyframes } from "styled-components";
+import globalColors from "@appserver/components/utils/globalColors";
+import { Base } from "@appserver/components/themes";
 
-const backgroundColor = 'none';
+const backgroundColor = "none";
 
 const StyledCircleWrap = styled.div`
   width: 16px;
@@ -52,7 +52,8 @@ const StyledCircle = styled.div`
 
   .circle__mask .circle__fill {
     clip: rect(0px, 8px, 16px, 0px);
-    background-color: ${(props) => props.theme.filesPanels.upload.loadingButton.color};
+    background-color: ${(props) =>
+      props.theme.filesPanels.upload.loadingButton.color};
   }
 
   .circle__mask.circle__full {
@@ -78,7 +79,8 @@ const StyledLoadingButton = styled.div`
   border-radius: 50%;
   text-align: center;
   line-height: 12px;
-  background: ${(props) => props.theme.filesPanels.upload.loadingButton.background};
+  background: ${(props) =>
+    props.theme.filesPanels.upload.loadingButton.background};
   position: absolute;
   margin: 2px;
   color: ${(props) => props.theme.filesPanels.upload.loadingButton.color};
@@ -105,8 +107,17 @@ const LoadingButton = ({ id, className, style, ...rest }) => {
   }, [isAnimation]);
 
   return (
-    <StyledCircleWrap id={id} className={className} style={style} onClick={onClick}>
-      <StyledCircle percent={percent} inConversion={inConversion} isAnimation={isAnimation}>
+    <StyledCircleWrap
+      id={id}
+      className={className}
+      style={style}
+      onClick={onClick}
+    >
+      <StyledCircle
+        percent={percent}
+        inConversion={inConversion}
+        isAnimation={isAnimation}
+      >
         <div className="circle__mask circle__full">
           <div className="circle__fill"></div>
         </div>

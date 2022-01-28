@@ -1,17 +1,17 @@
-import React, { useCallback } from 'react';
-import { inject, observer } from 'mobx-react';
-import { withRouter } from 'react-router';
-import { withTranslation } from 'react-i18next';
-import styled from 'styled-components';
-import { isMobile, isTablet } from 'react-device-detect';
+import React, { useCallback } from "react";
+import { inject, observer } from "mobx-react";
+import { withRouter } from "react-router";
+import { withTranslation } from "react-i18next";
+import styled from "styled-components";
+import { isMobile, isTablet } from "react-device-detect";
 
-import Link from '@appserver/components/link';
-import Text from '@appserver/components/text';
-import RowContent from '@appserver/components/row-content';
+import Link from "@appserver/components/link";
+import Text from "@appserver/components/text";
+import RowContent from "@appserver/components/row-content";
 
-import withContent from '../../../../../HOCs/withContent';
-import withBadges from '../../../../../HOCs/withBadges';
-import { Base } from '@appserver/components/themes';
+import withContent from "../../../../../HOCs/withContent";
+import withBadges from "../../../../../HOCs/withBadges";
+import { Base } from "@appserver/components/themes";
 
 const SimpleFilesRowContent = styled(RowContent)`
   .row-main-container-wrapper {
@@ -92,14 +92,22 @@ const FilesRowContent = ({
   badgesComponent,
   theme,
 }) => {
-  const { contentLength, fileExst, filesCount, foldersCount, providerKey, title } = item;
+  const {
+    contentLength,
+    fileExst,
+    filesCount,
+    foldersCount,
+    providerKey,
+    title,
+  } = item;
 
   return (
     <>
       <SimpleFilesRowContent
         sectionWidth={sectionWidth}
         isMobile={isMobile}
-        isFile={fileExst || contentLength}>
+        isFile={fileExst || contentLength}
+      >
         <Link
           className="row-content-link"
           containerWidth="55%"
@@ -109,7 +117,8 @@ const FilesRowContent = ({
           fontSize="15px"
           target="_blank"
           {...linkStyles}
-          isTextOverflow={true}>
+          isTextOverflow={true}
+        >
           {titleWithoutExt}
         </Link>
         <div className="badges">{badgesComponent}</div>
@@ -120,7 +129,8 @@ const FilesRowContent = ({
             fontSize="12px"
             fontWeight={400}
             // color={sideColor}
-            className="row_update-text">
+            className="row_update-text"
+          >
             {updatedDate && updatedDate}
           </Text>
         )}
@@ -132,10 +142,11 @@ const FilesRowContent = ({
           fontSize="12px"
           fontWeight={400}
           title=""
-          truncate={true}>
+          truncate={true}
+        >
           {!fileExst && !contentLength && !providerKey
-            ? `${foldersCount} ${t('Folders')} | ${filesCount} ${t('Files')}`
-            : ''}
+            ? `${foldersCount} ${t("Folders")} | ${filesCount} ${t("Files")}`
+            : ""}
         </Text>
       </SimpleFilesRowContent>
     </>
@@ -146,6 +157,10 @@ export default inject(({ auth }) => {
   return { theme: auth.settingsStore.theme };
 })(
   observer(
-    withRouter(withTranslation(['Home', 'Translations'])(withContent(withBadges(FilesRowContent)))),
-  ),
+    withRouter(
+      withTranslation(["Home", "Translations"])(
+        withContent(withBadges(FilesRowContent))
+      )
+    )
+  )
 );

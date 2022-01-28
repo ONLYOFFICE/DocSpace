@@ -1,7 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { Base } from '@appserver/components/themes';
+import React from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import { Base } from "@appserver/components/themes";
 
 const StyledProgress = styled.div`
   display: inline-block;
@@ -12,7 +12,8 @@ const StyledProgress = styled.div`
     position: relative;
     width: ${(props) => props.width}px;
     height: 6px;
-    background: ${(props) => props.theme.mediaViewer.progressBar.backgroundColor};
+    background: ${(props) =>
+      props.theme.mediaViewer.progressBar.backgroundColor};
     margin: 15px 0;
     vertical-align: middle;
   }
@@ -26,7 +27,7 @@ const StyledProgress = styled.div`
     background: ${(props) => props.theme.mediaViewer.progressBar.background};
     border-radius: 2px;
   }
-  input[type='range'] {
+  input[type="range"] {
     display: block;
     overflow: visible;
     background: transparent;
@@ -39,7 +40,7 @@ const StyledProgress = styled.div`
     cursor: pointer;
   }
 
-  input[type='range']::-webkit-slider-thumb {
+  input[type="range"]::-webkit-slider-thumb {
     position: relative;
     appearance: none;
     box-sizing: content-box;
@@ -51,7 +52,7 @@ const StyledProgress = styled.div`
 
     cursor: pointer;
   }
-  input[type='range']::-moz-range-thumb {
+  input[type="range"]::-moz-range-thumb {
     position: relative;
     appearance: none;
     box-sizing: content-box;
@@ -62,7 +63,7 @@ const StyledProgress = styled.div`
     margin-top: -3px;
     cursor: pointer;
   }
-  input[type='range']::-ms-thumb {
+  input[type="range"]::-ms-thumb {
     position: relative;
     appearance: none;
     box-sizing: content-box;
@@ -74,7 +75,7 @@ const StyledProgress = styled.div`
     cursor: pointer;
   }
 
-  input[type='range']::-webkit-slider-runnable-track {
+  input[type="range"]::-webkit-slider-runnable-track {
     margin: 12px 0;
     height: 6px;
     border-radius: 2px;
@@ -83,7 +84,7 @@ const StyledProgress = styled.div`
     text-align: right;
     pointer-events: none;
   }
-  input[type='range']::-moz-range-track {
+  input[type="range"]::-moz-range-track {
     margin: 12px 0;
     height: 6px;
     border-radius: 2px;
@@ -92,7 +93,7 @@ const StyledProgress = styled.div`
     text-align: right;
     pointer-events: none;
   }
-  input[type='range']::-ms-track {
+  input[type="range"]::-ms-track {
     border-color: transparent;
     color: transparent;
 

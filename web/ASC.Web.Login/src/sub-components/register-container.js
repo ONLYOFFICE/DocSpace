@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
-import Box from '@appserver/components/box';
-import Text from '@appserver/components/text';
-import toastr from '@appserver/components/toast/toastr';
+import Box from "@appserver/components/box";
+import Text from "@appserver/components/text";
+import toastr from "@appserver/components/toast/toastr";
 
-import RegisterModalDialog from './register-modal-dialog';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { sendRegisterRequest } from '@appserver/common/api/settings';
-import { I18nextProvider, useTranslation } from 'react-i18next';
-import i18n from '../i18n';
-import { inject, observer } from 'mobx-react';
-import { Base } from '@appserver/components/themes';
+import RegisterModalDialog from "./register-modal-dialog";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import { sendRegisterRequest } from "@appserver/common/api/settings";
+import { I18nextProvider, useTranslation } from "react-i18next";
+import i18n from "../i18n";
+import { inject, observer } from "mobx-react";
+import { Base } from "@appserver/components/themes";
 
 const StyledRegister = styled(Box)`
   display: flex;
@@ -30,21 +30,27 @@ const StyledRegister = styled(Box)`
 StyledRegister.defaultProps = { theme: Base };
 
 const Register = (props) => {
-  const { enabledJoin, isAuthenticated, trustedDomainsType, trustedDomains, theme } = props;
+  const {
+    enabledJoin,
+    isAuthenticated,
+    trustedDomainsType,
+    trustedDomains,
+    theme,
+  } = props;
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [emailErr, setEmailErr] = useState(false);
 
-  const { t } = useTranslation('Login');
+  const { t } = useTranslation("Login");
 
   const onRegisterClick = () => {
     setVisible(true);
   };
   const onRegisterModalClose = () => {
     setVisible(false);
-    setEmail('');
+    setEmail("");
     setEmailErr(false);
   };
   const onChangeEmail = (e) => {
@@ -72,7 +78,7 @@ const Register = (props) => {
   return enabledJoin && !isAuthenticated ? (
     <>
       <StyledRegister onClick={onRegisterClick}>
-        <Text color={theme.login.register.textColor}>{t('Register')}</Text>
+        <Text color={theme.login.register.textColor}>{t("Register")}</Text>
       </StyledRegister>
 
       {visible && (
@@ -103,7 +109,12 @@ Register.propTypes = {
 
 export default inject(({ auth }) => {
   const { settingsStore, isAuthenticated, language } = auth;
-  const { enabledJoin, trustedDomainsType, trustedDomains, theme } = settingsStore;
+  const {
+    enabledJoin,
+    trustedDomainsType,
+    trustedDomains,
+    theme,
+  } = settingsStore;
   return {
     theme,
     enabledJoin,

@@ -1,12 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { withRouter } from 'react-router';
-import { useTranslation } from 'react-i18next';
-import { inject, observer } from 'mobx-react';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { withRouter } from "react-router";
+import { useTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
 
-import Text from '@appserver/components/text';
-import Link from '@appserver/components/link';
+import Text from "@appserver/components/text";
+import Link from "@appserver/components/link";
 
 const StyledContactContainer = styled.div`
   display: grid;
@@ -16,19 +16,26 @@ const StyledContactContainer = styled.div`
 `;
 
 const ContactContainer = ({ salesEmail, helpUrl, theme }) => {
-  const { t } = useTranslation('PaymentsEnterprise');
+  const { t } = useTranslation("PaymentsEnterprise");
   return (
     <StyledContactContainer>
       <Text>
-        {t('ContactEmail')}{' '}
-        <Link href={`mailto:${salesEmail}`} color={theme.studio.paymentsEnterprise.linkColor}>
+        {t("ContactEmail")}{" "}
+        <Link
+          href={`mailto:${salesEmail}`}
+          color={theme.studio.paymentsEnterprise.linkColor}
+        >
           {salesEmail}
         </Link>
       </Text>
 
       <Text>
-        {t('ContactUrl')}{' '}
-        <Link target="_blank" href={`${helpUrl}`} color={theme.studio.paymentsEnterprise.linkColor}>
+        {t("ContactUrl")}{" "}
+        <Link
+          target="_blank"
+          href={`${helpUrl}`}
+          color={theme.studio.paymentsEnterprise.linkColor}
+        >
           {helpUrl}
         </Link>
       </Text>

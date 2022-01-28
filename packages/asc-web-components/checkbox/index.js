@@ -8,7 +8,7 @@ import CheckboxCheckedIcon from "./svg/checkbox.checked.react.svg";
 import CheckboxIcon from "./svg/checkbox.react.svg";
 
 // eslint-disable-next-line react/prop-types
-const RenderCheckboxIcon = ({ isChecked, isIndeterminate, theme }) => {
+const RenderCheckboxIcon = ({ isChecked, isIndeterminate }) => {
   // let newProps = {
   //   size: "medium",
   //   className: "checkbox",
@@ -73,7 +73,6 @@ class Checkbox extends React.Component {
       value,
       title,
       truncate,
-      theme,
     } = this.props;
 
     return (

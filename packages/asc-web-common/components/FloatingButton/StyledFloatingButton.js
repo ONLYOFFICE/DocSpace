@@ -1,5 +1,5 @@
-import Base from '@appserver/components/themes/base';
-import styled, { keyframes, css } from 'styled-components';
+import Base from "@appserver/components/themes/base";
+import styled, { keyframes, css } from "styled-components";
 
 const StyledCircleWrap = styled.div`
   width: 54px;
@@ -101,4 +101,10 @@ const StyledAlertIcon = styled.div`
   top: -10px;
 `;
 
-export { StyledCircleWrap, StyledCircle, StyledFloatingButton, StyledAlertIcon, IconBox };
+export {
+  StyledCircleWrap,
+  StyledCircle,
+  StyledFloatingButton,
+  StyledAlertIcon,
+  IconBox,
+};

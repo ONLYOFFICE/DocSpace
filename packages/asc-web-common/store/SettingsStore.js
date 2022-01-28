@@ -1,12 +1,12 @@
-import { makeAutoObservable } from 'mobx';
-import api from '../api';
-import { ARTICLE_PINNED_KEY, LANGUAGE } from '../constants';
-import { combineUrl } from '../utils';
-import FirebaseHelper from '../utils/firebase';
-import { AppServerConfig } from '../constants';
-import { version } from '../package.json';
+import { makeAutoObservable } from "mobx";
+import api from "../api";
+import { ARTICLE_PINNED_KEY, LANGUAGE } from "../constants";
+import { combineUrl } from "../utils";
+import FirebaseHelper from "../utils/firebase";
+import { AppServerConfig } from "../constants";
+import { version } from "../package.json";
 
-import { Dark, Base } from '@appserver/components/themes';
+import { Dark, Base } from "@appserver/components/themes";
 
 const { proxyURL } = AppServerConfig;
 
@@ -19,47 +19,49 @@ class SettingsStore {
   isLoading = false;
   isLoaded = false;
 
-  currentProductId = '';
-  culture = 'en-US';
+  currentProductId = "";
+  culture = "en-US";
   cultures = [];
-  theme = !!localStorage.getItem('theme') ? themes[localStorage.getItem('theme')] : Base;
+  theme = !!localStorage.getItem("theme")
+    ? themes[localStorage.getItem("theme")]
+    : Base;
   trustedDomains = [];
   trustedDomainsType = 0;
   trustedDomains = [];
-  timezone = 'UTC';
+  timezone = "UTC";
   timezones = [];
-  utcOffset = '00:00:00';
+  utcOffset = "00:00:00";
   utcHoursOffset = 0;
-  defaultPage = '/';
-  homepage = '';
-  datePattern = 'M/d/yyyy';
-  datePatternJQ = '00/00/0000';
-  dateTimePattern = 'dddd, MMMM d, yyyy h:mm:ss tt';
+  defaultPage = "/";
+  homepage = "";
+  datePattern = "M/d/yyyy";
+  datePatternJQ = "00/00/0000";
+  dateTimePattern = "dddd, MMMM d, yyyy h:mm:ss tt";
   datepicker = {
-    datePattern: 'mm/dd/yy',
-    dateTimePattern: 'DD, mm dd, yy h:mm:ss tt',
-    timePattern: 'h:mm tt',
+    datePattern: "mm/dd/yy",
+    dateTimePattern: "DD, mm dd, yy h:mm:ss tt",
+    timePattern: "h:mm tt",
   };
-  organizationName = 'ONLYOFFICE';
-  greetingSettings = 'Web Office Applications';
+  organizationName = "ONLYOFFICE";
+  greetingSettings = "Web Office Applications";
   enableAdmMess = false;
   enabledJoin = false;
-  urlLicense = 'https://gnu.org/licenses/gpl-3.0.html';
-  urlSupport = 'https://helpdesk.onlyoffice.com/';
-  logoUrl = combineUrl(proxyURL, '/static/images/nav.logo.opened.react.svg');
+  urlLicense = "https://gnu.org/licenses/gpl-3.0.html";
+  urlSupport = "https://helpdesk.onlyoffice.com/";
+  logoUrl = combineUrl(proxyURL, "/static/images/nav.logo.opened.react.svg");
   customNames = {
-    id: 'Common',
-    userCaption: 'User',
-    usersCaption: 'Users',
-    groupCaption: 'Group',
-    groupsCaption: 'Groups',
-    userPostCaption: 'Title',
-    regDateCaption: 'Registration Date',
-    groupHeadCaption: 'Head',
-    guestCaption: 'Guest',
-    guestsCaption: 'Guests',
+    id: "Common",
+    userCaption: "User",
+    usersCaption: "Users",
+    groupCaption: "Group",
+    groupsCaption: "Groups",
+    userPostCaption: "Title",
+    regDateCaption: "Registration Date",
+    groupHeadCaption: "Head",
+    guestCaption: "Guest",
+    guestsCaption: "Guests",
   };
-  isDesktopClient = window['AscDesktopEditor'] !== undefined;
+  isDesktopClient = window["AscDesktopEditor"] !== undefined;
   //isDesktopEncryption: desktopEncryption;
   isEncryptionSupport = false;
   encryptionKeys = null;
@@ -68,14 +70,15 @@ class SettingsStore {
 
   isHeaderVisible = false;
   isTabletView = false;
-  isArticlePinned = localStorage.getItem(ARTICLE_PINNED_KEY) === 'true' || false;
+  isArticlePinned =
+    localStorage.getItem(ARTICLE_PINNED_KEY) === "true" || false;
   isArticleVisible = false;
   isBackdropVisible = false;
 
   isArticleVisibleOnUnpin = false;
 
   hashSettings = null;
-  title = '';
+  title = "";
   ownerId = null;
   nameSchemaId = null;
   owner = {};
@@ -85,31 +88,31 @@ class SettingsStore {
 
   customSchemaList = [];
   firebase = {
-    apiKey: '',
-    authDomain: '',
-    projectId: '',
-    storageBucket: '',
-    messagingSenderId: '',
-    appId: '',
-    measurementId: '',
+    apiKey: "",
+    authDomain: "",
+    projectId: "",
+    storageBucket: "",
+    messagingSenderId: "",
+    appId: "",
+    measurementId: "",
   };
-  version = '';
+  version = "";
   buildVersionInfo = {
     appServer: version,
-    documentServer: '6.4.1',
+    documentServer: "6.4.1",
   };
   debugInfo = false;
 
   userFormValidation = /^[\p{L}\p{M}'\-]+$/gu;
-  folderFormValidation = new RegExp('[*+:"<>?|\\\\/]', 'gim');
+  folderFormValidation = new RegExp('[*+:"<>?|\\\\/]', "gim");
 
   constructor() {
     makeAutoObservable(this);
   }
 
   get urlAuthKeys() {
-    const splitted = this.culture.split('-');
-    const lang = splitted.length > 0 ? splitted[0] : 'en';
+    const splitted = this.culture.split("-");
+    const lang = splitted.length > 0 ? splitted[0] : "en";
     return `https://helpcenter.onlyoffice.com/${lang}/installation/groups-authorization-keys.aspx`;
   }
 
@@ -118,8 +121,8 @@ class SettingsStore {
   }
 
   get helpUrlCommonSettings() {
-    const substring = this.culture.substring(0, this.culture.indexOf('-'));
-    const lang = substring.length > 0 ? substring : 'en';
+    const substring = this.culture.substring(0, this.culture.indexOf("-"));
+    const lang = substring.length > 0 ? substring : "en";
 
     return `https://helpcenter.onlyoffice.com/${lang}/administration/configuration.aspx#CustomizingPortal_block`;
   }
@@ -148,8 +151,8 @@ class SettingsStore {
   getSettings = async () => {
     const newSettings = await api.settings.getSettings();
 
-    if (window['AscDesktopEditor'] !== undefined || this.personal) {
-      const dp = combineUrl(proxyURL, '/products/files/');
+    if (window["AscDesktopEditor"] !== undefined || this.personal) {
+      const dp = combineUrl(proxyURL, "/products/files/");
       this.setDefaultPage(dp);
     }
 
@@ -157,22 +160,24 @@ class SettingsStore {
       if (key in this) {
         this.setValue(
           key,
-          key === 'defaultPage' ? combineUrl(proxyURL, newSettings[key]) : newSettings[key],
+          key === "defaultPage"
+            ? combineUrl(proxyURL, newSettings[key])
+            : newSettings[key]
         );
-        if (key === 'culture') {
+        if (key === "culture") {
           const language = localStorage.getItem(LANGUAGE);
-          if (!language || language == 'undefined') {
+          if (!language || language == "undefined") {
             localStorage.setItem(LANGUAGE, newSettings[key]);
           }
         }
-        if (key === 'personal') {
+        if (key === "personal") {
           window.AppServer = {
             ...window.AppServer,
             personal: newSettings[key],
           };
         }
-      } else if (key === 'passwordHash') {
-        this.setValue('hashSettings', newSettings[key]);
+      } else if (key === "passwordHash") {
+        this.setValue("hashSettings", newSettings[key]);
       }
     });
 
@@ -241,14 +246,14 @@ class SettingsStore {
 
   getOAuthToken = (tokenGetterWin) => {
     return new Promise((resolve, reject) => {
-      localStorage.removeItem('code');
+      localStorage.removeItem("code");
       let interval = null;
       interval = setInterval(() => {
         try {
-          const code = localStorage.getItem('code');
+          const code = localStorage.getItem("code");
 
           if (code) {
-            localStorage.removeItem('code');
+            localStorage.removeItem("code");
             clearInterval(interval);
             resolve(code);
           } else if (tokenGetterWin && tokenGetterWin.closed) {
@@ -267,24 +272,25 @@ class SettingsStore {
   };
 
   setModuleInfo = (homepage, productId) => {
-    if (this.homepage === homepage || this.currentProductId === productId) return;
+    if (this.homepage === homepage || this.currentProductId === productId)
+      return;
 
     console.log(`setModuleInfo('${homepage}', '${productId}')`);
 
     this.homepage = homepage;
     this.setCurrentProductId(productId);
 
-    const baseElm = document.getElementsByTagName('base');
+    const baseElm = document.getElementsByTagName("base");
     if (baseElm && baseElm.length === 1) {
       const baseUrl = homepage
-        ? homepage[homepage.length - 1] === '/'
+        ? homepage[homepage.length - 1] === "/"
           ? homepage
           : `${homepage}/`
-        : '/';
+        : "/";
 
-      console.log('SET base URL', baseUrl);
+      console.log("SET base URL", baseUrl);
 
-      baseElm[0].setAttribute('href', baseUrl);
+      baseElm[0].setAttribute("href", baseUrl);
     }
   };
 
@@ -356,21 +362,23 @@ class SettingsStore {
       ...versionInfo,
     };
 
-    if (!this.buildVersionInfo.documentServer) this.buildVersionInfo.documentServer = '6.4.1';
+    if (!this.buildVersionInfo.documentServer)
+      this.buildVersionInfo.documentServer = "6.4.1";
   };
 
   changeTheme = () => {
-    const currentTheme = JSON.stringify(this.theme) === JSON.stringify(Base) ? Dark : Base;
+    const currentTheme =
+      JSON.stringify(this.theme) === JSON.stringify(Base) ? Dark : Base;
     localStorage.setItem(
-      'theme',
-      JSON.stringify(this.theme) === JSON.stringify(Base) ? 'Dark' : 'Base',
+      "theme",
+      JSON.stringify(this.theme) === JSON.stringify(Base) ? "Dark" : "Base"
     );
     this.theme = currentTheme;
   };
 
   setTheme = (theme) => {
     this.theme = themes[theme];
-    localStorage.setItem('theme', theme);
+    localStorage.setItem("theme", theme);
   };
 }
 

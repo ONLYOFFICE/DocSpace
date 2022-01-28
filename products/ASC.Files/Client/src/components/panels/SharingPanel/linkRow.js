@@ -1,15 +1,15 @@
-import React from 'react';
-import styled, { css } from 'styled-components';
-import Row from '@appserver/components/row';
-import LinkWithDropdown from '@appserver/components/link-with-dropdown';
-import ToggleButton from '@appserver/components/toggle-button';
-import { StyledLinkRow } from '../StyledPanels';
-import AccessComboBox from './AccessComboBox';
-import { ShareAccessRights } from '@appserver/common/constants';
-import AccessEditIcon from '../../../../../../../public/images/access.edit.react.svg';
-import CopyIcon from '../../../../../../../public/images/copy.react.svg';
-import commonIconsStyles from '@appserver/components/utils/common-icons-style';
-import { Base } from '@appserver/components/themes';
+import React from "react";
+import styled, { css } from "styled-components";
+import Row from "@appserver/components/row";
+import LinkWithDropdown from "@appserver/components/link-with-dropdown";
+import ToggleButton from "@appserver/components/toggle-button";
+import { StyledLinkRow } from "../StyledPanels";
+import AccessComboBox from "./AccessComboBox";
+import { ShareAccessRights } from "@appserver/common/constants";
+import AccessEditIcon from "../../../../../../../public/images/access.edit.react.svg";
+import CopyIcon from "../../../../../../../public/images/copy.react.svg";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import { Base } from "@appserver/components/themes";
 
 const StyledAccessEditIcon = styled(AccessEditIcon)`
   ${commonIconsStyles}
@@ -64,11 +64,12 @@ class LinkRow extends React.Component {
         theme={theme}
         withToggle={withToggle}
         isDisabled={isDisabled}
-        className="link-row__container">
+        className="link-row__container"
+      >
         <Row
           theme={theme}
           className="link-row"
-          key={`${linkText.replace(' ', '-')}-key_${index}`}
+          key={`${linkText.replace(" ", "-")}-key_${index}`}
           element={
             withToggle ? (
               <AccessComboBox
@@ -90,7 +91,8 @@ class LinkRow extends React.Component {
               />
             )
           }
-          contextButtonSpacerWidth="0px">
+          contextButtonSpacerWidth="0px"
+        >
           <>
             <div className="sharing_panel-link-container">
               <LinkWithDropdown
@@ -101,7 +103,8 @@ class LinkRow extends React.Component {
                 data={options}
                 fontSize="13px"
                 fontWeight={600}
-                isDisabled={isDisabled}>
+                isDisabled={isDisabled}
+              >
                 {linkText}
               </LinkWithDropdown>
               {onCopyLink && (
@@ -110,7 +113,7 @@ class LinkRow extends React.Component {
                   isDisabled={isDisabled}
                   size="medium"
                   onClick={onCopyLink}
-                  title={t('CopyExternalLink')}
+                  title={t("CopyExternalLink")}
                 />
               )}
             </div>

@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
-import { Base } from '@appserver/components/themes';
+import { Base } from "@appserver/components/themes";
 
 const StyledErrorContainer = styled.div`
   background: ${(props) => props.theme.errorContainer.background};
@@ -940,8 +940,10 @@ const StyledErrorContainer = styled.div`
     width: 12.26%;
     height: 38.08%;
     z-index: 11;
-    -webkit-animation: fadein_baloon 1s, move_baloon 1s linear 1s infinite alternate;
-    -moz-animation: fadein_baloon 1s, move_baloon 1s linear 1s infinite alternate;
+    -webkit-animation: fadein_baloon 1s,
+      move_baloon 1s linear 1s infinite alternate;
+    -moz-animation: fadein_baloon 1s,
+      move_baloon 1s linear 1s infinite alternate;
     -ms-animation: fadein_baloon 1s, move_baloon 1s linear 1s infinite alternate;
     -o-animation: fadein_baloon 1s, move_baloon 1s linear 1s infinite alternate;
     animation: fadein_baloon 1s, move_baloon 1s linear 1s infinite alternate;

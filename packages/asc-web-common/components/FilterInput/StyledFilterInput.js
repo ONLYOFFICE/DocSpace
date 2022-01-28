@@ -1,12 +1,12 @@
-import Base from '@appserver/components/themes/base';
-import styled, { css } from 'styled-components';
+import Base from "@appserver/components/themes/base";
+import styled, { css } from "styled-components";
 
 const StyledFilterInput = styled.div`
   width: 100%;
   min-width: 255px;
   display: flex;
   &:after {
-    content: ' ';
+    content: " ";
     display: block;
     height: 0;
     clear: both;
@@ -32,13 +32,17 @@ const StyledFilterInput = styled.div`
         height: 25px;
 
         path:first-child {
-          fill: ${(props) => props.theme.filterInput.filterButton.fill} !important;
-          stroke: ${(props) => props.theme.filterInput.filterButton.stroke} !important;
+          fill: ${(props) =>
+            props.theme.filterInput.filterButton.fill} !important;
+          stroke: ${(props) =>
+            props.theme.filterInput.filterButton.stroke} !important;
         }
 
         path:not(:first-child) {
-          fill: ${(props) => props.theme.filterInput.filterButton.fillSecond} !important;
-          /* stroke: ${(props) => props.theme.filterInput.filterButton.stroke} !important; */
+          fill: ${(props) =>
+            props.theme.filterInput.filterButton.fillSecond} !important;
+          /* stroke: ${(props) =>
+            props.theme.filterInput.filterButton.stroke} !important; */
         }
 
         /* path:not(:first-child) {
@@ -103,7 +107,7 @@ const StyledFilterInput = styled.div`
 
     .hide-filter-drop-down {
       .combo-button-label {
-        ${(props) => (props.isAllItemsHide ? 'margin-top: 2px;' : null)}
+        ${(props) => (props.isAllItemsHide ? "margin-top: 2px;" : null)}
       }
     }
   }
@@ -170,8 +174,10 @@ export const StyledViewSelector = styled.div`
   }
 
   &.active {
-    background-color: ${(props) => props.theme.filterInput.viewSelector.activeBackground};
-    border-color: ${(props) => props.theme.filterInput.viewSelector.activeBorder};
+    background-color: ${(props) =>
+      props.theme.filterInput.viewSelector.activeBackground};
+    border-color: ${(props) =>
+      props.theme.filterInput.viewSelector.activeBorder};
   }
 
   &:hover {
@@ -179,7 +185,8 @@ export const StyledViewSelector = styled.div`
       !props.isDisabled &&
       `background-color: ${props.theme.filterInput.viewSelector.activeBackground};`}
     ${(props) =>
-      !props.isDisabled && `border-color: ${props.theme.filterInput.viewSelector.activeBorder};`}
+      !props.isDisabled &&
+      `border-color: ${props.theme.filterInput.viewSelector.activeBorder};`}
   }
 
   &:first-child {
@@ -198,14 +205,15 @@ export const StyledViewSelector = styled.div`
 StyledViewSelector.defaultProps = { theme: Base };
 
 export const StyledFilterItem = styled.div`
-  display: ${(props) => (props.block ? 'flex' : 'inline-block')};
-  margin-bottom: ${(props) => (props.block ? '8px' : '0')};
+  display: ${(props) => (props.block ? "flex" : "inline-block")};
+  margin-bottom: ${(props) => (props.block ? "8px" : "0")};
   position: relative;
   height: 25px;
   margin-right: 2px;
   border: ${(props) => props.theme.filterInput.filterItem.border};
   border-radius: 3px;
-  background-color: ${(props) => props.theme.filterInput.filterItem.backgroundColor};
+  background-color: ${(props) =>
+    props.theme.filterInput.filterItem.backgroundColor};
   padding-right: 22px;
 
   font-weight: 600;
@@ -246,7 +254,8 @@ StyledFilterItemContent.defaultProps = { theme: Base };
 
 export const StyledCloseButtonBlock = styled.div`
   display: flex;
-  cursor: ${(props) => (props.isDisabled || !props.isClickable ? 'default' : 'pointer')};
+  cursor: ${(props) =>
+    props.isDisabled || !props.isClickable ? "default" : "pointer"};
   align-items: center;
   position: absolute;
   height: 100%;
@@ -254,7 +263,8 @@ export const StyledCloseButtonBlock = styled.div`
   border-left: ${(props) => props.theme.filterInput.closeButton.borderLeft};
   right: 0;
   top: 0;
-  background-color: ${(props) => props.theme.filterInput.closeButton.background};
+  background-color: ${(props) =>
+    props.theme.filterInput.closeButton.background};
   ${(props) =>
     !props.isDisabled &&
     css`
@@ -283,8 +293,8 @@ export const Caret = styled.div`
   width: 7px;
   position: absolute;
   right: 6px;
-  transform: ${(props) => (props.isOpen ? 'rotate(180deg)' : 'rotate(0)')};
-  top: ${(props) => (props.isOpen ? '2px' : '0')};
+  transform: ${(props) => (props.isOpen ? "rotate(180deg)" : "rotate(0)")};
+  top: ${(props) => (props.isOpen ? "2px" : "0")};
 `;
 
 export const StyledHideFilterButton = styled.div`
@@ -300,7 +310,7 @@ export const StyledHideFilterButton = styled.div`
   background-color: ${(props) => props.theme.filterInput.hideButton.background};
   padding: 0 20px 0 9px;
   margin-right: 2px;
-  cursor: ${(props) => (props.isDisabled ? 'default' : 'pointer')};
+  cursor: ${(props) => (props.isDisabled ? "default" : "pointer")};
   font-family: Open Sans;
   font-style: normal;
 
@@ -321,7 +331,7 @@ export const StyledHideFilterButton = styled.div`
 StyledHideFilterButton.defaultProps = { theme: Base };
 
 export const StyledIconButton = styled.div`
-  transform: ${(state) => (!state.sortDirection ? 'scale(1, -1)' : 'scale(1)')};
+  transform: ${(state) => (!state.sortDirection ? "scale(1, -1)" : "scale(1)")};
 `;
 
 export const StyledIconWrapper = styled.div`

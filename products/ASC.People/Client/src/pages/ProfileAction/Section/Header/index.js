@@ -1,17 +1,17 @@
-import React, { useCallback } from 'react';
-import styled from 'styled-components';
-import { withRouter } from 'react-router';
-import IconButton from '@appserver/components/icon-button';
-import Headline from '@appserver/common/components/Headline';
-import { useTranslation } from 'react-i18next';
-import { inject, observer } from 'mobx-react';
+import React, { useCallback } from "react";
+import styled from "styled-components";
+import { withRouter } from "react-router";
+import IconButton from "@appserver/components/icon-button";
+import Headline from "@appserver/common/components/Headline";
+import { useTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
 
-import config from '../../../../../package.json';
-import { combineUrl } from '@appserver/common/utils';
-import { AppServerConfig } from '@appserver/common/constants';
+import config from "../../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
-import Loaders from '@appserver/common/components/Loaders';
-import withLoader from '../../../../HOCs/withLoader';
+import Loaders from "@appserver/common/components/Loaders";
+import withLoader from "../../../../HOCs/withLoader";
 
 const homepage = config.homepage;
 
@@ -49,17 +49,17 @@ const SectionHeaderContent = (props) => {
   } = props;
   const { userCaption, guestCaption } = customNames;
   const { type } = match.params;
-  const { t } = useTranslation('ProfileAction');
+  const { t } = useTranslation("ProfileAction");
 
   const headerText = avatarEditorIsOpen
-    ? t('EditPhoto')
+    ? t("EditPhoto")
     : type
-    ? type === 'guest'
-      ? t('CustomCreation', { user: guestCaption })
-      : t('CustomCreation', { user: userCaption })
+    ? type === "guest"
+      ? t("CustomCreation", { user: guestCaption })
+      : t("CustomCreation", { user: userCaption })
     : profile
-    ? `${t('EditUserDialogTitle')} (${profile.displayName})`
-    : '';
+    ? `${t("EditUserDialogTitle")} (${profile.displayName})`
+    : "";
 
   const onClickBackHandler = () => {
     if (isEdit) {
@@ -74,7 +74,7 @@ const SectionHeaderContent = (props) => {
       props.resetProfile();
       setFilter(filter);
     },
-    [props, setFilter],
+    [props, setFilter]
   );
 
   const goBackAndReset = useCallback(() => {
@@ -85,10 +85,18 @@ const SectionHeaderContent = (props) => {
     if (!isEditTargetUser && (!profile || !document.referrer)) {
       setFilterAndReset(filter);
       const urlFilter = filter.toUrlParams();
-      return history.push(combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`));
+      return history.push(
+        combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
+      );
     }
 
-    history.push(combineUrl(AppServerConfig.proxyURL, homepage, `/view/${profile.userName}`));
+    history.push(
+      combineUrl(
+        AppServerConfig.proxyURL,
+        homepage,
+        `/view/${profile.userName}`
+      )
+    );
 
     return props.resetProfile();
   }, [history, props]);
@@ -116,7 +124,8 @@ export default withRouter(
   inject(({ auth, peopleStore }) => ({
     customNames: auth.settingsStore.customNames,
     isEdit: peopleStore.editingFormStore.isEdit,
-    setIsVisibleDataLossDialog: peopleStore.editingFormStore.setIsVisibleDataLossDialog,
+    setIsVisibleDataLossDialog:
+      peopleStore.editingFormStore.setIsVisibleDataLossDialog,
     filter: peopleStore.filterStore.filter,
     setFilter: peopleStore.filterStore.setFilterParams,
     toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
@@ -124,5 +133,5 @@ export default withRouter(
     profile: peopleStore.targetUserStore.targetUser,
     avatarEditorIsOpen: peopleStore.avatarEditorStore.visible,
     isEditTargetUser: peopleStore.targetUserStore.isEditTargetUser,
-  }))(withLoader(observer(SectionHeaderContent))(<Loaders.SectionHeader />)),
+  }))(withLoader(observer(SectionHeaderContent))(<Loaders.SectionHeader />))
 );

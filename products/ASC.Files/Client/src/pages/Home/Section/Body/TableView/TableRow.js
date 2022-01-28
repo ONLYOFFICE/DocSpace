@@ -1,29 +1,30 @@
-import React, { useState } from 'react';
-import { withRouter } from 'react-router';
-import withContent from '../../../../../HOCs/withContent';
-import withBadges from '../../../../../HOCs/withBadges';
-import withQuickButtons from '../../../../../HOCs/withQuickButtons';
-import withFileActions from '../../../../../HOCs/withFileActions';
-import withContextOptions from '../../../../../HOCs/withContextOptions';
-import ItemIcon from '../../../../../components/ItemIcon';
-import { withTranslation } from 'react-i18next';
-import TableRow from '@appserver/components/table-container/TableRow';
-import TableCell from '@appserver/components/table-container/TableCell';
-import DragAndDrop from '@appserver/components/drag-and-drop';
-import FileNameCell from './sub-components/FileNameCell';
-import SizeCell from './sub-components/SizeCell';
-import AuthorCell from './sub-components/AuthorCell';
-import DateCell from './sub-components/DateCell';
-import TypeCell from './sub-components/TypeCell';
-import globalColors from '@appserver/components/utils/globalColors';
-import styled, { css } from 'styled-components';
-import Base from '@appserver/components/themes/base';
-import { isSafari } from 'react-device-detect';
+import React, { useState } from "react";
+import { withRouter } from "react-router";
+import withContent from "../../../../../HOCs/withContent";
+import withBadges from "../../../../../HOCs/withBadges";
+import withQuickButtons from "../../../../../HOCs/withQuickButtons";
+import withFileActions from "../../../../../HOCs/withFileActions";
+import withContextOptions from "../../../../../HOCs/withContextOptions";
+import ItemIcon from "../../../../../components/ItemIcon";
+import { withTranslation } from "react-i18next";
+import TableRow from "@appserver/components/table-container/TableRow";
+import TableCell from "@appserver/components/table-container/TableCell";
+import DragAndDrop from "@appserver/components/drag-and-drop";
+import FileNameCell from "./sub-components/FileNameCell";
+import SizeCell from "./sub-components/SizeCell";
+import AuthorCell from "./sub-components/AuthorCell";
+import DateCell from "./sub-components/DateCell";
+import TypeCell from "./sub-components/TypeCell";
+import globalColors from "@appserver/components/utils/globalColors";
+import styled, { css } from "styled-components";
+import Base from "@appserver/components/themes/base";
+import { isSafari } from "react-device-detect";
 const sideColor = globalColors.gray;
 const { acceptBackground, background } = Base.dragAndDrop;
 
 const rowCheckboxCheckedStyle = css`
-  border-image-source: ${(props) => props.theme.filesSection.tableView.row.checkboxChecked};
+  border-image-source: ${(props) =>
+    props.theme.filesSection.tableView.row.checkboxChecked};
 `;
 const contextMenuWrapperCheckedStyle = css`
   border-image-source: ${(props) =>
@@ -31,7 +32,8 @@ const contextMenuWrapperCheckedStyle = css`
 `;
 
 const rowCheckboxDraggingStyle = css`
-  border-image-source: ${(props) => props.theme.filesSection.tableView.row.checkboxDragging};
+  border-image-source: ${(props) =>
+    props.theme.filesSection.tableView.row.checkboxDragging};
 `;
 
 const contextMenuWrapperDraggingStyle = css`
@@ -40,7 +42,8 @@ const contextMenuWrapperDraggingStyle = css`
 `;
 
 const rowCheckboxDraggingHoverStyle = css`
-  border-image-source: ${(props) => props.theme.filesSection.tableView.row.checkboxDraggingHover};
+  border-image-source: ${(props) =>
+    props.theme.filesSection.tableView.row.checkboxDraggingHover};
 `;
 const contextMenuWrapperDraggingHoverStyle = css`
   border-image-source: ${(props) =>
@@ -56,11 +59,11 @@ const StyledTableRow = styled(TableRow)`
     cursor: ${(props) =>
       !props.isThirdPartyFolder &&
       (props.checked || props.isActive) &&
-      'url(images/cursor.palm.svg), auto'};
+      "url(images/cursor.palm.svg), auto"};
   }
 
   .table-container_element {
-    /* margin-left: ${(props) => (props.isFolder ? '-3px' : '-4px')}; */
+    /* margin-left: ${(props) => (props.isFolder ? "-3px" : "-4px")}; */
   }
 
   .table-container_row-checkbox {
@@ -83,7 +86,8 @@ const StyledTableRow = styled(TableRow)`
     padding-left: 24px;
     border-bottom: 1px solid;
     border-image-slice: 1;
-    border-image-source: ${(props) => props.theme.filesSection.tableView.row.borderImageCheckbox};
+    border-image-source: ${(props) =>
+      props.theme.filesSection.tableView.row.borderImageCheckbox};
 
     border-top: 0;
     border-right: 0;
@@ -185,7 +189,8 @@ const StyledQuickButtonsContainer = styled.div`
   .share-button-icon:hover {
     cursor: pointer;
     path {
-      fill: ${(props) => props.theme.filesSection.tableView.row.shareHoverColor};
+      fill: ${(props) =>
+        props.theme.filesSection.tableView.row.shareHoverColor};
     }
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
@@ -220,7 +225,9 @@ const FilesTableRow = (props) => {
   } = props;
   const { acceptBackground, background } = theme.dragAndDrop;
 
-  const element = <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />;
+  const element = (
+    <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
+  );
 
   const selectionProp = {
     className: `files-item ${className} ${value}`,
@@ -231,7 +238,12 @@ const FilesTableRow = (props) => {
 
   const dragStyles = {
     style: {
-      background: dragging && isDragging ? (isDragActive ? acceptBackground : background) : 'none',
+      background:
+        dragging && isDragging
+          ? isDragActive
+            ? acceptBackground
+            : background
+          : "none",
     },
   };
 
@@ -254,7 +266,8 @@ const FilesTableRow = (props) => {
       onMouseDown={onMouseDown}
       dragging={dragging && isDragging}
       onDragOver={onDragOver}
-      onDragLeave={onDragLeave}>
+      onDragLeave={onDragLeave}
+    >
       <StyledTableRow
         {...dragStyles}
         dragging={dragging && isDragging}
@@ -271,9 +284,10 @@ const FilesTableRow = (props) => {
         checked={checkedProps}
         title={
           item.isFolder
-            ? t('Translations:TitleShowFolderActions')
-            : t('Translations:TitleShowActions')
-        }>
+            ? t("Translations:TitleShowFolderActions")
+            : t("Translations:TitleShowActions")
+        }
+      >
         <TableCell {...dragStyles} {...selectionProp}>
           <FileNameCell
             theme={theme}
@@ -287,33 +301,55 @@ const FilesTableRow = (props) => {
         </TableCell>
         {!personal && (
           <TableCell {...dragStyles} {...selectionProp}>
-            <AuthorCell sideColor={theme.filesSection.tableView.row.sideColor} {...props} />
+            <AuthorCell
+              sideColor={theme.filesSection.tableView.row.sideColor}
+              {...props}
+            />
           </TableCell>
         )}
         <TableCell {...dragStyles} {...selectionProp}>
-          <DateCell create sideColor={theme.filesSection.tableView.row.sideColor} {...props} />
+          <DateCell
+            create
+            sideColor={theme.filesSection.tableView.row.sideColor}
+            {...props}
+          />
         </TableCell>
         <TableCell {...dragStyles} {...selectionProp}>
-          <DateCell sideColor={theme.filesSection.tableView.row.sideColor} {...props} />
+          <DateCell
+            sideColor={theme.filesSection.tableView.row.sideColor}
+            {...props}
+          />
         </TableCell>
         <TableCell {...dragStyles} {...selectionProp}>
-          <SizeCell sideColor={theme.filesSection.tableView.row.sideColor} {...props} />
+          <SizeCell
+            sideColor={theme.filesSection.tableView.row.sideColor}
+            {...props}
+          />
         </TableCell>
 
         <TableCell {...dragStyles} {...selectionProp}>
-          <TypeCell sideColor={theme.filesSection.tableView.row.sideColor} {...props} />
+          <TypeCell
+            sideColor={theme.filesSection.tableView.row.sideColor}
+            {...props}
+          />
         </TableCell>
 
         <TableCell {...dragStyles} {...selectionProp}>
-          <StyledQuickButtonsContainer>{quickButtonsComponent}</StyledQuickButtonsContainer>
+          <StyledQuickButtonsContainer>
+            {quickButtonsComponent}
+          </StyledQuickButtonsContainer>
         </TableCell>
       </StyledTableRow>
     </StyledDragAndDrop>
   );
 };
 
-export default withTranslation(['Home', 'Common', 'VersionBadge'])(
+export default withTranslation(["Home", "Common", "VersionBadge"])(
   withFileActions(
-    withRouter(withContextOptions(withContent(withQuickButtons(withBadges(FilesTableRow))))),
-  ),
+    withRouter(
+      withContextOptions(
+        withContent(withQuickButtons(withBadges(FilesTableRow)))
+      )
+    )
+  )
 );

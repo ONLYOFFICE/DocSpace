@@ -1,13 +1,16 @@
-import React from 'react';
-import { inject, observer } from 'mobx-react';
+import React from "react";
+import { inject, observer } from "mobx-react";
 
-import { ShareAccessRights, AppServerConfig } from '@appserver/common/constants';
-import toastr from '@appserver/components/toast/toastr';
-import { combineUrl } from '@appserver/common/utils';
-import { getFileConversationProgress } from '@appserver/common/api/files';
+import {
+  ShareAccessRights,
+  AppServerConfig,
+} from "@appserver/common/constants";
+import toastr from "@appserver/components/toast/toastr";
+import { combineUrl } from "@appserver/common/utils";
+import { getFileConversationProgress } from "@appserver/common/api/files";
 
-import Badges from '../components/Badges';
-import config from '../../package.json';
+import Badges from "../components/Badges";
+import config from "../../package.json";
 
 export default function withBadges(WrappedComponent) {
   class WithBadges extends React.Component {
@@ -24,15 +27,22 @@ export default function withBadges(WrappedComponent) {
       if (isTrashFolder) return;
 
       if (!isTabletView) {
-        fetchFileVersions(item.id + '');
+        fetchFileVersions(item.id + "");
         setIsVerHistoryPanel(true);
       } else {
-        history.push(combineUrl(AppServerConfig.proxyURL, homepage, `/${item.id}/history`));
+        history.push(
+          combineUrl(AppServerConfig.proxyURL, homepage, `/${item.id}/history`)
+        );
       }
     };
 
     onBadgeClick = () => {
-      const { item, selectedFolderPathParts, markAsRead, setNewFilesPanelVisible } = this.props;
+      const {
+        item,
+        selectedFolderPathParts,
+        markAsRead,
+        setNewFilesPanelVisible,
+      } = this.props;
       if (item.fileExst) {
         markAsRead([], [item.id], item);
       } else {
@@ -55,10 +65,10 @@ export default function withBadges(WrappedComponent) {
       getFileConversationProgress(fileId).then((res) => {
         if (res && res[0] && res[0].progress !== 100) {
           setSecondaryProgressBarData({
-            icon: 'file',
+            icon: "file",
             visible: true,
             percent: res[0].progress,
-            label: t('Convert'),
+            label: t("Convert"),
             alert: false,
           });
           setTimeout(() => this.getConvertProgress(fileId), 1000);
@@ -72,10 +82,10 @@ export default function withBadges(WrappedComponent) {
             setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
           } else {
             setSecondaryProgressBarData({
-              icon: 'file',
+              icon: "file",
               visible: true,
               percent: 100,
-              label: t('Convert'),
+              label: t("Convert"),
               alert: false,
             });
             setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
@@ -121,7 +131,8 @@ export default function withBadges(WrappedComponent) {
       const showNew = !!newItems;
 
       const accessToEdit =
-        access === ShareAccessRights.FullAccess || access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
+        access === ShareAccessRights.FullAccess ||
+        access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
 
       const badgesComponent = (
         <Badges
@@ -146,7 +157,9 @@ export default function withBadges(WrappedComponent) {
         />
       );
 
-      return <WrappedComponent badgesComponent={badgesComponent} {...this.props} />;
+      return (
+        <WrappedComponent badgesComponent={badgesComponent} {...this.props} />
+      );
     }
   }
 
@@ -163,14 +176,22 @@ export default function withBadges(WrappedComponent) {
         filesStore,
         uploadDataStore,
       },
-      { item },
+      { item }
     ) => {
       const { docserviceStore } = formatsStore;
-      const { isRecycleBinFolder, isPrivacyFolder, updateRootBadge } = treeFoldersStore;
+      const {
+        isRecycleBinFolder,
+        isPrivacyFolder,
+        updateRootBadge,
+      } = treeFoldersStore;
       const { markAsRead } = filesActionsStore;
       const { isTabletView, isDesktopClient, theme } = auth.settingsStore;
       const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
-      const { setNewFilesPanelVisible, setConvertDialogVisible, setConvertItem } = dialogsStore;
+      const {
+        setNewFilesPanelVisible,
+        setConvertDialogVisible,
+        setConvertItem,
+      } = dialogsStore;
       const { filter, setIsLoading, fetchFiles } = filesStore;
       const { secondaryProgressDataStore } = uploadDataStore;
       const {
@@ -206,6 +227,6 @@ export default function withBadges(WrappedComponent) {
         setConvertItem,
         isDesktopClient,
       };
-    },
+    }
   )(observer(WithBadges));
 }

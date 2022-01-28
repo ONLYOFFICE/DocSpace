@@ -54,7 +54,7 @@ Initials.propTypes = {
 // eslint-disable-next-line react/display-name
 const Avatar = (props) => {
   //console.log("Avatar render");
-  const { size, source, userName, role, editing, editAction, theme } = props;
+  const { size, source, userName, role, editing, editAction } = props;
 
   const avatarContent = source ? (
     <StyledImage src={source} />

@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import Button from '@appserver/components/button';
-import StyledFooter from './StyledFooter';
+import React from "react";
+import PropTypes from "prop-types";
+import Button from "@appserver/components/button";
+import StyledFooter from "./StyledFooter";
 
 const Footer = (props) => {
   const {
@@ -20,12 +20,15 @@ const Footer = (props) => {
     <StyledFooter
       withEmbeddedComponent={embeddedComponent}
       isVisible={isVisible}
-      className={className}>
+      className={className}
+    >
       <Button
         className="add_members_btn"
         primary={true}
         size="big"
-        label={`${selectButtonLabel} ${selectedLength && showCounter ? `(${selectedLength})` : ''}`}
+        label={`${selectButtonLabel} ${
+          selectedLength && showCounter ? `(${selectedLength})` : ""
+        }`}
         scale={true}
         isDisabled={isDisabled}
         onClick={onClick}

@@ -1,15 +1,15 @@
-import React from 'react';
-import styled, { css } from 'styled-components';
-import Tooltip from '@appserver/components/tooltip';
-import Row from '@appserver/components/row';
-import Text from '@appserver/components/text';
-import Link from '@appserver/components/link';
-import LoadingButton from './LoadingButton';
-import ShareButton from './ShareButton';
-import LoadErrorIcon from '../../../../public/images/load.error.react.svg';
-import IconButton from '@appserver/components/icon-button';
-import { inject, observer } from 'mobx-react';
-import { withTranslation } from 'react-i18next';
+import React from "react";
+import styled, { css } from "styled-components";
+import Tooltip from "@appserver/components/tooltip";
+import Row from "@appserver/components/row";
+import Text from "@appserver/components/text";
+import Link from "@appserver/components/link";
+import LoadingButton from "./LoadingButton";
+import ShareButton from "./ShareButton";
+import LoadErrorIcon from "../../../../public/images/load.error.react.svg";
+import IconButton from "@appserver/components/icon-button";
+import { inject, observer } from "mobx-react";
+import { withTranslation } from "react-i18next";
 
 const StyledFileRow = styled(Row)`
   padding: 0 16px;
@@ -82,7 +82,9 @@ const FileRow = (props) => {
     //console.log("cancel upload ", e);
     const { id, action, fileId } = e.currentTarget.dataset;
 
-    return action === 'convert' ? cancelCurrentFileConversion(fileId) : cancelCurrentUpload(id);
+    return action === "convert"
+      ? cancelCurrentFileConversion(fileId)
+      : cancelCurrentUpload(id);
   };
 
   const onMediaClick = (id) => {
@@ -92,7 +94,9 @@ const FileRow = (props) => {
     setUploadPanelVisible(false);
   };
 
-  const onCancelClick = !item.inConversion ? { onClick: onCancelCurrentUpload } : {};
+  const onCancelClick = !item.inConversion
+    ? { onClick: onCancelCurrentUpload }
+    : {};
 
   return (
     <>
@@ -100,17 +104,25 @@ const FileRow = (props) => {
         className="download-row"
         key={item.uniqueId}
         checkbox={false}
-        element={<img className={item.error && 'img_error'} src={fileIcon} alt="" />}
-        isMediaActive={isMediaActive}>
+        element={
+          <img className={item.error && "img_error"} src={fileIcon} alt="" />
+        }
+        isMediaActive={isMediaActive}
+      >
         <>
           {item.fileId ? (
             isMedia ? (
               <Link
                 className="upload-panel_file-row-link"
                 fontWeight="600"
-                color={item.error || !isMediaActive ? theme.filesPanels.upload.color : ''}
+                color={
+                  item.error || !isMediaActive
+                    ? theme.filesPanels.upload.color
+                    : ""
+                }
                 truncate
-                onClick={() => onMediaClick(item.fileId)}>
+                onClick={() => onMediaClick(item.fileId)}
+              >
                 {name}
               </Link>
             ) : (
@@ -118,13 +130,18 @@ const FileRow = (props) => {
                 fontWeight="600"
                 color={item.error && theme.filesPanels.upload.color}
                 truncate
-                href={item.fileInfo ? item.fileInfo.webUrl : ''}
-                target={downloadInCurrentTab ? '_self' : '_blank'}>
+                href={item.fileInfo ? item.fileInfo.webUrl : ""}
+                target={downloadInCurrentTab ? "_self" : "_blank"}
+              >
                 {name}
               </Link>
             )
           ) : (
-            <Text fontWeight="600" color={item.error && theme.filesPanels.upload.color} truncate>
+            <Text
+              fontWeight="600"
+              color={item.error && theme.filesPanels.upload.color}
+              truncate
+            >
               {name}
             </Text>
           )}
@@ -137,14 +154,17 @@ const FileRow = (props) => {
           )}
           {item.fileId && !item.error ? (
             <>
-              {item.action === 'upload' && !isPersonal && <ShareButton uniqueId={item.uniqueId} />}
-              {item.action === 'convert' && (
+              {item.action === "upload" && !isPersonal && (
+                <ShareButton uniqueId={item.uniqueId} />
+              )}
+              {item.action === "convert" && (
                 <div
                   className="upload_panel-icon"
                   data-id={item.uniqueId}
                   data-file-id={item.fileId}
                   data-action={item.action}
-                  {...onCancelClick}>
+                  {...onCancelClick}
+                >
                   <LoadingButton
                     isConversion
                     inConversion={item.inConversion}
@@ -165,7 +185,7 @@ const FileRow = (props) => {
               <LoadErrorIcon
                 size="medium"
                 data-for="errorTooltip"
-                data-tip={item.error || t('Common:UnknownError')}
+                data-tip={item.error || t("Common:UnknownError")}
               />
               <Tooltip
                 id="errorTooltip"
@@ -181,7 +201,8 @@ const FileRow = (props) => {
             <div
               className="upload_panel-icon"
               data-id={item.uniqueId}
-              onClick={onCancelCurrentUpload}>
+              onClick={onCancelCurrentUpload}
+            >
               <LoadingButton percent={currentFileUploadProgress} />
             </div>
           )}
@@ -191,62 +212,71 @@ const FileRow = (props) => {
   );
 };
 
-export default inject(({ auth, formatsStore, uploadDataStore, mediaViewerDataStore }, { item }) => {
-  let ext;
-  let name;
-  let splitted;
-  if (item.file) {
-    splitted = item.file.name.split('.');
-    ext = splitted.length > 1 ? '.' + splitted.pop() : '';
-    name = splitted[0];
-  } else {
-    ext = item.fileInfo.fileExst;
-    splitted = item.fileInfo.title.split('.');
-    name = splitted[0];
+export default inject(
+  ({ auth, formatsStore, uploadDataStore, mediaViewerDataStore }, { item }) => {
+    let ext;
+    let name;
+    let splitted;
+    if (item.file) {
+      splitted = item.file.name.split(".");
+      ext = splitted.length > 1 ? "." + splitted.pop() : "";
+      name = splitted[0];
+    } else {
+      ext = item.fileInfo.fileExst;
+      splitted = item.fileInfo.title.split(".");
+      name = splitted[0];
+    }
+
+    const { personal, theme } = auth.settingsStore;
+    const {
+      iconFormatsStore,
+      mediaViewersFormatsStore,
+      docserviceStore,
+    } = formatsStore;
+    const { canViewedDocs } = docserviceStore;
+    const {
+      uploaded,
+      primaryProgressDataStore,
+      cancelCurrentUpload,
+      cancelCurrentFileConversion,
+      setUploadPanelVisible,
+    } = uploadDataStore;
+    const { playlist, setMediaViewerData } = mediaViewerDataStore;
+    const { loadingFile: file } = primaryProgressDataStore;
+    const isMedia = mediaViewersFormatsStore.isMediaOrImage(ext);
+    const isMediaActive =
+      playlist.findIndex((el) => el.fileId === item.fileId) !== -1;
+
+    const fileIcon = iconFormatsStore.getIconSrc(ext, 24);
+
+    const loadingFile = !file || !file.uniqueId ? null : file;
+
+    const currentFileUploadProgress =
+      file && loadingFile.uniqueId === item.uniqueId
+        ? loadingFile.percent
+        : null;
+
+    const { isArchive } = iconFormatsStore;
+
+    const downloadInCurrentTab = isArchive(ext) || !canViewedDocs(ext);
+
+    return {
+      isPersonal: personal,
+      theme,
+      currentFileUploadProgress,
+      uploaded,
+      isMedia,
+      fileIcon,
+      ext,
+      name,
+      loadingFile,
+      isMediaActive,
+      downloadInCurrentTab,
+
+      cancelCurrentUpload,
+      cancelCurrentFileConversion,
+      setMediaViewerData,
+      setUploadPanelVisible,
+    };
   }
-
-  const { personal, theme } = auth.settingsStore;
-  const { iconFormatsStore, mediaViewersFormatsStore, docserviceStore } = formatsStore;
-  const { canViewedDocs } = docserviceStore;
-  const {
-    uploaded,
-    primaryProgressDataStore,
-    cancelCurrentUpload,
-    cancelCurrentFileConversion,
-    setUploadPanelVisible,
-  } = uploadDataStore;
-  const { playlist, setMediaViewerData } = mediaViewerDataStore;
-  const { loadingFile: file } = primaryProgressDataStore;
-  const isMedia = mediaViewersFormatsStore.isMediaOrImage(ext);
-  const isMediaActive = playlist.findIndex((el) => el.fileId === item.fileId) !== -1;
-
-  const fileIcon = iconFormatsStore.getIconSrc(ext, 24);
-
-  const loadingFile = !file || !file.uniqueId ? null : file;
-
-  const currentFileUploadProgress =
-    file && loadingFile.uniqueId === item.uniqueId ? loadingFile.percent : null;
-
-  const { isArchive } = iconFormatsStore;
-
-  const downloadInCurrentTab = isArchive(ext) || !canViewedDocs(ext);
-
-  return {
-    isPersonal: personal,
-    theme,
-    currentFileUploadProgress,
-    uploaded,
-    isMedia,
-    fileIcon,
-    ext,
-    name,
-    loadingFile,
-    isMediaActive,
-    downloadInCurrentTab,
-
-    cancelCurrentUpload,
-    cancelCurrentFileConversion,
-    setMediaViewerData,
-    setUploadPanelVisible,
-  };
-})(withTranslation('UploadPanel')(observer(FileRow)));
+)(withTranslation("UploadPanel")(observer(FileRow)));

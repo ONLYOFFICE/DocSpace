@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import Text from '@appserver/components/text';
-import Link from '@appserver/components/link';
-import Button from '@appserver/components/button';
-import Loader from '@appserver/components/loader';
-import PageLayout from '@appserver/common/components/PageLayout';
-import { smallTablet, tablet } from '@appserver/components/utils/device';
-import { I18nextProvider, Trans, withTranslation } from 'react-i18next';
-import { withRouter } from 'react-router';
-import { isMobile } from 'react-device-detect';
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import Text from "@appserver/components/text";
+import Link from "@appserver/components/link";
+import Button from "@appserver/components/button";
+import Loader from "@appserver/components/loader";
+import PageLayout from "@appserver/common/components/PageLayout";
+import { smallTablet, tablet } from "@appserver/components/utils/device";
+import { I18nextProvider, Trans, withTranslation } from "react-i18next";
+import { withRouter } from "react-router";
+import { isMobile } from "react-device-detect";
 //import { setDocumentTitle } from "../../helpers/utils";
-import i18n from './i18n';
-import toastr from 'studio/toastr';
-import { checkProtocol } from '../../helpers/files-helpers';
-import Base from '@appserver/components/themes/base';
+import i18n from "./i18n";
+import toastr from "studio/toastr";
+import { checkProtocol } from "../../helpers/files-helpers";
+import Base from "@appserver/components/themes/base";
 
 const StyledPrivacyPage = styled.div`
-  margin-top: ${isMobile ? '80px' : '36px'};
+  margin-top: ${isMobile ? "80px" : "36px"};
 
   .privacy-rooms-body {
     display: flex;
@@ -106,11 +106,11 @@ const PrivacyPageComponent = ({ t, history, tReady }) => {
 
   const onOpenEditorsPopup = async () => {
     setIsDisabled(true);
-    checkProtocol(history.location.search.split('=')[1])
+    checkProtocol(history.location.search.split("=")[1])
       .then(() => setIsDisabled(false))
       .catch(() => {
         setIsDisabled(false);
-        toastr.info(t('PrivacyEditors'));
+        toastr.info(t("PrivacyEditors"));
       });
   };
 
@@ -131,14 +131,18 @@ const PrivacyPageComponent = ({ t, history, tReady }) => {
       </div>
 
       <div className="privacy-rooms-body">
-        <Text textAlign="center" className="privacy-rooms-text-header" fontSize="38px">
-          {t('PrivacyHeader')}
+        <Text
+          textAlign="center"
+          className="privacy-rooms-text-header"
+          fontSize="38px"
+        >
+          {t("PrivacyHeader")}
         </Text>
 
         <Text as="div" textAlign="center" fontSize="20px" fontWeight={300}>
           <Trans t={t} i18nKey="PrivacyClick" ns="PrivacyPage">
-            Click Open <strong>ONLYOFFICE Desktop</strong> in the browser dialog to work with the
-            encrypted documents
+            Click Open <strong>ONLYOFFICE Desktop</strong> in the browser dialog
+            to work with the encrypted documents
           </Trans>
           .
         </Text>
@@ -147,29 +151,35 @@ const PrivacyPageComponent = ({ t, history, tReady }) => {
           textAlign="center"
           className="privacy-rooms-text-dialog"
           fontSize="20px"
-          fontWeight={300}>
-          {t('PrivacyDialog')}.
+          fontWeight={300}
+        >
+          {t("PrivacyDialog")}.
         </Text>
         <Button
           onClick={onOpenEditorsPopup}
           size="large"
           primary
           isDisabled={isDisabled}
-          label={t('PrivacyButton')}
+          label={t("PrivacyButton")}
         />
 
         <label className="privacy-rooms-text-separator" />
 
         <div className="privacy-rooms-install">
-          <Text className="privacy-rooms-install-text" fontSize="16px" fontWeight={300}>
-            {t('PrivacyEditors')}?
+          <Text
+            className="privacy-rooms-install-text"
+            fontSize="16px"
+            fontWeight={300}
+          >
+            {t("PrivacyEditors")}?
           </Text>
           <Link
             className="privacy-rooms-link privacy-rooms-install-text"
             fontSize="16px"
             isHovered
-            href="https://www.onlyoffice.com/desktop.aspx">
-            {t('PrivacyInstall')}
+            href="https://www.onlyoffice.com/desktop.aspx"
+          >
+            {t("PrivacyInstall")}
           </Link>
         </div>
 
@@ -177,16 +187,19 @@ const PrivacyPageComponent = ({ t, history, tReady }) => {
           as="div"
           fontSize="12px"
           textAlign="center"
-          className="privacy-rooms-text-description">
-          <p>{t('PrivacyDescriptionEditors')}.</p>
-          <p>{t('PrivacyDescriptionConnect')}.</p>
+          className="privacy-rooms-text-description"
+        >
+          <p>{t("PrivacyDescriptionEditors")}.</p>
+          <p>{t("PrivacyDescriptionConnect")}.</p>
         </Text>
       </div>
     </StyledPrivacyPage>
   );
 };
 
-const PrivacyPageWrapper = withTranslation(['PrivacyPage'])(withRouter(PrivacyPageComponent));
+const PrivacyPageWrapper = withTranslation(["PrivacyPage"])(
+  withRouter(PrivacyPageComponent)
+);
 
 const PrivacyPage = (props) => {
   return (

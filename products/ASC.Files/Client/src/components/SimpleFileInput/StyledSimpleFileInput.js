@@ -1,10 +1,12 @@
-import styled from 'styled-components';
-import Base from '@appserver/components/themes/base';
+import styled from "styled-components";
+import Base from "@appserver/components/themes/base";
 
-const paddingRightStyle = (props) => props.theme.fileInput.paddingRight[props.size];
+const paddingRightStyle = (props) =>
+  props.theme.fileInput.paddingRight[props.size];
 
 const widthIconStyle = (props) => props.theme.fileInput.icon.width[props.size];
-const heightIconStyle = (props) => props.theme.fileInput.icon.height[props.size];
+const heightIconStyle = (props) =>
+  props.theme.fileInput.icon.height[props.size];
 
 const StyledFileInput = styled.div`
   display: flex;
@@ -16,12 +18,12 @@ const StyledFileInput = styled.div`
     margin: 0;
   }
   width: ${(props) =>
-    (props.scale && '100%') ||
-    (props.size === 'base' && props.theme.input.width.base) ||
-    (props.size === 'middle' && props.theme.input.width.middle) ||
-    (props.size === 'big' && props.theme.input.width.big) ||
-    (props.size === 'huge' && props.theme.input.width.huge) ||
-    (props.size === 'large' && props.theme.input.width.large)};
+    (props.scale && "100%") ||
+    (props.size === "base" && props.theme.input.width.base) ||
+    (props.size === "middle" && props.theme.input.width.middle) ||
+    (props.size === "big" && props.theme.input.width.big) ||
+    (props.size === "huge" && props.theme.input.width.huge) ||
+    (props.size === "large" && props.theme.input.width.large)};
 
   .text-input {
     border-color: ${(props) =>
@@ -33,7 +35,7 @@ const StyledFileInput = styled.div`
     text-overflow: ellipsis;
     padding-right: 40px;
     padding-right: ${(props) => paddingRightStyle(props)};
-    cursor: ${(props) => (props.isDisabled ? 'default' : 'pointer')};
+    cursor: ${(props) => (props.isDisabled ? "default" : "pointer")};
   }
 
   :hover {
@@ -77,11 +79,11 @@ const StyledFileInput = styled.div`
       (props.hasWarning && props.theme.input.warningBorderColor) ||
       (props.isDisabled && props.theme.input.disabledBorderColor) ||
       props.theme.input.borderColor};
-    cursor: ${(props) => (props.isDisabled ? 'default' : 'pointer')};
+    cursor: ${(props) => (props.isDisabled ? "default" : "pointer")};
   }
 
   .icon-button {
-    cursor: ${(props) => (props.isDisabled ? 'default' : 'pointer')};
+    cursor: ${(props) => (props.isDisabled ? "default" : "pointer")};
   }
 `;
 StyledFileInput.defaultProps = { theme: Base };

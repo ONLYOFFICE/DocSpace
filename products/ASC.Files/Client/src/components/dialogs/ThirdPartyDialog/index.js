@@ -1,14 +1,14 @@
-import React from 'react';
-import styled from 'styled-components';
-import { Trans } from 'react-i18next';
-import { inject, observer } from 'mobx-react';
-import { withTranslation } from 'react-i18next';
-import ModalDialog from '@appserver/components/modal-dialog';
-import Text from '@appserver/components/text';
-import Link from '@appserver/components/link';
-import { connectedCloudsTitleTranslation } from '../../../helpers/utils';
-import NoUserSelect from '@appserver/components/utils/commonStyles';
-import { Base } from '@appserver/components/themes';
+import React from "react";
+import styled from "styled-components";
+import { Trans } from "react-i18next";
+import { inject, observer } from "mobx-react";
+import { withTranslation } from "react-i18next";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Text from "@appserver/components/text";
+import Link from "@appserver/components/link";
+import { connectedCloudsTitleTranslation } from "../../../helpers/utils";
+import NoUserSelect from "@appserver/components/utils/commonStyles";
+import { Base } from "@appserver/components/themes";
 
 const StyledServicesBlock = styled.div`
   display: grid;
@@ -53,12 +53,12 @@ const ServiceItem = (props) => {
   const { capability, t, ...rest } = props;
 
   const capabilityName = capability[0];
-  const capabilityLink = capability.length > 1 ? capability[1] : '';
+  const capabilityLink = capability.length > 1 ? capability[1] : "";
 
   const dataProps = {
-    'data-link': capabilityLink,
-    'data-title': capabilityName,
-    'data-key': capabilityName,
+    "data-link": capabilityLink,
+    "data-title": capabilityName,
+    "data-key": capabilityName,
   };
 
   return <img {...dataProps} {...rest} alt="" />;
@@ -108,12 +108,16 @@ const ThirdPartyDialog = (props) => {
     const item = e.currentTarget.dataset;
     const showAccountSetting = !e.currentTarget.dataset.link;
     if (!showAccountSetting) {
-      let authModal = window.open('', 'Authorization', 'height=600, width=1020');
+      let authModal = window.open(
+        "",
+        "Authorization",
+        "height=600, width=1020"
+      );
       openConnectWindow(item.title, authModal).then((modal) =>
         getOAuthToken(modal).then((token) => {
           authModal.close();
           showOAuthModal(token, item);
-        }),
+        })
       );
     } else {
       item.title = connectedCloudsTitleTranslation(item.title, t);
@@ -125,9 +129,9 @@ const ThirdPartyDialog = (props) => {
   };
 
   const yandexLogoUrl =
-    i18n && i18n.language === 'ru-RU'
-      ? 'images/services/logo_yandex_ru.svg'
-      : 'images/services/logo_yandex_en.svg';
+    i18n && i18n.language === "ru-RU"
+      ? "images/services/logo_yandex_ru.svg"
+      : "images/services/logo_yandex_en.svg";
 
   return (
     <ModalDialog
@@ -136,11 +140,14 @@ const ThirdPartyDialog = (props) => {
       scale={false}
       displayType="auto"
       zIndex={310}
-      onClose={onClose}>
-      <ModalDialog.Header>{t('Translations:ConnectingAccount')}</ModalDialog.Header>
+      onClose={onClose}
+    >
+      <ModalDialog.Header>
+        {t("Translations:ConnectingAccount")}
+      </ModalDialog.Header>
       <ModalDialog.Body>
         <Text as="div" noSelect>
-          {t('ConnectDescription')}
+          {t("ConnectDescription")}
           {isAdmin && (
             <Trans t={t} i18nKey="ConnectAdminDescription" ns="Settings">
               For successful connection enter the necessary data at
@@ -181,8 +188,8 @@ const ThirdPartyDialog = (props) => {
               onClick={onShowService}
               src={
                 theme.isBase
-                  ? 'images/services/logo_sharepoint.svg'
-                  : 'images/services/logo_sharepoint_dark.svg'
+                  ? "images/services/logo_sharepoint.svg"
+                  : "images/services/logo_sharepoint_dark.svg"
               }
             />
           )}
@@ -201,8 +208,8 @@ const ThirdPartyDialog = (props) => {
               onClick={onShowService}
               src={
                 theme.isBase
-                  ? 'images/services/logo_onedrive-for-business.svg'
-                  : 'images/services/logo_onedrive-for-business_dark.svg'
+                  ? "images/services/logo_onedrive-for-business.svg"
+                  : "images/services/logo_onedrive-for-business_dark.svg"
               }
             />
           )}
@@ -229,8 +236,8 @@ const ThirdPartyDialog = (props) => {
               onClick={onShowService}
               src={
                 theme.isBase
-                  ? 'images/services/logo_kdrive.svg'
-                  : 'images/services/logo_kdrive_dark.svg'
+                  ? "images/services/logo_kdrive.svg"
+                  : "images/services/logo_kdrive_dark.svg"
               }
             />
           )}
@@ -247,8 +254,9 @@ const ThirdPartyDialog = (props) => {
               className="service-item service-text"
               data-title={webDavConnectItem[0]}
               data-key={webDavConnectItem[0]}
-              noSelect>
-              {t('ConnextOtherAccount')}
+              noSelect
+            >
+              {t("ConnextOtherAccount")}
             </Text>
           )}
         </StyledServicesBlock>
@@ -300,4 +308,4 @@ export default inject(({ auth, settingsStore, dialogsStore }) => {
     getOAuthToken,
     openConnectWindow,
   };
-})(withTranslation(['Settings', 'Translations'])(observer(ThirdPartyDialog)));
+})(withTranslation(["Settings", "Translations"])(observer(ThirdPartyDialog)));

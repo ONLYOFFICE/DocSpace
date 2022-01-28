@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import IconButton from '@appserver/components/icon-button';
+import IconButton from "@appserver/components/icon-button";
 
 const CloseButton = (props) => {
   //console.log("CloseButton render");

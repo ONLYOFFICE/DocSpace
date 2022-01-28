@@ -1,14 +1,14 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import Avatar from '@appserver/components/avatar';
-import DropDown from '@appserver/components/drop-down';
+import React from "react";
+import PropTypes from "prop-types";
+import Avatar from "@appserver/components/avatar";
+import DropDown from "@appserver/components/drop-down";
 
-import styled, { css } from 'styled-components';
-import DropDownItem from '@appserver/components/drop-down-item';
-import { Base } from '@appserver/components/themes';
+import styled, { css } from "styled-components";
+import DropDownItem from "@appserver/components/drop-down-item";
+import { Base } from "@appserver/components/themes";
 
 const commonStyle = css`
-  font-family: 'Open Sans', sans-serif, Arial;
+  font-family: "Open Sans", sans-serif, Arial;
   font-style: normal;
   color: ${(props) => props.theme.menuContainer.color};
   margin-left: 60px;
@@ -96,7 +96,8 @@ class ProfileMenu extends React.Component {
         className={className}
         directionX="right"
         open={open}
-        clickOutsideAction={clickOutsideAction}>
+        clickOutsideAction={clickOutsideAction}
+      >
         <StyledProfileMenu>
           <MenuContainer>
             <AvatarContainer>
@@ -118,10 +119,10 @@ class ProfileMenu extends React.Component {
   }
 }
 
-ProfileMenu.displayName = 'ProfileMenu';
+ProfileMenu.displayName = "ProfileMenu";
 
 ProfileMenu.propTypes = {
-  avatarRole: PropTypes.oneOf(['owner', 'admin', 'guest', 'user']),
+  avatarRole: PropTypes.oneOf(["owner", "admin", "guest", "user"]),
   avatarSource: PropTypes.string,
   children: PropTypes.any,
   className: PropTypes.string,

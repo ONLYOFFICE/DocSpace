@@ -1,7 +1,7 @@
-import React from 'react';
-import Link from '@appserver/components/link';
-import Checkbox from '@appserver/components/checkbox';
-import TableCell from '@appserver/components/table-container/TableCell';
+import React from "react";
+import Link from "@appserver/components/link";
+import Checkbox from "@appserver/components/checkbox";
+import TableCell from "@appserver/components/table-container/TableCell";
 
 const FileNameCell = ({
   item,
@@ -26,13 +26,14 @@ const FileNameCell = ({
         hasAccess={true}
         checked={checked}
         {...selectionProp}
-        className={`${selectionProp?.className} table-container_row-checkbox-wrapper`}>
+        className={`${selectionProp?.className} table-container_row-checkbox-wrapper`}
+      >
         <div className="table-container_element">{element}</div>
         <Checkbox
           className="table-container_row-checkbox"
           onChange={onChange}
           isChecked={checked}
-          title={t('Common:TitleSelectFile')}
+          title={t("Common:TitleSelectFile")}
         />
       </TableCell>
 
@@ -44,7 +45,8 @@ const FileNameCell = ({
         {...linkStyles}
         color={theme.filesSection.tableView.fileName.linkColor}
         isTextOverflow
-        className="item-file-name">
+        className="item-file-name"
+      >
         {titleWithoutExt}
       </Link>
     </>

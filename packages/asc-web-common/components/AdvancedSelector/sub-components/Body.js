@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import StyledBody from './StyledBody';
+import React from "react";
+import PropTypes from "prop-types";
+import StyledBody from "./StyledBody";
 
 class Body extends React.Component {
   constructor(props) {
@@ -21,7 +21,7 @@ Body.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
   style: PropTypes.object,
-  displayType: PropTypes.oneOf(['dropdown', 'aside']),
+  displayType: PropTypes.oneOf(["dropdown", "aside"]),
 };
 
 export default Body;

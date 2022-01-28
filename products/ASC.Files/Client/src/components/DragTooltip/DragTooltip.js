@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useRef } from 'react';
-import styled from 'styled-components';
-import { inject, observer } from 'mobx-react';
-import { withTranslation } from 'react-i18next';
-import { Base } from '@appserver/components/themes';
+import React, { useCallback, useEffect, useRef } from "react";
+import styled from "styled-components";
+import { inject, observer } from "mobx-react";
+import { withTranslation } from "react-i18next";
+import { Base } from "@appserver/components/themes";
 
 const StyledTooltip = styled.div`
   position: fixed;
@@ -54,8 +54,8 @@ const DragTooltip = (props) => {
     const tooltip = tooltipRef.current;
     if (tooltip) {
       const margin = 8;
-      tooltip.style.left = tooltipPageX + margin + 'px';
-      tooltip.style.top = tooltipPageY + margin + 'px';
+      tooltip.style.left = tooltipPageX + margin + "px";
+      tooltip.style.top = tooltipPageY + margin + "px";
     }
   }, [tooltipPageX, tooltipPageY]);
 
@@ -74,7 +74,11 @@ const DragTooltip = (props) => {
     return (
       <div className="tooltip-moved-obj-wrapper">
         {iconOfDraggedFile ? (
-          <img className="tooltip-moved-obj-icon" src={`${iconOfDraggedFile}`} alt="" />
+          <img
+            className="tooltip-moved-obj-icon"
+            src={`${iconOfDraggedFile}`}
+            alt=""
+          />
         ) : null}
         {nameOfMovedObj}
         {fileExtension ? (
@@ -85,20 +89,26 @@ const DragTooltip = (props) => {
   }, [title, iconOfDraggedFile]);
 
   const tooltipLabel = tooltipOptions
-    ? operationName === 'copy'
+    ? operationName === "copy"
       ? isSingleItem
-        ? t('TooltipElementCopyMessage', { element: filesCount })
-        : t('TooltipElementsCopyMessage', { element: filesCount })
+        ? t("TooltipElementCopyMessage", { element: filesCount })
+        : t("TooltipElementsCopyMessage", { element: filesCount })
       : isSingleItem
       ? renderFileMoveTooltip()
-      : t('TooltipElementsMoveMessage', { element: filesCount })
-    : t('');
+      : t("TooltipElementsMoveMessage", { element: filesCount })
+    : t("");
 
   return <StyledTooltip ref={tooltipRef}>{tooltipLabel}</StyledTooltip>;
 };
 
 export default inject(({ filesStore }) => {
-  const { selection, iconOfDraggedFile, tooltipOptions, tooltipPageX, tooltipPageY } = filesStore;
+  const {
+    selection,
+    iconOfDraggedFile,
+    tooltipOptions,
+    tooltipPageX,
+    tooltipPageY,
+  } = filesStore;
 
   const isSingleItem = selection.length === 1;
 
@@ -111,4 +121,4 @@ export default inject(({ filesStore }) => {
     tooltipPageX,
     tooltipPageY,
   };
-})(withTranslation('Home')(observer(DragTooltip)));
+})(withTranslation("Home")(observer(DragTooltip)));

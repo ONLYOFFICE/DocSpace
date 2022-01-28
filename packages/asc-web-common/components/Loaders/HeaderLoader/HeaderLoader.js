@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { StyledHeader, StyledSpacer } from './StyledHeaderLoader';
-import RectangleLoader from '../RectangleLoader';
-import CircleLoader from '../CircleLoader/index';
+import React from "react";
+import PropTypes from "prop-types";
+import { StyledHeader, StyledSpacer } from "./StyledHeaderLoader";
+import RectangleLoader from "../RectangleLoader";
+import CircleLoader from "../CircleLoader/index";
 
 const HeaderLoader = ({ id, className, style, ...rest }) => {
   const {
@@ -56,8 +56,8 @@ HeaderLoader.defaultProps = {
   id: undefined,
   className: undefined,
   style: undefined,
-  backgroundColor: '#fff',
-  foregroundColor: '#fff',
+  backgroundColor: "#fff",
+  foregroundColor: "#fff",
   backgroundOpacity: 0.25,
   foregroundOpacity: 0.2,
 };

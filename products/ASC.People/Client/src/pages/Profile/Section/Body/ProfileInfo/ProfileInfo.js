@@ -1,23 +1,23 @@
-import React from 'react';
-import { Trans, withTranslation } from 'react-i18next';
-import Text from '@appserver/components/text';
-import IconButton from '@appserver/components/icon-button';
-import Link from '@appserver/components/link';
-import ComboBox from '@appserver/components/combobox';
-import HelpButton from '@appserver/components/help-button';
-import styled from 'styled-components';
-import { resendUserInvites } from '@appserver/common/api/people';
-import toastr from 'studio/toastr';
-import Loaders from '@appserver/common/components/Loaders';
-import { inject, observer } from 'mobx-react';
-import { showLoader, hideLoader } from '@appserver/common/utils';
-import { withRouter } from 'react-router';
-import { AppServerConfig } from '@appserver/common/constants';
-import { combineUrl, convertLanguage } from '@appserver/common/utils';
-import withCultureNames from '@appserver/common/hoc/withCultureNames';
-import config from '../../../../../../package.json';
-import NoUserSelect from '@appserver/components/utils/commonStyles';
-import { Base } from '@appserver/components/themes';
+import React from "react";
+import { Trans, withTranslation } from "react-i18next";
+import Text from "@appserver/components/text";
+import IconButton from "@appserver/components/icon-button";
+import Link from "@appserver/components/link";
+import ComboBox from "@appserver/components/combobox";
+import HelpButton from "@appserver/components/help-button";
+import styled from "styled-components";
+import { resendUserInvites } from "@appserver/common/api/people";
+import toastr from "studio/toastr";
+import Loaders from "@appserver/common/components/Loaders";
+import { inject, observer } from "mobx-react";
+import { showLoader, hideLoader } from "@appserver/common/utils";
+import { withRouter } from "react-router";
+import { AppServerConfig } from "@appserver/common/constants";
+import { combineUrl, convertLanguage } from "@appserver/common/utils";
+import withCultureNames from "@appserver/common/hoc/withCultureNames";
+import config from "../../../../../../package.json";
+import NoUserSelect from "@appserver/components/utils/commonStyles";
+import { Base } from "@appserver/components/themes";
 
 const InfoContainer = styled.div`
   margin-bottom: 24px;
@@ -118,7 +118,11 @@ class ProfileInfo extends React.PureComponent {
 
     const urlFilter = newFilter.toUrlParams();
 
-    const url = combineUrl(AppServerConfig.proxyURL, config.homepage, `/filter?${urlFilter}`);
+    const url = combineUrl(
+      AppServerConfig.proxyURL,
+      config.homepage,
+      `/filter?${urlFilter}`
+    );
     history.push(url);
 
     fetchPeople(newFilter).finally(() => setIsLoading(false));
@@ -133,10 +137,11 @@ class ProfileInfo extends React.PureComponent {
             fontSize="13px"
             isHovered={true}
             data-id={department.id}
-            onClick={this.onGroupClick}>
+            onClick={this.onGroupClick}
+          >
             {department.name}
           </Link>
-          {departments.length - 1 !== index ? ', ' : ''}
+          {departments.length - 1 !== index ? ", " : ""}
         </span>
       );
     });
@@ -147,17 +152,19 @@ class ProfileInfo extends React.PureComponent {
   onSentInviteAgain = (id) => {
     const { t } = this.props;
     resendUserInvites(new Array(id))
-      .then(() => toastr.success(t('Translations:SuccessSentInvitation')))
-      .catch((error) => toastr.error(error && error.message ? error.message : error));
+      .then(() => toastr.success(t("Translations:SuccessSentInvitation")))
+      .catch((error) =>
+        toastr.error(error && error.message ? error.message : error)
+      );
   };
 
   onEmailClick = (e) => {
     const email = e.currentTarget.dataset.email;
-    if (e.target.title) window.open('mailto:' + email);
+    if (e.target.title) window.open("mailto:" + email);
   };
 
   onLanguageSelect = (language) => {
-    console.log('onLanguageSelect', language);
+    console.log("onLanguageSelect", language);
     const {
       profile,
       updateProfileCulture,
@@ -224,41 +231,47 @@ class ProfileInfo extends React.PureComponent {
     const language = convertLanguage(cultureName || currentCulture || culture);
 
     //const languages = this.getLanguages();
-    const selectedLanguage = cultureNames.find((item) => item.key === language) ||
+    const selectedLanguage = cultureNames.find(
+      (item) => item.key === language
+    ) ||
       cultureNames.find((item) => item.key === culture) || {
         key: language,
-        label: '',
+        label: "",
       };
 
     const workFromDate = new Date(workFrom).toLocaleDateString(language);
     const birthDayDate = new Date(birthday).toLocaleDateString(language);
 
     const formatedSex =
-      (sex === 'male' && t('Translations:MaleSexStatus')) || t('Translations:FemaleSexStatus');
+      (sex === "male" && t("Translations:MaleSexStatus")) ||
+      t("Translations:FemaleSexStatus");
 
-    const formatedDepartments = department && this.getFormattedDepartments(groups);
+    const formatedDepartments =
+      department && this.getFormattedDepartments(groups);
 
-    const supportEmail = 'documentation@onlyoffice.com';
+    const supportEmail = "documentation@onlyoffice.com";
 
     const tooltipLanguage = (
       <Text fontSize="13px">
         <Trans t={t} i18nKey="NotFoundLanguage" ns="Common">
-          "In case you cannot find your language in the list of the available ones, feel free to
-          write to us at
+          "In case you cannot find your language in the list of the available
+          ones, feel free to write to us at
           <Link
             href={`mailto:${supportEmail}`}
             isHovered={true}
-            color={theme.profileInfo.tooltipLinkColor}>
+            color={theme.profileInfo.tooltipLinkColor}
+          >
             {{ supportEmail }}
           </Link>
           to take part in the translation and get up to 1 year free of charge."
-        </Trans>{' '}
+        </Trans>{" "}
         <Link
           color={theme.profileInfo.tooltipLinkColor}
           isHovered={true}
           href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx"
-          target="_blank">
-          {t('Common:LearnMore')}
+          target="_blank"
+        >
+          {t("Common:LearnMore")}
         </Link>
       </Text>
     );
@@ -267,17 +280,20 @@ class ProfileInfo extends React.PureComponent {
       <InfoContainer>
         {!personal && (
           <InfoItem>
-            <InfoItemLabel>{t('Common:Type')}:</InfoItemLabel>
+            <InfoItemLabel>{t("Common:Type")}:</InfoItemLabel>
             <InfoItemValue>{type}</InfoItemValue>
           </InfoItem>
         )}
         {email && (
           <InfoItem>
-            <InfoItemLabel>{t('Common:Email')}:</InfoItemLabel>
+            <InfoItemLabel>{t("Common:Email")}:</InfoItemLabel>
             <InfoItemValue>
               <>
                 {activationStatus === 2 && (isAdmin || isSelf) && (
-                  <IconButtonWrapper isBefore={true} title={t('Translations:PendingTitle')}>
+                  <IconButtonWrapper
+                    isBefore={true}
+                    title={t("Translations:PendingTitle")}
+                  >
                     <IconButton
                       color={theme.profileInfo.iconColor}
                       size={16}
@@ -293,7 +309,8 @@ class ProfileInfo extends React.PureComponent {
                   isHovered={true}
                   title={email}
                   data-email={email}
-                  onClick={this.onEmailClick}>
+                  onClick={this.onEmailClick}
+                >
                   {email}
                 </Link>
               </>
@@ -302,19 +319,19 @@ class ProfileInfo extends React.PureComponent {
         )}
         {mobilePhone && (
           <InfoItem>
-            <InfoItemLabel>{t('PhoneLbl')}:</InfoItemLabel>
+            <InfoItemLabel>{t("PhoneLbl")}:</InfoItemLabel>
             <InfoItemValue>{mobilePhone}</InfoItemValue>
           </InfoItem>
         )}
         {sex && (
           <InfoItem>
-            <InfoItemLabel>{t('Translations:Sex')}:</InfoItemLabel>
+            <InfoItemLabel>{t("Translations:Sex")}:</InfoItemLabel>
             <InfoItemValue>{formatedSex}</InfoItemValue>
           </InfoItem>
         )}
         {birthday && (
           <InfoItem>
-            <InfoItemLabel>{t('Translations:Birthdate')}:</InfoItemLabel>
+            <InfoItemLabel>{t("Translations:Birthdate")}:</InfoItemLabel>
             <InfoItemValue>{birthDayDate}</InfoItemValue>
           </InfoItem>
         )}
@@ -332,7 +349,7 @@ class ProfileInfo extends React.PureComponent {
         )}
         {location && (
           <InfoItem>
-            <InfoItemLabel>{t('Translations:Location')}:</InfoItemLabel>
+            <InfoItemLabel>{t("Translations:Location")}:</InfoItemLabel>
             <InfoItemValue>{location}</InfoItemValue>
           </InfoItem>
         )}
@@ -344,7 +361,7 @@ class ProfileInfo extends React.PureComponent {
         )}
         {isSelf && (
           <InfoItem>
-            <InfoItemLabel>{t('Common:Language')}:</InfoItemLabel>
+            <InfoItemLabel>{t("Common:Language")}:</InfoItemLabel>
             <InfoItemValue>
               {cultureNames ? (
                 <>
@@ -366,7 +383,7 @@ class ProfileInfo extends React.PureComponent {
                     offsetLeft={50}
                     offsetRight={0}
                     tooltipContent={tooltipLanguage}
-                    helpButtonHeaderContent={t('Common:Language')}
+                    helpButtonHeaderContent={t("Common:Language")}
                     className="help-icon"
                   />
                 </>
@@ -392,7 +409,12 @@ export default withRouter(
       userCaption,
       guestCaption,
     } = customNames;
-    const { usersStore, filterStore, loadingStore, targetUserStore } = peopleStore;
+    const {
+      usersStore,
+      filterStore,
+      loadingStore,
+      targetUserStore,
+    } = peopleStore;
     const { getUsersList: fetchPeople } = usersStore;
     const { filter } = filterStore;
     const { setIsLoading, isLoading } = loadingStore;
@@ -413,6 +435,10 @@ export default withRouter(
       personal: auth.settingsStore.personal,
     };
   })(
-    observer(withTranslation(['Profile', 'Common', 'Translations'])(withCultureNames(ProfileInfo))),
-  ),
+    observer(
+      withTranslation(["Profile", "Common", "Translations"])(
+        withCultureNames(ProfileInfo)
+      )
+    )
+  )
 );

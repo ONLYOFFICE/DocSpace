@@ -1,16 +1,16 @@
-import React from 'react';
-import { withTranslation } from 'react-i18next';
-import styled from 'styled-components';
-import FieldContainer from '@appserver/components/field-container';
-import Loader from '@appserver/components/loader';
-import toastr from '@appserver/components/toast/toastr';
-import TextInput from '@appserver/components/text-input';
-import Link from '@appserver/components/link';
-import SaveCancelButtons from '@appserver/components/save-cancel-buttons';
-import { showLoader, hideLoader } from '@appserver/common/utils';
-import { saveToSessionStorage, getFromSessionStorage } from '../../utils';
-import { setDocumentTitle } from '../../../../../helpers/utils';
-import { inject, observer } from 'mobx-react';
+import React from "react";
+import { withTranslation } from "react-i18next";
+import styled from "styled-components";
+import FieldContainer from "@appserver/components/field-container";
+import Loader from "@appserver/components/loader";
+import toastr from "@appserver/components/toast/toastr";
+import TextInput from "@appserver/components/text-input";
+import Link from "@appserver/components/link";
+import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
+import { showLoader, hideLoader } from "@appserver/common/utils";
+import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
+import { setDocumentTitle } from "../../../../../helpers/utils";
+import { inject, observer } from "mobx-react";
 
 const StyledComponent = styled.div`
   .margin-top {
@@ -37,9 +37,9 @@ const StyledComponent = styled.div`
   }
 `;
 
-let greetingTitleFromSessionStorage = '';
+let greetingTitleFromSessionStorage = "";
 
-const settingNames = ['greetingTitle'];
+const settingNames = ["greetingTitle"];
 
 class CustomTitles extends React.Component {
   constructor(props) {
@@ -47,9 +47,9 @@ class CustomTitles extends React.Component {
 
     const { t, greetingSettings /*, organizationName*/ } = props;
 
-    greetingTitleFromSessionStorage = getFromSessionStorage('greetingTitle');
+    greetingTitleFromSessionStorage = getFromSessionStorage("greetingTitle");
 
-    setDocumentTitle(t('Customization'));
+    setDocumentTitle(t("Customization"));
 
     this.state = {
       isLoadedData: false,
@@ -92,10 +92,10 @@ class CustomTitles extends React.Component {
   onChangeGreetingTitle = (e) => {
     this.setState({ greetingTitle: e.target.value });
 
-    if (this.settingIsEqualInitialValue('greetingTitle', e.target.value)) {
-      saveToSessionStorage('greetingTitle', '');
+    if (this.settingIsEqualInitialValue("greetingTitle", e.target.value)) {
+      saveToSessionStorage("greetingTitle", "");
     } else {
-      saveToSessionStorage('greetingTitle', e.target.value);
+      saveToSessionStorage("greetingTitle", e.target.value);
     }
 
     this.checkChanges();
@@ -106,7 +106,9 @@ class CustomTitles extends React.Component {
     const { greetingTitle } = this.state;
     this.setState({ isLoadingGreetingSave: true }, function () {
       setGreetingTitle(greetingTitle)
-        .then(() => toastr.success(t('SuccessfullySaveGreetingSettingsMessage')))
+        .then(() =>
+          toastr.success(t("SuccessfullySaveGreetingSettingsMessage"))
+        )
         .catch((error) => toastr.error(error))
         .finally(() => this.setState({ isLoadingGreetingSave: false }));
     });
@@ -128,8 +130,8 @@ class CustomTitles extends React.Component {
             greetingTitleDefault: this.props.greetingSettings,
             showReminder: false,
           });
-          saveToSessionStorage('greetingTitle', '');
-          toastr.success(t('SuccessfullySaveGreetingSettingsMessage'));
+          saveToSessionStorage("greetingTitle", "");
+          toastr.success(t("SuccessfullySaveGreetingSettingsMessage"));
         })
         .catch((error) => toastr.error(error))
         .finally(() => this.setState({ isLoadingGreetingRestore: false }));
@@ -142,12 +144,15 @@ class CustomTitles extends React.Component {
 
       if (
         valueFromSessionStorage &&
-        !this.settingIsEqualInitialValue(currentSetting, valueFromSessionStorage)
+        !this.settingIsEqualInitialValue(
+          currentSetting,
+          valueFromSessionStorage
+        )
       ) {
-        const defaultValue = this.state[currentSetting + 'Default'];
+        const defaultValue = this.state[currentSetting + "Default"];
 
         this.setState({ [currentSetting]: defaultValue });
-        saveToSessionStorage(currentSetting, '');
+        saveToSessionStorage(currentSetting, "");
       }
     });
 
@@ -159,7 +164,7 @@ class CustomTitles extends React.Component {
   };
 
   settingIsEqualInitialValue = (stateName, value) => {
-    const defaultValue = JSON.stringify(this.state[stateName + 'Default']);
+    const defaultValue = JSON.stringify(this.state[stateName + "Default"]);
     const currentValue = JSON.stringify(value);
     return defaultValue === currentValue;
   };
@@ -203,8 +208,9 @@ class CustomTitles extends React.Component {
             <FieldContainer
               id="fieldContainerWelcomePage"
               className="field-container-width"
-              labelText={`${t('WelcomePageTitle')}:`}
-              isVertical={true}>
+              labelText={`${t("WelcomePageTitle")}:`}
+              isVertical={true}
+            >
               <TextInput
                 scale={true}
                 value={greetingTitle}
@@ -215,8 +221,9 @@ class CustomTitles extends React.Component {
                 <Link
                   onClick={this.onRestoreGreetingSettings}
                   type="action"
-                  color={theme.studio.settings.common.linkColor}>
-                  {t('SetDefaultTitle')}
+                  color={theme.studio.settings.common.linkColor}
+                >
+                  {t("SetDefaultTitle")}
                 </Link>
               </div>
             </FieldContainer>
@@ -226,9 +233,9 @@ class CustomTitles extends React.Component {
               onSaveClick={this.onSaveGreetingSettings}
               onCancelClick={this.onCancelClick}
               showReminder={showReminder}
-              reminderTest={t('YouHaveUnsavedChanges')}
-              saveButtonLabel={t('Common:SaveButton')}
-              cancelButtonLabel={t('Common:CancelButton')}
+              reminderTest={t("YouHaveUnsavedChanges")}
+              saveButtonLabel={t("Common:SaveButton")}
+              cancelButtonLabel={t("Common:CancelButton")}
             />
           )}
         </StyledComponent>
@@ -247,4 +254,4 @@ export default inject(({ auth, setup }) => {
     setGreetingTitle,
     restoreGreetingTitle,
   };
-})(withTranslation(['Settings', 'Common'])(observer(CustomTitles)));
+})(withTranslation(["Settings", "Common"])(observer(CustomTitles)));

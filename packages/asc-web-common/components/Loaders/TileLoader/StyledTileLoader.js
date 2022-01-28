@@ -1,12 +1,12 @@
-import styled, { css } from 'styled-components';
-import { smallTablet, tablet, size } from '@appserver/components/utils/device';
-import Base from '@appserver/components/themes/base';
+import styled, { css } from "styled-components";
+import { smallTablet, tablet, size } from "@appserver/components/utils/device";
+import Base from "@appserver/components/themes/base";
 
 const StyledTile = styled.div`
   position: relative;
   display: grid;
   width: 100%;
-  height: ${(props) => (props.isFolder ? '32px' : '220px')};
+  height: ${(props) => (props.isFolder ? "32px" : "220px")};
 
   @media ${smallTablet} {
     &:nth-of-type(n + 3) {
@@ -37,8 +37,8 @@ const StyledMainContent = styled.div`
 
 const StyledBottom = styled.div`
   display: flex;
-  align-items: ${(props) => (props.isFolder ? 'center' : 'stretch')};
-  margin-top: ${(props) => (props.isFolder ? 0 : '10px')};
+  align-items: ${(props) => (props.isFolder ? "center" : "stretch")};
+  margin-top: ${(props) => (props.isFolder ? 0 : "10px")};
   height: 38px;
 
   .first-content {
@@ -49,7 +49,7 @@ const StyledBottom = styled.div`
 
   .second-content {
     width: 100%;
-    height: ${(props) => (props.isFolder ? '32px' : '16px')};
+    height: ${(props) => (props.isFolder ? "32px" : "16px")};
     margin-left: 8px;
   }
 

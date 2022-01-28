@@ -1427,6 +1427,10 @@ const Dark = {
     borderRadius: "50%",
   },
 
+  dialogLoader: {
+    borderBottom: "1px solid #292929",
+  },
+
   // dropDownItem: {
   //   width: "100%",
   //   maxWidth: "240px",

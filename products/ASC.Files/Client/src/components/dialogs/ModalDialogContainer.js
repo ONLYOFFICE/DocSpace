@@ -1,7 +1,7 @@
-import styled from 'styled-components';
-import { tablet } from '@appserver/components/utils/device';
-import ModalDialog from '@appserver/components/modal-dialog';
-import { Base } from '@appserver/components/themes';
+import styled from "styled-components";
+import { tablet } from "@appserver/components/utils/device";
+import ModalDialog from "@appserver/components/modal-dialog";
+import { Base } from "@appserver/components/themes";
 
 const ModalDialogContainer = styled(ModalDialog)`
   .row-main-container-wrapper {

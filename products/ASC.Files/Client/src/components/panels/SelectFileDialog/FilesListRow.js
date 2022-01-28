@@ -1,10 +1,10 @@
-import React from 'react';
-import { StyledFilesList } from '../StyledPanels';
-import { ReactSVG } from 'react-svg';
-import { inject, observer } from 'mobx-react';
-import Text from '@appserver/components/text';
-import Checkbox from '@appserver/components/checkbox';
-import RadioButton from '@appserver/components/radio-button';
+import React from "react";
+import { StyledFilesList } from "../StyledPanels";
+import { ReactSVG } from "react-svg";
+import { inject, observer } from "mobx-react";
+import Text from "@appserver/components/text";
+import Checkbox from "@appserver/components/checkbox";
+import RadioButton from "@appserver/components/radio-button";
 const FilesListRow = ({
   displayType,
   needRowSelection,
@@ -23,8 +23,13 @@ const FilesListRow = ({
       displayType={displayType}
       theme={theme}
       needRowSelection={needRowSelection}
-      isChecked={isChecked}>
-      <div data-index={index} className="modal-dialog_file-name" onClick={onSelectFile}>
+      isChecked={isChecked}
+    >
+      <div
+        data-index={index}
+        className="modal-dialog_file-name"
+        onClick={onSelectFile}
+      >
         {isMultiSelect ? ( //  it will be needed
           <Checkbox
             theme={theme}
@@ -49,7 +54,12 @@ const FilesListRow = ({
         <div data-index={index} className="files-list_full-name">
           <Text theme={theme} data-index={index} className="entry-title">
             {fileName}
-            <Text theme={theme} data-index={index} className="file-exst" as="span">
+            <Text
+              theme={theme}
+              data-index={index}
+              className="file-exst"
+              as="span"
+            >
               {fileExst}
             </Text>
           </Text>

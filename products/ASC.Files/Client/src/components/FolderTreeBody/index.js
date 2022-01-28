@@ -1,11 +1,11 @@
-import React from 'react';
-import { inject, observer } from 'mobx-react';
-import { useTranslation } from 'react-i18next';
-import Loader from '@appserver/components/loader';
-import Text from '@appserver/components/text';
-import Scrollbar from '@appserver/components/scrollbar';
-import TreeFolders from '../Article/Body/TreeFolders';
-import { StyledSelectFolderPanel } from '../panels/StyledPanels';
+import React from "react";
+import { inject, observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
+import Loader from "@appserver/components/loader";
+import Text from "@appserver/components/text";
+import Scrollbar from "@appserver/components/scrollbar";
+import TreeFolders from "../Article/Body/TreeFolders";
+import { StyledSelectFolderPanel } from "../panels/StyledPanels";
 const FolderTreeBody = ({
   isLoadingData,
   expandedKeys,
@@ -21,7 +21,7 @@ const FolderTreeBody = ({
   isHeaderChildren,
   theme,
 }) => {
-  const { t } = useTranslation(['SelectFolder', 'Common']);
+  const { t } = useTranslation(["SelectFolder", "Common"]);
   return (
     <>
       {!isLoadingData ? (
@@ -29,7 +29,8 @@ const FolderTreeBody = ({
           <StyledSelectFolderPanel
             heightContent={heightContent}
             displayType={displayType}
-            isHeaderChildren={isHeaderChildren}>
+            isHeaderChildren={isHeaderChildren}
+          >
             <div className="select-folder-dialog_tree-folder">
               <Scrollbar id="folder-tree-scroll-bar">
                 <TreeFolders
@@ -49,9 +50,10 @@ const FolderTreeBody = ({
         ) : (
           <StyledSelectFolderPanel
             heightContent={heightContent}
-            isHeaderChildren={isHeaderChildren}>
+            isHeaderChildren={isHeaderChildren}
+          >
             <div className="tree-folder-empty-list select-folder-dialog_tree-folder">
-              <Text as="span">{t('NotAvailableFolder')}</Text>
+              <Text as="span">{t("NotAvailableFolder")}</Text>
             </div>
           </StyledSelectFolderPanel>
         )
@@ -62,13 +64,13 @@ const FolderTreeBody = ({
               type="oval"
               size="16px"
               style={{
-                display: 'inline',
-                marginRight: '10px',
-                marginTop: '16px',
+                display: "inline",
+                marginRight: "10px",
+                marginTop: "16px",
               }}
             />
-            <Text as="span">{`${t('Common:LoadingProcessing')} ${t(
-              'Common:LoadingDescription',
+            <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
+              "Common:LoadingDescription"
             )}`}</Text>
           </div>
         </StyledSelectFolderPanel>
@@ -82,12 +84,14 @@ FolderTreeBody.defaultProps = {
   isLoadingData: false,
 };
 
-export default inject(({ filesStore, treeFoldersStore, selectedFolderStore }) => {
-  const { filter, isLoading } = filesStore;
-  const { expandedPanelKeys } = treeFoldersStore;
-  return {
-    expandedKeys: expandedPanelKeys ? expandedPanelKeys : null,
-    filter,
-    isLoading,
-  };
-})(observer(FolderTreeBody));
+export default inject(
+  ({ filesStore, treeFoldersStore, selectedFolderStore }) => {
+    const { filter, isLoading } = filesStore;
+    const { expandedPanelKeys } = treeFoldersStore;
+    return {
+      expandedKeys: expandedPanelKeys ? expandedPanelKeys : null,
+      filter,
+      isLoading,
+    };
+  }
+)(observer(FolderTreeBody));

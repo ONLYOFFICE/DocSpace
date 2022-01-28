@@ -1,9 +1,9 @@
-import { Base } from '@appserver/components/themes';
-import styled from 'styled-components';
+import { Base } from "@appserver/components/themes";
+import styled from "styled-components";
 
 const StyledMediaViewer = styled.div`
   color: ${(props) => props.theme.mediaViewer.color};
-  display: ${(props) => (props.visible ? 'block' : 'none')};
+  display: ${(props) => (props.visible ? "block" : "none")};
   overflow: hidden;
   .videoViewerOverlay {
     position: fixed;

@@ -1,12 +1,12 @@
-import React from 'react';
+import React from "react";
 
-import IconButton from '@appserver/components/icon-button';
-import FolderTreeBody from '../../FolderTreeBody';
-import { StyledAsidePanel, StyledSelectFolderPanel } from '../StyledPanels';
-import Button from '@appserver/components/button';
-import ModalDialog from '@appserver/components/modal-dialog';
+import IconButton from "@appserver/components/icon-button";
+import FolderTreeBody from "../../FolderTreeBody";
+import { StyledAsidePanel, StyledSelectFolderPanel } from "../StyledPanels";
+import Button from "@appserver/components/button";
+import ModalDialog from "@appserver/components/modal-dialog";
 
-const DISPLAY_TYPE = 'aside';
+const DISPLAY_TYPE = "aside";
 const SelectFolderDialogAsideView = ({
   theme,
   t,
@@ -39,10 +39,11 @@ const SelectFolderDialogAsideView = ({
         visible={isPanelVisible}
         zIndex={zIndex}
         contentHeight="100%"
-        contentPaddingBottom={footer && showButtons ? '100px' : '40px'}
+        contentPaddingBottom={footer && showButtons ? "100px" : "40px"}
         onClose={onClose}
         removeScroll
-        displayType="aside">
+        displayType="aside"
+      >
         <ModalDialog.Header theme={theme}>
           <StyledSelectFolderPanel theme={theme}>
             <div className="select-folder-dialog_header">
@@ -56,7 +57,7 @@ const SelectFolderDialogAsideView = ({
                   // color={theme.filesPanels.selectFolder.color}
                 />
               )}
-              {headerName ? headerName : t('Translations:FolderSelection')}
+              {headerName ? headerName : t("Translations:FolderSelection")}
             </div>
           </StyledSelectFolderPanel>
         </ModalDialog.Header>
@@ -66,7 +67,8 @@ const SelectFolderDialogAsideView = ({
             displayType={DISPLAY_TYPE}
             showButtons={showButtons}
             isFooter={!!footer}
-            noTreeSwitcher={noTreeSwitcher}>
+            noTreeSwitcher={noTreeSwitcher}
+          >
             <div className="select-folder-dialog_aside_body">
               <div>{header} </div>
 
@@ -102,7 +104,7 @@ const SelectFolderDialogAsideView = ({
                 <Button
                   theme={theme}
                   size="big"
-                  label={t('Common:CancelButton')}
+                  label={t("Common:CancelButton")}
                   onClick={onClose}
                   isDisabled={isLoadingData || isLoading}
                 />

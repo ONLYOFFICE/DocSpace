@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { withRouter } from 'react-router';
-import { withTranslation } from 'react-i18next';
-import styled from 'styled-components';
-import Button from '@appserver/components/button';
-import TextInput from '@appserver/components/text-input';
-import Text from '@appserver/components/text';
-import PageLayout from '@appserver/common/components/PageLayout';
-import { inject, observer } from 'mobx-react';
-import withLoader from '../withLoader';
-import { Base } from '@appserver/components/themes';
+import React, { useState } from "react";
+import { withRouter } from "react-router";
+import { withTranslation } from "react-i18next";
+import styled from "styled-components";
+import Button from "@appserver/components/button";
+import TextInput from "@appserver/components/text-input";
+import Text from "@appserver/components/text";
+import PageLayout from "@appserver/common/components/PageLayout";
+import { inject, observer } from "mobx-react";
+import withLoader from "../withLoader";
+import { Base } from "@appserver/components/themes";
 
 const BodyStyle = styled.div`
   margin: 70px auto 0 auto;
@@ -56,11 +56,11 @@ const PhoneForm = (props) => {
   const buttonTranslation = `Enter number`;
 
   const onSubmit = () => {
-    console.log('onSubmit CHANGE'); //TODO: Why do nothing?
+    console.log("onSubmit CHANGE"); //TODO: Why do nothing?
   };
 
   const onKeyPress = (target) => {
-    if (target.code === 'Enter') onSubmit();
+    if (target.code === "Enter") onSubmit();
   };
 
   const simplePhoneMask = new Array(15).fill(/\d/);
@@ -106,7 +106,7 @@ const PhoneForm = (props) => {
         primary
         size="big"
         tabIndex={3}
-        label={isLoading ? t('Common:LoadingProcessing') : buttonTranslation}
+        label={isLoading ? t("Common:LoadingProcessing") : buttonTranslation}
         isDisabled={isLoading}
         isLoading={isLoading}
         onClick={onSubmit}
@@ -129,4 +129,10 @@ export default inject(({ auth }) => ({
   isLoaded: auth.isLoaded,
   currentPhone: auth.userStore.mobilePhone,
   greetingTitle: auth.settingsStore.greetingSettings,
-}))(withRouter(withTranslation(['Confirm', 'Common'])(observer(withLoader(ChangePhoneForm)))));
+}))(
+  withRouter(
+    withTranslation(["Confirm", "Common"])(
+      observer(withLoader(ChangePhoneForm))
+    )
+  )
+);

@@ -1,24 +1,24 @@
-import React, { useEffect } from 'react';
-import { ReactSVG } from 'react-svg';
-import PropTypes from 'prop-types';
-import { withRouter } from 'react-router';
-import Text from '@appserver/components/text';
-import Link from '@appserver/components/link';
-import Badge from '@appserver/components/badge';
-import Box from '@appserver/components/box';
-import EmptyScreenContainer from '@appserver/components/empty-screen-container';
-import ExternalLinkIcon from '../../../../../../public/images/external.link.react.svg';
-import Loaders from '@appserver/common/components/Loaders';
-import toastr from 'studio/toastr';
-import PageLayout from '@appserver/common/components/PageLayout';
-import { useTranslation, withTranslation } from 'react-i18next';
-import styled from 'styled-components';
-import { isMobile, isIOS } from 'react-device-detect';
+import React, { useEffect } from "react";
+import { ReactSVG } from "react-svg";
+import PropTypes from "prop-types";
+import { withRouter } from "react-router";
+import Text from "@appserver/components/text";
+import Link from "@appserver/components/link";
+import Badge from "@appserver/components/badge";
+import Box from "@appserver/components/box";
+import EmptyScreenContainer from "@appserver/components/empty-screen-container";
+import ExternalLinkIcon from "../../../../../../public/images/external.link.react.svg";
+import Loaders from "@appserver/common/components/Loaders";
+import toastr from "studio/toastr";
+import PageLayout from "@appserver/common/components/PageLayout";
+import { useTranslation, withTranslation } from "react-i18next";
+import styled from "styled-components";
+import { isMobile, isIOS } from "react-device-detect";
 
-import { setDocumentTitle } from '../../../helpers/utils';
-import { inject } from 'mobx-react';
-import i18n from '../../../i18n';
-import { I18nextProvider } from 'react-i18next';
+import { setDocumentTitle } from "../../../helpers/utils";
+import { inject } from "mobx-react";
+import i18n from "../../../i18n";
+import { I18nextProvider } from "react-i18next";
 
 const commonStyles = `
   .link-box {
@@ -33,7 +33,7 @@ const commonStyles = `
 `;
 
 const ComingSoonPage = styled.div`
-  padding: ${isMobile ? '62px 0 0 0' : '0'};
+  padding: ${isMobile ? "62px 0 0 0" : "0"};
   width: 336px;
   margin: 0 auto;
 
@@ -94,7 +94,7 @@ const ExternalLink = ({ label, href }) => (
   <Box className="link-box">
     <ExternalLinkIcon
       color={theme.studio.comingSoon.linkIconColor}
-      size={isMobile ? 'small' : 'medium'}
+      size={isMobile ? "small" : "medium"}
     />
     <Link
       as="a"
@@ -103,7 +103,8 @@ const ExternalLink = ({ label, href }) => (
       className="view-web-link"
       color={theme.studio.comingSoon.linkColor}
       isBold
-      isHovered>
+      isHovered
+    >
       {label}
     </Link>
   </Box>
@@ -113,14 +114,22 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId, t }) => {
   const { error } = match.params;
   const { pathname, protocol, hostname } = window.location;
   const currentModule = modules.find((m) => m.link === pathname);
-  const { id, title, description, imageUrl, link, originUrl, helpUrl } = currentModule;
+  const {
+    id,
+    title,
+    description,
+    imageUrl,
+    link,
+    originUrl,
+    helpUrl,
+  } = currentModule;
   const url = originUrl ? originUrl : link;
-  const webLink = protocol + '//' + hostname + url;
+  const webLink = protocol + "//" + hostname + url;
   const appLink = isIOS
-    ? id === '2A923037-8B2D-487b-9A22-5AC0918ACF3F'
-      ? 'message:'
-      : id === '32D24CB5-7ECE-4606-9C94-19216BA42086'
-      ? 'calshow:'
+    ? id === "2A923037-8B2D-487b-9A22-5AC0918ACF3F"
+      ? "message:"
+      : id === "32D24CB5-7ECE-4606-9C94-19216BA42086"
+      ? "calshow:"
       : false
     : false;
 
@@ -135,15 +144,15 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId, t }) => {
   const appButtons = (
     <>
       <Badge
-        label={t('Common:ComingSoon')}
+        label={t("Common:ComingSoon")}
         maxWidth="150px"
         borderRadius="2px"
         className="coming-soon-badge"
       />
-      <ExternalLink label={t('Common:ViewWeb')} href={webLink} />
+      <ExternalLink label={t("Common:ViewWeb")} href={webLink} />
       {appLink && (
         <ExternalLink
-          label={t('Common:OpenApp', {
+          label={t("Common:OpenApp", {
             title: title,
           })}
           href={appLink}
@@ -154,7 +163,7 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId, t }) => {
 
   const moduleDescription = (
     <Text className="module-info">
-      {description}{' '}
+      {description}{" "}
       {helpUrl && (
         <Link
           as="a"
@@ -163,8 +172,9 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId, t }) => {
           className="learn-more-link"
           color={theme.studio.comingSoon.linkColor}
           isBold
-          isHovered>
-          {t('Common:LearnMore')}...
+          isHovered
+        >
+          {t("Common:LearnMore")}...
         </Link>
       )}
     </Text>
@@ -227,7 +237,7 @@ const ComingSoonWrapper = inject(({ auth }) => ({
   isLoaded: auth.isLoaded,
   theme: auth.seetingsStore.theme,
   setCurrentProductId: auth.settingsStore.setCurrentProductId,
-}))(withRouter(withTranslation('Common')(ComingSoon)));
+}))(withRouter(withTranslation("Common")(ComingSoon)));
 
 export default (props) => (
   <I18nextProvider i18n={i18n}>

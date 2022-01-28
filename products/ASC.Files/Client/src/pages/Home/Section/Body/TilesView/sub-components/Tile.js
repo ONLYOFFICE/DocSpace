@@ -1,18 +1,18 @@
-import Checkbox from '@appserver/components/checkbox';
-import ContextMenuButton from '@appserver/components/context-menu-button';
-import PropTypes from 'prop-types';
-import React from 'react';
-import { ReactSVG } from 'react-svg';
-import styled, { css } from 'styled-components';
-import ContextMenu from '@appserver/components/context-menu';
-import { tablet } from '@appserver/components/utils/device';
-import { isDesktop } from 'react-device-detect';
+import Checkbox from "@appserver/components/checkbox";
+import ContextMenuButton from "@appserver/components/context-menu-button";
+import PropTypes from "prop-types";
+import React from "react";
+import { ReactSVG } from "react-svg";
+import styled, { css } from "styled-components";
+import ContextMenu from "@appserver/components/context-menu";
+import { tablet } from "@appserver/components/utils/device";
+import { isDesktop } from "react-device-detect";
 
-import Link from '@appserver/components/link';
-import Loader from '@appserver/components/loader';
-import { Base } from '@appserver/components/themes';
+import Link from "@appserver/components/link";
+import Loader from "@appserver/components/loader";
+import { Base } from "@appserver/components/themes";
 
-const svgLoader = () => <div style={{ width: '96px' }} />;
+const svgLoader = () => <div style={{ width: "96px" }} />;
 
 const FlexBoxStyles = css`
   display: flex;
@@ -33,7 +33,8 @@ const FileStyles = css`
 `;
 
 const checkedStyle = css`
-  background: ${(props) => props.theme.filesSection.tilesView.tile.checkedColor} !important;
+  background: ${(props) =>
+    props.theme.filesSection.tilesView.tile.checkedColor} !important;
 `;
 
 const bottomFileBorder = css`
@@ -42,7 +43,7 @@ const bottomFileBorder = css`
 `;
 
 const StyledTile = styled.div`
-  cursor: ${(props) => (!props.isRecycleBin ? 'pointer' : 'default')};
+  cursor: ${(props) => (!props.isRecycleBin ? "pointer" : "default")};
   ${(props) =>
     props.inProgress &&
     css`
@@ -57,7 +58,11 @@ const StyledTile = styled.div`
 
   ${(props) => props.isFolder && FlexBoxStyles}
   ${(props) => (props.isFolder ? FolderStyles : FileStyles)}
-  ${(props) => !props.isEdit && props.isFolder && (props.checked || props.isActive) && checkedStyle}
+  ${(props) =>
+    !props.isEdit &&
+    props.isFolder &&
+    (props.checked || props.isActive) &&
+    checkedStyle}
 
   .checkbox {
     display: flex;
@@ -71,24 +76,24 @@ const StyledTile = styled.div`
   }
 
   .file-checkbox {
-    display: ${(props) => (props.checked ? 'flex' : 'none')};
+    display: ${(props) => (props.checked ? "flex" : "none")};
     flex: 0 0 16px;
     margin-top: 8px;
-    margin-left: ${(props) => (props.isFolder ? '8px' : '7px')};
+    margin-left: ${(props) => (props.isFolder ? "8px" : "7px")};
   }
 
   .file-icon {
-    display: ${(props) => (props.checked ? 'none' : 'flex')};
+    display: ${(props) => (props.checked ? "none" : "flex")};
     flex: 0 0 auto;
     user-select: none;
-    margin-top: ${(props) => (props.isFolder ? '0' : '-2px')};
+    margin-top: ${(props) => (props.isFolder ? "0" : "-2px")};
   }
 
   .file-icon_container {
     width: 32px;
     height: 32px;
-    margin-left: ${(props) => (props.isFolder ? '15px' : '16px')};
-    margin-right: ${(props) => (props.isFolder ? '7px' : '8px')};
+    margin-left: ${(props) => (props.isFolder ? "15px" : "16px")};
+    margin-right: ${(props) => (props.isFolder ? "7px" : "8px")};
   }
 
   .tile-folder-loader {
@@ -140,10 +145,12 @@ const StyledFileTileTop = styled.div`
 
 const StyledFileTileBottom = styled.div`
   ${FlexBoxStyles};
-  ${(props) => !props.isEdit && (props.checked || props.isActive) && checkedStyle}
+  ${(props) =>
+    !props.isEdit && (props.checked || props.isActive) && checkedStyle}
 
   border-top: 1px solid transparent;
-  ${(props) => !props.isEdit && (props.checked || props.isActive) && bottomFileBorder}
+  ${(props) =>
+    !props.isEdit && (props.checked || props.isActive) && bottomFileBorder}
 
   padding: 9px 0;
   height: 62px;
@@ -244,7 +251,8 @@ const StyledIcons = styled.div`
     align-items: center;
     justify-content: center;
     padding: 8px;
-    background: ${(props) => props.theme.filesSection.tilesView.tile.backgroundColor};
+    background: ${(props) =>
+      props.theme.filesSection.tilesView.tile.backgroundColor};
     border-radius: 4px;
     box-shadow: 0px 2px 4px rgba(4, 15, 27, 0.16);
   }
@@ -273,7 +281,8 @@ class Tile extends React.PureComponent {
   getIconFile = () => {
     const { temporaryIcon, thumbnailClick, thumbnail } = this.props;
 
-    const icon = thumbnail && !this.state.errorLoadSrc ? thumbnail : temporaryIcon;
+    const icon =
+      thumbnail && !this.state.errorLoadSrc ? thumbnail : temporaryIcon;
 
     return (
       <Link type="page" onClick={thumbnailClick}>
@@ -323,12 +332,18 @@ class Tile extends React.PureComponent {
     } = this.props;
     const { isFolder, id, fileExst } = item;
 
-    const renderElement = Object.prototype.hasOwnProperty.call(this.props, 'element');
+    const renderElement = Object.prototype.hasOwnProperty.call(
+      this.props,
+      "element"
+    );
 
-    const renderContentElement = Object.prototype.hasOwnProperty.call(this.props, 'contentElement');
+    const renderContentElement = Object.prototype.hasOwnProperty.call(
+      this.props,
+      "contentElement"
+    );
 
     const renderContext =
-      Object.prototype.hasOwnProperty.call(this.props, 'contextOptions') &&
+      Object.prototype.hasOwnProperty.call(this.props, "contextOptions") &&
       contextOptions.length > 0;
 
     const getOptions = () => {
@@ -359,14 +374,18 @@ class Tile extends React.PureComponent {
         checked={checked}
         isActive={isActive}
         inProgress={inProgress}
-        isDesktop={isDesktop}>
+        isDesktop={isDesktop}
+      >
         {isFolder || (!fileExst && id === -1) ? (
           <>
             {renderElement && !(!fileExst && id === -1) && !isEdit && (
               <>
                 {!inProgress ? (
                   <div className="file-icon_container">
-                    <StyledElement className="file-icon" onClick={this.onFileIconClick}>
+                    <StyledElement
+                      className="file-icon"
+                      onClick={this.onFileIconClick}
+                    >
                       {element}
                     </StyledElement>
 
@@ -378,11 +397,17 @@ class Tile extends React.PureComponent {
                     />
                   </div>
                 ) : (
-                  <Loader className="tile-folder-loader" type="oval" size="16px" />
+                  <Loader
+                    className="tile-folder-loader"
+                    type="oval"
+                    size="16px"
+                  />
                 )}
               </>
             )}
-            <StyledContent isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}>
+            <StyledContent
+              isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
+            >
               {FilesTileContent}
             </StyledContent>
             <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
@@ -409,9 +434,15 @@ class Tile extends React.PureComponent {
 
             <StyledIcons isBadges>{badges}</StyledIcons>
 
-            {renderContentElement && <StyledIcons isQuickButtons>{quickButtons}</StyledIcons>}
+            {renderContentElement && (
+              <StyledIcons isQuickButtons>{quickButtons}</StyledIcons>
+            )}
 
-            <StyledFileTileBottom checked={checked} isActive={isActive} isEdit={isEdit}>
+            <StyledFileTileBottom
+              checked={checked}
+              isActive={isActive}
+              isEdit={isEdit}
+            >
               {id !== -1 && !isEdit && (
                 <>
                   <div className="file-icon_container">
@@ -427,7 +458,9 @@ class Tile extends React.PureComponent {
                   </div>
                 </>
               )}
-              <StyledContent isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}>
+              <StyledContent
+                isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
+              >
                 {FilesTileContent}
               </StyledContent>
               <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
@@ -455,7 +488,10 @@ class Tile extends React.PureComponent {
 
 Tile.propTypes = {
   checked: PropTypes.bool,
-  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.element), PropTypes.element]),
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.element),
+    PropTypes.element,
+  ]),
   className: PropTypes.string,
   contextButtonSpacerWidth: PropTypes.string,
   contextOptions: PropTypes.array,
@@ -472,7 +508,7 @@ Tile.propTypes = {
 };
 
 Tile.defaultProps = {
-  contextButtonSpacerWidth: '32px',
+  contextButtonSpacerWidth: "32px",
 };
 
 export default Tile;

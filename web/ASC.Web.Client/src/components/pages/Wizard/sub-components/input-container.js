@@ -1,15 +1,15 @@
-import React, { useRef } from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import React, { useRef } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
 
-import Box from '@appserver/components/box';
-import EmailInput from '@appserver/components/email-input';
-import FileInput from '@appserver/components/file-input';
-import PasswordInput from '@appserver/components/password-input';
-import Link from '@appserver/components/link';
-import Checkbox from '@appserver/components/checkbox';
-import { PasswordLimitSpecialCharacters } from '@appserver/common/constants';
-import { tablet } from '@appserver/components/utils/device';
+import Box from "@appserver/components/box";
+import EmailInput from "@appserver/components/email-input";
+import FileInput from "@appserver/components/file-input";
+import PasswordInput from "@appserver/components/password-input";
+import Link from "@appserver/components/link";
+import Checkbox from "@appserver/components/checkbox";
+import { PasswordLimitSpecialCharacters } from "@appserver/common/constants";
+import { tablet } from "@appserver/components/utils/device";
 
 const StyledContainer = styled(Box)`
   width: 311px;
@@ -69,17 +69,21 @@ const InputContainer = ({
 }) => {
   const refPassInput = useRef(null);
 
-  const tooltipPassTitle = `${t('Common:PasswordLimitMessage')}:`;
-  const tooltipPassLength = `${t('Common:PasswordLimitLength', {
+  const tooltipPassTitle = `${t("Common:PasswordLimitMessage")}:`;
+  const tooltipPassLength = `${t("Common:PasswordLimitLength", {
     fromNumber: settingsPassword ? settingsPassword.minLength : 8,
     toNumber: 30,
   })}`;
-  const tooltipPassDigits = settingsPassword.digits ? `${t('Common:PasswordLimitDigits')}` : null;
+  const tooltipPassDigits = settingsPassword.digits
+    ? `${t("Common:PasswordLimitDigits")}`
+    : null;
   const tooltipPassCapital = settingsPassword.upperCase
-    ? `${t('Common:PasswordLimitUpperCase')}`
+    ? `${t("Common:PasswordLimitUpperCase")}`
     : null;
   const tooltipPassSpecial = settingsPassword.specSymbols
-    ? `${t('Common:PasswordLimitSpecialSymbols')} (${PasswordLimitSpecialCharacters})`
+    ? `${t(
+        "Common:PasswordLimitSpecialSymbols"
+      )} (${PasswordLimitSpecialCharacters})`
     : null;
 
   const inputEmail = emailNeeded ? (
@@ -88,7 +92,7 @@ const InputContainer = ({
       tabIndex={1}
       size="large"
       scale={true}
-      placeholder={t('Common:Email')}
+      placeholder={t("Common:Email")}
       emailSettings={settings}
       hasError={hasErrorEmail}
       onValidateInput={onEmailChangeHandler}
@@ -99,7 +103,7 @@ const InputContainer = ({
     <Box>
       <FileInput
         tabIndex={3}
-        placeholder={t('PlaceholderLicense')}
+        placeholder={t("PlaceholderLicense")}
         size="large"
         scale={true}
         accept=".lic"
@@ -121,7 +125,7 @@ const InputContainer = ({
         inputValue={password}
         passwordSettings={settingsPassword}
         isDisabled={false}
-        placeholder={t('Common:Password')}
+        placeholder={t("Common:Password")}
         hideNewPasswordButton={true}
         isDisableTooltip={true}
         isTextTooltipVisible={true}
@@ -141,8 +145,9 @@ const InputContainer = ({
           type="action"
           fontWeight="400"
           isHovered={true}
-          onClick={() => refPassInput.current.onGeneratePassword()}>
-          {t('GeneratePassword')}
+          onClick={() => refPassInput.current.onGeneratePassword()}
+        >
+          {t("GeneratePassword")}
         </Link>
       ) : null}
       <Box>
@@ -150,7 +155,7 @@ const InputContainer = ({
           className="wizard-checkbox"
           id="license"
           name="confirm"
-          label={t('License')}
+          label={t("License")}
           isChecked={license}
           isDisabled={false}
           onChange={onChangeLicense}
@@ -161,9 +166,12 @@ const InputContainer = ({
           color={theme.studio.wizard.linkColor}
           fontSize="13px"
           target="_blank"
-          href={urlLicense ? urlLicense : 'https://gnu.org/licenses/gpl-3.0.html'}
-          isBold={false}>
-          {t('LicenseLink')}
+          href={
+            urlLicense ? urlLicense : "https://gnu.org/licenses/gpl-3.0.html"
+          }
+          isBold={false}
+        >
+          {t("LicenseLink")}
         </Link>
       </Box>
     </StyledContainer>

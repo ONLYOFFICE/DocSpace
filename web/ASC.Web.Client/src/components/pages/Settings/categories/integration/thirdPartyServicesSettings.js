@@ -1,17 +1,17 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
-import styled from 'styled-components';
-import Box from '@appserver/components/box';
-import Text from '@appserver/components/text';
-import Link from '@appserver/components/link';
-import toastr from '@appserver/components/toast/toastr';
-import { tablet, mobile } from '@appserver/components/utils/device';
-import { showLoader, hideLoader } from '@appserver/common/utils';
-import ConsumerItem from './sub-components/consumerItem';
-import ConsumerModalDialog from './sub-components/consumerModalDialog';
-import { inject, observer } from 'mobx-react';
-import { Base } from '@appserver/components/themes';
+import React from "react";
+import PropTypes from "prop-types";
+import { withTranslation } from "react-i18next";
+import styled from "styled-components";
+import Box from "@appserver/components/box";
+import Text from "@appserver/components/text";
+import Link from "@appserver/components/link";
+import toastr from "@appserver/components/toast/toastr";
+import { tablet, mobile } from "@appserver/components/utils/device";
+import { showLoader, hideLoader } from "@appserver/common/utils";
+import ConsumerItem from "./sub-components/consumerItem";
+import ConsumerModalDialog from "./sub-components/consumerModalDialog";
+import { inject, observer } from "mobx-react";
+import { Base } from "@appserver/components/themes";
 
 const RootContainer = styled(Box)`
   @media ${tablet} {
@@ -50,7 +50,7 @@ class ThirdPartyServices extends React.Component {
     super(props);
     const { t, setDocumentTitle } = props;
 
-    setDocumentTitle(`${t('ThirdPartyAuthorization')}`);
+    setDocumentTitle(`${t("ThirdPartyAuthorization")}`);
 
     this.state = {
       dialogVisible: false,
@@ -97,7 +97,7 @@ class ThirdPartyServices extends React.Component {
     for (i = 0; i < objLength; i++) {
       prop.push({
         name: isFill ? Object.keys(obj)[i] : obj.props[i].name,
-        value: isFill ? Object.values(obj)[i] : '',
+        value: isFill ? Object.values(obj)[i] : "",
       });
     }
 
@@ -111,8 +111,8 @@ class ThirdPartyServices extends React.Component {
       .then(() => {
         isFill && this.onChangeLoading(false);
         isFill
-          ? toastr.success(this.props.t('ThirdPartyPropsActivated'))
-          : toastr.success(this.props.t('ThirdPartyPropsDeactivated'));
+          ? toastr.success(this.props.t("ThirdPartyPropsActivated"))
+          : toastr.success(this.props.t("ThirdPartyPropsDeactivated"));
       })
       .catch((error) => {
         isFill && this.onChangeLoading(false);
@@ -123,22 +123,34 @@ class ThirdPartyServices extends React.Component {
   };
 
   render() {
-    const { t, i18n, consumers, updateConsumerProps, urlAuthKeys, theme } = this.props;
+    const {
+      t,
+      i18n,
+      consumers,
+      updateConsumerProps,
+      urlAuthKeys,
+      theme,
+    } = this.props;
     const { dialogVisible, isLoading } = this.state;
     const { onModalClose, onModalOpen, setConsumer, onChangeLoading } = this;
 
     return (
       <>
-        <RootContainer displayProp="flex" flexDirection="column" marginProp="0 88px 0 0">
+        <RootContainer
+          displayProp="flex"
+          flexDirection="column"
+          marginProp="0 88px 0 0"
+        >
           <Box className="title-description-container">
-            <Text>{t('ThirdPartyTitleDescription')}</Text>
+            <Text>{t("ThirdPartyTitleDescription")}</Text>
             <Box marginProp="16px 0 0 0">
               <Link
                 color={theme.studio.settings.integration.linkColor}
                 isHovered={false}
                 target="_blank"
-                href={urlAuthKeys}>
-                {t('Common:LearnMore')}
+                href={urlAuthKeys}
+              >
+                {t("Common:LearnMore")}
               </Link>
             </Box>
           </Box>
@@ -147,12 +159,14 @@ class ThirdPartyServices extends React.Component {
             widthProp="100%"
             displayProp="flex"
             flexWrap="wrap"
-            marginProp="32px 176px 40px 0">
+            marginProp="32px 176px 40px 0"
+          >
             {consumers.map((consumer) => (
               <StyledConsumer
                 className="consumer-item-wrapper"
                 key={consumer.name}
-                marginProp="0 24px 24px 0">
+                marginProp="0 24px 24px 0"
+              >
                 <Separator />
                 <Box displayProp="flex" className="consumer-item-container">
                   <ConsumerItem
@@ -200,7 +214,12 @@ ThirdPartyServices.propTypes = {
 export default inject(({ setup, auth }) => {
   const { settingsStore, setDocumentTitle } = auth;
   const { urlAuthKeys, theme } = settingsStore;
-  const { getConsumers, integration, updateConsumerProps, setSelectedConsumer } = setup;
+  const {
+    getConsumers,
+    integration,
+    updateConsumerProps,
+    setSelectedConsumer,
+  } = setup;
   const { consumers } = integration;
 
   return {
@@ -212,4 +231,4 @@ export default inject(({ setup, auth }) => {
     setSelectedConsumer,
     setDocumentTitle,
   };
-})(withTranslation(['Settings', 'Common'])(observer(ThirdPartyServices)));
+})(withTranslation(["Settings", "Common"])(observer(ThirdPartyServices)));

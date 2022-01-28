@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
-import Base from '@appserver/components/themes/base';
+import Base from "@appserver/components/themes/base";
 
 const StyledSelectFolder = styled.div`
   .editor-select-folder_text {

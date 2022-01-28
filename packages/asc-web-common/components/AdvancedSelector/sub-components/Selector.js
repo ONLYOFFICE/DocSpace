@@ -1,25 +1,25 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
-import PropTypes from 'prop-types';
-import Column from './Column';
-import Footer from './Footer';
-import Header from './Header';
-import Body from './Body';
-import { FixedSizeList as List } from 'react-window';
-import InfiniteLoader from 'react-window-infinite-loader';
-import AutoSizer from 'react-virtualized-auto-sizer';
-import ReactTooltip from 'react-tooltip';
+import React, { useRef, useState, useEffect, useCallback } from "react";
+import PropTypes from "prop-types";
+import Column from "./Column";
+import Footer from "./Footer";
+import Header from "./Header";
+import Body from "./Body";
+import { FixedSizeList as List } from "react-window";
+import InfiniteLoader from "react-window-infinite-loader";
+import AutoSizer from "react-virtualized-auto-sizer";
+import ReactTooltip from "react-tooltip";
 
-import Checkbox from '@appserver/components/checkbox';
-import Link from '@appserver/components/link';
-import ComboBox from '@appserver/components/combobox';
-import SearchInput from '@appserver/components/search-input';
-import Loader from '@appserver/components/loader';
-import Text from '@appserver/components/text';
-import Tooltip from '@appserver/components/tooltip';
-import CustomScrollbarsVirtualList from '@appserver/components/scrollbar/custom-scrollbars-virtual-list';
-import HelpButton from '@appserver/components/help-button';
+import Checkbox from "@appserver/components/checkbox";
+import Link from "@appserver/components/link";
+import ComboBox from "@appserver/components/combobox";
+import SearchInput from "@appserver/components/search-input";
+import Loader from "@appserver/components/loader";
+import Text from "@appserver/components/text";
+import Tooltip from "@appserver/components/tooltip";
+import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-scrollbars-virtual-list";
+import HelpButton from "@appserver/components/help-button";
 
-import StyledSelector from './StyledSelector';
+import StyledSelector from "./StyledSelector";
 
 const convertGroups = (items) => {
   if (!items) return [];
@@ -86,21 +86,27 @@ const Selector = (props) => {
     resetCache();
   }, [searchValue, currentGroup, hasNextPage]);
 
-  const [selectedOptionList, setSelectedOptionList] = useState(selectedOptions || []);
+  const [selectedOptionList, setSelectedOptionList] = useState(
+    selectedOptions || []
+  );
 
-  const [selectedGroupList, setSelectedGroupList] = useState(selectedGroups || []);
-  const [searchValue, setSearchValue] = useState('');
+  const [selectedGroupList, setSelectedGroupList] = useState(
+    selectedGroups || []
+  );
+  const [searchValue, setSearchValue] = useState("");
 
   const [selectedAll, setSelectedAll] = useState(false);
 
-  const [currentGroup, setCurrentGroup] = useState(getCurrentGroup(convertGroups(groups)));
+  const [currentGroup, setCurrentGroup] = useState(
+    getCurrentGroup(convertGroups(groups))
+  );
 
   // Every row is loaded except for our loading indicator row.
   const isItemLoaded = useCallback(
     (index) => {
       return !hasNextPage || index < options.length;
     },
-    [hasNextPage, options],
+    [hasNextPage, options]
   );
 
   const onOptionChange = useCallback(
@@ -126,7 +132,7 @@ const Selector = (props) => {
             newSelectedGroups.push(
               Object.assign({}, selectedGroup, {
                 selected: newSelected,
-              }),
+              })
             );
           } else {
             index = groups.findIndex((sg) => sg.key === g);
@@ -135,7 +141,7 @@ const Selector = (props) => {
             newSelectedGroups.push(
               Object.assign({}, notSelectedGroup, {
                 selected: 1,
-              }),
+              })
             );
           }
         });
@@ -150,13 +156,13 @@ const Selector = (props) => {
               newSelectedGroups.push(
                 Object.assign({}, selectedGroup, {
                   selected: newSelected,
-                }),
+                })
               );
             } else {
               removedSelectedGroups.push(
                 Object.assign({}, selectedGroup, {
                   selected: newSelected,
-                }),
+                })
               );
             }
           }
@@ -167,7 +173,9 @@ const Selector = (props) => {
         const indexNew = newSelectedGroups.findIndex((sg) => sg.key === g.key);
 
         if (indexNew === -1) {
-          const indexRemoved = removedSelectedGroups.findIndex((sg) => sg.key === g.key);
+          const indexRemoved = removedSelectedGroups.findIndex(
+            (sg) => sg.key === g.key
+          );
 
           if (indexRemoved === -1) {
             newSelectedGroups.push(g);
@@ -177,7 +185,7 @@ const Selector = (props) => {
 
       setSelectedGroupList(newSelectedGroups);
     },
-    [options, selectedOptionList, groups, selectedGroupList],
+    [options, selectedOptionList, groups, selectedGroupList]
   );
 
   const onGroupChange = useCallback(
@@ -199,7 +207,7 @@ const Selector = (props) => {
         //TODO: Implement  setSelectedOptionList changes
       }
     },
-    [groups, selectedGroupList, currentGroup],
+    [groups, selectedGroupList, currentGroup]
   );
 
   const resetCache = useCallback(() => {
@@ -217,11 +225,11 @@ const Selector = (props) => {
       setCurrentGroup(group);
       onGroupChanged && onGroupChanged(group);
 
-      if (displayType === 'aside' && isMultiSelect) {
+      if (displayType === "aside" && isMultiSelect) {
         setSelectedAll(isGroupChecked(group));
       }
     },
-    [displayType, isMultiSelect, currentGroup],
+    [displayType, isMultiSelect, currentGroup]
   );
 
   const onSelectAllChange = useCallback(() => {
@@ -249,7 +257,7 @@ const Selector = (props) => {
   });
 
   const onSearchReset = useCallback(() => {
-    onSearchChanged && onSearchChange('');
+    onSearchChanged && onSearchChange("");
   });
 
   const onSelectOptions = (items) => {
@@ -262,7 +270,9 @@ const Selector = (props) => {
         selectedOptionList.findIndex((el) => el.key === option.key) > -1 ||
         (option.groups &&
           option.groups.filter((gKey) => {
-            const selectedGroup = selectedGroupList.find((sg) => sg.key === gKey);
+            const selectedGroup = selectedGroupList.find(
+              (sg) => sg.key === gKey
+            );
 
             if (!selectedGroup) return false;
 
@@ -271,7 +281,7 @@ const Selector = (props) => {
 
       return checked;
     },
-    [selectedOptionList, selectedGroupList],
+    [selectedOptionList, selectedGroupList]
   );
 
   const onLinkClick = useCallback(
@@ -285,7 +295,7 @@ const Selector = (props) => {
 
       onSelectOptions([option]);
     },
-    [options],
+    [options]
   );
 
   const onAddClick = useCallback(() => {
@@ -306,7 +316,7 @@ const Selector = (props) => {
             title={option.label}
             onChange={onOptionChange}
           />
-          {displayType === 'aside' && getOptionTooltipContent && (
+          {displayType === "aside" && getOptionTooltipContent && (
             <HelpButton
               id={`info-${option.key}`}
               className="option-info"
@@ -332,9 +342,10 @@ const Selector = (props) => {
           className="row-option"
           {...tooltipProps}
           onClick={onLinkClick}
-          noHover>
+          noHover
+        >
           {option.label}
-          {displayType === 'aside' && getOptionTooltipContent && (
+          {displayType === "aside" && getOptionTooltipContent && (
             <HelpButton
               id={`info-${option.key}`}
               className="option-info"
@@ -353,7 +364,13 @@ const Selector = (props) => {
         </Link>
       );
     },
-    [isMultiSelect, onOptionChange, onLinkClick, displayType, getOptionTooltipContent],
+    [
+      isMultiSelect,
+      onOptionChange,
+      onLinkClick,
+      displayType,
+      getOptionTooltipContent,
+    ]
   );
 
   const renderOptionLoader = useCallback(
@@ -365,8 +382,8 @@ const Selector = (props) => {
               type="oval"
               size="16px"
               style={{
-                display: 'inline',
-                marginRight: '10px',
+                display: "inline",
+                marginRight: "10px",
               }}
             />
             <Text as="span">{loadingLabel}</Text>
@@ -374,7 +391,7 @@ const Selector = (props) => {
         </div>
       );
     },
-    [loadingLabel],
+    [loadingLabel]
   );
 
   // Render an item or a loading indicator.
@@ -391,7 +408,8 @@ const Selector = (props) => {
       const isChecked = isOptionChecked(option);
       let tooltipProps = {};
 
-      if (displayType === 'dropdown') tooltipProps = { 'data-for': 'user', 'data-tip': index };
+      if (displayType === "dropdown")
+        tooltipProps = { "data-for": "user", "data-tip": index };
 
       ReactTooltip.rebuild();
 
@@ -409,7 +427,7 @@ const Selector = (props) => {
       onOptionChange,
       onLinkClick,
       getOptionTooltipContent,
-    ],
+    ]
   );
 
   const isGroupChecked = useCallback(
@@ -417,15 +435,19 @@ const Selector = (props) => {
       const selectedGroup = selectedGroupList.find((g) => g.key === group.key);
       return !!selectedGroup;
     },
-    [selectedGroupList],
+    [selectedGroupList]
   );
 
   const isGroupIndeterminate = useCallback(
     (group) => {
       const selectedGroup = selectedGroupList.find((g) => g.key === group.key);
-      return selectedGroup && selectedGroup.selected > 0 && group.total !== selectedGroup.selected;
+      return (
+        selectedGroup &&
+        selectedGroup.selected > 0 &&
+        group.total !== selectedGroup.selected
+      );
     },
-    [selectedGroupList],
+    [selectedGroupList]
   );
 
   const getGroupSelected = useCallback(
@@ -437,7 +459,7 @@ const Selector = (props) => {
         ? group.total
         : 0;
     },
-    [selectedGroupList],
+    [selectedGroupList]
   );
 
   const getGroupLabel = useCallback(
@@ -447,7 +469,7 @@ const Selector = (props) => {
         ? `${group.label} (${group.total}/${selected})`
         : group.label;
     },
-    [isMultiSelect, allowGroupSelection],
+    [isMultiSelect, allowGroupSelection]
   );
 
   const getSelectorGroups = useCallback(
@@ -459,7 +481,7 @@ const Selector = (props) => {
         };
       });
     },
-    [groups],
+    [groups]
   );
 
   const onLinkGroupClick = useCallback(
@@ -473,7 +495,7 @@ const Selector = (props) => {
 
       onGroupSelect(group);
     },
-    [groups, currentGroup],
+    [groups, currentGroup]
   );
 
   // eslint-disable-next-line react/prop-types
@@ -494,8 +516,9 @@ const Selector = (props) => {
           onClick={onLinkGroupClick}
           title={label}
           style={style}
-          className={`row-group${isSelected ? ' selected' : ''}`}
-          noHover>
+          className={`row-group${isSelected ? " selected" : ""}`}
+          noHover
+        >
           {isMultiSelect && allowGroupSelection && (
             <Checkbox
               id={group.key}
@@ -511,7 +534,13 @@ const Selector = (props) => {
         </Link>
       );
     },
-    [groups, currentGroup, isMultiSelect, selectedGroupList, allowGroupSelection],
+    [
+      groups,
+      currentGroup,
+      isMultiSelect,
+      selectedGroupList,
+      allowGroupSelection,
+    ]
   );
 
   const hasSelected = useCallback(() => {
@@ -539,7 +568,7 @@ const Selector = (props) => {
 
       loadNextPage && loadNextPage(options);
     },
-    [isNextPageLoading, searchValue, currentGroup, options],
+    [isNextPageLoading, searchValue, currentGroup, options]
   );
 
   return (
@@ -550,7 +579,8 @@ const Selector = (props) => {
       isMultiSelect={isMultiSelect}
       allowGroupSelection={allowGroupSelection}
       hasSelected={hasSelected()}
-      className="selector-wrapper">
+      className="selector-wrapper"
+    >
       <Column className="column-options" displayType={displayType} size={size}>
         <Header className="header-options">
           <SearchInput
@@ -564,7 +594,7 @@ const Selector = (props) => {
             onChange={onSearchChange}
             onClearSearch={onSearchReset}
           />
-          {displayType === 'aside' && groups && groups.length > 0 && (
+          {displayType === "aside" && groups && groups.length > 0 && (
             <>
               <ComboBox
                 className="options_group_selector"
@@ -577,16 +607,19 @@ const Selector = (props) => {
                 size="content"
                 onSelect={onGroupSelect}
               />
-              {isMultiSelect && allowGroupSelection && options && options.length > 0 && (
-                <Checkbox
-                  className="options_group_select_all"
-                  label={selectAllLabel}
-                  isChecked={selectedAll}
-                  isIndeterminate={false}
-                  truncate={true}
-                  onChange={onSelectAllChange}
-                />
-              )}
+              {isMultiSelect &&
+                allowGroupSelection &&
+                options &&
+                options.length > 0 && (
+                  <Checkbox
+                    className="options_group_select_all"
+                    label={selectAllLabel}
+                    isChecked={selectedAll}
+                    isIndeterminate={false}
+                    truncate={true}
+                    onChange={onSelectAllChange}
+                  />
+                )}
             </>
           )}
         </Header>
@@ -597,7 +630,8 @@ const Selector = (props) => {
                 ref={listOptionsRef}
                 isItemLoaded={isItemLoaded}
                 itemCount={itemCount}
-                loadMoreItems={loadMoreItems}>
+                loadMoreItems={loadMoreItems}
+              >
                 {({ onItemsRendered, ref }) => (
                   <List
                     className="options_list"
@@ -607,7 +641,8 @@ const Selector = (props) => {
                     onItemsRendered={onItemsRendered}
                     ref={ref}
                     width={width + 8}
-                    outerElementType={CustomScrollbarsVirtualList}>
+                    outerElementType={CustomScrollbarsVirtualList}
+                  >
                     {renderOption}
                   </List>
                 )}
@@ -617,20 +652,35 @@ const Selector = (props) => {
 
           {!hasNextPage && itemCount === 0 && (
             <div className="row-option">
-              <Text>{!searchValue ? emptyOptionsLabel : emptySearchOptionsLabel}</Text>
+              <Text>
+                {!searchValue ? emptyOptionsLabel : emptySearchOptionsLabel}
+              </Text>
             </div>
           )}
           {getOptionTooltipContent && (
-            <Tooltip id="user" offsetRight={90} getContent={getOptionTooltipContent} />
+            <Tooltip
+              id="user"
+              offsetRight={90}
+              getContent={getOptionTooltipContent}
+            />
           )}
         </Body>
       </Column>
-      {displayType === 'dropdown' && groups && groups.length > 0 && (
+      {displayType === "dropdown" && groups && groups.length > 0 && (
         <>
           <div className="splitter"></div>
-          <Column className="column-groups" displayType={displayType} size={size}>
+          <Column
+            className="column-groups"
+            displayType={displayType}
+            size={size}
+          >
             <Header className="header-groups">
-              <Text as="p" className="group_header" fontSize="15px" fontWeight={600}>
+              <Text
+                as="p"
+                className="group_header"
+                fontSize="15px"
+                fontWeight={600}
+              >
                 {groupsHeaderLabel}
               </Text>
             </Header>
@@ -645,7 +695,8 @@ const Selector = (props) => {
                     itemCount={groups.length}
                     itemData={groups}
                     outerElementType={CustomScrollbarsVirtualList}
-                    ref={listGroupsRef}>
+                    ref={listGroupsRef}
+                  >
                     {renderGroup}
                   </List>
                 )}
@@ -688,8 +739,8 @@ Selector.propTypes = {
   emptyOptionsLabel: PropTypes.string,
   loadingLabel: PropTypes.string,
 
-  size: PropTypes.oneOf(['compact', 'full']),
-  displayType: PropTypes.oneOf(['dropdown', 'aside']),
+  size: PropTypes.oneOf(["compact", "full"]),
+  displayType: PropTypes.oneOf(["dropdown", "aside"]),
 
   selectedOptions: PropTypes.array,
   selectedGroups: PropTypes.array,
@@ -703,7 +754,7 @@ Selector.propTypes = {
 };
 
 Selector.defaultProps = {
-  size: 'full',
+  size: "full",
 };
 
 export default Selector;

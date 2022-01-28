@@ -1,17 +1,17 @@
-import React from 'react';
-import { observer, inject } from 'mobx-react';
-import RootFolderContainer from './RootFolderContainer';
-import EmptyFilterContainer from './EmptyFilterContainer';
-import EmptyFolderContainer from './EmptyFolderContainer';
-import { FileAction } from '@appserver/common/constants';
-import { isMobile } from 'react-device-detect';
+import React from "react";
+import { observer, inject } from "mobx-react";
+import RootFolderContainer from "./RootFolderContainer";
+import EmptyFilterContainer from "./EmptyFilterContainer";
+import EmptyFolderContainer from "./EmptyFolderContainer";
+import { FileAction } from "@appserver/common/constants";
+import { isMobile } from "react-device-detect";
 
 const linkStyles = {
   isHovered: true,
-  type: 'action',
-  fontWeight: '600',
-  className: 'empty-folder_link',
-  display: 'flex',
+  type: "action",
+  fontWeight: "600",
+  className: "empty-folder_link",
+  display: "flex",
 };
 
 const EmptyContainer = ({
@@ -42,18 +42,26 @@ const EmptyContainer = ({
   );
 };
 
-export default inject(({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
-  const { authorType, search, withSubfolders, filterType } = filesStore.filter;
-  const isPrivacyFolder = treeFoldersStore.isPrivacyFolder;
-  const isFiltered =
-    (authorType || search || !withSubfolders || filterType) && !(isPrivacyFolder && isMobile);
+export default inject(
+  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
+    const {
+      authorType,
+      search,
+      withSubfolders,
+      filterType,
+    } = filesStore.filter;
+    const isPrivacyFolder = treeFoldersStore.isPrivacyFolder;
+    const isFiltered =
+      (authorType || search || !withSubfolders || filterType) &&
+      !(isPrivacyFolder && isMobile);
 
-  return {
-    isEncryptionSupport: auth.settingsStore.isEncryptionSupport,
-    theme: auth.settingsStore.theme,
-    isFiltered,
-    setAction: filesStore.fileActionStore.setAction,
-    isPrivacyFolder,
-    parentId: selectedFolderStore.parentId,
-  };
-})(observer(EmptyContainer));
+    return {
+      isEncryptionSupport: auth.settingsStore.isEncryptionSupport,
+      theme: auth.settingsStore.theme,
+      isFiltered,
+      setAction: filesStore.fileActionStore.setAction,
+      isPrivacyFolder,
+      parentId: selectedFolderStore.parentId,
+    };
+  }
+)(observer(EmptyContainer));

@@ -1,9 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import Scrollbar from '@appserver/components/scrollbar';
-import { isMobileOnly, isDesktop } from 'react-device-detect';
-import { Base } from '@appserver/components/themes';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import Scrollbar from "@appserver/components/scrollbar";
+import { isMobileOnly, isDesktop } from "react-device-detect";
+import { Base } from "@appserver/components/themes";
 
 const StyledNav = styled.nav`
   background-color: ${(props) => props.theme.nav.backgroundColor};
@@ -14,7 +14,7 @@ const StyledNav = styled.nav`
   position: fixed;
   top: 0;
   transition: width 0.3s ease-in-out;
-  width: ${(props) => (props.opened ? '240px' : '0')};
+  width: ${(props) => (props.opened ? "240px" : "0")};
   z-index: 200;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
@@ -22,14 +22,14 @@ const StyledNav = styled.nav`
     position: absolute;
 
     @media (orientation: landscape) {
-      position: ${isMobileOnly && 'relative'};
+      position: ${isMobileOnly && "relative"};
       margin-top: 16px;
     }
 
     ${(props) =>
       props.numberOfModules &&
       `@media (max-height: ${props.numberOfModules * 52 + 80}px) {
-      position: ${isDesktop && 'relative'};
+      position: ${isDesktop && "relative"};
       margin-top: 16px;
     }`}
 
@@ -51,25 +51,35 @@ const StyledScrollbar = styled(Scrollbar)`
 
 const Nav = React.memo((props) => {
   //console.log("Nav render");
-  const { opened, onMouseEnter, onMouseLeave, children, numberOfModules } = props;
+  const {
+    opened,
+    onMouseEnter,
+    onMouseLeave,
+    children,
+    numberOfModules,
+  } = props;
   return (
     <StyledNav
       opened={opened}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      numberOfModules={numberOfModules}>
+      numberOfModules={numberOfModules}
+    >
       <StyledScrollbar stype="smallWhite">{children}</StyledScrollbar>
     </StyledNav>
   );
 });
 
-Nav.displayName = 'Nav';
+Nav.displayName = "Nav";
 
 Nav.propTypes = {
   opened: PropTypes.bool,
   onMouseEnter: PropTypes.func,
   onMouseLeave: PropTypes.func,
-  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]),
 };
 
 export default Nav;

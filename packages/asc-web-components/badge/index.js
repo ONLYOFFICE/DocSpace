@@ -22,7 +22,6 @@ const Badge = (props) => {
     padding,
     maxWidth,
     lineHeight,
-    theme,
     isHovered,
     label,
   } = props;

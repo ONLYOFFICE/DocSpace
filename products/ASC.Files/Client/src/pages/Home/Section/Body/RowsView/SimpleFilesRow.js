@@ -1,17 +1,17 @@
-import React from 'react';
-import styled, { css } from 'styled-components';
-import { withTranslation } from 'react-i18next';
-import DragAndDrop from '@appserver/components/drag-and-drop';
-import Row from '@appserver/components/row';
-import FilesRowContent from './FilesRowContent';
-import { withRouter } from 'react-router-dom';
-import { isTablet } from 'react-device-detect';
+import React from "react";
+import styled, { css } from "styled-components";
+import { withTranslation } from "react-i18next";
+import DragAndDrop from "@appserver/components/drag-and-drop";
+import Row from "@appserver/components/row";
+import FilesRowContent from "./FilesRowContent";
+import { withRouter } from "react-router-dom";
+import { isTablet } from "react-device-detect";
 
-import withFileActions from '../../../../../HOCs/withFileActions';
-import withContextOptions from '../../../../../HOCs/withContextOptions';
-import withQuickButtons from '../../../../../HOCs/withQuickButtons';
-import ItemIcon from '../../../../../components/ItemIcon';
-import { Base } from '@appserver/components/themes';
+import withFileActions from "../../../../../HOCs/withFileActions";
+import withContextOptions from "../../../../../HOCs/withContextOptions";
+import withQuickButtons from "../../../../../HOCs/withQuickButtons";
+import ItemIcon from "../../../../../components/ItemIcon";
+import { Base } from "@appserver/components/themes";
 
 const checkedStyle = css`
   background: ${(props) => props.theme.filesSection.rowView.checkedBackground};
@@ -31,7 +31,8 @@ const checkedStyle = css`
 const draggingStyle = css`
   background: ${(props) => props.theme.filesSection.rowView.draggingBackground};
   &:hover {
-    background: ${(props) => props.theme.filesSection.rowView.draggingHoverBackground};
+    background: ${(props) =>
+      props.theme.filesSection.rowView.draggingHoverBackground};
   }
   margin-left: -24px;
   margin-right: -24px;
@@ -61,7 +62,7 @@ const StyledSimpleFilesRow = styled(Row)`
   cursor: ${(props) =>
     !props.isThirdPartyFolder &&
     (props.checked || props.isActive) &&
-    'url(images/cursor.palm.svg), auto'};
+    "url(images/cursor.palm.svg), auto"};
   margin-top: -2px;
 
   ${(props) =>
@@ -106,7 +107,7 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .lock-file {
-    cursor: ${(props) => (props.withAccess ? 'pointer' : 'default')};
+    cursor: ${(props) => (props.withAccess ? "pointer" : "default")};
     svg {
       height: 12px;
     }
@@ -184,7 +185,9 @@ const SimpleFilesRow = (props) => {
 
   const withAccess = isAdmin || item.access === 0;
 
-  const element = <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />;
+  const element = (
+    <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
+  );
 
   return (
     <StyledWrapper>
@@ -194,7 +197,8 @@ const SimpleFilesRow = (props) => {
         className={`files-item ${className}`}
         onDrop={onDrop}
         onMouseDown={onMouseDown}
-        dragging={dragging && isDragging}>
+        dragging={dragging && isDragging}
+      >
         <StyledSimpleFilesRow
           key={item.id}
           data={item}
@@ -213,14 +217,21 @@ const SimpleFilesRow = (props) => {
           dragging={dragging && isDragging}
           isActive={isActive}
           isThirdPartyFolder={item.isThirdPartyFolder}
-          withAccess={withAccess}>
-          <FilesRowContent item={item} sectionWidth={sectionWidth} onFilesClick={onFilesClick} />
+          withAccess={withAccess}
+        >
+          <FilesRowContent
+            item={item}
+            sectionWidth={sectionWidth}
+            onFilesClick={onFilesClick}
+          />
         </StyledSimpleFilesRow>
       </DragAndDrop>
     </StyledWrapper>
   );
 };
 
-export default withTranslation(['Home', 'Translations'])(
-  withFileActions(withRouter(withContextOptions(withQuickButtons(SimpleFilesRow)))),
+export default withTranslation(["Home", "Translations"])(
+  withFileActions(
+    withRouter(withContextOptions(withQuickButtons(SimpleFilesRow)))
+  )
 );

@@ -1,16 +1,16 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import Selector from './sub-components/Selector';
-import utils from '@appserver/components/utils';
-import Backdrop from '@appserver/components/backdrop';
-import DropDown from '@appserver/components/drop-down';
-import Aside from '@appserver/components/aside';
+import React from "react";
+import PropTypes from "prop-types";
+import Selector from "./sub-components/Selector";
+import utils from "@appserver/components/utils";
+import Backdrop from "@appserver/components/backdrop";
+import DropDown from "@appserver/components/drop-down";
+import Aside from "@appserver/components/aside";
 
-import throttle from 'lodash/throttle';
+import throttle from "lodash/throttle";
 const { desktop } = utils.device;
 
-const displayTypes = ['dropdown', 'aside', 'auto'];
-const sizes = ['compact', 'full'];
+const displayTypes = ["dropdown", "aside", "auto"];
+const sizes = ["compact", "full"];
 
 class AdvancedSelector extends React.Component {
   constructor(props) {
@@ -27,12 +27,12 @@ class AdvancedSelector extends React.Component {
 
   componentDidMount() {
     if (this.props.isOpen) {
-      window.addEventListener('resize', this.throttledResize);
+      window.addEventListener("resize", this.throttledResize);
     }
   }
 
   resize = () => {
-    if (this.props.displayType !== 'auto') return;
+    if (this.props.displayType !== "auto") return;
 
     const type = this.getTypeByWidth();
 
@@ -52,10 +52,10 @@ class AdvancedSelector extends React.Component {
       //console.log(`ADSelector componentDidUpdate isOpen=${this.props.isOpen}`);
       if (this.props.isOpen) {
         this.resize();
-        window.addEventListener('resize', this.throttledResize);
+        window.addEventListener("resize", this.throttledResize);
       } else {
         this.throttledResize.cancel();
-        window.removeEventListener('resize', this.throttledResize);
+        window.removeEventListener("resize", this.throttledResize);
       }
     }
 
@@ -68,17 +68,17 @@ class AdvancedSelector extends React.Component {
   componentWillUnmount() {
     if (this.throttledResize) {
       this.throttledResize && this.throttledResize.cancel();
-      window.removeEventListener('resize', this.throttledResize);
+      window.removeEventListener("resize", this.throttledResize);
     }
   }
 
   getTypeByWidth = () => {
     const displayType =
-      this.props.displayType !== 'auto'
+      this.props.displayType !== "auto"
         ? this.props.displayType
         : window.innerWidth < desktop.match(/\d+/)[0]
-        ? 'aside'
-        : 'dropdown';
+        ? "aside"
+        : "dropdown";
 
     //console.log("AdvancedSelector2 displayType", displayType);
 
@@ -93,15 +93,24 @@ class AdvancedSelector extends React.Component {
 
     return (
       <div ref={this.ref} id={id} className={className} style={style}>
-        {displayType === 'dropdown' ? (
-          <DropDown open={isOpen} className="dropdown-container" clickOutsideAction={this.onClose}>
+        {displayType === "dropdown" ? (
+          <DropDown
+            open={isOpen}
+            className="dropdown-container"
+            clickOutsideAction={this.onClose}
+          >
             <Selector {...this.props} displayType={displayType} />
           </DropDown>
         ) : withoutAside ? (
           <Selector {...this.props} displayType={displayType} />
         ) : (
           <>
-            <Backdrop onClick={this.onClose} visible={isOpen} zIndex={310} isAside={true} />
+            <Backdrop
+              onClick={this.onClose}
+              visible={isOpen}
+              zIndex={310}
+              isAside={true}
+            />
             <Aside visible={isOpen} scale={false} className="aside-container">
               <Selector {...this.props} displayType={displayType} />
             </Aside>
@@ -152,12 +161,12 @@ AdvancedSelector.propTypes = {
 
 AdvancedSelector.defaultProps = {
   isMultiSelect: false,
-  size: 'full',
-  buttonLabel: 'Add members',
-  selectAllLabel: 'Select all',
+  size: "full",
+  buttonLabel: "Add members",
+  selectAllLabel: "Select all",
   allowGroupSelection: false,
   allowAnyClickClose: true,
-  displayType: 'auto',
+  displayType: "auto",
   options: [],
 };
 

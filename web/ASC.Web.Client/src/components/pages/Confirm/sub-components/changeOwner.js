@@ -1,15 +1,15 @@
-import React from 'react';
-import { withRouter } from 'react-router';
-import { withTranslation } from 'react-i18next';
-import styled from 'styled-components';
-import Button from '@appserver/components/button';
-import Text from '@appserver/components/text';
-import toastr from '@appserver/components/toast/toastr';
-import PageLayout from '@appserver/common/components/PageLayout';
-import { tryRedirectTo } from '@appserver/common/utils';
-import { inject, observer } from 'mobx-react';
-import withLoader from '../withLoader';
-import { Base } from '@appserver/components/themes';
+import React from "react";
+import { withRouter } from "react-router";
+import { withTranslation } from "react-i18next";
+import styled from "styled-components";
+import Button from "@appserver/components/button";
+import Text from "@appserver/components/text";
+import toastr from "@appserver/components/toast/toastr";
+import PageLayout from "@appserver/common/components/PageLayout";
+import { tryRedirectTo } from "@appserver/common/utils";
+import { inject, observer } from "mobx-react";
+import withLoader from "../withLoader";
+import { Base } from "@appserver/components/themes";
 
 const BodyStyle = styled.div`
   margin-top: 70px;
@@ -60,7 +60,7 @@ class Form extends React.PureComponent {
 
   onAcceptClick = () => {
     this.setState({ showButtons: false });
-    toastr.success(t('ConfirmOwnerPortalSuccessMessage'));
+    toastr.success(t("ConfirmOwnerPortalSuccessMessage"));
     setTimeout(this.onRedirect, 10000);
   };
 
@@ -79,10 +79,14 @@ class Form extends React.PureComponent {
       <BodyStyle>
         <div className="owner-container">
           <div className="owner-wrapper">
-            <img className="owner-img" src="images/dark_general.png" alt="Logo" />
+            <img
+              className="owner-img"
+              src="images/dark_general.png"
+              alt="Logo"
+            />
             <Text className="owner-title">{greetingTitle}</Text>
             <Text className="owner-confirm_text" fontSize="18px">
-              {t('ConfirmOwnerPortalTitle', { newOwner: 'NEW OWNER' })}
+              {t("ConfirmOwnerPortalTitle", { newOwner: "NEW OWNER" })}
             </Text>
             {this.state.showButtons ? (
               <>
@@ -90,7 +94,7 @@ class Form extends React.PureComponent {
                   className="owner-button owner-buttons"
                   primary
                   size="big"
-                  label={t('Common:SaveButton')}
+                  label={t("Common:SaveButton")}
                   tabIndex={2}
                   isDisabled={false}
                   onClick={this.onAcceptClick}
@@ -98,7 +102,7 @@ class Form extends React.PureComponent {
                 <Button
                   className="owner-buttons"
                   size="big"
-                  label={t('Common:CancelButton')}
+                  label={t("Common:CancelButton")}
                   tabIndex={2}
                   isDisabled={false}
                   onClick={this.onCancelClick}
@@ -106,7 +110,7 @@ class Form extends React.PureComponent {
               </>
             ) : (
               <Text className="owner-confirm-message" fontSize="12px">
-                {t('ConfirmOwnerPortalSuccessMessage')}
+                {t("ConfirmOwnerPortalSuccessMessage")}
               </Text>
             )}
           </div>
@@ -131,4 +135,10 @@ const ChangeOwnerForm = (props) => (
 export default inject(({ auth }) => ({
   greetingTitle: auth.settingsStore.greetingSettings,
   defaultPage: auth.settingsStore.defaultPage,
-}))(withRouter(withTranslation(['Confirm', 'Common'])(withLoader(observer(ChangeOwnerForm)))));
+}))(
+  withRouter(
+    withTranslation(["Confirm", "Common"])(
+      withLoader(observer(ChangeOwnerForm))
+    )
+  )
+);

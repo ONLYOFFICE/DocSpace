@@ -1,26 +1,26 @@
-import React from 'react';
-import { withRouter } from 'react-router';
-import styled from 'styled-components';
-import { withTranslation } from 'react-i18next';
-import TreeMenu from '@appserver/components/tree-menu';
-import TreeNode from '@appserver/components/tree-menu/sub-components/tree-node';
-import ExpanderDownIcon from '../../../../../../../../../public/images/expander-down.react.svg';
-import Link from '@appserver/components/link';
-import Text from '@appserver/components/text';
-import { isArrayEqual } from '@appserver/components/utils/array';
-import ExpanderRightIcon from '../../../../../../../../../public/images/expander-right.react.svg';
+import React from "react";
+import { withRouter } from "react-router";
+import styled from "styled-components";
+import { withTranslation } from "react-i18next";
+import TreeMenu from "@appserver/components/tree-menu";
+import TreeNode from "@appserver/components/tree-menu/sub-components/tree-node";
+import ExpanderDownIcon from "../../../../../../../../../public/images/expander-down.react.svg";
+import Link from "@appserver/components/link";
+import Text from "@appserver/components/text";
+import { isArrayEqual } from "@appserver/components/utils/array";
+import ExpanderRightIcon from "../../../../../../../../../public/images/expander-right.react.svg";
 import {
   //getKeyByLink,
   settingsTree,
   getSelectedLinkByKey,
   //selectKeyOfTreeElement,
   getCurrentSettingsCategory,
-} from '../../../utils';
-import { ReactSVG } from 'react-svg';
-import commonIconsStyles from '@appserver/components/utils/common-icons-style';
-import { clickBackdrop } from '@appserver/common/utils';
-import { tablet } from '@appserver/components/utils/device';
-import { Base } from '@appserver/components/themes';
+} from "../../../utils";
+import { ReactSVG } from "react-svg";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import { clickBackdrop } from "@appserver/common/utils";
+import { tablet } from "@appserver/components/utils/device";
+import { Base } from "@appserver/components/themes";
 
 const StyledTreeMenu = styled(TreeMenu)`
   .inherit-title-link {
@@ -84,44 +84,49 @@ StyledExpanderRightIcon.defaultProps = { theme: Base };
 const getTreeItems = (data, path, t) => {
   const maptKeys = (tKey) => {
     switch (tKey) {
-      case 'AccessRights':
-        return t('AccessRights');
-      case 'ManagementCategoryCommon':
-        return t('ManagementCategoryCommon');
-      case 'Customization':
-        return t('Customization');
-      case 'StudioTimeLanguageSettings':
-        return t('StudioTimeLanguageSettings');
-      case 'CustomTitles':
-        return t('CustomTitles');
-      case 'TeamTemplate':
-        return t('TeamTemplate');
-      case 'ManagementCategorySecurity':
-        return t('ManagementCategorySecurity');
-      case 'PortalAccess':
-        return t('PortalAccess');
-      case 'TwoFactorAuth':
-        return t('TwoFactorAuth');
-      case 'ManagementCategoryIntegration':
-        return t('ManagementCategoryIntegration');
-      case 'ThirdPartyAuthorization':
-        return t('ThirdPartyAuthorization');
-      case 'Migration':
-        return t('Migration');
-      case 'Backup':
-        return t('Backup');
+      case "AccessRights":
+        return t("AccessRights");
+      case "ManagementCategoryCommon":
+        return t("ManagementCategoryCommon");
+      case "Customization":
+        return t("Customization");
+      case "StudioTimeLanguageSettings":
+        return t("StudioTimeLanguageSettings");
+      case "CustomTitles":
+        return t("CustomTitles");
+      case "TeamTemplate":
+        return t("TeamTemplate");
+      case "ManagementCategorySecurity":
+        return t("ManagementCategorySecurity");
+      case "PortalAccess":
+        return t("PortalAccess");
+      case "TwoFactorAuth":
+        return t("TwoFactorAuth");
+      case "ManagementCategoryIntegration":
+        return t("ManagementCategoryIntegration");
+      case "ThirdPartyAuthorization":
+        return t("ThirdPartyAuthorization");
+      case "Migration":
+        return t("Migration");
+      case "Backup":
+        return t("Backup");
       default:
-        throw new Error('Unexpected translation key');
+        throw new Error("Unexpected translation key");
     }
   };
   return data.map((item) => {
     if (item.children && item.children.length && !item.isCategory) {
       return (
         <TreeNode
-          title={<Text className="inherit-title-link header">{maptKeys(item.tKey)}</Text>}
+          title={
+            <Text className="inherit-title-link header">
+              {maptKeys(item.tKey)}
+            </Text>
+          }
           key={item.key}
           icon={item.icon && <ReactSVG className="tree_icon" src={item.icon} />}
-          disableSwitch={true}>
+          disableSwitch={true}
+        >
           {getTreeItems(item.children, path, t)}
         </TreeNode>
       );
@@ -151,18 +156,25 @@ class ArticleBodyContent extends React.Component {
 
     const fullSettingsUrlLength = fullSettingsUrl.length;
     const resultPath = locationPathname.slice(fullSettingsUrlLength + 1);
-    const arrayOfParams = resultPath.split('/');
+    const arrayOfParams = resultPath.split("/");
 
-    let link = '';
+    let link = "";
     const selectedItem = arrayOfParams[arrayOfParams.length - 1];
-    if (selectedItem === 'owner' || selectedItem === 'admins' || selectedItem === 'modules') {
+    if (
+      selectedItem === "owner" ||
+      selectedItem === "admins" ||
+      selectedItem === "modules"
+    ) {
       link = `/${resultPath}`;
-    } else if (selectedItem === 'accessrights') {
+    } else if (selectedItem === "accessrights") {
       link = `/${resultPath}/owner`;
     }
-    const CurrentSettingsCategoryKey = getCurrentSettingsCategory(arrayOfParams, settingsTree);
+    const CurrentSettingsCategoryKey = getCurrentSettingsCategory(
+      arrayOfParams,
+      settingsTree
+    );
 
-    if (link === '') {
+    if (link === "") {
       link = getSelectedLinkByKey(CurrentSettingsCategoryKey, settingsTree);
     }
 
@@ -218,11 +230,12 @@ class ArticleBodyContent extends React.Component {
         switcherIcon={this.switcherIcon}
         onSelect={this.onSelect}
         selectedKeys={selectedKeys}
-        disableSwitch={true}>
+        disableSwitch={true}
+      >
         {getTreeItems(settingsTree, match.path, t)}
       </StyledTreeMenu>
     );
   }
 }
 
-export default withRouter(withTranslation('Settings')(ArticleBodyContent));
+export default withRouter(withTranslation("Settings")(ArticleBodyContent));

@@ -1,9 +1,9 @@
-import React from 'react';
-import styled from 'styled-components';
-import equal from 'fast-deep-equal/react';
-import ComboBox from '@appserver/components/combobox';
-import TextInput from '@appserver/components/text-input';
-import IconButton from '@appserver/components/icon-button';
+import React from "react";
+import styled from "styled-components";
+import equal from "fast-deep-equal/react";
+import ComboBox from "@appserver/components/combobox";
+import TextInput from "@appserver/components/text-input";
+import IconButton from "@appserver/components/icon-button";
 
 const Container = styled.div`
   display: flex;
@@ -59,7 +59,7 @@ class ContactField extends React.Component {
           className="remove_icon"
           size="16"
           onClick={removeButtonOnChange}
-          iconName={'/static/images/catalog.trash.react.svg'}
+          iconName={"/static/images/catalog.trash.react.svg"}
           isFill={true}
           isClickable={true}
         />

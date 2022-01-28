@@ -1,17 +1,17 @@
-import React from 'react';
-import { StyledAsidePanel, StyledSelectFilePanel } from '../StyledPanels';
-import ModalDialog from '@appserver/components/modal-dialog';
-import SelectFolderDialog from '../SelectFolderDialog';
-import FolderTreeBody from '../../FolderTreeBody';
-import FilesListBody from './FilesListBody';
-import Button from '@appserver/components/button';
-import Text from '@appserver/components/text';
-import { isArrayEqual } from '@appserver/components/utils/array';
-import { getFoldersTree } from '@appserver/common/api/files';
+import React from "react";
+import { StyledAsidePanel, StyledSelectFilePanel } from "../StyledPanels";
+import ModalDialog from "@appserver/components/modal-dialog";
+import SelectFolderDialog from "../SelectFolderDialog";
+import FolderTreeBody from "../../FolderTreeBody";
+import FilesListBody from "./FilesListBody";
+import Button from "@appserver/components/button";
+import Text from "@appserver/components/text";
+import { isArrayEqual } from "@appserver/components/utils/array";
+import { getFoldersTree } from "@appserver/common/api/files";
 import {
   exceptSortedByTagsFolders,
   exceptPrivacyTrashFolders,
-} from '../SelectFolderDialog/ExceptionFoldersConstants';
+} from "../SelectFolderDialog/ExceptionFoldersConstants";
 
 class SelectFileDialogModalView extends React.Component {
   constructor(props) {
@@ -20,7 +20,7 @@ class SelectFileDialogModalView extends React.Component {
       isLoading: true,
       isAvailable: true,
     };
-    this.folderList = '';
+    this.folderList = "";
     this.noTreeSwitcher = false;
   }
 
@@ -33,14 +33,22 @@ class SelectFileDialogModalView extends React.Component {
     });
   }
   trySwitch = async () => {
-    const { foldersType, onSelectFolder, selectedFolder, passedId } = this.props;
+    const {
+      foldersType,
+      onSelectFolder,
+      selectedFolder,
+      passedId,
+    } = this.props;
     switch (foldersType) {
-      case 'exceptSortedByTags':
+      case "exceptSortedByTags":
         try {
           const foldersTree = await getFoldersTree();
-          [this.folderList, this.noTreeSwitcher] = SelectFolderDialog.convertFolders(
+          [
+            this.folderList,
+            this.noTreeSwitcher,
+          ] = SelectFolderDialog.convertFolders(
             foldersTree,
-            exceptSortedByTagsFolders,
+            exceptSortedByTagsFolders
           );
           this.onSetSelectedFolder();
         } catch (err) {
@@ -49,12 +57,15 @@ class SelectFileDialogModalView extends React.Component {
 
         this.loadersCompletes();
         break;
-      case 'exceptPrivacyTrashFolders':
+      case "exceptPrivacyTrashFolders":
         try {
           const foldersTree = await getFoldersTree();
-          [this.folderList, this.noTreeSwitcher] = SelectFolderDialog.convertFolders(
+          [
+            this.folderList,
+            this.noTreeSwitcher,
+          ] = SelectFolderDialog.convertFolders(
             foldersTree,
-            exceptPrivacyTrashFolders,
+            exceptPrivacyTrashFolders
           );
           this.onSetSelectedFolder();
         } catch (err) {
@@ -62,14 +73,20 @@ class SelectFileDialogModalView extends React.Component {
         }
         this.loadersCompletes();
         break;
-      case 'common':
+      case "common":
         try {
           this.folderList = await SelectFolderDialog.getCommonFolders();
 
           !selectedFolder &&
             onSelectFolder &&
             onSelectFolder(
-              `${selectedFolder ? selectedFolder : passedId ? passedId : this.folderList[0].id}`,
+              `${
+                selectedFolder
+                  ? selectedFolder
+                  : passedId
+                  ? passedId
+                  : this.folderList[0].id
+              }`
             );
         } catch (err) {
           console.error(err);
@@ -77,7 +94,7 @@ class SelectFileDialogModalView extends React.Component {
 
         this.loadersCompletes();
         break;
-      case 'third-party':
+      case "third-party":
         try {
           this.folderList = await SelectFolderDialog.getCommonThirdPartyList();
           this.folderList.length !== 0
@@ -106,7 +123,13 @@ class SelectFileDialogModalView extends React.Component {
 
     onSelectFolder &&
       onSelectFolder(
-        `${selectedFolder ? selectedFolder : passedId ? passedId : this.folderList[0].id}`,
+        `${
+          selectedFolder
+            ? selectedFolder
+            : passedId
+            ? passedId
+            : this.folderList[0].id
+        }`
       );
   };
   onSelect = (folder) => {
@@ -154,20 +177,25 @@ class SelectFileDialogModalView extends React.Component {
           zIndex={zIndex}
           onClose={onClose}
           className="select-file-modal-dialog"
-          style={{ maxWidth: '725px' }}
+          style={{ maxWidth: "725px" }}
           displayType="modal"
           modalBodyPadding="0px"
           isLoading={isLoading}
-          modalLoaderBodyHeight="277px">
+          modalLoaderBodyHeight="277px"
+        >
           <ModalDialog.Header theme={theme}>
-            {headerName ? headerName : t('SelectFile')}
+            {headerName ? headerName : t("SelectFile")}
           </ModalDialog.Header>
-          <ModalDialog.Body theme={theme} className="select-file_body-modal-dialog">
+          <ModalDialog.Body
+            theme={theme}
+            className="select-file_body-modal-dialog"
+          >
             <StyledSelectFilePanel
               isHeaderChildren={isHeaderChildren}
               theme={theme}
               displayType="modal"
-              noTreeSwitcher={this.noTreeSwitcher}>
+              noTreeSwitcher={this.noTreeSwitcher}
+            >
               <div className="modal-dialog_body">
                 <div className="modal-dialog_tree-body">
                   <FolderTreeBody
@@ -204,7 +232,7 @@ class SelectFileDialogModalView extends React.Component {
                         selectedFile={selectedFile}
                         listHeight={isHeaderChildren ? 260 : 303}
                         onSetLoadingData={this.onSetLoadingData}
-                        displayType={'modal'}
+                        displayType={"modal"}
                       />
                     )}
                   </>
@@ -213,7 +241,10 @@ class SelectFileDialogModalView extends React.Component {
             </StyledSelectFilePanel>
           </ModalDialog.Body>
           <ModalDialog.Footer theme={theme}>
-            <StyledSelectFilePanel theme={theme} isHeaderChildren={isHeaderChildren}>
+            <StyledSelectFilePanel
+              theme={theme}
+              isHeaderChildren={isHeaderChildren}
+            >
               <div className="select-file-dialog-modal_buttons">
                 <Button
                   theme={theme}
@@ -228,7 +259,7 @@ class SelectFileDialogModalView extends React.Component {
                   theme={theme}
                   className="modal-dialog-button"
                   size="medium"
-                  label={t('Common:CancelButton')}
+                  label={t("Common:CancelButton")}
                   onClick={onClose}
                 />
               </div>

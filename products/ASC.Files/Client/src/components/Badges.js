@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import Badge from '@appserver/components/badge';
-import IconButton from '@appserver/components/icon-button';
-import commonIconsStyles from '@appserver/components/utils/common-icons-style';
-import { isTablet } from 'react-device-detect';
-import { Base } from '@appserver/components/themes';
+import React, { useState } from "react";
+import styled from "styled-components";
+import Badge from "@appserver/components/badge";
+import IconButton from "@appserver/components/icon-button";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import { isTablet } from "react-device-detect";
+import { Base } from "@appserver/components/themes";
 
 export const StyledIcon = styled(IconButton)`
   ${commonIconsStyles}
@@ -38,7 +38,11 @@ const BadgeWrapper = ({ onClick, isTile, children: badge }) => {
   const newBadge = React.cloneElement(badge, { isHovered: isHovered });
 
   return (
-    <StyledWrapper onClick={onClick} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+    <StyledWrapper
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
       {newBadge}
     </StyledWrapper>
   );
@@ -70,40 +74,41 @@ const Badges = ({
   const isEditingWithFav = fileStatus === 33;
   const showEditBadge = !locked || item.access === 0;
   const isPrivacy = isPrivacyFolder && isDesktopClient;
-  const isForm = fileExst === '.oform';
-  const isTile = viewAs === 'tile';
+  const isForm = fileExst === ".oform";
+  const isTile = viewAs === "tile";
 
   const iconEdit = isForm
-    ? '/static/images/access.edit.form.react.svg'
-    : '/static/images/file.actions.convert.edit.doc.react.svg';
+    ? "/static/images/access.edit.form.react.svg"
+    : "/static/images/file.actions.convert.edit.doc.react.svg";
 
-  const iconForm = '/static/images/access.edit.form.react.svg';
+  const iconForm = "/static/images/access.edit.form.react.svg";
 
-  const iconRefresh = '/static/images/refresh.react.svg';
+  const iconRefresh = "/static/images/refresh.react.svg";
 
-  const countVersions = versionGroup > 999 ? '999+' : versionGroup;
+  const countVersions = versionGroup > 999 ? "999+" : versionGroup;
 
-  const contentNewItems = newItems > 999 ? '999+' : newItems;
+  const contentNewItems = newItems > 999 ? "999+" : newItems;
 
-  const tabletViewBadge = !isTile && ((sectionWidth > 500 && sectionWidth <= 1024) || isTablet);
+  const tabletViewBadge =
+    !isTile && ((sectionWidth > 500 && sectionWidth <= 1024) || isTablet);
 
-  const sizeBadge = isTile || tabletViewBadge ? 'medium' : 'small';
+  const sizeBadge = isTile || tabletViewBadge ? "medium" : "small";
 
-  const lineHeightBadge = isTile || tabletViewBadge ? '1.46' : '1.34';
+  const lineHeightBadge = isTile || tabletViewBadge ? "1.46" : "1.34";
 
-  const paddingBadge = isTile || tabletViewBadge ? '0 5px' : '0 3px';
+  const paddingBadge = isTile || tabletViewBadge ? "0 5px" : "0 3px";
 
-  const fontSizeBadge = isTile || tabletViewBadge ? '11px' : '9px';
+  const fontSizeBadge = isTile || tabletViewBadge ? "11px" : "9px";
 
   const commonBadgeProps = {
-    borderRadius: '11px',
+    borderRadius: "11px",
     color: theme.filesBadges.color,
     fontSize: fontSizeBadge,
     fontWeight: 800,
-    maxWidth: '50px',
+    maxWidth: "50px",
     padding: paddingBadge,
     lineHeight: lineHeightBadge,
-    'data-id': id,
+    "data-id": id,
   };
 
   return fileExst ? (
@@ -123,7 +128,7 @@ const Badges = ({
             size={sizeBadge}
             onClick={onFilesClick}
             hoverColor={theme.filesBadges.hoverIconColor}
-            title={t('Common:FillFormButton')}
+            title={t("Common:FillFormButton")}
           />
         )}
       {(isEditing || isEditingWithFav) && (
@@ -133,7 +138,7 @@ const Badges = ({
           size={sizeBadge}
           onClick={onFilesClick}
           hoverColor={theme.filesBadges.hoverIconColor}
-          title={t('Common:EditButton')}
+          title={t("Common:EditButton")}
         />
       )}
       {canConvert && !isTrashFolder && (
@@ -151,7 +156,7 @@ const Badges = ({
             {...commonBadgeProps}
             className="badge-version badge-version-current tablet-badge icons-group"
             backgroundColor={theme.filesBadges.backgroundColor}
-            label={t('VersionBadge:Version', { version: countVersions })}
+            label={t("VersionBadge:Version", { version: countVersions })}
             onClick={onShowVersionHistory}
           />
         </BadgeWrapper>
@@ -162,7 +167,7 @@ const Badges = ({
             {...commonBadgeProps}
             className="badge-version badge-new-version tablet-badge icons-group"
             backgroundColor={theme.filesBadges.badgeBackgroundColor}
-            label={t('New')}
+            label={t("New")}
             onClick={onBadgeClick}
           />
         </BadgeWrapper>

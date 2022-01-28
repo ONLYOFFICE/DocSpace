@@ -1,17 +1,17 @@
-import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { withRouter } from 'react-router';
-import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
-import Text from '@appserver/components/text';
-import toastr from 'studio/toastr';
-import PageLayout from '@appserver/common/components/PageLayout';
-import history from '@appserver/common/history';
-import ModuleTile from './ModuleTile';
-import { tryRedirectTo } from '@appserver/common/utils';
-import { setDocumentTitle } from '../../../helpers/utils';
-import { inject, observer } from 'mobx-react';
-import config from '../../../../package.json';
+import React, { useEffect } from "react";
+import PropTypes from "prop-types";
+import { withRouter } from "react-router";
+import { useTranslation } from "react-i18next";
+import styled from "styled-components";
+import Text from "@appserver/components/text";
+import toastr from "studio/toastr";
+import PageLayout from "@appserver/common/components/PageLayout";
+import history from "@appserver/common/history";
+import ModuleTile from "./ModuleTile";
+import { tryRedirectTo } from "@appserver/common/utils";
+import { setDocumentTitle } from "../../../helpers/utils";
+import { inject, observer } from "mobx-react";
+import config from "../../../../package.json";
 
 const HomeContainer = styled.div`
   padding: 62px 15px 0 15px;
@@ -50,7 +50,9 @@ const HomeContainer = styled.div`
 
 const Tiles = ({ modules, isPrimary }) => {
   let index = 0;
-  const mapped = modules.filter((m) => m.isPrimary === isPrimary && m.isolateMode !== true);
+  const mapped = modules.filter(
+    (m) => m.isPrimary === isPrimary && m.isolateMode !== true
+  );
 
   //console.log("Tiles", mapped, isPrimary);
 
@@ -87,8 +89,12 @@ const Body = ({ modules, match, isLoaded, theme }) => {
       <Tiles modules={modules} isPrimary={false} />
 
       {!modules || !modules.length ? (
-        <Text className="home-error-text" fontSize="14px" color={theme.studio.home.textColorError}>
-          {t('NoOneModulesAvailable')}
+        <Text
+          className="home-error-text"
+          fontSize="14px"
+          color={theme.studio.home.textColorError}
+        >
+          {t("NoOneModulesAvailable")}
         </Text>
       ) : null}
     </HomeContainer>

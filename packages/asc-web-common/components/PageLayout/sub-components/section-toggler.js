@@ -1,9 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { tablet } from '@appserver/components/utils/device';
-import CatalogButtonIcon from '../../../../../public/images/catalog.button.react.svg';
-import Base from '@appserver/components/themes/base';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { tablet } from "@appserver/components/utils/device";
+import CatalogButtonIcon from "../../../../../public/images/catalog.button.react.svg";
+import Base from "@appserver/components/themes/base";
 
 const StyledSectionToggler = styled.div`
   height: 64px;
@@ -14,7 +14,7 @@ const StyledSectionToggler = styled.div`
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   @media ${tablet} {
-    display: ${(props) => (props.visible ? 'block' : 'none')};
+    display: ${(props) => (props.visible ? "block" : "none")};
   }
 
   div {
@@ -38,10 +38,10 @@ const StyledSectionToggler = styled.div`
 StyledSectionToggler.defaultProps = { theme: Base };
 
 const iconStyle = {
-  width: '20px',
-  height: '20px',
-  minWidth: '20px',
-  minHeight: '20px',
+  width: "20px",
+  height: "20px",
+  minWidth: "20px",
+  minHeight: "20px",
 };
 
 const SectionToggler = React.memo((props) => {
@@ -57,7 +57,7 @@ const SectionToggler = React.memo((props) => {
   );
 });
 
-SectionToggler.displayName = 'SectionToggler';
+SectionToggler.displayName = "SectionToggler";
 
 SectionToggler.propTypes = {
   visible: PropTypes.bool,

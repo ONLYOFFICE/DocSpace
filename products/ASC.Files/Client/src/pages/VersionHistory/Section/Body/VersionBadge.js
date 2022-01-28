@@ -1,7 +1,15 @@
-import React from 'react';
-import Text from '@appserver/components/text';
-import Box from '@appserver/components/box';
-const VersionBadge = ({ className, isVersion, versionGroup, index, t, theme, ...rest }) => (
+import React from "react";
+import Text from "@appserver/components/text";
+import Box from "@appserver/components/box";
+const VersionBadge = ({
+  className,
+  isVersion,
+  versionGroup,
+  index,
+  t,
+  theme,
+  ...rest
+}) => (
   <Box className={className} marginProp="0 8px" displayProp="flex" {...rest}>
     <svg
       width="55"
@@ -9,9 +17,10 @@ const VersionBadge = ({ className, isVersion, versionGroup, index, t, theme, ...
       viewBox="0 0 55 18"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      stroke={isVersion ? 'none' : theme.filesVersionHistory.badge.stroke}
-      strokeDasharray={isVersion ? 'none' : '2px'}
-      strokeWidth={isVersion ? 'none' : '2px'}>
+      stroke={isVersion ? "none" : theme.filesVersionHistory.badge.stroke}
+      strokeDasharray={isVersion ? "none" : "2px"}
+      strokeWidth={isVersion ? "none" : "2px"}
+    >
       <path
         fillRule="evenodd"
         clipRule="evenodd"
@@ -29,8 +38,9 @@ const VersionBadge = ({ className, isVersion, versionGroup, index, t, theme, ...
       className="version_badge-text"
       color={theme.filesVersionHistory.badge.color}
       isBold
-      fontSize="12px">
-      {isVersion && t('Version', { version: versionGroup })}
+      fontSize="12px"
+    >
+      {isVersion && t("Version", { version: versionGroup })}
     </Text>
   </Box>
 );

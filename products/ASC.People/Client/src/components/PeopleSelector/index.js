@@ -1,14 +1,14 @@
-import React from 'react';
-import { inject, observer } from 'mobx-react';
-import PropTypes from 'prop-types';
-import { I18nextProvider, withTranslation } from 'react-i18next';
-import i18n from './i18n';
-import AdvancedSelector from '@appserver/common/components/AdvancedSelector';
-import { getUserList } from '@appserver/common/api/people';
-import { getGroupList } from '@appserver/common/api/groups';
-import Filter from '@appserver/common/api/people/filter';
-import UserTooltip from './sub-components/UserTooltip';
-import from from '@appserver/components/text-input';
+import React from "react";
+import { inject, observer } from "mobx-react";
+import PropTypes from "prop-types";
+import { I18nextProvider, withTranslation } from "react-i18next";
+import i18n from "./i18n";
+import AdvancedSelector from "@appserver/common/components/AdvancedSelector";
+import { getUserList } from "@appserver/common/api/people";
+import { getGroupList } from "@appserver/common/api/groups";
+import Filter from "@appserver/common/api/people/filter";
+import UserTooltip from "./sub-components/UserTooltip";
+import from from "@appserver/components/text-input";
 
 class PeopleSelector extends React.Component {
   constructor(props) {
@@ -32,20 +32,20 @@ class PeopleSelector extends React.Component {
           this.setState({
             groups: [
               {
-                key: 'all',
-                label: t('CustomAllGroups', { groupsCaption }),
+                key: "all",
+                label: t("CustomAllGroups", { groupsCaption }),
                 total: 0,
               },
             ].concat(this.convertGroups(groups)),
-          }),
+          })
         )
         .catch((error) => console.log(error));
     } else {
       this.setState({
         groups: [
           {
-            key: 'all',
-            label: t('CustomAllGroups', { groupsCaption }),
+            key: "all",
+            label: t("CustomAllGroups", { groupsCaption }),
             total: 0,
           },
         ].concat(groupList),
@@ -82,7 +82,7 @@ class PeopleSelector extends React.Component {
 
   loadNextPage = ({ startIndex, searchValue, currentGroup }) => {
     console.log(
-      `loadNextPage(startIndex=${startIndex}, searchValue="${searchValue}", currentGroup="${currentGroup}")`,
+      `loadNextPage(startIndex=${startIndex}, searchValue="${searchValue}", currentGroup="${currentGroup}")`
     );
 
     const pageCount = 100;
@@ -109,7 +109,7 @@ class PeopleSelector extends React.Component {
         filter.employeeStatus = employeeStatus;
       }
 
-      if (currentGroup && currentGroup !== 'all') filter.group = currentGroup;
+      if (currentGroup && currentGroup !== "all") filter.group = currentGroup;
 
       const { defaultOption, defaultOptionLabel } = this.props;
 
@@ -120,19 +120,22 @@ class PeopleSelector extends React.Component {
           if (defaultOption) {
             const inGroup =
               !currentGroup ||
-              currentGroup === 'all' ||
+              currentGroup === "all" ||
               (defaultOption.groups &&
-                defaultOption.groups.filter((g) => g.id === currentGroup).length > 0);
+                defaultOption.groups.filter((g) => g.id === currentGroup)
+                  .length > 0);
 
             if (searchValue) {
-              const exists = response.items.find((item) => item.id === defaultOption.id);
+              const exists = response.items.find(
+                (item) => item.id === defaultOption.id
+              );
 
               if (exists && inGroup) {
                 newOptions.push(
                   this.convertUser({
                     ...defaultOption,
                     displayName: defaultOptionLabel,
-                  }),
+                  })
                 );
               }
             } else if (!startIndex && response.items.length > 0 && inGroup) {
@@ -140,12 +143,14 @@ class PeopleSelector extends React.Component {
                 this.convertUser({
                   ...defaultOption,
                   displayName: defaultOptionLabel,
-                }),
+                })
               );
             }
 
             newOptions = newOptions.concat(
-              this.convertUsers(response.items.filter((item) => item.id !== defaultOption.id)),
+              this.convertUsers(
+                response.items.filter((item) => item.id !== defaultOption.id)
+              )
             );
           } else {
             newOptions = newOptions.concat(this.convertUsers(response.items));
@@ -175,7 +180,9 @@ class PeopleSelector extends React.Component {
     const { defaultOption, theme } = this.props;
 
     const label =
-      defaultOption && defaultOption.id === user.key ? defaultOption.displayName : user.label;
+      defaultOption && defaultOption.id === user.key
+        ? defaultOption.displayName
+        : user.label;
 
     return (
       <UserTooltip
@@ -199,7 +206,13 @@ class PeopleSelector extends React.Component {
   };
 
   render() {
-    const { options, groups, selectedGroups, hasNextPage, isNextPageLoading } = this.state;
+    const {
+      options,
+      groups,
+      selectedGroups,
+      hasNextPage,
+      isNextPageLoading,
+    } = this.state;
 
     const {
       id,
@@ -222,9 +235,9 @@ class PeopleSelector extends React.Component {
       theme,
     } = this.props;
 
-    console.log('CustomAllGroups', t('CustomAllGroups', { groupsCaption }));
+    console.log("CustomAllGroups", t("CustomAllGroups", { groupsCaption }));
 
-    console.log('PeopleSelector render');
+    console.log("PeopleSelector render");
     return (
       <AdvancedSelector
         theme={theme}
@@ -243,13 +256,17 @@ class PeopleSelector extends React.Component {
         isOpen={isOpen}
         isMultiSelect={isMultiSelect}
         isDisabled={isDisabled}
-        searchPlaceHolderLabel={searchPlaceHolderLabel || t('SearchUsersPlaceholder')}
-        selectButtonLabel={t('Translations:AddMembers')}
-        selectAllLabel={t('Common:SelectAll')}
+        searchPlaceHolderLabel={
+          searchPlaceHolderLabel || t("SearchUsersPlaceholder")
+        }
+        selectButtonLabel={t("Translations:AddMembers")}
+        selectAllLabel={t("Common:SelectAll")}
         groupsHeaderLabel={groupsCaption}
-        emptySearchOptionsLabel={t('EmptySearchUsersResult')}
-        emptyOptionsLabel={t('EmptyUsers')}
-        loadingLabel={`${t('Common:LoadingProcessing')} ${t('Common:LoadingDescription')}`}
+        emptySearchOptionsLabel={t("EmptySearchUsersResult")}
+        emptyOptionsLabel={t("EmptyUsers")}
+        loadingLabel={`${t("Common:LoadingProcessing")} ${t(
+          "Common:LoadingDescription"
+        )}`}
         onSelect={onSelect}
         onSearchChanged={this.onSearchChanged}
         onGroupChanged={this.onGroupChanged}
@@ -275,34 +292,40 @@ PeopleSelector.propTypes = {
   isDisabled: PropTypes.bool,
   defaultOption: PropTypes.object,
   defaultOptionLabel: PropTypes.string,
-  size: PropTypes.oneOf(['full', 'compact']),
+  size: PropTypes.oneOf(["full", "compact"]),
   language: PropTypes.string,
   t: PropTypes.func,
   groupsCaption: PropTypes.string,
   searchPlaceHolderLabel: PropTypes.string,
-  role: PropTypes.oneOf(['admin', 'user', 'guest']),
+  role: PropTypes.oneOf(["admin", "user", "guest"]),
   employeeStatus: PropTypes.any,
-  displayType: PropTypes.oneOf(['auto', 'aside', 'dropdown']),
+  displayType: PropTypes.oneOf(["auto", "aside", "dropdown"]),
   withoutAside: PropTypes.bool,
   embeddedComponent: PropTypes.any,
 };
 
 PeopleSelector.defaultProps = {
   useFake: false,
-  size: 'full',
-  language: 'en',
+  size: "full",
+  language: "en",
   role: null,
   employeeStatus: null,
   defaultOption: null,
-  defaultOptionLabel: 'Me',
-  groupsCaption: 'Groups',
-  displayType: 'auto',
+  defaultOptionLabel: "Me",
+  groupsCaption: "Groups",
+  displayType: "auto",
   withoutAside: false,
 };
 
 const ExtendedPeopleSelector = inject(({ auth }) => {
   return { theme: auth.settingsStore.theme };
-})(observer(withTranslation(['PeopleSelector', 'Translations', 'Common'])(PeopleSelector)));
+})(
+  observer(
+    withTranslation(["PeopleSelector", "Translations", "Common"])(
+      PeopleSelector
+    )
+  )
+);
 
 export default (props) => (
   <I18nextProvider i18n={i18n}>

@@ -1,23 +1,23 @@
-import React, { PureComponent } from 'react';
-import { withRouter } from 'react-router';
-import { withTranslation } from 'react-i18next';
-import styled from 'styled-components';
+import React, { PureComponent } from "react";
+import { withRouter } from "react-router";
+import { withTranslation } from "react-i18next";
+import styled from "styled-components";
 
-import OwnerSettings from './sub-components/owner';
+import OwnerSettings from "./sub-components/owner";
 // import ModulesSettings from "./sub-components/modules";
 
-import { setDocumentTitle } from '../../../../../helpers/utils';
-import Link from '@appserver/components/link';
-import Text from '@appserver/components/text';
-import toastr from '@appserver/components/toast/toastr';
-import { inject } from 'mobx-react';
-import isEmpty from 'lodash/isEmpty';
-import { combineUrl, showLoader, hideLoader } from '@appserver/common/utils';
-import { AppServerConfig } from '@appserver/common/constants';
-import commonIconsStyles from '@appserver/components/utils/common-icons-style';
-import ArrowRightIcon from '@appserver/studio/public/images/arrow.right.react.svg';
-import Loader from '@appserver/components/loader';
-import { Base } from '@appserver/components/themes';
+import { setDocumentTitle } from "../../../../../helpers/utils";
+import Link from "@appserver/components/link";
+import Text from "@appserver/components/text";
+import toastr from "@appserver/components/toast/toastr";
+import { inject } from "mobx-react";
+import isEmpty from "lodash/isEmpty";
+import { combineUrl, showLoader, hideLoader } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import ArrowRightIcon from "@appserver/studio/public/images/arrow.right.react.svg";
+import Loader from "@appserver/components/loader";
+import { Base } from "@appserver/components/themes";
 
 const StyledArrowRightIcon = styled(ArrowRightIcon)`
   ${commonIconsStyles}
@@ -58,7 +58,8 @@ const MainContainer = styled.div`
     }
 
     .category-item-description {
-      color: ${(props) => props.theme.studio.settings.security.descriptionColor};
+      color: ${(props) =>
+        props.theme.studio.settings.security.descriptionColor};
       font-size: 12px;
       max-width: 1024px;
     }
@@ -87,7 +88,7 @@ class AccessRights extends PureComponent {
       isLoading: false,
     };
 
-    setDocumentTitle(t('AccessRights'));
+    setDocumentTitle(t("AccessRights"));
   }
 
   async componentDidMount() {
@@ -137,18 +138,21 @@ class AccessRights extends PureComponent {
                 onClick={this.onClickLink}
                 href={combineUrl(
                   AppServerConfig.proxyURL,
-                  '/settings/security/access-rights/admins',
-                )}>
-                {t('PortalAdmins')}
+                  "/settings/security/access-rights/admins"
+                )}
+              >
+                {t("PortalAdmins")}
               </Link>
               <StyledArrowRightIcon size="small" />
             </div>
             {adminsTotal > 0 && (
               <Text className="category-item-subheader" truncate={true}>
-                {adminsTotal} {t('Admins')}
+                {adminsTotal} {t("Admins")}
               </Text>
             )}
-            <Text className="category-item-description">{t('PortalAdminsDescription')}</Text>
+            <Text className="category-item-description">
+              {t("PortalAdminsDescription")}
+            </Text>
           </div>
         }
       </MainContainer>
@@ -166,4 +170,4 @@ export default inject(({ auth, setup }) => {
     organizationName: auth.settingsStore.organizationName,
     owner: auth.settingsStore.owner,
   };
-})(withTranslation('Settings')(withRouter(AccessRights)));
+})(withTranslation("Settings")(withRouter(AccessRights)));

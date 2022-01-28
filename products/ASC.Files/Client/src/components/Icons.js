@@ -1,15 +1,15 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
-import commonIconsStyles from '@appserver/components/utils/common-icons-style';
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
-import FavoriteIcon from '../../public/images/favorite.react.svg';
-import FileActionsConvertEditDocIcon from '../../public/images/file.actions.convert.edit.doc.react.svg';
-import FileActionsLockedIcon from '../../public/images/file.actions.locked.react.svg';
-import EditFormIcon from '../../public/images/file.actions.edit.form.react.svg';
-import Base from '@appserver/components/themes/base';
+import FavoriteIcon from "../../public/images/favorite.react.svg";
+import FileActionsConvertEditDocIcon from "../../public/images/file.actions.convert.edit.doc.react.svg";
+import FileActionsLockedIcon from "../../public/images/file.actions.locked.react.svg";
+import EditFormIcon from "../../public/images/file.actions.edit.form.react.svg";
+import Base from "@appserver/components/themes/base";
 
 export const EncryptedFileIcon = styled.div`
-  background: url('images/security.svg') no-repeat 0 0 / 16px 16px transparent;
+  background: url("images/security.svg") no-repeat 0 0 / 16px 16px transparent;
   height: 16px;
   position: absolute;
   width: 16px;
@@ -21,7 +21,9 @@ export const StyledFavoriteIcon = styled(FavoriteIcon)`
   ${commonIconsStyles}
 `;
 
-export const StyledFileActionsConvertEditDocIcon = styled(FileActionsConvertEditDocIcon)`
+export const StyledFileActionsConvertEditDocIcon = styled(
+  FileActionsConvertEditDocIcon
+)`
   ${commonIconsStyles}
   path {
     fill: ${(props) => props.theme.filesIcons.fill};

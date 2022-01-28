@@ -1,9 +1,9 @@
-import React from 'react';
+import React from "react";
 
-import ModalDialog from '@appserver/components/modal-dialog';
-import { StyledAsidePanel, StyledSelectFolderPanel } from '../StyledPanels';
-import FolderTreeBody from '../../FolderTreeBody';
-import Button from '@appserver/components/button';
+import ModalDialog from "@appserver/components/modal-dialog";
+import { StyledAsidePanel, StyledSelectFolderPanel } from "../StyledPanels";
+import FolderTreeBody from "../../FolderTreeBody";
+import Button from "@appserver/components/button";
 
 const SelectFolderDialogModalView = ({
   t,
@@ -38,16 +38,18 @@ const SelectFolderDialogModalView = ({
         zIndex={zIndex}
         onClose={onClose}
         displayType="modal"
-        {...(!header && !footer && !showButtons && { contentHeight: '416px' })}>
+        {...(!header && !footer && !showButtons && { contentHeight: "416px" })}
+      >
         <ModalDialog.Header theme={theme}>
-          {headerName ? headerName : t('Translations:FolderSelection')}
+          {headerName ? headerName : t("Translations:FolderSelection")}
         </ModalDialog.Header>
 
         <ModalDialog.Body theme={theme}>
           <StyledSelectFolderPanel
             theme={theme}
             isNeedArrowIcon={isNeedArrowIcon}
-            noTreeSwitcher={noTreeSwitcher}>
+            noTreeSwitcher={noTreeSwitcher}
+          >
             <div className="select-folder-modal-dialog-header">{header} </div>
             <FolderTreeBody
               theme={theme}
@@ -79,7 +81,7 @@ const SelectFolderDialogModalView = ({
                 <Button
                   theme={theme}
                   size="medium"
-                  label={t('Common:CancelButton')}
+                  label={t("Common:CancelButton")}
                   onClick={onClose}
                   isDisabled={isLoadingData || isLoading}
                 />

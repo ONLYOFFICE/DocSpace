@@ -1,15 +1,15 @@
-import React from 'react';
-import { inject, observer } from 'mobx-react';
-import { withRouter } from 'react-router';
-import { withTranslation } from 'react-i18next';
-import styled from 'styled-components';
+import React from "react";
+import { inject, observer } from "mobx-react";
+import { withRouter } from "react-router";
+import { withTranslation } from "react-i18next";
+import styled from "styled-components";
 
-import Link from '@appserver/components/link';
+import Link from "@appserver/components/link";
 
-import TileContent from './sub-components/TileContent';
-import withContent from '../../../../../HOCs/withContent';
-import withBadges from '../../../../../HOCs/withBadges';
-import { isDesktop } from 'react-device-detect';
+import TileContent from "./sub-components/TileContent";
+import withContent from "../../../../../HOCs/withContent";
+import withBadges from "../../../../../HOCs/withBadges";
+import { isDesktop } from "react-device-detect";
 
 const SimpleFilesTileContent = styled(TileContent)`
   .row-main-container {
@@ -69,18 +69,22 @@ const FilesTileContent = ({ item, titleWithoutExt, linkStyles, theme }) => {
 
   return (
     <>
-      <SimpleFilesTileContent sideColor={theme.filesSection.tilesView.sideColor} isFile={fileExst}>
+      <SimpleFilesTileContent
+        sideColor={theme.filesSection.tilesView.sideColor}
+        isFile={fileExst}
+      >
         <Link
           className="item-file-name"
           containerWidth="100%"
           type="page"
           title={title}
           fontWeight="600"
-          fontSize={isDesktop ? '13px' : '14px'}
+          fontSize={isDesktop ? "13px" : "14px"}
           target="_blank"
           {...linkStyles}
           color={theme.filesSection.tilesView.color}
-          isTextOverflow>
+          isTextOverflow
+        >
           {titleWithoutExt}
         </Link>
       </SimpleFilesTileContent>
@@ -93,7 +97,9 @@ export default inject(({ auth }) => {
 })(
   observer(
     withRouter(
-      withTranslation(['Home', 'Translations'])(withContent(withBadges(FilesTileContent))),
-    ),
-  ),
+      withTranslation(["Home", "Translations"])(
+        withContent(withBadges(FilesTileContent))
+      )
+    )
+  )
 );

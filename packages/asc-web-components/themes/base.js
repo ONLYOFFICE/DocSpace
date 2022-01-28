@@ -1430,6 +1430,10 @@ const Base = {
     borderRadius: "50%",
   },
 
+  dialogLoader: {
+    borderBottom: "1px solid rgb(222, 226, 230)",
+  },
+
   // dropDownItem: {
   //   width: "100%",
   //   maxWidth: "240px",

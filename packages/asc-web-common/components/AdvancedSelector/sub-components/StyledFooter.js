@@ -1,5 +1,5 @@
-import styled, { css } from 'styled-components';
-import Base from '../../../../asc-web-components/themes/base';
+import styled, { css } from "styled-components";
+import Base from "../../../../asc-web-components/themes/base";
 
 const StyledFooter = styled.div`
   box-sizing: border-box;

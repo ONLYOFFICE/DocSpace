@@ -1,9 +1,9 @@
-import React from 'react';
-import styled, { css } from 'styled-components';
-import { withRouter } from 'react-router';
-import Headline from '@appserver/common/components/Headline';
-import IconButton from '@appserver/components/icon-button';
-import { desktop } from '@appserver/components/utils/device';
+import React from "react";
+import styled, { css } from "styled-components";
+import { withRouter } from "react-router";
+import Headline from "@appserver/common/components/Headline";
+import IconButton from "@appserver/components/icon-button";
+import { desktop } from "@appserver/components/utils/device";
 
 const StyledContainer = styled.div`
   display: grid;

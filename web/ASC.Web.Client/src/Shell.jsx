@@ -1,28 +1,28 @@
-import React, { useEffect } from 'react';
-import { Router, Switch, Route, Redirect } from 'react-router-dom';
-import { inject, observer } from 'mobx-react';
-import NavMenu from './components/NavMenu';
-import Main from './components/Main';
-import PrivateRoute from '@appserver/common/components/PrivateRoute';
-import PublicRoute from '@appserver/common/components/PublicRoute';
-import ErrorBoundary from '@appserver/common/components/ErrorBoundary';
-import Layout from './components/Layout';
-import ScrollToTop from './components/Layout/ScrollToTop';
-import history from '@appserver/common/history';
-import toastr from 'studio/toastr';
-import { combineUrl, updateTempContent } from '@appserver/common/utils';
-import { Provider as MobxProvider } from 'mobx-react';
-import ThemeProvider from '@appserver/components/theme-provider';
+import React, { useEffect } from "react";
+import { Router, Switch, Route, Redirect } from "react-router-dom";
+import { inject, observer } from "mobx-react";
+import NavMenu from "./components/NavMenu";
+import Main from "./components/Main";
+import PrivateRoute from "@appserver/common/components/PrivateRoute";
+import PublicRoute from "@appserver/common/components/PublicRoute";
+import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
+import Layout from "./components/Layout";
+import ScrollToTop from "./components/Layout/ScrollToTop";
+import history from "@appserver/common/history";
+import toastr from "studio/toastr";
+import { combineUrl, updateTempContent } from "@appserver/common/utils";
+import { Provider as MobxProvider } from "mobx-react";
+import ThemeProvider from "@appserver/components/theme-provider";
 
-import store from 'studio/store';
-import config from '../package.json';
-import { I18nextProvider, useTranslation } from 'react-i18next';
-import i18n from './i18n';
-import AppLoader from '@appserver/common/components/AppLoader';
-import System from './components/System';
-import { AppServerConfig } from '@appserver/common/constants';
-import Snackbar from '@appserver/components/snackbar';
-import moment from 'moment';
+import store from "studio/store";
+import config from "../package.json";
+import { I18nextProvider, useTranslation } from "react-i18next";
+import i18n from "./i18n";
+import AppLoader from "@appserver/common/components/AppLoader";
+import System from "./components/System";
+import { AppServerConfig } from "@appserver/common/constants";
+import Snackbar from "@appserver/components/snackbar";
+import moment from "moment";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -30,34 +30,34 @@ const homepage = config.homepage;
 const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, homepage);
 const HOME_URLS = [
   combineUrl(PROXY_HOMEPAGE_URL),
-  combineUrl(PROXY_HOMEPAGE_URL, '/'),
-  combineUrl(PROXY_HOMEPAGE_URL, '/error=:error'),
+  combineUrl(PROXY_HOMEPAGE_URL, "/"),
+  combineUrl(PROXY_HOMEPAGE_URL, "/error=:error"),
 ];
-const WIZARD_URL = combineUrl(PROXY_HOMEPAGE_URL, '/wizard');
-const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, '/about');
+const WIZARD_URL = combineUrl(PROXY_HOMEPAGE_URL, "/wizard");
+const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, "/about");
 const LOGIN_URLS = [
-  combineUrl(PROXY_HOMEPAGE_URL, '/login'),
-  combineUrl(PROXY_HOMEPAGE_URL, '/login/error=:error'),
-  combineUrl(PROXY_HOMEPAGE_URL, '/login/confirmed-email=:confirmedEmail'),
+  combineUrl(PROXY_HOMEPAGE_URL, "/login"),
+  combineUrl(PROXY_HOMEPAGE_URL, "/login/error=:error"),
+  combineUrl(PROXY_HOMEPAGE_URL, "/login/confirmed-email=:confirmedEmail"),
 ];
-const CONFIRM_URL = combineUrl(PROXY_HOMEPAGE_URL, '/confirm');
-const COMING_SOON_URLS = [combineUrl(PROXY_HOMEPAGE_URL, '/coming-soon')];
-const PAYMENTS_URL = combineUrl(PROXY_HOMEPAGE_URL, '/payments');
-const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, '/settings');
-const ERROR_401_URL = combineUrl(PROXY_HOMEPAGE_URL, '/error401');
-const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, '/my');
+const CONFIRM_URL = combineUrl(PROXY_HOMEPAGE_URL, "/confirm");
+const COMING_SOON_URLS = [combineUrl(PROXY_HOMEPAGE_URL, "/coming-soon")];
+const PAYMENTS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/payments");
+const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/settings");
+const ERROR_401_URL = combineUrl(PROXY_HOMEPAGE_URL, "/error401");
+const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
 
-const Payments = React.lazy(() => import('./components/pages/Payments'));
-const Error404 = React.lazy(() => import('studio/Error404'));
-const Error401 = React.lazy(() => import('studio/Error401'));
-const Home = React.lazy(() => import('./components/pages/Home'));
+const Payments = React.lazy(() => import("./components/pages/Payments"));
+const Error404 = React.lazy(() => import("studio/Error404"));
+const Error401 = React.lazy(() => import("studio/Error401"));
+const Home = React.lazy(() => import("./components/pages/Home"));
 
-const About = React.lazy(() => import('./components/pages/About'));
-const Wizard = React.lazy(() => import('./components/pages/Wizard'));
-const Settings = React.lazy(() => import('./components/pages/Settings'));
-const ComingSoon = React.lazy(() => import('./components/pages/ComingSoon'));
-const Confirm = React.lazy(() => import('./components/pages/Confirm'));
-const MyProfile = React.lazy(() => import('people/MyProfile'));
+const About = React.lazy(() => import("./components/pages/About"));
+const Wizard = React.lazy(() => import("./components/pages/Wizard"));
+const Settings = React.lazy(() => import("./components/pages/Settings"));
+const ComingSoon = React.lazy(() => import("./components/pages/ComingSoon"));
+const Confirm = React.lazy(() => import("./components/pages/Confirm"));
+const MyProfile = React.lazy(() => import("people/MyProfile"));
 
 const SettingsRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
@@ -140,18 +140,21 @@ const MyProfileRoute = (props) => (
 const RedirectToHome = () => <Redirect to={PROXY_HOMEPAGE_URL} />;
 
 const checkTheme = () => {
-  const theme = localStorage.getItem('theme');
+  const theme = localStorage.getItem("theme");
 
   if (theme) return theme;
 
-  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    return 'Dark';
+  if (
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+  ) {
+    return "Dark";
   }
 
-  return 'Base';
+  return "Base";
 };
 
-const Shell = ({ items = [], page = 'home', ...rest }) => {
+const Shell = ({ items = [], page = "home", ...rest }) => {
   const {
     isLoaded,
     loadBaseInfo,
@@ -188,13 +191,13 @@ const Shell = ({ items = [], page = 'home', ...rest }) => {
     }
   }, []);
 
-  const { t } = useTranslation('Common');
+  const { t } = useTranslation("Common");
 
   let snackTimer = null;
   let fbInterval = null;
   let lastCampaignStr = null;
-  const LS_CAMPAIGN_DATE = 'maintenance_to_date';
-  const DATE_FORMAT = 'YYYY-MM-DD';
+  const LS_CAMPAIGN_DATE = "maintenance_to_date";
+  const DATE_FORMAT = "YYYY-MM-DD";
   const SNACKBAR_TIMEOUT = 10000;
 
   const setSnackBarTimer = (campaign) => {
@@ -213,10 +216,12 @@ const Shell = ({ items = [], page = 'home', ...rest }) => {
 
     const { fromDate, toDate, desktop } = campaign;
 
-    console.log(`FB: 'bar/maintenance' desktop=${desktop} fromDate=${fromDate} toDate=${toDate}`);
+    console.log(
+      `FB: 'bar/maintenance' desktop=${desktop} fromDate=${fromDate} toDate=${toDate}`
+    );
 
     if (!campaign || !fromDate || !toDate) {
-      console.log('Skip snackBar by empty campaign params');
+      console.log("Skip snackBar by empty campaign params");
       return;
     }
 
@@ -225,7 +230,7 @@ const Shell = ({ items = [], page = 'home', ...rest }) => {
     const watchedCampaignDateStr = localStorage.getItem(LS_CAMPAIGN_DATE);
     const campaignDateStr = to.format(DATE_FORMAT);
     if (campaignDateStr == watchedCampaignDateStr) {
-      console.log('Skip snackBar by already watched');
+      console.log("Skip snackBar by already watched");
       return;
     }
 
@@ -241,45 +246,46 @@ const Shell = ({ items = [], page = 'home', ...rest }) => {
     }
 
     if (now.isAfter(to)) {
-      console.log('Skip snackBar by current date', now);
+      console.log("Skip snackBar by current date", now);
       Snackbar.close();
       return;
     }
 
     if (isDesktop && !desktop) {
-      console.log('Skip snackBar by desktop', desktop);
+      console.log("Skip snackBar by desktop", desktop);
       Snackbar.close();
       return;
     }
 
     setSnackBarTimer(campaign);
 
-    if (!document.getElementById('main-bar')) return;
+    if (!document.getElementById("main-bar")) return;
 
     const campaignStr = JSON.stringify(campaign);
     let skipRender = lastCampaignStr === campaignStr;
 
-    skipRender = skipRender && document.getElementById('main-bar').hasChildNodes();
+    skipRender =
+      skipRender && document.getElementById("main-bar").hasChildNodes();
 
     if (skipRender) return;
 
     lastCampaignStr = campaignStr;
 
-    const targetDate = to.locale(language).format('LL');
+    const targetDate = to.locale(language).format("LL");
 
     const barConfig = {
-      parentElementId: 'main-bar',
-      text: `${t('BarMaintenanceDescription', {
+      parentElementId: "main-bar",
+      text: `${t("BarMaintenanceDescription", {
         targetDate: targetDate,
-        productName: 'ONLYOFFICE Personal',
-      })} ${t('BarMaintenanceDisclaimer')}`,
+        productName: "ONLYOFFICE Personal",
+      })} ${t("BarMaintenanceDisclaimer")}`,
       onAction: () => {
         Snackbar.close();
         localStorage.setItem(LS_CAMPAIGN_DATE, to.format(DATE_FORMAT));
       },
       opacity: 1,
       style: {
-        marginTop: '10px',
+        marginTop: "10px",
       },
     };
 
@@ -292,7 +298,7 @@ const Shell = ({ items = [], page = 'home', ...rest }) => {
 
       FirebaseHelper.checkMaintenance()
         .then((campaign) => {
-          console.log('checkMaintenance', campaign);
+          console.log("checkMaintenance", campaign);
           if (!campaign) {
             clearSnackBarTimer();
             Snackbar.close();
@@ -314,7 +320,7 @@ const Shell = ({ items = [], page = 'home', ...rest }) => {
 
     FirebaseHelper.checkCampaigns()
       .then((campaigns) => {
-        localStorage.setItem('campaigns', campaigns);
+        localStorage.setItem("campaigns", campaigns);
       })
       .catch((err) => {
         console.error(err);
@@ -327,7 +333,7 @@ const Shell = ({ items = [], page = 'home', ...rest }) => {
     updateTempContent();
 
     if (!FirebaseHelper.isEnabled) {
-      localStorage.setItem('campaigns', '');
+      localStorage.setItem("campaigns", "");
       return;
     }
 
@@ -344,7 +350,7 @@ const Shell = ({ items = [], page = 'home', ...rest }) => {
   }, [isLoaded]);
 
   useEffect(() => {
-    console.log('Current page ', page);
+    console.log("Current page ", page);
   }, [page]);
 
   useEffect(() => {
@@ -352,7 +358,7 @@ const Shell = ({ items = [], page = 'home', ...rest }) => {
   }, []);
 
   const pathname = window.location.pathname.toLowerCase();
-  const isEditor = pathname.indexOf('doceditor') !== -1;
+  const isEditor = pathname.indexOf("doceditor") !== -1;
 
   if (!window.AppServer.studio) {
     window.AppServer.studio = {};
@@ -362,12 +368,16 @@ const Shell = ({ items = [], page = 'home', ...rest }) => {
 
   const dynamicRoutes = modules.map((m) => {
     const appURL = m.link;
-    const remoteEntryURL = combineUrl(window.location.origin, appURL, `remoteEntry.js`);
+    const remoteEntryURL = combineUrl(
+      window.location.origin,
+      appURL,
+      `remoteEntry.js`
+    );
 
     const system = {
       url: remoteEntryURL,
       scope: m.appName,
-      module: './app',
+      module: "./app",
     };
 
     window.AppServer.studio.modules[m.appName] = {
@@ -379,8 +389,13 @@ const Shell = ({ items = [], page = 'home', ...rest }) => {
       <PrivateRoute
         key={m.id}
         path={
-          m.appName === 'files'
-            ? ['/Products/Files', '/Products/Files/', '/Products/Files/?desktop=true', appURL]
+          m.appName === "files"
+            ? [
+                "/Products/Files",
+                "/Products/Files/",
+                "/Products/Files/?desktop=true",
+                appURL,
+              ]
             : appURL
         }
         component={System}
@@ -393,9 +408,9 @@ const Shell = ({ items = [], page = 'home', ...rest }) => {
 
   if (isLoaded && !personal) {
     const loginSystem = {
-      url: combineUrl(AppServerConfig.proxyURL, '/login/remoteEntry.js'),
-      scope: 'login',
-      module: './app',
+      url: combineUrl(AppServerConfig.proxyURL, "/login/remoteEntry.js"),
+      scope: "login",
+      module: "./app",
     };
     loginRoutes.push(
       <PublicRoute
@@ -404,7 +419,7 @@ const Shell = ({ items = [], page = 'home', ...rest }) => {
         path={LOGIN_URLS}
         component={System}
         system={loginSystem}
-      />,
+      />
     );
   }
 
@@ -421,13 +436,27 @@ const Shell = ({ items = [], page = 'home', ...rest }) => {
               <PrivateRoute path={ABOUT_URL} component={AboutRoute} />
               {loginRoutes}
               <Route path={CONFIRM_URL} component={ConfirmRoute} />
-              <PrivateRoute path={COMING_SOON_URLS} component={ComingSoonRoute} />
+              <PrivateRoute
+                path={COMING_SOON_URLS}
+                component={ComingSoonRoute}
+              />
               <PrivateRoute path={PAYMENTS_URL} component={PaymentsRoute} />
-              <PrivateRoute restricted path={SETTINGS_URL} component={SettingsRoute} />
-              <PrivateRoute exact allowForMe path={PROFILE_MY_URL} component={MyProfileRoute} />
+              <PrivateRoute
+                restricted
+                path={SETTINGS_URL}
+                component={SettingsRoute}
+              />
+              <PrivateRoute
+                exact
+                allowForMe
+                path={PROFILE_MY_URL}
+                component={MyProfileRoute}
+              />
               {dynamicRoutes}
               <PrivateRoute path={ERROR_401_URL} component={Error401Route} />
-              <PrivateRoute component={!personal ? Error404Route : RedirectToHome} />
+              <PrivateRoute
+                component={!personal ? Error404Route : RedirectToHome}
+              />
             </Switch>
           </Main>
         </>
@@ -438,16 +467,22 @@ const Shell = ({ items = [], page = 'home', ...rest }) => {
 
 const ShellWrapper = inject(({ auth }) => {
   const { init, isLoaded, settingsStore, setProductVersion, language } = auth;
-  const { personal, isDesktopClient, firebaseHelper, setModuleInfo, setTheme } = settingsStore;
+  const {
+    personal,
+    isDesktopClient,
+    firebaseHelper,
+    setModuleInfo,
+    setTheme,
+  } = settingsStore;
 
   return {
     loadBaseInfo: () => {
       init();
-      setModuleInfo(config.homepage, 'home');
+      setModuleInfo(config.homepage, "home");
       setProductVersion(config.version);
 
       if (isDesktopClient) {
-        document.body.classList.add('desktop');
+        document.body.classList.add("desktop");
       }
     },
     language,

@@ -1,9 +1,9 @@
-import React from 'react';
-import { inject, observer } from 'mobx-react';
+import React from "react";
+import { inject, observer } from "mobx-react";
 
-import { ShareAccessRights } from '@appserver/common/constants';
-import toastr from '@appserver/components/toast/toastr';
-import QuickButtons from '../components/QuickButtons';
+import { ShareAccessRights } from "@appserver/common/constants";
+import toastr from "@appserver/components/toast/toastr";
+import QuickButtons from "../components/QuickButtons";
 
 export default function withQuickButtons(WrappedComponent) {
   class WithQuickButtons extends React.Component {
@@ -24,14 +24,14 @@ export default function withQuickButtons(WrappedComponent) {
       const { t, item, setFavoriteAction } = this.props;
 
       if (showFavorite) {
-        setFavoriteAction('remove', item.id)
-          .then(() => toastr.success(t('RemovedFromFavorites')))
+        setFavoriteAction("remove", item.id)
+          .then(() => toastr.success(t("RemovedFromFavorites")))
           .catch((err) => toastr.error(err));
         return;
       }
 
-      setFavoriteAction('mark', item.id)
-        .then(() => toastr.success(t('MarkedAsFavorite')))
+      setFavoriteAction("mark", item.id)
+        .then(() => toastr.success(t("MarkedAsFavorite")))
         .catch((err) => toastr.error(err));
     };
 
@@ -59,7 +59,8 @@ export default function withQuickButtons(WrappedComponent) {
       const { access, id, fileExst } = item;
 
       const accessToEdit =
-        access === ShareAccessRights.FullAccess || access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
+        access === ShareAccessRights.FullAccess ||
+        access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
 
       const isEdit = id === fileActionId && fileExst === fileActionExt;
 
@@ -80,28 +81,48 @@ export default function withQuickButtons(WrappedComponent) {
         />
       ) : null;
 
-      return <WrappedComponent quickButtonsComponent={quickButtonsComponent} {...this.props} />;
+      return (
+        <WrappedComponent
+          quickButtonsComponent={quickButtonsComponent}
+          {...this.props}
+        />
+      );
     }
   }
 
-  return inject(({ auth, treeFoldersStore, filesActionsStore, filesStore, dialogsStore }) => {
-    const { isRecycleBinFolder } = treeFoldersStore;
-    const { lockFileAction, setFavoriteAction, onSelectItem } = filesActionsStore;
+  return inject(
+    ({
+      auth,
+      treeFoldersStore,
+      filesActionsStore,
+      filesStore,
+      dialogsStore,
+    }) => {
+      const { isRecycleBinFolder } = treeFoldersStore;
+      const {
+        lockFileAction,
+        setFavoriteAction,
+        onSelectItem,
+      } = filesActionsStore;
 
-    const { setIsLoading } = filesStore;
-    const { extension: fileActionExt, id: fileActionId } = filesStore.fileActionStore;
-    const { setSharingPanelVisible } = dialogsStore;
-    return {
-      theme: auth.settingsStore.theme,
-      isAdmin: auth.isAdmin,
-      isTrashFolder: isRecycleBinFolder,
-      lockFileAction,
-      setFavoriteAction,
-      setIsLoading,
-      fileActionExt,
-      fileActionId,
-      onSelectItem,
-      setSharingPanelVisible,
-    };
-  })(observer(WithQuickButtons));
+      const { setIsLoading } = filesStore;
+      const {
+        extension: fileActionExt,
+        id: fileActionId,
+      } = filesStore.fileActionStore;
+      const { setSharingPanelVisible } = dialogsStore;
+      return {
+        theme: auth.settingsStore.theme,
+        isAdmin: auth.isAdmin,
+        isTrashFolder: isRecycleBinFolder,
+        lockFileAction,
+        setFavoriteAction,
+        setIsLoading,
+        fileActionExt,
+        fileActionId,
+        onSelectItem,
+        setSharingPanelVisible,
+      };
+    }
+  )(observer(WithQuickButtons));
 }

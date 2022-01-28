@@ -1,18 +1,20 @@
-import React from 'react';
+import React from "react";
 
-import EmptyScreenContainer from '@appserver/components/empty-screen-container';
-import IconButton from '@appserver/components/icon-button';
-import Link from '@appserver/components/link';
-import Box from '@appserver/components/box';
-import Grid from '@appserver/components/grid';
-import { useTranslation } from 'react-i18next';
-import { inject, observer } from 'mobx-react';
+import EmptyScreenContainer from "@appserver/components/empty-screen-container";
+import IconButton from "@appserver/components/icon-button";
+import Link from "@appserver/components/link";
+import Box from "@appserver/components/box";
+import Grid from "@appserver/components/grid";
+import { useTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
 
 const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
-  const { t } = useTranslation(['Home', 'Common']);
+  const { t } = useTranslation(["Home", "Common"]);
 
-  const title = isEmptyGroup ? t('EmptyGroupTitle') : t('NotFoundTitle');
-  const description = isEmptyGroup ? t('EmptyGroupDescription') : t('NotFoundDescription');
+  const title = isEmptyGroup ? t("EmptyGroupTitle") : t("NotFoundTitle");
+  const description = isEmptyGroup
+    ? t("EmptyGroupDescription")
+    : t("NotFoundDescription");
 
   const onResetFilter = () => {
     setIsLoading(true);
@@ -26,7 +28,11 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
       headerText={title}
       descriptionText={description}
       buttons={
-        <Grid marginProp="13px 0" gridColumnGap="8px" columnsProp={['12px 1fr']}>
+        <Grid
+          marginProp="13px 0"
+          gridColumnGap="8px"
+          columnsProp={["12px 1fr"]}
+        >
           {isEmptyGroup ? null : (
             <>
               <Box>
@@ -37,12 +43,17 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
                   iconName="CrossIcon"
                   isFill
                 />
-              </Box>{' '}
+              </Box>{" "}
               <Box marginProp="-4px 0 0 0">
-                <Link type="action" isHovered={true} fontWeight="600" onClick={onResetFilter}>
-                  {t('Common:ClearButton')}
+                <Link
+                  type="action"
+                  isHovered={true}
+                  fontWeight="600"
+                  onClick={onResetFilter}
+                >
+                  {t("Common:ClearButton")}
                 </Link>
-              </Box>{' '}
+              </Box>{" "}
             </>
           )}
         </Grid>

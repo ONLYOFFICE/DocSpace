@@ -1,11 +1,11 @@
-import React from 'react';
-import styled from 'styled-components';
-import { withTranslation } from 'react-i18next';
-import Text from '@appserver/components/text';
-import IconButton from '@appserver/components/icon-button';
+import React from "react";
+import styled from "styled-components";
+import { withTranslation } from "react-i18next";
+import Text from "@appserver/components/text";
+import IconButton from "@appserver/components/icon-button";
 
-import withLoader from '../../../HOCs/withLoader';
-import { Base } from '@appserver/components/themes';
+import withLoader from "../../../HOCs/withLoader";
+import { Base } from "@appserver/components/themes";
 
 const StyledDownloadAppList = styled.div`
   margin-top: 20px;
@@ -28,14 +28,14 @@ const StyledDownloadAppList = styled.div`
 StyledDownloadAppList.defaultProps = { theme: Base };
 
 const DownloadAppListContainer = ({ t }) => {
-  const desktopLink = 'https://www.onlyoffice.com/desktop.aspx';
-  const androidLink = 'https://www.onlyoffice.com/office-for-android.aspx';
-  const iosLink = 'https://www.onlyoffice.com/office-for-ios.aspx';
+  const desktopLink = "https://www.onlyoffice.com/desktop.aspx";
+  const androidLink = "https://www.onlyoffice.com/office-for-android.aspx";
+  const iosLink = "https://www.onlyoffice.com/office-for-ios.aspx";
 
   return (
     <StyledDownloadAppList>
       <Text className="download-app-text" fontSize="14px">
-        {t('Translations:DownloadApps')}
+        {t("Translations:DownloadApps")}
       </Text>
       <div className="download-app-list">
         <IconButton
@@ -88,8 +88,8 @@ const DownloadAppListContainer = ({ t }) => {
   );
 };
 
-const DownloadAppList = withTranslation(['Translations'])(
-  withLoader(DownloadAppListContainer)(<></>),
+const DownloadAppList = withTranslation(["Translations"])(
+  withLoader(DownloadAppListContainer)(<></>)
 );
 
 export default DownloadAppList;

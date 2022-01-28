@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import Avatar from '@appserver/components/avatar';
-import Text from '@appserver/components/text';
-import StyledUserTooltip from './StyledUserTooltip';
+import React from "react";
+import PropTypes from "prop-types";
+import Avatar from "@appserver/components/avatar";
+import Text from "@appserver/components/text";
+import StyledUserTooltip from "./StyledUserTooltip";
 
 const UserTooltip = ({ avatarUrl, label, email, position, theme }) => (
   <StyledUserTooltip theme={theme}>
@@ -25,7 +25,8 @@ const UserTooltip = ({ avatarUrl, label, email, position, theme }) => (
         fontSize="13px"
         fontWeight={600}
         truncate={true}
-        title={label}>
+        title={label}
+      >
         {label}
       </Text>
       <Text
@@ -34,10 +35,17 @@ const UserTooltip = ({ avatarUrl, label, email, position, theme }) => (
         fontSize="13px"
         className="email-text"
         truncate={true}
-        title={email}>
+        title={email}
+      >
         {email}
       </Text>
-      <Text theme={theme} fontSize="13px" fontWeight={600} truncate={true} title={position}>
+      <Text
+        theme={theme}
+        fontSize="13px"
+        fontWeight={600}
+        truncate={true}
+        title={position}
+      >
         {position}
       </Text>
     </div>

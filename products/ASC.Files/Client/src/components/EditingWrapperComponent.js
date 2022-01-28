@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import styled, { css } from 'styled-components';
-import Button from '@appserver/components/button';
-import TextInput from '@appserver/components/text-input';
-import commonIconsStyles from '@appserver/components/utils/common-icons-style';
+import React, { useState } from "react";
+import styled, { css } from "styled-components";
+import Button from "@appserver/components/button";
+import TextInput from "@appserver/components/text-input";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
-import CheckIcon from '../../public/images/check.react.svg';
-import CrossIcon from '../../../../../public/images/cross.react.svg';
-import { tablet } from '@appserver/components/utils/device';
-import { Base } from '@appserver/components/themes';
+import CheckIcon from "../../public/images/check.react.svg";
+import CrossIcon from "../../../../../public/images/cross.react.svg";
+import { tablet } from "@appserver/components/utils/device";
+import { Base } from "@appserver/components/themes";
 
 const StyledCheckIcon = styled(CheckIcon)`
   ${commonIconsStyles}
@@ -34,7 +34,9 @@ const StyledCrossIcon = styled(CrossIcon)`
 StyledCrossIcon.defaultProps = { theme: Base };
 
 export const okIcon = <StyledCheckIcon className="edit-ok-icon" size="scale" />;
-export const cancelIcon = <StyledCrossIcon className="edit-cancel-icon" size="scale" />;
+export const cancelIcon = (
+  <StyledCrossIcon className="edit-cancel-icon" size="scale" />
+);
 
 const EditingWrapper = styled.div`
   width: 100%;
@@ -42,7 +44,7 @@ const EditingWrapper = styled.div`
   align-items: center;
 
   ${(props) =>
-    props.viewAs === 'table' &&
+    props.viewAs === "table" &&
     css`
       grid-column-start: 1;
       grid-column-end: -1;
@@ -54,7 +56,9 @@ const EditingWrapper = styled.div`
       /* margin-left: -4px; */
     `}
 
-  ${(props) => props.viewAs === 'tile' && `margin-right: 10px !important; margin-left: 8px;`}
+  ${(props) =>
+    props.viewAs === "tile" &&
+    `margin-right: 10px !important; margin-left: 8px;`}
   
   
   @media ${tablet} {
@@ -64,15 +68,19 @@ const EditingWrapper = styled.div`
   .edit-text {
     height: 32px;
     font-size: ${(props) =>
-      props.viewAs === 'table' ? '13px' : props.viewAs === 'tile' ? '14px' : '15px'};
+      props.viewAs === "table"
+        ? "13px"
+        : props.viewAs === "tile"
+        ? "14px"
+        : "15px"};
     outline: 0 !important;
     font-weight: 600;
     margin: 0;
-    font-family: 'Open Sans', sans-serif, Arial;
+    font-family: "Open Sans", sans-serif, Arial;
     text-align: left;
     color: ${(props) => props.theme.filesEditingWrapper.color};
     ${(props) =>
-      props.viewAs === 'tile' &&
+      props.viewAs === "tile" &&
       css`
         margin-right: 2px;
         border: none;
@@ -85,7 +93,7 @@ const EditingWrapper = styled.div`
     padding: 8px 7px 7px 7px;
 
     ${(props) =>
-      props.viewAs === 'tile' &&
+      props.viewAs === "tile" &&
       css`
         background: none;
         border: 1px solid transparent;
@@ -100,7 +108,7 @@ const EditingWrapper = styled.div`
       `};
 
     ${(props) =>
-      props.viewAs === 'table' &&
+      props.viewAs === "table" &&
       css`
         width: 24px;
         height: 24px;
@@ -144,7 +152,7 @@ const EditingWrapperComponent = (props) => {
     elementIcon,
   } = props;
 
-  const isTable = viewAs === 'table';
+  const isTable = viewAs === "table";
 
   const [OkIconIsHovered, setIsHoveredOk] = useState(false);
   const [CancelIconIsHovered, setIsHoveredCancel] = useState(false);
@@ -173,7 +181,8 @@ const EditingWrapperComponent = (props) => {
 
   const onFocus = (e) => e.target.select();
   const onBlur = (e) => {
-    if (e.relatedTarget && e.relatedTarget.classList.contains('edit-button')) return false;
+    if (e.relatedTarget && e.relatedTarget.classList.contains("edit-button"))
+      return false;
     onClickUpdateItem(e, false);
   };
 

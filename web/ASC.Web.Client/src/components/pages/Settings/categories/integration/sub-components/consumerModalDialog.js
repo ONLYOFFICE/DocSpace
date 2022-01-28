@@ -1,17 +1,17 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Trans } from 'react-i18next';
-import { inject, observer } from 'mobx-react';
-import { format } from 'react-string-format';
-import ModalDialog from '@appserver/components/modal-dialog';
-import Text from '@appserver/components/text';
-import Button from '@appserver/components/button';
-import TextInput from '@appserver/components/text-input';
-import Box from '@appserver/components/box';
-import Link from '@appserver/components/link';
-import toastr from '@appserver/components/toast/toastr';
-import ModalDialogContainer from './modalDialogContainer';
-import { showLoader, hideLoader } from '@appserver/common/utils';
+import React from "react";
+import PropTypes from "prop-types";
+import { Trans } from "react-i18next";
+import { inject, observer } from "mobx-react";
+import { format } from "react-string-format";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Text from "@appserver/components/text";
+import Button from "@appserver/components/button";
+import TextInput from "@appserver/components/text-input";
+import Box from "@appserver/components/box";
+import Link from "@appserver/components/link";
+import toastr from "@appserver/components/toast/toastr";
+import ModalDialogContainer from "./modalDialogContainer";
+import { showLoader, hideLoader } from "@appserver/common/utils";
 
 class ConsumerModalDialog extends React.Component {
   constructor(props) {
@@ -24,7 +24,7 @@ class ConsumerModalDialog extends React.Component {
     selectedConsumer.props.map((prop) =>
       this.setState({
         [`${prop.name}`]: prop.value,
-      }),
+      })
     );
   };
 
@@ -35,7 +35,13 @@ class ConsumerModalDialog extends React.Component {
   };
 
   updateConsumerValues = () => {
-    const { onChangeLoading, selectedConsumer, updateConsumerProps, onModalClose, t } = this.props;
+    const {
+      onChangeLoading,
+      selectedConsumer,
+      updateConsumerProps,
+      onModalClose,
+      t,
+    } = this.props;
     const { state } = this;
 
     onChangeLoading(true);
@@ -58,7 +64,7 @@ class ConsumerModalDialog extends React.Component {
       .then(() => {
         onChangeLoading(false);
         hideLoader();
-        toastr.success(t('ThirdPartyPropsActivated'));
+        toastr.success(t("ThirdPartyPropsActivated"));
       })
       .catch((error) => {
         onChangeLoading(false);
@@ -82,22 +88,28 @@ class ConsumerModalDialog extends React.Component {
     format(this.props.selectedConsumer.instruction, <Box marginProp="4px 0" />);
 
   bodyDescription = (
-    <Box marginProp={`${this.consumerInstruction ? '44px' : 0} 0 16px 0`}>
+    <Box marginProp={`${this.consumerInstruction ? "44px" : 0} 0 16px 0`}>
       <Box marginProp="0 0 16px 0">
         <Text as="div" isBold fontSize="15px">
-          {this.props.t('ThirdPartyHowItWorks')}
+          {this.props.t("ThirdPartyHowItWorks")}
         </Text>
       </Box>
       <Text as="div">
-        <Trans t={this.props.t} i18nKey="ThirdPartyBodyDescription" ns="Settings">
-          For more detailed instructions about connecting this service, please refer to our{' '}
+        <Trans
+          t={this.props.t}
+          i18nKey="ThirdPartyBodyDescription"
+          ns="Settings"
+        >
+          For more detailed instructions about connecting this service, please
+          refer to our{" "}
           <Link
             color={this.props.theme.studio.settings.integration.linkColor}
             isHovered={false}
             target="_blank"
-            href={`${this.props.urlAuthKeys}#${this.props.selectedConsumer.name}`}>
+            href={`${this.props.urlAuthKeys}#${this.props.selectedConsumer.name}`}
+          >
             Help Center
-          </Link>{' '}
+          </Link>{" "}
           that provides all the necessary information.
         </Trans>
       </Text>
@@ -106,20 +118,27 @@ class ConsumerModalDialog extends React.Component {
 
   bottomDescription = (
     <Trans t={this.props.t} i18nKey="ThirdPartyBottomDescription" ns="Settings">
-      If you still have some questions on how to connect this service or need technical assistance,
-      please feel free to contact our{' '}
+      If you still have some questions on how to connect this service or need
+      technical assistance, please feel free to contact our{" "}
       <Link
         color={this.props.theme.studio.settings.integration.linkColor}
         isHovered={false}
         target="_blank"
-        href={this.props.urlSupport}>
+        href={this.props.urlSupport}
+      >
         Support Team
       </Link>
     </Trans>
   );
 
   render() {
-    const { selectedConsumer, onModalClose, dialogVisible, isLoading, t } = this.props;
+    const {
+      selectedConsumer,
+      onModalClose,
+      dialogVisible,
+      isLoading,
+      t,
+    } = this.props;
     const {
       state,
       onChangeHandler,
@@ -138,7 +157,11 @@ class ConsumerModalDialog extends React.Component {
           <React.Fragment>
             {selectedConsumer.props.map((prop, i) => (
               <React.Fragment key={prop.name}>
-                <Box displayProp="flex" flexDirection="column" marginProp="0 0 16px 0">
+                <Box
+                  displayProp="flex"
+                  flexDirection="column"
+                  marginProp="0 0 16px 0"
+                >
                   <Box marginProp="0 0 4px 0">
                     <Text isBold>{prop.title}:</Text>
                   </Box>
@@ -165,7 +188,7 @@ class ConsumerModalDialog extends React.Component {
             className="modal-dialog-button"
             primary
             size="big"
-            label={isLoading ? t('Common:Sending') : t('Common:Enable')}
+            label={isLoading ? t("Common:Sending") : t("Common:Enable")}
             tabIndex={1}
             isLoading={isLoading}
             isDisabled={isLoading}

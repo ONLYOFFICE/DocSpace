@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import StyledHeader from './StyledHeader';
+import React from "react";
+import PropTypes from "prop-types";
+import StyledHeader from "./StyledHeader";
 
 class Header extends React.Component {
   constructor(props) {
@@ -10,7 +10,11 @@ class Header extends React.Component {
   render() {
     const { children, displayType, className, style, theme } = this.props;
     return (
-      <StyledHeader displayType={displayType} className={className} style={style}>
+      <StyledHeader
+        displayType={displayType}
+        className={className}
+        style={style}
+      >
         {children}
       </StyledHeader>
     );
@@ -21,7 +25,7 @@ Header.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
   style: PropTypes.object,
-  displayType: PropTypes.oneOf(['dropdown', 'aside']),
+  displayType: PropTypes.oneOf(["dropdown", "aside"]),
 };
 
 export default Header;

@@ -1,7 +1,7 @@
-import styled from 'styled-components';
-import { tablet } from '@appserver/components/utils/device';
-import ModalDialog from '@appserver/components/modal-dialog';
-import Base from '@appserver/components/themes/base';
+import styled from "styled-components";
+import { tablet } from "@appserver/components/utils/device";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Base from "@appserver/components/themes/base";
 
 const ModalDialogContainer = styled(ModalDialog)`
   .invite-link-dialog-wrapper {
