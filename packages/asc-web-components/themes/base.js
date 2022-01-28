@@ -243,8 +243,7 @@ const Base = {
 
     boxShadow:
       "0px 1px 1px rgba(0, 0, 0, 0.24),0px 0px 1px rgba(0, 0, 0, 0.12)",
-    hoverBoxShadow:
-      "0px 2px 2px rgba(0, 0, 0, 0.24),0px 0px 2px rgba(0, 0, 0, 0.12)",
+    hoverBoxShadow: "none",
 
     color: "rgba(0, 0, 0, 0.54)",
     disableColor: "rgba(0, 0, 0, 0.4)",

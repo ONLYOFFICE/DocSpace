@@ -69,6 +69,10 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
                 cursor: pointer;
                 box-shadow: ${(props) =>
                   props.theme.socialButton.hoverBoxShadow};
+                border: 1px solid #1877f2;
+                .social_button_text {
+                  color: #1877f2;
+                }
               }
 
               :hover {
