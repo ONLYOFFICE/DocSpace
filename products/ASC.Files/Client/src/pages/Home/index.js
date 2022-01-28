@@ -27,6 +27,7 @@ import MediaViewer from "./MediaViewer";
 import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
 import config from "../../../package.json";
+import { Consumer } from "@appserver/components/utils/context";
 
 class PureHome extends React.Component {
   componentDidMount() {
@@ -313,7 +314,11 @@ class PureHome extends React.Component {
           </PageLayout.SectionFilter>
 
           <PageLayout.SectionBody>
-            <SectionBodyContent />
+            <Consumer>
+              {(context) => (
+                <SectionBodyContent sectionWidth={context.sectionWidth} />
+              )}
+            </Consumer>
           </PageLayout.SectionBody>
 
           <PageLayout.SectionPaging>

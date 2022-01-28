@@ -241,7 +241,7 @@ class FilesStore {
   };
 
   setSelection = (selection) => {
-    if (selection.length === 1) this.setInitialSelectedFile(selection[0]);
+    if (selection.length === 1) this.setHotkeyCaret(selection[0]);
     this.selection = selection;
   };
 
