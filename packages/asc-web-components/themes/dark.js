@@ -1910,6 +1910,11 @@ const Dark = {
     iconColor: "#C96C27",
   },
 
+  updateUserForm: {
+    tooltipTextColor: black,
+    borderTop: "none",
+  },
+
   tableContainer: {
     borderRight: "2px solid #474747",
     hoverBorderColor: "#474747",

@@ -866,7 +866,7 @@ const Base = {
     padding: "16px",
     pointerEvents: "auto",
     maxWidth: "340px",
-    color: lightCumulus,
+    color: "#F8F7BF",
     textColor: black,
 
     before: {
@@ -1906,6 +1906,11 @@ const Base = {
 
     tooltipLinkColor: black,
     iconColor: "#C96C27",
+  },
+
+  updateUserForm: {
+    tooltipTextColor: black,
+    borderTop: "1px solid #eceef1",
   },
 
   tableContainer: {
