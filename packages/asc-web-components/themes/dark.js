@@ -2392,6 +2392,7 @@ const Dark = {
       common: {
         linkColor: "#858585",
         linkColorHelp: strongBlue,
+        tooltipLinkColor: "#e06a1b",
         arrowColor: black,
         descriptionColor: "#858585",
 

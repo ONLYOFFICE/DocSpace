@@ -2383,6 +2383,7 @@ const Base = {
       common: {
         linkColor: gray,
         linkColorHelp: link,
+        tooltipLinkColor: black,
         arrowColor: black,
         descriptionColor: cyanBlueDarkShade,
 
