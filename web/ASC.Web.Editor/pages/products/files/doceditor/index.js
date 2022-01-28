@@ -7,6 +7,9 @@ import { isMobile } from "react-device-detect";
 import FilesFilter from "@appserver/common/api/files/filter";
 import combineUrl from "@appserver/common/utils/combineUrl";
 import { AppServerConfig } from "@appserver/common/constants";
+import { homepage } from "../../../../package.json";
+
+import throttle from "lodash/throttle";
 
 const getSettingsNext = async () => {
   try {
@@ -76,6 +79,29 @@ const openEdit = (fileId, version, doc, view, headers) => {
   return request(options);
 };
 
+const markAsFavorite = (ids, headers) => {
+  const data = { fileIds: ids };
+  const options = {
+    method: "post",
+    url: "/files/favorites",
+    data,
+    headers: headers,
+  };
+
+  return request(options);
+};
+
+const removeFromFavorite = (ids) => {
+  const data = { fileIds: ids };
+  const options = {
+    method: "delete",
+    url: "/files/favorites",
+    data,
+  };
+
+  return request(options);
+};
+
 const loadScript = (url, id, onLoad, onError) => {
   try {
     const script = document.createElement("script");
@@ -96,7 +122,6 @@ const loadScript = (url, id, onLoad, onError) => {
 
 const setFavicon = (documentType) => {
   const favicon = document.getElementById("favicon");
-  console.log(document);
   if (!favicon) return;
   let icon = null;
   switch (documentType) {
@@ -114,29 +139,8 @@ const setFavicon = (documentType) => {
   }
 
   if (icon) favicon.href = `${homepage}/images/${icon}`;
-};
+}; //TODO: to fix
 
-const setDocumentTitle = (subTitle = null) => {
-  //const { isAuthenticated, settingsStore, product: currentModule } = auth;
-  //const { organizationName } = settingsStore;
-  const organizationName = "ONLYOFFICE"; //TODO: Replace to API variant
-  const moduleTitle = "Documents"; //TODO: Replace to API variant
-
-  // let title;
-  // if (subTitle) {
-  //   if (isAuthenticated && moduleTitle) {
-  //     title = subTitle + " - " + moduleTitle;
-  //   } else {
-  //     title = subTitle + " - " + organizationName;
-  //   }
-  // } else if (moduleTitle && organizationName) {
-  //   title = moduleTitle + " - " + organizationName;
-  // } else {
-  //   title = organizationName;
-  // }
-
-  document.title = subTitle; //title;
-};
 const getDefaultFileName = (format) => {
   switch (format) {
     case "docx":
@@ -150,9 +154,10 @@ const getDefaultFileName = (format) => {
     default:
       return " SSR New Folder";
   }
-};
+}; // TODO: нужно подключить i18n
 
 const onSDKRequestSharingSettings = () => {
+  //setIsVisible(true); TODO: перенести шару
   console.log("onSDKRequestSharingSettings");
 };
 
@@ -184,67 +189,6 @@ const onSDKRequestRestore = async (event) => {
   //   });
   // }
   console.log("onSDKRequestRestore");
-};
-
-const onSDKAppReady = () => {
-  // console.log("ONLYOFFICE Document Editor is ready");
-
-  // const index = url.indexOf("#message/");
-  // if (index > -1) {
-  //   const splitUrl = url.split("#message/");
-  //   const message = decodeURIComponent(splitUrl[1]).replaceAll("+", " ");
-  //   history.pushState({}, null, url.substring(0, index));
-  //   docEditor.showMessage(message);
-  // }
-
-  // const tempElm = document.getElementById("loader");
-  // if (tempElm) {
-  //   tempElm.outerHTML = "";
-  // }
-  console.log("onSDKAppReady");
-};
-
-const onDocumentStateChange = (event) => {
-  // if (!documentIsReady) return;
-
-  // docSaved = !event.data;
-  // throttledChangeTitle();
-  console.log("onDocumentStateChange");
-};
-
-const onDocumentReady = () => {
-  // documentIsReady = true;
-
-  // if (isSharingAccess) {
-  //   loadUsersRightsList();
-  // }
-  console.log("onDocumentReady");
-};
-
-const onMetaChange = (event) => {
-  // const newTitle = event.data.title;
-  // const favorite = event.data.favorite;
-
-  // if (newTitle && newTitle !== docTitle) {
-  //   setDocumentTitle(newTitle);
-  //   docTitle = newTitle;
-  // }
-
-  // if (!newTitle) {
-  //   const onlyNumbers = new RegExp("^[0-9]+$");
-  //   const isFileWithoutProvider = onlyNumbers.test(fileId);
-
-  //   const convertFileId = isFileWithoutProvider ? +fileId : fileId;
-
-  //   favorite
-  //     ? markAsFavorite([convertFileId])
-  //         .then(() => updateFavorite(favorite))
-  //         .catch((error) => console.log("error", error))
-  //     : removeFromFavorite([convertFileId])
-  //         .then(() => updateFavorite(favorite))
-  //         .catch((error) => console.log("error", error));
-  // }
-  console.log("onMetaChange");
 };
 
 const onSDKRequestInsertImage = (event) => {
@@ -316,15 +260,6 @@ const onMakeActionLink = (event) => {
   // const linkFormation = `${urlFormation}&anchor=${link}`;
 
   // docEditor.setActionLink(linkFormation);
-  console.log("onMakeActionLink");
-};
-
-const onSDKRequestSaveAs = (event) => {
-  // setTitleSelectorFolder(event.data.title);
-  // setUrlSelectorFolder(event.data.url);
-  // setExtension(event.data.title.split(".").pop());
-
-  // setIsFolderDialogVisible(true);
   console.log("onMakeActionLink");
 };
 
@@ -416,11 +351,12 @@ const initDesktop = (cfg) => {
   );
 };
 
-let docTitle;
 const text = "text";
 const presentation = "presentation";
-// let docEditor;
-// let isSharingAccess;
+let documentIsReady = false; // move to state?
+let docSaved = null; // move to state?
+let docTitle = null;
+
 export default function Home({
   fileInfo,
   docApiUrl,
@@ -430,9 +366,122 @@ export default function Home({
   isSharingAccess,
   docEditor,
   user,
+  url,
+  doc,
+  fileId, //
 }) {
+  const [titleSelectorFolder, setTitleSelectorFolder] = useState("");
+  const [urlSelectorFolder, setUrlSelectorFolder] = useState("");
+  const [extension, setExtension] = useState();
+  const [isFolderDialogVisible, setIsFolderDialogVisible] = useState(false);
+
+  const throttledChangeTitle = throttle(() => changeTitle(), 500);
+
   const router = useRouter();
-  useEffect(() => {});
+  useEffect(() => {}, []);
+
+  const loadUsersRightsList = () => {
+    // SharingDialog.getSharingSettings(fileId).then((sharingSettings) => {
+    //   docEditor.setSharingSettings({
+    //     sharingSettings,
+    //   });
+    // }); TODO:
+    console.log("loadUsersRightsList");
+  };
+
+  const onDocumentReady = () => {
+    documentIsReady = true;
+
+    if (isSharingAccess) {
+      loadUsersRightsList();
+    }
+  };
+
+  const updateFavorite = (favorite) => {
+    docEditor.setFavorite(favorite);
+  }; //+++
+
+  const onMetaChange = (event) => {
+    const newTitle = event.data.title;
+    const favorite = event.data.favorite;
+
+    if (newTitle && newTitle !== docTitle) {
+      setDocumentTitle(newTitle);
+      docTitle = newTitle;
+    }
+
+    if (!newTitle) {
+      const onlyNumbers = new RegExp("^[0-9]+$");
+      const isFileWithoutProvider = onlyNumbers.test(fileId);
+
+      const convertFileId = isFileWithoutProvider ? +fileId : fileId;
+
+      favorite
+        ? markAsFavorite([convertFileId])
+            .then(() => updateFavorite(favorite))
+            .catch((error) => console.log("error", error))
+        : removeFromFavorite([convertFileId])
+            .then(() => updateFavorite(favorite))
+            .catch((error) => console.log("error", error));
+    }
+  }; // +++
+
+  const setDocumentTitle = (subTitle = null) => {
+    //const { isAuthenticated, settingsStore, product: currentModule } = auth;
+    //const { organizationName } = settingsStore;
+    const organizationName = "ONLYOFFICE"; //TODO: Replace to API variant
+    const moduleTitle = "Documents"; //TODO: Replace to API variant
+
+    let title;
+    if (subTitle) {
+      if (successAuth && moduleTitle) {
+        title = subTitle + " - " + moduleTitle;
+      } else {
+        title = subTitle + " - " + organizationName;
+      }
+    } else if (moduleTitle && organizationName) {
+      title = moduleTitle + " - " + organizationName;
+    } else {
+      title = organizationName;
+    }
+
+    document.title = title;
+  }; //+++
+
+  const changeTitle = () => {
+    docSaved ? setDocumentTitle(docTitle) : setDocumentTitle(`*${docTitle}`);
+  }; // +++
+
+  const onDocumentStateChange = (event) => {
+    if (!documentIsReady) return;
+
+    docSaved = !event.data;
+    throttledChangeTitle();
+  }; //+++
+
+  const onSDKRequestSaveAs = (event) => {
+    setTitleSelectorFolder(event.data.title);
+    setUrlSelectorFolder(event.data.url);
+    setExtension(event.data.title.split(".").pop());
+    setIsFolderDialogVisible(true);
+  }; // +++
+
+  const onSDKAppReady = () => {
+    console.log("ONLYOFFICE Document Editor is ready");
+
+    const index = url.indexOf("#message/");
+    if (index > -1) {
+      const splitUrl = url.split("#message/");
+      const message = decodeURIComponent(splitUrl[1]).replaceAll("+", " ");
+      history.pushState({}, null, url.substring(0, index));
+      docEditor.showMessage(message);
+    }
+
+    // const tempElm = document.getElementById("loader");
+    // if (tempElm) {
+    //   tempElm.outerHTML = "";
+    // } not need to ssr
+  }; // +++
 
   const onLoad = () => {
     try {
@@ -440,27 +489,30 @@ export default function Home({
 
       console.log("Editor config: ", config);
 
-      docTitle = config.document.title;
-
-      setFavicon(config.documentType);
+      setFavicon(config.documentType); // TODO: need to fix
+      const docTitle = config.document.title;
       setDocumentTitle(docTitle);
 
       if (isMobile) {
         config.type = "mobile";
+        // не уверен что нужно, т.к. сразу в конфиге прилетает
       }
 
       let goBack;
+      const url = window.location.href;
 
       if (fileInfo) {
         const filterObj = FilesFilter.getDefault();
         filterObj.folder = fileInfo.folderId;
         const urlFilter = filterObj.toUrlParams();
 
+        const filesUrl = url.substring(0, url.indexOf("/doceditor"));
+
         goBack = {
           blank: true,
           requestClose: false,
-          text: "test", ///i18n.t("FileLocation"),
-          url: "http://localhost:8092/product/files/", //"`${combineUrl(filesUrl, `/filter?${urlFilter}`)}`",
+          text: "SSR TEST", ///i18n.t("FileLocation"), TODO: подкключить i18
+          url: `${combineUrl(filesUrl, `/filter?${urlFilter}`)}`,
         };
       }
 
@@ -473,7 +525,8 @@ export default function Home({
         //TODO: add conditions for SaaS
         config.document.info.favorite = null;
       }
-      let url = window.location.href;
+
+      //let url = window.location.href;
       if (url.indexOf("anchor") !== -1) {
         const splitUrl = url.split("anchor=");
         const decodeURI = decodeURIComponent(splitUrl[1]);
@@ -495,21 +548,17 @@ export default function Home({
 
         const defaultFileName = getDefaultFileName(fileExt);
 
-        console.log("defaultFileName", defaultFileName);
-
         if (!user.isVisitor)
-          console.log("before combine", config.editorConfig.createUrl);
-        config.editorConfig.createUrl = combineUrl(
-          window.location.origin,
-          AppServerConfig.proxyURL,
-          "products/files/",
-          `/httphandlers/filehandler.ashx?action=create&doctype=text&title=${encodeURIComponent(
-            defaultFileName
-          )}`
-        );
-
-        console.log("after combine", config.editorConfig.createUrl);
+          config.editorConfig.createUrl = combineUrl(
+            window.location.origin,
+            AppServerConfig.proxyURL,
+            "products/files/",
+            `/httphandlers/filehandler.ashx?action=create&doctype=text&title=${encodeURIComponent(
+              defaultFileName
+            )}`
+          );
       }
+
       let onRequestSharingSettings,
         onRequestRename,
         onRequestSaveAs,
@@ -527,7 +576,7 @@ export default function Home({
       }
 
       if (successAuth) {
-        onRequestSaveAs = onSDKRequestSaveAs;
+        onRequestSaveAs = onSDKRequestSaveAs; //+++
         onRequestInsertImage = onSDKRequestInsertImage;
         onRequestMailMergeRecipients = onSDKRequestMailMergeRecipients;
         onRequestCompareFile = onSDKRequestCompareFile;
@@ -538,14 +587,14 @@ export default function Home({
       }
       const events = {
         events: {
-          onAppReady: onSDKAppReady,
-          onDocumentStateChange: onDocumentStateChange,
-          onMetaChange: onMetaChange,
-          onDocumentReady: onDocumentReady,
-          onInfo: onSDKInfo,
-          onWarning: onSDKWarning,
-          onError: onSDKError,
-          onRequestSharingSettings,
+          onAppReady: onSDKAppReady, // +++
+          onDocumentStateChange: onDocumentStateChange, // +++
+          onMetaChange: onMetaChange, // +++
+          onDocumentReady: onDocumentReady, // ++-
+          onInfo: onSDKInfo, // +++
+          onWarning: onSDKWarning, // +++
+          onError: onSDKError, // +++
+          onRequestSharingSettings, //---
           onRequestRename,
           onMakeActionLink: onMakeActionLink,
           onRequestInsertImage,
@@ -565,14 +614,14 @@ export default function Home({
       docEditor = window.DocsAPI.DocEditor("editor", newConfig);
     } catch (error) {
       console.log(error);
-      toastr.error(error.message, null, 0, true);
+      //toastr.error(error.message, null, 0, true);
     }
   };
 
   return (
     <div style={{ height: "100vh" }}>
-      <Head title="SSR TEST">
-        <title>SSR TEST</title>
+      <Head title="Loading...">
+        <title>Loading...</title>
       </Head>
       <div id="editor"></div>
       <Script
@@ -591,7 +640,7 @@ export default function Home({
 
 export async function getServerSideProps({ params, req, query, res }) {
   const { headers, cookies, url } = req;
-  const { fileId, slug, version, desktop: isDesktop } = query;
+  const { version, desktop: isDesktop } = query;
   let error,
     docApiUrl,
     settings,
@@ -601,13 +650,18 @@ export async function getServerSideProps({ params, req, query, res }) {
     personal,
     successAuth,
     actionLink,
-    isSharingAccess;
+    isSharingAccess,
+    doc;
 
-  console.log(query);
+  const decodedId = query.fileId || query.fileid || null;
+  const fileId =
+    typeof decodedId === "string" ? encodeURIComponent(decodedId) : decodedId;
+
+  console.log(query, url);
 
   try {
-    const filesUrl = url.substring(0, url.indexOf("/doceditor")); //move to client?
-    const doc = url.indexOf("doc=") !== -1 ? url.split("doc=")[1] : null;
+    //const doc = url.indexOf("doc=") !== -1 ? url.split("doc=")[1] : null;??
+    doc = query?.doc || null;
     const view = url.indexOf("action=view") !== -1;
 
     if (!fileId) {
@@ -632,7 +686,7 @@ export async function getServerSideProps({ params, req, query, res }) {
         Location: personal
           ? `/sign-in?fallback=${url}`
           : `/login?fallback=${url}`,
-        state: { url: slug },
+        state: { url: url },
       });
       res.end();
       return;
@@ -680,6 +734,7 @@ export async function getServerSideProps({ params, req, query, res }) {
     }
 
     actionLink = config?.editorConfig?.actionLink;
+    console.log(config);
 
     if (isDesktop) {
       // initDesktop(config); TODO:
@@ -706,6 +761,9 @@ export async function getServerSideProps({ params, req, query, res }) {
       error,
       actionLink,
       isSharingAccess,
+      url,
+      doc,
+      fileId,
     },
   };
 }
