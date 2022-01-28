@@ -681,6 +681,7 @@ class FilesActionStore {
     const { destFolderId, folderIds, fileIds } = operationData;
     const { setBufferSelection } = this.filesStore;
 
+    this.filesStore.setSelected("none");
     let conflicts;
 
     try {
