@@ -263,7 +263,7 @@ const Base = {
     },
 
     svg: {
-      margin: "11px",
+      margin: "11px 16px",
       width: "18px",
       height: "18px",
       minWidth: "18px",

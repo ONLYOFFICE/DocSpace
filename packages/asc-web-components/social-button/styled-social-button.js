@@ -23,8 +23,9 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
   font-family: ${(props) => props.theme.fontFamily};
   border: none;
   display: flex;
+  flex-direction: row;
   align-items: center;
-
+  justify-content: center;
   font-weight: ${(props) => props.theme.socialButton.fontWeight};
   text-decoration: ${(props) => props.theme.socialButton.textDecoration};
   margin: ${(props) => props.theme.socialButton.margin};
@@ -109,7 +110,6 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
 
     width: ${(props) => props.theme.socialButton.text.width};
     height: ${(props) => props.theme.socialButton.text.height};
-    margin: ${(props) => props.theme.socialButton.text.margin};
     font-family: Roboto, "Open Sans", sans-serif, Arial;
     font-style: normal;
     font-weight: ${(props) => props.theme.socialButton.text.fontWeight};
