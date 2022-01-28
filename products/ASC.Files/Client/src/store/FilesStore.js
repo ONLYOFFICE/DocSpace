@@ -72,6 +72,9 @@ class FilesStore {
 
     socketHelper.on("s:modify-folder", async (opt) => {
       console.log("Call s:modify-folder", opt);
+
+      if (this.isLoading) return;
+
       //selectedFolderStore.id === folderId && this.fetchFiles(folderId);
       switch (opt?.cmd) {
         case "create":
@@ -79,9 +82,8 @@ class FilesStore {
             const foundIndex = this.files.findIndex((x) => x.id === opt?.id);
             if (foundIndex > -1) return;
 
-            const file = opt?.data
-              ? JSON.parse(opt?.data)
-              : await api.files.getFileInfo(opt?.id);
+            const file = JSON.parse(opt?.data);
+
             this.setFiles([file, ...this.files]);
           } else if (opt?.type == "folder" && opt?.id) {
             const foundIndex = this.files.findIndex((x) => x.id === opt?.id);
@@ -98,7 +100,16 @@ class FilesStore {
             if (foundIndex == -1) return;
 
             this.setFiles(
-              this.files.filter((value, index) => {
+              this.files.filter((_, index) => {
+                return index !== foundIndex;
+              })
+            );
+          } else if (opt?.type == "folder" && opt?.id) {
+            const foundIndex = this.folders.findIndex((x) => x.id === opt?.id);
+            if (foundIndex == -1) return;
+
+            this.setFolders(
+              this.folders.filter((_, index) => {
                 return index !== foundIndex;
               })
             );
