@@ -664,6 +664,8 @@ const Base = {
     },
 
     icon: {
+      background: white,
+
       border: "1px solid",
       borderRadius: "0 3px 3px 0",
 
