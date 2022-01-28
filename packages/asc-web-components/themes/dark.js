@@ -661,6 +661,8 @@ const Dark = {
     },
 
     icon: {
+      background: "#292929",
+
       border: "1px solid",
       borderRadius: "0 3px 3px 0",
 
