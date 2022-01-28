@@ -804,7 +804,7 @@ const Editor = () => {
         {!isLoading ? (
           <>
             <div id="editor"></div>
-            {isSharingAccess && (
+            {isSharingAccess && isVisible && (
               <SharingDialog
                 isVisible={isVisible}
                 sharingObject={fileInfo}
