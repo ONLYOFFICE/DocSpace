@@ -2155,6 +2155,8 @@ const Dark = {
       background: black,
       borderBottom: "1px solid #474747",
       borderRight: "1px solid #474747",
+
+      buttonsBackground: black,
     },
 
     filesList: {
@@ -2436,7 +2438,7 @@ const Dark = {
   },
 
   editor: {
-    color: "#858585",
+    color: "#eeeeee",
     background: black,
   },
 };

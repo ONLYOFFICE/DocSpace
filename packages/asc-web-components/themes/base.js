@@ -2147,6 +2147,8 @@ const Base = {
       background: grayLight,
       borderBottom: `1px solid ${grayLightMid}`,
       borderRight: `1px solid ${globalColors.lightGrayishBlue}`,
+
+      buttonsBackground: white,
     },
 
     filesList: {

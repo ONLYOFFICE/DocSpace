@@ -862,7 +862,7 @@ const StyledSelectFilePanel = styled.div`
     position: fixed;
     bottom: 0;
     padding-top: 8px;
-    background-color: white;
+    background-color: ${(props) => props.theme.filesPanels.selectFile.buttonsBackground};
     height: 40px;
     width: 100%;
   }
