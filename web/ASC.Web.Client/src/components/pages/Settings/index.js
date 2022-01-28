@@ -26,6 +26,9 @@ const TeamTemplate = lazy(() => import("./categories/common/team-template"));
 const ThirdPartyServices = lazy(() =>
   import("./categories/integration/thirdPartyServicesSettings")
 );
+const SingleSignOn = lazy(() =>
+  import("./categories/integration/SingleSignOn")
+);
 
 //const WhiteLabel = lazy(() => import("./categories/common/whitelabel"));
 const PROXY_BASE_URL = combineUrl(AppServerConfig.proxyURL, "/settings");
@@ -57,6 +60,7 @@ const THIRD_PARTY_URL = combineUrl(
   PROXY_BASE_URL,
   "/integration/third-party-services"
 );
+const SSO_URL = combineUrl(PROXY_BASE_URL, "/integration/single-sign-on");
 const ERROR_404_URL = combineUrl(AppServerConfig.proxyURL, "/error/404");
 
 const Settings = () => {
@@ -84,6 +88,7 @@ const Settings = () => {
           <Route exact path={TFA_PAGE_URL} component={TfaPage} />
 
           <Route exact path={THIRD_PARTY_URL} component={ThirdPartyServices} />
+          <Route exact path={SSO_URL} component={SingleSignOn} />
           <Redirect
             to={{
               pathname: ERROR_404_URL,

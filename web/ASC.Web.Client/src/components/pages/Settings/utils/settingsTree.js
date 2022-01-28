@@ -98,6 +98,13 @@ export const settingsTree = [
         tKey: "ThirdPartyAuthorization",
         isCategory: true,
       },
+      {
+        key: "3-1",
+        icon: "",
+        link: "single-sign-on",
+        tKey: "SingleSignOn",
+        isCategory: true,
+      },
     ],
   },
 ];

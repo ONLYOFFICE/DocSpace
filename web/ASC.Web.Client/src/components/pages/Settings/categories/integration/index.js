@@ -6,6 +6,7 @@ import { combineUrl } from "@appserver/common/utils";
 import AppServerConfig from "@appserver/common/constants/AppServerConfig";
 
 const ThirdPartyServices = lazy(() => import("./thirdPartyServicesSettings"));
+const SingleSignOn = lazy(() => import("./SingleSignOn"));
 
 const PROXY_BASE_URL = combineUrl(
   AppServerConfig.proxyURL,
@@ -26,6 +27,15 @@ const Integration = ({ match }) => {
             match.path,
           ]}
           component={ThirdPartyServices}
+        />
+        <Route
+          exact
+          path={[
+            combineUrl(PROXY_BASE_URL, "/single-sign-on"),
+            combineUrl(AppServerConfig.proxyURL, "/integration"),
+            match.path,
+          ]}
+          component={SingleSignOn}
         />
       </Switch>
     </Suspense>
