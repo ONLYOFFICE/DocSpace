@@ -23,20 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-
-using ASC.Core;
-using ASC.Core.Common;
-using ASC.Core.Tenants;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
-
 namespace ASC.VoipService
 {
     public class VoipSettings
