@@ -14,33 +14,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common;
-using ASC.Files.Core;
-using ASC.Web.Core.Files;
-using ASC.Web.Core.Users;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Core;
-using ASC.Web.Files.Services.DocumentService;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats.Png;
-
 namespace ASC.Files.ThumbnailBuilder
 {
     [Singletone]

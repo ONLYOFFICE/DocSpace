@@ -15,8 +15,6 @@
 */
 
 
-using ASC.Common;
-using ASC.Common.Caching;
 using ASC.Web.Files;
 
 namespace ASC.Files.ThumbnailBuilder
