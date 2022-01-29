@@ -10,10 +10,6 @@
 // You must not remove this notice, or any other, from this software.
 #endregion
 
-#region Using Statements
-using System.Collections.Generic;
-#endregion
-
 
 namespace Textile
 {
