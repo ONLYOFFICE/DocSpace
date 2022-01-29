@@ -1,10 +1,4 @@
-﻿using System;
-using System.Linq;
-
-using ASC.People.Resources;
-using ASC.Web.Core;
-
-namespace ASC.People
+﻿namespace ASC.People
 {
     public class PeopleProduct : Product
     {
@@ -14,7 +8,7 @@ namespace ASC.People
 
         public static Guid ID
         {
-            get { return new Guid("{F4D98AFD-D336-4332-8778-3C6945C81EA0}"); }
+            get { return new Guid("{F4D98AFD-D336-4332 -8778-3C6945C81EA0}"); }
         }
 
         public override bool Visible { get { return true; } }

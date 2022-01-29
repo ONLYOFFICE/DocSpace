@@ -1,18 +1,6 @@
-﻿
-using ASC.Api.Core;
-using ASC.Common;
-using ASC.Employee.Core.Controllers;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-
-using StackExchange.Redis.Extensions.Core.Configuration;
-using StackExchange.Redis.Extensions.Newtonsoft;
-
-namespace ASC.People
+﻿namespace ASC.People
 {
-public class Startup : BaseStartup
+    public class Startup : BaseStartup
     {
         public override bool ConfirmAddScheme { get => true; }
 
