@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
@@ -39,9 +39,14 @@ const FilesMediaViewer = (props) => {
     }
   }, [removeQuery, onMediaFileClick]);
 
-  window.onpopstate = function (e) {
+  useEffect(() => {
+    window.addEventListener("popstate", onButtonBackHandler);
+  }, [onButtonBackHandler]);
+
+  const onButtonBackHandler = () => {
     const hash = window.location.hash;
     const id = +hash.slice(9);
+
     if (!id) {
       setMediaViewerData({ visible: false, id: null });
       return;
@@ -118,18 +123,14 @@ const FilesMediaViewer = (props) => {
     }
     setMediaViewerData({ visible: false, id: null });
 
-    console.log("event", e);
-
     if (e) {
       const url = localStorage.getItem("isFirstUrl");
 
       if (!url) {
         return;
       }
-
       window.history.replaceState(null, null, url);
     }
-    localStorage.removeItem("isFirstUrl");
   };
 
   return (
@@ -150,7 +151,7 @@ const FilesMediaViewer = (props) => {
         extsMediaPreviewed={mediaViewerMediaFormats} //TODO:
         extsImagePreviewed={mediaViewerImageFormats} //TODO:
         errorLabel={t("Translations:MediaLoadError")}
-        previewFile={previewFile}
+        isPreviewFile={!!previewFile}
         onChangeUrl={onChangeUrl}
       />
     )
