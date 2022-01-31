@@ -23,6 +23,8 @@
  *
 */
 
+using DbContext = ASC.Core.Common.EF.Context.DbContext;
+
 namespace ASC.Geolocation
 {
     public class GeolocationHelper

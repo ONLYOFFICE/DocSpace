@@ -23,6 +23,8 @@
  *
 */
 
+using Constants = ASC.Core.Configuration.Constants;
+
 namespace ASC.Core.Common.Notify
 {
     class PushSenderSink : Sink

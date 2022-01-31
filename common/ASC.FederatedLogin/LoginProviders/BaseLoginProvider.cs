@@ -44,6 +44,7 @@ namespace ASC.FederatedLogin.LoginProviders
 
     public abstract class BaseLoginProvider<T> : Consumer, ILoginProvider where T : Consumer, ILoginProvider, new()
     {
+        private readonly InstanceCrypto zinstanceCrypto;
         public T Instance
         {
             get

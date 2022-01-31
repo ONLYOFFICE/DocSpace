@@ -23,6 +23,8 @@
  *
 */
 
+using SecurityContext = ASC.Core.SecurityContext;
+
 namespace ASC.Api.Core
 {
     [Scope]

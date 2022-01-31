@@ -23,6 +23,8 @@
  *
 */
 
+using JsonSerializer = System.Text.Json.JsonSerializer;
+
 namespace ASC.Common.Threading
 {
     public class DistributedTask

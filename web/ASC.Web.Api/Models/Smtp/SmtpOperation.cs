@@ -36,6 +36,7 @@ using MailKit.Security;
 
 using MimeKit;
 
+using AuthenticationException = System.Security.Authentication.AuthenticationException;
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Api.Settings.Smtp

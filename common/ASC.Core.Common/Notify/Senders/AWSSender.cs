@@ -23,6 +23,8 @@
  *
 */
 
+using Message = Amazon.SimpleEmail.Model.Message;
+
 namespace ASC.Core.Notify.Senders
 {
     [Singletone(Additional = typeof(AWSSenderExtension))]

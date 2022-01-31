@@ -23,6 +23,8 @@
  *
 */
 
+using Timeout = System.Threading.Timeout;
+
 namespace ASC.Web.Files.Utils
 {
     [Singletone(Additional = typeof(FileConverterQueueExtension))]

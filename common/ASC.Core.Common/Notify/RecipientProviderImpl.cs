@@ -23,6 +23,8 @@
  *
 */
 
+using Constants = ASC.Core.Users.Constants;
+
 namespace ASC.Core.Notify
 {
     public class RecipientProviderImpl : IRecipientProvider
