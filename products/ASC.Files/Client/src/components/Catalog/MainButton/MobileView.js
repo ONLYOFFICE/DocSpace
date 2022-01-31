@@ -1,17 +1,17 @@
-import React from 'react';
-import styled, { css } from 'styled-components';
-import { inject, observer } from 'mobx-react';
-import { isMobileOnly } from 'react-device-detect';
+import React from "react";
+import styled, { css } from "styled-components";
+import { inject, observer } from "mobx-react";
+import { isMobileOnly } from "react-device-detect";
 
-import { mobile } from '@appserver/components/utils/device';
+import { mobile } from "@appserver/components/utils/device";
 
-import MainButtonMobile from '@appserver/components/main-button-mobile';
+import MainButtonMobile from "@appserver/components/main-button-mobile";
 
 const StyledMainButtonMobile = styled(MainButtonMobile)`
   position: fixed;
 
-  right: 21px;
-  bottom: 21px;
+  right: 24px;
+  bottom: 24px;
 
   @media ${mobile} {
     right: 16px;
@@ -20,8 +20,8 @@ const StyledMainButtonMobile = styled(MainButtonMobile)`
 
   ${isMobileOnly &&
   css`
-    right: 13px;
-    bottom: 13px;
+    right: 16px;
+    bottom: 16px;
   `}
 `;
 
@@ -30,14 +30,17 @@ const MobileView = ({
   buttonOptions,
   sectionWidth,
   files,
+  clearUploadData,
+  setUploadPanelVisible,
   primaryProgressDataVisible,
   primaryProgressDataPercent,
   primaryProgressDataLoadingFile,
   clearPrimaryProgressData,
-  filesToConversion,
   secondaryProgressDataStoreVisible,
   secondaryProgressDataStorePercent,
-  secondaryProgressFinished,
+  secondaryProgressDataStoreCurrentFile,
+  secondaryProgressDataStoreCurrentFilesCount,
+  clearSecondaryProgressData,
 }) => {
   const [isOpenButton, setIsOpenButton] = React.useState(false);
   const [percentProgress, setPercentProgress] = React.useState(0);
@@ -50,6 +53,15 @@ const MobileView = ({
     setIsOpenButton((prevState) => !prevState);
   };
 
+  const showUploadPanel = React.useCallback(() => {
+    setUploadPanelVisible && setUploadPanelVisible(true);
+  }, [setUploadPanelVisible]);
+
+  const clearUploadPanel = React.useCallback(() => {
+    clearUploadData && clearUploadData();
+    clearPrimaryProgressData && clearPrimaryProgressData();
+  }, [clearUploadData, clearPrimaryProgressData]);
+
   React.useEffect(() => {
     let currentPrimaryNumEl = primaryNumEl;
 
@@ -59,29 +71,54 @@ const MobileView = ({
     }
 
     if (primaryCurrentFile.current !== null && primaryProgressDataLoadingFile) {
-      if (primaryCurrentFile.current !== primaryProgressDataLoadingFile.uniqueId) {
+      if (
+        primaryCurrentFile.current !== primaryProgressDataLoadingFile.uniqueId
+      ) {
         currentPrimaryNumEl++;
         primaryCurrentFile.current = primaryProgressDataLoadingFile.uniqueId;
       }
     }
 
-    console.log(filesToConversion);
+    const currentSecondaryProgressItem =
+      (secondaryProgressDataStoreCurrentFilesCount *
+        secondaryProgressDataStorePercent) /
+      100;
 
     const newProgressOptions = [
       {
-        key: 'primary-progress',
+        key: "primary-progress",
         open: primaryProgressDataVisible,
-        label: 'Upload',
-        icon: '/static/images/mobile.actions.remove.react.svg',
+        label: "Upload",
+        icon: "/static/images/mobile.actions.remove.react.svg",
         percent: primaryProgressDataPercent,
-        status: `${primaryProgressDataPercent === 100 ? files.length : currentPrimaryNumEl}/${
-          files.length
-        }`,
-        onCancel: clearPrimaryProgressData,
+        status: `${
+          primaryProgressDataPercent === 100
+            ? files.length
+            : currentPrimaryNumEl
+        }/${files.length}`,
+        onClick: showUploadPanel,
+        onCancel: clearUploadPanel,
+      },
+      {
+        key: "secondary-progress",
+        open: secondaryProgressDataStoreVisible,
+        label: "Other operations",
+        icon: "/static/images/mobile.actions.remove.react.svg",
+        percent: secondaryProgressDataStorePercent,
+        status: `${currentSecondaryProgressItem}/${secondaryProgressDataStoreCurrentFilesCount}`,
+        onCancel: clearSecondaryProgressData,
       },
     ];
 
-    const newPercentProgress = primaryProgressDataPercent;
+    let newPercentProgress =
+      primaryProgressDataPercent + secondaryProgressDataStorePercent;
+
+    if (primaryProgressDataVisible && secondaryProgressDataStoreVisible) {
+      newPercentProgress =
+        ((currentPrimaryNumEl + currentSecondaryProgressItem) /
+          (files.length + secondaryProgressDataStoreCurrentFilesCount)) *
+        100;
+    }
 
     if (primaryProgressDataPercent === 100) {
       currentPrimaryNumEl = 0;
@@ -93,14 +130,15 @@ const MobileView = ({
     setProgressOptions([...newProgressOptions]);
   }, [
     files.length,
+    showUploadPanel,
+    clearUploadPanel,
     primaryProgressDataVisible,
     primaryProgressDataPercent,
     primaryProgressDataLoadingFile,
-    clearPrimaryProgressData,
-    filesToConversion,
     secondaryProgressDataStoreVisible,
     secondaryProgressDataStorePercent,
-    secondaryProgressFinished,
+    secondaryProgressDataStoreCurrentFile,
+    secondaryProgressDataStoreCurrentFilesCount,
   ]);
 
   return (
@@ -121,17 +159,11 @@ const MobileView = ({
 
 export default inject(({ uploadDataStore }) => {
   const {
-    startUpload,
-    converted,
-    clearUploadData,
-    cancelUpload,
-    cancelConversion,
-    clearUploadedFiles,
-    setUploadPanelVisible,
     files,
-    filesToConversion,
+    setUploadPanelVisible,
     secondaryProgressDataStore,
     primaryProgressDataStore,
+    clearUploadData,
   } = uploadDataStore;
 
   const {
@@ -144,18 +176,23 @@ export default inject(({ uploadDataStore }) => {
   const {
     visible: secondaryProgressDataStoreVisible,
     percent: secondaryProgressDataStorePercent,
-    isSecondaryProgressFinished: secondaryProgressFinished,
+    currentFile: secondaryProgressDataStoreCurrentFile,
+    filesCount: secondaryProgressDataStoreCurrentFilesCount,
+    clearSecondaryProgressData,
   } = secondaryProgressDataStore;
 
   return {
     files,
+    clearUploadData,
+    setUploadPanelVisible,
     primaryProgressDataVisible,
     primaryProgressDataPercent,
     primaryProgressDataLoadingFile,
     clearPrimaryProgressData,
-    filesToConversion,
     secondaryProgressDataStoreVisible,
     secondaryProgressDataStorePercent,
-    secondaryProgressFinished,
+    secondaryProgressDataStoreCurrentFile,
+    secondaryProgressDataStoreCurrentFilesCount,
+    clearSecondaryProgressData,
   };
 })(observer(MobileView));

@@ -4,7 +4,7 @@ import DropDown from "../drop-down";
 import DropDownItem from "../drop-down-item";
 import FloatingButton from "@appserver/common/components/FloatingButton";
 
-import { isMobile } from "react-device-detect";
+import { isMobileOnly } from "react-device-detect";
 import { mobile } from "../utils/device";
 
 const StyledFloatingButton = styled(FloatingButton)`
@@ -20,9 +20,6 @@ const StyledFloatingButton = styled(FloatingButton)`
       display: flex;
       align-items: center;
       justify-content: center;
-      /* svg {
-        ${(props) => props.isOpen && `margin-bottom: 4px;`}
-      } */
     }
   }
 
@@ -72,7 +69,7 @@ const StyledDropDown = styled(DropDown)`
     ${mobileDropDown}
   }
 
-  ${isMobile && mobileDropDown}
+  ${isMobileOnly && mobileDropDown}
 
   .section-scroll {
     padding-right: 0px !important;
@@ -134,6 +131,7 @@ const StyledButtonWrapper = styled.div`
 
 const StyledProgressContainer = styled.div`
   display: ${(props) => (props.isUploading ? "flex" : "none")};
+  flex-direction: column;
   background-color: ${(props) => (props.isUploading ? "#ECEEF1" : "#fff")};
   cursor: default;
   padding: 0 24px 34px;

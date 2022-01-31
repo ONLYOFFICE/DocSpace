@@ -26,15 +26,21 @@ const ProgressBarMobile = ({
   open,
   onCancel,
   icon,
-  onClick,
+  onClickAction,
+  hideButton,
   error,
 }) => {
   const uploadPercent = percent > 100 ? 100 : percent;
 
+  const onClickHeaderAction = () => {
+    onClickAction && onClickAction();
+    hideButton();
+  };
+
   return (
     <StyledProgressBarContainer isUploading={open}>
       <Text
-        onClick={onClick}
+        onClick={onClickHeaderAction}
         className="progress-header"
         fontSize={`14`}
         color="#657077"
@@ -60,7 +66,7 @@ ProgressBarMobile.propTypes = {
   onCancel: PropTypes.func,
   icon: PropTypes.string,
   /** The function that will be called after the progress header click  */
-  onClick: PropTypes.func,
+  onClickAction: PropTypes.func,
   /** If true the progress bar changes color */
   error: PropTypes.bool,
 };
@@ -108,6 +114,7 @@ const MainButtonMobile = (props) => {
     if (isOpenButton && onClose) {
       onClose();
     }
+
     return setIsOpen(isOpen);
   };
 
@@ -134,6 +141,7 @@ const MainButtonMobile = (props) => {
           {actionOptions.map((option) => {
             const optionOnClickAction = () => {
               toggle(false);
+              console.log("1");
               option.onClick && option.onClick({ action: option.action });
             };
 
@@ -164,6 +172,8 @@ const MainButtonMobile = (props) => {
                 status={option.status}
                 open={option.open}
                 onCancel={option.onCancel}
+                onClickAction={option.onClick}
+                hideButton={() => toggle(false)}
                 error={option.error}
               />
             ))}
