@@ -23,10 +23,6 @@
  *
 */
 
-
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
-
 namespace ASC.Data.Storage
 {
     [Singletone]

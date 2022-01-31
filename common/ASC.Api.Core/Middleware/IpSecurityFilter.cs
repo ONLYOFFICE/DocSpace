@@ -1,8 +1,4 @@
-﻿using ASC.IPSecurity;
-
-using Microsoft.AspNetCore.Mvc.Filters;
-
-namespace ASC.Api.Core.Middleware
+﻿namespace ASC.Api.Core.Middleware
 {
     [Scope]
     public class IpSecurityFilter : IResourceFilter

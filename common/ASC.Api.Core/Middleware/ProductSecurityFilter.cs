@@ -1,8 +1,4 @@
-﻿using ASC.Common.Notify.Engine;
-
-using Microsoft.AspNetCore.Mvc.Routing;
-
-namespace ASC.Api.Core.Middleware
+﻿namespace ASC.Api.Core.Middleware
 {
     [Scope]
     public class ProductSecurityFilter : IResourceFilter

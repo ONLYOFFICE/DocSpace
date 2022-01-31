@@ -14,9 +14,6 @@
  *
 */
 
-
-using ASC.Web.Files;
-
 namespace ASC.Files.ThumbnailBuilder
 {
     [Singletone]

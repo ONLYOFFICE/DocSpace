@@ -1,7 +1,4 @@
-﻿
-using ASC.Api.Utils;
-
-namespace ASC.Data.Backup
+﻿namespace ASC.Data.Backup
 {
     [Scope]
     public class BackupAjaxHandler

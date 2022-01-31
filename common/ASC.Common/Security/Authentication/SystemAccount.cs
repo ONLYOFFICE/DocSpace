@@ -23,7 +23,6 @@
  *
 */
 
-using AutoMapper;
 namespace ASC.Common.Security.Authentication
 {
     [Serializable]

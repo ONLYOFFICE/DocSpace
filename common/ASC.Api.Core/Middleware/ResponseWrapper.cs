@@ -1,6 +1,4 @@
-﻿using System.Security;
-
-namespace ASC.Api.Core.Middleware
+﻿namespace ASC.Api.Core.Middleware
 {
     public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
     {

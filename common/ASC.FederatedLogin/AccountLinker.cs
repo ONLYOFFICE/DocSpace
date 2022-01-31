@@ -23,9 +23,6 @@
  *
 */
 
-
-using Microsoft.EntityFrameworkCore;
-
 namespace ASC.FederatedLogin
 {
     [Singletone]

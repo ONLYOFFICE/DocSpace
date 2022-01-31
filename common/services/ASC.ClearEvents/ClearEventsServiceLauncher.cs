@@ -22,7 +22,6 @@
  * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
 */
-
 namespace ASC.Thumbnails.Svc
 {
     [Scope(Additional = typeof(MessagesRepositoryExtension))]
