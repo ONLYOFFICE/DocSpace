@@ -75,7 +75,7 @@ class FilesStore {
     const { socketHelper } = authStore.settingsStore;
 
     socketHelper.on("s:modify-folder", async (opt) => {
-      console.log("Call s:modify-folder", opt);
+      //console.log("Call s:modify-folder", opt);
 
       if (this.isLoading) return;
 
@@ -124,7 +124,7 @@ class FilesStore {
 
     //WAIT FOR RESPONSES OF EDITING FILE
     socketHelper.on("s:start-edit-file", (id) => {
-      console.log(`Call s:start-edit-file (id=${id})`);
+      //console.log(`Call s:start-edit-file (id=${id})`);
       const foundIndex = this.files.findIndex((x) => x.id === id);
       if (foundIndex == -1) return;
 
@@ -132,7 +132,7 @@ class FilesStore {
     });
 
     socketHelper.on("s:stop-edit-file", (id) => {
-      console.log(`Call s:stop-edit-file (id=${id})`);
+      //console.log(`Call s:stop-edit-file (id=${id})`);
       const foundIndex = this.files.findIndex((x) => x.id === id);
       if (foundIndex == -1) return;
 

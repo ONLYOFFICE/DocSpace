@@ -22,7 +22,7 @@ class VersionHistoryStore {
       const { socketHelper } = this.filesStore.settingsStore;
 
       socketHelper.on("s:start-edit-file", (id) => {
-        console.log(`VERSION STORE Call s:start-edit-file (id=${id})`);
+        //console.log(`VERSION STORE Call s:start-edit-file (id=${id})`);
         const verIndex = this.versions.findIndex((x) => x.id == id);
         if (verIndex == -1) return;
 
@@ -30,7 +30,7 @@ class VersionHistoryStore {
       });
 
       socketHelper.on("s:stop-edit-file", (id) => {
-        console.log(`VERSION STORE Call s:stop-edit-file (id=${id})`);
+        //console.log(`VERSION STORE Call s:stop-edit-file (id=${id})`);
         const verIndex = this.files.findIndex((x) => x.id === id);
         if (verIndex == -1) return;
 
