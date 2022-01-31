@@ -23,13 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Core.Common.Notify.Push;
-
 namespace ASC.Web.Core.Mobile
 {
     public class CachedMobileAppInstallRegistrator : IMobileAppInstallRegistrator

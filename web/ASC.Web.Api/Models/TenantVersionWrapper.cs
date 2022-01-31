@@ -26,8 +26,6 @@
 
 using System.Collections.Generic;
 
-using ASC.Core;
-
 namespace ASC.Api.Settings
 {
     public class TenantVersionWrapper

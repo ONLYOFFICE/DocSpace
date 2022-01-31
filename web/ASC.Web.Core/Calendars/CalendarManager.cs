@@ -23,13 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
-using ASC.Common;
-using ASC.Core;
-
 namespace ASC.Web.Core.Calendars
 {
     public delegate List<BaseCalendar> GetCalendarForUser(Guid userId);

@@ -23,21 +23,7 @@
  *
 */
 
-
-using System;
-using System.Linq;
-using System.Security;
-using System.Web;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-
-using Microsoft.AspNetCore.Http;
-
-
-using SecurityContext = ASC.Core.SecurityContext;
+using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Core
 {

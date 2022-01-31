@@ -23,10 +23,6 @@
  *
 */
 
-
-using ASC.Common;
-using ASC.Core.Common.Notify.Push;
-
 namespace ASC.Web.Core.Mobile
 {
     [Scope(typeof(MobileAppInstallRegistrator), typeof(CachedMobileAppInstallRegistrator))]

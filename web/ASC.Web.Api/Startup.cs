@@ -1,9 +1,6 @@
-﻿
-using ASC.Api.Core;
-using ASC.Api.Settings;
+﻿using ASC.Api.Settings;
 using ASC.Web.Api.Controllers;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
