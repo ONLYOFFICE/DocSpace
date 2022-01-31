@@ -105,7 +105,9 @@ const MobileView = ({
         label: "Other operations",
         icon: "/static/images/mobile.actions.remove.react.svg",
         percent: secondaryProgressDataStorePercent,
-        status: `${currentSecondaryProgressItem}/${secondaryProgressDataStoreCurrentFilesCount}`,
+        status: `${Math.round(
+          currentSecondaryProgressItem
+        )}/${secondaryProgressDataStoreCurrentFilesCount}`,
         onCancel: clearSecondaryProgressData,
       },
     ];
