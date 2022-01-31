@@ -1,10 +1,10 @@
-import { makeObservable, action, observable, computed } from 'mobx';
+import { makeObservable, action, observable, computed } from "mobx";
 
 class SecondaryProgressDataStore {
   percent = 0;
-  label = '';
+  label = "";
   visible = false;
-  icon = 'trash';
+  icon = "trash";
   alert = false;
   filesCount = 0;
 
@@ -35,9 +35,9 @@ class SecondaryProgressDataStore {
 
   clearSecondaryProgressData = () => {
     this.percent = 0;
-    this.label = '';
+    this.label = "";
     this.visible = false;
-    this.icon = '';
+    this.icon = "";
     this.alert = false;
     this.filesCount = 0;
   };
