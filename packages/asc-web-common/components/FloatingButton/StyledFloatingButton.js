@@ -1,13 +1,14 @@
-import styled, { keyframes, css } from 'styled-components';
+import styled, { keyframes, css } from "styled-components";
 
-const color = '#2DA7DB';
+const color = "#2DA7DB";
 
 const StyledCircleWrap = styled.div`
   width: 48px;
   height: 48px;
-  background: ${(props) => props.color};
+  background: ${(props) => (props.color ? props.color : "#fff")};
   border-radius: 50%;
   cursor: pointer;
+  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
 `;
 
 const rotate360 = keyframes`
@@ -22,8 +23,8 @@ const rotate360 = keyframes`
 const StyledCircle = styled.div`
   .circle__mask,
   .circle__fill {
-    width: 44px;
-    height: 44px;
+    width: 42px;
+    height: 42px;
     position: absolute;
     border-radius: 50%;
     top: 0;
@@ -31,13 +32,17 @@ const StyledCircle = styled.div`
     bottom: 0;
     right: 0;
     margin: auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   ${(props) =>
     props.percent > 0
       ? css`
           .circle__mask {
-            clip: rect(0px, 44px, 44px, 22px);
+            clip: rect(0px, 42px, 42px, 21px);
           }
 
           .circle__fill {
@@ -53,7 +58,7 @@ const StyledCircle = styled.div`
         `}
 
   .circle__mask .circle__fill {
-    clip: rect(0px, 22px, 44px, 0px);
+    clip: rect(0px, 21px, 42px, 0px);
     background-color: ${color};
   }
 
@@ -73,26 +78,37 @@ const StyledCircle = styled.div`
 `;
 
 const StyledFloatingButton = styled.div`
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  background: ${(props) => (props.color ? props.color : '#fff')};
-  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
+  background: ${(props) => (props.color ? props.color : "#fff")};
   text-align: center;
-  margin: 4px;
+  margin: 5px;
   position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const IconBox = styled.div`
-  padding-top: 12px;
+  // padding-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const StyledAlertIcon = styled.div`
   position: absolute;
   width: 12px;
   height: 12px;
-  left: 26px;
-  top: -10px;
+  left: 19px;
+  top: 0px;
 `;
 
-export { StyledCircleWrap, StyledCircle, StyledFloatingButton, StyledAlertIcon, IconBox };
+export {
+  StyledCircleWrap,
+  StyledCircle,
+  StyledFloatingButton,
+  StyledAlertIcon,
+  IconBox,
+};

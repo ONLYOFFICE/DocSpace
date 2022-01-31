@@ -1,31 +1,37 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import Backdrop from '@appserver/components/backdrop';
-import { desktop, size, tablet } from '@appserver/components/utils/device';
-import { Provider } from '@appserver/components/utils/context';
-import { isMobile, isFirefox, isMobileOnly } from 'react-device-detect';
-import Article from './sub-components/article';
-import SubArticleHeader from './sub-components/article-header';
-import SubArticleMainButton from './sub-components/article-main-button';
-import SubArticleBody from './sub-components/article-body';
-import ArticlePinPanel from './sub-components/article-pin-panel';
-import Section from './sub-components/section';
-import SubSectionHeader from './sub-components/section-header';
-import SubSectionFilter from './sub-components/section-filter';
-import SubSectionBody from './sub-components/section-body';
-import SubSectionBodyContent from './sub-components/section-body-content';
-import SubSectionPaging from './sub-components/section-paging';
-import SectionToggler from './sub-components/section-toggler';
-import ReactResizeDetector from 'react-resize-detector';
-import FloatingButton from '../FloatingButton';
-import { inject, observer } from 'mobx-react';
-import Selecto from 'react-selecto';
-import styled, { css } from 'styled-components';
-import Catalog from './sub-components/catalog';
-import SubCatalogBackdrop from './sub-components/catalog-backdrop';
-import SubCatalogHeader from './sub-components/catalog-header';
-import SubCatalogMainButton from './sub-components/catalog-main-button';
-import SubCatalogBody from './sub-components/catalog-body';
+import React from "react";
+import PropTypes from "prop-types";
+import Backdrop from "@appserver/components/backdrop";
+import {
+  desktop,
+  size,
+  tablet,
+  isMobile as isMobileUtils,
+  isTablet as isTabletUtils,
+} from "@appserver/components/utils/device";
+import { Provider } from "@appserver/components/utils/context";
+import { isMobile, isFirefox, isMobileOnly } from "react-device-detect";
+import Article from "./sub-components/article";
+import SubArticleHeader from "./sub-components/article-header";
+import SubArticleMainButton from "./sub-components/article-main-button";
+import SubArticleBody from "./sub-components/article-body";
+import ArticlePinPanel from "./sub-components/article-pin-panel";
+import Section from "./sub-components/section";
+import SubSectionHeader from "./sub-components/section-header";
+import SubSectionFilter from "./sub-components/section-filter";
+import SubSectionBody from "./sub-components/section-body";
+import SubSectionBodyContent from "./sub-components/section-body-content";
+import SubSectionPaging from "./sub-components/section-paging";
+import SectionToggler from "./sub-components/section-toggler";
+import ReactResizeDetector from "react-resize-detector";
+import FloatingButton from "../FloatingButton";
+import { inject, observer } from "mobx-react";
+import Selecto from "react-selecto";
+import styled, { css } from "styled-components";
+import Catalog from "./sub-components/catalog";
+import SubCatalogBackdrop from "./sub-components/catalog-backdrop";
+import SubCatalogHeader from "./sub-components/catalog-header";
+import SubCatalogMainButton from "./sub-components/catalog-main-button";
+import SubCatalogBody from "./sub-components/catalog-body";
 
 const StyledSelectoWrapper = styled.div`
   .selecto-selection {
@@ -56,52 +62,52 @@ const StyledMainBar = styled.div`
 function CatalogHeader() {
   return null;
 }
-CatalogHeader.displayName = 'CatalogHeader';
+CatalogHeader.displayName = "CatalogHeader";
 
 function CatalogMainButton() {
   return null;
 }
-CatalogMainButton.displayName = 'CatalogMainButton';
+CatalogMainButton.displayName = "CatalogMainButton";
 
 function CatalogBody() {
   return null;
 }
-CatalogBody.displayName = 'CatalogBody';
+CatalogBody.displayName = "CatalogBody";
 
 function ArticleHeader() {
   return null;
 }
-ArticleHeader.displayName = 'ArticleHeader';
+ArticleHeader.displayName = "ArticleHeader";
 
 function ArticleMainButton() {
   return null;
 }
-ArticleMainButton.displayName = 'ArticleMainButton';
+ArticleMainButton.displayName = "ArticleMainButton";
 
 function ArticleBody() {
   return null;
 }
-ArticleBody.displayName = 'ArticleBody';
+ArticleBody.displayName = "ArticleBody";
 
 function SectionHeader() {
   return null;
 }
-SectionHeader.displayName = 'SectionHeader';
+SectionHeader.displayName = "SectionHeader";
 
 function SectionFilter() {
   return null;
 }
-SectionFilter.displayName = 'SectionFilter';
+SectionFilter.displayName = "SectionFilter";
 
 function SectionBody() {
   return null;
 }
-SectionBody.displayName = 'SectionBody';
+SectionBody.displayName = "SectionBody";
 
 function SectionPaging() {
   return null;
 }
-SectionPaging.displayName = 'SectionPaging';
+SectionPaging.displayName = "SectionPaging";
 
 class PageLayout extends React.Component {
   static CatalogHeader = CatalogHeader;
@@ -126,7 +132,7 @@ class PageLayout extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (!this.scroll) {
-      this.scroll = document.getElementsByClassName('section-scroll')[0];
+      this.scroll = document.getElementsByClassName("section-scroll")[0];
     }
 
     if (
@@ -139,13 +145,16 @@ class PageLayout extends React.Component {
   }
 
   componentDidMount() {
-    window.addEventListener('orientationchange', this.orientationChangeHandler);
+    window.addEventListener("orientationchange", this.orientationChangeHandler);
 
     this.orientationChangeHandler();
   }
 
   componentWillUnmount() {
-    window.removeEventListener('orientationchange', this.orientationChangeHandler);
+    window.removeEventListener(
+      "orientationchange",
+      this.orientationChangeHandler
+    );
 
     if (this.intervalHandler) clearInterval(this.intervalHandler);
     if (this.timeoutHandler) clearTimeout(this.timeoutHandler);
@@ -154,7 +163,10 @@ class PageLayout extends React.Component {
   orientationChangeHandler = () => {
     const isValueExist = !!this.props.isArticlePinned;
     const isEnoughWidth = screen.availWidth > size.smallTablet;
-    const isPortrait = isFirefox && isMobileOnly && screen.orientation.type === 'portrait-primary';
+    const isPortrait =
+      isFirefox &&
+      isMobileOnly &&
+      screen.orientation.type === "portrait-primary";
 
     if ((!isEnoughWidth && isValueExist) || isPortrait) {
       this.backdropClick();
@@ -201,12 +213,16 @@ class PageLayout extends React.Component {
 
   dragCondition = (e) => {
     const path = e.inputEvent.composedPath();
-    const isBackdrop = path.some((x) => x.classList && x.classList.contains('backdrop-active'));
+    const isBackdrop = path.some(
+      (x) => x.classList && x.classList.contains("backdrop-active")
+    );
     const notSelectablePath = path.some(
-      (x) => x.classList && x.classList.contains('not-selectable'),
+      (x) => x.classList && x.classList.contains("not-selectable")
     );
 
-    const isDraggable = path.some((x) => x.classList && x.classList.contains('draggable'));
+    const isDraggable = path.some(
+      (x) => x.classList && x.classList.contains("draggable")
+    );
 
     if (notSelectablePath || isBackdrop || isDraggable) {
       return false;
@@ -259,7 +275,8 @@ class PageLayout extends React.Component {
     let sectionPagingContent = null;
     let sectionBodyContent = null;
     React.Children.forEach(children, (child) => {
-      const childType = child && child.type && (child.type.displayName || child.type.name);
+      const childType =
+        child && child.type && (child.type.displayName || child.type.name);
 
       switch (childType) {
         case CatalogHeader.displayName:
@@ -301,12 +318,16 @@ class PageLayout extends React.Component {
       isArticleMainButtonAvailable = !!articleMainButtonContent,
       isArticleBodyAvailable = !!articleBodyContent,
       isArticleAvailable =
-        isArticleHeaderAvailable || isArticleMainButtonAvailable || isArticleBodyAvailable,
+        isArticleHeaderAvailable ||
+        isArticleMainButtonAvailable ||
+        isArticleBodyAvailable,
       isSectionHeaderAvailable = !!sectionHeaderContent,
       isSectionFilterAvailable = !!sectionFilterContent,
       isSectionPagingAvailable = !!sectionPagingContent,
       isSectionBodyAvailable =
-        !!sectionBodyContent || isSectionFilterAvailable || isSectionPagingAvailable,
+        !!sectionBodyContent ||
+        isSectionFilterAvailable ||
+        isSectionPagingAvailable,
       isSectionAvailable =
         isSectionHeaderAvailable ||
         isSectionFilterAvailable ||
@@ -318,7 +339,9 @@ class PageLayout extends React.Component {
       isCatalogMainButtonAvailable = !!catalogMainButtonContent,
       isCatalogBodyAvailable = !!catalogBodyContent,
       isCatalogAvailable =
-        isCatalogHeaderAvailable || isCatalogMainButtonAvailable || isCatalogBodyAvailable;
+        isCatalogHeaderAvailable ||
+        isCatalogMainButtonAvailable ||
+        isCatalogBodyAvailable;
 
     const renderPageLayout = () => {
       return (
@@ -333,43 +356,66 @@ class PageLayout extends React.Component {
               )}
               <Catalog showText={showText} setShowText={setShowText}>
                 {isCatalogHeaderAvailable && (
-                  <SubCatalogHeader showText={showText} onClick={toggleShowText}>
-                    {catalogHeaderContent ? catalogHeaderContent.props.children : null}
+                  <SubCatalogHeader
+                    showText={showText}
+                    onClick={toggleShowText}
+                  >
+                    {catalogHeaderContent
+                      ? catalogHeaderContent.props.children
+                      : null}
                   </SubCatalogHeader>
                 )}
 
                 {isCatalogMainButtonAvailable && (
                   <SubCatalogMainButton showText={showText}>
-                    {catalogMainButtonContent ? catalogMainButtonContent.props.children : null}
+                    {catalogMainButtonContent
+                      ? catalogMainButtonContent.props.children
+                      : null}
                   </SubCatalogMainButton>
                 )}
 
                 {isCatalogBodyAvailable && (
                   <SubCatalogBody showText={showText}>
-                    {catalogBodyContent ? catalogBodyContent.props.children : null}
+                    {catalogBodyContent
+                      ? catalogBodyContent.props.children
+                      : null}
                   </SubCatalogBody>
                 )}
               </Catalog>
             </>
           )}
           {isBackdropAvailable && (
-            <Backdrop zIndex={400} visible={isBackdropVisible} onClick={this.backdropClick} />
+            <Backdrop
+              zIndex={400}
+              visible={isBackdropVisible}
+              onClick={this.backdropClick}
+            />
           )}
           {isArticleAvailable && (
-            <Article visible={isArticleVisible} pinned={isArticlePinned} firstLoad={firstLoad}>
+            <Article
+              visible={isArticleVisible}
+              pinned={isArticlePinned}
+              firstLoad={firstLoad}
+            >
               {isArticleHeaderAvailable && (
                 <SubArticleHeader>
-                  {articleHeaderContent ? articleHeaderContent.props.children : null}
+                  {articleHeaderContent
+                    ? articleHeaderContent.props.children
+                    : null}
                 </SubArticleHeader>
               )}
               {isArticleMainButtonAvailable && (
                 <SubArticleMainButton>
-                  {articleMainButtonContent ? articleMainButtonContent.props.children : null}
+                  {articleMainButtonContent
+                    ? articleMainButtonContent.props.children
+                    : null}
                 </SubArticleMainButton>
               )}
               {isArticleBodyAvailable && (
                 <SubArticleBody pinned={isArticlePinned} isDesktop={isDesktop}>
-                  {articleBodyContent ? articleBodyContent.props.children : null}
+                  {articleBodyContent
+                    ? articleBodyContent.props.children
+                    : null}
                 </SubArticleBody>
               )}
               {isArticleBodyAvailable && (
@@ -385,33 +431,44 @@ class PageLayout extends React.Component {
             <ReactResizeDetector
               refreshRate={100}
               refreshMode="debounce"
-              refreshOptions={{ trailing: true }}>
+              refreshOptions={{ trailing: true }}
+            >
               {({ width, height }) => (
                 <Provider
                   value={{
                     sectionWidth: width,
                     sectionHeight: height,
-                  }}>
+                  }}
+                >
                   <Section
                     showText={showText}
                     widthProp={width}
                     unpinArticle={this.unpinArticle}
                     pinned={isArticlePinned}
-                    visible={isArticleVisible}>
+                    visible={isArticleVisible}
+                  >
                     {isSectionHeaderAvailable && (
                       <SubSectionHeader
                         isHeaderVisible={isHeaderVisible}
                         isArticlePinned={isArticlePinned}
-                        viewAs={viewAs}>
-                        {sectionHeaderContent ? sectionHeaderContent.props.children : null}
+                        viewAs={viewAs}
+                      >
+                        {sectionHeaderContent
+                          ? sectionHeaderContent.props.children
+                          : null}
                       </SubSectionHeader>
                     )}
 
                     {isSectionFilterAvailable && (
                       <>
                         <StyledMainBar id="main-bar" />
-                        <SubSectionFilter className="section-header_filter" viewAs={viewAs}>
-                          {sectionFilterContent ? sectionFilterContent.props.children : null}
+                        <SubSectionFilter
+                          className="section-header_filter"
+                          viewAs={viewAs}
+                        >
+                          {sectionFilterContent
+                            ? sectionFilterContent.props.children
+                            : null}
                         </SubSectionFilter>
                       </>
                     )}
@@ -423,26 +480,49 @@ class PageLayout extends React.Component {
                           withScroll={withBodyScroll}
                           autoFocus={isMobile || isTabletView ? false : true}
                           pinned={isArticlePinned}
-                          viewAs={viewAs}>
+                          viewAs={viewAs}
+                        >
                           {isSectionFilterAvailable && (
                             <SubSectionFilter className="section-body_filter">
-                              {sectionFilterContent ? sectionFilterContent.props.children : null}
+                              {sectionFilterContent
+                                ? sectionFilterContent.props.children
+                                : null}
                             </SubSectionFilter>
                           )}
                           <SubSectionBodyContent>
-                            {sectionBodyContent ? sectionBodyContent.props.children : null}
+                            {sectionBodyContent
+                              ? sectionBodyContent.props.children
+                              : null}
                           </SubSectionBodyContent>
                           {isSectionPagingAvailable && (
                             <SubSectionPaging>
-                              {sectionPagingContent ? sectionPagingContent.props.children : null}
+                              {sectionPagingContent
+                                ? sectionPagingContent.props.children
+                                : null}
                             </SubSectionPaging>
                           )}
                         </SubSectionBody>
                       </>
                     )}
-
-                    {showPrimaryProgressBar && showSecondaryProgressBar ? (
-                      <>
+                    {isMobile || isMobileUtils() || isTabletUtils ? (
+                      showPrimaryProgressBar && showSecondaryProgressBar ? (
+                        <>
+                          <FloatingButton
+                            className="layout-progress-bar"
+                            icon={primaryProgressBarIcon}
+                            percent={primaryProgressBarValue}
+                            alert={showPrimaryButtonAlert}
+                            onClick={onOpenUploadPanel}
+                          />
+                          <FloatingButton
+                            className="layout-progress-second-bar"
+                            icon={secondaryProgressBarIcon}
+                            percent={secondaryProgressBarValue}
+                            alert={showSecondaryButtonAlert}
+                          />
+                        </>
+                      ) : showPrimaryProgressBar &&
+                        !showSecondaryProgressBar ? (
                         <FloatingButton
                           className="layout-progress-bar"
                           icon={primaryProgressBarIcon}
@@ -450,34 +530,26 @@ class PageLayout extends React.Component {
                           alert={showPrimaryButtonAlert}
                           onClick={onOpenUploadPanel}
                         />
+                      ) : !showPrimaryProgressBar &&
+                        showSecondaryProgressBar ? (
                         <FloatingButton
-                          className="layout-progress-second-bar"
+                          className="layout-progress-bar"
                           icon={secondaryProgressBarIcon}
                           percent={secondaryProgressBarValue}
                           alert={showSecondaryButtonAlert}
                         />
-                      </>
-                    ) : showPrimaryProgressBar && !showSecondaryProgressBar ? (
-                      <FloatingButton
-                        className="layout-progress-bar"
-                        icon={primaryProgressBarIcon}
-                        percent={primaryProgressBarValue}
-                        alert={showPrimaryButtonAlert}
-                        onClick={onOpenUploadPanel}
-                      />
-                    ) : !showPrimaryProgressBar && showSecondaryProgressBar ? (
-                      <FloatingButton
-                        className="layout-progress-bar"
-                        icon={secondaryProgressBarIcon}
-                        percent={secondaryProgressBarValue}
-                        alert={showSecondaryButtonAlert}
-                      />
+                      ) : (
+                        <></>
+                      )
                     ) : (
                       <></>
                     )}
 
                     {isArticleAvailable && (
-                      <SectionToggler visible={!isArticleVisible} onClick={this.showArticle} />
+                      <SectionToggler
+                        visible={!isArticleVisible}
+                        onClick={this.showArticle}
+                      />
                     )}
                   </Section>
                 </Provider>
@@ -502,9 +574,9 @@ class PageLayout extends React.Component {
         {!isMobile && uploadFiles && !dragging && (
           <StyledSelectoWrapper>
             <Selecto
-              boundContainer={'.section-wrapper'}
-              dragContainer={'.section-body'}
-              selectableTargets={['.files-item']}
+              boundContainer={".section-wrapper"}
+              dragContainer={".section-body"}
+              selectableTargets={[".files-item"]}
               hitRate={0}
               selectByClick={false}
               selectFromInside={true}
