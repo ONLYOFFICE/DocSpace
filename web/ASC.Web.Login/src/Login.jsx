@@ -17,7 +17,10 @@ import FacebookButton from "@appserver/components/facebook-button";
 import PageLayout from "@appserver/common/components/PageLayout";
 import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
 import Register from "./sub-components/register-container";
-import { getAuthProviders } from "@appserver/common/api/settings";
+import {
+  getAuthProviders,
+  getCapabilities,
+} from "@appserver/common/api/settings";
 import { checkPwd } from "@appserver/common/desktop";
 import {
   createPasswordHash,
@@ -202,6 +205,8 @@ const Form = (props) => {
   const [isDialogVisible, setIsDialogVisible] = useState(false);
 
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
+  const [ssoLabel, setSsoLabel] = useState("");
+  const [ssoUrl, setSsoUrl] = useState("");
 
   const [errorText, setErrorText] = useState("");
 
@@ -243,6 +248,12 @@ const Form = (props) => {
   };
 
   useEffect(() => {
+    getCapabilities().then((data) => {
+      console.log(data);
+      setSsoLabel(data.ssoLabel);
+      setSsoUrl(data.ssoUrl);
+    });
+
     const profile = localStorage.getItem("profile");
     if (!profile) return;
 
@@ -415,30 +426,7 @@ const Form = (props) => {
     }
   }, []);
 
-  const addFacebookToStart = (facebookIndex, providerButtons) => {
-    const faceBookData = providers[facebookIndex];
-    const { icon, label, iconOptions } = providersData[faceBookData.provider];
-    providerButtons.unshift(
-      <div
-        className="buttonWrapper"
-        key={`${faceBookData.provider}ProviderItem`}
-      >
-        <FacebookButton
-          iconName={icon}
-          label={getProviderTranslation(label, t)}
-          className="socialButton"
-          $iconOptions={iconOptions}
-          data-url={faceBookData.url}
-          data-providername={faceBookData.provider}
-          onClick={onSocialButtonClick}
-        />
-      </div>
-    );
-  };
-
   const providerButtons = () => {
-    let facebookIndex = null;
-
     const providerButtons =
       providers &&
       providers.map((item, index) => {
@@ -449,10 +437,6 @@ const Form = (props) => {
           item.provider
         ];
 
-        if (item.provider === "facebook") {
-          facebookIndex = index;
-          return;
-        }
         return (
           <div className="buttonWrapper" key={`${item.provider}ProviderItem`}>
             <SocialButton
@@ -468,9 +452,20 @@ const Form = (props) => {
         );
       });
 
-    if (facebookIndex) addFacebookToStart(facebookIndex, providerButtons);
-
     return providerButtons;
+  };
+
+  const ssoButton = () => {
+    return (
+      <div className="buttonWrapper">
+        <SocialButton
+          iconName="/static/images/sso.react.svg"
+          className="socialButton"
+          label={ssoLabel}
+          onClick={() => (window.location.href = ssoUrl)}
+        />
+      </div>
+    );
   };
 
   const oauthDataExists = () => {
@@ -482,6 +477,11 @@ const Form = (props) => {
     });
 
     return !!existProviders;
+  };
+
+  const ssoExists = () => {
+    if (ssoLabel && ssoUrl) return true;
+    else return false;
   };
 
   //console.log("Login render");
@@ -496,6 +496,8 @@ const Form = (props) => {
       >
         {greetingTitle}
       </Text>
+
+      {ssoExists() && <ButtonsWrapper>{ssoButton()}</ButtonsWrapper>}
 
       {oauthDataExists() && (
         <>
@@ -516,7 +518,7 @@ const Form = (props) => {
         </>
       )}
 
-      {oauthDataExists() && (
+      {(oauthDataExists() || ssoExists()) && (
         <div className="line">
           <Text color="#A3A9AE" className="or-label">
             {t("Or")}
