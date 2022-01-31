@@ -187,6 +187,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var scopeClass = scope.ServiceProvider.GetService<FileMoveCopyOperationScope>();
             var (filesMessageService, fileMarker, _, _, _) = scopeClass;
             var folderDao = scope.ServiceProvider.GetService<IFolderDao<TTo>>();
+            var documentServiceHelper = scope.ServiceProvider.GetService<DocumentServiceHelper>();
+            var socketManager = scope.ServiceProvider.GetService<SocketManager>();
 
             var toFolderId = toFolder.ID;
             var isToFolder = Equals(toFolderId, DaoFolderId);
@@ -258,6 +260,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                     else if (FolderDao.IsEmpty(folder.ID))
                                     {
                                         FolderDao.DeleteFolder(folder.ID);
+
+                                        var room = documentServiceHelper.GetSocketFolderRoom(folder.RootFolderId);
+                                        socketManager.DeleteFolder(folder.ID, room);
+
                                         if (ProcessedFolder(folderId))
                                         {
                                             Result += string.Format("folder_{0}{1}", newFolder.ID, SPLIT_CHAR);
@@ -311,6 +317,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                         if (isToFolder)
                                             needToMark.Add(newFolder);
 
+                                        var room = documentServiceHelper.GetSocketFolderRoom(folder.RootFolderId);
+                                        socketManager.DeleteFolder(folder.ID, room);
+
                                         if (ProcessedFolder(folderId))
                                         {
                                             Result += string.Format("folder_{0}{1}", newFolderId, SPLIT_CHAR);
@@ -347,6 +356,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                                 if (isToFolder)
                                     needToMark.Add(newFolder);
+
+                                var room = documentServiceHelper.GetSocketFolderRoom(folder.RootFolderId);
+                                socketManager.DeleteFolder(folder.ID, room);
 
                                 if (ProcessedFolder(folderId))
                                 {
