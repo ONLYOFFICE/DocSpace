@@ -24,21 +24,15 @@ namespace ASC.Api.Core.Core
 
             var connectionString = configurationExtension.GetConnectionStrings("default");
 
-            if (String.Compare(connectionString.ProviderName, "MySql.Data.MySqlClient") == 0)
-            {
+            if (string.Compare(connectionString.ProviderName, "MySql.Data.MySqlClient") == 0)
                 hcBuilder.AddMySql(connectionString.ConnectionString,
                                    name: "mysqldb",
-                                   tags: new string[] { "mysqldb" }
-                                  );
-            }
+                                   tags: new string[] { "mysqldb" });
 
-            if (String.Compare(connectionString.ProviderName, "Npgsql") == 0)
-            {
+            if (string.Compare(connectionString.ProviderName, "Npgsql") == 0)
                 hcBuilder.AddNpgSql(connectionString.ConnectionString,
                                    name: "postgredb",
-                                   tags: new string[] { "postgredb" }
-                                  );
-            }
+                                   tags: new string[] { "postgredb" });
 
             var kafkaSettings = configurationExtension.GetSetting<KafkaSettings>("kafka");
 
@@ -63,11 +57,9 @@ namespace ASC.Api.Core.Core
                 var elasticSearchUri = $"{scheme}://{host}:{port}";
 
                 if (Uri.IsWellFormedUriString(elasticSearchUri, UriKind.Absolute))
-                {
                     hcBuilder.AddElasticsearch(elasticSearchUri,
                                                name: "elasticsearch",
                                                tags: new string[] { "elasticsearch" });
-                }
             }
 
             return services;

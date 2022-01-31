@@ -30,10 +30,8 @@ namespace ASC.Api.Utils
     {
         public static T IfNotEquals<T>(T current, T @new)
         {
-            if (!Equals(current, @new))
-            {
-                return @new;
-            }
+            if (!Equals(current, @new)) return @new;
+
             return current;
         }
 
@@ -41,10 +39,8 @@ namespace ASC.Api.Utils
         {
             if (Equals(@new, default(T))) return current;
 
-            if (!Equals(current, @new))
-            {
-                return @new;
-            }
+            if (!Equals(current, @new)) return @new;
+
             return current;
         }
     }

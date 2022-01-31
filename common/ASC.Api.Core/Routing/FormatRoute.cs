@@ -33,6 +33,7 @@ namespace ASC.Web.Api.Routing
         public CreateAttribute(bool check = true, int order = 1) :
            this(null, check, order)
         { }
+
         public CreateAttribute(string template, bool check = true, int order = 1) :
            base(HttpMethod.Post.Method, template, check, order)
         { }
@@ -42,6 +43,7 @@ namespace ASC.Web.Api.Routing
         public UpdateAttribute(bool check = true, int order = 1) :
             this(null, check, order)
         { }
+
         public UpdateAttribute(string template, bool check = true, int order = 1) :
             base(HttpMethod.Put.Method, template, check, order)
         { }
@@ -51,6 +53,7 @@ namespace ASC.Web.Api.Routing
         public DeleteAttribute(bool check = true, int order = 1) :
             this(null, check, order)
         { }
+
         public DeleteAttribute(string template, bool check = true, int order = 1) :
             base(HttpMethod.Delete.Method, template, check, order)
         { }

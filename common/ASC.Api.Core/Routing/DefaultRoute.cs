@@ -6,13 +6,8 @@ namespace ASC.Web.Api.Routing
     {
         public static string BaseUrl { get; set; }
 
-        static DefaultRouteAttribute()
-        {
-            BaseUrl = "api/2.0";
-        }
+        static DefaultRouteAttribute() => BaseUrl = "api/2.0";
 
-        public DefaultRouteAttribute() : base(BaseUrl)
-        {
-        }
+        public DefaultRouteAttribute() : base(BaseUrl) { }
     }
 }

@@ -10,10 +10,7 @@ namespace ASC.Api.Core.Convention
     {
         public string Name { get; }
 
-        public ControllerNameAttribute(string name)
-        {
-            Name = name;
-        }
+        public ControllerNameAttribute(string name) => Name = name;
     }
 
     public class ControllerNameAttributeConvention : IControllerModelConvention
@@ -22,9 +19,7 @@ namespace ASC.Api.Core.Convention
         {
             var controllerNameAttribute = controller.Attributes.OfType<ControllerNameAttribute>().SingleOrDefault();
             if (controllerNameAttribute != null)
-            {
                 controller.ControllerName = controllerNameAttribute.Name;
-            }
         }
     }
 }

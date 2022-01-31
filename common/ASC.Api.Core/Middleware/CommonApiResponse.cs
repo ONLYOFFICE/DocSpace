@@ -8,23 +8,15 @@ namespace ASC.Api.Core.Middleware
     public abstract class CommonApiResponse
     {
         public int Status { get; set; }
-
         public HttpStatusCode StatusCode { get; set; }
 
-        protected CommonApiResponse(HttpStatusCode statusCode)
-        {
-            StatusCode = statusCode;
-        }
+        protected CommonApiResponse(HttpStatusCode statusCode) => StatusCode = statusCode;
 
-        public static SuccessApiResponse Create(HttpStatusCode statusCode, object response)
-        {
-            return new SuccessApiResponse(statusCode, response);
-        }
+        public static SuccessApiResponse Create(HttpStatusCode statusCode, object response) =>
+            new SuccessApiResponse(statusCode, response);
 
-        public static ErrorApiResponse CreateError(HttpStatusCode statusCode, Exception error)
-        {
-            return new ErrorApiResponse(statusCode, error);
-        }
+        public static ErrorApiResponse CreateError(HttpStatusCode statusCode, Exception error) =>
+            new ErrorApiResponse(statusCode, error);
     }
 
     public class ErrorApiResponse : CommonApiResponse
@@ -41,9 +33,7 @@ namespace ASC.Api.Core.Middleware
     public class SuccessApiResponse : CommonApiResponse
     {
         public int? Count { get; set; }
-
         public long? Total { get; set; }
-
         public object Response { get; set; }
 
         protected internal SuccessApiResponse(HttpStatusCode statusCode, object response, long? total = null, int? count = null) : base(statusCode)
@@ -52,28 +42,13 @@ namespace ASC.Api.Core.Middleware
             Response = response;
             Total = total;
 
-            if (count.HasValue)
-            {
-                Count = count;
-            }
+            if (count.HasValue) Count = count;
             else
             {
-                if (response is List<object> list)
-                {
-                    Count = list.Count;
-                }
-                else if (response is IEnumerable<object> collection)
-                {
-                    Count = collection.Count();
-                }
-                else if (response == null)
-                {
-                    Count = 0;
-                }
-                else
-                {
-                    Count = 1;
-                }
+                if (response is List<object> list) Count = list.Count;
+                else if (response is IEnumerable<object> collection) Count = collection.Count();
+                else if (response == null) Count = 0;
+                else Count = 1;
             }
         }
     }
@@ -81,22 +56,17 @@ namespace ASC.Api.Core.Middleware
     public class CommonApiError
     {
         public string Message { get; set; }
-
         public string Type { get; set; }
-
         public string Stack { get; set; }
-
         public int Hresult { get; set; }
 
-        public static CommonApiError FromException(Exception exception, string message = null)
-        {
-            return new CommonApiError()
+        public static CommonApiError FromException(Exception exception, string message = null) =>
+            new CommonApiError()
             {
                 Message = message ?? exception.Message,
                 Type = exception.GetType().ToString(),
                 Stack = exception.StackTrace,
                 Hresult = exception.HResult
             };
-        }
     }
 }

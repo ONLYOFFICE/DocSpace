@@ -9,26 +9,21 @@ namespace ASC.Api.Core.Middleware
 {
     public class DisposeMiddleware
     {
-        private readonly RequestDelegate next;
+        private readonly RequestDelegate _next;
 
-        public DisposeMiddleware(RequestDelegate next)
-        {
-            this.next = next;
-        }
+        public DisposeMiddleware(RequestDelegate next) => _next = next;
 
         public async Task Invoke(HttpContext context)
         {
             context.Response.RegisterForDispose(new DisposableHttpContext(context));
 
-            await next.Invoke(context);
+            await _next.Invoke(context);
         }
     }
 
     public static class DisposeMiddlewareExtensions
     {
-        public static IApplicationBuilder UseDisposeMiddleware(this IApplicationBuilder builder)
-        {
-            return builder.UseMiddleware<DisposeMiddleware>();
-        }
+        public static IApplicationBuilder UseDisposeMiddleware(this IApplicationBuilder builder) =>
+            builder.UseMiddleware<DisposeMiddleware>();
     }
 }

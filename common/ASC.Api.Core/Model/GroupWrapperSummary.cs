@@ -33,6 +33,12 @@ namespace ASC.Web.Api.Models
 {
     public class GroupWrapperSummary
     {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string Manager { get; set; }
+
+        protected GroupWrapperSummary() { }
+
         public GroupWrapperSummary(GroupInfo group, UserManager userManager)
         {
             Id = group.ID;
@@ -40,20 +46,7 @@ namespace ASC.Web.Api.Models
             Manager = userManager.GetUsers(userManager.GetDepartmentManager(group.ID)).UserName;
         }
 
-        protected GroupWrapperSummary()
-        {
-        }
-
-
-        public string Name { get; set; }
-
-        public Guid Id { get; set; }
-
-        public string Manager { get; set; }
-
-        public static GroupWrapperSummary GetSample()
-        {
-            return new GroupWrapperSummary { Id = Guid.Empty, Manager = "Jake.Zazhitski", Name = "Group Name" };
-        }
+        public static GroupWrapperSummary GetSample() =>
+            new GroupWrapperSummary { Id = Guid.Empty, Manager = "Jake.Zazhitski", Name = "Group Name" };
     }
 }

@@ -17,34 +17,38 @@ namespace ASC.Api.Core.Auth
     [Scope]
     public class CookieAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
-        private AuthorizationHelper AuthorizationHelper { get; }
-        private SecurityContext SecurityContext { get; }
-        private CookiesManager CookiesManager { get; }
+        private readonly AuthorizationHelper _authorizationHelper;
+        private readonly SecurityContext _securityContext;
+        private readonly CookiesManager _cookiesManager;
 
-        public CookieAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
-        {
-        }
-        //
-        public CookieAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock,
+        public CookieAuthHandler(
+            IOptionsMonitor<AuthenticationSchemeOptions> options, 
+            ILoggerFactory logger, 
+            UrlEncoder encoder, 
+            ISystemClock clock) 
+            : base(options, logger, encoder, clock) { }
+
+        public CookieAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, 
+            ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock,
             AuthorizationHelper authorizationHelper,
             SecurityContext securityContext,
             CookiesManager cookiesManager)
             : this(options, logger, encoder, clock)
         {
-            AuthorizationHelper = authorizationHelper;
-            SecurityContext = securityContext;
-            CookiesManager = cookiesManager;
+            _authorizationHelper = authorizationHelper;
+            _securityContext = securityContext;
+            _cookiesManager = cookiesManager;
         }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            var result = AuthorizationHelper.ProcessBasicAuthorization(out _);
+            var result = _authorizationHelper.ProcessBasicAuthorization(out _);
 
             if (!result)
             {
-                SecurityContext.Logout();
-                CookiesManager.ClearCookies(CookiesType.AuthKey);
-                CookiesManager.ClearCookies(CookiesType.SocketIO);
+                _securityContext.Logout();
+                _cookiesManager.ClearCookies(CookiesType.AuthKey);
+                _cookiesManager.ClearCookies(CookiesType.SocketIO);
             }
 
             return Task.FromResult(

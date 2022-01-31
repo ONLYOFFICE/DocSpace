@@ -39,35 +39,30 @@ namespace ASC.Web.Api.Models
     public class EmployeeWraper
     {
         public Guid Id { get; set; }
-
         public string DisplayName { get; set; }
-
         public string Title { get; set; }
-
         public string AvatarSmall { get; set; }
-
         public string ProfileUrl { get; set; }
 
-        public static EmployeeWraper GetSample()
-        {
-            return new EmployeeWraper
+        public static EmployeeWraper GetSample() =>
+            new EmployeeWraper
             {
                 Id = Guid.Empty,
                 DisplayName = "Mike Zanyatski",
                 Title = "Manager",
                 AvatarSmall = "url to small avatar",
             };
-        }
     }
 
     [Scope]
     public class EmployeeWraperHelper
     {
-        private ApiContext HttpContext { get; }
-        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        protected UserPhotoManager UserPhotoManager { get; }
-        private CommonLinkUtility CommonLinkUtility { get; }
+        protected  UserPhotoManager UserPhotoManager { get; }
         protected UserManager UserManager { get; }
+
+        private readonly ApiContext _httpContext;
+        private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+        private readonly CommonLinkUtility _commonLinkUtility;
 
         public EmployeeWraperHelper(
             ApiContext httpContext,
@@ -76,17 +71,15 @@ namespace ASC.Web.Api.Models
             CommonLinkUtility commonLinkUtility,
             UserManager userManager)
         {
-            HttpContext = httpContext;
-            DisplayUserSettingsHelper = displayUserSettingsHelper;
             UserPhotoManager = userPhotoManager;
-            CommonLinkUtility = commonLinkUtility;
             UserManager = userManager;
+            _httpContext = httpContext;
+            _displayUserSettingsHelper = displayUserSettingsHelper;
+            _commonLinkUtility = commonLinkUtility;
+            
         }
 
-        public EmployeeWraper Get(UserInfo userInfo)
-        {
-            return Init(new EmployeeWraper(), userInfo);
-        }
+        public EmployeeWraper Get(UserInfo userInfo) => Init(new EmployeeWraper(), userInfo);
 
         public EmployeeWraper Get(Guid userId)
         {
@@ -103,23 +96,19 @@ namespace ASC.Web.Api.Models
         protected EmployeeWraper Init(EmployeeWraper result, UserInfo userInfo)
         {
             result.Id = userInfo.ID;
-            result.DisplayName = DisplayUserSettingsHelper.GetFullUserName(userInfo);
-            if (!string.IsNullOrEmpty(userInfo.Title))
-            {
-                result.Title = userInfo.Title;
-            }
+            result.DisplayName = _displayUserSettingsHelper.GetFullUserName(userInfo);
+
+            if (!string.IsNullOrEmpty(userInfo.Title)) result.Title = userInfo.Title;
 
             var userInfoLM = userInfo.LastModified.GetHashCode();
 
-            if (HttpContext.Check("avatarSmall"))
-            {
+            if (_httpContext.Check("avatarSmall"))
                 result.AvatarSmall = UserPhotoManager.GetSmallPhotoURL(userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
-            }
 
             if (result.Id != Guid.Empty)
             {
-                var profileUrl = CommonLinkUtility.GetUserProfile(userInfo, false);
-                result.ProfileUrl = CommonLinkUtility.GetFullAbsolutePath(profileUrl);
+                var profileUrl = _commonLinkUtility.GetUserProfile(userInfo, false);
+                result.ProfileUrl = _commonLinkUtility.GetFullAbsolutePath(profileUrl);
             }
 
             return result;

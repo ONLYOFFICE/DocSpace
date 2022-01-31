@@ -28,13 +28,10 @@ namespace ASC.Web.Api.Models
     public class Contact
     {
         public string Type { get; set; }
-
         public string Value { get; set; }
 
-        public Contact()
-        {
-            //For binder
-        }
+        //For binder
+        public Contact() { }
 
         public Contact(string type, string value)
         {
@@ -42,9 +39,6 @@ namespace ASC.Web.Api.Models
             Value = value;
         }
 
-        public static Contact GetSample()
-        {
-            return new Contact("GTalk", "my@gmail.com");
-        }
+        public static Contact GetSample() => new Contact("GTalk", "my@gmail.com");
     }
 }

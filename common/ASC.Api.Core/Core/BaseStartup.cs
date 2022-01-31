@@ -23,7 +23,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -57,10 +56,9 @@ namespace ASC.Api.Core
             Configuration = configuration;
             HostEnvironment = hostEnvironment;
             DIHelper = new DIHelper();
+
             if (bool.TryParse(Configuration["core:products"], out var loadProducts))
-            {
                 LoadProducts = loadProducts;
-            }
         }
 
         public virtual void ConfigureServices(IServiceCollection services)
@@ -109,9 +107,8 @@ namespace ASC.Api.Core
             var kafkaConfiguration = Configuration.GetSection("kafka").Get<KafkaSettings>();
 
             if (kafkaConfiguration != null)
-            {
                 DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-            }
+
             else if (redisConfiguration != null)
             {
                 DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
@@ -119,17 +116,12 @@ namespace ASC.Api.Core
                 services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
             }
             else
-            {
                 DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
-            }
-
 
             DIHelper.TryAdd(typeof(IWebhookPublisher), typeof(WebhookPublisher));
 
             if (LoadProducts)
-            {
                 DIHelper.RegisterProducts(Configuration, HostEnvironment.ContentRootPath);
-            }
 
             var builder = services.AddMvcCore(config =>
             {
@@ -156,9 +148,7 @@ namespace ASC.Api.Core
                 .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
 
             if (ConfirmAddScheme)
-            {
                 authBuilder.AddScheme<AuthenticationSchemeOptions, ConfirmAuthHandler>("confirm", a => { });
-            }
 
             services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
         }

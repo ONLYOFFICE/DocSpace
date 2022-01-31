@@ -13,8 +13,8 @@ namespace ASC.Api.Core.Core
     public class CustomEndpointDataSource : EndpointDataSource
     {
         public EndpointDataSource Source { get; }
-
         public override IReadOnlyList<Endpoint> Endpoints { get; }
+
         public CustomEndpointDataSource(EndpointDataSource source)
         {
             Source = source;
@@ -28,9 +28,7 @@ namespace ASC.Api.Core.Core
                     var enableFormat = attr == null || !attr.DisableFormat;
 
                     if (enableFormat)
-                    {
                         endpoints.Add(new RouteEndpoint(r.RequestDelegate, RoutePatternFactory.Parse(r.RoutePattern.RawText + ".{format}"), r.Order, r.Metadata, r.DisplayName));
-                    }
                     else
                     {
                         endpoints.Add(new RouteEndpoint(r.RequestDelegate, RoutePatternFactory.Parse(r.RoutePattern.RawText + ".json"), r.Order - 1, r.Metadata, r.DisplayName));
@@ -38,14 +36,10 @@ namespace ASC.Api.Core.Core
                     }
 
                     return endpoints;
-                })
-                .ToList();
+                }).ToList();
         }
 
-        public override IChangeToken GetChangeToken()
-        {
-            return Source.GetChangeToken();
-        }
+        public override IChangeToken GetChangeToken() => Source.GetChangeToken();
     }
 
     public static class EndpointExtension
@@ -53,6 +47,7 @@ namespace ASC.Api.Core.Core
         public static IEndpointRouteBuilder MapCustom(this IEndpointRouteBuilder endpoints)
         {
             endpoints.DataSources.Add(new CustomEndpointDataSource(endpoints.DataSources.First()));
+
             return endpoints;
         }
     }

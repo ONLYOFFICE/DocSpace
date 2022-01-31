@@ -14,34 +14,33 @@ namespace ASC.Api.Core.Middleware
     [Scope]
     public class TenantStatusFilter : IResourceFilter
     {
-        private readonly ILog log;
+        private readonly TenantManager _tenantManager;
+        private readonly ILog _logger;
 
         public TenantStatusFilter(IOptionsMonitor<ILog> options, TenantManager tenantManager)
         {
-            log = options.CurrentValue;
-            TenantManager = tenantManager;
+            _logger = options.CurrentValue;
+            _tenantManager = tenantManager;
         }
 
-        private TenantManager TenantManager { get; }
-
-        public void OnResourceExecuted(ResourceExecutedContext context)
-        {
-        }
+        public void OnResourceExecuted(ResourceExecutedContext context) { }
 
         public void OnResourceExecuting(ResourceExecutingContext context)
         {
-            var tenant = TenantManager.GetCurrentTenant(false);
+            var tenant = _tenantManager.GetCurrentTenant(false);
             if (tenant == null)
             {
                 context.Result = new StatusCodeResult((int)HttpStatusCode.NotFound);
-                log.WarnFormat("Tenant {0} not found", tenant.TenantId);
+                _logger.WarnFormat("Tenant {0} not found", tenant.TenantId);
+
                 return;
             }
 
             if (tenant.Status == TenantStatus.RemovePending || tenant.Status == TenantStatus.Suspended)
             {
                 context.Result = new StatusCodeResult((int)HttpStatusCode.NotFound);
-                log.WarnFormat("Tenant {0} is not removed or suspended", tenant.TenantId);
+                _logger.WarnFormat("Tenant {0} is not removed or suspended", tenant.TenantId);
+
                 return;
             }
         }

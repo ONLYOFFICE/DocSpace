@@ -39,59 +39,21 @@ namespace ASC.Api.Core
     [Scope]
     public class ApiContext : ICloneable
     {
-        private static int MaxCount = 1000;
         public IHttpContextAccessor HttpContextAccessor { get; set; }
-        public Tenant tenant;
-        public Tenant Tenant { get { return tenant ??= TenantManager.GetCurrentTenant(HttpContextAccessor?.HttpContext); } }
-
-        public ApiContext(IHttpContextAccessor httpContextAccessor, SecurityContext securityContext, TenantManager tenantManager)
+        public string[] Fields { get; set; }
+        public string[] FilterValues { get; set; }
+        public bool FromCache { get; set; }
+        public Tenant Tenant => _tenant ??= _tenantManager.GetCurrentTenant(HttpContextAccessor?.HttpContext);
+        public long? TotalCount
         {
-            SecurityContext = securityContext;
-            TenantManager = tenantManager;
-            HttpContextAccessor = httpContextAccessor;
-            if (httpContextAccessor.HttpContext == null) return;
-
-            Count = MaxCount;
-            var query = HttpContextAccessor.HttpContext.Request.Query;
-            //Try parse values
-            var count = query.GetRequestValue("count");
-            if (!string.IsNullOrEmpty(count) && ulong.TryParse(count, out var countParsed))
+            set
             {
-                //Count specified and valid
-                Count = Math.Min((long)countParsed, MaxCount);
-            }
-
-            var startIndex = query.GetRequestValue("startIndex");
-            if (startIndex != null && long.TryParse(startIndex, out var startIndexParsed))
-            {
-                StartIndex = Math.Max(0, startIndexParsed);
-                SpecifiedStartIndex = StartIndex;
-            }
-
-            var sortOrder = query.GetRequestValue("sortOrder");
-            if ("descending".Equals(sortOrder))
-            {
-                SortDescending = true;
-            }
-
-            FilterToType = query.GetRequestValue("type");
-            SortBy = query.GetRequestValue("sortBy");
-            FilterBy = query.GetRequestValue("filterBy");
-            FilterOp = query.GetRequestValue("filterOp");
-            FilterValue = query.GetRequestValue("filterValue");
-            FilterValues = query.GetRequestArray("filterValue");
-            Fields = query.GetRequestArray("fields");
-
-            var updatedSince = query.GetRequestValue("updatedSince");
-            if (updatedSince != null)
-            {
-                UpdatedSince = Convert.ToDateTime(updatedSince);
+                if (HttpContextAccessor.HttpContext.Items.ContainsKey(nameof(TotalCount)))
+                    HttpContextAccessor.HttpContext.Items[nameof(TotalCount)] = value;
+                else
+                    HttpContextAccessor.HttpContext.Items.Add(nameof(TotalCount), value);
             }
         }
-
-        public string[] Fields { get; set; }
-
-        public string[] FilterValues { get; set; }
 
         /// <summary>
         /// Filters responce to specific type from request parameter "type"
@@ -116,9 +78,7 @@ namespace ASC.Api.Core
         /// Don't forget to call _context.SetDataPaginated() to prevent SmartList from filtering response if you fetch data from DB with TOP & COUNT
         /// </remarks>
         public long StartIndex { get; set; }
-
-        internal long SpecifiedStartIndex { get; set; }
-
+        
         /// <summary>
         /// Gets field to sort by from request parameter "sortBy"
         /// </summary>
@@ -150,10 +110,50 @@ namespace ASC.Api.Core
         /// Gets value to filter from request parameter "updatedSince"
         /// </summary>
         public DateTime UpdatedSince { get; set; }
-
-        public bool FromCache { get; set; }
-
+        
         internal long SpecifiedCount { get; private set; }
+        internal long SpecifiedStartIndex { get; set; }
+
+        private Tenant _tenant;
+        private static int s_maxCount = 1000;
+        private readonly SecurityContext _securityContext;
+        private readonly TenantManager _tenantManager;
+
+        public ApiContext(IHttpContextAccessor httpContextAccessor, SecurityContext securityContext, TenantManager tenantManager)
+        {
+            _securityContext = securityContext;
+            _tenantManager = tenantManager;
+            HttpContextAccessor = httpContextAccessor;
+            if (httpContextAccessor.HttpContext == null) return;
+
+            Count = s_maxCount;
+            var query = HttpContextAccessor.HttpContext.Request.Query;
+            //Try parse values
+            var count = query.GetRequestValue("count");
+            if (!string.IsNullOrEmpty(count) && ulong.TryParse(count, out var countParsed))
+                Count = Math.Min((long)countParsed, s_maxCount); //Count specified and valid
+
+            var startIndex = query.GetRequestValue("startIndex");
+            if (startIndex != null && long.TryParse(startIndex, out var startIndexParsed))
+            {
+                StartIndex = Math.Max(0, startIndexParsed);
+                SpecifiedStartIndex = StartIndex;
+            }
+
+            var sortOrder = query.GetRequestValue("sortOrder");
+            if ("descending".Equals(sortOrder)) SortDescending = true;
+
+            FilterToType = query.GetRequestValue("type");
+            SortBy = query.GetRequestValue("sortBy");
+            FilterBy = query.GetRequestValue("filterBy");
+            FilterOp = query.GetRequestValue("filterOp");
+            FilterValue = query.GetRequestValue("filterValue");
+            FilterValues = query.GetRequestArray("filterValue");
+            Fields = query.GetRequestArray("fields");
+
+            var updatedSince = query.GetRequestValue("updatedSince");
+            if (updatedSince != null) UpdatedSince = Convert.ToDateTime(updatedSince);
+        }
 
         /// <summary>
         /// Set mark that data is already paginated and additional filtering is not needed
@@ -162,12 +162,14 @@ namespace ASC.Api.Core
         {
             //Count = 0;//We always ask for +1 count so smart list should cut it
             StartIndex = 0;
+
             return this;
         }
 
         public ApiContext SetDataSorted()
         {
             SortBy = string.Empty;
+
             return this;
         }
 
@@ -176,57 +178,33 @@ namespace ASC.Api.Core
             FilterBy = string.Empty;
             FilterOp = string.Empty;
             FilterValue = string.Empty;
+
             return this;
         }
 
         public ApiContext SetTotalCount(long totalCollectionCount)
         {
             TotalCount = totalCollectionCount;
+
             return this;
         }
-
-        public long? TotalCount
-        {
-            set
-            {
-                if (HttpContextAccessor.HttpContext.Items.ContainsKey(nameof(TotalCount)))
-                {
-                    HttpContextAccessor.HttpContext.Items[nameof(TotalCount)] = value;
-                }
-                else
-                {
-                    HttpContextAccessor.HttpContext.Items.Add(nameof(TotalCount), value);
-                }
-            }
-        }
-
-        private SecurityContext SecurityContext { get; }
-        private TenantManager TenantManager { get; }
 
         public ApiContext SetCount(int count)
         {
             HttpContextAccessor.HttpContext.Items[nameof(Count)] = count;
+
             return this;
         }
 
-        public object Clone()
-        {
-            return MemberwiseClone();
-        }
+        public object Clone() => MemberwiseClone();
 
-        public override string ToString()
-        {
-            return string.Format("C:{0},S:{1},So:{2},Sd:{3},Fb;{4},Fo:{5},Fv:{6},Us:{7},Ftt:{8}", Count, StartIndex,
+        public override string ToString() => string.Format("C:{0},S:{1},So:{2},Sd:{3},Fb;{4},Fo:{5},Fv:{6},Us:{7},Ftt:{8}", Count, StartIndex,
                                  SortBy, SortDescending, FilterBy, FilterOp, FilterValue, UpdatedSince.Ticks, FilterToType);
-        }
 
         public void AuthByClaim()
         {
             var id = HttpContextAccessor.HttpContext.User.Claims.FirstOrDefault(r => r.Type == ClaimTypes.Sid);
-            if (Guid.TryParse(id?.Value, out var userId))
-            {
-                SecurityContext.AuthenticateMeWithoutCookie(userId);
-            }
+            if (Guid.TryParse(id?.Value, out var userId)) _securityContext.AuthenticateMeWithoutCookie(userId);
         }
     }
 
@@ -237,8 +215,7 @@ namespace ASC.Api.Core
             if (query != null)
             {
                 var values = query[key + "[]"];
-                if (values.Count > 0)
-                    return values;
+                if (values.Count > 0) return values;
 
                 values = query[key];
                 if (values.Count > 0)
@@ -249,24 +226,25 @@ namespace ASC.Api.Core
                         if (!string.IsNullOrEmpty(values[0]))
                             return values[0].Split(',');
                     }
+
                     return values;
                 }
             }
+
             return null;
         }
 
         public static string GetRequestValue(this IQueryCollection query, string key)
         {
             var reqArray = query.GetRequestArray(key);
+
             return reqArray?.FirstOrDefault();
         }
     }
 
     public static class ApiContextExtension
     {
-        public static bool Check(this ApiContext context, string field)
-        {
-            return context?.Fields == null || (context.Fields != null && context.Fields.Contains(field, StringComparer.InvariantCultureIgnoreCase));
-        }
+        public static bool Check(this ApiContext context, string field) =>
+            context?.Fields == null || (context.Fields != null && context.Fields.Contains(field, StringComparer.InvariantCultureIgnoreCase));
     }
 }

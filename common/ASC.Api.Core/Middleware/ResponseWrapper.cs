@@ -16,10 +16,7 @@ namespace ASC.Api.Core.Middleware
             var status = (HttpStatusCode)context.HttpContext.Response.StatusCode;
             string message = null;
 
-            if (status == HttpStatusCode.OK)
-            {
-                status = HttpStatusCode.InternalServerError;
-            }
+            if (status == HttpStatusCode.OK) status = HttpStatusCode.InternalServerError;
 
             switch (context.Exception)
             {

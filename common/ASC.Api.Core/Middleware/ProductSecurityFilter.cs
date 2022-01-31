@@ -20,11 +20,10 @@ namespace ASC.Api.Core.Middleware
     [Scope]
     public class ProductSecurityFilter : IResourceFilter
     {
-        private static readonly IDictionary<string, Guid> products;
-        private readonly ILog log;
-
-        private WebItemSecurity WebItemSecurity { get; }
-        private AuthContext AuthContext { get; }
+        private static readonly IDictionary<string, Guid> _products;
+        private readonly ILog _logger;
+        private readonly WebItemSecurity _webItemSecurity;
+        private readonly AuthContext _authContext;
 
         static ProductSecurityFilter()
         {
@@ -35,7 +34,7 @@ namespace ASC.Api.Core.Middleware
             var wiki = new Guid("742cf945-cbbc-4a57-82d6-1600a12cf8ca");
             var photo = new Guid("9d51954f-db9b-4aed-94e3-ed70b914e101");
 
-            products = new Dictionary<string, Guid>
+            _products = new Dictionary<string, Guid>
                 {
                     { "blog", blog },
                     { "bookmark", bookmark },
@@ -59,18 +58,16 @@ namespace ASC.Api.Core.Middleware
             WebItemSecurity webItemSecurity,
             AuthContext authContext)
         {
-            log = options.CurrentValue;
-            WebItemSecurity = webItemSecurity;
-            AuthContext = authContext;
+            _logger = options.CurrentValue;
+            _webItemSecurity = webItemSecurity;
+            _authContext = authContext;
         }
 
-        public void OnResourceExecuted(ResourceExecutedContext context)
-        {
-        }
+        public void OnResourceExecuted(ResourceExecutedContext context) { }
 
         public void OnResourceExecuting(ResourceExecutingContext context)
         {
-            if (!AuthContext.IsAuthenticated) return;
+            if (!_authContext.IsAuthenticated) return;
 
             if (context.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptor)
             {
@@ -78,13 +75,12 @@ namespace ASC.Api.Core.Middleware
                 if (pid != Guid.Empty)
                 {
                     if (CallContext.GetData("asc.web.product_id") == null)
-                    {
                         CallContext.SetData("asc.web.product_id", pid);
-                    }
-                    if (!WebItemSecurity.IsAvailableForMe(pid))
+
+                    if (!_webItemSecurity.IsAvailableForMe(pid))
                     {
                         context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
-                        log.WarnFormat("Product {0} denied for user {1}", controllerActionDescriptor.ControllerName, AuthContext.CurrentAccount);
+                        _logger.WarnFormat("Product {0} denied for user {1}", controllerActionDescriptor.ControllerName, _authContext.CurrentAccount);
                     }
                 }
             }
@@ -92,10 +88,8 @@ namespace ASC.Api.Core.Middleware
 
         private static Guid FindProduct(ControllerActionDescriptor method)
         {
-            if (method == null || string.IsNullOrEmpty(method.ControllerName))
-            {
-                return default;
-            }
+            if (method == null || string.IsNullOrEmpty(method.ControllerName)) return default;
+
             var name = method.ControllerName.ToLower();
             if (name == "community")
             {
@@ -103,17 +97,12 @@ namespace ASC.Api.Core.Middleware
                 if (!string.IsNullOrEmpty(url))
                 {
                     var module = url.Split('/')[0];
-                    if (products.ContainsKey(module))
-                    {
-                        return products[module];
-                    }
+                    if (_products.ContainsKey(module)) return _products[module];
                 }
             }
 
-            if (products.ContainsKey(name))
-            {
-                return products[name];
-            }
+            if (_products.ContainsKey(name)) return _products[name];
+            
             return default;
         }
     }
