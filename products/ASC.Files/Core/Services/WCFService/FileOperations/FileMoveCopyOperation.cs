@@ -239,6 +239,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                 if (isToFolder)
                                     needToMark.Add(newFolder);
 
+                                var roomNew = documentServiceHelper.GetSocketFolderRoom(toFolderId);
+                                socketManager.CreateFolder(newFolder.ID, roomNew, newFolder);
+
                                 if (ProcessedFolder(folderId))
                                 {
                                     Result += string.Format("folder_{0}{1}", newFolder.ID, SPLIT_CHAR);
@@ -285,6 +288,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                         if (isToFolder)
                                             needToMark.Add(newFolder);
 
+                                        var roomNew = documentServiceHelper.GetSocketFolderRoom(toFolderId);
+                                        socketManager.CreateFolder(newFolder.ID, roomNew, newFolder);
+
                                         if (ProcessedFolder(folderId))
                                         {
                                             Result += string.Format("folder_{0}{1}", newFolderId, SPLIT_CHAR);
@@ -316,6 +322,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                                         if (isToFolder)
                                             needToMark.Add(newFolder);
+
+                                        var roomNew = documentServiceHelper.GetSocketFolderRoom(toFolderId);
+                                        socketManager.CreateFolder(newFolder.ID, roomNew, newFolder);
 
                                         var room = documentServiceHelper.GetSocketFolderRoom(folder.RootFolderId);
                                         socketManager.DeleteFolder(folder.ID, room);
@@ -357,8 +366,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                 if (isToFolder)
                                     needToMark.Add(newFolder);
 
-                                var room = documentServiceHelper.GetSocketFolderRoom(folder.RootFolderId);
-                                socketManager.DeleteFolder(folder.ID, room);
+                                var roomNew = documentServiceHelper.GetSocketFolderRoom(toFolderId);
+                                socketManager.CreateFolder(newFolder.ID, roomNew, newFolder);
+
+                                var roomOld = documentServiceHelper.GetSocketFolderRoom(folder.RootFolderId);
+                                socketManager.DeleteFolder(folder.ID, roomOld);
 
                                 if (ProcessedFolder(folderId))
                                 {
@@ -390,6 +402,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var (filesMessageService, fileMarker, fileUtility, global, entryManager) = scopeClass;
             var fileDao = scope.ServiceProvider.GetService<IFileDao<TTo>>();
             var fileTracker = scope.ServiceProvider.GetService<FileTrackerHelper>();
+            var documentServiceHelper = scope.ServiceProvider.GetService<DocumentServiceHelper>();
+            var socketManager = scope.ServiceProvider.GetService<SocketManager>();
 
             var toFolderId = toFolder.ID;
             foreach (var fileId in fileIds)
@@ -438,6 +452,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                     {
                                         needToMark.Add(newFile);
                                     }
+
+                                    var room = documentServiceHelper.GetSocketFolderRoom(toFolderId);
+                                    socketManager.CreateFile(newFile.ID, room, newFile);
 
                                     if (ProcessedFile(fileId))
                                     {
@@ -491,11 +508,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                         needToMark.Add(newFile);
                                     }
 
-                                    var documentServiceHelper = scope.ServiceProvider.GetService<DocumentServiceHelper>();
-                                    var socketManager = scope.ServiceProvider.GetService<SocketManager>();
+                                    var roomOld = documentServiceHelper.GetSocketFolderRoom(file.FolderID);
+                                    socketManager.DeleteFile(file.ID, roomOld);
 
-                                    var room = documentServiceHelper.GetSocketFolderRoom(file.FolderID);
-                                    socketManager.DeleteFile(file.ID, room);
+                                    var roomNew = documentServiceHelper.GetSocketFolderRoom(toFolderId);
+                                    socketManager.CreateFile(newFile.ID, roomNew, newFile);
 
                                     if (ProcessedFile(fileId))
                                     {
@@ -551,6 +568,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                                     needToMark.Add(newFile);
 
+                                    var roomNew = documentServiceHelper.GetSocketFolderRoom(newFile.RootFolderId);
+                                    socketManager.CreateFile(newFile.ID, roomNew, newFile);
+
                                     if (copy)
                                     {
                                         filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileCopiedWithOverwriting, newFile.Title, parentFolder.Title, toFolder.Title);
@@ -588,6 +608,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                                 {
                                                     filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileMovedWithOverwriting, file.Title, parentFolder.Title, toFolder.Title);
                                                 }
+
+                                                var roomOld = documentServiceHelper.GetSocketFolderRoom(file.FolderID);
+                                                socketManager.DeleteFile(file.ID, roomOld);
 
                                                 if (ProcessedFile(fileId))
                                                 {
