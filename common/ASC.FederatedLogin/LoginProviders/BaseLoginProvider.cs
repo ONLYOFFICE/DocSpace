@@ -73,6 +73,7 @@ namespace ASC.FederatedLogin.LoginProviders
 
         private OAuth20TokenHelper OAuth20TokenHelper { get; }
         internal Signature Signature { get; }
+        internal InstanceCrypto InstanceCrypto { get; }
 
         protected BaseLoginProvider()
         {
@@ -94,7 +95,7 @@ namespace ASC.FederatedLogin.LoginProviders
         {
             OAuth20TokenHelper = oAuth20TokenHelper;
             Signature = signature;
-            instanceCrypto = instanceCrypto;
+            InstanceCrypto = instanceCrypto;
         }
 
         public virtual LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs = null)
