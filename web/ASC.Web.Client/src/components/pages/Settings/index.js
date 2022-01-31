@@ -24,7 +24,7 @@ const LanguageAndTimeZoneSettings = lazy(() =>
 const CustomTitles = lazy(() => import("./categories/common/custom-titles"));
 const TeamTemplate = lazy(() => import("./categories/common/team-template"));
 const ThirdPartyServices = lazy(() =>
-  import("./categories/integration/thirdPartyServicesSettings")
+  import("./categories/integration/ThirdPartyServicesSettings")
 );
 const SingleSignOn = lazy(() =>
   import("./categories/integration/SingleSignOn")

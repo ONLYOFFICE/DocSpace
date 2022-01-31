@@ -5,7 +5,7 @@ import Loader from "@appserver/components/loader";
 import { combineUrl } from "@appserver/common/utils";
 import AppServerConfig from "@appserver/common/constants/AppServerConfig";
 
-const ThirdPartyServices = lazy(() => import("./thirdPartyServicesSettings"));
+const ThirdPartyServices = lazy(() => import("./ThirdPartyServicesSettings"));
 const SingleSignOn = lazy(() => import("./SingleSignOn"));
 
 const PROXY_BASE_URL = combineUrl(
