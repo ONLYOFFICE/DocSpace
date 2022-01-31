@@ -27,6 +27,7 @@ const FilesMediaViewer = (props) => {
     setIsLoading,
     setFirstLoad,
     setExpandedKeys,
+    setToPreviewFile,
     expandedKeys,
   } = props;
 
@@ -46,7 +47,6 @@ const FilesMediaViewer = (props) => {
   const onButtonBackHandler = () => {
     const hash = window.location.hash;
     const id = +hash.slice(9);
-
     if (!id) {
       setMediaViewerData({ visible: false, id: null });
       return;
@@ -119,6 +119,7 @@ const FilesMediaViewer = (props) => {
         .finally(() => {
           setIsLoading(false);
           setFirstLoad(false);
+          setToPreviewFile(null);
         });
     }
     setMediaViewerData({ visible: false, id: null });
@@ -180,6 +181,7 @@ export default inject(
       setMediaViewerData,
       playlist,
       previewFile,
+      setToPreviewFile,
     } = mediaViewerDataStore;
     const { deleteItemAction } = filesActionsStore;
     const { media, images } = formatsStore.mediaViewersFormatsStore;
@@ -202,6 +204,7 @@ export default inject(
       setIsLoading,
       setFirstLoad,
       setExpandedKeys,
+      setToPreviewFile,
       expandedKeys,
     };
   }
