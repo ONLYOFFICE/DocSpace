@@ -1,15 +1,4 @@
-﻿using System.Net;
-using System.Net.Http;
-using System.Security;
-
-using ASC.Core.Billing;
-using ASC.Core.Common.Notify.Push;
-using ASC.Web.Core.Files;
-using ASC.Web.Core.Mobile;
-using ASC.Web.Core.Utility;
-using ASC.Web.Studio.UserControls.Management;
-
-using SecurityContext = ASC.Core.SecurityContext;
+﻿using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Api.Controllers
 {

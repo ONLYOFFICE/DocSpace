@@ -1,6 +1,4 @@
-﻿using static ASC.Security.Cryptography.EmailValidationKeyProvider;
-
-namespace ASC.Web.Api.Controllers
+﻿namespace ASC.Web.Api.Controllers
 {
     [Scope]
     [DefaultRoute]

@@ -25,8 +25,6 @@
 
 
 using System.Net.Sockets;
-using System.Security;
-using System.Threading.Tasks;
 
 using ASC.Common.Security.Authorizing;
 using ASC.Common.Threading;

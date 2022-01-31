@@ -26,7 +26,6 @@
 
 using System.Text.Json.Serialization;
 
-using ASC.Web.Core.Files;
 using ASC.Web.Files.Services.DocumentService;
 
 namespace ASC.Api.Settings

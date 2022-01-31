@@ -23,9 +23,6 @@
  *
 */
 
-
-using ASC.AuditTrail;
-
 namespace ASC.Api.Security
 {
     public class EventWrapper

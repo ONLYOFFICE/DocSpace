@@ -23,11 +23,6 @@
  *
 */
 
-
-using ASC.Api.Settings.Smtp;
-using ASC.Core.Billing;
-using ASC.Core.Configuration;
-
 namespace ASC.Api.Settings
 {
     [Scope]

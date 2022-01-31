@@ -1,13 +1,4 @@
-﻿using ASC.Api.Settings;
-using ASC.Web.Api.Controllers;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-
-using StackExchange.Redis.Extensions.Core.Configuration;
-using StackExchange.Redis.Extensions.Newtonsoft;
-
-namespace ASC.Web.Api
+﻿namespace ASC.Web.Api
 {
     public class Startup : BaseStartup
     {

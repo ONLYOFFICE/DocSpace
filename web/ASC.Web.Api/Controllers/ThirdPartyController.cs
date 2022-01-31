@@ -23,10 +23,6 @@
  *
 */
 
-using System.Collections.Generic;
-
-using ASC.FederatedLogin.Helpers;
-
 namespace ASC.Web.Api.Controllers
 {
     [Scope(Additional = typeof(BaseLoginProviderExtension))]

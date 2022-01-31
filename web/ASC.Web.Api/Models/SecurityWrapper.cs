@@ -23,9 +23,6 @@
  *
 */
 
-
-using System.Collections.Generic;
-
 namespace ASC.Api.Settings
 {
     public class SecurityWrapper

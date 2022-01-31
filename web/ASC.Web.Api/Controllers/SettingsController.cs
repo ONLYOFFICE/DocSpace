@@ -23,48 +23,6 @@
  *
 */
 
-
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Net;
-using System.Net.Http;
-using System.Net.Mail;
-using System.Security;
-using System.ServiceModel.Security;
-using System.Text.Json;
-using System.Text.RegularExpressions;
-
-using ASC.Api.Collections;
-using ASC.Core.Billing;
-using ASC.Core.Common.Configuration;
-using ASC.Core.Common.Notify;
-using ASC.Core.Encryption;
-using ASC.Data.Backup;
-using ASC.Data.Backup.Contracts;
-using ASC.Data.Storage;
-using ASC.Data.Storage.Configuration;
-using ASC.Data.Storage.Encryption;
-using ASC.Data.Storage.Migration;
-using ASC.IPSecurity;
-using ASC.Web.Core.Utility;
-using ASC.Web.Core.Utility.Settings;
-using ASC.Web.Core.WebZones;
-using ASC.Web.Core.WhiteLabel;
-using ASC.Web.Studio.Core.Quota;
-using ASC.Web.Studio.Core.Statistic;
-using ASC.Web.Studio.UserControls.CustomNavigation;
-using ASC.Web.Studio.UserControls.FirstTime;
-using ASC.Web.Studio.UserControls.Management;
-using ASC.Web.Studio.UserControls.Statistics;
-using ASC.Webhooks.Core;
-using ASC.Webhooks.Core.Dao.Models;
-
-using Google.Authenticator;
-
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Caching.Memory;
-
 namespace ASC.Api.Settings
 {
     [Scope]
