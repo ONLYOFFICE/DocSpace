@@ -331,3 +331,11 @@ export function getBuildVersion() {
   };
   return request(options);
 }
+
+export function getCapabilities() {
+  const options = {
+    method: "get",
+    url: "/capabilities",
+  };
+  return request(options);
+}
