@@ -135,7 +135,7 @@ class FilesContent extends React.Component {
   }
 }
 
-const Files = inject(({ auth, filesStore, socketStore }) => {
+const Files = inject(({ auth, filesStore }) => {
   return {
     isDesktop: auth.settingsStore.isDesktopClient,
     user: auth.userStore.user,
