@@ -183,14 +183,6 @@ const StyledQuickButtonsContainer = styled.div`
   .favorite {
     margin-top: 1px;
   }
-
-  .share-button-icon:hover {
-    cursor: pointer;
-    path {
-      fill: #3b72a7;
-    }
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  }
 `;
 
 const FilesTableRow = (props) => {

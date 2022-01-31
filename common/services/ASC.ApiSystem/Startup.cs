@@ -76,8 +76,13 @@ namespace ASC.ApiSystem
             services.AddMemoryCache();
 
             var redisConfiguration = Configuration.GetSection("Redis").Get<RedisConfiguration>();
+            var kafkaConfiguration = Configuration.GetSection("kafka").Get<KafkaSettings>();
 
-            if (redisConfiguration != null)
+            if (kafkaConfiguration != null)
+            {
+                diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+            }
+            else if (redisConfiguration != null)
             {
                 diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
             }
