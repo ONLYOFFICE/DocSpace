@@ -11,7 +11,7 @@ import Button from "@appserver/components/button";
 import RadioButtonGroup from "@appserver/components/radio-button-group";
 import ComboBox from "@appserver/components/combobox";
 import Checkbox from "@appserver/components/checkbox";
-import { Label } from "@appserver/components";
+import Label from "@appserver/components/label";
 
 const SingleSignOn = () => {
   const { t } = useTranslation("SingleSignOn");
