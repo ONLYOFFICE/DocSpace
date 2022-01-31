@@ -46,7 +46,6 @@ const SingleSignOn = () => {
         displayProp="flex"
         flexDirection="row"
         paddingProp="12px"
-        widthProp="100%"
       >
         <ToggleButton
           isChecked={isSSOEnabled}
@@ -59,39 +58,41 @@ const SingleSignOn = () => {
             <Text fontWeight={600} lineHeight="20px">
               {t("TurnOn")}
             </Text>
+
             <HelpButton
               offsetRight={0}
               style={{ padding: "0 6px" }}
               tooltipContent={<Text>{t("TurnOnTooltip")}</Text>}
             />
           </Box>
+
           <Text>{t("TurnOnCaption")}</Text>
         </Box>
       </Box>
 
-      <Box displayProp="flex" flexDirection="row" marginProp="24px 0">
-        <Text as="h2" fontWeight={600}>
-          {t("ServiceProviderSettings")}
-        </Text>
-        <Link
-          isHovered
-          onClick={showServiceProviderClick}
-          style={{ margin: "0 16px" }}
-          type="action"
-        >
-          {showServiceProvider ? t("Hide") : t("Show")}
-        </Link>
-      </Box>
-
-      <Box as="form">
+      <Box as="form" displayProp="flex" flexDirection="column">
         <Box>
+          <Box displayProp="flex" flexDirection="row" marginProp="24px 0">
+            <Text as="h2" fontWeight={600}>
+              {t("ServiceProviderSettings")}
+            </Text>
+
+            <Link
+              isHovered
+              onClick={showServiceProviderClick}
+              style={{ margin: "0 16px" }}
+              type="action"
+            >
+              {showServiceProvider ? t("Hide") : t("Show")}
+            </Link>
+          </Box>
+
           <FieldContainer
             errorMessage="Error text. Lorem ipsum dolor sit amet, consectetuer adipiscing elit"
             helpButtonHeaderContent="Tooltip header"
             isVertical
             labelText={t("UploadXML")}
             place="top"
-            style={{ maxWidth: "350px" }}
             tooltipContent="Paste you tooltip content here"
           >
             <Box displayProp="flex" flexDirection="row">
@@ -99,7 +100,9 @@ const SingleSignOn = () => {
                 className="field-input"
                 onChange={() => {}}
                 placeholder={t("UploadXMLPlaceholder")}
+                size="middle"
               />
+
               <Button label="icon" size="medium" />
               <Text>{t("Or")}</Text>
               <Button label={t("ChooseFile")} size="medium" />
@@ -146,6 +149,7 @@ const SingleSignOn = () => {
           >
             <Box displayProp="flex" flexDirection="row">
               <Label text={t("Binding")} htmlFor="binding" />
+
               <RadioButtonGroup
                 name="binding"
                 selected="b"
@@ -232,37 +236,39 @@ const SingleSignOn = () => {
           </FieldContainer>
         </Box>
 
-        <Box
-          alignItems="center"
-          displayProp="flex"
-          flexDirection="row"
-          marginProp="24px 0"
-        >
-          <Text as="h2" fontWeight={600}>
-            {t("OpenCertificates")}
-          </Text>
-          <HelpButton
-            offsetRight={0}
-            style={{ padding: "0 6px" }}
-            tooltipContent={<Text>{t("TurnOnTooltip")}</Text>}
-          />
-        </Box>
-
-        <Box alignItems="center" displayProp="flex" flexDirection="row">
-          <Button label="Добавить сертификат" size="medium" />
-          <Link
-            isHovered
-            onClick={showAdditionalParametersClick}
-            style={{ margin: "0 16px" }}
-            type="action"
-          >
-            {showAdditionalParameters
-              ? t("HideAdditionalParameters")
-              : t("ShowAdditionalParameters")}
-          </Link>
-        </Box>
-        {/*Additional parameters, needs to be hidable*/}
         <Box>
+          <Box
+            alignItems="center"
+            displayProp="flex"
+            flexDirection="row"
+            marginProp="24px 0"
+          >
+            <Text as="h2" fontWeight={600}>
+              {t("OpenCertificates")}
+            </Text>
+
+            <HelpButton
+              offsetRight={0}
+              style={{ padding: "0 6px" }}
+              tooltipContent={<Text>{t("TurnOnTooltip")}</Text>}
+            />
+          </Box>
+
+          <Box alignItems="center" displayProp="flex" flexDirection="row">
+            <Button label="Добавить сертификат" size="medium" />
+
+            <Link
+              isHovered
+              onClick={showAdditionalParametersClick}
+              style={{ margin: "0 16px" }}
+              type="action"
+            >
+              {showAdditionalParameters
+                ? t("HideAdditionalParameters")
+                : t("ShowAdditionalParameters")}
+            </Link>
+          </Box>
+
           <Checkbox label={t("SignAuthRequest")} />
           <Checkbox label={t("SignExitRequest")} />
           <Checkbox label={t("SignResponseRequest")} />
@@ -328,17 +334,19 @@ const SingleSignOn = () => {
         </Box>
 
         <Box>
-          <Box alignItems="center" displayProp="flex" flexDirection="row">
-            <Text as="h2" fontWeight={600}>
-              {t("AttributeMatching")}
-            </Text>
-            <HelpButton
-              offsetRight={0}
-              style={{ padding: "0 6px" }}
-              tooltipContent={<Text>{t("AttributeMatchingTooltip")}</Text>}
-            />
+          <Box>
+            <Box alignItems="center" displayProp="flex" flexDirection="row">
+              <Text as="h2" fontWeight={600}>
+                {t("AttributeMatching")}
+              </Text>
+
+              <HelpButton
+                offsetRight={0}
+                style={{ padding: "0 6px" }}
+                tooltipContent={<Text>{t("AttributeMatchingTooltip")}</Text>}
+              />
+            </Box>
           </Box>
-        </Box>
 
         <Box>
           <FieldContainer
@@ -443,20 +451,22 @@ const SingleSignOn = () => {
         </Box>
 
         <Box displayProp="flex" flexDirection="column">
-          <Box displayProp="flex" flexDirection="row" marginProp="24px 0">
-            <Text as="h2" fontWeight={600}>
-              {t("SPMetadata")}
-            </Text>
-            <Link
-              isHovered
-              onClick={showProviderMetadataClick}
-              style={{ margin: "0 16px" }}
-              type="action"
-            >
-              {showProviderMetadata ? t("Hide") : t("Show")}
-            </Link>
+          <Box displayProp="flex" flexDirection="column">
+            <Box displayProp="flex" flexDirection="row" marginProp="24px 0">
+              <Text as="h2" fontWeight={600}>
+                {t("SPMetadata")}
+              </Text>
+
+              <Link
+                isHovered
+                onClick={showProviderMetadataClick}
+                style={{ margin: "0 16px" }}
+                type="action"
+              >
+                {showProviderMetadata ? t("Hide") : t("Show")}
+              </Link>
+            </Box>
           </Box>
-        </Box>
 
         <Box displayProp="flex" flexDirection="column">
           <FieldContainer
