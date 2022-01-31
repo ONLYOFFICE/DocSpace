@@ -80,7 +80,7 @@ namespace ASC.Data.Storage
         /// <param name="expire"></param>
         /// <param name="headers"></param>
         /// <returns></returns>
-        Uri GetInternalUri(string domain, string path, TimeSpan expire, IEnumerable<string> headers);
+        Task<Uri> GetInternalUriAsync(string domain, string path, TimeSpan expire, IEnumerable<string> headers);
 
         ///<summary>
         /// A stream of read-only. In the case of the C3 stream NetworkStream general, and with him we have to work

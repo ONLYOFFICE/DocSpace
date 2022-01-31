@@ -175,9 +175,8 @@ namespace ASC.Web.Files.Services.DocumentService
 
                 tenantManager.SetCurrentTenant(TenantId);
                 securityContext.AuthenticateMeWithoutCookie(UserId);
-                Dictionary<string, string> urls = null;
 
-                (BuilderKey, urls) = documentServiceConnector.DocbuilderRequestAsync(null, Script, true, urls).Result;
+                (BuilderKey, var urls) = documentServiceConnector.DocbuilderRequestAsync(null, Script, true).Result;
 
                 while (true)
                 {
@@ -187,7 +186,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     }
 
                     Task.Delay(1500, cancellationToken).Wait(cancellationToken);
-                    (var builderKey, urls) = documentServiceConnector.DocbuilderRequestAsync(BuilderKey, null, true, urls).Result;
+                    (var builderKey, urls) = documentServiceConnector.DocbuilderRequestAsync(BuilderKey, null, true).Result;
                     if (builderKey == null)
                         throw new NullReferenceException();
 
@@ -238,9 +237,8 @@ namespace ASC.Web.Files.Services.DocumentService
 
                 tenantManager.SetCurrentTenant(TenantId);
                 securityContext.AuthenticateMeWithoutCookie(UserId);
-                Dictionary<string, string> urls = null;
 
-                (BuilderKey, urls) = await documentServiceConnector.DocbuilderRequestAsync(null, Script, true, urls);
+                (BuilderKey, var urls) = await documentServiceConnector.DocbuilderRequestAsync(null, Script, true);
 
                 while (true)
                 {
@@ -250,7 +248,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     }
 
                     await Task.Delay(1500, cancellationToken);
-                    (var builderKey, urls) = await documentServiceConnector.DocbuilderRequestAsync(BuilderKey, null, true, urls);
+                    (var builderKey, urls) = await documentServiceConnector.DocbuilderRequestAsync(BuilderKey, null, true);
                     if (builderKey == null)
                         throw new NullReferenceException();
 

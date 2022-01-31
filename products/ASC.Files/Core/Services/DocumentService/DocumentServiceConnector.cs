@@ -93,7 +93,7 @@ namespace ASC.Web.Files.Services.DocumentService
             return Web.Core.Files.DocumentService.GenerateRevisionId(expectedKey);
         }
 
-        public int GetConvertedUri(string documentUri,
+        public Task<(int ResultPercent, string ConvertedDocumentUri)> GetConvertedUriAsync(string documentUri,
                                           string fromExtension,
                                           string toExtension,
                                           string documentRevisionId,
@@ -101,12 +101,12 @@ namespace ASC.Web.Files.Services.DocumentService
                                           ThumbnailData thumbnail,
                                           SpreadsheetLayout spreadsheetLayout,
                                           bool isAsync,
-                                          out string convertedDocumentUri)
+                                          string convertedDocumentUri)
         {
             Logger.Debug($"DocService convert from {fromExtension} to {toExtension} - {documentUri}, DocServiceConverterUrl:{FilesLinkUtility.DocServiceConverterUrl}");
             try
             {
-                return Web.Core.Files.DocumentService.GetConvertedUri(
+                return Web.Core.Files.DocumentService.GetConvertedUriAsync(
                     FileUtility,
                     FilesLinkUtility.DocServiceConverterUrl,
                     documentUri,
@@ -118,7 +118,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     spreadsheetLayout,
                     isAsync,
                     FileUtility.SignatureSecret,
-                    out convertedDocumentUri);
+                    convertedDocumentUri);
             }
             catch (Exception ex)
             {
@@ -126,17 +126,17 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        public bool Command(CommandMethod method,
-                                   string docKeyForTrack,
-                                   object fileId = null,
-                                   string callbackUrl = null,
-                                   string[] users = null,
-                                   MetaData meta = null)
+        public async Task<bool> CommandAsync(CommandMethod method,
+                                  string docKeyForTrack,
+                                  object fileId = null,
+                                  string callbackUrl = null,
+                                  string[] users = null,
+                                  MetaData meta = null)
         {
             Logger.DebugFormat("DocService command {0} fileId '{1}' docKey '{2}' callbackUrl '{3}' users '{4}' meta '{5}'", method, fileId, docKeyForTrack, callbackUrl, users != null ? string.Join(", ", users) : null, JsonConvert.SerializeObject(meta));
             try
             {
-                var commandResponse = CommandRequest(
+                var commandResponse = await CommandRequestAsync(
                     FileUtility,
                     FilesLinkUtility.DocServiceCommandUrl,
                     method,
@@ -158,13 +158,13 @@ namespace ASC.Web.Files.Services.DocumentService
                 Logger.Error("DocService command error", e);
             }
             return false;
-        }       
+        }
 
         public async Task<(string BuilderKey,Dictionary<string, string> Urls)> DocbuilderRequestAsync(string requestKey,
                                                string inputScript,
-                                               bool isAsync,
-                                               Dictionary<string, string> urls)
+                                               bool isAsync)
         {
+            var urls = new Dictionary<string, string>();
             string scriptUrl = null;
             if (!string.IsNullOrEmpty(inputScript))
             {
@@ -183,14 +183,13 @@ namespace ASC.Web.Files.Services.DocumentService
             Logger.DebugFormat("DocService builder requestKey {0} async {1}", requestKey, isAsync);
             try
             {
-                return (Web.Core.Files.DocumentService.DocbuilderRequest(
+                return await Web.Core.Files.DocumentService.DocbuilderRequestAsync(
                     FileUtility,
                     FilesLinkUtility.DocServiceDocbuilderUrl,
                     GenerateRevisionId(requestKey),
                     scriptUrl,
                     isAsync,
-                    FileUtility.SignatureSecret,
-                    out urls), urls);
+                    FileUtility.SignatureSecret);
             }
             catch (Exception ex)
             {
@@ -198,12 +197,12 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        public string GetVersion()
+        public async Task<string> GetVersionAsync()
         {
             Logger.DebugFormat("DocService request version");
             try
             {
-                var commandResponse = CommandRequest(
+                var commandResponse = await CommandRequestAsync(
                     FileUtility,
                     FilesLinkUtility.DocServiceCommandUrl,
                     CommandMethod.Version,
@@ -231,7 +230,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 Logger.Error("DocService command error", e);
             }
             return "4.1.5.1";
-        }      
+        }
 
         public async Task CheckDocServiceUrlAsync()
         {
@@ -239,7 +238,7 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 try
                 {
-                    if (!HealthcheckRequest(FilesLinkUtility.DocServiceHealthcheckUrl))
+                    if (!await HealthcheckRequestAsync(FilesLinkUtility.DocServiceHealthcheckUrl))
                     {
                         throw new Exception("bad status");
                     }
@@ -253,7 +252,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             if (!string.IsNullOrEmpty(FilesLinkUtility.DocServiceConverterUrl))
             {
-                string convertedFileUri;
+                string convertedFileUri = null;
                 try
                 {
                     const string fileExtension = ".docx";
@@ -263,7 +262,8 @@ namespace ASC.Web.Files.Services.DocumentService
                     var fileUri = ReplaceCommunityAdress(url);
 
                     var key = GenerateRevisionId(Guid.NewGuid().ToString());
-                    Web.Core.Files.DocumentService.GetConvertedUri(FileUtility, FilesLinkUtility.DocServiceConverterUrl, fileUri, fileExtension, toExtension, key, null, null, null, false, FileUtility.SignatureSecret, out convertedFileUri);
+                    var uriTuple = await Web.Core.Files.DocumentService.GetConvertedUriAsync(FileUtility, FilesLinkUtility.DocServiceConverterUrl, fileUri, fileExtension, toExtension, key, null, null, null, false, FileUtility.SignatureSecret, convertedFileUri);
+                    convertedFileUri = uriTuple.ConvertedDocumentUri;
                 }
                 catch (Exception ex)
                 {
@@ -296,7 +296,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 try
                 {
                     var key = GenerateRevisionId(Guid.NewGuid().ToString());
-                    CommandRequest(FileUtility, FilesLinkUtility.DocServiceCommandUrl, CommandMethod.Version, key, null, null, null, FileUtility.SignatureSecret);
+                    await CommandRequestAsync(FileUtility, FilesLinkUtility.DocServiceCommandUrl, CommandMethod.Version, key, null, null, null, FileUtility.SignatureSecret);
                 }
                 catch (Exception ex)
                 {
@@ -314,7 +314,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     var scriptUrl = BaseCommonLinkUtility.GetFullAbsolutePath(scriptUri.ToString());
                     scriptUrl = ReplaceCommunityAdress(scriptUrl);
 
-                    Web.Core.Files.DocumentService.DocbuilderRequest(FileUtility, FilesLinkUtility.DocServiceDocbuilderUrl, null, scriptUrl, false, FileUtility.SignatureSecret, out var urls);
+                    await Web.Core.Files.DocumentService.DocbuilderRequestAsync(FileUtility, FilesLinkUtility.DocServiceDocbuilderUrl, null, scriptUrl, false, FileUtility.SignatureSecret);
                 }
                 catch (Exception ex)
                 {

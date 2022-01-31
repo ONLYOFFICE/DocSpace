@@ -847,7 +847,7 @@ namespace ASC.Web.Files.Services.WCFService
                         !string.IsNullOrEmpty(configuration.ErrorMessage) ? configuration.ErrorMessage : FilesCommonResource.ErrorMassage_SecurityException_EditFile);
                 var key = configuration.Document.Key;
 
-                if (!DocumentServiceTrackerHelper.StartTrack(fileId.ToString(), key))
+                if (!await DocumentServiceTrackerHelper.StartTrackAsync(fileId.ToString(), key))
                 {
                     throw new Exception(FilesCommonResource.ErrorMassage_StartEditing);
                 }
@@ -992,7 +992,7 @@ namespace ASC.Web.Files.Services.WCFService
                 {
                     var fileStable = file.Forcesave == ForcesaveType.None ? file : await fileDao.GetFileStableAsync(file.ID, file.Version);
                     var docKey = DocumentServiceHelper.GetDocKey(fileStable);
-                    DocumentServiceHelper.DropUser(docKey, usersDrop, file.ID);
+                    DocumentServiceHelper.DropUserAsync(docKey, usersDrop, file.ID).Wait();
                 }
 
                 FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileLocked, file.Title);
@@ -1970,7 +1970,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             try
             {
-                return UrlShortener.Instance.GetShortenLink(shareLink);
+                return await UrlShortener.Instance.GetShortenLinkAsync(shareLink);
             }
             catch (Exception e)
             {

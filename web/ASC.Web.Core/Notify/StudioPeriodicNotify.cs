@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -66,7 +67,7 @@ namespace ASC.Web.Studio.Core.Notify
             Log = log.Get("ASC.Notify");
         }
 
-        public void SendSaasLetters(string senderName, DateTime scheduleDate)
+        public async Task SendSaasLettersAsync(string senderName, DateTime scheduleDate)
         {
             var nowDate = scheduleDate.Date;
 
@@ -370,7 +371,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                             if (!string.IsNullOrEmpty(apiSystemHelper.ApiCacheUrl))
                             {
-                                apiSystemHelper.RemoveTenantFromCache(tenant.TenantAlias, authContext.CurrentAccount.ID);
+                                await apiSystemHelper.RemoveTenantFromCacheAsync(tenant.TenantAlias, authContext.CurrentAccount.ID);
                             }
                         }
 
@@ -408,7 +409,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                             if (!string.IsNullOrEmpty(apiSystemHelper.ApiCacheUrl))
                             {
-                                apiSystemHelper.RemoveTenantFromCache(tenant.TenantAlias, authContext.CurrentAccount.ID);
+                                await apiSystemHelper.RemoveTenantFromCacheAsync(tenant.TenantAlias, authContext.CurrentAccount.ID);
                             }
                         }
 

@@ -1101,7 +1101,9 @@ namespace ASC.Web.Files.Utils
                     }
 
                     var key = DocumentServiceConnector.GenerateRevisionId(downloadUri);
-                    DocumentServiceConnector.GetConvertedUri(downloadUri, newExtension, currentExt, key, null, null, null, false, out downloadUri);
+
+                    var resultTuple = await DocumentServiceConnector.GetConvertedUriAsync(downloadUri, newExtension, currentExt, key, null, null, null, false, downloadUri);
+                    downloadUri = resultTuple.ConvertedDocumentUri;
 
                     stream = null;
                 }

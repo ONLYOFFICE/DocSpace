@@ -179,7 +179,7 @@ namespace ASC.Data.Storage.RackspaceCloud
             return this;
         }
 
-        public override Uri GetInternalUri(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
+        public override Task<Uri> GetInternalUriAsync(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
         {
             if (expire == TimeSpan.Zero || expire == TimeSpan.MinValue || expire == TimeSpan.MaxValue)
             {
@@ -188,7 +188,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
             if (expire == TimeSpan.Zero || expire == TimeSpan.MinValue || expire == TimeSpan.MaxValue)
             {
-                return GetUriShared(domain, path);
+                return Task.FromResult(GetUriShared(domain, path));
             }
 
             var client = GetClient();
@@ -206,13 +206,13 @@ namespace ASC.Data.Storage.RackspaceCloud
                 client.UpdateAccountMetadata(accounMetaData, _region);
             }
 
-            return client.CreateTemporaryPublicUri(
+            return Task.FromResult(client.CreateTemporaryPublicUri(
                                                         JSIStudios.SimpleRESTServices.Client.HttpMethod.GET,
                                                         _private_container,
                                                         MakePath(domain, path),
                                                         secretKey,
                                                         DateTime.UtcNow.Add(expire),
-                                                        _region);
+                                                        _region));
         }
 
         private Uri GetUriShared(string domain, string path)

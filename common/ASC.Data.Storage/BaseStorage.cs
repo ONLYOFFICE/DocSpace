@@ -170,11 +170,6 @@ namespace ASC.Data.Storage
             get { return true; }
         }
 
-        public virtual Uri GetInternalUri(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
-        {
-            return null;
-        }
-
         public virtual Task<Uri> GetInternalUriAsync(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
         {
             return null;

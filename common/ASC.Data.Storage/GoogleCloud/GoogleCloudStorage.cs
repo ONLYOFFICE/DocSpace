@@ -183,7 +183,7 @@ namespace ASC.Data.Storage.GoogleCloud
             return (long)ts.TotalSeconds;
         }
 
-        public override Uri GetInternalUri(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
+        public override async Task<Uri> GetInternalUriAsync(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
         {
             if (expire == TimeSpan.Zero || expire == TimeSpan.MinValue || expire == TimeSpan.MaxValue)
             {
@@ -197,28 +197,9 @@ namespace ASC.Data.Storage.GoogleCloud
             using var storage = GetStorage();
 
             using var stream = new MemoryStream(Encoding.UTF8.GetBytes(_json ?? ""));
-            var preSignedURL = UrlSigner.FromServiceAccountData(stream).Sign(_bucket, MakePath(domain, path), expire, HttpMethod.Get);
+            var preSignedURL = await UrlSigner.FromServiceAccountData(stream).SignAsync(_bucket, MakePath(domain, path), expire, HttpMethod.Get);
 
             return MakeUri(preSignedURL);
-        }
-
-        public override Task<Uri> GetInternalUriAsync(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
-        {
-            if (expire == TimeSpan.Zero || expire == TimeSpan.MinValue || expire == TimeSpan.MaxValue)
-            {
-                expire = GetExpire(domain);
-            }
-            if (expire == TimeSpan.Zero || expire == TimeSpan.MinValue || expire == TimeSpan.MaxValue)
-            {
-                return Task.FromResult(GetUriShared(domain, path));
-            }
-
-            using var storage = GetStorage();
-
-            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(_json ?? ""));
-            var preSignedURL = UrlSigner.FromServiceAccountData(stream).Sign(_bucket, MakePath(domain, path), expire, HttpMethod.Get);
-
-            return Task.FromResult(MakeUri(preSignedURL));
         }
 
         public Uri GetUriShared(string domain, string path)

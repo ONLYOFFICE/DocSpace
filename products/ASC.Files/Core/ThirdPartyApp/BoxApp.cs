@@ -302,7 +302,10 @@ namespace ASC.Web.Files.ThirdPartyApp
                     Logger.Debug("BoxApp: GetConvertedUri from " + fileType + " to " + currentType + " - " + downloadUrl);
 
                     var key = DocumentServiceConnector.GenerateRevisionId(downloadUrl);
-                    DocumentServiceConnector.GetConvertedUri(downloadUrl, fileType, currentType, key, null, null, null, false, out downloadUrl);
+
+                    var resultTuple = await DocumentServiceConnector.GetConvertedUriAsync(downloadUrl, fileType, currentType, key, null, null, null, false, downloadUrl);
+                    downloadUrl = resultTuple.ConvertedDocumentUri;
+
                     stream = null;
                 }
                 catch (Exception e)

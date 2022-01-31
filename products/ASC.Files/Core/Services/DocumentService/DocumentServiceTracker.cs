@@ -239,10 +239,10 @@ namespace ASC.Web.Files.Services.DocumentService
             return callbackUrl;
         }
 
-        public bool StartTrack<T>(T fileId, string docKeyForTrack)
+        public Task<bool> StartTrackAsync<T>(T fileId, string docKeyForTrack)
         {
             var callbackUrl = GetCallbackUrl(fileId);
-            return DocumentServiceConnector.Command(CommandMethod.Info, docKeyForTrack, fileId, callbackUrl);
+            return DocumentServiceConnector.CommandAsync(CommandMethod.Info, docKeyForTrack, fileId, callbackUrl);
         }
 
         public async Task<TrackResponse> ProcessDataAsync<T>(T fileId, TrackerData fileData)
@@ -326,7 +326,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             if (usersDrop.Any())
             {
-                if (!DocumentServiceHelper.DropUser(fileData.Key, usersDrop.ToArray(), fileId))
+                if (!await DocumentServiceHelper.DropUserAsync(fileData.Key, usersDrop.ToArray(), fileId))
                 {
                     Logger.Error("DocService drop failed for users " + string.Join(",", usersDrop));
                 }

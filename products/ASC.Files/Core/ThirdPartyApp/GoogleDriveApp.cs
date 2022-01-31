@@ -307,7 +307,10 @@ namespace ASC.Web.Files.ThirdPartyApp
                     Logger.Debug("GoogleDriveApp: GetConvertedUri from " + fileType + " to " + currentType + " - " + downloadUrl);
 
                     var key = DocumentServiceConnector.GenerateRevisionId(downloadUrl);
-                    DocumentServiceConnector.GetConvertedUri(downloadUrl, fileType, currentType, key, null, null, null, false, out downloadUrl);
+
+                    var resultTuple = await DocumentServiceConnector.GetConvertedUriAsync(downloadUrl, fileType, currentType, key, null, null, null, false, downloadUrl);
+                    downloadUrl = resultTuple.ConvertedDocumentUri;
+
                     stream = null;
                 }
                 catch (Exception e)
@@ -802,7 +805,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             return null;
         }
 
-        private string ConvertFile(string fileId, string fromExt)
+        private async Task<string> ConvertFileAsync(string fileId, string fromExt)
         {
             Logger.Debug("GoogleDriveApp: convert file");
 
@@ -814,7 +817,10 @@ namespace ASC.Web.Files.ThirdPartyApp
                 Logger.Debug("GoogleDriveApp: GetConvertedUri- " + downloadUrl);
 
                 var key = DocumentServiceConnector.GenerateRevisionId(downloadUrl);
-                DocumentServiceConnector.GetConvertedUri(downloadUrl, fromExt, toExt, key, null, null, null, false, out downloadUrl);
+
+                var resultTuple = await DocumentServiceConnector.GetConvertedUriAsync(downloadUrl, fromExt, toExt, key, null, null, null, false, downloadUrl);
+                downloadUrl = resultTuple.ConvertedDocumentUri;
+
             }
             catch (Exception e)
             {
@@ -873,7 +879,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             }
             else
             {
-                var convertedUrl = ConvertFile(fileId, ext);
+                var convertedUrl = await ConvertFileAsync(fileId, ext);
 
                 if (string.IsNullOrEmpty(convertedUrl))
                 {

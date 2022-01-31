@@ -39,6 +39,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 using ASC.Common.Web;
 using ASC.Core;
@@ -100,19 +101,20 @@ namespace ASC.Web.Core.Files
         /// </example>
         /// <exception>
         /// </exception>
-        public static int GetConvertedUri(
-            FileUtility fileUtility,
-            string documentConverterUrl,
-            string documentUri,
-            string fromExtension,
-            string toExtension,
-            string documentRevisionId,
-            string password,
-            ThumbnailData thumbnail,
-            SpreadsheetLayout spreadsheetLayout,
-            bool isAsync,
-            string signatureSecret,
-            out string convertedDocumentUri)
+        
+        public static async Task<(int ResultPercent, string ConvertedDocumentUri)> GetConvertedUriAsync(
+           FileUtility fileUtility,
+           string documentConverterUrl,
+           string documentUri,
+           string fromExtension,
+           string toExtension,
+           string documentRevisionId,
+           string password,
+           ThumbnailData thumbnail,
+           SpreadsheetLayout spreadsheetLayout,
+           bool isAsync,
+           string signatureSecret,
+           string convertedDocumentUri)
         {
             fromExtension = string.IsNullOrEmpty(fromExtension) ? Path.GetExtension(documentUri) : fromExtension;
             if (string.IsNullOrEmpty(fromExtension)) throw new ArgumentNullException("fromExtension", "Document's extension for conversion is not known");
@@ -190,8 +192,8 @@ namespace ASC.Web.Core.Files
                     try
                     {
                         countTry++;
-                        response = httpClient.Send(request);
-                        responseStream = response.Content.ReadAsStream();
+                        response = await httpClient.SendAsync(request);
+                        responseStream = await response.Content.ReadAsStreamAsync();
                         break;
                     }
                     catch (HttpRequestException ex)
@@ -206,7 +208,7 @@ namespace ASC.Web.Core.Files
 
                 if (responseStream == null) throw new WebException("Could not get an answer");
                 using var reader = new StreamReader(responseStream);
-                dataResponse = reader.ReadToEnd();
+                dataResponse = await reader.ReadToEndAsync();
             }
             finally
             {
@@ -216,7 +218,9 @@ namespace ASC.Web.Core.Files
                     response.Dispose();
             }
 
-            return GetResponseUri(dataResponse, out convertedDocumentUri);
+            var resultPercent = GetResponseUri(dataResponse, out convertedDocumentUri);
+
+            return (resultPercent, convertedDocumentUri);
         }
 
         /// <summary>
@@ -231,14 +235,15 @@ namespace ASC.Web.Core.Files
         /// <param name="signatureSecret">Secret key to generate the token</param>
         /// <param name="version">server version</param>
         /// <returns>Response</returns>
-        public static CommandResponse CommandRequest(FileUtility fileUtility,
-            string documentTrackerUrl,
-            CommandMethod method,
-            string documentRevisionId,
-            string callbackUrl,
-            string[] users,
-            MetaData meta,
-            string signatureSecret)
+
+        public static async Task<CommandResponse> CommandRequestAsync(FileUtility fileUtility,
+           string documentTrackerUrl,
+           CommandMethod method,
+           string documentRevisionId,
+           string callbackUrl,
+           string[] users,
+           MetaData meta,
+           string signatureSecret)
         {
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(documentTrackerUrl);
@@ -287,13 +292,13 @@ namespace ASC.Web.Core.Files
             }
 
             string dataResponse;
-            using (var response = httpClient.Send(request))
-            using (var stream = response.Content.ReadAsStream())
+            using (var response = await httpClient.SendAsync(request))
+            using (var stream = await response.Content.ReadAsStreamAsync())
             {
                 if (stream == null) throw new Exception("Response is null");
 
                 using var reader = new StreamReader(stream);
-                dataResponse = reader.ReadToEnd();
+                dataResponse = await reader.ReadToEndAsync();
             }
 
 
@@ -312,14 +317,13 @@ namespace ASC.Web.Core.Files
             }
         }
 
-        public static string DocbuilderRequest(
-            FileUtility fileUtility,
-            string docbuilderUrl,
-            string requestKey,
-            string scriptUrl,
-            bool isAsync,
-            string signatureSecret,
-            out Dictionary<string, string> urls)
+        public static async Task<(string DocBuilderKey, Dictionary<string, string>  Urls)> DocbuilderRequestAsync(
+           FileUtility fileUtility,
+           string docbuilderUrl,
+           string requestKey,
+           string scriptUrl,
+           bool isAsync,
+           string signatureSecret)
         {
             if (string.IsNullOrEmpty(docbuilderUrl))
                 throw new ArgumentNullException("docbuilderUrl");
@@ -372,13 +376,13 @@ namespace ASC.Web.Core.Files
 
             string dataResponse = null;
 
-            using (var response = httpClient.Send(request))
-            using (var responseStream = response.Content.ReadAsStream())
+            using (var response = await httpClient.SendAsync(request))
+            using (var responseStream = await response.Content.ReadAsStreamAsync())
             {
                 if (responseStream != null)
                 {
                     using var reader = new StreamReader(responseStream);
-                    dataResponse = reader.ReadToEnd();
+                    dataResponse = await reader.ReadToEndAsync();
                 }
             }
 
@@ -395,7 +399,7 @@ namespace ASC.Web.Core.Files
 
             var isEnd = responseFromService.Value<bool>("end");
 
-            urls = null;
+            Dictionary<string, string> urls = null;
             if (isEnd)
             {
                 IDictionary<string, JToken> rates = (JObject)responseFromService["urls"];
@@ -403,10 +407,10 @@ namespace ASC.Web.Core.Files
                 urls = rates.ToDictionary(pair => pair.Key, pair => pair.Value.ToString());
             }
 
-            return responseFromService.Value<string>("key");
+            return (responseFromService.Value<string>("key"), urls);
         }
 
-        public static bool HealthcheckRequest(string healthcheckUrl)
+        public static async Task<bool> HealthcheckRequestAsync(string healthcheckUrl)
         {
             if (string.IsNullOrEmpty(healthcheckUrl))
                 throw new ArgumentNullException("healthcheckUrl");
@@ -417,14 +421,14 @@ namespace ASC.Web.Core.Files
             using var httpClient = new HttpClient();
             httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
 
-            using var response = httpClient.Send(request);
-            using var responseStream = response.Content.ReadAsStream();
+            using var response = await httpClient.SendAsync(request);
+            using var responseStream = await response.Content.ReadAsStreamAsync();
             if (responseStream == null)
             {
                 throw new Exception("Empty response");
             }
             using var reader = new StreamReader(responseStream);
-            var dataResponse = reader.ReadToEnd();
+            var dataResponse = await reader.ReadToEndAsync();
             return dataResponse.Equals("true", StringComparison.InvariantCultureIgnoreCase);
         }
 

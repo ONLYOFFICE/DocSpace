@@ -194,10 +194,11 @@ namespace ASC.Web.Files.Utils
                             .ToList();
                     }
 
+                    string convertedFileUrl = null;
+
                     foreach (var file in filesIsConverting)
                     {
                         var fileUri = file.ID.ToString();
-                        string convertedFileUrl;
                         int operationResultProgress;
 
                         try
@@ -262,7 +263,7 @@ namespace ASC.Web.Files.Utils
                             var docKey = documentServiceHelper.GetDocKey(file);
 
                             fileUri = documentServiceConnector.ReplaceCommunityAdress(fileUri);
-                            operationResultProgress = documentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, password, null, null, true, out convertedFileUrl);
+                            (operationResultProgress, convertedFileUrl) = documentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, password, null, null, true, convertedFileUrl).Result;
                         }
                         catch (Exception exception)
                         {
@@ -680,7 +681,10 @@ namespace ASC.Web.Files.Utils
             var fileUri = PathProvider.GetFileStreamUrl(file);
             var docKey = DocumentServiceHelper.GetDocKey(file);
             fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
-            DocumentServiceConnector.GetConvertedUri(fileUri, file.ConvertedExtension, toExtension, docKey, null, null, null, false, out var convertUri);
+
+            string convertUri = null;
+            var uriTuple = await DocumentServiceConnector.GetConvertedUriAsync(fileUri, file.ConvertedExtension, toExtension, docKey, null, null, null, false, convertUri);
+            convertUri = uriTuple.ConvertedDocumentUri;
 
             if (WorkContext.IsMono && ServicePointManager.ServerCertificateValidationCallback == null)
             {
@@ -717,7 +721,10 @@ namespace ASC.Web.Files.Utils
             var docKey = DocumentServiceHelper.GetDocKey(file);
 
             fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
-            DocumentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, null, null, null, false, out var convertUri);
+
+            string convertUri = null;
+            var uriTuple = await DocumentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, null, null, null, false, convertUri);
+            convertUri = uriTuple.ConvertedDocumentUri;
 
             var operationResult = new ConvertFileOperationResult
             {

@@ -3,6 +3,7 @@ using System.IO;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Common;
@@ -17,7 +18,7 @@ namespace ASC.Web.Core.Utility
 {
     public interface IUrlShortener
     {
-        string GetShortenLink(string shareLink);
+        Task<string> GetShortenLinkAsync(string shareLink);
     }
 
     [Scope]
@@ -81,9 +82,9 @@ namespace ASC.Web.Core.Utility
 
         private ConsumerFactory ConsumerFactory { get; }
 
-        public string GetShortenLink(string shareLink)
+        public Task<string> GetShortenLinkAsync(string shareLink)
         {
-            return ConsumerFactory.Get<BitlyLoginProvider>().GetShortenLink(shareLink);
+            return Task.FromResult(ConsumerFactory.Get<BitlyLoginProvider>().GetShortenLink(shareLink));
         }
     }
 
@@ -109,7 +110,7 @@ namespace ASC.Web.Core.Utility
 
         private CommonLinkUtility CommonLinkUtility { get; }
 
-        public string GetShortenLink(string shareLink)
+        public async Task<string> GetShortenLinkAsync(string shareLink)
         {
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(internalUrl + "?url=" + HttpUtility.UrlEncode(shareLink));
@@ -117,10 +118,10 @@ namespace ASC.Web.Core.Utility
             request.Headers.Add("Encoding", Encoding.UTF8.ToString());//todo check 
 
             using var httpClient = new HttpClient();
-            using var response = httpClient.Send(request);
-            using var stream = response.Content.ReadAsStream();
+            using var response = await httpClient.SendAsync(request);
+            using var stream = await response.Content.ReadAsStreamAsync();
             using var rs = new StreamReader(stream);
-            return CommonLinkUtility.GetFullAbsolutePath(url + rs.ReadToEnd());
+            return CommonLinkUtility.GetFullAbsolutePath(url + await rs.ReadToEndAsync());
         }
 
         private string CreateAuthToken(string pkey = "urlShortener")
@@ -134,7 +135,7 @@ namespace ASC.Web.Core.Utility
 
     public class NullShortener : IUrlShortener
     {
-        public string GetShortenLink(string shareLink)
+        public Task<string> GetShortenLinkAsync(string shareLink)
         {
             return null;
         }

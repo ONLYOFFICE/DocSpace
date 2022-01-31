@@ -220,8 +220,8 @@ namespace ASC.Data.Storage
                         using var stream = File.OpenRead(mappedPath);
                         await dataStore.SaveAsync(path, stream);
                     }
-
-                    Result = dataStore.GetInternalUri("", path, TimeSpan.Zero, null).AbsoluteUri.ToLower();
+                    var uri = await dataStore.GetInternalUriAsync("", path, TimeSpan.Zero, null);
+                    Result = uri.AbsoluteUri.ToLower();
                     Log.DebugFormat("UploadFile {0}", Result);
                     return Result;
                 }

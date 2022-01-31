@@ -80,7 +80,7 @@ namespace ASC.Data.Backup.Storage
 
         public string GetPublicLink(string storagePath)
         {
-            return Store.GetInternalUri(Domain, storagePath, TimeSpan.FromDays(1), null).AbsoluteUri;
+            return Store.GetInternalUriAsync(Domain, storagePath, TimeSpan.FromDays(1), null).Result.AbsoluteUri;
         }
     }
 }

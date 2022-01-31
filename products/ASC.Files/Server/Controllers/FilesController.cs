@@ -2395,7 +2395,7 @@ namespace ASC.Api.Documents
         /// <visible>false</visible>
         [AllowAnonymous]
         [Read("docservice")]
-        public object GetDocServiceUrl(bool version)
+        public async Task<object> GetDocServiceUrlAsync(bool version)
         {
             var url = CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.DocServiceApiUrl);
             if (!version)
@@ -2403,7 +2403,7 @@ namespace ASC.Api.Documents
                 return url;
             }
 
-            var dsVersion = DocumentServiceConnector.GetVersion();
+            var dsVersion = await DocumentServiceConnector.GetVersionAsync();
 
             return new
             {

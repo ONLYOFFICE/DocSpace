@@ -123,7 +123,7 @@ namespace ASC.Data.Storage.S3
             return new Uri(SecureHelper.IsSecure(HttpContextAccessor?.HttpContext, Options) ? _bucketSSlRoot : _bucketRoot, MakePath(domain, path));
         }
 
-        public override Uri GetInternalUri(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
+        public override Task<Uri> GetInternalUriAsync(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
         {
             if (expire == TimeSpan.Zero || expire == TimeSpan.MinValue || expire == TimeSpan.MaxValue)
             {
@@ -131,7 +131,7 @@ namespace ASC.Data.Storage.S3
             }
             if (expire == TimeSpan.Zero || expire == TimeSpan.MinValue || expire == TimeSpan.MaxValue)
             {
-                return GetUriShared(domain, path);
+                return Task.FromResult(GetUriShared(domain, path));
             }
 
             var pUrlRequest = new GetPreSignedUrlRequest
@@ -160,9 +160,8 @@ namespace ASC.Data.Storage.S3
                 pUrlRequest.ResponseHeaderOverrides = headersOverrides;
             }
             using var client = GetClient();
-            return MakeUri(client.GetPreSignedURL(pUrlRequest));
+            return Task.FromResult(MakeUri(client.GetPreSignedURL(pUrlRequest)));
         }
-
 
         private Uri MakeUri(string preSignedURL)
         {

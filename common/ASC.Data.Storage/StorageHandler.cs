@@ -106,7 +106,7 @@ namespace ASC.Data.Storage.DiscStorage
 
             if (storage.IsSupportInternalUri)
             {
-                var uri = storage.GetInternalUri(_domain, path, TimeSpan.FromMinutes(15), headers);
+                var uri = await storage.GetInternalUriAsync(_domain, path, TimeSpan.FromMinutes(15), headers);
 
                 //TODO
                 //context.Response.Cache.SetAllowResponseInBrowserHistory(false);

@@ -25,6 +25,7 @@
 
 
 using System;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Core;
@@ -62,7 +63,7 @@ namespace ASC.Web.Studio.Core.SMS
             StudioSmsNotificationSettingsHelper = studioSmsNotificationSettingsHelper;
         }
 
-        public string SaveMobilePhone(UserInfo user, string mobilePhone)
+        public async Task<string> SaveMobilePhoneAsync(UserInfo user, string mobilePhone)
         {
             mobilePhone = SmsSender.GetPhoneValueDigits(mobilePhone);
 
@@ -91,13 +92,13 @@ namespace ASC.Web.Studio.Core.SMS
 
             if (StudioSmsNotificationSettingsHelper.Enable)
             {
-                PutAuthCode(user, false);
+                await PutAuthCodeAsync(user, false);
             }
 
             return mobilePhone;
         }
 
-        public void PutAuthCode(UserInfo user, bool again)
+        public async Task PutAuthCodeAsync(UserInfo user, bool again)
         {
             if (user == null || Equals(user, Constants.LostUser)) throw new Exception(Resource.ErrorUserNotFound);
 
@@ -108,7 +109,7 @@ namespace ASC.Web.Studio.Core.SMS
             if (SmsKeyStorage.ExistsKey(mobilePhone) && !again) return;
 
             if (!SmsKeyStorage.GenerateKey(mobilePhone, out var key)) throw new Exception(Resource.SmsTooMuchError);
-            if (SmsSender.SendSMS(mobilePhone, string.Format(Resource.SmsAuthenticationMessageToUser, key)))
+            if (await SmsSender.SendSMSAsync(mobilePhone, string.Format(Resource.SmsAuthenticationMessageToUser, key)))
             {
                 TenantManager.SetTenantQuotaRow(new TenantQuotaRow { Tenant = TenantManager.GetCurrentTenant().TenantId, Path = "/sms", Counter = 1 }, true);
             }

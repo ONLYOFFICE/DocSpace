@@ -56,15 +56,15 @@ namespace ASC.Data.Storage.S3
 
         public void DeleteExpiredUploadsAsync(TimeSpan trustInterval)
         {
-            var task = new Task(() =>
+            var task = new Task(async () =>
             {
-                DeleteExpiredUploads(trustInterval);
+                await DeleteExpiredUploadsActionAsync(trustInterval);
             }, TaskCreationOptions.LongRunning);
 
             task.Start();
         }
 
-        private void DeleteExpiredUploads(TimeSpan trustInterval)
+        private async Task DeleteExpiredUploadsActionAsync(TimeSpan trustInterval)
         {
             Configure();
 
@@ -92,11 +92,11 @@ namespace ASC.Data.Storage.S3
                     request.UploadIdMarker = nextUploadIdMarker;
                 }
 
-                var response = s3.ListMultipartUploadsAsync(request).Result;
+                var response = await s3.ListMultipartUploadsAsync(request);
 
                 foreach (var u in response.MultipartUploads.Where(x => x.Initiated + trustInterval <= DateTime.UtcNow))
                 {
-                    AbortMultipartUpload(u, s3);
+                    await AbortMultipartUploadAsync(u, s3);
                 }
 
                 isTruncated = response.IsTruncated;
@@ -106,7 +106,7 @@ namespace ASC.Data.Storage.S3
             while (isTruncated);
         }
 
-        private void AbortMultipartUpload(MultipartUpload u, AmazonS3Client client)
+        private async Task AbortMultipartUploadAsync(MultipartUpload u, AmazonS3Client client)
         {
             var request = new AbortMultipartUploadRequest
             {
@@ -115,7 +115,7 @@ namespace ASC.Data.Storage.S3
                 UploadId = u.UploadId,
             };
 
-            client.AbortMultipartUploadAsync(request).Wait();
+            await client.AbortMultipartUploadAsync(request);
         }
 
         private AmazonS3Client GetClient()

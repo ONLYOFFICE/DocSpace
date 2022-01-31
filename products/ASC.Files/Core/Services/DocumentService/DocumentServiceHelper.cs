@@ -383,13 +383,12 @@ namespace ASC.Web.Files.Services.DocumentService
             }
 
             var docKey = GetDocKey(fileStable);
-            DropUser(docKey, usersDrop, file.ID);
+            await DropUserAsync(docKey, usersDrop, file.ID);
         }
 
-
-        public bool DropUser(string docKeyForTrack, string[] users, object fileId = null)
+        public Task<bool> DropUserAsync(string docKeyForTrack, string[] users, object fileId = null)
         {
-            return DocumentServiceConnector.Command(Web.Core.Files.DocumentService.CommandMethod.Drop, docKeyForTrack, fileId, null, users);
+            return DocumentServiceConnector.CommandAsync(Web.Core.Files.DocumentService.CommandMethod.Drop, docKeyForTrack, fileId, null, users);
         }
 
         public async Task<bool> RenameFileAsync<T>(File<T> file, IFileDao<T> fileDao)
@@ -406,7 +405,7 @@ namespace ASC.Web.Files.Services.DocumentService
             var docKeyForTrack = GetDocKey(fileStable);
 
             var meta = new Web.Core.Files.DocumentService.MetaData { Title = file.Title };
-            return DocumentServiceConnector.Command(Web.Core.Files.DocumentService.CommandMethod.Meta, docKeyForTrack, file.ID, meta: meta);
+            return await DocumentServiceConnector.CommandAsync(Web.Core.Files.DocumentService.CommandMethod.Meta, docKeyForTrack, file.ID, meta: meta);
         }
     }
 }

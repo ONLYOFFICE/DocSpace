@@ -808,9 +808,9 @@ namespace ASC.Api.Settings
 
         [AllowAnonymous]
         [Read("version/build", false)]
-        public BuildVersion GetBuildVersions()
+        public Task<BuildVersion> GetBuildVersionsAsync()
         {
-            return BuildVersion.GetCurrentBuildVersion();
+            return BuildVersion.GetCurrentBuildVersionAsync();
         }
 
         [Read("version")]
