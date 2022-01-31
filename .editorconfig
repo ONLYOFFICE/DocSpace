@@ -175,7 +175,7 @@ dotnet_naming_rule.non_field_members_should_be_pascal_case.symbols = non_field_m
 dotnet_naming_rule.non_field_members_should_be_pascal_case.style = pascal_case
 
 dotnet_naming_rule.private_or_internal_field_should_be_begin_with__.severity = error
-dotnet_naming_rule.private_or_internal_field_should_be_begin_with__.symbols = private_or_internal_field
+dotnet_naming_rule.private_or_internal_field_should_be_begin_with__.symbols = private_or_internal_field_only_in_class
 dotnet_naming_rule.private_or_internal_field_should_be_begin_with__.style = begin_with__
 
 # Symbol specifications
@@ -191,6 +191,10 @@ dotnet_naming_symbols.types.required_modifiers =
 dotnet_naming_symbols.non_field_members.applicable_kinds = property, event, method
 dotnet_naming_symbols.non_field_members.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
 dotnet_naming_symbols.non_field_members.required_modifiers = 
+
+dotnet_naming_symbols.private_or_internal_field_only_in_class.applicable_kinds = field
+dotnet_naming_symbols.private_or_internal_field_only_in_class.applicable_accessibilities = internal, private
+dotnet_naming_symbols.private_or_internal_field_only_in_class.required_modifiers = 
 
 # Naming styles
 
@@ -210,4 +214,4 @@ dotnet_naming_style.begin_with__.word_separator =
 dotnet_naming_style.begin_with__.capitalization = camel_case
 
 # Default severity for analyzer diagnostics with category 'Style'
-dotnet_analyzer_diagnostic.category-Style.severity = suggestion
+dotnet_analyzer_diagnostic.category-Style.severity = silent
