@@ -45,6 +45,7 @@ namespace ASC.FederatedLogin.LoginProviders
     public abstract class BaseLoginProvider<T> : Consumer, ILoginProvider where T : Consumer, ILoginProvider, new()
     {
         private readonly InstanceCrypto zinstanceCrypto;
+
         public T Instance
         {
             get
@@ -72,7 +73,6 @@ namespace ASC.FederatedLogin.LoginProviders
 
         private OAuth20TokenHelper OAuth20TokenHelper { get; }
         internal Signature Signature { get; }
-        internal InstanceCrypto InstanceCrypto { get; }
 
         protected BaseLoginProvider()
         {
@@ -94,7 +94,7 @@ namespace ASC.FederatedLogin.LoginProviders
         {
             OAuth20TokenHelper = oAuth20TokenHelper;
             Signature = signature;
-            InstanceCrypto = instanceCrypto;
+            instanceCrypto = instanceCrypto;
         }
 
         public virtual LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs = null)
