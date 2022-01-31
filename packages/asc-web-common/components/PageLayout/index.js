@@ -504,7 +504,7 @@ class PageLayout extends React.Component {
                         </SubSectionBody>
                       </>
                     )}
-                    {isMobile || isMobileUtils() || isTabletUtils ? (
+                    {!(isMobile || isMobileUtils() || isTabletUtils) ? (
                       showPrimaryProgressBar && showSecondaryProgressBar ? (
                         <>
                           <FloatingButton
