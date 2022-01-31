@@ -9,7 +9,7 @@
     "ByTitle": "Titlu",
     "CommonEmptyContainerDescription": "Secțiunea Comune conține fișiere partajate cu alți utilizatori de către administratorul portalului. Numai administratorii portalului pot crea fișiere acolo. Utilizatorii pot primi acces complet la un anumit dosar din secțiunea. În acest mod, utilizatorii pot crea/încărca fișiere în acest dosar.",
     "ContainsSpecCharacter": "Numele nu poate conține niciun din caractere următoare: *+:\"<>?|/ ",
-    "Convert": "Convertește",
+    "Convert": "Convertire",
     "CopyItem": "<strong>{{title}}</strong> copiat",
     "CopyItems": "<strong>{{qty}}</strong> elemente copiate",
     "Document": "Document",

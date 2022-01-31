@@ -611,7 +611,7 @@ class FilesActionStore {
       .finally(() => setTimeout(() => clearSecondaryProgressData(), TIMEOUT));
   };
 
-  moveDragItems = (destFolderId, folderTitle, translations) => {
+  moveDragItems = (destFolderId, folderTitle, providerKey, translations) => {
     const folderIds = [];
     const fileIds = [];
     const deleteAfter = false;
@@ -645,12 +645,14 @@ class FilesActionStore {
       setDestFolderId,
     } = this.dialogsStore;
 
-    for (let item of selection) {
-      if (item.providerKey && !isRootFolder) {
-        setDestFolderId(destFolderId);
-        return setThirdPartyMoveDialogVisible(true);
-      }
+    const provider = selection.find((x) => x.providerKey);
 
+    if (provider && providerKey !== provider.providerKey) {
+      setDestFolderId(destFolderId);
+      return setThirdPartyMoveDialogVisible(true);
+    }
+
+    for (let item of selection) {
       if (!item.isFolder) {
         fileIds.push(item.id);
       } else {
@@ -679,6 +681,7 @@ class FilesActionStore {
     const { destFolderId, folderIds, fileIds } = operationData;
     const { setBufferSelection } = this.filesStore;
 
+    this.filesStore.setSelected("none");
     let conflicts;
 
     try {

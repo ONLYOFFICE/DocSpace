@@ -55,10 +55,12 @@ class DialogsStore {
   };
 
   setMoveToPanelVisible = (moveToPanelVisible) => {
+    !moveToPanelVisible && this.deselectActiveFiles();
     this.moveToPanelVisible = moveToPanelVisible;
   };
 
   setCopyPanelVisible = (copyPanelVisible) => {
+    !copyPanelVisible && this.deselectActiveFiles();
     this.copyPanelVisible = copyPanelVisible;
   };
 
@@ -81,10 +83,12 @@ class DialogsStore {
   };
 
   setDeleteDialogVisible = (deleteDialogVisible) => {
+    !deleteDialogVisible && this.deselectActiveFiles();
     this.deleteDialogVisible = deleteDialogVisible;
   };
 
   setDownloadDialogVisible = (downloadDialogVisible) => {
+    !downloadDialogVisible && this.deselectActiveFiles();
     this.downloadDialogVisible = downloadDialogVisible;
   };
 
@@ -203,6 +207,10 @@ class DialogsStore {
       title: `${newTitle}.docxf`,
       templateId: fileInfo.id,
     });
+  };
+
+  deselectActiveFiles = () => {
+    this.filesStore.setSelected("none");
   };
 }
 

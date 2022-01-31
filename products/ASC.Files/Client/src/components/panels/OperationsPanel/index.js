@@ -156,7 +156,13 @@ const OperationsPanelComponent = (props) => {
         <Button
           scale
           key="OkButton"
-          label={t("Translations:Move")}
+          label={
+            isRecycleBin
+              ? t("Translations:Restore")
+              : isCopy
+              ? t("Translations:Copy")
+              : t("Translations:Move")
+          }
           size="medium"
           primary
           onClick={onSubmit}

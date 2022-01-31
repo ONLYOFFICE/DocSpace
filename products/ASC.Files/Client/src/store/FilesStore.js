@@ -55,6 +55,10 @@ class FilesStore {
   activeFiles = [];
   activeFolders = [];
 
+  firstElemChecked = false;
+
+  isPrevSettingsModule = false;
+
   constructor(
     authStore,
     settingsStore,
@@ -145,6 +149,10 @@ class FilesStore {
     this.formatsStore = formatsStore;
     this.filesSettingsStore = filesSettingsStore;
   }
+
+  setIsPrevSettingsModule = (isSettings) => {
+    this.isPrevSettingsModule = isSettings;
+  };
 
   addActiveItems = (files, folders) => {
     if (folders && folders.length) {
@@ -371,12 +379,12 @@ class FilesStore {
   };
 
   //TODO: FILTER
-  setFilesFilter = (filter) => {
+  setFilesFilter = (filter, isPrefSettings) => {
     const key = `UserFilter=${this.userStore.user.id}`;
     const value = `${filter.sortBy},${filter.pageCount},${filter.sortOrder}`;
     localStorage.setItem(key, value);
 
-    this.setFilterUrl(filter);
+    !isPrefSettings && this.setFilterUrl(filter);
     this.filter = filter;
   };
 
@@ -429,7 +437,12 @@ class FilesStore {
       treeFolders,
       setSelectedNode,
       getSubfolders,
+      selectedTreeNode,
     } = this.treeFoldersStore;
+    const { id } = this.selectedFolderStore;
+
+    const isPrefSettings = isNaN(+selectedTreeNode) && !id;
+    isPrefSettings && this.setIsPrevSettingsModule(true);
 
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
@@ -470,7 +483,7 @@ class FilesStore {
             data.current.rootFolderType === FolderType.Privacy;
 
           filterData.total = data.total;
-          this.setFilesFilter(filterData); //TODO: FILTER
+          this.setFilesFilter(filterData, isPrefSettings); //TODO: FILTER
           this.setFolders(isPrivacyFolder && isMobile ? [] : data.folders);
           this.setFiles(isPrivacyFolder && isMobile ? [] : data.files);
 
@@ -1237,6 +1250,10 @@ class FilesStore {
     return this.isHeaderVisible && this.selection.length === items.length;
   }
 
+  setFirsElemChecked = (checked) => {
+    this.firstElemChecked = checked;
+  };
+
   get canCreate() {
     switch (this.selectedFolderStore.rootFolderType) {
       case FolderType.USER:
@@ -1640,6 +1657,7 @@ class FilesStore {
       canWebReview,
       canFormFillingDocs,
       canWebFilterEditing,
+      canConvert,
     } = this.formatsStore.docserviceStore;
 
     if (selection[0].encrypted) {
@@ -1662,7 +1680,10 @@ class FilesStore {
 
     const webFilter = selection.find((x) => canWebFilterEditing(x.fileExst));
 
-    if (webEdit || !externalAccess) AccessOptions.push("FullAccess");
+    const webNeedConvert = selection.find((x) => canConvert(x.fileExst));
+
+    if ((webEdit && !webNeedConvert) || !externalAccess)
+      AccessOptions.push("FullAccess");
 
     if (webComment) AccessOptions.push("Comment");
     if (webReview) AccessOptions.push("Review");
@@ -1691,10 +1712,12 @@ class FilesStore {
       const splitValue = value && value.split("_");
 
       const fileType = splitValue[0];
-      const id =
-        splitValue[splitValue.length - 1] === "draggable"
-          ? splitValue.slice(1, -1).join("_")
-          : splitValue.slice(1).join("_");
+      // const id =
+      //   splitValue[splitValue.length - 1] === "draggable"
+      //     ? splitValue.slice(1, -1).join("_")
+      //     : splitValue.slice(1, -1).join("_");
+
+      const id = splitValue.slice(1, -1).join("_");
 
       if (fileType === "file") {
         this.activeFiles.findIndex((f) => f == id) === -1 &&
