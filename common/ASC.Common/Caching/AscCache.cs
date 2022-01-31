@@ -50,7 +50,7 @@ namespace ASC.Common.Caching
 
         public void ClearCache()
         {
-            CacheNotify.Publish(new AscCacheItem { Id = ByteString.CopyFrom(Guid.NewGuid().ToByteArray()) }, CacheNotifyAction.Any);
+            CacheNotify.Publish(new AscCacheItem { Id = Guid.NewGuid().ToString() }, CacheNotifyAction.Any);
         }
 
         public static void OnClearCache()

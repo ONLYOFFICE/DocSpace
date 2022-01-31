@@ -49,38 +49,48 @@ namespace ASC.Web.CRM.Classes
         private readonly ILog _log;
         private readonly IHttpClientFactory _clientFactory;
         private readonly object _syncRoot = new object();
-        private readonly Dictionary<String, CurrencyInfo> _currencies;
+        private readonly IConfiguration _configuration;
+        private readonly SettingsManager _settingsManager;
         private Dictionary<string, decimal> _exchangeRates;
         private DateTime _publisherDate;
         private const String _formatDate = "yyyy-MM-ddTHH:mm:ss.fffffffK";
+        private Dictionary<String, CurrencyInfo> _currencies;
+        private readonly DaoFactory _daoFactory;
 
         public CurrencyProvider(IOptionsMonitor<ILog> logger,
                                 IConfiguration configuration,
-                                SettingsManager settingsManager,
                                 DaoFactory daoFactory,
-                                IHttpClientFactory clientFactory)
+                                SettingsManager settingsManager,
+                                IHttpClientFactory httpClientFactory)
         {
             _log = logger.Get("ASC");
-            Configuration = configuration;
-            SettingsManager = settingsManager;
-
-            var daocur = daoFactory.GetCurrencyInfoDao();
-            var currencies = daocur.GetAll();
-
-            if (currencies == null || currencies.Count == 0)
-            {
-                currencies = new List<CurrencyInfo>
-                    {
-                        new CurrencyInfo("Currency_UnitedStatesDollar", "USD", "$", "US", true, true)
-                    };
-            }
-
-            _currencies = currencies.ToDictionary(c => c.Abbreviation);
-            _clientFactory = clientFactory;
+            _daoFactory = daoFactory;
+            _configuration = configuration;
+            _settingsManager = settingsManager;
+            _clientFactory = httpClientFactory;
         }
 
-        public IConfiguration Configuration { get; }
-        public SettingsManager SettingsManager { get; }
+        public Dictionary<String, CurrencyInfo> Currencies
+        {
+            get
+            {
+                if (_currencies != null) return _currencies;
+
+                var currencies = _daoFactory.GetCurrencyInfoDao().GetAll();
+
+                if (currencies == null || currencies.Count == 0)
+                {
+                    currencies = new List<CurrencyInfo>
+                            {
+                                new CurrencyInfo("Currency_UnitedStatesDollar", "USD", "$", "US", true, true)
+                            };
+                }
+
+                _currencies = currencies.ToDictionary(c => c.Abbreviation);
+
+                return _currencies;
+            }
+        }
 
         public DateTime GetPublisherDate
         {
@@ -93,31 +103,31 @@ namespace ASC.Web.CRM.Classes
 
         public CurrencyInfo Get(string currencyAbbreviation)
         {
-            if (!_currencies.ContainsKey(currencyAbbreviation))
+            if (!Currencies.ContainsKey(currencyAbbreviation))
                 return null;
 
-            return _currencies[currencyAbbreviation];
+            return Currencies[currencyAbbreviation];
         }
 
         public List<CurrencyInfo> GetAll()
         {
-            return _currencies.Values.OrderBy(v => v.Abbreviation).ToList();
+            return Currencies.Values.OrderBy(v => v.Abbreviation).ToList();
         }
 
         public List<CurrencyInfo> GetBasic()
         {
-            return _currencies.Values.Where(c => c.IsBasic).OrderBy(v => v.Abbreviation).ToList();
+            return Currencies.Values.Where(c => c.IsBasic).OrderBy(v => v.Abbreviation).ToList();
         }
 
         public List<CurrencyInfo> GetOther()
         {
-            return _currencies.Values.Where(c => !c.IsBasic).OrderBy(v => v.Abbreviation).ToList();
+            return Currencies.Values.Where(c => !c.IsBasic).OrderBy(v => v.Abbreviation).ToList();
         }
 
         public Dictionary<CurrencyInfo, Decimal> MoneyConvert(CurrencyInfo baseCurrency)
         {
             if (baseCurrency == null) throw new ArgumentNullException("baseCurrency");
-            if (!_currencies.ContainsKey(baseCurrency.Abbreviation)) throw new ArgumentOutOfRangeException("baseCurrency", "Not found.");
+            if (!Currencies.ContainsKey(baseCurrency.Abbreviation)) throw new ArgumentOutOfRangeException("baseCurrency", "Not found.");
 
             var result = new Dictionary<CurrencyInfo, Decimal>();
             var rates = GetExchangeRates();
@@ -149,7 +159,7 @@ namespace ASC.Web.CRM.Classes
             if (findedItem == null)
                 throw new ArgumentException(abbreviation);
 
-            return _currencies[findedItem].IsConvertable;
+            return Currencies[findedItem].IsConvertable;
         }
 
         public Decimal MoneyConvert(decimal amount, string from, string to)
@@ -168,7 +178,7 @@ namespace ASC.Web.CRM.Classes
         public decimal MoneyConvertToDefaultCurrency(decimal amount, string from)
         {
 
-            var crmSettings = SettingsManager.Load<CrmSettings>();
+            var crmSettings = _settingsManager.Load<CrmSettings>();
             var defaultCurrency = Get(crmSettings.DefaultCurrency);
 
             return MoneyConvert(amount, from, defaultCurrency.Abbreviation);
@@ -204,10 +214,10 @@ namespace ASC.Web.CRM.Classes
 
 
 
-                            var updateEnable = Configuration["crm:update:currency:info:enable"] != "false";
+                            var updateEnable = _configuration["crm:update:currency:info:enable"] != "false";
                             var ratesUpdatedFlag = false;
 
-                            foreach (var ci in _currencies.Values.Where(c => c.IsConvertable))
+                            foreach (var ci in Currencies.Values.Where(c => c.IsConvertable))
                             {
                                 var filepath = Path.Combine(tmppath, ci.Abbreviation + ".html");
 
@@ -244,7 +254,7 @@ namespace ASC.Web.CRM.Classes
                         }
                         catch (Exception error)
                         {
-                            _log.Error(error);
+                            _logger.Error(error);
                             _publisherDate = DateTime.UtcNow;
                         }
                     }
@@ -298,7 +308,7 @@ namespace ASC.Web.CRM.Classes
                 }
                 catch (Exception err)
                 {
-                    _log.Error(err);
+                    _logger.Error(err);
                 }
             }
         }
@@ -312,7 +322,7 @@ namespace ASC.Web.CRM.Classes
             }
             catch (Exception err)
             {
-                _log.Error(err);
+                _logger.Error(err);
             }
         }
 
@@ -352,7 +362,7 @@ namespace ASC.Web.CRM.Classes
             }
             catch (Exception error)
             {
-                _log.Error(error);
+                _logger.Error(error);
             }
         }
 

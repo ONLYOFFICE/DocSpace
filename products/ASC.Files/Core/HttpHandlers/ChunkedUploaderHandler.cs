@@ -212,7 +212,7 @@ namespace ASC.Web.Files.HttpHandlers
                 {
                     TenantManager.SetCurrentTenant(uploadSession.TenantId);
                     SecurityContext.AuthenticateMeWithoutCookie(AuthManager.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, uploadSession.UserId));
-                    var culture = SetupInfo.EnabledCulturesPersonal.Find(c => string.Equals(c.Name, uploadSession.CultureName, StringComparison.InvariantCultureIgnoreCase));
+                    var culture = SetupInfo.GetPersonalCulture(uploadSession.CultureName).Value;
                     if (culture != null)
                         Thread.CurrentThread.CurrentUICulture = culture;
                     return true;
@@ -361,7 +361,7 @@ namespace ASC.Web.Files.HttpHandlers
             var culture = _request.Query["culture"];
             if (string.IsNullOrEmpty(culture)) culture = "en-US";
 
-            return _cultureInfo = setupInfo.EnabledCulturesPersonal.Find(c => string.Equals(c.Name, culture, StringComparison.InvariantCultureIgnoreCase));
+            return _cultureInfo = setupInfo.GetPersonalCulture(culture).Value;
         }
 
         public bool Encrypted

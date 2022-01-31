@@ -1,25 +1,18 @@
 import React from "react";
-import { Provider as MobxProvider } from "mobx-react";
-import stores from "../../../store/index";
 import { StyledAsidePanel, StyledSelectFilePanel } from "../StyledPanels";
 import ModalDialog from "@appserver/components/modal-dialog";
 import SelectFolderDialog from "../SelectFolderDialog";
 import FolderTreeBody from "../../FolderTreeBody";
 import FilesListBody from "./FilesListBody";
 import Button from "@appserver/components/button";
-import Loader from "@appserver/components/loader";
 import Text from "@appserver/components/text";
 import { isArrayEqual } from "@appserver/components/utils/array";
-import { FolderType } from "@appserver/common/constants";
 import { getFoldersTree } from "@appserver/common/api/files";
+import {
+  exceptSortedByTagsFolders,
+  exceptPrivacyTrashFolders,
+} from "../SelectFolderDialog/ExceptionFoldersConstants";
 
-const exceptSortedByTagsFolders = [
-  FolderType.Recent,
-  FolderType.TRASH,
-  FolderType.Favorites,
-];
-
-const exceptTrashFolder = [FolderType.TRASH];
 class SelectFileDialogModalView extends React.Component {
   constructor(props) {
     super(props);
@@ -28,6 +21,7 @@ class SelectFileDialogModalView extends React.Component {
       isAvailable: true,
     };
     this.folderList = "";
+    this.noTreeSwitcher = false;
   }
 
   componentDidMount() {
@@ -49,7 +43,10 @@ class SelectFileDialogModalView extends React.Component {
       case "exceptSortedByTags":
         try {
           const foldersTree = await getFoldersTree();
-          this.folderList = SelectFolderDialog.convertFolders(
+          [
+            this.folderList,
+            this.noTreeSwitcher,
+          ] = SelectFolderDialog.convertFolders(
             foldersTree,
             exceptSortedByTagsFolders
           );
@@ -60,18 +57,20 @@ class SelectFileDialogModalView extends React.Component {
 
         this.loadersCompletes();
         break;
-      case "exceptTrashFolder":
+      case "exceptPrivacyTrashFolders":
         try {
           const foldersTree = await getFoldersTree();
-          this.folderList = SelectFolderDialog.convertFolders(
+          [
+            this.folderList,
+            this.noTreeSwitcher,
+          ] = SelectFolderDialog.convertFolders(
             foldersTree,
-            exceptTrashFolder
+            exceptPrivacyTrashFolders
           );
           this.onSetSelectedFolder();
         } catch (err) {
           console.error(err);
         }
-
         this.loadersCompletes();
         break;
       case "common":
@@ -157,16 +156,17 @@ class SelectFileDialogModalView extends React.Component {
       isNextPageLoading,
       loadNextPage,
       selectedFolder,
-      header,
+      titleFilesList,
       loadingText,
       selectedFile,
       onClickSave,
       headerName,
+      primaryButtonName,
     } = this.props;
 
     const { isLoading, isAvailable } = this.state;
 
-    const isHeaderChildren = !!header;
+    const isHeaderChildren = !!titleFilesList;
 
     return (
       <StyledAsidePanel visible={isPanelVisible}>
@@ -175,32 +175,43 @@ class SelectFileDialogModalView extends React.Component {
           zIndex={zIndex}
           onClose={onClose}
           className="select-file-modal-dialog"
-          style={{ maxWidth: "890px" }}
+          style={{ maxWidth: "725px" }}
           displayType="modal"
-          bodyPadding="0"
+          modalBodyPadding="0px"
+          isLoading={isLoading}
+          modalLoaderBodyHeight="277px"
         >
           <ModalDialog.Header>
             {headerName ? headerName : t("SelectFile")}
           </ModalDialog.Header>
           <ModalDialog.Body className="select-file_body-modal-dialog">
-            <StyledSelectFilePanel isHeaderChildren={isHeaderChildren}>
-              {!isLoading ? (
-                <div className="modal-dialog_body">
-                  <div className="modal-dialog_children">{header}</div>
-                  <div className="modal-dialog_tree-body">
-                    <FolderTreeBody
-                      expandedKeys={expandedKeys}
-                      folderList={this.folderList}
-                      onSelect={this.onSelect}
-                      withoutProvider={withoutProvider}
-                      certainFolders
-                      isAvailable={isAvailable}
-                      filter={filter}
-                      selectedKeys={[selectedFolder]}
-                      isHeaderChildren={isHeaderChildren}
-                    />
-                  </div>
-                  <div className="modal-dialog_files-body">
+            <StyledSelectFilePanel
+              isHeaderChildren={isHeaderChildren}
+              displayType="modal"
+              noTreeSwitcher={this.noTreeSwitcher}
+            >
+              <div className="modal-dialog_body">
+                <div className="modal-dialog_tree-body">
+                  <FolderTreeBody
+                    expandedKeys={expandedKeys}
+                    folderList={this.folderList}
+                    onSelect={this.onSelect}
+                    withoutProvider={withoutProvider}
+                    certainFolders
+                    isAvailable={isAvailable}
+                    filter={filter}
+                    selectedKeys={[selectedFolder]}
+                    isHeaderChildren={isHeaderChildren}
+                    displayType="modal"
+                  />
+                </div>
+                <div className="modal-dialog_files-body">
+                  <>
+                    {titleFilesList && (
+                      <Text className="modal-dialog-filter-title">
+                        {titleFilesList}
+                      </Text>
+                    )}
                     {selectedFolder && (
                       <FilesListBody
                         filesList={filesList}
@@ -211,22 +222,14 @@ class SelectFileDialogModalView extends React.Component {
                         selectedFolder={selectedFolder}
                         loadingText={loadingText}
                         selectedFile={selectedFile}
-                        listHeight={isHeaderChildren ? 280 : 310}
+                        listHeight={isHeaderChildren ? 260 : 303}
+                        onSetLoadingData={this.onSetLoadingData}
+                        displayType={"modal"}
                       />
                     )}
-                  </div>
+                  </>
                 </div>
-              ) : (
-                <div
-                  key="loader"
-                  className="select-file-dialog_modal-loader panel-loader-wrapper"
-                >
-                  <Loader type="oval" size="16px" className="panel-loader" />
-                  <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
-                    "Common:LoadingDescription"
-                  )}`}</Text>
-                </div>
-              )}
+              </div>
             </StyledSelectFilePanel>
           </ModalDialog.Body>
           <ModalDialog.Footer>
@@ -236,14 +239,14 @@ class SelectFileDialogModalView extends React.Component {
                   className="select-file-modal-dialog-buttons-save"
                   primary
                   size="medium"
-                  label={t("Common:SaveButton")}
+                  label={primaryButtonName}
                   onClick={onClickSave}
                   isDisabled={selectedFile.length === 0}
                 />
                 <Button
                   className="modal-dialog-button"
                   size="medium"
-                  label={t("Common:CloseButton")}
+                  label={t("Common:CancelButton")}
                   onClick={onClose}
                 />
               </div>

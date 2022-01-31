@@ -113,6 +113,10 @@ namespace ASC.Api.Documents
         /// </summary>
         public string LockedBy { get; set; }
 
+        public bool CanWebRestrictedEditing { get; set; }
+
+        public bool CanFillForms { get; set; }
+
         /// <summary>
         /// </summary>
         /// <param name="file"></param>
@@ -228,6 +232,8 @@ namespace ASC.Api.Documents
             result.Encrypted = file.Encrypted.NullIfDefault();
             result.Locked = file.Locked.NullIfDefault();
             result.LockedBy = file.LockedBy;
+            result.CanWebRestrictedEditing = FileUtility.CanWebRestrictedEditing(file.Title);
+            result.CanFillForms = FileSecurity.CanFillForms(file);
 
             try
             {

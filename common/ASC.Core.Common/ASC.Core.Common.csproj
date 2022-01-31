@@ -29,29 +29,29 @@
     <Compile Remove="Notify\Jabber\IReverseJabberService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="protos\AzRecordCache.proto" />
-    <None Remove="protos\ConsumerCacheItem.proto" />
-    <None Remove="protos\CreateClientProto.proto" />
-    <None Remove="protos\DisableClientProto.proto" />
-    <None Remove="protos\EncryptionSettingsProto.proto" />
-    <None Remove="protos\GroupCacheItem.proto" />
-    <None Remove="protos\NotifyInvoke.proto" />
-    <None Remove="protos\NotifyMessage.proto" />
-    <None Remove="protos\QuotaCacheItem.proto" />
-    <None Remove="protos\RegisterUserProto.proto" />
-    <None Remove="protos\SettingsCacheItem.proto" />
-    <None Remove="protos\SubscriptionMethodCache.proto" />
-    <None Remove="protos\SubscriptionRecord.proto" />
-    <None Remove="protos\TenantCacheItem.proto" />
-    <None Remove="protos\TenantSetting.proto" />
-    <None Remove="protos\UserGroupRefCacheItem.proto" />
-    <None Remove="protos\UserInfoCacheItem.proto" />
-    <None Remove="protos\UserPhotoCacheItem.proto" />
+    <None Remove="protos\az_record_cache.proto" />
+    <None Remove="protos\consumer_cache_item.proto" />
+    <None Remove="protos\create_client_proto.proto" />
+    <None Remove="protos\disable_client_proto.proto" />
+    <None Remove="protos\encryption_settings_proto.proto" />
+    <None Remove="protos\group_cache_item.proto" />
+    <None Remove="protos\notify_invoke.proto" />
+    <None Remove="protos\notify_message.proto" />
+    <None Remove="protos\quota_cache_item.proto" />
+    <None Remove="protos\register_user_proto.proto" />
+    <None Remove="protos\settings_cache_item.proto" />
+    <None Remove="protos\subscription_method_cache.proto" />
+    <None Remove="protos\subscription_record.proto" />
+    <None Remove="protos\tenant_cache_item.proto" />
+    <None Remove="protos\tenant_setting.proto" />
+    <None Remove="protos\user_group_ref_cache_item.proto" />
+    <None Remove="protos\user_info_cache_item.proto" />
+    <None Remove="protos\user_photo_cache_item.proto" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AWSSDK.Core" Version="3.5.1.25" />
     <PackageReference Include="AWSSDK.SimpleEmail" Version="3.5.0.27" />
-    <PackageReference Include="Grpc.Tools" Version="2.32.0">
+    <PackageReference Include="Grpc.Tools" Version="2.40.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -62,25 +62,25 @@
     <PackageReference Include="Telegram.Bot" Version="15.7.1" />
   </ItemGroup>
   <ItemGroup>
-    <Protobuf Include="protos\CreateClientProto.proto" />
-    <Protobuf Include="protos\EncryptionSettingsProto.proto" />
-    <Protobuf Include="protos\NotifyInvoke.proto" />
-    <Protobuf Include="protos\NotifyMessage.proto" />
-    <Protobuf Include="protos\DisableClientProto.proto" />
-    <Protobuf Include="protos\RegisterUserProto.proto" />
-    <Protobuf Include="protos\SettingsCacheItem.proto" />
-    <Protobuf Include="protos\ConsumerCacheItem.proto" />
-    <Protobuf Include="protos\TenantCacheItem.proto" />
-    <Protobuf Include="protos\GroupCacheItem.proto" />
-    <Protobuf Include="protos\UserGroupRefCacheItem.proto" />
-    <Protobuf Include="protos\UserInfoCacheItem.proto" />
-    <Protobuf Include="protos\UserPhotoCacheItem.proto" />
-    <Protobuf Include="protos\TenantSetting.proto" />
-    <Protobuf Include="protos\SubscriptionMethodCache.proto" />
-    <Protobuf Include="protos\SubscriptionRecord.proto" />
-    <Protobuf Include="protos\TariffCacheItem.proto" />
-    <Protobuf Include="protos\AzRecordCache.proto" />
-    <Protobuf Include="protos\QuotaCacheItem.proto" />
+    <Protobuf Include="protos\create_client_proto.proto" />
+    <Protobuf Include="protos\encryption_settings_proto.proto" />
+    <Protobuf Include="protos\notify_invoke.proto" />
+    <Protobuf Include="protos\notify_message.proto" />
+    <Protobuf Include="protos\disable_client_proto.proto" />
+    <Protobuf Include="protos\register_user_proto.proto" />
+    <Protobuf Include="protos\settings_cache_item.proto" />
+    <Protobuf Include="protos\consumer_cache_item.proto" />
+    <Protobuf Include="protos\tenant_cache_item.proto" />
+    <Protobuf Include="protos\group_cache_item.proto" />
+    <Protobuf Include="protos\user_group_ref_cache_item.proto" />
+    <Protobuf Include="protos\user_info_cache_item.proto" />
+    <Protobuf Include="protos\user_photo_cache_item.proto" />
+    <Protobuf Include="protos\tenant_setting.proto" />
+    <Protobuf Include="protos\subscription_method_cache.proto" />
+    <Protobuf Include="protos\subscription_record.proto" />
+    <Protobuf Include="protos\tariff_cache_item.proto" />
+    <Protobuf Include="protos\az_record_cache.proto" />
+    <Protobuf Include="protos\quota_cache_item.proto" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Migrations\MySql\DbContextMySql\" />

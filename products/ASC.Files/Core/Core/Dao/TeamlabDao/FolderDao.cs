@@ -78,7 +78,6 @@ namespace ASC.Files.Core.Data
             FactoryIndexerFolder factoryIndexer,
             UserManager userManager,
             DbContextManager<EF.FilesDbContext> dbContextManager,
-            DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             TenantUtil tenantUtil,
             SetupInfo setupInfo,
@@ -96,7 +95,6 @@ namespace ASC.Files.Core.Data
             CrossDao crossDao)
             : base(
                   dbContextManager,
-                  dbContextManager1,
                   userManager,
                   tenantManager,
                   tenantUtil,

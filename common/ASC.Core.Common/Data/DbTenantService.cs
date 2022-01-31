@@ -156,6 +156,13 @@ namespace ASC.Core.Data
             return q.Select(FromDbTenantToTenant).ToList();
         }
 
+        public IEnumerable<Tenant> GetTenants(List<int> ids)
+        {
+            var q = TenantsQuery();
+
+            return q.Where(r => ids.Contains(r.Id) && r.Status == TenantStatus.Active).Select(FromDbTenantToTenant).ToList();
+        }
+
         public IEnumerable<Tenant> GetTenants(string login, string passwordHash)
         {
             if (string.IsNullOrEmpty(login)) throw new ArgumentNullException(nameof(login));

@@ -51,7 +51,7 @@ using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
 
-namespace ASC.Data.Backup.Service
+namespace ASC.Data.Backup.Services
 {
     [Singletone(Additional = typeof(BackupWorkerExtension))]
     public class BackupWorker

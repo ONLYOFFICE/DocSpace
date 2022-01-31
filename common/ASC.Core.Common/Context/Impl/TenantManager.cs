@@ -156,6 +156,10 @@ namespace ASC.Core
         {
             return TenantService.GetTenants(default, active).ToList();
         }
+        public List<Tenant> GetTenants(List<int> ids)
+        {
+            return TenantService.GetTenants(ids).ToList();
+        }
 
         public Tenant GetTenant(int tenantId)
         {

@@ -1,0 +1,8 @@
+﻿{
+  "ConversionFileMessage": "El archivo se convertirá en OOXML (docx, xlsx o pptx) para una visualización y edición más rápidas.",
+  "ConversionMessage": "Todos los documentos que usted carga serán convertidos en el formato Office Open XML (docx, xlsx o pptx) para una edición más rápida.",
+  "ConversionTitle": "Carga de dodocumentos",
+  "ConvertAndOpenTitle": "Convertir y abrir documento",
+  "HideMessage": "No volver a mostrar este mensaje",
+  "SaveOriginalFormatMessage": "Guardar la copia del archivo en el formato original"
+}

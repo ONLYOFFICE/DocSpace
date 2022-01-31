@@ -298,11 +298,25 @@ namespace ASC.ApiSystem.Controllers
             //return null;
         }
 
-        public bool ValidateRecaptcha(string response, string ip)
+        public bool ValidateRecaptcha(string response, RecaptchaType recaptchaType, string ip)
         {
             try
             {
-                var data = $"secret={Configuration["recaptcha:private-key"]}&remoteip={ip}&response={response}";
+                string privateKey;
+                switch (recaptchaType)
+                {
+                    case RecaptchaType.AndroidV2:
+                        privateKey = Configuration["recaptcha:private-key:android"];
+                        break;
+                    case RecaptchaType.iOSV2:
+                        privateKey = Configuration["recaptcha:private-key:ios"];
+                        break;
+                    default:
+                        privateKey = Configuration["recaptcha:private-key"];
+                        break;
+                }
+
+                var data = $"secret={privateKey}&remoteip={ip}&response={response}";
                 var url = Configuration["recaptcha:verify-url"] ?? "https://www.recaptcha.net/recaptcha/api/siteverify";
 
                 var request = new HttpRequestMessage();

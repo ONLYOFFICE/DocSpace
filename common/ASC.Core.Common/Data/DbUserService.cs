@@ -299,6 +299,14 @@ namespace ASC.Core.Data
             }
         }
 
+        public IEnumerable<UserInfo> GetUsersAllTenants(IEnumerable<Guid> userIds)
+        {
+            var q = UserDbContext.Users
+                .Where(r => userIds.Contains(r.Id))
+                .Where(r => !r.Removed);
+            return q.Select(FromUserToUserInfo).ToList();
+        }
+
         //todo: remove
         private void RegeneratePassword(int tenant, Guid userId)
         {

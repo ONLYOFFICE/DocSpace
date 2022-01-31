@@ -130,12 +130,12 @@ const DownloadContent = (props) => {
               {title}
             </Text>
             <></>
-            <Text fontSize="12px" containerWidth="auto">
+            <Text fontSize="12px" containerMinWidth="fit-content">
               {(checkedTitle || indeterminateTitle) && t("ConvertInto")}
             </Text>
             {checkedTitle || indeterminateTitle ? (
               <LinkWithDropdown
-                containerWidth="auto"
+                containerMinWidth="fit-content"
                 data={titleData}
                 directionX="left"
                 directionY="bottom"
@@ -181,7 +181,11 @@ const DownloadContent = (props) => {
                 </Text>
                 <></>
                 {file.checked && (
-                  <Text fontSize="12px" containerWidth="auto" noSelect>
+                  <Text
+                    fontSize="12px"
+                    containerMinWidth="fit-content"
+                    noSelect
+                  >
                     {t("ConvertInto")}
                   </Text>
                 )}
@@ -191,7 +195,7 @@ const DownloadContent = (props) => {
                     dropdownType={
                       isMobile ? "alwaysDashed" : "appearDashedAfterHover"
                     }
-                    containerWidth="auto"
+                    containerMinWidth="fit-content"
                     data={dropdownItems}
                     directionX="left"
                     directionY="bottom"

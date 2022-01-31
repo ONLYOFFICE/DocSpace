@@ -16,6 +16,7 @@ using ASC.Core.Users;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
+using ASC.Web.Core.Files;
 using ASC.Web.Core.Mobile;
 using ASC.Web.Core.Utility;
 using ASC.Web.Studio.Core;
@@ -50,9 +51,10 @@ namespace ASC.Web.Api.Controllers
         private SettingsManager SettingsManager { get; }
         private IMobileAppInstallRegistrator MobileAppInstallRegistrator { get; }
         private IConfiguration Configuration { get; set; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public LicenseReader LicenseReader { get; }
-        public SetupInfo SetupInfo { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private LicenseReader LicenseReader { get; }
+        private SetupInfo SetupInfo { get; }
+        private DocumentServiceLicense DocumentServiceLicense { get; }
         private TenantExtra TenantExtra { get; set; }
         public ILog Log { get; }
         public IHttpClientFactory ClientFactory { get; }
@@ -76,6 +78,7 @@ namespace ASC.Web.Api.Controllers
             CoreBaseSettings coreBaseSettings,
             LicenseReader licenseReader,
             SetupInfo setupInfo,
+            DocumentServiceLicense documentServiceLicense,
             IHttpClientFactory clientFactory
             )
         {
@@ -95,6 +98,7 @@ namespace ASC.Web.Api.Controllers
             CoreBaseSettings = coreBaseSettings;
             LicenseReader = licenseReader;
             SetupInfo = setupInfo;
+            DocumentServiceLicense = documentServiceLicense;
             TenantExtra = tenantExtra;
             ClientFactory = clientFactory;
         }
@@ -152,7 +156,9 @@ namespace ASC.Web.Api.Controllers
                 enableTariffPage = //TenantExtra.EnableTarrifSettings - think about hide-settings for opensource
                     (!CoreBaseSettings.Standalone || !string.IsNullOrEmpty(LicenseReader.LicensePath))
                     && string.IsNullOrEmpty(SetupInfo.AmiMetaUrl)
-                    && !CoreBaseSettings.CustomMode
+                    && !CoreBaseSettings.CustomMode,
+                DocServerUserQuota = DocumentServiceLicense.GetLicenseQuota(),
+                DocServerLicense = DocumentServiceLicense.GetLicense()
             };
         }
 
@@ -170,7 +176,7 @@ namespace ASC.Web.Api.Controllers
         [Read("userscount")]
         public long GetUsersCount()
         {
-            return UserManager.GetUserNames(EmployeeStatus.Active).Length;
+            return CoreBaseSettings.Personal ? 1 : UserManager.GetUserNames(EmployeeStatus.Active).Length;
         }
 
         [Read("tariff")]

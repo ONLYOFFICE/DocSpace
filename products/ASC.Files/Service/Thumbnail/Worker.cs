@@ -40,10 +40,10 @@ namespace ASC.Files.ThumbnailBuilder
         public Worker(
             IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> options,
-            Common.Utils.ConfigurationExtension configurationExtension)
+            ThumbnailSettings settings)
         {
             this.serviceProvider = serviceProvider;
-            this.thumbnailSettings = ThumbnailSettings.GetInstance(configurationExtension);
+            this.thumbnailSettings = settings;
             logger = options.Get("ASC.Files.ThumbnailBuilder");
         }
 

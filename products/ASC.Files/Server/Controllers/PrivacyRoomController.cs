@@ -87,14 +87,14 @@ namespace ASC.Api.Documents
         /// </summary>
         /// <visible>false</visible>
         [Update("keys")]
-        public object SetKeysFromBody([FromBody]PrivacyRoomModel model)
+        public object SetKeysFromBody([FromBody] PrivacyRoomModel model)
         {
             return SetKeys(model);
         }
 
         [Update("keys")]
         [Consumes("application/x-www-form-urlencoded")]
-        public object SetKeysFromForm([FromForm]PrivacyRoomModel model)
+        public object SetKeysFromForm([FromForm] PrivacyRoomModel model)
         {
             return SetKeys(model);
         }
@@ -108,7 +108,7 @@ namespace ASC.Api.Documents
             var keyPair = EncryptionKeyPairHelper.GetKeyPair();
             if (keyPair != null)
             {
-                if (!string.IsNullOrEmpty(keyPair.PublicKey))
+                if (!string.IsNullOrEmpty(keyPair.PublicKey) && !model.Update)
                 {
                     return new { isset = true };
                 }
@@ -179,14 +179,14 @@ namespace ASC.Api.Documents
         /// <returns></returns>
         /// <visible>false</visible>
         [Update("")]
-        public bool SetPrivacyRoomFromBody([FromBody]PrivacyRoomModel model)
+        public bool SetPrivacyRoomFromBody([FromBody] PrivacyRoomModel model)
         {
             return SetPrivacyRoom(model);
         }
 
         [Update("")]
         [Consumes("application/x-www-form-urlencoded")]
-        public bool SetPrivacyRoomFromForm([FromForm]PrivacyRoomModel model)
+        public bool SetPrivacyRoomFromForm([FromForm] PrivacyRoomModel model)
         {
             return SetPrivacyRoom(model);
         }

@@ -30,6 +30,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -264,7 +265,10 @@ namespace ASC.Files.Thirdparty.OneDrive
             request.RequestUri = uploadUriBuilder.Uri;
             request.Method = HttpMethod.Post;
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
-            request.Headers.Add("Content-Type", "application/json; charset=UTF-8");
+            request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json")
+            {
+                CharSet = Encoding.UTF8.WebName
+            };
 
             var uploadSession = new ResumableUploadSession(onedriveFile.Id, folderId, contentLength);
 

@@ -1121,7 +1121,7 @@ namespace ASC.Web.Files
 
             if (responseMessage)
             {
-                return InternalWriteOk(context, folder);
+                return InternalWriteOk(context, folder, file);
             }
 
             context.Response.Redirect(
@@ -1145,9 +1145,13 @@ namespace ASC.Web.Files
             return;
         }
 
-        private async Task InternalWriteOk<T>(HttpContext context, Folder<T> folder)
+        private async Task InternalWriteOk<T>(HttpContext context, Folder<T> folder, File<T> file)
         {
-            await context.Response.WriteAsync("ok: " + string.Format(FilesCommonResource.MessageFileCreated, folder.Title));
+            var message = string.Format(FilesCommonResource.MessageFileCreated, folder.Title);
+            if (FileUtility.CanWebRestrictedEditing(file.Title))
+                message = string.Format(FilesCommonResource.MessageFileCreatedForm, folder.Title);
+
+            await context.Response.WriteAsync("ok: " + message);
         }
 
         private File<T> CreateFileFromTemplate<T>(Folder<T> folder, string fileTitle, string docType)

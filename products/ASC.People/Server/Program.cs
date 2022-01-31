@@ -69,6 +69,8 @@ namespace ASC.People
                     .AddJsonFile("storage.json")
                     .AddJsonFile("kafka.json")
                     .AddJsonFile($"kafka.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
+                    .AddJsonFile("redis.json")
+                    .AddJsonFile($"redis.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
                     .AddEnvironmentVariables()
                     .AddCommandLine(args)
                     .AddInMemoryCollection(new Dictionary<string, string>

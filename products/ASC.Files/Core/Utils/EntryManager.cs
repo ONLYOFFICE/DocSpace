@@ -738,7 +738,7 @@ namespace ASC.Web.Files.Utils
                     break;
                 case FilterType.ByExtension:
                     var filterExt = (searchText ?? string.Empty).ToLower().Trim();
-                    where = f => !string.IsNullOrEmpty(filterExt) && f.FileEntryType == FileEntryType.File && FileUtility.GetFileExtension(f.Title).Contains(filterExt);
+                    where = f => !string.IsNullOrEmpty(filterExt) && f.FileEntryType == FileEntryType.File && FileUtility.GetFileExtension(f.Title).Equals(filterExt);
                     break;
             }
 
@@ -893,8 +893,95 @@ namespace ASC.Web.Files.Utils
             return LockerManager.FileLockedBy(fileId, tagDao);
         }
 
+        public File<int> GetFillFormDraft<T>(File<T> sourceFile, out Folder<int> folderIfNew)
+        {
+            folderIfNew = null;
+            if (sourceFile == null) return null;
 
-        public File<T> SaveEditing<T>(T fileId, string fileExtension, string downloadUri, Stream stream, string doc, string comment = null, bool checkRight = true, bool encrypted = false, ForcesaveType? forcesave = null)
+            File<int> linkedFile = null;
+            var fileDao = DaoFactory.GetFileDao<int>();
+            var sourceFileDao = DaoFactory.GetFileDao<T>();
+            var linkDao = DaoFactory.GetLinkDao();
+
+            var fileSecurity = FileSecurity;
+
+            var linkedId = linkDao.GetLinked(sourceFile.ID.ToString());
+            if (linkedId != null)
+            {
+                linkedFile = fileDao.GetFile(int.Parse(linkedId));
+                if (linkedFile == null
+                    || !fileSecurity.CanFillForms(linkedFile)
+                    || FileLockedForMe(linkedFile.ID)
+                    || linkedFile.RootFolderType == FolderType.TRASH)
+                {
+                    linkDao.DeleteLink(sourceFile.ID.ToString());
+                    linkedFile = null;
+                }
+            }
+
+            if (linkedFile == null)
+            {
+                var folderId = GlobalFolderHelper.FolderMy;
+                var folderDao = DaoFactory.GetFolderDao<int>();
+                folderIfNew = folderDao.GetFolder(folderId);
+                if (folderIfNew == null) throw new Exception(FilesCommonResource.ErrorMassage_FolderNotFound);
+                if (!fileSecurity.CanCreate(folderIfNew)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
+
+                linkedFile = ServiceProvider.GetService<File<int>>();
+                linkedFile.Title = sourceFile.Title;
+                linkedFile.FolderID = folderIfNew.ID;
+                linkedFile.FileStatus = sourceFile.FileStatus;
+                linkedFile.ConvertedType = sourceFile.ConvertedType;
+                linkedFile.Comment = FilesCommonResource.CommentCreateFillFormDraft;
+                linkedFile.Encrypted = sourceFile.Encrypted;
+
+                using (var stream = sourceFileDao.GetFileStream(sourceFile))
+                {
+                    linkedFile.ContentLength = stream.CanSeek ? stream.Length : sourceFile.ContentLength;
+                    linkedFile = fileDao.SaveFile(linkedFile, stream);
+                }
+
+                FileMarker.MarkAsNew(linkedFile);
+
+                linkDao.AddLink(sourceFile.ID.ToString(), linkedFile.ID.ToString());
+            }
+
+            return linkedFile;
+        }
+
+        public bool CheckFillFormDraft<T>(File<T> linkedFile)
+        {
+            if (linkedFile == null) return false;
+
+            var linkDao = DaoFactory.GetLinkDao();
+            var sourceId = linkDao.GetSource(linkedFile.ID.ToString());
+            var fileSecurity = FileSecurity;
+
+            if (int.TryParse(sourceId, out var sId))
+            {
+                return Check(sId);
+            }
+
+            return Check(sourceId);
+
+            bool Check<T1>(T1 sourceId)
+            {
+                var fileDao = DaoFactory.GetFileDao<T1>();
+                var sourceFile = fileDao.GetFile(sourceId);
+                if (sourceFile == null
+                    || !fileSecurity.CanFillForms(sourceFile)
+                    || sourceFile.Access != FileShare.FillForms)
+                {
+                    linkDao.DeleteLink(sourceId.ToString());
+
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
+        public File<T> SaveEditing<T>(T fileId, string fileExtension, string downloadUri, Stream stream, string doc, string comment = null, bool checkRight = true, bool encrypted = false, ForcesaveType? forcesave = null, bool keepLink = false)
         {
             var newExtension = string.IsNullOrEmpty(fileExtension)
                               ? FileUtility.GetFileExtension(downloadUri)
@@ -922,7 +1009,7 @@ namespace ASC.Web.Files.Utils
             if (file.RootFolderType == FolderType.TRASH) throw new Exception(FilesCommonResource.ErrorMassage_ViewTrashItem);
 
             var currentExt = file.ConvertedExtension;
-            if (string.IsNullOrEmpty(newExtension)) newExtension = FileUtility.GetInternalExtension(file.Title);
+            if (string.IsNullOrEmpty(newExtension)) newExtension = FileUtility.GetFileExtension(file.Title);
 
             var replaceVersion = false;
             if (file.Forcesave != ForcesaveType.None)
@@ -951,7 +1038,12 @@ namespace ASC.Web.Files.Utils
                     {
                         path = FileConstant.NewDocPath + "en-US/";
                     }
-                    path += "new" + FileUtility.GetInternalExtension(file.Title);
+
+                    var fileExt = currentExt != FileUtility.MasterFormExtension
+                        ? FileUtility.GetInternalExtension(file.Title)
+                        : currentExt;
+
+                    path += "new" + fileExt;
 
                     //todo: think about the criteria for saving after creation
                     if (!storeTemplate.IsFile(path) || file.ContentLength != storeTemplate.GetFileSize("", path))
@@ -1023,6 +1115,13 @@ namespace ASC.Web.Files.Utils
                 else
                 {
                     file = fileDao.SaveFile(file, tmpStream);
+                }
+                if (!keepLink
+                   || file.CreateBy != AuthContext.CurrentAccount.ID
+                   || !file.IsFillFormDraft)
+                {
+                    var linkDao = DaoFactory.GetLinkDao();
+                    linkDao.DeleteAllLink(file.ID.ToString());
                 }
             }
 
@@ -1134,6 +1233,9 @@ namespace ASC.Web.Files.Utils
                     }
                     newFile.ThumbnailStatus = Thumbnail.Created;
                 }
+
+                var linkDao = DaoFactory.GetLinkDao();
+                linkDao.DeleteAllLink(newFile.ID.ToString());
 
                 FileMarker.MarkAsNew(newFile);
 
@@ -1257,12 +1359,12 @@ namespace ASC.Web.Files.Utils
 
 
         //Long operation
-        public void DeleteSubitems<T>(T parentId, IFolderDao<T> folderDao, IFileDao<T> fileDao)
+        public void DeleteSubitems<T>(T parentId, IFolderDao<T> folderDao, IFileDao<T> fileDao, ILinkDao linkDao)
         {
             var folders = folderDao.GetFolders(parentId);
             foreach (var folder in folders)
             {
-                DeleteSubitems(folder.ID, folderDao, fileDao);
+                DeleteSubitems(folder.ID, folderDao, fileDao, linkDao);
 
                 Logger.InfoFormat("Delete folder {0} in {1}", folder.ID, parentId);
                 folderDao.DeleteFolder(folder.ID);
@@ -1273,6 +1375,8 @@ namespace ASC.Web.Files.Utils
             {
                 Logger.InfoFormat("Delete file {0} in {1}", file.ID, parentId);
                 fileDao.DeleteFile(file.ID);
+
+                linkDao.DeleteAllLink(file.ID.ToString());
             }
         }
 

@@ -62,7 +62,6 @@ namespace ASC.CRM.Core.Dao
         private readonly FactoryIndexerEvents _factoryIndexer;
 
         public RelationshipEventDao(DbContextManager<CrmDbContext> dbContextManager,
-            DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             SecurityContext securityContext,
             FilesIntegration filesIntegration,
@@ -74,7 +73,6 @@ namespace ASC.CRM.Core.Dao
             IMapper mapper
             ) :
                 base(dbContextManager,
-                     dbContextManager1,
                         tenantManager,
                         securityContext,
                         logger,
