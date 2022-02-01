@@ -21,21 +21,24 @@ import StyledContextMenu from "./styled-new-context-menu";
 
 // eslint-disable-next-line react/display-name, react/prop-types
 const Row = React.memo(({ data, index, style }) => {
-  if (!data[index]) return null;
+  // eslint-disable-next-line react/prop-types
+  if (!data.data[index]) return null;
   return (
     <MenuItem
       // eslint-disable-next-line react/prop-types
-      key={data[index].key}
+      key={data.data[index].key}
       // eslint-disable-next-line react/prop-types
-      icon={data[index].icon}
+      icon={data.data[index].icon}
       // eslint-disable-next-line react/prop-types
-      label={data[index].label}
+      label={data.data[index].label}
       // eslint-disable-next-line react/prop-types
-      isSeparator={data[index].isSeparator}
+      isSeparator={data.data[index].isSeparator}
       // eslint-disable-next-line react/prop-types
-      options={data[index].options}
+      options={data.data[index].options}
       // eslint-disable-next-line react/prop-types
-      onClick={data[index].onClick}
+      onClick={data.data[index].onClick}
+      // eslint-disable-next-line react/prop-types
+      hideMenu={data.hideMenu}
       style={style}
     />
   );
@@ -117,6 +120,14 @@ class NewContextMenu extends React.Component {
     }
 
     this.currentEvent = e;
+    this.setState({ visible: false, reshow: false, changeView: false }, () => {
+      if (this.props.onHide) {
+        this.props.onHide(this.currentEvent);
+      }
+    });
+  }
+
+  hideMenu() {
     this.setState({ visible: false, reshow: false, changeView: false }, () => {
       if (this.props.onHide) {
         this.props.onHide(this.currentEvent);
@@ -348,7 +359,10 @@ class NewContextMenu extends React.Component {
           width={"auto"}
           itemCount={this.props.model.length}
           itemSize={getItemSize}
-          itemData={this.props.model}
+          itemData={{
+            data: this.props.model,
+            hideMenu: this.hideMenu.bind(this),
+          }}
           outerElementType={CustomScrollbarsVirtualList}
         >
           {Row}
@@ -366,6 +380,7 @@ class NewContextMenu extends React.Component {
             isSeparator={item.isSeparator}
             options={item.options}
             onClick={item.onClick}
+            hideMenu={this.hideMenu.bind(this)}
           />
         );
       });
