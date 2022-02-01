@@ -49,13 +49,13 @@ namespace ASC.ClearEvents.Services
     public class TimedClearEventsService : IHostedService, IDisposable
     {
         private readonly ILog _logger;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
         private Timer _timer = null!;
 
-        public TimedClearEventsService(IOptionsMonitor<ILog> options, IServiceProvider serviceProvider)
+        public TimedClearEventsService(IOptionsMonitor<ILog> options, IServiceScopeFactory serviceScopeFactory)
         {
             _logger = options.CurrentValue;
-            _serviceProvider = serviceProvider;
+            _serviceScopeFactory = serviceScopeFactory;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -98,7 +98,7 @@ namespace ASC.ClearEvents.Services
             var compile = func.Compile();
             do
             {
-                using var scope = _serviceProvider.CreateScope();
+                using var scope = _serviceScopeFactory.CreateScope();
                 using var ef = scope.ServiceProvider.GetService<DbContextManager<Messages>>().Get("messages");
                 var table = compile.Invoke(ef);
 
@@ -140,5 +140,4 @@ namespace ASC.ClearEvents.Services
     {
         public static void Register(DIHelper services) => services.TryAdd<DbContextManager<Messages>>();
     }
-
 }
