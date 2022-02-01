@@ -440,7 +440,7 @@ namespace ASC.Files.Helpers
 
         public IEnumerable<ConversationResult<T>> CheckConversion(CheckConversionModel<T> model)
         {
-            return FileStorageService.CheckConversion(new List<CheckConversionModel<T>>() { model })
+            return FileStorageService.CheckConversion(new List<CheckConversionModel<T>>() { model }, model.Sync)
             .Select(r =>
             {
                 var o = new ConversationResult<T>
