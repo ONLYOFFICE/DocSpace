@@ -26,7 +26,5 @@
 
 namespace ASC.Common.Security.Authorizing
 {
-    public interface IRole : ISubject
-    {
-    }
+    public interface IRole : ISubject { }
 }

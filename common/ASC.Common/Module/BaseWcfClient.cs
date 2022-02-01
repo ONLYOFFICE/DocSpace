@@ -31,9 +31,7 @@ namespace ASC.Common.Module
 {
     public class BaseWcfClient<TService> : ClientBase<TService>, IDisposable where TService : class
     {
-        public BaseWcfClient()
-        {
-        }
+        public BaseWcfClient() { }
 
         void IDisposable.Dispose()
         {

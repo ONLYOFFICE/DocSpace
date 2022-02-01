@@ -36,16 +36,15 @@ namespace ASC.Common.Web
     public class DisposableHttpContext : IDisposable
     {
         private const string key = "disposable.key";
-        private readonly Microsoft.AspNetCore.Http.HttpContext ctx;
+        private readonly Microsoft.AspNetCore.Http.HttpContext _context;
+        private bool _isDisposed;
 
-        public DisposableHttpContext(Microsoft.AspNetCore.Http.HttpContext ctx)
-        {
-            this.ctx = ctx ?? throw new ArgumentNullException();
-        }
+        public DisposableHttpContext(Microsoft.AspNetCore.Http.HttpContext ctx) =>
+            _context = ctx ?? throw new ArgumentNullException();
 
         public object this[string key]
         {
-            get { return Items.ContainsKey(key) ? Items[key] : null; }
+            get => Items.ContainsKey(key) ? Items[key] : null;
             set
             {
                 if (value == null) throw new ArgumentNullException();
@@ -58,19 +57,17 @@ namespace ASC.Common.Web
         {
             get
             {
-                var table = (Dictionary<string, IDisposable>)ctx.Items[key];
+                var table = (Dictionary<string, IDisposable>)_context.Items[key];
+
                 if (table == null)
                 {
                     table = new Dictionary<string, IDisposable>(1);
-                    ctx.Items.Add(key, table);
+                    _context.Items.Add(key, table);
                 }
+
                 return table;
             }
         }
-
-        #region IDisposable Members
-
-        private bool _isDisposed;
 
         public void Dispose()
         {
@@ -82,14 +79,11 @@ namespace ASC.Common.Web
                     {
                         item.Dispose();
                     }
-                    catch
-                    {
-                    }
+                    catch { }
                 }
+
                 _isDisposed = true;
             }
         }
-
-        #endregion
     }
 }

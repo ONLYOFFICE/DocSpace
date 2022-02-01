@@ -28,30 +28,25 @@ namespace ASC.Common.Utils
 {
     public static class Wildcard
     {
-        public static bool WildcardMatch(this string input, string pattern)
-        {
-            return WildcardMatch(input, pattern, true);
-        }
+        public static bool WildcardMatch(this string input, string pattern) =>
+            WildcardMatch(input, pattern, true);
 
         public static bool WildcardMatch(this string input, string pattern, bool ignoreCase)
         {
-            if (!string.IsNullOrEmpty(input))
-            {
-                return IsMatch(pattern, input, ignoreCase);
-            }
+            if (!string.IsNullOrEmpty(input)) return IsMatch(pattern, input, ignoreCase);
+
             return false;
         }
 
-        public static bool IsMatch(string pattern, string input)
-        {
-            return IsMatch(pattern, input, true);
-        }
+        public static bool IsMatch(string pattern, string input) =>
+            IsMatch(pattern, input, true);
 
         public static bool IsMatch(string pattern, string input, bool ignoreCase)
         {
             var offsetInput = 0;
             var isAsterix = false;
             int i;
+
             for (i = 0; i < pattern.Length;)
             {
                 switch (pattern[i])
@@ -62,17 +57,21 @@ namespace ASC.Common.Utils
                         break;
                     case '*':
                         isAsterix = true;
+
                         while (i < pattern.Length &&
                                 pattern[i] == '*')
                         {
                             i++;
                         }
+
                         if (i >= pattern.Length)
                             return true;
+
                         continue;
                     default:
                         if (offsetInput >= input.Length)
                             return false;
+
                         if ((ignoreCase
                                     ? char.ToLower(input[offsetInput])
                                     : input[offsetInput])
@@ -83,7 +82,9 @@ namespace ASC.Common.Utils
                         {
                             if (!isAsterix)
                                 return false;
+
                             offsetInput++;
+
                             continue;
                         }
                         offsetInput++;

@@ -23,7 +23,7 @@ namespace ASC.Common
 
     public class TransientAttribute : DIAttribute
     {
-        public override DIAttributeEnum DIAttributeEnum { get => DIAttributeEnum.Transient; }
+        public override DIAttributeEnum DIAttributeEnum => DIAttributeEnum.Transient;
 
         public TransientAttribute() { }
 
@@ -33,20 +33,15 @@ namespace ASC.Common
 
         public override void TryAdd(IServiceCollection services, Type service, Type implementation = null)
         {
-            if (implementation != null)
-            {
-                services.AddTransient(service, implementation);
-            }
-            else
-            {
-                services.AddTransient(service);
-            }
+            if (implementation != null) services.AddTransient(service, implementation);
+
+            else services.AddTransient(service);
         }
     }
 
     public class ScopeAttribute : DIAttribute
     {
-        public override DIAttributeEnum DIAttributeEnum { get => DIAttributeEnum.Scope; }
+        public override DIAttributeEnum DIAttributeEnum => DIAttributeEnum.Scope;
 
         public ScopeAttribute() { }
 
@@ -56,20 +51,15 @@ namespace ASC.Common
 
         public override void TryAdd(IServiceCollection services, Type service, Type implementation = null)
         {
-            if (implementation != null)
-            {
-                services.AddScoped(service, implementation);
-            }
-            else
-            {
-                services.AddScoped(service);
-            }
+            if (implementation != null) services.AddScoped(service, implementation);
+
+            else services.AddScoped(service);
         }
     }
 
     public class SingletoneAttribute : DIAttribute
     {
-        public override DIAttributeEnum DIAttributeEnum { get => DIAttributeEnum.Singletone; }
+        public override DIAttributeEnum DIAttributeEnum => DIAttributeEnum.Singletone;
 
         public SingletoneAttribute() { }
 
@@ -79,14 +69,9 @@ namespace ASC.Common
 
         public override void TryAdd(IServiceCollection services, Type service, Type implementation = null)
         {
-            if (implementation != null)
-            {
-                services.AddSingleton(service, implementation);
-            }
-            else
-            {
-                services.AddSingleton(service);
-            }
+            if (implementation != null) services.AddSingleton(service, implementation);
+
+            else services.AddSingleton(service);
         }
     }
 
@@ -99,10 +84,7 @@ namespace ASC.Common
 
         public DIAttribute() { }
 
-        public DIAttribute(Type service)
-        {
-            Service = service;
-        }
+        public DIAttribute(Type service) => Service = service;
 
         public DIAttribute(Type service, Type implementation)
         {
@@ -128,39 +110,26 @@ namespace ASC.Common
                 { DIAttributeEnum.Scope, new List<string>() },
                 { DIAttributeEnum.Transient, new List<string>() }
             };
+
             Added = new List<string>();
             Configured = new List<string>();
         }
 
-        public DIHelper(IServiceCollection serviceCollection) : this()
-        {
-            ServiceCollection = serviceCollection;
-        }
+        public DIHelper(IServiceCollection serviceCollection) : this() => ServiceCollection = serviceCollection;
 
-        public void Configure(IServiceCollection serviceCollection)
-        {
-            ServiceCollection = serviceCollection;
-        }
+        public void Configure(IServiceCollection serviceCollection) => ServiceCollection = serviceCollection;
 
         public void RegisterProducts(IConfiguration configuration, string path)
         {
             var types = AutofacExtension.FindAndLoad(configuration, path);
 
             foreach (var t in types.Select(Type.GetType).Where(r => r != null))
-            {
                 TryAdd(t);
-            }
         }
 
-        public bool TryAdd<TService>() where TService : class
-        {
-            return TryAdd(typeof(TService));
-        }
+        public bool TryAdd<TService>() where TService : class => TryAdd(typeof(TService));
 
-        public bool TryAdd<TService, TImplementation>() where TService : class
-        {
-            return TryAdd(typeof(TService), typeof(TImplementation));
-        }
+        public bool TryAdd<TService, TImplementation>() where TService : class => TryAdd(typeof(TService), typeof(TImplementation));
 
         public bool TryAdd(Type service, Type implementation = null)
         {
@@ -171,14 +140,14 @@ namespace ASC.Common
                 ))
             {
                 service = service.GetGenericArguments().FirstOrDefault();
-                if (service == null)
-                {
-                    return false;
-                }
+
+                if (service == null) return false;
             }
 
             var serviceName = $"{service}{implementation}";
+
             if (Added.Contains(serviceName)) return false;
+
             Added.Add(serviceName);
 
             var di = service.IsGenericType && (
@@ -186,6 +155,7 @@ namespace ASC.Common
                 service.GetGenericTypeDefinition() == typeof(IPostConfigureOptions<>) ||
                 service.GetGenericTypeDefinition() == typeof(IOptionsMonitor<>)
                 ) && implementation != null ? implementation.GetCustomAttribute<DIAttribute>() : service.GetCustomAttribute<DIAttribute>();
+
             var isnew = false;
 
             if (di != null)
@@ -211,6 +181,7 @@ namespace ASC.Common
                         x.GetGenericTypeDefinition() == typeof(IPostConfigureOptions<>) ||
                         x.GetGenericTypeDefinition() == typeof(IOptionsMonitor<>)
                         ));
+
                         if (a != null)
                         {
                             if (!a.ContainsGenericParameters)
@@ -222,10 +193,8 @@ namespace ASC.Common
                                     if (g != service)
                                     {
                                         TryAdd(g);
-                                        if (service.IsInterface && di.Implementation == null)
-                                        {
-                                            TryAdd(service, g);
-                                        }
+
+                                        if (service.IsInterface && di.Implementation == null) TryAdd(service, g);
                                     }
                                 }
 
@@ -260,11 +229,7 @@ namespace ASC.Common
                                 isnew = Register(service, di.Service);
                                 TryAdd(di.Service);
                             }
-                            else
-                            {
-                                Register(di.Service);
-                            }
-
+                            else Register(di.Service);
                         }
                     }
 
@@ -286,10 +251,7 @@ namespace ASC.Common
                                     if (g != service)
                                     {
                                         //TryAdd(g);
-                                        if (service.IsInterface && implementation == null)
-                                        {
-                                            TryAdd(service, g);
-                                        }
+                                        if (service.IsInterface && implementation == null) TryAdd(service, g);
                                     }
                                 }
 
@@ -308,19 +270,14 @@ namespace ASC.Common
                                     TryAdd(b1);
                                     c = a1.MakeGenericType(b1);
                                 }
-                                else
-                                {
-                                    c = a1.MakeGenericType(service.GetGenericArguments());
-                                }
+                                else c = a1.MakeGenericType(service.GetGenericArguments());
 
                                 TryAdd(c, di.Implementation.MakeGenericType(service.GetGenericArguments()));
                                 //a, di.Service
                             }
                         }
-                        else
-                        {
-                            isnew = TryAdd(service, di.Implementation);
-                        }
+
+                        else isnew = TryAdd(service, di.Implementation);
                     }
                 }
             }
@@ -329,55 +286,28 @@ namespace ASC.Common
             {
                 ConstructorInfo[] props = null;
 
-                if (!service.IsInterface)
-                {
-                    props = service.GetConstructors();
-                }
-                else if (implementation != null)
-                {
-                    props = implementation.GetConstructors();
-                }
-                else if (di.Service != null)
-                {
-                    props = di.Service.GetConstructors();
-                }
+                if (!service.IsInterface) props = service.GetConstructors();
+
+                else if (implementation != null) props = implementation.GetConstructors();
+
+                else if (di.Service != null) props = di.Service.GetConstructors();
 
                 if (props != null)
                 {
                     var par = props.SelectMany(r => r.GetParameters()).Distinct();
+
                     foreach (var p1 in par)
-                    {
                         TryAdd(p1.ParameterType);
-                    }
                 }
             }
 
             return isnew;
         }
 
-        private bool Register(Type service, Type implementation = null)
-        {
-            if (service.IsSubclassOf(typeof(ControllerBase)) || service.GetInterfaces().Contains(typeof(IResourceFilter)) || service.GetInterfaces().Contains(typeof(IDictionary<string, string>))) return true;
-            var c = service.IsGenericType && (
-                service.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) ||
-                service.GetGenericTypeDefinition() == typeof(IPostConfigureOptions<>) ||
-                service.GetGenericTypeDefinition() == typeof(IOptionsMonitor<>)
-                ) && implementation != null ? implementation.GetCustomAttribute<DIAttribute>() : service.GetCustomAttribute<DIAttribute>();
-            var serviceName = $"{service}{implementation}";
-
-            if (!Services[c.DIAttributeEnum].Contains(serviceName))
-            {
-                c.TryAdd(ServiceCollection, service, implementation);
-                Services[c.DIAttributeEnum].Add(serviceName);
-                return true;
-            }
-
-            return false;
-        }
-
         public DIHelper TryAddSingleton<TService>(Func<IServiceProvider, TService> implementationFactory) where TService : class
         {
             var serviceName = $"{typeof(TService)}";
+
             if (!Services[DIAttributeEnum.Singletone].Contains(serviceName))
             {
                 Services[DIAttributeEnum.Singletone].Add(serviceName);
@@ -390,6 +320,7 @@ namespace ASC.Common
         public DIHelper TryAddSingleton<TService, TImplementation>() where TService : class where TImplementation : class, TService
         {
             var serviceName = $"{typeof(TService)}{typeof(TImplementation)}";
+
             if (!Services[DIAttributeEnum.Singletone].Contains(serviceName))
             {
                 Services[DIAttributeEnum.Singletone].Add(serviceName);
@@ -402,6 +333,7 @@ namespace ASC.Common
         public DIHelper Configure<TOptions>(Action<TOptions> configureOptions) where TOptions : class
         {
             var serviceName = $"{typeof(TOptions)}";
+
             if (!Configured.Contains(serviceName))
             {
                 Configured.Add(serviceName);
@@ -414,6 +346,7 @@ namespace ASC.Common
         public DIHelper Configure<TOptions>(string name, Action<TOptions> configureOptions) where TOptions : class
         {
             var serviceName = $"{typeof(TOptions)}{name}";
+
             if (!Configured.Contains(serviceName))
             {
                 Configured.Add(serviceName);
@@ -421,6 +354,31 @@ namespace ASC.Common
             }
 
             return this;
+        }
+
+        private bool Register(Type service, Type implementation = null)
+        {
+            if (service.IsSubclassOf(typeof(ControllerBase)) || service.GetInterfaces().Contains(typeof(IResourceFilter))
+                || service.GetInterfaces().Contains(typeof(IDictionary<string, string>)))
+                return true;
+
+            var c = service.IsGenericType && (
+                service.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) ||
+                service.GetGenericTypeDefinition() == typeof(IPostConfigureOptions<>) ||
+                service.GetGenericTypeDefinition() == typeof(IOptionsMonitor<>)
+                ) && implementation != null ? implementation.GetCustomAttribute<DIAttribute>() : service.GetCustomAttribute<DIAttribute>();
+
+            var serviceName = $"{service}{implementation}";
+
+            if (!Services[c.DIAttributeEnum].Contains(serviceName))
+            {
+                c.TryAdd(ServiceCollection, service, implementation);
+                Services[c.DIAttributeEnum].Add(serviceName);
+
+                return true;
+            }
+
+            return false;
         }
     }
 }

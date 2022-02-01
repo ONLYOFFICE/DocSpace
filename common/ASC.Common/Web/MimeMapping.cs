@@ -32,9 +32,8 @@ namespace ASC.Common.Web
 {
     public static class MimeMapping
     {
-        private static readonly Hashtable extensionToMimeMappingTable = new Hashtable(200, StringComparer.CurrentCultureIgnoreCase);
-
-        private static readonly IDictionary<string, IList<string>> mimeSynonyms = new Dictionary<string, IList<string>>();
+        private static readonly Hashtable _extensionToMimeMappingTable = new Hashtable(200, StringComparer.CurrentCultureIgnoreCase);
+        private static readonly IDictionary<string, IList<string>> _mimeSynonyms = new Dictionary<string, IList<string>>();
 
         static MimeMapping()
         {
@@ -812,56 +811,49 @@ namespace ASC.Common.Web
             AddMimeMapping(".*", "application/octet-stream");
         }
 
-        private static void AddMimeMapping(string extension, string MimeType)
+        public static string GetExtention(string mimeMapping)
         {
-            if (extensionToMimeMappingTable.ContainsKey(extension))
-            {
-                AddMimeSynonym((string)extensionToMimeMappingTable[extension], MimeType);
-            }
-            else
-            {
-                extensionToMimeMappingTable.Add(extension, MimeType);
-            }
-        }
+            if (string.IsNullOrEmpty(mimeMapping)) return null;
 
-        private static void AddMimeSynonym(string mime, string synonym)
-        {
-            if (!mimeSynonyms.ContainsKey(mime))
+            foreach (DictionaryEntry entry in _extensionToMimeMappingTable)
             {
-                mimeSynonyms[mime] = new List<string>();
+                var mime = (string)entry.Value;
+                if (mime == mimeMapping.ToLowerInvariant()) return (string)entry.Key;
+                if (!_mimeSynonyms.ContainsKey(mime)) continue;
+                if (_mimeSynonyms[mime].Contains(mimeMapping.ToLowerInvariant())) return (string)entry.Key;
             }
-            if (!mimeSynonyms[mime].Contains(synonym))
-            {
-                mimeSynonyms[mime].Add(synonym);
-            }
+
+            return null;
         }
 
         public static string GetMimeMapping(string fileName)
         {
             string str = null;
             var startIndex = fileName.LastIndexOf('.');
+
             if (0 <= startIndex && fileName.LastIndexOf('\\') < startIndex)
-            {
-                str = (string)extensionToMimeMappingTable[fileName.Substring(startIndex)];
-            }
-            if (str == null)
-            {
-                str = (string)extensionToMimeMappingTable[".*"];
-            }
+                str = (string)_extensionToMimeMappingTable[fileName.Substring(startIndex)];
+
+            if (str == null) str = (string)_extensionToMimeMappingTable[".*"];
+
             return str;
         }
 
-        public static string GetExtention(string mimeMapping)
+        private static void AddMimeMapping(string extension, string MimeType)
         {
-            if (string.IsNullOrEmpty(mimeMapping)) return null;
-            foreach (DictionaryEntry entry in extensionToMimeMappingTable)
-            {
-                var mime = (string)entry.Value;
-                if (mime == mimeMapping.ToLowerInvariant()) return (string)entry.Key;
-                if (!mimeSynonyms.ContainsKey(mime)) continue;
-                if (mimeSynonyms[mime].Contains(mimeMapping.ToLowerInvariant())) return (string)entry.Key;
-            }
-            return null;
+            if (_extensionToMimeMappingTable.ContainsKey(extension))
+                AddMimeSynonym((string)_extensionToMimeMappingTable[extension], MimeType);
+
+            else _extensionToMimeMappingTable.Add(extension, MimeType);
+        }
+
+        private static void AddMimeSynonym(string mime, string synonym)
+        {
+            if (!_mimeSynonyms.ContainsKey(mime))
+                _mimeSynonyms[mime] = new List<string>();
+
+            if (!_mimeSynonyms[mime].Contains(synonym))
+                _mimeSynonyms[mime].Add(synonym);
         }
     }
 }

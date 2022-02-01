@@ -23,30 +23,28 @@ namespace ASC.Common
     [Singletone]
     public class TempStream
     {
-        private TempPath TempPath { get; }
+        private readonly TempPath _tempPath;
 
-        public TempStream(TempPath tempPath)
-        {
-            TempPath = tempPath;
-        }
+        public TempStream(TempPath tempPath) => _tempPath = tempPath;
 
         public Stream GetBuffered(Stream srcStream)
         {
-            if (srcStream == null) throw new ArgumentNullException("srcStream");
+            if (srcStream == null) throw new ArgumentNullException(nameof(srcStream));
+
             if (!srcStream.CanSeek || srcStream.CanTimeout)
             {
                 //Buffer it
                 var memStream = Create();
                 srcStream.CopyTo(memStream);
                 memStream.Position = 0;
+
                 return memStream;
             }
+
             return srcStream;
         }
 
-        public Stream Create()
-        {
-            return new FileStream(TempPath.GetTempFileName(), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.DeleteOnClose);
-        }
+        public Stream Create() => new FileStream(_tempPath.GetTempFileName(), FileMode.OpenOrCreate, 
+            FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.DeleteOnClose);
     }
 }

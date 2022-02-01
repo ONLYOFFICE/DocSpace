@@ -26,34 +26,24 @@ namespace System.IO
     [Singletone]
     public class TempPath
     {
-        readonly string tempFolder;
+        private readonly string _tempFolder;
 
         public TempPath(IConfiguration configuration)
         {
             string rootFolder = AppContext.BaseDirectory;
 
             if (string.IsNullOrEmpty(rootFolder))
-            {
                 rootFolder = Assembly.GetEntryAssembly().Location;
-            }
 
-            tempFolder = configuration["temp"] ?? Path.Combine("..", "Data", "temp");
+            _tempFolder = configuration["temp"] ?? Path.Combine("..", "Data", "temp");
 
-            if (!Path.IsPathRooted(tempFolder))
-            {
-                tempFolder = Path.GetFullPath(Path.Combine(rootFolder, tempFolder));
-            }
+            if (!Path.IsPathRooted(_tempFolder))
+                _tempFolder = Path.GetFullPath(Path.Combine(rootFolder, _tempFolder));
 
-            if (!Directory.Exists(tempFolder))
-            {
-                Directory.CreateDirectory(tempFolder);
-            }
+            if (!Directory.Exists(_tempFolder)) Directory.CreateDirectory(_tempFolder);
         }
 
-        public string GetTempPath()
-        {
-            return tempFolder;
-        }
+        public string GetTempPath() => _tempFolder;
 
         public string GetTempFileName()
         {
@@ -63,7 +53,7 @@ namespace System.IO
 
             do
             {
-                path = Path.Combine(tempFolder, Path.GetRandomFileName());
+                path = Path.Combine(_tempFolder, Path.GetRandomFileName());
 
                 try
                 {

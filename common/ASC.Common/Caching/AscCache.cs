@@ -37,19 +37,16 @@ namespace ASC.Common.Caching
     [Singletone]
     public class AscCacheNotify
     {
-        private IEventBus<AscCacheItem> CacheNotify { get; }
+        private readonly IEventBus<AscCacheItem> _eventBus;
 
-        public AscCacheNotify(IEventBus<AscCacheItem> cacheNotify)
+        public AscCacheNotify(IEventBus<AscCacheItem> eventBus)
         {
-            CacheNotify = cacheNotify;
+            _eventBus = eventBus;
 
-            CacheNotify.Subscribe((item) => { OnClearCache(); }, EventType.Any);
+            _eventBus.Subscribe((item) => { OnClearCache(); }, EventType.Any);
         }
 
-        public void ClearCache()
-        {
-            CacheNotify.Publish(new AscCacheItem { Id = Guid.NewGuid().ToString() }, EventType.Any);
-        }
+        public void ClearCache() => _eventBus.Publish(new AscCacheItem { Id = Guid.NewGuid().ToString() }, EventType.Any);
 
         public static void OnClearCache()
         {
@@ -65,19 +62,16 @@ namespace ASC.Common.Caching
     [Singletone]
     public class AscCache : ICache
     {
-        private IMemoryCache MemoryCache { get; }
-        private ConcurrentDictionary<string, object> MemoryCacheKeys { get; }
+        private readonly IMemoryCache _memoryCache;
+        private readonly ConcurrentDictionary<string, object> _memoryCacheKeys;
 
         public AscCache(IMemoryCache memoryCache)
         {
-            MemoryCache = memoryCache;
-            MemoryCacheKeys = new ConcurrentDictionary<string, object>();
+            _memoryCache = memoryCache;
+            _memoryCacheKeys = new ConcurrentDictionary<string, object>();
         }
 
-        public T Get<T>(string key) where T : class
-        {
-            return MemoryCache.Get<T>(key);
-        }
+        public T Get<T>(string key) where T : class => _memoryCache.Get<T>(key);
 
         public void Insert(string key, object value, TimeSpan sligingExpiration)
         {
@@ -85,8 +79,8 @@ namespace ASC.Common.Caching
                 .SetSlidingExpiration(sligingExpiration)
                 .RegisterPostEvictionCallback(EvictionCallback);
 
-            MemoryCache.Set(key, value, options);
-            MemoryCacheKeys.TryAdd(key, null);
+            _memoryCache.Set(key, value, options);
+            _memoryCacheKeys.TryAdd(key, null);
         }
 
         public void Insert(string key, object value, DateTime absolutExpiration)
@@ -95,43 +89,32 @@ namespace ASC.Common.Caching
                 .SetAbsoluteExpiration(absolutExpiration == DateTime.MaxValue ? DateTimeOffset.MaxValue : new DateTimeOffset(absolutExpiration))
                 .RegisterPostEvictionCallback(EvictionCallback);
 
-            MemoryCache.Set(key, value, options);
-            MemoryCacheKeys.TryAdd(key, null);
+            _memoryCache.Set(key, value, options);
+            _memoryCacheKeys.TryAdd(key, null);
         }
 
-        private void EvictionCallback(object key, object value, EvictionReason reason, object state)
-        {
-            MemoryCacheKeys.TryRemove(key.ToString(), out _);
-        }
-
-        public void Remove(string key)
-        {
-            MemoryCache.Remove(key);
-        }
+        public void Remove(string key) => _memoryCache.Remove(key);
 
         public void Remove(Regex pattern)
         {
-            var copy = MemoryCacheKeys.ToDictionary(p => p.Key, p => p.Value);
+            var copy = _memoryCacheKeys.ToDictionary(p => p.Key, p => p.Value);
             var keys = copy.Select(p => p.Key).Where(k => pattern.IsMatch(k)).ToArray();
 
             foreach (var key in keys)
             {
-                MemoryCache.Remove(key);
+                _memoryCache.Remove(key);
             }
         }
 
-
-        public ConcurrentDictionary<string, T> HashGetAll<T>(string key)
-        {
-            return MemoryCache.GetOrCreate(key, r => new ConcurrentDictionary<string, T>());
-        }
+        public ConcurrentDictionary<string, T> HashGetAll<T>(string key) => 
+            _memoryCache.GetOrCreate(key, r => new ConcurrentDictionary<string, T>());
 
         public T HashGet<T>(string key, string field)
         {
-            if (MemoryCache.TryGetValue<ConcurrentDictionary<string, T>>(key, out var dic) && dic.TryGetValue(field, out var value))
-            {
+            if (_memoryCache.TryGetValue<ConcurrentDictionary<string, T>>(key, out var dic) 
+                && dic.TryGetValue(field, out var value))
                 return value;
-            }
+
             return default;
         }
 
@@ -141,20 +124,19 @@ namespace ASC.Common.Caching
             if (value != null)
             {
                 dic.AddOrUpdate(field, value, (k, v) => value);
-                MemoryCache.Set(key, dic, DateTime.MaxValue);
+                _memoryCache.Set(key, dic, DateTime.MaxValue);
             }
             else if (dic != null)
             {
                 dic.TryRemove(field, out _);
-                if (dic.Count == 0)
-                {
-                    MemoryCache.Remove(key);
-                }
-                else
-                {
-                    MemoryCache.Set(key, dic, DateTime.MaxValue);
-                }
+
+                if (dic.IsEmpty) _memoryCache.Remove(key);
+
+                else _memoryCache.Set(key, dic, DateTime.MaxValue);
             }
         }
+
+        private void EvictionCallback(object key, object value, EvictionReason reason, object state) =>
+            _memoryCacheKeys.TryRemove(key.ToString(), out _);
     }
 }

@@ -41,6 +41,28 @@ namespace ASC.Common.Logging
 
         private static int? _cleanPeriod;
 
+        protected override void Append(LoggingEvent loggingEvent)
+        {
+            if (DateTime.UtcNow.Date > _lastCleanDate.Date)
+            {
+                _lastCleanDate = DateTime.UtcNow.Date;
+                Clean();
+            }
+
+            base.Append(loggingEvent);
+        }
+
+        protected override void Append(LoggingEvent[] loggingEvents)
+        {
+            if (DateTime.UtcNow.Date > _lastCleanDate.Date)
+            {
+                _lastCleanDate = DateTime.UtcNow.Date;
+                Clean();
+            }
+
+            base.Append(loggingEvents);
+        }
+
         private static int GetCleanPeriod()
         {
             if (_cleanPeriod != null)
@@ -53,9 +75,7 @@ namespace ASC.Common.Logging
             var repo = log4net.LogManager.GetRepository(Assembly.GetCallingAssembly());
 
             if (repo != null && repo.Properties.GetKeys().Contains(key))
-            {
                 int.TryParse(repo.Properties[key].ToString(), out value);
-            }
 
             _cleanPeriod = value;
 
@@ -92,28 +112,6 @@ namespace ASC.Common.Logging
             {
                 LogLog.Error(GetType(), err.Message, err);
             }
-        }
-
-        protected override void Append(LoggingEvent loggingEvent)
-        {
-            if (DateTime.UtcNow.Date > _lastCleanDate.Date)
-            {
-                _lastCleanDate = DateTime.UtcNow.Date;
-                Clean();
-            }
-
-            base.Append(loggingEvent);
-        }
-
-        protected override void Append(LoggingEvent[] loggingEvents)
-        {
-            if (DateTime.UtcNow.Date > _lastCleanDate.Date)
-            {
-                _lastCleanDate = DateTime.UtcNow.Date;
-                Clean();
-            }
-
-            base.Append(loggingEvents);
         }
     }
 }

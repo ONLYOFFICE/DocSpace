@@ -223,10 +223,8 @@ namespace ASC.Common.Utils
         /// <exception cref="ArgumentException">if domainName is invalid</exception>
         /// <exception cref="FormatException">if ipAddress is invalid</exception>
         /// <returns>true if exists and vice versa</returns>
-        public bool IsDomainPtrRecordExists(string ipAddress, string domainName)
-        {
-            return IsDomainPtrRecordExists(IPAddress.Parse(ipAddress), domainName);
-        }
+        public bool IsDomainPtrRecordExists(string ipAddress, string domainName) =>
+            IsDomainPtrRecordExists(IPAddress.Parse(ipAddress), domainName);
 
         private DnsMessage GetDnsMessage(string domainName, RecordType? type = null)
         {
@@ -239,9 +237,7 @@ namespace ASC.Common.Utils
 
             if ((dnsMessage == null) ||
                 ((dnsMessage.ReturnCode != ReturnCode.NoError) && (dnsMessage.ReturnCode != ReturnCode.NxDomain)))
-            {
                 throw new SystemException(); // DNS request failed
-            }
 
             return dnsMessage;
         }

@@ -25,7 +25,8 @@ namespace ASC.Common.DependencyInjection
 
     public static class AutofacExtension
     {
-        public static void Register(this ContainerBuilder builder, IConfiguration configuration, bool loadproducts = true, bool loadconsumers = true, params string[] intern)
+        public static void Register(this ContainerBuilder builder, IConfiguration configuration, 
+            bool loadproducts = true, bool loadconsumers = true, params string[] intern)
         {
             var modules = new List<(bool, string)>
             {
@@ -33,27 +34,20 @@ namespace ASC.Common.DependencyInjection
             };
 
             if (loadproducts)
-            {
                 modules.Add((true, "autofac.products.json"));
-            }
 
             if (loadconsumers)
-            {
                 modules.Add((true, "autofac.consumers.json"));
-            }
 
             if (intern != null)
-            {
                 modules.AddRange(intern.Select(r => (false, r)));
-            }
 
             foreach (var p in modules)
             {
                 var config = new ConfigurationBuilder();
-                if (p.Item1)
-                {
-                    config.SetBasePath(configuration["pathToConf"]);
-                }
+
+                if (p.Item1) config.SetBasePath(configuration["pathToConf"]);
+
                 config.AddJsonFile(p.Item2);
 
                 var root = config.Build();
@@ -73,10 +67,7 @@ namespace ASC.Common.DependencyInjection
 
             var sectionSettings = root.GetSection("components");
 
-            if (sectionSettings == null)
-            {
-                return new List<string>();
-            }
+            if (sectionSettings == null) return new List<string>();
 
             var folder = configuration["core:products:folder"];
             var subfolder = configuration["core:products:subfolder"];
@@ -85,18 +76,12 @@ namespace ASC.Common.DependencyInjection
             if (!Path.IsPathRooted(folder))
             {
                 if (currentDir.EndsWith(CrossPlatform.PathCombine(Path.GetFileName(folder), Assembly.GetEntryAssembly().GetName().Name, subfolder)))
-                {
                     productsDir = Path.GetFullPath(CrossPlatform.PathCombine("..", ".."));
-                }
-                else
-                {
-                    productsDir = Path.GetFullPath(CrossPlatform.PathCombine(currentDir, folder));
-                }
+
+                else productsDir = Path.GetFullPath(CrossPlatform.PathCombine(currentDir, folder));
             }
-            else
-            {
-                productsDir = folder;
-            }
+
+            else productsDir = folder;
 
             var cs = new List<AutofacComponent>();
             sectionSettings.Bind(cs);
@@ -124,15 +109,15 @@ namespace ASC.Common.DependencyInjection
                 var path = GetFullPath(dll);
 
                 if (!string.IsNullOrEmpty(path))
-                {
                     AssemblyLoadContext.Default.Resolving += new Resolver(path).Resolving;
-                }
             }
 
             string GetFullPath(string n)
             {
                 var productPath = CrossPlatform.PathCombine(productsDir, n, subfolder);
-                return GetPath(CrossPlatform.PathCombine(productPath, "bin"), n, SearchOption.AllDirectories) ?? GetPath(productPath, n, SearchOption.TopDirectoryOnly);
+
+                return GetPath(CrossPlatform.PathCombine(productPath, "bin"), n, SearchOption.AllDirectories) 
+                    ?? GetPath(productPath, n, SearchOption.TopDirectoryOnly);
             }
 
             static string GetPath(string dirPath, string dll, SearchOption searchOption)
@@ -142,22 +127,17 @@ namespace ASC.Common.DependencyInjection
                 return Directory.GetFiles(dirPath, $"{dll}.dll", searchOption).FirstOrDefault();
             }
         }
-
-        
     }
 
     class Resolver
     {
-        private string ResolvePath { get; set; }
+        private readonly string _resolvePath;
 
-        public Resolver(string assemblyPath)
-        {
-            ResolvePath = assemblyPath;
-        }
+        public Resolver(string assemblyPath) => _resolvePath = assemblyPath;
 
         public Assembly Resolving(AssemblyLoadContext context, AssemblyName assemblyName)
         {
-            var path = CrossPlatform.PathCombine(Path.GetDirectoryName(ResolvePath), $"{assemblyName.Name}.dll");
+            var path = CrossPlatform.PathCombine(Path.GetDirectoryName(_resolvePath), $"{assemblyName.Name}.dll");
 
             if (!File.Exists(path)) return null;
 

@@ -44,68 +44,56 @@ namespace ASC.Common.Threading
     {
         public ConcurrentDictionary<string, CancellationTokenSource> Cancelations { get; }
         public ICache Cache { get; }
-        private readonly IEventBus<DistributedTaskCancelation> notify;
-        private readonly IEventBus<DistributedTaskCache> notifyCache;
+
+        private readonly IEventBus<DistributedTaskCancelation> _eventBusNotify;
+        private readonly IEventBus<DistributedTaskCache> _eventBusCache;
 
         public DistributedTaskCacheNotify(
-            IEventBus<DistributedTaskCancelation> notify, 
-            IEventBus<DistributedTaskCache> notifyCache,
+            IEventBus<DistributedTaskCancelation> eventBusNotify, 
+            IEventBus<DistributedTaskCache> eventBusCache,
             ICache cache)
         {
             Cancelations = new ConcurrentDictionary<string, CancellationTokenSource>();
 
             Cache = cache;
 
-            this.notify = notify;
+            _eventBusNotify = eventBusNotify;
 
-            notify.Subscribe((c) =>
+            eventBusNotify.Subscribe((c) =>
             {
-                if (Cancelations.TryGetValue(c.Id, out var s))
-                {
-                    s.Cancel();
-                }
-            }, Caching.EventType.Remove);
+                if (Cancelations.TryGetValue(c.Id, out var s)) s.Cancel();
 
-            this.notifyCache = notifyCache;
+            }, EventType.Remove);
 
-            notifyCache.Subscribe((c) =>
+            _eventBusCache = eventBusCache;
+
+            eventBusCache.Subscribe((c) =>
             {
                 Cache.HashSet(c.Key, c.Id, (DistributedTaskCache)null);
-            }, Caching.EventType.Remove);
+            }, EventType.Remove);
 
-            notifyCache.Subscribe((c) =>
+            eventBusCache.Subscribe((c) =>
             {
                 Cache.HashSet(c.Key, c.Id, c);
-            }, Caching.EventType.InsertOrUpdate);
+            }, EventType.InsertOrUpdate);
         }
 
-        public void CancelTask(string id)
-        {
-            notify.Publish(new DistributedTaskCancelation() { Id = id }, Caching.EventType.Remove);
-        }
+        public void CancelTask(string id) =>
+            _eventBusNotify.Publish(new DistributedTaskCancelation() { Id = id }, EventType.Remove);
 
-        public void SetTask(DistributedTask task)
-        {
-            notifyCache.Publish(task.DistributedTaskCache, Caching.EventType.InsertOrUpdate);
-        }
+        public void SetTask(DistributedTask task) =>
+            _eventBusCache.Publish(task.DistributedTaskCache, EventType.InsertOrUpdate);
 
-        public void RemoveTask(string id, string key)
-        {
-            notifyCache.Publish(new DistributedTaskCache() { Id = id, Key = key }, Caching.EventType.Remove);
-        }
+        public void RemoveTask(string id, string key) =>
+            _eventBusCache.Publish(new DistributedTaskCache() { Id = id, Key = key }, EventType.Remove);
     }
 
     [Singletone(typeof(ConfigureDistributedTaskQueue))]
     public class DistributedTaskQueueOptionsManager : OptionsManager<DistributedTaskQueue>
     {
-        public DistributedTaskQueueOptionsManager(IOptionsFactory<DistributedTaskQueue> factory) : base(factory)
-        {
-        }
+        public DistributedTaskQueueOptionsManager(IOptionsFactory<DistributedTaskQueue> factory) : base(factory) { }
 
-        public DistributedTaskQueue Get<T>() where T : DistributedTask
-        {
-            return Get(typeof(T).FullName);
-        }
+        public DistributedTaskQueue Get<T>() where T : DistributedTask => Get(typeof(T).FullName);
     }
 
     [Scope]
@@ -135,45 +123,38 @@ namespace ASC.Common.Threading
 
     public class DistributedTaskQueue
     {
-        public static readonly int InstanceId;
-
-        private string key;
-        private TaskScheduler Scheduler { get; set; } = TaskScheduler.Default;
-
         public IServiceProvider ServiceProvider { get; set; }
-        public string Name { get { return key; }  set { key = value + GetType().Name; } }
-        private ICache Cache { get => DistributedTaskCacheNotify.Cache; }
-        private ConcurrentDictionary<string, CancellationTokenSource> Cancelations { get => DistributedTaskCacheNotify.Cancelations; }
-
+        public DistributedTaskCacheNotify DistributedTaskCacheNotify { get; set; }
+        public string Name
+        {
+            get => _name;
+            set => _name = value + GetType().Name;
+        }
         public int MaxThreadsCount
         {
-            set
-            {
-                Scheduler = value <= 0
+            set => Scheduler = value <= 0
                     ? TaskScheduler.Default
-                : new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, value).ConcurrentScheduler;
-            }
+                    : new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, value).ConcurrentScheduler;
         }
 
-        public DistributedTaskCacheNotify DistributedTaskCacheNotify { get; set; }
+        public static readonly int InstanceId;
 
-        static DistributedTaskQueue()
-        {
-            InstanceId = Process.GetCurrentProcess().Id;
-        }
+        private TaskScheduler Scheduler { get; set; } = TaskScheduler.Default;
+        private ICache Cache => DistributedTaskCacheNotify.Cache;
+        private ConcurrentDictionary<string, CancellationTokenSource> Cancelations =>
+            DistributedTaskCacheNotify.Cancelations;
+
+        private string _name;
+
+        static DistributedTaskQueue() => InstanceId = Process.GetCurrentProcess().Id;
 
 
-        public void QueueTask(DistributedTaskProgress taskProgress)
-        {
-            QueueTask((a, b) => taskProgress.RunJob(), taskProgress);
-        }
+        public void QueueTask(DistributedTaskProgress taskProgress) =>
+             QueueTask((a, b) => taskProgress.RunJob(), taskProgress);
 
         public void QueueTask(Action<DistributedTask, CancellationToken> action, DistributedTask distributedTask = null)
         {
-            if (distributedTask == null)
-            {
-                distributedTask = new DistributedTask();
-            }
+            if (distributedTask == null) distributedTask = new DistributedTask();
 
             distributedTask.InstanceId = InstanceId;
 
@@ -182,17 +163,16 @@ namespace ASC.Common.Threading
             Cancelations[distributedTask.Id] = cancelation;
 
             var task = new Task(() => { action(distributedTask, token); }, token, TaskCreationOptions.LongRunning);
-            task
-                .ConfigureAwait(false)
+            
+            task.ConfigureAwait(false)
                 .GetAwaiter()
                 .OnCompleted(() => OnCompleted(task, distributedTask.Id));
 
             distributedTask.Status = DistributedTaskStatus.Running;
 
             if (distributedTask.Publication == null)
-            {
                 distributedTask.Publication = GetPublication();
-            }
+
             distributedTask.PublishChanges();
 
             task.Start(Scheduler);
@@ -200,48 +180,46 @@ namespace ASC.Common.Threading
 
         public IEnumerable<DistributedTask> GetTasks()
         {
-            var tasks = Cache.HashGetAll<DistributedTaskCache>(key).Values.Select(r => new DistributedTask(r)).ToList();
+            var tasks = Cache.HashGetAll<DistributedTaskCache>(_name).Values.Select(r => new DistributedTask(r)).ToList();
+
             tasks.ForEach(t =>
             {
-                if (t.Publication == null)
-                {
-                    t.Publication = GetPublication();
-                }
+                if (t.Publication == null) t.Publication = GetPublication();
             });
+
             return tasks;
         }
 
         public IEnumerable<T> GetTasks<T>() where T : DistributedTask
         {
-            var tasks = Cache.HashGetAll<DistributedTaskCache>(key).Values.Select(r =>
+            var tasks = Cache.HashGetAll<DistributedTaskCache>(_name).Values.Select(r =>
             {
                 var result = ServiceProvider.GetService<T>();
                 result.DistributedTaskCache = r;
+
                 return result;
             }).ToList();
 
             tasks.ForEach(t =>
             {
-                if (t.Publication == null)
-                {
-                    t.Publication = GetPublication();
-                }
+                if (t.Publication == null) t.Publication = GetPublication();
             });
+
             return tasks;
         }
 
         public T GetTask<T>(string id) where T : DistributedTask
         {
-            var cache = Cache.HashGet<DistributedTaskCache>(key, id);
+            var cache = Cache.HashGet<DistributedTaskCache>(_name, id);
             if (cache != null)
             {
                 using var scope = ServiceProvider.CreateScope();
                 var task = scope.ServiceProvider.GetService<T>();
                 task.DistributedTaskCache = cache;
+
                 if (task != null && task.Publication == null)
-                {
                     task.Publication = GetPublication();
-                }
+
                 return task;
             }
 
@@ -250,35 +228,25 @@ namespace ASC.Common.Threading
 
         public DistributedTask GetTask(string id)
         {
-            var cache = Cache.HashGet<DistributedTaskCache>(key, id);
+            var cache = Cache.HashGet<DistributedTaskCache>(_name, id);
             if (cache != null)
             {
                 var task = new DistributedTask();
                 task.DistributedTaskCache = cache;
-                if (task != null && task.Publication == null)
-                {
-                    task.Publication = GetPublication();
-                }
+
+                if (task != null && task.Publication == null) task.Publication = GetPublication();
+
                 return task;
             }
 
             return null;
         }
 
-        public void SetTask(DistributedTask task)
-        {
-            DistributedTaskCacheNotify.SetTask(task);
-        }
+        public void SetTask(DistributedTask task) => DistributedTaskCacheNotify.SetTask(task);
 
-        public void RemoveTask(string id)
-        {
-            DistributedTaskCacheNotify.RemoveTask(id, key);
-        }
+        public void RemoveTask(string id) => DistributedTaskCacheNotify.RemoveTask(id, _name);
 
-        public void CancelTask(string id)
-        {
-            DistributedTaskCacheNotify.CancelTask(id);
-        }
+        public void CancelTask(string id) => DistributedTaskCacheNotify.CancelTask(id);
 
         private void OnCompleted(Task task, string id)
         {
@@ -287,14 +255,10 @@ namespace ASC.Common.Threading
             {
                 distributedTask.Status = DistributedTaskStatus.Completed;
                 distributedTask.Exception = task.Exception;
-                if (task.IsFaulted)
-                {
-                    distributedTask.Status = DistributedTaskStatus.Failted;
-                }
-                if (task.IsCanceled)
-                {
-                    distributedTask.Status = DistributedTaskStatus.Canceled;
-                }
+
+                if (task.IsFaulted) distributedTask.Status = DistributedTaskStatus.Failted;
+
+                if (task.IsCanceled) distributedTask.Status = DistributedTaskStatus.Canceled;
 
                 Cancelations.TryRemove(id, out _);
 
@@ -306,10 +270,8 @@ namespace ASC.Common.Threading
         {
             return (t) =>
             {
-                if (t.DistributedTaskCache != null)
-                {
-                    t.DistributedTaskCache.Key = key;
-                }
+                if (t.DistributedTaskCache != null) t.DistributedTaskCache.Key = _name;
+
                 DistributedTaskCacheNotify.SetTask(t);
             };
         }
@@ -324,10 +286,8 @@ namespace ASC.Common.Threading
             services.TryAdd<DistributedTaskQueue>();
 
             var type = typeof(T);
-            if (!type.IsAbstract)
-            {
-                services.TryAdd<T>();
-            }
+
+            if (!type.IsAbstract) services.TryAdd<T>();
 
             services.TryAddSingleton<IConfigureOptions<DistributedTaskQueue>, ConfigureDistributedTaskQueue>();
 

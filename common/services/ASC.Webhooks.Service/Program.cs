@@ -75,17 +75,17 @@ namespace ASC.Webhooks.Service
 
                     if (kafkaConfiguration != null)
                     {
-                        diHelper.TryAdd(typeof(IEventBus<>), typeof(KafkaCache<>));
+                        diHelper.TryAdd(typeof(IEventBus<>), typeof(EventBusKafka<>));
                     }
                     else if (redisConfiguration != null)
                     {
-                        diHelper.TryAdd(typeof(IEventBus<>), typeof(RedisCache<>));
+                        diHelper.TryAdd(typeof(IEventBus<>), typeof(EventBusRedis<>));
 
                         services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
                     }
                     else
                     {
-                        diHelper.TryAdd(typeof(IEventBus<>), typeof(MemoryCacheNotify<>));
+                        diHelper.TryAdd(typeof(IEventBus<>), typeof(EventBusMemoryCache<>));
                     }
 
                     diHelper.TryAdd<DbWorker>();

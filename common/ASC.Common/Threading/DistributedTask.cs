@@ -33,55 +33,27 @@ namespace ASC.Common.Threading
     public class DistributedTask
     {
         public Action<DistributedTask> Publication { get; set; }
-
-        protected internal DistributedTaskCache DistributedTaskCache { get; internal set; }
-
         public int InstanceId
         {
-            get
-            {
-                return DistributedTaskCache.InstanceId;
-            }
-            set
-            {
-                DistributedTaskCache.InstanceId = value;
-            }
+            get => DistributedTaskCache.InstanceId;
+            set => DistributedTaskCache.InstanceId = value;
         }
         public string Id
         {
-            get
-            {
-                return DistributedTaskCache.Id;
-            }
-            protected set
-            {
-                DistributedTaskCache.Id = value?.ToString() ?? "";
-            }
+            get => DistributedTaskCache.Id;
+            protected set => DistributedTaskCache.Id = value?.ToString() ?? "";
         }
-
         public DistributedTaskStatus Status
         {
-            get
-            {
-                return Enum.Parse<DistributedTaskStatus>(DistributedTaskCache.Status);
-            }
-            set
-            {
-                DistributedTaskCache.Status = value.ToString();
-            }
+            get => Enum.Parse<DistributedTaskStatus>(DistributedTaskCache.Status);
+            set => DistributedTaskCache.Status = value.ToString();
         }
-
         public Exception Exception
         {
-            get
-            {
-                return new Exception(DistributedTaskCache.Exception);
-            }
-            set
-            {
-                DistributedTaskCache.Exception = value?.ToString() ?? "";
-            }
+            get => new Exception(DistributedTaskCache.Exception);
+            set => DistributedTaskCache.Exception = value?.ToString() ?? "";
         }
+        protected internal DistributedTaskCache DistributedTaskCache { get; internal set; }
 
         public DistributedTask()
         {
@@ -90,10 +62,9 @@ namespace ASC.Common.Threading
                 Id = Guid.NewGuid().ToString()
             };
         }
-        public DistributedTask(DistributedTaskCache distributedTaskCache)
-        {
-            DistributedTaskCache = distributedTaskCache;
-        }
+
+        public DistributedTask(DistributedTaskCache distributedTaskCache) =>
+             DistributedTaskCache = distributedTaskCache;
 
 
         public T GetProperty<T>(string name)
@@ -114,23 +85,16 @@ namespace ASC.Common.Threading
             };
 
             var current = DistributedTaskCache.Props.SingleOrDefault(r => r.Key == name);
-            if (current != null)
-            {
-                DistributedTaskCache.Props.Remove(current);
-            }
 
-            if (value != null)
-            {
-                DistributedTaskCache.Props.Add(prop);
-            }
+            if (current != null) DistributedTaskCache.Props.Remove(current);
+
+            if (value != null) DistributedTaskCache.Props.Add(prop);
         }
 
         public void PublishChanges()
         {
-            if (Publication == null)
-            {
-                throw new InvalidOperationException("Publication not found.");
-            }
+            if (Publication == null) throw new InvalidOperationException("Publication not found.");
+
             Publication(this);
         }
     }

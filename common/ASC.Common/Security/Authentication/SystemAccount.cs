@@ -32,8 +32,6 @@ namespace ASC.Common.Security.Authentication
     public class SystemAccount : Account, ISystemAccount
     {
         public SystemAccount(Guid id, string name, bool authenticated)
-            : base(id, name, authenticated)
-        {
-        }
+            : base(id, name, authenticated) { }
     }
 }

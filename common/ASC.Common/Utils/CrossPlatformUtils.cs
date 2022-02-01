@@ -37,6 +37,7 @@ namespace ASC.Common.Utils
             var segments = new string[totalLength + 1];
             segments[0] = basePath;
             var i = 0;
+
             foreach (var split in splits)
             {
                 foreach (var value in split)
@@ -45,6 +46,7 @@ namespace ASC.Common.Utils
                     segments[i] = value;
                 }
             }
+
             return Path.Combine(segments);
         }
 

@@ -26,7 +26,5 @@
 
 namespace ASC.Common.Security.Authentication
 {
-    public interface ISystemAccount : IAccount
-    {
-    }
+    public interface ISystemAccount : IAccount { }
 }

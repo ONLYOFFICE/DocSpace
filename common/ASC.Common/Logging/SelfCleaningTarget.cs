@@ -44,6 +44,38 @@ namespace ASC.Common.Logging
 
         private static int? _cleanPeriod;
 
+        protected override void Write(IList<AsyncLogEventInfo> logEvents)
+        {
+            if (DateTime.UtcNow.Date > _lastCleanDate.Date)
+            {
+                _lastCleanDate = DateTime.UtcNow.Date;
+                Clean();
+            }
+
+            var buffer = new List<AsyncLogEventInfo>();
+
+            foreach (var logEvent in logEvents)
+            {
+                buffer.Add(logEvent);
+                if (buffer.Count < 10) continue;
+                base.Write(buffer);
+                buffer.Clear();
+            }
+
+            base.Write(buffer);
+        }
+
+        protected override void Write(LogEventInfo logEvent)
+        {
+            if (DateTime.UtcNow.Date > _lastCleanDate.Date)
+            {
+                _lastCleanDate = DateTime.UtcNow.Date;
+                Clean();
+            }
+
+            base.Write(logEvent);
+        }
+
         private static int GetCleanPeriod()
         {
             if (_cleanPeriod != null)
@@ -53,14 +85,12 @@ namespace ASC.Common.Logging
 
             const string key = "cleanPeriod";
 
-            if (NLog.LogManager.Configuration.Variables.Keys.Contains(key))
+            if (LogManager.Configuration.Variables.Keys.Contains(key))
             {
-                var variable = NLog.LogManager.Configuration.Variables[key];
+                var variable = LogManager.Configuration.Variables[key];
 
                 if (variable != null && !string.IsNullOrEmpty(variable.Text))
-                {
                     int.TryParse(variable.Text, out value);
-                }
             }
 
             _cleanPeriod = value;
@@ -115,38 +145,6 @@ namespace ASC.Common.Logging
                     LoggerName = "SelfCleaningTarget"
                 });
             }
-        }
-
-        protected override void Write(IList<AsyncLogEventInfo> logEvents)
-        {
-            if (DateTime.UtcNow.Date > _lastCleanDate.Date)
-            {
-                _lastCleanDate = DateTime.UtcNow.Date;
-                Clean();
-            }
-
-            var buffer = new List<AsyncLogEventInfo>();
-
-            foreach (var logEvent in logEvents)
-            {
-                buffer.Add(logEvent);
-                if (buffer.Count < 10) continue;
-                base.Write(buffer);
-                buffer.Clear();
-            }
-
-            base.Write(buffer);
-        }
-
-        protected override void Write(LogEventInfo logEvent)
-        {
-            if (DateTime.UtcNow.Date > _lastCleanDate.Date)
-            {
-                _lastCleanDate = DateTime.UtcNow.Date;
-                Clean();
-            }
-
-            base.Write(logEvent);
         }
     }
 }

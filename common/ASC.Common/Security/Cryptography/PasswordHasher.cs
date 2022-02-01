@@ -37,6 +37,10 @@ namespace ASC.Security.Cryptography
     [Singletone]
     public class PasswordHasher
     {
+        public int Size { get; private set; }
+        public int Iterations { get; private set; }
+        public string Salt { get; private set; }
+
         public PasswordHasher(IConfiguration configuration, MachinePseudoKeys machinePseudoKeys)
         {
             if (!int.TryParse(configuration["core:password:size"], out var size)) size = 256;
@@ -60,24 +64,6 @@ namespace ASC.Security.Cryptography
             }
         }
 
-        public int Size
-        {
-            get;
-            private set;
-        }
-
-        public int Iterations
-        {
-            get;
-            private set;
-        }
-
-        public string Salt
-        {
-            get;
-            private set;
-        }
-
         public string GetClientPassword(string password)
         {
             if (string.IsNullOrWhiteSpace(password)) password = Guid.NewGuid().ToString();
@@ -96,5 +82,4 @@ namespace ASC.Security.Cryptography
             return hash;
         }
     }
-
 }

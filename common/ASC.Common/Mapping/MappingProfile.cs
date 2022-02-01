@@ -33,10 +33,7 @@ namespace ASC.Common.Mapping
 {
     public class MappingProfile : Profile
     {
-        public MappingProfile()
-        {
-            Array.ForEach(AppDomain.CurrentDomain.GetAssemblies(), a => ApplyMappingsFromAssembly(a));
-        }
+        public MappingProfile() => Array.ForEach(AppDomain.CurrentDomain.GetAssemblies(), a => ApplyMappingsFromAssembly(a));
 
         private void ApplyMappingsFromAssembly(Assembly assembly)
         {
@@ -55,7 +52,6 @@ namespace ASC.Common.Mapping
                     ?? type.GetInterface("IMapFrom`1").GetMethod("Mapping");
 
                 methodInfo?.Invoke(instance, new object[] { this });
-
             }
         }
     }

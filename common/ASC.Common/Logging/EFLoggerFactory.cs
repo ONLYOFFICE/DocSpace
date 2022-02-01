@@ -9,13 +9,13 @@ namespace ASC.Common.Logging
     [Singletone]
     public class EFLoggerFactory : ILoggerFactory
     {
-        Lazy<ILogger> Logger { get; set; }
-        ILoggerProvider LoggerProvider { get; set; }
+        private readonly Lazy<ILogger> _logger;
+        private readonly ILoggerProvider _loggerProvider;
 
         public EFLoggerFactory(EFLoggerProvider loggerProvider)
         {
-            LoggerProvider = loggerProvider;
-            Logger = new Lazy<ILogger>(() => LoggerProvider.CreateLogger(""));
+            _loggerProvider = loggerProvider;
+            _logger = new Lazy<ILogger>(() => _loggerProvider.CreateLogger(""));
         }
 
         public void AddProvider(ILoggerProvider provider)
@@ -23,30 +23,19 @@ namespace ASC.Common.Logging
             //LoggerProvider = provider;
         }
 
-        public ILogger CreateLogger(string categoryName)
-        {
-            return Logger.Value;
-        }
+        public ILogger CreateLogger(string categoryName) => _logger.Value;
 
-        public void Dispose()
-        {
-        }
+        public void Dispose() { }
     }
 
     [Singletone]
     public class EFLoggerProvider : ILoggerProvider
     {
-        private IOptionsMonitor<ILog> Option { get; }
+        private readonly IOptionsMonitor<ILog> _option;
 
-        public EFLoggerProvider(IOptionsMonitor<ILog> option)
-        {
-            Option = option;
-        }
+        public EFLoggerProvider(IOptionsMonitor<ILog> option) => _option = option;
 
-        public ILogger CreateLogger(string categoryName)
-        {
-            return new EFLogger(Option.Get("ASC.SQL"));
-        }
+        public ILogger CreateLogger(string categoryName) => new EFLogger(_option.Get("ASC.SQL"));
 
         public void Dispose() { }
     }
@@ -55,12 +44,10 @@ namespace ASC.Common.Logging
     {
         public ILog CustomLogger { get; }
 
-        public EFLogger(ILog customLogger)
-        {
-            CustomLogger = customLogger;
-        }
+        public EFLogger(ILog customLogger) => CustomLogger = customLogger;
 
         public IDisposable BeginScope<TState>(TState state) { return null; }
+
         public bool IsEnabled(LogLevel logLevel)
         {
             return logLevel switch

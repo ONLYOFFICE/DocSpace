@@ -32,18 +32,12 @@ namespace ASC.Common.Security.Authorizing
     public class Action : IAction
     {
         public Guid ID { get; private set; }
-
         public string Name { get; private set; }
-
         public bool AdministratorAlwaysAllow { get; private set; }
-
         public bool Conjunction { get; private set; }
 
-
         public Action(Guid id, string name)
-            : this(id, name, true, true)
-        {
-        }
+            : this(id, name, true, true) { }
 
         public Action(Guid id, string name, bool administratorAlwaysAllow, bool conjunction)
         {
@@ -55,19 +49,10 @@ namespace ASC.Common.Security.Authorizing
             Conjunction = conjunction;
         }
 
-        public override int GetHashCode()
-        {
-            return ID.GetHashCode();
-        }
+        public override int GetHashCode() => ID.GetHashCode();
 
-        public override bool Equals(object obj)
-        {
-            return obj is Action a && a.ID == ID;
-        }
+        public override bool Equals(object obj) => obj is Action a && a.ID == ID;
 
-        public override string ToString()
-        {
-            return Name;
-        }
+        public override string ToString() => Name;
     }
 }

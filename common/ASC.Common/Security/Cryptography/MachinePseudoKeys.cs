@@ -39,31 +39,25 @@ namespace ASC.Security.Cryptography
     [Singletone]
     public class MachinePseudoKeys
     {
-        private readonly byte[] confkey = null;
+        private readonly byte[] _confKey = null;
 
         public MachinePseudoKeys(IConfiguration configuration)
         {
             var key = configuration["core:machinekey"];
-            if (string.IsNullOrEmpty(key))
-            {
-                key = configuration["asc:common.machinekey"];
-            }
-            if (!string.IsNullOrEmpty(key))
-            {
-                confkey = Encoding.UTF8.GetBytes(key);
-            }
+
+            if (string.IsNullOrEmpty(key)) key = configuration["asc:common.machinekey"];
+
+            if (!string.IsNullOrEmpty(key)) _confKey = Encoding.UTF8.GetBytes(key);
         }
 
 
         public byte[] GetMachineConstant()
         {
-            if (confkey != null)
-            {
-                return confkey;
-            }
+            if (_confKey != null) return _confKey;
 
             var path = typeof(MachinePseudoKeys).Assembly.Location;
             var fi = new FileInfo(path);
+
             return BitConverter.GetBytes(fi.CreationTime.ToOADate());
         }
 
@@ -74,6 +68,7 @@ namespace ASC.Security.Cryptography
             var rnd = new AscRandom(icnst);
             var buff = new byte[bytesCount];
             rnd.NextBytes(buff);
+
             return buff;
         }
     }

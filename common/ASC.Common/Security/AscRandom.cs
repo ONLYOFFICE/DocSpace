@@ -30,17 +30,15 @@ namespace ASC.Common.Security
 {
     public class AscRandom : Random
     {
-        private int inext;
-        private int inextp;
         private const int MBIG = int.MaxValue;
         private const int MSEED = 161803398;
         private const int MZ = 0;
+
+        private int inext;
+        private int inextp;
         private readonly int[] seeds;
 
-
-        public AscRandom() : this(Environment.TickCount)
-        {
-        }
+        public AscRandom() : this(Environment.TickCount) { }
 
         public AscRandom(int seed)
         {
@@ -49,38 +47,36 @@ namespace ASC.Common.Security
             var num2 = 161803398 - num4;
             seeds[^1] = num2;
             var num3 = 1;
+
             for (var i = 1; i < seeds.Length - 1; i++)
             {
                 var index = (21 * i) % (seeds.Length - 1);
                 seeds[index] = num3;
                 num3 = num2 - num3;
-                if (num3 < 0)
-                {
-                    num3 += int.MaxValue;
-                }
+
+                if (num3 < 0) num3 += int.MaxValue;
+
                 num2 = seeds[index];
             }
+
             for (var j = 1; j < 5; j++)
             {
                 for (var k = 1; k < seeds.Length; k++)
                 {
                     seeds[k] -= seeds[1 + ((k + 30) % (seeds.Length - 1))];
-                    if (seeds[k] < 0)
-                    {
-                        seeds[k] += int.MaxValue;
-                    }
+
+                    if (seeds[k] < 0) seeds[k] += int.MaxValue;
                 }
             }
+
             inext = 0;
             inextp = 21;
         }
 
         public override int Next(int maxValue)
         {
-            if (maxValue < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(maxValue));
-            }
+            if (maxValue < 0) throw new ArgumentOutOfRangeException(nameof(maxValue));
+
             return (int)(InternalSample() * 4.6566128752457969E-10 * maxValue);
         }
 
@@ -98,26 +94,21 @@ namespace ASC.Common.Security
         {
             var inext = this.inext;
             var inextp = this.inextp;
-            if (++inext >= seeds.Length - 1)
-            {
-                inext = 1;
-            }
-            if (++inextp >= seeds.Length - 1)
-            {
-                inextp = 1;
-            }
+
+            if (++inext >= seeds.Length - 1) inext = 1;
+
+            if (++inextp >= seeds.Length - 1) inextp = 1;
+
             var num = seeds[inext] - seeds[inextp];
-            if (num == int.MaxValue)
-            {
-                num--;
-            }
-            if (num < 0)
-            {
-                num += int.MaxValue;
-            }
+
+            if (num == int.MaxValue) num--;
+
+            if (num < 0) num += int.MaxValue;
+
             seeds[inext] = num;
             this.inext = inext;
             this.inextp = inextp;
+
             return num;
         }
     }

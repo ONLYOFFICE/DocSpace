@@ -42,14 +42,12 @@ namespace ASC.Common.Utils
         public static string GetText(string html, int maxLength = 0, string endBlockTemplate = "...")
         {
             var unformatedText = string.Empty;
+
             if (!string.IsNullOrEmpty(html))
             {
                 html = xssReplacer.Replace(html, string.Empty); //Clean malicious tags. <script> <style>
 
-                if (string.IsNullOrEmpty(html))
-                {
-                    return html;
-                }
+                if (string.IsNullOrEmpty(html)) return html;
 
                 unformatedText = tagReplacer.Replace(html, string.Empty);
 
@@ -62,9 +60,7 @@ namespace ASC.Common.Utils
                     if (!string.IsNullOrEmpty(unformatedText))
                     {
                         if (maxLength == 0 || unformatedText.Length < maxLength)
-                        {
                             return HttpUtility.HtmlDecode(unformatedText);
-                        }
 
                         //Set maximum length with end block
                         maxLength = Math.Max(0, maxLength - endBlockTemplate.Length);
@@ -76,20 +72,17 @@ namespace ASC.Common.Utils
                         unformatedText = lastSpaceIndex > 0 && lastSpaceIndex < unformatedText.Length
                                              ? unformatedText.Remove(lastSpaceIndex)
                                              : unformatedText.Substring(0, maxLength);
+
                         if (!string.IsNullOrEmpty(endBlockTemplate))
-                        {
                             unformatedText += endBlockTemplate;
-                        }
                     }
                 }
             }
+
             return HttpUtility.HtmlDecode(unformatedText);//TODO:!!!
         }
 
-        public static string ToPlainText(string html)
-        {
-            return GetText(html);
-        }
+        public static string ToPlainText(string html) => GetText(html);
 
         /// <summary>
         /// The function highlight all words in htmlText by searchText.
@@ -104,6 +97,7 @@ namespace ASC.Common.Utils
 
             var regexpstr = Worder.Matches(searchText).Cast<Match>().Select(m => m.Value).Distinct().Aggregate((r, n) => r + "|" + n);
             var wordsFinder = new Regex(Regex.Escape(regexpstr), RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Multiline);
+
             return wordsFinder.Replace(htmlText, m => string.Format("<span class='searchTextHighlight{1}'>{0}</span>", m.Value, withoutLink ? " bold" : string.Empty));
         }
     }

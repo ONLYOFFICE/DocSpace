@@ -110,17 +110,17 @@ namespace ASC.Api.Core
 
             if (kafkaConfiguration != null)
             {
-                DIHelper.TryAdd(typeof(IEventBus<>), typeof(KafkaCache<>));
+                DIHelper.TryAdd(typeof(IEventBus<>), typeof(EventBusKafka<>));
             }
             else if (redisConfiguration != null)
             {
-                DIHelper.TryAdd(typeof(IEventBus<>), typeof(RedisCache<>));
+                DIHelper.TryAdd(typeof(IEventBus<>), typeof(EventBusRedis<>));
 
                 services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
             }
             else
             {
-                DIHelper.TryAdd(typeof(IEventBus<>), typeof(MemoryCacheNotify<>));
+                DIHelper.TryAdd(typeof(IEventBus<>), typeof(EventBusMemoryCache<>));
             }
 
 

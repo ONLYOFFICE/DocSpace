@@ -25,14 +25,11 @@ using StackExchange.Redis.Extensions.Core.Abstractions;
 namespace ASC.Common.Caching;
 
 [Singletone]
-public class RedisCache<T> : IEventBus<T> where T : IMessage<T>, new()
+public class EventBusRedis<T> : IEventBus<T> where T : IMessage<T>, new()
 {
     private readonly IRedisDatabase _redis;
 
-    public RedisCache(IRedisCacheClient redisCacheClient)
-    {
-        _redis = redisCacheClient.GetDbFromConfiguration();
-    }
+    public EventBusRedis(IRedisCacheClient redisCacheClient) => _redis = redisCacheClient.GetDbFromConfiguration();
 
     public void Publish(T obj, EventType action)
     {
@@ -61,10 +58,7 @@ public class RedisCache<T> : IEventBus<T> where T : IMessage<T>, new()
           .GetResult();
     }
 
-    private string GetChannelName(EventType cacheNotifyAction)
-    {
-        return $"asc:channel:{cacheNotifyAction}:{typeof(T).FullName}".ToLower();
-    }
+    private string GetChannelName(EventType cacheNotifyAction) => $"asc:channel:{cacheNotifyAction}:{typeof(T).FullName}".ToLower();
 
     class RedisCachePubSubItem<T0>
     {
@@ -73,6 +67,3 @@ public class RedisCache<T> : IEventBus<T> where T : IMessage<T>, new()
         public EventType Action { get; set; }
     }
 }
-
-
-

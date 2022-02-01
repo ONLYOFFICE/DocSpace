@@ -7,60 +7,35 @@ namespace ASC.Common.Threading
     {
         public double Percentage
         {
-            get
-            {
-                return Math.Min(100.0, Math.Max(0, DistributedTaskCache.Percentage));
-            }
-            set
-            {
-                DistributedTaskCache.Percentage = value;
-            }
+            get => Math.Min(100.0, Math.Max(0, DistributedTaskCache.Percentage));
+            set => DistributedTaskCache.Percentage = value;
         }
-
         public bool IsCompleted
         {
-            get
-            {
-                return DistributedTaskCache.IsCompleted;
-            }
-            set
-            {
-                DistributedTaskCache.IsCompleted = value;
-            }
+            get => DistributedTaskCache.IsCompleted;
+            set => DistributedTaskCache.IsCompleted = value;
         }
-
         protected int StepCount
         {
-            get
-            {
-                return DistributedTaskCache.StepCount;
-            }
-            set
-            {
-                DistributedTaskCache.StepCount = value;
-            }
-        }
-
-        protected void StepDone()
-        {
-            if (StepCount > 0)
-            {
-                Percentage += 100.0 / StepCount;
-            }
-
-            PublishChanges();
+            get => DistributedTaskCache.StepCount;
+            set => DistributedTaskCache.StepCount = value;
         }
 
         public void RunJob()
         {
             Percentage = 0;
             Status = DistributedTaskStatus.Running;
+
             DoJob();
         }
 
-        protected virtual void DoJob()
-        {
+        protected virtual void DoJob() { }
 
-        }
+        protected void StepDone()
+        {
+            if (StepCount > 0) Percentage += 100.0 / StepCount;
+
+            PublishChanges();
+        } 
     }
 }

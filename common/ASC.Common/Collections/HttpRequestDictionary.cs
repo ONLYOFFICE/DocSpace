@@ -29,69 +29,53 @@ namespace ASC.Collections
 {
     public sealed class HttpRequestDictionary<T> : CachedDictionaryBase<T>
     {
-        private class CachedItem
-        {
-            internal T Value { get; set; }
-
-            internal CachedItem(T value)
-            {
-                Value = value;
-            }
-        }
-
-        HttpContext HttpContext { get; set; }
+        private readonly HttpContext _httpContext;
 
         public HttpRequestDictionary(HttpContext httpContext, string baseKey)
         {
             condition = (T) => true;
             this.baseKey = baseKey;
-            HttpContext = httpContext;
+            _httpContext = httpContext;
         }
+
+        public override void Reset(string rootKey, string key)
+        {
+            if (_httpContext != null)
+            {
+                var builtkey = BuildKey(key, rootKey);
+                _httpContext.Items[builtkey] = null;
+            }
+        }
+
+        public override void Add(string rootkey, string key, T newValue)
+        {
+            if (_httpContext != null)
+            {
+                var builtkey = BuildKey(key, rootkey);
+                _httpContext.Items[builtkey] = new CachedItem(newValue);
+            }
+        }
+
+        protected override object GetObjectFromCache(string fullKey) => _httpContext?.Items[fullKey];
+
+        protected override bool FitsCondition(object cached) => cached is CachedItem;
+
+        protected override T ReturnCached(object objectCache) => ((CachedItem)objectCache).Value;
+
+        protected override void OnHit(string fullKey) { }
+
+        protected override void OnMiss(string fullKey) { }
 
         protected override void InsertRootKey(string rootKey)
         {
             //We can't expire in HtppContext in such way
         }
 
-        public override void Reset(string rootKey, string key)
+        private class CachedItem
         {
-            if (HttpContext != null)
-            {
-                var builtkey = BuildKey(key, rootKey);
-                HttpContext.Items[builtkey] = null;
-            }
-        }
+            internal T Value { get; set; }
 
-        public override void Add(string rootkey, string key, T newValue)
-        {
-            if (HttpContext != null)
-            {
-                var builtkey = BuildKey(key, rootkey);
-                HttpContext.Items[builtkey] = new CachedItem(newValue);
-            }
+            internal CachedItem(T value) => Value = value;
         }
-
-        protected override object GetObjectFromCache(string fullKey)
-        {
-            return HttpContext?.Items[fullKey];
-        }
-
-        protected override bool FitsCondition(object cached)
-        {
-            return cached is CachedItem;
-        }
-        protected override T ReturnCached(object objectCache)
-        {
-            return ((CachedItem)objectCache).Value;
-        }
-
-        protected override void OnHit(string fullKey)
-        {
-        }
-
-        protected override void OnMiss(string fullKey)
-        {
-        }
-
     }
 }

@@ -35,51 +35,53 @@ namespace ASC.Common.Security.Authorizing
 {
     public class AzObjectSecurityProviderHelper
     {
-        private readonly SecurityCallContext callContext;
-        private readonly bool currObjIdAsProvider;
-        private ISecurityObjectProvider currSecObjProvider;
+        public ISecurityObjectId CurrentObjectId { get; private set; }
+        public bool ObjectRolesSupported => _currSecObjProvider != null && _currSecObjProvider.ObjectRolesSupported;
+
+        private readonly SecurityCallContext _callContext;
+        private readonly bool _currObjIdAsProvider;
+        private ISecurityObjectProvider _currSecObjProvider;
 
         public AzObjectSecurityProviderHelper(ISecurityObjectId objectId, ISecurityObjectProvider secObjProvider)
         {
-            currObjIdAsProvider = false;
+            _currObjIdAsProvider = false;
             CurrentObjectId = objectId ?? throw new ArgumentNullException(nameof(objectId));
-            currSecObjProvider = secObjProvider;
-            if (currSecObjProvider == null && CurrentObjectId is ISecurityObjectProvider securityObjectProvider)
+            _currSecObjProvider = secObjProvider;
+
+            if (_currSecObjProvider == null && CurrentObjectId is ISecurityObjectProvider securityObjectProvider)
             {
-                currObjIdAsProvider = true;
-                currSecObjProvider = securityObjectProvider;
+                _currObjIdAsProvider = true;
+                _currSecObjProvider = securityObjectProvider;
             }
-            callContext = new SecurityCallContext();
-        }
 
-        public ISecurityObjectId CurrentObjectId { get; private set; }
-
-        public bool ObjectRolesSupported
-        {
-            get { return currSecObjProvider != null && currSecObjProvider.ObjectRolesSupported; }
+            _callContext = new SecurityCallContext();
         }
 
         public IEnumerable<IRole> GetObjectRoles(ISubject account)
         {
-            var roles = currSecObjProvider.GetObjectRoles(account, CurrentObjectId, callContext);
+            var roles = _currSecObjProvider.GetObjectRoles(account, CurrentObjectId, _callContext);
+
             foreach (var role in roles)
             {
-                if (!callContext.RolesList.Contains(role)) callContext.RolesList.Add(role);
+                if (!_callContext.RolesList.Contains(role)) _callContext.RolesList.Add(role);
             }
+
             return roles;
         }
 
         public bool NextInherit()
         {
-            if (currSecObjProvider == null || !currSecObjProvider.InheritSupported) return false;
-            CurrentObjectId = currSecObjProvider.InheritFrom(CurrentObjectId);
+            if (_currSecObjProvider == null || !_currSecObjProvider.InheritSupported) return false;
+
+            CurrentObjectId = _currSecObjProvider.InheritFrom(CurrentObjectId);
+
             if (CurrentObjectId == null) return false;
-            if (currObjIdAsProvider)
-            {
-                currSecObjProvider = CurrentObjectId as ISecurityObjectProvider;
-            }
-            callContext.ObjectsStack.Insert(0, CurrentObjectId);
-            return currSecObjProvider != null;
+
+            if (_currObjIdAsProvider) _currSecObjProvider = CurrentObjectId as ISecurityObjectProvider;
+
+            _callContext.ObjectsStack.Insert(0, CurrentObjectId);
+
+            return _currSecObjProvider != null;
         }
     }
 }

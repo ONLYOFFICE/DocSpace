@@ -42,20 +42,12 @@ namespace ASC.Common.Utils
             //nothing to configure
         }
 
-        public override Stream GetResourceStream(string source)
-        {
-            return new MemoryStream(Encoding.UTF8.GetBytes(source));
-        }
+        public override Stream GetResourceStream(string source) =>
+            new MemoryStream(Encoding.UTF8.GetBytes(source));
 
-        public override long GetLastModified(NVelocity.Runtime.Resource.Resource resource)
-        {
-            return 1;
-        }
+        public override long GetLastModified(NVelocity.Runtime.Resource.Resource resource) => 1;
 
-        public override bool IsSourceModified(NVelocity.Runtime.Resource.Resource resource)
-        {
-            return false;
-        }
+        public override bool IsSourceModified(NVelocity.Runtime.Resource.Resource resource) => false;
     }
 
     public class VelocityFormatter
@@ -66,8 +58,10 @@ namespace ASC.Common.Utils
         public static string FormatText(string templateText, IDictionary<string, object> values)
         {
             var nvelocityContext = new VelocityContext();
+
             foreach (var tagValue in values)
                 nvelocityContext.Put(tagValue.Key, tagValue.Value);
+
             return FormatText(templateText, nvelocityContext);
         }
 
@@ -86,12 +80,15 @@ namespace ASC.Common.Utils
 
             using var writer = new StringWriter();
             var key = templateText.GetHashCode().ToString();
+
             if (!patterns.TryGetValue(key, out var template))
             {
                 template = Velocity.GetTemplate(templateText);
                 patterns.TryAdd(key, template);
             }
+
             template.Merge(context, writer);
+
             return writer.GetStringBuilder().ToString();
         }
     }
