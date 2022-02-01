@@ -200,17 +200,17 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   const showSnackBar = (campaign) => {
     clearSnackBarTimer();
 
+    let skipMaintenance;
+
     const { fromDate, toDate, desktop } = campaign;
 
     console.log(
       `FB: 'bar/maintenance' desktop=${desktop} fromDate=${fromDate} toDate=${toDate}`
     );
 
-    setCheckedMaintenance(true);
-
     if (!campaign || !fromDate || !toDate) {
       console.log("Skip snackBar by empty campaign params");
-      return;
+      skipMaintenance = true;
     }
 
     const to = moment(toDate).local();
@@ -220,7 +220,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     const campaignDateStr = to.format(DATE_FORMAT);
     if (campaignDateStr == watchedCampaignDateStr) {
       console.log("Skip snackBar by already watched");
-      return;
+      skipMaintenance = true;
     }
 
     const from = moment(fromDate).local();
@@ -231,18 +231,23 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
       Snackbar.close();
       console.log(`Show snackBar has been delayed for 1 minute`, now);
-      return;
+      skipMaintenance = true;
     }
 
     if (now.isAfter(to)) {
       console.log("Skip snackBar by current date", now);
       Snackbar.close();
-      return;
+      skipMaintenance = true;
     }
 
     if (isDesktop && !desktop) {
       console.log("Skip snackBar by desktop", desktop);
       Snackbar.close();
+      skipMaintenance = true;
+    }
+
+    if (skipMaintenance) {
+      setCheckedMaintenance(true);
       return;
     }
 
@@ -263,11 +268,9 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
     const targetDate = to.locale(language).format("LL");
 
-    if (document.getElementById("bar-banner")) {
-      document.getElementById("main-bar").removeChild();
-    }
     const barConfig = {
       parentElementId: "main-bar",
+      headerText: "Atention",
       text: `${t("BarMaintenanceDescription", {
         targetDate: targetDate,
         productName: "ONLYOFFICE Personal",
@@ -278,13 +281,13 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         localStorage.setItem(LS_CAMPAIGN_DATE, to.format(DATE_FORMAT));
       },
       opacity: 1,
-      style: {
-        height: "60px",
+      onLoad: () => {
+        setCheckedMaintenance(true);
+        setMaintenanceExist(true);
       },
     };
 
     Snackbar.show(barConfig);
-    setMaintenanceExist(true);
   };
 
   const fetchMaintenance = () => {
