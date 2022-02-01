@@ -174,6 +174,7 @@ const PureThirdPartyListContainer = ({
             capability={googleConnectItem}
             src="images/services/google_drive.svg"
             onClick={onConnect}
+            title={t("ButtonAddGoogle")}
           />
         )}
         {boxConnectItem && (
@@ -181,6 +182,7 @@ const PureThirdPartyListContainer = ({
             capability={boxConnectItem}
             src="images/services/box.svg"
             onClick={onConnect}
+            title={t("ButtonAddBoxNet")}
           />
         )}
         {dropboxConnectItem && (
@@ -188,6 +190,7 @@ const PureThirdPartyListContainer = ({
             capability={dropboxConnectItem}
             src="images/services/dropbox.svg"
             onClick={onConnect}
+            title={t("ButtonAddDropBox")}
           />
         )}
         {oneDriveConnectItem && (
@@ -195,6 +198,7 @@ const PureThirdPartyListContainer = ({
             capability={oneDriveConnectItem}
             src="images/services/onedrive.svg"
             onClick={onConnect}
+            title={t("ButtonAddSkyDrive")}
           />
         )}
         {nextCloudConnectItem && (
@@ -202,6 +206,7 @@ const PureThirdPartyListContainer = ({
             capability={nextCloudConnectItem}
             src="images/services/nextcloud.svg"
             onClick={onConnect}
+            title={t("ButtonAddNextcloud")}
           />
         )}
         {/* {webDavConnectItem && (
@@ -215,6 +220,7 @@ const PureThirdPartyListContainer = ({
         <IconButton
           iconName="images/services/more.svg"
           onClick={onShowConnectPanel}
+          title={t("Translations:AddAccount")}
           {...iconButtonProps}
         />
       </div>

@@ -50,11 +50,11 @@ namespace ASC.Files.ThumbnailBuilder
         private readonly ILog logger;
         private IServiceProvider ServiceProvider { get; }
 
-        public BuilderQueue(IServiceProvider serviceProvider, IOptionsMonitor<ILog> log, ASC.Common.Utils.ConfigurationExtension configurationExtension)
+        public BuilderQueue(IServiceProvider serviceProvider, IOptionsMonitor<ILog> log, ThumbnailSettings settings)
         {
             logger = log.Get("ASC.Files.ThumbnailBuilder");
             ServiceProvider = serviceProvider;
-            config = ThumbnailSettings.GetInstance(configurationExtension);
+            config = settings;
         }
 
         public void BuildThumbnails(IEnumerable<FileData<T>> filesWithoutThumbnails)
@@ -96,7 +96,7 @@ namespace ASC.Files.ThumbnailBuilder
         private PathProvider PathProvider { get; }
 
         public Builder(
-            Common.Utils.ConfigurationExtension configurationExtension,
+            ThumbnailSettings settings,
             TenantManager tenantManager,
             IDaoFactory daoFactory,
             DocumentServiceConnector documentServiceConnector,
@@ -105,7 +105,7 @@ namespace ASC.Files.ThumbnailBuilder
             PathProvider pathProvider,
             IOptionsMonitor<ILog> log)
         {
-            this.config = ThumbnailSettings.GetInstance(configurationExtension);
+            this.config = settings;
             TenantManager = tenantManager;
             DaoFactory = daoFactory;
             DocumentServiceConnector = documentServiceConnector;
@@ -263,14 +263,14 @@ namespace ASC.Files.ThumbnailBuilder
                 FitToWidth = 1,
                 Headings = false,
                 GridLines = false,
-                Margins = new DocumentService.Margins
+                Margins = new DocumentService.SpreadsheetLayout.LayoutMargins
                 {
                     Top = "0mm",
                     Right = "0mm",
                     Bottom = "0mm",
                     Left = "0mm"
                 },
-                PageSize = new DocumentService.PageSize
+                PageSize = new DocumentService.SpreadsheetLayout.LayoutPageSize
                 {
                     Width = (config.ThumbnaillWidth * 1.5) + "mm", // 192 * 1.5 = "288mm",
                     Height = (config.ThumbnaillHeight * 1.5) + "mm" // 128 * 1.5 = "192mm"

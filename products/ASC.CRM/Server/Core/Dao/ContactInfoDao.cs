@@ -54,7 +54,6 @@ namespace ASC.CRM.Core.Dao
 
         public ContactInfoDao(
              DbContextManager<CrmDbContext> dbContextManager,
-             DbContextManager<TenantDbContext> dbContextManager1,
              TenantManager tenantManager,
              SecurityContext securityContext,
              TenantUtil tenantUtil,
@@ -63,7 +62,6 @@ namespace ASC.CRM.Core.Dao
              FactoryIndexerContactInfo factoryIndexerContactInfo,
              IMapper mapper)
            : base(dbContextManager,
-                 dbContextManager1,
                  tenantManager,
                  securityContext,
                  logger,

@@ -1,4 +1,4 @@
-{
+﻿{
   "AddMembers": "Adăugați membrii",
   "Birthdate": "Data de naștere",
   "Comments": "Comentarii",
@@ -14,6 +14,7 @@
   "Location": "Locația",
   "MaleSexStatus": "Masculin",
   "maxSizeFileError": "Fişierul depăşeşte limita maximă de dimensiune",
+  "MaxSizeLabel": "((JPG sau PNG, max 1 MB))",
   "NotBeUndone": "Remarcă: această acțiune nu poate fi anulată.",
   "orDropFileHereLabel": "sau plasați fișierul aici",
   "PasswordChangeButton": "Schimbare parola",

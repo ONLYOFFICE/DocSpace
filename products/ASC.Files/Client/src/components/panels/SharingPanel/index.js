@@ -585,7 +585,7 @@ class SharingPanelComponent extends React.Component {
         />
         <Aside className="header_aside-panel" visible={visible}>
           <StyledContent isDisabled={isLoading}>
-            <StyledHeaderContent>
+            <StyledHeaderContent className="sharing_panel-header-container">
               {uploadPanelVisible && (
                 <IconButton
                   size="16"

@@ -1,4 +1,4 @@
-{
+﻿{
   "AddMembers": "Ajouter des membres",
   "Birthdate": "Date de naissance",
   "Comments": "Commentaires",
@@ -14,6 +14,7 @@
   "Location": "Emplacement",
   "MaleSexStatus": "Homme",
   "maxSizeFileError": "La taille maximale du fichier est dépassée",
+  "MaxSizeLabel": "(JPG ou PNG, max 1 MB)",
   "NotBeUndone": "Attention : cette action ne peut pas être annulée.",
   "orDropFileHereLabel": "ou déposez un fichier ici",
   "PasswordChangeButton": "Modifier le mot de passe",

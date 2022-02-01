@@ -263,6 +263,7 @@ class AvatarEditorBody extends React.Component {
   onSaveImage() {
     var img = new Image();
     var _this = this;
+    img.crossOrigin = "Anonymous";
     img.src = this.state.image;
     if (!this.state.image) _this.props.onLoadFile(null);
     img.onload = () => {
@@ -307,10 +308,19 @@ class AvatarEditorBody extends React.Component {
   };
 
   renderLinkContainer = () => {
-    const { selectNewPhotoLabel, orDropFileHereLabel } = this.props;
+    const {
+      selectNewPhotoLabel,
+      orDropFileHereLabel,
+      maxSizeLabel,
+    } = this.props;
+    const { image } = this.state;
+
     const desktopMode = isDesktop();
+    const labelAlign = image === "" ? "center" : "left";
+
+    //console.log("maxSizeLabel", maxSizeLabel);
     return (
-      <Text as="span">
+      <Text as="span" textAlign={!desktopMode ? labelAlign : "left"}>
         <Link
           type="action"
           fontWeight={600}
@@ -321,6 +331,15 @@ class AvatarEditorBody extends React.Component {
           {selectNewPhotoLabel}
         </Link>{" "}
         {desktopMode && orDropFileHereLabel}
+        <Text
+          as="p"
+          color="#A3A9AE"
+          fontSize="12px"
+          fontWeight="600"
+          textAlign={labelAlign}
+        >
+          {maxSizeLabel}
+        </Text>
       </Text>
     );
   };
@@ -463,14 +482,6 @@ class AvatarEditorBody extends React.Component {
                           >
                             {title}
                           </Text>
-                          <ContextMenuButton
-                            isFill
-                            color="#A3A9AE"
-                            hoverColor="#657077"
-                            directionX="right"
-                            getData={() => []}
-                            isDisabled={true}
-                          />
                         </Box>
                       </Box>
                     )}
@@ -483,6 +494,7 @@ class AvatarEditorBody extends React.Component {
             </DropZoneContainer>
           )}
         </Dropzone>
+
         <StyledErrorContainer key="errorMsg">
           {this.state.errorText !== null && (
             <Text as="p" color="#C96C27" isBold={true}>
@@ -514,6 +526,7 @@ AvatarEditorBody.propTypes = {
   role: PropTypes.string,
   title: PropTypes.string,
   useModalDialog: PropTypes.bool,
+  maxSizeLabel: PropTypes.string,
 };
 
 AvatarEditorBody.defaultProps = {

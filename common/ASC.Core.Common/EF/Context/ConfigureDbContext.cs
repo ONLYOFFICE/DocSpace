@@ -15,18 +15,20 @@ namespace ASC.Core.Common.EF
         public const string baseName = "default";
         private EFLoggerFactory LoggerFactory { get; }
         private ConfigurationExtension Configuration { get; }
+        private string MigrateAssembly { get; }
 
         public ConfigureDbContext(EFLoggerFactory loggerFactory, ConfigurationExtension configuration)
         {
             LoggerFactory = loggerFactory;
             Configuration = configuration;
+            MigrateAssembly = Configuration["testAssembly"];
         }
 
         public void Configure(string name, T context)
         {
             context.LoggerFactory = LoggerFactory;
             context.ConnectionStringSettings = Configuration.GetConnectionStrings(name) ?? Configuration.GetConnectionStrings(baseName);
-            context.MigrateAssembly = Configuration["testAssembly"];
+            context.MigrateAssembly = MigrateAssembly;
         }
 
         public void Configure(T context)

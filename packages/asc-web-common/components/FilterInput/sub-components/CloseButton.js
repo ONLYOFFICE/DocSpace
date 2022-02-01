@@ -5,7 +5,7 @@ import IconButton from "@appserver/components/icon-button";
 
 const CloseButton = (props) => {
   //console.log("CloseButton render");
-  const { className, isDisabled, onClick } = props;
+  const { className, isDisabled, onClick, isClickable } = props;
   return (
     <div className={`styled-close-button ${className}`}>
       <IconButton
@@ -17,6 +17,7 @@ const CloseButton = (props) => {
         isFill={true}
         isDisabled={isDisabled}
         onClick={!isDisabled ? onClick : undefined}
+        isClickable={isClickable}
       />
     </div>
   );

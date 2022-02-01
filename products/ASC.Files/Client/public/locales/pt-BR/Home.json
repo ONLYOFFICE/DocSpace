@@ -1,4 +1,4 @@
-{
+﻿{
   "All": "Todos",
   "AllFiles": "Todos os arquivos",
   "Archives": "Arquivos",
@@ -12,7 +12,6 @@
   "Convert": "Converter",
   "CopyItem": "<strong>{{title}}</strong> copiado",
   "CopyItems": "<strong>{{qty}}</strong> elementos copiados",
-  "CreateWithEmptyTitle": "Não é possível criar uma pasta ou arquivo com um título vazio",
   "Document": "Documento",
   "Duplicate": "Criar uma cópia",
   "EmptyFile": "Arquivo vazio",
@@ -42,6 +41,7 @@
   "New": "Novo",
   "NewDocument": "Novo Documento",
   "NewFolder": "Nova pasta",
+  "NewMasterForm": "Novo modelo de formulário",
   "NewPresentation": "Nova apresentação",
   "NewSpreadsheet": "Nova planilha",
   "NoSubfolders": "Nenhuma subpasta",
@@ -67,11 +67,8 @@
   "ShowVersionHistory": "Exibir histórico de versão",
   "Spreadsheet": "Planilha",
   "SubheadingEmptyText": "Não há arquivos a serem exibidos nesta seção",
-  "TitleCreated": "Criado",
   "TitleDocuments": "Arquivos",
-  "TitleModified": "Atualizado",
   "TitleSubfolders": "Pasta",
-  "TitleUploaded": "Carregado",
   "TooltipElementCopyMessage": "Cópia {{element}}",
   "TooltipElementsCopyMessage": "Cópia {{element}} elementos",
   "TooltipElementsMoveMessage": "Mover {{element}} elementos",

@@ -1,4 +1,4 @@
-{
+﻿{
   "ChangePasswordSuccess": "Contraseña se ha cambiado con éxito",
   "ConfirmOwnerPortalSuccessMessage": "El propietario del portal ha sido cambiado correctamente. Dentro de 10 segundos será redirigido",
   "ConfirmOwnerPortalTitle": "Por favor, confirme que desea cambiar el propietario del portal a {{newOwner}}",
@@ -11,7 +11,7 @@
   "EnterAppCodeDescription": "Introduzca el código de 6 dígitos generado desde su aplicación. Si no tiene acceso a su teléfono, utilice los códigos de reserva.",
   "EnterAppCodeTitle": "Introduzca el código de la aplicación de autenticación",
   "EnterCodePlaceholder": "Introduzca el código",
-  "FirstName": "Nombre ",
+  "FirstName": "Nombre",
   "InviteTitle": "¡Usted está invitado/a a unirse a este portal!",
   "LoginRegistryButton": "Unirse",
   "LoginWithAccount": "o iniciar sesión con:",
