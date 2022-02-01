@@ -16,7 +16,7 @@ using Microsoft.Extensions.Options;
 namespace ASC.Common.Caching
 {
     [Singletone]
-    public class KafkaCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<T>, new()
+    public class KafkaCache<T> : IDisposable, IEventBus<T> where T : IMessage<T>, new()
     {
         private ClientConfig ClientConfig { get; set; }
         private AdminClientConfig AdminClientConfig { get; set; }
@@ -43,7 +43,7 @@ namespace ASC.Common.Caching
             AdminClientConfig = new AdminClientConfig { BootstrapServers = settings.BootstrapServers };
         }
 
-        public void Publish(T obj, CacheNotifyAction cacheNotifyAction)
+        public void Publish(T obj, EventType cacheNotifyAction)
         {
             try
             {
@@ -84,7 +84,7 @@ namespace ASC.Common.Caching
             }
         }
 
-        public void Subscribe(Action<T> onchange, CacheNotifyAction cacheNotifyAction)
+        public void Subscribe(Action<T> onchange, EventType cacheNotifyAction)
         {
             var channelName = GetChannelName(cacheNotifyAction);
 
@@ -167,12 +167,12 @@ namespace ASC.Common.Caching
             task.Start();
         }
 
-        private string GetChannelName(CacheNotifyAction cacheNotifyAction)
+        private string GetChannelName(EventType cacheNotifyAction)
         {
             return $"ascchannel{cacheNotifyAction}{typeof(T).FullName}".ToLower();
         }
 
-        public void Unsubscribe(CacheNotifyAction action)
+        public void Unsubscribe(EventType action)
         {
             Cts.TryGetValue(GetChannelName(action), out var source);
             if (source != null)

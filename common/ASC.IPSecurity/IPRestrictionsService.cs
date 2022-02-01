@@ -38,12 +38,12 @@ namespace ASC.IPSecurity
         private const string cacheKey = "iprestrictions";
         public ICache Cache { get; set; }
 
-        internal ICacheNotify<IPRestrictionItem> Notify { get; }
+        internal IEventBus<IPRestrictionItem> Notify { get; }
 
-        public IPRestrictionsServiceCache(ICacheNotify<IPRestrictionItem> notify, ICache cache)
+        public IPRestrictionsServiceCache(IEventBus<IPRestrictionItem> notify, ICache cache)
         {
             Cache = cache;
-            notify.Subscribe((r) => Cache.Remove(GetCacheKey(r.TenantId)), CacheNotifyAction.Any);
+            notify.Subscribe((r) => Cache.Remove(GetCacheKey(r.TenantId)), Common.Caching.EventType.Any);
             Notify = notify;
         }
 
@@ -57,7 +57,7 @@ namespace ASC.IPSecurity
     public class IPRestrictionsService
     {
         private readonly ICache cache;
-        private readonly ICacheNotify<IPRestrictionItem> notify;
+        private readonly IEventBus<IPRestrictionItem> notify;
         private static readonly TimeSpan timeout = TimeSpan.FromMinutes(5);
 
         private IPRestrictionsRepository IPRestrictionsRepository { get; }
@@ -85,7 +85,7 @@ namespace ASC.IPSecurity
         public IEnumerable<string> Save(IEnumerable<string> ips, int tenant)
         {
             var restrictions = IPRestrictionsRepository.Save(ips, tenant);
-            notify.Publish(new IPRestrictionItem { TenantId = tenant }, CacheNotifyAction.InsertOrUpdate);
+            notify.Publish(new IPRestrictionItem { TenantId = tenant }, Common.Caching.EventType.InsertOrUpdate);
             return restrictions;
         }
     }

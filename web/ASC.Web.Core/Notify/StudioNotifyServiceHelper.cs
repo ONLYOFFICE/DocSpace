@@ -14,7 +14,7 @@ namespace ASC.Web.Core.Notify
     [Scope]
     public class StudioNotifyServiceHelper
     {
-        private ICacheNotify<NotifyItem> Cache { get; }
+        private IEventBus<NotifyItem> Cache { get; }
         private StudioNotifyHelper StudioNotifyHelper { get; }
         private AuthContext AuthContext { get; }
         private TenantManager TenantManager { get; }
@@ -25,7 +25,7 @@ namespace ASC.Web.Core.Notify
             AuthContext authContext,
             TenantManager tenantManager,
             CommonLinkUtility commonLinkUtility,
-            ICacheNotify<NotifyItem> cache)
+            IEventBus<NotifyItem> cache)
         {
             StudioNotifyHelper = studioNotifyHelper;
             AuthContext = authContext;
@@ -118,7 +118,7 @@ namespace ASC.Web.Core.Notify
                 item.Tags.AddRange(args.Select(r => new Tag { Tag_ = r.Tag, Value = r.Value.ToString() }));
             }
 
-            Cache.Publish(item, CacheNotifyAction.Any);
+            Cache.Publish(item, EventType.Any);
         }
     }
 }

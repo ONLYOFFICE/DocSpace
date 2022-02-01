@@ -10,9 +10,9 @@ namespace ASC.Webhooks.Service
     public class BuildQueueService
     {
         internal ConcurrentQueue<WebhookRequest> Queue { get; }
-        private ICacheNotify<WebhookRequest> WebhookNotify { get; }
+        private IEventBus<WebhookRequest> WebhookNotify { get; }
 
-        public BuildQueueService(ICacheNotify<WebhookRequest> webhookNotify)
+        public BuildQueueService(IEventBus<WebhookRequest> webhookNotify)
         {
             WebhookNotify = webhookNotify;
             Queue = new ConcurrentQueue<WebhookRequest>();
@@ -20,12 +20,12 @@ namespace ASC.Webhooks.Service
 
         public void Start()
         {
-            WebhookNotify.Subscribe(BuildWebhooksQueue, CacheNotifyAction.Update);
+            WebhookNotify.Subscribe(BuildWebhooksQueue, EventType.Update);
         }
 
         public void Stop()
         {
-            WebhookNotify.Unsubscribe(CacheNotifyAction.Update);
+            WebhookNotify.Unsubscribe(EventType.Update);
         }
 
         public void BuildWebhooksQueue(WebhookRequest request)

@@ -592,9 +592,9 @@ namespace ASC.Files.Thirdparty.SharePoint
         private readonly TimeSpan CacheExpiration;
         private readonly ICache FileCache;
         private readonly ICache FolderCache;
-        private readonly ICacheNotify<SharePointProviderCacheItem> Notify;
+        private readonly IEventBus<SharePointProviderCacheItem> Notify;
 
-        public SharePointProviderInfoHelper(ICacheNotify<SharePointProviderCacheItem> notify, ICache cache)
+        public SharePointProviderInfoHelper(IEventBus<SharePointProviderCacheItem> notify, ICache cache)
         {
             CacheExpiration = TimeSpan.FromMinutes(1);
             FileCache = cache;
@@ -616,16 +616,16 @@ namespace ASC.Files.Thirdparty.SharePoint
                     FileCache.Remove(new Regex("^spointf-.*"));
                     FolderCache.Remove(new Regex("^spointd-.*"));
                 }
-            }, CacheNotifyAction.Remove);
+            }, Common.Caching.EventType.Remove);
         }
 
         public void Invalidate()
         {
-            Notify.Publish(new SharePointProviderCacheItem { }, CacheNotifyAction.Remove);
+            Notify.Publish(new SharePointProviderCacheItem { }, Common.Caching.EventType.Remove);
         }
         public void PublishFolder(string id)
         {
-            Notify.Publish(new SharePointProviderCacheItem { FolderKey = id }, CacheNotifyAction.Remove);
+            Notify.Publish(new SharePointProviderCacheItem { FolderKey = id }, Common.Caching.EventType.Remove);
         }
 
         public void PublishFolder(string id1, string id2)
@@ -642,7 +642,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public void PublishFile(string fileId, string folderId)
         {
-            Notify.Publish(new SharePointProviderCacheItem { FileKey = fileId, FolderKey = folderId }, CacheNotifyAction.Remove);
+            Notify.Publish(new SharePointProviderCacheItem { FileKey = fileId, FolderKey = folderId }, Common.Caching.EventType.Remove);
         }
 
         public void CreateFolder(string id, string parentFolderId, Folder folder)

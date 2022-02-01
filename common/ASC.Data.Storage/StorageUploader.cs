@@ -53,14 +53,14 @@ namespace ASC.Data.Storage
 
         private IServiceProvider ServiceProvider { get; }
         private TempStream TempStream { get; }
-        private ICacheNotify<MigrationProgress> CacheMigrationNotify { get; }
+        private IEventBus<MigrationProgress> CacheMigrationNotify { get; }
 
         static StorageUploader()
         {
             Locker = new object();
         }
 
-        public StorageUploader(IServiceProvider serviceProvider, TempStream tempStream, ICacheNotify<MigrationProgress> cacheMigrationNotify, DistributedTaskQueueOptionsManager options)
+        public StorageUploader(IServiceProvider serviceProvider, TempStream tempStream, IEventBus<MigrationProgress> cacheMigrationNotify, DistributedTaskQueueOptionsManager options)
         {
             ServiceProvider = serviceProvider;
             TempStream = tempStream;
@@ -119,7 +119,7 @@ namespace ASC.Data.Storage
 
         public MigrateOperation(
             IServiceProvider serviceProvider,
-            ICacheNotify<MigrationProgress> cacheMigrationNotify,
+            IEventBus<MigrationProgress> cacheMigrationNotify,
             string id,
             int tenantId,
             StorageSettings settings,
@@ -143,7 +143,7 @@ namespace ASC.Data.Storage
         private IServiceProvider ServiceProvider { get; }
         private StorageFactoryConfig StorageFactoryConfig { get; }
         private TempStream TempStream { get; }
-        private ICacheNotify<MigrationProgress> CacheMigrationNotify { get; }
+        private IEventBus<MigrationProgress> CacheMigrationNotify { get; }
 
         protected override void DoJob()
         {
@@ -230,7 +230,7 @@ namespace ASC.Data.Storage
                 Error = Exception.ToString(),
                 IsCompleted = IsCompleted
             },
-            CacheNotifyAction.Insert);
+            Common.Caching.EventType.Insert);
         }
     }
 

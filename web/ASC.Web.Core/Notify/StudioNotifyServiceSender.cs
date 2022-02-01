@@ -52,9 +52,9 @@ namespace ASC.Web.Studio.Core.Notify
         private IServiceProvider ServiceProvider { get; }
         private IConfiguration Configuration { get; }
 
-        public StudioNotifyServiceSender(IServiceProvider serviceProvider, IConfiguration configuration, ICacheNotify<NotifyItem> cache)
+        public StudioNotifyServiceSender(IServiceProvider serviceProvider, IConfiguration configuration, IEventBus<NotifyItem> cache)
         {
-            cache.Subscribe(OnMessage, CacheNotifyAction.Any);
+            cache.Subscribe(this.OnMessage, Common.Caching.EventType.Any);
             ServiceProvider = serviceProvider;
             Configuration = configuration;
         }

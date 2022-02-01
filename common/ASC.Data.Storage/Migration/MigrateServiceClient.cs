@@ -36,12 +36,12 @@ namespace ASC.Data.Storage.Migration
     [Singletone]
     public class ServiceClientListener
     {
-        private ICacheNotify<MigrationProgress> ProgressMigrationNotify { get; }
+        private IEventBus<MigrationProgress> ProgressMigrationNotify { get; }
         private IServiceProvider ServiceProvider { get; }
         private ICache Cache { get; }
 
         public ServiceClientListener(
-            ICacheNotify<MigrationProgress> progressMigrationNotify,
+            IEventBus<MigrationProgress> progressMigrationNotify,
             IServiceProvider serviceProvider, 
             ICache cache)
         {
@@ -71,7 +71,7 @@ namespace ASC.Data.Storage.Migration
 
                 Cache.Insert(GetCacheKey(n.TenantId), migrationProgress, DateTime.MaxValue);
             },
-           CacheNotifyAction.Insert);
+           Common.Caching.EventType.Insert);
         }
 
         private string GetCacheKey(int tenantId)
@@ -84,14 +84,14 @@ namespace ASC.Data.Storage.Migration
     public class ServiceClient : IService
     {
         public ServiceClientListener ServiceClientListener { get; }
-        public ICacheNotify<MigrationCache> CacheMigrationNotify { get; }
-        public ICacheNotify<MigrationUploadCdn> UploadCdnMigrationNotify { get; }
+        public IEventBus<MigrationCache> CacheMigrationNotify { get; }
+        public IEventBus<MigrationUploadCdn> UploadCdnMigrationNotify { get; }
         public IServiceProvider ServiceProvider { get; }
 
         public ServiceClient(
             ServiceClientListener serviceClientListener,
-            ICacheNotify<MigrationCache> cacheMigrationNotify,
-            ICacheNotify<MigrationUploadCdn> uploadCdnMigrationNotify,
+            IEventBus<MigrationCache> cacheMigrationNotify,
+            IEventBus<MigrationUploadCdn> uploadCdnMigrationNotify,
             IServiceProvider serviceProvider)
         {
             ServiceClientListener = serviceClientListener;
@@ -109,7 +109,7 @@ namespace ASC.Data.Storage.Migration
                 TenantId = tenant,
                 StorSettings = storSettings
             },
-                CacheNotifyAction.Insert);
+                Common.Caching.EventType.Insert);
         }
 
         public void UploadCdn(int tenantId, string relativePath, string mappedPath, CdnStorageSettings settings = null)
@@ -123,7 +123,7 @@ namespace ASC.Data.Storage.Migration
                 MappedPath = mappedPath,
                 CdnStorSettings = cdnStorSettings
             },
-                CacheNotifyAction.Insert);
+                Common.Caching.EventType.Insert);
         }
 
         public double GetProgress(int tenant)
@@ -135,7 +135,7 @@ namespace ASC.Data.Storage.Migration
 
         public void StopMigrate()
         {
-            CacheMigrationNotify.Publish(new MigrationCache(), CacheNotifyAction.InsertOrUpdate);
+            CacheMigrationNotify.Publish(new MigrationCache(), Common.Caching.EventType.InsertOrUpdate);
         }
     }
 }

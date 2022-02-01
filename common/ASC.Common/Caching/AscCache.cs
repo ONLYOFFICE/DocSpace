@@ -30,8 +30,6 @@ using System.Linq;
 using System.Runtime.Caching;
 using System.Text.RegularExpressions;
 
-using Google.Protobuf;
-
 using Microsoft.Extensions.Caching.Memory;
 
 namespace ASC.Common.Caching
@@ -39,18 +37,18 @@ namespace ASC.Common.Caching
     [Singletone]
     public class AscCacheNotify
     {
-        private ICacheNotify<AscCacheItem> CacheNotify { get; }
+        private IEventBus<AscCacheItem> CacheNotify { get; }
 
-        public AscCacheNotify(ICacheNotify<AscCacheItem> cacheNotify)
+        public AscCacheNotify(IEventBus<AscCacheItem> cacheNotify)
         {
             CacheNotify = cacheNotify;
 
-            CacheNotify.Subscribe((item) => { OnClearCache(); }, CacheNotifyAction.Any);
+            CacheNotify.Subscribe((item) => { OnClearCache(); }, EventType.Any);
         }
 
         public void ClearCache()
         {
-            CacheNotify.Publish(new AscCacheItem { Id = Guid.NewGuid().ToString() }, CacheNotifyAction.Any);
+            CacheNotify.Publish(new AscCacheItem { Id = Guid.NewGuid().ToString() }, EventType.Any);
         }
 
         public static void OnClearCache()

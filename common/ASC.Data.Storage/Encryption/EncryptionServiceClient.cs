@@ -34,11 +34,11 @@ namespace ASC.Data.Storage.Encryption
     public class EncryptionServiceClient : IEncryptionService
     {
 
-        private ICacheNotify<EncryptionSettingsProto> NotifySetting { get; }
-        private ICacheNotify<EncryptionStop> NotifyStop { get; }
+        private IEventBus<EncryptionSettingsProto> NotifySetting { get; }
+        private IEventBus<EncryptionStop> NotifyStop { get; }
 
         public EncryptionServiceClient(
-            ICacheNotify<EncryptionSettingsProto> notifySetting, ICacheNotify<EncryptionStop> notifyStop)
+            IEventBus<EncryptionSettingsProto> notifySetting, IEventBus<EncryptionStop> notifyStop)
         {
             NotifySetting = notifySetting;
             NotifyStop = notifyStop;
@@ -46,12 +46,12 @@ namespace ASC.Data.Storage.Encryption
 
         public void Start(EncryptionSettingsProto encryptionSettingsProto)
         {
-            NotifySetting.Publish(encryptionSettingsProto, CacheNotifyAction.Insert);
+            NotifySetting.Publish(encryptionSettingsProto, EventType.Insert);
         }
 
         public void Stop()
         {
-            NotifyStop.Publish(new EncryptionStop(), CacheNotifyAction.Insert);
+            NotifyStop.Publish(new EncryptionStop(), EventType.Insert);
         }
 
     }

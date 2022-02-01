@@ -57,21 +57,21 @@ namespace ASC.ElasticSearch
     public class BaseIndexerHelper
     {
         public ConcurrentDictionary<string, bool> IsExist { get; set; }
-        private readonly ICacheNotify<ClearIndexAction> Notify;
+        private readonly IEventBus<ClearIndexAction> Notify;
 
-        public BaseIndexerHelper(ICacheNotify<ClearIndexAction> cacheNotify)
+        public BaseIndexerHelper(IEventBus<ClearIndexAction> cacheNotify)
         {
             IsExist = new ConcurrentDictionary<string, bool>();
             Notify = cacheNotify;
             Notify.Subscribe((a) =>
             {
-                IsExist.AddOrUpdate(a.Id, false, (q, w) => false);
-            }, CacheNotifyAction.Any);
+                IsExist.AddOrUpdate(a.Id, false, (string q, bool w) => false);
+            }, Common.Caching.EventType.Any);
         }
 
         public void Clear<T>(T t) where T : class, ISearchItem
         {
-            Notify.Publish(new ClearIndexAction() { Id = t.IndexName }, CacheNotifyAction.Any);
+            Notify.Publish(new ClearIndexAction() { Id = t.IndexName }, Common.Caching.EventType.Any);
         }
     }
 

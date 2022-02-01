@@ -30,7 +30,7 @@ using System;
 namespace ASC.Common.Caching
 {
     [Flags]
-    public enum CacheNotifyAction
+    public enum EventType
     {
         Insert = 1,
         Update = 2,

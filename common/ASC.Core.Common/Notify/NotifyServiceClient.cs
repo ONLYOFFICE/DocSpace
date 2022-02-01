@@ -34,9 +34,9 @@ namespace ASC.Core.Notify
     [Scope]
     public class NotifyServiceClient : INotifyService
     {
-        private readonly ICacheNotify<NotifyMessage> СacheNotify;
-        private readonly ICacheNotify<NotifyInvoke> NotifyInvoke;
-        public NotifyServiceClient(ICacheNotify<NotifyMessage> cacheNotify, ICacheNotify<NotifyInvoke> notifyInvoke)
+        private readonly IEventBus<NotifyMessage> СacheNotify;
+        private readonly IEventBus<NotifyInvoke> NotifyInvoke;
+        public NotifyServiceClient(IEventBus<NotifyMessage> cacheNotify, IEventBus<NotifyInvoke> notifyInvoke)
         {
             СacheNotify = cacheNotify;
             NotifyInvoke = notifyInvoke;
@@ -44,12 +44,12 @@ namespace ASC.Core.Notify
 
         public void SendNotifyMessage(NotifyMessage m)
         {
-            СacheNotify.Publish(m, CacheNotifyAction.InsertOrUpdate);
+            СacheNotify.Publish(m, EventType.InsertOrUpdate);
         }
 
         public void InvokeSendMethod(NotifyInvoke notifyInvoke)
         {
-            NotifyInvoke.Publish(notifyInvoke, CacheNotifyAction.InsertOrUpdate);
+            NotifyInvoke.Publish(notifyInvoke, EventType.InsertOrUpdate);
         }
     }
 }

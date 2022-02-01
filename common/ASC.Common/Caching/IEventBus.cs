@@ -31,12 +31,12 @@ using Google.Protobuf;
 namespace ASC.Common.Caching
 {
     [Singletone]
-    public interface ICacheNotify<T> where T : IMessage<T>, new()
+    public interface IEventBus<T> where T : IMessage<T>, new()
     {
-        void Publish(T obj, CacheNotifyAction action);
+        void Publish(T obj, EventType action);
 
-        void Subscribe(Action<T> onchange, CacheNotifyAction action);
+        void Subscribe(Action<T> onchange, EventType action);
 
-        void Unsubscribe(CacheNotifyAction action);
+        void Unsubscribe(EventType action);
     }
 }

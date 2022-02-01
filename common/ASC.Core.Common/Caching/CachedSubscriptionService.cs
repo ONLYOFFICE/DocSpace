@@ -38,10 +38,10 @@ namespace ASC.Core.Caching
     class SubscriptionServiceCache
     {
         internal ICache Cache { get; }
-        internal ICacheNotify<SubscriptionRecord> NotifyRecord { get; }
-        internal ICacheNotify<SubscriptionMethodCache> NotifyMethod { get; }
+        internal IEventBus<SubscriptionRecord> NotifyRecord { get; }
+        internal IEventBus<SubscriptionMethodCache> NotifyMethod { get; }
 
-        public SubscriptionServiceCache(ICacheNotify<SubscriptionRecord> notifyRecord, ICacheNotify<SubscriptionMethodCache> notifyMethod, ICache cache)
+        public SubscriptionServiceCache(IEventBus<SubscriptionRecord> notifyRecord, IEventBus<SubscriptionMethodCache> notifyMethod, ICache cache)
         {
             Cache = cache;
             NotifyRecord = notifyRecord;
@@ -57,7 +57,7 @@ namespace ASC.Core.Caching
                         store.SaveSubscription(s);
                     }
                 }
-            }, CacheNotifyAction.InsertOrUpdate);
+            }, ASC.Common.Caching.EventType.InsertOrUpdate);
 
             notifyRecord.Subscribe((s) =>
             {
@@ -76,7 +76,7 @@ namespace ASC.Core.Caching
                         }
                     }
                 }
-            }, CacheNotifyAction.Remove);
+            }, ASC.Common.Caching.EventType.Remove);
 
             notifyMethod.Subscribe((m) =>
             {
@@ -88,7 +88,7 @@ namespace ASC.Core.Caching
                         store.SetSubscriptionMethod(m);
                     }
                 }
-            }, CacheNotifyAction.Any);
+            }, ASC.Common.Caching.EventType.Any);
         }
 
         private SubsciptionsStore GetSubsciptionsStore(int tenant, string sourceId, string actionId)
@@ -107,8 +107,8 @@ namespace ASC.Core.Caching
     {
         private readonly ISubscriptionService service;
         private readonly ICache cache;
-        private readonly ICacheNotify<SubscriptionRecord> notifyRecord;
-        private readonly ICacheNotify<SubscriptionMethodCache> notifyMethod;
+        private readonly IEventBus<SubscriptionRecord> notifyRecord;
+        private readonly IEventBus<SubscriptionMethodCache> notifyMethod;
 
         private TimeSpan CacheExpiration { get; set; }
 
@@ -162,19 +162,19 @@ namespace ASC.Core.Caching
         public void SaveSubscription(SubscriptionRecord s)
         {
             service.SaveSubscription(s);
-            notifyRecord.Publish(s, CacheNotifyAction.InsertOrUpdate);
+            notifyRecord.Publish(s, ASC.Common.Caching.EventType.InsertOrUpdate);
         }
 
         public void RemoveSubscriptions(int tenant, string sourceId, string actionId)
         {
             service.RemoveSubscriptions(tenant, sourceId, actionId);
-            notifyRecord.Publish(new SubscriptionRecord { Tenant = tenant, SourceId = sourceId, ActionId = actionId }, CacheNotifyAction.Remove);
+            notifyRecord.Publish(new SubscriptionRecord { Tenant = tenant, SourceId = sourceId, ActionId = actionId }, ASC.Common.Caching.EventType.Remove);
         }
 
         public void RemoveSubscriptions(int tenant, string sourceId, string actionId, string objectId)
         {
             service.RemoveSubscriptions(tenant, sourceId, actionId, objectId);
-            notifyRecord.Publish(new SubscriptionRecord { Tenant = tenant, SourceId = sourceId, ActionId = actionId, ObjectId = objectId }, CacheNotifyAction.Remove);
+            notifyRecord.Publish(new SubscriptionRecord { Tenant = tenant, SourceId = sourceId, ActionId = actionId, ObjectId = objectId }, ASC.Common.Caching.EventType.Remove);
         }
 
         public IEnumerable<SubscriptionMethod> GetSubscriptionMethods(int tenant, string sourceId, string actionId, string recipientId)
@@ -189,7 +189,7 @@ namespace ASC.Core.Caching
         public void SetSubscriptionMethod(SubscriptionMethod m)
         {
             service.SetSubscriptionMethod(m);
-            notifyMethod.Publish(m, CacheNotifyAction.Any);
+            notifyMethod.Publish(m, ASC.Common.Caching.EventType.Any);
         }
 
 

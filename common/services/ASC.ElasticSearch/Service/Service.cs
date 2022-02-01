@@ -43,9 +43,9 @@ namespace ASC.ElasticSearch.Service
     public class Service
     {
         private IServiceProvider ServiceProvider { get; }
-        private ICacheNotify<ReIndexAction> CacheNotify { get; }
+        private IEventBus<ReIndexAction> CacheNotify { get; }
 
-        public Service(IServiceProvider serviceProvider, ICacheNotify<ReIndexAction> cacheNotify)
+        public Service(IServiceProvider serviceProvider, IEventBus<ReIndexAction> cacheNotify)
         {
             ServiceProvider = serviceProvider;
             CacheNotify = cacheNotify;
@@ -56,7 +56,7 @@ namespace ASC.ElasticSearch.Service
             CacheNotify.Subscribe((a) =>
             {
                 ReIndex(a.Names.ToList(), a.Tenant);
-            }, CacheNotifyAction.Any);
+            }, Common.Caching.EventType.Any);
         }
 
         public bool Support(string table)

@@ -56,7 +56,7 @@ namespace ASC.ElasticSearch
         public DateTime LastIndexed { get; set; }
         public string Indexing { get; set; }
 
-        public FactoryIndexerHelper(ICacheNotify<IndexAction> cacheNotify)
+        public FactoryIndexerHelper(IEventBus<IndexAction> cacheNotify)
         {
             cacheNotify.Subscribe((a) =>
             {
@@ -65,7 +65,7 @@ namespace ASC.ElasticSearch
                     LastIndexed = new DateTime(a.LastIndexed);
                 }
                 Indexing = a.Indexing;
-            }, CacheNotifyAction.Any);
+            }, Common.Caching.EventType.Any);
         }
     }
 
@@ -480,7 +480,7 @@ namespace ASC.ElasticSearch
             Indexer.Refresh();
         }
 
-        private Task<bool> Queue(Action actionData)
+        private Task<bool> Queue(System.Action actionData)
         {
             var task = new Task<bool>(() =>
             {

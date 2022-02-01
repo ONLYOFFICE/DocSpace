@@ -155,7 +155,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             IConfiguration configuration,
-            ICacheNotify<ConsumerCacheItem> cache,
+            IEventBus<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             string name, int order, Dictionary<string, string> additional)
             : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, additional)

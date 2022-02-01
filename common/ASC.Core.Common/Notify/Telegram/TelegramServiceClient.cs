@@ -35,17 +35,17 @@ namespace ASC.Core.Common.Notify
     [Singletone]
     public class TelegramServiceClient : ITelegramService
     {
-        private ICacheNotify<NotifyMessage> CacheMessage { get; }
-        private ICacheNotify<RegisterUserProto> CacheRegisterUser { get; }
-        private ICacheNotify<CreateClientProto> CacheCreateClient { get; }
-        private ICacheNotify<DisableClientProto> CacheDisableClient { get; }
+        private IEventBus<NotifyMessage> CacheMessage { get; }
+        private IEventBus<RegisterUserProto> CacheRegisterUser { get; }
+        private IEventBus<CreateClientProto> CacheCreateClient { get; }
+        private IEventBus<DisableClientProto> CacheDisableClient { get; }
 
         private ICache Cache { get; }
 
-        public TelegramServiceClient(ICacheNotify<NotifyMessage> cacheMessage,
-            ICacheNotify<RegisterUserProto> cacheRegisterUser,
-            ICacheNotify<CreateClientProto> cacheCreateClient,
-            ICacheNotify<DisableClientProto> cacheDisableClient, 
+        public TelegramServiceClient(IEventBus<NotifyMessage> cacheMessage,
+            IEventBus<RegisterUserProto> cacheRegisterUser,
+            IEventBus<CreateClientProto> cacheCreateClient,
+            IEventBus<DisableClientProto> cacheDisableClient, 
             ICache cache)
         {
             CacheMessage = cacheMessage;
@@ -57,7 +57,7 @@ namespace ASC.Core.Common.Notify
 
         public void SendMessage(NotifyMessage m)
         {
-            CacheMessage.Publish(m, CacheNotifyAction.Insert);
+            CacheMessage.Publish(m, ASC.Common.Caching.EventType.Insert);
         }
 
         public void RegisterUser(string userId, int tenantId, string token)
@@ -68,7 +68,7 @@ namespace ASC.Core.Common.Notify
                 UserId = userId,
                 TenantId = tenantId,
                 Token = token
-            }, CacheNotifyAction.Insert);
+            }, ASC.Common.Caching.EventType.Insert);
         }
 
         public void CreateOrUpdateClient(int tenantId, string token, int tokenLifespan, string proxy)
@@ -79,12 +79,12 @@ namespace ASC.Core.Common.Notify
                 Token = token,
                 TokenLifespan = tokenLifespan,
                 Proxy = proxy
-            }, CacheNotifyAction.Insert);
+            }, ASC.Common.Caching.EventType.Insert);
         }
 
         public void DisableClient(int tenantId)
         {
-            CacheDisableClient.Publish(new DisableClientProto() { TenantId = tenantId }, CacheNotifyAction.Insert);
+            CacheDisableClient.Publish(new DisableClientProto() { TenantId = tenantId }, ASC.Common.Caching.EventType.Insert);
         }
 
         public string RegistrationToken(string userId, int tenantId)

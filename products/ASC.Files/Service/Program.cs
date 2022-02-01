@@ -81,17 +81,17 @@ namespace ASC.Files.Service
 
                     if (kafkaConfiguration != null)
                     {
-                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                        diHelper.TryAdd(typeof(IEventBus<>), typeof(KafkaCache<>));
                     }
                     else if (redisConfiguration != null)
                     {
-                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+                        diHelper.TryAdd(typeof(IEventBus<>), typeof(RedisCache<>));
 
                         services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
                     }
                     else
                     {
-                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
+                        diHelper.TryAdd(typeof(IEventBus<>), typeof(MemoryCacheNotify<>));
                     }
 
 

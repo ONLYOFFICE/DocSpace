@@ -63,7 +63,7 @@ namespace ASC.Data.Storage.Configuration
 
                 Subscribed = true;
 
-                ServiceProvider.GetService<ICacheNotify<ConsumerCacheItem>>().Subscribe((i) =>
+                ServiceProvider.GetService<IEventBus<ConsumerCacheItem>>().Subscribe((i) =>
                 {
                     using var scope = ServiceProvider.CreateScope();
 
@@ -80,7 +80,7 @@ namespace ASC.Data.Storage.Configuration
                     {
                         storageSettingsHelper.Clear(cdnSettings);
                     }
-                }, CacheNotifyAction.Remove);
+                }, Common.Caching.EventType.Remove);
             }
         }
     }
@@ -99,7 +99,7 @@ namespace ASC.Data.Storage.Configuration
 
         public virtual Func<DataStoreConsumer, DataStoreConsumer> Switch { get { return d => d; } }
 
-        internal ICacheNotify<DataStoreCacheItem> Cache { get; set; }
+        internal IEventBus<DataStoreCacheItem> Cache { get; set; }
 
         public abstract Guid ID { get; }
     }
@@ -130,7 +130,7 @@ namespace ASC.Data.Storage.Configuration
     {
         private StorageFactoryConfig StorageFactoryConfig { get; }
         private PathUtils PathUtils { get; }
-        private ICacheNotify<DataStoreCacheItem> Cache { get; }
+        private IEventBus<DataStoreCacheItem> Cache { get; }
         private IOptionsMonitor<ILog> Options { get; }
         private TenantManager TenantManager { get; }
         private SettingsManager SettingsManager { get; }
@@ -141,7 +141,7 @@ namespace ASC.Data.Storage.Configuration
             BaseStorageSettingsListener baseStorageSettingsListener,
             StorageFactoryConfig storageFactoryConfig,
             PathUtils pathUtils,
-            ICacheNotify<DataStoreCacheItem> cache,
+            IEventBus<DataStoreCacheItem> cache,
             IOptionsMonitor<ILog> options,
             TenantManager tenantManager,
             SettingsManager settingsManager,
@@ -160,7 +160,7 @@ namespace ASC.Data.Storage.Configuration
             BaseStorageSettingsListener baseStorageSettingsListener,
             StorageFactoryConfig storageFactoryConfig,
             PathUtils pathUtils,
-            ICacheNotify<DataStoreCacheItem> cache,
+            IEventBus<DataStoreCacheItem> cache,
             IOptionsMonitor<ILog> options,
             TenantManager tenantManager,
             SettingsManager settingsManager,
@@ -184,7 +184,7 @@ namespace ASC.Data.Storage.Configuration
             var path = TenantPath.CreatePath(tenantId);
             foreach (var module in StorageFactoryConfig.GetModuleList("", true))
             {
-                Cache.Publish(new DataStoreCacheItem() { TenantId = path, Module = module }, CacheNotifyAction.Remove);
+                Cache.Publish(new DataStoreCacheItem() { TenantId = path, Module = module }, Common.Caching.EventType.Remove);
             }
         }
 

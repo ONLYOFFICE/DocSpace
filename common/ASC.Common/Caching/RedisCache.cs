@@ -25,7 +25,7 @@ using StackExchange.Redis.Extensions.Core.Abstractions;
 namespace ASC.Common.Caching;
 
 [Singletone]
-public class RedisCache<T> : ICacheNotify<T> where T : IMessage<T>, new()
+public class RedisCache<T> : IEventBus<T> where T : IMessage<T>, new()
 {
     private readonly IRedisDatabase _redis;
 
@@ -34,14 +34,14 @@ public class RedisCache<T> : ICacheNotify<T> where T : IMessage<T>, new()
         _redis = redisCacheClient.GetDbFromConfiguration();
     }
 
-    public void Publish(T obj, CacheNotifyAction action)
+    public void Publish(T obj, EventType action)
     {
         Task.Run(() => _redis.PublishAsync(GetChannelName(action), new RedisCachePubSubItem<T>() { Object = obj, Action = action }))
             .GetAwaiter()
             .GetResult();
     }
 
-    public void Subscribe(Action<T> onchange, CacheNotifyAction action)
+    public void Subscribe(Action<T> onchange, EventType action)
     {
         Task.Run(() => _redis.SubscribeAsync<RedisCachePubSubItem<T>>(GetChannelName(action), (i) =>
         {
@@ -52,7 +52,7 @@ public class RedisCache<T> : ICacheNotify<T> where T : IMessage<T>, new()
           .GetResult();
     }
 
-    public void Unsubscribe(CacheNotifyAction action)
+    public void Unsubscribe(EventType action)
     {
         Task.Run(() => _redis.UnsubscribeAsync<RedisCachePubSubItem<T>>(GetChannelName(action), (i) =>
         {
@@ -61,7 +61,7 @@ public class RedisCache<T> : ICacheNotify<T> where T : IMessage<T>, new()
           .GetResult();
     }
 
-    private string GetChannelName(CacheNotifyAction cacheNotifyAction)
+    private string GetChannelName(EventType cacheNotifyAction)
     {
         return $"asc:channel:{cacheNotifyAction}:{typeof(T).FullName}".ToLower();
     }
@@ -70,7 +70,7 @@ public class RedisCache<T> : ICacheNotify<T> where T : IMessage<T>, new()
     {
         public T0 Object { get; set; }
 
-        public CacheNotifyAction Action { get; set; }
+        public EventType Action { get; set; }
     }
 }
 

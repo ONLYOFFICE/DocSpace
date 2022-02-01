@@ -16,13 +16,13 @@ namespace ASC.Webhooks.Core
     {
         private DbWorker DbWorker { get; }
         private TenantManager TenantManager { get; }
-        private ICacheNotify<WebhookRequest> WebhookNotify { get; }
+        private IEventBus<WebhookRequest> WebhookNotify { get; }
 
         public WebhookPublisher(
             DbWorker dbWorker,
             TenantManager tenantManager,
             IOptionsMonitor<ILog> options,
-            ICacheNotify<WebhookRequest> webhookNotify)
+            IEventBus<WebhookRequest> webhookNotify)
         {
             DbWorker = dbWorker;
             TenantManager = tenantManager;
@@ -53,7 +53,7 @@ namespace ASC.Webhooks.Core
                     Id = DbId
                 };
 
-                WebhookNotify.Publish(request, CacheNotifyAction.Update);
+                WebhookNotify.Publish(request, Common.Caching.EventType.Update);
             }
         }
     }

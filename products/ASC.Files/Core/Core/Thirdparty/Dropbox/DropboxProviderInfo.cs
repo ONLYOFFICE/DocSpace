@@ -184,9 +184,9 @@ namespace ASC.Files.Thirdparty.Dropbox
         private readonly ICache CacheFile;
         private readonly ICache CacheFolder;
         private readonly ICache CacheChildItems;
-        private readonly ICacheNotify<DropboxCacheItem> CacheNotify;
+        private readonly IEventBus<DropboxCacheItem> CacheNotify;
 
-        public DropboxProviderInfoHelper(ICacheNotify<DropboxCacheItem> cacheNotify, ICache cache)
+        public DropboxProviderInfoHelper(IEventBus<DropboxCacheItem> cacheNotify, ICache cache)
         {
             CacheExpiration = TimeSpan.FromMinutes(1);
             CacheFile = cache;
@@ -220,7 +220,7 @@ namespace ASC.Files.Thirdparty.Dropbox
                         CacheFolder.Remove("dropboxd-" + i.Key);
                     }
                 }
-            }, CacheNotifyAction.Remove);
+            }, Common.Caching.EventType.Remove);
         }
 
         internal FolderMetadata GetDropboxFolder(DropboxStorage storage, int id, string dropboxFolderPath)
@@ -263,7 +263,7 @@ namespace ASC.Files.Thirdparty.Dropbox
         {
             if (dropboxItem != null)
             {
-                CacheNotify.Publish(new DropboxCacheItem { IsFile = dropboxItem.AsFolder != null, Key = id + "-" + dropboxItem.PathDisplay }, CacheNotifyAction.Remove);
+                CacheNotify.Publish(new DropboxCacheItem { IsFile = dropboxItem.AsFolder != null, Key = id + "-" + dropboxItem.PathDisplay }, Common.Caching.EventType.Remove);
             }
         }
 
@@ -272,13 +272,13 @@ namespace ASC.Files.Thirdparty.Dropbox
             var key = id + "-";
             if (dropboxPath == null)
             {
-                CacheNotify.Publish(new DropboxCacheItem { ResetAll = true, Key = key }, CacheNotifyAction.Remove);
+                CacheNotify.Publish(new DropboxCacheItem { ResetAll = true, Key = key }, Common.Caching.EventType.Remove);
             }
             else
             {
                 key += dropboxPath;
 
-                CacheNotify.Publish(new DropboxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, CacheNotifyAction.Remove);
+                CacheNotify.Publish(new DropboxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, Common.Caching.EventType.Remove);
             }
         }
     }

@@ -92,7 +92,7 @@ namespace ASC.FederatedLogin.LoginProviders
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             IConfiguration configuration,
-            ICacheNotify<ConsumerCacheItem> cache,
+            IEventBus<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             Signature signature,
             InstanceCrypto instanceCrypto,

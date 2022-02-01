@@ -74,7 +74,7 @@ namespace ASC.Web.Files.Helpers
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             IConfiguration configuration,
-            ICacheNotify<ConsumerCacheItem> cache,
+            IEventBus<ConsumerCacheItem> cache,
             ConsumerFactory factory,
             string name,
             int order,

@@ -67,7 +67,7 @@ namespace ASC.FederatedLogin.LoginProviders
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             IConfiguration configuration,
-            ICacheNotify<ConsumerCacheItem> cache,
+            IEventBus<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
             : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)

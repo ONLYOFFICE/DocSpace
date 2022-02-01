@@ -44,12 +44,12 @@ namespace ASC.Common.Threading
     {
         public ConcurrentDictionary<string, CancellationTokenSource> Cancelations { get; }
         public ICache Cache { get; }
-        private readonly ICacheNotify<DistributedTaskCancelation> notify;
-        private readonly ICacheNotify<DistributedTaskCache> notifyCache;
+        private readonly IEventBus<DistributedTaskCancelation> notify;
+        private readonly IEventBus<DistributedTaskCache> notifyCache;
 
         public DistributedTaskCacheNotify(
-            ICacheNotify<DistributedTaskCancelation> notify, 
-            ICacheNotify<DistributedTaskCache> notifyCache,
+            IEventBus<DistributedTaskCancelation> notify, 
+            IEventBus<DistributedTaskCache> notifyCache,
             ICache cache)
         {
             Cancelations = new ConcurrentDictionary<string, CancellationTokenSource>();
@@ -64,34 +64,34 @@ namespace ASC.Common.Threading
                 {
                     s.Cancel();
                 }
-            }, CacheNotifyAction.Remove);
+            }, Caching.EventType.Remove);
 
             this.notifyCache = notifyCache;
 
             notifyCache.Subscribe((c) =>
             {
                 Cache.HashSet(c.Key, c.Id, (DistributedTaskCache)null);
-            }, CacheNotifyAction.Remove);
+            }, Caching.EventType.Remove);
 
             notifyCache.Subscribe((c) =>
             {
                 Cache.HashSet(c.Key, c.Id, c);
-            }, CacheNotifyAction.InsertOrUpdate);
+            }, Caching.EventType.InsertOrUpdate);
         }
 
         public void CancelTask(string id)
         {
-            notify.Publish(new DistributedTaskCancelation() { Id = id }, CacheNotifyAction.Remove);
+            notify.Publish(new DistributedTaskCancelation() { Id = id }, Caching.EventType.Remove);
         }
 
         public void SetTask(DistributedTask task)
         {
-            notifyCache.Publish(task.DistributedTaskCache, CacheNotifyAction.InsertOrUpdate);
+            notifyCache.Publish(task.DistributedTaskCache, Caching.EventType.InsertOrUpdate);
         }
 
         public void RemoveTask(string id, string key)
         {
-            notifyCache.Publish(new DistributedTaskCache() { Id = id, Key = key }, CacheNotifyAction.Remove);
+            notifyCache.Publish(new DistributedTaskCache() { Id = id, Key = key }, Caching.EventType.Remove);
         }
     }
 

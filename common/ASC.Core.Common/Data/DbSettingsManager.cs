@@ -46,18 +46,18 @@ namespace ASC.Core.Data
     public class DbSettingsManagerCache
     {
         public ICache Cache { get; }
-        private ICacheNotify<SettingsCacheItem> Notify { get; }
+        private IEventBus<SettingsCacheItem> Notify { get; }
 
-        public DbSettingsManagerCache(ICacheNotify<SettingsCacheItem> notify, ICache cache)
+        public DbSettingsManagerCache(IEventBus<SettingsCacheItem> notify, ICache cache)
         {
             Cache = cache;
             Notify = notify;
-            Notify.Subscribe((i) => Cache.Remove(i.Key), CacheNotifyAction.Remove);
+            Notify.Subscribe((i) => Cache.Remove(i.Key), ASC.Common.Caching.EventType.Remove);
         }
 
         public void Remove(string key)
         {
-            Notify.Publish(new SettingsCacheItem { Key = key }, CacheNotifyAction.Remove);
+            Notify.Publish(new SettingsCacheItem { Key = key }, ASC.Common.Caching.EventType.Remove);
         }
     }
 

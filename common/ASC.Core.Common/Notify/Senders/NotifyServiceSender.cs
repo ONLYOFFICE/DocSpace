@@ -34,7 +34,7 @@ namespace ASC.Core.Notify.Senders
     public class NotifyServiceSender : INotifySender
     {
         public NotifyServiceClient NotifyServiceClient { get; }
-        public NotifyServiceSender(ICacheNotify<NotifyMessage> cacheNotify, ICacheNotify<NotifyInvoke> notifyInvoke)
+        public NotifyServiceSender(IEventBus<NotifyMessage> cacheNotify, IEventBus<NotifyInvoke> notifyInvoke)
         {
             NotifyServiceClient = new NotifyServiceClient(cacheNotify, notifyInvoke);
         }

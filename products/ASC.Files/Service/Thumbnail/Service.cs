@@ -24,22 +24,22 @@ namespace ASC.Files.ThumbnailBuilder
     [Singletone]
     public class Service
     {
-        private ICacheNotify<ThumbnailRequest> CacheNotify { get; }
+        private IEventBus<ThumbnailRequest> CacheNotify { get; }
 
-        public Service(ICacheNotify<ThumbnailRequest> cacheNotify)
+        public Service(IEventBus<ThumbnailRequest> cacheNotify)
         {
             CacheNotify = cacheNotify;
         }
 
         public void Start()
         {
-            CacheNotify.Subscribe(BuildThumbnails, CacheNotifyAction.Insert);
+            CacheNotify.Subscribe(BuildThumbnails, EventType.Insert);
             //Cache.Subscribe
         }
 
         public void Stop()
         {
-            CacheNotify.Unsubscribe(CacheNotifyAction.Insert);
+            CacheNotify.Unsubscribe(EventType.Insert);
             //Cache.Subscribe
         }
 
