@@ -22,7 +22,7 @@ namespace ASC.Api.Core.Auth
     {
         private readonly SecurityContext _securityContext;
         private readonly UserManager _userManager;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
 
         public ConfirmAuthHandler(
             IOptionsMonitor<AuthenticationSchemeOptions> options, 
@@ -39,17 +39,17 @@ namespace ASC.Api.Core.Auth
             ISystemClock clock,
             SecurityContext securityContext,
             UserManager userManager,
-            IServiceProvider serviceProvider) :
+            IServiceScopeFactory serviceScopeFactory) :
             base(options, logger, encoder, clock)
         {
             _securityContext = securityContext;
             _userManager = userManager;
-            _serviceProvider = serviceProvider;
+            _serviceScopeFactory = serviceScopeFactory;
         }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            using var scope = _serviceProvider.CreateScope();
+            using var scope = _serviceScopeFactory.CreateScope();
 
             var emailValidationKeyHelper = scope.ServiceProvider.GetService<EmailValidationKeyModelHelper>();
             var emailValidationKeyModel = emailValidationKeyHelper.GetModel();
