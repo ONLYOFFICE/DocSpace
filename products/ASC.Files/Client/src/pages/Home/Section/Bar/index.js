@@ -3,6 +3,7 @@ import { LANGUAGE } from "@appserver/common/constants";
 import { ADS_TIMEOUT } from "../../../../helpers/constants";
 import { getLanguage } from "@appserver/common/utils";
 import SnackBar from "@appserver/components/snackbar";
+import { Consumer } from "@appserver/components/utils/context";
 
 const loadLanguagePath = () => {
   if (!window.firebaseHelper) return;
@@ -65,15 +66,22 @@ const bannerHOC = (props) => {
     bar.remove();
   };
 
-  const onLoad = () => setMaintenanceExist(true);
+  const onLoad = () => {
+    setMaintenanceExist(true);
+  };
 
-  return personal && !mainBarExistNode && htmlLink && !firstLoad ? (
-    <SnackBar
-      onLoad={onLoad}
-      clickAction={onClose}
-      isCampaings={true}
-      htmlContent={htmlLink}
-    />
+  return !mainBarExistNode && htmlLink && !firstLoad ? (
+    <Consumer>
+      {(context) => (
+        <SnackBar
+          sectionWidth={context.sectionWidth}
+          onLoad={onLoad}
+          clickAction={onClose}
+          isCampaigns={true}
+          htmlContent={htmlLink}
+        />
+      )}
+    </Consumer>
   ) : null;
 };
 
