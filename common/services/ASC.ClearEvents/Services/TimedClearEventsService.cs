@@ -60,7 +60,7 @@ namespace ASC.ClearEvents.Services
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _logger.Debug("Timer Clear Events Service running.");
+            _logger.Info("Timer Clear Events Service running.");
 
             _timer = new Timer(DeleteOldEvents, null, TimeSpan.Zero, 
                 TimeSpan.FromDays(1));
@@ -70,7 +70,7 @@ namespace ASC.ClearEvents.Services
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            _logger.Debug("Timed Clear Events Service is stopping.");
+            _logger.Info("Timed Clear Events Service is stopping.");
 
             _timer?.Change(Timeout.Infinite, 0);
 
@@ -138,7 +138,7 @@ namespace ASC.ClearEvents.Services
     
     public class MessagesRepositoryExtension
     {
-        public static void Register(DIHelper services) => services.TryAdd<DbContextManager<MessagesContext>>();
+        public static void Register(DIHelper services) => services.TryAdd<DbContextManager<Messages>>();
     }
 
 }
