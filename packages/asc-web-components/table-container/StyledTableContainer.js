@@ -34,16 +34,15 @@ const StyledTableContainer = styled.div`
   .table-container_group-menu,
   .table-container_header {
     padding: 0 24px;
-    margin: 0 -24px;
 
     border-bottom: 1px solid;
     border-image-slice: 1;
     border-image-source: linear-gradient(
       to right,
-      #ffffff 24px,
-      #eceef1 24px,
-      #eceef1 calc(100% - 24px),
-      #ffffff calc(100% - 24px)
+      #ffffff 21px,
+      #eceef1 21px,
+      #eceef1 calc(100% - 31px),
+      #ffffff calc(100% - 31px)
     );
     border-top: 0;
   }

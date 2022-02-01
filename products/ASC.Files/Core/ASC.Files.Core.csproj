@@ -8,13 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="proto\BoxCacheItem.proto" />
-    <None Remove="proto\DropboxCacheItem.proto" />
-    <None Remove="proto\GoogleDriveCacheItem.proto" />
-    <None Remove="proto\OneDriveCacheItem.proto" />
-    <None Remove="proto\ProviderAccountCacheItem.proto" />
-    <None Remove="proto\SharePointProviderCacheItem.proto" />
-    <None Remove="proto\ThumbnailRequest.proto" />
+    <None Remove="proto\box_cache_item.proto" />
+    <None Remove="proto\dropbox_cache_item.proto" />
+    <None Remove="proto\google_drive_cache_item.proto" />
+    <None Remove="proto\one_drive_cache_item.proto" />
+    <None Remove="proto\provider_account_cache_item.proto" />
+    <None Remove="proto\share_point_provider_cache_item.proto" />
+    <None Remove="proto\thumbnail_request.proto" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,7 +23,7 @@
     <PackageReference Include="DocuSign.eSign.dll" Version="4.4.1" />
     <PackageReference Include="Dropbox.Api" Version="4.10.0" />
     <PackageReference Include="Google.Apis.Drive.v3" Version="1.49.0.2111" />
-    <PackageReference Include="Grpc.Tools" Version="2.32.0">
+    <PackageReference Include="Grpc.Tools" Version="2.40.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -38,13 +38,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="proto\ThumbnailRequest.proto" />
-    <Protobuf Include="proto\BoxCacheItem.proto" />
-    <Protobuf Include="proto\DropboxCacheItem.proto" />
-    <Protobuf Include="proto\GoogleDriveCacheItem.proto" />
-    <Protobuf Include="proto\OneDriveCacheItem.proto" />
-    <Protobuf Include="proto\ProviderAccountCacheItem.proto" />
-    <Protobuf Include="proto\SharePointProviderCacheItem.proto" />
+    <Protobuf Include="proto\thumbnail_request.proto" />
+    <Protobuf Include="proto\box_cache_item.proto" />
+    <Protobuf Include="proto\dropbox_cache_item.proto" />
+    <Protobuf Include="proto\google_drive_cache_item.proto" />
+    <Protobuf Include="proto\one_drive_cache_item.proto" />
+    <Protobuf Include="proto\provider_account_cache_item.proto" />
+    <Protobuf Include="proto\share_point_provider_cache_item.proto" />
   </ItemGroup>
 
   <ItemGroup>

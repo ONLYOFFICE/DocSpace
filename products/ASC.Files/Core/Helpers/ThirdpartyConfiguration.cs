@@ -37,10 +37,29 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Files.Helpers
 {
+    [Singletone]
+    public class ThirdpartyConfigurationData
+    {
+        private IConfiguration Configuration { get; }
+
+        private List<string> thirdPartyProviders;
+        public List<string> ThirdPartyProviders
+        {
+            get
+            {
+                return thirdPartyProviders ??= (Configuration.GetSection("files:thirdparty:enable").Get<string[]>() ?? new string[] { }).ToList();
+            }
+        }
+        public ThirdpartyConfigurationData(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+    }
+
     [Scope(Additional = typeof(BaseLoginProviderExtension))]
     public class ThirdpartyConfiguration
     {
-        private IConfiguration Configuration { get; }
+        private ThirdpartyConfigurationData Configuration { get; }
         private Lazy<BoxLoginProvider> BoxLoginProvider { get; }
         private Lazy<DropboxLoginProvider> DropboxLoginProvider { get; }
         private Lazy<OneDriveLoginProvider> OneDriveLoginProvider { get; }
@@ -48,7 +67,7 @@ namespace ASC.Web.Files.Helpers
         private Lazy<GoogleLoginProvider> GoogleLoginProvider { get; }
 
         public ThirdpartyConfiguration(
-            IConfiguration configuration,
+            ThirdpartyConfigurationData configuration,
             ConsumerFactory consumerFactory)
         {
             Configuration = configuration;
@@ -59,13 +78,9 @@ namespace ASC.Web.Files.Helpers
             GoogleLoginProvider = new Lazy<GoogleLoginProvider>(() => consumerFactory.Get<GoogleLoginProvider>());
         }
 
-        private IEnumerable<string> thirdPartyProviders;
-        public IEnumerable<string> ThirdPartyProviders
+        public List<string> ThirdPartyProviders
         {
-            get
-            {
-                return thirdPartyProviders ??= (Configuration.GetSection("files:thirdparty:enable").Get<string[]>() ?? new string[] { }).ToList();
-            }
+            get => Configuration.ThirdPartyProviders;
         }
 
         public bool SupportInclusion(IDaoFactory daoFactory)
@@ -80,7 +95,7 @@ namespace ASC.Web.Files.Helpers
         {
             get
             {
-                return ThirdPartyProviders.Contains("box") && BoxLoginProvider.Value.IsEnabled;
+                return ThirdPartyProviders.Exists(r => r == "box") && BoxLoginProvider.Value.IsEnabled;
             }
         }
 
@@ -88,7 +103,7 @@ namespace ASC.Web.Files.Helpers
         {
             get
             {
-                return ThirdPartyProviders.Contains("dropboxv2") && DropboxLoginProvider.Value.IsEnabled;
+                return ThirdPartyProviders.Exists(r => r == "dropboxv2") && DropboxLoginProvider.Value.IsEnabled;
             }
         }
 
@@ -96,38 +111,38 @@ namespace ASC.Web.Files.Helpers
         {
             get
             {
-                return ThirdPartyProviders.Contains("onedrive") && OneDriveLoginProvider.Value.IsEnabled;
+                return ThirdPartyProviders.Exists(r => r == "onedrive") && OneDriveLoginProvider.Value.IsEnabled;
             }
         }
 
         public bool SupportSharePointInclusion
         {
-            get { return ThirdPartyProviders.Contains("sharepoint"); }
+            get { return ThirdPartyProviders.Exists(r => r == "sharepoint"); }
         }
 
         public bool SupportWebDavInclusion
         {
-            get { return ThirdPartyProviders.Contains("webdav"); }
+            get { return ThirdPartyProviders.Exists(r => r == "webdav"); }
         }
 
         public bool SupportNextcloudInclusion
         {
-            get { return ThirdPartyProviders.Contains("nextcloud"); }
+            get { return ThirdPartyProviders.Exists(r => r == "nextcloud"); }
         }
 
         public bool SupportOwncloudInclusion
         {
-            get { return ThirdPartyProviders.Contains("owncloud"); }
+            get { return ThirdPartyProviders.Exists(r => r == "owncloud"); }
         }
 
         public bool SupportkDriveInclusion
         {
-            get { return ThirdPartyProviders.Contains("kdrive"); }
+            get { return ThirdPartyProviders.Exists(r => r == "kdrive"); }
         }
 
         public bool SupportYandexInclusion
         {
-            get { return ThirdPartyProviders.Contains("yandex"); }
+            get { return ThirdPartyProviders.Exists(r => r == "yandex"); }
         }
 
         public string DropboxAppKey
@@ -144,7 +159,7 @@ namespace ASC.Web.Files.Helpers
         {
             get
             {
-                return ThirdPartyProviders.Contains("docusign") && DocuSignLoginProvider.Value.IsEnabled;
+                return ThirdPartyProviders.Exists(r => r == "docusign") && DocuSignLoginProvider.Value.IsEnabled;
             }
         }
 
@@ -152,7 +167,7 @@ namespace ASC.Web.Files.Helpers
         {
             get
             {
-                return ThirdPartyProviders.Contains("google") && GoogleLoginProvider.Value.IsEnabled;
+                return ThirdPartyProviders.Exists(r => r == "google") && GoogleLoginProvider.Value.IsEnabled;
             }
         }
 

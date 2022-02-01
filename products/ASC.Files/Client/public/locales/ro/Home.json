@@ -1,4 +1,4 @@
-{
+﻿{
   "All": "Toate",
   "AllFiles": "Toate fișierele",
   "Archives": "Arhive",
@@ -12,7 +12,6 @@
   "Convert": "Convertește",
   "CopyItem": "<strong>{{title}}</strong> copiat",
   "CopyItems": "<strong>{{qty}}</strong> elemente copiate",
-  "CreateWithEmptyTitle": "Imposibil de creat un dosar sau un fișier fără nume ",
   "Document": "Document",
   "Duplicate": "Crează o copie",
   "EmptyFile": "Fișier gol",
@@ -42,6 +41,7 @@
   "New": "Nou",
   "NewDocument": "Document nou",
   "NewFolder": "Dosar nou",
+  "NewMasterForm": "Șablon formă nou",
   "NewPresentation": "Prezentare nouă",
   "NewSpreadsheet": "Foaie de calcul nouă",
   "NoSubfolders": "Subdosar",
@@ -67,11 +67,8 @@
   "ShowVersionHistory": "Afișare istoricul versiunei",
   "Spreadsheet": "Foaie de calcul",
   "SubheadingEmptyText": "Niciun fișier de afișat în acestă secțiune",
-  "TitleCreated": "A fost creat la",
   "TitleDocuments": "Documente",
-  "TitleModified": "Actualizat",
   "TitleSubfolders": "Foldere",
-  "TitleUploaded": "Încarcat",
   "TooltipElementCopyMessage": "Copiere {{element}}",
   "TooltipElementsCopyMessage": "Copiere elemente {{element}}",
   "TooltipElementsMoveMessage": "Mutare elemente {{element}}",

@@ -1,4 +1,4 @@
-{
+﻿{
   "ChangeUserTypeButton": "ປ່ຽນປະເພດ",
   "ChangeUserTypeHeader": "ປ່ຽນປະເພດຜູ້ໃຊ້",
   "ChangeUserTypeMessage": "ຜູ້ໃຊ້ທີ່ມີປະເພດ '{{firstType}}' ຈະຖືກຍ້າຍໄປປະເພດ '{{secondType}}'.",

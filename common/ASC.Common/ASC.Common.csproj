@@ -32,8 +32,8 @@
     <PackageReference Include="Autofac.Configuration" Version="6.0.0" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="Confluent.Kafka" Version="1.4.3" />
-    <PackageReference Include="Google.Protobuf" Version="3.14.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.32.0">
+    <PackageReference Include="Google.Protobuf" Version="3.19.1" />
+    <PackageReference Include="Grpc.Tools" Version="2.40.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -55,12 +55,14 @@
     </PackageReference> -->
     <PackageReference Include="NLog" Version="4.7.10" />
     <PackageReference Include="NVelocity" Version="1.2.0" />
+    <PackageReference Include="StackExchange.Redis" Version="2.2.88" />
+    <PackageReference Include="StackExchange.Redis.Extensions.Core" Version="7.2.1" />
   </ItemGroup>
   <ItemGroup>
-    <Protobuf Include="protos\AscCacheItem.proto" />
-    <Protobuf Include="protos\NotifyItem.proto" />
-    <Protobuf Include="protos\DistributedTaskCache.proto" />
-    <Protobuf Include="protos\DistributedTaskCancelation.proto" />
+    <Protobuf Include="protos\asc_cache_item.proto" />
+    <Protobuf Include="protos\notify_item.proto" />
+    <Protobuf Include="protos\distributed_task_cache.proto" />
+    <Protobuf Include="protos\distributed_task_cancelation.proto" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Notify\" />

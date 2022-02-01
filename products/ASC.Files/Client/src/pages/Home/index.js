@@ -285,13 +285,12 @@ class PureHome extends React.Component {
           hideAside={
             !!fileActionId ||
             primaryProgressDataVisible ||
-            secondaryProgressDataStoreVisible
+            secondaryProgressDataStoreVisible //TODO: use hideArticle action
           }
           isLoaded={!firstLoad}
           isHeaderVisible={isHeaderVisible}
           onOpenUploadPanel={this.showUploadPanel}
           firstLoad={firstLoad}
-          dragging={dragging}
         >
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />

@@ -1,4 +1,4 @@
-{
+﻿{
   "All": "Tout",
   "AllFiles": "Tous les fichiers",
   "Archives": "Archives",
@@ -12,7 +12,6 @@
   "Convert": "Convertir",
   "CopyItem": "<strong>{{title}}</strong> copié",
   "CopyItems": "<strong>{{qty}}</strong> éléments copiés",
-  "CreateWithEmptyTitle": "Impossible de créer un dossier ou un fichier sans titre",
   "Document": "Document",
   "Duplicate": "Créer une copie",
   "EmptyFile": "Fichier vide",
@@ -42,6 +41,7 @@
   "New": "nouveau",
   "NewDocument": "Nouveau document",
   "NewFolder": "Nouveau dossier",
+  "NewMasterForm": "Nouveau modèle de formulaire",
   "NewPresentation": "Nouvelle présentation",
   "NewSpreadsheet": "Nouvelle feuille de calcul",
   "NoSubfolders": "Aucun sous-dossier",
@@ -67,11 +67,8 @@
   "ShowVersionHistory": "Afficher l'historique des versions",
   "Spreadsheet": "Feuille de calcul",
   "SubheadingEmptyText": "Aucun fichier à afficher dans cette section",
-  "TitleCreated": "Créée",
   "TitleDocuments": "Dcs",
-  "TitleModified": "Actualisé",
   "TitleSubfolders": "Dossiers",
-  "TitleUploaded": "Téléchargé",
   "TooltipElementCopyMessage": "Copier {{element}}",
   "TooltipElementsCopyMessage": "Copier {{element}} des elements",
   "TooltipElementsMoveMessage": "Déplacer les éléments {{element}}",

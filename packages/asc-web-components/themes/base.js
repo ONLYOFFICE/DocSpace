@@ -167,6 +167,18 @@ const Base = {
     bodyPadding: "16px 0",
   },
 
+  mainButtonMobile: {
+    dropDown: {
+      right: "15%",
+      bottom: "15%",
+      width: "400px",
+    },
+
+    dropDownItem: {
+      padding: "10px",
+    },
+  },
+
   mainButton: {
     backgroundColor: orangeMain,
     disableBackgroundColor: orangeDisabled,
@@ -491,13 +503,17 @@ const Base = {
 
     content: {
       backgroundColor: white,
-      padding: "0 16px 16px",
-
+      modalPadding: "0 12px 12px",
+      modalBorderRadius: "6px",
+      asidePadding: "0 16px 16px",
       heading: {
         maxWidth: "500px",
         margin: "0",
-        lineHeight: "56px",
+        modalLineHeight: "40px",
+        asideLineHeight: "56px",
         fontWeight: "700",
+        asideFontSize: "21px",
+        modalFontSize: "18px",
       },
     },
 
@@ -506,13 +522,13 @@ const Base = {
     },
 
     closeButton: {
-      width: "17px",
-      height: "17px",
-      minWidth: "17px",
-      minHeight: "17px",
+      width: "14px",
+      height: "14px",
+      minWidth: "14px",
+      minHeight: "14px",
 
       right: "16px",
-      top: "19px",
+      top: "13px",
       hoverColor: grayMain,
     },
   },
@@ -755,10 +771,10 @@ const Base = {
     span: { maxWidth: "300px" },
 
     caret: {
-      width: "8px",
-      minWidth: "8px",
-      height: "8px",
-      minHeight: "8px",
+      width: "5px",
+      minWidth: "5px",
+      height: "4px",
+      minHeight: "4px",
       marginLeft: "5px",
       marginTop: "-4px",
       right: "6px",

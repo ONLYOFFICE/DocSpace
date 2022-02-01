@@ -4,31 +4,21 @@ import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 
 import Link from "@appserver/components/link";
-import Text from "@appserver/components/text";
 
 import TileContent from "./sub-components/TileContent";
 import withContent from "../../../../../HOCs/withContent";
 import withBadges from "../../../../../HOCs/withBadges";
-import { isMobile } from "react-device-detect";
+import { isDesktop } from "react-device-detect";
 
 const SimpleFilesTileContent = styled(TileContent)`
   .row-main-container {
     height: auto;
     max-width: 100%;
     align-self: flex-end;
-
-    a {
-      word-break: break-word;
-    }
   }
 
   .main-icons {
     align-self: flex-end;
-  }
-
-  .badge-ext {
-    margin-left: -8px;
-    margin-right: 8px;
   }
 
   .badge {
@@ -54,15 +44,13 @@ const SimpleFilesTileContent = styled(TileContent)`
     padding-right: 8px;
   }
 
-  .title-link {
-    font-size: ${isMobile ? "15px" : "13px"};
-    margin-top: 2px;
-  }
-
   .favorite,
-  .can-convert {
-    height: 14px;
-    width: 14px;
+  .can-convert,
+  .edit {
+    svg:not(:root) {
+      width: 14px;
+      height: 14px;
+    }
   }
 
   @media (max-width: 1024px) {
@@ -75,45 +63,26 @@ const SimpleFilesTileContent = styled(TileContent)`
   }
 `;
 
-const FilesTileContent = ({
-  item,
-  titleWithoutExt,
-  linkStyles,
-  badgesComponent,
-}) => {
+const FilesTileContent = ({ item, titleWithoutExt, linkStyles }) => {
   const { fileExst, title } = item;
 
   return (
     <>
       <SimpleFilesTileContent sideColor="#333" isFile={fileExst}>
         <Link
-          className="title-link item-file-name"
+          className="item-file-name"
           containerWidth="100%"
           type="page"
           title={title}
           fontWeight="600"
-          fontSize={isMobile ? "15px" : "13px"}
+          fontSize={isDesktop ? "13px" : "14px"}
           target="_blank"
           {...linkStyles}
           color="#333"
           isTextOverflow
         >
           {titleWithoutExt}
-          {fileExst ? (
-            <Text
-              className="badge-ext"
-              as="span"
-              color="#A3A9AE"
-              fontSize={isMobile ? "15px" : "13px"}
-              fontWeight={600}
-              truncate={true}
-            >
-              {fileExst}
-            </Text>
-          ) : null}
         </Link>
-
-        <div className="badges">{badgesComponent}</div>
       </SimpleFilesTileContent>
     </>
   );

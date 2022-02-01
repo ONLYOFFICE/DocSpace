@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security;
 using System.Text;
 using System.Threading;
@@ -321,7 +322,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             request.RequestUri = new Uri(GoogleLoginProvider.GoogleUrlFileUpload + "/{fileId}?uploadType=media".Replace("{fileId}", fileId));
             request.Method = HttpMethod.Patch;
             request.Headers.Add("Authorization", "Bearer " + token);
-            request.Headers.Add("Content-Type", MimeMapping.GetMimeMapping(currentType));
+            request.Content.Headers.ContentType = new MediaTypeHeaderValue(MimeMapping.GetMimeMapping(currentType));
 
             if (stream != null)
             {
@@ -769,7 +770,7 @@ namespace ASC.Web.Files.ThirdPartyApp
 
                 request.Method = HttpMethod.Post;
                 request.Headers.Add("Authorization", "Bearer " + token);
-                request.Headers.Add("Content-Type", "multipart/related; boundary=" + boundary);
+                request.Content.Headers.ContentType = new MediaTypeHeaderValue("multipart/related; boundary=" + boundary);
 
                 Logger.Debug("GoogleDriveApp: create file totalSize - " + tmpStream.Length);
 

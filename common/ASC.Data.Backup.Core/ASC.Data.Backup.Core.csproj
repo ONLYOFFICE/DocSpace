@@ -8,15 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="protos\BackupProgress.proto" />
-    <None Remove="protos\DeleteSchedule.proto" />
+    <None Remove="protos\backup_progress.proto" />
+    <None Remove="protos\delete_schedule.proto" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Grpc" Version="2.32.0">
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
-    <PackageReference Include="Grpc.Tools" Version="2.32.0">
+    <PackageReference Include="Grpc.Tools" Version="2.40.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -29,8 +29,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="protos\BackupProgress.proto" />
-    <Protobuf Include="protos\DeleteSchedule.proto" />
+    <Protobuf Include="protos\backup_progress.proto" />
+    <Protobuf Include="protos\delete_schedule.proto" />
   </ItemGroup>
 
   <ItemGroup>
