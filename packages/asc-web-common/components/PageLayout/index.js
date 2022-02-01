@@ -22,6 +22,8 @@ import FloatingButton from "../FloatingButton";
 import { inject, observer } from "mobx-react";
 import Selecto from "react-selecto";
 import styled, { css } from "styled-components";
+import { LayoutContextConsumer } from "studio/Layout/context";
+import classnames from "classnames";
 
 const StyledSelectoWrapper = styled.div`
   .selecto-selection {
@@ -31,22 +33,23 @@ const StyledSelectoWrapper = styled.div`
 
 const StyledMainBar = styled.div`
   box-sizing: border-box;
+  @media ${desktop} {
+    margin-left: -24px;
+    max-width: ${(props) => props.width + 40 + "px"};
+  }
 
-  ${!isMobile
-    ? css`
-        padding-right: 24px;
-        @media ${tablet} {
-          padding-right: 16px;
-        }
-      `
-    : css`
-        margin-top: 10px;
-        padding-right: 0px;
-
-        @media ${desktop} {
-          padding-right: 10px;
-        }
-      `}
+  @media ${tablet} {
+    margin-left: -16px;
+    max-width: ${(props) => props.width + 36 + "px"};
+  }
+  ${isMobile &&
+  css`
+    z-index: 149;
+    //  min-width: 100%;
+    position: fixed;
+    // padding-left: 8px;
+    top: 48px;
+  `};
 `;
 
 function ArticleHeader() {
@@ -239,6 +242,7 @@ class PageLayout extends React.Component {
       isArticlePinned,
       isDesktop,
       isHomepage,
+      maintenanceExist,
     } = this.props;
     let articleHeaderContent = null;
     let articleMainButtonContent = null;
@@ -370,16 +374,30 @@ class PageLayout extends React.Component {
                     pinned={isArticlePinned}
                     visible={isArticleVisible}
                   >
-                    <div id="main-bar" style={{ marginLeft: "-24px" }}>
-                      <SubSectionBar>
-                        {sectionBarContent
-                          ? sectionBarContent.props.children
-                          : null}
-                      </SubSectionBar>
-                    </div>
-                    {/* <div style={{ padding: "0 0 0 24px" }}> */}
+                    <LayoutContextConsumer>
+                      {(value) => (
+                        <StyledMainBar
+                          width={width}
+                          id="main-bar"
+                          className={classnames("main-bar", {
+                            "main-bar--hidden":
+                              value.isVisible === undefined
+                                ? false
+                                : !value.isVisible,
+                          })}
+                        >
+                          <SubSectionBar>
+                            {sectionBarContent
+                              ? sectionBarContent.props.children
+                              : null}
+                          </SubSectionBar>
+                        </StyledMainBar>
+                      )}
+                    </LayoutContextConsumer>
+
                     {isSectionHeaderAvailable && (
                       <SubSectionHeader
+                        maintenanceExist={maintenanceExist}
                         isHeaderVisible={isHeaderVisible}
                         isArticlePinned={isArticlePinned}
                         viewAs={viewAs}
@@ -573,6 +591,7 @@ export default inject(({ auth }) => {
     setIsArticleVisible,
     setIsBackdropVisible,
     isDesktopClient,
+    maintenanceExist,
   } = settingsStore;
 
   return {
@@ -586,6 +605,7 @@ export default inject(({ auth }) => {
     setIsArticleVisible,
     isBackdropVisible,
     setIsBackdropVisible,
+    maintenanceExist,
     isDesktop: isDesktopClient,
   };
 })(observer(PageLayout));
