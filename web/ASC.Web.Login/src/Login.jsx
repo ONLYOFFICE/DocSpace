@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import Box from "@appserver/components/box";
@@ -448,6 +447,8 @@ const Form = (props) => {
         onClose={moreAuthClose}
         providers={providers}
         onSocialLoginClick={onSocialButtonClick}
+        ssoLabel={ssoLabel}
+        ssoUrl={ssoUrl}
       />
     </LoginContainer>
   );

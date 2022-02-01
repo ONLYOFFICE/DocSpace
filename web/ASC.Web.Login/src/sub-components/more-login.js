@@ -36,7 +36,15 @@ const ProviderRow = styled.div`
 `;
 
 const MoreLoginModal = (props) => {
-  const { t, visible, onClose, providers, onSocialLoginClick } = props;
+  const {
+    t,
+    visible,
+    onClose,
+    providers,
+    onSocialLoginClick,
+    ssoLabel,
+    ssoUrl,
+  } = props;
 
   return (
     <ModalDialogContainer
@@ -46,6 +54,20 @@ const MoreLoginModal = (props) => {
     >
       <ModalDialog.Header>{t("Authorization")}</ModalDialog.Header>
       <ModalDialog.Body>
+        {ssoLabel && ssoUrl && (
+          <ProviderRow key={`ProviderItemSSO`}>
+            <ReactSVG src="/static/images/sso.react.svg" />
+            <Text fontSize="14px" fontWeight="600" className="provider-name">
+              {ssoLabel}
+            </Text>
+            <Button
+              label={t("LoginButton")}
+              className="signin-button"
+              size="medium"
+              onClick={() => (window.location.href = ssoUrl)}
+            />
+          </ProviderRow>
+        )}
         {providers.map((item, index) => {
           if (!providersData[item.provider]) return;
 
