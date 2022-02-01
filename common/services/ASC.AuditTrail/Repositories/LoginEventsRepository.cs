@@ -30,6 +30,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ASC.AuditTrail.Mappers;
+using ASC.AuditTrail.Models;
 using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
@@ -38,7 +39,7 @@ using ASC.Core.Users;
 
 using Newtonsoft.Json;
 
-namespace ASC.AuditTrail.Data
+namespace ASC.AuditTrail.Data.Repositories
 {
     [Scope]
     public class LoginEventsRepository

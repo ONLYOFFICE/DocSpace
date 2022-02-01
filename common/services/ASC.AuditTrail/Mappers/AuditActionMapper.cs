@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.AuditTrail.Models;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.MessagingSystem;

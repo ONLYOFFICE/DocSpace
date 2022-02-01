@@ -31,9 +31,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+using ASC.AuditTrail.Attributes;
+
 using CsvHelper.Configuration;
 
-namespace ASC.AuditTrail
+namespace ASC.AuditTrail.Models
 {
     public class BaseEvent
     {
@@ -80,20 +82,6 @@ namespace ASC.AuditTrail
                 var attr = prop.GetCustomAttribute<EventAttribute>().Resource;
                 Map(eventType, prop).Name(AuditReportResource.ResourceManager.GetString(attr));
             }
-        }
-    }
-
-    [AttributeUsage(AttributeTargets.Property)]
-    internal class EventAttribute : Attribute
-    {
-        public string Resource { get; private set; }
-
-        public int Order { get; private set; }
-
-        public EventAttribute(string resource, int order = 0)
-        {
-            Resource = resource;
-            Order = order;
         }
     }
 }
