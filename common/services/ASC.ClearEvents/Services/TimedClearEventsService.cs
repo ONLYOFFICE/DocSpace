@@ -43,36 +43,41 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
-namespace ASC.Thumbnails.Svc
+namespace ASC.ClearEvents.Services
 {
     [Scope(Additional = typeof(MessagesRepositoryExtension))]
-    public class ClearEventsServiceLauncher : IHostedService
+    public class TimedClearEventsService : IHostedService, IDisposable
     {
-        private ILog Log { get; set; }
-        private IServiceProvider ServiceProvider { get; }
-        private Timer ClearTimer;
+        private readonly ILog _logger;
+        private readonly IServiceProvider _serviceProvider;
+        private Timer _timer = null!;
 
-        public ClearEventsServiceLauncher(IOptionsMonitor<ILog> options, IServiceProvider serviceProvider)
+        public TimedClearEventsService(IOptionsMonitor<ILog> options, IServiceProvider serviceProvider)
         {
-            Log = options.CurrentValue;
-            ServiceProvider = serviceProvider;
+            _logger = options.CurrentValue;
+            _serviceProvider = serviceProvider;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            ClearTimer = new Timer(DeleteOldEvents);
-            ClearTimer.Change(new TimeSpan(0), TimeSpan.FromDays(1));
+            _logger.Debug("Timer Clear Events Service running.");
+
+            _timer = new Timer(DeleteOldEvents, null, TimeSpan.Zero, 
+                TimeSpan.FromDays(1));
+
             return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            if (ClearTimer != null)
-            {
-                ClearTimer.Dispose();
-            }
+            _logger.Debug("Timed Clear Events Service is stopping.");
+
+            _timer?.Change(Timeout.Infinite, 0);
+
             return Task.CompletedTask;
         }
+
+        public void Dispose() => _timer?.Dispose();
 
         private void DeleteOldEvents(object state)
         {
@@ -83,7 +88,7 @@ namespace ASC.Thumbnails.Svc
             }
             catch (Exception ex)
             {
-                Log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -93,7 +98,7 @@ namespace ASC.Thumbnails.Svc
             var compile = func.Compile();
             do
             {
-                using var scope = ServiceProvider.CreateScope();
+                using var scope = _serviceProvider.CreateScope();
                 using var ef = scope.ServiceProvider.GetService<DbContextManager<Messages>>().Get("messages");
                 var table = compile.Invoke(ef);
 
@@ -131,12 +136,9 @@ namespace ASC.Thumbnails.Svc
         public DbSet<DbWebstudioSettings> WebstudioSettings { get; }
     }
     
-public class MessagesRepositoryExtension
+    public class MessagesRepositoryExtension
     {
-        public static void Register(DIHelper services)
-        {
-            services.TryAdd<DbContextManager<MessagesContext>>();
-        }
+        public static void Register(DIHelper services) => services.TryAdd<DbContextManager<MessagesContext>>();
     }
 
 }
