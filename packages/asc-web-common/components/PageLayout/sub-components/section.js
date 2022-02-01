@@ -25,7 +25,24 @@ const StyledSection = styled.section`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  //width: ${(props) => `${props.widthProp}px`};
+
+  .main-bar,
+  .main-bar--hidden {
+    ${isMobile &&
+    css`
+      transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+      -moz-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+      -ms-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+      -webkit-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+      -o-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+    `}
+  }
+  .main-bar--hidden {
+    ${isMobile &&
+    css`
+      top: -140px;
+    `}
+  }
   .layout-progress-bar {
     position: fixed;
     right: 15px;
