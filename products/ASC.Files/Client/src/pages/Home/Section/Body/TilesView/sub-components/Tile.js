@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { ReactSVG } from "react-svg";
 import styled, { css } from "styled-components";
-import ContextMenu from "@appserver/components/context-menu";
+import NewContextMenu from "@appserver/components/new-context-menu";
 import { tablet } from "@appserver/components/utils/device";
 import { isDesktop } from "react-device-detect";
 
@@ -356,6 +356,11 @@ class Tile extends React.PureComponent {
     const [FilesTileContent, badges] = children;
     const quickButtons = contentElement;
 
+    const contextMenuHeader = {
+      icon: children.props.item.icon,
+      title: children.props.item.title,
+    };
+
     return (
       <StyledTile
         ref={this.tile}
@@ -418,7 +423,11 @@ class Tile extends React.PureComponent {
               ) : (
                 <div className="expandButton" />
               )}
-              <ContextMenu model={contextOptions} ref={this.cm} />
+              <NewContextMenu
+                model={contextOptions}
+                ref={this.cm}
+                header={contextMenuHeader}
+              />
             </StyledOptionButton>
           </>
         ) : (
@@ -473,7 +482,11 @@ class Tile extends React.PureComponent {
                 ) : (
                   <div className="expandButton" />
                 )}
-                <ContextMenu model={contextOptions} ref={this.cm} />
+                <NewContextMenu
+                  model={contextOptions}
+                  ref={this.cm}
+                  header={contextMenuHeader}
+                />
               </StyledOptionButton>
             </StyledFileTileBottom>
           </>

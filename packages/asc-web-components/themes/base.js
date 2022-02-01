@@ -1719,6 +1719,69 @@ const Base = {
       },
     },
   },
+
+  menuItem: {
+    iconWrapper: {
+      width: "16px",
+      height: "16px",
+      header: {
+        width: "24px",
+        height: "24px",
+      },
+    },
+    separator: {
+      borderBottom: `1px solid ${grayLightMid} !important`,
+      margin: "6px 16px 6px 16px !important",
+      height: "1px !important",
+      width: "calc(100% - 32px) !important",
+    },
+    text: {
+      header: {
+        fontSize: "15px",
+        lineHeight: "16px",
+      },
+      mobile: {
+        fontSize: "13px",
+        lineHeight: "36px",
+      },
+      fontSize: "12px",
+      lineHeight: "30px",
+      fontWeight: "600",
+      margin: "0 0 0 8px",
+      color: black,
+    },
+    hover: grayLight,
+    background: "none",
+    svgFill: black,
+    header: {
+      height: "55px",
+      borderBottom: `1px solid ${grayLightMid}`,
+      marginBottom: "6px",
+    },
+    height: "30px",
+    borderBottom: "none",
+    marginBottom: "0",
+    padding: "0 12px",
+    mobile: {
+      height: "36px",
+      padding: "0 16px",
+    },
+  },
+  newContextMenu: {
+    background: white,
+    borderRadius: "6px",
+    boxShadow: "0px 12px 40px rgba(4, 15, 27, 0.12)",
+    padding: "6px 0px",
+    devices: {
+      maxHeight: "calc(100vh - 64px)",
+      tabletWidth: "375px",
+      mobileWidth: "100vw",
+      left: 0,
+      right: 0,
+      bottom: 0,
+      margin: "0 auto",
+    },
+  },
 };
 
 export default Base;
