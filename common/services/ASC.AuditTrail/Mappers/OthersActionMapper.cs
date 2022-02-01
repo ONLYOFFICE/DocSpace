@@ -34,10 +34,9 @@ namespace ASC.AuditTrail.Mappers
 {
     internal class OthersActionsMapper
     {
-        public static Dictionary<MessageAction, MessageMaps> GetMaps()
-        {
-            return new Dictionary<MessageAction, MessageMaps>
-                {
+        public static Dictionary<MessageAction, MessageMaps> GetMaps() =>
+            new Dictionary<MessageAction, MessageMaps>
+            {
                     {
                         MessageAction.ContactAdminMailSent, new MessageMaps
                             {
@@ -46,7 +45,6 @@ namespace ASC.AuditTrail.Mappers
                                 ProductResourceName = "OthersProduct"
                             }
                     }
-                };
-        }
+            };
     }
 }

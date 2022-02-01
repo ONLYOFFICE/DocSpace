@@ -38,17 +38,13 @@ namespace ASC.AuditTrail
     public class BaseEvent
     {
         public int Id { get; set; }
-
         public int TenantId { get; set; }
-
         public Guid UserId { get; set; }
-
         public bool Mobile { get; set; }
-
         public IList<string> Description { get; set; }
 
         [Event("IpCol")]
-        public string IP { get; set; }
+        public string Ip { get; set; }
 
         [Event("BrowserCol")]
         public string Browser { get; set; }

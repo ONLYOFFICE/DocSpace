@@ -34,10 +34,9 @@ namespace ASC.AuditTrail.Mappers
 {
     internal class CrmActionMapper
     {
-        public static Dictionary<MessageAction, MessageMaps> GetMaps()
-        {
-            return new Dictionary<MessageAction, MessageMaps>
-                {
+        public static Dictionary<MessageAction, MessageMaps> GetMaps() =>
+            new Dictionary<MessageAction, MessageMaps>
+            {
                     #region companies
 
                     {
@@ -1622,7 +1621,6 @@ namespace ASC.AuditTrail.Mappers
                     },
 
                     #endregion
-                };
-        }
+            };
     }
 }

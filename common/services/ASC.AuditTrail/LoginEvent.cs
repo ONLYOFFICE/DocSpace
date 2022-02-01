@@ -31,7 +31,6 @@ namespace ASC.AuditTrail
     public class LoginEvent : BaseEvent
     {
         public string Login { get; set; }
-
         public int Action { get; set; }
     }
 }

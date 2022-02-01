@@ -43,22 +43,20 @@ namespace ASC.AuditTrail.Data
     [Scope]
     public class LoginEventsRepository
     {
-        private UserFormatter UserFormatter { get; }
-        private AuditActionMapper AuditActionMapper { get; }
-        private MessagesContext MessagesContext { get => LazyMessagesContext.Value; }
-        private Lazy<MessagesContext> LazyMessagesContext { get; }
+        private MessagesContext MessagesContext => _lazyMessagesContext.Value;
 
-        public LoginEventsRepository(UserFormatter userFormatter, AuditActionMapper auditActionMapper, DbContextManager<MessagesContext> dbMessagesContext)
-        {
-            UserFormatter = userFormatter;
-            AuditActionMapper = auditActionMapper;
-            LazyMessagesContext = new Lazy<MessagesContext>(() => dbMessagesContext.Value);
-        }
+        private readonly UserFormatter _userFormatter;
+        private readonly AuditActionMapper _auditActionMapper;
+        private readonly Lazy<MessagesContext> _lazyMessagesContext;
 
-        private class Query
+        public LoginEventsRepository(
+            UserFormatter userFormatter, 
+            AuditActionMapper auditActionMapper, 
+            DbContextManager<MessagesContext> dbMessagesContext)
         {
-            public LoginEvents LoginEvents { get; set; }
-            public User User { get; set; }
+            _userFormatter = userFormatter;
+            _auditActionMapper = auditActionMapper;
+            _lazyMessagesContext = new Lazy<MessagesContext>(() => dbMessagesContext.Value);
         }
 
         public IEnumerable<LoginEvent> GetLast(int tenant, int chunk)
@@ -68,7 +66,7 @@ namespace ASC.AuditTrail.Data
                  from p in MessagesContext.Users.Where(p => b.UserId == p.Id).DefaultIfEmpty()
                  where b.TenantId == tenant
                  orderby b.Date descending
-                 select new Query { LoginEvents = b, User = p })
+                 select new LoginEventQuery { LoginEvents = b, User = p })
                 .Take(chunk);
 
             return query.AsEnumerable().Select(ToLoginEvent).ToList();
@@ -83,7 +81,7 @@ namespace ASC.AuditTrail.Data
                 where q.Date >= fromDate
                 where q.Date <= to
                 orderby q.Date descending
-                select new Query { LoginEvents = q, User = p };
+                select new LoginEventQuery { LoginEvents = q, User = p };
 
             return query.AsEnumerable().Select(ToLoginEvent).ToList();
         }
@@ -93,20 +91,17 @@ namespace ASC.AuditTrail.Data
             var query = MessagesContext.LoginEvents
                 .Where(l => l.TenantId == tenant);
 
-            if (from.HasValue && to.HasValue)
-            {
-                query = query.Where(l => l.Date >= from & l.Date <= to);
-            }
+            if (from.HasValue && to.HasValue) query = query.Where(l => l.Date >= from & l.Date <= to);
 
             return query.Count();
         }
 
-        private LoginEvent ToLoginEvent(Query query)
+        private LoginEvent ToLoginEvent(LoginEventQuery query)
         {
             var evt = new LoginEvent
             {
                 Id = query.LoginEvents.Id,
-                IP = query.LoginEvents.Ip,
+                Ip = query.LoginEvents.Ip,
                 Login = query.LoginEvents.Login,
                 Browser = query.LoginEvents.Browser,
                 Platform = query.LoginEvents.Platform,
@@ -118,24 +113,30 @@ namespace ASC.AuditTrail.Data
             };
 
             if (query.LoginEvents.Description != null)
-            {
                 evt.Description = JsonConvert.DeserializeObject<IList<string>>(
                     query.LoginEvents.Description,
                     new JsonSerializerSettings
                     {
                         DateTimeZoneHandling = DateTimeZoneHandling.Utc
                     });
-            }
+
             evt.UserName = (!string.IsNullOrEmpty(query.User?.FirstName) && !string.IsNullOrEmpty(query.User?.LastName))
-                                ? UserFormatter.GetUserName(query.User.FirstName, query.User.LastName)
+                                ? _userFormatter.GetUserName(query.User.FirstName, query.User.LastName)
                                 : !string.IsNullOrWhiteSpace(evt.Login)
                                         ? evt.Login
                                         : evt.UserId == Core.Configuration.Constants.Guest.ID
                                             ? AuditReportResource.GuestAccount
                                             : AuditReportResource.UnknownAccount;
 
-            evt.ActionText = AuditActionMapper.GetActionText(evt);
+            evt.ActionText = _auditActionMapper.GetActionText(evt);
+
             return evt;
-        }
+        } 
+    }
+
+    public class LoginEventQuery
+    {
+        public LoginEvents LoginEvents { get; set; }
+        public User User { get; set; }
     }
 }

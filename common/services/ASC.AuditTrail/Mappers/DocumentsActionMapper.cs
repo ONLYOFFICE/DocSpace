@@ -33,19 +33,9 @@ namespace ASC.AuditTrail.Mappers
 {
     internal class DocumentsActionMapper
     {
-        public static Dictionary<MessageAction, MessageMaps> GetMaps()
-        {
-            return new Dictionary<MessageAction, MessageMaps>
-                {
-                    {
-                        MessageAction.FileCreated, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "CreateActionType",
-                                ActionTextResourceName = "FileCreated",
-                                ProductResourceName = "DocumentsProduct",
-                                ModuleResourceName = "FilesModule"
-                            }
-                    },
+        public static Dictionary<MessageAction, MessageMaps> GetMaps() =>
+            new Dictionary<MessageAction, MessageMaps>
+            {
                     {
                         MessageAction.FileRenamed, new MessageMaps
                             {
@@ -63,7 +53,7 @@ namespace ASC.AuditTrail.Mappers
                                 ProductResourceName = "DocumentsProduct",
                                 ModuleResourceName = "FilesModule"
                             }
-                    },                    
+                    },
                     {
                         MessageAction.UserFileUpdated, new MessageMaps
                             {
@@ -424,7 +414,6 @@ namespace ASC.AuditTrail.Mappers
                                 ModuleResourceName = "FilesModule"
                             }
                     },
-                };
-        }
+            };
     }
 }

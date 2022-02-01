@@ -15,11 +15,11 @@
  * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
  * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
  *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
+ * Pursuant to Section 7 ï¿½ 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
  * relevant author attributions when distributing the software. If the display of the logo in its graphic 
  * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
  * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
+ * Pursuant to Section 7 ï¿½ 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
 */
 
@@ -42,35 +42,28 @@ namespace ASC.AuditTrail
     [Scope]
     public class AuditEventsRepository
     {
-        private MessageTarget MessageTarget { get; set; }
-        private UserFormatter UserFormatter { get; set; }
-        private Lazy<AuditTrailContext> LazyAuditTrailContext { get; }
-        private AuditTrailContext AuditTrailContext { get => LazyAuditTrailContext.Value; }
-        private AuditActionMapper AuditActionMapper { get; }
+        private AuditTrailContext AuditTrailContext => _lazyAuditTrailContext.Value;
 
-        public AuditEventsRepository(MessageTarget messageTarget, UserFormatter userFormatter, DbContextManager<AuditTrailContext> dbContextManager, AuditActionMapper auditActionMapper)
+        private readonly MessageTarget _messageTarget;
+        private readonly UserFormatter _userFormatter;
+        private readonly Lazy<AuditTrailContext> _lazyAuditTrailContext;
+        private readonly AuditActionMapper _auditActionMapper;
+
+        public AuditEventsRepository(
+            MessageTarget messageTarget, 
+            UserFormatter userFormatter, 
+            DbContextManager<AuditTrailContext> dbContextManager, 
+            AuditActionMapper auditActionMapper)
         {
-            MessageTarget = messageTarget;
-            UserFormatter = userFormatter;
-            LazyAuditTrailContext = new Lazy<AuditTrailContext>(() => dbContextManager.Value );
-            AuditActionMapper = auditActionMapper;
+            _messageTarget = messageTarget;
+            _userFormatter = userFormatter;
+            _lazyAuditTrailContext = new Lazy<AuditTrailContext>(() => dbContextManager.Value );
+            _auditActionMapper = auditActionMapper;
         }
 
-        public IEnumerable<AuditEvent> GetLast(int tenant, int chunk)
-        {
-            return Get(tenant, null, null, chunk);
-        }
+        public IEnumerable<AuditEvent> GetLast(int tenant, int chunk) => Get(tenant, null, null, chunk);
 
-        public IEnumerable<AuditEvent> Get(int tenant, DateTime from, DateTime to)
-        {
-            return Get(tenant, from, to, null);
-        }
-
-        private class Query
-        {
-            public Core.Common.EF.Model.AuditEvent AuditEvent { get; set; }
-            public User User { get; set; }
-        }
+        public IEnumerable<AuditEvent> Get(int tenant, DateTime from, DateTime to) => Get(tenant, from, to, null);
 
         private IEnumerable<AuditEvent> Get(int tenant, DateTime? fromDate, DateTime? to, int? limit)
         {
@@ -82,14 +75,9 @@ namespace ASC.AuditTrail
                select new Query { AuditEvent = q, User = p };
 
             if (fromDate.HasValue && to.HasValue)
-            {
                 query = query.Where(q => q.AuditEvent.Date >= fromDate & q.AuditEvent.Date <= to);
-            }
 
-            if (limit.HasValue)
-            {
-                query = query.Take((int)limit);
-            }
+            if (limit.HasValue) query = query.Take((int)limit);
 
             return query.AsEnumerable().Select(ToAuditEvent).ToList();
         }
@@ -101,9 +89,7 @@ namespace ASC.AuditTrail
                 .OrderByDescending(a => a.Date);
 
             if (from.HasValue && to.HasValue)
-            {
                 query = query.Where(a => a.Date >= from & a.Date <= to);
-            }
 
             return query.Count();
         }
@@ -115,7 +101,7 @@ namespace ASC.AuditTrail
                 var evt = new AuditEvent
                 {
                     Id = query.AuditEvent.Id,
-                    IP = query.AuditEvent.Ip,
+                    Ip = query.AuditEvent.Ip,
                     Initiator = query.AuditEvent.Initiator,
                     Browser = query.AuditEvent.Browser,
                     Platform = query.AuditEvent.Platform,
@@ -133,25 +119,29 @@ namespace ASC.AuditTrail
                         new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Utc });
                 }
 
-                evt.Target = MessageTarget.Parse(query.AuditEvent.Target);
+                evt.Target = _messageTarget.Parse(query.AuditEvent.Target);
 
-                evt.UserName = (query.User.FirstName != null && query.User.LastName != null) ? UserFormatter.GetUserName(query.User.FirstName, query.User.LastName) :
+                evt.UserName = (query.User.FirstName != null && query.User.LastName != null) ? _userFormatter.GetUserName(query.User.FirstName, query.User.LastName) :
                     evt.UserId == Core.Configuration.Constants.CoreSystem.ID ? AuditReportResource.SystemAccount :
                         evt.UserId == Core.Configuration.Constants.Guest.ID ? AuditReportResource.GuestAccount :
                             evt.Initiator ?? AuditReportResource.UnknownAccount;
 
-                evt.ActionText = AuditActionMapper.GetActionText(evt);
-                evt.ActionTypeText = AuditActionMapper.GetActionTypeText(evt);
-                evt.Product = AuditActionMapper.GetProductText(evt);
-                evt.Module = AuditActionMapper.GetModuleText(evt);
+                evt.ActionText = _auditActionMapper.GetActionText(evt);
+                evt.ActionTypeText = _auditActionMapper.GetActionTypeText(evt);
+                evt.Product = _auditActionMapper.GetProductText(evt);
+                evt.Module = _auditActionMapper.GetModuleText(evt);
 
                 return evt;
             }
-            catch (Exception)
-            {
-            }
+            catch (Exception) { }
 
             return null;
+        }
+
+        private class Query
+        {
+            public Core.Common.EF.Model.AuditEvent AuditEvent { get; set; }
+            public User User { get; set; }
         }
     }
 }
