@@ -31,6 +31,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 
+using ASC.AuditTrail.Models;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Web.Core.Files;
