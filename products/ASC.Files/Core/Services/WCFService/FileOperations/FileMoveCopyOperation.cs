@@ -568,7 +568,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                                     needToMark.Add(newFile);
 
-                                    var roomNew = documentServiceHelper.GetSocketFolderRoom(newFile.RootFolderId);
+                                    var roomNew = documentServiceHelper.GetSocketFolderRoom(toFolderId);
                                     socketManager.CreateFile(newFile.ID, roomNew, newFile);
 
                                     if (copy)
