@@ -531,7 +531,7 @@ class UploadDataStore {
     if (window.location.pathname.indexOf("/history") === -1) {
       const newFiles = files;
       const newFolders = folders;
-      const path = currentFile.path || [];
+      const path = currentFile.path.slice() || [];
       const fileIndex = newFiles.findIndex(
         (x) => x.id === currentFile.fileInfo.id
       );
