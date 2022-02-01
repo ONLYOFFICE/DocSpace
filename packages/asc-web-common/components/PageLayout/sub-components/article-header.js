@@ -1,7 +1,7 @@
-import React from "react";
-import styled from "styled-components";
-import equal from "fast-deep-equal/react";
-import { tablet } from "@appserver/components/utils/device";
+import React from 'react';
+import styled from 'styled-components';
+import equal from 'fast-deep-equal/react';
+import { tablet } from '@appserver/components/utils/device';
 
 const StyledArticleHeader = styled.div`
   height: 39px;
@@ -30,6 +30,6 @@ class ArticleHeader extends React.Component {
   }
 }
 
-ArticleHeader.displayName = "ArticleHeader";
+ArticleHeader.displayName = 'ArticleHeader';
 
 export default ArticleHeader;
