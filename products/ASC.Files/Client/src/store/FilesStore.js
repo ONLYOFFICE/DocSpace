@@ -1721,9 +1721,15 @@ class FilesStore {
 
       if (fileType === "file") {
         this.activeFiles.findIndex((f) => f == id) === -1 &&
-          newSelection.push(this.files.find((f) => f.id == id));
+          //newSelection.push(this.files.find((f) => f.id == id));
+          newSelection.push(
+            this.filesList.find((f) => f.id == id && f.fileExst)
+          );
       } else if (this.activeFolders.findIndex((f) => f == id) === -1) {
-        const selectableFolder = this.folders.find((f) => f.id == id);
+        //const selectableFolder = this.folders.find((f) => f.id == id);
+        const selectableFolder = this.filesList.find(
+          (f) => f.id == id && !f.fileExst
+        );
         selectableFolder.isFolder = true;
         newSelection.push(selectableFolder);
       }
