@@ -28,15 +28,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using ASC.AuditTrail.Mappers;
 using ASC.AuditTrail.Models;
 using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
-using ASC.Core.Users;
-using ASC.MessagingSystem;
 
-using Newtonsoft.Json;
+using AutoMapper;
 
 namespace ASC.AuditTrail.Repositories
 {
@@ -45,21 +42,15 @@ namespace ASC.AuditTrail.Repositories
     {
         private AuditTrailContext AuditTrailContext => _lazyAuditTrailContext.Value;
 
-        private readonly MessageTarget _messageTarget;
-        private readonly UserFormatter _userFormatter;
         private readonly Lazy<AuditTrailContext> _lazyAuditTrailContext;
-        private readonly AuditActionMapper _auditActionMapper;
+        private readonly IMapper _mapper;
 
         public AuditEventsRepository(
-            MessageTarget messageTarget, 
-            UserFormatter userFormatter, 
-            DbContextManager<AuditTrailContext> dbContextManager, 
-            AuditActionMapper auditActionMapper)
+            DbContextManager<AuditTrailContext> dbContextManager,
+            IMapper mapper)
         {
-            _messageTarget = messageTarget;
-            _userFormatter = userFormatter;
-            _lazyAuditTrailContext = new Lazy<AuditTrailContext>(() => dbContextManager.Value );
-            _auditActionMapper = auditActionMapper;
+            _lazyAuditTrailContext = new Lazy<AuditTrailContext>(() => dbContextManager.Value);
+            _mapper = mapper;
         }
 
         public IEnumerable<AuditEvent> GetLast(int tenant, int chunk) => Get(tenant, null, null, chunk);
@@ -80,7 +71,7 @@ namespace ASC.AuditTrail.Repositories
 
             if (limit.HasValue) query = query.Take((int)limit);
 
-            return query.AsEnumerable().Select(ToAuditEvent).ToList();
+            return query.AsEnumerable().Select(_mapper.Map<AuditEvent>).ToList();
         }
 
         public int GetCount(int tenant, DateTime? from = null, DateTime? to = null)
@@ -93,50 +84,6 @@ namespace ASC.AuditTrail.Repositories
                 query = query.Where(a => a.Date >= from & a.Date <= to);
 
             return query.Count();
-        }
-
-        private AuditEvent ToAuditEvent(AuditEventQuery query)
-        {
-            try
-            {
-                var evt = new AuditEvent
-                {
-                    Id = query.AuditEvent.Id,
-                    Ip = query.AuditEvent.Ip,
-                    Initiator = query.AuditEvent.Initiator,
-                    Browser = query.AuditEvent.Browser,
-                    Platform = query.AuditEvent.Platform,
-                    Date = query.AuditEvent.Date,
-                    TenantId = query.AuditEvent.TenantId,
-                    UserId = query.AuditEvent.UserId,
-                    Page = query.AuditEvent.Page,
-                    Action = query.AuditEvent.Action
-                };
-
-                if (query.AuditEvent.Description != null)
-                {
-                    evt.Description = JsonConvert.DeserializeObject<IList<string>>(
-                        Convert.ToString(query.AuditEvent.Description),
-                        new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Utc });
-                }
-
-                evt.Target = _messageTarget.Parse(query.AuditEvent.Target);
-
-                evt.UserName = (query.User.FirstName != null && query.User.LastName != null) ? _userFormatter.GetUserName(query.User.FirstName, query.User.LastName) :
-                    evt.UserId == Core.Configuration.Constants.CoreSystem.ID ? AuditReportResource.SystemAccount :
-                        evt.UserId == Core.Configuration.Constants.Guest.ID ? AuditReportResource.GuestAccount :
-                            evt.Initiator ?? AuditReportResource.UnknownAccount;
-
-                evt.ActionText = _auditActionMapper.GetActionText(evt);
-                evt.ActionTypeText = _auditActionMapper.GetActionTypeText(evt);
-                evt.Product = _auditActionMapper.GetProductText(evt);
-                evt.Module = _auditActionMapper.GetModuleText(evt);
-
-                return evt;
-            }
-            catch (Exception) { }
-
-            return null;
         }
     }
 }

@@ -29,15 +29,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using ASC.AuditTrail.Mappers;
 using ASC.AuditTrail.Models;
 using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
-using ASC.Core.Common.EF.Model;
-using ASC.Core.Users;
 
-using Newtonsoft.Json;
+using AutoMapper;
 
 namespace ASC.AuditTrail.Data.Repositories
 {
@@ -46,18 +43,15 @@ namespace ASC.AuditTrail.Data.Repositories
     {
         private MessagesContext MessagesContext => _lazyMessagesContext.Value;
 
-        private readonly UserFormatter _userFormatter;
-        private readonly AuditActionMapper _auditActionMapper;
         private readonly Lazy<MessagesContext> _lazyMessagesContext;
+        private readonly IMapper _mapper;
 
         public LoginEventsRepository(
-            UserFormatter userFormatter, 
-            AuditActionMapper auditActionMapper, 
-            DbContextManager<MessagesContext> dbMessagesContext)
+            DbContextManager<MessagesContext> dbMessagesContext,
+            IMapper mapper)
         {
-            _userFormatter = userFormatter;
-            _auditActionMapper = auditActionMapper;
             _lazyMessagesContext = new Lazy<MessagesContext>(() => dbMessagesContext.Value);
+            _mapper = mapper;
         }
 
         public IEnumerable<LoginEvent> GetLast(int tenant, int chunk)
@@ -70,7 +64,7 @@ namespace ASC.AuditTrail.Data.Repositories
                  select new LoginEventQuery { LoginEvents = b, User = p })
                 .Take(chunk);
 
-            return query.AsEnumerable().Select(ToLoginEvent).ToList();
+            return query.AsEnumerable().Select(_mapper.Map<LoginEvent>).ToList();
         }
 
         public IEnumerable<LoginEvent> Get(int tenant, DateTime fromDate, DateTime to)
@@ -84,7 +78,7 @@ namespace ASC.AuditTrail.Data.Repositories
                 orderby q.Date descending
                 select new LoginEventQuery { LoginEvents = q, User = p };
 
-            return query.AsEnumerable().Select(ToLoginEvent).ToList();
+            return query.AsEnumerable().Select(_mapper.Map<LoginEvent>).ToList();
         }
 
         public int GetCount(int tenant, DateTime? from = null, DateTime? to = null)
@@ -96,48 +90,5 @@ namespace ASC.AuditTrail.Data.Repositories
 
             return query.Count();
         }
-
-        private LoginEvent ToLoginEvent(LoginEventQuery query)
-        {
-            var evt = new LoginEvent
-            {
-                Id = query.LoginEvents.Id,
-                Ip = query.LoginEvents.Ip,
-                Login = query.LoginEvents.Login,
-                Browser = query.LoginEvents.Browser,
-                Platform = query.LoginEvents.Platform,
-                Date = query.LoginEvents.Date,
-                TenantId = query.LoginEvents.TenantId,
-                UserId = query.LoginEvents.UserId,
-                Page = query.LoginEvents.Page,
-                Action = query.LoginEvents.Action
-            };
-
-            if (query.LoginEvents.Description != null)
-                evt.Description = JsonConvert.DeserializeObject<IList<string>>(
-                    query.LoginEvents.Description,
-                    new JsonSerializerSettings
-                    {
-                        DateTimeZoneHandling = DateTimeZoneHandling.Utc
-                    });
-
-            evt.UserName = (!string.IsNullOrEmpty(query.User?.FirstName) && !string.IsNullOrEmpty(query.User?.LastName))
-                                ? _userFormatter.GetUserName(query.User.FirstName, query.User.LastName)
-                                : !string.IsNullOrWhiteSpace(evt.Login)
-                                        ? evt.Login
-                                        : evt.UserId == Core.Configuration.Constants.Guest.ID
-                                            ? AuditReportResource.GuestAccount
-                                            : AuditReportResource.UnknownAccount;
-
-            evt.ActionText = _auditActionMapper.GetActionText(evt);
-
-            return evt;
-        } 
-    }
-
-    public class LoginEventQuery
-    {
-        public LoginEvents LoginEvents { get; set; }
-        public User User { get; set; }
     }
 }
