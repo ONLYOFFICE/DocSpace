@@ -1,5 +1,18 @@
 import styled from "styled-components";
 import Box from "../box";
+import { desktop, tablet } from "@appserver/components/utils/device";
+
+const StyledIframe = styled.iframe`
+  border: none;
+  height: 60px;
+  @media ${desktop} {
+    width: ${(props) => props.sectionWidth + 24 + "px"};
+  }
+
+  @media ${tablet} {
+    min-width: ${(props) => props.sectionWidth + 36 + "px"};
+  }
+`;
 
 const StyledSnackBar = styled(Box)`
   transition: all 500ms ease;
@@ -18,7 +31,6 @@ const StyledSnackBar = styled(Box)`
   width: 100%;
   background-color: ${(props) => props.backgroundColor};
   background-image: url(${(props) => props.backgroundImg || ""});
-  border-radius: 6px;
 
   .logo {
     padding-right: 10px;
@@ -29,7 +41,7 @@ const StyledSnackBar = styled(Box)`
     display: flex;
     flex-direction: column;
     gap: 5px;
-    text-align: ${(props) => props.textAlign};
+    text-align: ${(props) => props.textalign};
 
     .text-header {
       margin: 0;
@@ -40,7 +52,7 @@ const StyledSnackBar = styled(Box)`
       display: flex;
       flex-direction: row;
       gap: 10px;
-      justify-content: ${(props) => props.textAlign};
+      justify-content: ${(props) => props.textalign};
     }
   }
 
@@ -49,7 +61,7 @@ const StyledSnackBar = styled(Box)`
     display: inline-block;
     border: none;
     font-size: inherit;
-    color: "#000";
+    color: "#333";
     margin: 0 0 0 24px;
     padding: 0;
     min-width: min-content;
@@ -70,4 +82,17 @@ const StyledSnackBar = styled(Box)`
   }
 `;
 
-export default StyledSnackBar;
+const StyledAction = styled.div`
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  background: inherit;
+  display: inline-block;
+  border: none;
+  font-size: inherit;
+  color: "#333";
+  cursor: pointer;
+  text-decoration: underline;
+`;
+
+export { StyledAction, StyledSnackBar, StyledIframe };
