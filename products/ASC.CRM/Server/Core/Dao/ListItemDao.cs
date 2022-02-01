@@ -53,14 +53,12 @@ namespace ASC.CRM.Core.Dao
         public ListItemDao(
             CrmSecurity crmSecurity,
             DbContextManager<CrmDbContext> dbContextManager,
-             DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             SecurityContext securityContext,
             IOptionsMonitor<ILog> logger,
             ICache ascCache,
             IMapper mapper)
             : base(dbContextManager,
-                  dbContextManager1,
                   tenantManager,
                   securityContext,
                   logger,

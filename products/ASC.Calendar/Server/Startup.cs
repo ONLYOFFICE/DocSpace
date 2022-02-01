@@ -43,9 +43,6 @@ namespace ASC.Calendar
             DIHelper.TryAdd<CalendarController>();
 
             NotifyConfigurationExtension.Register(DIHelper);
-            
-            services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(Configuration.GetSection("Redis").Get<RedisConfiguration>());
-
         }
 
         public override  void Configure(IApplicationBuilder app, IWebHostEnvironment env)

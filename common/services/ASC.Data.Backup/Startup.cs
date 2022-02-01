@@ -59,7 +59,5 @@ public class Startup : BaseStartup
         services.AddHostedService<BackupSchedulerService>();
         services.AddHostedService<BackupListenerService>();
         services.AddHostedService<BackupWorkerService>();
-
-        services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(Configuration.GetSection("Redis").Get<RedisConfiguration>());
     }
 }
