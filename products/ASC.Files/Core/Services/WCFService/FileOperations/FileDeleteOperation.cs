@@ -178,9 +178,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                 FolderDao.DeleteFolder(folder.ID);
                                 filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
 
-                                var room = documentServiceHelper.GetSocketFolderRoom(folder.RootFolderId);
-                                socketManager.DeleteFolder(folder.ID, room);
-
                                 ProcessedFolder(folderId);
                             }
                         }
@@ -203,9 +200,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                     FolderDao.MoveFolder(folder.ID, _trashId, CancellationToken);
                                     filesMessageService.Send(folder, _headers, MessageAction.FolderMovedToTrash, folder.Title);
                                 }
-
-                                var room = documentServiceHelper.GetSocketFolderRoom(folder.RootFolderId);
-                                socketManager.DeleteFolder(folder.ID, room);
 
                                 ProcessedFolder(folderId);
                             }

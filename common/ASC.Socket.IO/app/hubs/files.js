@@ -1,4 +1,4 @@
-module.exports = (io) => {
+﻿module.exports = (io) => {
   const logger = require("../log.js");
   const moment = require("moment");
   const filesIO = io; //TODO: Restore .of("/files");
@@ -114,15 +114,5 @@ module.exports = (io) => {
     modifyFolder(room, "delete", fileId, "file");
   }
 
-  function createFolder({ folderId, room, data } = {}) {
-    logger.info(`create new folder ${folderId} in room ${room}`);
-    modifyFolder(room, "create", folderId, "folder", data);
-  }
-  
-  function deleteFolder({ folderId, room } = {}) {
-    logger.info(`delete folder ${folderId} in room ${room}`);
-    modifyFolder(room, "delete", folderId, "folder");
-  }
-
-  return { startEdit, stopEdit, createFile, deleteFile, createFolder, deleteFolder };
+  return { startEdit, stopEdit, createFile, deleteFile };
 };

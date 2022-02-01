@@ -239,9 +239,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                 if (isToFolder)
                                     needToMark.Add(newFolder);
 
-                                var roomNew = documentServiceHelper.GetSocketFolderRoom(toFolderId);
-                                socketManager.CreateFolder(newFolder.ID, roomNew, newFolder);
-
                                 if (ProcessedFolder(folderId))
                                 {
                                     Result += string.Format("folder_{0}{1}", newFolder.ID, SPLIT_CHAR);
@@ -264,9 +261,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                     {
                                         FolderDao.DeleteFolder(folder.ID);
 
-                                        var room = documentServiceHelper.GetSocketFolderRoom(folder.RootFolderId);
-                                        socketManager.DeleteFolder(folder.ID, room);
-
                                         if (ProcessedFolder(folderId))
                                         {
                                             Result += string.Format("folder_{0}{1}", newFolder.ID, SPLIT_CHAR);
@@ -287,9 +281,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                                         if (isToFolder)
                                             needToMark.Add(newFolder);
-
-                                        var roomNew = documentServiceHelper.GetSocketFolderRoom(toFolderId);
-                                        socketManager.CreateFolder(newFolder.ID, roomNew, newFolder);
 
                                         if (ProcessedFolder(folderId))
                                         {
@@ -322,12 +313,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                                         if (isToFolder)
                                             needToMark.Add(newFolder);
-
-                                        var roomNew = documentServiceHelper.GetSocketFolderRoom(toFolderId);
-                                        socketManager.CreateFolder(newFolder.ID, roomNew, newFolder);
-
-                                        var room = documentServiceHelper.GetSocketFolderRoom(folder.RootFolderId);
-                                        socketManager.DeleteFolder(folder.ID, room);
 
                                         if (ProcessedFolder(folderId))
                                         {
@@ -365,12 +350,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                                 if (isToFolder)
                                     needToMark.Add(newFolder);
-
-                                var roomNew = documentServiceHelper.GetSocketFolderRoom(toFolderId);
-                                socketManager.CreateFolder(newFolder.ID, roomNew, newFolder);
-
-                                var roomOld = documentServiceHelper.GetSocketFolderRoom(folder.RootFolderId);
-                                socketManager.DeleteFolder(folder.ID, roomOld);
 
                                 if (ProcessedFolder(folderId))
                                 {

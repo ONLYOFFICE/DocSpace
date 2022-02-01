@@ -89,13 +89,6 @@ class FilesStore {
             const file = JSON.parse(opt?.data);
 
             this.setFiles([file, ...this.files]);
-          } else if (opt?.type == "folder" && opt?.id) {
-            const foundIndex = this.files.findIndex((x) => x.id === opt?.id);
-            if (foundIndex > -1) return;
-
-            const folder = JSON.parse(opt?.data);
-
-            this.setFolders([folder, ...this.folders]);
           }
           break;
         case "delete":
@@ -105,15 +98,6 @@ class FilesStore {
 
             this.setFiles(
               this.files.filter((_, index) => {
-                return index !== foundIndex;
-              })
-            );
-          } else if (opt?.type == "folder" && opt?.id) {
-            const foundIndex = this.folders.findIndex((x) => x.id === opt?.id);
-            if (foundIndex == -1) return;
-
-            this.setFolders(
-              this.folders.filter((_, index) => {
                 return index !== foundIndex;
               })
             );
