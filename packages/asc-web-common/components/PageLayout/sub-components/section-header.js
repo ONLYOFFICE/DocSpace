@@ -14,7 +14,7 @@ const StyledSectionHeader = styled.div`
   ${NoUserSelect}
   ${isMobile &&
   css`
-    height: 20px;
+    height: ${(props) => (props.maintenanceExist ? "120px" : "40px")};
     /* height: 49px;
     min-height: 48px;
     max-height: 49px; */
@@ -22,7 +22,7 @@ const StyledSectionHeader = styled.div`
 
     margin-top: 62px;
     @media ${tablet} {
-      margin-top: 48px;
+      margin-top: ${(props) => props.marginTop};
     }
   `}
 
@@ -36,8 +36,6 @@ const StyledSectionHeader = styled.div`
     ${(props) =>
       props.viewAs !== "tablet" &&
       css`
-        height: 49px;
-
         .arrow-button {
           svg {
             width: 14px !important;
@@ -61,7 +59,7 @@ const StyledSectionHeader = styled.div`
     ${isMobile &&
     css`
       position: fixed;
-      top: 48px;
+      top: ${(props) => props.top};
 
       width: ${(props) =>
         props.isArticlePinned ? `calc(100% - 272px)` : "100%"};
@@ -122,7 +120,25 @@ class SectionHeader extends React.Component {
     //console.log("PageLayout SectionHeader render");
     // eslint-disable-next-line react/prop-types
 
-    const { isArticlePinned, isHeaderVisible, viewAs, ...rest } = this.props;
+    const {
+      isArticlePinned,
+      isHeaderVisible,
+      viewAs,
+      maintenanceExist,
+      ...rest
+    } = this.props;
+
+    let top = "48px";
+    let marginTop = "48px";
+
+    if (maintenanceExist) {
+      const mainBar = document.getElementById("main-bar");
+      const bar = document.getElementById("bar-banner");
+      const rects = mainBar.getBoundingClientRect();
+
+      top = bar ? "108px" : rects.height + 40 + "px";
+      marginTop = bar ? "48px" : rects.height - 60 + 36 + "px";
+    }
 
     return (
       <LayoutContextConsumer>
@@ -131,6 +147,9 @@ class SectionHeader extends React.Component {
             isArticlePinned={isArticlePinned}
             isSectionHeaderVisible={value.isVisible}
             viewAs={viewAs}
+            maintenanceExist={maintenanceExist}
+            top={top}
+            marginTop={marginTop}
           >
             <div
               className={classnames("section-header hidingHeader", {
