@@ -105,13 +105,15 @@ const Form = (props) => {
     localStorage.removeItem("code");
   };
 
-  useEffect(() => {
-    getCapabilities().then((data) => {
-      console.log(data);
-      setSsoLabel(data.ssoLabel);
-      setSsoUrl(data.ssoUrl);
-    });
+  const getSso = async () => {
+    const data = await getCapabilities();
+    console.log(data);
+    setSsoLabel(data.ssoLabel);
+    setSsoUrl(data.ssoUrl);
+  };
 
+  useEffect(() => {
+    getSso();
     const profile = localStorage.getItem("profile");
     if (!profile) return;
 
