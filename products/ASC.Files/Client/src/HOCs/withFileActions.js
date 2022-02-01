@@ -242,7 +242,7 @@ export default function withFileActions(WrappedFileItem) {
       if (draggable) className += " draggable";
 
       let value = !item.isFolder ? `file_${id}` : `folder_${id}`;
-      value += draggable ? "_draggable" : "";
+      value += draggable ? "_draggable" : `_${item.providerKey}`;
 
       const isShareable = allowShareIn && item.canShare;
 
@@ -363,7 +363,11 @@ export default function withFileActions(WrappedFileItem) {
 
       const inProgress =
         activeFiles.findIndex((x) => x === item.id) !== -1 ||
-        activeFolders.findIndex((x) => x === item.id && item.isFolder) !== -1;
+        activeFolders.findIndex(
+          (x) =>
+            x === item.id &&
+            (item.isFolder || (!item.fileExst && item.id === -1))
+        ) !== -1;
 
       const isActive =
         bufferSelection &&

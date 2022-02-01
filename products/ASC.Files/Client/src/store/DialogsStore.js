@@ -23,6 +23,7 @@ class DialogsStore {
   conflictResolveDialogVisible = false;
   convertDialogVisible = false;
   selectFileDialogVisible = false;
+  convertPasswordDialogVisible = false;
 
   removeItem = null;
   connectItem = null;
@@ -34,6 +35,7 @@ class DialogsStore {
   removeMediaItem = null;
   unsubscribe = null;
   convertItem = null;
+  formCreationInfo = null;
 
   constructor(authStore, treeFoldersStore, filesStore, selectedFolderStore) {
     makeAutoObservable(this);
@@ -53,10 +55,12 @@ class DialogsStore {
   };
 
   setMoveToPanelVisible = (moveToPanelVisible) => {
+    !moveToPanelVisible && this.deselectActiveFiles();
     this.moveToPanelVisible = moveToPanelVisible;
   };
 
   setCopyPanelVisible = (copyPanelVisible) => {
+    !copyPanelVisible && this.deselectActiveFiles();
     this.copyPanelVisible = copyPanelVisible;
   };
 
@@ -79,10 +83,12 @@ class DialogsStore {
   };
 
   setDeleteDialogVisible = (deleteDialogVisible) => {
+    !deleteDialogVisible && this.deselectActiveFiles();
     this.deleteDialogVisible = deleteDialogVisible;
   };
 
   setDownloadDialogVisible = (downloadDialogVisible) => {
+    !downloadDialogVisible && this.deselectActiveFiles();
     this.downloadDialogVisible = downloadDialogVisible;
   };
 
@@ -172,6 +178,14 @@ class DialogsStore {
     this.convertDialogVisible = visible;
   };
 
+  setConvertPasswordDialogVisible = (visible) => {
+    this.convertPasswordDialogVisible = visible;
+  };
+
+  setFormCreationInfo = (item) => {
+    this.formCreationInfo = item;
+  };
+
   setConvertItem = (item) => {
     this.convertItem = item;
   };
@@ -193,6 +207,10 @@ class DialogsStore {
       title: `${newTitle}.docxf`,
       templateId: fileInfo.id,
     });
+  };
+
+  deselectActiveFiles = () => {
+    this.filesStore.setSelected("none");
   };
 }
 

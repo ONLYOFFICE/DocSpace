@@ -113,6 +113,7 @@ class SectionFilterContent extends React.Component {
       personal,
       isRecentFolder,
       isFavoritesFolder,
+      isRecycleBinFolder,
     } = this.props;
     const { selectedItem } = filter;
     const { usersCaption, groupsCaption } = customNames;
@@ -229,7 +230,7 @@ class SectionFilterContent extends React.Component {
         }
       );
 
-    if (!isRecentFolder && !isFavoritesFolder)
+    if (!isRecentFolder && !isFavoritesFolder && !isRecycleBinFolder)
       filterOptions.push(
         {
           key: "filter-folders",
@@ -377,7 +378,11 @@ export default inject(
 
     const { user } = auth.userStore;
     const { customNames, culture, personal } = auth.settingsStore;
-    const { isFavoritesFolder, isRecentFolder } = treeFoldersStore;
+    const {
+      isFavoritesFolder,
+      isRecentFolder,
+      isRecycleBinFolder,
+    } = treeFoldersStore;
 
     const { search, filterType, authorType } = filter;
     const isFiltered =
@@ -399,6 +404,7 @@ export default inject(
       isFiltered,
       isFavoritesFolder,
       isRecentFolder,
+      isRecycleBinFolder,
 
       setIsLoading,
       fetchFiles,

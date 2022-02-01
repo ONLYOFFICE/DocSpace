@@ -611,7 +611,7 @@ class FilesActionStore {
       .finally(() => setTimeout(() => clearSecondaryProgressData(), TIMEOUT));
   };
 
-  moveDragItems = (destFolderId, folderTitle, translations) => {
+  moveDragItems = (destFolderId, folderTitle, providerKey, translations) => {
     const folderIds = [];
     const fileIds = [];
     const deleteAfter = false;
@@ -645,12 +645,14 @@ class FilesActionStore {
       setDestFolderId,
     } = this.dialogsStore;
 
-    for (let item of selection) {
-      if (item.providerKey && !isRootFolder) {
-        setDestFolderId(destFolderId);
-        return setThirdPartyMoveDialogVisible(true);
-      }
+    const provider = selection.find((x) => x.providerKey);
 
+    if (provider && providerKey !== provider.providerKey) {
+      setDestFolderId(destFolderId);
+      return setThirdPartyMoveDialogVisible(true);
+    }
+
+    for (let item of selection) {
       if (!item.isFolder) {
         fileIds.push(item.id);
       } else {
@@ -663,8 +665,11 @@ class FilesActionStore {
     this.checkOperationConflict(operationData);
   };
 
-  checkFileConflicts = (destFolderId, folderIds, fileIds) =>
-    checkFileConflicts(destFolderId, folderIds, fileIds);
+  checkFileConflicts = (destFolderId, folderIds, fileIds) => {
+    this.filesStore.addActiveItems(fileIds);
+    this.filesStore.addActiveItems(null, folderIds);
+    return checkFileConflicts(destFolderId, folderIds, fileIds);
+  };
 
   setConflictDialogData = (conflicts, operationData) => {
     this.dialogsStore.setConflictResolveDialogItems(conflicts);
@@ -674,11 +679,9 @@ class FilesActionStore {
 
   checkOperationConflict = async (operationData) => {
     const { destFolderId, folderIds, fileIds } = operationData;
-    const { setBufferSelection, addActiveItems } = this.filesStore;
+    const { setBufferSelection } = this.filesStore;
 
-    addActiveItems(fileIds);
-    addActiveItems(null, folderIds);
-
+    this.filesStore.setSelected("none");
     let conflicts;
 
     try {

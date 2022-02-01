@@ -61,6 +61,7 @@ using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 
 using Newtonsoft.Json.Linq;
 
@@ -99,6 +100,7 @@ namespace ASC.Api.Documents
         private TenantManager TenantManager { get; }
         private FileUtility FileUtility { get; }
         private FileConverter FileConverter { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         /// <summary>
         /// </summary>
@@ -128,7 +130,8 @@ namespace ASC.Api.Documents
             TenantManager tenantManager,
             FileUtility fileUtility,
             ConsumerFactory consumerFactory,
-            FileConverter fileConverter)
+            FileConverter fileConverter,
+            IServiceProvider serviceProvider)
         {
             FilesControllerHelperString = filesControllerHelperString;
             FilesControllerHelperInt = filesControllerHelperInt;
@@ -154,6 +157,7 @@ namespace ASC.Api.Documents
             TenantManager = tenantManager;
             FileUtility = fileUtility;
             FileConverter = fileConverter;
+            ServiceProvider = serviceProvider;
         }
 
         [Read("info")]
@@ -1119,29 +1123,44 @@ namespace ASC.Api.Documents
         }
 
         [Create("file/{fileId:int}/copyas", order: int.MaxValue - 1)]
-        public FileWrapper<int> CopyFileAsFromBody(int fileId, [FromBody] CopyAsModel<int> model)
+        public object CopyFileAsFromBody(int fileId, [FromBody] CopyAsModel<JsonElement> model)
         {
-            return FilesControllerHelperInt.CopyFileAs(fileId, model.DestFolderId, model.DestTitle);
+            return CopyFile(fileId, model);
         }
 
         [Create("file/{fileId:int}/copyas", order: int.MaxValue - 1)]
         [Consumes("application/x-www-form-urlencoded")]
-        public FileWrapper<int> CopyFileAsFromForm(int fileId, [FromForm] CopyAsModel<int> model)
+        public object CopyFileAsFromForm(int fileId, [FromForm] CopyAsModel<JsonElement> model)
         {
-            return FilesControllerHelperInt.CopyFileAs(fileId, model.DestFolderId, model.DestTitle);
+            return CopyFile(fileId, model);
         }
 
         [Create("file/{fileId}/copyas", order: int.MaxValue)]
-        public FileWrapper<string> CopyFileAsFromBody(string fileId, [FromBody] CopyAsModel<string> model)
+        public object CopyFileAsFromBody(string fileId, [FromBody] CopyAsModel<JsonElement> model)
         {
-            return FilesControllerHelperString.CopyFileAs(fileId, model.DestFolderId, model.DestTitle);
+            return CopyFile(fileId, model);
         }
 
         [Create("file/{fileId}/copyas", order: int.MaxValue)]
         [Consumes("application/x-www-form-urlencoded")]
-        public FileWrapper<string> CopyFileAsFromForm(string fileId, [FromBody] CopyAsModel<string> model)
+        public object CopyFileAsFromForm(string fileId, [FromForm] CopyAsModel<JsonElement> model)
         {
-            return FilesControllerHelperString.CopyFileAs(fileId, model.DestFolderId, model.DestTitle);
+            return CopyFile(fileId, model);
+        }
+
+        private object CopyFile<T>(T fileId, CopyAsModel<JsonElement> model)
+        {
+            var helper = ServiceProvider.GetService<FilesControllerHelper<T>>();
+            if (model.DestFolderId.ValueKind == JsonValueKind.Number)
+            {
+                return helper.CopyFileAs(fileId, model.DestFolderId.GetInt32(), model.DestTitle, model.Password);
+            }
+            else if (model.DestFolderId.ValueKind == JsonValueKind.String)
+            {
+                return helper.CopyFileAs(fileId, model.DestFolderId.GetString(), model.DestTitle, model.Password);
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -1209,15 +1228,17 @@ namespace ASC.Api.Documents
         /// <param name="fileId"></param>
         /// <returns>Operation result</returns>
         [Update("file/{fileId}/checkconversion")]
-        public IEnumerable<ConversationResult<string>> StartConversion(string fileId, [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] CheckConversionModel model)
+        public IEnumerable<ConversationResult<string>> StartConversion(string fileId, [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] CheckConversionModel<string> model)
         {
-            return FilesControllerHelperString.StartConversion(fileId, model?.Sync ?? false);
+            model.FileId = fileId;
+            return FilesControllerHelperString.StartConversion(model);
         }
 
         [Update("file/{fileId:int}/checkconversion")]
-        public IEnumerable<ConversationResult<int>> StartConversion(int fileId, [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] CheckConversionModel model)
+        public IEnumerable<ConversationResult<int>> StartConversion(int fileId, [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] CheckConversionModel<int> model)
         {
-            return FilesControllerHelperInt.StartConversion(fileId, model?.Sync ?? false);
+            model.FileId = fileId;
+            return FilesControllerHelperInt.StartConversion(model);
         }
 
         /// <summary>
@@ -1231,13 +1252,21 @@ namespace ASC.Api.Documents
         [Read("file/{fileId}/checkconversion")]
         public IEnumerable<ConversationResult<string>> CheckConversion(string fileId, bool start)
         {
-            return FilesControllerHelperString.CheckConversion(fileId, start);
+            return FilesControllerHelperString.CheckConversion(new CheckConversionModel<string>()
+            {
+                FileId = fileId,
+                StartConvert = start
+            });
         }
 
         [Read("file/{fileId:int}/checkconversion")]
         public IEnumerable<ConversationResult<int>> CheckConversion(int fileId, bool start)
         {
-            return FilesControllerHelperInt.CheckConversion(fileId, start);
+            return FilesControllerHelperInt.CheckConversion(new CheckConversionModel<int>()
+            {
+                FileId = fileId,
+                StartConvert = start
+            });
         }
 
         /// <summary>
@@ -2639,7 +2668,7 @@ namespace ASC.Api.Documents
             /// Result file of operation.
             /// </summary>
             [JsonPropertyName("result")]
-            public FileWrapper<T> File { get; set; }
+            public object File { get; set; }
 
             /// <summary>
             /// Error during conversation.

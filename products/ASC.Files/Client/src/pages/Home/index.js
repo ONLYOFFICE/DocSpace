@@ -41,6 +41,8 @@ class PureHome extends React.Component {
       setToPreviewFile,
       mediaViewersFormatsStore,
       getFileInfo,
+      setIsPrevSettingsModule,
+      isPrevSettingsModule,
     } = this.props;
 
     const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gmi"); //TODO: Always find?
@@ -76,6 +78,11 @@ class PureHome extends React.Component {
 
         return;
       }
+    }
+
+    if (isPrevSettingsModule) {
+      setIsPrevSettingsModule(false);
+      return;
     }
 
     if (!filterObj) return;
@@ -367,6 +374,8 @@ export default inject(
       isLoading,
       viewAs,
       getFileInfo,
+      setIsPrevSettingsModule,
+      isPrevSettingsModule,
     } = filesStore;
 
     const { mediaViewersFormatsStore } = formatsStore;
@@ -460,6 +469,9 @@ export default inject(
       setToPreviewFile,
       mediaViewersFormatsStore,
       getFileInfo,
+
+      setIsPrevSettingsModule,
+      isPrevSettingsModule,
     };
   }
 )(withRouter(observer(Home)));

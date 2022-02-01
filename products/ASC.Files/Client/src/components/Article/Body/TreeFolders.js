@@ -215,7 +215,7 @@ class TreeFolders extends React.Component {
       if (withoutProvider && provider) return;
 
       let value = "";
-      if (dragging) value = `${item.id} dragging`;
+      if (dragging) value = `${item.id} dragging ${provider}`;
 
       if ((item.folders && item.folders.length > 0) || serviceFolder) {
         return (
