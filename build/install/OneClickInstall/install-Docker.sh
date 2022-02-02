@@ -860,6 +860,89 @@ install_appserver () {
 	fi
 
 	docker-compose -f $BASE_DIR/appserver.yml up -d
+	docker-compose -f $BASE_DIR/notify.yml up -d
+}
+
+get_local_image_RepoDigests() {
+   local CONTAINER_IMAGE=$1;
+   LOCAL_IMAGE_RepoDigest=$(docker inspect --format='{{index .RepoDigests 0}}' $CONTAINER_IMAGE)
+   if [ -z ${LOCAL_IMAGE_RepoDigest} ]; then
+        echo "Local docker image not found, check the name of docker image $CONTAINER_IMAGE"
+        exit 1 
+   fi
+   echo $LOCAL_IMAGE_RepoDigest
+}
+
+check_pull_image() {
+    local CONTAINER_IMAGE=$1;
+    CHECK_STATUS_IMAGE="$(docker pull  $CONTAINER_IMAGE | grep Status | awk '{print $2" "$3" "$4" "$5" "$6}')"
+    if [ "${CHECK_STATUS_IMAGE}" == "Image is up to date" ]; then
+        echo "No updates required"
+    fi
+}
+
+check_image_RepoDigest() {
+    local OLD_LOCAL_IMAGE_RepoDigest=$1
+    local NEW_LOCAL_IMAGE_RepoDigest=$2
+    if [ "${OLD_LOCAL_IMAGE_RepoDigest}" == "${NEW_LOCAL_IMAGE_RepoDigest}" ]; then
+       CHECK_RepoDigest="false";
+    else
+       CHECK_RepoDigest="true";
+    fi
+}
+
+docker_image_update() {
+    docker-compose -f $BASE_DIR/notify.yml -f $BASE_DIR/appserver.yml down --volumes
+    docker-compose -f $BASE_DIR/build.yml pull
+}
+
+update_appserver () {
+	if ! command_exists docker-compose; then
+		install_docker_compose
+	fi
+	
+	IMAGE_NAME="onlyoffice-api"
+	CONTAINER_IMAGE=$(docker inspect --format='{{.Config.Image}}' $IMAGE_NAME)
+	
+	OLD_LOCAL_IMAGE_RepoDigest=$(get_local_image_RepoDigests "${CONTAINER_IMAGE}")
+	check_pull_image "${CONTAINER_IMAGE}"
+	NEW_LOCAL_IMAGE_RepoDigest=$(get_local_image_RepoDigests "${CONTAINER_IMAGE}")
+	check_image_RepoDigest ${OLD_LOCAL_IMAGE_RepoDigest} ${NEW_LOCAL_IMAGE_RepoDigest}
+
+	if [ ${CHECK_RepoDigest} == "true" ]; then
+		docker_image_update
+	fi
+}
+
+save_parameter() {
+	local VARIABLE_NAME=$1
+	local VARIABLE_VALUE=$2
+
+	if [[ -z ${VARIABLE_VALUE} ]]; then
+		sed -n "/.*${VARIABLE_NAME}=/s///p" $BASE_DIR/.env
+	else
+		echo $VARIABLE_VALUE
+	fi
+}
+
+save_parameters_from_configs() {
+	MYSQL_DATABASE=$(save_parameter MYSQL_DATABASE $MYSQL_DATABASE)
+	MYSQL_USER=$(save_parameter MYSQL_USER $MYSQL_USER)
+	MYSQL_PASSWORD=$(save_parameter MYSQL_PASSWORD $MYSQL_PASSWORD)
+	MYSQL_ROOT_PASSWORD=$(save_parameter MYSQL_ROOT_PASSWORD $MYSQL_ROOT_PASSWORD)
+	MYSQL_HOST=$(save_parameter MYSQL_HOST $MYSQL_HOST)
+	DOCUMENT_SERVER_JWT_SECRET=$(save_parameter DOCUMENT_SERVER_JWT_SECRET $DOCUMENT_SERVER_JWT_SECRET)
+	DOCUMENT_SERVER_HOST=$(save_parameter DOCUMENT_SERVER_HOST $DOCUMENT_SERVER_HOST)
+	ZOO_PORT=$(save_parameter ZOO_PORT $ZOO_PORT)
+	ZOO_HOST=$(save_parameter ZOO_HOST $ZOO_HOST)
+	KAFKA_HOST=$(save_parameter KAFKA_HOST $KAFKA_HOST)
+	ELK_HOST=$(save_parameter ELK_HOST $ELK_HOST)
+	SERVICE_PORT=$(save_parameter SERVICE_PORT $SERVICE_PORT)
+	APP_CORE_MACHINEKEY=$(save_parameter APP_CORE_MACHINEKEY $APP_CORE_MACHINEKEY)
+	APP_CORE_BASE_DOMAIN=$(save_parameter APP_CORE_BASE_DOMAIN $APP_CORE_BASE_DOMAIN)
+	if [ ${EXTERNAL_PORT} = "8092" ]; then 
+		EXTERNAL_PORT=$(grep -oP '(?<=- ).*?(?=:8092)' /app/onlyoffice/appserver.yml)
+	fi
 }
 
 start_installation () {
@@ -886,6 +969,10 @@ start_installation () {
 
 	docker_login
 
+	if [ "$UPDATE" = "true" ]; then
+		save_parameters_from_configs
+	fi
+
 	download_files
 
 	set_jwt_secret
@@ -893,6 +980,10 @@ start_installation () {
 	set_core_machinekey
 
 	create_network
+
+	if [ "$UPDATE" = "true" ]; then
+		update_appserver
+	fi
 
 	if [ "$INSTALL_MYSQL_SERVER" == "true" ]; then
 		install_mysql_server
