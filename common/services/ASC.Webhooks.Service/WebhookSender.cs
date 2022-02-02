@@ -21,21 +21,21 @@ namespace ASC.Webhooks.Service
     [Singletone]
     public class WebhookSender
     {
-        public int? RepeatCount { get; }
+        private readonly int? _repeatCount;
         private static readonly HttpClient httpClient = new HttpClient();
-        private IServiceProvider ServiceProvider { get; }
-        private ILog Log { get; }
+        private readonly IServiceScopeFactory _scopeFactory;
+        private readonly ILog _log;
 
-        public WebhookSender(IOptionsMonitor<ILog> options, IServiceProvider serviceProvider, Settings settings)
+        public WebhookSender(IOptionsMonitor<ILog> options, IServiceScopeFactory scopeFactory, Settings settings)
         {
-            Log = options.Get("ASC.Webhooks.Core");
-            ServiceProvider = serviceProvider;
-            RepeatCount = settings.RepeatCount;
+            _log = options.Get("ASC.Webhooks.Core");
+            _scopeFactory = scopeFactory;
+            _repeatCount = settings.RepeatCount;
         }
 
         public async Task Send(WebhookRequest webhookRequest, CancellationToken cancellationToken)
         {
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _scopeFactory.CreateScope();
             var dbWorker = scope.ServiceProvider.GetService<DbWorker>();
 
             var entry = dbWorker.ReadFromJournal(webhookRequest.Id);
@@ -47,7 +47,7 @@ namespace ASC.Webhooks.Service
             HttpResponseMessage response = new HttpResponseMessage();
             HttpRequestMessage request = new HttpRequestMessage();
 
-            for (int i = 0; i < RepeatCount; i++)
+            for (int i = 0; i < _repeatCount; i++)
             {
                 try
                 {
@@ -65,23 +65,23 @@ namespace ASC.Webhooks.Service
                     if (response.IsSuccessStatusCode)
                     {
                         UpdateDb(dbWorker, id, response, request, ProcessStatus.Success);
-                        Log.Debug("Response: " + response);
+                        _log.Debug("Response: " + response);
                         break;
                     }
-                    else if (i == RepeatCount - 1)
+                    else if (i == _repeatCount - 1)
                     {
                         UpdateDb(dbWorker, id, response, request, ProcessStatus.Failed);
-                        Log.Debug("Response: " + response);
+                        _log.Debug("Response: " + response);
                     }
                 }
                 catch (Exception ex)
                 {
-                    if (i == RepeatCount - 1)
+                    if (i == _repeatCount - 1)
                     {
                         UpdateDb(dbWorker, id, response, request, ProcessStatus.Failed);
                     }
 
-                    Log.Error(ex.Message);
+                    _log.Error(ex.Message);
                     continue;
                 }
             }

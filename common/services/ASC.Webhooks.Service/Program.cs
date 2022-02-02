@@ -8,6 +8,7 @@ using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Utils;
 using ASC.Webhooks.Core;
+using ASC.Webhooks.Service.Services;
 
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -90,8 +91,11 @@ namespace ASC.Webhooks.Service
 
                     diHelper.TryAdd<DbWorker>();
 
-                    services.AddHostedService<WebhookHostedService>();
-                    diHelper.TryAdd<WebhookHostedService>();
+                    services.AddHostedService<BuildQueueService>();
+                    diHelper.TryAdd<BuildQueueService>();
+
+                    services.AddHostedService<WorkerService>();
+                    diHelper.TryAdd<WorkerService>();
 
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
