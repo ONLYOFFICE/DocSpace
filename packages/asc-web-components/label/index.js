@@ -50,8 +50,8 @@ Label.propTypes = {
   truncate: PropTypes.bool,
   /** The field ID to which the label is attached */
   htmlFor: PropTypes.string,
-  /** Text */
-  text: PropTypes.string,
+  /** Text or element */
+  text: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   /** Sets the 'display' property */
   display: PropTypes.string,
   /** Class name */
