@@ -1,7 +1,6 @@
-import React, { useState, useRef } from "react";
+import React from "react";
 import PageLayout from "@appserver/common/components/PageLayout";
 import { withRouter } from "react-router";
-import { inject, observer } from "mobx-react";
 import {
   I18nextProvider,
   useTranslation,
@@ -12,22 +11,11 @@ import CodeInput from "@appserver/components/code-input";
 import { Trans } from "react-i18next";
 
 import i18n from "./i18n";
-import {
-  ButtonsWrapper,
-  LoginContainer,
-  LoginFormWrapper,
-} from "./StyledLogin";
+import { LoginContainer, LoginFormWrapper } from "./StyledLogin";
 
 const Form = () => {
-  const inputRef = useRef(null);
   const { t } = useTranslation("Login");
-  const [isLoading, setIsLoading] = useState(false);
-  const [url, setUrl] = useState("");
   const email = "test@onlyoffice.com";
-
-  const onChangeLogin = (e) => {
-    setUrl(e.target.value);
-  };
 
   const onSubmit = (code) => {
     console.log("Code ", code);
@@ -74,9 +62,7 @@ const CodeLoginForm = (props) => {
   );
 };
 
-const CodeLogin = withRouter(
-  observer(withTranslation(["Login", "Common"])(CodeLoginForm))
-);
+const CodeLogin = withRouter(withTranslation("Login")(CodeLoginForm));
 
 export default (props) => (
   <I18nextProvider i18n={i18n}>
