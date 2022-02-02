@@ -12,12 +12,115 @@ import RadioButtonGroup from "@appserver/components/radio-button-group";
 import ComboBox from "@appserver/components/combobox";
 import Checkbox from "@appserver/components/checkbox";
 import { ReactSVG } from "react-svg";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+
+const StyledContainer = styled.div`
+  box-sizing: border-box;
+  outline: none;
+  width: 100%;
+
+  .toggle {
+    position: static;
+  }
+
+  .tooltip-button,
+  .icon-button {
+    padding: 0 5px;
+  }
+
+  .hide-button {
+    margin-left: 16px;
+  }
+
+  .hide-additional-button {
+    margin-left: 8px;
+  }
+
+  .field-label-icon {
+    align-items: center;
+    margin-bottom: 4px;
+    max-width: 350px;
+  }
+
+  .field-label {
+    height: auto;
+    font-weight: 600;
+    line-height: 20px;
+    overflow: visible;
+    white-space: normal;
+  }
+
+  .xml-input {
+    .field-label-icon {
+      margin-bottom: 8px;
+      max-width: 350px;
+    }
+
+    .field-label {
+      font-weight: 400;
+    }
+  }
+
+  .or-text {
+    margin: 0 24px;
+  }
+
+  .radio-button-group {
+    margin-left: 25px;
+  }
+
+  .combo-button-label {
+    max-width: 100%;
+  }
+
+  .checkbox-input {
+    margin: 6px 8px 6px 0;
+  }
+
+  .upload-button {
+    margin-left: 9px;
+    overflow: inherit;
+
+    & > div {
+      margin-top: 2px;
+    }
+  }
+
+  .save-button {
+    margin-right: 8px;
+  }
+
+  .download-button {
+    max-width: 404px;
+    width: 100%;
+  }
+`;
 
 const StyledInputWrapper = styled.div`
   width: 100%;
   max-width: ${(props) => props.maxWidth || "350px"};
 `;
+
+const InputLabel = ({ text, tooltipContent }) => (
+  <Box
+    alignItems="center"
+    className="field-label-icon"
+    displayProp="flex"
+    flexDirection="row"
+  >
+    <span className="field-label">
+      {text}
+      {tooltipContent && (
+        <HelpButton
+          className="tooltip-button"
+          offsetRight={0}
+          tooltipContent={<Text>{tooltipContent}</Text>}
+          style={{ display: "inline-flex" }}
+        />
+      )}
+    </span>
+  </Box>
+);
 
 const SingleSignOn = () => {
   const { t } = useTranslation("SingleSignOn");
@@ -45,7 +148,7 @@ const SingleSignOn = () => {
   };
 
   return (
-    <Box widthProp="100%">
+    <StyledContainer>
       <Box
         backgroundProp="#F8F9F9 "
         borderProp={{ radius: "4px" }}
@@ -54,47 +157,54 @@ const SingleSignOn = () => {
         paddingProp="12px"
       >
         <ToggleButton
+          className="toggle"
           isChecked={isSSOEnabled}
           onChange={onSSOToggle}
-          style={{ position: "static" }}
         />
 
         <Box>
           <Box alignItems="center" displayProp="flex" flexDirection="row">
-            <Text fontWeight={600} lineHeight="20px">
-              {t("TurnOn")}
+            <Text as="span" fontWeight={600} lineHeight="20px">
+              {t("TurnOnSSO")}
+              <HelpButton
+                offsetRight={0}
+                style={{ display: "inline-flex" }}
+                tooltipContent={<Text>{t("TurnOnSSOTooltip")}</Text>}
+              />
             </Text>
-
-            <HelpButton
-              offsetRight={0}
-              style={{ padding: "0 6px" }}
-              tooltipContent={<Text>{t("TurnOnTooltip")}</Text>}
-            />
           </Box>
 
-          <Text>{t("TurnOnCaption")}</Text>
+          <Text lineHeight="16px">{t("TurnOnSSOCaption")}</Text>
         </Box>
       </Box>
 
       <Box as="form">
         <Box>
-          <Box displayProp="flex" flexDirection="row" marginProp="24px 0">
-            <Text as="h2" fontWeight={600}>
+          <Box
+            alignItems="center"
+            displayProp="flex"
+            flexDirection="row"
+            marginProp="24px 0"
+          >
+            <Text as="h2" fontSize="16px" fontWeight={600}>
               {t("ServiceProviderSettings")}
             </Text>
 
-            <Link isHovered onClick={showServiceProviderClick} type="action">
+            <Link
+              className="hide-button"
+              isHovered
+              onClick={showServiceProviderClick}
+              type="action"
+            >
               {showServiceProvider ? t("Hide") : t("Show")}
             </Link>
           </Box>
 
           <FieldContainer
+            className="xml-input"
             errorMessage="Error text. Lorem ipsum dolor sit amet, consectetuer adipiscing elit"
-            helpButtonHeaderContent="Tooltip header"
             isVertical
             labelText={t("UploadXML")}
-            place="top"
-            tooltipContent="Paste you tooltip content here"
           >
             <Box alignItems="center" displayProp="flex" flexDirection="row">
               <StyledInputWrapper maxWidth="300px">
@@ -106,18 +216,24 @@ const SingleSignOn = () => {
                 />
               </StyledInputWrapper>
 
-              <Button label="icon" size="medium" />
-              <Text>{t("Or")}</Text>
+              <Button
+                className="upload-button"
+                size="medium"
+                icon={<ReactSVG src="images/actions.upload.react.svg" />}
+              />
+              <Text className="or-text">{t("Or")}</Text>
               <Button label={t("ChooseFile")} size="medium" />
             </Box>
           </FieldContainer>
 
           <FieldContainer
-            helpButtonHeaderContent="Tooltip header"
             isVertical
-            labelText={t("CustomEntryButton")}
-            place="top"
-            tooltipContent={t("CustomEntryTooltip")}
+            labelText={
+              <InputLabel
+                text={t("CustomEntryButton")}
+                tooltipContent={t("CustomEntryTooltip")}
+              />
+            }
           >
             <StyledInputWrapper>
               <TextInput
@@ -130,11 +246,13 @@ const SingleSignOn = () => {
           </FieldContainer>
 
           <FieldContainer
-            helpButtonHeaderContent="Tooltip header"
             isVertical
-            labelText={t("ProviderURL")}
-            place="top"
-            tooltipContent={t("ProviderURLTooltip")}
+            labelText={
+              <InputLabel
+                text={t("ProviderURL")}
+                tooltipContent={t("ProviderURLTooltip")}
+              />
+            }
           >
             <StyledInputWrapper>
               <TextInput
@@ -147,18 +265,22 @@ const SingleSignOn = () => {
           </FieldContainer>
 
           <FieldContainer
-            helpButtonHeaderContent="Tooltip header"
             isVertical
-            labelText={t("EndpointURL")}
-            place="top"
-            tooltipContent={t("EndpointURLTooltip")}
+            labelText={
+              <InputLabel
+                text={t("EndpointURL")}
+                tooltipContent={t("EndpointURLTooltip")}
+              />
+            }
           >
-            <Box displayProp="flex" flexDirection="row">
+            <Box displayProp="flex" flexDirection="row" marginProp="0 0 4px 0">
               <Text>{t("Binding")}</Text>
 
               <RadioButtonGroup
+                className="radio-button-group"
                 name="binding"
                 selected="b"
+                spacing="21px"
                 options={[
                   {
                     value: "a",
@@ -182,17 +304,12 @@ const SingleSignOn = () => {
             </StyledInputWrapper>
           </FieldContainer>
 
-          <FieldContainer
-            helpButtonHeaderContent="Tooltip header"
-            isVertical
-            labelText={t("NameIDFormat")}
-            place="top"
-          >
+          <FieldContainer isVertical labelText={t("NameIDFormat")}>
             <StyledInputWrapper>
               <ComboBox
                 scaled
                 scaledOptions
-                textOverflow={false}
+                showDisabledItems
                 selectedOption={{
                   key: 1,
                   label:
@@ -260,7 +377,7 @@ const SingleSignOn = () => {
             flexDirection="row"
             marginProp="24px 0"
           >
-            <Text as="h2" fontWeight={600}>
+            <Text as="h2" fontSize="14px" fontWeight={600}>
               {t("OpenCertificates")}
             </Text>
 
@@ -274,6 +391,7 @@ const SingleSignOn = () => {
             <Button label="Добавить сертификат" size="medium" />
 
             <Link
+              className="hide-additional-button"
               isHovered
               onClick={showAdditionalParametersClick}
               type="action"
@@ -284,19 +402,25 @@ const SingleSignOn = () => {
             </Link>
           </Box>
 
-          <Checkbox label={t("SignAuthRequest")} />
-          <Checkbox label={t("SignExitRequest")} />
-          <Checkbox label={t("SignResponseRequest")} />
-          <Checkbox label={t("DecryptStatements")} />
+          <Box marginProp="12px 0">
+            <Checkbox className="checkbox-input" label={t("SignAuthRequest")} />
+            <Checkbox className="checkbox-input" label={t("SignExitRequest")} />
+            <Checkbox
+              className="checkbox-input"
+              label={t("SignResponseRequest")}
+            />
+            <Checkbox
+              className="checkbox-input"
+              label={t("DecryptStatements")}
+            />
+          </Box>
 
-          <FieldContainer
-            helpButtonHeaderContent="Tooltip header"
-            isVertical
-            labelText={t("SigningAlgorithm")}
-            place="top"
-          >
+          <FieldContainer isVertical labelText={t("SigningAlgorithm")}>
             <StyledInputWrapper>
               <ComboBox
+                scaled
+                scaledOptions
+                showDisabledItems
                 selectedOption={{
                   key: 1,
                   label: "rsa-sha1",
@@ -320,13 +444,14 @@ const SingleSignOn = () => {
           </FieldContainer>
 
           <FieldContainer
-            helpButtonHeaderContent="Tooltip header"
             isVertical
             labelText={t("StandardDecryptionAlgorithm")}
-            place="top"
           >
             <StyledInputWrapper>
               <ComboBox
+                scaled
+                scaledOptions
+                showDisabledItems
                 selectedOption={{
                   key: 1,
                   label: "aes128-cbc",
@@ -341,7 +466,7 @@ const SingleSignOn = () => {
                     label: "aes256-cbc",
                   },
                   {
-                    key: 1,
+                    key: 3,
                     label: "tripledes-cbc",
                   },
                 ]}
@@ -364,12 +489,7 @@ const SingleSignOn = () => {
             </Box>
           </Box>
 
-          <FieldContainer
-            helpButtonHeaderContent="Tooltip header"
-            isVertical
-            labelText={t("FirstName")}
-            place="top"
-          >
+          <FieldContainer isVertical labelText={t("FirstName")}>
             <StyledInputWrapper>
               <TextInput
                 className="field-input"
@@ -380,12 +500,51 @@ const SingleSignOn = () => {
             </StyledInputWrapper>
           </FieldContainer>
 
-          <FieldContainer
-            helpButtonHeaderContent="Tooltip header"
-            isVertical
-            labelText={t("LastName")}
-            place="top"
-          >
+          <FieldContainer isVertical labelText={t("LastName")}>
+            <StyledInputWrapper>
+              <TextInput
+                className="field-input"
+                onChange={() => {}}
+                placeholder="sn"
+                scale
+              />
+            </StyledInputWrapper>
+          </FieldContainer>
+
+          <FieldContainer isVertical labelText={t("Email")}>
+            <StyledInputWrapper>
+              <TextInput
+                className="field-input"
+                onChange={() => {}}
+                placeholder="sn"
+                scale
+              />
+            </StyledInputWrapper>
+          </FieldContainer>
+
+          <FieldContainer isVertical labelText={t("Location")}>
+            <StyledInputWrapper>
+              <TextInput
+                className="field-input"
+                onChange={() => {}}
+                placeholder="sn"
+                scale
+              />
+            </StyledInputWrapper>
+          </FieldContainer>
+
+          <FieldContainer isVertical labelText={t("Title")}>
+            <StyledInputWrapper>
+              <TextInput
+                className="field-input"
+                onChange={() => {}}
+                placeholder="sn"
+                scale
+              />
+            </StyledInputWrapper>
+          </FieldContainer>
+
+          <FieldContainer isVertical labelText={t("Phone")}>
             <StyledInputWrapper>
               <TextInput
                 className="field-input"
@@ -397,104 +556,57 @@ const SingleSignOn = () => {
           </FieldContainer>
 
           <FieldContainer
-            helpButtonHeaderContent="Tooltip header"
             isVertical
-            labelText={t("Email")}
-            place="top"
-          >
-            <StyledInputWrapper>
-              <TextInput
-                className="field-input"
-                onChange={() => {}}
-                placeholder="sn"
-                scale
+            labelText={
+              <InputLabel
+                text={t("AdvancedSettings")}
+                tooltipContent={t("AdvancedSettingsTooltip")}
               />
-            </StyledInputWrapper>
-          </FieldContainer>
-
-          <FieldContainer
-            helpButtonHeaderContent="Tooltip header"
-            isVertical
-            labelText={t("Location")}
-            place="top"
-          >
-            <StyledInputWrapper>
-              <TextInput
-                className="field-input"
-                onChange={() => {}}
-                placeholder="sn"
-                scale
-              />
-            </StyledInputWrapper>
-          </FieldContainer>
-
-          <FieldContainer
-            helpButtonHeaderContent="Tooltip header"
-            isVertical
-            labelText={t("Title")}
-            place="top"
-          >
-            <StyledInputWrapper>
-              <TextInput
-                className="field-input"
-                onChange={() => {}}
-                placeholder="sn"
-                scale
-              />
-            </StyledInputWrapper>
-          </FieldContainer>
-
-          <FieldContainer
-            helpButtonHeaderContent="Tooltip header"
-            isVertical
-            labelText={t("Phone")}
-            place="top"
-          >
-            <StyledInputWrapper>
-              <TextInput
-                className="field-input"
-                onChange={() => {}}
-                placeholder="sn"
-                scale
-              />
-            </StyledInputWrapper>
-          </FieldContainer>
-
-          <FieldContainer
-            helpButtonHeaderContent="Tooltip header"
-            isVertical
-            labelText={t("AdvancedSettings")}
-            place="top"
-            tooltipContent={t("AdvancedSettingsTooltip")}
+            }
           >
             <Checkbox label={t("HideAuthPage")} />
           </FieldContainer>
 
           <Box alignItems="center" displayProp="flex" flexDirection="row">
-            <Button label={t("Save")} primary size="medium" />
+            <Button
+              className="save-button"
+              label={t("Save")}
+              primary
+              size="medium"
+            />
             <Button label={t("ResetSettings")} size="medium" />
           </Box>
         </Box>
 
-        <Box displayProp="flex" flexDirection="column">
-          <Box displayProp="flex" flexDirection="column">
-            <Box displayProp="flex" flexDirection="row" marginProp="24px 0">
-              <Text as="h2" fontWeight={600}>
-                {t("SPMetadata")}
-              </Text>
+        <Box>
+          <Box
+            alignItems="center"
+            displayProp="flex"
+            flexDirection="row"
+            marginProp="24px 0"
+          >
+            <Text as="h2" fontSize="14x" fontWeight={600}>
+              {t("SPMetadata")}
+            </Text>
 
-              <Link isHovered onClick={showProviderMetadataClick} type="action">
-                {showProviderMetadata ? t("Hide") : t("Show")}
-              </Link>
-            </Box>
+            <Link
+              className="hide-button"
+              isHovered
+              onClick={showProviderMetadataClick}
+              type="action"
+            >
+              {showProviderMetadata ? t("Hide") : t("Show")}
+            </Link>
           </Box>
 
           <FieldContainer
-            helpButtonHeaderContent="Tooltip header"
             isVertical
-            labelText={t("SPEntityId")}
-            place="top"
-            tooltipContent={t("SPEntityIdTooltip")}
+            labelText={
+              <InputLabel
+                text={t("SPEntityId")}
+                tooltipContent={t("SPEntityIdTooltip")}
+              />
+            }
           >
             <StyledInputWrapper>
               <TextInput
@@ -507,11 +619,13 @@ const SingleSignOn = () => {
           </FieldContainer>
 
           <FieldContainer
-            helpButtonHeaderContent="Tooltip header"
             isVertical
-            labelText={t("SPAssertionConsumerURL")}
-            place="top"
-            tooltipContent={t("SPAssertionConsumerURLTooltip")}
+            labelText={
+              <InputLabel
+                text={t("SPAssertionConsumerURL")}
+                tooltipContent={t("SPAssertionConsumerURLTooltip")}
+              />
+            }
           >
             <StyledInputWrapper>
               <TextInput
@@ -524,11 +638,13 @@ const SingleSignOn = () => {
           </FieldContainer>
 
           <FieldContainer
-            helpButtonHeaderContent="Tooltip header"
             isVertical
-            labelText={t("SPSingleLogoutURL")}
-            place="top"
-            tooltipContent={t("SPSingleLogoutURLTooltip")}
+            labelText={
+              <InputLabel
+                text={t("SPSingleLogoutURL")}
+                tooltipContent={t("SPSingleLogoutURLTooltip")}
+              />
+            }
           >
             <StyledInputWrapper>
               <TextInput
@@ -540,10 +656,17 @@ const SingleSignOn = () => {
             </StyledInputWrapper>
           </FieldContainer>
 
-          <Button label="DownloadMetadataXML" primary size="medium" />
+          <Box>
+            <Button
+              className="download-button"
+              label="DownloadMetadataXML"
+              primary
+              size="medium"
+            />
+          </Box>
         </Box>
       </Box>
-    </Box>
+    </StyledContainer>
   );
 };
 
