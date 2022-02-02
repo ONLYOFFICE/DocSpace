@@ -261,6 +261,7 @@ const Editor = () => {
           const formUrl = await checkFillFormDraft(fileId);
           history.pushState({}, null, formUrl);
           url = window.location.href;
+          document.location.reload();
         } catch (err) {
           console.error(err);
         }
