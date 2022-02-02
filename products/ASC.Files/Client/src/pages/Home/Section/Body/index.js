@@ -1,14 +1,19 @@
-import React, { useEffect } from "react";
-import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
-import { isMobile } from "react-device-detect";
-import { observer, inject } from "mobx-react";
-import FilesRowContainer from "./RowsView/FilesRowContainer";
-import FilesTileContainer from "./TilesView/FilesTileContainer";
-import EmptyContainer from "../../../../components/EmptyContainer";
-import withLoader from "../../../../HOCs/withLoader";
-import TableView from "./TableView/TableContainer";
-import { Consumer } from "@appserver/components/utils/context";
+import React, { useEffect } from 'react';
+import { withRouter } from 'react-router';
+import { withTranslation } from 'react-i18next';
+import { isMobile } from 'react-device-detect';
+import {
+  isMobile as isMobileUtils,
+  isTablet as isTabletUtils,
+} from '@appserver/components/utils/device';
+import { observer, inject } from 'mobx-react';
+import FilesRowContainer from './RowsView/FilesRowContainer';
+import FilesTileContainer from './TilesView/FilesTileContainer';
+import EmptyContainer from '../../../../components/EmptyContainer';
+import withLoader from '../../../../HOCs/withLoader';
+import TableView from './TableView/TableContainer';
+import { Consumer } from '@appserver/components/utils/context';
+import { CatalogMainButtonContent } from '../../../../components/Catalog';
 
 let currentDroppable = null;
 
@@ -34,39 +39,37 @@ const SectionBodyContent = (props) => {
   } = props;
 
   useEffect(() => {
-    const customScrollElm = document.querySelector(
-      "#customScrollBar > .scroll-body"
-    );
+    const customScrollElm = document.querySelector('#customScrollBar > .scroll-body');
 
     if (isMobile) {
       customScrollElm && customScrollElm.scrollTo(0, 0);
     }
 
-    !isMobile && window.addEventListener("mousedown", onMouseDown);
-    startDrag && window.addEventListener("mouseup", onMouseUp);
-    startDrag && document.addEventListener("mousemove", onMouseMove);
+    !isMobile && window.addEventListener('mousedown', onMouseDown);
+    startDrag && window.addEventListener('mouseup', onMouseUp);
+    startDrag && document.addEventListener('mousemove', onMouseMove);
 
-    document.addEventListener("dragover", onDragOver);
-    document.addEventListener("dragleave", onDragLeaveDoc);
-    document.addEventListener("drop", onDropEvent);
+    document.addEventListener('dragover', onDragOver);
+    document.addEventListener('dragleave', onDragLeaveDoc);
+    document.addEventListener('drop', onDropEvent);
 
     return () => {
-      window.removeEventListener("mousedown", onMouseDown);
-      window.removeEventListener("mouseup", onMouseUp);
-      document.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener('mousedown', onMouseDown);
+      window.removeEventListener('mouseup', onMouseUp);
+      document.removeEventListener('mousemove', onMouseMove);
 
-      document.removeEventListener("dragover", onDragOver);
-      document.removeEventListener("dragleave", onDragLeaveDoc);
-      document.removeEventListener("drop", onDropEvent);
+      document.removeEventListener('dragover', onDragOver);
+      document.removeEventListener('dragleave', onDragLeaveDoc);
+      document.removeEventListener('drop', onDropEvent);
     };
   }, [onMouseUp, onMouseMove, startDrag, folderId, viewAs]);
 
   const onMouseDown = (e) => {
     if (
-      e.target.closest(".scroll-body") &&
-      !e.target.closest(".files-item") &&
-      !e.target.closest(".not-selectable") &&
-      !e.target.closest(".table-container_group-menu")
+      e.target.closest('.scroll-body') &&
+      !e.target.closest('.files-item') &&
+      !e.target.closest('.not-selectable') &&
+      !e.target.closest('.table-container_group-menu')
     ) {
       setSelection([]);
       setBufferSelection(null);
@@ -74,15 +77,12 @@ const SectionBodyContent = (props) => {
   };
 
   const onMouseMove = (e) => {
-    if (
-      Math.abs(e.pageX - tooltipPageX) < 5 &&
-      Math.abs(e.pageY - tooltipPageY) < 5
-    ) {
+    if (Math.abs(e.pageX - tooltipPageX) < 5 && Math.abs(e.pageY - tooltipPageY) < 5) {
       return false;
     }
 
     if (!dragging) {
-      document.body.classList.add("drag-cursor");
+      document.body.classList.add('drag-cursor');
       setDragging(true);
     }
 
@@ -92,32 +92,32 @@ const SectionBodyContent = (props) => {
       return;
     }
 
-    const droppable = wrapperElement.closest(".droppable");
+    const droppable = wrapperElement.closest('.droppable');
     if (currentDroppable !== droppable) {
       if (currentDroppable) {
-        if (viewAs === "table") {
-          const value = currentDroppable.getAttribute("value");
+        if (viewAs === 'table') {
+          const value = currentDroppable.getAttribute('value');
           const classElements = document.getElementsByClassName(value);
 
           for (let cl of classElements) {
-            cl.classList.remove("droppable-hover");
+            cl.classList.remove('droppable-hover');
           }
         } else {
-          currentDroppable.classList.remove("droppable-hover");
+          currentDroppable.classList.remove('droppable-hover');
         }
       }
       currentDroppable = droppable;
 
       if (currentDroppable) {
-        if (viewAs === "table") {
-          const value = currentDroppable.getAttribute("value");
+        if (viewAs === 'table') {
+          const value = currentDroppable.getAttribute('value');
           const classElements = document.getElementsByClassName(value);
 
           for (let cl of classElements) {
-            cl.classList.add("droppable-hover");
+            cl.classList.add('droppable-hover');
           }
         } else {
-          currentDroppable.classList.add("droppable-hover");
+          currentDroppable.classList.add('droppable-hover');
           currentDroppable = droppable;
         }
       }
@@ -125,24 +125,24 @@ const SectionBodyContent = (props) => {
   };
 
   const onMouseUp = (e) => {
-    document.body.classList.remove("drag-cursor");
+    document.body.classList.remove('drag-cursor');
 
-    const treeElem = e.target.closest(".tree-drag");
+    const treeElem = e.target.closest('.tree-drag');
     const treeDataValue = treeElem?.dataset?.value;
-    const splitValue = treeDataValue && treeDataValue.split(" ");
-    const isDragging = splitValue && splitValue.includes("dragging");
+    const splitValue = treeDataValue && treeDataValue.split(' ');
+    const isDragging = splitValue && splitValue.includes('dragging');
     const treeValue = isDragging ? splitValue[0] : null;
 
-    const elem = e.target.closest(".droppable");
+    const elem = e.target.closest('.droppable');
     const title = elem && elem.dataset.title;
-    const value = elem && elem.getAttribute("value");
+    const value = elem && elem.getAttribute('value');
     if ((!value && !treeValue) || isRecycleBinFolder) {
       setDragging(false);
       setStartDrag(false);
       return;
     }
 
-    const folderId = value ? value.split("_")[1] : treeValue;
+    const folderId = value ? value.split('_')[1] : treeValue;
 
     setStartDrag(false);
     setDragging(false);
@@ -153,8 +153,8 @@ const SectionBodyContent = (props) => {
   const onMoveTo = (destFolderId, title) => {
     const id = isNaN(+destFolderId) ? destFolderId : +destFolderId;
     moveDragItems(id, title, {
-      copy: t("Translations:CopyOperation"),
-      move: t("Translations:MoveToOperation"),
+      copy: t('Translations:CopyOperation'),
+      move: t('Translations:MoveToOperation'),
     }); //TODO: then catch
   };
 
@@ -164,10 +164,7 @@ const SectionBodyContent = (props) => {
 
   const onDragOver = (e) => {
     e.preventDefault();
-    if (
-      e.dataTransfer.items.length > 0 &&
-      e.dataTransfer.dropEffect !== "none"
-    ) {
+    if (e.dataTransfer.items.length > 0 && e.dataTransfer.dropEffect !== 'none') {
       setDragging(true);
     }
   };
@@ -185,16 +182,33 @@ const SectionBodyContent = (props) => {
     <Consumer>
       {(context) =>
         (!fileActionId && isEmptyFilesList) || null ? (
-          <EmptyContainer />
-        ) : viewAs === "tile" ? (
-          <FilesTileContainer sectionWidth={context.sectionWidth} t={t} />
-        ) : viewAs === "table" ? (
-          <TableView sectionWidth={context.sectionWidth} tReady={tReady} />
+          <>
+            <EmptyContainer />
+            {(isMobile || isMobileUtils() || isTabletUtils()) && (
+              <CatalogMainButtonContent sectionWidth={context.sectionWidth} />
+            )}
+          </>
+        ) : viewAs === 'tile' ? (
+          <>
+            <FilesTileContainer sectionWidth={context.sectionWidth} t={t} />
+            {(isMobile || isMobileUtils() || isTabletUtils()) && (
+              <CatalogMainButtonContent sectionWidth={context.sectionWidth} />
+            )}
+          </>
+        ) : viewAs === 'table' ? (
+          <>
+            <TableView sectionWidth={context.sectionWidth} tReady={tReady} />
+            {(isMobile || isMobileUtils() || isTabletUtils()) && (
+              <CatalogMainButtonContent sectionWidth={context.sectionWidth} />
+            )}
+          </>
         ) : (
-          <FilesRowContainer
-            sectionWidth={context.sectionWidth}
-            tReady={tReady}
-          />
+          <>
+            <FilesRowContainer sectionWidth={context.sectionWidth} tReady={tReady} />
+            {(isMobile || isMobileUtils() || isTabletUtils()) && (
+              <CatalogMainButtonContent sectionWidth={context.sectionWidth} />
+            )}
+          </>
         )
       }
     </Consumer>
@@ -202,12 +216,7 @@ const SectionBodyContent = (props) => {
 };
 
 export default inject(
-  ({
-    filesStore,
-    selectedFolderStore,
-    treeFoldersStore,
-    filesActionsStore,
-  }) => {
+  ({ filesStore, selectedFolderStore, treeFoldersStore, filesActionsStore }) => {
     const {
       fileActionStore,
       isEmptyFilesList,
@@ -240,11 +249,9 @@ export default inject(
       tooltipPageX,
       tooltipPageY,
     };
-  }
+  },
 )(
   withRouter(
-    withTranslation(["Home", "Common", "Translations"])(
-      withLoader(observer(SectionBodyContent))()
-    )
-  )
+    withTranslation(['Home', 'Common', 'Translations'])(withLoader(observer(SectionBodyContent))()),
+  ),
 );

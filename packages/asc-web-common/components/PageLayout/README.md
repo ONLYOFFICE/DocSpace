@@ -5,18 +5,22 @@ Default page layout
 ### Usage
 
 ```js
-import PageLayout from "@appserver/common/components/PageLayout";
+import PageLayout from '@appserver/common/components/PageLayout';
 ```
 
 ```jsx
 <PageLayout withBodyScroll={true}>
   <PageLayout.ArticleHeader>{articleHeaderContent}</PageLayout.ArticleHeader>
 
-  <PageLayout.ArticleMainButton>
-    {articleMainButtonContent}
-  </PageLayout.ArticleMainButton>
+  <PageLayout.ArticleMainButton>{articleMainButtonContent}</PageLayout.ArticleMainButton>
 
   <PageLayout.ArticleBody>{articleBodyContent}</PageLayout.ArticleBody>
+
+  <PageLayout.CatalogHeader>{catalogHeaderContent}</PageLayout.CatalogHeader>
+
+  <PageLayout.catalogMainButton>{catalogMainButtonContent}</PageLayout.catalogMainButton>
+
+  <PageLayout.CatalogBody>{catalogBodyContent}</PageLayout.CatalogBody>
 
   <PageLayout.SectionHeader>{sectionHeaderContent}</PageLayout.SectionHeader>
 
@@ -35,6 +39,9 @@ import PageLayout from "@appserver/common/components/PageLayout";
 | `articleHeaderContent`     | `bool` |    -     |   -    |    -    | Article header content                    |
 | `articleMainButtonContent` | `bool` |    -     |   -    |    -    | Article main button content               |
 | `articleBodyContent`       | `bool` |    -     |   -    |    -    | Article body content                      |
+| `catalogHeaderContent`     | `bool` |    -     |   -    |    -    | Article header content                    |
+| `catalogMainButtonContent` | `bool` |    -     |   -    |    -    | Article main button content               |
+| `catalogBodyContent`       | `bool` |    -     |   -    |    -    | Article body content                      |
 | `sectionHeaderContent`     | `bool` |    -     |   -    |    -    | Section header content                    |
 | `sectionFilterContent`     | `bool` |    -     |   -    |    -    | Section filter content                    |
 | `sectionBodyContent`       | `bool` |    -     |   -    |    -    | Section body content                      |

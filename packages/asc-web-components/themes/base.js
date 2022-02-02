@@ -169,9 +169,22 @@ const Base = {
 
   mainButtonMobile: {
     dropDown: {
-      right: "15%",
-      bottom: "15%",
+      position: "fixed",
+      right: "32px",
+      bottom: "32px",
+
       width: "400px",
+
+      zIndex: "202",
+
+      mobile: {
+        right: "24px",
+        bottom: "24px",
+
+        marginLeft: "24px",
+
+        width: "calc(100vw - 48px)",
+      },
     },
 
     dropDownItem: {
@@ -1629,6 +1642,146 @@ const Base = {
   //     },
   //   },
   // },
+
+  catalogItem: {
+    container: {
+      width: "100%",
+      height: "36px",
+      padding: "0 20px",
+      marginBottom: "20px",
+      tablet: {
+        height: "44px",
+        padding: "0 16px",
+        marginBottom: "24px",
+      },
+    },
+    sibling: {
+      active: {
+        background: lightGrayishStrongBlue,
+      },
+      hover: {
+        background: grayLightMid,
+      },
+    },
+    img: {
+      svg: {
+        width: "16px",
+        height: "16px",
+
+        tablet: {
+          width: "20px",
+          height: "20px",
+        },
+      },
+    },
+    text: {
+      width: "100%",
+      marginLeft: "8px",
+      lineHeight: "20px",
+      color: cyanBlueDarkShade,
+      fontSize: "13px",
+      fontWeight: 600,
+      tablet: {
+        marginLeft: "12px",
+        lineHeight: "16px",
+        fontSize: "14px",
+        fontWeight: "bold",
+      },
+    },
+    initialText: {
+      color: white,
+      width: "16px",
+      lineHeight: "15px",
+      fontSize: "9px",
+      fontWeight: 700,
+      tablet: {
+        width: "20px",
+        lineHeight: "19px",
+        fontSize: "11px",
+      },
+    },
+    badgeWrapper: {
+      size: "20px",
+      marginLeft: "20px",
+      tablet: {
+        width: "48px",
+        height: "44px",
+        marginRight: "-16px",
+      },
+    },
+    badgeWithoutText: {
+      size: "6px",
+      position: "-3px",
+      backgroundColor: orangeMain,
+      tablet: {
+        size: "8px",
+        position: "-4px",
+      },
+    },
+  },
+
+  menuItem: {
+    iconWrapper: {
+      width: "16px",
+      height: "16px",
+      header: {
+        width: "24px",
+        height: "24px",
+      },
+    },
+    separator: {
+      borderBottom: `1px solid ${grayLightMid} !important`,
+      margin: "6px 16px 6px 16px !important",
+      height: "1px !important",
+      width: "calc(100% - 32px) !important",
+    },
+    text: {
+      header: {
+        fontSize: "15px",
+        lineHeight: "16px",
+      },
+      mobile: {
+        fontSize: "13px",
+        lineHeight: "36px",
+      },
+      fontSize: "12px",
+      lineHeight: "30px",
+      fontWeight: "600",
+      margin: "0 0 0 8px",
+      color: black,
+    },
+    hover: grayLight,
+    background: "none",
+    svgFill: black,
+    header: {
+      height: "55px",
+      borderBottom: `1px solid ${grayLightMid}`,
+      marginBottom: "6px",
+    },
+    height: "30px",
+    borderBottom: "none",
+    marginBottom: "0",
+    padding: "0 12px",
+    mobile: {
+      height: "36px",
+      padding: "0 16px",
+    },
+  },
+  newContextMenu: {
+    background: white,
+    borderRadius: "6px",
+    boxShadow: "0px 12px 40px rgba(4, 15, 27, 0.12)",
+    padding: "6px 0px",
+    devices: {
+      maxHeight: "calc(100vh - 64px)",
+      tabletWidth: "375px",
+      mobileWidth: "100vw",
+      left: 0,
+      right: 0,
+      bottom: 0,
+      margin: "0 auto",
+    },
+  },
 };
 
 export default Base;

@@ -786,8 +786,8 @@ class UploadDataStore {
         if (this.files[indexOfFile] === undefined) {
           this.primaryProgressDataStore.setPrimaryProgressBarData({
             icon: "upload",
-            percent: 100,
-            visible: true,
+            percent: 0,
+            visible: false,
             alert: true,
           });
           return Promise.resolve();
@@ -869,7 +869,8 @@ class UploadDataStore {
 
         const data = res[0] ? res[0] : null;
         const pbData = { icon: "duplicate" };
-        return this.loopFilesOperations(data, pbData).then(() =>
+
+        return this.loopFilesOperations(data, fileIds.length, pbData).then(() =>
           this.moveToCopyTo(destFolderId, pbData, true)
         );
       })
@@ -907,6 +908,7 @@ class UploadDataStore {
       .then((res) => {
         const data = res[0] ? res[0] : null;
         const pbData = { icon: "move" };
+
         return this.loopFilesOperations(data, pbData).then(() =>
           this.moveToCopyTo(destFolderId, pbData, false)
         );
@@ -953,6 +955,7 @@ class UploadDataStore {
       percent: 0,
       label: isCopy ? translations.copy : translations.move,
       alert: false,
+      filesCount: this.secondaryProgressDataStore.filesCount + fileIds.length,
     });
 
     return isCopy
@@ -993,6 +996,7 @@ class UploadDataStore {
     while (!finished) {
       const item = await this.getOperationProgress(data.id);
       operationItem = item;
+
       progress = item ? item.progress : 100;
       finished = item.finished;
 
@@ -1002,6 +1006,7 @@ class UploadDataStore {
         percent: progress,
         visible: true,
         alert: false,
+        currentFile: item,
       });
     }
 

@@ -1,17 +1,22 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { withRouter } from "react-router";
-import PageLayout from "@appserver/common/components/PageLayout";
-import Loaders from "@appserver/common/components/Loaders";
-import { withTranslation } from "react-i18next";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withRouter } from 'react-router';
+import PageLayout from '@appserver/common/components/PageLayout';
+import Loaders from '@appserver/common/components/Loaders';
+import { withTranslation } from 'react-i18next';
 import {
   ArticleHeaderContent,
   ArticleBodyContent,
   ArticleMainButtonContent,
-} from "../../components/Article";
-import { SectionHeaderContent, SectionBodyContent } from "./Section";
+} from '../../components/Article';
+import {
+  CatalogBodyContent,
+  CatalogHeaderContent,
+  CatalogMainButtonContent,
+} from '../../components/Catalog';
+import { SectionHeaderContent, SectionBodyContent } from './Section';
 //import { setDocumentTitle } from "../../../helpers/utils";
-import { inject, observer } from "mobx-react";
+import { inject, observer } from 'mobx-react';
 
 class PureVersionHistory extends React.Component {
   componentDidMount() {
@@ -50,8 +55,7 @@ class PureVersionHistory extends React.Component {
         showSecondaryProgressBar={showProgressBar}
         secondaryProgressBarIcon="file"
         showSecondaryButtonAlert={false}
-        withBodyScroll={false}
-      >
+        withBodyScroll={false}>
         <PageLayout.ArticleHeader>
           <ArticleHeaderContent />
         </PageLayout.ArticleHeader>
@@ -64,12 +68,19 @@ class PureVersionHistory extends React.Component {
           <ArticleBodyContent />
         </PageLayout.ArticleBody>
 
+        <PageLayout.CatalogHeader>
+          <CatalogHeaderContent />
+        </PageLayout.CatalogHeader>
+        <PageLayout.CatalogMainButton>
+          <CatalogMainButtonContent />
+        </PageLayout.CatalogMainButton>
+        <PageLayout.CatalogBody>
+          <CatalogBodyContent />
+        </PageLayout.CatalogBody>
+
         <PageLayout.SectionHeader>
           {versions && !isLoading ? (
-            <SectionHeaderContent
-              title={versions[0].title}
-              onClickBack={this.redirectToHomepage}
-            />
+            <SectionHeaderContent title={versions[0].title} onClickBack={this.redirectToHomepage} />
           ) : (
             <Loaders.SectionHeader title="version-history-title-loader" />
           )}
@@ -83,7 +94,7 @@ class PureVersionHistory extends React.Component {
   }
 }
 
-const VersionHistory = withTranslation("VersionHistory")(PureVersionHistory);
+const VersionHistory = withTranslation('VersionHistory')(PureVersionHistory);
 
 VersionHistory.propTypes = {
   history: PropTypes.object.isRequired,
@@ -91,11 +102,7 @@ VersionHistory.propTypes = {
 
 export default inject(({ auth, filesStore, versionHistoryStore }) => {
   const { filter, isLoading } = filesStore;
-  const {
-    setIsVerHistoryPanel,
-    versions,
-    showProgressBar,
-  } = versionHistoryStore;
+  const { setIsVerHistoryPanel, versions, showProgressBar } = versionHistoryStore;
 
   return {
     isTabletView: auth.settingsStore.isTabletView,

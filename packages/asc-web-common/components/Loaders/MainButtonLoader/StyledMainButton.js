@@ -1,12 +1,14 @@
-import styled from "styled-components";
-import { desktop } from "@appserver/components/utils/device";
+import { tablet } from '@appserver/components/utils/device';
+import { isTablet } from 'react-device-detect';
+import styled from 'styled-components';
 
 const StyledContainer = styled.div`
-  width: 209px;
-
-  @media ${desktop} {
-    width: 225px;
+  width: 208px;
+  @media ${tablet} {
+    display: none;
   }
+
+  ${isTablet && 'display: none'}
 `;
 
 export default StyledContainer;

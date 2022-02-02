@@ -1,28 +1,28 @@
-import React from "react";
-import { inject, observer } from "mobx-react";
-import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
-import { Link as LinkWithoutRedirect } from "react-router-dom";
-import { isMobileOnly } from "react-device-detect";
-import NavItem from "./nav-item";
-import Headline from "@appserver/common/components/Headline";
-import Nav from "./nav";
-import NavLogoItem from "./nav-logo-item";
-import Link from "@appserver/components/link";
-import history from "@appserver/common/history";
-import { useTranslation } from "react-i18next";
+import React from 'react';
+import { inject, observer } from 'mobx-react';
+import PropTypes from 'prop-types';
+import styled, { css } from 'styled-components';
+import { Link as LinkWithoutRedirect } from 'react-router-dom';
+import NavItem from './nav-item';
+import Nav from './nav';
+import NavLogoItem from './nav-logo-item';
+import Link from '@appserver/components/link';
+import history from '@appserver/common/history';
+import { useTranslation } from 'react-i18next';
 
-import Box from "@appserver/components/box";
-import Text from "@appserver/components/text";
-import { desktop, tablet } from "@appserver/components/utils/device";
-import i18n from "../i18n";
-import { combineUrl } from "@appserver/common/utils";
-import { AppServerConfig } from "@appserver/common/constants";
-import NoUserSelect from "@appserver/components/utils/commonStyles";
+import Box from '@appserver/components/box';
+import Text from '@appserver/components/text';
+import { desktop, mobile, tablet } from '@appserver/components/utils/device';
+import { isMobileOnly, isMobile } from 'react-device-detect';
+import i18n from '../i18n';
+import { combineUrl } from '@appserver/common/utils';
+import { AppServerConfig } from '@appserver/common/constants';
+import NoUserSelect from '@appserver/components/utils/commonStyles';
+import HeaderNavigationIcon from './header-navigation-icon';
 
 const { proxyURL } = AppServerConfig;
 
-const backgroundColor = "#0F4071";
+const backgroundColor = '#0F4071';
 
 const Header = styled.header`
   align-items: center;
@@ -35,69 +35,26 @@ const Header = styled.header`
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
     ${NoUserSelect}
-    ${(props) =>
-      props.module &&
-      !props.isPersonal &&
-      css`
-        @media ${tablet} {
-          display: none;
-        }
-      `}
-  }
-
-  .header-module-title {
-    display: block;
-    font-size: 21px;
-    line-height: 0;
-    margin-top: -5px;
-    cursor: pointer;
-
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    -webkit-user-drag: none;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-
-    @media ${desktop} {
-      display: none;
-    }
-  }
-
-  .header-logo-min_icon {
-    display: none;
-    cursor: pointer;
-
-    width: 24px;
-    height: 24px;
-
-    @media (max-width: 620px) {
-      padding: 0 12px 0 0;
-      display: ${(props) => props.module && "block"};
-    }
   }
 
   .header-logo-icon {
-    width: ${(props) => (props.isPersonal ? "220px" : "146px")};
-    ${(props) => props.isPersonal && `margin-left: 20px;`}
     height: 24px;
     position: relative;
-    padding: ${(props) => (!props.isPersonal ? "0 20px 0 6px" : "0")};
+    margin-left: 20px;
     cursor: pointer;
 
     @media ${tablet} {
-      ${(props) => props.isPersonal && `margin-left: 16px;`}
+      margin-left: 16px;
     }
 
-    @media (max-width: 620px) {
+    /* @media (max-width: 620px) {
       ${(props) =>
-        !props.isPersonal &&
-        css`
-          display: ${(props) => (props.module ? "none" : "block")};
-          padding: 3px 20px 0 6px;
-        `}
-    }
+      !props.isPersonal &&
+      css`
+        display: ${(props) => (props.module ? 'none' : 'block')};
+        padding: 3px 20px 0 6px;
+      `}
+    } */
   }
   .mobile-short-logo {
     width: 146px;
@@ -122,10 +79,31 @@ const StyledLink = styled.div`
 `;
 
 const versionBadgeProps = {
-  color: "#7A95B0",
-  fontWeight: "600",
-  fontSize: "13px",
+  color: '#7A95B0',
+  fontWeight: '600',
+  fontSize: '13px',
 };
+
+const StyledNavigationIconsWrapper = styled.div`
+  height: 20px;
+  position: absolute;
+  left: ${isMobile ? '254px' : '280px'};
+  display: ${isMobileOnly ? 'none' : 'flex'};
+  justify-content: flex-start;
+
+  @media ${tablet} {
+    left: 254px;
+  }
+
+  @media ${mobile} {
+    display: none;
+  }
+
+  .header-navigation__icon {
+    cursor: pointer;
+    margin-right: 22px;
+  }
+`;
 
 const HeaderComponent = ({
   currentProductName,
@@ -146,7 +124,7 @@ const HeaderComponent = ({
   isPersonal,
   ...props
 }) => {
-  const { t } = useTranslation("Common");
+  const { t } = useTranslation('Common');
 
   const isNavAvailable = mainModules.length > 0;
 
@@ -155,22 +133,22 @@ const HeaderComponent = ({
     backdropClick();
   };
 
-  const onBadgeClick = (e) => {
+  const onBadgeClick = React.useCallback((e) => {
     if (!e) return;
     const id = e.currentTarget.dataset.id;
     const item = mainModules.find((m) => m.id === id);
     toggleAside();
 
     if (item) item.onBadgeClick(e);
-  };
+  }, []);
 
-  const onItemClick = (e) => {
+  const onItemClick = React.useCallback((e) => {
     if (!e) return;
     const link = e.currentTarget.dataset.link;
     history.push(link);
     backdropClick();
     e.preventDefault();
-  };
+  }, []);
 
   const numberOfModules = mainModules.filter((item) => !item.separator).length;
 
@@ -181,48 +159,44 @@ const HeaderComponent = ({
         isLoaded={isLoaded}
         isPersonal={isPersonal}
         isAuthenticated={isAuthenticated}
-        className="navMenuHeader hidingHeader"
-      >
-        {!isPersonal && (
-          <NavItem
-            badgeNumber={totalNotifications}
-            onClick={onClick}
-            noHover={true}
-          />
-        )}
-
+        className="navMenuHeader hidingHeader">
         <LinkWithoutRedirect className="header-logo-wrapper" to={defaultPage}>
           {!isPersonal ? (
             <img alt="logo" src={props.logoUrl} className="header-logo-icon" />
-          ) : !isMobileOnly ? (
+          ) : (
             <img
               alt="logo"
               className="header-logo-icon"
-              src={combineUrl(
-                AppServerConfig.proxyURL,
-                "/static/images/personal.logo.react.svg"
-              )}
-            />
-          ) : (
-            <img
-              className="header-logo-icon mobile-short-logo"
-              src={combineUrl(
-                AppServerConfig.proxyURL,
-                "/static/images/nav.logo.opened.react.svg"
-              )}
+              src={combineUrl(AppServerConfig.proxyURL, '/static/images/personal.logo.react.svg')}
             />
           )}
         </LinkWithoutRedirect>
 
         {!isPersonal && (
-          <Headline
-            className="header-module-title"
-            type="header"
-            color="#FFF"
-            onClick={onClick}
-          >
-            {currentProductName}
-          </Headline>
+          <StyledNavigationIconsWrapper>
+            {mainModules.map((item) => {
+              return (
+                <React.Fragment key={item.id}>
+                  {item.iconUrl &&
+                    !item.separator &&
+                    (item.appName === 'files' || item.appName === 'people') && (
+                      <HeaderNavigationIcon
+                        key={item.id}
+                        id={item.id}
+                        data-id={item.id}
+                        data-link={item.link}
+                        active={item.id == currentProductId}
+                        iconUrl={item.iconUrl}
+                        badgeNumber={item.notifications}
+                        onItemClick={onItemClick}
+                        onBadgeClick={onBadgeClick}
+                        url={item.link}
+                      />
+                    )}
+                </React.Fragment>
+              );
+            })}
+          </StyledNavigationIconsWrapper>
         )}
       </Header>
 
@@ -231,62 +205,50 @@ const HeaderComponent = ({
           opened={isNavOpened}
           onMouseEnter={onNavMouseEnter}
           onMouseLeave={onNavMouseLeave}
-          numberOfModules={numberOfModules}
-        >
+          numberOfModules={numberOfModules}>
           <NavLogoItem opened={isNavOpened} onClick={onLogoClick} />
           <NavItem
             separator={true}
-            key={"nav-products-separator"}
-            data-id={"nav-products-separator"}
+            key={'nav-products-separator'}
+            data-id={'nav-products-separator'}
           />
-          {mainModules.map(
-            ({
-              id,
-              separator, //iconName,
-              iconUrl,
-              notifications,
-              link,
-              title,
-              dashed,
-            }) => (
-              <NavItem
-                separator={!!separator}
-                key={id}
-                data-id={id}
-                data-link={link}
-                opened={isNavOpened}
-                active={id == currentProductId}
-                //iconName={iconName}
-                iconUrl={iconUrl}
-                badgeNumber={notifications}
-                onClick={onItemClick}
-                onBadgeClick={onBadgeClick}
-                url={link}
-                dashed={dashed}
-              >
-                {id === "settings" ? i18n.t("Common:Settings") : title}
-              </NavItem>
-            )
-          )}
+          {mainModules.map((
+            { id, separator, iconUrl, notifications, link, title, dashed }, //iconName,
+          ) => (
+            <NavItem
+              separator={!!separator}
+              key={id}
+              data-id={id}
+              data-link={link}
+              opened={isNavOpened}
+              active={id == currentProductId}
+              //iconName={iconName}
+              iconUrl={iconUrl}
+              badgeNumber={notifications}
+              onClick={onItemClick}
+              onBadgeClick={onBadgeClick}
+              url={link}
+              dashed={dashed}>
+              {id === 'settings' ? i18n.t('Common:Settings') : title}
+            </NavItem>
+          ))}
           <Box className="version-box">
             <Link
               as="a"
               href={`https://github.com/ONLYOFFICE/AppServer/releases`}
               target="_blank"
-              {...versionBadgeProps}
-            >
-              {t("Common:Version")} {version}
+              {...versionBadgeProps}>
+              {t('Common:Version')} {version}
             </Link>
             <Text as="span" {...versionBadgeProps}>
-              {" "}
-              -{" "}
+              {' '}
+              -{' '}
             </Text>
             <StyledLink>
               <LinkWithoutRedirect
-                to={combineUrl(proxyURL, "/about")}
-                className="nav-menu-header_link"
-              >
-                {t("Common:About")}
+                to={combineUrl(proxyURL, '/about')}
+                className="nav-menu-header_link">
+                {t('Common:About')}
               </LinkWithoutRedirect>
             </StyledLink>
           </Box>
@@ -296,7 +258,7 @@ const HeaderComponent = ({
   );
 };
 
-HeaderComponent.displayName = "Header";
+HeaderComponent.displayName = 'Header';
 
 HeaderComponent.propTypes = {
   totalNotifications: PropTypes.number,
@@ -327,12 +289,7 @@ export default inject(({ auth }) => {
     availableModules,
     version,
   } = auth;
-  const {
-    logoUrl,
-    defaultPage,
-    currentProductId,
-    personal: isPersonal,
-  } = settingsStore;
+  const { logoUrl, defaultPage, currentProductId, personal: isPersonal } = settingsStore;
   const { totalNotifications } = moduleStore;
 
   //TODO: restore when chat will complete -> const mainModules = availableModules.filter((m) => !m.isolateMode);
@@ -348,6 +305,6 @@ export default inject(({ auth }) => {
     version,
     isAuthenticated,
     currentProductId,
-    currentProductName: (product && product.title) || "",
+    currentProductName: (product && product.title) || '',
   };
 })(observer(HeaderComponent));
