@@ -436,7 +436,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             var folderAccess = folder.Access;
 
-            if (string.Equals(folder.Title, title, StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(folder.Title, title, StringComparison.OrdinalIgnoreCase))
             {
                 var newFolderID = folderDao.RenameFolder(folder, title);
                 folder = folderDao.GetFolder(newFolderID);
