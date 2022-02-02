@@ -4419,11 +4419,6 @@
     content-type "^1.0.4"
     tslib "^2.1.0"
 
-"@telenko/node-mf@^0.0.7":
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@telenko/node-mf/-/node-mf-0.0.7.tgz#220d96c8d6858495052a47b605d210938806c0df"
-  integrity sha512-KlOVNWC9wd79nWnSVUPcdXxZ0ao8g0/cruxDhFTwsJ/JINmwXMGqKQoHbgnJ1MqMjpXnDTp3xWOX5Yxzd6IUSw==
-
 "@testing-library/dom@*":
   version "8.11.1"
   resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-8.11.1.tgz#03fa2684aa09ade589b460db46b4c7be9fc69753"

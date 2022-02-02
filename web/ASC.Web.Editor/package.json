@@ -10,7 +10,7 @@
     "clean": "shx rm -rf dist",
     "deploy": "shx --silent mkdir -p ../../build/deploy/products/ASC.Files/editor && shx cp -r dist/* ../../build/deploy/products/ASC.Files/editor",
     "serve": "serve dist -p 5013",
-    "start-old": "webpack-cli serve",
+    "start-csr": "webpack-cli serve --config ./webpack.configl.js",
     "start-prod": "webpack --mode production && serve dist -p 5013",
     "dev": "next dev -p 5013",
     "build": "next build",
@@ -24,7 +24,6 @@
     "@babel/preset-env": "^7.15.6",
     "@babel/preset-react": "^7.14.5",
     "@svgr/webpack": "^5.5.0",
-    "@telenko/node-mf": "^0.0.7",
     "babel-loader": "^8.2.2",
     "bundle-loader": "^0.5.6",
     "clean-webpack-plugin": "^4.0.0",
@@ -48,9 +47,6 @@
   "id": "e67be73d-f9ae-4ce1-8fec-1880cb518cb4",
   "title": "ONLYOFFICE",
   "dependencies": {
-    "cookies-next": "^2.0.3",
-    "next": "^12.0.8",
-    "next-compose-plugins": "^2.2.1",
-    "next-transpile-modules": "^9.0.0"
+    "next": "^12.0.8"
   }
 }
