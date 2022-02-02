@@ -29,6 +29,10 @@ const Form = () => {
     setUrl(e.target.value);
   };
 
+  const onSubmit = (code) => {
+    console.log("Code ", code);
+  };
+
   return (
     <LoginContainer>
       <Text
@@ -48,7 +52,7 @@ const Form = () => {
       </Text>
 
       <form className="auth-form-container">
-        <CodeInput className="code-input" />
+        <CodeInput className="code-input" onSubmit={onSubmit} />
 
         <Text color="#A3A9AE" fontSize="12px" textAlign="center">
           {t("NotFoundCode")}
