@@ -81,9 +81,9 @@ const Editor = () => {
   const decodedId = urlParams
     ? urlParams.fileId || urlParams.fileid || null
     : null;
-  const fileId =
+  let fileId =
     typeof decodedId === "string" ? encodeURIComponent(decodedId) : decodedId;
-  const version = urlParams ? urlParams.version || null : null;
+  let version = urlParams ? urlParams.version || null : null;
   const doc = urlParams ? urlParams.doc || null : null;
   const isDesktop = window["AscDesktopEditor"] !== undefined;
   const view = url.indexOf("action=view") !== -1;
@@ -183,7 +183,7 @@ const Editor = () => {
 
   const convertDocumentUrl = async () => {
     const convert = await convertFile(fileId, null, true);
-    return convert[0]?.result;
+    return convert && convert[0]?.result;
   };
 
   const init = async () => {
@@ -233,9 +233,15 @@ const Editor = () => {
             if (canConvert(fileInfo.fileExst)) {
               const result = await convertDocumentUrl();
 
+              const splitUrl = url.split("#message/");
+
               if (result) {
-                history.pushState({}, null, result.webUrl);
-                url = window.location.href;
+                const newUrl = `${result.webUrl}#message/${splitUrl[1]}`;
+
+                history.pushState({}, null, newUrl);
+
+                fileInfo = result;
+                url = newUrl;
                 fileId = result.id;
                 version = result.version;
               }
@@ -260,7 +266,7 @@ const Editor = () => {
         try {
           const formUrl = await checkFillFormDraft(fileId);
           history.pushState({}, null, formUrl);
-          url = window.location.href;
+
           document.location.reload();
         } catch (err) {
           console.error(err);
