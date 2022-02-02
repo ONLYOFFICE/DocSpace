@@ -25,7 +25,7 @@ export const LoginContainer = styled.div`
       width: 480px;
     }
 
-    @media (max-width: 375px) {
+    @media (max-width: 414px) {
       width: 311px;
     }
   }
@@ -35,7 +35,7 @@ export const LoginContainer = styled.div`
     max-width: 480px;
   }
 
-  @media (max-width: 375px) {
+  @media (max-width: 414px) {
     margin: 72px auto 0 auto;
     max-width: 311px;
   }
@@ -58,6 +58,10 @@ export const LoginContainer = styled.div`
     margin: 0 8px;
   }
 
+  .code-input {
+    margin-bottom: 32px;
+  }
+
   .line {
     display: flex;
     width: 320px;
@@ -69,7 +73,7 @@ export const LoginContainer = styled.div`
       width: 480px;
     }
 
-    @media (max-width: 375px) {
+    @media (max-width: 414px) {
       width: 311px;
     }
   }
