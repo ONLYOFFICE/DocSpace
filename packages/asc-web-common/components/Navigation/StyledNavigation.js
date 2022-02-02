@@ -1,6 +1,6 @@
-import styled, { css } from 'styled-components';
-import { isMobile, isMobileOnly } from 'react-device-detect';
-import { tablet, desktop, mobile } from '@appserver/components/utils/device';
+import styled, { css } from "styled-components";
+import { isMobile, isMobileOnly } from "react-device-detect";
+import { tablet, desktop, mobile } from "@appserver/components/utils/device";
 
 const StyledContainer = styled.div`
   .header-container {
@@ -16,19 +16,29 @@ const StyledContainer = styled.div`
         display: grid;
         grid-template-columns: ${(props) =>
           props.isRootFolder
-            ? 'auto auto 1fr'
+            ? "auto auto 1fr"
             : props.canCreate
-            ? 'auto auto auto auto 1fr'
-            : 'auto auto auto 1fr'};
+            ? "auto auto auto auto 1fr"
+            : "auto auto auto 1fr"};
 
         @media ${tablet} {
           grid-template-columns: ${(props) =>
             props.isRootFolder
-              ? '1fr auto'
+              ? "1fr auto"
               : props.canCreate
-              ? 'auto 1fr auto auto'
-              : 'auto 1fr auto'};
+              ? "auto 1fr auto auto"
+              : "auto 1fr auto"};
         }
+
+        ${isMobile &&
+        css`
+          grid-template-columns: ${(props) =>
+            props.isRootFolder
+              ? "1fr auto"
+              : props.canCreate
+              ? "auto 1fr auto auto"
+              : "auto 1fr auto"};
+        `}
       `}
 
     .arrow-button {
@@ -42,19 +52,33 @@ const StyledContainer = styled.div`
         margin-left: -8px;
         margin-right: 16px;
       }
+
+      ${isMobile &&
+      css`
+        padding: 0 0 0 8px;
+        margin-left: -8px;
+        margin-right: 16px;
+      `}
     }
 
     .add-button {
-      margin-left: 16px;
+      ${(props) =>
+        !props.isRootFolder ? `margin-left: 16px` : `margin-left: 6px`};
 
       @media ${tablet} {
-        margin-left: auto;
+        display: none;
+        // margin-left: auto;
 
-        & > div:first-child {
-          padding: 0px 8px 8px 8px;
-          margin-right: -8px;
-        }
+        // & > div:first-child {
+        //   padding: 0px 8px 8px 8px;
+        //   margin-right: -8px;
+        // }
       }
+
+      ${isMobile &&
+      css`
+        display: none;
+      `}
     }
 
     .option-button {
@@ -68,6 +92,14 @@ const StyledContainer = styled.div`
           margin-right: -8px;
         }
       }
+
+      ${isMobile &&
+      css`
+        & > div:first-child {
+          padding: 0px 8px 8px 8px;
+          margin-right: -8px;
+        }
+      `}
     }
   }
 `;

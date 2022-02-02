@@ -17,6 +17,26 @@ import { inject, observer } from "mobx-react";
 import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu";
 import Navigation from "@appserver/common/components/Navigation";
 
+const StyledContainer = styled.div`
+  .table-container_group-menu {
+    ${(props) =>
+      props.viewAs === "table"
+        ? css`
+            margin: 0px -20px;
+            width: calc(100% + 44px);
+          `
+        : css`
+            margin: 0px -24px;
+            width: calc(100% + 48px);
+          `}
+
+    @media ${tablet} {
+      margin: 0 -16px;
+      width: calc(100% + 32px);
+    }
+  }
+`;
+
 class SectionHeaderContent extends React.Component {
   constructor(props) {
     super(props);
@@ -280,28 +300,62 @@ class SectionHeaderContent extends React.Component {
       viewAs,
       isRecycleBinFolder,
       isEmptyFilesList,
+      isHeaderVisible,
+      isHeaderChecked,
+      isHeaderIndeterminate,
     } = this.props;
     const menuItems = this.getMenuItems();
     const isLoading = !title || !tReady;
     const headerMenu = getHeaderMenu(t);
 
     return (
-      <Navigation
-        isRootFolder={isRootFolder}
-        canCreate={canCreate}
-        title={title}
-        isDesktop={isDesktop}
-        isTabletView={isTabletView}
-        personal={personal}
-        tReady={tReady}
-        menuItems={menuItems}
-        navigationItems={navigationPath}
-        getContextOptionsPlus={this.getContextOptionsPlus}
-        getContextOptionsFolder={this.getContextOptionsFolder}
-        onClose={this.onClose}
-        onClickFolder={this.onClickFolder}
-        onBackToParentFolder={this.onBackToParentFolder}
-      />
+      <Consumer>
+        {(context) => (
+          <StyledContainer
+            width={context.sectionWidth}
+            isRootFolder={isRootFolder}
+            canCreate={canCreate}
+            title={title}
+            isDesktop={isDesktop}
+            isTabletView={isTabletView}
+            isLoading={isLoading}
+            viewAs={viewAs}
+          >
+            {isHeaderVisible ? (
+              <TableGroupMenu
+                checkboxOptions={menuItems}
+                onChange={this.onChange}
+                isChecked={isHeaderChecked}
+                isIndeterminate={isHeaderIndeterminate}
+                headerMenu={headerMenu}
+              />
+            ) : (
+              <div className="header-container">
+                {isLoading ? (
+                  <Loaders.SectionHeader />
+                ) : (
+                  <Navigation
+                    isRootFolder={isRootFolder}
+                    canCreate={canCreate}
+                    title={title}
+                    isDesktop={isDesktop}
+                    isTabletView={isTabletView}
+                    personal={personal}
+                    tReady={tReady}
+                    menuItems={menuItems}
+                    navigationItems={navigationPath}
+                    getContextOptionsPlus={this.getContextOptionsPlus}
+                    getContextOptionsFolder={this.getContextOptionsFolder}
+                    onClose={this.onClose}
+                    onClickFolder={this.onClickFolder}
+                    onBackToParentFolder={this.onBackToParentFolder}
+                  />
+                )}
+              </div>
+            )}
+          </StyledContainer>
+        )}
+      </Consumer>
     );
   }
 }
