@@ -53,6 +53,15 @@ const checkFillFormDraft = (fileId, headers) => {
   });
 };
 
+const restoreDocumentsVersion = (fileId, version, doc) => {
+  const options = {
+    method: "get",
+    url: `files/file/${fileId}/restoreversion?version=${version}&doc=${doc}`,
+  };
+
+  return request(options);
+};
+
 const openEdit = (fileId, version, doc, view, headers) => {
   const params = []; // doc ? `?doc=${doc}` : "";
 
@@ -96,6 +105,31 @@ const removeFromFavorite = (ids) => {
   const options = {
     method: "delete",
     url: "/files/favorites",
+    data,
+  };
+
+  return request(options);
+};
+
+const getEditDiff = (fileId, version, doc) => {
+  return request({
+    method: "get",
+    url: `files/file/${fileId}/edit/diff?version=${version}&doc=${doc}`,
+  });
+};
+
+const getEditHistory = (fileId, doc) => {
+  return request({
+    method: "get",
+    url: `files/file/${fileId}/edit/history?doc=${doc}`,
+  });
+};
+
+const updateFile = (fileId, title, lastVersion) => {
+  const data = { title, lastVersion };
+  const options = {
+    method: "put",
+    url: `/files/file/${fileId}`,
     data,
   };
 
@@ -156,60 +190,6 @@ const getDefaultFileName = (format) => {
   }
 }; // TODO: нужно подключить i18n
 
-const onSDKRequestSharingSettings = () => {
-  //setIsVisible(true); TODO: перенести шару
-  console.log("onSDKRequestSharingSettings");
-};
-
-const onSDKRequestRename = (event) => {
-  // const title = event.data;
-  // updateFile(fileInfo.id, title);
-  console.log("onSDKRequestRename");
-};
-
-const onSDKRequestRestore = async (event) => {
-  // const restoreVersion = event.data.version;
-  // try {
-  //   const updateVersions = await restoreDocumentsVersion(
-  //     fileId,
-  //     restoreVersion,
-  //     doc
-  //   );
-  //   const historyLength = updateVersions.length;
-  //   docEditor.refreshHistory({
-  //     currentVersion: getCurrentDocumentVersion(
-  //       updateVersions,
-  //       historyLength
-  //     ),
-  //     history: getDocumentHistory(updateVersions, historyLength),
-  //   });
-  // } catch (e) {
-  //   docEditor.refreshHistory({
-  //     error: `${e}`, //TODO: maybe need to display something else.
-  //   });
-  // }
-  console.log("onSDKRequestRestore");
-};
-
-const onSDKRequestInsertImage = (event) => {
-  // setTypeInsertImageAction(event.data);
-  // setFilesType(insertImageAction);
-  // setIsFileDialogVisible(true);
-  console.log("onSDKRequestInsertImage");
-};
-
-const onSDKRequestMailMergeRecipients = () => {
-  // setFilesType(mailMergeAction);
-  // setIsFileDialogVisible(true);
-  console.log("onSDKRequestMailMergeRecipients");
-};
-
-const onSDKRequestCompareFile = () => {
-  // setFilesType(compareFilesAction);
-  // setIsFileDialogVisible(true);
-  console.log("onSDKRequestCompareFile");
-};
-
 const onSDKInfo = (event) => {
   console.log(
     "ONLYOFFICE Document Editor is opened in mode " + event.data.mode
@@ -250,73 +230,6 @@ const onSDKError = (event) => {
   );
 };
 
-const onMakeActionLink = (event) => {
-  // var ACTION_DATA = event.data;
-
-  // const link = generateLink(ACTION_DATA);
-
-  // const urlFormation = !actionLink ? url : url.split("&anchor=")[0];
-
-  // const linkFormation = `${urlFormation}&anchor=${link}`;
-
-  // docEditor.setActionLink(linkFormation);
-  console.log("onMakeActionLink");
-};
-
-const onSDKRequestHistory = async () => {
-  // try {
-  //   const fileHistory = await getEditHistory(fileId, doc);
-  //   const historyLength = fileHistory.length;
-
-  //   docEditor.refreshHistory({
-  //     currentVersion: getCurrentDocumentVersion(fileHistory, historyLength),
-  //     history: getDocumentHistory(fileHistory, historyLength),
-  //   });
-  // } catch (e) {
-  //   docEditor.refreshHistory({
-  //     error: `${e}`, //TODO: maybe need to display something else.
-  //   });
-  // }
-  console.log("onSDKRequestHistory");
-};
-
-const onSDKRequestHistoryClose = () => {
-  document.location.reload();
-};
-
-const onSDKRequestHistoryData = async (event) => {
-  console.log("onSDKRequestHistoryData");
-  // const version = event.data;
-
-  // try {
-  //   const versionDifference = await getEditDiff(fileId, version, doc);
-  //   const changesUrl = versionDifference.changesUrl;
-  //   const previous = versionDifference.previous;
-  //   const token = versionDifference.token;
-
-  //   docEditor.setHistoryData({
-  //     ...(changesUrl && { changesUrl }),
-  //     key: versionDifference.key,
-  //     fileType: versionDifference.fileType,
-  //     ...(previous && {
-  //       previous: {
-  //         fileType: previous.fileType,
-  //         key: previous.key,
-  //         url: previous.url,
-  //       },
-  //     }),
-  //     ...(token && { token }),
-  //     url: versionDifference.url,
-  //     version,
-  //   });
-  // } catch (e) {
-  //   docEditor.setHistoryData({
-  //     error: `${e}`, //TODO: maybe need to display something else.
-  //     version,
-  //   });
-  // }
-};
-
 const initDesktop = (cfg) => {
   const encryptionKeys = cfg?.editorConfig?.encryptionKeys;
 
@@ -339,12 +252,12 @@ const initDesktop = (cfg) => {
         })
         .catch((error) => {
           console.log(error);
-          toastr.error(
-            typeof error === "string" ? error : error.message,
-            null,
-            0,
-            true
-          );
+          // toastr.error(
+          //   typeof error === "string" ? error : error.message,
+          //   null,
+          //   0,
+          //   true
+          // );
         });
     },
     i18n.t
@@ -353,9 +266,11 @@ const initDesktop = (cfg) => {
 
 const text = "text";
 const presentation = "presentation";
+const insertImageAction = "imageFileType";
 let documentIsReady = false; // move to state?
 let docSaved = null; // move to state?
 let docTitle = null;
+let docEditor;
 
 export default function Home({
   fileInfo,
@@ -364,21 +279,194 @@ export default function Home({
   personal,
   successAuth,
   isSharingAccess,
-  docEditor,
+  //docEditor: docEditorSSR,
   user,
   url,
   doc,
   fileId, //
+  actionLink,
 }) {
   const [titleSelectorFolder, setTitleSelectorFolder] = useState("");
   const [urlSelectorFolder, setUrlSelectorFolder] = useState("");
   const [extension, setExtension] = useState();
   const [isFolderDialogVisible, setIsFolderDialogVisible] = useState(false);
+  const [typeInsertImageAction, setTypeInsertImageAction] = useState();
+  const [filesType, setFilesType] = useState("");
+  const [isFileDialogVisible, setIsFileDialogVisible] = useState(false); // посмотреть
+  const [isVisible, setIsVisible] = useState(false);
 
   const throttledChangeTitle = throttle(() => changeTitle(), 500);
-
+  //docEditor = docEditorSSR;
+  //console.log("render editor", docEditor, docEditorSSR);
   const router = useRouter();
   useEffect(() => {}, []);
+
+  const onSDKRequestHistoryClose = () => {
+    document.location.reload();
+  };
+
+  const onSDKRequestEditRights = async () => {
+    console.log("ONLYOFFICE Document Editor requests editing rights");
+    const index = url.indexOf("&action=view");
+
+    if (index) {
+      let convertUrl = url.substring(0, index);
+
+      // if (canConvert(fileInfo.fileExst)) {
+      //   convertUrl = await convertDocumentUrl();
+      // } // TODO: need move can canConvert from docsevicestore
+
+      history.pushState({}, null, convertUrl);
+      document.location.reload();
+    }
+  };
+
+  const onMakeActionLink = (event) => {
+    const actionData = event.data;
+
+    const link = generateLink(actionData);
+
+    const urlFormation = !actionLink ? url : url.split("&anchor=")[0];
+
+    const linkFormation = `${urlFormation}&anchor=${link}`;
+
+    docEditor.setActionLink(linkFormation);
+  };
+
+  const generateLink = (actionData) => {
+    return encodeURIComponent(JSON.stringify(actionData));
+  };
+
+  const onSDKRequestRename = (event) => {
+    const title = event.data;
+    updateFile(fileInfo.id, title);
+  };
+
+  const onSDKRequestSharingSettings = () => {
+    setIsVisible(true);
+  };
+
+  const onSDKRequestRestore = async (event) => {
+    const restoreVersion = event.data.version;
+    try {
+      const updateVersions = await restoreDocumentsVersion(
+        fileId,
+        restoreVersion,
+        doc
+      );
+      const historyLength = updateVersions.length;
+      docEditor.refreshHistory({
+        currentVersion: getCurrentDocumentVersion(
+          updateVersions,
+          historyLength
+        ),
+        history: getDocumentHistory(updateVersions, historyLength),
+      });
+    } catch (e) {
+      docEditor.refreshHistory({
+        error: `${e}`, //TODO: maybe need to display something else.
+      });
+    }
+  };
+
+  const onSDKRequestCompareFile = () => {
+    setFilesType(compareFilesAction);
+    setIsFileDialogVisible(true);
+  };
+
+  const onSDKRequestMailMergeRecipients = () => {
+    setFilesType(mailMergeAction);
+    setIsFileDialogVisible(true);
+  };
+
+  const onSDKRequestInsertImage = (event) => {
+    setTypeInsertImageAction(event.data);
+    setFilesType(insertImageAction);
+    setIsFileDialogVisible(true);
+  };
+
+  const getDocumentHistory = (fileHistory, historyLength) => {
+    let result = [];
+
+    for (let i = 0; i < historyLength; i++) {
+      const changes = fileHistory[i].changes;
+      const serverVersion = fileHistory[i].serverVersion;
+      const version = fileHistory[i].version;
+      const versionGroup = fileHistory[i].versionGroup;
+
+      let obj = {
+        ...(changes.length !== 0 && { changes }),
+        created: `${new Date(fileHistory[i].created).toLocaleString(
+          config.editorConfig.lang
+        )}`,
+        ...(serverVersion && { serverVersion }),
+        key: fileHistory[i].key,
+        user: {
+          id: fileHistory[i].user.id,
+          name: fileHistory[i].user.name,
+        },
+        version,
+        versionGroup,
+      };
+
+      result.push(obj);
+    }
+    return result;
+  }; // +++
+
+  const getCurrentDocumentVersion = (fileHistory, historyLength) => {
+    return url.indexOf("&version=") !== -1
+      ? +url.split("&version=")[1]
+      : fileHistory[historyLength - 1].version;
+  }; // +++
+
+  const onSDKRequestHistory = async () => {
+    try {
+      const fileHistory = await getEditHistory(fileId, doc);
+      const historyLength = fileHistory.length;
+
+      docEditor.refreshHistory({
+        currentVersion: getCurrentDocumentVersion(fileHistory, historyLength),
+        history: getDocumentHistory(fileHistory, historyLength),
+      });
+    } catch (e) {
+      docEditor.refreshHistory({
+        error: `${e}`, //TODO: maybe need to display something else.
+      });
+    }
+  }; // +++
+
+  const onSDKRequestHistoryData = async (event) => {
+    const version = event.data;
+
+    try {
+      const versionDifference = await getEditDiff(fileId, version, doc);
+      const changesUrl = versionDifference.changesUrl;
+      const previous = versionDifference.previous;
+      const token = versionDifference.token;
+
+      docEditor.setHistoryData({
+        ...(changesUrl && { changesUrl }),
+        key: versionDifference.key,
+        fileType: versionDifference.fileType,
+        ...(previous && {
+          previous: {
+            fileType: previous.fileType,
+            key: previous.key,
+            url: previous.url,
+          },
+        }),
+        ...(token && { token }),
+        url: versionDifference.url,
+        version,
+      });
+    } catch (e) {
+      docEditor.setHistoryData({
+        error: `${e}`, //TODO: maybe need to display something else.
+        version,
+      });
+    }
+  }; // +++
 
   const loadUsersRightsList = () => {
     // SharingDialog.getSharingSettings(fileId).then((sharingSettings) => {
@@ -568,22 +656,22 @@ export default function Home({
         onRequestRestore;
 
       if (isSharingAccess) {
-        onRequestSharingSettings = onSDKRequestSharingSettings;
+        onRequestSharingSettings = onSDKRequestSharingSettings; // +++
       }
 
       if (fileInfo && fileInfo.canEdit) {
-        onRequestRename = onSDKRequestRename;
+        onRequestRename = onSDKRequestRename; // +++
       }
 
       if (successAuth) {
         onRequestSaveAs = onSDKRequestSaveAs; //+++
-        onRequestInsertImage = onSDKRequestInsertImage;
-        onRequestMailMergeRecipients = onSDKRequestMailMergeRecipients;
-        onRequestCompareFile = onSDKRequestCompareFile;
+        onRequestInsertImage = onSDKRequestInsertImage; // +++
+        onRequestMailMergeRecipients = onSDKRequestMailMergeRecipients; // +++
+        onRequestCompareFile = onSDKRequestCompareFile; // +++
       }
 
       if (!!config.document.permissions.changeHistory) {
-        onRequestRestore = onSDKRequestRestore;
+        onRequestRestore = onSDKRequestRestore; // +++
       }
       const events = {
         events: {
@@ -594,24 +682,25 @@ export default function Home({
           onInfo: onSDKInfo, // +++
           onWarning: onSDKWarning, // +++
           onError: onSDKError, // +++
-          onRequestSharingSettings, //---
-          onRequestRename,
-          onMakeActionLink: onMakeActionLink,
-          onRequestInsertImage,
-          onRequestSaveAs,
-          onRequestMailMergeRecipients,
-          onRequestCompareFile,
-          onRequestEditRights: onSDKRequestEditRights,
-          onRequestHistory: onSDKRequestHistory,
-          onRequestHistoryClose: onSDKRequestHistoryClose,
-          onRequestHistoryData: onSDKRequestHistoryData,
-          onRequestRestore,
+          onRequestSharingSettings, // +++
+          onRequestRename, // +++
+          onMakeActionLink: onMakeActionLink, // +++
+          onRequestInsertImage, //+++
+          onRequestSaveAs, // +++
+          onRequestMailMergeRecipients, // +++
+          onRequestCompareFile, // +++
+          onRequestEditRights: onSDKRequestEditRights, // // TODO: need move can canConvert from docsevicestore
+          onRequestHistory: onSDKRequestHistory, // +++
+          onRequestHistoryClose: onSDKRequestHistoryClose, // +++
+          onRequestHistoryData: onSDKRequestHistoryData, // +++
+          onRequestRestore, // +++
         },
       };
 
       const newConfig = Object.assign(config, events);
 
       docEditor = window.DocsAPI.DocEditor("editor", newConfig);
+      console.log("docEditor", docEditor);
     } catch (error) {
       console.log(error);
       //toastr.error(error.message, null, 0, true);
@@ -622,6 +711,7 @@ export default function Home({
     <div style={{ height: "100vh" }}>
       <Head title="Loading...">
         <title>Loading...</title>
+        <link id="favicon" rel="shortcut icon" href="/favicon.ico" />
       </Head>
       <div id="editor"></div>
       <Script
@@ -639,7 +729,7 @@ export default function Home({
 }
 
 export async function getServerSideProps({ params, req, query, res }) {
-  const { headers, cookies, url } = req;
+  const { headers, url } = req;
   const { version, desktop: isDesktop } = query;
   let error,
     docApiUrl,
@@ -657,7 +747,7 @@ export async function getServerSideProps({ params, req, query, res }) {
   const fileId =
     typeof decodedId === "string" ? encodeURIComponent(decodedId) : decodedId;
 
-  console.log(query, url);
+  console.log(headers, url);
 
   try {
     //const doc = url.indexOf("doc=") !== -1 ? url.split("doc=")[1] : null;??
@@ -734,7 +824,6 @@ export async function getServerSideProps({ params, req, query, res }) {
     }
 
     actionLink = config?.editorConfig?.actionLink;
-    console.log(config);
 
     if (isDesktop) {
       // initDesktop(config); TODO:
@@ -745,11 +834,12 @@ export async function getServerSideProps({ params, req, query, res }) {
     if (view) {
       config.editorConfig.mode = "view";
     }
+
+    console.log(config, "arguments", fileId, fileVersion, doc, view, headers);
   } catch (err) {
     error = typeof err === "string" ? err : err.message;
   }
 
-  //console.log(req);
   return {
     props: {
       fileInfo,
