@@ -21,5 +21,8 @@
   "LoginDescription": "We'll email you a magic code to sign in without a password. Or you can <1>log in manually.</1>",
   "WorkspaceLoginTitle": "Log in to your workspace",
   "WorkspaceLoginSubtitle": "Enter your portal URL",
-  "WorkspaceLoginDescription": "Don't know your portal URL? <1>Find your workspaces</1>"
+  "WorkspaceLoginDescription": "Don't know your portal URL? <1>Find your workspaces</1>",
+  "CodeTitle": "The code was emailed to you",
+  "CodeSubtitle": "We sent a 6-digit code to {{email}}. The code has a limited validity period, enter it as soon as possible.",
+  "NotFoundCode": "Can't find the code? Check your «Spam» folder."
 }
