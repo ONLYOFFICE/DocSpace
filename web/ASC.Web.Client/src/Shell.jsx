@@ -148,6 +148,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     language,
     FirebaseHelper,
     personal,
+    roomsMode,
   } = rest;
 
   useEffect(() => {
@@ -387,10 +388,17 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   const loginRoutes = [];
 
   if (isLoaded && !personal) {
+    let module;
+    if (roomsMode) {
+      module = "./roomsLogin";
+    } else {
+      module = "./login";
+    }
+
     const loginSystem = {
       url: combineUrl(AppServerConfig.proxyURL, "/login/remoteEntry.js"),
       scope: "login",
-      module: "./app",
+      module: module,
     };
     loginRoutes.push(
       <PublicRoute
@@ -449,6 +457,7 @@ const ShellWrapper = inject(({ auth }) => {
   const { init, isLoaded, settingsStore, setProductVersion, language } = auth;
   const {
     personal,
+    roomsMode,
     isDesktopClient,
     firebaseHelper,
     setModuleInfo,
@@ -470,6 +479,7 @@ const ShellWrapper = inject(({ auth }) => {
     isDesktop: isDesktopClient,
     FirebaseHelper: firebaseHelper,
     personal,
+    roomsMode,
   };
 })(observer(Shell));
 
