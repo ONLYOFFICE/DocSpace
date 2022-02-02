@@ -13,7 +13,7 @@ import {
 } from "./styled-inputwithchips";
 
 const InputWithChips = (props) => {
-  const [chips, setChips] = useState(props.chips || []);
+  const [options, setChips] = useState(props.options || []);
 
   const [value, setValue] = useState("");
 
@@ -47,12 +47,12 @@ const InputWithChips = (props) => {
   };
 
   const onDelete = (value) => {
-    setChips(chips.filter((it) => it.value !== value.value));
+    setChips(options.filter((it) => it.value !== value.value));
   };
 
   const onEnterPress = () => {
-    if (!chips.find((it) => it.value === value) && value) {
-      setChips([...chips, { label: value, value }]);
+    if (!options.find((it) => it.value === value) && value) {
+      setChips([...options, { label: value, value }]);
       setValue("");
     }
   };
@@ -64,7 +64,7 @@ const InputWithChips = (props) => {
 
   const onSaveNewChip = (value, newValue) => {
     setChips(
-      chips.map((it) =>
+      options.map((it) =>
         it.value === value.value ? { label: newValue, value: newValue } : it
       )
     );
@@ -111,7 +111,7 @@ const InputWithChips = (props) => {
     }
 
     if (selectedChips.length > 1 && code === "Backspace") {
-      const Chips = chips.filter((e) => !~selectedChips.indexOf(e));
+      const Chips = options.filter((e) => !~selectedChips.indexOf(e));
       setChips(Chips);
       setSelectedChips([]);
       return;
@@ -126,31 +126,31 @@ const InputWithChips = (props) => {
         chip = selectedChips[0];
       }
 
-      const index = chips.findIndex((it) => it === chip);
+      const index = options.findIndex((it) => it === chip);
       switch (code) {
         case "ArrowLeft": {
           if (isShiftDown) {
-            selectedChips.includes(chips[index - 1])
+            selectedChips.includes(options[index - 1])
               ? setSelectedChips(
-                  selectedChips.filter((it) => it !== chips[index])
+                  selectedChips.filter((it) => it !== options[index])
                 )
-              : chips[index - 1] &&
-                setSelectedChips([chips[index - 1], ...selectedChips]);
+              : options[index - 1] &&
+                setSelectedChips([options[index - 1], ...selectedChips]);
           } else {
-            setSelectedChips([chips[index - 1]]);
+            setSelectedChips([options[index - 1]]);
           }
           break;
         }
         case "ArrowRight": {
           if (isShiftDown) {
-            selectedChips.includes(chips[index + 1])
+            selectedChips.includes(options[index + 1])
               ? setSelectedChips(
-                  selectedChips.filter((it) => it !== chips[index])
+                  selectedChips.filter((it) => it !== options[index])
                 )
-              : chips[index + 1] &&
-                setSelectedChips([chips[index + 1], ...selectedChips]);
+              : options[index + 1] &&
+                setSelectedChips([options[index + 1], ...selectedChips]);
           } else {
-            setSelectedChips([chips[index + 1]]);
+            setSelectedChips([options[index + 1]]);
           }
           break;
         }
@@ -173,7 +173,7 @@ const InputWithChips = (props) => {
           style={{ height: "fit-content" }}
         >
           <StyledChipWithInput>
-            {chips.map((it) => {
+            {options.map((it) => {
               return (
                 <Chip
                   key={it?.value}
@@ -193,7 +193,7 @@ const InputWithChips = (props) => {
             <TextInput
               value={value}
               onChange={onChange}
-              placeholder={chips.length > 0 ? "" : props.placeholder}
+              placeholder={options.length > 0 ? "" : props.placeholder}
               onKeyDown={onInputKeyDown}
               withBorder={false}
             />
@@ -205,9 +205,7 @@ const InputWithChips = (props) => {
 };
 
 InputWithChips.propTypes = {
-  chips: PropTypes.arrayOf(PropTypes.object),
-  max: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  maxlength: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  options: PropTypes.arrayOf(PropTypes.object),
   placeholder: PropTypes.string,
 };
 

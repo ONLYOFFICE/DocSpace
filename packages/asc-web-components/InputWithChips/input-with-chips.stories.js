@@ -14,7 +14,7 @@ const Wrapper = (props) => (
 const Template = () => (
   <Wrapper>
     <InputWithChips
-      chips={[
+      options={[
         { label: "Ivan Petrov", value: "myname@gmul.com" },
         { label: "Lisa Cooper", value: "myn348ame@gmul.com" },
         { label: "Donna Cross", value: "myname45@gmul.com" },
