@@ -213,6 +213,7 @@ const SingleSignOn = () => {
                   onChange={() => {}}
                   placeholder={t("UploadXMLPlaceholder")}
                   scale
+                  tabIndex={1}
                 />
               </StyledInputWrapper>
 
@@ -220,9 +221,10 @@ const SingleSignOn = () => {
                 className="upload-button"
                 size="medium"
                 icon={<ReactSVG src="images/actions.upload.react.svg" />}
+                tabIndex={2}
               />
               <Text className="or-text">{t("Or")}</Text>
-              <Button label={t("ChooseFile")} size="medium" />
+              <Button label={t("ChooseFile")} size="medium" tabIndex={3} />
             </Box>
           </FieldContainer>
 
@@ -241,6 +243,7 @@ const SingleSignOn = () => {
                 onChange={() => {}}
                 placeholder="Single Sign-on"
                 scale
+                tabIndex={4}
               />
             </StyledInputWrapper>
           </FieldContainer>
@@ -260,6 +263,7 @@ const SingleSignOn = () => {
                 onChange={() => {}}
                 placeholder="https://www.test.com"
                 scale
+                tabIndex={5}
               />
             </StyledInputWrapper>
           </FieldContainer>
@@ -281,6 +285,7 @@ const SingleSignOn = () => {
                 name="binding"
                 selected="b"
                 spacing="21px"
+                tabIndex={6}
                 options={[
                   {
                     value: "a",
@@ -300,6 +305,7 @@ const SingleSignOn = () => {
                 onChange={() => {}}
                 placeholder="https://www.test.com/saml/login"
                 scale
+                tabIndex={7}
               />
             </StyledInputWrapper>
           </FieldContainer>
@@ -310,6 +316,7 @@ const SingleSignOn = () => {
                 scaled
                 scaledOptions
                 showDisabledItems
+                tabIndex={8}
                 selectedOption={{
                   key: 1,
                   label:
@@ -388,7 +395,7 @@ const SingleSignOn = () => {
           </Box>
 
           <Box alignItems="center" displayProp="flex" flexDirection="row">
-            <Button label="Добавить сертификат" size="medium" />
+            <Button label="Добавить сертификат" size="medium" tabIndex={9} />
 
             <Link
               className="hide-additional-button"
@@ -403,15 +410,25 @@ const SingleSignOn = () => {
           </Box>
 
           <Box marginProp="12px 0">
-            <Checkbox className="checkbox-input" label={t("SignAuthRequest")} />
-            <Checkbox className="checkbox-input" label={t("SignExitRequest")} />
+            <Checkbox
+              className="checkbox-input"
+              label={t("SignAuthRequest")}
+              tabIndex={10}
+            />
+            <Checkbox
+              className="checkbox-input"
+              label={t("SignExitRequest")}
+              tabIndex={11}
+            />
             <Checkbox
               className="checkbox-input"
               label={t("SignResponseRequest")}
+              tabIndex={12}
             />
             <Checkbox
               className="checkbox-input"
               label={t("DecryptStatements")}
+              tabIndex={13}
             />
           </Box>
 
@@ -421,6 +438,7 @@ const SingleSignOn = () => {
                 scaled
                 scaledOptions
                 showDisabledItems
+                tabIndex={14}
                 selectedOption={{
                   key: 1,
                   label: "rsa-sha1",
@@ -452,6 +470,7 @@ const SingleSignOn = () => {
                 scaled
                 scaledOptions
                 showDisabledItems
+                tabIndex={15}
                 selectedOption={{
                   key: 1,
                   label: "aes128-cbc",
@@ -496,6 +515,7 @@ const SingleSignOn = () => {
                 onChange={() => {}}
                 placeholder="givenName"
                 scale
+                tabIndex={16}
               />
             </StyledInputWrapper>
           </FieldContainer>
@@ -507,6 +527,7 @@ const SingleSignOn = () => {
                 onChange={() => {}}
                 placeholder="sn"
                 scale
+                tabIndex={17}
               />
             </StyledInputWrapper>
           </FieldContainer>
@@ -518,6 +539,7 @@ const SingleSignOn = () => {
                 onChange={() => {}}
                 placeholder="sn"
                 scale
+                tabIndex={18}
               />
             </StyledInputWrapper>
           </FieldContainer>
@@ -529,6 +551,7 @@ const SingleSignOn = () => {
                 onChange={() => {}}
                 placeholder="sn"
                 scale
+                tabIndex={19}
               />
             </StyledInputWrapper>
           </FieldContainer>
@@ -540,6 +563,7 @@ const SingleSignOn = () => {
                 onChange={() => {}}
                 placeholder="sn"
                 scale
+                tabIndex={20}
               />
             </StyledInputWrapper>
           </FieldContainer>
@@ -551,6 +575,7 @@ const SingleSignOn = () => {
                 onChange={() => {}}
                 placeholder="sn"
                 scale
+                tabIndex={21}
               />
             </StyledInputWrapper>
           </FieldContainer>
@@ -564,7 +589,7 @@ const SingleSignOn = () => {
               />
             }
           >
-            <Checkbox label={t("HideAuthPage")} />
+            <Checkbox label={t("HideAuthPage")} tabIndex={22} />
           </FieldContainer>
 
           <Box alignItems="center" displayProp="flex" flexDirection="row">
@@ -573,8 +598,9 @@ const SingleSignOn = () => {
               label={t("Save")}
               primary
               size="medium"
+              tabIndex={23}
             />
-            <Button label={t("ResetSettings")} size="medium" />
+            <Button label={t("ResetSettings")} size="medium" tabIndex={24} />
           </Box>
         </Box>
 
@@ -614,6 +640,7 @@ const SingleSignOn = () => {
                 onChange={() => {}}
                 placeholder="Line input"
                 scale
+                tabIndex={25}
               />
             </StyledInputWrapper>
           </FieldContainer>
@@ -633,6 +660,7 @@ const SingleSignOn = () => {
                 onChange={() => {}}
                 placeholder="Line input"
                 scale
+                tabIndex={26}
               />
             </StyledInputWrapper>
           </FieldContainer>
@@ -652,6 +680,7 @@ const SingleSignOn = () => {
                 onChange={() => {}}
                 placeholder="Line input"
                 scale
+                tabIndex={27}
               />
             </StyledInputWrapper>
           </FieldContainer>
@@ -662,6 +691,7 @@ const SingleSignOn = () => {
               label={t("DownloadMetadataXML")}
               primary
               size="medium"
+              tabIndex={28}
             />
           </Box>
         </Box>
