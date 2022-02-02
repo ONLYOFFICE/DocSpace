@@ -68,10 +68,17 @@ namespace ASC.Api.Core
             DIHelper.TryAdd<WebhooksGlobalFilterAttribute>();
 
             var redisConfiguration = Configuration.GetSection("Redis").Get<RedisConfiguration>();
+            var kafkaConfiguration = Configuration.GetSection("kafka").Get<KafkaSettings>();
 
-            if (redisConfiguration != null)
+            if (kafkaConfiguration != null)
+            {
+                DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+            }
+            else if (redisConfiguration != null)
             {
                 DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+
+                services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
             }
             else
             {

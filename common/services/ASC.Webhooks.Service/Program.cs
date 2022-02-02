@@ -49,8 +49,13 @@ namespace ASC.Webhooks.Service
                     var diHelper = new DIHelper(services);
 
                     var redisConfiguration = hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>();
+                    var kafkaConfiguration = hostContext.Configuration.GetSection("kafka").Get<KafkaSettings>();
 
-                    if (redisConfiguration != null)
+                    if (kafkaConfiguration != null)
+                    {
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                    }
+                    else if (redisConfiguration != null)
                     {
                         diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
 

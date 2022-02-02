@@ -22,8 +22,6 @@
             DIHelper.TryAdd<SecurityController>();
             DIHelper.TryAdd<SmtpSettingsController>();
             DIHelper.TryAdd<ThirdPartyController>();
-
-            services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(Configuration.GetSection("Redis").Get<RedisConfiguration>());
         }
     }
 }

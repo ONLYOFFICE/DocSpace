@@ -14,8 +14,6 @@
 
             DIHelper.TryAdd<PeopleController>();
             DIHelper.TryAdd<GroupController>();
-
-            services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(Configuration.GetSection("Redis").Get<RedisConfiguration>());
         }
     }
 }

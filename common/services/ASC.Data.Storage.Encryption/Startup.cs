@@ -49,7 +49,6 @@ namespace ASC.Data.Storage.Encryption
             DIHelper.TryAdd<EncryptionServiceLauncher>();
 
             services.AddHostedService<EncryptionServiceLauncher>();
-            services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(Configuration.GetSection("Redis").Get<RedisConfiguration>());
         }
     }
 }
