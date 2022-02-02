@@ -37,7 +37,7 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.2.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.32.0">
+    <PackageReference Include="Grpc.Tools" Version="2.40.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -178,7 +178,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="proto\ContactPhotoManagerCacheItem.proto" />
+    <Protobuf Include="proto\contact_photo_manager_cache_item.proto" />
   </ItemGroup>
 
   <ItemGroup>

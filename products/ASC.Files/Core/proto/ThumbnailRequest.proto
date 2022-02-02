@@ -1,9 +1,0 @@
-syntax = "proto3";
-
-package ASC.Web.Files;
-
-message ThumbnailRequest {
-    int32 Tenant = 1;
-    repeated int32 Files = 2;
-    string BaseUrl = 3;
-}

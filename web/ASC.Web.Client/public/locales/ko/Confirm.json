@@ -1,4 +1,4 @@
-{
+﻿{
   "ChangePasswordSuccess": "비밀번호가 성공적으로 변경되었습니다",
   "ConfirmOwnerPortalSuccessMessage": "포털 소유자가 성공적으로 변경되었습니다. 10초 후에 리디렉션됩니다",
   "ConfirmOwnerPortalTitle": "포털 소유자를 {{newOwner}} 님으로 변경하는 것을 승인해주세요",

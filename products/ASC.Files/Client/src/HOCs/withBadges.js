@@ -122,6 +122,7 @@ export default function withBadges(WrappedComponent) {
         isAdmin,
         isDesktopClient,
         sectionWidth,
+        viewAs,
       } = this.props;
       const { fileStatus, access } = item;
 
@@ -150,6 +151,7 @@ export default function withBadges(WrappedComponent) {
           onBadgeClick={this.onBadgeClick}
           setConvertDialogVisible={this.setConvertDialogVisible}
           onFilesClick={onFilesClick}
+          viewAs={viewAs}
         />
       );
 
