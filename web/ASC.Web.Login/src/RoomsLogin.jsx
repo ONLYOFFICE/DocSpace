@@ -1,20 +1,14 @@
 import React, { useCallback, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
 import TextInput from "@appserver/components/text-input";
 import Link from "@appserver/components/link";
-import Checkbox from "@appserver/components/checkbox";
 import Toast from "@appserver/components/toast";
-import HelpButton from "@appserver/components/help-button";
-import PasswordInput from "@appserver/components/password-input";
 import FieldContainer from "@appserver/components/field-container";
 import SocialButton from "@appserver/components/social-button";
-import FacebookButton from "@appserver/components/facebook-button";
 import PageLayout from "@appserver/common/components/PageLayout";
-import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
 import Register from "./sub-components/register-container";
 import {
   getAuthProviders,
@@ -42,13 +36,6 @@ import {
   LoginFormWrapper,
 } from "./StyledLogin";
 
-const settings = {
-  minLength: 6,
-  upperCase: false,
-  digits: false,
-  specSymbols: false,
-};
-
 const Form = (props) => {
   const inputRef = React.useRef(null);
 
@@ -56,11 +43,6 @@ const Form = (props) => {
   const [identifier, setIdentifier] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
-
-  const [passwordValid, setPasswordValid] = useState(true);
-  const [password, setPassword] = useState("");
-  const [isChecked, setIsChecked] = useState(false);
-  const [isDialogVisible, setIsDialogVisible] = useState(false);
 
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
   const [ssoLabel, setSsoLabel] = useState("");
@@ -132,7 +114,6 @@ const Form = (props) => {
   const onClearErrors = (e) => {
     //console.log("onClearErrors", e);
     !identifierValid && setIdentifierValid(true);
-    !passwordValid && setPasswordValid(true);
     errorText && setErrorText("");
   };
 
@@ -184,25 +165,6 @@ const Form = (props) => {
     onClearErrors(e);
   };
 
-  const onChangePassword = (e) => {
-    //console.log("onChangePassword", e.target.value);
-    setPassword(e.target.value);
-    onClearErrors(e);
-  };
-
-  const onChangeCheckbox = () => setIsChecked(!isChecked);
-
-  const onClick = () => {
-    setIsDialogVisible(true);
-    setIsDisabled(true);
-  };
-
-  const onDialogClose = () => {
-    setIsDialogVisible(false);
-    setIsDisabled(false);
-    setIsLoading(false);
-  };
-
   const moreAuthOpen = () => {
     setMoreAuthVisible(true);
   };
@@ -222,37 +184,11 @@ const Form = (props) => {
       setIdentifierValid(false);
     }
 
-    const pass = password.trim();
-
-    if (!pass) {
-      hasError = true;
-      setPasswordValid(false);
-    }
-
     if (hasError) return false;
 
     setIsLoading(true);
-    const hash = createPasswordHash(pass, hashSettings);
-
-    isDesktop && checkPwd();
-    const session = !isChecked;
-    login(userName, hash, session)
-      .then((res) => {
-        const { url, user, hash } = res;
-        const redirectPath = localStorage.getItem("redirectPath");
-
-        if (redirectPath) {
-          localStorage.removeItem("redirectPath");
-          window.location.href = redirectPath;
-        } else history.push(url, { user, hash });
-      })
-      .catch((error) => {
-        setErrorText(error);
-        setIdentifierValid(!error);
-        setPasswordValid(!error);
-        setIsLoading(false);
-        focusInput();
-      });
+    console.log("fake login");
+    setIsLoading(false);
   };
 
   const onSocialButtonClick = useCallback((e) => {
