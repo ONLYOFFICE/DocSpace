@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import api from "@appserver/common/api";
 import {
   FolderType,
@@ -58,7 +58,7 @@ class FilesStore {
   firstElemChecked = false;
 
   isPrevSettingsModule = false;
-
+  viaDeleteRequest = false;
   constructor(
     authStore,
     settingsStore,
@@ -95,6 +95,8 @@ class FilesStore {
           if (opt?.type == "file" && opt?.id) {
             const foundIndex = this.files.findIndex((x) => x.id === opt?.id);
             if (foundIndex == -1) return;
+
+            runInAction(() => (this.withSocketDelete = true));
 
             this.setFiles(
               this.files.filter((_, index) => {
@@ -193,6 +195,9 @@ class FilesStore {
     this.startDrag = startDrag;
   };
 
+  addViaDeleteRequest = (viaDeleteRequest) => {
+    this.viaDeleteRequest = viaDeleteRequest;
+  };
   get tooltipOptions() {
     if (!this.dragging) return null;
 
@@ -262,6 +267,10 @@ class FilesStore {
     this.firstLoad = firstLoad;
   };
 
+  isLastPage = () => {
+    return this.filter.page > 0 && !this.filter.hasNext();
+  };
+
   setFiles = (files) => {
     const { socketHelper } = this.settingsStore;
 
@@ -272,13 +281,23 @@ class FilesStore {
       });
     }
 
-    this.files = files;
+    if (files.length === 0 && this.isLastPage() && this.withSocketDelete) {
+      runInAction(() => (this.isDeleteLastFile = true));
 
-    if (this.files?.length > 0) {
-      socketHelper.emit({
-        command: "subscribe",
-        data: this.files.map((f) => `FILE-${f.id}`),
-      });
+      if (!this.viaDeleteRequest) {
+        this.filter.page--;
+        this.fetchFiles(this.selectedFolderStore.id, this.filter, true, true);
+        runInAction(() => (this.isDeleteLastFile = false));
+      }
+    } else {
+      this.files = files;
+
+      if (this.files?.length > 0) {
+        socketHelper.emit({
+          command: "subscribe",
+          data: this.files.map((f) => `FILE-${f.id}`),
+        });
+      }
     }
   };
 
@@ -391,16 +410,20 @@ class FilesStore {
     );
   };
 
-  isEmptyLastPageAfterOperation = (newSelection) => {
+  setLastFileDeleteActions = (newSelection) => {
     const selection =
       newSelection || this.selection?.length || [this.bufferSelection].length;
 
-    return (
-      selection &&
-      this.filter.page > 0 &&
-      !this.filter.hasNext() &&
-      selection === this.files.length + this.folders.length
-    );
+    const filesLength = this.files.length + this.folders.length;
+    if (this.withSocketDelete) {
+      if (this.isDeleteLastFile && this.isLastPage()) {
+        this.filter.page--;
+        runInAction(() => (this.isDeleteLastFile = false));
+        runInAction(() => (this.withSocketDelete = false));
+      }
+    } else if (selection && this.isLastPage() && selection === filesLength) {
+      this.filter.page--;
+    }
   };
 
   resetFilterPage = () => {
