@@ -3,18 +3,23 @@ import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 //import equal from "fast-deep-equal/react";
 //import { LayoutContextConsumer } from "studio/Layout/context";
-import { isMobile } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 
 import Scrollbar from "@appserver/components/scrollbar";
 import DragAndDrop from "@appserver/components/drag-and-drop";
-import { tablet, desktop } from "@appserver/components/utils/device";
+import { tablet, mobile, desktop } from "@appserver/components/utils/device";
 
 const paddingStyles = css`
   padding: 17px 7px 16px 20px;
   @media ${tablet} {
-    padding: 16px 0 16px 24px;
+    padding: 11px 0 16px 24px;
   }
+  @media ${mobile} {
+    padding: 3px 0 16px 24px;
+  }
+  ${isMobile && `padding: 11px 0 16px 24px`};
+  ${isMobileOnly && `padding: 3px 0 16px 24px`};
 `;
 const commonStyles = css`
   flex-grow: 1;

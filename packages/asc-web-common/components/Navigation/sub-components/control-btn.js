@@ -1,7 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import ContextMenuButton from '@appserver/components/context-menu-button';
+import React from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import ContextMenuButton from "@appserver/components/context-menu-button";
 
 const StyledContainer = styled.div`
   margin-left: 4px;

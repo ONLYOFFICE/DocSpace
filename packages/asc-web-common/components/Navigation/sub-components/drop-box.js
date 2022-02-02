@@ -1,35 +1,34 @@
-import React, { useCallback, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import styled, { css } from 'styled-components';
+import React, { useCallback, useEffect } from "react";
+import PropTypes from "prop-types";
+import styled, { css } from "styled-components";
 
-import { VariableSizeList } from 'react-window';
-import CustomScrollbarsVirtualList from '@appserver/components/scrollbar/custom-scrollbars-virtual-list';
+import { VariableSizeList } from "react-window";
+import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-scrollbars-virtual-list";
 
-import ArrowButton from './arrow-btn';
-import Text from './text';
-import ControlButtons from './control-btn';
-import Item from './item';
+import ArrowButton from "./arrow-btn";
+import Text from "./text";
+import ControlButtons from "./control-btn";
+import Item from "./item";
 
-import { isMobile, isMobileOnly } from 'react-device-detect';
+import { isMobile, isMobileOnly } from "react-device-detect";
 import {
   tablet,
-  mobile,
   isMobile as IsMobileUtils,
   isTablet as isTabletUtils,
-} from '@appserver/components/utils/device';
+} from "@appserver/components/utils/device";
 
 const StyledBox = styled.div`
   position: absolute;
-  top: 1px;
-  left: ${isMobile ? '-16px' : '-24px'};
+  top: 0;
+
+  left: ${isMobile ? "-16px" : "-24px"};
   ${isMobile &&
   css`
     top: 0px;
     width: 100vw !important;
     max-width: 100vw !important;
   `}
-  height: fit-content;
-  min-width: 185px;
+  height: ${(props) => props.height}px;
   ${(props) =>
     props.changeWidth &&
     !isMobile &&
@@ -51,29 +50,43 @@ const StyledBox = styled.div`
     width: 100vw;
     max-width: 100vw !important;
   }
+
+  ${isMobile &&
+  css`
+    top: 0px;
+    left: -16px;
+    width: 100vw;
+    max-width: 100vw !important;
+  `}
 `;
 
 const StyledContainer = styled.div`
   margin: 14px 0 7px;
   position: relative;
-  top: -1px;
+  top: 0;
   align-items: center;
   min-width: 100px;
   max-width: calc(100vw - 32px);
-  padding: ${isMobile ? '0px 16px' : '0px 24px'};
+  padding: ${isMobile ? "0px 16px" : "0px 24px"};
   display: grid;
   grid-template-columns: ${(props) =>
-    props.canCreate ? 'auto auto auto auto 1fr' : 'auto auto auto 1fr'};
+    props.canCreate ? "auto auto auto auto 1fr" : "auto auto auto 1fr"};
 
   @media ${tablet} {
-    top: ${!isMobile && '0px'};
+    top: ${!isMobile && "0px"};
     padding: 0px 16px;
 
-    grid-template-columns: ${(props) => (props.canCreate ? 'auto 1fr auto' : 'auto 1fr auto')};
+    grid-template-columns: ${(props) =>
+      props.canCreate ? "auto 1fr auto" : "auto 1fr auto"};
   }
 
-  @media ${mobile} {
-  }
+  ${isMobile &&
+  css`
+    padding: 0px 16px;
+
+    grid-template-columns: ${(props) =>
+      props.canCreate ? "auto 1fr auto" : "auto 1fr auto"};
+  `}
 
   .arrow-button {
     margin-right: 15px;
@@ -86,19 +99,23 @@ const StyledContainer = styled.div`
       margin-left: -8px;
       margin-right: 16px;
     }
+
+    ${isMobile &&
+    css`
+      padding: 0 0 0 8px;
+      margin-left: -8px;
+      margin-right: 16px;
+    `};
   }
 
   .add-button {
     margin-left: 16px;
 
     @media ${tablet} {
-      margin-left: auto;
-
-      & > div:first-child {
-        padding: 0px 8px 8px 8px;
-        margin-right: -8px;
-      }
+      display: none;
     }
+
+    ${isMobile && `display: none`};
   }
 
   .option-button {
@@ -133,6 +150,7 @@ const DropBox = React.forwardRef(
   (
     {
       width,
+      height,
       changeWidth,
       isRootFolder,
       onBackToParentFolder,
@@ -145,7 +163,7 @@ const DropBox = React.forwardRef(
       toggleDropBox,
       onClickAvailable,
     },
-    ref,
+    ref
   ) => {
     const [dropBoxHeight, setDropBoxHeight] = React.useState(0);
     const countItems = navigationItems.length;
@@ -156,19 +174,31 @@ const DropBox = React.forwardRef(
     };
 
     React.useEffect(() => {
-      const itemsHeight = navigationItems.map((item, index) => getItemSize(index));
+      const itemsHeight = navigationItems.map((item, index) =>
+        getItemSize(index)
+      );
 
       const currentHeight = itemsHeight.reduce((a, b) => a + b);
 
       setDropBoxHeight(
-        currentHeight > window.innerHeight - 99 ? window.innerHeight - 99 : currentHeight,
+        currentHeight > window.innerHeight - 99
+          ? window.innerHeight - 99
+          : currentHeight
       );
     });
 
     return (
-      <StyledBox ref={ref} width={width} changeWidth={changeWidth}>
+      <StyledBox
+        ref={ref}
+        width={width}
+        height={height}
+        changeWidth={changeWidth}
+      >
         <StyledContainer canCreate={canCreate}>
-          <ArrowButton isRootFolder={isRootFolder} onBackToParentFolder={onBackToParentFolder} />
+          <ArrowButton
+            isRootFolder={isRootFolder}
+            onBackToParentFolder={onBackToParentFolder}
+          />
           <Text title={title} isOpen={true} onClick={toggleDropBox} />
           <ControlButtons
             personal={personal}
@@ -181,16 +211,17 @@ const DropBox = React.forwardRef(
 
         <VariableSizeList
           height={dropBoxHeight}
-          width={'auto'}
+          width={"auto"}
           itemCount={countItems}
           itemSize={getItemSize}
           itemData={[navigationItems, onClickAvailable]}
-          outerElementType={CustomScrollbarsVirtualList}>
+          outerElementType={CustomScrollbarsVirtualList}
+        >
           {Row}
         </VariableSizeList>
       </StyledBox>
     );
-  },
+  }
 );
 
 DropBox.propTypes = {
