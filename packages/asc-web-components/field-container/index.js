@@ -84,8 +84,8 @@ FieldContainer.propTypes = {
   hasError: PropTypes.bool,
   /** Sets visibility of field label section */
   labelVisible: PropTypes.bool,
-  /** Field label text */
-  labelText: PropTypes.string,
+  /** Field label text or element */
+  labelText: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   icon: PropTypes.string,
   /** Children elements */
   children: PropTypes.oneOfType([
