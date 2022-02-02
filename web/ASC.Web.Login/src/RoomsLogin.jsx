@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
+import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
 import TextInput from "@appserver/components/text-input";
@@ -11,6 +12,7 @@ import HelpButton from "@appserver/components/help-button";
 import PasswordInput from "@appserver/components/password-input";
 import FieldContainer from "@appserver/components/field-container";
 import SocialButton from "@appserver/components/social-button";
+import FacebookButton from "@appserver/components/facebook-button";
 import PageLayout from "@appserver/common/components/PageLayout";
 import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
 import Register from "./sub-components/register-container";
@@ -33,6 +35,7 @@ import {
 } from "react-i18next";
 import toastr from "@appserver/components/toast/toastr";
 import MoreLoginModal from "./sub-components/more-login";
+import { Trans } from "react-i18next";
 import {
   ButtonsWrapper,
   LoginContainer,
@@ -408,66 +411,7 @@ const Form = (props) => {
             forwardedRef={inputRef}
           />
         </FieldContainer>
-        <FieldContainer
-          isVertical={true}
-          labelVisible={false}
-          hasError={!passwordValid}
-          errorMessage={errorText ? "" : t("Common:RequiredField")} //TODO: Add wrong password server error
-        >
-          <PasswordInput
-            simpleView={true}
-            passwordSettings={settings}
-            id="password"
-            inputName="password"
-            placeholder={t("Common:Password")}
-            type="password"
-            hasError={!passwordValid}
-            inputValue={password}
-            size="large"
-            scale={true}
-            tabIndex={1}
-            isDisabled={isLoading}
-            autoComplete="current-password"
-            onChange={onChangePassword}
-            onKeyDown={onKeyDown}
-          />
-        </FieldContainer>
 
-        <div className="login-forgot-wrapper">
-          <div className="login-checkbox-wrapper">
-            <Checkbox
-              className="login-checkbox"
-              isChecked={isChecked}
-              onChange={onChangeCheckbox}
-              label={<Text fontSize="13px">{t("Remember")}</Text>}
-            />
-            <HelpButton
-              className="login-tooltip"
-              helpButtonHeaderContent={t("CookieSettingsTitle")}
-              tooltipContent={
-                <Text fontSize="12px">{t("RememberHelper")}</Text>
-              }
-            />
-            <Link
-              fontSize="13px"
-              color="#316DAA"
-              className="login-link"
-              type="page"
-              isHovered={false}
-              onClick={onClick}
-            >
-              {t("ForgotPassword")}
-            </Link>
-          </div>
-        </div>
-
-        {isDialogVisible && (
-          <ForgotPasswordModalDialog
-            visible={isDialogVisible}
-            email={identifier}
-            onDialogClose={onDialogClose}
-          />
-        )}
         <Button
           id="submit"
           className="login-button"
@@ -480,6 +424,16 @@ const Form = (props) => {
           isLoading={isLoading}
           onClick={onSubmit}
         />
+
+        <Text color="#A3A9AE" fontSize="12px">
+          <Trans t={t} i18nKey="LoginDescription" ns="Login">
+            We'll email you a magic code to sign in without a password. Or you
+            can
+            <Link color="#2DA7DB;" fontSize="12px" href="">
+              log in manually.
+            </Link>
+          </Trans>
+        </Text>
 
         {confirmedEmail && (
           <Text isBold={true} fontSize="16px">
