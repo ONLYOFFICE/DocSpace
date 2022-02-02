@@ -615,7 +615,10 @@ const Editor = () => {
       let convertUrl = url.substring(0, index);
 
       if (canConvert(fileInfo.fileExst)) {
-        convertUrl = await convertDocumentUrl();
+        const newUrl = await convertDocumentUrl();
+        if (newUrl) {
+          convertUrl = newUrl.webUrl;
+        }
       }
 
       history.pushState({}, null, convertUrl);
