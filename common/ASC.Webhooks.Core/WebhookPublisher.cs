@@ -14,9 +14,9 @@ namespace ASC.Webhooks.Core
     [Scope]
     public class WebhookPublisher : IWebhookPublisher
     {
-        private DbWorker DbWorker { get; }
-        private TenantManager TenantManager { get; }
-        private ICacheNotify<WebhookRequest> WebhookNotify { get; }
+        private readonly DbWorker _dbWorker;
+        private readonly TenantManager _tenantManager;
+        private readonly ICacheNotify<WebhookRequest> _webhookNotify;
 
         public WebhookPublisher(
             DbWorker dbWorker,
@@ -24,15 +24,15 @@ namespace ASC.Webhooks.Core
             IOptionsMonitor<ILog> options,
             ICacheNotify<WebhookRequest> webhookNotify)
         {
-            DbWorker = dbWorker;
-            TenantManager = tenantManager;
-            WebhookNotify = webhookNotify;
+            _dbWorker = dbWorker;
+            _tenantManager = tenantManager;
+            _webhookNotify = webhookNotify;
         }
 
         public void Publish(string eventName, string requestPayload)
         {
-            var tenantId = TenantManager.GetCurrentTenant().TenantId;
-            var webhookConfigs = DbWorker.GetWebhookConfigs(tenantId);
+            var tenantId = _tenantManager.GetCurrentTenant().TenantId;
+            var webhookConfigs = _dbWorker.GetWebhookConfigs(tenantId);
 
             foreach (var config in webhookConfigs)
             {
@@ -46,14 +46,14 @@ namespace ASC.Webhooks.Core
                     Status = ProcessStatus.InProcess,
                     ConfigId = config.ConfigId
                 };
-                var DbId = DbWorker.WriteToJournal(webhooksLog);
+                var DbId = _dbWorker.WriteToJournal(webhooksLog);
 
                 var request = new WebhookRequest()
                 {
                     Id = DbId
                 };
 
-                WebhookNotify.Publish(request, CacheNotifyAction.Update);
+                _webhookNotify.Publish(request, CacheNotifyAction.Update);
             }
         }
     }
