@@ -8,7 +8,7 @@ import toastr from "studio/toastr";
 import PageLayout from "@appserver/common/components/PageLayout";
 import history from "@appserver/common/history";
 import ModuleTile from "./ModuleTile";
-import { tryRedirectTo } from "@appserver/common/utils";
+import tryRedirectTo from "@appserver/common/utils/tryRedirectTo";
 import { setDocumentTitle } from "../../../helpers/utils";
 import { inject, observer } from "mobx-react";
 import config from "../../../../package.json";

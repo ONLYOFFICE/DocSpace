@@ -1,7 +1,6 @@
 import { LANGUAGE } from "../constants";
 import sjcl from "sjcl";
 import { isMobile } from "react-device-detect";
-import history from "../history";
 import TopLoaderService from "@appserver/components/top-loading-indicator";
 export const toUrlParams = (obj, skipNull) => {
   let str = "";
@@ -111,20 +110,6 @@ export function showLoader() {
 }
 
 export { withLayoutSize } from "./withLayoutSize";
-
-export function tryRedirectTo(page) {
-  if (
-    window.location.pathname === page ||
-    window.location.pathname.indexOf(page) !== -1
-  ) {
-    return false;
-  }
-  //TODO: check if we already on default page
-  //window.location.replace(page);
-  history.push(page);
-
-  return true;
-}
 
 export function isMe(user, userName) {
   return (
@@ -290,7 +275,7 @@ export function loadScript(url, id, onLoad, onError) {
   } catch (e) {
     console.error(e);
   }
-}
+} // not need  ssr -
 
 export function isRetina() {
   if (window.devicePixelRatio > 1) return true;
