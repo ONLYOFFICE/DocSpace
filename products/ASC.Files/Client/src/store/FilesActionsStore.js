@@ -342,6 +342,7 @@ class FilesActionStore {
       selected,
       setSelected,
       setSelection,
+      setHotkeyCaretStart,
     } = this.filesStore;
     /* selected === "close" &&  */ setSelected("none");
 
@@ -353,7 +354,11 @@ class FilesActionStore {
 
     if (item) {
       item.isFolder = isFolder;
-      isBuffer ? setBufferSelection(item) : setSelection([item]);
+      if (isBuffer) setBufferSelection(item);
+      else {
+        setSelection([item]);
+        setHotkeyCaretStart(item);
+      }
     }
   };
 

@@ -51,6 +51,7 @@ class FilesStore {
   filter = FilesFilter.getDefault(); //TODO: FILTER
   loadTimeout = null;
   hotkeyCaret = null;
+  hotkeyCaretStart = null;
 
   constructor(
     authStore,
@@ -238,6 +239,10 @@ class FilesStore {
 
   setHotkeyCaret = (hotkeyCaret) => {
     this.hotkeyCaret = hotkeyCaret;
+  };
+
+  setHotkeyCaretStart = (hotkeyCaretStart) => {
+    this.hotkeyCaretStart = hotkeyCaretStart;
   };
 
   setSelection = (selection) => {
