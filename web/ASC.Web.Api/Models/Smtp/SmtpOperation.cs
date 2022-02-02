@@ -24,18 +24,9 @@
 */
 
 
-using System.Net.Sockets;
-
-using ASC.Common.Security.Authorizing;
-using ASC.Common.Threading;
-
-using MailKit.Net.Smtp;
-using MailKit.Security;
-
-using MimeKit;
-
 using AuthenticationException = System.Security.Authentication.AuthenticationException;
 using SecurityContext = ASC.Core.SecurityContext;
+using SmtpClient = MailKit.Net.Smtp.SmtpClient;
 
 namespace ASC.Api.Settings.Smtp
 {
