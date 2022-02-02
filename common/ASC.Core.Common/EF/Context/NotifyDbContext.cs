@@ -14,17 +14,14 @@ namespace ASC.Core.Common.EF.Context
     {
         public DbSet<NotifyInfo> NotifyInfo { get; set; }
         public DbSet<NotifyQueue> NotifyQueue { get; set; }
-        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-        {
-            get
+
+        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext =>
+            new Dictionary<Provider, Func<BaseDbContext>>()
             {
-                return new Dictionary<Provider, Func<BaseDbContext>>()
-                {
-                    { Provider.MySql, () => new MySqlNotifyDbContext() } ,
-                    { Provider.PostgreSql, () => new PostgreSqlNotifyDbContext() } ,
-                };
-            }
-        }
+                { Provider.MySql, () => new MySqlNotifyDbContext() } ,
+                { Provider.PostgreSql, () => new PostgreSqlNotifyDbContext() } ,
+            };
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             ModelBuilderWrapper
@@ -36,9 +33,7 @@ namespace ASC.Core.Common.EF.Context
 
     public static class NotifyDbExtension
     {
-        public static DIHelper AddNotifyDbContext(this DIHelper services)
-        {
-            return services.AddDbContextManagerService<NotifyDbContext>();
-        }
+        public static DIHelper AddNotifyDbContext(this DIHelper services) =>
+            services.AddDbContextManagerService<NotifyDbContext>();
     }
 }

@@ -98,7 +98,7 @@ namespace ASC.Web.Core.Sms
         private string BuildCacheKey(string phone)
         {
             var tenant = TenantManager.GetCurrentTenant(false);
-            var tenantCache = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
+            var tenantCache = tenant == null ? Tenant.DefaultTenant : tenant.TenantId;
             return "smskey" + phone + tenantCache;
         }
 

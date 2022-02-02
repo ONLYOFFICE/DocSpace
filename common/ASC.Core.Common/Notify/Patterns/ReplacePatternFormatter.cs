@@ -33,14 +33,10 @@ namespace ASC.Notify.Patterns
         public const string DefaultPattern = @"[[]%(?<tagName>[a-zA-Z0-9_\-.]+)%[]]";
 
         public ReplacePatternFormatter()
-            : base(DefaultPattern)
-        {
-        }
+            : base(DefaultPattern) { }
 
         internal ReplacePatternFormatter(string tagPattern, bool formatMessage)
-            : base(tagPattern, formatMessage)
-        {
-        }
+            : base(tagPattern, formatMessage) { }
 
         protected override string FormatText(string text, ITagValue[] tagsValues)
         {
@@ -52,6 +48,7 @@ namespace ASC.Notify.Patterns
                     var value = Array.Find(tagsValues, v => v.Tag == match.Groups["tagName"].Value);
                     return value != null && value.Value != null ? Convert.ToString(value.Value) : match.Value;
                 });
+
             return formattedText;
         }
     }

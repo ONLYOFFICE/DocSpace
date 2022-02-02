@@ -43,32 +43,28 @@ namespace ASC.Core.Notify
 {
     public class EmailSenderSink : Sink
     {
-        private static readonly string senderName = ASC.Core.Configuration.Constants.NotifyEMailSenderSysName;
-        private readonly INotifySender sender;
-
+        private static readonly string s_senderName = Configuration.Constants.NotifyEMailSenderSysName;
+        private readonly INotifySender _sender;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly ILog _logger;
 
         public EmailSenderSink(INotifySender sender, IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
         {
-            this.sender = sender ?? throw new ArgumentNullException("sender");
-            ServiceProvider = serviceProvider;
-            Log = options.Get("ASC.Notify");
+            _sender = sender ?? throw new ArgumentNullException(nameof(sender));
+            _serviceProvider = serviceProvider;
+            _logger = options.Get("ASC.Notify");
         }
-
-        private IServiceProvider ServiceProvider { get; }
-        private ILog Log { get; }
 
         public override SendResponse ProcessMessage(INoticeMessage message)
         {
             if (message.Recipient.Addresses == null || message.Recipient.Addresses.Length == 0)
-            {
-                return new SendResponse(message, senderName, SendResult.IncorrectRecipient);
-            }
+                return new SendResponse(message, s_senderName, SendResult.IncorrectRecipient);
 
-            var responce = new SendResponse(message, senderName, default(SendResult));
+            var responce = new SendResponse(message, s_senderName, default(SendResult));
             try
             {
                 var m = CreateNotifyMessage(message);
-                var result = sender.Send(m);
+                var result = _sender.Send(m);
 
                 responce.Result = result switch
                 {
@@ -81,10 +77,9 @@ namespace ASC.Core.Notify
             }
             catch (Exception e)
             {
-                return new SendResponse(message, senderName, e);
+                return new SendResponse(message, s_senderName, e);
             }
         }
-
 
         private NotifyMessage CreateNotifyMessage(INoticeMessage message)
         {
@@ -93,17 +88,17 @@ namespace ASC.Core.Notify
                 Subject = message.Subject.Trim(' ', '\t', '\n', '\r'),
                 ContentType = message.ContentType,
                 Content = message.Body,
-                Sender = senderName,
+                Sender = s_senderName,
                 CreationDate = DateTime.UtcNow.Ticks,
             };
 
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
 
             var scopeClass = scope.ServiceProvider.GetService<EmailSenderSinkScope>();
             var (tenantManager, configuration, options) = scopeClass;
 
             var tenant = tenantManager.GetCurrentTenant(false);
-            m.Tenant = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
+            m.Tenant = tenant == null ? Tenant.DefaultTenant : tenant.TenantId;
 
             var from = MailAddressUtils.Create(configuration.SmtpSettings.SenderAddress, configuration.SmtpSettings.SenderDisplayName);
             var fromTag = message.Arguments.FirstOrDefault(x => x.Tag.Equals("MessageFrom"));
@@ -134,21 +129,17 @@ namespace ASC.Core.Notify
                 }
                 catch (Exception e)
                 {
-                    ServiceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify").Error("Error creating reply to tag for: " + replyTag.Value, e);
+                    _serviceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify").Error("Error creating reply to tag for: " + replyTag.Value, e);
                 }
             }
 
             var priority = message.Arguments.FirstOrDefault(a => a.Tag == "Priority");
             if (priority != null)
-            {
                 m.Priority = Convert.ToInt32(priority.Value);
-            }
 
             var attachmentTag = message.Arguments.FirstOrDefault(x => x.Tag == "EmbeddedAttachments");
             if (attachmentTag != null && attachmentTag.Value != null)
-            {
                 m.EmbeddedAttachments.AddRange(attachmentTag.Value as NotifyMessageAttachment[]);
-            }
 
             var autoSubmittedTag = message.Arguments.FirstOrDefault(x => x.Tag == "AutoSubmitted");
             if (autoSubmittedTag != null && autoSubmittedTag.Value is string)
@@ -159,7 +150,7 @@ namespace ASC.Core.Notify
                 }
                 catch (Exception e)
                 {
-                    Log.Error("Error creating AutoSubmitted tag for: " + autoSubmittedTag.Value, e);
+                    _logger.Error("Error creating AutoSubmitted tag for: " + autoSubmittedTag.Value, e);
                 }
             }
 
@@ -170,20 +161,20 @@ namespace ASC.Core.Notify
     [Scope]
     public class EmailSenderSinkScope
     {
-        private TenantManager TenantManager { get; }
-        private CoreConfiguration CoreConfiguration { get; }
-        private IOptionsMonitor<ILog> Options { get; }
+        private readonly TenantManager _tenantManager;
+        private readonly CoreConfiguration _coreConfiguration;
+        private readonly IOptionsMonitor<ILog> _options;
 
         public EmailSenderSinkScope(TenantManager tenantManager, CoreConfiguration coreConfiguration, IOptionsMonitor<ILog> options)
         {
-            TenantManager = tenantManager;
-            CoreConfiguration = coreConfiguration;
-            Options = options;
+            _tenantManager = tenantManager;
+            _coreConfiguration = coreConfiguration;
+            _options = options;
         }
 
         public void Deconstruct(out TenantManager tenantManager, out CoreConfiguration coreConfiguration, out IOptionsMonitor<ILog> optionsMonitor)
         {
-            (tenantManager, coreConfiguration, optionsMonitor) = (TenantManager, CoreConfiguration, Options);
+            (tenantManager, coreConfiguration, optionsMonitor) = (_tenantManager, _coreConfiguration, _options);
         }
     }
 }

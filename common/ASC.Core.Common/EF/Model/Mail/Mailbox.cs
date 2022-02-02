@@ -39,6 +39,7 @@ namespace ASC.Core.Common.EF.Model.Mail
         public DateTime DateCreated { get; set; }
         public DateTime DateModified { get; set; }
     }
+
     public static class MailboxExtension
     {
         public static ModelBuilderWrapper AddMailbox(this ModelBuilderWrapper modelBuilder)
@@ -48,6 +49,7 @@ namespace ASC.Core.Common.EF.Model.Mail
                 .Add(PgSqlAddMailbox, Provider.PostgreSql);
             return modelBuilder;
         }
+
         public static void MySqlAddMailbox(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Mailbox>(entity =>

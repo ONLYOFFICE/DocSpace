@@ -35,12 +35,11 @@ namespace ASC.Core.Common.Notify
     [Singletone]
     public class TelegramServiceClient : ITelegramService
     {
-        private ICacheNotify<NotifyMessage> CacheMessage { get; }
-        private ICacheNotify<RegisterUserProto> CacheRegisterUser { get; }
-        private ICacheNotify<CreateClientProto> CacheCreateClient { get; }
-        private ICacheNotify<DisableClientProto> CacheDisableClient { get; }
-
-        private ICache Cache { get; }
+        private readonly ICacheNotify<NotifyMessage> _eventBusNotifyMessage;
+        private readonly ICacheNotify<RegisterUserProto> _eventBusRegisterUser;
+        private readonly ICacheNotify<CreateClientProto> _eventBusCreateClient;
+        private readonly ICacheNotify<DisableClientProto> _eventBusDisableClient;
+        private readonly ICache _cache;
 
         public TelegramServiceClient(ICacheNotify<NotifyMessage> cacheMessage,
             ICacheNotify<RegisterUserProto> cacheRegisterUser,
@@ -48,22 +47,20 @@ namespace ASC.Core.Common.Notify
             ICacheNotify<DisableClientProto> cacheDisableClient, 
             ICache cache)
         {
-            CacheMessage = cacheMessage;
-            CacheRegisterUser = cacheRegisterUser;
-            CacheCreateClient = cacheCreateClient;
-            CacheDisableClient = cacheDisableClient;
-            Cache = cache;
+            _eventBusNotifyMessage = cacheMessage;
+            _eventBusRegisterUser = cacheRegisterUser;
+            _eventBusCreateClient = cacheCreateClient;
+            _eventBusDisableClient = cacheDisableClient;
+            _cache = cache;
         }
 
-        public void SendMessage(NotifyMessage m)
-        {
-            CacheMessage.Publish(m, CacheNotifyAction.Insert);
-        }
+        public void SendMessage(NotifyMessage m) =>
+            _eventBusNotifyMessage.Publish(m, CacheNotifyAction.Insert);
 
         public void RegisterUser(string userId, int tenantId, string token)
         {
-            Cache.Insert(GetCacheTokenKey(tenantId, userId), token, DateTime.MaxValue);
-            CacheRegisterUser.Publish(new RegisterUserProto()
+            _cache.Insert(GetCacheTokenKey(tenantId, userId), token, DateTime.MaxValue);
+            _eventBusRegisterUser.Publish(new RegisterUserProto()
             {
                 UserId = userId,
                 TenantId = tenantId,
@@ -73,7 +70,7 @@ namespace ASC.Core.Common.Notify
 
         public void CreateOrUpdateClient(int tenantId, string token, int tokenLifespan, string proxy)
         {
-            CacheCreateClient.Publish(new CreateClientProto()
+            _eventBusCreateClient.Publish(new CreateClientProto()
             {
                 TenantId = tenantId,
                 Token = token,
@@ -82,19 +79,12 @@ namespace ASC.Core.Common.Notify
             }, CacheNotifyAction.Insert);
         }
 
-        public void DisableClient(int tenantId)
-        {
-            CacheDisableClient.Publish(new DisableClientProto() { TenantId = tenantId }, CacheNotifyAction.Insert);
-        }
+        public void DisableClient(int tenantId) =>
+            _eventBusDisableClient.Publish(new DisableClientProto() { TenantId = tenantId }, CacheNotifyAction.Insert);
 
-        public string RegistrationToken(string userId, int tenantId)
-        {
-            return Cache.Get<string>(GetCacheTokenKey(tenantId, userId));
-        }
+        public string RegistrationToken(string userId, int tenantId) =>
+            _cache.Get<string>(GetCacheTokenKey(tenantId, userId));
 
-        private string GetCacheTokenKey(int tenantId, string userId)
-        {
-            return "Token" + userId + tenantId;
-        }
+        private string GetCacheTokenKey(int tenantId, string userId) => $"Token{userId}{tenantId}";
     }
 }

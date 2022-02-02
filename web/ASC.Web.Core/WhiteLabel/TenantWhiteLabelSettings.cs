@@ -595,7 +595,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             SettingsManager.SaveForTenant(tenantWhiteLabelSettings, tenantId);
 
-            if (tenantId == Tenant.DEFAULT_TENANT)
+            if (tenantId == Tenant.DefaultTenant)
             {
                 AppliedTenants.Clear();
             }

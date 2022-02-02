@@ -12,10 +12,8 @@ namespace ASC.Core.Common.EF
         public UserGroupRefType RefType { get; set; }
         public bool Removed { get; set; }
         public DateTime LastModified { get; set; }
-        public override object[] GetKeys()
-        {
-            return new object[] { Tenant, UserId, GroupId, RefType };
-        }
+
+        public override object[] GetKeys() => new object[] { Tenant, UserId, GroupId, RefType };
     }
 
     public static class DbUserGroupExtension
@@ -74,6 +72,7 @@ namespace ASC.Core.Common.EF
                 entity.Property(e => e.Removed).HasColumnName("removed");
             });
         }
+
         public static void PgSqlAddUserGroup(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserGroup>(entity =>
@@ -104,7 +103,6 @@ namespace ASC.Core.Common.EF
 
                 entity.Property(e => e.Removed).HasColumnName("removed");
             });
-
         }
     }
 }

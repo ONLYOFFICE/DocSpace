@@ -33,7 +33,12 @@ namespace ASC.Notify.Recipients
     public class DirectRecipient
         : IDirectRecipient
     {
-        private readonly List<string> _Addresses = new List<string>();
+        public bool CheckActivation { get; set; }
+        public string ID { get; private set; }
+        public string Name { get; private set; }
+        public string[] Addresses => _addresses.ToArray();
+
+        private readonly List<string> _addresses = new List<string>();
 
         public DirectRecipient(string id, string name)
         {
@@ -42,9 +47,7 @@ namespace ASC.Notify.Recipients
         }
 
         public DirectRecipient(string id, string name, string[] addresses)
-            : this(id, name, addresses, true)
-        {
-        }
+            : this(id, name, addresses, true) { }
 
         public DirectRecipient(string id, string name, string[] addresses, bool checkActivation)
         {
@@ -52,43 +55,18 @@ namespace ASC.Notify.Recipients
             Name = name;
             CheckActivation = checkActivation;
             if (addresses != null)
-                _Addresses.AddRange(addresses);
+                _addresses.AddRange(addresses);
         }
-
-        #region IDirectRecipient
-
-        public string[] Addresses
-        {
-            get { return _Addresses.ToArray(); }
-        }
-
-
-
-        #endregion
-
-        #region IRecipient
-
-        public string ID { get; private set; }
-
-        public string Name { get; private set; }
-        public bool CheckActivation { get; set; }
-
-        #endregion
 
         public override bool Equals(object obj)
         {
             if (!(obj is IDirectRecipient recD)) return false;
+
             return Equals(recD.ID, ID);
         }
 
-        public override int GetHashCode()
-        {
-            return (ID ?? "").GetHashCode();
-        }
+        public override int GetHashCode() => (ID ?? "").GetHashCode();
 
-        public override string ToString()
-        {
-            return string.Format("{0}({1})", Name, string.Join(";", _Addresses.ToArray()));
-        }
+        public override string ToString() => $"{Name}({string.Join(";", _addresses.ToArray())})";
     }
 }

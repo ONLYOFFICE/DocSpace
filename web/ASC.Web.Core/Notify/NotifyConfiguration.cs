@@ -98,7 +98,7 @@ namespace ASC.Web.Studio.Core.Notify
                 InterceptorLifetime.Global,
                 (r, p, scope) =>
                 {
-                    if (r != null && r.CurrentMessage != null && r.CurrentMessage.ContentType == Pattern.HTMLContentType)
+                    if (r != null && r.CurrentMessage != null && r.CurrentMessage.ContentType == Pattern.HtmlContentType)
                     {
                         var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
 
@@ -294,7 +294,7 @@ namespace ASC.Web.Studio.Core.Notify
             request.Arguments.Add(new TagValue(CommonTags.ModuleID, module != null ? module.ID : Guid.Empty));
             request.Arguments.Add(new TagValue(CommonTags.ProductUrl, commonLinkUtility.GetFullAbsolutePath(product != null ? product.StartURL : "~")));
             request.Arguments.Add(new TagValue(CommonTags.DateTime, tenantUtil.DateTimeNow()));
-            request.Arguments.Add(new TagValue(CommonTags.RecipientID, Context.SYS_RECIPIENT_ID));
+            request.Arguments.Add(new TagValue(CommonTags.RecipientID, Context.SysRecipient));
             request.Arguments.Add(new TagValue(CommonTags.ProfileUrl, commonLinkUtility.GetFullAbsolutePath(commonLinkUtility.GetMyStaff())));
             request.Arguments.Add(new TagValue(CommonTags.RecipientSubscriptionConfigURL, commonLinkUtility.GetMyStaff()));
             request.Arguments.Add(new TagValue(CommonTags.HelpLink, commonLinkUtility.GetHelpLink(settingsManager, additionalWhiteLabelSettingsHelper, false)));

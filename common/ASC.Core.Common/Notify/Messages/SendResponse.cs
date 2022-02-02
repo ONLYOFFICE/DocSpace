@@ -34,10 +34,14 @@ namespace ASC.Notify.Messages
     [Serializable]
     public class SendResponse
     {
-        public SendResponse()
-        {
-            Result = SendResult.OK;
-        }
+        public INoticeMessage NoticeMessage { get; internal set; }
+        public INotifyAction NotifyAction { get; internal set; }
+        public SendResult Result { get; set; }
+        public Exception Exception { get; set; }
+        public string SenderName { get; internal set; }
+        public IRecipient Recipient { get; internal set; }
+
+        public SendResponse() => Result = SendResult.OK;
 
         public SendResponse(INotifyAction action, IRecipient recipient, Exception exc)
         {
@@ -88,17 +92,5 @@ namespace ASC.Notify.Messages
                 NotifyAction = message.Action;
             }
         }
-
-        public INoticeMessage NoticeMessage { get; internal set; }
-
-        public INotifyAction NotifyAction { get; internal set; }
-
-        public SendResult Result { get; set; }
-
-        public Exception Exception { get; set; }
-
-        public string SenderName { get; internal set; }
-
-        public IRecipient Recipient { get; internal set; }
     }
 }

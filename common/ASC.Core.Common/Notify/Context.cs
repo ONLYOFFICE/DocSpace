@@ -42,40 +42,24 @@ namespace ASC.Notify
 {
     public sealed class Context : INotifyRegistry
     {
-        public const string SYS_RECIPIENT_ID = "_#" + _SYS_RECIPIENT_ID + "#_";
-        internal const string _SYS_RECIPIENT_ID = "SYS_RECIPIENT_ID";
-        internal const string _SYS_RECIPIENT_NAME = "SYS_RECIPIENT_NAME";
-        internal const string _SYS_RECIPIENT_ADDRESS = "SYS_RECIPIENT_ADDRESS";
-
-        private readonly Dictionary<string, ISenderChannel> channels = new Dictionary<string, ISenderChannel>(2);
-
-
-        public NotifyEngine NotifyEngine
-        {
-            get;
-            private set;
-        }
-
-        public INotifyRegistry NotifyService
-        {
-            get { return this; }
-        }
-
-        public DispatchEngine DispatchEngine
-        {
-            get;
-            private set;
-        }
-
+        public const string SysRecipient = "_#" + SysRecipientId + "#_";
+        internal const string SysRecipientId = "SYS_RECIPIENT_ID";
+        internal const string SysRecipientName = "SYS_RECIPIENT_NAME";
+        internal const string SysRecipientAddress = "SYS_RECIPIENT_ADDRESS";
 
         public event Action<Context, INotifyClient> NotifyClientRegistration;
 
-        private ILog Log { get; set; }
+        public NotifyEngine NotifyEngine { get; private set; }
+        public INotifyRegistry NotifyService => this;
+        public DispatchEngine DispatchEngine { get; private set; }
+
+        private readonly Dictionary<string, ISenderChannel> _channels = new Dictionary<string, ISenderChannel>(2);
+        private ILog _logger;
 
         public Context(IServiceProvider serviceProvider)
         {
             var options = serviceProvider.GetService<IOptionsMonitor<ILog>>();
-            Log = options.CurrentValue;
+            _logger = options.CurrentValue;
             NotifyEngine = new NotifyEngine(this, serviceProvider);
             DispatchEngine = new DispatchEngine(this, serviceProvider.GetService<IConfiguration>(), options);
         }
@@ -83,25 +67,25 @@ namespace ASC.Notify
 
         void INotifyRegistry.RegisterSender(string senderName, ISink senderSink)
         {
-            lock (channels)
+            lock (_channels)
             {
-                channels[senderName] = new SenderChannel(this, senderName, null, senderSink);
+                _channels[senderName] = new SenderChannel(this, senderName, null, senderSink);
             }
         }
 
         void INotifyRegistry.UnregisterSender(string senderName)
         {
-            lock (channels)
+            lock (_channels)
             {
-                channels.Remove(senderName);
+                _channels.Remove(senderName);
             }
         }
 
         ISenderChannel INotifyRegistry.GetSender(string senderName)
         {
-            lock (channels)
+            lock (_channels)
             {
-                channels.TryGetValue(senderName, out var channel);
+                _channels.TryGetValue(senderName, out var channel);
                 return channel;
             }
         }
@@ -111,6 +95,7 @@ namespace ASC.Notify
             //ValidateNotifySource(source);
             var client = new NotifyClientImpl(this, source, serviceScope);
             NotifyClientRegistration?.Invoke(this, client);
+
             return client;
         }
 
@@ -120,9 +105,9 @@ namespace ASC.Notify
             foreach (var a in source.GetActionProvider().GetActions())
             {
                 IEnumerable<string> senderNames;
-                lock (channels)
+                lock (_channels)
                 {
-                    senderNames = channels.Values.Select(s => s.SenderName);
+                    senderNames = _channels.Values.Select(s => s.SenderName);
                 }
                 foreach (var s in senderNames)
                 {
@@ -136,7 +121,7 @@ namespace ASC.Notify
                     }
                     catch (Exception error)
                     {
-                        Log.ErrorFormat("Source: {0}, action: {1}, sender: {2}, error: {3}", source.ID, a.ID, s, error);
+                        _logger.ErrorFormat("Source: {0}, action: {1}, sender: {2}, error: {3}", source.ID, a.ID, s, error);
                     }
                 }
             }

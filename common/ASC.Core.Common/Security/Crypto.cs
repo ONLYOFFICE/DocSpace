@@ -35,24 +35,20 @@ namespace ASC.Core
 {
     public class Crypto
     {
-        private static byte[] GetSK1(bool rewrite)
-        {
-            return GetSK(rewrite.GetType().Name.Length);
-        }
+        private static byte[] GetSK1(bool rewrite) => GetSK(rewrite.GetType().Name.Length);
 
-        private static byte[] GetSK2(bool rewrite)
-        {
-            return GetSK(rewrite.GetType().Name.Length * 2);
-        }
+        private static byte[] GetSK2(bool rewrite) => GetSK(rewrite.GetType().Name.Length * 2);
 
         private static byte[] GetSK(int seed)
         {
             var random = new AscRandom(seed);
             var randomKey = new byte[32];
+
             for (var i = 0; i < randomKey.Length; i++)
             {
                 randomKey[i] = (byte)random.Next(byte.MaxValue);
             }
+
             return randomKey;
         }
 
@@ -70,6 +66,7 @@ namespace ASC.Core
                 plainTextStream.CopyTo(ss);
                 ss.FlushFinalBlock();
                 hasher.Clear();
+
                 return Convert.ToBase64String(ms.ToArray());
             }
             else
@@ -79,6 +76,7 @@ namespace ASC.Core
                 using var plainTextStream = new MemoryStream();
                 ss.CopyTo(plainTextStream);
                 hasher.Clear();
+
                 return Encoding.Unicode.GetString(plainTextStream.ToArray());
             }
         }
@@ -97,6 +95,7 @@ namespace ASC.Core
                 plainTextStream.CopyTo(ss);
                 ss.FlushFinalBlock();
                 hasher.Clear();
+
                 return ms.ToArray();
             }
             else
@@ -106,6 +105,7 @@ namespace ASC.Core
                 using var plainTextStream = new MemoryStream();
                 ss.CopyTo(plainTextStream);
                 hasher.Clear();
+
                 return plainTextStream.ToArray();
             }
         }

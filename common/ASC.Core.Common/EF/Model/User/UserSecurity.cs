@@ -11,11 +11,10 @@ namespace ASC.Core.Common.EF
         public string PwdHash { get; set; }
         public string PwdHashSha512 { get; set; }
         public DateTime? LastModified { get; set; }
-        public override object[] GetKeys()
-        {
-            return new object[] { UserId };
-        }
+
+        public override object[] GetKeys() => new object[] { UserId };
     }
+
     public static class UserSecurityExtension
     {
         public static ModelBuilderWrapper AddUserSecurity(this ModelBuilderWrapper modelBuilder)
@@ -76,6 +75,7 @@ namespace ASC.Core.Common.EF
                 entity.Property(e => e.Tenant).HasColumnName("tenant");
             });
         }
+
         public static void PgSqlAddUserSecurity(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserSecurity>(entity =>

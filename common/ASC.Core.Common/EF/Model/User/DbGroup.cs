@@ -17,11 +17,9 @@ namespace ASC.Core.Common.EF
         public bool Removed { get; set; }
         public DateTime LastModified { get; set; }
 
-        public override object[] GetKeys()
-        {
-            return new object[] { Id };
-        }
+        public override object[] GetKeys() => new object[] { Id };
     }
+
     public static class DbGroupExtension
     {
         public static ModelBuilderWrapper AddDbGroup(this ModelBuilderWrapper modelBuilder)
@@ -29,8 +27,10 @@ namespace ASC.Core.Common.EF
             modelBuilder
                 .Add(MySqlAddDbGroup, Provider.MySql)
                 .Add(PgSqlAddDbGroup, Provider.PostgreSql);
+
             return modelBuilder;
         }
+
         private static void MySqlAddDbGroup(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbGroup>(entity =>
@@ -84,6 +84,7 @@ namespace ASC.Core.Common.EF
                 entity.Property(e => e.Tenant).HasColumnName("tenant");
             });
         }
+
         private static void PgSqlAddDbGroup(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbGroup>(entity =>

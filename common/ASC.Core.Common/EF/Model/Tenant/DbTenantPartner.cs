@@ -11,6 +11,7 @@ namespace ASC.Core.Common.EF.Model
 
         //public DbTenant Tenant { get; set; }
     }
+
     public static class DbTenantPartnerExtension
     {
         public static ModelBuilderWrapper AddDbTenantPartner(this ModelBuilderWrapper modelBuilder)
@@ -20,6 +21,7 @@ namespace ASC.Core.Common.EF.Model
                 .Add(PgSqlAddDbTenantPartner, Provider.PostgreSql);
             return modelBuilder;
         }
+
         public static void MySqlAddDbTenantPartner(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbTenantPartner>(entity =>
@@ -49,8 +51,8 @@ namespace ASC.Core.Common.EF.Model
                     .HasCharSet("utf8")
                     .UseCollation("utf8_general_ci");
             });
-
         }
+
         public static void PgSqlAddDbTenantPartner(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbTenantPartner>(entity =>
@@ -79,7 +81,6 @@ namespace ASC.Core.Common.EF.Model
                     .HasMaxLength(36)
                     .HasDefaultValueSql("NULL");
             });
-
         }
     }
 }

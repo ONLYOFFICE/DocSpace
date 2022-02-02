@@ -11,10 +11,7 @@ namespace ASC.Core.Common.EF
         public string Recipient { get; set; }
         public string Sender { get; set; }
 
-        public override object[] GetKeys()
-        {
-            return new object[] { Tenant, Source, Action, Recipient };
-        }
+        public override object[] GetKeys() => new object[] { Tenant, Source, Action, Recipient };
     }
 
     public static class SubscriptionMethodExtension

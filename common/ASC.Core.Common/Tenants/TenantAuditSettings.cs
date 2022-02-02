@@ -36,14 +36,10 @@ namespace ASC.Core.Tenants
         public const int MaxLifeTime = 180;
 
         public int LoginHistoryLifeTime { get; set; }
-
         public int AuditTrailLifeTime { get; set; }
+        public Guid ID => Guid;
 
         public static Guid Guid = new Guid("{8337D0FB-AD67-4552-8297-802312E7F503}");
-        public Guid ID
-        {
-            get { return Guid; }
-        }
 
         public ISettings GetDefault(IServiceProvider serviceProvider)
         {
@@ -57,6 +53,6 @@ namespace ASC.Core.Tenants
 
     public class TenantAuditSettingsWrapper
     {
-        public TenantAuditSettings settings{ get; set; }
+        public TenantAuditSettings Settings { get; set; }
     }
 }

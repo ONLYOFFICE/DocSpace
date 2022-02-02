@@ -12,10 +12,7 @@ namespace ASC.Core.Common.EF.Model
         public string Profile { get; set; }
         public DateTime Linked { get; set; }
 
-        public override object[] GetKeys()
-        {
-            return new object[] { Id, UId };
-        }
+        public override object[] GetKeys() => new object[] { Id, UId };
     }
 
     public static class AccountLinksExtension
@@ -25,8 +22,10 @@ namespace ASC.Core.Common.EF.Model
             modelBuilder
                 .Add(MySqlAddAccountLinks, Provider.MySql)
                 .Add(PgSqlAddAccountLinks, Provider.PostgreSql);
+
             return modelBuilder;
         }
+
         public static void MySqlAddAccountLinks(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AccountLinks>(entity =>
@@ -69,6 +68,7 @@ namespace ASC.Core.Common.EF.Model
                     .UseCollation("utf8_general_ci");
             });
         }
+
         public static void PgSqlAddAccountLinks(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AccountLinks>(entity =>

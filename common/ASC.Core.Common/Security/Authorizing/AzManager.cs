@@ -32,19 +32,17 @@ namespace ASC.Common.Security.Authorizing
     [Scope]
     public class AzManager
     {
-        private readonly IPermissionProvider permissionProvider;
-        private readonly IRoleProvider roleProvider;
+        private readonly IPermissionProvider _permissionProvider;
+        private readonly IRoleProvider _roleProvider;
 
 
-        internal AzManager()
-        {
-        }
+        internal AzManager() { }
 
         public AzManager(IRoleProvider roleProvider, IPermissionProvider permissionProvider)
             : this()
         {
-            this.roleProvider = roleProvider ?? throw new ArgumentNullException("roleProvider");
-            this.permissionProvider = permissionProvider ?? throw new ArgumentNullException("permissionProvider");
+            _roleProvider = roleProvider ?? throw new ArgumentNullException(nameof(roleProvider));
+            _permissionProvider = permissionProvider ?? throw new ArgumentNullException(nameof(permissionProvider));
         }
 
 
@@ -52,28 +50,28 @@ namespace ASC.Common.Security.Authorizing
                                     ISecurityObjectProvider securityObjProvider, out ISubject denySubject,
                                     out IAction denyAction)
         {
-            if (subject == null) throw new ArgumentNullException("subject");
-            if (action == null) throw new ArgumentNullException("action");
+            if (subject == null) throw new ArgumentNullException(nameof(subject));
+            if (action == null) throw new ArgumentNullException(nameof(action));
 
             var acl = GetAzManagerAcl(subject, action, objectId, securityObjProvider);
             denySubject = acl.DenySubject;
             denyAction = acl.DenyAction;
+
             return acl.IsAllow;
         }
 
         internal AzManagerAcl GetAzManagerAcl(ISubject subject, IAction action, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider)
         {
-            if (action.AdministratorAlwaysAllow && (Constants.Admin.ID == subject.ID || roleProvider.IsSubjectInRole(subject, Constants.Admin)))
-            {
+            if (action.AdministratorAlwaysAllow && (Constants.Admin.ID == subject.ID 
+                || _roleProvider.IsSubjectInRole(subject, Constants.Admin)))
                 return AzManagerAcl.Allow;
-            }
 
             var acl = AzManagerAcl.Default;
             var exit = false;
 
             foreach (var s in GetSubjects(subject, objectId, securityObjProvider))
             {
-                var aceList = permissionProvider.GetAcl(s, action, objectId, securityObjProvider);
+                var aceList = _permissionProvider.GetAcl(s, action, objectId, securityObjProvider);
                 foreach (var ace in aceList)
                 {
                     if (ace.Reaction == AceType.Deny && !exit)
@@ -96,6 +94,7 @@ namespace ASC.Common.Security.Authorizing
                 }
                 if (exit) break;
             }
+
             return acl;
         }
 
@@ -106,7 +105,7 @@ namespace ASC.Common.Security.Authorizing
                 subject
             };
             subjects.AddRange(
-                roleProvider.GetRoles(subject)
+                _roleProvider.GetRoles(subject)
                     .ConvertAll(r => { return (ISubject)r; })
                 );
             if (objectId != null)
@@ -115,12 +114,15 @@ namespace ASC.Common.Security.Authorizing
                 do
                 {
                     if (!secObjProviderHelper.ObjectRolesSupported) continue;
+
                     foreach (var role in secObjProviderHelper.GetObjectRoles(subject))
                     {
                         if (!subjects.Contains(role)) subjects.Add(role);
                     }
+
                 } while (secObjProviderHelper.NextInherit());
             }
+
             return subjects;
         }
 
@@ -128,19 +130,12 @@ namespace ASC.Common.Security.Authorizing
 
         internal class AzManagerAcl
         {
-            public IAction DenyAction;
-            public ISubject DenySubject;
-            public bool IsAllow;
+            public IAction DenyAction { get; set; }
+            public ISubject DenySubject { get; set; }
+            public bool IsAllow { get; set; }
 
-            public static AzManagerAcl Allow
-            {
-                get { return new AzManagerAcl { IsAllow = true }; }
-            }
-
-            public static AzManagerAcl Default
-            {
-                get { return new AzManagerAcl { IsAllow = false }; }
-            }
+            public static AzManagerAcl Allow => new AzManagerAcl { IsAllow = true };
+            public static AzManagerAcl Default => new AzManagerAcl { IsAllow = false };
         }
 
         #endregion

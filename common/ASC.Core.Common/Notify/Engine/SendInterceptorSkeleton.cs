@@ -32,30 +32,28 @@ namespace ASC.Notify.Engine
 {
     public class SendInterceptorSkeleton : ISendInterceptor
     {
-        private readonly Func<NotifyRequest, InterceptorPlace, IServiceScope, bool> method;
-
-
         public string Name { get; internal set; }
-
         public InterceptorPlace PreventPlace { get; internal set; }
-
         public InterceptorLifetime Lifetime { get; internal set; }
 
+        private readonly Func<NotifyRequest, InterceptorPlace, IServiceScope, bool> _method;
 
-        public SendInterceptorSkeleton(string name, InterceptorPlace preventPlace, InterceptorLifetime lifetime, Func<NotifyRequest, InterceptorPlace, IServiceScope, bool> sendInterceptor)
+        public SendInterceptorSkeleton(
+            string name, 
+            InterceptorPlace preventPlace, 
+            InterceptorLifetime lifetime, 
+            Func<NotifyRequest, InterceptorPlace, IServiceScope, bool> sendInterceptor)
         {
-            if (string.IsNullOrEmpty(name)) throw new ArgumentException("Empty name.", "name");
-            if (sendInterceptor == null) throw new ArgumentNullException("sendInterceptor");
+            if (string.IsNullOrEmpty(name)) throw new ArgumentException("Empty name.", nameof(name));
+            if (sendInterceptor == null) throw new ArgumentNullException(nameof(sendInterceptor));
 
-            method = sendInterceptor;
+            _method = sendInterceptor;
             Name = name;
             PreventPlace = preventPlace;
             Lifetime = lifetime;
         }
 
-        public bool PreventSend(NotifyRequest request, InterceptorPlace place, IServiceScope serviceScope)
-        {
-            return method(request, place, serviceScope);
-        }
+        public bool PreventSend(NotifyRequest request, InterceptorPlace place, IServiceScope serviceScope) =>
+            _method(request, place, serviceScope);
     }
 }

@@ -14,6 +14,7 @@ namespace ASC.Core.Common.EF
 
             var method = typeof(Queryable).GetMethods().FirstOrDefault(m => m.Name == (sortOrderAsc ? "OrderBy" : "OrderByDescending") && m.GetParameters().Length == 2);
             var genericMethod = method.MakeGenericMethod(typeof(T), propInfo.PropertyType);
+
             return (IOrderedQueryable<T>)genericMethod.Invoke(null, new object[] { query, expr });
         }
 
@@ -24,6 +25,7 @@ namespace ASC.Core.Common.EF
 
             var method = typeof(Queryable).GetMethods().FirstOrDefault(m => m.Name == (sortOrderAsc ? "ThenBy" : "ThenByDescending") && m.GetParameters().Length == 2);
             var genericMethod = method.MakeGenericMethod(typeof(T), propInfo.PropertyType);
+
             return (IOrderedQueryable<T>)genericMethod.Invoke(null, new object[] { query, expr });
         }
 
@@ -33,7 +35,7 @@ namespace ASC.Core.Common.EF
             var properties = objType.GetProperties();
             var matchedProperty = properties.FirstOrDefault(p => p.Name.ToLower() == name.ToLower());
             if (matchedProperty == null)
-                throw new ArgumentException("name");
+                throw new ArgumentException(nameof(name));
 
             return matchedProperty;
         }
@@ -42,6 +44,7 @@ namespace ASC.Core.Common.EF
             var paramExpr = Expression.Parameter(objType);
             var propAccess = Expression.PropertyOrField(paramExpr, pi.Name);
             var expr = Expression.Lambda(propAccess, paramExpr);
+
             return expr;
         }
     }

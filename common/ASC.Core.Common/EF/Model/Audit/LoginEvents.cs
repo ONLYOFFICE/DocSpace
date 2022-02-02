@@ -16,6 +16,7 @@ namespace ASC.Core.Common.EF.Model
                 .Add(PgSqlAddLoginEvents, Provider.PostgreSql);
             return modelBuilder;
         }
+
         public static void MySqlAddLoginEvents(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<LoginEvents>(entity =>

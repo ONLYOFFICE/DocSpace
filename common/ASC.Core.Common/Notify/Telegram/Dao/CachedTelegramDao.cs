@@ -38,25 +38,25 @@ namespace ASC.Core.Common.Notify.Telegram
 {
     class ConfigureCachedTelegramDao : IConfigureNamedOptions<CachedTelegramDao>
     {
-        private IOptionsSnapshot<TelegramDao> Service { get; }
-        private ICache Cache { get; }
+        private readonly IOptionsSnapshot<TelegramDao> _option;
+        private readonly ICache _cache;
 
         public ConfigureCachedTelegramDao(IOptionsSnapshot<TelegramDao> service, ICache cache)
         {
-            Service = service;
-            Cache = cache;
+            _option = service;
+            _cache = cache;
         }
 
         public void Configure(string name, CachedTelegramDao options)
         {
             Configure(options);
-            options.TgDao = Service.Get(name);
+            options.TgDao = _option.Get(name);
         }
 
         public void Configure(CachedTelegramDao options)
         {
-            options.TgDao = Service.Value;
-            options.Cache = Cache;
+            options.TgDao = _option.Value;
+            options.Cache = _cache;
             options.Expiration = TimeSpan.FromMinutes(20);
 
             options.PairKeyFormat = "tgUser:{0}:{1}";
@@ -70,7 +70,6 @@ namespace ASC.Core.Common.Notify.Telegram
         public TelegramDao TgDao { get; set; }
         public ICache Cache { get; set; }
         public TimeSpan Expiration { get; set; }
-
         public string PairKeyFormat { get; set; }
         public string SingleKeyFormat { get; set; }
 
@@ -108,6 +107,7 @@ namespace ASC.Core.Common.Notify.Telegram
 
             users = TgDao.GetUser(telegramId);
             if (users.Any()) Cache.Insert(key, users, Expiration);
+
             return users;
         }
 

@@ -9,6 +9,7 @@ namespace ASC.Core.Common.EF.Model
         public int Tenant { get; set; }
         public string Ip { get; set; }
     }
+
     public static class TenantIpRestrictionsExtension
     {
         public static ModelBuilderWrapper AddTenantIpRestrictions(this ModelBuilderWrapper modelBuilder)
@@ -16,8 +17,10 @@ namespace ASC.Core.Common.EF.Model
             modelBuilder
                 .Add(MySqlAddTenantIpRestrictions, Provider.MySql)
                 .Add(PgSqlAddTenantIpRestrictions, Provider.PostgreSql);
+
             return modelBuilder;
         }
+
         public static void MySqlAddTenantIpRestrictions(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<TenantIpRestrictions>(entity =>
@@ -38,8 +41,8 @@ namespace ASC.Core.Common.EF.Model
 
                 entity.Property(e => e.Tenant).HasColumnName("tenant");
             });
-
         }
+
         public static void PgSqlAddTenantIpRestrictions(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<TenantIpRestrictions>(entity =>
@@ -58,7 +61,6 @@ namespace ASC.Core.Common.EF.Model
 
                 entity.Property(e => e.Tenant).HasColumnName("tenant");
             });
-
         }
     }
 }

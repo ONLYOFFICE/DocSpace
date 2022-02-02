@@ -43,25 +43,26 @@ namespace ASC.Notify.Patterns
         private VelocityContext _nvelocityContext;
 
         public NVelocityPatternFormatter()
-            : base(DefaultPattern)
-        {
-        }
+            : base(DefaultPattern) { }
 
         protected override void BeforeFormat(INoticeMessage message, ITagValue[] tagsValues)
         {
             _nvelocityContext = new VelocityContext();
             _nvelocityContext.AttachEventCartridge(new EventCartridge());
             _nvelocityContext.EventCartridge.ReferenceInsertion += EventCartridgeReferenceInsertion;
+
             foreach (var tagValue in tagsValues)
             {
                 _nvelocityContext.Put(tagValue.Tag, tagValue.Value);
             }
+
             base.BeforeFormat(message, tagsValues);
         }
 
         protected override string FormatText(string text, ITagValue[] tagsValues)
         {
             if (string.IsNullOrEmpty(text)) return text;
+
             return VelocityFormatter.FormatText(text, _nvelocityContext);
         }
 
@@ -74,13 +75,16 @@ namespace ASC.Notify.Patterns
         private static void EventCartridgeReferenceInsertion(object sender, ReferenceInsertionEventArgs e)
         {
             if (!(e.OriginalValue is string originalString)) return;
+
             var lines = originalString.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
             if (lines.Length == 0) return;
             e.NewValue = string.Empty;
+
             for (var i = 0; i < lines.Length - 1; i++)
             {
                 e.NewValue += string.Format("{0}{1}{2}\n", NoStylePreffix, lines[i], NoStyleSuffix);
             }
+
             e.NewValue += string.Format("{0}{1}{2}", NoStylePreffix, lines[^1], NoStyleSuffix);
         }
     }

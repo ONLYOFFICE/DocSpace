@@ -34,22 +34,19 @@ namespace ASC.Core.Notify
     [Scope]
     public class NotifyServiceClient : INotifyService
     {
-        private readonly ICacheNotify<NotifyMessage> СacheNotify;
-        private readonly ICacheNotify<NotifyInvoke> NotifyInvoke;
+        private readonly ICacheNotify<NotifyMessage> _eventBusNotifyMessage;
+        private readonly ICacheNotify<NotifyInvoke> _eventBusNotifyInvoke;
+
         public NotifyServiceClient(ICacheNotify<NotifyMessage> cacheNotify, ICacheNotify<NotifyInvoke> notifyInvoke)
         {
-            СacheNotify = cacheNotify;
-            NotifyInvoke = notifyInvoke;
+            _eventBusNotifyMessage = cacheNotify;
+            _eventBusNotifyInvoke = notifyInvoke;
         }
 
-        public void SendNotifyMessage(NotifyMessage m)
-        {
-            СacheNotify.Publish(m, CacheNotifyAction.InsertOrUpdate);
-        }
+        public void SendNotifyMessage(NotifyMessage m) =>
+            _eventBusNotifyMessage.Publish(m, CacheNotifyAction.InsertOrUpdate);
 
-        public void InvokeSendMethod(NotifyInvoke notifyInvoke)
-        {
-            NotifyInvoke.Publish(notifyInvoke, CacheNotifyAction.InsertOrUpdate);
-        }
+        public void InvokeSendMethod(NotifyInvoke notifyInvoke) =>
+            _eventBusNotifyInvoke.Publish(notifyInvoke, CacheNotifyAction.InsertOrUpdate);
     }
 }

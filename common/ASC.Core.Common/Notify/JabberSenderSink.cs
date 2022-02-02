@@ -38,23 +38,22 @@ namespace ASC.Core.Notify
 {
     class JabberSenderSink : Sink
     {
-        private static readonly string senderName = ASC.Core.Configuration.Constants.NotifyMessengerSenderSysName;
-        private readonly INotifySender sender;
+        private static readonly string s_senderName = Configuration.Constants.NotifyMessengerSenderSysName;
+        private readonly INotifySender _sender;
+        private readonly IServiceProvider _serviceProvider;
 
 
         public JabberSenderSink(INotifySender sender, IServiceProvider serviceProvider)
         {
-            this.sender = sender ?? throw new ArgumentNullException("sender");
-            ServiceProvider = serviceProvider;
+            _sender = sender ?? throw new ArgumentNullException(nameof(sender));
+            _serviceProvider = serviceProvider;
         }
-
-        private IServiceProvider ServiceProvider { get; }
 
         public override SendResponse ProcessMessage(INoticeMessage message)
         {
             try
             {
-                using var scope = ServiceProvider.CreateScope();
+                using var scope = _serviceProvider.CreateScope();
                 var scopeClass = scope.ServiceProvider.GetService<JabberSenderSinkScope>();
                 (var userManager, var tenantManager) = scopeClass;
                 var result = SendResult.OK;
@@ -71,20 +70,20 @@ namespace ASC.Core.Notify
                         Subject = message.Subject,
                         ContentType = message.ContentType,
                         Content = message.Body,
-                        Sender = senderName,
+                        Sender = s_senderName,
                         CreationDate = DateTime.UtcNow.Ticks,
                     };
 
                     var tenant = tenantManager.GetCurrentTenant(false);
-                    m.Tenant = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
+                    m.Tenant = tenant == null ? Tenant.DefaultTenant : tenant.TenantId;
 
-                    sender.Send(m);
+                    _sender.Send(m);
                 }
-                return new SendResponse(message, senderName, result);
+                return new SendResponse(message, s_senderName, result);
             }
             catch (Exception ex)
             {
-                return new SendResponse(message, senderName, ex);
+                return new SendResponse(message, s_senderName, ex);
             }
         }
     }
@@ -92,18 +91,18 @@ namespace ASC.Core.Notify
     [Scope]
     public class JabberSenderSinkScope
     {
-        private UserManager UserManager { get; }
-        private TenantManager TenantManager { get; }
+        private readonly UserManager _userManager;
+        private readonly TenantManager _tenantManager;
 
         public JabberSenderSinkScope(UserManager userManager, TenantManager tenantManager)
         {
-            TenantManager = tenantManager;
-            UserManager = userManager;
+            _tenantManager = tenantManager;
+            _userManager = userManager;
         }
 
         public void Deconstruct(out UserManager userManager, out TenantManager tenantManager)
         {
-            (userManager, tenantManager) = (UserManager, TenantManager);
+            (userManager, tenantManager) = (_userManager, _tenantManager);
         }
     }
 }

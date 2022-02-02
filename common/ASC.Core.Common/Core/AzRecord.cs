@@ -35,30 +35,18 @@ namespace ASC.Core
     public class AzRecord
     {
         public Guid SubjectId { get; set; }
-
         public Guid ActionId { get; set; }
-
         public string ObjectId { get; set; }
-
         public AceType Reaction { get; set; }
-
         public int Tenant { get; set; }
 
-
-        public AzRecord()
-        {
-        }
+        public AzRecord() { }
 
         public AzRecord(Guid subjectId, Guid actionId, AceType reaction)
-            : this(subjectId, actionId, reaction, default(string))
-        {
-        }
+            : this(subjectId, actionId, reaction, default(string)) { }
 
         public AzRecord(Guid subjectId, Guid actionId, AceType reaction, ISecurityObjectId objectId)
-            : this(subjectId, actionId, reaction, AzObjectIdHelper.GetFullObjectId(objectId))
-        {
-        }
-
+            : this(subjectId, actionId, reaction, AzObjectIdHelper.GetFullObjectId(objectId)) { }
 
         internal AzRecord(Guid subjectId, Guid actionId, AceType reaction, string objectId)
         {
@@ -67,7 +55,6 @@ namespace ASC.Core
             Reaction = reaction;
             ObjectId = objectId;
         }
-
 
         public static implicit operator AzRecord(AzRecordCache cache)
         {
@@ -78,21 +65,15 @@ namespace ASC.Core
 
 
             if (Guid.TryParse(cache.SubjectId, out var subjectId))
-            {
                 result.SubjectId = subjectId;
-            }
 
             if (Guid.TryParse(cache.ActionId, out var actionId))
-            {
                 result.ActionId = actionId;
-            }
 
             result.ObjectId = cache.ObjectId;
 
             if (Enum.TryParse<AceType>(cache.Reaction, out var reaction))
-            {
                 result.Reaction = reaction;
-            }
 
             return result;
         }

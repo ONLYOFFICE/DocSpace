@@ -10,10 +10,7 @@ namespace ASC.Core.Common.EF.Model
         public string Module { get; set; }
         public int Tenant { get; set; }
 
-        public override object[] GetKeys()
-        {
-            return new object[] { Tenant, UserId, Module };
-        }
+        public override object[] GetKeys() => new object[] { Tenant, UserId, Module };
     }
 
     public static class FeedReadedExtension
@@ -25,6 +22,7 @@ namespace ASC.Core.Common.EF.Model
                 .Add(PgSqlAddFeedReaded, Provider.PostgreSql);
             return modelBuilder;
         }
+
         public static void MySqlAddFeedReaded(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FeedReaded>(entity =>
@@ -53,6 +51,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnType("datetime");
             });
         }
+
         public static void PgSqlAddFeedReaded(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FeedReaded>(entity =>

@@ -38,45 +38,33 @@ namespace ASC.Core.Users
     [Singletone]
     public sealed class Constants
     {
-        public Constants(IConfiguration configuration)
-        {
-            Configuration = configuration;
-            NamingPoster = new UserInfo
-            {
-                ID = new Guid("{17097D73-2D1E-4B36-AA07-AEB34AF993CD}"),
-                FirstName = configuration["core:system:poster:name"] ?? "ONLYOFFICE Poster",
-                LastName = string.Empty,
-                ActivationStatus = EmployeeActivationStatus.Activated
-            };
-        }
-
         public int MaxEveryoneCount
         {
             get
             {
-                if (!int.TryParse(Configuration["core:users"], out var count))
+                if (!int.TryParse(_configuration["core:users"], out var count))
                 {
                     count = 10000;
                 }
+
                 return count;
             }
         }
-
         public int CoefficientOfVisitors
         {
             get
             {
                 int count;
-                if (!int.TryParse(Configuration["core:coefficient-of-visitors"], out count))
+                if (!int.TryParse(_configuration["core:coefficient-of-visitors"], out count))
                 {
                     count = 2;
                 }
+
                 return count;
             }
         }
 
-        private IConfiguration Configuration { get; }
-
+        private readonly IConfiguration _configuration;
 
         #region system group and category groups
 
@@ -141,7 +129,6 @@ namespace ASC.Core.Users
 
         #endregion
 
-
         #region authorization rules module to work with users
 
         public static readonly Action Action_EditUser = new Action(
@@ -157,5 +144,17 @@ namespace ASC.Core.Users
             "Edit categories and groups");
 
         #endregion
+
+        public Constants(IConfiguration configuration)
+        {
+            _configuration = configuration;
+            NamingPoster = new UserInfo
+            {
+                ID = new Guid("{17097D73-2D1E-4B36-AA07-AEB34AF993CD}"),
+                FirstName = configuration["core:system:poster:name"] ?? "ONLYOFFICE Poster",
+                LastName = string.Empty,
+                ActivationStatus = EmployeeActivationStatus.Activated
+            };
+        }
     }
 }

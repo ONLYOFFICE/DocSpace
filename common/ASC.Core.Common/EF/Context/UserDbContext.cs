@@ -9,12 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ASC.Core.Common.EF
 {
     public class MySqlUserDbContext : UserDbContext { }
-
-
-    public class PostgreSqlUserDbContext : UserDbContext
-    {
-
-    }
+    public class PostgreSqlUserDbContext : UserDbContext { }
 
     public class UserDbContext : BaseDbContext
     {
@@ -27,17 +22,12 @@ namespace ASC.Core.Common.EF
         public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<DbSubscriptionMethod> SubscriptionMethods { get; set; }
 
-        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-        {
-            get
-            {
-                return new Dictionary<Provider, Func<BaseDbContext>>()
-                {
-                    { Provider.MySql, () => new MySqlUserDbContext() } ,
-                    { Provider.PostgreSql, () => new PostgreSqlUserDbContext() } ,
-                };
-            }
-        }
+        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext =>
+             new Dictionary<Provider, Func<BaseDbContext>>()
+             {
+                 { Provider.MySql, () => new MySqlUserDbContext() } ,
+                 { Provider.PostgreSql, () => new PostgreSqlUserDbContext() } ,
+             };
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -56,9 +46,7 @@ namespace ASC.Core.Common.EF
 
     public static class UserDbExtension
     {
-        public static DIHelper AddUserDbContextService(this DIHelper services)
-        {
-            return services.AddDbContextManagerService<UserDbContext>();
-        }
+        public static DIHelper AddUserDbContextService(this DIHelper services) =>
+            services.AddDbContextManagerService<UserDbContext>();
     }
 }

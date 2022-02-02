@@ -36,21 +36,13 @@ namespace ASC.Core
     public class UserGroupRef
     {
         public Guid UserId { get; set; }
-
         public Guid GroupId { get; set; }
-
         public bool Removed { get; set; }
-
         public DateTime LastModified { get; set; }
-
         public UserGroupRefType RefType { get; set; }
-
         public int Tenant { get; set; }
 
-
-        public UserGroupRef()
-        {
-        }
+        public UserGroupRef() { }
 
         public UserGroupRef(Guid userId, Guid groupId, UserGroupRefType refType)
         {
@@ -59,25 +51,16 @@ namespace ASC.Core
             RefType = refType;
         }
 
-        public static string CreateKey(int tenant, Guid userId, Guid groupId, UserGroupRefType refType)
-        {
-            return tenant.ToString() + userId.ToString("N") + groupId.ToString("N") + ((int)refType).ToString();
-        }
+        public static string CreateKey(int tenant, Guid userId, Guid groupId, UserGroupRefType refType) =>
+            tenant.ToString() + userId.ToString("N") + groupId.ToString("N") + ((int)refType).ToString();
 
-        public string CreateKey()
-        {
-            return CreateKey(Tenant, UserId, GroupId, RefType);
-        }
+        public string CreateKey() => CreateKey(Tenant, UserId, GroupId, RefType);
 
-        public override int GetHashCode()
-        {
-            return UserId.GetHashCode() ^ GroupId.GetHashCode() ^ Tenant.GetHashCode() ^ RefType.GetHashCode();
-        }
+        public override int GetHashCode() =>
+            UserId.GetHashCode() ^ GroupId.GetHashCode() ^ Tenant.GetHashCode() ^ RefType.GetHashCode();
 
-        public override bool Equals(object obj)
-        {
-            return obj is UserGroupRef r && r.Tenant == Tenant && r.UserId == UserId && r.GroupId == GroupId && r.RefType == RefType;
-        }
+        public override bool Equals(object obj) =>
+            obj is UserGroupRef r && r.Tenant == Tenant && r.UserId == UserId && r.GroupId == GroupId && r.RefType == RefType;
 
         public static implicit operator UserGroupRef(UserGroupRefCacheItem cache)
         {

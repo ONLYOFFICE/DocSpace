@@ -8,10 +8,8 @@ namespace ASC.Core.Common.EF.Model
         public Guid PortalUserId { get; set; }
         public int TenantId { get; set; }
         public int TelegramUserId { get; set; }
-        public override object[] GetKeys()
-        {
-            return new object[] { TenantId, PortalUserId };
-        }
+
+        public override object[] GetKeys() => new object[] { TenantId, PortalUserId };
     }
 
     public static class TelegramUsersExtension
@@ -21,8 +19,10 @@ namespace ASC.Core.Common.EF.Model
             modelBuilder
                 .Add(MySqlAddTelegramUsers, Provider.MySql)
                 .Add(PgSqlAddTelegramUsers, Provider.PostgreSql);
+
             return modelBuilder;
         }
+
         public static void MySqlAddTelegramUsers(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<TelegramUser>(entity =>
@@ -46,6 +46,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.TelegramUserId).HasColumnName("telegram_user_id");
             });
         }
+
         public static void PgSqlAddTelegramUsers(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<TelegramUser>(entity =>

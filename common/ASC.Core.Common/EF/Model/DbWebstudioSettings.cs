@@ -9,10 +9,8 @@ namespace ASC.Core.Common.EF.Model
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public string Data { get; set; }
-        public override object[] GetKeys()
-        {
-            return new object[] { TenantId, Id, UserId };
-        }
+
+        public override object[] GetKeys() => new object[] { TenantId, Id, UserId };
     }
 
     public static class WebstudioSettingsExtension
@@ -30,6 +28,7 @@ namespace ASC.Core.Common.EF.Model
                     UserId = Guid.Parse("00000000-0000-0000-0000-000000000000"), 
                     Data = "{\"Completed\":false}"
                 });
+
             return modelBuilder;
         }
 
@@ -66,6 +65,7 @@ namespace ASC.Core.Common.EF.Model
                     .UseCollation("utf8_general_ci");
             });
         }
+
         public static void PgSqlAddWebstudioSettings(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbWebstudioSettings>(entity =>

@@ -11,10 +11,7 @@ namespace ASC.Core.Common.EF.Model
         public byte[] Value { get; set; }
         public DateTime LastModified { get; set; }
 
-        public override object[] GetKeys()
-        {
-            return new object[] { Tenant, Id };
-        }
+        public override object[] GetKeys() => new object[] { Tenant, Id };
     }
 
     public static class CoreSettingsExtension

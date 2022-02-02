@@ -8,11 +8,10 @@ namespace ASC.Core.Common.EF.Model
     {
         public string IndexName { get; set; }
         public DateTime LastModified { get; set; }
-        public override object[] GetKeys()
-        {
-            return new[] { IndexName };
-        }
+
+        public override object[] GetKeys() => new[] { IndexName };
     }
+
     public static class DbWebstudioIndexExtension
     {
         public static ModelBuilderWrapper AddDbWebstudioIndex(this ModelBuilderWrapper modelBuilder)
@@ -20,8 +19,10 @@ namespace ASC.Core.Common.EF.Model
             modelBuilder
                 .Add(MySqlAddDbWebstudioIndex, Provider.MySql)
                 .Add(PgSqlAddDbWebstudioIndex, Provider.PostgreSql);
+
             return modelBuilder;
         }
+
         public static void MySqlAddDbWebstudioIndex(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbWebstudioIndex>(entity =>
@@ -44,6 +45,7 @@ namespace ASC.Core.Common.EF.Model
                     .ValueGeneratedOnAddOrUpdate();
             });
         }
+
         public static void PgSqlAddDbWebstudioIndex(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbWebstudioIndex>(entity =>

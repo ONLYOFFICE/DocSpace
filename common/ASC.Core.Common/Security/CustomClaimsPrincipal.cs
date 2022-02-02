@@ -7,9 +7,7 @@ namespace ASC.Core.Common.Security
     {
         public override IIdentity Identity { get; }
 
-        public CustomClaimsPrincipal(ClaimsIdentity claimsIdentity, IIdentity identity) : base(claimsIdentity)
-        {
-            this.Identity = identity;
-        }
+        public CustomClaimsPrincipal(ClaimsIdentity claimsIdentity, IIdentity identity) 
+            : base(claimsIdentity) => Identity = identity;
     }
 }

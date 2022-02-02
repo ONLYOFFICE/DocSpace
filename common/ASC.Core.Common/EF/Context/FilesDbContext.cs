@@ -13,17 +13,14 @@ namespace ASC.Core.Common.EF.Context
     public class FilesDbContext : BaseDbContext
     {
         public DbSet<FilesConverts> FilesConverts { get; set; }
-        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-        {
-            get
+
+        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext =>
+            new Dictionary<Provider, Func<BaseDbContext>>()
             {
-                return new Dictionary<Provider, Func<BaseDbContext>>()
-                {
-                    { Provider.MySql, () => new MySqlFilesDbContext() } ,
-                    { Provider.PostgreSql, () => new PostgreSqlFilesDbContext() } ,
-                };
-            }
-        }
+                { Provider.MySql, () => new MySqlFilesDbContext() } ,
+                { Provider.PostgreSql, () => new PostgreSqlFilesDbContext() } ,
+            };
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             ModelBuilderWrapper
@@ -34,9 +31,7 @@ namespace ASC.Core.Common.EF.Context
 
     public static class FilesDbExtension
     {
-        public static DIHelper AddFilesDbContextService(this DIHelper services)
-        {
-            return services.AddDbContextManagerService<FilesDbContext>();
-        }
+        public static DIHelper AddFilesDbContextService(this DIHelper services) =>
+            services.AddDbContextManagerService<FilesDbContext>();
     }
 }

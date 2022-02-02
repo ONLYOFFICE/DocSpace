@@ -16,6 +16,7 @@ namespace ASC.Core.Common.EF.Model
                 .Add(PgSqlAddAuditEvent, Provider.PostgreSql);
             return modelBuilder;
         }
+
         public static void MySqlAddAuditEvent(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AuditEvent>(entity =>

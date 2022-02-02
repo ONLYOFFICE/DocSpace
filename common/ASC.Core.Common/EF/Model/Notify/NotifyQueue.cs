@@ -19,6 +19,7 @@ namespace ASC.Core.Common.EF.Model
         public string Attachments { get; set; }
         public string AutoSubmitted { get; set; }
     }
+
     public static class NotifyQueueExtension
     {
         public static ModelBuilderWrapper AddNotifyQueue(this ModelBuilderWrapper modelBuilder)
@@ -28,6 +29,7 @@ namespace ASC.Core.Common.EF.Model
                 .Add(PgSqlAddNotifyQueue, Provider.PostgreSql);
             return modelBuilder;
         }
+
         public static void MySqlAddNotifyQueue(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<NotifyQueue>(entity =>
@@ -100,6 +102,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
             });
         }
+
         public static void PgSqlAddNotifyQueue(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<NotifyQueue>(entity =>

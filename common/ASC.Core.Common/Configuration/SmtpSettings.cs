@@ -35,98 +35,64 @@ namespace ASC.Core.Configuration
         public const string DefaultSenderDisplayName = "ONLYOFFICE Postman";
 
         public string Host { get; private set; }
-
         public int Port { get; private set; }
-
         public string SenderAddress { get; private set; }
-
         public string SenderDisplayName { get; private set; }
-
         public string CredentialsDomain { get; private set; }
-
         public string CredentialsUserName { get; private set; }
-
         public string CredentialsUserPassword { get; private set; }
-
         public bool EnableSSL { get; set; }
-
         public bool EnableAuth { get; set; }
-
         public bool IsDefaultSettings { get; internal set; }
 
-        public static SmtpSettings Empty = new SmtpSettings();
+        public readonly static SmtpSettings Empty = new SmtpSettings();
 
-        private SmtpSettings()
-        {
-
-        }
+        private SmtpSettings() { }
 
         public SmtpSettings(string host, string senderAddress)
-            : this(host, senderAddress, DefaultSenderDisplayName)
-        {
-
-        }
+            : this(host, senderAddress, DefaultSenderDisplayName) { }
 
         public SmtpSettings(string host, string senderAddress, string senderDisplayName)
-            : this(host, DefaultSmtpPort, senderAddress, senderDisplayName)
-        {
-
-        }
+            : this(host, DefaultSmtpPort, senderAddress, senderDisplayName) { }
 
         public SmtpSettings(string host, int port, string senderAddress)
-            : this(host, port, senderAddress, DefaultSenderDisplayName)
-        {
-
-        }
+            : this(host, port, senderAddress, DefaultSenderDisplayName) { }
 
         public SmtpSettings(string host, int port, string senderAddress, string senderDisplayName)
         {
             if (string.IsNullOrEmpty(host))
-            {
-                throw new ArgumentException("Empty smtp host.", "host");
-            }
+                throw new ArgumentException("Empty smtp host.", nameof(host));
+
             if (string.IsNullOrEmpty(senderAddress))
-            {
-                throw new ArgumentException("Empty sender address.", "senderAddress");
-            }
+                throw new ArgumentException("Empty sender address.", nameof(senderAddress));
 
             Host = host;
             Port = port;
             SenderAddress = senderAddress;
-            SenderDisplayName = senderDisplayName ?? throw new ArgumentNullException("senderDisplayName");
+            SenderDisplayName = senderDisplayName ?? throw new ArgumentNullException(nameof(senderDisplayName));
         }
 
-        public void SetCredentials(string userName, string password)
-        {
+        public void SetCredentials(string userName, string password) =>
             SetCredentials(userName, password, string.Empty);
-        }
 
         public void SetCredentials(string userName, string password, string domain)
         {
             if (string.IsNullOrEmpty(userName))
-            {
-                throw new ArgumentException("Empty user name.", "userName");
-            }
+                throw new ArgumentException("Empty user name.", nameof(userName));
+
             if (string.IsNullOrEmpty(password))
-            {
-                throw new ArgumentException("Empty password.", "password");
-            }
+                throw new ArgumentException("Empty password.", nameof(password));
+
             CredentialsUserName = userName;
             CredentialsUserPassword = password;
             CredentialsDomain = domain;
         }
 
-        public string Serialize()
-        {
-            return ToString();
-        }
+        public string Serialize() => ToString();
 
         public static SmtpSettings Deserialize(string value)
         {
-            if (string.IsNullOrEmpty(value))
-            {
-                return Empty;
-            }
+            if (string.IsNullOrEmpty(value)) return Empty;
 
             var props = value.Split(new[] { '#' }, StringSplitOptions.None);
             props = Array.ConvertAll(props, p => !string.IsNullOrEmpty(p) ? p : null);
@@ -149,10 +115,7 @@ namespace ASC.Core.Configuration
                 settings.SetCredentials(credentialsUserName, credentialsUserPassword, credentialsDomain);
                 settings.EnableAuth = true;
             }
-            else
-            {
-                settings.EnableAuth = false;
-            }
+            else settings.EnableAuth = false;
 
             return settings;
         }

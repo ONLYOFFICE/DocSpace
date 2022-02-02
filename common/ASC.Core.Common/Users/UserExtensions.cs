@@ -32,6 +32,11 @@ namespace ASC.Core.Users
 {
     public static class UserExtensions
     {
+        private const string ExtMobPhone = "extmobphone";
+        private const string MobPhone = "mobphone";
+        private const string ExtMail = "extmail";
+        private const string Mail = "mail";
+
         public static bool IsOwner(this UserInfo ui, Tenant tenant)
         {
             if (ui == null) return false;
@@ -39,25 +44,17 @@ namespace ASC.Core.Users
             return tenant != null && tenant.OwnerId.Equals(ui.ID);
         }
 
-        public static bool IsMe(this UserInfo ui, AuthContext authContext)
-        {
-            return ui != null && ui.ID == authContext.CurrentAccount.ID;
-        }
+        public static bool IsMe(this UserInfo ui, AuthContext authContext) =>
+            ui != null && ui.ID == authContext.CurrentAccount.ID;
 
-        public static bool IsAdmin(this UserInfo ui, UserManager UserManager)
-        {
-            return ui != null && UserManager.IsUserInGroup(ui.ID, Constants.GroupAdmin.ID);
-        }
+        public static bool IsAdmin(this UserInfo ui, UserManager UserManager) =>
+            ui != null && UserManager.IsUserInGroup(ui.ID, Constants.GroupAdmin.ID);
 
-        public static bool IsVisitor(this UserInfo ui, UserManager UserManager)
-        {
-            return ui != null && UserManager.IsUserInGroup(ui.ID, Constants.GroupVisitor.ID);
-        }
+        public static bool IsVisitor(this UserInfo ui, UserManager UserManager) =>
+            ui != null && UserManager.IsUserInGroup(ui.ID, Constants.GroupVisitor.ID);
 
-        public static bool IsOutsider(this UserInfo ui, UserManager userManager)
-        {
-            return IsVisitor(ui, userManager) && ui.ID == Constants.OutsideUser.ID;
-        }
+        public static bool IsOutsider(this UserInfo ui, UserManager userManager) =>
+            IsVisitor(ui, userManager) && ui.ID == Constants.OutsideUser.ID;
 
         public static bool IsLDAP(this UserInfo ui)
         {
@@ -73,11 +70,6 @@ namespace ASC.Core.Users
 
             return !string.IsNullOrEmpty(ui.SsoNameId);
         }
-
-        private const string EXT_MOB_PHONE = "extmobphone";
-        private const string MOB_PHONE = "mobphone";
-        private const string EXT_MAIL = "extmail";
-        private const string MAIL = "mail";
 
         public static void ConvertExternalContactsToOrdinary(this UserInfo ui)
         {
@@ -97,12 +89,12 @@ namespace ASC.Core.Users
 
                 switch (type)
                 {
-                    case EXT_MOB_PHONE:
-                        newContacts.Add(MOB_PHONE);
+                    case ExtMobPhone:
+                        newContacts.Add(MobPhone);
                         newContacts.Add(value);
                         break;
-                    case EXT_MAIL:
-                        newContacts.Add(MAIL);
+                    case ExtMail:
+                        newContacts.Add(Mail);
                         newContacts.Add(value);
                         break;
                     default:

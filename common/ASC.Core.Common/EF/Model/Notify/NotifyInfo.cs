@@ -12,6 +12,7 @@ namespace ASC.Core.Common.EF.Model
         public DateTime ModifyDate { get; set; }
         public int Priority { get; set; }
     }
+
     public static class NotifyInfoExtension
     {
         public static ModelBuilderWrapper AddNotifyInfo(this ModelBuilderWrapper modelBuilder)
@@ -21,6 +22,7 @@ namespace ASC.Core.Common.EF.Model
                 .Add(PgSqlAddNotifyInfo, Provider.PostgreSql);
             return modelBuilder;
         }
+
         public static void MySqlAddNotifyInfo(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<NotifyInfo>(entity =>
@@ -46,6 +48,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.State).HasColumnName("state");
             });
         }
+
         public static void PgSqlAddNotifyInfo(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<NotifyInfo>(entity =>

@@ -98,6 +98,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.VisitCount).HasColumnName("visitcount");
             });
         }
+
         public static void PgSqlAddWebstudioUserVisit(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbWebstudioUserVisit>(entity =>

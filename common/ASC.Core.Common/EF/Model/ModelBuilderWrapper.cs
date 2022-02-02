@@ -19,17 +19,12 @@ namespace ASC.Core.Common.EF.Model
             Provider = provider;
         }
 
-        public static ModelBuilderWrapper From(ModelBuilder modelBuilder, Provider provider)
-        {
-            return new ModelBuilderWrapper(modelBuilder, provider);
-        }
+        public static ModelBuilderWrapper From(ModelBuilder modelBuilder, Provider provider) =>
+            new ModelBuilderWrapper(modelBuilder, provider);
 
         public ModelBuilderWrapper Add(Action<ModelBuilder> action, Provider provider)
         {
-            if (provider == Provider)
-            {
-                action(ModelBuilder);
-            }
+            if (provider == Provider) action(ModelBuilder);
 
             return this;
         }
@@ -51,14 +46,10 @@ namespace ASC.Core.Common.EF.Model
                     if (e is List<SqlExpression> list)
                     {
                         if (list[0] is SqlConstantExpression key)
-                        {
                             res.Add(new SqlFragmentExpression($"`{key.Value}`"));
-                        }
 
                         if (list[1] is SqlConstantExpression val)
-                        {
                             res.Add(new SqlConstantExpression(Expression.Constant($"$.{val.Value}"), val.TypeMapping));
-                        }
                     }
 
                     return new SqlFunctionExpression("JSON_EXTRACT", res, true, res.Select((SqlExpression a) => false), typeof(string), null);

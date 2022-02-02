@@ -18,6 +18,7 @@ namespace ASC.Core.Common.EF.Model.Resource
         public string Link { get; set; }
         public string AuthorLogin { get; set; }
     }
+
     public static class ResDataExtension
     {
         public static ModelBuilderWrapper AddResData(this ModelBuilderWrapper modelBuilder)
@@ -27,6 +28,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                 .Add(PgSqlAddResData, Provider.PostgreSql);
             return modelBuilder;
         }
+
         public static void MySqlAddResData(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ResData>(entity =>
@@ -105,6 +107,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .ValueGeneratedOnAddOrUpdate();
             });
         }
+
         public static void PgSqlAddResData(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ResData>(entity =>

@@ -40,15 +40,9 @@ namespace ASC.Core.Configuration
     public class AmiPublicDnsSyncService : IServiceController
     {
         public static IServiceProvider ServiceProvider { get; set; }
-        public void Start()
-        {
-            Synchronize();
-        }
+        public void Start() => Synchronize();
 
-        public void Stop()
-        {
-
-        }
+        public void Stop() { }
 
         public static void Synchronize()
         {
@@ -70,10 +64,9 @@ namespace ASC.Core.Configuration
             }
         }
 
-        private static bool MappedDomainNotSettedByUser(string domain)
-        {
-            return string.IsNullOrEmpty(domain) || Regex.IsMatch(domain, "^ec2.+\\.compute\\.amazonaws\\.com$", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
-        }
+        private static bool MappedDomainNotSettedByUser(string domain) =>
+            string.IsNullOrEmpty(domain) || Regex.IsMatch(domain, "^ec2.+\\.compute\\.amazonaws\\.com$", 
+                RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
         private static string GetAmiPublicDnsName()
         {
@@ -89,33 +82,32 @@ namespace ASC.Core.Configuration
                 using var responce = httpClient.Send(request);
                 using var stream = responce.Content.ReadAsStream();
                 using var reader = new StreamReader(stream);
+
                 return reader.ReadToEnd();
             }
             catch (HttpRequestException ex)
             {
-                if (ex.StatusCode == HttpStatusCode.NotFound || ex.StatusCode == HttpStatusCode.Conflict)
-                {
-                    throw;
-                }
+                if (ex.StatusCode == HttpStatusCode.NotFound || ex.StatusCode == HttpStatusCode.Conflict) throw;
             }
+
             return null;
         }
     }
 
     public class AmiPublicDnsSyncServiceScope
     {
-        private TenantManager TenantManager { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
+        private readonly TenantManager _tenantManager;
+        private readonly CoreBaseSettings _coreBaseSettings;
 
         public AmiPublicDnsSyncServiceScope(TenantManager tenantManager, CoreBaseSettings coreBaseSettings)
         {
-            TenantManager = tenantManager;
-            CoreBaseSettings = coreBaseSettings;
+            _tenantManager = tenantManager;
+            _coreBaseSettings = coreBaseSettings;
         }
 
         public void Deconstruct(out TenantManager tenantManager, out CoreBaseSettings coreBaseSettings)
         {
-            (tenantManager, coreBaseSettings) = (TenantManager, CoreBaseSettings);
+            (tenantManager, coreBaseSettings) = (_tenantManager, _coreBaseSettings);
         }
     }
 }

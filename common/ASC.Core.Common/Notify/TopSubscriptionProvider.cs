@@ -34,116 +34,121 @@ namespace ASC.Notify.Model
 {
     public class TopSubscriptionProvider : ISubscriptionProvider
     {
-        private readonly string[] defaultSenderMethods = new string[0];
-        private readonly ISubscriptionProvider subscriptionProvider;
-        private readonly IRecipientProvider recipientProvider;
+        private readonly string[] _defaultSenderMethods = Array.Empty<string>();
+        private readonly ISubscriptionProvider _subscriptionProvider;
+        private readonly IRecipientProvider _recipientProvider;
 
 
         public TopSubscriptionProvider(IRecipientProvider recipientProvider, ISubscriptionProvider directSubscriptionProvider)
         {
-            this.recipientProvider = recipientProvider ?? throw new ArgumentNullException("recipientProvider");
-            subscriptionProvider = directSubscriptionProvider ?? throw new ArgumentNullException("directSubscriptionProvider");
+            _recipientProvider = recipientProvider ?? throw new ArgumentNullException(nameof(recipientProvider));
+            _subscriptionProvider = directSubscriptionProvider ?? throw new ArgumentNullException(nameof(directSubscriptionProvider));
         }
 
-        public TopSubscriptionProvider(IRecipientProvider recipientProvider, ISubscriptionProvider directSubscriptionProvider, string[] defaultSenderMethods)
+        public TopSubscriptionProvider(
+            IRecipientProvider recipientProvider, 
+            ISubscriptionProvider directSubscriptionProvider, 
+            string[] defaultSenderMethods)
             : this(recipientProvider, directSubscriptionProvider)
         {
-            this.defaultSenderMethods = defaultSenderMethods;
+            _defaultSenderMethods = defaultSenderMethods;
         }
 
 
         public virtual string[] GetSubscriptionMethod(INotifyAction action, IRecipient recipient)
         {
-            if (action == null) throw new ArgumentNullException("action");
-            if (recipient == null) throw new ArgumentNullException("recipient");
+            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
 
-            var senders = subscriptionProvider.GetSubscriptionMethod(action, recipient);
+            var senders = _subscriptionProvider.GetSubscriptionMethod(action, recipient);
             if (senders == null || senders.Length == 0)
             {
                 var parents = WalkUp(recipient);
                 foreach (var parent in parents)
                 {
-                    senders = subscriptionProvider.GetSubscriptionMethod(action, parent);
+                    senders = _subscriptionProvider.GetSubscriptionMethod(action, parent);
                     if (senders != null && senders.Length != 0) break;
                 }
             }
 
-            return senders != null && 0 < senders.Length ? senders : defaultSenderMethods;
+            return senders != null && 0 < senders.Length ? senders : _defaultSenderMethods;
         }
 
         public virtual IRecipient[] GetRecipients(INotifyAction action, string objectID)
         {
-            if (action == null) throw new ArgumentNullException("action");
+            if (action == null) throw new ArgumentNullException(nameof(action));
 
             var recipents = new List<IRecipient>(5);
-            var directRecipients = subscriptionProvider.GetRecipients(action, objectID) ?? new IRecipient[0];
+            var directRecipients = _subscriptionProvider.GetRecipients(action, objectID) ?? new IRecipient[0];
             recipents.AddRange(directRecipients);
+
             return recipents.ToArray();
         }
 
         public virtual bool IsUnsubscribe(IDirectRecipient recipient, INotifyAction action, string objectID)
         {
-            if (action == null) throw new ArgumentNullException("action");
-            if (recipient == null) throw new ArgumentNullException("recipient");
+            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
 
-            return subscriptionProvider.IsUnsubscribe(recipient, action, objectID);
+            return _subscriptionProvider.IsUnsubscribe(recipient, action, objectID);
         }
 
 
         public virtual void Subscribe(INotifyAction action, string objectID, IRecipient recipient)
         {
-            if (action == null) throw new ArgumentNullException("action");
-            if (recipient == null) throw new ArgumentNullException("recipient");
+            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
 
-            subscriptionProvider.Subscribe(action, objectID, recipient);
+            _subscriptionProvider.Subscribe(action, objectID, recipient);
         }
 
         public virtual void UnSubscribe(INotifyAction action, string objectID, IRecipient recipient)
         {
-            if (action == null) throw new ArgumentNullException("action");
-            if (recipient == null) throw new ArgumentNullException("recipient");
+            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
 
-            subscriptionProvider.UnSubscribe(action, objectID, recipient);
+            _subscriptionProvider.UnSubscribe(action, objectID, recipient);
         }
 
         public void UnSubscribe(INotifyAction action, string objectID)
         {
-            if (action == null) throw new ArgumentNullException("action");
+            if (action == null) throw new ArgumentNullException(nameof(action));
 
-            subscriptionProvider.UnSubscribe(action, objectID);
+            _subscriptionProvider.UnSubscribe(action, objectID);
         }
 
         public void UnSubscribe(INotifyAction action)
         {
-            if (action == null) throw new ArgumentNullException("action");
+            if (action == null) throw new ArgumentNullException(nameof(action));
 
-            subscriptionProvider.UnSubscribe(action);
+            _subscriptionProvider.UnSubscribe(action);
         }
 
         public virtual void UnSubscribe(INotifyAction action, IRecipient recipient)
         {
             var objects = GetSubscriptions(action, recipient);
+
             foreach (var objectID in objects)
             {
-                subscriptionProvider.UnSubscribe(action, objectID, recipient);
+                _subscriptionProvider.UnSubscribe(action, objectID, recipient);
             }
         }
 
         public virtual void UpdateSubscriptionMethod(INotifyAction action, IRecipient recipient, params string[] senderNames)
         {
-            if (action == null) throw new ArgumentNullException("action");
-            if (recipient == null) throw new ArgumentNullException("recipient");
-            if (senderNames == null) throw new ArgumentNullException("senderNames");
+            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
+            if (senderNames == null) throw new ArgumentNullException(nameof(senderNames));
 
-            subscriptionProvider.UpdateSubscriptionMethod(action, recipient, senderNames);
+            _subscriptionProvider.UpdateSubscriptionMethod(action, recipient, senderNames);
         }
 
         public virtual object GetSubscriptionRecord(INotifyAction action, IRecipient recipient, string objectID)
         {
-            if (recipient == null) throw new ArgumentNullException("recipient");
-            if (action == null) throw new ArgumentNullException("action");
+            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
+            if (action == null) throw new ArgumentNullException(nameof(action));
 
-            var subscriptionRecord = subscriptionProvider.GetSubscriptionRecord(action, recipient, objectID);
+            var subscriptionRecord = _subscriptionProvider.GetSubscriptionRecord(action, recipient, objectID);
 
             if (subscriptionRecord != null) return subscriptionRecord;
 
@@ -151,7 +156,7 @@ namespace ASC.Notify.Model
 
             foreach (var parent in parents)
             {
-                subscriptionRecord = subscriptionProvider.GetSubscriptionRecord(action, parent, objectID);
+                subscriptionRecord = _subscriptionProvider.GetSubscriptionRecord(action, parent, objectID);
 
                 if (subscriptionRecord != null) break;
             }
@@ -161,30 +166,27 @@ namespace ASC.Notify.Model
 
         public virtual string[] GetSubscriptions(INotifyAction action, IRecipient recipient, bool checkSubscription = true)
         {
-            if (recipient == null) throw new ArgumentNullException("recipient");
-            if (action == null) throw new ArgumentNullException("action");
+            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
+            if (action == null) throw new ArgumentNullException(nameof(action));
 
             var objects = new List<string>();
-            var direct = subscriptionProvider.GetSubscriptions(action, recipient, checkSubscription) ?? new string[0];
+            var direct = _subscriptionProvider.GetSubscriptions(action, recipient, checkSubscription) ?? Array.Empty<string>();
             MergeObjects(objects, direct);
             var parents = WalkUp(recipient);
+
             foreach (var parent in parents)
             {
-                direct = subscriptionProvider.GetSubscriptions(action, parent, checkSubscription) ?? new string[0];
+                direct = _subscriptionProvider.GetSubscriptions(action, parent, checkSubscription) ?? Array.Empty<string>();
                 if (recipient is IDirectRecipient)
                 {
                     foreach (var groupsubscr in direct)
                     {
-                        if (!objects.Contains(groupsubscr) && !subscriptionProvider.IsUnsubscribe(recipient as IDirectRecipient, action, groupsubscr))
-                        {
+                        if (!objects.Contains(groupsubscr) 
+                            && !_subscriptionProvider.IsUnsubscribe(recipient as IDirectRecipient, action, groupsubscr))
                             objects.Add(groupsubscr);
-                        }
                     }
                 }
-                else
-                {
-                    MergeObjects(objects, direct);
-                }
+                else MergeObjects(objects, direct);
             }
             return objects.ToArray();
         }
@@ -193,12 +195,14 @@ namespace ASC.Notify.Model
         private List<IRecipient> WalkUp(IRecipient recipient)
         {
             var parents = new List<IRecipient>();
-            var groups = recipientProvider.GetGroups(recipient) ?? new IRecipientsGroup[0];
+            var groups = _recipientProvider.GetGroups(recipient) ?? new IRecipientsGroup[0];
+
             foreach (var group in groups)
             {
                 parents.Add(group);
                 parents.AddRange(WalkUp(group));
             }
+
             return parents;
         }
 

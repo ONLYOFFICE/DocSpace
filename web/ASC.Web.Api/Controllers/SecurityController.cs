@@ -163,16 +163,16 @@ namespace ASC.Web.Api.Controllers
 
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            if (wrapper.settings.LoginHistoryLifeTime <= 0 || wrapper.settings.LoginHistoryLifeTime > TenantAuditSettings.MaxLifeTime)
+            if (wrapper.Settings.LoginHistoryLifeTime <= 0 || wrapper.Settings.LoginHistoryLifeTime > TenantAuditSettings.MaxLifeTime)
                 throw new ArgumentException("LoginHistoryLifeTime");
 
-            if (wrapper.settings.AuditTrailLifeTime <= 0 || wrapper.settings.AuditTrailLifeTime > TenantAuditSettings.MaxLifeTime)
+            if (wrapper.Settings.AuditTrailLifeTime <= 0 || wrapper.Settings.AuditTrailLifeTime > TenantAuditSettings.MaxLifeTime)
                 throw new ArgumentException("AuditTrailLifeTime");
 
-            SettingsManager.SaveForTenant(wrapper.settings, TenantManager.GetCurrentTenant().TenantId);
+            SettingsManager.SaveForTenant(wrapper.Settings, TenantManager.GetCurrentTenant().TenantId);
             MessageService.Send(MessageAction.AuditSettingsUpdated);
 
-            return wrapper.settings;
+            return wrapper.Settings;
         }
     }
 }

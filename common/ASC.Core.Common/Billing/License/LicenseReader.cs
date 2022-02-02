@@ -41,12 +41,25 @@ namespace ASC.Core.Billing
     [Scope]
     public class LicenseReader
     {
-        private readonly ILog Log;
-        public readonly string LicensePath;
-        private readonly string LicensePathTemp;
-
         public const string CustomerIdKey = "CustomerId";
         public const int MaxUserCount = 10000;
+
+        public string LicensePath { get; }
+        public DateTime VersionReleaseDate => s_date;
+        public string CustomerId
+        {
+            get => _coreSettings.GetSetting(CustomerIdKey);
+            set => _coreSettings.SaveSetting(CustomerIdKey, value);
+        }
+
+        private readonly ILog _logger;
+        private readonly string _licensePathTemp;
+        private readonly UserManager _userManager;
+        private readonly TenantManager _tenantManager;
+        private readonly PaymentManager _paymentManager;
+        private readonly CoreSettings _coreSettings;
+        private readonly IConfiguration _configuration;
+        private static readonly DateTime s_date = DateTime.MinValue;
 
         public LicenseReader(
             UserManager userManager,
@@ -56,38 +69,24 @@ namespace ASC.Core.Billing
             IConfiguration configuration,
             IOptionsMonitor<ILog> options)
         {
-            UserManager = userManager;
-            TenantManager = tenantManager;
-            PaymentManager = paymentManager;
-            CoreSettings = coreSettings;
-            Configuration = configuration;
-            LicensePath = Configuration["license:file:path"] ?? "";
-            LicensePathTemp = LicensePath + ".tmp";
-            Log = options.CurrentValue;
-        }
-
-        public string CustomerId
-        {
-            get { return CoreSettings.GetSetting(CustomerIdKey); }
-            private set { CoreSettings.SaveSetting(CustomerIdKey, value); }
-        }
-
-        private Stream GetLicenseStream(bool temp = false)
-        {
-            var path = temp ? LicensePathTemp : LicensePath;
-            if (!File.Exists(path)) throw new BillingNotFoundException("License not found");
-
-            return File.OpenRead(path);
+            _userManager = userManager;
+            _tenantManager = tenantManager;
+            _paymentManager = paymentManager;
+            _coreSettings = coreSettings;
+            _configuration = configuration;
+            LicensePath = _configuration["license:file:path"] ?? "";
+            _licensePathTemp = LicensePath + ".tmp";
+            _logger = options.CurrentValue;
         }
 
         public void RejectLicense()
         {
-            if (File.Exists(LicensePathTemp))
-                File.Delete(LicensePathTemp);
+            if (File.Exists(_licensePathTemp))
+                File.Delete(_licensePathTemp);
             if (File.Exists(LicensePath))
                 File.Delete(LicensePath);
 
-            PaymentManager.DeleteDefaultTariff();
+            _paymentManager.DeleteDefaultTariff();
         }
 
         public void RefreshLicense()
@@ -95,9 +94,9 @@ namespace ASC.Core.Billing
             try
             {
                 var temp = true;
-                if (!File.Exists(LicensePathTemp))
+                if (!File.Exists(_licensePathTemp))
                 {
-                    Log.Debug("Temp license not found");
+                    _logger.Debug("Temp license not found");
 
                     if (!File.Exists(LicensePath))
                     {
@@ -121,14 +120,14 @@ namespace ASC.Core.Billing
                 }
 
                 if (temp)
-                    File.Delete(LicensePathTemp);
+                    File.Delete(_licensePathTemp);
             }
             catch (Exception ex)
             {
                 LogError(ex);
                 throw;
             }
-        }
+        } 
 
         public DateTime SaveLicenseTemp(Stream licenseStream)
         {
@@ -140,7 +139,7 @@ namespace ASC.Core.Billing
 
                 var dueDate = Validate(license);
 
-                SaveLicense(licenseStream, LicensePathTemp);
+                SaveLicense(licenseStream, _licensePathTemp);
 
                 return dueDate;
             }
@@ -164,6 +163,14 @@ namespace ASC.Core.Billing
             licenseStream.CopyTo(fs);
         }
 
+        private Stream GetLicenseStream(bool temp = false)
+        {
+            var path = temp ? _licensePathTemp : LicensePath;
+            if (!File.Exists(path)) throw new BillingNotFoundException("License not found");
+
+            return File.OpenRead(path);
+        }
+
         private DateTime Validate(License license)
         {
             if (string.IsNullOrEmpty(license.CustomerId)
@@ -180,16 +187,16 @@ namespace ASC.Core.Billing
             if (license.ActiveUsers.Equals(default) || license.ActiveUsers < 1)
                 license.ActiveUsers = MaxUserCount;
 
-            if (license.ActiveUsers < UserManager.GetUsers(EmployeeStatus.Default, EmployeeType.User).Length)
+            if (license.ActiveUsers < _userManager.GetUsers(EmployeeStatus.Default, EmployeeType.User).Length)
             {
                 throw new LicenseQuotaException("License quota", license.OriginalLicense);
             }
 
             if (license.PortalCount <= 0)
             {
-                license.PortalCount = TenantManager.GetTenantQuota(Tenant.DEFAULT_TENANT).CountPortals;
+                license.PortalCount = _tenantManager.GetTenantQuota(Tenant.DefaultTenant).CountPortals;
             }
-            var activePortals = TenantManager.GetTenants().Count();
+            var activePortals = _tenantManager.GetTenants().Count();
             if (activePortals > 1 && license.PortalCount < activePortals)
             {
                 throw new LicensePortalException("License portal count", license.OriginalLicense);
@@ -204,7 +211,7 @@ namespace ASC.Core.Billing
 
             CustomerId = license.CustomerId;
 
-            var defaultQuota = TenantManager.GetTenantQuota(Tenant.DEFAULT_TENANT);
+            var defaultQuota = _tenantManager.GetTenantQuota(Tenant.DefaultTenant);
 
             var quota = new TenantQuota(-1000)
             {
@@ -242,7 +249,7 @@ namespace ASC.Core.Billing
                 quota.CountPortals = Math.Max(defaultQuota.CountPortals, quota.CountPortals);
             }
 
-            TenantManager.SaveTenantQuota(quota);
+            _tenantManager.SaveTenantQuota(quota);
 
             var tariff = new Tariff
             {
@@ -250,13 +257,13 @@ namespace ASC.Core.Billing
                 DueDate = license.DueDate,
             };
 
-            PaymentManager.SetTariff(-1, tariff);
+            _paymentManager.SetTariff(-1, tariff);
 
             if (!string.IsNullOrEmpty(license.AffiliateId))
             {
-                var tenant = TenantManager.GetCurrentTenant();
+                var tenant = _tenantManager.GetCurrentTenant();
                 tenant.AffiliateId = license.AffiliateId;
-                TenantManager.SaveTenant(tenant);
+                _tenantManager.SaveTenant(tenant);
             }
         }
 
@@ -264,82 +271,74 @@ namespace ASC.Core.Billing
         {
             if (error is BillingNotFoundException)
             {
-                Log.DebugFormat("License not found: {0}", error.Message);
+                _logger.DebugFormat("License not found: {0}", error.Message);
             }
             else
             {
-                if (Log.IsDebugEnabled)
+                if (_logger.IsDebugEnabled)
                 {
-                    Log.Error(error);
+                    _logger.Error(error);
                 }
                 else
                 {
-                    Log.Error(error.Message);
+                    _logger.Error(error.Message);
                 }
             }
         }
 
-        private static readonly DateTime _date = DateTime.MinValue;
+        //public DateTime VersionReleaseDate
+        //{
+        //    get
+        //    {
+        //        // release sign is not longer requered
+        //        return _date;
 
-        public DateTime VersionReleaseDate
-        {
-            get
-            {
-                // release sign is not longer requered
-                return _date;
+        //        //if (_date != DateTime.MinValue) return _date;
 
-                //if (_date != DateTime.MinValue) return _date;
+        //        //_date = DateTime.MaxValue;
+        //        //try
+        //        //{
+        //        //    var versionDate = Configuration["version:release:date"];
+        //        //    var sign = Configuration["version:release:sign"];
 
-                //_date = DateTime.MaxValue;
-                //try
-                //{
-                //    var versionDate = Configuration["version:release:date"];
-                //    var sign = Configuration["version:release:sign"];
+        //        //    if (!sign.StartsWith("ASC "))
+        //        //    {
+        //        //        throw new Exception("sign without ASC");
+        //        //    }
 
-                //    if (!sign.StartsWith("ASC "))
-                //    {
-                //        throw new Exception("sign without ASC");
-                //    }
+        //        //    var splitted = sign.Substring(4).Split(':');
+        //        //    var pkey = splitted[0];
+        //        //    if (pkey != versionDate)
+        //        //    {
+        //        //        throw new Exception("sign with different date");
+        //        //    }
 
-                //    var splitted = sign.Substring(4).Split(':');
-                //    var pkey = splitted[0];
-                //    if (pkey != versionDate)
-                //    {
-                //        throw new Exception("sign with different date");
-                //    }
+        //        //    var date = splitted[1];
+        //        //    var orighash = splitted[2];
 
-                //    var date = splitted[1];
-                //    var orighash = splitted[2];
+        //        //var skey = MachinePseudoKeys.GetMachineConstant();
 
-                //var skey = MachinePseudoKeys.GetMachineConstant();
+        //        //using (var hasher = new HMACSHA1(skey))
+        //        //    {
+        //        //        var data = string.Join("\n", date, pkey);
+        //        //        var hash = hasher.ComputeHash(Encoding.UTF8.GetBytes(data));
+        //        //        if (WebEncoders.Base64UrlEncode(hash) != orighash && Convert.ToBase64String(hash) != orighash)
+        //        //        {
+        //        //            throw new Exception("incorrect hash");
+        //        //        }
+        //        //    }
 
-                //using (var hasher = new HMACSHA1(skey))
-                //    {
-                //        var data = string.Join("\n", date, pkey);
-                //        var hash = hasher.ComputeHash(Encoding.UTF8.GetBytes(data));
-                //        if (WebEncoders.Base64UrlEncode(hash) != orighash && Convert.ToBase64String(hash) != orighash)
-                //        {
-                //            throw new Exception("incorrect hash");
-                //        }
-                //    }
-
-                //    var year = int.Parse(versionDate.Substring(0, 4));
-                //    var month = int.Parse(versionDate.Substring(4, 2));
-                //    var day = int.Parse(versionDate.Substring(6, 2));
-                //    _date = new DateTime(year, month, day);
-                //}
-                //catch (Exception ex)
-                //{
-                //    Log.Error("VersionReleaseDate", ex);
-                //}
-                //return _date;
-            }
-        }
-
-        private UserManager UserManager { get; }
-        private TenantManager TenantManager { get; }
-        private PaymentManager PaymentManager { get; }
-        private CoreSettings CoreSettings { get; }
-        private IConfiguration Configuration { get; }
+        //        //    var year = int.Parse(versionDate.Substring(0, 4));
+        //        //    var month = int.Parse(versionDate.Substring(4, 2));
+        //        //    var day = int.Parse(versionDate.Substring(6, 2));
+        //        //    _date = new DateTime(year, month, day);
+        //        //}
+        //        //catch (Exception ex)
+        //        //{
+        //        //    Log.Error("VersionReleaseDate", ex);
+        //        //}
+        //        //return _date;
+        //    }
+        //} 
     }
 }

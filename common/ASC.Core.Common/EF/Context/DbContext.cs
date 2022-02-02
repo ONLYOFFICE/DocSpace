@@ -16,24 +16,17 @@ namespace ASC.Core.Common.EF.Context
         public DbSet<DbipLocation> DbipLocation { get; set; }
         public DbSet<Regions> Regions { get; set; }
 
-        public DbContext()
-        {
-        }
+        public DbContext() { }
 
-        public DbContext(DbContextOptions options) : base(options)
-        {
-        }
-        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-        {
-            get
+        public DbContext(DbContextOptions options) : base(options) { }
+
+        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext =>
+            new Dictionary<Provider, Func<BaseDbContext>>()
             {
-                return new Dictionary<Provider, Func<BaseDbContext>>()
-                {
-                    { Provider.MySql, () => new MySqlDbContext() } ,
-                    { Provider.PostgreSql, () => new PostgreSqlDbContext() } ,
-                };
-            }
-        }
+                { Provider.MySql, () => new MySqlDbContext() } ,
+                { Provider.PostgreSql, () => new PostgreSqlDbContext() } ,
+            };
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             ModelBuilderWrapper
@@ -46,9 +39,7 @@ namespace ASC.Core.Common.EF.Context
 
     public static class DbContextExtension
     {
-        public static DIHelper AddDbContextService(this DIHelper services)
-        {
-            return services.AddDbContextManagerService<DbContext>();
-        }
+        public static DIHelper AddDbContextService(this DIHelper services) => 
+            services.AddDbContextManagerService<DbContext>();
     }
 }

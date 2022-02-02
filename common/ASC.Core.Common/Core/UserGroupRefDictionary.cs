@@ -33,34 +33,13 @@ namespace ASC.Core
 {
     public class UserGroupRefDictionary : IDictionary<string, UserGroupRef>
     {
-        private readonly IDictionary<string, UserGroupRef> d = new Dictionary<string, UserGroupRef>();
-        private IDictionary<Guid, IEnumerable<UserGroupRef>> byUsers;
-        private IDictionary<Guid, IEnumerable<UserGroupRef>> byGroups;
-
-
-        public int Count
-        {
-            get { return d.Count; }
-        }
-
-        public bool IsReadOnly
-        {
-            get { return d.IsReadOnly; }
-        }
-
-        public ICollection<string> Keys
-        {
-            get { return d.Keys; }
-        }
-
-        public ICollection<UserGroupRef> Values
-        {
-            get { return d.Values; }
-        }
-
+        public int Count => d.Count;
+        public bool IsReadOnly => d.IsReadOnly;
+        public ICollection<string> Keys => d.Keys;
+        public ICollection<UserGroupRef> Values => d.Values;
         public UserGroupRef this[string key]
         {
-            get { return d[key]; }
+            get => d[key];
             set
             {
                 d[key] = value;
@@ -68,16 +47,16 @@ namespace ASC.Core
             }
         }
 
+        private readonly IDictionary<string, UserGroupRef> d = new Dictionary<string, UserGroupRef>();
+        private IDictionary<Guid, IEnumerable<UserGroupRef>> _byUsers;
+        private IDictionary<Guid, IEnumerable<UserGroupRef>> _byGroups;
 
         public UserGroupRefDictionary(IDictionary<string, UserGroupRef> dic)
         {
             foreach (var p in dic)
-            {
                 d.Add(p);
-            }
             BuildIndexes();
         }
-
 
         public void Add(string key, UserGroupRef value)
         {
@@ -95,6 +74,7 @@ namespace ASC.Core
         {
             var result = d.Remove(key);
             BuildIndexes();
+
             return result;
         }
 
@@ -102,6 +82,7 @@ namespace ASC.Core
         {
             var result = d.Remove(item);
             BuildIndexes();
+
             return result;
         }
 
@@ -111,53 +92,29 @@ namespace ASC.Core
             BuildIndexes();
         }
 
+        public bool TryGetValue(string key, out UserGroupRef value) =>
+            d.TryGetValue(key, out value);
 
-        public bool TryGetValue(string key, out UserGroupRef value)
-        {
-            return d.TryGetValue(key, out value);
-        }
+        public bool ContainsKey(string key) => d.ContainsKey(key);
 
-        public bool ContainsKey(string key)
-        {
-            return d.ContainsKey(key);
-        }
+        public bool Contains(KeyValuePair<string, UserGroupRef> item) => d.Contains(item);
 
-        public bool Contains(KeyValuePair<string, UserGroupRef> item)
-        {
-            return d.Contains(item);
-        }
+        public void CopyTo(KeyValuePair<string, UserGroupRef>[] array, int arrayIndex) => d.CopyTo(array, arrayIndex);
 
-        public void CopyTo(KeyValuePair<string, UserGroupRef>[] array, int arrayIndex)
-        {
-            d.CopyTo(array, arrayIndex);
-        }
+        public IEnumerator<KeyValuePair<string, UserGroupRef>> GetEnumerator() => d.GetEnumerator();
 
-        public IEnumerator<KeyValuePair<string, UserGroupRef>> GetEnumerator()
-        {
-            return d.GetEnumerator();
-        }
+        public IEnumerable<UserGroupRef> GetByUser(Guid userId) =>
+            _byUsers.ContainsKey(userId) ? _byUsers[userId].ToList() : new List<UserGroupRef>();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable)d).GetEnumerator();
-        }
-
-
-        public IEnumerable<UserGroupRef> GetByUser(Guid userId)
-        {
-            return byUsers.ContainsKey(userId) ? byUsers[userId].ToList() : new List<UserGroupRef>();
-        }
-
-        public IEnumerable<UserGroupRef> GetByGroups(Guid groupId)
-        {
-            return byGroups.ContainsKey(groupId) ? byGroups[groupId].ToList() : new List<UserGroupRef>();
-        }
-
+        public IEnumerable<UserGroupRef> GetByGroups(Guid groupId) =>
+            _byGroups.ContainsKey(groupId) ? _byGroups[groupId].ToList() : new List<UserGroupRef>();
 
         private void BuildIndexes()
         {
-            byUsers = d.Values.GroupBy(r => r.UserId).ToDictionary(g => g.Key, g => g.AsEnumerable());
-            byGroups = d.Values.GroupBy(r => r.GroupId).ToDictionary(g => g.Key, g => g.AsEnumerable());
+            _byUsers = d.Values.GroupBy(r => r.UserId).ToDictionary(g => g.Key, g => g.AsEnumerable());
+            _byGroups = d.Values.GroupBy(r => r.GroupId).ToDictionary(g => g.Key, g => g.AsEnumerable());
         }
+
+        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)d).GetEnumerator();
     }
 }

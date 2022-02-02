@@ -16,17 +16,14 @@ namespace ASC.Core.Common.EF.Context
         public DbSet<FeedAggregate> FeedAggregates { get; set; }
         public DbSet<FeedUsers> FeedUsers { get; set; }
         public DbSet<FeedReaded> FeedReaded { get; set; }
-        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-        {
-            get
+
+        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext =>
+            new Dictionary<Provider, Func<BaseDbContext>>()
             {
-                return new Dictionary<Provider, Func<BaseDbContext>>()
-                {
-                    { Provider.MySql, () => new MySqlFeedDbContext() } ,
-                    { Provider.PostgreSql, () => new PostgreSqlFeedDbContext() } ,
-                };
-            }
-        }
+                { Provider.MySql, () => new MySqlFeedDbContext() } ,
+                { Provider.PostgreSql, () => new PostgreSqlFeedDbContext() } ,
+            };
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             ModelBuilderWrapper
@@ -40,9 +37,7 @@ namespace ASC.Core.Common.EF.Context
 
     public static class FeedDbExtension
     {
-        public static DIHelper AddFeedDbService(this DIHelper services)
-        {
-            return services.AddDbContextManagerService<FeedDbContext>();
-        }
+        public static DIHelper AddFeedDbService(this DIHelper services) => 
+            services.AddDbContextManagerService<FeedDbContext>();
     }
 }

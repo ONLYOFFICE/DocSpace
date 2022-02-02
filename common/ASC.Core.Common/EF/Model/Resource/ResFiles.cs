@@ -14,6 +14,7 @@ namespace ASC.Core.Common.EF.Model.Resource
         public DateTime LastUpdate { get; set; }
         public DateTime CreationDate { get; set; }
     }
+
     public static class ResFilesExtension
     {
         public static ModelBuilderWrapper AddResFiles(this ModelBuilderWrapper modelBuilder)
@@ -23,6 +24,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                 .Add(PgSqlAddResFiles, Provider.PostgreSql);
             return modelBuilder;
         }
+
         public static void MySqlAddResFiles(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ResFiles>(entity =>
@@ -70,6 +72,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .UseCollation("utf8_general_ci");
             });
         }
+
         public static void PgSqlAddResFiles(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ResFiles>(entity =>

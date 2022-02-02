@@ -30,67 +30,19 @@ namespace ASC.Core
 {
     public class Group
     {
-        public Guid Id
-        {
-            get;
-            set;
-        }
+        public Guid Id { get; set; }
+        public Guid ParentId { get; set; }
+        public string Name { get; set; }
+        public Guid CategoryId { get; set; }
+        public bool Removed { get; set; }
+        public DateTime LastModified { get; set; }
+        public int Tenant { get; set; }
+        public string Sid { get; set; }
 
-        public Guid ParentId
-        {
-            get;
-            set;
-        }
+        public override string ToString() => Name;
 
-        public string Name
-        {
-            get;
-            set;
-        }
+        public override int GetHashCode() => Id.GetHashCode();
 
-        public Guid CategoryId
-        {
-            get;
-            set;
-        }
-
-        public bool Removed
-        {
-            get;
-            set;
-        }
-
-        public DateTime LastModified
-        {
-            get;
-            set;
-        }
-
-        public int Tenant
-        {
-            get;
-            set;
-        }
-
-        public string Sid
-        {
-            get;
-            set;
-        }
-
-        public override string ToString()
-        {
-            return Name;
-        }
-
-        public override int GetHashCode()
-        {
-            return Id.GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is Group g && g.Id == Id;
-        }
+        public override bool Equals(object obj) => obj is Group g && g.Id == Id;
     }
 }

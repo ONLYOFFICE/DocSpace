@@ -10,6 +10,7 @@ namespace ASC.Core.Common.EF.Model.Mail
         public string DisplayShortName { get; set; }
         public string Documentation { get; set; }
     }
+
     public static class MailboxProviderExtension
     {
         public static ModelBuilderWrapper AddMailboxProvider(this ModelBuilderWrapper modelBuilder)
@@ -276,6 +277,7 @@ namespace ASC.Core.Common.EF.Model.Mail
                     .UseCollation("utf8_general_ci");
             });
         }
+
         public static void PgSqlAddMailboxProvider(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<MailboxProvider>(entity =>

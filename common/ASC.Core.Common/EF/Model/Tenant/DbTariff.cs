@@ -16,6 +16,7 @@ namespace ASC.Core.Common.EF
         public string Comment { get; set; }
         public DateTime CreateOn { get; set; }
     }
+
     public static class DbTariffExtension
     {
         public static ModelBuilderWrapper AddDbTariff(this ModelBuilderWrapper modelBuilder)
@@ -25,6 +26,7 @@ namespace ASC.Core.Common.EF
                 .Add(PgSqlAddDbTariff, Provider.PostgreSql);
             return modelBuilder;
         }
+
         public static void MySqlAddDbTariff(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbTariff>(entity =>
@@ -61,6 +63,7 @@ namespace ASC.Core.Common.EF
                 entity.Property(e => e.Tenant).HasColumnName("tenant");
             });
         }
+
         public static void PgSqlAddDbTariff(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbTariff>(entity =>

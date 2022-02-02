@@ -49,57 +49,41 @@ namespace ASC.Core
 {
     public static class WorkContext
     {
-        private static readonly object syncRoot = new object();
-        private static bool notifyStarted;
-        private static bool? ismono;
-        private static string monoversion;
-
-
         public static NotifyContext NotifyContext { get; private set; }
-
-        public static string[] DefaultClientSenders
-        {
-            get { return new[] { Constants.NotifyEMailSenderSysName, }; }
-        }
-
+        public static string MonoVersion => IsMono ? s_monoVersion : null;
+        public static string[] DefaultClientSenders =>
+            new[] { Constants.NotifyEMailSenderSysName, };
         public static bool IsMono
         {
             get
             {
-                if (ismono.HasValue)
-                {
-                    return ismono.Value;
-                }
+                if (s_isMono.HasValue) return s_isMono.Value;
 
                 var monoRuntime = Type.GetType("Mono.Runtime");
-                ismono = monoRuntime != null;
+
+                s_isMono = monoRuntime != null;
                 if (monoRuntime != null)
                 {
                     var dispalayName = monoRuntime.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
                     if (dispalayName != null)
-                    {
-                        monoversion = dispalayName.Invoke(null, null) as string;
-                    }
+                        s_monoVersion = dispalayName.Invoke(null, null) as string;
                 }
-                return ismono.Value;
+
+                return s_isMono.Value;
             }
         }
 
-        public static string MonoVersion
-        {
-            get
-            {
-                return IsMono ? monoversion : null;
-            }
-        }
-
+        private static readonly object s_syncRoot = new object();
+        private static bool s_notifyStarted;
+        private static bool? s_isMono;
+        private static string s_monoVersion;
 
         public static void NotifyStartUp(IServiceProvider serviceProvider)
         {
-            if (notifyStarted) return;
-            lock (syncRoot)
+            if (s_notifyStarted) return;
+            lock (s_syncRoot)
             {
-                if (notifyStarted) return;
+                if (s_notifyStarted) return;
 
                 var configuration = serviceProvider.GetService<IConfiguration>();
                 var cacheNotify = serviceProvider.GetService<ICacheNotify<NotifyMessage>>();
@@ -130,9 +114,8 @@ namespace ASC.Core
                         properties["refreshTimeout"] = configuration["ses:refreshTimeout"];
                     }
                     else
-                    {
                         emailSender = new SmtpSender(serviceProvider, options);
-                    }
+
                     emailSender.Init(properties);
                 }
 
@@ -142,24 +125,18 @@ namespace ASC.Core
 
                 NotifyContext.NotifyEngine.BeforeTransferRequest += NotifyEngine_BeforeTransferRequest;
                 NotifyContext.NotifyEngine.AfterTransferRequest += NotifyEngine_AfterTransferRequest;
-                notifyStarted = true;
+                s_notifyStarted = true;
             }
         }
 
-        public static void RegisterSendMethod(Action<DateTime> method, string cron)
-        {
+        public static void RegisterSendMethod(Action<DateTime> method, string cron) =>
             NotifyContext.NotifyEngine.RegisterSendMethod(method, cron);
-        }
 
-        public static void UnregisterSendMethod(Action<DateTime> method)
-        {
+        public static void UnregisterSendMethod(Action<DateTime> method) =>
             NotifyContext.NotifyEngine.UnregisterSendMethod(method);
 
-        }
-        private static void NotifyEngine_BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope serviceScope)
-        {
+        private static void NotifyEngine_BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope serviceScope) =>
             request.Properties.Add("Tenant", serviceScope.ServiceProvider.GetService<TenantManager>().GetCurrentTenant(false));
-        }
 
         private static void NotifyEngine_AfterTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope scope)
         {

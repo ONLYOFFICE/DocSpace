@@ -46,30 +46,29 @@ namespace ASC.Core.Data
     public class DbSettingsManagerCache
     {
         public ICache Cache { get; }
-        private ICacheNotify<SettingsCacheItem> Notify { get; }
 
-        public DbSettingsManagerCache(ICacheNotify<SettingsCacheItem> notify, ICache cache)
+        private readonly ICacheNotify<SettingsCacheItem> _eventBusSettingsItem;
+
+        public DbSettingsManagerCache(ICacheNotify<SettingsCacheItem> eventBustSettingsItem, ICache cache)
         {
             Cache = cache;
-            Notify = notify;
-            Notify.Subscribe((i) => Cache.Remove(i.Key), CacheNotifyAction.Remove);
+            _eventBusSettingsItem = eventBustSettingsItem;
+            _eventBusSettingsItem.Subscribe((i) => Cache.Remove(i.Key), CacheNotifyAction.Remove);
         }
 
-        public void Remove(string key)
-        {
-            Notify.Publish(new SettingsCacheItem { Key = key }, CacheNotifyAction.Remove);
-        }
+        public void Remove(string key) =>
+            _eventBusSettingsItem.Publish(new SettingsCacheItem { Key = key }, CacheNotifyAction.Remove);
     }
 
     [Scope]
     class ConfigureDbSettingsManager : IConfigureNamedOptions<DbSettingsManager>
     {
-        private IServiceProvider ServiceProvider { get; }
-        private DbSettingsManagerCache DbSettingsManagerCache { get; }
-        private IOptionsMonitor<ILog> ILog { get; }
-        private AuthContext AuthContext { get; }
-        private IOptionsSnapshot<TenantManager> TenantManager { get; }
-        private DbContextManager<WebstudioDbContext> DbContextManager { get; }
+        private readonly IServiceProvider _serviceProvider;
+        private readonly DbSettingsManagerCache _dbSettingsManagerCache;
+        private readonly IOptionsMonitor<ILog> _logger;
+        private readonly AuthContext _authContext;
+        private readonly IOptionsSnapshot<TenantManager> _tenantManager;
+        private readonly DbContextManager<WebstudioDbContext> _dbContextManager;
 
         public ConfigureDbSettingsManager(
             IServiceProvider serviceProvider,
@@ -80,53 +79,53 @@ namespace ASC.Core.Data
             DbContextManager<WebstudioDbContext> dbContextManager
             )
         {
-            ServiceProvider = serviceProvider;
-            DbSettingsManagerCache = dbSettingsManagerCache;
-            ILog = iLog;
-            AuthContext = authContext;
-            TenantManager = tenantManager;
-            DbContextManager = dbContextManager;
+            _serviceProvider = serviceProvider;
+            _dbSettingsManagerCache = dbSettingsManagerCache;
+            _logger = iLog;
+            _authContext = authContext;
+            _tenantManager = tenantManager;
+            _dbContextManager = dbContextManager;
         }
 
         public void Configure(string name, DbSettingsManager options)
         {
             Configure(options);
 
-            options.TenantManager = TenantManager.Get(name);
-            options.LazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => DbContextManager.Get(name));
+            options.TenantManager = _tenantManager.Get(name);
+            options.LazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => _dbContextManager.Get(name));
         }
 
         public void Configure(DbSettingsManager options)
         {
-            options.ServiceProvider = ServiceProvider;
-            options.DbSettingsManagerCache = DbSettingsManagerCache;
-            options.AuthContext = AuthContext;
-            options.Log = ILog.CurrentValue;
+            options.ServiceProvider = _serviceProvider;
+            options.DbSettingsManagerCache = _dbSettingsManagerCache;
+            options.AuthContext = _authContext;
+            options.Logger = _logger.CurrentValue;
 
-            options.TenantManager = TenantManager.Value;
-            options.LazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => DbContextManager.Value);
+            options.TenantManager = _tenantManager.Value;
+            options.LazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => _dbContextManager.Value);
         }
     }
 
     [Scope(typeof(ConfigureDbSettingsManager))]
     public class DbSettingsManager
     {
-        private readonly TimeSpan expirationTimeout = TimeSpan.FromMinutes(5);
-
-        internal ILog Log { get; set; }
+        internal ILog Logger { get; set; }
         internal ICache Cache { get; set; }
         internal IServiceProvider ServiceProvider { get; set; }
         internal DbSettingsManagerCache DbSettingsManagerCache { get; set; }
         internal AuthContext AuthContext { get; set; }
         internal TenantManager TenantManager { get; set; }
         internal Lazy<WebstudioDbContext> LazyWebstudioDbContext { get; set; }
-        internal WebstudioDbContext WebstudioDbContext { get => LazyWebstudioDbContext.Value; }
-        
+        internal WebstudioDbContext WebstudioDbContext => LazyWebstudioDbContext.Value;
+        private int TenantID => _tenantID != 0 ? _tenantID : (_tenantID = TenantManager.GetCurrentTenant().TenantId);
+        private Guid CurrentUserID => ((Guid?)(_currentUserID ??= AuthContext.CurrentAccount.ID)).Value;
 
-        public DbSettingsManager()
-        {
+        private readonly TimeSpan _expirationTimeout = TimeSpan.FromMinutes(5);
+        private int _tenantID;
+        private Guid? _currentUserID;
 
-        }
+        public DbSettingsManager() { }
 
         public DbSettingsManager(
             IServiceProvider serviceProvider,
@@ -141,31 +140,15 @@ namespace ASC.Core.Data
             AuthContext = authContext;
             TenantManager = tenantManager;
             Cache = dbSettingsManagerCache.Cache;
-            Log = option.CurrentValue;
+            Logger = option.CurrentValue;
             LazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => dbContextManager.Value);
         }
 
-        private int tenantID;
-        private int TenantID
-        {
-            get { return tenantID != 0 ? tenantID : (tenantID = TenantManager.GetCurrentTenant().TenantId); }
-        }
-        //
-        private Guid? currentUserID;
-        private Guid CurrentUserID
-        {
-            get { return ((Guid?)(currentUserID ??= AuthContext.CurrentAccount.ID)).Value; }
-        }
+        public bool SaveSettings<T>(T settings, int tenantId) where T : ISettings =>
+            SaveSettingsFor(settings, tenantId, Guid.Empty);
 
-        public bool SaveSettings<T>(T settings, int tenantId) where T : ISettings
-        {
-            return SaveSettingsFor(settings, tenantId, Guid.Empty);
-        }
-
-        public T LoadSettings<T>(int tenantId) where T : class, ISettings
-        {
-            return LoadSettingsFor<T>(tenantId, Guid.Empty);
-        }
+        public T LoadSettings<T>(int tenantId) where T : class, ISettings =>
+            LoadSettingsFor<T>(tenantId, Guid.Empty);
 
         public void ClearCache<T>(int tenantId) where T : class, ISettings
         {
@@ -197,10 +180,7 @@ namespace ASC.Core.Data
                         .Where(r => r.UserId == userId)
                         .FirstOrDefault();
 
-                    if (s != null)
-                    {
-                        WebstudioDbContext.WebstudioSettings.Remove(s);
-                    }
+                    if (s != null) WebstudioDbContext.WebstudioSettings.Remove(s);
 
                     WebstudioDbContext.SaveChanges();
                     tr.Commit();
@@ -222,12 +202,14 @@ namespace ASC.Core.Data
 
                 DbSettingsManagerCache.Remove(key);
 
-                Cache.Insert(key, settings, expirationTimeout);
+                Cache.Insert(key, settings, _expirationTimeout);
+
                 return true;
             }
             catch (Exception ex)
             {
-                Log.Error(ex);
+                Logger.Error(ex);
+
                 return false;
             }
         }
@@ -250,89 +232,45 @@ namespace ASC.Core.Data
                         .Select(r => r.Data)
                         .FirstOrDefault();
 
-                if (result != null)
-                {
-                    settings = Deserialize<T>(result);
-                }
-                else
-                {
-                    settings = def;
-                }
+                if (result != null) settings = Deserialize<T>(result);
+                else settings = def;
 
-                Cache.Insert(key, settings, expirationTimeout);
+                Cache.Insert(key, settings, _expirationTimeout);
+
                 return settings;
             }
             catch (Exception ex)
             {
-                Log.Error(ex);
+                Logger.Error(ex);
             }
+
             return def;
         }
 
-        public T Load<T>() where T : class, ISettings
-        {
-            return LoadSettings<T>(TenantID);
-        }
+        public T Load<T>() where T : class, ISettings => LoadSettings<T>(TenantID);
 
-        public T LoadForCurrentUser<T>() where T : class, ISettings
-        {
-            return LoadForUser<T>(CurrentUserID);
-        }
+        public T LoadForCurrentUser<T>() where T : class, ISettings => LoadForUser<T>(CurrentUserID);
 
-        public T LoadForUser<T>(Guid userId) where T : class, ISettings
-        {
-            return LoadSettingsFor<T>(TenantID, userId);
-        }
+        public T LoadForUser<T>(Guid userId) where T : class, ISettings => LoadSettingsFor<T>(TenantID, userId);
 
-        public T LoadForDefaultTenant<T>() where T : class, ISettings
-        {
-            return LoadForTenant<T>(Tenant.DEFAULT_TENANT);
-        }
+        public T LoadForDefaultTenant<T>() where T : class, ISettings => LoadForTenant<T>(Tenant.DefaultTenant);
 
-        public T LoadForTenant<T>(int tenantId) where T : class, ISettings
-        {
-            return LoadSettings<T>(tenantId);
-        }
+        public T LoadForTenant<T>(int tenantId) where T : class, ISettings => LoadSettings<T>(tenantId);
 
-        public virtual bool Save<T>(T data) where T : class, ISettings
-        {
-            return SaveSettings(data, TenantID);
-        }
+        public virtual bool Save<T>(T data) where T : class, ISettings => SaveSettings(data, TenantID);
 
-        public bool SaveForCurrentUser<T>(T data) where T : class, ISettings
-        {
-            return SaveForUser(data, CurrentUserID);
-        }
+        public bool SaveForCurrentUser<T>(T data) where T : class, ISettings => SaveForUser(data, CurrentUserID);
 
-        public bool SaveForUser<T>(T data, Guid userId) where T : class, ISettings
-        {
-            return SaveSettingsFor(data, TenantID, userId);
-        }
+        public bool SaveForUser<T>(T data, Guid userId) where T : class, ISettings => SaveSettingsFor(data, TenantID, userId);
 
-        public bool SaveForDefaultTenant<T>(T data) where T : class, ISettings
-        {
-            return SaveForTenant(data, Tenant.DEFAULT_TENANT);
-        }
+        public bool SaveForDefaultTenant<T>(T data) where T : class, ISettings => SaveForTenant(data, Tenant.DefaultTenant);
 
-        public bool SaveForTenant<T>(T data, int tenantId) where T : class, ISettings
-        {
-            return SaveSettings(data, tenantId);
-        }
+        public bool SaveForTenant<T>(T data, int tenantId) where T : class, ISettings => SaveSettings(data, tenantId);
 
-        public void ClearCache<T>() where T : class, ISettings
-        {
-            ClearCache<T>(TenantID);
-        }
+        public void ClearCache<T>() where T : class, ISettings => ClearCache<T>(TenantID);
 
-        private T Deserialize<T>(string data)
-        {
-            return JsonSerializer.Deserialize<T>(data);
-        }
+        private T Deserialize<T>(string data) => JsonSerializer.Deserialize<T>(data);
 
-        private string Serialize<T>(T settings)
-        {
-            return JsonSerializer.Serialize(settings);
-        }
-
+        private string Serialize<T>(T settings) => JsonSerializer.Serialize(settings);
     }
 }

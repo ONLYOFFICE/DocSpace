@@ -11,6 +11,7 @@ namespace ASC.Core.Common.EF.Model
         public int DefaultVersion { get; set; }
         public bool Visible { get; set; }
     }
+
     public static class DbTenantVersionExtension
     {
         public static ModelBuilderWrapper AddDbTenantVersion(this ModelBuilderWrapper modelBuilder)
@@ -20,6 +21,7 @@ namespace ASC.Core.Common.EF.Model
                 .Add(PgSqlAddDbTenantVersion, Provider.PostgreSql);
             return modelBuilder;
         }
+
         public static void MySqlAddDbTenantVersion(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbTenantVersion>(entity =>
@@ -46,8 +48,8 @@ namespace ASC.Core.Common.EF.Model
 
                 entity.Property(e => e.Visible).HasColumnName("visible");
             });
-
         }
+
         public static void PgSqlAddDbTenantVersion(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbTenantVersion>(entity =>
@@ -72,7 +74,6 @@ namespace ASC.Core.Common.EF.Model
 
                 entity.Property(e => e.Visible).HasColumnName("visible");
             });
-
         }
     }
 }

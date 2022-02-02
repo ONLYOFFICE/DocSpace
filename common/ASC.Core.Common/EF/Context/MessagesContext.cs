@@ -15,17 +15,12 @@ namespace ASC.Core.Common.EF.Context
         public DbSet<LoginEvents> LoginEvents { get; set; }
         public DbSet<User> Users { get; set; }
 
-        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-        {
-            get
+        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext =>
+            new Dictionary<Provider, Func<BaseDbContext>>()
             {
-                return new Dictionary<Provider, Func<BaseDbContext>>()
-                {
-                    { Provider.MySql, () => new MySqlMessagesContext() } ,
-                    { Provider.PostgreSql, () => new PostgreSqlMessagesContext() } ,
-                };
-            }
-        }
+                { Provider.MySql, () => new MySqlMessagesContext() } ,
+                { Provider.PostgreSql, () => new PostgreSqlMessagesContext() } ,
+            };
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -39,9 +34,7 @@ namespace ASC.Core.Common.EF.Context
 
     public static class MessagesContextExtension
     {
-        public static DIHelper AddMessagesContextService(this DIHelper services)
-        {
-            return services.AddDbContextManagerService<MessagesContext>();
-        }
+        public static DIHelper AddMessagesContextService(this DIHelper services) =>
+            services.AddDbContextManagerService<MessagesContext>();
     }
 }

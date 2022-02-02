@@ -18,6 +18,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                 .Add(PgSqlAddResAuthorsFile, Provider.PostgreSql);
             return modelBuilder;
         }
+
         public static void MySqlAddResAuthorsFile(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ResAuthorsFile>(entity =>
@@ -41,6 +42,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                 entity.Property(e => e.WriteAccess).HasColumnName("writeAccess");
             });
         }
+
         public static void PgSqlAddResAuthorsFile(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ResAuthorsFile>(entity =>

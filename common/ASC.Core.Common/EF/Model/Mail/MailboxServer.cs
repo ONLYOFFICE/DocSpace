@@ -14,6 +14,7 @@ namespace ASC.Core.Common.EF.Model.Mail
         public string Authentication { get; set; }
         public bool IsUserData { get; set; }
     }
+
     public static class MailboxServerExtension
     {
         public static ModelBuilderWrapper AddMailboxServer(this ModelBuilderWrapper modelBuilder)
@@ -582,6 +583,7 @@ namespace ASC.Core.Common.EF.Model.Mail
                     .UseCollation("utf8_general_ci");
             });
         }
+
         public static void PgSqlAddMailboxServer(this ModelBuilder modelBuilder)
         {
             modelBuilder.HasPostgresEnum("onlyoffice", "enum_mail_mailbox_server", new[] { "pop3", "imap", "smtp" });

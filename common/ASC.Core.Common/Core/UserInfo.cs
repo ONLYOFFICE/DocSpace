@@ -36,6 +36,48 @@ namespace ASC.Core.Users
     [Serializable]
     public sealed class UserInfo : IDirectRecipient, ICloneable
     {
+        public Guid ID { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string UserName { get; set; }
+        public DateTime? BirthDate { get; set; }
+        public bool? Sex { get; set; }
+        public EmployeeStatus Status { get; set; }
+        public EmployeeActivationStatus ActivationStatus { get; set; }
+        public DateTime? TerminatedDate { get; set; }
+        public string Title { get; set; }
+        public DateTime? WorkFromDate { get; set; }
+        public string Email { get; set; }
+        public List<string> ContactsList { get; set; }
+        public string Location { get; set; }
+        public string Notes { get; set; }
+        public bool Removed { get; set; }
+        public DateTime LastModified { get; set; }
+        public int Tenant { get; set; }
+        public bool IsActive => ActivationStatus.HasFlag(EmployeeActivationStatus.Activated);
+        public string CultureName { get; set; }
+        public string MobilePhone { get; set; }
+        public MobilePhoneActivationStatus MobilePhoneActivationStatus { get; set; }
+        public string Sid { get; set; } // LDAP user identificator
+        public string SsoNameId { get; set; } // SSO SAML user identificator
+        public string SsoSessionId { get; set; } // SSO SAML user session identificator
+        public DateTime CreateDate { get; set; }
+        public string Contacts
+        {
+            get => _contacts;
+            set
+            {
+                _contacts = value;
+                ContactsFromString(_contacts);
+            }
+        }
+        string[] IDirectRecipient.Addresses => !string.IsNullOrEmpty(Email) ? new[] { Email } : Array.Empty<string>();
+        public bool CheckActivation => IsActive; /*if user already active we don't need activation*/
+        string IRecipient.ID => ID.ToString();
+        string IRecipient.Name => ToString();
+
+        private string _contacts;
+
         public UserInfo()
         {
             Status = EmployeeStatus.Active;
@@ -43,133 +85,30 @@ namespace ASC.Core.Users
             LastModified = DateTime.UtcNow;
         }
 
+        public override string ToString() => $"{FirstName} {LastName}".Trim();
 
-        public Guid ID { get; set; }
+        public override int GetHashCode() => ID.GetHashCode();
 
-        public string FirstName { get; set; }
+        public override bool Equals(object obj) => obj is UserInfo ui && ID.Equals(ui.ID);
 
-        public string LastName { get; set; }
+        public bool Equals(UserInfo obj) => obj != null && ID.Equals(obj.ID);
 
-        public string UserName { get; set; }
+        public CultureInfo GetCulture() =>
+            string.IsNullOrEmpty(CultureName) ? CultureInfo.CurrentCulture : CultureInfo.GetCultureInfo(CultureName);
 
-        public DateTime? BirthDate { get; set; }
-
-        public bool? Sex { get; set; }
-
-        public EmployeeStatus Status { get; set; }
-
-        public EmployeeActivationStatus ActivationStatus { get; set; }
-
-        public DateTime? TerminatedDate { get; set; }
-
-        public string Title { get; set; }
-
-        public DateTime? WorkFromDate { get; set; }
-
-        public string Email { get; set; }
-
-        private string contacts;
-        public string Contacts
-        {
-            get => contacts;
-            set
-            {
-                contacts = value;
-                ContactsFromString(contacts);
-            }
-        }
-
-        public List<string> ContactsList { get; set; }
-
-        public string Location { get; set; }
-
-        public string Notes { get; set; }
-
-        public bool Removed { get; set; }
-
-        public DateTime LastModified { get; set; }
-
-        public int Tenant { get; set; }
-
-        public bool IsActive
-        {
-            get { return ActivationStatus.HasFlag(EmployeeActivationStatus.Activated); }
-        }
-
-        public string CultureName { get; set; }
-
-        public string MobilePhone { get; set; }
-
-        public MobilePhoneActivationStatus MobilePhoneActivationStatus { get; set; }
-
-        public string Sid { get; set; } // LDAP user identificator
-
-        public string SsoNameId { get; set; } // SSO SAML user identificator
-
-        public string SsoSessionId { get; set; } // SSO SAML user session identificator
-
-        public DateTime CreateDate { get; set; }
-
-        public override string ToString()
-        {
-            return string.Format("{0} {1}", FirstName, LastName).Trim();
-        }
-
-        public override int GetHashCode()
-        {
-            return ID.GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is UserInfo ui && ID.Equals(ui.ID);
-        }
-
-        public bool Equals(UserInfo obj)
-        {
-            return obj != null && ID.Equals(obj.ID);
-        }
-
-        public CultureInfo GetCulture()
-        {
-            return string.IsNullOrEmpty(CultureName) ? CultureInfo.CurrentCulture : CultureInfo.GetCultureInfo(CultureName);
-        }
-
-
-        string[] IDirectRecipient.Addresses
-        {
-            get { return !string.IsNullOrEmpty(Email) ? new[] { Email } : new string[0]; }
-        }
-
-        public bool CheckActivation
-        {
-            get { return !IsActive; /*if user already active we don't need activation*/ }
-        }
-
-        string IRecipient.ID
-        {
-            get { return ID.ToString(); }
-        }
-
-        string IRecipient.Name
-        {
-            get { return ToString(); }
-        }
-
-        public object Clone()
-        {
-            return MemberwiseClone();
-        }
+        public object Clone() => MemberwiseClone();
 
 
         internal string ContactsToString()
         {
             if (ContactsList == null || ContactsList.Count == 0) return null;
             var sBuilder = new StringBuilder();
+
             foreach (var contact in ContactsList)
             {
                 sBuilder.AppendFormat("{0}|", contact);
             }
+
             return sBuilder.ToString();
         }
 
@@ -177,14 +116,9 @@ namespace ASC.Core.Users
         {
             if (string.IsNullOrEmpty(contacts)) return this;
 
-            if (ContactsList == null)
-            {
-                ContactsList = new List<string>();
-            }
-            else
-            {
-                ContactsList.Clear();
-            }
+            if (ContactsList == null) ContactsList = new List<string>();
+
+            else ContactsList.Clear();
 
             ContactsList.AddRange(contacts.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries));
 

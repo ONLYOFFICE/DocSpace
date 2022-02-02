@@ -8,10 +8,7 @@ namespace ASC.Core.Common.EF.Model
         public string FeedId { get; set; }
         public Guid UserId { get; set; }
 
-        public override object[] GetKeys()
-        {
-            return new object[] { FeedId, UserId };
-        }
+        public override object[] GetKeys() => new object[] { FeedId, UserId };
     }
 
     public static class FeedUsersExtension
@@ -23,6 +20,7 @@ namespace ASC.Core.Common.EF.Model
                 .Add(PgSqlAddFeedUsers, Provider.PostgreSql);
             return modelBuilder;
         }
+
         public static void MySqlAddFeedUsers(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FeedUsers>(entity =>

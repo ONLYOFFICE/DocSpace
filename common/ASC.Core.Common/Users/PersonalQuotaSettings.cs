@@ -35,18 +35,13 @@ namespace ASC.Core.Tenants
     {
         public long MaxSpace { get; set; }
 
-        public Guid ID
-        {
-            get { return new Guid("{C634A747-C39B-4517-8698-B3B39BF2BD8E}"); }
-        }
+        public Guid ID => new Guid("{C634A747-C39B-4517-8698-B3B39BF2BD8E}");
 
 
-        public ISettings GetDefault(IServiceProvider serviceProvider)
-        {
-            return new PersonalQuotaSettings
+        public ISettings GetDefault(IServiceProvider serviceProvider) =>
+            new PersonalQuotaSettings
             {
                 MaxSpace = long.MaxValue
             };
-        }
     }
 }

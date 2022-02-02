@@ -14,7 +14,11 @@ namespace ASC.Core.Common.EF.Model
         public string MappedDomain { get; set; }
         public int Version { get; set; }
         public DateTime? Version_Changed { get; set; }
-        public DateTime VersionChanged { get => Version_Changed ?? DateTime.MinValue; set => Version_Changed = value; }
+        public DateTime VersionChanged
+        {
+            get => Version_Changed ?? DateTime.MinValue;
+            set => Version_Changed = value;
+        }
         public string Language { get; set; }
         public string TimeZone { get; set; }
         public string TrustedDomains { get; set; }
@@ -22,8 +26,11 @@ namespace ASC.Core.Common.EF.Model
         public TenantStatus Status { get; set; }
         public DateTime? StatusChanged { get; set; }
         //hack for DateTime?
-       
-        public DateTime StatusChangedHack { get { return StatusChanged ?? DateTime.MinValue; } set { StatusChanged = value; } }
+        public DateTime StatusChangedHack
+        {
+            get => StatusChanged ?? DateTime.MinValue;
+            set => StatusChanged = value;
+        }
         public DateTime CreationDateTime { get; set; }
         public Guid OwnerId { get; set; }
         public string PaymentId { get; set; }
@@ -32,7 +39,7 @@ namespace ASC.Core.Common.EF.Model
         public bool Spam { get; set; }
         public bool Calls { get; set; }
 
-//        public DbTenantPartner Partner { get; set; }
+        //        public DbTenantPartner Partner { get; set; }
     }
 
     public static class DbTenantExtension
@@ -62,7 +69,7 @@ namespace ASC.Core.Common.EF.Model
             //    .HasOne(r => r.Partner)
             //    .WithOne(r => r.Tenant)
             //    .HasPrincipalKey<DbTenant>(r => new { r.Id });
-           
+
             modelBuilder.Entity<DbTenant>(entity =>
             {
                 entity.ToTable("tenants_tenants");
@@ -171,6 +178,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.Ignore(c => c.VersionChanged);
             });
         }
+
         public static void PgSqlAddDbTenant(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbTenant>().Ignore(c => c.StatusChangedHack);

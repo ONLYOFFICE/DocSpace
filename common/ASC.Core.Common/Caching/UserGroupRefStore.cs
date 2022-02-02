@@ -33,126 +33,90 @@ namespace ASC.Core.Caching
 {
     class UserGroupRefStore : IDictionary<string, UserGroupRef>
     {
-        private readonly IDictionary<string, UserGroupRef> refs;
-        private ILookup<Guid, UserGroupRef> index;
-        private bool changed;
+        public ICollection<string> Keys => _refs.Keys;
+        public int Count => _refs.Count;
+        public bool IsReadOnly => _refs.IsReadOnly;
 
-
-        public UserGroupRefStore(IDictionary<string, UserGroupRef> refs)
-        {
-            this.refs = refs;
-            changed = true;
-        }
-
-
-        public void Add(string key, UserGroupRef value)
-        {
-            refs.Add(key, value);
-            RebuildIndex();
-        }
-
-        public bool ContainsKey(string key)
-        {
-            return refs.ContainsKey(key);
-        }
-
-        public ICollection<string> Keys
-        {
-            get { return refs.Keys; }
-        }
-
-        public bool Remove(string key)
-        {
-            var result = refs.Remove(key);
-            RebuildIndex();
-            return result;
-        }
-
-        public bool TryGetValue(string key, out UserGroupRef value)
-        {
-            return refs.TryGetValue(key, out value);
-        }
-
-        public ICollection<UserGroupRef> Values
-        {
-            get { return refs.Values; }
-        }
+        private readonly IDictionary<string, UserGroupRef> _refs;
+        private ILookup<Guid, UserGroupRef> _index;
+        private bool _changed;
 
         public UserGroupRef this[string key]
         {
-            get
-            {
-                return refs[key];
-            }
+            get => _refs[key];
             set
             {
-                refs[key] = value;
+                _refs[key] = value;
                 RebuildIndex();
             }
         }
 
+        public UserGroupRefStore(IDictionary<string, UserGroupRef> refs)
+        {
+            _refs = refs;
+            _changed = true;
+        }
+
+        public void Add(string key, UserGroupRef value)
+        {
+            _refs.Add(key, value);
+            RebuildIndex();
+        }
+
+        public bool ContainsKey(string key) => _refs.ContainsKey(key);
+
+        public bool Remove(string key)
+        {
+            var result = _refs.Remove(key);
+            RebuildIndex();
+
+            return result;
+        }
+
+        public bool TryGetValue(string key, out UserGroupRef value) => _refs.TryGetValue(key, out value);
+
+        public ICollection<UserGroupRef> Values => _refs.Values;
+
         public void Add(KeyValuePair<string, UserGroupRef> item)
         {
-            refs.Add(item);
+            _refs.Add(item);
             RebuildIndex();
         }
 
         public void Clear()
         {
-            refs.Clear();
+            _refs.Clear();
             RebuildIndex();
         }
 
-        public bool Contains(KeyValuePair<string, UserGroupRef> item)
-        {
-            return refs.Contains(item);
-        }
+        public bool Contains(KeyValuePair<string, UserGroupRef> item) => _refs.Contains(item);
 
-        public void CopyTo(KeyValuePair<string, UserGroupRef>[] array, int arrayIndex)
-        {
-            refs.CopyTo(array, arrayIndex);
-        }
-
-        public int Count
-        {
-            get { return refs.Count; }
-        }
-
-        public bool IsReadOnly
-        {
-            get { return refs.IsReadOnly; }
-        }
+        public void CopyTo(KeyValuePair<string, UserGroupRef>[] array, int arrayIndex) =>
+            _refs.CopyTo(array, arrayIndex);
 
         public bool Remove(KeyValuePair<string, UserGroupRef> item)
         {
-            var result = refs.Remove(item);
+            var result = _refs.Remove(item);
             RebuildIndex();
             return result;
         }
 
-        public IEnumerator<KeyValuePair<string, UserGroupRef>> GetEnumerator()
-        {
-            return refs.GetEnumerator();
-        }
+        public IEnumerator<KeyValuePair<string, UserGroupRef>> GetEnumerator() =>
+            _refs.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return refs.GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => _refs.GetEnumerator();
 
         public IEnumerable<UserGroupRef> GetRefsByUser(Guid userId)
         {
-            if (changed)
+            if (_changed)
             {
-                index = refs.Values.ToLookup(r => r.UserId);
-                changed = false;
+                _index = _refs.Values.ToLookup(r => r.UserId);
+                _changed = false;
             }
-            return index[userId];
+
+            return _index[userId];
         }
 
-        private void RebuildIndex()
-        {
-            changed = true;
-        }
+        private void RebuildIndex() => _changed = true;
     }
 }

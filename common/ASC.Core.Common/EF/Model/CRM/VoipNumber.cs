@@ -11,6 +11,7 @@ namespace ASC.Core.Common.EF.Model
         public string Settings { get; set; }
         public int TenantId { get; set; }
     }
+
     public static class VoipNumberExtension
     {
         public static ModelBuilderWrapper AddVoipNumber(this ModelBuilderWrapper modelBuilder)
@@ -20,6 +21,7 @@ namespace ASC.Core.Common.EF.Model
                 .Add(PgSqlAddVoipNumber, Provider.PostgreSql);
             return modelBuilder;
         }
+
         public static void MySqlAddVoipNumber(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<VoipNumber>(entity =>
@@ -57,6 +59,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
             });
         }
+
         public static void PgSqlAddVoipNumber(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<VoipNumber>(entity =>

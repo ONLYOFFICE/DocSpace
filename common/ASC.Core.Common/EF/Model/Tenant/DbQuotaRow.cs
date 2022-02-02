@@ -11,10 +11,8 @@ namespace ASC.Core.Common.EF
         public long Counter { get; set; }
         public string Tag { get; set; }
         public DateTime LastModified { get; set; }
-        public override object[] GetKeys()
-        {
-            return new object[] { Tenant, Path };
-        }
+
+        public override object[] GetKeys() => new object[] { Tenant, Path };
     }
 
     public static class DbQuotaRowExtension
@@ -26,6 +24,7 @@ namespace ASC.Core.Common.EF
                 .Add(PgSqlAddDbQuotaRow, Provider.PostgreSql);
             return modelBuilder;
         }
+
         public static void MySqlAddDbQuotaRow(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbQuotaRow>(entity =>
@@ -60,6 +59,7 @@ namespace ASC.Core.Common.EF
                     .UseCollation("utf8_general_ci");
             });
         }
+
         public static void PgSqlAddDbQuotaRow(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbQuotaRow>(entity =>

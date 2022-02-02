@@ -10,10 +10,7 @@ namespace ASC.Core.Common.EF
         public int TariffId { get; set; }
         public string PartnerId { get; set; }
 
-        public override object[] GetKeys()
-        {
-            return new object[] { TariffId, PartnerId };
-        }
+        public override object[] GetKeys() => new object[] { TariffId, PartnerId };
     }
 
     public static class DbButtonExtension
@@ -25,6 +22,7 @@ namespace ASC.Core.Common.EF
                 .Add(PgSqlAddDbButton, Provider.PostgreSql);
             return modelBuilder;
         }
+
         public static void MySqlAddDbButton(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbButton>(entity =>
@@ -50,6 +48,7 @@ namespace ASC.Core.Common.EF
                     .UseCollation("utf8_general_ci");
             });
         }
+
         public static void PgSqlAddDbButton(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbButton>(entity =>

@@ -34,47 +34,22 @@ using System.Collections;
 namespace ASC.Notify.Cron
 {
 
-    #region
-
-    #endregion
-
     [Serializable]
     public class TreeSet : ArrayList, ISortedSet
     {
-        #region Members
-
-        #endregion
-
-        #region Properties
-
         public IComparer Comparator { get; } = Comparer.Default;
 
-        #endregion
+        public TreeSet() { }
 
-        #region Constructor
+        public TreeSet(ICollection c) => AddAll(c);
 
-        public TreeSet()
-        {
-        }
-
-        public TreeSet(ICollection c)
-        {
-            AddAll(c);
-        }
-
-        public TreeSet(IComparer c)
-        {
-            Comparator = c;
-        }
-
-        #endregion
-
-        #region Methods
+        public TreeSet(IComparer c) => Comparator = c;
 
         public new bool Add(object obj)
         {
             var inserted = AddWithoutSorting(obj);
             Sort(Comparator);
+
             return inserted;
         }
 
@@ -82,32 +57,29 @@ namespace ASC.Notify.Cron
         {
             var e = new ArrayList(c).GetEnumerator();
             var added = false;
+
             while (e.MoveNext())
             {
-                if (AddWithoutSorting(e.Current))
-                {
-                    added = true;
-                }
+                if (AddWithoutSorting(e.Current)) added = true;
             }
+
             Sort(Comparator);
+
             return added;
         }
 
-        public object First()
-        {
-            return this[0];
-        }
+        public object First() => this[0];
 
         public override bool Contains(object item)
         {
             var tempEnumerator = GetEnumerator();
+
             while (tempEnumerator.MoveNext())
             {
                 if (Comparator.Compare(tempEnumerator.Current, item) == 0)
-                {
                     return true;
-                }
             }
+
             return false;
         }
 
@@ -115,14 +87,17 @@ namespace ASC.Notify.Cron
         {
             ISortedSet newList = new TreeSet();
             var i = 0;
+
             while ((i < Count) && (Comparator.Compare(this[i], limit) < 0))
             {
                 i++;
             }
+
             for (; i < Count; i++)
             {
                 newList.Add(this[i]);
             }
+
             return newList;
         }
 
@@ -130,23 +105,16 @@ namespace ASC.Notify.Cron
         {
             var items = new ArrayList(collection);
             items = ReadOnly(items);
+
             return new TreeSet(items);
         }
-
-        #endregion
-
-        #region Utility methods
 
         private bool AddWithoutSorting(object obj)
         {
             bool inserted;
-            if (!(inserted = Contains(obj)))
-            {
-                base.Add(obj);
-            }
+            if (!(inserted = Contains(obj))) base.Add(obj);
+
             return !inserted;
         }
-
-        #endregion
     }
 }

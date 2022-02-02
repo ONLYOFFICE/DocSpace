@@ -21,6 +21,7 @@ namespace ASC.Core.Common.EF.Model
         public string TimezoneName { get; set; }
         public int Processed { get; set; }
     }
+
     public static class DbipLocationExtension
     {
         public static ModelBuilderWrapper AddDbipLocation(this ModelBuilderWrapper modelBuilder)
@@ -113,8 +114,8 @@ namespace ASC.Core.Common.EF.Model
                     .HasCharSet("utf8")
                     .UseCollation("utf8_general_ci");
             });
-
         }
+
         public static void PgSqlAddDbipLocation(this ModelBuilder modelBuilder)
         {
             modelBuilder.HasPostgresEnum("onlyoffice", "enum_dbip_location", new[] { "ipv4", "ipv6" });

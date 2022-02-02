@@ -47,107 +47,106 @@ namespace ASC.Core.Common.Billing
     [Singletone]
     public class CouponManager
     {
-        private IEnumerable<AvangateProduct> Products { get; set; }
-        private IEnumerable<string> Groups { get; set; }
-        private readonly int Percent;
-        private readonly int Schedule;
-        private readonly string VendorCode;
-        private readonly byte[] Secret;
-        private readonly Uri BaseAddress;
-        private readonly string ApiVersion;
-        private readonly SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1, 1);
-        private readonly ILog Log;
+        private IEnumerable<AvangateProduct> _products;
+        private IEnumerable<string> _groups;
+        private readonly int _percent;
+        private readonly int _schedule;
+        private readonly string _vendorCode;
+        private readonly byte[] _secret;
+        private readonly Uri _baseAddress;
+        private readonly string _apiVersion;
+        private readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
+        private readonly ILog _logger;
 
         public CouponManager(IOptionsMonitor<ILog> option)
         {
-            SemaphoreSlim = new SemaphoreSlim(1, 1);
-            Log = option.CurrentValue;
+            _semaphoreSlim = new SemaphoreSlim(1, 1);
+            _logger = option.CurrentValue;
 
             try
             {
                 var cfg = (AvangateCfgSectionHandler)ConfigurationManager.GetSection("avangate");
-                Secret = Encoding.UTF8.GetBytes(cfg.Secret);
-                VendorCode = cfg.Vendor;
-                Percent = cfg.Percent;
-                Schedule = cfg.Schedule;
-                BaseAddress = new Uri(cfg.BaseAddress);
-                ApiVersion = "/rest/" + cfg.ApiVersion.TrimStart('/');
-                Groups = (cfg.Groups ?? "").Split(',', '|', ' ');
+                _secret = Encoding.UTF8.GetBytes(cfg.Secret);
+                _vendorCode = cfg.Vendor;
+                _percent = cfg.Percent;
+                _schedule = cfg.Schedule;
+                _baseAddress = new Uri(cfg.BaseAddress);
+                _apiVersion = "/rest/" + cfg.ApiVersion.TrimStart('/');
+                _groups = (cfg.Groups ?? "").Split(',', '|', ' ');
             }
             catch (Exception e)
             {
-                Secret = Encoding.UTF8.GetBytes("");
-                VendorCode = "";
-                Percent = AvangateCfgSectionHandler.DefaultPercent;
-                Schedule = AvangateCfgSectionHandler.DefaultShedule;
-                BaseAddress = new Uri(AvangateCfgSectionHandler.DefaultAdress);
-                ApiVersion = AvangateCfgSectionHandler.DefaultApiVersion;
-                Groups = new List<string>();
-                Log.Fatal(e);
+                _secret = Encoding.UTF8.GetBytes("");
+                _vendorCode = "";
+                _percent = AvangateCfgSectionHandler.DefaultPercent;
+                _schedule = AvangateCfgSectionHandler.DefaultShedule;
+                _baseAddress = new Uri(AvangateCfgSectionHandler.DefaultAdress);
+                _apiVersion = AvangateCfgSectionHandler.DefaultApiVersion;
+                _groups = new List<string>();
+                _logger.Fatal(e);
             }
         }
 
-        public string CreateCoupon(TenantManager tenantManager)
-        {
-            return CreatePromotionAsync(tenantManager).Result;
-        }
+        public string CreateCoupon(TenantManager tenantManager) => CreatePromotionAsync(tenantManager).Result;
 
         private async Task<string> CreatePromotionAsync(TenantManager tenantManager)
         {
             try
             {
                 using var httpClient = PrepaireClient();
-                using var content = new StringContent(await Promotion.GeneratePromotion(Log, this, tenantManager, Percent, Schedule), Encoding.Default, "application/json");
-                using var response = await httpClient.PostAsync(string.Format("{0}/promotions/", ApiVersion), content);
+                using var content = new StringContent(await Promotion.GeneratePromotion(_logger, this, tenantManager, _percent, _schedule), Encoding.Default, "application/json");
+                using var response = await httpClient.PostAsync(string.Format("{0}/promotions/", _apiVersion), content);
                 if (!response.IsSuccessStatusCode)
                     throw new Exception(response.ReasonPhrase);
 
                 var result = await response.Content.ReadAsStringAsync();
                 await Task.Delay(1000 - DateTime.UtcNow.Millisecond); // otherwise authorize exception
                 var createdPromotion = JsonConvert.DeserializeObject<Promotion>(result);
+
                 return createdPromotion.Coupon.Code;
             }
             catch (Exception ex)
             {
-                Log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 throw;
             }
         }
 
         internal async Task<IEnumerable<AvangateProduct>> GetProducts()
         {
-            if (Products != null) return Products;
+            if (_products != null) return _products;
 
-            await SemaphoreSlim.WaitAsync();
+            await _semaphoreSlim.WaitAsync();
 
-            if (Products != null)
+            if (_products != null)
             {
-                SemaphoreSlim.Release();
-                return Products;
+                _semaphoreSlim.Release();
+                return _products;
             }
 
             try
             {
                 using var httpClient = PrepaireClient();
-                using var response = await httpClient.GetAsync(string.Format("{0}/products/?Limit=1000&Enabled=true", ApiVersion));
+                using var response = await httpClient.GetAsync(string.Format("{0}/products/?Limit=1000&Enabled=true", _apiVersion));
                 if (!response.IsSuccessStatusCode)
                     throw new Exception(response.ReasonPhrase);
 
                 var result = await response.Content.ReadAsStringAsync();
-                Log.Debug(result);
+                _logger.Debug(result);
 
                 var products = JsonConvert.DeserializeObject<List<AvangateProduct>>(result);
-                products = products.Where(r => r.ProductGroup != null && Groups.Contains(r.ProductGroup.Code)).ToList();
-                return Products = products;
+                products = products.Where(r => r.ProductGroup != null && _groups.Contains(r.ProductGroup.Code)).ToList();
+
+                return _products = products;
             }
             catch (Exception ex)
             {
-                Log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 throw;
             }
             finally
             {
-                SemaphoreSlim.Release();
+                _semaphoreSlim.Release();
             }
         }
 
@@ -155,30 +154,33 @@ namespace ASC.Core.Common.Billing
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
             const string applicationJson = "application/json";
-            using var httpClient = new HttpClient { BaseAddress = BaseAddress, Timeout = TimeSpan.FromMinutes(3) };
+            using var httpClient = new HttpClient { BaseAddress = _baseAddress, Timeout = TimeSpan.FromMinutes(3) };
             httpClient.DefaultRequestHeaders.TryAddWithoutValidation("accept", applicationJson);
             httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", applicationJson);
             httpClient.DefaultRequestHeaders.TryAddWithoutValidation("X-Avangate-Authentication", CreateAuthHeader());
+
             return httpClient;
         }
 
         private string CreateAuthHeader()
         {
-            using var hmac = new HMACMD5(Secret);
+            using var hmac = new HMACMD5(_secret);
             var date = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
-            var hash = VendorCode.Length + VendorCode + date.Length + date;
+            var hash = _vendorCode.Length + _vendorCode + date.Length + date;
             var data = hmac.ComputeHash(Encoding.UTF8.GetBytes(hash));
 
             var sBuilder = new StringBuilder();
+
             foreach (var t in data)
             {
                 sBuilder.Append(t.ToString("x2"));
             }
 
             var stringBuilder = new StringBuilder();
-            stringBuilder.AppendFormat("code='{0}' ", VendorCode);
+            stringBuilder.AppendFormat("code='{0}' ", _vendorCode);
             stringBuilder.AppendFormat("date='{0}' ", date);
             stringBuilder.AppendFormat("hash='{0}'", sBuilder);
+
             return stringBuilder.ToString();
         }
     }
@@ -278,50 +280,47 @@ namespace ASC.Core.Common.Billing
         public const int DefaultShedule = 10;
 
         [ConfigurationProperty("secret")]
-        public string Secret
-        {
-            get { return (string)this["secret"]; }
-        }
+        public string Secret => (string)this["secret"];
 
         [ConfigurationProperty("vendor")]
         public string Vendor
         {
-            get { return (string)this["vendor"]; }
-            set { this["vendor"] = value; }
+            get => (string)this["vendor"];
+            set => this["vendor"] = value;
         }
 
         [ConfigurationProperty("percent", DefaultValue = DefaultPercent)]
         public int Percent
         {
-            get { return Convert.ToInt32(this["percent"]); }
-            set { this["percent"] = value; }
+            get => Convert.ToInt32(this["percent"]);
+            set => this["percent"] = value;
         }
 
         [ConfigurationProperty("schedule", DefaultValue = DefaultShedule)]
         public int Schedule
         {
-            get { return Convert.ToInt32(this["schedule"]); }
-            set { this["schedule"] = value; }
+            get => Convert.ToInt32(this["schedule"]);
+            set => this["schedule"] = value;
         }
 
         [ConfigurationProperty("groups")]
         public string Groups
         {
-            get { return (string)this["groups"]; }
+            get => (string)this["groups"];
         }
 
         [ConfigurationProperty("address", DefaultValue = DefaultAdress)]
         public string BaseAddress
         {
-            get { return (string)this["address"]; }
-            set { this["address"] = value; }
+            get => (string)this["address"];
+            set => this["address"] = value;
         }
 
         [ConfigurationProperty("apiVersion", DefaultValue = DefaultApiVersion)]
         public string ApiVersion
         {
-            get { return (string)this["apiVersion"]; }
-            set { this["apiVersion"] = value; }
+            get => (string)this["apiVersion"];
+            set => this["apiVersion"] = value;
         }
     }
 }

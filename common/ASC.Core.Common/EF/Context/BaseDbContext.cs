@@ -17,23 +17,18 @@ namespace ASC.Core.Common.EF
 
     public class BaseDbContext : DbContext
     {
-        public string baseName;
-        public BaseDbContext() { }
-        public BaseDbContext(DbContextOptions options) : base(options)
-        {
-
-        }
-
+        public ConnectionStringSettings ConnectionStringSettings { get; set; }
         internal string MigrateAssembly { get; set; }
         internal ILoggerFactory LoggerFactory { get; set; }
-        public ConnectionStringSettings ConnectionStringSettings { get; set; }
         protected internal Provider Provider { get; set; }
+        protected virtual Dictionary<Provider, Func<BaseDbContext>> ProviderContext => null;
 
-        public static ServerVersion ServerVersion = ServerVersion.Parse("8.0.25");
-        protected virtual Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-        {
-            get { return null; }
-        }
+        public string baseName;
+        public static ServerVersion serverVersion = ServerVersion.Parse("8.0.25");
+
+        public BaseDbContext() { }
+
+        public BaseDbContext(DbContextOptions options) : base(options) { }
 
         public void Migrate()
         {
@@ -48,10 +43,7 @@ namespace ASC.Core.Common.EF
 
                 sqlProvider.Database.Migrate();
             }
-            else
-            {
-                Database.Migrate();
-            }
+            else Database.Migrate();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -62,12 +54,10 @@ namespace ASC.Core.Common.EF
             switch (Provider)
             {
                 case Provider.MySql:
-                    optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString, ServerVersion, r =>
+                    optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString, serverVersion, r =>
                     {
                         if (!string.IsNullOrEmpty(MigrateAssembly))
-                        {
                             r = r.MigrationsAssembly(MigrateAssembly);
-                        }
                     });
                     break;
                 case Provider.PostgreSql:
@@ -99,9 +89,7 @@ namespace ASC.Core.Common.EF
             var dbSet = expressionDbSet.Compile().Invoke(b);
             var existingBlog = dbSet.Find(entity.GetKeys());
             if (existingBlog == null)
-            {
                 return dbSet.Add(entity).Entity;
-            }
             else
             {
                 b.Entry(existingBlog).CurrentValues.SetValues(entity);
@@ -117,9 +105,9 @@ namespace ASC.Core.Common.EF
 
     public class MultiRegionalDbContext<T> : IDisposable, IAsyncDisposable where T : BaseDbContext, new()
     {
-        public MultiRegionalDbContext() { }
-
         internal List<T> Context { get; set; }
+
+        public MultiRegionalDbContext() { }
 
         public void Dispose()
         {
@@ -127,10 +115,7 @@ namespace ASC.Core.Common.EF
 
             foreach (var c in Context)
             {
-                if (c != null)
-                {
-                    c.Dispose();
-                }
+                if (c != null) c.Dispose();
             }
         }
         public async ValueTask DisposeAsync()
@@ -139,10 +124,7 @@ namespace ASC.Core.Common.EF
 
             foreach (var c in Context)
             {
-                if (c != null)
-                {
-                    await c.DisposeAsync();
-                }
+                if (c != null) await c.DisposeAsync();
             }
         }
     }

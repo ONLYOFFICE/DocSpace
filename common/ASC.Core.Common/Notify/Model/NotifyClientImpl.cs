@@ -36,79 +36,57 @@ namespace ASC.Notify.Model
 {
     class NotifyClientImpl : INotifyClient
     {
-        private readonly Context ctx;
-        private readonly InterceptorStorage interceptors = new InterceptorStorage();
-        private readonly INotifySource notifySource;
         public IServiceScope ServiceScope { get; }
+
+        private readonly Context _ctx;
+        private readonly InterceptorStorage _interceptors = new InterceptorStorage();
+        private readonly INotifySource _notifySource;
 
         public NotifyClientImpl(Context context, INotifySource notifySource, IServiceScope serviceScope)
         {
-            this.notifySource = notifySource ?? throw new ArgumentNullException("notifySource");
+            _notifySource = notifySource ?? throw new ArgumentNullException(nameof(notifySource));
             ServiceScope = serviceScope;
-            ctx = context ?? throw new ArgumentNullException("context");
+            _ctx = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public void SendNoticeToAsync(INotifyAction action, IRecipient[] recipients, string[] senderNames, params ITagValue[] args)
-        {
+        public void SendNoticeToAsync(INotifyAction action, IRecipient[] recipients, string[] senderNames, params ITagValue[] args) =>
             SendNoticeToAsync(action, null, recipients, senderNames, false, args);
-        }
 
-        public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, params ITagValue[] args)
-        {
+        public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, params ITagValue[] args) =>
             SendNoticeToAsync(action, objectID, recipients, senderNames, false, args);
-        }
 
-        public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, params ITagValue[] args)
-        {
+        public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, params ITagValue[] args) =>
             SendNoticeToAsync(action, objectID, recipients, null, false, args);
-        }
 
-        public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, bool checkSubscription, params ITagValue[] args)
-        {
+        public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, bool checkSubscription, params ITagValue[] args) =>
             SendNoticeToAsync(action, objectID, recipients, null, checkSubscription, args);
-        }
 
-        public void SendNoticeAsync(INotifyAction action, string objectID, IRecipient recipient, params ITagValue[] args)
-        {
+        public void SendNoticeAsync(INotifyAction action, string objectID, IRecipient recipient, params ITagValue[] args) =>
             SendNoticeToAsync(action, objectID, new[] { recipient }, null, false, args);
-        }
 
         public void SendNoticeAsync(int tenantId, INotifyAction action, string objectID, params ITagValue[] args)
         {
-            var subscriptionSource = notifySource.GetSubscriptionProvider();
+            var subscriptionSource = _notifySource.GetSubscriptionProvider();
             var recipients = subscriptionSource.GetRecipients(action, objectID);
             SendNoticeToAsync(action, objectID, recipients, null, false, args);
         }
 
-        public void SendNoticeAsync(INotifyAction action, string objectID, IRecipient recipient, bool checkSubscription, params ITagValue[] args)
-        {
+        public void SendNoticeAsync(INotifyAction action, string objectID, IRecipient recipient, bool checkSubscription, params ITagValue[] args) =>
             SendNoticeToAsync(action, objectID, new[] { recipient }, null, checkSubscription, args);
-        }
 
-        public void BeginSingleRecipientEvent(string name)
-        {
-            interceptors.Add(new SingleRecipientInterceptor(name));
-        }
+        public void BeginSingleRecipientEvent(string name) =>
+            _interceptors.Add(new SingleRecipientInterceptor(name));
 
-        public void EndSingleRecipientEvent(string name)
-        {
-            interceptors.Remove(name);
-        }
+        public void EndSingleRecipientEvent(string name) => _interceptors.Remove(name);
 
-        public void AddInterceptor(ISendInterceptor interceptor)
-        {
-            interceptors.Add(interceptor);
-        }
+        public void AddInterceptor(ISendInterceptor interceptor) => _interceptors.Add(interceptor);
 
-        public void RemoveInterceptor(string name)
-        {
-            interceptors.Remove(name);
-        }
+        public void RemoveInterceptor(string name) => _interceptors.Remove(name);
 
 
         public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, bool checkSubsciption, params ITagValue[] args)
         {
-            if (recipients == null) throw new ArgumentNullException("recipients");
+            if (recipients == null) throw new ArgumentNullException(nameof(recipients));
 
             BeginSingleRecipientEvent("__syspreventduplicateinterceptor");
 
@@ -121,21 +99,23 @@ namespace ASC.Notify.Model
 
         private void SendAsync(NotifyRequest request)
         {
-            request.Interceptors = interceptors.GetAll();
-            ctx.NotifyEngine.QueueRequest(request, ServiceScope);
+            request.Interceptors = _interceptors.GetAll();
+            _ctx.NotifyEngine.QueueRequest(request, ServiceScope);
         }
 
         private NotifyRequest CreateRequest(INotifyAction action, string objectID, IRecipient recipient, ITagValue[] args, string[] senders, bool checkSubsciption)
         {
-            if (action == null) throw new ArgumentNullException("action");
-            if (recipient == null) throw new ArgumentNullException("recipient");
+            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
 
-            var request = new NotifyRequest(notifySource, action, objectID, recipient)
+            var request = new NotifyRequest(_notifySource, action, objectID, recipient)
             {
                 SenderNames = senders,
                 IsNeedCheckSubscriptions = checkSubsciption
             };
+
             if (args != null) request.Arguments.AddRange(args);
+
             return request;
         }
     }

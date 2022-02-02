@@ -21,6 +21,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                 .Add(PgSqlAddResReserve, Provider.PostgreSql);
             return modelBuilder;
         }
+
         public static void MySqlAddResReserve(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ResReserve>(entity =>
@@ -64,6 +65,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .UseCollation("utf8_general_ci");
             });
         }
+
         public static void PgSqlAddResReserve(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ResReserve>(entity =>

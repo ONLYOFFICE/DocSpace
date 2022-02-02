@@ -52,7 +52,6 @@ namespace ASC.Core
 
         void RemoveSubscriptions(int tenant, string sourceId, string actionId, string objectId);
 
-
         IEnumerable<SubscriptionMethod> GetSubscriptionMethods(int tenant, string sourceId, string actionId, string recipientId);
 
         void SetSubscriptionMethod(SubscriptionMethod m);

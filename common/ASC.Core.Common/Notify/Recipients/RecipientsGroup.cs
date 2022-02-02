@@ -32,19 +32,14 @@ namespace ASC.Notify.Recipients
     public class RecipientsGroup
         : IRecipientsGroup
     {
+        public string ID { get; private set; }
+        public string Name { get; private set; }
+
         public RecipientsGroup(string id, string name)
         {
             ID = id;
             Name = name;
         }
-
-        #region IRecipientsGroup Members
-
-        public string ID { get; private set; }
-
-        public string Name { get; private set; }
-
-        #endregion
 
         public override bool Equals(object obj)
         {
@@ -52,14 +47,8 @@ namespace ASC.Notify.Recipients
             return Equals(recGr.ID, ID);
         }
 
-        public override int GetHashCode()
-        {
-            return (ID ?? "").GetHashCode();
-        }
+        public override int GetHashCode() => (ID ?? "").GetHashCode();
 
-        public override string ToString()
-        {
-            return string.Format("{0}", Name);
-        }
+        public override string ToString() => Name;
     }
 }

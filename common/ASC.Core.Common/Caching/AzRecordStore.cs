@@ -32,21 +32,19 @@ namespace ASC.Core.Caching
 {
     class AzRecordStore : IEnumerable<AzRecord>
     {
-        private readonly Dictionary<string, List<AzRecord>> byObjectId = new Dictionary<string, List<AzRecord>>();
-
+        private readonly Dictionary<string, List<AzRecord>> _byObjectId 
+            = new Dictionary<string, List<AzRecord>>();
 
         public AzRecordStore(IEnumerable<AzRecord> aces)
         {
             foreach (var a in aces)
-            {
                 Add(a);
-            }
         }
-
 
         public IEnumerable<AzRecord> Get(string objectId)
         {
-            byObjectId.TryGetValue(objectId ?? string.Empty, out var aces);
+            _byObjectId.TryGetValue(objectId ?? string.Empty, out var aces);
+
             return aces ?? new List<AzRecord>();
         }
 
@@ -55,12 +53,13 @@ namespace ASC.Core.Caching
             if (r == null) return;
 
             var id = r.ObjectId ?? string.Empty;
-            if (!byObjectId.ContainsKey(id))
+            if (!_byObjectId.ContainsKey(id))
             {
-                byObjectId[id] = new List<AzRecord>();
+                _byObjectId[id] = new List<AzRecord>();
             }
-            byObjectId[id].RemoveAll(a => a.SubjectId == r.SubjectId && a.ActionId == r.ActionId); // remove escape, see DbAzService
-            byObjectId[id].Add(r);
+
+            _byObjectId[id].RemoveAll(a => a.SubjectId == r.SubjectId && a.ActionId == r.ActionId); // remove escape, see DbAzService
+            _byObjectId[id].Add(r);
         }
 
         public void Remove(AzRecord r)
@@ -68,20 +67,13 @@ namespace ASC.Core.Caching
             if (r == null) return;
 
             var id = r.ObjectId ?? string.Empty;
-            if (byObjectId.ContainsKey(id))
-            {
-                byObjectId[id].RemoveAll(a => a.SubjectId == r.SubjectId && a.ActionId == r.ActionId && a.Reaction == r.Reaction);
-            }
+
+            if (_byObjectId.ContainsKey(id))
+                _byObjectId[id].RemoveAll(a => a.SubjectId == r.SubjectId && a.ActionId == r.ActionId && a.Reaction == r.Reaction);
         }
 
-        public IEnumerator<AzRecord> GetEnumerator()
-        {
-            return byObjectId.Values.SelectMany(v => v).GetEnumerator();
-        }
+        public IEnumerator<AzRecord> GetEnumerator() => _byObjectId.Values.SelectMany(v => v).GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

@@ -16,6 +16,13 @@ namespace ASC.Core.Common.EF.Context
         public DbSet<AuditEvent> AuditEvents { get; set; }
         public DbSet<User> Users { get; set; }
 
+        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext =>
+            new Dictionary<Provider, Func<BaseDbContext>>()
+            {
+                    { Provider.MySql, () => new MySqlAuditTrailContext() } ,
+                    { Provider.PostgreSql, () => new PostgreSqlAuditTrailContext() } ,
+            };
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             ModelBuilderWrapper
@@ -24,25 +31,11 @@ namespace ASC.Core.Common.EF.Context
             .AddUser()
             .AddDbFunction();
         }
-
-        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-        {
-            get
-            {
-                return new Dictionary<Provider, Func<BaseDbContext>>()
-                {
-                    { Provider.MySql, () => new MySqlAuditTrailContext() } ,
-                    { Provider.PostgreSql, () => new PostgreSqlAuditTrailContext() } ,
-                };
-            }
-        }
     }
 
     public static class AuditTrailContextExtension
     {
-        public static DIHelper AddAuditTrailContextService(this DIHelper services)
-        {
-            return services.AddDbContextManagerService<AuditTrailContext>();
-        }
+        public static DIHelper AddAuditTrailContextService(this DIHelper services) =>
+            services.AddDbContextManagerService<AuditTrailContext>();
     }
 }

@@ -11,9 +11,7 @@ namespace ASC.Core.Common.EF
         private ConcurrentDictionary<Type, bool> _historyStore
             = new ConcurrentDictionary<Type, bool>();
 
-        public bool TryAddMigratedContext(Type contextType)
-        {
-            return _historyStore.TryAdd(contextType, true);
-        }
+        public bool TryAddMigratedContext(Type contextType) =>
+            _historyStore.TryAdd(contextType, true);
     }
 }

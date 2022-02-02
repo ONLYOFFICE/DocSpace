@@ -1102,7 +1102,7 @@ namespace ASC.Api.Settings
             var settings = SettingsManager.LoadForDefaultTenant<TenantWhiteLabelSettings>();
             var storage = StorageFactory.GetStorage(string.Empty, "static_partnerdata");
 
-            SaveWhiteLabelSettingsForTenant(settings, storage, Tenant.DEFAULT_TENANT, model);
+            SaveWhiteLabelSettingsForTenant(settings, storage, Tenant.DefaultTenant, model);
         }
 
         private void SaveWhiteLabelSettingsForTenant(TenantWhiteLabelSettings settings, IDataStore storage, int tenantId, WhiteLabelModel model)
@@ -1160,7 +1160,7 @@ namespace ASC.Api.Settings
             var settings = SettingsManager.LoadForDefaultTenant<TenantWhiteLabelSettings>();
             var storage = StorageFactory.GetStorage(string.Empty, "static_partnerdata");
 
-            SaveWhiteLabelSettingsFromFilesForTenant(settings, storage, Tenant.DEFAULT_TENANT);
+            SaveWhiteLabelSettingsFromFilesForTenant(settings, storage, Tenant.DefaultTenant);
         }
 
         private void SaveWhiteLabelSettingsFromFilesForTenant(TenantWhiteLabelSettings settings, IDataStore storage, int tenantId)
@@ -1295,7 +1295,7 @@ namespace ASC.Api.Settings
             var settings = SettingsManager.LoadForDefaultTenant<TenantWhiteLabelSettings>();
             var storage = StorageFactory.GetStorage(string.Empty, "static_partnerdata");
 
-            RestoreWhiteLabelOptionsForTenant(settings, storage, Tenant.DEFAULT_TENANT);
+            RestoreWhiteLabelOptionsForTenant(settings, storage, Tenant.DefaultTenant);
         }
 
         private void RestoreWhiteLabelOptionsForTenant(TenantWhiteLabelSettings settings, IDataStore storage, int tenantId)
@@ -1927,7 +1927,7 @@ namespace ASC.Api.Settings
             if (!UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsAdmin(UserManager)) throw new SecurityException();
 
             var curQuota = TenantExtra.GetTenantQuota();
-            if (curQuota.Id != Tenant.DEFAULT_TENANT) return false;
+            if (curQuota.Id != Tenant.DefaultTenant) return false;
             if (curQuota.Trial) return false;
 
             var curTariff = TenantExtra.GetCurrentTariff();

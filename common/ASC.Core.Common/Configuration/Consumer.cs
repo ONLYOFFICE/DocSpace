@@ -42,33 +42,36 @@ namespace ASC.Core.Common.Configuration
     public class Consumer : IDictionary<string, string>
     {
         public bool CanSet { get; private set; }
-
         public int Order { get; private set; }
-
         public string Name { get; private set; }
+        public int Count => AllProps.Count;
+        public bool IsReadOnly => true;
+        public bool IsSet => _props.Any() && !_props.All(r => string.IsNullOrEmpty(this[r.Key]));
+        public IEnumerable<string> ManagedKeys => _props.Select(r => r.Key).ToList();
+        public ICollection<string> Keys => AllProps.Keys;
+        public ICollection<string> Values => AllProps.Values;
+        public virtual IEnumerable<string> AdditionalKeys => _additional.Select(r => r.Key).ToList();
 
-        protected readonly Dictionary<string, string> Props;
-        public IEnumerable<string> ManagedKeys
+        public string this[string key]
         {
-            get { return Props.Select(r => r.Key).ToList(); }
+            get => Get(key);
+            set => Set(key, value);
         }
 
-        protected readonly Dictionary<string, string> Additional;
-        public virtual IEnumerable<string> AdditionalKeys
-        {
-            get { return Additional.Select(r => r.Key).ToList(); }
-        }
-
-        public ICollection<string> Keys { get { return AllProps.Keys; } }
-        public ICollection<string> Values { get { return AllProps.Values; } }
+        internal protected TenantManager TenantManager { get; set; }
+        internal protected CoreBaseSettings CoreBaseSettings { get; set; }
+        internal protected CoreSettings CoreSettings { get; set; }
+        internal protected ConsumerFactory ConsumerFactory { get; set; }
+        internal protected IConfiguration Configuration { get; }
+        internal protected ICacheNotify<ConsumerCacheItem> EventBusConsumerItem { get; }
 
         private Dictionary<string, string> AllProps
         {
             get
             {
-                var result = Props.ToDictionary(item => item.Key, item => item.Value);
+                var result = _props.ToDictionary(item => item.Key, item => item.Value);
 
-                foreach (var item in Additional.Where(item => !result.ContainsKey(item.Key)))
+                foreach (var item in _additional.Where(item => !result.ContainsKey(item.Key)))
                 {
                     result.Add(item.Key, item.Value);
                 }
@@ -77,29 +80,16 @@ namespace ASC.Core.Common.Configuration
             }
         }
 
-        private readonly bool OnlyDefault;
+        protected readonly Dictionary<string, string> _props;
+        protected readonly Dictionary<string, string> _additional;
+        private readonly bool _onlyDefault;
 
-        internal protected TenantManager TenantManager { get; set; }
-        internal protected CoreBaseSettings CoreBaseSettings { get; set; }
-        internal protected CoreSettings CoreSettings { get; set; }
-        internal protected ConsumerFactory ConsumerFactory { get; set; }
-        internal protected IConfiguration Configuration { get; }
-        internal protected ICacheNotify<ConsumerCacheItem> Cache { get; }
-
-        public bool IsSet
-        {
-            get { return Props.Any() && !Props.All(r => string.IsNullOrEmpty(this[r.Key])); }
-        }
-
-        static Consumer()
-        {
-
-        }
+        static Consumer() { }
 
         public Consumer()
         {
-            Props = new Dictionary<string, string>();
-            Additional = new Dictionary<string, string>();
+            _props = new Dictionary<string, string>();
+            _additional = new Dictionary<string, string>();
         }
 
         public Consumer(
@@ -114,9 +104,9 @@ namespace ASC.Core.Common.Configuration
             CoreBaseSettings = coreBaseSettings;
             CoreSettings = coreSettings;
             Configuration = configuration;
-            Cache = cache;
+            EventBusConsumerItem = cache;
             ConsumerFactory = consumerFactory;
-            OnlyDefault = configuration["core:default-consumers"] == "true";
+            _onlyDefault = configuration["core:default-consumers"] == "true";
             Name = "";
             Order = int.MaxValue;
         }
@@ -133,8 +123,8 @@ namespace ASC.Core.Common.Configuration
         {
             Name = name;
             Order = order;
-            Props = new Dictionary<string, string>();
-            Additional = additional;
+            _props = new Dictionary<string, string>();
+            _additional = additional;
         }
 
         public Consumer(
@@ -149,107 +139,59 @@ namespace ASC.Core.Common.Configuration
         {
             Name = name;
             Order = order;
-            Props = props ?? new Dictionary<string, string>();
-            Additional = additional ?? new Dictionary<string, string>();
+            _props = props ?? new Dictionary<string, string>();
+            _additional = additional ?? new Dictionary<string, string>();
 
             if (props != null && props.Any())
-            {
                 CanSet = props.All(r => string.IsNullOrEmpty(r.Value));
-            }
         }
 
-        public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
-        {
-            return AllProps.GetEnumerator();
-        }
+        public IEnumerator<KeyValuePair<string, string>> GetEnumerator() => AllProps.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        public void Add(KeyValuePair<string, string> item)
-        {
-        }
+        public void Add(KeyValuePair<string, string> item) { }
 
         public void Clear()
         {
             if (!CanSet)
-            {
                 throw new NotSupportedException("Key for read only. Consumer " + Name);
-            }
 
-            foreach (var providerProp in Props)
-            {
+            foreach (var providerProp in _props)
                 this[providerProp.Key] = null;
-            }
 
-            Cache.Publish(new ConsumerCacheItem() { Name = this.Name }, CacheNotifyAction.Remove);
+            EventBusConsumerItem.Publish(new ConsumerCacheItem() { Name = this.Name }, CacheNotifyAction.Remove);
         }
 
-        public bool Contains(KeyValuePair<string, string> item)
-        {
-            return AllProps.Contains(item);
-        }
+        public bool Contains(KeyValuePair<string, string> item) => AllProps.Contains(item);
 
-        public void CopyTo(KeyValuePair<string, string>[] array, int arrayIndex)
-        {
-        }
+        public void CopyTo(KeyValuePair<string, string>[] array, int arrayIndex) { }
 
-        public bool Remove(KeyValuePair<string, string> item)
-        {
-            return AllProps.Remove(item.Key);
-        }
+        public bool Remove(KeyValuePair<string, string> item) => AllProps.Remove(item.Key);
 
-        public int Count { get { return AllProps.Count; } }
+        public bool ContainsKey(string key) => AllProps.ContainsKey(key);
 
-        public bool IsReadOnly { get { return true; } }
+        public void Add(string key, string value) { }
 
-        public bool ContainsKey(string key)
-        {
-            return AllProps.ContainsKey(key);
-        }
+        public bool Remove(string key) => false;
 
-        public void Add(string key, string value)
-        {
-        }
+        public bool TryGetValue(string key, out string value) => AllProps.TryGetValue(key, out value);
 
-        public bool Remove(string key)
-        {
-            return false;
-        }
-
-        public bool TryGetValue(string key, out string value)
-        {
-            return AllProps.TryGetValue(key, out value);
-        }
-
-        public string this[string key]
-        {
-            get { return Get(key); }
-            set { Set(key, value); }
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         private string Get(string name)
         {
             string value = null;
 
-            if (!OnlyDefault && CanSet)
+            if (!_onlyDefault && CanSet)
             {
                 var tenant = CoreBaseSettings.Standalone
-                                 ? Tenant.DEFAULT_TENANT
+                                 ? Tenant.DefaultTenant
                                  : TenantManager.GetCurrentTenant().TenantId;
 
                 value = CoreSettings.GetSetting(GetSettingsKey(name), tenant);
             }
 
-            if (string.IsNullOrEmpty(value))
-            {
-                if (AllProps.ContainsKey(name))
-                {
-                    value = AllProps[name];
-                }
-            }
+            if (string.IsNullOrEmpty(value) && AllProps.ContainsKey(name))
+                value = AllProps[name];
 
             return value;
         }
@@ -257,47 +199,35 @@ namespace ASC.Core.Common.Configuration
         private void Set(string name, string value)
         {
             if (!CanSet)
-            {
                 throw new NotSupportedException("Key for read only. Key " + name);
-            }
 
             if (!ManagedKeys.Contains(name))
             {
-                if (Additional.ContainsKey(name))
-                {
-                    Additional[name] = value;
-                }
-                else
-                {
-                    Additional.Add(name, value);
-                }
+                if (_additional.ContainsKey(name)) _additional[name] = value;
+
+                else _additional.Add(name, value);
+
                 return;
             }
 
             var tenant = CoreBaseSettings.Standalone
-                             ? Tenant.DEFAULT_TENANT
+                             ? Tenant.DefaultTenant
                              : TenantManager.GetCurrentTenant().TenantId;
             CoreSettings.SaveSetting(GetSettingsKey(name), value, tenant);
         }
 
-        protected virtual string GetSettingsKey(string name)
-        {
-            return "AuthKey_" + name;
-        }
+        protected virtual string GetSettingsKey(string name) => $"AuthKey_{name}";
     }
 
     public class DataStoreConsumer : Consumer, ICloneable
     {
-        public Type HandlerType { get; private set; }
-        public DataStoreConsumer Cdn { get; private set; }
-
         public const string HandlerTypeKey = "handlerType";
         public const string CdnKey = "cdn";
 
-        public DataStoreConsumer() : base()
-        {
+        public Type HandlerType { get; private set; }
+        public DataStoreConsumer Cdn { get; private set; }
 
-        }
+        public DataStoreConsumer() : base() { }
 
         public DataStoreConsumer(
             TenantManager tenantManager,
@@ -306,10 +236,7 @@ namespace ASC.Core.Common.Configuration
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory)
-        {
-
-        }
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory) { }
 
         public DataStoreConsumer(
             TenantManager tenantManager,
@@ -337,15 +264,18 @@ namespace ASC.Core.Common.Configuration
             Init(additional);
         }
 
-        public override IEnumerable<string> AdditionalKeys
+        public override IEnumerable<string> AdditionalKeys =>
+            base.AdditionalKeys.Where(r => r != HandlerTypeKey && r != "cdn").ToList();
+
+        public object Clone()
         {
-            get { return base.AdditionalKeys.Where(r => r != HandlerTypeKey && r != "cdn").ToList(); }
+            return new DataStoreConsumer(TenantManager, CoreBaseSettings, CoreSettings, Configuration,
+                EventBusConsumerItem, ConsumerFactory, Name, Order, _props.ToDictionary(r => r.Key, r => r.Value),
+                _additional.ToDictionary(r => r.Key, r => r.Value));
         }
 
-        protected override string GetSettingsKey(string name)
-        {
-            return base.GetSettingsKey(Name + name);
-        }
+        protected override string GetSettingsKey(string name) =>
+            base.GetSettingsKey(Name + name);
 
         private void Init(IReadOnlyDictionary<string, string> additional)
         {
@@ -354,10 +284,7 @@ namespace ASC.Core.Common.Configuration
 
             HandlerType = Type.GetType(additional[HandlerTypeKey]);
 
-            if (additional.ContainsKey(CdnKey))
-            {
-                Cdn = GetCdn(additional[CdnKey]);
-            }
+            if (additional.ContainsKey(CdnKey)) Cdn = GetCdn(additional[CdnKey]);
         }
 
         private DataStoreConsumer GetCdn(string cdn)
@@ -369,12 +296,9 @@ namespace ASC.Core.Common.Configuration
             var additional = fromConfig.AdditionalKeys.ToDictionary(prop => prop, prop => fromConfig[prop]);
             additional.Add(HandlerTypeKey, HandlerType.AssemblyQualifiedName);
 
-            return new DataStoreConsumer(fromConfig.TenantManager, fromConfig.CoreBaseSettings, fromConfig.CoreSettings, fromConfig.Configuration, fromConfig.Cache, fromConfig.ConsumerFactory, fromConfig.Name, fromConfig.Order, props, additional);
-        }
-
-        public object Clone()
-        {
-            return new DataStoreConsumer(TenantManager, CoreBaseSettings, CoreSettings, Configuration, Cache, ConsumerFactory, Name, Order, Props.ToDictionary(r => r.Key, r => r.Value), Additional.ToDictionary(r => r.Key, r => r.Value));
+            return new DataStoreConsumer(fromConfig.TenantManager, fromConfig.CoreBaseSettings, fromConfig.CoreSettings,
+                fromConfig.Configuration, fromConfig.EventBusConsumerItem, fromConfig.ConsumerFactory, fromConfig.Name,
+                fromConfig.Order, props, additional);
         }
     }
 
@@ -383,22 +307,14 @@ namespace ASC.Core.Common.Configuration
     {
         public ILifetimeScope Builder { get; set; }
 
-        public ConsumerFactory(IContainer builder)
-        {
-            Builder = builder.BeginLifetimeScope();
-        }
+        public ConsumerFactory(IContainer builder) => Builder = builder.BeginLifetimeScope();
 
-        public ConsumerFactory(ILifetimeScope builder)
-        {
-            Builder = builder;
-        }
+        public ConsumerFactory(ILifetimeScope builder) => Builder = builder;
 
         public Consumer GetByKey(string key)
         {
             if (Builder.TryResolveKeyed(key, typeof(Consumer), out var result))
-            {
                 return (Consumer)result;
-            }
 
             return new Consumer();
         }
@@ -406,9 +322,7 @@ namespace ASC.Core.Common.Configuration
         public T GetByKey<T>(string key) where T : Consumer, new()
         {
             if (Builder.TryResolveKeyed(key, typeof(T), out var result))
-            {
                 return (T)result;
-            }
 
             return new T();
         }
@@ -416,21 +330,13 @@ namespace ASC.Core.Common.Configuration
         public T Get<T>() where T : Consumer, new()
         {
             if (Builder.TryResolve(out T result))
-            {
                 return result;
-            }
 
             return new T();
         }
 
-        public IEnumerable<T> GetAll<T>() where T : Consumer, new()
-        {
-            return Builder.Resolve<IEnumerable<T>>();
-        }
+        public IEnumerable<T> GetAll<T>() where T : Consumer, new() => Builder.Resolve<IEnumerable<T>>();
 
-        public void Dispose()
-        {
-            Builder.Dispose();
-        }
+        public void Dispose() => Builder.Dispose();
     }
 }

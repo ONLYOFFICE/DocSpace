@@ -12,41 +12,40 @@ namespace ASC.Core.Common.EF
     [Scope]
     public class ConfigureDbContext<T> : IConfigureNamedOptions<T> where T : BaseDbContext, new()
     {
-        public const string baseName = "default";
-        private EFLoggerFactory LoggerFactory { get; }
-        private ConfigurationExtension Configuration { get; }
-        private string MigrateAssembly { get; }
+        public const string BaseName = "default";
+
+        private readonly EFLoggerFactory _loggerFactory;
+        private readonly ConfigurationExtension _configuration;
+        private readonly string _migrateAssembly;
 
         public ConfigureDbContext(EFLoggerFactory loggerFactory, ConfigurationExtension configuration)
         {
-            LoggerFactory = loggerFactory;
-            Configuration = configuration;
-            MigrateAssembly = Configuration["testAssembly"];
+            _loggerFactory = loggerFactory;
+            _configuration = configuration;
+            _migrateAssembly = _configuration["testAssembly"];
         }
 
         public void Configure(string name, T context)
         {
-            context.LoggerFactory = LoggerFactory;
-            context.ConnectionStringSettings = Configuration.GetConnectionStrings(name) ?? Configuration.GetConnectionStrings(baseName);
-            context.MigrateAssembly = MigrateAssembly;
+            context.LoggerFactory = _loggerFactory;
+            context.ConnectionStringSettings = _configuration.GetConnectionStrings(name) ?? _configuration.GetConnectionStrings(BaseName);
+            context.MigrateAssembly = _migrateAssembly;
         }
 
-        public void Configure(T context)
-        {
-            Configure(baseName, context);
-        }
+        public void Configure(T context) => Configure(BaseName, context);
     }
 
     public class ConfigureMultiRegionalDbContext<T> : IConfigureNamedOptions<MultiRegionalDbContext<T>> where T : BaseDbContext, new()
     {
-        public string baseName = "default";
-        private ConfigurationExtension Configuration { get; }
-        private DbContextManager<T> DbContext { get; }
+        public string BaseName = "default";
+
+        private readonly ConfigurationExtension _configuration;
+        private readonly DbContextManager<T> _dbContext;
 
         public ConfigureMultiRegionalDbContext(ConfigurationExtension configuration, DbContextManager<T> dbContext)
         {
-            Configuration = configuration;
-            DbContext = dbContext;
+            _configuration = configuration;
+            _dbContext = dbContext;
         }
 
         public void Configure(string name, MultiRegionalDbContext<T> context)
@@ -55,18 +54,15 @@ namespace ASC.Core.Common.EF
 
             const StringComparison cmp = StringComparison.InvariantCultureIgnoreCase;
 
-            foreach (var c in Configuration.GetConnectionStrings().Where(r =>
+            foreach (var c in _configuration.GetConnectionStrings().Where(r =>
             r.Name.Equals(name, cmp) || r.Name.StartsWith(name + ".", cmp) ||
-            r.Name.Equals(baseName, cmp) || r.Name.StartsWith(baseName + ".", cmp)
+            r.Name.Equals(BaseName, cmp) || r.Name.StartsWith(BaseName + ".", cmp)
             ))
             {
-                context.Context.Add(DbContext.Get(c.Name));
+                context.Context.Add(_dbContext.Get(c.Name));
             }
         }
 
-        public void Configure(MultiRegionalDbContext<T> context)
-        {
-            Configure(baseName, context);
-        }
+        public void Configure(MultiRegionalDbContext<T> context) => Configure(BaseName, context);
     }
 }

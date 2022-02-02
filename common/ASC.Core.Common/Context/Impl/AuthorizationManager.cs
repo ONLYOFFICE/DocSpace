@@ -38,20 +38,19 @@ namespace ASC.Core
     [Scope]
     public class AuthorizationManager
     {
-        private readonly IAzService service;
-
-        private TenantManager TenantManager { get; }
+        private readonly IAzService _service;
+        private readonly TenantManager _tenantManager;
 
         public AuthorizationManager(IAzService service, TenantManager tenantManager)
         {
-            this.service = service;
-            TenantManager = tenantManager;
+            _service = service;
+            _tenantManager = tenantManager;
         }
-
 
         public IEnumerable<AzRecord> GetAces(Guid subjectId, Guid actionId)
         {
-            var aces = service.GetAces(TenantManager.GetCurrentTenant().TenantId, default);
+            var aces = _service.GetAces(_tenantManager.GetCurrentTenant().TenantId, default);
+
             return aces
                 .Where(a => a.ActionId == actionId && (a.SubjectId == subjectId || subjectId == Guid.Empty))
                 .ToList();
@@ -59,24 +58,23 @@ namespace ASC.Core
 
         public IEnumerable<AzRecord> GetAces(Guid subjectId, Guid actionId, ISecurityObjectId objectId)
         {
-            var aces = service.GetAces(TenantManager.GetCurrentTenant().TenantId, default);
+            var aces = _service.GetAces(_tenantManager.GetCurrentTenant().TenantId, default);
+
             return FilterAces(aces, subjectId, actionId, objectId)
                 .ToList();
         }
 
         public IEnumerable<AzRecord> GetAcesWithInherits(Guid subjectId, Guid actionId, ISecurityObjectId objectId, ISecurityObjectProvider secObjProvider)
         {
-            if (objectId == null)
-            {
-                return GetAces(subjectId, actionId, null);
-            }
+            if (objectId == null) return GetAces(subjectId, actionId, null);
 
             var result = new List<AzRecord>();
-            var aces = service.GetAces(TenantManager.GetCurrentTenant().TenantId, default);
+            var aces = _service.GetAces(_tenantManager.GetCurrentTenant().TenantId, default);
             result.AddRange(FilterAces(aces, subjectId, actionId, objectId));
 
             var inherits = new List<AzRecord>();
             var secObjProviderHelper = new AzObjectSecurityProviderHelper(objectId, secObjProvider);
+
             while (secObjProviderHelper.NextInherit())
             {
                 inherits.AddRange(FilterAces(aces, subjectId, actionId, secObjProviderHelper.CurrentObjectId));
@@ -85,45 +83,41 @@ namespace ASC.Core
             inherits.AddRange(FilterAces(aces, subjectId, actionId, null));
 
             result.AddRange(DistinctAces(inherits));
+
             return result;
         }
 
-        public void AddAce(AzRecord r)
-        {
-            service.SaveAce(TenantManager.GetCurrentTenant().TenantId, r);
-        }
+        public void AddAce(AzRecord r) =>
+             _service.SaveAce(_tenantManager.GetCurrentTenant().TenantId, r);
 
-        public void RemoveAce(AzRecord r)
-        {
-            service.RemoveAce(TenantManager.GetCurrentTenant().TenantId, r);
-        }
+        public void RemoveAce(AzRecord r) =>
+            _service.RemoveAce(_tenantManager.GetCurrentTenant().TenantId, r);
 
         public void RemoveAllAces(ISecurityObjectId id)
         {
             foreach (var r in GetAces(Guid.Empty, Guid.Empty, id).ToArray())
-            {
                 RemoveAce(r);
-            }
         }
 
-        private IEnumerable<AzRecord> GetAcesInternal()
-        {
-            return service.GetAces(TenantManager.GetCurrentTenant().TenantId, default);
-        }
+        private IEnumerable<AzRecord> GetAcesInternal() =>
+            _service.GetAces(_tenantManager.GetCurrentTenant().TenantId, default);
 
         private IEnumerable<AzRecord> DistinctAces(IEnumerable<AzRecord> inheritAces)
         {
             var aces = new Dictionary<string, AzRecord>();
+
             foreach (var a in inheritAces)
             {
                 aces[string.Format("{0}{1}{2:D}", a.SubjectId, a.ActionId, a.Reaction)] = a;
             }
+
             return aces.Values;
         }
 
         private IEnumerable<AzRecord> FilterAces(IEnumerable<AzRecord> aces, Guid subjectId, Guid actionId, ISecurityObjectId objectId)
         {
             var objId = AzObjectIdHelper.GetFullObjectId(objectId);
+
             return aces is AzRecordStore store ?
                 store.Get(objId).Where(a => (a.SubjectId == subjectId || subjectId == Guid.Empty) && (a.ActionId == actionId || actionId == Guid.Empty)) :
                 aces.Where(a => (a.SubjectId == subjectId || subjectId == Guid.Empty) && (a.ActionId == actionId || actionId == Guid.Empty) && a.ObjectId == objId);

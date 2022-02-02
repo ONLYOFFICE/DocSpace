@@ -20,19 +20,17 @@ namespace ASC.Core.Common.EF.Context
         public DbSet<ApiKeys> ApiKeys { get; set; }
         public DbSet<GreyListingWhiteList> GreyListingWhiteList { get; set; }
 
-        public MailDbContext() { }
-        public MailDbContext(DbContextOptions options) : base(options) { }
-        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-        {
-            get
+        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext =>
+            new Dictionary<Provider, Func<BaseDbContext>>()
             {
-                return new Dictionary<Provider, Func<BaseDbContext>>()
-                {
-                    { Provider.MySql, () => new MySqlMailDbContext() } ,
-                    { Provider.PostgreSql, () => new PostgreSqlMailDbContext() } ,
-                };
-            }
-        }
+                { Provider.MySql, () => new MySqlMailDbContext() } ,
+                { Provider.PostgreSql, () => new PostgreSqlMailDbContext() } ,
+            };
+
+        public MailDbContext() { }
+
+        public MailDbContext(DbContextOptions options) : base(options) { }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             ModelBuilderWrapper
@@ -45,9 +43,7 @@ namespace ASC.Core.Common.EF.Context
     }
     public static class MailDbExtension
     {
-        public static DIHelper AddMailDbContextService(this DIHelper services)
-        {
-            return services.AddDbContextManagerService<MailDbContext>();
-        }
+        public static DIHelper AddMailDbContextService(this DIHelper services) =>
+            services.AddDbContextManagerService<MailDbContext>();
     }
 }

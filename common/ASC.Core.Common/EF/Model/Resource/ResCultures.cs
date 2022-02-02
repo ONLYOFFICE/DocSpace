@@ -11,6 +11,7 @@ namespace ASC.Core.Common.EF.Model.Resource
         public bool Available { get; set; }
         public DateTime CreationDate { get; set; }
     }
+
     public static class ResCulturesExtension
     {
         public static ModelBuilderWrapper AddResCultures(this ModelBuilderWrapper modelBuilder)
@@ -20,6 +21,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                 .Add(PgSqlAddResCultures, Provider.PostgreSql);
             return modelBuilder;
         }
+
         public static void MySqlAddResCultures(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ResCultures>(entity =>
@@ -50,6 +52,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .UseCollation("utf8_general_ci");
             });
         }
+
         public static void PgSqlAddResCultures(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ResCultures>(entity =>

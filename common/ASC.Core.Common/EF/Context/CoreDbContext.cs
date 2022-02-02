@@ -16,22 +16,19 @@ namespace ASC.Core.Common.EF
         public DbSet<DbButton> Buttons { get; set; }
         public DbSet<DbQuota> Quotas { get; set; }
         public DbSet<DbQuotaRow> QuotaRows { get; set; }
-        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-        {
-            get
+
+        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext =>
+            new Dictionary<Provider, Func<BaseDbContext>>()
             {
-                return new Dictionary<Provider, Func<BaseDbContext>>()
-                {
                     { Provider.MySql, () => new MySqlCoreDbContext() } ,
                     { Provider.PostgreSql, () => new PostgreSqlCoreDbContext() } ,
-                };
-            }
-        }
+            };
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             ModelBuilderWrapper
                   .From(modelBuilder, Provider)
-                .AddDbButton()
+                  .AddDbButton()
                   .AddDbQuotaRow()
                   .AddDbQuota()
                   .AddDbTariff();

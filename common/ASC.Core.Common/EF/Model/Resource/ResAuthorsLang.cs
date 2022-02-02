@@ -17,6 +17,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                 .Add(PgSqlAddResAuthorsLang, Provider.PostgreSql);
             return modelBuilder;
         }
+
         public static void MySqlAddResAuthorsLang(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ResAuthorsLang>(entity =>
@@ -42,6 +43,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .UseCollation("utf8_general_ci");
             });
         }
+
         public static void PgSqlAddResAuthorsLang(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ResAuthorsLang>(entity =>

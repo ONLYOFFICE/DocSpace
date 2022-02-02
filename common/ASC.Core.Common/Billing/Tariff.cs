@@ -36,26 +36,19 @@ namespace ASC.Core.Billing
     public class Tariff
     {
         public int QuotaId { get; set; }
-
         public TariffState State { get; set; }
-
         public DateTime DueDate { get; set; }
-
         public DateTime DelayDueDate { get; set; }
-
         public DateTime LicenseDate { get; set; }
-
         public bool Autorenewal { get; set; }
-
         public bool Prolongable { get; set; }
-
         public int Quantity { get; set; }
 
         public static Tariff CreateDefault()
         {
             return new Tariff
             {
-                QuotaId = Tenant.DEFAULT_TENANT,
+                QuotaId = Tenant.DefaultTenant,
                 State = TariffState.Paid,
                 DueDate = DateTime.MaxValue,
                 DelayDueDate = DateTime.MaxValue,
@@ -64,16 +57,9 @@ namespace ASC.Core.Billing
             };
         }
 
+        public override int GetHashCode() => QuotaId.GetHashCode();
 
-        public override int GetHashCode()
-        {
-            return QuotaId.GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is Tariff t && t.QuotaId == QuotaId;
-        }
+        public override bool Equals(object obj) => obj is Tariff t && t.QuotaId == QuotaId;
 
         public bool EqualsByParams(Tariff t)
         {

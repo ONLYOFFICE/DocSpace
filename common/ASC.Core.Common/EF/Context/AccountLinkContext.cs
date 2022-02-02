@@ -14,17 +14,12 @@ namespace ASC.Core.Common.EF.Context
     {
         public DbSet<AccountLinks> AccountLinks { get; set; }
 
-        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-        {
-            get
+        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext =>
+            new Dictionary<Provider, Func<BaseDbContext>>()
             {
-                return new Dictionary<Provider, Func<BaseDbContext>>()
-                {
                     { Provider.MySql, () => new MySqlAccountLinkContext() } ,
                     { Provider.PostgreSql, () => new PostgreSqlAccountLinkContext() } ,
-                };
-            }
-        }
+            };
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,9 +31,7 @@ namespace ASC.Core.Common.EF.Context
 
     public static class AccountLinkContextExtension
     {
-        public static DIHelper AddAccountLinkContextService(this DIHelper services)
-        {
-            return services.AddDbContextManagerService<AccountLinkContext>();
-        }
+        public static DIHelper AddAccountLinkContextService(this DIHelper services) =>
+            services.AddDbContextManagerService<AccountLinkContext>();
     }
 }

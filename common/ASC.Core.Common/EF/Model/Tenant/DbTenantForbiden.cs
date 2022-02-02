@@ -6,6 +6,7 @@ namespace ASC.Core.Common.EF.Model
     {
         public string Address { get; set; }
     }
+
     public static class DbTenantForbidenExtension
     {
         public static ModelBuilderWrapper AddDbTenantForbiden(this ModelBuilderWrapper modelBuilder)
@@ -36,6 +37,7 @@ namespace ASC.Core.Common.EF.Model
                     .UseCollation("utf8_general_ci");
             });
         }
+
         public static void PgSqlAddDbTenantForbiden(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbTenantForbiden>(entity =>

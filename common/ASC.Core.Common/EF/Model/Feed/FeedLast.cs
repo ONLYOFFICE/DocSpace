@@ -9,11 +9,9 @@ namespace ASC.Core.Common.EF.Model
         public string LastKey { get; set; }
         public DateTime LastDate { get; set; }
 
-        public override object[] GetKeys()
-        {
-            return new object[] { LastKey };
-        }
+        public override object[] GetKeys() => new object[] { LastKey };
     }
+
     public static class FeedLastExtension
     {
         public static ModelBuilderWrapper AddFeedLast(this ModelBuilderWrapper modelBuilder)
@@ -23,6 +21,7 @@ namespace ASC.Core.Common.EF.Model
                 .Add(PgSqlAddFeedLast, Provider.PostgreSql);
             return modelBuilder;
         }
+
         public static void MySqlAddFeedLast(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FeedLast>(entity =>
@@ -43,6 +42,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnType("datetime");
             });
         }
+
         public static void PgSqlAddFeedLast(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FeedLast>(entity =>

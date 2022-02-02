@@ -50,13 +50,17 @@ namespace TMResourceData
 {
     public class DBResourceManager : ResourceManager
     {
-        public static bool WhiteLableEnabled = false;
-        private readonly ConcurrentDictionary<string, ResourceSet> resourceSets = new ConcurrentDictionary<string, ResourceSet>();
+        public static bool WhiteLableEnabled { get; set; }
+        public override Type ResourceSetType => typeof(DBResourceSet);
+
+        private readonly IConfiguration _configuration;
+        private readonly IOptionsMonitor<ILog> _option;
+        private readonly DbContextManager<ResourceDbContext> _dbContext;
+        private readonly ConcurrentDictionary<string, ResourceSet> _resourceSets 
+            = new ConcurrentDictionary<string, ResourceSet>();
 
         public DBResourceManager(string filename, Assembly assembly)
-                    : base(filename, assembly)
-        {
-        }
+            : base(filename, assembly) { }
 
         public DBResourceManager(
             IConfiguration configuration,
@@ -66,11 +70,10 @@ namespace TMResourceData
             Assembly assembly)
                     : base(filename, assembly)
         {
-            Configuration = configuration;
-            Option = option;
-            DbContext = dbContext;
+            _configuration = configuration;
+            _option = option;
+            _dbContext = dbContext;
         }
-
 
         public static void PatchAssemblies(IOptionsMonitor<ILog> option)
         {
@@ -92,6 +95,7 @@ namespace TMResourceData
                 catch (ReflectionTypeLoadException rtle)
                 {
                     log.WarnFormat("Can not GetTypes() from assembly {0}, try GetExportedTypes(), error: {1}", a.FullName, rtle.Message);
+
                     foreach (var e in rtle.LoaderExceptions)
                     {
                         log.Info(e.Message);
@@ -106,6 +110,7 @@ namespace TMResourceData
                         log.ErrorFormat("Can not GetExportedTypes() from assembly {0}: {1}", a.FullName, err.Message);
                     }
                 }
+
                 foreach (var type in types)
                 {
                     var prop = type.GetProperty("ResourceManager", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
@@ -122,47 +127,38 @@ namespace TMResourceData
             }
         }
 
-        private static bool Accept(Assembly a)
-        {
-            var n = a.GetName().Name;
-            return (n.StartsWith("ASC.") || n.StartsWith("App_GlobalResources")) && a.GetManifestResourceNames().Any();
-        }
-
-
-        public override Type ResourceSetType
-        {
-            get { return typeof(DBResourceSet); }
-        }
-
-        private IConfiguration Configuration { get; }
-        private IOptionsMonitor<ILog> Option { get; }
-        private DbContextManager<ResourceDbContext> DbContext { get; }
-
         protected override ResourceSet InternalGetResourceSet(CultureInfo culture, bool createIfNotExists, bool tryParents)
         {
-            resourceSets.TryGetValue(culture.Name, out var set);
+            _resourceSets.TryGetValue(culture.Name, out var set);
             if (set == null)
             {
                 var invariant = culture == CultureInfo.InvariantCulture ? base.InternalGetResourceSet(CultureInfo.InvariantCulture, true, true) : null;
-                set = new DBResourceSet(Configuration, Option, DbContext, invariant, culture, BaseName);
-                resourceSets.AddOrUpdate(culture.Name, set, (k, v) => set);
+                set = new DBResourceSet(_configuration, _option, _dbContext, invariant, culture, BaseName);
+                _resourceSets.AddOrUpdate(culture.Name, set, (k, v) => set);
             }
+
             return set;
         }
 
+        private static bool Accept(Assembly a)
+        {
+            var n = a.GetName().Name;
+
+            return (n.StartsWith("ASC.") || n.StartsWith("App_GlobalResources")) && a.GetManifestResourceNames().Any();
+        }
 
         class DBResourceSet : ResourceSet
         {
-            private const string NEUTRAL_CULTURE = "Neutral";
+            private const string NeutralCulture = "Neutral";
 
-            private readonly TimeSpan cacheTimeout = TimeSpan.FromMinutes(120); // for performance
-            private readonly object locker = new object();
-            private readonly MemoryCache cache;
-            private readonly ResourceSet invariant;
-            private readonly string culture;
-            private readonly string filename;
-            private readonly ILog log;
-            private DbContextManager<ResourceDbContext> DbContext { get; }
+            private readonly TimeSpan _cacheTimeout = TimeSpan.FromMinutes(120); // for performance
+            private readonly DbContextManager<ResourceDbContext> _dbContext;
+            private readonly object _locker = new object();
+            private readonly MemoryCache _cache;
+            private readonly ResourceSet _invariant;
+            private readonly string _culture;
+            private readonly string _filename;
+            private readonly ILog _logger;
 
             public DBResourceSet(
                 IConfiguration configuration,
@@ -172,32 +168,27 @@ namespace TMResourceData
                 CultureInfo culture,
                 string filename)
             {
-                if (culture == null)
-                {
-                    throw new ArgumentNullException("culture");
-                }
-                if (string.IsNullOrEmpty(filename))
-                {
-                    throw new ArgumentNullException("filename");
-                }
+                if (culture == null) throw new ArgumentNullException(nameof(culture));
 
-                DbContext = dbContext;
-                log = option.CurrentValue;
+                if (string.IsNullOrEmpty(filename)) throw new ArgumentNullException(nameof(culture));
+
+                _dbContext = dbContext;
+                _logger = option.CurrentValue;
 
                 try
                 {
-                    var defaultValue = ((int)cacheTimeout.TotalMinutes).ToString();
-                    cacheTimeout = TimeSpan.FromMinutes(Convert.ToInt32(configuration["resources:cache-timeout"] ?? defaultValue));
+                    var defaultValue = ((int)_cacheTimeout.TotalMinutes).ToString();
+                    _cacheTimeout = TimeSpan.FromMinutes(Convert.ToInt32(configuration["resources:cache-timeout"] ?? defaultValue));
                 }
                 catch (Exception err)
                 {
-                    log.Error(err);
+                    _logger.Error(err);
                 }
 
-                this.invariant = invariant;
-                this.culture = invariant != null ? NEUTRAL_CULTURE : culture.Name;
-                this.filename = filename.Split('.').Last() + ".resx";
-                cache = MemoryCache.Default;
+                _invariant = invariant;
+                _culture = invariant != null ? NeutralCulture : culture.Name;
+                _filename = filename.Split('.').Last() + ".resx";
+                _cache = MemoryCache.Default;
             }
 
             public override string GetString(string name, bool ignoreCase)
@@ -210,13 +201,11 @@ namespace TMResourceData
                 }
                 catch (Exception err)
                 {
-                    log.ErrorFormat("Can not get resource from {0} for {1}: GetString({2}), {3}", filename, culture, name, err);
+                    _logger.ErrorFormat("Can not get resource from {0} for {1}: GetString({2}), {3}", _filename, _culture, name, err);
                 }
 
-                if (invariant != null && result == null)
-                {
-                    result = invariant.GetString(name, ignoreCase);
-                }
+                if (_invariant != null && result == null)
+                    result = _invariant.GetString(name, ignoreCase);
 
                 return result;
             }
@@ -224,9 +213,9 @@ namespace TMResourceData
             public override IDictionaryEnumerator GetEnumerator()
             {
                 var result = new Hashtable();
-                if (invariant != null)
+                if (_invariant != null)
                 {
-                    foreach (DictionaryEntry e in invariant)
+                    foreach (DictionaryEntry e in _invariant)
                     {
                         result[e.Key] = e.Value;
                     }
@@ -241,32 +230,34 @@ namespace TMResourceData
                 }
                 catch (Exception err)
                 {
-                    log.Error(err);
+                    _logger.Error(err);
                 }
+
                 return result.GetEnumerator();
             }
 
             private Dictionary<string, string> GetResources()
             {
-                var key = string.Format("{0}/{1}", filename, culture);
-                if (!(cache.Get(key) is Dictionary<string, string> dic))
+                var key = $"{_filename}/{_culture}";
+                if (!(_cache.Get(key) is Dictionary<string, string> dic))
                 {
-                    lock (locker)
+                    lock (_locker)
                     {
-                        dic = cache.Get(key) as Dictionary<string, string>;
+                        dic = _cache.Get(key) as Dictionary<string, string>;
                         if (dic == null)
                         {
-                            var policy = cacheTimeout == TimeSpan.Zero ? null : new CacheItemPolicy() { AbsoluteExpiration = DateTimeOffset.Now.Add(cacheTimeout) };
-                            cache.Set(key, dic = LoadResourceSet(filename, culture), policy);
+                            var policy = _cacheTimeout == TimeSpan.Zero ? null : new CacheItemPolicy() { AbsoluteExpiration = DateTimeOffset.Now.Add(_cacheTimeout) };
+                            _cache.Set(key, dic = LoadResourceSet(_filename, _culture), policy);
                         }
                     }
                 }
+
                 return dic;
             }
 
             private Dictionary<string, string> LoadResourceSet(string filename, string culture)
             {
-                using var context = DbContext.Get("tmresource");
+                using var context = _dbContext.Get("tmresource");
                 var q = context.ResData
                     .Where(r => r.CultureTitle == culture)
                     .Join(context.ResFiles, r => r.FileId, a => a.Id, (d, f) => new { data = d, files = f })
@@ -281,29 +272,29 @@ namespace TMResourceData
     [Singletone]
     public class WhiteLabelHelper
     {
-        private readonly ILog log;
-        private readonly ConcurrentDictionary<int, string> whiteLabelDictionary;
-        public string DefaultLogoText;
+        public string DefaultLogoText { get; set; }
 
-        private IConfiguration Configuration { get; }
+        private readonly ILog _logger;
+        private readonly ConcurrentDictionary<int, string> _whiteLabelDictionary;
+        private readonly IConfiguration _configuration;
 
         public WhiteLabelHelper(IConfiguration configuration, IOptionsMonitor<ILog> option)
         {
-            log = option.Get("ASC.Resources");
-            whiteLabelDictionary = new ConcurrentDictionary<int, string>();
+            _logger = option.Get("ASC.Resources");
+            _whiteLabelDictionary = new ConcurrentDictionary<int, string>();
             DefaultLogoText = "";
-            Configuration = configuration;
+            _configuration = configuration;
         }
 
         public void SetNewText(int tenantId, string newText)
         {
             try
             {
-                whiteLabelDictionary.AddOrUpdate(tenantId, r => newText, (i, s) => newText);
+                _whiteLabelDictionary.AddOrUpdate(tenantId, r => newText, (i, s) => newText);
             }
             catch (Exception e)
             {
-                log.Error("SetNewText", e);
+                _logger.Error("SetNewText", e);
             }
         }
 
@@ -311,24 +302,19 @@ namespace TMResourceData
         {
             try
             {
-                whiteLabelDictionary.TryRemove(tenantId, out var text);
+                _whiteLabelDictionary.TryRemove(tenantId, out var text);
             }
             catch (Exception e)
             {
-                log.Error("RestoreOldText", e);
+                _logger.Error("RestoreOldText", e);
             }
         }
 
         internal string ReplaceLogo(TenantManager tenantManager, IHttpContextAccessor httpContextAccessor, string resourceName, string resourceValue)
         {
-            if (string.IsNullOrEmpty(resourceValue))
-            {
-                return resourceValue;
-            }
-            if (!DBResourceManager.WhiteLableEnabled)
-            {
-                return resourceValue;
-            }
+            if (string.IsNullOrEmpty(resourceValue)) return resourceValue;
+
+            if (!DBResourceManager.WhiteLableEnabled) return resourceValue;
 
             if (httpContextAccessor.HttpContext != null) //if in Notify Service or other process without HttpContext
             {
@@ -337,21 +323,17 @@ namespace TMResourceData
                     var tenant = tenantManager.GetCurrentTenant(false);
                     if (tenant == null) return resourceValue;
 
-                    if (whiteLabelDictionary.TryGetValue(tenant.TenantId, out var newText))
+                    if (_whiteLabelDictionary.TryGetValue(tenant.TenantId, out var newText))
                     {
                         var newTextReplacement = newText;
 
                         if (resourceValue.Contains("<") && resourceValue.Contains(">") || resourceName.StartsWith("pattern_"))
-                        {
                             newTextReplacement = HttpUtility.HtmlEncode(newTextReplacement);
-                        }
-                        if (resourceValue.Contains("{0"))
-                        {
-                            //Hack for string which used in string.Format
-                            newTextReplacement = newTextReplacement.Replace("{", "{{").Replace("}", "}}");
-                        }
 
-                        var replPattern = Configuration["resources:whitelabel-text.replacement.pattern"] ?? "(?<=[^@/\\\\]|^)({0})(?!\\.com)";
+                        if (resourceValue.Contains("{0"))
+                            newTextReplacement = newTextReplacement.Replace("{", "{{").Replace("}", "}}"); //Hack for string which used in string.Format
+
+                        var replPattern = _configuration["resources:whitelabel-text.replacement.pattern"] ?? "(?<=[^@/\\\\]|^)({0})(?!\\.com)";
                         var pattern = string.Format(replPattern, DefaultLogoText);
                         //Hack for resource strings with mails looked like ...@onlyoffice... or with website http://www.onlyoffice.com link or with the https://www.facebook.com/pages/OnlyOffice/833032526736775
 
@@ -360,7 +342,7 @@ namespace TMResourceData
                 }
                 catch (Exception e)
                 {
-                    log.Error("ReplaceLogo", e);
+                    _logger.Error("ReplaceLogo", e);
                 }
             }
 

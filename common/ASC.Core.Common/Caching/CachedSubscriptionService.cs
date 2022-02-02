@@ -38,16 +38,16 @@ namespace ASC.Core.Caching
     class SubscriptionServiceCache
     {
         internal ICache Cache { get; }
-        internal ICacheNotify<SubscriptionRecord> NotifyRecord { get; }
-        internal ICacheNotify<SubscriptionMethodCache> NotifyMethod { get; }
+        internal ICacheNotify<SubscriptionRecord> EventBusRecord { get; }
+        internal ICacheNotify<SubscriptionMethodCache> EventBusMethod { get; }
 
-        public SubscriptionServiceCache(ICacheNotify<SubscriptionRecord> notifyRecord, ICacheNotify<SubscriptionMethodCache> notifyMethod, ICache cache)
+        public SubscriptionServiceCache(ICacheNotify<SubscriptionRecord> eventBusRecord, ICacheNotify<SubscriptionMethodCache> eventBustMethod, ICache cache)
         {
             Cache = cache;
-            NotifyRecord = notifyRecord;
-            NotifyMethod = notifyMethod;
+            EventBusRecord = eventBusRecord;
+            EventBusMethod = eventBustMethod;
 
-            notifyRecord.Subscribe((s) =>
+            eventBusRecord.Subscribe((s) =>
             {
                 var store = GetSubsciptionsStore(s.Tenant, s.SourceId, s.ActionId);
                 if (store != null)
@@ -59,26 +59,21 @@ namespace ASC.Core.Caching
                 }
             }, CacheNotifyAction.InsertOrUpdate);
 
-            notifyRecord.Subscribe((s) =>
+            eventBusRecord.Subscribe((s) =>
             {
                 var store = GetSubsciptionsStore(s.Tenant, s.SourceId, s.ActionId);
                 if (store != null)
                 {
                     lock (store)
                     {
-                        if (s.ObjectId == null)
-                        {
-                            store.RemoveSubscriptions();
-                        }
-                        else
-                        {
-                            store.RemoveSubscriptions(s.ObjectId);
-                        }
+                        if (s.ObjectId == null) store.RemoveSubscriptions();
+
+                        else store.RemoveSubscriptions(s.ObjectId);
                     }
                 }
             }, CacheNotifyAction.Remove);
 
-            notifyMethod.Subscribe((m) =>
+            eventBustMethod.Subscribe((m) =>
             {
                 var store = GetSubsciptionsStore(m.Tenant, m.SourceId, m.ActionId);
                 if (store != null)
@@ -91,36 +86,30 @@ namespace ASC.Core.Caching
             }, CacheNotifyAction.Any);
         }
 
-        private SubsciptionsStore GetSubsciptionsStore(int tenant, string sourceId, string actionId)
-        {
-            return Cache.Get<SubsciptionsStore>(GetKey(tenant, sourceId, actionId));
-        }
+        public static string GetKey(int tenant, string sourceId, string actionId) =>
+            $"sub/{tenant}/{sourceId}/{actionId}";
 
-        public static string GetKey(int tenant, string sourceId, string actionId)
-        {
-            return string.Format("sub/{0}/{1}/{2}", tenant, sourceId, actionId);
-        }
+        private SubsciptionsStore GetSubsciptionsStore(int tenant, string sourceId, string actionId) =>
+            Cache.Get<SubsciptionsStore>(GetKey(tenant, sourceId, actionId));
     }
 
     [Scope]
     class CachedSubscriptionService : ISubscriptionService
     {
-        private readonly ISubscriptionService service;
-        private readonly ICache cache;
-        private readonly ICacheNotify<SubscriptionRecord> notifyRecord;
-        private readonly ICacheNotify<SubscriptionMethodCache> notifyMethod;
-
-        private TimeSpan CacheExpiration { get; set; }
+        private readonly ISubscriptionService _service;
+        private readonly ICache _cache;
+        private readonly ICacheNotify<SubscriptionRecord> _eventBusRecord;
+        private readonly ICacheNotify<SubscriptionMethodCache> _eventBusMethod;
+        private TimeSpan _cacheExpiration;
 
         public CachedSubscriptionService(DbSubscriptionService service, SubscriptionServiceCache subscriptionServiceCache)
         {
-            this.service = service ?? throw new ArgumentNullException("service");
-            cache = subscriptionServiceCache.Cache;
-            notifyRecord = subscriptionServiceCache.NotifyRecord;
-            notifyMethod = subscriptionServiceCache.NotifyMethod;
-            CacheExpiration = TimeSpan.FromMinutes(5);
+            _service = service ?? throw new ArgumentNullException(nameof(service));
+            _cache = subscriptionServiceCache.Cache;
+            _eventBusRecord = subscriptionServiceCache.EventBusRecord;
+            _eventBusMethod = subscriptionServiceCache.EventBusMethod;
+            _cacheExpiration = TimeSpan.FromMinutes(5);
         }
-
 
         public IEnumerable<SubscriptionRecord> GetSubscriptions(int tenant, string sourceId, string actionId)
         {
@@ -140,15 +129,11 @@ namespace ASC.Core.Caching
             }
         }
 
-        public string[] GetRecipients(int tenant, string sourceID, string actionID, string objectID)
-        {
-            return service.GetRecipients(tenant, sourceID, actionID, objectID);
-        }
+        public string[] GetRecipients(int tenant, string sourceID, string actionID, string objectID) =>
+            _service.GetRecipients(tenant, sourceID, actionID, objectID);
 
-        public string[] GetSubscriptions(int tenant, string sourceId, string actionId, string recipientId, bool checkSubscribe)
-        {
-            return service.GetSubscriptions(tenant, sourceId, actionId, recipientId, checkSubscribe);
-        }
+        public string[] GetSubscriptions(int tenant, string sourceId, string actionId, string recipientId, bool checkSubscribe) =>
+            _service.GetSubscriptions(tenant, sourceId, actionId, recipientId, checkSubscribe);
 
         public SubscriptionRecord GetSubscription(int tenant, string sourceId, string actionId, string recipientId, string objectId)
         {
@@ -161,20 +146,20 @@ namespace ASC.Core.Caching
 
         public void SaveSubscription(SubscriptionRecord s)
         {
-            service.SaveSubscription(s);
-            notifyRecord.Publish(s, CacheNotifyAction.InsertOrUpdate);
+            _service.SaveSubscription(s);
+            _eventBusRecord.Publish(s, CacheNotifyAction.InsertOrUpdate);
         }
 
         public void RemoveSubscriptions(int tenant, string sourceId, string actionId)
         {
-            service.RemoveSubscriptions(tenant, sourceId, actionId);
-            notifyRecord.Publish(new SubscriptionRecord { Tenant = tenant, SourceId = sourceId, ActionId = actionId }, CacheNotifyAction.Remove);
+            _service.RemoveSubscriptions(tenant, sourceId, actionId);
+            _eventBusRecord.Publish(new SubscriptionRecord { Tenant = tenant, SourceId = sourceId, ActionId = actionId }, CacheNotifyAction.Remove);
         }
 
         public void RemoveSubscriptions(int tenant, string sourceId, string actionId, string objectId)
         {
-            service.RemoveSubscriptions(tenant, sourceId, actionId, objectId);
-            notifyRecord.Publish(new SubscriptionRecord { Tenant = tenant, SourceId = sourceId, ActionId = actionId, ObjectId = objectId }, CacheNotifyAction.Remove);
+            _service.RemoveSubscriptions(tenant, sourceId, actionId, objectId);
+            _eventBusRecord.Publish(new SubscriptionRecord { Tenant = tenant, SourceId = sourceId, ActionId = actionId, ObjectId = objectId }, CacheNotifyAction.Remove);
         }
 
         public IEnumerable<SubscriptionMethod> GetSubscriptionMethods(int tenant, string sourceId, string actionId, string recipientId)
@@ -188,62 +173,57 @@ namespace ASC.Core.Caching
 
         public void SetSubscriptionMethod(SubscriptionMethod m)
         {
-            service.SetSubscriptionMethod(m);
-            notifyMethod.Publish(m, CacheNotifyAction.Any);
+            _service.SetSubscriptionMethod(m);
+            _eventBusMethod.Publish(m, CacheNotifyAction.Any);
         }
 
+        public bool IsUnsubscribe(int tenant, string sourceId, string actionId, string recipientId, string objectId) =>
+            _service.IsUnsubscribe(tenant, sourceId, actionId, recipientId, objectId);
 
         private SubsciptionsStore GetSubsciptionsStore(int tenant, string sourceId, string actionId)
         {
             var key = SubscriptionServiceCache.GetKey(tenant, sourceId, actionId);
-            var store = cache.Get<SubsciptionsStore>(key);
+            var store = _cache.Get<SubsciptionsStore>(key);
             if (store == null)
             {
-                var records = service.GetSubscriptions(tenant, sourceId, actionId);
-                var methods = service.GetSubscriptionMethods(tenant, sourceId, actionId, null);
-                cache.Insert(key, store = new SubsciptionsStore(records, methods), DateTime.UtcNow.Add(CacheExpiration));
+                var records = _service.GetSubscriptions(tenant, sourceId, actionId);
+                var methods = _service.GetSubscriptionMethods(tenant, sourceId, actionId, null);
+                _cache.Insert(key, store = new SubsciptionsStore(records, methods), DateTime.UtcNow.Add(_cacheExpiration));
             }
+
             return store;
-        }
-        public bool IsUnsubscribe(int tenant, string sourceId, string actionId, string recipientId, string objectId)
-        {
-            return service.IsUnsubscribe(tenant, sourceId, actionId, recipientId, objectId);
         }
     }
 
     internal class SubsciptionsStore
     {
-        private readonly List<SubscriptionRecord> records;
-        private IDictionary<string, List<SubscriptionRecord>> recordsByRec;
-        private IDictionary<string, List<SubscriptionRecord>> recordsByObj;
-
-        private readonly List<SubscriptionMethod> methods;
-        private IDictionary<string, List<SubscriptionMethod>> methodsByRec;
+        private readonly List<SubscriptionRecord> _records;
+        private readonly List<SubscriptionMethod> _methods;
+        private IDictionary<string, List<SubscriptionRecord>> _recordsByRec;
+        private IDictionary<string, List<SubscriptionRecord>> _recordsByObj;
+        private IDictionary<string, List<SubscriptionMethod>> _methodsByRec;
 
         public SubsciptionsStore(IEnumerable<SubscriptionRecord> records, IEnumerable<SubscriptionMethod> methods)
         {
-            this.records = records.ToList();
-            this.methods = methods.ToList();
+            _records = records.ToList();
+            _methods = methods.ToList();
             BuildSubscriptionsIndex(records);
             BuildMethodsIndex(methods);
         }
 
-        public IEnumerable<SubscriptionRecord> GetSubscriptions()
-        {
-            return records.ToList();
-        }
+        public IEnumerable<SubscriptionRecord> GetSubscriptions() => _records.ToList();
 
         public IEnumerable<SubscriptionRecord> GetSubscriptions(string recipientId, string objectId)
         {
             return recipientId != null ?
-                recordsByRec.ContainsKey(recipientId) ? recordsByRec[recipientId].ToList() : new List<SubscriptionRecord>() :
-                recordsByObj.ContainsKey(objectId ?? string.Empty) ? recordsByObj[objectId ?? string.Empty].ToList() : new List<SubscriptionRecord>();
+                _recordsByRec.ContainsKey(recipientId) ? _recordsByRec[recipientId].ToList() : new List<SubscriptionRecord>() :
+                _recordsByObj.ContainsKey(objectId ?? string.Empty) ? _recordsByObj[objectId ?? string.Empty].ToList() : new List<SubscriptionRecord>();
         }
 
         public SubscriptionRecord GetSubscription(string recipientId, string objectId)
         {
-            return recordsByRec.ContainsKey(recipientId) ?
-                recordsByRec[recipientId].Where(s => s.ObjectId == objectId).FirstOrDefault() :
+            return _recordsByRec.ContainsKey(recipientId) ?
+                _recordsByRec[recipientId].Where(s => s.ObjectId == objectId).FirstOrDefault() :
                 null;
         }
 
@@ -251,54 +231,50 @@ namespace ASC.Core.Caching
         {
             var old = GetSubscription(s.RecipientId, s.ObjectId);
             if (old != null)
-            {
                 old.Subscribed = s.Subscribed;
-            }
             else
             {
-                records.Add(s);
-                BuildSubscriptionsIndex(records);
+                _records.Add(s);
+                BuildSubscriptionsIndex(_records);
             }
         }
 
         public void RemoveSubscriptions()
         {
-            records.Clear();
-            BuildSubscriptionsIndex(records);
+            _records.Clear();
+            BuildSubscriptionsIndex(_records);
         }
 
         public void RemoveSubscriptions(string objectId)
         {
-            records.RemoveAll(s => s.ObjectId == objectId);
-            BuildSubscriptionsIndex(records);
+            _records.RemoveAll(s => s.ObjectId == objectId);
+            BuildSubscriptionsIndex(_records);
         }
 
         public IEnumerable<SubscriptionMethod> GetSubscriptionMethods(string recipientId)
         {
             return string.IsNullOrEmpty(recipientId) ?
-                methods.ToList() :
-                methodsByRec.ContainsKey(recipientId) ? methodsByRec[recipientId].ToList() : new List<SubscriptionMethod>();
+                _methods.ToList() :
+                _methodsByRec.ContainsKey(recipientId) ? _methodsByRec[recipientId].ToList() : new List<SubscriptionMethod>();
         }
 
         public void SetSubscriptionMethod(SubscriptionMethod m)
         {
-            methods.RemoveAll(r => r.Tenant == m.Tenant && r.SourceId == m.SourceId && r.ActionId == m.ActionId && r.RecipientId == m.RecipientId);
+            _methods.RemoveAll(r => r.Tenant == m.Tenant && r.SourceId == m.SourceId && r.ActionId == m.ActionId && r.RecipientId == m.RecipientId);
+
             if (m.Methods != null && 0 < m.Methods.Length)
-            {
-                methods.Add(m);
-            }
-            BuildMethodsIndex(methods);
+                _methods.Add(m);
+
+            BuildMethodsIndex(_methods);
         }
 
         private void BuildSubscriptionsIndex(IEnumerable<SubscriptionRecord> records)
         {
-            recordsByRec = records.GroupBy(r => r.RecipientId).ToDictionary(g => g.Key, g => g.ToList());
-            recordsByObj = records.GroupBy(r => r.ObjectId ?? string.Empty).ToDictionary(g => g.Key, g => g.ToList());
+            _recordsByRec = records.GroupBy(r => r.RecipientId).ToDictionary(g => g.Key, g => g.ToList());
+            _recordsByObj = records.GroupBy(r => r.ObjectId ?? string.Empty).ToDictionary(g => g.Key, g => g.ToList());
         }
 
-        private void BuildMethodsIndex(IEnumerable<SubscriptionMethod> methods)
-        {
-            methodsByRec = methods.GroupBy(r => r.RecipientId).ToDictionary(g => g.Key, g => g.ToList());
-        }
+        private void BuildMethodsIndex(IEnumerable<SubscriptionMethod> methods) =>
+            _methodsByRec = methods.GroupBy(r => r.RecipientId).ToDictionary(g => g.Key, g => g.ToList());
     }
 }

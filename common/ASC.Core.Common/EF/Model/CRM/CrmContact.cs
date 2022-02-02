@@ -26,6 +26,7 @@ namespace ASC.Core.Common.EF.Model
         public bool IsShared { get; set; }
         public string Currency { get; set; }
     }
+
     public static class CrmContactExtension
     {
         public static ModelBuilderWrapper AddCrmContact(this ModelBuilderWrapper modelBuilder)
@@ -35,6 +36,7 @@ namespace ASC.Core.Common.EF.Model
                 .Add(PgSqlAddCrmContact, Provider.PostgreSql);
             return modelBuilder;
         }
+
         public static void MySqlAddCrmContact(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<CrmContact>(entity =>
@@ -137,6 +139,7 @@ namespace ASC.Core.Common.EF.Model
                     .UseCollation("utf8_general_ci");
             });
         }
+
         public static void PgSqlAddCrmContact(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<CrmContact>(entity =>
@@ -223,7 +226,6 @@ namespace ASC.Core.Common.EF.Model
                     .HasMaxLength(255)
                     .HasDefaultValueSql("NULL");
             });
-
         }
     }
 }

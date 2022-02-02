@@ -14,22 +14,19 @@ namespace ASC.Core.Common.EF.Context
     {
         public DbSet<TelegramUser> Users { get; set; }
 
+        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext =>
+           new Dictionary<Provider, Func<BaseDbContext>>()
+           {
+                { Provider.MySql, () => new MySqlTelegramDbContext() } ,
+                { Provider.PostgreSql, () => new PostgreSqlTelegramDbContext() } ,
+           };
+
         public TelegramDbContext() { }
+
         public TelegramDbContext(DbContextOptions<TelegramDbContext> options)
-            : base(options)
-        {
-        }
-        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-        {
-            get
-            {
-                return new Dictionary<Provider, Func<BaseDbContext>>()
-                {
-                    { Provider.MySql, () => new MySqlTelegramDbContext() } ,
-                    { Provider.PostgreSql, () => new PostgreSqlTelegramDbContext() } ,
-                };
-            }
-        }
+            : base(options) { }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             ModelBuilderWrapper
@@ -40,9 +37,7 @@ namespace ASC.Core.Common.EF.Context
 
     public static class TelegramDbContextExtension
     {
-        public static DIHelper AddTelegramDbContextService(this DIHelper services)
-        {
-            return services.AddDbContextManagerService<TelegramDbContext>();
-        }
+        public static DIHelper AddTelegramDbContextService(this DIHelper services) =>
+            services.AddDbContextManagerService<TelegramDbContext>();
     }
 }

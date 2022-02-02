@@ -35,23 +35,14 @@ namespace ASC.Core.Security.Authentication
     class UserAccount : MarshalByRefObject, IUserAccount
     {
         public Guid ID { get; private set; }
-
         public string Name { get; private set; }
-
-        public string AuthenticationType { get { return "ASC"; } }
-
-        public bool IsAuthenticated { get { return true; } }
-
+        public string AuthenticationType => "ASC";
+        public bool IsAuthenticated => true;
         public string FirstName { get; private set; }
-
         public string LastName { get; private set; }
-
         public string Title { get; private set; }
-
         public int Tenant { get; private set; }
-
         public string Email { get; private set; }
-
 
         public UserAccount(UserInfo info, int tenant, UserFormatter userFormatter)
         {
@@ -64,25 +55,12 @@ namespace ASC.Core.Security.Authentication
             Email = info.Email;
         }
 
+        public object Clone() => MemberwiseClone();
 
-        public object Clone()
-        {
-            return MemberwiseClone();
-        }
+        public override bool Equals(object obj) => obj is IUserAccount a && ID.Equals(a.ID);
 
-        public override bool Equals(object obj)
-        {
-            return obj is IUserAccount a && ID.Equals(a.ID);
-        }
+        public override int GetHashCode() => ID.GetHashCode();
 
-        public override int GetHashCode()
-        {
-            return ID.GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return Name;
-        }
+        public override string ToString() => Name;
     }
 }

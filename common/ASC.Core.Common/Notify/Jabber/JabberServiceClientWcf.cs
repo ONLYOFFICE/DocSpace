@@ -34,73 +34,44 @@ namespace ASC.Core.Notify.Jabber
 {
     public class JabberServiceClientWcf : BaseWcfClient<IJabberService>, IJabberService, IDisposable
     {
-        public JabberServiceClientWcf()
-        {
-        }
+        public JabberServiceClientWcf() { }
 
-        public string GetVersion()
-        {
-            return Channel.GetVersion();
-        }
+        public string GetVersion() => Channel.GetVersion();
 
-        public byte AddXmppConnection(string connectionId, string userName, byte state, int tenantId)
-        {
-            return Channel.AddXmppConnection(connectionId, userName, state, tenantId);
-        }
+        public byte AddXmppConnection(string connectionId, string userName, byte state, int tenantId) =>
+            Channel.AddXmppConnection(connectionId, userName, state, tenantId);
 
-        public byte RemoveXmppConnection(string connectionId, string userName, int tenantId)
-        {
-            return Channel.RemoveXmppConnection(connectionId, userName, tenantId);
-        }
+        public byte RemoveXmppConnection(string connectionId, string userName, int tenantId) =>
+            Channel.RemoveXmppConnection(connectionId, userName, tenantId);
 
-        public int GetNewMessagesCount(int tenantId, string userName)
-        {
-            return Channel.GetNewMessagesCount(tenantId, userName);
-        }
+        public int GetNewMessagesCount(int tenantId, string userName) =>
+            Channel.GetNewMessagesCount(tenantId, userName);
 
-        public string GetUserToken(int tenantId, string userName)
-        {
-            return Channel.GetUserToken(tenantId, userName);
-        }
+        public string GetUserToken(int tenantId, string userName) =>
+            Channel.GetUserToken(tenantId, userName);
 
-        public void SendCommand(int tenantId, string from, string to, string command, bool fromTenant)
-        {
+        public void SendCommand(int tenantId, string from, string to, string command, bool fromTenant) =>
             Channel.SendCommand(tenantId, from, to, command, fromTenant);
-        }
 
-        public void SendMessage(int tenantId, string from, string to, string text, string subject)
-        {
+        public void SendMessage(int tenantId, string from, string to, string text, string subject) =>
             Channel.SendMessage(tenantId, from, to, text, subject);
-        }
 
-        public byte SendState(int tenantId, string userName, byte state)
-        {
-            return Channel.SendState(tenantId, userName, state);
-        }
+        public byte SendState(int tenantId, string userName, byte state) =>
+            Channel.SendState(tenantId, userName, state);
 
-        public MessageClass[] GetRecentMessages(int tenantId, string from, string to, int id)
-        {
-            return Channel.GetRecentMessages(tenantId, from, to, id);
-        }
+        public MessageClass[] GetRecentMessages(int tenantId, string from, string to, int id) =>
+            Channel.GetRecentMessages(tenantId, from, to, id);
 
-        public Dictionary<string, byte> GetAllStates(int tenantId, string userName)
-        {
-            return Channel.GetAllStates(tenantId, userName);
-        }
+        public Dictionary<string, byte> GetAllStates(int tenantId, string userName) =>
+            Channel.GetAllStates(tenantId, userName);
 
-        public byte GetState(int tenantId, string userName)
-        {
-            return Channel.GetState(tenantId, userName);
-        }
+        public byte GetState(int tenantId, string userName) =>
+            Channel.GetState(tenantId, userName);
 
-        public void Ping(string userId, int tenantId, string userName, byte state)
-        {
+        public void Ping(string userId, int tenantId, string userName, byte state) =>
             Channel.Ping(userId, tenantId, userName, state);
-        }
 
-        public string HealthCheck(string userName, int tenantId)
-        {
-            return Channel.HealthCheck(userName, tenantId);
-        }
+        public string HealthCheck(string userName, int tenantId) =>
+            Channel.HealthCheck(userName, tenantId);
     }
 }

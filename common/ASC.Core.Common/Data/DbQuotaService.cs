@@ -40,32 +40,27 @@ namespace ASC.Core.Data
     [Scope]
     class ConfigureDbQuotaService : IConfigureNamedOptions<DbQuotaService>
     {
-        private DbContextManager<CoreDbContext> DbContextManager { get; }
         public string DbId { get; set; }
 
-        public ConfigureDbQuotaService(DbContextManager<CoreDbContext> dbContextManager)
-        {
-            DbContextManager = dbContextManager;
-        }
+        private readonly DbContextManager<CoreDbContext> _dbContextManager;
 
-        public void Configure(string name, DbQuotaService options)
-        {
-            options.LazyCoreDbContext = new Lazy<CoreDbContext>(() => DbContextManager.Get(name));
-        }
+        public ConfigureDbQuotaService(DbContextManager<CoreDbContext> dbContextManager) =>
+            _dbContextManager = dbContextManager;
 
-        public void Configure(DbQuotaService options)
-        {
-            options.LazyCoreDbContext = new Lazy<CoreDbContext>(() => DbContextManager.Value);
-        }
+        public void Configure(string name, DbQuotaService options) =>
+            options.LazyCoreDbContext = new Lazy<CoreDbContext>(() => _dbContextManager.Get(name));
+
+        public void Configure(DbQuotaService options) =>
+            options.LazyCoreDbContext = new Lazy<CoreDbContext>(() => _dbContextManager.Value);
     }
 
     [Scope]
     class DbQuotaService : IQuotaService
     {
+        internal CoreDbContext CoreDbContext => LazyCoreDbContext.Value;
+        internal Lazy<CoreDbContext> LazyCoreDbContext { get; set; }
         private static Expression<Func<DbQuota, TenantQuota>> FromDbQuotaToTenantQuota { get; set; }
         private static Expression<Func<DbQuotaRow, TenantQuotaRow>> FromDbQuotaRowToTenantQuotaRow { get; set; }
-        internal CoreDbContext CoreDbContext { get => LazyCoreDbContext.Value; }
-        internal Lazy<CoreDbContext> LazyCoreDbContext { get; set; }
 
         static DbQuotaService()
         {
@@ -91,10 +86,8 @@ namespace ASC.Core.Data
             };
         }
 
-        public DbQuotaService(DbContextManager<CoreDbContext> dbContextManager)
-        {
+        public DbQuotaService(DbContextManager<CoreDbContext> dbContextManager) =>
             LazyCoreDbContext = new Lazy<CoreDbContext>(() => dbContextManager.Value);
-        }
 
         public IEnumerable<TenantQuota> GetTenantQuotas()
         {
@@ -115,7 +108,7 @@ namespace ASC.Core.Data
 
         public TenantQuota SaveTenantQuota(TenantQuota quota)
         {
-            if (quota == null) throw new ArgumentNullException("quota");
+            if (quota == null) throw new ArgumentNullException(nameof(quota));
 
             var dbQuota = new DbQuota
             {
@@ -184,7 +177,7 @@ namespace ASC.Core.Data
         {
             IQueryable<DbQuotaRow> q = CoreDbContext.QuotaRows;
 
-            if (tenantId != Tenant.DEFAULT_TENANT)
+            if (tenantId != Tenant.DefaultTenant)
             {
                 q = q.Where(r => r.Tenant == tenantId);
             }
@@ -196,12 +189,14 @@ namespace ASC.Core.Data
         private static long GetInBytes(long bytes)
         {
             const long MB = 1024 * 1024;
+
             return bytes < MB ? bytes * MB : bytes;
         }
 
         private static long GetInMBytes(long bytes)
         {
             const long MB = 1024 * 1024;
+
             return bytes < MB * MB ? bytes / MB : bytes;
         }
     }

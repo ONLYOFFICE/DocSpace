@@ -15,17 +15,14 @@ namespace ASC.Core.Common.EF.Context
         public DbSet<VoipNumber> VoipNumbers { get; set; }
         public DbSet<DbVoipCall> VoipCalls { get; set; }
         public DbSet<CrmContact> CrmContact { get; set; }
-        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-        {
-            get
+
+        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext =>
+            new Dictionary<Provider, Func<BaseDbContext>>()
             {
-                return new Dictionary<Provider, Func<BaseDbContext>>()
-                {
-                    { Provider.MySql, () => new MySqlVoipDbContext() } ,
-                    { Provider.PostgreSql, () => new PostgreSqlVoipDbContext() } ,
-                };
-            }
-        }
+                { Provider.MySql, () => new MySqlVoipDbContext() } ,
+                { Provider.PostgreSql, () => new PostgreSqlVoipDbContext() } ,
+            };
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             ModelBuilderWrapper
@@ -38,9 +35,7 @@ namespace ASC.Core.Common.EF.Context
 
     public static class VoipDbExtension
     {
-        public static DIHelper AddVoipDbContextService(this DIHelper services)
-        {
-            return services.AddDbContextManagerService<VoipDbContext>();
-        }
+        public static DIHelper AddVoipDbContextService(this DIHelper services) =>
+            services.AddDbContextManagerService<VoipDbContext>();
     }
 }

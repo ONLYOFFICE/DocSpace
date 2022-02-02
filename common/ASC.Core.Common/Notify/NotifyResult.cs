@@ -34,9 +34,7 @@ namespace ASC.Notify
     public class NotifyResult
     {
         public SendResult Result { get; internal set; }
-
         public List<SendResponse> Responses { get; set; }
-
 
         internal NotifyResult(SendResult result, List<SendResponse> responses)
         {

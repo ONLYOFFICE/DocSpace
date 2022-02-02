@@ -47,15 +47,15 @@ namespace ASC.Core
 {
     public class MultiRegionHostedSolution
     {
-        private readonly Dictionary<string, HostedSolution> regions = new Dictionary<string, HostedSolution>();
-        private readonly string dbid;
-
-        private IConfiguration Configuraion { get; }
         public ConfigurationExtension ConfigurationExtension { get; }
-        private CookieStorage CookieStorage { get; }
-        private EFLoggerFactory LoggerFactory { get; }
-        private PasswordHasher PasswordHasher { get; }
-        private IOptionsSnapshot<HostedSolution> HostedSolutionOptions { get; }
+
+        private readonly Dictionary<string, HostedSolution> _regions = new Dictionary<string, HostedSolution>();
+        private readonly string _dbId;
+        private readonly IConfiguration _configuraion;
+        private readonly CookieStorage _cookieStorage;
+        private readonly EFLoggerFactory _loggerFactory;
+        private readonly PasswordHasher _passwordHasher;
+        private readonly IOptionsSnapshot<HostedSolution> _hostedSolutionOptions;
 
         public MultiRegionHostedSolution(string dbid,
             IConfiguration configuraion,
@@ -65,13 +65,13 @@ namespace ASC.Core
             PasswordHasher passwordHasher,
             IOptionsSnapshot<HostedSolution> hostedSolutionOptions)
         {
-            this.dbid = dbid;
-            Configuraion = configuraion;
+            _dbId = dbid;
+            _configuraion = configuraion;
             ConfigurationExtension = configurationExtension;
-            CookieStorage = cookieStorage;
-            LoggerFactory = loggerFactory;
-            PasswordHasher = passwordHasher;
-            HostedSolutionOptions = hostedSolutionOptions;
+            _cookieStorage = cookieStorage;
+            _loggerFactory = loggerFactory;
+            _passwordHasher = passwordHasher;
+            _hostedSolutionOptions = hostedSolutionOptions;
             Initialize();
         }
 
@@ -82,10 +82,7 @@ namespace ASC.Core
                 .ToList();
         }
 
-        public List<Tenant> FindTenants(string login)
-        {
-            return FindTenants(login, null);
-        }
+        public List<Tenant> FindTenants(string login) => FindTenants(login, null);
 
         public List<Tenant> FindTenants(string login, string password, string passwordHash = null)
         {
@@ -97,9 +94,8 @@ namespace ASC.Core
                 try
                 {
                     if (string.IsNullOrEmpty(passwordHash) && !string.IsNullOrEmpty(password))
-                    {
-                        passwordHash = PasswordHasher.GetClientPassword(password);
-                    }
+                        passwordHash = _passwordHasher.GetClientPassword(password);
+
                     result.AddRange(service.FindTenants(login, passwordHash));
                 }
                 catch (SecurityException exception)
@@ -107,10 +103,8 @@ namespace ASC.Core
                     error = exception;
                 }
             }
-            if (!result.Any() && error != null)
-            {
-                throw error;
-            }
+            if (!result.Any() && error != null) throw error;
+
             return result;
         }
 
@@ -125,55 +119,36 @@ namespace ASC.Core
             foreach (var service in GetRegionServices())
             {
                 var tenant = service.GetTenant(domain);
-                if (tenant != null)
-                {
-                    return tenant;
-                }
+                if (tenant != null) return tenant;
             }
+
             return null;
         }
 
-        public Tenant GetTenant(string region, int tenantId)
-        {
-            return GetRegionService(region).GetTenant(tenantId);
-        }
+        public Tenant GetTenant(string region, int tenantId) =>
+            GetRegionService(region).GetTenant(tenantId);
 
-        public Tenant SaveTenant(string region, Tenant tenant)
-        {
-            return GetRegionService(region).SaveTenant(tenant);
-        }
+        public Tenant SaveTenant(string region, Tenant tenant) =>
+            GetRegionService(region).SaveTenant(tenant);
 
-
-        public string CreateAuthenticationCookie(string region, int tenantId, Guid userId)
-        {
-            return GetRegionService(region).CreateAuthenticationCookie(CookieStorage, tenantId, userId);
-        }
+        public string CreateAuthenticationCookie(string region, int tenantId, Guid userId) =>
+            GetRegionService(region).CreateAuthenticationCookie(_cookieStorage, tenantId, userId);
 
 
-        public Tariff GetTariff(string region, int tenantId, bool withRequestToPaymentSystem = true)
-        {
-            return GetRegionService(region).GetTariff(tenantId, withRequestToPaymentSystem);
-        }
+        public Tariff GetTariff(string region, int tenantId, bool withRequestToPaymentSystem = true) =>
+            GetRegionService(region).GetTariff(tenantId, withRequestToPaymentSystem);
 
-        public void SetTariff(string region, int tenant, bool paid)
-        {
+        public void SetTariff(string region, int tenant, bool paid) =>
             GetRegionService(region).SetTariff(tenant, paid);
-        }
 
-        public void SetTariff(string region, int tenant, Tariff tariff)
-        {
+        public void SetTariff(string region, int tenant, Tariff tariff) =>
             GetRegionService(region).SetTariff(tenant, tariff);
-        }
 
-        public void SaveButton(string region, int tariffId, string partnerId, string buttonUrl)
-        {
+        public void SaveButton(string region, int tariffId, string partnerId, string buttonUrl) =>
             GetRegionService(region).SaveButton(tariffId, partnerId, buttonUrl);
-        }
 
-        public TenantQuota GetTenantQuota(string region, int tenant)
-        {
-            return GetRegionService(region).GetTenantQuota(tenant);
-        }
+        public TenantQuota GetTenantQuota(string region, int tenant) =>
+            GetRegionService(region).GetTenantQuota(tenant);
 
         public void CheckTenantAddress(string address)
         {
@@ -183,45 +158,36 @@ namespace ASC.Core
             }
         }
 
-        public IEnumerable<string> GetRegions()
-        {
-            return GetRegionServices().Select(s => s.Region).ToList();
-        }
-
-
+        public IEnumerable<string> GetRegions() => 
+            GetRegionServices().Select(s => s.Region).ToList();
 
         private IEnumerable<HostedSolution> GetRegionServices()
         {
-            return regions.Where(x => !string.IsNullOrEmpty(x.Key))
+            return _regions.Where(x => !string.IsNullOrEmpty(x.Key))
                    .Select(x => x.Value);
         }
 
-        private HostedSolution GetRegionService(string region)
-        {
-            return regions[region];
-        }
+        private HostedSolution GetRegionService(string region) => _regions[region];
 
         private void Initialize()
         {
             var connectionStrings = ConfigurationExtension.GetConnectionStrings();
-            var dbConnectionStrings = ConfigurationExtension.GetConnectionStrings(dbid);
+            var dbConnectionStrings = ConfigurationExtension.GetConnectionStrings(_dbId);
 
-            if (Convert.ToBoolean(Configuraion["core.multi-hosted.config-only"] ?? "false"))
+            if (Convert.ToBoolean(_configuraion["core.multi-hosted.config-only"] ?? "false"))
             {
                 foreach (var cs in ConfigurationExtension.GetConnectionStrings())
                 {
-                    if (cs.Name.StartsWith(dbid + "."))
+                    if (cs.Name.StartsWith(_dbId + "."))
                     {
-                        var name = cs.Name.Substring(dbid.Length + 1);
-                        regions[name] = HostedSolutionOptions.Get(cs.Name);
+                        var name = cs.Name.Substring(_dbId.Length + 1);
+                        _regions[name] = _hostedSolutionOptions.Get(cs.Name);
                     }
                 }
 
-                regions[dbid] = HostedSolutionOptions.Get(dbid);
-                if (!regions.ContainsKey(string.Empty))
-                {
-                    regions[string.Empty] = HostedSolutionOptions.Get(dbid);
-                }
+                _regions[_dbId] = _hostedSolutionOptions.Get(_dbId);
+                if (!_regions.ContainsKey(string.Empty))
+                    _regions[string.Empty] = _hostedSolutionOptions.Get(_dbId);
             }
             else
             {
@@ -233,25 +199,24 @@ namespace ASC.Core
                     var options = dbContextOptionsBuilder
                         //.UseMySql(cs.ConnectionString)
                         .UseNpgsql(cs.ConnectionString)
-                        .UseLoggerFactory(LoggerFactory)
+                        .UseLoggerFactory(_loggerFactory)
                         .Options;
 
                     using var dbContext = new DbContext(options);
 
-                    if (cs.Name.StartsWith(dbid + "."))
+                    if (cs.Name.StartsWith(_dbId + "."))
                     {
-                        var name = cs.Name.Substring(dbid.Length + 1);
-                        regions[name] = HostedSolutionOptions.Get(name);
+                        var name = cs.Name.Substring(_dbId.Length + 1);
+                        _regions[name] = _hostedSolutionOptions.Get(name);
                         find = true;
                     }
                 }
+
                 if (find)
                 {
-                    regions[dbid] = HostedSolutionOptions.Get(dbid);
-                    if (!regions.ContainsKey(string.Empty))
-                    {
-                        regions[string.Empty] = HostedSolutionOptions.Get(dbid);
-                    }
+                    _regions[_dbId] = _hostedSolutionOptions.Get(_dbId);
+                    if (!_regions.ContainsKey(string.Empty))
+                        _regions[string.Empty] = _hostedSolutionOptions.Get(_dbId);
                 }
                 else
                 {
@@ -263,7 +228,7 @@ namespace ASC.Core
                             var options = dbContextOptionsBuilder
                                 //.UseMySql(connectionString.ConnectionString)
                                 .UseNpgsql(connectionString.ConnectionString)
-                                .UseLoggerFactory(LoggerFactory)
+                                .UseLoggerFactory(_loggerFactory)
                                 .Options;
 
                             using var dbContext = new DbContext(options);
@@ -274,12 +239,10 @@ namespace ASC.Core
                             {
                                 var cs = new System.Configuration.ConnectionStringSettings(r.Region, r.ConnectionString, r.Provider);
 
-                                if (!regions.ContainsKey(string.Empty))
-                                {
-                                    regions[string.Empty] = HostedSolutionOptions.Get(cs.Name);
-                                }
+                                if (!_regions.ContainsKey(string.Empty))
+                                    _regions[string.Empty] = _hostedSolutionOptions.Get(cs.Name);
 
-                                regions[cs.Name] = HostedSolutionOptions.Get(cs.Name);
+                                _regions[cs.Name] = _hostedSolutionOptions.Get(cs.Name);
                             }
                         }
                         catch (DbException) { }

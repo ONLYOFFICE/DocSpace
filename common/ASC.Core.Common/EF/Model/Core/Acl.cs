@@ -15,10 +15,7 @@ namespace ASC.Core.Common.EF
         public string Object { get; set; }
         public AceType AceType { get; set; }
 
-        public override object[] GetKeys()
-        {
-            return new object[] { Tenant, Subject, Action, Object };
-        }
+        public override object[] GetKeys() => new object[] { Tenant, Subject, Action, Object };
     }
 
     public static class AclExtension

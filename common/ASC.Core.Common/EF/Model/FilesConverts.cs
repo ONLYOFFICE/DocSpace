@@ -205,6 +205,7 @@ namespace ASC.Core.Common.EF.Model
                     .UseCollation("utf8_general_ci");
             });
         }
+
         public static void PgSqlAddFilesConverts(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FilesConverts>(entity =>

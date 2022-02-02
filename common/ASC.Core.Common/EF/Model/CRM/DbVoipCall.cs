@@ -21,9 +21,9 @@ namespace ASC.Core.Common.EF.Model
         public int ContactId { get; set; }
         public decimal Price { get; set; }
         public int TenantId { get; set; }
-
         public CrmContact CrmContact { get; set; }
     }
+
     public static class DbVoipCallExtension
     {
         public static ModelBuilderWrapper AddDbVoipCall(this ModelBuilderWrapper modelBuilder)
@@ -33,6 +33,7 @@ namespace ASC.Core.Common.EF.Model
                 .Add(PgSqlAddDbVoipCall, Provider.PostgreSql);
             return modelBuilder;
         }
+
         public static void MySqlAddDbVoipCall(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbVoipCall>(entity =>
@@ -115,6 +116,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
             });
         }
+
         public static void PgSqlAddDbVoipCall(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbVoipCall>(entity =>

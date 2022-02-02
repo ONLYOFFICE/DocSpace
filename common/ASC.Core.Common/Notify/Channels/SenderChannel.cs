@@ -33,40 +33,33 @@ namespace ASC.Notify.Channels
 {
     public class SenderChannel : ISenderChannel
     {
-        private readonly ISink firstSink;
-        private readonly ISink senderSink;
-        private readonly Context context;
+        public string SenderName { get; private set; }
 
-
-        public string SenderName
-        {
-            get;
-            private set;
-        }
-
+        private readonly ISink _firstSink;
+        private readonly ISink _senderSink;
+        private readonly Context _context;
 
         public SenderChannel(Context context, string senderName, ISink decorateSink, ISink senderSink)
         {
-            this.context = context ?? throw new ArgumentNullException("context");
-            this.SenderName = senderName ?? throw new ArgumentNullException("senderName");
-            this.firstSink = decorateSink;
-            this.senderSink = senderSink ?? throw new ApplicationException(string.Format("channel with tag {0} not created sender sink", senderName));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            SenderName = senderName ?? throw new ArgumentNullException(nameof(context));
+            _firstSink = decorateSink;
+            _senderSink = senderSink 
+                ?? throw new ApplicationException($"channel with tag {senderName} not created sender sink");
 
-            var dispatcherSink = new DispatchSink(SenderName, this.context.DispatchEngine);
-            this.firstSink = AddSink(firstSink, dispatcherSink);
+            var dispatcherSink = new DispatchSink(SenderName, this._context.DispatchEngine);
+            _firstSink = AddSink(_firstSink, dispatcherSink);
         }
 
         public void SendAsync(INoticeMessage message)
         {
-            if (message == null) throw new ArgumentNullException("message");
+            if (message == null) throw new ArgumentNullException(nameof(message));
 
-            firstSink.ProcessMessageAsync(message);
+            _firstSink.ProcessMessageAsync(message);
         }
 
-        public SendResponse DirectSend(INoticeMessage message)
-        {
-            return senderSink.ProcessMessage(message);
-        }
+        public SendResponse DirectSend(INoticeMessage message) =>
+            _senderSink.ProcessMessage(message);
 
 
         private ISink AddSink(ISink firstSink, ISink addedSink)
@@ -75,11 +68,14 @@ namespace ASC.Notify.Channels
             if (addedSink == null) return firstSink;
 
             var current = firstSink;
+
             while (current.NextSink != null)
             {
                 current = current.NextSink;
             }
+
             current.NextSink = addedSink;
+
             return firstSink;
         }
     }

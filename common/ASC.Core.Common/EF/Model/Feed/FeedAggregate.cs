@@ -19,11 +19,9 @@ namespace ASC.Core.Common.EF.Model
         public string Json { get; set; }
         public string Keywords { get; set; }
 
-        public override object[] GetKeys()
-        {
-            return new object[] { Id };
-        }
+        public override object[] GetKeys() => new object[] { Id };
     }
+
     public static class FeedAggregateExtension
     {
         public static ModelBuilderWrapper AddFeedAggregate(this ModelBuilderWrapper modelBuilder)
@@ -33,6 +31,7 @@ namespace ASC.Core.Common.EF.Model
                 .Add(PgSqlAddFeedAggregate, Provider.PostgreSql);
             return modelBuilder;
         }
+
         public static void MySqlAddFeedAggregate(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FeedAggregate>(entity =>
@@ -116,6 +115,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.Tenant).HasColumnName("tenant");
             });
         }
+
         public static void PgSqlAddFeedAggregate(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FeedAggregate>(entity =>

@@ -35,18 +35,15 @@ namespace ASC.Core.Encryption
 {
     public class EncryptionSettings
     {
-
-        internal string password;
-
+        public EncryprtionStatus Status { get; set; }
+        public bool NotifyUsers { get; set; }
         public string Password
         {
-            get { return password; }
-            set { password = (value ?? string.Empty).Replace('#', '_'); }
+            get => password;
+            set => password = (value ?? string.Empty).Replace('#', '_');
         }
 
-        public EncryprtionStatus Status { get; set; }
-
-        public bool NotifyUsers { get; set; }
+        internal string password;
 
         public EncryptionSettings(EncryptionSettingsProto encryptionSettingsProto)
         {
@@ -66,30 +63,33 @@ namespace ASC.Core.Encryption
     [Scope]
     public class EncryptionSettingsHelper
     {
-        private const string key = "EncryptionSettings";
+        private const string Key = "EncryptionSettings";
 
-        private CoreConfiguration CoreConfiguration { get; }
-        private AscCacheNotify AscCacheNotify { get; }
-        private InstanceCrypto InstanceCrypto { get; }
+        private readonly CoreConfiguration _coreConfiguration;
+        private readonly AscCacheNotify _ascCacheNotify;
+        private readonly InstanceCrypto _instanceCrypto;
 
-        public EncryptionSettingsHelper(CoreConfiguration coreConfiguration, AscCacheNotify ascCacheNotify, InstanceCrypto instanceCrypto)
+        public EncryptionSettingsHelper(
+            CoreConfiguration coreConfiguration, 
+            AscCacheNotify ascCacheNotify, 
+            InstanceCrypto instanceCrypto)
         {
-            CoreConfiguration = coreConfiguration;
-            AscCacheNotify = ascCacheNotify;
-            InstanceCrypto = instanceCrypto;
+            _coreConfiguration = coreConfiguration;
+            _ascCacheNotify = ascCacheNotify;
+            _instanceCrypto = instanceCrypto;
         }
 
         public void Save(EncryptionSettings encryptionSettings)
         {
             var settings = Serialize(encryptionSettings);
-            CoreConfiguration.SaveSetting(key, settings);
+            _coreConfiguration.SaveSetting(Key, settings);
 
-            AscCacheNotify.ClearCache();
+            _ascCacheNotify.ClearCache();
         }
 
         public EncryptionSettings Load()
         {
-            var settings = CoreConfiguration.GetSetting(key);
+            var settings = _coreConfiguration.GetSetting(Key);
 
             return Deserialize(settings);
         }
@@ -97,7 +97,7 @@ namespace ASC.Core.Encryption
         public string Serialize(EncryptionSettings encryptionSettings)
         {
             return string.Join("#",
-                string.IsNullOrEmpty(encryptionSettings.password) ? string.Empty : InstanceCrypto.Encrypt(encryptionSettings.password),
+                string.IsNullOrEmpty(encryptionSettings.password) ? string.Empty : _instanceCrypto.Encrypt(encryptionSettings.password),
                 (int)encryptionSettings.Status,
                 encryptionSettings.NotifyUsers
             );
@@ -105,14 +105,11 @@ namespace ASC.Core.Encryption
 
         public EncryptionSettings Deserialize(string value)
         {
-            if (string.IsNullOrEmpty(value))
-            {
-                return new EncryptionSettings();
-            }
+            if (string.IsNullOrEmpty(value)) return new EncryptionSettings();
 
             var parts = value.Split(new[] { '#' }, StringSplitOptions.None);
 
-            var password = string.IsNullOrEmpty(parts[0]) ? string.Empty : InstanceCrypto.Decrypt(parts[0]);
+            var password = string.IsNullOrEmpty(parts[0]) ? string.Empty : _instanceCrypto.Decrypt(parts[0]);
             var status = int.Parse(parts[1]);
             var notifyUsers = bool.Parse(parts[2]);
 
@@ -130,14 +127,11 @@ namespace ASC.Core.Encryption
             var punctuations = "!@#$%^&*()_-+=[{]};:>|./?".ToCharArray();
 
             if (length < 1 || length > 128)
-            {
-                throw new ArgumentException("password_length_incorrect", "length");
-            }
+                throw new ArgumentException("password_length_incorrect", nameof(length));
 
             if (numberOfNonAlphanumericCharacters > length || numberOfNonAlphanumericCharacters < 0)
-            {
-                throw new ArgumentException("min_required_non_alphanumeric_characters_incorrect", "numberOfNonAlphanumericCharacters");
-            }
+                throw new ArgumentException("min_required_non_alphanumeric_characters_incorrect",
+                    nameof(numberOfNonAlphanumericCharacters));
 
             var array = new byte[length];
             var array2 = new char[length];

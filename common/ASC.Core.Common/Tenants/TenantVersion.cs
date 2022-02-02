@@ -31,23 +31,10 @@ namespace ASC.Core
     [Serializable]
     public class TenantVersion
     {
-        public int Id
-        {
-            get;
-            private set;
-        }
+        public int Id { get; private set; }
+        public string Name { get; private set; }
 
-        public string Name
-        {
-            get;
-            private set;
-        }
-
-
-        public TenantVersion()
-        {
-
-        }
+        public TenantVersion() { }
 
         public TenantVersion(int id, string name)
         {
@@ -55,19 +42,10 @@ namespace ASC.Core
             Name = name;
         }
 
-        public override int GetHashCode()
-        {
-            return Id.GetHashCode();
-        }
+        public override int GetHashCode() => Id.GetHashCode();
 
-        public override bool Equals(object obj)
-        {
-            return obj is TenantVersion v && v.Id == Id;
-        }
+        public override bool Equals(object obj) => obj is TenantVersion v && v.Id == Id;
 
-        public override string ToString()
-        {
-            return Name;
-        }
+        public override string ToString() => Name;
     }
 }

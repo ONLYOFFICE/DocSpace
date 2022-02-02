@@ -34,18 +34,18 @@ namespace ASC.Core.Notify.Senders
     public class NotifyServiceSender : INotifySender
     {
         public NotifyServiceClient NotifyServiceClient { get; }
-        public NotifyServiceSender(ICacheNotify<NotifyMessage> cacheNotify, ICacheNotify<NotifyInvoke> notifyInvoke)
-        {
-            NotifyServiceClient = new NotifyServiceClient(cacheNotify, notifyInvoke);
-        }
 
-        public void Init(IDictionary<string, string> properties)
-        {
-        }
+        public NotifyServiceSender(
+            ICacheNotify<NotifyMessage> eventBusNotifyMessage, 
+            ICacheNotify<NotifyInvoke> eventBusNotifyInvoke) =>
+            NotifyServiceClient = new NotifyServiceClient(eventBusNotifyMessage, eventBusNotifyInvoke);
+
+        public void Init(IDictionary<string, string> properties) { }
 
         public NoticeSendResult Send(NotifyMessage m)
         {
             NotifyServiceClient.SendNotifyMessage(m);
+
             return NoticeSendResult.OK;
         }
     }

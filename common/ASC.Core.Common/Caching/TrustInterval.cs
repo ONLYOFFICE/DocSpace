@@ -30,30 +30,17 @@ namespace ASC.Core.Caching
 {
     public class TrustInterval
     {
-        private TimeSpan interval;
+        public DateTime StartTime { get; private set; }
+        public bool Expired => _interval == default || _interval < (DateTime.UtcNow - StartTime).Duration();
 
-
-        public DateTime StartTime
-        {
-            get;
-            private set;
-        }
-
-        public bool Expired
-        {
-            get { return interval == default || interval < (DateTime.UtcNow - StartTime).Duration(); }
-        }
-
+        private TimeSpan _interval;
 
         public void Start(TimeSpan interval)
         {
-            this.interval = interval;
+            _interval = interval;
             StartTime = DateTime.UtcNow;
         }
 
-        public void Expire()
-        {
-            interval = default;
-        }
+        public void Expire() => _interval = default;
     }
 }

@@ -10,11 +10,10 @@ namespace ASC.Core.Common.EF
         public int Tenant { get; set; }
         public Guid UserId { get; set; }
         public byte[] Photo { get; set; }
-        public override object[] GetKeys()
-        {
-            return new object[] { UserId };
-        }
+
+        public override object[] GetKeys() => new object[] { UserId };
     }
+
     public static class UserPhotoExtension
     {
         public static ModelBuilderWrapper AddUserPhoto(this ModelBuilderWrapper modelBuilder)
@@ -22,8 +21,10 @@ namespace ASC.Core.Common.EF
             modelBuilder
                 .Add(MySqlAddUserPhoto, Provider.MySql)
                 .Add(PgSqlAddUserPhoto, Provider.PostgreSql);
+
             return modelBuilder;
         }
+
         public static void MySqlAddUserPhoto(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserPhoto>(entity =>
@@ -50,6 +51,7 @@ namespace ASC.Core.Common.EF
                 entity.Property(e => e.Tenant).HasColumnName("tenant");
             });
         }
+
         public static void PgSqlAddUserPhoto(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserPhoto>(entity =>

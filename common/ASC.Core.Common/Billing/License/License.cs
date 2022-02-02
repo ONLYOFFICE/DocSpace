@@ -42,11 +42,8 @@ namespace ASC.Core.Billing
 
         //[Obsolete]
         public bool WhiteLabel { get; set; }
-
         public bool Customization { get; set; }
-
         public bool Branding { get; set; }
-
         public bool SSBranding { get; set; }
 
         [JsonPropertyName("end_date")]
@@ -54,7 +51,6 @@ namespace ASC.Core.Billing
 
         [JsonPropertyName("portal_count")]
         public int PortalCount { get; set; }
-
         public bool Trial { get; set; }
 
         [JsonPropertyName("user_quota")]
@@ -62,9 +58,7 @@ namespace ASC.Core.Billing
 
         [JsonPropertyName("customer_id")]
         public string CustomerId { get; set; }
-
         public string Signature { get; set; }
-
         public bool? DiscEncryption { get; set; }
 
         [JsonPropertyName("users_count")]
@@ -119,10 +113,8 @@ namespace ASC.Core.Billing
             if (typeToConvert == typeof(int) && reader.TokenType == JsonTokenType.String)
             {
                 var i = reader.GetString();
-                if (!int.TryParse(i, out var result))
-                {
-                    return 0;
-                }
+
+                if (!int.TryParse(i, out var result)) return 0;
 
                 return result;
             }
@@ -132,10 +124,8 @@ namespace ASC.Core.Billing
                 if (reader.TokenType == JsonTokenType.String)
                 {
                     var i = reader.GetString();
-                    if (!bool.TryParse(i, out var result))
-                    {
-                        return false;
-                    }
+
+                    if (!bool.TryParse(i, out var result)) return false;
 
                     return result;
                 }

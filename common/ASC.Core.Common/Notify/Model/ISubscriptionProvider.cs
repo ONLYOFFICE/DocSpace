@@ -73,9 +73,7 @@ namespace ASC.Notify.Model
                     {
                         var property = properties.Single(p => p.Name == "Subscribed");
                         if (property != null)
-                        {
                             result = (bool)property.GetValue(subscriptionRecord, null);
-                        }
                     }
                 }
             }

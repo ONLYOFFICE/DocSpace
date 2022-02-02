@@ -16,11 +16,10 @@ namespace ASC.Core.Common.EF
         public decimal Price { get; set; }
         public string AvangateId { get; set; }
         public bool Visible { get; set; }
-        public override object[] GetKeys()
-        {
-            return new object[] { Tenant };
-        }
+
+        public override object[] GetKeys() => new object[] { Tenant };
     }
+
     public static class DbQuotaExtension
     {
         public static ModelBuilderWrapper AddDbQuota(this ModelBuilderWrapper modelBuilder)
@@ -93,6 +92,7 @@ namespace ASC.Core.Common.EF
                 entity.Property(e => e.Visible).HasColumnName("visible");
             });
         }
+
         public static void PgSqlAddDbQuota(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbQuota>(entity =>

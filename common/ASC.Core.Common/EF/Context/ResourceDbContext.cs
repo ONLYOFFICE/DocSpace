@@ -20,17 +20,14 @@ namespace ASC.Core.Common.EF.Context
         public DbSet<ResData> ResData { get; set; }
         public DbSet<ResFiles> ResFiles { get; set; }
         public DbSet<ResReserve> ResReserve { get; set; }
-        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-        {
-            get
+
+        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext =>
+            new Dictionary<Provider, Func<BaseDbContext>>()
             {
-                return new Dictionary<Provider, Func<BaseDbContext>>()
-                {
-                    { Provider.MySql, () => new MySqlResourceDbContext() } ,
-                    { Provider.PostgreSql, () => new PostgreSqlResourceDbContext() } ,
-                };
-            }
-        }
+                { Provider.MySql, () => new MySqlResourceDbContext() } ,
+                { Provider.PostgreSql, () => new PostgreSqlResourceDbContext() } ,
+            };
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             ModelBuilderWrapper
@@ -47,9 +44,7 @@ namespace ASC.Core.Common.EF.Context
 
     public static class ResourceDbExtension
     {
-        public static DIHelper AddResourceDbService(this DIHelper services)
-        {
-            return services.AddDbContextManagerService<ResourceDbContext>();
-        }
+        public static DIHelper AddResourceDbService(this DIHelper services) =>
+            services.AddDbContextManagerService<ResourceDbContext>();
     }
 }

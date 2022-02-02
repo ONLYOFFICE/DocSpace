@@ -37,6 +37,5 @@ namespace ASC.Core.Common.Notify
         void CreateOrUpdateClient(int tenantId, string token, int tokenLifespan, string proxy);
 
         void DisableClient(int tenantId);
-
     }
 }

@@ -12,6 +12,7 @@ namespace ASC.Core.Common.EF.Model.Resource
         public bool Online { get; set; }
         public DateTime LastVisit { get; set; }
     }
+
     public static class ResAuthorsExtension
     {
         public static ModelBuilderWrapper AddResAuthors(this ModelBuilderWrapper modelBuilder)
@@ -21,6 +22,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                 .Add(PgSqlAddResAuthors, Provider.PostgreSql);
             return modelBuilder;
         }
+
         public static void MySqlAddResAuthors(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ResAuthors>(entity =>
@@ -52,6 +54,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .UseCollation("utf8_general_ci");
             });
         }
+
         public static void PgSqlAddResAuthors(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ResAuthors>(entity =>

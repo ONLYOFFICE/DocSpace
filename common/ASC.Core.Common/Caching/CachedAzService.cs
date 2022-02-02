@@ -37,16 +37,18 @@ namespace ASC.Core.Caching
     class AzServiceCache
     {
         internal ICache Cache { get; }
-        internal ICacheNotify<AzRecordCache> CacheNotify { get; }
+        internal ICacheNotify<AzRecordCache> EventBusAzRecord { get; }
 
-        public AzServiceCache(ICacheNotify<AzRecordCache> cacheNotify, ICache cache)
+        public AzServiceCache(ICacheNotify<AzRecordCache> eventBus, ICache cache)
         {
-            CacheNotify = cacheNotify;
+            EventBusAzRecord = eventBus;
             Cache = cache;
 
-            cacheNotify.Subscribe((r) => UpdateCache(r, true), CacheNotifyAction.Remove);
-            cacheNotify.Subscribe((r) => UpdateCache(r, false), CacheNotifyAction.InsertOrUpdate);
+            eventBus.Subscribe((r) => UpdateCache(r, true), CacheNotifyAction.Remove);
+            eventBus.Subscribe((r) => UpdateCache(r, false), CacheNotifyAction.InsertOrUpdate);
         }
+
+        public static string GetKey(int tenant) => $"acl{tenant}";
 
         private void UpdateCache(AzRecord r, bool remove)
         {
@@ -55,68 +57,55 @@ namespace ASC.Core.Caching
             {
                 lock (aces)
                 {
-                    if (remove)
-                    {
-                        aces.Remove(r);
-                    }
-                    else
-                    {
-                        aces.Add(r);
-                    }
+                    if (remove) aces.Remove(r);
+
+                    else aces.Add(r);
                 }
             }
-        }
-
-        public static string GetKey(int tenant)
-        {
-            return "acl" + tenant.ToString();
         }
     }
 
     [Scope]
     class CachedAzService : IAzService
     {
-        private readonly IAzService service;
-
-        private readonly ICacheNotify<AzRecordCache> cacheNotify;
-
-        private ICache Cache { get; }
-
-        private TimeSpan CacheExpiration { get; set; }
-
+        private readonly IAzService _service;
+        private readonly ICacheNotify<AzRecordCache> _eventBusAzRecord;
+        private readonly ICache _cache;
+        private TimeSpan _cacheExpiration;
 
         public CachedAzService(DbAzService service, AzServiceCache azServiceCache)
         {
-            this.service = service ?? throw new ArgumentNullException("service");
-            Cache = azServiceCache.Cache;
-            cacheNotify = azServiceCache.CacheNotify;
-            CacheExpiration = TimeSpan.FromMinutes(10);
+            _service = service ?? throw new ArgumentNullException(nameof(service));
+            _cache = azServiceCache.Cache;
+            _eventBusAzRecord = azServiceCache.EventBusAzRecord;
+            _cacheExpiration = TimeSpan.FromMinutes(10);
         }
-
 
         public IEnumerable<AzRecord> GetAces(int tenant, DateTime from)
         {
             var key = AzServiceCache.GetKey(tenant);
-            var aces = Cache.Get<AzRecordStore>(key);
+            var aces = _cache.Get<AzRecordStore>(key);
             if (aces == null)
             {
-                var records = service.GetAces(tenant, default);
-                Cache.Insert(key, aces = new AzRecordStore(records), DateTime.UtcNow.Add(CacheExpiration));
+                var records = _service.GetAces(tenant, default);
+                _cache.Insert(key, aces = new AzRecordStore(records), DateTime.UtcNow.Add(_cacheExpiration));
             }
+
             return aces;
         }
 
         public AzRecord SaveAce(int tenant, AzRecord r)
         {
-            r = service.SaveAce(tenant, r);
-            cacheNotify.Publish(r, CacheNotifyAction.InsertOrUpdate);
+            r = _service.SaveAce(tenant, r);
+            _eventBusAzRecord.Publish(r, CacheNotifyAction.InsertOrUpdate);
+
             return r;
         }
 
         public void RemoveAce(int tenant, AzRecord r)
         {
-            service.RemoveAce(tenant, r);
-            cacheNotify.Publish(r, CacheNotifyAction.Remove);
+            _service.RemoveAce(tenant, r);
+            _eventBusAzRecord.Publish(r, CacheNotifyAction.Remove);
         }
     }
 }

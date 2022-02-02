@@ -40,53 +40,44 @@ namespace ASC.Web.Core.Users
     [Serializable]
     public class DisplayUserSettings : ISettings
     {
-        public Guid ID
-        {
-            get { return new Guid("2EF59652-E1A7-4814-BF71-FEB990149428"); }
-        }
-
+        public Guid ID => new Guid("2EF59652-E1A7-4814-BF71-FEB990149428");
         public bool IsDisableGettingStarted { get; set; }
 
-        public ISettings GetDefault(IServiceProvider serviceProvider)
-        {
-            return new DisplayUserSettings
+        public ISettings GetDefault(IServiceProvider serviceProvider) =>
+            new DisplayUserSettings
             {
                 IsDisableGettingStarted = false,
             };
-        }
     }
 
     [Scope]
     public class DisplayUserSettingsHelper
     {
-        private readonly string RemovedProfileName;
-        public DisplayUserSettingsHelper(UserManager userManager, UserFormatter userFormatter, IConfiguration configuration)
+        private readonly string _removedProfileName;
+        private readonly UserManager _userManager;
+        private readonly UserFormatter _userFormatter;
+
+        public DisplayUserSettingsHelper(
+            UserManager userManager, 
+            UserFormatter userFormatter, 
+            IConfiguration configuration)
         {
-            UserManager = userManager;
-            UserFormatter = userFormatter;
-            RemovedProfileName = configuration["web:removed-profile-name"] ?? "profile removed";
+            _userManager = userManager;
+            _userFormatter = userFormatter;
+            _removedProfileName = configuration["web:removed-profile-name"] ?? "profile removed";
         }
 
-        private UserManager UserManager { get; }
-        private UserFormatter UserFormatter { get; }
+        public string GetFullUserName(Guid userID, bool withHtmlEncode = true) =>
+            GetFullUserName(_userManager.GetUsers(userID), withHtmlEncode);
 
-        public string GetFullUserName(Guid userID, bool withHtmlEncode = true)
-        {
-            return GetFullUserName(UserManager.GetUsers(userID), withHtmlEncode);
-        }
-
-        public string GetFullUserName(UserInfo userInfo, bool withHtmlEncode = true)
-        {
-            return GetFullUserName(userInfo, DisplayUserNameFormat.Default, withHtmlEncode);
-        }
+        public string GetFullUserName(UserInfo userInfo, bool withHtmlEncode = true) =>
+            GetFullUserName(userInfo, DisplayUserNameFormat.Default, withHtmlEncode);
 
         public string GetFullUserName(UserInfo userInfo, DisplayUserNameFormat format, bool withHtmlEncode)
         {
-            if (userInfo == null)
-            {
-                return string.Empty;
-            }
-            if (!userInfo.ID.Equals(Guid.Empty) && !UserManager.UserExists(userInfo))
+            if (userInfo == null) return string.Empty;
+
+            if (!userInfo.ID.Equals(Guid.Empty) && !_userManager.UserExists(userInfo))
             {
                 try
                 {
@@ -94,19 +85,20 @@ namespace ASC.Web.Core.Users
                     var resourceProperty = resourceType.GetProperty("ProfileRemoved", BindingFlags.Static | BindingFlags.Public);
                     var resourceValue = (string)resourceProperty.GetValue(null);
 
-                    return string.IsNullOrEmpty(resourceValue) ? RemovedProfileName : resourceValue;
+                    return string.IsNullOrEmpty(resourceValue) ? _removedProfileName : resourceValue;
                 }
                 catch (Exception)
                 {
-                    return RemovedProfileName;
+                    return _removedProfileName;
                 }
             }
-            var result = UserFormatter.GetUserName(userInfo, format);
+
+            var result = _userFormatter.GetUserName(userInfo, format);
+
             return withHtmlEncode ? HtmlEncode(result) : result;
         }
-        public string HtmlEncode(string str)
-        {
-            return !string.IsNullOrEmpty(str) ? HttpUtility.HtmlEncode(str) : str;
-        }
+
+        public string HtmlEncode(string str) =>
+            !string.IsNullOrEmpty(str) ? HttpUtility.HtmlEncode(str) : str;
     }
 }
