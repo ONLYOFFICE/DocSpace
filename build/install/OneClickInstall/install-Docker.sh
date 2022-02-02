@@ -299,7 +299,7 @@ while [ "$1" != "" ]; do
 			echo "      -un, --username                   dockerhub username"
 			echo "      -p, --password                    dockerhub password"
 			echo "      -ias, --installappserver          install or update appserver (true|false)"
-			echo "      -vas, --versionappserver          select the version to install appserver (latest|develop|version number)"
+			echo "      -tag, --dockertag                 select the version to install appserver (latest|develop|version number)"
 			echo "      -ids, --installdocumentserver     install or update document server (true|false)"
 			echo "      -di, --documentserverimage        document server image name"
 			echo "      -imysql, --installmysql           install or update mysql (true|false)"			
@@ -506,8 +506,8 @@ check_hardware () {
 }
 
 install_service () {
-	COMMAND_NAME=$1
-	PACKAGE_NAME=$2
+	local COMMAND_NAME=$1
+	local PACKAGE_NAME=$2
 
 	PACKAGE_NAME=${PACKAGE_NAME:-"$COMMAND_NAME"}
 
@@ -707,8 +707,8 @@ create_network () {
 }
 
 get_container_env_parameter () {
-	CONTAINER_NAME=$1;
-	PARAMETER_NAME=$2;
+	local CONTAINER_NAME=$1;
+	local PARAMETER_NAME=$2;
 	VALUE="";
 
 	if [[ -z ${CONTAINER_NAME} ]]; then
@@ -795,11 +795,11 @@ download_files () {
 }
 
 reconfigure () {
-	VARIABLE_NAME=$1
-	VARIABLE_VALUE=$(echo $2 | sed -e 's/;/%/g' -e 's/=/%/g' -e 's/!/%/g')
+	local VARIABLE_NAME=$1
+	local VARIABLE_VALUE=$2
 
 	if [[ -n ${VARIABLE_VALUE} ]]; then
-		sed -i "s/${VARIABLE_NAME}=.*/${VARIABLE_NAME}=${VARIABLE_VALUE}/g" $BASE_DIR/.env
+		sed -i "s~${VARIABLE_NAME}=.*~${VARIABLE_NAME}=${VARIABLE_VALUE}~g" $BASE_DIR/.env
 	fi
 }
 
@@ -809,8 +809,8 @@ install_mysql_server () {
 	fi
 
 	if [[ -z ${MYSQL_PASSWORD} ]] && [[ -z ${MYSQL_ROOT_PASSWORD} ]]; then
-		MYSQL_PASSWORD=$(get_random_str 20);
-		MYSQL_ROOT_PASSWORD=$(get_random_str 20);
+		MYSQL_PASSWORD=$(get_random_str 20 | sed -e 's/;/%/g' -e 's/=/%/g' -e 's/!/%/g');
+		MYSQL_ROOT_PASSWORD=$(get_random_str 20 | sed -e 's/;/%/g' -e 's/=/%/g' -e 's/!/%/g');
 	elif [[ -z ${MYSQL_PASSWORD} ]] || [[ -z ${MYSQL_ROOT_PASSWORD} ]]; then
 		MYSQL_PASSWORD=${MYSQL_PASSWORD:-"$MYSQL_ROOT_PASSWORD"}
 		MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-"$MYSQL_PASSWORD"}
