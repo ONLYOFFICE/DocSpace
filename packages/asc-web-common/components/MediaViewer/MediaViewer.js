@@ -481,7 +481,6 @@ class MediaViewer extends React.Component {
     if (this.canImageView(ext)) {
       isImage = true;
     } else {
-      console.log("isVideo");
       isImage = false;
       isVideo = this.mapSupplied[ext]
         ? this.mapSupplied[ext].type == mediaTypes.video
