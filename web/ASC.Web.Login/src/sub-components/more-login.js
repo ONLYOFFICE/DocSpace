@@ -54,11 +54,11 @@ const MoreLoginModal = (props) => {
     >
       <ModalDialog.Header>{t("Authorization")}</ModalDialog.Header>
       <ModalDialog.Body>
-        {ssoLabel && ssoUrl && (
+        {ssoUrl && (
           <ProviderRow key={`ProviderItemSSO`}>
             <ReactSVG src="/static/images/sso.react.svg" />
             <Text fontSize="14px" fontWeight="600" className="provider-name">
-              {ssoLabel}
+              {ssoLabel || getProviderTranslation("sso", t)}
             </Text>
             <Button
               label={t("LoginButton")}

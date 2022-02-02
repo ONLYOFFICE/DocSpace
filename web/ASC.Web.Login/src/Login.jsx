@@ -321,7 +321,7 @@ const Form = (props) => {
         <SocialButton
           iconName="/static/images/sso.react.svg"
           className="socialButton"
-          label={ssoLabel}
+          label={ssoLabel || getProviderTranslation("sso", t)}
           onClick={() => (window.location.href = ssoUrl)}
         />
       </div>
@@ -340,7 +340,7 @@ const Form = (props) => {
   };
 
   const ssoExists = () => {
-    if (ssoLabel && ssoUrl) return true;
+    if (ssoUrl) return true;
     else return false;
   };
 
