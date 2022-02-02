@@ -70,6 +70,7 @@ KAFKA_HOST=""
 
 ELK_HOST=""
 
+DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/4testing-documentserver-ee:latest
 DOCUMENT_SERVER_JWT_SECRET=""
 DOCUMENT_SERVER_HOST=""
 
@@ -282,6 +283,13 @@ while [ "$1" != "" ]; do
 				shift
 			fi
 		;;
+		
+		-di | --documentserverimage )
+			if [ "$2" != "" ]; then
+				DOCUMENT_SERVER_IMAGE_NAME=$2
+				shift
+			fi
+		;;
 
 		-? | -h | --help )
 			echo "  Usage: bash $HELP_TARGET [PARAMETER] [[PARAMETER], ...]"
@@ -293,6 +301,7 @@ while [ "$1" != "" ]; do
 			echo "      -ias, --installappserver          install or update appserver (true|false)"
 			echo "      -vas, --versionappserver          select the version to install appserver (latest|develop|version number)"
 			echo "      -ids, --installdocumentserver     install or update document server (true|false)"
+			echo "      -di, --documentserverimage        document server image name"
 			echo "      -imysql, --installmysql           install or update mysql (true|false)"			
 			echo "      -ikafka, --installkafka           install or update kafka (true|false)"
 			echo "      -mysqlrp, --mysqlrootpassword     mysql server root password"
@@ -839,6 +848,7 @@ install_document_server () {
 		install_docker_compose
 	fi
 
+	reconfigure DOCUMENT_SERVER_IMAGE_NAME ${DOCUMENT_SERVER_IMAGE_NAME}
 	reconfigure DOCUMENT_SERVER_JWT_SECRET ${DOCUMENT_SERVER_JWT_SECRET}
 	reconfigure DOCUMENT_SERVER_HOST ${DOCUMENT_SERVER_HOST}
 
