@@ -43,6 +43,10 @@ class PureHome extends React.Component {
       getFileInfo,
     } = this.props;
 
+    if (!window.location.href.includes("#preview")) {
+      localStorage.removeItem("isFirstUrl");
+    }
+
     const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gmi"); //TODO: Always find?
     const match = window.location.pathname.match(reg);
     let filterObj = null;
