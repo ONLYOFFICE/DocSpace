@@ -659,7 +659,7 @@ const SingleSignOn = () => {
           <Box>
             <Button
               className="download-button"
-              label="DownloadMetadataXML"
+              label={t("DownloadMetadataXML")}
               primary
               size="medium"
             />
