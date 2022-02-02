@@ -117,6 +117,7 @@
   "SignInWithFacebook": "Вход через Facebook",
   "SignInWithGoogle": "Вход через Google",
   "SignInWithLinkedIn": "Вход через LinkedIn",
+  "SignInWithSso": "Вход через SSO",
   "SignInWithTwitter": "Вход через Twitter",
   "Size": "Размер",
   "SomethingWentWrong": "Что-то пошло не так.",
