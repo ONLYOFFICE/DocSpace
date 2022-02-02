@@ -1738,7 +1738,7 @@ const Base = {
     text: {
       header: {
         fontSize: "15px",
-        lineHeight: "16px",
+        lineHeight: "20px",
       },
       mobile: {
         fontSize: "13px",
@@ -1754,7 +1754,7 @@ const Base = {
     background: "none",
     svgFill: black,
     header: {
-      height: "55px",
+      height: "50px",
       borderBottom: `1px solid ${grayLightMid}`,
       marginBottom: "6px",
     },
