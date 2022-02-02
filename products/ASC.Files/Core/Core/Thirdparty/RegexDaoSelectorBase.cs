@@ -40,9 +40,10 @@ namespace ASC.Files.Thirdparty
     {
         private IServiceProvider ServiceProvider { get; }
         private IDaoFactory DaoFactory { get; }
-        public Regex Selector { get; set; }
         protected internal abstract string Name { get; }
         protected internal abstract string Id { get; }
+        public Regex Selector { get => selector ??= new Regex(@"^" + Id + @"-(?'id'\d+)(-(?'path'.*)){0,1}$", RegexOptions.Singleline | RegexOptions.Compiled); }
+        private Regex selector;
 
         private Dictionary<string, ThirdPartyProviderDao<T>> Providers { get; set; }
 
@@ -52,7 +53,6 @@ namespace ASC.Files.Thirdparty
         {
             ServiceProvider = serviceProvider;
             DaoFactory = daoFactory;
-            Selector = new Regex(@"^" + Id + @"-(?'id'\d+)(-(?'path'.*)){0,1}$", RegexOptions.Singleline | RegexOptions.Compiled);
             Providers = new Dictionary<string, ThirdPartyProviderDao<T>>();
         }
 

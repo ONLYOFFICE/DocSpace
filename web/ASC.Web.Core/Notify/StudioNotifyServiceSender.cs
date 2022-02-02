@@ -99,8 +99,8 @@ namespace ASC.Web.Studio.Core.Notify
 
             client.SendNoticeToAsync(
                 (NotifyAction)item.Action,
-                item.ObjectID,
-                item.Recipients?.Select(r => r.IsGroup ? new RecipientsGroup(r.ID, r.Name) : (IRecipient)new DirectRecipient(r.ID, r.Name, r.Addresses.ToArray(), r.CheckActivation)).ToArray(),
+                item.ObjectId,
+                item.Recipients?.Select(r => r.IsGroup ? new RecipientsGroup(r.Id, r.Name) : (IRecipient)new DirectRecipient(r.Id, r.Name, r.Addresses.ToArray(), r.CheckActivation)).ToArray(),
                 item.SenderNames.Any() ? item.SenderNames.ToArray() : null,
                 item.CheckSubsciption,
                 item.Tags.Select(r => new TagValue(r.Tag_, r.Value)).ToArray());
@@ -127,7 +127,10 @@ namespace ASC.Web.Studio.Core.Notify
                 {
                     if (coreBaseSettings.Personal)
                     {
-                        WorkContext.RegisterSendMethod(SendLettersPersonal, cron);
+                        if (!coreBaseSettings.CustomMode)
+                        {
+                            WorkContext.RegisterSendMethod(SendLettersPersonal, cron);
+                        }
                     }
                     else
                     {

@@ -15,6 +15,7 @@ import {
   getFileConversationProgress,
   copyToFolder,
   moveToFolder,
+  fileCopyAs,
 } from "@appserver/common/api/files";
 
 class UploadDataStore {
@@ -339,8 +340,10 @@ class UploadDataStore {
           });
 
           this.settingsStore.storeOriginalFiles && this.refreshFiles(file);
-          file.fileInfo = fileInfo;
-          this.refreshFiles(file);
+          if (fileInfo) {
+            file.fileInfo = fileInfo;
+            this.refreshFiles(file);
+          }
           const percent = this.getConversationPercent(index + 1);
           this.setConversionPercent(percent, !!error);
         }
@@ -486,12 +489,12 @@ class UploadDataStore {
         }
       }
 
-    if (
+      if (
         newPath[newPath.length - 1] !== this.selectedFolderStore.id &&
         path.length
-    ) {
+      ) {
         return;
-        }
+      }
 
       const addNewFile = () => {
         if (folderInfo) {
@@ -557,7 +560,7 @@ class UploadDataStore {
 
         const newExpandedKeys = expandedKeys.filter(
           (x) => x !== newPath[newPath.length - 1] + ""
-      );
+        );
 
         setExpandedKeys(newExpandedKeys);
 
@@ -567,7 +570,7 @@ class UploadDataStore {
           this.filesStore.folders.length === 1 ? this.filesStore.folders : [],
           this.filesStore.folders.length
         );
-    }
+      }
     }
   };
 
@@ -652,7 +655,7 @@ class UploadDataStore {
     } else {
       if (currentFile.action === "uploaded") {
         this.refreshFiles(currentFile);
-    }
+      }
       return Promise.resolve();
     }
   };
@@ -919,6 +922,18 @@ class UploadDataStore {
       });
   };
 
+  copyAsAction = (fileId, title, folderId, enableExternalExt) => {
+    const { fetchFiles, filter } = this.filesStore;
+
+    return fileCopyAs(fileId, title, folderId, enableExternalExt)
+      .then(() => {
+        fetchFiles(folderId, filter, true, true);
+      })
+      .catch((err) => {
+        return Promise.reject(err);
+      });
+  };
+
   itemOperationToFolder = (data) => {
     const {
       destFolderId,
@@ -1036,8 +1051,8 @@ class UploadDataStore {
           true,
           true
         ).finally(() => {
-            setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-            this.dialogsStore.setIsFolderActions(false);
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+          this.dialogsStore.setIsFolderActions(false);
         });
       } else {
         setSecondaryProgressBarData({

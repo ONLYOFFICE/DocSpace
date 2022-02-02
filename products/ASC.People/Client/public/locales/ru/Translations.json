@@ -1,4 +1,4 @@
-{
+﻿{
   "AddMembers": "Добавить участников",
   "Birthdate": "Дата рождения",
   "Comments": "Комментарии",
@@ -14,6 +14,7 @@
   "Location": "Местоположение",
   "MaleSexStatus": "Мужской",
   "maxSizeFileError": "Превышен максимальный размер файла",
+  "MaxSizeLabel": "(JPG или PNG, максимум 1 Мб)",
   "NotBeUndone": "Внимание: это действие необратимо.",
   "orDropFileHereLabel": "или перетащите файл сюда",
   "PasswordChangeButton": "Изменить пароль",

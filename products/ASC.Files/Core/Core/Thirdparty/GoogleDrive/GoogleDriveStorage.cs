@@ -411,7 +411,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             }
             catch (HttpRequestException exception) // todo create catch
             {
-                /*if (exception. != null && exception.Response.Headers.AllKeys.Contains("Range"))
+                /*if (exception. != null && exception.Response.Headers.AllKeys.Contains("Range")) if (exception.Status == WebExceptionStatus.ProtocolError || exception.Status == WebExceptionStatus.UnknownError) //Status is UnknownError (unix)
                 {
                     response = exception.Response;
                 }

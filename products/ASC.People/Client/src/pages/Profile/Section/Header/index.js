@@ -479,6 +479,7 @@ class SectionHeaderContent extends React.PureComponent {
           maxSizeFileError={t("Translations:maxSizeFileError")}
           unknownError={t("Common:Error")}
           saveButtonLabel={t("Common:SaveButton")}
+          maxSizeLabel={t("Translations:MaxSizeLabel")}
         />
 
         {dialogsVisible.deleteSelfProfile && (

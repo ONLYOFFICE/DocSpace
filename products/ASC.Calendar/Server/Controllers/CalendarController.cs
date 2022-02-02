@@ -31,6 +31,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security;
 using System.Text;
 using System.Text.Json;
@@ -1030,7 +1031,10 @@ namespace ASC.Calendar.Controllers
             var request = new HttpRequestMessage();
             request.Method = HttpMethod.Get;
             request.RequestUri = new Uri(calUrl);
-            request.Headers.Add("Content-Type", "text/xml; charset=utf-8");
+            request.Content.Headers.ContentType = new MediaTypeHeaderValue("text/xml")
+            {
+                CharSet = Encoding.UTF8.WebName
+            };
             request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(authorization)));
 
             try
@@ -4188,7 +4192,10 @@ namespace ASC.Calendar.Controllers
                     var _email = UserManager.GetUsers(ownerId).Email;
                     var authorization = sharedPostfixIndex != -1 ? DataProvider.GetSystemAuthorization() : DataProvider.GetUserAuthorization(_email);
                     request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(authorization)));
-                    request.Headers.Add("Content-Type", "text/calendar; charset=utf-8");
+                    request.Content.Headers.ContentType = new MediaTypeHeaderValue("text/calendar")
+                    {
+                        CharSet = Encoding.UTF8.WebName
+                    };
 
                     Log.Info(String.Format("UpdateCalDavEvent eventURl: {0}", eventURl));
 

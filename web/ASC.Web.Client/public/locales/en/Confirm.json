@@ -1,4 +1,4 @@
-{
+﻿{
   "ChangePasswordSuccess": "Password has been successfully changed",
   "ConfirmOwnerPortalSuccessMessage": "Portal owner has been successfully changed. In 10 seconds you will be redirected",
   "ConfirmOwnerPortalTitle": "Please confirm that you want to change portal owner to {{newOwner}}",

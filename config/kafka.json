@@ -1,5 +1,4 @@
 {
 	"kafka": {
-		"BootstrapServers": ""
 	}
 }

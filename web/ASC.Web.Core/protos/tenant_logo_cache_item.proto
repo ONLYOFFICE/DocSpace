@@ -1,0 +1,8 @@
+﻿
+syntax = "proto3";
+
+package ASC.Web.Core.WhiteLabel;
+
+message TenantLogoCacheItem {
+	string key = 1;
+}

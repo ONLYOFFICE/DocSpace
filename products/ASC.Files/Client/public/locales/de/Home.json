@@ -1,4 +1,4 @@
-{
+﻿{
   "All": "Alle",
   "AllFiles": "Alle Dateien",
   "Archives": "Archive",
@@ -12,7 +12,6 @@
   "Convert": "Konvertierung",
   "CopyItem": "<strong>{{title}}</strong> kopiert",
   "CopyItems": "Elemente kopiert: <strong>{{qty}}</strong>",
-  "CreateWithEmptyTitle": "Der Titel des Orderns oder Datei darf nicht leer sein",
   "Document": "Dokument",
   "Duplicate": "Kopie erstellen",
   "EmptyFile": "Leere Datei",
@@ -42,6 +41,7 @@
   "New": "Erstellen",
   "NewDocument": "Neues Dokument",
   "NewFolder": "Neuer Ordner",
+  "NewMasterForm": "Neue Formularvorlage",
   "NewPresentation": "Neue Präsentation",
   "NewSpreadsheet": "Neue Tabellenkalkulation",
   "NoSubfolders": "Keine Unterordner",
@@ -67,11 +67,8 @@
   "ShowVersionHistory": "Versionshistorie anzeigen",
   "Spreadsheet": "Tabellenkalkulation",
   "SubheadingEmptyText": "In dieser Sektion gibt es keine Dateien zum Anzeigen.",
-  "TitleCreated": "Erstellt",
   "TitleDocuments": "Dateien",
-  "TitleModified": "Aktualisiert",
   "TitleSubfolders": "Ordner",
-  "TitleUploaded": "Hochgeladen",
   "TooltipElementCopyMessage": "Kopieren {{element}}",
   "TooltipElementsCopyMessage": "Kopieren {{element}} Element(e)",
   "TooltipElementsMoveMessage": "{{element}} Element(e) verschieben",
@@ -79,5 +76,5 @@
   "UnblockVersion": "Entsperren/Einchecken",
   "UploadToFolder": "In den Ordner hochladen",
   "ViewList": "Liste",
-  "ViewTiles": "Kacheln"
+  "ViewTiles": "Tiles"
 }

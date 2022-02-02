@@ -1,0 +1,5 @@
+﻿{
+  "DeleteUserConfirmation": "{{userCaption}} <strong>{{user}}</strong> tiks izdzēsts.",
+  "DeleteUserDataConfirmation": "Lietotāja dokumenti, kas kopīgoti ar citiem, tiks dzēsti. Lai no tā izvairītos, atkārtoti piešķiriet datus no jauna.",
+  "SuccessfullyDeleteUserInfoMessage": "Lietotājs ir veiksmīgi izdzēsts"
+}

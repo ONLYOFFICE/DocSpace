@@ -22,6 +22,17 @@ newInstance.use(Backend).init({
     },
   },
 
+  ns: [
+    "DownloadDialog",
+    "DeleteDialog",
+    "EmptyTrashDialog",
+    "ConvertDialog",
+    "ConnectDialog",
+    "ConflictResolveDialog",
+    "DeleteThirdPartyDialog",
+    "ThirdPartyMoveDialog",
+  ],
+
   backend: {
     loadPath: loadLanguagePath(config.homepage),
     allowMultiLoading: false,

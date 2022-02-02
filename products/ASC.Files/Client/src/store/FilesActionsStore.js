@@ -151,7 +151,7 @@ class FilesActionStore {
             this.updateCurrentFolder(selection.length);
             if (isRecycleBinFolder) {
               return toastr.success(translations.deleteFromTrash);
-          }
+            }
 
             if (selection.length > 1) {
               return toastr.success(translations.deleteSelectedElem);
@@ -320,7 +320,13 @@ class FilesActionStore {
           setTreeFolders(treeFolders);
         }
       }
-      setAction({ type: null, id: null, extension: null });
+      setAction({
+        type: null,
+        id: null,
+        extension: null,
+        title: "",
+        templateId: null,
+      });
       setIsLoading(false);
       type === FileAction.Rename &&
         this.onSelectItem({
@@ -728,6 +734,7 @@ class FilesActionStore {
             label: t("Share"),
             onClick: () => setSharingPanelVisible(true),
             iconUrl: "/static/images/share.react.svg",
+            title: t("Translations:ButtonShareAccess"),
           };
 
       case "copy":
@@ -909,12 +916,7 @@ class FilesActionStore {
         onClick: () => setMoveToPanelVisible(true),
         iconUrl: "/static/images/move.react.svg",
       })
-      .set("delete", deleteOption)
-      .set("emptyRecycleBin", {
-        label: t("EmptyRecycleBin"),
-        onClick: () => setEmptyTrashDialogVisible(true),
-        iconUrl: "/static/images/delete.react.svg",
-      });
+      .set("delete", deleteOption);
     return this.convertToArray(itemsCollection);
   };
   getHeaderMenu = (t) => {
