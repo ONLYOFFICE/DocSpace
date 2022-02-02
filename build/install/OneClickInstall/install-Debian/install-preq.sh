@@ -107,12 +107,16 @@ if ! dpkg -l | grep -q "mysql-server"; then
 	MYSQL_SERVER_PASS=${MYSQL_SERVER_PASS:-"$(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 12)"}
 
 	# setup mysql 8.0 package
-	curl -OL http://dev.mysql.com/get/mysql-apt-config_0.8.15-1_all.deb
+	MYSQL_PACKAGE_NAME="mysql-apt-config_0.8.22-1_all.deb"
+	if [ "$DIST" = "debian" ] && [ "$DISTRIB_CODENAME" = "stretch" ]; then
+		MYSQL_PACKAGE_NAME="mysql-apt-config_0.8.16-1_all.deb"
+	fi
+	curl -OL http://dev.mysql.com/get/${MYSQL_PACKAGE_NAME}
 	echo "mysql-apt-config mysql-apt-config/repo-codename  select  $DISTRIB_CODENAME" | debconf-set-selections
 	echo "mysql-apt-config mysql-apt-config/repo-distro  select  $DIST" | debconf-set-selections
 	echo "mysql-apt-config mysql-apt-config/select-server  select  mysql-8.0" | debconf-set-selections
-	DEBIAN_FRONTEND=noninteractive dpkg -i mysql-apt-config_0.8.15-1_all.deb
-	rm -f mysql-apt-config_0.8.15-1_all.deb
+	DEBIAN_FRONTEND=noninteractive dpkg -i ${MYSQL_PACKAGE_NAME}
+	rm -f ${MYSQL_PACKAGE_NAME}
 
 	echo mysql-community-server mysql-community-server/root-pass password ${MYSQL_SERVER_PASS} | debconf-set-selections
 	echo mysql-community-server mysql-community-server/re-root-pass password ${MYSQL_SERVER_PASS} | debconf-set-selections

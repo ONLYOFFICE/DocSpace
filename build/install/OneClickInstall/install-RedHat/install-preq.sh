@@ -74,9 +74,9 @@ rpm -Uvh https://packages.microsoft.com/config/centos/$REV/packages-microsoft-pr
 case $REV in
 	8) 	dnf remove -y @mysql
 		dnf module -y reset mysql && dnf module -y disable mysql
-		${package_manager} localinstall -y https://dev.mysql.com/get/mysql80-community-release-el8-1.noarch.rpm || true ;;
-	7) 	${package_manager} localinstall -y https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm || true ;;
-	6) 	${package_manager} localinstall -y https://dev.mysql.com/get/mysql80-community-release-el6-3.noarch.rpm || true ;;
+		${package_manager} localinstall -y https://dev.mysql.com/get/mysql80-community-release-el8-3.noarch.rpm || true ;;
+	7) 	${package_manager} localinstall -y https://dev.mysql.com/get/mysql80-community-release-el7-5.noarch.rpm || true ;;
+	6) 	${package_manager} localinstall -y https://dev.mysql.com/get/mysql80-community-release-el6-5.noarch.rpm || true ;;
 esac
 
 if ! rpm -q mysql-community-server; then
