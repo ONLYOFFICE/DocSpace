@@ -15,6 +15,7 @@ import DomHelpers from "@appserver/components/utils/domHelpers";
 
 const Navigation = ({
   tReady,
+  showText,
   isRootFolder,
   title,
   canCreate,
@@ -85,6 +86,7 @@ const Navigation = ({
               changeWidth={changeWidth}
               width={context.sectionWidth}
               height={context.sectionHeight}
+              showText={showText}
               isRootFolder={isRootFolder}
               onBackToParentFolder={onBackToParentFolder}
               title={title}

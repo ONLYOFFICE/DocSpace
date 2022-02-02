@@ -23,6 +23,15 @@ const StyledBox = styled.div`
   left: ${isMobile ? "-16px" : "-20px"};
   ${isMobile &&
   css`
+    width: ${(props) =>
+      props.showText
+        ? css`calc(100vw - 240px)`
+        : css`calc(100vw - 52px)`} !important;
+    max-width: 100vw !important;
+  `}
+
+  ${isMobileOnly &&
+  css`
     width: 100vw !important;
     max-width: 100vw !important;
   `}
@@ -149,6 +158,7 @@ const DropBox = React.forwardRef(
     {
       width,
       height,
+      showText,
       changeWidth,
       isRootFolder,
       onBackToParentFolder,
@@ -190,6 +200,7 @@ const DropBox = React.forwardRef(
         ref={ref}
         width={width}
         height={height < dropBoxHeight ? height : null}
+        showText={showText}
         changeWidth={changeWidth}
       >
         <StyledContainer canCreate={canCreate}>

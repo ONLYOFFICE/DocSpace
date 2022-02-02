@@ -303,6 +303,7 @@ class SectionHeaderContent extends React.Component {
       isHeaderVisible,
       isHeaderChecked,
       isHeaderIndeterminate,
+      showText,
     } = this.props;
     const menuItems = this.getMenuItems();
     const isLoading = !title || !tReady;
@@ -335,6 +336,7 @@ class SectionHeaderContent extends React.Component {
                   <Loaders.SectionHeader />
                 ) : (
                   <Navigation
+                    showText={showText}
                     isRootFolder={isRootFolder}
                     canCreate={canCreate}
                     title={title}
@@ -404,6 +406,8 @@ export default inject(
     const { deleteAction, downloadAction, getHeaderMenu } = filesActionsStore;
 
     return {
+      showText: auth.settingsStore.showText,
+
       isDesktop: auth.settingsStore.isDesktopClient,
       isRootFolder: selectedFolderStore.parentId === 0,
       title: selectedFolderStore.title,
