@@ -40,6 +40,7 @@ const CodeInput = (props) => {
     const target = e.target;
 
     if (key === "Backspace") {
+      handleChange();
       if (target.value === "" && target.previousElementSibling !== null) {
         if (target.previousElementSibling !== null) {
           if (e.target.previousElementSibling.nodeName === "HR") {
