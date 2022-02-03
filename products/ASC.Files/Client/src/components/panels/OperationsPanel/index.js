@@ -207,6 +207,7 @@ export default inject(
     } = dialogsStore;
 
     const selections = selection.length ? selection : [bufferSelection];
+    const selectionsWithoutEditing = selections.filter((f) => !f.isEditing);
 
     const provider = selections.find((x) => x.providerKey);
 
@@ -220,7 +221,7 @@ export default inject(
       operationsFolders,
       visible: copyPanelVisible || moveToPanelVisible,
       provider,
-      selection: selections,
+      selection: selectionsWithoutEditing,
 
       setCopyPanelVisible,
       setMoveToPanelVisible,

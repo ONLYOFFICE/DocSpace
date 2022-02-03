@@ -39,17 +39,25 @@ class PureHome extends React.Component {
       expandedKeys,
       setExpandedKeys,
       setToPreviewFile,
+      playlist,
       mediaViewersFormatsStore,
       getFileInfo,
       setIsPrevSettingsModule,
       isPrevSettingsModule,
     } = this.props;
 
+    if (!window.location.href.includes("#preview")) {
+      localStorage.removeItem("isFirstUrl");
+    }
+
     const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gmi"); //TODO: Always find?
     const match = window.location.pathname.match(reg);
     let filterObj = null;
 
-    if (window.location.href.indexOf("/files/#preview") > 1) {
+    if (
+      window.location.href.indexOf("/files/#preview") > 1 &&
+      playlist.length < 1
+    ) {
       const pathname = window.location.href;
       const fileId = pathname.slice(pathname.indexOf("#preview") + 9);
 
@@ -70,6 +78,10 @@ class PureHome extends React.Component {
     }
 
     if (match && match.length > 0) {
+      if (window.location.href.includes("#preview")) {
+        return;
+      }
+
       filterObj = FilesFilter.getFilter(window.location);
 
       if (!filterObj) {
@@ -416,7 +428,7 @@ export default inject(
       ? filesStore.selectionTitle
       : null;
 
-    const { setToPreviewFile } = mediaViewerDataStore;
+    const { setToPreviewFile, playlist } = mediaViewerDataStore;
     if (!firstLoad) {
       if (isLoading) {
         showLoader();
@@ -467,6 +479,7 @@ export default inject(
       setHeaderVisible: auth.settingsStore.setHeaderVisible,
       personal: auth.settingsStore.personal,
       setToPreviewFile,
+      playlist,
       mediaViewersFormatsStore,
       getFileInfo,
 

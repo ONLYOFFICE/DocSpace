@@ -20,7 +20,15 @@ class MediaViewerDataStore {
   };
 
   setToPreviewFile = (file, visible) => {
+    if (file === null) {
+      this.previewFile = null;
+      this.id = null;
+      this.visible = false;
+      return;
+    }
+
     if (!file.canOpenPlayer) return;
+
     this.previewFile = file;
     this.id = file.id;
     this.visible = visible;
@@ -55,6 +63,7 @@ class MediaViewerDataStore {
         title: this.previewFile.title,
       });
     }
+
     return playlist;
   }
 }

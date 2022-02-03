@@ -689,6 +689,8 @@ namespace ASC.Web.Files.Services.WCFService
 
             FileMarker.MarkAsNew(file);
 
+            SocketManager.CreateFile(file);
+
             return file;
         }
 
@@ -709,7 +711,7 @@ namespace ASC.Web.Files.Services.WCFService
                 if (isFinish)
                 {
                     FileTracker.Remove(id, tabId);
-                    SocketManager.FilesChangeEditors(id, true);
+                    SocketManager.StopEdit(id);
                 }
                 else
                 {
@@ -763,7 +765,6 @@ namespace ASC.Web.Files.Services.WCFService
                 if (file != null)
                     FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdated, file.Title);
 
-                SocketManager.FilesChangeEditors(fileId, !forcesave);
                 return file;
             }
             catch (Exception e)
@@ -793,7 +794,6 @@ namespace ASC.Web.Files.Services.WCFService
                 if (file != null)
                     FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdated, file.Title);
 
-                SocketManager.FilesChangeEditors(fileId, true);
                 return file;
             }
             catch (Exception e)

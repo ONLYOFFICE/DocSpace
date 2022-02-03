@@ -118,6 +118,7 @@ namespace ASC.Web.Files
         private IServiceProvider ServiceProvider { get; }
         public TempStream TempStream { get; }
         private UserManager UserManager { get; }
+        private SocketManager SocketManager { get; }
         private ILog Logger { get; }
 
         public FileHandlerService(
@@ -140,12 +141,14 @@ namespace ASC.Web.Files
             PathProvider pathProvider,
             UserManager userManager,
             DocumentServiceTrackerHelper documentServiceTrackerHelper,
+            DocumentServiceHelper documentServiceHelper,
             FilesMessageService filesMessageService,
             FileShareLink fileShareLink,
             FileConverter fileConverter,
             FFmpegService fFmpegService,
             IServiceProvider serviceProvider,
-            TempStream tempStream)
+            TempStream tempStream,
+            SocketManager socketManager)
         {
             FilesLinkUtility = filesLinkUtility;
             TenantExtra = tenantExtra;
@@ -168,6 +171,7 @@ namespace ASC.Web.Files
             FileConverter = fileConverter;
             FFmpegService = fFmpegService;
             ServiceProvider = serviceProvider;
+            SocketManager = socketManager;
             TempStream = tempStream;
             UserManager = userManager;
             Logger = optionsMonitor.CurrentValue;
@@ -1096,6 +1100,8 @@ namespace ASC.Web.Files
                     var docType = context.Request.Query["doctype"];
                     file = CreateFileFromTemplate(folder, fileTitle, docType);
                 }
+
+                SocketManager.CreateFile(file);
             }
             catch (Exception ex)
             {

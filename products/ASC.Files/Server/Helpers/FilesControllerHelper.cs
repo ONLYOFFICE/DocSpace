@@ -71,6 +71,7 @@ namespace ASC.Files.Helpers
         private ApiDateTimeHelper ApiDateTimeHelper { get; }
         private UserManager UserManager { get; }
         private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        public SocketManager SocketManager { get; }
         public IServiceProvider ServiceProvider { get; }
         private ILog Logger { get; set; }
 
@@ -104,7 +105,8 @@ namespace ASC.Files.Helpers
             ApiDateTimeHelper apiDateTimeHelper,
             UserManager userManager,
             DisplayUserSettingsHelper displayUserSettingsHelper,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            SocketManager socketManager)
         {
             ApiContext = context;
             FileStorageService = fileStorageService;
@@ -129,6 +131,7 @@ namespace ASC.Files.Helpers
             UserManager = userManager;
             DisplayUserSettingsHelper = displayUserSettingsHelper;
             ServiceProvider = serviceProvider;
+            SocketManager = socketManager;
             HttpContextAccessor = httpContextAccessor;
             FileConverter = fileConverter;
             Logger = optionMonitor.Get("ASC.Files");
@@ -187,6 +190,9 @@ namespace ASC.Files.Helpers
             try
             {
                 var resultFile = FileUploader.Exec(folderId, title, file.Length, file, createNewIfExist ?? !FilesSettingsHelper.UpdateIfExist, !keepConvertStatus);
+
+                SocketManager.CreateFile(resultFile);
+
                 return FileWrapperHelper.Get(resultFile);
             }
             catch (FileNotFoundException e)
@@ -328,6 +334,7 @@ namespace ASC.Files.Helpers
         public FolderWrapper<T> CreateFolder(T folderId, string title)
         {
             var folder = FileStorageService.CreateNewFolder(folderId, title);
+
             return FolderWrapperHelper.Get(folder);
         }
 
@@ -440,7 +447,7 @@ namespace ASC.Files.Helpers
 
         public IEnumerable<ConversationResult<T>> CheckConversion(CheckConversionModel<T> model)
         {
-            return FileStorageService.CheckConversion(new List<CheckConversionModel<T>>() { model })
+            return FileStorageService.CheckConversion(new List<CheckConversionModel<T>>() { model }, model.Sync)
             .Select(r =>
             {
                 var o = new ConversationResult<T>

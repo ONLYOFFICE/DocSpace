@@ -1,6 +1,6 @@
 import FilesStore from "./FilesStore";
 import fileActionStore from "./FileActionStore";
-import selectedFolderStore from "./SelectedFolderStore";
+import SelectedFolderStore from "./SelectedFolderStore";
 import TreeFoldersStore from "./TreeFoldersStore";
 import thirdPartyStore from "./ThirdPartyStore";
 import SettingsStore from "./SettingsStore";
@@ -24,6 +24,9 @@ const formatsStore = new FormatsStore(
   mediaViewersFormatsStore,
   docserviceStore
 );
+
+const selectedFolderStore = new SelectedFolderStore(store.auth.settingsStore);
+
 const treeFoldersStore = new TreeFoldersStore(selectedFolderStore);
 
 const settingsStore = new SettingsStore(thirdPartyStore, treeFoldersStore);
@@ -60,6 +63,7 @@ const uploadDataStore = new UploadDataStore(
   dialogsStore,
   settingsStore
 );
+
 const filesActionsStore = new FilesActionsStore(
   store.auth,
   uploadDataStore,
