@@ -32,8 +32,8 @@ namespace ASC.Collections
 {
     public abstract class CachedDictionaryBase<T>
     {
-        protected string baseKey;
-        protected Func<T, bool> condition;
+        protected string BaseKey;
+        protected Func<T, bool> Condition;
 
         public T this[string key] => Get(key);
 
@@ -41,7 +41,7 @@ namespace ASC.Collections
 
         protected abstract void InsertRootKey(string rootKey);
 
-        public void Clear() => InsertRootKey(baseKey);
+        public void Clear() => InsertRootKey(BaseKey);
 
         public void Clear(string rootKey) => InsertRootKey(BuildKey(string.Empty, rootKey));
 
@@ -86,7 +86,7 @@ namespace ASC.Collections
                 OnMiss(fullKey);
                 var newValue = defaults();
 
-                if (condition == null || condition(newValue))
+                if (Condition == null || Condition(newValue))
                     Add(rootkey, key, newValue);
 
                 return newValue;
@@ -99,7 +99,7 @@ namespace ASC.Collections
 
         protected virtual T ReturnCached(object objectCache) => (T)objectCache;
 
-        protected string BuildKey(string key, string rootkey) => $"{baseKey}-{rootkey}-{key}";
+        protected string BuildKey(string key, string rootkey) => $"{BaseKey}-{rootkey}-{key}";
 
         protected abstract object GetObjectFromCache(string fullKey);
 

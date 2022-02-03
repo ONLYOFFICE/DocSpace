@@ -33,10 +33,18 @@ namespace ASC.Common.Utils
 {
     public static class HtmlUtil
     {
-        private static readonly Regex tagReplacer = new Regex("<[^>]*>", RegexOptions.Multiline | RegexOptions.Compiled);
-        private static readonly Regex commentsReplacer = new Regex("<!--(?s).*?-->", RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.Compiled);
-        private static readonly Regex xssReplacer = new Regex(@"<\s*(style|script)[^>]*>(.*?)<\s*/\s*(style|script)>", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled | RegexOptions.Singleline);
-        private static readonly Regex Worder = new Regex(@"\S+", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        private static readonly Regex _tagReplacer 
+            = new Regex("<[^>]*>", RegexOptions.Multiline | RegexOptions.Compiled);
+
+        private static readonly Regex _commentsReplacer 
+            = new Regex("<!--(?s).*?-->", RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+        private static readonly Regex _xssReplacer 
+            = new Regex(@"<\s*(style|script)[^>]*>(.*?)<\s*/\s*(style|script)>", RegexOptions.IgnoreCase 
+                | RegexOptions.CultureInvariant | RegexOptions.Compiled | RegexOptions.Singleline);
+
+        private static readonly Regex _worder = 
+            new Regex(@"\S+", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
 
         public static string GetText(string html, int maxLength = 0, string endBlockTemplate = "...")
@@ -45,16 +53,16 @@ namespace ASC.Common.Utils
 
             if (!string.IsNullOrEmpty(html))
             {
-                html = xssReplacer.Replace(html, string.Empty); //Clean malicious tags. <script> <style>
+                html = _xssReplacer.Replace(html, string.Empty); //Clean malicious tags. <script> <style>
 
                 if (string.IsNullOrEmpty(html)) return html;
 
-                unformatedText = tagReplacer.Replace(html, string.Empty);
+                unformatedText = _tagReplacer.Replace(html, string.Empty);
 
                 if (!string.IsNullOrEmpty(unformatedText))
                 {
                     // kill comments
-                    unformatedText = commentsReplacer.Replace(unformatedText, string.Empty);
+                    unformatedText = _commentsReplacer.Replace(unformatedText, string.Empty);
                     unformatedText = unformatedText.Trim();
 
                     if (!string.IsNullOrEmpty(unformatedText))
@@ -95,7 +103,7 @@ namespace ASC.Common.Utils
         {
             if (string.IsNullOrEmpty(searchText) || string.IsNullOrEmpty(htmlText)) return htmlText;
 
-            var regexpstr = Worder.Matches(searchText).Cast<Match>().Select(m => m.Value).Distinct().Aggregate((r, n) => r + "|" + n);
+            var regexpstr = _worder.Matches(searchText).Cast<Match>().Select(m => m.Value).Distinct().Aggregate((r, n) => r + "|" + n);
             var wordsFinder = new Regex(Regex.Escape(regexpstr), RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Multiline);
 
             return wordsFinder.Replace(htmlText, m => string.Format("<span class='searchTextHighlight{1}'>{0}</span>", m.Value, withoutLink ? " bold" : string.Empty));

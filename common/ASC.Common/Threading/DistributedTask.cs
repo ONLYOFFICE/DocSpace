@@ -66,7 +66,6 @@ namespace ASC.Common.Threading
         public DistributedTask(DistributedTaskCache distributedTaskCache) =>
              DistributedTaskCache = distributedTaskCache;
 
-
         public T GetProperty<T>(string name)
         {
             var prop = DistributedTaskCache.Props.FirstOrDefault(r => r.Key == name);

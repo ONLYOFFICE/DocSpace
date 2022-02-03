@@ -30,9 +30,7 @@ namespace ASC.Common.Security.Authentication
     {
         string Email { get; }
         string FirstName { get; }
-
         string LastName { get; }
-
         string Title { get; }
         int Tenant { get; }
     }

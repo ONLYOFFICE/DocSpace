@@ -40,7 +40,6 @@ namespace System.Web
     {
         public static readonly string UrlRewriterHeader = "X-REWRITER-URL";
 
-
         public static Uri GetUrlRewriter(this HttpRequest request) =>
             request != null ? GetUrlRewriter(request.Headers, request) : null;
 

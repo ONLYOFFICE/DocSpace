@@ -33,8 +33,8 @@ namespace ASC.Collections
 
         public HttpRequestDictionary(HttpContext httpContext, string baseKey)
         {
-            condition = (T) => true;
-            this.baseKey = baseKey;
+            Condition = (T) => true;
+            BaseKey = baseKey;
             _httpContext = httpContext;
         }
 

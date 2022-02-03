@@ -10,13 +10,13 @@ namespace ASC.Common.Utils
 {
     public class ConnectionStringCollection : IEnumerable<ConnectionStringSettings>
     {
-        private List<ConnectionStringSettings> Data { get; set; }
+        private List<ConnectionStringSettings> _data;
 
-        public ConnectionStringSettings this[string name] => Data.FirstOrDefault(r => r.Name == name);
+        public ConnectionStringSettings this[string name] => _data.FirstOrDefault(r => r.Name == name);
 
-        public ConnectionStringCollection(IEnumerable<ConnectionStringSettings> data) => Data = data.ToList();
+        public ConnectionStringCollection(IEnumerable<ConnectionStringSettings> data) => _data = data.ToList();
 
-        public IEnumerator<ConnectionStringSettings> GetEnumerator() => Data.GetEnumerator();
+        public IEnumerator<ConnectionStringSettings> GetEnumerator() => _data.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }

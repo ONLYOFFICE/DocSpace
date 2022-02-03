@@ -35,12 +35,7 @@ namespace ASC.Common.Web
 {
     public class DisposableHttpContext : IDisposable
     {
-        private const string key = "disposable.key";
-        private readonly Microsoft.AspNetCore.Http.HttpContext _context;
-        private bool _isDisposed;
-
-        public DisposableHttpContext(Microsoft.AspNetCore.Http.HttpContext ctx) =>
-            _context = ctx ?? throw new ArgumentNullException();
+        private const string Key = "disposable.key";
 
         public object this[string key]
         {
@@ -53,16 +48,22 @@ namespace ASC.Common.Web
             }
         }
 
+        private readonly Microsoft.AspNetCore.Http.HttpContext _context;
+        private bool _isDisposed;
+
+        public DisposableHttpContext(Microsoft.AspNetCore.Http.HttpContext ctx) =>
+            _context = ctx ?? throw new ArgumentNullException(nameof(ctx));
+
         private Dictionary<string, IDisposable> Items
         {
             get
             {
-                var table = (Dictionary<string, IDisposable>)_context.Items[key];
+                var table = (Dictionary<string, IDisposable>)_context.Items[Key];
 
                 if (table == null)
                 {
                     table = new Dictionary<string, IDisposable>(1);
-                    _context.Items.Add(key, table);
+                    _context.Items.Add(Key, table);
                 }
 
                 return table;

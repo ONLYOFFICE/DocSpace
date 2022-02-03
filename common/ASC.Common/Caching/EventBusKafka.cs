@@ -18,7 +18,7 @@ namespace ASC.Common.Caching
     [Singletone]
     public class EventBusKafka<T> : IDisposable, IEventBus<T> where T : IMessage<T>, new()
     {
-        private IProducer<AscCacheItem, T> Producer { get; set; }
+        private IProducer<AscCacheItem, T> _producer;
 
         private bool _disposedValue = false; // To detect redundant calls
         private readonly ClientConfig _clientConfig;
@@ -49,9 +49,9 @@ namespace ASC.Common.Caching
         {
             try
             {
-                if (Producer == null)
+                if (_producer == null)
                 {
-                    Producer = new ProducerBuilder<AscCacheItem, T>(new ProducerConfig(_clientConfig))
+                    _producer = new ProducerBuilder<AscCacheItem, T>(new ProducerConfig(_clientConfig))
                     .SetErrorHandler((_, e) => _logger.Error(e))
                     .SetKeySerializer(_keySerializer)
                     .SetValueSerializer(_valueSerializer)
@@ -71,7 +71,7 @@ namespace ASC.Common.Caching
                     }
                 };
 
-                Producer.ProduceAsync(channelName, message);
+                _producer.ProduceAsync(channelName, message);
             }
             catch (ProduceException<Null, string> e)
             {
@@ -179,7 +179,7 @@ namespace ASC.Common.Caching
         {
             if (!_disposedValue)
             {
-                if (disposing && Producer != null) Producer.Dispose();
+                if (disposing && _producer != null) _producer.Dispose();
 
                 _disposedValue = true;
             }

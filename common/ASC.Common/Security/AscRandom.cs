@@ -30,47 +30,47 @@ namespace ASC.Common.Security
 {
     public class AscRandom : Random
     {
-        private const int MBIG = int.MaxValue;
-        private const int MSEED = 161803398;
-        private const int MZ = 0;
+        private const int Mbig = int.MaxValue;
+        private const int Mseed = 161803398;
+        private const int Mz = 0;
 
-        private int inext;
-        private int inextp;
-        private readonly int[] seeds;
+        private int _inext;
+        private int _inextp;
+        private readonly int[] _seeds;
 
         public AscRandom() : this(Environment.TickCount) { }
 
         public AscRandom(int seed)
         {
-            seeds = new int[56];
+            _seeds = new int[56];
             var num4 = (seed == int.MinValue) ? int.MaxValue : Math.Abs(seed);
             var num2 = 161803398 - num4;
-            seeds[^1] = num2;
+            _seeds[^1] = num2;
             var num3 = 1;
 
-            for (var i = 1; i < seeds.Length - 1; i++)
+            for (var i = 1; i < _seeds.Length - 1; i++)
             {
-                var index = (21 * i) % (seeds.Length - 1);
-                seeds[index] = num3;
+                var index = (21 * i) % (_seeds.Length - 1);
+                _seeds[index] = num3;
                 num3 = num2 - num3;
 
                 if (num3 < 0) num3 += int.MaxValue;
 
-                num2 = seeds[index];
+                num2 = _seeds[index];
             }
 
             for (var j = 1; j < 5; j++)
             {
-                for (var k = 1; k < seeds.Length; k++)
+                for (var k = 1; k < _seeds.Length; k++)
                 {
-                    seeds[k] -= seeds[1 + ((k + 30) % (seeds.Length - 1))];
+                    _seeds[k] -= _seeds[1 + ((k + 30) % (_seeds.Length - 1))];
 
-                    if (seeds[k] < 0) seeds[k] += int.MaxValue;
+                    if (_seeds[k] < 0) _seeds[k] += int.MaxValue;
                 }
             }
 
-            inext = 0;
-            inextp = 21;
+            _inext = 0;
+            _inextp = 21;
         }
 
         public override int Next(int maxValue)
@@ -92,22 +92,22 @@ namespace ASC.Common.Security
 
         private int InternalSample()
         {
-            var inext = this.inext;
-            var inextp = this.inextp;
+            var inext = this._inext;
+            var inextp = this._inextp;
 
-            if (++inext >= seeds.Length - 1) inext = 1;
+            if (++inext >= _seeds.Length - 1) inext = 1;
 
-            if (++inextp >= seeds.Length - 1) inextp = 1;
+            if (++inextp >= _seeds.Length - 1) inextp = 1;
 
-            var num = seeds[inext] - seeds[inextp];
+            var num = _seeds[inext] - _seeds[inextp];
 
             if (num == int.MaxValue) num--;
 
             if (num < 0) num += int.MaxValue;
 
-            seeds[inext] = num;
-            this.inext = inext;
-            this.inextp = inextp;
+            _seeds[inext] = num;
+            this._inext = inext;
+            this._inextp = inextp;
 
             return num;
         }

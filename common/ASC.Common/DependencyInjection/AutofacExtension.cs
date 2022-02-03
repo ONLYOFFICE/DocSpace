@@ -18,6 +18,7 @@ namespace ASC.Common.DependencyInjection
         public string Type { get; set; }
         public IEnumerable<AutofacService> Services { get; set; }
     }
+
     internal class AutofacService
     {
         public string Type { get; set; }
