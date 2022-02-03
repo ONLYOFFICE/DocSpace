@@ -56,6 +56,7 @@ namespace ASC.Socket.IO.Svc
         private SocketIO SocketClient { get; set; }
         private CancellationTokenSource CancellationTokenSource { get; set; }
         private ILog Logger { get; set; }
+        private string LogDir { get; set; }
         private IConfiguration Configuration { get; set; }
         private ConfigurationExtension ConfigurationExtension { get; }
         private CoreBaseSettings CoreBaseSettings { get; set; }
@@ -108,6 +109,8 @@ namespace ASC.Socket.IO.Svc
                     StartInfo.EnvironmentVariables.Add("portal.internal.url", "http://localhost");
                 }
 
+                LogDir = Logger.LogDirectory;
+                StartInfo.EnvironmentVariables.Add("logPath", CrossPlatform.PathCombine(LogDir, "socket-io.%DATE%.log"));
                 StartNode();
             }
             catch (Exception e)
