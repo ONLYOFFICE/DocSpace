@@ -72,6 +72,16 @@ class FilesStore {
     const pathname = window.location.pathname.toLowerCase();
     this.isEditor = pathname.indexOf("doceditor") !== -1;
 
+    makeAutoObservable(this);
+    this.authStore = authStore;
+    this.settingsStore = settingsStore;
+    this.userStore = userStore;
+    this.fileActionStore = fileActionStore;
+    this.selectedFolderStore = selectedFolderStore;
+    this.treeFoldersStore = treeFoldersStore;
+    this.formatsStore = formatsStore;
+    this.filesSettingsStore = filesSettingsStore;
+
     const { socketHelper } = authStore.settingsStore;
 
     socketHelper.on("s:modify-folder", async (opt) => {
@@ -108,13 +118,18 @@ class FilesStore {
             );
           }
           break;
-        case "refresh":
-          if (opt?.type == "folder" && opt?.id) {
-            //console.log(`Folder ${opt?.id} has been changed`);
-            selectedFolderStore.id === opt?.id &&
-              this.fetchFiles(opt?.id, this.filter);
-          }
-          break;
+      }
+    });
+
+    socketHelper.on("refresh-folder", (id) => {
+      if (!id || this.isLoading) return;
+
+      //console.log(
+      //  `selected folder id ${this.selectedFolderStore.id} an changed folder id ${id}`
+      //);
+
+      if (this.selectedFolderStore.id == id) {
+        this.fetchFiles(id, this.filter);
       }
     });
 
@@ -134,16 +149,6 @@ class FilesStore {
 
       this.updateFileStatus(foundIndex, 0);
     });
-
-    makeAutoObservable(this);
-    this.authStore = authStore;
-    this.settingsStore = settingsStore;
-    this.userStore = userStore;
-    this.fileActionStore = fileActionStore;
-    this.selectedFolderStore = selectedFolderStore;
-    this.treeFoldersStore = treeFoldersStore;
-    this.formatsStore = formatsStore;
-    this.filesSettingsStore = filesSettingsStore;
   }
 
   setIsPrevSettingsModule = (isSettings) => {
@@ -468,6 +473,23 @@ class FilesStore {
 
           !isRecycleBinFolder && this.checkUpdateNode(data, folderId);
 
+          filterData.total = data.total;
+
+          if (data.total > 0) {
+            const lastPage = filterData.getLastPage();
+
+            if (filterData.page > lastPage) {
+              filterData.page = lastPage;
+
+              return this.fetchFiles(
+                folderId,
+                filterData,
+                clearFilter,
+                withSubfolders
+              );
+            }
+          }
+
           if (!isRecycleBinFolder && withSubfolders) {
             const path = data.pathParts.slice(0);
             const foldersCount = data.current.foldersCount;
@@ -478,7 +500,6 @@ class FilesStore {
           const isPrivacyFolder =
             data.current.rootFolderType === FolderType.Privacy;
 
-          filterData.total = data.total;
           this.setFilesFilter(filterData, isPrefSettings); //TODO: FILTER
           this.setFolders(isPrivacyFolder && isMobile ? [] : data.folders);
           this.setFiles(isPrivacyFolder && isMobile ? [] : data.files);

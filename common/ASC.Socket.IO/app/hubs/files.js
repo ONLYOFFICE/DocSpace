@@ -83,10 +83,10 @@
       }
     });
 
-    socket.on("c:refresh-folder", (folderId) => {
+    socket.on("refresh-folder", (folderId) => {
       const room = getRoom(`DIR-${folderId}`);
       logger.info(`refresh folder ${folderId} in room ${room}`);
-      modifyFolder(room, "refresh", folderId, "folder");
+      socket.to(room).emit("refresh-folder", folderId);
     });
   });
 

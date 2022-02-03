@@ -892,7 +892,7 @@ class UploadDataStore {
         const { socketHelper } = this.filesStore.settingsStore;
 
         socketHelper.emit({
-          command: "c:refresh-folder",
+          command: "refresh-folder",
           data: toFolderId,
         });
       }
