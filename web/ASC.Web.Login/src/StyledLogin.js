@@ -58,10 +58,6 @@ export const LoginContainer = styled.div`
     margin: 0 8px;
   }
 
-  .code-input {
-    margin-bottom: 32px;
-  }
-
   .line {
     display: flex;
     width: 320px;
@@ -87,6 +83,40 @@ export const LoginContainer = styled.div`
     font-size: 0px;
     line-height: 0px;
     margin: 0px;
+  }
+
+  .code-input-container {
+    margin-top: 32px;
+    text-align: center;
+  }
+
+  .not-found-code {
+    margin-top: 32px;
+  }
+
+  .code-input-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    margin-top: 16px;
+    padding: 14px 12px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 11px;
+    line-height: 12px;
+    svg {
+      margin: 8px;
+    }
+  }
+
+  .code-input-bar.warning {
+    background: #f7e6be;
+    margin-bottom: 16px;
+  }
+
+  .code-input-bar.error {
+    background: #f7cdbe;
   }
 
   .auth-form-container {

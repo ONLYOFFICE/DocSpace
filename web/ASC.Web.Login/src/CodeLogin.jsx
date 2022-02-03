@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PageLayout from "@appserver/common/components/PageLayout";
 import { withRouter } from "react-router";
 import {
@@ -7,18 +7,45 @@ import {
   withTranslation,
 } from "react-i18next";
 import Text from "@appserver/components/text";
+import Link from "@appserver/components/link";
 import CodeInput from "@appserver/components/code-input";
 import { Trans } from "react-i18next";
+import { ReactSVG } from "react-svg";
 
 import i18n from "./i18n";
 import { LoginContainer, LoginFormWrapper } from "./StyledLogin";
 
+const Bar = (props) => {
+  const { t, expired } = props;
+  const type = expired ? "warning" : "error";
+  const text = expired ? t("ExpiredCode") : t("InvalidCode");
+
+  return (
+    <div className={`code-input-bar ${type}`}>
+      <ReactSVG src="/static/images/danger.alert.react.svg" />
+      {text}
+    </div>
+  );
+};
+
 const Form = () => {
   const { t } = useTranslation("Login");
-  const email = "test@onlyoffice.com";
+  const [invalidCode, setInvalidCode] = useState(false);
+  const [expiredCode, setExpiredCode] = useState(false);
+
+  const email = "test@onlyoffice.com"; //TODO: get email from form
+  const validCode = "123456"; //TODO: get from api
 
   const onSubmit = (code) => {
-    console.log("Code ", code);
+    console.log(`Code ${code}`); //TODO: send code on backend
+
+    if (code !== validCode) {
+      setInvalidCode(true);
+    }
+  };
+
+  const handleChange = () => {
+    setInvalidCode(false);
   };
 
   return (
@@ -39,13 +66,31 @@ const Form = () => {
         </Trans>
       </Text>
 
-      <form className="auth-form-container">
-        <CodeInput className="code-input" onSubmit={onSubmit} />
+      <div className="code-input-container">
+        <CodeInput onSubmit={onSubmit} handleChange={handleChange} />
+        {(expiredCode || invalidCode) && <Bar t={t} expired={expiredCode} />}
 
-        <Text color="#A3A9AE" fontSize="12px" textAlign="center">
+        {expiredCode && (
+          <Link
+            isHovered
+            type="action"
+            fontSize="13px"
+            fontWeight="600"
+            color="#3B72A7"
+          >
+            {t("ResendCode")}
+          </Link>
+        )}
+
+        <Text
+          className="not-found-code"
+          color="#A3A9AE"
+          fontSize="12px"
+          textAlign="center"
+        >
           {t("NotFoundCode")}
         </Text>
-      </form>
+      </div>
     </LoginContainer>
   );
 };
