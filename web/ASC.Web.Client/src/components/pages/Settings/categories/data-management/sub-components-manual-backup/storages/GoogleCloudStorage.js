@@ -6,20 +6,15 @@ import GoogleCloudSettings from "../../consumer-storage-settings/GoogleCloudSett
 class GoogleCloudStorage extends React.Component {
   constructor(props) {
     super(props);
-    const { availableStorage, selectedId } = this.props;
+
+    const formSettings = {};
+    this.namesArray = GoogleCloudSettings.formNames();
+    this.namesArray.forEach((elem) => (formSettings[elem] = ""));
 
     this.state = {
-      formSettings: {
-        bucket: "",
-      },
-      isError: false,
-      isChangedInput: false,
+      formSettings,
       formErrors: {},
     };
-    this.isDisabled =
-      availableStorage[selectedId] && !availableStorage[selectedId].isSet;
-
-    this._isMounted = false;
   }
 
   onChange = (event) => {
@@ -33,12 +28,10 @@ class GoogleCloudStorage extends React.Component {
 
   onMakeCopy = () => {
     const { formSettings } = this.state;
-    const { bucket } = formSettings;
+
     const { onMakeCopyIntoStorage, isInvalidForm } = this.props;
 
-    const isInvalid = isInvalidForm({
-      bucket,
-    });
+    const isInvalid = isInvalidForm(formSettings);
 
     const hasError = isInvalid[0];
     const errors = isInvalid[1];
@@ -48,7 +41,7 @@ class GoogleCloudStorage extends React.Component {
       return;
     }
 
-    onMakeCopyIntoStorage([bucket]);
+    onMakeCopyIntoStorage(this.namesArray);
     this.setState({ formErrors: {} });
   };
   render() {
@@ -56,7 +49,7 @@ class GoogleCloudStorage extends React.Component {
     const {
       t,
       isLoadingData,
-      maxProgress,
+      isMaxProgress,
       availableStorage,
       selectedId,
     } = this.props;
@@ -76,18 +69,15 @@ class GoogleCloudStorage extends React.Component {
             label={t("MakeCopy")}
             onClick={this.onMakeCopy}
             primary
-            isDisabled={!maxProgress}
+            isDisabled={!isMaxProgress}
             size="medium"
-            tabIndex={10}
           />
-          {!maxProgress && (
+          {!isMaxProgress && (
             <Button
               label={t("Copying")}
-              onClick={() => console.log("click")}
-              isDisabled={true}
+              isDisabled
               size="medium"
               style={{ marginLeft: "8px" }}
-              tabIndex={11}
             />
           )}
         </div>

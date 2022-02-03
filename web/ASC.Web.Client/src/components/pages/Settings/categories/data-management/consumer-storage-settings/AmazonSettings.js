@@ -19,6 +19,10 @@ class AmazonSettings extends React.Component {
     ];
   };
 
+  static requiredFormsName = () => {
+    return [bucketInput, regionInput];
+  };
+
   constructor(props) {
     super(props);
     const { t, selectedStorage } = this.props;

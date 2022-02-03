@@ -5,26 +5,22 @@ import AmazonSettings from "../../consumer-storage-settings/AmazonSettings";
 class AmazonStorage extends React.Component {
   constructor(props) {
     super(props);
-    const { t, availableStorage, selectedId } = this.props;
+    const { availableStorage, selectedId } = this.props;
+
+    const formSettings = {};
+
+    this.namesArray = AmazonSettings.formNames();
+    this.namesArray.forEach((elem) => (formSettings[elem] = ""));
+
+    this.requiredFields = AmazonSettings.requiredFormsName();
 
     this.state = {
-      formSettings: {
-        bucket: "",
-        forcePathStyle: "",
-        region: "",
-        serviceUrl: "",
-        sse: "",
-        useHttp: "",
-      },
+      formSettings,
       formErrors: {},
-      isChangedInput: false,
     };
-    this.namesArray = AmazonSettings.formNames();
 
     this.isDisabled =
       availableStorage[selectedId] && !availableStorage[selectedId].isSet;
-
-    this._isMounted = false;
   }
 
   onChange = (event) => {
@@ -38,13 +34,14 @@ class AmazonStorage extends React.Component {
 
   onMakeCopy = () => {
     const { formSettings } = this.state;
-    const { bucket, region } = formSettings;
     const { onMakeCopyIntoStorage, isInvalidForm } = this.props;
 
-    const isInvalid = isInvalidForm({
-      bucket,
-      region,
-    });
+    const requiredSettings = {};
+    this.requiredFields.forEach(
+      (el) => (requiredSettings[el] = formSettings[el])
+    );
+
+    const isInvalid = isInvalidForm(requiredSettings);
 
     const hasError = isInvalid[0];
     const errors = isInvalid[1];
@@ -62,7 +59,7 @@ class AmazonStorage extends React.Component {
     const {
       t,
       isLoadingData,
-      maxProgress,
+      isMaxProgress,
       availableStorage,
       selectedId,
     } = this.props;
@@ -83,11 +80,11 @@ class AmazonStorage extends React.Component {
             label={t("MakeCopy")}
             onClick={this.onMakeCopy}
             primary
-            isDisabled={!maxProgress || this.isDisabled}
+            isDisabled={!isMaxProgress || this.isDisabled}
             size="medium"
             tabIndex={10}
           />
-          {!maxProgress && (
+          {!isMaxProgress && (
             <Button
               label={t("Copying")}
               onClick={() => console.log("click")}

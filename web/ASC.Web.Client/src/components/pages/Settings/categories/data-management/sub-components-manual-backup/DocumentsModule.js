@@ -13,7 +13,6 @@ class DocumentsModule extends React.Component {
     selectedFolderPathFromSessionStorage = getFromSessionStorage(
       "selectedFolderPath"
     );
-
     selectedFolderFromSessionStorage = getFromSessionStorage("selectedFolder");
 
     this.state = {
@@ -22,27 +21,18 @@ class DocumentsModule extends React.Component {
       isPanelVisible: false,
       folderPath: selectedFolderPathFromSessionStorage || "",
     };
-    this._isMounted = false;
   }
 
-  componentDidMount() {
-    this._isMounted = true;
-  }
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
   onSetLoadingData = (isLoading) => {
-    this._isMounted &&
-      this.setState({
-        isLoadingData: isLoading,
-      });
+    this.setState({
+      isLoadingData: isLoading,
+    });
   };
 
   onSelectFolder = (folderId) => {
-    this._isMounted &&
-      this.setState({
-        selectedFolder: folderId,
-      });
+    this.setState({
+      selectedFolder: folderId,
+    });
   };
 
   onClickInput = () => {
@@ -65,7 +55,7 @@ class DocumentsModule extends React.Component {
   };
 
   render() {
-    const { maxProgress, t, isCopyingLocal } = this.props;
+    const { isMaxProgress, t, isCopyingLocal } = this.props;
     const { isPanelVisible, isLoadingData, folderPath } = this.state;
 
     return (
@@ -89,18 +79,15 @@ class DocumentsModule extends React.Component {
             label={t("MakeCopy")}
             onClick={this.onMakeCopy}
             primary
-            isDisabled={!maxProgress || isLoadingData}
+            isDisabled={!isMaxProgress || isLoadingData}
             size="medium"
-            tabIndex={10}
           />
-          {!maxProgress && (
+          {!isMaxProgress && (
             <Button
               label={t("Copying")}
-              onClick={() => console.log("click")}
               isDisabled={true}
               size="medium"
               style={{ marginLeft: "8px" }}
-              tabIndex={11}
             />
           )}
         </div>

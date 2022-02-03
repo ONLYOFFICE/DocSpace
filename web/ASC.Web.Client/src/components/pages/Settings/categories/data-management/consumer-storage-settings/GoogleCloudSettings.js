@@ -1,7 +1,12 @@
 import React from "react";
 import TextInput from "@appserver/components/text-input";
 
+const bucket = "bucket";
 class GoogleCloudSettings extends React.Component {
+  static formNames = () => {
+    return [bucket];
+  };
+
   constructor(props) {
     super(props);
     const { selectedStorage } = this.props;
@@ -24,15 +29,14 @@ class GoogleCloudSettings extends React.Component {
     return (
       <>
         <TextInput
-          name="bucket"
+          name={bucket}
           className="backup_text-input"
           scale
           value={formSettings.bucket}
           hasError={isError?.bucket}
           onChange={onChange}
           isDisabled={isLoadingData || isLoading || this.isDisabled}
-          placeholder={this.bucketPlaceholder}
-          tabIndex={1}
+          placeholder={this.bucketPlaceholder || ""}
         />
       </>
     );

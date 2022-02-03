@@ -8,20 +8,16 @@ class RackspaceStorage extends React.Component {
     super(props);
     const { availableStorage, selectedId } = this.props;
 
+    const formSettings = {};
     this.namesArray = RackspaceSettings.formNames();
+    this.namesArray.forEach((elem) => (formSettings[elem] = ""));
 
     this.state = {
-      formSettings: {
-        private_container: "",
-        public_container: "",
-        region: "",
-      },
+      formSettings,
       formErrors: {},
     };
     this.isDisabled =
       availableStorage[selectedId] && !availableStorage[selectedId].isSet;
-
-    this._isMounted = false;
   }
 
   onChange = (event) => {
@@ -35,14 +31,10 @@ class RackspaceStorage extends React.Component {
 
   onMakeCopy = () => {
     const { formSettings } = this.state;
-    const { private_container, public_container, region } = formSettings;
+
     const { onMakeCopyIntoStorage, isInvalidForm } = this.props;
 
-    const isInvalid = isInvalidForm({
-      private_container,
-      public_container,
-      region,
-    });
+    const isInvalid = isInvalidForm(formSettings);
 
     const hasError = isInvalid[0];
     const errors = isInvalid[1];
@@ -60,7 +52,7 @@ class RackspaceStorage extends React.Component {
     const {
       t,
       isLoadingData,
-      maxProgress,
+      isMaxProgress,
       selectedId,
       availableStorage,
     } = this.props;
@@ -81,18 +73,15 @@ class RackspaceStorage extends React.Component {
             label={t("MakeCopy")}
             onClick={this.onMakeCopy}
             primary
-            isDisabled={!maxProgress || this.isDisabled}
+            isDisabled={!isMaxProgress || this.isDisabled}
             size="medium"
-            tabIndex={10}
           />
-          {!maxProgress && (
+          {!isMaxProgress && (
             <Button
               label={t("Copying")}
-              onClick={() => console.log("click")}
-              isDisabled={true}
+              isDisabled
               size="medium"
               style={{ marginLeft: "8px" }}
-              tabIndex={11}
             />
           )}
         </div>

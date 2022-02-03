@@ -30,20 +30,18 @@ class ThirdPartyStorageModule extends React.PureComponent {
       availableStorage: {},
       selectedStorage: "",
       selectedId: "",
-      isLoading: false,
+      isInitialLoading: false,
     };
 
     this.isFirstSet = false;
-    this._isMounted = false;
   }
   componentDidMount() {
-    this._isMounted = true;
     const { onSetLoadingData } = this.props;
 
     onSetLoadingData && onSetLoadingData(true);
     this.setState(
       {
-        isLoading: true,
+        isInitialLoading: true,
       },
       function () {
         getBackupStorage()
@@ -68,14 +66,10 @@ class ThirdPartyStorageModule extends React.PureComponent {
           })
           .finally(() => {
             onSetLoadingData && onSetLoadingData(false);
-            this.setState({ isLoading: false });
+            this.setState({ isInitialLoading: false });
           });
       }
     );
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
   }
 
   onSelect = (option) => {
@@ -140,12 +134,12 @@ class ThirdPartyStorageModule extends React.PureComponent {
     return [firstError, errors];
   };
   render() {
-    const { t, isLoadingData, maxProgress } = this.props;
+    const { isLoadingData, isMaxProgress } = this.props;
     const {
       availableOptions,
       availableStorage,
       selectedStorage,
-      isLoading,
+      isInitialLoading,
       selectedId,
     } = this.state;
 
@@ -155,52 +149,52 @@ class ThirdPartyStorageModule extends React.PureComponent {
           options={availableOptions}
           selectedOption={{ key: 0, label: selectedStorage }}
           onSelect={this.onSelect}
-          isDisabled={isLoadingData || isLoading}
+          isDisabled={isLoadingData || isInitialLoading}
           noBorder={false}
-          scaled={true}
-          scaledOptions={true}
+          scaled
+          scaledOptions
           dropDownMaxHeight={400}
           className="backup_combo"
         />
 
-        {selectedId === ThirdPartyStorages.GoogleId && !isLoading && (
+        {selectedId === ThirdPartyStorages.GoogleId && !isInitialLoading && (
           <GoogleCloudStorage
             isLoadingData={isLoadingData}
             availableStorage={availableStorage}
-            maxProgress={maxProgress}
+            isMaxProgress={isMaxProgress}
             selectedId={selectedId}
             onMakeCopyIntoStorage={this.onMakeCopyIntoStorage}
             isInvalidForm={this.isInvalidForm}
           />
         )}
 
-        {selectedId === ThirdPartyStorages.RackspaceId && !isLoading && (
+        {selectedId === ThirdPartyStorages.RackspaceId && !isInitialLoading && (
           <RackspaceStorage
             isLoadingData={isLoadingData}
             availableStorage={availableStorage}
-            maxProgress={maxProgress}
+            isMaxProgress={isMaxProgress}
             selectedId={selectedId}
             onMakeCopyIntoStorage={this.onMakeCopyIntoStorage}
             isInvalidForm={this.isInvalidForm}
           />
         )}
 
-        {selectedId === ThirdPartyStorages.SelectelId && !isLoading && (
+        {selectedId === ThirdPartyStorages.SelectelId && !isInitialLoading && (
           <SelectelStorage
             isLoadingData={isLoadingData}
             availableStorage={availableStorage}
-            maxProgress={maxProgress}
+            isMaxProgress={isMaxProgress}
             selectedId={selectedId}
             onMakeCopyIntoStorage={this.onMakeCopyIntoStorage}
             isInvalidForm={this.isInvalidForm}
           />
         )}
 
-        {selectedId === ThirdPartyStorages.AmazonId && !isLoading && (
+        {selectedId === ThirdPartyStorages.AmazonId && !isInitialLoading && (
           <AmazonStorage
             isLoadingData={isLoadingData}
             availableStorage={availableStorage}
-            maxProgress={maxProgress}
+            isMaxProgress={isMaxProgress}
             selectedId={selectedId}
             onMakeCopyIntoStorage={this.onMakeCopyIntoStorage}
             isInvalidForm={this.isInvalidForm}

@@ -14,8 +14,8 @@ class ThirdPartyModule extends React.Component {
     selectedFolderPathFromSessionStorage = getFromSessionStorage(
       "selectedFolderPath"
     );
-
     selectedFolderFromSessionStorage = getFromSessionStorage("selectedFolder");
+
     this.state = {
       isLoadingData: false,
       selectedFolder: selectedFolderFromSessionStorage || "",
@@ -23,28 +23,19 @@ class ThirdPartyModule extends React.Component {
       isError: false,
       folderPath: selectedFolderPathFromSessionStorage || "",
     };
-    this._isMounted = false;
   }
 
-  componentDidMount() {
-    this._isMounted = true;
-  }
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
   onSetLoadingData = (isLoading) => {
-    this._isMounted &&
-      this.setState({
-        isLoadingData: isLoading,
-      });
+    this.setState({
+      isLoadingData: isLoading,
+    });
   };
 
   onSelectFolder = (folderId) => {
-    this._isMounted &&
-      this.setState({
-        selectedFolder: folderId,
-        isChanged: true,
-      });
+    this.setState({
+      selectedFolder: folderId,
+      isChanged: true,
+    });
   };
 
   onClickInput = () => {
@@ -66,13 +57,16 @@ class ThirdPartyModule extends React.Component {
     this.setState({
       isError: true,
     });
+
     return true;
   };
 
   onMakeCopy = () => {
     const { onMakeCopy } = this.props;
     const { selectedFolder, isError } = this.state;
+
     if (this.isInvalidForm()) return;
+
     isError &&
       this.setState({
         isError: false,
@@ -81,7 +75,7 @@ class ThirdPartyModule extends React.Component {
     onMakeCopy(selectedFolder, "thirdPartyResource", "1", "folderId");
   };
   render() {
-    const { maxProgress, t, isCopyingLocal } = this.props;
+    const { isMaxProgress, t, isCopyingLocal } = this.props;
     const { isPanelVisible, isLoadingData, isError, folderPath } = this.state;
     return (
       <>
@@ -104,18 +98,16 @@ class ThirdPartyModule extends React.Component {
             label={t("MakeCopy")}
             onClick={this.onMakeCopy}
             primary
-            isDisabled={!maxProgress || isLoadingData}
+            isDisabled={!isMaxProgress || isLoadingData}
             size="medium"
-            tabIndex={10}
           />
-          {!maxProgress && (
+          {!isMaxProgress && (
             <Button
               label={t("Copying")}
               onClick={() => console.log("click")}
               isDisabled={true}
               size="medium"
               style={{ marginLeft: "8px" }}
-              tabIndex={11}
             />
           )}
         </div>

@@ -16,30 +16,30 @@ import SelectFolderDialog from "files/SelectFolderDialog";
 import Loader from "@appserver/components/loader";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
 
-let selectedManualBackupFromSessionStorage = "";
+let selectedManualStorageType = "";
 
 class ManualBackup extends React.Component {
   constructor(props) {
     super(props);
 
-    selectedManualBackupFromSessionStorage = getFromSessionStorage(
+    selectedManualStorageType = getFromSessionStorage(
       "selectedManualStorageType"
     );
 
-    const checkedDocuments = selectedManualBackupFromSessionStorage
-      ? selectedManualBackupFromSessionStorage === "documents"
+    const checkedDocuments = selectedManualStorageType
+      ? selectedManualStorageType === "documents"
       : false;
 
-    const checkedTemporary = selectedManualBackupFromSessionStorage
-      ? selectedManualBackupFromSessionStorage === "temporary"
+    const checkedTemporary = selectedManualStorageType
+      ? selectedManualStorageType === "temporary"
       : true;
 
-    const checkedThirdPartyResource = selectedManualBackupFromSessionStorage
-      ? selectedManualBackupFromSessionStorage === "thirdPartyResource"
+    const checkedThirdPartyResource = selectedManualStorageType
+      ? selectedManualStorageType === "thirdPartyResource"
       : false;
 
-    const checkedThirdPartyStorage = selectedManualBackupFromSessionStorage
-      ? selectedManualBackupFromSessionStorage === "thirdPartyStorage"
+    const checkedThirdPartyStorage = selectedManualStorageType
+      ? selectedManualStorageType === "thirdPartyStorage"
       : false;
 
     this.state = {
@@ -48,7 +48,7 @@ class ManualBackup extends React.Component {
       link: "",
       selectedFolder: "",
       isPanelVisible: false,
-      isLoading: true,
+      isInitialLoading: true,
       isLoadingData: false,
 
       isCheckedTemporaryStorage: checkedTemporary,
@@ -56,6 +56,12 @@ class ManualBackup extends React.Component {
       isCheckedThirdParty: checkedThirdPartyResource,
       isCheckedThirdPartyStorage: checkedThirdPartyStorage,
     };
+    this.switches = [
+      "isCheckedTemporaryStorage",
+      "isCheckedDocuments",
+      "isCheckedThirdParty",
+      "isCheckedThirdPartyStorage",
+    ];
     this._isMounted = false;
     this.timerId = null;
   }
@@ -78,24 +84,25 @@ class ManualBackup extends React.Component {
 
   checkDownloadingProgress = async () => {
     try {
-      let response;
-      [this.commonThirdPartyList, response] = await Promise.all([
+      let progressResponse;
+
+      [this.commonThirdPartyList, progressResponse] = await Promise.all([
         SelectFolderDialog.getCommonThirdPartyList(),
         getBackupProgress(),
       ]);
 
-      if (response && !response.error) {
-        response.link &&
-          response.link.slice(0, 1) === "/" &&
+      if (progressResponse && !progressResponse.error) {
+        progressResponse.link &&
+          progressResponse.link.slice(0, 1) === "/" &&
           this.setState({
-            link: response.link,
+            link: progressResponse.link,
           });
 
         this.setState({
-          downloadingProgress: response.progress,
+          downloadingProgress: progressResponse.progress,
         });
 
-        if (response.progress !== 100) {
+        if (progressResponse.progress !== 100) {
           this._isMounted &&
             this.setState({
               isLoadingData: true,
@@ -113,7 +120,7 @@ class ManualBackup extends React.Component {
     }
 
     this.setState({
-      isLoading: false,
+      isInitialLoading: false,
     });
   };
 
@@ -122,7 +129,7 @@ class ManualBackup extends React.Component {
 
     this.setState(
       {
-        isLoading: true,
+        isInitialLoading: true,
       },
       function () {
         this.checkDownloadingProgress();
@@ -135,10 +142,11 @@ class ManualBackup extends React.Component {
     clearInterval(this.timerId);
   }
 
-  onClickButton = () => {
+  onMakeTemporaryBackup = () => {
     saveToSessionStorage("selectedManualStorageType", "temporary");
-    const storageParams = null;
-    startBackup("4", storageParams);
+
+    startBackup("4", null);
+
     this.setState({
       downloadingProgress: 1,
       isLoadingData: true,
@@ -154,12 +162,15 @@ class ManualBackup extends React.Component {
     getBackupProgress()
       .then((response) => {
         if (response.error.length > 0 && response.progress !== 100) {
-          this.clearSessionStorage();
-
-          clearInterval(this.timerId);
-          this.timerId && toastr.error(`${t("CopyingError")}`);
           console.log("error", response.error);
+
+          this.clearSessionStorage();
+          clearInterval(this.timerId);
+
+          this.timerId && toastr.error(`${t("CopyingError")}`);
+
           this.timerId = null;
+
           this.setState({
             downloadingProgress: 100,
             isLoadingData: false,
@@ -173,11 +184,11 @@ class ManualBackup extends React.Component {
           clearInterval(this.timerId);
 
           if (this._isMounted) {
-            response.link &&
-              response.link.slice(0, 1) === "/" &&
+            response.link?.slice(0, 1) === "/" &&
               this.setState({
                 link: response.link,
               });
+
             this.setState({
               isLoadingData: false,
             });
@@ -195,12 +206,13 @@ class ManualBackup extends React.Component {
       })
       .catch((err) => {
         console.log("error", err);
-        this.clearSessionStorage();
 
+        this.clearSessionStorage();
         clearInterval(this.timerId);
 
         this.timerId && toastr.error(`${t("CopyingError")}`);
         this.timerId = null;
+
         if (this._isMounted) {
           this.setState({
             downloadingProgress: 100,
@@ -218,7 +230,7 @@ class ManualBackup extends React.Component {
     this.timerId = setInterval(() => this.getProgress(), 1000);
   };
 
-  onClickDownload = () => {
+  onClickDownloadBackup = () => {
     const { link } = this.state;
     const url = window.location.origin;
     const downloadUrl = `${url}` + `${link}`;
@@ -226,99 +238,18 @@ class ManualBackup extends React.Component {
   };
 
   onClickShowStorage = (e) => {
-    const {
-      isCheckedTemporaryStorage,
-      isCheckedDocuments,
-      isCheckedThirdParty,
-      isCheckedThirdPartyStorage,
-    } = this.state;
+    let newStateObj = {};
     const name = e.target.name;
+    newStateObj[name] = true;
 
-    switch (+name) {
-      case 0:
-        if (isCheckedDocuments) {
-          this.setState({
-            isCheckedDocuments: false,
-            isCheckedTemporaryStorage: true,
-          });
-        }
-        if (isCheckedThirdParty) {
-          this.setState({
-            isCheckedThirdParty: false,
-            isCheckedTemporaryStorage: true,
-          });
-        }
-        if (isCheckedThirdPartyStorage) {
-          this.setState({
-            isCheckedThirdPartyStorage: false,
-            isCheckedTemporaryStorage: true,
-          });
-        }
-        break;
-      case 1:
-        if (isCheckedTemporaryStorage) {
-          this.setState({
-            isCheckedTemporaryStorage: false,
-            isCheckedDocuments: true,
-          });
-        }
-        if (isCheckedThirdParty) {
-          this.setState({
-            isCheckedThirdParty: false,
-            isCheckedDocuments: true,
-          });
-        }
-        if (isCheckedThirdPartyStorage) {
-          this.setState({
-            isCheckedThirdPartyStorage: false,
-            isCheckedDocuments: true,
-          });
-        }
-        break;
+    const newState = this.switches.filter((el) => el !== name);
+    newState.forEach((name) => (newStateObj[name] = false));
 
-      case 2:
-        if (isCheckedTemporaryStorage) {
-          this.setState({
-            isCheckedTemporaryStorage: false,
-            isCheckedThirdParty: true,
-          });
-        }
-        if (isCheckedDocuments) {
-          this.setState({
-            isCheckedDocuments: false,
-            isCheckedThirdParty: true,
-          });
-        }
-        if (isCheckedThirdPartyStorage) {
-          this.setState({
-            isCheckedThirdPartyStorage: false,
-            isCheckedThirdParty: true,
-          });
-        }
-        break;
-
-      default:
-        if (isCheckedTemporaryStorage) {
-          this.setState({
-            isCheckedTemporaryStorage: false,
-            isCheckedThirdPartyStorage: true,
-          });
-        }
-        if (isCheckedDocuments) {
-          this.setState({
-            isCheckedDocuments: false,
-            isCheckedThirdPartyStorage: true,
-          });
-        }
-        if (isCheckedThirdParty) {
-          this.setState({
-            isCheckedThirdParty: false,
-            isCheckedThirdPartyStorage: true,
-          });
-        }
-        break;
-    }
+    this.setState({
+      ...newStateObj,
+    });
   };
+
   onSetLoadingData = (isLoading) => {
     this._isMounted &&
       this.setState({
@@ -374,16 +305,19 @@ class ManualBackup extends React.Component {
     const {
       downloadingProgress,
       link,
-      isLoading,
+      isInitialLoading,
       isCheckedTemporaryStorage,
       isCheckedDocuments,
       isCheckedThirdParty,
       isCheckedThirdPartyStorage,
       isLoadingData,
     } = this.state;
-    const maxProgress = downloadingProgress === 100;
 
-    return isLoading ? (
+    const isMaxProgress = downloadingProgress === 100;
+    const isDisabledThirdParty =
+      this.commonThirdPartyList && this.commonThirdPartyList.length === 0;
+
+    return isInitialLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <StyledManualBackup>
@@ -392,7 +326,7 @@ class ManualBackup extends React.Component {
             fontSize="13px"
             fontWeight="400"
             label={t("TemporaryStorage")}
-            name={"0"}
+            name={"isCheckedTemporaryStorage"}
             key={0}
             onClick={this.onClickShowStorage}
             isChecked={isCheckedTemporaryStorage}
@@ -408,30 +342,27 @@ class ManualBackup extends React.Component {
               <div className="manual-backup_buttons">
                 <Button
                   label={t("MakeCopy")}
-                  onClick={this.onClickButton}
+                  onClick={this.onMakeTemporaryBackup}
                   primary
-                  isDisabled={!maxProgress}
+                  isDisabled={!isMaxProgress}
                   size="medium"
-                  tabIndex={10}
                 />
-                {link.length > 0 && maxProgress && (
+                {link.length > 0 && isMaxProgress && (
                   <Button
                     label={t("DownloadBackup")}
-                    onClick={this.onClickDownload}
+                    onClick={this.onClickDownloadBackup}
                     isDisabled={false}
                     size="medium"
                     style={{ marginLeft: "8px" }}
-                    tabIndex={11}
                   />
                 )}
-                {!maxProgress && (
+                {!isMaxProgress && (
                   <Button
                     label={t("Copying")}
                     onClick={() => console.log("click")}
                     isDisabled={true}
                     size="medium"
                     style={{ marginLeft: "8px" }}
-                    tabIndex={11}
                   />
                 )}
               </div>
@@ -444,7 +375,7 @@ class ManualBackup extends React.Component {
             fontSize="13px"
             fontWeight="400"
             label={t("DocumentsModule")}
-            name={"1"}
+            name={"isCheckedDocuments"}
             key={1}
             onClick={this.onClickShowStorage}
             isChecked={isCheckedDocuments}
@@ -459,7 +390,7 @@ class ManualBackup extends React.Component {
 
           {isCheckedDocuments && (
             <DocumentsModule
-              maxProgress={maxProgress}
+              isMaxProgress={isMaxProgress}
               isCheckedDocuments={isCheckedDocuments}
               isCopyingLocal={isLoadingData}
               onMakeCopy={this.onMakeCopy}
@@ -467,24 +398,16 @@ class ManualBackup extends React.Component {
           )}
         </StyledModules>
 
-        <StyledModules
-          isDisabled={
-            this.commonThirdPartyList && this.commonThirdPartyList.length === 0
-          }
-        >
+        <StyledModules isDisabled={isDisabledThirdParty}>
           <RadioButton
             fontSize="13px"
             fontWeight="400"
             label={t("ThirdPartyResource")}
-            name={"2"}
+            name={"isCheckedThirdParty"}
             key={2}
             onClick={this.onClickShowStorage}
             isChecked={isCheckedThirdParty}
-            isDisabled={
-              (this.commonThirdPartyList &&
-                this.commonThirdPartyList.length === 0) ||
-              isLoadingData
-            }
+            isDisabled={isDisabledThirdParty || isLoadingData}
             value="value"
             className="backup_radio-button"
           />
@@ -493,7 +416,7 @@ class ManualBackup extends React.Component {
           </Text>
           {isCheckedThirdParty && (
             <ThirdPartyModule
-              maxProgress={maxProgress}
+              isMaxProgress={isMaxProgress}
               commonThirdPartyList={this.commonThirdPartyList}
               isCopyingLocal={isLoadingData}
               onMakeCopy={this.onMakeCopy}
@@ -506,7 +429,7 @@ class ManualBackup extends React.Component {
             fontSize="13px"
             fontWeight="400"
             label={t("ThirdPartyStorage")}
-            name={"3"}
+            name={"isCheckedThirdPartyStorage"}
             key={3}
             onClick={this.onClickShowStorage}
             isChecked={isCheckedThirdPartyStorage}
@@ -519,7 +442,7 @@ class ManualBackup extends React.Component {
           </Text>
           {isCheckedThirdPartyStorage && (
             <ThirdPartyStorageModule
-              maxProgress={maxProgress}
+              isMaxProgress={isMaxProgress}
               isLoadingData={isLoadingData}
               onMakeCopy={this.onMakeCopy}
             />
