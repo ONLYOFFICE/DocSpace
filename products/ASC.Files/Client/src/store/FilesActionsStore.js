@@ -64,19 +64,29 @@ class FilesActionStore {
     const {
       filter,
       fetchFiles,
-      setLastFileDeleteActions,
-      addViaDeleteRequest,
+      isEmptyLastPageAfterOperation,
+      resetFilterPage,
     } = this.filesStore;
+    let newFilter;
 
     const selectionFilesLength =
       fileIds && folderIds
         ? fileIds.length + folderIds.length
         : fileIds?.length || folderIds?.length;
 
-    setLastFileDeleteActions(selectionFilesLength);
+    if (
+      selectionFilesLength &&
+      isEmptyLastPageAfterOperation(selectionFilesLength)
+    ) {
+      newFilter = resetFilterPage();
+    }
 
-    fetchFiles(this.selectedFolderStore.id, filter, true, true).finally(() => {
-      addViaDeleteRequest(false);
+    fetchFiles(
+      this.selectedFolderStore.id,
+      newFilter ? newFilter : filter,
+      true,
+      true
+    ).finally(() => {
       this.uploadDataStore.clearActiveOperations(fileIds, folderIds);
       setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
     });
@@ -84,7 +94,7 @@ class FilesActionStore {
 
   deleteAction = async (translations, newSelection = null) => {
     const { isRecycleBinFolder, isPrivacyFolder } = this.treeFoldersStore;
-    const { addActiveItems, addViaDeleteRequest } = this.filesStore;
+    const { addActiveItems } = this.filesStore;
     const {
       secondaryProgressDataStore,
       loopFilesOperations,
@@ -130,7 +140,6 @@ class FilesActionStore {
       try {
         await removeFiles(folderIds, fileIds, deleteAfter, immediately).then(
           async (res) => {
-            addViaDeleteRequest(true);
             if (res[0]?.error) return Promise.reject(res[0].error);
             const data = res[0] ? res[0] : null;
             const pbData = {
@@ -398,19 +407,20 @@ class FilesActionStore {
   };
 
   deleteItemOperation = (isFile, itemId, translations) => {
-    const { addActiveItems, addViaDeleteRequest } = this.filesStore;
+    const { addActiveItems } = this.filesStore;
 
     const pbData = {
       icon: "trash",
       label: translations.deleteOperation,
     };
 
+    const selectionFilesLength = 1;
+
     if (isFile) {
       addActiveItems([itemId]);
       this.isMediaOpen();
       return deleteFile(itemId)
         .then(async (res) => {
-          addViaDeleteRequest(true);
           if (res[0]?.error) return Promise.reject(res[0].error);
           const data = res[0] ? res[0] : null;
           await this.uploadDataStore.loopFilesOperations(data, pbData);
@@ -421,7 +431,6 @@ class FilesActionStore {
       addActiveItems(null, [itemId]);
       return deleteFolder(itemId)
         .then(async (res) => {
-          addViaDeleteRequest(true);
           if (res[0]?.error) return Promise.reject(res[0].error);
           const data = res[0] ? res[0] : null;
           await this.uploadDataStore.loopFilesOperations(data, pbData);
