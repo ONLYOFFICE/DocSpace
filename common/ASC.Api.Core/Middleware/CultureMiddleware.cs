@@ -1,34 +1,33 @@
-﻿namespace ASC.Api.Core.Middleware
+﻿namespace ASC.Api.Core.Middleware;
+
+public class CultureMiddleware
 {
-    public class CultureMiddleware
+    private readonly RequestDelegate _next;
+
+    public CultureMiddleware(RequestDelegate next) => _next = next;
+
+    public async Task Invoke(HttpContext context, UserManager userManager, TenantManager tenantManager, AuthContext authContext)
     {
-        private readonly RequestDelegate _next;
+        CultureInfo culture = null;
 
-        public CultureMiddleware(RequestDelegate next) => _next = next;
-
-        public async Task Invoke(HttpContext context, UserManager userManager, TenantManager tenantManager, AuthContext authContext)
+        if (authContext.IsAuthenticated)
         {
-            CultureInfo culture = null;
+            var user = userManager.GetUsers(authContext.CurrentAccount.ID);
 
-            if (authContext.IsAuthenticated)
-            {
-                var user = userManager.GetUsers(authContext.CurrentAccount.ID);
-
-                if (!string.IsNullOrEmpty(user.CultureName)) culture = user.GetCulture();
-            }
-
-            if (culture == null) culture = tenantManager.GetCurrentTenant().GetCulture();
-
-            Thread.CurrentThread.CurrentCulture = culture;
-            Thread.CurrentThread.CurrentUICulture = culture;
-
-            await _next.Invoke(context);
+            if (!string.IsNullOrEmpty(user.CultureName)) culture = user.GetCulture();
         }
-    }
 
-    public static class CultureMiddlewareExtensions
-    {
-        public static IApplicationBuilder UseCultureMiddleware(this IApplicationBuilder builder) =>
-            builder.UseMiddleware<CultureMiddleware>();
+        if (culture == null) culture = tenantManager.GetCurrentTenant().GetCulture();
+
+        Thread.CurrentThread.CurrentCulture = culture;
+        Thread.CurrentThread.CurrentUICulture = culture;
+
+        await _next.Invoke(context);
     }
+}
+
+public static class CultureMiddlewareExtensions
+{
+    public static IApplicationBuilder UseCultureMiddleware(this IApplicationBuilder builder) =>
+        builder.UseMiddleware<CultureMiddleware>();
 }

@@ -1,67 +1,66 @@
-﻿namespace ASC.Api.Core.Middleware
+﻿namespace ASC.Api.Core.Middleware;
+
+public abstract class CommonApiResponse
 {
-    public abstract class CommonApiResponse
+    public int Status { get; set; }
+    public HttpStatusCode StatusCode { get; set; }
+
+    protected CommonApiResponse(HttpStatusCode statusCode) => StatusCode = statusCode;
+
+    public static SuccessApiResponse Create(HttpStatusCode statusCode, object response) =>
+        new SuccessApiResponse(statusCode, response);
+
+    public static ErrorApiResponse CreateError(HttpStatusCode statusCode, Exception error) =>
+        new ErrorApiResponse(statusCode, error);
+}
+
+public class ErrorApiResponse : CommonApiResponse
+{
+    public CommonApiError Error { get; set; }
+
+    protected internal ErrorApiResponse(HttpStatusCode statusCode, Exception error, string message = null) : base(statusCode)
     {
-        public int Status { get; set; }
-        public HttpStatusCode StatusCode { get; set; }
-
-        protected CommonApiResponse(HttpStatusCode statusCode) => StatusCode = statusCode;
-
-        public static SuccessApiResponse Create(HttpStatusCode statusCode, object response) =>
-            new SuccessApiResponse(statusCode, response);
-
-        public static ErrorApiResponse CreateError(HttpStatusCode statusCode, Exception error) =>
-            new ErrorApiResponse(statusCode, error);
+        Status = 1;
+        Error = CommonApiError.FromException(error, message);
     }
+}
 
-    public class ErrorApiResponse : CommonApiResponse
+public class SuccessApiResponse : CommonApiResponse
+{
+    public int? Count { get; set; }
+    public long? Total { get; set; }
+    public object Response { get; set; }
+
+    protected internal SuccessApiResponse(HttpStatusCode statusCode, object response, long? total = null, int? count = null) : base(statusCode)
     {
-        public CommonApiError Error { get; set; }
+        Status = 0;
+        Response = response;
+        Total = total;
 
-        protected internal ErrorApiResponse(HttpStatusCode statusCode, Exception error, string message = null) : base(statusCode)
+        if (count.HasValue) Count = count;
+        else
         {
-            Status = 1;
-            Error = CommonApiError.FromException(error, message);
+            if (response is List<object> list) Count = list.Count;
+            else if (response is IEnumerable<object> collection) Count = collection.Count();
+            else if (response == null) Count = 0;
+            else Count = 1;
         }
     }
+}
 
-    public class SuccessApiResponse : CommonApiResponse
-    {
-        public int? Count { get; set; }
-        public long? Total { get; set; }
-        public object Response { get; set; }
+public class CommonApiError
+{
+    public string Message { get; set; }
+    public string Type { get; set; }
+    public string Stack { get; set; }
+    public int Hresult { get; set; }
 
-        protected internal SuccessApiResponse(HttpStatusCode statusCode, object response, long? total = null, int? count = null) : base(statusCode)
+    public static CommonApiError FromException(Exception exception, string message = null) =>
+        new CommonApiError()
         {
-            Status = 0;
-            Response = response;
-            Total = total;
-
-            if (count.HasValue) Count = count;
-            else
-            {
-                if (response is List<object> list) Count = list.Count;
-                else if (response is IEnumerable<object> collection) Count = collection.Count();
-                else if (response == null) Count = 0;
-                else Count = 1;
-            }
-        }
-    }
-
-    public class CommonApiError
-    {
-        public string Message { get; set; }
-        public string Type { get; set; }
-        public string Stack { get; set; }
-        public int Hresult { get; set; }
-
-        public static CommonApiError FromException(Exception exception, string message = null) =>
-            new CommonApiError()
-            {
-                Message = message ?? exception.Message,
-                Type = exception.GetType().ToString(),
-                Stack = exception.StackTrace,
-                Hresult = exception.HResult
-            };
-    }
+            Message = message ?? exception.Message,
+            Type = exception.GetType().ToString(),
+            Stack = exception.StackTrace,
+            Hresult = exception.HResult
+        };
 }

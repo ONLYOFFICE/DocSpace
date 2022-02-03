@@ -1,20 +1,19 @@
-﻿namespace ASC.Api.Core.Convention
+﻿namespace ASC.Api.Core.Convention;
+
+[AttributeUsage(AttributeTargets.Class)]
+public class ControllerNameAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Class)]
-    public class ControllerNameAttribute : Attribute
-    {
-        public string Name { get; }
+    public string Name { get; }
 
-        public ControllerNameAttribute(string name) => Name = name;
-    }
+    public ControllerNameAttribute(string name) => Name = name;
+}
 
-    public class ControllerNameAttributeConvention : IControllerModelConvention
+public class ControllerNameAttributeConvention : IControllerModelConvention
+{
+    public void Apply(ControllerModel controller)
     {
-        public void Apply(ControllerModel controller)
-        {
-            var controllerNameAttribute = controller.Attributes.OfType<ControllerNameAttribute>().SingleOrDefault();
-            if (controllerNameAttribute != null)
-                controller.ControllerName = controllerNameAttribute.Name;
-        }
+        var controllerNameAttribute = controller.Attributes.OfType<ControllerNameAttribute>().SingleOrDefault();
+        if (controllerNameAttribute != null)
+            controller.ControllerName = controllerNameAttribute.Name;
     }
 }

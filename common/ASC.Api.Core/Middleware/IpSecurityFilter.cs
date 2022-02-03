@@ -1,33 +1,32 @@
-﻿namespace ASC.Api.Core.Middleware
+﻿namespace ASC.Api.Core.Middleware;
+
+[Scope]
+public class IpSecurityFilter : IResourceFilter
 {
-    [Scope]
-    public class IpSecurityFilter : IResourceFilter
+    private readonly AuthContext _authContext;
+    private readonly IPSecurity.IPSecurity _iPSecurity;
+    private readonly ILog _logger;
+
+    public IpSecurityFilter(
+        IOptionsMonitor<ILog> options,
+        AuthContext authContext,
+        IPSecurity.IPSecurity IPSecurity)
     {
-        private readonly AuthContext _authContext;
-        private readonly IPSecurity.IPSecurity _iPSecurity;
-        private readonly ILog _logger;
+        _logger = options.CurrentValue;
+        _authContext = authContext;
+        _iPSecurity = IPSecurity;
+    }
 
-        public IpSecurityFilter(
-            IOptionsMonitor<ILog> options,
-            AuthContext authContext,
-            IPSecurity.IPSecurity IPSecurity)
+    public void OnResourceExecuted(ResourceExecutedContext context) { }
+
+    public void OnResourceExecuting(ResourceExecutingContext context)
+    {
+        if (_authContext.IsAuthenticated && !_iPSecurity.Verify())
         {
-            _logger = options.CurrentValue;
-            _authContext = authContext;
-            _iPSecurity = IPSecurity;
-        }
+            context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
+            _logger.WarnFormat("IPSecurity: user {0}", _authContext.CurrentAccount.ID);
 
-        public void OnResourceExecuted(ResourceExecutedContext context) { }
-
-        public void OnResourceExecuting(ResourceExecutingContext context)
-        {
-            if (_authContext.IsAuthenticated && !_iPSecurity.Verify())
-            {
-                context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
-                _logger.WarnFormat("IPSecurity: user {0}", _authContext.CurrentAccount.ID);
-
-                return;
-            }
+            return;
         }
     }
 }

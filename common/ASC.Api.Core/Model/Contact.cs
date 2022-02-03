@@ -23,22 +23,21 @@
  *
 */
 
-namespace ASC.Web.Api.Models
+namespace ASC.Web.Api.Models;
+
+public class Contact
 {
-    public class Contact
+    public string Type { get; set; }
+    public string Value { get; set; }
+
+    //For binder
+    public Contact() { }
+
+    public Contact(string type, string value)
     {
-        public string Type { get; set; }
-        public string Value { get; set; }
-
-        //For binder
-        public Contact() { }
-
-        public Contact(string type, string value)
-        {
-            Type = type;
-            Value = value;
-        }
-
-        public static Contact GetSample() => new Contact("GTalk", "my@gmail.com");
+        Type = type;
+        Value = value;
     }
+
+    public static Contact GetSample() => new Contact("GTalk", "my@gmail.com");
 }

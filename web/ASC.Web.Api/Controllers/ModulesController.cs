@@ -1,4 +1,6 @@
-﻿namespace ASC.Web.Api.Controllers
+﻿using Module = ASC.Api.Core.Module;
+
+namespace ASC.Web.Api.Controllers
 {
     [Scope]
     [DefaultRoute]
