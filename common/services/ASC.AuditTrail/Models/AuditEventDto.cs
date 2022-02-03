@@ -26,10 +26,15 @@
 
 using ASC.MessagingSystem;
 using ASC.AuditTrail.Attributes;
+using ASC.Common.Mapping;
+using AutoMapper;
+using ASC.Core.Common.EF;
+using ASC.AuditTrail.Models.Mapping.Actions;
+using ASC.Core.Common.EF.Model;
 
 namespace ASC.AuditTrail.Models
 {
-    public class AuditEvent : BaseEvent
+    public class AuditEventDto : BaseEvent, IMapFrom<AuditEventQuery>
     {
         public string Initiator { get; set; }
 
@@ -47,5 +52,18 @@ namespace ASC.AuditTrail.Models
 
         [Event("TargetIdCol", 34)]
         public MessageTarget Target { get; set; }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<AuditEvent, AuditEventDto>()
+                .ForMember(src => src.Description, opt => opt.Ignore());
+
+            profile.CreateMap<User, AuditEventDto>()
+                .ForMember(src => src.Id, opt => opt.Ignore());
+
+            profile.CreateMap<AuditEventQuery, AuditEventDto>()
+                .IncludeMembers(src => src.AuditEvent, src => src.User)
+                .AfterMap<AuditEventMappingAction>();
+        }
     }
 }
