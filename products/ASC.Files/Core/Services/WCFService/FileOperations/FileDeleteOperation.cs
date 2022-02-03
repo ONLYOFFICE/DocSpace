@@ -126,7 +126,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         private void DeleteFolders(IEnumerable<T> folderIds, IServiceScope scope)
         {
             var scopeClass = scope.ServiceProvider.GetService<FileDeleteOperationScope>();
-            var socketManager = scope.ServiceProvider.GetService<SocketManager>();
             var (fileMarker, filesMessageService) = scopeClass;
             foreach (var folderId in folderIds)
             {

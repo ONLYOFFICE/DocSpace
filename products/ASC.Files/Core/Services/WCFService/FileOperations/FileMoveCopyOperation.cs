@@ -186,7 +186,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var scopeClass = scope.ServiceProvider.GetService<FileMoveCopyOperationScope>();
             var (filesMessageService, fileMarker, _, _, _) = scopeClass;
             var folderDao = scope.ServiceProvider.GetService<IFolderDao<TTo>>();
-            var socketManager = scope.ServiceProvider.GetService<SocketManager>();
 
             var toFolderId = toFolder.ID;
             var isToFolder = Equals(toFolderId, DaoFolderId);
