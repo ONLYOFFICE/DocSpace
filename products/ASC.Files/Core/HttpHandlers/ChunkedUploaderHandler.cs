@@ -43,7 +43,6 @@ using ASC.MessagingSystem;
 using ASC.Security.Cryptography;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Helpers;
-using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
 
@@ -85,9 +84,8 @@ namespace ASC.Web.Files.HttpHandlers
         private InstanceCrypto InstanceCrypto { get; }
         private ChunkedUploadSessionHolder ChunkedUploadSessionHolder { get; }
         private ChunkedUploadSessionHelper ChunkedUploadSessionHelper { get; }
-        public SocketManager SocketManager { get; }
-        public DocumentServiceHelper DocumentServiceHelper { get; }
-        public ILog Logger { get; }
+        private SocketManager SocketManager { get; }
+        private ILog Logger { get; }
 
         public ChunkedUploaderHandlerService(
             IOptionsMonitor<ILog> optionsMonitor,
@@ -100,8 +98,7 @@ namespace ASC.Web.Files.HttpHandlers
             InstanceCrypto instanceCrypto,
             ChunkedUploadSessionHolder chunkedUploadSessionHolder,
             ChunkedUploadSessionHelper chunkedUploadSessionHelper,
-            SocketManager socketManager,
-            DocumentServiceHelper documentServiceHelper)
+            SocketManager socketManager)
         {
             TenantManager = tenantManager;
             FileUploader = fileUploader;
@@ -113,7 +110,6 @@ namespace ASC.Web.Files.HttpHandlers
             ChunkedUploadSessionHolder = chunkedUploadSessionHolder;
             ChunkedUploadSessionHelper = chunkedUploadSessionHelper;
             SocketManager = socketManager;
-            DocumentServiceHelper = documentServiceHelper;
             Logger = optionsMonitor.CurrentValue;
         }
 
