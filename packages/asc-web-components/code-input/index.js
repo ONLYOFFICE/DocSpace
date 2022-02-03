@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import InputWrapper from "./styled-code-input";
 
 const CodeInput = (props) => {
-  const { onSubmit, isDisabled } = props;
+  const { onSubmit, handleChange, isDisabled } = props;
 
   const inputsRef = useRef([]);
   const characters = 6;
@@ -22,6 +22,7 @@ const CodeInput = (props) => {
 
   const handleOnChange = (e) => {
     if (e.target.value.match(allowed)) {
+      handleChange();
       if (e.target.nextElementSibling !== null) {
         if (e.target.nextElementSibling.nodeName === "HR") {
           e.target.nextElementSibling.nextElementSibling.focus();
@@ -95,6 +96,7 @@ const CodeInput = (props) => {
 
 CodeInput.propTypes = {
   onSubmit: PropTypes.func.isRequired,
+  handleChange: PropTypes.func,
   isDisabled: PropTypes.bool,
   className: PropTypes.string,
   id: PropTypes.string,
