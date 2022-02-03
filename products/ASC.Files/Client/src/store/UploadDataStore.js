@@ -1086,8 +1086,8 @@ class UploadDataStore {
     const {
       fetchFiles,
       filter,
-      isEmptyLastPageAfterOperation,
-      resetFilterPage,
+      setLastFileDeleteActions,
+      addViaDeleteRequest,
     } = this.filesStore;
 
     const {
@@ -1106,9 +1106,9 @@ class UploadDataStore {
       if (!isCopy || destFolderId === this.selectedFolderStore.id) {
         let newFilter;
 
-        if (isEmptyLastPageAfterOperation()) {
-          newFilter = resetFilterPage();
-        }
+        addViaDeleteRequest(true);
+
+        setLastFileDeleteActions();
 
         fetchFiles(
           this.selectedFolderStore.id,
@@ -1116,6 +1116,7 @@ class UploadDataStore {
           true,
           true
         ).finally(() => {
+          addViaDeleteRequest(false);
           this.clearActiveOperations(fileIds, folderIds);
           setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         });
