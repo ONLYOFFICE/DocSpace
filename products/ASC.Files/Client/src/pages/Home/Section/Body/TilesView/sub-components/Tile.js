@@ -364,8 +364,8 @@ class Tile extends React.PureComponent {
     const quickButtons = contentElement;
 
     const contextMenuHeader = {
-      icon: children.props.item.icon,
-      title: children.props.item.title,
+      icon: children[0].props.item.icon,
+      title: children[0].props.item.title,
     };
 
     return (
