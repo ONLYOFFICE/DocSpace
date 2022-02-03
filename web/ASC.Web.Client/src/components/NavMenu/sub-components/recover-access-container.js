@@ -19,7 +19,7 @@ const RecoverContainer = styled(Box)`
 
   .recover-icon {
     @media (max-width: 450px) {
-      padding: 16px;
+      padding: 12px;
     }
   }
   .recover-text {
@@ -93,11 +93,11 @@ const RecoverAccess = ({ t }) => {
           displayProp="flex"
           onClick={onRecoverClick}
         >
-          <Box paddingProp="16px 8px 16px 16px" className="recover-icon">
+          <Box paddingProp="12px 8px 12px 12px" className="recover-icon">
             <StyledUnionIcon />
           </Box>
           <Box
-            paddingProp="18px 16px 18px 0px"
+            paddingProp="14px 12px 14px 0px"
             className="recover-text"
             widthProp="100%"
           >
