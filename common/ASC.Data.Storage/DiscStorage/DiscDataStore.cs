@@ -23,25 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Utils;
-using ASC.Core;
-using ASC.Core.Encryption;
-using ASC.Data.Storage.Configuration;
-using ASC.Data.Storage.Encryption;
-using ASC.Security.Cryptography;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Data.Storage.DiscStorage
 {
     [Scope]

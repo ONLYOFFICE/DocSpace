@@ -23,16 +23,7 @@
  *
 */
 
-
-using System;
-using System.Linq;
-using System.Security.Claims;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Tenants;
-
-using Microsoft.AspNetCore.Http;
+using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Api.Core
 {

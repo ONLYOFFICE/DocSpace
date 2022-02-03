@@ -23,15 +23,6 @@
  *
 */
 
-
-#region usings
-
-using System.Collections.Generic;
-
-using ASC.Common.Security.Authorizing;
-
-#endregion
-
 namespace ASC.Common.Security
 {
     public class SecurityCallContext

@@ -23,30 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Runtime.Serialization;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
-
-using ASC.Common.Web;
-using ASC.Core;
-using ASC.Core.Billing;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
 namespace ASC.Web.Core.Files
 {
     /// <summary>

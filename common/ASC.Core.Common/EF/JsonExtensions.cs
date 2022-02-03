@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Query;
-
-namespace ASC.Core.Common.EF
+﻿namespace ASC.Core.Common.EF
 {
     public static class JsonExtensions
     {

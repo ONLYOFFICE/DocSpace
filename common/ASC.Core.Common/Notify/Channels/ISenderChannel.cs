@@ -23,9 +23,6 @@
  *
 */
 
-
-using ASC.Notify.Messages;
-
 namespace ASC.Notify.Channels
 {
     public interface ISenderChannel

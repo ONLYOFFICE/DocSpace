@@ -23,12 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
-using ASC.Data.Backup.Tasks.Data;
-
 namespace ASC.Data.Backup.Tasks.Modules
 {
     public class CalendarModuleSpecifics : ModuleSpecificsBase

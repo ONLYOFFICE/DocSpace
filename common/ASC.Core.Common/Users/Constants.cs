@@ -24,12 +24,6 @@
 */
 
 
-using System;
-
-using ASC.Common;
-
-using Microsoft.Extensions.Configuration;
-
 using Action = ASC.Common.Security.Authorizing.Action;
 using AuthConst = ASC.Common.Security.Authorizing.Constants;
 

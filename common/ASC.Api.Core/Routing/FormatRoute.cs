@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Net.Http;
-
-using Microsoft.AspNetCore.Mvc.Routing;
-
-namespace ASC.Web.Api.Routing
+﻿namespace ASC.Web.Api.Routing
 {
     public abstract class CustomHttpMethodAttribute : HttpMethodAttribute
     {

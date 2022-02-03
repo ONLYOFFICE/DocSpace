@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
-
-namespace ASC.Api.Core.Convention
+﻿namespace ASC.Api.Core.Convention
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class ControllerNameAttribute : Attribute

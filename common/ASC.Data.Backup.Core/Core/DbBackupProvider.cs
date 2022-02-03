@@ -23,18 +23,7 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Xml.Linq;
-
-using ASC.Common;
-using ASC.Common.Utils;
+using ConfigurationManager = System.Configuration.ConfigurationManager;
 
 namespace ASC.Data.Backup
 {

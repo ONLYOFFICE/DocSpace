@@ -1,14 +1,4 @@
-﻿using System.Net;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Options;
-
-namespace ASC.Api.Core.Middleware
+﻿namespace ASC.Api.Core.Middleware
 {
     [Scope]
     public class IpSecurityFilter : IResourceFilter

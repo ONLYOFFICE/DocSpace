@@ -23,24 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Common.Logging;
-using ASC.Common.Notify.Patterns;
-using ASC.Notify.Channels;
-using ASC.Notify.Cron;
-using ASC.Notify.Messages;
-using ASC.Notify.Patterns;
-using ASC.Notify.Recipients;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Notify.Engine
 {
     public class NotifyEngine : INotifyEngine

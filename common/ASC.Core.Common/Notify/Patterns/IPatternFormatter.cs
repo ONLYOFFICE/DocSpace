@@ -23,9 +23,6 @@
  *
 */
 
-
-using ASC.Notify.Messages;
-
 namespace ASC.Notify.Patterns
 {
     public interface IPatternFormatter

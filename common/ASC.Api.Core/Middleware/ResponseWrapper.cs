@@ -1,13 +1,4 @@
-﻿using System;
-using System.Net;
-using System.Security;
-
-using ASC.Common.Web;
-
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-
-namespace ASC.Api.Core.Middleware
+﻿namespace ASC.Api.Core.Middleware
 {
     public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
     {

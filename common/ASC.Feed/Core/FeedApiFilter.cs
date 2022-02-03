@@ -23,9 +23,6 @@
  *
 */
 
-
-using System;
-
 namespace ASC.Feed
 {
     public class FeedApiFilter

@@ -23,17 +23,6 @@
  *
 */
 
-
-using System;
-
-
-using ASC.Api.Core;
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Users;
-using ASC.Web.Core.Users;
-using ASC.Web.Studio.Utility;
-
 namespace ASC.Web.Api.Models
 {
     public class EmployeeWraper

@@ -23,9 +23,6 @@
  *
 */
 
-
-using ASC.Notify.Model;
-
 namespace ASC.Files.Core.Services.NotifyService
 {
     public static class NotifyConstants

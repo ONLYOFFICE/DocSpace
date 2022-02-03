@@ -1,11 +1,4 @@
-﻿using System.Threading.Tasks;
-
-using ASC.Common.Web;
-
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-
-namespace ASC.Api.Core.Middleware
+﻿namespace ASC.Api.Core.Middleware
 {
     public class DisposeMiddleware
     {

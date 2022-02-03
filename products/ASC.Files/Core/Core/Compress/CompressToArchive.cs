@@ -14,15 +14,6 @@
  *
 */
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-
-using ASC.Common;
-using ASC.Web.Files.Classes;
-
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Web.Files.Core.Compress
 {
     /// <summary>

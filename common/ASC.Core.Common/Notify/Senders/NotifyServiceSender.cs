@@ -23,12 +23,6 @@
  *
 */
 
-
-using System.Collections.Generic;
-
-using ASC.Common.Caching;
-using ASC.Notify.Messages;
-
 namespace ASC.Core.Notify.Senders
 {
     public class NotifyServiceSender : INotifySender

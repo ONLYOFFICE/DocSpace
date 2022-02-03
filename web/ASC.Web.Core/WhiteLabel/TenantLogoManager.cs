@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-using System.IO;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-
 namespace ASC.Web.Core.WhiteLabel
 {
     [Scope]

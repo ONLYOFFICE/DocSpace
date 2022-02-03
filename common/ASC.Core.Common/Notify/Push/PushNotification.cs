@@ -23,9 +23,6 @@
  *
 */
 
-
-using System;
-
 namespace ASC.Core.Common.Notify.Push
 {
     public class PushNotification

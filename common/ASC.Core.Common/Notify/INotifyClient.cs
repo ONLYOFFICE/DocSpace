@@ -23,11 +23,6 @@
  *
 */
 
-
-using ASC.Notify.Model;
-using ASC.Notify.Patterns;
-using ASC.Notify.Recipients;
-
 namespace ASC.Notify
 {
     public delegate void SendNoticeCallback(INotifyAction action, string objectID, IRecipient recipient, NotifyResult result);

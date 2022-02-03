@@ -1,18 +1,4 @@
-﻿using System.Linq;
-using System.Net;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Web.Api.Routing;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Options;
-
-namespace ASC.Api.Core.Middleware
+﻿namespace ASC.Api.Core.Middleware
 {
     [Scope]
     public class PaymentFilter : IResourceFilter

@@ -23,9 +23,6 @@
  *
 */
 
-
-using System.Runtime.Serialization;
-
 namespace ASC.Files.Core
 {
     public enum FilterType

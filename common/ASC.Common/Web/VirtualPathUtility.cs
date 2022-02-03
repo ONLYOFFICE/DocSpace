@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ASC.Common.Web
+﻿namespace ASC.Common.Web
 {
     public class VirtualPathUtility
     {

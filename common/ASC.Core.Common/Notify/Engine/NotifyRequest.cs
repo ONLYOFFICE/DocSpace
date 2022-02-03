@@ -23,20 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections;
-using System.Collections.Generic;
-
-using ASC.Common.Logging;
-using ASC.Notify.Messages;
-using ASC.Notify.Model;
-using ASC.Notify.Patterns;
-using ASC.Notify.Recipients;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Notify.Engine
 {
     public class NotifyRequest

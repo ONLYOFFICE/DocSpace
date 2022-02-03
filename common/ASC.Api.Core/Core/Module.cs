@@ -1,8 +1,4 @@
-﻿using System;
-
-using ASC.Web.Core;
-
-namespace ASC.Api.Core
+﻿namespace ASC.Api.Core
 {
     public class Module
     {

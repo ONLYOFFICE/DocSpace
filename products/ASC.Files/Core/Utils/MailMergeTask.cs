@@ -23,21 +23,6 @@
  *
 */
 
-
-using System;
-using System.IO;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Web;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Common;
-using ASC.Web.Studio.Core;
-
-using Newtonsoft.Json.Linq;
-
 namespace ASC.Web.Files.Utils
 {
     public class MailMergeTask : IDisposable

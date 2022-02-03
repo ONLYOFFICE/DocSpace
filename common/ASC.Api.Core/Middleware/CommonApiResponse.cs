@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-
-namespace ASC.Api.Core.Middleware
+﻿namespace ASC.Api.Core.Middleware
 {
     public abstract class CommonApiResponse
     {

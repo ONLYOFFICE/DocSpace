@@ -23,10 +23,6 @@
  *
 */
 
-
-using System;
-using System.Text;
-
 namespace ASC.Web.Core.Calendars
 {
     public abstract class BaseTodo : ITodo, ICloneable

@@ -1,18 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Mime;
-using System.Text.Json;
-using System.Threading.Tasks;
-
-using ASC.Files.Core.Model;
-using ASC.Web.Files.Services.WCFService.FileOperations;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-
-#nullable enable
+﻿#nullable enable
 
 namespace ASC.Files.Model
 {

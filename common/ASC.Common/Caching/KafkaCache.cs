@@ -1,19 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Common.Logging;
-using ASC.Common.Utils;
-
-using Confluent.Kafka;
-using Confluent.Kafka.Admin;
-
-using Google.Protobuf;
-
-using Microsoft.Extensions.Options;
-
-namespace ASC.Common.Caching
+﻿namespace ASC.Common.Caching
 {
     [Singletone]
     public class KafkaCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<T>, new()

@@ -1,6 +1,3 @@
-using System;
-using System.Text.RegularExpressions;
-
 namespace Textile.Blocks
 {
     public static class NoTextileEncoder

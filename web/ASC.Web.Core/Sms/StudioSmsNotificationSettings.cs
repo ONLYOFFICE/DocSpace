@@ -23,16 +23,6 @@
  *
 */
 
-
-using System;
-using System.Text.Json.Serialization;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.Web.Core.Sms;
-using ASC.Web.Studio.Utility;
-
 namespace ASC.Web.Studio.Core.SMS
 {
     [Serializable]

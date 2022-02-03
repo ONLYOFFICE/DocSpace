@@ -23,11 +23,6 @@
  *
 */
 
-
-using ASC.Common;
-using ASC.Core.Common.Settings;
-using ASC.Web.Core.WhiteLabel;
-
 namespace ASC.Web.Studio.Utility
 {
     [Scope]

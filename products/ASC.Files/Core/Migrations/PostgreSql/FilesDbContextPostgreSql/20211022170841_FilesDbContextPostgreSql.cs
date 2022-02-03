@@ -1,7 +1,3 @@
-using System;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-
 namespace ASC.Files.Core.Migrations.PostgreSql.FilesDbContextPostgreSql
 {
     public partial class FilesDbContextPostgreSql : Migration

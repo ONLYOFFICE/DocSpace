@@ -23,30 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security;
-using System.Security.Authentication;
-using System.Security.Claims;
-using System.Threading;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Security;
-using ASC.Common.Security.Authentication;
-using ASC.Common.Security.Authorizing;
-using ASC.Core.Billing;
-using ASC.Core.Common.Security;
-using ASC.Core.Security.Authentication;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Core
 {
     [Scope]

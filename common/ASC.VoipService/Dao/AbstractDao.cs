@@ -24,12 +24,6 @@
 */
 
 
-using System;
-
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-
 namespace ASC.VoipService.Dao
 {
     public class AbstractDao

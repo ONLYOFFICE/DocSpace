@@ -23,13 +23,6 @@
  *
 */
 
-
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Web.Core;
-using ASC.Web.Studio.Utility;
-
 namespace ASC.Core.Users
 {
     public static class StudioUserInfoExtension

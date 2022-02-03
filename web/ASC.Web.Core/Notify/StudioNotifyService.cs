@@ -23,33 +23,7 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Threading;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-using ASC.Notify.Model;
-using ASC.Notify.Patterns;
-using ASC.Notify.Recipients;
-using ASC.Web.Core;
-using ASC.Web.Core.Notify;
-using ASC.Web.Core.PublicResources;
-using ASC.Web.Core.Users;
-using ASC.Web.Core.WhiteLabel;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Studio.Core.Notify
 {

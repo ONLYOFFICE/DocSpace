@@ -23,12 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common.Security;
-using ASC.Common.Security.Authorizing;
-
 namespace ASC.Core
 {
     [Serializable]

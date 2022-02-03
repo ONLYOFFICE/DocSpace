@@ -1,9 +1,4 @@
-﻿using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Model;
-using Microsoft.EntityFrameworkCore;
-using Nest;
-
-namespace ASC.Files.Core.EF
+﻿namespace ASC.Files.Core.EF
 {
     [ElasticsearchType(RelationName = Tables.Tree)]
     public class DbFolderTree : BaseEntity

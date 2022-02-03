@@ -24,13 +24,6 @@
 */
 
 
-using System;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Security.Cryptography;
-
 using ConfigurationConstants = ASC.Core.Configuration.Constants;
 using UserConstants = ASC.Core.Users.Constants;
 

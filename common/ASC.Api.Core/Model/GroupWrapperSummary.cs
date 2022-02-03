@@ -23,11 +23,7 @@
  *
 */
 
-
-using System;
-
-using ASC.Core;
-using ASC.Core.Users;
+using GroupInfo = ASC.Core.Users.GroupInfo;
 
 namespace ASC.Web.Api.Models
 {

@@ -23,12 +23,6 @@
  *
 */
 
-
-using System;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Web;
-
 namespace ASC.Common.Utils
 {
     public static class HtmlUtil

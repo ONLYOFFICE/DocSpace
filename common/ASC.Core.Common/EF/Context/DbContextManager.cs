@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-using ASC.Common;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-
-namespace ASC.Core.Common.EF
+﻿namespace ASC.Core.Common.EF
 {
     public class BaseDbContextManager<T> : OptionsManager<T>, IDisposable where T : class, IDisposable, IAsyncDisposable, new()
     {

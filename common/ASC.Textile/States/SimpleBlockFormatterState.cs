@@ -1,5 +1,3 @@
-using System.Text.RegularExpressions;
-
 namespace Textile.States
 {
     public abstract class SimpleBlockFormatterState : FormatterState

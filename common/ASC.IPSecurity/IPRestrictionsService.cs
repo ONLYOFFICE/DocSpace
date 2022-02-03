@@ -23,13 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
-using ASC.Common;
-using ASC.Common.Caching;
-
 namespace ASC.IPSecurity
 {
     [Singletone]

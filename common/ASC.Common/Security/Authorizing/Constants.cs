@@ -23,9 +23,6 @@
  *
 */
 
-
-using System;
-
 namespace ASC.Common.Security.Authorizing
 {
     public sealed class Constants

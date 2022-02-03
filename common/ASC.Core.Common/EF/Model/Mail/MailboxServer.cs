@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace ASC.Core.Common.EF.Model.Mail
+﻿namespace ASC.Core.Common.EF.Model.Mail
 {
     public class MailboxServer
     {

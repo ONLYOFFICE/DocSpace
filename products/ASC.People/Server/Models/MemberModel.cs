@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-using ASC.Api.Core;
-using ASC.Web.Api.Models;
-
-namespace ASC.People.Models
+﻿namespace ASC.People.Models
 {
     public class MemberModel
     {

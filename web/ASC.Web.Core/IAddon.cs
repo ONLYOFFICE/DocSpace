@@ -23,9 +23,6 @@
  *
 */
 
-
-using ASC.Web.Core.WebZones;
-
 namespace ASC.Web.Core
 {
     [WebZoneAttribute(WebZoneType.Nowhere)]

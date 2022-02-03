@@ -1,7 +1,3 @@
-using System;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-
 namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
 {
     public partial class VoipDbContextMySql : Migration

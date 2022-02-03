@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.Json;
-
-using ASC.Common;
-using ASC.Webhooks.Core;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Routing;
+﻿using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ASC.Api.Core.Middleware
 {
