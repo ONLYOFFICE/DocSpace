@@ -37,7 +37,6 @@ using ASC.MessagingSystem;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Helpers;
-using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.Utils;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -187,7 +186,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var scopeClass = scope.ServiceProvider.GetService<FileMoveCopyOperationScope>();
             var (filesMessageService, fileMarker, _, _, _) = scopeClass;
             var folderDao = scope.ServiceProvider.GetService<IFolderDao<TTo>>();
-            var documentServiceHelper = scope.ServiceProvider.GetService<DocumentServiceHelper>();
             var socketManager = scope.ServiceProvider.GetService<SocketManager>();
 
             var toFolderId = toFolder.ID;
@@ -381,7 +379,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var (filesMessageService, fileMarker, fileUtility, global, entryManager) = scopeClass;
             var fileDao = scope.ServiceProvider.GetService<IFileDao<TTo>>();
             var fileTracker = scope.ServiceProvider.GetService<FileTrackerHelper>();
-            var documentServiceHelper = scope.ServiceProvider.GetService<DocumentServiceHelper>();
             var socketManager = scope.ServiceProvider.GetService<SocketManager>();
 
             var toFolderId = toFolder.ID;

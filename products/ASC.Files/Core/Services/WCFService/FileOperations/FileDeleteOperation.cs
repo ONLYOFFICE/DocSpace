@@ -35,7 +35,6 @@ using ASC.Files.Core;
 using ASC.Files.Core.Resources;
 using ASC.MessagingSystem;
 using ASC.Web.Files.Helpers;
-using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.Utils;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -127,7 +126,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         private void DeleteFolders(IEnumerable<T> folderIds, IServiceScope scope)
         {
             var scopeClass = scope.ServiceProvider.GetService<FileDeleteOperationScope>();
-            var documentServiceHelper = scope.ServiceProvider.GetService<DocumentServiceHelper>();
             var socketManager = scope.ServiceProvider.GetService<SocketManager>();
             var (fileMarker, filesMessageService) = scopeClass;
             foreach (var folderId in folderIds)
@@ -213,7 +211,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         private void DeleteFiles(IEnumerable<T> fileIds, IServiceScope scope)
         {
             var scopeClass = scope.ServiceProvider.GetService<FileDeleteOperationScope>();
-            var documentServiceHelper = scope.ServiceProvider.GetService<DocumentServiceHelper>();
             var socketManager = scope.ServiceProvider.GetService<SocketManager>();
 
             var (fileMarker, filesMessageService) = scopeClass;
