@@ -250,10 +250,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 case TrackerStatus.NotFound:
                 case TrackerStatus.Closed:
                     FileTracker.Remove(fileId);
-                    var fileStable = DaoFactory.GetFileDao<T>().GetFileStable(fileId);
-
-                    var roomFile = DocumentServiceHelper.GetSocketFileRoom(fileStable);
-                    SocketManager.StopEdit(fileId, roomFile);
+                    SocketManager.StopEdit(fileId);
 
                     break;
 
@@ -283,12 +280,11 @@ namespace ASC.Web.Files.Services.DocumentService
             var users = FileTracker.GetEditingBy(fileId);
             var usersDrop = new List<string>();
 
-            var fileStable = DaoFactory.GetFileDao<T>().GetFileStable(fileId);
-
             string docKey;
             var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
             if (app == null)
             {
+                File<T> fileStable = DaoFactory.GetFileDao<T>().GetFileStable(fileId);
                 docKey = DocumentServiceHelper.GetDocKey(fileStable);
             }
             else
@@ -338,9 +334,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 FileTracker.Remove(fileId, userId: removeUserId);
             }
 
-            var roomFile = DocumentServiceHelper.GetSocketFileRoom(fileStable);
-
-            SocketManager.StartEdit(fileId, roomFile);
+            SocketManager.StartEdit(fileId);
         }
 
         private TrackResponse ProcessSave<T>(T fileId, TrackerData fileData)

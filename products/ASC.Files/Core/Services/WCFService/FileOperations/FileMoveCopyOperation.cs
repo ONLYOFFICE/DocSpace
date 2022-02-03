@@ -37,7 +37,6 @@ using ASC.MessagingSystem;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Helpers;
-using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.Utils;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -187,8 +186,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var scopeClass = scope.ServiceProvider.GetService<FileMoveCopyOperationScope>();
             var (filesMessageService, fileMarker, _, _, _) = scopeClass;
             var folderDao = scope.ServiceProvider.GetService<IFolderDao<TTo>>();
-            var documentServiceHelper = scope.ServiceProvider.GetService<DocumentServiceHelper>();
-            var socketManager = scope.ServiceProvider.GetService<SocketManager>();
 
             var toFolderId = toFolder.ID;
             var isToFolder = Equals(toFolderId, DaoFolderId);
@@ -381,7 +378,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var (filesMessageService, fileMarker, fileUtility, global, entryManager) = scopeClass;
             var fileDao = scope.ServiceProvider.GetService<IFileDao<TTo>>();
             var fileTracker = scope.ServiceProvider.GetService<FileTrackerHelper>();
-            var documentServiceHelper = scope.ServiceProvider.GetService<DocumentServiceHelper>();
             var socketManager = scope.ServiceProvider.GetService<SocketManager>();
 
             var toFolderId = toFolder.ID;
@@ -432,8 +428,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                         needToMark.Add(newFile);
                                     }
 
-                                    var room = documentServiceHelper.GetSocketFolderRoom(toFolderId);
-                                    socketManager.CreateFile(newFile.ID, room, newFile);
+                                    socketManager.CreateFile(newFile);
 
                                     if (ProcessedFile(fileId))
                                     {
@@ -487,11 +482,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                         needToMark.Add(newFile);
                                     }
 
-                                    var roomOld = documentServiceHelper.GetSocketFolderRoom(file.FolderID);
-                                    socketManager.DeleteFile(file.ID, roomOld);
+                                    socketManager.DeleteFile(file);
 
-                                    var roomNew = documentServiceHelper.GetSocketFolderRoom(toFolderId);
-                                    socketManager.CreateFile(newFile.ID, roomNew, newFile);
+                                    socketManager.CreateFile(newFile);
 
                                     if (ProcessedFile(fileId))
                                     {
@@ -547,8 +540,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                                     needToMark.Add(newFile);
 
-                                    var roomNew = documentServiceHelper.GetSocketFolderRoom(toFolderId);
-                                    socketManager.CreateFile(newFile.ID, roomNew, newFile);
+                                    socketManager.CreateFile(newFile);
 
                                     if (copy)
                                     {
@@ -588,8 +580,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                                     filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileMovedWithOverwriting, file.Title, parentFolder.Title, toFolder.Title);
                                                 }
 
-                                                var roomOld = documentServiceHelper.GetSocketFolderRoom(file.FolderID);
-                                                socketManager.DeleteFile(file.ID, roomOld);
+                                                socketManager.DeleteFile(file);
 
                                                 if (ProcessedFile(fileId))
                                                 {
