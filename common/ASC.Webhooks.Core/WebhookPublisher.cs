@@ -9,59 +9,58 @@ using ASC.Webhooks.Core.Dao.Models;
 
 using Microsoft.Extensions.Options;
 
-namespace ASC.Webhooks.Core
+namespace ASC.Webhooks.Core;
+
+[Scope]
+public class WebhookPublisher : IWebhookPublisher
 {
-    [Scope]
-    public class WebhookPublisher : IWebhookPublisher
+    private readonly DbWorker _dbWorker;
+    private readonly TenantManager _tenantManager;
+    private readonly ICacheNotify<WebhookRequest> _webhookNotify;
+
+    public WebhookPublisher(
+        DbWorker dbWorker,
+        TenantManager tenantManager,
+        IOptionsMonitor<ILog> options,
+        ICacheNotify<WebhookRequest> webhookNotify)
     {
-        private readonly DbWorker _dbWorker;
-        private readonly TenantManager _tenantManager;
-        private readonly ICacheNotify<WebhookRequest> _webhookNotify;
+        _dbWorker = dbWorker;
+        _tenantManager = tenantManager;
+        _webhookNotify = webhookNotify;
+    }
 
-        public WebhookPublisher(
-            DbWorker dbWorker,
-            TenantManager tenantManager,
-            IOptionsMonitor<ILog> options,
-            ICacheNotify<WebhookRequest> webhookNotify)
+    public void Publish(string eventName, string requestPayload)
+    {
+        var tenantId = _tenantManager.GetCurrentTenant().TenantId;
+        var webhookConfigs = _dbWorker.GetWebhookConfigs(tenantId);
+
+        foreach (var config in webhookConfigs)
         {
-            _dbWorker = dbWorker;
-            _tenantManager = tenantManager;
-            _webhookNotify = webhookNotify;
-        }
-
-        public void Publish(string eventName, string requestPayload)
-        {
-            var tenantId = _tenantManager.GetCurrentTenant().TenantId;
-            var webhookConfigs = _dbWorker.GetWebhookConfigs(tenantId);
-
-            foreach (var config in webhookConfigs)
+            var webhooksLog = new WebhooksLog
             {
-                var webhooksLog = new WebhooksLog
-                {
-                    Uid = Guid.NewGuid().ToString(),
-                    TenantId = tenantId,
-                    Event = eventName,
-                    CreationTime = DateTime.UtcNow,
-                    RequestPayload = requestPayload,
-                    Status = ProcessStatus.InProcess,
-                    ConfigId = config.ConfigId
-                };
-                var DbId = _dbWorker.WriteToJournal(webhooksLog);
+                Uid = Guid.NewGuid().ToString(),
+                TenantId = tenantId,
+                Event = eventName,
+                CreationTime = DateTime.UtcNow,
+                RequestPayload = requestPayload,
+                Status = ProcessStatus.InProcess,
+                ConfigId = config.ConfigId
+            };
+            var DbId = _dbWorker.WriteToJournal(webhooksLog);
 
-                var request = new WebhookRequest()
-                {
-                    Id = DbId
-                };
+            var request = new WebhookRequest()
+            {
+                Id = DbId
+            };
 
-                _webhookNotify.Publish(request, CacheNotifyAction.Update);
-            }
+            _webhookNotify.Publish(request, CacheNotifyAction.Update);
         }
     }
+}
 
-    public enum ProcessStatus
-    {
-        InProcess,
-        Success,
-        Failed
-    }
+public enum ProcessStatus
+{
+    InProcess,
+    Success,
+    Failed
 }
