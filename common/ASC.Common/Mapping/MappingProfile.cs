@@ -23,12 +23,6 @@
  *
 */
 
-using System;
-using System.Linq;
-using System.Reflection;
-
-using AutoMapper;
-
 namespace ASC.Common.Mapping
 {
     public class MappingProfile : Profile

@@ -23,11 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Web.Core.Users;
-
 namespace ASC.Web.Api.Models
 {
     public class ThumbnailsDataWrapper

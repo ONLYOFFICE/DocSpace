@@ -23,8 +23,6 @@
  *
 */
 
-using System;
-
 namespace ASC.TelegramService.Core
 {
     [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]

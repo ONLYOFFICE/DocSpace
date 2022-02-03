@@ -23,12 +23,6 @@
  *
 */
 
-
-using System.Collections.Generic;
-
-using ASC.Core.Common.EF.Model;
-using ASC.VoipService.Twilio;
-
 namespace ASC.VoipService
 {
     public interface IVoipProvider

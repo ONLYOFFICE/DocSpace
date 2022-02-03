@@ -23,18 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Core.Common.Configuration;
-using ASC.FederatedLogin.LoginProviders;
-using ASC.Files.Core;
-
-using Microsoft.Extensions.Configuration;
-
 namespace ASC.Web.Files.Helpers
 {
     [Singletone]

@@ -23,18 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.AuditTrail.Models;
-using ASC.Common;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-
-using AutoMapper;
-
 namespace ASC.AuditTrail.Repositories;
 
 [Scope]

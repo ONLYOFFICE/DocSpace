@@ -23,15 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-
-using ASC.Data.Backup.Tasks.Data;
-using ASC.Data.Backup.Utils;
-
 namespace ASC.Data.Backup.Tasks.Modules
 {
     public class CommunityModuleSpecifics : ModuleSpecificsBase

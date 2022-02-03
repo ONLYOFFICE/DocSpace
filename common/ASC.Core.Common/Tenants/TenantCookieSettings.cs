@@ -23,15 +23,6 @@
  *
 */
 
-
-using System;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Core.Common.Settings;
-
-using Microsoft.Extensions.Configuration;
-
 namespace ASC.Core.Tenants
 {
     [Serializable]

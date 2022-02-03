@@ -23,32 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-
-using ASC.Common;
-using ASC.Common.Security.Authentication;
-using ASC.Common.Threading;
-using ASC.Common.Web;
-using ASC.Core.Tenants;
-using ASC.Files.Core;
-using ASC.Files.Core.EF;
-using ASC.Files.Core.Resources;
-using ASC.MessagingSystem;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Core.Compress;
-using ASC.Web.Files.Helpers;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Core;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Primitives;
-
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
     internal class FileDownloadOperationData<T> : FileOperationData<T>

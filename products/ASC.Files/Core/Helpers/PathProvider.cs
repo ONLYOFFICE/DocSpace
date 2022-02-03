@@ -23,24 +23,6 @@
  *
 */
 
-
-using System;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Utils;
-using ASC.Common.Web;
-using ASC.Core.Common;
-using ASC.Files.Core;
-using ASC.Files.Core.Resources;
-using ASC.Security.Cryptography;
-using ASC.Web.Core.Files;
-using ASC.Web.Core.Utility.Skins;
-using ASC.Web.Studio.Utility;
-
 namespace ASC.Web.Files.Classes
 {
     [Scope]

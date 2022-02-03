@@ -1,14 +1,4 @@
-﻿using System.Collections.Generic;
-using System;
-
-using AutoMapper;
-
-using Newtonsoft.Json;
-using ASC.MessagingSystem;
-using ASC.Core.Users;
-using ASC.AuditTrail.Mappers;
-
-namespace ASC.AuditTrail.Models.Mapping.Actions;
+﻿namespace ASC.AuditTrail.Models.Mapping.Actions;
 
 public class AuditEventMappingAction : IMappingAction<AuditEventQuery, AuditEventDto>
 {

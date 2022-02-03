@@ -23,15 +23,6 @@
  *
 */
 
-
-using ASC.MessagingSystem;
-using ASC.AuditTrail.Attributes;
-using ASC.Common.Mapping;
-using AutoMapper;
-using ASC.Core.Common.EF;
-using ASC.AuditTrail.Models.Mapping.Actions;
-using ASC.Core.Common.EF.Model;
-
 namespace ASC.AuditTrail.Models;
 
 public class AuditEventDto : BaseEvent, IMapFrom<AuditEventQuery>

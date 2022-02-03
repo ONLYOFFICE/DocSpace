@@ -26,8 +26,6 @@
  *
 */
 
-
-
 namespace ASC.AuditTrail.Mappers;
 
 internal class MessageMaps

@@ -23,16 +23,6 @@
  *
 */
 
-
-
-
-using ASC.AuditTrail.Models.Mapping.Actions;
-using ASC.Common.Mapping;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Model;
-
-using AutoMapper;
-
 namespace ASC.AuditTrail.Models;
 
 public class LoginEventDTO : BaseEvent, IMapFrom<LoginEventQuery>

@@ -23,18 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-using ASC.Common;
-using ASC.Core.Common.Configuration;
-using ASC.FederatedLogin.LoginProviders;
-
-using Microsoft.AspNetCore.Http;
-
 namespace ASC.FederatedLogin.Helpers
 {
     [Scope]

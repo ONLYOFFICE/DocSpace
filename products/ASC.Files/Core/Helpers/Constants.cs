@@ -23,9 +23,6 @@
  *
 */
 
-
-using System;
-
 namespace ASC.Files.Core
 {
     public static class FileConstant

@@ -24,27 +24,7 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Utils;
-using ASC.Core;
-using ASC.Core.Common.Security;
-using ASC.Core.Common.Settings;
-using ASC.Core.Users;
-using ASC.Security.Cryptography;
-using ASC.Web.Core;
-using ASC.Web.Core.PublicResources;
-
-using Google.Authenticator;
-
-using Microsoft.AspNetCore.WebUtilities;
+using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Studio.Core.TFA
 {

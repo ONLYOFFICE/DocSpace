@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ASC.AuditTrail.Attributes;
+﻿namespace ASC.AuditTrail.Attributes;
 
 [AttributeUsage(AttributeTargets.Property)]
 public class EventAttribute : Attribute

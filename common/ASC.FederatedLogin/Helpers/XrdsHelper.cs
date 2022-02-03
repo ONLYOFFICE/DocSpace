@@ -23,11 +23,6 @@
  *
 */
 
-
-using System.Threading.Tasks;
-
-using Microsoft.AspNetCore.Http;
-
 namespace ASC.FederatedLogin.Helpers
 {
     public class XrdsHelper

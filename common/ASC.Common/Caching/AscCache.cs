@@ -23,17 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Concurrent;
-using System.Linq;
-using System.Runtime.Caching;
-using System.Text.RegularExpressions;
-
-using Google.Protobuf;
-
-using Microsoft.Extensions.Caching.Memory;
-
 namespace ASC.Common.Caching
 {
     [Singletone]

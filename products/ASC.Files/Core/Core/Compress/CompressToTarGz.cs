@@ -14,15 +14,6 @@
  *
 */
 
-using System.IO;
-using System.Text;
-
-using ASC.Common;
-using ASC.Files.Core.Resources;
-
-using ICSharpCode.SharpZipLib.GZip;
-using ICSharpCode.SharpZipLib.Tar;
-
 namespace ASC.Web.Files.Core.Compress
 {
     /// <summary>

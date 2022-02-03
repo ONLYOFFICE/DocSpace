@@ -1,23 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Api.Utils;
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Billing;
-using ASC.Core.Common.Configuration;
-using ASC.Core.Users;
-using ASC.Data.Backup.Contracts;
-using ASC.Data.Backup.Services;
-using ASC.MessagingSystem;
-using ASC.Notify.Cron;
-using ASC.Web.Core.PublicResources;
-using ASC.Web.Studio.Core;
-using ASC.Web.Studio.Core.Backup;
-using ASC.Web.Studio.Utility;
-
-namespace ASC.Data.Backup
+﻿namespace ASC.Data.Backup
 {
     [Scope]
     public class BackupAjaxHandler

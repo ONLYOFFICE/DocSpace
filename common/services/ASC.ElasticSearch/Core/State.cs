@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ASC.ElasticSearch.Core
+﻿namespace ASC.ElasticSearch.Core
 {
     public class State
     {

@@ -1,42 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Text.Json;
-using System.Text.RegularExpressions;
-using System.Web;
-
-using ASC.Api.Core;
-using ASC.Api.Documents;
-using ASC.Api.Utils;
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Web;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.FederatedLogin.Helpers;
-using ASC.Files.Core;
-using ASC.Files.Core.Model;
-using ASC.Files.Model;
-using ASC.Web.Core.Files;
-using ASC.Web.Core.Users;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Core.Entries;
-using ASC.Web.Files.Services.DocumentService;
-using ASC.Web.Files.Services.WCFService;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Core;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json.Linq;
-
-using static ASC.Api.Documents.FilesController;
-
+﻿
 using FileShare = ASC.Files.Core.Security.FileShare;
 using MimeMapping = ASC.Common.Web.MimeMapping;
 using SortedByType = ASC.Files.Core.SortedByType;

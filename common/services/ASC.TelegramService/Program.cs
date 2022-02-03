@@ -22,20 +22,14 @@
  * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
 */
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 
-using ASC.Api.Core;
 using ASC.Common.Utils;
 
 using Autofac.Extensions.DependencyInjection;
 
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 
 namespace ASC.TelegramService
 {

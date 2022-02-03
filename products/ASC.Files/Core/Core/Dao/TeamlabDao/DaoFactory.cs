@@ -23,15 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common;
-using ASC.Files.Core.Security;
-using ASC.Files.Thirdparty.ProviderDao;
-
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Files.Core.Data
 {
     [Scope]

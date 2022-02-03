@@ -1,14 +1,4 @@
-﻿using System.Collections.Generic;
-
-using ASC.Api.Core;
-using ASC.Common;
-using ASC.Web.Api.Routing;
-using ASC.Web.Core;
-using ASC.Web.Core.WebZones;
-
-using Microsoft.AspNetCore.Mvc;
-
-namespace ASC.Web.Api.Controllers
+﻿namespace ASC.Web.Api.Controllers
 {
     [Scope]
     [DefaultRoute]

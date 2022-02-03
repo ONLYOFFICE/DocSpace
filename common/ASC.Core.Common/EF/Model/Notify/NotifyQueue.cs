@@ -1,8 +1,4 @@
-﻿using System;
-
-using Microsoft.EntityFrameworkCore;
-
-namespace ASC.Core.Common.EF.Model
+﻿namespace ASC.Core.Common.EF.Model
 {
     public class NotifyQueue
     {

@@ -23,26 +23,6 @@
  *
 */
 
-
-using System.Collections.Generic;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Billing;
-using ASC.Core.Common.Settings;
-using ASC.Core.Users;
-using ASC.Files.Core.Model;
-using ASC.MessagingSystem;
-using ASC.Web.Api.Routing;
-using ASC.Web.Core.PublicResources;
-using ASC.Web.Files.Core.Entries;
-using ASC.Web.Files.Services.WCFService;
-using ASC.Web.Studio.Core;
-
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Api.Documents
 {
     [Scope]

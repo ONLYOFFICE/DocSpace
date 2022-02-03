@@ -23,19 +23,6 @@
  *
 */
 
-
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Utils;
-using ASC.Core.Common;
-using ASC.Files.Core;
-using ASC.Files.Core.Security;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Classes;
-
-using FileShare = ASC.Files.Core.Security.FileShare;
-
 namespace ASC.Web.Files.Utils
 {
     [Scope]

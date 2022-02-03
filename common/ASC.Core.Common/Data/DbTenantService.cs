@@ -23,24 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-
-using ASC.Common;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-using ASC.Core.Common.EF.Model;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-using ASC.Security.Cryptography;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Core.Data
 {
     [Scope]

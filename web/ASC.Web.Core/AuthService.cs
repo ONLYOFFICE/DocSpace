@@ -23,13 +23,6 @@
  *
 */
 
-
-using System.Collections.Generic;
-using System.Diagnostics;
-
-using ASC.Core.Common.Configuration;
-using ASC.Web.Core.PublicResources;
-
 namespace ASC.Web.Studio.UserControls.Management
 {
     public class AuthService

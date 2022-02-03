@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace ASC.Files.Core.Model
+﻿namespace ASC.Files.Core.Model
 {
     public class SaveEditingModel : IModelWithFile
     {

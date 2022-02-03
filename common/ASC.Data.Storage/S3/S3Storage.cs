@@ -23,36 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-
-using Amazon;
-using Amazon.CloudFront;
-using Amazon.CloudFront.Model;
-using Amazon.S3;
-using Amazon.S3.Model;
-using Amazon.S3.Transfer;
-using Amazon.Util;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Data.Storage.Configuration;
-using ASC.Security.Cryptography;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-
-using MimeMapping = ASC.Common.Web.MimeMapping;
-
 namespace ASC.Data.Storage.S3
 {
     [Scope]

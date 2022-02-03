@@ -1,44 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
-using System.Security.Authentication;
-using System.Threading;
-
-using ASC.Api.Core;
-using ASC.Api.Utils;
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Utils;
-using ASC.Core;
-using ASC.Core.Common.Security;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-using ASC.FederatedLogin;
-using ASC.FederatedLogin.LoginProviders;
-using ASC.FederatedLogin.Profile;
-using ASC.MessagingSystem;
-using ASC.Security.Cryptography;
-using ASC.Web.Api.Core;
-using ASC.Web.Api.Models;
-using ASC.Web.Api.Routing;
-using ASC.Web.Core;
-using ASC.Web.Core.PublicResources;
-using ASC.Web.Core.Sms;
-using ASC.Web.Core.Users;
-using ASC.Web.Studio.Core;
-using ASC.Web.Studio.Core.Notify;
-using ASC.Web.Studio.Core.SMS;
-using ASC.Web.Studio.Core.TFA;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-
-using static ASC.Security.Cryptography.EmailValidationKeyProvider;
-
-namespace ASC.Web.Api.Controllers
+﻿namespace ASC.Web.Api.Controllers
 {
     [Scope]
     [DefaultRoute]

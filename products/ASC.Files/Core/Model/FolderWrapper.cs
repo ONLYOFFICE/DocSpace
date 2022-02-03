@@ -23,21 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Api.Core;
-using ASC.Api.Utils;
-using ASC.Common;
-using ASC.Core;
-using ASC.Files.Core;
-using ASC.Files.Core.Security;
-using ASC.Web.Api.Models;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Utils;
-
 namespace ASC.Api.Documents
 {
     /// <summary>

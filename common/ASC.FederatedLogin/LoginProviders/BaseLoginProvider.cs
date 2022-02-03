@@ -23,23 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Threading;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Utils;
-using ASC.Core;
-using ASC.Core.Common.Configuration;
-using ASC.FederatedLogin.Helpers;
-using ASC.FederatedLogin.Profile;
-using ASC.Security.Cryptography;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-
 namespace ASC.FederatedLogin.LoginProviders
 {
     public enum LoginProviderEnum
@@ -61,6 +44,8 @@ namespace ASC.FederatedLogin.LoginProviders
 
     public abstract class BaseLoginProvider<T> : Consumer, ILoginProvider where T : Consumer, ILoginProvider, new()
     {
+        private readonly InstanceCrypto zinstanceCrypto;
+
         public T Instance
         {
             get

@@ -23,10 +23,6 @@
  *
 */
 
-
-using System;
-using System.ComponentModel.DataAnnotations;
-
 namespace ASC.ApiSystem.Classes
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]

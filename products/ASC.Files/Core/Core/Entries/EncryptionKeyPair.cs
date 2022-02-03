@@ -23,21 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Users;
-using ASC.Files.Core;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
-using ASC.Web.Files.Services.WCFService;
-using ASC.Web.Studio.Core;
-
 namespace ASC.Web.Files.Core.Entries
 {
     public class EncryptionKeyPair

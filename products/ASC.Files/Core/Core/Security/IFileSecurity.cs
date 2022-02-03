@@ -23,12 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
-using ASC.Common;
-
 namespace ASC.Files.Core.Security
 {
     [Scope(typeof(FileSecurity))]

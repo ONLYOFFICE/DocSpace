@@ -23,12 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common.Security.Authorizing;
-using ASC.Notify.Recipients;
-
 namespace ASC.Core.Users
 {
     [Serializable]

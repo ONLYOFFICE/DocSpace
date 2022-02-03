@@ -23,26 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Runtime.Caching;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core.Common.Notify;
-using ASC.Core.Common.Notify.Telegram;
-using ASC.Notify.Messages;
-using ASC.TelegramService.Core;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
-using Telegram.Bot;
-using Telegram.Bot.Args;
-
 namespace ASC.TelegramService
 {
     [Singletone(Additional = typeof(TelegramHandlerExtension))]

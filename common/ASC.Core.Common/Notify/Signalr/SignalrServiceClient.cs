@@ -23,26 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Security.Cryptography;
-using System.ServiceModel;
-using System.Text;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core.Common.Notify.Jabber;
-using ASC.Security.Cryptography;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json;
-
 namespace ASC.Core.Notify.Signalr
 {
     [Scope]

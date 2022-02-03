@@ -1,13 +1,4 @@
-﻿using System.Collections.Generic;
-
-using ASC.AuditTrail.Mappers;
-using ASC.Core.Users;
-
-using AutoMapper;
-
-using Newtonsoft.Json;
-
-namespace ASC.AuditTrail.Models.Mapping.Actions;
+﻿namespace ASC.AuditTrail.Models.Mapping.Actions;
 
 public class LoginEventMappingAction : IMappingAction<LoginEventQuery, LoginEventDTO>
 {

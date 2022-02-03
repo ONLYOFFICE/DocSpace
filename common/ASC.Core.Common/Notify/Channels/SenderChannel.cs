@@ -23,12 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Notify.Messages;
-using ASC.Notify.Sinks;
-
 namespace ASC.Notify.Channels
 {
     public class SenderChannel : ISenderChannel

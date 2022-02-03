@@ -23,10 +23,6 @@
  *
 */
 
-
-using ASC.Common.Security.Authorizing;
-using ASC.Core.Security.Authorizing;
-
 namespace ASC.Common.Security
 {
     [Scope(typeof(PermissionResolver))]

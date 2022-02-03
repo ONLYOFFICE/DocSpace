@@ -24,25 +24,6 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-using ASC.Core.Common.EF.Model;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json;
-
-using UAParser;
-
 using IsolationLevel = System.Data.IsolationLevel;
 
 namespace ASC.MessagingSystem.DbSender

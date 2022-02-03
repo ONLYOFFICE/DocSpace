@@ -23,26 +23,6 @@
  *
 */
 
-
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Text;
-
-using ASC.AuditTrail.Models;
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Utility;
-
-using CsvHelper;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.AuditTrail;
 
 [Scope]

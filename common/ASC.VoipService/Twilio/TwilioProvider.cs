@@ -24,24 +24,6 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-
-using ASC.Core;
-using ASC.Core.Common;
-using ASC.Core.Common.EF.Model;
-using ASC.Core.Tenants;
-
-using Twilio.Clients;
-using Twilio.Exceptions;
-using Twilio.Jwt;
-using Twilio.Jwt.Client;
-using Twilio.Rest.Api.V2010.Account;
-using Twilio.Rest.Api.V2010.Account.AvailablePhoneNumberCountry;
-using Twilio.Types;
-
 using RecordingResource = Twilio.Rest.Api.V2010.Account.Call.RecordingResource;
 
 

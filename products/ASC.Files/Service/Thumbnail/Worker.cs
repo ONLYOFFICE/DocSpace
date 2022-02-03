@@ -14,17 +14,6 @@
  *
 */
 
-
-using System;
-using System.Linq;
-using System.Threading;
-
-using ASC.Common;
-using ASC.Common.Logging;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Files.ThumbnailBuilder
 {
     [Singletone]

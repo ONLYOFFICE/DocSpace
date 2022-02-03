@@ -23,11 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections;
-using System.Collections.Generic;
-
 namespace ASC.Common.Web
 {
     public static class MimeMapping

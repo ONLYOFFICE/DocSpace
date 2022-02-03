@@ -23,14 +23,6 @@
  *
 */
 
-
-using System;
-using System.Security.Cryptography;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Security.Cryptography;
-
 namespace ASC.Core.Encryption
 {
     public class EncryptionSettings
