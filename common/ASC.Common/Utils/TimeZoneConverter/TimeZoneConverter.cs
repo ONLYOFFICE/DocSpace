@@ -23,113 +23,106 @@
  *
 */
 
-namespace ASC.Common.Utils
+namespace ASC.Common.Utils;
+
+[Singletone]
+public class TimeZoneConverter
 {
-    [Singletone]
-    public class TimeZoneConverter
+    private TimeZoneInfo _defaultTimeZone;
+    private IEnumerable<MapZone> _mapZones;
+    private bool _customMode;
+    private bool _isMono;
+    private Dictionary<string, string> _translations;
+    private readonly IConfiguration _configuration;
+    private readonly ILog _logger;
+
+    public TimeZoneConverter(IConfiguration configuration, IOptionsMonitor<ILog> option)
     {
-        private TimeZoneInfo _defaultTimeZone;
-        private IEnumerable<MapZone> _mapZones;
-        private bool _customMode;
-        private bool _isMono;
-        private Dictionary<string, string> _translations;
-        private readonly IConfiguration _configuration;
-        private readonly ILog _logger;
+        _logger = option.CurrentValue;
+        _configuration = configuration;
+        InitMapZones();
+        InitTranslations();
+    }
 
-        public TimeZoneConverter(IConfiguration configuration, IOptionsMonitor<ILog> option)
+    public string GetTimeZoneDisplayName(TimeZoneInfo tz)
+    {
+        var displayName = GetTimeZoneName(tz);
+        if (!displayName.StartsWith("(UTC") && !displayName.StartsWith("UTC"))
         {
-            _logger = option.CurrentValue;
-            _configuration = configuration;
-            InitMapZones();
-            InitTranslations();
-        }
-
-        public string GetTimeZoneDisplayName(TimeZoneInfo tz)
-        {
-            var displayName = GetTimeZoneName(tz);
-            if (!displayName.StartsWith("(UTC") && !displayName.StartsWith("UTC"))
+            if (tz.BaseUtcOffset != TimeSpan.Zero)
             {
-                if (tz.BaseUtcOffset != TimeSpan.Zero)
-                {
-                    var offSet = tz.BaseUtcOffset < TimeSpan.Zero ? "-" : "+";
-                    var name = tz.BaseUtcOffset.ToString(@"hh\:mm");
-                    displayName = $"(UTC{offSet}{name}) {displayName}";
-                }
-                else displayName = "(UTC) " + displayName;
+                var offSet = tz.BaseUtcOffset < TimeSpan.Zero ? "-" : "+";
+                var name = tz.BaseUtcOffset.ToString(@"hh\:mm");
+                displayName = $"(UTC{offSet}{name}) {displayName}";
             }
-
-            return displayName;
+            else displayName = "(UTC) " + displayName;
         }
 
-        public string OlsonTzId2WindowsTzId(string olsonTimeZoneId, bool defaultIfNoMatch = true)
+        return displayName;
+    }
+
+    public string OlsonTzId2WindowsTzId(string olsonTimeZoneId, bool defaultIfNoMatch = true)
+    {
+        var mapZone = GetMapZoneByWindowsTzId(olsonTimeZoneId);
+
+        if (mapZone != null)
+            return olsonTimeZoneId; //already Windows
+
+        mapZone = GetMapZoneByOlsonTzId(olsonTimeZoneId);
+
+        if (mapZone != null)
+            return mapZone.WindowsTimeZoneId;
+
+        _logger.Error($"OlsonTimeZone {olsonTimeZoneId} not found");
+
+        return defaultIfNoMatch ? "UTC" : null;
+    }
+
+    public string WindowsTzId2OlsonTzId(string windowsTimeZoneId, bool defaultIfNoMatch = true)
+    {
+        var mapZone = GetMapZoneByOlsonTzId(windowsTimeZoneId);
+
+        if (mapZone != null)
+            return windowsTimeZoneId; //already Olson
+
+        mapZone = GetMapZoneByWindowsTzId(windowsTimeZoneId);
+
+        if (mapZone != null)
+            return mapZone.OlsonTimeZoneId;
+
+        _logger.Error($"WindowsTimeZone {windowsTimeZoneId} not found");
+
+        return defaultIfNoMatch ? "Etc/GMT" : null;
+    }
+
+    public TimeZoneInfo GetTimeZone(string timeZoneId, bool defaultIfNoMatch = true)
+    {
+        var defaultTimezone = GetTimeZoneDefault();
+
+        if (string.IsNullOrEmpty(timeZoneId))
+            return defaultIfNoMatch ? defaultTimezone : null;
+
+        try
         {
-            var mapZone = GetMapZoneByWindowsTzId(olsonTimeZoneId);
-
-            if (mapZone != null)
-                return olsonTimeZoneId; //already Windows
-
-            mapZone = GetMapZoneByOlsonTzId(olsonTimeZoneId);
-
-            if (mapZone != null)
-                return mapZone.WindowsTimeZoneId;
-
-            _logger.Error($"OlsonTimeZone {olsonTimeZoneId} not found");
-
-            return defaultIfNoMatch ? "UTC" : null;
+            return TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
         }
-
-        public string WindowsTzId2OlsonTzId(string windowsTimeZoneId, bool defaultIfNoMatch = true)
+        catch (TimeZoneNotFoundException)
         {
-            var mapZone = GetMapZoneByOlsonTzId(windowsTimeZoneId);
-
-            if (mapZone != null)
-                return windowsTimeZoneId; //already Olson
-
-            mapZone = GetMapZoneByWindowsTzId(windowsTimeZoneId);
-
-            if (mapZone != null)
-                return mapZone.OlsonTimeZoneId;
-
-            _logger.Error($"WindowsTimeZone {windowsTimeZoneId} not found");
-
-            return defaultIfNoMatch ? "Etc/GMT" : null;
-        }
-
-        public TimeZoneInfo GetTimeZone(string timeZoneId, bool defaultIfNoMatch = true)
-        {
-            var defaultTimezone = GetTimeZoneDefault();
-
-            if (string.IsNullOrEmpty(timeZoneId))
-                return defaultIfNoMatch ? defaultTimezone : null;
-
             try
             {
-                return TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
-            }
-            catch (TimeZoneNotFoundException)
-            {
-                try
-                {
-                    var mapZone = GetMapZoneByOlsonTzId(timeZoneId);
+                var mapZone = GetMapZoneByOlsonTzId(timeZoneId);
 
-                    if (mapZone != null)
-                        return TimeZoneInfo.FindSystemTimeZoneById(mapZone.WindowsTimeZoneId);
+                if (mapZone != null)
+                    return TimeZoneInfo.FindSystemTimeZoneById(mapZone.WindowsTimeZoneId);
 
-                    mapZone = GetMapZoneByWindowsTzId(timeZoneId);
+                mapZone = GetMapZoneByWindowsTzId(timeZoneId);
 
-                    if (mapZone != null)
-                        return TimeZoneInfo.FindSystemTimeZoneById(mapZone.OlsonTimeZoneId);
+                if (mapZone != null)
+                    return TimeZoneInfo.FindSystemTimeZoneById(mapZone.OlsonTimeZoneId);
 
-                    _logger.InfoFormat("TimeZone {0} not found", timeZoneId);
+                _logger.InfoFormat("TimeZone {0} not found", timeZoneId);
 
-                    return defaultIfNoMatch ? GetTimeZoneByOffset(timeZoneId) ?? defaultTimezone : null;
-                }
-                catch (Exception error)
-                {
-                    _logger.Error(error);
-
-                    return defaultIfNoMatch ? defaultTimezone : null;
-                }
+                return defaultIfNoMatch ? GetTimeZoneByOffset(timeZoneId) ?? defaultTimezone : null;
             }
             catch (Exception error)
             {
@@ -138,171 +131,177 @@ namespace ASC.Common.Utils
                 return defaultIfNoMatch ? defaultTimezone : null;
             }
         }
-
-
-        private MapZone GetMapZoneByOlsonTzId(string olsonTimeZoneId)
+        catch (Exception error)
         {
-            return _mapZones.FirstOrDefault(x =>
-                                            x.OlsonTimeZoneId.Equals(olsonTimeZoneId, StringComparison.CurrentCultureIgnoreCase));
+            _logger.Error(error);
+
+            return defaultIfNoMatch ? defaultTimezone : null;
         }
+    }
 
-        private MapZone GetMapZoneByWindowsTzId(string windowsTimeZoneId)
+
+    private MapZone GetMapZoneByOlsonTzId(string olsonTimeZoneId)
+    {
+        return _mapZones.FirstOrDefault(x =>
+                                        x.OlsonTimeZoneId.Equals(olsonTimeZoneId, StringComparison.CurrentCultureIgnoreCase));
+    }
+
+    private MapZone GetMapZoneByWindowsTzId(string windowsTimeZoneId)
+    {
+        return _mapZones.FirstOrDefault(x =>
+                                        x.WindowsTimeZoneId.Equals(windowsTimeZoneId, StringComparison.CurrentCultureIgnoreCase) &&
+                                        x.Territory.Equals("001", StringComparison.CurrentCultureIgnoreCase));
+    }
+
+    private TimeZoneInfo GetTimeZoneByOffset(string timeZoneId)
+    {
+        var systemTimeZones = TimeZoneInfo.GetSystemTimeZones();
+
+        var timeZone = systemTimeZones.FirstOrDefault(tz =>
+                                                      tz.DisplayName == timeZoneId ||
+                                                      tz.StandardName == timeZoneId ||
+                                                      tz.DaylightName == timeZoneId);
+
+        if (timeZone != null) return timeZone;
+
+        var regex = new Regex(@"[+-][0-9]{2}:[0-9]{2}\b");
+
+        var offsetStr = regex.Match(timeZoneId).Value.TrimStart('+');
+
+        if (string.IsNullOrEmpty(offsetStr)) return null;
+
+
+        if (!TimeSpan.TryParse(offsetStr, out var offset))
+            return null;
+
+        return systemTimeZones.FirstOrDefault(tz => tz.BaseUtcOffset == offset);
+    }
+
+    private void InitMapZones()
+    {
+        try
         {
-            return _mapZones.FirstOrDefault(x =>
-                                            x.WindowsTimeZoneId.Equals(windowsTimeZoneId, StringComparison.CurrentCultureIgnoreCase) &&
-                                            x.Territory.Equals("001", StringComparison.CurrentCultureIgnoreCase));
+            var assembly = Assembly.GetExecutingAssembly();
+
+            using var stream = assembly.GetManifestResourceStream("ASC.Common.Utils.TimeZoneConverter.windowsZones.xml");
+
+            var xml = XElement.Load(stream);
+
+            _mapZones = from row in xml.XPathSelectElements("*/mapTimezones/mapZone")
+                        let olsonTimeZones = row.Attribute("type").Value.Split(' ')
+                        from olsonTimeZone in olsonTimeZones
+                        select new MapZone
+                        {
+                            OlsonTimeZoneId = olsonTimeZone,
+                            WindowsTimeZoneId = row.Attribute("other").Value,
+                            Territory = row.Attribute("territory").Value
+                        };
+
+            _mapZones = _mapZones.ToList();
         }
-
-        private TimeZoneInfo GetTimeZoneByOffset(string timeZoneId)
+        catch (Exception error)
         {
-            var systemTimeZones = TimeZoneInfo.GetSystemTimeZones();
-
-            var timeZone = systemTimeZones.FirstOrDefault(tz =>
-                                                          tz.DisplayName == timeZoneId ||
-                                                          tz.StandardName == timeZoneId ||
-                                                          tz.DaylightName == timeZoneId);
-
-            if (timeZone != null) return timeZone;
-
-            var regex = new Regex(@"[+-][0-9]{2}:[0-9]{2}\b");
-
-            var offsetStr = regex.Match(timeZoneId).Value.TrimStart('+');
-
-            if (string.IsNullOrEmpty(offsetStr)) return null;
-
-
-            if (!TimeSpan.TryParse(offsetStr, out var offset))
-                return null;
-
-            return systemTimeZones.FirstOrDefault(tz => tz.BaseUtcOffset == offset);
+            _mapZones = new MapZone[0];
+            _logger.Error(error);
         }
+    }
 
-        private void InitMapZones()
+    private void InitTranslations()
+    {
+        try
         {
-            try
-            {
-                var assembly = Assembly.GetExecutingAssembly();
+            _customMode = _configuration["core:custom-mode"] == "true";
 
-                using var stream = assembly.GetManifestResourceStream("ASC.Common.Utils.TimeZoneConverter.windowsZones.xml");
-
-                var xml = XElement.Load(stream);
-
-                _mapZones = from row in xml.XPathSelectElements("*/mapTimezones/mapZone")
-                            let olsonTimeZones = row.Attribute("type").Value.Split(' ')
-                            from olsonTimeZone in olsonTimeZones
-                            select new MapZone
-                            {
-                                OlsonTimeZoneId = olsonTimeZone,
-                                WindowsTimeZoneId = row.Attribute("other").Value,
-                                Territory = row.Attribute("territory").Value
-                            };
-
-                _mapZones = _mapZones.ToList();
-            }
-            catch (Exception error)
-            {
-                _mapZones = new MapZone[0];
-                _logger.Error(error);
-            }
-        }
-
-        private void InitTranslations()
-        {
-            try
-            {
-                _customMode = _configuration["core:custom-mode"] == "true";
-
-                if (!_customMode)
-                {
-                    _translations = new Dictionary<string, string>();
-                    return;
-                }
-
-                var assembly = Assembly.GetExecutingAssembly();
-
-                using var stream = assembly.GetManifestResourceStream("ASC.Common.Utils.TimeZoneConverter.timeZoneNames.xml");
-
-                var xml = XElement.Load(stream);
-                _translations = (from row in xml.XPathSelectElements("*/zone")
-                                 select new KeyValuePair<string, string>(row.Attribute("type").Value, row.Value)
-                                ).ToDictionary(item => item.Key, item => item.Value);
-            }
-            catch (Exception error)
+            if (!_customMode)
             {
                 _translations = new Dictionary<string, string>();
-                _logger.Error(error);
+                return;
             }
+
+            var assembly = Assembly.GetExecutingAssembly();
+
+            using var stream = assembly.GetManifestResourceStream("ASC.Common.Utils.TimeZoneConverter.timeZoneNames.xml");
+
+            var xml = XElement.Load(stream);
+            _translations = (from row in xml.XPathSelectElements("*/zone")
+                             select new KeyValuePair<string, string>(row.Attribute("type").Value, row.Value)
+                            ).ToDictionary(item => item.Key, item => item.Value);
         }
-
-        public string GetTimeZoneName(TimeZoneInfo timeZone)
+        catch (Exception error)
         {
-            if (!_customMode)
-                return _isMono ? timeZone.Id : timeZone.DisplayName;
-
-            return _translations.ContainsKey(timeZone.Id) ? _translations[timeZone.Id] : timeZone.DisplayName;
+            _translations = new Dictionary<string, string>();
+            _logger.Error(error);
         }
+    }
 
-        private TimeZoneInfo GetTimeZoneDefault()
+    public string GetTimeZoneName(TimeZoneInfo timeZone)
+    {
+        if (!_customMode)
+            return _isMono ? timeZone.Id : timeZone.DisplayName;
+
+        return _translations.ContainsKey(timeZone.Id) ? _translations[timeZone.Id] : timeZone.DisplayName;
+    }
+
+    private TimeZoneInfo GetTimeZoneDefault()
+    {
+        if (_defaultTimeZone == null)
         {
-            if (_defaultTimeZone == null)
+            try
             {
-                try
+                var tz = TimeZoneInfo.Local;
+                if (Path.DirectorySeparatorChar == '/')
                 {
-                    var tz = TimeZoneInfo.Local;
-                    if (Path.DirectorySeparatorChar == '/')
+                    if (tz.StandardName == "UTC" || tz.StandardName == "UCT")
+                        tz = TimeZoneInfo.Utc;
+                    else
                     {
-                        if (tz.StandardName == "UTC" || tz.StandardName == "UCT")
-                            tz = TimeZoneInfo.Utc;
-                        else
+                        var id = string.Empty;
+
+                        if (File.Exists("/etc/timezone"))
                         {
-                            var id = string.Empty;
-
-                            if (File.Exists("/etc/timezone"))
-                            {
-                                _isMono = true;
-                                id = File.ReadAllText("/etc/timezone").Trim();
-                            }
-
-                            if (string.IsNullOrEmpty(id))
-                            {
-                                var psi = new ProcessStartInfo
-                                {
-                                    FileName = "/bin/bash",
-                                    Arguments = "date +%Z",
-                                    RedirectStandardOutput = true,
-                                    UseShellExecute = false,
-                                };
-
-                                using var p = Process.Start(psi);
-
-                                if (p.WaitForExit(1000))
-                                    id = p.StandardOutput.ReadToEnd();
-
-                                p.Close();
-                            }
-
-                            if (!string.IsNullOrEmpty(id))
-                                tz = TimeZoneInfo.GetSystemTimeZones().FirstOrDefault(z => z.Id == id) ?? tz;
+                            _isMono = true;
+                            id = File.ReadAllText("/etc/timezone").Trim();
                         }
+
+                        if (string.IsNullOrEmpty(id))
+                        {
+                            var psi = new ProcessStartInfo
+                            {
+                                FileName = "/bin/bash",
+                                Arguments = "date +%Z",
+                                RedirectStandardOutput = true,
+                                UseShellExecute = false,
+                            };
+
+                            using var p = Process.Start(psi);
+
+                            if (p.WaitForExit(1000))
+                                id = p.StandardOutput.ReadToEnd();
+
+                            p.Close();
+                        }
+
+                        if (!string.IsNullOrEmpty(id))
+                            tz = TimeZoneInfo.GetSystemTimeZones().FirstOrDefault(z => z.Id == id) ?? tz;
                     }
+                }
 
-                    _defaultTimeZone = tz;
-                }
-                catch (Exception)
-                {
-                    // ignore
-                    _defaultTimeZone = TimeZoneInfo.Utc;
-                }
+                _defaultTimeZone = tz;
             }
-
-            return _defaultTimeZone;
+            catch (Exception)
+            {
+                // ignore
+                _defaultTimeZone = TimeZoneInfo.Utc;
+            }
         }
 
-        private class MapZone
-        {
-            public string OlsonTimeZoneId { get; set; }
-            public string WindowsTimeZoneId { get; set; }
-            public string Territory { get; set; }
-        }
+        return _defaultTimeZone;
+    }
+
+    private class MapZone
+    {
+        public string OlsonTimeZoneId { get; set; }
+        public string WindowsTimeZoneId { get; set; }
+        public string Territory { get; set; }
     }
 }

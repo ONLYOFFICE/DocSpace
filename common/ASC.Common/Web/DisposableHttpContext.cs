@@ -23,66 +23,59 @@
  *
 */
 
+namespace ASC.Common.Web;
 
-#region usings
-
-
-#endregion
-
-namespace ASC.Common.Web
+public class DisposableHttpContext : IDisposable
 {
-    public class DisposableHttpContext : IDisposable
+    private const string Key = "disposable.key";
+
+    public object this[string key]
     {
-        private const string Key = "disposable.key";
-
-        public object this[string key]
+        get => Items.ContainsKey(key) ? Items[key] : null;
+        set
         {
-            get => Items.ContainsKey(key) ? Items[key] : null;
-            set
-            {
-                if (value == null) throw new ArgumentNullException();
-                if (!(value is IDisposable)) throw new ArgumentException("Only IDisposable may be added!");
-                Items[key] = (IDisposable)value;
-            }
+            if (value == null) throw new ArgumentNullException();
+            if (!(value is IDisposable)) throw new ArgumentException("Only IDisposable may be added!");
+            Items[key] = (IDisposable)value;
         }
+    }
 
-        private readonly Microsoft.AspNetCore.Http.HttpContext _context;
-        private bool _isDisposed;
-
-        public DisposableHttpContext(Microsoft.AspNetCore.Http.HttpContext ctx) =>
-            _context = ctx ?? throw new ArgumentNullException(nameof(ctx));
-
-        private Dictionary<string, IDisposable> Items
+    private Dictionary<string, IDisposable> Items
+    {
+        get
         {
-            get
+            var table = (Dictionary<string, IDisposable>)_context.Items[Key];
+
+            if (table == null)
             {
-                var table = (Dictionary<string, IDisposable>)_context.Items[Key];
-
-                if (table == null)
-                {
-                    table = new Dictionary<string, IDisposable>(1);
-                    _context.Items.Add(Key, table);
-                }
-
-                return table;
+                table = new Dictionary<string, IDisposable>(1);
+                _context.Items.Add(Key, table);
             }
+
+            return table;
         }
+    }
 
-        public void Dispose()
+    private readonly HttpContext _context;
+    private bool _isDisposed;
+
+    public DisposableHttpContext(HttpContext ctx) =>
+        _context = ctx ?? throw new ArgumentNullException(nameof(ctx));
+
+    public void Dispose()
+    {
+        if (!_isDisposed)
         {
-            if (!_isDisposed)
+            foreach (var item in Items.Values)
             {
-                foreach (var item in Items.Values)
+                try
                 {
-                    try
-                    {
-                        item.Dispose();
-                    }
-                    catch { }
+                    item.Dispose();
                 }
-
-                _isDisposed = true;
+                catch { }
             }
+
+            _isDisposed = true;
         }
     }
 }

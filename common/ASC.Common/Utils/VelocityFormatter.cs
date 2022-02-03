@@ -23,63 +23,62 @@
  *
 */
 
-namespace ASC.Common.Utils
+namespace ASC.Common.Utils;
+
+public class TextLoader : ResourceLoader
 {
-    public class TextLoader : ResourceLoader
+    public override void Init(Commons.Collections.ExtendedProperties configuration)
     {
-        public override void Init(Commons.Collections.ExtendedProperties configuration)
-        {
-            //nothing to configure
-        }
-
-        public override Stream GetResourceStream(string source) =>
-            new MemoryStream(Encoding.UTF8.GetBytes(source));
-
-        public override long GetLastModified(NVelocity.Runtime.Resource.Resource resource) => 1;
-
-        public override bool IsSourceModified(NVelocity.Runtime.Resource.Resource resource) => false;
+        //nothing to configure
     }
 
-    public class VelocityFormatter
+    public override Stream GetResourceStream(string source) =>
+        new MemoryStream(Encoding.UTF8.GetBytes(source));
+
+    public override long GetLastModified(NVelocity.Runtime.Resource.Resource resource) => 1;
+
+    public override bool IsSourceModified(NVelocity.Runtime.Resource.Resource resource) => false;
+}
+
+public class VelocityFormatter
+{
+    private static bool _initialized;
+    private static readonly ConcurrentDictionary<string, Template> _patterns = new ConcurrentDictionary<string, Template>();
+
+    public static string FormatText(string templateText, IDictionary<string, object> values)
     {
-        private static bool initialized;
-        private static readonly ConcurrentDictionary<string, Template> patterns = new ConcurrentDictionary<string, Template>();
+        var nvelocityContext = new VelocityContext();
 
-        public static string FormatText(string templateText, IDictionary<string, object> values)
+        foreach (var tagValue in values)
+            nvelocityContext.Put(tagValue.Key, tagValue.Value);
+
+        return FormatText(templateText, nvelocityContext);
+    }
+
+    public static string FormatText(string templateText, VelocityContext context)
+    {
+        if (!_initialized)
         {
-            var nvelocityContext = new VelocityContext();
-
-            foreach (var tagValue in values)
-                nvelocityContext.Put(tagValue.Key, tagValue.Value);
-
-            return FormatText(templateText, nvelocityContext);
+            var properties = new Commons.Collections.ExtendedProperties();
+            properties.AddProperty("resource.loader", "custom");
+            properties.AddProperty("custom.resource.loader.class", "ASC.Common.Utils.TextLoader; ASC.Common");
+            properties.AddProperty("input.encoding", Encoding.UTF8.WebName);
+            properties.AddProperty("output.encoding", Encoding.UTF8.WebName);
+            Velocity.Init(properties);
+            _initialized = true;
         }
 
-        public static string FormatText(string templateText, VelocityContext context)
+        using var writer = new StringWriter();
+        var key = templateText.GetHashCode().ToString();
+
+        if (!_patterns.TryGetValue(key, out var template))
         {
-            if (!initialized)
-            {
-                var properties = new Commons.Collections.ExtendedProperties();
-                properties.AddProperty("resource.loader", "custom");
-                properties.AddProperty("custom.resource.loader.class", "ASC.Common.Utils.TextLoader; ASC.Common");
-                properties.AddProperty("input.encoding", Encoding.UTF8.WebName);
-                properties.AddProperty("output.encoding", Encoding.UTF8.WebName);
-                Velocity.Init(properties);
-                initialized = true;
-            }
-
-            using var writer = new StringWriter();
-            var key = templateText.GetHashCode().ToString();
-
-            if (!patterns.TryGetValue(key, out var template))
-            {
-                template = Velocity.GetTemplate(templateText);
-                patterns.TryAdd(key, template);
-            }
-
-            template.Merge(context, writer);
-
-            return writer.GetStringBuilder().ToString();
+            template = Velocity.GetTemplate(templateText);
+            _patterns.TryAdd(key, template);
         }
+
+        template.Merge(context, writer);
+
+        return writer.GetStringBuilder().ToString();
     }
 }

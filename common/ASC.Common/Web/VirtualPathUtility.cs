@@ -1,16 +1,15 @@
-﻿namespace ASC.Common.Web
+﻿namespace ASC.Common.Web;
+
+public class VirtualPathUtility
 {
-    public class VirtualPathUtility
+    public static string ToAbsolute(string virtualPath)
     {
-        public static string ToAbsolute(string virtualPath)
-        {
-            if (string.IsNullOrEmpty(virtualPath))
-                return virtualPath;
+        if (string.IsNullOrEmpty(virtualPath))
+            return virtualPath;
 
-            if (Uri.IsWellFormedUriString(virtualPath, UriKind.Absolute))
-                return virtualPath;
+        if (Uri.IsWellFormedUriString(virtualPath, UriKind.Absolute))
+            return virtualPath;
 
-            return "/" + virtualPath.TrimStart('~', '/');
-        }
+        return "/" + virtualPath.TrimStart('~', '/');
     }
 }

@@ -25,116 +25,115 @@
 
 using LogLevel = NLog.LogLevel;
 
-namespace ASC.Common.Logging
+namespace ASC.Common.Logging;
+
+[Target("SelfCleaning")]
+public class SelfCleaningTarget : FileTarget
 {
-    [Target("SelfCleaning")]
-    public class SelfCleaningTarget : FileTarget
+    private static DateTime _lastCleanDate;
+
+    private static int? _cleanPeriod;
+
+    protected override void Write(IList<AsyncLogEventInfo> logEvents)
     {
-        private static DateTime _lastCleanDate;
-
-        private static int? _cleanPeriod;
-
-        protected override void Write(IList<AsyncLogEventInfo> logEvents)
+        if (DateTime.UtcNow.Date > _lastCleanDate.Date)
         {
-            if (DateTime.UtcNow.Date > _lastCleanDate.Date)
-            {
-                _lastCleanDate = DateTime.UtcNow.Date;
-                Clean();
-            }
+            _lastCleanDate = DateTime.UtcNow.Date;
+            Clean();
+        }
 
-            var buffer = new List<AsyncLogEventInfo>();
+        var buffer = new List<AsyncLogEventInfo>();
 
-            foreach (var logEvent in logEvents)
-            {
-                buffer.Add(logEvent);
-                if (buffer.Count < 10) continue;
-                base.Write(buffer);
-                buffer.Clear();
-            }
-
+        foreach (var logEvent in logEvents)
+        {
+            buffer.Add(logEvent);
+            if (buffer.Count < 10) continue;
             base.Write(buffer);
+            buffer.Clear();
         }
 
-        protected override void Write(LogEventInfo logEvent)
-        {
-            if (DateTime.UtcNow.Date > _lastCleanDate.Date)
-            {
-                _lastCleanDate = DateTime.UtcNow.Date;
-                Clean();
-            }
+        base.Write(buffer);
+    }
 
-            base.Write(logEvent);
+    protected override void Write(LogEventInfo logEvent)
+    {
+        if (DateTime.UtcNow.Date > _lastCleanDate.Date)
+        {
+            _lastCleanDate = DateTime.UtcNow.Date;
+            Clean();
         }
 
-        private static int GetCleanPeriod()
+        base.Write(logEvent);
+    }
+
+    private static int GetCleanPeriod()
+    {
+        if (_cleanPeriod != null)
+            return _cleanPeriod.Value;
+
+        var value = 30;
+
+        const string key = "cleanPeriod";
+
+        if (LogManager.Configuration.Variables.Keys.Contains(key))
         {
-            if (_cleanPeriod != null)
-                return _cleanPeriod.Value;
+            var variable = LogManager.Configuration.Variables[key];
 
-            var value = 30;
-
-            const string key = "cleanPeriod";
-
-            if (LogManager.Configuration.Variables.Keys.Contains(key))
-            {
-                var variable = LogManager.Configuration.Variables[key];
-
-                if (variable != null && !string.IsNullOrEmpty(variable.Text))
-                    int.TryParse(variable.Text, out value);
-            }
-
-            _cleanPeriod = value;
-
-            return value;
+            if (variable != null && !string.IsNullOrEmpty(variable.Text))
+                int.TryParse(variable.Text, out value);
         }
 
-        private void Clean()
+        _cleanPeriod = value;
+
+        return value;
+    }
+
+    private void Clean()
+    {
+        var filePath = string.Empty;
+        var dirPath = string.Empty;
+
+        try
         {
-            var filePath = string.Empty;
-            var dirPath = string.Empty;
+            if (FileName == null)
+                return;
 
-            try
+            filePath = ((NLog.Layouts.SimpleLayout)FileName).Text;
+
+            if (string.IsNullOrEmpty(filePath))
+                return;
+
+            dirPath = Path.GetDirectoryName(filePath);
+
+            if (string.IsNullOrEmpty(dirPath))
+                return;
+
+            if (!Path.IsPathRooted(dirPath))
+                dirPath = CrossPlatform.PathCombine(AppDomain.CurrentDomain.BaseDirectory, dirPath);
+
+            var directory = new DirectoryInfo(dirPath);
+
+            if (!directory.Exists)
+                return;
+
+            var files = directory.GetFiles();
+
+            var cleanPeriod = GetCleanPeriod();
+
+            foreach (var file in files.Where(file => (DateTime.UtcNow.Date - file.CreationTimeUtc.Date).Days > cleanPeriod))
             {
-                if (FileName == null)
-                    return;
-
-                filePath = ((NLog.Layouts.SimpleLayout)FileName).Text;
-
-                if (string.IsNullOrEmpty(filePath))
-                    return;
-
-                dirPath = Path.GetDirectoryName(filePath);
-
-                if (string.IsNullOrEmpty(dirPath))
-                    return;
-
-                if (!Path.IsPathRooted(dirPath))
-                    dirPath = CrossPlatform.PathCombine(AppDomain.CurrentDomain.BaseDirectory, dirPath);
-
-                var directory = new DirectoryInfo(dirPath);
-
-                if (!directory.Exists)
-                    return;
-
-                var files = directory.GetFiles();
-
-                var cleanPeriod = GetCleanPeriod();
-
-                foreach (var file in files.Where(file => (DateTime.UtcNow.Date - file.CreationTimeUtc.Date).Days > cleanPeriod))
-                {
-                    file.Delete();
-                }
+                file.Delete();
             }
-            catch (Exception err)
+        }
+        catch (Exception err)
+        {
+            base.Write(new LogEventInfo
             {
-                base.Write(new LogEventInfo
-                {
-                    Exception = err,
-                    Level = LogLevel.Error,
-                    Message = string.Format("file: {0}, dir: {1}, mess: {2}", filePath, dirPath, err.Message),
-                    LoggerName = "SelfCleaningTarget"
-                });
-            }
+                Exception = err,
+                Level = LogLevel.Error,
+                Message = string.Format("file: {0}, dir: {1}, mess: {2}", filePath, dirPath, err.Message),
+                LoggerName = "SelfCleaningTarget"
+            });
         }
     }
 }

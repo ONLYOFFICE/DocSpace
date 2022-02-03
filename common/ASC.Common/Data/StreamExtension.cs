@@ -23,6 +23,8 @@
  *
 */
 
+namespace ASC.Common.Data;
+
 public static class StreamExtension
 {
     public const int BufferSize = 2048; //NOTE: set to 2048 to fit in minimum tcp window

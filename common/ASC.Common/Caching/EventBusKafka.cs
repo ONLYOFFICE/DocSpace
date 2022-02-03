@@ -1,200 +1,184 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Threading;
-using System.Threading.Tasks;
+﻿namespace ASC.Common.Caching;
 
-using ASC.Common.Logging;
-using ASC.Common.Utils;
-
-using Confluent.Kafka;
-using Confluent.Kafka.Admin;
-
-using Google.Protobuf;
-
-using Microsoft.Extensions.Options;
-
-namespace ASC.Common.Caching
+[Singletone]
+public class EventBusKafka<T> : IDisposable, IEventBus<T> where T : IMessage<T>, new()
 {
-    [Singletone]
-    public class EventBusKafka<T> : IDisposable, IEventBus<T> where T : IMessage<T>, new()
+    private IProducer<AscCacheItem, T> _producer;
+
+    private bool _disposedValue = false; // To detect redundant calls
+    private readonly ClientConfig _clientConfig;
+    private readonly AdminClientConfig _adminClientConfig;
+    private readonly ILog _logger;
+    private readonly ConcurrentDictionary<string, CancellationTokenSource> _cancelationToken;
+    private readonly ConcurrentDictionary<string, Action<T>> _actions;
+    private readonly ProtobufSerializer<T> _valueSerializer = new ProtobufSerializer<T>();
+    private readonly ProtobufDeserializer<T> _valueDeserializer = new ProtobufDeserializer<T>();
+    private readonly ProtobufSerializer<AscCacheItem> _keySerializer = new ProtobufSerializer<AscCacheItem>();
+    private readonly ProtobufDeserializer<AscCacheItem> _keyDeserializer = new ProtobufDeserializer<AscCacheItem>();
+    private readonly Guid _key;
+
+    public EventBusKafka(ConfigurationExtension configuration, IOptionsMonitor<ILog> options)
     {
-        private IProducer<AscCacheItem, T> _producer;
+        _logger = options.CurrentValue;
+        _cancelationToken = new ConcurrentDictionary<string, CancellationTokenSource>();
+        _actions = new ConcurrentDictionary<string, Action<T>>();
+        _key = Guid.NewGuid();
 
-        private bool _disposedValue = false; // To detect redundant calls
-        private readonly ClientConfig _clientConfig;
-        private readonly AdminClientConfig _adminClientConfig;
-        private readonly ILog _logger;
-        private readonly ConcurrentDictionary<string, CancellationTokenSource> _cancelationToken;
-        private readonly ConcurrentDictionary<string, Action<T>> _actions;
-        private readonly ProtobufSerializer<T> _valueSerializer = new ProtobufSerializer<T>();
-        private readonly ProtobufDeserializer<T> _valueDeserializer = new ProtobufDeserializer<T>();
-        private readonly ProtobufSerializer<AscCacheItem> _keySerializer = new ProtobufSerializer<AscCacheItem>();
-        private readonly ProtobufDeserializer<AscCacheItem> _keyDeserializer = new ProtobufDeserializer<AscCacheItem>();
-        private readonly Guid _key;
+        var settings = configuration.GetSetting<KafkaSettings>("kafka");
 
-        public EventBusKafka(ConfigurationExtension configuration, IOptionsMonitor<ILog> options)
+        _clientConfig = new ClientConfig { BootstrapServers = settings.BootstrapServers };
+        _adminClientConfig = new AdminClientConfig { BootstrapServers = settings.BootstrapServers };
+    }
+
+    public void Publish(T obj, EventType eventType)
+    {
+        try
         {
-            _logger = options.CurrentValue;
-            _cancelationToken = new ConcurrentDictionary<string, CancellationTokenSource>();
-            _actions = new ConcurrentDictionary<string, Action<T>>();
-            _key = Guid.NewGuid();
-
-            var settings = configuration.GetSetting<KafkaSettings>("kafka");
-
-            _clientConfig = new ClientConfig { BootstrapServers = settings.BootstrapServers };
-            _adminClientConfig = new AdminClientConfig { BootstrapServers = settings.BootstrapServers };
-        }
-
-        public void Publish(T obj, EventType eventType)
-        {
-            try
+            if (_producer == null)
             {
-                if (_producer == null)
-                {
-                    _producer = new ProducerBuilder<AscCacheItem, T>(new ProducerConfig(_clientConfig))
-                    .SetErrorHandler((_, e) => _logger.Error(e))
-                    .SetKeySerializer(_keySerializer)
-                    .SetValueSerializer(_valueSerializer)
-                    .Build();
-                }
-
-                var channelName = GetChannelName(eventType);
-
-                if (_actions.TryGetValue(channelName, out var onchange)) onchange(obj);
-
-                var message = new Message<AscCacheItem, T>
-                {
-                    Value = obj,
-                    Key = new AscCacheItem
-                    {
-                        Id = _key.ToString()
-                    }
-                };
-
-                _producer.ProduceAsync(channelName, message);
+                _producer = new ProducerBuilder<AscCacheItem, T>(new ProducerConfig(_clientConfig))
+                .SetErrorHandler((_, e) => _logger.Error(e))
+                .SetKeySerializer(_keySerializer)
+                .SetValueSerializer(_valueSerializer)
+                .Build();
             }
-            catch (ProduceException<Null, string> e)
-            {
-                _logger.Error(e);
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e);
-            }
-        }
 
-        public void Subscribe(Action<T> onchange, EventType eventType)
-        {
             var channelName = GetChannelName(eventType);
 
-            _cancelationToken[channelName] = new CancellationTokenSource();
-            _actions[channelName] = onchange;
+            if (_actions.TryGetValue(channelName, out var onchange)) onchange(obj);
 
-            void action()
+            var message = new Message<AscCacheItem, T>
             {
-                var conf = new ConsumerConfig(_clientConfig)
+                Value = obj,
+                Key = new AscCacheItem
                 {
-                    GroupId = Guid.NewGuid().ToString()
-                };
+                    Id = _key.ToString()
+                }
+            };
+
+            _producer.ProduceAsync(channelName, message);
+        }
+        catch (ProduceException<Null, string> e)
+        {
+            _logger.Error(e);
+        }
+        catch (Exception e)
+        {
+            _logger.Error(e);
+        }
+    }
+
+    public void Subscribe(Action<T> onchange, EventType eventType)
+    {
+        var channelName = GetChannelName(eventType);
+
+        _cancelationToken[channelName] = new CancellationTokenSource();
+        _actions[channelName] = onchange;
+
+        void action()
+        {
+            var conf = new ConsumerConfig(_clientConfig)
+            {
+                GroupId = Guid.NewGuid().ToString()
+            };
 
 
-                using (var adminClient = new AdminClientBuilder(_adminClientConfig)
-                    .SetErrorHandler((_, e) => _logger.Error(e))
-                    .Build())
+            using (var adminClient = new AdminClientBuilder(_adminClientConfig)
+                .SetErrorHandler((_, e) => _logger.Error(e))
+                .Build())
+            {
+                try
                 {
-                    try
-                    {
-                        //TODO: must add checking exist
-                        adminClient.CreateTopicsAsync(
-                            new TopicSpecification[]
-                            {
+                    //TODO: must add checking exist
+                    adminClient.CreateTopicsAsync(
+                        new TopicSpecification[]
+                        {
                                 new TopicSpecification
                                 {
                                     Name = channelName,
                                     NumPartitions = 1,
                                     ReplicationFactor = 1
                                 }
-                            }).Wait();
-                    }
-                    catch (AggregateException) { }
+                        }).Wait();
                 }
+                catch (AggregateException) { }
+            }
 
-                using var c = new ConsumerBuilder<AscCacheItem, T>(conf)
-                    .SetErrorHandler((_, e) => _logger.Error(e))
-                    .SetKeyDeserializer(_keyDeserializer)
-                    .SetValueDeserializer(_valueDeserializer)
-                    .Build();
+            using var c = new ConsumerBuilder<AscCacheItem, T>(conf)
+                .SetErrorHandler((_, e) => _logger.Error(e))
+                .SetKeyDeserializer(_keyDeserializer)
+                .SetValueDeserializer(_valueDeserializer)
+                .Build();
 
-                c.Assign(new TopicPartition(channelName, new Partition()));
+            c.Assign(new TopicPartition(channelName, new Partition()));
 
-                try
+            try
+            {
+                while (true)
                 {
-                    while (true)
+                    try
                     {
-                        try
+                        var cr = c.Consume(_cancelationToken[channelName].Token);
+                        if (cr != null && cr.Message != null && cr.Message.Value != null && !(new Guid(cr.Message.Key.Id)).Equals(_key) && _actions.TryGetValue(channelName, out var act))
                         {
-                            var cr = c.Consume(_cancelationToken[channelName].Token);
-                            if (cr != null && cr.Message != null && cr.Message.Value != null && !(new Guid(cr.Message.Key.Id)).Equals(_key) && _actions.TryGetValue(channelName, out var act))
+                            try
                             {
-                                try
-                                {
-                                    act(cr.Message.Value);
-                                }
-                                catch (Exception e)
-                                {
-                                    _logger.Error("Kafka onmessage", e);
-                                }
+                                act(cr.Message.Value);
+                            }
+                            catch (Exception e)
+                            {
+                                _logger.Error("Kafka onmessage", e);
                             }
                         }
-                        catch (ConsumeException e)
-                        {
-                            _logger.Error(e);
-                        }
+                    }
+                    catch (ConsumeException e)
+                    {
+                        _logger.Error(e);
                     }
                 }
-                catch (OperationCanceledException)
-                {
-                    c.Close();
-                }
             }
-
-            var task = new Task(action, TaskCreationOptions.LongRunning);
-            task.Start();
-        }
-
-        public void Unsubscribe(EventType eventType)
-        {
-            _cancelationToken.TryGetValue(GetChannelName(eventType), out var source);
-
-            if (source != null) source.Cancel();
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposedValue)
+            catch (OperationCanceledException)
             {
-                if (disposing && _producer != null) _producer.Dispose();
-
-                _disposedValue = true;
+                c.Close();
             }
         }
 
-        ~EventBusKafka()
-        {
-            Dispose(false);
-        }
-
-        private string GetChannelName(EventType eventType) => $"ascchannel{eventType}{typeof(T).FullName}".ToLower();
+        var task = new Task(action, TaskCreationOptions.LongRunning);
+        task.Start();
     }
 
-    public class KafkaSettings
+    public void Unsubscribe(EventType eventType)
     {
-        public string BootstrapServers { get; set; }
+        _cancelationToken.TryGetValue(GetChannelName(eventType), out var source);
+
+        if (source != null) source.Cancel();
     }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposedValue)
+        {
+            if (disposing && _producer != null) _producer.Dispose();
+
+            _disposedValue = true;
+        }
+    }
+
+    ~EventBusKafka()
+    {
+        Dispose(false);
+    }
+
+    private string GetChannelName(EventType eventType) => $"ascchannel{eventType}{typeof(T).FullName}".ToLower();
+}
+
+public class KafkaSettings
+{
+    public string BootstrapServers { get; set; }
 }

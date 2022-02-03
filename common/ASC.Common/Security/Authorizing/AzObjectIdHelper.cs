@@ -24,17 +24,16 @@
 */
 
 
-namespace ASC.Common.Security.Authorizing
+namespace ASC.Common.Security.Authorizing;
+
+public static class AzObjectIdHelper
 {
-    public static class AzObjectIdHelper
+    private static readonly string separator = "|";
+
+    public static string GetFullObjectId(ISecurityObjectId objectId)
     {
-        private static readonly string separator = "|";
+        if (objectId == null) return null;
 
-        public static string GetFullObjectId(ISecurityObjectId objectId)
-        {
-            if (objectId == null) return null;
-
-            return $"{objectId.ObjectType.FullName}{separator}{objectId.SecurityId}";
-        }
+        return $"{objectId.ObjectType.FullName}{separator}{objectId.SecurityId}";
     }
 }

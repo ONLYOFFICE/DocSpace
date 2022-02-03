@@ -25,9 +25,6 @@
     <EmbeddedResource Include="Utils\TimeZoneConverter\timeZoneNames.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="Notify\AWSEmail.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="ARSoft.Tools.NetStandard.DXSdata" Version="1.0.0" />
     <PackageReference Include="Autofac.Configuration" Version="6.0.0" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
@@ -63,8 +60,5 @@
     <Protobuf Include="protos\notify_item.proto" />
     <Protobuf Include="protos\distributed_task_cache.proto" />
     <Protobuf Include="protos\distributed_task_cancelation.proto" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Notify\" />
   </ItemGroup>
 </Project>

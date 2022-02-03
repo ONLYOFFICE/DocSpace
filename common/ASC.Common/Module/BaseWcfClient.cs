@@ -23,35 +23,31 @@
  *
 */
 
+namespace ASC.Common.Module;
 
-using System.ServiceModel;
-
-namespace ASC.Common.Module
+public class BaseWcfClient<TService> : ClientBase<TService>, IDisposable where TService : class
 {
-    public class BaseWcfClient<TService> : ClientBase<TService>, IDisposable where TService : class
-    {
-        public BaseWcfClient() { }
+    public BaseWcfClient() { }
 
-        void IDisposable.Dispose()
+    void IDisposable.Dispose()
+    {
+        // msdn recommendation to close wcf client
+        try
         {
-            // msdn recommendation to close wcf client
-            try
-            {
-                //Close();
-            }
-            catch (CommunicationException)
-            {
-                Abort();
-            }
-            catch (TimeoutException)
-            {
-                Abort();
-            }
-            catch (Exception)
-            {
-                Abort();
-                throw;
-            }
+            //Close();
+        }
+        catch (CommunicationException)
+        {
+            Abort();
+        }
+        catch (TimeoutException)
+        {
+            Abort();
+        }
+        catch (Exception)
+        {
+            Abort();
+            throw;
         }
     }
 }

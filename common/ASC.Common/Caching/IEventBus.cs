@@ -23,15 +23,14 @@
  *
 */
 
-namespace ASC.Common.Caching
+namespace ASC.Common.Caching;
+
+[Singletone]
+public interface IEventBus<T> where T : IMessage<T>, new()
 {
-    [Singletone]
-    public interface IEventBus<T> where T : IMessage<T>, new()
-    {
-        void Publish(T obj, EventType action);
+    void Publish(T obj, EventType action);
 
-        void Subscribe(Action<T> onchange, EventType action);
+    void Subscribe(Action<T> onchange, EventType action);
 
-        void Unsubscribe(EventType action);
-    }
+    void Unsubscribe(EventType action);
 }
