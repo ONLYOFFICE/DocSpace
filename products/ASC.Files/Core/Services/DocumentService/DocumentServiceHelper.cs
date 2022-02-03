@@ -63,7 +63,6 @@ namespace ASC.Web.Files.Services.DocumentService
         private FileTrackerHelper FileTracker { get; }
         private EntryStatusManager EntryStatusManager { get; }
         private IServiceProvider ServiceProvider { get; }
-        private TenantManager TenantManager { get; }
 
         public DocumentServiceHelper(
             IDaoFactory daoFactory,
@@ -79,8 +78,7 @@ namespace ASC.Web.Files.Services.DocumentService
             LockerManager lockerManager,
             FileTrackerHelper fileTracker,
             EntryStatusManager entryStatusManager,
-            IServiceProvider serviceProvider,
-            TenantManager tenantManager)
+            IServiceProvider serviceProvider)
         {
             DaoFactory = daoFactory;
             FileShareLink = fileShareLink;
@@ -96,7 +94,6 @@ namespace ASC.Web.Files.Services.DocumentService
             FileTracker = fileTracker;
             EntryStatusManager = entryStatusManager;
             ServiceProvider = serviceProvider;
-            TenantManager = tenantManager;
         }
 
         public File<T> GetParams<T>(T fileId, int version, string doc, bool editPossible, bool tryEdit, bool tryCoauth, out Configuration<T> configuration)
