@@ -34,7 +34,7 @@ const CodeInput = (props) => {
     const { key } = e;
     const target = e.target;
 
-    if (key === "Enter") onEnter();
+    //if (key === "Enter") onEnter();
 
     if (key === "Backspace") {
       if (target.value === "" && target.previousElementSibling !== null) {
@@ -46,6 +46,7 @@ const CodeInput = (props) => {
         target.value = "";
       }
     }
+    onEnter();
   };
 
   const handleOnFocus = (e) => {
@@ -62,6 +63,7 @@ const CodeInput = (props) => {
         }
       }
     }
+    onEnter();
     e.preventDefault();
   };
 

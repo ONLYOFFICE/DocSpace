@@ -15,21 +15,27 @@ const InputWrapper = styled.div`
     border-radius: 8px;
     margin: 0 4px;
     text-align: center;
-    font-size: 2rem;
+    font-size: 72px;
 
     @media (max-width: 768px) {
       height: 76px;
       width: 64px;
+      font-size: 48px;
     }
 
     @media (max-width: 414px) {
       height: 48px;
       width: 40px;
+      font-size: 32px;
     }
 
     &:last-child {
       margin: 0;
     }
+  }
+
+  input:focus {
+    border: 1px solid #3b72a7;
   }
 
   hr {
