@@ -29,14 +29,16 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
+using ASC.Common.Mapping;
+using ASC.Core.Common.EF;
 using ASC.Notify.Recipients;
 
 namespace ASC.Core.Users
 {
     [Serializable]
-    public sealed class UserInfo : IDirectRecipient, ICloneable
+    public sealed class UserInfo : IDirectRecipient, ICloneable, IMapFrom<User>
     {
-        public Guid ID { get; set; }
+        public Guid Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string UserName { get; set; }
@@ -73,7 +75,7 @@ namespace ASC.Core.Users
         }
         string[] IDirectRecipient.Addresses => !string.IsNullOrEmpty(Email) ? new[] { Email } : Array.Empty<string>();
         public bool CheckActivation => IsActive; /*if user already active we don't need activation*/
-        string IRecipient.ID => ID.ToString();
+        string IRecipient.ID => Id.ToString();
         string IRecipient.Name => ToString();
 
         private string _contacts;
@@ -87,17 +89,16 @@ namespace ASC.Core.Users
 
         public override string ToString() => $"{FirstName} {LastName}".Trim();
 
-        public override int GetHashCode() => ID.GetHashCode();
+        public override int GetHashCode() => Id.GetHashCode();
 
-        public override bool Equals(object obj) => obj is UserInfo ui && ID.Equals(ui.ID);
+        public override bool Equals(object obj) => obj is UserInfo ui && Id.Equals(ui.Id);
 
-        public bool Equals(UserInfo obj) => obj != null && ID.Equals(obj.ID);
+        public bool Equals(UserInfo obj) => obj != null && Id.Equals(obj.Id);
 
         public CultureInfo GetCulture() =>
             string.IsNullOrEmpty(CultureName) ? CultureInfo.CurrentCulture : CultureInfo.GetCultureInfo(CultureName);
 
         public object Clone() => MemberwiseClone();
-
 
         internal string ContactsToString()
         {

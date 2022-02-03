@@ -192,7 +192,7 @@ namespace ASC.Web.Studio.Utility
 
         public string GetUserProfile(UserInfo user, bool absolute = true)
         {
-            var queryParams = user.ID != Guid.Empty ? GetUserParamsPair(user) : HttpUtility.UrlEncode(user.UserName.ToLowerInvariant());
+            var queryParams = user.Id != Guid.Empty ? GetUserParamsPair(user) : HttpUtility.UrlEncode(user.UserName.ToLowerInvariant());
 
             var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
             url += "view/";

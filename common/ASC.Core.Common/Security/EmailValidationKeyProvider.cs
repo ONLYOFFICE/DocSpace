@@ -253,7 +253,7 @@ namespace ASC.Security.Cryptography
                     break;
                 case ConfirmType.PasswordChange:
 
-                    var hash = _authentication.GetUserPasswordStamp(_userManager.GetUserByEmail(email).ID).ToString("s");
+                    var hash = _authentication.GetUserPasswordStamp(_userManager.GetUserByEmail(email).Id).ToString("s");
 
                     checkKeyResult = _provider.ValidateEmailKey(email + type + hash, key, _provider.ValidEmailKeyInterval);
                     break;

@@ -220,7 +220,7 @@ namespace ASC.Web.Api.Controllers
             ApiContext.AuthByClaim();
             var user = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
             model.MobilePhone = SmsManager.SaveMobilePhone(user, model.MobilePhone);
-            MessageService.Send(MessageAction.UserUpdatedMobileNumber, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper), model.MobilePhone);
+            MessageService.Send(MessageAction.UserUpdatedMobileNumber, MessageTarget.Create(user.Id), user.DisplayUserName(false, DisplayUserSettingsHelper), model.MobilePhone);
 
             return new AuthenticationTokenData
             {
@@ -283,7 +283,7 @@ namespace ASC.Web.Api.Controllers
 
             if (TfaAppAuthSettings.IsVisibleSettings && SettingsManager.Load<TfaAppAuthSettings>().EnableSetting)
             {
-                if (!TfaAppUserSettings.EnableForUser(SettingsManager, user.ID))
+                if (!TfaAppUserSettings.EnableForUser(SettingsManager, user.Id))
                     return new AuthenticationTokenData
                     {
                         Tfa = true,
@@ -300,7 +300,7 @@ namespace ASC.Web.Api.Controllers
 
             try
             {
-                var token = SecurityContext.AuthenticateMe(user.ID);
+                var token = SecurityContext.AuthenticateMe(user.Id);
                 CookiesManager.SetCookies(CookiesType.AuthKey, token, auth.Session);
 
                 MessageService.Send(viaEmail ? MessageAction.LoginSuccessViaApi : MessageAction.LoginSuccessViaApiSocialAccount);
@@ -342,7 +342,7 @@ namespace ASC.Web.Api.Controllers
                 {
                     if (TfaManager.ValidateAuthCode(user, auth.Code))
                     {
-                        MessageService.Send(MessageAction.UserConnectedTfaApp, MessageTarget.Create(user.ID));
+                        MessageService.Send(MessageAction.UserConnectedTfaApp, MessageTarget.Create(user.Id));
                     }
                 }
                 else
@@ -350,7 +350,7 @@ namespace ASC.Web.Api.Controllers
                     throw new System.Security.SecurityException("Auth code is not available");
                 }
 
-                var token = SecurityContext.AuthenticateMe(user.ID);
+                var token = SecurityContext.AuthenticateMe(user.Id);
 
                 MessageService.Send(sms ? MessageAction.LoginSuccessViaApiSms : MessageAction.LoginSuccessViaApiTfa);
                 ;
@@ -379,7 +379,7 @@ namespace ASC.Web.Api.Controllers
                 MessageService.Send(user.DisplayUserName(false, DisplayUserSettingsHelper), sms
                                                                               ? MessageAction.LoginFailViaApiSms
                                                                               : MessageAction.LoginFailViaApiTfa,
-                                    MessageTarget.Create(user.ID));
+                                    MessageTarget.Create(user.Id));
                 throw new AuthenticationException("User authentication failed");
             }
             finally
@@ -497,12 +497,12 @@ namespace ASC.Web.Api.Controllers
                 var isNew = false;
                 if (CoreBaseSettings.Personal)
                 {
-                    if (UserManager.UserExists(userInfo.ID) && SetupInfo.IsSecretEmail(userInfo.Email))
+                    if (UserManager.UserExists(userInfo.Id) && SetupInfo.IsSecretEmail(userInfo.Email))
                     {
                         try
                         {
                             SecurityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
-                            UserManager.DeleteUser(userInfo.ID);
+                            UserManager.DeleteUser(userInfo.Id);
                             userInfo = Constants.LostUser;
                         }
                         finally
@@ -511,7 +511,7 @@ namespace ASC.Web.Api.Controllers
                         }
                     }
 
-                    if (!UserManager.UserExists(userInfo.ID))
+                    if (!UserManager.UserExists(userInfo.Id))
                     {
                         userInfo = JoinByThirdPartyAccount(loginProfile);
 
@@ -567,7 +567,7 @@ namespace ASC.Web.Api.Controllers
             }
 
             var userInfo = UserManager.GetUserByEmail(loginProfile.EMail);
-            if (!UserManager.UserExists(userInfo.ID))
+            if (!UserManager.UserExists(userInfo.Id))
             {
                 var newUserInfo = ProfileToUserInfo(loginProfile);
 
@@ -583,7 +583,7 @@ namespace ASC.Web.Api.Controllers
             }
 
             var linker = AccountLinker.Get("webstudio");
-            linker.AddLink(userInfo.ID.ToString(), loginProfile);
+            linker.AddLink(userInfo.Id.ToString(), loginProfile);
 
             return userInfo;
         }

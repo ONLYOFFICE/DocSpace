@@ -61,7 +61,7 @@ namespace ASC.Files.Service.Core
                 if (shareRecord != null && shareRecord.ShareBy == userId) return false;
 
                 var owner = (Guid)feed.Target;
-                var groupUsers = UserManager.GetUsersByGroup(owner).Select(x => x.ID).ToList();
+                var groupUsers = UserManager.GetUsersByGroup(owner).Select(x => x.Id).ToList();
                 if (!groupUsers.Any())
                 {
                     groupUsers.Add(owner);

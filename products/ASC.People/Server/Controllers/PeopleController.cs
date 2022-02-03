@@ -224,7 +224,7 @@ namespace ASC.Employee.Core.Controllers
             if (CoreBaseSettings.Personal && !UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsOwner(Tenant))
                 throw new MethodAccessException("Method not available");
             var user = UserManager.GetUserByEmail(email);
-            if (user.ID == Constants.LostUser.ID)
+            if (user.Id == Constants.LostUser.Id)
             {
                 throw new ItemNotFoundException("User not found");
             }
@@ -237,7 +237,7 @@ namespace ASC.Employee.Core.Controllers
         {
             if (CoreBaseSettings.Personal) throw new MethodAccessException("Method not available");
             var user = UserManager.GetUserByUserName(username);
-            if (user.ID == Constants.LostUser.ID)
+            if (user.Id == Constants.LostUser.Id)
             {
                 if (Guid.TryParse(username, out var userId))
                 {
@@ -249,7 +249,7 @@ namespace ASC.Employee.Core.Controllers
                 }
             }
 
-            if (user.ID == Constants.LostUser.ID)
+            if (user.Id == Constants.LostUser.Id)
             {
                 throw new ItemNotFoundException("User not found");
             }
@@ -296,7 +296,7 @@ namespace ASC.Employee.Core.Controllers
                 {
                     var groupId = new Guid(ApiContext.FilterValue);
                     //Filter by group
-                    list = list.Where(x => UserManager.IsUserInGroup(x.ID, groupId));
+                    list = list.Where(x => UserManager.IsUserInGroup(x.Id, groupId));
                     ApiContext.SetDataFiltered();
                 }
 
@@ -461,7 +461,7 @@ namespace ASC.Employee.Core.Controllers
 
                 var newUserInfo = UserManager.GetUserByEmail(model.Email);
 
-                if (UserManager.UserExists(newUserInfo.ID))
+                if (UserManager.UserExists(newUserInfo.Id))
                 {
                     if (!SetupInfo.IsSecretEmail(model.Email) || SecurityContext.IsAuthenticated)
                     {
@@ -472,7 +472,7 @@ namespace ASC.Employee.Core.Controllers
                     try
                     {
                         SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
-                        UserManager.DeleteUser(newUserInfo.ID);
+                        UserManager.DeleteUser(newUserInfo.Id);
                     }
                     finally
                     {
@@ -570,7 +570,7 @@ namespace ASC.Employee.Core.Controllers
             user = UserManagerWrapper.AddUser(user, memberModel.PasswordHash, memberModel.FromInviteLink, true, memberModel.IsVisitor, memberModel.FromInviteLink);
 
             var messageAction = memberModel.IsVisitor ? MessageAction.GuestCreated : MessageAction.UserCreated;
-            MessageService.Send(messageAction, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
+            MessageService.Send(messageAction, MessageTarget.Create(user.Id), user.DisplayUserName(false, DisplayUserSettingsHelper));
 
             UpdateDepartments(memberModel.Department, user);
 
@@ -667,10 +667,10 @@ namespace ASC.Employee.Core.Controllers
         {
             var user = GetUserInfo(userid);
 
-            if (UserManager.IsSystemUser(user.ID))
+            if (UserManager.IsSystemUser(user.Id))
                 throw new SecurityException();
 
-            PermissionContext.DemandPermissions(new UserSecurityProvider(user.ID), Constants.Action_EditUser);
+            PermissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 
             var curLng = user.CultureName;
 
@@ -690,7 +690,7 @@ namespace ASC.Employee.Core.Controllers
                         throw;
                     }
 
-                    MessageService.Send(MessageAction.UserUpdatedLanguage, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
+                    MessageService.Send(MessageAction.UserUpdatedLanguage, MessageTarget.Create(user.Id), user.DisplayUserName(false, DisplayUserSettingsHelper));
 
                 }
             }
@@ -715,12 +715,12 @@ namespace ASC.Employee.Core.Controllers
         {
             var user = GetUserInfo(userid);
 
-            if (UserManager.IsSystemUser(user.ID))
+            if (UserManager.IsSystemUser(user.Id))
                 throw new SecurityException();
 
-            PermissionContext.DemandPermissions(new UserSecurityProvider(user.ID), Constants.Action_EditUser);
+            PermissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 
-            var self = SecurityContext.CurrentAccount.ID.Equals(user.ID);
+            var self = SecurityContext.CurrentAccount.ID.Equals(user.Id);
             var resetDate = new DateTime(1900, 01, 01);
 
             //Update it
@@ -769,7 +769,7 @@ namespace ASC.Employee.Core.Controllers
             UpdateContacts(memberModel.Contacts, user);
             UpdateDepartments(memberModel.Department, user);
 
-            if (memberModel.Files != UserPhotoManager.GetPhotoAbsoluteWebPath(user.ID))
+            if (memberModel.Files != UserPhotoManager.GetPhotoAbsoluteWebPath(user.Id))
             {
                 UpdatePhotoUrl(memberModel.Files, user);
             }
@@ -789,7 +789,7 @@ namespace ASC.Employee.Core.Controllers
 
             if (memberModel.IsVisitor && !user.IsVisitor(UserManager) && canBeGuestFlag)
             {
-                UserManager.AddUserIntoGroup(user.ID, Constants.GroupVisitor.ID);
+                UserManager.AddUserIntoGroup(user.Id, Constants.GroupVisitor.ID);
                 WebItemSecurityCache.ClearCache(Tenant.TenantId);
             }
 
@@ -798,7 +798,7 @@ namespace ASC.Employee.Core.Controllers
                 var usersQuota = TenantExtra.GetTenantQuota().ActiveUsers;
                 if (TenantStatisticsProvider.GetUsersCount() < usersQuota)
                 {
-                    UserManager.RemoveUserFromGroup(user.ID, Constants.GroupVisitor.ID);
+                    UserManager.RemoveUserFromGroup(user.Id, Constants.GroupVisitor.ID);
                     WebItemSecurityCache.ClearCache(Tenant.TenantId);
                 }
                 else
@@ -808,11 +808,11 @@ namespace ASC.Employee.Core.Controllers
             }
 
             UserManager.SaveUserInfo(user);
-            MessageService.Send(MessageAction.UserUpdated, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
+            MessageService.Send(MessageAction.UserUpdated, MessageTarget.Create(user.Id), user.DisplayUserName(false, DisplayUserSettingsHelper));
 
             if (memberModel.Disable.HasValue && memberModel.Disable.Value)
             {
-                CookiesManager.ResetUserCookie(user.ID);
+                CookiesManager.ResetUserCookie(user.Id);
                 MessageService.Send(MessageAction.CookieSettingsUpdated);
             }
 
@@ -826,21 +826,21 @@ namespace ASC.Employee.Core.Controllers
 
             var user = GetUserInfo(userid);
 
-            if (UserManager.IsSystemUser(user.ID) || user.IsLDAP())
+            if (UserManager.IsSystemUser(user.Id) || user.IsLDAP())
                 throw new SecurityException();
 
             if (user.Status != EmployeeStatus.Terminated)
                 throw new Exception("The user is not suspended");
 
-            CheckReassignProccess(new[] { user.ID });
+            CheckReassignProccess(new[] { user.Id });
 
             var userName = user.DisplayUserName(false, DisplayUserSettingsHelper);
 
-            UserPhotoManager.RemovePhoto(user.ID);
-            UserManager.DeleteUser(user.ID);
+            UserPhotoManager.RemovePhoto(user.Id);
+            UserManager.DeleteUser(user.Id);
             QueueWorkerRemove.Start(Tenant.TenantId, user, SecurityContext.CurrentAccount.ID, false);
 
-            MessageService.Send(MessageAction.UserDeleted, MessageTarget.Create(user.ID), userName);
+            MessageService.Send(MessageAction.UserDeleted, MessageTarget.Create(user.Id), userName);
 
             return EmployeeWraperFullHelper.GetFull(user);
         }
@@ -869,16 +869,16 @@ namespace ASC.Employee.Core.Controllers
             UserManager.SaveUserInfo(user);
 
             var userName = user.DisplayUserName(false, DisplayUserSettingsHelper);
-            MessageService.Send(MessageAction.UsersUpdatedStatus, MessageTarget.Create(user.ID), userName);
+            MessageService.Send(MessageAction.UsersUpdatedStatus, MessageTarget.Create(user.Id), userName);
 
-            CookiesManager.ResetUserCookie(user.ID);
+            CookiesManager.ResetUserCookie(user.Id);
             MessageService.Send(MessageAction.CookieSettingsUpdated);
 
             if (CoreBaseSettings.Personal)
             {
-                UserPhotoManager.RemovePhoto(user.ID);
-                UserManager.DeleteUser(user.ID);
-                MessageService.Send(MessageAction.UserDeleted, MessageTarget.Create(user.ID), userName);
+                UserPhotoManager.RemovePhoto(user.Id);
+                UserManager.DeleteUser(user.Id);
+                MessageService.Send(MessageAction.UserDeleted, MessageTarget.Create(user.Id), userName);
             }
             else
             {
@@ -906,7 +906,7 @@ namespace ASC.Employee.Core.Controllers
         {
             var user = GetUserInfo(userid);
 
-            if (UserManager.IsSystemUser(user.ID))
+            if (UserManager.IsSystemUser(user.Id))
                 throw new SecurityException();
 
             UpdateContacts(memberModel.Contacts, user);
@@ -931,7 +931,7 @@ namespace ASC.Employee.Core.Controllers
         {
             var user = GetUserInfo(userid);
 
-            if (UserManager.IsSystemUser(user.ID))
+            if (UserManager.IsSystemUser(user.Id))
                 throw new SecurityException();
 
             UpdateContacts(memberModel.Contacts, user);
@@ -956,7 +956,7 @@ namespace ASC.Employee.Core.Controllers
         {
             var user = GetUserInfo(userid);
 
-            if (UserManager.IsSystemUser(user.ID))
+            if (UserManager.IsSystemUser(user.Id))
                 throw new SecurityException();
 
             DeleteContacts(memberModel.Contacts, user);
@@ -969,10 +969,10 @@ namespace ASC.Employee.Core.Controllers
         {
             var user = GetUserInfo(userid);
 
-            if (UserManager.IsSystemUser(user.ID))
+            if (UserManager.IsSystemUser(user.Id))
                 throw new SecurityException();
 
-            return new ThumbnailsDataWrapper(user.ID, UserPhotoManager);
+            return new ThumbnailsDataWrapper(user.Id, UserPhotoManager);
         }
 
         [Create("{userid}/photo")]
@@ -1088,18 +1088,18 @@ namespace ASC.Employee.Core.Controllers
         {
             var user = GetUserInfo(userid);
 
-            if (UserManager.IsSystemUser(user.ID))
+            if (UserManager.IsSystemUser(user.Id))
                 throw new SecurityException();
 
-            if (model.Files != UserPhotoManager.GetPhotoAbsoluteWebPath(user.ID))
+            if (model.Files != UserPhotoManager.GetPhotoAbsoluteWebPath(user.Id))
             {
                 UpdatePhotoUrl(model.Files, user);
             }
 
             UserManager.SaveUserInfo(user);
-            MessageService.Send(MessageAction.UserAddedAvatar, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
+            MessageService.Send(MessageAction.UserAddedAvatar, MessageTarget.Create(user.Id), user.DisplayUserName(false, DisplayUserSettingsHelper));
 
-            return new ThumbnailsDataWrapper(user.ID, UserPhotoManager);
+            return new ThumbnailsDataWrapper(user.Id, UserPhotoManager);
         }
 
         [Delete("{userid}/photo")]
@@ -1107,17 +1107,17 @@ namespace ASC.Employee.Core.Controllers
         {
             var user = GetUserInfo(userid);
 
-            if (UserManager.IsSystemUser(user.ID))
+            if (UserManager.IsSystemUser(user.Id))
                 throw new SecurityException();
 
-            PermissionContext.DemandPermissions(new UserSecurityProvider(user.ID), Constants.Action_EditUser);
+            PermissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 
-            UserPhotoManager.RemovePhoto(user.ID);
+            UserPhotoManager.RemovePhoto(user.Id);
 
             UserManager.SaveUserInfo(user);
-            MessageService.Send(MessageAction.UserDeletedAvatar, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
+            MessageService.Send(MessageAction.UserDeletedAvatar, MessageTarget.Create(user.Id), user.DisplayUserName(false, DisplayUserSettingsHelper));
 
-            return new ThumbnailsDataWrapper(user.ID, UserPhotoManager);
+            return new ThumbnailsDataWrapper(user.Id, UserPhotoManager);
         }
 
 
@@ -1138,10 +1138,10 @@ namespace ASC.Employee.Core.Controllers
         {
             var user = GetUserInfo(userid);
 
-            if (UserManager.IsSystemUser(user.ID))
+            if (UserManager.IsSystemUser(user.Id))
                 throw new SecurityException();
 
-            PermissionContext.DemandPermissions(new UserSecurityProvider(user.ID), Constants.Action_EditUser);
+            PermissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 
             if (!string.IsNullOrEmpty(thumbnailsModel.TmpFile))
             {
@@ -1149,21 +1149,21 @@ namespace ASC.Employee.Core.Controllers
                 var data = UserPhotoManager.GetTempPhotoData(fileName);
 
                 var settings = new UserPhotoThumbnailSettings(thumbnailsModel.X, thumbnailsModel.Y, thumbnailsModel.Width, thumbnailsModel.Height);
-                SettingsManager.SaveForUser(settings, user.ID);
+                SettingsManager.SaveForUser(settings, user.Id);
 
-                UserPhotoManager.RemovePhoto(user.ID);
-                UserPhotoManager.SaveOrUpdatePhoto(user.ID, data);
+                UserPhotoManager.RemovePhoto(user.Id);
+                UserPhotoManager.SaveOrUpdatePhoto(user.Id, data);
                 UserPhotoManager.RemoveTempPhoto(fileName);
             }
             else
             {
-                UserPhotoThumbnailManager.SaveThumbnails(UserPhotoManager, SettingsManager, thumbnailsModel.X, thumbnailsModel.Y, thumbnailsModel.Width, thumbnailsModel.Height, user.ID);
+                UserPhotoThumbnailManager.SaveThumbnails(UserPhotoManager, SettingsManager, thumbnailsModel.X, thumbnailsModel.Y, thumbnailsModel.Width, thumbnailsModel.Height, user.Id);
             }
 
             UserManager.SaveUserInfo(user);
-            MessageService.Send(MessageAction.UserUpdatedAvatarThumbnails, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
+            MessageService.Send(MessageAction.UserUpdatedAvatarThumbnails, MessageTarget.Create(user.Id), user.DisplayUserName(false, DisplayUserSettingsHelper));
 
-            return new ThumbnailsDataWrapper(user.ID, UserPhotoManager);
+            return new ThumbnailsDataWrapper(user.Id, UserPhotoManager);
         }
 
 
@@ -1217,7 +1217,7 @@ namespace ASC.Employee.Core.Controllers
 
             if (!UserManager.UserExists(user)) return null;
 
-            if (UserManager.IsSystemUser(user.ID))
+            if (UserManager.IsSystemUser(user.Id))
                 throw new SecurityException();
 
             if (!string.IsNullOrEmpty(memberModel.Email))
@@ -1286,12 +1286,12 @@ namespace ASC.Employee.Core.Controllers
             if (user == null)
                 throw new Exception(Resource.ErrorUserNotFound);
 
-            if (viewer == null || (user.IsOwner(Tenant) && viewer.ID != user.ID))
+            if (viewer == null || (user.IsOwner(Tenant) && viewer.Id != user.Id))
                 throw new Exception(Resource.ErrorAccessDenied);
 
             var existentUser = UserManager.GetUserByEmail(email);
 
-            if (existentUser.ID != Constants.LostUser.ID)
+            if (existentUser.Id != Constants.LostUser.Id)
                 throw new Exception(CustomNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
 
             if (!viewer.IsAdmin(UserManager))
@@ -1326,7 +1326,7 @@ namespace ASC.Employee.Core.Controllers
             {
                 user = UserManager.GetUserByUserName(userNameOrId);
             }
-            if (user == null || user.ID == Constants.LostUser.ID)
+            if (user == null || user.Id == Constants.LostUser.Id)
                 throw new ItemNotFoundException("user not found");
             return user;
         }
@@ -1355,7 +1355,7 @@ namespace ASC.Employee.Core.Controllers
             {
                 PermissionContext.DemandPermissions(new UserSecurityProvider(id), Constants.Action_EditUser);
                 var u = UserManager.GetUsers(id);
-                if (u.ID == Constants.LostUser.ID || u.IsLDAP()) continue;
+                if (u.Id == Constants.LostUser.Id || u.IsLDAP()) continue;
 
                 u.ActivationStatus = activationstatus;
                 UserManager.SaveUserInfo(u);
@@ -1397,7 +1397,7 @@ namespace ASC.Employee.Core.Controllers
                         {
                             if (TenantStatisticsProvider.GetUsersCount() < TenantExtra.GetTenantQuota().ActiveUsers)
                             {
-                                UserManager.RemoveUserFromGroup(user.ID, Constants.GroupVisitor.ID);
+                                UserManager.RemoveUserFromGroup(user.Id, Constants.GroupVisitor.ID);
                                 WebItemSecurityCache.ClearCache(Tenant.TenantId);
                             }
                         }
@@ -1405,14 +1405,14 @@ namespace ASC.Employee.Core.Controllers
                     case EmployeeType.Visitor:
                         if (CoreBaseSettings.Standalone || TenantStatisticsProvider.GetVisitorsCount() < TenantExtra.GetTenantQuota().ActiveUsers * Constants.CoefficientOfVisitors)
                         {
-                            UserManager.AddUserIntoGroup(user.ID, Constants.GroupVisitor.ID);
+                            UserManager.AddUserIntoGroup(user.Id, Constants.GroupVisitor.ID);
                             WebItemSecurityCache.ClearCache(Tenant.TenantId);
                         }
                         break;
                 }
             }
 
-            MessageService.Send(MessageAction.UsersUpdatedType, MessageTarget.Create(users.Select(x => x.ID)), users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)));
+            MessageService.Send(MessageAction.UsersUpdatedType, MessageTarget.Create(users.Select(x => x.Id)), users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)));
 
             return users.Select(EmployeeWraperFullHelper.GetFull);
         }
@@ -1435,7 +1435,7 @@ namespace ASC.Employee.Core.Controllers
             PermissionContext.DemandPermissions(Constants.Action_EditUser);
 
             var users = model.UserIds.Select(userId => UserManager.GetUsers(userId))
-                .Where(u => !UserManager.IsSystemUser(u.ID) && !u.IsLDAP())
+                .Where(u => !UserManager.IsSystemUser(u.Id) && !u.IsLDAP())
                 .ToList();
 
             foreach (var user in users)
@@ -1459,13 +1459,13 @@ namespace ASC.Employee.Core.Controllers
                         user.Status = EmployeeStatus.Terminated;
                         UserManager.SaveUserInfo(user);
 
-                        CookiesManager.ResetUserCookie(user.ID);
+                        CookiesManager.ResetUserCookie(user.Id);
                         MessageService.Send(MessageAction.CookieSettingsUpdated);
                         break;
                 }
             }
 
-            MessageService.Send(MessageAction.UsersUpdatedStatus, MessageTarget.Create(users.Select(x => x.ID)), users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)));
+            MessageService.Send(MessageAction.UsersUpdatedStatus, MessageTarget.Create(users.Select(x => x.Id)), users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)));
 
             return users.Select(EmployeeWraperFullHelper.GetFull);
         }
@@ -1500,7 +1500,7 @@ namespace ASC.Employee.Core.Controllers
 
                 if (viewer == null) throw new Exception(Resource.ErrorAccessDenied);
 
-                if (viewer.IsAdmin(UserManager) || viewer.ID == user.ID)
+                if (viewer.IsAdmin(UserManager) || viewer.Id == user.Id)
                 {
                     if (user.ActivationStatus == EmployeeActivationStatus.Activated)
                     {
@@ -1530,7 +1530,7 @@ namespace ASC.Employee.Core.Controllers
                 }
             }
 
-            MessageService.Send(MessageAction.UsersSentActivationInstructions, MessageTarget.Create(users.Select(x => x.ID)), users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)));
+            MessageService.Send(MessageAction.UsersSentActivationInstructions, MessageTarget.Create(users.Select(x => x.Id)), users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)));
 
             return users.Select(EmployeeWraperFullHelper.GetFull);
         }
@@ -1555,7 +1555,7 @@ namespace ASC.Employee.Core.Controllers
             CheckReassignProccess(model.UserIds);
 
             var users = model.UserIds.Select(userId => UserManager.GetUsers(userId))
-                .Where(u => !UserManager.IsSystemUser(u.ID) && !u.IsLDAP())
+                .Where(u => !UserManager.IsSystemUser(u.Id) && !u.IsLDAP())
                 .ToList();
 
             var userNames = users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)).ToList();
@@ -1564,12 +1564,12 @@ namespace ASC.Employee.Core.Controllers
             {
                 if (user.Status != EmployeeStatus.Terminated) continue;
 
-                UserPhotoManager.RemovePhoto(user.ID);
-                UserManager.DeleteUser(user.ID);
+                UserPhotoManager.RemovePhoto(user.Id);
+                UserManager.DeleteUser(user.Id);
                 QueueWorkerRemove.Start(Tenant.TenantId, user, SecurityContext.CurrentAccount.ID, false);
             }
 
-            MessageService.Send(MessageAction.UsersDeleted, MessageTarget.Create(users.Select(x => x.ID)), userNames);
+            MessageService.Send(MessageAction.UsersDeleted, MessageTarget.Create(users.Select(x => x.Id)), userNames);
 
             return users.Select(EmployeeWraperFullHelper.GetFull);
         }
@@ -1722,9 +1722,9 @@ namespace ASC.Employee.Core.Controllers
                 var newUser = CreateNewUser(GetFirstName(model, thirdPartyProfile), GetLastName(model, thirdPartyProfile), GetEmailAddress(model, thirdPartyProfile), passwordHash, employeeType, false);
 
                 var messageAction = employeeType == EmployeeType.User ? MessageAction.UserCreatedViaInvite : MessageAction.GuestCreatedViaInvite;
-                MessageService.Send(MessageInitiator.System, messageAction, MessageTarget.Create(newUser.ID), newUser.DisplayUserName(false, DisplayUserSettingsHelper));
+                MessageService.Send(MessageInitiator.System, messageAction, MessageTarget.Create(newUser.Id), newUser.DisplayUserName(false, DisplayUserSettingsHelper));
 
-                userID = newUser.ID;
+                userID = newUser.Id;
                 if (!string.IsNullOrEmpty(thirdPartyProfile.Avatar))
                 {
                     SaveContactImage(userID, thirdPartyProfile.Avatar);
@@ -1776,7 +1776,7 @@ namespace ASC.Employee.Core.Controllers
 
             var canChange =
                 user.IsMe(AuthContext)
-                || PermissionContext.CheckPermissions(new UserSecurityProvider(user.ID), Constants.Action_EditUser);
+                || PermissionContext.CheckPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 
             if (!canChange)
                 throw new SecurityAccessDeniedException(Resource.ErrorAccessDenied);
@@ -1948,7 +1948,7 @@ namespace ASC.Employee.Core.Controllers
 
             var fromUser = UserManager.GetUsers(model.FromUserId);
 
-            if (fromUser == null || fromUser.ID == Constants.LostUser.ID)
+            if (fromUser == null || fromUser.Id == Constants.LostUser.Id)
                 throw new ArgumentException("User with id = " + model.FromUserId + " not found");
 
             if (fromUser.IsOwner(Tenant) || fromUser.IsMe(AuthContext) || fromUser.Status != EmployeeStatus.Terminated)
@@ -1956,7 +1956,7 @@ namespace ASC.Employee.Core.Controllers
 
             var toUser = UserManager.GetUsers(model.ToUserId);
 
-            if (toUser == null || toUser.ID == Constants.LostUser.ID)
+            if (toUser == null || toUser.Id == Constants.LostUser.Id)
                 throw new ArgumentException("User with id = " + model.ToUserId + " not found");
 
             if (toUser.IsVisitor(UserManager) || toUser.Status == EmployeeStatus.Terminated)
@@ -2027,7 +2027,7 @@ namespace ASC.Employee.Core.Controllers
 
             var user = UserManager.GetUsers(model.UserId);
 
-            if (user == null || user.ID == Constants.LostUser.ID)
+            if (user == null || user.Id == Constants.LostUser.Id)
                 throw new ArgumentException("User with id = " + model.UserId + " not found");
 
             if (user.IsOwner(Tenant) || user.IsMe(AuthContext) || user.Status != EmployeeStatus.Terminated)
@@ -2043,13 +2043,13 @@ namespace ASC.Employee.Core.Controllers
             if (!PermissionContext.CheckPermissions(Constants.Action_EditGroups)) return;
             if (department == null) return;
 
-            var groups = UserManager.GetUserGroups(user.ID);
+            var groups = UserManager.GetUserGroups(user.Id);
             var managerGroups = new List<Guid>();
             foreach (var groupInfo in groups)
             {
-                UserManager.RemoveUserFromGroup(user.ID, groupInfo.ID);
+                UserManager.RemoveUserFromGroup(user.Id, groupInfo.ID);
                 var managerId = UserManager.GetDepartmentManager(groupInfo.ID);
-                if (managerId == user.ID)
+                if (managerId == user.Id)
                 {
                     managerGroups.Add(groupInfo.ID);
                     UserManager.SetDepartmentManager(groupInfo.ID, Guid.Empty);
@@ -2060,10 +2060,10 @@ namespace ASC.Employee.Core.Controllers
                 var userDepartment = UserManager.GetGroupInfo(guid);
                 if (userDepartment != Constants.LostGroupInfo)
                 {
-                    UserManager.AddUserIntoGroup(user.ID, guid);
+                    UserManager.AddUserIntoGroup(user.Id, guid);
                     if (managerGroups.Contains(guid))
                     {
-                        UserManager.SetDepartmentManager(guid, user.ID);
+                        UserManager.SetDepartmentManager(guid, user.Id);
                     }
                 }
             }
@@ -2071,7 +2071,7 @@ namespace ASC.Employee.Core.Controllers
 
         private void UpdateContacts(IEnumerable<Contact> contacts, UserInfo user)
         {
-            PermissionContext.DemandPermissions(new UserSecurityProvider(user.ID), Constants.Action_EditUser);
+            PermissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 
             if (contacts == null) return;
             var values = contacts.Where(r => !string.IsNullOrEmpty(r.Value)).Select(r => $"{r.Type}|{r.Value}");
@@ -2080,7 +2080,7 @@ namespace ASC.Employee.Core.Controllers
 
         private void DeleteContacts(IEnumerable<Contact> contacts, UserInfo user)
         {
-            PermissionContext.DemandPermissions(new UserSecurityProvider(user.ID), Constants.Action_EditUser);
+            PermissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
             if (contacts == null) return;
 
             if (user.ContactsList == null)
@@ -2106,7 +2106,7 @@ namespace ASC.Employee.Core.Controllers
                 return;
             }
 
-            PermissionContext.DemandPermissions(new UserSecurityProvider(user.ID), Constants.Action_EditUser);
+            PermissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 
             if (!files.StartsWith("http://") && !files.StartsWith("https://"))
             {
@@ -2120,7 +2120,7 @@ namespace ASC.Employee.Core.Controllers
             using var inputStream = response.Content.ReadAsStream();
             using var br = new BinaryReader(inputStream);
             var imageByteArray = br.ReadBytes((int)inputStream.Length);
-            UserPhotoManager.SaveOrUpdatePhoto(user.ID, imageByteArray);
+            UserPhotoManager.SaveOrUpdatePhoto(user.Id, imageByteArray);
         }
 
         private static void CheckImgFormat(byte[] data)

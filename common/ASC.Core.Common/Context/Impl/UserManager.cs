@@ -48,10 +48,10 @@ namespace ASC.Core
 
         public UserManagerConstants(Constants constants)
         {
-            SystemUsers = Configuration.Constants.SystemAccounts.ToDictionary(a => a.ID, a => new UserInfo { ID = a.ID, LastName = a.Name });
-            SystemUsers[Constants.LostUser.ID] = Constants.LostUser;
-            SystemUsers[Constants.OutsideUser.ID] = Constants.OutsideUser;
-            SystemUsers[constants.NamingPoster.ID] = constants.NamingPoster;
+            SystemUsers = Configuration.Constants.SystemAccounts.ToDictionary(a => a.ID, a => new UserInfo { Id = a.ID, LastName = a.Name });
+            SystemUsers[Constants.LostUser.Id] = Constants.LostUser;
+            SystemUsers[Constants.OutsideUser.Id] = Constants.OutsideUser;
+            SystemUsers[constants.NamingPoster.Id] = constants.NamingPoster;
             Constants = constants;
         }
     }
@@ -253,9 +253,9 @@ namespace ASC.Core
 
         public UserInfo SaveUserInfo(UserInfo u, bool isVisitor = false)
         {
-            if (IsSystemUser(u.ID)) return SystemUsers[u.ID];
-            if (u.ID == Guid.Empty) _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
-            else _permissionContext.DemandPermissions(new UserSecurityProvider(u.ID), Constants.Action_EditUser);
+            if (IsSystemUser(u.Id)) return SystemUsers[u.Id];
+            if (u.Id == Guid.Empty) _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
+            else _permissionContext.DemandPermissions(new UserSecurityProvider(u.Id), Constants.Action_EditUser);
 
             if (!_coreBaseSettings.Personal)
             {
@@ -281,7 +281,7 @@ namespace ASC.Core
                 }
             }
 
-            if (u.Status == EmployeeStatus.Terminated && u.ID == _tenantManager.GetCurrentTenant().OwnerId)
+            if (u.Status == EmployeeStatus.Terminated && u.Id == _tenantManager.GetCurrentTenant().OwnerId)
                 throw new InvalidOperationException("Can not disable tenant owner.");
 
             var newUser = _userService.SaveUser(_tenantManager.GetCurrentTenant().TenantId, u);
@@ -331,12 +331,12 @@ namespace ASC.Core
         {
             var refs = GetRefsInternal();
 
-            return GetUsers(employeeStatus).Where(u => IsUserInGroupInternal(u.ID, groupId, refs)).ToArray();
+            return GetUsers(employeeStatus).Where(u => IsUserInGroupInternal(u.Id, groupId, refs)).ToArray();
         }
 
         public void AddUserIntoGroup(Guid userId, Guid groupId)
         {
-            if (Constants.LostUser.ID == userId || Constants.LostGroupInfo.ID == groupId) return;
+            if (Constants.LostUser.Id == userId || Constants.LostGroupInfo.ID == groupId) return;
             _permissionContext.DemandPermissions(Constants.Action_EditGroups);
 
             _userService.SaveUserGroupRef(Tenant.TenantId, new UserGroupRef(userId, groupId, UserGroupRefType.Contains));
@@ -346,7 +346,7 @@ namespace ASC.Core
 
         public void RemoveUserFromGroup(Guid userId, Guid groupId)
         {
-            if (Constants.LostUser.ID == userId || Constants.LostGroupInfo.ID == groupId) return;
+            if (Constants.LostUser.Id == userId || Constants.LostGroupInfo.ID == groupId) return;
             _permissionContext.DemandPermissions(Constants.Action_EditGroups);
 
             _userService.RemoveUserGroupRef(Tenant.TenantId, userId, groupId, UserGroupRefType.Contains);
@@ -544,10 +544,10 @@ namespace ASC.Core
             if (groupId == Constants.GroupEveryone.ID) return true;
 
             if (groupId == Constants.GroupAdmin.ID && (Tenant.OwnerId == userId 
-                || userId == Configuration.Constants.CoreSystem.ID || userId == _constants.NamingPoster.ID))
+                || userId == Configuration.Constants.CoreSystem.ID || userId == _constants.NamingPoster.Id))
                 return true;
 
-            if (groupId == Constants.GroupVisitor.ID && userId == Constants.OutsideUser.ID)
+            if (groupId == Constants.GroupVisitor.ID && userId == Constants.OutsideUser.Id)
                 return true;
 
             UserGroupRef r;

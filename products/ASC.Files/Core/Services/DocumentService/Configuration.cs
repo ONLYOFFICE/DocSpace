@@ -336,11 +336,11 @@ namespace ASC.Web.Files.Services.DocumentService
             Embedded = embeddedConfig;
             _userInfo = userManager.GetUsers(authContext.CurrentAccount.ID);
 
-            if (!_userInfo.ID.Equals(ASC.Core.Configuration.Constants.Guest.ID))
+            if (!_userInfo.Id.Equals(ASC.Core.Configuration.Constants.Guest.ID))
             {
                 User = new UserConfig
                 {
-                    Id = _userInfo.ID.ToString(),
+                    Id = _userInfo.Id.ToString(),
                     Name = _userInfo.DisplayUserName(false, displayUserSettingsHelper),
                 };
             }

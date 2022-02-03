@@ -257,7 +257,7 @@ namespace ASC.Web.Core
 
                 Users = info
                                .Select(i => UserManager.GetUsers(i.Item1))
-                               .Where(u => u.ID != ASC.Core.Users.Constants.LostUser.ID),
+                               .Where(u => u.Id != ASC.Core.Users.Constants.LostUser.Id),
 
                 Groups = info
                                .Select(i => UserManager.GetGroupInfo(i.Item1))

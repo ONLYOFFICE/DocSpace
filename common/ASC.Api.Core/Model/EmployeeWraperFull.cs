@@ -226,7 +226,7 @@ namespace ASC.Web.Api.Models
 
             if (Context.Check("groups") || Context.Check("department"))
             {
-                var groups = UserManager.GetUserGroups(userInfo.ID)
+                var groups = UserManager.GetUserGroups(userInfo.Id)
                     .Select(x => new GroupWrapperSummary(x, UserManager))
                     .ToList();
 
@@ -245,17 +245,17 @@ namespace ASC.Web.Api.Models
 
             if (Context.Check("avatarMax"))
             {
-                result.AvatarMax = UserPhotoManager.GetMaxPhotoURL(userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+                result.AvatarMax = UserPhotoManager.GetMaxPhotoURL(userInfo.Id, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
             }
 
             if (Context.Check("avatarMedium"))
             {
-                result.AvatarMedium = UserPhotoManager.GetMediumPhotoURL(userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+                result.AvatarMedium = UserPhotoManager.GetMediumPhotoURL(userInfo.Id, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
             }
 
             if (Context.Check("avatar"))
             {
-                result.Avatar = UserPhotoManager.GetBigPhotoURL(userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+                result.Avatar = UserPhotoManager.GetBigPhotoURL(userInfo.Id, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
             }
 
             if (Context.Check("listAdminModules"))

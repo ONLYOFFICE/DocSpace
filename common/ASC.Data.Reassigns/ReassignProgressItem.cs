@@ -201,8 +201,8 @@ namespace ASC.Data.Reassigns
             var user = userManager.GetUsers(FromUser);
             var userName = user.DisplayUserName(false, displayUserSettingsHelper);
 
-            userPhotoManager.RemovePhoto(user.ID);
-            userManager.DeleteUser(user.ID);
+            userPhotoManager.RemovePhoto(user.Id);
+            userManager.DeleteUser(user.Id);
             QueueWorkerRemove.Start(_tenantId, user, _currentUserId, false);
 
             if (_httpHeaders != null)

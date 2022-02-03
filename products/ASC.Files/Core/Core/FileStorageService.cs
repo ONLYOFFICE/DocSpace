@@ -1665,14 +1665,14 @@ namespace ASC.Web.Files.Services.WCFService
             var providerDao = GetProviderDao();
             if (providerDao != null)
             {
-                var providersInfo = providerDao.GetProvidersInfo(userFrom.ID);
+                var providersInfo = providerDao.GetProvidersInfo(userFrom.Id);
                 var commonProvidersInfo = providersInfo.Where(provider => provider.RootFolderType == FolderType.COMMON).ToList();
 
                 //move common thirdparty storage userFrom
                 foreach (var commonProviderInfo in commonProvidersInfo)
                 {
-                    Logger.InfoFormat("Reassign provider {0} from {1} to {2}", commonProviderInfo.ID, userFrom.ID, userTo.ID);
-                    providerDao.UpdateProviderInfo(commonProviderInfo.ID, null, null, FolderType.DEFAULT, userTo.ID);
+                    Logger.InfoFormat("Reassign provider {0} from {1} to {2}", commonProviderInfo.ID, userFrom.Id, userTo.Id);
+                    providerDao.UpdateProviderInfo(commonProviderInfo.ID, null, null, FolderType.DEFAULT, userTo.Id);
                 }
             }
 
@@ -1681,12 +1681,12 @@ namespace ASC.Web.Files.Services.WCFService
 
             if (!userFrom.IsVisitor(UserManager))
             {
-                var folderIdFromMy = folderDao.GetFolderIDUser(false, userFrom.ID);
+                var folderIdFromMy = folderDao.GetFolderIDUser(false, userFrom.Id);
 
                 if (!Equals(folderIdFromMy, 0))
                 {
                     //create folder with name userFrom in folder userTo
-                    var folderIdToMy = folderDao.GetFolderIDUser(true, userTo.ID);
+                    var folderIdToMy = folderDao.GetFolderIDUser(true, userTo.Id);
                     var newFolder = ServiceProvider.GetService<Folder<T>>();
                     newFolder.Title = string.Format(CustomNamingPeople.Substitute<FilesCommonResource>("TitleDeletedUserFolder"), userFrom.DisplayUserName(false, DisplayUserSettingsHelper));
                     newFolder.FolderID = folderIdToMy;
@@ -1696,11 +1696,11 @@ namespace ASC.Web.Files.Services.WCFService
                     //move items from userFrom to userTo
                     EntryManager.MoveSharedItems(folderIdFromMy, newFolderTo, folderDao, fileDao);
 
-                    EntryManager.ReassignItems(newFolderTo, userFrom.ID, userTo.ID, folderDao, fileDao);
+                    EntryManager.ReassignItems(newFolderTo, userFrom.Id, userTo.Id, folderDao, fileDao);
                 }
             }
 
-            EntryManager.ReassignItems(GlobalFolderHelper.GetFolderCommon<T>(), userFrom.ID, userTo.ID, folderDao, fileDao);
+            EntryManager.ReassignItems(GlobalFolderHelper.GetFolderCommon<T>(), userFrom.Id, userTo.Id, folderDao, fileDao);
         }
 
         public void DeleteStorage(Guid userId)
@@ -2033,9 +2033,9 @@ namespace ASC.Web.Files.Services.WCFService
             }
 
             var users = UserManager.GetUsersByGroup(Constants.GroupEveryone.ID)
-                                   .Where(user => !user.ID.Equals(AuthContext.CurrentAccount.ID)
-                                                  && !user.ID.Equals(Constants.LostUser.ID))
-                                   .Select(user => new MentionWrapper(user, DisplayUserSettingsHelper) { HasAccess = usersIdWithAccess.Contains(user.ID) })
+                                   .Where(user => !user.Id.Equals(AuthContext.CurrentAccount.ID)
+                                                  && !user.Id.Equals(Constants.LostUser.Id))
+                                   .Select(user => new MentionWrapper(user, DisplayUserSettingsHelper) { HasAccess = usersIdWithAccess.Contains(user.Id) })
                                    .ToList();
 
             users = users
@@ -2078,13 +2078,13 @@ namespace ASC.Web.Files.Services.WCFService
                 }
 
                 var recipient = UserManager.GetUserByEmail(email);
-                if (recipient == null || recipient.ID == Constants.LostUser.ID)
+                if (recipient == null || recipient.Id == Constants.LostUser.Id)
                 {
                     showSharingSettings = canShare.Value;
                     continue;
                 }
 
-                if (!fileSecurity.CanRead(file, recipient.ID))
+                if (!fileSecurity.CanRead(file, recipient.Id))
                 {
                     if (!canShare.Value)
                     {
@@ -2098,14 +2098,14 @@ namespace ASC.Web.Files.Services.WCFService
                                 new AceWrapper
                                     {
                                         Share = FileShare.Read,
-                                        SubjectId = recipient.ID,
+                                        SubjectId = recipient.Id,
                                         SubjectGroup = false,
                                     }
                             };
 
                         showSharingSettings |= FileSharingAceHelper.SetAceObject(aces, file, false, null);
 
-                        recipients.Add(recipient.ID);
+                        recipients.Add(recipient.Id);
                     }
                     catch (Exception e)
                     {
@@ -2114,7 +2114,7 @@ namespace ASC.Web.Files.Services.WCFService
                 }
                 else
                 {
-                    recipients.Add(recipient.ID);
+                    recipients.Add(recipient.Id);
                 }
             }
 
@@ -2195,11 +2195,11 @@ namespace ASC.Web.Files.Services.WCFService
                 if (folder.ProviderEntry) continue;
 
                 var newFolder = folder;
-                if (folder.CreateBy != userInfo.ID)
+                if (folder.CreateBy != userInfo.Id)
                 {
                     var folderAccess = folder.Access;
 
-                    newFolder.CreateBy = userInfo.ID;
+                    newFolder.CreateBy = userInfo.Id;
                     var newFolderID = folderDao.SaveFolder(newFolder);
 
                     newFolder = folderDao.GetFolder(newFolderID);
@@ -2222,7 +2222,7 @@ namespace ASC.Web.Files.Services.WCFService
                 if (file.ProviderEntry) continue;
 
                 var newFile = file;
-                if (file.CreateBy != userInfo.ID)
+                if (file.CreateBy != userInfo.Id)
                 {
                     newFile = ServiceProvider.GetService<File<T>>();
                     newFile.ID = file.ID;
@@ -2231,7 +2231,7 @@ namespace ASC.Web.Files.Services.WCFService
                     newFile.Title = file.Title;
                     newFile.FileStatus = file.FileStatus;
                     newFile.FolderID = file.FolderID;
-                    newFile.CreateBy = userInfo.ID;
+                    newFile.CreateBy = userInfo.Id;
                     newFile.CreateOn = file.CreateOn;
                     newFile.ConvertedType = file.ConvertedType;
                     newFile.Comment = FilesCommonResource.CommentChangeOwner;

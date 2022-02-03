@@ -516,7 +516,7 @@ namespace ASC.Api.Settings
                 CheckCache("sendjoininvite");
 
                 var user = UserManager.GetUserByEmail(email);
-                if (!user.ID.Equals(Constants.LostUser.ID))
+                if (!user.Id.Equals(Constants.LostUser.Id))
                     throw new Exception(CustomNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
 
                 var settings = SettingsManager.Load<IPRestrictionsSettings>();
@@ -978,7 +978,7 @@ namespace ASC.Api.Settings
                     {
                         var productInfo = WebItemSecurity.GetSecurityInfo(item.Key);
                         var selectedGroups = productInfo.Groups.Select(group => group.ID).ToList();
-                        var selectedUsers = productInfo.Users.Select(user => user.ID).ToList();
+                        var selectedUsers = productInfo.Users.Select(user => user.Id).ToList();
                         selectedUsers.AddRange(selectedGroups);
                         if (selectedUsers.Count > 0)
                         {
@@ -1038,12 +1038,12 @@ namespace ASC.Api.Settings
             if (model.ProductId == Guid.Empty)
             {
                 var messageAction = model.Administrator ? MessageAction.AdministratorOpenedFullAccess : MessageAction.AdministratorDeleted;
-                MessageService.Send(messageAction, MessageTarget.Create(admin.ID), admin.DisplayUserName(false, DisplayUserSettingsHelper));
+                MessageService.Send(messageAction, MessageTarget.Create(admin.Id), admin.DisplayUserName(false, DisplayUserSettingsHelper));
             }
             else
             {
                 var messageAction = model.Administrator ? MessageAction.ProductAddedAdministrator : MessageAction.ProductDeletedAdministrator;
-                MessageService.Send(messageAction, MessageTarget.Create(admin.ID), GetProductName(model.ProductId), admin.DisplayUserName(false, DisplayUserSettingsHelper));
+                MessageService.Send(messageAction, MessageTarget.Create(admin.Id), GetProductName(model.ProductId), admin.DisplayUserName(false, DisplayUserSettingsHelper));
             }
 
             return new { model.ProductId, model.UserId, model.Administrator };
@@ -1597,7 +1597,7 @@ namespace ASC.Api.Settings
 
             if (!TfaAppAuthSettings.IsVisibleSettings ||
                 !SettingsManager.Load<TfaAppAuthSettings>().EnableSetting ||
-                TfaAppUserSettings.EnableForUser(SettingsManager, currentUser.ID))
+                TfaAppUserSettings.EnableForUser(SettingsManager, currentUser.Id))
                 throw new Exception(Resource.TfaAppNotAvailable);
 
             if (currentUser.IsVisitor(UserManager) || currentUser.IsOutsider(UserManager))
@@ -1611,7 +1611,7 @@ namespace ASC.Api.Settings
         {
             var currentUser = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
 
-            if (!TfaAppAuthSettings.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(SettingsManager, currentUser.ID))
+            if (!TfaAppAuthSettings.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(SettingsManager, currentUser.Id))
                 throw new Exception(Resource.TfaAppNotAvailable);
 
             if (currentUser.IsVisitor(UserManager) || currentUser.IsOutsider(UserManager))
@@ -1625,14 +1625,14 @@ namespace ASC.Api.Settings
         {
             var currentUser = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
 
-            if (!TfaAppAuthSettings.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(SettingsManager, currentUser.ID))
+            if (!TfaAppAuthSettings.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(SettingsManager, currentUser.Id))
                 throw new Exception(Resource.TfaAppNotAvailable);
 
             if (currentUser.IsVisitor(UserManager) || currentUser.IsOutsider(UserManager))
                 throw new NotSupportedException("Not available.");
 
             var codes = TfaManager.GenerateBackupCodes().Select(r => new { r.IsUsed, Code = r.GetEncryptedCode(InstanceCrypto, Signature) }).ToList();
-            MessageService.Send(MessageAction.UserConnectedTfaApp, MessageTarget.Create(currentUser.ID), currentUser.DisplayUserName(false, DisplayUserSettingsHelper));
+            MessageService.Send(MessageAction.UserConnectedTfaApp, MessageTarget.Create(currentUser.Id), currentUser.DisplayUserName(false, DisplayUserSettingsHelper));
             return codes;
         }
 
@@ -1655,17 +1655,17 @@ namespace ASC.Api.Settings
             var isMe = id.Equals(Guid.Empty);
             var user = UserManager.GetUsers(isMe ? AuthContext.CurrentAccount.ID : id);
 
-            if (!isMe && !PermissionContext.CheckPermissions(new UserSecurityProvider(user.ID), Constants.Action_EditUser))
+            if (!isMe && !PermissionContext.CheckPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser))
                 throw new SecurityAccessDeniedException(Resource.ErrorAccessDenied);
 
-            if (!TfaAppAuthSettings.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(SettingsManager, user.ID))
+            if (!TfaAppAuthSettings.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(SettingsManager, user.Id))
                 throw new Exception(Resource.TfaAppNotAvailable);
 
             if (user.IsVisitor(UserManager) || user.IsOutsider(UserManager))
                 throw new NotSupportedException("Not available.");
 
-            TfaAppUserSettings.DisableForUser(ServiceProvider, SettingsManager, user.ID);
-            MessageService.Send(MessageAction.UserDisconnectedTfaApp, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
+            TfaAppUserSettings.DisableForUser(ServiceProvider, SettingsManager, user.Id);
+            MessageService.Send(MessageAction.UserDisconnectedTfaApp, MessageTarget.Create(user.Id), user.DisplayUserName(false, DisplayUserSettingsHelper));
 
             if (isMe)
             {
@@ -1791,15 +1791,15 @@ namespace ASC.Api.Settings
 
             if (newOwner.IsVisitor(UserManager)) throw new System.Security.SecurityException("Collaborator can not be an owner");
 
-            if (!owner.ID.Equals(AuthContext.CurrentAccount.ID) || Guid.Empty.Equals(newOwner.ID))
+            if (!owner.Id.Equals(AuthContext.CurrentAccount.ID) || Guid.Empty.Equals(newOwner.Id))
             {
                 return new { Status = 0, Message = Resource.ErrorAccessDenied };
             }
 
-            var confirmLink = CommonLinkUtility.GetConfirmationUrl(owner.Email, ConfirmType.PortalOwnerChange, newOwner.ID, newOwner.ID);
+            var confirmLink = CommonLinkUtility.GetConfirmationUrl(owner.Email, ConfirmType.PortalOwnerChange, newOwner.Id, newOwner.Id);
             StudioNotifyService.SendMsgConfirmChangeOwner(owner, newOwner, confirmLink);
 
-            MessageService.Send(MessageAction.OwnerSentChangeOwnerInstructions, MessageTarget.Create(owner.ID), owner.DisplayUserName(false, DisplayUserSettingsHelper));
+            MessageService.Send(MessageAction.OwnerSentChangeOwnerInstructions, MessageTarget.Create(owner.Id), owner.DisplayUserName(false, DisplayUserSettingsHelper));
 
             var emailLink = string.Format("<a href=\"mailto:{0}\">{0}</a>", owner.Email);
             return new { Status = 1, Message = Resource.ChangePortalOwnerMsg.Replace(":email", emailLink) };
@@ -1835,13 +1835,13 @@ namespace ASC.Api.Settings
                 throw new Exception(Resource.ErrorUserNotFound);
             }
 
-            if (UserManager.IsUserInGroup(newOwner.ID, Constants.GroupVisitor.ID))
+            if (UserManager.IsUserInGroup(newOwner.Id, Constants.GroupVisitor.ID))
             {
                 throw new Exception(Resource.ErrorUserNotFound);
             }
 
             var curTenant = TenantManager.GetCurrentTenant();
-            curTenant.OwnerId = newOwner.ID;
+            curTenant.OwnerId = newOwner.Id;
             TenantManager.SaveTenant(curTenant);
 
             MessageService.Send(MessageAction.OwnerUpdated, newOwner.DisplayUserName(false, DisplayUserSettingsHelper));

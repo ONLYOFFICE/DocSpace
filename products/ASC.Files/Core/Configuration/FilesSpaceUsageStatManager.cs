@@ -93,8 +93,8 @@ namespace ASC.Web.Files
                 .Where(r => r.file.TenantId == r.bunch.TenantId)
                 .Where(r => r.file.TenantId == TenantManager.GetCurrentTenant().TenantId)
                 .Where(r => r.bunch.RightNode.StartsWith("files/common/"))
-                .GroupBy(r => Constants.LostUser.ID)
-                .Select(r => new { CreateBy = Constants.LostUser.ID, Size = r.Sum(a => a.file.ContentLength) });
+                .GroupBy(r => Constants.LostUser.Id)
+                .Select(r => new { CreateBy = Constants.LostUser.Id, Size = r.Sum(a => a.file.ContentLength) });
 
             return myFiles.Union(commonFiles)
                 .ToList()

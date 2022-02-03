@@ -182,11 +182,11 @@ namespace ASC.Core
                 ActivationStatus = registrationInfo.ActivationStatus
             };
             user = UserService.SaveUser(tenant.TenantId, user);
-            UserService.SetUserPasswordHash(tenant.TenantId, user.ID, registrationInfo.PasswordHash);
-            UserService.SaveUserGroupRef(tenant.TenantId, new UserGroupRef(user.ID, Constants.GroupAdmin.ID, UserGroupRefType.Contains));
+            UserService.SetUserPasswordHash(tenant.TenantId, user.Id, registrationInfo.PasswordHash);
+            UserService.SaveUserGroupRef(tenant.TenantId, new UserGroupRef(user.Id, Constants.GroupAdmin.ID, UserGroupRefType.Contains));
 
             // save tenant owner
-            tenant.OwnerId = user.ID;
+            tenant.OwnerId = user.Id;
             tenant = TenantService.SaveTenant(CoreSettings, tenant);
 
             SettingsManager.SaveSettings(new TenantControlPanelSettings { LimitedAccess = registrationInfo.LimitedControlPanel }, tenant.TenantId);
@@ -242,9 +242,9 @@ namespace ASC.Core
 
             var tenantSettings = SettingsManager.LoadSettingsFor<TenantCookieSettings>(tenantId, Guid.Empty);
             var expires = tenantSettings.IsDefault() ? DateTime.UtcNow.AddYears(1) : DateTime.UtcNow.AddMinutes(tenantSettings.LifeTime);
-            var userSettings = SettingsManager.LoadSettingsFor<TenantCookieSettings>(tenantId, user.ID);
+            var userSettings = SettingsManager.LoadSettingsFor<TenantCookieSettings>(tenantId, user.Id);
 
-            return cookieStorage.EncryptCookie(tenantId, user.ID, tenantSettings.Index, expires, userSettings.Index);
+            return cookieStorage.EncryptCookie(tenantId, user.Id, tenantSettings.Index, expires, userSettings.Index);
         }
     }
 }

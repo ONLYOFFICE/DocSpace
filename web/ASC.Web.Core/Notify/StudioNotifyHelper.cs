@@ -126,10 +126,10 @@ namespace ASC.Web.Studio.Core.Notify
             {
                 if (toguests)
                     return UserManager.GetUsers()
-                                      .Where(u => !UserManager.IsUserInGroup(u.ID, Constants.GroupAdmin.ID));
+                                      .Where(u => !UserManager.IsUserInGroup(u.Id, Constants.GroupAdmin.ID));
 
                 return UserManager.GetUsers(EmployeeStatus.Default, EmployeeType.User)
-                                  .Where(u => !UserManager.IsUserInGroup(u.ID, Constants.GroupAdmin.ID));
+                                  .Where(u => !UserManager.IsUserInGroup(u.Id, Constants.GroupAdmin.ID));
             }
 
             if (toguests)

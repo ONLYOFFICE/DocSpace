@@ -129,7 +129,7 @@ namespace ASC.Web.Files.Utils
                 var listUsersId = new List<Guid>();
 
                 if (w.SubjectGroup)
-                    listUsersId = UserManager.GetUsersByGroup(w.SubjectId).Select(ui => ui.ID).ToList();
+                    listUsersId = UserManager.GetUsersByGroup(w.SubjectId).Select(ui => ui.Id).ToList();
                 else
                     listUsersId.Add(w.SubjectId);
                 listUsersId.Remove(AuthContext.CurrentAccount.ID);
@@ -328,7 +328,7 @@ namespace ASC.Web.Files.Utils
                 var title = u.DisplayUserName(false, DisplayUserSettingsHelper);
                 var share = r.Share;
 
-                if (u.ID == Constants.LostUser.ID)
+                if (u.Id == Constants.LostUser.Id)
                 {
                     var g = UserManager.GetGroupInfo(r.Subject);
                     isgroup = true;

@@ -41,20 +41,20 @@ namespace ASC.Core.Users
         {
             if (ui == null) return false;
 
-            return tenant != null && tenant.OwnerId.Equals(ui.ID);
+            return tenant != null && tenant.OwnerId.Equals(ui.Id);
         }
 
         public static bool IsMe(this UserInfo ui, AuthContext authContext) =>
-            ui != null && ui.ID == authContext.CurrentAccount.ID;
+            ui != null && ui.Id == authContext.CurrentAccount.ID;
 
         public static bool IsAdmin(this UserInfo ui, UserManager UserManager) =>
-            ui != null && UserManager.IsUserInGroup(ui.ID, Constants.GroupAdmin.ID);
+            ui != null && UserManager.IsUserInGroup(ui.Id, Constants.GroupAdmin.ID);
 
         public static bool IsVisitor(this UserInfo ui, UserManager UserManager) =>
-            ui != null && UserManager.IsUserInGroup(ui.ID, Constants.GroupVisitor.ID);
+            ui != null && UserManager.IsUserInGroup(ui.Id, Constants.GroupVisitor.ID);
 
         public static bool IsOutsider(this UserInfo ui, UserManager userManager) =>
-            IsVisitor(ui, userManager) && ui.ID == Constants.OutsideUser.ID;
+            IsVisitor(ui, userManager) && ui.Id == Constants.OutsideUser.Id;
 
         public static bool IsLDAP(this UserInfo ui)
         {

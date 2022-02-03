@@ -82,11 +82,11 @@ namespace ASC.Web.Files.Core.Entries
             {
                 PrivateKeyEnc = privateKeyEnc,
                 PublicKey = publicKey,
-                UserId = user.ID,
+                UserId = user.Id,
             };
 
             var keyPairString = JsonSerializer.Serialize(keyPair);
-            EncryptionLoginProvider.SetKeys(user.ID, keyPairString);
+            EncryptionLoginProvider.SetKeys(user.Id, keyPairString);
         }
 
         public EncryptionKeyPair GetKeyPair()

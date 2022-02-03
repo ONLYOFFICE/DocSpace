@@ -147,7 +147,7 @@ namespace ASC.Core
 
                         if (indexUser != settingsUser.Index) return false;
 
-                        AuthenticateMeWithoutCookie(new UserAccount(new UserInfo { ID = userid }, tenant, _userFormatter));
+                        AuthenticateMeWithoutCookie(new UserAccount(new UserInfo { Id = userid }, tenant, _userFormatter));
 
                         return true;
                     }
@@ -209,7 +209,7 @@ namespace ASC.Core
 
                 var u = _userManager.GetUsers(account.ID);
 
-                if (u.ID == Users.Constants.LostUser.ID)
+                if (u.Id == Users.Constants.LostUser.Id)
                     throw new InvalidCredentialException("Invalid username or password.");
 
                 if (u.Status != EmployeeStatus.Active)
@@ -219,7 +219,7 @@ namespace ASC.Core
                 if (u.Sid != null && !_tenantManager.GetTenantQuota(tenant.TenantId).Ldap)
                     throw new BillingException("Your tariff plan does not support this option.", "Ldap");
 
-                if (_userManager.IsUserInGroup(u.ID, Users.Constants.GroupAdmin.ID))
+                if (_userManager.IsUserInGroup(u.Id, Users.Constants.GroupAdmin.ID))
                     roles.Add(Role.Administrators);
 
                 roles.Add(Role.Users);

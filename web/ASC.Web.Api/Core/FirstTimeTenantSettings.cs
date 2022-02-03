@@ -139,7 +139,7 @@ namespace ASC.Web.Studio.UserControls.FirstTime
                 if (string.IsNullOrEmpty(passwordHash))
                     throw new Exception(Resource.ErrorPasswordEmpty);
 
-                SecurityContext.SetUserPasswordHash(currentUser.ID, passwordHash);
+                SecurityContext.SetUserPasswordHash(currentUser.Id, passwordHash);
 
                 email = email.Trim();
                 if (currentUser.Email != email)

@@ -102,7 +102,7 @@ namespace ASC.Web.Api.Models
 
         protected EmployeeWraper Init(EmployeeWraper result, UserInfo userInfo)
         {
-            result.Id = userInfo.ID;
+            result.Id = userInfo.Id;
             result.DisplayName = DisplayUserSettingsHelper.GetFullUserName(userInfo);
             if (!string.IsNullOrEmpty(userInfo.Title))
             {
@@ -113,7 +113,7 @@ namespace ASC.Web.Api.Models
 
             if (HttpContext.Check("avatarSmall"))
             {
-                result.AvatarSmall = UserPhotoManager.GetSmallPhotoURL(userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+                result.AvatarSmall = UserPhotoManager.GetSmallPhotoURL(userInfo.Id, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
             }
 
             if (result.Id != Guid.Empty)

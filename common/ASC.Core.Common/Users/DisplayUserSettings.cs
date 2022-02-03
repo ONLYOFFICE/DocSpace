@@ -77,7 +77,7 @@ namespace ASC.Web.Core.Users
         {
             if (userInfo == null) return string.Empty;
 
-            if (!userInfo.ID.Equals(Guid.Empty) && !_userManager.UserExists(userInfo))
+            if (!userInfo.Id.Equals(Guid.Empty) && !_userManager.UserExists(userInfo))
             {
                 try
                 {

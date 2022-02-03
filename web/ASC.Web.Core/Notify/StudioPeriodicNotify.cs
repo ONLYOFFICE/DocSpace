@@ -433,7 +433,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         client.SendNoticeToAsync(
                             action,
-                            new[] { studioNotifyHelper.ToRecipient(u.ID) },
+                            new[] { studioNotifyHelper.ToRecipient(u.Id) },
                             new[] { senderName },
                             new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
                             new TagValue(Tags.PricingPage, commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx")),
@@ -835,7 +835,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         client.SendNoticeToAsync(
                             action,
-                            new[] { studioNotifyHelper.ToRecipient(u.ID) },
+                            new[] { studioNotifyHelper.ToRecipient(u.Id) },
                             new[] { senderName },
                             new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
                             new TagValue(Tags.PricingPage, commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx")),
@@ -917,7 +917,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                             client.SendNoticeToAsync(
                                 u.IsAdmin(userManager) ? Actions.OpensourceAdminDocsTipsV11 : Actions.OpensourceUserDocsTipsV11,
-                                new[] { studioNotifyHelper.ToRecipient(u.ID) },
+                                new[] { studioNotifyHelper.ToRecipient(u.Id) },
                                 new[] { senderName },
                                 new TagValue(Tags.UserName, u.DisplayUserName(displayUserSettingsHelper)),
                                 new TagValue(CommonTags.Footer, "opensource"));
@@ -974,7 +974,7 @@ namespace ASC.Web.Studio.Core.Notify
                     {
                         INotifyAction action;
 
-                        securityContext.AuthenticateMeWithoutCookie(authManager.GetAccountByID(tenant.TenantId, user.ID));
+                        securityContext.AuthenticateMeWithoutCookie(authManager.GetAccountByID(tenant.TenantId, user.Id));
 
                         var culture = tenant.GetCulture();
                         if (!string.IsNullOrEmpty(user.CultureName))

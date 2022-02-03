@@ -407,7 +407,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                     throw new Exception("Profile is null");
                 }
 
-                var cookiesKey = SecurityContext.AuthenticateMe(userInfo.ID);
+                var cookiesKey = SecurityContext.AuthenticateMe(userInfo.Id);
                 CookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
                 MessageService.Send(MessageAction.LoginSuccessViaSocialApp);
 
@@ -584,7 +584,7 @@ namespace ASC.Web.Files.ThirdPartyApp
 
                 isNew = true;
 
-                Logger.Debug("BoxApp: new user " + userInfo.ID);
+                Logger.Debug("BoxApp: new user " + userInfo.Id);
             }
 
             return userInfo;

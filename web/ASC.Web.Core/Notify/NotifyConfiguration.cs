@@ -195,7 +195,7 @@ namespace ASC.Web.Studio.Core.Notify
                                  }
                                  if (productId != Guid.Empty && productId != new Guid("f4d98afdd336433287783c6945c81ea0") /* ignore people product */)
                                  {
-                                     return !webItemSecurity.IsAvailableForUser(productId, u.ID);
+                                     return !webItemSecurity.IsAvailableForUser(productId, u.Id);
                                  }
                              }
                          }

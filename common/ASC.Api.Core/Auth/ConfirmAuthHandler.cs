@@ -90,7 +90,7 @@ namespace ASC.Api.Core.Auth
                         }
                         else
                         {
-                            userId = UserManager.GetUserByEmail(emailValidationKeyModel.Email).ID;
+                            userId = UserManager.GetUserByEmail(emailValidationKeyModel.Email).Id;
                         }
                     }
                 }

@@ -86,17 +86,17 @@ namespace ASC.Core.Data
             _fromUserToUserInfo = user => new UserInfo
             {
                 ActivationStatus = user.ActivationStatus,
-                BirthDate = user.Birthdate,
-                CreateDate = user.CreateOn,
-                CultureName = user.Culture,
+                BirthDate = user.BirthDate,
+                CreateDate = user.CreateDate,
+                CultureName = user.CultureName,
                 Email = user.Email,
                 FirstName = user.FirstName,
-                ID = user.Id,
+                Id = user.Id,
                 LastModified = user.LastModified,
                 LastName = user.LastName,
                 Location = user.Location,
-                MobilePhone = user.Phone,
-                MobilePhoneActivationStatus = user.PhoneActivation,
+                MobilePhone = user.MobilePhone,
+                MobilePhoneActivationStatus = user.MobilePhoneActivationStatus,
                 Notes = user.Notes,
                 Removed = user.Removed,
                 Sex = user.Sex,
@@ -115,17 +115,17 @@ namespace ASC.Core.Data
             _fromUserInfoToUser = user => new User
             {
                 ActivationStatus = user.ActivationStatus,
-                Birthdate = user.BirthDate,
-                CreateOn = user.CreateDate,
-                Culture = user.CultureName,
+                BirthDate = user.BirthDate,
+                CreateDate = user.CreateDate,
+                CultureName = user.CultureName,
                 Email = user.Email,
                 FirstName = user.FirstName,
-                Id = user.ID,
+                Id = user.Id,
                 LastModified = user.LastModified,
                 LastName = user.LastName,
                 Location = user.Location,
-                Phone = user.MobilePhone,
-                PhoneActivation = user.MobilePhoneActivationStatus,
+                MobilePhone = user.MobilePhone,
+                MobilePhoneActivationStatus = user.MobilePhoneActivationStatus,
                 Notes = user.Notes,
                 Removed = user.Removed,
                 Sex = user.Sex,
@@ -271,13 +271,13 @@ namespace ASC.Core.Data
 
                 foreach (var user in users)
                 {
-                    RegeneratePassword(tenant, user.ID);
+                    RegeneratePassword(tenant, user.Id);
 
-                    var pwdHash = GetPasswordHash(user.ID, passwordHash);
+                    var pwdHash = GetPasswordHash(user.Id, passwordHash);
                     var oldHash = Hasher.Base64Hash(passwordHash, HashAlg.SHA256);
 
                     var any = UserDbContext.UserSecurity
-                        .Any(r => r.UserId == user.ID && (r.PwdHash == pwdHash || r.PwdHash == oldHash));//todo: remove old scheme
+                        .Any(r => r.UserId == user.Id && (r.PwdHash == pwdHash || r.PwdHash == oldHash));//todo: remove old scheme
 
                     if (any)
                     {
@@ -511,7 +511,7 @@ namespace ASC.Core.Data
             if (user == null) throw new ArgumentNullException(nameof(user));
             if (string.IsNullOrEmpty(user.UserName)) throw new ArgumentOutOfRangeException("Empty username.");
 
-            if (user.ID == default) user.ID = Guid.NewGuid();
+            if (user.Id == default) user.Id = Guid.NewGuid();
             if (user.CreateDate == default) user.CreateDate = DateTime.UtcNow;
             user.LastModified = DateTime.UtcNow;
             user.Tenant = tenant;
@@ -520,12 +520,12 @@ namespace ASC.Core.Data
 
             using var tx = UserDbContext.Database.BeginTransaction();
             var any = GetUserQuery(tenant)
-                .Any(r => r.UserName == user.UserName && r.Id != user.ID && !r.Removed);
+                .Any(r => r.UserName == user.UserName && r.Id != user.Id && !r.Removed);
 
             if (any) throw new ArgumentOutOfRangeException("Duplicate username.");
 
             any = GetUserQuery(tenant)
-                .Any(r => r.Email == user.Email && r.Id != user.ID && !r.Removed);
+                .Any(r => r.Email == user.Email && r.Id != user.Id && !r.Removed);
 
             if (any) throw new ArgumentOutOfRangeException("Duplicate email.");
 

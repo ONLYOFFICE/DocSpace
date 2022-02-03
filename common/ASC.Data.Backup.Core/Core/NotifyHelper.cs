@@ -119,7 +119,7 @@ namespace ASC.Data.Backup
 
             foreach (var user in users)
             {
-                var hash = authManager.GetUserPasswordStamp(user.ID).ToString("s");
+                var hash = authManager.GetUserPasswordStamp(user.Id).ToString("s");
                 var confirmationUrl = commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.PasswordChange, hash);
 
                 Func<string> greenButtonText = () => BackupResource.ButtonSetPassword;
@@ -155,7 +155,7 @@ namespace ASC.Data.Backup
                         var currentArgs = new List<ITagValue>(args);
 
                         var newTenantId = toTenantId.HasValue ? toTenantId.Value : tenant.TenantId;
-                        var hash = authManager.GetUserPasswordStamp(user.ID).ToString("s");
+                        var hash = authManager.GetUserPasswordStamp(user.Id).ToString("s");
                         var confirmationUrl = url + "/" + commonLinkUtility.GetConfirmationUrlRelative(newTenantId, user.Email, ConfirmType.PasswordChange, hash);
 
                         Func<string> greenButtonText = () => BackupResource.ButtonSetPassword;
@@ -174,7 +174,7 @@ namespace ASC.Data.Backup
                     client.SendNoticeToAsync(
                         action,
                         null,
-                        users.Select(u => studioNotifyHelper.ToRecipient(u.ID)).ToArray(),
+                        users.Select(u => studioNotifyHelper.ToRecipient(u.Id)).ToArray(),
                         new[] { StudioNotifyService.EMailSenderName },
                         args.ToArray());
                 }
