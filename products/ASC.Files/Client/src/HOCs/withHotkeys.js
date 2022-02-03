@@ -1,10 +1,12 @@
 import React from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { observer, inject } from "mobx-react";
+import SettingsStore from "@appserver/common/store/SettingsStore";
 
 const withHotkeys = (Component) => {
   const WithHotkeys = (props) => {
     const {
+      t,
       selection,
       setSelection,
       firstFile,
@@ -22,6 +24,10 @@ const withHotkeys = (Component) => {
       hotkeyCaretStart,
       setHotkeyCaretStart,
       setHotkeyPanelVisible,
+      confirmDelete,
+      setDeleteDialogVisible,
+      deleteAction,
+      isAvailableOption,
     } = props;
 
     //Select item
@@ -205,205 +211,287 @@ const withHotkeys = (Component) => {
       setSelected("none");
     });
 
+    //Move down without changing selection
+    useHotkeys(
+      "ctrl+DOWN",
+      () => {
+        if (viewAs === "tile") setHotkeyCaret(nextForTileDown);
+        else if (nextFile) setHotkeyCaret(nextFile);
+      },
+      [nextFile, nextForTileDown]
+    );
+
+    //Move up without changing selection
+    useHotkeys(
+      "ctrl+UP",
+      () => {
+        if (viewAs === "tile") setHotkeyCaret(prevForTileUp);
+        else if (nextFile) setHotkeyCaret(prevFile);
+      },
+      [prevFile, prevForTileUp]
+    );
+
+    //Move left without changing selection
+    useHotkeys(
+      "ctrl+LEFT",
+      () => {
+        if (prevFile) setHotkeyCaret(prevFile);
+      },
+      [prevFile]
+    );
+
+    //Move right without changing selection
+    useHotkeys(
+      "ctrl+RIGHT",
+      () => {
+        if (nextFile) setHotkeyCaret(nextFile);
+      },
+      [prevFile]
+    );
+
+    //Open item
+    useHotkeys("Enter", () => selection.length === 1 && alert("Open"), [
+      selection,
+    ]);
+
+    //Delete selection
+    useHotkeys(
+      "Delete, shift+3",
+      () => {
+        if (isAvailableOption("delete")) {
+          if (confirmDelete) setDeleteDialogVisible(true);
+          else {
+            const translations = {
+              deleteOperation: t("Translations:DeleteOperation"),
+              deleteFromTrash: t("Translations:DeleteFromTrash"),
+              deleteSelectedElem: t("Translations:DeleteSelectedElem"),
+              FileRemoved: t("Home:FileRemoved"),
+              FolderRemoved: t("Home:FolderRemoved"),
+            };
+            deleteAction(translations).catch((err) => toastr.error(err));
+          }
+        }
+      },
+      [confirmDelete]
+    );
+
+    //Undo the last action
+    useHotkeys("Ctrl+z", () => alert("Undo the last action"), []);
+
+    //Redo the last undone action
+    useHotkeys("Ctrl+Shift+z", () => alert("Redo the last undone action"), []);
+
     //Open hotkeys panel
     useHotkeys("Ctrl+num_divide, Ctrl+/", () => setHotkeyPanelVisible(true));
 
     return <Component {...props} />;
   };
 
-  return inject(({ filesStore, dialogsStore }, { sectionWidth }) => {
-    const {
-      selection,
-      setSelection,
-      filesList,
-      setSelected,
-      hotkeyCaret,
-      setHotkeyCaret,
-      setHotkeyCaretStart,
-      hotkeyCaretStart,
-      deselectFile,
-      viewAs,
-      files,
-      folders,
-    } = filesStore;
+  return inject(
+    (
+      { filesStore, dialogsStore, settingsStore, filesActionsStore },
+      { sectionWidth }
+    ) => {
+      const {
+        selection,
+        setSelection,
+        filesList,
+        setSelected,
+        hotkeyCaret,
+        setHotkeyCaret,
+        setHotkeyCaretStart,
+        hotkeyCaretStart,
+        deselectFile,
+        viewAs,
+        files,
+        folders,
+      } = filesStore;
 
-    const minTileWidth = 220 + 16;
-    const countTilesInRow = Math.floor(sectionWidth / minTileWidth);
-    const foldersLength = folders.length;
-    const division = foldersLength % countTilesInRow;
+      const { setHotkeyPanelVisible, setDeleteDialogVisible } = dialogsStore;
+      const { isAvailableOption, deleteAction } = filesActionsStore;
 
-    let caretIndex = -1;
-    let prevCaretIndex, nextCaretIndex, prevFile, nextFile;
-    let indexForNextTile, indexForPrevTile;
-    let nextForTileDown, prevForTileUp;
+      const minTileWidth = 220 + 16;
+      const countTilesInRow = Math.floor(sectionWidth / minTileWidth);
+      const foldersLength = folders.length;
+      const division = foldersLength % countTilesInRow;
 
-    if (filesList.length && selection.length && hotkeyCaret) {
-      caretIndex = filesList.findIndex((f) => f.id === hotkeyCaret.id);
+      let caretIndex = -1;
+      let prevCaretIndex, nextCaretIndex, prevFile, nextFile;
+      let indexForNextTile, indexForPrevTile;
+      let nextForTileDown, prevForTileUp;
 
-      if (caretIndex !== -1) {
-        prevCaretIndex = caretIndex - 1;
-        prevFile = filesList[prevCaretIndex];
-      }
+      if (filesList.length && selection.length && hotkeyCaret) {
+        caretIndex = filesList.findIndex((f) => f.id === hotkeyCaret.id);
 
-      if (caretIndex !== -1) {
-        nextCaretIndex = caretIndex + 1;
-        nextFile = filesList[nextCaretIndex];
-      }
+        if (caretIndex !== -1) {
+          prevCaretIndex = caretIndex - 1;
+          prevFile = filesList[prevCaretIndex];
+        }
 
-      //TODO: table view
-      // console.log("sectionWidth", sectionWidth);
-      // console.log("countTilesInRow", countTilesInRow);
+        if (caretIndex !== -1) {
+          nextCaretIndex = caretIndex + 1;
+          nextFile = filesList[nextCaretIndex];
+        }
 
-      //Tile view
-      const nextTileFile = filesList[caretIndex + countTilesInRow];
-      const prevTileFile = filesList[caretIndex - countTilesInRow];
+        //TODO: table view
+        // console.log("sectionWidth", sectionWidth);
+        // console.log("countTilesInRow", countTilesInRow);
 
-      nextForTileDown = nextTileFile
-        ? nextTileFile
-        : filesList[filesList.length - 1];
-      prevForTileUp = prevTileFile ? prevTileFile : filesList[0];
+        //Tile view
+        const nextTileFile = filesList[caretIndex + countTilesInRow];
+        const prevTileFile = filesList[caretIndex - countTilesInRow];
 
-      const isFolder =
-        caretIndex !== -1 ? filesList[caretIndex].isFolder : false;
+        nextForTileDown = nextTileFile
+          ? nextTileFile
+          : filesList[filesList.length - 1];
+        prevForTileUp = prevTileFile ? prevTileFile : filesList[0];
 
-      const countOfMissingFiles = division ? countTilesInRow - division : 0;
+        const isFolder =
+          caretIndex !== -1 ? filesList[caretIndex].isFolder : false;
 
-      //Next tile
-      if (nextForTileDown.isFolder !== isFolder) {
-        indexForNextTile = caretIndex + countTilesInRow - countOfMissingFiles;
+        const countOfMissingFiles = division ? countTilesInRow - division : 0;
 
-        nextForTileDown =
-          foldersLength - caretIndex - 1 <= division || division === 0
-            ? filesList[indexForNextTile]
+        //Next tile
+        if (nextForTileDown.isFolder !== isFolder) {
+          indexForNextTile = caretIndex + countTilesInRow - countOfMissingFiles;
+
+          nextForTileDown =
+            foldersLength - caretIndex - 1 <= division || division === 0
               ? filesList[indexForNextTile]
-              : files[0]
+                ? filesList[indexForNextTile]
+                : files[0]
+              : folders[foldersLength - 1];
+        } else if (!nextTileFile) {
+          // const pp = filesList.findIndex((f) => f.id === nextForTileDown?.id);
+          // if (pp < caretIndex + countTilesInRow) {
+          //   nextForTileDown = hotkeyCaret;
+          // }
+        }
+
+        //Prev tile
+        if (prevForTileUp.isFolder !== isFolder) {
+          indexForPrevTile = caretIndex - countTilesInRow + countOfMissingFiles;
+
+          prevForTileUp = filesList[indexForPrevTile]
+            ? filesList[indexForPrevTile].isFolder
+              ? filesList[indexForPrevTile]
+              : folders[foldersLength - 1]
             : folders[foldersLength - 1];
-      } else if (!nextTileFile) {
-        // const pp = filesList.findIndex((f) => f.id === nextForTileDown?.id);
-        // if (pp < caretIndex + countTilesInRow) {
-        //   nextForTileDown = hotkeyCaret;
-        // }
+        } else if (!prevTileFile) {
+          prevForTileUp = hotkeyCaret;
+        }
       }
 
-      //Prev tile
-      if (prevForTileUp.isFolder !== isFolder) {
-        indexForPrevTile = caretIndex - countTilesInRow + countOfMissingFiles;
+      //shift
 
-        prevForTileUp = filesList[indexForPrevTile]
-          ? filesList[indexForPrevTile].isFolder
-            ? filesList[indexForPrevTile]
-            : folders[foldersLength - 1]
-          : folders[foldersLength - 1];
-      } else if (!prevTileFile) {
-        prevForTileUp = hotkeyCaret;
+      const hotkeyCaretStartIndex = filesList.findIndex(
+        (f) => f.id === hotkeyCaretStart?.id
+      );
+
+      const selectionsDown = [];
+      const selectionsUp = [];
+      const firstSelectionIndex = filesList.findIndex(
+        (f) => f.id === selection[0]?.id
+      );
+      //shift select down
+
+      const nextForTileDownIndex = filesList.findIndex(
+        (f) => f.id === nextForTileDown?.id
+      );
+      let nextForTileDownItemIndex = nextForTileDownIndex;
+
+      const itemIndexDown =
+        hotkeyCaretStartIndex !== -1 &&
+        hotkeyCaretStartIndex < firstSelectionIndex
+          ? hotkeyCaretStartIndex
+          : firstSelectionIndex;
+
+      if (itemIndexDown !== -1 && viewAs === "tile") {
+        if (nextForTileDownItemIndex === -1)
+          nextForTileDownItemIndex = itemIndexDown + countTilesInRow;
+
+        if (nextForTileDownItemIndex > itemIndexDown) {
+          while (nextForTileDownItemIndex !== itemIndexDown) {
+            if (hotkeyCaretStartIndex - nextForTileDownItemIndex <= 0)
+              selectionsDown.push(filesList[nextForTileDownItemIndex]);
+            nextForTileDownItemIndex--;
+          }
+        }
+
+        let counterToDown = 0;
+        if (nextForTileDownIndex < hotkeyCaretStartIndex) {
+          counterToDown = hotkeyCaretStartIndex - nextForTileDownIndex;
+        }
+
+        while (counterToDown !== 0) {
+          selectionsDown.push(filesList[hotkeyCaretStartIndex - counterToDown]);
+          counterToDown--;
+        }
+        //console.log("selectionsDown", selectionsDown);
       }
+
+      const prevForTileUpIndex = filesList.findIndex(
+        (f) => f.id === prevForTileUp?.id
+      );
+      let prevForTileUpItemIndex = prevForTileUpIndex;
+
+      const itemIndexUp =
+        hotkeyCaretStartIndex !== -1 &&
+        hotkeyCaretStartIndex > firstSelectionIndex
+          ? hotkeyCaretStartIndex
+          : firstSelectionIndex;
+
+      //shift select up
+      if (itemIndexUp !== -1 && viewAs === "tile") {
+        if (prevForTileUpItemIndex === -1)
+          prevForTileUpItemIndex = itemIndexUp - countTilesInRow;
+
+        if (prevForTileUpItemIndex < itemIndexUp) {
+          while (prevForTileUpItemIndex !== itemIndexUp) {
+            if (prevForTileUpItemIndex - hotkeyCaretStartIndex <= 0)
+              selectionsUp.push(filesList[prevForTileUpItemIndex]);
+            prevForTileUpItemIndex++;
+          }
+
+          let counterToUp = 0;
+          if (prevForTileUpIndex > hotkeyCaretStartIndex) {
+            counterToUp = prevForTileUpIndex - hotkeyCaretStartIndex;
+          }
+
+          while (counterToUp !== 0) {
+            selectionsUp.push(filesList[hotkeyCaretStartIndex + counterToUp]);
+            counterToUp--;
+          }
+        }
+      }
+
+      //console.log("selectionsUp", selectionsUp);
+      return {
+        selection,
+        setSelection,
+        firstFile: filesList[0],
+        nextFile,
+        prevFile,
+        setSelected,
+        hotkeyCaret,
+        setHotkeyCaret,
+        deselectFile,
+        nextForTileDown,
+        prevForTileUp,
+        viewAs,
+        selectionsDown,
+        selectionsUp,
+        setHotkeyCaretStart,
+        hotkeyCaretStart,
+
+        setHotkeyPanelVisible,
+        setDeleteDialogVisible,
+        confirmDelete: settingsStore.confirmDelete,
+        deleteAction,
+        isAvailableOption,
+      };
     }
-
-    //shift
-
-    const hotkeyCaretStartIndex = filesList.findIndex(
-      (f) => f.id === hotkeyCaretStart?.id
-    );
-
-    const selectionsDown = [];
-    const selectionsUp = [];
-    const firstSelectionIndex = filesList.findIndex(
-      (f) => f.id === selection[0]?.id
-    );
-    //shift select down
-
-    const nextForTileDownIndex = filesList.findIndex(
-      (f) => f.id === nextForTileDown?.id
-    );
-    let nextForTileDownItemIndex = nextForTileDownIndex;
-
-    const itemIndexDown =
-      hotkeyCaretStartIndex !== -1 &&
-      hotkeyCaretStartIndex < firstSelectionIndex
-        ? hotkeyCaretStartIndex
-        : firstSelectionIndex;
-
-    if (itemIndexDown !== -1 && viewAs === "tile") {
-      if (nextForTileDownItemIndex === -1)
-        nextForTileDownItemIndex = itemIndexDown + countTilesInRow;
-
-      if (nextForTileDownItemIndex > itemIndexDown) {
-        while (nextForTileDownItemIndex !== itemIndexDown) {
-          if (hotkeyCaretStartIndex - nextForTileDownItemIndex <= 0)
-            selectionsDown.push(filesList[nextForTileDownItemIndex]);
-          nextForTileDownItemIndex--;
-        }
-      }
-
-      let counterToDown = 0;
-      if (nextForTileDownIndex < hotkeyCaretStartIndex) {
-        counterToDown = hotkeyCaretStartIndex - nextForTileDownIndex;
-      }
-
-      while (counterToDown !== 0) {
-        selectionsDown.push(filesList[hotkeyCaretStartIndex - counterToDown]);
-        counterToDown--;
-      }
-      //console.log("selectionsDown", selectionsDown);
-    }
-
-    const prevForTileUpIndex = filesList.findIndex(
-      (f) => f.id === prevForTileUp?.id
-    );
-    let prevForTileUpItemIndex = prevForTileUpIndex;
-
-    const itemIndexUp =
-      hotkeyCaretStartIndex !== -1 &&
-      hotkeyCaretStartIndex > firstSelectionIndex
-        ? hotkeyCaretStartIndex
-        : firstSelectionIndex;
-
-    //shift select up
-    if (itemIndexUp !== -1 && viewAs === "tile") {
-      if (prevForTileUpItemIndex === -1)
-        prevForTileUpItemIndex = itemIndexUp - countTilesInRow;
-
-      if (prevForTileUpItemIndex < itemIndexUp) {
-        while (prevForTileUpItemIndex !== itemIndexUp) {
-          if (prevForTileUpItemIndex - hotkeyCaretStartIndex <= 0)
-            selectionsUp.push(filesList[prevForTileUpItemIndex]);
-          prevForTileUpItemIndex++;
-        }
-
-        let counterToUp = 0;
-        if (prevForTileUpIndex > hotkeyCaretStartIndex) {
-          counterToUp = prevForTileUpIndex - hotkeyCaretStartIndex;
-        }
-
-        while (counterToUp !== 0) {
-          selectionsUp.push(filesList[hotkeyCaretStartIndex + counterToUp]);
-          counterToUp--;
-        }
-      }
-    }
-
-    //console.log("selectionsUp", selectionsUp);
-    return {
-      selection,
-      setSelection,
-      firstFile: filesList[0],
-      nextFile,
-      prevFile,
-      setSelected,
-      hotkeyCaret,
-      setHotkeyCaret,
-      deselectFile,
-      nextForTileDown,
-      prevForTileUp,
-      viewAs,
-      selectionsDown,
-      selectionsUp,
-      setHotkeyCaretStart,
-      hotkeyCaretStart,
-
-      setHotkeyPanelVisible: dialogsStore.setHotkeyPanelVisible,
-    };
-  })(observer(WithHotkeys));
+  )(observer(WithHotkeys));
 };
 
 export default withHotkeys;

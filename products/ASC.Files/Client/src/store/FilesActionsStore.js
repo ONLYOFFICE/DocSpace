@@ -343,17 +343,17 @@ class FilesActionStore {
       setSelected,
       setSelection,
       setHotkeyCaretStart,
+      filesList,
     } = this.filesStore;
     /* selected === "close" &&  */ setSelected("none");
 
     if (!id) return;
 
-    const item = this.filesStore[isFolder ? "folders" : "files"].find(
-      (elm) => elm.id === id
+    const item = filesList.find(
+      (elm) => elm.id === id && elm.isFolder === isFolder
     );
 
     if (item) {
-      item.isFolder = isFolder;
       if (isBuffer) setBufferSelection(item);
       else {
         setSelection([item]);
