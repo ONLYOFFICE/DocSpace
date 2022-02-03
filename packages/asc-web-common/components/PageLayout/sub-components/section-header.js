@@ -1,12 +1,14 @@
-import React from 'react';
-import styled, { css } from 'styled-components';
-import equal from 'fast-deep-equal/react';
-import classnames from 'classnames';
-import PropTypes from 'prop-types';
-import { LayoutContextConsumer } from 'studio/Layout/context';
-import { isMobile } from 'react-device-detect';
-import { tablet, desktop } from '@appserver/components/utils/device';
-import NoUserSelect from '@appserver/components/utils/commonStyles';
+import React from "react";
+import styled, { css } from "styled-components";
+import equal from "fast-deep-equal/react";
+import classnames from "classnames";
+import PropTypes from "prop-types";
+import { LayoutContextConsumer } from "studio/Layout/context";
+import { isMobile } from "react-device-detect";
+import { tablet, desktop } from "@appserver/components/utils/device";
+import NoUserSelect from "@appserver/components/utils/commonStyles";
+import Base from "@appserver/components/themes/base";
+
 const StyledSectionHeader = styled.div`
   position: relative;
   height: 42px;
@@ -15,7 +17,7 @@ const StyledSectionHeader = styled.div`
   ${isMobile &&
   css`
     height: 20px;
-    width: ${(props) => !props.isLoaded && '100%'};
+    width: ${(props) => !props.isLoaded && "100%"};
 
     margin-top: 62px;
     @media ${tablet} {
@@ -24,12 +26,14 @@ const StyledSectionHeader = styled.div`
   `}
 
   @media ${desktop} {
-    ${(props) => (props.viewAs === 'table' || props.viewAs === 'tile') && 'margin-left: -4px'};
+    ${(props) =>
+      (props.viewAs === "table" || props.viewAs === "tile") &&
+      "margin-left: -4px"};
   }
 
   @media ${tablet} {
     ${(props) =>
-      props.viewAs !== 'tablet' &&
+      props.viewAs !== "tablet" &&
       css`
         height: 49px;
 
@@ -59,9 +63,11 @@ const StyledSectionHeader = styled.div`
       position: fixed;
       top: 48px;
 
-      width: ${(props) => (props.isArticlePinned ? `calc(100% - 272px)` : '100%')};
+      width: ${(props) =>
+        props.isArticlePinned ? `calc(100% - 272px)` : "100%"};
 
-      background-color: #fff;
+      background-color: ${(props) =>
+        props.theme.section.header.backgroundColor};
       z-index: 149;
       padding-right: 16px;
     `}
@@ -81,7 +87,8 @@ const StyledSectionHeader = styled.div`
       .group-button-menu-container {
         padding-bottom: 0 !important;
         > div:first-child {
-          top: ${(props) => (!props.isSectionHeaderVisible ? '56px' : '0px')} !important;
+          top: ${(props) =>
+            !props.isSectionHeaderVisible ? "56px" : "0px"} !important;
 
           @media ${desktop} {
             ${isMobile &&
@@ -100,6 +107,8 @@ const StyledSectionHeader = styled.div`
     `}
   }
 `;
+
+StyledSectionHeader.defaultProps = { theme: Base };
 
 class SectionHeader extends React.Component {
   constructor(props) {
@@ -124,10 +133,12 @@ class SectionHeader extends React.Component {
           <StyledSectionHeader
             isArticlePinned={isArticlePinned}
             isSectionHeaderVisible={value.isVisible}
-            viewAs={viewAs}>
+            viewAs={viewAs}
+          >
             <div
-              className={classnames('section-header hidingHeader', {
-                'section-header--hidden': value.isVisible === undefined ? false : !value.isVisible,
+              className={classnames("section-header hidingHeader", {
+                "section-header--hidden":
+                  value.isVisible === undefined ? false : !value.isVisible,
               })}
               {...rest}
             />
@@ -138,7 +149,7 @@ class SectionHeader extends React.Component {
   }
 }
 
-SectionHeader.displayName = 'SectionHeader';
+SectionHeader.displayName = "SectionHeader";
 
 SectionHeader.propTypes = {
   isArticlePinned: PropTypes.bool,

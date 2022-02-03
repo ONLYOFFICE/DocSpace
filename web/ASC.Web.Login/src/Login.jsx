@@ -32,6 +32,7 @@ import {
   withTranslation,
 } from "react-i18next";
 import toastr from "@appserver/components/toast/toastr";
+import { Base } from "@appserver/components/themes";
 
 const ButtonsWrapper = styled.div`
   display: table;
@@ -57,7 +58,7 @@ const LoginContainer = styled.div`
 
   .line {
     height: 1px;
-    background-color: #eceef1;
+    background-color: ${(props) => props.theme.login.container.backgroundColor};
     flex-basis: 100%;
     margin: 0 8px;
   }
@@ -127,7 +128,7 @@ const LoginContainer = styled.div`
     .login-bottom-border {
       width: 100%;
       height: 1px;
-      background: #eceef1;
+      background: ${(props) => props.theme.login.container.backgroundColor};
     }
 
     .login-bottom-text {
@@ -135,6 +136,8 @@ const LoginContainer = styled.div`
     }
   }
 `;
+
+LoginContainer.defaultProps = { theme: Base };
 
 const LoginFormWrapper = styled.div`
   display: grid;
@@ -182,6 +185,7 @@ const Form = (props) => {
     history,
     thirdPartyLogin,
     providers,
+    theme,
   } = props;
 
   const { error, confirmedEmail } = match.params;
@@ -519,7 +523,7 @@ const Form = (props) => {
             />
             <Link
               fontSize="13px"
-              color="#316DAA"
+              color={theme.login.linkColor}
               className="login-link"
               type="page"
               isHovered={false}
@@ -561,7 +565,7 @@ const Form = (props) => {
           <>
             <Box displayProp="flex" alignItems="center" marginProp="0 0 16px 0">
               <div className="login-bottom-border"></div>
-              <Text className="login-bottom-text" color="#A3A9AE">
+              <Text className="login-bottom-text" color={theme.login.textColor}>
                 {t("Or")}
               </Text>
               <div className="login-bottom-border"></div>
@@ -633,6 +637,7 @@ const Login = inject(({ auth }) => {
     isDesktopClient: isDesktop,
     getOAuthToken,
     getLoginLink,
+    theme,
   } = settingsStore;
 
   return {
@@ -650,6 +655,7 @@ const Login = inject(({ auth }) => {
     getLoginLink,
     setProviders,
     providers,
+    theme,
   };
 })(withRouter(observer(withTranslation(["Login", "Common"])(LoginForm))));
 

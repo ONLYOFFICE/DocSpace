@@ -10,6 +10,7 @@ const PeopleRowContainer = ({
   sectionWidth,
   viewAs,
   setViewAs,
+  theme,
 }) => {
   useEffect(() => {
     if (viewAs !== "table" && viewAs !== "row") return;
@@ -24,7 +25,12 @@ const PeopleRowContainer = ({
   return peopleList.length > 0 ? (
     <RowContainer className="people-row-container" useReactWindow={false}>
       {peopleList.map((item) => (
-        <SimpleUserRow key={item.id} item={item} sectionWidth={sectionWidth} />
+        <SimpleUserRow
+          theme={theme}
+          key={item.id}
+          item={item}
+          sectionWidth={sectionWidth}
+        />
       ))}
     </RowContainer>
   ) : (
@@ -32,13 +38,15 @@ const PeopleRowContainer = ({
   );
 };
 
-export default inject(({ peopleStore }) => {
+export default inject(({ peopleStore, auth }) => {
   const { usersStore, viewAs, setViewAs } = peopleStore;
+  const { theme } = auth.settingsStore;
   const { peopleList } = usersStore;
 
   return {
     peopleList,
     viewAs,
     setViewAs,
+    theme,
   };
 })(observer(PeopleRowContainer));

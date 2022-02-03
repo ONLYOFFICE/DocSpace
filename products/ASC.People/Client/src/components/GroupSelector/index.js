@@ -94,10 +94,12 @@ class GroupSelector extends React.Component {
       withoutAside,
       embeddedComponent,
       showCounter,
+      theme,
     } = this.props;
 
     return (
       <AdvancedSelector
+        theme={theme}
         id={id}
         className={className}
         style={style}

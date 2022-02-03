@@ -13,12 +13,13 @@ import MediaFullScreenIcon from "../../../../../public/images/media.fullscreen.v
 import MediaMuteIcon from "../../../../../public/images/media.mute.react.svg";
 import MediaMuteOffIcon from "../../../../../public/images/media.muteoff.react.svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import { Base } from "@appserver/components/themes";
 
 const iconsStyles = css`
   path,
   stroke,
   rect {
-    fill: #fff;
+    fill: ${(props) => props.theme.mediaViewer.videoViewer.fill};
   }
 `;
 
@@ -28,10 +29,14 @@ const StyledControls = styled.div`
   display: block;
   position: fixed;
   z-index: 301;
-  ${(props) => !props.isVideo && "background-color: rgba(11,11,11,0.7);"}
+  ${(props) =>
+    !props.isVideo &&
+    `background-color: ${props.theme.mediaViewer.videoViewer.backgroundColor};`}
   top: calc(50% + ${(props) => props.top}px);
   left: ${(props) => props.left}px;
 `;
+
+StyledControls.defaultProps = { theme: Base };
 const StyledVideoControlBtn = styled.div`
   display: inline-block;
   height: 26px;
@@ -43,7 +48,8 @@ const StyledVideoControlBtn = styled.div`
   text-align: center;
   vertical-align: top;
   &:hover {
-    background-color: rgba(200, 200, 200, 0.2);
+    background-color: ${(props) =>
+      props.theme.mediaViewer.videoViewer.background};
   }
 
   .playBtnContainer {
@@ -74,36 +80,43 @@ const StyledVideoControlBtn = styled.div`
     line-height: 19px;
   }
 `;
+
+StyledVideoControlBtn.defaultProps = { theme: Base };
 const StyledMediaPauseIcon = styled(MediaPauseIcon)`
   ${commonIconsStyles}
   ${iconsStyles}
 `;
+StyledMediaPauseIcon.defaultProps = { theme: Base };
 const StyledMediaPlayIcon = styled(MediaPlayIcon)`
   ${commonIconsStyles}
   ${iconsStyles}
 `;
+StyledMediaPlayIcon.defaultProps = { theme: Base };
 const StyledMediaFullScreenIcon = styled(MediaFullScreenIcon)`
   ${commonIconsStyles}
   ${iconsStyles}
 `;
+StyledMediaFullScreenIcon.defaultProps = { theme: Base };
 const StyledMediaMuteIcon = styled(MediaMuteIcon)`
   ${commonIconsStyles}
 
   path:first-child {
-    stroke: #fff;
+    stroke: ${(props) => props.theme.mediaViewer.videoViewer.stroke};
   }
 
   path:last-child {
-    fill: #fff;
+    fill: ${(props) => props.theme.mediaViewer.videoViewer.fill};
   }
 `;
 const StyledMediaMuteOffIcon = styled(MediaMuteOffIcon)`
   ${commonIconsStyles}
 
   path, rect {
-    fill: #fff;
+    fill: ${(props) => props.theme.mediaViewer.videoViewer.fill};
   }
 `;
+
+StyledMediaMuteIcon.defaultProps = { theme: Base };
 const VideoControlBtn = (props) => {
   return (
     <StyledVideoControlBtn {...props}>{props.children}</StyledVideoControlBtn>
@@ -189,11 +202,14 @@ const StyledDuration = styled.div`
   cursor: pointer;
 
   &:hover {
-    background-color: rgba(200, 200, 200, 0.2);
+    background-color: ${(props) =>
+      props.theme.mediaViewer.videoViewer.background};
   }
 `;
+
+StyledValumeContainer.defaultProps = { theme: Base };
 const StyledVideoViewer = styled.div`
-  color: #d1d1d1;
+  color: ${(props) => props.theme.mediaViewer.videoViewer.color};
 
   .playerWrapper {
     display: ${(props) => (props.isVideo ? "block" : "none")};
@@ -204,7 +220,8 @@ const StyledVideoViewer = styled.div`
     z-index: 301;
     position: fixed;
     padding-bottom: 40px;
-    background-color: rgba(11, 11, 11, 0.7);
+    background-color: ${(props) =>
+      props.theme.mediaViewer.videoViewer.backgroundColor};
 
     video {
       z-index: 300;
@@ -212,18 +229,23 @@ const StyledVideoViewer = styled.div`
   }
 `;
 
+StyledVideoViewer.defaultProps = { theme: Base };
+
 const ErrorContainer = styled.div`
   z-index: 301;
   display: block;
   position: fixed;
   left: calc(50% - 110px);
   top: calc(50% - 40px);
-  background-color: #000;
-  color: #fff;
+  background-color: ${(props) =>
+    props.theme.mediaViewer.videoViewer.backgroundColorError};
+  color: ${(props) => props.theme.mediaViewer.videoViewer.colorError};
   border-radius: 10px;
   padding: 20px;
   text-align: center;
 `;
+
+ErrorContainer.defaultProps = { theme: Base };
 
 class ValumeBtn extends Component {
   constructor(props) {

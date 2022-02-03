@@ -65,6 +65,7 @@ const InputContainer = ({
   hasErrorPass,
   hasErrorLicense,
   urlLicense,
+  theme,
 }) => {
   const refPassInput = useRef(null);
 
@@ -162,7 +163,7 @@ const InputContainer = ({
         <Link
           className="link"
           type="page"
-          color="#116d9d"
+          color={theme.studio.wizard.linkColor}
           fontSize="13px"
           target="_blank"
           href={

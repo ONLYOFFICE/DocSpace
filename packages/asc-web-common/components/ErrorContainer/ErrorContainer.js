@@ -5,6 +5,10 @@ import Headline from "../Headline";
 import Text from "@appserver/components/text";
 import Button from "@appserver/components/button";
 
+import store from "studio/store";
+
+const theme = store.auth.settingsStore.theme;
+
 const ErrorContainer = (props) => {
   //console.log("ErrorContainer render");
 

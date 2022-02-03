@@ -10,6 +10,7 @@ import Box from "@appserver/components/box";
 const RootFolderContainer = (props) => {
   const {
     t,
+    theme,
     isPrivacyFolder,
     isDesktop,
     isEncryptionSupport,
@@ -113,7 +114,12 @@ const RootFolderContainer = (props) => {
           <Trans t={t} i18nKey="PrivateRoomSupport" ns="Home">
             Work in Private Room is available via {{ organizationName }} desktop
             app.
-            <Link isBold isHovered color="#116d9d" href={privacyInstructions}>
+            <Link
+              isBold
+              isHovered
+              color={theme.filesEmptyContainer.privateRoom.linkColor}
+              href={privacyInstructions}
+            >
               Instructions
             </Link>
           </Trans>
@@ -196,6 +202,7 @@ export default inject(
       isDesktopClient,
       isEncryptionSupport,
       organizationName,
+      theme,
     } = auth.settingsStore;
 
     const {
@@ -208,6 +215,7 @@ export default inject(
     const { isPrivacyFolder, myFolderId } = treeFoldersStore;
 
     return {
+      theme,
       isPrivacyFolder,
       isDesktop: isDesktopClient,
       isEncryptionSupport,

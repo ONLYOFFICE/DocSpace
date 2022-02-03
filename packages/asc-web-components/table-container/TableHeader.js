@@ -236,8 +236,8 @@ class TableHeader extends React.Component {
     const storageSize =
       !resetColumnsSize && localStorage.getItem(columnStorageName);
 
-     const defaultSize = this.props.columns.find((col) => col.defaultSize)
-       ?.defaultSize;
+    const defaultSize = this.props.columns.find((col) => col.defaultSize)
+      ?.defaultSize;
 
     //TODO: Fixed columns size if something went wrong
     if (storageSize) {

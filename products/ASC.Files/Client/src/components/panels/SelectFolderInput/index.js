@@ -96,12 +96,14 @@ class SelectFolderInputBody extends React.PureComponent {
       headerName,
       footer,
       selectionButtonPrimary,
+      theme,
     } = this.props;
     const { isLoading, baseFolderPath, fullFolderPath } = this.state;
 
     return (
-      <StyledComponent>
+      <StyledComponent theme={theme}>
         <SimpleFileInput
+          theme={theme}
           name={name}
           className="input-with-folder-path"
           textField={fullFolderPath || baseFolderPath}
@@ -111,6 +113,7 @@ class SelectFolderInputBody extends React.PureComponent {
         />
 
         <SelectFolderDialog
+          theme={theme}
           zIndex={zIndex}
           isPanelVisible={isPanelVisible}
           onClose={onClose}

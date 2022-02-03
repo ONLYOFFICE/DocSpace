@@ -70,6 +70,7 @@ const Selector = (props) => {
     allowGroupSelection,
     embeddedComponent,
     showCounter,
+    theme,
   } = props;
 
   //console.log("options", options);

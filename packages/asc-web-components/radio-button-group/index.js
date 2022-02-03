@@ -26,6 +26,7 @@ class RadioButtonGroup extends React.Component {
 
   render() {
     const options = this.props.options;
+    const theme = this.props.theme;
     return (
       <StyledDiv
         id={this.props.id}

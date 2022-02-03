@@ -42,7 +42,6 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
                   onClick={onResetFilter}
                   iconName="CrossIcon"
                   isFill
-                  color="#657077"
                 />
               </Box>{" "}
               <Box marginProp="-4px 0 0 0">
@@ -50,7 +49,6 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
                   type="action"
                   isHovered={true}
                   fontWeight="600"
-                  color="#555f65"
                   onClick={onResetFilter}
                 >
                   {t("Common:ClearButton")}

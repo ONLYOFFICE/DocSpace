@@ -23,7 +23,9 @@ const Label = styled(ClearLabel)`
 
     path {
       fill: ${(props) =>
-        props.isDisabled && props.theme.radioButton.disableColor};
+        props.isDisabled
+          ? props.theme.radioButton.disableBackground
+          : props.theme.radioButton.background};
     }
   }
   .radio-button_text {
@@ -46,6 +48,14 @@ const Label = styled(ClearLabel)`
         `
       : css`
           cursor: pointer;
+          svg {
+            path:first-child {
+              stroke: ${props.theme.radioButton.borderColor};
+            }
+            path:nth-child(even) {
+              fill: ${props.theme.radioButton.fillColor};
+            }
+          }
 
           &:hover {
             svg {

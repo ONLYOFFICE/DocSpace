@@ -50,6 +50,7 @@ import {
 import config from "../../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
+import { Base } from "@appserver/components/themes";
 
 const dialogsDataset = {
   changeEmail: "changeEmail",
@@ -64,8 +65,10 @@ const Table = styled.table`
 
 const Th = styled.th`
   padding: 11px 0 10px 0px;
-  border-top: 1px solid #eceef1;
+  border-top: ${(props) => props.theme.updateUserForm.borderTop};
 `;
+
+Th.defaultProps = { theme: Base };
 
 const Td = styled.td``;
 
@@ -626,6 +629,7 @@ class UpdateUserForm extends React.Component {
       language,
       personal,
       isTabletView,
+      theme,
     } = this.props;
     const {
       guestCaption,
@@ -644,11 +648,19 @@ class UpdateUserForm extends React.Component {
     //TODO: inject guestsCaption in 'ProfileTypePopupHelper' key instead of hardcoded 'Guests'
     const tooltipTypeContent = (
       <>
-        <Text style={{ paddingBottom: 17 }} fontSize="13px">
+        <Text
+          style={{ paddingBottom: 17 }}
+          color={theme.updateUserForm.tooltipTextColor}
+          fontSize="13px"
+        >
           {t("ProfileTypePopupHelper")}
         </Text>
 
-        <Text fontSize="12px" as="div">
+        <Text
+          color={theme.updateUserForm.tooltipTextColor}
+          fontSize="12px"
+          as="div"
+        >
           <Table>
             <tbody>
               <tr>
@@ -771,7 +783,11 @@ class UpdateUserForm extends React.Component {
               buttonTabIndex={1}
               helpButtonHeaderContent={t("Common:Mail")}
               tooltipContent={
-                <Text fontSize="13px" as="div">
+                <Text
+                  color={theme.updateUserForm.tooltipTextColor}
+                  fontSize="13px"
+                  as="div"
+                >
                   <Trans t={t} i18nKey="EmailPopupHelper" ns="ProfileAction">
                     The main e-mail is needed to restore access to the portal in
                     case of loss of the password and send notifications.
@@ -1041,6 +1057,7 @@ class UpdateUserForm extends React.Component {
 
 export default withRouter(
   inject(({ auth, peopleStore }) => ({
+    theme: auth.settingsStore.theme,
     customNames: auth.settingsStore.customNames,
     isAdmin: auth.isAdmin,
     language: auth.language,

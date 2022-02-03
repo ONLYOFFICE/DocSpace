@@ -15,6 +15,7 @@ const Label = (props) => {
     className,
     id,
     style,
+    theme,
   } = props;
   const errorProp = error ? { color: "#c30" } : {};
 

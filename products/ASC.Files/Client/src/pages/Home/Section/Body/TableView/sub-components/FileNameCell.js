@@ -11,6 +11,7 @@ const FileNameCell = ({
   onContentSelect,
   checked,
   selectionProp,
+  theme,
   t,
 }) => {
   const { title } = item;
@@ -42,7 +43,7 @@ const FileNameCell = ({
         fontWeight="600"
         fontSize="13px"
         {...linkStyles}
-        color="#333"
+        color={theme.filesSection.tableView.fileName.linkColor}
         isTextOverflow
         className="item-file-name"
       >

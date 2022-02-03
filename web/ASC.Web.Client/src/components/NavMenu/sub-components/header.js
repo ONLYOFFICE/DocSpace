@@ -1,32 +1,31 @@
-import React from 'react';
-import { inject, observer } from 'mobx-react';
-import PropTypes from 'prop-types';
-import styled, { css } from 'styled-components';
-import { Link as LinkWithoutRedirect } from 'react-router-dom';
-import NavItem from './nav-item';
-import Nav from './nav';
-import NavLogoItem from './nav-logo-item';
-import Link from '@appserver/components/link';
-import history from '@appserver/common/history';
-import { useTranslation } from 'react-i18next';
-
-import Box from '@appserver/components/box';
-import Text from '@appserver/components/text';
-import { desktop, mobile, tablet } from '@appserver/components/utils/device';
-import { isMobileOnly, isMobile } from 'react-device-detect';
-import i18n from '../i18n';
-import { combineUrl } from '@appserver/common/utils';
-import { AppServerConfig } from '@appserver/common/constants';
-import NoUserSelect from '@appserver/components/utils/commonStyles';
-import HeaderNavigationIcon from './header-navigation-icon';
+import React from "react";
+import { inject, observer } from "mobx-react";
+import PropTypes from "prop-types";
+import styled, { css } from "styled-components";
+import { Link as LinkWithoutRedirect } from "react-router-dom";
+import { isMobileOnly, isMobile } from "react-device-detect";
+import NavItem from "./nav-item";
+import Headline from "@appserver/common/components/Headline";
+import Nav from "./nav";
+import NavLogoItem from "./nav-logo-item";
+import Link from "@appserver/components/link";
+import history from "@appserver/common/history";
+import { useTranslation } from "react-i18next";
+import HeaderNavigationIcon from "./header-navigation-icon";
+import Box from "@appserver/components/box";
+import Text from "@appserver/components/text";
+import { desktop, tablet, mobile } from "@appserver/components/utils/device";
+import i18n from "../i18n";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
+import NoUserSelect from "@appserver/components/utils/commonStyles";
+import { Base } from "@appserver/components/themes";
 
 const { proxyURL } = AppServerConfig;
 
-const backgroundColor = '#0F4071';
-
 const Header = styled.header`
   align-items: center;
-  background-color: ${backgroundColor};
+  background-color: ${(props) => props.theme.header.backgroundColor};
   display: flex;
   width: 100vw;
   height: 48px;
@@ -51,7 +50,7 @@ const Header = styled.header`
       ${(props) =>
       !props.isPersonal &&
       css`
-        display: ${(props) => (props.module ? 'none' : 'block')};
+        display: ${(props) => (props.module ? "none" : "block")};
         padding: 3px 20px 0 6px;
       `}
     } */
@@ -61,10 +60,12 @@ const Header = styled.header`
   }
 `;
 
+Header.defaultProps = { theme: Base };
+
 const StyledLink = styled.div`
   display: inline;
   .nav-menu-header_link {
-    color: #7a95b0;
+    color: ${(props) => props.theme.header.linkColor};
     font-size: 13px;
   }
 
@@ -72,23 +73,25 @@ const StyledLink = styled.div`
     text-decoration: none;
   }
   :hover {
-    color: #7a95b0;
+    color: ${(props) => props.theme.header.linkColor};
     -webkit-text-decoration: underline;
     text-decoration: underline;
   }
 `;
 
+StyledLink.defaultProps = { theme: Base };
+
 const versionBadgeProps = {
-  color: '#7A95B0',
-  fontWeight: '600',
-  fontSize: '13px',
+  color: "#7A95B0",
+  fontWeight: "600",
+  fontSize: "13px",
 };
 
 const StyledNavigationIconsWrapper = styled.div`
   height: 20px;
   position: absolute;
-  left: ${isMobile ? '254px' : '280px'};
-  display: ${isMobileOnly ? 'none' : 'flex'};
+  left: ${isMobile ? "254px" : "280px"};
+  display: ${isMobileOnly ? "none" : "flex"};
   justify-content: flex-start;
 
   @media ${tablet} {
@@ -122,9 +125,10 @@ const HeaderComponent = ({
   isAdmin,
   backdropClick,
   isPersonal,
+  theme,
   ...props
 }) => {
-  const { t } = useTranslation('Common');
+  const { t } = useTranslation("Common");
 
   const isNavAvailable = mainModules.length > 0;
 
@@ -159,7 +163,8 @@ const HeaderComponent = ({
         isLoaded={isLoaded}
         isPersonal={isPersonal}
         isAuthenticated={isAuthenticated}
-        className="navMenuHeader hidingHeader">
+        className="navMenuHeader hidingHeader"
+      >
         <LinkWithoutRedirect className="header-logo-wrapper" to={defaultPage}>
           {!isPersonal ? (
             <img alt="logo" src={props.logoUrl} className="header-logo-icon" />
@@ -167,7 +172,10 @@ const HeaderComponent = ({
             <img
               alt="logo"
               className="header-logo-icon"
-              src={combineUrl(AppServerConfig.proxyURL, '/static/images/personal.logo.react.svg')}
+              src={combineUrl(
+                AppServerConfig.proxyURL,
+                "/static/images/personal.logo.react.svg"
+              )}
             />
           )}
         </LinkWithoutRedirect>
@@ -179,7 +187,7 @@ const HeaderComponent = ({
                 <React.Fragment key={item.id}>
                   {item.iconUrl &&
                     !item.separator &&
-                    (item.appName === 'files' || item.appName === 'people') && (
+                    (item.appName === "files" || item.appName === "people") && (
                       <HeaderNavigationIcon
                         key={item.id}
                         id={item.id}
@@ -205,15 +213,16 @@ const HeaderComponent = ({
           opened={isNavOpened}
           onMouseEnter={onNavMouseEnter}
           onMouseLeave={onNavMouseLeave}
-          numberOfModules={numberOfModules}>
+          numberOfModules={numberOfModules}
+        >
           <NavLogoItem opened={isNavOpened} onClick={onLogoClick} />
           <NavItem
             separator={true}
-            key={'nav-products-separator'}
-            data-id={'nav-products-separator'}
+            key={"nav-products-separator"}
+            data-id={"nav-products-separator"}
           />
           {mainModules.map((
-            { id, separator, iconUrl, notifications, link, title, dashed }, //iconName,
+            { id, separator, iconUrl, notifications, link, title, dashed } //iconName,
           ) => (
             <NavItem
               separator={!!separator}
@@ -228,8 +237,9 @@ const HeaderComponent = ({
               onClick={onItemClick}
               onBadgeClick={onBadgeClick}
               url={link}
-              dashed={dashed}>
-              {id === 'settings' ? i18n.t('Common:Settings') : title}
+              dashed={dashed}
+            >
+              {id === "settings" ? i18n.t("Common:Settings") : title}
             </NavItem>
           ))}
           <Box className="version-box">
@@ -237,18 +247,20 @@ const HeaderComponent = ({
               as="a"
               href={`https://github.com/ONLYOFFICE/AppServer/releases`}
               target="_blank"
-              {...versionBadgeProps}>
-              {t('Common:Version')} {version}
+              {...versionBadgeProps}
+            >
+              {t("Common:Version")} {version}
             </Link>
             <Text as="span" {...versionBadgeProps}>
-              {' '}
-              -{' '}
+              {" "}
+              -{" "}
             </Text>
             <StyledLink>
               <LinkWithoutRedirect
-                to={combineUrl(proxyURL, '/about')}
-                className="nav-menu-header_link">
-                {t('Common:About')}
+                to={combineUrl(proxyURL, "/about")}
+                className="nav-menu-header_link"
+              >
+                {t("Common:About")}
               </LinkWithoutRedirect>
             </StyledLink>
           </Box>
@@ -258,7 +270,7 @@ const HeaderComponent = ({
   );
 };
 
-HeaderComponent.displayName = 'Header';
+HeaderComponent.displayName = "Header";
 
 HeaderComponent.propTypes = {
   totalNotifications: PropTypes.number,
@@ -289,12 +301,19 @@ export default inject(({ auth }) => {
     availableModules,
     version,
   } = auth;
-  const { logoUrl, defaultPage, currentProductId, personal: isPersonal } = settingsStore;
+  const {
+    logoUrl,
+    defaultPage,
+    currentProductId,
+    personal: isPersonal,
+    theme,
+  } = settingsStore;
   const { totalNotifications } = moduleStore;
 
   //TODO: restore when chat will complete -> const mainModules = availableModules.filter((m) => !m.isolateMode);
 
   return {
+    theme,
     isPersonal,
     isAdmin,
     defaultPage,
@@ -305,6 +324,6 @@ export default inject(({ auth }) => {
     version,
     isAuthenticated,
     currentProductId,
-    currentProductName: (product && product.title) || '',
+    currentProductName: (product && product.title) || "",
   };
 })(observer(HeaderComponent));

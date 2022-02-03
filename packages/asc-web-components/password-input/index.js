@@ -7,7 +7,7 @@ import { RefreshIcon } from "./svg";
 import Link from "../link";
 import Text from "../text";
 import Tooltip from "../tooltip";
-import Base from "../themes/base";
+
 import {
   Progress,
   CopyLink,
@@ -355,7 +355,6 @@ class PasswordInput extends React.Component {
       placeholder,
       tabIndex,
       maxLength,
-      theme,
       id,
       autoComplete,
     } = this.props;
@@ -382,7 +381,6 @@ class PasswordInput extends React.Component {
           size={size}
           type={type}
           iconSize={16}
-          hoverColor={"#A3A9AE"}
           isIconFill={true}
           onBlur={this.onBlur}
           onKeyDown={this.onKeyDown}
@@ -391,7 +389,6 @@ class PasswordInput extends React.Component {
           tabIndex={tabIndex}
           maxLength={maxLength}
           autoComplete={autoComplete}
-          theme={theme}
         ></InputBlock>
         <TooltipStyle>
           <Tooltip
@@ -560,7 +557,6 @@ PasswordInput.defaultProps = {
   inputType: "password",
   inputName: "passwordInput",
   autoComplete: "new-password",
-  theme: Base,
   isDisabled: false,
   size: "base",
   scale: true,

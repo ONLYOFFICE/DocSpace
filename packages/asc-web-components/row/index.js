@@ -111,8 +111,6 @@ class Row extends React.Component {
           )}
           {renderContext ? (
             <ContextMenuButton
-              color="#A3A9AE"
-              hoverColor="#657077"
               className="expandButton"
               getData={getOptions}
               directionX="right"

@@ -122,7 +122,7 @@ class Form extends React.PureComponent {
   validatePassword = (value) => this.setState({ passwordValid: value });
 
   render() {
-    const { settings, t, greetingTitle } = this.props;
+    const { settings, t, greetingTitle, theme } = this.props;
     const { isLoading, password, passwordEmpty } = this.state;
 
     return (
@@ -133,7 +133,10 @@ class Form extends React.PureComponent {
             src="images/dark_general.png"
             alt="Logo"
           />
-          <Heading className="password-title" color="#116d9d">
+          <Heading
+            className="password-title"
+            color={theme.studio.confirm.change.titleColor}
+          >
             {greetingTitle}
           </Heading>
         </div>
@@ -214,10 +217,12 @@ export default inject(({ auth, setup }) => {
     passwordSettings,
     getSettings,
     getPortalPasswordSettings,
+    theme,
   } = settingsStore;
   const { changePassword } = setup;
 
   return {
+    theme,
     settings: passwordSettings,
     hashSettings,
     greetingTitle: greetingSettings,

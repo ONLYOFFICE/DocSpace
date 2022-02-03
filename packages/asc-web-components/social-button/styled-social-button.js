@@ -33,7 +33,7 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
   width: ${(props) => props.theme.socialButton.width};
   height: ${(props) => props.theme.socialButton.height};
   text-align: ${(props) => props.theme.socialButton.textAlign};
-
+  border: ${(props) => props.theme.socialButton.border};
   touch-callout: none;
   -o-touch-callout: none;
   -moz-touch-callout: none;

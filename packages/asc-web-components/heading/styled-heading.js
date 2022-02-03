@@ -8,12 +8,12 @@ const fontSizeStyle = (props) => props.theme.heading.fontSize[props.size];
 const styleCss = css`
   font-size: ${(props) => fontSizeStyle(props)};
   font-weight: ${(props) => props.theme.heading.fontWeight};
-
-  ${(props) =>
-    props.isInline &&
-    css`
-      display: inline-block;
-    `}
+  color: ${(props) => (props.color ? props.color : props.theme.heading.color)}
+    ${(props) =>
+      props.isInline &&
+      css`
+        display: inline-block;
+      `};
 `;
 
 const StyledHeading = styled.h1`

@@ -8,6 +8,7 @@ import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import { connectedCloudsTitleTranslation } from "../../../helpers/utils";
 import NoUserSelect from "@appserver/components/utils/commonStyles";
+import { Base } from "@appserver/components/themes";
 
 const StyledServicesBlock = styled.div`
   display: grid;
@@ -19,7 +20,7 @@ const StyledServicesBlock = styled.div`
   padding-top: 24px;
 
   .service-item {
-    border: 1px solid #d1d1d1;
+    border: ${(props) => props.theme.filesThirdPartyDialog.border};
     width: 158px;
     height: 40px;
 
@@ -30,7 +31,7 @@ const StyledServicesBlock = styled.div`
 
   img {
     ${NoUserSelect}
-    border: 1px solid #d1d1d1;
+    border: ${(props) => props.theme.filesThirdPartyDialog.border};
     width: 158px;
     height: 40px;
 
@@ -45,6 +46,8 @@ const StyledServicesBlock = styled.div`
     justify-content: center;
   }
 `;
+
+StyledServicesBlock.defaultProps = { theme: Base };
 
 const ServiceItem = (props) => {
   const { capability, t, ...rest } = props;
@@ -64,6 +67,7 @@ const ServiceItem = (props) => {
 const ThirdPartyDialog = (props) => {
   const {
     t,
+    theme,
     i18n,
     tReady,
     isAdmin,
@@ -182,7 +186,11 @@ const ThirdPartyDialog = (props) => {
             <ServiceItem
               capability={sharePointConnectItem}
               onClick={onShowService}
-              src="images/services/logo_sharepoint.svg"
+              src={
+                theme.isBase
+                  ? "images/services/logo_sharepoint.svg"
+                  : "images/services/logo_sharepoint_dark.svg"
+              }
             />
           )}
 
@@ -198,7 +206,11 @@ const ThirdPartyDialog = (props) => {
             <ServiceItem
               capability={sharePointConnectItem}
               onClick={onShowService}
-              src="images/services/logo_onedrive-for-business.svg"
+              src={
+                theme.isBase
+                  ? "images/services/logo_onedrive-for-business.svg"
+                  : "images/services/logo_onedrive-for-business_dark.svg"
+              }
             />
           )}
 
@@ -222,7 +234,11 @@ const ThirdPartyDialog = (props) => {
             <ServiceItem
               capability={kDriveConnectItem}
               onClick={onShowService}
-              src="images/services/logo_kdrive.svg"
+              src={
+                theme.isBase
+                  ? "images/services/logo_kdrive.svg"
+                  : "images/services/logo_kdrive_dark.svg"
+              }
             />
           )}
           {yandexConnectItem && (
@@ -269,9 +285,10 @@ export default inject(({ auth, settingsStore, dialogsStore }) => {
     setConnectDialogVisible,
     setConnectItem,
   } = dialogsStore;
-  const { getOAuthToken } = auth.settingsStore;
+  const { getOAuthToken, theme } = auth.settingsStore;
 
   return {
+    theme: theme,
     visible,
     isAdmin: auth.isAdmin,
     googleConnectItem,

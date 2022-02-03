@@ -189,7 +189,7 @@ class CustomTitles extends React.Component {
   };
 
   render() {
-    const { t } = this.props;
+    const { t, theme } = this.props;
     const {
       isLoadedData,
       greetingTitle,
@@ -221,7 +221,7 @@ class CustomTitles extends React.Component {
                 <Link
                   onClick={this.onRestoreGreetingSettings}
                   type="action"
-                  color="#A3A9AE"
+                  color={theme.studio.settings.common.linkColor}
                 >
                   {t("SetDefaultTitle")}
                 </Link>
@@ -245,9 +245,10 @@ class CustomTitles extends React.Component {
 }
 
 export default inject(({ auth, setup }) => {
-  const { greetingSettings, organizationName } = auth.settingsStore;
+  const { greetingSettings, organizationName, theme } = auth.settingsStore;
   const { setGreetingTitle, restoreGreetingTitle } = setup;
   return {
+    theme,
     greetingSettings,
     organizationName,
     setGreetingTitle,

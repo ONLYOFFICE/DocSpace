@@ -128,7 +128,7 @@ const StyledSecondaryButton = styled(StyledMainButton)`
     height: 16px;
     min-height: 16px;
     path {
-      fill: #fff;
+      fill: ${(props) => props.theme.mainButton.svg.fill};
     }
   }
 `;

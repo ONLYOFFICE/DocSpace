@@ -1,4 +1,5 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import Backdrop from "@appserver/components/backdrop";
 import Heading from "@appserver/components/heading";
@@ -104,7 +105,7 @@ class AddGroupsPanelComponent extends React.Component {
   // }
 
   render() {
-    const { t, visible, accessOptions } = this.props;
+    const { t, visible, accessOptions, theme } = this.props;
     const { accessRight } = this.state;
 
     const zIndex = 310;
@@ -125,7 +126,7 @@ class AddGroupsPanelComponent extends React.Component {
                 size="16"
                 iconName="/static/images/arrow.path.react.svg"
                 onClick={this.onArrowClick}
-                color="A3A9AE"
+                // color={theme.filesPanels.addGroups.iconColor}
               />
               <Heading
                 className="header_aside-panel-header"
@@ -157,7 +158,7 @@ class AddGroupsPanelComponent extends React.Component {
                     directionX="right"
                     onAccessChange={this.onAccessChange}
                     accessOptions={accessOptions}
-                    arrowIconColor="#000000"
+                    arrowIconColor={theme.filesPanels.addGroups.arrowColor}
                   />
                 }
                 showCounter
@@ -176,6 +177,12 @@ AddGroupsPanelComponent.propTypes = {
   onClose: PropTypes.func,
 };
 
-export default withTranslation("SharingPanel")(
-  withLoader(AddGroupsPanelComponent)(<Loaders.DialogAsideLoader isPanel />)
+export default inject(({ auth }) => {
+  return { theme: auth.settingsStore.theme };
+})(
+  observer(
+    withTranslation("SharingPanel")(
+      withLoader(AddGroupsPanelComponent)(<Loaders.DialogAsideLoader isPanel />)
+    )
+  )
 );

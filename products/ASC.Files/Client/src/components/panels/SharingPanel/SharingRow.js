@@ -104,6 +104,7 @@ class SharingRow extends React.Component {
       isLoading,
       internalLink,
       isPersonal,
+      theme,
     } = this.props;
     const { access } = this.state;
 
@@ -167,6 +168,7 @@ class SharingRow extends React.Component {
       <>
         {externalLinkVisible && (
           <LinkRow
+            theme={theme}
             linkText={t("ExternalLink")}
             options={externalLinkOptions}
             externalLinkData={externalLinkData}
@@ -180,6 +182,7 @@ class SharingRow extends React.Component {
           <>
             {internalLinkVisible && (
               <LinkRow
+                theme={theme}
                 linkText={t("InternalLink")}
                 options={internalLinkData}
                 {...this.props}
@@ -188,6 +191,7 @@ class SharingRow extends React.Component {
 
             {!shareLink && (
               <Row
+                theme={theme}
                 className="sharing-row"
                 key={`internal-link-key_${id}`}
                 element={
@@ -200,7 +204,9 @@ class SharingRow extends React.Component {
                           .querySelector("path")
                           .setAttribute(
                             "fill",
-                            isLoading ? "#D0D5DA" : "#a3a9ae"
+                            isLoading
+                              ? theme.filesPanels.sharing.loadingFill
+                              : theme.filesPanels.sharing.fill
                           );
                         svg.setAttribute(
                           "style",
@@ -214,6 +220,7 @@ class SharingRow extends React.Component {
                   ) : (
                     <AccessComboBox
                       t={t}
+                      theme={theme}
                       access={access}
                       directionX="left"
                       onAccessChange={onChangeItemAccess}
@@ -229,6 +236,7 @@ class SharingRow extends React.Component {
                   {!shareLink &&
                     (isOwner && canShareOwnerChange ? (
                       <Link
+                        theme={theme}
                         isHovered
                         type="action"
                         {...onShowChangeOwnerPanelProp}
@@ -236,17 +244,26 @@ class SharingRow extends React.Component {
                         {label ? label : userName ? userName : displayName}
                       </Link>
                     ) : (
-                      <Text truncate className="sharing_panel-text">
+                      <Text
+                        theme={theme}
+                        truncate
+                        className="sharing_panel-text"
+                      >
                         {label ? label : userName ? userName : displayName}
                       </Text>
                     ))}
                   {isOwner ? (
-                    <Text className="sharing_panel-remove-icon" color="#A3A9AE">
+                    <Text
+                      className="sharing_panel-remove-icon"
+                      theme={theme}
+                      color={theme.filesPanels.sharing.color}
+                    >
                       {t("Common:Owner")}
                     </Text>
                   ) : id === isMyId ? (
                     <Text
                       className="sharing_panel-remove-icon"
+                      theme={theme}
                       //color="#A3A9AE"
                     >
                       {t("Common:FullAccess")}
@@ -256,10 +273,11 @@ class SharingRow extends React.Component {
                     !isLocked && (
                       <IconButton
                         iconName="/static/images/remove.react.svg"
+                        theme={theme}
                         id={id}
                         {...onRemoveUserProp}
                         className="sharing_panel-remove-icon"
-                        color="#A3A9AE"
+                        // color={theme.filesPanels.sharing.color}
                         isDisabled={isLoading}
                       />
                     )

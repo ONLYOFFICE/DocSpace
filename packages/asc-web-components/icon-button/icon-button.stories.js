@@ -41,7 +41,6 @@ const Template = (args) => {
 
 export const Default = Template.bind({});
 Default.args = {
-  color: "#d0d5da",
   size: 25,
   iconName: "static/images/search.react.svg",
   isFill: true,

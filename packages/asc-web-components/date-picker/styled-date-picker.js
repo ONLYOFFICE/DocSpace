@@ -18,7 +18,7 @@ const Content = styled.div`
   box-sizing: border-box;
   position: relative;
   width: 100%;
-  background-color: #fff;
+  background-color: ${(props) => props.theme.datePicker.backgroundColor};
   padding: ${(props) => props.theme.datePicker.contentPadding};
 
   .header {
