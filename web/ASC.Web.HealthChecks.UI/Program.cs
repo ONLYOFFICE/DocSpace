@@ -1,25 +1,28 @@
-using System.Threading.Tasks;
+using System;
 
-using ASC.Api.Core;
+using ASC.Web.HealthChecks.UI;
 
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Hosting.WindowsServices;
 
-namespace ASC.Web.HealthChecks.UI
+var options = new WebApplicationOptions
 {
-    public class Program
-    {
-        public async static Task Main(string[] args)
-        {
-            var host = CreateHostBuilder(args).Build();
+    Args = args,
+    ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
+};
 
-            await host.RunAsync();
-        }
+var builder = WebApplication.CreateBuilder(options);
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .UseSystemd()
-                .UseWindowsService()
-                .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
-    }
-}
+builder.Host.UseWindowsService();
+builder.Host.UseSystemd();
+
+var startup = new Startup(builder.Configuration);
+
+startup.ConfigureServices(builder.Services);
+
+var app = builder.Build();
+
+startup.Configure(app, app.Environment);
+
+app.Run();
