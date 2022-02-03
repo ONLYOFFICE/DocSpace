@@ -7,7 +7,7 @@ const CodeInput = (props) => {
 
   const inputsRef = useRef([]);
   const characters = 6;
-  const allowed = "^[0-9]*$";
+  const allowed = "^[A-Za-z0-9]*$";
 
   useEffect(() => {
     inputsRef.current[0].focus();
@@ -31,13 +31,12 @@ const CodeInput = (props) => {
     } else {
       e.target.value = "";
     }
+    onEnter();
   };
 
   const handleOnKeyDown = (e) => {
     const { key } = e;
     const target = e.target;
-
-    //if (key === "Enter") onEnter();
 
     if (key === "Backspace") {
       if (target.value === "" && target.previousElementSibling !== null) {
@@ -52,7 +51,6 @@ const CodeInput = (props) => {
         target.value = "";
       }
     }
-    onEnter();
   };
 
   const handleOnFocus = (e) => {
