@@ -1171,7 +1171,7 @@ namespace ASC.Web.Files
             return await fileDao.SaveFileAsync(file, stream);
         }
 
-        private Task<File<T>> CreateFileFromUriAsync<T>(Folder<T> folder, string fileUri, string fileTitle)
+        private async Task<File<T>> CreateFileFromUriAsync<T>(Folder<T> folder, string fileUri, string fileTitle)
         {
             if (string.IsNullOrEmpty(fileTitle))
                 fileTitle = Path.GetFileName(HttpUtility.UrlDecode(fileUri));
@@ -1194,19 +1194,20 @@ namespace ASC.Web.Files
 
             var fileDao = DaoFactory.GetFileDao<T>();
             using var httpClient = new HttpClient();
-            using var response = httpClient.Send(request);
-            using var fileStream = httpClient.Send(request).Content.ReadAsStream();
+            using var response = await httpClient.SendAsync(request);
+            using var secondResponse = await httpClient.SendAsync(request);
+            var fileStream = secondResponse.Content.ReadAsStream();
 
             if (fileStream.CanSeek)
             {
                 file.ContentLength = fileStream.Length;
-                return fileDao.SaveFileAsync(file, fileStream);
+                return await fileDao.SaveFileAsync(file, fileStream);
             }
             else
             {
                 using var buffered = TempStream.GetBuffered(fileStream);
                 file.ContentLength = buffered.Length;
-                return fileDao.SaveFileAsync(file, buffered);
+                return await fileDao.SaveFileAsync(file, buffered);
             }
 
 

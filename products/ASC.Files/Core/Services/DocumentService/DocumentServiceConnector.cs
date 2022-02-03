@@ -277,7 +277,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     request1.RequestUri = new Uri(convertedFileUri);
 
                     using var httpClient = new HttpClient();
-                    using var response = httpClient.Send(request1);
+                    using var response = await httpClient.SendAsync(request1);
 
                     if (response.StatusCode != HttpStatusCode.OK)
                     {

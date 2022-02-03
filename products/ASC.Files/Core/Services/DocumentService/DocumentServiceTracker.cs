@@ -266,7 +266,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     return await ProcessSaveAsync(fileId, fileData);
 
                 case TrackerStatus.MailMerge:
-                    return ProcessMailMerge(fileId, fileData);
+                    return await ProcessMailMergeAsync(fileId, fileData);
             }
             return null;
         }
@@ -468,7 +468,7 @@ namespace ASC.Web.Files.Services.DocumentService
             return result;
         }
 
-        private TrackResponse ProcessMailMerge<T>(T fileId, TrackerData fileData)
+        private async Task<TrackResponse> ProcessMailMergeAsync<T>(T fileId, TrackerData fileData)
         {
             if (fileData.Users == null || fileData.Users.Count == 0 || !Guid.TryParse(fileData.Users[0], out var userId))
             {
@@ -506,17 +506,17 @@ namespace ASC.Web.Files.Services.DocumentService
                             ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
                         }
 
-                        using (var responseDownload = httpClient.Send(requestDownload))
-                        using (var streamDownload = responseDownload.Content.ReadAsStream())
+                        using (var responseDownload = await httpClient.SendAsync(requestDownload))
+                        using (var streamDownload = await responseDownload.Content.ReadAsStreamAsync())
                         using (var downloadStream = new ResponseStream(streamDownload, streamDownload.Length))
                         {
                             const int bufferSize = 2048;
                             var buffer = new byte[bufferSize];
                             int readed;
                             attach = new MemoryStream();
-                            while ((readed = downloadStream.Read(buffer, 0, bufferSize)) > 0)
+                            while ((readed = await downloadStream.ReadAsync(buffer, 0, bufferSize)) > 0)
                             {
-                                attach.Write(buffer, 0, readed);
+                                await attach.WriteAsync(buffer, 0, readed);
                             }
                             attach.Position = 0;
                         }
@@ -546,12 +546,12 @@ namespace ASC.Web.Files.Services.DocumentService
                         }
 
 
-                        using (var httpResponse = httpClient.Send(httpRequest))
-                        using (var stream = httpResponse.Content.ReadAsStream())
+                        using (var httpResponse = await httpClient.SendAsync(httpRequest))
+                        using (var stream = await httpResponse.Content.ReadAsStreamAsync())
                             if (stream != null)
                                 using (var reader = new StreamReader(stream, Encoding.GetEncoding(Encoding.UTF8.WebName)))
                                 {
-                                    message = reader.ReadToEnd();
+                                    message = await reader.ReadToEndAsync();
                                 }
                         break;
                 }
@@ -567,7 +567,7 @@ namespace ASC.Web.Files.Services.DocumentService
                         Attach = attach
                     })
                 {
-                    var response = MailMergeTaskRunner.Run(mailMergeTask);
+                    var response = await MailMergeTaskRunner.RunAsync(mailMergeTask);
                     Logger.InfoFormat("DocService mailMerge {0}/{1} send: {2}",
                                              fileData.MailMerge.RecordIndex + 1, fileData.MailMerge.RecordCount, response);
                 }

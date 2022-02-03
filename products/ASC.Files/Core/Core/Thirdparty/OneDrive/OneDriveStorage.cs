@@ -121,11 +121,11 @@ namespace ASC.Files.Thirdparty.OneDrive
             return (parentPath ?? "") + "/" + (name ?? "");
         }
 
-        public Item GetItem(string itemId)
+        public Task<Item> GetItemAsync(string itemId)
         {
             try
             {
-                return GetItemRequest(itemId).Request().GetAsync().Result;
+                return GetItemRequest(itemId).Request().GetAsync();
             }
             catch (Exception ex)
             {
@@ -136,51 +136,11 @@ namespace ASC.Files.Thirdparty.OneDrive
                 }
                 throw;
             }
-        }
-
-        public async Task<Item> GetItemAsync(string itemId)
-        {
-            try
-            {
-                return await GetItemRequest(itemId).Request().GetAsync();
-            }
-            catch (Exception ex)
-            {
-                var serviceException = (ServiceException)ex.InnerException;
-                if (serviceException != null && serviceException.StatusCode == HttpStatusCode.NotFound)
-                {
-                    return null;
-                }
-                throw;
-            }
-        }
-
-        public List<Item> GetItems(string folderId, int limit = 500)
-        {
-            return new List<Item>(GetItemRequest(folderId).Children.Request().GetAsync().Result);
         }
 
         public async Task<List<Item>> GetItemsAsync(string folderId, int limit = 500)
         {
             return new List<Item>(await GetItemRequest(folderId).Children.Request().GetAsync());
-        }
-
-        public Stream DownloadStream(Item file, int offset = 0)
-        {
-            if (file == null || file.File == null) throw new ArgumentNullException("file");
-
-            var fileStream = OnedriveClient
-                .Drive
-                .Items[file.Id]
-                .Content
-                .Request()
-                .GetAsync()
-                .Result;
-
-            if (fileStream != null && offset > 0)
-                fileStream.Seek(offset, SeekOrigin.Begin);
-
-            return fileStream;
         }
 
         public async Task<Stream> DownloadStreamAsync(Item file, int offset = 0)
@@ -200,21 +160,6 @@ namespace ASC.Files.Thirdparty.OneDrive
             return fileStream;
         }
 
-        public Item CreateFolder(string title, string parentId)
-        {
-            var newFolderItem = new Item
-            {
-                Folder = new Folder(),
-                Name = title
-            };
-
-            return GetItemRequest(parentId)
-                .Children
-                .Request()
-                .AddAsync(newFolderItem)
-                .Result;
-        }
-
         public Task<Item> CreateFolderAsync(string title, string parentId)
         {
             var newFolderItem = new Item
@@ -229,17 +174,6 @@ namespace ASC.Files.Thirdparty.OneDrive
                 .AddAsync(newFolderItem);
         }
 
-        public Item CreateFile(Stream fileStream, string title, string parentPath)
-        {
-            return OnedriveClient
-                .Drive
-                .Root
-                .ItemWithPath(MakeOneDrivePath(parentPath, title))
-                .Content
-                .Request()
-                .PutAsync<Item>(fileStream)
-                .Result;
-        }
 
         public Task<Item> CreateFileAsync(Stream fileStream, string title, string parentPath)
         {
@@ -252,15 +186,6 @@ namespace ASC.Files.Thirdparty.OneDrive
                 .PutAsync<Item>(fileStream);
         }
 
-        public void DeleteItem(Item item)
-        {
-            OnedriveClient
-                .Drive
-                .Items[item.Id]
-                .Request()
-                .DeleteAsync();
-        }
-
         public Task DeleteItemAsync(Item item)
         {
             return OnedriveClient
@@ -268,18 +193,6 @@ namespace ASC.Files.Thirdparty.OneDrive
                 .Items[item.Id]
                 .Request()
                 .DeleteAsync();
-        }
-
-        public Item MoveItem(string itemId, string newItemName, string toFolderId)
-        {
-            var updateItem = new Item { ParentReference = new ItemReference { Id = toFolderId }, Name = newItemName };
-
-            return OnedriveClient
-                .Drive
-                .Items[itemId]
-                .Request()
-                .UpdateAsync(updateItem)
-                .Result;
         }
 
         public Task<Item> MoveItemAsync(string itemId, string newItemName, string toFolderId)
@@ -291,19 +204,6 @@ namespace ASC.Files.Thirdparty.OneDrive
                 .Items[itemId]
                 .Request()
                 .UpdateAsync(updateItem);
-        }
-
-        public Item CopyItem(string itemId, string newItemName, string toFolderId)
-        {
-            var copyMonitor = OnedriveClient
-                .Drive
-                .Items[itemId]
-                .Copy(newItemName, new ItemReference { Id = toFolderId })
-                .Request()
-                .PostAsync()
-                .Result;
-
-            return copyMonitor.PollForOperationCompletionAsync(null, CancellationToken.None).Result;
         }
 
         public async Task<Item> CopyItemAsync(string itemId, string newItemName, string toFolderId)
@@ -318,17 +218,6 @@ namespace ASC.Files.Thirdparty.OneDrive
             return await copyMonitor.PollForOperationCompletionAsync(null, CancellationToken.None);
         }
 
-        public Item RenameItem(string itemId, string newName)
-        {
-            var updateItem = new Item { Name = newName };
-            return OnedriveClient
-                .Drive
-                .Items[itemId]
-                .Request()
-                .UpdateAsync(updateItem)
-                .Result;
-        }
-
         public Task<Item> RenameItemAsync(string itemId, string newName)
         {
             var updateItem = new Item { Name = newName };
@@ -337,17 +226,6 @@ namespace ASC.Files.Thirdparty.OneDrive
                 .Items[itemId]
                 .Request()
                 .UpdateAsync(updateItem);
-        }
-
-        public Item SaveStream(string fileId, Stream fileStream)
-        {
-            return OnedriveClient
-                .Drive
-                .Items[fileId]
-                .Content
-                .Request()
-                .PutAsync<Item>(fileStream)
-                .Result;
         }
 
         public Task<Item> SaveStreamAsync(string fileId, Stream fileStream)
@@ -367,8 +245,7 @@ namespace ASC.Files.Thirdparty.OneDrive
                        : OnedriveClient.Drive.Items[itemId];
         }
 
-
-        public ResumableUploadSession CreateResumableSession(Item onedriveFile, long contentLength)
+        public async Task<ResumableUploadSession> CreateResumableSessionAsync(Item onedriveFile, long contentLength)
         {
             if (onedriveFile == null) throw new ArgumentNullException("onedriveFile");
 
@@ -389,45 +266,8 @@ namespace ASC.Files.Thirdparty.OneDrive
             var uploadSession = new ResumableUploadSession(onedriveFile.Id, folderId, contentLength);
 
             using (var httpClient = new HttpClient())
-            using (var response = httpClient.Send(request))
-            using (var responseStream = response.Content.ReadAsStream())
-            {
-                if (responseStream != null)
-                {
-                    using var readStream = new StreamReader(responseStream);
-                    var responseString = readStream.ReadToEnd();
-                    var responseJson = JObject.Parse(responseString);
-                    uploadSession.Location = responseJson.Value<string>("uploadUrl");
-                }
-            }
-
-            uploadSession.Status = ResumableUploadSessionStatus.Started;
-
-            return uploadSession;
-        }
-
-        public async Task<ResumableUploadSession> CreateResumableSessionAsync(Item onedriveFile, long contentLength)
-        {
-            if (onedriveFile == null) throw new ArgumentNullException("onedriveFile");
-
-            var folderId = onedriveFile.ParentReference.Id;
-            var fileName = onedriveFile.Name;
-
-            var uploadUriBuilder = new UriBuilder(OneDriveLoginProvider.OneDriveApiUrl)
-            {
-                Path = "/" + ApiVersion + "/drive/items/" + folderId + ":/" + fileName + ":/oneDrive.createUploadSession"
-            };
-
-            var request = WebRequest.Create(uploadUriBuilder.Uri);
-            request.Method = "POST";
-            request.ContentLength = 0;
-
-            request.ContentType = "application/json; charset=UTF-8";
-            request.Headers.Add("Authorization", "Bearer " + AccessToken);
-
-            var uploadSession = new ResumableUploadSession(onedriveFile.Id, folderId, contentLength);
-            using (var response = await request.GetResponseAsync())
-            using (var responseStream = response.GetResponseStream())
+            using (var response = await httpClient.SendAsync(request))
+            using (var responseStream = await response.Content.ReadAsStreamAsync())
             {
                 if (responseStream != null)
                 {
@@ -443,7 +283,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             return uploadSession;
         }
 
-        public void Transfer(ResumableUploadSession oneDriveSession, Stream stream, long chunkLength)
+        public async Task TransferAsync(ResumableUploadSession oneDriveSession, Stream stream, long chunkLength)
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");
@@ -462,7 +302,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             request.Content = new StreamContent(stream);
 
             using var httpClient = new HttpClient();
-            using var response = httpClient.Send(request);
+            using var response = await httpClient.SendAsync(request);
 
             if (response.StatusCode != HttpStatusCode.Created && response.StatusCode != HttpStatusCode.OK)
             {
@@ -472,48 +312,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             {
                 oneDriveSession.Status = ResumableUploadSessionStatus.Completed;
 
-                using var responseStream = response.Content.ReadAsStream();
-                if (responseStream == null) return;
-                using var readStream = new StreamReader(responseStream);
-                var responseString = readStream.ReadToEnd();
-                var responseJson = JObject.Parse(responseString);
-
-                oneDriveSession.FileId = responseJson.Value<string>("id");
-            }
-        }
-
-        public async Task TransferAsync(ResumableUploadSession oneDriveSession, Stream stream, long chunkLength)
-        {
-            if (stream == null)
-                throw new ArgumentNullException("stream");
-
-            if (oneDriveSession.Status != ResumableUploadSessionStatus.Started)
-                throw new InvalidOperationException("Can't upload chunk for given upload session.");
-
-            var request = WebRequest.Create(oneDriveSession.Location);
-            request.Method = "PUT";
-            request.ContentLength = chunkLength;
-            request.Headers.Add("Authorization", "Bearer " + AccessToken);
-            request.Headers.Add("Content-Range", string.Format("bytes {0}-{1}/{2}",
-                                                               oneDriveSession.BytesTransfered,
-                                                               oneDriveSession.BytesTransfered + chunkLength - 1,
-                                                               oneDriveSession.BytesToTransfer));
-
-            using (var requestStream = await request.GetRequestStreamAsync())
-            {
-                await stream.CopyToAsync(requestStream);
-            }
-
-            using var response = (HttpWebResponse)await request.GetResponseAsync();
-            if (response.StatusCode != HttpStatusCode.Created && response.StatusCode != HttpStatusCode.OK)
-            {
-                oneDriveSession.BytesTransfered += chunkLength;
-            }
-            else
-            {
-                oneDriveSession.Status = ResumableUploadSessionStatus.Completed;
-
-                using var responseStream = response.GetResponseStream();
+                using var responseStream = await response.Content.ReadAsStreamAsync();
                 if (responseStream == null) return;
                 using var readStream = new StreamReader(responseStream);
                 var responseString = await readStream.ReadToEndAsync();

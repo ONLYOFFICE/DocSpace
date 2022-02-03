@@ -872,7 +872,7 @@ namespace ASC.Web.Files.Utils
 
             try
             {
-                using var response = httpClient.Send(request);
+                using var response = await httpClient.SendAsync(request);
                 using var convertedFileStream = new ResponseStream(response);
                 newFile.ContentLength = convertedFileStream.Length;
                 newFile = await fileDao.SaveFileAsync(newFile, convertedFileStream);

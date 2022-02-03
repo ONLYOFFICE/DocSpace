@@ -723,7 +723,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             return null;
         }
 
-        private Task<string> CreateFileAsync(string contentUrl, string fileName, string folderId, Token token)
+        private async Task<string> CreateFileAsync(string contentUrl, string fileName, string folderId, Token token)
         {
             if (string.IsNullOrEmpty(contentUrl))
             {
@@ -736,9 +736,9 @@ namespace ASC.Web.Files.ThirdPartyApp
             request.RequestUri = new Uri(contentUrl);
 
             using var httpClient = new HttpClient();
-            using var response = httpClient.Send(request);
+            using var response = await httpClient.SendAsync(request);
             using var content = new ResponseStream(response);
-            return CreateFileAsync(content, fileName, folderId, token);
+            return await CreateFileAsync(content, fileName, folderId, token);
         }       
 
         private async Task<string> CreateFileAsync(Stream content, string fileName, string folderId, Token token)

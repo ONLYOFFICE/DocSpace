@@ -370,7 +370,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             if (!(onedriveFile is ErrorItem))
             {
                 var storage = await ProviderInfo.StorageAsync;
-                storage.DeleteItem(onedriveFile);
+                await storage.DeleteItemAsync(onedriveFile);
             }
 
             await ProviderInfo.CacheResetAsync(onedriveFile.Id).ConfigureAwait(false);
