@@ -77,7 +77,15 @@ namespace ASC.ClearEvents.Services
             return Task.CompletedTask;
         }
 
-        public void Dispose() => _timer?.Dispose();
+        public void Dispose()
+        {
+            var handle = new AutoResetEvent(false);
+
+            if ((bool)!(_timer?.Dispose(handle)))
+                throw new Exception("Timer already disposed");
+
+            handle.WaitOne();
+        }
 
         private void DeleteOldEvents(object state)
         {
