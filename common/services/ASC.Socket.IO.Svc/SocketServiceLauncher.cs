@@ -242,7 +242,7 @@ namespace ASC.Socket.IO.Svc
             if (attempt >= ReconnectAttempts)
             {
                 StopPing();
-                StartNode();
+                Process.GetCurrentProcess().Kill();
             }
         }
 
