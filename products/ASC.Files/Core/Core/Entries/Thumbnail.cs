@@ -14,9 +14,6 @@
  *
 */
 
-
-using System.Runtime.Serialization;
-
 namespace ASC.Files.Core
 {
     [DataContract(Namespace = "")]

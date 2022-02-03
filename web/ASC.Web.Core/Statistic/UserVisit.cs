@@ -23,9 +23,6 @@
  *
 */
 
-
-using System;
-
 namespace ASC.Web.Studio.Core.Statistic
 {
     public class UserVisit

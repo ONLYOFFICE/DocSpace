@@ -23,11 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Xml.Linq;
-
 namespace ASC.Data.Backup
 {
     public interface IBackupProvider

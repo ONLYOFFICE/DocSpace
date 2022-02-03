@@ -23,16 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Data.Storage;
-using ASC.Data.Storage.Configuration;
-
 namespace ASC.Data.Backup.Storage
 {
     [Scope]

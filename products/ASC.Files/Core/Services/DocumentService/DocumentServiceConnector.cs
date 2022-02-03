@@ -24,30 +24,6 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Net;
-using System.Net.Http;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common;
-using ASC.Core.Tenants;
-using ASC.Files.Core.Resources;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Classes;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json;
-
-using static ASC.Web.Core.Files.DocumentService;
-
 using CommandMethod = ASC.Web.Core.Files.DocumentService.CommandMethod;
 
 namespace ASC.Web.Files.Services.DocumentService

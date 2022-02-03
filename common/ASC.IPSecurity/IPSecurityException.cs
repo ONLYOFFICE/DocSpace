@@ -23,10 +23,6 @@
  *
 */
 
-
-using System;
-using System.Runtime.Serialization;
-
 namespace ASC.IPSecurity
 {
     public class IPSecurityException : Exception

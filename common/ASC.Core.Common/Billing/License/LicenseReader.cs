@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-using System.IO;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Core.Billing
 {
     [Scope]

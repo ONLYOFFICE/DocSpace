@@ -23,9 +23,6 @@
  *
 */
 
-
-using System;
-
 namespace ASC.Data.Backup.Exceptions
 {
     public class DbBackupException : Exception

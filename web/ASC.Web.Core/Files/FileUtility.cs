@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-
-using ASC.Common;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-
-using Microsoft.Extensions.Configuration;
-
 namespace ASC.Web.Core.Files
 {
     [Singletone]

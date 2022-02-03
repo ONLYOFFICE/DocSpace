@@ -23,20 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.ElasticSearch.Core;
-
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.ElasticSearch.Service
 {
     [Singletone(Additional = typeof(ServiceExtension))]

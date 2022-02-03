@@ -1,42 +1,6 @@
-﻿using System;
-using System.Reflection;
-using System.Text.Json.Serialization;
+﻿using StackExchange.Redis.Extensions.Newtonsoft;
 
-using ASC.Api.Core.Auth;
-using ASC.Api.Core.Convention;
-using ASC.Api.Core.Core;
-using ASC.Api.Core.Middleware;
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.DependencyInjection;
-using ASC.Common.Logging;
-using ASC.Common.Mapping;
-using ASC.Common.Utils;
-using ASC.Webhooks.Core;
-
-using Autofac;
-
-using HealthChecks.UI.Client;
-
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-
-using NLog;
-using NLog.Extensions.Logging;
-
-using StackExchange.Redis.Extensions.Core.Configuration;
-using StackExchange.Redis.Extensions.Newtonsoft;
+using JsonConverter = System.Text.Json.Serialization.JsonConverter;
 
 namespace ASC.Api.Core
 {

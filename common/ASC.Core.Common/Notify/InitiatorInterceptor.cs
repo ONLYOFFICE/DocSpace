@@ -23,12 +23,6 @@
  *
 */
 
-
-using System.Linq;
-
-using ASC.Notify.Engine;
-using ASC.Notify.Recipients;
-
 namespace ASC.Notify
 {
     public class InitiatorInterceptor : SendInterceptorSkeleton

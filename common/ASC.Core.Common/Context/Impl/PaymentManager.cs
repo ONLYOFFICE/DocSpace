@@ -23,23 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Net.Http;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading;
-using System.Web;
-
-using ASC.Common;
-using ASC.Core.Billing;
-
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Configuration;
-
-
 namespace ASC.Core
 {
     [Scope]

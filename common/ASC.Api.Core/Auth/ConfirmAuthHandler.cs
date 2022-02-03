@@ -1,19 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Security.Authentication;
-using System.Security.Claims;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Security.Cryptography;
-
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+﻿using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Api.Core.Auth
 {

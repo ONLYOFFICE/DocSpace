@@ -1,13 +1,4 @@
-﻿using ASC.Api.Core.Core;
-
-using HealthChecks.UI.Client;
-
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace ASC.Api.Core
+﻿namespace ASC.Api.Core
 {
     public class BaseWorkerStartup
     {

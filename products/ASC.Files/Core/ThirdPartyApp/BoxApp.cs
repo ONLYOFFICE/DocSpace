@@ -23,54 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Security;
-using System.Text;
-using System.Threading;
-using System.Web;
-
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Common.Web;
-using ASC.Core;
-using ASC.Core.Common;
-using ASC.Core.Common.Configuration;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-using ASC.FederatedLogin;
-using ASC.FederatedLogin.Helpers;
-using ASC.FederatedLogin.LoginProviders;
-using ASC.Files.Core;
-using ASC.Files.Core.Resources;
-using ASC.MessagingSystem;
-using ASC.Security.Cryptography;
-using ASC.Web.Core;
-using ASC.Web.Core.Files;
-using ASC.Web.Core.Users;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Core;
-using ASC.Web.Files.HttpHandlers;
-using ASC.Web.Files.Services.DocumentService;
-using ASC.Web.Studio.Core;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json.Linq;
-
-using SecurityContext = ASC.Core.SecurityContext;
-
 namespace ASC.Web.Files.ThirdPartyApp
 {
     public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider

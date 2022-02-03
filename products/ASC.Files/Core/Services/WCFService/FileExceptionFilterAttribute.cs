@@ -23,20 +23,6 @@
  *
 */
 
-
-
-
-using System;
-using System.Diagnostics;
-using System.Net;
-
-using ASC.Common.Logging;
-using ASC.Files.Core.Resources;
-
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Web.Files.Services.WCFService
 {
     class FileExceptionFilterAttribute : IExceptionFilter

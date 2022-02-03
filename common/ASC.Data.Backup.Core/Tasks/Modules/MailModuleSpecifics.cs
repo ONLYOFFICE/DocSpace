@@ -23,22 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-
-using ASC.Common.Logging;
-using ASC.Data.Backup.Tasks.Data;
-using ASC.Data.Storage;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Data.Backup.Tasks.Modules
 {
     internal class MailModuleSpecifics : ModuleSpecificsBase

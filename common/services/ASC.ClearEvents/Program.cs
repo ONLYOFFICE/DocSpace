@@ -23,29 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-
-using ASC.Api.Core;
-using ASC.ClearEvents.Services;
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.DependencyInjection;
-using ASC.Common.Utils;
-
-using Autofac;
-using Autofac.Extensions.DependencyInjection;
-
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Hosting.WindowsServices;
-
-using StackExchange.Redis.Extensions.Core.Configuration;
-
 var options = new WebApplicationOptions
 {
     Args = args,

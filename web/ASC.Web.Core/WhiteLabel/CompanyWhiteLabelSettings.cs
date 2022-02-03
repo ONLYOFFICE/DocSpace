@@ -23,16 +23,6 @@
  *
 */
 
-
-using System;
-using System.Text.Json.Serialization;
-
-using ASC.Core;
-using ASC.Core.Common.Settings;
-
-using Microsoft.Extensions.DependencyInjection;
-
-
 namespace ASC.Web.Core.WhiteLabel
 {
     public class CompanyWhiteLabelSettingsWrapper

@@ -24,10 +24,8 @@
 */
 
 
-using System;
-using System.Diagnostics;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using JsonIgnoreAttribute = System.Text.Json.Serialization.JsonIgnoreAttribute;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ASC.FederatedLogin
 {

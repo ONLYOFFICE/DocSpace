@@ -24,21 +24,7 @@
 */
 
 
-using System;
-using System.Globalization;
-using System.Net.Mail;
-using System.Text;
-using System.Text.RegularExpressions;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-using ASC.MessagingSystem;
-using ASC.Web.Core.PublicResources;
-using ASC.Web.Core.Utility;
-using ASC.Web.Studio.Core.Notify;
+using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Core.Users
 {

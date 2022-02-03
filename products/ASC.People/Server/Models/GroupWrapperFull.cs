@@ -23,16 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Users;
-
 namespace ASC.Web.Api.Models
 {
     public class GroupWrapperFull

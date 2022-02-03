@@ -23,9 +23,6 @@
  *
 */
 
-
-using System;
-
 namespace ASC.Notify.Patterns
 {
     public class Pattern : IPattern

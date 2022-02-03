@@ -23,10 +23,6 @@
  *
 */
 
-
-using System.Net;
-using System.Net.Sockets;
-
 namespace ASC.IPSecurity
 {
     class IPAddressRange

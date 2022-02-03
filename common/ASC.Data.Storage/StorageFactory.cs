@@ -23,24 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Common.Configuration;
-using ASC.Core.Common.Settings;
-using ASC.Data.Storage.Configuration;
-using ASC.Data.Storage.DiscStorage;
-using ASC.Data.Storage.GoogleCloud;
-using ASC.Data.Storage.RackspaceCloud;
-using ASC.Data.Storage.S3;
-
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Data.Storage
 {
     [Singletone(Additional = typeof(StorageConfigExtension))]

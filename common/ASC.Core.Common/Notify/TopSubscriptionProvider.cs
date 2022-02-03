@@ -23,13 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
-using ASC.Notify.Recipients;
-
-
 namespace ASC.Notify.Model
 {
     public class TopSubscriptionProvider : ISubscriptionProvider

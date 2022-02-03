@@ -23,26 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Utils;
-using ASC.Notify.Messages;
-using ASC.Notify.Patterns;
-
-using MailKit.Security;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
-using MimeKit;
-
 namespace ASC.Core.Notify.Senders
 {
     [Singletone(Additional = typeof(SmtpSenderExtension))]

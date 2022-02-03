@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-using ASC.Core.Common.EF.Model;
-
-using Microsoft.EntityFrameworkCore;
-
 namespace ASC.Web.Studio.Core.Statistic
 {
     [Scope]

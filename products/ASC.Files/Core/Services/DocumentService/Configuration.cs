@@ -23,38 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Web;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Common;
-using ASC.Core.Common.Configuration;
-using ASC.Core.Common.Settings;
-using ASC.Core.Users;
-using ASC.FederatedLogin.LoginProviders;
-using ASC.Files.Core;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
-using ASC.Web.Core.Files;
-using ASC.Web.Core.Users;
-using ASC.Web.Core.WhiteLabel;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Helpers;
-using ASC.Web.Files.Services.WCFService;
-using ASC.Web.Files.ThirdPartyApp;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Web.Files.Services.DocumentService
 {
     public enum EditorType

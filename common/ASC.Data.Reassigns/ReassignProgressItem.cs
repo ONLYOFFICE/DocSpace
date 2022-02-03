@@ -24,28 +24,6 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Threading;
-//using System.Web;
-using ASC.Core;
-using ASC.Core.Users;
-using ASC.MessagingSystem;
-//using ASC.Web.CRM.Core;
-using ASC.Web.Core.Users;
-//using ASC.Web.Files.Services.WCFService;
-//using ASC.Web.Projects.Core.Engine;
-using ASC.Web.Studio.Core.Notify;
-//using Autofac;
-//using CrmDaoFactory = ASC.CRM.Core.Dao.DaoFactory;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Primitives;
-
 namespace ASC.Data.Reassigns
 {
     [Transient]

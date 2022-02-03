@@ -23,12 +23,6 @@
  *
 */
 
-
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Data.Backup.Tasks.Data;
-
 namespace ASC.Data.Backup.Tasks.Modules
 {
     public class AuditModuleSpecifics : ModuleSpecificsBase

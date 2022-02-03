@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore.Migrations;
-
 namespace ASC.Core.Common.Migrations.MySql.TelegramDbContextMySql
 {
     public partial class TelegramDbContextMySql : Migration

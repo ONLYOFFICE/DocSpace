@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-
-namespace ASC.Core.Common.Migrations.MySql.FilesDbContextMySql
+﻿namespace ASC.Core.Common.Migrations.MySql.FilesDbContextMySql
 {
     public partial class FilesDbContextMySql : Migration
     {

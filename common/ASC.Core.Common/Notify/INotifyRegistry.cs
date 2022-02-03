@@ -23,13 +23,6 @@
  *
 */
 
-
-using ASC.Notify.Channels;
-using ASC.Notify.Model;
-using ASC.Notify.Sinks;
-
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Notify
 {
     public interface INotifyRegistry

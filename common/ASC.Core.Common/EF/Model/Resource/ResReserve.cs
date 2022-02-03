@@ -1,7 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
-
-namespace ASC.Core.Common.EF.Model.Resource
+﻿namespace ASC.Core.Common.EF.Model.Resource
 {
     public class ResReserve
     {

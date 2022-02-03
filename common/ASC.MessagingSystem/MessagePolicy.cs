@@ -23,15 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-
-using Microsoft.Extensions.Configuration;
-
 namespace ASC.MessagingSystem
 {
     [Singletone]

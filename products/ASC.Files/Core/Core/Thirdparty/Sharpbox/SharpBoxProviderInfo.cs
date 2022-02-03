@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-
-using AppLimit.CloudComputing.SharpBox;
-using AppLimit.CloudComputing.SharpBox.Exceptions;
-using AppLimit.CloudComputing.SharpBox.StorageProvider;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Files.Core;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Files.Thirdparty.Sharpbox
 {
     [Transient]

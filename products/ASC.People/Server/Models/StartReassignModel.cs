@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ASC.People.Models
+﻿namespace ASC.People.Models
 {
     public class StartReassignModel
     {

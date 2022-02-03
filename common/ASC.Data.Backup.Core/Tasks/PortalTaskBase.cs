@@ -23,21 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using ASC.Common.Logging;
-using ASC.Data.Backup.Tasks.Modules;
-using ASC.Data.Storage;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Data.Backup.Tasks
 {
     public class ProgressChangedEventArgs : EventArgs

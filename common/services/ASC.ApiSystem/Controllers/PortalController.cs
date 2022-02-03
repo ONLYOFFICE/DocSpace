@@ -23,38 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Security;
-
-using ASC.ApiSystem.Classes;
-using ASC.ApiSystem.Models;
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Utils;
-using ASC.Core;
-using ASC.Core.Billing;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-using ASC.Security.Cryptography;
-using ASC.Web.Core.Helpers;
-using ASC.Web.Core.Users;
-using ASC.Web.Core.Utility;
-using ASC.Web.Core.Utility.Settings;
-
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json.Linq;
-
-
 namespace ASC.ApiSystem.Controllers
 {
     [Scope]

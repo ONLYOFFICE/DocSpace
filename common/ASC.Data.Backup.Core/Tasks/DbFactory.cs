@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-using System.Configuration;
-using System.Data;
-using System.Data.Common;
-
-using ASC.Common;
-using ASC.Common.Utils;
-
-using Microsoft.Extensions.Configuration;
-
-using MySql.Data.MySqlClient;
-
 namespace ASC.Data.Backup.Tasks
 {
     [Scope]
