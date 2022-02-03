@@ -23,7 +23,7 @@
  *
 */
 
-namespace ASC.AuditTrail.Data.Repositories;
+namespace ASC.AuditTrail.Repositories;
 
 [Scope]
 public class LoginEventsRepository

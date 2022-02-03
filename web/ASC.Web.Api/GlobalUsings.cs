@@ -8,12 +8,13 @@ global using System.Security;
 global using System.Security.Authentication;
 global using System.Threading;
 global using System.Web;
+global using System.Text.Json.Serialization;
 
 global using ASC.Api.Core;
 global using ASC.Api.Security;
 global using ASC.Api.Utils;
 global using ASC.AuditTrail;
-global using ASC.AuditTrail.Data;
+global using ASC.AuditTrail.Models;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.Logging;
@@ -47,6 +48,7 @@ global using ASC.Web.Studio.Core.SMS;
 global using ASC.Web.Studio.Core.TFA;
 global using ASC.Web.Studio.UserControls.Management;
 global using ASC.Web.Studio.Utility;
+global using ASC.AuditTrail.Repositories;
 
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Http;
