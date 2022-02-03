@@ -79,7 +79,6 @@ class FilesStore {
 
       if (this.isLoading) return;
 
-      //selectedFolderStore.id === folderId && this.fetchFiles(folderId);
       switch (opt?.cmd) {
         case "create":
           if (opt?.type == "file" && opt?.id) {
@@ -88,7 +87,13 @@ class FilesStore {
 
             const file = JSON.parse(opt?.data);
 
-            this.setFiles([file, ...this.files]);
+            const newFiles = [file, ...this.files];
+
+            if (newFiles.length > this.filter.pageCount) {
+              newFiles.pop(); // Remove last
+            }
+
+            this.setFiles(newFiles);
           }
           break;
         case "delete":
@@ -101,6 +106,13 @@ class FilesStore {
                 return index !== foundIndex;
               })
             );
+          }
+          break;
+        case "refresh":
+          if (opt?.type == "folder" && opt?.id) {
+            //console.log(`Folder ${opt?.id} has been changed`);
+            selectedFolderStore.id === opt?.id &&
+              this.fetchFiles(opt?.id, this.filter);
           }
           break;
       }

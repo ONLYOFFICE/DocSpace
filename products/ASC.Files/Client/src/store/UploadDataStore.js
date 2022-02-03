@@ -886,6 +886,18 @@ class UploadDataStore {
       conversionPercent: 0,
     };
 
+    if (this.files.length > 0) {
+      const toFolderId = this.files[0]?.toFolderId;
+      if (toFolderId) {
+        const { socketHelper } = this.filesStore.settingsStore;
+
+        socketHelper.emit({
+          command: "c:refresh-folder",
+          data: toFolderId,
+        });
+      }
+    }
+
     setTimeout(() => {
       if (!this.primaryProgressDataStore.alert) {
         this.primaryProgressDataStore.clearPrimaryProgressData();
