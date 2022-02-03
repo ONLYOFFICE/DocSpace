@@ -87,7 +87,7 @@ const CodeInput = (props) => {
           maxLength={1}
           disabled={isDisabled}
         />
-        {i === 2 && <hr id="InputCode-line" />}
+        {i === 2 && <hr key="InputCode-line" />}
       </>
     );
   }
