@@ -38,6 +38,12 @@ const InputWrapper = styled.div`
     border: 1px solid #3b72a7;
   }
 
+  input:disabled {
+    color: #a3a9ae;
+    background: #f8f9f9;
+    border: 1px solid #eceef1;
+  }
+
   hr {
     width: 24px;
     height: 1px;

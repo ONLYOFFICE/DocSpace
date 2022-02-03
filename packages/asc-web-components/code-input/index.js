@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import InputWrapper from "./styled-code-input";
 
 const CodeInput = (props) => {
-  const { onSubmit } = props;
+  const { onSubmit, isDisabled } = props;
 
   const inputsRef = useRef([]);
   const characters = 6;
@@ -78,6 +78,7 @@ const CodeInput = (props) => {
         onPaste={handleOnPaste}
         ref={(el) => (inputsRef.current[i] = el)}
         maxLength={1}
+        disabled={isDisabled}
       />
     );
   }
@@ -87,9 +88,14 @@ const CodeInput = (props) => {
 
 CodeInput.propTypes = {
   onSubmit: PropTypes.func.isRequired,
+  isDisabled: PropTypes.bool,
   className: PropTypes.string,
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+};
+
+CodeInput.defaultProps = {
+  isDisabled: false,
 };
 
 export default CodeInput;
