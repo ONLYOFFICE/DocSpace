@@ -286,18 +286,12 @@ class ManualBackup extends React.Component {
       saveToSessionStorage("selectedStorageId", `${selectedStorageId}`);
       saveToSessionStorage("selectedStorage", `${selectedStorage}`);
 
-      let obj = {};
-
       for (let i = 0; i < storageValues.length; i++) {
-        obj = {
-          key: storageValues[i].key,
-          value: storageValues[i].value,
-        };
-        storageParams.push(obj);
+        storageParams.push(storageValues[i]);
       }
     }
 
-    startBackup(`${moduleType}`, storageParams);
+    startBackup(moduleType, storageParams);
     this.setInterval();
   };
   render() {

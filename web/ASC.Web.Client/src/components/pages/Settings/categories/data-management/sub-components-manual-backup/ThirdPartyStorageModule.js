@@ -82,20 +82,19 @@ class ThirdPartyStorageModule extends React.PureComponent {
     });
   };
 
-  convertFormSettings = (inputNumber, valuesArray) => {
-    const { selectedId, availableStorage, selectedStorage } = this.state;
+  onMakeCopyIntoStorage = (arraySettings) => {
+    const { selectedId, selectedStorage } = this.state;
     const { onMakeCopy } = this.props;
 
     let obj = {};
     let inputValueArray = [];
 
-    const availableStorageParams = availableStorage[selectedId];
-
-    for (let i = 1; i <= inputNumber; i++) {
+    for (let i = 0; i < arraySettings.length; i++) {
       obj = {
-        key: availableStorageParams.properties[i - 1].name,
-        value: valuesArray[i - 1],
+        key: arraySettings[i][0],
+        value: arraySettings[i][1],
       };
+
       inputValueArray.push(obj);
     }
 
@@ -109,13 +108,6 @@ class ThirdPartyStorageModule extends React.PureComponent {
       selectedId,
       selectedStorage
     );
-  };
-
-  onMakeCopyIntoStorage = (valuesArray) => {
-    const formSettings = [...valuesArray];
-    const inputsNumber = formSettings.length;
-
-    this.convertFormSettings(inputsNumber, formSettings);
   };
 
   isInvalidForm = (formSettings) => {

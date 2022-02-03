@@ -51,7 +51,9 @@ class AmazonStorage extends React.Component {
       return;
     }
 
-    onMakeCopyIntoStorage(this.namesArray);
+    const arraySettings = Object.entries(formSettings);
+
+    onMakeCopyIntoStorage(arraySettings);
     this.setState({ formErrors: {} });
   };
   render() {
