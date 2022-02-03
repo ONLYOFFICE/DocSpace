@@ -23,6 +23,7 @@ class DialogsStore {
   convertDialogVisible = false;
   selectFileDialogVisible = false;
   isFolderActions = false;
+  hotkeyPanelVisible = false;
 
   removeItem = null;
   connectItem = null;
@@ -195,6 +196,10 @@ class DialogsStore {
       title: `${newTitle}.docxf`,
       templateId: fileInfo.id,
     });
+  };
+
+  setHotkeyPanelVisible = (hotkeyPanelVisible) => {
+    this.hotkeyPanelVisible = hotkeyPanelVisible;
   };
 }
 
