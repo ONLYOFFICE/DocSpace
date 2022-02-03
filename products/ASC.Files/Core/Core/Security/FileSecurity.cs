@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Users;
-using ASC.Web.Core;
-using ASC.Web.Files.Api;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Configuration;
-
 namespace ASC.Files.Core.Security
 {
     [Scope]

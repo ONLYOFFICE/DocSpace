@@ -23,26 +23,6 @@
  *
 */
 
-
-using System;
-using System.Globalization;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common;
-using ASC.Core.Common.Settings;
-using ASC.Core.Users;
-using ASC.Security.Cryptography;
-using ASC.Web.Core;
-using ASC.Web.Core.WhiteLabel;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Web.Studio.Utility
 {
     public enum ManagementType

@@ -14,13 +14,6 @@
  *
 */
 
-
-using System.Reflection;
-
-using ASC.Common;
-
-using Microsoft.Extensions.Configuration;
-
 namespace System.IO
 {
     [Singletone]

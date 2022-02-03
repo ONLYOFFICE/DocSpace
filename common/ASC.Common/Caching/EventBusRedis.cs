@@ -14,14 +14,6 @@
  *
 */
 
-
-using System;
-using System.Threading.Tasks;
-
-using Google.Protobuf;
-
-using StackExchange.Redis.Extensions.Core.Abstractions;
-
 namespace ASC.Common.Caching;
 
 [Singletone]

@@ -23,16 +23,6 @@
  *
 */
 
-
-using System;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-
-using log4net.Appender;
-using log4net.Core;
-using log4net.Util;
-
 namespace ASC.Common.Logging
 {
     public class SelfCleaningAppender : RollingFileAppender

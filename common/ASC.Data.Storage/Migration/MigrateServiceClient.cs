@@ -23,14 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Data.Storage.Configuration;
-using ASC.Protos.Migration;
-
 namespace ASC.Data.Storage.Migration
 {
     [Singletone]

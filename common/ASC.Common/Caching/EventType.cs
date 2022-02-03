@@ -23,10 +23,6 @@
  *
 */
 
-
-using System;
-
-
 namespace ASC.Common.Caching
 {
     [Flags]

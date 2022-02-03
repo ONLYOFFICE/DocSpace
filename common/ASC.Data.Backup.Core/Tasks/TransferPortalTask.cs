@@ -23,23 +23,6 @@
  *
 */
 
-
-using System;
-using System.Data.Common;
-using System.IO;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Utils;
-using ASC.Core.Tenants;
-using ASC.Data.Backup.Extensions;
-using ASC.Data.Backup.Tasks.Modules;
-using ASC.Data.Storage;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Data.Backup.Tasks
 {
     [Scope]

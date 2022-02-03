@@ -23,13 +23,6 @@
  *
 */
 
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core.Common.Notify;
-using ASC.Notify.Messages;
-
 namespace ASC.TelegramService
 {
     [Singletone]

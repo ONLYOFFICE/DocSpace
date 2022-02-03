@@ -23,21 +23,6 @@
  *
 */
 
-
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.AuditTrail.Mappers;
-using ASC.Common;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-using ASC.Core.Common.EF.Model;
-using ASC.Core.Users;
-
-using Newtonsoft.Json;
-
 namespace ASC.AuditTrail.Data
 {
     [Scope]

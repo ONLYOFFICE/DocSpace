@@ -23,29 +23,9 @@
  *
 */
 
-
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-
-using ASC.Api.Core;
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.DependencyInjection;
-using ASC.Common.Utils;
-
-using Autofac;
-using Autofac.Extensions.DependencyInjection;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-
-using StackExchange.Redis.Extensions.Core.Configuration;
-
 namespace ASC.Thumbnails.Svc
 {
-public class Program
+    public class Program
     {
         public async static Task Main(string[] args)
         {

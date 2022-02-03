@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-using ASC.Common.Utils;
-
-namespace ASC.Data.Backup.Services
+﻿namespace ASC.Data.Backup.Services
 {
     public class BackupSettings
     {

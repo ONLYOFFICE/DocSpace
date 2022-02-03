@@ -23,12 +23,6 @@
  *
 */
 
-
-using System;
-using System.Diagnostics;
-
-using ASC.Common;
-
 namespace ASC.Files.Core
 {
     public enum FolderType

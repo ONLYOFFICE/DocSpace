@@ -23,18 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
-using ASC.Common;
-using ASC.Files.Core;
-using ASC.Files.Core.Security;
-using ASC.Web.Files.Services.WCFService;
-
 namespace ASC.Api.Documents
 {
     /// <summary>
@@ -186,7 +174,7 @@ namespace ASC.Api.Documents
         }
     }
 
-    public class FileEntryWrapperConverter : JsonConverter<FileEntryWrapper>
+    public class FileEntryWrapperConverter : System.Text.Json.Serialization.JsonConverter<FileEntryWrapper>
     {
         public override FileEntryWrapper Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {

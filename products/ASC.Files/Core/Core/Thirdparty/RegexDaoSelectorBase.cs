@@ -23,17 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-
-using ASC.Files.Core;
-using ASC.Files.Core.Security;
-using ASC.Files.Core.Thirdparty;
-
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Files.Thirdparty
 {
     internal abstract class RegexDaoSelectorBase<T> : IDaoSelector<T> where T : class, IProviderInfo

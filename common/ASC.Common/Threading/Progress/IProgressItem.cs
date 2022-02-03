@@ -23,9 +23,6 @@
  *
 */
 
-
-using System;
-
 namespace ASC.Common.Threading.Progress
 {
     public interface IProgressItem : ICloneable

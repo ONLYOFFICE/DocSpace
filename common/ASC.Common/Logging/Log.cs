@@ -23,22 +23,7 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-
-using ASC.Common.Utils;
-
-using log4net.Config;
-using log4net.Core;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
-
-using NLog;
+using LogLevel = NLog.LogLevel;
 
 namespace ASC.Common.Logging
 {

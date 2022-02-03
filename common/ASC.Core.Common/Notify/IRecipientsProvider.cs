@@ -23,9 +23,6 @@
  *
 */
 
-using ASC.Common;
-using ASC.Core.Notify;
-
 namespace ASC.Notify.Recipients
 {
     [Scope(typeof(RecipientProviderImpl))]

@@ -23,28 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Core.Tenants;
-using ASC.Files.Core;
-using ASC.Files.Core.EF;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Classes;
-using ASC.Web.Studio.Core;
-
-using Box.V2.Models;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Files.Thirdparty.Box
 {
     internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>

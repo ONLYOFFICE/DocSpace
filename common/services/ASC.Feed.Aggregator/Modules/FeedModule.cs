@@ -23,14 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
-using ASC.Core;
-using ASC.Feed.Data;
-using ASC.Web.Core;
-
 namespace ASC.Feed.Aggregator.Modules
 {
     public abstract class FeedModule : IFeedModule

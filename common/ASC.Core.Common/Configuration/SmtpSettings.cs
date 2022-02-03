@@ -23,10 +23,6 @@
  *
 */
 
-
-using System;
-using System.Web;
-
 namespace ASC.Core.Configuration
 {
     public class SmtpSettings

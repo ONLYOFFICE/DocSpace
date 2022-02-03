@@ -23,24 +23,8 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Logging;
-
-using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json;
+using ConfigurationManager = System.Configuration.ConfigurationManager;
+using ConfigurationSection = System.Configuration.ConfigurationSection;
 
 namespace ASC.Core.Common.Billing
 {

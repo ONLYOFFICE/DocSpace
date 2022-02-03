@@ -23,9 +23,6 @@
  *
 */
 
-
-using System.Text;
-
 namespace ASC.FederatedLogin.Helpers
 {
     public class HashHelper

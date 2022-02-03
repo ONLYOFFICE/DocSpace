@@ -23,10 +23,6 @@
  *
 */
 
-
-using System;
-using System.IO;
-
 namespace ASC.Data.Storage
 {
     public class ProgressStream : Stream

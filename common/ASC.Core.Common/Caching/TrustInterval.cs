@@ -23,9 +23,6 @@
  *
 */
 
-
-using System;
-
 namespace ASC.Core.Caching
 {
     public class TrustInterval

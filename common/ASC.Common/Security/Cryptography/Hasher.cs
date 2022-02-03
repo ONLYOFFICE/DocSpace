@@ -23,11 +23,6 @@
  *
 */
 
-
-using System;
-using System.Security.Cryptography;
-using System.Text;
-
 namespace ASC.Security.Cryptography
 {
     public sealed class Hasher

@@ -23,15 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-
-using ASC.Core;
-using ASC.Core.Tenants;
-using ASC.Data.Backup.Tasks.Data;
-
 namespace ASC.Data.Backup.Tasks.Modules
 {
     public class TenantsModuleSpecifics : ModuleSpecificsBase

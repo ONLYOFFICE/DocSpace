@@ -23,9 +23,6 @@
  *
 */
 
-
-using System.ComponentModel.DataAnnotations;
-
 namespace ASC.ApiSystem.Models
 {
     public class CoreSettingsModel

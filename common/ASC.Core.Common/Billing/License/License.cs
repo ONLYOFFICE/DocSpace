@@ -23,11 +23,7 @@
  *
 */
 
-
-using System;
-using System.Diagnostics;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ASC.Core.Billing
 {
@@ -105,7 +101,7 @@ namespace ASC.Core.Billing
         }
     }
 
-    public class LicenseConverter : JsonConverter<object>
+    public class LicenseConverter : System.Text.Json.Serialization.JsonConverter<object>
     {
         public override bool CanConvert(Type typeToConvert)
         {

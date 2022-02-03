@@ -23,28 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Core.Tenants;
-using ASC.Files.Core;
-using ASC.Files.Core.EF;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Classes;
-using ASC.Web.Studio.Core;
-
-using Dropbox.Api.Files;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Files.Thirdparty.Dropbox
 {
     internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderInfo>

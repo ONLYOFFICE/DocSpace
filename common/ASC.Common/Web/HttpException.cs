@@ -1,7 +1,4 @@
-﻿using System;
-using System.Net;
-
-namespace ASC.Common.Web
+﻿namespace ASC.Common.Web
 {
     public class HttpException : Exception
     {

@@ -23,8 +23,6 @@
  *
 */
 
-using AutoMapper;
-
 namespace ASC.Common.Mapping
 {
     public interface IMapFrom<T>

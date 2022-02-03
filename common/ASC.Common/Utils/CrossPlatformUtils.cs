@@ -23,9 +23,6 @@
  *
 */
 
-using System.IO;
-using System.Linq;
-
 namespace ASC.Common.Utils
 {
     public static class CrossPlatform

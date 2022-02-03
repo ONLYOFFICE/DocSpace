@@ -23,17 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Services.NotifyService;
-using ASC.Notify.Model;
-using ASC.Web.Core.Subscriptions;
-
 namespace ASC.Web.Files.Classes
 {
     [Scope]

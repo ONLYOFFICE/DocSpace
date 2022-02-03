@@ -23,17 +23,6 @@
  *
 */
 
-
-using System;
-using System.IO;
-using System.Linq;
-using System.Text;
-
-using ASC.Common;
-using ASC.Common.Security;
-
-using Microsoft.Extensions.Configuration;
-
 namespace ASC.Security.Cryptography
 {
     [Singletone]

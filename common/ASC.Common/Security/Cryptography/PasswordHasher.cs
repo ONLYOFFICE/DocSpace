@@ -23,15 +23,6 @@
  *
 */
 
-
-using System;
-using System.Text;
-
-using ASC.Common;
-
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using Microsoft.Extensions.Configuration;
-
 namespace ASC.Security.Cryptography
 {
     [Singletone]

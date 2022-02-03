@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.FederatedLogin;
-using ASC.Files.Core;
-
-using Dropbox.Api.Files;
-
 namespace ASC.Files.Thirdparty.Dropbox
 {
     [Transient]

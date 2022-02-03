@@ -23,10 +23,7 @@
  *
 */
 
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core.Encryption;
+using EventType = ASC.Common.Caching.EventType;
 
 namespace ASC.Data.Storage.Encryption
 {

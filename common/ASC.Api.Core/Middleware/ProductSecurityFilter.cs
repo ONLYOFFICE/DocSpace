@@ -1,21 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Reflection;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Notify.Engine;
-using ASC.Core;
-using ASC.Web.Core;
-
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.Extensions.Options;
-
-namespace ASC.Api.Core.Middleware
+﻿namespace ASC.Api.Core.Middleware
 {
     [Scope]
     public class ProductSecurityFilter : IResourceFilter

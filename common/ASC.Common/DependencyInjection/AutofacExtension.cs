@@ -1,17 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Loader;
-
-using ASC.Common.Utils;
-
-using Autofac;
-using Autofac.Configuration;
-
-using Microsoft.Extensions.Configuration;
-
-namespace ASC.Common.DependencyInjection
+﻿namespace ASC.Common.DependencyInjection
 {
     internal class AutofacComponent
     {

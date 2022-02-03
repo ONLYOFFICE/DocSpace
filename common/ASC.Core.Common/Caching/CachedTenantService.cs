@@ -23,17 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core.Data;
-using ASC.Core.Tenants;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Core.Caching
 {
     [Singletone]

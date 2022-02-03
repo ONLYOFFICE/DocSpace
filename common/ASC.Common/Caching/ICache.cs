@@ -23,11 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Concurrent;
-using System.Text.RegularExpressions;
-
 namespace ASC.Common.Caching
 {
     [Singletone(typeof(AscCache))]

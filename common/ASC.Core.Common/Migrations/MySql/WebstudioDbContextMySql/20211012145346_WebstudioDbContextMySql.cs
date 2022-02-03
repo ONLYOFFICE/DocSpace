@@ -1,7 +1,3 @@
-using System;
-
-using Microsoft.EntityFrameworkCore.Migrations;
-
 namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
 {
     public partial class WebstudioDbContextMySql : Migration

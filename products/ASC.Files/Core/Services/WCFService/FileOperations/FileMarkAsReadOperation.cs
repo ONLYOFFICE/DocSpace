@@ -23,23 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-
-using ASC.Common;
-using ASC.Common.Security.Authentication;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Files.Core;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Core;
-
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
     class FileMarkAsReadOperationData<T> : FileOperationData<T>

@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-using System.IO;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core.ChunkedUploader;
-using ASC.Files.Core;
-using ASC.Web.Files.Classes;
-using ASC.Web.Studio.Core;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Web.Files.Utils
 {
     [Scope]

@@ -23,16 +23,6 @@
  *
 */
 
-
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-
-using ASC.Common;
-
-using ICSharpCode.SharpZipLib.GZip;
-using ICSharpCode.SharpZipLib.Tar;
-
 namespace ASC.Data.Backup
 {
     public class ZipWriteOperator : IDataWriteOperator

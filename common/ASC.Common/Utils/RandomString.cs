@@ -23,10 +23,6 @@
  *
 */
 
-
-using System;
-using System.Text;
-
 namespace ASC.Common.Utils
 {
     public static class RandomString

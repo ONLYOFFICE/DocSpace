@@ -23,8 +23,6 @@
  *
 */
 
-using System.Threading.Tasks;
-
 namespace ASC.ElasticSearch
 {
     public interface IIndexer

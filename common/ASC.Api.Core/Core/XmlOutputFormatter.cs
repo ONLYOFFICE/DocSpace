@@ -1,15 +1,4 @@
-﻿using System.Threading.Tasks;
-using System.Xml.Linq;
-
-using ASC.Common.Web;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Formatters;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-
-namespace ASC.Api.Core.Core
+﻿namespace ASC.Api.Core.Core
 {
     public class XmlOutputFormatter : IOutputFormatter
     {

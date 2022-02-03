@@ -23,16 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Files.Core;
-using ASC.Files.Core.Security;
-using ASC.Web.Api.Models;
-using ASC.Web.Files.Services.WCFService;
-
 namespace ASC.Api.Documents
 {
     /// <summary>

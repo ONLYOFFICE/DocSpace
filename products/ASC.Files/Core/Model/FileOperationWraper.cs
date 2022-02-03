@@ -23,17 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Serialization;
-
-using ASC.Common;
-using ASC.Files.Core;
-using ASC.Web.Files.Services.WCFService.FileOperations;
-using ASC.Web.Studio.Utility;
-
 namespace ASC.Api.Documents
 {
     /// <summary>

@@ -23,15 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Notify.Engine;
-using ASC.Notify.Patterns;
-using ASC.Notify.Recipients;
-
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Notify.Model
 {
     class NotifyClientImpl : INotifyClient

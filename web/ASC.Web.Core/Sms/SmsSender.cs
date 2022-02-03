@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-using System.Text;
-using System.Text.RegularExpressions;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Tenants;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Web.Core.Sms
 {
     [Scope]

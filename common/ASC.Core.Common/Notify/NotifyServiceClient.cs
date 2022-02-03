@@ -23,11 +23,7 @@
  *
 */
 
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Notify;
-using ASC.Notify.Messages;
+using EventType = ASC.Common.Caching.EventType;
 
 namespace ASC.Core.Notify
 {

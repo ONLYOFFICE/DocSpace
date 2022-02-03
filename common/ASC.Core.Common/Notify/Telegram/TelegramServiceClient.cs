@@ -23,13 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Notify.Messages;
-
 namespace ASC.Core.Common.Notify
 {
     [Singletone]

@@ -23,14 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Core.Common.Settings;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Web.Core.Utility
 {
     [Serializable]

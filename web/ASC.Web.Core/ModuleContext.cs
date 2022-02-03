@@ -23,9 +23,6 @@
  *
 */
 
-
-using ASC.Web.Core.ModuleManagement.Common;
-
 namespace ASC.Web.Core
 {
     public class ModuleContext : WebItemContext

@@ -23,29 +23,6 @@
  *
 */
 
-
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-
-using ASC.Common;
-using ASC.Common.Notify.Patterns;
-using ASC.Core;
-using ASC.Core.Common.WhiteLabel;
-using ASC.Notify.Messages;
-using ASC.Notify.Patterns;
-using ASC.Notify.Textile.Resources;
-using ASC.Security.Cryptography;
-using ASC.Web.Core.WhiteLabel;
-
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Configuration;
-
-using Textile;
-using Textile.Blocks;
-
 namespace ASC.Notify.Textile
 {
     [Scope]

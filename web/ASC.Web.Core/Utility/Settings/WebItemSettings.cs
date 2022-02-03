@@ -23,15 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
-
-using ASC.Core.Common.Settings;
-
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Web.Core.Utility.Settings
 {
     public class WebItemSettings : ISettings

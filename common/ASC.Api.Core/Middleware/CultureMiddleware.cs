@@ -1,13 +1,4 @@
-﻿using System.Globalization;
-using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Core;
-
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-
-namespace ASC.Api.Core.Middleware
+﻿namespace ASC.Api.Core.Middleware
 {
     public class CultureMiddleware
     {

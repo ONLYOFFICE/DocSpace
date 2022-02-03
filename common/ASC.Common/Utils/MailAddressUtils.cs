@@ -23,10 +23,6 @@
  *
 */
 
-
-using System.Net.Mail;
-using System.Text;
-
 namespace ASC.Common.Utils
 {
     public static class MailAddressUtils

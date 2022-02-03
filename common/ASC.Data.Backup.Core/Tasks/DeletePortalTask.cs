@@ -23,18 +23,6 @@
  *
 */
 
-
-using System.Linq;
-
-using ASC.Common.Logging;
-using ASC.Data.Backup.Exceptions;
-using ASC.Data.Backup.Extensions;
-using ASC.Data.Backup.Tasks.Data;
-using ASC.Data.Backup.Tasks.Modules;
-using ASC.Data.Storage;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Data.Backup.Tasks
 {
     public class DeletePortalTask : PortalTaskBase

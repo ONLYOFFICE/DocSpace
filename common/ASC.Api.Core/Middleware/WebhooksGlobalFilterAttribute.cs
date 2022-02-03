@@ -1,16 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.Json;
-
-using ASC.Common;
-using ASC.Webhooks.Core;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Routing;
-
-namespace ASC.Api.Core.Middleware
+﻿namespace ASC.Api.Core.Middleware
 {
     [Scope]
     public class WebhooksGlobalFilterAttribute : ResultFilterAttribute
@@ -49,7 +37,7 @@ namespace ASC.Api.Core.Middleware
 
             if (context.Result is ObjectResult objectResult)
             {
-                var resultContent = JsonSerializer.Serialize(objectResult.Value, jsonSerializerOptions);
+                var resultContent = System.Text.Json.JsonSerializer.Serialize(objectResult.Value, jsonSerializerOptions);
 
                 var eventName = $"method: {method}, route: {routePattern}";
 

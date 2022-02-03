@@ -23,12 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Notify.Engine;
-using ASC.Notify.Model;
-
 namespace ASC.Notify.Patterns
 {
     public interface IPatternProvider

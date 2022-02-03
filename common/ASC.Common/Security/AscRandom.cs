@@ -23,9 +23,6 @@
  *
 */
 
-
-using System;
-
 namespace ASC.Common.Security
 {
     public class AscRandom : Random

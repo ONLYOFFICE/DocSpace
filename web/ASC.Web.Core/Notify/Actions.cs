@@ -23,9 +23,6 @@
  *
 */
 
-
-using ASC.Notify.Model;
-
 namespace ASC.Web.Studio.Core.Notify
 {
     public static class Actions
