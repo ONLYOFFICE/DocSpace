@@ -531,7 +531,7 @@ class UploadDataStore {
     if (window.location.pathname.indexOf("/history") === -1) {
       const newFiles = files;
       const newFolders = folders;
-      const path = currentFile.path || [];
+      const path = currentFile.path.slice() || [];
       const fileIndex = newFiles.findIndex(
         (x) => x.id === currentFile.fileInfo.id
       );
@@ -885,6 +885,18 @@ class UploadDataStore {
       percent: 0,
       conversionPercent: 0,
     };
+
+    if (this.files.length > 0) {
+      const toFolderId = this.files[0]?.toFolderId;
+      if (toFolderId) {
+        const { socketHelper } = this.filesStore.settingsStore;
+
+        socketHelper.emit({
+          command: "refresh-folder",
+          data: toFolderId,
+        });
+      }
+    }
 
     setTimeout(() => {
       if (!this.primaryProgressDataStore.alert) {
