@@ -30,13 +30,13 @@ using System.Collections.Generic;
 
 using ASC.MessagingSystem;
 
-namespace ASC.AuditTrail.Mappers
+namespace ASC.AuditTrail.Mappers;
+
+internal class LoginActionsMapper
 {
-    internal class LoginActionsMapper
-    {
-        public static Dictionary<MessageAction, MessageMaps> GetMaps() =>
-            new Dictionary<MessageAction, MessageMaps>
-            {
+    public static Dictionary<MessageAction, MessageMaps> GetMaps() =>
+        new Dictionary<MessageAction, MessageMaps>
+        {
                     { MessageAction.LoginSuccess, new MessageMaps { ActionTextResourceName = "LoginSuccess"} },
                     { MessageAction.LoginSuccessViaSocialAccount, new MessageMaps { ActionTextResourceName = "LoginSuccessSocialAccount"} },
                     { MessageAction.LoginSuccessViaSocialApp, new MessageMaps { ActionTextResourceName = "LoginSuccessSocialApp"} },
@@ -64,6 +64,5 @@ namespace ASC.AuditTrail.Mappers
                     { MessageAction.Logout, new MessageMaps { ActionTextResourceName = "Logout" } },
                     { MessageAction.SessionStarted, new MessageMaps { ActionTextResourceName = "SessionStarted" } },
                     { MessageAction.SessionCompleted, new MessageMaps { ActionTextResourceName = "SessionCompleted" } }
-            };
-    }
+        };
 }

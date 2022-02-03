@@ -30,13 +30,13 @@ using System.Collections.Generic;
 
 using ASC.MessagingSystem;
 
-namespace ASC.AuditTrail.Mappers
+namespace ASC.AuditTrail.Mappers;
+
+internal class PeopleActionMapper
 {
-    internal class PeopleActionMapper
-    {
-        public static Dictionary<MessageAction, MessageMaps> GetMaps() =>
-            new Dictionary<MessageAction, MessageMaps>
-            {
+    public static Dictionary<MessageAction, MessageMaps> GetMaps() =>
+        new Dictionary<MessageAction, MessageMaps>
+        {
                     {
                         MessageAction.UserCreated, new MessageMaps
                         {
@@ -352,6 +352,5 @@ namespace ASC.AuditTrail.Mappers
                                 ModuleResourceName = "UsersModule"
                         }
                     }
-            };
-    }
+        };
 }

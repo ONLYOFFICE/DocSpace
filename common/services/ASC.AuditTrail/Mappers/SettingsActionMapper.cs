@@ -29,13 +29,13 @@ using System.Collections.Generic;
 
 using ASC.MessagingSystem;
 
-namespace ASC.AuditTrail.Mappers
+namespace ASC.AuditTrail.Mappers;
+
+internal class SettingsActionsMapper
 {
-    internal class SettingsActionsMapper
-    {
-        public static Dictionary<MessageAction, MessageMaps> GetMaps() =>
-            new Dictionary<MessageAction, MessageMaps>
-            {
+    public static Dictionary<MessageAction, MessageMaps> GetMaps() =>
+        new Dictionary<MessageAction, MessageMaps>
+        {
                     {
                         MessageAction.LanguageSettingsUpdated, new MessageMaps
                         {
@@ -477,6 +477,5 @@ namespace ASC.AuditTrail.Mappers
                                 ModuleResourceName = "ProductsModule"
                         }
                     }
-            };
-    }
+        };
 }

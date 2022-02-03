@@ -35,55 +35,54 @@ using ASC.Core.Common.EF.Context;
 
 using AutoMapper;
 
-namespace ASC.AuditTrail.Repositories
+namespace ASC.AuditTrail.Repositories;
+
+[Scope]
+public class AuditEventsRepository
 {
-    [Scope]
-    public class AuditEventsRepository
+    private AuditTrailContext AuditTrailContext => _lazyAuditTrailContext.Value;
+
+    private readonly Lazy<AuditTrailContext> _lazyAuditTrailContext;
+    private readonly IMapper _mapper;
+
+    public AuditEventsRepository(
+        DbContextManager<AuditTrailContext> dbContextManager,
+        IMapper mapper)
     {
-        private AuditTrailContext AuditTrailContext => _lazyAuditTrailContext.Value;
+        _lazyAuditTrailContext = new Lazy<AuditTrailContext>(() => dbContextManager.Value);
+        _mapper = mapper;
+    }
 
-        private readonly Lazy<AuditTrailContext> _lazyAuditTrailContext;
-        private readonly IMapper _mapper;
+    public IEnumerable<AuditEventDto> GetLast(int tenant, int chunk) => Get(tenant, null, null, chunk);
 
-        public AuditEventsRepository(
-            DbContextManager<AuditTrailContext> dbContextManager,
-            IMapper mapper)
-        {
-            _lazyAuditTrailContext = new Lazy<AuditTrailContext>(() => dbContextManager.Value);
-            _mapper = mapper;
-        }
+    public IEnumerable<AuditEventDto> Get(int tenant, DateTime from, DateTime to) => Get(tenant, from, to, null);
 
-        public IEnumerable<AuditEvent> GetLast(int tenant, int chunk) => Get(tenant, null, null, chunk);
+    public int GetCount(int tenant, DateTime? from = null, DateTime? to = null)
+    {
+        IQueryable<Core.Common.EF.Model.AuditEvent> query = AuditTrailContext.AuditEvents
+            .Where(a => a.TenantId == tenant)
+            .OrderByDescending(a => a.Date);
 
-        public IEnumerable<AuditEvent> Get(int tenant, DateTime from, DateTime to) => Get(tenant, from, to, null);
+        if (from.HasValue && to.HasValue)
+            query = query.Where(a => a.Date >= from & a.Date <= to);
 
-        private IEnumerable<AuditEvent> Get(int tenant, DateTime? fromDate, DateTime? to, int? limit)
-        {
-            var query =
-               from q in AuditTrailContext.AuditEvents
-               from p in AuditTrailContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
-               where q.TenantId == tenant
-               orderby q.Date descending
-               select new AuditEventQuery { AuditEvent = q, User = p };
+        return query.Count();
+    }
 
-            if (fromDate.HasValue && to.HasValue)
-                query = query.Where(q => q.AuditEvent.Date >= fromDate & q.AuditEvent.Date <= to);
+    private IEnumerable<AuditEventDto> Get(int tenant, DateTime? fromDate, DateTime? to, int? limit)
+    {
+        var query =
+           from q in AuditTrailContext.AuditEvents
+           from p in AuditTrailContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
+           where q.TenantId == tenant
+           orderby q.Date descending
+           select new AuditEventQuery { AuditEvent = q, User = p };
 
-            if (limit.HasValue) query = query.Take((int)limit);
+        if (fromDate.HasValue && to.HasValue)
+            query = query.Where(q => q.AuditEvent.Date >= fromDate & q.AuditEvent.Date <= to);
 
-            return query.AsEnumerable().Select(_mapper.Map<AuditEvent>).ToList();
-        }
+        if (limit.HasValue) query = query.Take((int)limit);
 
-        public int GetCount(int tenant, DateTime? from = null, DateTime? to = null)
-        {
-            IQueryable<Core.Common.EF.Model.AuditEvent> query = AuditTrailContext.AuditEvents
-                .Where(a => a.TenantId == tenant)
-                .OrderByDescending(a => a.Date);
-
-            if (from.HasValue && to.HasValue)
-                query = query.Where(a => a.Date >= from & a.Date <= to);
-
-            return query.Count();
-        }
+        return query.AsEnumerable().Select(_mapper.Map<AuditEventDto>).ToList();
     }
 }

@@ -30,13 +30,13 @@ using System.Collections.Generic;
 
 using ASC.MessagingSystem;
 
-namespace ASC.AuditTrail.Mappers
+namespace ASC.AuditTrail.Mappers;
+
+internal class CrmActionMapper
 {
-    internal class CrmActionMapper
-    {
-        public static Dictionary<MessageAction, MessageMaps> GetMaps() =>
-            new Dictionary<MessageAction, MessageMaps>
-            {
+    public static Dictionary<MessageAction, MessageMaps> GetMaps() =>
+        new Dictionary<MessageAction, MessageMaps>
+        {
                     #region companies
 
                     {
@@ -1620,7 +1620,6 @@ namespace ASC.AuditTrail.Mappers
                             }
                     },
 
-                    #endregion
-            };
-    }
+            #endregion
+        };
 }

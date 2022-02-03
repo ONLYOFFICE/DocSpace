@@ -33,24 +33,23 @@ using ASC.Core.Common.EF.Model;
 
 using AutoMapper;
 
-namespace ASC.AuditTrail.Models
+namespace ASC.AuditTrail.Models;
+
+public class LoginEventDTO : BaseEvent, IMapFrom<LoginEventQuery>
 {
-    public class LoginEventDTO : BaseEvent, IMapFrom<LoginEventQuery>
+    public string Login { get; set; }
+    public int Action { get; set; }
+
+    public void Mapping(Profile profile)
     {
-        public string Login { get; set; }
-        public int Action { get; set; }
+        profile.CreateMap<LoginEvent, LoginEventDTO>()
+            .ForMember(src => src.Description, opt => opt.Ignore());
 
-        public void Mapping(Profile profile)
-        {
-            profile.CreateMap<LoginEvents, LoginEventDTO>()
-                .ForMember(src => src.Description, opt => opt.Ignore());
+        profile.CreateMap<User, LoginEventDTO>()
+            .ForMember(src => src.Id, opt => opt.Ignore());
 
-            profile.CreateMap<User, LoginEventDTO>()
-                .ForMember(src => src.Id, opt => opt.Ignore());
-
-            profile.CreateMap<LoginEventQuery, LoginEventDTO>()
-                .IncludeMembers(src => src.LoginEvents, src => src.User)
-                .AfterMap<LoginEventMappingAction>();
-        }
+        profile.CreateMap<LoginEventQuery, LoginEventDTO>()
+            .IncludeMembers(src => src.LoginEvents, src => src.User)
+            .AfterMap<LoginEventMappingAction>();
     }
 }

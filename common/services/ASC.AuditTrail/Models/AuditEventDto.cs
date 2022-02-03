@@ -32,38 +32,37 @@ using ASC.Core.Common.EF;
 using ASC.AuditTrail.Models.Mapping.Actions;
 using ASC.Core.Common.EF.Model;
 
-namespace ASC.AuditTrail.Models
+namespace ASC.AuditTrail.Models;
+
+public class AuditEventDto : BaseEvent, IMapFrom<AuditEventQuery>
 {
-    public class AuditEventDto : BaseEvent, IMapFrom<AuditEventQuery>
+    public string Initiator { get; set; }
+
+    [Event("ActionIdCol", 33)]
+    public int Action { get; set; }
+
+    [Event("ActionTypeCol", 30)]
+    public string ActionTypeText { get; set; }
+
+    [Event("ProductCol", 31)]
+    public string Product { get; set; }
+
+    [Event("ModuleCol", 32)]
+    public string Module { get; set; }
+
+    [Event("TargetIdCol", 34)]
+    public MessageTarget Target { get; set; }
+
+    public void Mapping(Profile profile)
     {
-        public string Initiator { get; set; }
+        profile.CreateMap<AuditEvent, AuditEventDto>()
+            .ForMember(src => src.Description, opt => opt.Ignore());
 
-        [Event("ActionIdCol", 33)]
-        public int Action { get; set; }
+        profile.CreateMap<User, AuditEventDto>()
+            .ForMember(src => src.Id, opt => opt.Ignore());
 
-        [Event("ActionTypeCol", 30)]
-        public string ActionTypeText { get; set; }
-
-        [Event("ProductCol", 31)]
-        public string Product { get; set; }
-
-        [Event("ModuleCol", 32)]
-        public string Module { get; set; }
-
-        [Event("TargetIdCol", 34)]
-        public MessageTarget Target { get; set; }
-
-        public void Mapping(Profile profile)
-        {
-            profile.CreateMap<AuditEvent, AuditEventDto>()
-                .ForMember(src => src.Description, opt => opt.Ignore());
-
-            profile.CreateMap<User, AuditEventDto>()
-                .ForMember(src => src.Id, opt => opt.Ignore());
-
-            profile.CreateMap<AuditEventQuery, AuditEventDto>()
-                .IncludeMembers(src => src.AuditEvent, src => src.User)
-                .AfterMap<AuditEventMappingAction>();
-        }
+        profile.CreateMap<AuditEventQuery, AuditEventDto>()
+            .IncludeMembers(src => src.AuditEvent, src => src.User)
+            .AfterMap<AuditEventMappingAction>();
     }
 }

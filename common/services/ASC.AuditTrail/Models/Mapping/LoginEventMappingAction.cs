@@ -7,38 +7,37 @@ using AutoMapper;
 
 using Newtonsoft.Json;
 
-namespace ASC.AuditTrail.Models.Mapping.Actions
+namespace ASC.AuditTrail.Models.Mapping.Actions;
+
+public class LoginEventMappingAction : IMappingAction<LoginEventQuery, LoginEventDTO>
 {
-    public class LoginEventMappingAction : IMappingAction<LoginEventQuery, LoginEventDTO>
+    private readonly UserFormatter _userFormatter;
+    private readonly AuditActionMapper _auditActionMapper;
+
+    public LoginEventMappingAction(UserFormatter userFormatter, AuditActionMapper auditActionMapper)
     {
-        private readonly UserFormatter _userFormatter;
-        private readonly AuditActionMapper _auditActionMapper;
+        _userFormatter = userFormatter;
+        _auditActionMapper = auditActionMapper;
+    }
 
-        public LoginEventMappingAction(UserFormatter userFormatter, AuditActionMapper auditActionMapper)
-        {
-            _userFormatter = userFormatter;
-            _auditActionMapper = auditActionMapper;
-        }
+    public void Process(LoginEventQuery source, LoginEventDTO destination, ResolutionContext context)
+    {
+        if (source.LoginEvents.Description != null)
+            destination.Description = JsonConvert.DeserializeObject<IList<string>>(
+                source.LoginEvents.Description,
+                new JsonSerializerSettings
+                {
+                    DateTimeZoneHandling = DateTimeZoneHandling.Utc
+                });
 
-        public void Process(LoginEventQuery source, LoginEventDTO destination, ResolutionContext context)
-        {
-            if (source.LoginEvents.Description != null)
-                destination.Description = JsonConvert.DeserializeObject<IList<string>>(
-                    source.LoginEvents.Description,
-                    new JsonSerializerSettings
-                    {
-                        DateTimeZoneHandling = DateTimeZoneHandling.Utc
-                    });
+        destination.UserName = (!string.IsNullOrEmpty(source.User?.FirstName) && !string.IsNullOrEmpty(source.User?.LastName))
+                            ? _userFormatter.GetUserName(source.User.FirstName, source.User.LastName)
+                            : !string.IsNullOrWhiteSpace(source.LoginEvents.Login)
+                                    ? source.LoginEvents.Login
+                                    : source.LoginEvents.UserId == Core.Configuration.Constants.Guest.ID
+                                        ? AuditReportResource.GuestAccount
+                                        : AuditReportResource.UnknownAccount;
 
-            destination.UserName = (!string.IsNullOrEmpty(source.User?.FirstName) && !string.IsNullOrEmpty(source.User?.LastName))
-                                ? _userFormatter.GetUserName(source.User.FirstName, source.User.LastName)
-                                : !string.IsNullOrWhiteSpace(source.LoginEvents.Login)
-                                        ? source.LoginEvents.Login
-                                        : source.LoginEvents.UserId == Core.Configuration.Constants.Guest.ID
-                                            ? AuditReportResource.GuestAccount
-                                            : AuditReportResource.UnknownAccount;
-
-            destination.ActionText = _auditActionMapper.GetActionText(destination);
-        }
+        destination.ActionText = _auditActionMapper.GetActionText(destination);
     }
 }

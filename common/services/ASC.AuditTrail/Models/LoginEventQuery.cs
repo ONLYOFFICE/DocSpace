@@ -1,11 +1,10 @@
 ﻿using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
 
-namespace ASC.AuditTrail.Models
+namespace ASC.AuditTrail.Models;
+
+public class LoginEventQuery
 {
-    public class LoginEventQuery
-    {
-        public LoginEvents LoginEvents { get; set; }
-        public User User { get; set; }
-    }
+    public LoginEvent LoginEvents { get; set; }
+    public User User { get; set; }
 }

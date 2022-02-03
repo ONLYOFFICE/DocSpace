@@ -35,120 +35,119 @@ using ASC.MessagingSystem;
 
 using Microsoft.Extensions.Options;
 
-namespace ASC.AuditTrail.Mappers
+namespace ASC.AuditTrail.Mappers;
+
+[Singletone]
+public class AuditActionMapper
 {
-    [Singletone]
-    public class AuditActionMapper
+    private readonly Dictionary<MessageAction, MessageMaps> _actions;
+    private readonly ILog _logger;
+
+    public AuditActionMapper(IOptionsMonitor<ILog> options)
     {
-        private readonly Dictionary<MessageAction, MessageMaps> _actions;
-        private readonly ILog _logger;
+        _actions = new Dictionary<MessageAction, MessageMaps>();
+        _logger = options.CurrentValue;
 
-        public AuditActionMapper(IOptionsMonitor<ILog> options)
+        _actions = _actions
+            .Union(LoginActionsMapper.GetMaps())
+            .Union(ProjectsActionsMapper.GetMaps())
+            .Union(CrmActionMapper.GetMaps())
+            .Union(PeopleActionMapper.GetMaps())
+            .Union(DocumentsActionMapper.GetMaps())
+            .Union(SettingsActionsMapper.GetMaps())
+            .Union(OthersActionsMapper.GetMaps())
+            .ToDictionary(x => x.Key, x => x.Value);
+    }
+
+    public string GetActionText(AuditEventDto evt)
+    {
+        var action = (MessageAction)evt.Action;
+        if (!_actions.ContainsKey(action))
         {
-            _actions = new Dictionary<MessageAction, MessageMaps>();
-            _logger = options.CurrentValue;
+            _logger.Error(string.Format("There is no action text for \"{0}\" type of event", action));
 
-            _actions = _actions
-                .Union(LoginActionsMapper.GetMaps())
-                .Union(ProjectsActionsMapper.GetMaps())
-                .Union(CrmActionMapper.GetMaps())
-                .Union(PeopleActionMapper.GetMaps())
-                .Union(DocumentsActionMapper.GetMaps())
-                .Union(SettingsActionsMapper.GetMaps())
-                .Union(OthersActionsMapper.GetMaps())
-                .ToDictionary(x => x.Key, x => x.Value);
+            return string.Empty;
         }
 
-        public string GetActionText(AuditEvent evt)
+        try
         {
-            var action = (MessageAction)evt.Action;
-            if (!_actions.ContainsKey(action))
-            {
-                _logger.Error(string.Format("There is no action text for \"{0}\" type of event", action));
+            var actionText = _actions[(MessageAction)evt.Action].GetActionText();
 
-                return string.Empty;
-            }
+            if (evt.Description == null || !evt.Description.Any()) return actionText;
 
-            try
-            {
-                var actionText = _actions[(MessageAction)evt.Action].GetActionText();
-
-                if (evt.Description == null || !evt.Description.Any()) return actionText;
-
-                var description = evt.Description
-                                     .Select(t => t.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                                     .Select(split => string.Join(", ", split.Select(ToLimitedText))).ToArray();
+            var description = evt.Description
+                                 .Select(t => t.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                                 .Select(split => string.Join(", ", split.Select(ToLimitedText))).ToArray();
 
 
-                return string.Format(actionText, description);
-            }
-            catch
-            {
-                //log.Error(string.Format("Error while building action text for \"{0}\" type of event", action));
-                return string.Empty;
-            }
+            return string.Format(actionText, description);
+        }
+        catch
+        {
+            //log.Error(string.Format("Error while building action text for \"{0}\" type of event", action));
+            return string.Empty;
+        }
+    }
+
+    public string GetActionText(LoginEventDTO evt)
+    {
+        var action = (MessageAction)evt.Action;
+        if (!_actions.ContainsKey(action))
+        {
+            //log.Error(string.Format("There is no action text for \"{0}\" type of event", action));
+            return string.Empty;
         }
 
-        public string GetActionText(LoginEvent evt)
+        try
         {
-            var action = (MessageAction)evt.Action;
-            if (!_actions.ContainsKey(action))
-            {
-                //log.Error(string.Format("There is no action text for \"{0}\" type of event", action));
-                return string.Empty;
-            }
+            var actionText = _actions[(MessageAction)evt.Action].GetActionText();
 
-            try
-            {
-                var actionText = _actions[(MessageAction)evt.Action].GetActionText();
+            if (evt.Description == null || !evt.Description.Any()) return actionText;
 
-                if (evt.Description == null || !evt.Description.Any()) return actionText;
+            var description = evt.Description
+                                 .Select(t => t.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                                 .Select(split => string.Join(", ", split.Select(ToLimitedText))).ToArray();
 
-                var description = evt.Description
-                                     .Select(t => t.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                                     .Select(split => string.Join(", ", split.Select(ToLimitedText))).ToArray();
-
-                return string.Format(actionText, description);
-            }
-            catch
-            {
-                //log.Error(string.Format("Error while building action text for \"{0}\" type of event", action));
-                return string.Empty;
-            }
+            return string.Format(actionText, description);
         }
-
-        public string GetActionTypeText(AuditEvent evt)
+        catch
         {
-            var action = (MessageAction)evt.Action;
-
-            return !_actions.ContainsKey(action)
-                       ? string.Empty
-                       : _actions[(MessageAction)evt.Action].GetActionTypeText();
+            //log.Error(string.Format("Error while building action text for \"{0}\" type of event", action));
+            return string.Empty;
         }
+    }
 
-        public string GetProductText(AuditEvent evt)
-        {
-            var action = (MessageAction)evt.Action;
+    public string GetActionTypeText(AuditEventDto evt)
+    {
+        var action = (MessageAction)evt.Action;
 
-            return !_actions.ContainsKey(action)
-                       ? string.Empty
-                       : _actions[(MessageAction)evt.Action].GetProduct();
-        }
+        return !_actions.ContainsKey(action)
+                   ? string.Empty
+                   : _actions[(MessageAction)evt.Action].GetActionTypeText();
+    }
 
-        public string GetModuleText(AuditEvent evt)
-        {
-            var action = (MessageAction)evt.Action;
+    public string GetProductText(AuditEventDto evt)
+    {
+        var action = (MessageAction)evt.Action;
 
-            return !_actions.ContainsKey(action)
-                       ? string.Empty
-                       : _actions[(MessageAction)evt.Action].GetModule();
-        }
+        return !_actions.ContainsKey(action)
+                   ? string.Empty
+                   : _actions[(MessageAction)evt.Action].GetProduct();
+    }
 
-        private string ToLimitedText(string text)
-        {
-            if (text == null) return null;
+    public string GetModuleText(AuditEventDto evt)
+    {
+        var action = (MessageAction)evt.Action;
 
-            return text.Length < 50 ? text : string.Format("{0}...", text.Substring(0, 47));
-        }
+        return !_actions.ContainsKey(action)
+                   ? string.Empty
+                   : _actions[(MessageAction)evt.Action].GetModule();
+    }
+
+    private string ToLimitedText(string text)
+    {
+        if (text == null) return null;
+
+        return text.Length < 50 ? text : string.Format("{0}...", text.Substring(0, 47));
     }
 }
