@@ -11,12 +11,6 @@ const ApplicationActionsBlock = ({ t, textStyles, keyTextStyles }) => {
           <Text {...keyTextStyles}>? {t("HotkeysOr")} Ctrl+/</Text>
         </>
       </Row>
-      <Row className="hotkeys_row">
-        <>
-          <Text {...textStyles}>{t("HotkeysFind")}</Text>
-          <Text {...keyTextStyles}>Ctrl+f</Text>
-        </>
-      </Row>
     </>
   );
 };
