@@ -177,8 +177,7 @@ namespace ASC.Web.Files.HttpHandlers
                             await WriteSuccess(context, ToResponseObject(resumedSession.File), (int)HttpStatusCode.Created);
                             FilesMessageService.Send(resumedSession.File, MessageAction.FileUploaded, resumedSession.File.Title);
 
-                            var room = DocumentServiceHelper.GetSocketFolderRoom(resumedSession.File.FolderID);
-                            SocketManager.CreateFile(resumedSession.File.ID, room, resumedSession.File);
+                            SocketManager.CreateFile(resumedSession.File);
                         }
                         else
                         {

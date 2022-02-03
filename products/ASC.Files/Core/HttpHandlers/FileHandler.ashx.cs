@@ -111,7 +111,6 @@ namespace ASC.Web.Files
         private GlobalFolderHelper GlobalFolderHelper { get; }
         private PathProvider PathProvider { get; }
         private DocumentServiceTrackerHelper DocumentServiceTrackerHelper { get; }
-        private DocumentServiceHelper DocumentServiceHelper { get; }
         private FilesMessageService FilesMessageService { get; }
         private FileShareLink FileShareLink { get; }
         private FileConverter FileConverter { get; }
@@ -167,7 +166,6 @@ namespace ASC.Web.Files
             GlobalFolderHelper = globalFolderHelper;
             PathProvider = pathProvider;
             DocumentServiceTrackerHelper = documentServiceTrackerHelper;
-            DocumentServiceHelper = documentServiceHelper;
             FilesMessageService = filesMessageService;
             FileShareLink = fileShareLink;
             FileConverter = fileConverter;
@@ -1103,8 +1101,7 @@ namespace ASC.Web.Files
                     file = CreateFileFromTemplate(folder, fileTitle, docType);
                 }
 
-                var room = DocumentServiceHelper.GetSocketFolderRoom(file.FolderID);
-                SocketManager.CreateFile(file.ID, room, file);
+                SocketManager.CreateFile(file);
             }
             catch (Exception ex)
             {

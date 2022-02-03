@@ -191,8 +191,7 @@ namespace ASC.Files.Helpers
             {
                 var resultFile = FileUploader.Exec(folderId, title, file.Length, file, createNewIfExist ?? !FilesSettingsHelper.UpdateIfExist, !keepConvertStatus);
 
-                var room = DocumentServiceHelper.GetSocketFolderRoom(resultFile.FolderID);
-                SocketManager.CreateFile(resultFile.ID, room, resultFile);
+                SocketManager.CreateFile(resultFile);
 
                 return FileWrapperHelper.Get(resultFile);
             }

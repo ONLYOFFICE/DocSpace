@@ -244,8 +244,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             FileDao.SaveThumbnail(file, null);
                         }
 
-                        var room = documentServiceHelper.GetSocketFolderRoom(file.FolderID);
-                        socketManager.DeleteFile(file.ID, room);
+                        socketManager.DeleteFile(file);
                     }
                     else
                     {
@@ -254,8 +253,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             FileDao.DeleteFile(file.ID);
                             filesMessageService.Send(file, _headers, MessageAction.FileDeleted, file.Title);
 
-                            var room = documentServiceHelper.GetSocketFolderRoom(file.FolderID);
-                            socketManager.DeleteFile(file.ID, room);
+                            socketManager.DeleteFile(file);
                         }
                         catch (Exception ex)
                         {

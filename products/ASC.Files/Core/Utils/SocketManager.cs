@@ -24,15 +24,16 @@
 */
 
 
+using System.Text.Json;
+
+using ASC.Api.Core;
 using ASC.Api.Documents;
 using ASC.Common;
+using ASC.Core;
 using ASC.Core.Notify.Signalr;
 using ASC.Files.Core;
 
 using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace ASC.Web.Files.Utils
 {
@@ -41,35 +42,65 @@ namespace ASC.Web.Files.Utils
     {
         private readonly SignalrServiceClient _signalrServiceClient;
         private FileWrapperHelper FilesWrapperHelper { get; }
-        private FolderWrapperHelper FolderWrapperHelper { get; }
+        private TenantManager TenantManager { get; }
 
-        public SocketManager(IOptionsSnapshot<SignalrServiceClient> optionsSnapshot, FileWrapperHelper filesWrapperHelper, FolderWrapperHelper folderWrapperHelper)
+        public SocketManager(
+            IOptionsSnapshot<SignalrServiceClient> optionsSnapshot,
+            FileWrapperHelper filesWrapperHelper,
+            TenantManager tenantManager
+            )
         {
             _signalrServiceClient = optionsSnapshot.Get("files");
             FilesWrapperHelper = filesWrapperHelper;
-            FolderWrapperHelper = folderWrapperHelper;
+            TenantManager = tenantManager;
         }
 
-        public void StartEdit<T>(T fileId, string room)
+        public void StartEdit<T>(T fileId)
         {
+            var room = GetFileRoom(fileId);
             _signalrServiceClient.StartEdit(fileId, room);
         }
 
-        public void StopEdit<T>(T fileId, string room)
+        public void StopEdit<T>(T fileId)
         {
+            var room = GetFileRoom(fileId);
             _signalrServiceClient.StopEdit(fileId, room);
         }
 
-        public void CreateFile<T>(T fileId, string room, File<T> file)
+        public void CreateFile<T>(File<T> file)
         {
-            var serializerSettings = new JsonSerializerSettings();
-            serializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-            _signalrServiceClient.CreateFile(fileId, room, JsonConvert.SerializeObject(FilesWrapperHelper.Get(file), Formatting.None, serializerSettings));
+            var room = GetFolderRoom(file.FolderID);
+            var serializerSettings = new JsonSerializerOptions()
+            {
+                WriteIndented = false,
+                IgnoreNullValues = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            serializerSettings.Converters.Add(new ApiDateTimeConverter());
+            serializerSettings.Converters.Add(new FileEntryWrapperConverter());
+            var data = JsonSerializer.Serialize(FilesWrapperHelper.Get(file), serializerSettings);
+
+            _signalrServiceClient.CreateFile(file.ID, room, data);
         }
 
-        public void DeleteFile<T>(T fileId, string room)
+        public void DeleteFile<T>(File<T> file)
         {
-            _signalrServiceClient.DeleteFile(fileId, room);
+            var room = GetFolderRoom(file.FolderID);
+            _signalrServiceClient.DeleteFile(file.ID, room);
+        }
+
+        private string GetFileRoom<T>(T fileId)
+        {
+            var tenantId = TenantManager.GetCurrentTenant().TenantId;
+
+            return $"{tenantId}-FILE-{fileId}";
+        }
+
+        private string GetFolderRoom<T>(T folderId)
+        {
+            var tenantId = TenantManager.GetCurrentTenant().TenantId;
+
+            return $"{tenantId}-DIR-{folderId}";
         }
     }
 }

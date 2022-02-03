@@ -63,8 +63,7 @@ namespace ASC.Web.Files.Services.DocumentService
         private FileTrackerHelper FileTracker { get; }
         private EntryStatusManager EntryStatusManager { get; }
         private IServiceProvider ServiceProvider { get; }
-        public GlobalFolderHelper GlobalFolderHelper { get; }
-        public TenantManager TenantManager { get; }
+        private TenantManager TenantManager { get; }
 
         public DocumentServiceHelper(
             IDaoFactory daoFactory,
@@ -81,7 +80,6 @@ namespace ASC.Web.Files.Services.DocumentService
             FileTrackerHelper fileTracker,
             EntryStatusManager entryStatusManager,
             IServiceProvider serviceProvider,
-            GlobalFolderHelper globalFolderHelper,
             TenantManager tenantManager)
         {
             DaoFactory = daoFactory;
@@ -98,7 +96,6 @@ namespace ASC.Web.Files.Services.DocumentService
             FileTracker = fileTracker;
             EntryStatusManager = entryStatusManager;
             ServiceProvider = serviceProvider;
-            GlobalFolderHelper = globalFolderHelper;
             TenantManager = tenantManager;
         }
 
@@ -410,24 +407,6 @@ namespace ASC.Web.Files.Services.DocumentService
 
             var meta = new Web.Core.Files.DocumentService.MetaData { Title = file.Title };
             return DocumentServiceConnector.Command(Web.Core.Files.DocumentService.CommandMethod.Meta, docKeyForTrack, file.ID, meta: meta);
-        }
-
-        public string GetSocketFileRoom<T>(File<T> file)
-        {
-            var tenantId = TenantManager.GetCurrentTenant().TenantId;
-
-            var room = $"{tenantId}-FILE-{file.ID}";
-
-            return room;
-        }
-
-        public string GetSocketFolderRoom<T>(T folderId)
-        {
-            var tenantId = TenantManager.GetCurrentTenant().TenantId;
-
-            var room = $"{tenantId}-DIR-{folderId}";
-
-            return room;
         }
     }
 }
