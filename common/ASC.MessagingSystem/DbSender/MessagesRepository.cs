@@ -168,7 +168,7 @@ namespace ASC.MessagingSystem.DbSender
 
         private static void AddLoginEvent(EventMessage message, MessagesContext dbContext)
         {
-            var le = new LoginEvents
+            var le = new LoginEvent
             {
                 Ip = message.IP,
                 Login = message.Initiator,
