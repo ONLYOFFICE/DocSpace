@@ -1,15 +1,3 @@
-import { Meta, Story, ArgsTable, Canvas } from "@storybook/addon-docs/blocks";
-import InputWithChips from "./";
-import * as stories from "./input-with-chips.stories.js";
-
-<Meta
-  title="Components/InputWithChips"
-  component={InputWithChips}
-  argTypes={{
-    options: { required: true },
-  }}
-/>
-
 # InputWithChips
 
 Custom input-with-chips
@@ -20,15 +8,9 @@ Custom input-with-chips
 import InputWithChips from "@appserver/components/input-with-chips";
 ```
 
-### InputWithChips - Default
-
-<Canvas>
-  <Story story={stories.Default} name="Default" />
-</Canvas>
-
-#### Properties
-
-<ArgsTable story="Default" />
+```jsx
+<InputWithChips options={options} placeholder="Type your chips..." />
+```
 
 #### Options - an array of objects that contains the following fields:
 
@@ -46,16 +28,6 @@ Options have options:
 - label - Display text
 - value - Email address
 
-### InputWithChips - Empty
-
-<Canvas>
-  <Story story={stories.Empty} name="Empty" />
-</Canvas>
-
-#### Properties
-
-<ArgsTable story="Empty" />
-
 #### Actions that can be performed on chips and input:
 
 - Enter a chip into the input (chips are checked for a valid email, and the same chips).
@@ -67,3 +39,10 @@ Options have options:
 - Hold down the shift button by moving the arrows to the left, right or clicking the mouse on the chips, thereby highlighting several chips.
 - The highlighted chip(s) can be removed by clicking on the button Backspace.
 - The selected chip(s) can be copied to the clipboard by pressing "ctrl + c".
+
+### Properties
+
+| Props         |      Type      | Required | Values |         Default          | Description                                               |
+| ------------- | :------------: | :------: | :----: | :----------------------: | --------------------------------------------------------- |
+| `options`     | `obj`, `array` |    ✅    |   -    |            -             | Array of objects with chips                               |
+| `placeholder` |    `string`    |    -     |   -    | Add placeholder to props | The placeholder is displayed only when the input is empty |
