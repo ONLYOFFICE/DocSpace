@@ -23,6 +23,9 @@ const CodeInput = (props) => {
   const handleOnChange = (e) => {
     if (e.target.value.match(allowed)) {
       if (e.target.nextElementSibling !== null) {
+        if (e.target.nextElementSibling.nodeName === "HR") {
+          e.target.nextElementSibling.nextElementSibling.focus();
+        }
         e.target.nextElementSibling.focus();
       }
     } else {
@@ -39,6 +42,9 @@ const CodeInput = (props) => {
     if (key === "Backspace") {
       if (target.value === "" && target.previousElementSibling !== null) {
         if (target.previousElementSibling !== null) {
+          if (e.target.previousElementSibling.nodeName === "HR") {
+            e.target.previousElementSibling.previousElementSibling.focus();
+          }
           target.previousElementSibling.focus();
           e.preventDefault();
         }
@@ -70,16 +76,19 @@ const CodeInput = (props) => {
   const elements = [];
   for (let i = 0; i < characters; i++) {
     elements.push(
-      <input
-        key={`InputCode-${i}`}
-        onChange={handleOnChange}
-        onKeyDown={handleOnKeyDown}
-        onFocus={handleOnFocus}
-        onPaste={handleOnPaste}
-        ref={(el) => (inputsRef.current[i] = el)}
-        maxLength={1}
-        disabled={isDisabled}
-      />
+      <>
+        <input
+          key={`InputCode-${i}`}
+          onChange={handleOnChange}
+          onKeyDown={handleOnKeyDown}
+          onFocus={handleOnFocus}
+          onPaste={handleOnPaste}
+          ref={(el) => (inputsRef.current[i] = el)}
+          maxLength={1}
+          disabled={isDisabled}
+        />
+        {i === 2 && <hr id="InputCode-line" />}
+      </>
     );
   }
 
