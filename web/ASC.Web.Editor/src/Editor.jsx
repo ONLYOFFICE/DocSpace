@@ -713,7 +713,9 @@ const Editor = () => {
       const onlyNumbers = new RegExp("^[0-9]+$");
       const isFileWithoutProvider = onlyNumbers.test(fileId);
 
-      const convertFileId = isFileWithoutProvider ? +fileId : fileId;
+      const convertFileId = isFileWithoutProvider
+        ? +fileId
+        : decodeURIComponent(fileId);
 
       favorite
         ? markAsFavorite([convertFileId])
