@@ -24,5 +24,8 @@
   "WorkspaceLoginDescription": "Don't know your portal URL? <1>Find your workspaces</1>",
   "CodeTitle": "The code was emailed to you",
   "CodeSubtitle": "We sent a 6-digit code to {{email}}. The code has a limited validity period, enter it as soon as possible.",
-  "NotFoundCode": "Can't find the code? Check your «Spam» folder."
+  "NotFoundCode": "Can't find the code? Check your «Spam» folder.",
+  "InvalidCode": "This code is invalid. Try again",
+  "ExpiredCode": "This code is no longer valid. Request a new code and try again",
+  "ResendCode": "Resend code"
 }
