@@ -1,1 +1,1 @@
-export default from './PeopleCatalogLoader';
+export default from "./PeopleCatalogLoader";

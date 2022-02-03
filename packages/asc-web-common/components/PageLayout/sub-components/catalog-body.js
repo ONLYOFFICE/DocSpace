@@ -1,9 +1,9 @@
-import React from 'react';
+import React from "react";
 
 const CatalogBody = (props) => {
   return <> {props.children}</>;
 };
 
-CatalogBody.displayName = 'CatalogBody';
+CatalogBody.displayName = "CatalogBody";
 
 export default React.memo(CatalogBody);

@@ -1,11 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { ReactSVG } from 'react-svg';
-import Badge from '@appserver/components/badge';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { ReactSVG } from "react-svg";
+import Badge from "@appserver/components/badge";
 
-const baseColor = '#7A95B0',
-  activeColor = '#FFFFFF';
+const baseColor = "#7A95B0",
+  activeColor = "#FFFFFF";
 
 const StyledReactSVG = styled(ReactSVG)`
   position: relative;
@@ -40,10 +40,28 @@ const HeaderNavigationIcon = ({
 }) => {
   const color = active ? activeColor : baseColor;
   return (
-    <div style={{ position: 'relative', width: '20px', height: '20px', marginRight: '22px' }}>
-      <StyledReactSVG src={iconUrl} href={url} onClick={onItemClick} {...rest} color={color} />
+    <div
+      style={{
+        position: "relative",
+        width: "20px",
+        height: "20px",
+        marginRight: "22px",
+      }}
+    >
+      <StyledReactSVG
+        src={iconUrl}
+        href={url}
+        onClick={onItemClick}
+        {...rest}
+        color={color}
+      />
 
-      <StyledBadge onClick={onBadgeClick} label={badgeNumber} maxWidth={'6px'} fontSize={'9px'} />
+      <StyledBadge
+        onClick={onBadgeClick}
+        label={badgeNumber}
+        maxWidth={"6px"}
+        fontSize={"9px"}
+      />
     </div>
   );
 };

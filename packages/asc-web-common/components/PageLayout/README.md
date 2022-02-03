@@ -5,20 +5,24 @@ Default page layout
 ### Usage
 
 ```js
-import PageLayout from '@appserver/common/components/PageLayout';
+import PageLayout from "@appserver/common/components/PageLayout";
 ```
 
 ```jsx
 <PageLayout withBodyScroll={true}>
   <PageLayout.ArticleHeader>{articleHeaderContent}</PageLayout.ArticleHeader>
 
-  <PageLayout.ArticleMainButton>{articleMainButtonContent}</PageLayout.ArticleMainButton>
+  <PageLayout.ArticleMainButton>
+    {articleMainButtonContent}
+  </PageLayout.ArticleMainButton>
 
   <PageLayout.ArticleBody>{articleBodyContent}</PageLayout.ArticleBody>
 
   <PageLayout.CatalogHeader>{catalogHeaderContent}</PageLayout.CatalogHeader>
 
-  <PageLayout.catalogMainButton>{catalogMainButtonContent}</PageLayout.catalogMainButton>
+  <PageLayout.catalogMainButton>
+    {catalogMainButtonContent}
+  </PageLayout.catalogMainButton>
 
   <PageLayout.CatalogBody>{catalogBodyContent}</PageLayout.CatalogBody>
 

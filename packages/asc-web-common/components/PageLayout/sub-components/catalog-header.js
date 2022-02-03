@@ -1,10 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled, { css } from 'styled-components';
-import Heading from '@appserver/components/heading';
-import { isMobileOnly, isTablet } from 'react-device-detect';
-import MenuIcon from '@appserver/components/public/static/images/menu.react.svg';
-import { tablet, mobile } from '@appserver/components/utils/device';
+import React from "react";
+import PropTypes from "prop-types";
+import styled, { css } from "styled-components";
+import Heading from "@appserver/components/heading";
+import { isMobileOnly, isTablet } from "react-device-detect";
+import MenuIcon from "@appserver/components/public/static/images/menu.react.svg";
+import { tablet, mobile } from "@appserver/components/utils/device";
 
 const StyledCatalogHeader = styled.div`
   padding: 12px 20px 13px;
@@ -15,7 +15,7 @@ const StyledCatalogHeader = styled.div`
   @media ${tablet} {
     padding: 16px 16px 17px;
     margin: 0;
-    justify-content: ${(props) => (props.showText ? 'flex-start' : 'center')};
+    justify-content: ${(props) => (props.showText ? "flex-start" : "center")};
   }
 
   @media ${mobile} {
@@ -27,7 +27,7 @@ const StyledCatalogHeader = styled.div`
   ${isTablet &&
   css`
     padding: 16px 16px 17px;
-    justify-content: ${(props) => (props.showText ? 'flex-start' : 'center')};
+    justify-content: ${(props) => (props.showText ? "flex-start" : "center")};
     margin: 0;
   `}
 
@@ -45,14 +45,14 @@ const StyledHeading = styled(Heading)`
   font-weight: bold;
   line-height: 28px;
   @media ${tablet} {
-    display: ${(props) => (props.showText ? 'block' : 'none')};
-    margin-left: ${(props) => props.showText && '12px'};
+    display: ${(props) => (props.showText ? "block" : "none")};
+    margin-left: ${(props) => props.showText && "12px"};
   }
 
   ${isTablet &&
   css`
-    display: ${(props) => (props.showText ? 'block' : 'none')};
-    margin-left: ${(props) => props.showText && '12px'};
+    display: ${(props) => (props.showText ? "block" : "none")};
+    margin-left: ${(props) => props.showText && "12px"};
   `}
 
   @media ${mobile} {
@@ -119,6 +119,6 @@ CatalogHeader.propTypes = {
   onClick: PropTypes.func,
 };
 
-CatalogHeader.displayName = 'CatalogHeader';
+CatalogHeader.displayName = "CatalogHeader";
 
 export default React.memo(CatalogHeader);

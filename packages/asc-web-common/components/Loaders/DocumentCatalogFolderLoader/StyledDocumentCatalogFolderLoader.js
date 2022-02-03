@@ -1,6 +1,6 @@
-import styled from 'styled-components';
-import RectangleLoader from '../RectangleLoader';
-import { tablet, mobile } from '@appserver/components/utils/device';
+import styled from "styled-components";
+import RectangleLoader from "../RectangleLoader";
+import { tablet, mobile } from "@appserver/components/utils/device";
 
 const StyledContainer = styled.div`
   margin: 0;
@@ -9,8 +9,8 @@ const StyledContainer = styled.div`
   padding: 0 20px;
 
   @media ${tablet} {
-    width: ${(props) => (props.showText ? '240px' : '52px')};
-    padding: ${(props) => (props.showText ? '0 16px' : '10px 16px')};
+    width: ${(props) => (props.showText ? "240px" : "52px")};
+    padding: ${(props) => (props.showText ? "0 16px" : "10px 16px")};
   }
 
   @media ${mobile} {

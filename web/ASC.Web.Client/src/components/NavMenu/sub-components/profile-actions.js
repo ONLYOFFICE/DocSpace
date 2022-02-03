@@ -1,21 +1,23 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import Avatar from '@appserver/components/avatar';
-import DropDownItem from '@appserver/components/drop-down-item';
-import Link from '@appserver/components/link';
-import ProfileMenu from './profile-menu';
-import api from '@appserver/common/api';
-import { mobile } from '@appserver/components/utils/device';
-import { isMobileOnly } from 'react-device-detect';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import Avatar from "@appserver/components/avatar";
+import DropDownItem from "@appserver/components/drop-down-item";
+import Link from "@appserver/components/link";
+import ProfileMenu from "./profile-menu";
+import api from "@appserver/common/api";
+import { mobile } from "@appserver/components/utils/device";
+import { isMobileOnly } from "react-device-detect";
 
 const StyledDiv = styled.div`
   width: 32px;
   height: 32px;
   @media ${mobile} {
-    display: ${(props) => (props.isProduct && props.showCatalog ? 'none !important' : 'block')};
+    display: ${(props) =>
+      props.isProduct && props.showCatalog ? "none !important" : "block"};
   }
-  display: ${(props) => (props.isProduct && props.showCatalog && isMobileOnly ? 'none' : 'block')};
+  display: ${(props) =>
+    props.isProduct && props.showCatalog && isMobileOnly ? "none" : "block"};
 `;
 class ProfileActions extends React.PureComponent {
   constructor(props) {
@@ -26,7 +28,7 @@ class ProfileActions extends React.PureComponent {
     this.state = {
       opened: props.opened,
       user: props.user,
-      avatar: '',
+      avatar: "",
     };
   }
 
@@ -60,10 +62,10 @@ class ProfileActions extends React.PureComponent {
   getUserRole = (user) => {
     let isModuleAdmin = user.listAdminModules && user.listAdminModules.length;
 
-    if (user.isOwner) return 'owner';
-    if (user.isAdmin || isModuleAdmin) return 'admin';
-    if (user.isVisitor) return 'guest';
-    return 'user';
+    if (user.isOwner) return "owner";
+    if (user.isAdmin || isModuleAdmin) return "admin";
+    if (user.isVisitor) return "guest";
+    return "user";
   };
 
   onClose = (e) => {
@@ -101,9 +103,10 @@ class ProfileActions extends React.PureComponent {
       <StyledDiv
         isProduct={this.props.isProduct}
         showCatalog={this.props.showCatalog}
-        ref={this.ref}>
+        ref={this.ref}
+      >
         <Avatar
-          style={{ width: '32px', height: '32px' }}
+          style={{ width: "32px", height: "32px" }}
           onClick={this.onClick}
           role={userRole}
           size="min"
@@ -118,14 +121,16 @@ class ProfileActions extends React.PureComponent {
           displayName={user.displayName}
           email={user.email}
           open={opened}
-          clickOutsideAction={this.onClose}>
-          <div style={{ paddingTop: '8px' }}>
+          clickOutsideAction={this.onClose}
+        >
+          <div style={{ paddingTop: "8px" }}>
             {this.props.userActions.map((action) => (
               <Link
                 noHover={true}
                 key={action.key}
                 href={action.url}
-                onClick={this.onClickItemLink}>
+                onClick={this.onClickItemLink}
+              >
                 <DropDownItem {...action} />
               </Link>
             ))}

@@ -1,25 +1,25 @@
-import React from 'react';
-import styled from 'styled-components';
-import { inject, observer } from 'mobx-react';
-import { withRouter } from 'react-router';
-import { setDocumentTitle } from '../../../helpers/utils';
-import config from '../../../../package.json';
-import { AppServerConfig } from '@appserver/common/constants';
-import Items from './Items';
-import { isMobile, tablet } from '@appserver/components/utils/device';
-import FilesFilter from '@appserver/common/api/files/filter';
-import SettingsItems from './SettingsItems';
-import { combineUrl } from '@appserver/common/utils';
-import { isDesktop, isTablet, isMobileOnly } from 'react-device-detect';
-import ThirdPartyList from './ThirdPartyList';
-import DownloadAppList from './DownloadAppList';
-import Banner from './Banner';
+import React from "react";
+import styled from "styled-components";
+import { inject, observer } from "mobx-react";
+import { withRouter } from "react-router";
+import { setDocumentTitle } from "../../../helpers/utils";
+import config from "../../../../package.json";
+import { AppServerConfig } from "@appserver/common/constants";
+import Items from "./Items";
+import { isMobile, tablet } from "@appserver/components/utils/device";
+import FilesFilter from "@appserver/common/api/files/filter";
+import SettingsItems from "./SettingsItems";
+import { combineUrl } from "@appserver/common/utils";
+import { isDesktop, isTablet, isMobileOnly } from "react-device-detect";
+import ThirdPartyList from "./ThirdPartyList";
+import DownloadAppList from "./DownloadAppList";
+import Banner from "./Banner";
 
 const StyledBlock = styled.div`
   padding: 0 20px;
 
   @media ${tablet} {
-    padding: ${(props) => (props.showText ? '0 16px' : 0)};
+    padding: ${(props) => (props.showText ? "0 16px" : 0)};
   }
 `;
 
@@ -48,7 +48,7 @@ const CatalogBodyContent = (props) => {
     setSelectedNode(data);
     setIsLoading(true);
 
-    if (window.location.pathname.indexOf('/filter') > 0) {
+    if (window.location.pathname.indexOf("/filter") > 0) {
       fetchFiles(data, null, true, false)
         .then(() => {
           (isMobileOnly || isMobile()) && toggleShowText();
@@ -63,7 +63,9 @@ const CatalogBodyContent = (props) => {
 
       const urlFilter = filter.toUrlParams();
       if (isMobileOnly || isMobile()) toggleShowText();
-      history.push(combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`));
+      history.push(
+        combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
+      );
     }
   }, []);
 
@@ -79,9 +81,10 @@ const CatalogBodyContent = (props) => {
         <StyledBlock showText={showText}>
           {enableThirdParty && !isVisitor && <ThirdPartyList />}
           <DownloadAppList />
-          {(isDesktop || isTablet) && personal && !firstLoad && campaigns.length > 0 && (
-            <Banner FirebaseHelper={FirebaseHelper} />
-          )}
+          {(isDesktop || isTablet) &&
+            personal &&
+            !firstLoad &&
+            campaigns.length > 0 && <Banner FirebaseHelper={FirebaseHelper} />}
         </StyledBlock>
       )}
     </>
@@ -89,7 +92,14 @@ const CatalogBodyContent = (props) => {
 };
 
 export default inject(
-  ({ auth, filesStore, treeFoldersStore, selectedFolderStore, dialogsStore, settingsStore }) => {
+  ({
+    auth,
+    filesStore,
+    treeFoldersStore,
+    selectedFolderStore,
+    dialogsStore,
+    settingsStore,
+  }) => {
     const { fetchFiles, setIsLoading, setFirstLoad, firstLoad } = filesStore;
     const { treeFolders, setSelectedNode, setTreeFolders } = treeFoldersStore;
 
@@ -106,7 +116,9 @@ export default inject(
 
     const selectedFolderTitle = selectedFolderStore.title;
 
-    selectedFolderTitle ? setDocumentTitle(selectedFolderTitle) : setDocumentTitle();
+    selectedFolderTitle
+      ? setDocumentTitle(selectedFolderTitle)
+      : setDocumentTitle();
 
     return {
       treeFolders,
@@ -128,5 +140,5 @@ export default inject(
       isDesktopClient,
       FirebaseHelper,
     };
-  },
+  }
 )(observer(withRouter(CatalogBodyContent)));

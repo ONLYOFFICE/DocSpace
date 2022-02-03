@@ -1,11 +1,19 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { StyledContainer, StyledRectangleLoader } from './StyledPeopleCatalogLoader';
-import { inject, observer } from 'mobx-react';
+import React from "react";
+import PropTypes from "prop-types";
+import {
+  StyledContainer,
+  StyledRectangleLoader,
+} from "./StyledPeopleCatalogLoader";
+import { inject, observer } from "mobx-react";
 
 const PeopleCatalogLoader = ({ id, className, style, showText, ...rest }) => {
   return (
-    <StyledContainer id={id} className={className} style={style} showText={showText}>
+    <StyledContainer
+      id={id}
+      className={className}
+      style={style}
+      showText={showText}
+    >
       <StyledRectangleLoader {...rest} />
       <StyledRectangleLoader {...rest} />
       <StyledRectangleLoader {...rest} />
@@ -31,6 +39,6 @@ PeopleCatalogLoader.defaultProps = {
   style: undefined,
 };
 
-export default inject(({ auth }) => ({ showText: auth.settingsStore.showText }))(
-  observer(PeopleCatalogLoader),
-);
+export default inject(({ auth }) => ({
+  showText: auth.settingsStore.showText,
+}))(observer(PeopleCatalogLoader));

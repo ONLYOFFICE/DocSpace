@@ -1,27 +1,27 @@
-import React from 'react';
-import Loader from '@appserver/components/loader';
-import PageLayout from '@appserver/common/components/PageLayout';
+import React from "react";
+import Loader from "@appserver/components/loader";
+import PageLayout from "@appserver/common/components/PageLayout";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
   ArticleBodyContent,
-} from '../../components/Article';
+} from "../../components/Article";
 import {
   CatalogHeaderContent,
   CatalogMainButtonContent,
   CatalogBodyContent,
-} from '../../components/Catalog';
-import { SectionHeaderContent, SectionBodyContent } from './Section';
-import { withTranslation } from 'react-i18next';
-import { withRouter } from 'react-router';
-import { inject, observer } from 'mobx-react';
+} from "../../components/Catalog";
+import { SectionHeaderContent, SectionBodyContent } from "./Section";
+import { withTranslation } from "react-i18next";
+import { withRouter } from "react-router";
+import { inject, observer } from "mobx-react";
 
 class GroupAction extends React.Component {
   componentDidMount() {
     const { match, fetchGroup, t, setDocumentTitle, setFirstLoad } = this.props;
     const { groupId } = match.params;
     setFirstLoad(false);
-    setDocumentTitle(t('GroupAction'));
+    setDocumentTitle(t("GroupAction"));
 
     if (groupId) {
       fetchGroup(groupId);
@@ -43,7 +43,7 @@ class GroupAction extends React.Component {
   }
 
   render() {
-    console.log('GroupAction render');
+    console.log("GroupAction render");
 
     const { group, match, tReady, isAdmin, showCatalog } = this.props;
 
@@ -118,12 +118,18 @@ class GroupAction extends React.Component {
   }
 }
 
-const GroupActionContainer = withTranslation(['GroupAction', 'Common'])(GroupAction);
+const GroupActionContainer = withTranslation(["GroupAction", "Common"])(
+  GroupAction
+);
 export default withRouter(
   inject(({ auth, peopleStore }) => {
     const { setDocumentTitle } = auth;
     const { selectedGroupStore, loadingStore } = peopleStore;
-    const { setTargetedGroup: fetchGroup, targetedGroup: group, resetGroup } = selectedGroupStore;
+    const {
+      setTargetedGroup: fetchGroup,
+      targetedGroup: group,
+      resetGroup,
+    } = selectedGroupStore;
     const { setFirstLoad } = loadingStore;
     return {
       setDocumentTitle,
@@ -134,5 +140,5 @@ export default withRouter(
       isAdmin: auth.isAdmin,
       showCatalog: auth.settingsStore.showCatalog,
     };
-  })(observer(GroupActionContainer)),
+  })(observer(GroupActionContainer))
 );

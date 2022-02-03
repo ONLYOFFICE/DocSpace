@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { withRouter } from 'react-router';
-import PageLayout from '@appserver/common/components/PageLayout';
-import Loaders from '@appserver/common/components/Loaders';
-import { showLoader, hideLoader } from '@appserver/common/utils';
+import React, { useEffect, useState } from "react";
+import { withRouter } from "react-router";
+import PageLayout from "@appserver/common/components/PageLayout";
+import Loaders from "@appserver/common/components/Loaders";
+import { showLoader, hideLoader } from "@appserver/common/utils";
 import {
   ArticleHeaderContent,
   ArticleBodyContent,
   ArticleMainButtonContent,
-} from '../../components/Article';
+} from "../../components/Article";
 import {
   CatalogBodyContent,
   CatalogHeaderContent,
   CatalogMainButtonContent,
-} from '../../components/Catalog';
-import { SectionHeaderContent, SectionBodyContent } from './Section';
-import { withTranslation } from 'react-i18next';
-import { setDocumentTitle } from '../../helpers/utils';
-import { inject, observer } from 'mobx-react';
+} from "../../components/Catalog";
+import { SectionHeaderContent, SectionBodyContent } from "./Section";
+import { withTranslation } from "react-i18next";
+import { setDocumentTitle } from "../../helpers/utils";
+import { inject, observer } from "mobx-react";
 
 const PureSettings = ({
   match,
@@ -27,7 +27,7 @@ const PureSettings = ({
   tReady,
   showCatalog,
 }) => {
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState("");
   const { setting } = match.params;
 
   useEffect(() => {
@@ -36,17 +36,17 @@ const PureSettings = ({
 
   useEffect(() => {
     switch (setting) {
-      case 'common':
-        setTitle(t('CommonSettings'));
+      case "common":
+        setTitle(t("CommonSettings"));
         break;
-      case 'admin':
-        setTitle(t('Common:AdminSettings'));
+      case "admin":
+        setTitle(t("Common:AdminSettings"));
         break;
-      case 'thirdParty':
-        setTitle(t('ThirdPartySettings'));
+      case "thirdParty":
+        setTitle(t("ThirdPartySettings"));
         break;
       default:
-        setTitle(t('CommonSettings'));
+        setTitle(t("CommonSettings"));
         break;
     }
   }, [setting, t, tReady]);
@@ -112,7 +112,7 @@ const PureSettings = ({
 
         <PageLayout.SectionBody>
           {(!isLoadedSettingsTree && isLoading) || isLoading || !tReady ? (
-            setting === 'thirdParty' ? (
+            setting === "thirdParty" ? (
               <Loaders.Rows />
             ) : (
               <Loaders.SettingsFiles />
@@ -126,21 +126,23 @@ const PureSettings = ({
   );
 };
 
-const Settings = withTranslation(['Settings', 'Common'])(PureSettings);
+const Settings = withTranslation(["Settings", "Common"])(PureSettings);
 
-export default inject(({ auth, filesStore, settingsStore, treeFoldersStore }) => {
-  const { setFirstLoad, isLoading } = filesStore;
-  const { setSelectedNode } = treeFoldersStore;
-  const { getFilesSettings, isLoadedSettingsTree } = settingsStore;
+export default inject(
+  ({ auth, filesStore, settingsStore, treeFoldersStore }) => {
+    const { setFirstLoad, isLoading } = filesStore;
+    const { setSelectedNode } = treeFoldersStore;
+    const { getFilesSettings, isLoadedSettingsTree } = settingsStore;
 
-  return {
-    isLoading,
-    isLoadedSettingsTree,
+    return {
+      isLoading,
+      isLoadedSettingsTree,
 
-    setFirstLoad,
-    setSelectedNode,
-    getFilesSettings,
+      setFirstLoad,
+      setSelectedNode,
+      getFilesSettings,
 
-    showCatalog: auth.settingsStore.showCatalog,
-  };
-})(withRouter(observer(Settings)));
+      showCatalog: auth.settingsStore.showCatalog,
+    };
+  }
+)(withRouter(observer(Settings)));

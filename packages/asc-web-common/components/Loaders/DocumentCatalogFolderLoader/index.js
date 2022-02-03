@@ -1,1 +1,1 @@
-export default from './DocumentCatalogFolderLoader';
+export default from "./DocumentCatalogFolderLoader";

@@ -1,6 +1,6 @@
-import styled from 'styled-components';
-import RectangleLoader from '../RectangleLoader';
-import { tablet, mobile } from '@appserver/components/utils/device';
+import styled from "styled-components";
+import RectangleLoader from "../RectangleLoader";
+import { tablet, mobile } from "@appserver/components/utils/device";
 
 const StyledContainer = styled.div`
   margin: 0;
@@ -12,7 +12,7 @@ const StyledContainer = styled.div`
   flex-direction: column;
 
   @media ${tablet} {
-    width: ${(props) => (props.showText ? '240px' : '52px')};
+    width: ${(props) => (props.showText ? "240px" : "52px")};
     padding: 0 16px;
   }
 

@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import CrossIcon from '@appserver/components/public/static/images/cross.react.svg';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import CrossIcon from "@appserver/components/public/static/images/cross.react.svg";
 
 const StyledControlContainer = styled.div`
   background: #9a9ea3;

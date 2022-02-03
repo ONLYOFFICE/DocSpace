@@ -1,20 +1,20 @@
-import React from 'react';
-import { withTranslation } from 'react-i18next';
-import Filter from '@appserver/common/api/people/filter';
-import Loaders from '@appserver/common/components/Loaders';
-import { inject, observer } from 'mobx-react';
-import { getSelectedGroup } from '../../../helpers/people-helpers';
-import { withRouter } from 'react-router';
-import { isMobile } from '@appserver/components/utils/device';
-import { isMobileOnly } from 'react-device-detect';
-import config from '../../../../package.json';
-import { combineUrl } from '@appserver/common/utils';
-import { AppServerConfig } from '@appserver/common/constants';
-import CatalogItem from '@appserver/components/catalog-item';
-import withLoader from '../../../HOCs/withLoader';
+import React from "react";
+import { withTranslation } from "react-i18next";
+import Filter from "@appserver/common/api/people/filter";
+import Loaders from "@appserver/common/components/Loaders";
+import { inject, observer } from "mobx-react";
+import { getSelectedGroup } from "../../../helpers/people-helpers";
+import { withRouter } from "react-router";
+import { isMobile } from "@appserver/components/utils/device";
+import { isMobileOnly } from "react-device-detect";
+import config from "../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
+import CatalogItem from "@appserver/components/catalog-item";
+import withLoader from "../../../HOCs/withLoader";
 
-const departmentsIcon = 'images/departments.group.react.svg';
-const groupIcon = '/static/images/catalog.folder.react.svg';
+const departmentsIcon = "images/departments.group.react.svg";
+const groupIcon = "/static/images/catalog.folder.react.svg";
 
 const CatalogBodyContent = ({
   selectedKeys,
@@ -40,7 +40,10 @@ const CatalogBodyContent = ({
   }, [selectedKeys[0]]);
 
   const changeTitleDocument = (id) => {
-    const currentGroup = getSelectedGroup(groups, id === 'root' ? selectedKeys[0] : id);
+    const currentGroup = getSelectedGroup(
+      groups,
+      id === "root" ? selectedKeys[0] : id
+    );
     currentGroup ? setDocumentTitle(currentGroup.name) : setDocumentTitle();
   };
 
@@ -49,11 +52,11 @@ const CatalogBodyContent = ({
     return false;
   };
   const onClick = (data) => {
-    const isRoot = data === 'departments';
-    const groupId = isRoot ? 'root' : data;
+    const isRoot = data === "departments";
+    const groupId = isRoot ? "root" : data;
     changeTitleDocument(groupId);
 
-    if (window.location.pathname.indexOf('/people/filter') > 0) {
+    if (window.location.pathname.indexOf("/people/filter") > 0) {
       selectGroup(groupId);
       if (isMobileOnly || isMobile()) toggleShowText();
     } else {
@@ -63,7 +66,11 @@ const CatalogBodyContent = ({
       if (!isRoot) newFilter.group = groupId;
 
       const urlFilter = newFilter.toUrlParams();
-      const url = combineUrl(AppServerConfig.proxyURL, config.homepage, `/filter?${urlFilter}`);
+      const url = combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/filter?${urlFilter}`
+      );
       history.push(url);
       if (isMobileOnly || isMobile()) toggleShowText();
     }
@@ -90,15 +97,15 @@ const CatalogBodyContent = ({
   return (
     <>
       {!isVisitor && (
-        <div style={!isAdmin && isMobileOnly ? { marginTop: '16px' } : null}>
+        <div style={!isAdmin && isMobileOnly ? { marginTop: "16px" } : null}>
           <CatalogItem
-            key={'root'}
-            id={'departments'}
+            key={"root"}
+            id={"departments"}
             icon={departmentsIcon}
             onClick={onClick}
             text={groupsCaption}
             showText={showText}
-            isActive={isActive('root')}
+            isActive={isActive("root")}
           />
           {getItems(groups)}
         </div>
@@ -107,8 +114,8 @@ const CatalogBodyContent = ({
   );
 };
 
-const BodyContent = withTranslation('Article')(
-  withRouter(withLoader(CatalogBodyContent)(<Loaders.PeopleCatalogLoader />)),
+const BodyContent = withTranslation("Article")(
+  withRouter(withLoader(CatalogBodyContent)(<Loaders.PeopleCatalogLoader />))
 );
 
 export default inject(({ auth, peopleStore }) => {
@@ -126,7 +133,7 @@ export default inject(({ auth, peopleStore }) => {
   const { groupsCaption } = customNames;
   const { isEdit, setIsVisibleDataLossDialog } = editingFormStore;
   const { selectedGroup, selectGroup } = selectedGroupStore;
-  const selectedKeys = selectedGroup ? [selectedGroup] : ['root'];
+  const selectedKeys = selectedGroup ? [selectedGroup] : ["root"];
   const { setFirstLoad, isLoading, setIsLoading, isLoaded } = loadingStore;
   return {
     setDocumentTitle,
