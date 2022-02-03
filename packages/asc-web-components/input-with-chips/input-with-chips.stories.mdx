@@ -1,0 +1,69 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/addon-docs/blocks";
+import InputWithChips from "./";
+import * as stories from "./input-with-chips.stories.js";
+
+<Meta
+  title="Components/InputWithChips"
+  component={InputWithChips}
+  argTypes={{
+    options: { required: true },
+  }}
+/>
+
+# InputWithChips
+
+Custom input-with-chips
+
+### Import
+
+```js
+import InputWithChips from "@appserver/components/input-with-chips";
+```
+
+### InputWithChips - Default
+
+<Canvas>
+  <Story story={stories.Default} name="Default" />
+</Canvas>
+
+#### Properties
+
+<ArgsTable story="Default" />
+
+#### Options - an array of objects that contains the following fields:
+
+```js
+const options = [
+  {
+    label: "Ivan Petrov",
+    value: "myname@gmul.com",
+  },
+];
+```
+
+Options have options:
+
+- label - Display text
+- value - Email address
+
+### InputWithChips - Empty
+
+<Canvas>
+  <Story story={stories.Empty} name="Empty" />
+</Canvas>
+
+#### Properties
+
+<ArgsTable story="Empty" />
+
+#### Actions that can be performed on chips and input:
+
+- Enter a chip into the input (chips are checked for a valid email, and the same chips).
+- Add chips by pressing Enter or NumpadEnter.
+- By double-clicking on the mouse button on a specific selected chip, you can switch to the chip editing mode.
+- You can exit the editing mode by pressing Escape, Enter or NumpadEnter.
+- Remove the chips by clicking on the button in the form of a cross.
+- Click on the chip once, thereby highlighting it.
+- Hold down the shift button by moving the arrows to the left, right or clicking the mouse on the chips, thereby highlighting several chips.
+- The highlighted chip(s) can be removed by clicking on the button Backspace.
+- The selected chip(s) can be copied to the clipboard by pressing "ctrl + c".

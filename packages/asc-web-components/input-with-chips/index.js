@@ -13,7 +13,7 @@ import {
 } from "./styled-inputwithchips";
 
 const InputWithChips = (props) => {
-  const [options, setChips] = useState(props.options || []);
+  const [options, setOptions] = useState(props.options || []);
 
   const [value, setValue] = useState("");
 
@@ -39,7 +39,16 @@ const InputWithChips = (props) => {
   };
 
   const onClick = (value) => {
-    setSelectedChips([value]);
+    if (isShiftDown) {
+      const isExisted = !!selectedChips.find((it) => it.value === value.value);
+      return isExisted
+        ? setSelectedChips(
+            selectedChips.filter((it) => it.value != value.value)
+          )
+        : setSelectedChips([value, ...selectedChips]);
+    } else {
+      setSelectedChips([value]);
+    }
   };
 
   const onDoubleClick = (value) => {
@@ -47,12 +56,16 @@ const InputWithChips = (props) => {
   };
 
   const onDelete = (value) => {
-    setChips(options.filter((it) => it.value !== value.value));
+    setOptions(options.filter((it) => it.value !== value.value));
   };
 
   const onEnterPress = () => {
-    if (!options.find((it) => it.value === value) && value) {
-      setChips([...options, { label: value, value }]);
+    if (
+      !options.find((it) => it.value === value) &&
+      value &&
+      value.trim().length > 0
+    ) {
+      setOptions([...options, { label: value, value }]);
       setValue("");
     }
   };
@@ -63,7 +76,7 @@ const InputWithChips = (props) => {
   };
 
   const onSaveNewChip = (value, newValue) => {
-    setChips(
+    setOptions(
       options.map((it) =>
         it.value === value.value ? { label: newValue, value: newValue } : it
       )
@@ -76,7 +89,9 @@ const InputWithChips = (props) => {
   };
 
   const copyToClipbord = () => {
-    navigator.clipboard.writeText(selectedChips.map((it) => it.value).join());
+    navigator.clipboard.writeText(
+      selectedChips.map((it) => it.value).join(", ")
+    );
   };
 
   const onKeyUp = (e) => {
@@ -112,7 +127,7 @@ const InputWithChips = (props) => {
 
     if (selectedChips.length > 1 && code === "Backspace") {
       const Chips = options.filter((e) => !~selectedChips.indexOf(e));
-      setChips(Chips);
+      setOptions(Chips);
       setSelectedChips([]);
       return;
     }
@@ -205,8 +220,14 @@ const InputWithChips = (props) => {
 };
 
 InputWithChips.propTypes = {
-  options: PropTypes.arrayOf(PropTypes.object),
+  /** Array of objects with chips */
+  options: PropTypes.arrayOf(PropTypes.object).isRequired,
+  /** The placeholder is displayed only when the input is empty */
   placeholder: PropTypes.string,
+};
+
+InputWithChips.defaultProps = {
+  placeholder: "Add placeholder to props",
 };
 
 export default InputWithChips;

@@ -26,7 +26,11 @@ const Chip = (props) => {
     setNewValue(e.target.value);
   };
 
-  const onClickHandler = () => {
+  const onClickHandler = (e) => {
+    if (e.shiftKey) {
+      document.getSelection().removeAllRanges();
+    }
+
     onClick(value);
   };
 
