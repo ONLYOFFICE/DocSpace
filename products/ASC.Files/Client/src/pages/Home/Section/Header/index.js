@@ -350,6 +350,9 @@ class SectionHeaderContent extends React.Component {
                     getContextOptionsFolder={this.getContextOptionsFolder}
                     onClose={this.onClose}
                     onClickFolder={this.onClickFolder}
+                    isRecycleBinFolder={isRecycleBinFolder}
+                    isEmptyFilesList={isEmptyFilesList}
+                    clearTrash={this.onEmptyTrashAction}
                     onBackToParentFolder={this.onBackToParentFolder}
                   />
                 )}

@@ -67,18 +67,16 @@ const StyledContainer = styled.div`
 
       @media ${tablet} {
         display: none;
-        // margin-left: auto;
-
-        // & > div:first-child {
-        //   padding: 0px 8px 8px 8px;
-        //   margin-right: -8px;
-        // }
       }
 
       ${isMobile &&
       css`
         display: none;
       `}
+    }
+
+    .trash-button {
+      margin-left: 6px;
     }
 
     .option-button {

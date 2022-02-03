@@ -27,6 +27,9 @@ const Navigation = ({
   getContextOptionsPlus,
   getContextOptionsFolder,
   onBackToParentFolder,
+  isRecycleBinFolder,
+  isEmptyFilesList,
+  clearTrash,
   ...rest
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -126,6 +129,9 @@ const Navigation = ({
                   canCreate={canCreate}
                   getContextOptionsFolder={getContextOptionsFolder}
                   getContextOptionsPlus={getContextOptionsPlus}
+                  isRecycleBinFolder={isRecycleBinFolder}
+                  isEmptyFilesList={isEmptyFilesList}
+                  clearTrash={clearTrash}
                 />
               </>
             </div>
