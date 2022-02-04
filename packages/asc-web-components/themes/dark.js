@@ -1779,7 +1779,7 @@ const Dark = {
       width: "100%",
       height: "36px",
       padding: "0 20px",
-      marginBottom: "20px",
+      marginBottom: "16px",
       tablet: {
         height: "44px",
         padding: "0 16px",
@@ -1788,16 +1788,18 @@ const Dark = {
     },
     sibling: {
       active: {
-        background: "#333333",
+        background: black,
       },
       hover: {
-        background: "#333333",
+        background: black,
       },
     },
     img: {
       svg: {
         width: "16px",
         height: "16px",
+
+        fill: "#a9a9a9",
 
         tablet: {
           width: "20px",
@@ -1809,7 +1811,7 @@ const Dark = {
       width: "100%",
       marginLeft: "8px",
       lineHeight: "20px",
-      color: cyanBlueDarkShade,
+      color: "#a9a9a9",
       fontSize: "13px",
       fontWeight: 600,
       tablet: {
@@ -1820,7 +1822,7 @@ const Dark = {
       },
     },
     initialText: {
-      color: white,
+      color: black,
       width: "16px",
       lineHeight: "15px",
       fontSize: "9px",
@@ -1832,8 +1834,9 @@ const Dark = {
       },
     },
     badgeWrapper: {
-      size: "20px",
-      marginLeft: "20px",
+      size: "16px",
+      marginLeft: "8px",
+      marginRight: "-2px",
       tablet: {
         width: "48px",
         height: "44px",
@@ -1841,13 +1844,10 @@ const Dark = {
       },
     },
     badgeWithoutText: {
-      size: "6px",
-      position: "-3px",
-      backgroundColor: orangeMain,
-      tablet: {
-        size: "8px",
-        position: "-4px",
-      },
+      backgroundColor: "#F58D31",
+
+      size: "8px",
+      position: "-4px",
     },
   },
 

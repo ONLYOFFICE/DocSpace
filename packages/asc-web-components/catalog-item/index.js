@@ -17,8 +17,6 @@ import {
 const getInitial = (text) => text.substring(0, 1).toUpperCase();
 
 const CatalogItem = (props) => {
-  // console.log("render");
-
   const {
     className,
     id,
@@ -71,7 +69,7 @@ const CatalogItem = (props) => {
               <StyledCatalogItemBadgeWrapper
                 onClick={onClickBadgeAction}
                 showText={showText}
-              ></StyledCatalogItemBadgeWrapper>
+              />
             )}
           </>
         )}
@@ -85,7 +83,7 @@ const CatalogItem = (props) => {
           onClick={onClickBadgeAction}
         >
           {!iconBadge ? (
-            <Badge label={labelBadge} />
+            <Badge className="catalog-item__badge" label={labelBadge} />
           ) : (
             <ReactSVG src={iconBadge} />
           )}

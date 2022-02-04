@@ -1791,7 +1791,7 @@ const Base = {
       width: "100%",
       height: "36px",
       padding: "0 20px",
-      marginBottom: "20px",
+      marginBottom: "16px",
       tablet: {
         height: "44px",
         padding: "0 16px",
@@ -1810,6 +1810,8 @@ const Base = {
       svg: {
         width: "16px",
         height: "16px",
+
+        fill: "#657077",
 
         tablet: {
           width: "20px",
@@ -1834,9 +1836,9 @@ const Base = {
     initialText: {
       color: white,
       width: "16px",
-      lineHeight: "15px",
-      fontSize: "9px",
-      fontWeight: 700,
+      lineHeight: "11px",
+      fontSize: "11px",
+      fontWeight: "bold",
       tablet: {
         width: "20px",
         lineHeight: "19px",
@@ -1844,8 +1846,9 @@ const Base = {
       },
     },
     badgeWrapper: {
-      size: "20px",
-      marginLeft: "20px",
+      size: "16px",
+      marginLeft: "8px",
+      marginRight: "-2px",
       tablet: {
         width: "48px",
         height: "44px",
@@ -1853,13 +1856,10 @@ const Base = {
       },
     },
     badgeWithoutText: {
-      size: "6px",
-      position: "-3px",
       backgroundColor: orangeMain,
-      tablet: {
-        size: "8px",
-        position: "-4px",
-      },
+
+      size: "8px",
+      position: "-4px",
     },
   },
   nav: {
@@ -1878,7 +1878,7 @@ const Base = {
 
   header: {
     backgroundColor: "#0F4071",
-    
+
     linkColor: "#7a95b0",
     productColor: white,
   },
