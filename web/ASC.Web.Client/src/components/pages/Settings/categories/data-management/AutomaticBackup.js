@@ -211,7 +211,7 @@ class AutomaticBackup extends React.PureComponent {
       selectedOptions = {
         selectedFolder: defaultOptions.defaultSelectedFolder,
         selectedStorageTypeNumber: defaultOptions.defaultStorageTypeNumber,
-        selectedHour: defaultOptions.defaultDay,
+        selectedHour: defaultOptions.defaultHour,
         selectedMaxCopiesNumber: defaultOptions.defaultMaxCopiesNumber,
       };
     }
