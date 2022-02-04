@@ -26,15 +26,18 @@
 
 using System;
 
+using ASC.Common.Mapping;
+using ASC.Core.Common.EF;
+
 namespace ASC.Core
 {
     [Serializable]
-    public class SubscriptionMethod
+    public class SubscriptionMethod : IMapFrom<DbSubscriptionMethod>
     {
         public int Tenant { get; set; }
         public string SourceId { get; set; }
-        public string ActionId { get; set; }
-        public string RecipientId { get; set; }
+        public string Action { get; set; }
+        public string Recipient { get; set; }
         public string[] Methods { get; set; }
         public string MethodsFromDb { set => Methods = value.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries); }
 
@@ -45,8 +48,8 @@ namespace ASC.Core
             {
                 Tenant = cache.Tenant,
                 SourceId = cache.SourceId,
-                ActionId = cache.ActionId,
-                RecipientId = cache.RecipientId
+                Action = cache.ActionId,
+                Recipient = cache.RecipientId
             };
         }
 
@@ -56,8 +59,8 @@ namespace ASC.Core
             {
                 Tenant = cache.Tenant,
                 SourceId = cache.SourceId,
-                ActionId = cache.ActionId,
-                RecipientId = cache.RecipientId
+                ActionId = cache.Action,
+                RecipientId = cache.Recipient
             };
         }
     }

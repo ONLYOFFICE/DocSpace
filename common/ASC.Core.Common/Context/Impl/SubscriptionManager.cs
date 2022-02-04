@@ -108,7 +108,7 @@ namespace ASC.Core
                 methods = _service.GetSubscriptionMethods(GetTenant(), sourceID, actionID, recipientID);
 
             var m = methods
-                .FirstOrDefault(x => x.ActionId.Equals(actionID, StringComparison.OrdinalIgnoreCase));
+                .FirstOrDefault(x => x.Action.Equals(actionID, StringComparison.OrdinalIgnoreCase));
 
             if (m == null) m = methods.FirstOrDefault();
 
@@ -133,8 +133,8 @@ namespace ASC.Core
             {
                 Tenant = GetTenant(),
                 SourceId = sourceID,
-                ActionId = actionID,
-                RecipientId = recipientID,
+                Action = actionID,
+                Recipient = recipientID,
                 Methods = senderNames,
             };
 

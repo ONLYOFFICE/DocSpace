@@ -60,8 +60,8 @@ namespace ASC.Core.Data
 
             _fromDbSubscriptionMethodToSubscriptionMethod = r => new SubscriptionMethod
             {
-                ActionId = r.Action,
-                RecipientId = r.Recipient,
+                Action = r.Action,
+                Recipient = r.Recipient,
                 SourceId = r.Source,
                 Tenant = r.Tenant,
                 MethodsFromDb = r.Sender
@@ -212,7 +212,7 @@ namespace ASC.Core.Data
             foreach (var r in methods)
             {
                 var m = conv(r);
-                var key = m.SourceId + m.ActionId + m.RecipientId;
+                var key = m.SourceId + m.Action + m.Recipient;
                 if (m.Tenant == Tenant.DefaultTenant)
                 {
                     m.Tenant = tenant;
@@ -238,8 +238,8 @@ namespace ASC.Core.Data
                 var q = UserDbContext.SubscriptionMethods
                     .Where(r => r.Tenant == subMethod.Tenant)
                     .Where(r => r.Source == subMethod.SourceId)
-                    .Where(r => r.Recipient == subMethod.RecipientId)
-                    .Where(r => r.Action == subMethod.ActionId);
+                    .Where(r => r.Recipient == subMethod.Recipient)
+                    .Where(r => r.Action == subMethod.Action);
 
                 var sm = q.FirstOrDefault();
 
@@ -249,8 +249,8 @@ namespace ASC.Core.Data
             {
                 var sm = new DbSubscriptionMethod
                 {
-                    Action = subMethod.ActionId,
-                    Recipient = subMethod.RecipientId,
+                    Action = subMethod.Action,
+                    Recipient = subMethod.Recipient,
                     Source = subMethod.SourceId,
                     Tenant = subMethod.Tenant,
                     Sender = string.Join("|", subMethod.Methods)

@@ -157,10 +157,9 @@ namespace ASC.Core.Data
             DbSettingsManagerCache.Remove(key);
         }
 
-
         public bool SaveSettingsFor<T>(T settings, int tenantId, Guid userId) where T : ISettings
         {
-            if (settings == null) throw new ArgumentNullException("settings");
+            if (settings == null) throw new ArgumentNullException(nameof(settings));
             try
             {
                 var key = settings.ID.ToString() + tenantId + userId;

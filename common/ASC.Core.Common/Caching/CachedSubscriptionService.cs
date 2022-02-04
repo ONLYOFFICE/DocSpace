@@ -260,7 +260,7 @@ namespace ASC.Core.Caching
 
         public void SetSubscriptionMethod(SubscriptionMethod m)
         {
-            _methods.RemoveAll(r => r.Tenant == m.Tenant && r.SourceId == m.SourceId && r.ActionId == m.ActionId && r.RecipientId == m.RecipientId);
+            _methods.RemoveAll(r => r.Tenant == m.Tenant && r.SourceId == m.SourceId && r.Action == m.Action && r.Recipient == m.Recipient);
 
             if (m.Methods != null && 0 < m.Methods.Length)
                 _methods.Add(m);
@@ -275,6 +275,6 @@ namespace ASC.Core.Caching
         }
 
         private void BuildMethodsIndex(IEnumerable<SubscriptionMethod> methods) =>
-            _methodsByRec = methods.GroupBy(r => r.RecipientId).ToDictionary(g => g.Key, g => g.ToList());
+            _methodsByRec = methods.GroupBy(r => r.Recipient).ToDictionary(g => g.Key, g => g.ToList());
     }
 }
