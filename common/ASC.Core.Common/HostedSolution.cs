@@ -219,7 +219,7 @@ namespace ASC.Core
         {
             var quota = QuotaService.GetTenantQuotas().FirstOrDefault(q => paid ? q.NonProfit : q.Trial);
             if (quota != null)
-                TariffService.SetTariff(tenant, new Tariff { QuotaId = quota.Id, DueDate = DateTime.MaxValue, });
+                TariffService.SetTariff(tenant, new Tariff { QuotaId = quota.Tenant, DueDate = DateTime.MaxValue, });
         }
 
         public void SetTariff(int tenant, Tariff tariff) => TariffService.SetTariff(tenant, tariff);

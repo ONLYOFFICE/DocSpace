@@ -223,7 +223,7 @@ namespace ASC.Web.Core
 
             // remove old aces
             AuthorizationManager.RemoveAllAces(securityObj);
-            var allowToAll = new AzRecord(ASC.Core.Users.Constants.GroupEveryone.ID, Read.ID, AceType.Allow, securityObj);
+            var allowToAll = new AzRecord(ASC.Core.Users.Constants.GroupEveryone.ID, Read.ID, securityObj.ToString(), AceType.Allow);
             AuthorizationManager.RemoveAce(allowToAll);
 
             // set new aces
@@ -238,7 +238,7 @@ namespace ASC.Web.Core
             }
             foreach (var s in subjects)
             {
-                var a = new AzRecord(s, Read.ID, enabled ? AceType.Allow : AceType.Deny, securityObj);
+                var a = new AzRecord(s, Read.ID, securityObj.ToString(), enabled ? AceType.Allow : AceType.Deny);
                 AuthorizationManager.AddAce(a);
             }
 

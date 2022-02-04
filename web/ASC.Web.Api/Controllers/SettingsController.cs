@@ -1927,7 +1927,7 @@ namespace ASC.Api.Settings
             if (!UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsAdmin(UserManager)) throw new SecurityException();
 
             var curQuota = TenantExtra.GetTenantQuota();
-            if (curQuota.Id != Tenant.DefaultTenant) return false;
+            if (curQuota.Tenant != Tenant.DefaultTenant) return false;
             if (curQuota.Trial) return false;
 
             var curTariff = TenantExtra.GetCurrentTariff();
@@ -1949,7 +1949,7 @@ namespace ASC.Api.Settings
 
             var tariff = new Tariff
             {
-                QuotaId = quota.Id,
+                QuotaId = quota.Tenant,
                 DueDate = DateTime.Today.AddDays(DEFAULT_TRIAL_PERIOD)
             };
 
