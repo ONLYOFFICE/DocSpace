@@ -1,6 +1,4 @@
-﻿using StackExchange.Redis.Extensions.Newtonsoft;
-
-using JsonConverter = System.Text.Json.Serialization.JsonConverter;
+﻿using JsonConverter = System.Text.Json.Serialization.JsonConverter;
 
 namespace ASC.Api.Core
 {
