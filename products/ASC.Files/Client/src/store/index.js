@@ -67,7 +67,8 @@ const filesActionsStore = new FilesActionsStore(
   selectedFolderStore,
   settingsStore,
   dialogsStore,
-  mediaViewerDataStore
+  mediaViewerDataStore,
+  formatsStore
 );
 
 const versionHistoryStore = new VersionHistoryStore(filesStore);

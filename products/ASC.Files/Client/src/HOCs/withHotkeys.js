@@ -28,6 +28,7 @@ const withHotkeys = (Component) => {
       setDeleteDialogVisible,
       deleteAction,
       isAvailableOption,
+      openFileAction,
     } = props;
 
     //Select item
@@ -250,9 +251,11 @@ const withHotkeys = (Component) => {
     );
 
     //Open item
-    useHotkeys("Enter", () => selection.length === 1 && alert("Open"), [
-      selection,
-    ]);
+    useHotkeys(
+      "Enter",
+      () => selection.length === 1 && openFileAction(selection[0]),
+      [selection]
+    );
 
     //Delete selection
     useHotkeys(
@@ -308,7 +311,11 @@ const withHotkeys = (Component) => {
       } = filesStore;
 
       const { setHotkeyPanelVisible, setDeleteDialogVisible } = dialogsStore;
-      const { isAvailableOption, deleteAction } = filesActionsStore;
+      const {
+        isAvailableOption,
+        deleteAction,
+        openFileAction,
+      } = filesActionsStore;
 
       const minTileWidth = 220 + 16;
       const countTilesInRow = Math.floor(sectionWidth / minTileWidth);
@@ -489,6 +496,7 @@ const withHotkeys = (Component) => {
         confirmDelete: settingsStore.confirmDelete,
         deleteAction,
         isAvailableOption,
+        openFileAction,
       };
     }
   )(observer(WithHotkeys));

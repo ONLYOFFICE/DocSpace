@@ -15,8 +15,11 @@ import {
 } from "@appserver/common/api/files";
 import { ConflictResolveType, FileAction } from "@appserver/common/constants";
 import { TIMEOUT } from "../helpers/constants";
-import { loopTreeFolders } from "../helpers/files-helpers";
+import { loopTreeFolders, checkProtocol } from "../helpers/files-helpers";
 import toastr from "studio/toastr";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
+import config from "../../package.json";
 
 class FilesActionStore {
   authStore;
@@ -27,6 +30,7 @@ class FilesActionStore {
   settingsStore;
   dialogsStore;
   mediaViewerDataStore;
+  formatsStore;
 
   constructor(
     authStore,
@@ -36,7 +40,8 @@ class FilesActionStore {
     selectedFolderStore,
     settingsStore,
     dialogsStore,
-    mediaViewerDataStore
+    mediaViewerDataStore,
+    formatsStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -47,6 +52,7 @@ class FilesActionStore {
     this.settingsStore = settingsStore;
     this.dialogsStore = dialogsStore;
     this.mediaViewerDataStore = mediaViewerDataStore;
+    this.formatsStore = formatsStore;
   }
 
   isMediaOpen = () => {
@@ -953,6 +959,80 @@ class FilesActionStore {
     if (isRecentFolder) return this.getRecentFolderOptions(itemsCollection, t);
 
     return this.getAnotherFolderOptions(itemsCollection, t);
+  };
+
+  openFileAction = (item) => {
+    const { setIsLoading, fetchFiles, openDocEditor } = this.filesStore;
+    const { mediaViewersFormatsStore, docserviceStore } = this.formatsStore;
+    const {
+      isRecycleBinFolder,
+      setExpandedKeys,
+      createNewExpandedKeys,
+    } = this.treeFoldersStore;
+    const { setMediaViewerData } = this.mediaViewerDataStore;
+    const { setConvertDialogVisible, setConvertItem } = this.dialogsStore;
+
+    const isMediaOrImage = mediaViewersFormatsStore.isMediaOrImage(
+      item.fileExst
+    );
+    const canConvert = docserviceStore.canConvert(item.fileExst);
+    const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
+    const canViewedDocs = docserviceStore.canViewedDocs(item.fileExst);
+
+    const { id, viewUrl, providerKey, fileStatus, encrypted, isFolder } = item;
+    if (encrypted && isPrivacyFolder) return checkProtocol(item.id, true);
+
+    if (isRecycleBinFolder) return;
+
+    if (isFolder) {
+      setIsLoading(true);
+      //addExpandedKeys(parentFolder + "");
+
+      fetchFiles(id, null, true, false)
+        .then((data) => {
+          const pathParts = data.selectedFolder.pathParts;
+          const newExpandedKeys = createNewExpandedKeys(pathParts);
+          setExpandedKeys(newExpandedKeys);
+
+          this.setNewBadgeCount(item);
+        })
+        .catch((err) => {
+          toastr.error(err);
+          setIsLoading(false);
+        })
+        .finally(() => setIsLoading(false));
+    } else {
+      if (canConvert) {
+        setConvertItem(item);
+        setConvertDialogVisible(true);
+        return;
+      }
+
+      if (fileStatus === 2) this.markAsRead([], [`${id}`], item);
+
+      if (canWebEdit || canViewedDocs) {
+        let tab =
+          !this.authStore.settingsStore.isDesktopClient && !isFolder
+            ? window.open(
+                combineUrl(
+                  AppServerConfig.proxyURL,
+                  config.homepage,
+                  "/doceditor"
+                ),
+                "_blank"
+              )
+            : null;
+
+        return openDocEditor(id, providerKey, tab);
+      }
+
+      if (isMediaOrImage) {
+        setMediaViewerData({ visible: true, id });
+        return;
+      }
+
+      return window.open(viewUrl, "_self");
+    }
   };
 }
 
