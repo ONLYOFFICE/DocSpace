@@ -3,29 +3,70 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 import Badge from "@appserver/components/badge";
+import { Base } from "@appserver/components/themes";
 
-const baseColor = "#7A95B0",
-  activeColor = "#FFFFFF";
-
-const StyledReactSVG = styled(ReactSVG)`
+const StyledContainer = styled.div`
   position: relative;
   width: 20px;
   height: 20px;
+
   display: flex;
   align-items: center;
-  cursor: pointer;
-  svg {
-    path {
-      fill: ${(props) => props.color};
+  justify-content: center;
+
+  margin-right: 22px;
+
+  .navigation-item__svg {
+    height: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    svg {
+      width: 20px;
+      height: 20px;
+      path {
+        fill: ${(props) =>
+          props.active
+            ? props.theme.header.productColor
+            : props.theme.header.linkColor};
+      }
+    }
+  }
+
+  .navigation-item__badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+
+    width: 12px;
+    height: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    div {
+      width: 2px;
+      height: 12px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      p {
+        font-weight: 800;
+        font-size: 9px;
+        line-height: 12px;
+      }
     }
   }
 `;
 
-const StyledBadge = styled(Badge)`
-  position: absolute;
-  top: -8px;
-  right: -8px;
-`;
+StyledContainer.defaultProps = { theme: Base };
 
 const HeaderNavigationIcon = ({
   id,
@@ -38,31 +79,23 @@ const HeaderNavigationIcon = ({
   url,
   ...rest
 }) => {
-  const color = active ? activeColor : baseColor;
   return (
-    <div
-      style={{
-        position: "relative",
-        width: "20px",
-        height: "20px",
-        marginRight: "22px",
-      }}
-    >
-      <StyledReactSVG
-        src={iconUrl}
-        href={url}
+    <StyledContainer active={active} {...rest}>
+      <ReactSVG
         onClick={onItemClick}
+        className="navigation-item__svg"
+        src={iconUrl}
         {...rest}
-        color={color}
       />
 
-      <StyledBadge
-        onClick={onBadgeClick}
-        label={badgeNumber}
-        maxWidth={"6px"}
-        fontSize={"9px"}
-      />
-    </div>
+      {badgeNumber > 0 && (
+        <Badge
+          className="navigation-item__badge"
+          label={badgeNumber}
+          onClick={onBadgeClick}
+        />
+      )}
+    </StyledContainer>
   );
 };
 

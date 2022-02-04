@@ -24,13 +24,20 @@ import { Base } from "@appserver/components/themes";
 const { proxyURL } = AppServerConfig;
 
 const Header = styled.header`
-  align-items: center;
-  background-color: ${(props) => props.theme.header.backgroundColor};
   display: flex;
+  align-items: center;
+
+  background-color: ${(props) => props.theme.header.backgroundColor};
+
   width: 100vw;
   height: 48px;
 
   .header-logo-wrapper {
+    height: 24px;
+
+    display: flex;
+    align-items: center;
+
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
     ${NoUserSelect}
@@ -93,6 +100,7 @@ const StyledNavigationIconsWrapper = styled.div`
   left: ${isMobile ? "254px" : "280px"};
   display: ${isMobileOnly ? "none" : "flex"};
   justify-content: flex-start;
+  align-items: center;
 
   @media ${tablet} {
     left: 254px;
@@ -100,11 +108,6 @@ const StyledNavigationIconsWrapper = styled.div`
 
   @media ${mobile} {
     display: none;
-  }
-
-  .header-navigation__icon {
-    cursor: pointer;
-    margin-right: 22px;
   }
 `;
 
@@ -185,22 +188,20 @@ const HeaderComponent = ({
             {mainModules.map((item) => {
               return (
                 <React.Fragment key={item.id}>
-                  {item.iconUrl &&
-                    !item.separator &&
-                    (item.appName === "files" || item.appName === "people") && (
-                      <HeaderNavigationIcon
-                        key={item.id}
-                        id={item.id}
-                        data-id={item.id}
-                        data-link={item.link}
-                        active={item.id == currentProductId}
-                        iconUrl={item.iconUrl}
-                        badgeNumber={item.notifications}
-                        onItemClick={onItemClick}
-                        onBadgeClick={onBadgeClick}
-                        url={item.link}
-                      />
-                    )}
+                  {item.iconUrl && !item.separator && (
+                    <HeaderNavigationIcon
+                      key={item.id}
+                      id={item.id}
+                      data-id={item.id}
+                      data-link={item.link}
+                      active={item.id == currentProductId}
+                      iconUrl={item.iconUrl}
+                      badgeNumber={item.notifications}
+                      onItemClick={onItemClick}
+                      onBadgeClick={onBadgeClick}
+                      url={item.link}
+                    />
+                  )}
                 </React.Fragment>
               );
             })}
