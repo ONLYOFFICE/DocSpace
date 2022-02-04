@@ -1,10 +1,14 @@
-﻿using ASC.Core.Common.EF.Model;
+﻿using ASC.Common.Mapping;
+using ASC.Core.Common.EF.Model;
+using ASC.Core.Tenants;
+
+using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
 {
-    public class DbQuota : BaseEntity
+    public class DbQuota : BaseEntity, IMapFrom<TenantQuota>
     {
         public int Tenant { get; set; }
         public string Name { get; set; }
@@ -18,6 +22,20 @@ namespace ASC.Core.Common.EF
         public bool Visible { get; set; }
 
         public override object[] GetKeys() => new object[] { Tenant };
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<TenantQuota, DbQuota>()
+                .ForMember(dest => dest.MaxFileSize, opt => opt.MapFrom(src => GetInMBytes(src.MaxFileSize)))
+                .ForMember(dest => dest.MaxTotalSize, opt => opt.MapFrom(src => GetInMBytes(src.MaxTotalSize)));
+        }
+
+        private static long GetInMBytes(long bytes)
+        {
+            const long MB = 1024 * 1024;
+
+            return bytes < MB * MB ? bytes / MB : bytes;
+        }
     }
 
     public static class DbQuotaExtension

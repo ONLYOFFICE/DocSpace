@@ -28,12 +28,17 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 
+using ASC.Common.Mapping;
+using ASC.Core.Common.EF;
+
+using AutoMapper;
+
 namespace ASC.Core.Tenants
 {
     [DebuggerDisplay("{Name}")]
-    public class TenantQuota : ICloneable
+    public class TenantQuota : ICloneable, IMapFrom<DbQuota>
     {
-        public static readonly TenantQuota Default = new TenantQuota(Tenant.DefaultTenant)
+        public static readonly TenantQuota Default = new TenantQuota(Tenants.Tenant.DefaultTenant)
         {
             Name = "Default",
             MaxFileSize = 25 * 1024 * 1024, // 25Mb
@@ -41,7 +46,7 @@ namespace ASC.Core.Tenants
             ActiveUsers = int.MaxValue,
         };
 
-        public int Id { get; set; }
+        public int Tenant { get; set; }
         public string Name { get; set; }
         public long MaxFileSize { get; set; }
         public long MaxTotalSize { get; set; }
@@ -235,7 +240,6 @@ namespace ASC.Core.Tenants
             set => SetFeature("contentsearch", value);
         }
 
-
         public int CountPortals
         {
             get
@@ -268,17 +272,26 @@ namespace ASC.Core.Tenants
 
         public TenantQuota() { }
 
-        public TenantQuota(int tenant) => Id = tenant;
+        public TenantQuota(int tenant) => Tenant = tenant;
 
 
-        public override int GetHashCode() => Id.GetHashCode();
+        public override int GetHashCode() => Tenant.GetHashCode();
 
-        public override bool Equals(object obj) => obj is TenantQuota q && q.Id == Id;
+        public override bool Equals(object obj) => obj is TenantQuota q && q.Tenant == Tenant;
 
         public bool GetFeature(string feature) =>
             !string.IsNullOrEmpty(Features) && Features.Split(' ', ',', ';').Contains(feature);
 
         public object Clone() => MemberwiseClone();
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<DbQuota, TenantQuota>()
+               .ForMember(dest => dest.ActiveUsers, opt => 
+                    opt.MapFrom(src => src.ActiveUsers != 0 ? src.ActiveUsers : int.MaxValue))
+               .ForMember(dest => dest.MaxFileSize, opt => opt.MapFrom(src => GetInBytes(src.MaxFileSize)))
+               .ForMember(dest => dest.MaxTotalSize, opt => opt.MapFrom(src => GetInBytes(src.MaxTotalSize)));
+        }
 
         internal void SetFeature(string feature, bool set)
         {
@@ -293,6 +306,13 @@ namespace ASC.Core.Tenants
                 features.Remove(feature);
 
             Features = string.Join(",", features.ToArray());
+        }
+
+        private static long GetInBytes(long bytes)
+        {
+            const long MB = 1024 * 1024;
+
+            return bytes < MB ? bytes * MB : bytes;
         }
     }
 }

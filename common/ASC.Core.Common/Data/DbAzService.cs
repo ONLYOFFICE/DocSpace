@@ -27,33 +27,28 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 
 using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
+
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 namespace ASC.Core.Data
 {
     [Scope]
     class DbAzService : IAzService
     {
-        public Expression<Func<Acl, AzRecord>> FromAclToAzRecord { get; set; }
         private UserDbContext UserDbContext => _lazyUserDbContext.Value;
 
         private readonly Lazy<UserDbContext> _lazyUserDbContext;
+        private IMapper _mapper;
 
-        public DbAzService(DbContextManager<UserDbContext> dbContextManager)
+        public DbAzService(DbContextManager<UserDbContext> dbContextManager, IMapper mapper)
         {
             _lazyUserDbContext = new Lazy<UserDbContext>(() => dbContextManager.Value);
-            FromAclToAzRecord = r => new AzRecord
-            {
-                ActionId = r.Action,
-                ObjectId = r.Object,
-                Reaction = r.AceType,
-                SubjectId = r.Subject,
-                Tenant = r.Tenant
-            };
+            _mapper = mapper;
         }
 
         public IEnumerable<AzRecord> GetAces(int tenant, DateTime from)
@@ -62,13 +57,13 @@ namespace ASC.Core.Data
             var commonAces =
                 UserDbContext.Acl
                 .Where(r => r.Tenant == Tenant.DefaultTenant)
-                .Select(FromAclToAzRecord)
+                .ProjectTo<AzRecord>(_mapper.ConfigurationProvider)
                 .ToDictionary(a => string.Concat(a.Tenant.ToString(), a.SubjectId.ToString(), a.ActionId.ToString(), a.ObjectId));
 
             var tenantAces =
                 UserDbContext.Acl
                 .Where(r => r.Tenant == tenant)
-                .Select(FromAclToAzRecord)
+                .ProjectTo<AzRecord>(_mapper.ConfigurationProvider)
                 .ToList();
 
             // remove excaped rows
@@ -116,10 +111,10 @@ namespace ASC.Core.Data
         {
             var count = UserDbContext.Acl
                 .Where(a => a.Tenant == Tenant.DefaultTenant)
-                .Where(a => a.Subject == r.SubjectId)
-                .Where(a => a.Action == r.ActionId)
-                .Where(a => a.Object == (r.ObjectId ?? string.Empty))
-                .Where(a => a.AceType == r.Reaction)
+                .Where(a => a.SubjectId == r.SubjectId)
+                .Where(a => a.ActionId == r.ActionId)
+                .Where(a => a.ObjectId == (r.ObjectId ?? string.Empty))
+                .Where(a => a.Reaction == r.Reaction)
                 .Count();
 
             return count != 0;
@@ -129,10 +124,10 @@ namespace ASC.Core.Data
         {
             var record = UserDbContext.Acl
                 .Where(a => a.Tenant == r.Tenant)
-                .Where(a => a.Subject == r.SubjectId)
-                .Where(a => a.Action == r.ActionId)
-                .Where(a => a.Object == (r.ObjectId ?? string.Empty))
-                .Where(a => a.AceType == r.Reaction)
+                .Where(a => a.SubjectId == r.SubjectId)
+                .Where(a => a.ActionId == r.ActionId)
+                .Where(a => a.ObjectId == (r.ObjectId ?? string.Empty))
+                .Where(a => a.Reaction == r.Reaction)
                 .FirstOrDefault();
 
             if (record != null)
@@ -144,16 +139,7 @@ namespace ASC.Core.Data
 
         private void InsertRecord(AzRecord r)
         {
-            var record = new Acl
-            {
-                AceType = r.Reaction,
-                Action = r.ActionId,
-                Object = r.ObjectId ?? string.Empty,
-                Subject = r.SubjectId,
-                Tenant = r.Tenant
-            };
-
-            UserDbContext.AddOrUpdate(r => r.Acl, record);
+            UserDbContext.AddOrUpdate(r => r.Acl, _mapper.Map<Acl>(r));
             UserDbContext.SaveChanges();
         }
     }

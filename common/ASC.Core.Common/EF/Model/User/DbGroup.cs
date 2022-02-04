@@ -1,12 +1,13 @@
 ﻿using System;
 
+using ASC.Common.Mapping;
 using ASC.Core.Common.EF.Model;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
 {
-    public class DbGroup : BaseEntity
+    public class DbGroup : BaseEntity, IMapFrom<Group>
     {
         public int Tenant { get; set; }
         public Guid Id { get; set; }

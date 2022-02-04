@@ -26,9 +26,14 @@
 
 using System;
 
+using ASC.Common.Mapping;
+using ASC.Core.Common.EF;
+
+using AutoMapper;
+
 namespace ASC.Core
 {
-    public class Group
+    public class Group : IMapFrom<DbGroup>
     {
         public Guid Id { get; set; }
         public Guid ParentId { get; set; }
@@ -44,5 +49,10 @@ namespace ASC.Core
         public override int GetHashCode() => Id.GetHashCode();
 
         public override bool Equals(object obj) => obj is Group g && g.Id == Id;
+
+        public void Mapping(Profile profile) =>
+            profile.CreateMap<DbGroup, Group>()
+            .ForMember(src => src.CategoryId, opt => opt.NullSubstitute(Guid.Empty))
+            .ForMember(src => src.ParentId, opt => opt.NullSubstitute(Guid.Empty));
     }
 }

@@ -28,12 +28,14 @@ using System;
 using System.Diagnostics;
 
 using ASC.Common.Caching;
+using ASC.Common.Mapping;
 using ASC.Core.Caching;
+using ASC.Core.Common.EF;
 
 namespace ASC.Core
 {
     [DebuggerDisplay("{UserId} - {GroupId}")]
-    public class UserGroupRef
+    public class UserGroupRef : IMapFrom<UserGroup>
     {
         public Guid UserId { get; set; }
         public Guid GroupId { get; set; }
