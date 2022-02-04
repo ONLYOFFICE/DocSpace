@@ -41,13 +41,13 @@ public class AuditEventsRepository
         _mapper = mapper;
     }
 
-    public IEnumerable<AuditEventDto> GetLast(int tenant, int chunk) => Get(tenant, null, null, chunk);
+    public IEnumerable<AuditEvent> GetLast(int tenant, int chunk) => Get(tenant, null, null, chunk);
 
-    public IEnumerable<AuditEventDto> Get(int tenant, DateTime from, DateTime to) => Get(tenant, from, to, null);
+    public IEnumerable<AuditEvent> Get(int tenant, DateTime from, DateTime to) => Get(tenant, from, to, null);
 
     public int GetCount(int tenant, DateTime? from = null, DateTime? to = null)
     {
-        IQueryable<Core.Common.EF.Model.AuditEvent> query = AuditTrailContext.AuditEvents
+        IQueryable<DbAuditEvent> query = AuditTrailContext.AuditEvents
             .Where(a => a.TenantId == tenant)
             .OrderByDescending(a => a.Date);
 
@@ -57,7 +57,7 @@ public class AuditEventsRepository
         return query.Count();
     }
 
-    private IEnumerable<AuditEventDto> Get(int tenant, DateTime? fromDate, DateTime? to, int? limit)
+    private IEnumerable<AuditEvent> Get(int tenant, DateTime? fromDate, DateTime? to, int? limit)
     {
         var query =
            from q in AuditTrailContext.AuditEvents
@@ -71,6 +71,6 @@ public class AuditEventsRepository
 
         if (limit.HasValue) query = query.Take((int)limit);
 
-        return query.AsEnumerable().Select(_mapper.Map<AuditEventDto>).ToList();
+        return query.AsEnumerable().Select(_mapper.Map<AuditEvent>).ToList();
     }
 }

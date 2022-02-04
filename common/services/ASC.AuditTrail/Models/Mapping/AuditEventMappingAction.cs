@@ -1,10 +1,10 @@
 ﻿namespace ASC.AuditTrail.Models.Mapping.Actions;
 
-public class AuditEventMappingAction : IMappingAction<AuditEventQuery, AuditEventDto>
+public class AuditEventMappingAction : IMappingAction<AuditEventQuery, AuditEvent>
 {
-    private MessageTarget _messageTarget;
-    private UserFormatter _userFormatter;
-    private AuditActionMapper _auditActionMapper;
+    private readonly MessageTarget _messageTarget;
+    private readonly UserFormatter _userFormatter;
+    private readonly AuditActionMapper _auditActionMapper;
 
     public AuditEventMappingAction(
         MessageTarget messageTarget,
@@ -16,7 +16,7 @@ public class AuditEventMappingAction : IMappingAction<AuditEventQuery, AuditEven
         _auditActionMapper = auditActionMapper;
     }
 
-    public void Process(AuditEventQuery source, AuditEventDto destination, ResolutionContext context)
+    public void Process(AuditEventQuery source, AuditEvent destination, ResolutionContext context)
     {
         if (source.AuditEvent.Description != null)
             destination.Description = JsonConvert.DeserializeObject<IList<string>>(

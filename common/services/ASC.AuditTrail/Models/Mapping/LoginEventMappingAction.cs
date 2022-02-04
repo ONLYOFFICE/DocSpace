@@ -1,6 +1,6 @@
 ﻿namespace ASC.AuditTrail.Models.Mapping.Actions;
 
-public class LoginEventMappingAction : IMappingAction<LoginEventQuery, LoginEventDTO>
+public class LoginEventMappingAction : IMappingAction<LoginEventQuery, LoginEvent>
 {
     private readonly UserFormatter _userFormatter;
     private readonly AuditActionMapper _auditActionMapper;
@@ -11,7 +11,7 @@ public class LoginEventMappingAction : IMappingAction<LoginEventQuery, LoginEven
         _auditActionMapper = auditActionMapper;
     }
 
-    public void Process(LoginEventQuery source, LoginEventDTO destination, ResolutionContext context)
+    public void Process(LoginEventQuery source, LoginEvent destination, ResolutionContext context)
     {
         if (source.LoginEvents.Description != null)
             destination.Description = JsonConvert.DeserializeObject<IList<string>>(

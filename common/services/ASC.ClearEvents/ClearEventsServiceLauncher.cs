@@ -105,7 +105,7 @@ namespace ASC.Thumbnails.Svc
 
     public class Messages : MessagesContext
     {
-        public DbSet<AuditEvent> AuditEvents { get; }
+        public DbSet<DbAuditEvent> AuditEvents { get; }
         public DbSet<DbTenant> Tenants { get; }
         public DbSet<DbWebstudioSettings> WebstudioSettings { get; }
     }

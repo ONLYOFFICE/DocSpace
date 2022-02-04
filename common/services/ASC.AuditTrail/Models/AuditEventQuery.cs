@@ -2,6 +2,6 @@
 
 public class AuditEventQuery
 {
-    public AuditEvent AuditEvent { get; set; }
+    public DbAuditEvent AuditEvent { get; set; }
     public User User { get; set; }
 }
