@@ -1,140 +1,30 @@
 import Head from "next/head";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import request from "@appserver/common/api/client-ssr";
+import { initSSR } from "@appserver/common/api/client";
 import Script from "next/script";
 import { isMobile } from "react-device-detect";
 import FilesFilter from "@appserver/common/api/files/filter";
 import combineUrl from "@appserver/common/utils/combineUrl";
 import { AppServerConfig } from "@appserver/common/constants";
 import { homepage } from "../../../../package.json";
-
+//import  from "@appserver/common/utils/axiosClient";
 import throttle from "lodash/throttle";
 
-const getSettingsNext = async () => {
-  try {
-    const res = await request({
-      method: "get",
-      url: "/settings.json",
-    });
-    return res;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const getDocServiceUrl = () => {
-  return request({ method: "get", url: `/files/docservice` });
-};
-
-const getUser = (headers) => {
-  return request({
-    method: "get",
-    url: "/people/@self.json",
-    headers: headers,
-  });
-};
-
-const getFileInfo = (fileId, headers) => {
-  return request({
-    method: "get",
-    url: `/files/file/${fileId}`,
-    headers: headers,
-  });
-};
-
-const checkFillFormDraft = (fileId, headers) => {
-  // TODO: need headers?
-  return request({
-    method: "post",
-    url: `files/masterform/${fileId}/checkfillformdraft`,
-    data: { fileId },
-    headers: headers,
-  });
-};
-
-const restoreDocumentsVersion = (fileId, version, doc) => {
-  const options = {
-    method: "get",
-    url: `files/file/${fileId}/restoreversion?version=${version}&doc=${doc}`,
-  };
-
-  return request(options);
-};
-
-const openEdit = (fileId, version, doc, view, headers) => {
-  const params = []; // doc ? `?doc=${doc}` : "";
-
-  if (view) {
-    params.push(`view=${view}`);
-  }
-
-  if (version) {
-    params.push(`version=${version}`);
-  }
-
-  if (doc) {
-    params.push(`doc=${doc}`);
-  }
-
-  const paramsString = params.length > 0 ? `?${params.join("&")}` : "";
-
-  const options = {
-    method: "get",
-    url: `/files/file/${fileId}/openedit${paramsString}`,
-    headers,
-  };
-
-  return request(options);
-};
-
-const markAsFavorite = (ids, headers) => {
-  const data = { fileIds: ids };
-  const options = {
-    method: "post",
-    url: "/files/favorites",
-    data,
-    headers: headers,
-  };
-
-  return request(options);
-};
-
-const removeFromFavorite = (ids) => {
-  const data = { fileIds: ids };
-  const options = {
-    method: "delete",
-    url: "/files/favorites",
-    data,
-  };
-
-  return request(options);
-};
-
-const getEditDiff = (fileId, version, doc) => {
-  return request({
-    method: "get",
-    url: `files/file/${fileId}/edit/diff?version=${version}&doc=${doc}`,
-  });
-};
-
-const getEditHistory = (fileId, doc) => {
-  return request({
-    method: "get",
-    url: `files/file/${fileId}/edit/history?doc=${doc}`,
-  });
-};
-
-const updateFile = (fileId, title, lastVersion) => {
-  const data = { title, lastVersion };
-  const options = {
-    method: "put",
-    url: `/files/file/${fileId}`,
-    data,
-  };
-
-  return request(options);
-};
+import {
+  getDocServiceUrl,
+  getFileInfo,
+  checkFillFormDraft,
+  restoreDocumentsVersion,
+  openEdit,
+  markAsFavorite,
+  removeFromFavorite,
+  getEditDiff,
+  getEditHistory,
+  updateFile,
+} from "@appserver/common/api/files";
+import { getSettings } from "@appserver/common/api/settings";
+import { getUser } from "@appserver/common/api/people";
 
 const loadScript = (url, id, onLoad, onError) => {
   try {
@@ -583,7 +473,7 @@ export default function Home({
 
       if (isMobile) {
         config.type = "mobile";
-        // не уверен что нужно, т.к. сразу в конфиге прилетает
+        // not sure what is needed, as it arrives in the config
       }
 
       let goBack;
@@ -599,7 +489,7 @@ export default function Home({
         goBack = {
           blank: true,
           requestClose: false,
-          text: "SSR TEST", ///i18n.t("FileLocation"), TODO: подкключить i18
+          text: "SSR TEST", ///i18n.t("FileLocation"), TODO: connect i18
           url: `${combineUrl(filesUrl, `/filter?${urlFilter}`)}`,
         };
       }
@@ -702,7 +592,7 @@ export default function Home({
       docEditor = window.DocsAPI.DocEditor("editor", newConfig);
       console.log("docEditor", docEditor);
     } catch (error) {
-      console.log(error);
+      console.log(error, "init error");
       //toastr.error(error.message, null, 0, true);
     }
   };
@@ -743,6 +633,8 @@ export async function getServerSideProps({ params, req, query, res }) {
     isSharingAccess,
     doc;
 
+  initSSR(headers);
+
   const decodedId = query.fileId || query.fileid || null;
   const fileId =
     typeof decodedId === "string" ? encodeURIComponent(decodedId) : decodedId;
@@ -760,8 +652,8 @@ export async function getServerSideProps({ params, req, query, res }) {
     } // TODO:
 
     docApiUrl = await getDocServiceUrl();
-    settings = await getSettingsNext();
-    user = await getUser(headers); // remove from node?
+    settings = await getSettings();
+    user = await getUser(); // remove from node?
 
     try {
       personal = settings?.personal;
@@ -784,7 +676,7 @@ export async function getServerSideProps({ params, req, query, res }) {
 
     if (successAuth) {
       try {
-        fileInfo = await getFileInfo(fileId, headers);
+        fileInfo = await getFileInfo(fileId);
         // if (url.indexOf("#message/") > -1) {
         //   if (canConvert(fileInfo.fileExst)) {
         //     const url = await convertDocumentUrl();
@@ -798,7 +690,7 @@ export async function getServerSideProps({ params, req, query, res }) {
 
     const fileVersion = version || null;
 
-    config = await openEdit(fileId, fileVersion, doc, view, headers);
+    config = await openEdit(fileId, fileVersion, doc, view);
 
     // const NextRequestMetaSymbol = Reflect.ownKeys(req).find(
     //   (key) => key.toString() === "Symbol(NextRequestMeta)"
@@ -834,8 +726,6 @@ export async function getServerSideProps({ params, req, query, res }) {
     if (view) {
       config.editorConfig.mode = "view";
     }
-
-    console.log(config, "arguments", fileId, fileVersion, doc, view, headers);
   } catch (err) {
     error = typeof err === "string" ? err : err.message;
   }

@@ -6,13 +6,11 @@ const { proxyURL, apiPrefixURL, apiTimeout } = AppServerConfig;
 
 class AxiosClient {
   constructor() {
-    this.isSSR = false;
-    this.headers = null;
-
-    if (typeof window !== "undefined") this.CSRConstructor();
+    if (typeof window !== "undefined") this.initCSR();
   }
 
-  CSRConstructor = () => {
+  initCSR = () => {
+    this.isSSR = false;
     const { proxyURL, apiPrefixURL, apiTimeout } = AppServerConfig;
     const origin = window.location.origin;
 
@@ -37,7 +35,8 @@ class AxiosClient {
     });
   };
 
-  SSRConstructor = (headers) => {
+  initSSR = (headers) => {
+    this.isSSR = true;
     const xRewriterUrl = headers["x-rewriter-url"];
     const apiBaseURL = combineUrl(xRewriterUrl, proxyURL, apiPrefixURL);
 
@@ -47,11 +46,6 @@ class AxiosClient {
       timeout: apiTimeout,
       headers: headers,
     });
-  };
-
-  initSSR = (headers) => {
-    this.isSSR = true;
-    this.SSRConstructor(headers);
   };
 
   setWithCredentialsStatus = (state) => {
