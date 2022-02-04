@@ -883,7 +883,6 @@ class AutomaticBackup extends React.PureComponent {
           this.selectedSchedule = false;
           toastr.success(t("SuccessfullySaveSettingsMessage"));
         })
-        .then(() => getBackupSchedule())
         .then(() => {
           const resetOptions = this.resetPeriodSettings();
           console.log("createSchedule resetOptions", resetOptions);
