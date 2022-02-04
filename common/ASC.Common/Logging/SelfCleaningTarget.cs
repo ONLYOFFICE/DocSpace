@@ -30,15 +30,14 @@ namespace ASC.Common.Logging;
 [Target("SelfCleaning")]
 public class SelfCleaningTarget : FileTarget
 {
-    private static DateTime _lastCleanDate;
-
-    private static int? _cleanPeriod;
+    private static DateTime s_lastCleanDate;
+    private static int? s_cleanPeriod;
 
     protected override void Write(IList<AsyncLogEventInfo> logEvents)
     {
-        if (DateTime.UtcNow.Date > _lastCleanDate.Date)
+        if (DateTime.UtcNow.Date > s_lastCleanDate.Date)
         {
-            _lastCleanDate = DateTime.UtcNow.Date;
+            s_lastCleanDate = DateTime.UtcNow.Date;
             Clean();
         }
 
@@ -57,9 +56,9 @@ public class SelfCleaningTarget : FileTarget
 
     protected override void Write(LogEventInfo logEvent)
     {
-        if (DateTime.UtcNow.Date > _lastCleanDate.Date)
+        if (DateTime.UtcNow.Date > s_lastCleanDate.Date)
         {
-            _lastCleanDate = DateTime.UtcNow.Date;
+            s_lastCleanDate = DateTime.UtcNow.Date;
             Clean();
         }
 
@@ -68,8 +67,8 @@ public class SelfCleaningTarget : FileTarget
 
     private static int GetCleanPeriod()
     {
-        if (_cleanPeriod != null)
-            return _cleanPeriod.Value;
+        if (s_cleanPeriod != null)
+            return s_cleanPeriod.Value;
 
         var value = 30;
 
@@ -83,7 +82,7 @@ public class SelfCleaningTarget : FileTarget
                 int.TryParse(variable.Text, out value);
         }
 
-        _cleanPeriod = value;
+        s_cleanPeriod = value;
 
         return value;
     }
