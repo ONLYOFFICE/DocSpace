@@ -23,9 +23,6 @@
  *
 */
 
-
-using ASC.Web.Core.PublicResources;
-
 namespace ASC.Web.Studio.Utility
 {
     public static class TransferResourceHelper

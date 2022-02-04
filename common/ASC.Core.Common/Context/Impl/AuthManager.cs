@@ -23,16 +23,6 @@
  *
 */
 
-
-using System;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Security.Authentication;
-using ASC.Core.Security.Authentication;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-
 namespace ASC.Core
 {
     [Scope]
@@ -74,7 +64,7 @@ namespace ASC.Core
             if (s != null) return s;
 
             var u = UserManager.GetUsers(id);
-            return !Constants.LostUser.Equals(u) && u.Status == EmployeeStatus.Active ? (IAccount)ToAccount(tenantId, u) : ASC.Core.Configuration.Constants.Guest;
+            return !Users.Constants.LostUser.Equals(u) && u.Status == EmployeeStatus.Active ? (IAccount)ToAccount(tenantId, u) : ASC.Core.Configuration.Constants.Guest;
         }
 
 

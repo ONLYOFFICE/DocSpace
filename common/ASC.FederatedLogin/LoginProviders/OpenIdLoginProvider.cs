@@ -23,23 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
-using ASC.Common.Utils;
-using ASC.Core.Common.Configuration;
-using ASC.FederatedLogin.Profile;
-using ASC.Security.Cryptography;
-
-using DotNetOpenAuth.Messaging;
-using DotNetOpenAuth.OpenId;
-using DotNetOpenAuth.OpenId.Extensions.AttributeExchange;
-using DotNetOpenAuth.OpenId.Extensions.SimpleRegistration;
-using DotNetOpenAuth.OpenId.RelyingParty;
-
-using Microsoft.AspNetCore.Http;
-
 namespace ASC.FederatedLogin.LoginProviders
 {
     class OpenIdLoginProvider : ILoginProvider

@@ -23,12 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
-using Newtonsoft.Json;
-
 namespace ASC.Feed.Data
 {
     public class FeedRow

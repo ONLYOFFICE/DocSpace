@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-using Google.Protobuf;
-
-namespace ASC.Common.Caching
+﻿namespace ASC.Common.Caching
 {
     [Singletone]
     public class MemoryCacheNotify<T> : ICacheNotify<T> where T : IMessage<T>, new()

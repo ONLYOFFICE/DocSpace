@@ -23,9 +23,6 @@
  *
 */
 
-
-using ASC.Notify.Messages;
-
 namespace ASC.Core.Common.Notify
 {
     public interface ITelegramService

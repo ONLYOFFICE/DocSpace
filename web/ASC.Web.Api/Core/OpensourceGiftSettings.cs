@@ -23,11 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Core.Common.Settings;
-
 namespace ASC.Web.Studio.Core
 {
     public class OpensourceGiftSettings : ISettings

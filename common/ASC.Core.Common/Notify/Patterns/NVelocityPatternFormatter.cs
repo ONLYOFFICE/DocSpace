@@ -23,15 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common.Utils;
-using ASC.Notify.Messages;
-
-using NVelocity;
-using NVelocity.App.Events;
-
 namespace ASC.Notify.Patterns
 {
     public sealed class NVelocityPatternFormatter : PatternFormatter

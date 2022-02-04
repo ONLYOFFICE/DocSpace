@@ -23,16 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common.Utils;
-using ASC.FederatedLogin.Profile;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.FederatedLogin
 {
     public class MultiRegionAccountLinker

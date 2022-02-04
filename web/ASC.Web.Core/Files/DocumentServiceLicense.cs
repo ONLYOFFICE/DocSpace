@@ -14,16 +14,6 @@
  *
 */
 
-using System;
-using System.Collections.Generic;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Core.Billing;
-
-using static ASC.Web.Core.Files.DocumentService;
-
 namespace ASC.Web.Core.Files
 {
     [Scope]

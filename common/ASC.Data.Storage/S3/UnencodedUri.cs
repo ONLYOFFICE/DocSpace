@@ -23,10 +23,6 @@
  *
 */
 
-
-using System;
-using System.Runtime.Serialization;
-
 namespace ASC.Data.Storage.S3
 {
     public class UnencodedUri : Uri

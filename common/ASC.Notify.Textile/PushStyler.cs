@@ -23,15 +23,6 @@
  *
 */
 
-
-using System;
-using System.Text.RegularExpressions;
-
-using ASC.Common;
-using ASC.Common.Notify.Patterns;
-using ASC.Notify.Messages;
-using ASC.Notify.Patterns;
-
 namespace ASC.Notify.Textile
 {
     [Scope]

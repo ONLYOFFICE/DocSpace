@@ -23,10 +23,6 @@
  *
 */
 
-
-using System.IO;
-using System.Reflection;
-
 namespace ASC.FederatedLogin.Helpers
 {
     public class JsCallbackHelper

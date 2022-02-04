@@ -23,9 +23,6 @@
  *
 */
 
-
-using System;
-
 namespace ASC.Web.Core.ModuleManagement.Common
 {
     public interface IShortcutProvider

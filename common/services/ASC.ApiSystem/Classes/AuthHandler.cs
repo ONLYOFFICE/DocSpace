@@ -23,31 +23,6 @@
  *
 */
 
-
-using System;
-using System.Globalization;
-using System.Linq;
-using System.Net;
-using System.Security.Authentication;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core.Common.Security;
-using ASC.Security.Cryptography;
-using ASC.Web.Core.Helpers;
-
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-
 namespace ASC.ApiSystem.Classes
 {
     [Scope]

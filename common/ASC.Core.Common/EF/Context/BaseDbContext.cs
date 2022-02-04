@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+﻿
+using DbContext = Microsoft.EntityFrameworkCore.DbContext;
 
 namespace ASC.Core.Common.EF
 {

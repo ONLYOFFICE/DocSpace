@@ -23,13 +23,6 @@
  *
 */
 
-
-using System;
-using System.Linq;
-
-using ASC.Core;
-using ASC.Core.Tenants;
-
 namespace ASC.Data.Storage
 {
     public class TenantQuotaController : IQuotaController

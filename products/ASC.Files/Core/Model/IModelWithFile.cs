@@ -1,7 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Http;
-
-namespace ASC.Files.Core.Model
+﻿namespace ASC.Files.Core.Model
 {
     public interface IModelWithFile
     {

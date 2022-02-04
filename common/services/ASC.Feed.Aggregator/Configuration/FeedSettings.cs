@@ -1,9 +1,4 @@
-﻿using System;
-
-using ASC.Common;
-using ASC.Common.Utils;
-
-namespace ASC.Feed.Configuration
+﻿namespace ASC.Feed.Configuration
 {
     [Singletone]
     public class FeedSettings

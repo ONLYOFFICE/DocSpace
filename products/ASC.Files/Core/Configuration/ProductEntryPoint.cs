@@ -24,18 +24,7 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Files.Core.Resources;
-using ASC.Web.Core;
-using ASC.Web.Core.PublicResources;
-using ASC.Web.Files.Classes;
-using ASC.Web.Studio.Core.Notify;
 
 namespace ASC.Web.Files.Configuration
 {

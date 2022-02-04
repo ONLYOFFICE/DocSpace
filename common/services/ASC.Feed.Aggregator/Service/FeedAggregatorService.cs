@@ -24,23 +24,15 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
-using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Notify.Signalr;
 using ASC.Feed.Aggregator.Modules;
 using ASC.Feed.Configuration;
-using ASC.Feed.Data;
-
-using Autofac;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

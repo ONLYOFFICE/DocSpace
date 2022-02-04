@@ -24,25 +24,8 @@
 */
 
 
-using System.Text.Json.Serialization;
-
-using ASC.Api.Core;
-using ASC.ApiSystem.Classes;
 using ASC.ApiSystem.Controllers;
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.DependencyInjection;
 
-using Autofac;
-
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-
-using StackExchange.Redis.Extensions.Core.Configuration;
 using StackExchange.Redis.Extensions.Newtonsoft;
 
 namespace ASC.ApiSystem

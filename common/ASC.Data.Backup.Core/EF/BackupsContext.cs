@@ -1,12 +1,4 @@
-﻿using ASC.Common;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Model;
-using ASC.Data.Backup.EF.Model;
-
-using Microsoft.EntityFrameworkCore;
-
-
-namespace ASC.Data.Backup.EF.Context
+﻿namespace ASC.Data.Backup.EF.Context
 {
     public class BackupsContext : BaseDbContext
     {

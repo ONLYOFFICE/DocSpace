@@ -23,10 +23,6 @@
  *
 */
 
-
-using ASC.Common;
-using ASC.Common.Utils;
-
 namespace ASC.ElasticSearch.Service
 {
     [Singletone]

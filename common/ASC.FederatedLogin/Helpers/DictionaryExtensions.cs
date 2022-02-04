@@ -23,9 +23,6 @@
  *
 */
 
-
-using System.Collections.Generic;
-
 namespace ASC.FederatedLogin.Helpers
 {
     public static class DictionaryExtensions

@@ -23,22 +23,6 @@
  *
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Logging;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
-using Telegram.Bot;
-using Telegram.Bot.Types;
-
 namespace ASC.TelegramService.Core
 {
     public class TelegramCommand

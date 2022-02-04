@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-using System.IO;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Data.Storage;
-using ASC.Files.Core;
-using ASC.Web.Studio.Core;
-//using File = ASC.Files.Core.File;
-
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Data.Backup.Storage
 {
     [Scope]

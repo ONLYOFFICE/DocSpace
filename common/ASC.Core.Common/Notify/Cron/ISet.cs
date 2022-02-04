@@ -24,11 +24,6 @@
 */
 
 
-#region usings
-
-using System.Collections;
-
-#endregion
 
 namespace ASC.Notify.Cron
 {

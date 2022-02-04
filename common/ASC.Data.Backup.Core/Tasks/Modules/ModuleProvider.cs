@@ -23,16 +23,6 @@
  *
 */
 
-
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Data.Backup.Tasks.Modules
 {
     [Scope]

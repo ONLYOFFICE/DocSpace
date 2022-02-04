@@ -23,15 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common;
-using ASC.Common.Logging;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-
 namespace ASC.MessagingSystem.DbSender
 {
     [Singletone]

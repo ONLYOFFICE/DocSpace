@@ -23,12 +23,6 @@
  *
 */
 
-
-using System;
-using System.Globalization;
-
-using ASC.Core.Users;
-
 namespace ASC.Core.Tenants
 {
     public class TenantRegistrationInfo

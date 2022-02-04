@@ -23,23 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Api.Core;
-using ASC.Api.Settings.Smtp;
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Billing;
-using ASC.Core.Configuration;
-using ASC.Core.Tenants;
-using ASC.Web.Api.Routing;
-using ASC.Web.Core.PublicResources;
-using ASC.Web.Studio.Core;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.AspNetCore.Mvc;
-
 namespace ASC.Api.Settings
 {
     [Scope]
