@@ -237,7 +237,7 @@ namespace ASC.Core.Billing
                                   throw new InvalidOperationException(string.Format("Quota with id {0} not found for portal {1}.", lastPayment.ProductId, GetPortalId(tenantId)));
 
                               var asynctariff = Tariff.CreateDefault();
-                              asynctariff.QuotaId = quota.Id;
+                              asynctariff.QuotaId = quota.Tenant;
                               asynctariff.Autorenewal = lastPayment.Autorenewal;
                               asynctariff.DueDate = 9999 <= lastPayment.EndDate.Year ? DateTime.MaxValue : lastPayment.EndDate;
 
@@ -308,7 +308,7 @@ namespace ASC.Core.Billing
                         {
                             var quota = quotas.SingleOrDefault(q => q.AvangateId == pi.ProductRef);
 
-                            if (quota != null) pi.QuotaId = quota.Id;
+                            if (quota != null) pi.QuotaId = quota.Tenant;
 
                             payments.Add(pi);
                         }

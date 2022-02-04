@@ -273,12 +273,12 @@ namespace ASC.Core
         public IEnumerable<TenantQuota> GetTenantQuotas() => GetTenantQuotas(false);
 
         public IEnumerable<TenantQuota> GetTenantQuotas(bool all) =>
-            QuotaService.GetTenantQuotas().Where(q => q.Id < 0 && (all || q.Visible)).OrderByDescending(q => q.Id).ToList();
+            QuotaService.GetTenantQuotas().Where(q => q.Tenant < 0 && (all || q.Visible)).OrderByDescending(q => q.Tenant).ToList();
 
         public TenantQuota GetTenantQuota(int tenant)
         {
             var defaultQuota = QuotaService.GetTenantQuota(tenant) ?? QuotaService.GetTenantQuota(Tenant.DefaultTenant) ?? TenantQuota.Default;
-            if (defaultQuota.Id != tenant && TariffService != null)
+            if (defaultQuota.Tenant != tenant && TariffService != null)
             {
                 var tariff = TariffService.GetTariff(tenant);
                 var currentQuota = QuotaService.GetTenantQuota(tariff.QuotaId);

@@ -253,7 +253,7 @@ namespace ASC.Core.Billing
 
             var tariff = new Tariff
             {
-                QuotaId = quota.Id,
+                QuotaId = quota.Tenant,
                 DueDate = license.DueDate,
             };
 
