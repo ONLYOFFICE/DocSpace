@@ -13,19 +13,19 @@ const PreviewActionsBlock = ({ t, textStyles, keyTextStyles }) => {
       </Row>
       <Row className="hotkeys_row">
         <>
-          <Text {...textStyles}>{t("HotkeysRemove")}</Text>
+          <Text {...textStyles}>{t("HotkeysPlayPause")}</Text>
           <Text {...keyTextStyles}>{t("HotkeysSpaceKey")}</Text>
         </>
       </Row>
       <Row className="hotkeys_row">
         <>
-          <Text {...textStyles}>{t("HotkeysUndoLastAction")}</Text>
-          <Text {...keyTextStyles}>+ {t("HotkeysOr")} -</Text>
+          <Text {...textStyles}>{t("HotkeysZoomIn")}</Text>
+          <Text {...keyTextStyles}>+ {t("HotkeysOr")} =</Text>
         </>
       </Row>
       <Row className="hotkeys_row">
         <>
-          <Text {...textStyles}>{t("HotkeysRedoLastUndoneAction")}</Text>
+          <Text {...textStyles}>{t("HotkeysZoomOut")}</Text>
           <Text {...keyTextStyles}>-</Text>
         </>
       </Row>
