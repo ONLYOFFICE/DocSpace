@@ -86,10 +86,15 @@ public class Program
 
                     var redisConfiguration = hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>();
                     var kafkaConfiguration = hostContext.Configuration.GetSection("kafka").Get<KafkaSettings>();
+                    var rabbitMQConfiguration = hostContext.Configuration.GetSection("RabbitMQ").Get<RabbitMQSettings>();
 
                     if (kafkaConfiguration != null)
                     {
                         diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                    }
+                    else if (rabbitMQConfiguration != null)
+                    {
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RabbitMQCache<>));
                     }
                     else if (redisConfiguration != null)
                     {

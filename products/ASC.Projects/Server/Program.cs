@@ -69,6 +69,8 @@ namespace ASC.Projects
                     .AddJsonFile("storage.json")
                     .AddJsonFile("kafka.json")
                     .AddJsonFile($"kafka.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
+                    .AddJsonFile("rabbitmq.json")
+                    .AddJsonFile($"rabbitmq.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
                     .AddJsonFile("redis.json")
                     .AddJsonFile($"redis.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
                     .AddEnvironmentVariables()

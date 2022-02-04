@@ -27,11 +27,8 @@ namespace ASC.Common.Caching
 
         public void Subscribe(Action<T> onchange, CacheNotifyAction notifyAction)
         {
-            if (onchange != null)
-            {
-                _actions.GetOrAdd(GetKey(notifyAction), new List<Action<T>>())
-                        .Add(onchange);
-            }
+            _actions.GetOrAdd(GetKey(notifyAction), new List<Action<T>>())
+                .Add(onchange);
         }
 
         public void Unsubscribe(CacheNotifyAction action)

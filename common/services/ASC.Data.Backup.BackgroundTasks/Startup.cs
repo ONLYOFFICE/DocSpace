@@ -24,7 +24,7 @@
 */
 
 
-namespace ASC.Data.Backup;
+namespace ASC.Data.Backup.BackgroundTasks;
 
 public class Startup : BaseStartup
 {
@@ -38,24 +38,10 @@ public class Startup : BaseStartup
     {
         base.ConfigureServices(services);
 
-        DIHelper.AddDistributedTaskQueueService<BaseBackupProgressItem>(1);
-
-        DIHelper.TryAdd<BackupProgressItem>();
-        DIHelper.TryAdd<RestoreProgressItem>();
-        DIHelper.TryAdd<TransferProgressItem>();
-
-        DIHelper.TryAdd<Schedule>();
-
-        DIHelper.TryAdd<BackupController>();
-
-        DIHelper.TryAdd<BackupCleanerService>();
-        DIHelper.TryAdd<BackupSchedulerService>();
-        DIHelper.TryAdd<BackupListenerService>();
+        DIHelper.TryAdd<BackupWorkerService>();
 
         NotifyConfigurationExtension.Register(DIHelper);
 
-        services.AddHostedService<BackupCleanerService>();
-        services.AddHostedService<BackupSchedulerService>();
-        services.AddHostedService<BackupListenerService>();
+        services.AddHostedService<BackupWorkerService>();
     }
 }

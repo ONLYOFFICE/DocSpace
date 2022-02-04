@@ -54,6 +54,8 @@ builder.Host.ConfigureAppConfiguration((hostContext, config) =>
         .AddJsonFile("backup.json")
         .AddJsonFile("kafka.json")
         .AddJsonFile($"kafka.{env}.json", true)
+        .AddJsonFile("rabbitmq.json")
+        .AddJsonFile($"rabbitmq.{env}.json", true)
         .AddJsonFile("redis.json")
         .AddJsonFile($"redis.{env}.json", true)
         .AddEnvironmentVariables()

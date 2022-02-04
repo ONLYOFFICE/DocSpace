@@ -18,6 +18,7 @@
       "common\\ASC.Webhooks.Core\\ASC.Webhooks.Core.csproj",
       "common\\services\\ASC.AuditTrail\\ASC.AuditTrail.csproj",
       "common\\services\\ASC.ClearEvents\\ASC.ClearEvents.csproj",
+      "common\\services\\ASC.Data.Backup.BackgroundTasks\\ASC.Data.Backup.BackgroundTasks.csproj",
       "common\\services\\ASC.Data.Backup\\ASC.Data.Backup.csproj",
       "common\\services\\ASC.ElasticSearch\\ASC.ElasticSearch.csproj",
       "common\\services\\ASC.Feed.Aggregator\\ASC.Feed.Aggregator.csproj",
