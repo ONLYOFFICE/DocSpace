@@ -4,7 +4,7 @@
     public class PostgreSqlMessagesContext : MessagesContext { }
     public class MessagesContext : BaseDbContext
     {
-        public DbSet<LoginEvent> LoginEvents { get; set; }
+        public DbSet<DbLoginEvent> LoginEvents { get; set; }
         public DbSet<User> Users { get; set; }
 
         protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext

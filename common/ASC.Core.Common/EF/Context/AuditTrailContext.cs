@@ -4,7 +4,7 @@
     public class PostgreSqlAuditTrailContext : AuditTrailContext { }
     public class AuditTrailContext : BaseDbContext
     {
-        public DbSet<AuditEvent> AuditEvents { get; set; }
+        public DbSet<DbAuditEvent> AuditEvents { get; set; }
         public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
