@@ -28,6 +28,8 @@
 
 using System;
 
+using ASC.Common.Security.Authorizing;
+
 #endregion
 
 namespace ASC.Common.Security
@@ -36,5 +38,7 @@ namespace ASC.Common.Security
     {
         object SecurityId { get; }
         Type ObjectType { get; }
+
+        void ToString() => AzObjectIdHelper.GetFullObjectId(this);
     }
 }

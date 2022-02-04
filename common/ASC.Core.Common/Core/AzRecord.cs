@@ -26,13 +26,15 @@
 
 using System;
 
+using ASC.Common.Mapping;
 using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
+using ASC.Core.Common.EF;
 
 namespace ASC.Core
 {
     [Serializable]
-    public class AzRecord
+    public class AzRecord : IMapFrom<Acl>
     {
         public Guid SubjectId { get; set; }
         public Guid ActionId { get; set; }
@@ -43,12 +45,9 @@ namespace ASC.Core
         public AzRecord() { }
 
         public AzRecord(Guid subjectId, Guid actionId, AceType reaction)
-            : this(subjectId, actionId, reaction, default(string)) { }
+            : this(subjectId, actionId, default(string), reaction) { }
 
-        public AzRecord(Guid subjectId, Guid actionId, AceType reaction, ISecurityObjectId objectId)
-            : this(subjectId, actionId, reaction, AzObjectIdHelper.GetFullObjectId(objectId)) { }
-
-        internal AzRecord(Guid subjectId, Guid actionId, AceType reaction, string objectId)
+        public AzRecord(Guid subjectId, Guid actionId, string objectId, AceType reaction)
         {
             SubjectId = subjectId;
             ActionId = actionId;
