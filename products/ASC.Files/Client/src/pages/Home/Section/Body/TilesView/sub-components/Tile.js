@@ -47,6 +47,7 @@ const StyledTile = styled.div`
   width: 100%;
   border: 1px solid #d0d5da;
   border-radius: 3px;
+  ${(props) => props.showHotkeyBorder && "border-color: #2DA7DB"};
   ${(props) => props.isFolder && "border-top-left-radius: 0px;"}
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
@@ -89,6 +90,7 @@ const StyledTile = styled.div`
   &:before, 
   &:after {
     ${(props) => props.isFolder && props.dragging && draggingStyle};
+    ${(props) => props.showHotkeyBorder && "border-color: #2DA7DB"};
   }
 
   &:before,
@@ -346,6 +348,7 @@ class Tile extends React.PureComponent {
       isActive,
       isEdit,
       title,
+      showHotkeyBorder,
     } = this.props;
     const { isFolder, id, fileExst } = item;
 
@@ -389,6 +392,7 @@ class Tile extends React.PureComponent {
         checked={checked}
         isActive={isActive}
         isDesktop={isDesktop}
+        showHotkeyBorder={showHotkeyBorder}
       >
         {isFolder || (!fileExst && id === -1) ? (
           <>

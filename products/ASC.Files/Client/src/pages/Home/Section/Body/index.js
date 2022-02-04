@@ -32,6 +32,7 @@ const SectionBodyContent = (props) => {
     tooltipPageX,
     tooltipPageY,
     setHotkeyCaretStart,
+    setHotkeyCaret,
   } = props;
 
   useEffect(() => {
@@ -72,6 +73,7 @@ const SectionBodyContent = (props) => {
       setSelection([]);
       setBufferSelection(null);
       setHotkeyCaretStart(null);
+      setHotkeyCaret(null);
     }
   };
 
@@ -215,6 +217,7 @@ export default inject(
       tooltipPageY,
       setBufferSelection,
       setHotkeyCaretStart,
+      setHotkeyCaret,
     } = filesStore;
 
     return {
@@ -236,6 +239,7 @@ export default inject(
       tooltipPageX,
       tooltipPageY,
       setHotkeyCaretStart,
+      setHotkeyCaret,
     };
   }
 )(

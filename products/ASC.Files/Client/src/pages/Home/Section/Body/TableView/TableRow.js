@@ -29,6 +29,10 @@ const contextMenuWrapperCheckedStyle = css`
   border-image-source: linear-gradient(to left, #f3f4f4 24px, #eceef1 24px);
 `;
 
+const hotkeyBorderStyle = css`
+  border-image-source: linear-gradient(to left, #2da7db 24px, #2da7db 24px);
+`;
+
 const rowCheckboxDraggingStyle = css`
   border-image-source: linear-gradient(to right, #f8f7bf 24px, #eceef1 24px);
 `;
@@ -61,6 +65,8 @@ const StyledTableRow = styled(TableRow)`
       !props.isThirdPartyFolder &&
       (props.checked || props.isActive) &&
       "url(images/cursor.palm.svg), auto"};
+
+    ${(props) => props.showHotkeyBorder && "border-color: #2DA7DB"}
   }
 
   .table-container_element {
@@ -109,6 +115,7 @@ const StyledTableRow = styled(TableRow)`
 
     ${(props) => props.checked && contextMenuWrapperCheckedStyle};
     ${(props) => props.dragging && contextMenuWrapperDraggingStyle};
+    ${(props) => props.showHotkeyBorder && hotkeyBorderStyle};
   }
 
   .edit {
@@ -117,6 +124,15 @@ const StyledTableRow = styled(TableRow)`
       height: 12px;
     }
   }
+
+  ${(props) =>
+    props.showHotkeyBorder &&
+    css`
+      .table-container_cell {
+        margin-top: -1px;
+        border-top: 1px solid #2da7db;
+      }
+    `}
 `;
 
 const StyledDragAndDrop = styled(DragAndDrop)`
@@ -214,6 +230,7 @@ const FilesTableRow = (props) => {
     onHideContextMenu,
     onFilesClick,
     quickButtonsComponent,
+    showHotkeyBorder,
   } = props;
 
   const element = (
@@ -273,6 +290,7 @@ const FilesTableRow = (props) => {
         isThirdPartyFolder={item.isThirdPartyFolder}
         onDoubleClick={onFilesClick}
         checked={checkedProps}
+        showHotkeyBorder={showHotkeyBorder}
         title={
           item.isFolder
             ? t("Translations:TitleShowFolderActions")

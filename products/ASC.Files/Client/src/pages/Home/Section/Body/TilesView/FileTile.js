@@ -38,6 +38,7 @@ const FilesTile = (props) => {
     isActive,
     isEdit,
     quickButtonsComponent,
+    showHotkeyBorder,
   } = props;
 
   const temporaryExtension =
@@ -91,6 +92,7 @@ const FilesTile = (props) => {
               ? t("Translations:TitleShowFolderActions")
               : t("Translations:TitleShowActions")
           }
+          showHotkeyBorder={showHotkeyBorder}
         >
           <FilesTileContent
             item={item}

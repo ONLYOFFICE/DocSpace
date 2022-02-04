@@ -64,6 +64,25 @@ const StyledSimpleFilesRow = styled(Row)`
   margin-top: -2px;
 
   ${(props) =>
+    props.showHotkeyBorder &&
+    css`
+      border-top: 1px solid #2da7db;
+      margin-top: -3px;
+    `}
+
+  ::after {
+    ${(props) =>
+      props.showHotkeyBorder &&
+      css`
+        background: #2da7db;
+        padding-left: 24px;
+        padding-right: 24px;
+        margin-left: -24px;
+        margin-right: -24px;
+      `}
+  }
+
+  ${(props) =>
     !props.contextOptions &&
     `
     & > div:last-child {
@@ -183,6 +202,7 @@ const SimpleFilesRow = (props) => {
     isEdit,
     isActive,
     isAdmin,
+    showHotkeyBorder,
   } = props;
 
   const withAccess = isAdmin || item.access === 0;
@@ -220,6 +240,7 @@ const SimpleFilesRow = (props) => {
           isActive={isActive}
           isThirdPartyFolder={item.isThirdPartyFolder}
           withAccess={withAccess}
+          showHotkeyBorder={showHotkeyBorder}
         >
           <FilesRowContent
             item={item}

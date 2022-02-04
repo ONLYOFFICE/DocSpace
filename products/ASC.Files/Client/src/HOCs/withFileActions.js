@@ -244,6 +244,7 @@ export default function withFileActions(WrappedFileItem) {
         viewAs,
         bufferSelection,
         setBufferSelection,
+        hotkeyCaret,
       } = filesStore;
       const { startUpload } = uploadDataStore;
       const { type, extension, id } = fileActionStore;
@@ -266,6 +267,8 @@ export default function withFileActions(WrappedFileItem) {
         bufferSelection.id === item.id &&
         bufferSelection.fileExst === item.fileExst &&
         !selection.length; // need for select row item
+
+      const showHotkeyBorder = hotkeyCaret?.id === item.id;
 
       return {
         t,
@@ -301,7 +304,7 @@ export default function withFileActions(WrappedFileItem) {
         isActive,
         setBufferSelection,
         bufferSelection,
-
+        showHotkeyBorder,
         openFileAction,
       };
     }
