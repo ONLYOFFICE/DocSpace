@@ -15,7 +15,6 @@ import { Base } from "@appserver/components/themes";
 
 const StyledCatalog = styled.div`
   position: relative;
-  top: 48px;
 
   @media ${mobile} {
     top: 16px;
@@ -23,7 +22,7 @@ const StyledCatalog = styled.div`
 
   ${isMobileOnly &&
   css`
-    top: 64px;
+    top: 16px;
   `}
 
   z-index: ${(props) =>
