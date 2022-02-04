@@ -87,11 +87,16 @@ public class ConfigureDistributedTaskQueue : IConfigureNamedOptions<DistributedT
 {
     private DistributedTaskCacheNotify DistributedTaskCacheNotify { get; }
     public IServiceProvider ServiceProvider { get; }
+    public IServiceScopeFactory ServiceScopeFactory { get; }
 
-    public ConfigureDistributedTaskQueue(DistributedTaskCacheNotify distributedTaskCacheNotify, IServiceProvider serviceProvider)
+    public ConfigureDistributedTaskQueue(
+        DistributedTaskCacheNotify distributedTaskCacheNotify, 
+        IServiceProvider serviceProvider,
+        IServiceScopeFactory serviceScopeFactory)
     {
         DistributedTaskCacheNotify = distributedTaskCacheNotify;
         ServiceProvider = serviceProvider;
+        ServiceScopeFactory = serviceScopeFactory;
     }
 
     public void Configure(DistributedTaskQueue queue)
@@ -110,6 +115,7 @@ public class ConfigureDistributedTaskQueue : IConfigureNamedOptions<DistributedT
 public class DistributedTaskQueue
 {
     public IServiceProvider ServiceProvider { get; set; }
+    public IServiceScopeFactory ServiceScopeFactory { get; set; }
     public DistributedTaskCacheNotify DistributedTaskCacheNotify { get; set; }
     public string Name
     {
@@ -123,17 +129,16 @@ public class DistributedTaskQueue
                 : new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, value).ConcurrentScheduler;
     }
 
-    public static readonly int InstanceId;
-
-    private TaskScheduler Scheduler { get; set; } = TaskScheduler.Default;
     private ICache Cache => DistributedTaskCacheNotify.Cache;
+    private TaskScheduler Scheduler { get; set; } = TaskScheduler.Default;
+
+    public static readonly int InstanceId;
+    private string _name;
+
     private ConcurrentDictionary<string, CancellationTokenSource> Cancelations =>
         DistributedTaskCacheNotify.Cancelations;
 
-    private string _name;
-
     static DistributedTaskQueue() => InstanceId = Process.GetCurrentProcess().Id;
-
 
     public void QueueTask(DistributedTaskProgress taskProgress) =>
          QueueTask((a, b) => taskProgress.RunJob(), taskProgress);
@@ -199,7 +204,7 @@ public class DistributedTaskQueue
         var cache = Cache.HashGet<DistributedTaskCache>(_name, id);
         if (cache != null)
         {
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = ServiceScopeFactory.CreateScope();
             var task = scope.ServiceProvider.GetService<T>();
             task.DistributedTaskCache = cache;
 
