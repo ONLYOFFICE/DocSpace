@@ -8,24 +8,20 @@ const StyledCatalogMainButton = styled.div`
   max-width: 216px;
   @media ${tablet} {
     display: none;
-    // padding: 0 16px 16px;
   }
 
   @media ${mobile} {
     display: none;
-    // padding: 16px 16px 16px;
   }
 
   ${isTablet &&
   css`
     display: none;
-    // padding: 0 16px 16px;
   `}
 
   ${isMobileOnly &&
   css`
     display: none;
-    // padding: 16px 16px 16px !important;
   `}
 `;
 

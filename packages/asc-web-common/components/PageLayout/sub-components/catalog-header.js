@@ -5,6 +5,7 @@ import Heading from "@appserver/components/heading";
 import { isMobileOnly, isTablet } from "react-device-detect";
 import MenuIcon from "@appserver/components/public/static/images/menu.react.svg";
 import { tablet, mobile } from "@appserver/components/utils/device";
+import Base from "@appserver/components/themes/base";
 
 const StyledCatalogHeader = styled.div`
   padding: 12px 20px 13px;
@@ -19,9 +20,9 @@ const StyledCatalogHeader = styled.div`
   }
 
   @media ${mobile} {
-    border-bottom: 1px solid #eceef1;
-    padding: 8px 14px 17px;
-    margin: 0;
+    border-bottom: ${(props) => props.theme.catalog.header.borderBottom};
+    padding: 12px 16px 12px;
+    margin-bottom: 16px !important;
   }
 
   ${isTablet &&
@@ -33,11 +34,14 @@ const StyledCatalogHeader = styled.div`
 
   ${isMobileOnly &&
   css`
-    border-bottom: 1px solid #eceef1 !important;
-    padding: 8px 14px 17px !important;
-    margin: 0;
+    border-bottom: ${(props) =>
+      props.theme.catalog.header.borderBottom} !important;
+    padding: 12px 16px 12px !important;
+    margin-bottom: 16px !important;
   `}
 `;
+
+StyledCatalogHeader.defaultProps = { theme: Base };
 
 const StyledHeading = styled(Heading)`
   margin: 0;
@@ -93,9 +97,15 @@ const StyledMenuIcon = styled(MenuIcon)`
   display: block;
   width: 20px;
   height: 20px;
-  fill: #657077;
+
   cursor: pointer;
+
+  path {
+    fill: ${(props) => props.theme.catalog.header.iconFill};
+  }
 `;
+
+StyledMenuIcon.defaultProps = { theme: Base };
 
 const CatalogHeader = (props) => {
   const { showText, children, onClick, ...rest } = props;
@@ -106,7 +116,7 @@ const CatalogHeader = (props) => {
         <StyledMenuIcon onClick={onClick} />
       </StyledIconBox>
 
-      <StyledHeading showText={showText} color="#333333" size="large">
+      <StyledHeading showText={showText} size="large">
         {children}
       </StyledHeading>
     </StyledCatalogHeader>

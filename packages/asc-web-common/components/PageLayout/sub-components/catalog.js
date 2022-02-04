@@ -11,23 +11,34 @@ import {
   isDesktop as isDesktopUtils,
 } from "@appserver/components/utils/device";
 
+import { Base } from "@appserver/components/themes";
+
 const StyledCatalog = styled.div`
   position: relative;
+  top: 48px;
+
   @media ${mobile} {
-    top: 8px;
+    top: 16px;
   }
-  top: ${isMobile && "48px"} !important;
-  top: ${isMobileOnly && "64px"} !important;
+
+  ${isMobileOnly &&
+  css`
+    top: 64px;
+  `}
 
   z-index: ${(props) =>
     props.showText && (isMobileOnly || isMobileUtils()) ? "201" : "100"};
+
   .resizable-block {
     display: flex;
     flex-direction: column;
+
     min-width: ${(props) => (props.showText ? "256px" : "52px")};
     width: ${(props) => (props.showText ? "256px" : "52px")};
+
     height: 100% !important;
-    background: #f8f9f9;
+
+    background: ${(props) => props.theme.catalog.background};
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: none;
@@ -53,7 +64,7 @@ const StyledCatalog = styled.div`
     @media ${mobile} {
       display: ${(props) => (props.showText ? "flex" : "none")};
       min-width: 100vw;
-      width: 100%;
+      width: 100vw;
       margin: 0;
       padding: 0;
       padding-bottom: 44px;
@@ -72,13 +83,15 @@ const StyledCatalog = styled.div`
     css`
       display: ${(props) => (props.showText ? "flex" : "none")};
       min-width: 100vw !important;
-      width: 100%;
+      width: 100vw;
       margin: 0;
       padding: 0;
       padding-bottom: 44px;
     `}
   }
 `;
+
+StyledCatalog.defaultProps = { theme: Base };
 
 const Catalog = (props) => {
   const { showText, setShowText, children, ...rest } = props;

@@ -205,9 +205,22 @@ const Dark = {
     },
 
     dropDown: {
-      right: "15%",
-      bottom: "15%",
+      position: "fixed",
+      right: "32px",
+      bottom: "32px",
+
       width: "400px",
+
+      zIndex: "202",
+
+      mobile: {
+        right: "24px",
+        bottom: "24px",
+
+        marginLeft: "24px",
+
+        width: "calc(100vw - 48px)",
+      },
 
       separatorBackground: white,
 
@@ -1774,6 +1787,19 @@ const Dark = {
   //     },
   //   },
   // },
+  catalog: {
+    background: "#292929",
+
+    header: {
+      borderBottom: "1px solid #474747",
+      iconFill: "#a9a9a9",
+    },
+    control: {
+      background: "#a3a3a3",
+      fill: "#333333",
+    },
+  },
+
   catalogItem: {
     container: {
       width: "100%",

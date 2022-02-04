@@ -1786,6 +1786,19 @@ const Base = {
   //   },
   // },
 
+  catalog: {
+    background: "#f8f9f9",
+
+    header: {
+      borderBottom: "1px solid #eceef1",
+      iconFill: "#657077",
+    },
+    control: {
+      background: "#9a9ea3",
+      fill: "#ffffff",
+    },
+  },
+
   catalogItem: {
     container: {
       width: "100%",
@@ -1862,6 +1875,7 @@ const Base = {
       position: "-4px",
     },
   },
+
   nav: {
     backgroundColor: "#0F4071",
   },
