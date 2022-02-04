@@ -26,7 +26,7 @@
 
   <ItemGroup>
     <PackageReference Include="DotNetOpenAuth.Ultimate" Version="4.3.4.13329" />
-    <PackageReference Include="Grpc.Tools" Version="2.40.0">
+    <PackageReference Include="Grpc.Tools" Version="2.43.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
