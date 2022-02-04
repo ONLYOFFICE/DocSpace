@@ -1,4 +1,5 @@
-﻿using Constants = ASC.Core.Users.Constants;
+﻿using AuthenticationException = System.Security.Authentication.AuthenticationException;
+using Constants = ASC.Core.Users.Constants;
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Api.Controllers
