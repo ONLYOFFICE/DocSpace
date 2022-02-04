@@ -7,8 +7,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
-using Frontend.Translations.Tests.Models;
-
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -52,7 +50,7 @@ namespace Frontend.Translations.Tests
 
             var moduleWorkspaces = ((JArray)jsonPackage["workspaces"])
                 .Select(p => ((string)p).Replace("/", "\\"))
-                .Where(w => !w.Contains("asc-web-components"))
+                //.Where(w => !w.Contains("asc-web-components"))
                 .ToList();
 
             Workspaces = new List<string>();
@@ -82,6 +80,10 @@ namespace Frontend.Translations.Tests
                             new JsonEncodingError(path, result.Detected));
                     }
 
+#if SORT
+
+                    JObject jsonSorted;
+#endif
                     using (var md5 = MD5.Create())
                     {
                         using (var stream = File.OpenRead(path))
@@ -100,20 +102,19 @@ namespace Frontend.Translations.Tests
                                     .ToList(), md5hash);
 
                                 TranslationFiles.Add(translationFile);
+
+#if SORT
+                                var orderedList = jsonTranslation.Properties().OrderBy(t => t.Name);
+                                jsonSorted = new JObject(orderedList);
+#endif
                             }
-
                         }
+#if SORT
+                        //   Re-write by order 
+                        var sortedJsonString = JsonConvert.SerializeObject(jsonSorted, Formatting.Indented);
+                        File.WriteAllText(path, sortedJsonString, Encoding.UTF8);
+#endif
                     }
-
-                    /*   Re-write by order */
-
-                    //var orderedList = jsonTranslation.Properties().OrderBy(t => t.Name);
-
-                    //var result = new JObject(orderedList);
-
-                    //var sortedJsonString = JsonConvert.SerializeObject(result, Formatting.Indented);
-
-                    //File.WriteAllText(path, sortedJsonString);
                 }
                 catch (Exception ex)
                 {
@@ -153,15 +154,18 @@ namespace Frontend.Translations.Tests
             {
                 var jsFileText = File.ReadAllText(path);
 
-                var toastMatches = notTranslatedToastsRegex.Matches(jsFileText).ToList();
-
-                if (toastMatches.Any())
+                if (!path.Contains("asc-web-components"))
                 {
-                    foreach (var toastMatch in toastMatches)
+                    var toastMatches = notTranslatedToastsRegex.Matches(jsFileText).ToList();
+
+                    if (toastMatches.Any())
                     {
-                        var found = toastMatch.Value;
-                        if (!string.IsNullOrEmpty(found) && !NotTranslatedToasts.Exists(t => t.Value == found))
-                            NotTranslatedToasts.Add(new KeyValuePair<string, string>(path, found));
+                        foreach (var toastMatch in toastMatches)
+                        {
+                            var found = toastMatch.Value;
+                            if (!string.IsNullOrEmpty(found) && !NotTranslatedToasts.Exists(t => t.Value == found))
+                                NotTranslatedToasts.Add(new KeyValuePair<string, string>(path, found));
+                        }
                     }
                 }
 
@@ -204,7 +208,6 @@ namespace Frontend.Translations.Tests
                 {
                     ModulePath = g.Key,
                     Languages = g.ToList().Select(t => t.Language).ToList()
-                    .ToList()
                 })
                 .ToList();
 
@@ -223,17 +226,17 @@ namespace Frontend.Translations.Tests
                 })
                 .ToList();
 
-            foreach (var ws in moduleWorkspaces)
+            foreach (var wsPath in moduleWorkspaces)
             {
-                var t = moduleTranslations.FirstOrDefault(t => t.ModulePath == ws);
-                var j = moduleJsTranslatedFiles.FirstOrDefault(t => t.ModulePath == ws);
+                var t = moduleTranslations.FirstOrDefault(t => t.ModulePath == wsPath);
+                var j = moduleJsTranslatedFiles.FirstOrDefault(t => t.ModulePath == wsPath);
 
                 if (j == null && t == null)
                     continue;
 
                 ModuleFolders.Add(new ModuleFolder
                 {
-                    Path = ws,
+                    Path = wsPath,
                     AvailableLanguages = t?.Languages,
                     AppliedJsTranslationKeys = j?.TranslationKeys
                 });
@@ -327,7 +330,7 @@ namespace Frontend.Translations.Tests
             }
 
             //string json = JsonConvert.SerializeObject(list, Formatting.Indented);
-            //File.WriteAllText("../../../spellcheck-excludes.json", json);
+            //File.WriteAllText("../../../spellcheck-excludes.json", json, Encoding.UTF8);
 
             Assert.AreEqual(0, errorsCount, message);
         }
@@ -337,8 +340,12 @@ namespace Frontend.Translations.Tests
         public void DublicatesFilesByMD5HashTest()
         {
             var skipHashes = new List<string>() {
-                "bcba174a8dadc0ff97f37f9a2d816d88",
-                "2a506ed97d0fbd0858192b755ae122d0",
+                "e6d664afaace71b3a22abb09fc124543",
+                "5a1d4d36141c7a8ca53f2540f3fd5940",
+                "6d3334459f062ba0f39de6a38225c564",
+                "b8e7630201c96d26c94d348447328276",
+                "3ad0e57ce636af715af3f629e364f1ed",
+                "dfb129715a0122a29afe233226c648d9",
                 "ec73989085d4e1b984c1c9dca10524da"
             };
 
@@ -446,7 +453,7 @@ namespace Frontend.Translations.Tests
             if (!Directory.Exists(fullPathOnly))
                 Directory.CreateDirectory(fullPathOnly);
 
-            File.WriteAllText(notExistJsonPath, sortedJsonString);
+            File.WriteAllText(notExistJsonPath, sortedJsonString, Encoding.UTF8);
         }
 
         [Test]
@@ -523,7 +530,7 @@ namespace Frontend.Translations.Tests
 
             var sortedJsonString = JsonConvert.SerializeObject(result, Formatting.Indented);
 
-            File.WriteAllText(pathToJson, sortedJsonString);
+            File.WriteAllText(pathToJson, sortedJsonString, Encoding.UTF8);
         }
 
         [Test]
@@ -624,7 +631,9 @@ namespace Frontend.Translations.Tests
         {
             var notFoundi18nKeys = new List<KeyValuePair<string, List<string>>>();
 
-            var message = $"Some i18n-keys are not found in js: \r\nKeys: \r\n\r\n";
+            var message = $"Some i18n-keys are not found in Module or Common translations: \r\nKeys: \r\n\r\n";
+
+            var index = 0;
 
             for (int i = 0; i < ModuleFolders.Count; i++)
             {
@@ -632,7 +641,7 @@ namespace Frontend.Translations.Tests
 
                 if (module.AppliedJsTranslationKeys == null && module.AvailableLanguages != null)
                 {
-                    message += $"{i}. 'ANY LANGUAGES' '{module.Path}' NOT USES";
+                    message += $"{++index}. 'ANY LANGUAGES' '{module.Path}' NOT USES";
 
                     var list = module.AvailableLanguages
                         .SelectMany(l => l.Translations.Select(t => t.Key).ToList())
@@ -645,12 +654,16 @@ namespace Frontend.Translations.Tests
 
                 var notCommonKeys = module.AppliedJsTranslationKeys
                     .Where(k => !k.StartsWith("Common:"))
+                    .OrderBy(t => t)
                     .ToList();
 
                 var onlyCommonKeys = module.AppliedJsTranslationKeys
                     .Except(notCommonKeys)
                     .Select(k => k.Replace("Common:", ""))
+                    .OrderBy(t => t)
                     .ToList();
+
+                notCommonKeys = notCommonKeys.Select(k => k.Substring(k.IndexOf(":") + 1)).ToList();
 
                 if (onlyCommonKeys.Any())
                 {
@@ -663,7 +676,7 @@ namespace Frontend.Translations.Tests
                         if (!list.Any())
                             continue;
 
-                        message += $"{i}. '{lng.Language}' '{module.Path}' \r\n {string.Join("\r\n", list)} \r\n";
+                        message += $"{++index}. '{lng.Language}' '{module.Path}' \r\n {string.Join("\r\n", list)} \r\n";
 
                         notFoundi18nKeys.Add(new KeyValuePair<string, List<string>>(lng.Language, list));
                     }
@@ -673,7 +686,7 @@ namespace Frontend.Translations.Tests
                 {
                     if (notCommonKeys.Any())
                     {
-                        message += $"{i}. 'ANY LANGUAGES' '{module.Path}' \r\n {string.Join("\r\n", notCommonKeys)} \r\n";
+                        message += $"{++index}. 'ANY LANGUAGES' '{module.Path}' \r\n {string.Join("\r\n", notCommonKeys)} \r\n";
 
                         notFoundi18nKeys.Add(new KeyValuePair<string, List<string>>("ANY LANGUAGES", notCommonKeys));
                     }
@@ -685,13 +698,13 @@ namespace Frontend.Translations.Tests
                 {
                     var list = lng.Translations
                          .Select(t => t.Key)
-                         .Except(notCommonKeys.Select(k => k.Substring(k.IndexOf(":") + 1)))
+                         .Except(notCommonKeys)
                          .ToList();
 
                     if (!list.Any())
                         continue;
 
-                    message += $"{i}. '{lng.Language}' '{module.Path}' \r\n {string.Join("\r\n", list)} \r\n";
+                    message += $"{++index}. '{lng.Language}' '{module.Path}' \r\n {string.Join("\r\n", list)} \r\n";
 
                     notFoundi18nKeys.Add(new KeyValuePair<string, List<string>>(lng.Language, list));
                 }
@@ -761,7 +774,7 @@ namespace Frontend.Translations.Tests
 
             var sortedJsonString = JsonConvert.SerializeObject(result, Formatting.Indented);
 
-            File.WriteAllText(pathToJson, sortedJsonString);
+            File.WriteAllText(pathToJson, sortedJsonString, Encoding.UTF8);
         }
 
         public static void RemoveEmptyKeys(string pathToJson, List<string> emptyKeys)
@@ -777,7 +790,7 @@ namespace Frontend.Translations.Tests
 
             var sortedJsonString = JsonConvert.SerializeObject(result, Formatting.Indented);
 
-            File.WriteAllText(pathToJson, sortedJsonString);
+            File.WriteAllText(pathToJson, sortedJsonString, Encoding.UTF8);
         }
 
         public string GetWorkspace(string path)

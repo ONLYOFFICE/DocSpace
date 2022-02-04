@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
@@ -170,7 +171,7 @@ namespace ASC.Web.Core.Sms
 
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(url);
-                request.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
+                request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
 
                 using var httpClient = new HttpClient();
                 httpClient.Timeout = TimeSpan.FromMilliseconds(15000);
@@ -264,7 +265,7 @@ namespace ASC.Web.Core.Sms
 
                     var request = new HttpRequestMessage();
                     request.RequestUri = new Uri(url);
-                    request.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
+                    request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
 
                     using var httpClient = new HttpClient();
                     httpClient.Timeout = TimeSpan.FromMilliseconds(1000);

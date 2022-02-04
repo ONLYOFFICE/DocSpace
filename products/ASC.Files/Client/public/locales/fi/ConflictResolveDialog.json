@@ -1,4 +1,4 @@
-{
+﻿{
   "ConflictResolveDescription": "Tiedosto, jonka nimi on {{file}}, on jo kansiossa {{folder}}.",
   "ConflictResolveDescriptionFiles": "{{filesCount}} samannimistä asiakirjaa on jo olemassa kansiossa {{folder}}.",
   "ConflictResolveSelectAction": "Valitse toiminto:",

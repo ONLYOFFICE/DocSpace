@@ -60,11 +60,11 @@ namespace ASC.Web.Files.Core.Search
             IServiceProvider serviceProvider,
             IDaoFactory daoFactory,
             ICache cache,
-            SettingsHelper settingsHelper)
+            Settings settings)
             : base(options, tenantManager, searchSettingsHelper, factoryIndexer, baseIndexer, serviceProvider, cache)
         {
             DaoFactory = daoFactory;
-            Settings = settingsHelper.Settings;
+            Settings = settings;
         }
 
         public override void IndexAll()
@@ -129,7 +129,7 @@ namespace ASC.Web.Files.Core.Search
             IQueryable<FolderTenant> GetBaseQuery(DateTime lastIndexed) => folderDao.FilesDbContext.Folders
                     .AsQueryable()
                     .Where(r => r.ModifiedOn >= lastIndexed)
-                    .Join(folderDao.TenantDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FolderTenant { DbFolder = f, DbTenant = t })
+                    .Join(folderDao.FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FolderTenant { DbFolder = f, DbTenant = t })
                     .Where(r => r.DbTenant.Status == ASC.Core.Tenants.TenantStatus.Active);
 
             try

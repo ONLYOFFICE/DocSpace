@@ -50,11 +50,11 @@ namespace ASC.Files.ThumbnailBuilder
         private readonly ILog logger;
         private IServiceProvider ServiceProvider { get; }
 
-        public BuilderQueue(IServiceProvider serviceProvider, IOptionsMonitor<ILog> log, ASC.Common.Utils.ConfigurationExtension configurationExtension)
+        public BuilderQueue(IServiceProvider serviceProvider, IOptionsMonitor<ILog> log, ThumbnailSettings settings)
         {
             logger = log.Get("ASC.Files.ThumbnailBuilder");
             ServiceProvider = serviceProvider;
-            config = ThumbnailSettings.GetInstance(configurationExtension);
+            config = settings;
         }
 
         public void BuildThumbnails(IEnumerable<FileData<T>> filesWithoutThumbnails)
@@ -96,7 +96,7 @@ namespace ASC.Files.ThumbnailBuilder
         private PathProvider PathProvider { get; }
 
         public Builder(
-            Common.Utils.ConfigurationExtension configurationExtension,
+            ThumbnailSettings settings,
             TenantManager tenantManager,
             IDaoFactory daoFactory,
             DocumentServiceConnector documentServiceConnector,
@@ -105,7 +105,7 @@ namespace ASC.Files.ThumbnailBuilder
             PathProvider pathProvider,
             IOptionsMonitor<ILog> log)
         {
-            this.config = ThumbnailSettings.GetInstance(configurationExtension);
+            this.config = settings;
             TenantManager = tenantManager;
             DaoFactory = daoFactory;
             DocumentServiceConnector = documentServiceConnector;

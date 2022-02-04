@@ -43,7 +43,6 @@ namespace ASC.Files.Core.Data
         public LinkDao(
             UserManager userManager,
             DbContextManager<EF.FilesDbContext> dbContextManager,
-            DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             TenantUtil tenantUtil,
             SetupInfo setupInfo,
@@ -57,7 +56,6 @@ namespace ASC.Files.Core.Data
             ICache cache)
             : base(
                   dbContextManager,
-                  dbContextManager1,
                   userManager,
                   tenantManager,
                   tenantUtil,

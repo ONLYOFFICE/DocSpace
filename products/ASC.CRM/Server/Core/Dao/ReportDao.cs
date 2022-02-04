@@ -81,7 +81,6 @@ namespace ASC.CRM.Core.Dao
         #region Constructor
 
         public ReportDao(DbContextManager<CrmDbContext> dbContextManager,
-                       DbContextManager<TenantDbContext> dbContextManager1,
                        TenantManager tenantManager,
                        SecurityContext securityContext,
                        FilesIntegration filesIntegration,
@@ -97,7 +96,6 @@ namespace ASC.CRM.Core.Dao
                        DisplayUserSettingsHelper displayUserSettingsHelper,
                        IMapper mapper) :
             base(dbContextManager,
-                dbContextManager1,
                  tenantManager,
                  securityContext,
                  logger,

@@ -67,7 +67,6 @@ namespace ASC.CRM.Core.Dao
 
         public ContactDao(
             DbContextManager<CrmDbContext> dbContextManager,
-            DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             SecurityContext securityContext,
             CrmSecurity crmSecurity,
@@ -83,7 +82,6 @@ namespace ASC.CRM.Core.Dao
             IMapper mapper
             ) :
                  base(dbContextManager,
-                 dbContextManager1,
                  tenantManager,
                  securityContext,
                  logger,

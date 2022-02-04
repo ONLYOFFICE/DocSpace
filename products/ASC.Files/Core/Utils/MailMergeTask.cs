@@ -28,11 +28,11 @@ using System;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Common;
-using ASC.Common.Web;
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Web.Studio.Core;
@@ -138,7 +138,7 @@ namespace ASC.Web.Files.Utils
             request.RequestUri = new Uri(BaseCommonLinkUtility.GetFullAbsolutePath(apiUrlAttach));
             request.Method = HttpMethod.Post;
             request.Headers.Add("Authorization", SecurityContext.AuthenticateMe(SecurityContext.CurrentAccount.ID));
-            request.Headers.Add("Content-Type", MimeMapping.GetMimeMapping(mailMergeTask.AttachTitle));
+            request.Content.Headers.ContentType = new MediaTypeHeaderValue(mailMergeTask.AttachTitle);
             request.Content = new StreamContent(mailMergeTask.Attach);
 
             // hack. http://ubuntuforums.org/showthread.php?t=1841740

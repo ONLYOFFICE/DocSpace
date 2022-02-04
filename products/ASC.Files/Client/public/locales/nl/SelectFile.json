@@ -1,4 +1,4 @@
-{
-    "SelectFile": "Selecteer bestand",
-    "SelectDOCXFormat": "Selecteer het bestand in .DOCX formaat"
+﻿{
+  "SelectDOCXFormat": "Selecteer het bestand in .DOCX formaat",
+  "SelectFile": "Selecteer bestand"
 }

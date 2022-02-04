@@ -1,5 +1,4 @@
 import React from "react";
-import { EncryptedFileIcon } from "./Icons";
 import { inject, observer } from "mobx-react";
 import styled from "styled-components";
 
@@ -7,6 +6,15 @@ const StyledIcon = styled.img`
   /* width: 24px;
   height: 24px;
   margin-top: 4px; */
+`;
+
+const EncryptedFileIcon = styled.div`
+  background: url("images/security.svg") no-repeat 0 0 / 16px 16px transparent;
+  height: 16px;
+  position: absolute;
+  width: 16px;
+  margin-top: 14px;
+  margin-left: 12px;
 `;
 
 const ItemIcon = ({

@@ -61,7 +61,6 @@ namespace ASC.CRM.Core.Dao
         private UserDbContext _userDbContext { get => LazyUserDbContext.Value; }
 
         public TaskDao(DbContextManager<CrmDbContext> dbContextManager,
-             DbContextManager<TenantDbContext> dbContextManager1,
                        TenantManager tenantManager,
                        SecurityContext securityContext,
                        CrmSecurity crmSecurity,
@@ -72,7 +71,6 @@ namespace ASC.CRM.Core.Dao
                        DbContextManager<UserDbContext> userDbContext,
                        IMapper mapper) :
             base(dbContextManager,
-                dbContextManager1,
                  tenantManager,
                  securityContext,
                  logger,

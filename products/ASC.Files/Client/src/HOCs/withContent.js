@@ -1,7 +1,6 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import { Trans } from "react-i18next";
-import { isMobile } from "react-device-detect";
 
 import toastr from "studio/toastr";
 import {
@@ -219,30 +218,24 @@ export default function withContent(WrappedContent) {
       return this.setState({ itemTitle: title });
     };
 
-    getStatusByDate = () => {
-      const { culture, t, item, sectionWidth, viewAs } = this.props;
-      const { created, updated, version, fileExst } = item;
+    getStatusByDate = (create) => {
+      const { culture, item } = this.props;
+      const { created, updated } = item;
 
-      const title =
-        version > 1
-          ? t("TitleModified")
-          : fileExst
-          ? t("TitleUploaded")
-          : t("TitleCreated");
-
-      const date = fileExst ? updated : created;
-      const dateLabel = new Date(date).toLocaleString(culture);
-      const mobile =
-        (sectionWidth && sectionWidth <= 375) || isMobile || viewAs === "table";
-
-      return mobile ? dateLabel : `${title}: ${dateLabel}`;
-    };
-
-    getTableStatusByDate = (create) => {
-      const { created, updated } = this.props.item;
+      const options = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "numeric",
+      };
 
       const date = create ? created : updated;
-      const dateLabel = new Date(date).toLocaleString(this.props.culture);
+
+      const dateLabel = new Date(date)
+        .toLocaleString(culture, options)
+        .replace(",", "");
+
       return dateLabel;
     };
 
@@ -260,26 +253,14 @@ export default function withContent(WrappedContent) {
         viewAs,
         viewer,
       } = this.props;
-      const {
-        access,
-        createdBy,
-        fileExst,
-        fileStatus,
-        href,
-        icon,
-        id,
-        updated,
-      } = item;
+      const { access, createdBy, fileExst, fileStatus, href, icon, id } = item;
 
       const titleWithoutExt = getTitleWithoutExst(item);
 
       const isEdit = id === fileActionId && fileExst === fileActionExt;
 
-      const updatedDate =
-        viewAs === "table"
-          ? this.getTableStatusByDate(false)
-          : updated && this.getStatusByDate();
-      const createdDate = this.getTableStatusByDate(true);
+      const updatedDate = this.getStatusByDate(false);
+      const createdDate = this.getStatusByDate(true);
 
       const fileOwner =
         createdBy &&

@@ -52,7 +52,6 @@ namespace ASC.Files.Core.Data
     {
         public SecurityDao(UserManager userManager,
             DbContextManager<EF.FilesDbContext> dbContextManager,
-            DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             TenantUtil tenantUtil,
             SetupInfo setupInfo,
@@ -65,7 +64,6 @@ namespace ASC.Files.Core.Data
             IServiceProvider serviceProvider,
             ICache cache)
             : base(dbContextManager,
-                  dbContextManager1,
                   userManager,
                   tenantManager,
                   tenantUtil,
