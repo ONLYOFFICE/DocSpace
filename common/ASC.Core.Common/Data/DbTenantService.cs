@@ -38,6 +38,8 @@ using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Security.Cryptography;
 
+using AutoMapper;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -80,6 +82,8 @@ namespace ASC.Core.Data
         internal Lazy<UserDbContext> LazyUserDbContext { get; set; }
         
         private readonly MachinePseudoKeys _machinePseudoKeys;
+        private readonly IMapper _mapper;
+
         private List<string> _forbiddenDomains;
         private static Expression<Func<DbTenant, Tenant>> _fromDbTenantToTenant;
         private static Expression<Func<TenantUserSecurity, Tenant>> _fromTenantUserToTenant;
@@ -98,14 +102,14 @@ namespace ASC.Core.Data
                 PaymentId = r.PaymentId,
                 Spam = r.Spam,
                 Status = r.Status,
-                StatusChangeDate = r.StatusChangedHack,
-                TenantAlias = r.Alias,
-                TenantId = r.Id,
+                StatusChangeDate = r.StatusChangeDate,
+                TenantAlias = r.TenantAlias,
+                TenantId = r.TenantId,
                 MappedDomain = r.MappedDomain,
                 Version = r.Version,
                 VersionChanged = r.VersionChanged,
-                TrustedDomainsRaw = r.TrustedDomains,
-                TrustedDomainsType = r.TrustedDomainsEnabled,
+                //TrustedDomainsRaw = r.TrustedDomains,
+                TrustedDomainsType = r.TrustedDomainsType,
                 //AffiliateId = r.Partner != null ? r.Partner.AffiliateId : null,
                 //PartnerId = r.Partner != null ? r.Partner.PartnerId : null,
                 TimeZone = r.TimeZone,
@@ -122,12 +126,14 @@ namespace ASC.Core.Data
             DbContextManager<TenantDbContext> dbContextManager,
             DbContextManager<UserDbContext> DbContextManager,
             TenantDomainValidator tenantDomainValidator,
-            MachinePseudoKeys machinePseudoKeys)
+            MachinePseudoKeys machinePseudoKeys,
+            IMapper mapper)
         {
             LazyTenantDbContext = new Lazy<TenantDbContext>(() => dbContextManager.Value);
             LazyUserDbContext = new Lazy<UserDbContext>(() => DbContextManager.Value);
             TenantDomainValidator = tenantDomainValidator;
             _machinePseudoKeys = machinePseudoKeys;
+            _mapper = mapper;
         }
 
         public void ValidateDomain(string domain)
@@ -144,14 +150,14 @@ namespace ASC.Core.Data
 
             if (from != default) q = q.Where(r => r.LastModified >= from);
 
-            return q.Select(_fromDbTenantToTenant).ToList();
+            return q.Select(_mapper.Map<DbTenant, Tenant>).ToList();
         }
 
         public IEnumerable<Tenant> GetTenants(List<int> ids)
         {
             var q = TenantsQuery();
 
-            return q.Where(r => ids.Contains(r.Id) && r.Status == TenantStatus.Active).Select(_fromDbTenantToTenant).ToList();
+            return q.Where(r => ids.Contains(r.TenantId) && r.Status == TenantStatus.Active).Select(_mapper.Map<DbTenant, Tenant>).ToList();
         }
 
         public IEnumerable<Tenant> GetTenants(string login, string passwordHash)
@@ -160,7 +166,7 @@ namespace ASC.Core.Data
 
             IQueryable<TenantUserSecurity> query() => TenantsQuery()
                     .Where(r => r.Status == TenantStatus.Active)
-                    .Join(UserDbContext.Users, r => r.Id, r => r.Tenant, (tenant, user) => new
+                    .Join(UserDbContext.Users, r => r.TenantId, r => r.Tenant, (tenant, user) => new
                     {
                         tenant,
                         user
@@ -233,8 +239,8 @@ namespace ASC.Core.Data
         public Tenant GetTenant(int id)
         {
             return TenantsQuery()
-                .Where(r => r.Id == id)
-                .Select(_fromDbTenantToTenant)
+                .Where(r => r.TenantId == id)
+                .Select(_mapper.Map<DbTenant, Tenant>)
                 .SingleOrDefault();
         }
 
@@ -245,10 +251,10 @@ namespace ASC.Core.Data
             domain = domain.ToLowerInvariant();
 
             return TenantsQuery()
-                .Where(r => r.Alias == domain || r.MappedDomain == domain)
+                .Where(r => r.TenantAlias == domain || r.MappedDomain == domain)
                 .OrderBy(a => a.Status == TenantStatus.Restoring ? TenantStatus.Active : a.Status)
-                .ThenByDescending(a => a.Status == TenantStatus.Restoring ? 0 : a.Id)
-                .Select(_fromDbTenantToTenant)
+                .ThenByDescending(a => a.Status == TenantStatus.Restoring ? 0 : a.TenantId)
+                .Select(_mapper.Map<DbTenant, Tenant>)
                 .FirstOrDefault();
         }
 
@@ -256,8 +262,8 @@ namespace ASC.Core.Data
         {
             return TenantsQuery()
                 .OrderBy(a => a.Status)
-                .ThenByDescending(a => a.Id)
-                .Select(_fromDbTenantToTenant)
+                .ThenByDescending(a => a.TenantId)
+                .Select(_mapper.Map<DbTenant, Tenant>)
                 .FirstOrDefault();
         }
 
@@ -287,8 +293,8 @@ namespace ASC.Core.Data
 
                 var tenant = new DbTenant
                 {
-                    Id = t.TenantId,
-                    Alias = t.TenantAlias.ToLowerInvariant(),
+                    TenantId = t.TenantId,
+                    TenantAlias = t.TenantAlias.ToLowerInvariant(),
                     MappedDomain = !string.IsNullOrEmpty(t.MappedDomain) ? t.MappedDomain.ToLowerInvariant() : null,
                     Version = t.Version,
                     VersionChanged = t.VersionChanged,
@@ -297,7 +303,7 @@ namespace ASC.Core.Data
                     TimeZone = t.TimeZone,
                     OwnerId = t.OwnerId,
                     TrustedDomains = t.GetTrustedDomains(),
-                    TrustedDomainsEnabled = t.TrustedDomainsType,
+                    TrustedDomainsType = t.TrustedDomainsType,
                     CreationDateTime = t.CreatedDateTime,
                     Status = t.Status,
                     StatusChanged = t.StatusChangeDate,
@@ -310,17 +316,17 @@ namespace ASC.Core.Data
 
                 tenant = TenantDbContext.Tenants.Add(tenant).Entity;
                 TenantDbContext.SaveChanges();
-                t.TenantId = tenant.Id;
+                t.TenantId = tenant.TenantId;
             }
             else
             {
                 var tenant = TenantDbContext.Tenants
-                    .Where(r => r.Id == t.TenantId)
+                    .Where(r => r.TenantId == t.TenantId)
                     .FirstOrDefault();
 
                 if (tenant != null)
                 {
-                    tenant.Alias = t.TenantAlias.ToLowerInvariant();
+                    tenant.TenantAlias = t.TenantAlias.ToLowerInvariant();
                     tenant.MappedDomain = !string.IsNullOrEmpty(t.MappedDomain) ? t.MappedDomain.ToLowerInvariant() : null;
                     tenant.Version = t.Version;
                     tenant.VersionChanged = t.VersionChanged;
@@ -328,7 +334,7 @@ namespace ASC.Core.Data
                     tenant.Language = t.Language;
                     tenant.TimeZone = t.TimeZone;
                     tenant.TrustedDomains = t.GetTrustedDomains();
-                    tenant.TrustedDomainsEnabled = t.TrustedDomainsType;
+                    tenant.TrustedDomainsType = t.TrustedDomainsType;
                     tenant.CreationDateTime = t.CreatedDateTime;
                     tenant.Status = t.Status;
                     tenant.StatusChanged = t.StatusChangeDate;
@@ -375,19 +381,19 @@ namespace ASC.Core.Data
             using var tx = TenantDbContext.Database.BeginTransaction();
 
             var alias = TenantDbContext.Tenants
-                .Where(r => r.Id == id)
-                .Select(r => r.Alias)
+                .Where(r => r.TenantId == id)
+                .Select(r => r.TenantAlias)
                 .FirstOrDefault();
 
             var count = TenantDbContext.Tenants
-                .Where(r => r.Alias.StartsWith(alias + postfix))
+                .Where(r => r.TenantAlias.StartsWith(alias + postfix))
                 .Count();
 
-            var tenant = TenantDbContext.Tenants.Where(r => r.Id == id).FirstOrDefault();
+            var tenant = TenantDbContext.Tenants.Where(r => r.TenantId == id).FirstOrDefault();
 
             if (tenant != null)
             {
-                tenant.Alias = alias + postfix + (count > 0 ? count.ToString() : "");
+                tenant.TenantAlias = alias + postfix + (count > 0 ? count.ToString() : "");
                 tenant.Status = TenantStatus.RemovePending;
                 tenant.StatusChanged = DateTime.UtcNow;
                 tenant.LastModified = DateTime.UtcNow;
@@ -475,11 +481,11 @@ namespace ASC.Core.Data
                 exists = tenantId != 0 && _forbiddenDomains.Contains(domain);
             }
 
-            if (!exists) exists = 0 < TenantDbContext.Tenants.Where(r => r.Alias == domain && r.Id != tenantId).Count();
+            if (!exists) exists = 0 < TenantDbContext.Tenants.Where(r => r.TenantAlias == domain && r.TenantId != tenantId).Count();
 
             if (!exists)
                 exists = 0 < TenantDbContext.Tenants
-                    .Where(r => r.MappedDomain == domain && r.Id != tenantId && !(r.Status == TenantStatus.RemovePending || r.Status == TenantStatus.Restoring))
+                    .Where(r => r.MappedDomain == domain && r.TenantId != tenantId && !(r.Status == TenantStatus.RemovePending || r.Status == TenantStatus.Restoring))
                     .Count();
 
             if (exists)
@@ -494,8 +500,8 @@ namespace ASC.Core.Data
                 }
 
                 var existsTenants = TenantDbContext.TenantForbiden.Where(r => r.Address.StartsWith(domain)).Select(r => r.Address)
-                    .Union(TenantDbContext.Tenants.Where(r => r.Alias.StartsWith(domain) && r.Id != tenantId).Select(r => r.Alias))
-                    .Union(TenantDbContext.Tenants.Where(r => r.MappedDomain.StartsWith(domain) && r.Id != tenantId && r.Status != TenantStatus.RemovePending).Select(r => r.MappedDomain));
+                    .Union(TenantDbContext.Tenants.Where(r => r.TenantAlias.StartsWith(domain) && r.TenantId != tenantId).Select(r => r.TenantAlias))
+                    .Union(TenantDbContext.Tenants.Where(r => r.MappedDomain.StartsWith(domain) && r.TenantId != tenantId && r.Status != TenantStatus.RemovePending).Select(r => r.MappedDomain));
 
                 throw new TenantAlreadyExistsException("Address busy.", existsTenants);
             }

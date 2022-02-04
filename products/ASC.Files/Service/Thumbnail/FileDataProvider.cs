@@ -130,7 +130,7 @@ namespace ASC.Files.ThumbnailBuilder
             }
 
             return search
-                .Join(filesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FileTenant { DbFile = f, DbTenant = t })
+                .Join(filesDbContext.Tenants, r => r.TenantId, r => r.TenantId, (f, t) => new FileTenant { DbFile = f, DbTenant = t })
                 .Where(r => r.DbTenant.Status == TenantStatus.Active)
                 .Select(r => new FileData<int>(r.DbFile.TenantId, r.DbFile.Id, ""))
                 .ToList();

@@ -29,6 +29,8 @@ using System;
 using ASC.Common.Mapping;
 using ASC.Core.Common.EF;
 
+using AutoMapper;
+
 namespace ASC.Core
 {
     [Serializable]
@@ -39,8 +41,6 @@ namespace ASC.Core
         public string Action { get; set; }
         public string Recipient { get; set; }
         public string[] Methods { get; set; }
-        public string MethodsFromDb { set => Methods = value.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries); }
-
 
         public static implicit operator SubscriptionMethod(SubscriptionMethodCache cache)
         {
@@ -62,6 +62,13 @@ namespace ASC.Core
                 ActionId = cache.Action,
                 RecipientId = cache.Recipient
             };
+        }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<DbSubscriptionMethod, SubscriptionMethod>()
+                .ForMember(dest => dest.Methods, opt => opt
+                    .MapFrom(src => src.Sender.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries)));
         }
     }
 }

@@ -30,10 +30,15 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 
+using ASC.Common.Mapping;
+using ASC.Core.Common.EF.Model;
+
+using AutoMapper;
+
 namespace ASC.Core.Tenants
 {
     [Serializable]
-    public class Tenant
+    public class Tenant : IMapFrom<DbTenant>
     {
         public const int DefaultTenant = -1;
 
@@ -60,11 +65,6 @@ namespace ASC.Core.Tenants
         public TenantIndustry Industry { get; set; }
         public bool Spam { get; set; }
         public bool Calls { get; set; }
-        public string TrustedDomainsRaw
-        {
-            set => TrustedDomains = value != null ? value.Split(new[] { '|' },
-                StringSplitOptions.RemoveEmptyEntries).ToList() : new List<string>();
-        }
 
         public static readonly string HostName = Dns.GetHostName().ToLowerInvariant();
 
@@ -133,6 +133,17 @@ namespace ASC.Core.Tenants
             }
 
             return result;
+        }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<DbTenant, Tenant>()
+                .ForMember(dest => dest.TrustedDomains, opt => opt
+                    .MapFrom(src => src.TrustedDomains != null
+                    ? src.TrustedDomains.Split(new[] { '|' },
+                        StringSplitOptions.RemoveEmptyEntries).ToList()
+                    : new List<string>()))
+                .ForMember(dest => dest.Industry, opt => opt.NullSubstitute(TenantIndustry.Other));
         }
 
         internal string GetTrustedDomains()

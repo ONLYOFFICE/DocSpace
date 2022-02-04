@@ -8,9 +8,9 @@ namespace ASC.Core.Common.EF.Model
 {
     public class DbTenant
     {
-        public int Id { get; set; }
+        public int TenantId { get; set; }
         public string Name { get; set; }
-        public string Alias { get; set; }
+        public string TenantAlias { get; set; }
         public string MappedDomain { get; set; }
         public int Version { get; set; }
         public DateTime? Version_Changed { get; set; }
@@ -22,11 +22,11 @@ namespace ASC.Core.Common.EF.Model
         public string Language { get; set; }
         public string TimeZone { get; set; }
         public string TrustedDomains { get; set; }
-        public TenantTrustedDomainsType TrustedDomainsEnabled { get; set; }
+        public TenantTrustedDomainsType TrustedDomainsType { get; set; }
         public TenantStatus Status { get; set; }
         public DateTime? StatusChanged { get; set; }
         //hack for DateTime?
-        public DateTime StatusChangedHack
+        public DateTime StatusChangeDate
         {
             get => StatusChanged ?? DateTime.MinValue;
             set => StatusChanged = value;
@@ -52,8 +52,8 @@ namespace ASC.Core.Common.EF.Model
                 .HasData(
                 new DbTenant
                 {
-                    Id = 1,
-                    Alias = "localhost",
+                    TenantId = 1,
+                    TenantAlias = "localhost",
                     Name = "Web Office",
                     CreationDateTime = new DateTime(2021, 3, 9, 17, 46, 59, 97, DateTimeKind.Utc).AddTicks(4317),
                     OwnerId = Guid.Parse("66faa6e4-f133-11ea-b126-00ffeec8b4ef")
@@ -83,9 +83,9 @@ namespace ASC.Core.Common.EF.Model
                 entity.HasIndex(e => e.Version)
                     .HasDatabaseName("version");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.TenantId).HasColumnName("id");
 
-                entity.Property(e => e.Alias)
+                entity.Property(e => e.TenantAlias)
                     .IsRequired()
                     .HasColumnName("alias")
                     .HasColumnType("varchar(100)")
@@ -162,7 +162,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasCharSet("utf8")
                     .UseCollation("utf8_general_ci");
 
-                entity.Property(e => e.TrustedDomainsEnabled)
+                entity.Property(e => e.TrustedDomainsType)
                     .HasColumnName("trusteddomainsenabled")
                     .HasDefaultValueSql("'1'");
 
@@ -174,19 +174,19 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("version_changed")
                     .HasColumnType("datetime");
 
-                entity.Ignore(c => c.StatusChangedHack);
+                entity.Ignore(c => c.StatusChangeDate);
                 entity.Ignore(c => c.VersionChanged);
             });
         }
 
         public static void PgSqlAddDbTenant(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DbTenant>().Ignore(c => c.StatusChangedHack);
+            modelBuilder.Entity<DbTenant>().Ignore(c => c.StatusChangeDate);
             modelBuilder.Entity<DbTenant>(entity =>
             {
                 entity.ToTable("tenants_tenants", "onlyoffice");
 
-                entity.HasIndex(e => e.Alias)
+                entity.HasIndex(e => e.TenantAlias)
                     .HasDatabaseName("alias")
                     .IsUnique();
 
@@ -199,9 +199,9 @@ namespace ASC.Core.Common.EF.Model
                 entity.HasIndex(e => e.Version)
                     .HasDatabaseName("version");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.TenantId).HasColumnName("id");
 
-                entity.Property(e => e.Alias)
+                entity.Property(e => e.TenantAlias)
                     .IsRequired()
                     .HasColumnName("alias")
                     .HasMaxLength(100);
@@ -263,7 +263,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasMaxLength(1024)
                     .HasDefaultValueSql("NULL");
 
-                entity.Property(e => e.TrustedDomainsEnabled)
+                entity.Property(e => e.TrustedDomainsType)
                     .HasColumnName("trusteddomainsenabled")
                     .HasDefaultValueSql("1");
 
@@ -273,7 +273,7 @@ namespace ASC.Core.Common.EF.Model
 
                 entity.Property(e => e.Version_Changed).HasColumnName("version_changed");
 
-                entity.Ignore(c => c.StatusChangedHack);
+                entity.Ignore(c => c.StatusChangeDate);
                 entity.Ignore(c => c.VersionChanged);
             });
         }

@@ -98,7 +98,7 @@ namespace ASC.Thumbnails.Svc
                 var table = compile.Invoke(ef);
 
                 var ae = table
-                    .Join(ef.Tenants, r => r.TenantId, r => r.Id, (audit, tenant) => audit)
+                    .Join(ef.Tenants, r => r.TenantId, r => r.TenantId, (audit, tenant) => audit)
                     .Select(r => new
                     {
                         r.Id,

@@ -171,7 +171,7 @@ namespace ASC.Data.Backup
                             r[table.Columns["mappeddomain"]] = null;
                             if (table.Columns.Contains("id"))
                             {
-                                var tariff = coreDbContext.Tariffs.FirstOrDefault(t => t.Tenant == tenant.Id);
+                                var tariff = coreDbContext.Tariffs.FirstOrDefault(t => t.Tenant == tenant.TenantId);
                                 tariff.Tenant = (int)r[table.Columns["id"]];
                                 //  CreateCommand("update tenants_tariff set tenant = " + r[table.Columns["id"]] + " where tenant = " + tenantid).ExecuteNonQuery();
                                 coreDbContext.Entry(tariff).State = EntityState.Modified;

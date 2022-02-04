@@ -57,6 +57,8 @@ using Microsoft.Extensions.Options;
 
 using MimeKit.Utils;
 
+using Constants = ASC.Core.Users.Constants;
+
 namespace ASC.Web.Studio.Core.Notify
 {
     [Singletone(Additional = typeof(WorkContextExtension))]
