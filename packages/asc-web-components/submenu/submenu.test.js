@@ -41,36 +41,4 @@ describe("<Submenu />", () => {
     const currentItemWrapper = shallow(testData[0].content);
     expect(wrapper.debug()).toEqual(currentItemWrapper.debug());
   });
-
-  // TODO : Develop a test that will monitor content after tab clicks
-  // it("changes currentItem after clicking on SubmenuItem", () => {
-  //   let wrapper = shallow(<Submenu data={testData} startSelect={1} />);
-  //   const tabs = wrapper.find("styled-submenu__StyledSubmenuItem");
-  //   console.log(wrapper.debug());
-  //   tabs.forEach((t, i = 0) => {
-  //     console.log("\n\n --- ITERATION", i, " ---\n");
-  //     console.log(t.debug());
-
-  //     const text = mount();
-  //     t.simulate("click", { target: { text } });
-
-  //     const newDisplayedContent = wrapper
-  //       .update()
-  //       .find("styled-submenu__StyledSubmenuContentWrapper")
-  //       .childAt(0);
-
-  //     const newCurrentItem = mount(testData[i].content);
-  //     i++;
-
-  //     console.log(
-  //       "\nCONTENT ON THE PAGE - \n",
-  //       newDisplayedContent.debug(),
-  //       "\n",
-  //       "\nCONTENT FROM THE DATA - \n",
-  //       newCurrentItem.debug(),
-  //       "\n\n\n"
-  //     );
-  //     expect(newDisplayedContent.debug()).toEqual(newCurrentItem.debug());
-  //   });
-  // });
 });

@@ -21,7 +21,6 @@ const Submenu = ({ data, startSelect = 0 }) => {
 
   const onSelectSubmenuItem = (e) => {
     const item = data.find((el) => el.id === e.target.title);
-    console.log(e.toString());
     if (item) setCurrentItem(item);
   };
 
