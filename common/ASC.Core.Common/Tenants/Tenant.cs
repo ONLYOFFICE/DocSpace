@@ -32,6 +32,7 @@ using System.Net;
 
 using ASC.Common.Mapping;
 using ASC.Core.Common.EF.Model;
+using ASC.Core.Data;
 
 using AutoMapper;
 
@@ -42,7 +43,7 @@ namespace ASC.Core.Tenants
     {
         public const int DefaultTenant = -1;
 
-        public int TenantId { get; internal set; }
+        public int Id { get; internal set; }
         public string TenantAlias { get; set; }
         public string MappedDomain { get; set; }
         public int Version { get; set; }
@@ -70,7 +71,7 @@ namespace ASC.Core.Tenants
 
         public Tenant()
         {
-            TenantId = DefaultTenant;
+            Id = DefaultTenant;
             TimeZone = TimeZoneInfo.Utc.Id;
             Language = CultureInfo.CurrentCulture.Name;
             TrustedDomains = new List<string>();
@@ -86,7 +87,7 @@ namespace ASC.Core.Tenants
             : this() => TenantAlias = alias.ToLowerInvariant();
 
         public Tenant(int id, string alias)
-            : this(alias) => TenantId = id;
+            : this(alias) => Id = id;
 
         public CultureInfo GetCulture() =>
             !string.IsNullOrEmpty(Language) 
@@ -99,9 +100,9 @@ namespace ASC.Core.Tenants
         }
 
         public override bool Equals(object obj) =>
-            obj is Tenant t && t.TenantId == TenantId;
+            obj is Tenant t && t.Id == Id;
 
-        public override int GetHashCode() => TenantId;
+        public override int GetHashCode() => Id;
 
         public override string ToString() => TenantAlias;
 
@@ -139,11 +140,13 @@ namespace ASC.Core.Tenants
         {
             profile.CreateMap<DbTenant, Tenant>()
                 .ForMember(dest => dest.TrustedDomains, opt => opt
-                    .MapFrom(src => src.TrustedDomains != null
-                    ? src.TrustedDomains.Split(new[] { '|' },
+                    .MapFrom(src => src.TrustedDomainsRaw != null
+                    ? src.TrustedDomainsRaw.Split(new[] { '|' },
                         StringSplitOptions.RemoveEmptyEntries).ToList()
-                    : new List<string>()))
-                .ForMember(dest => dest.Industry, opt => opt.NullSubstitute(TenantIndustry.Other));
+                    : new List<string>()));
+
+            profile.CreateMap<TenantUserSecurity, Tenant>()
+                .IncludeMembers(src => src.DbTenant);
         }
 
         internal string GetTrustedDomains()

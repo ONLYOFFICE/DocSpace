@@ -1,14 +1,17 @@
 ﻿using System;
 
+using ASC.Common.Mapping;
 using ASC.Core.Tenants;
+
+using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model
 {
-    public class DbTenant
+    public class DbTenant : IMapFrom<Tenant>
     {
-        public int TenantId { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public string TenantAlias { get; set; }
         public string MappedDomain { get; set; }
@@ -21,7 +24,7 @@ namespace ASC.Core.Common.EF.Model
         }
         public string Language { get; set; }
         public string TimeZone { get; set; }
-        public string TrustedDomains { get; set; }
+        public string TrustedDomainsRaw { get; set; }
         public TenantTrustedDomainsType TrustedDomainsType { get; set; }
         public TenantStatus Status { get; set; }
         public DateTime? StatusChanged { get; set; }
@@ -40,6 +43,17 @@ namespace ASC.Core.Common.EF.Model
         public bool Calls { get; set; }
 
         //        public DbTenantPartner Partner { get; set; }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<Tenant, DbTenant>()
+                .ForMember(dest => dest.TrustedDomainsRaw, opt => opt.MapFrom(dest => dest.GetTrustedDomains()))
+                .ForMember(dest => dest.TenantAlias, opt => opt.MapFrom(dest => dest.TenantAlias.ToLowerInvariant()))
+                .ForMember(dest => dest.LastModified, opt => opt.MapFrom(dest => DateTime.UtcNow))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(dest => dest.Name ?? dest.TenantAlias))
+                .ForMember(dest => dest.MappedDomain, opt => opt.MapFrom(dest => 
+                    !string.IsNullOrEmpty(dest.MappedDomain) ? dest.MappedDomain.ToLowerInvariant() : null));
+        }
     }
 
     public static class DbTenantExtension
@@ -52,7 +66,7 @@ namespace ASC.Core.Common.EF.Model
                 .HasData(
                 new DbTenant
                 {
-                    TenantId = 1,
+                    Id = 1,
                     TenantAlias = "localhost",
                     Name = "Web Office",
                     CreationDateTime = new DateTime(2021, 3, 9, 17, 46, 59, 97, DateTimeKind.Utc).AddTicks(4317),
@@ -83,7 +97,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.HasIndex(e => e.Version)
                     .HasDatabaseName("version");
 
-                entity.Property(e => e.TenantId).HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.TenantAlias)
                     .IsRequired()
@@ -156,7 +170,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasCharSet("utf8")
                     .UseCollation("utf8_general_ci");
 
-                entity.Property(e => e.TrustedDomains)
+                entity.Property(e => e.TrustedDomainsRaw)
                     .HasColumnName("trusteddomains")
                     .HasColumnType("varchar(1024)")
                     .HasCharSet("utf8")
@@ -199,7 +213,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.HasIndex(e => e.Version)
                     .HasDatabaseName("version");
 
-                entity.Property(e => e.TenantId).HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.TenantAlias)
                     .IsRequired()
@@ -258,7 +272,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasMaxLength(50)
                     .HasDefaultValueSql("NULL");
 
-                entity.Property(e => e.TrustedDomains)
+                entity.Property(e => e.TrustedDomainsRaw)
                     .HasColumnName("trusteddomains")
                     .HasMaxLength(1024)
                     .HasDefaultValueSql("NULL");

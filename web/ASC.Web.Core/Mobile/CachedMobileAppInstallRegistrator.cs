@@ -82,7 +82,7 @@ namespace ASC.Web.Core.Mobile
         {
             var cacheKey = appType.HasValue ? userEmail + "/" + appType.ToString() : userEmail;
 
-            return string.Format("{0}:mobile:{1}", TenantManager.GetCurrentTenant().TenantId, cacheKey);
+            return string.Format("{0}:mobile:{1}", TenantManager.GetCurrentTenant().Id, cacheKey);
         }
     }
 }

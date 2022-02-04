@@ -180,7 +180,7 @@ namespace ASC.Data.Storage.Configuration
 
         internal void ClearDataStoreCache()
         {
-            var tenantId = TenantManager.GetCurrentTenant().TenantId.ToString();
+            var tenantId = TenantManager.GetCurrentTenant().Id.ToString();
             var path = TenantPath.CreatePath(tenantId);
             foreach (var module in StorageFactoryConfig.GetModuleList("", true))
             {
@@ -223,7 +223,7 @@ namespace ASC.Data.Storage.Configuration
 
             return dataStore = ((IDataStore)
                 Activator.CreateInstance(DataStoreConsumer(baseStorageSettings).HandlerType, TenantManager, PathUtils, HttpContextAccessor, Options))
-                .Configure(TenantManager.GetCurrentTenant().TenantId.ToString(), null, null, DataStoreConsumer(baseStorageSettings));
+                .Configure(TenantManager.GetCurrentTenant().Id.ToString(), null, null, DataStoreConsumer(baseStorageSettings));
         }
     }
 

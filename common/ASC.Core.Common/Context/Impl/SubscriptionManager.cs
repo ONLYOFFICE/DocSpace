@@ -157,6 +157,6 @@ namespace ASC.Core
             }
         }
 
-        private int GetTenant() => _tenantManager.GetCurrentTenant().TenantId;
+        private int GetTenant() => _tenantManager.GetCurrentTenant().Id;
     }
 }

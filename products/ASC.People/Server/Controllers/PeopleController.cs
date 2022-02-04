@@ -790,7 +790,7 @@ namespace ASC.Employee.Core.Controllers
             if (memberModel.IsVisitor && !user.IsVisitor(UserManager) && canBeGuestFlag)
             {
                 UserManager.AddUserIntoGroup(user.Id, Constants.GroupVisitor.ID);
-                WebItemSecurityCache.ClearCache(Tenant.TenantId);
+                WebItemSecurityCache.ClearCache(Tenant.Id);
             }
 
             if (!self && !memberModel.IsVisitor && user.IsVisitor(UserManager))
@@ -799,7 +799,7 @@ namespace ASC.Employee.Core.Controllers
                 if (TenantStatisticsProvider.GetUsersCount() < usersQuota)
                 {
                     UserManager.RemoveUserFromGroup(user.Id, Constants.GroupVisitor.ID);
-                    WebItemSecurityCache.ClearCache(Tenant.TenantId);
+                    WebItemSecurityCache.ClearCache(Tenant.Id);
                 }
                 else
                 {
@@ -838,7 +838,7 @@ namespace ASC.Employee.Core.Controllers
 
             UserPhotoManager.RemovePhoto(user.Id);
             UserManager.DeleteUser(user.Id);
-            QueueWorkerRemove.Start(Tenant.TenantId, user, SecurityContext.CurrentAccount.ID, false);
+            QueueWorkerRemove.Start(Tenant.Id, user, SecurityContext.CurrentAccount.ID, false);
 
             MessageService.Send(MessageAction.UserDeleted, MessageTarget.Create(user.Id), userName);
 
@@ -1398,7 +1398,7 @@ namespace ASC.Employee.Core.Controllers
                             if (TenantStatisticsProvider.GetUsersCount() < TenantExtra.GetTenantQuota().ActiveUsers)
                             {
                                 UserManager.RemoveUserFromGroup(user.Id, Constants.GroupVisitor.ID);
-                                WebItemSecurityCache.ClearCache(Tenant.TenantId);
+                                WebItemSecurityCache.ClearCache(Tenant.Id);
                             }
                         }
                         break;
@@ -1406,7 +1406,7 @@ namespace ASC.Employee.Core.Controllers
                         if (CoreBaseSettings.Standalone || TenantStatisticsProvider.GetVisitorsCount() < TenantExtra.GetTenantQuota().ActiveUsers * Constants.CoefficientOfVisitors)
                         {
                             UserManager.AddUserIntoGroup(user.Id, Constants.GroupVisitor.ID);
-                            WebItemSecurityCache.ClearCache(Tenant.TenantId);
+                            WebItemSecurityCache.ClearCache(Tenant.Id);
                         }
                         break;
                 }
@@ -1566,7 +1566,7 @@ namespace ASC.Employee.Core.Controllers
 
                 UserPhotoManager.RemovePhoto(user.Id);
                 UserManager.DeleteUser(user.Id);
-                QueueWorkerRemove.Start(Tenant.TenantId, user, SecurityContext.CurrentAccount.ID, false);
+                QueueWorkerRemove.Start(Tenant.Id, user, SecurityContext.CurrentAccount.ID, false);
             }
 
             MessageService.Send(MessageAction.UsersDeleted, MessageTarget.Create(users.Select(x => x.Id)), userNames);
@@ -1909,7 +1909,7 @@ namespace ASC.Employee.Core.Controllers
         {
             PermissionContext.DemandPermissions(Constants.Action_EditUser);
 
-            return QueueWorkerReassign.GetProgressItemStatus(Tenant.TenantId, userId);
+            return QueueWorkerReassign.GetProgressItemStatus(Tenant.Id, userId);
         }
 
         [Update(@"reassign/terminate")]
@@ -1917,7 +1917,7 @@ namespace ASC.Employee.Core.Controllers
         {
             PermissionContext.DemandPermissions(Constants.Action_EditUser);
 
-            QueueWorkerReassign.Terminate(Tenant.TenantId, model.UserId);
+            QueueWorkerReassign.Terminate(Tenant.Id, model.UserId);
         }
 
         [Update(@"reassign/terminate")]
@@ -1926,7 +1926,7 @@ namespace ASC.Employee.Core.Controllers
         {
             PermissionContext.DemandPermissions(Constants.Action_EditUser);
 
-            QueueWorkerReassign.Terminate(Tenant.TenantId, model.UserId);
+            QueueWorkerReassign.Terminate(Tenant.Id, model.UserId);
         }
 
         [Create(@"reassign/start")]
@@ -1962,14 +1962,14 @@ namespace ASC.Employee.Core.Controllers
             if (toUser.IsVisitor(UserManager) || toUser.Status == EmployeeStatus.Terminated)
                 throw new ArgumentException("Can not reassign data to user with id = " + model.ToUserId);
 
-            return QueueWorkerReassign.Start(Tenant.TenantId, model.FromUserId, model.ToUserId, SecurityContext.CurrentAccount.ID, model.DeleteProfile);
+            return QueueWorkerReassign.Start(Tenant.Id, model.FromUserId, model.ToUserId, SecurityContext.CurrentAccount.ID, model.DeleteProfile);
         }
 
         private void CheckReassignProccess(IEnumerable<Guid> userIds)
         {
             foreach (var userId in userIds)
             {
-                var reassignStatus = QueueWorkerReassign.GetProgressItemStatus(Tenant.TenantId, userId);
+                var reassignStatus = QueueWorkerReassign.GetProgressItemStatus(Tenant.Id, userId);
                 if (reassignStatus == null || reassignStatus.IsCompleted)
                     continue;
 
@@ -1988,7 +1988,7 @@ namespace ASC.Employee.Core.Controllers
         {
             PermissionContext.DemandPermissions(Constants.Action_EditUser);
 
-            return QueueWorkerRemove.GetProgressItemStatus(Tenant.TenantId, userId);
+            return QueueWorkerRemove.GetProgressItemStatus(Tenant.Id, userId);
         }
 
         [Update(@"remove/terminate")]
@@ -1996,7 +1996,7 @@ namespace ASC.Employee.Core.Controllers
         {
             PermissionContext.DemandPermissions(Constants.Action_EditUser);
 
-            QueueWorkerRemove.Terminate(Tenant.TenantId, model.UserId);
+            QueueWorkerRemove.Terminate(Tenant.Id, model.UserId);
         }
 
         [Update(@"remove/terminate")]
@@ -2005,7 +2005,7 @@ namespace ASC.Employee.Core.Controllers
         {
             PermissionContext.DemandPermissions(Constants.Action_EditUser);
 
-            QueueWorkerRemove.Terminate(Tenant.TenantId, model.UserId);
+            QueueWorkerRemove.Terminate(Tenant.Id, model.UserId);
         }
 
         [Create(@"remove/start")]
@@ -2033,7 +2033,7 @@ namespace ASC.Employee.Core.Controllers
             if (user.IsOwner(Tenant) || user.IsMe(AuthContext) || user.Status != EmployeeStatus.Terminated)
                 throw new ArgumentException("Can not delete user with id = " + model.UserId);
 
-            return QueueWorkerRemove.Start(Tenant.TenantId, user, SecurityContext.CurrentAccount.ID, true);
+            return QueueWorkerRemove.Start(Tenant.Id, user, SecurityContext.CurrentAccount.ID, true);
         }
 
         #endregion

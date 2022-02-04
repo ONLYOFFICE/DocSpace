@@ -181,20 +181,20 @@ namespace ASC.Core
                 WorkFromDate = TenantUtil.DateTimeNow(tenant.TimeZone),
                 ActivationStatus = registrationInfo.ActivationStatus
             };
-            user = UserService.SaveUser(tenant.TenantId, user);
-            UserService.SetUserPasswordHash(tenant.TenantId, user.Id, registrationInfo.PasswordHash);
-            UserService.SaveUserGroupRef(tenant.TenantId, new UserGroupRef(user.Id, Constants.GroupAdmin.ID, UserGroupRefType.Contains));
+            user = UserService.SaveUser(tenant.Id, user);
+            UserService.SetUserPasswordHash(tenant.Id, user.Id, registrationInfo.PasswordHash);
+            UserService.SaveUserGroupRef(tenant.Id, new UserGroupRef(user.Id, Constants.GroupAdmin.ID, UserGroupRefType.Contains));
 
             // save tenant owner
             tenant.OwnerId = user.Id;
             tenant = TenantService.SaveTenant(CoreSettings, tenant);
 
-            SettingsManager.SaveSettings(new TenantControlPanelSettings { LimitedAccess = registrationInfo.LimitedControlPanel }, tenant.TenantId);
+            SettingsManager.SaveSettings(new TenantControlPanelSettings { LimitedAccess = registrationInfo.LimitedControlPanel }, tenant.Id);
         }
 
         public Tenant SaveTenant(Tenant tenant) => TenantService.SaveTenant(CoreSettings, tenant);
 
-        public void RemoveTenant(Tenant tenant) => TenantService.RemoveTenant(tenant.TenantId);
+        public void RemoveTenant(Tenant tenant) => TenantService.RemoveTenant(tenant.Id);
 
         public string CreateAuthenticationCookie(CookieStorage cookieStorage, int tenantId, Guid userId)
         {

@@ -75,7 +75,7 @@ namespace ASC.Core
         public Uri GetShoppingUri(int quotaId, bool forCurrentTenant = true, string affiliateId = null, string currency = null, 
             string language = null, string customerId = null, string quantity = null)
         {
-            return _tariffService.GetShoppingUri(forCurrentTenant ? _tenantManager.GetCurrentTenant().TenantId 
+            return _tariffService.GetShoppingUri(forCurrentTenant ? _tenantManager.GetCurrentTenant().Id 
                 : null, quotaId, affiliateId, currency, language, customerId, quantity);
         }
 
@@ -100,13 +100,13 @@ namespace ASC.Core
 
             using var response = httpClient.Send(request);
 
-            _tariffService.ClearCache(_tenantManager.GetCurrentTenant().TenantId);
+            _tariffService.ClearCache(_tenantManager.GetCurrentTenant().Id);
 
             var timeout = DateTime.UtcNow - now - TimeSpan.FromSeconds(5);
             if (TimeSpan.Zero < timeout)
                 Thread.Sleep(timeout); // clear tenant cache
 
-            _tenantManager.GetTenant(_tenantManager.GetCurrentTenant().TenantId);
+            _tenantManager.GetTenant(_tenantManager.GetCurrentTenant().Id);
         }
 
         private string GetPartnerAuthHeader(string url)

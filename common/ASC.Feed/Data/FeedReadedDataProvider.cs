@@ -118,7 +118,7 @@ namespace ASC.Feed.Data
 
         private int GetTenant()
         {
-            return TenantManager.GetCurrentTenant().TenantId;
+            return TenantManager.GetCurrentTenant().Id;
         }
 
         private Guid GetUser()

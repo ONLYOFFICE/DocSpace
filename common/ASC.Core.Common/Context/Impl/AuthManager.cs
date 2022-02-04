@@ -57,13 +57,13 @@ namespace ASC.Core
 
 
         public IUserAccount[] GetUserAccounts(Tenant tenant) =>
-            _userManager.GetUsers(EmployeeStatus.Active).Select(u => ToAccount(tenant.TenantId, u)).ToArray();
+            _userManager.GetUsers(EmployeeStatus.Active).Select(u => ToAccount(tenant.Id, u)).ToArray();
 
         public void SetUserPasswordHash(Guid userID, string passwordHash) =>
-            _userService.SetUserPasswordHash(_tenantManager.GetCurrentTenant().TenantId, userID, passwordHash);
+            _userService.SetUserPasswordHash(_tenantManager.GetCurrentTenant().Id, userID, passwordHash);
 
         public DateTime GetUserPasswordStamp(Guid userID) =>
-            _userService.GetUserPasswordStamp(_tenantManager.GetCurrentTenant().TenantId, userID);
+            _userService.GetUserPasswordStamp(_tenantManager.GetCurrentTenant().Id, userID);
 
         public IAccount GetAccountByID(int tenantId, Guid id)
         {

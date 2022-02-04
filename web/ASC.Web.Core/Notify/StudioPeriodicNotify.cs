@@ -95,11 +95,11 @@ namespace ASC.Web.Studio.Core.Notify
                     using var scope = ServiceProvider.CreateScope();
                     var scopeClass = scope.ServiceProvider.GetService<StudioPeriodicNotifyScope>();
                     var (tenantManager, userManager, studioNotifyHelper, paymentManager, tenantExtra, authContext, commonLinkUtility, apiSystemHelper, setupInfo, dbContextManager, couponManager, _, _, coreBaseSettings, _, _, _) = scopeClass;
-                    tenantManager.SetCurrentTenant(tenant.TenantId);
+                    tenantManager.SetCurrentTenant(tenant.Id);
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
-                    var tariff = paymentManager.GetTariff(tenant.TenantId);
-                    var quota = tenantManager.GetTenantQuota(tenant.TenantId);
+                    var tariff = paymentManager.GetTariff(tenant.Id);
+                    var quota = tenantManager.GetTenantQuota(tenant.Id);
                     var createdDate = tenant.CreatedDateTime.Date;
 
                     var dueDateIsNotMax = tariff.DueDate != DateTime.MaxValue;
@@ -366,7 +366,7 @@ namespace ASC.Web.Studio.Core.Notify
                         }
                         else if (dueDateIsNotMax && dueDate.AddMonths(6).AddDays(7) <= nowDate)
                         {
-                            tenantManager.RemoveTenant(tenant.TenantId, true);
+                            tenantManager.RemoveTenant(tenant.Id, true);
 
                             if (!string.IsNullOrEmpty(apiSystemHelper.ApiCacheUrl))
                             {
@@ -404,7 +404,7 @@ namespace ASC.Web.Studio.Core.Notify
                         }
                         else if (tariff.State == TariffState.NotPaid && dueDateIsNotMax && dueDate.AddMonths(6).AddDays(7) <= nowDate)
                         {
-                            tenantManager.RemoveTenant(tenant.TenantId, true);
+                            tenantManager.RemoveTenant(tenant.Id, true);
 
                             if (!string.IsNullOrEmpty(apiSystemHelper.ApiCacheUrl))
                             {
@@ -496,11 +496,11 @@ namespace ASC.Web.Studio.Core.Notify
                     var scopeClass = scope.ServiceProvider.GetService<StudioPeriodicNotifyScope>();
                     var (tenantManager, userManager, studioNotifyHelper, paymentManager, tenantExtra, _, commonLinkUtility, _, _, dbContextManager, _, configuration, settingsManager, coreBaseSettings, _, _, _) = scopeClass;
                     var defaultRebranding = MailWhiteLabelSettings.IsDefault(settingsManager, configuration);
-                    tenantManager.SetCurrentTenant(tenant.TenantId);
+                    tenantManager.SetCurrentTenant(tenant.Id);
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
-                    var tariff = paymentManager.GetTariff(tenant.TenantId);
-                    var quota = tenantManager.GetTenantQuota(tenant.TenantId);
+                    var tariff = paymentManager.GetTariff(tenant.Id);
+                    var quota = tenantManager.GetTenantQuota(tenant.Id);
                     var createdDate = tenant.CreatedDateTime.Date;
 
                     var actualEndDate = (tariff.DueDate != DateTime.MaxValue ? tariff.DueDate : tariff.LicenseDate);
@@ -636,7 +636,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                             datesWithActivity =
                                 dbContextManager.Get(dbid).FeedAggregates
-                                .Where(r => r.Tenant == tenantManager.GetCurrentTenant().TenantId)
+                                .Where(r => r.Tenant == tenantManager.GetCurrentTenant().Id)
                                 .Where(r => r.CreatedDate <= nowDate.AddDays(-1))
                                 .GroupBy(r => r.CreatedDate.Date)
                                 .Select(r => r.Key)
@@ -894,7 +894,7 @@ namespace ASC.Web.Studio.Core.Notify
                     using var scope = ServiceProvider.CreateScope();
                     var scopeClass = scope.ServiceProvider.GetService<StudioPeriodicNotifyScope>();
                     var (tenantManager, userManager, studioNotifyHelper, _, _, _, _, _, _, _, _, _, _, _, displayUserSettingsHelper, _, _) = scopeClass;
-                    tenantManager.SetCurrentTenant(tenant.TenantId);
+                    tenantManager.SetCurrentTenant(tenant.Id);
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
                     var createdDate = tenant.CreatedDateTime.Date;
@@ -963,10 +963,10 @@ namespace ASC.Web.Studio.Core.Notify
                     var scopeClass = scope.ServiceProvider.GetService<StudioPeriodicNotifyScope>();
                     var (tenantManager, userManager, studioNotifyHelper, _, _, _, _, _, _, _, _, _, _, coreBaseSettings, _, authManager, securityContext) = scopeClass;
 
-                    tenantManager.SetCurrentTenant(tenant.TenantId);
+                    tenantManager.SetCurrentTenant(tenant.Id);
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
-                    Log.InfoFormat("Current tenant: {0}", tenant.TenantId);
+                    Log.InfoFormat("Current tenant: {0}", tenant.Id);
 
                     var users = userManager.GetUsers(EmployeeStatus.Active);
 
@@ -974,7 +974,7 @@ namespace ASC.Web.Studio.Core.Notify
                     {
                         INotifyAction action;
 
-                        securityContext.AuthenticateMeWithoutCookie(authManager.GetAccountByID(tenant.TenantId, user.Id));
+                        securityContext.AuthenticateMeWithoutCookie(authManager.GetAccountByID(tenant.Id, user.Id));
 
                         var culture = tenant.GetCulture();
                         if (!string.IsNullOrEmpty(user.CultureName))
@@ -1033,7 +1033,7 @@ namespace ASC.Web.Studio.Core.Notify
                         if (action == null) continue;
 
                         Log.InfoFormat(@"Send letter personal '{1}'  to {0} culture {2}. tenant id: {3} user culture {4} create on {5} now date {6}",
-                              user.Email, action.ID, culture, tenant.TenantId, user.GetCulture(), user.CreateDate, scheduleDate.Date);
+                              user.Email, action.ID, culture, tenant.Id, user.GetCulture(), user.CreateDate, scheduleDate.Date);
 
                         sendCount++;
 

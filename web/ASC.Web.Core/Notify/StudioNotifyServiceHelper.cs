@@ -76,7 +76,7 @@ namespace ASC.Web.Core.Notify
         {
             var item = new NotifyItem
             {
-                TenantId = TenantManager.GetCurrentTenant().TenantId,
+                TenantId = TenantManager.GetCurrentTenant().Id,
                 UserId = AuthContext.CurrentAccount.ID.ToString(),
                 Action = (NotifyAction)action,
                 CheckSubsciption = checkSubsciption,

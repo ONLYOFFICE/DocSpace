@@ -49,7 +49,7 @@ namespace ASC.Core
 
         public IEnumerable<AzRecord> GetAces(Guid subjectId, Guid actionId)
         {
-            var aces = _service.GetAces(_tenantManager.GetCurrentTenant().TenantId, default);
+            var aces = _service.GetAces(_tenantManager.GetCurrentTenant().Id, default);
 
             return aces
                 .Where(a => a.ActionId == actionId && (a.SubjectId == subjectId || subjectId == Guid.Empty))
@@ -58,7 +58,7 @@ namespace ASC.Core
 
         public IEnumerable<AzRecord> GetAces(Guid subjectId, Guid actionId, ISecurityObjectId objectId)
         {
-            var aces = _service.GetAces(_tenantManager.GetCurrentTenant().TenantId, default);
+            var aces = _service.GetAces(_tenantManager.GetCurrentTenant().Id, default);
 
             return FilterAces(aces, subjectId, actionId, objectId)
                 .ToList();
@@ -69,7 +69,7 @@ namespace ASC.Core
             if (objectId == null) return GetAces(subjectId, actionId, null);
 
             var result = new List<AzRecord>();
-            var aces = _service.GetAces(_tenantManager.GetCurrentTenant().TenantId, default);
+            var aces = _service.GetAces(_tenantManager.GetCurrentTenant().Id, default);
             result.AddRange(FilterAces(aces, subjectId, actionId, objectId));
 
             var inherits = new List<AzRecord>();
@@ -88,10 +88,10 @@ namespace ASC.Core
         }
 
         public void AddAce(AzRecord r) =>
-             _service.SaveAce(_tenantManager.GetCurrentTenant().TenantId, r);
+             _service.SaveAce(_tenantManager.GetCurrentTenant().Id, r);
 
         public void RemoveAce(AzRecord r) =>
-            _service.RemoveAce(_tenantManager.GetCurrentTenant().TenantId, r);
+            _service.RemoveAce(_tenantManager.GetCurrentTenant().Id, r);
 
         public void RemoveAllAces(ISecurityObjectId id)
         {
@@ -100,7 +100,7 @@ namespace ASC.Core
         }
 
         private IEnumerable<AzRecord> GetAcesInternal() =>
-            _service.GetAces(_tenantManager.GetCurrentTenant().TenantId, default);
+            _service.GetAces(_tenantManager.GetCurrentTenant().Id, default);
 
         private IEnumerable<AzRecord> DistinctAces(IEnumerable<AzRecord> inheritAces)
         {

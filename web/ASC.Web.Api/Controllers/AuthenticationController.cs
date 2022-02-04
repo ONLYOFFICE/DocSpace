@@ -305,7 +305,7 @@ namespace ASC.Web.Api.Controllers
 
                 MessageService.Send(viaEmail ? MessageAction.LoginSuccessViaApi : MessageAction.LoginSuccessViaApiSocialAccount);
 
-                var tenant = TenantManager.GetCurrentTenant().TenantId;
+                var tenant = TenantManager.GetCurrentTenant().Id;
                 var expires = TenantCookieSettingsHelper.GetExpiresTime(tenant);
 
                 return new AuthenticationTokenData
@@ -327,7 +327,7 @@ namespace ASC.Web.Api.Controllers
 
         private AuthenticationTokenData AuthenticateMeWithCode(AuthModel auth)
         {
-            var tenant = TenantManager.GetCurrentTenant().TenantId;
+            var tenant = TenantManager.GetCurrentTenant().Id;
             var user = GetUser(auth, out _);
 
             var sms = false;
@@ -428,7 +428,7 @@ namespace ASC.Web.Api.Controllers
                     }
 
                     user = UserManager.GetUsersByPasswordHash(
-                        TenantManager.GetCurrentTenant().TenantId,
+                        TenantManager.GetCurrentTenant().Id,
                         memberModel.UserName,
                         memberModel.PasswordHash);
 

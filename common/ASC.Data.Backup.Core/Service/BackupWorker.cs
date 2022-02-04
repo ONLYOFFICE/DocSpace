@@ -589,7 +589,7 @@ namespace ASC.Data.Backup.Services
                 }
                 else
                 {
-                    tenantManager.RemoveTenant(tenant.TenantId);
+                    tenantManager.RemoveTenant(tenant.Id);
 
                     restoredTenant = tenantManager.GetTenant(columnMapper.GetTenantMapping());
                     restoredTenant.SetStatus(TenantStatus.Active);

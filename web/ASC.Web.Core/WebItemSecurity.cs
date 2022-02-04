@@ -143,7 +143,7 @@ namespace ASC.Web.Core
             var result = false;
 
             var tenant = TenantManager.GetCurrentTenant();
-            var dic = WebItemSecurityCache.GetOrInsert(tenant.TenantId);
+            var dic = WebItemSecurityCache.GetOrInsert(tenant.Id);
             if (dic != null)
             {
                 lock (dic)
@@ -187,13 +187,13 @@ namespace ASC.Web.Core
                     }
                     else if (webitem is IModule)
                     {
-                        result = PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(tenant.TenantId, @for), securityObj, null, Read) &&
+                        result = PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(tenant.Id, @for), securityObj, null, Read) &&
                             IsAvailableForUser(WebItemManager.GetParentItemID(webitem.ID), @for);
                     }
                     else
                     {
                         var hasUsers = AuthorizationManager.GetAces(Guid.Empty, Read.ID, securityObj).Any(a => a.SubjectId != ASC.Core.Users.Constants.GroupEveryone.ID);
-                        result = PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(tenant.TenantId, @for), securityObj, null, Read) ||
+                        result = PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(tenant.Id, @for), securityObj, null, Read) ||
                                  (hasUsers && IsProductAdministrator(securityObj.WebItemId, @for));
                     }
                 }
@@ -203,7 +203,7 @@ namespace ASC.Web.Core
                 }
             }
 
-            dic = WebItemSecurityCache.Get(tenant.TenantId);
+            dic = WebItemSecurityCache.Get(tenant.Id);
             if (dic != null)
             {
                 lock (dic)
@@ -242,7 +242,7 @@ namespace ASC.Web.Core
                 AuthorizationManager.AddAce(a);
             }
 
-            WebItemSecurityCache.Publish(TenantManager.GetCurrentTenant().TenantId);
+            WebItemSecurityCache.Publish(TenantManager.GetCurrentTenant().Id);
         }
 
         public WebItemSecurityInfo GetSecurityInfo(string id)
@@ -327,7 +327,7 @@ namespace ASC.Web.Core
                 UserManager.RemoveUserFromGroup(userid, productid);
             }
 
-            WebItemSecurityCache.Publish(TenantManager.GetCurrentTenant().TenantId);
+            WebItemSecurityCache.Publish(TenantManager.GetCurrentTenant().Id);
         }
 
         public bool IsProductAdministrator(Guid productid, Guid userid)

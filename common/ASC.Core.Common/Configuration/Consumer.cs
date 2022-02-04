@@ -185,7 +185,7 @@ namespace ASC.Core.Common.Configuration
             {
                 var tenant = CoreBaseSettings.Standalone
                                  ? Tenant.DefaultTenant
-                                 : TenantManager.GetCurrentTenant().TenantId;
+                                 : TenantManager.GetCurrentTenant().Id;
 
                 value = CoreSettings.GetSetting(GetSettingsKey(name), tenant);
             }
@@ -212,7 +212,7 @@ namespace ASC.Core.Common.Configuration
 
             var tenant = CoreBaseSettings.Standalone
                              ? Tenant.DefaultTenant
-                             : TenantManager.GetCurrentTenant().TenantId;
+                             : TenantManager.GetCurrentTenant().Id;
             CoreSettings.SaveSetting(GetSettingsKey(name), value, tenant);
         }
 

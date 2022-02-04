@@ -79,7 +79,7 @@ namespace ASC.Web.Api.Controllers
             {
                 if (SetupInfo.IsVisibleSettings(ManagementType.LdapSettings.ToString())
                     && (!CoreBaseSettings.Standalone
-                        || TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).Ldap))
+                        || TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().Id).Ldap))
                 {
                     //var settings = SettingsManager.Load<LdapSettings>();
 
@@ -109,7 +109,7 @@ namespace ASC.Web.Api.Controllers
             try
             {
                 if (SetupInfo.IsVisibleSettings(ManagementType.SingleSignOnSettings.ToString())
-                    && TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).Sso)
+                    && TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().Id).Sso)
                 {
                     //var settings = SettingsManager.Load<SsoSettingsV2>();
 

@@ -221,7 +221,7 @@ namespace ASC.Web.Files.Classes
 
         public IDataStore GetStore(bool currentTenant = true)
         {
-            return StorageFactory.GetStorage(currentTenant ? TenantManager.GetCurrentTenant().TenantId.ToString() : string.Empty, FileConstant.StorageModule);
+            return StorageFactory.GetStorage(currentTenant ? TenantManager.GetCurrentTenant().Id.ToString() : string.Empty, FileConstant.StorageModule);
         }
 
         public IDataStore GetStoreTemplate()
@@ -305,11 +305,11 @@ namespace ASC.Web.Files.Classes
             if (WebItemManager[WebItemManager.ProjectsProductID].IsDisabled(WebItemSecurity, AuthContext)) return default;
 
             var folderDao = daoFactory.GetFolderDao<int>();
-            if (!ProjectsRootFolderCache.TryGetValue(TenantManager.GetCurrentTenant().TenantId, out var result))
+            if (!ProjectsRootFolderCache.TryGetValue(TenantManager.GetCurrentTenant().Id, out var result))
             {
                 result = folderDao.GetFolderIDProjects(true);
 
-                ProjectsRootFolderCache[TenantManager.GetCurrentTenant().TenantId] = result;
+                ProjectsRootFolderCache[TenantManager.GetCurrentTenant().Id] = result;
             }
 
             return result;
@@ -333,7 +333,7 @@ namespace ASC.Web.Files.Classes
             if (!AuthContext.IsAuthenticated) return default;
             if (UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) return default;
 
-            var cacheKey = string.Format("my/{0}/{1}", TenantManager.GetCurrentTenant().TenantId, AuthContext.CurrentAccount.ID);
+            var cacheKey = string.Format("my/{0}/{1}", TenantManager.GetCurrentTenant().Id, AuthContext.CurrentAccount.ID);
 
             var myFolderId = UserRootFolderCache.GetOrAdd(cacheKey, (a) => new Lazy<int>(() => GetFolderIdAndProccessFirstVisit(fileMarker, daoFactory, true)));
             return myFolderId.Value;
@@ -341,13 +341,13 @@ namespace ASC.Web.Files.Classes
 
         protected internal void SetFolderMy(object value)
         {
-            var cacheKey = string.Format("my/{0}/{1}", TenantManager.GetCurrentTenant().TenantId, value);
+            var cacheKey = string.Format("my/{0}/{1}", TenantManager.GetCurrentTenant().Id, value);
             UserRootFolderCache.Remove(cacheKey, out _);
         }
 
         public bool IsFirstVisit(IDaoFactory daoFactory)
         {
-            var cacheKey = string.Format("my/{0}/{1}", TenantManager.GetCurrentTenant().TenantId, AuthContext.CurrentAccount.ID);
+            var cacheKey = string.Format("my/{0}/{1}", TenantManager.GetCurrentTenant().Id, AuthContext.CurrentAccount.ID);
 
             if (!UserRootFolderCache.TryGetValue(cacheKey, out var _))
             {
@@ -375,11 +375,11 @@ namespace ASC.Web.Files.Classes
         {
             if (CoreBaseSettings.Personal) return default;
 
-            if (!CommonFolderCache.TryGetValue(TenantManager.GetCurrentTenant().TenantId, out var commonFolderId))
+            if (!CommonFolderCache.TryGetValue(TenantManager.GetCurrentTenant().Id, out var commonFolderId))
             {
                 commonFolderId = GetFolderIdAndProccessFirstVisit(fileMarker, daoFactory, false);
                 if (!Equals(commonFolderId, 0))
-                    CommonFolderCache[TenantManager.GetCurrentTenant().TenantId] = commonFolderId;
+                    CommonFolderCache[TenantManager.GetCurrentTenant().Id] = commonFolderId;
             }
             return commonFolderId;
         }
@@ -392,12 +392,12 @@ namespace ASC.Web.Files.Classes
             if (CoreBaseSettings.Personal) return default;
             if (IsOutsider) return default;
 
-            if (!ShareFolderCache.TryGetValue(TenantManager.GetCurrentTenant().TenantId, out var sharedFolderId))
+            if (!ShareFolderCache.TryGetValue(TenantManager.GetCurrentTenant().Id, out var sharedFolderId))
             {
                 sharedFolderId = daoFactory.GetFolderDao<int>().GetFolderIDShare(true);
 
                 if (!sharedFolderId.Equals(default))
-                    ShareFolderCache[TenantManager.GetCurrentTenant().TenantId] = sharedFolderId;
+                    ShareFolderCache[TenantManager.GetCurrentTenant().Id] = sharedFolderId;
             }
 
             return sharedFolderId;
@@ -416,13 +416,13 @@ namespace ASC.Web.Files.Classes
             if (!AuthContext.IsAuthenticated) return 0;
             if (UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) return 0;
 
-            if (!RecentFolderCache.TryGetValue(TenantManager.GetCurrentTenant().TenantId, out var recentFolderId))
+            if (!RecentFolderCache.TryGetValue(TenantManager.GetCurrentTenant().Id, out var recentFolderId))
             {
                 var folderDao = daoFactory.GetFolderDao<int>();
                 recentFolderId = folderDao.GetFolderIDRecent(true);
 
                 if (!recentFolderId.Equals(0))
-                    RecentFolderCache[TenantManager.GetCurrentTenant().TenantId] = recentFolderId;
+                    RecentFolderCache[TenantManager.GetCurrentTenant().Id] = recentFolderId;
             }
 
             return recentFolderId;
@@ -436,13 +436,13 @@ namespace ASC.Web.Files.Classes
             if (!AuthContext.IsAuthenticated) return 0;
             if (UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) return 0;
 
-            if (!FavoritesFolderCache.TryGetValue(TenantManager.GetCurrentTenant().TenantId, out var favoriteFolderId))
+            if (!FavoritesFolderCache.TryGetValue(TenantManager.GetCurrentTenant().Id, out var favoriteFolderId))
             {
                 var folderDao = daoFactory.GetFolderDao<int>();
                 favoriteFolderId = folderDao.GetFolderIDFavorites(true);
 
                 if (!favoriteFolderId.Equals(0))
-                    FavoritesFolderCache[TenantManager.GetCurrentTenant().TenantId] = favoriteFolderId;
+                    FavoritesFolderCache[TenantManager.GetCurrentTenant().Id] = favoriteFolderId;
             }
 
             return favoriteFolderId;
@@ -456,13 +456,13 @@ namespace ASC.Web.Files.Classes
             if (!AuthContext.IsAuthenticated) return 0;
             if (UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) return 0;
 
-            if (!TemplatesFolderCache.TryGetValue(TenantManager.GetCurrentTenant().TenantId, out var templatesFolderId))
+            if (!TemplatesFolderCache.TryGetValue(TenantManager.GetCurrentTenant().Id, out var templatesFolderId))
             {
                 var folderDao = daoFactory.GetFolderDao<int>();
                 templatesFolderId = folderDao.GetFolderIDTemplates(true);
 
                 if (!templatesFolderId.Equals(0))
-                    TemplatesFolderCache[TenantManager.GetCurrentTenant().TenantId] = templatesFolderId;
+                    TemplatesFolderCache[TenantManager.GetCurrentTenant().Id] = templatesFolderId;
             }
 
             return templatesFolderId;
@@ -481,7 +481,7 @@ namespace ASC.Web.Files.Classes
             if (!AuthContext.IsAuthenticated) return 0;
             if (UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) return 0;
 
-            var cacheKey = string.Format("privacy/{0}/{1}", TenantManager.GetCurrentTenant().TenantId, AuthContext.CurrentAccount.ID);
+            var cacheKey = string.Format("privacy/{0}/{1}", TenantManager.GetCurrentTenant().Id, AuthContext.CurrentAccount.ID);
 
             if (!PrivacyFolderCache.TryGetValue(cacheKey, out var privacyFolderId))
             {
@@ -506,7 +506,7 @@ namespace ASC.Web.Files.Classes
         {
             if (IsOutsider) return null;
 
-            var cacheKey = string.Format("trash/{0}/{1}", TenantManager.GetCurrentTenant().TenantId, AuthContext.CurrentAccount.ID);
+            var cacheKey = string.Format("trash/{0}/{1}", TenantManager.GetCurrentTenant().Id, AuthContext.CurrentAccount.ID);
 
             if (!TrashFolderCache.TryGetValue(cacheKey, out var trashFolderId))
             {
@@ -518,7 +518,7 @@ namespace ASC.Web.Files.Classes
 
         protected internal void SetFolderTrash(object value)
         {
-            var cacheKey = string.Format("trash/{0}/{1}", TenantManager.GetCurrentTenant().TenantId, value);
+            var cacheKey = string.Format("trash/{0}/{1}", TenantManager.GetCurrentTenant().Id, value);
             TrashFolderCache.Remove(cacheKey);
         }
 

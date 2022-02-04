@@ -200,7 +200,7 @@ namespace ASC.Feed.Data
         private List<FeedResultItem> GetFeedsInternal(FeedApiFilter filter)
         {
             var q = FeedDbContext.FeedAggregates
-                .Where(r => r.Tenant == TenantManager.GetCurrentTenant().TenantId)
+                .Where(r => r.Tenant == TenantManager.GetCurrentTenant().Id)
                 .Where(r => r.ModifiedBy != AuthContext.CurrentAccount.ID)
                 .Join(FeedDbContext.FeedUsers, a => a.Id, b => b.FeedId, (aggregates, users) => new { aggregates, users })
                 .Where(r => r.users.UserId == AuthContext.CurrentAccount.ID)
@@ -262,7 +262,7 @@ namespace ASC.Feed.Data
         public int GetNewFeedsCount(DateTime lastReadedTime, AuthContext authContext, TenantManager tenantManager)
         {
             var count = FeedDbContext.FeedAggregates
-                .Where(r => r.Tenant == tenantManager.GetCurrentTenant().TenantId)
+                .Where(r => r.Tenant == tenantManager.GetCurrentTenant().Id)
                 .Where(r => r.ModifiedBy != authContext.CurrentAccount.ID)
                 .Join(FeedDbContext.FeedUsers, r => r.Id, u => u.FeedId, (agg, user) => new { agg, user })
                 .Where(r => r.user.UserId == authContext.CurrentAccount.ID);

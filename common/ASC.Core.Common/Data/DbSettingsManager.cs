@@ -118,7 +118,7 @@ namespace ASC.Core.Data
         internal TenantManager TenantManager { get; set; }
         internal Lazy<WebstudioDbContext> LazyWebstudioDbContext { get; set; }
         internal WebstudioDbContext WebstudioDbContext => LazyWebstudioDbContext.Value;
-        private int TenantID => _tenantID != 0 ? _tenantID : (_tenantID = TenantManager.GetCurrentTenant().TenantId);
+        private int TenantID => _tenantID != 0 ? _tenantID : (_tenantID = TenantManager.GetCurrentTenant().Id);
         private Guid CurrentUserID => ((Guid?)(_currentUserID ??= AuthContext.CurrentAccount.ID)).Value;
 
         private readonly TimeSpan _expirationTimeout = TimeSpan.FromMinutes(5);

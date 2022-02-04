@@ -43,7 +43,7 @@ namespace ASC.Feed.Aggregator.Modules
 
         protected int Tenant
         {
-            get { return TenantManager.GetCurrentTenant().TenantId; }
+            get { return TenantManager.GetCurrentTenant().Id; }
         }
 
         protected TenantManager TenantManager { get; }

@@ -141,7 +141,7 @@ namespace ASC.Core.Notify.Signalr
                     Text = messageText
                 };
 
-                MakeRequest("send", new { tenantId = tenant.TenantId, callerUserName, calleeUserName, message, isTenantUser });
+                MakeRequest("send", new { tenantId = tenant.Id, callerUserName, calleeUserName, message, isTenantUser });
             }
             catch (Exception error)
             {
@@ -163,7 +163,7 @@ namespace ASC.Core.Notify.Signalr
                     Text = chatRoomName
                 };
 
-                MakeRequest("sendInvite", new { tenantId = tenant.TenantId, calleeUserName, message });
+                MakeRequest("sendInvite", new { tenantId = tenant.Id, calleeUserName, message });
             }
             catch (Exception error)
             {
@@ -179,7 +179,7 @@ namespace ASC.Core.Notify.Signalr
 
                 if (tenantId == -1)
                 {
-                    tenantId = TenantManager.GetTenant(domain).TenantId;
+                    tenantId = TenantManager.GetTenant(domain).Id;
                 }
 
                 MakeRequest("setState", new { tenantId, from, state });
@@ -210,7 +210,7 @@ namespace ASC.Core.Notify.Signalr
 
                 var tenant = TenantManager.GetTenant(domain);
 
-                MakeRequest("sendUnreadCounts", new { tenantId = tenant.TenantId, unreadCounts });
+                MakeRequest("sendUnreadCounts", new { tenantId = tenant.Id, unreadCounts });
             }
             catch (Exception error)
             {
@@ -294,7 +294,7 @@ namespace ASC.Core.Notify.Signalr
         {
             try
             {
-                var numberRoom = TenantManager.GetCurrentTenant().TenantId + numberId;
+                var numberRoom = TenantManager.GetCurrentTenant().Id + numberId;
                 MakeRequest("reload", new { numberRoom, agentId });
             }
             catch (Exception error)

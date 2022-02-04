@@ -138,12 +138,12 @@ namespace ASC.Web.Studio.Utility
 
         public Tariff GetCurrentTariff()
         {
-            return PaymentManager.GetTariff(TenantManager.GetCurrentTenant().TenantId);
+            return PaymentManager.GetTariff(TenantManager.GetCurrentTenant().Id);
         }
 
         public TenantQuota GetTenantQuota()
         {
-            return GetTenantQuota(TenantManager.GetCurrentTenant().TenantId);
+            return GetTenantQuota(TenantManager.GetCurrentTenant().Id);
         }
 
         public TenantQuota GetTenantQuota(int tenant)

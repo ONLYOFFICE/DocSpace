@@ -323,7 +323,7 @@ namespace TMResourceData
                     var tenant = tenantManager.GetCurrentTenant(false);
                     if (tenant == null) return resourceValue;
 
-                    if (_whiteLabelDictionary.TryGetValue(tenant.TenantId, out var newText))
+                    if (_whiteLabelDictionary.TryGetValue(tenant.Id, out var newText))
                     {
                         var newTextReplacement = newText;
 

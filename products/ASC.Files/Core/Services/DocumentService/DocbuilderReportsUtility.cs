@@ -339,7 +339,7 @@ namespace ASC.Web.Files.Services.DocumentService
             DocbuilderReportsUtility = docbuilderReportsUtility;
             AuthContext = authContext;
             TenantManager = tenantManager;
-            TenantId = TenantManager.GetCurrentTenant().TenantId;
+            TenantId = TenantManager.GetCurrentTenant().Id;
             UserId = AuthContext.CurrentAccount.ID;
         }
 

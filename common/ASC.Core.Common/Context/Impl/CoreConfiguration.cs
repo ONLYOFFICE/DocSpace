@@ -228,7 +228,7 @@ namespace ASC.Core
                 if (tenant != null)
                 {
 
-                    var settingsValue = GetSetting("SmtpSettings", tenant.TenantId);
+                    var settingsValue = GetSetting("SmtpSettings", tenant.Id);
                     if (string.IsNullOrEmpty(settingsValue))
                     {
                         isDefaultSettings = true;
@@ -249,7 +249,7 @@ namespace ASC.Core
                     return settings;
                 }
             }
-            set => SaveSetting("SmtpSettings", value?.Serialize(), _tenantManager.GetCurrentTenant().TenantId);
+            set => SaveSetting("SmtpSettings", value?.Serialize(), _tenantManager.GetCurrentTenant().Id);
         }
 
         private long? _personalMaxSpace;
@@ -300,7 +300,7 @@ namespace ASC.Core
         public T GetSection<T>(int tenantId) where T : class => GetSection<T>(tenantId, typeof(T).Name);
 
         public T GetSection<T>(string sectionName) where T : class =>
-            GetSection<T>(_tenantManager.GetCurrentTenant().TenantId, sectionName);
+            GetSection<T>(_tenantManager.GetCurrentTenant().Id, sectionName);
 
         public T GetSection<T>(int tenantId, string sectionName) where T : class
         {
@@ -312,7 +312,7 @@ namespace ASC.Core
         }
 
         public void SaveSection<T>(string sectionName, T section) where T : class =>
-            SaveSection(_tenantManager.GetCurrentTenant().TenantId, sectionName, section);
+            SaveSection(_tenantManager.GetCurrentTenant().Id, sectionName, section);
 
         public void SaveSection<T>(T section) where T : class =>
             SaveSection(typeof(T).Name, section);

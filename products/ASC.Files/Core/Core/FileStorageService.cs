@@ -2359,7 +2359,7 @@ namespace ASC.Web.Files.Services.WCFService
             {
                 var req = new ThumbnailRequest()
                 {
-                    Tenant = TenantManager.GetCurrentTenant().TenantId,
+                    Tenant = TenantManager.GetCurrentTenant().Id,
                     BaseUrl = BaseCommonLinkUtility.GetFullAbsolutePath("")
                 };
 

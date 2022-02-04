@@ -108,7 +108,7 @@ namespace ASC.Data.Backup.Storage
         {
             var query = _backupContext.Value.Schedules.Join(_backupContext.Value.Tenants,
                 s => s.TenantId,
-                t => t.TenantId,
+                t => t.Id,
                 (s, t) => new { schedule = s, tenant = t })
                 .Where(q => q.tenant.Status == TenantStatus.Active)
                 .Select(q => q.schedule);

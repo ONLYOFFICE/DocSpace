@@ -228,7 +228,7 @@ namespace ASC.Core.Notify.Jabber
         private static bool IsServiceProbablyNotAvailable() =>
             s_lastErrorTime != default && s_lastErrorTime + s_timeout > DateTime.Now;
 
-        private int GetCurrentTenantId() => _tenantManager.GetCurrentTenant().TenantId;
+        private int GetCurrentTenantId() => _tenantManager.GetCurrentTenant().Id;
 
         private string GetCurrentUserName() =>
             _userManager.GetUsers(_authContext.CurrentAccount.ID).UserName;

@@ -87,7 +87,7 @@ namespace ASC.Web.Studio.Core.Backup
 
         internal string GetFilePath()
         {
-            var folder = Path.Combine(TempPath.GetTempPath(), BackupTempFolder, TenantManager.GetCurrentTenant().TenantId.ToString());
+            var folder = Path.Combine(TempPath.GetTempPath(), BackupTempFolder, TenantManager.GetCurrentTenant().Id.ToString());
 
             if (!Directory.Exists(folder))
             {

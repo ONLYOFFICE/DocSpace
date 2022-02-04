@@ -141,7 +141,7 @@ namespace ASC.Data.Backup.Tasks
             var stepscount = tables.Count * 4; // (schema + data) * (dump + zip)
             if (ProcessStorage)
             {
-                var tenants = TenantManager.GetTenants(false).Select(r => r.TenantId);
+                var tenants = TenantManager.GetTenants(false).Select(r => r.Id);
                 foreach (var t in tenants)
                 {
                     files.AddRange(GetFiles(t));

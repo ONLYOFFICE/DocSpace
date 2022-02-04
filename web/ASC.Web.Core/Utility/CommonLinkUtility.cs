@@ -524,7 +524,7 @@ namespace ASC.Web.Studio.Utility
 
         public string GetConfirmationUrlRelative(string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
         {
-            return GetConfirmationUrlRelative(TenantManager.GetCurrentTenant().TenantId, email, confirmType, postfix, userId);
+            return GetConfirmationUrlRelative(TenantManager.GetCurrentTenant().Id, email, confirmType, postfix, userId);
         }
 
         public string GetConfirmationUrlRelative(int tenantId, string email, ConfirmType confirmType, object postfix = null, Guid userId = default)

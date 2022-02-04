@@ -137,7 +137,7 @@ namespace ASC.Data.Backup
 
             var scheduleRequest = new CreateScheduleRequest
             {
-                TenantId = TenantManager.GetCurrentTenant().TenantId,
+                TenantId = TenantManager.GetCurrentTenant().Id,
                 BackupMail = backupMail,
                 Cron = cronParams.ToString(),
                 NumberOfBackupsStored = backupsStored,
@@ -202,7 +202,7 @@ namespace ASC.Data.Backup
 
                 var Schedule = new CreateScheduleRequest
                 {
-                    TenantId = TenantManager.GetCurrentTenant().TenantId,
+                    TenantId = TenantManager.GetCurrentTenant().Id,
                     BackupMail = schedule.BackupMail != null && (bool)schedule.BackupMail,
                     Cron = schedule.CronParams.ToString(),
                     NumberOfBackupsStored = schedule.BackupsStored == null ? 0 : (int)schedule.BackupsStored,
@@ -275,7 +275,7 @@ namespace ASC.Data.Backup
             BackupProgress result;
 
             var tenant = TenantManager.GetCurrentTenant();
-            result = BackupService.GetRestoreProgress(tenant.TenantId);
+            result = BackupService.GetRestoreProgress(tenant.Id);
 
             return result;
         }
@@ -285,7 +285,7 @@ namespace ASC.Data.Backup
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             if (!SetupInfo.IsVisibleSettings("Restore") ||
-                (!CoreBaseSettings.Standalone && !TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).Restore))
+                (!CoreBaseSettings.Standalone && !TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().Id).Restore))
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Restore");
         }
 
@@ -339,7 +339,7 @@ namespace ASC.Data.Backup
 
         private int GetCurrentTenantId()
         {
-            return TenantManager.GetCurrentTenant().TenantId;
+            return TenantManager.GetCurrentTenant().Id;
         }
 
         public class Schedule

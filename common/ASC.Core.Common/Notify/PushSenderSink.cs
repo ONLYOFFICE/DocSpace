@@ -74,7 +74,7 @@ namespace ASC.Core.Common.Notify
                     {
                         using var pushClient = new PushServiceClient();
                         pushClient.EnqueueNotification(
-                            tenantManager.GetCurrentTenant().TenantId,
+                            tenantManager.GetCurrentTenant().Id,
                             message.Recipient.ID,
                             notification,
                             new List<string>());

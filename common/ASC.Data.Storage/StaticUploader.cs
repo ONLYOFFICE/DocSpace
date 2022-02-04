@@ -90,7 +90,7 @@ namespace ASC.Data.Storage
             if (!CanUpload()) return null;
             if (!File.Exists(mappedPath)) return null;
 
-            var tenantId = TenantManager.GetCurrentTenant().TenantId;
+            var tenantId = TenantManager.GetCurrentTenant().Id;
             UploadOperation uploadOperation;
             var key = GetCacheKey(tenantId.ToString(), relativePath);
 
@@ -114,7 +114,7 @@ namespace ASC.Data.Storage
 
         public Task<string> UploadFileAsync(string relativePath, string mappedPath, Action<string> onComplete = null)
         {
-            var tenantId = TenantManager.GetCurrentTenant().TenantId;
+            var tenantId = TenantManager.GetCurrentTenant().Id;
             var task = new Task<string>(() =>
             {
                 using var scope = ServiceProvider.CreateScope();
@@ -137,7 +137,7 @@ namespace ASC.Data.Storage
             if (!Directory.Exists(mappedPath)) return;
 
             var tenant = TenantManager.GetCurrentTenant();
-            var key = typeof(UploadOperationProgress).FullName + tenant.TenantId;
+            var key = typeof(UploadOperationProgress).FullName + tenant.Id;
             UploadOperationProgress uploadOperation;
 
             lock (Locker)
@@ -145,7 +145,7 @@ namespace ASC.Data.Storage
                 uploadOperation = Queue.GetTask<UploadOperationProgress>(key);
                 if (uploadOperation != null) return;
 
-                uploadOperation = new UploadOperationProgress(ServiceProvider, key, tenant.TenantId, relativePath, mappedPath);
+                uploadOperation = new UploadOperationProgress(ServiceProvider, key, tenant.Id, relativePath, mappedPath);
                 Queue.QueueTask(uploadOperation);
             }
         }

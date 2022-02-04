@@ -154,7 +154,7 @@ namespace ASC.Data.Backup
                     {
                         var currentArgs = new List<ITagValue>(args);
 
-                        var newTenantId = toTenantId.HasValue ? toTenantId.Value : tenant.TenantId;
+                        var newTenantId = toTenantId.HasValue ? toTenantId.Value : tenant.Id;
                         var hash = authManager.GetUserPasswordStamp(user.Id).ToString("s");
                         var confirmationUrl = url + "/" + commonLinkUtility.GetConfirmationUrlRelative(newTenantId, user.Email, ConfirmType.PasswordChange, hash);
 

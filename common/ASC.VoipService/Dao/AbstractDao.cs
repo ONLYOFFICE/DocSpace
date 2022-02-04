@@ -42,7 +42,7 @@ namespace ASC.VoipService.Dao
         protected AbstractDao(DbContextManager<VoipDbContext> dbOptions, TenantManager tenantManager)
         {
             LazyVoipDbContext = new Lazy<VoipDbContext>(() => dbOptions.Get(dbid));
-            TenantID = tenantManager.GetCurrentTenant().TenantId;
+            TenantID = tenantManager.GetCurrentTenant().Id;
         }
 
         protected int TenantID

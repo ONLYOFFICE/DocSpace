@@ -34,14 +34,14 @@ namespace ASC.Api.Core.Middleware
             if (tenant == null)
             {
                 context.Result = new StatusCodeResult((int)HttpStatusCode.NotFound);
-                log.WarnFormat("Tenant {0} not found", tenant.TenantId);
+                log.WarnFormat("Tenant {0} not found", tenant.Id);
                 return;
             }
 
             if (tenant.Status == TenantStatus.RemovePending || tenant.Status == TenantStatus.Suspended)
             {
                 context.Result = new StatusCodeResult((int)HttpStatusCode.NotFound);
-                log.WarnFormat("Tenant {0} is not removed or suspended", tenant.TenantId);
+                log.WarnFormat("Tenant {0} is not removed or suspended", tenant.Id);
                 return;
             }
         }

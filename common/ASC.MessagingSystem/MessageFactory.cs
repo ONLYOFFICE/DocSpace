@@ -67,7 +67,7 @@ namespace ASC.MessagingSystem
                     IP = request != null ? request.Headers[forwardedHeader].ToString() ?? request.GetUserHostAddress() : null,
                     Initiator = initiator,
                     Date = DateTime.UtcNow,
-                    TenantId = TenantManager.GetCurrentTenant().TenantId,
+                    TenantId = TenantManager.GetCurrentTenant().Id,
                     UserId = AuthContext.CurrentAccount.ID,
                     Page = request?.GetTypedHeaders().Referer?.ToString(),
                     Action = action,
@@ -90,7 +90,7 @@ namespace ASC.MessagingSystem
                 var message = new EventMessage
                 {
                     Date = DateTime.UtcNow,
-                    TenantId = userData == null ? TenantManager.GetCurrentTenant().TenantId : userData.TenantId,
+                    TenantId = userData == null ? TenantManager.GetCurrentTenant().Id : userData.TenantId,
                     UserId = userData == null ? AuthContext.CurrentAccount.ID : userData.UserId,
                     Action = action,
                     Description = description,
@@ -126,7 +126,7 @@ namespace ASC.MessagingSystem
                 {
                     Initiator = initiator,
                     Date = DateTime.UtcNow,
-                    TenantId = TenantManager.GetCurrentTenant().TenantId,
+                    TenantId = TenantManager.GetCurrentTenant().Id,
                     Action = action,
                     Description = description,
                     Target = target

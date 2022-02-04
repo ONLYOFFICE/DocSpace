@@ -114,10 +114,10 @@ namespace ASC.Core.Caching
             {
                 if (t == null) return;
 
-                Remove(t.TenantId);
+                Remove(t.Id);
                 lock (_locker)
                 {
-                    _byId[t.TenantId] = t;
+                    _byId[t.Id] = t;
                     _byDomain[t.TenantAlias] = t;
                     if (!string.IsNullOrEmpty(t.MappedDomain)) _byDomain[t.MappedDomain] = t;
                     if (!string.IsNullOrEmpty(ip)) _byDomain[ip] = t;
@@ -257,7 +257,7 @@ namespace ASC.Core.Caching
         public Tenant SaveTenant(CoreSettings coreSettings, Tenant tenant)
         {
             tenant = Service.SaveTenant(coreSettings, tenant);
-            CacheNotifyItem.Publish(new TenantCacheItem() { TenantId = tenant.TenantId }, CacheNotifyAction.InsertOrUpdate);
+            CacheNotifyItem.Publish(new TenantCacheItem() { TenantId = tenant.Id }, CacheNotifyAction.InsertOrUpdate);
 
             return tenant;
         }

@@ -68,7 +68,7 @@ namespace ASC.Security.Cryptography
             _logger = options.CurrentValue;
         }
 
-        public string GetEmailKey(string email) => GetEmailKey(_tenantManager.GetCurrentTenant().TenantId, email);
+        public string GetEmailKey(string email) => GetEmailKey(_tenantManager.GetCurrentTenant().Id, email);
 
         public string GetEmailKey(int tenantId, string email)
         {
@@ -89,7 +89,7 @@ namespace ASC.Security.Cryptography
         {
             var result = ValidateEmailKeyInternal(email, key, validInterval);
             _logger.DebugFormat("validation result: {0}, source: {1} with key: {2} interval: {3} tenant: {4}", 
-                result, email, key, validInterval, _tenantManager.GetCurrentTenant().TenantId);
+                result, email, key, validInterval, _tenantManager.GetCurrentTenant().Id);
 
             return result;
         }
@@ -117,7 +117,7 @@ namespace ASC.Security.Cryptography
             if (string.IsNullOrEmpty(email)) throw new ArgumentNullException(nameof(email));
             if (key == null) throw new ArgumentNullException(nameof(key));
 
-            email = FormatEmail(_tenantManager.GetCurrentTenant().TenantId, email);
+            email = FormatEmail(_tenantManager.GetCurrentTenant().Id, email);
             var parts = key.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length != 2) return ValidationResult.Invalid;
 

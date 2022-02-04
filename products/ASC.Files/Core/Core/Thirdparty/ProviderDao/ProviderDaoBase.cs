@@ -62,7 +62,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
         }
 
         private int tenantID;
-        private int TenantID { get => tenantID != 0 ? tenantID : (tenantID = TenantManager.GetCurrentTenant().TenantId); }
+        private int TenantID { get => tenantID != 0 ? tenantID : (tenantID = TenantManager.GetCurrentTenant().Id); }
 
         public ProviderDaoBase(
             IServiceProvider serviceProvider,

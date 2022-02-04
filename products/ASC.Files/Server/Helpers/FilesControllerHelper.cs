@@ -268,7 +268,7 @@ namespace ASC.Files.Helpers
                 };
             }
 
-            var createSessionUrl = FilesLinkUtility.GetInitiateUploadSessionUrl(TenantManager.GetCurrentTenant().TenantId, file.FolderID, file.ID, file.Title, file.ContentLength, encrypted, SecurityContext);
+            var createSessionUrl = FilesLinkUtility.GetInitiateUploadSessionUrl(TenantManager.GetCurrentTenant().Id, file.FolderID, file.ID, file.Title, file.ContentLength, encrypted, SecurityContext);
 
             using var httpClient = new HttpClient();
 
