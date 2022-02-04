@@ -257,6 +257,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                     else if (FolderDao.IsEmpty(folder.ID))
                                     {
                                         FolderDao.DeleteFolder(folder.ID);
+
                                         if (ProcessedFolder(folderId))
                                         {
                                             Result += string.Format("folder_{0}{1}", newFolder.ID, SPLIT_CHAR);
@@ -377,6 +378,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var (filesMessageService, fileMarker, fileUtility, global, entryManager) = scopeClass;
             var fileDao = scope.ServiceProvider.GetService<IFileDao<TTo>>();
             var fileTracker = scope.ServiceProvider.GetService<FileTrackerHelper>();
+            var socketManager = scope.ServiceProvider.GetService<SocketManager>();
 
             var toFolderId = toFolder.ID;
             foreach (var fileId in fileIds)
@@ -425,6 +427,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                     {
                                         needToMark.Add(newFile);
                                     }
+
+                                    socketManager.CreateFile(newFile);
 
                                     if (ProcessedFile(fileId))
                                     {
@@ -477,6 +481,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                     {
                                         needToMark.Add(newFile);
                                     }
+
+                                    socketManager.DeleteFile(file);
+
+                                    socketManager.CreateFile(newFile);
 
                                     if (ProcessedFile(fileId))
                                     {
@@ -532,6 +540,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                                     needToMark.Add(newFile);
 
+                                    socketManager.CreateFile(newFile);
+
                                     if (copy)
                                     {
                                         filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileCopiedWithOverwriting, newFile.Title, parentFolder.Title, toFolder.Title);
@@ -569,6 +579,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                                 {
                                                     filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileMovedWithOverwriting, file.Title, parentFolder.Title, toFolder.Title);
                                                 }
+
+                                                socketManager.DeleteFile(file);
 
                                                 if (ProcessedFile(fileId))
                                                 {

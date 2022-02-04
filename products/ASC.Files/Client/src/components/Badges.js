@@ -34,10 +34,10 @@ const Badges = ({
     versionGroup,
     title,
     fileExst,
+    isEditing,
   } = item;
 
   const isFavorite = fileStatus === 32;
-  const isEditing = fileStatus === 1;
   const isNewWithFav = fileStatus === 34;
   const isEditingWithFav = fileStatus === 33;
   const showEditBadge = !locked || item.access === 0;
