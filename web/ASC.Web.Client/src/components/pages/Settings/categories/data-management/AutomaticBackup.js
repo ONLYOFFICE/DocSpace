@@ -169,54 +169,64 @@ class AutomaticBackup extends React.PureComponent {
 
   onSetDefaultOptions = (selectedSchedule) => {
     let checkedStorage = {};
+    let defaultOptions, selectedOptions;
 
-    const defaultOptions = {
-      defaultSelectedFolder:
-        selectedSchedule &&
-        selectedSchedule.storageType !== STORAGES_MODULE_TYPE
-          ? `${selectedSchedule.storageParams.folderId}`
-          : "",
-      defaultStorageTypeNumber: selectedSchedule
-        ? `${selectedSchedule.storageType}`
-        : "0",
-      defaultHour: selectedSchedule
-        ? `${selectedSchedule.cronParams.hour}:00`
-        : "12:00",
-      defaultPeriodNumber: selectedSchedule
-        ? `${selectedSchedule.cronParams.period}`
-        : "0",
-      defaultDay: selectedSchedule ? `${selectedSchedule.cronParams.day}` : "0",
-      defaultMaxCopiesNumber: selectedSchedule
-        ? `${selectedSchedule.backupsStored}`
-        : "10",
-    };
+    if (selectedSchedule) {
+      const {
+        storageType,
+        cronParams,
+        backupsStored,
+        storageParams,
+      } = selectedSchedule;
+      const { folderId } = storageParams;
+      const { period, day, hour } = cronParams;
 
-    const selectedOptions = {
-      selectedFolder:
-        selectedSchedule &&
-        selectedSchedule.storageType !== STORAGES_MODULE_TYPE
-          ? `${selectedSchedule.storageParams.folderId}`
-          : "",
-      selectedStorageTypeNumber: selectedSchedule
-        ? `${selectedSchedule.storageType}`
-        : "0",
-      selectedHour: selectedSchedule
-        ? `${selectedSchedule.cronParams.hour}:00`
-        : "12:00",
+      const isThirdPartyStorage = storageType === STORAGES_MODULE_TYPE;
 
-      selectedMaxCopiesNumber: selectedSchedule
-        ? `${selectedSchedule.backupsStored}`
-        : "10",
-    };
-    if (+defaultOptions.defaultStorageTypeNumber === DOCUMENT_MODULE_TYPE) {
+      defaultOptions = {
+        defaultSelectedFolder: !isThirdPartyStorage ? `${folderId}` : "",
+        defaultStorageTypeNumber: `${storageType}`,
+        defaultHour: `${hour}:00`,
+        defaultPeriodNumber: `${period}`,
+        defaultDay: `${day}`,
+        defaultMaxCopiesNumber: `${backupsStored}`,
+      };
+
+      selectedOptions = {
+        selectedFolder: defaultOptions.defaultSelectedFolder,
+        selectedStorageTypeNumber: defaultOptions.defaultStorageTypeNumber,
+        selectedHour: defaultOptions.defaultHour,
+        selectedMaxCopiesNumber: defaultOptions.defaultMaxCopiesNumber,
+      };
+    } else {
+      defaultOptions = {
+        defaultSelectedFolder: "",
+        defaultStorageTypeNumber: "0",
+        defaultHour: "12:00",
+        defaultPeriodNumber: "0",
+        defaultDay: "0",
+        defaultMaxCopiesNumber: "10",
+      };
+
+      selectedOptions = {
+        selectedFolder: defaultOptions.defaultSelectedFolder,
+        selectedStorageTypeNumber: defaultOptions.defaultStorageTypeNumber,
+        selectedHour: defaultOptions.defaultDay,
+        selectedMaxCopiesNumber: defaultOptions.defaultMaxCopiesNumber,
+      };
+    }
+
+    const { defaultStorageTypeNumber } = defaultOptions;
+
+    if (+defaultStorageTypeNumber === DOCUMENT_MODULE_TYPE) {
       // Documents Module
       checkedStorage.isCheckedDocuments = true;
     } else {
-      if (+defaultOptions.defaultStorageTypeNumber === RESOURCES_MODULE_TYPE) {
+      if (+defaultStorageTypeNumber === RESOURCES_MODULE_TYPE) {
         // ThirdPartyResource Module
         checkedStorage.isCheckedThirdParty = true;
       } else {
-        if (+defaultOptions.defaultStorageTypeNumber === STORAGES_MODULE_TYPE) {
+        if (+defaultStorageTypeNumber === STORAGES_MODULE_TYPE) {
           // ThirdPartyStorage Module
           checkedStorage.isCheckedThirdPartyStorage = true;
         }
@@ -235,74 +245,93 @@ class AutomaticBackup extends React.PureComponent {
     defaultOptions,
     selectedOptions
   ) => {
-    if (+defaultOptions.defaultPeriodNumber === EVERY_WEEK_TYPE) {
-      //Every Week option
+    const { defaultPeriodNumber, defaultDay } = defaultOptions;
 
-      let weekday;
+    if (+defaultPeriodNumber === EVERY_WEEK_TYPE) {
+      //Every Week option
+      let weekDay;
+      const periodLabel = this.periodsObject[EVERY_WEEK_TYPE].label;
+
       for (let i = 0; i < this.weekdaysLabelArray.length; i++) {
-        if (+this.weekdaysLabelArray[i]["key"] === +defaultOptions.defaultDay) {
-          weekday = i;
+        if (+this.weekdaysLabelArray[i].key === +defaultDay) {
+          weekDay = i;
         }
       }
+
+      const weekDayLabel = this.weekdaysLabelArray[defaultDay ? weekDay : 0]
+        .label;
 
       this._isMounted &&
         this.setState({
           ...checkedStorage,
-          defaultPeriodLabel: this.periodsObject[EVERY_WEEK_TYPE].label,
-          selectedPeriodLabel: this.periodsObject[EVERY_WEEK_TYPE].label,
-          defaultWeekdayLabel: this.weekdaysLabelArray[
-            defaultOptions.defaultDay ? weekday : 0
-          ].label,
+          defaultPeriodLabel: periodLabel,
+          selectedPeriodLabel: periodLabel,
 
-          selectedWeekdayLabel: this.weekdaysLabelArray[
-            defaultOptions.defaultDay ? weekday : 0
-          ].label,
-
-          selectedWeekday: defaultOptions.defaultDay,
-          defaultWeekday: defaultOptions.defaultDay,
+          defaultWeekdayLabel: weekDayLabel,
+          selectedWeekdayLabel: weekDayLabel,
+          selectedWeekday: defaultDay,
+          defaultWeekday: defaultDay,
 
           defaultWeeklySchedule: true,
           selectedWeeklySchedule: true,
+
           selectedMonthDay: "1",
+          defaultMonthDay: "1",
+
           isLoading: false,
           ...defaultOptions,
           ...selectedOptions,
         });
     } else {
-      if (+defaultOptions.defaultPeriodNumber === EVERY_MONTH_TYPE) {
+      const weekDay = this.weekdaysLabelArray[0].key;
+      const weekDayLabel = this.weekdaysLabelArray[0].label;
+
+      if (+defaultPeriodNumber === EVERY_MONTH_TYPE) {
         //Every Month option
+        const periodLabel = this.periodsObject[EVERY_MONTH_TYPE].label;
 
         this._isMounted &&
           this.setState({
             ...checkedStorage,
-            defaultPeriodLabel: this.periodsObject[EVERY_MONTH_TYPE].label,
-            selectedPeriodLabel: this.periodsObject[EVERY_MONTH_TYPE].label,
-            defaultWeekdayLabel: this.weekdaysLabelArray[0].label,
-            selectedWeekdayLabel: this.weekdaysLabelArray[0].label,
-            selectedMonthDay: defaultOptions.defaultDay,
-            defaultMonthDay: defaultOptions.defaultDay,
-            selectedWeekday: "1",
-            defaultWeekday: "1",
+            defaultPeriodLabel: periodLabel,
+            selectedPeriodLabel: periodLabel,
+
+            defaultWeekdayLabel: weekDayLabel,
+            selectedWeekdayLabel: weekDayLabel,
+            selectedWeekday: weekDay,
+            defaultWeekday: weekDay,
+
+            selectedMonthDay: defaultDay,
+            defaultMonthDay: defaultDay,
+
             defaultMonthlySchedule: true,
             selectedMonthlySchedule: true,
+
             isLoading: false,
             ...defaultOptions,
             ...selectedOptions,
           });
       } else {
+        //Every Day option
+        const periodLabel = this.periodsObject[EVERY_DAY_TYPE].label;
+
         this._isMounted &&
           this.setState({
             ...checkedStorage,
-            defaultPeriodLabel: this.periodsObject[EVERY_DAY_TYPE].label,
-            selectedPeriodLabel: this.periodsObject[EVERY_DAY_TYPE].label,
-            defaultWeekdayLabel: this.weekdaysLabelArray[0].label,
-            selectedWeekdayLabel: this.weekdaysLabelArray[0].label,
+            defaultPeriodLabel: periodLabel,
+            selectedPeriodLabel: periodLabel,
+
+            defaultWeekdayLabel: weekDayLabel,
+            selectedWeekdayLabel: weekDayLabel,
+            selectedWeekday: weekDay,
+            defaultWeekday: weekDay,
+
+            selectedMonthDay: "1",
+            defaultMonthDay: "1",
+
             defaultDailySchedule: true,
             selectedDailySchedule: true,
-            selectedMonthDay: "1",
-            selectedWeekday: "1",
-            defaultMonthDay: "1",
-            defaultWeekday: "1",
+
             isLoading: false,
             ...defaultOptions,
             ...selectedOptions,
