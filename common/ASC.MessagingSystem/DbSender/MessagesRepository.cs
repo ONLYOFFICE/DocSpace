@@ -149,7 +149,7 @@ namespace ASC.MessagingSystem.DbSender
 
         private static void AddLoginEvent(EventMessage message, MessagesContext dbContext)
         {
-            var le = new LoginEvent
+            var le = new DbLoginEvent
             {
                 Ip = message.IP,
                 Login = message.Initiator,
@@ -177,7 +177,7 @@ namespace ASC.MessagingSystem.DbSender
 
         private static void AddAuditEvent(EventMessage message, Messages dbContext)
         {
-            var ae = new AuditEvent
+            var ae = new DbAuditEvent
             {
                 Ip = message.IP,
                 Initiator = message.Initiator,
@@ -253,7 +253,7 @@ namespace ASC.MessagingSystem.DbSender
 
     public class Messages : MessagesContext
     {
-        public DbSet<AuditEvent> AuditEvents { get; set; }
+        public DbSet<DbAuditEvent> AuditEvents { get; set; }
         public DbSet<DbTenant> Tenants { get; set; }
         public DbSet<DbWebstudioSettings> WebstudioSettings { get; set; }
     }
