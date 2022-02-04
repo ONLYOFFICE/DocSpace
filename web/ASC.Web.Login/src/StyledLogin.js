@@ -45,11 +45,6 @@ export const LoginContainer = styled.div`
     padding-bottom: 32px;
   }
 
-  .workspace-title {
-    width: 100%;
-    padding-bottom: 16px;
-  }
-
   .more-label {
     padding-top: 18px;
   }
