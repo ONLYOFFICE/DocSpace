@@ -442,30 +442,20 @@ class AutomaticBackup extends React.PureComponent {
   onClickPermissions = () => {
     const { isEnable } = this.state;
 
-    if (!isEnable) {
-      this.setState(
-        {
-          isEnable: true,
-          isCheckedDocuments: true,
-          selectedStorageTypeNumber: `${DOCUMENT_MODULE_TYPE}`,
-        },
-        function () {
-          this.checkChanges();
-        }
-      );
-    } else {
-      this.setState(
-        {
-          isEnable: false,
-          isCheckedDocuments: false,
-          isCheckedThirdParty: false,
-          isCheckedThirdPartyStorage: false,
-        },
-        function () {
-          this.checkChanges();
-        }
-      );
-    }
+    const resetModuleSettings = this.resetModuleSettings(
+      isEnable ? -1 : `${DOCUMENT_MODULE_TYPE}`
+    );
+
+    console.log("onClickPermissions resetModuleSettings", resetModuleSettings);
+    this.setState(
+      {
+        isEnable: !isEnable,
+        ...resetModuleSettings,
+      },
+      function () {
+        this.checkChanges();
+      }
+    );
   };
 
   onSelectMaxCopies = (options) => {
@@ -650,71 +640,40 @@ class AutomaticBackup extends React.PureComponent {
     return false;
   };
 
-  setDocumentsModule = () => {
-    return {
-      isCheckedDocuments: true,
-      isCheckedThirdParty: false,
-      isCheckedThirdPartyStorage: false,
-      selectedStorageTypeNumber: `${DOCUMENT_MODULE_TYPE}`,
-    };
-  };
+  resetModuleSettings = (key = -1) => {
+    const arrayType = [
+      [`${DOCUMENT_MODULE_TYPE}`, "Documents"],
+      [`${RESOURCES_MODULE_TYPE}`, "ThirdParty"],
+      [`${STORAGES_MODULE_TYPE}`, "ThirdPartyStorage"],
+    ];
+    let resultObj = {};
 
-  setResourcesModule = () => {
-    return {
-      isCheckedDocuments: false,
-      isCheckedThirdParty: true,
-      isCheckedThirdPartyStorage: false,
-      selectedStorageTypeNumber: `${RESOURCES_MODULE_TYPE}`,
-    };
-  };
-
-  setStorageModule = () => {
-    return {
-      isCheckedDocuments: false,
-      isCheckedThirdParty: false,
-      isCheckedThirdPartyStorage: true,
-      selectedStorageTypeNumber: `${STORAGES_MODULE_TYPE}`,
-    };
-  };
-  onClickShowStorage = (e) => {
-    const name = +e.target.name;
-    let options = {};
-    if (name === DOCUMENT_MODULE_TYPE) {
-      options = this.setDocumentsModule();
-      this.setState(
-        {
-          ...options,
-          isError: false,
-        },
-        function () {
-          this.checkChanges();
-        }
-      );
-    } else {
-      if (name === RESOURCES_MODULE_TYPE) {
-        options = this.setResourcesModule();
-        this.setState(
-          {
-            ...options,
-            selectedFolderResources: "",
-            isError: false,
-          },
-          function () {
-            this.checkChanges();
-          }
-        );
+    for (let i = 0; i < 3; i++) {
+      if (key === arrayType[i][0]) {
+        resultObj[`isChecked${arrayType[i][1]}`] = true;
+        resultObj["selectedStorageTypeNumber"] = `${key}`;
       } else {
-        options = this.setStorageModule();
-        this.setState(
-          {
-            ...options,
-          },
-          function () {
-            this.checkChanges();
-          }
-        );
+        resultObj[`isChecked${arrayType[i][1]}`] = false;
       }
     }
+
+    return resultObj;
+  };
+  onClickShowStorage = (e) => {
+    const key = e.target.name;
+    let options = this.resetModuleSettings(key);
+    console.log("onClickShowStorage resetModuleSettings", options);
+    this.setState(
+      {
+        ...options,
+        selectedFolderResources: "", //Why?
+        selectedFolderDocument: "",
+        isError: false,
+      },
+      function () {
+        this.checkChanges();
+      }
+    );
   };
 
   onCancelModuleSettings = () => {
@@ -742,16 +701,9 @@ class AutomaticBackup extends React.PureComponent {
     if (this.selectedSchedule && !isEnable) {
       this.setState({ isEnable: true });
     }
-    if (+defaultStorageTypeNumber === DOCUMENT_MODULE_TYPE) {
-      storageObj = this.setDocumentsModule();
-    } else {
-      if (+defaultStorageTypeNumber === RESOURCES_MODULE_TYPE) {
-        storageObj = this.setResourcesModule();
-      } else {
-        storageObj = this.setStorageModule();
-      }
-    }
 
+    storageObj = this.resetModuleSettings(defaultStorageTypeNumber);
+    console.log("onCancelModuleSettings storageObj", storageObj);
     this.setState({
       selectedMonthlySchedule: defaultMonthlySchedule,
       selectedWeeklySchedule: defaultWeeklySchedule,
@@ -894,25 +846,16 @@ class AutomaticBackup extends React.PureComponent {
       );
       const selectedSchedule = await getBackupSchedule();
       if (selectedSchedule) {
+        const { storageType } = selectedSchedule;
         this.selectedSchedule = true;
         const resetOptions = this.resetPeriodSettings();
-        console.log("createSchedule resetOptions", resetOptions);
+        const resetModuleSettings = this.resetModuleSettings(storageType);
+        console.log("createSchedule resetModuleSettings", resetModuleSettings);
 
-        if (selectedSchedule.storageType === DOCUMENT_MODULE_TYPE) {
-          this.setState({
-            ...resetOptions,
-            ...this.setDocumentsModule(),
-          });
-        } else if (selectedSchedule.storageType === RESOURCES_MODULE_TYPE) {
-          this.setState({
-            ...resetOptions,
-            ...this.setResourcesModule(),
-          });
-        } else
-          this.setState({
-            ...resetOptions,
-            ...this.setStorageModule(),
-          });
+        this.setState({
+          ...resetOptions,
+          ...resetModuleSettings,
+        });
 
         this.onSetDefaultOptions(selectedSchedule);
       } else {
