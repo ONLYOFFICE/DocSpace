@@ -490,48 +490,45 @@ class AutomaticBackup extends React.PureComponent {
     });
   };
 
+  resetPeriodSettings = (key = -1) => {
+    const titleArray = [
+      [EVERY_DAY_TYPE, "Daily"],
+      [EVERY_WEEK_TYPE, "Weekly"],
+      [EVERY_MONTH_TYPE, "Monthly"],
+    ];
+
+    let resultObj = {};
+
+    for (let i = 0; i < titleArray.length; i++) {
+      console.log("key", key, "i", i);
+      if (key === titleArray[i][0]) {
+        resultObj[`selected${titleArray[i][1]}Schedule`] = true;
+      } else {
+        resultObj[`selected${titleArray[i][1]}Schedule`] = false;
+        if (key === -1) resultObj[`default${titleArray[i][1]}Schedule`] = false;
+      }
+    }
+    return resultObj;
+  };
+
   onSelectPeriod = (options) => {
     const key = options.key;
     const label = options.label;
 
     this.setState({ selectedPeriodLabel: label });
 
-    if (key === EVERY_DAY_TYPE) {
-      this.setState(
-        {
-          selectedWeeklySchedule: false,
-          selectedMonthlySchedule: false,
-          selectedDailySchedule: true,
-        },
-        function () {
-          this.checkChanges();
-        }
-      );
-    } else {
-      if (key === EVERY_WEEK_TYPE) {
-        this.setState(
-          {
-            selectedWeeklySchedule: true,
-            selectedMonthlySchedule: false,
-            selectedDailySchedule: false,
-          },
-          function () {
-            this.checkChanges();
-          }
-        );
-      } else {
-        this.setState(
-          {
-            selectedWeeklySchedule: false,
-            selectedMonthlySchedule: true,
-            selectedDailySchedule: false,
-          },
-          function () {
-            this.checkChanges();
-          }
-        );
+    const resetOptions = this.resetPeriodSettings(key);
+
+    console.log("onSelectPeriod resetOptions", resetOptions);
+
+    this.setState(
+      {
+        ...resetOptions,
+      },
+      function () {
+        this.checkChanges();
       }
-    }
+    );
   };
 
   checkChanges = () => {
@@ -869,15 +866,8 @@ class AutomaticBackup extends React.PureComponent {
       const selectedSchedule = await getBackupSchedule();
       if (selectedSchedule) {
         this.selectedSchedule = true;
-
-        const resetOptions = {
-          defaultMonthlySchedule: false,
-          defaultWeeklySchedule: false,
-          defaultDailySchedule: false,
-          selectedMonthlySchedule: false,
-          selectedDailySchedule: false,
-          selectedWeeklySchedule: false,
-        };
+        const resetOptions = this.resetPeriodSettings();
+        console.log("createSchedule resetOptions", resetOptions);
 
         if (selectedSchedule.storageType === DOCUMENT_MODULE_TYPE) {
           this.setState({
@@ -923,14 +913,10 @@ class AutomaticBackup extends React.PureComponent {
         })
         .then(() => getBackupSchedule())
         .then(() => {
+          const resetOptions = this.resetPeriodSettings();
+          console.log("createSchedule resetOptions", resetOptions);
           this.setState({
-            defaultMonthlySchedule: false,
-            defaultWeeklySchedule: false,
-            defaultDailySchedule: false,
-
-            selectedMonthlySchedule: false,
-            selectedDailySchedule: false,
-            selectedWeeklySchedule: false,
+            ...resetOptions,
           });
           this.onSetDefaultOptions();
         })
