@@ -51,6 +51,7 @@ const MoreLoginModal = (props) => {
       displayType="aside"
       visible={visible}
       onClose={onClose}
+      removeScroll={true}
     >
       <ModalDialog.Header>{t("Authorization")}</ModalDialog.Header>
       <ModalDialog.Body>
