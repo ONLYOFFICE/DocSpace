@@ -65,14 +65,14 @@ class ThirdPartyStoragesModule extends React.Component {
       selectedId,
       availableStorage,
     } = this.state;
-    const {
-      onSetFormNames,
-      formSettings,
-      onChange,
-      onResetFormSettings,
-      isErrors,
-    } = this.props;
 
+    const commonProps = {
+      isLoading,
+      availableStorage,
+      selectedId,
+    };
+
+    const { GoogleId, RackspaceId, SelectelId, AmazonId } = ThirdPartyStorages;
     return (
       <>
         <ComboBox
@@ -81,59 +81,23 @@ class ThirdPartyStoragesModule extends React.Component {
           onSelect={this.onSelect}
           isDisabled={isLoading}
           noBorder={false}
-          scaled={true}
-          scaledOptions={true}
+          scaled
+          scaledOptions
           dropDownMaxHeight={400}
           className="backup_combo"
         />
 
-        {selectedId === ThirdPartyStorages.GoogleId && (
-          <GoogleCloudStorage
-            isLoading={isLoading}
-            availableStorage={availableStorage}
-            selectedId={selectedId}
-            onSetFormNames={onSetFormNames}
-            formSettings={formSettings}
-            onChange={onChange}
-            onResetFormSettings={onResetFormSettings}
-            isErrors={isErrors}
-          />
+        {selectedId === GoogleId && (
+          <GoogleCloudStorage {...commonProps} {...this.props} />
         )}
-        {selectedId === ThirdPartyStorages.RackspaceId && (
-          <RackspaceStorage
-            isLoading={isLoading}
-            availableStorage={availableStorage}
-            selectedId={selectedId}
-            onSetFormNames={onSetFormNames}
-            formSettings={formSettings}
-            onChange={onChange}
-            onResetFormSettings={onResetFormSettings}
-            isErrors={isErrors}
-          />
+        {selectedId === RackspaceId && (
+          <RackspaceStorage {...commonProps} {...this.props} />
         )}
-        {selectedId === ThirdPartyStorages.SelectelId && (
-          <SelectelStorage
-            isLoading={isLoading}
-            availableStorage={availableStorage}
-            selectedId={selectedId}
-            onSetFormNames={onSetFormNames}
-            formSettings={formSettings}
-            onChange={onChange}
-            onResetFormSettings={onResetFormSettings}
-            isErrors={isErrors}
-          />
+        {selectedId === SelectelId && (
+          <SelectelStorage {...commonProps} {...this.props} />
         )}
-        {selectedId === ThirdPartyStorages.AmazonId && (
-          <AmazonStorage
-            isLoading={isLoading}
-            availableStorage={availableStorage}
-            selectedId={selectedId}
-            onSetFormNames={onSetFormNames}
-            formSettings={formSettings}
-            onChange={onChange}
-            onResetFormSettings={onResetFormSettings}
-            isErrors={isErrors}
-          />
+        {selectedId === AmazonId && (
+          <AmazonStorage {...commonProps} {...this.props} />
         )}
       </>
     );
