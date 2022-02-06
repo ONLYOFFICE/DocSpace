@@ -55,10 +55,11 @@ class ThirdPartyModule extends React.Component {
       defaultSelectedFolder,
 
       isReset,
-      resourcesModule,
+      isThirdPartyDefault,
       isError,
     } = this.props;
 
+    const passedId = isThirdPartyDefault ? defaultSelectedFolder : "";
     return (
       <>
         <SelectFolderInput
@@ -70,7 +71,7 @@ class ThirdPartyModule extends React.Component {
           onSetLoadingData={onSetLoadingData}
           foldersType="third-party"
           isSavingProcess={isLoadingData}
-          id={resourcesModule ? defaultSelectedFolder : ""}
+          id={passedId}
           isReset={isReset}
           onSetLoadingData={onSetLoadingData}
         />

@@ -54,10 +54,11 @@ class DocumentsModule extends React.Component {
       defaultSelectedFolder,
 
       isReset,
-      resourcesModule,
+      isThirdPartyDefault,
       isError,
     } = this.props;
 
+    const passedId = !isThirdPartyDefault ? defaultSelectedFolder : "";
     return (
       <>
         <SelectFolderInput
@@ -70,7 +71,7 @@ class DocumentsModule extends React.Component {
           foldersType="common"
           withoutProvider
           isSavingProcess={isLoadingData}
-          id={!resourcesModule ? defaultSelectedFolder : ""}
+          id={passedId}
           isReset={isReset}
           onSetLoadingData={onSetLoadingData}
         />

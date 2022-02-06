@@ -4,14 +4,14 @@ import { useTranslation } from "react-i18next";
 import { StyledScheduleComponent } from "../StyledBackup";
 import Text from "@appserver/components/text";
 const ScheduleComponent = ({
-  weeklySchedule,
-  monthlySchedule,
+  selectedMonthlySchedule,
+  selectedWeeklySchedule,
 
   selectedPeriodLabel,
   selectedWeekdayLabel,
   selectedHour,
   selectedMonthDay,
-  selectedMaxCopies,
+  selectedMaxCopiesNumber,
 
   onSelectMaxCopies,
   onSelectPeriod,
@@ -32,8 +32,8 @@ const ScheduleComponent = ({
 
   return (
     <StyledScheduleComponent
-      weeklySchedule={weeklySchedule}
-      monthlySchedule={monthlySchedule}
+      weeklySchedule={selectedMonthlySchedule}
+      monthlySchedule={selectedMonthlySchedule}
     >
       <Text className="schedule_description"> {t("ScheduleDescription")}</Text>
       <div className="main_options">
@@ -52,7 +52,7 @@ const ScheduleComponent = ({
           className="schedule-backup_combobox days_option"
         />
         <div className="additional_options">
-          {weeklySchedule && (
+          {selectedWeeklySchedule && (
             <ComboBox
               options={weekdaysLabelArray}
               selectedOption={{
@@ -68,7 +68,7 @@ const ScheduleComponent = ({
               className="schedule-backup_combobox weekly_option"
             />
           )}
-          {monthlySchedule && (
+          {selectedMonthlySchedule && (
             <ComboBox
               options={monthNumbersArray}
               selectedOption={{
@@ -105,7 +105,7 @@ const ScheduleComponent = ({
           options={maxNumberCopiesArray}
           selectedOption={{
             key: 0,
-            label: `${selectedMaxCopies} ${t("MaxCopies")}`,
+            label: `${selectedMaxCopiesNumber} ${t("MaxCopies")}`,
           }}
           onSelect={onSelectMaxCopies}
           isDisabled={isLoadingData || isDisableOptions}

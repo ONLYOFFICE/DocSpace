@@ -74,8 +74,6 @@ class AutomaticBackup extends React.PureComponent {
       selectedHour: "",
       selectedMonthDay: "",
       selectedMaxCopiesNumber: "",
-      selectedFolderDocument: "",
-      selectedFolderResources: "",
       selectedStorageTypeNumber: "",
 
       isCopyingToLocal: true,
@@ -84,6 +82,8 @@ class AutomaticBackup extends React.PureComponent {
       isChanged: false,
 
       downloadingProgress: 100,
+
+      selectedFolder: "",
     };
     this.selectedSchedule = false;
     this.periodsObject = [
@@ -596,11 +596,7 @@ class AutomaticBackup extends React.PureComponent {
       selectedMonthlySchedule,
       selectedDailySchedule,
       selectedWeeklySchedule,
-
-      isCheckedDocuments,
-      selectedFolderDocument,
-      isCheckedThirdParty,
-      selectedFolderResources,
+      selectedFolder,
     } = this.state;
 
     if (selectedHour !== defaultHour) {
@@ -628,14 +624,7 @@ class AutomaticBackup extends React.PureComponent {
         return true;
       }
     }
-    if (isCheckedDocuments && selectedFolderDocument !== defaultSelectedFolder)
-      return true;
-
-    if (
-      isCheckedThirdParty &&
-      selectedFolderResources !== defaultSelectedFolder
-    )
-      return true;
+    if (selectedFolder !== defaultSelectedFolder) return true;
 
     return false;
   };
@@ -666,8 +655,7 @@ class AutomaticBackup extends React.PureComponent {
     this.setState(
       {
         ...options,
-        selectedFolderResources: "", //Why?
-        selectedFolderDocument: "",
+        selectedFolder: "",
         isError: false,
       },
       function () {
@@ -723,8 +711,6 @@ class AutomaticBackup extends React.PureComponent {
   };
   onSaveModuleSettings = async (selectedId, inputValueArray) => {
     const {
-      selectedFolderDocument,
-      selectedFolderResources,
       selectedMaxCopiesNumber,
       selectedMonthlySchedule,
       selectedWeeklySchedule,
@@ -735,6 +721,7 @@ class AutomaticBackup extends React.PureComponent {
       isCheckedDocuments,
       isCheckedThirdParty,
       isEnable,
+      selectedFolder,
     } = this.state;
 
     if (!isEnable) {
@@ -743,8 +730,8 @@ class AutomaticBackup extends React.PureComponent {
     }
 
     if (
-      (isCheckedDocuments && !selectedFolderDocument) ||
-      (isCheckedThirdParty && !selectedFolderResources)
+      (isCheckedDocuments && !selectedFolder) ||
+      (isCheckedThirdParty && !selectedFolder)
     ) {
       this.setState({
         isError: true,
@@ -753,7 +740,7 @@ class AutomaticBackup extends React.PureComponent {
     }
 
     this.setState({ isLoadingData: true }, function () {
-      let day, period, storageType;
+      let day, period;
 
       if (selectedWeeklySchedule) {
         period = `${EVERY_WEEK_TYPE}`;
@@ -770,19 +757,11 @@ class AutomaticBackup extends React.PureComponent {
 
       let time = selectedHour.substring(0, selectedHour.indexOf(":"));
 
-      let selectedFolder;
-
-      if (isCheckedDocuments) {
-        storageType = `${DOCUMENT_MODULE_TYPE}`;
-        selectedFolder = selectedFolderDocument;
-      } else {
-        if (isCheckedThirdParty) {
-          storageType = `${RESOURCES_MODULE_TYPE}`;
-          selectedFolder = selectedFolderResources;
-        } else {
-          storageType = `${STORAGES_MODULE_TYPE}`;
-        }
-      }
+      const storageType = isCheckedDocuments
+        ? `${DOCUMENT_MODULE_TYPE}`
+        : isCheckedThirdParty
+        ? `${RESOURCES_MODULE_TYPE}`
+        : `${STORAGES_MODULE_TYPE}`;
 
       let storageParams = [];
 
@@ -898,22 +877,9 @@ class AutomaticBackup extends React.PureComponent {
     });
   };
   onSelectFolder = (folderId) => {
-    const { isCheckedThirdParty } = this.state;
-
-    let folderType = {};
-    if (isCheckedThirdParty) {
-      folderType = {
-        selectedFolderResources: folderId,
-      };
-    } else {
-      folderType = {
-        selectedFolderDocument: folderId,
-      };
-    }
-
     this.setState(
       {
-        ...folderType,
+        selectedFolder: folderId,
       },
       function () {
         this.checkChanges();
@@ -941,15 +907,6 @@ class AutomaticBackup extends React.PureComponent {
       isChanged,
       downloadingProgress,
       isEnable,
-      defaultSelectedFolder,
-
-      selectedMonthlySchedule,
-      selectedWeeklySchedule,
-      selectedHour,
-      selectedPeriodLabel,
-      selectedMonthDay,
-      selectedWeekdayLabel,
-      selectedMaxCopiesNumber,
       isReset,
 
       isCheckedDocuments,
@@ -961,7 +918,47 @@ class AutomaticBackup extends React.PureComponent {
       isCopyingToLocal,
     } = this.state;
 
-    const resourcesModule = +defaultStorageTypeNumber === RESOURCES_MODULE_TYPE;
+    const isThirdPartyDefault =
+      +defaultStorageTypeNumber === RESOURCES_MODULE_TYPE;
+
+    const isDisabledThirdPartyList =
+      this.commonThirdPartyList && this.commonThirdPartyList.length === 0;
+
+    const commonProps = {
+      selectedMonthlySchedule: this.state.selectedMonthlySchedule,
+      selectedWeeklySchedule: this.state.selectedWeeklySchedule,
+      selectedHour: this.state.selectedHour,
+      selectedPeriodLabel: this.state.selectedPeriodLabel,
+      selectedMonthDay: this.state.selectedMonthDay,
+      selectedWeekdayLabel: this.state.selectedWeekdayLabel,
+      selectedMaxCopiesNumber: this.state.selectedMaxCopiesNumber,
+      isLoadingData: isLoadingData,
+
+      monthNumbersArray: this.monthNumbersArray,
+      hoursArray: this.hoursArray,
+      maxNumberCopiesArray: this.maxNumberCopiesArray,
+      periodsObject: this.periodsObject,
+      weekdaysLabelArray: this.weekdaysLabelArray,
+
+      onSelectPeriod: this.onSelectPeriod,
+      onSelectWeekDay: this.onSelectWeekDay,
+      onSelectMonthNumber: this.onSelectMonthNumber,
+      onSelectTime: this.onSelectTime,
+      onSelectMaxCopies: this.onSelectMaxCopies,
+      onSelectFolder: this.onSelectFolder,
+      onSetLoadingData: this.onSetLoadingData,
+    };
+
+    const commonRadioButtonProps = {
+      fontSize: "13px",
+      fontWeight: "400",
+      isDisabled: isCheckedThirdParty
+        ? isLoadingData || isDisabledThirdPartyList
+        : isLoadingData,
+      value: "value",
+      className: "backup_radio-button",
+      onClick: this.onClickShowStorage,
+    };
 
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
@@ -981,70 +978,31 @@ class AutomaticBackup extends React.PureComponent {
           <div className="backup_modules">
             <StyledModules>
               <RadioButton
-                fontSize="13px"
-                fontWeight="400"
+                {...commonRadioButtonProps}
                 label={t("DocumentsModule")}
                 name={"0"}
                 key={0}
-                onClick={this.onClickShowStorage}
                 isChecked={isCheckedDocuments}
-                isDisabled={isLoadingData}
-                value="value"
-                className="backup_radio-button"
               />
               <Text className="backup-description">
                 {t("DocumentsModuleDescription")}
               </Text>
               {isCheckedDocuments && (
                 <DocumentsModule
-                  selectedPeriodLabel={selectedPeriodLabel}
-                  selectedWeekdayLabel={selectedWeekdayLabel}
-                  selectedMonthDay={selectedMonthDay}
-                  selectedHour={selectedHour}
-                  selectedMaxCopies={selectedMaxCopiesNumber}
-                  monthNumbersArray={this.monthNumbersArray}
-                  hoursArray={this.hoursArray}
-                  maxNumberCopiesArray={this.maxNumberCopiesArray}
-                  periodsObject={this.periodsObject}
-                  weekdaysLabelArray={this.weekdaysLabelArray}
-                  onSelectPeriod={this.onSelectPeriod}
-                  onSelectWeekDay={this.onSelectWeekDay}
-                  onSelectMonthNumber={this.onSelectMonthNumber}
-                  onSelectTime={this.onSelectTime}
-                  onSelectMaxCopies={this.onSelectMaxCopies}
-                  onSelectFolder={this.onSelectFolder}
-                  onSetLoadingData={this.onSetLoadingData}
-                  weeklySchedule={selectedWeeklySchedule}
-                  monthlySchedule={selectedMonthlySchedule}
-                  defaultSelectedFolder={defaultSelectedFolder}
+                  {...commonProps}
                   isReset={isReset}
-                  resourcesModule={resourcesModule}
-                  isLoadingData={isLoadingData}
+                  isThirdPartyDefault={isThirdPartyDefault}
                   isError={isError}
                 />
               )}
             </StyledModules>
 
-            <StyledModules
-              isDisabled={
-                this.commonThirdPartyList &&
-                this.commonThirdPartyList.length === 0
-              }
-            >
+            <StyledModules isDisabled={isDisabledThirdPartyList}>
               <RadioButton
-                fontSize="13px"
-                fontWeight="400"
+                {...commonRadioButtonProps}
                 label={t("ThirdPartyResource")}
                 name={"1"}
-                onClick={this.onClickShowStorage}
                 isChecked={isCheckedThirdParty}
-                isDisabled={
-                  isLoadingData ||
-                  (this.commonThirdPartyList &&
-                    this.commonThirdPartyList.length === 0)
-                }
-                value="value"
-                className="backup_radio-button"
               />
               <Text className="backup-description">
                 {t("ThirdPartyResourceDescription")}
@@ -1052,29 +1010,9 @@ class AutomaticBackup extends React.PureComponent {
 
               {isCheckedThirdParty && (
                 <ThirdPartyModule
-                  selectedPeriodLabel={selectedPeriodLabel}
-                  selectedWeekdayLabel={selectedWeekdayLabel}
-                  selectedMonthDay={selectedMonthDay}
-                  selectedHour={selectedHour}
-                  selectedMaxCopies={selectedMaxCopiesNumber}
-                  monthNumbersArray={this.monthNumbersArray}
-                  hoursArray={this.hoursArray}
-                  maxNumberCopiesArray={this.maxNumberCopiesArray}
-                  periodsObject={this.periodsObject}
-                  weekdaysLabelArray={this.weekdaysLabelArray}
-                  onSelectPeriod={this.onSelectPeriod}
-                  onSelectWeekDay={this.onSelectWeekDay}
-                  onSelectMonthNumber={this.onSelectMonthNumber}
-                  onSelectTime={this.onSelectTime}
-                  onSelectMaxCopies={this.onSelectMaxCopies}
-                  onSelectFolder={this.onSelectFolder}
-                  onSetLoadingData={this.onSetLoadingData}
-                  weeklySchedule={selectedWeeklySchedule}
-                  monthlySchedule={selectedMonthlySchedule}
-                  defaultSelectedFolder={defaultSelectedFolder}
+                  {...commonProps}
                   isReset={isReset}
-                  resourcesModule={resourcesModule}
-                  isLoadingData={isLoadingData}
+                  isThirdPartyDefault={isThirdPartyDefault}
                   isError={isError}
                 />
               )}
@@ -1082,15 +1020,10 @@ class AutomaticBackup extends React.PureComponent {
 
             <StyledModules>
               <RadioButton
-                fontSize="13px"
-                fontWeight="400"
+                {...commonRadioButtonProps}
                 label={t("ThirdPartyStorage")}
                 name={"2"}
-                onClick={this.onClickShowStorage}
                 isChecked={isCheckedThirdPartyStorage}
-                isDisabled={isLoadingData}
-                value="value"
-                className="backup_radio-button"
               />
               <Text className="backup-description">
                 {t("ThirdPartyStorageDescription")}
@@ -1098,31 +1031,11 @@ class AutomaticBackup extends React.PureComponent {
 
               {isCheckedThirdPartyStorage && (
                 <ThirdPartyStorageModule
-                  isLoadingData={isLoadingData}
-                  selectedPeriodLabel={selectedPeriodLabel}
-                  selectedWeekdayLabel={selectedWeekdayLabel}
-                  selectedMonthDay={selectedMonthDay}
-                  selectedHour={selectedHour}
-                  selectedMaxCopies={selectedMaxCopiesNumber}
-                  monthNumbersArray={this.monthNumbersArray}
-                  hoursArray={this.hoursArray}
-                  maxNumberCopiesArray={this.maxNumberCopiesArray}
-                  periodsObject={this.periodsObject}
-                  weekdaysLabelArray={this.weekdaysLabelArray}
-                  onSelectPeriod={this.onSelectPeriod}
-                  onSelectWeekDay={this.onSelectWeekDay}
-                  onSelectMonthNumber={this.onSelectMonthNumber}
-                  onSelectTime={this.onSelectTime}
-                  onSelectMaxCopies={this.onSelectMaxCopies}
-                  onSelectFolder={this.onSelectFolder}
-                  onSetLoadingData={this.onSetLoadingData}
-                  weeklySchedule={selectedWeeklySchedule}
-                  monthlySchedule={selectedMonthlySchedule}
+                  {...commonProps}
                   onCancelModuleSettings={this.onCancelModuleSettings}
                   checkChanges={this.checkChanges}
                   onSaveModuleSettings={this.onSaveModuleSettings}
                   isChanged={isChanged}
-                  onCancelModuleSettings={this.onCancelModuleSettings}
                   isCopyingToLocal={isCopyingToLocal}
                 />
               )}
@@ -1138,7 +1051,6 @@ class AutomaticBackup extends React.PureComponent {
               primary
               isDisabled={isCopyingToLocal || isLoadingData}
               size="medium"
-              tabIndex={10}
               className="save-button"
             />
 
@@ -1147,7 +1059,6 @@ class AutomaticBackup extends React.PureComponent {
               isDisabled={isLoadingData}
               onClick={this.onCancelModuleSettings}
               size="medium"
-              tabIndex={10}
             />
           </>
         )}
