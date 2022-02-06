@@ -212,35 +212,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
   };
 
   render() {
-    const {
-      t,
-      isLoadingData,
-      isCopyingToLocal,
-      maxProgress,
-
-      selectedPeriodLabel,
-      selectedWeekdayLabel,
-      selectedHour,
-      selectedMonthDay,
-      selectedMaxCopies,
-
-      onSelectMaxCopies,
-      onSelectPeriod,
-      onSelectWeekDay,
-      onSelectMonthNumber,
-      onSelectTime,
-
-      periodsObject,
-      weekdaysLabelArray,
-      monthNumbersArray,
-      hoursArray,
-      maxNumberCopiesArray,
-
-      weeklySchedule,
-      monthlySchedule,
-
-      isChanged,
-    } = this.props;
+    const { isLoadingData, ...rest } = this.props;
     const {
       availableOptions,
       availableStorage,
@@ -250,6 +222,16 @@ class ThirdPartyStorageModule extends React.PureComponent {
       isChangedThirdParty,
     } = this.state;
 
+    const commonProps = {
+      selectedStorage: availableStorage[selectedId],
+      convertSettings: this.convertSettings,
+      isInvalidForm: this.isInvalidForm,
+      onCancelModuleSettings: this.onCancelModuleSettings,
+      isChangedThirdParty: isChangedThirdParty,
+    };
+
+    const { GoogleId, RackspaceId, SelectelId, AmazonId } = ThirdPartyStorages;
+
     return (
       <StyledAutoBackup>
         <ComboBox
@@ -258,141 +240,35 @@ class ThirdPartyStorageModule extends React.PureComponent {
           onSelect={this.onSelect}
           isDisabled={isLoadingData || isLoading}
           noBorder={false}
-          scaled={true}
-          scaledOptions={true}
+          scaled
+          scaledOptions
           dropDownMaxHeight={300}
           className="backup_combo"
         />
 
-        {selectedId === ThirdPartyStorages.GoogleId && !isLoading && (
+        {selectedId === GoogleId && !isLoading && (
           <GoogleCloudStorage
             isLoadingData={isLoadingData}
-            selectedStorage={availableStorage[selectedId]}
-            isCopyingToLocal={isCopyingToLocal}
-            maxProgress={maxProgress}
-            isChanged={isChanged}
-            selectedId={selectedId}
-            convertSettings={this.convertSettings}
-            isInvalidForm={this.isInvalidForm}
-            isChanged={isChanged}
-            selectedPeriodLabel={selectedPeriodLabel}
-            selectedWeekdayLabel={selectedWeekdayLabel}
-            selectedMonthDay={selectedMonthDay}
-            selectedHour={selectedHour}
-            selectedMaxCopies={selectedMaxCopies}
-            monthNumbersArray={monthNumbersArray}
-            hoursArray={hoursArray}
-            maxNumberCopiesArray={maxNumberCopiesArray}
-            periodsObject={periodsObject}
-            weekdaysLabelArray={weekdaysLabelArray}
-            onSelectPeriod={onSelectPeriod}
-            onSelectWeekDay={onSelectWeekDay}
-            onSelectMonthNumber={onSelectMonthNumber}
-            onSelectTime={onSelectTime}
-            onSelectMaxCopies={onSelectMaxCopies}
-            weeklySchedule={weeklySchedule}
-            monthlySchedule={monthlySchedule}
-            isChangedThirdParty={isChangedThirdParty}
-            onCancelModuleSettings={this.onCancelModuleSettings}
+            {...rest}
+            {...commonProps}
           />
         )}
 
-        {selectedId === ThirdPartyStorages.RackspaceId && !isLoading && (
-          <RackspaceStorage
-            isLoadingData={isLoadingData}
-            selectedStorage={availableStorage[selectedId]}
-            isCopyingToLocal={isCopyingToLocal}
-            maxProgress={maxProgress}
-            isChanged={isChanged}
-            selectedId={selectedId}
-            convertSettings={this.convertSettings}
-            isInvalidForm={this.isInvalidForm}
-            isChanged={isChanged}
-            selectedPeriodLabel={selectedPeriodLabel}
-            selectedWeekdayLabel={selectedWeekdayLabel}
-            selectedMonthDay={selectedMonthDay}
-            selectedHour={selectedHour}
-            selectedMaxCopies={selectedMaxCopies}
-            monthNumbersArray={monthNumbersArray}
-            hoursArray={hoursArray}
-            maxNumberCopiesArray={maxNumberCopiesArray}
-            periodsObject={periodsObject}
-            weekdaysLabelArray={weekdaysLabelArray}
-            onSelectPeriod={onSelectPeriod}
-            onSelectWeekDay={onSelectWeekDay}
-            onSelectMonthNumber={onSelectMonthNumber}
-            onSelectTime={onSelectTime}
-            onSelectMaxCopies={onSelectMaxCopies}
-            weeklySchedule={weeklySchedule}
-            monthlySchedule={monthlySchedule}
-            isChangedThirdParty={isChangedThirdParty}
-            onCancelModuleSettings={this.onCancelModuleSettings}
-          />
-        )}
+        {selectedId === RackspaceId && !isLoading && <RackspaceStorage />}
 
-        {selectedId === ThirdPartyStorages.SelectelId && !isLoading && (
+        {selectedId === SelectelId && !isLoading && (
           <SelectelStorage
             isLoadingData={isLoadingData}
-            selectedStorage={availableStorage[selectedId]}
-            isCopyingToLocal={isCopyingToLocal}
-            maxProgress={maxProgress}
-            isChanged={isChanged}
-            selectedId={selectedId}
-            convertSettings={this.convertSettings}
-            isInvalidForm={this.isInvalidForm}
-            isChanged={isChanged}
-            selectedPeriodLabel={selectedPeriodLabel}
-            selectedWeekdayLabel={selectedWeekdayLabel}
-            selectedMonthDay={selectedMonthDay}
-            selectedHour={selectedHour}
-            selectedMaxCopies={selectedMaxCopies}
-            monthNumbersArray={monthNumbersArray}
-            hoursArray={hoursArray}
-            maxNumberCopiesArray={maxNumberCopiesArray}
-            periodsObject={periodsObject}
-            weekdaysLabelArray={weekdaysLabelArray}
-            onSelectPeriod={onSelectPeriod}
-            onSelectWeekDay={onSelectWeekDay}
-            onSelectMonthNumber={onSelectMonthNumber}
-            onSelectTime={onSelectTime}
-            onSelectMaxCopies={onSelectMaxCopies}
-            weeklySchedule={weeklySchedule}
-            monthlySchedule={monthlySchedule}
-            isChangedThirdParty={isChangedThirdParty}
-            onCancelModuleSettings={this.onCancelModuleSettings}
+            {...rest}
+            {...commonProps}
           />
         )}
 
-        {selectedId === ThirdPartyStorages.AmazonId && !isLoading && (
+        {selectedId === AmazonId && !isLoading && (
           <AmazonStorage
             isLoadingData={isLoadingData}
-            selectedStorage={availableStorage[selectedId]}
-            isCopyingToLocal={isCopyingToLocal}
-            maxProgress={maxProgress}
-            isChanged={isChanged}
-            selectedId={selectedId}
-            convertSettings={this.convertSettings}
-            isInvalidForm={this.isInvalidForm}
-            isChanged={isChanged}
-            selectedPeriodLabel={selectedPeriodLabel}
-            selectedWeekdayLabel={selectedWeekdayLabel}
-            selectedMonthDay={selectedMonthDay}
-            selectedHour={selectedHour}
-            selectedMaxCopies={selectedMaxCopies}
-            monthNumbersArray={monthNumbersArray}
-            hoursArray={hoursArray}
-            maxNumberCopiesArray={maxNumberCopiesArray}
-            periodsObject={periodsObject}
-            weekdaysLabelArray={weekdaysLabelArray}
-            onSelectPeriod={onSelectPeriod}
-            onSelectWeekDay={onSelectWeekDay}
-            onSelectMonthNumber={onSelectMonthNumber}
-            onSelectTime={onSelectTime}
-            onSelectMaxCopies={onSelectMaxCopies}
-            weeklySchedule={weeklySchedule}
-            monthlySchedule={monthlySchedule}
-            isChangedThirdParty={isChangedThirdParty}
-            onCancelModuleSettings={this.onCancelModuleSettings}
+            {...rest}
+            {...commonProps}
           />
         )}
       </StyledAutoBackup>

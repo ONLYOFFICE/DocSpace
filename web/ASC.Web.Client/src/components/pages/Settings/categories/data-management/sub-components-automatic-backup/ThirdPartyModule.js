@@ -27,36 +27,14 @@ class ThirdPartyModule extends React.Component {
   render() {
     const { isPanelVisible } = this.state;
     const {
-      isLoadingData,
-
-      onSetLoadingData,
       onSelectFolder,
-
-      weeklySchedule,
-      monthlySchedule,
-
-      selectedPeriodLabel,
-      selectedWeekdayLabel,
-      selectedHour,
-      selectedMonthDay,
-      selectedMaxCopies,
-
-      onSelectMaxCopies,
-      onSelectPeriod,
-      onSelectWeekDay,
-      onSelectMonthNumber,
-      onSelectTime,
-
-      periodsObject,
-      weekdaysLabelArray,
-      monthNumbersArray,
-      hoursArray,
-      maxNumberCopiesArray,
-      defaultSelectedFolder,
-
+      isError,
+      isLoadingData,
+      onSetLoadingData,
       isReset,
       isThirdPartyDefault,
-      isError,
+      defaultSelectedFolder,
+      ...rest
     } = this.props;
 
     const passedId = isThirdPartyDefault ? defaultSelectedFolder : "";
@@ -73,29 +51,9 @@ class ThirdPartyModule extends React.Component {
           isSavingProcess={isLoadingData}
           id={passedId}
           isReset={isReset}
-          onSetLoadingData={onSetLoadingData}
         />
 
-        <ScheduleComponent
-          isLoadingData={isLoadingData}
-          selectedPeriodLabel={selectedPeriodLabel}
-          selectedWeekdayLabel={selectedWeekdayLabel}
-          selectedMonthDay={selectedMonthDay}
-          selectedHour={selectedHour}
-          selectedMaxCopies={selectedMaxCopies}
-          monthNumbersArray={monthNumbersArray}
-          hoursArray={hoursArray}
-          maxNumberCopiesArray={maxNumberCopiesArray}
-          periodsObject={periodsObject}
-          weekdaysLabelArray={weekdaysLabelArray}
-          onSelectPeriod={onSelectPeriod}
-          onSelectWeekDay={onSelectWeekDay}
-          onSelectMonthNumber={onSelectMonthNumber}
-          onSelectTime={onSelectTime}
-          onSelectMaxCopies={onSelectMaxCopies}
-          weeklySchedule={weeklySchedule}
-          monthlySchedule={monthlySchedule}
-        />
+        <ScheduleComponent isLoadingData={isLoadingData} {...rest} />
       </>
     );
   }

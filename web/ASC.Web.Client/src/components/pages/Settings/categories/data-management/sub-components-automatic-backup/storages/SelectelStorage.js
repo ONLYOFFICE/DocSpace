@@ -84,30 +84,11 @@ class SelectelStorage extends React.Component {
     const {
       t,
       isLoadingData,
-
       isCopyingToLocal,
+      isChangedThirdParty,
       isChanged,
       selectedStorage,
-
-      selectedPeriodLabel,
-      selectedWeekdayLabel,
-      selectedMonthDay,
-      selectedHour,
-      selectedMaxCopies,
-      monthNumbersArray,
-      hoursArray,
-      maxNumberCopiesArray,
-      periodsObject,
-      weekdaysLabelArray,
-      onSelectPeriod,
-      onSelectWeekDay,
-      onSelectMonthNumber,
-      onSelectTime,
-      onSelectMaxCopies,
-      weeklySchedule,
-      monthlySchedule,
-
-      isChangedThirdParty,
+      ...rest
     } = this.props;
 
     return (
@@ -121,26 +102,7 @@ class SelectelStorage extends React.Component {
           t={t}
         />
 
-        <ScheduleComponent
-          isLoadingData={isLoadingData}
-          selectedPeriodLabel={selectedPeriodLabel}
-          selectedWeekdayLabel={selectedWeekdayLabel}
-          selectedMonthDay={selectedMonthDay}
-          selectedHour={selectedHour}
-          selectedMaxCopies={selectedMaxCopies}
-          monthNumbersArray={monthNumbersArray}
-          hoursArray={hoursArray}
-          maxNumberCopiesArray={maxNumberCopiesArray}
-          periodsObject={periodsObject}
-          weekdaysLabelArray={weekdaysLabelArray}
-          onSelectPeriod={onSelectPeriod}
-          onSelectWeekDay={onSelectWeekDay}
-          onSelectMonthNumber={onSelectMonthNumber}
-          onSelectTime={onSelectTime}
-          onSelectMaxCopies={onSelectMaxCopies}
-          weeklySchedule={weeklySchedule}
-          monthlySchedule={monthlySchedule}
-        />
+        <ScheduleComponent isLoadingData={isLoadingData} {...rest} />
 
         {(isChanged || isChangedThirdParty || isChangedInput) && (
           //isChanged - from auto backup, monitor  period, time and etc. options;
