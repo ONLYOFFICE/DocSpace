@@ -53,15 +53,14 @@ const Form = (props) => {
   const { t } = useTranslation("Login");
 
   const {
-    login,
-    hashSettings,
     isDesktop,
     match,
     organizationName,
     greetingTitle,
-    history,
     thirdPartyLogin,
     providers,
+    history,
+    setRoomsMode,
   } = props;
 
   const { error, confirmedEmail } = match.params;
@@ -186,9 +185,11 @@ const Form = (props) => {
 
     if (hasError) return false;
 
-    setIsLoading(true);
     console.log("fake login");
-    setIsLoading(false);
+  };
+
+  const onManuallyLogin = () => {
+    setRoomsMode(false);
   };
 
   const onSocialButtonClick = useCallback((e) => {
@@ -365,7 +366,7 @@ const Form = (props) => {
           <Trans t={t} i18nKey="LoginDescription" ns="Login">
             We'll email you a magic code to sign in without a password. Or you
             can
-            <Link color="#2DA7DB;" fontSize="12px" href="">
+            <Link color="#2DA7DB;" fontSize="12px" onClick={onManuallyLogin}>
               log in manually.
             </Link>
           </Trans>
@@ -393,7 +394,6 @@ const Form = (props) => {
 };
 
 Form.propTypes = {
-  login: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
   hashSettings: PropTypes.object,
   greetingTitle: PropTypes.string.isRequired,
@@ -435,7 +435,6 @@ const Login = inject(({ auth }) => {
     settingsStore,
     isAuthenticated,
     isLoaded,
-    login,
     thirdPartyLogin,
     setProviders,
     providers,
@@ -443,12 +442,12 @@ const Login = inject(({ auth }) => {
   const {
     greetingSettings: greetingTitle,
     organizationName,
-    hashSettings,
     enabledJoin,
     defaultPage,
     isDesktopClient: isDesktop,
     getOAuthToken,
     getLoginLink,
+    setRoomsMode,
   } = settingsStore;
 
   return {
@@ -456,16 +455,15 @@ const Login = inject(({ auth }) => {
     isLoaded,
     organizationName,
     greetingTitle,
-    hashSettings,
     enabledJoin,
     defaultPage,
     isDesktop,
-    login,
     thirdPartyLogin,
     getOAuthToken,
     getLoginLink,
     setProviders,
     providers,
+    setRoomsMode,
   };
 })(withRouter(observer(withTranslation(["Login", "Common"])(LoginForm))));
 
