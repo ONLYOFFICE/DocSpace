@@ -630,14 +630,22 @@ class AutomaticBackup extends React.PureComponent {
   };
 
   resetModuleSettings = (key = -1) => {
+    const storageType = `${STORAGES_MODULE_TYPE}`;
+
+    console.log("key", key);
     const arrayType = [
       [`${DOCUMENT_MODULE_TYPE}`, "Documents"],
       [`${RESOURCES_MODULE_TYPE}`, "ThirdParty"],
-      [`${STORAGES_MODULE_TYPE}`, "ThirdPartyStorage"],
+      [storageType, "ThirdPartyStorage"],
     ];
+    const lastElem = arrayType.length - 1;
     let resultObj = {};
 
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < arrayType.length; i++) {
+      if (i === lastElem && key === storageType) {
+        resultObj[`isChecked${arrayType[lastElem][1]}`] = true;
+        resultObj["selectedStorageTypeNumber"] = `${key}`;
+      }
       if (key === arrayType[i][0]) {
         resultObj[`isChecked${arrayType[i][1]}`] = true;
         resultObj["selectedStorageTypeNumber"] = `${key}`;
@@ -917,7 +925,7 @@ class AutomaticBackup extends React.PureComponent {
       isError,
       isCopyingToLocal,
     } = this.state;
-
+    console.log("isCheckedThirdPartyStorage", isCheckedThirdPartyStorage);
     const isThirdPartyDefault =
       +defaultStorageTypeNumber === RESOURCES_MODULE_TYPE;
 
@@ -959,6 +967,7 @@ class AutomaticBackup extends React.PureComponent {
       className: "backup_radio-button",
       onClick: this.onClickShowStorage,
     };
+    console.log("selectedMaxCopiesNumber", commonProps.selectedMaxCopiesNumber);
 
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
@@ -980,7 +989,7 @@ class AutomaticBackup extends React.PureComponent {
               <RadioButton
                 {...commonRadioButtonProps}
                 label={t("DocumentsModule")}
-                name={"0"}
+                name={`${DOCUMENT_MODULE_TYPE}`}
                 key={0}
                 isChecked={isCheckedDocuments}
               />
@@ -1001,7 +1010,7 @@ class AutomaticBackup extends React.PureComponent {
               <RadioButton
                 {...commonRadioButtonProps}
                 label={t("ThirdPartyResource")}
-                name={"1"}
+                name={`${RESOURCES_MODULE_TYPE}`}
                 isChecked={isCheckedThirdParty}
               />
               <Text className="backup-description">
@@ -1022,7 +1031,7 @@ class AutomaticBackup extends React.PureComponent {
               <RadioButton
                 {...commonRadioButtonProps}
                 label={t("ThirdPartyStorage")}
-                name={"2"}
+                name={`${STORAGES_MODULE_TYPE}`}
                 isChecked={isCheckedThirdPartyStorage}
               />
               <Text className="backup-description">
