@@ -311,22 +311,31 @@ class ManualBackup extends React.Component {
     const isDisabledThirdParty =
       this.commonThirdPartyList && this.commonThirdPartyList.length === 0;
 
+    const commonRadioButtonProps = {
+      fontSize: "13px",
+      fontWeight: "400",
+      value: "value",
+      className: "backup_radio-button",
+      onClick: this.onClickShowStorage,
+    };
+
+    const commonModulesProps = {
+      isMaxProgress,
+      isCopyingLocal: isLoadingData,
+      onMakeCopy: this.onMakeCopy,
+    };
+
     return isInitialLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <StyledManualBackup>
         <StyledModules>
           <RadioButton
-            fontSize="13px"
-            fontWeight="400"
             label={t("TemporaryStorage")}
             name={"isCheckedTemporaryStorage"}
             key={0}
-            onClick={this.onClickShowStorage}
             isChecked={isCheckedTemporaryStorage}
-            isDisabled={isLoadingData}
-            value="value"
-            className="backup_radio-button"
+            {...commonRadioButtonProps}
           />
           <Text className="backup-description">
             {t("TemporaryStorageDescription")}
@@ -366,16 +375,12 @@ class ManualBackup extends React.Component {
 
         <StyledModules>
           <RadioButton
-            fontSize="13px"
-            fontWeight="400"
             label={t("DocumentsModule")}
             name={"isCheckedDocuments"}
             key={1}
-            onClick={this.onClickShowStorage}
             isChecked={isCheckedDocuments}
             isDisabled={isLoadingData}
-            value="value"
-            className="backup_radio-button"
+            {...commonRadioButtonProps}
           />
 
           <Text className="backup-description">
@@ -384,62 +389,46 @@ class ManualBackup extends React.Component {
 
           {isCheckedDocuments && (
             <DocumentsModule
-              isMaxProgress={isMaxProgress}
+              {...commonModulesProps}
               isCheckedDocuments={isCheckedDocuments}
-              isCopyingLocal={isLoadingData}
-              onMakeCopy={this.onMakeCopy}
             />
           )}
         </StyledModules>
 
         <StyledModules isDisabled={isDisabledThirdParty}>
           <RadioButton
-            fontSize="13px"
-            fontWeight="400"
             label={t("ThirdPartyResource")}
             name={"isCheckedThirdParty"}
             key={2}
-            onClick={this.onClickShowStorage}
             isChecked={isCheckedThirdParty}
             isDisabled={isDisabledThirdParty || isLoadingData}
-            value="value"
-            className="backup_radio-button"
+            {...commonRadioButtonProps}
           />
           <Text className="backup-description">
             {t("ThirdPartyResourceDescription")}
           </Text>
           {isCheckedThirdParty && (
             <ThirdPartyModule
-              isMaxProgress={isMaxProgress}
+              {...commonModulesProps}
               commonThirdPartyList={this.commonThirdPartyList}
-              isCopyingLocal={isLoadingData}
-              onMakeCopy={this.onMakeCopy}
             />
           )}
         </StyledModules>
 
         <StyledModules>
           <RadioButton
-            fontSize="13px"
-            fontWeight="400"
             label={t("ThirdPartyStorage")}
             name={"isCheckedThirdPartyStorage"}
             key={3}
-            onClick={this.onClickShowStorage}
             isChecked={isCheckedThirdPartyStorage}
             isDisabled={isLoadingData}
-            value="value"
-            className="backup_radio-button"
+            {...commonRadioButtonProps}
           />
           <Text className="backup-description">
             {t("ThirdPartyStorageDescription")}
           </Text>
           {isCheckedThirdPartyStorage && (
-            <ThirdPartyStorageModule
-              isMaxProgress={isMaxProgress}
-              isLoadingData={isLoadingData}
-              onMakeCopy={this.onMakeCopy}
-            />
+            <ThirdPartyStorageModule {...commonModulesProps} />
           )}
         </StyledModules>
 
