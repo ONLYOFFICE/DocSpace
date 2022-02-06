@@ -200,6 +200,10 @@ class SettingsStore {
     this.setIsLoaded(true);
   };
 
+  setRoomsMode = (mode) => {
+    this.roomsMode = mode;
+  };
+
   setIsLoading = (isLoading) => {
     this.isLoading = isLoading;
   };
