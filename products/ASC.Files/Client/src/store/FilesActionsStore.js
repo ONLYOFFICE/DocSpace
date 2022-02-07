@@ -107,6 +107,8 @@ class FilesActionStore {
 
     const selection = newSelection ? newSelection : this.filesStore.selection;
 
+    const currentFolderId = this.selectedFolderStore.id;
+
     setSecondaryProgressBarData({
       icon: "trash",
       visible: true,
@@ -148,6 +150,16 @@ class FilesActionStore {
             };
             await this.uploadDataStore.loopFilesOperations(data, pbData);
             this.updateCurrentFolder(fileIds, folderIds);
+
+            if (currentFolderId) {
+              const { socketHelper } = this.authStore.settingsStore;
+
+              socketHelper.emit({
+                command: "refresh-folder",
+                data: currentFolderId,
+              });
+            }
+
             if (isRecycleBinFolder) {
               return toastr.success(translations.deleteFromTrash);
             }
@@ -718,6 +730,7 @@ class FilesActionStore {
       canConvertSelected,
       isThirdPartyRootSelection,
       hasSelection,
+      allFilesIsEditing,
     } = this.filesStore;
     const { personal } = this.authStore.settingsStore;
     const { userAccess } = this.filesStore;
@@ -736,12 +749,16 @@ class FilesActionStore {
           hasSelection &&
           isAccessedSelected &&
           !isRecentFolder &&
-          !isFavoritesFolder
+          !isFavoritesFolder &&
+          !allFilesIsEditing
         );
 
       case "delete":
         const deleteCondition =
-          !isThirdPartyRootSelection && hasSelection && isAccessedSelected;
+          !isThirdPartyRootSelection &&
+          hasSelection &&
+          isAccessedSelected &&
+          !allFilesIsEditing;
 
         return isCommonFolder ? userAccess && deleteCondition : deleteCondition;
     }

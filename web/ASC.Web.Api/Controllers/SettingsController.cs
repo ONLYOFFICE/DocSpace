@@ -321,6 +321,8 @@ namespace ASC.Api.Settings
                 settings.OwnerId = Tenant.OwnerId;
                 settings.NameSchemaId = CustomNamingPeople.Current.Id;
 
+                settings.SocketUrl = Configuration["web:hub:url"] ?? "";
+
                 settings.Firebase = new FirebaseWrapper
                 {
                     ApiKey = Configuration["firebase:apiKey"] ?? "",

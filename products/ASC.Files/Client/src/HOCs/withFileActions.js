@@ -204,7 +204,11 @@ export default function withFileActions(WrappedFileItem) {
         }
 
         if (isMediaOrImage) {
+          localStorage.setItem("isFirstUrl", window.location.href);
           setMediaViewerData({ visible: true, id });
+
+          const url = "/products/files/#preview/" + id;
+          history.pushState(null, null, url);
           return;
         }
 

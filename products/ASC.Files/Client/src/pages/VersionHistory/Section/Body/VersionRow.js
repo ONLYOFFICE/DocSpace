@@ -36,12 +36,13 @@ const VersionRow = (props) => {
     isTabletView,
     onUpdateHeight,
     versionsListLength,
+    isEditing,
   } = props;
   const [showEditPanel, setShowEditPanel] = useState(false);
   const [commentValue, setCommentValue] = useState(info.comment);
   const [isSavingComment, setIsSavingComment] = useState(false);
 
-  const canEdit = info.access === 1 || info.access === 0;
+  const canEdit = (info.access === 1 || info.access === 0) && !isEditing;
 
   const title = `${new Date(info.updated).toLocaleString(
     culture
@@ -51,7 +52,7 @@ const VersionRow = (props) => {
 
   const onDownloadAction = () =>
     window.open(`${info.viewUrl}&version=${info.version}`, "_self");
-  const onEditComment = () => setShowEditPanel(!showEditPanel);
+  const onEditComment = () => !isEditing && setShowEditPanel(!showEditPanel);
 
   const onChange = (e) => setCommentValue(e.target.value);
 
@@ -117,6 +118,7 @@ const VersionRow = (props) => {
       canEdit={canEdit}
       isTabletView={isTabletView}
       isSavingComment={isSavingComment}
+      isEditing={isEditing}
     >
       <div className={`version-row_${index}`}>
         <Box displayProp="flex">
@@ -205,7 +207,8 @@ const VersionRow = (props) => {
 
             <Link
               type="action"
-              isHovered
+              isHovered={!isEditing}
+              noHover={isEditing}
               onClick={onEditComment}
               className="version_link"
             >
@@ -276,6 +279,8 @@ export default inject(({ auth, versionHistoryStore }) => {
     markAsVersion,
     restoreVersion,
     updateCommentVersion,
+    isEditing,
+    isEditingVersion,
   } = versionHistoryStore;
 
   return {
@@ -284,6 +289,7 @@ export default inject(({ auth, versionHistoryStore }) => {
     markAsVersion,
     restoreVersion,
     updateCommentVersion,
+    isEditing: isEditingVersion || isEditing,
   };
 })(
   withRouter(

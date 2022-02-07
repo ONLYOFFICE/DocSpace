@@ -1230,6 +1230,10 @@ namespace ASC.Api.Documents
         [Update("file/{fileId}/checkconversion")]
         public IEnumerable<ConversationResult<string>> StartConversion(string fileId, [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] CheckConversionModel<string> model)
         {
+            if (model == null)
+            {
+                model = new CheckConversionModel<string>();
+            }
             model.FileId = fileId;
             return FilesControllerHelperString.StartConversion(model);
         }
@@ -1237,6 +1241,10 @@ namespace ASC.Api.Documents
         [Update("file/{fileId:int}/checkconversion")]
         public IEnumerable<ConversationResult<int>> StartConversion(int fileId, [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] CheckConversionModel<int> model)
         {
+            if (model == null)
+            {
+                model = new CheckConversionModel<int>();
+            }
             model.FileId = fileId;
             return FilesControllerHelperInt.StartConversion(model);
         }
