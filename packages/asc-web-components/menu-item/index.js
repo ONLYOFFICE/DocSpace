@@ -64,7 +64,7 @@ const MenuItem = (props) => {
 
   const onClickAction = (e) => {
     onClick && onClick(e);
-    hideMenu();
+    hideMenu && hideMenu();
   };
 
   return options ? (
