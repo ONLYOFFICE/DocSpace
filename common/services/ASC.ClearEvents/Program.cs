@@ -68,8 +68,9 @@ builder.Host.ConfigureServices((hostContext, services) =>
 
     else diHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
 
-    services.AddHostedService<TimedClearEventsService>();
-    diHelper.TryAdd<TimedClearEventsService>();
+    services.AddHostedService<ClearEventsService>();
+    diHelper.TryAdd<ClearEventsService>();
+    diHelper.TryAdd<DbContextManager<EventsContext>>();
 });
 
 builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
