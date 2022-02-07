@@ -161,6 +161,7 @@ var config = {
       exposes: {
         "./login": "./src/Login.jsx",
         "./roomsLogin": "./src/RoomsLogin.jsx",
+        "./codeLogin": "./src/CodeLogin.jsx",
       },
       shared: {
         ...deps,

@@ -185,7 +185,7 @@ const Form = (props) => {
 
     if (hasError) return false;
 
-    console.log("fake login");
+    history.push("/code"); //TODO: confirm link?
   };
 
   const onManuallyLogin = () => {
