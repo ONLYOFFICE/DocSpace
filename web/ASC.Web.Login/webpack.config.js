@@ -162,6 +162,7 @@ var config = {
         "./login": "./src/Login.jsx",
         "./roomsLogin": "./src/RoomsLogin.jsx",
         "./codeLogin": "./src/CodeLogin.jsx",
+        "./moreLogin": "./src/sub-components/more-login.js",
       },
       shared: {
         ...deps,
