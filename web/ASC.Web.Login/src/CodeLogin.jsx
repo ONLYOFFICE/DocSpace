@@ -32,15 +32,18 @@ const Form = () => {
   const { t } = useTranslation("Login");
   const [invalidCode, setInvalidCode] = useState(false);
   const [expiredCode, setExpiredCode] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const email = "test@onlyoffice.com"; //TODO: get email from form
   const validCode = "123456"; //TODO: get from api
 
   const onSubmit = (code) => {
-    console.log(`Code ${code}`); //TODO: send code on backend
-
     if (code !== validCode) {
       setInvalidCode(true);
+    } else {
+      console.log(`Code ${code}`); //TODO: send code on backend
+      setIsLoading(true);
+      setTimeout(() => setIsLoading(false), 5000); // fake
     }
   };
 
@@ -67,7 +70,11 @@ const Form = () => {
       </Text>
 
       <div className="code-input-container">
-        <CodeInput onSubmit={onSubmit} handleChange={handleChange} />
+        <CodeInput
+          onSubmit={onSubmit}
+          handleChange={handleChange}
+          isDisabled={isLoading}
+        />
         {(expiredCode || invalidCode) && <Bar t={t} expired={expiredCode} />}
 
         {expiredCode && (
