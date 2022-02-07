@@ -280,6 +280,7 @@ class FilesStore {
   };
 
   setFiles = (files) => {
+    const { socketHelper } = this.settingsStore;
     if (files.length === 0 && this.files.length === 0) return;
 
     if (this.files?.length > 0) {
