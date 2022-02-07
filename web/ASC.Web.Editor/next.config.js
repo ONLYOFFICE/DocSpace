@@ -1,9 +1,7 @@
-const serverConfig = require("./server.config.json");
+const { homepage } = require("./package.json");
 module.exports = {
   //future: { webpack5: true },
-  env: {
-    remoteApiUrl: serverConfig.remoteApiUrl,
-  },
+  basePath: homepage,
   webpack: (config, options) => {
     return {
       ...config,
