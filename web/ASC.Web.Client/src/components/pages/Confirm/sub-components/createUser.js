@@ -161,7 +161,8 @@ const RegisterContainer = styled.div`
 `;
 
 const Confirm = (props) => {
-  const { settings, t, greetingTitle, providers } = props;
+  const { settings, t, greetingTitle, providers, isDesktop } = props;
+
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
   const [ssoLabel, setSsoLabel] = useState("");
   const [ssoUrl, setSsoUrl] = useState("");
@@ -171,7 +172,9 @@ const Confirm = (props) => {
   const [passwordValid, setPasswordValid] = useState(true);
 
   const [fname, setFname] = useState("");
+  const [fnameValid, setFnameValid] = useState(true);
   const [sname, setSname] = useState("");
+  const [snameValid, setSnameValid] = useState(true);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -193,8 +196,87 @@ const Confirm = (props) => {
     await setProviders();
   }, []);
 
+  const onSubmit = () => {
+    console.log("onSubmit");
+    const { defaultPage, linkData, hashSettings } = props;
+    const isVisitor = parseInt(linkData.emplType) === 2;
+
+    setErrorText("");
+
+    let hasError = false;
+
+    if (!fname.trim()) {
+      hasError = true;
+      setFnameValid(!hasError);
+    }
+
+    if (sname.trim()) {
+      hasError = true;
+      setSnameValid(!hasError);
+    }
+
+    if (!"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$".test(email.trim())) {
+      hasError = true;
+      setEmailValid(!hasError);
+    }
+
+    if (hasError) {
+      setIsLoading(false);
+      return false;
+    }
+
+    const hash = createPasswordHash(password, hashSettings);
+
+    const loginData = {
+      userName: email,
+      passwordHash: hash,
+    };
+
+    const personalData = {
+      firstname: fname,
+      lastname: sname,
+      email: email,
+    };
+
+    const registerData = Object.assign(personalData, {
+      isVisitor: isVisitor,
+    });
+
+    const key = props.linkData.confirmHeader;
+
+    createConfirmUser(registerData, loginData, key)
+      .then(() => window.location.replace(defaultPage))
+      .catch((error) => {
+        console.error("confirm error", error);
+        this.setState({
+          errorText: error,
+          isLoading: false,
+        });
+      });
+  };
+
   const authCallback = (profile) => {
-    oAuthLogin(profile);
+    const { t, defaultPage } = this.props;
+    const { FirstName, LastName, EMail, Serialized } = profile;
+
+    console.log(profile);
+
+    const signupAccount = {
+      EmployeeType: null,
+      FirstName: FirstName,
+      LastName: LastName,
+      Email: EMail,
+      PasswordHash: "",
+      SerializedProfile: Serialized,
+    };
+
+    signupOAuth(signupAccount)
+      .then(() => {
+        window.location.replace(defaultPage);
+      })
+      .catch((e) => {
+        toastr.error(e);
+      });
   };
 
   const setProviders = async () => {
@@ -207,6 +289,27 @@ const Confirm = (props) => {
     } catch (e) {
       console.error(e);
     }
+  };
+
+  const createConfirmUser = async (registerData, loginData, key) => {
+    const data = Object.assign(
+      { fromInviteLink: true },
+      registerData,
+      loginData
+    );
+
+    const user = await createUser(data, key);
+
+    console.log("Created user", user);
+
+    const { login } = this.props;
+    const { userName, passwordHash } = loginData;
+
+    const response = await login(userName, passwordHash);
+
+    console.log("Login", response);
+
+    return user;
   };
 
   const moreAuthOpen = () => {
@@ -232,11 +335,6 @@ const Confirm = (props) => {
   const onChangePassword = (e) => {
     setPassword(e.target.value);
   };
-
-  const onSubmit = () => {
-    console.log("onSubmit");
-  };
-
   const onSocialButtonClick = useCallback((e) => {
     const providerName = e.target.dataset.providername;
     const url = e.target.dataset.url;
@@ -351,8 +449,8 @@ const Confirm = (props) => {
           </div>
         </div>
 
-        <div class="tooltip">
-          <span class="tooltiptext">Welcome to join our portal!</span>
+        <div className="tooltip">
+          <span className="tooltiptext">Welcome to join our portal!</span>
         </div>
       </GreetingContainer>
 
@@ -413,12 +511,14 @@ const Confirm = (props) => {
           <FieldContainer
             isVertical={true}
             labelVisible={false}
+            hasError={!fnameValid}
             errorMessage={errorText ? errorText : t("Common:RequiredField")}
           >
             <TextInput
               id="first-name"
               name="first-name"
               type="text"
+              hasError={!fnameValid}
               value={fname}
               placeholder={t("FirstName")}
               size="large"
@@ -433,12 +533,14 @@ const Confirm = (props) => {
           <FieldContainer
             isVertical={true}
             labelVisible={false}
+            hasError={!snameValid}
             errorMessage={errorText ? errorText : t("Common:RequiredField")}
           >
             <TextInput
               id="last-name"
               name="last-name"
               type="text"
+              hasError={!snameValid}
               value={sname}
               placeholder={t("Common:LastName")}
               size="large"
