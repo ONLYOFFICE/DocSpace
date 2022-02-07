@@ -8,7 +8,6 @@ import FilesFilter from "@appserver/common/api/files/filter";
 import combineUrl from "@appserver/common/utils/combineUrl";
 import { AppServerConfig } from "@appserver/common/constants";
 import { homepage } from "../../../../package.json";
-//import  from "@appserver/common/utils/axiosClient";
 import throttle from "lodash/throttle";
 
 import {
@@ -175,6 +174,7 @@ export default function Home({
   doc,
   fileId, //
   actionLink,
+  error,
 }) {
   const [titleSelectorFolder, setTitleSelectorFolder] = useState("");
   const [urlSelectorFolder, setUrlSelectorFolder] = useState("");
@@ -597,6 +597,15 @@ export default function Home({
     }
   };
 
+  useEffect(() => {
+    console.log("useEffect", error);
+    if (error) {
+      error?.unAuthorized &&
+        error?.redirectPath &&
+        (window.location.href = error?.redirectPath);
+    }
+  });
+
   return (
     <div style={{ height: "100vh" }}>
       <Head title="Loading...">
@@ -618,85 +627,64 @@ export default function Home({
   );
 }
 
-export async function getServerSideProps({ params, req, query, res }) {
+export async function getServerSideProps({ params, req, query }) {
   const { headers, url } = req;
   const { version, desktop: isDesktop } = query;
-  let error,
-    docApiUrl,
-    settings,
-    fileInfo,
-    user,
-    config,
-    personal,
-    successAuth,
-    actionLink,
-    isSharingAccess,
-    doc;
+  let error = null;
 
   initSSR(headers);
 
-  const decodedId = query.fileId || query.fileid || null;
-  const fileId =
-    typeof decodedId === "string" ? encodeURIComponent(decodedId) : decodedId;
-
-  console.log(headers, url);
-
   try {
     //const doc = url.indexOf("doc=") !== -1 ? url.split("doc=")[1] : null;??
-    doc = query?.doc || null;
+    const decodedId = query.fileId || query.fileid || null;
+    const fileId =
+      typeof decodedId === "string" ? encodeURIComponent(decodedId) : decodedId;
+
+    const doc = query?.doc || null; // TODO: need to check
     const view = url.indexOf("action=view") !== -1;
+    const fileVersion = version || null;
 
     if (!fileId) {
-      error = "error file id";
+      error = { errorMessage: "Something went wrong" };
       return { props: { error } };
-    } // TODO:
+    } // TODO: t()
 
-    docApiUrl = await getDocServiceUrl();
-    settings = await getSettings();
-    user = await getUser(); // remove from node?
+    const [user, settings] = await Promise.all([getUser(), getSettings()]);
 
-    try {
-      personal = settings?.personal;
-      successAuth = !!user;
-    } catch (e) {
-      successAuth = false;
-    }
+    const successAuth = !!user;
+    const personal = settings?.personal;
 
     if (!successAuth && !doc) {
-      res.writeHead(301, {
-        // TODO:
-        Location: personal
-          ? `/sign-in?fallback=${url}`
-          : `/login?fallback=${url}`,
-        state: { url: url },
-      });
-      res.end();
-      return;
+      error = {
+        unAuthorized: true,
+        redirectPath: combineUrl(
+          AppServerConfig.proxyURL,
+          personal ? "/sign-in" : "/login"
+        ),
+      };
+      return { props: { error } };
     }
+
+    let [config, docApiUrl, fileInfo] = await Promise.all([
+      openEdit(fileId, fileVersion, doc, view),
+      getDocServiceUrl(),
+      getFileInfo(fileId),
+    ]);
+
+    const actionLink = config?.editorConfig?.actionLink;
 
     if (successAuth) {
       try {
-        fileInfo = await getFileInfo(fileId);
         // if (url.indexOf("#message/") > -1) {
         //   if (canConvert(fileInfo.fileExst)) {
         //     const url = await convertDocumentUrl();
         //     history.pushState({}, null, url);
         //   }
-        // } TODO:
+        // } TODO: move to hook?
       } catch (err) {
-        error = typeof err === "string" ? err : err.message;
+        error = { errorMessage: typeof err === "string" ? err : err.message };
       }
     }
-
-    const fileVersion = version || null;
-
-    config = await openEdit(fileId, fileVersion, doc, view);
-
-    // const NextRequestMetaSymbol = Reflect.ownKeys(req).find(
-    //   (key) => key.toString() === "Symbol(NextRequestMeta)"
-    // );
-    // const targetUrl = req[NextRequestMetaSymbol].__NEXT_INIT_URL;
-    // console.log(targetUrl);
 
     if (
       !view &&
@@ -707,7 +695,7 @@ export async function getServerSideProps({ params, req, query, res }) {
     ) {
       try {
         const formUrl = await checkFillFormDraft(fileId);
-        // TODO:
+        // TODO: move to hook?
         // history.pushState({}, null, formUrl);
         //   url = window.location.href;
       } catch (err) {
@@ -715,35 +703,38 @@ export async function getServerSideProps({ params, req, query, res }) {
       }
     }
 
-    actionLink = config?.editorConfig?.actionLink;
-
+    const needInitDesktop = false;
     if (isDesktop) {
-      // initDesktop(config); TODO:
+      // initDesktop(config); TODO: move to hook
+      needInitDesktop = true;
     }
 
-    isSharingAccess = fileInfo && fileInfo.canShare;
+    const isSharingAccess = fileInfo && fileInfo.canShare;
 
     if (view) {
       config.editorConfig.mode = "view";
     }
-  } catch (err) {
-    error = typeof err === "string" ? err : err.message;
-  }
 
-  return {
-    props: {
-      fileInfo,
-      docApiUrl,
-      config,
-      personal,
-      successAuth,
-      user,
-      error,
-      actionLink,
-      isSharingAccess,
-      url,
-      doc,
-      fileId,
-    },
-  };
+    return {
+      props: {
+        fileInfo,
+        docApiUrl,
+        config,
+        personal,
+        successAuth,
+        user,
+        error,
+        actionLink,
+        isSharingAccess,
+        url,
+        doc,
+        fileId,
+        needInitDesktop,
+      },
+    };
+  } catch (err) {
+    console.log(err);
+    error = { errorMessage: typeof err === "string" ? err : err.message };
+    return { props: { error } };
+  }
 }
