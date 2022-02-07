@@ -17,12 +17,12 @@ const StyledCatalog = styled.div`
   position: relative;
 
   @media ${mobile} {
-    top: 16px;
+    top: 64px;
   }
 
   ${isMobileOnly &&
   css`
-    top: 16px;
+    top: 64px;
   `}
 
   z-index: ${(props) =>
