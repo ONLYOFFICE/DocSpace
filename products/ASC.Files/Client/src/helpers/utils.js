@@ -36,6 +36,8 @@ export const getDefaultFileName = (format) => {
       return i18n.t("NewSpreadsheet");
     case "pptx":
       return i18n.t("NewPresentation");
+    case "docxf":
+      return i18n.t("NewMasterForm");
     default:
       return i18n.t("NewFolder");
   }
@@ -63,7 +65,7 @@ export const openDocEditor = async (
     url = combineUrl(
       AppServerConfig.proxyURL,
       config.homepage,
-      `/doceditor?fileId=${id}`
+      `/doceditor?fileId=${encodeURIComponent(id)}`
     );
   }
 

@@ -1,5 +1,6 @@
-{
+﻿{
   "AddMembers": "Mitglieder hinzufügen",
+  "Birthdate": "Geburtsdatum",
   "Comments": "Kommentare",
   "DeleteSelfProfile": "Profil löschen",
   "DisabledEmployeeStatus": "Deaktiviert",
@@ -13,6 +14,7 @@
   "Location": "Standort",
   "MaleSexStatus": "Männlich",
   "maxSizeFileError": "Maximale Dateigröße überschritten",
+  "MaxSizeLabel": "(JPG oder PNG, max 1 MB)",
   "NotBeUndone": "Dies kann nicht rückgängig gemacht werden.",
   "orDropFileHereLabel": "oder legen Sie eine Datei hier ab",
   "PasswordChangeButton": "Kennwort ändern",
@@ -24,6 +26,6 @@
   "Sex": "Geschlecht",
   "SocialProfiles": "Soziale Profile",
   "SuccessChangeUserStatus": "Der Benutzerstatus war erfolgreich geändert",
-  "SuccessSentInvitation": "Die Einladung wurde erfolgreich gesendet",
-  "Birthdate": "Geburtsdatum"
+  "SuccessDeletePersonalData": "Alle persönlichen Daten wurden erfolgreich gelöscht",
+  "SuccessSentInvitation": "Die Einladung wurde erfolgreich gesendet"
 }

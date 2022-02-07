@@ -114,7 +114,7 @@ namespace ASC.FederatedLogin.LoginProviders
         }
 
 
-        public override LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params)
+        public override LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs = null)
         {
             try
             {
@@ -142,7 +142,7 @@ namespace ASC.FederatedLogin.LoginProviders
             }
         }
 
-        protected override OAuth20Token Auth(HttpContext context, string scopes, out bool redirect, Dictionary<string, string> additionalArgs = null)
+        protected override OAuth20Token Auth(HttpContext context, string scopes, out bool redirect, IDictionary<string, string> additionalArgs = null, IDictionary<string, string> additionalStateArgs = null)
         {
             var error = context.Request.Query["error"];
             if (!string.IsNullOrEmpty(error))

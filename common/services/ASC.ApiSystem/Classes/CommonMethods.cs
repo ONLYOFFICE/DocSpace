@@ -28,7 +28,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -169,17 +170,15 @@ namespace ASC.ApiSystem.Controllers
                 return false;
             }
 
-            var webRequest = (HttpWebRequest)WebRequest.Create(url);
-            webRequest.Method = WebRequestMethods.Http.Post;
-            webRequest.Accept = "application/x-www-form-urlencoded";
-            webRequest.ContentLength = 0;
+            var request = new HttpRequestMessage();
+            request.Method = HttpMethod.Post;
+            request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/x-www-form-urlencoded"));
 
             try
             {
-                using var response = webRequest.GetResponse();
-
-                using var stream = response.GetResponseStream();
-
+                using var httpClient = new HttpClient();
+                using var response = httpClient.Send(request);
+                using var stream = response.Content.ReadAsStream();
                 using var reader = new StreamReader(stream, Encoding.UTF8);
 
                 var result = reader.ReadToEnd();
@@ -299,24 +298,37 @@ namespace ASC.ApiSystem.Controllers
             //return null;
         }
 
-        public bool ValidateRecaptcha(string response, string ip)
+        public bool ValidateRecaptcha(string response, RecaptchaType recaptchaType, string ip)
         {
             try
             {
-                var data = string.Format("secret={0}&remoteip={1}&response={2}", Configuration["recaptcha:private-key"], ip, response);
-                var url = Configuration["recaptcha:verify-url"] ?? "https://www.recaptcha.net/recaptcha/api/siteverify";
-
-                var webRequest = (HttpWebRequest)WebRequest.Create(url);
-                webRequest.Method = WebRequestMethods.Http.Post;
-                webRequest.ContentType = "application/x-www-form-urlencoded";
-                webRequest.ContentLength = data.Length;
-                using (var writer = new StreamWriter(webRequest.GetRequestStream()))
+                string privateKey;
+                switch (recaptchaType)
                 {
-                    writer.Write(data);
+                    case RecaptchaType.AndroidV2:
+                        privateKey = Configuration["recaptcha:private-key:android"];
+                        break;
+                    case RecaptchaType.iOSV2:
+                        privateKey = Configuration["recaptcha:private-key:ios"];
+                        break;
+                    default:
+                        privateKey = Configuration["recaptcha:private-key"];
+                        break;
                 }
 
-                using var webResponse = webRequest.GetResponse();
-                using var reader = new StreamReader(webResponse.GetResponseStream());
+                var data = string.Format("secret={0}&remoteip={1}&response={2}", privateKey, ip, response);
+                var url = Configuration["recaptcha:verify-url"] ?? "https://www.recaptcha.net/recaptcha/api/siteverify";
+
+                var request = new HttpRequestMessage();
+                request.RequestUri = new Uri(url);
+                request.Method = HttpMethod.Post;
+                request.Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
+
+                using var httpClient = new HttpClient();
+                using var httpClientResponse = httpClient.Send(request);
+                using var stream = httpClientResponse.Content.ReadAsStream();
+                using var reader = new StreamReader(stream);
+
                 var resp = reader.ReadToEnd();
                 var resObj = JObject.Parse(resp);
 

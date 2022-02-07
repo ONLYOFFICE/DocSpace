@@ -30,6 +30,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -237,10 +238,13 @@ namespace ASC.Data.Storage
         {
             try
             {
-                var request = (HttpWebRequest)WebRequest.Create(path);
-                request.Method = "HEAD";
-                using var resp = (HttpWebResponse)request.GetResponse();
-                return resp.StatusCode == HttpStatusCode.OK;
+                var request = new HttpRequestMessage();
+                request.RequestUri = new Uri(path);
+                request.Method = HttpMethod.Head;
+                using var httpClient = new HttpClient();
+                using var response = httpClient.Send(request);
+
+                return response.StatusCode == HttpStatusCode.OK;
             }
             catch (Exception)
             {

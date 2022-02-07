@@ -1,0 +1,6 @@
+﻿{
+  "DeleteGroupUsersMessage": "Seçtiğiniz devre dışı kullanıcılar silinecek.",
+  "DeleteGroupUsersMessageHeader": "Kullanıcıları portaldan sil",
+  "DeleteGroupUsersSuccessMessage": "Kullanıcılar başarıyla silindi.",
+  "DeleteUserDataConfirmation": "Başkalarıyla paylaşılan kullanıcı belgeleri silinecek. Bunu önlemek için verileri yeniden atayın."
+}

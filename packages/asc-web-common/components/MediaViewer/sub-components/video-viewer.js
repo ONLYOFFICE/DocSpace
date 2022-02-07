@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { findDOMNode } from "react-dom";
 import screenfull from "screenfull";
 import ReactPlayer from "react-player";
@@ -9,10 +9,18 @@ import Duration from "./duration";
 import Progress from "./progress";
 import MediaPauseIcon from "../../../../../public/images/media.pause.react.svg";
 import MediaPlayIcon from "../../../../../public/images/media.play.react.svg";
-import MediaFullScreenIcon from "../../../../../public/images/media.fullscreen.react.svg";
+import MediaFullScreenIcon from "../../../../../public/images/media.fullscreen.video.react.svg";
 import MediaMuteIcon from "../../../../../public/images/media.mute.react.svg";
 import MediaMuteOffIcon from "../../../../../public/images/media.muteoff.react.svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+
+const iconsStyles = css`
+  path,
+  stroke,
+  rect {
+    fill: #fff;
+  }
+`;
 
 const controlsHeight = 40;
 const StyledControls = styled.div`
@@ -26,10 +34,10 @@ const StyledControls = styled.div`
 `;
 const StyledVideoControlBtn = styled.div`
   display: inline-block;
-  height: 30px;
+  height: 26px;
   line-height: 30px;
-  margin: 5px;
-  width: 40px;
+  margin: 5px 2px;
+  width: 38px;
   border-radius: 2px;
   cursor: pointer;
   text-align: center;
@@ -39,43 +47,62 @@ const StyledVideoControlBtn = styled.div`
   }
 
   .playBtnContainer {
-    width: 23px;
+    width: 16px;
+    height: 16px;
     line-height: 0;
-    margin: 3px auto;
+    margin: 5px auto;
   }
   .pauseBtnContainer {
     display: block;
-    width: 19px;
+    width: 16px;
+    height: 16px;
     margin: 3px 10px;
     line-height: 19px;
   }
   .muteBtnContainer {
     display: block;
-    width: 26px;
-    margin: 3px 7px;
+    width: 16px;
+    height: 16px;
+    margin: 3px 11px;
     line-height: 19px;
   }
   .fullscreenBtnContainer {
     display: block;
-    width: 20px;
-    margin: 3px 10px;
+    width: 16px;
+    height: 16px;
+    margin: 3px 11px;
     line-height: 19px;
   }
 `;
 const StyledMediaPauseIcon = styled(MediaPauseIcon)`
   ${commonIconsStyles}
+  ${iconsStyles}
 `;
 const StyledMediaPlayIcon = styled(MediaPlayIcon)`
   ${commonIconsStyles}
+  ${iconsStyles}
 `;
 const StyledMediaFullScreenIcon = styled(MediaFullScreenIcon)`
   ${commonIconsStyles}
+  ${iconsStyles}
 `;
 const StyledMediaMuteIcon = styled(MediaMuteIcon)`
   ${commonIconsStyles}
+
+  path:first-child {
+    stroke: #fff;
+  }
+
+  path:last-child {
+    fill: #fff;
+  }
 `;
 const StyledMediaMuteOffIcon = styled(MediaMuteOffIcon)`
   ${commonIconsStyles}
+
+  path, rect {
+    fill: #fff;
+  }
 `;
 const VideoControlBtn = (props) => {
   return (
@@ -152,8 +179,8 @@ const StyledValumeContainer = styled.div`
 `;
 const StyledDuration = styled.div`
   display: inline-block;
-  height: 30px;
-  line-height: 30px;
+  height: 26px;
+  line-height: 26px;
   margin: 5px;
   width: 60px;
   text-align: center;

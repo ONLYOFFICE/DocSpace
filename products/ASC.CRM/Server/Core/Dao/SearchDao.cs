@@ -1,3 +1,4 @@
+
 /*
  *
  * (c) Copyright Ascensio System Limited 2010-2018
@@ -34,6 +35,7 @@ using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Core.Tenants;
 using ASC.CRM.Classes;
 using ASC.CRM.Core.EF;

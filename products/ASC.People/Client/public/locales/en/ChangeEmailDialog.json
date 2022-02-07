@@ -1,8 +1,8 @@
-{
+﻿{
   "DomainIpAddress": "Domains as IP address are not supported",
   "EmailActivationDescription": "The activation instructions will be sent to the entered email",
   "EmailChangeTitle": "Email change",
-  "EmptyEmail": "No one email parsed",
+  "EmptyEmail": "No email parsed",
   "EnterEmail": "Enter a new email address",
   "IncorrectDomain": "Incorrect domain",
   "IncorrectEmail": "Incorrect email",

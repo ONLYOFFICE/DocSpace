@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Web;
 
 using ASC.Common;
@@ -44,6 +45,8 @@ using ASC.Web.Studio.Utility;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
+
+using static ASC.Web.Core.Files.DocumentService;
 
 using CommandMethod = ASC.Web.Core.Files.DocumentService.CommandMethod;
 
@@ -94,8 +97,8 @@ namespace ASC.Web.Files.Services.DocumentService
                                           string toExtension,
                                           string documentRevisionId,
                                           string password,
-                                          Web.Core.Files.DocumentService.ThumbnailData thumbnail,
-                                          Web.Core.Files.DocumentService.SpreadsheetLayout spreadsheetLayout,
+                                          ThumbnailData thumbnail,
+                                          SpreadsheetLayout spreadsheetLayout,
                                           bool isAsync,
                                           out string convertedDocumentUri)
         {
@@ -127,12 +130,12 @@ namespace ASC.Web.Files.Services.DocumentService
                                    object fileId = null,
                                    string callbackUrl = null,
                                    string[] users = null,
-                                   Web.Core.Files.DocumentService.MetaData meta = null)
+                                   MetaData meta = null)
         {
             Logger.DebugFormat("DocService command {0} fileId '{1}' docKey '{2}' callbackUrl '{3}' users '{4}' meta '{5}'", method, fileId, docKeyForTrack, callbackUrl, users != null ? string.Join(", ", users) : null, JsonConvert.SerializeObject(meta));
             try
             {
-                var result = Web.Core.Files.DocumentService.CommandRequest(
+                var commandResponse = CommandRequest(
                     FileUtility,
                     FilesLinkUtility.DocServiceCommandUrl,
                     method,
@@ -140,15 +143,14 @@ namespace ASC.Web.Files.Services.DocumentService
                     callbackUrl,
                     users,
                     meta,
-                    FileUtility.SignatureSecret,
-                    out var version);
+                    FileUtility.SignatureSecret);
 
-                if (result == Web.Core.Files.DocumentService.CommandResultTypes.NoError)
+                if (commandResponse.Error == CommandResponse.ErrorTypes.NoError)
                 {
                     return true;
                 }
 
-                Logger.ErrorFormat("DocService command response: '{0}'", result);
+                Logger.ErrorFormat("DocService command response: '{0}' {1}", commandResponse.Error, commandResponse.ErrorString);
             }
             catch (Exception e)
             {
@@ -200,7 +202,7 @@ namespace ASC.Web.Files.Services.DocumentService
             Logger.DebugFormat("DocService request version");
             try
             {
-                var result = Web.Core.Files.DocumentService.CommandRequest(
+                var commandResponse = CommandRequest(
                     FileUtility,
                     FilesLinkUtility.DocServiceCommandUrl,
                     CommandMethod.Version,
@@ -208,15 +210,20 @@ namespace ASC.Web.Files.Services.DocumentService
                     null,
                     null,
                     null,
-                    FileUtility.SignatureSecret,
-                    out var version);
+                    FileUtility.SignatureSecret);
 
-                if (result == Web.Core.Files.DocumentService.CommandResultTypes.NoError)
+                var version = commandResponse.Version;
+                if (string.IsNullOrEmpty(version))
+                {
+                    version = "0";
+                }
+
+                if (commandResponse.Error == CommandResponse.ErrorTypes.NoError)
                 {
                     return version;
                 }
 
-                Logger.ErrorFormat("DocService command response: '{0}'", result);
+                Logger.ErrorFormat("DocService command response: '{0}' {1}", commandResponse.Error, commandResponse.ErrorString);
             }
             catch (Exception e)
             {
@@ -231,7 +238,7 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 try
                 {
-                    if (!Web.Core.Files.DocumentService.HealthcheckRequest(FilesLinkUtility.DocServiceHealthcheckUrl))
+                    if (!HealthcheckRequest(FilesLinkUtility.DocServiceHealthcheckUrl))
                     {
                         throw new Exception("bad status");
                     }
@@ -265,8 +272,12 @@ namespace ASC.Web.Files.Services.DocumentService
 
                 try
                 {
-                    var request = (HttpWebRequest)WebRequest.Create(convertedFileUri);
-                    using var response = (HttpWebResponse)request.GetResponse();
+                    var request1 = new HttpRequestMessage();
+                    request1.RequestUri = new Uri(convertedFileUri);
+
+                    using var httpClient = new HttpClient();
+                    using var response = httpClient.Send(request1);
+
                     if (response.StatusCode != HttpStatusCode.OK)
                     {
                         throw new Exception("Converted url is not available");
@@ -284,7 +295,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 try
                 {
                     var key = GenerateRevisionId(Guid.NewGuid().ToString());
-                    Web.Core.Files.DocumentService.CommandRequest(FileUtility, FilesLinkUtility.DocServiceCommandUrl, CommandMethod.Version, key, null, null, null, FileUtility.SignatureSecret, out var version);
+                    CommandRequest(FileUtility, FilesLinkUtility.DocServiceCommandUrl, CommandMethod.Version, key, null, null, null, FileUtility.SignatureSecret);
                 }
                 catch (Exception ex)
                 {

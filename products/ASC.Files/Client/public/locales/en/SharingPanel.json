@@ -1,4 +1,4 @@
-{
+﻿{
   "AddGroupsForSharingButton": "Add groups",
   "AddShareMessage": "Add message",
   "Comment": "Comment",
@@ -13,7 +13,6 @@
   "InternalLink": "Internal link",
   "LinkText": "Add users",
   "Notify users": "Notify users",
-  "Owner": "Owner",
   "ReadOnly": "Read only",
   "ShareEmailBody": "You have been granted access to the {{itemName}} document. Click the link below to open the document right now: {{shareLink}}",
   "ShareEmailSubject": "You have been granted access to the {{itemName}} document",

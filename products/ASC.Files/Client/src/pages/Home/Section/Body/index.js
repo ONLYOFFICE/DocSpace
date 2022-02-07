@@ -65,7 +65,8 @@ const SectionBodyContent = (props) => {
     if (
       e.target.closest(".scroll-body") &&
       !e.target.closest(".files-item") &&
-      !e.target.closest(".not-selectable")
+      !e.target.closest(".not-selectable") &&
+      !e.target.closest(".table-container_group-menu")
     ) {
       setSelection([]);
       setBufferSelection(null);
@@ -127,18 +128,10 @@ const SectionBodyContent = (props) => {
     document.body.classList.remove("drag-cursor");
 
     const treeElem = e.target.closest(".tree-drag");
-    const treeClassList = treeElem && treeElem.classList;
-    const isDragging = treeElem && treeClassList.contains("dragging");
-
-    let index = null;
-    for (let i in treeClassList) {
-      if (treeClassList[i] === "dragging") {
-        index = i - 1;
-        break;
-      }
-    }
-
-    const treeValue = isDragging ? treeClassList[index].split("_")[1] : null;
+    const treeDataValue = treeElem?.dataset?.value;
+    const splitValue = treeDataValue && treeDataValue.split(" ");
+    const isDragging = splitValue && splitValue.includes("dragging");
+    const treeValue = isDragging ? splitValue[0] : null;
 
     const elem = e.target.closest(".droppable");
     const title = elem && elem.dataset.title;
@@ -187,6 +180,7 @@ const SectionBodyContent = (props) => {
   };
 
   //console.log("Files Home SectionBodyContent render", props);
+
   return (
     <Consumer>
       {(context) =>
@@ -236,8 +230,6 @@ export default inject(
       fileActionId: fileActionStore.id,
       isEmptyFilesList,
       setDragging,
-      startDrag,
-      setStartDrag,
       folderId: selectedFolderStore.id,
       setTooltipPosition,
       isRecycleBinFolder: treeFoldersStore.isRecycleBinFolder,
@@ -251,7 +243,7 @@ export default inject(
   }
 )(
   withRouter(
-    withTranslation(["Home", "Translations"])(
+    withTranslation(["Home", "Common", "Translations"])(
       withLoader(observer(SectionBodyContent))()
     )
   )

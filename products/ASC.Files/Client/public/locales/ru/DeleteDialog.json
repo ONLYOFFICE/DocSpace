@@ -1,4 +1,4 @@
-{
+﻿{
   "MoveToTrashButton": "Переместить в корзину",
   "MoveToTrashItemsNote": "Если вы удалите расшаренные элементы, другие пользователи не смогут получить к ним доступ.",
   "MoveToTrashItemsTitle": "Переместить элементы в корзину?",
@@ -8,6 +8,5 @@
   "MoveToTrashOneFolderTitle": "Переместить папку в корзину?",
   "UnsubscribeButton": "Отписаться",
   "UnsubscribeNote": "Вы действительно хотите отписаться от выделенных элементов из списка?",
-  "UnsubscribeTitle": "Подтверждение отписки",
-  "ConfirmRemove": "Подтверждение удаления"
+  "UnsubscribeTitle": "Подтверждение отписки"
 }

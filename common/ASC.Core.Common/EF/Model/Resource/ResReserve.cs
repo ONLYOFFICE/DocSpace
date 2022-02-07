@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
+﻿
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model.Resource
@@ -19,7 +18,7 @@ namespace ASC.Core.Common.EF.Model.Resource
         {
             modelBuilder
                 .Add(MySqlAddResReserve, Provider.MySql)
-                .Add(PgSqlAddResReserve, Provider.Postgre);
+                .Add(PgSqlAddResReserve, Provider.PostgreSql);
             return modelBuilder;
         }
         public static void MySqlAddResReserve(this ModelBuilder modelBuilder)

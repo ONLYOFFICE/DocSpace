@@ -175,10 +175,16 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Create("logout")]
+        [Read("logout")]// temp fix
         public void Logout()
         {
+            if (SecurityContext.IsAuthenticated)
+                CookiesManager.ResetUserCookie(SecurityContext.CurrentAccount.ID);
+
             CookiesManager.ClearCookies(CookiesType.AuthKey);
             CookiesManager.ClearCookies(CookiesType.SocketIO);
+
+            SecurityContext.Logout();
         }
 
         [Create("confirm", false)]
@@ -225,14 +231,14 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Create(@"sendsms", false)]
-        public AuthenticationTokenData SendSmsCodeFromBody([FromBody]AuthModel model)
+        public AuthenticationTokenData SendSmsCodeFromBody([FromBody] AuthModel model)
         {
             return SendSmsCode(model);
         }
 
         [Create(@"sendsms", false)]
         [Consumes("application/x-www-form-urlencoded")]
-        public AuthenticationTokenData SendSmsCodeFromForm([FromForm]AuthModel model)
+        public AuthenticationTokenData SendSmsCodeFromForm([FromForm] AuthModel model)
         {
             return SendSmsCode(model);
         }
@@ -295,10 +301,10 @@ namespace ASC.Web.Api.Controllers
             try
             {
                 var token = SecurityContext.AuthenticateMe(user.ID);
-                CookiesManager.SetCookies(CookiesType.AuthKey, token);
+                CookiesManager.SetCookies(CookiesType.AuthKey, token, auth.Session);
 
                 MessageService.Send(viaEmail ? MessageAction.LoginSuccessViaApi : MessageAction.LoginSuccessViaApiSocialAccount);
-                
+
                 var tenant = TenantManager.GetCurrentTenant().TenantId;
                 var expires = TenantCookieSettingsHelper.GetExpiresTime(tenant);
 
@@ -347,7 +353,7 @@ namespace ASC.Web.Api.Controllers
                 var token = SecurityContext.AuthenticateMe(user.ID);
 
                 MessageService.Send(sms ? MessageAction.LoginSuccessViaApiSms : MessageAction.LoginSuccessViaApiTfa);
-;
+                ;
                 var expires = TenantCookieSettingsHelper.GetExpiresTime(tenant);
 
                 var result = new AuthenticationTokenData
@@ -430,6 +436,8 @@ namespace ASC.Web.Api.Controllers
                     {
                         throw new Exception("user not found");
                     }
+
+                    Cache.Insert("loginsec/" + memberModel.UserName, (--counter).ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
                 }
                 else
                 {
@@ -444,7 +452,7 @@ namespace ASC.Web.Api.Controllers
                     {
                         thirdPartyProfile = ProviderManager.GetLoginProfile(memberModel.Provider, memberModel.AccessToken);
                     }
-                    
+
                     memberModel.UserName = thirdPartyProfile.EMail;
 
                     user = GetUserByThirdParty(thirdPartyProfile);

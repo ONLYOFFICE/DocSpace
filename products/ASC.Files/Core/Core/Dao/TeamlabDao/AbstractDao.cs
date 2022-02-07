@@ -33,6 +33,7 @@ using System.Text.RegularExpressions;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Files.Core.EF;
@@ -49,9 +50,8 @@ namespace ASC.Files.Core.Data
     {
         protected readonly ICache cache;
 
-        private Lazy<FilesDbContext> LazyFilesDbContext { get; }
-        public FilesDbContext FilesDbContext { get => LazyFilesDbContext.Value; }
-
+        private Lazy<EF.FilesDbContext> LazyFilesDbContext { get; }
+        public EF.FilesDbContext FilesDbContext { get => LazyFilesDbContext.Value; }
         private int tenantID;
         protected internal int TenantID { get => tenantID != 0 ? tenantID : (tenantID = TenantManager.GetCurrentTenant().TenantId); }
         protected UserManager UserManager { get; }
@@ -67,7 +67,7 @@ namespace ASC.Files.Core.Data
         protected IServiceProvider ServiceProvider { get; }
 
         protected AbstractDao(
-            DbContextManager<FilesDbContext> dbContextManager,
+            DbContextManager<EF.FilesDbContext> dbContextManager,
             UserManager userManager,
             TenantManager tenantManager,
             TenantUtil tenantUtil,
@@ -78,11 +78,11 @@ namespace ASC.Files.Core.Data
             CoreConfiguration coreConfiguration,
             SettingsManager settingsManager,
             AuthContext authContext,
-            IServiceProvider serviceProvider, 
+            IServiceProvider serviceProvider,
             ICache cache)
         {
             this.cache = cache;
-            LazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
+            LazyFilesDbContext = new Lazy<EF.FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
             UserManager = userManager;
             TenantManager = tenantManager;
             TenantUtil = tenantUtil;
@@ -123,7 +123,7 @@ namespace ASC.Files.Core.Data
                     .Join(FilesDbContext.Tree, a => a.FolderId, b => b.FolderId, (file, tree) => new { file, tree })
                     .Where(r => r.file.TenantId == f.TenantId)
                     .Where(r => r.tree.ParentId == f.Id)
-                    .Select(r=> r.file.Id)
+                    .Select(r => r.file.Id)
                     .Distinct()
                     .Count();
 
@@ -186,7 +186,7 @@ namespace ASC.Files.Core.Data
 
         internal static IQueryable<T> BuildSearch<T>(IQueryable<T> query, string text, SearhTypeEnum searhTypeEnum) where T : IDbSearch
         {
-            var lowerText = text.ToLower().Trim().Replace("%", "\\%").Replace("_", "\\_");
+            var lowerText = GetSearchText(text);
 
             return searhTypeEnum switch
             {
@@ -196,6 +196,8 @@ namespace ASC.Files.Core.Data
                 _ => query,
             };
         }
+
+        internal static string GetSearchText(string text) => (text ?? "").ToLower().Trim().Replace("%", "\\%").Replace("_", "\\_");
 
         internal enum SearhTypeEnum
         {

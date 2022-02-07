@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Text.Json.Serialization;
 
 using ASC.Api.Core.Auth;
@@ -11,6 +12,7 @@ using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Mapping;
 using ASC.Common.Utils;
+using ASC.Webhooks.Core;
 
 using Autofac;
 
@@ -21,6 +23,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -31,6 +34,9 @@ using Microsoft.Extensions.Hosting;
 
 using NLog;
 using NLog.Extensions.Logging;
+
+using StackExchange.Redis.Extensions.Core.Configuration;
+using StackExchange.Redis.Extensions.Newtonsoft;
 
 namespace ASC.Api.Core
 {
@@ -43,7 +49,7 @@ namespace ASC.Api.Core
         public virtual bool ConfirmAddScheme { get; } = false;
         public virtual bool AddAndUseSession { get; } = false;
         protected DIHelper DIHelper { get; }
-        protected bool LoadProducts { get; } = true;
+        protected bool LoadProducts { get; set; } = true;
         protected bool LoadConsumers { get; } = true;
 
         public BaseStartup(IConfiguration configuration, IHostEnvironment hostEnvironment)
@@ -51,6 +57,10 @@ namespace ASC.Api.Core
             Configuration = configuration;
             HostEnvironment = hostEnvironment;
             DIHelper = new DIHelper();
+            if (bool.TryParse(Configuration["core:products"], out var loadProducts))
+            {
+                LoadProducts = loadProducts;
+            }
         }
 
         public virtual void ConfigureServices(IServiceCollection services)
@@ -64,12 +74,10 @@ namespace ASC.Api.Core
 
             DIHelper.Configure(services);
 
-            services.AddControllers()
-                .AddXmlSerializerFormatters()
-                .AddJsonOptions(options =>
+            Action<JsonOptions> jsonOptions = options =>
                 {
                     options.JsonSerializerOptions.WriteIndented = false;
-                    options.JsonSerializerOptions.IgnoreNullValues = true;
+                    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                     options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
 
                     if (Converters != null)
@@ -79,7 +87,13 @@ namespace ASC.Api.Core
                             options.JsonSerializerOptions.Converters.Add(c);
                         }
                     }
-                });
+                };
+
+            services.AddControllers()
+                .AddXmlSerializerFormatters()
+                .AddJsonOptions(jsonOptions);
+
+            services.AddSingleton(jsonOptions);
 
             DIHelper.TryAdd<DisposeMiddleware>();
             DIHelper.TryAdd<CultureMiddleware>();
@@ -89,8 +103,28 @@ namespace ASC.Api.Core
             DIHelper.TryAdd<TenantStatusFilter>();
             DIHelper.TryAdd<ConfirmAuthHandler>();
             DIHelper.TryAdd<CookieAuthHandler>();
+            DIHelper.TryAdd<WebhooksGlobalFilterAttribute>();
 
-            DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+            var redisConfiguration = Configuration.GetSection("Redis").Get<RedisConfiguration>();
+            var kafkaConfiguration = Configuration.GetSection("kafka").Get<KafkaSettings>();
+
+            if (kafkaConfiguration != null)
+            {
+                DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+            }
+            else if (redisConfiguration != null)
+            {
+                DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+
+                services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
+            }
+            else
+            {
+                DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
+            }
+
+
+            DIHelper.TryAdd(typeof(IWebhookPublisher), typeof(WebhookPublisher));
 
             if (LoadProducts)
             {
@@ -111,6 +145,7 @@ namespace ASC.Api.Core
                 config.Filters.Add(new CustomResponseFilterAttribute());
                 config.Filters.Add(new CustomExceptionFilterAttribute());
                 config.Filters.Add(new TypeFilterAttribute(typeof(FormatFilter)));
+                config.Filters.Add(new TypeFilterAttribute(typeof(WebhooksGlobalFilterAttribute)));
 
                 config.OutputFormatters.RemoveType<XmlSerializerOutputFormatter>();
                 config.OutputFormatters.Add(new XmlOutputFormatter());
@@ -177,7 +212,7 @@ namespace ASC.Api.Core
         {
             return hostBuilder.ConfigureLogging((hostBuildexContext, r) =>
             {
-                _ = new ConfigureLogNLog(hostBuildexContext.Configuration, new ConfigurationExtension(hostBuildexContext.Configuration));
+                _ = new ConfigureLogNLog(hostBuildexContext.Configuration, new ConfigurationExtension(hostBuildexContext.Configuration), hostBuildexContext.HostingEnvironment);
                 r.AddNLog(LogManager.Configuration);
             });
         }

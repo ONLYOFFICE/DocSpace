@@ -7,44 +7,32 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import Heading from "@appserver/components/heading";
 import ContextMenu from "@appserver/components/context-menu";
 import CustomScrollbarsVirtualList from "@appserver/components/scrollbar";
-
 import { tablet, desktop } from "@appserver/components/utils/device";
 
-const foldersStyle = css`
-  grid-gap: 19px 14px;
-
+const paddingCss = css`
   @media ${desktop} {
-    margin-left: -1px;
-    padding-right: 1px;
+    margin-left: 1px;
+    padding-right: 3px;
   }
 
   @media ${tablet} {
-    grid-gap: 17px 12px;
     margin-left: -1px;
-  }
-`;
-
-const filesStyle = css`
-  grid-gap: 14px 18px;
-
-  @media ${desktop} {
-    padding-right: 5px;
-  }
-
-  @media ${tablet} {
-    grid-gap: 12px 14px;
-    margin-left: -1px;
-    padding-right: 2px;
   }
 `;
 
 const StyledGridWrapper = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(216px, 1fr));
   width: 100%;
-  padding-bottom: 24px;
+  margin-bottom: ${(props) => (props.isFolders ? "23px" : 0)};
   box-sizing: border-box;
-  ${(props) => (props.isFolders ? foldersStyle : filesStyle)};
+  ${paddingCss};
+
+  grid-gap: 14px 16px;
+
+  @media ${tablet} {
+    grid-gap: 14px;
+  }
 `;
 
 const StyledTileContainer = styled.div`
@@ -59,31 +47,13 @@ const StyledTileContainer = styled.div`
     }
     &.folder {
       padding: 0;
-
-      .drag-and-drop {
-        margin: 0px;
-      }
     }
   }
 
   .tile-items-heading {
     margin: 0;
-    padding-bottom: 11px;
+    margin-bottom: 15px;
     pointer-events: none;
-
-    &.files {
-      padding-top: 8px;
-    }
-
-    margin-left: -1px;
-  }
-
-  @media (min-width: 1024px) {
-    .tile-item-wrapper {
-      &.file {
-        margin-left: 1px;
-      }
-    }
   }
 
   @media ${tablet} {
@@ -117,11 +87,11 @@ class TileContainer extends React.PureComponent {
   }
 
   renderFolders = () => {
-    return <div></div>;
+    return <div />;
   };
 
   renderFiles = () => {
-    return <div></div>;
+    return <div />;
   };
 
   // eslint-disable-next-line react/prop-types
@@ -221,9 +191,11 @@ class TileContainer extends React.PureComponent {
 
         {Files.length > 0 && (
           <>
-            <Heading size="xsmall" className="tile-items-heading">
-              {headingFiles}
-            </Heading>
+            {Folders.length > 0 && (
+              <Heading size="xsmall" className="tile-items-heading">
+                {headingFiles}
+              </Heading>
+            )}
             {useReactWindow ? (
               <AutoSizer>{renderList}</AutoSizer>
             ) : (

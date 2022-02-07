@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { withRouter } from "react-router";
 import withContent from "../../../../../HOCs/withContent";
 import withBadges from "../../../../../HOCs/withBadges";
+import withQuickButtons from "../../../../../HOCs/withQuickButtons";
 import withFileActions from "../../../../../HOCs/withFileActions";
 import withContextOptions from "../../../../../HOCs/withContextOptions";
 import ItemIcon from "../../../../../components/ItemIcon";
-import SharedButton from "../../../../../components/SharedButton";
 import { withTranslation } from "react-i18next";
 import TableRow from "@appserver/components/table-container/TableRow";
 import TableCell from "@appserver/components/table-container/TableCell";
@@ -64,7 +64,12 @@ const StyledTableRow = styled(TableRow)`
   }
 
   .table-container_element {
-    margin-left: ${(props) => (props.item.isFolder ? "-3px" : "-4px")};
+    /* margin-left: ${(props) => (props.isFolder ? "-3px" : "-4px")}; */
+  }
+
+  .table-container_row-checkbox {
+    padding-left: 4px;
+    width: 26px;
   }
 
   &:hover {
@@ -77,7 +82,7 @@ const StyledTableRow = styled(TableRow)`
   }
 
   .table-container_row-checkbox-wrapper {
-    width: 50px;
+    min-width: 30px;
     margin-left: -24px;
     padding-left: 24px;
     border-bottom: 1px solid;
@@ -94,7 +99,7 @@ const StyledTableRow = styled(TableRow)`
   .table-container_row-context-menu-wrapper {
     margin-right: -20x;
     width: 28px;
-    padding-right: 20px;
+    padding-right: 18px;
     border-bottom: 1px solid;
     border-image-slice: 1;
     border-image-source: linear-gradient(to left, #ffffff 24px, #eceef1 24px);
@@ -105,53 +110,78 @@ const StyledTableRow = styled(TableRow)`
     ${(props) => props.checked && contextMenuWrapperCheckedStyle};
     ${(props) => props.dragging && contextMenuWrapperDraggingStyle};
   }
+
+  .edit {
+    svg:not(:root) {
+      width: 12px;
+      height: 12px;
+    }
+  }
 `;
 
 const StyledDragAndDrop = styled(DragAndDrop)`
   display: contents;
 `;
 
-const StyledShare = styled.div`
-  cursor: pointer;
-  margin: 0 auto;
-
-  .share-button {
-    padding: 4px;
-    border: 1px solid transparent;
-    border-radius: 3px;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-
-    :hover {
-      border: 1px solid #a3a9ae;
-      svg {
-        cursor: pointer;
-      }
-    }
-
-    .share-button-icon {
-      margin-right: 7px;
-    }
-  }
-`;
-
 const StyledBadgesContainer = styled.div`
-  display: flex;
-  align-items: center;
-  height: 19px;
   margin-left: 8px;
 
   .badges {
     display: flex;
     align-items: center;
-    height: 19px;
     margin-right: 12px;
+  }
+
+  .badges:last-child {
+    margin-left: 0px;
   }
 
   .badge {
     cursor: pointer;
-    height: 14px;
-    width: 14px;
-    margin-right: 6px;
+    margin-right: 8px;
+  }
+
+  .new-items {
+    min-width: 12px;
+    width: max-content;
+    margin: 1px -2px -2px -2px;
+  }
+
+  .badge-version {
+    width: max-content;
+    margin: -2px 6px -2px -2px;
+  }
+
+  .badge-new-version {
+    width: max-content;
+  }
+`;
+
+const StyledQuickButtonsContainer = styled.div`
+  width: 100%;
+
+  .badges {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .badge {
+    margin-right: 14px;
+  }
+
+  .badge:last-child {
+    margin-right: 10px;
+  }
+
+  .lock-file {
+    svg {
+      height: 12px;
+    }
+  }
+
+  .favorite {
+    margin-top: 1px;
   }
 `;
 
@@ -171,22 +201,12 @@ const FilesTableRow = (props) => {
     isDragging,
     onDrop,
     onMouseDown,
-    showShare,
     personal,
     isActive,
     onHideContextMenu,
     onFilesClick,
+    quickButtonsComponent,
   } = props;
-
-  const sharedButton =
-    item.canShare && showShare ? (
-      <SharedButton
-        t={t}
-        id={item.id}
-        shared={item.shared}
-        isFolder={item.isFolder}
-      />
-    ) : null;
 
   const element = (
     <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
@@ -236,20 +256,29 @@ const FilesTableRow = (props) => {
         dragging={dragging && isDragging}
         selectionProp={selectionProp}
         key={item.id}
-        item={item}
-        element={element}
         fileContextClick={fileContextClick}
-        onContentSelect={onContentFileSelect}
         onClick={onMouseClick}
         {...contextOptionsProps}
-        checked={checkedProps}
         isActive={isActive}
+        isFolder={item.isFolder}
         onHideContextMenu={onHideContextMenu}
         isThirdPartyFolder={item.isThirdPartyFolder}
         onDoubleClick={onFilesClick}
+        checked={checkedProps}
+        title={
+          item.isFolder
+            ? t("Translations:TitleShowFolderActions")
+            : t("Translations:TitleShowActions")
+        }
       >
         <TableCell {...dragStyles} {...selectionProp}>
-          <FileNameCell {...props} />
+          <FileNameCell
+            onContentSelect={onContentFileSelect}
+            checked={checkedProps}
+            element={element}
+            {...selectionProp}
+            {...props}
+          />
           <StyledBadgesContainer>{badgesComponent}</StyledBadgesContainer>
         </TableCell>
         {!personal && (
@@ -272,15 +301,21 @@ const FilesTableRow = (props) => {
         </TableCell>
 
         <TableCell {...dragStyles} {...selectionProp}>
-          <StyledShare>{sharedButton}</StyledShare>
+          <StyledQuickButtonsContainer>
+            {quickButtonsComponent}
+          </StyledQuickButtonsContainer>
         </TableCell>
       </StyledTableRow>
     </StyledDragAndDrop>
   );
 };
 
-export default withTranslation("Home")(
+export default withTranslation(["Home", "Common", "VersionBadge"])(
   withFileActions(
-    withRouter(withContextOptions(withContent(withBadges(FilesTableRow))))
+    withRouter(
+      withContextOptions(
+        withContent(withQuickButtons(withBadges(FilesTableRow)))
+      )
+    )
   )
 );

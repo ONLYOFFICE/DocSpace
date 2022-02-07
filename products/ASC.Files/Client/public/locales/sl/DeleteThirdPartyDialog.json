@@ -1,0 +1,4 @@
+﻿{
+  "DeleteThirdPartyAlert": "Odstranite {{service}} iz modula 'Dokumenti'? To ne bo vplivalo na vaš {{account}} račun na noben način.",
+  "SuccessDeleteThirdParty": "Tretja oseba {{service}} je izbrisana"
+}

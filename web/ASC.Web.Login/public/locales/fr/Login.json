@@ -1,4 +1,4 @@
-{
+﻿{
   "Authorization": "Autorisation",
   "CookieSettingsTitle": "Durée de validité de la session",
   "ForgotPassword": "Mot de passe oublié ?",
@@ -13,6 +13,7 @@
   "RegisterTextBodyAfterDomainsList": "Pour vous inscrire, merci de saisir votre adresse de courriel puis de cliquer sur Envoyer une demande. Un lien d'activation vous sera envoyé à cette adresse.",
   "RegisterTextBodyBeforeDomainsList": "L'inscription est accessible aux utilisateurs avec une adresse de messagerie à ",
   "RegisterTitle": "Demande d'inscription",
+  "RegistrationEmail": "Email d'enregistrement",
   "RegistrationEmailWatermark": "Adresse de courriel",
   "Remember": "Se souvenir de moi",
   "RememberHelper": "Par défaut, la durée de validité de la session est de 20 minutes. Cochez cette option pour la définir sur 1 an. Vous pouvez définir votre propre valeur en accédant aux paramètres."

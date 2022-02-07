@@ -77,6 +77,7 @@ class SelectFolderInputBody extends React.PureComponent {
       header,
       headerName,
       footer,
+      selectionButtonPrimary,
       fontSizeInput,
       maxInputWidth,
       isReset,
@@ -120,6 +121,7 @@ class SelectFolderInputBody extends React.PureComponent {
           header={header}
           headerName={headerName}
           footer={footer}
+          selectionButtonPrimary={selectionButtonPrimary}
           isReset={isReset}
         />
       </StyledComponent>

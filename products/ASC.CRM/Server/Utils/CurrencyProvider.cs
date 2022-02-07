@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 
 using ASC.Common;
@@ -37,8 +37,6 @@ using ASC.Common.Logging;
 using ASC.Core.Common.Settings;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
-
-using Autofac;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -48,39 +46,48 @@ namespace ASC.Web.CRM.Classes
     [Scope]
     public class CurrencyProvider
     {
-        private readonly ILog _log;
+        private readonly ILog _logger;
         private readonly object _syncRoot = new object();
-        private readonly Dictionary<String, CurrencyInfo> _currencies;
+        private readonly IConfiguration _configuration;
+        private readonly SettingsManager _settingsManager;
         private Dictionary<string, decimal> _exchangeRates;
         private DateTime _publisherDate;
         private const String _formatDate = "yyyy-MM-ddTHH:mm:ss.fffffffK";
+        private Dictionary<String, CurrencyInfo> _currencies;
+        private readonly DaoFactory _daoFactory;
 
         public CurrencyProvider(IOptionsMonitor<ILog> logger,
                                 IConfiguration configuration,
-                                SettingsManager settingsManager,
-                                DaoFactory daoFactory)
+                                DaoFactory daoFactory,
+                                SettingsManager settingsManager)
         {
-            _log = logger.Get("ASC");
-            Configuration = configuration;
-            SettingsManager = settingsManager;
-
-            var daocur = daoFactory.GetCurrencyInfoDao();
-            var currencies = daocur.GetAll();
-
-            if (currencies == null || currencies.Count == 0)
-            {
-                currencies = new List<CurrencyInfo>
-                    {
-                        new CurrencyInfo("Currency_UnitedStatesDollar", "USD", "$", "US", true, true)
-                    };
-            }
-
-            _currencies = currencies.ToDictionary(c => c.Abbreviation);
-
+            _logger = logger.Get("ASC");
+            _daoFactory = daoFactory;
+            _configuration = configuration;
+            _settingsManager = settingsManager;
         }
 
-        public IConfiguration Configuration { get; }
-        public SettingsManager SettingsManager { get; }
+        public Dictionary<String, CurrencyInfo> Currencies
+        {
+            get
+            {
+                if (_currencies != null) return _currencies;
+
+                var currencies = _daoFactory.GetCurrencyInfoDao().GetAll();
+
+                if (currencies == null || currencies.Count == 0)
+                {
+                    currencies = new List<CurrencyInfo>
+                            {
+                                new CurrencyInfo("Currency_UnitedStatesDollar", "USD", "$", "US", true, true)
+                            };
+                }
+
+                _currencies = currencies.ToDictionary(c => c.Abbreviation);
+
+                return _currencies;
+            }
+        }
 
         public DateTime GetPublisherDate
         {
@@ -93,31 +100,31 @@ namespace ASC.Web.CRM.Classes
 
         public CurrencyInfo Get(string currencyAbbreviation)
         {
-            if (!_currencies.ContainsKey(currencyAbbreviation))
+            if (!Currencies.ContainsKey(currencyAbbreviation))
                 return null;
 
-            return _currencies[currencyAbbreviation];
+            return Currencies[currencyAbbreviation];
         }
 
         public List<CurrencyInfo> GetAll()
         {
-            return _currencies.Values.OrderBy(v => v.Abbreviation).ToList();
+            return Currencies.Values.OrderBy(v => v.Abbreviation).ToList();
         }
 
         public List<CurrencyInfo> GetBasic()
         {
-            return _currencies.Values.Where(c => c.IsBasic).OrderBy(v => v.Abbreviation).ToList();
+            return Currencies.Values.Where(c => c.IsBasic).OrderBy(v => v.Abbreviation).ToList();
         }
 
         public List<CurrencyInfo> GetOther()
         {
-            return _currencies.Values.Where(c => !c.IsBasic).OrderBy(v => v.Abbreviation).ToList();
+            return Currencies.Values.Where(c => !c.IsBasic).OrderBy(v => v.Abbreviation).ToList();
         }
 
         public Dictionary<CurrencyInfo, Decimal> MoneyConvert(CurrencyInfo baseCurrency)
         {
             if (baseCurrency == null) throw new ArgumentNullException("baseCurrency");
-            if (!_currencies.ContainsKey(baseCurrency.Abbreviation)) throw new ArgumentOutOfRangeException("baseCurrency", "Not found.");
+            if (!Currencies.ContainsKey(baseCurrency.Abbreviation)) throw new ArgumentOutOfRangeException("baseCurrency", "Not found.");
 
             var result = new Dictionary<CurrencyInfo, Decimal>();
             var rates = GetExchangeRates();
@@ -144,12 +151,12 @@ namespace ASC.Web.CRM.Classes
 
         public bool IsConvertable(String abbreviation)
         {
-            var findedItem = _currencies.Keys.ToList().Find(item => String.Compare(abbreviation, item) == 0);
+            var findedItem = Currencies.Keys.ToList().Find(item => String.Compare(abbreviation, item) == 0);
 
             if (findedItem == null)
                 throw new ArgumentException(abbreviation);
 
-            return _currencies[findedItem].IsConvertable;
+            return Currencies[findedItem].IsConvertable;
         }
 
         public Decimal MoneyConvert(decimal amount, string from, string to)
@@ -168,7 +175,7 @@ namespace ASC.Web.CRM.Classes
         public decimal MoneyConvertToDefaultCurrency(decimal amount, string from)
         {
 
-            var crmSettings = SettingsManager.Load<CrmSettings>();
+            var crmSettings = _settingsManager.Load<CrmSettings>();
             var defaultCurrency = Get(crmSettings.DefaultCurrency);
 
             return MoneyConvert(amount, from, defaultCurrency.Abbreviation);
@@ -204,10 +211,10 @@ namespace ASC.Web.CRM.Classes
 
 
 
-                            var updateEnable = Configuration["crm:update:currency:info:enable"] != "false";
+                            var updateEnable = _configuration["crm:update:currency:info:enable"] != "false";
                             var ratesUpdatedFlag = false;
 
-                            foreach (var ci in _currencies.Values.Where(c => c.IsConvertable))
+                            foreach (var ci in Currencies.Values.Where(c => c.IsConvertable))
                             {
                                 var filepath = Path.Combine(tmppath, ci.Abbreviation + ".html");
 
@@ -244,7 +251,7 @@ namespace ASC.Web.CRM.Classes
                         }
                         catch (Exception error)
                         {
-                            _log.Error(error);
+                            _logger.Error(error);
                             _publisherDate = DateTime.UtcNow;
                         }
                     }
@@ -299,7 +306,7 @@ namespace ASC.Web.CRM.Classes
                 }
                 catch (Exception err)
                 {
-                    _log.Error(err);
+                    _logger.Error(err);
                 }
             }
         }
@@ -313,7 +320,7 @@ namespace ASC.Web.CRM.Classes
             }
             catch (Exception err)
             {
-                _log.Error(err);
+                _logger.Error(err);
             }
         }
 
@@ -331,25 +338,28 @@ namespace ASC.Web.CRM.Classes
 
                 var destinationURI = new Uri(String.Format("https://themoneyconverter.com/{0}/{0}.aspx", currency));
 
-                var request = (HttpWebRequest)WebRequest.Create(destinationURI);
-                request.Method = "GET";
-                request.AllowAutoRedirect = true;
-                request.MaximumAutomaticRedirections = 2;
-                request.UserAgent = "Mozilla/5.0 (Windows NT 6.1; rv:8.0) Gecko/20100101 Firefox/8.0";
-                request.UseDefaultCredentials = true;
+                var request = new HttpRequestMessage();
+                request.RequestUri = destinationURI;
+                request.Method = HttpMethod.Get;
+                request.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; rv:8.0) Gecko/20100101 Firefox/8.0");
 
-                using (var response = (HttpWebResponse)request.GetResponse())
-                using (var responseStream = new StreamReader(response.GetResponseStream()))
+                var handler = new HttpClientHandler();
+                handler.AllowAutoRedirect = true;
+                handler.MaxAutomaticRedirections = 2;
+                handler.UseDefaultCredentials = true;
+
+                var httpClient = new HttpClient(handler);
+                using var response = httpClient.Send(request);
+                using (var responseStream = new StreamReader(response.Content.ReadAsStream()))
                 {
                     var data = responseStream.ReadToEnd();
 
                     File.WriteAllText(filepath, data);
-
                 }
             }
             catch (Exception error)
             {
-                _log.Error(error);
+                _logger.Error(error);
             }
         }
 

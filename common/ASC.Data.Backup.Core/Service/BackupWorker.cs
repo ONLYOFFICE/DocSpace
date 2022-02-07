@@ -51,7 +51,7 @@ using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
 
-namespace ASC.Data.Backup.Service
+namespace ASC.Data.Backup.Services
 {
     [Singletone(Additional = typeof(BackupWorkerExtension))]
     public class BackupWorker
@@ -122,7 +122,7 @@ namespace ASC.Data.Backup.Service
         {
             lock (SynchRoot)
             {
-                var item = ProgressQueue.GetTasks<BackupProgressItem>().FirstOrDefault(t => t.TenantId == request.TenantId && t.BackupProgressItemEnum == BackupProgressItemEnum.Backup);
+                var item = ProgressQueue.GetTasks<BackupProgressItem>().FirstOrDefault(t => t.TenantId == request.TenantId);
                 if (item != null && item.IsCompleted)
                 {
                     ProgressQueue.RemoveTask(item.Id);
@@ -144,7 +144,7 @@ namespace ASC.Data.Backup.Service
         {
             lock (SynchRoot)
             {
-                var item = ProgressQueue.GetTasks<BackupProgressItem>().FirstOrDefault(t => t.TenantId == schedule.TenantId && t.BackupProgressItemEnum == BackupProgressItemEnum.Backup);
+                var item = ProgressQueue.GetTasks<BackupProgressItem>().FirstOrDefault(t => t.TenantId == schedule.TenantId);
                 if (item != null && item.IsCompleted)
                 {
                     ProgressQueue.RemoveTask(item.Id);
@@ -162,7 +162,7 @@ namespace ASC.Data.Backup.Service
         {
             lock (SynchRoot)
             {
-                return ToBackupProgress(ProgressQueue.GetTasks<BackupProgressItem>().FirstOrDefault(t => t.TenantId == tenantId && t.BackupProgressItemEnum == BackupProgressItemEnum.Backup));
+                return ToBackupProgress(ProgressQueue.GetTasks<BackupProgressItem>().FirstOrDefault(t => t.TenantId == tenantId));
             }
         }
 
@@ -170,7 +170,7 @@ namespace ASC.Data.Backup.Service
         {
             lock (SynchRoot)
             {
-                return ToBackupProgress(ProgressQueue.GetTasks<TransferProgressItem>().FirstOrDefault(t => t.TenantId == tenantId && t.BackupProgressItemEnum == BackupProgressItemEnum.Transfer));
+                return ToBackupProgress(ProgressQueue.GetTasks<TransferProgressItem>().FirstOrDefault(t => t.TenantId == tenantId));
             }
         }
 
@@ -178,7 +178,7 @@ namespace ASC.Data.Backup.Service
         {
             lock (SynchRoot)
             {
-                return ToBackupProgress(ProgressQueue.GetTasks<RestoreProgressItem>().FirstOrDefault(t => t.TenantId == tenantId && t.BackupProgressItemEnum == BackupProgressItemEnum.Restore));
+                return ToBackupProgress(ProgressQueue.GetTasks<RestoreProgressItem>().FirstOrDefault(t => t.TenantId == tenantId));
             }
         }
 
@@ -210,7 +210,7 @@ namespace ASC.Data.Backup.Service
         {
             lock (SynchRoot)
             {
-                var item = ProgressQueue.GetTasks<RestoreProgressItem>().FirstOrDefault(t => t.TenantId == request.TenantId && t.BackupProgressItemEnum == BackupProgressItemEnum.Restore);
+                var item = ProgressQueue.GetTasks<RestoreProgressItem>().FirstOrDefault(t => t.TenantId == request.TenantId);
                 if (item != null && item.IsCompleted)
                 {
                     ProgressQueue.RemoveTask(item.Id);
@@ -229,7 +229,7 @@ namespace ASC.Data.Backup.Service
         {
             lock (SynchRoot)
             {
-                var item = ProgressQueue.GetTasks<TransferProgressItem>().FirstOrDefault(t => t.TenantId == tenantId && t.BackupProgressItemEnum == BackupProgressItemEnum.Transfer);
+                var item = ProgressQueue.GetTasks<TransferProgressItem>().FirstOrDefault(t => t.TenantId == tenantId);
                 if (item != null && item.IsCompleted)
                 {
                     ProgressQueue.RemoveTask(item.Id);
@@ -326,19 +326,7 @@ namespace ASC.Data.Backup.Service
             }
         }
 
-        private BackupProgressItemEnum? backupProgressItemEnum;
-        public BackupProgressItemEnum BackupProgressItemEnum
-        {
-            get
-            {
-                return backupProgressItemEnum ?? GetProperty<BackupProgressItemEnum>(nameof(backupProgressItemEnum));
-            }
-            protected set
-            {
-                backupProgressItemEnum = value;
-                SetProperty(nameof(backupProgressItemEnum), value);
-            }
-        }
+        public abstract BackupProgressItemEnum BackupProgressItemEnum { get; }
 
         public abstract object Clone();
 
@@ -362,27 +350,15 @@ namespace ASC.Data.Backup.Service
         {
         }
 
+        public override BackupProgressItemEnum BackupProgressItemEnum { get => BackupProgressItemEnum.Backup; }
+
         private bool IsScheduled { get; set; }
         private Guid UserId { get; set; }
         private BackupStorageType StorageType { get; set; }
         private string StorageBasePath { get; set; }
         public bool BackupMail { get; set; }
         public Dictionary<string, string> StorageParams { get; set; }
-
-        private string link;
-        public string Link
-        {
-            get
-            {
-                return link ?? GetProperty<string>(nameof(link));
-            }
-            set
-            {
-                link = value;
-                SetProperty(nameof(link), value);
-            }
-        }
-
+        public string Link { get; private set; }
         public string TempFolder { get; set; }
         private string CurrentRegion { get; set; }
         private Dictionary<string, string> ConfigPaths { get; set; }
@@ -532,6 +508,7 @@ namespace ASC.Data.Backup.Service
         {
         }
 
+        public override BackupProgressItemEnum BackupProgressItemEnum { get => BackupProgressItemEnum.Restore; }
         public BackupStorageType StorageType { get; set; }
         public string StoragePath { get; set; }
         public bool Notify { get; set; }
@@ -565,9 +542,8 @@ namespace ASC.Data.Backup.Service
             {
                 tenant = tenantManager.GetTenant(TenantId);
                 tenantManager.SetCurrentTenant(tenant);
-                tenant.SetStatus(TenantStatus.Restoring);
+				tenant.SetStatus(TenantStatus.Restoring);
                 tenantManager.SaveTenant(tenant);
-
                 notifyHelper.SendAboutRestoreStarted(tenant, Notify);
                 var storage = backupStorageFactory.GetBackupStorage(StorageType, TenantId, StorageParams);
                 storage.Download(StoragePath, tempFile);
@@ -583,6 +559,8 @@ namespace ASC.Data.Backup.Service
                 }
 
                 Percentage = 10;
+
+                
 
                 var columnMapper = new ColumnMapper();
                 columnMapper.SetMapping("tenants_tenants", "alias", tenant.TenantAlias, (Guid.Parse(Id)).ToString("N"));
@@ -687,6 +665,7 @@ namespace ASC.Data.Backup.Service
         {
         }
 
+        public override BackupProgressItemEnum BackupProgressItemEnum { get => BackupProgressItemEnum.Transfer; }
         public string TargetRegion { get; set; }
         public bool TransferMail { get; set; }
         public bool Notify { get; set; }

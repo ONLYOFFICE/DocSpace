@@ -1,4 +1,4 @@
-{
+﻿{
   "ActivationLink": "ການເປີດໃຊ້ງານລິ້ງ",
   "AddContact": "ເພີ່ມຜູ້ຕິດຕໍ່",
   "AddPhoto": "ເພີ່ມຮູບພາບ",
@@ -7,10 +7,13 @@
   "ChangeButton": "ການປ່ຽນແປງ",
   "ChangesSavedSuccessfully": "ການປ່ຽນແປງຖືກບັນທຶກຮຽບຮ້ອຍແລ້ວ",
   "ContactInformation": "ຂໍ້​ມູນ​ຕິດ​ຕໍ່",
-  "CustomCreation": "{{ຜູ້ໃຊ້}} (ການສ້າງ)",
+  "CopiedResourceText": "ສໍາເນົາ",
+  "CustomCreation": "{{user}} (ການສ້າງ)",
   "EditPhoto": "ແກ້ໄຂຮູບພາບ",
   "EditUserDialogTitle": "ແກ້ໄຂໂປຣໄຟລ໌",
   "EmailPopupHelper": "ອີເມວຫຼັກແມ່ນໃຊ້ ສຳ ລັບການແຈ້ງເຕືອນແລະການກູ້ຄືນການເຂົ້າເຖິງ.<1> ທ່ານສາມາດສ້າງອີເມວໃໝ່ໃນໂດເມນນີ້ສຳລັບຜູ້ໃຊ້ແລະຕັ້ງລະຫັດຜ່ານໜຶ່ງຄັ້ງສຳລັບການເຂົ້າສູ່ລະບົບຄັ້ງທຳອິດ.</1>",
+  "ErrorInvalidUserFirstName": "ບໍ່ພົບຊື່",
+  "ErrorInvalidUserLastName": "ບໍ່ພົບນາມສະກຸນ",
   "FirstName": "ຊື່ແທ້",
   "Message": "ເວົ້າ",
   "ProductsAndInstruments_Products": "ໂມດູນ",

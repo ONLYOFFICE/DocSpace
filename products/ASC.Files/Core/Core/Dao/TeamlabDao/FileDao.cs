@@ -36,6 +36,7 @@ using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.ElasticSearch;
@@ -77,7 +78,7 @@ namespace ASC.Files.Core.Data
         public FileDao(
             FactoryIndexerFile factoryIndexer,
             UserManager userManager,
-            DbContextManager<FilesDbContext> dbContextManager,
+            DbContextManager<EF.FilesDbContext> dbContextManager,
             TenantManager tenantManager,
             TenantUtil tenantUtil,
             SetupInfo setupInfo,
@@ -1201,14 +1202,12 @@ namespace ASC.Files.Core.Data
                     .Select(r =>
                         {
                             var item = ServiceProvider.GetService<EditHistory>();
-                            var editHistoryAuthor = ServiceProvider.GetService<EditHistoryAuthor>();
 
-                            editHistoryAuthor.Id = r.ModifiedBy;
                             item.ID = r.Id;
                             item.Version = r.Version;
                             item.VersionGroup = r.VersionGroup;
                             item.ModifiedOn = TenantUtil.DateTimeFromUtc(r.ModifiedOn);
-                            item.ModifiedBy = editHistoryAuthor;
+                            item.ModifiedBy = r.ModifiedBy;
                             item.ChangesString = r.Changes;
                             item.Key = documentServiceHelper.GetDocKey(item.ID, item.Version, TenantUtil.DateTimeFromUtc(r.CreateOn));
 
@@ -1303,6 +1302,16 @@ namespace ASC.Files.Core.Data
             return storage.GetReadStream(string.Empty, path);
         }
 
+        public async Task<Stream> GetThumbnailAsync(File<int> file)
+        {
+            var thumnailName = ThumbnailTitle + "." + Global.ThumbnailExtension;
+            var path = GetUniqFilePath(file, thumnailName);
+            var storage = GlobalStore.GetStore();
+            var isExist = await storage.IsFileAsync(string.Empty, path);
+            if (!isExist) throw new FileNotFoundException();
+            return await storage.GetReadStreamAsync(string.Empty, path, 0);
+        }
+
         #endregion
 
         private Func<Selector<DbFile>, Selector<DbFile>> GetFuncForSearch(object parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
@@ -1378,6 +1387,7 @@ namespace ASC.Files.Core.Data
 
         protected IQueryable<DbFileQuery> FromQueryWithShared(IQueryable<DbFile> dbFiles)
         {
+            var cId = AuthContext.CurrentAccount.ID;
             return from r in dbFiles
                    select new DbFileQuery
                    {
@@ -1395,12 +1405,17 @@ namespace ASC.Files.Core.Data
                        Shared = (from f in FilesDbContext.Security
                                  where f.EntryType == FileEntryType.File && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId
                                  select f
-                                 ).Any()
+                                 ).Any(),
+                       Linked = (from f in FilesDbContext.FilesLink
+                                 where f.TenantId == r.TenantId && f.LinkedId == r.Id.ToString() && f.LinkedFor == cId
+                                 select f)
+                                 .Any()
                    };
         }
 
         protected IQueryable<DbFileQuery> FromQuery(IQueryable<DbFile> dbFiles)
         {
+            var cId = AuthContext.CurrentAccount.ID;
             return dbFiles
                 .Select(r => new DbFileQuery
                 {
@@ -1415,7 +1430,11 @@ namespace ASC.Files.Core.Data
                             where f.TenantId == r.TenantId
                             select f
                               ).FirstOrDefault(),
-                    Shared = true
+                    Shared = true,
+                    Linked = (from f in FilesDbContext.FilesLink
+                              where f.TenantId == r.TenantId && f.LinkedId == r.Id.ToString() && f.LinkedFor == cId
+                              select f)
+                                 .Any()
                 });
         }
 
@@ -1442,6 +1461,7 @@ namespace ASC.Files.Core.Data
             file.Encrypted = r.File.Encrypted;
             file.Forcesave = r.File.Forcesave;
             file.ThumbnailStatus = r.File.Thumb;
+            file.IsFillFormDraft = r.Linked;
             return file;
         }
 
@@ -1534,6 +1554,7 @@ namespace ASC.Files.Core.Data
         public DbFile File { get; set; }
         public DbFolder Root { get; set; }
         public bool Shared { get; set; }
+        public bool Linked { get; set; }
     }
 
     public class DbFileQueryWithSecurity

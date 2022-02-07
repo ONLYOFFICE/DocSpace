@@ -76,7 +76,7 @@ namespace ASC.AuditTrail
         {
             var query =
                from q in AuditTrailContext.AuditEvents
-               from p in AuditTrailContext.User.Where(p => q.UserId == p.Id).DefaultIfEmpty()
+               from p in AuditTrailContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
                where q.TenantId == tenant
                orderby q.Date descending
                select new Query { AuditEvent = q, User = p };

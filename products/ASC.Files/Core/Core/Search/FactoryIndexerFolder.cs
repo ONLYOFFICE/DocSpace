@@ -49,7 +49,7 @@ namespace ASC.Web.Files.Core.Search
     public class FactoryIndexerFolder : FactoryIndexer<DbFolder>
     {
         private IDaoFactory DaoFactory { get; }
-        public Settings Settings { get; }
+        private Settings Settings { get; }
 
         public FactoryIndexerFolder(
             IOptionsMonitor<ILog> options,

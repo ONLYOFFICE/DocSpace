@@ -1,0 +1,5 @@
+﻿{
+  "DeleteUserConfirmation": "{{userCaption}} <strong>{{user}}</strong>  silinəcək",
+  "DeleteUserDataConfirmation": "Başqaları üçün əlçatan olan sənədlər silinəcəkdir. Bunun olmaması üçün, məlumatları yenidən tanıdın.",
+  "SuccessfullyDeleteUserInfoMessage": "İstifadəçi müvəffəqiyyətlə silinmişdir"
+}

@@ -1,4 +1,4 @@
-{
+﻿{
   "Administrator": "Administrador",
   "ChangeToGuest": "Mudança para {{guestCaption}}",
   "ChangeToUser": "Mude para {{userCaption}}",
@@ -12,7 +12,7 @@
   "LblSetActive": "Ativar",
   "LblSetDisabled": "Conjunto desativado",
   "MakeInvitationLink": "Criar link para convite",
-  "MessageEmailActivationInstuctionsSentOnEmail": "As instruções de ativação de e-mail foram enviadas para o endereço de e-mail <1>{{{{email}}</1>",
+  "MessageEmailActivationInstuctionsSentOnEmail": "As instruções de ativação de e-mail foram enviadas para o endereço de e-mail <1>{{email}}</1>",
   "NotFoundDescription": "Tente um filtro diferente ou limpe-o para ver todas as pessoas da seção.",
   "NotFoundTitle": "Nenhum colega de equipe encontrado",
   "SuccessfullyRemovedGroup": "O grupo foi removido com sucesso",

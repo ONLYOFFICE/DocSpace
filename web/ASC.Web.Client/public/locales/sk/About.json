@@ -1,6 +1,9 @@
-{
+﻿{
   "AboutCompanyAddressTitle": "Adresa",
   "AboutCompanyEmailTitle": "E-mail",
-  "AboutCompanyLicensor": "Copyright",
-  "AllRightsReservedCustomMode": "<0>Ascensio System SIA.</0> <1>Všetky práva vyhradené.</1>"
+  "AboutCompanyTelTitle": "tel.",
+  "AboutHeader": "O tomto programe",
+  "DocumentManagement": "Manažment dokumentov",
+  "OnlineEditors": "Online redaktori",
+  "SoftwareLicense": "Softvérová licencia"
 }

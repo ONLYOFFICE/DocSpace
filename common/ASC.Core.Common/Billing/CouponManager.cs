@@ -155,7 +155,7 @@ namespace ASC.Core.Common.Billing
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
             const string applicationJson = "application/json";
-            var httpClient = new HttpClient { BaseAddress = BaseAddress, Timeout = TimeSpan.FromMinutes(3) };
+            using var httpClient = new HttpClient { BaseAddress = BaseAddress, Timeout = TimeSpan.FromMinutes(3) };
             httpClient.DefaultRequestHeaders.TryAddWithoutValidation("accept", applicationJson);
             httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", applicationJson);
             httpClient.DefaultRequestHeaders.TryAddWithoutValidation("X-Avangate-Authentication", CreateAuthHeader());

@@ -26,6 +26,7 @@ const Home = ({
   setIsLoading,
   setIsRefresh,
   selectedGroup,
+  viewAs,
 }) => {
   const { location } = history;
   const { pathname } = location;
@@ -62,6 +63,7 @@ const Home = ({
         withBodyScroll
         withBodyAutoFocus={!isMobile}
         isLoading={isLoading}
+        viewAs={viewAs}
       >
         <PageLayout.ArticleHeader>
           <ArticleHeaderContent />
@@ -102,7 +104,7 @@ Home.propTypes = {
 };
 
 export default inject(({ peopleStore }) => {
-  const { usersStore, selectedGroupStore, loadingStore } = peopleStore;
+  const { usersStore, selectedGroupStore, loadingStore, viewAs } = peopleStore;
   const { getUsersList } = usersStore;
   const { selectedGroup } = selectedGroupStore;
   const { isLoading, setIsLoading, setIsRefresh } = loadingStore;
@@ -113,5 +115,6 @@ export default inject(({ peopleStore }) => {
     setIsLoading,
     setIsRefresh,
     selectedGroup,
+    viewAs,
   };
 })(observer(withRouter(Home)));

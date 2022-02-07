@@ -9,17 +9,6 @@ describe("<HelpButton />", () => {
     expect(wrapper).toExist();
   });
 
-  it("HelpButton renders without error in Aside mode", () => {
-    const wrapper = mount(
-      <HelpButton
-        tooltipContent={tooltipContent}
-        displayType="aside"
-        helpButtonHeaderContent="Header text"
-      />
-    );
-    expect(wrapper).toExist();
-  });
-
   it("HelpButton componentWillUnmount  test", () => {
     const wrapper = mount(<HelpButton tooltipContent={tooltipContent} />);
     const componentWillUnmount = jest.spyOn(
@@ -35,11 +24,11 @@ describe("<HelpButton />", () => {
       <HelpButton tooltipContent={tooltipContent} />
     ).instance();
     wrapper.afterHide();
-    expect(wrapper.state.isOpen).toEqual(false);
+    expect(wrapper.state.hideTooltip).toEqual(false);
 
-    wrapper.setState({ isOpen: true });
+    wrapper.setState({ hideTooltip: false });
     wrapper.afterHide();
-    expect(wrapper.state.isOpen).toEqual(false);
+    expect(wrapper.state.hideTooltip).toEqual(false);
   });
 
   it("accepts id", () => {
@@ -64,17 +53,5 @@ describe("<HelpButton />", () => {
     );
 
     expect(wrapper.getDOMNode().style).toHaveProperty("color", "red");
-  });
-
-  it("", () => {
-    const wrapper = mount(
-      <HelpButton tooltipContent={tooltipContent} />
-    ).instance();
-    wrapper.componentDidUpdate(wrapper.props);
-
-    wrapper.componentDidUpdate({ displayType: "auto" });
-    wrapper.componentDidUpdate({ displayType: "aside" });
-
-    expect(wrapper.props).toBe(wrapper.props);
   });
 });

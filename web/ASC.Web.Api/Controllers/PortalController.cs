@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Security;
 
 using ASC.Api.Core;
@@ -15,6 +16,7 @@ using ASC.Core.Users;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
+using ASC.Web.Core.Files;
 using ASC.Web.Core.Mobile;
 using ASC.Web.Core.Utility;
 using ASC.Web.Studio.Core;
@@ -49,11 +51,12 @@ namespace ASC.Web.Api.Controllers
         private SettingsManager SettingsManager { get; }
         private IMobileAppInstallRegistrator MobileAppInstallRegistrator { get; }
         private IConfiguration Configuration { get; set; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public LicenseReader LicenseReader { get; }
-        public SetupInfo SetupInfo { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private LicenseReader LicenseReader { get; }
+        private SetupInfo SetupInfo { get; }
+        private DocumentServiceLicense DocumentServiceLicense { get; }
         private TenantExtra TenantExtra { get; set; }
-        public ILog Log { get; }
+        private ILog Log { get; }
 
 
         public PortalController(
@@ -73,7 +76,8 @@ namespace ASC.Web.Api.Controllers
             IConfiguration configuration,
             CoreBaseSettings coreBaseSettings,
             LicenseReader licenseReader,
-            SetupInfo setupInfo
+            SetupInfo setupInfo,
+            DocumentServiceLicense documentServiceLicense
             )
         {
             Log = options.CurrentValue;
@@ -92,6 +96,7 @@ namespace ASC.Web.Api.Controllers
             CoreBaseSettings = coreBaseSettings;
             LicenseReader = licenseReader;
             SetupInfo = setupInfo;
+            DocumentServiceLicense = documentServiceLicense;
             TenantExtra = tenantExtra;
         }
 
@@ -148,7 +153,9 @@ namespace ASC.Web.Api.Controllers
                 enableTariffPage = //TenantExtra.EnableTarrifSettings - think about hide-settings for opensource
                     (!CoreBaseSettings.Standalone || !string.IsNullOrEmpty(LicenseReader.LicensePath))
                     && string.IsNullOrEmpty(SetupInfo.AmiMetaUrl)
-                    && !CoreBaseSettings.CustomMode
+                    && !CoreBaseSettings.CustomMode,
+                DocServerUserQuota = DocumentServiceLicense.GetLicenseQuota(),
+                DocServerLicense = DocumentServiceLicense.GetLicense()
             };
         }
 
@@ -166,7 +173,7 @@ namespace ASC.Web.Api.Controllers
         [Read("userscount")]
         public long GetUsersCount()
         {
-            return UserManager.GetUserNames(EmployeeStatus.Active).Count();
+            return CoreBaseSettings.Personal ? 1 : UserManager.GetUserNames(EmployeeStatus.Active).Count();
         }
 
         [Read("tariff")]
@@ -212,9 +219,24 @@ namespace ASC.Web.Api.Controllers
             url = url.Replace("&amp;", "&");
             url = WebUtility.UrlEncode(url);
 
-            using var wc = new WebClient();
-            var bytes = wc.DownloadData(string.Format(Configuration["bookmarking:thumbnail-url"], url));
-            var type = wc.ResponseHeaders["Content-Type"] ?? "image/png";
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(string.Format(Configuration["bookmarking:thumbnail-url"], url));
+
+            using var httpClient = new HttpClient();
+            using var response = httpClient.Send(request);
+            using var stream = response.Content.ReadAsStream();
+            var bytes = new byte[stream.Length];
+            stream.Read(bytes, 0, (int)stream.Length);
+
+            string type;
+            if (response.Headers.TryGetValues("Content-Type", out var values))
+            {
+                type = values.First();
+            }
+            else
+            {
+                type = "image/png";
+            }
             return File(bytes, type);
         }
 
@@ -234,7 +256,7 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Create("mobile/registration")]
-        public void RegisterMobileAppInstallFromBody([FromBody]MobileAppModel model)
+        public void RegisterMobileAppInstallFromBody([FromBody] MobileAppModel model)
         {
             var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
             MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, model.Type);
@@ -242,7 +264,7 @@ namespace ASC.Web.Api.Controllers
 
         [Create("mobile/registration")]
         [Consumes("application/x-www-form-urlencoded")]
-        public void RegisterMobileAppInstallFromForm([FromForm]MobileAppModel model)
+        public void RegisterMobileAppInstallFromForm([FromForm] MobileAppModel model)
         {
             var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
             MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, model.Type);

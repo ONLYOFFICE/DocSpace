@@ -26,11 +26,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Web;
+
 using ASC.Api.Core;
 using ASC.Calendar.Core.Dao;
 using ASC.Calendar.Core.Dao.Models;
@@ -44,6 +45,7 @@ using ASC.Core.Common.EF;
 using ASC.Core.Users;
 using ASC.Security.Cryptography;
 using ASC.Web.Core.Calendars;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -204,9 +206,9 @@ namespace ASC.Calendar.BusinessObjects
 
         public List<Calendar> LoadiCalStreamsForUser(Guid userId)
         {
-            var calIds = CalendarDb.CalendarCalendars.Where(p => 
-                    p.Tenant == TenantManager.GetCurrentTenant().TenantId && 
-                    p.OwnerId == userId.ToString() && 
+            var calIds = CalendarDb.CalendarCalendars.Where(p =>
+                    p.Tenant == TenantManager.GetCurrentTenant().TenantId &&
+                    p.OwnerId == userId.ToString() &&
                     p.IcalUrl != null)
                 .Select(s => s.Id).ToArray();
             var calendars = GetCalendarsByIds(calIds.ToArray());
@@ -257,29 +259,29 @@ namespace ASC.Calendar.BusinessObjects
 
         }
 
-         public List<object[]> GetCalendarIdByCaldavGuid(string caldavGuid)
-         {
+        public List<object[]> GetCalendarIdByCaldavGuid(string caldavGuid)
+        {
             var data = CalendarDb.CalendarCalendars
                 .Where(p => p.CaldavGuid == caldavGuid)
-                .Select(s => new object[]{ 
+                .Select(s => new object[]{
                     s.Id,
                     s.OwnerId,
                     s.Tenant
                 }).ToList();
 
-             return data;
-         }
-         public Event GetEventIdByUid(string uid, int calendarId)
-         {
+            return data;
+        }
+        public Event GetEventIdByUid(string uid, int calendarId)
+        {
             var eventId = CalendarDb.CalendarEvents
-                .Where(p => 
+                .Where(p =>
                     uid.Contains(p.Uid) &&
                     p.CalendarId == calendarId
                  )
                 .Select(s => s.Id).FirstOrDefault();
 
-             return eventId == 0 ? null : GetEventById(eventId);
-         }
+            return eventId == 0 ? null : GetEventById(eventId);
+        }
 
         public Event GetEventIdOnlyByUid(string uid)
         {
@@ -482,7 +484,7 @@ namespace ASC.Calendar.BusinessObjects
             var dataCaldavGuid = CalendarDb.CalendarCalendars.Where(p => p.Id.ToString() == id).Select(s => s.CaldavGuid).FirstOrDefault();
 
             return dataCaldavGuid;
-           
+
         }
         public Calendar UpdateCalendar(int calendarId, string name, string description, List<SharingOptions.PublicItem> publicItems, List<UserViewSettings> viewSettings)
         {
@@ -749,8 +751,8 @@ namespace ASC.Calendar.BusinessObjects
             {
                 var dataCaldavGuid = CalendarDb.CalendarCalendars.Where(p => p.Id == calendarId).Select(s => s.CaldavGuid).ToArray();
 
-                if (dataCaldavGuid[0] != null) 
-                    caldavGuid = Guid.Parse(dataCaldavGuid[0].ToString());             
+                if (dataCaldavGuid[0] != null)
+                    caldavGuid = Guid.Parse(dataCaldavGuid[0].ToString());
             }
             catch (Exception ex)
             {
@@ -793,20 +795,25 @@ namespace ASC.Calendar.BusinessObjects
 
         public void RemoveCaldavCalendar(string currentUserName, string email, string calDavGuid, Uri myUri, bool isShared = false)
         {
-            var calDavServerUrl = myUri.Scheme + "://" + myUri.Host + "/caldav";           
+            var calDavServerUrl = myUri.Scheme + "://" + myUri.Host + "/caldav";
             var requestUrl = calDavServerUrl + "/" + HttpUtility.UrlEncode(currentUserName) + "/" + (isShared ? calDavGuid + "-shared" : calDavGuid);
 
             try
             {
-                var webRequest = (HttpWebRequest)WebRequest.Create(requestUrl);
-                webRequest.Method = "DELETE";
-                webRequest.ContentType = "text/xml; charset=utf-8";
+                var request = new HttpRequestMessage();
+                request.RequestUri = new Uri(requestUrl);
+                request.Method = HttpMethod.Delete;
 
                 var authorization = isShared ? GetSystemAuthorization() : GetUserAuthorization(email);
-                webRequest.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(authorization)));
 
-                using (var webResponse = webRequest.GetResponse())
-                using (var reader = new StreamReader(webResponse.GetResponseStream())){}
+                request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(authorization)));
+                request.Content.Headers.ContentType = new MediaTypeHeaderValue("text/xml")
+                {
+                    CharSet = Encoding.UTF8.WebName
+                };
+
+                using var httpClient = new HttpClient();
+                httpClient.Send(request);
             }
             catch (Exception ex)
             {
@@ -816,7 +823,7 @@ namespace ASC.Calendar.BusinessObjects
         public void RemoveExternalCalendarData(string calendarId)
         {
             using var tx = CalendarDb.Database.BeginTransaction();
-            
+
             var ccu = CalendarDb.CalendarCalendarUser.Where(r => r.ExtCalendarId == calendarId).SingleOrDefault();
 
             if (ccu != null)
@@ -1019,19 +1026,19 @@ namespace ASC.Calendar.BusinessObjects
             groups.AddRange(UserManager.GetUserGroups(userId, Constants.SysGroupCategoryId).Select(g => g.ID));
 
             var evIds = from events in CalendarDb.CalendarEvents
-                       join eventItem in CalendarDb.CalendarEventItem on events.Id equals eventItem.EventId
-                       where
-                            events.Tenant == tenantId &&
-                            (
-                                eventItem.ItemId == userId || (groups.Contains(eventItem.ItemId) && eventItem.IsGroup == 1) &&
-                                events.Tenant == tenantId &&
-                                ((events.StartDate >= utcStartDate && events.StartDate <= utcEndDate && events.Rrule == "") || events.Rrule != "") &&
-                                events.OwnerId != userId &&
-                                !(from calEventUser in CalendarDb.CalendarEventUser
-                                    where calEventUser.EventId == events.Id && calEventUser.UserId == userId && calEventUser.IsUnsubscribe == 1 
-                                    select calEventUser.EventId).Any()
-                            )
-                       select events.Id;
+                        join eventItem in CalendarDb.CalendarEventItem on events.Id equals eventItem.EventId
+                        where
+                             events.Tenant == tenantId &&
+                             (
+                                 eventItem.ItemId == userId || (groups.Contains(eventItem.ItemId) && eventItem.IsGroup == 1) &&
+                                 events.Tenant == tenantId &&
+                                 ((events.StartDate >= utcStartDate && events.StartDate <= utcEndDate && events.Rrule == "") || events.Rrule != "") &&
+                                 events.OwnerId != userId &&
+                                 !(from calEventUser in CalendarDb.CalendarEventUser
+                                   where calEventUser.EventId == events.Id && calEventUser.UserId == userId && calEventUser.IsUnsubscribe == 1
+                                   select calEventUser.EventId).Any()
+                             )
+                        select events.Id;
             return GetEventsByIds(evIds.ToArray(), userId, tenantId);
         }
 
@@ -1055,7 +1062,7 @@ namespace ASC.Calendar.BusinessObjects
                         )
                     )
                 )
-                .Select(s => s.Id).ToList();          
+                .Select(s => s.Id).ToList();
 
             return GetEventsByIds(evIds.ToArray(), userId, tenantId);
         }
@@ -1261,7 +1268,7 @@ namespace ASC.Calendar.BusinessObjects
             {
                 CalendarDb.CalendarEventItem.Remove(cei);
             }
-            else if(!userNoSubscibe)
+            else if (!userNoSubscibe)
             {
                 var newEventUser = new CalendarEventUser
                 {
@@ -1451,7 +1458,7 @@ namespace ASC.Calendar.BusinessObjects
 
             CalendarDb.SaveChanges();
             tx.Commit();
-           
+
             return GetEventById(eventId);
         }
 
@@ -1604,7 +1611,7 @@ namespace ASC.Calendar.BusinessObjects
             CalendarDb.SaveChanges();
             tx.Commit();
         }
-      
+
         public static string GetEventUid(string uid, string id = null)
         {
             if (!string.IsNullOrEmpty(uid))

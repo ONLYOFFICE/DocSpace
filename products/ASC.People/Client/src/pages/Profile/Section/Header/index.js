@@ -149,6 +149,9 @@ class SectionHeaderContent extends React.PureComponent {
     data.append("Autosave", false);
     loadAvatar(this.state.profile.id, data)
       .then((response) => {
+        if (!response.success && response.message) {
+          throw response.message;
+        }
         var img = new Image();
         img.onload = function () {
           var stateCopy = Object.assign({}, _this.state);
@@ -476,6 +479,7 @@ class SectionHeaderContent extends React.PureComponent {
           maxSizeFileError={t("Translations:maxSizeFileError")}
           unknownError={t("Common:Error")}
           saveButtonLabel={t("Common:SaveButton")}
+          maxSizeLabel={t("Translations:MaxSizeLabel")}
         />
 
         {dialogsVisible.deleteSelfProfile && (

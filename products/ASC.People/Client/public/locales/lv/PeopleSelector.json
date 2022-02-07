@@ -1,0 +1,6 @@
+﻿{
+  "CustomAllGroups": "Visas {{ groupsCaption, lowercase }}",
+  "EmptySearchUsersResult": "Nav lietotāju ar šādu vārdu",
+  "EmptyUsers": "Lietotāju nav",
+  "SearchUsersPlaceholder": "Meklēt lietotājus"
+}

@@ -47,7 +47,7 @@ class SelectFileInputBody extends React.PureComponent {
       isTablesOnly,
       isMediaOnly,
       loadingLabel,
-      header,
+      titleFilesList,
       zIndex,
       fontSizeInput,
       maxInputWidth,
@@ -87,7 +87,7 @@ class SelectFileInputBody extends React.PureComponent {
             isTables={isTablesOnly}
             isMediaOnly={isMediaOnly}
             loadingLabel={loadingLabel}
-            header={header}
+            titleFilesList={titleFilesList}
           />
         )}
       </StyledComponent>

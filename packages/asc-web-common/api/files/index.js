@@ -48,6 +48,10 @@ export function getFolderPath(folderId) {
 }
 
 export function getFolder(folderId, filter) {
+  if (folderId && typeof folderId === "string") {
+    folderId = encodeURIComponent(folderId.replace(/\\\\/g, "\\"));
+  }
+
   const params =
     filter && filter instanceof FilesFilter
       ? `${folderId}?${filter.toApiUrlParams()}`
@@ -60,26 +64,28 @@ export function getFolder(folderId, filter) {
   return request(options);
 }
 
-// const getFolderNameByType = (folderType) => {
-//   switch (folderType) {
-//     case FolderType.USER:
-//       return "@my";
-//     case FolderType.SHARE:
-//       return "@share";
-//     case FolderType.COMMON:
-//       return "@common";
-//     case FolderType.Projects:
-//       return "@projects";
-//     case FolderType.Favorites:
-//       return "@favorites";
-//     case FolderType.Recent:
-//       return "@recent";
-//     case FolderType.TRASH:
-//       return "@trash";
-//     default:
-//       return "";
-//   }
-// }; //TODO: need get from settings
+const getFolderClassNameByType = (folderType) => {
+  switch (folderType) {
+    case FolderType.USER:
+      return "tree-node-my";
+    case FolderType.SHARE:
+      return "tree-node-share";
+    case FolderType.COMMON:
+      return "tree-node-common";
+    case FolderType.Projects:
+      return "tree-node-projects";
+    case FolderType.Favorites:
+      return "tree-node-favorites";
+    case FolderType.Recent:
+      return "tree-node-recent";
+    case FolderType.Privacy:
+      return "tree-node-privacy";
+    case FolderType.TRASH:
+      return "tree-node-trash";
+    default:
+      return "";
+  }
+};
 
 const sortInDisplayOrder = (folders) => {
   const sorted = [];
@@ -141,7 +147,7 @@ export function getFoldersTree() {
       const folders = sortInDisplayOrder(response);
       return folders.map((data, index) => {
         const type = +data.current.rootFolderType;
-        //const name = getFolderNameByType(type);
+        const name = getFolderClassNameByType(type);
         const isRecycleBinFolder = type === FolderType.TRASH;
         return {
           id: data.current.id,
@@ -149,7 +155,7 @@ export function getFoldersTree() {
           parentId: data.current.parentId,
           title: data.current.title,
           rootFolderType: type,
-          //rootFolderName: name,
+          folderClassName: name,
           // folders: !isRecycleBinFolder
           //   ? data.folders.map((folder) => {
           //       return {
@@ -271,8 +277,8 @@ export function deleteFolder(folderId, deleteAfter, immediately) {
   return request(options);
 }
 
-export function createFile(folderId, title) {
-  const data = { title };
+export function createFile(folderId, title, templateId) {
+  const data = { title, templateId };
   const options = {
     method: "post",
     url: `/files/${folderId}/file`,
@@ -700,6 +706,8 @@ export function setEncryptionKeys(keys) {
   const data = {
     publicKey: keys.publicKey,
     privateKeyEnc: keys.privateKeyEnc,
+    enable: keys.enable,
+    update: keys.update,
   };
   return request({
     method: "put",
@@ -796,4 +804,47 @@ export function getPresignedUri(fileId) {
     method: "get",
     url: `files/file/${fileId}/presigned`,
   });
+}
+
+export function checkFillFormDraft(fileId) {
+  return request({
+    method: "post",
+    url: `files/masterform/${fileId}/checkfillformdraft`,
+    data: { fileId },
+  });
+}
+
+export function fileCopyAs(fileId, destTitle, destFolderId, enableExternalExt) {
+  return request({
+    method: "post",
+    url: `files/file/${fileId}/copyas`,
+    data: {
+      destTitle,
+      destFolderId,
+      enableExternalExt,
+    },
+  });
+}
+
+export function getEditHistory(fileId, doc) {
+  return request({
+    method: "get",
+    url: `files/file/${fileId}/edit/history?doc=${doc}`,
+  });
+}
+
+export function getEditDiff(fileId, version, doc) {
+  return request({
+    method: "get",
+    url: `files/file/${fileId}/edit/diff?version=${version}&doc=${doc}`,
+  });
+}
+
+export function restoreDocumentsVersion(fileId, version, doc) {
+  const options = {
+    method: "get",
+    url: `files/file/${fileId}/restoreversion?version=${version}&doc=${doc}`,
+  };
+
+  return request(options);
 }

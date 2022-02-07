@@ -56,7 +56,7 @@ class SharingRow extends React.Component {
         body,
       });
 
-    window.open(mailtoLink);
+    window.open(mailtoLink, "_self");
   };
 
   onShareTwitter = () => {
@@ -69,7 +69,7 @@ class SharingRow extends React.Component {
         text: shareLink,
       });
 
-    window.open(twitterLink);
+    window.open(twitterLink, "", "width=1000,height=670");
   };
 
   // onShareFacebook = () => {
@@ -131,15 +131,6 @@ class SharingRow extends React.Component {
 
     const externalLinkOptions = [
       {
-        key: "linkItem_0",
-        label: t("CopyExternalLink"),
-        onClick: this.onCopyClick,
-      },
-      {
-        key: "linkItem_1",
-        isSeparator: true,
-      },
-      {
         key: "linkItem_2",
         label: `${t("ShareVia")} e-mail`,
         onClick: this.onShareEmail,
@@ -181,6 +172,7 @@ class SharingRow extends React.Component {
             externalLinkData={externalLinkData}
             onToggleLink={onToggleLink}
             withToggle
+            onCopyLink={this.onCopyClick}
             {...this.props}
           />
         )}
@@ -250,7 +242,7 @@ class SharingRow extends React.Component {
                     ))}
                   {isOwner ? (
                     <Text className="sharing_panel-remove-icon" color="#A3A9AE">
-                      {t("Owner")}
+                      {t("Common:Owner")}
                     </Text>
                   ) : id === isMyId ? (
                     <Text

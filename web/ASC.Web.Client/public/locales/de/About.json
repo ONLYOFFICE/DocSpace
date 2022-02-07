@@ -1,9 +1,9 @@
-{
+﻿{
   "AboutCompanyAddressTitle": "Adresse",
   "AboutCompanyEmailTitle": "E-Mail",
-  "AboutCompanyLicensor": "Urheberrecht",
   "AboutCompanyTelTitle": "Tel.",
-  "AllRightsReservedCustomMode": "<0>Ascensio System SIA.</0> <1>Alle Rechte vorbehalten.</1>",
-  "LicensedUnder": "Diese Software wird unter <1>{{license}}</1> vertrieben",
-  "SourceCode": "Den Quellcode finden Sie unter"
+  "AboutHeader": "Über dieses Programm",
+  "DocumentManagement": "Dokumentenverwaltung",
+  "OnlineEditors": "Online-Editoren",
+  "SoftwareLicense": "Lizenz"
 }

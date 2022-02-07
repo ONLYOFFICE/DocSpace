@@ -1,8 +1,8 @@
-{
+﻿{
   "ChangeUsersActiveStatus": "разблокированы",
   "ChangeUsersDisableStatus": "заблокированы",
   "ChangeUsersStatusButton": "Изменить статус",
-  "ChangeUserStatusDialog": "Пользователи со статусом '{{ userStatus }}' будут  {{ status }}.",
+  "ChangeUserStatusDialog": "Пользователи со статусом '{{ userStatus }}' будут {{ status }}.",
   "ChangeUserStatusDialogHeader": "Изменение статуса пользователя",
   "ChangeUserStatusDialogMessage": "Вы не можете изменить статус владельца портала и свой собственный статус"
 }

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.IO;
-using System.Net;
+using System.Net.Http;
 using System.Security.Authentication;
+using System.Text;
 
 using ASC.Common;
 using ASC.Web.Studio.Core;
@@ -39,17 +40,14 @@ namespace ASC.Web.Core
             {
                 var data = string.Format("secret={0}&remoteip={1}&response={2}", SetupInfo.RecaptchaPrivateKey, ip, response);
 
-                var webRequest = (HttpWebRequest)WebRequest.Create(SetupInfo.RecaptchaVerifyUrl);
-                webRequest.Method = WebRequestMethods.Http.Post;
-                webRequest.ContentType = "application/x-www-form-urlencoded";
-                webRequest.ContentLength = data.Length;
-                using (var writer = new StreamWriter(webRequest.GetRequestStream()))
-                {
-                    writer.Write(data);
-                }
+                var request = new HttpRequestMessage();
+                request.RequestUri = new Uri(SetupInfo.RecaptchaVerifyUrl);
+                request.Method = HttpMethod.Post;
+                request.Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
 
-                using (var webResponse = webRequest.GetResponse())
-                using (var reader = new StreamReader(webResponse.GetResponseStream()))
+                using var httpClient = new HttpClient();
+                using var httpClientResponse = httpClient.Send(request);
+                using (var reader = new StreamReader(httpClientResponse.Content.ReadAsStream()))
                 {
                     var resp = reader.ReadToEnd();
                     var resObj = JObject.Parse(resp);

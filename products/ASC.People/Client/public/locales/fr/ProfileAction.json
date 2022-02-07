@@ -1,4 +1,4 @@
-{
+﻿{
   "ActivationLink": "Lien d'activation",
   "AddContact": "Ajouter un contact",
   "AddPhoto": "Ajouter une photo",
@@ -7,10 +7,13 @@
   "ChangeButton": "Modifier",
   "ChangesSavedSuccessfully": "Les modifications ont été appliquées avec succès",
   "ContactInformation": "Informations de contact",
+  "CopiedResourceText": "Copié",
   "CustomCreation": "{{user}} (création)",
   "EditPhoto": "Modifier la photo",
   "EditUserDialogTitle": "Modifier profil",
   "EmailPopupHelper": "L'adresse mail principal est utilisée pour les notifications et pour la restauration de l'accès. <1> Vous pouvez créer une nouvelle adresse mail sur ce domaine pour cet utilisateur et définir un mot de passe à usage unique pour la première connexion.",
+  "ErrorInvalidUserFirstName": "Nom invalide",
+  "ErrorInvalidUserLastName": "Prénom invalide",
   "FirstName": "Prénom",
   "Message": "Chat",
   "ProductsAndInstruments_Products": "Modules",
@@ -19,7 +22,5 @@
   "TemporaryPassword": "Mot de passe temporaire",
   "TermsOfUsePopupHelperLink": "Savoir plus à propos de termes d'utilisation ",
   "UpdatingProcess": "Mis à jour...",
-  "WriteComment": "Ajouter un commentaire",
-  "ErrorInvalidUserLastName": "Prénom invalide",
-  "ErrorInvalidUserFirstName": "Nom invalide"
+  "WriteComment": "Ajouter un commentaire"
 }

@@ -62,7 +62,7 @@ class DeleteProfileEverDialogComponent extends React.Component {
         visible={visible}
         onClose={onClose}
       >
-        <ModalDialog.Header>{t("Confirmation")}</ModalDialog.Header>
+        <ModalDialog.Header>{t("Common:Confirmation")}</ModalDialog.Header>
         <ModalDialog.Body>
           <Text>
             <Trans

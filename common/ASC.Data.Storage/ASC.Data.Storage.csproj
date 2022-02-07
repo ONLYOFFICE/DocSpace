@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
 	<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
   </PropertyGroup>
 
@@ -22,29 +22,27 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="protos\EncryptionStop.proto" />
-    <None Remove="protos\MigrationCache.proto" />
-    <None Remove="protos\MigrationProgress.proto" />
-    <None Remove="protos\MigrationUploadCdn.proto" />
-    <None Remove="protos\ProgressEncryption.proto" />
+    <None Remove="protos\encryption_stop.proto" />
+    <None Remove="protos\migration_cache.proto" />
+    <None Remove="protos\migration_progress.proto" />
+    <None Remove="protos\migration_upload_cdn.proto" />
+    <None Remove="protos\progress_encryption.proto" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.CloudFront" Version="3.5.3.16" />
-    <PackageReference Include="AWSSDK.S3" Version="3.5.3.3" />
-    <PackageReference Include="Google.Api.Gax" Version="3.2.0" />
-    <PackageReference Include="Google.Api.Gax.Rest" Version="3.2.0" />
-    <PackageReference Include="Google.Apis.Auth" Version="1.49.0" />
-    <PackageReference Include="Google.Apis.Core" Version="1.49.0" />
-    <PackageReference Include="Google.Apis.Storage.v1" Version="1.49.0.2102" />
-    <PackageReference Include="Google.Cloud.Storage.V1" Version="3.3.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.32.0">
+    <PackageReference Include="AWSSDK.CloudFront" Version="3.7.4.29" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.7.17" />
+    <PackageReference Include="Google.Api.Gax" Version="3.6.0" />
+    <PackageReference Include="Google.Api.Gax.Rest" Version="3.6.0" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.55.0" />
+    <PackageReference Include="Google.Apis.Core" Version="1.55.0" />
+    <PackageReference Include="Google.Apis.Storage.v1" Version="1.55.0.2526" />
+    <PackageReference Include="Google.Cloud.Storage.V1" Version="3.7.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.43.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="5.0.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.5" />
-    <PackageReference Include="openstack.net" Version="1.7.9" />
+    <PackageReference Include="openstack.net" Version="1.8.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -52,12 +50,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="protos\DataStoreCacheItem.proto" />
-    <Protobuf Include="protos\EncryptionStop.proto" />
-    <Protobuf Include="protos\MigrationCache.proto" />
-    <Protobuf Include="protos\MigrationProgress.proto" />
-    <Protobuf Include="protos\MigrationUploadCdn.proto" />
-    <Protobuf Include="protos\ProgressEncryption.proto" />
+    <Protobuf Include="protos\data_store_cache_item.proto" />
+    <Protobuf Include="protos\encryption_stop.proto" />
+    <Protobuf Include="protos\migration_cache.proto" />
+    <Protobuf Include="protos\migration_progress.proto" />
+    <Protobuf Include="protos\migration_upload_cdn.proto" />
+    <Protobuf Include="protos\progress_encryption.proto" />
   </ItemGroup>
   
 </Project>

@@ -1,4 +1,4 @@
-{
+﻿{
   "MoveToTrashButton": "Move to Trash",
   "MoveToTrashItemsNote": "If you delete shared items, other users won’t be able to access them.",
   "MoveToTrashItemsTitle": "Move items to Trash?",
@@ -8,6 +8,5 @@
   "MoveToTrashOneFolderTitle": "Move folder to Trash?",
   "UnsubscribeButton": "Unsubscribe",
   "UnsubscribeNote": "Are you sure you want to unsubscribe from the selected items from the list?",
-  "UnsubscribeTitle": "Unsubscribe confirmation",
-  "ConfirmRemove": "Confirmation"
+  "UnsubscribeTitle": "Unsubscribe confirmation"
 }

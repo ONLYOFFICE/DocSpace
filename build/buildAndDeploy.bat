@@ -1,18 +1,25 @@
-PUSHD %~dp0
+@echo off
+
+echo "##########################################################"
+echo "#########  Start build and deploy  #######################"
+echo "##########################################################"
+
+echo.
+
+cd /D "%~dp0"
 call runasadmin.bat "%~dpnx0"
+
 if %errorlevel% == 0 (
 
-call start\stop.bat
-
-PUSHD %~dp0..
 
 echo "FRONT-END static"
-call build\build.static.bat
+call build.static.bat nopause
 
 echo "BACK-END"
-call build\build.backend.bat
+call build.backend.bat nopause
 
-start /b call build\start\start.bat
+echo.
 
 pause
+
 )

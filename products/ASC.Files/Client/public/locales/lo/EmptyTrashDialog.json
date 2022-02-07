@@ -1,3 +1,6 @@
-{
-  "SuccessEmptyTrash": "ລ້າງຖັງຂີ້ເຫຍື້ອແລ້ວ"
+﻿{
+  "DeleteForeverButton": "ລືບອອກເລີຍ",
+  "DeleteForeverNote": "ທຸກໄອເທັມທີ່ຖືກລືບໃນຖັງຂີ້ເຫຍື້ອແລ້ວ, ຈະບໍ່ສາມາດເອົາກັບມາຄືນໄດ້.",
+  "DeleteForeverTitle": "ລືບອອກ？",
+  "SuccessEmptyTrash": "ຖັງຂີ້ເຫຍື້ອ ວ່າງເປົ່າ."
 }

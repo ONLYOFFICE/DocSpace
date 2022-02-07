@@ -1,5 +1,6 @@
-{
+﻿{
   "AddMembers": "Добавить участников",
+  "Birthdate": "Дата рождения",
   "Comments": "Комментарии",
   "DeleteSelfProfile": "Удалить профиль",
   "DisabledEmployeeStatus": "Заблокирован",
@@ -13,6 +14,7 @@
   "Location": "Местоположение",
   "MaleSexStatus": "Мужской",
   "maxSizeFileError": "Превышен максимальный размер файла",
+  "MaxSizeLabel": "(JPG или PNG, максимум 1 Мб)",
   "NotBeUndone": "Внимание: это действие необратимо.",
   "orDropFileHereLabel": "или перетащите файл сюда",
   "PasswordChangeButton": "Изменить пароль",
@@ -24,7 +26,6 @@
   "Sex": "Пол",
   "SocialProfiles": "Социальные профили",
   "SuccessChangeUserStatus": "Статус пользователя успешно изменен",
-  "SuccessSentInvitation": "Приглашение было успешно отправлено",
   "SuccessDeletePersonalData": "Персональные данные успешно удалены",
-  "Birthdate": "Дата рождения"
+  "SuccessSentInvitation": "Приглашение было успешно отправлено"
 }

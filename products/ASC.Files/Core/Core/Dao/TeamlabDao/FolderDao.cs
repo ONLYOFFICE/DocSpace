@@ -34,6 +34,7 @@ using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.ElasticSearch;
@@ -76,7 +77,7 @@ namespace ASC.Files.Core.Data
         public FolderDao(
             FactoryIndexerFolder factoryIndexer,
             UserManager userManager,
-            DbContextManager<FilesDbContext> dbContextManager,
+            DbContextManager<EF.FilesDbContext> dbContextManager,
             TenantManager tenantManager,
             TenantUtil tenantUtil,
             SetupInfo setupInfo,

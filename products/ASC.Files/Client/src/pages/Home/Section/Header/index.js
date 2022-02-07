@@ -10,13 +10,31 @@ import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
 import ContextMenuButton from "@appserver/components/context-menu-button";
 import DropDownItem from "@appserver/components/drop-down-item";
-import GroupButtonsMenu from "@appserver/components/group-buttons-menu";
 import IconButton from "@appserver/components/icon-button";
 import { tablet, desktop } from "@appserver/components/utils/device";
 import { Consumer } from "@appserver/components/utils/context";
 import { inject, observer } from "mobx-react";
+import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu";
 
 const StyledContainer = styled.div`
+  .table-container_group-menu {
+    ${(props) =>
+      props.viewAs === "table"
+        ? css`
+            margin: 0px -20px;
+            width: calc(100% + 44px);
+          `
+        : css`
+            margin: 0px -24px;
+            width: calc(100% + 48px);
+          `}
+
+    @media ${tablet} {
+      margin: 0 -16px;
+      width: calc(100% + 32px);
+    }
+  }
+
   .header-container {
     position: relative;
     ${(props) =>
@@ -37,6 +55,7 @@ const StyledContainer = styled.div`
               : props.canCreate
               ? "auto 1fr auto auto"
               : "auto 1fr auto"};
+          ${(props) => !props.isLoading && "top: 7px;"}
         }
       `}
     align-items: center;
@@ -82,6 +101,20 @@ const StyledContainer = styled.div`
       @media ${tablet} {
         & > div:first-child {
           padding: 8px 8px 8px 8px;
+          margin-right: -8px;
+        }
+      }
+    }
+
+    .trash-button {
+      margin-bottom: -1px;
+
+      @media (min-width: 1024px) {
+        margin-left: 8px;
+  }
+
+      @media ${tablet} {
+        & > div:first-child {
           margin-right: -8px;
         }
       }
@@ -159,12 +192,19 @@ class SectionHeaderContent extends React.Component {
 
   createPresentation = () => this.onCreate("pptx");
 
+  createForm = () => this.onCreate("docxf");
+
+  createFormFromFile = () => {
+    const { setSelectFileDialogVisible } = this.props;
+    setSelectFileDialogVisible(true);
+  };
+
   createFolder = () => this.onCreate();
 
   uploadToFolder = () => console.log("Upload To Folder click");
 
   getContextOptionsPlus = () => {
-    const { t } = this.props;
+    const { t, isPrivacyFolder } = this.props;
 
     return [
       {
@@ -181,6 +221,15 @@ class SectionHeaderContent extends React.Component {
         key: "new-presentation",
         label: t("NewPresentation"),
         onClick: this.createPresentation,
+      },
+      {
+        label: t("Translations:NewForm"),
+        onClick: this.createForm,
+      },
+      {
+        label: t("Translations:NewFormFile"),
+        onClick: this.createFormFromFile,
+        disabled: isPrivacyFolder,
       },
       {
         key: "new-folder",
@@ -322,15 +371,12 @@ class SectionHeaderContent extends React.Component {
   onBackToParentFolder = () => {
     const { setIsLoading, parentId, filter, fetchFiles } = this.props;
     setIsLoading(true);
-    fetchFiles(parentId, filter).finally(() => setIsLoading(false));
+    fetchFiles(parentId, null, true, false).finally(() => setIsLoading(false));
   };
 
-  onCheck = (checked) => {
-    this.props.setSelected(checked ? "all" : "none");
-  };
-
-  onSelect = (item) => {
-    this.props.setSelected(item.key);
+  onSelect = (e) => {
+    const key = e.currentTarget.dataset.key;
+    this.props.setSelected(key);
   };
 
   onClose = () => {
@@ -338,29 +384,29 @@ class SectionHeaderContent extends React.Component {
   };
 
   getMenuItems = () => {
-    const { t, getHeaderMenu, cbMenuItems, getCheckboxItemLabel } = this.props;
+    const { t, cbMenuItems, getCheckboxItemLabel } = this.props;
 
-    const headerMenu = getHeaderMenu(t);
-    const children = cbMenuItems.map((key, index) => {
-      const label = getCheckboxItemLabel(t, key);
-      return <DropDownItem key={key} label={label} data-index={index} />;
-    });
+    const checkboxOptions = (
+      <>
+        {cbMenuItems.map((key) => {
+          const label = getCheckboxItemLabel(t, key);
+          return (
+            <DropDownItem
+              key={key}
+              label={label}
+              data-key={key}
+              onClick={this.onSelect}
+            />
+          );
+        })}
+      </>
+    );
 
-    let menu = [
-      {
-        label: t("Common:Select"),
-        isDropdown: true,
-        isSeparator: true,
-        isSelect: true,
-        fontWeight: "bold",
-        children,
-        onSelect: this.onSelect,
-      },
-    ];
+    return checkboxOptions;
+  };
 
-    menu = [...menu, ...headerMenu];
-
-    return menu;
+  onChange = (checked) => {
+    this.props.setSelected(checked ? "all" : "none");
   };
 
   render() {
@@ -378,10 +424,15 @@ class SectionHeaderContent extends React.Component {
       isDesktop,
       isTabletView,
       personal,
+      getHeaderMenu,
       viewAs,
+      isRecycleBinFolder,
+      isEmptyFilesList,
     } = this.props;
 
     const menuItems = this.getMenuItems();
+    const isLoading = !title || !tReady;
+    const headerMenu = getHeaderMenu(t);
 
     return (
       <Consumer>
@@ -393,25 +444,20 @@ class SectionHeaderContent extends React.Component {
             title={title}
             isDesktop={isDesktop}
             isTabletView={isTabletView}
+            isLoading={isLoading}
+            viewAs={viewAs}
           >
-            {isHeaderVisible && viewAs !== "table" ? (
-              <div className="group-button-menu-container">
-                <GroupButtonsMenu
-                  checked={isHeaderChecked}
-                  isIndeterminate={isHeaderIndeterminate}
-                  onChange={this.onCheck}
-                  menuItems={menuItems}
-                  visible={isHeaderVisible}
-                  moreLabel={t("Common:More")}
-                  closeTitle={t("Common:CloseButton")}
-                  onClose={this.onClose}
-                  selected={menuItems[0].label}
-                  sectionWidth={context.sectionWidth}
-                />
-              </div>
+            {isHeaderVisible ? (
+              <TableGroupMenu
+                checkboxOptions={menuItems}
+                onChange={this.onChange}
+                isChecked={isHeaderChecked}
+                isIndeterminate={isHeaderIndeterminate}
+                headerMenu={headerMenu}
+              />
             ) : (
               <div className="header-container">
-                {!title || !tReady ? (
+                {isLoading ? (
                   <Loaders.SectionHeader />
                 ) : (
                   <>
@@ -474,6 +520,19 @@ class SectionHeaderContent extends React.Component {
                         />
                       )
                     )}
+                    {isRecycleBinFolder && !isEmptyFilesList && (
+                      <span title={t("EmptyRecycleBin")}>
+                        <IconButton
+                          iconName="images/clear.active.react.svg"
+                          size="15"
+                          color="#A3A9AE"
+                          hoverColor="#657077"
+                          isFill={true}
+                          onClick={this.onEmptyTrashAction}
+                          className="trash-button"
+                        />
+                      </span>
+                    )}
                   </>
                 )}
               </div>
@@ -493,6 +552,7 @@ export default inject(
     selectedFolderStore,
     filesActionsStore,
     settingsStore,
+    treeFoldersStore,
   }) => {
     const {
       setSelected,
@@ -506,11 +566,11 @@ export default inject(
       isHeaderChecked,
       isThirdPartySelection,
       setIsLoading,
-      viewAs,
       cbMenuItems,
       getCheckboxItemLabel,
-      getFolderInfo,
+      isEmptyFilesList,      getFolderInfo,
       setBufferSelection,
+      viewAs,
     } = filesStore;
     const { setAction } = fileActionStore;
     const {
@@ -518,9 +578,12 @@ export default inject(
       setMoveToPanelVisible,
       setCopyPanelVisible,
       setDeleteDialogVisible,
+      setEmptyTrashDialogVisible,
+      setSelectFileDialogVisible,
       setIsFolderActions,
     } = dialogsStore;
 
+    const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
     const { deleteAction, downloadAction, getHeaderMenu } = filesActionsStore;
 
     return {
@@ -538,7 +601,6 @@ export default inject(
       isTabletView: auth.settingsStore.isTabletView,
       confirmDelete: settingsStore.confirmDelete,
       personal: auth.settingsStore.personal,
-      viewAs,
       cbMenuItems,
       getFolderInfo,
 
@@ -557,7 +619,13 @@ export default inject(
       downloadAction,
       getHeaderMenu,
       getCheckboxItemLabel,
-    };
+      setSelectFileDialogVisible,
+
+      isRecycleBinFolder,
+      setEmptyTrashDialogVisible,
+      isEmptyFilesList,
+      isPrivacyFolder,
+      viewAs,    };
   }
 )(
   withTranslation(["Home", "Common", "Translations"])(

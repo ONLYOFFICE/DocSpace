@@ -1,4 +1,4 @@
-{
+﻿{
   "ActivationLink": "Activation link",
   "AddContact": "Add contact",
   "AddPhoto": "Add photo",
@@ -12,6 +12,8 @@
   "EditPhoto": "Edit Photo",
   "EditUserDialogTitle": "Edit profile",
   "EmailPopupHelper": "The main email is used for notifications and restoring access. <1> You can create a new email on this domain for the user and set a one-time password for the first login.</1>",
+  "ErrorInvalidUserFirstName": "Invalid first name",
+  "ErrorInvalidUserLastName": "Invalid last name",
   "FirstName": "First Name",
   "Message": "Talk",
   "ProductsAndInstruments_Products": "Modules",
@@ -20,7 +22,5 @@
   "TemporaryPassword": "Temporary password",
   "TermsOfUsePopupHelperLink": "Read more about terms of use",
   "UpdatingProcess": "Updating...",
-  "WriteComment": "Add comment",
-  "ErrorInvalidUserLastName": "Invalid last name",
-  "ErrorInvalidUserFirstName": "Invalid first name"
+  "WriteComment": "Add comment"
 }

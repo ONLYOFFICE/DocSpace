@@ -1,0 +1,8 @@
+﻿{
+  "CustomNewDepartment": "{{groupCaption}} (creation)",
+  "GroupAction": "Grup eylemi",
+  "Members": "Üyeler",
+  "SearchAddedMembers": "Eklenen üyeleri ara",
+  "SelectAction": "Seç",
+  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' başarıyla kaydedildi"
+}

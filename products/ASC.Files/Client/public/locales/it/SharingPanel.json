@@ -1,4 +1,4 @@
-{
+﻿{
   "AddGroupsForSharingButton": "Aggiungi gruppi",
   "AddShareMessage": "Aggiungi messaggio",
   "Comment": "Commento",
@@ -13,7 +13,6 @@
   "InternalLink": "Collegamento interno",
   "LinkText": "Aggiungi utenti",
   "Notify users": "Notifica utenti",
-  "Owner": "Proprietario",
   "ReadOnly": "In sola lettura",
   "ShareEmailBody": "Ti è stato concesso l'accesso al documento {{itemName}}. Fare clic sul collegamento sottostante per aprire subito il documento: {{shareLink}}",
   "ShareEmailSubject": "Ti è stato concesso l'accesso al documento: {{itemName}}",

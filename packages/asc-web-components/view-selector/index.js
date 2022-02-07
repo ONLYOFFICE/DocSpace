@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { ReactSVG } from "react-svg";
 
 import { StyledViewSelector, IconWrapper } from "./styled-view-selector";
+import { useTranslation } from "react-i18next";
 
 const ViewSelector = ({
   isDisabled,
@@ -24,6 +25,9 @@ const ViewSelector = ({
   };
 
   const lastIndx = viewSettings && viewSettings.length - 1;
+  const loadingSVG = () => <svg></svg>;
+
+  const { t } = useTranslation("Common");
 
   return (
     <StyledViewSelector
@@ -45,8 +49,13 @@ const ViewSelector = ({
               key={value}
               className="view-selector-icon"
               data-view={value}
+              title={
+                value === "row"
+                  ? t("Common:SwitchViewToCompact")
+                  : t("Common:SwitchToThumbnails")
+              }
             >
-              <ReactSVG src={icon} />
+              <ReactSVG src={icon} loading={loadingSVG} />
             </IconWrapper>
           );
         })}

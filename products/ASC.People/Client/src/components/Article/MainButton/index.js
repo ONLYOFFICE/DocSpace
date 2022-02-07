@@ -69,67 +69,72 @@ class ArticleMainButtonContent extends React.Component {
 
     const { dialogVisible } = this.state;
 
+    const menuModel = [
+      {
+        icon: combineUrl(
+          AppServerConfig.proxyURL,
+          homepage,
+          "/images/add.employee.react.svg"
+        ),
+        label: userCaption,
+        onClick: this.goToEmployeeCreate,
+      },
+      {
+        icon: combineUrl(
+          AppServerConfig.proxyURL,
+          homepage,
+          "/images/add.guest.react.svg"
+        ),
+        label: guestCaption,
+        onClick: this.goToGuestCreate,
+      },
+      {
+        icon: combineUrl(
+          AppServerConfig.proxyURL,
+          homepage,
+          "/images/add.department.react.svg"
+        ),
+        label: groupCaption,
+        onClick: this.goToGroupCreate,
+      },
+      {
+        isSeparator: true,
+      },
+      {
+        icon: combineUrl(
+          AppServerConfig.proxyURL,
+          "/static/images/invitation.link.react.svg"
+        ),
+        label: t("Translations:InviteLinkTitle"),
+        onClick: this.onInvitationDialogClick,
+      },
+      /* {
+        icon: combineUrl(
+          AppServerConfig.proxyURL,
+          "/static/images/plane.react.svg"
+        ),
+        label: t("SendInvitesAgain"),
+        onClick: this.onNotImplementedClick.bind(this, t("SendInvitesAgain")),
+      },
+      {
+        icon: combineUrl(
+          AppServerConfig.proxyURL,
+          "/static/images/import.react.svg"
+        ),
+        label: t("ImportPeople"),
+        onClick: this.onImportClick,
+      }, */
+    ];
+
     return isAdmin ? (
       <>
         <MainButton
           isDisabled={false}
           isDropdown={true}
           text={t("Common:Actions")}
-        >
-          <DropDownItem
-            icon={combineUrl(
-              AppServerConfig.proxyURL,
-              homepage,
-              "/images/add.employee.react.svg"
-            )}
-            label={userCaption}
-            onClick={this.goToEmployeeCreate}
-          />
-
-          <DropDownItem
-            icon={combineUrl(
-              AppServerConfig.proxyURL,
-              homepage,
-              "/images/add.guest.react.svg"
-            )}
-            label={guestCaption}
-            onClick={this.goToGuestCreate}
-          />
-          <DropDownItem
-            icon={combineUrl(
-              AppServerConfig.proxyURL,
-              homepage,
-              "/images/add.department.react.svg"
-            )}
-            label={groupCaption}
-            onClick={this.goToGroupCreate}
-          />
-          <DropDownItem isSeparator />
-          <DropDownItem
-            icon={combineUrl(
-              AppServerConfig.proxyURL,
-              "/static/images/invitation.link.react.svg"
-            )}
-            label={t("Translations:InviteLinkTitle")}
-            onClick={this.onInvitationDialogClick}
-          />
-          {/* <DropDownItem
-              icon="images/plane.react.svg"
-              label={t("SendInvitesAgain")}
-              onClick={this.onNotImplementedClick.bind(this, t("SendInvitesAgain"))}
-            /> */}
-          {false && (
-            <DropDownItem
-              icon={combineUrl(
-                AppServerConfig.proxyURL,
-                homepage,
-                "/images/import.react.svg"
-              )}
-              label={t("ImportPeople")}
-              onClick={this.onImportClick}
-            />
-          )}
-        </MainButton>
+          model={menuModel}
+          className="main-button_invitation-link"
+        />
         {dialogVisible && (
           <InviteDialog
             visible={dialogVisible}

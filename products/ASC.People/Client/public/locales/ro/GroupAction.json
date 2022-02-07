@@ -1,7 +1,8 @@
-{
+﻿{
   "CustomNewDepartment": "{{groupCaption}} (creare)",
   "GroupAction": "Acțiune de grup",
   "Members": "Membrii",
   "SearchAddedMembers": "Căutare după membrii adăugați",
+  "SelectAction": "Selectare",
   "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' a fost salvat cu succes"
 }

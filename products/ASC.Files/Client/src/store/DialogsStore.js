@@ -1,4 +1,5 @@
 import { getNewFiles } from "@appserver/common/api/files";
+import { FileAction } from "@appserver/common/constants";
 import { makeAutoObservable } from "mobx";
 
 class DialogsStore {
@@ -20,6 +21,7 @@ class DialogsStore {
   newFilesPanelVisible = false;
   conflictResolveDialogVisible = false;
   convertDialogVisible = false;
+  selectFileDialogVisible = false;
   isFolderActions = false;
 
   removeItem = null;
@@ -174,6 +176,25 @@ class DialogsStore {
 
   setConvertItem = (item) => {
     this.convertItem = item;
+  };
+
+  setSelectFileDialogVisible = (visible) => {
+    this.selectFileDialogVisible = visible;
+  };
+
+  createMasterForm = async (fileInfo) => {
+    const { setAction } = this.filesStore.fileActionStore;
+
+    let newTitle = fileInfo.title;
+    newTitle = newTitle.substring(0, newTitle.lastIndexOf("."));
+
+    setAction({
+      type: FileAction.Create,
+      extension: "docxf",
+      id: -1,
+      title: `${newTitle}.docxf`,
+      templateId: fileInfo.id,
+    });
   };
 }
 

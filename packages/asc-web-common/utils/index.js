@@ -22,14 +22,12 @@ export function getObjectByLocation(location) {
   if (!location.search || !location.search.length) return null;
 
   const searchUrl = location.search.substring(1);
-  const object = JSON.parse(
-    '{"' +
-      decodeURIComponent(searchUrl)
-        .replace(/"/g, '\\"')
-        .replace(/&/g, '","')
-        .replace(/=/g, '":"') +
-      '"}'
-  );
+  const decodedString = decodeURIComponent(searchUrl)
+    .replace(/"/g, '\\"')
+    .replace(/&/g, '","')
+    .replace(/=/g, '":"')
+    .replace(/\\/g, "\\\\");
+  const object = JSON.parse(`{"${decodedString}"}`);
 
   return object;
 }
@@ -306,4 +304,21 @@ export function isRetina() {
 
   if (window.matchMedia && window.matchMedia(mediaQuery).matches) return true;
   return false;
+}
+
+export function convertLanguage(key) {
+  switch (key) {
+    case "en-US":
+      return "en";
+    case "ru-RU":
+      return "ru";
+    case "de-DE":
+      return "de";
+    case "it-IT":
+      return "it";
+    case "fr-FR":
+      return "fr";
+  }
+
+  return key;
 }

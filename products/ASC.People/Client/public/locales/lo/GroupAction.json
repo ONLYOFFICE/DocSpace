@@ -1,7 +1,8 @@
-{
-  "CustomNewDepartment": "{{ກຸ່ມສົນທະນາ}} (ສ້າງ)",
+﻿{
+  "CustomNewDepartment": "{{groupCaption}} (ສ້າງ)",
   "GroupAction": "ກຸ່ມດຳເນີນການ",
   "Members": "ສະມາຊິກ",
   "SearchAddedMembers": "ຄົ້ນຫາສະມາຊິກເພີ່ມ",
+  "SelectAction": "ເລືອກ",
   "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' ໄດ້ຖືກບັນທຶກ ສຳ ເລັດແລ້ວ"
 }

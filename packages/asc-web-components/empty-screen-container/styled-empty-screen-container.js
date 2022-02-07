@@ -5,6 +5,7 @@ import NoUserSelect from "../utils/commonStyles";
 const EmptyContentBody = styled.div`
   margin: 0 auto;
   padding: 64px 0;
+  grid-template-columns: 150px 1fr;
 
   display: grid;
   grid-template-areas:
@@ -60,11 +61,15 @@ const EmptyContentBody = styled.div`
     @media ${mobile} {
       min-width: 343px;
       grid-template-areas:
-        "img"
-        "headerText"
-        ${(props) => props.subheadingText && `"subheadingText"`}
-        ${(props) => props.descriptionText && `"descriptionText"`}
-        "button";
+        "img img img"
+        "headerText headerText headerText"
+        ${(props) =>
+          props.subheadingText &&
+          `"subheadingText subheadingText subheadingText"`}
+        ${(props) =>
+          props.descriptionText &&
+          `"descriptionText descriptionText descriptionText"`}
+        "button button button";
 
       .ec-header {
         padding-top: 0px;

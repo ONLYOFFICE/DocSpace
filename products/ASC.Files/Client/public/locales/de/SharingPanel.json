@@ -1,4 +1,4 @@
-{
+﻿{
   "AddGroupsForSharingButton": "Gruppen hinzufügen",
   "AddShareMessage": "Nachricht hinzufügen",
   "Comment": "Kommentieren",
@@ -13,7 +13,6 @@
   "InternalLink": "Interner Link",
   "LinkText": "Benutzer hinzufügen",
   "Notify users": "Benutzer benachrichtigen",
-  "Owner": "Besitzer",
   "ReadOnly": "Schreibgeschützt",
   "ShareEmailBody": "Ihnen wurde Zugriff auf das Dokument {{itemName}} erteilt. Zum Öffnen klicken Sie auf den Link: {{shareLink}}",
   "ShareEmailSubject": "Ihnen wurde Zugriff auf das Dokument {{itemName}} erteilt",

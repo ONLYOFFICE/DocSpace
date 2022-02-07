@@ -1,4 +1,4 @@
-{
+﻿{
   "ActivationLink": "Ссылка для активации",
   "AddContact": "Добавить новый контакт",
   "AddPhoto": "Добавить фотографию",
@@ -12,6 +12,8 @@
   "EditPhoto": "Изменить фотографию",
   "EditUserDialogTitle": "Редактирование профиля",
   "EmailPopupHelper": "Основной email нужен для восстановления доступа к порталу в случае потери пароля, а также для отправки оповещений. <1>Вы можете создать новый email на домене в качестве основного. В этом случае потребуется задать одноразовый пароль, чтобы пользователь смог войти на портал в первый раз.</1> Основной email можно использовать как логин при входе на портал.",
+  "ErrorInvalidUserFirstName": "Недопустимое имя",
+  "ErrorInvalidUserLastName": "Недопустимая фамилия",
   "FirstName": "Имя",
   "Message": "Чат",
   "ProductsAndInstruments_Products": "Модули",
@@ -20,7 +22,5 @@
   "TemporaryPassword": "Временный пароль",
   "TermsOfUsePopupHelperLink": "Подробнее об условиях использования",
   "UpdatingProcess": "Обновление...",
-  "WriteComment": "Добавить комментарий",
-  "ErrorInvalidUserLastName": "Недопустимая фамилия",
-  "ErrorInvalidUserFirstName": "Недопустимое имя"
+  "WriteComment": "Добавить комментарий"
 }

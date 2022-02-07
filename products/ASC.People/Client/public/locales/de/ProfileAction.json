@@ -1,4 +1,4 @@
-{
+﻿{
   "ActivationLink": "Aktivierungslink",
   "AddContact": "Kontakt hinzufügen",
   "AddPhoto": "Foto hinzufügen",
@@ -7,10 +7,13 @@
   "ChangeButton": "Ändern",
   "ChangesSavedSuccessfully": "Änderungen wurden gespeichert",
   "ContactInformation": "Kontaktdaten",
+  "CopiedResourceText": "Kopiert",
   "CustomCreation": "{{user}} (Erstellung)",
   "EditPhoto": "Bild bearbeiten",
   "EditUserDialogTitle": "Profil bearbeiten",
   "EmailPopupHelper": "Die Haupt-E-Mail-Adresse wird für Benachrichtigungen und Zugriffswiederherstellung benutzt. <1> Sie können in dieser Domain eine neue E-Mail für den Benutzer erstellen und ein Einmalkennwort für die erste Anmeldung festlegen.</1>",
+  "ErrorInvalidUserFirstName": "Ungültiger Vorname",
+  "ErrorInvalidUserLastName": "Ungültiger Nachname",
   "FirstName": "Vorname",
   "Message": "Chat",
   "ProductsAndInstruments_Products": "Module",
@@ -19,7 +22,5 @@
   "TemporaryPassword": "Vorübergehendes Kennwort",
   "TermsOfUsePopupHelperLink": "Erfahren Sie mehr über die Nutzungsbedingungen",
   "UpdatingProcess": "Wird aktualisiert...",
-  "WriteComment": "Kommentar hinzufügen",
-  "ErrorInvalidUserLastName": "Ungültiger Nachname",
-  "ErrorInvalidUserFirstName": "Ungültiger Vorname"
+  "WriteComment": "Kommentar hinzufügen"
 }

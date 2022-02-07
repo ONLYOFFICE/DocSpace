@@ -14,12 +14,7 @@ const StyledFileInput = styled.div`
   outline: none;
   .file-text-input {
     width: 100%;
-    max-width: ${(props) => (props.maxWidth ? props.maxWidth : "350px")};
-    ${(props) =>
-      props.fontSizeInput &&
-      css`
-        font-size: ${props.fontSizeInput};
-      `}
+    margin: 0;
   }
   width: ${(props) =>
     (props.scale && "100%") ||

@@ -44,15 +44,15 @@ namespace ASC.AuditTrail.Data
     public class LoginEventsRepository
     {
         private UserFormatter UserFormatter { get; }
-        private Lazy<AuditTrailContext> LazyAuditTrailContext { get; }
-        private AuditTrailContext AuditTrailContext { get => LazyAuditTrailContext.Value; }
         private AuditActionMapper AuditActionMapper { get; }
+        private MessagesContext MessagesContext { get => LazyMessagesContext.Value; }
+        private Lazy<MessagesContext> LazyMessagesContext { get; }
 
-        public LoginEventsRepository(UserFormatter userFormatter, DbContextManager<AuditTrailContext> dbContextManager, AuditActionMapper auditActionMapper)
+        public LoginEventsRepository(UserFormatter userFormatter, AuditActionMapper auditActionMapper, DbContextManager<MessagesContext> dbMessagesContext)
         {
             UserFormatter = userFormatter;
-            LazyAuditTrailContext = new Lazy<AuditTrailContext>(() => dbContextManager.Value);
             AuditActionMapper = auditActionMapper;
+            LazyMessagesContext = new Lazy<MessagesContext>(() => dbMessagesContext.Value);
         }
 
         private class Query
@@ -64,8 +64,8 @@ namespace ASC.AuditTrail.Data
         public IEnumerable<LoginEvent> GetLast(int tenant, int chunk)
         {
             var query =
-                (from b in AuditTrailContext.LoginEvents
-                 from p in AuditTrailContext.User.Where(p => b.UserId == p.Id).DefaultIfEmpty()
+                (from b in MessagesContext.LoginEvents
+                 from p in MessagesContext.Users.Where(p => b.UserId == p.Id).DefaultIfEmpty()
                  where b.TenantId == tenant
                  orderby b.Date descending
                  select new Query { LoginEvents = b, User = p })
@@ -77,8 +77,8 @@ namespace ASC.AuditTrail.Data
         public IEnumerable<LoginEvent> Get(int tenant, DateTime fromDate, DateTime to)
         {
             var query =
-                from q in AuditTrailContext.LoginEvents
-                from p in AuditTrailContext.User.Where(p => q.UserId == p.Id).DefaultIfEmpty()
+                from q in MessagesContext.LoginEvents
+                from p in MessagesContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
                 where q.TenantId == tenant
                 where q.Date >= fromDate
                 where q.Date <= to
@@ -90,7 +90,7 @@ namespace ASC.AuditTrail.Data
 
         public int GetCount(int tenant, DateTime? from = null, DateTime? to = null)
         {
-            var query = AuditTrailContext.LoginEvents
+            var query = MessagesContext.LoginEvents
                 .Where(l => l.TenantId == tenant);
 
             if (from.HasValue && to.HasValue)

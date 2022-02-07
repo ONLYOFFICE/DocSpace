@@ -1,1 +1,11 @@
-{}
+﻿{
+  "DocumentsFileType": "ເອກະສານ",
+  "FileLocation": "ເປີດບ່ອນຕຳແໜ່ງເອກະສານ",
+  "FileName": "ຊື່ຟາຍ",
+  "FolderForSave": "ແຟ້ມສຳລັບບັນທຶກ",
+  "ImageFileType": "ຮູບພາບ",
+  "MailMergeFileType": "ກະລຸນາເລືືອກໄຟລ໌ເປັນ .XLSX",
+  "OpenSavedDocument": "ເປີດເອກະສານທີ່ບັນທືກໄວ້ໃນແຖບໃໝ່",
+  "SelectFilesType": "ກະລຸນາເລືອກປະເພດໄຟລ໌ {{fileType}}",
+  "SelectFileTitle": "ເລືອກແຫຼ່ງຂໍ້ມູນ"
+}
