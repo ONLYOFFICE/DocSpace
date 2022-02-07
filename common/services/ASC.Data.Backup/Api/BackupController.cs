@@ -250,24 +250,23 @@ public class BackupController
 
         return _backupHandler.GetTmpFolder();
     }
-	
-	
-        ///<visible>false</visible>
-        [Read("enablerestore")]
-        public bool EnableRestore()
+
+    ///<visible>false</visible>
+    [Read("enablerestore")]
+    public bool EnableRestore()
+    {
+        try
         {
-            try
+            if (_coreBaseSettings.Standalone)
             {
-                if (CoreBaseSettings.Standalone)
-                {
-                    TenantExtra.DemandControlPanelPermission();
-                }
-                BackupHandler.DemandPermissionsRestore();
-                return true;
+                _tenantExtra.DemandControlPanelPermission();
             }
-            catch
-            {
-                return false;
-            }
+            _backupHandler.DemandPermissionsRestore();
+            return true;
         }
+        catch
+        {
+            return false;
+        }
+    }
 }

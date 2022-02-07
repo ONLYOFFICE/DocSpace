@@ -392,7 +392,6 @@ namespace ASC.Data.Backup.Services
             Limit = limit;
             CurrentRegion = currentRegion;
             ConfigPaths = configPaths;
-            BackupProgressItemEnum = BackupProgressItemEnum.Backup;
         }
 
         protected override void DoJob()
@@ -528,7 +527,6 @@ namespace ASC.Data.Backup.Services
             UpgradesPath = upgradesPath;
             CurrentRegion = currentRegion;
             ConfigPaths = configPaths;
-            BackupProgressItemEnum = BackupProgressItemEnum.Restore;
         }
 
         protected override void DoJob()
@@ -694,7 +692,6 @@ namespace ASC.Data.Backup.Services
             ConfigPaths = configPaths;
             CurrentRegion = currentRegion;
             Limit = limit;
-            BackupProgressItemEnum = BackupProgressItemEnum.Transfer;
         }
 
         protected override void DoJob()
