@@ -303,13 +303,7 @@ class RestoreBackup extends React.Component {
           method: "post",
           url: `/backupFileUpload.ashx`,
           responseType: "text",
-          data: {
-            backupStorageSelector: "4",
-            autoBackupSwitch: "1",
-            autoBackupSettingsStorageSelector: "0",
-            restoreStorageVariants: "3",
-            files: selectedFile,
-          },
+          data: selectedFile,
         });
         console.error("data", data);
       }
