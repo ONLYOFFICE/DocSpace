@@ -4,7 +4,8 @@ import styled, { keyframes, css } from "styled-components";
 const StyledCircleWrap = styled.div`
   width: 48px;
   height: 48px;
-  background: ${(props) => (props.color ? props.color : "#fff")};
+  background: ${(props) =>
+    props.color ? props.color : props.theme.floatingButton.backgroundColor};
   border-radius: 50%;
   cursor: pointer;
   box-shadow: ${(props) => props.theme.floatingButton.boxShadow};
@@ -95,7 +96,10 @@ const StyledFloatingButton = styled.div`
 StyledFloatingButton.defaultProps = { theme: Base };
 
 const IconBox = styled.div`
-  padding-top: 12px;
+  // padding-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 IconBox.defaultProps = { theme: Base };
