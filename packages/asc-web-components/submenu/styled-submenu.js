@@ -1,5 +1,7 @@
 import styled from "styled-components";
 
+import { tablet } from "../utils/device";
+
 export const StyledSubmenu = styled.div`
   display: flex;
   flex-direction: column;
@@ -23,7 +25,10 @@ export const StyledSubmenuItems = styled.div`
   display: flex;
   flex-direction: row;
   gap: 4px;
-  padding: ${(props) => (props.isTablet ? "16px" : "20px")};
+  padding: 20px;
+  @media ${tablet} {
+    padding: 16px;
+  }
 `;
 
 export const StyledSubmenuItem = styled.div.attrs((props) => ({

@@ -2,7 +2,6 @@ import PropTypes from "prop-types";
 import React, { useState } from "react";
 
 import Text from "../text";
-import { isTablet } from "../utils/device";
 import {
   StyledSubmenu,
   StyledSubmenuBottomLine,
@@ -27,7 +26,7 @@ const Submenu = ({ data, startSelect = 0, ...rest }) => {
 
   return (
     <StyledSubmenu {...rest}>
-      <StyledSubmenuItems isTablet={isTablet()}>
+      <StyledSubmenuItems>
         {data.map((d) => {
           const isActive = d === currentItem;
           return (
