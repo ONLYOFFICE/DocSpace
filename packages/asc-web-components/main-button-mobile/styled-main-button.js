@@ -10,11 +10,16 @@ import { mobile } from "../utils/device";
 const StyledFloatingButton = styled(FloatingButton)`
   position: relative;
   z-index: 1010;
+  background: ${(props) => props.theme.mainButtonMobile.buttonColor} !important;
 
   .circle__mask + div {
     display: flex;
     align-items: center;
     justify-content: center;
+
+    background: ${(props) =>
+      props.theme.mainButtonMobile.buttonColor} !important;
+
     div {
       padding-top: 0;
       display: flex;
@@ -40,6 +45,12 @@ const StyledFloatingButton = styled(FloatingButton)`
   .circle__mask .circle__fill {
     background-color: ${(props) =>
       props.theme.mainButtonMobile.circleBackground};
+  }
+
+  svg {
+    path {
+      fill: ${(props) => props.theme.mainButtonMobile.iconFill};
+    }
   }
 `;
 StyledFloatingButton.defaultProps = { theme: Base };
@@ -113,6 +124,8 @@ const StyledDropDown = styled(DropDown)`
   }
 `;
 
+StyledDropDown.defaultProps = { theme: Base };
+
 const StyledDropDownItem = styled(DropDownItem)`
   padding: 6px 23px;
 `;
@@ -134,11 +147,13 @@ const StyledContainerAction = styled.div`
 const StyledButtonWrapper = styled.div`
   padding: 0 24px 34px;
   display: ${(props) => (props.isOpenButton ? "none" : "block")};
-  background-color: {(props) =>
+  background-color: ${(props) =>
     props.isUploading
       ? props.theme.mainButtonMobile.buttonWrapper.uploadingBackground
       : props.theme.mainButtonMobile.buttonWrapper.background};
 `;
+
+StyledButtonWrapper.defaultProps = { theme: Base };
 
 const StyledProgressContainer = styled.div`
   display: ${(props) => (props.isUploading ? "flex" : "none")};
@@ -155,6 +170,7 @@ StyledButtonWrapper.defaultProps = { theme: Base };
 
 const StyledProgressBarContainer = styled.div`
   display: ${(props) => (props.isUploading ? "flex" : "none")};
+  align-items: center;
 
   flex-wrap: wrap;
 
@@ -181,6 +197,14 @@ const StyledProgressBarContainer = styled.div`
     text-align: right;
     margin-right: 6px;
   }
+
+  .progress_icon {
+    svg {
+      path {
+        fill: ${(props) => props.theme.mainButtonMobile.bar.icon};
+      }
+    }
+  }
 `;
 
 StyledProgressBarContainer.defaultProps = { theme: Base };
@@ -194,6 +218,8 @@ const StyledMobileProgressBar = styled.div`
   margin-top: 14px;
 `;
 
+StyledMobileProgressBar.defaultProps = { theme: Base };
+
 const StyledBar = styled.div`
   width: ${(props) => props.uploadPercent}%;
   height: 4px;
@@ -205,8 +231,6 @@ const StyledBar = styled.div`
 `;
 
 StyledBar.defaultProps = { theme: Base };
-
-StyledDropDown.defaultProps = { theme: Base };
 
 export {
   StyledFloatingButton,

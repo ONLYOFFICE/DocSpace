@@ -180,22 +180,24 @@ const Dark = {
   },
 
   mainButtonMobile: {
-    textColor: grayMain,
+    textColor: "rgba(255, 255, 255, 0.6)",
 
     buttonColor: "#F58D31",
     iconFill: black,
 
     circleBackground: black,
 
-    mobileProgressBarBackground: "#F58D31",
+    mobileProgressBarBackground: "#606060",
 
     bar: {
-      background: grayMaxLight,
+      background: "#858585",
       errorBackground: orangePressed,
+
+      icon: "#858585",
     },
 
     buttonWrapper: {
-      background: "#242424",
+      background: "#333333",
       uploadingBackground: "#242424",
     },
 
@@ -228,7 +230,7 @@ const Dark = {
 
       hoverButtonColor: black,
 
-      backgroundActionMobile: grayMaxLight,
+      backgroundActionMobile: "rgba(255, 255, 255, 0.92)",
     },
 
     dropDownItem: {
