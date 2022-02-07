@@ -59,27 +59,6 @@ const loadScript = (url, id, onLoad, onError) => {
   }
 };
 
-const setFavicon = (documentType) => {
-  const favicon = document.getElementById("favicon");
-  if (!favicon) return;
-  let icon = null;
-  switch (documentType) {
-    case "text":
-      icon = "text.ico";
-      break;
-    case "presentation":
-      icon = "presentation.ico";
-      break;
-    case "spreadsheet":
-      icon = "spreadsheet.ico";
-      break;
-    default:
-      break;
-  }
-  console.log(icon);
-  if (icon) favicon.href = `${homepage}/images/${icon}`;
-}; //TODO: to fix
-
 const getDefaultFileName = (format) => {
   switch (format) {
     case "docx":
@@ -184,11 +163,10 @@ export default function Home({
   personal,
   successAuth,
   isSharingAccess,
-  //docEditor: docEditorSSR,
   user,
   url,
   doc,
-  fileId, //
+  fileId,
   actionLink,
   error,
   needLoader,
@@ -199,15 +177,34 @@ export default function Home({
   const [isFolderDialogVisible, setIsFolderDialogVisible] = useState(false);
   const [typeInsertImageAction, setTypeInsertImageAction] = useState();
   const [filesType, setFilesType] = useState("");
-  const [isFileDialogVisible, setIsFileDialogVisible] = useState(false); // посмотреть
+  const [isFileDialogVisible, setIsFileDialogVisible] = useState(false); // ??
   const [isVisible, setIsVisible] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [documentTitle, setNewDocumentTitle] = useState("Loading...");
+  const [faviconHref, setFaviconHref] = useState("/favicon.ico");
+
+  const setFavicon = (documentType) => {
+    const favicon = document.getElementById("favicon");
+    if (!favicon) return;
+    let icon = null;
+    switch (documentType) {
+      case "text":
+        icon = "text.ico";
+        break;
+      case "presentation":
+        icon = "presentation.ico";
+        break;
+      case "spreadsheet":
+        icon = "spreadsheet.ico";
+        break;
+      default:
+        break;
+    }
+    console.log("setFavicon", icon, documentType, `${homepage}/images/${icon}`);
+    if (icon) setFaviconHref(`${homepage}/images/${icon}`);
+  };
 
   const throttledChangeTitle = throttle(() => changeTitle(), 500);
-  //docEditor = docEditorSSR;
-  //console.log("render editor", docEditor, docEditorSSR);
-  const router = useRouter();
-  useEffect(() => {}, []);
 
   const onSDKRequestHistoryClose = () => {
     document.location.reload();
@@ -440,8 +437,9 @@ export default function Home({
     } else {
       title = organizationName;
     }
-
+    console.log("setDocumentTitle", title);
     document.title = title;
+    setNewDocumentTitle(title);
   }; //+++
 
   const changeTitle = () => {
@@ -484,10 +482,6 @@ export default function Home({
       if (!window.DocsAPI) throw new Error("DocsAPI is not defined");
 
       console.log("Editor config: ", config);
-
-      // TODO: need to fix
-      const docTitle = config.document.title;
-      setDocumentTitle(docTitle);
 
       if (isMobile) {
         config.type = "mobile";
@@ -617,21 +611,28 @@ export default function Home({
   };
 
   useEffect(() => {
-    console.log("useEffect", isLoaded);
-    setFavicon(config?.documentType);
+    console.log("useEffect error catch", error);
 
     if (error) {
       error?.unAuthorized &&
         error?.redirectPath &&
         (window.location.href = error?.redirectPath);
     }
-  });
+  }, []);
+
+  useEffect(() => {
+    if (config) {
+      console.log("useEffect meta change", config);
+      setFavicon(config?.documentType);
+      setDocumentTitle(config?.document?.title);
+    }
+  }, []);
 
   return (
     <div style={{ height: "100vh" }}>
-      <Head title="Loading...">
-        <title>Loading...</title>
-        <link id="favicon" rel="shortcut icon" href="/favicon.ico" />
+      <Head>
+        <title>{documentTitle}</title>
+        <link id="favicon" rel="shortcut icon" href={faviconHref} />
       </Head>
       {needLoader ? (
         LoaderComponent
