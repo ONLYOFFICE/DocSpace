@@ -25,14 +25,14 @@
 
 namespace ASC.ClearEvents.Services;
 
-[Scope(Additional = typeof(MessagesRepositoryExtension))]
-public class TimedClearEventsService : IHostedService, IDisposable
+[Scope]
+public class ClearEventsService : IHostedService, IDisposable
 {
     private readonly ILog _logger;
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private Timer _timer = null!;
 
-    public TimedClearEventsService(IOptionsMonitor<ILog> options, IServiceScopeFactory serviceScopeFactory)
+    public ClearEventsService(IOptionsMonitor<ILog> options, IServiceScopeFactory serviceScopeFactory)
     {
         _logger = options.CurrentValue;
         _serviceScopeFactory = serviceScopeFactory;
@@ -43,7 +43,7 @@ public class TimedClearEventsService : IHostedService, IDisposable
         _logger.Info("Timer Clear Events Service running.");
 
         _timer = new Timer(DeleteOldEvents, null, TimeSpan.Zero,
-            TimeSpan.FromDays(1));
+            TimeSpan.FromSeconds(15));
 
         return Task.CompletedTask;
     }
@@ -80,14 +80,14 @@ public class TimedClearEventsService : IHostedService, IDisposable
         }
     }
 
-    private void GetOldEvents<T>(Expression<Func<Messages, DbSet<T>>> func, string settings) where T : MessageEvent
+    private void GetOldEvents<T>(Expression<Func<EventsContext, DbSet<T>>> func, string settings) where T : MessageEvent
     {
         List<T> ids;
         var compile = func.Compile();
         do
         {
             using var scope = _serviceScopeFactory.CreateScope();
-            using var ef = scope.ServiceProvider.GetService<DbContextManager<Messages>>().Get("messages");
+            using var ef = scope.ServiceProvider.GetService<DbContextManager<EventsContext>>().Get("messages");
             var table = compile.Invoke(ef);
 
             var ae = table
@@ -115,16 +115,4 @@ public class TimedClearEventsService : IHostedService, IDisposable
 
         } while (ids.Any());
     }
-}
-
-public class Messages : MessagesContext
-{
-    public DbSet<AuditEvent> AuditEvents { get; }
-    public DbSet<DbTenant> Tenants { get; }
-    public DbSet<DbWebstudioSettings> WebstudioSettings { get; }
-}
-
-public class MessagesRepositoryExtension
-{
-    public static void Register(DIHelper services) => services.TryAdd<DbContextManager<Messages>>();
 }
