@@ -23,13 +23,13 @@ export const StyledSubmenuItems = styled.div`
   display: flex;
   flex-direction: row;
   gap: 4px;
-  padding: 0 20px;
-  @media (max-width: 768px) {
-    padding: 0 16px;
-  }
+  padding: ${(props) => (props.isTablet ? "16px" : "20px")};
 `;
 
-export const StyledSubmenuItem = styled.div`
+export const StyledSubmenuItem = styled.div.attrs((props) => ({
+  id: props._key,
+}))`
+  cursor: pointer;
   display: flex;
   flex-direction: column;
   line-height: 20px;

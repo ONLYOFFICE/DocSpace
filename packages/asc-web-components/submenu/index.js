@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import React, { useState } from "react";
 
 import Text from "../text";
+import { isTablet } from "../utils/device";
 import {
   StyledSubmenu,
   StyledSubmenuBottomLine,
@@ -12,32 +13,31 @@ import {
   StyledSubmenuItemText,
 } from "./styled-submenu";
 
-const Submenu = ({ data, startSelect = 0 }) => {
+const Submenu = ({ data, startSelect = 0, ...rest }) => {
   if (!data) return null;
 
   const [currentItem, setCurrentItem] = useState(
     data[startSelect] || startSelect || null
   );
 
-  const onSelectSubmenuItem = (e) => {
-    const item = data.find((el) => el.id === e.target.title);
+  const selectSubmenuItem = (e) => {
+    const item = data.find((el) => el.id === e.currentTarget.id);
     if (item) setCurrentItem(item);
   };
 
   return (
-    <StyledSubmenu>
-      <StyledSubmenuItems>
+    <StyledSubmenu {...rest}>
+      <StyledSubmenuItems isTablet={isTablet()}>
         {data.map((d) => {
           const isActive = d === currentItem;
           return (
             <StyledSubmenuItem
               key={d.id}
-              onClick={(e) => onSelectSubmenuItem(e)}
+              _key={d.id}
+              onClick={selectSubmenuItem}
             >
               <StyledSubmenuItemText>
                 <Text
-                  style={{ cursor: "pointer" }}
-                  title={d.id}
                   color={isActive ? "#316DAA" : "#657077"}
                   fontSize="13px"
                   fontWeight="600"
