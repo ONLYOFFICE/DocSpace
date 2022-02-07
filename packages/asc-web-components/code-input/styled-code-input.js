@@ -42,6 +42,7 @@ const InputWrapper = styled.div`
     color: #a3a9ae;
     background: #f8f9f9;
     border: 1px solid #eceef1;
+    outline: none;
   }
 
   hr {
