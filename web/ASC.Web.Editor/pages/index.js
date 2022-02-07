@@ -7,8 +7,13 @@ import { isMobile } from "react-device-detect";
 import FilesFilter from "@appserver/common/api/files/filter";
 import combineUrl from "@appserver/common/utils/combineUrl";
 import { AppServerConfig } from "@appserver/common/constants";
-import { homepage } from "../../../../package.json";
+import { homepage } from "../package.json";
 import throttle from "lodash/throttle";
+import Loader from "@appserver/components/loader";
+
+// import Toast from "@appserver/components/toast";
+// import toastr from "../../../../../ASC.Web.Client/src/helpers/toastr";
+// import { toast } from "react-toastify";
 
 import {
   getDocServiceUrl,
@@ -25,6 +30,17 @@ import {
 import { getSettings } from "@appserver/common/api/settings";
 import { getUser } from "@appserver/common/api/people";
 
+const LoaderComponent = (
+  <Loader
+    type="rombs"
+    style={{
+      position: "absolute",
+      bottom: "42%",
+      height: "170px",
+      left: "50%",
+    }}
+  />
+);
 const loadScript = (url, id, onLoad, onError) => {
   try {
     const script = document.createElement("script");
@@ -60,7 +76,7 @@ const setFavicon = (documentType) => {
     default:
       break;
   }
-
+  console.log(icon);
   if (icon) favicon.href = `${homepage}/images/${icon}`;
 }; //TODO: to fix
 
@@ -77,7 +93,7 @@ const getDefaultFileName = (format) => {
     default:
       return " SSR New Folder";
   }
-}; // TODO: нужно подключить i18n
+}; // TODO:  i18n
 
 const onSDKInfo = (event) => {
   console.log(
@@ -175,6 +191,7 @@ export default function Home({
   fileId, //
   actionLink,
   error,
+  needLoader,
 }) {
   const [titleSelectorFolder, setTitleSelectorFolder] = useState("");
   const [urlSelectorFolder, setUrlSelectorFolder] = useState("");
@@ -184,6 +201,7 @@ export default function Home({
   const [filesType, setFilesType] = useState("");
   const [isFileDialogVisible, setIsFileDialogVisible] = useState(false); // посмотреть
   const [isVisible, setIsVisible] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const throttledChangeTitle = throttle(() => changeTitle(), 500);
   //docEditor = docEditorSSR;
@@ -467,7 +485,7 @@ export default function Home({
 
       console.log("Editor config: ", config);
 
-      setFavicon(config.documentType); // TODO: need to fix
+      // TODO: need to fix
       const docTitle = config.document.title;
       setDocumentTitle(docTitle);
 
@@ -591,6 +609,7 @@ export default function Home({
 
       docEditor = window.DocsAPI.DocEditor("editor", newConfig);
       console.log("docEditor", docEditor);
+      setIsLoaded(true);
     } catch (error) {
       console.log(error, "init error");
       //toastr.error(error.message, null, 0, true);
@@ -598,7 +617,9 @@ export default function Home({
   };
 
   useEffect(() => {
-    console.log("useEffect", error);
+    console.log("useEffect", isLoaded);
+    setFavicon(config?.documentType);
+
     if (error) {
       error?.unAuthorized &&
         error?.redirectPath &&
@@ -612,17 +633,24 @@ export default function Home({
         <title>Loading...</title>
         <link id="favicon" rel="shortcut icon" href="/favicon.ico" />
       </Head>
-      <div id="editor"></div>
-      <Script
-        async
-        defer
-        type={"text/javascript"}
-        id="scriptDocServiceAddress"
-        src={docApiUrl}
-        onLoad={() => onLoad()}
-        onError={() => console.log("error load")}
-        //strategy={"beforeInteractive"}
-      />
+      {needLoader ? (
+        LoaderComponent
+      ) : (
+        <>
+          <div id="editor"></div>
+          {!isLoaded && LoaderComponent}
+          <Script
+            async
+            defer
+            type={"text/javascript"}
+            id="scriptDocServiceAddress"
+            src={docApiUrl}
+            onLoad={() => onLoad()}
+            onError={() => console.log("error load")}
+            //strategy={"beforeInteractive"}
+          />
+        </>
+      )}
     </div>
   );
 }
@@ -640,14 +668,13 @@ export async function getServerSideProps({ params, req, query }) {
     const fileId =
       typeof decodedId === "string" ? encodeURIComponent(decodedId) : decodedId;
 
+    if (!fileId) {
+      return { props: { needLoader: true } };
+    } // TODO: t()
+
     const doc = query?.doc || null; // TODO: need to check
     const view = url.indexOf("action=view") !== -1;
     const fileVersion = version || null;
-
-    if (!fileId) {
-      error = { errorMessage: "Something went wrong" };
-      return { props: { error } };
-    } // TODO: t()
 
     const [user, settings] = await Promise.all([getUser(), getSettings()]);
 
@@ -685,7 +712,7 @@ export async function getServerSideProps({ params, req, query }) {
         error = { errorMessage: typeof err === "string" ? err : err.message };
       }
     }
-
+    let formUrl;
     if (
       !view &&
       fileInfo &&
@@ -694,7 +721,7 @@ export async function getServerSideProps({ params, req, query }) {
       !fileInfo.canEdit
     ) {
       try {
-        const formUrl = await checkFillFormDraft(fileId);
+        formUrl = await checkFillFormDraft(fileId);
         // TODO: move to hook?
         // history.pushState({}, null, formUrl);
         //   url = window.location.href;
@@ -733,7 +760,6 @@ export async function getServerSideProps({ params, req, query }) {
       },
     };
   } catch (err) {
-    console.log(err);
     error = { errorMessage: typeof err === "string" ? err : err.message };
     return { props: { error } };
   }
