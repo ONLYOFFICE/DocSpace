@@ -193,7 +193,7 @@ namespace ASC.Data.Backup.Tasks.Modules
                     match =>
                     {
                         var mappedId = Convert.ToString(columnMapper.GetMapping("projects_tasks", "id", match.Value.TrimEnd(',')));
-                        return !string.IsNullOrEmpty(mappedId) && match.Value.EndsWith(",") ? mappedId + "," : mappedId;
+                        return !string.IsNullOrEmpty(mappedId) && match.Value.EndsWith(',') ? mappedId + "," : mappedId;
                     },
                     RegexOptions.Compiled);
 
@@ -203,7 +203,7 @@ namespace ASC.Data.Backup.Tasks.Modules
                     match =>
                     {
                         var mappedId = Convert.ToString(columnMapper.GetMapping("projects_milestones", "id", match.Value.TrimEnd(',')));
-                        return !string.IsNullOrEmpty(mappedId) && match.Value.EndsWith(",") ? mappedId + "," : mappedId;
+                        return !string.IsNullOrEmpty(mappedId) && match.Value.EndsWith(',') ? mappedId + "," : mappedId;
                     },
                     RegexOptions.Compiled);
 

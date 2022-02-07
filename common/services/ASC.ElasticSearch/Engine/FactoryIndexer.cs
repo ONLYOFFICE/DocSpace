@@ -207,7 +207,7 @@ namespace ASC.ElasticSearch
         public void Index(List<T> data, bool immediately = true, int retry = 0)
         {
             var t = ServiceProvider.GetService<T>();
-            if (!Support(t) || !data.Any()) return;
+            if (!Support(t) || data.Count == 0) return;
 
             try
             {
@@ -230,7 +230,7 @@ namespace ASC.ElasticSearch
                         Thread.Sleep(60000);
                         if (retry < 5)
                         {
-                            Index(data, immediately, retry++);
+                            Index(data, immediately, retry + 1);
                             return;
                         }
 
@@ -259,7 +259,7 @@ namespace ASC.ElasticSearch
                         Thread.Sleep(60000);
                         if (retry < 5)
                         {
-                            Index(data, immediately, retry++);
+                            Index(data, immediately, retry + 1);
                             return;
                         }
 
@@ -273,11 +273,16 @@ namespace ASC.ElasticSearch
             }
         }
 
-        public async Task IndexAsync(List<T> data, bool immediately = true, int retry = 0)
+        public Task IndexAsync(List<T> data, bool immediately = true, int retry = 0)
         {
             var t = ServiceProvider.GetService<T>();
-            if (!Support(t) || !data.Any()) return;
+            if (!Support(t) || data.Count == 0) return Task.CompletedTask;
 
+            return InternalIndexAsync(data, immediately, retry);
+        }
+
+        private async Task InternalIndexAsync(List<T> data, bool immediately, int retry)
+        {
             try
             {
                 await Indexer.IndexAsync(data, immediately).ConfigureAwait(false);
@@ -299,7 +304,7 @@ namespace ASC.ElasticSearch
                         await Task.Delay(60000);
                         if (retry < 5)
                         {
-                            await IndexAsync(data, immediately, retry++);
+                            await IndexAsync(data, immediately, retry + 1);
                             return;
                         }
 
@@ -328,7 +333,7 @@ namespace ASC.ElasticSearch
                         await Task.Delay(60000);
                         if (retry < 5)
                         {
-                            await IndexAsync(data, immediately, retry++);
+                            await IndexAsync(data, immediately, retry + 1);
                             return;
                         }
 
@@ -546,9 +551,9 @@ namespace ASC.ElasticSearch
             }
         }
 
-        public async Task<bool> SupportAsync(T t)
+        public Task<bool> SupportAsync(T t)
         {
-            return await FactoryIndexerCommon.CheckStateAsync();
+            return FactoryIndexerCommon.CheckStateAsync();
         }
     }
 
@@ -624,7 +629,7 @@ namespace ASC.ElasticSearch
             }
         }
 
-        public async Task<bool> CheckStateAsync(bool cacheState = true)
+        public Task<bool> CheckStateAsync(bool cacheState = true)
         {
             const string key = "elasticsearch";
 
@@ -633,10 +638,15 @@ namespace ASC.ElasticSearch
                 var cacheValue = cache.Get<string>(key);
                 if (!string.IsNullOrEmpty(cacheValue))
                 {
-                    return Convert.ToBoolean(cacheValue);
+                    return Task.FromResult(Convert.ToBoolean(cacheValue));
                 }
             }
 
+            return InternalCheckStateAsync(cacheState, key);
+        }
+
+        private async Task<bool> InternalCheckStateAsync(bool cacheState, string key)
+        {
             var cacheTime = DateTime.UtcNow.AddMinutes(15);
 
             try

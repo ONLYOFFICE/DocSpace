@@ -28,10 +28,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Security;
-using System.Text;
 using System.Threading;
 
 using ASC.Common;
@@ -54,8 +52,6 @@ using ASC.Web.Studio.Core;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json.Linq;
 
 using FileShare = ASC.Files.Core.Security.FileShare;
 
@@ -253,7 +249,6 @@ namespace ASC.Web.Files.Utils
         private FilesIntegration FilesIntegration { get; }
         private FileMarker FileMarker { get; }
         private FileUtility FileUtility { get; }
-        private Global Global { get; }
         private GlobalStore GlobalStore { get; }
         private CoreBaseSettings CoreBaseSettings { get; }
         private FilesSettingsHelper FilesSettingsHelper { get; }
@@ -268,6 +263,7 @@ namespace ASC.Web.Files.Utils
         private SettingsManager SettingsManager { get; }
         private IServiceProvider ServiceProvider { get; }
         private ILog Logger { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
         public EntryManager(
             IDaoFactory daoFactory,
@@ -278,7 +274,6 @@ namespace ASC.Web.Files.Utils
             FilesIntegration filesIntegration,
             FileMarker fileMarker,
             FileUtility fileUtility,
-            Global global,
             GlobalStore globalStore,
             CoreBaseSettings coreBaseSettings,
             FilesSettingsHelper filesSettingsHelper,
@@ -295,7 +290,8 @@ namespace ASC.Web.Files.Utils
             IServiceProvider serviceProvider,
             ICache cache,
             FileTrackerHelper fileTracker,
-            EntryStatusManager entryStatusManager)
+            EntryStatusManager entryStatusManager,
+            IHttpClientFactory clientFactory)
         {
             DaoFactory = daoFactory;
             FileSecurity = fileSecurity;
@@ -305,7 +301,6 @@ namespace ASC.Web.Files.Utils
             FilesIntegration = filesIntegration;
             FileMarker = fileMarker;
             FileUtility = fileUtility;
-            Global = global;
             GlobalStore = globalStore;
             CoreBaseSettings = coreBaseSettings;
             FilesSettingsHelper = filesSettingsHelper;
@@ -323,13 +318,14 @@ namespace ASC.Web.Files.Utils
             Cache = cache;
             FileTracker = fileTracker;
             EntryStatusManager = entryStatusManager;
+            ClientFactory = clientFactory;
         }
 
         public IEnumerable<FileEntry> GetEntries<T>(Folder<T> parent, int from, int count, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy, out int total)
         {
             total = 0;
 
-            if (parent == null) throw new ArgumentNullException("parent", FilesCommonResource.ErrorMassage_FolderNotFound);
+            if (parent == null) throw new ArgumentNullException(nameof(parent), FilesCommonResource.ErrorMassage_FolderNotFound);
             if (parent.ProviderEntry && !FilesSettingsHelper.EnableThirdParty) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFolder);
             if (parent.RootFolderType == FolderType.Privacy && (!PrivacyRoomSettings.IsAvailable(TenantManager) || !PrivacyRoomSettings.GetEnabled(SettingsManager))) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFolder);
 
@@ -344,101 +340,99 @@ namespace ASC.Web.Files.Utils
                 //var apiServer = new ASC.Api.ApiServer();
                 //var apiUrl = string.Format("{0}project/maxlastmodified.json", SetupInfo.WebApiBaseUrl);
 
-                string responseBody = null;// apiServer.GetApiResponse(apiUrl, "GET");
-                if (responseBody != null)
-                {
-                    var responseApi = JObject.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(responseBody)));
+                //const string responseBody = null;// apiServer.GetApiResponse(apiUrl, "GET");
+                //if (responseBody != null)
+                //{
+                //    JObject responseApi;
 
-                    var projectLastModified = responseApi["response"].Value<string>();
-                    var projectListCacheKey = string.Format("documents/projectFolders/{0}", AuthContext.CurrentAccount.ID);
-                    Dictionary<int, KeyValuePair<int, string>> folderIDProjectTitle = null;
+                //    Dictionary<int, KeyValuePair<int, string>> folderIDProjectTitle = null;
 
-                    if (folderIDProjectTitle == null)
-                    {
-                        //apiUrl = string.Format("{0}project/filter.json?sortBy=title&sortOrder=ascending&status=open&fields=id,title,security,projectFolder", SetupInfo.WebApiBaseUrl);
+                //    if (folderIDProjectTitle == null)
+                //    {
+                //        //apiUrl = string.Format("{0}project/filter.json?sortBy=title&sortOrder=ascending&status=open&fields=id,title,security,projectFolder", SetupInfo.WebApiBaseUrl);
 
-                        responseApi = JObject.Parse(""); //Encoding.UTF8.GetString(Convert.FromBase64String(apiServer.GetApiResponse(apiUrl, "GET"))));
+                //        responseApi = JObject.Parse(""); //Encoding.UTF8.GetString(Convert.FromBase64String(apiServer.GetApiResponse(apiUrl, "GET"))));
 
-                        var responseData = responseApi["response"];
+                //        var responseData = responseApi["response"];
 
-                        if (!(responseData is JArray)) return entries.ToList();
+                //        if (!(responseData is JArray)) return entries.ToList();
 
-                        folderIDProjectTitle = new Dictionary<int, KeyValuePair<int, string>>();
-                        foreach (JObject projectInfo in responseData.Children())
-                        {
-                            var projectID = projectInfo["id"].Value<int>();
-                            var projectTitle = Global.ReplaceInvalidCharsAndTruncate(projectInfo["title"].Value<string>());
+                //        folderIDProjectTitle = new Dictionary<int, KeyValuePair<int, string>>();
+                //        foreach (JObject projectInfo in responseData.Children().OfType<JObject>())
+                //        {
+                //            var projectID = projectInfo["id"].Value<int>();
+                //            var projectTitle = Global.ReplaceInvalidCharsAndTruncate(projectInfo["title"].Value<string>());
 
-                            if (projectInfo.TryGetValue("security", out var projectSecurityJToken))
-                            {
-                                var projectSecurity = projectInfo["security"].Value<JObject>();
-                                if (projectSecurity.TryGetValue("canReadFiles", out var projectCanFileReadJToken))
-                                {
-                                    if (!projectSecurity["canReadFiles"].Value<bool>())
-                                    {
-                                        continue;
-                                    }
-                                }
-                            }
+                //            if (projectInfo.TryGetValue("security", out var projectSecurityJToken))
+                //            {
+                //                var projectSecurity = projectInfo["security"].Value<JObject>();
+                //                if (projectSecurity.TryGetValue("canReadFiles", out var projectCanFileReadJToken))
+                //                {
+                //                    if (!projectSecurity["canReadFiles"].Value<bool>())
+                //                    {
+                //                        continue;
+                //                    }
+                //                }
+                //            }
 
-                            int projectFolderID;
-                            if (projectInfo.TryGetValue("projectFolder", out var projectFolderIDjToken))
-                                projectFolderID = projectFolderIDjToken.Value<int>();
-                            else
-                                projectFolderID = FilesIntegration.RegisterBunch<int>("projects", "project", projectID.ToString());
+                //            int projectFolderID;
+                //            if (projectInfo.TryGetValue("projectFolder", out var projectFolderIDjToken))
+                //                projectFolderID = projectFolderIDjToken.Value<int>();
+                //            else
+                //                projectFolderID = FilesIntegration.RegisterBunch<int>("projects", "project", projectID.ToString());
 
-                            if (!folderIDProjectTitle.ContainsKey(projectFolderID))
-                                folderIDProjectTitle.Add(projectFolderID, new KeyValuePair<int, string>(projectID, projectTitle));
+                //            if (!folderIDProjectTitle.ContainsKey(projectFolderID))
+                //                folderIDProjectTitle.Add(projectFolderID, new KeyValuePair<int, string>(projectID, projectTitle));
 
-                            Cache.Remove("documents/folders/" + projectFolderID);
-                            Cache.Insert("documents/folders/" + projectFolderID, projectTitle, TimeSpan.FromMinutes(30));
-                        }
-                    }
+                //            Cache.Remove("documents/folders/" + projectFolderID);
+                //            Cache.Insert("documents/folders/" + projectFolderID, projectTitle, TimeSpan.FromMinutes(30));
+                //        }
+                //    }
 
-                    var rootKeys = folderIDProjectTitle.Keys.ToArray();
-                    if (filter == FilterType.None || filter == FilterType.FoldersOnly)
-                    {
-                        var folders = DaoFactory.GetFolderDao<int>().GetFolders(rootKeys, filter, subjectGroup, subjectId, searchText, withSubfolders, false);
+                //    var rootKeys = folderIDProjectTitle.Keys.ToArray();
+                //    if (filter == FilterType.None || filter == FilterType.FoldersOnly)
+                //    {
+                //        var folders = DaoFactory.GetFolderDao<int>().GetFolders(rootKeys, filter, subjectGroup, subjectId, searchText, withSubfolders, false);
 
-                        var emptyFilter = string.IsNullOrEmpty(searchText) && filter == FilterType.None && subjectId == Guid.Empty;
-                        if (!emptyFilter)
-                        {
-                            var projectFolderIds =
-                                folderIDProjectTitle
-                                    .Where(projectFolder => string.IsNullOrEmpty(searchText)
-                                                            || (projectFolder.Value.Value ?? "").ToLower().Trim().Contains(searchText.ToLower().Trim()))
-                                    .Select(projectFolder => projectFolder.Key);
+                //        var emptyFilter = string.IsNullOrEmpty(searchText) && filter == FilterType.None && subjectId == Guid.Empty;
+                //        if (!emptyFilter)
+                //        {
+                //            var projectFolderIds =
+                //                folderIDProjectTitle
+                //                    .Where(projectFolder => string.IsNullOrEmpty(searchText)
+                //                                            || (projectFolder.Value.Value ?? "").ToLower().Trim().Contains(searchText.ToLower().Trim()))
+                //                    .Select(projectFolder => projectFolder.Key);
 
-                            folders.RemoveAll(folder => rootKeys.Contains(folder.ID));
+                //            folders.RemoveAll(folder => rootKeys.Contains(folder.ID));
 
-                            var projectFolders = DaoFactory.GetFolderDao<int>().GetFolders(projectFolderIds.ToList(), filter, subjectGroup, subjectId, null, false, false);
-                            folders.AddRange(projectFolders);
-                        }
+                //            var projectFolders = DaoFactory.GetFolderDao<int>().GetFolders(projectFolderIds.ToList(), filter, subjectGroup, subjectId, null, false, false);
+                //            folders.AddRange(projectFolders);
+                //        }
 
-                        folders.ForEach(x =>
-                            {
-                                x.Title = folderIDProjectTitle.ContainsKey(x.ID) ? folderIDProjectTitle[x.ID].Value : x.Title;
-                                x.FolderUrl = folderIDProjectTitle.ContainsKey(x.ID) ? PathProvider.GetFolderUrl(x, folderIDProjectTitle[x.ID].Key) : string.Empty;
-                            });
+                //        folders.ForEach(x =>
+                //            {
+                //                x.Title = folderIDProjectTitle.ContainsKey(x.ID) ? folderIDProjectTitle[x.ID].Value : x.Title;
+                //                x.FolderUrl = folderIDProjectTitle.ContainsKey(x.ID) ? PathProvider.GetFolderUrl(x, folderIDProjectTitle[x.ID].Key) : string.Empty;
+                //            });
 
-                        if (withSubfolders)
-                        {
-                            entries = entries.Concat(fileSecurity.FilterRead(folders));
-                        }
-                        else
-                        {
-                            entries = entries.Concat(folders);
-                        }
-                    }
+                //        if (withSubfolders)
+                //        {
+                //            entries = entries.Concat(fileSecurity.FilterRead(folders));
+                //        }
+                //        else
+                //        {
+                //            entries = entries.Concat(folders);
+                //        }
+                //    }
 
-                    if (filter != FilterType.FoldersOnly && withSubfolders)
-                    {
-                        var files = DaoFactory.GetFileDao<int>().GetFiles(rootKeys, filter, subjectGroup, subjectId, searchText, searchInContent);
-                        entries = entries.Concat(fileSecurity.FilterRead(files));
-                    }
-                }
+                //    if (filter != FilterType.FoldersOnly && withSubfolders)
+                //    {
+                //        var files = DaoFactory.GetFileDao<int>().GetFiles(rootKeys, filter, subjectGroup, subjectId, searchText, searchInContent);
+                //        entries = entries.Concat(fileSecurity.FilterRead(files));
+                //    }
+                //}
 
-                CalculateTotal();
+                //CalculateTotal();
             }
             else if (parent.FolderType == FolderType.SHARE)
             {
@@ -458,9 +452,6 @@ namespace ASC.Web.Files.Utils
             }
             else if (parent.FolderType == FolderType.Favorites)
             {
-                var fileDao = DaoFactory.GetFileDao<T>();
-                var folderDao = DaoFactory.GetFolderDao<T>();
-
                 var (files, folders) = GetFavorites(filter, subjectGroup, subjectId, searchText, searchInContent);
 
                 entries = entries.Concat(folders);
@@ -591,19 +582,20 @@ namespace ASC.Web.Files.Utils
 
                 var providers = providerDao.GetProvidersInfo(parent.RootFolderType, searchText);
                 folderList = providers
-                    .Select(providerInfo => GetFakeThirdpartyFolder<T>(providerInfo, parent.ID.ToString()))
+                    .Select(providerInfo => GetFakeThirdpartyFolder(providerInfo, parent.ID.ToString()))
                     .Where(r => fileSecurity.CanRead(r)).ToList();
 
-                if (folderList.Any())
+                if (folderList.Count > 0)
                 {
                     var securityDao = DaoFactory.GetSecurityDao<string>();
-                    securityDao.GetPureShareRecords(folderList)
+                    var ids = securityDao.GetPureShareRecords(folderList)
                     //.Where(x => x.Owner == SecurityContext.CurrentAccount.ID)
-                    .Select(x => x.EntryId).Distinct().ToList()
-                    .ForEach(id =>
+                    .Select(x => x.EntryId).Distinct();
+
+                    foreach (var id in ids)
                     {
                         folderList.First(y => y.ID.Equals(id)).Shared = true;
-                    });
+                    }
                 }
             }
 
@@ -656,7 +648,6 @@ namespace ASC.Web.Files.Utils
 
         public (IEnumerable<FileEntry>, IEnumerable<FileEntry>) GetFavorites(FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
         {
-            var fileSecurity = FileSecurity;
             var tagDao = DaoFactory.GetTagDao<int>();
             var tags = tagDao.GetTags(AuthContext.CurrentAccount.ID, TagType.Favorite);
 
@@ -749,9 +740,11 @@ namespace ASC.Web.Files.Utils
                 entries = entries.Where(where).ToList();
             }
 
-            if ((!searchInContent || filter == FilterType.ByExtension) && !string.IsNullOrEmpty(searchText = (searchText ?? string.Empty).ToLower().Trim()))
+            searchText = (searchText ?? string.Empty).ToLower().Trim();
+
+            if ((!searchInContent || filter == FilterType.ByExtension) && !string.IsNullOrEmpty(searchText))
             {
-                entries = entries.Where(f => f.Title.ToLower().Contains(searchText)).ToList();
+                entries = entries.Where(f => f.Title.Contains(searchText, StringComparison.InvariantCultureIgnoreCase)).ToList();
             }
             return entries;
         }
@@ -772,7 +765,7 @@ namespace ASC.Web.Files.Utils
                 {
                     var cmp = 0;
                     if (x.FileEntryType == FileEntryType.File && y.FileEntryType == FileEntryType.File)
-                        cmp = c * (FileUtility.GetFileExtension((x.Title)).CompareTo(FileUtility.GetFileExtension(y.Title)));
+                        cmp = c * FileUtility.GetFileExtension(x.Title).CompareTo(FileUtility.GetFileExtension(y.Title));
                     return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
                 }
                 ,
@@ -829,7 +822,7 @@ namespace ASC.Web.Files.Utils
             return result;
         }
 
-        public Folder<string> GetFakeThirdpartyFolder<T>(IProviderInfo providerInfo, string parentFolderId = null)
+        public Folder<string> GetFakeThirdpartyFolder(IProviderInfo providerInfo, string parentFolderId = null)
         {
             //Fake folder. Don't send request to third party
             var folder = ServiceProvider.GetService<Folder<string>>();
@@ -1096,15 +1089,10 @@ namespace ASC.Web.Files.Utils
                 }
                 else
                 {
-                    // hack. http://ubuntuforums.org/showthread.php?t=1841740
-                    if (WorkContext.IsMono)
-                    {
-                        ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
-                    }
                     var request = new HttpRequestMessage();
                     request.RequestUri = new Uri(downloadUri);
 
-                    using var httpClient = new HttpClient();
+                    var httpClient = ClientFactory.CreateClient();
                     using var response = httpClient.Send(request);
                     using var editedFileStream = new ResponseStream(response);
                     editedFileStream.CopyTo(tmpStream);
@@ -1175,7 +1163,7 @@ namespace ASC.Web.Files.Utils
         public File<T> UpdateToVersionFile<T>(T fileId, int version, string doc = null, bool checkRight = true)
         {
             var fileDao = DaoFactory.GetFileDao<T>();
-            if (version < 1) throw new ArgumentNullException("version");
+            if (version < 1) throw new ArgumentNullException(nameof(version));
 
             var editLink = FileShareLink.Check(doc, false, fileDao, out var fromFile);
 
@@ -1326,7 +1314,7 @@ namespace ASC.Web.Files.Utils
             title = Global.ReplaceInvalidCharsAndTruncate(title);
 
             var ext = FileUtility.GetFileExtension(file.Title);
-            if (string.Compare(ext, FileUtility.GetFileExtension(title), true) != 0)
+            if (!string.Equals(ext, FileUtility.GetFileExtension(title), StringComparison.InvariantCultureIgnoreCase))
             {
                 title += ext;
             }
@@ -1334,7 +1322,7 @@ namespace ASC.Web.Files.Utils
             var fileAccess = file.Access;
 
             var renamed = false;
-            if (string.Compare(file.Title, title, false) != 0)
+            if (!string.Equals(file.Title, title))
             {
                 var newFileID = fileDao.FileRename(file, title);
 

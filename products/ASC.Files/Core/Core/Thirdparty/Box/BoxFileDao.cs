@@ -99,7 +99,7 @@ namespace ASC.Files.Thirdparty.Box
                               .FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase)) as BoxFile);
         }
 
-        public File<string> GetFileStable(string fileId, int fileVersion)
+        public File<string> GetFileStable(string fileId, int fileVersion = -1)
         {
             return ToFile(GetBoxFile(fileId));
         }
@@ -151,8 +151,8 @@ namespace ASC.Files.Thirdparty.Box
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
                         {
-                            FileType fileType;
-                            return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
+                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                            return fileType == FileType.Audio || fileType == FileType.Video;
                         });
                     break;
                 case FilterType.ByExtension:
@@ -212,8 +212,8 @@ namespace ASC.Files.Thirdparty.Box
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
                         {
-                            FileType fileType;
-                            return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
+                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                            return fileType == FileType.Audio || fileType == FileType.Video;
                         });
                     break;
                 case FilterType.ByExtension:
@@ -252,7 +252,7 @@ namespace ASC.Files.Thirdparty.Box
             ProviderInfo.CacheReset(boxFileId, true);
 
             var boxFile = GetBoxFile(file.ID);
-            if (boxFile == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
+            if (boxFile == null) throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
             if (boxFile is ErrorFile errorFile) throw new Exception(errorFile.Error);
 
             var fileStream = ProviderInfo.Storage.DownloadStream(boxFile, (int)offset);
@@ -272,8 +272,8 @@ namespace ASC.Files.Thirdparty.Box
 
         public File<string> SaveFile(File<string> file, Stream fileStream)
         {
-            if (file == null) throw new ArgumentNullException("file");
-            if (fileStream == null) throw new ArgumentNullException("fileStream");
+            if (file == null) throw new ArgumentNullException(nameof(file));
+            if (fileStream == null) throw new ArgumentNullException(nameof(fileStream));
 
             BoxFile newBoxFile = null;
 

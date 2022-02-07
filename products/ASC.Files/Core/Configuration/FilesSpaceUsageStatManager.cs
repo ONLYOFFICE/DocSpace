@@ -83,7 +83,7 @@ namespace ASC.Web.Files
                 .Join(FilesDbContext.BunchObjects, a => a.tree.ParentId.ToString(), b => b.LeftNode, (fileTree, bunch) => new { fileTree.file, fileTree.tree, bunch })
                 .Where(r => r.file.TenantId == r.bunch.TenantId)
                 .Where(r => r.file.TenantId == TenantManager.GetCurrentTenant().TenantId)
-                .Where(r => r.bunch.RightNode.StartsWith("files/my/") | r.bunch.RightNode.StartsWith("files/trash/"))
+                .Where(r => r.bunch.RightNode.StartsWith("files/my/") || r.bunch.RightNode.StartsWith("files/trash/"))
                 .GroupBy(r => r.file.CreateBy)
                 .Select(r => new { CreateBy = r.Key, Size = r.Sum(a => a.file.ContentLength) });
 

@@ -156,7 +156,7 @@ namespace ASC.Web.Core
                 }
                 catch (Exception exc)
                 {
-                    log.Error(string.Format("Couldn't load web item {0}", file), exc);
+                    log.Error($"Couldn't load web item {file}", exc);
                 }
             }
 
@@ -261,10 +261,11 @@ namespace ASC.Web.Core
 
         public List<IWebItem> GetSubItems(Guid parentItemID, ItemAvailableState avaliableState)
         {
-            return GetItems(WebZoneType.All, avaliableState).OfType<IModule>()
-                                                            .Where(p => p.ProjectId == parentItemID)
-                                                            .Cast<IWebItem>()
-                                                            .ToList();
+            return GetItems(WebZoneType.All, avaliableState)
+                .OfType<IModule>()
+                .Where(p => p.ProjectId == parentItemID)
+                .Cast<IWebItem>()
+                .ToList();
         }
     }
 }

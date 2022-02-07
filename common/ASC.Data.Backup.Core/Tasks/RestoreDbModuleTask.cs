@@ -54,9 +54,9 @@ namespace ASC.Data.Backup.Tasks
         public RestoreDbModuleTask(IOptionsMonitor<ILog> options, IModuleSpecifics module, IDataReadOperator reader, ColumnMapper columnMapper, DbFactory factory, bool replaceDate, bool dump, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
             : base(factory, options, storageFactory, storageFactoryConfig, moduleProvider)
         {
-            Reader = reader ?? throw new ArgumentNullException("reader");
-            ColumnMapper = columnMapper ?? throw new ArgumentNullException("columnMapper");
-            DbFactory = factory ?? throw new ArgumentNullException("factory");
+            Reader = reader ?? throw new ArgumentNullException(nameof(reader));
+            ColumnMapper = columnMapper ?? throw new ArgumentNullException(nameof(columnMapper));
+            DbFactory = factory ?? throw new ArgumentNullException(nameof(factory));
             Module = module;
             ReplaceDate = replaceDate;
             Dump = dump;
@@ -139,7 +139,7 @@ namespace ASC.Data.Backup.Tasks
                             else if (tableInfo.IdType == IdType.Integer)
                             {
                                 var command = connection.CreateCommand();
-                                command.CommandText = string.Format("select max({0}) from {1};", tableInfo.IdColumn, tableInfo.Name);
+                                command.CommandText = $"select max({tableInfo.IdColumn}) from {tableInfo.Name};";
                                 newIdValue = (int)command.WithTimeout(120).ExecuteScalar() + 1;
                             }
                         }

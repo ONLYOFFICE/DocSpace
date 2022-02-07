@@ -38,8 +38,6 @@ namespace ASC.Files.Thirdparty.Dropbox
 {
     internal class DropboxStorage : IDisposable
     {
-        private OAuth20Token _token;
-
         private DropboxClient dropboxClient;
 
         public bool IsOpened { get; private set; }
@@ -57,9 +55,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             if (IsOpened)
                 return;
 
-            _token = token;
-
-            dropboxClient = new DropboxClient(_token.AccessToken);
+            dropboxClient = new DropboxClient(token.AccessToken);
 
             IsOpened = true;
         }

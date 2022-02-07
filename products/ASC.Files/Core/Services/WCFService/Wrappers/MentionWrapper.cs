@@ -37,13 +37,11 @@ namespace ASC.Web.Files.Services.WCFService
         public string Email
         {
             get { return User.Email; }
-            set { }
         }
 
         public string Id
         {
             get { return User.ID.ToString(); }
-            set { }
         }
 
         public bool HasAccess { get; set; }
@@ -51,12 +49,11 @@ namespace ASC.Web.Files.Services.WCFService
         public string Name
         {
             get { return User.DisplayUserName(false, DisplayUserSettingsHelper); }
-            set { }
         }
 
         private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
 
-        public UserInfo User;
+        public UserInfo User { get; set; }
 
         public MentionWrapper(UserInfo user, DisplayUserSettingsHelper displayUserSettingsHelper)
         {

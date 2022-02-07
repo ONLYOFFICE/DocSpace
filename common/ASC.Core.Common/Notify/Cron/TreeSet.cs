@@ -139,8 +139,8 @@ namespace ASC.Notify.Cron
 
         private bool AddWithoutSorting(object obj)
         {
-            bool inserted;
-            if (!(inserted = Contains(obj)))
+            bool inserted = Contains(obj);
+            if (!inserted)
             {
                 base.Add(obj);
             }

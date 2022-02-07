@@ -44,6 +44,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+using System;
 using System.Collections;
 using System.IO;
 using System.Text;
@@ -490,7 +491,7 @@ namespace ASC.Calendar.iCalParser
             }
             else if (iprop != null && id.TokenVal != TokenValue.Xtension)
             {
-                if (iprop.TokenText.ToLowerInvariant() == "uri")
+                if (iprop.TokenText.Equals("uri", StringComparison.OrdinalIgnoreCase))
                 {
                     // special case 
                     emitter.doURIResource(val);

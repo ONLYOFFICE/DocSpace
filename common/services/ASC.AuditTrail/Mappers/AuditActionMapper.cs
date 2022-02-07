@@ -71,7 +71,7 @@ namespace ASC.AuditTrail.Mappers
             {
                 var actionText = Actions[(MessageAction)evt.Action].GetActionText();
 
-                if (evt.Description == null || !evt.Description.Any()) return actionText;
+                if (evt.Description == null || evt.Description.Count == 0) return actionText;
 
                 var description = evt.Description
                                      .Select(t => t.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
@@ -100,7 +100,7 @@ namespace ASC.AuditTrail.Mappers
             {
                 var actionText = Actions[(MessageAction)evt.Action].GetActionText();
 
-                if (evt.Description == null || !evt.Description.Any()) return actionText;
+                if (evt.Description == null || evt.Description.Count == 0) return actionText;
 
                 var description = evt.Description
                                      .Select(t => t.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
@@ -142,7 +142,7 @@ namespace ASC.AuditTrail.Mappers
         private string ToLimitedText(string text)
         {
             if (text == null) return null;
-            return text.Length < 50 ? text : string.Format("{0}...", text.Substring(0, 47));
+            return text.Length < 50 ? text : $"{text.Substring(0, 47)}...";
         }
     }
 }

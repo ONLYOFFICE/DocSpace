@@ -71,7 +71,7 @@ namespace ASC.Core.Common.Notify
             if (string.IsNullOrEmpty(entityId)) throw new ArgumentException(@"Entity Id is null or empty", entityId);
 
             var pId = parentId != Guid.Empty.ToString() && parentId != null ? parentId : string.Empty;
-            return new TagValue(TagName, string.Format("reply_{0}_{1}_{2}@{3}", entity, entityId, pId, AutoreplyDomain));
+            return new TagValue(TagName, $"reply_{entity}_{entityId}_{pId}@{AutoreplyDomain}");
         }
 
         /// <summary>

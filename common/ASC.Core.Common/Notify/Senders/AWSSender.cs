@@ -249,7 +249,7 @@ namespace ASC.Core.Notify.Senders
         }
     }
 
-    public class AWSSenderExtension
+    public static class AWSSenderExtension
     {
         public static void Register(DIHelper services)
         {

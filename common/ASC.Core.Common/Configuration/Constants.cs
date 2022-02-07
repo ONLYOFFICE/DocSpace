@@ -32,7 +32,7 @@ using ASC.Common.Security.Authorizing;
 
 namespace ASC.Core.Configuration
 {
-    public sealed class Constants
+    public static class Constants
     {
         public static readonly string NotifyEMailSenderSysName = "email.sender";
 

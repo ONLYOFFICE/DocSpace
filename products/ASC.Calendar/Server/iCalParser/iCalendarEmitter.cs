@@ -30,6 +30,7 @@ using System.Linq;
 using ASC.Common.Utils;
 using ASC.Web.Core.Calendars;
 using ASC.Core;
+using System.Net.Http;
 
 namespace ASC.Calendar.iCalParser
 {
@@ -46,14 +47,17 @@ namespace ASC.Calendar.iCalParser
         private AuthContext AuthContext { get; }
         private TimeZoneConverter TimeZoneConverter { get; }
         private TenantManager TenantManager { get; }
+        private IHttpClientFactory ClientFactory { get; }
         public iCalendarEmitter(
             AuthContext authContext,
             TimeZoneConverter timeZoneConverter,
-            TenantManager tenantManager)
+            TenantManager tenantManager,
+            IHttpClientFactory clientFactory)
         {
             AuthContext = authContext;
             TimeZoneConverter = timeZoneConverter;
             TenantManager = tenantManager;
+            ClientFactory = clientFactory;
         }
         public iCalendar GetCalendar()
         {
@@ -96,7 +100,7 @@ namespace ASC.Calendar.iCalParser
             switch (t.TokenVal)
             {
                 case TokenValue.Tvcalendar:                    
-                    _curCalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
+                    _curCalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager, ClientFactory);
                     break;
 
                 case TokenValue.Tvevent:
@@ -136,7 +140,7 @@ namespace ASC.Calendar.iCalParser
                 || _curPropToken.TokenVal == TokenValue.Texdate)
             {
 
-                if (iprop != null && iprop.TokenText.ToLowerInvariant() == "date")
+                if (iprop != null && iprop.TokenText.Equals("date", StringComparison.OrdinalIgnoreCase))
                     dateTime = Token.ParseDate(t.TokenText);
 
                 else

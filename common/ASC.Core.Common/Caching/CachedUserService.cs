@@ -207,7 +207,7 @@ namespace ASC.Core.Caching
             UserServiceCache userServiceCache
             ) : this()
         {
-            Service = service ?? throw new ArgumentNullException("service");
+            Service = service ?? throw new ArgumentNullException(nameof(service));
             CoreBaseSettings = coreBaseSettings;
             UserServiceCache = userServiceCache;
             Cache = userServiceCache.Cache;
@@ -322,7 +322,7 @@ namespace ASC.Core.Caching
                 group = Service.GetGroup(tenant, id);
 
                 if (group != null) Cache.Insert(key, group, CacheExpiration);
-            };
+            }
 
             return group;
         }

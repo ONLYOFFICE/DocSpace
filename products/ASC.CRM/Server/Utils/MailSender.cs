@@ -693,7 +693,7 @@ namespace ASC.Web.CRM.Classes
 
             foreach (Match match in _regex.Matches(template))
             {
-                var findedTag = tags.Find(item => String.Compare(item.Name, match.Value) == 0);
+                var findedTag = tags.Find(item => string.Equals(item.Name, match.Value));
 
                 if (findedTag == null) continue;
 
@@ -827,7 +827,7 @@ namespace ASC.Web.CRM.Classes
 
         private String ToTagName(String value, bool isCompany)
         {
-            return String.Format("$({0}.{1})", isCompany ? "Company" : "Person", value);
+            return $"$({(isCompany ? "Company" : "Person")}.{value})";
         }
 
         private List<MailTemplateTag> GetAllTags()
@@ -907,7 +907,7 @@ namespace ASC.Web.CRM.Classes
                             DisplayName = String.Format(localTitle + " {0}", addressPartEnum.ToLocalizedString()),
                             Category = CRMContactResource.GeneralInformation,
                             isCompany = isCompany,
-                            Name = ToTagName(String.Format("{0} {1}", infoTypeEnum.ToString(), addressPartEnum.ToString()), isCompany)
+                            Name = ToTagName($"{infoTypeEnum} {addressPartEnum}", isCompany)
                         });
                 else
                     result.Add(new MailTemplateTag
