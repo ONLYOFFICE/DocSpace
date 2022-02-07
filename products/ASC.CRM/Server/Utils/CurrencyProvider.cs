@@ -254,7 +254,7 @@ namespace ASC.Web.CRM.Classes
                         }
                         catch (Exception error)
                         {
-                            _logger.Error(error);
+                            _log.Error(error);
                             _publisherDate = DateTime.UtcNow;
                         }
                     }
@@ -308,7 +308,7 @@ namespace ASC.Web.CRM.Classes
                 }
                 catch (Exception err)
                 {
-                    _logger.Error(err);
+                    _log.Error(err);
                 }
             }
         }
@@ -322,7 +322,7 @@ namespace ASC.Web.CRM.Classes
             }
             catch (Exception err)
             {
-                _logger.Error(err);
+                _log.Error(err);
             }
         }
 
@@ -338,7 +338,7 @@ namespace ASC.Web.CRM.Classes
                     Directory.CreateDirectory(dir);
                 }
 
-                var destinationURI = new Uri("https://themoneyconverter.com/"+ currency + "/" + currency + ".aspx");
+                var destinationURI = new Uri("https://themoneyconverter.com/" + currency + "/" + currency + ".aspx");
 
                 var request = new HttpRequestMessage();
                 request.RequestUri = destinationURI;
@@ -362,7 +362,7 @@ namespace ASC.Web.CRM.Classes
             }
             catch (Exception error)
             {
-                _logger.Error(error);
+                _log.Error(error);
             }
         }
 

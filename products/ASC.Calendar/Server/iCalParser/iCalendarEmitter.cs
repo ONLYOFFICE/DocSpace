@@ -27,10 +27,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ASC.Common.Utils;
-using ASC.Web.Core.Calendars;
-using ASC.Core;
 using System.Net.Http;
+
+using ASC.Common.Utils;
+using ASC.Core;
+using ASC.Web.Core.Calendars;
 
 namespace ASC.Calendar.iCalParser
 {
@@ -39,7 +40,7 @@ namespace ASC.Calendar.iCalParser
         private iCalendar _curCalendar;
         private iCalEvent _curEvent;
 
-        private Stack<Token> _component= new Stack<Token>();
+        private Stack<Token> _component = new Stack<Token>();
         private Token _curPropToken = null;
 
         public Parser VParser { get; set; }
@@ -65,12 +66,12 @@ namespace ASC.Calendar.iCalParser
         }
 
 
-        public void doIntro(){}
+        public void doIntro() { }
         public void doOutro()
         {
         }
         public void doComponent() { }
-      
+
         public void doResource(Token t) { }
         public void emit(string val) { }
 
@@ -85,44 +86,44 @@ namespace ASC.Calendar.iCalParser
         }
 
         public void doBegin(Token t)
-        {            
+        {
         }
 
-        public void doEndComponent() 
+        public void doEndComponent()
         {
             _component.Pop();
         }
 
         public void doComponentBegin(Token t)
-        {  
+        {
             _component.Push(t);
 
             switch (t.TokenVal)
             {
-                case TokenValue.Tvcalendar:                    
+                case TokenValue.Tvcalendar:
                     _curCalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager, ClientFactory);
                     break;
 
                 case TokenValue.Tvevent:
-                case TokenValue.Tvjournal:                    
+                case TokenValue.Tvjournal:
                     _curEvent = new iCalEvent();
                     _curCalendar.Events.Add(_curEvent);
                     _curEvent.CalendarId = _curCalendar.Id;
                     break;
             }
-        }       
+        }
 
         public void doID(Token t)
         {
-            _curPropToken = t;            
+            _curPropToken = t;
         }
 
         public void doSymbolic(Token t)
-        {           
+        {
         }
 
         public void doURIResource(Token t)
-        {         
+        {
         }
 
         public void doMailto(Token t)
@@ -135,7 +136,7 @@ namespace ASC.Calendar.iCalParser
             bool isAllDay = true;
             bool isUTC = true;
 
-            if (_curPropToken.TokenVal == TokenValue.Tdtstart 
+            if (_curPropToken.TokenVal == TokenValue.Tdtstart
                 || _curPropToken.TokenVal == TokenValue.Tdtend
                 || _curPropToken.TokenVal == TokenValue.Texdate)
             {
@@ -186,7 +187,7 @@ namespace ASC.Calendar.iCalParser
         }
 
         public void doIprop(Token t, Token iprop)
-        {         
+        {
         }
 
         public void doRest(Token t, Token id)
@@ -209,7 +210,7 @@ namespace ASC.Calendar.iCalParser
                         case "x:wrtimezone":
                             _curCalendar.xTimeZone = t.TokenText;
                             break;
-        
+
                         case "x:wrcalname":
                             _curCalendar.Name = t.TokenText;
                             break;
@@ -266,7 +267,7 @@ namespace ASC.Calendar.iCalParser
             //event rrule
             if (_curPropToken.TokenVal == TokenValue.Trrule && _component.Peek().TokenVal == TokenValue.Tvevent)
             {
-                switch(key.TokenText.ToLowerInvariant())
+                switch (key.TokenText.ToLowerInvariant())
                 {
                     case "freq":
                         _curEvent.RecurrenceRule.Freq = RecurrenceRule.ParseFrequency(val.TokenText);
@@ -290,7 +291,7 @@ namespace ASC.Calendar.iCalParser
                         break;
 
                     case "byminute":
-                        _curEvent.RecurrenceRule.ByMinute= val.TokenText.Split(',').Select(v => Convert.ToInt32(v)).ToArray();
+                        _curEvent.RecurrenceRule.ByMinute = val.TokenText.Split(',').Select(v => Convert.ToInt32(v)).ToArray();
                         break;
 
                     case "byhour":
@@ -298,7 +299,7 @@ namespace ASC.Calendar.iCalParser
                         break;
 
                     case "byday":
-                        _curEvent.RecurrenceRule.ByDay = val.TokenText.Split(',').Select(v => RecurrenceRule.WeekDay.Parse(v)).ToArray();
+                        _curEvent.RecurrenceRule.ByDay = val.TokenText.Split(',').Select(v => RecurrenceRule.WeekDay.ParseWeekDay(v)).ToArray();
                         break;
 
                     case "bymonthday":
@@ -318,11 +319,11 @@ namespace ASC.Calendar.iCalParser
                         break;
 
                     case "bysetpos":
-                        _curEvent.RecurrenceRule.BySetPos= val.TokenText.Split(',').Select(v => Convert.ToInt32(v)).ToArray();
+                        _curEvent.RecurrenceRule.BySetPos = val.TokenText.Split(',').Select(v => Convert.ToInt32(v)).ToArray();
                         break;
 
                     case "wkst":
-                        _curEvent.RecurrenceRule.WKST = RecurrenceRule.WeekDay.Parse(val.TokenText);
+                        _curEvent.RecurrenceRule.WKST = RecurrenceRule.WeekDay.ParseWeekDay(val.TokenText);
                         break;
                 }
             }
