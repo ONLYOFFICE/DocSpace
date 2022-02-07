@@ -18,11 +18,13 @@ const StyledCatalog = styled.div`
 
   @media ${mobile} {
     top: 64px;
+    height: calc(100vh - 64px) !important;
   }
 
   ${isMobileOnly &&
   css`
     top: 64px;
+    height: calc(100vh - 64px) !important;
   `}
 
   z-index: ${(props) =>
@@ -64,6 +66,7 @@ const StyledCatalog = styled.div`
       display: ${(props) => (props.showText ? "flex" : "none")};
       min-width: 100vw;
       width: 100vw;
+      height: calc(100vh - 64px) !important;
       margin: 0;
       padding: 0;
       padding-bottom: 44px;
@@ -83,6 +86,7 @@ const StyledCatalog = styled.div`
       display: ${(props) => (props.showText ? "flex" : "none")};
       min-width: 100vw !important;
       width: 100vw;
+      height: calc(100vh - 64px) !important;
       margin: 0;
       padding: 0;
       padding-bottom: 44px;
