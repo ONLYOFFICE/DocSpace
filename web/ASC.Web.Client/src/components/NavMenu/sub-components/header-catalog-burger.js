@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { isMobileOnly } from "react-device-detect";
 import MenuIcon from "@appserver/components/public/static/images/menu.react.svg";
 import { mobile } from "@appserver/components/utils/device";
+import { Base } from "@appserver/components/themes";
 
 const StyledIconBox = styled.div`
   @media ${mobile} {
@@ -18,9 +19,15 @@ const StyledIconBox = styled.div`
 const StyledMenuIcon = styled(MenuIcon)`
   width: 20px;
   height: 20px;
-  fill: #657077;
+
+  path {
+    fill: ${(props) => props.theme.catalog.headerBurgerColor};
+  }
+
   cursor: pointer;
 `;
+
+StyledMenuIcon.defaultProps = { theme: Base };
 
 const HeaderCatalogBurger = (props) => {
   const { isProduct, showCatalog, onClick, ...rest } = props;

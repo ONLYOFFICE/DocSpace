@@ -1799,6 +1799,8 @@ const Base = {
       background: "#9a9ea3",
       fill: "#ffffff",
     },
+
+    headerBurgerColor: "#657077",
   },
 
   catalogItem: {
