@@ -42,6 +42,7 @@ class RestoreBackup extends React.Component {
       isErrors: {},
       isCopyingToLocal: true,
       downloadingProgress: 100,
+      isLoading: false,
     };
     this._isMounted = false;
     this.timerId = null;
@@ -216,6 +217,7 @@ class RestoreBackup extends React.Component {
       isCheckedThirdParty,
       formSettings,
     } = this.state;
+
     if (isCheckedDocuments || isCheckedThirdParty) {
       if (!selectedFileId) return false;
       return true;
@@ -227,22 +229,31 @@ class RestoreBackup extends React.Component {
     }
 
     if (isCheckedThirdPartyStorage) {
-      let errorObject = {};
+      let errors = {};
+      let firstError = false;
 
       for (let key of this.formNames) {
-        errorObject = {
-          ...errorObject,
-          [key]: this.state.formSettings[key]
-            ? !this.state.formSettings[key].trim()
-            : true,
-        };
+        const field = this.state.formSettings[key];
+        if (!field) {
+          if (!firstError) {
+            firstError = true;
+          }
+          errors[key] = true;
+        } else {
+          if (!firstError && !field.trim()) {
+            firstError = true;
+          }
+          errors[key] = !field.trim();
+        }
       }
-      if (Object.keys(errorObject).length !== 0) {
+
+      if (firstError) {
         this.setState({
-          isErrors: errorObject,
+          isErrors: errors,
         });
-        return;
+        return false;
       }
+      return true;
     }
   };
   onRestoreClick = async () => {
@@ -273,7 +284,21 @@ class RestoreBackup extends React.Component {
       : "5";
 
     if (isCheckedThirdPartyStorage) {
-      //TODO: add to add storageParams
+      storageParams.push({
+        key: "module",
+        value: this.storageId,
+      });
+      let tmpObj = {};
+      const arraySettings = Object.entries(formSettings);
+      console.log("this.state.formSettings", arraySettings);
+      for (let i = 0; i < this.formNames.length; i++) {
+        tmpObj = {
+          key: arraySettings[i][0],
+          value: arraySettings[i][1],
+        };
+
+        storageParams.push(tmpObj);
+      }
     } else {
       obj.key = "filePath";
       if (isCheckedDocuments || isCheckedThirdParty) {
@@ -313,7 +338,7 @@ class RestoreBackup extends React.Component {
 
     // startRestore(backupId, storageType, storageParams, isNotify)
     //   .then(() => getSettings())
-    //   .then(() => (this.storageId = ""))
+    //.then(() => this.storageId ="")
     //   .then(() =>
     //     history.push(
     //       combineUrl(
@@ -388,7 +413,7 @@ class RestoreBackup extends React.Component {
 
     const isDisabledThirdParty =
       this.commonThirdPartyList && this.commonThirdPartyList.length === 0;
-    console.log("render child ");
+    console.log("render restore backup ", this.state, this.props);
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
