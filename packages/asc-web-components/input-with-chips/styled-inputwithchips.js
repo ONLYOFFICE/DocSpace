@@ -1,15 +1,44 @@
 import styled from "styled-components";
 import commonInputStyle from "../text-input/common-input-styles";
 import Base from "../themes/base";
+import TextInput from "../text-input";
 
 const CHIPS_BORDER_RADIUS = "3px",
   CHIPS_BACKGROUND = "#ECEEF1",
   CHIPS_COLOR = "#333333";
 
+const StyledChipWithInput = styled.div`
+  min-height: 32px;
+  max-height: 88px;
+  display: flex;
+  flex-wrap: wrap;
+  height: fit-content;
+  width: ${(props) => props.length === 0 && "100%"};
+`;
+
 const StyledContent = styled.div`
   width: 469px;
   height: 88px;
 `;
+
+const StyledChipGroup = styled.div`
+  height: fit-content;
+  ${commonInputStyle} :focus-within {
+    border-color: ${(props) => props.theme.inputBlock.borderColor};
+  }
+
+  .scroll {
+    height: fit-content;
+    position: inherit !important;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  input {
+    flex: 1 0 auto;
+  }
+`;
+StyledChipGroup.defaultProps = { theme: Base };
 
 const StyledChip = styled.div`
   width: fit-content;
@@ -27,6 +56,13 @@ const StyledChip = styled.div`
 
   border-radius: ${CHIPS_BORDER_RADIUS} 0 0 ${CHIPS_BORDER_RADIUS};
   border: ${(props) => props.isSelected && "1px dashed #000"};
+
+  .warning_icon_wrap {
+    cursor: pointer;
+    .warning_icon {
+      margin-right: 4px;
+    }
+  }
 `;
 
 const StyledChipValue = styled.div`
@@ -38,36 +74,15 @@ const StyledChipValue = styled.div`
   color: ${CHIPS_COLOR};
 `;
 
-const StyledChipGroup = styled.div`
-  height: fit-content;
-  ${commonInputStyle} :focus-within {
-    border-color: ${(props) => props.theme.inputBlock.borderColor};
-  }
-
-  .scroll {
-    position: inherit !important;
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  input {
-    flex: 1 0 auto;
-  }
-`;
-StyledChipGroup.defaultProps = { theme: Base };
-
-const StyledChipWithInput = styled.div`
-  min-height: 32px;
-  max-height: 88px;
-  display: flex;
-  flex-wrap: wrap;
-  height: fit-content;
+const StyledChipInput = styled(TextInput)`
+  flex: 0 1 auto;
 `;
 
 export {
+  StyledChipWithInput,
   StyledContent,
+  StyledChipGroup,
   StyledChip,
   StyledChipValue,
-  StyledChipGroup,
-  StyledChipWithInput,
+  StyledChipInput,
 };
