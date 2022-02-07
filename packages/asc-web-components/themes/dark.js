@@ -2337,7 +2337,7 @@ const Dark = {
       },
     },
     separator: {
-      borderBottom: `1px solid ${grayLightMid} !important`,
+      borderBottom: `1px solid #474747 !important`,
       margin: "6px 16px 6px 16px !important",
       height: "1px !important",
       width: "calc(100% - 32px) !important",
@@ -2355,14 +2355,14 @@ const Dark = {
       lineHeight: "30px",
       fontWeight: "600",
       margin: "0 0 0 8px",
-      color: black,
+      color: "#eeeeee",
     },
-    hover: grayLight,
+    hover: black,
     background: "none",
-    svgFill: black,
+    svgFill: "#eeeeee",
     header: {
       height: "50px",
-      borderBottom: `1px solid ${grayLightMid}`,
+      borderBottom: `1px solid #474747`,
       marginBottom: "6px",
     },
     height: "30px",
@@ -2375,10 +2375,12 @@ const Dark = {
     },
   },
   newContextMenu: {
-    background: white,
+    background: "#3D3D3D",
     borderRadius: "6px",
-    boxShadow: "0px 12px 40px rgba(4, 15, 27, 0.12)",
+    boxShadow:
+      "0px 12px 24px rgba(0, 0, 0, 0.12), 0px 8px 16px rgba(0, 0, 0, 0.08), 0px 3.2px 2.6px rgba(0, 0, 0, 0.08)",
     padding: "6px 0px",
+    border: "1px solid #474747",
     devices: {
       maxHeight: "calc(100vh - 64px)",
       tabletWidth: "375px",

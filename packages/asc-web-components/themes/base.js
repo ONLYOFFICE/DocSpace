@@ -2370,6 +2370,7 @@ const Base = {
     borderRadius: "6px",
     boxShadow: "0px 12px 40px rgba(4, 15, 27, 0.12)",
     padding: "6px 0px",
+    border: "none",
     devices: {
       maxHeight: "calc(100vh - 64px)",
       tabletWidth: "375px",
