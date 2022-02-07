@@ -455,7 +455,7 @@ namespace ASC.Files.Core.Data
 
                 parentFoldersIds = parentFolders.Select(r => r.ParentId).ToList();
 
-                if (parentFoldersIds.Count == 0)
+                if (parentFoldersIds.Count > 0)
                 {
                     var folderToUpdate = FilesDbContext.Folders
                         .Where(r => parentFoldersIds.Contains(r.Id));
