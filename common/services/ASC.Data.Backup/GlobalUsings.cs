@@ -37,7 +37,4 @@ global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Options;
 
-global using StackExchange.Redis.Extensions.Core.Configuration;
-global using StackExchange.Redis.Extensions.Newtonsoft;
-
 global using static ASC.Data.Backup.BackupAjaxHandler;

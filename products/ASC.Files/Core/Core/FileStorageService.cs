@@ -45,7 +45,6 @@ using ASC.Core.Common.Configuration;
 using ASC.Core.Common.Settings;
 using ASC.Core.Users;
 using ASC.Data.Storage;
-using ASC.ElasticSearch;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
 using ASC.Files.Core.Resources;

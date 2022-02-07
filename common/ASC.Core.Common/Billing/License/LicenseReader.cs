@@ -26,7 +26,6 @@
 
 using System;
 using System.IO;
-using System.Linq;
 
 using ASC.Common;
 using ASC.Common.Logging;

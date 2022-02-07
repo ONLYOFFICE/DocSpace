@@ -25,7 +25,6 @@
 
 
 using System;
-using System.Linq;
 
 using ASC.Common.Threading;
 using ASC.Core;

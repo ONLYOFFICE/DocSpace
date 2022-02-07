@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -48,7 +47,6 @@ namespace ASC.Files.ThumbnailBuilder
     {
         private readonly ThumbnailSettings config;
         private readonly ILog logger;
-        private readonly IHttpClientFactory clientFactory;
         private IServiceProvider ServiceProvider { get; }
 
         public BuilderQueue(IServiceProvider serviceProvider, IOptionsMonitor<ILog> log, ThumbnailSettings settings)

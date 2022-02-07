@@ -681,7 +681,7 @@ namespace ASC.Web.Files.Services.DocumentService
             Logo.SetConfiguration(_configuration);
         }
 
-        private string _gobackUrl;
+        //private string _gobackUrl;
         public bool IsRetina { get; set; } = false;
 
 
@@ -726,13 +726,13 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 if (_configuration.EditorType == EditorType.Embedded || _configuration.EditorType == EditorType.External) return null;
                 if (!AuthContext.IsAuthenticated) return null;
-                if (_gobackUrl != null)
-                {
-                    return new GobackConfig
-                    {
-                        Url = _gobackUrl,
-                    };
-                }
+                //if (_gobackUrl != null)
+                //{
+                //    return new GobackConfig
+                //    {
+                //        Url = _gobackUrl,
+                //    };
+                //}
 
                 var folderDao = DaoFactory.GetFolderDao<T>();
                 try
