@@ -33,14 +33,16 @@ public class EmployeeWraper
     public string AvatarSmall { get; set; }
     public string ProfileUrl { get; set; }
 
-    public static EmployeeWraper GetSample() =>
-        new EmployeeWraper
+    public static EmployeeWraper GetSample()
+    {
+        return new EmployeeWraper
         {
             Id = Guid.Empty,
             DisplayName = "Mike Zanyatski",
             Title = "Manager",
             AvatarSmall = "url to small avatar",
         };
+    }
 }
 
 [Scope]
@@ -68,7 +70,10 @@ public class EmployeeWraperHelper
 
     }
 
-    public EmployeeWraper Get(UserInfo userInfo) => Init(new EmployeeWraper(), userInfo);
+    public EmployeeWraper Get(UserInfo userInfo)
+    {
+        return Init(new EmployeeWraper(), userInfo);
+    }
 
     public EmployeeWraper Get(Guid userId)
     {
@@ -87,12 +92,18 @@ public class EmployeeWraperHelper
         result.Id = userInfo.ID;
         result.DisplayName = _displayUserSettingsHelper.GetFullUserName(userInfo);
 
-        if (!string.IsNullOrEmpty(userInfo.Title)) result.Title = userInfo.Title;
+        if (!string.IsNullOrEmpty(userInfo.Title))
+        {
+            result.Title = userInfo.Title;
+        }
 
         var userInfoLM = userInfo.LastModified.GetHashCode();
 
         if (_httpContext.Check("avatarSmall"))
-            result.AvatarSmall = UserPhotoManager.GetSmallPhotoURL(userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+        {
+            result.AvatarSmall = UserPhotoManager.GetSmallPhotoURL(userInfo.ID, out var isdef) 
+                + (isdef ? "" : $"?_={userInfoLM}");
+        }     
 
         if (result.Id != Guid.Empty)
         {

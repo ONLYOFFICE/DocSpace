@@ -4,7 +4,10 @@ public class DisposeMiddleware
 {
     private readonly RequestDelegate _next;
 
-    public DisposeMiddleware(RequestDelegate next) => _next = next;
+    public DisposeMiddleware(RequestDelegate next)
+    {
+        _next = next;
+    }
 
     public async Task Invoke(HttpContext context)
     {
@@ -16,6 +19,8 @@ public class DisposeMiddleware
 
 public static class DisposeMiddlewareExtensions
 {
-    public static IApplicationBuilder UseDisposeMiddleware(this IApplicationBuilder builder) =>
-        builder.UseMiddleware<DisposeMiddleware>();
+    public static IApplicationBuilder UseDisposeMiddleware(this IApplicationBuilder builder)
+    {
+        return builder.UseMiddleware<DisposeMiddleware>();
+    }
 }

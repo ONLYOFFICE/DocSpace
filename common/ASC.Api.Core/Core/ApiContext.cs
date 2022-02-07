@@ -40,9 +40,13 @@ public class ApiContext : ICloneable
         set
         {
             if (HttpContextAccessor.HttpContext.Items.ContainsKey(nameof(TotalCount)))
+            {
                 HttpContextAccessor.HttpContext.Items[nameof(TotalCount)] = value;
+            }
             else
+            {
                 HttpContextAccessor.HttpContext.Items.Add(nameof(TotalCount), value);
+            }
         }
     }
 
@@ -115,14 +119,20 @@ public class ApiContext : ICloneable
         _securityContext = securityContext;
         _tenantManager = tenantManager;
         HttpContextAccessor = httpContextAccessor;
-        if (httpContextAccessor.HttpContext == null) return;
+        if (httpContextAccessor.HttpContext == null)
+        {
+            return;
+        }
 
         Count = s_maxCount;
         var query = HttpContextAccessor.HttpContext.Request.Query;
         //Try parse values
         var count = query.GetRequestValue("count");
         if (!string.IsNullOrEmpty(count) && ulong.TryParse(count, out var countParsed))
-            Count = Math.Min((long)countParsed, s_maxCount); //Count specified and valid
+        {
+            //Count specified and valid
+            Count = Math.Min((long)countParsed, s_maxCount); 
+        }
 
         var startIndex = query.GetRequestValue("startIndex");
         if (startIndex != null && long.TryParse(startIndex, out var startIndexParsed))
@@ -132,7 +142,10 @@ public class ApiContext : ICloneable
         }
 
         var sortOrder = query.GetRequestValue("sortOrder");
-        if ("descending".Equals(sortOrder)) SortDescending = true;
+        if ("descending".Equals(sortOrder))
+        {
+            SortDescending = true;
+        }
 
         FilterToType = query.GetRequestValue("type");
         SortBy = query.GetRequestValue("sortBy");
@@ -143,7 +156,10 @@ public class ApiContext : ICloneable
         Fields = query.GetRequestArray("fields");
 
         var updatedSince = query.GetRequestValue("updatedSince");
-        if (updatedSince != null) UpdatedSince = Convert.ToDateTime(updatedSince);
+        if (updatedSince != null)
+        {
+            UpdatedSince = Convert.ToDateTime(updatedSince);
+        }
     }
 
     /// <summary>
@@ -187,15 +203,24 @@ public class ApiContext : ICloneable
         return this;
     }
 
-    public object Clone() => MemberwiseClone();
+    public object Clone()
+    {
+        return MemberwiseClone();
+    }
 
-    public override string ToString() => string.Format("C:{0},S:{1},So:{2},Sd:{3},Fb;{4},Fo:{5},Fv:{6},Us:{7},Ftt:{8}", Count, StartIndex,
+    public override string ToString()
+    {
+        return string.Format("C:{0},S:{1},So:{2},Sd:{3},Fb;{4},Fo:{5},Fv:{6},Us:{7},Ftt:{8}", Count, StartIndex,
                              SortBy, SortDescending, FilterBy, FilterOp, FilterValue, UpdatedSince.Ticks, FilterToType);
+    }
 
     public void AuthByClaim()
     {
         var id = HttpContextAccessor.HttpContext.User.Claims.FirstOrDefault(r => r.Type == ClaimTypes.Sid);
-        if (Guid.TryParse(id?.Value, out var userId)) _securityContext.AuthenticateMeWithoutCookie(userId);
+        if (Guid.TryParse(id?.Value, out var userId))
+        {
+            _securityContext.AuthenticateMeWithoutCookie(userId);
+        }
     }
 }
 
@@ -235,6 +260,10 @@ public static class QueryExtension
 
 public static class ApiContextExtension
 {
-    public static bool Check(this ApiContext context, string field) =>
-        context?.Fields == null || (context.Fields != null && context.Fields.Contains(field, StringComparer.InvariantCultureIgnoreCase));
+    public static bool Check(this ApiContext context, string field)
+    {
+        return context?.Fields == null 
+            || (context.Fields != null 
+            && context.Fields.Contains(field, StringComparer.InvariantCultureIgnoreCase));
+    }
 }

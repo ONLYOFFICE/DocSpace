@@ -21,7 +21,9 @@ public abstract class BaseStartup
         DIHelper = new DIHelper();
 
         if (bool.TryParse(Configuration["core:products"], out var loadProducts))
+        {
             LoadProducts = loadProducts;
+        }
     }
 
     public virtual void ConfigureServices(IServiceCollection services)
@@ -31,7 +33,9 @@ public abstract class BaseStartup
         services.AddMemoryCache();
 
         if (AddAndUseSession)
+        {
             services.AddSession();
+        }
 
         DIHelper.Configure(services);
 
@@ -70,8 +74,9 @@ public abstract class BaseStartup
         var kafkaConfiguration = Configuration.GetSection("kafka").Get<KafkaSettings>();
 
         if (kafkaConfiguration != null)
+        {
             DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-
+        }
         else if (redisConfiguration != null)
         {
             DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
@@ -79,12 +84,16 @@ public abstract class BaseStartup
             services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
         }
         else
+        {
             DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
+        }
 
         DIHelper.TryAdd(typeof(IWebhookPublisher), typeof(WebhookPublisher));
 
         if (LoadProducts)
+        {
             DIHelper.RegisterProducts(Configuration, HostEnvironment.ContentRootPath);
+        }
 
         var builder = services.AddMvcCore(config =>
         {
@@ -111,7 +120,9 @@ public abstract class BaseStartup
             .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
 
         if (ConfirmAddScheme)
+        {
             authBuilder.AddScheme<AuthenticationSchemeOptions, ConfirmAuthHandler>("confirm", a => { });
+        }
 
         services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
     }
@@ -126,7 +137,9 @@ public abstract class BaseStartup
         app.UseRouting();
 
         if (AddAndUseSession)
+        {
             app.UseSession();
+        }
 
         app.UseAuthentication();
 
@@ -165,7 +178,8 @@ public static class LogNLogConfigureExtenstion
     {
         return hostBuilder.ConfigureLogging((hostBuildexContext, r) =>
         {
-            _ = new ConfigureLogNLog(hostBuildexContext.Configuration, new ConfigurationExtension(hostBuildexContext.Configuration), hostBuildexContext.HostingEnvironment);
+            _ = new ConfigureLogNLog(hostBuildexContext.Configuration, 
+                new ConfigurationExtension(hostBuildexContext.Configuration), hostBuildexContext.HostingEnvironment);
             r.AddNLog(LogManager.Configuration);
         });
     }

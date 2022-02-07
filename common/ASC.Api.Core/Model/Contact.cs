@@ -39,5 +39,8 @@ public class Contact
         Value = value;
     }
 
-    public static Contact GetSample() => new Contact("GTalk", "my@gmail.com");
+    public static Contact GetSample()
+    {
+        return new Contact("GTalk", "my@gmail.com");
+    }
 }

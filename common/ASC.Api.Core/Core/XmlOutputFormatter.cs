@@ -2,8 +2,10 @@
 
 public class XmlOutputFormatter : IOutputFormatter
 {
-    public bool CanWriteResult(OutputFormatterCanWriteContext context) =>
-        context.ContentType == MimeMapping.GetMimeMapping(".xml");
+    public bool CanWriteResult(OutputFormatterCanWriteContext context)
+    {
+        return context.ContentType == MimeMapping.GetMimeMapping(".xml");
+    }
 
     public Task WriteAsync(OutputFormatterWriteContext context)
     {

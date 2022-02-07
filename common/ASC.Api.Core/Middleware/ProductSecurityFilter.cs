@@ -50,7 +50,10 @@ public class ProductSecurityFilter : IResourceFilter
 
     public void OnResourceExecuting(ResourceExecutingContext context)
     {
-        if (!_authContext.IsAuthenticated) return;
+        if (!_authContext.IsAuthenticated)
+        {
+            return;
+        }
 
         if (context.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptor)
         {
@@ -58,7 +61,9 @@ public class ProductSecurityFilter : IResourceFilter
             if (pid != Guid.Empty)
             {
                 if (CallContext.GetData("asc.web.product_id") == null)
+                {
                     CallContext.SetData("asc.web.product_id", pid);
+                } 
 
                 if (!_webItemSecurity.IsAvailableForMe(pid))
                 {
@@ -71,7 +76,10 @@ public class ProductSecurityFilter : IResourceFilter
 
     private static Guid FindProduct(ControllerActionDescriptor method)
     {
-        if (method == null || string.IsNullOrEmpty(method.ControllerName)) return default;
+        if (method == null || string.IsNullOrEmpty(method.ControllerName))
+        {
+            return default;
+        }
 
         var name = method.ControllerName.ToLower();
         if (name == "community")
@@ -80,11 +88,17 @@ public class ProductSecurityFilter : IResourceFilter
             if (!string.IsNullOrEmpty(url))
             {
                 var module = url.Split('/')[0];
-                if (s_products.ContainsKey(module)) return s_products[module];
+                if (s_products.ContainsKey(module))
+                {
+                    return s_products[module];
+                }
             }
         }
 
-        if (s_products.ContainsKey(name)) return s_products[name];
+        if (s_products.ContainsKey(name))
+        {
+            return s_products[name];
+        }
 
         return default;
     }

@@ -112,7 +112,11 @@ public class EmployeeWraperFullHelper : EmployeeWraperHelper
 
     public static Expression<Func<User, UserInfo>> GetExpression(ApiContext apiContext)
     {
-        if (apiContext?.Fields == null) return null;
+        if (apiContext?.Fields == null)
+        {
+            return null;
+        }
+
         var newExpr = Expression.New(typeof(UserInfo));
 
         //i => new UserInfo { ID = i.id } 
@@ -120,7 +124,10 @@ public class EmployeeWraperFullHelper : EmployeeWraperHelper
         var bindExprs = new List<MemberAssignment>();
 
         if (apiContext.Check("Id"))
-            bindExprs.Add(Expression.Bind(typeof(UserInfo).GetProperty("ID"), Expression.Property(parameter, typeof(User).GetProperty("Id"))));
+        {
+            bindExprs.Add(Expression.Bind(typeof(UserInfo).GetProperty("ID"), 
+                Expression.Property(parameter, typeof(User).GetProperty("Id"))));
+        }
 
         var body = Expression.MemberInit(newExpr, bindExprs);
         var lambda = Expression.Lambda<Func<User, UserInfo>>(body, parameter);
@@ -151,21 +158,31 @@ public class EmployeeWraperFullHelper : EmployeeWraperHelper
         Init(result, userInfo);
 
         if (userInfo.Sex.HasValue)
+        {
             result.Sex = userInfo.Sex.Value ? "male" : "female";
+        }
 
         if (!string.IsNullOrEmpty(userInfo.Location))
+        {
             result.Location = userInfo.Location;
+        }
 
         if (!string.IsNullOrEmpty(userInfo.Notes))
+        {
             result.Notes = userInfo.Notes;
+        }
 
         if (!string.IsNullOrEmpty(userInfo.MobilePhone))
+        {
             result.MobilePhone = userInfo.MobilePhone;
+        }
 
         result.MobilePhoneActivationStatus = userInfo.MobilePhoneActivationStatus;
 
         if (!string.IsNullOrEmpty(userInfo.CultureName))
+        {
             result.CultureName = userInfo.CultureName;
+        }
 
         FillConacts(result, userInfo);
 
@@ -180,25 +197,36 @@ public class EmployeeWraperFullHelper : EmployeeWraperHelper
                 result.Groups = groups;
                 result.Department = string.Join(", ", result.Groups.Select(d => d.Name.HtmlEncode()));
             }
-            else result.Department = "";
+            else
+            {
+                result.Department = "";
+            }
         }
 
         var userInfoLM = userInfo.LastModified.GetHashCode();
 
         if (_context.Check("avatarMax"))
+        {
             result.AvatarMax = UserPhotoManager.GetMaxPhotoURL(userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+        }
 
         if (_context.Check("avatarMedium"))
+        {
             result.AvatarMedium = UserPhotoManager.GetMediumPhotoURL(userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+        }
 
         if (_context.Check("avatar"))
+        {
             result.Avatar = UserPhotoManager.GetBigPhotoURL(userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+        }
 
         if (_context.Check("listAdminModules"))
         {
             var listAdminModules = userInfo.GetListAdminModules(_webItemSecurity);
-
-            if (listAdminModules.Any()) result.ListAdminModules = listAdminModules;
+            if (listAdminModules.Any())
+            {
+                result.ListAdminModules = listAdminModules;
+            }
         }
 
         return result;
@@ -206,17 +234,24 @@ public class EmployeeWraperFullHelper : EmployeeWraperHelper
 
     private void FillConacts(EmployeeWraperFull employeeWraperFull, UserInfo userInfo)
     {
-        if (userInfo.ContactsList == null) return;
+        if (userInfo.ContactsList == null)
+        {
+            return;
+        }
 
         var contacts = new List<Contact>();
 
         for (var i = 0; i < userInfo.ContactsList.Count; i += 2)
         {
             if (i + 1 < userInfo.ContactsList.Count)
+            {
                 contacts.Add(new Contact(userInfo.ContactsList[i], userInfo.ContactsList[i + 1]));
+            }
         }
 
         if (contacts.Any())
+        {
             employeeWraperFull.Contacts = contacts;
+        }
     }
 }

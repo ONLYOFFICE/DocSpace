@@ -81,4 +81,3 @@ global using NLog;
 global using NLog.Extensions.Logging;
 
 global using StackExchange.Redis.Extensions.Core.Configuration;
-global using StackExchange.Redis.Extensions.Newtonsoft;

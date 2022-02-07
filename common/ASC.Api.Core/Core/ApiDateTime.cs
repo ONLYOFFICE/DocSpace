@@ -78,33 +78,45 @@ public class ApiDateTime : IComparable<ApiDateTime>, IComparable
         TimeZoneOffset = offset;
     }
 
-    public static ApiDateTime Parse(string data, TenantManager tenantManager, TimeZoneConverter timeZoneConverter) =>
-        Parse(data, null, tenantManager, timeZoneConverter);
+    public static ApiDateTime Parse(string data, TenantManager tenantManager, TimeZoneConverter timeZoneConverter)
+    {
+        return Parse(data, null, tenantManager, timeZoneConverter);
+    }
 
     public static ApiDateTime Parse(string data, TimeZoneInfo tz, TenantManager tenantManager, TimeZoneConverter timeZoneConverter)
     {
-        if (string.IsNullOrEmpty(data)) throw new ArgumentNullException(nameof(data));
-
-        if (data.Length < 7) throw new ArgumentException("invalid date time format");
+        if (string.IsNullOrEmpty(data))
+        {
+            throw new ArgumentNullException(nameof(data));
+        }
+        if (data.Length < 7)
+        {
+            throw new ArgumentException("invalid date time format");
+        }
 
         var offsetPart = data.Substring(data.Length - 6, 6);
         if (DateTime.TryParseExact(data, Formats, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out var dateTime))
         {
             //Parse time   
             var tzOffset = TimeSpan.Zero;
-            if (offsetPart.Contains(':') && TimeSpan.TryParse(offsetPart.TrimStart('+'), out tzOffset))
+            if (offsetPart.Contains(':') 
+                && TimeSpan.TryParse(offsetPart.TrimStart('+'), out tzOffset))
+            {
                 return new ApiDateTime(dateTime, tzOffset);
-
+            }
+                
             if (!data.EndsWith("Z", true, CultureInfo.InvariantCulture))
             {
-                if (tz == null) tz = GetTimeZoneInfo(tenantManager, timeZoneConverter);
+                if (tz == null)
+                {
+                    tz = GetTimeZoneInfo(tenantManager, timeZoneConverter);
+                }
 
                 tzOffset = tz.GetUtcOffset(dateTime);
                 dateTime = dateTime.Subtract(tzOffset);
             }
 
             return new ApiDateTime(dateTime, tzOffset);
-
         }
 
         throw new ArgumentException("invalid date time format: " + data);
@@ -117,17 +129,25 @@ public class ApiDateTime : IComparable<ApiDateTime>, IComparable
         UtcTime = DateTime.MinValue;
 
         if (timeZone == null)
+        {
             timeZone = GetTimeZoneInfo(_tenantManager, _timeZoneConverter);
+        }
 
         //Hack
         if (timeZone.IsInvalidTime(new DateTime(value.Ticks, DateTimeKind.Unspecified)))
+        {
             value = value.AddHours(1);
+        }
 
         if (value.Kind == DateTimeKind.Local)
+        {
             value = TimeZoneInfo.ConvertTimeToUtc(new DateTime(value.Ticks, DateTimeKind.Unspecified), timeZone);
+        }
 
         if (value.Kind == DateTimeKind.Unspecified)
+        {
             value = new DateTime(value.Ticks, DateTimeKind.Utc); //Assume it's utc
+        } 
 
         if (value.Kind == DateTimeKind.Utc)
         {
@@ -154,7 +174,9 @@ public class ApiDateTime : IComparable<ApiDateTime>, IComparable
     private string ToRoundTripString(DateTime date, TimeSpan offset)
     {
         var dateString = date.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffff", CultureInfo.InvariantCulture);
-        var offsetString = offset.Ticks == 0 ? "Z" : ((offset < TimeSpan.Zero) ? "-" : "+") + offset.ToString("hh\\:mm", CultureInfo.InvariantCulture);
+        var offsetString = offset.Ticks == 0 
+            ? "Z" : ((offset < TimeSpan.Zero) 
+            ? "-" : "+") + offset.ToString("hh\\:mm", CultureInfo.InvariantCulture);
 
         return dateString + offsetString;
     }
@@ -180,64 +202,115 @@ public class ApiDateTime : IComparable<ApiDateTime>, IComparable
 
     public static bool operator >(ApiDateTime left, ApiDateTime right)
     {
-        if (ReferenceEquals(left, right)) return false;
-        if (left == null) return false;
+        if (ReferenceEquals(left, right))
+        {
+            return false;
+        }
+        if (left == null)
+        {
+            return false;
+        }
 
         return left.CompareTo(right) > 0;
     }
 
     public static bool operator >=(ApiDateTime left, ApiDateTime right)
     {
-        if (ReferenceEquals(left, right)) return false;
-        if (left == null) return false;
+        if (ReferenceEquals(left, right))
+        {
+            return false;
+        }
+        if (left == null)
+        {
+            return false;
+        }
 
         return left.CompareTo(right) >= 0;
     }
 
-    public static bool operator <=(ApiDateTime left, ApiDateTime right) => !(left >= right);
+    public static bool operator <=(ApiDateTime left, ApiDateTime right)
+    {
+        return !(left >= right);
+    }
 
-    public static bool operator <(ApiDateTime left, ApiDateTime right) => !(left > right);
+    public static bool operator <(ApiDateTime left, ApiDateTime right)
+    {
+        return !(left > right);
+    }
 
-    public static bool operator ==(ApiDateTime left, ApiDateTime right) => Equals(left, right);
+    public static bool operator ==(ApiDateTime left, ApiDateTime right)
+    {
+        return Equals(left, right);
+    }
 
-    public static bool operator !=(ApiDateTime left, ApiDateTime right) => !(left == right);
+    public static bool operator !=(ApiDateTime left, ApiDateTime right)
+    {
+        return !(left == right);
+    }
 
     public static implicit operator DateTime(ApiDateTime d)
     {
-        if (d == null) return DateTime.MinValue;
+        if (d == null)
+        {
+            return DateTime.MinValue;
+        }
 
         return d.UtcTime;
     }
 
     public static implicit operator DateTime?(ApiDateTime d)
     {
-        if (d == null) return null;
+        if (d == null)
+        {
+            return null;
+        }
 
         return d.UtcTime;
     }
 
-    public int CompareTo(DateTime other) => CompareTo(new ApiDateTime(_tenantManager, _timeZoneConverter, other));
+    public int CompareTo(DateTime other)
+    {
+        return CompareTo(new ApiDateTime(_tenantManager, _timeZoneConverter, other));
+    }
 
     public int CompareTo(ApiDateTime other)
     {
-        if (other == null) return 1;
+        if (other == null)
+        {
+            return 1;
+        }
 
         return UtcTime.CompareTo(other.UtcTime);
     }
 
     public override bool Equals(object obj)
     {
-        if (obj is null) return false;
-        if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != typeof(ApiDateTime)) return false;
+        if (obj is null)
+        {
+            return false;
+        }
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+        if (obj.GetType() != typeof(ApiDateTime))
+        {
+            return false;
+        }
 
         return Equals((ApiDateTime)obj);
     }
 
     public bool Equals(ApiDateTime other)
     {
-        if (other is null) return false;
-        if (ReferenceEquals(this, other)) return true;
+        if (other is null)
+        {
+            return false;
+        }
+        if (ReferenceEquals(this, other))
+        {
+            return true;
+        }
 
         return UtcTime.Equals(other.UtcTime) && TimeZoneOffset.Equals(other.TimeZoneOffset);
     }
@@ -253,7 +326,9 @@ public class ApiDateTime : IComparable<ApiDateTime>, IComparable
     public int CompareTo(object obj)
     {
         if (obj is DateTime dateTime)
+        {
             return CompareTo(dateTime);
+        }
 
         return obj is ApiDateTime apiDateTime ? CompareTo(apiDateTime) : 0;
     }
@@ -261,14 +336,18 @@ public class ApiDateTime : IComparable<ApiDateTime>, IComparable
     public override string ToString()
     {
         var localUtcTime = UtcTime;
-
         if (!UtcTime.Equals(DateTime.MinValue))
+        {
             localUtcTime = UtcTime.Add(TimeZoneOffset);
+        }
 
         return ToRoundTripString(localUtcTime, TimeZoneOffset);
     }
 
-    public static ApiDateTime GetSample() => new ApiDateTime(DateTime.UtcNow, TimeSpan.Zero);
+    public static ApiDateTime GetSample()
+    {
+        return new ApiDateTime(DateTime.UtcNow, TimeSpan.Zero);
+    }
 }
 
 public class ApiDateTimeTypeConverter : DateTimeConverter
@@ -276,7 +355,9 @@ public class ApiDateTimeTypeConverter : DateTimeConverter
     public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
     {
         if (destinationType == typeof(string))
+        {
             return value.ToString();
+        }
 
         return base.ConvertTo(context, culture, value, destinationType);
     }
@@ -284,10 +365,13 @@ public class ApiDateTimeTypeConverter : DateTimeConverter
     public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
     {
         if (value is string @string)
+        {
             return ApiDateTime.Parse(@string, null, null);
-
+        }
         if (value is DateTime time)
+        {
             return new ApiDateTime(null, null, time);
+        }
 
         return base.ConvertFrom(context, culture, value);
     }
@@ -298,18 +382,27 @@ public class ApiDateTimeConverter : System.Text.Json.Serialization.JsonConverter
     public override ApiDateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TryGetDateTime(out var result))
+        {
             return new ApiDateTime(result, TimeSpan.Zero);
+        }
         else
         {
-            if (DateTime.TryParseExact(reader.GetString(), ApiDateTime.Formats, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var dateTime))
+            if (DateTime.TryParseExact(reader.GetString(), ApiDateTime.Formats, 
+                CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var dateTime))
+            {
                 return new ApiDateTime(dateTime, TimeSpan.Zero);
+            }
             else
+            {
                 return new ApiDateTime();
+            }  
         }
     }
 
-    public override void Write(Utf8JsonWriter writer, ApiDateTime value, JsonSerializerOptions options) =>
+    public override void Write(Utf8JsonWriter writer, ApiDateTime value, JsonSerializerOptions options)
+    {
         writer.WriteStringValue(value.ToString());
+    }
 }
 
 [Scope]
@@ -324,5 +417,8 @@ public class ApiDateTimeHelper
         _timeZoneConverter = timeZoneConverter;
     }
 
-    public ApiDateTime Get(DateTime? from) => ApiDateTime.FromDate(_tenantManager, _timeZoneConverter, from);
+    public ApiDateTime Get(DateTime? from)
+    {
+        return ApiDateTime.FromDate(_tenantManager, _timeZoneConverter, from);
+    }
 }

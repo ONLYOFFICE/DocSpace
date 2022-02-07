@@ -42,6 +42,13 @@ public class GroupWrapperSummary
         Manager = userManager.GetUsers(userManager.GetDepartmentManager(group.ID)).UserName;
     }
 
-    public static GroupWrapperSummary GetSample() =>
-        new GroupWrapperSummary { Id = Guid.Empty, Manager = "Jake.Zazhitski", Name = "Group Name" };
+    public static GroupWrapperSummary GetSample()
+    {
+        return new GroupWrapperSummary 
+        {
+            Id = Guid.Empty, 
+            Manager = "Jake.Zazhitski", 
+            Name = "Group Name" 
+        };
+    }
 }

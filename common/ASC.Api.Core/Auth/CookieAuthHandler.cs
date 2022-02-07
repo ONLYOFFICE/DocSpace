@@ -31,7 +31,6 @@ public class CookieAuthHandler : AuthenticationHandler<AuthenticationSchemeOptio
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
         var result = _authorizationHelper.ProcessBasicAuthorization(out _);
-
         if (!result)
         {
             _securityContext.Logout();
@@ -42,7 +41,6 @@ public class CookieAuthHandler : AuthenticationHandler<AuthenticationSchemeOptio
         return Task.FromResult(
                  result ?
                  AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)) :
-                 AuthenticateResult.Fail(new AuthenticationException(HttpStatusCode.Unauthorized.ToString()))
-                 );
+                 AuthenticateResult.Fail(new AuthenticationException(HttpStatusCode.Unauthorized.ToString())));
     }
 }

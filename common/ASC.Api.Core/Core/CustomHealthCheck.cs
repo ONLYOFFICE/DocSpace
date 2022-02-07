@@ -23,7 +23,6 @@ public static class CustomHealthCheck
                                tags: new string[] { "postgredb" });
 
         var kafkaSettings = configurationExtension.GetSetting<KafkaSettings>("kafka");
-
         if (kafkaSettings != null && !string.IsNullOrEmpty(kafkaSettings.BootstrapServers))
         {
             var clientConfig = new ClientConfig { BootstrapServers = kafkaSettings.BootstrapServers };
@@ -34,9 +33,7 @@ public static class CustomHealthCheck
 
         }
 
-
         var elasticSettings = configuration.GetSection("elastic");
-
         if (elasticSettings != null && elasticSettings.GetChildren().Any())
         {
             var host = elasticSettings.GetSection("Host").Value ?? "localhost";
@@ -45,9 +42,11 @@ public static class CustomHealthCheck
             var elasticSearchUri = $"{scheme}://{host}:{port}";
 
             if (Uri.IsWellFormedUriString(elasticSearchUri, UriKind.Absolute))
+            {
                 hcBuilder.AddElasticsearch(elasticSearchUri,
-                                           name: "elasticsearch",
-                                           tags: new string[] { "elasticsearch" });
+                                          name: "elasticsearch",
+                                          tags: new string[] { "elasticsearch" });
+            }
         }
 
         return services;

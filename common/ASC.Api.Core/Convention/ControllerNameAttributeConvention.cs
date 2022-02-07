@@ -5,7 +5,10 @@ public class ControllerNameAttribute : Attribute
 {
     public string Name { get; }
 
-    public ControllerNameAttribute(string name) => Name = name;
+    public ControllerNameAttribute(string name)
+    {
+        Name = name;
+    }
 }
 
 public class ControllerNameAttributeConvention : IControllerModelConvention
@@ -14,6 +17,8 @@ public class ControllerNameAttributeConvention : IControllerModelConvention
     {
         var controllerNameAttribute = controller.Attributes.OfType<ControllerNameAttribute>().SingleOrDefault();
         if (controllerNameAttribute != null)
+        {
             controller.ControllerName = controllerNameAttribute.Name;
+        }
     }
 }

@@ -57,9 +57,9 @@ public class ConfirmAuthHandler : AuthenticationHandler<AuthenticationSchemeOpti
         }
 
         var claims = new List<Claim>()
-            {
+        {
                 new Claim(ClaimTypes.Role, emailValidationKeyModel.Type.ToString())
-            };
+        };
 
         if (checkKeyResult == EmailValidationKeyProvider.ValidationResult.Ok)
         {
@@ -67,19 +67,27 @@ public class ConfirmAuthHandler : AuthenticationHandler<AuthenticationSchemeOpti
             if (!_securityContext.IsAuthenticated)
             {
                 if (emailValidationKeyModel.UiD.HasValue && !emailValidationKeyModel.UiD.Equals(Guid.Empty))
+                {
                     userId = emailValidationKeyModel.UiD.Value;
+                }
                 else
                 {
-                    if (emailValidationKeyModel.Type == Web.Studio.Utility.ConfirmType.EmailActivation
-                        || emailValidationKeyModel.Type == Web.Studio.Utility.ConfirmType.EmpInvite
-                        || emailValidationKeyModel.Type == Web.Studio.Utility.ConfirmType.LinkInvite)
+                    if (emailValidationKeyModel.Type == ConfirmType.EmailActivation
+                        || emailValidationKeyModel.Type == ConfirmType.EmpInvite
+                        || emailValidationKeyModel.Type == ConfirmType.LinkInvite)
+                    {
                         userId = ASC.Core.Configuration.Constants.CoreSystem.ID;
+                    }
                     else
+                    {
                         userId = _userManager.GetUserByEmail(emailValidationKeyModel.Email).ID;
+                    }
                 }
             }
             else
+            {
                 userId = _securityContext.CurrentAccount.ID;
+            }
 
             _securityContext.AuthenticateMeWithoutCookie(userId, claims);
         }
@@ -96,6 +104,8 @@ public class ConfirmAuthHandler : AuthenticationHandler<AuthenticationSchemeOpti
 
 public class ConfirmAuthHandlerExtension
 {
-    public static void Register(DIHelper services) =>
-        services.TryAdd<EmailValidationKeyModelHelper>();
+    public static void Register(DIHelper services)
+    {
+        return services.TryAdd<EmailValidationKeyModelHelper>();
+    }
 }
