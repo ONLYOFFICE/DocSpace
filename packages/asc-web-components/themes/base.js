@@ -1880,6 +1880,16 @@ const Base = {
     },
   },
 
+  navigation: {
+    expanderColor: black,
+    background: white,
+
+    icon: {
+      fill: "#316DAA",
+      stroke: "#DFE2E3",
+    },
+  },
+
   nav: {
     backgroundColor: "#0F4071",
   },

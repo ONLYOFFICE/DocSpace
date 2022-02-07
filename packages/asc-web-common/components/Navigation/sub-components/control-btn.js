@@ -27,8 +27,6 @@ const ControlButtons = ({
         directionX="right"
         iconName="images/plus.svg"
         size={17}
-        color="#A3A9AE"
-        hoverColor="#657077"
         isFill
         getData={getContextOptionsPlus}
         isDisabled={false}
@@ -39,8 +37,6 @@ const ControlButtons = ({
           directionX="right"
           iconName="images/vertical-dots.react.svg"
           size={17}
-          color="#A3A9AE"
-          hoverColor="#657077"
           isFill
           getData={getContextOptionsFolder}
           isDisabled={false}
@@ -53,8 +49,6 @@ const ControlButtons = ({
       directionX="right"
       iconName="images/plus.svg"
       size={17}
-      color="#A3A9AE"
-      hoverColor="#657077"
       isFill
       getData={getContextOptionsPlus}
       isDisabled={false}
@@ -65,8 +59,6 @@ const ControlButtons = ({
       <IconButton
         iconName="images/clear.active.react.svg"
         size="15"
-        color="#A3A9AE"
-        hoverColor="#657077"
         isFill={true}
         onClick={clearTrash}
         className="trash-button"

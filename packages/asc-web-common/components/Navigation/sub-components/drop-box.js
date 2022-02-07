@@ -16,6 +16,7 @@ import {
   isMobile as IsMobileUtils,
   isTablet as isTabletUtils,
 } from "@appserver/components/utils/device";
+import { Base } from "@appserver/components/themes";
 
 const StyledBox = styled.div`
   position: absolute;
@@ -46,7 +47,7 @@ const StyledBox = styled.div`
   display: flex;
   flex-direction: column;
 
-  background: #ffffff;
+  background: ${(props) => props.theme.navigation.background};
 
   filter: drop-shadow(0px 12px 40px rgba(4, 15, 27, 0.12));
   border-radius: 0px 0px 6px 6px;
@@ -66,6 +67,8 @@ const StyledBox = styled.div`
     max-width: 100vw !important;
   `}
 `;
+
+StyledBox.defaultProps = { theme: Base };
 
 const StyledContainer = styled.div`
   margin: 14px 0 7px;

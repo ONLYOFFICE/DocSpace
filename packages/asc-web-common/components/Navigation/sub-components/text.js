@@ -9,6 +9,7 @@ import Headline from "@appserver/common/components/Headline";
 
 import { tablet } from "@appserver/components/utils/device";
 import { isMobile } from "react-device-detect";
+import { Base } from "@appserver/components/themes";
 
 const StyledTextContainer = styled.div`
   width: fit-content;
@@ -37,8 +38,14 @@ const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
   min-height: 18px !important;
   padding-left: 6px;
 
+  path {
+    fill: ${(props) => props.theme.navigation.expanderColor};
+  }
+
   ${commonIconsStyles};
 `;
+
+StyledExpanderDownIcon.defaultProps = { theme: Base };
 
 const StyledExpanderDownIconRotate = styled(ExpanderDownIcon)`
   min-width: 8px !important;
@@ -47,8 +54,14 @@ const StyledExpanderDownIconRotate = styled(ExpanderDownIcon)`
   padding-right: 6px;
   transform: rotate(-180deg);
 
+  path {
+    fill: ${(props) => props.theme.navigation.expanderColor};
+  }
+
   ${commonIconsStyles};
 `;
+
+StyledExpanderDownIconRotate.defaultProps = { theme: Base };
 
 const Text = ({ title, isRootFolder, isOpen, onClick, ...rest }) => {
   return (

@@ -8,8 +8,6 @@ const ArrowButton = ({ isRootFolder, onBackToParentFolder }) => {
         <IconButton
           iconName="/static/images/arrow.path.react.svg"
           size="17"
-          color="#A3A9AE"
-          hoverColor="#657077"
           isFill={true}
           onClick={onBackToParentFolder}
           className="arrow-button"

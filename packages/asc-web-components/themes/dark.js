@@ -1881,6 +1881,16 @@ const Dark = {
     },
   },
 
+  navigation: {
+    expanderColor: "#eeeeee",
+    background: black,
+
+    icon: {
+      fill: "#E06A1B",
+      stroke: "#474747",
+    },
+  },
+
   nav: {
     backgroundColor: "#292929",
   },
