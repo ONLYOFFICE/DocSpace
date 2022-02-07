@@ -54,6 +54,7 @@ class RestoreBackup extends React.Component {
     ];
 
     this.storageId = "";
+    this.formSettings = "";
   }
 
   componentDidMount() {
@@ -233,7 +234,8 @@ class RestoreBackup extends React.Component {
       let firstError = false;
 
       for (let key of this.formNames) {
-        const field = this.state.formSettings[key];
+        const field = this.formSettings[key];
+        //console.log("this.formNames", this.formNames, "key", key);
         if (!field) {
           if (!firstError) {
             firstError = true;
@@ -244,6 +246,7 @@ class RestoreBackup extends React.Component {
             firstError = true;
           }
           errors[key] = !field.trim();
+          console.log("errors[key]", errors[key]);
         }
       }
 
@@ -351,22 +354,13 @@ class RestoreBackup extends React.Component {
     //   .catch((error) => toastr.error(error));
   };
 
-  onSetFormNames = (namesArray) => {
+  onSetRequiredFormNames = (namesArray) => {
     this.formNames = namesArray;
   };
 
-  onChange = (event) => {
-    const { target } = event;
-    const value = target.value;
-    const name = target.name;
-    const { formSettings } = this.state;
-
-    this.setState({ formSettings: { ...formSettings, ...{ [name]: value } } });
-  };
-
   onResetFormSettings = () => {
+    this.formSettings = {};
     this.setState({
-      formSettings: {},
       isErrors: {},
     });
   };
@@ -383,6 +377,13 @@ class RestoreBackup extends React.Component {
 
   onSetStorageId = (storageId) => {
     this.storageId = storageId;
+  };
+
+  onSetFormSettings = (name, value) => {
+    this.formSettings = {
+      ...this.formSettings,
+      ...{ [name]: value },
+    };
   };
   render() {
     const { t, history } = this.props;
@@ -477,13 +478,11 @@ class RestoreBackup extends React.Component {
         )}
         {isCheckedThirdPartyStorage && (
           <ThirdPartyStorages
-            onSetStorageForm={this.onSetStorageForm}
-            onSetFormNames={this.onSetFormNames}
-            onChange={this.onChange}
-            formSettings={formSettings}
+            onSetRequiredFormNames={this.onSetRequiredFormNames}
             onResetFormSettings={this.onResetFormSettings}
             isErrors={isErrors}
             onSetStorageId={this.onSetStorageId}
+            onSetFormSettings={this.onSetFormSettings}
           />
         )}
         {isCheckedLocalFile && (

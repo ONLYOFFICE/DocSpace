@@ -6,33 +6,53 @@ import RackspaceSettings from "../../consumer-storage-settings/RackspaceSettings
 class RackspaceStorage extends React.Component {
   constructor(props) {
     super(props);
-    const { onSetFormNames } = this.props;
+    const { onSetRequiredFormNames } = this.props;
+
+    let formSettings = {};
 
     this.namesArray = RackspaceSettings.formNames();
-    onSetFormNames([...this.namesArray, "path"]);
+    this.namesArray.forEach((elem) => (formSettings[elem] = ""));
+
+    onSetRequiredFormNames([...this.namesArray, "path"]);
+
+    this.state = {
+      formSettings,
+    };
   }
 
   componentWillUnmount() {
     this.props.onResetFormSettings();
   }
 
+  onChange = (event) => {
+    const { target } = event;
+    const value = target.value;
+    const name = target.name;
+    const { formSettings } = this.state;
+    const { onSetFormSettings } = this.props;
+
+    onSetFormSettings(name, value);
+
+    this.setState({ formSettings: { ...formSettings, ...{ [name]: value } } });
+  };
+
   render() {
     const {
       t,
-      isLoading,
-      formSettings,
-      onChange,
+      isInitialLoading,
       isErrors,
       availableStorage,
       selectedId,
     } = this.props;
-    console.log("isErrors", isErrors);
+
+    const { formSettings } = this.state;
+
     return (
       <>
         <RackspaceSettings
           formSettings={formSettings}
-          onChange={onChange}
-          isLoading={isLoading}
+          onChange={this.onChange}
+          isLoading={isInitialLoading}
           isError={isErrors}
           selectedStorage={availableStorage[selectedId]}
         />
@@ -42,8 +62,8 @@ class RackspaceStorage extends React.Component {
           className="backup_text-input"
           scale={true}
           value={formSettings.path}
-          onChange={onChange}
-          isDisabled={isLoading || !availableStorage[selectedId]?.isSet}
+          onChange={this.onChange}
+          isDisabled={isInitialLoading || !availableStorage[selectedId]?.isSet}
           placeholder={t("Path")}
           tabIndex={this.namesArray.length}
           hasError={isErrors?.path}

@@ -8,7 +8,7 @@ import AmazonStorage from "./storages/AmazonStorage";
 import RackspaceStorage from "./storages/RackspaceStorage";
 import SelectelStorage from "./storages/SelectelStorage";
 
-class ThirdPartyStoragesModule extends React.Component {
+class ThirdPartyStoragesModule extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -17,11 +17,12 @@ class ThirdPartyStoragesModule extends React.Component {
 
       selectedStorage: "",
       selectedId: "",
-      isLoading: false,
+      isInitialLoading: false,
     };
   }
   componentDidMount() {
-    this.setState({ isLoading: true }, function () {
+    const { onSetStorageId } = this.props;
+    this.setState({ isInitialLoading: true }, function () {
       getBackupStorage()
         .then((storageBackup) => {
           const parameters = getOptions(storageBackup);
@@ -33,17 +34,19 @@ class ThirdPartyStoragesModule extends React.Component {
             selectedId,
           } = parameters;
 
+          onSetStorageId && onSetStorageId(selectedId);
+
           this.setState({
             availableOptions: options,
-            availableStorage: availableStorage,
+            availableStorage,
 
-            selectedStorage: selectedStorage,
-            selectedId: selectedId,
+            selectedStorage,
+            selectedId,
           });
         })
         .finally(() =>
           this.setState({
-            isLoading: false,
+            isInitialLoading: false,
           })
         );
     });
@@ -51,23 +54,27 @@ class ThirdPartyStoragesModule extends React.Component {
   onSelect = (option) => {
     const selectedStorageId = option.key;
     const { availableStorage } = this.state;
+    const { onSetStorageId } = this.props;
+    const storage = availableStorage[selectedStorageId];
+
+    onSetStorageId && onSetStorageId(storage.id);
 
     this.setState({
-      selectedStorage: availableStorage[selectedStorageId].title,
-      selectedId: availableStorage[selectedStorageId].id,
+      selectedStorage: storage.title,
+      selectedId: storage.id,
     });
   };
   render() {
     const {
       availableOptions,
       selectedStorage,
-      isLoading,
+      isInitialLoading,
       selectedId,
       availableStorage,
     } = this.state;
 
     const commonProps = {
-      isLoading,
+      isInitialLoading,
       availableStorage,
       selectedId,
     };
@@ -79,7 +86,7 @@ class ThirdPartyStoragesModule extends React.Component {
           options={availableOptions}
           selectedOption={{ key: 0, label: selectedStorage }}
           onSelect={this.onSelect}
-          isDisabled={isLoading}
+          isDisabled={isInitialLoading}
           noBorder={false}
           scaled
           scaledOptions

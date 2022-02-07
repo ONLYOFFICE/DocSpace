@@ -6,32 +6,51 @@ import GoogleCloudSettings from "../../consumer-storage-settings/GoogleCloudSett
 class GoogleCloudStorage extends React.Component {
   constructor(props) {
     super(props);
-    const { onSetFormNames } = this.props;
+    const { onSetRequiredFormNames } = this.props;
 
-    onSetFormNames(["bucket", "path"]);
+    onSetRequiredFormNames([...this.namesArray, "path"]);
+
+    let formSettings = {};
+    this.namesArray = GoogleCloudSettings.formNames();
+    this.namesArray.forEach((elem) => (formSettings[elem] = ""));
+
+    this.state = {
+      formSettings,
+    };
   }
 
   componentWillUnmount() {
     this.props.onResetFormSettings();
   }
 
+  onChange = (event) => {
+    const { target } = event;
+    const value = target.value;
+    const name = target.name;
+    const { formSettings } = this.state;
+    const { onSetFormSettings } = this.props;
+
+    onSetFormSettings(name, value);
+
+    this.setState({ formSettings: { ...formSettings, ...{ [name]: value } } });
+  };
   render() {
     const {
       t,
-      isLoading,
-      formSettings,
-      onChange,
+      isInitialLoading,
       isErrors,
       availableStorage,
       selectedId,
     } = this.props;
 
+    const { formSettings } = this.state;
+
     return (
       <>
         <GoogleCloudSettings
           formSettings={formSettings}
-          onChange={onChange}
-          isLoading={isLoading}
+          onChange={this.onChange}
+          isLoading={isInitialLoading}
           isError={isErrors}
           selectedStorage={availableStorage[selectedId]}
         />
@@ -40,8 +59,8 @@ class GoogleCloudStorage extends React.Component {
           className="backup_text-input"
           scale={true}
           value={formSettings.path}
-          onChange={onChange}
-          isDisabled={isLoading || !availableStorage[selectedId]?.isSet}
+          onChange={this.onChange}
+          isDisabled={isInitialLoading || !availableStorage[selectedId]?.isSet}
           placeholder={t("Path")}
           tabIndex={2}
           hasError={isErrors?.path}
