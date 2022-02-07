@@ -85,40 +85,6 @@ namespace ASC.Core.Data
         private readonly IMapper _mapper;
 
         private List<string> _forbiddenDomains;
-        //private static Expression<Func<DbTenant, Tenant>> _fromDbTenantToTenant;
-        //private static Expression<Func<TenantUserSecurity, Tenant>> _fromTenantUserToTenant;
-
-        static DbTenantService()
-        {
-            //_fromDbTenantToTenant = r => new Tenant
-            //{
-            //    Calls = r.Calls,
-            //    CreatedDateTime = r.CreationDateTime,
-            //    Industry = r.Industry != null ? r.Industry.Value : TenantIndustry.Other,
-            //    Language = r.Language,
-            //    LastModified = r.LastModified,
-            //    Name = r.Name,
-            //    OwnerId = r.OwnerId,
-            //    PaymentId = r.PaymentId,
-            //    Spam = r.Spam,
-            //    Status = r.Status,
-            //    StatusChangeDate = r.StatusChangeDate,
-            //    TenantAlias = r.TenantAlias,
-            //    Id = r.Id,
-            //    MappedDomain = r.MappedDomain,
-            //    Version = r.Version,
-            //    VersionChanged = r.VersionChanged,
-            //    //TrustedDomainsRaw = r.TrustedDomains,
-            //    TrustedDomainsType = r.TrustedDomainsType,
-            //    //AffiliateId = r.Partner != null ? r.Partner.AffiliateId : null,
-            //    //PartnerId = r.Partner != null ? r.Partner.PartnerId : null,
-            //    TimeZone = r.TimeZone,
-            //    //Campaign = r.Partner != null ? r.Partner.Campaign : null
-            //};
-
-            //var fromDbTenantToTenant = _fromDbTenantToTenant.Compile();
-            //_fromTenantUserToTenant = r => fromDbTenantToTenant(r.DbTenant);
-        }
 
         public DbTenantService() { }
 
@@ -147,17 +113,16 @@ namespace ASC.Core.Data
             var q = TenantsQuery();
 
             if (active) q = q.Where(r => r.Status == TenantStatus.Active);
-
             if (from != default) q = q.Where(r => r.LastModified >= from);
 
-            return q.Select(_mapper.Map<DbTenant, Tenant>);
+            return q.ProjectTo<Tenant>(_mapper.ConfigurationProvider);
         }
 
         public IEnumerable<Tenant> GetTenants(List<int> ids)
         {
             var q = TenantsQuery();
 
-            return q.Where(r => ids.Contains(r.Id) && r.Status == TenantStatus.Active).Select(_mapper.Map<DbTenant, Tenant>).ToList();
+            return q.Where(r => ids.Contains(r.Id) && r.Status == TenantStatus.Active).ProjectTo<Tenant>(_mapper.ConfigurationProvider).ToList();
         }
 
         public IEnumerable<Tenant> GetTenants(string login, string passwordHash)
@@ -187,7 +152,7 @@ namespace ASC.Core.Data
                 var q = query()
                     .Where(r => login.Contains('@') ? r.User.Email == login : r.User.Id.ToString() == login);
 
-                return q.Select(_mapper.Map<TenantUserSecurity, Tenant>).ToList();
+                return q.ProjectTo<Tenant>(_mapper.ConfigurationProvider).ToList();
             }
 
             if (Guid.TryParse(login, out var userId))
@@ -199,7 +164,7 @@ namespace ASC.Core.Data
                     .Where(r => r.UserSecurity.PwdHash == pwdHash || r.UserSecurity.PwdHash == oldHash)  //todo: remove old scheme
                     ;
 
-                return q.Select(_mapper.Map<TenantUserSecurity, Tenant>).ToList();
+                return q.ProjectTo<Tenant>(_mapper.ConfigurationProvider).ToList();
             }
             else
             {
@@ -210,11 +175,10 @@ namespace ASC.Core.Data
                     .Where(r => r.UserSecurity.PwdHash == oldHash);
 
                 if (login.Contains('@')) q = q.Where(r => r.User.Email == login);
-
                 else if (Guid.TryParse(login, out var uId)) q = q.Where(r => r.User.Id == uId);
 
                 //old password
-                var result = q.Select(_mapper.Map<TenantUserSecurity, Tenant>).ToList();
+                var result = q.ProjectTo<Tenant>(_mapper.ConfigurationProvider).ToList();
 
                 var usersQuery = UserDbContext.Users
                     .Where(r => r.Email == login)
@@ -229,7 +193,7 @@ namespace ASC.Core.Data
                     .Where(r => passwordHashs.Any(p => r.UserSecurity.PwdHash == p) && r.DbTenant.Status == TenantStatus.Active);
 
                 //new password
-                result = result.Concat(q.Select(_mapper.Map<TenantUserSecurity, Tenant>)).ToList();
+                result = result.Concat(q.ProjectTo<Tenant>(_mapper.ConfigurationProvider)).ToList();
                 result.Distinct();
 
                 return result;
@@ -240,7 +204,7 @@ namespace ASC.Core.Data
         {
             return TenantsQuery()
                 .Where(r => r.Id == id)
-                .Select(_mapper.Map<DbTenant, Tenant>)
+                .ProjectTo<Tenant>(_mapper.ConfigurationProvider)
                 .SingleOrDefault();
         }
 
@@ -254,7 +218,7 @@ namespace ASC.Core.Data
                 .Where(r => r.TenantAlias == domain || r.MappedDomain == domain)
                 .OrderBy(a => a.Status == TenantStatus.Restoring ? TenantStatus.Active : a.Status)
                 .ThenByDescending(a => a.Status == TenantStatus.Restoring ? 0 : a.Id)
-                .Select(_mapper.Map<DbTenant, Tenant>)
+                .ProjectTo<Tenant>(_mapper.ConfigurationProvider)
                 .FirstOrDefault();
         }
 
@@ -263,7 +227,7 @@ namespace ASC.Core.Data
             return TenantsQuery()
                 .OrderBy(a => a.Status)
                 .ThenByDescending(a => a.Id)
-                .Select(_mapper.Map<DbTenant, Tenant>)
+                .ProjectTo<Tenant>(_mapper.ConfigurationProvider)
                 .FirstOrDefault();
         }
 

@@ -52,7 +52,7 @@ namespace ASC.Core.Tenants
         public string Name { get; set; }
         public string Language { get; set; }
         public string TimeZone { get; set; }
-        public List<string> TrustedDomains { get; set; }
+        public string TrustedDomainsRaw { get; set; }
         public TenantTrustedDomainsType TrustedDomainsType { get; set; }
         public Guid OwnerId { get; set; }
         public DateTime CreatedDateTime { get; internal set; }
@@ -66,8 +66,22 @@ namespace ASC.Core.Tenants
         public TenantIndustry Industry { get; set; }
         public bool Spam { get; set; }
         public bool Calls { get; set; }
+        public List<string> TrustedDomains
+        {
+            get
+            {
+                if (_domains.Count == 0 && !string.IsNullOrEmpty(TrustedDomainsRaw))
+                    _domains = TrustedDomainsRaw.Split(new[] { '|' },
+                        StringSplitOptions.RemoveEmptyEntries).ToList();
+
+                return _domains;
+            }
+            set => _domains = value;
+        }
 
         public static readonly string HostName = Dns.GetHostName().ToLowerInvariant();
+
+        private List<string> _domains;
 
         public Tenant()
         {
@@ -138,12 +152,7 @@ namespace ASC.Core.Tenants
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<DbTenant, Tenant>()
-                .ForMember(dest => dest.TrustedDomains, opt => opt
-                    .MapFrom(src => src.TrustedDomainsRaw != null
-                    ? src.TrustedDomainsRaw.Split(new[] { '|' },
-                        StringSplitOptions.RemoveEmptyEntries).ToList()
-                    : new List<string>()));
+            profile.CreateMap<DbTenant, Tenant>();
 
             profile.CreateMap<TenantUserSecurity, Tenant>()
                 .IncludeMembers(src => src.DbTenant);
