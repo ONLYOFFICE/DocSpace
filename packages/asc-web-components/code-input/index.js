@@ -75,20 +75,19 @@ const CodeInput = (props) => {
 
   const elements = [];
   for (let i = 0; i < characters; i++) {
+    if (i === 3) elements.push(<hr key="InputCode-line" />);
+
     elements.push(
-      <>
-        <input
-          key={`InputCode-${i}`}
-          onChange={handleOnChange}
-          onKeyDown={handleOnKeyDown}
-          onFocus={handleOnFocus}
-          onPaste={handleOnPaste}
-          ref={(el) => (inputsRef.current[i] = el)}
-          maxLength={1}
-          disabled={isDisabled}
-        />
-        {i === 2 && <hr key="InputCode-line" />}
-      </>
+      <input
+        key={`InputCode-${i}`}
+        onChange={handleOnChange}
+        onKeyDown={handleOnKeyDown}
+        onFocus={handleOnFocus}
+        onPaste={handleOnPaste}
+        ref={(el) => (inputsRef.current[i] = el)}
+        maxLength={1}
+        disabled={isDisabled}
+      />
     );
   }
 
