@@ -141,7 +141,6 @@ const MainButtonMobile = (props) => {
           {actionOptions.map((option) => {
             const optionOnClickAction = () => {
               toggle(false);
-              console.log("1");
               option.onClick && option.onClick({ action: option.action });
             };
 

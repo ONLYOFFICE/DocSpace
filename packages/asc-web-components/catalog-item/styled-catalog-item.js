@@ -207,6 +207,15 @@ const StyledCatalogItemImg = styled.div`
 
 StyledCatalogItemImg.defaultProps = { theme: Base };
 
+const draggingSiblingCss = css`
+  background: ${(props) => props.theme.dragAndDrop.background} !important;
+
+  &:hover {
+    background: ${(props) =>
+      props.theme.dragAndDrop.acceptBackground} !important;
+  }
+`;
+
 const StyledCatalogItemSibling = styled.div`
   position: absolute;
   top: 0;
@@ -236,6 +245,8 @@ const StyledCatalogItemSibling = styled.div`
     min-height: ${(props) => props.theme.catalogItem.container.tablet.height};
     max-height: ${(props) => props.theme.catalogItem.container.tablet.height};
   `}
+
+  ${(props) => props.isDragging && draggingSiblingCss}
 `;
 
 StyledCatalogItemSibling.defaultProps = { theme: Base };

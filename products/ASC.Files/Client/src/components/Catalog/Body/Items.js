@@ -2,18 +2,31 @@ import React from "react";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import CatalogItem from "@appserver/components/catalog-item";
-import { FolderType } from "@appserver/common/constants";
+import { FolderType, ShareAccessRights } from "@appserver/common/constants";
 import { withTranslation } from "react-i18next";
 import withLoader from "../../../HOCs/withLoader";
 import Loaders from "@appserver/common/components/Loaders";
 
 const Items = ({
+  t,
   data,
   showText,
   pathParts,
   selectedTreeNode,
   onClick,
   onBadgeClick,
+  selection,
+  setIsLoading,
+  isLoading,
+  dragging,
+  isAdmin,
+  myId,
+  commonId,
+  currentId,
+  draggableItems,
+  setDragging,
+  setStartDrag,
+  moveDragItems,
 }) => {
   const isActive = (item) => {
     if (selectedTreeNode.length > 0) {
@@ -100,20 +113,72 @@ const Items = ({
     return iconUrl;
   };
 
+  const showDragItems = (item) => {
+    if (item.id === currentId) {
+      return false;
+    }
+
+    if (!draggableItems || draggableItems.find((x) => x.id === item.id))
+      return false;
+
+    if (
+      item.rootFolderType === FolderType.SHARE &&
+      item.access === ShareAccessRights.FullAccess
+    ) {
+      return true;
+    }
+
+    if (isAdmin) {
+      if (
+        (item.pathParts &&
+          (item.pathParts[0] === myId || item.pathParts[0] === commonId)) ||
+        item.rootFolderType === FolderType.USER ||
+        item.rootFolderType === FolderType.COMMON
+      ) {
+        return true;
+      }
+    } else {
+      if (
+        (item.pathParts && item.pathParts[0] === myId) ||
+        item.rootFolderType === FolderType.USER
+      ) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
+  const onMoveTo = (destFolderId, title) => {
+    moveDragItems(destFolderId, title, {
+      copy: t("Translations:CopyOperation"),
+      move: t("Translations:MoveToOperation"),
+    });
+  };
+
   const getItem = (data) => {
     const items = data.map((item) => {
       const showBadge = item.newItems ? item.newItems > 0 && true : false;
+
+      const isDragging = dragging ? showDragItems(item) : false;
+
+      let value = "";
+      if (isDragging) value = `${item.id} dragging`;
 
       return (
         <CatalogItem
           key={item.id}
           id={item.id}
+          className={`tree-drag ${item.folderClassName}`}
           icon={getFolderIcon(item)}
           showText={showText}
           text={item.title}
           isActive={isActive(item)}
           onClick={onClick}
+          onDrop={onMoveTo}
           isEndOfBlock={getEndOfBlock(item)}
+          isDragging={isDragging}
+          value={value}
           showBadge={showBadge}
           labelBadge={showBadge ? item.newItems : null}
           onClickBadge={onBadgeClick}
@@ -134,17 +199,59 @@ Items.propTypes = {
   onClickBadge: PropTypes.func,
 };
 
-export default inject(({ auth, treeFoldersStore, selectedFolderStore }) => {
-  const { treeFolders, selectedTreeNode } = treeFoldersStore;
+export default inject(
+  ({
+    auth,
+    treeFoldersStore,
+    selectedFolderStore,
+    filesStore,
+    filesActionsStore,
+  }) => {
+    const {
+      selection,
+      setIsLoading,
+      isLoading,
+      dragging,
+      setDragging,
+      setStartDrag,
+    } = filesStore;
 
-  return {
-    showText: auth.settingsStore.showText,
-    pathParts: selectedFolderStore.pathParts,
-    data: treeFolders,
-    selectedTreeNode,
-  };
-})(
-  withTranslation(["Home", "Common"])(
+    const {
+      selectedTreeNode,
+      treeFolders,
+      setTreeFolders,
+      myFolderId,
+      commonFolderId,
+      isPrivacyFolder,
+      expandedKeys,
+      setExpandedKeys,
+      setExpandedPanelKeys,
+      getSubfolders,
+    } = treeFoldersStore;
+
+    const { id } = selectedFolderStore;
+
+    return {
+      isAdmin: auth.isAdmin,
+      myId: myFolderId,
+      commonId: commonFolderId,
+      isPrivacy: isPrivacyFolder,
+      currentId: id,
+      showText: auth.settingsStore.showText,
+      pathParts: selectedFolderStore.pathParts,
+      data: treeFolders,
+      selectedTreeNode,
+      draggableItems: dragging ? selection : null,
+      setIsLoading,
+      isLoading,
+      dragging,
+      setDragging,
+      setStartDrag,
+      moveDragItems: filesActionsStore.moveDragItems,
+    };
+  }
+)(
+  withTranslation(["Home", "Common", "Translations"])(
     withLoader(observer(Items))(<Loaders.DocumentCatalogFolderLoader />)
   )
 );
