@@ -11,12 +11,11 @@ class AxiosClient {
 
   initCSR = () => {
     this.isSSR = false;
-    const { proxyURL, apiPrefixURL, apiTimeout } = AppServerConfig;
     const origin = window.location.origin;
 
     const apiBaseURL = combineUrl(origin, proxyURL, apiPrefixURL);
     const paymentsURL = combineUrl(proxyURL, "/payments");
-    this.loginURL = combineUrl(proxyURL, "/login");
+    this.paymentsURL = paymentsURL;
 
     window.AppServer = {
       ...window.AppServer,
@@ -89,16 +88,19 @@ class AxiosClient {
     const onError = (error) => {
       //console.error("Request Failed:", error);
 
-      const errorText = error.response
+      let errorText = error.response
         ? this.getResponseError(error.response)
         : error.message;
 
+      if (error?.response?.status === 401 && this.isSSR) errorText = 401;
+
+      const loginURL = combineUrl(proxyURL, "/login");
       if (!this.isSSR) {
         switch (error.response?.status) {
           case 401:
             if (options.skipUnauthorized) return Promise.resolve();
 
-            request({
+            this.request({
               method: "post",
               url: "/authentication/logout",
             }).then(() => {
@@ -110,15 +112,23 @@ class AxiosClient {
             break;
           case 402:
             if (!window.location.pathname.includes("payments")) {
-              window.location.href = paymentsURL;
+              window.location.href = this.paymentsURL;
             }
             break;
           default:
             break;
         }
-      } // TODO: adapt for SSR
+        return Promise.reject(errorText || error);
+      } else {
+        switch (error.response?.status) {
+          case 401:
+            return Promise.resolve();
 
-      return Promise.reject(errorText || error);
+          default:
+            break;
+        }
+        return Promise.reject(errorText || error);
+      } // adapt to ssr
     };
     return this.client(options).then(onSuccess).catch(onError);
   };
