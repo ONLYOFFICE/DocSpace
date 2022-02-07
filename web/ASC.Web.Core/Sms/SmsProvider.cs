@@ -84,9 +84,9 @@ namespace ASC.Web.Core.Sms
                 provider = ClickatellProvider;
             }
 
-            string smsUsa = ClickatellProvider["clickatellUSA"];
+            string smsUsa;
             if (ClickatellUSAProvider.Enable()
-                && !string.IsNullOrEmpty(smsUsa) && Regex.IsMatch(number, smsUsa))
+                && !string.IsNullOrEmpty(smsUsa = ClickatellProvider["clickatellUSA"]) && Regex.IsMatch(number, smsUsa))
             {
                 provider = ClickatellUSAProvider;
             }

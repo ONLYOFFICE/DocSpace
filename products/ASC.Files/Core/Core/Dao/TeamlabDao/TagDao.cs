@@ -730,7 +730,7 @@ namespace ASC.Files.Core.Data
             var monitorFolderIdsInt = monitorFolderIds.OfType<int>().ToList();
             var subFoldersSqlQuery = getFolderQuery(FilesDbContext, monitorFolderIdsInt, deepSearch);
 
-            monitorFolderIds = monitorFolderIds.Concat(subFoldersSqlQuery.Select(r => (object)r));
+            monitorFolderIds = monitorFolderIds.Concat(subFoldersSqlQuery.ToList().ConvertAll(r => (object)r));
 
             var monitorFolderIdsStrings = monitorFolderIds.Select(r => r.ToString()).ToList();
 

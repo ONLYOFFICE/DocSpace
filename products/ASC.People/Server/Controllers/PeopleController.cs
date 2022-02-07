@@ -895,14 +895,26 @@ namespace ASC.Employee.Core.Controllers
         [Update("{userid}/contacts")]
         public EmployeeWraperFull UpdateMemberContactsFromBody(string userid, [FromBody] UpdateMemberModel memberModel)
         {
-            return SetMemberContacts(userid, memberModel);
+            return UpdateMemberContacts(userid, memberModel);
         }
 
         [Update("{userid}/contacts")]
         [Consumes("application/x-www-form-urlencoded")]
         public EmployeeWraperFull UpdateMemberContactsFromForm(string userid, [FromForm] UpdateMemberModel memberModel)
         {
-            return SetMemberContacts(userid, memberModel);
+            return UpdateMemberContacts(userid, memberModel);
+        }
+
+        private EmployeeWraperFull UpdateMemberContacts(string userid, UpdateMemberModel memberModel)
+        {
+            var user = GetUserInfo(userid);
+
+            if (UserManager.IsSystemUser(user.ID))
+                throw new SecurityException();
+
+            UpdateContacts(memberModel.Contacts, user);
+            UserManager.SaveUserInfo(user);
+            return EmployeeWraperFullHelper.GetFull(user);
         }
 
         [Create("{userid}/contacts")]
@@ -925,6 +937,7 @@ namespace ASC.Employee.Core.Controllers
             if (UserManager.IsSystemUser(user.ID))
                 throw new SecurityException();
 
+            user.ContactsList.Clear();
             UpdateContacts(memberModel.Contacts, user);
             UserManager.SaveUserInfo(user);
             return EmployeeWraperFullHelper.GetFull(user);

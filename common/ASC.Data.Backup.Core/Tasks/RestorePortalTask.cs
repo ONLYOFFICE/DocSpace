@@ -369,8 +369,20 @@ namespace ASC.Data.Backup.Tasks
         private void SetTenantActive(int tenantId)
         {
             using var connection = DbFactory.OpenConnection();
+            var commandText = string.Format(
+                "update tenants_tenants " +
+                "set " +
+                "  status={0}, " +
+                "  last_modified='{1}', " +
+                "  statuschanged='{1}' " +
+                "where id = '{2}'",
+                (int)TenantStatus.Active,
+                DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
+                tenantId);
 
-            connection.CreateCommand().WithTimeout(120).ExecuteNonQuery();
+            var command = connection.CreateCommand().WithTimeout(120);
+            command.CommandText = commandText;
+            command.ExecuteNonQuery();
         }
     }
 }

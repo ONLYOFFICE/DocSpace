@@ -444,6 +444,14 @@ namespace ASC.ElasticSearch
                         return b;
                     }
 
+                    Client.Instance.Indices.Create(data.IndexName,
+                       c =>
+                       c.Map<T>(m => m.AutoMap())
+                       .Settings(r => r.Analysis(a =>
+                                       a.Analyzers(analyzers)
+                                       .CharFilters(d => d.HtmlStrip(CharFilter.html.ToString())
+                                       .Mapping(CharFilter.io.ToString(), m => m.Mappings("ё => е", "Ё => Е"))))));
+
                     IsExist = true;
                 }
             }
@@ -520,8 +528,7 @@ namespace ASC.ElasticSearch
 
                 var sourceExprText = "";
 
-                name = TryGetName(expression, out var member);
-                while (!string.IsNullOrEmpty(name))
+                while (!string.IsNullOrEmpty(name = TryGetName(expression, out var member)))
                 {
                     sourceExprText = "." + name + sourceExprText;
                 }
@@ -574,10 +581,10 @@ namespace ASC.ElasticSearch
 
             var sourceExprText = "";
 
-            name = TryGetName(expression, out var member);
-            while (!string.IsNullOrEmpty(name))
+            while (!string.IsNullOrEmpty(name = TryGetName(expression, out var member)))
             {
                 sourceExprText = "." + name + sourceExprText;
+                expression = member.Expression;
             }
 
             var parameters = new Dictionary<string, object>();

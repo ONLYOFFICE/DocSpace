@@ -23,11 +23,8 @@
  *
 */
 
-using System;
-
 using ASC.Common;
 using ASC.Web.Core.Files;
-using ASC.Web.Files.Classes;
 using ASC.Web.Files.Utils;
 
 namespace ASC.Files.Core
@@ -43,15 +40,12 @@ namespace ASC.Files.Core
 
         private FileConverter FileConverter { get; set; }
 
-        private Global Global { get; set; }
-
-        public FileHelper(FileTrackerHelper fileTracker, FilesLinkUtility filesLinkUtility, FileUtility fileUtility, FileConverter fileConverter, Global global)
+        public FileHelper(FileTrackerHelper fileTracker, FilesLinkUtility filesLinkUtility, FileUtility fileUtility, FileConverter fileConverter)
         {
             FileTracker = fileTracker;
             FilesLinkUtility = filesLinkUtility;
             FileUtility = fileUtility;
             FileConverter = fileConverter;
-            Global = global;
         }
 
         internal string GetTitle<T>(File<T> file)

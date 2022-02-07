@@ -93,7 +93,8 @@ namespace ASC.VoipService.Dao
         {
             return VoipDbContext.VoipNumbers
                 .Where(r => r.TenantId == TenantID)
-                .Select(ToPhone);
+                .ToList()
+                .ConvertAll(ToPhone);
         }
 
         public virtual IEnumerable<VoipPhone> GetNumbers(params string[] ids)
@@ -105,7 +106,7 @@ namespace ASC.VoipService.Dao
                 numbers = numbers.Where(r => ids.Any(a => a == r.Number || a == r.Id));
             }
 
-            return numbers.Select(ToPhone);
+            return numbers.ToList().ConvertAll(ToPhone);
         }
 
         public VoipPhone GetNumber(string id)
@@ -203,7 +204,7 @@ namespace ASC.VoipService.Dao
             query = query.Skip((int)filter.Offset);
             query = query.Take((int)filter.Max * 3);
 
-            var calls = query.Select(ToCall);
+            var calls = query.ToList().ConvertAll(ToCall);
 
             calls = calls.GroupJoin(calls, call => call.Id, h => h.ParentID, (call, h) =>
             {
@@ -248,7 +249,7 @@ namespace ASC.VoipService.Dao
                 .Max(tmp => tmp.DialDate)
             }).Where(r => r.dbVoipCall.DbVoipCall.DialDate >= r.tmpDate || r.tmpDate == default);
 
-            return a.Select(r => ToCall(r.dbVoipCall)).ToList();
+            return a.ToList().ConvertAll(r => ToCall(r.dbVoipCall));
         }
 
         private IQueryable<CallContact> GetCallsQuery(VoipCallFilter filter)

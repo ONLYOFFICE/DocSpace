@@ -666,6 +666,9 @@ namespace ASC.Files.Core.Data
                 .Distinct()
                 .ToList();
 
+            var toDeleteLinks = Query(FilesDbContext.TagLink).Where(r => r.EntryId == fileId.ToString() && r.EntryType == FileEntryType.File);
+            FilesDbContext.RemoveRange(toDeleteLinks);
+
             var toDeleteFiles = Query(FilesDbContext.Files).Where(r => r.Id == fileId);
             FilesDbContext.RemoveRange(toDeleteFiles);
 
@@ -690,7 +693,7 @@ namespace ASC.Files.Core.Data
 
             tx.Commit();
 
-            foreach(var folderId in fromFolders)
+            foreach (var folderId in fromFolders)
             {
                 RecalculateFilesCount(folderId);
             }
@@ -770,7 +773,7 @@ namespace ASC.Files.Core.Data
                 FilesDbContext.SaveChanges();
                 tx.Commit();
 
-                foreach(var folderId in fromFolders)
+                foreach (var folderId in fromFolders)
                 {
                     RecalculateFilesCount(folderId);
                 }

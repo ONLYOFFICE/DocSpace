@@ -168,11 +168,11 @@ namespace ASC.Files.Core
         {
             get
             {
-                UserInfo user = UserManager.GetUsers(Id);
+                UserInfo user;
                 return
                     Id.Equals(Guid.Empty)
                           || Id.Equals(ASC.Core.Configuration.Constants.Guest.ID)
-                          || (user).Equals(Constants.LostUser)
+                          || (user = UserManager.GetUsers(Id)).Equals(Constants.LostUser)
                               ? string.IsNullOrEmpty(_name)
                                     ? FilesCommonResource.Guest
                                     : _name

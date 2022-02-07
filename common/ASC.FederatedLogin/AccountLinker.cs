@@ -169,8 +169,9 @@ namespace ASC.FederatedLogin
             //Retrieve by uinque id
             return AccountLinks
                     .Where(r => r.Id == obj)
-                    .Select(x => LoginProfile.CreateFromSerializedString(Signature, InstanceCrypto, x.Profile))
-                    .ToList();
+                    .Select(r => r.Profile)
+                    .ToList()
+                    .ConvertAll(x => LoginProfile.CreateFromSerializedString(Signature, InstanceCrypto, x));
         }
 
         public void AddLink(string obj, LoginProfile profile)

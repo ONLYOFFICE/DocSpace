@@ -200,9 +200,9 @@ namespace ASC.Feed.Aggregator
                             {
                                 dictionary = new Dictionary<Guid, int>();
                             }
-                            if (dictionary.TryGetValue(userGuid, out var value))
+                            if (dictionary.ContainsKey(userGuid))
                             {
-                                ++value;
+                                ++dictionary[userGuid];
                             }
                             else
                             {

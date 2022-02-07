@@ -244,7 +244,7 @@ namespace ASC.Feed.Data
                 q = q.Where(r => keys.Any(k => r.aggregates.Keywords.StartsWith(k)));
             }
 
-            var news = q.Select(r => r.aggregates);
+            var news = q.Select(r => r.aggregates).ToList();
 
             return news.Select(r => new FeedResultItem(
                 r.Json,

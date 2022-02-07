@@ -172,7 +172,8 @@ namespace ASC.Web.Files.Utils
 
                         var queues = conversionQueue.Where(x => !string.IsNullOrEmpty(x.Value.Processed)
                                                    && (x.Value.Progress == 100 && DateTime.UtcNow - x.Value.StopDateTime > TimeSpan.FromMinutes(1) ||
-                                                       DateTime.UtcNow - x.Value.StopDateTime > TimeSpan.FromMinutes(10)));
+                                                       DateTime.UtcNow - x.Value.StopDateTime > TimeSpan.FromMinutes(10)))
+                            .ToList();
 
                         foreach (var q in queues)
                         {

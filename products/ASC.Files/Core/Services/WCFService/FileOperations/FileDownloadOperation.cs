@@ -36,7 +36,6 @@ using ASC.Common.Threading;
 using ASC.Common.Web;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
-using ASC.Files.Core.EF;
 using ASC.Files.Core.Resources;
 using ASC.MessagingSystem;
 using ASC.Web.Core.Files;
@@ -96,7 +95,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 string archiveExtension;
 
-                using(var zip = scope.ServiceProvider.GetService<CompressToArchive>())
+                using (var zip = scope.ServiceProvider.GetService<CompressToArchive>())
                 {
                     archiveExtension = zip.ArchiveExtension;
                 }
@@ -233,7 +232,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 var folders = FilesSecurity.FilterRead(FolderDao.GetFolders(Files));
 
-                foreach(var folder in folders)
+                foreach (var folder in folders)
                 {
                     fileMarker.RemoveMarkAsNew(folder);
                 }
@@ -277,7 +276,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
             return entriesPathId;
         }
-            
+
         internal void CompressToZip(Stream stream, IServiceScope scope)
         {
             if (_entriesPathId == null) return;
@@ -330,7 +329,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                             if (!Equals(entryId, default(T)))
                             {
-                                newtitle = newtitle.IndexOf('.') > -1 ? newtitle.Insert(newtitle.LastIndexOf('.'), suffix) : newtitle + suffix;
+                                newtitle = newtitle.IndexOf('.') > 0 ? newtitle.Insert(newtitle.LastIndexOf('.'), suffix) : newtitle + suffix;
                             }
                             else
                             {

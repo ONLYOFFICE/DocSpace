@@ -272,13 +272,18 @@ namespace ASC.Web.Files
         {
             try
             {
+                var flushed = false;
                 using (var readStream = store.GetReadStream(FileConstant.StorageDomainTmp, path))
                 {
                     long offset = 0;
+                    var length = readStream.Length;
                     if (readStream.CanSeek)
                     {
+                        length = ProcessRangeHeader(context, readStream.Length, ref offset);
                         readStream.Seek(offset, SeekOrigin.Begin);
                     }
+
+                    await SendStreamByChunksAsync(context, length, FileConstant.DownloadTitle + ext, readStream, flushed);
                 }
 
                 await context.Response.Body.FlushAsync();

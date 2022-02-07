@@ -228,7 +228,8 @@ namespace ASC.Core.Data
                     .Where(r => r.Email == login)
                     .Where(r => r.Status == EmployeeStatus.Active)
                     .Where(r => !r.Removed)
-                    .Select(r => r.Id);
+                    .Select(r => r.Id)
+                    .ToList();
 
                 var passwordHashs = usersQuery.Select(r => GetPasswordHash(r, passwordHash)).ToList();
 
@@ -253,7 +254,7 @@ namespace ASC.Core.Data
         public Tenant GetTenant(string domain)
         {
             if (string.IsNullOrEmpty(domain)) throw new ArgumentNullException(nameof(domain));
-            
+
             domain = domain.ToLowerInvariant();
 
             return TenantsQuery()

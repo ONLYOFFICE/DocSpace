@@ -320,7 +320,7 @@ namespace ASC.Data.Backup.Tasks
                 {
                     using var connection = DbFactory.OpenConnection();
                     var command = connection.CreateCommand();
-                    command.CommandText =   $"select max({primaryIndex}), min({primaryIndex}) from {t}";
+                    command.CommandText = $"select max({primaryIndex}), min({primaryIndex}) from {t}";
                     var minMax = ExecuteList(command).ConvertAll(r => new Tuple<int, int>(Convert.ToInt32(r[0]), Convert.ToInt32(r[1]))).FirstOrDefault();
                     primaryIndexStart = minMax.Item2;
                     primaryIndexStep = (minMax.Item1 - minMax.Item2) / count;
@@ -392,8 +392,8 @@ namespace ASC.Data.Backup.Tasks
         private void SaveToFile(string path, string t, IReadOnlyCollection<string> columns, List<object[]> data)
         {
             Logger.DebugFormat("save to file {0}", t);
-            List<object[]> portion = data.Take(BatchLimit).ToList();
-            while (portion.Count > 0)
+            List<object[]> portion;
+            while ((portion = data.Take(BatchLimit).ToList()).Count > 0)
             {
                 using (var sw = new StreamWriter(path, true))
                 using (var writer = new JsonTextWriter(sw))
@@ -410,7 +410,7 @@ namespace ASC.Data.Backup.Tasks
 
                         for (var i = 0; i < obj.Length; i++)
                         {
-                            var value = obj[i]; 
+                            var value = obj[i];
                             if (value is byte[] byteArray)
                             {
                                 sw.Write("0x");

@@ -104,7 +104,7 @@ namespace ASC.Common.Utils
 
             var regexpstr = Worder.Matches(searchText).Select(m => m.Value).Distinct().Aggregate((r, n) => r + "|" + n);
             var wordsFinder = new Regex(Regex.Escape(regexpstr), RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Multiline);
-            return wordsFinder.Replace(htmlText, m => "<span class='searchTextHighlight" + (withoutLink ? " bold" : string.Empty) + "'>{0}</span>");
+            return wordsFinder.Replace(htmlText, m => "<span class='searchTextHighlight" + (withoutLink ? " bold" : string.Empty) + "'>" + m.Value + "</span>");
         }
     }
 }
