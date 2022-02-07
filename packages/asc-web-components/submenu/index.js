@@ -2,7 +2,6 @@ import PropTypes from "prop-types";
 import React, { useState } from "react";
 
 import Text from "../text";
-import { isTablet } from "../utils/device";
 import {
   StyledSubmenu,
   StyledSubmenuBottomLine,
