@@ -8,15 +8,12 @@ import { inject, observer } from "mobx-react";
 import Avatar from "@appserver/components/avatar";
 import Button from "@appserver/components/button";
 import TextInput from "@appserver/components/text-input";
-import Box from "@appserver/components/box";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import PasswordInput from "@appserver/components/password-input";
 import FieldContainer from "@appserver/components/field-container";
 import toastr from "@appserver/components/toast/toastr";
 import SocialButton from "@appserver/components/social-button";
-import FacebookButton from "@appserver/components/facebook-button";
-import EmailInput from "@appserver/components/email-input";
 import {
   getAuthProviders,
   getCapabilities,
@@ -26,12 +23,7 @@ import {
   createPasswordHash,
   getProviderTranslation,
 } from "@appserver/common/utils";
-import {
-  providersData,
-  PasswordLimitSpecialCharacters,
-} from "@appserver/common/constants";
-import { isMobile } from "react-device-detect";
-import { desktop } from "@appserver/components/utils/device";
+import { providersData } from "@appserver/common/constants";
 import withLoader from "../withLoader";
 import MoreLoginModal from "login/moreLogin";
 
