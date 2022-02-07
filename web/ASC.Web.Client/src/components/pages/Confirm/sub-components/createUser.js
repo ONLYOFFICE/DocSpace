@@ -5,6 +5,7 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { createUser, signupOAuth } from "@appserver/common/api/people";
 import { inject, observer } from "mobx-react";
+import Avatar from "@appserver/components/avatar";
 import Button from "@appserver/components/button";
 import TextInput from "@appserver/components/text-input";
 import Box from "@appserver/components/box";
@@ -59,17 +60,47 @@ const ConfirmContainer = styled.div`
   align-items: center;
   margin: 80px auto 0 auto;
   max-width: 960px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const GreetingContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: left;
   height: 100%;
+  padding-bottom: 32px;
 
   .greeting-title {
     width: 100%;
     padding-bottom: 32px;
+  }
+
+  .greeting-block {
+    display: flex;
+    flex-direction: row;
+
+    .user-info {
+      margin-left: 12px;
+    }
+  }
+
+  .tooltip {
+    position: relative;
+    display: inline-block;
+    margin-top: 15px;
+  }
+
+  .tooltip .tooltiptext {
+    background: #ffffff;
+    border: 1px solid #eceef1;
+    box-sizing: border-box;
+    border-radius: 6px;
+    position: absolute;
+    padding: 16px;
+    width: 100%;
   }
 `;
 
@@ -306,7 +337,25 @@ const Confirm = (props) => {
         >
           {greetingTitle}
         </Text>
+
+        {/*TODO: get user info from api */}
+        <div className="greeting-block">
+          <Avatar role="user" size="medium" source="" />
+          <div className="user-info">
+            <Text fontSize="15px" fontWeight={600}>
+              John Doe
+            </Text>
+            <Text fontSize="12px" fontWeight={600} color="#A3A9AE">
+              Head of department
+            </Text>
+          </div>
+        </div>
+
+        <div class="tooltip">
+          <span class="tooltiptext">Welcome to join our portal!</span>
+        </div>
       </GreetingContainer>
+
       <RegisterContainer>
         {ssoExists() && <ButtonsWrapper>{ssoButton()}</ButtonsWrapper>}
 
