@@ -9,6 +9,7 @@ import Button from "@appserver/components/button";
 import TextInput from "@appserver/components/text-input";
 import Box from "@appserver/components/box";
 import Text from "@appserver/components/text";
+import Link from "@appserver/components/link";
 import PasswordInput from "@appserver/components/password-input";
 import FieldContainer from "@appserver/components/field-container";
 import toastr from "@appserver/components/toast/toastr";
@@ -36,15 +37,18 @@ import MoreLoginModal from "login/moreLogin";
 export const ButtonsWrapper = styled.div`
   display: table;
   margin: auto;
-  margin-bottom: 8px;
-  width: 320px;
 
-  @media (max-width: 768px) {
-    width: 480px;
-  }
+  .buttonWrapper {
+    margin-bottom: 8px;
+    width: 320px;
 
-  @media (max-width: 414px) {
-    width: 311px;
+    @media (max-width: 768px) {
+      width: 480px;
+    }
+
+    @media (max-width: 414px) {
+      width: 311px;
+    }
   }
 `;
 
@@ -77,6 +81,10 @@ const RegisterContainer = styled.div`
 
   .or-label {
     margin: 0 8px;
+  }
+
+  .more-label {
+    padding-top: 18px;
   }
 
   .line {
@@ -147,6 +155,11 @@ const Confirm = (props) => {
 
   useEffect(() => {
     getSso();
+  }, []);
+
+  useEffect(async () => {
+    window.authCallback = authCallback;
+    await setProviders();
   }, []);
 
   const authCallback = (profile) => {
