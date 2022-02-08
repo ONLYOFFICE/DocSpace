@@ -85,6 +85,7 @@ class SelectFolderModalDialog extends React.Component {
       canCreate,
       showButtons,
       selectionButtonPrimary,
+      isReset,
     } = this.props;
 
     if (
@@ -385,7 +386,7 @@ class SelectFolderModalDialog extends React.Component {
       showButtons,
       onSetFullPath,
       selectionButtonPrimary,
-	  onSetLoadingData,
+      onSetLoadingData,
       onSetLoadingInput,
     } = this.props;
     const { folderId } = this.state;
