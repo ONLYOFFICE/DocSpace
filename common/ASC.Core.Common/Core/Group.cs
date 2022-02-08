@@ -28,6 +28,7 @@ using System;
 
 using ASC.Common.Mapping;
 using ASC.Core.Common.EF;
+using ASC.Core.Users;
 
 using AutoMapper;
 
@@ -55,6 +56,9 @@ namespace ASC.Core
             profile.CreateMap<DbGroup, Group>()
                 .ForMember(src => src.CategoryId, opt => opt.NullSubstitute(Guid.Empty))
                 .ForMember(src => src.ParentId, opt => opt.NullSubstitute(Guid.Empty));
+
+            profile.CreateMap<GroupInfo, Group>()
+                .ForMember(src => src.CategoryId, opt => opt.NullSubstitute(Guid.Empty));
         }
     }
 }

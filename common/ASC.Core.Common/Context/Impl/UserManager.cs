@@ -36,6 +36,8 @@ using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 
+using AutoMapper;
+
 using Microsoft.AspNetCore.Http;
 
 namespace ASC.Core
@@ -69,6 +71,7 @@ namespace ASC.Core
         private readonly UserManagerConstants _userManagerConstants;
         private readonly CoreBaseSettings _coreBaseSettings;
         private readonly Constants _constants;
+        private readonly IMapper _mapper;
         private Tenant _tenant;
         
         public UserManager() { }
@@ -78,7 +81,8 @@ namespace ASC.Core
             TenantManager tenantManager,
             PermissionContext permissionContext,
             UserManagerConstants userManagerConstants,
-            CoreBaseSettings coreBaseSettings)
+            CoreBaseSettings coreBaseSettings,
+            IMapper mapper)
         {
             _userService = service;
             _tenantManager = tenantManager;
@@ -86,6 +90,7 @@ namespace ASC.Core
             _userManagerConstants = userManagerConstants;
             _coreBaseSettings = coreBaseSettings;
             _constants = _userManagerConstants.Constants;
+            _mapper = mapper;
         }
 
         public UserManager(
@@ -94,8 +99,9 @@ namespace ASC.Core
             PermissionContext permissionContext,
             UserManagerConstants userManagerConstants,
             CoreBaseSettings coreBaseSettings,
-            IHttpContextAccessor httpContextAccessor)
-            : this(service, tenantManager, permissionContext, userManagerConstants, coreBaseSettings)
+            IHttpContextAccessor httpContextAccessor,
+            IMapper mapper)
+            : this(service, tenantManager, permissionContext, userManagerConstants, coreBaseSettings, mapper)
         {
             _accessor = httpContextAccessor;
         }
@@ -602,7 +608,7 @@ namespace ASC.Core
 
             _permissionContext.DemandPermissions(Constants.Action_EditGroups);
 
-            var newGroup = _userService.SaveGroup(Tenant.Id, ToGroup(g));
+            var newGroup = _userService.SaveGroup(Tenant.Id, _mapper.Map<GroupInfo, Group>(g));
 
             return new GroupInfo(newGroup.CategoryId) { ID = newGroup.Id, Name = newGroup.Name, Sid = newGroup.Sid };
         }
