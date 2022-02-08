@@ -45,9 +45,7 @@ const StyledMainBar = styled.div`
   ${isMobile &&
   css`
     z-index: 149;
-    //  min-width: 100%;
     position: fixed;
-    // padding-left: 8px;
     top: 48px;
   `};
 `;
