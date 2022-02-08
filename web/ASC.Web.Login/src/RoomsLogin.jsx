@@ -309,7 +309,7 @@ const Form = (props) => {
               className="more-label"
               onClick={moreAuthOpen}
             >
-              {t("ShowMore")}
+              {t("Common:ShowMore")}
             </Link>
           )}
         </>
