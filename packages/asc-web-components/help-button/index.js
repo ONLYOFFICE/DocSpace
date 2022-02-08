@@ -61,6 +61,7 @@ class HelpButton extends React.Component {
       className,
       dataTip,
       style,
+      size,
     } = this.props;
 
     return (
@@ -70,7 +71,7 @@ class HelpButton extends React.Component {
           className={`${className} help-icon`}
           isClickable={true}
           iconName={iconName}
-          size={13}
+          size={size}
           color={color}
           data-for={this.id}
           dataTip={dataTip}
@@ -131,6 +132,7 @@ HelpButton.propTypes = {
   /** Accepts id */
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  size: PropTypes.number,
 };
 
 HelpButton.defaultProps = {
@@ -142,6 +144,7 @@ HelpButton.defaultProps = {
   offsetBottom: 0,
   className: "icon-button",
   color: "#A3A9AE",
+  size: 13,
 };
 
 export default HelpButton;
