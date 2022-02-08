@@ -86,7 +86,9 @@ const RootFolderContainer = (props) => {
       case FolderType.TRASH:
         return {
           descriptionText: trashDescription,
-          imageSrc: "images/empty_screen_trash.png",
+          imageSrc: theme.isBase
+            ? "images/empty_screen_trash.png"
+            : "images/empty_screen_trash_dark.png",
           buttons: trashButtons,
         };
       default:
