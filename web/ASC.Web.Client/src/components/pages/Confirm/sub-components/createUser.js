@@ -75,7 +75,15 @@ const GreetingContainer = styled.div`
     flex-direction: row;
 
     .user-info {
+      display: flex;
+      flex-direction: column;
       margin-left: 12px;
+      justify-content: center;
+    }
+
+    .avatar {
+      height: 54px;
+      width: 54px;
     }
   }
 
@@ -430,7 +438,7 @@ const Confirm = (props) => {
 
         {/*TODO: get user info from api */}
         <div className="greeting-block">
-          <Avatar role="user" size="medium" source="" />
+          <Avatar className="avatar" role="user" source="" />
           <div className="user-info">
             <Text fontSize="15px" fontWeight={600}>
               John Doe
