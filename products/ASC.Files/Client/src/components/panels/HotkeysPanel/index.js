@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { observer, inject } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import Heading from "@appserver/components/heading";
@@ -22,6 +22,15 @@ const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, tReady }) => {
     ...textStyles,
     ...{ color: "#657077", className: "hotkeys-key" },
   };
+
+  const onKeyPress = (e) =>
+    (e.key === "Esc" || e.key === "Escape") && onClose();
+
+  useEffect(() => {
+    document.addEventListener("keyup", onKeyPress);
+
+    return () => document.removeEventListener("keyup", onKeyPress);
+  });
 
   return (
     <StyledHotkeysPanel>
