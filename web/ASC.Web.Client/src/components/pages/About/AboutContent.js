@@ -48,7 +48,11 @@ const AboutContent = ({ personal, buildVersionInfo, theme }) => {
           />
         ) : (
           <img
-            src="/images/dark_general.png"
+            src={
+              theme.isBase
+                ? "/images/dark_general.png"
+                : "/images/white_general.png"
+            }
             alt="Logo"
             className="no-select"
           />
