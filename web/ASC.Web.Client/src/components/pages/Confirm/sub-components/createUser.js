@@ -331,19 +331,34 @@ const Confirm = (props) => {
 
   const onChangeEmail = (e) => {
     setEmail(e.target.value);
+    setEmailValid(true);
+    setErrorText("");
   };
 
   const onChangeFname = (e) => {
     setFname(e.target.value);
+    setFnameValid(true);
+    setErrorText("");
   };
 
   const onChangeSname = (e) => {
     setSname(e.target.value);
+    setSnameValid(true);
+    setErrorText("");
   };
 
   const onChangePassword = (e) => {
     setPassword(e.target.value);
+    setPasswordValid(true);
+    setErrorText("");
   };
+
+  const onKeyPress = (event) => {
+    if (event.key === "Enter") {
+      onSubmit();
+    }
+  };
+
   const onSocialButtonClick = useCallback((e) => {
     const providerName = e.target.dataset.providername;
     const url = e.target.dataset.url;
@@ -514,6 +529,7 @@ const Confirm = (props) => {
               isDisabled={isLoading}
               autoComplete="username"
               onChange={onChangeEmail}
+              onKeyDown={onKeyPress}
             />
           </FieldContainer>
 
@@ -536,6 +552,7 @@ const Confirm = (props) => {
               tabIndex={1}
               isDisabled={isLoading}
               onChange={onChangeFname}
+              onKeyDown={onKeyPress}
             />
           </FieldContainer>
 
@@ -558,6 +575,7 @@ const Confirm = (props) => {
               tabIndex={1}
               isDisabled={isLoading}
               onChange={onChangeSname}
+              onKeyDown={onKeyPress}
             />
           </FieldContainer>
 
@@ -582,6 +600,7 @@ const Confirm = (props) => {
               isDisabled={isLoading}
               autoComplete="current-password"
               onChange={onChangePassword}
+              onKeyDown={onKeyPress}
             />
           </FieldContainer>
 
