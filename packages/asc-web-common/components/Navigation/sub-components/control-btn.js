@@ -53,17 +53,16 @@ const ControlButtons = ({
       getData={getContextOptionsPlus}
       isDisabled={false}
     />
+  ) : isRecycleBinFolder && !isEmptyFilesList ? (
+    <IconButton
+      iconName="images/clear.active.react.svg"
+      size="15"
+      isFill={true}
+      onClick={clearTrash}
+      className="trash-button"
+    />
   ) : (
-    isRecycleBinFolder &&
-    !isEmptyFilesList && (
-      <IconButton
-        iconName="images/clear.active.react.svg"
-        size="15"
-        isFill={true}
-        onClick={clearTrash}
-        className="trash-button"
-      />
-    )
+    <></>
   );
 };
 
