@@ -460,34 +460,36 @@ class RestoreBackup extends React.Component {
           {...commonRadioButtonProps}
         />
 
-        {isCheckedDocuments && (
-          <Documents
-            isPanelVisible={isPanelVisible}
-            onClose={this.onPanelClose}
-            onClickInput={this.onClickInput}
-            onSelectFile={this.onSelectFile}
-          />
-        )}
-        {isCheckedThirdParty && (
-          <ThirdPartyResources
-            isPanelVisible={isPanelVisible}
-            onClose={this.onPanelClose}
-            onClickInput={this.onClickInput}
-            onSelectFile={this.onSelectFile}
-          />
-        )}
-        {isCheckedThirdPartyStorage && (
-          <ThirdPartyStorages
-            onSetRequiredFormNames={this.onSetRequiredFormNames}
-            onResetFormSettings={this.onResetFormSettings}
-            isErrors={isErrors}
-            onSetStorageId={this.onSetStorageId}
-            onSetFormSettings={this.onSetFormSettings}
-          />
-        )}
-        {isCheckedLocalFile && (
-          <LocalFile onSelectLocalFile={this.onSelectLocalFile} />
-        )}
+        <div className="restore-backup_modules">
+          {isCheckedDocuments && (
+            <Documents
+              isPanelVisible={isPanelVisible}
+              onClose={this.onPanelClose}
+              onClickInput={this.onClickInput}
+              onSelectFile={this.onSelectFile}
+            />
+          )}
+          {isCheckedThirdParty && (
+            <ThirdPartyResources
+              isPanelVisible={isPanelVisible}
+              onClose={this.onPanelClose}
+              onClickInput={this.onClickInput}
+              onSelectFile={this.onSelectFile}
+            />
+          )}
+          {isCheckedThirdPartyStorage && (
+            <ThirdPartyStorages
+              onSetRequiredFormNames={this.onSetRequiredFormNames}
+              onResetFormSettings={this.onResetFormSettings}
+              isErrors={isErrors}
+              onSetStorageId={this.onSetStorageId}
+              onSetFormSettings={this.onSetFormSettings}
+            />
+          )}
+          {isCheckedLocalFile && (
+            <LocalFile onSelectLocalFile={this.onSelectLocalFile} />
+          )}
+        </div>
 
         <Text className="restore-backup_list" onClick={this.onClickBackupList}>
           {t("BackupList")}

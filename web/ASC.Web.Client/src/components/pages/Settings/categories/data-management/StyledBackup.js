@@ -1,8 +1,11 @@
 import styled, { css } from "styled-components";
 import commonSettingsStyles from "../../utils/commonSettingsStyles";
+import globalColors from "@appserver/components/utils/globalColors";
+
+const linkColor = globalColors.black;
 
 const INPUT_LENGTH = "350px";
-const TEXT_LENGTH = "476px";
+const TEXT_LENGTH = "700px";
 
 const commonStyles = css`
   margin-right: 16px;
@@ -14,8 +17,12 @@ const commonStyles = css`
     font-weight: 600;
   }
   .backup_radio-button {
-    margin-bottom: 8px;
+    margin-bottom: 16px;
+    &:last-of-type {
+      margin-bottom: 24px;
+    }
   }
+
   .backup_combo {
     margin-top: 16px;
     width: 100%;
@@ -112,9 +119,12 @@ const StyledRestoreBackup = styled.div`
   .restore-backup-checkbox_notification {
     margin-top: 15px;
     max-width: ${TEXT_LENGTH};
+    .checkbox-text {
+      white-space: normal;
+    }
   }
   .restore-backup_list {
-    color: #316daa;
+    color: ${linkColor};
     text-decoration: underline dotted;
     cursor: pointer;
     font-weight: 600;
@@ -125,7 +135,11 @@ const StyledRestoreBackup = styled.div`
     max-width: ${INPUT_LENGTH};
   }
   .restore-description {
-    margin-bottom: 32px;
+    margin-bottom: 24px;
+  }
+
+  .restore-backup_modules {
+    margin-top: 24px;
   }
 `;
 
