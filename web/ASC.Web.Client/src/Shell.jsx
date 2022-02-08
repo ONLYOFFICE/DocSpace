@@ -340,6 +340,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     updateTempContent();
 
     if (!FirebaseHelper.isEnabled) {
+      setCheckedMaintenance(true);
       localStorage.setItem("campaigns", "");
       return;
     }
