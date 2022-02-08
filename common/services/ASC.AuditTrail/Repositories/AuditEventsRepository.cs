@@ -64,13 +64,19 @@ public class AuditEventsRepository
            from p in AuditTrailContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
            where q.TenantId == tenant
            orderby q.Date descending
-           select new AuditEventQuery { AuditEvent = q, User = p };
+           select new AuditEventQuery 
+           {   
+               Event = q, 
+               FirstName = p.FirstName, 
+               LastName = p.LastName, 
+               UserName = p.UserName 
+           };
 
         if (fromDate.HasValue && to.HasValue)
-            query = query.Where(q => q.AuditEvent.Date >= fromDate & q.AuditEvent.Date <= to);
+            query = query.Where(q => q.Event.Date >= fromDate & q.Event.Date <= to);
 
         if (limit.HasValue) query = query.Take((int)limit);
 
-        return query.AsEnumerable().Select(_mapper.Map<AuditEvent>).ToList();
+        return _mapper.Map<List<AuditEventQuery>, List<AuditEvent>>(query.ToList());
     }
 }

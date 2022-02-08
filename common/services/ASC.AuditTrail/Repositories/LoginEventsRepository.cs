@@ -48,10 +48,16 @@ public class LoginEventsRepository
              from p in MessagesContext.Users.Where(p => b.UserId == p.Id).DefaultIfEmpty()
              where b.TenantId == tenant
              orderby b.Date descending
-             select new LoginEventQuery { LoginEvents = b, User = p })
-            .Take(chunk);
+             select new LoginEventQuery
+             {
+                 Event = b,
+                 UserName = p.UserName,
+                 FirstName = p.FirstName,
+                 LastName = p.LastName
+             })
+             .Take(chunk);
 
-        return query.AsEnumerable().Select(_mapper.Map<LoginEvent>).ToList();
+        return _mapper.Map<List<LoginEventQuery>, List<LoginEvent>>(query.ToList());
     }
 
     public IEnumerable<LoginEvent> Get(int tenant, DateTime fromDate, DateTime to)
@@ -63,9 +69,15 @@ public class LoginEventsRepository
             where q.Date >= fromDate
             where q.Date <= to
             orderby q.Date descending
-            select new LoginEventQuery { LoginEvents = q, User = p };
+            select new LoginEventQuery
+            {
+                Event = q,
+                UserName = p.UserName,
+                FirstName = p.FirstName,
+                LastName = p.LastName
+            };
 
-        return query.AsEnumerable().Select(_mapper.Map<LoginEvent>).ToList();
+        return _mapper.Map<List<LoginEventQuery>, List<LoginEvent>>(query.ToList());
     }
 
     public int GetCount(int tenant, DateTime? from = null, DateTime? to = null)
