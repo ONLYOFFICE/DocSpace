@@ -1961,10 +1961,10 @@ const Dark = {
     fill: graySilver,
 
     nameColor: grayMaxLight,
-    pendingNameColor: "#595959",
+    pendingNameColor: "#6f6f6f",
 
     sideInfoColor: "#858585",
-    pendingSideInfoColor: "#434343",
+    pendingSideInfoColor: "#5a5a5a",
   },
 
   filterInput: {
