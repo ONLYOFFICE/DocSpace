@@ -501,6 +501,7 @@ class Calendar extends Component {
                 selectedOption={selectedOptionMonth}
                 options={optionsMonth}
                 isDisabled={false}
+                name="month-button"
               />
             </ComboBoxMonthStyle>
             <ComboBoxDateStyle>
@@ -513,6 +514,7 @@ class Calendar extends Component {
                 selectedOption={selectedOptionYear}
                 options={optionsYear}
                 isDisabled={false}
+                name="year-button"
               />
             </ComboBoxDateStyle>
           </ComboBoxStyle>
