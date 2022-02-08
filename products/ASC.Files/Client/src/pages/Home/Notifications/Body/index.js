@@ -9,4 +9,4 @@ const NotificationsBodyContent = () => {
 
 export default inject(({}) => {
     return {};
-})(withTranslation()(withRouter(observer(NotificationsBodyContent))));
+})(observer(NotificationsBodyContent));

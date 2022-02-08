@@ -1,3 +1,4 @@
+import { observer } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
 
@@ -10,7 +11,7 @@ const Notifications = ({ children }) => {
 
     console.log("N - ", children);
 
-    return <StyledNotifications>{children}</StyledNotifications>;
+    return <StyledNotifications>{children}1213</StyledNotifications>;
 };
 
-export default Notifications;
+export default observer(Notifications);
