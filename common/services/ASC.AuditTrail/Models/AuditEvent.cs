@@ -46,14 +46,9 @@ public class AuditEvent : BaseEvent, IMapFrom<AuditEventQuery>
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<DbAuditEvent, AuditEvent>()
-            .ForMember(src => src.Description, opt => opt.Ignore());
-
-        profile.CreateMap<User, AuditEvent>()
-            .ForMember(src => src.Id, opt => opt.Ignore());
+        profile.CreateMap<DbAuditEvent, AuditEvent>();
 
         profile.CreateMap<AuditEventQuery, AuditEvent>()
-            .IncludeMembers(src => src.AuditEvent, src => src.User)
-            .AfterMap<AuditEventMappingAction>();
+            .ConvertUsing<EventsConverter>();
     }
 }
