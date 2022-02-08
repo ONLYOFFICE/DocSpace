@@ -201,6 +201,8 @@ const Confirm = (props) => {
     const { defaultPage, linkData, hashSettings } = props;
     const isVisitor = parseInt(linkData.emplType) === 2;
 
+    setIsLoading(true);
+
     setErrorText("");
 
     let hasError = false;
@@ -210,14 +212,22 @@ const Confirm = (props) => {
       setFnameValid(!hasError);
     }
 
-    if (sname.trim()) {
+    if (!sname.trim()) {
       hasError = true;
       setSnameValid(!hasError);
     }
 
-    if (!"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$".test(email.trim())) {
+    const emailRegex = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$";
+    const validationEmail = new RegExp(emailRegex);
+
+    if (!validationEmail.test(email.trim())) {
       hasError = true;
       setEmailValid(!hasError);
+    }
+
+    if (!passwordValid || !password.trim()) {
+      hasError = true;
+      setPasswordValid(!hasError);
     }
 
     if (hasError) {
@@ -248,10 +258,8 @@ const Confirm = (props) => {
       .then(() => window.location.replace(defaultPage))
       .catch((error) => {
         console.error("confirm error", error);
-        this.setState({
-          errorText: error,
-          isLoading: false,
-        });
+        setErrorText(error);
+        setIsLoading(false);
       });
   };
 
@@ -292,6 +300,8 @@ const Confirm = (props) => {
   };
 
   const createConfirmUser = async (registerData, loginData, key) => {
+    const { login } = props;
+
     const data = Object.assign(
       { fromInviteLink: true },
       registerData,
@@ -302,7 +312,6 @@ const Confirm = (props) => {
 
     console.log("Created user", user);
 
-    const { login } = this.props;
     const { userName, passwordHash } = loginData;
 
     const response = await login(userName, passwordHash);
@@ -592,6 +601,10 @@ const Confirm = (props) => {
             isLoading={isLoading}
             onClick={onSubmit}
           />
+
+          <Text fontSize="14px" color="#c30">
+            {errorText}
+          </Text>
         </form>
 
         <MoreLoginModal
