@@ -973,16 +973,18 @@ class AutomaticBackup extends React.PureComponent {
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <StyledAutoBackup>
-        <ToggleButton
-          className="backup_toggle-btn"
-          label={t("EnableAutomaticBackup")}
-          onChange={this.onClickPermissions}
-          isChecked={isEnable}
-          isDisabled={isLoadingData}
-        />
-        <Text className="backup_toggle-btn-description">
-          {t("DocumentsModuleDescription")}
-        </Text>
+        <div className="backup_toggle-wrapper">
+          <ToggleButton
+            className="backup_toggle-btn"
+            label={t("EnableAutomaticBackup")}
+            onChange={this.onClickPermissions}
+            isChecked={isEnable}
+            isDisabled={isLoadingData}
+          />
+          <Text className="backup_toggle-btn-description">
+            {t("DataRestoreDescription")}
+          </Text>
+        </div>
         {isEnable && (
           <div className="backup_modules">
             <StyledModules>

@@ -42,6 +42,10 @@ const commonStyles = css`
     line-height: 15px;
     margin-left: 24px;
   }
+  .select-folder_file-input {
+    margin-left: 24px;
+    margin-top: 16px;
+  }
 `;
 
 const StyledManualBackup = styled.div`
@@ -50,10 +54,7 @@ const StyledManualBackup = styled.div`
     margin-top: 16px;
     margin-left: 24px;
   }
-  .select-folder_file-input {
-    margin-left: 24px;
-    margin-top: 16px;
-  }
+
   .manual-backup_storages-module {
     margin-left: 24px;
     .manual-backup_buttons {
@@ -75,12 +76,12 @@ const StyledAutoBackup = styled.div`
     position: static;
   }
   .backup_toggle-btn-description {
-    margin-bottom: 40px;
     margin-left: 37px;
-    max-width: 500px;
+    max-width: 1024px;
   }
   .toggle-button-text {
     font-weight: 600;
+    margin-bottom: 4px;
   }
 
   .input-with-folder-path {
@@ -93,7 +94,20 @@ const StyledAutoBackup = styled.div`
     margin-right: 8px;
   }
   .backup_modules {
-    margin-left: 60px;
+    margin-left: 37px;
+  }
+  .auto-backup_storages-module {
+    margin-left: 24px;
+    .backup_schedule-component {
+      margin-left: 0;
+    }
+  }
+
+  .backup_toggle-wrapper {
+    margin-bottom: 16px;
+    background-color: #f8f9f9;
+    padding: 12px;
+    max-width: 1144px;
   }
 `;
 
@@ -171,6 +185,7 @@ const StyledModules = styled.div`
 `;
 
 const StyledScheduleComponent = styled.div`
+  margin-left: 24px;
   .additional_options {
     max-width: ${INPUT_LENGTH};
     display: grid;

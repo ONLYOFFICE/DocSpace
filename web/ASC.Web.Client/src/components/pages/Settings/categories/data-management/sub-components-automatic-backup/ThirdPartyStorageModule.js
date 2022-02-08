@@ -234,43 +234,45 @@ class ThirdPartyStorageModule extends React.PureComponent {
 
     return (
       <StyledAutoBackup>
-        <ComboBox
-          options={availableOptions}
-          selectedOption={{ key: 0, label: selectedStorage }}
-          onSelect={this.onSelect}
-          isDisabled={isLoadingData || isLoading}
-          noBorder={false}
-          scaled
-          scaledOptions
-          dropDownMaxHeight={300}
-          className="backup_combo"
-        />
-
-        {selectedId === GoogleId && !isLoading && (
-          <GoogleCloudStorage
-            isLoadingData={isLoadingData}
-            {...rest}
-            {...commonProps}
+        <div className="auto-backup_storages-module">
+          <ComboBox
+            options={availableOptions}
+            selectedOption={{ key: 0, label: selectedStorage }}
+            onSelect={this.onSelect}
+            isDisabled={isLoadingData || isLoading}
+            noBorder={false}
+            scaled
+            scaledOptions
+            dropDownMaxHeight={300}
+            className="backup_combo"
           />
-        )}
 
-        {selectedId === RackspaceId && !isLoading && <RackspaceStorage />}
+          {selectedId === GoogleId && !isLoading && (
+            <GoogleCloudStorage
+              isLoadingData={isLoadingData}
+              {...rest}
+              {...commonProps}
+            />
+          )}
 
-        {selectedId === SelectelId && !isLoading && (
-          <SelectelStorage
-            isLoadingData={isLoadingData}
-            {...rest}
-            {...commonProps}
-          />
-        )}
+          {selectedId === RackspaceId && !isLoading && <RackspaceStorage />}
 
-        {selectedId === AmazonId && !isLoading && (
-          <AmazonStorage
-            isLoadingData={isLoadingData}
-            {...rest}
-            {...commonProps}
-          />
-        )}
+          {selectedId === SelectelId && !isLoading && (
+            <SelectelStorage
+              isLoadingData={isLoadingData}
+              {...rest}
+              {...commonProps}
+            />
+          )}
+
+          {selectedId === AmazonId && !isLoading && (
+            <AmazonStorage
+              isLoadingData={isLoadingData}
+              {...rest}
+              {...commonProps}
+            />
+          )}
+        </div>
       </StyledAutoBackup>
     );
   }

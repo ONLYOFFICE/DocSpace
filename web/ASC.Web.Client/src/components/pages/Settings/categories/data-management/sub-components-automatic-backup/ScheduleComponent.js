@@ -34,6 +34,7 @@ const ScheduleComponent = ({
     <StyledScheduleComponent
       weeklySchedule={selectedMonthlySchedule}
       monthlySchedule={selectedMonthlySchedule}
+      className="backup_schedule-component"
     >
       <Text className="schedule_description"> {t("ScheduleDescription")}</Text>
       <div className="main_options">
