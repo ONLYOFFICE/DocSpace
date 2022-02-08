@@ -43,7 +43,7 @@ public class ClearEventsService : IHostedService, IDisposable
         _logger.Info("Timer Clear Events Service running.");
 
         _timer = new Timer(DeleteOldEvents, null, TimeSpan.Zero,
-            TimeSpan.FromSeconds(15));
+            TimeSpan.FromDays(1));
 
         return Task.CompletedTask;
     }
