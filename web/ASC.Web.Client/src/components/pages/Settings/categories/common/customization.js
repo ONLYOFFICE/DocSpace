@@ -12,6 +12,7 @@ import { showLoader, hideLoader, combineUrl } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
 import { AppServerConfig } from "@appserver/common/constants";
 import withCultureNames from "@appserver/common/hoc/withCultureNames";
+import LanguageAndTimeZone from "./language-and-time-zone";
 
 const mapTimezonesToArray = (timezones) => {
   return timezones.map((timezone) => {
@@ -40,7 +41,7 @@ const StyledComponent = styled.div`
   }
 
   .settings-block {
-    margin-bottom: 70px;
+    margin-bottom: 24px;
   }
 
   .field-container-width {
@@ -54,11 +55,11 @@ const StyledComponent = styled.div`
   .category-item-wrapper {
     margin-bottom: 40px;
 
-    .category-item-heading {
+    /* .category-item-heading {
       display: flex;
       align-items: center;
-      margin-bottom: 5px;
-    }
+      margin-bottom: 16px;
+    } */
 
     .category-item-subheader {
       font-size: 13px;
@@ -72,15 +73,22 @@ const StyledComponent = styled.div`
       max-width: 1024px;
     }
 
-    .inherit-title-link {
+    /* .inherit-title-link {
       margin-right: 7px;
       font-size: 19px;
       font-weight: 600;
-    }
+    } */
 
     .link-text {
       margin: 0;
     }
+
+    /* .category-item-title {
+      font-weight: bold;
+      font-size: 16px;
+      line-height: 22px;
+      margin-right: 4px;
+    } */
   }
 `;
 class Customization extends React.Component {
@@ -193,33 +201,11 @@ class Customization extends React.Component {
 
   render() {
     const { t, helpUrlCommonSettings, customNames } = this.props;
-    const { language, timezone } = this.state;
 
     return (
       <StyledComponent>
         <div className="category-item-wrapper">
-          <div className="category-item-heading">
-            <Link
-              className="inherit-title-link header"
-              onClick={this.onClickLink}
-              truncate={true}
-              href={combineUrl(
-                AppServerConfig.proxyURL,
-                "/settings/common/customization/language-and-time-zone"
-              )}
-            >
-              {t("StudioTimeLanguageSettings")}
-            </Link>
-            <StyledArrowRightIcon size="small" color="#333333" />
-          </div>
-          {language && language.label && timezone && timezone.label && (
-            <Text className="category-item-subheader" truncate={true}>
-              {`${language.label} / ${timezone.label}`}
-            </Text>
-          )}
-          <Text className="category-item-description">
-            {t("LanguageAndTimeZoneSettingsDescription")}
-          </Text>
+          <LanguageAndTimeZone />
         </div>
         <div className="category-item-wrapper">
           <div className="category-item-heading">
