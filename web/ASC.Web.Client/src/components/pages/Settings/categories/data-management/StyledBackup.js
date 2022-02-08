@@ -234,6 +234,10 @@ const StyledScheduleComponent = styled.div`
   }
   .combo-button-label {
     max-width: 100% !important;
+    font-weight: 400;
+  }
+  .schedule_description {
+    font-weight: 600;
   }
 `;
 
