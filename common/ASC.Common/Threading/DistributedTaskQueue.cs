@@ -98,16 +98,13 @@ public class ConfigureDistributedTaskQueue : IConfigureNamedOptions<DistributedT
 {
     private readonly DistributedTaskCacheNotify _distributedTaskCacheNotify;
     public readonly IServiceProvider _serviceProvider;
-    public readonly IServiceScopeFactory _serviceScopeFactory;
 
     public ConfigureDistributedTaskQueue(
         DistributedTaskCacheNotify distributedTaskCacheNotify, 
-        IServiceProvider serviceProvider,
-        IServiceScopeFactory serviceScopeFactory)
+        IServiceProvider serviceProvider)
     {
         _distributedTaskCacheNotify = distributedTaskCacheNotify;
         _serviceProvider = serviceProvider;
-        _serviceScopeFactory = serviceScopeFactory;
     }
 
     public void Configure(DistributedTaskQueue queue)
@@ -126,7 +123,6 @@ public class ConfigureDistributedTaskQueue : IConfigureNamedOptions<DistributedT
 public class DistributedTaskQueue
 {
     public IServiceProvider ServiceProvider { get; set; }
-    public IServiceScopeFactory ServiceScopeFactory { get; set; }
     public DistributedTaskCacheNotify DistributedTaskCacheNotify { get; set; }
     public string Name
     {
@@ -236,7 +232,7 @@ public class DistributedTaskQueue
         var cache = Cache.HashGet<DistributedTaskCache>(_name, id);
         if (cache != null)
         {
-            using var scope = ServiceScopeFactory.CreateScope();
+            using var scope = ServiceProvider.CreateScope();
             var task = scope.ServiceProvider.GetService<T>();
             task.DistributedTaskCache = cache;
 
