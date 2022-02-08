@@ -281,6 +281,7 @@ class FilesStore {
 
   setFiles = (files) => {
     const { socketHelper } = this.settingsStore;
+    if (files.length === 0 && this.files.length === 0) return;
 
     if (this.files?.length > 0) {
       socketHelper.emit({
@@ -300,6 +301,7 @@ class FilesStore {
   };
 
   setFolders = (folders) => {
+    if (folders.length === 0 && this.folders.length === 0) return;
     this.folders = folders;
   };
 
@@ -892,7 +894,7 @@ class FilesStore {
         !(
           isRecentFolder ||
           isFavoritesFolder ||
-          (isMyFolder && (this.filter.filterType || this.filter.search))
+          (isMyFolder && (this.filterType || this.filterSearch))
         )
       ) {
         fileOptions = this.removeOptions(fileOptions, ["open-location"]);
@@ -1104,10 +1106,6 @@ class FilesStore {
         ]);
       }
 
-      if (!(isMyFolder && (this.filter.filterType || this.filter.search))) {
-        folderOptions = this.removeOptions(folderOptions, ["open-location"]);
-      }
-
       return folderOptions;
     }
   };
@@ -1184,13 +1182,8 @@ class FilesStore {
 
   canShareOwnerChange = (item) => {
     const userId = this.userStore.user && this.userStore.user.id;
-    const isCommonFolder =
-      this.treeFoldersStore.commonFolder &&
-      this.selectedFolderStore.pathParts &&
-      this.treeFoldersStore.commonFolder.id ===
-        this.selectedFolderStore.pathParts[0];
 
-    if (item.providerKey || !isCommonFolder) {
+    if (item.providerKey || !this.hasCommonFolder) {
       return false;
     } else if (this.authStore.isAdmin) {
       return true;
@@ -1267,6 +1260,15 @@ class FilesStore {
     return this.isHeaderVisible && this.selection.length === items.length;
   }
 
+  get hasCommonFolder() {
+    return (
+      this.treeFoldersStore.commonFolder &&
+      this.selectedFolderStore.pathParts &&
+      this.treeFoldersStore.commonFolder.id ===
+        this.selectedFolderStore.pathParts[0]
+    );
+  }
+
   setFirsElemChecked = (checked) => {
     this.firstElemChecked = checked;
   };
@@ -1312,6 +1314,14 @@ class FilesStore {
       icon,
     });
   };
+
+  get filterType() {
+    return this.filter.filterType;
+  }
+
+  get filterSearch() {
+    return this.filter.search;
+  }
 
   get filesList() {
     const { mediaViewersFormatsStore, iconFormatsStore } = this.formatsStore;

@@ -1,0 +1,5 @@
+{
+    "GoodMorning": "Guten Morgeng, {{displayName}}!",
+    "GoodAfternoon": "Guten Tag, {{displayName}}!",
+    "GoodEvening": "Guten Abend, {{displayName}}!"
+}
