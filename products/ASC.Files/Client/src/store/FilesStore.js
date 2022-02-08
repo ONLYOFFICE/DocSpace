@@ -238,7 +238,11 @@ class FilesStore {
   };
 
   setHotkeyCaret = (hotkeyCaret) => {
-    this.hotkeyCaret = hotkeyCaret;
+    if (hotkeyCaret) {
+      this.hotkeyCaret = hotkeyCaret;
+    } else if (this.hotkeyCaret) {
+      this.hotkeyCaret = hotkeyCaret;
+    }
   };
 
   setHotkeyCaretStart = (hotkeyCaretStart) => {
@@ -246,7 +250,10 @@ class FilesStore {
   };
 
   setSelection = (selection) => {
-    if (selection.length === 1) this.setHotkeyCaret(selection[0]);
+    if (selection.length === 1 || !this.hotkeyCaret) {
+      this.setHotkeyCaret(selection[0]);
+      this.setHotkeyCaretStart(selection[0]);
+    }
     this.selection = selection;
   };
 

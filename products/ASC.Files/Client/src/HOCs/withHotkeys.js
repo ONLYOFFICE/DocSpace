@@ -1,261 +1,91 @@
 import React from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { observer, inject } from "mobx-react";
-import SettingsStore from "@appserver/common/store/SettingsStore";
 
 const withHotkeys = (Component) => {
   const WithHotkeys = (props) => {
     const {
       t,
-      selection,
-      setSelection,
-      firstFile,
-      nextFile,
-      prevFile,
       setSelected,
-      setHotkeyCaret,
-      deselectFile,
-      hotkeyCaret,
-      nextForTileDown,
-      prevForTileUp,
-      viewAs,
-      selectionsDown,
-      selectionsUp,
-      hotkeyCaretStart,
-      setHotkeyCaretStart,
       setHotkeyPanelVisible,
       confirmDelete,
       setDeleteDialogVisible,
       deleteAction,
       isAvailableOption,
-      openFileAction,
+
+      selectFile,
+      selectBottom,
+      selectUpper,
+      selectLeft,
+      selectRight,
+      multiSelectBottom,
+      multiSelectUpper,
+      multiSelectRight,
+      multiSelectLeft,
+      moveCaretBottom,
+      moveCaretUpper,
+      moveCaretLeft,
+      moveCaretRight,
+      openItem,
+      selectAll,
     } = props;
 
-    //Select item
-    useHotkeys(
-      "x",
-      () => {
-        if (selection.length) setSelection([]);
-        else {
-          setSelection([firstFile]);
-          setHotkeyCaretStart(null);
-        }
-      },
-      [selection, firstFile]
-    );
+    console.log("props", props.sectionWidth);
+
+    const hotkeysFilter = {
+      filter: (ev) =>
+        ev.target?.type === "checkbox" || ev.target?.tagName !== "INPUT",
+      filterPreventDefault: false,
+      enableOnTags: ["INPUT"],
+    };
+
+    //Select/deselect item
+    useHotkeys("x", selectFile);
 
     //Select bottom element
-    useHotkeys(
-      "j, DOWN",
-      () => {
-        if (!selection.length) setSelection([firstFile]);
-        else if (viewAs === "tile") setSelection([nextForTileDown]);
-        else if (nextFile) setSelection([nextFile]);
-      },
-      [nextFile, selection, firstFile, nextForTileDown]
-    );
+    useHotkeys("j, DOWN", selectBottom, hotkeysFilter);
 
     //Select upper item
-    useHotkeys(
-      "k, UP",
-      () => {
-        if (!selection.length) setSelection([firstFile]);
-        else if (viewAs === "tile") setSelection([prevForTileUp]);
-        else if (prevFile) setSelection([prevFile]);
-      },
-      [prevFile, selection, firstFile, prevForTileUp]
-    );
+    useHotkeys("k, UP", selectUpper, hotkeysFilter);
 
     //Select item on the left
-    useHotkeys(
-      "h, LEFT",
-      () => {
-        if (!selection.length) {
-          setSelection([firstFile]);
-          setHotkeyCaretStart(firstFile);
-        } else if (prevFile) {
-          setSelection([prevFile]);
-          setHotkeyCaretStart(prevFile);
-        }
-      },
-      [prevFile, selection, firstFile]
-    );
+    useHotkeys("h, LEFT", selectLeft, hotkeysFilter);
 
     //Select item on the right
-    useHotkeys(
-      "l, RIGHT",
-      () => {
-        if (!selection.length) {
-          setSelection([firstFile]);
-          setHotkeyCaretStart(firstFile);
-        } else if (nextFile) {
-          setSelection([nextFile]);
-          setHotkeyCaretStart(nextFile);
-        }
-      },
-      [nextFile, selection, firstFile]
-    );
+    useHotkeys("l, RIGHT", selectRight, hotkeysFilter);
 
     //Expand Selection DOWN
-    useHotkeys(
-      "shift+DOWN",
-      () => {
-        if (!hotkeyCaretStart) setHotkeyCaretStart(hotkeyCaret);
-        if (!selection.length) setSelection([firstFile]);
-
-        if (viewAs === "tile") {
-          if (nextForTileDown.id === hotkeyCaret.id) return;
-          setSelection([
-            ...selectionsDown,
-            ...[hotkeyCaretStart ? hotkeyCaretStart : hotkeyCaret],
-          ]);
-          setHotkeyCaret(nextForTileDown);
-        } else if (nextFile) {
-          if (selection.findIndex((f) => f.id === nextFile.id) !== -1) {
-            deselectFile(hotkeyCaret);
-          } else {
-            setSelection([...selection, ...[nextFile]]);
-          }
-          setHotkeyCaret(nextFile);
-        }
-      },
-      [
-        viewAs,
-        nextFile,
-        selection,
-        firstFile,
-        nextForTileDown,
-        selectionsDown,
-        hotkeyCaretStart,
-        hotkeyCaret,
-      ]
-    );
+    useHotkeys("shift+DOWN", multiSelectBottom, hotkeysFilter);
 
     //Expand Selection UP
-    useHotkeys(
-      "shift+UP",
-      () => {
-        if (!hotkeyCaretStart) setHotkeyCaretStart(hotkeyCaret);
-        if (!selection.length) setSelection([firstFile]);
-
-        if (viewAs === "tile") {
-          if (prevForTileUp.id === hotkeyCaret.id) return;
-          setSelection([
-            ...selectionsUp,
-            ...[hotkeyCaretStart ? hotkeyCaretStart : hotkeyCaret],
-          ]);
-          setHotkeyCaret(prevForTileUp);
-        } else if (prevFile) {
-          if (selection.findIndex((f) => f.id === prevFile.id) !== -1) {
-            deselectFile(hotkeyCaret);
-          } else {
-            setSelection([...[prevFile], ...selection]);
-          }
-
-          setHotkeyCaret(prevFile);
-        }
-      },
-      [
-        viewAs,
-        prevFile,
-        selection,
-        firstFile,
-        prevForTileUp,
-        selectionsUp,
-        hotkeyCaret,
-        hotkeyCaretStart,
-      ]
-    );
+    useHotkeys("shift+UP", multiSelectUpper, hotkeysFilter);
 
     //Expand Selection RIGHT
-    useHotkeys(
-      "shift+RIGHT",
-      () => {
-        if (!selection.length) setSelection([firstFile]);
-        else if (nextFile) {
-          if (selection.findIndex((f) => f.id === nextFile.id) !== -1) {
-            deselectFile(hotkeyCaret);
-          } else {
-            setSelection([...selection, ...[nextFile]]);
-          }
-          setHotkeyCaret(nextFile);
-        }
-      },
-      [nextFile, selection, firstFile]
-    );
+    useHotkeys("shift+RIGHT", () => multiSelectRight(), hotkeysFilter);
 
     //Expand Selection LEFT
-    useHotkeys(
-      "shift+LEFT",
-      () => {
-        if (!selection.length) setSelection([firstFile]);
-        else if (prevFile) {
-          if (selection.findIndex((f) => f.id === prevFile.id) !== -1) {
-            deselectFile(hotkeyCaret);
-          } else {
-            setSelection([...[prevFile], ...selection]);
-          }
-
-          setHotkeyCaret(prevFile);
-        }
-      },
-      [prevFile, selection, firstFile]
-    );
+    useHotkeys("shift+LEFT", () => multiSelectLeft(), hotkeysFilter);
 
     //Select all files and folders
-    useHotkeys("shift+a", () => {
-      setSelected("all");
-    });
+    useHotkeys("shift+a", selectAll, hotkeysFilter);
 
     //Deselect all files and folders
-    useHotkeys("shift+n", () => {
-      setSelected("none");
-    });
+    useHotkeys("shift+n", () => setSelected("none"), hotkeysFilter);
 
     //Move down without changing selection
-    useHotkeys(
-      "ctrl+DOWN",
-      () => {
-        if (viewAs === "tile") setHotkeyCaret(nextForTileDown);
-        else if (nextFile) setHotkeyCaret(nextFile);
-      },
-      [nextFile, nextForTileDown]
-    );
+    useHotkeys("ctrl+DOWN", moveCaretBottom, hotkeysFilter);
 
     //Move up without changing selection
-    useHotkeys(
-      "ctrl+UP",
-      () => {
-        if (viewAs === "tile") setHotkeyCaret(prevForTileUp);
-        else if (nextFile) setHotkeyCaret(prevFile);
-      },
-      [prevFile, prevForTileUp]
-    );
+    useHotkeys("ctrl+UP", moveCaretUpper, hotkeysFilter);
 
     //Move left without changing selection
-    useHotkeys(
-      "ctrl+LEFT",
-      () => {
-        if (prevFile) setHotkeyCaret(prevFile);
-      },
-      [prevFile]
-    );
+    useHotkeys("ctrl+LEFT", moveCaretLeft, hotkeysFilter);
 
     //Move right without changing selection
-    useHotkeys(
-      "ctrl+RIGHT",
-      () => {
-        if (nextFile) setHotkeyCaret(nextFile);
-      },
-      [prevFile]
-    );
+    useHotkeys("ctrl+RIGHT", moveCaretRight, hotkeysFilter);
 
     //Open item
-    useHotkeys(
-      "Enter",
-      () => selection.length === 1 && openFileAction(selection[0]),
-      [selection]
-    );
+    useHotkeys("Enter", openItem, hotkeysFilter);
 
     //Delete selection
     useHotkeys(
@@ -275,228 +105,91 @@ const withHotkeys = (Component) => {
           }
         }
       },
+      hotkeysFilter,
       [confirmDelete]
     );
 
-    //Undo the last action
-    useHotkeys("Ctrl+z", () => alert("Undo the last action"), []);
+    //TODO: Undo the last action
+    useHotkeys(
+      "Ctrl+z",
+      () => alert("Undo the last action"),
+      hotkeysFilter,
+      []
+    );
 
-    //Redo the last undone action
-    useHotkeys("Ctrl+Shift+z", () => alert("Redo the last undone action"), []);
+    //TODO: Redo the last undone action
+    useHotkeys(
+      "Ctrl+Shift+z",
+      () => alert("Redo the last undone action"),
+      hotkeysFilter,
+      []
+    );
 
     //Open hotkeys panel
-    useHotkeys("Ctrl+num_divide, Ctrl+/", () => setHotkeyPanelVisible(true));
+    useHotkeys(
+      "Ctrl+num_divide, Ctrl+/",
+      () => setHotkeyPanelVisible(true),
+      hotkeysFilter
+    );
 
     return <Component {...props} />;
   };
 
   return inject(
-    (
-      { filesStore, dialogsStore, settingsStore, filesActionsStore },
-      { sectionWidth }
-    ) => {
+    ({
+      filesStore,
+      dialogsStore,
+      settingsStore,
+      filesActionsStore,
+      hotkeyStore,
+    }) => {
+      const { setSelected } = filesStore;
+
       const {
-        selection,
-        setSelection,
-        filesList,
-        setSelected,
-        hotkeyCaret,
-        setHotkeyCaret,
-        setHotkeyCaretStart,
-        hotkeyCaretStart,
-        deselectFile,
-        viewAs,
-        files,
-        folders,
-      } = filesStore;
+        selectFile,
+        selectBottom,
+        selectUpper,
+        selectLeft,
+        selectRight,
+        multiSelectBottom,
+        multiSelectUpper,
+        multiSelectRight,
+        multiSelectLeft,
+        moveCaretBottom,
+        moveCaretUpper,
+        moveCaretLeft,
+        moveCaretRight,
+        openItem,
+        selectAll,
+      } = hotkeyStore;
 
       const { setHotkeyPanelVisible, setDeleteDialogVisible } = dialogsStore;
-      const {
-        isAvailableOption,
-        deleteAction,
-        openFileAction,
-      } = filesActionsStore;
+      const { isAvailableOption, deleteAction } = filesActionsStore;
 
-      const minTileWidth = 220 + 16;
-      const countTilesInRow = Math.floor(sectionWidth / minTileWidth);
-      const foldersLength = folders.length;
-      const division = foldersLength % countTilesInRow;
-
-      let caretIndex = -1;
-      let prevCaretIndex, nextCaretIndex, prevFile, nextFile;
-      let indexForNextTile, indexForPrevTile;
-      let nextForTileDown, prevForTileUp;
-
-      if (filesList.length && selection.length && hotkeyCaret) {
-        caretIndex = filesList.findIndex((f) => f.id === hotkeyCaret.id);
-
-        if (caretIndex !== -1) {
-          prevCaretIndex = caretIndex - 1;
-          prevFile = filesList[prevCaretIndex];
-        }
-
-        if (caretIndex !== -1) {
-          nextCaretIndex = caretIndex + 1;
-          nextFile = filesList[nextCaretIndex];
-        }
-
-        //TODO: table view
-        // console.log("sectionWidth", sectionWidth);
-        // console.log("countTilesInRow", countTilesInRow);
-
-        //Tile view
-        const nextTileFile = filesList[caretIndex + countTilesInRow];
-        const prevTileFile = filesList[caretIndex - countTilesInRow];
-
-        nextForTileDown = nextTileFile
-          ? nextTileFile
-          : filesList[filesList.length - 1];
-        prevForTileUp = prevTileFile ? prevTileFile : filesList[0];
-
-        const isFolder =
-          caretIndex !== -1 ? filesList[caretIndex].isFolder : false;
-
-        const countOfMissingFiles = division ? countTilesInRow - division : 0;
-
-        //Next tile
-        if (nextForTileDown.isFolder !== isFolder) {
-          indexForNextTile = caretIndex + countTilesInRow - countOfMissingFiles;
-
-          nextForTileDown =
-            foldersLength - caretIndex - 1 <= division || division === 0
-              ? filesList[indexForNextTile]
-                ? filesList[indexForNextTile]
-                : files[0]
-              : folders[foldersLength - 1];
-        } else if (!nextTileFile) {
-          // const pp = filesList.findIndex((f) => f.id === nextForTileDown?.id);
-          // if (pp < caretIndex + countTilesInRow) {
-          //   nextForTileDown = hotkeyCaret;
-          // }
-        }
-
-        //Prev tile
-        if (prevForTileUp.isFolder !== isFolder) {
-          indexForPrevTile = caretIndex - countTilesInRow + countOfMissingFiles;
-
-          prevForTileUp = filesList[indexForPrevTile]
-            ? filesList[indexForPrevTile].isFolder
-              ? filesList[indexForPrevTile]
-              : folders[foldersLength - 1]
-            : folders[foldersLength - 1];
-        } else if (!prevTileFile) {
-          prevForTileUp = hotkeyCaret;
-        }
-      }
-
-      //shift
-
-      const hotkeyCaretStartIndex = filesList.findIndex(
-        (f) => f.id === hotkeyCaretStart?.id
-      );
-
-      const selectionsDown = [];
-      const selectionsUp = [];
-      const firstSelectionIndex = filesList.findIndex(
-        (f) => f.id === selection[0]?.id
-      );
-      //shift select down
-
-      const nextForTileDownIndex = filesList.findIndex(
-        (f) => f.id === nextForTileDown?.id
-      );
-      let nextForTileDownItemIndex = nextForTileDownIndex;
-
-      const itemIndexDown =
-        hotkeyCaretStartIndex !== -1 &&
-        hotkeyCaretStartIndex < firstSelectionIndex
-          ? hotkeyCaretStartIndex
-          : firstSelectionIndex;
-
-      if (itemIndexDown !== -1 && viewAs === "tile") {
-        if (nextForTileDownItemIndex === -1)
-          nextForTileDownItemIndex = itemIndexDown + countTilesInRow;
-
-        if (nextForTileDownItemIndex > itemIndexDown) {
-          while (nextForTileDownItemIndex !== itemIndexDown) {
-            if (hotkeyCaretStartIndex - nextForTileDownItemIndex <= 0)
-              selectionsDown.push(filesList[nextForTileDownItemIndex]);
-            nextForTileDownItemIndex--;
-          }
-        }
-
-        let counterToDown = 0;
-        if (nextForTileDownIndex < hotkeyCaretStartIndex) {
-          counterToDown = hotkeyCaretStartIndex - nextForTileDownIndex;
-        }
-
-        while (counterToDown !== 0) {
-          selectionsDown.push(filesList[hotkeyCaretStartIndex - counterToDown]);
-          counterToDown--;
-        }
-        //console.log("selectionsDown", selectionsDown);
-      }
-
-      const prevForTileUpIndex = filesList.findIndex(
-        (f) => f.id === prevForTileUp?.id
-      );
-      let prevForTileUpItemIndex = prevForTileUpIndex;
-
-      const itemIndexUp =
-        hotkeyCaretStartIndex !== -1 &&
-        hotkeyCaretStartIndex > firstSelectionIndex
-          ? hotkeyCaretStartIndex
-          : firstSelectionIndex;
-
-      //shift select up
-      if (itemIndexUp !== -1 && viewAs === "tile") {
-        if (prevForTileUpItemIndex === -1)
-          prevForTileUpItemIndex = itemIndexUp - countTilesInRow;
-
-        if (prevForTileUpItemIndex < itemIndexUp) {
-          while (prevForTileUpItemIndex !== itemIndexUp) {
-            if (prevForTileUpItemIndex - hotkeyCaretStartIndex <= 0)
-              selectionsUp.push(filesList[prevForTileUpItemIndex]);
-            prevForTileUpItemIndex++;
-          }
-
-          let counterToUp = 0;
-          if (prevForTileUpIndex > hotkeyCaretStartIndex) {
-            counterToUp = prevForTileUpIndex - hotkeyCaretStartIndex;
-          }
-
-          while (counterToUp !== 0) {
-            selectionsUp.push(filesList[hotkeyCaretStartIndex + counterToUp]);
-            counterToUp--;
-          }
-        }
-      }
-
-      //console.log("selectionsUp", selectionsUp);
       return {
-        selection,
-        setSelection,
-        firstFile: filesList[0],
-        nextFile,
-        prevFile,
         setSelected,
-        hotkeyCaret,
-        setHotkeyCaret,
-        deselectFile,
-        nextForTileDown,
-        prevForTileUp,
-        viewAs,
-        selectionsDown,
-        selectionsUp,
-        setHotkeyCaretStart,
-        hotkeyCaretStart,
 
         setHotkeyPanelVisible,
         setDeleteDialogVisible,
         confirmDelete: settingsStore.confirmDelete,
         deleteAction,
         isAvailableOption,
-        openFileAction,
+
+        selectFile,
+        selectBottom,
+        selectUpper,
+        selectLeft,
+        selectRight,
+        multiSelectBottom,
+        multiSelectUpper,
+        multiSelectRight,
+        multiSelectLeft,
+        moveCaretBottom,
+        moveCaretUpper,
+        moveCaretLeft,
+        moveCaretRight,
+        openItem,
+        selectAll,
       };
     }
   )(observer(WithHotkeys));

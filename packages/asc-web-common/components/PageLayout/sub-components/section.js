@@ -92,7 +92,7 @@ class Section extends React.Component {
   render() {
     //console.log("PageLayout Section render");
 
-    return <StyledSection {...this.props} />;
+    return <StyledSection id="section" {...this.props} />;
   }
 }
 

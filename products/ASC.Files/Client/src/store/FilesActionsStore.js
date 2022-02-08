@@ -349,6 +349,7 @@ class FilesActionStore {
       setSelected,
       setSelection,
       setHotkeyCaretStart,
+      setHotkeyCaret,
       filesList,
     } = this.filesStore;
     /* selected === "close" &&  */ setSelected("none");
@@ -363,6 +364,7 @@ class FilesActionStore {
       if (isBuffer) setBufferSelection(item);
       else {
         setSelection([item]);
+        setHotkeyCaret(item);
         setHotkeyCaretStart(item);
       }
     }
@@ -519,9 +521,15 @@ class FilesActionStore {
       selectFile,
       deselectFile,
       setBufferSelection,
+      setHotkeyCaretStart,
+      setHotkeyCaret,
     } = this.filesStore;
     //selected === "close" && setSelected("none");
     setBufferSelection(null);
+
+    setHotkeyCaretStart(file);
+    setHotkeyCaret(file);
+
     if (checked) {
       selectFile(file);
     } else {
