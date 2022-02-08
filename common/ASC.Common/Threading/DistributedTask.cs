@@ -66,8 +66,10 @@ public class DistributedTask
     public T GetProperty<T>(string name)
     {
         var prop = DistributedTaskCache.Props.FirstOrDefault(r => r.Key == name);
-
-        if (prop == null) return default;
+        if (prop == null)
+        {
+            return default;
+        }
 
         return JsonSerializer.Deserialize<T>(prop.Value);
     }
@@ -81,15 +83,23 @@ public class DistributedTask
         };
 
         var current = DistributedTaskCache.Props.SingleOrDefault(r => r.Key == name);
+        if (current != null)
+        {
+            DistributedTaskCache.Props.Remove(current);
+        }
 
-        if (current != null) DistributedTaskCache.Props.Remove(current);
-
-        if (value != null) DistributedTaskCache.Props.Add(prop);
+        if (value != null)
+        {
+            DistributedTaskCache.Props.Add(prop);
+        }
     }
 
     public void PublishChanges()
     {
-        if (Publication == null) throw new InvalidOperationException("Publication not found.");
+        if (Publication == null)
+        {
+            throw new InvalidOperationException("Publication not found.");
+        }
 
         Publication(this);
     }

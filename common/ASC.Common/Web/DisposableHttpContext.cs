@@ -34,8 +34,16 @@ public class DisposableHttpContext : IDisposable
         get => Items.ContainsKey(key) ? Items[key] : null;
         set
         {
-            if (value == null) throw new ArgumentNullException();
-            if (!(value is IDisposable)) throw new ArgumentException("Only IDisposable may be added!");
+            if (value == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            if (!(value is IDisposable))
+            {
+                throw new ArgumentException("Only IDisposable may be added!");
+            }
+
             Items[key] = (IDisposable)value;
         }
     }
@@ -59,8 +67,10 @@ public class DisposableHttpContext : IDisposable
     private readonly HttpContext _context;
     private bool _isDisposed;
 
-    public DisposableHttpContext(HttpContext ctx) =>
+    public DisposableHttpContext(HttpContext ctx)
+    {
         _context = ctx ?? throw new ArgumentNullException(nameof(ctx));
+    }
 
     public void Dispose()
     {

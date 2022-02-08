@@ -22,19 +22,28 @@ public static class AutofacExtension
             };
 
         if (loadproducts)
+        {
             modules.Add((true, "autofac.products.json"));
+        }
 
         if (loadconsumers)
+        {
             modules.Add((true, "autofac.consumers.json"));
+        }
 
         if (intern != null)
+        {
             modules.AddRange(intern.Select(r => (false, r)));
+        }
 
         foreach (var p in modules)
         {
             var config = new ConfigurationBuilder();
 
-            if (p.Item1) config.SetBasePath(configuration["pathToConf"]);
+            if (p.Item1)
+            {
+                config.SetBasePath(configuration["pathToConf"]);
+            }
 
             config.AddJsonFile(p.Item2);
 
@@ -54,8 +63,10 @@ public static class AutofacExtension
         var root = config.Build();
 
         var sectionSettings = root.GetSection("components");
-
-        if (sectionSettings == null) return new List<string>();
+        if (sectionSettings == null)
+        {
+            return new List<string>();
+        }
 
         var folder = configuration["core:products:folder"];
         var subfolder = configuration["core:products:subfolder"];
@@ -64,12 +75,18 @@ public static class AutofacExtension
         if (!Path.IsPathRooted(folder))
         {
             if (currentDir.EndsWith(CrossPlatform.PathCombine(Path.GetFileName(folder), Assembly.GetEntryAssembly().GetName().Name, subfolder)))
+            {
                 productsDir = Path.GetFullPath(CrossPlatform.PathCombine("..", ".."));
-
-            else productsDir = Path.GetFullPath(CrossPlatform.PathCombine(currentDir, folder));
+            }
+            else
+            {
+                productsDir = Path.GetFullPath(CrossPlatform.PathCombine(currentDir, folder));
+            }
         }
-
-        else productsDir = folder;
+        else
+        {
+            productsDir = folder;
+        }
 
         var cs = new List<AutofacComponent>();
         sectionSettings.Bind(cs);
@@ -97,7 +114,9 @@ public static class AutofacExtension
             var path = GetFullPath(dll);
 
             if (!string.IsNullOrEmpty(path))
+            {
                 AssemblyLoadContext.Default.Resolving += new Resolver(path).Resolving;
+            }
         }
 
         string GetFullPath(string n)
@@ -110,7 +129,10 @@ public static class AutofacExtension
 
         static string GetPath(string dirPath, string dll, SearchOption searchOption)
         {
-            if (!Directory.Exists(dirPath)) return null;
+            if (!Directory.Exists(dirPath))
+            {
+                return null;
+            }
 
             return Directory.GetFiles(dirPath, $"{dll}.dll", searchOption).FirstOrDefault();
         }
@@ -121,13 +143,19 @@ class Resolver
 {
     private readonly string _resolvePath;
 
-    public Resolver(string assemblyPath) => _resolvePath = assemblyPath;
+    public Resolver(string assemblyPath)
+    {
+        _resolvePath = assemblyPath;
+    }
 
     public Assembly Resolving(AssemblyLoadContext context, AssemblyName assemblyName)
     {
         var path = CrossPlatform.PathCombine(Path.GetDirectoryName(_resolvePath), $"{assemblyName.Name}.dll");
 
-        if (!File.Exists(path)) return null;
+        if (!File.Exists(path))
+        {
+            return null;
+        }
 
         return context.LoadFromAssemblyPath(path);
     }

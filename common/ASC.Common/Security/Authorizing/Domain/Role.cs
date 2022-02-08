@@ -42,16 +42,31 @@ public sealed class Role : IRole
 
     public Role(Guid id, string name)
     {
-        if (id == Guid.Empty) throw new ArgumentException(nameof(id));
-        if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
+        if (id == Guid.Empty)
+        {
+            throw new ArgumentException(nameof(id));
+        }
+        if (string.IsNullOrEmpty(name))
+        {
+            throw new ArgumentNullException(nameof(name));
+        }
 
         ID = id;
         Name = name;
     }
 
-    public override int GetHashCode() => ID.GetHashCode();
+    public override int GetHashCode()
+    {
+        return ID.GetHashCode();
+    }
 
-    public override bool Equals(object obj) => obj is Role r && r.ID == ID;
+    public override bool Equals(object obj)
+    {
+        return obj is Role r && r.ID == ID;
+    }
 
-    public override string ToString() => $"Role: {Name}";
+    public override string ToString()
+    {
+        return $"Role: {Name}";
+    }
 }

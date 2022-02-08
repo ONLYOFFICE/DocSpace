@@ -51,7 +51,10 @@ public abstract class AbstractHttpAsyncHandler // : IHttpAsyncHandler, IReadOnly
         return _processRequest.BeginInvoke(context, cb, extraData);
     }
 
-    public void EndProcessRequest(IAsyncResult result) => _processRequest.EndInvoke(result);
+    public void EndProcessRequest(IAsyncResult result)
+    {
+        _processRequest.EndInvoke(result);
+    }
 
     public abstract void OnProcessRequest(HttpContext context);
 }

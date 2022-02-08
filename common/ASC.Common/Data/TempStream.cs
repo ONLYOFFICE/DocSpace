@@ -21,11 +21,17 @@ public class TempStream
 {
     private readonly TempPath _tempPath;
 
-    public TempStream(TempPath tempPath) => _tempPath = tempPath;
+    public TempStream(TempPath tempPath)
+    {
+        _tempPath = tempPath;
+    }
 
     public Stream GetBuffered(Stream srcStream)
     {
-        if (srcStream == null) throw new ArgumentNullException(nameof(srcStream));
+        if (srcStream == null)
+        {
+            throw new ArgumentNullException(nameof(srcStream));
+        }
 
         if (!srcStream.CanSeek || srcStream.CanTimeout)
         {
@@ -40,6 +46,9 @@ public class TempStream
         return srcStream;
     }
 
-    public Stream Create() => new FileStream(_tempPath.GetTempFileName(), FileMode.OpenOrCreate,
-        FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.DeleteOnClose);
+    public Stream Create()
+    {
+        return new FileStream(_tempPath.GetTempFileName(), FileMode.OpenOrCreate,
+            FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.DeleteOnClose);
+    }
 }

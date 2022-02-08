@@ -32,11 +32,15 @@ public static class HttpRequestExtensions
 {
     public static readonly string UrlRewriterHeader = "X-REWRITER-URL";
 
-    public static Uri GetUrlRewriter(this HttpRequest request) =>
-        request != null ? GetUrlRewriter(request.Headers, request) : null;
+    public static Uri GetUrlRewriter(this HttpRequest request)
+    {
+        return request != null ? GetUrlRewriter(request.Headers, request) : null;
+    }
 
-    public static Uri Url(this HttpRequest request) =>
-        request != null ? new Uri(request.GetDisplayUrl()) : null;
+    public static Uri Url(this HttpRequest request)
+    {
+        return request != null ? new Uri(request.GetDisplayUrl()) : null;
+    }
 
     /*public static Uri GetUrlRewriter(this HttpRequestBase request)
     {
@@ -88,8 +92,10 @@ public static class HttpRequestExtensions
         return request.Url();
     }
 
-    public static Uri PushRewritenUri(this HttpContext context) =>
-        context != null ? PushRewritenUri(context, GetUrlRewriter(context.Request)) : null;
+    public static Uri PushRewritenUri(this HttpContext context)
+    {
+        return context != null ? PushRewritenUri(context, GetUrlRewriter(context.Request)) : null;
+    }
 
     public static Uri PushRewritenUri(this HttpContext context, Uri rewrittenUri)
     {
@@ -113,11 +119,15 @@ public static class HttpRequestExtensions
                                                 rewrittenUri.Port.ToString(CultureInfo.InvariantCulture));
 
                     if (rewrittenUri.IsDefaultPort)
+                    {
                         request.Headers.SetCommaSeparatedValues("HTTP_HOST",
                                                     rewrittenUri.Host);
-
-                    else request.Headers.SetCommaSeparatedValues("HTTP_HOST",
+                    }
+                    else
+                    {
+                        request.Headers.SetCommaSeparatedValues("HTTP_HOST",
                                                     rewrittenUri.Host + ":" + requestUri.Port);
+                    }
                     //Hack:
                     typeof(HttpRequest).InvokeMember("_url",
                                                       BindingFlags.NonPublic | BindingFlags.SetField |
@@ -141,7 +151,10 @@ public static class HttpRequestExtensions
         {
             var rewriteTo = context.Items["oldUri"] as Uri;
 
-            if (rewriteTo != null) return PushRewritenUri(context, rewriteTo);
+            if (rewriteTo != null)
+            {
+                return PushRewritenUri(context, rewriteTo);
+            }
         }
 
         return null;
@@ -161,29 +174,40 @@ public static class HttpRequestExtensions
                    || !string.IsNullOrEmpty(request.Headers[HeaderNames.UserAgent]) && request.Headers[HeaderNames.UserAgent].ToString().Contains("SailfishOS"));
     }
 
-    public static string GetUserHostAddress(this HttpRequest request) =>
-        request.HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress.ToString();
+    public static string GetUserHostAddress(this HttpRequest request)
+    {
+        return request.HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress.ToString();
+    }
 
     private static Uri ParseRewriterUrl(string s)
     {
-        if (string.IsNullOrEmpty(s)) return null;
+        if (string.IsNullOrEmpty(s))
+        {
+            return null;
+        }
 
         const StringComparison cmp = StringComparison.OrdinalIgnoreCase;
 
         if (0 < s.Length && (s.StartsWith("0", cmp)))
+        {
             s = Uri.UriSchemeHttp + s.Substring(1);
-
+        }
         else if (3 < s.Length && s.StartsWith("OFF", cmp))
+        {
             s = Uri.UriSchemeHttp + s.Substring(3);
-
+        }
         else if (0 < s.Length && (s.StartsWith("1", cmp)))
+        {
             s = Uri.UriSchemeHttps + s.Substring(1);
-
+        }
         else if (2 < s.Length && s.StartsWith("ON", cmp))
+        {
             s = Uri.UriSchemeHttps + s.Substring(2);
-
+        }
         else if (s.StartsWith(Uri.UriSchemeHttp + "%3A%2F%2F", cmp) || s.StartsWith(Uri.UriSchemeHttps + "%3A%2F%2F", cmp))
+        {
             s = HttpUtility.UrlDecode(s);
+        }
 
         Uri.TryCreate(s, UriKind.Absolute, out var result);
 

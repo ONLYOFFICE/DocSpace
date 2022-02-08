@@ -35,10 +35,15 @@ public class RouteCallInfo
     public Dictionary<string, object> Params { get; set; }
     public bool CleanupHtml { get; set; }
 
-    public RouteCallInfo() => CleanupHtml = true; //Default
+    public RouteCallInfo()
+    {
+        CleanupHtml = true; //Default
+    }
 
-    public override string ToString() =>
-        string.Format("{0} {1} T:{2},{3}", Method.ToUpper(), Url, Tid,
+    public override string ToString()
+    {
+        return string.Format("{0} {1} T:{2},{3}", Method.ToUpper(), Url, Tid,
             string.Join(",",
-                Params.Select(x => string.Format("{0}={1}", x.Key, x.Value)).ToArray()));
+            Params.Select(x => string.Format("{0}={1}", x.Key, x.Value)).ToArray()));
+    }
 }

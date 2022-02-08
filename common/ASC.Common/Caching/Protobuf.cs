@@ -2,17 +2,25 @@
 
 public class ProtobufSerializer<T> : ISerializer<T> where T : IMessage<T>, new()
 {
-    public byte[] Serialize(T data, SerializationContext context) => data.ToByteArray();
+    public byte[] Serialize(T data, SerializationContext context)
+    {
+        return data.ToByteArray();
+    }
 }
 
 public class ProtobufDeserializer<T> : IDeserializer<T> where T : IMessage<T>, new()
 {
     private readonly MessageParser<T> _parser;
 
-    public ProtobufDeserializer() => _parser = new MessageParser<T>(() => new T());
+    public ProtobufDeserializer()
+    {
+        _parser = new MessageParser<T>(() => new T());
+    }
 
     public T Deserialize(ReadOnlySpan<byte> data, bool isNull, SerializationContext context)
-        => _parser.ParseFrom(data.ToArray());
+    {
+        return _parser.ParseFrom(data.ToArray());
+    }
 }
 
 public static class GuidExtension

@@ -6,11 +6,20 @@ public class ConnectionStringCollection : IEnumerable<ConnectionStringSettings>
 
     public ConnectionStringSettings this[string name] => _data.FirstOrDefault(r => r.Name == name);
 
-    public ConnectionStringCollection(IEnumerable<ConnectionStringSettings> data) => _data = data.ToList();
+    public ConnectionStringCollection(IEnumerable<ConnectionStringSettings> data)
+    {
+        _data = data.ToList();
+    }
 
-    public IEnumerator<ConnectionStringSettings> GetEnumerator() => _data.GetEnumerator();
+    public IEnumerator<ConnectionStringSettings> GetEnumerator()
+    {
+        return _data.GetEnumerator();
+    }
 
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
 }
 
 [Singletone]
@@ -47,7 +56,10 @@ public class ConfigurationExtension
         return result;
     }
 
-    public T GetSetting<T>(string section) where T : new() => GetSetting(section, new T());
+    public T GetSetting<T>(string section) where T : new()
+    {
+        return GetSetting(section, new T());
+    }
 
     public T GetSetting<T>(string section, T instance)
     {
@@ -58,7 +70,13 @@ public class ConfigurationExtension
         return instance;
     }
 
-    public ConnectionStringCollection GetConnectionStrings() => _connectionStringSettings.Value;
+    public ConnectionStringCollection GetConnectionStrings()
+    {
+        return _connectionStringSettings.Value;
+    }
 
-    public ConnectionStringSettings GetConnectionStrings(string key) => GetConnectionStrings()[key];
+    public ConnectionStringSettings GetConnectionStrings(string key)
+    {
+        return GetConnectionStrings()[key];
+    }
 }

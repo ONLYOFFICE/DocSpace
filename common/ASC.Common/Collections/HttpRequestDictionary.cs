@@ -54,11 +54,20 @@ public sealed class HttpRequestDictionary<T> : CachedDictionaryBase<T>
         }
     }
 
-    protected override object GetObjectFromCache(string fullKey) => _httpContext?.Items[fullKey];
+    protected override object GetObjectFromCache(string fullKey)
+    {
+        return _httpContext?.Items[fullKey];
+    }
 
-    protected override bool FitsCondition(object cached) => cached is CachedItem;
+    protected override bool FitsCondition(object cached)
+    {
+        return cached is CachedItem;
+    }
 
-    protected override T ReturnCached(object objectCache) => ((CachedItem)objectCache).Value;
+    protected override T ReturnCached(object objectCache)
+    {
+        return ((CachedItem)objectCache).Value;
+    }
 
     protected override void OnHit(string fullKey) { }
 
@@ -73,6 +82,9 @@ public sealed class HttpRequestDictionary<T> : CachedDictionaryBase<T>
     {
         internal T Value { get; set; }
 
-        internal CachedItem(T value) => Value = value;
+        internal CachedItem(T value)
+        {
+            Value = value;
+        }
     }
 }

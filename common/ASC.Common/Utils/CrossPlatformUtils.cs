@@ -27,11 +27,11 @@ namespace ASC.Common.Utils;
 
 public static class CrossPlatform
 {
-    private static char[] _pathSplitCharacters = new char[] { '/', '\\' };
+    private static char[] s_pathSplitCharacters = new char[] { '/', '\\' };
 
     public static string PathCombine(string basePath, params string[] additional)
     {
-        var splits = additional.Select(s => s.Split(_pathSplitCharacters)).ToArray();
+        var splits = additional.Select(s => s.Split(s_pathSplitCharacters)).ToArray();
         var totalLength = splits.Sum(arr => arr.Length);
         var segments = new string[totalLength + 1];
         segments[0] = basePath;

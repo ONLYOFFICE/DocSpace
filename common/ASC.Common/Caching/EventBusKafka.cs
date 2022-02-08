@@ -45,7 +45,10 @@ public class EventBusKafka<T> : IDisposable, IEventBus<T> where T : IMessage<T>,
 
             var channelName = GetChannelName(eventType);
 
-            if (_actions.TryGetValue(channelName, out var onchange)) onchange(obj);
+            if (_actions.TryGetValue(channelName, out var onchange))
+            {
+                onchange(obj);
+            }
 
             var message = new Message<AscCacheItem, T>
             {
@@ -151,7 +154,10 @@ public class EventBusKafka<T> : IDisposable, IEventBus<T> where T : IMessage<T>,
     {
         _cancelationToken.TryGetValue(GetChannelName(eventType), out var source);
 
-        if (source != null) source.Cancel();
+        if (source != null)
+        {
+            source.Cancel();
+        }
     }
 
     public void Dispose()
@@ -164,7 +170,10 @@ public class EventBusKafka<T> : IDisposable, IEventBus<T> where T : IMessage<T>,
     {
         if (!_disposedValue)
         {
-            if (disposing && _producer != null) _producer.Dispose();
+            if (disposing && _producer != null)
+            {
+                _producer.Dispose();
+            }
 
             _disposedValue = true;
         }
@@ -175,7 +184,10 @@ public class EventBusKafka<T> : IDisposable, IEventBus<T> where T : IMessage<T>,
         Dispose(false);
     }
 
-    private string GetChannelName(EventType eventType) => $"ascchannel{eventType}{typeof(T).FullName}".ToLower();
+    private string GetChannelName(EventType eventType)
+    {
+        return $"ascchannel{eventType}{typeof(T).FullName}".ToLower();
+    }
 }
 
 public class KafkaSettings

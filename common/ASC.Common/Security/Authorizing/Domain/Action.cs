@@ -38,7 +38,10 @@ public class Action : IAction
 
     public Action(Guid id, string name, bool administratorAlwaysAllow, bool conjunction)
     {
-        if (id == Guid.Empty) throw new ArgumentNullException(nameof(id));
+        if (id == Guid.Empty)
+        {
+            throw new ArgumentNullException(nameof(id));
+        }
 
         ID = id;
         Name = name;
@@ -46,9 +49,18 @@ public class Action : IAction
         Conjunction = conjunction;
     }
 
-    public override int GetHashCode() => ID.GetHashCode();
+    public override int GetHashCode()
+    {
+        return ID.GetHashCode();
+    }
 
-    public override bool Equals(object obj) => obj is Action a && a.ID == ID;
+    public override bool Equals(object obj)
+    {
+        return obj is Action a && a.ID == ID;
+    }
 
-    public override string ToString() => Name;
+    public override string ToString()
+    {
+        return Name;
+    }
 }

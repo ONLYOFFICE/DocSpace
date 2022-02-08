@@ -40,11 +40,23 @@ public class Account : IAccount
         IsAuthenticated = authenticated;
     }
 
-    public object Clone() => MemberwiseClone();
+    public object Clone()
+    {
+        return MemberwiseClone();
+    }
 
-    public override bool Equals(object obj) => obj is IAccount a && ID.Equals(a.ID);
+    public override bool Equals(object obj)
+    {
+        return obj is IAccount a && ID.Equals(a.ID);
+    }
 
-    public override int GetHashCode() => ID.GetHashCode();
+    public override int GetHashCode()
+    {
+        return ID.GetHashCode();
+    }
 
-    public override string ToString() => Name;
+    public override string ToString()
+    {
+        return Name;
+    }
 }

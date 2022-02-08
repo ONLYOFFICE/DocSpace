@@ -21,7 +21,10 @@ public class EventBusRedis<T> : IEventBus<T> where T : IMessage<T>, new()
 {
     private readonly IRedisDatabase _redis;
 
-    public EventBusRedis(IRedisCacheClient redisCacheClient) => _redis = redisCacheClient.GetDbFromConfiguration();
+    public EventBusRedis(IRedisCacheClient redisCacheClient)
+    {
+        _redis = redisCacheClient.GetDbFromConfiguration();
+    }
 
     public void Publish(T obj, EventType action)
     {
@@ -50,7 +53,10 @@ public class EventBusRedis<T> : IEventBus<T> where T : IMessage<T>, new()
           .GetResult();
     }
 
-    private string GetChannelName(EventType cacheNotifyAction) => $"asc:channel:{cacheNotifyAction}:{typeof(T).FullName}".ToLower();
+    private string GetChannelName(EventType cacheNotifyAction)
+    {
+        return $"asc:channel:{cacheNotifyAction}:{typeof(T).FullName}".ToLower();
+    }
 
     class RedisCachePubSubItem<T0>
     {

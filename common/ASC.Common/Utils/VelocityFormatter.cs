@@ -32,12 +32,20 @@ public class TextLoader : ResourceLoader
         //nothing to configure
     }
 
-    public override Stream GetResourceStream(string source) =>
-        new MemoryStream(Encoding.UTF8.GetBytes(source));
+    public override Stream GetResourceStream(string source)
+    {
+        return new MemoryStream(Encoding.UTF8.GetBytes(source));
+    }
 
-    public override long GetLastModified(NVelocity.Runtime.Resource.Resource resource) => 1;
+    public override long GetLastModified(NVelocity.Runtime.Resource.Resource resource)
+    {
+        return 1;
+    }
 
-    public override bool IsSourceModified(NVelocity.Runtime.Resource.Resource resource) => false;
+    public override bool IsSourceModified(NVelocity.Runtime.Resource.Resource resource)
+    {
+        return false;
+    }
 }
 
 public class VelocityFormatter
@@ -50,7 +58,9 @@ public class VelocityFormatter
         var nvelocityContext = new VelocityContext();
 
         foreach (var tagValue in values)
+        {
             nvelocityContext.Put(tagValue.Key, tagValue.Value);
+        }
 
         return FormatText(templateText, nvelocityContext);
     }

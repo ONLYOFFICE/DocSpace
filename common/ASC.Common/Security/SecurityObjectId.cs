@@ -37,9 +37,14 @@ public class SecurityObjectId : ISecurityObjectId
         ObjectType = objType ?? throw new ArgumentNullException(nameof(objType));
     }
 
-    public override int GetHashCode() => AzObjectIdHelper.GetFullObjectId(this).GetHashCode();
+    public override int GetHashCode()
+    {
+        return AzObjectIdHelper.GetFullObjectId(this).GetHashCode();
+    }
 
-    public override bool Equals(object obj) =>
-        obj is SecurityObjectId other &&
-               Equals(AzObjectIdHelper.GetFullObjectId(other), AzObjectIdHelper.GetFullObjectId(this));
+    public override bool Equals(object obj)
+    {
+        return obj is SecurityObjectId other &&
+            Equals(AzObjectIdHelper.GetFullObjectId(other), AzObjectIdHelper.GetFullObjectId(this));
+    }
 }

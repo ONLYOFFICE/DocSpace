@@ -36,23 +36,40 @@ public abstract class CachedDictionaryBase<T>
 
     protected abstract void InsertRootKey(string rootKey);
 
-    public void Clear() => InsertRootKey(BaseKey);
+    public void Clear()
+    {
+        InsertRootKey(BaseKey);
+    }
 
-    public void Clear(string rootKey) => InsertRootKey(BuildKey(string.Empty, rootKey));
+    public void Clear(string rootKey)
+    {
+        InsertRootKey(BuildKey(string.Empty, rootKey));
+    }
 
-    public void Reset(string key) => Reset(string.Empty, key);
+    public void Reset(string key)
+    {
+        Reset(string.Empty, key);
+    }
 
-    public abstract void Reset(string rootKey, string key);
+    public T Get(string key)
+    {
+        return Get(string.Empty, key, null);
+    }
 
-    public T Get(string key) => Get(string.Empty, key, null);
+    public T Get(string key, Func<T> defaults)
+    {
+        return Get(string.Empty, key, defaults);
+    }
 
-    public T Get(string key, Func<T> defaults) => Get(string.Empty, key, defaults);
+    public void Add(string key, T newValue)
+    {
+        Add(string.Empty, key, newValue);
+    }
 
-    public void Add(string key, T newValue) => Add(string.Empty, key, newValue);
-
-    public abstract void Add(string rootkey, string key, T newValue);
-
-    public bool HasItem(string key) => !Equals(Get(key), default(T));
+    public bool HasItem(string key)
+    {
+        return !Equals(Get(key), default(T));
+    }
 
     public T Get(Func<T> @default)
     {
@@ -90,17 +107,36 @@ public abstract class CachedDictionaryBase<T>
         return default;
     }
 
-    protected virtual bool FitsCondition(object cached) => cached != null && cached is T;
+    public abstract void Add(string rootkey, string key, T newValue);
 
-    protected virtual T ReturnCached(object objectCache) => (T)objectCache;
+    public abstract void Reset(string rootKey, string key);
 
-    protected string BuildKey(string key, string rootkey) => $"{BaseKey}-{rootkey}-{key}";
+    protected virtual bool FitsCondition(object cached)
+    {
+        return cached != null && cached is T;
+    }
+
+    protected virtual T ReturnCached(object objectCache)
+    {
+        return (T)objectCache;
+    }
+
+    protected string BuildKey(string key, string rootkey)
+    {
+        return $"{BaseKey}-{rootkey}-{key}";
+    }
 
     protected abstract object GetObjectFromCache(string fullKey);
 
     [Conditional("DEBUG")]
-    protected virtual void OnHit(string fullKey) => Debug.Print("cache hit:{0}", fullKey);
+    protected virtual void OnHit(string fullKey)
+    {
+        Debug.Print("cache hit:{0}", fullKey);
+    }
 
     [Conditional("DEBUG")]
-    protected virtual void OnMiss(string fullKey) => Debug.Print("cache miss:{0}", fullKey);
+    protected virtual void OnMiss(string fullKey)
+    {
+        Debug.Print("cache miss:{0}", fullKey);
+    }
 }

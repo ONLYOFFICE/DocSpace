@@ -29,7 +29,10 @@ public class SpecialFolderPathConverter : PatternConverter
 {
     protected override void Convert(TextWriter writer, object state)
     {
-        if (string.IsNullOrEmpty(Option)) return;
+        if (string.IsNullOrEmpty(Option))
+        {
+            return;
+        }
 
         try
         {
@@ -42,7 +45,9 @@ public class SpecialFolderPathConverter : PatternConverter
                 for (var i = 0; i < args.Length - 1; i++)
                 {
                     if (args[i].Equals(Option.Substring(CMD_LINE.Length), StringComparison.InvariantCultureIgnoreCase))
+                    {
                         result = args[i + 1];
+                    }
                 }
             }
             else
@@ -54,10 +59,14 @@ public class SpecialFolderPathConverter : PatternConverter
                     foreach (var key in repo.Properties.GetKeys())
                     {
                         if (Path.DirectorySeparatorChar == '/' && key == "UNIX:" + Option)
+                        {
                             realKey = "UNIX:" + Option;
+                        }
 
                         if (Path.DirectorySeparatorChar == '\\' && key == "WINDOWS:" + Option)
+                        {
                             realKey = "WINDOWS:" + Option;
+                        }
                     }
 
                     var val = repo.Properties[realKey];
@@ -66,8 +75,10 @@ public class SpecialFolderPathConverter : PatternConverter
                         patternString.ActivateOptions();
                         patternString.Format(writer);
                     }
-
-                    else if (val != null) result = val.ToString();
+                    else if (val != null)
+                    {
+                        result = val.ToString();
+                    }
                 }
             }
 

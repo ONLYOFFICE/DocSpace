@@ -48,7 +48,10 @@ public static class HtmlUtil
         {
             html = s_xssReplacer.Replace(html, string.Empty); //Clean malicious tags. <script> <style>
 
-            if (string.IsNullOrEmpty(html)) return html;
+            if (string.IsNullOrEmpty(html))
+            {
+                return html;
+            }
 
             unformatedText = s_tagReplacer.Replace(html, string.Empty);
 
@@ -61,7 +64,9 @@ public static class HtmlUtil
                 if (!string.IsNullOrEmpty(unformatedText))
                 {
                     if (maxLength == 0 || unformatedText.Length < maxLength)
+                    {
                         return HttpUtility.HtmlDecode(unformatedText);
+                    }
 
                     //Set maximum length with end block
                     maxLength = Math.Max(0, maxLength - endBlockTemplate.Length);
@@ -75,7 +80,9 @@ public static class HtmlUtil
                                          : unformatedText.Substring(0, maxLength);
 
                     if (!string.IsNullOrEmpty(endBlockTemplate))
+                    {
                         unformatedText += endBlockTemplate;
+                    }
                 }
             }
         }
@@ -83,7 +90,10 @@ public static class HtmlUtil
         return HttpUtility.HtmlDecode(unformatedText);//TODO:!!!
     }
 
-    public static string ToPlainText(string html) => GetText(html);
+    public static string ToPlainText(string html)
+    {
+        return GetText(html);
+    }
 
     /// <summary>
     /// The function highlight all words in htmlText by searchText.
@@ -94,7 +104,10 @@ public static class HtmlUtil
     /// <returns>highlighted html</returns>
     public static string SearchTextHighlight(string searchText, string htmlText, bool withoutLink = false)
     {
-        if (string.IsNullOrEmpty(searchText) || string.IsNullOrEmpty(htmlText)) return htmlText;
+        if (string.IsNullOrEmpty(searchText) || string.IsNullOrEmpty(htmlText))
+        {
+            return htmlText;
+        }
 
         var regexpstr = s_worder.Matches(searchText).Cast<Match>().Select(m => m.Value).Distinct().Aggregate((r, n) => r + "|" + n);
         var wordsFinder = new Regex(Regex.Escape(regexpstr), RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Multiline);

@@ -34,10 +34,18 @@ public class PasswordHasher
 
     public PasswordHasher(IConfiguration configuration, MachinePseudoKeys machinePseudoKeys)
     {
-        if (!int.TryParse(configuration["core:password:size"], out var size)) size = 256;
+        if (!int.TryParse(configuration["core:password:size"], out var size))
+        {
+            size = 256;
+        }
+
         Size = size;
 
-        if (!int.TryParse(configuration["core.password.iterations"], out var iterations)) iterations = 100000;
+        if (!int.TryParse(configuration["core.password.iterations"], out var iterations))
+        {
+            iterations = 100000;
+        }
+
         Iterations = iterations;
 
         Salt = (configuration["core:password:salt"] ?? "").Trim();
@@ -57,7 +65,10 @@ public class PasswordHasher
 
     public string GetClientPassword(string password)
     {
-        if (string.IsNullOrWhiteSpace(password)) password = Guid.NewGuid().ToString();
+        if (string.IsNullOrWhiteSpace(password))
+        {
+            password = Guid.NewGuid().ToString();
+        }
 
         var salt = new UTF8Encoding(false).GetBytes(Salt);
 

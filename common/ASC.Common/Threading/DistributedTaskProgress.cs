@@ -31,7 +31,10 @@ public class DistributedTaskProgress : DistributedTask
 
     protected void StepDone()
     {
-        if (StepCount > 0) Percentage += 100.0 / StepCount;
+        if (StepCount > 0)
+        {
+            Percentage += 100.0 / StepCount;
+        }
 
         PublishChanges();
     }

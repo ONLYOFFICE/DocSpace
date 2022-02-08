@@ -55,16 +55,19 @@ public class SelfCleaningAppender : RollingFileAppender
     private static int GetCleanPeriod()
     {
         if (s_cleanPeriod != null)
+        {
             return s_cleanPeriod.Value;
+        }
 
         const string key = "CleanPeriod";
 
         var value = 30;
 
         var repo = log4net.LogManager.GetRepository(Assembly.GetCallingAssembly());
-
         if (repo != null && repo.Properties.GetKeys().Contains(key))
+        {
             int.TryParse(repo.Properties[key].ToString(), out value);
+        }
 
         s_cleanPeriod = value;
 
@@ -76,20 +79,23 @@ public class SelfCleaningAppender : RollingFileAppender
         try
         {
             if (string.IsNullOrEmpty(File))
+            {
                 return;
+            }
 
             var fileInfo = new FileInfo(File);
-
             if (!fileInfo.Exists)
+            {
                 return;
+            }
 
             var directory = fileInfo.Directory;
-
             if (directory == null || !directory.Exists)
+            {
                 return;
+            }
 
             var files = directory.GetFiles();
-
             var cleanPeriod = GetCleanPeriod();
 
             foreach (var file in files.Where(file => (DateTime.UtcNow.Date - file.CreationTimeUtc.Date).Days > cleanPeriod))

@@ -24,19 +24,27 @@ public class TempPath
     public TempPath(IConfiguration configuration)
     {
         string rootFolder = AppContext.BaseDirectory;
-
         if (string.IsNullOrEmpty(rootFolder))
+        {
             rootFolder = Assembly.GetEntryAssembly().Location;
+        }
 
         _tempFolder = configuration["temp"] ?? Path.Combine("..", "Data", "temp");
-
         if (!Path.IsPathRooted(_tempFolder))
+        {
             _tempFolder = Path.GetFullPath(Path.Combine(rootFolder, _tempFolder));
+        }
 
-        if (!Directory.Exists(_tempFolder)) Directory.CreateDirectory(_tempFolder);
+        if (!Directory.Exists(_tempFolder))
+        {
+            Directory.CreateDirectory(_tempFolder);
+        }
     }
 
-    public string GetTempPath() => _tempFolder;
+    public string GetTempPath()
+    {
+        return _tempFolder;
+    }
 
     public string GetTempFileName()
     {
@@ -58,12 +66,16 @@ public class TempPath
             catch (IOException ex)
             {
                 if (ex.HResult != -2147024816 || count++ > 65536)
+                {
                     throw;
+                }
             }
             catch (UnauthorizedAccessException ex)
             {
                 if (count++ > 65536)
+                {
                     throw new IOException(ex.Message, ex);
+                }
             }
         } while (f == null);
 

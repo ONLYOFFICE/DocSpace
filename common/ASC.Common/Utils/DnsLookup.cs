@@ -46,7 +46,9 @@ public class DnsLookup
     public List<MxRecord> GetDomainMxRecords(string domainName)
     {
         if (string.IsNullOrEmpty(domainName))
+        {
             throw new ArgumentNullException(nameof(domainName));
+        }
 
         var mxRecords = DnsResolve<MxRecord>(domainName, RecordType.Mx);
 
@@ -64,10 +66,14 @@ public class DnsLookup
     public bool IsDomainMxRecordExists(string domainName, string mxRecord)
     {
         if (string.IsNullOrEmpty(domainName))
+        {
             throw new ArgumentNullException(nameof(domainName));
+        }
 
         if (string.IsNullOrEmpty(mxRecord))
+        {
             throw new ArgumentNullException(nameof(mxRecord));
+        }
 
         var mxDomain = DomainName.Parse(mxRecord);
 
@@ -88,7 +94,9 @@ public class DnsLookup
     public bool IsDomainExists(string domainName)
     {
         if (string.IsNullOrEmpty(domainName))
+        {
             throw new ArgumentNullException(nameof(domainName));
+        }
 
         var dnsMessage = GetDnsMessage(domainName);
 
@@ -105,7 +113,9 @@ public class DnsLookup
     public List<ARecord> GetDomainARecords(string domainName)
     {
         if (string.IsNullOrEmpty(domainName))
+        {
             throw new ArgumentNullException(nameof(domainName));
+        }
 
         var aRecords = DnsResolve<ARecord>(domainName, RecordType.A);
 
@@ -122,7 +132,9 @@ public class DnsLookup
     public List<IPAddress> GetDomainIPs(string domainName)
     {
         if (string.IsNullOrEmpty(domainName))
+        {
             throw new ArgumentNullException(nameof(domainName));
+        }
 
         var addresses = _sDnsResolver.ResolveHost(domainName);
 
@@ -139,7 +151,9 @@ public class DnsLookup
     public List<TxtRecord> GetDomainTxtRecords(string domainName)
     {
         if (string.IsNullOrEmpty(domainName))
+        {
             throw new ArgumentNullException(nameof(domainName));
+        }
 
         var txtRecords = DnsResolve<TxtRecord>(domainName, RecordType.Txt);
 
@@ -193,10 +207,13 @@ public class DnsLookup
     public bool IsDomainPtrRecordExists(IPAddress ipAddress, string domainName)
     {
         if (string.IsNullOrEmpty(domainName))
+        {
             throw new ArgumentNullException(nameof(domainName));
-
+        }
         if (ipAddress == null)
+        {
             throw new ArgumentNullException(nameof(ipAddress));
+        }
 
         var domain = DomainName.Parse(domainName);
 
@@ -214,21 +231,26 @@ public class DnsLookup
     /// <exception cref="ArgumentException">if domainName is invalid</exception>
     /// <exception cref="FormatException">if ipAddress is invalid</exception>
     /// <returns>true if exists and vice versa</returns>
-    public bool IsDomainPtrRecordExists(string ipAddress, string domainName) =>
-        IsDomainPtrRecordExists(IPAddress.Parse(ipAddress), domainName);
+    public bool IsDomainPtrRecordExists(string ipAddress, string domainName)
+    {
+        return IsDomainPtrRecordExists(IPAddress.Parse(ipAddress), domainName);
+    }
 
     private DnsMessage GetDnsMessage(string domainName, RecordType? type = null)
     {
         if (string.IsNullOrEmpty(domainName))
+        {
             throw new ArgumentNullException(nameof(domainName));
+        }
 
         var domain = DomainName.Parse(domainName);
 
         var dnsMessage = type.HasValue ? _dnsClient.Resolve(domain, type.Value) : _dnsClient.Resolve(domain);
-
         if ((dnsMessage == null) ||
             ((dnsMessage.ReturnCode != ReturnCode.NoError) && (dnsMessage.ReturnCode != ReturnCode.NxDomain)))
+        {
             throw new SystemException(); // DNS request failed
+        }
 
         return dnsMessage;
     }
@@ -236,7 +258,9 @@ public class DnsLookup
     private List<T> DnsResolve<T>(string domainName, RecordType type)
     {
         if (string.IsNullOrEmpty(domainName))
+        {
             throw new ArgumentNullException(nameof(domainName));
+        }
 
         var dnsMessage = GetDnsMessage(domainName, type);
 

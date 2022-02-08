@@ -30,11 +30,15 @@ public class InstanceCrypto
 {
     private readonly byte[] _eKey;
 
-    public InstanceCrypto(MachinePseudoKeys machinePseudoKeys) =>
+    public InstanceCrypto(MachinePseudoKeys machinePseudoKeys)
+    {
         _eKey = machinePseudoKeys.GetMachineConstant(32);
+    }
 
-    public string Encrypt(string data) =>
-        Convert.ToBase64String(Encrypt(Encoding.UTF8.GetBytes(data)));
+    public string Encrypt(string data)
+    {
+        return Convert.ToBase64String(Encrypt(Encoding.UTF8.GetBytes(data)));
+    }
 
     public byte[] Encrypt(byte[] data)
     {

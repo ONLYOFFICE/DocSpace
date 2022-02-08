@@ -40,7 +40,10 @@ public class AuthorizingException : Exception
 
     public AuthorizingException(ISubject subject, IAction[] actions)
     {
-        if (actions == null || actions.Length == 0) throw new ArgumentNullException(nameof(actions));
+        if (actions == null || actions.Length == 0)
+        {
+            throw new ArgumentNullException(nameof(actions));
+        }
 
         Subject = subject ?? throw new ArgumentNullException(nameof(subject));
         Actions = actions;
@@ -77,12 +80,26 @@ public class AuthorizingException : Exception
     internal static string FormatErrorMessage(ISubject subject, IAction[] actions, ISubject[] denySubjects,
                                               IAction[] denyActions)
     {
-        if (subject == null) throw new ArgumentNullException(nameof(subject));
-        if (actions == null || actions.Length == 0) throw new ArgumentNullException(nameof(actions));
-        if (denySubjects == null || denySubjects.Length == 0) throw new ArgumentNullException(nameof(denySubjects));
-        if (denyActions == null || denyActions.Length == 0) throw new ArgumentNullException(nameof(denyActions));
+        if (subject == null)
+        {
+            throw new ArgumentNullException(nameof(subject));
+        }
+        if (actions == null || actions.Length == 0)
+        {
+            throw new ArgumentNullException(nameof(actions));
+        }
+        if (denySubjects == null || denySubjects.Length == 0)
+        {
+            throw new ArgumentNullException(nameof(denySubjects));
+        }
+        if (denyActions == null || denyActions.Length == 0)
+        {
+            throw new ArgumentNullException(nameof(denyActions));
+        }
         if (actions.Length != denySubjects.Length || actions.Length != denyActions.Length)
+        {
             throw new ArgumentException();
+        }
 
         var reasons = "";
         for (var i = 0; i < actions.Length; i++)
@@ -90,15 +107,22 @@ public class AuthorizingException : Exception
             var reason = "";
 
             if (denySubjects[i] != null && denyActions[i] != null)
+            {
                 reason = string.Format("{0}:{1} access denied {2}.",
                                        actions[i].Name,
                                        (denySubjects[i] is IRole ? "role:" : "") + denySubjects[i].Name,
                                        denyActions[i].Name
                     );
-            else reason = string.Format("{0}: access denied.", actions[i].Name);
+            }
+            else
+            {
+                reason = string.Format("{0}: access denied.", actions[i].Name);
+            }
 
             if (i != actions.Length - 1)
+            {
                 reason += ", ";
+            }
 
             reasons += reason;
         }

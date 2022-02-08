@@ -30,10 +30,15 @@ public class Signature
 {
     private readonly MachinePseudoKeys _machinePseudoKeys;
 
-    public Signature(MachinePseudoKeys machinePseudoKeys) => _machinePseudoKeys = machinePseudoKeys;
+    public Signature(MachinePseudoKeys machinePseudoKeys)
+    {
+        _machinePseudoKeys = machinePseudoKeys;
+    }
 
-    public string Create<T>(T obj) =>
-        Create(obj, Encoding.UTF8.GetString(_machinePseudoKeys.GetMachineConstant()));
+    public string Create<T>(T obj)
+    {
+        return Create(obj, Encoding.UTF8.GetString(_machinePseudoKeys.GetMachineConstant()));
+    }
 
     public static string Create<T>(T obj, string secret)
     {
@@ -43,8 +48,10 @@ public class Signature
         return WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(payload));
     }
 
-    public T Read<T>(string signature) =>
-        Read<T>(signature, Encoding.UTF8.GetString(_machinePseudoKeys.GetMachineConstant()));
+    public T Read<T>(string signature)
+    {
+        return Read<T>(signature, Encoding.UTF8.GetString(_machinePseudoKeys.GetMachineConstant()));
+    }
 
     public static T Read<T>(string signature, string secret)
     {
@@ -54,7 +61,9 @@ public class Signature
             var payloadParts = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(rightSignature)).Split('?');
 
             if (GetHashBase64(payloadParts[1] + secret) == payloadParts[0])
+            {
                 return JsonConvert.DeserializeObject<T>(payloadParts[1]); //Sig correct
+            }
         }
         catch (Exception) { }
 

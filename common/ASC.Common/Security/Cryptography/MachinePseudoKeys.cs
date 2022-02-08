@@ -34,15 +34,24 @@ public class MachinePseudoKeys
     {
         var key = configuration["core:machinekey"];
 
-        if (string.IsNullOrEmpty(key)) key = configuration["asc:common.machinekey"];
+        if (string.IsNullOrEmpty(key))
+        {
+            key = configuration["asc:common.machinekey"];
+        }
 
-        if (!string.IsNullOrEmpty(key)) _confKey = Encoding.UTF8.GetBytes(key);
+        if (!string.IsNullOrEmpty(key))
+        {
+            _confKey = Encoding.UTF8.GetBytes(key);
+        }
     }
 
 
     public byte[] GetMachineConstant()
     {
-        if (_confKey != null) return _confKey;
+        if (_confKey != null)
+        {
+            return _confKey;
+        }
 
         var path = typeof(MachinePseudoKeys).Assembly.Location;
         var fi = new FileInfo(path);

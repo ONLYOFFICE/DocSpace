@@ -62,7 +62,10 @@ public class AscCache : ICache
         _memoryCacheKeys = new ConcurrentDictionary<string, object>();
     }
 
-    public T Get<T>(string key) where T : class => _memoryCache.Get<T>(key);
+    public T Get<T>(string key) where T : class
+    {
+        return _memoryCache.Get<T>(key);
+    }
 
     public void Insert(string key, object value, TimeSpan sligingExpiration)
     {
@@ -84,7 +87,10 @@ public class AscCache : ICache
         _memoryCacheKeys.TryAdd(key, null);
     }
 
-    public void Remove(string key) => _memoryCache.Remove(key);
+    public void Remove(string key)
+    {
+        _memoryCache.Remove(key);
+    }
 
     public void Remove(Regex pattern)
     {
@@ -104,7 +110,9 @@ public class AscCache : ICache
     {
         if (_memoryCache.TryGetValue<ConcurrentDictionary<string, T>>(key, out var dic)
             && dic.TryGetValue(field, out var value))
+        {
             return value;
+        }
 
         return default;
     }
@@ -121,12 +129,19 @@ public class AscCache : ICache
         {
             dic.TryRemove(field, out _);
 
-            if (dic.IsEmpty) _memoryCache.Remove(key);
-
-            else _memoryCache.Set(key, dic, DateTime.MaxValue);
+            if (dic.IsEmpty)
+            {
+                _memoryCache.Remove(key);
+            }
+            else
+            {
+                _memoryCache.Set(key, dic, DateTime.MaxValue);
+            }
         }
     }
 
-    private void EvictionCallback(object key, object value, EvictionReason reason, object state) =>
+    private void EvictionCallback(object key, object value, EvictionReason reason, object state)
+    {
         _memoryCacheKeys.TryRemove(key.ToString(), out _);
+    }
 }

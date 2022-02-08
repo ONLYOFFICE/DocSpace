@@ -27,8 +27,10 @@ namespace ASC.Common.Utils;
 
 public static class MimeHeaderUtils
 {
-    public static string EncodeMime(string mimeHeaderValue) =>
-        EncodeMime(mimeHeaderValue, Encoding.UTF8, false);
+    public static string EncodeMime(string mimeHeaderValue)
+    {
+        return EncodeMime(mimeHeaderValue, Encoding.UTF8, false);
+    }
 
     public static string EncodeMime(string mimeHeaderValue, Encoding charset, bool split)
     {
@@ -59,9 +61,12 @@ public static class MimeHeaderUtils
 
             return result.ToString();
         }
+
         return mimeHeaderValue;
     }
 
-    public static bool MustEncode(string text) =>
-        !string.IsNullOrEmpty(text) && text.Any(c => c > 127);
+    public static bool MustEncode(string text)
+    {
+        return !string.IsNullOrEmpty(text) && text.Any(c => c > 127);
+    }
 }

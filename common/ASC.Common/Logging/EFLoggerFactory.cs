@@ -20,7 +20,10 @@ public class EFLoggerFactory : ILoggerFactory
         //LoggerProvider = provider;
     }
 
-    public ILogger CreateLogger(string categoryName) => _logger.Value;
+    public ILogger CreateLogger(string categoryName)
+    {
+        return _logger.Value;
+    }
 
     public void Dispose() { }
 }
@@ -30,9 +33,15 @@ public class EFLoggerProvider : ILoggerProvider
 {
     private readonly IOptionsMonitor<ILog> _option;
 
-    public EFLoggerProvider(IOptionsMonitor<ILog> option) => _option = option;
+    public EFLoggerProvider(IOptionsMonitor<ILog> option)
+    {
+        _option = option;
+    }
 
-    public ILogger CreateLogger(string categoryName) => new EFLogger(_option.Get("ASC.SQL"));
+    public ILogger CreateLogger(string categoryName)
+    {
+        return new EFLogger(_option.Get("ASC.SQL"));
+    }
 
     public void Dispose() { }
 }
@@ -41,9 +50,15 @@ public class EFLogger : ILogger
 {
     public ILog CustomLogger { get; }
 
-    public EFLogger(ILog customLogger) => CustomLogger = customLogger;
+    public EFLogger(ILog customLogger)
+    {
+        CustomLogger = customLogger;
+    }
 
-    public IDisposable BeginScope<TState>(TState state) { return null; }
+    public IDisposable BeginScope<TState>(TState state) 
+    { 
+        return null; 
+    }
 
     public bool IsEnabled(LogLevel logLevel)
     {

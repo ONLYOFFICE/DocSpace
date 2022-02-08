@@ -55,7 +55,10 @@ public class AzObjectSecurityProviderHelper
 
         foreach (var role in roles)
         {
-            if (!_callContext.RolesList.Contains(role)) _callContext.RolesList.Add(role);
+            if (!_callContext.RolesList.Contains(role))
+            {
+                _callContext.RolesList.Add(role);
+            }
         }
 
         return roles;
@@ -63,13 +66,21 @@ public class AzObjectSecurityProviderHelper
 
     public bool NextInherit()
     {
-        if (_currSecObjProvider == null || !_currSecObjProvider.InheritSupported) return false;
+        if (_currSecObjProvider == null || !_currSecObjProvider.InheritSupported)
+        {
+            return false;
+        }
 
         CurrentObjectId = _currSecObjProvider.InheritFrom(CurrentObjectId);
+        if (CurrentObjectId == null)
+        {
+            return false;
+        }
 
-        if (CurrentObjectId == null) return false;
-
-        if (_currObjIdAsProvider) _currSecObjProvider = CurrentObjectId as ISecurityObjectProvider;
+        if (_currObjIdAsProvider)
+        {
+            _currSecObjProvider = CurrentObjectId as ISecurityObjectProvider;
+        }
 
         _callContext.ObjectsStack.Insert(0, CurrentObjectId);
 

@@ -31,7 +31,10 @@ public class MappingProfile : Profile
 
     private void ApplyMappingsFromAssembly(Assembly assembly)
     {
-        if (!assembly.GetName().Name.StartsWith("ASC.")) return;
+        if (!assembly.GetName().Name.StartsWith("ASC."))
+        {
+            return;
+        }
 
         var types = assembly.GetExportedTypes()
             .Where(t => t.GetInterfaces().Any(i =>

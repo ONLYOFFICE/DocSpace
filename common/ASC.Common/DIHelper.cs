@@ -19,9 +19,14 @@ public class TransientAttribute : DIAttribute
 
     public override void TryAdd(IServiceCollection services, Type service, Type implementation = null)
     {
-        if (implementation != null) services.AddTransient(service, implementation);
-
-        else services.AddTransient(service);
+        if (implementation != null)
+        {
+            services.AddTransient(service, implementation);
+        }
+        else
+        {
+            services.AddTransient(service);
+        }
     }
 }
 
@@ -37,9 +42,14 @@ public class ScopeAttribute : DIAttribute
 
     public override void TryAdd(IServiceCollection services, Type service, Type implementation = null)
     {
-        if (implementation != null) services.AddScoped(service, implementation);
-
-        else services.AddScoped(service);
+        if (implementation != null)
+        {
+            services.AddScoped(service, implementation);
+        }
+        else
+        {
+            services.AddScoped(service);
+        }
     }
 }
 
@@ -55,9 +65,14 @@ public class SingletoneAttribute : DIAttribute
 
     public override void TryAdd(IServiceCollection services, Type service, Type implementation = null)
     {
-        if (implementation != null) services.AddSingleton(service, implementation);
-
-        else services.AddSingleton(service);
+        if (implementation != null)
+        {
+            services.AddSingleton(service, implementation);
+        }
+        else
+        {
+            services.AddSingleton(service);
+        }
     }
 }
 
@@ -70,7 +85,10 @@ public abstract class DIAttribute : Attribute
 
     public DIAttribute() { }
 
-    public DIAttribute(Type service) => Service = service;
+    public DIAttribute(Type service)
+    {
+        Service = service;
+    }
 
     public DIAttribute(Type service, Type implementation)
     {
@@ -101,21 +119,35 @@ public class DIHelper
         Configured = new List<string>();
     }
 
-    public DIHelper(IServiceCollection serviceCollection) : this() => ServiceCollection = serviceCollection;
+    public DIHelper(IServiceCollection serviceCollection) : this()
+    {
+        ServiceCollection = serviceCollection;
+    }
 
-    public void Configure(IServiceCollection serviceCollection) => ServiceCollection = serviceCollection;
+    public void Configure(IServiceCollection serviceCollection)
+    {
+        ServiceCollection = serviceCollection;
+    }
 
     public void RegisterProducts(IConfiguration configuration, string path)
     {
         var types = AutofacExtension.FindAndLoad(configuration, path);
 
         foreach (var t in types.Select(Type.GetType).Where(r => r != null))
+        {
             TryAdd(t);
+        }
     }
 
-    public bool TryAdd<TService>() where TService : class => TryAdd(typeof(TService));
+    public bool TryAdd<TService>() where TService : class
+    {
+        return TryAdd(typeof(TService));
+    }
 
-    public bool TryAdd<TService, TImplementation>() where TService : class => TryAdd(typeof(TService), typeof(TImplementation));
+    public bool TryAdd<TService, TImplementation>() where TService : class
+    {
+        return TryAdd(typeof(TService), typeof(TImplementation));
+    }
 
     public bool TryAdd(Type service, Type implementation = null)
     {
@@ -127,12 +159,18 @@ public class DIHelper
         {
             service = service.GetGenericArguments().FirstOrDefault();
 
-            if (service == null) return false;
+            if (service == null)
+            {
+                return false;
+            }
         }
 
         var serviceName = $"{service}{implementation}";
 
-        if (Added.Contains(serviceName)) return false;
+        if (Added.Contains(serviceName))
+        {
+            return false;
+        }
 
         Added.Add(serviceName);
 
@@ -155,7 +193,10 @@ public class DIHelper
             if (!service.IsInterface || implementation != null)
             {
                 isnew = implementation != null ? Register(service, implementation) : Register(service);
-                if (!isnew) return false;
+                if (!isnew)
+                {
+                    return false;
+                }
             }
 
             if (service.IsInterface && implementation == null || !service.IsInterface)
@@ -180,7 +221,10 @@ public class DIHelper
                                 {
                                     TryAdd(g);
 
-                                    if (service.IsInterface && di.Implementation == null) TryAdd(service, g);
+                                    if (service.IsInterface && di.Implementation == null)
+                                    {
+                                        TryAdd(service, g);
+                                    }
                                 }
                             }
 
@@ -215,7 +259,10 @@ public class DIHelper
                             isnew = Register(service, di.Service);
                             TryAdd(di.Service);
                         }
-                        else Register(di.Service);
+                        else
+                        {
+                            Register(di.Service);
+                        }
                     }
                 }
 
@@ -237,7 +284,10 @@ public class DIHelper
                                 if (g != service)
                                 {
                                     //TryAdd(g);
-                                    if (service.IsInterface && implementation == null) TryAdd(service, g);
+                                    if (service.IsInterface && implementation == null)
+                                    {
+                                        TryAdd(service, g);
+                                    }
                                 }
                             }
 
@@ -256,14 +306,20 @@ public class DIHelper
                                 TryAdd(b1);
                                 c = a1.MakeGenericType(b1);
                             }
-                            else c = a1.MakeGenericType(service.GetGenericArguments());
+                            else
+                            {
+                                c = a1.MakeGenericType(service.GetGenericArguments());
+                            }
 
                             TryAdd(c, di.Implementation.MakeGenericType(service.GetGenericArguments()));
                             //a, di.Service
                         }
                     }
 
-                    else isnew = TryAdd(service, di.Implementation);
+                    else
+                    {
+                        isnew = TryAdd(service, di.Implementation);
+                    }
                 }
             }
         }
@@ -272,18 +328,27 @@ public class DIHelper
         {
             ConstructorInfo[] props = null;
 
-            if (!service.IsInterface) props = service.GetConstructors();
-
-            else if (implementation != null) props = implementation.GetConstructors();
-
-            else if (di.Service != null) props = di.Service.GetConstructors();
+            if (!service.IsInterface)
+            {
+                props = service.GetConstructors();
+            }
+            else if (implementation != null)
+            {
+                props = implementation.GetConstructors();
+            }
+            else if (di.Service != null)
+            {
+                props = di.Service.GetConstructors();
+            }
 
             if (props != null)
             {
                 var par = props.SelectMany(r => r.GetParameters()).Distinct();
 
                 foreach (var p1 in par)
+                {
                     TryAdd(p1.ParameterType);
+                }
             }
         }
 
@@ -346,7 +411,9 @@ public class DIHelper
     {
         if (service.IsSubclassOf(typeof(ControllerBase)) || service.GetInterfaces().Contains(typeof(IResourceFilter))
             || service.GetInterfaces().Contains(typeof(IDictionary<string, string>)))
+        {
             return true;
+        }
 
         var c = service.IsGenericType && (
             service.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) ||

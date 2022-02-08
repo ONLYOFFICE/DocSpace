@@ -51,7 +51,10 @@ public class AscRandom : Random
             _seeds[index] = num3;
             num3 = num2 - num3;
 
-            if (num3 < 0) num3 += int.MaxValue;
+            if (num3 < 0)
+            {
+                num3 += int.MaxValue;
+            }
 
             num2 = _seeds[index];
         }
@@ -62,7 +65,10 @@ public class AscRandom : Random
             {
                 _seeds[k] -= _seeds[1 + ((k + 30) % (_seeds.Length - 1))];
 
-                if (_seeds[k] < 0) _seeds[k] += int.MaxValue;
+                if (_seeds[k] < 0)
+                {
+                    _seeds[k] += int.MaxValue;
+                }
             }
         }
 
@@ -72,14 +78,20 @@ public class AscRandom : Random
 
     public override int Next(int maxValue)
     {
-        if (maxValue < 0) throw new ArgumentOutOfRangeException(nameof(maxValue));
+        if (maxValue < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(maxValue));
+        }
 
         return (int)(InternalSample() * 4.6566128752457969E-10 * maxValue);
     }
 
     public override void NextBytes(byte[] buffer)
     {
-        if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+        if (buffer == null)
+        {
+            throw new ArgumentNullException(nameof(buffer));
+        }
 
         for (var i = 0; i < buffer.Length; i++)
         {
@@ -92,15 +104,27 @@ public class AscRandom : Random
         var inext = _inext;
         var inextp = _inextp;
 
-        if (++inext >= _seeds.Length - 1) inext = 1;
+        if (++inext >= _seeds.Length - 1)
+        {
+            inext = 1;
+        }
 
-        if (++inextp >= _seeds.Length - 1) inextp = 1;
+        if (++inextp >= _seeds.Length - 1)
+        {
+            inextp = 1;
+        }
 
         var num = _seeds[inext] - _seeds[inextp];
 
-        if (num == int.MaxValue) num--;
+        if (num == int.MaxValue)
+        {
+            num--;
+        }
 
-        if (num < 0) num += int.MaxValue;
+        if (num < 0)
+        {
+            num += int.MaxValue;
+        }
 
         _seeds[inext] = num;
         _inext = inext;

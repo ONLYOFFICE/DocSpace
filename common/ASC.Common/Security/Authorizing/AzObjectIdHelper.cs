@@ -32,7 +32,10 @@ public static class AzObjectIdHelper
 
     public static string GetFullObjectId(ISecurityObjectId objectId)
     {
-        if (objectId == null) return null;
+        if (objectId == null)
+        {
+            return null;
+        }
 
         return $"{objectId.ObjectType.FullName}{s_separator}{objectId.SecurityId}";
     }
