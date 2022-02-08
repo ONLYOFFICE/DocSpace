@@ -14,7 +14,10 @@ ExclusiveArch:  x86_64
 AutoReq:        no
 AutoProv:       no
 License:        AGPLv3
-Source0:        https://github.com/ONLYOFFICE/%{product}/archive/%GIT_BRANCH.tar.gz
+Source0:        https://github.com/ONLYOFFICE/%{product}/archive/%GIT_BRANCH.tar.gz#/%{sourcename}.tar.gz
+Source1:        https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz#/document-templates-main-community-server.tar.gz
+Source2:        https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz#/dictionaries-master.tar.gz
+Source3:        https://github.com/ONLYOFFICE/CommunityServer/archive/master.tar.gz#/CommunityServer-master.tar.gz
 BuildRequires:  nodejs >= 12.0
 BuildRequires:  yarn
 BuildRequires:  libgdiplus
@@ -49,7 +52,10 @@ App Server is a platform for building your own online office by connecting ONLYO
 %prep
 
 rm -rf %{_rpmdir}/%{_arch}/%{name}-*
-%setup -n %{sourcename}
+%setup -b1 -b2 -b3 -n %{sourcename}
+mv -f %{_builddir}/document-templates-main-community-server/*  %{_builddir}/%{sourcename}/products/ASC.Files/Server/DocStore/
+mv -f %{_builddir}/dictionaries-master/*  %{_builddir}/%{sourcename}/common/Tests/Frontend.Translations.Tests/dictionaries/
+mv -f %{_builddir}/CommunityServer-master/build/sql/*  %{_builddir}/%{sourcename}/install/docker/config/
 
 %include build.spec
 
