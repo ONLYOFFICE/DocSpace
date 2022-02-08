@@ -1,16 +1,21 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Box from "../box";
 import { desktop, tablet } from "@appserver/components/utils/device";
+import { isMobile } from "react-device-detect";
 
 const StyledIframe = styled.iframe`
   border: none;
   height: 60px;
+
   @media ${desktop} {
     width: ${(props) => props.sectionWidth + 24 + "px"};
   }
 
   @media ${tablet} {
-    min-width: ${(props) => props.sectionWidth + 36 + "px"};
+    min-width: ${(props) =>
+      isMobile
+        ? props.sectionWidth + 32 + "px"
+        : props.sectionWidth + 16 + "px"};
   }
 `;
 
