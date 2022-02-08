@@ -100,14 +100,14 @@ END
 
 #install kafka
 PRODUCT_DIR="/var/www/${product}"
-if [ "$(ls -A "$PRODUCT_DIR/services/kafka" 2> /dev/null)" == "" ]; then
+if [ "$(ls "$PRODUCT_DIR/services/kafka" 2> /dev/null)" == "" ]; then
 	mkdir -p ${PRODUCT_DIR}/services/
 	getent passwd kafka >/dev/null || useradd -m -d ${PRODUCT_DIR}/services/kafka -s /sbin/nologin -p kafka kafka
 	cd ${PRODUCT_DIR}/services/kafka
-	KAFKA_VERSION=$(curl https://downloads.apache.org/kafka/ | grep -Eo '2.7.[0-9]' | tail -1)
+	KAFKA_VERSION=$(curl https://downloads.apache.org/kafka/ | grep -Eo '3.1.[0-9]' | tail -1)
 	KAFKA_ARCHIVE=$(curl https://downloads.apache.org/kafka/$KAFKA_VERSION/ | grep -Eo "kafka_2.[0-9][0-9]-$KAFKA_VERSION.tgz" | tail -1)
 	curl https://downloads.apache.org/kafka/$KAFKA_VERSION/$KAFKA_ARCHIVE -O
-	tar xzf kafka_*.tgz --strip 1 && rm -rf kafka_*.tgz
+	tar xzf $KAFKA_ARCHIVE --strip 1 && rm -rf $KAFKA_ARCHIVE
 	chown -R kafka ${PRODUCT_DIR}/services/kafka
 	cd -
 fi
