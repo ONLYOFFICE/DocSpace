@@ -60,8 +60,10 @@ public class DistributedTask
         };
     }
 
-    public DistributedTask(DistributedTaskCache distributedTaskCache) =>
-         DistributedTaskCache = distributedTaskCache;
+    public DistributedTask(DistributedTaskCache distributedTaskCache)
+    {
+        DistributedTaskCache = distributedTaskCache;
+    }
 
     public T GetProperty<T>(string name)
     {
