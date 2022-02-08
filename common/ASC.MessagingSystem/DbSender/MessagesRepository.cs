@@ -164,7 +164,7 @@ namespace ASC.MessagingSystem.DbSender
 
             if (message.Description != null && message.Description.Any())
             {
-                le.Description =
+                le.DescriptionRaw =
                     JsonConvert.SerializeObject(message.Description, new JsonSerializerSettings
                     {
                         DateTimeZoneHandling = DateTimeZoneHandling.Utc
@@ -193,7 +193,7 @@ namespace ASC.MessagingSystem.DbSender
 
             if (message.Description != null && message.Description.Any())
             {
-                ae.Description =
+                ae.DescriptionRaw =
                     JsonConvert.SerializeObject(GetSafeDescription(message.Description), new JsonSerializerSettings
                     {
                         DateTimeZoneHandling = DateTimeZoneHandling.Utc
