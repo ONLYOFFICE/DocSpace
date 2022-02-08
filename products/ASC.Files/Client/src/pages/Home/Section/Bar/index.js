@@ -18,9 +18,10 @@ const loadLanguagePath = () => {
   let index = Number(localStorage.getItem("barIndex") || 0);
   const currentBar = bar[index];
 
-  const htmlUrl = currentBar
-    ? `https://${window.firebaseHelper.config.authDomain}/${language}/${currentBar}/index.html`
-    : null;
+  const htmlUrl =
+    currentBar && window.firebaseHelper.config.authDomain
+      ? `https://${window.firebaseHelper.config.authDomain}/${language}/${currentBar}/index.html`
+      : null;
 
   return htmlUrl;
 };
