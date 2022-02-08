@@ -57,18 +57,18 @@ namespace ASC.Data.Storage
             Option = option;
             TempStream = tempStream;
             TempPath = tempPath;
-            this.source = source ?? throw new ArgumentNullException("source");
-            this.destination = destination ?? throw new ArgumentNullException("destination");
+            this.source = source ?? throw new ArgumentNullException(nameof(source));
+            this.destination = destination ?? throw new ArgumentNullException(nameof(destination));
             maxChunkUploadSize = 10 * 1024 * 1024;
             chunksize = 5 * 1024 * 1024;
         }
 
         public void CopyFile(string srcDomain, string srcPath, string destDomain, string destPath)
         {
-            if (srcDomain == null) throw new ArgumentNullException("srcDomain");
-            if (srcPath == null) throw new ArgumentNullException("srcPath");
-            if (destDomain == null) throw new ArgumentNullException("destDomain");
-            if (destPath == null) throw new ArgumentNullException("destPath");
+            if (srcDomain == null) throw new ArgumentNullException(nameof(srcDomain));
+            if (srcPath == null) throw new ArgumentNullException(nameof(srcPath));
+            if (destDomain == null) throw new ArgumentNullException(nameof(destDomain));
+            if (destPath == null) throw new ArgumentNullException(nameof(destPath));
 
             using var stream = source.GetReadStream(srcDomain, srcPath);
             if (stream.Length < maxChunkUploadSize)
@@ -90,7 +90,6 @@ namespace ASC.Data.Storage
                             memstream.Seek(0, SeekOrigin.Begin);
                             holder.UploadChunk(session, memstream, chunksize);
                             memstream.Dispose();
-                            memstream = null;
                         }
                     }
                     finally

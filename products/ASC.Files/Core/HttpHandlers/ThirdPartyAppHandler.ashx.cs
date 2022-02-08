@@ -115,7 +115,7 @@ namespace ASC.Web.Files.HttpHandlers
 
             if (string.IsNullOrEmpty(message))
             {
-                if ((context.Request.Query["error"].FirstOrDefault() ?? "").ToLower() == "access_denied")
+                if ((context.Request.Query["error"].FirstOrDefault() ?? "").Equals("access_denied", StringComparison.InvariantCultureIgnoreCase))
                 {
                     message = context.Request.Query["error_description"].FirstOrDefault() ?? FilesCommonResource.AppAccessDenied;
                 }

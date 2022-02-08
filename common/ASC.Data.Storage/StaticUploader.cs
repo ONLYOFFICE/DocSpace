@@ -255,7 +255,7 @@ namespace ASC.Data.Storage
             this.relativePath = relativePath;
             this.mappedPath = mappedPath;
 
-            var extensions = ".png|.jpeg|.jpg|.gif|.ico|.swf|.mp3|.ogg|.eot|.svg|.ttf|.woff|.woff2|.css|.less|.js";
+            const string extensions = ".png|.jpeg|.jpg|.gif|.ico|.swf|.mp3|.ogg|.eot|.svg|.ttf|.woff|.woff2|.css|.less|.js";
             var extensionsArray = extensions.Split('|');
 
             directoryFiles = Directory.GetFiles(mappedPath, "*", SearchOption.AllDirectories)

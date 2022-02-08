@@ -89,7 +89,7 @@ namespace ASC.Collections
 
         protected string BuildKey(string key, string rootkey)
         {
-            return string.Format("{0}-{1}-{2}", baseKey, rootkey, key);
+            return $"{baseKey}-{rootkey}-{key}";
         }
 
         protected abstract object GetObjectFromCache(string fullKey);
@@ -106,7 +106,7 @@ namespace ASC.Collections
 
         protected virtual bool FitsCondition(object cached)
         {
-            return cached != null && cached is T;
+            return cached is T;
         }
 
         public virtual T Get(string rootkey, string key, Func<T> defaults)

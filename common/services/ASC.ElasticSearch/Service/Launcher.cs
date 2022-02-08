@@ -210,7 +210,7 @@ namespace ASC.ElasticSearch
         }
     }
 
-    public class ServiceLauncherExtension
+    public static class ServiceLauncherExtension
     {
         public static void Register(DIHelper services)
         {

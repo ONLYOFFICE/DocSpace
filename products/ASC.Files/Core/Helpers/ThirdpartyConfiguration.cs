@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using ASC.Common;
 using ASC.Core.Common.Configuration;
@@ -47,7 +46,7 @@ namespace ASC.Web.Files.Helpers
         {
             get
             {
-                return thirdPartyProviders ??= (Configuration.GetSection("files:thirdparty:enable").Get<string[]>() ?? new string[] { }).ToList();
+                return thirdPartyProviders ??= Configuration.GetSection("files:thirdparty:enable").Get<List<string>>() ?? new List<string>();
             }
         }
         public ThirdpartyConfigurationData(IConfiguration configuration)

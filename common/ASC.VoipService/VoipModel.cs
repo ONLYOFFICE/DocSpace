@@ -90,7 +90,7 @@ namespace ASC.VoipService
         }
     }
 
-    public class WorkingHours
+    public sealed class WorkingHours
     {
         public bool Enabled { get; set; }
         public TimeSpan? From { get; set; }
@@ -105,7 +105,7 @@ namespace ASC.VoipService
         }
 
 
-        protected bool Equals(WorkingHours other)
+        private bool Equals(WorkingHours other)
         {
             return Enabled.Equals(other.Enabled) && From.Equals(other.From) && To.Equals(other.To);
         }

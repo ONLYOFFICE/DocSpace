@@ -135,7 +135,7 @@ namespace ASC.Web.Files.Classes
 
         #region Property
 
-        public string ThumbnailExtension;
+        public string ThumbnailExtension { get; set; }
 
         public const int MaxTitle = 170;
 

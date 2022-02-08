@@ -57,12 +57,12 @@ namespace ASC.Web.Studio.Core
 
         public static string GetFileSizeExceptionString(long size)
         {
-            return string.Format("{0} ({1}).", Resource.FileSizeMaxExceed, FilesSizeToString(size));
+            return $"{Resource.FileSizeMaxExceed} ({FilesSizeToString(size)}).";
         }
 
         public static string GetPersonalFreeSpaceExceptionString(long size)
         {
-            return string.Format("{0} ({1}).", Resource.PersonalFreeSpaceException, FilesSizeToString(size));
+            return $"{Resource.PersonalFreeSpaceException} ({FilesSizeToString(size)}).";
         }
 
         /// <summary>

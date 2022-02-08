@@ -50,7 +50,7 @@ namespace ASC.Web.CRM.HttpHandlers
             _next = next;
         }
 
-        public async Task Invoke(HttpContext context,
+        public Task Invoke(HttpContext context,
                                 WebItemSecurity webItemSecurity,
                                 CrmSecurity crmSecurity,
                                 Global global,
@@ -59,6 +59,15 @@ namespace ASC.Web.CRM.HttpHandlers
             if (!webItemSecurity.IsAvailableForMe(ProductEntryPoint.ID))
                 throw crmSecurity.CreateSecurityException();
 
+            return InternalInvoke(context, webItemSecurity, crmSecurity, global, importFromCSV);
+        }
+
+        private async Task InternalInvoke(HttpContext context,
+                                WebItemSecurity webItemSecurity,
+                                CrmSecurity crmSecurity,
+                                Global global,
+                                ImportFromCSV importFromCSV)
+        {
             var fileUploadResult = new FileUploadResult();
 
             if (context.Request.Form.Files.Count == 0)

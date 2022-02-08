@@ -91,7 +91,7 @@ namespace ASC.Core.Tenants
         public void SetForTenant(int tenantId, TenantCookieSettings settings = null)
         {
             if (!IsVisibleSettings) return;
-            SettingsManager.SaveForTenant((settings ?? TenantCookieSettings.GetInstance()), tenantId);
+            SettingsManager.SaveForTenant(settings ?? TenantCookieSettings.GetInstance(), tenantId);
         }
 
         public TenantCookieSettings GetForUser(Guid userId)
@@ -111,7 +111,7 @@ namespace ASC.Core.Tenants
         public void SetForUser(Guid userId, TenantCookieSettings settings = null)
         {
             if (!IsVisibleSettings) return;
-            SettingsManager.SaveForUser((settings ?? TenantCookieSettings.GetInstance()), userId);
+            SettingsManager.SaveForUser(settings ?? TenantCookieSettings.GetInstance(), userId);
         }
 
         public DateTime GetExpiresTime(int tenantId)

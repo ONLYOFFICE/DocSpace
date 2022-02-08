@@ -65,7 +65,8 @@ namespace ASC.FederatedLogin
             var profiles = cache.Get<List<LoginProfile>>(obj);
             if (profiles == null)
             {
-                cache.Insert(obj, profiles = fromDb(obj), DateTime.UtcNow + TimeSpan.FromMinutes(10));
+                profiles = fromDb(obj);
+                cache.Insert(obj, profiles, DateTime.UtcNow + TimeSpan.FromMinutes(10));
             }
             return profiles;
         }

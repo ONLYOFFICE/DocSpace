@@ -1,13 +1,11 @@
 using System.Threading.Tasks;
 
-using ASC.Api.Core;
-
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
 namespace ASC.Web.HealthChecks.UI
 {
-    public class Program
+    public static class Program
     {
         public async static Task Main(string[] args)
         {
