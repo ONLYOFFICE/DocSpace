@@ -49,7 +49,7 @@ const Header = styled.header`
       !props.isPersonal &&
       css`
         @media ${tablet} {
-          padding-left: 4px;
+          display: none;
         }
       `}
   }

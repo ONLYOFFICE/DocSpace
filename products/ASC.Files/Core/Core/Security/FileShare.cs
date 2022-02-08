@@ -23,8 +23,11 @@
  *
 */
 
+using System.Text.Json.Serialization;
+
 namespace ASC.Files.Core.Security
 {
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum FileShare
     {
         None,
