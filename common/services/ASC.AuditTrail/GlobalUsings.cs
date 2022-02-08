@@ -20,7 +20,7 @@ global using ASC.Web.Core.Files;
 global using ASC.Web.Files.Classes;
 global using ASC.Web.Files.Utils;
 global using ASC.AuditTrail.Models;
-global using ASC.AuditTrail.Models.Mapping;
+global using ASC.AuditTrail.Models.Mappings;
 global using ASC.Common.Mapping;
 
 global using Autofac;

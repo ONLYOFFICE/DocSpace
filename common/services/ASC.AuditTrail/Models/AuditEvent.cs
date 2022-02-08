@@ -49,6 +49,6 @@ public class AuditEvent : BaseEvent, IMapFrom<AuditEventQuery>
         profile.CreateMap<DbAuditEvent, AuditEvent>();
 
         profile.CreateMap<AuditEventQuery, AuditEvent>()
-            .ConvertUsing<EventsConverter>();
+            .ConvertUsing<EventTypeConverter>();
     }
 }

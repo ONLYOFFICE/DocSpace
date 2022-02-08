@@ -90,6 +90,6 @@ public class AuditEventsRepository
             query = query.Take((int)limit);
         }
 
-        return _mapper.Map<List<AuditEventQuery>, List<AuditEvent>>(query.ToList());
+        return _mapper.Map<List<AuditEventQuery>, IEnumerable<AuditEvent>>(query.ToList());
     }
 }

@@ -57,7 +57,7 @@ public class LoginEventsRepository
              })
              .Take(chunk);
 
-        return _mapper.Map<List<LoginEventQuery>, List<LoginEvent>>(query.ToList());
+        return _mapper.Map<List<LoginEventQuery>, IEnumerable<LoginEvent>>(query.ToList());
     }
 
     public IEnumerable<LoginEvent> Get(int tenant, DateTime fromDate, DateTime to)
@@ -77,7 +77,7 @@ public class LoginEventsRepository
                 LastName = p.LastName
             };
 
-        return _mapper.Map<List<LoginEventQuery>, List<LoginEvent>>(query.ToList());
+        return _mapper.Map<List<LoginEventQuery>, IEnumerable<LoginEvent>>(query.ToList());
     }
 
     public int GetCount(int tenant, DateTime? from = null, DateTime? to = null)

@@ -23,8 +23,6 @@
  *
 */
 
-using ASC.AuditTrail.Models.Mapping;
-
 namespace ASC.AuditTrail.Models;
 
 public class LoginEvent : BaseEvent, IMapFrom<LoginEventQuery>
@@ -37,6 +35,6 @@ public class LoginEvent : BaseEvent, IMapFrom<LoginEventQuery>
         profile.CreateMap<DbLoginEvent, LoginEvent>();
 
         profile.CreateMap<LoginEventQuery, LoginEvent>()
-            .ConvertUsing<EventsConverter>();
+            .ConvertUsing<EventTypeConverter>();
     }
 }
