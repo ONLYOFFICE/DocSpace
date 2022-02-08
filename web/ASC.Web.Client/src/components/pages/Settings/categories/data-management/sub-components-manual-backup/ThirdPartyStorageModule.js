@@ -137,61 +137,65 @@ class ThirdPartyStorageModule extends React.PureComponent {
 
     return (
       <StyledManualBackup>
-        <ComboBox
-          options={availableOptions}
-          selectedOption={{ key: 0, label: selectedStorage }}
-          onSelect={this.onSelect}
-          isDisabled={isLoadingData || isInitialLoading}
-          noBorder={false}
-          scaled
-          scaledOptions
-          dropDownMaxHeight={400}
-          className="backup_combo"
-        />
-
-        {selectedId === ThirdPartyStorages.GoogleId && !isInitialLoading && (
-          <GoogleCloudStorage
-            isLoadingData={isLoadingData}
-            availableStorage={availableStorage}
-            isMaxProgress={isMaxProgress}
-            selectedId={selectedId}
-            onMakeCopyIntoStorage={this.onMakeCopyIntoStorage}
-            isInvalidForm={this.isInvalidForm}
+        <div className="manual-backup_storages-module">
+          <ComboBox
+            options={availableOptions}
+            selectedOption={{ key: 0, label: selectedStorage }}
+            onSelect={this.onSelect}
+            isDisabled={isLoadingData || isInitialLoading}
+            noBorder={false}
+            scaled
+            scaledOptions
+            dropDownMaxHeight={400}
+            className="backup_combo"
           />
-        )}
 
-        {selectedId === ThirdPartyStorages.RackspaceId && !isInitialLoading && (
-          <RackspaceStorage
-            isLoadingData={isLoadingData}
-            availableStorage={availableStorage}
-            isMaxProgress={isMaxProgress}
-            selectedId={selectedId}
-            onMakeCopyIntoStorage={this.onMakeCopyIntoStorage}
-            isInvalidForm={this.isInvalidForm}
-          />
-        )}
+          {selectedId === ThirdPartyStorages.GoogleId && !isInitialLoading && (
+            <GoogleCloudStorage
+              isLoadingData={isLoadingData}
+              availableStorage={availableStorage}
+              isMaxProgress={isMaxProgress}
+              selectedId={selectedId}
+              onMakeCopyIntoStorage={this.onMakeCopyIntoStorage}
+              isInvalidForm={this.isInvalidForm}
+            />
+          )}
 
-        {selectedId === ThirdPartyStorages.SelectelId && !isInitialLoading && (
-          <SelectelStorage
-            isLoadingData={isLoadingData}
-            availableStorage={availableStorage}
-            isMaxProgress={isMaxProgress}
-            selectedId={selectedId}
-            onMakeCopyIntoStorage={this.onMakeCopyIntoStorage}
-            isInvalidForm={this.isInvalidForm}
-          />
-        )}
+          {selectedId === ThirdPartyStorages.RackspaceId &&
+            !isInitialLoading && (
+              <RackspaceStorage
+                isLoadingData={isLoadingData}
+                availableStorage={availableStorage}
+                isMaxProgress={isMaxProgress}
+                selectedId={selectedId}
+                onMakeCopyIntoStorage={this.onMakeCopyIntoStorage}
+                isInvalidForm={this.isInvalidForm}
+              />
+            )}
 
-        {selectedId === ThirdPartyStorages.AmazonId && !isInitialLoading && (
-          <AmazonStorage
-            isLoadingData={isLoadingData}
-            availableStorage={availableStorage}
-            isMaxProgress={isMaxProgress}
-            selectedId={selectedId}
-            onMakeCopyIntoStorage={this.onMakeCopyIntoStorage}
-            isInvalidForm={this.isInvalidForm}
-          />
-        )}
+          {selectedId === ThirdPartyStorages.SelectelId &&
+            !isInitialLoading && (
+              <SelectelStorage
+                isLoadingData={isLoadingData}
+                availableStorage={availableStorage}
+                isMaxProgress={isMaxProgress}
+                selectedId={selectedId}
+                onMakeCopyIntoStorage={this.onMakeCopyIntoStorage}
+                isInvalidForm={this.isInvalidForm}
+              />
+            )}
+
+          {selectedId === ThirdPartyStorages.AmazonId && !isInitialLoading && (
+            <AmazonStorage
+              isLoadingData={isLoadingData}
+              availableStorage={availableStorage}
+              isMaxProgress={isMaxProgress}
+              selectedId={selectedId}
+              onMakeCopyIntoStorage={this.onMakeCopyIntoStorage}
+              isInvalidForm={this.isInvalidForm}
+            />
+          )}
+        </div>
       </StyledManualBackup>
     );
   }

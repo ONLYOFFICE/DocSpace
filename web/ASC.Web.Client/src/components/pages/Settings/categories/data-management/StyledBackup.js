@@ -12,15 +12,12 @@ const commonStyles = css`
 
   .radio-button_text {
     margin-right: 7px;
-    margin-left: 8px;
+    margin-left: 4px;
     font-size: 13px;
     font-weight: 600;
   }
   .backup_radio-button {
-    margin-bottom: 16px;
-    &:last-of-type {
-      margin-bottom: 24px;
-    }
+    margin-bottom: 4px;
   }
 
   .backup_combo {
@@ -43,6 +40,7 @@ const commonStyles = css`
     max-width: ${TEXT_LENGTH};
     font-size: 12px;
     line-height: 15px;
+    margin-left: 24px;
   }
 `;
 
@@ -50,6 +48,17 @@ const StyledManualBackup = styled.div`
   ${commonStyles}
   .manual-backup_buttons {
     margin-top: 16px;
+    margin-left: 24px;
+  }
+  .select-folder_file-input {
+    margin-left: 24px;
+    margin-top: 16px;
+  }
+  .manual-backup_storages-module {
+    margin-left: 24px;
+    .manual-backup_buttons {
+      margin-left: 0px;
+    }
   }
 `;
 
@@ -97,6 +106,12 @@ const StyledStoragesModule = styled.div`
 const StyledRestoreBackup = styled.div`
   ${commonStyles}
 
+  .restore-description {
+    max-width: ${TEXT_LENGTH};
+    font-size: 12px;
+    line-height: 15px;
+  }
+
   .restore-source {
     font-weight: 600;
     margin-top: 30px;
@@ -141,10 +156,14 @@ const StyledRestoreBackup = styled.div`
   .restore-backup_modules {
     margin-top: 24px;
   }
+
+  .backup_radio-button {
+    margin-bottom: 16px;
+  }
 `;
 
 const StyledModules = styled.div`
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 
   .backup-description {
     ${(props) => props.isDisabled && `color: #A3A9AE`}

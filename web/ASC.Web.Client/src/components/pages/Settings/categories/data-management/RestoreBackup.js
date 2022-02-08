@@ -420,7 +420,7 @@ class RestoreBackup extends React.Component {
     ) : (
       <StyledRestoreBackup>
         <div className="restore-description">
-          <Text className="backup-description">
+          <Text className="restore-description">
             {t("DataRestoreDescription")}
           </Text>
         </div>
@@ -514,14 +514,14 @@ class RestoreBackup extends React.Component {
           label={t("UserNotification")}
         />
 
-        <Text className="backup-description restore-source restore-warning">
+        <Text className="restore-description restore-source restore-warning">
           {t("Common:Warning")}
           {"!"}
         </Text>
-        <Text className="backup-description ">
+        <Text className="restore-description">
           {t("RestoreSettingsWarning")}
         </Text>
-        <Text className="backup-description restore-warning_link">
+        <Text className="restore-description restore-warning_link">
           {t("RestoreSettingsLink")}
         </Text>
 
