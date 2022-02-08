@@ -1087,7 +1087,7 @@ const Dark = {
 
     selectLink: {
       color: "#474747",
-      linkColor: grayMaxLight,
+      linkColor: "#E06A1B",
     },
 
     slider: {
@@ -2215,7 +2215,7 @@ const Dark = {
   filesEmptyContainer: {
     linkColor: "#adadad",
     privateRoom: {
-      linkColor: "#116d9d",
+      linkColor: "#E06A1B",
     },
   },
 
@@ -2436,7 +2436,7 @@ const Dark = {
 
   filesPrivateRoom: {
     borderBottom: "1px solid #d3d3d3",
-    linkColor: "#116d9d",
+    linkColor: "#E06A1B",
     textColor: "#83888D",
   },
 
@@ -2510,7 +2510,7 @@ const Dark = {
 
   studio: {
     about: {
-      linkColor: blueMain,
+      linkColor: "#E06A1B",
       border: "1px solid #474747",
     },
 
@@ -2523,11 +2523,11 @@ const Dark = {
 
     confirm: {
       activateUser: {
-        textColor: "#116d9d",
+        textColor: "#E06A1B",
         textColorError: red,
       },
       change: {
-        titleColor: "#116d9d",
+        titleColor: "#E06A1B",
       },
     },
 
@@ -2540,7 +2540,7 @@ const Dark = {
 
       buttonBackground: "#292929",
 
-      linkColor: strongBlue,
+      linkColor: "#E06A1B",
       headerColor: orangePressed,
     },
 
@@ -2560,7 +2560,7 @@ const Dark = {
           backgroundColorWrapper: blueMain,
           roleColor: grayMid,
 
-          color: strongBlue,
+          color: "#E06A1B",
           departmentColor: "#858585",
 
           tooltipColor: "#F5E9BA",
@@ -2574,7 +2574,7 @@ const Dark = {
 
         owner: {
           backgroundColor: black,
-          linkColor: strongBlue,
+          linkColor: "#E06A1B",
           departmentColor: "#858585",
           tooltipColor: "#F5E9BA",
         },
@@ -2582,7 +2582,7 @@ const Dark = {
 
       common: {
         linkColor: "#858585",
-        linkColorHelp: strongBlue,
+        linkColorHelp: "#E06A1B",
         tooltipLinkColor: "#e06a1b",
         arrowColor: black,
         descriptionColor: "#858585",
@@ -2602,12 +2602,12 @@ const Dark = {
 
       integration: {
         separatorBorder: "1px solid #474747",
-        linkColor: strongBlue,
+        linkColor: "#E06A1B",
       },
     },
 
     wizard: {
-      linkColor: "#116d9d",
+      linkColor: "#E06A1B",
     },
   },
 

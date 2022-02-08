@@ -332,7 +332,7 @@ class AvatarEditorBody extends React.Component {
         {desktopMode && orDropFileHereLabel}
         <Text
           as="p"
-          color="#A3A9AE"
+          // color="#A3A9AE"
           fontSize="12px"
           fontWeight="600"
           textAlign={labelAlign}
