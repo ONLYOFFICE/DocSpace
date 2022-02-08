@@ -85,7 +85,10 @@ public class LoginEventsRepository
         var query = MessagesContext.LoginEvents
             .Where(l => l.TenantId == tenant);
 
-        if (from.HasValue && to.HasValue) query = query.Where(l => l.Date >= from & l.Date <= to);
+        if (from.HasValue && to.HasValue)
+        {
+            query = query.Where(l => l.Date >= from & l.Date <= to);
+        }
 
         return query.Count();
     }

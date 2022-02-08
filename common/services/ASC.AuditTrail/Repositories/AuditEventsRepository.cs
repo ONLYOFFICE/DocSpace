@@ -41,9 +41,15 @@ public class AuditEventsRepository
         _mapper = mapper;
     }
 
-    public IEnumerable<AuditEvent> GetLast(int tenant, int chunk) => Get(tenant, null, null, chunk);
+    public IEnumerable<AuditEvent> GetLast(int tenant, int chunk)
+    {
+        return Get(tenant, null, null, chunk);
+    }
 
-    public IEnumerable<AuditEvent> Get(int tenant, DateTime from, DateTime to) => Get(tenant, from, to, null);
+    public IEnumerable<AuditEvent> Get(int tenant, DateTime from, DateTime to)
+    {
+        return Get(tenant, from, to, null);
+    }
 
     public int GetCount(int tenant, DateTime? from = null, DateTime? to = null)
     {
@@ -52,7 +58,9 @@ public class AuditEventsRepository
             .OrderByDescending(a => a.Date);
 
         if (from.HasValue && to.HasValue)
+        {
             query = query.Where(a => a.Date >= from & a.Date <= to);
+        }
 
         return query.Count();
     }
@@ -73,9 +81,14 @@ public class AuditEventsRepository
            };
 
         if (fromDate.HasValue && to.HasValue)
+        {
             query = query.Where(q => q.Event.Date >= fromDate & q.Event.Date <= to);
+        }
 
-        if (limit.HasValue) query = query.Take((int)limit);
+        if (limit.HasValue)
+        {
+            query = query.Take((int)limit);
+        }
 
         return _mapper.Map<List<AuditEventQuery>, List<AuditEvent>>(query.ToList());
     }
