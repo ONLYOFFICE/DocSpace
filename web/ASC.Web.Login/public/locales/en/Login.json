@@ -17,7 +17,6 @@
   "RegistrationEmailWatermark": "Email",
   "Remember": "Remember me",
   "RememberHelper": "The default session lifetime is 20 minutes. Check this option to set it to 1 year. To set your own value, go to Settings.",
-  "ShowMore": "Show more",
   "LoginDescription": "We'll email you a magic code to sign in without a password. Or you can <1>log in manually.</1>",
   "CodeTitle": "The code was emailed to you",
   "CodeSubtitle": "We sent a 6-digit code to {{email}}. The code has a limited validity period, enter it as soon as possible.",
