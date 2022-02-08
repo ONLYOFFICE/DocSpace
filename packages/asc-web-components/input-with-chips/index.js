@@ -81,10 +81,13 @@ const InputWithChips = ({ options, placeholder, onChange, ...props }) => {
 
   const onEnterPress = () => {
     if (value.trim().length > 0) {
+      const separators = [",", " ", ", "];
       const chipsFromString = value
-        .split(", ")
+        .split(new RegExp(separators.join("|"), "g"))
         .filter((it) => {
-          return !chips.find((chip) => chip.value === it);
+          return (
+            !chips.find((chip) => chip.value === it) && it.trim().length > 0
+          );
         })
         .map((it) => ({ label: it, value: it }));
 
