@@ -85,9 +85,9 @@ RUN mkdir -p /var/log/onlyoffice && \
 RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     apt-get -y update && \
     apt-get -y upgrade && \
-    apt-get install -yq nano && \
-    apt-get install -yq jq && \
-    apt-get install -yq nodejs && \
+    apt-get install -yq sudo nano curl vim && \
+    curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash - && \
+    apt-get install -y nodejs && \
     apt-get install -yq libgdiplus
     
 #USER onlyoffice
