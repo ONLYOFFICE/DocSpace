@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 
 using ASC.Common;
 using ASC.Core.Common.EF;
@@ -50,11 +49,15 @@ namespace ASC.Core.Data
         public ConfigureDbQuotaService(DbContextManager<CoreDbContext> dbContextManager) =>
             _dbContextManager = dbContextManager;
 
-        public void Configure(string name, DbQuotaService options) =>
+        public void Configure(string name, DbQuotaService options)
+        {
             options.LazyCoreDbContext = new Lazy<CoreDbContext>(() => _dbContextManager.Get(name));
+        }
 
-        public void Configure(DbQuotaService options) =>
+        public void Configure(DbQuotaService options)
+        {
             options.LazyCoreDbContext = new Lazy<CoreDbContext>(() => _dbContextManager.Value);
+        }
     }
 
     [Scope]
@@ -73,24 +76,24 @@ namespace ASC.Core.Data
 
         public IEnumerable<TenantQuota> GetTenantQuotas()
         {
-            return
-                CoreDbContext.Quotas
+            return CoreDbContext.Quotas
                 .ProjectTo<TenantQuota>(_mapper.ConfigurationProvider)
                 .ToList();
         }
 
         public TenantQuota GetTenantQuota(int id)
         {
-            return
-                 CoreDbContext.Quotas
-                 .Where(r => r.Tenant == id)
+            return CoreDbContext.Quotas.Where(r => r.Tenant == id)
                 .ProjectTo<TenantQuota>(_mapper.ConfigurationProvider)
                 .SingleOrDefault();
         }
 
         public TenantQuota SaveTenantQuota(TenantQuota quota)
         {
-            if (quota == null) throw new ArgumentNullException(nameof(quota));
+            if (quota == null)
+            {
+                throw new ArgumentNullException(nameof(quota));
+            }
 
             CoreDbContext.AddOrUpdate(r => r.Quotas, _mapper.Map<TenantQuota, DbQuota>(quota));
             CoreDbContext.SaveChanges();
@@ -114,10 +117,12 @@ namespace ASC.Core.Data
             tr.Commit();
         }
 
-
         public void SetTenantQuotaRow(TenantQuotaRow row, bool exchange)
         {
-            if (row == null) throw new ArgumentNullException(nameof(row));
+            if (row == null)
+            {
+                throw new ArgumentNullException(nameof(row));
+            }
 
             using var tx = CoreDbContext.Database.BeginTransaction();
 
@@ -142,7 +147,9 @@ namespace ASC.Core.Data
             IQueryable<DbQuotaRow> q = CoreDbContext.QuotaRows;
 
             if (tenantId != Tenant.DefaultTenant)
+            {
                 q = q.Where(r => r.Tenant == tenantId);
+            }
 
             return q.ProjectTo<TenantQuotaRow>(_mapper.ConfigurationProvider).ToList();
         }

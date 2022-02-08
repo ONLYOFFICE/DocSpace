@@ -41,6 +41,9 @@ namespace ASC.Core.Caching
             StartTime = DateTime.UtcNow;
         }
 
-        public void Expire() => _interval = default;
+        public void Expire()
+        {
+            _interval = default;
+        }
     }
 }

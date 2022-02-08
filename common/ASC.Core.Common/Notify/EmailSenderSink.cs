@@ -58,7 +58,9 @@ namespace ASC.Core.Notify
         public override SendResponse ProcessMessage(INoticeMessage message)
         {
             if (message.Recipient.Addresses == null || message.Recipient.Addresses.Length == 0)
+            {
                 return new SendResponse(message, s_senderName, SendResult.IncorrectRecipient);
+            }
 
             var responce = new SendResponse(message, s_senderName, default(SendResult));
             try
@@ -135,11 +137,15 @@ namespace ASC.Core.Notify
 
             var priority = message.Arguments.FirstOrDefault(a => a.Tag == "Priority");
             if (priority != null)
+            {
                 m.Priority = Convert.ToInt32(priority.Value);
+            }
 
             var attachmentTag = message.Arguments.FirstOrDefault(x => x.Tag == "EmbeddedAttachments");
             if (attachmentTag != null && attachmentTag.Value != null)
+            {
                 m.EmbeddedAttachments.AddRange(attachmentTag.Value as NotifyMessageAttachment[]);
+            }
 
             var autoSubmittedTag = message.Arguments.FirstOrDefault(x => x.Tag == "AutoSubmitted");
             if (autoSubmittedTag != null && autoSubmittedTag.Value is string)

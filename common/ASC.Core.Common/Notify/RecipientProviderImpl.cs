@@ -45,10 +45,16 @@ namespace ASC.Core.Notify
             if (TryParseGuid(id, out var recID))
             {
                 var user = _userManager.GetUsers(recID);
-                if (user.Id != Constants.LostUser.Id) return new DirectRecipient(user.Id.ToString(), user.ToString());
+                if (user.Id != Constants.LostUser.Id)
+                {
+                    return new DirectRecipient(user.Id.ToString(), user.ToString());
+                }
 
                 var group = _userManager.GetGroupInfo(recID);
-                if (group.ID != Constants.LostGroupInfo.ID) return new RecipientsGroup(group.ID.ToString(), group.Name);
+                if (group.ID != Constants.LostGroupInfo.ID)
+                {
+                    return new RecipientsGroup(group.ID.ToString(), group.Name);
+                }
             }
 
             return null;
@@ -56,7 +62,10 @@ namespace ASC.Core.Notify
 
         public virtual IRecipient[] GetGroupEntries(IRecipientsGroup group)
         {
-            if (group == null) throw new ArgumentNullException(nameof(group));
+            if (group == null)
+            {
+                throw new ArgumentNullException(nameof(group));
+            }
 
             var result = new List<IRecipient>();
             var groupID = Guid.Empty;
@@ -75,7 +84,10 @@ namespace ASC.Core.Notify
 
         public virtual IRecipientsGroup[] GetGroups(IRecipient recipient)
         {
-            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
+            if (recipient == null)
+            {
+                throw new ArgumentNullException(nameof(recipient));
+            }
 
             var result = new List<IRecipientsGroup>();
             if (TryParseGuid(recipient.ID, out var recID))
@@ -104,17 +116,32 @@ namespace ASC.Core.Notify
 
         public virtual string[] GetRecipientAddresses(IDirectRecipient recipient, string senderName)
         {
-            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
+            if (recipient == null)
+            {
+                throw new ArgumentNullException(nameof(recipient));
+            }
 
             if (TryParseGuid(recipient.ID, out var userID))
             {
                 var user = _userManager.GetUsers(userID);
                 if (user.Id != Constants.LostUser.Id)
                 {
-                    if (senderName == Configuration.Constants.NotifyEMailSenderSysName) return new[] { user.Email };
-                    if (senderName == Configuration.Constants.NotifyMessengerSenderSysName) return new[] { user.UserName };
-                    if (senderName == Configuration.Constants.NotifyPushSenderSysName) return new[] { user.UserName };
-                    if (senderName == Configuration.Constants.NotifyTelegramSenderSysName) return new[] { user.Id.ToString() };
+                    if (senderName == Configuration.Constants.NotifyEMailSenderSysName)
+                    {
+                        return new[] { user.Email };
+                    }
+                    if (senderName == Configuration.Constants.NotifyMessengerSenderSysName)
+                    {
+                        return new[] { user.UserName };
+                    }
+                    if (senderName == Configuration.Constants.NotifyPushSenderSysName)
+                    {
+                        return new[] { user.UserName };
+                    }
+                    if (senderName == Configuration.Constants.NotifyTelegramSenderSysName)
+                    {
+                        return new[] { user.Id.ToString() };
+                    }
                 }
             }
 

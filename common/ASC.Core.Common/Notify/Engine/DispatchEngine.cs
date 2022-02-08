@@ -57,9 +57,13 @@ namespace ASC.Notify.Engine
             {
                 var sender = _context.NotifyService.GetSender(senderName);
                 if (sender != null)
+                {
                     response = sender.DirectSend(message);
+                }
                 else
+                {
                     response = new SendResponse(message, senderName, SendResult.Impossible);
+                }
 
                 LogResponce(message, response, sender != null ? sender.SenderName : string.Empty);
             }
@@ -73,12 +77,17 @@ namespace ASC.Notify.Engine
         {
             var logmsg = string.Format("[{0}] sended to [{1}] over {2}, status: {3} ", message.Subject, message.Recipient, senderName, response.Result);
             if (response.Result == SendResult.Inprogress)
+            {
                 _logger.Debug(logmsg, response.Exception);
-
+            }
             else if (response.Result == SendResult.Impossible)
+            {
                 _logger.Error(logmsg, response.Exception);
-
-            else _logger.Debug(logmsg);
+            }
+            else
+            {
+                _logger.Debug(logmsg);
+            }
         }
 
         private void LogMessage(INoticeMessage message, string senderName)
@@ -86,6 +95,7 @@ namespace ASC.Notify.Engine
             try
             {
                 if (_messagesLogger.IsDebugEnabled)
+                {
                     _messagesLogger.DebugFormat("[{5}]->[{1}] by [{6}] to [{2}] at {0}\r\n\r\n[{3}]\r\n{4}\r\n{7}",
                         DateTime.Now,
                         message.Recipient.Name,
@@ -95,6 +105,7 @@ namespace ASC.Notify.Engine
                         message.Action,
                         senderName,
                         new string('-', 80));
+                }
             }
             catch { }
         }

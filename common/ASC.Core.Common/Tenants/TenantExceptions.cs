@@ -67,7 +67,10 @@ namespace ASC.Core.Tenants
         public IEnumerable<string> ExistsTenants { get; private set; }
 
         public TenantAlreadyExistsException(string message, IEnumerable<string> existsTenants)
-            : base(message) => ExistsTenants = existsTenants ?? Enumerable.Empty<string>();
+            : base(message)
+        {
+            ExistsTenants = existsTenants ?? Enumerable.Empty<string>();
+        }
 
         protected TenantAlreadyExistsException(SerializationInfo info, StreamingContext context)
             : base(info, context) { }

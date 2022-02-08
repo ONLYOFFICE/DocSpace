@@ -83,7 +83,11 @@ namespace ASC.Notify.Messages
 
         public void AddArgument(params ITagValue[] tagValues)
         {
-            if (tagValues == null) throw new ArgumentNullException(nameof(tagValues));
+            if (tagValues == null)
+            {
+                throw new ArgumentNullException(nameof(tagValues));
+            }
+
             Array.ForEach(tagValues,
                 tagValue =>
                 {
@@ -94,6 +98,9 @@ namespace ASC.Notify.Messages
                 });
         }
 
-        public ITagValue GetArgument(string tag) => _arguments.Find(r => r.Tag == tag);
+        public ITagValue GetArgument(string tag)
+        {
+            return _arguments.Find(r => r.Tag == tag);
+        }
     }
 }

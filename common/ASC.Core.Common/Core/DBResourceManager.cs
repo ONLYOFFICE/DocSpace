@@ -168,9 +168,14 @@ namespace TMResourceData
                 CultureInfo culture,
                 string filename)
             {
-                if (culture == null) throw new ArgumentNullException(nameof(culture));
-
-                if (string.IsNullOrEmpty(filename)) throw new ArgumentNullException(nameof(culture));
+                if (culture == null)
+                {
+                    throw new ArgumentNullException(nameof(culture));
+                }
+                if (string.IsNullOrEmpty(filename))
+                {
+                    throw new ArgumentNullException(nameof(culture));
+                }
 
                 _dbContext = dbContext;
                 _logger = option.CurrentValue;
@@ -205,7 +210,9 @@ namespace TMResourceData
                 }
 
                 if (_invariant != null && result == null)
+                {
                     result = _invariant.GetString(name, ignoreCase);
+                }
 
                 return result;
             }
@@ -312,26 +319,38 @@ namespace TMResourceData
 
         internal string ReplaceLogo(TenantManager tenantManager, IHttpContextAccessor httpContextAccessor, string resourceName, string resourceValue)
         {
-            if (string.IsNullOrEmpty(resourceValue)) return resourceValue;
+            if (string.IsNullOrEmpty(resourceValue))
+            {
+                return resourceValue;
+            }
 
-            if (!DBResourceManager.WhiteLableEnabled) return resourceValue;
+            if (!DBResourceManager.WhiteLableEnabled)
+            {
+                return resourceValue;
+            }
 
             if (httpContextAccessor.HttpContext != null) //if in Notify Service or other process without HttpContext
             {
                 try
                 {
                     var tenant = tenantManager.GetCurrentTenant(false);
-                    if (tenant == null) return resourceValue;
+                    if (tenant == null)
+                    {
+                        return resourceValue;
+                    }
 
                     if (_whiteLabelDictionary.TryGetValue(tenant.Id, out var newText))
                     {
                         var newTextReplacement = newText;
 
                         if (resourceValue.Contains("<") && resourceValue.Contains(">") || resourceName.StartsWith("pattern_"))
+                        {
                             newTextReplacement = HttpUtility.HtmlEncode(newTextReplacement);
-
+                        }
                         if (resourceValue.Contains("{0"))
+                        {
                             newTextReplacement = newTextReplacement.Replace("{", "{{").Replace("}", "}}"); //Hack for string which used in string.Format
+                        }
 
                         var replPattern = _configuration["resources:whitelabel-text.replacement.pattern"] ?? "(?<=[^@/\\\\]|^)({0})(?!\\.com)";
                         var pattern = string.Format(replPattern, DefaultLogoText);

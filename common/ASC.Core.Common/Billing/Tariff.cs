@@ -57,9 +57,15 @@ namespace ASC.Core.Billing
             };
         }
 
-        public override int GetHashCode() => QuotaId.GetHashCode();
+        public override int GetHashCode()
+        {
+            return QuotaId.GetHashCode();
+        }
 
-        public override bool Equals(object obj) => obj is Tariff t && t.QuotaId == QuotaId;
+        public override bool Equals(object obj)
+        {
+            return obj is Tariff t && t.QuotaId == QuotaId;
+        }
 
         public bool EqualsByParams(Tariff t)
         {

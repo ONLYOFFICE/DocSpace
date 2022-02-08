@@ -38,7 +38,9 @@ namespace ASC.Core.Caching
         public AzRecordStore(IEnumerable<AzRecord> aces)
         {
             foreach (var a in aces)
+            {
                 Add(a);
+            }
         }
 
         public IEnumerable<AzRecord> Get(string objectId)
@@ -50,7 +52,10 @@ namespace ASC.Core.Caching
 
         public void Add(AzRecord r)
         {
-            if (r == null) return;
+            if (r == null)
+            {
+                return;
+            }
 
             var id = r.ObjectId ?? string.Empty;
             if (!_byObjectId.ContainsKey(id))
@@ -64,16 +69,27 @@ namespace ASC.Core.Caching
 
         public void Remove(AzRecord r)
         {
-            if (r == null) return;
+            if (r == null)
+            {
+                return;
+            }
 
             var id = r.ObjectId ?? string.Empty;
 
             if (_byObjectId.ContainsKey(id))
+            {
                 _byObjectId[id].RemoveAll(a => a.SubjectId == r.SubjectId && a.ActionId == r.ActionId && a.Reaction == r.Reaction);
+            }
         }
 
-        public IEnumerator<AzRecord> GetEnumerator() => _byObjectId.Values.SelectMany(v => v).GetEnumerator();
+        public IEnumerator<AzRecord> GetEnumerator()
+        {
+            return _byObjectId.Values.SelectMany(v => v).GetEnumerator();
+        }
 
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
     }
 }

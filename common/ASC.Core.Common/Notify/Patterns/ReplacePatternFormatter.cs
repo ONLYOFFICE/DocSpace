@@ -40,7 +40,10 @@ namespace ASC.Notify.Patterns
 
         protected override string FormatText(string text, ITagValue[] tagsValues)
         {
-            if (string.IsNullOrEmpty(text)) return text;
+            if (string.IsNullOrEmpty(text))
+            {
+                return text;
+            }
 
             var formattedText = RegEx.Replace(text,
                 match =>

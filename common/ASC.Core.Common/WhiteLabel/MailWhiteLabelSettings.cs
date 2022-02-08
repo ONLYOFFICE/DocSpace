@@ -65,9 +65,9 @@ namespace ASC.Web.Core.WhiteLabel
 
         public bool IsDefault(IConfiguration configuration)
         {
-            if (!(GetDefault(configuration) is MailWhiteLabelSettings defaultSettings)) return false;
-
-            return FooterEnabled == defaultSettings.FooterEnabled &&
+            return !(GetDefault(configuration) is MailWhiteLabelSettings defaultSettings)
+                ? false
+                : FooterEnabled == defaultSettings.FooterEnabled &&
                     FooterSocialEnabled == defaultSettings.FooterSocialEnabled &&
                     SupportUrl == defaultSettings.SupportUrl &&
                     SupportEmail == defaultSettings.SupportEmail &&
@@ -76,14 +76,20 @@ namespace ASC.Web.Core.WhiteLabel
                     SiteUrl == defaultSettings.SiteUrl;
         }
 
-        public static MailWhiteLabelSettings Instance(SettingsManager settingsManager) =>
-            settingsManager.LoadForDefaultTenant<MailWhiteLabelSettings>();
+        public static MailWhiteLabelSettings Instance(SettingsManager settingsManager)
+        {
+            return settingsManager.LoadForDefaultTenant<MailWhiteLabelSettings>();
+        }
 
-        public static bool IsDefault(SettingsManager settingsManager, IConfiguration configuration) =>
-            Instance(settingsManager).IsDefault(configuration);
+        public static bool IsDefault(SettingsManager settingsManager, IConfiguration configuration)
+        {
+            return Instance(settingsManager).IsDefault(configuration);
+        }
 
-        public ISettings GetDefault(IServiceProvider serviceProvider) =>
-            GetDefault(serviceProvider.GetService<IConfiguration>());
+        public ISettings GetDefault(IServiceProvider serviceProvider)
+        {
+            return GetDefault(serviceProvider.GetService<IConfiguration>());
+        }
     }
 
     [Singletone]
@@ -94,6 +100,7 @@ namespace ASC.Web.Core.WhiteLabel
             get
             {
                 var url = BaseCommonLinkUtility.GetRegionalUrl(_configuration["web:support-feedback"] ?? string.Empty, null);
+
                 return !string.IsNullOrEmpty(url) ? url : "http://helpdesk.onlyoffice.com";
             }
         }
@@ -103,6 +110,7 @@ namespace ASC.Web.Core.WhiteLabel
             get
             {
                 var email = _configuration["web:support:email"];
+
                 return !string.IsNullOrEmpty(email) ? email : "support@onlyoffice.com";
             }
         }
@@ -112,6 +120,7 @@ namespace ASC.Web.Core.WhiteLabel
             get
             {
                 var email = _configuration["web:payment:email"];
+
                 return !string.IsNullOrEmpty(email) ? email : "sales@onlyoffice.com";
             }
         }
@@ -121,6 +130,7 @@ namespace ASC.Web.Core.WhiteLabel
             get
             {
                 var url = BaseCommonLinkUtility.GetRegionalUrl(_configuration["web:demo-order"] ?? string.Empty, null);
+
                 return !string.IsNullOrEmpty(url) ? url : "http://www.onlyoffice.com/demo-order.aspx";
             }
         }
@@ -130,13 +140,16 @@ namespace ASC.Web.Core.WhiteLabel
             get
             {
                 var url = _configuration["web:teamlab-site"];
+
                 return !string.IsNullOrEmpty(url) ? url : "http://www.onlyoffice.com";
             }
         }
 
         private readonly IConfiguration _configuration;
 
-        public MailWhiteLabelSettingsHelper(IConfiguration configuration) =>
+        public MailWhiteLabelSettingsHelper(IConfiguration configuration)
+        {
             _configuration = configuration;
+        }
     }
 }

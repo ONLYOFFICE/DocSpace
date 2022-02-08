@@ -46,7 +46,9 @@ namespace ASC.Core.Common.EF.Context
 
     public static class TenantDbExtension
     {
-        public static DIHelper AddTenantDbContextService(this DIHelper services) =>
-            services.AddDbContextManagerService<TenantDbContext>();
+        public static DIHelper AddTenantDbContextService(this DIHelper services)
+        {
+            return services.AddDbContextManagerService<TenantDbContext>();
+        }
     }
 }

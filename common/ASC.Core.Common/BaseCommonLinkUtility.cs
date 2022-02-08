@@ -44,7 +44,6 @@ namespace ASC.Core.Common
         public string ServerUri { get; set; }
     }
 
-
     [Scope]
     public class BaseCommonLinkUtility
     {
@@ -54,7 +53,11 @@ namespace ASC.Core.Common
         {
             get
             {
-                if (!string.IsNullOrEmpty(_serverRootPath)) return _serverRootPath;
+                if (!string.IsNullOrEmpty(_serverRootPath))
+                {
+                    return _serverRootPath;
+                }
+
                 UriBuilder result;
                 // first, take from current request
                 if (HttpContextAccessor?.HttpContext?.Request != null)
@@ -63,7 +66,9 @@ namespace ASC.Core.Common
                     result = new UriBuilder(u.Scheme, u.Host, u.Port);
 
                     if (CoreBaseSettings.Standalone && !result.Uri.IsLoopback)
+                    {
                         _serverRoot.Host = result.Host; // save for stanalone
+                    }
                 } 
                 else result = new UriBuilder(_serverRoot.Uri);
 
@@ -74,7 +79,10 @@ namespace ASC.Core.Common
                     result.Host = tenant.GetTenantDomain(_coreSettings);
 
 #if DEBUG
-                    if (tenant.TenantAlias == Localhost) result.Host = Localhost; // for Visual Studio debug
+                    if (tenant.TenantAlias == Localhost)
+                    {
+                        result.Host = Localhost; // for Visual Studio debug
+                    }
 #endif
                     if (!string.IsNullOrEmpty(tenant.MappedDomain))
                     {
@@ -151,40 +159,51 @@ namespace ASC.Core.Common
 
         public string GetFullAbsolutePath(string virtualPath)
         {
-            if (string.IsNullOrEmpty(virtualPath)) return ServerRootPath;
+            if (string.IsNullOrEmpty(virtualPath))
+            {
+                return ServerRootPath;
+            }
 
             if (virtualPath.StartsWith("http://", StringComparison.InvariantCultureIgnoreCase) ||
                 virtualPath.StartsWith("mailto:", StringComparison.InvariantCultureIgnoreCase) ||
                 virtualPath.StartsWith("javascript:", StringComparison.InvariantCultureIgnoreCase) ||
                 virtualPath.StartsWith("https://", StringComparison.InvariantCultureIgnoreCase))
+            {
                 return virtualPath;
+            }
 
-            if (string.IsNullOrEmpty(virtualPath) || virtualPath.StartsWith("/")) 
-                return ServerRootPath + virtualPath;
-
-            return ServerRootPath + VirtualRoot.TrimEnd('/') + "/" + virtualPath.TrimStart('~', '/');
+            return string.IsNullOrEmpty(virtualPath) || virtualPath.StartsWith("/")
+                ? ServerRootPath + virtualPath
+                : ServerRootPath + VirtualRoot.TrimEnd('/') + "/" + virtualPath.TrimStart('~', '/');
         }
 
         public string ToAbsolute(string virtualPath)
         {
-            if (_vpath == null) return VirtualPathUtility.ToAbsolute(virtualPath);
+            if (_vpath == null)
+            {
+                return VirtualPathUtility.ToAbsolute(virtualPath);
+            }
 
-            if (string.IsNullOrEmpty(virtualPath) || virtualPath.StartsWith("/")) return virtualPath;
-
-            return (_vpath != "/" ? _vpath : string.Empty) + "/" + virtualPath.TrimStart('~', '/');
+            return string.IsNullOrEmpty(virtualPath) || virtualPath.StartsWith("/")
+                ? virtualPath
+                : (_vpath != "/" ? _vpath : string.Empty) + "/" + virtualPath.TrimStart('~', '/');
         }
 
         public static string GetRegionalUrl(string url, string lang)
         {
             if (string.IsNullOrEmpty(url))
+            {
                 return url;
+            }
 
             //-replace language
             var regex = new Regex("{.*?}");
             var matches = regex.Matches(url);
 
             if (string.IsNullOrEmpty(lang))
+            {
                 url = matches.Cast<Match>().Aggregate(url, (current, match) => current.Replace(match.Value, string.Empty));
+            }
             else
             {
                 foreach (Match match in matches)
@@ -199,13 +218,14 @@ namespace ASC.Core.Common
             var uri = new Uri(url);
 
             if (uri.Scheme == "mailto")
+            {
                 return uri.OriginalString;
+            }
 
             var baseUri = new UriBuilder(uri.Scheme, uri.Host, uri.Port).Uri;
             baseUri = uri.Segments.Aggregate(baseUri, (current, segment) => new Uri(current, segment));
             //--
             //todo: lost query string!!!
-
 
             return baseUri.ToString().TrimEnd('/');
         }

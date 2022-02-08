@@ -42,10 +42,14 @@ namespace ASC.Notify.Sinks
             _senderName = senderName;
         }
 
-        public override SendResponse ProcessMessage(INoticeMessage message) =>
-            _dispatcher.Dispatch(message, _senderName);
+        public override SendResponse ProcessMessage(INoticeMessage message)
+        {
+            return _dispatcher.Dispatch(message, _senderName);
+        }
 
-        public override void ProcessMessageAsync(INoticeMessage message) =>
+        public override void ProcessMessageAsync(INoticeMessage message)
+        {
             _dispatcher.Dispatch(message, _senderName);
+        }
     }
 }

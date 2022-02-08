@@ -37,7 +37,9 @@ namespace ASC.Core.Common.EF.Context
 
     public static class TelegramDbContextExtension
     {
-        public static DIHelper AddTelegramDbContextService(this DIHelper services) =>
-            services.AddDbContextManagerService<TelegramDbContext>();
+        public static DIHelper AddTelegramDbContextService(this DIHelper services)
+        {
+            return services.AddDbContextManagerService<TelegramDbContext>();
+        }
     }
 }

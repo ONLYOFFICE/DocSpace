@@ -41,9 +41,15 @@ namespace ASC.Notify.Cron
 
         public TreeSet() { }
 
-        public TreeSet(ICollection c) => AddAll(c);
+        public TreeSet(ICollection c)
+        {
+            AddAll(c);
+        }
 
-        public TreeSet(IComparer c) => Comparator = c;
+        public TreeSet(IComparer c)
+        {
+            Comparator = c;
+        }
 
         public new bool Add(object obj)
         {
@@ -60,7 +66,10 @@ namespace ASC.Notify.Cron
 
             while (e.MoveNext())
             {
-                if (AddWithoutSorting(e.Current)) added = true;
+                if (AddWithoutSorting(e.Current))
+                {
+                    added = true;
+                }
             }
 
             Sort(Comparator);
@@ -77,7 +86,9 @@ namespace ASC.Notify.Cron
             while (tempEnumerator.MoveNext())
             {
                 if (Comparator.Compare(tempEnumerator.Current, item) == 0)
+                {
                     return true;
+                }
             }
 
             return false;
@@ -112,7 +123,10 @@ namespace ASC.Notify.Cron
         private bool AddWithoutSorting(object obj)
         {
             bool inserted;
-            if (!(inserted = Contains(obj))) base.Add(obj);
+            if (!(inserted = Contains(obj)))
+            {
+                base.Add(obj);
+            }
 
             return !inserted;
         }

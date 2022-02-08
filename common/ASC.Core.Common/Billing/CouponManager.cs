@@ -87,7 +87,10 @@ namespace ASC.Core.Common.Billing
             }
         }
 
-        public string CreateCoupon(TenantManager tenantManager) => CreatePromotionAsync(tenantManager).Result;
+        public string CreateCoupon(TenantManager tenantManager)
+        {
+            return CreatePromotionAsync(tenantManager).Result;
+        }
 
         private async Task<string> CreatePromotionAsync(TenantManager tenantManager)
         {
@@ -97,7 +100,9 @@ namespace ASC.Core.Common.Billing
                 using var content = new StringContent(await Promotion.GeneratePromotion(_logger, this, tenantManager, _percent, _schedule), Encoding.Default, "application/json");
                 using var response = await httpClient.PostAsync(string.Format("{0}/promotions/", _apiVersion), content);
                 if (!response.IsSuccessStatusCode)
+                {
                     throw new Exception(response.ReasonPhrase);
+                }
 
                 var result = await response.Content.ReadAsStringAsync();
                 await Task.Delay(1000 - DateTime.UtcNow.Millisecond); // otherwise authorize exception
@@ -114,7 +119,10 @@ namespace ASC.Core.Common.Billing
 
         internal async Task<IEnumerable<AvangateProduct>> GetProducts()
         {
-            if (_products != null) return _products;
+            if (_products != null)
+            {
+                return _products;
+            }
 
             await _semaphoreSlim.WaitAsync();
 
@@ -129,7 +137,9 @@ namespace ASC.Core.Common.Billing
                 using var httpClient = PrepaireClient();
                 using var response = await httpClient.GetAsync(string.Format("{0}/products/?Limit=1000&Enabled=true", _apiVersion));
                 if (!response.IsSuccessStatusCode)
+                {
                     throw new Exception(response.ReasonPhrase);
+                }
 
                 var result = await response.Content.ReadAsStringAsync();
                 _logger.Debug(result);

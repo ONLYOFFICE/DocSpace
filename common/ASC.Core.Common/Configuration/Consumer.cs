@@ -107,7 +107,7 @@ namespace ASC.Core.Common.Configuration
             EventBusConsumerItem = cache;
             ConsumerFactory = consumerFactory;
             _onlyDefault = configuration["core:default-consumers"] == "true";
-            Name = "";
+            Name = string.Empty;
             Order = int.MaxValue;
         }
 
@@ -143,39 +143,65 @@ namespace ASC.Core.Common.Configuration
             _additional = additional ?? new Dictionary<string, string>();
 
             if (props != null && props.Any())
+            {
                 CanSet = props.All(r => string.IsNullOrEmpty(r.Value));
+            }
         }
 
-        public IEnumerator<KeyValuePair<string, string>> GetEnumerator() => AllProps.GetEnumerator();
+        public IEnumerator<KeyValuePair<string, string>> GetEnumerator() {
+            return AllProps.GetEnumerator();
+        }
 
         public void Add(KeyValuePair<string, string> item) { }
 
         public void Clear()
         {
             if (!CanSet)
+            {
                 throw new NotSupportedException("Key for read only. Consumer " + Name);
+            }
 
             foreach (var providerProp in _props)
+            {
                 this[providerProp.Key] = null;
+            }
 
             EventBusConsumerItem.Publish(new ConsumerCacheItem() { Name = this.Name }, CacheNotifyAction.Remove);
         }
 
-        public bool Contains(KeyValuePair<string, string> item) => AllProps.Contains(item);
+        public bool Contains(KeyValuePair<string, string> item)
+        {
+            return AllProps.Contains(item);
+        }
 
         public void CopyTo(KeyValuePair<string, string>[] array, int arrayIndex) { }
 
-        public bool Remove(KeyValuePair<string, string> item) => AllProps.Remove(item.Key);
+        public bool Remove(KeyValuePair<string, string> item) 
+        {
+            return AllProps.Remove(item.Key);
+        }
 
-        public bool ContainsKey(string key) => AllProps.ContainsKey(key);
+        public bool ContainsKey(string key) 
+        {
+            return AllProps.ContainsKey(key);
+        }
 
         public void Add(string key, string value) { }
 
-        public bool Remove(string key) => false;
+        public bool Remove(string key)
+        {
+            return false;
+        }
 
-        public bool TryGetValue(string key, out string value) => AllProps.TryGetValue(key, out value);
+        public bool TryGetValue(string key, out string value) 
+        {
+            return AllProps.TryGetValue(key, out value);
+        }
 
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
         private string Get(string name)
         {
@@ -191,7 +217,9 @@ namespace ASC.Core.Common.Configuration
             }
 
             if (string.IsNullOrEmpty(value) && AllProps.ContainsKey(name))
+            {
                 value = AllProps[name];
+            }
 
             return value;
         }
@@ -199,11 +227,16 @@ namespace ASC.Core.Common.Configuration
         private void Set(string name, string value)
         {
             if (!CanSet)
+            {
                 throw new NotSupportedException("Key for read only. Key " + name);
+            }
 
             if (!ManagedKeys.Contains(name))
             {
-                if (_additional.ContainsKey(name)) _additional[name] = value;
+                if (_additional.ContainsKey(name)) 
+                {
+                    _additional[name] = value;
+                }
 
                 else _additional.Add(name, value);
 
@@ -226,6 +259,8 @@ namespace ASC.Core.Common.Configuration
 
         public Type HandlerType { get; private set; }
         public DataStoreConsumer Cdn { get; private set; }
+        public override IEnumerable<string> AdditionalKeys =>
+            base.AdditionalKeys.Where(r => r != HandlerTypeKey && r != "cdn").ToList();
 
         public DataStoreConsumer() : base() { }
 
@@ -264,9 +299,6 @@ namespace ASC.Core.Common.Configuration
             Init(additional);
         }
 
-        public override IEnumerable<string> AdditionalKeys =>
-            base.AdditionalKeys.Where(r => r != HandlerTypeKey && r != "cdn").ToList();
-
         public object Clone()
         {
             return new DataStoreConsumer(TenantManager, CoreBaseSettings, CoreSettings, Configuration,
@@ -274,23 +306,33 @@ namespace ASC.Core.Common.Configuration
                 _additional.ToDictionary(r => r.Key, r => r.Value));
         }
 
-        protected override string GetSettingsKey(string name) =>
-            base.GetSettingsKey(Name + name);
+        protected override string GetSettingsKey(string name)
+        {
+            return base.GetSettingsKey(Name + name);
+        }
 
         private void Init(IReadOnlyDictionary<string, string> additional)
         {
             if (additional == null || !additional.ContainsKey(HandlerTypeKey))
+            {
                 throw new ArgumentException(HandlerTypeKey);
+            }
 
             HandlerType = Type.GetType(additional[HandlerTypeKey]);
 
-            if (additional.ContainsKey(CdnKey)) Cdn = GetCdn(additional[CdnKey]);
+            if (additional.ContainsKey(CdnKey)) 
+            {
+                Cdn = GetCdn(additional[CdnKey]);
+            }
         }
 
         private DataStoreConsumer GetCdn(string cdn)
         {
             var fromConfig = ConsumerFactory.GetByKey<Consumer>(cdn);
-            if (string.IsNullOrEmpty(fromConfig.Name)) return null;
+            if (string.IsNullOrEmpty(fromConfig.Name)) 
+            {
+                return null;
+            }
 
             var props = ManagedKeys.ToDictionary(prop => prop, prop => this[prop]);
             var additional = fromConfig.AdditionalKeys.ToDictionary(prop => prop, prop => fromConfig[prop]);
@@ -307,14 +349,22 @@ namespace ASC.Core.Common.Configuration
     {
         public ILifetimeScope Builder { get; set; }
 
-        public ConsumerFactory(IContainer builder) => Builder = builder.BeginLifetimeScope();
+        public ConsumerFactory(IContainer builder)
+        {
+            Builder = builder.BeginLifetimeScope();
+        }
 
-        public ConsumerFactory(ILifetimeScope builder) => Builder = builder;
+        public ConsumerFactory(ILifetimeScope builder)
+        {
+            Builder = builder;
+        }
 
         public Consumer GetByKey(string key)
         {
             if (Builder.TryResolveKeyed(key, typeof(Consumer), out var result))
+            {
                 return (Consumer)result;
+            }
 
             return new Consumer();
         }
@@ -322,7 +372,9 @@ namespace ASC.Core.Common.Configuration
         public T GetByKey<T>(string key) where T : Consumer, new()
         {
             if (Builder.TryResolveKeyed(key, typeof(T), out var result))
+            {
                 return (T)result;
+            }
 
             return new T();
         }
@@ -330,13 +382,21 @@ namespace ASC.Core.Common.Configuration
         public T Get<T>() where T : Consumer, new()
         {
             if (Builder.TryResolve(out T result))
+            {
                 return result;
+            }
 
             return new T();
         }
 
-        public IEnumerable<T> GetAll<T>() where T : Consumer, new() => Builder.Resolve<IEnumerable<T>>();
+        public IEnumerable<T> GetAll<T>() where T : Consumer, new()
+        {
+            return Builder.Resolve<IEnumerable<T>>();
+        }
 
-        public void Dispose() => Builder.Dispose();
+        public void Dispose()
+        {
+            Builder.Dispose();
+        }
     }
 }

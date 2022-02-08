@@ -49,7 +49,9 @@ namespace ASC.Core.Users
         {
             var roles = new List<IRole>();
             if (account.ID.Equals(objectId.SecurityId))
+            {
                 roles.Add(ASC.Common.Security.Authorizing.Constants.Self);
+            }
 
             return roles;
         }

@@ -79,6 +79,7 @@ namespace ASC.Core.Notify
 
                     _sender.Send(m);
                 }
+
                 return new SendResponse(message, s_senderName, result);
             }
             catch (Exception ex)

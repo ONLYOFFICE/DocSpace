@@ -53,19 +53,30 @@ namespace ASC.Notify.Channels
 
         public void SendAsync(INoticeMessage message)
         {
-            if (message == null) throw new ArgumentNullException(nameof(message));
+            if (message == null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
 
             _firstSink.ProcessMessageAsync(message);
         }
 
-        public SendResponse DirectSend(INoticeMessage message) =>
-            _senderSink.ProcessMessage(message);
-
+        public SendResponse DirectSend(INoticeMessage message)
+        {
+            return _senderSink.ProcessMessage(message);
+        }
 
         private ISink AddSink(ISink firstSink, ISink addedSink)
         {
-            if (firstSink == null) return addedSink;
-            if (addedSink == null) return firstSink;
+            if (firstSink == null)
+            {
+                return addedSink;
+            }
+
+            if (addedSink == null)
+            {
+                return firstSink;
+            }
 
             var current = firstSink;
 

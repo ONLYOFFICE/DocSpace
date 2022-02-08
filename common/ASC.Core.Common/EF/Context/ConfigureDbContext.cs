@@ -32,7 +32,10 @@ namespace ASC.Core.Common.EF
             context.MigrateAssembly = _migrateAssembly;
         }
 
-        public void Configure(T context) => Configure(BaseName, context);
+        public void Configure(T context)
+        {
+            Configure(BaseName, context);
+        }
     }
 
     public class ConfigureMultiRegionalDbContext<T> : IConfigureNamedOptions<MultiRegionalDbContext<T>> where T : BaseDbContext, new()

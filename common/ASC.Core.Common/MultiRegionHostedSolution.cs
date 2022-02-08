@@ -82,7 +82,10 @@ namespace ASC.Core
                 .ToList();
         }
 
-        public List<Tenant> FindTenants(string login) => FindTenants(login, null);
+        public List<Tenant> FindTenants(string login)
+        {
+            return FindTenants(login, null);
+        }
 
         public List<Tenant> FindTenants(string login, string password, string passwordHash = null)
         {
@@ -94,7 +97,9 @@ namespace ASC.Core
                 try
                 {
                     if (string.IsNullOrEmpty(passwordHash) && !string.IsNullOrEmpty(password))
+                    {
                         passwordHash = _passwordHasher.GetClientPassword(password);
+                    }
 
                     result.AddRange(service.FindTenants(login, passwordHash));
                 }
@@ -103,9 +108,8 @@ namespace ASC.Core
                     error = exception;
                 }
             }
-            if (!result.Any() && error != null) throw error;
 
-            return result;
+            return !result.Any() && error != null ? throw error : result;
         }
 
         public void RegisterTenant(string region, TenantRegistrationInfo ri, out Tenant tenant)
@@ -119,36 +123,54 @@ namespace ASC.Core
             foreach (var service in GetRegionServices())
             {
                 var tenant = service.GetTenant(domain);
-                if (tenant != null) return tenant;
+                if (tenant != null)
+                {
+                    return tenant;
+                }
             }
 
             return null;
         }
 
-        public Tenant GetTenant(string region, int tenantId) =>
-            GetRegionService(region).GetTenant(tenantId);
+        public Tenant GetTenant(string region, int tenantId)
+        {
+            return GetRegionService(region).GetTenant(tenantId);
+        }
 
-        public Tenant SaveTenant(string region, Tenant tenant) =>
-            GetRegionService(region).SaveTenant(tenant);
+        public Tenant SaveTenant(string region, Tenant tenant)
+        {
+            return GetRegionService(region).SaveTenant(tenant);
+        }
 
-        public string CreateAuthenticationCookie(string region, int tenantId, Guid userId) =>
-            GetRegionService(region).CreateAuthenticationCookie(_cookieStorage, tenantId, userId);
+        public string CreateAuthenticationCookie(string region, int tenantId, Guid userId)
+        {
+            return GetRegionService(region).CreateAuthenticationCookie(_cookieStorage, tenantId, userId);
+        }
 
+        public Tariff GetTariff(string region, int tenantId, bool withRequestToPaymentSystem = true)
+        {
+            return GetRegionService(region).GetTariff(tenantId, withRequestToPaymentSystem);
+        }
 
-        public Tariff GetTariff(string region, int tenantId, bool withRequestToPaymentSystem = true) =>
-            GetRegionService(region).GetTariff(tenantId, withRequestToPaymentSystem);
-
-        public void SetTariff(string region, int tenant, bool paid) =>
+        public void SetTariff(string region, int tenant, bool paid)
+        {
             GetRegionService(region).SetTariff(tenant, paid);
+        }
 
-        public void SetTariff(string region, int tenant, Tariff tariff) =>
+        public void SetTariff(string region, int tenant, Tariff tariff)
+        {
             GetRegionService(region).SetTariff(tenant, tariff);
+        }
 
-        public void SaveButton(string region, int tariffId, string partnerId, string buttonUrl) =>
+        public void SaveButton(string region, int tariffId, string partnerId, string buttonUrl)
+        {
             GetRegionService(region).SaveButton(tariffId, partnerId, buttonUrl);
+        }
 
-        public TenantQuota GetTenantQuota(string region, int tenant) =>
-            GetRegionService(region).GetTenantQuota(tenant);
+        public TenantQuota GetTenantQuota(string region, int tenant)
+        {
+            return GetRegionService(region).GetTenantQuota(tenant);
+        }
 
         public void CheckTenantAddress(string address)
         {
@@ -158,8 +180,10 @@ namespace ASC.Core
             }
         }
 
-        public IEnumerable<string> GetRegions() => 
-            GetRegionServices().Select(s => s.Region).ToList();
+        public IEnumerable<string> GetRegions()
+        {
+            return GetRegionServices().Select(s => s.Region).ToList();
+        }
 
         private IEnumerable<HostedSolution> GetRegionServices()
         {
@@ -167,7 +191,10 @@ namespace ASC.Core
                    .Select(x => x.Value);
         }
 
-        private HostedSolution GetRegionService(string region) => _regions[region];
+        private HostedSolution GetRegionService(string region)
+        {
+            return _regions[region];
+        }
 
         private void Initialize()
         {
@@ -187,7 +214,9 @@ namespace ASC.Core
 
                 _regions[_dbId] = _hostedSolutionOptions.Get(_dbId);
                 if (!_regions.ContainsKey(string.Empty))
+                {
                     _regions[string.Empty] = _hostedSolutionOptions.Get(_dbId);
+                }
             }
             else
             {
@@ -216,7 +245,9 @@ namespace ASC.Core
                 {
                     _regions[_dbId] = _hostedSolutionOptions.Get(_dbId);
                     if (!_regions.ContainsKey(string.Empty))
+                    {
                         _regions[string.Empty] = _hostedSolutionOptions.Get(_dbId);
+                    }
                 }
                 else
                 {
@@ -240,7 +271,9 @@ namespace ASC.Core
                                 var cs = new System.Configuration.ConnectionStringSettings(r.Region, r.ConnectionString, r.Provider);
 
                                 if (!_regions.ContainsKey(string.Empty))
+                                {
                                     _regions[string.Empty] = _hostedSolutionOptions.Get(cs.Name);
+                                }
 
                                 _regions[cs.Name] = _hostedSolutionOptions.Get(cs.Name);
                             }

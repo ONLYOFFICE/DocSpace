@@ -43,7 +43,10 @@ namespace ASC.Core.Common.EF
 
                 sqlProvider.Database.Migrate();
             }
-            else Database.Migrate();
+            else
+            {
+                Database.Migrate();
+            }
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -89,7 +92,9 @@ namespace ASC.Core.Common.EF
             var dbSet = expressionDbSet.Compile().Invoke(b);
             var existingBlog = dbSet.Find(entity.GetKeys());
             if (existingBlog == null)
+            {
                 return dbSet.Add(entity).Entity;
+            }
             else
             {
                 b.Entry(existingBlog).CurrentValues.SetValues(entity);
@@ -111,20 +116,32 @@ namespace ASC.Core.Common.EF
 
         public void Dispose()
         {
-            if (Context == null) return;
+            if (Context == null)
+            {
+                return;
+            }
 
             foreach (var c in Context)
             {
-                if (c != null) c.Dispose();
+                if (c != null)
+                {
+                    c.Dispose();
+                }
             }
         }
         public async ValueTask DisposeAsync()
         {
-            if (Context == null) return;
+            if (Context == null)
+            {
+                return;
+            }
 
             foreach (var c in Context)
             {
-                if (c != null) await c.DisposeAsync();
+                if (c != null)
+                {
+                    await c.DisposeAsync();
+                }
             }
         }
     }

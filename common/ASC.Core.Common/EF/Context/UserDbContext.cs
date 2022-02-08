@@ -46,7 +46,9 @@ namespace ASC.Core.Common.EF
 
     public static class UserDbExtension
     {
-        public static DIHelper AddUserDbContextService(this DIHelper services) =>
-            services.AddDbContextManagerService<UserDbContext>();
+        public static DIHelper AddUserDbContextService(this DIHelper services)
+        {
+            return services.AddDbContextManagerService<UserDbContext>();
+        }
     }
 }

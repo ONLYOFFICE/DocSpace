@@ -33,7 +33,9 @@ namespace ASC.Core.Common.EF.Context
 
     public static class NotifyDbExtension
     {
-        public static DIHelper AddNotifyDbContext(this DIHelper services) =>
-            services.AddDbContextManagerService<NotifyDbContext>();
+        public static DIHelper AddNotifyDbContext(this DIHelper services)
+        {
+            return services.AddDbContextManagerService<NotifyDbContext>();
+        }
     }
 }

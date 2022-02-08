@@ -52,9 +52,13 @@ namespace ASC.Core.Caching
         public QuotaServiceCache(IConfiguration Configuration, ICacheNotify<QuotaCacheItem> eventBus, ICache cache)
         {
             if (Configuration["core:enable-quota-cache"] == null)
+            {
                 QuotaCacheEnabled = true;
+            }
             else
+            {
                 QuotaCacheEnabled = !bool.TryParse(Configuration["core:enable-quota-cache"], out var enabled) || enabled;
+            }
 
             EventBusQuota = eventBus;
             Cache = cache;
@@ -62,9 +66,14 @@ namespace ASC.Core.Caching
 
             eventBus.Subscribe((i) =>
             {
-                if (i.Key == KeyQuota) Cache.Remove(KeyQuota);
-
-                else Cache.Remove(i.Key);
+                if (i.Key == KeyQuota)
+                {
+                    Cache.Remove(KeyQuota);
+                }
+                else
+                {
+                    Cache.Remove(i.Key);
+                }
             }, CacheNotifyAction.Any);
         }
     }
@@ -129,13 +138,18 @@ namespace ASC.Core.Caching
             {
                 quotas = Service.GetTenantQuotas();
                 if (QuotaServiceCache.QuotaCacheEnabled)
+                {
                     Cache.Insert(QuotaServiceCache.KeyQuota, quotas, DateTime.UtcNow.Add(CacheExpiration));
+                }
             }
 
             return quotas;
         }
 
-        public TenantQuota GetTenantQuota(int tenant) => GetTenantQuotas().SingleOrDefault(q => q.Tenant == tenant);
+        public TenantQuota GetTenantQuota(int tenant)
+        {
+            return GetTenantQuotas().SingleOrDefault(q => q.Tenant == tenant);
+        }
 
         public TenantQuota SaveTenantQuota(TenantQuota quota)
         {
@@ -145,7 +159,10 @@ namespace ASC.Core.Caching
             return q;
         }
 
-        public void RemoveTenantQuota(int tenant) => throw new NotImplementedException();
+        public void RemoveTenantQuota(int tenant)
+        {
+            throw new NotImplementedException();
+        }
 
         public void SetTenantQuotaRow(TenantQuotaRow row, bool exchange)
         {
@@ -167,6 +184,9 @@ namespace ASC.Core.Caching
             return result;
         }
 
-        public string GetKey(int tenant) => QuotaServiceCache.KeyQuotaRows + tenant;
+        public string GetKey(int tenant)
+        {
+            return QuotaServiceCache.KeyQuotaRows + tenant;
+        }
     }
 }

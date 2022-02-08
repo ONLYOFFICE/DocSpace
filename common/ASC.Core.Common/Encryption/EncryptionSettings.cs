@@ -105,7 +105,10 @@ namespace ASC.Core.Encryption
 
         public EncryptionSettings Deserialize(string value)
         {
-            if (string.IsNullOrEmpty(value)) return new EncryptionSettings();
+            if (string.IsNullOrEmpty(value))
+            {
+                return new EncryptionSettings();
+            }
 
             var parts = value.Split(new[] { '#' }, StringSplitOptions.None);
 
@@ -127,11 +130,14 @@ namespace ASC.Core.Encryption
             var punctuations = "!@#$%^&*()_-+=[{]};:>|./?".ToCharArray();
 
             if (length < 1 || length > 128)
+            {
                 throw new ArgumentException("password_length_incorrect", nameof(length));
-
+            }
             if (numberOfNonAlphanumericCharacters > length || numberOfNonAlphanumericCharacters < 0)
+            {
                 throw new ArgumentException("min_required_non_alphanumeric_characters_incorrect",
                     nameof(numberOfNonAlphanumericCharacters));
+            }
 
             var array = new byte[length];
             var array2 = new char[length];

@@ -44,6 +44,9 @@ namespace ASC.Core.Common.Notify.Jabber
         [JsonProperty("d")]
         public DateTime DateTime { get; set; }
 
-        public int CompareTo(MessageClass other) => Id.CompareTo(other.Id);
+        public int CompareTo(MessageClass other)
+        {
+            return Id.CompareTo(other.Id);
+        }
     }
 }

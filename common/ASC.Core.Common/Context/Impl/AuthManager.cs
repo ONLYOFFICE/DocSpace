@@ -56,19 +56,28 @@ namespace ASC.Core
         }
 
 
-        public IUserAccount[] GetUserAccounts(Tenant tenant) =>
-            _userManager.GetUsers(EmployeeStatus.Active).Select(u => ToAccount(tenant.Id, u)).ToArray();
+        public IUserAccount[] GetUserAccounts(Tenant tenant)
+        {
+            return _userManager.GetUsers(EmployeeStatus.Active).Select(u => ToAccount(tenant.Id, u)).ToArray();
+        }
 
-        public void SetUserPasswordHash(Guid userID, string passwordHash) =>
+        public void SetUserPasswordHash(Guid userID, string passwordHash)
+        {
             _userService.SetUserPasswordHash(_tenantManager.GetCurrentTenant().Id, userID, passwordHash);
+        }
 
-        public DateTime GetUserPasswordStamp(Guid userID) =>
-            _userService.GetUserPasswordStamp(_tenantManager.GetCurrentTenant().Id, userID);
+        public DateTime GetUserPasswordStamp(Guid userID)
+        {
+            return _userService.GetUserPasswordStamp(_tenantManager.GetCurrentTenant().Id, userID);
+        }
 
         public IAccount GetAccountByID(int tenantId, Guid id)
         {
             var s = Configuration.Constants.SystemAccounts.FirstOrDefault(a => a.ID == id);
-            if (s != null) return s;
+            if (s != null)
+            {
+                return s;
+            }
 
             var u = _userManager.GetUsers(id);
 

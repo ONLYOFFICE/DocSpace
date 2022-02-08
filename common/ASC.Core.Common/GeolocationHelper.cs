@@ -84,7 +84,9 @@ namespace ASC.Geolocation
             {
                 var ip = (string)(context.Request.HttpContext.Items["X-Forwarded-For"] ?? context.Request.HttpContext.Items["REMOTE_ADDR"]);
                 if (!string.IsNullOrWhiteSpace(ip))
+                {
                     return GetIPGeolocation(ip);
+                }
             }
 
             return IPGeolocationInfo.Default;
@@ -96,22 +98,33 @@ namespace ASC.Geolocation
             if (ip.Contains('.'))
             {
                 //ip v4
-                if (ip.Length == 15) return ip;
+                if (ip.Length == 15)
+                {
+                    return ip;
+                }
 
                 return string.Join(".", ip.Split(':')[0].Split('.').Select(s => ("00" + s).Substring(s.Length - 1)).ToArray());
             }
             else if (ip.Contains(':'))
             {
                 //ip v6
-                if (ip.Length == 39) return ip;
+                if (ip.Length == 39)
+                {
+                    return ip;
+                }
 
                 var index = ip.IndexOf("::");
                 if (0 <= index)
+                {
                     ip = ip.Insert(index + 2, new string(':', 8 - ip.Split(':').Length));
+                }
 
                 return string.Join(":", ip.Split(':').Select(s => ("0000" + s).Substring(s.Length)).ToArray());
             }
-            else throw new ArgumentException("Unknown ip " + ip);
+            else
+            {
+                throw new ArgumentException("Unknown ip " + ip);
+            }
         }
     }
 }

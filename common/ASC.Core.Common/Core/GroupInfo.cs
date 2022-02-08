@@ -47,17 +47,32 @@ namespace ASC.Core.Users
 
         public GroupInfo() { }
 
-        public GroupInfo(Guid categoryID) => CategoryID = categoryID;
+        public GroupInfo(Guid categoryID)
+        {
+            CategoryID = categoryID;
+        }
 
-        public override string ToString() => Name;
+        public override string ToString()
+        {
+            return Name;
+        }
 
-        public override int GetHashCode() =>
-            ID != Guid.Empty ? ID.GetHashCode() : base.GetHashCode();
+        public override int GetHashCode()
+        {
+            return ID != Guid.Empty ? ID.GetHashCode() : base.GetHashCode();
+        }
 
         public override bool Equals(object obj)
         {
-            if (!(obj is GroupInfo g)) return false;
-            if (ID == Guid.Empty && g.ID == Guid.Empty) return ReferenceEquals(this, g);
+            if (!(obj is GroupInfo g))
+            {
+                return false;
+            }
+
+            if (ID == Guid.Empty && g.ID == Guid.Empty)
+            {
+                return ReferenceEquals(this, g);
+            }
 
             return g.ID == ID;
         }

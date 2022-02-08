@@ -44,7 +44,9 @@ namespace ASC.Core.Common.EF.Context
 
     public static class ResourceDbExtension
     {
-        public static DIHelper AddResourceDbService(this DIHelper services) =>
-            services.AddDbContextManagerService<ResourceDbContext>();
+        public static DIHelper AddResourceDbService(this DIHelper services)
+        {
+            return services.AddDbContextManagerService<ResourceDbContext>();
+        }
     }
 }

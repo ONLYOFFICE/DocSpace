@@ -34,7 +34,9 @@ namespace ASC.Core.Common.EF.Context
 
     public static class MessagesContextExtension
     {
-        public static DIHelper AddMessagesContextService(this DIHelper services) =>
-            services.AddDbContextManagerService<MessagesContext>();
+        public static DIHelper AddMessagesContextService(this DIHelper services)
+        {
+            return services.AddDbContextManagerService<MessagesContext>();
+        }
     }
 }

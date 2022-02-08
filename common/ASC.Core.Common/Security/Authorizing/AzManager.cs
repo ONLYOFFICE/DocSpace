@@ -35,7 +35,6 @@ namespace ASC.Common.Security.Authorizing
         private readonly IPermissionProvider _permissionProvider;
         private readonly IRoleProvider _roleProvider;
 
-
         internal AzManager() { }
 
         public AzManager(IRoleProvider roleProvider, IPermissionProvider permissionProvider)
@@ -50,8 +49,14 @@ namespace ASC.Common.Security.Authorizing
                                     ISecurityObjectProvider securityObjProvider, out ISubject denySubject,
                                     out IAction denyAction)
         {
-            if (subject == null) throw new ArgumentNullException(nameof(subject));
-            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (subject == null)
+            {
+                throw new ArgumentNullException(nameof(subject));
+            }
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
 
             var acl = GetAzManagerAcl(subject, action, objectId, securityObjProvider);
             denySubject = acl.DenySubject;
@@ -64,7 +69,9 @@ namespace ASC.Common.Security.Authorizing
         {
             if (action.AdministratorAlwaysAllow && (Constants.Admin.ID == subject.ID 
                 || _roleProvider.IsSubjectInRole(subject, Constants.Admin)))
+            {
                 return AzManagerAcl.Allow;
+            }
 
             var acl = AzManagerAcl.Default;
             var exit = false;
@@ -90,9 +97,15 @@ namespace ASC.Common.Security.Authorizing
                             exit = true;
                         }
                     }
-                    if (exit) break;
+                    if (exit)
+                    {
+                        break;
+                    }
                 }
-                if (exit) break;
+                if (exit)
+                {
+                    break;
+                }
             }
 
             return acl;
@@ -113,11 +126,17 @@ namespace ASC.Common.Security.Authorizing
                 var secObjProviderHelper = new AzObjectSecurityProviderHelper(objectId, securityObjProvider);
                 do
                 {
-                    if (!secObjProviderHelper.ObjectRolesSupported) continue;
+                    if (!secObjProviderHelper.ObjectRolesSupported)
+                    {
+                        continue;
+                    }
 
                     foreach (var role in secObjProviderHelper.GetObjectRoles(subject))
                     {
-                        if (!subjects.Contains(role)) subjects.Add(role);
+                        if (!subjects.Contains(role))
+                        {
+                            subjects.Add(role);
+                        }
                     }
 
                 } while (secObjProviderHelper.NextInherit());

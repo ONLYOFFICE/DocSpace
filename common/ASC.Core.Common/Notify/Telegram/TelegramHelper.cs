@@ -70,8 +70,10 @@ namespace ASC.Core.Common.Notify
             return GetLink(token);
         }
 
-        public void SendMessage(NotifyMessage msg) =>
+        public void SendMessage(NotifyMessage msg)
+        {
             _telegramServiceClient.SendMessage(msg);
+        }
 
         public bool CreateClient(int tenantId, string token, int tokenLifespan, string proxy)
         {
@@ -87,7 +89,10 @@ namespace ASC.Core.Common.Notify
 
         public RegStatus UserIsConnected(Guid userId, int tenantId)
         {
-            if (_cachedTelegramDao.GetUser(userId, tenantId) != null) return RegStatus.Registered;
+            if (_cachedTelegramDao.GetUser(userId, tenantId) != null)
+            {
+                return RegStatus.Registered;
+            }
 
             return IsAwaitingRegistration(userId, tenantId) ? RegStatus.AwaitingConfirmation : RegStatus.NotRegistered;
         }
@@ -95,7 +100,10 @@ namespace ASC.Core.Common.Notify
         public string CurrentRegistrationLink(Guid userId, int tenantId)
         {
             var token = GetCurrentToken(userId, tenantId);
-            if (token == null || token == string.Empty) return string.Empty;
+            if (token == null || token == string.Empty)
+            {
+                return string.Empty;
+            }
 
             return GetLink(token);
         }
@@ -110,7 +118,10 @@ namespace ASC.Core.Common.Notify
         {
             try
             {
-                if (!telegramBotClient.TestApiAsync().GetAwaiter().GetResult()) return false;
+                if (!telegramBotClient.TestApiAsync().GetAwaiter().GetResult())
+                {
+                    return false;
+                }
             }
             catch (Exception e)
             {
@@ -122,15 +133,21 @@ namespace ASC.Core.Common.Notify
             return true;
         }
 
-        public TelegramBotClient InitClient(string token, string proxy) =>
-            string.IsNullOrEmpty(proxy) ? new TelegramBotClient(token) 
-            : new TelegramBotClient(token, new WebProxy(proxy));
+        public TelegramBotClient InitClient(string token, string proxy)
+        {
+            return string.IsNullOrEmpty(proxy) ? new TelegramBotClient(token)
+                : new TelegramBotClient(token, new WebProxy(proxy));
+        }
 
-        private bool IsAwaitingRegistration(Guid userId, int tenantId) =>
-            GetCurrentToken(userId, tenantId) != null;
+        private bool IsAwaitingRegistration(Guid userId, int tenantId)
+        {
+            return GetCurrentToken(userId, tenantId) != null;
+        }
 
-        private string GetCurrentToken(Guid userId, int tenantId) =>
-            _telegramServiceClient.RegistrationToken(userId.ToString(), tenantId);
+        private string GetCurrentToken(Guid userId, int tenantId)
+        {
+            return _telegramServiceClient.RegistrationToken(userId.ToString(), tenantId);
+        }
 
         private string GenerateToken(Guid userId)
         {
@@ -149,7 +166,10 @@ namespace ASC.Core.Common.Notify
         {
             var tgProvider = (ITelegramLoginProvider)_consumerFactory.GetByKey("telegram");
             var botname = tgProvider == null ? default : tgProvider.TelegramBotName;
-            if (string.IsNullOrEmpty(botname)) return null;
+            if (string.IsNullOrEmpty(botname))
+            {
+                return null;
+            }
 
             return $"t.me/{botname}?start={token}";
         }

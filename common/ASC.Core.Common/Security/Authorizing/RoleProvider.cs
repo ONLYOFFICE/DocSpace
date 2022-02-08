@@ -50,7 +50,10 @@ namespace ASC.Core.Security.Authorizing
             var roles = new List<IRole>();
             if (!(account is ISystemAccount))
             {
-                if (account is IRole) roles = GetParentRoles(account.ID).ToList();
+                if (account is IRole)
+                {
+                    roles = GetParentRoles(account.ID).ToList();
+                }
                 else if (account is IUserAccount)
                 {
                     roles = _serviceProvider.GetService<UserManager>()

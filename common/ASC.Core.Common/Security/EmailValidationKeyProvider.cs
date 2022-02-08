@@ -59,9 +59,14 @@ namespace ASC.Security.Cryptography
             _tenantManager = tenantManager;
 
             if (!TimeSpan.TryParse(configuration["email:validinterval"], out var validInterval))
+            {
                 validInterval = TimeSpan.FromDays(7);
+            }
+
             if (!TimeSpan.TryParse(configuration["auth:validinterval"], out var authValidInterval))
+            {
                 authValidInterval = TimeSpan.FromHours(1);
+            }
 
             ValidEmailKeyInterval = validInterval;
             ValidAuthKeyInterval = authValidInterval;
@@ -72,7 +77,10 @@ namespace ASC.Security.Cryptography
 
         public string GetEmailKey(int tenantId, string email)
         {
-            if (string.IsNullOrEmpty(email)) throw new ArgumentNullException(nameof(email));
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new ArgumentNullException(nameof(email));
+            }
 
             email = FormatEmail(tenantId, email);
 
@@ -114,19 +122,34 @@ namespace ASC.Security.Cryptography
 
         private ValidationResult ValidateEmailKeyInternal(string email, string key, TimeSpan validInterval)
         {
-            if (string.IsNullOrEmpty(email)) throw new ArgumentNullException(nameof(email));
-            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new ArgumentNullException(nameof(email));
+            }
+            if (key == null)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
 
             email = FormatEmail(_tenantManager.GetCurrentTenant().Id, email);
             var parts = key.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length != 2) return ValidationResult.Invalid;
+            if (parts.Length != 2)
+            {
+                return ValidationResult.Invalid;
+            }
 
-            if (!long.TryParse(parts[0], out var ms)) return ValidationResult.Invalid;
+            if (!long.TryParse(parts[0], out var ms))
+            {
+                return ValidationResult.Invalid;
+            }
 
             var hash = GetMashineHashedData(BitConverter.GetBytes(ms), Encoding.ASCII.GetBytes(email));
             var key2 = DoStringFromBytes(hash);
             var key2_good = string.Compare(parts[1], key2, StringComparison.InvariantCultureIgnoreCase) == 0;
-            if (!key2_good) return ValidationResult.Invalid;
+            if (!key2_good)
+            {
+                return ValidationResult.Invalid;
+            }
 
             var ms_current = (long)(DateTime.UtcNow - s_from).TotalMilliseconds;
 
@@ -135,7 +158,11 @@ namespace ASC.Security.Cryptography
 
         private string FormatEmail(int tenantId, string email)
         {
-            if (email == null) throw new ArgumentNullException(nameof(email));
+            if (email == null)
+            {
+                throw new ArgumentNullException(nameof(email));
+            }
+
             try
             {
                 return string.Format("{0}|{1}|{2}", email.ToLowerInvariant(), tenantId,
@@ -203,7 +230,9 @@ namespace ASC.Security.Cryptography
 
             ConfirmType? cType = null;
             if (Enum.TryParse<ConfirmType>(type, out var confirmType))
+            {
                 cType = confirmType;
+            }
 
             request.TryGetValue("key", out var key);
 
@@ -268,7 +297,9 @@ namespace ASC.Security.Cryptography
                     {
                         var user = _userManager.GetUsers(uiD.GetValueOrDefault());
                         if (user == null || user.Status == EmployeeStatus.Terminated || _authContext.IsAuthenticated && _authContext.CurrentAccount.ID != uiD)
+                        {
                             return ValidationResult.Invalid;
+                        }
                     }
 
                     checkKeyResult = _provider.ValidateEmailKey(email + type + uiD, key, _provider.ValidEmailKeyInterval);

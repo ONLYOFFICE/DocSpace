@@ -70,7 +70,10 @@ namespace ASC.Core.Common.Notify
         /// <param name="entity">Name of entity e.g. 'blog', 'project.task', etc.</param>
         /// <param name="entityId">Uniq id of the entity</param>
         /// <returns>New TeamLab tag</returns>
-        public TagValue Comment(string entity, string entityId) => Comment(entity, entityId, null);
+        public TagValue Comment(string entity, string entityId)
+        {
+            return Comment(entity, entityId, null);
+        }
 
         /// <summary>
         /// Creates 'replyto' tag that can be used to comment some TeamLab entity
@@ -81,8 +84,14 @@ namespace ASC.Core.Common.Notify
         /// <returns>New TeamLab tag</returns>
         public TagValue Comment(string entity, string entityId, string parentId)
         {
-            if (string.IsNullOrEmpty(entity) || !s_entityTypePattern.Match(entity).Success) throw new ArgumentException(@"Not supported entity type", entity);
-            if (string.IsNullOrEmpty(entityId)) throw new ArgumentException(@"Entity Id is null or empty", entityId);
+            if (string.IsNullOrEmpty(entity) || !s_entityTypePattern.Match(entity).Success)
+            {
+                throw new ArgumentException(@"Not supported entity type", entity);
+            }
+            if (string.IsNullOrEmpty(entityId))
+            {
+                throw new ArgumentException(@"Entity Id is null or empty", entityId);
+            }
 
             var pId = parentId != Guid.Empty.ToString() && parentId != null ? parentId : string.Empty;
 
@@ -94,7 +103,9 @@ namespace ASC.Core.Common.Notify
         /// </summary>
         /// <param name="projectId">Id of the project to create message</param>
         /// <returns>New TeamLab tag</returns>
-        public TagValue Message(int projectId) => 
-            new TagValue(TagName, string.Format("message_{0}@{1}", projectId, AutoreplyDomain));       
+        public TagValue Message(int projectId)
+        {
+            return new TagValue(TagName, string.Format("message_{0}@{1}", projectId, AutoreplyDomain));
+        }
     }
 }

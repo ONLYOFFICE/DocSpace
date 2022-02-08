@@ -103,16 +103,16 @@ namespace ASC.Core
         internal CoreSettings CoreSettings { get; set; }
 
         private Tenant _currentTenant;
-        private static readonly List<string> _thisCompAddresses = new List<string>();
+        private static readonly List<string> s_thisCompAddresses = new List<string>();
 
         static TenantManager()
         {
-            _thisCompAddresses.Add("localhost");
-            _thisCompAddresses.Add(Dns.GetHostName().ToLowerInvariant());
-            _thisCompAddresses.AddRange(Dns.GetHostAddresses("localhost").Select(a => a.ToString()));
+            s_thisCompAddresses.Add("localhost");
+            s_thisCompAddresses.Add(Dns.GetHostName().ToLowerInvariant());
+            s_thisCompAddresses.AddRange(Dns.GetHostAddresses("localhost").Select(a => a.ToString()));
             try
             {
-                _thisCompAddresses.AddRange(Dns.GetHostAddresses(Dns.GetHostName()).Select(a => a.ToString()));
+                s_thisCompAddresses.AddRange(Dns.GetHostAddresses(Dns.GetHostName()).Select(a => a.ToString()));
             }
             catch
             {
@@ -147,20 +147,34 @@ namespace ASC.Core
             HttpContextAccessor = httpContextAccessor;
         }
 
-        public List<Tenant> GetTenants(bool active = true) => TenantService.GetTenants(default, active).ToList();
+        public List<Tenant> GetTenants(bool active = true)
+        {
+            return TenantService.GetTenants(default, active).ToList();
+        }
 
-        public List<Tenant> GetTenants(List<int> ids) => TenantService.GetTenants(ids).ToList();
+        public List<Tenant> GetTenants(List<int> ids)
+        {
+            return TenantService.GetTenants(ids).ToList();
+        }
 
-        public Tenant GetTenant(int tenantId) => TenantService.GetTenant(tenantId);
+        public Tenant GetTenant(int tenantId)
+        {
+            return TenantService.GetTenant(tenantId);
+        }
 
         public Tenant GetTenant(string domain)
         {
-            if (string.IsNullOrEmpty(domain)) return null;
+            if (string.IsNullOrEmpty(domain))
+            {
+                return null;
+            }
 
             Tenant t = null;
 
-            if (_thisCompAddresses.Contains(domain, StringComparer.InvariantCultureIgnoreCase))
+            if (s_thisCompAddresses.Contains(domain, StringComparer.InvariantCultureIgnoreCase))
+            {
                 t = TenantService.GetTenant("localhost");
+            }
 
             var isAlias = false;
 
@@ -174,24 +188,35 @@ namespace ASC.Core
                 }
             }
 
-            if (t == null) t = TenantService.GetTenant(domain);
+            if (t == null)
+            {
+                t = TenantService.GetTenant(domain);
+            }
 
             if (t == null && CoreBaseSettings.Standalone && !isAlias)
+            {
                 t = TenantService.GetTenantForStandaloneWithoutAlias(domain);
+            }
 
             return t;
         }
 
         public Tenant SetTenantVersion(Tenant tenant, int version)
         {
-            if (tenant == null) throw new ArgumentNullException(nameof(tenant));
+            if (tenant == null)
+            {
+                throw new ArgumentNullException(nameof(tenant));
+            }
 
             if (tenant.Version != version)
             {
                 tenant.Version = version;
                 SaveTenant(tenant);
             }
-            else throw new ArgumentException("This is current version already");
+            else
+            {
+                throw new ArgumentException("This is current version already");
+            }
 
             return tenant;
         }
@@ -199,18 +224,30 @@ namespace ASC.Core
         public Tenant SaveTenant(Tenant tenant)
         {
             var newTenant = TenantService.SaveTenant(CoreSettings, tenant);
-            if (CallContext.GetData(CurrentTenant) is Tenant) SetCurrentTenant(newTenant);
+            if (CallContext.GetData(CurrentTenant) is Tenant)
+            {
+                SetCurrentTenant(newTenant);
+            }
 
             return newTenant;
         }
 
-        public void RemoveTenant(int tenantId, bool auto = false) => TenantService.RemoveTenant(tenantId, auto);
+        public void RemoveTenant(int tenantId, bool auto = false)
+        {
+            TenantService.RemoveTenant(tenantId, auto);
+        }
 
-        public Tenant GetCurrentTenant(HttpContext context) => GetCurrentTenant(true, context);
+        public Tenant GetCurrentTenant(HttpContext context)
+        {
+            return GetCurrentTenant(true, context);
+        }
 
         public Tenant GetCurrentTenant(bool throwIfNotFound, HttpContext context)
         {
-            if (_currentTenant != null) return _currentTenant;
+            if (_currentTenant != null)
+            {
+                return _currentTenant;
+            }
 
             Tenant tenant = null;
 
@@ -225,16 +262,24 @@ namespace ASC.Core
             }
 
             if (tenant == null && throwIfNotFound)
+            {
                 throw new Exception("Could not resolve current tenant :-(.");
+            }
 
             _currentTenant = tenant;
 
             return tenant;
         }
 
-        public Tenant GetCurrentTenant() => GetCurrentTenant(true);
+        public Tenant GetCurrentTenant()
+        {
+            return GetCurrentTenant(true);
+        }
 
-        public Tenant GetCurrentTenant(bool throwIfNotFound) => GetCurrentTenant(throwIfNotFound, HttpContextAccessor?.HttpContext);
+        public Tenant GetCurrentTenant(bool throwIfNotFound)
+        {
+            return GetCurrentTenant(throwIfNotFound, HttpContextAccessor?.HttpContext);
+        }
 
         public void SetCurrentTenant(Tenant tenant)
         {
@@ -243,7 +288,9 @@ namespace ASC.Core
                 _currentTenant = tenant;
 
                 if (HttpContextAccessor?.HttpContext != null)
+                {
                     HttpContextAccessor.HttpContext.Items[CurrentTenant] = tenant;
+                }
 
                 Thread.CurrentThread.CurrentCulture = tenant.GetCulture();
                 Thread.CurrentThread.CurrentUICulture = tenant.GetCulture();
@@ -266,14 +313,25 @@ namespace ASC.Core
             return result;
         }
 
-        public void CheckTenantAddress(string address) => TenantService.ValidateDomain(address);
+        public void CheckTenantAddress(string address)
+        {
+            TenantService.ValidateDomain(address);
+        }
 
-        public IEnumerable<TenantVersion> GetTenantVersions() => TenantService.GetTenantVersions();
+        public IEnumerable<TenantVersion> GetTenantVersions()
+        {
+            return TenantService.GetTenantVersions();
+        }
 
-        public IEnumerable<TenantQuota> GetTenantQuotas() => GetTenantQuotas(false);
+        public IEnumerable<TenantQuota> GetTenantQuotas()
+        {
+            return GetTenantQuotas(false);
+        }
 
-        public IEnumerable<TenantQuota> GetTenantQuotas(bool all) =>
-            QuotaService.GetTenantQuotas().Where(q => q.Tenant < 0 && (all || q.Visible)).OrderByDescending(q => q.Tenant).ToList();
+        public IEnumerable<TenantQuota> GetTenantQuotas(bool all)
+        {
+            return QuotaService.GetTenantQuotas().Where(q => q.Tenant < 0 && (all || q.Visible)).OrderByDescending(q => q.Tenant).ToList();
+        }
 
         public TenantQuota GetTenantQuota(int tenant)
         {
@@ -317,8 +375,14 @@ namespace ASC.Core
             return quota;
         }
 
-        public void SetTenantQuotaRow(TenantQuotaRow row, bool exchange) => QuotaService.SetTenantQuotaRow(row, exchange);
+        public void SetTenantQuotaRow(TenantQuotaRow row, bool exchange)
+        {
+            QuotaService.SetTenantQuotaRow(row, exchange);
+        }
 
-        public List<TenantQuotaRow> FindTenantQuotaRows(int tenantId) => QuotaService.FindTenantQuotaRows(tenantId).ToList();
+        public List<TenantQuotaRow> FindTenantQuotaRows(int tenantId)
+        {
+            return QuotaService.FindTenantQuotaRows(tenantId).ToList();
+        }
     }
 }

@@ -57,7 +57,10 @@ namespace ASC.Core
         {
             get
             {
-                if (s_isMono.HasValue) return s_isMono.Value;
+                if (s_isMono.HasValue)
+                {
+                    return s_isMono.Value;
+                }
 
                 var monoRuntime = Type.GetType("Mono.Runtime");
 
@@ -66,7 +69,9 @@ namespace ASC.Core
                 {
                     var dispalayName = monoRuntime.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
                     if (dispalayName != null)
+                    {
                         s_monoVersion = dispalayName.Invoke(null, null) as string;
+                    }
                 }
 
                 return s_isMono.Value;
@@ -80,10 +85,17 @@ namespace ASC.Core
 
         public static void NotifyStartUp(IServiceProvider serviceProvider)
         {
-            if (s_notifyStarted) return;
+            if (s_notifyStarted)
+            {
+                return;
+            }
+
             lock (s_syncRoot)
             {
-                if (s_notifyStarted) return;
+                if (s_notifyStarted)
+                {
+                    return;
+                }
 
                 var configuration = serviceProvider.GetService<IConfiguration>();
                 var cacheNotify = serviceProvider.GetService<ICacheNotify<NotifyMessage>>();
@@ -106,6 +118,7 @@ namespace ASC.Core
                     {
                         ["useCoreSettings"] = "true"
                     };
+
                     if ("ases".Equals(postman, StringComparison.InvariantCultureIgnoreCase))
                     {
                         emailSender = new AWSSender(serviceProvider, options);
@@ -114,7 +127,9 @@ namespace ASC.Core
                         properties["refreshTimeout"] = configuration["ses:refreshTimeout"];
                     }
                     else
+                    {
                         emailSender = new SmtpSender(serviceProvider, options);
+                    }
 
                     emailSender.Init(properties);
                 }
@@ -129,14 +144,20 @@ namespace ASC.Core
             }
         }
 
-        public static void RegisterSendMethod(Action<DateTime> method, string cron) =>
+        public static void RegisterSendMethod(Action<DateTime> method, string cron)
+        {
             NotifyContext.NotifyEngine.RegisterSendMethod(method, cron);
+        }
 
-        public static void UnregisterSendMethod(Action<DateTime> method) =>
+        public static void UnregisterSendMethod(Action<DateTime> method)
+        {
             NotifyContext.NotifyEngine.UnregisterSendMethod(method);
+        }
 
-        private static void NotifyEngine_BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope serviceScope) =>
+        private static void NotifyEngine_BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope serviceScope)
+        {
             request.Properties.Add("Tenant", serviceScope.ServiceProvider.GetService<TenantManager>().GetCurrentTenant(false));
+        }
 
         private static void NotifyEngine_AfterTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope scope)
         {

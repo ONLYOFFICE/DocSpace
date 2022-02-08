@@ -42,11 +42,15 @@ namespace ASC.Core.Security.Authorizing
     {
         private readonly AzManager _azManager;
 
-        public PermissionResolver(AzManager azManager) =>
+        public PermissionResolver(AzManager azManager)
+        {
             _azManager = azManager ?? throw new ArgumentNullException(nameof(azManager));
+        }
 
-        public bool Check(ISubject subject, params IAction[] actions) => 
-            Check(subject, null, null, actions);
+        public bool Check(ISubject subject, params IAction[] actions)
+        {
+            return Check(subject, null, null, actions);
+        }
 
         public bool Check(ISubject subject, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
         {
@@ -55,8 +59,10 @@ namespace ASC.Core.Security.Authorizing
             return denyActions.Length == 0;
         }
 
-        public void Demand(ISubject subject, params IAction[] actions) =>
+        public void Demand(ISubject subject, params IAction[] actions)
+        {
             Demand(subject, null, null, actions);
+        }
 
         public void Demand(ISubject subject, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
         {
@@ -74,10 +80,15 @@ namespace ASC.Core.Security.Authorizing
         private DenyResult[] GetDenyActions(ISubject subject, IAction[] actions, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider)
         {
             var denyActions = new List<DenyResult>();
-            if (actions == null) actions = new IAction[0];
+            if (actions == null)
+            {
+                actions = Array.Empty<IAction>();
+            }
 
             if (subject == null)
+            {
                 denyActions = actions.Select(a => new DenyResult(a, null, null)).ToList();
+            }
             else if (subject is ISystemAccount && subject.ID == Constants.CoreSystem.ID)
             {
                 // allow all

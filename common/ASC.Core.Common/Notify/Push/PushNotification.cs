@@ -40,8 +40,10 @@ namespace ASC.Core.Common.Notify.Push
         public PushItem ParentItem { get; set; }
         public DateTime QueuedOn { get; set; }
 
-        public static PushNotification ApiNotification(string message, int? badge) =>
-            new PushNotification { Message = message, Badge = badge };
+        public static PushNotification ApiNotification(string message, int? badge)
+        {
+            return new PushNotification { Message = message, Badge = badge };
+        }
     }
 
     public class PushItem

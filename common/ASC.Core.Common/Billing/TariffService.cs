@@ -158,8 +158,8 @@ namespace ASC.Core.Billing
         internal TariffServiceStorage TariffServiceStorage { get; set; }
         internal IOptionsMonitor<ILog> Options { get; set; }
 
-        public readonly int activeUsersMin;
-        public readonly int activeUsersMax;
+        public readonly int ActiveUsersMin;
+        public readonly int ActiveUsersMax;
 
         private const int DefaultTrialPeriod = 30;
 
@@ -201,18 +201,24 @@ namespace ASC.Core.Billing
             LazyCoreDbContext = new Lazy<CoreDbContext>(() => coreDbContextManager.Value);
             var range = (Configuration["core.payment-user-range"] ?? "").Split('-');
 
-            if (!int.TryParse(range[0], out activeUsersMin))
-                activeUsersMin = 0;
+            if (!int.TryParse(range[0], out ActiveUsersMin))
+            {
+                ActiveUsersMin = 0;
+            }
 
-            if (range.Length < 2 || !int.TryParse(range[1], out activeUsersMax))
-                activeUsersMax = constants.MaxEveryoneCount;
+            if (range.Length < 2 || !int.TryParse(range[1], out ActiveUsersMax))
+            {
+                ActiveUsersMax = constants.MaxEveryoneCount;
+            }
         }
 
         public Tariff GetTariff(int tenantId, bool withRequestToPaymentSystem = true)
         {
             //single tariff for all portals
             if (CoreBaseSettings.Standalone)
+            {
                 tenantId = -1;
+            }
 
             var key = GetTariffCacheKey(tenantId);
             var tariff = Cache.Get<Tariff>(key);
@@ -234,7 +240,9 @@ namespace ASC.Core.Billing
                               var quota = QuotaService.GetTenantQuotas().SingleOrDefault(q => q.AvangateId == lastPayment.ProductId);
 
                               if (quota == null)
+                              {
                                   throw new InvalidOperationException(string.Format("Quota with id {0} not found for portal {1}.", lastPayment.ProductId, GetPortalId(tenantId)));
+                              }
 
                               var asynctariff = Tariff.CreateDefault();
                               asynctariff.QuotaId = quota.Tenant;
@@ -242,8 +250,10 @@ namespace ASC.Core.Billing
                               asynctariff.DueDate = 9999 <= lastPayment.EndDate.Year ? DateTime.MaxValue : lastPayment.EndDate;
 
                               if (quota.ActiveUsers == -1
-                                  && lastPayment.Quantity < activeUsersMin)
+                                  && lastPayment.Quantity < ActiveUsersMin)
+                              {
                                   throw new BillingException(string.Format("The portal {0} is paid for {1} users", tenantId, lastPayment.Quantity));
+                              }
 
                               asynctariff.Quantity = lastPayment.Quantity;
 
@@ -268,10 +278,16 @@ namespace ASC.Core.Billing
 
         public void SetTariff(int tenantId, Tariff tariff)
         {
-            if (tariff == null) throw new ArgumentNullException(nameof(tariff));
+            if (tariff == null)
+            {
+                throw new ArgumentNullException(nameof(tariff));
+            }
 
             var q = QuotaService.GetTenantQuota(tariff.QuotaId);
-            if (q == null) return;
+            if (q == null)
+            {
+                return;
+            }
 
             SaveBillingInfo(tenantId, tariff);
             if (q.Trial)
@@ -308,7 +324,10 @@ namespace ASC.Core.Billing
                         {
                             var quota = quotas.SingleOrDefault(q => q.AvangateId == pi.ProductRef);
 
-                            if (quota != null) pi.QuotaId = quota.Tenant;
+                            if (quota != null)
+                            {
+                                pi.QuotaId = quota.Tenant;
+                            }
 
                             payments.Add(pi);
                         }
@@ -328,7 +347,10 @@ namespace ASC.Core.Billing
         public Uri GetShoppingUri(int? tenant, int quotaId, string affiliateId, string currency = null, string language = null, string customerId = null, string quantity = null)
         {
             var quota = QuotaService.GetTenantQuota(quotaId);
-            if (quota == null) return null;
+            if (quota == null)
+            {
+                return null;
+            }
 
             var key = tenant.HasValue
                           ? GetBillingUrlCacheKey(tenant.Value)
@@ -376,15 +398,23 @@ namespace ASC.Core.Billing
             {
                 var result = tuple.Item2;
 
-                if (result == null) result = tuple.Item1;
+                if (result == null)
+                {
+                    result = tuple.Item1;
+                }
                 else
                 {
                     var tariff = tenant.HasValue ? GetTariff(tenant.Value) : null;
                     if (tariff == null || tariff.QuotaId == quotaId || tariff.State >= TariffState.Delay)
+                    {
                         result = tuple.Item1;
+                    }
                 }
 
-                if (result == null) return null;
+                if (result == null)
+                {
+                    return null;
+                }
 
                 result = new Uri(result.ToString()
                                        .Replace("__Currency__", HttpUtility.UrlEncode(currency ?? ""))
@@ -400,7 +430,11 @@ namespace ASC.Core.Billing
 
         public IDictionary<string, Dictionary<string, decimal>> GetProductPriceInfo(params string[] productIds)
         {
-            if (productIds == null) throw new ArgumentNullException(nameof(productIds));
+            if (productIds == null)
+            {
+                throw new ArgumentNullException(nameof(productIds));
+            }
+
             try
             {
                 var key = "biling-prices" + string.Join(",", productIds);
@@ -453,18 +487,29 @@ namespace ASC.Core.Billing
             var tariffs = CoreDbContext.Tariffs.Where(r => r.Tenant == tenant).ToList();
 
             foreach (var t in tariffs)
+            {
                 t.Tenant = -2;
+            }
 
             CoreDbContext.SaveChanges();
 
             ClearCache(tenant);
         }
 
-        internal static string GetTariffCacheKey(int tenantId) => $"{tenantId}:tariff";
+        internal static string GetTariffCacheKey(int tenantId)
+        {
+            return $"{tenantId}:tariff";
+        }
 
-        internal static string GetBillingUrlCacheKey(int tenantId) => $"{tenantId}:billing:urls";
+        internal static string GetBillingUrlCacheKey(int tenantId)
+        {
+            return $"{tenantId}:billing:urls";
+        }
 
-        internal static string GetBillingPaymentCacheKey(int tenantId) => $"{tenantId}:billing:payments";
+        internal static string GetBillingPaymentCacheKey(int tenantId)
+        {
+            return $"{tenantId}:billing:payments";
+        }
 
         private Tariff GetBillingInfo(int tenant)
         {
@@ -473,7 +518,10 @@ namespace ASC.Core.Billing
                 .OrderByDescending(r => r.Id)
                 .FirstOrDefault();
 
-            if (r == null) return Tariff.CreateDefault();
+            if (r == null)
+            {
+                return Tariff.CreateDefault();
+            }
 
             var tariff = Tariff.CreateDefault();
             tariff.QuotaId = r.Tariff;
@@ -518,7 +566,10 @@ namespace ASC.Core.Billing
             if (inserted)
             {
                 var t = TenantService.GetTenant(tenant);
-                if (t != null) TenantService.SaveTenant(CoreSettings, t); // update tenant.LastModified to flush cache in documents
+                if (t != null)
+                {
+                    TenantService.SaveTenant(CoreSettings, t); // update tenant.LastModified to flush cache in documents
+                }
             }
 
             return inserted;
@@ -547,14 +598,23 @@ namespace ASC.Core.Billing
                         var fromDate = tenant.CreatedDateTime < tenant.VersionChanged ? tenant.VersionChanged : tenant.CreatedDateTime;
                         var trialPeriod = GetPeriod("TrialPeriod", DefaultTrialPeriod);
 
-                        if (fromDate == DateTime.MinValue) fromDate = DateTime.UtcNow.Date;
+                        if (fromDate == DateTime.MinValue)
+                        {
+                            fromDate = DateTime.UtcNow.Date;
+                        }
 
                         tariff.DueDate = trialPeriod != default ? fromDate.Date.AddDays(trialPeriod) : DateTime.MaxValue;
                     }
-                    else tariff.DueDate = DateTime.MaxValue;
+                    else
+                    {
+                        tariff.DueDate = DateTime.MaxValue;
+                    }
                 }
             }
-            else delay = PaymentDelay;
+            else
+            {
+                delay = PaymentDelay;
+            }
 
             if (tariff.DueDate != DateTime.MinValue && tariff.DueDate.Date < DateTime.Today && delay > 0)
             {
@@ -622,16 +682,27 @@ namespace ASC.Core.Billing
             }
         }
 
-        private string GetPortalId(int tenant) => CoreSettings.GetKey(tenant);
+        private string GetPortalId(int tenant)
+        {
+            return CoreSettings.GetKey(tenant);
+        }
 
-        private string GetAffiliateId(int tenant) => CoreSettings.GetAffiliateId(tenant);
+        private string GetAffiliateId(int tenant)
+        {
+            return CoreSettings.GetAffiliateId(tenant);
+        }
 
-        private string GetCampaign(int tenant) => CoreSettings.GetCampaign(tenant);
+        private string GetCampaign(int tenant)
+        {
+            return CoreSettings.GetCampaign(tenant);
+        }
 
         private TimeSpan GetCacheExpiration()
         {
             if (CoreBaseSettings.Standalone && CacheExpiration < s_standaloneCacheExpiration)
+            {
                 CacheExpiration = CacheExpiration.Add(TimeSpan.FromSeconds(30));
+            }
 
             return CacheExpiration;
         }
@@ -639,17 +710,21 @@ namespace ASC.Core.Billing
         private void ResetCacheExpiration()
         {
             if (CoreBaseSettings.Standalone)
+            {
                 CacheExpiration = s_defaultCacheExpiration;
+            }
         }
 
         private void LogError(Exception error, string tenantId = null)
         {
             if (error is BillingNotFoundException)
+            {
                 Logger.DebugFormat("Payment tenant {0} not found: {1}", tenantId, error.Message);
-
+            }
             else if (error is BillingNotConfiguredException)
+            {
                 Logger.DebugFormat("Billing tenant {0} not configured: {1}", tenantId, error.Message);
-
+            }
             else
             {
                 if (Logger.IsDebugEnabled)
@@ -657,8 +732,10 @@ namespace ASC.Core.Billing
                     Logger.Error("Billing tenant " + tenantId);
                     Logger.Error(error);
                 }
-
-                else Logger.ErrorFormat("Billing tenant {0}: {1}", tenantId, error.Message);
+                else
+                {
+                    Logger.ErrorFormat("Billing tenant {0}: {1}", tenantId, error.Message);
+                }
             }
         }
     }

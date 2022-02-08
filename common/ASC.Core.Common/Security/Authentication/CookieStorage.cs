@@ -76,18 +76,36 @@ namespace ASC.Core.Security.Authentication
             expire = DateTime.MaxValue;
             indexUser = 0;
 
-            if (string.IsNullOrEmpty(cookie)) return false;
+            if (string.IsNullOrEmpty(cookie))
+            {
+                return false;
+            }
 
             try
             {
                 cookie = (HttpUtility.UrlDecode(cookie) ?? "").Replace(' ', '+');
                 var s = _instanceCrypto.Decrypt(cookie).Split('$');
 
-                if (1 < s.Length) tenant = int.Parse(s[1]);
-                if (4 < s.Length) userid = new Guid(s[4]);
-                if (5 < s.Length) indexTenant = int.Parse(s[5]);
-                if (6 < s.Length) expire = DateTime.ParseExact(s[6], DateTimeFormat, CultureInfo.InvariantCulture);
-                if (7 < s.Length) indexUser = int.Parse(s[7]);
+                if (1 < s.Length)
+                {
+                    tenant = int.Parse(s[1]);
+                }
+                if (4 < s.Length)
+                {
+                    userid = new Guid(s[4]);
+                }
+                if (5 < s.Length)
+                {
+                    indexTenant = int.Parse(s[5]);
+                }
+                if (6 < s.Length)
+                {
+                    expire = DateTime.ParseExact(s[6], DateTimeFormat, CultureInfo.InvariantCulture);
+                }
+                if (7 < s.Length)
+                {
+                    indexUser = int.Parse(s[7]);
+                }
 
                 return true;
             }

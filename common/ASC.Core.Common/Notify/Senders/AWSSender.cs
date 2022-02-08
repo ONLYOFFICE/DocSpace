@@ -91,7 +91,10 @@ namespace ASC.Core.Notify.Senders
                         result = base.Send(m);
                         UseCoreSettings = false;
                     }
-                    else result = SendMessage(m);
+                    else
+                    {
+                        result = SendMessage(m);
+                    }
 
                     Logger.DebugFormat(result.ToString());
                 }
@@ -161,13 +164,18 @@ namespace ASC.Core.Notify.Senders
                     Html = new Content(GetHtmlView(m.Content)) { Charset = Encoding.UTF8.WebName }
                 };
             }
-            else body = new Body(new Content(m.Content) { Charset = Encoding.UTF8.WebName });
+            else
+            {
+                body = new Body(new Content(m.Content) { Charset = Encoding.UTF8.WebName });
+            }
 
             var from = MailAddressUtils.Create(m.From).ToEncodedString();
             var request = new SendEmailRequest { Source = from, Destination = dest, Message = new Message(subject, body) };
 
             if (!string.IsNullOrEmpty(m.ReplyTo))
+            {
                 request.ReplyToAddresses.Add(MailAddressUtils.Create(m.ReplyTo).Address);
+            }
 
             ThrottleIfNeeded();
 
@@ -195,7 +203,10 @@ namespace ASC.Core.Notify.Senders
 
         private void RefreshQuotaIfNeeded()
         {
-            if (!IsRefreshNeeded()) return;
+            if (!IsRefreshNeeded())
+            {
+                return;
+            }
 
             lock (_locker)
             {

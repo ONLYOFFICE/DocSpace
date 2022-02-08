@@ -66,7 +66,10 @@ namespace ASC.Core
 
         public IEnumerable<AzRecord> GetAcesWithInherits(Guid subjectId, Guid actionId, ISecurityObjectId objectId, ISecurityObjectProvider secObjProvider)
         {
-            if (objectId == null) return GetAces(subjectId, actionId, null);
+            if (objectId == null)
+            {
+                return GetAces(subjectId, actionId, null);
+            }
 
             var result = new List<AzRecord>();
             var aces = _service.GetAces(_tenantManager.GetCurrentTenant().Id, default);
@@ -87,20 +90,28 @@ namespace ASC.Core
             return result;
         }
 
-        public void AddAce(AzRecord r) =>
-             _service.SaveAce(_tenantManager.GetCurrentTenant().Id, r);
+        public void AddAce(AzRecord r)
+        {
+            _service.SaveAce(_tenantManager.GetCurrentTenant().Id, r);
+        }
 
-        public void RemoveAce(AzRecord r) =>
+        public void RemoveAce(AzRecord r)
+        {
             _service.RemoveAce(_tenantManager.GetCurrentTenant().Id, r);
+        }
 
         public void RemoveAllAces(ISecurityObjectId id)
         {
             foreach (var r in GetAces(Guid.Empty, Guid.Empty, id).ToArray())
+            {
                 RemoveAce(r);
+            }
         }
 
-        private IEnumerable<AzRecord> GetAcesInternal() =>
-            _service.GetAces(_tenantManager.GetCurrentTenant().Id, default);
+        private IEnumerable<AzRecord> GetAcesInternal()
+        {
+            return _service.GetAces(_tenantManager.GetCurrentTenant().Id, default);
+        }
 
         private IEnumerable<AzRecord> DistinctAces(IEnumerable<AzRecord> inheritAces)
         {

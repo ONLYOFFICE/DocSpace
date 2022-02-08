@@ -37,7 +37,9 @@ namespace ASC.Core.Common.EF.Context
 
     public static class FeedDbExtension
     {
-        public static DIHelper AddFeedDbService(this DIHelper services) => 
-            services.AddDbContextManagerService<FeedDbContext>();
+        public static DIHelper AddFeedDbService(this DIHelper services)
+        {
+            return services.AddDbContextManagerService<FeedDbContext>();
+        }
     }
 }

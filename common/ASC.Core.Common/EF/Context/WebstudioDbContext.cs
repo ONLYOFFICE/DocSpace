@@ -35,7 +35,9 @@ namespace ASC.Core.Common.EF.Context
 
     public static class WebstudioDbExtension
     {
-        public static DIHelper AddWebstudioDbContextService(this DIHelper services) =>
-            services.AddDbContextManagerService<WebstudioDbContext>();
+        public static DIHelper AddWebstudioDbContextService(this DIHelper services)
+        {
+            return services.AddDbContextManagerService<WebstudioDbContext>();
+        }
     }
 }

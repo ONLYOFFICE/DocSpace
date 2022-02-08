@@ -43,16 +43,29 @@ namespace ASC.Notify.Model
             Name = name;
         }
 
-        public static implicit operator NotifyActionItem(NotifyAction cache) =>
-            new NotifyActionItem() { Id = cache.ID };
+        public static implicit operator NotifyActionItem(NotifyAction cache)
+        {
+            return new NotifyActionItem() { Id = cache.ID };
+        }
 
-        public static explicit operator NotifyAction(NotifyActionItem cache) =>
-            new NotifyAction(cache.Id);
+        public static explicit operator NotifyAction(NotifyActionItem cache)
+        {
+            return new NotifyAction(cache.Id);
+        }
 
-        public override bool Equals(object obj) => obj is INotifyAction a && a.ID == ID;
+        public override bool Equals(object obj)
+        {
+            return obj is INotifyAction a && a.ID == ID;
+        }
 
-        public override int GetHashCode() => ID.GetHashCode();
+        public override int GetHashCode()
+        {
+            return ID.GetHashCode();
+        }
 
-        public override string ToString() => $"action: {ID}";
+        public override string ToString()
+        {
+            return $"action: {ID}";
+        }
     }
 }

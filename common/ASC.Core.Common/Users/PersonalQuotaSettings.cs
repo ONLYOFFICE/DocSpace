@@ -37,11 +37,12 @@ namespace ASC.Core.Tenants
 
         public Guid ID => new Guid("{C634A747-C39B-4517-8698-B3B39BF2BD8E}");
 
-
-        public ISettings GetDefault(IServiceProvider serviceProvider) =>
-            new PersonalQuotaSettings
+        public ISettings GetDefault(IServiceProvider serviceProvider)
+        {
+            return new PersonalQuotaSettings
             {
                 MaxSpace = long.MaxValue
             };
+        }
     }
 }

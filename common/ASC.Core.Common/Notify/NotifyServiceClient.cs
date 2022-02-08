@@ -43,10 +43,14 @@ namespace ASC.Core.Notify
             _eventBusNotifyInvoke = notifyInvoke;
         }
 
-        public void SendNotifyMessage(NotifyMessage m) =>
+        public void SendNotifyMessage(NotifyMessage m)
+        {
             _eventBusNotifyMessage.Publish(m, CacheNotifyAction.InsertOrUpdate);
+        }
 
-        public void InvokeSendMethod(NotifyInvoke notifyInvoke) =>
+        public void InvokeSendMethod(NotifyInvoke notifyInvoke)
+        {
             _eventBusNotifyInvoke.Publish(notifyInvoke, CacheNotifyAction.InsertOrUpdate);
+        }
     }
 }

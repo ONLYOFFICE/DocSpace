@@ -112,8 +112,14 @@ namespace ASC.Core.Data
         {
             var q = TenantsQuery();
 
-            if (active) q = q.Where(r => r.Status == TenantStatus.Active);
-            if (from != default) q = q.Where(r => r.LastModified >= from);
+            if (active)
+            {
+                q = q.Where(r => r.Status == TenantStatus.Active);
+            }
+            if (from != default)
+            {
+                q = q.Where(r => r.LastModified >= from);
+            }
 
             return q.ProjectTo<Tenant>(_mapper.ConfigurationProvider);
         }
@@ -127,7 +133,10 @@ namespace ASC.Core.Data
 
         public IEnumerable<Tenant> GetTenants(string login, string passwordHash)
         {
-            if (string.IsNullOrEmpty(login)) throw new ArgumentNullException(nameof(login));
+            if (string.IsNullOrEmpty(login))
+            {
+                throw new ArgumentNullException(nameof(login));
+            }
 
             IQueryable<TenantUserSecurity> query() => TenantsQuery()
                     .Where(r => r.Status == TenantStatus.Active)
@@ -174,8 +183,14 @@ namespace ASC.Core.Data
                     query()
                     .Where(r => r.UserSecurity.PwdHash == oldHash);
 
-                if (login.Contains('@')) q = q.Where(r => r.User.Email == login);
-                else if (Guid.TryParse(login, out var uId)) q = q.Where(r => r.User.Id == uId);
+                if (login.Contains('@'))
+                {
+                    q = q.Where(r => r.User.Email == login);
+                }
+                else if (Guid.TryParse(login, out var uId))
+                {
+                    q = q.Where(r => r.User.Id == uId);
+                }
 
                 //old password
                 var result = q.ProjectTo<Tenant>(_mapper.ConfigurationProvider).ToList();
@@ -210,7 +225,10 @@ namespace ASC.Core.Data
 
         public Tenant GetTenant(string domain)
         {
-            if (string.IsNullOrEmpty(domain)) throw new ArgumentNullException(nameof(domain));
+            if (string.IsNullOrEmpty(domain))
+            {
+                throw new ArgumentNullException(nameof(domain));
+            }
 
             domain = domain.ToLowerInvariant();
 
@@ -233,7 +251,10 @@ namespace ASC.Core.Data
 
         public Tenant SaveTenant(CoreSettings coreSettings, Tenant t)
         {
-            if (t == null) throw new ArgumentNullException(nameof(t));
+            if (t == null)
+            {
+                throw new ArgumentNullException(nameof(t));
+            }
 
             using var tx = TenantDbContext.Database.BeginTransaction();
 
@@ -242,9 +263,13 @@ namespace ASC.Core.Data
                 var baseUrl = coreSettings.GetBaseDomain(t.HostedRegion);
 
                 if (baseUrl != null && t.MappedDomain.EndsWith("." + baseUrl, StringComparison.InvariantCultureIgnoreCase))
+                {
                     ValidateDomain(t.MappedDomain.Substring(0, t.MappedDomain.Length - baseUrl.Length - 1), t.Id, false);
+                }
                 else
+                {
                     ValidateDomain(t.MappedDomain, t.Id, false);
+                }
             }
 
             if (t.Id == Tenant.DefaultTenant)
@@ -296,7 +321,10 @@ namespace ASC.Core.Data
                     .Where(r => r.TenantId == t.Id)
                     .FirstOrDefault();
 
-                if (p != null) TenantDbContext.TenantPartner.Remove(p);
+                if (p != null)
+                {
+                    TenantDbContext.TenantPartner.Remove(p);
+                }
             }
             else
             {
@@ -377,7 +405,9 @@ namespace ASC.Core.Data
                     .FirstOrDefault();
 
                 if (settings != null)
+                {
                     TenantDbContext.CoreSettings.Remove(settings);
+                }
             }
             else
             {
@@ -401,7 +431,10 @@ namespace ASC.Core.Data
             return Hasher.Base64Hash(password + userId + Encoding.UTF8.GetString(_machinePseudoKeys.GetMachineConstant()), HashAlg.SHA512);
         }
 
-        private IQueryable<DbTenant> TenantsQuery() => TenantDbContext.Tenants;
+        private IQueryable<DbTenant> TenantsQuery()
+        {
+            return TenantDbContext.Tenants;
+        }
 
         private void ValidateDomain(string domain, int tenantId, bool validateCharacters)
         {
@@ -410,7 +443,9 @@ namespace ASC.Core.Data
 
             // characters
             if (validateCharacters)
+            {
                 TenantDomainValidator.ValidateDomainCharacters(domain);
+            }
 
             // forbidden or exists
             var exists = false;
@@ -419,27 +454,38 @@ namespace ASC.Core.Data
             if (!exists)
             {
                 if (_forbiddenDomains == null)
+                {
                     _forbiddenDomains = TenantDbContext.TenantForbiden.Select(r => r.Address).ToList();
+                }
 
                 exists = tenantId != 0 && _forbiddenDomains.Contains(domain);
             }
 
-            if (!exists) exists = 0 < TenantDbContext.Tenants.Where(r => r.TenantAlias == domain && r.Id != tenantId).Count();
+            if (!exists)
+            {
+                exists = 0 < TenantDbContext.Tenants.Where(r => r.TenantAlias == domain && r.Id != tenantId).Count();
+            }
 
             if (!exists)
+            {
                 exists = 0 < TenantDbContext.Tenants
                     .Where(r => r.MappedDomain == domain && r.Id != tenantId && !(r.Status == TenantStatus.RemovePending || r.Status == TenantStatus.Restoring))
                     .Count();
+            }
 
             if (exists)
             {
                 // cut number suffix
                 while (true)
                 {
-                    if (6 < domain.Length && char.IsNumber(domain, domain.Length - 1)) 
+                    if (6 < domain.Length && char.IsNumber(domain, domain.Length - 1))
+                    {
                         domain = domain[0..^1];
-                    else 
+                    }
+                    else
+                    {
                         break;
+                    }
                 }
 
                 var existsTenants = TenantDbContext.TenantForbiden.Where(r => r.Address.StartsWith(domain)).Select(r => r.Address)

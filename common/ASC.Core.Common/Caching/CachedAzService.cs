@@ -48,7 +48,10 @@ namespace ASC.Core.Caching
             eventBus.Subscribe((r) => UpdateCache(r, false), CacheNotifyAction.InsertOrUpdate);
         }
 
-        public static string GetKey(int tenant) => $"acl{tenant}";
+        public static string GetKey(int tenant)
+        {
+            return $"acl{tenant}";
+        }
 
         private void UpdateCache(AzRecord r, bool remove)
         {
@@ -57,9 +60,14 @@ namespace ASC.Core.Caching
             {
                 lock (aces)
                 {
-                    if (remove) aces.Remove(r);
-
-                    else aces.Add(r);
+                    if (remove)
+                    {
+                        aces.Remove(r);
+                    }
+                    else
+                    {
+                        aces.Add(r);
+                    }
                 }
             }
         }

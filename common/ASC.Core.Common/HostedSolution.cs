@@ -121,37 +121,68 @@ namespace ASC.Core
 
         public HostedSolution() { }
 
-        public List<Tenant> GetTenants(DateTime from) =>
-            TenantService.GetTenants(from).Select(AddRegion).ToList();
+        public List<Tenant> GetTenants(DateTime from)
+        {
+            return TenantService.GetTenants(from).Select(AddRegion).ToList();
+        }
 
-        public List<Tenant> FindTenants(string login) =>
-            FindTenants(login, null);
+        public List<Tenant> FindTenants(string login)
+        {
+            return FindTenants(login, null);
+        }
 
         public List<Tenant> FindTenants(string login, string passwordHash)
         {
-            if (!string.IsNullOrEmpty(passwordHash) && UserService.GetUserByPasswordHash(Tenant.DefaultTenant, login, passwordHash) == null)
-                throw new SecurityException("Invalid login or password.");
-
-            return TenantService.GetTenants(login, passwordHash).Select(AddRegion).ToList();
+            return !string.IsNullOrEmpty(passwordHash) && UserService.GetUserByPasswordHash(Tenant.DefaultTenant, login, passwordHash) == null
+                ? throw new SecurityException("Invalid login or password.")
+                : TenantService.GetTenants(login, passwordHash).Select(AddRegion).ToList();
         }
 
-        public Tenant GetTenant(string domain) => AddRegion(TenantService.GetTenant(domain));
+        public Tenant GetTenant(string domain)
+        {
+            return AddRegion(TenantService.GetTenant(domain));
+        }
 
-        public Tenant GetTenant(int id) => AddRegion(TenantService.GetTenant(id));
+        public Tenant GetTenant(int id)
+        {
+            return AddRegion(TenantService.GetTenant(id));
+        }
 
-        public void CheckTenantAddress(string address) => TenantService.ValidateDomain(address);
+        public void CheckTenantAddress(string address)
+        {
+            TenantService.ValidateDomain(address);
+        }
 
         public void RegisterTenant(TenantRegistrationInfo registrationInfo, out Tenant tenant)
         {
-            if (registrationInfo == null) throw new ArgumentNullException(nameof(registrationInfo));
-            if (string.IsNullOrEmpty(registrationInfo.Address)) throw new Exception("Address can not be empty");
-
-            if (string.IsNullOrEmpty(registrationInfo.Email)) throw new Exception("Account email can not be empty");
-            if (registrationInfo.FirstName == null) throw new Exception("Account firstname can not be empty");
-            if (registrationInfo.LastName == null) throw new Exception("Account lastname can not be empty");
-            if (!UserFormatter.IsValidUserName(registrationInfo.FirstName, registrationInfo.LastName)) throw new Exception("Incorrect firstname or lastname");
-
-            if (string.IsNullOrEmpty(registrationInfo.PasswordHash)) registrationInfo.PasswordHash = Guid.NewGuid().ToString();
+            if (registrationInfo == null)
+            {
+                throw new ArgumentNullException(nameof(registrationInfo));
+            }
+            if (string.IsNullOrEmpty(registrationInfo.Address))
+            {
+                throw new Exception("Address can not be empty");
+            }
+            if (string.IsNullOrEmpty(registrationInfo.Email))
+            {
+                throw new Exception("Account email can not be empty");
+            }
+            if (registrationInfo.FirstName == null)
+            {
+                throw new Exception("Account firstname can not be empty");
+            }
+            if (registrationInfo.LastName == null)
+            {
+                throw new Exception("Account lastname can not be empty");
+            }
+            if (!UserFormatter.IsValidUserName(registrationInfo.FirstName, registrationInfo.LastName))
+            {
+                throw new Exception("Incorrect firstname or lastname");
+            }
+            if (string.IsNullOrEmpty(registrationInfo.PasswordHash))
+            {
+                registrationInfo.PasswordHash = Guid.NewGuid().ToString();
+            }
 
             // create tenant
             tenant = new Tenant(registrationInfo.Address.ToLowerInvariant())
@@ -192,9 +223,15 @@ namespace ASC.Core
             SettingsManager.SaveSettings(new TenantControlPanelSettings { LimitedAccess = registrationInfo.LimitedControlPanel }, tenant.Id);
         }
 
-        public Tenant SaveTenant(Tenant tenant) => TenantService.SaveTenant(CoreSettings, tenant);
+        public Tenant SaveTenant(Tenant tenant)
+        {
+            return TenantService.SaveTenant(CoreSettings, tenant);
+        }
 
-        public void RemoveTenant(Tenant tenant) => TenantService.RemoveTenant(tenant.Id);
+        public void RemoveTenant(Tenant tenant)
+        {
+            TenantService.RemoveTenant(tenant.Id);
+        }
 
         public string CreateAuthenticationCookie(CookieStorage cookieStorage, int tenantId, Guid userId)
         {
@@ -203,42 +240,66 @@ namespace ASC.Core
             return CreateAuthenticationCookie(cookieStorage, tenantId, u);
         }
 
-        public Tariff GetTariff(int tenant, bool withRequestToPaymentSystem = true) =>
-            TariffService.GetTariff(tenant, withRequestToPaymentSystem);
+        public Tariff GetTariff(int tenant, bool withRequestToPaymentSystem = true)
+        {
+            return TariffService.GetTariff(tenant, withRequestToPaymentSystem);
+        }
 
-        public TenantQuota GetTenantQuota(int tenant) =>
-            ClientTenantManager.GetTenantQuota(tenant);
+        public TenantQuota GetTenantQuota(int tenant)
+        {
+            return ClientTenantManager.GetTenantQuota(tenant);
+        }
 
-        public IEnumerable<TenantQuota> GetTenantQuotas() =>
-            ClientTenantManager.GetTenantQuotas();
+        public IEnumerable<TenantQuota> GetTenantQuotas()
+        {
+            return ClientTenantManager.GetTenantQuotas();
+        }
 
-        public TenantQuota SaveTenantQuota(TenantQuota quota) =>
-            ClientTenantManager.SaveTenantQuota(quota);
+        public TenantQuota SaveTenantQuota(TenantQuota quota)
+        {
+            return ClientTenantManager.SaveTenantQuota(quota);
+        }
 
         public void SetTariff(int tenant, bool paid)
         {
             var quota = QuotaService.GetTenantQuotas().FirstOrDefault(q => paid ? q.NonProfit : q.Trial);
             if (quota != null)
+            {
                 TariffService.SetTariff(tenant, new Tariff { QuotaId = quota.Tenant, DueDate = DateTime.MaxValue, });
+            }
         }
 
-        public void SetTariff(int tenant, Tariff tariff) => TariffService.SetTariff(tenant, tariff);
+        public void SetTariff(int tenant, Tariff tariff)
+        {
+            TariffService.SetTariff(tenant, tariff);
+        }
 
-        public void SaveButton(int tariffId, string partnerId, string buttonUrl) => TariffService.SaveButton(tariffId, partnerId, buttonUrl);
+        public void SaveButton(int tariffId, string partnerId, string buttonUrl)
+        {
+            TariffService.SaveButton(tariffId, partnerId, buttonUrl);
+        }
 
-        public IEnumerable<UserInfo> FindUsers(IEnumerable<Guid> userIds) =>
-            UserService.GetUsersAllTenants(userIds);
+        public IEnumerable<UserInfo> FindUsers(IEnumerable<Guid> userIds)
+        {
+            return UserService.GetUsersAllTenants(userIds);
+        }
 
         private Tenant AddRegion(Tenant tenant)
         {
-            if (tenant != null) tenant.HostedRegion = Region;
+            if (tenant != null)
+            {
+                tenant.HostedRegion = Region;
+            }
 
             return tenant;
         }
 
         private string CreateAuthenticationCookie(CookieStorage cookieStorage, int tenantId, UserInfo user)
         {
-            if (user == null) return null;
+            if (user == null)
+            {
+                return null;
+            }
 
             var tenantSettings = SettingsManager.LoadSettingsFor<TenantCookieSettings>(tenantId, Guid.Empty);
             var expires = tenantSettings.IsDefault() ? DateTime.UtcNow.AddYears(1) : DateTime.UtcNow.AddMinutes(tenantSettings.LifeTime);

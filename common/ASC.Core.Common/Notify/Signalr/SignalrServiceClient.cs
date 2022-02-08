@@ -335,7 +335,9 @@ namespace ASC.Core.Notify.Signalr
             {
                 var place = domain.LastIndexOf(JabberReplaceFromDomain);
                 if (place >= 0)
+                {
                     return domain.Remove(place, JabberReplaceFromDomain.Length).Insert(place, JabberReplaceToDomain);
+                }
             }
 
             return domain;
@@ -347,12 +349,17 @@ namespace ASC.Core.Notify.Signalr
                 (e.InnerException != null) ? e.InnerException.Message : string.Empty);
 
             if (e is CommunicationException || e is TimeoutException)
+            {
                 s_lastErrorTime = DateTime.Now;
+            }
         }
 
         private string MakeRequest(string method, object data)
         {
-            if (!IsAvailable()) return string.Empty;
+            if (!IsAvailable())
+            {
+                return string.Empty;
+            }
 
             var request = new HttpRequestMessage();
             request.Headers.Add("Authorization", CreateAuthToken());
@@ -380,10 +387,15 @@ namespace ASC.Core.Notify.Signalr
             return JsonConvert.DeserializeObject<T>(resultMakeRequest);
         }
 
-        private bool IsAvailable() =>
-            EnableSignalr && s_lastErrorTime + s_timeout < DateTime.Now;
+        private bool IsAvailable()
+        {
+            return EnableSignalr && s_lastErrorTime + s_timeout < DateTime.Now;
+        }
 
-        private string GetMethod(string method) => $"{Url.TrimEnd('/')}/controller/{Hub}/{method}";
+        private string GetMethod(string method)
+        {
+            return $"{Url.TrimEnd('/')}/controller/{Hub}/{method}";
+        }
 
         public string CreateAuthToken(string pkey = "socketio")
         {

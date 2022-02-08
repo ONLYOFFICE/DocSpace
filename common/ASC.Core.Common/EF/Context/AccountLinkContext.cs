@@ -31,7 +31,9 @@ namespace ASC.Core.Common.EF.Context
 
     public static class AccountLinkContextExtension
     {
-        public static DIHelper AddAccountLinkContextService(this DIHelper services) =>
-            services.AddDbContextManagerService<AccountLinkContext>();
+        public static DIHelper AddAccountLinkContextService(this DIHelper services)
+        {
+            return services.AddDbContextManagerService<AccountLinkContext>();
+        }
     }
 }

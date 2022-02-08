@@ -55,18 +55,29 @@ namespace ASC.Notify.Recipients
             Name = name;
             CheckActivation = checkActivation;
             if (addresses != null)
+            {
                 _addresses.AddRange(addresses);
+            }
         }
 
         public override bool Equals(object obj)
         {
-            if (!(obj is IDirectRecipient recD)) return false;
+            if (!(obj is IDirectRecipient recD))
+            {
+                return false;
+            }
 
             return Equals(recD.ID, ID);
         }
 
-        public override int GetHashCode() => (ID ?? "").GetHashCode();
+        public override int GetHashCode()
+        {
+            return (ID ?? "").GetHashCode();
+        }
 
-        public override string ToString() => $"{Name}({string.Join(";", _addresses.ToArray())})";
+        public override string ToString()
+        {
+            return $"{Name}({string.Join(";", _addresses.ToArray())})";
+        }
     }
 }

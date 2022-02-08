@@ -60,17 +60,30 @@ namespace ASC.Core
             _partnerKey = (_configuration["core:machinekey"] ?? "C5C1F4E85A3A43F5B3202C24D97351DF");
         }
 
-        public Tariff GetTariff(int tenantId) => _tariffService.GetTariff(tenantId);
+        public Tariff GetTariff(int tenantId)
+        {
+            return _tariffService.GetTariff(tenantId);
+        }
 
-        public void SetTariff(int tenantId, Tariff tariff) => _tariffService.SetTariff(tenantId, tariff);
+        public void SetTariff(int tenantId, Tariff tariff)
+        {
+            _tariffService.SetTariff(tenantId, tariff);
+        }
 
-        public void DeleteDefaultTariff() => _tariffService.DeleteDefaultBillingInfo();
+        public void DeleteDefaultTariff()
+        {
+            _tariffService.DeleteDefaultBillingInfo();
+        }
 
-        public IEnumerable<PaymentInfo> GetTariffPayments(int tenant) =>
-            _tariffService.GetPayments(tenant);
+        public IEnumerable<PaymentInfo> GetTariffPayments(int tenant)
+        {
+            return _tariffService.GetPayments(tenant);
+        }
 
-        public IDictionary<string, Dictionary<string, decimal>> GetProductPriceInfo(params string[] productIds) =>
-            _tariffService.GetProductPriceInfo(productIds);
+        public IDictionary<string, Dictionary<string, decimal>> GetProductPriceInfo(params string[] productIds)
+        {
+            return _tariffService.GetProductPriceInfo(productIds);
+        }
 
         public Uri GetShoppingUri(int quotaId, bool forCurrentTenant = true, string affiliateId = null, string currency = null, 
             string language = null, string customerId = null, string quantity = null)
@@ -87,7 +100,10 @@ namespace ASC.Core
 
         public void ActivateKey(string key)
         {
-            if (string.IsNullOrEmpty(key)) throw new ArgumentNullException(nameof(key));
+            if (string.IsNullOrEmpty(key))
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
 
             var now = DateTime.UtcNow;
             var actionUrl = "/partnerapi/ActivateKey?code=" + HttpUtility.UrlEncode(key) + "&portal=" + HttpUtility.UrlEncode(_tenantManager.GetCurrentTenant().TenantAlias);
@@ -104,7 +120,9 @@ namespace ASC.Core
 
             var timeout = DateTime.UtcNow - now - TimeSpan.FromSeconds(5);
             if (TimeSpan.Zero < timeout)
+            {
                 Thread.Sleep(timeout); // clear tenant cache
+            }
 
             _tenantManager.GetTenant(_tenantManager.GetCurrentTenant().Id);
         }

@@ -31,7 +31,9 @@ namespace ASC.Core.Common.EF.Context
 
     public static class FilesDbExtension
     {
-        public static DIHelper AddFilesDbContextService(this DIHelper services) =>
-            services.AddDbContextManagerService<FilesDbContext>();
+        public static DIHelper AddFilesDbContextService(this DIHelper services)
+        {
+            return services.AddDbContextManagerService<FilesDbContext>();
+        }
     }
 }

@@ -64,15 +64,21 @@ namespace ASC.Core
 
 
             if (Guid.TryParse(cache.SubjectId, out var subjectId))
+            {
                 result.SubjectId = subjectId;
+            }
 
             if (Guid.TryParse(cache.ActionId, out var actionId))
+            {
                 result.ActionId = actionId;
+            }
 
             result.ObjectId = cache.ObjectId;
 
             if (Enum.TryParse<AceType>(cache.Reaction, out var reaction))
+            {
                 result.Reaction = reaction;
+            }
 
             return result;
         }

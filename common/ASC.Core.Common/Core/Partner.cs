@@ -76,10 +76,19 @@ namespace ASC.Core
         public bool CustomEmailSignature { get; set; }
         public string AuthorizedKey { get; set; }
 
-        public override bool Equals(object obj) => obj is Partner p && p.Id == Id;
+        public override bool Equals(object obj)
+        {
+            return obj is Partner p && p.Id == Id;
+        }
 
-        public override int GetHashCode() => (Id ?? string.Empty).GetHashCode();
+        public override int GetHashCode()
+        {
+            return (Id ?? string.Empty).GetHashCode();
+        }
 
-        public override string ToString() => $"{FirstName} {LastName}";
+        public override string ToString()
+        {
+            return $"{FirstName} {LastName}";
+        }
     }
 }

@@ -48,21 +48,27 @@ namespace ASC.Core.Tenants
             _minLength = 6;
 
             if (int.TryParse(configuration["web:alias:min"], out var defaultMinLength))
+            {
                 _minLength = Math.Max(1, Math.Min(MaxLength, defaultMinLength));
+            }
         }
 
         public void ValidateDomainLength(string domain)
         {
             if (string.IsNullOrEmpty(domain)
                 || domain.Length < _minLength || MaxLength < domain.Length)
+            {
                 throw new TenantTooShortException("The domain name must be between " +
                     _minLength + " and " + MaxLength + " characters long.", _minLength, MaxLength);
+            }
         }
 
         public static void ValidateDomainCharacters(string domain)
         {
             if (!s_validDomainPatter.IsMatch(domain))
+            {
                 throw new TenantIncorrectCharsException("Domain contains invalid characters.");
+            }
         }
     }
 }

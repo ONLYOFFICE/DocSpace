@@ -35,7 +35,9 @@ namespace ASC.Core.Common.EF
             var properties = objType.GetProperties();
             var matchedProperty = properties.FirstOrDefault(p => p.Name.ToLower() == name.ToLower());
             if (matchedProperty == null)
+            {
                 throw new ArgumentException(nameof(name));
+            }
 
             return matchedProperty;
         }

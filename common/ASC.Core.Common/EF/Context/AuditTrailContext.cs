@@ -35,7 +35,9 @@ namespace ASC.Core.Common.EF.Context
 
     public static class AuditTrailContextExtension
     {
-        public static DIHelper AddAuditTrailContextService(this DIHelper services) =>
-            services.AddDbContextManagerService<AuditTrailContext>();
+        public static DIHelper AddAuditTrailContextService(this DIHelper services)
+        {
+            return services.AddDbContextManagerService<AuditTrailContext>();
+        }
     }
 }

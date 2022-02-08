@@ -58,10 +58,14 @@ namespace ASC.Core.Common.EF
         public void Dispose()
         {
             foreach (var v in _pairs)
+            {
                 v.Value.Dispose();
+            }
 
             foreach (var v in _asyncList)
+            {
                 v.Dispose();
+            }
         }
     }
 

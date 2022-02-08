@@ -82,7 +82,9 @@ namespace ASC.Notify.Engine
                     try
                     {
                         if (interceptor.PreventSend(this, place, serviceScope))
+                        {
                             result = true;
+                        }
                     }
                     catch (Exception err)
                     {
@@ -105,14 +107,19 @@ namespace ASC.Notify.Engine
 
             var index = Array.IndexOf(SenderNames, senderName);
             if (index < 0)
+            {
                 throw new ApplicationException(string.Format("Sender with tag {0} dnot found", senderName));
+            }
 
             return Patterns[index];
         }
 
         internal NotifyRequest Split(IRecipient recipient)
         {
-            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
+            if (recipient == null)
+            {
+                throw new ArgumentNullException(nameof(recipient));
+            }
 
             var newRequest = new NotifyRequest(NotifySource, NotifyAction, ObjectID, recipient)
             {

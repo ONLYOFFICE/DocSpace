@@ -54,8 +54,10 @@ namespace ASC.Core.Common.Notify
             _cache = cache;
         }
 
-        public void SendMessage(NotifyMessage m) =>
+        public void SendMessage(NotifyMessage m)
+        {
             _eventBusNotifyMessage.Publish(m, CacheNotifyAction.Insert);
+        }
 
         public void RegisterUser(string userId, int tenantId, string token)
         {
@@ -79,12 +81,19 @@ namespace ASC.Core.Common.Notify
             }, CacheNotifyAction.Insert);
         }
 
-        public void DisableClient(int tenantId) =>
+        public void DisableClient(int tenantId)
+        {
             _eventBusDisableClient.Publish(new DisableClientProto() { TenantId = tenantId }, CacheNotifyAction.Insert);
+        }
 
-        public string RegistrationToken(string userId, int tenantId) =>
-            _cache.Get<string>(GetCacheTokenKey(tenantId, userId));
+        public string RegistrationToken(string userId, int tenantId)
+        {
+            return _cache.Get<string>(GetCacheTokenKey(tenantId, userId));
+        }
 
-        private string GetCacheTokenKey(int tenantId, string userId) => $"Token{userId}{tenantId}";
+        private string GetCacheTokenKey(int tenantId, string userId)
+        {
+            return $"Token{userId}{tenantId}";
+        }
     }
 }

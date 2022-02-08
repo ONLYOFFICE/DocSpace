@@ -57,8 +57,14 @@ namespace ASC.Notify.Model
 
         public virtual string[] GetSubscriptionMethod(INotifyAction action, IRecipient recipient)
         {
-            if (action == null) throw new ArgumentNullException(nameof(action));
-            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+            if (recipient == null)
+            {
+                throw new ArgumentNullException(nameof(recipient));
+            }
 
             var senders = _subscriptionProvider.GetSubscriptionMethod(action, recipient);
             if (senders == null || senders.Length == 0)
@@ -67,7 +73,10 @@ namespace ASC.Notify.Model
                 foreach (var parent in parents)
                 {
                     senders = _subscriptionProvider.GetSubscriptionMethod(action, parent);
-                    if (senders != null && senders.Length != 0) break;
+                    if (senders != null && senders.Length != 0)
+                    {
+                        break;
+                    }
                 }
             }
 
@@ -76,7 +85,10 @@ namespace ASC.Notify.Model
 
         public virtual IRecipient[] GetRecipients(INotifyAction action, string objectID)
         {
-            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
 
             var recipents = new List<IRecipient>(5);
             var directRecipients = _subscriptionProvider.GetRecipients(action, objectID) ?? new IRecipient[0];
@@ -87,8 +99,14 @@ namespace ASC.Notify.Model
 
         public virtual bool IsUnsubscribe(IDirectRecipient recipient, INotifyAction action, string objectID)
         {
-            if (action == null) throw new ArgumentNullException(nameof(action));
-            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+            if (recipient == null)
+            {
+                throw new ArgumentNullException(nameof(recipient));
+            }
 
             return _subscriptionProvider.IsUnsubscribe(recipient, action, objectID);
         }
@@ -96,30 +114,48 @@ namespace ASC.Notify.Model
 
         public virtual void Subscribe(INotifyAction action, string objectID, IRecipient recipient)
         {
-            if (action == null) throw new ArgumentNullException(nameof(action));
-            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+            if (recipient == null)
+            {
+                throw new ArgumentNullException(nameof(recipient));
+            }
 
             _subscriptionProvider.Subscribe(action, objectID, recipient);
         }
 
         public virtual void UnSubscribe(INotifyAction action, string objectID, IRecipient recipient)
         {
-            if (action == null) throw new ArgumentNullException(nameof(action));
-            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+            if (recipient == null)
+            {
+                throw new ArgumentNullException(nameof(recipient));
+            }
 
             _subscriptionProvider.UnSubscribe(action, objectID, recipient);
         }
 
         public void UnSubscribe(INotifyAction action, string objectID)
         {
-            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
 
             _subscriptionProvider.UnSubscribe(action, objectID);
         }
 
         public void UnSubscribe(INotifyAction action)
         {
-            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
 
             _subscriptionProvider.UnSubscribe(action);
         }
@@ -136,29 +172,48 @@ namespace ASC.Notify.Model
 
         public virtual void UpdateSubscriptionMethod(INotifyAction action, IRecipient recipient, params string[] senderNames)
         {
-            if (action == null) throw new ArgumentNullException(nameof(action));
-            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
-            if (senderNames == null) throw new ArgumentNullException(nameof(senderNames));
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+            if (recipient == null)
+            {
+                throw new ArgumentNullException(nameof(recipient));
+            }
+            if (senderNames == null)
+            {
+                throw new ArgumentNullException(nameof(senderNames));
+            }
 
             _subscriptionProvider.UpdateSubscriptionMethod(action, recipient, senderNames);
         }
 
         public virtual object GetSubscriptionRecord(INotifyAction action, IRecipient recipient, string objectID)
         {
-            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
-            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (recipient == null)
+            {
+                throw new ArgumentNullException(nameof(recipient));
+            }
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
 
             var subscriptionRecord = _subscriptionProvider.GetSubscriptionRecord(action, recipient, objectID);
-
-            if (subscriptionRecord != null) return subscriptionRecord;
+            if (subscriptionRecord != null)
+            {
+                return subscriptionRecord;
+            }
 
             var parents = WalkUp(recipient);
 
             foreach (var parent in parents)
             {
                 subscriptionRecord = _subscriptionProvider.GetSubscriptionRecord(action, parent, objectID);
-
-                if (subscriptionRecord != null) break;
+                if (subscriptionRecord != null)
+                {
+                    break;
+                }
             }
 
             return subscriptionRecord;
@@ -166,8 +221,14 @@ namespace ASC.Notify.Model
 
         public virtual string[] GetSubscriptions(INotifyAction action, IRecipient recipient, bool checkSubscription = true)
         {
-            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
-            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (recipient == null)
+            {
+                throw new ArgumentNullException(nameof(recipient));
+            }
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
 
             var objects = new List<string>();
             var direct = _subscriptionProvider.GetSubscriptions(action, recipient, checkSubscription) ?? Array.Empty<string>();
@@ -183,11 +244,17 @@ namespace ASC.Notify.Model
                     {
                         if (!objects.Contains(groupsubscr) 
                             && !_subscriptionProvider.IsUnsubscribe(recipient as IDirectRecipient, action, groupsubscr))
+                        {
                             objects.Add(groupsubscr);
+                        }
                     }
                 }
-                else MergeObjects(objects, direct);
+                else
+                {
+                    MergeObjects(objects, direct);
+                }
             }
+
             return objects.ToArray();
         }
 
@@ -210,7 +277,10 @@ namespace ASC.Notify.Model
         {
             foreach (var addition in additions)
             {
-                if (!result.Contains(addition)) result.Add(addition);
+                if (!result.Contains(addition))
+                {
+                    result.Add(addition);
+                }
             }
         }
 
@@ -218,7 +288,10 @@ namespace ASC.Notify.Model
         {
             foreach (var addition in additions)
             {
-                if (!result.Contains(addition)) result.Add(addition);
+                if (!result.Contains(addition))
+                {
+                    result.Add(addition);
+                }
             }
         }
     }

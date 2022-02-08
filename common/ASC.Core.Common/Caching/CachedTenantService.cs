@@ -74,7 +74,9 @@ namespace ASC.Core.Caching
         {
             var store = Cache.Get<TenantStore>(Key);
             if (store == null)
+            {
                 Cache.Insert(Key, store = new TenantStore(), DateTime.UtcNow.Add(_cacheExpiration));
+            }
 
             return store;
         }
@@ -99,7 +101,10 @@ namespace ASC.Core.Caching
 
             public Tenant Get(string domain)
             {
-                if (string.IsNullOrEmpty(domain)) return null;
+                if (string.IsNullOrEmpty(domain))
+                {
+                    return null;
+                }
 
                 Tenant t;
                 lock (_locker)
@@ -112,15 +117,25 @@ namespace ASC.Core.Caching
 
             public void Insert(Tenant t, string ip = null)
             {
-                if (t == null) return;
+                if (t == null)
+                {
+                    return;
+                }
 
                 Remove(t.Id);
                 lock (_locker)
                 {
                     _byId[t.Id] = t;
                     _byDomain[t.TenantAlias] = t;
-                    if (!string.IsNullOrEmpty(t.MappedDomain)) _byDomain[t.MappedDomain] = t;
-                    if (!string.IsNullOrEmpty(ip)) _byDomain[ip] = t;
+                    if (!string.IsNullOrEmpty(t.MappedDomain))
+                    {
+                        _byDomain[t.MappedDomain] = t;
+                    }
+
+                    if (!string.IsNullOrEmpty(ip))
+                    {
+                        _byDomain[ip] = t;
+                    }
                 }
             }
 
@@ -143,7 +158,11 @@ namespace ASC.Core.Caching
 
             internal void Clear(CoreBaseSettings coreBaseSettings)
             {
-                if (!coreBaseSettings.Standalone) return;
+                if (!coreBaseSettings.Standalone)
+                {
+                    return;
+                }
+
                 lock (_locker)
                 {
                     _byId.Clear();
@@ -204,13 +223,25 @@ namespace ASC.Core.Caching
             CacheNotifySettings = tenantServiceCache.EventBustSettings;
         }
 
-        public void ValidateDomain(string domain) => Service.ValidateDomain(domain);
+        public void ValidateDomain(string domain)
+        {
+            Service.ValidateDomain(domain);
+        }
 
-        public IEnumerable<Tenant> GetTenants(string login, string passwordHash) => Service.GetTenants(login, passwordHash);
+        public IEnumerable<Tenant> GetTenants(string login, string passwordHash)
+        {
+            return Service.GetTenants(login, passwordHash);
+        }
 
-        public IEnumerable<Tenant> GetTenants(DateTime from, bool active = true) => Service.GetTenants(from, active);
+        public IEnumerable<Tenant> GetTenants(DateTime from, bool active = true)
+        {
+            return Service.GetTenants(from, active);
+        }
 
-        public IEnumerable<Tenant> GetTenants(List<int> ids) => Service.GetTenants(ids);
+        public IEnumerable<Tenant> GetTenants(List<int> ids)
+        {
+            return Service.GetTenants(ids);
+        }
 
         public Tenant GetTenant(int id)
         {
@@ -220,7 +251,10 @@ namespace ASC.Core.Caching
             {
                 t = Service.GetTenant(id);
 
-                if (t != null) tenants.Insert(t);
+                if (t != null)
+                {
+                    tenants.Insert(t);
+                }
             }
 
             return t;
@@ -233,8 +267,10 @@ namespace ASC.Core.Caching
             if (t == null)
             {
                 t = Service.GetTenant(domain);
-
-                if (t != null) tenants.Insert(t);
+                if (t != null)
+                {
+                    tenants.Insert(t);
+                }
             }
 
             return t;
@@ -247,8 +283,10 @@ namespace ASC.Core.Caching
             if (t == null)
             {
                 t = Service.GetTenantForStandaloneWithoutAlias(ip);
-
-                if (t != null) tenants.Insert(t, ip);
+                if (t != null)
+                {
+                    tenants.Insert(t, ip);
+                }
             }
 
             return t;
@@ -268,7 +306,10 @@ namespace ASC.Core.Caching
             CacheNotifyItem.Publish(new TenantCacheItem() { TenantId = id }, CacheNotifyAction.InsertOrUpdate);
         }
 
-        public IEnumerable<TenantVersion> GetTenantVersions() => Service.GetTenantVersions();
+        public IEnumerable<TenantVersion> GetTenantVersions()
+        {
+            return Service.GetTenantVersions();
+        }
 
         public byte[] GetTenantSettings(int tenant, string key)
         {
@@ -277,7 +318,7 @@ namespace ASC.Core.Caching
             if (data == null)
             {
                 data = Service.GetTenantSettings(tenant, key);
-                _cache.Insert(cacheKey, data ?? new byte[0], DateTime.UtcNow + _settingsExpiration);
+                _cache.Insert(cacheKey, data ?? Array.Empty<byte>(), DateTime.UtcNow + _settingsExpiration);
             }
 
             return data == null ? null : data.Length == 0 ? null : data;

@@ -43,12 +43,22 @@ namespace ASC.Notify.Recipients
 
         public override bool Equals(object obj)
         {
-            if (!(obj is IRecipientsGroup recGr)) return false;
+            if (!(obj is IRecipientsGroup recGr))
+            {
+                return false;
+            }
+
             return Equals(recGr.ID, ID);
         }
 
-        public override int GetHashCode() => (ID ?? "").GetHashCode();
+        public override int GetHashCode()
+        {
+            return (ID ?? string.Empty).GetHashCode();
+        }
 
-        public override string ToString() => Name;
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

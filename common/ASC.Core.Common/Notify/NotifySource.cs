@@ -54,7 +54,10 @@ namespace ASC.Core.Notify
 
         public NotifySource(string id, UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
         {
-            if (string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
 
             ID = id;
             _userManager = userManager;
@@ -71,7 +74,9 @@ namespace ASC.Core.Notify
             {
                 var culture = Thread.CurrentThread.CurrentCulture;
                 if (!_actions.ContainsKey(culture))
+                {
                     _actions[culture] = CreateActionProvider();
+                }
 
                 return _actions[culture];
             }
@@ -83,18 +88,28 @@ namespace ASC.Core.Notify
             {
                 var culture = Thread.CurrentThread.CurrentCulture;
                 if (Thread.CurrentThread.CurrentUICulture != culture)
+                {
                     Thread.CurrentThread.CurrentUICulture = culture;
+                }
 
                 if (!_patterns.ContainsKey(culture))
+                {
                     _patterns[culture] = CreatePatternsProvider();
+                }
 
                 return _patterns[culture];
             }
         }
 
-        public IRecipientProvider GetRecipientsProvider() => CreateRecipientsProvider();
+        public IRecipientProvider GetRecipientsProvider()
+        {
+            return CreateRecipientsProvider();
+        }
 
-        public ISubscriptionProvider GetSubscriptionProvider() => CreateSubscriptionProvider();
+        public ISubscriptionProvider GetSubscriptionProvider()
+        {
+            return CreateSubscriptionProvider();
+        }
 
         protected abstract IPatternProvider CreatePatternsProvider();
 

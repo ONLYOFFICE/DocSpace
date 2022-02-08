@@ -47,8 +47,6 @@ namespace ASC.Core.Configuration
 
         public readonly static SmtpSettings Empty = new SmtpSettings();
 
-        private SmtpSettings() { }
-
         public SmtpSettings(string host, string senderAddress)
             : this(host, senderAddress, DefaultSenderDisplayName) { }
 
@@ -58,13 +56,18 @@ namespace ASC.Core.Configuration
         public SmtpSettings(string host, int port, string senderAddress)
             : this(host, port, senderAddress, DefaultSenderDisplayName) { }
 
+        private SmtpSettings() { }
+
         public SmtpSettings(string host, int port, string senderAddress, string senderDisplayName)
         {
             if (string.IsNullOrEmpty(host))
+            {
                 throw new ArgumentException("Empty smtp host.", nameof(host));
-
+            }
             if (string.IsNullOrEmpty(senderAddress))
+            {
                 throw new ArgumentException("Empty sender address.", nameof(senderAddress));
+            }
 
             Host = host;
             Port = port;
@@ -72,27 +75,38 @@ namespace ASC.Core.Configuration
             SenderDisplayName = senderDisplayName ?? throw new ArgumentNullException(nameof(senderDisplayName));
         }
 
-        public void SetCredentials(string userName, string password) =>
+        public void SetCredentials(string userName, string password)
+        {
             SetCredentials(userName, password, string.Empty);
+        }
 
         public void SetCredentials(string userName, string password, string domain)
         {
             if (string.IsNullOrEmpty(userName))
+            {
                 throw new ArgumentException("Empty user name.", nameof(userName));
-
+            }
             if (string.IsNullOrEmpty(password))
+            {
                 throw new ArgumentException("Empty password.", nameof(password));
+            }
 
             CredentialsUserName = userName;
             CredentialsUserPassword = password;
             CredentialsDomain = domain;
         }
 
-        public string Serialize() => ToString();
+        public string Serialize()
+        {
+            return ToString();
+        }
 
         public static SmtpSettings Deserialize(string value)
         {
-            if (string.IsNullOrEmpty(value)) return Empty;
+            if (string.IsNullOrEmpty(value))
+            {
+                return Empty;
+            }
 
             var props = value.Split(new[] { '#' }, StringSplitOptions.None);
             props = Array.ConvertAll(props, p => !string.IsNullOrEmpty(p) ? p : null);
@@ -115,7 +129,10 @@ namespace ASC.Core.Configuration
                 settings.SetCredentials(credentialsUserName, credentialsUserPassword, credentialsDomain);
                 settings.EnableAuth = true;
             }
-            else settings.EnableAuth = false;
+            else
+            {
+                settings.EnableAuth = false;
+            }
 
             return settings;
         }

@@ -81,7 +81,9 @@ namespace ASC.Core.Notify.Senders
         public virtual void Init(IDictionary<string, string> properties)
         {
             if (properties.ContainsKey("useCoreSettings") && bool.Parse(properties["useCoreSettings"]))
+            {
                 UseCoreSettings = true;
+            }
             else
             {
                 _host = properties["host"];
@@ -110,7 +112,9 @@ namespace ASC.Core.Notify.Senders
                 try
                 {
                     if (UseCoreSettings)
+                    {
                         InitUseCoreSettings(configuration);
+                    }
 
                     var mail = BuildMailMessage(m);
 
@@ -119,7 +123,10 @@ namespace ASC.Core.Notify.Senders
                     smtpClient.Connect(_host, _port,
                         _ssl ? SecureSocketOptions.Auto : SecureSocketOptions.None);
 
-                    if (_credentials != null) smtpClient.Authenticate(_credentials);
+                    if (_credentials != null)
+                    {
+                        smtpClient.Authenticate(_credentials);
+                    }
 
                     smtpClient.Send(mail);
                     result = NoticeSendResult.OK;
@@ -175,7 +182,9 @@ namespace ASC.Core.Notify.Senders
             finally
             {
                 if (smtpClient.IsConnected)
+                {
                     smtpClient.Disconnect(true);
+                }
 
                 smtpClient.Dispose();
             }
@@ -240,7 +249,9 @@ namespace ASC.Core.Notify.Senders
                     {
                         var mimeEntity = ConvertAttachmentToMimePart(attachment);
                         if (mimeEntity != null)
+                        {
                             multipartRelated.Add(mimeEntity);
+                        }
                     }
 
                     multipartAlternative.Add(multipartRelated);
@@ -259,7 +270,9 @@ namespace ASC.Core.Notify.Senders
             }
 
             if (!string.IsNullOrEmpty(m.ReplyTo))
+            {
                 mimeMessage.ReplyTo.Add(MailboxAddress.Parse(ParserOptions.Default, m.ReplyTo));
+            }
 
             mimeMessage.Headers.Add("Auto-Submitted", string.IsNullOrEmpty(m.AutoSubmitted) ? "auto-generated" : m.AutoSubmitted);
 
@@ -277,7 +290,9 @@ namespace ASC.Core.Notify.Senders
             };
 
             if (sslCertificatePermit)
+            {
                 smtpClient.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
+            }
 
             return smtpClient;
         }
@@ -287,12 +302,16 @@ namespace ASC.Core.Notify.Senders
             try
             {
                 if (attachment == null || string.IsNullOrEmpty(attachment.FileName) || string.IsNullOrEmpty(attachment.ContentId) || attachment.Content == null)
+                {
                     return null;
+                }
 
                 var extension = Path.GetExtension(attachment.FileName);
 
                 if (string.IsNullOrEmpty(extension))
+                {
                     return null;
+                }
 
                 return new MimePart("image", extension.TrimStart('.'))
                 {
@@ -330,7 +349,9 @@ namespace ASC.Core.Notify.Senders
 
     public class SmtpSenderExtension
     {
-        public static void Register(DIHelper services) =>
+        public static void Register(DIHelper services)
+        {
             services.TryAdd<SmtpSenderScope>();
+        }
     }
 }

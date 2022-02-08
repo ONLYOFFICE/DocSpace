@@ -39,26 +39,40 @@ namespace ASC.Core.Users
 
         public static bool IsOwner(this UserInfo ui, Tenant tenant)
         {
-            if (ui == null) return false;
+            if (ui == null)
+            {
+                return false;
+            }
 
             return tenant != null && tenant.OwnerId.Equals(ui.Id);
         }
 
-        public static bool IsMe(this UserInfo ui, AuthContext authContext) =>
-            ui != null && ui.Id == authContext.CurrentAccount.ID;
+        public static bool IsMe(this UserInfo ui, AuthContext authContext)
+        {
+            return ui != null && ui.Id == authContext.CurrentAccount.ID;
+        }
 
-        public static bool IsAdmin(this UserInfo ui, UserManager UserManager) =>
-            ui != null && UserManager.IsUserInGroup(ui.Id, Constants.GroupAdmin.ID);
+        public static bool IsAdmin(this UserInfo ui, UserManager UserManager)
+        {
+            return ui != null && UserManager.IsUserInGroup(ui.Id, Constants.GroupAdmin.ID);
+        }
 
-        public static bool IsVisitor(this UserInfo ui, UserManager UserManager) =>
-            ui != null && UserManager.IsUserInGroup(ui.Id, Constants.GroupVisitor.ID);
+        public static bool IsVisitor(this UserInfo ui, UserManager UserManager)
+        {
+            return ui != null && UserManager.IsUserInGroup(ui.Id, Constants.GroupVisitor.ID);
+        }
 
-        public static bool IsOutsider(this UserInfo ui, UserManager userManager) =>
-            IsVisitor(ui, userManager) && ui.Id == Constants.OutsideUser.Id;
+        public static bool IsOutsider(this UserInfo ui, UserManager userManager)
+        {
+            return IsVisitor(ui, userManager) && ui.Id == Constants.OutsideUser.Id;
+        }
 
         public static bool IsLDAP(this UserInfo ui)
         {
-            if (ui == null) return false;
+            if (ui == null)
+            {
+                return false;
+            }
 
             return !string.IsNullOrEmpty(ui.Sid);
         }
@@ -66,7 +80,10 @@ namespace ASC.Core.Users
         // ReSharper disable once InconsistentNaming
         public static bool IsSSO(this UserInfo ui)
         {
-            if (ui == null) return false;
+            if (ui == null)
+            {
+                return false;
+            }
 
             return !string.IsNullOrEmpty(ui.SsoNameId);
         }
@@ -75,14 +92,19 @@ namespace ASC.Core.Users
         {
             var ldapUserContacts = ui.ContactsList;
 
-            if (ui.ContactsList == null) return;
+            if (ui.ContactsList == null)
+            {
+                return;
+            }
 
             var newContacts = new List<string>();
 
             for (int i = 0, m = ldapUserContacts.Count; i < m; i += 2)
             {
                 if (i + 1 >= ldapUserContacts.Count)
+                {
                     continue;
+                }
 
                 var type = ldapUserContacts[i];
                 var value = ldapUserContacts[i + 1];

@@ -75,7 +75,10 @@ namespace ASC.Core.Data
                     var common = commonAces[key];
                     commonAces.Remove(key);
 
-                    if (common.Reaction == a.Reaction) tenantAces.Remove(a);
+                    if (common.Reaction == a.Reaction)
+                    {
+                        tenantAces.Remove(a);
+                    }
                 }
             }
 
@@ -87,8 +90,14 @@ namespace ASC.Core.Data
             r.Tenant = tenant;
             using var tx = UserDbContext.Database.BeginTransaction();
 
-            if (!ExistEscapeRecord(r)) InsertRecord(r);
-            else DeleteRecord(r); // unescape
+            if (!ExistEscapeRecord(r))
+            {
+                InsertRecord(r);
+            }
+            else
+            {
+                DeleteRecord(r); // unescape
+            }
 
             tx.Commit();
 
@@ -100,12 +109,17 @@ namespace ASC.Core.Data
             r.Tenant = tenant;
             using var tx = UserDbContext.Database.BeginTransaction();
 
-            if (ExistEscapeRecord(r)) InsertRecord(r); // escape
-            else DeleteRecord(r);
+            if (ExistEscapeRecord(r))
+            {
+                InsertRecord(r); // escape
+            }
+            else
+            {
+                DeleteRecord(r);
+            }
 
             tx.Commit();
         }
-
 
         private bool ExistEscapeRecord(AzRecord r)
         {

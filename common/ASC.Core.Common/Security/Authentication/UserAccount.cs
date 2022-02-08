@@ -55,12 +55,24 @@ namespace ASC.Core.Security.Authentication
             Email = info.Email;
         }
 
-        public object Clone() => MemberwiseClone();
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
 
-        public override bool Equals(object obj) => obj is IUserAccount a && ID.Equals(a.ID);
+        public override bool Equals(object obj)
+        {
+            return obj is IUserAccount a && ID.Equals(a.ID);
+        }
 
-        public override int GetHashCode() => ID.GetHashCode();
+        public override int GetHashCode()
+        {
+            return ID.GetHashCode();
+        }
 
-        public override string ToString() => Name;
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

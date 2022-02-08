@@ -81,7 +81,9 @@ namespace ASC.Core.Billing
             var paymentLast = JsonSerializer.Deserialize<PaymentLast>(result);
 
             if (!_test && paymentLast.PaymentStatus == 4)
+            {
                 throw new BillingException("Can not accept test payment.", new { PortalId = portalId });
+            }
 
             return paymentLast;
         }
@@ -101,22 +103,34 @@ namespace ASC.Core.Billing
             var additionalParameters = new List<Tuple<string, string>>() { Tuple.Create("PaymentSystemId", AvangatePaymentSystemId.ToString()) };
 
             if (!string.IsNullOrEmpty(affiliateId))
+            {
                 additionalParameters.Add(Tuple.Create("AffiliateId", affiliateId));
+            }
 
             if (!string.IsNullOrEmpty(campaign))
+            {
                 additionalParameters.Add(Tuple.Create("campaign", campaign));
+            }
 
             if (!string.IsNullOrEmpty(currency))
+            {
                 additionalParameters.Add(Tuple.Create("Currency", currency));
+            }
 
             if (!string.IsNullOrEmpty(language))
+            {
                 additionalParameters.Add(Tuple.Create("Language", language));
+            }
 
             if (!string.IsNullOrEmpty(customerId))
+            {
                 additionalParameters.Add(Tuple.Create("CustomerID", customerId));
+            }
 
             if (!string.IsNullOrEmpty(quantity))
+            {
                 additionalParameters.Add(Tuple.Create("Quantity", quantity));
+            }
 
             var parameters = products
                 .Distinct()
@@ -149,10 +163,14 @@ namespace ASC.Core.Billing
                 var upgradeUrl = (Uri)null;
 
                 if (paymentUrls.TryGetValue(p, out url) && !string.IsNullOrEmpty(url = ToUrl(url)))
+                {
                     paymentUrl = new Uri(url);
+                }
 
                 if (upgradeUrls.TryGetValue(p, out url) && !string.IsNullOrEmpty(url = ToUrl(url)))
+                {
                     upgradeUrl = new Uri(url);
+                }
 
                 urls[p] = Tuple.Create(paymentUrl, upgradeUrl);
             }
@@ -162,7 +180,10 @@ namespace ASC.Core.Billing
 
         public IDictionary<string, Dictionary<string, decimal>> GetProductPriceInfo(params string[] productIds)
         {
-            if (productIds == null) throw new ArgumentNullException("productIds");
+            if (productIds == null)
+            {
+                throw new ArgumentNullException(nameof(productIds));
+            }
 
             var parameters = productIds.Select(pid => Tuple.Create("ProductId", pid)).ToList();
             parameters.Add(Tuple.Create("PaymentSystemId", AvangatePaymentSystemId.ToString()));
@@ -177,9 +198,19 @@ namespace ASC.Core.Billing
                 return productIds.Select(productId =>
                 {
                     if (pricesPaymentSystem.ContainsKey(productId))
-                        return new { ProductId = productId, Prices = pricesPaymentSystem[productId] };
+                    {
+                        return new
+                        {
+                            ProductId = productId,
+                            Prices = pricesPaymentSystem[productId]
+                        };
+                    }
 
-                    return new { ProductId = productId, Prices = new Dictionary<string, decimal>() };
+                    return new 
+                    { 
+                        ProductId = productId, 
+                        Prices = new Dictionary<string, decimal>() 
+                    };
                 })
                     .ToDictionary(e => e.ProductId, e => e.Prices);
             }
@@ -207,7 +238,9 @@ namespace ASC.Core.Billing
             request.Method = HttpMethod.Post;
 
             if (!string.IsNullOrEmpty(_billingKey))
+            {
                 request.Headers.Add("Authorization", CreateAuthToken(_billingKey, _billingSecret));
+            }
 
             using var httpClient = new HttpClient();
             httpClient.Timeout = TimeSpan.FromMilliseconds(60000);
@@ -215,14 +248,20 @@ namespace ASC.Core.Billing
             var data = new Dictionary<string, List<string>>();
 
             if (!string.IsNullOrEmpty(portalId))
+            {
                 data.Add("PortalId", new List<string>() { portalId });
+            }
 
             foreach (var parameter in parameters)
             {
                 if (!data.ContainsKey(parameter.Item1))
+                {
                     data.Add(parameter.Item1, new List<string>() { parameter.Item2 });
-
-                else data[parameter.Item1].Add(parameter.Item2);
+                }
+                else
+                {
+                    data[parameter.Item1].Add(parameter.Item2);
+                }
             }
 
             var body = JsonSerializer.Serialize(data);
@@ -233,7 +272,9 @@ namespace ASC.Core.Billing
             using (var stream = response.Content.ReadAsStream())
             {
                 if (stream == null)
+                {
                     throw new BillingNotConfiguredException("Billing response is null");
+                }
 
                 using (var readStream = new StreamReader(stream))
                 {
@@ -242,15 +283,22 @@ namespace ASC.Core.Billing
             }
 
             if (string.IsNullOrEmpty(result))
+            {
                 throw new BillingNotConfiguredException("Billing response is null");
+            }
 
-            if (!result.StartsWith("{\"Message\":\"error")) return result;
+            if (!result.StartsWith("{\"Message\":\"error"))
+            {
+                return result;
+            }
 
             var @params = (parameters ?? Enumerable.Empty<Tuple<string, string>>()).Select(p => string.Format("{0}: {1}", p.Item1, p.Item2));
             var info = new { Method = method, PortalId = portalId, Params = string.Join(", ", @params) };
 
             if (result.Contains("{\"Message\":\"error: cannot find "))
+            {
                 throw new BillingNotFoundException(result, info);
+            }
 
             throw new BillingException(result, info);
         }
@@ -258,12 +306,15 @@ namespace ASC.Core.Billing
         private string ToUrl(string s)
         {
             s = s.Trim();
-
             if (s.StartsWith("error", StringComparison.InvariantCultureIgnoreCase))
+            {
                 return string.Empty;
+            }
 
             if (_test && !s.Contains("&DOTEST = 1"))
+            {
                 s += "&DOTEST=1";
+            }
 
             return s;
         }

@@ -103,14 +103,22 @@ namespace ASC.Core
         public void ClearCache()
         {
             if (_userService is ICachedService service)
+            {
                 service.InvalidateCache();
+            }
         }
 
         #region Users
 
-        public UserInfo[] GetUsers() => GetUsers(EmployeeStatus.Default);
+        public UserInfo[] GetUsers()
+        {
+            return GetUsers(EmployeeStatus.Default);
+        }
 
-        public UserInfo[] GetUsers(EmployeeStatus status) => GetUsers(status, EmployeeType.All);
+        public UserInfo[] GetUsers(EmployeeStatus status)
+        {
+            return GetUsers(status, EmployeeType.All);
+        }
 
         public UserInfo[] GetUsers(EmployeeStatus status, EmployeeType type)
         {
@@ -182,7 +190,11 @@ namespace ASC.Core
 
         public UserInfo GetUsers(Guid id)
         {
-            if (IsSystemUser(id)) return SystemUsers[id];
+            if (IsSystemUser(id))
+            {
+                return SystemUsers[id];
+            }
+
             var u = _userService.GetUser(Tenant.Id, id);
 
             return u != null && !u.Removed ? u : Constants.LostUser;
@@ -190,7 +202,11 @@ namespace ASC.Core
 
         public UserInfo GetUser(Guid id, Expression<Func<User, UserInfo>> exp)
         {
-            if (IsSystemUser(id)) return SystemUsers[id];
+            if (IsSystemUser(id))
+            {
+                return SystemUsers[id];
+            }
+
             var u = _userService.GetUser(Tenant.Id, id, exp);
 
             return u != null && !u.Removed ? u : Constants.LostUser;
@@ -203,29 +219,50 @@ namespace ASC.Core
             return u != null && !u.Removed ? u : Constants.LostUser;
         }
 
-        public bool UserExists(Guid id) => UserExists(GetUsers(id));
+        public bool UserExists(Guid id)
+        {
+            return UserExists(GetUsers(id));
+        }
 
-        public bool UserExists(UserInfo user) => !user.Equals(Constants.LostUser);
+        public bool UserExists(UserInfo user)
+        {
+            return !user.Equals(Constants.LostUser);
+        }
 
-        public bool IsSystemUser(Guid id) => SystemUsers.ContainsKey(id);
+        public bool IsSystemUser(Guid id)
+        {
+            return SystemUsers.ContainsKey(id);
+        }
 
         public UserInfo GetUserByEmail(string email)
         {
-            if (string.IsNullOrEmpty(email)) return Constants.LostUser;
+            if (string.IsNullOrEmpty(email))
+            {
+                return Constants.LostUser;
+            }
 
             var u = _userService.GetUser(Tenant.Id, email);
 
             return u != null && !u.Removed ? u : Constants.LostUser;
         }
 
-        public UserInfo[] Search(string text, EmployeeStatus status) => Search(text, status, Guid.Empty);
+        public UserInfo[] Search(string text, EmployeeStatus status)
+        {
+            return Search(text, status, Guid.Empty);
+        }
 
         public UserInfo[] Search(string text, EmployeeStatus status, Guid groupId)
         {
-            if (text == null || text.Trim() == string.Empty) return Array.Empty<UserInfo>();
+            if (text == null || text.Trim() == string.Empty)
+            {
+                return Array.Empty<UserInfo>();
+            }
 
             var words = text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            if (words.Length == 0) return Array.Empty<UserInfo>();
+            if (words.Length == 0)
+            {
+                return Array.Empty<UserInfo>();
+            }
 
             var users = groupId == Guid.Empty ?
                 GetUsers(status) :
@@ -245,7 +282,9 @@ namespace ASC.Core
                 };
 
                 if (IsPropertiesContainsWords(properties, words))
+                {
                     findUsers.Add(user);
+                }
             }
 
             return findUsers.ToArray();
@@ -253,14 +292,26 @@ namespace ASC.Core
 
         public UserInfo SaveUserInfo(UserInfo u, bool isVisitor = false)
         {
-            if (IsSystemUser(u.Id)) return SystemUsers[u.Id];
-            if (u.Id == Guid.Empty) _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
-            else _permissionContext.DemandPermissions(new UserSecurityProvider(u.Id), Constants.Action_EditUser);
+            if (IsSystemUser(u.Id))
+            {
+                return SystemUsers[u.Id];
+            }
+
+            if (u.Id == Guid.Empty)
+            {
+                _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
+            }
+            else
+            {
+                _permissionContext.DemandPermissions(new UserSecurityProvider(u.Id), Constants.Action_EditUser);
+            }
 
             if (!_coreBaseSettings.Personal)
             {
                 if (_constants.MaxEveryoneCount <= GetUsersByGroup(Constants.GroupEveryone.ID).Length)
+                {
                     throw new TenantQuotaException("Maximum number of users exceeded");
+                }
 
                 if (u.Status == EmployeeStatus.Active)
                 {
@@ -270,19 +321,25 @@ namespace ASC.Core
                         var visitors = _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Free ? 0 : _constants.CoefficientOfVisitors;
 
                         if (!_coreBaseSettings.Standalone && GetUsersByGroup(Constants.GroupVisitor.ID).Length > visitors * maxUsers)
+                        {
                             throw new TenantQuotaException("Maximum number of visitors exceeded");
+                        }
                     }
                     else
                     {
                         var q = _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id);
                         if (q.ActiveUsers < GetUsersByGroup(Constants.GroupUser.ID).Length)
+                        {
                             throw new TenantQuotaException(string.Format("Exceeds the maximum active users ({0})", q.ActiveUsers));
+                        }
                     }
                 }
             }
 
             if (u.Status == EmployeeStatus.Terminated && u.Id == _tenantManager.GetCurrentTenant().OwnerId)
+            {
                 throw new InvalidOperationException("Can not disable tenant owner.");
+            }
 
             var newUser = _userService.SaveUser(_tenantManager.GetCurrentTenant().Id, u);
 
@@ -291,18 +348,28 @@ namespace ASC.Core
 
         public void DeleteUser(Guid id)
         {
-            if (IsSystemUser(id)) return;
+            if (IsSystemUser(id))
+            {
+                return;
+            }
+
             _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
             if (id == Tenant.OwnerId)
+            {
                 throw new InvalidOperationException("Can not remove tenant owner.");
+            }
 
             _userService.RemoveUser(Tenant.Id, id);
         }
 
         public void SaveUserPhoto(Guid id, byte[] photo)
         {
-            if (IsSystemUser(id)) return;
+            if (IsSystemUser(id))
+            {
+                return;
+            }
+
             _permissionContext.DemandPermissions(new UserSecurityProvider(id), Constants.Action_EditUser);
 
             _userService.SetUserPhoto(Tenant.Id, id, photo);
@@ -310,22 +377,33 @@ namespace ASC.Core
 
         public byte[] GetUserPhoto(Guid id)
         {
-            if (IsSystemUser(id)) return null;
+            if (IsSystemUser(id))
+            {
+                return null;
+            }
 
             return _userService.GetUserPhoto(Tenant.Id, id);
         }
 
-        public List<GroupInfo> GetUserGroups(Guid id) => 
-            GetUserGroups(id, IncludeType.Distinct, Guid.Empty);
+        public List<GroupInfo> GetUserGroups(Guid id)
+        {
+            return GetUserGroups(id, IncludeType.Distinct, Guid.Empty);
+        }
 
-        public List<GroupInfo> GetUserGroups(Guid id, Guid categoryID) => 
-            GetUserGroups(id, IncludeType.Distinct, categoryID);
+        public List<GroupInfo> GetUserGroups(Guid id, Guid categoryID)
+        {
+            return GetUserGroups(id, IncludeType.Distinct, categoryID);
+        }
 
-        public List<GroupInfo> GetUserGroups(Guid userID, IncludeType includeType) => 
-            GetUserGroups(userID, includeType, null);
+        public List<GroupInfo> GetUserGroups(Guid userID, IncludeType includeType)
+        {
+            return GetUserGroups(userID, includeType, null);
+        }
 
-        public bool IsUserInGroup(Guid userId, Guid groupId) =>
-            IsUserInGroupInternal(userId, groupId, GetRefsInternal());
+        public bool IsUserInGroup(Guid userId, Guid groupId)
+        {
+            return IsUserInGroupInternal(userId, groupId, GetRefsInternal());
+        }
 
         public UserInfo[] GetUsersByGroup(Guid groupId, EmployeeStatus employeeStatus = EmployeeStatus.Default)
         {
@@ -336,7 +414,11 @@ namespace ASC.Core
 
         public void AddUserIntoGroup(Guid userId, Guid groupId)
         {
-            if (Constants.LostUser.Id == userId || Constants.LostGroupInfo.ID == groupId) return;
+            if (Constants.LostUser.Id == userId || Constants.LostGroupInfo.ID == groupId)
+            {
+                return;
+            }
+
             _permissionContext.DemandPermissions(Constants.Action_EditGroups);
 
             _userService.SaveUserGroupRef(Tenant.Id, new UserGroupRef(userId, groupId, UserGroupRefType.Contains));
@@ -346,7 +428,11 @@ namespace ASC.Core
 
         public void RemoveUserFromGroup(Guid userId, Guid groupId)
         {
-            if (Constants.LostUser.Id == userId || Constants.LostGroupInfo.ID == groupId) return;
+            if (Constants.LostUser.Id == userId || Constants.LostGroupInfo.ID == groupId)
+            {
+                return;
+            }
+
             _permissionContext.DemandPermissions(Constants.Action_EditGroups);
 
             _userService.RemoveUserGroupRef(Tenant.Id, userId, groupId, UserGroupRefType.Contains);
@@ -357,14 +443,18 @@ namespace ASC.Core
         internal List<GroupInfo> GetUserGroups(Guid userID, IncludeType includeType, Guid? categoryId)
         {
             if (_coreBaseSettings.Personal)
+            {
                 return new List<GroupInfo> { Constants.GroupUser, Constants.GroupEveryone };
+            }
 
             var httpRequestDictionary = new HttpRequestDictionary<List<GroupInfo>>(_accessor?.HttpContext, "GroupInfo");
             var result = httpRequestDictionary.Get(userID.ToString());
             if (result != null)
             {
                 if (categoryId.HasValue)
+                {
                     result = result.Where(r => r.CategoryID.Equals(categoryId.Value)).ToList();
+                }
 
                 return result;
             }
@@ -376,7 +466,9 @@ namespace ASC.Core
             IEnumerable<UserGroupRef> userRefs = null;
 
             if (refs is UserGroupRefStore store)
+            {
                 userRefs = store.GetRefsByUser(userID);
+            }
 
             var userRefsContainsNotRemoved = userRefs?.Where(r => !r.Removed && r.RefType == UserGroupRefType.Contains).ToList();
 
@@ -390,14 +482,18 @@ namespace ASC.Core
             }
 
             if (IncludeType.Distinct == (includeType & IncludeType.Distinct))
+            {
                 result.AddRange(distinctUserGroups);
+            }
 
             result.Sort((group1, group2) => string.Compare(group1.Name, group2.Name, StringComparison.Ordinal));
 
             httpRequestDictionary.Add(userID.ToString(), result);
 
             if (categoryId.HasValue)
+            {
                 result = result.Where(r => r.CategoryID.Equals(categoryId.Value)).ToList();
+            }
 
             return result;
         }
@@ -413,15 +509,16 @@ namespace ASC.Core
 
         #region Company
 
-        public GroupInfo[] GetDepartments() => GetGroups();
+        public GroupInfo[] GetDepartments()
+        {
+            return GetGroups();
+        }
 
         public Guid GetDepartmentManager(Guid deparmentID)
         {
             var groupRef = _userService.GetUserGroupRef(Tenant.Id, deparmentID, UserGroupRefType.Manager);
 
-            if (groupRef == null) return Guid.Empty;
-
-            return groupRef.UserId;
+            return groupRef == null ? Guid.Empty : groupRef.UserId;
         }
 
         public void SetDepartmentManager(Guid deparmentID, Guid userID)
@@ -429,30 +526,41 @@ namespace ASC.Core
             var managerId = GetDepartmentManager(deparmentID);
 
             if (managerId != Guid.Empty)
+            {
                 _userService.RemoveUserGroupRef(
                     Tenant.Id,
                     managerId, deparmentID, UserGroupRefType.Manager);
+            }
 
             if (userID != Guid.Empty)
+            {
                 _userService.SaveUserGroupRef(
                    Tenant.Id,
                    new UserGroupRef(userID, deparmentID, UserGroupRefType.Manager));
+            }
         }
 
         public UserInfo GetCompanyCEO()
         {
             var id = GetDepartmentManager(Guid.Empty);
+
             return id != Guid.Empty ? GetUsers(id) : null;
         }
 
-        public void SetCompanyCEO(Guid userId) => SetDepartmentManager(Guid.Empty, userId);
+        public void SetCompanyCEO(Guid userId)
+        {
+            SetDepartmentManager(Guid.Empty, userId);
+        }
 
         #endregion Company
 
 
         #region Groups
 
-        public GroupInfo[] GetGroups() => GetGroups(Guid.Empty);
+        public GroupInfo[] GetGroups()
+        {
+            return GetGroups(Guid.Empty);
+        }
 
         public GroupInfo[] GetGroups(Guid categoryID)
         {
@@ -482,8 +590,16 @@ namespace ASC.Core
 
         public GroupInfo SaveGroupInfo(GroupInfo g)
         {
-            if (Constants.LostGroupInfo.Equals(g)) return Constants.LostGroupInfo;
-            if (Constants.BuildinGroups.Any(b => b.ID == g.ID)) return Constants.BuildinGroups.Single(b => b.ID == g.ID);
+            if (Constants.LostGroupInfo.Equals(g))
+            {
+                return Constants.LostGroupInfo;
+            }
+
+            if (Constants.BuildinGroups.Any(b => b.ID == g.ID))
+            {
+                return Constants.BuildinGroups.Single(b => b.ID == g.ID);
+            }
+
             _permissionContext.DemandPermissions(Constants.Action_EditGroups);
 
             var newGroup = _userService.SaveGroup(Tenant.Id, ToGroup(g));
@@ -493,8 +609,16 @@ namespace ASC.Core
 
         public void DeleteGroup(Guid id)
         {
-            if (Constants.LostGroupInfo.Equals(id)) return;
-            if (Constants.BuildinGroups.Any(b => b.ID == id)) return;
+            if (Constants.LostGroupInfo.Equals(id))
+            {
+                return;
+            }
+
+            if (Constants.BuildinGroups.Any(b => b.ID == id))
+            {
+                return;
+            }
+
             _permissionContext.DemandPermissions(Constants.Action_EditGroups);
 
             _userService.RemoveGroup(Tenant.Id, id);
@@ -512,10 +636,16 @@ namespace ASC.Core
                 foreach (var p in properties)
                 {
                     find = (2 <= w.Length) && (0 <= p.IndexOf(w, StringComparison.CurrentCultureIgnoreCase));
-                    if (find) break;
+                    if (find)
+                    {
+                        break;
+                    }
                 }
 
-                if (!find) return false;
+                if (!find)
+                {
+                    return false;
+                }
             }
 
             return true;
@@ -541,14 +671,21 @@ namespace ASC.Core
 
         private bool IsUserInGroupInternal(Guid userId, Guid groupId, IDictionary<string, UserGroupRef> refs)
         {
-            if (groupId == Constants.GroupEveryone.ID) return true;
+            if (groupId == Constants.GroupEveryone.ID)
+            {
+                return true;
+            }
 
             if (groupId == Constants.GroupAdmin.ID && (Tenant.OwnerId == userId 
                 || userId == Configuration.Constants.CoreSystem.ID || userId == _constants.NamingPoster.Id))
+            {
                 return true;
+            }
 
             if (groupId == Constants.GroupVisitor.ID && userId == Constants.OutsideUser.Id)
+            {
                 return true;
+            }
 
             UserGroupRef r;
             if (groupId == Constants.GroupUser.ID || groupId == Constants.GroupVisitor.ID)
@@ -556,9 +693,15 @@ namespace ASC.Core
                 var visitor = refs.TryGetValue(UserGroupRef.CreateKey(Tenant.Id, userId, Constants.GroupVisitor.ID, 
                     UserGroupRefType.Contains), out r) && !r.Removed;
 
-                if (groupId == Constants.GroupVisitor.ID) return visitor;
+                if (groupId == Constants.GroupVisitor.ID)
+                {
+                    return visitor;
+                }
 
-                if (groupId == Constants.GroupUser.ID) return !visitor;
+                if (groupId == Constants.GroupUser.ID)
+                {
+                    return !visitor;
+                }
             }
 
             return refs.TryGetValue(UserGroupRef.CreateKey(Tenant.Id, userId, groupId, UserGroupRefType.Contains), out r) && !r.Removed;
@@ -566,7 +709,10 @@ namespace ASC.Core
 
         private Group ToGroup(GroupInfo g)
         {
-            if (g == null) return null;
+            if (g == null)
+            {
+                return null;
+            }
 
             return new Group
             {

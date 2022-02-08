@@ -55,7 +55,9 @@ namespace ASC.Notify.Patterns
             {
                 var type = xformatter.GetAttribute("type");
                 if (!string.IsNullOrEmpty(type))
+                {
                     _formatter = (IPatternFormatter)Activator.CreateInstance(Type.GetType(type, true));
+                }
             }
 
             var references = new Dictionary<string, string>();
@@ -73,13 +75,18 @@ namespace ASC.Notify.Patterns
                     var xbody = GetElementByTagName(xpattern, "body");
                     var body = GetResource(xbody);
                     if (string.IsNullOrEmpty(body) && xbody != null && xbody.FirstChild is XmlText)
+                    {
                         body = xbody.FirstChild.Value ?? string.Empty;
+                    }
 
                     var styler = xbody != null ? xbody.GetAttribute("styler") : string.Empty;
 
                     _patterns[id + sender] = new Pattern(id, subject, body, Pattern.HtmlContentType) { Styler = styler };
                 }
-                else references[id + sender] = reference + sender;
+                else
+                {
+                    references[id + sender] = reference + sender;
+                }
             }
 
             foreach (var pair in references)
@@ -91,9 +98,14 @@ namespace ASC.Notify.Patterns
         public IPattern GetPattern(INotifyAction action, string senderName)
         {
             if (_patterns.TryGetValue(action.ID + senderName, out var p))
+            {
                 return p;
+            }
+
             if (_patterns.TryGetValue(action.ID, out p))
+            {
                 return p;
+            }
 
             return null;
         }
@@ -111,19 +123,30 @@ namespace ASC.Notify.Patterns
         {
             var result = string.Empty;
 
-            if (e == null) return result;
+            if (e == null)
+            {
+                return result;
+            }
 
             result = e.GetAttribute("resource");
-            if (string.IsNullOrEmpty(result)) return result;
+            if (string.IsNullOrEmpty(result))
+            {
+                return result;
+            }
 
             var array = result.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries);
-            if (array.Length < 2) return result;
+            if (array.Length < 2)
+            {
+                return result;
+            }
 
             var resourceManagerType = Type.GetType(array[1], true, true);
             var property = resourceManagerType.GetProperty(array[0], BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static) ??
                            resourceManagerType.GetProperty(ToUpper(array[0]), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
             if (property == null)
+            {
                 throw new NotifyException(string.Format("Resource {0} not found in resourceManager {1}", array[0], array[1]));
+            }
 
             return property.GetValue(resourceManagerType, null) as string;
 

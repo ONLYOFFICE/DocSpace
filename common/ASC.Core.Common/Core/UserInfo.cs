@@ -87,22 +87,43 @@ namespace ASC.Core.Users
             LastModified = DateTime.UtcNow;
         }
 
-        public override string ToString() => $"{FirstName} {LastName}".Trim();
+        public override string ToString()
+        {
+            return $"{FirstName} {LastName}".Trim();
+        }
 
-        public override int GetHashCode() => Id.GetHashCode();
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
 
-        public override bool Equals(object obj) => obj is UserInfo ui && Id.Equals(ui.Id);
+        public override bool Equals(object obj)
+        {
+            return obj is UserInfo ui && Id.Equals(ui.Id);
+        }
 
-        public bool Equals(UserInfo obj) => obj != null && Id.Equals(obj.Id);
+        public bool Equals(UserInfo obj)
+        {
+            return obj != null && Id.Equals(obj.Id);
+        }
 
-        public CultureInfo GetCulture() =>
-            string.IsNullOrEmpty(CultureName) ? CultureInfo.CurrentCulture : CultureInfo.GetCultureInfo(CultureName);
+        public CultureInfo GetCulture()
+        {
+            return string.IsNullOrEmpty(CultureName) ? CultureInfo.CurrentCulture : CultureInfo.GetCultureInfo(CultureName);
+        }
 
-        public object Clone() => MemberwiseClone();
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
 
         internal string ContactsToString()
         {
-            if (ContactsList == null || ContactsList.Count == 0) return null;
+            if (ContactsList == null || ContactsList.Count == 0)
+            {
+                return null;
+            }
+
             var sBuilder = new StringBuilder();
 
             foreach (var contact in ContactsList)
@@ -115,11 +136,19 @@ namespace ASC.Core.Users
 
         internal UserInfo ContactsFromString(string contacts)
         {
-            if (string.IsNullOrEmpty(contacts)) return this;
+            if (string.IsNullOrEmpty(contacts))
+            {
+                return this;
+            }
 
-            if (ContactsList == null) ContactsList = new List<string>();
-
-            else ContactsList.Clear();
+            if (ContactsList == null)
+            {
+                ContactsList = new List<string>();
+            }
+            else
+            {
+                ContactsList.Clear();
+            }
 
             ContactsList.AddRange(contacts.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries));
 

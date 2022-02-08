@@ -71,8 +71,10 @@ namespace ASC.Core.Tenants
             get
             {
                 if (_domains.Count == 0 && !string.IsNullOrEmpty(TrustedDomainsRaw))
+                {
                     _domains = TrustedDomainsRaw.Split(new[] { '|' },
                         StringSplitOptions.RemoveEmptyEntries).ToList();
+                }
 
                 return _domains;
             }
@@ -98,10 +100,16 @@ namespace ASC.Core.Tenants
         }
 
         public Tenant(string alias)
-            : this() => TenantAlias = alias.ToLowerInvariant();
+            : this()
+        {
+            TenantAlias = alias.ToLowerInvariant();
+        }
 
         public Tenant(int id, string alias)
-            : this(alias) => Id = id;
+            : this(alias)
+        {
+            Id = id;
+        }
 
         public CultureInfo GetCulture() =>
             !string.IsNullOrEmpty(Language) 
@@ -113,19 +121,29 @@ namespace ASC.Core.Tenants
             StatusChangeDate = DateTime.UtcNow;
         }
 
-        public override bool Equals(object obj) =>
-            obj is Tenant t && t.Id == Id;
+        public override bool Equals(object obj)
+        {
+            return obj is Tenant t && t.Id == Id;
+        }
 
-        public override int GetHashCode() => Id;
+        public override int GetHashCode()
+        {
+            return Id;
+        }
 
-        public override string ToString() => TenantAlias;
+        public override string ToString()
+        {
+            return TenantAlias;
+        }
 
         public string GetTenantDomain(CoreSettings coreSettings, bool allowMappedDomain = true)
         {
             var baseHost = coreSettings.GetBaseDomain(HostedRegion);
 
             if (string.IsNullOrEmpty(baseHost) && !string.IsNullOrEmpty(HostedRegion))
+            {
                 baseHost = HostedRegion;
+            }
 
             string result;
             if (baseHost == "localhost" || TenantAlias == "localhost")
@@ -134,15 +152,22 @@ namespace ASC.Core.Tenants
                 TenantAlias = "localhost";
                 result = HostName;
             }
-            else result = string.Format("{0}.{1}", TenantAlias, baseHost).TrimEnd('.').ToLowerInvariant();
+            else
+            {
+                result = string.Format("{0}.{1}", TenantAlias, baseHost).TrimEnd('.').ToLowerInvariant();
+            }
 
             if (!string.IsNullOrEmpty(MappedDomain) && allowMappedDomain)
             {
                 if (MappedDomain.StartsWith("http://", StringComparison.InvariantCultureIgnoreCase))
+                {
                     MappedDomain = MappedDomain.Substring(7);
+                }
 
                 if (MappedDomain.StartsWith("https://", StringComparison.InvariantCultureIgnoreCase))
+                {
                     MappedDomain = MappedDomain.Substring(8);
+                }
 
                 result = MappedDomain.ToLowerInvariant();
             }
@@ -161,16 +186,21 @@ namespace ASC.Core.Tenants
         internal string GetTrustedDomains()
         {
             TrustedDomains.RemoveAll(d => string.IsNullOrEmpty(d));
-            if (TrustedDomains.Count == 0) return null;
 
-            return string.Join("|", TrustedDomains.ToArray());
+            return TrustedDomains.Count == 0 ? null : string.Join("|", TrustedDomains.ToArray());
         }
 
         internal void SetTrustedDomains(string trustedDomains)
         {
-            if (string.IsNullOrEmpty(trustedDomains)) TrustedDomains.Clear();
-            else TrustedDomains.AddRange(trustedDomains.Split(new[] { '|' },
+            if (string.IsNullOrEmpty(trustedDomains))
+            {
+                TrustedDomains.Clear();
+            }
+            else
+            {
+                TrustedDomains.AddRange(trustedDomains.Split(new[] { '|' },
                 StringSplitOptions.RemoveEmptyEntries));
+            }
         }
     }
 }

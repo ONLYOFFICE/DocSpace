@@ -72,7 +72,10 @@ namespace ASC.Core.Billing
 
         public static License Parse(string licenseString)
         {
-            if (string.IsNullOrEmpty(licenseString)) throw new BillingNotFoundException("License file is empty");
+            if (string.IsNullOrEmpty(licenseString))
+            {
+                throw new BillingNotFoundException("License file is empty");
+            }
 
             try
             {
@@ -85,8 +88,10 @@ namespace ASC.Core.Billing
                 options.Converters.Add(new LicenseConverter());
 
                 var license = JsonSerializer.Deserialize<License>(licenseString, options);
-
-                if (license == null) throw new BillingNotFoundException("Can't parse license");
+                if (license == null)
+                {
+                    throw new BillingNotFoundException("Can't parse license");
+                }
 
                 license.OriginalLicense = licenseString;
 
@@ -103,9 +108,7 @@ namespace ASC.Core.Billing
     {
         public override bool CanConvert(Type typeToConvert)
         {
-            return
-                   typeof(int) == typeToConvert ||
-                   typeof(bool) == typeToConvert;
+            return typeof(int) == typeToConvert || typeof(bool) == typeToConvert;
         }
 
         public override object Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -114,7 +117,10 @@ namespace ASC.Core.Billing
             {
                 var i = reader.GetString();
 
-                if (!int.TryParse(i, out var result)) return 0;
+                if (!int.TryParse(i, out var result))
+                {
+                    return 0;
+                }
 
                 return result;
             }
@@ -125,7 +131,10 @@ namespace ASC.Core.Billing
                 {
                     var i = reader.GetString();
 
-                    if (!bool.TryParse(i, out var result)) return false;
+                    if (!bool.TryParse(i, out var result))
+                    {
+                        return false;
+                    }
 
                     return result;
                 }

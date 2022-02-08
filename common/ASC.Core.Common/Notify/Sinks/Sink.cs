@@ -34,7 +34,9 @@ namespace ASC.Notify.Sinks
 
         public abstract SendResponse ProcessMessage(INoticeMessage message);
 
-        public virtual void ProcessMessageAsync(INoticeMessage message) =>
+        public virtual void ProcessMessageAsync(INoticeMessage message)
+        {
             NextSink.ProcessMessageAsync(message);
+        }
     }
 }

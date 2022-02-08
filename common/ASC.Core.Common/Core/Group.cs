@@ -50,9 +50,11 @@ namespace ASC.Core
 
         public override bool Equals(object obj) => obj is Group g && g.Id == Id;
 
-        public void Mapping(Profile profile) =>
+        public void Mapping(Profile profile)
+        {
             profile.CreateMap<DbGroup, Group>()
-            .ForMember(src => src.CategoryId, opt => opt.NullSubstitute(Guid.Empty))
-            .ForMember(src => src.ParentId, opt => opt.NullSubstitute(Guid.Empty));
+                .ForMember(src => src.CategoryId, opt => opt.NullSubstitute(Guid.Empty))
+                .ForMember(src => src.ParentId, opt => opt.NullSubstitute(Guid.Empty));
+        }
     }
 }

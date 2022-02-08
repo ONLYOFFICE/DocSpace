@@ -43,7 +43,9 @@ namespace ASC.Core.Common.EF.Context
     }
     public static class MailDbExtension
     {
-        public static DIHelper AddMailDbContextService(this DIHelper services) =>
-            services.AddDbContextManagerService<MailDbContext>();
+        public static DIHelper AddMailDbContextService(this DIHelper services)
+        {
+            return services.AddDbContextManagerService<MailDbContext>();
+        }
     }
 }

@@ -46,7 +46,10 @@ namespace ASC.Notify.Patterns
 
         internal PatternFormatter(string tagSearchRegExp, bool formatMessage)
         {
-            if (string.IsNullOrEmpty(tagSearchRegExp)) throw new ArgumentException(nameof(tagSearchRegExp));
+            if (string.IsNullOrEmpty(tagSearchRegExp))
+            {
+                throw new ArgumentException(nameof(tagSearchRegExp));
+            }
 
             _tagSearchPattern = tagSearchRegExp;
             RegEx = new Regex(_tagSearchPattern, RegexOptions.IgnoreCase | RegexOptions.Multiline);
@@ -55,7 +58,10 @@ namespace ASC.Notify.Patterns
 
         public string[] GetTags(IPattern pattern)
         {
-            if (pattern == null) throw new ArgumentNullException(nameof(pattern));
+            if (pattern == null)
+            {
+                throw new ArgumentNullException(nameof(pattern));
+            }
 
             var findedTags = new List<string>(SearchTags(pattern.Body));
             Array.ForEach(SearchTags(pattern.Subject), tag => { if (!findedTags.Contains(tag)) findedTags.Add(tag); });
@@ -64,9 +70,18 @@ namespace ASC.Notify.Patterns
 
         public void FormatMessage(INoticeMessage message, ITagValue[] tagsValues)
         {
-            if (message == null) throw new ArgumentNullException(nameof(message));
-            if (message.Pattern == null) throw new ArgumentException(nameof(message));
-            if (tagsValues == null) throw new ArgumentNullException(nameof(tagsValues));
+            if (message == null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
+            if (message.Pattern == null)
+            {
+                throw new ArgumentException(nameof(message));
+            }
+            if (tagsValues == null)
+            {
+                throw new ArgumentNullException(nameof(tagsValues));
+            }
 
             BeforeFormat(message, tagsValues);
 
@@ -84,14 +99,20 @@ namespace ASC.Notify.Patterns
 
         protected virtual string[] SearchTags(string text)
         {
-            if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(_tagSearchPattern)) return Array.Empty<string>();
+            if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(_tagSearchPattern))
+            {
+                return Array.Empty<string>();
+            }
 
             var maches = RegEx.Matches(text);
             var findedTags = new List<string>(maches.Count);
             foreach (Match mach in maches)
             {
                 var tag = mach.Groups["tagName"].Value;
-                if (!findedTags.Contains(tag)) findedTags.Add(tag);
+                if (!findedTags.Contains(tag))
+                {
+                    findedTags.Add(tag);
+                }
             }
 
             return findedTags.ToArray();

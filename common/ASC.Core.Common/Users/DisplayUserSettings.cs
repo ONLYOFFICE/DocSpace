@@ -43,11 +43,13 @@ namespace ASC.Web.Core.Users
         public Guid ID => new Guid("2EF59652-E1A7-4814-BF71-FEB990149428");
         public bool IsDisableGettingStarted { get; set; }
 
-        public ISettings GetDefault(IServiceProvider serviceProvider) =>
-            new DisplayUserSettings
+        public ISettings GetDefault(IServiceProvider serviceProvider)
+        {
+            return new DisplayUserSettings
             {
                 IsDisableGettingStarted = false,
             };
+        }
     }
 
     [Scope]
@@ -67,15 +69,22 @@ namespace ASC.Web.Core.Users
             _removedProfileName = configuration["web:removed-profile-name"] ?? "profile removed";
         }
 
-        public string GetFullUserName(Guid userID, bool withHtmlEncode = true) =>
-            GetFullUserName(_userManager.GetUsers(userID), withHtmlEncode);
+        public string GetFullUserName(Guid userID, bool withHtmlEncode = true)
+        {
+            return GetFullUserName(_userManager.GetUsers(userID), withHtmlEncode);
+        }
 
-        public string GetFullUserName(UserInfo userInfo, bool withHtmlEncode = true) =>
-            GetFullUserName(userInfo, DisplayUserNameFormat.Default, withHtmlEncode);
+        public string GetFullUserName(UserInfo userInfo, bool withHtmlEncode = true)
+        {
+            return GetFullUserName(userInfo, DisplayUserNameFormat.Default, withHtmlEncode);
+        }
 
         public string GetFullUserName(UserInfo userInfo, DisplayUserNameFormat format, bool withHtmlEncode)
         {
-            if (userInfo == null) return string.Empty;
+            if (userInfo == null)
+            {
+                return string.Empty;
+            }
 
             if (!userInfo.Id.Equals(Guid.Empty) && !_userManager.UserExists(userInfo))
             {
@@ -98,7 +107,9 @@ namespace ASC.Web.Core.Users
             return withHtmlEncode ? HtmlEncode(result) : result;
         }
 
-        public string HtmlEncode(string str) =>
-            !string.IsNullOrEmpty(str) ? HttpUtility.HtmlEncode(str) : str;
+        public string HtmlEncode(string str)
+        {
+            return !string.IsNullOrEmpty(str) ? HttpUtility.HtmlEncode(str) : str;
+        }
     }
 }

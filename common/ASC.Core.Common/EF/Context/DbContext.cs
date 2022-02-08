@@ -39,7 +39,9 @@ namespace ASC.Core.Common.EF.Context
 
     public static class DbContextExtension
     {
-        public static DIHelper AddDbContextService(this DIHelper services) => 
-            services.AddDbContextManagerService<DbContext>();
+        public static DIHelper AddDbContextService(this DIHelper services)
+        {
+            return services.AddDbContextManagerService<DbContext>();
+        }
     }
 }

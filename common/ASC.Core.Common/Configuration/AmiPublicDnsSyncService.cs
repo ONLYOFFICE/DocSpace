@@ -40,7 +40,11 @@ namespace ASC.Core.Configuration
     public class AmiPublicDnsSyncService : IServiceController
     {
         public static IServiceProvider ServiceProvider { get; set; }
-        public void Start() => Synchronize();
+
+        public void Start()
+        {
+            Synchronize();
+        }
 
         public void Stop() { }
 
@@ -64,9 +68,11 @@ namespace ASC.Core.Configuration
             }
         }
 
-        private static bool MappedDomainNotSettedByUser(string domain) =>
-            string.IsNullOrEmpty(domain) || Regex.IsMatch(domain, "^ec2.+\\.compute\\.amazonaws\\.com$", 
+        private static bool MappedDomainNotSettedByUser(string domain)
+        {
+            return string.IsNullOrEmpty(domain) || Regex.IsMatch(domain, "^ec2.+\\.compute\\.amazonaws\\.com$",
                 RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+        }
 
         private static string GetAmiPublicDnsName()
         {
@@ -87,7 +93,10 @@ namespace ASC.Core.Configuration
             }
             catch (HttpRequestException ex)
             {
-                if (ex.StatusCode == HttpStatusCode.NotFound || ex.StatusCode == HttpStatusCode.Conflict) throw;
+                if (ex.StatusCode == HttpStatusCode.NotFound || ex.StatusCode == HttpStatusCode.Conflict)
+                {
+                    throw;
+                }
             }
 
             return null;

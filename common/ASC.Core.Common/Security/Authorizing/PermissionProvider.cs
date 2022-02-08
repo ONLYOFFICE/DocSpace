@@ -42,8 +42,14 @@ namespace ASC.Core.Security.Authorizing
 
         public IEnumerable<Ace> GetAcl(ISubject subject, IAction action, ISecurityObjectId objectId, ISecurityObjectProvider secObjProvider)
         {
-            if (subject == null) throw new ArgumentNullException(nameof(subject));
-            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (subject == null)
+            {
+                throw new ArgumentNullException(nameof(subject));
+            }
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
 
             return _authorizationManager
                 .GetAcesWithInherits(subject.ID, action.ID, objectId, secObjProvider)

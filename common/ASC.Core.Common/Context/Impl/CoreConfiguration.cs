@@ -100,21 +100,29 @@ namespace ASC.Core
             get
             {
                 if (_basedomain == null)
+                {
                     _basedomain = Configuration["core:base-domain"] ?? string.Empty;
+                }
 
                 string result;
 
                 if (CoreBaseSettings.Standalone || string.IsNullOrEmpty(_basedomain))
+                {
                     result = GetSetting("BaseDomain") ?? _basedomain;
-
-                else result = _basedomain;
+                }
+                else
+                {
+                    result = _basedomain;
+                }
 
                 return result;
             }
             set
             {
                 if (CoreBaseSettings.Standalone || string.IsNullOrEmpty(_basedomain))
+                {
                     SaveSetting("BaseDomain", value);
+                }
             }
         }
         internal ITenantService TenantService { get; set; }
@@ -140,7 +148,9 @@ namespace ASC.Core
             var baseHost = BaseDomain;
 
             if (string.IsNullOrEmpty(hostedRegion) || string.IsNullOrEmpty(baseHost) || !baseHost.Contains("."))
+            {
                 return baseHost;
+            }
 
             var subdomain = baseHost.Remove(baseHost.IndexOf('.') + 1);
 
@@ -149,18 +159,26 @@ namespace ASC.Core
 
         public void SaveSetting(string key, string value, int tenant = Tenant.DefaultTenant)
         {
-            if (string.IsNullOrEmpty(key)) throw new ArgumentNullException(nameof(key));
+            if (string.IsNullOrEmpty(key))
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
 
             byte[] bytes = null;
             if (value != null)
+            {
                 bytes = Crypto.GetV(Encoding.UTF8.GetBytes(value), 2, true);
+            }
 
             TenantService.SetTenantSettings(tenant, key, bytes);
         }
 
         public string GetSetting(string key, int tenant = Tenant.DefaultTenant)
         {
-            if (string.IsNullOrEmpty(key)) throw new ArgumentNullException(nameof(key));
+            if (string.IsNullOrEmpty(key))
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
 
             var bytes = TenantService.GetTenantSettings(tenant, key);
 
@@ -181,7 +199,9 @@ namespace ASC.Core
                         // thread safe
                         key = GetSetting("PortalId");
                         if (string.IsNullOrEmpty(key))
+                        {
                             SaveSetting("PortalId", key = Guid.NewGuid().ToString());
+                        }
                     }
                 }
                 return key;
@@ -190,7 +210,9 @@ namespace ASC.Core
             {
                 var t = TenantService.GetTenant(tenant);
                 if (t != null && !string.IsNullOrWhiteSpace(t.PaymentId))
+                {
                     return t.PaymentId;
+                }
 
                 return Configuration["core:payment:region"] + tenant;
             }
@@ -200,7 +222,9 @@ namespace ASC.Core
         {
             var t = TenantService.GetTenant(tenant);
             if (t != null && !string.IsNullOrWhiteSpace(t.AffiliateId))
+            {
                 return t.AffiliateId;
+            }
 
             return null;
         }
@@ -209,7 +233,9 @@ namespace ASC.Core
         {
             var t = TenantService.GetTenant(tenant);
             if (t != null && !string.IsNullOrWhiteSpace(t.Campaign))
+            {
                 return t.Campaign;
+            }
 
             return null;
         }
@@ -269,14 +295,19 @@ namespace ASC.Core
             var quotaSettings = settingsManager.LoadForCurrentUser<PersonalQuotaSettings>();
 
             if (quotaSettings.MaxSpace != long.MaxValue)
+            {
                 return quotaSettings.MaxSpace;
+            }
 
             if (_personalMaxSpace.HasValue)
+            {
                 return _personalMaxSpace.Value;
-
+            }
 
             if (!long.TryParse(_configuration["core:personal.maxspace"], out var value))
+            {
                 value = long.MaxValue;
+            }
 
             _personalMaxSpace = value;
 
@@ -285,40 +316,60 @@ namespace ASC.Core
 
         #region Methods Get/Save Setting
 
-        public void SaveSetting(string key, string value, int tenant = Tenant.DefaultTenant) =>
+        public void SaveSetting(string key, string value, int tenant = Tenant.DefaultTenant)
+        {
             _coreSettings.SaveSetting(key, value, tenant);
+        }
 
-        public string GetSetting(string key, int tenant = Tenant.DefaultTenant) =>
-            _coreSettings.GetSetting(key, tenant);
+        public string GetSetting(string key, int tenant = Tenant.DefaultTenant)
+        {
+            return _coreSettings.GetSetting(key, tenant);
+        }
 
         #endregion
 
         #region Methods Get/Set Section
 
-        public T GetSection<T>() where T : class => GetSection<T>(typeof(T).Name);
+        public T GetSection<T>() where T : class
+        {
+            return GetSection<T>(typeof(T).Name);
+        }
 
-        public T GetSection<T>(int tenantId) where T : class => GetSection<T>(tenantId, typeof(T).Name);
+        public T GetSection<T>(int tenantId) where T : class
+        {
+            return GetSection<T>(tenantId, typeof(T).Name);
+        }
 
-        public T GetSection<T>(string sectionName) where T : class =>
-            GetSection<T>(_tenantManager.GetCurrentTenant().Id, sectionName);
+        public T GetSection<T>(string sectionName) where T : class
+        {
+            return GetSection<T>(_tenantManager.GetCurrentTenant().Id, sectionName);
+        }
 
         public T GetSection<T>(int tenantId, string sectionName) where T : class
         {
             var serializedSection = GetSetting(sectionName, tenantId);
             if (serializedSection == null && tenantId != Tenant.DefaultTenant)
+            {
                 serializedSection = GetSetting(sectionName, Tenant.DefaultTenant);
+            }
 
             return serializedSection != null ? JsonConvert.DeserializeObject<T>(serializedSection) : null;
         }
 
-        public void SaveSection<T>(string sectionName, T section) where T : class =>
+        public void SaveSection<T>(string sectionName, T section) where T : class
+        {
             SaveSection(_tenantManager.GetCurrentTenant().Id, sectionName, section);
+        }
 
-        public void SaveSection<T>(T section) where T : class =>
+        public void SaveSection<T>(T section) where T : class
+        {
             SaveSection(typeof(T).Name, section);
+        }
 
-        public void SaveSection<T>(int tenantId, T section) where T : class =>
+        public void SaveSection<T>(int tenantId, T section) where T : class
+        {
             SaveSection(tenantId, typeof(T).Name, section);
+        }
 
         public void SaveSection<T>(int tenantId, string sectionName, T section) where T : class
         {

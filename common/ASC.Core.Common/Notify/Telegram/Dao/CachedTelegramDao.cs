@@ -91,10 +91,17 @@ namespace ASC.Core.Common.Notify.Telegram
             var key = string.Format(PairKeyFormat, userId, tenantId);
 
             var user = Cache.Get<TelegramUser>(key);
-            if (user != null) return user;
+            if (user != null)
+            {
+                return user;
+            }
 
             user = TgDao.GetUser(userId, tenantId);
-            if (user != null) Cache.Insert(key, user, Expiration);
+            if (user != null)
+            {
+                Cache.Insert(key, user, Expiration);
+            }
+
             return user;
         }
 
@@ -103,10 +110,16 @@ namespace ASC.Core.Common.Notify.Telegram
             var key = string.Format(SingleKeyFormat, telegramId);
 
             var users = Cache.Get<List<TelegramUser>>(key);
-            if (users != null) return users;
+            if (users != null)
+            {
+                return users;
+            }
 
             users = TgDao.GetUser(telegramId);
-            if (users.Any()) Cache.Insert(key, users, Expiration);
+            if (users.Any())
+            {
+                Cache.Insert(key, users, Expiration);
+            }
 
             return users;
         }

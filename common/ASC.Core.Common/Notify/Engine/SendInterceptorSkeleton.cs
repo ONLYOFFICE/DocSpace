@@ -44,8 +44,14 @@ namespace ASC.Notify.Engine
             InterceptorLifetime lifetime, 
             Func<NotifyRequest, InterceptorPlace, IServiceScope, bool> sendInterceptor)
         {
-            if (string.IsNullOrEmpty(name)) throw new ArgumentException("Empty name.", nameof(name));
-            if (sendInterceptor == null) throw new ArgumentNullException(nameof(sendInterceptor));
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentException("Empty name.", nameof(name));
+            }
+            if (sendInterceptor == null)
+            {
+                throw new ArgumentNullException(nameof(sendInterceptor));
+            }
 
             _method = sendInterceptor;
             Name = name;

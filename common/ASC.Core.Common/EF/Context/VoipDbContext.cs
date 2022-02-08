@@ -35,7 +35,9 @@ namespace ASC.Core.Common.EF.Context
 
     public static class VoipDbExtension
     {
-        public static DIHelper AddVoipDbContextService(this DIHelper services) =>
-            services.AddDbContextManagerService<VoipDbContext>();
+        public static DIHelper AddVoipDbContextService(this DIHelper services)
+        {
+            return services.AddDbContextManagerService<VoipDbContext>();
+        }
     }
 }

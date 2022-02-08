@@ -53,8 +53,14 @@ namespace ASC.Notify.Engine
 
         public void Add(ISendInterceptor interceptor)
         {
-            if (interceptor == null) throw new ArgumentNullException(nameof(interceptor));
-            if (string.IsNullOrEmpty(interceptor.Name)) throw new ArgumentException("empty name property", nameof(interceptor));
+            if (interceptor == null)
+            {
+                throw new ArgumentNullException(nameof(interceptor));
+            }
+            if (string.IsNullOrEmpty(interceptor.Name))
+            {
+                throw new ArgumentException("empty name property", nameof(interceptor));
+            }
 
             switch (interceptor.Lifetime)
             {
@@ -71,17 +77,26 @@ namespace ASC.Notify.Engine
 
         public ISendInterceptor Get(string name)
         {
-            if (string.IsNullOrEmpty(name)) throw new ArgumentException("empty name", nameof(name));
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentException("empty name", nameof(name));
+            }
 
             var result = GetInternal(name, CallInterceptors);
-            if (result == null) result = GetInternal(name, _globalInterceptors);
+            if (result == null)
+            {
+                result = GetInternal(name, _globalInterceptors);
+            }
 
             return result;
         }
 
         public void Remove(string name)
         {
-            if (string.IsNullOrEmpty(name)) throw new ArgumentException("empty name", nameof(name));
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentException("empty name", nameof(name));
+            }
 
             RemoveInternal(name, CallInterceptors);
             RemoveInternal(name, _globalInterceptors);
@@ -94,8 +109,15 @@ namespace ASC.Notify.Engine
         {
             lock (_syncRoot)
             {
-                if ((lifetime & InterceptorLifetime.Call) == InterceptorLifetime.Call) CallInterceptors.Clear();
-                if ((lifetime & InterceptorLifetime.Global) == InterceptorLifetime.Global) _globalInterceptors.Clear();
+                if ((lifetime & InterceptorLifetime.Call) == InterceptorLifetime.Call)
+                {
+                    CallInterceptors.Clear();
+                }
+
+                if ((lifetime & InterceptorLifetime.Global) == InterceptorLifetime.Global)
+                {
+                    _globalInterceptors.Clear();
+                }
             }
         }
 

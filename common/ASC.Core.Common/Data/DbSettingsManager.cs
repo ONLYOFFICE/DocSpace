@@ -56,8 +56,10 @@ namespace ASC.Core.Data
             _eventBusSettingsItem.Subscribe((i) => Cache.Remove(i.Key), CacheNotifyAction.Remove);
         }
 
-        public void Remove(string key) =>
+        public void Remove(string key)
+        {
             _eventBusSettingsItem.Publish(new SettingsCacheItem { Key = key }, CacheNotifyAction.Remove);
+        }
     }
 
     [Scope]
@@ -144,11 +146,15 @@ namespace ASC.Core.Data
             LazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => dbContextManager.Value);
         }
 
-        public bool SaveSettings<T>(T settings, int tenantId) where T : ISettings =>
-            SaveSettingsFor(settings, tenantId, Guid.Empty);
+        public bool SaveSettings<T>(T settings, int tenantId) where T : ISettings
+        {
+            return SaveSettingsFor(settings, tenantId, Guid.Empty);
+        }
 
-        public T LoadSettings<T>(int tenantId) where T : class, ISettings =>
-            LoadSettingsFor<T>(tenantId, Guid.Empty);
+        public T LoadSettings<T>(int tenantId) where T : class, ISettings
+        {
+            return LoadSettingsFor<T>(tenantId, Guid.Empty);
+        }
 
         public void ClearCache<T>(int tenantId) where T : class, ISettings
         {
@@ -159,7 +165,11 @@ namespace ASC.Core.Data
 
         public bool SaveSettingsFor<T>(T settings, int tenantId, Guid userId) where T : ISettings
         {
-            if (settings == null) throw new ArgumentNullException(nameof(settings));
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             try
             {
                 var key = settings.ID.ToString() + tenantId + userId;
@@ -179,7 +189,10 @@ namespace ASC.Core.Data
                         .Where(r => r.UserId == userId)
                         .FirstOrDefault();
 
-                    if (s != null) WebstudioDbContext.WebstudioSettings.Remove(s);
+                    if (s != null)
+                    {
+                        WebstudioDbContext.WebstudioSettings.Remove(s);
+                    }
 
                     WebstudioDbContext.SaveChanges();
                     tr.Commit();
@@ -222,7 +235,10 @@ namespace ASC.Core.Data
             try
             {
                 var settings = Cache.Get<T>(key);
-                if (settings != null) return settings;
+                if (settings != null)
+                {
+                    return settings;
+                }
 
                 var result = WebstudioDbContext.WebstudioSettings
                         .Where(r => r.Id == settingsInstance.ID)
@@ -231,8 +247,14 @@ namespace ASC.Core.Data
                         .Select(r => r.Data)
                         .FirstOrDefault();
 
-                if (result != null) settings = Deserialize<T>(result);
-                else settings = def;
+                if (result != null)
+                {
+                    settings = Deserialize<T>(result);
+                }
+                else
+                {
+                    settings = def;
+                }
 
                 Cache.Insert(key, settings, _expirationTimeout);
 
@@ -246,30 +268,69 @@ namespace ASC.Core.Data
             return def;
         }
 
-        public T Load<T>() where T : class, ISettings => LoadSettings<T>(TenantID);
+        public T Load<T>() where T : class, ISettings
+        {
+            return LoadSettings<T>(TenantID);
+        }
 
-        public T LoadForCurrentUser<T>() where T : class, ISettings => LoadForUser<T>(CurrentUserID);
+        public T LoadForCurrentUser<T>() where T : class, ISettings
+        {
+            return LoadForUser<T>(CurrentUserID);
+        }
 
-        public T LoadForUser<T>(Guid userId) where T : class, ISettings => LoadSettingsFor<T>(TenantID, userId);
+        public T LoadForUser<T>(Guid userId) where T : class, ISettings
+        {
+            return LoadSettingsFor<T>(TenantID, userId);
+        }
 
-        public T LoadForDefaultTenant<T>() where T : class, ISettings => LoadForTenant<T>(Tenant.DefaultTenant);
+        public T LoadForDefaultTenant<T>() where T : class, ISettings
+        {
+            return LoadForTenant<T>(Tenant.DefaultTenant);
+        }
 
-        public T LoadForTenant<T>(int tenantId) where T : class, ISettings => LoadSettings<T>(tenantId);
+        public T LoadForTenant<T>(int tenantId) where T : class, ISettings
+        {
+            return LoadSettings<T>(tenantId);
+        }
 
-        public virtual bool Save<T>(T data) where T : class, ISettings => SaveSettings(data, TenantID);
+        public virtual bool Save<T>(T data) where T : class, ISettings
+        {
+            return SaveSettings(data, TenantID);
+        }
 
-        public bool SaveForCurrentUser<T>(T data) where T : class, ISettings => SaveForUser(data, CurrentUserID);
+        public bool SaveForCurrentUser<T>(T data) where T : class, ISettings
+        {
+            return SaveForUser(data, CurrentUserID);
+        }
 
-        public bool SaveForUser<T>(T data, Guid userId) where T : class, ISettings => SaveSettingsFor(data, TenantID, userId);
+        public bool SaveForUser<T>(T data, Guid userId) where T : class, ISettings
+        {
+            return SaveSettingsFor(data, TenantID, userId);
+        }
 
-        public bool SaveForDefaultTenant<T>(T data) where T : class, ISettings => SaveForTenant(data, Tenant.DefaultTenant);
+        public bool SaveForDefaultTenant<T>(T data) where T : class, ISettings
+        {
+            return SaveForTenant(data, Tenant.DefaultTenant);
+        }
 
-        public bool SaveForTenant<T>(T data, int tenantId) where T : class, ISettings => SaveSettings(data, tenantId);
+        public bool SaveForTenant<T>(T data, int tenantId) where T : class, ISettings
+        {
+            return SaveSettings(data, tenantId);
+        }
 
-        public void ClearCache<T>() where T : class, ISettings => ClearCache<T>(TenantID);
+        public void ClearCache<T>() where T : class, ISettings
+        {
+            ClearCache<T>(TenantID);
+        }
 
-        private T Deserialize<T>(string data) => JsonSerializer.Deserialize<T>(data);
+        private T Deserialize<T>(string data)
+        {
+            return JsonSerializer.Deserialize<T>(data);
+        }
 
-        private string Serialize<T>(T settings) => JsonSerializer.Serialize(settings);
+        private string Serialize<T>(T settings)
+        {
+            return JsonSerializer.Serialize(settings);
+        }
     }
 }

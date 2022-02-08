@@ -60,42 +60,74 @@ namespace ASC.Core.Users
 
         public string GetUserName(UserInfo userInfo, DisplayUserNameFormat format)
         {
-            if (userInfo == null) throw new ArgumentNullException(nameof(userInfo));
+            if (userInfo == null)
+            {
+                throw new ArgumentNullException(nameof(userInfo));
+            }
 
             return string.Format(GetUserDisplayFormat(format), userInfo.FirstName, userInfo.LastName);
         }
 
         public string GetUserName(string firstName, string lastName)
         {
-            if (string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName)) throw new ArgumentException(nameof(firstName));
+            if (string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName))
+            {
+                throw new ArgumentException(nameof(firstName));
+            }
 
             return string.Format(GetUserDisplayFormat(DisplayUserNameFormat.Default), firstName, lastName);
         }
 
-        public bool IsValidUserName(string firstName, string lastName) =>
-            UserNameRegex.IsMatch(firstName + lastName);
+        public bool IsValidUserName(string firstName, string lastName)
+        {
+            return UserNameRegex.IsMatch(firstName + lastName);
+        }
 
-        public string GetUserName(UserInfo userInfo) => GetUserName(userInfo, DisplayUserNameFormat.Default);
+        public string GetUserName(UserInfo userInfo)
+        {
+            return GetUserName(userInfo, DisplayUserNameFormat.Default);
+        }
 
-        public static int Compare(UserInfo x, UserInfo y) => Compare(x, y, DisplayUserNameFormat.Default);
+        public static int Compare(UserInfo x, UserInfo y)
+        {
+            return Compare(x, y, DisplayUserNameFormat.Default);
+        }
 
         public static int Compare(UserInfo x, UserInfo y, DisplayUserNameFormat format)
         {
-            if (x == null && y == null) return 0;
-            if (x == null && y != null) return -1;
-            if (x != null && y == null) return +1;
-            if (format == DisplayUserNameFormat.Default) format = GetUserDisplayDefaultOrder();
+            if (x == null && y == null)
+            {
+                return 0;
+            }
+            if (x == null && y != null)
+            {
+                return -1;
+            }
+            if (x != null && y == null)
+            {
+                return +1;
+            }
+            if (format == DisplayUserNameFormat.Default)
+            {
+                format = GetUserDisplayDefaultOrder();
+            }
 
             int result;
             if (format == DisplayUserNameFormat.FirstLast)
             {
                 result = string.Compare(x.FirstName, y.FirstName, true);
-                if (result == 0) result = string.Compare(x.LastName, y.LastName, true);
+                if (result == 0)
+                {
+                    result = string.Compare(x.LastName, y.LastName, true);
+                }
             }
             else
             {
                 result = string.Compare(x.LastName, y.LastName, true);
-                if (result == 0) result = string.Compare(x.FirstName, y.FirstName, true);
+                if (result == 0)
+                {
+                    result = string.Compare(x.FirstName, y.FirstName, true);
+                }
             }
 
             return result;
@@ -107,7 +139,10 @@ namespace ASC.Core.Users
             if (!s_displayFormats.TryGetValue(culture, out var formats))
             {
                 var twoletter = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
-                if (!s_displayFormats.TryGetValue(twoletter, out formats)) formats = s_displayFormats["default"];
+                if (!s_displayFormats.TryGetValue(twoletter, out formats))
+                {
+                    formats = s_displayFormats["default"];
+                }
             }
             var format = formats[DisplayUserNameFormat.Default];
 
@@ -119,22 +154,35 @@ namespace ASC.Core.Users
             if (!s_forceFormatChecked)
             {
                 s_forceFormat = _configuration["core:user-display-format"];
-                if (string.IsNullOrEmpty(s_forceFormat)) s_forceFormat = null;
+                if (string.IsNullOrEmpty(s_forceFormat))
+                {
+                    s_forceFormat = null;
+                }
+
                 s_forceFormatChecked = true;
             }
 
-            if (s_forceFormat != null) return s_forceFormat;
+            if (s_forceFormat != null)
+            {
+                return s_forceFormat;
+            }
 
             var culture = Thread.CurrentThread.CurrentCulture.Name;
             if (!s_displayFormats.TryGetValue(culture, out var formats))
             {
                 var twoletter = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
-                if (!s_displayFormats.TryGetValue(twoletter, out formats)) formats = s_displayFormats["default"];
+                if (!s_displayFormats.TryGetValue(twoletter, out formats))
+                {
+                    formats = s_displayFormats["default"];
+                }
             }
 
             return formats[format];
         }
 
-        int IComparer<UserInfo>.Compare(UserInfo x, UserInfo y) => Compare(x, y, _format);
+        int IComparer<UserInfo>.Compare(UserInfo x, UserInfo y)
+        {
+            return Compare(x, y, _format);
+        }
     }
 }

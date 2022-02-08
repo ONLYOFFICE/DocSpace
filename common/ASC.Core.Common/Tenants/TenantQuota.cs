@@ -201,7 +201,9 @@ namespace ASC.Core.Tenants
                 var admin = features.FirstOrDefault(f => f.StartsWith("admin:"));
                 int countAdmin;
                 if (admin == null || !int.TryParse(admin.Replace("admin:", ""), out countAdmin))
+                {
                     countAdmin = int.MaxValue;
+                }
 
                 return countAdmin;
             }
@@ -210,7 +212,10 @@ namespace ASC.Core.Tenants
                 var features = (Features ?? string.Empty).Split(' ', ',', ';').ToList();
                 var admin = features.FirstOrDefault(f => f.StartsWith("admin:"));
                 features.Remove(admin);
-                if (value > 0) features.Add("admin:" + value);
+                if (value > 0)
+                {
+                    features.Add("admin:" + value);
+                }
 
                 Features = string.Join(",", features.ToArray());
             }
@@ -248,7 +253,9 @@ namespace ASC.Core.Tenants
                 var portals = features.FirstOrDefault(f => f.StartsWith("portals:"));
 
                 if (portals == null || !int.TryParse(portals.Replace("portals:", ""), out var countPortals) || countPortals <= 0)
+                {
                     countPortals = 0;
+                }
 
                 return countPortals;
             }
@@ -258,7 +265,9 @@ namespace ASC.Core.Tenants
                 var portals = features.FirstOrDefault(f => f.StartsWith("portals:"));
                 features.Remove(portals);
                 if (value > 0)
+                {
                     features.Add("portals:" + value);
+                }
 
                 Features = string.Join(",", features.ToArray());
             }
@@ -272,17 +281,30 @@ namespace ASC.Core.Tenants
 
         public TenantQuota() { }
 
-        public TenantQuota(int tenant) => Tenant = tenant;
+        public TenantQuota(int tenant)
+        {
+            Tenant = tenant;
+        }
 
+        public override int GetHashCode()
+        {
+            return Tenant.GetHashCode();
+        }
 
-        public override int GetHashCode() => Tenant.GetHashCode();
+        public override bool Equals(object obj)
+        {
+            return obj is TenantQuota q && q.Tenant == Tenant;
+        }
 
-        public override bool Equals(object obj) => obj is TenantQuota q && q.Tenant == Tenant;
+        public bool GetFeature(string feature)
+        {
+            return !string.IsNullOrEmpty(Features) && Features.Split(' ', ',', ';').Contains(feature);
+        }
 
-        public bool GetFeature(string feature) =>
-            !string.IsNullOrEmpty(Features) && Features.Split(' ', ',', ';').Contains(feature);
-
-        public object Clone() => MemberwiseClone();
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
 
         public void Mapping(Profile profile)
         {
@@ -300,10 +322,13 @@ namespace ASC.Core.Tenants
                                 : Features.Split(' ', ',', ';')).ToList();
 
             if (set && !features.Contains(feature))
+            {
                 features.Add(feature);
-
+            }
             else if (!set && features.Contains(feature))
+            {
                 features.Remove(feature);
+            }
 
             Features = string.Join(",", features.ToArray());
         }

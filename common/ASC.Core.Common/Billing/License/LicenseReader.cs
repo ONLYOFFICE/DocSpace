@@ -82,9 +82,14 @@ namespace ASC.Core.Billing
         public void RejectLicense()
         {
             if (File.Exists(_licensePathTemp))
+            {
                 File.Delete(_licensePathTemp);
+            }
+
             if (File.Exists(LicensePath))
+            {
                 File.Delete(LicensePath);
+            }
 
             _paymentManager.DeleteDefaultTariff();
         }
@@ -120,7 +125,9 @@ namespace ASC.Core.Billing
                 }
 
                 if (temp)
+                {
                     File.Delete(_licensePathTemp);
+                }
             }
             catch (Exception ex)
             {
@@ -152,7 +159,10 @@ namespace ASC.Core.Billing
 
         private static void SaveLicense(Stream licenseStream, string path)
         {
-            if (licenseStream == null) throw new ArgumentNullException("licenseStream");
+            if (licenseStream == null)
+            {
+                throw new ArgumentNullException(nameof(licenseStream));
+            }
 
             if (licenseStream.CanSeek)
             {
@@ -166,7 +176,10 @@ namespace ASC.Core.Billing
         private Stream GetLicenseStream(bool temp = false)
         {
             var path = temp ? _licensePathTemp : LicensePath;
-            if (!File.Exists(path)) throw new BillingNotFoundException("License not found");
+            if (!File.Exists(path))
+            {
+                throw new BillingNotFoundException("License not found");
+            }
 
             return File.OpenRead(path);
         }
@@ -185,7 +198,9 @@ namespace ASC.Core.Billing
             }
 
             if (license.ActiveUsers.Equals(default) || license.ActiveUsers < 1)
+            {
                 license.ActiveUsers = MaxUserCount;
+            }
 
             if (license.ActiveUsers < _userManager.GetUsers(EmployeeStatus.Default, EmployeeType.User).Length)
             {

@@ -41,7 +41,10 @@ namespace ASC.Notify.Messages
         public string SenderName { get; internal set; }
         public IRecipient Recipient { get; internal set; }
 
-        public SendResponse() => Result = SendResult.OK;
+        public SendResponse()
+        {
+            Result = SendResult.OK;
+        }
 
         public SendResponse(INotifyAction action, IRecipient recipient, Exception exc)
         {

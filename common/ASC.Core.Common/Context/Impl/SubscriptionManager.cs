@@ -92,40 +92,58 @@ namespace ASC.Core
             _service.SaveSubscription(s);
         }
 
-        public void UnsubscribeAll(string sourceID, string actionID, string objectID) =>
+        public void UnsubscribeAll(string sourceID, string actionID, string objectID)
+        {
             _service.RemoveSubscriptions(GetTenant(), sourceID, actionID, objectID);
+        }
 
-        public void UnsubscribeAll(string sourceID, string actionID) =>
+        public void UnsubscribeAll(string sourceID, string actionID)
+        {
             _service.RemoveSubscriptions(GetTenant(), sourceID, actionID);
+        }
 
         public string[] GetSubscriptionMethod(string sourceID, string actionID, string recipientID)
         {
             IEnumerable<SubscriptionMethod> methods;
 
             if (groups.Any(r => r.ToString() == recipientID))
+            {
                 methods = GetDefaultSubscriptionMethodsFromCache(sourceID, actionID, recipientID);
+            }
             else
+            {
                 methods = _service.GetSubscriptionMethods(GetTenant(), sourceID, actionID, recipientID);
+            }
 
             var m = methods
                 .FirstOrDefault(x => x.Action.Equals(actionID, StringComparison.OrdinalIgnoreCase));
-
-            if (m == null) m = methods.FirstOrDefault();
+            if (m == null)
+            {
+                m = methods.FirstOrDefault();
+            }
 
             return m != null ? m.Methods : Array.Empty<string>();
         }
 
-        public string[] GetRecipients(string sourceID, string actionID, string objectID) =>
-            _service.GetRecipients(GetTenant(), sourceID, actionID, objectID);
+        public string[] GetRecipients(string sourceID, string actionID, string objectID)
+        {
+            return _service.GetRecipients(GetTenant(), sourceID, actionID, objectID);
+        }
 
-        public object GetSubscriptionRecord(string sourceID, string actionID, string recipientID, string objectID) =>
-            _service.GetSubscription(GetTenant(), sourceID, actionID, recipientID, objectID);
+        public object GetSubscriptionRecord(string sourceID, string actionID, string recipientID, string objectID)
+        {
+            return _service.GetSubscription(GetTenant(), sourceID, actionID, recipientID, objectID);
+        }
 
-        public string[] GetSubscriptions(string sourceID, string actionID, string recipientID, bool checkSubscribe = true) =>
-            _service.GetSubscriptions(GetTenant(), sourceID, actionID, recipientID, checkSubscribe);
+        public string[] GetSubscriptions(string sourceID, string actionID, string recipientID, bool checkSubscribe = true)
+        {
+            return _service.GetSubscriptions(GetTenant(), sourceID, actionID, recipientID, checkSubscribe);
+        }
 
-        public bool IsUnsubscribe(string sourceID, string recipientID, string actionID, string objectID) =>
-            _service.IsUnsubscribe(GetTenant(), sourceID, actionID, recipientID, objectID);
+        public bool IsUnsubscribe(string sourceID, string recipientID, string actionID, string objectID)
+        {
+            return _service.IsUnsubscribe(GetTenant(), sourceID, actionID, recipientID, objectID);
+        }
 
         public void UpdateSubscriptionMethod(string sourceID, string actionID, string recipientID, string[] senderNames)
         {
@@ -157,6 +175,9 @@ namespace ASC.Core
             }
         }
 
-        private int GetTenant() => _tenantManager.GetCurrentTenant().Id;
+        private int GetTenant()
+        {
+            return _tenantManager.GetCurrentTenant().Id;
+        }
     }
 }

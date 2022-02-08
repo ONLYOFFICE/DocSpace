@@ -87,32 +87,51 @@ namespace ASC.Core.Tenants
         public static DateTime DateTimeFromUtc(TimeZoneInfo timeZone, DateTime utc)
         {
             if (utc.Kind != DateTimeKind.Utc)
+            {
                 utc = DateTime.SpecifyKind(utc, DateTimeKind.Utc);
+            }
 
             if (utc == DateTime.MinValue || utc == DateTime.MaxValue)
+            {
                 return utc;
+            }
 
             return DateTime.SpecifyKind(TimeZoneInfo.ConvertTime(utc, TimeZoneInfo.Utc, timeZone), DateTimeKind.Local);
         }
 
-        public DateTime DateTimeToUtc(DateTime local) => DateTimeToUtc(TimeZoneInfo, local);
+        public DateTime DateTimeToUtc(DateTime local)
+        {
+            return DateTimeToUtc(TimeZoneInfo, local);
+        }
 
         public static DateTime DateTimeToUtc(TimeZoneInfo timeZone, DateTime local)
         {
             if (local.Kind == DateTimeKind.Utc || local == DateTime.MinValue || local == DateTime.MaxValue)
+            {
                 return local;
+            }
 
             if (timeZone.IsInvalidTime(DateTime.SpecifyKind(local, DateTimeKind.Unspecified)))
+            {
                 local = local.AddHours(1); // hack
+            }
 
             return TimeZoneInfo.ConvertTimeToUtc(DateTime.SpecifyKind(local, DateTimeKind.Unspecified), timeZone);
         }
 
-        public DateTime DateTimeNow() => DateTimeNow(TimeZoneInfo);
+        public DateTime DateTimeNow()
+        {
+            return DateTimeNow(TimeZoneInfo);
+        }
 
-        public static DateTime DateTimeNow(TimeZoneInfo timeZone) =>
-            DateTime.SpecifyKind(TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZone), DateTimeKind.Local);
+        public static DateTime DateTimeNow(TimeZoneInfo timeZone)
+        {
+            return DateTime.SpecifyKind(TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZone), DateTimeKind.Local);
+        }
 
-        public DateTime DateTimeNow(string timeZone) => DateTimeNow(TimeZoneConverter.GetTimeZone(timeZone));
+        public DateTime DateTimeNow(string timeZone)
+        {
+            return DateTimeNow(TimeZoneConverter.GetTimeZone(timeZone));
+        }
     }
 }
