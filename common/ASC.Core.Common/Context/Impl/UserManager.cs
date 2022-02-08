@@ -712,22 +712,5 @@ namespace ASC.Core
 
             return refs.TryGetValue(UserGroupRef.CreateKey(Tenant.Id, userId, groupId, UserGroupRefType.Contains), out r) && !r.Removed;
         }
-
-        private Group ToGroup(GroupInfo g)
-        {
-            if (g == null)
-            {
-                return null;
-            }
-
-            return new Group
-            {
-                Id = g.ID,
-                Name = g.Name,
-                ParentId = g.Parent != null ? g.Parent.ID : Guid.Empty,
-                CategoryId = g.CategoryID,
-                Sid = g.Sid
-            };
-        }
     }
 }
