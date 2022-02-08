@@ -2083,8 +2083,8 @@ const Dark = {
       linkColor: grayMaxLight,
       textColor: "#858585",
 
-      editingIconColor: "#3b72a7",
-      shareHoverColor: "#3b72a7",
+      editingIconColor: "#eeeeee",
+      shareHoverColor: "#eeeeee",
     },
 
     tableView: {
@@ -2116,7 +2116,7 @@ const Dark = {
         borderHover: "#474747",
         sideColor: gray,
 
-        shareHoverColor: "#3b72a7",
+        shareHoverColor: "#eeeeee",
       },
     },
 
@@ -2400,7 +2400,7 @@ const Dark = {
 
   filesBadges: {
     iconColor: "#858585",
-    hoverIconColor: "#3B72A7",
+    hoverIconColor: "#eeeeee",
 
     color: black,
     backgroundColor: "#858585",
@@ -2415,12 +2415,12 @@ const Dark = {
     borderBottom: "1px solid #474747",
 
     fill: "#858585",
-    hoverFill: grayMaxLight,
+    hoverFill: "#eeeeee",
   },
 
   filesIcons: {
     fill: "#858585",
-    hoverFill: grayMaxLight,
+    hoverFill: "#eeeeee",
   },
 
   filesQuickButtons: {
@@ -2431,7 +2431,7 @@ const Dark = {
 
   filesSharedButton: {
     color: "#858585",
-    sharedColor: grayMaxLight,
+    sharedColor: "#eeeeee",
   },
 
   filesPrivateRoom: {

@@ -55,6 +55,14 @@ StyledFileActionsLockedIcon.defaultProps = { theme: Base };
 export const StyledFileActionsEditFormIcon = styled(EditFormIcon)`
   ${commonIconsStyles}
   path {
-    fill: #3b72a7;
+    fill: ${(props) => props.theme.filesIcons.fill};
+  }
+
+  &:hover {
+    path {
+      fill: ${(props) => props.theme.filesIcons.hoverFill};
+    }
   }
 `;
+
+StyledFileActionsEditFormIcon.defaultProps = { theme: Base };

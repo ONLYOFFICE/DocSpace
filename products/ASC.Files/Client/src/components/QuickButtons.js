@@ -34,8 +34,8 @@ const QuickButtons = ({
     : "/static/images/catalog.share.react.svg";
 
   const colorShare = shared
-    ? "/static/images/file.actions.locked.react.svg"
-    : "/static/images/locked.react.svg";
+    ? theme.filesQuickButtons.sharedColor
+    : theme.filesQuickButtons.color;
 
   const iconLock = locked
     ? "/static/images/file.actions.locked.react.svg"
