@@ -3,13 +3,9 @@ import SelectFileInput from "files/SelectFileInput";
 
 class ThirdPartyResources extends React.Component {
   render() {
-    const { onClose, isPanelVisible, onClickInput, onSelectFile } = this.props;
     return (
       <SelectFileInput
-        onClickInput={onClickInput}
-        onSelectFile={onSelectFile}
-        onClose={onClose}
-        isPanelVisible={isPanelVisible}
+        {...this.props}
         foldersType="third-party"
         searchParam=".gz"
         isArchiveOnly

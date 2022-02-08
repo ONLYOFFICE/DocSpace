@@ -17,39 +17,40 @@ class ThirdPartyStoragesModule extends React.PureComponent {
 
       selectedStorage: "",
       selectedId: "",
-      isInitialLoading: false,
+      isInitialLoading: true,
     };
   }
   componentDidMount() {
     const { onSetStorageId } = this.props;
-    this.setState({ isInitialLoading: true }, function () {
-      getBackupStorage()
-        .then((storageBackup) => {
-          const parameters = getOptions(storageBackup);
 
-          const {
-            options,
-            availableStorage,
-            selectedStorage,
-            selectedId,
-          } = parameters;
+    getBackupStorage()
+      .then((storageBackup) => {
+        const parameters = getOptions(storageBackup);
 
-          onSetStorageId && onSetStorageId(selectedId);
+        const {
+          options,
+          availableStorage,
+          selectedStorage,
+          selectedId,
+        } = parameters;
 
-          this.setState({
-            availableOptions: options,
-            availableStorage,
+        onSetStorageId && onSetStorageId(selectedId);
 
-            selectedStorage,
-            selectedId,
-          });
+        this.setState({
+          availableOptions: options,
+          availableStorage,
+
+          selectedStorage,
+          selectedId,
+
+          isInitialLoading: false,
+        });
+      })
+      .catch(() =>
+        this.setState({
+          isInitialLoading: false,
         })
-        .finally(() =>
-          this.setState({
-            isInitialLoading: false,
-          })
-        );
-    });
+      );
   }
   onSelect = (option) => {
     const selectedStorageId = option.key;
@@ -80,6 +81,8 @@ class ThirdPartyStoragesModule extends React.PureComponent {
     };
 
     const { GoogleId, RackspaceId, SelectelId, AmazonId } = ThirdPartyStorages;
+
+    console.log("render storage", this.state, this.props);
     return (
       <>
         <ComboBox

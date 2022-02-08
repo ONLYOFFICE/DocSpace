@@ -40,12 +40,14 @@ class RestoreBackup extends React.Component {
       selectedFile: "",
       formSettings: {},
       isErrors: {},
-      isCopyingToLocal: true,
+      isCopyingToLocal: false,
       downloadingProgress: 100,
-      isLoading: false,
+      isLoading: true,
     };
+
     this._isMounted = false;
     this.timerId = null;
+
     this.switches = [
       "isCheckedLocalFile",
       "isCheckedDocuments",
@@ -59,44 +61,24 @@ class RestoreBackup extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-    this.setState(
-      {
-        isLoading: true,
-      },
-      function () {
-        getBackupProgress().then((response) => {
-          if (response) {
-            if (!response.error) {
-              if (response.progress === 100)
-                this.setState({
-                  isCopyingToLocal: false,
-                });
-              if (response.progress !== 100)
-                this.timerId = setInterval(() => this.getProgress(), 1000);
-            } else {
-              this.setState({
-                isCopyingToLocal: false,
-              });
-            }
-          } else {
-            this.setState({
-              isCopyingToLocal: false,
-            });
-          }
-        });
 
-        SelectFolderDialog.getCommonThirdPartyList()
-          .then(
-            (thirdPartyArray) => (this.commonThirdPartyList = thirdPartyArray)
-          )
-          .finally(() =>
-            this.setState({
-              isLoading: false,
-            })
-          );
+    getBackupProgress().then((response) => {
+      if (response) {
+        if (!response.error && response.progress !== 100) {
+          this.timerId = setInterval(() => this.getProgress(), 1000);
+        }
       }
-    );
+    });
+
+    SelectFolderDialog.getCommonThirdPartyList()
+      .then((thirdPartyArray) => (this.commonThirdPartyList = thirdPartyArray))
+      .finally(() =>
+        this.setState({
+          isLoading: false,
+        })
+      );
   }
+
   componentWillUnmount() {
     this._isMounted = false;
     clearInterval(this.timerId);
@@ -131,6 +113,7 @@ class RestoreBackup extends React.Component {
             if (this._isMounted) {
               this.setState({
                 isCopyingToLocal: false,
+                downloadingProgress: 100,
               });
             }
           }
@@ -216,7 +199,6 @@ class RestoreBackup extends React.Component {
       selectedFile,
       isCheckedThirdPartyStorage,
       isCheckedThirdParty,
-      formSettings,
     } = this.state;
 
     if (isCheckedDocuments || isCheckedThirdParty) {

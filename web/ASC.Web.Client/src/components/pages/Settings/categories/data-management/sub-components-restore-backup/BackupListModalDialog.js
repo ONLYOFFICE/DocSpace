@@ -29,7 +29,7 @@ class BackupListModalDialog extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoading: false,
+      isLoading: true,
       filesList: [],
       hasNextPage: true,
       isNextPageLoading: false,
@@ -46,16 +46,15 @@ class BackupListModalDialog extends React.Component {
       window.addEventListener("resize", this.throttledResize);
     }
 
-    this.setState({ isLoading: true }, function () {
-      getBackupHistory()
-        .then((backupList) =>
-          this.setState({
-            filesList: backupList,
-            backupListHeight: backupList.length * 40,
-          })
-        )
-        .finally(() => this.setState({ isLoading: false }));
-    });
+    getBackupHistory()
+      .then((backupList) =>
+        this.setState({
+          filesList: backupList,
+          backupListHeight: backupList.length * 40,
+          isLoading: false,
+        })
+      )
+      .catch(() => this.setState({ isLoading: false }));
   }
 
   componentWillUnmount() {
