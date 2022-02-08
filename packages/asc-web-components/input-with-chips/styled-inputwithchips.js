@@ -9,7 +9,8 @@ const CHIPS_BORDER_RADIUS = "3px",
 
 const StyledChipWithInput = styled.div`
   min-height: 32px;
-  max-height: 88px;
+  max-height: 220px;
+  width: 100%;
   display: flex;
   flex-wrap: wrap;
   height: fit-content;
@@ -18,11 +19,12 @@ const StyledChipWithInput = styled.div`
 
 const StyledContent = styled.div`
   width: 469px;
-  height: 88px;
+  height: 220px;
 `;
 
 const StyledChipGroup = styled.div`
   height: fit-content;
+  padding-top: 2px;
   ${commonInputStyle} :focus-within {
     border-color: ${(props) => props.theme.inputBlock.borderColor};
   }
@@ -40,8 +42,17 @@ const StyledChipGroup = styled.div`
 `;
 StyledChipGroup.defaultProps = { theme: Base };
 
+const StyledAllChips = styled.div`
+  width: 448px;
+  max-height: 180px;
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1 1 auto;
+`;
+
 const StyledChip = styled.div`
   width: fit-content;
+  max-width: calc(100% - 18px);
 
   display: flex;
   align-items: center;
@@ -50,12 +61,13 @@ const StyledChip = styled.div`
   box-sizing: border-box;
   background: ${CHIPS_BACKGROUND};
 
-  height: 20px;
-  margin: 4px;
-  padding: 2px 4px;
+  height: 32px;
+  margin: 2px 4px;
+  padding: 6px 8px;
 
   border-radius: ${CHIPS_BORDER_RADIUS} 0 0 ${CHIPS_BORDER_RADIUS};
   border: ${(props) => props.isSelected && "1px dashed #000"};
+  background: ${(props) => (props.isValid ? "#ECEEF1" : "#F7CDBE")};
 
   .warning_icon_wrap {
     cursor: pointer;
@@ -67,22 +79,34 @@ const StyledChip = styled.div`
 
 const StyledChipValue = styled.div`
   margin-right: 4px;
+  min-width: 0px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   font-weight: normal;
-  font-size: 14px;
+  font-size: 13px;
 
   color: ${CHIPS_COLOR};
 `;
 
 const StyledChipInput = styled(TextInput)`
-  flex: 0 1 auto;
+  flex: 0 1 auto !important;
+`;
+
+const StyledInputWithLink = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
 `;
 
 export {
   StyledChipWithInput,
   StyledContent,
   StyledChipGroup,
+  StyledAllChips,
   StyledChip,
   StyledChipValue,
   StyledChipInput,
+  StyledInputWithLink,
 };

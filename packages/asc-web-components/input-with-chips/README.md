@@ -39,6 +39,7 @@ Options have options:
 - Hold down the shift button by moving the arrows to the left, right or clicking the mouse on the chips, thereby highlighting several chips.
 - The highlighted chip(s) can be removed by clicking on the button Backspace.
 - The selected chip(s) can be copied to the clipboard by pressing "ctrl + c".
+- You can remove all chips by clicking on the button "Clear list".
 
 ### Properties
 

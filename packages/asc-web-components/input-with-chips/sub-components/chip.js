@@ -60,7 +60,6 @@ const Chip = (props) => {
   };
 
   const onBlur = () => {
-    setNewValue(value.value);
     onSaveNewChip(value, newValue);
     onDoubleClick(null);
   };
@@ -75,7 +74,8 @@ const Chip = (props) => {
         break;
       }
       case "Escape": {
-        onBlur();
+        setNewValue(value.value);
+        onDoubleClick(null);
         break;
       }
     }
@@ -99,6 +99,7 @@ const Chip = (props) => {
       isSelected={isSelected}
       onDoubleClick={onDoubleClickHandler}
       onClick={onClickHandler}
+      isValid={isValid}
     >
       {!isValid && (
         <div className="warning_icon_wrap">
@@ -107,7 +108,7 @@ const Chip = (props) => {
             size={12}
             className="warning_icon_wrap warning_icon "
             data-for="group"
-            data-tip={"Email entered incorrectly"}
+            data-tip={"Invalid email address"}
           />
           <Tooltip
             getContent={() => {}}
@@ -115,6 +116,7 @@ const Chip = (props) => {
             afterShow={onOpenTooltip}
             afterHide={onCloseTooltip}
             reference={tooltipRef}
+            place={"top"}
           />
         </div>
       )}
@@ -126,7 +128,7 @@ const Chip = (props) => {
 
 Chip.propTypes = {
   value: PropTypes.object,
-  currentChip: PropTypes.string,
+  currentChip: PropTypes.object,
   isSelected: PropTypes.bool,
   isValid: PropTypes.bool,
   isBlured: PropTypes.bool,

@@ -10,8 +10,11 @@ import {
   StyledContent,
   StyledChipGroup,
   StyledChipWithInput,
+  StyledAllChips,
+  StyledInputWithLink,
 } from "./styled-inputwithchips";
 import { useClickOutside } from "./sub-components/use-click-outside";
+import Link from "../link";
 
 const InputWithChips = ({ options, placeholder, onChange, ...props }) => {
   const [chips, setChips] = useState(options || []);
@@ -37,7 +40,7 @@ const InputWithChips = ({ options, placeholder, onChange, ...props }) => {
       document.removeEventListener("keydown", onKeyDown);
       document.removeEventListener("keyup", onKeyUp);
     };
-  }, [selectedChips, isShiftDown, isCtrlDown]);
+  }, [selectedChips, currentChip, isShiftDown, isCtrlDown]);
 
   useEffect(() => {
     onChange(selectedChips);
@@ -129,6 +132,10 @@ const InputWithChips = ({ options, placeholder, onChange, ...props }) => {
     }
   };
 
+  const onClearList = () => {
+    setChips([]);
+  };
+
   const onKeyUp = (e) => {
     const code = e.code;
     switch (code) {
@@ -160,9 +167,9 @@ const InputWithChips = ({ options, placeholder, onChange, ...props }) => {
       return;
     }
 
-    if (selectedChips.length > 0 && code === "Backspace") {
-      const Chips = chips.filter((e) => !~selectedChips.indexOf(e));
-      setChips(Chips);
+    if (selectedChips.length > 0 && code === "Backspace" && !currentChip) {
+      const filteredChips = chips.filter((e) => !~selectedChips.indexOf(e));
+      setChips(filteredChips);
       setSelectedChips([]);
       return;
     }
@@ -224,37 +231,51 @@ const InputWithChips = ({ options, placeholder, onChange, ...props }) => {
   return (
     <StyledContent ref={blockRef} onFocus={() => setIsBlured(false)}>
       <StyledChipGroup>
-        <Scrollbar scrollclass={"scroll"} stype="thumbV">
-          <StyledChipWithInput length={chips.length}>
-            {chips.map((it) => {
-              return (
-                <Chip
-                  key={it?.value}
-                  value={it}
-                  currentChip={currentChip}
-                  isSelected={checkSelected(it)}
-                  isValid={checkEmail(it?.value)}
-                  isBlured={isBlured}
-                  onDelete={onDelete}
-                  onDoubleClick={onDoubleClick}
-                  onSaveNewChip={onSaveNewChip}
-                  onClick={onClick}
-                />
-              );
-            })}
+        <StyledChipWithInput length={chips.length}>
+          <Scrollbar scrollclass={"scroll"} stype="thumbV">
+            <StyledAllChips>
+              {chips.map((it) => {
+                return (
+                  <Chip
+                    key={it?.value}
+                    value={it}
+                    currentChip={currentChip}
+                    isSelected={checkSelected(it)}
+                    isValid={checkEmail(it?.value)}
+                    isBlured={isBlured}
+                    onDelete={onDelete}
+                    onDoubleClick={onDoubleClick}
+                    onSaveNewChip={onSaveNewChip}
+                    onClick={onClick}
+                  />
+                );
+              })}
+            </StyledAllChips>
+          </Scrollbar>
+          <StyledInputWithLink>
             <TextInput
               value={value}
               onChange={onInputChange}
               forwardedRef={inputRef}
               onKeyDown={onInputKeyDown}
-              placeholder={chips.length > 0 ? "" : placeholder}
+              placeholder={placeholder}
               withBorder={false}
               style={{
                 flex: `flex: 1 0 ${chips.length > 0 ? "auto" : "100%"}`,
+                padding: "0px",
+                margin: "8px 0px 10px 8px",
               }}
             />
-          </StyledChipWithInput>
-        </Scrollbar>
+            <Link
+              type="action"
+              isHovered={true}
+              style={{ width: "55px", margin: "10px 8px" }}
+              onClick={onClearList}
+            >
+              Clear list
+            </Link>
+          </StyledInputWithLink>
+        </StyledChipWithInput>
       </StyledChipGroup>
     </StyledContent>
   );

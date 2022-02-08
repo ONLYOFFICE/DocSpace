@@ -12,6 +12,14 @@ const Options = [
     label: "mynameiskonstantine1353434@gmail.com",
     value: "mynameiskonstantine1353434@gmail.com",
   },
+  {
+    label: "mynameiskonstantine56454864846455488875454654846454@gmail.com",
+    value: "mynameiskonstantine56454864846455488875454654846454@gmail.com",
+  },
+  {
+    label: "mynameiskonstantine3246@gmail.com",
+    value: "mynameiskonstantine3246@gmail.com",
+  },
 ];
 
 const Wrapper = (props) => (
@@ -34,7 +42,7 @@ export const Default = Template.bind({});
 Default.args = {
   options: Options,
   onChange: (selected) => console.log(selected),
-  placeholder: "Invite by email",
+  placeholder: "Invite people by name or email",
 };
 
 export const Empty = Template.bind({});
