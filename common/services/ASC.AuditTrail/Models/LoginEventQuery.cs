@@ -2,6 +2,8 @@
 
 public class LoginEventQuery
 {
-    public DbLoginEvent LoginEvents { get; set; }
-    public User User { get; set; }
+    public DbLoginEvent Event { get; set; }
+    public string UserName { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
 }
