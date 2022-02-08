@@ -1,27 +1,29 @@
-%define         debug_package %{nil}
 %global         product appserver
 %global         buildpath %{_var}/www/%{product}
 %global         sourcename AppServer-%GIT_BRANCH
+
 Name:           onlyoffice-appserver
 Summary:        Business productivity tools.
+Group:          Applications/Internet
 Version:        %version
 Release:        %release
-Group:          Applications/Internet
+ExclusiveArch:  x86_64
+AutoReqProv:    no
+
 URL:            http://onlyoffice.com
 Vendor:         Ascensio System SIA
 Packager:       Ascensio System SIA <support@onlyoffice.com>
-ExclusiveArch:  x86_64
-AutoReq:        no
-AutoProv:       no
 License:        AGPLv3
+
 Source0:        https://github.com/ONLYOFFICE/%{product}/archive/%GIT_BRANCH.tar.gz#/%{sourcename}.tar.gz
 Source1:        https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz#/document-templates-main-community-server.tar.gz
 Source2:        https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz#/dictionaries-master.tar.gz
 Source3:        https://github.com/ONLYOFFICE/CommunityServer/archive/master.tar.gz#/CommunityServer-master.tar.gz
+
 BuildRequires:  nodejs >= 12.0
 BuildRequires:  yarn
-BuildRequires:  libgdiplus
 BuildRequires:  dotnet-sdk-5.0
+
 Requires:       %name-api-system
 Requires:       %name-calendar
 Requires:       %name-crm
@@ -43,7 +45,7 @@ Requires:       %name-urlshortener
 Requires:       %name-api
 Requires:       %name-studio
 Requires:       %name-proxy
-AutoReqProv:    no
+
 %description
 App Server is a platform for building your own online office by connecting ONLYOFFICE modules packed as separate apps.
 
@@ -80,6 +82,6 @@ chmod +x %{_bindir}/%{product}-configuration.sh
 
 %clean
 
-rm -rf %{buildroot}
+rm -rf %{_builddir} %{buildroot} 
 
 %changelog
