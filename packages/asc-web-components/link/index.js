@@ -61,7 +61,6 @@ Link.propTypes = {
 
 Link.defaultProps = {
   className: "",
-  color: "#333333",
   fontSize: "13px",
   href: undefined,
   isBold: false,

@@ -1,10 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import CrossIcon from '@appserver/components/public/static/images/cross.react.svg';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import CrossIcon from "@appserver/components/public/static/images/cross.react.svg";
+import Base from "@appserver/components/themes/base";
 
 const StyledControlContainer = styled.div`
-  background: #9a9ea3;
+  background: ${(props) => props.theme.catalog.control.background};
   width: 24px;
   height: 24px;
   position: absolute;
@@ -18,13 +19,17 @@ const StyledControlContainer = styled.div`
   z-index: 290;
 `;
 
+StyledControlContainer.defaultProps = { theme: Base };
+
 const StyledCrossIcon = styled(CrossIcon)`
-  width: 11.31px;
-  height: 11.31px;
+  width: 12px;
+  height: 12px;
   path {
-    fill: #ffffff;
+    fill: ${(props) => props.theme.catalog.control.fill};
   }
 `;
+
+StyledCrossIcon.defaultProps = { theme: Base };
 
 const CatalogBackdrop = (props) => {
   const { showText, onClick, ...rest } = props;

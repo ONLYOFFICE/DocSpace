@@ -9,13 +9,16 @@ import { ShareAccessRights } from "@appserver/common/constants";
 import AccessEditIcon from "../../../../../../../public/images/access.edit.react.svg";
 import CopyIcon from "../../../../../../../public/images/copy.react.svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import { Base } from "@appserver/components/themes";
 
 const StyledAccessEditIcon = styled(AccessEditIcon)`
   ${commonIconsStyles}
   path {
-    fill: "#A3A9AE";
+    fill: ${(props) => props.theme.filesPanels.sharing.fill};
   }
 `;
+
+StyledAccessEditIcon.defaultProps = { theme: Base };
 
 const StyledCopyIcon = styled(CopyIcon)`
   ${commonIconsStyles}
@@ -48,6 +51,7 @@ class LinkRow extends React.Component {
       externalAccessOptions,
       onChangeItemAccess,
       isLoading,
+      theme,
       onCopyLink,
     } = this.props;
 
@@ -57,16 +61,19 @@ class LinkRow extends React.Component {
 
     return (
       <StyledLinkRow
+        theme={theme}
         withToggle={withToggle}
         isDisabled={isDisabled}
         className="link-row__container"
       >
         <Row
+          theme={theme}
           className="link-row"
           key={`${linkText.replace(" ", "-")}-key_${index}`}
           element={
             withToggle ? (
               <AccessComboBox
+                theme={theme}
                 t={t}
                 access={item.access}
                 directionX="left"
@@ -78,6 +85,7 @@ class LinkRow extends React.Component {
               />
             ) : (
               <StyledAccessEditIcon
+                theme={theme}
                 size="medium"
                 className="sharing_panel-owner-icon"
               />
@@ -88,8 +96,9 @@ class LinkRow extends React.Component {
           <>
             <div className="sharing_panel-link-container">
               <LinkWithDropdown
+                theme={theme}
                 className="sharing_panel-link"
-                color="#333"
+                color={theme.filesPanels.sharing.dropdownColor}
                 dropdownType="alwaysDashed"
                 data={options}
                 fontSize="13px"
@@ -100,6 +109,7 @@ class LinkRow extends React.Component {
               </LinkWithDropdown>
               {onCopyLink && (
                 <StyledCopyIcon
+                  theme={theme}
                   isDisabled={isDisabled}
                   size="medium"
                   onClick={onCopyLink}
@@ -110,6 +120,7 @@ class LinkRow extends React.Component {
             {withToggle && (
               <div>
                 <ToggleButton
+                  theme={theme}
                   isChecked={isChecked}
                   onChange={this.onToggleButtonChange}
                   isDisabled={isLoading}

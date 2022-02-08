@@ -87,7 +87,7 @@ class AdvancedSelector extends React.Component {
 
   render() {
     const { displayType } = this.state;
-    const { isOpen, id, className, style, withoutAside } = this.props;
+    const { isOpen, id, className, style, withoutAside, theme } = this.props;
 
     //console.log(`AdvancedSelector render() isOpen=${isOpen} displayType=${displayType}`);
 

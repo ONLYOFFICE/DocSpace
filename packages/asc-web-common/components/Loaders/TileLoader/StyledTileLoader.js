@@ -1,5 +1,6 @@
 import styled, { css } from "styled-components";
 import { smallTablet, tablet, size } from "@appserver/components/utils/device";
+import Base from "@appserver/components/themes/base";
 
 const StyledTile = styled.div`
   position: relative;
@@ -27,6 +28,8 @@ const StyledTile = styled.div`
     }
   }
 `;
+
+StyledTile.defaultProps = { theme: Base };
 
 const StyledMainContent = styled.div`
   height: 172px;

@@ -17,8 +17,6 @@ import {
 const getInitial = (text) => text.substring(0, 1).toUpperCase();
 
 const CatalogItem = (props) => {
-  // console.log("render");
-
   const {
     className,
     id,
@@ -27,8 +25,10 @@ const CatalogItem = (props) => {
     text,
     showText,
     onClick,
+    onDrop,
     isEndOfBlock,
     isActive,
+    isDragging,
     showInitial,
     showBadge,
     labelBadge,
@@ -45,6 +45,10 @@ const CatalogItem = (props) => {
     onClickBadge && onClickBadge(id);
   };
 
+  const onMouseUpAction = () => {
+    onDrop && isDragging && onDrop(id, text);
+  };
+
   return (
     <StyledCatalogItemContainer
       className={className}
@@ -55,7 +59,9 @@ const CatalogItem = (props) => {
     >
       <StyledCatalogItemSibling
         isActive={isActive}
+        isDragging={isDragging}
         onClick={onClickAction}
+        onMouseUp={onMouseUpAction}
       ></StyledCatalogItemSibling>
 
       <StyledCatalogItemImg>
@@ -71,7 +77,7 @@ const CatalogItem = (props) => {
               <StyledCatalogItemBadgeWrapper
                 onClick={onClickBadgeAction}
                 showText={showText}
-              ></StyledCatalogItemBadgeWrapper>
+              />
             )}
           </>
         )}
@@ -85,7 +91,7 @@ const CatalogItem = (props) => {
           onClick={onClickBadgeAction}
         >
           {!iconBadge ? (
-            <Badge label={labelBadge} />
+            <Badge className="catalog-item__badge" label={labelBadge} />
           ) : (
             <ReactSVG src={iconBadge} />
           )}
@@ -110,12 +116,16 @@ CatalogItem.propTypes = {
   showText: PropTypes.bool,
   /** Call function when user clicked on catalog item */
   onClick: PropTypes.func,
+  /** Call function when user mouse up on catalog item with dragging */
+  onDrop: PropTypes.func,
   /** Tells when the catalog item should display initial on icon, text should be hidden */
   showInitial: PropTypes.bool,
   /** Tells when the catalog item should be end of block */
   isEndOfBlock: PropTypes.bool,
   /** Tells when the catalog item should be active */
   isActive: PropTypes.bool,
+  /** Tells when the catalog item available for drag`n`drop */
+  isDragging: PropTypes.bool,
   /** Tells when the catalog item should display badge */
   showBadge: PropTypes.bool,
   /** Label in catalog item badge */
@@ -132,6 +142,7 @@ CatalogItem.defaultProps = {
   isActive: false,
   showInitial: false,
   isEndOfBlock: false,
+  isDragging: false,
 };
 
 export default React.memo(CatalogItem);

@@ -1,21 +1,21 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withRouter } from 'react-router';
-import MainButton from '@appserver/components/main-button';
-import { withTranslation } from 'react-i18next';
-import { isMobile } from 'react-device-detect';
+import React from "react";
+import PropTypes from "prop-types";
+import { withRouter } from "react-router";
+import MainButton from "@appserver/components/main-button";
+import { withTranslation } from "react-i18next";
+import { isMobile } from "react-device-detect";
 import {
   isMobile as isMobileUtils,
   isTablet as isTabletUtils,
-} from '@appserver/components/utils/device';
-import Loaders from '@appserver/common/components/Loaders';
-import { FileAction, AppServerConfig } from '@appserver/common/constants';
-import { encryptionUploadDialog } from '../../../helpers/desktop';
-import { inject, observer } from 'mobx-react';
-import config from '../../../../package.json';
-import { combineUrl } from '@appserver/common/utils';
-import withLoader from '../../../HOCs/withLoader';
-import MobileView from './MobileView';
+} from "@appserver/components/utils/device";
+import Loaders from "@appserver/common/components/Loaders";
+import { FileAction, AppServerConfig } from "@appserver/common/constants";
+import { encryptionUploadDialog } from "../../../helpers/desktop";
+import { inject, observer } from "mobx-react";
+import config from "../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
+import withLoader from "../../../HOCs/withLoader";
+import MobileView from "./MobileView";
 
 class CatalogMainButtonContent extends React.Component {
   onCreate = (e) => {
@@ -53,7 +53,9 @@ class CatalogMainButtonContent extends React.Component {
   goToHomePage = () => {
     const { homepage, history, filter } = this.props;
     const urlFilter = filter.toUrlParams();
-    history.push(combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`));
+    history.push(
+      combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
+    );
   };
 
   onFileChange = (e) => {
@@ -74,16 +76,24 @@ class CatalogMainButtonContent extends React.Component {
 
   render() {
     //console.log("Files ArticleMainButtonContent render");
-    const { t, tReady, canCreate, isDisabled, firstLoad, isPrivacy, sectionWidth } = this.props;
+    const {
+      t,
+      tReady,
+      canCreate,
+      isDisabled,
+      firstLoad,
+      isPrivacy,
+      sectionWidth,
+    } = this.props;
     const folderUpload = !isMobile
       ? [
           {
-            className: 'main-button_drop-down',
-            icon: 'images/actions.upload.react.svg',
-            label: t('UploadFolder'),
+            className: "main-button_drop-down",
+            icon: "images/actions.upload.react.svg",
+            label: t("UploadFolder"),
             disabled: isPrivacy,
             onClick: this.onUploadFolderClick,
-            key: 'upload-folder',
+            key: "upload-folder",
           },
         ]
       : [];
@@ -91,89 +101,89 @@ class CatalogMainButtonContent extends React.Component {
     const formActions = !isMobile
       ? [
           {
-            className: 'main-button_drop-down',
-            icon: 'images/form.react.svg',
-            label: t('Translations:NewForm'),
-            key: 'new-form',
+            className: "main-button_drop-down",
+            icon: "images/form.react.svg",
+            label: t("Translations:NewForm"),
+            key: "new-form",
             items: [
               {
-                className: 'main-button_drop-down_sub',
-                label: t('Translations:SubNewForm'),
+                className: "main-button_drop-down_sub",
+                label: t("Translations:SubNewForm"),
                 onClick: this.onCreate,
-                action: 'docxf',
-                key: 'docxf',
+                action: "docxf",
+                key: "docxf",
               },
               {
-                className: 'main-button_drop-down_sub',
-                label: t('Translations:SubNewFormFile'),
+                className: "main-button_drop-down_sub",
+                label: t("Translations:SubNewFormFile"),
                 onClick: this.onShowSelectFileDialog,
                 disabled: isPrivacy,
-                key: 'form-file',
+                key: "form-file",
               },
             ],
           },
         ]
       : [
           {
-            className: 'main-button_drop-down_sub',
-            icon: 'images/form.react.svg',
-            label: t('Translations:NewForm'),
+            className: "main-button_drop-down_sub",
+            icon: "images/form.react.svg",
+            label: t("Translations:NewForm"),
             onClick: this.onCreate,
-            action: 'docxf',
-            key: 'docxf',
+            action: "docxf",
+            key: "docxf",
           },
           {
-            className: 'main-button_drop-down_sub',
-            icon: 'images/form.file.react.svg',
-            label: t('Translations:NewFormFile'),
+            className: "main-button_drop-down_sub",
+            icon: "images/form.file.react.svg",
+            label: t("Translations:NewFormFile"),
             onClick: this.onShowSelectFileDialog,
             disabled: isPrivacy,
-            key: 'form-file',
+            key: "form-file",
           },
         ];
 
     const actions = [
       {
-        className: 'main-button_drop-down',
-        icon: 'images/actions.documents.react.svg',
-        label: t('NewDocument'),
+        className: "main-button_drop-down",
+        icon: "images/actions.documents.react.svg",
+        label: t("NewDocument"),
         onClick: this.onCreate,
-        action: 'docx',
-        key: 'docx',
+        action: "docx",
+        key: "docx",
       },
       {
-        className: 'main-button_drop-down',
-        icon: 'images/spreadsheet.react.svg',
-        label: t('NewSpreadsheet'),
+        className: "main-button_drop-down",
+        icon: "images/spreadsheet.react.svg",
+        label: t("NewSpreadsheet"),
         onClick: this.onCreate,
-        action: 'xlsx',
-        key: 'xlsx',
+        action: "xlsx",
+        key: "xlsx",
       },
       {
-        className: 'main-button_drop-down',
-        icon: 'images/actions.presentation.react.svg',
-        label: t('NewPresentation'),
+        className: "main-button_drop-down",
+        icon: "images/actions.presentation.react.svg",
+        label: t("NewPresentation"),
         onClick: this.onCreate,
-        action: 'pptx',
-        key: 'pptx',
+        action: "pptx",
+        key: "pptx",
       },
       ...formActions,
       {
-        className: 'main-button_drop-down',
-        icon: 'images/catalog.folder.react.svg',
-        label: t('NewFolder'),
+        className: "main-button_drop-down",
+        icon: "images/catalog.folder.react.svg",
+        label: t("NewFolder"),
         onClick: this.onCreate,
-        key: 'new-folder',
+        key: "new-folder",
       },
     ];
 
     const uploadActions = [
       {
-        className: 'main-button_drop-down',
-        icon: 'images/actions.upload.react.svg',
-        label: t('UploadFiles'),
+        className: "main-button_drop-down",
+        icon: "images/actions.upload.react.svg",
+        label: t("UploadFiles"),
         onClick: this.onUploadFileClick,
-        key: 'upload-files',
+        key: "upload-files",
       },
       ...folderUpload,
     ];
@@ -199,7 +209,7 @@ class CatalogMainButtonContent extends React.Component {
             <MainButton
               isDisabled={isDisabled ? isDisabled : !canCreate}
               isDropdown={true}
-              text={t('Common:Actions')}
+              text={t("Common:Actions")}
               model={menuModel}
             />
           </>
@@ -213,7 +223,7 @@ class CatalogMainButtonContent extends React.Component {
           onChange={this.onFileChange}
           onClick={this.onInputClick}
           ref={(input) => (this.inputFilesElement = input)}
-          style={{ display: 'none' }}
+          style={{ display: "none" }}
         />
         <input
           id="customFolderInput"
@@ -224,7 +234,7 @@ class CatalogMainButtonContent extends React.Component {
           onChange={this.onFileChange}
           onClick={this.onInputClick}
           ref={(input) => (this.inputFolderElement = input)}
-          style={{ display: 'none' }}
+          style={{ display: "none" }}
         />
       </>
     );
@@ -235,27 +245,29 @@ CatalogMainButtonContent.propTypes = {
   history: PropTypes.object.isRequired,
 };
 
-export default inject(({ auth, filesStore, uploadDataStore, treeFoldersStore }) => {
-  const { firstLoad, fileActionStore, filter, canCreate } = filesStore;
-  const { isPrivacyFolder } = treeFoldersStore;
-  const { startUpload } = uploadDataStore;
+export default inject(
+  ({ auth, filesStore, uploadDataStore, treeFoldersStore }) => {
+    const { firstLoad, fileActionStore, filter, canCreate } = filesStore;
+    const { isPrivacyFolder } = treeFoldersStore;
+    const { startUpload } = uploadDataStore;
 
-  return {
-    homepage: config.homepage,
-    firstLoad,
-    isPrivacy: isPrivacyFolder,
-    filter,
-    canCreate,
+    return {
+      homepage: config.homepage,
+      firstLoad,
+      isPrivacy: isPrivacyFolder,
+      filter,
+      canCreate,
 
-    setAction: fileActionStore.setAction,
-    startUpload,
+      setAction: fileActionStore.setAction,
+      startUpload,
 
-    toggleShowText: auth.settingsStore.toggleShowText,
-  };
-})(
+      toggleShowText: auth.settingsStore.toggleShowText,
+    };
+  }
+)(
   withRouter(
-    withTranslation(['Article', 'Common'])(
-      withLoader(observer(CatalogMainButtonContent))(<Loaders.MainButton />),
-    ),
-  ),
+    withTranslation(["Article", "Common"])(
+      withLoader(observer(CatalogMainButtonContent))(<Loaders.MainButton />)
+    )
+  )
 );

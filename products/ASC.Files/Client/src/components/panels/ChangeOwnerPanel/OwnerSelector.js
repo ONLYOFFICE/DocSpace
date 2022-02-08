@@ -19,6 +19,7 @@ const OwnerSelector = (props) => {
     onOwnerSelect,
     onClose,
     onClosePanel,
+    theme,
   } = props;
 
   const zIndex = 310;
@@ -38,7 +39,7 @@ const OwnerSelector = (props) => {
               size="16"
               iconName="/static/images/arrow.path.react.svg"
               onClick={onClosePanel}
-              color="#A3A9AE"
+              // color={theme.filesPanels.changeOwner.iconColor}
             />
             <Heading
               className="header_aside-panel-header"

@@ -11,6 +11,19 @@ const StyledSearchInput = styled.div`
       font-weight: ${(props) => props.theme.searchInput.fontWeight};
     }
   }
+
+  svg {
+    path {
+      fill: ${(props) => props.theme.searchInput.iconColor};
+    }
+  }
+  &:hover {
+    svg {
+      path {
+        fill: ${(props) => props.theme.searchInput.hoverIconColor};
+      }
+    }
+  }
 `;
 
 StyledSearchInput.defaultProps = { theme: Base };

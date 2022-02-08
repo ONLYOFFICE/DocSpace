@@ -15,6 +15,7 @@ const Input = ({
   isBold,
   forwardedRef,
   className,
+  theme,
   ...props
 }) => {
   const rest = {};

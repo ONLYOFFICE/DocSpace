@@ -559,7 +559,6 @@ Calendar.defaultProps = {
   openToDate: new Date(),
   minDate: new Date("1970/01/01"),
   maxDate: new Date(new Date().getFullYear() + 1 + "/01/01"),
-  themeColor: "#ED7309",
   locale: moment.locale(),
   size: "base",
 };

@@ -1,28 +1,28 @@
-import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { withRouter } from 'react-router';
-import Filter from '@appserver/common/api/people/filter';
-import PageLayout from '@appserver/common/components/PageLayout';
-import { showLoader, hideLoader, isAdmin } from '@appserver/common/utils';
+import React, { useEffect } from "react";
+import PropTypes from "prop-types";
+import { withRouter } from "react-router";
+import Filter from "@appserver/common/api/people/filter";
+import PageLayout from "@appserver/common/components/PageLayout";
+import { showLoader, hideLoader, isAdmin } from "@appserver/common/utils";
 import {
   ArticleHeaderContent,
   ArticleBodyContent,
   ArticleMainButtonContent,
-} from '../../components/Article';
+} from "../../components/Article";
 import {
   CatalogHeaderContent,
   CatalogMainButtonContent,
   CatalogBodyContent,
-} from '../../components/Catalog';
+} from "../../components/Catalog";
 import {
   SectionHeaderContent,
   SectionBodyContent,
   SectionFilterContent,
   SectionPagingContent,
-} from './Section';
-import { inject, observer } from 'mobx-react';
-import { isMobile } from 'react-device-detect';
-import Dialogs from './Section/Body/Dialogs'; //TODO: Move dialogs to another folder
+} from "./Section";
+import { inject, observer } from "mobx-react";
+import { isMobile } from "react-device-detect";
+import Dialogs from "./Section/Body/Dialogs"; //TODO: Move dialogs to another folder
 
 const Home = ({
   isAdmin,
@@ -42,11 +42,11 @@ const Home = ({
   // console.log('People Home render');
 
   useEffect(() => {
-    if (pathname.indexOf('/people/filter') > -1) {
+    if (pathname.indexOf("/people/filter") > -1) {
       setIsLoading(true);
       setIsRefresh(true);
       const newFilter = Filter.getFilter(location);
-      console.log('PEOPLE URL changed', pathname, newFilter);
+      console.log("PEOPLE URL changed", pathname, newFilter);
       getUsersList(newFilter).finally(() => {
         setFirstLoad(false);
         setIsLoading(false);
@@ -56,7 +56,9 @@ const Home = ({
   }, [pathname, location]);
   useEffect(() => {
     if (isMobile) {
-      const customScrollElm = document.querySelector('#customScrollBar > .scroll-body');
+      const customScrollElm = document.querySelector(
+        "#customScrollBar > .scroll-body"
+      );
       customScrollElm && customScrollElm.scrollTo(0, 0);
     }
   }, [selectedGroup]);
@@ -74,7 +76,8 @@ const Home = ({
         withBodyAutoFocus={!isMobile}
         isLoading={isLoading}
         firstLoad={firstLoad}
-        viewAs={viewAs}>
+        viewAs={viewAs}
+      >
         {showCatalog && (
           <PageLayout.CatalogHeader>
             <CatalogHeaderContent />
@@ -134,7 +137,13 @@ export default inject(({ auth, peopleStore }) => {
   const { usersStore, selectedGroupStore, loadingStore, viewAs } = peopleStore;
   const { getUsersList } = usersStore;
   const { selectedGroup } = selectedGroupStore;
-  const { isLoading, setIsLoading, setIsRefresh, firstLoad, setFirstLoad } = loadingStore;
+  const {
+    isLoading,
+    setIsLoading,
+    setIsRefresh,
+    firstLoad,
+    setFirstLoad,
+  } = loadingStore;
 
   return {
     isAdmin: auth.isAdmin,

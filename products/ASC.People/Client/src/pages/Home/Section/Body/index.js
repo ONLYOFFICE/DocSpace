@@ -6,21 +6,37 @@ import withLoader from "../../../../HOCs/withLoader";
 import PeopleRowContainer from "./RowView/PeopleRowContainer";
 import TableView from "./TableView/TableContainer";
 import { Consumer } from "@appserver/components/utils/context";
+import { CatalogMainButtonContent } from "../../../../components/Catalog";
+import { isMobile } from "react-device-detect";
+import {
+  isMobile as isMobileUtils,
+  isTablet as isTabletUtils,
+} from "@appserver/components/utils/device";
 
 class SectionBodyContent extends React.Component {
   render() {
     const { tReady, viewAs } = this.props;
-
+    console.log("render");
     return (
       <Consumer>
         {(context) =>
           viewAs === "table" ? (
-            <TableView sectionWidth={context.sectionWidth} tReady={tReady} />
+            <>
+              <TableView sectionWidth={context.sectionWidth} tReady={tReady} />
+              {(isMobile || isMobileUtils() || isTabletUtils()) && (
+                <CatalogMainButtonContent sectionWidth={context.sectionWidth} />
+              )}
+            </>
           ) : (
-            <PeopleRowContainer
-              sectionWidth={context.sectionWidth}
-              tReady={tReady}
-            />
+            <>
+              <PeopleRowContainer
+                sectionWidth={context.sectionWidth}
+                tReady={tReady}
+              />
+              {(isMobile || isMobileUtils() || isTabletUtils()) && (
+                <CatalogMainButtonContent sectionWidth={context.sectionWidth} />
+              )}
+            </>
           )
         }
       </Consumer>

@@ -10,11 +10,16 @@ import { mobile } from "../utils/device";
 const StyledFloatingButton = styled(FloatingButton)`
   position: relative;
   z-index: 1010;
+  background: ${(props) => props.theme.mainButtonMobile.buttonColor} !important;
 
   .circle__mask + div {
     display: flex;
     align-items: center;
     justify-content: center;
+
+    background: ${(props) =>
+      props.theme.mainButtonMobile.buttonColor} !important;
+
     div {
       padding-top: 0;
       display: flex;
@@ -38,9 +43,17 @@ const StyledFloatingButton = styled(FloatingButton)`
     `}
 
   .circle__mask .circle__fill {
-    background-color: #fff;
+    background-color: ${(props) =>
+      props.theme.mainButtonMobile.circleBackground};
+  }
+
+  svg {
+    path {
+      fill: ${(props) => props.theme.mainButtonMobile.iconFill};
+    }
   }
 `;
+StyledFloatingButton.defaultProps = { theme: Base };
 
 const mobileDropDown = css`
   width: ${(props) => props.theme.mainButtonMobile.dropDown.mobile.width};
@@ -80,33 +93,40 @@ const StyledDropDown = styled(DropDown)`
   }
 
   .is-separator {
-    height: 1px;
-    width: 100%;
-    background-color: #fff;
+    height: 1px !important;
+    width: calc(100% - 48px);
+    padding: 0 !important;
+    margin: 12px 24px !important;
+    background-color: ${(props) =>
+      props.theme.mainButtonMobile.dropDown.separatorBackground};
   }
 
   .drop-down-item-button {
-    color: #fff;
+    color: ${(props) => props.theme.mainButtonMobile.dropDown.buttonColor};
 
     svg {
       path {
-        fill: #fff;
+        fill: ${(props) => props.theme.mainButtonMobile.dropDown.buttonColor};
       }
     }
 
     &:hover {
-      background-color: #3a6c9e;
+      background-color: ${(props) =>
+        props.theme.mainButtonMobile.dropDown.hoverButtonColor};
     }
   }
 
   .action-mobile-button {
     width: 100%;
-    background-color: #265a8f;
+    background-color: ${(props) =>
+      props.theme.mainButtonMobile.dropDown.backgroundActionMobile};
     border-radius: 3px;
     font-size: 13px;
     display: block;
   }
 `;
+
+StyledDropDown.defaultProps = { theme: Base };
 
 const StyledDropDownItem = styled(DropDownItem)`
   padding: 6px 23px;
@@ -115,9 +135,12 @@ const StyledDropDownItem = styled(DropDownItem)`
 const StyledButtonOptions = styled.div`
   display: ${(props) => !props.isOpenButton && "none"};
   padding: 16px 0;
-  background-color: #265a8f;
-  color: #fff;
+  background-color: ${(props) =>
+    props.theme.mainButtonMobile.buttonOptions.backgroundColor};
+  color: ${(props) => props.theme.mainButtonMobile.buttonOptions.color};
 `;
+
+StyledButtonOptions.defaultProps = { theme: Base };
 
 const StyledContainerAction = styled.div`
   padding: 16px 0px;
@@ -126,19 +149,30 @@ const StyledContainerAction = styled.div`
 const StyledButtonWrapper = styled.div`
   padding: 0 24px 34px;
   display: ${(props) => (props.isOpenButton ? "none" : "block")};
-  background-color: ${(props) => (props.isUploading ? "#ECEEF1" : "#fff")};
+  background-color: ${(props) =>
+    props.isUploading
+      ? props.theme.mainButtonMobile.buttonWrapper.uploadingBackground
+      : props.theme.mainButtonMobile.buttonWrapper.background};
 `;
+
+StyledButtonWrapper.defaultProps = { theme: Base };
 
 const StyledProgressContainer = styled.div`
   display: ${(props) => (props.isUploading ? "flex" : "none")};
   flex-direction: column;
-  background-color: ${(props) => (props.isUploading ? "#ECEEF1" : "#fff")};
+  background-color: ${(props) =>
+    props.isUploading
+      ? props.theme.mainButtonMobile.buttonWrapper.uploadingBackground
+      : props.theme.mainButtonMobile.buttonWrapper.background};
   cursor: default;
   padding: 0 24px 34px;
 `;
 
+StyledButtonWrapper.defaultProps = { theme: Base };
+
 const StyledProgressBarContainer = styled.div`
   display: ${(props) => (props.isUploading ? "flex" : "none")};
+  align-items: center;
 
   flex-wrap: wrap;
 
@@ -152,6 +186,7 @@ const StyledProgressBarContainer = styled.div`
   .progress-header {
     width: 50%;
     line-height: 16px;
+    color: ${(props) => props.theme.mainButtonMobile.textColor};
     &:hover {
       cursor: pointer;
     }
@@ -159,19 +194,33 @@ const StyledProgressBarContainer = styled.div`
 
   .progress_count {
     line-height: 16px;
+    color: ${(props) => props.theme.mainButtonMobile.textColor};
     width: 42%;
     text-align: right;
     margin-right: 6px;
   }
+
+  .progress_icon {
+    svg {
+      path {
+        fill: ${(props) => props.theme.mainButtonMobile.bar.icon};
+      }
+    }
+  }
 `;
+
+StyledProgressBarContainer.defaultProps = { theme: Base };
 
 const StyledMobileProgressBar = styled.div`
   width: 100%;
   height: 4px;
-  background-color: rgb(48%, 58%, 69%, 0.4);
+  background-color: ${(props) =>
+    props.theme.mainButtonMobile.mobileProgressBarBackground};
   border-radius: 2px;
   margin-top: 14px;
 `;
+
+StyledMobileProgressBar.defaultProps = { theme: Base };
 
 const StyledBar = styled.div`
   width: ${(props) => props.uploadPercent}%;
@@ -179,11 +228,11 @@ const StyledBar = styled.div`
   opacity: 1;
   background: ${(props) =>
     props.error
-      ? "#C96C27"
-      : "linear-gradient(225deg, #2274aa 0%, #0f4071 100%)"}; ;
+      ? props.theme.mainButtonMobile.bar.errorBackground
+      : props.theme.mainButtonMobile.bar.background};
 `;
 
-StyledDropDown.defaultProps = { theme: Base };
+StyledBar.defaultProps = { theme: Base };
 
 export {
   StyledFloatingButton,

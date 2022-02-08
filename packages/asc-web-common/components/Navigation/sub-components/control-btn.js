@@ -1,7 +1,8 @@
-import React from 'react';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import ContextMenuButton from '@appserver/components/context-menu-button';
+import React from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import ContextMenuButton from "@appserver/components/context-menu-button";
+import IconButton from "@appserver/components/icon-button";
 
 const StyledContainer = styled.div`
   margin-left: 4px;
@@ -15,6 +16,9 @@ const ControlButtons = ({
   canCreate,
   getContextOptionsFolder,
   getContextOptionsPlus,
+  isRecycleBinFolder,
+  isEmptyFilesList,
+  clearTrash,
 }) => {
   return !isRootFolder && canCreate ? (
     <StyledContainer>
@@ -23,8 +27,6 @@ const ControlButtons = ({
         directionX="right"
         iconName="images/plus.svg"
         size={17}
-        color="#A3A9AE"
-        hoverColor="#657077"
         isFill
         getData={getContextOptionsPlus}
         isDisabled={false}
@@ -35,28 +37,32 @@ const ControlButtons = ({
           directionX="right"
           iconName="images/vertical-dots.react.svg"
           size={17}
-          color="#A3A9AE"
-          hoverColor="#657077"
           isFill
           getData={getContextOptionsFolder}
           isDisabled={false}
         />
       )}
     </StyledContainer>
+  ) : canCreate ? (
+    <ContextMenuButton
+      className="add-button"
+      directionX="right"
+      iconName="images/plus.svg"
+      size={17}
+      isFill
+      getData={getContextOptionsPlus}
+      isDisabled={false}
+    />
+  ) : isRecycleBinFolder && !isEmptyFilesList ? (
+    <IconButton
+      iconName="images/clear.active.react.svg"
+      size="15"
+      isFill={true}
+      onClick={clearTrash}
+      className="trash-button"
+    />
   ) : (
-    canCreate && (
-      <ContextMenuButton
-        className="add-button"
-        directionX="right"
-        iconName="images/plus.svg"
-        size={17}
-        color="#A3A9AE"
-        hoverColor="#657077"
-        isFill
-        getData={getContextOptionsPlus}
-        isDisabled={false}
-      />
-    )
+    <></>
   );
 };
 

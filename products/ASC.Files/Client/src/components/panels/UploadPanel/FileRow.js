@@ -60,6 +60,7 @@ const StyledFileRow = styled(Row)`
 const FileRow = (props) => {
   const {
     t,
+    theme,
     item,
     uploaded,
     cancelCurrentUpload,
@@ -114,7 +115,11 @@ const FileRow = (props) => {
               <Link
                 className="upload-panel_file-row-link"
                 fontWeight="600"
-                color={item.error || !isMediaActive ? "#A3A9AE" : ""}
+                color={
+                  item.error || !isMediaActive
+                    ? theme.filesPanels.upload.color
+                    : ""
+                }
                 truncate
                 onClick={() => onMediaClick(item.fileId)}
               >
@@ -123,7 +128,7 @@ const FileRow = (props) => {
             ) : (
               <Link
                 fontWeight="600"
-                color={item.error && "#A3A9AE"}
+                color={item.error && theme.filesPanels.upload.color}
                 truncate
                 href={item.fileInfo ? item.fileInfo.webUrl : ""}
                 target={downloadInCurrentTab ? "_self" : "_blank"}
@@ -132,12 +137,16 @@ const FileRow = (props) => {
               </Link>
             )
           ) : (
-            <Text fontWeight="600" color={item.error && "#A3A9AE"} truncate>
+            <Text
+              fontWeight="600"
+              color={item.error && theme.filesPanels.upload.color}
+              truncate
+            >
               {name}
             </Text>
           )}
           {ext ? (
-            <Text fontWeight="600" color="#A3A9AE">
+            <Text fontWeight="600" color={theme.filesPanels.upload.color}>
               {ext}
             </Text>
           ) : (
@@ -166,7 +175,7 @@ const FileRow = (props) => {
                     className="convert_icon"
                     size="medium"
                     isfill={true}
-                    color="#A3A9AE"
+                    // color={theme.filesPanels.upload.color}
                   />
                 </div>
               )}
@@ -185,7 +194,7 @@ const FileRow = (props) => {
                 effect="float"
                 place="left"
                 maxWidth="250px"
-                color="#f8f7bf"
+                color={theme.filesPanels.upload.tooltipColor}
               />
             </div>
           ) : (
@@ -218,7 +227,7 @@ export default inject(
       name = splitted[0];
     }
 
-    const { personal } = auth.settingsStore;
+    const { personal, theme } = auth.settingsStore;
     const {
       iconFormatsStore,
       mediaViewersFormatsStore,
@@ -253,6 +262,7 @@ export default inject(
 
     return {
       isPersonal: personal,
+      theme,
       currentFileUploadProgress,
       uploaded,
       isMedia,

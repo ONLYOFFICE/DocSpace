@@ -62,7 +62,6 @@ const linkStyles = {
   isHovered: true,
   type: "action",
   fontWeight: "600",
-  color: "#555f65",
   className: "empty-folder_link",
   display: "flex",
 };
@@ -201,7 +200,9 @@ class ConnectClouds extends React.Component {
   };
 
   render() {
-    const { t, providers, tReady } = this.props;
+    const { t, providers, tReady, theme } = this.props;
+
+    linkStyles.color = theme.filesSettings.color;
 
     return (
       <>
@@ -244,7 +245,7 @@ class ConnectClouds extends React.Component {
                         title={item.provider_key}
                         fontWeight="600"
                         fontSize="15px"
-                        color="#333"
+                        color={theme.filesSettings.linkColor}
                         noSelect
                       >
                         {tReady ? (
@@ -256,7 +257,7 @@ class ConnectClouds extends React.Component {
                       <Link
                         type="page"
                         title={item.customer_title}
-                        color="#333"
+                        color={theme.filesSettings.linkColor}
                         fontSize="13px"
                         fontWeight={400}
                         truncate={true}
@@ -300,7 +301,7 @@ class ConnectClouds extends React.Component {
 }
 
 export default inject(
-  ({ filesStore, settingsStore, treeFoldersStore, dialogsStore }) => {
+  ({ auth, filesStore, settingsStore, treeFoldersStore, dialogsStore }) => {
     const { providers, capabilities } = settingsStore.thirdPartyStore;
     const { filter, setFirstLoad } = filesStore;
     const { myFolder, commonFolder, getSubfolders } = treeFoldersStore;
@@ -313,6 +314,7 @@ export default inject(
     } = dialogsStore;
 
     return {
+      theme: auth.settingsStore.theme,
       filter,
       providers,
       capabilities,

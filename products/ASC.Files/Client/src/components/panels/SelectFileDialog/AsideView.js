@@ -10,6 +10,7 @@ import ModalDialog from "@appserver/components/modal-dialog";
 const DISPLAY_TYPE = "aside";
 const SelectFileDialogAsideView = ({
   t,
+  theme,
   isPanelVisible,
   zIndex,
   onClose,
@@ -59,6 +60,7 @@ const SelectFileDialogAsideView = ({
         </ModalDialog.Header>
         <ModalDialog.Body className="select-file_body-modal-dialog">
           <StyledSelectFilePanel
+            theme={theme}
             isHeaderChildren={isHeaderChildren}
             displayType={DISPLAY_TYPE}
           >
@@ -66,6 +68,7 @@ const SelectFileDialogAsideView = ({
               <div className="select-file-dialog_aside-children"></div>
               <div className="select-file-dialog_aside_body">
                 <SelectFolderInput
+                  theme={theme}
                   onClickInput={onClickInput}
                   onClose={onCloseSelectFolderDialog}
                   onSelectFolder={onSelectFolder}
@@ -92,6 +95,7 @@ const SelectFileDialogAsideView = ({
                 <div className="select-file-dialog_aside_body-files_list">
                   {selectedFolder && !isLoadingData ? (
                     <FilesListBody
+                      theme={theme}
                       filesList={filesList}
                       onSelectFile={onSelectFile}
                       hasNextPage={hasNextPage}
@@ -105,6 +109,7 @@ const SelectFileDialogAsideView = ({
                   ) : isAvailableFolderList ? (
                     <div key="loader" className="panel-loader-wrapper">
                       <Loaders.Rows
+                        theme={theme}
                         style={{
                           marginBottom: "24px",
                           marginTop: "20px",
@@ -115,6 +120,7 @@ const SelectFileDialogAsideView = ({
                   ) : (
                     <div className="select-file-dialog_empty-container">
                       <EmptyContainer
+                        theme={theme}
                         headerText={t("Home:EmptyFolderHeader")}
                         imageSrc="/static/images/empty_screen.png"
                       />
@@ -125,10 +131,14 @@ const SelectFileDialogAsideView = ({
             </div>
           </StyledSelectFilePanel>
         </ModalDialog.Body>
-        <ModalDialog.Footer>
-          <StyledSelectFilePanel isHeaderChildren={isHeaderChildren}>
+        <ModalDialog.Footer theme={theme}>
+          <StyledSelectFilePanel
+            theme={theme}
+            isHeaderChildren={isHeaderChildren}
+          >
             <div className="select-file-dialog-aside_buttons">
               <Button
+                theme={theme}
                 className="select-file-dialog-buttons-save"
                 primary
                 size="big"
@@ -137,6 +147,7 @@ const SelectFileDialogAsideView = ({
                 isDisabled={selectedFile.length === 0}
               />
               <Button
+                theme={theme}
                 size="big"
                 label={t("Common:CancelButton")}
                 onClick={onClose}

@@ -67,6 +67,7 @@ class HelpButton extends React.Component {
     return (
       <div ref={this.ref} style={style}>
         <IconButton
+          theme={this.props.theme}
           id={this.id}
           className={`${className} help-icon`}
           isClickable={true}
@@ -79,6 +80,7 @@ class HelpButton extends React.Component {
         />
         {getContent ? (
           <Tooltip
+            theme={this.props.theme}
             id={this.id}
             reference={this.refTooltip}
             effect="solid"
@@ -93,6 +95,7 @@ class HelpButton extends React.Component {
           />
         ) : (
           <Tooltip
+            theme={this.props.theme}
             id={this.id}
             reference={this.refTooltip}
             effect="solid"
@@ -143,7 +146,6 @@ HelpButton.defaultProps = {
   offsetTop: 0,
   offsetBottom: 0,
   className: "icon-button",
-  color: "#A3A9AE",
   size: 13,
 };
 

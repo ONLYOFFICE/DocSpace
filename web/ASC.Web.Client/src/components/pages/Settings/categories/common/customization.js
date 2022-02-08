@@ -13,6 +13,7 @@ import { inject, observer } from "mobx-react";
 import { AppServerConfig } from "@appserver/common/constants";
 import withCultureNames from "@appserver/common/hoc/withCultureNames";
 import LanguageAndTimeZone from "./language-and-time-zone";
+import { Base } from "@appserver/components/themes";
 
 const mapTimezonesToArray = (timezones) => {
   return timezones.map((timezone) => {
@@ -27,9 +28,11 @@ const findSelectedItemByKey = (items, selectedItemKey) => {
 const StyledArrowRightIcon = styled(ArrowRightIcon)`
   ${commonIconsStyles}
   path {
-    fill: ${(props) => props.color};
+    fill: ${(props) => props.theme.studio.settings.common.arrowColor};
   }
 `;
+
+StyledArrowRightIcon.defaultProps = { theme: Base };
 
 const StyledComponent = styled.div`
   .margin-top {
@@ -68,7 +71,7 @@ const StyledComponent = styled.div`
     }
 
     .category-item-description {
-      color: #555f65;
+      color: ${(props) => props.theme.studio.settings.common.descriptionColor};
       font-size: 12px;
       max-width: 1024px;
     }
@@ -91,6 +94,8 @@ const StyledComponent = styled.div`
     } */
   }
 `;
+
+StyledComponent.defaultProps = { theme: Base };
 class Customization extends React.Component {
   constructor(props) {
     super(props);
@@ -220,7 +225,7 @@ class Customization extends React.Component {
             >
               {t("CustomTitles")}
             </Link>
-            <StyledArrowRightIcon size="small" color="#333333" />
+            <StyledArrowRightIcon size="small" />
           </div>
           <Text className="category-item-description">
             {t("CustomTitlesSettingsDescription")}
@@ -239,7 +244,7 @@ class Customization extends React.Component {
             >
               {t("TeamTemplate")}
             </Link>
-            <StyledArrowRightIcon size="small" color="#333333" />
+            <StyledArrowRightIcon size="small" />
           </div>
           <Box marginProp="4px 0 6px 0">
             <Text fontWeight="600">{`${customNames.name}`}</Text>
@@ -249,7 +254,7 @@ class Customization extends React.Component {
           </Text>
           <Box marginProp="16px 0 0 0">
             <Link
-              color="#316DAA"
+              color={theme.studio.settings.common.linkColorHelp}
               target="_blank"
               isHovered={true}
               href={helpUrlCommonSettings}
@@ -274,11 +279,13 @@ export default inject(({ auth, setup }) => {
     getPortalTimezones,
     helpUrlCommonSettings,
     customNames,
+    theme,
   } = auth.settingsStore;
 
   const { setLanguageAndTime } = setup;
 
   return {
+    theme,
     portalLanguage: culture,
     language: culture,
     portalTimeZoneId: timezone,

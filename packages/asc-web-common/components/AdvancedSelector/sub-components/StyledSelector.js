@@ -1,6 +1,7 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import { tablet } from "@appserver/components/utils/device";
+import Base from "@appserver/components/themes/base";
 
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
@@ -71,13 +72,15 @@ const dropdownStyles = css`
         }
 
         &:hover {
-          background-color: #eceef1;
+          background-color: ${(props) =>
+            props.theme.advancedSelector.hoverBackgroundColor};
           border-radius: 3px;
         }
       }
 
       .row-group.selected {
-        background-color: #eceef1;
+        background-color: ${(props) =>
+          props.theme.advancedSelector.selectedBackgroundColor};
         border-radius: 3px;
       }
     }
@@ -89,7 +92,7 @@ const dropdownStyles = css`
     css`
       .splitter {
         grid-area: splitter;
-        border-left: 1px solid #eceef1;
+        border-left: ${(props) => props.theme.advancedSelector.borderLeft};
         margin-top: 16px;
       }
     `}
@@ -189,16 +192,19 @@ const StyledSelector = styled(Container)`
       .options_searcher {
         div:first-child {
           :hover {
-            border-color: #d0d5da;
+            border-color: ${(props) =>
+              props.theme.advancedSelector.searcher.hoverBorderColor};
           }
 
           :focus,
           :focus-within {
-            border-color: #2da7db;
+            border-color: ${(props) =>
+              props.theme.advancedSelector.searcher.focusBorderColor};
           }
 
           & > input::placeholder {
-            color: #a3a9ae;
+            color: ${(props) =>
+              props.theme.advancedSelector.searcher.placeholderColor};
           }
         }
       }
@@ -224,7 +230,8 @@ const StyledSelector = styled(Container)`
         cursor: pointer;
 
         &:hover {
-          background-color: #eceef1;
+          background-color: ${(props) =>
+            props.theme.advancedSelector.hoverBackgroundColor};
           border-radius: 3px;
         }
 
@@ -251,5 +258,7 @@ const StyledSelector = styled(Container)`
     grid-area: footer;
   }
 `;
+
+StyledSelector.defaultProps = { theme: Base };
 
 export default StyledSelector;

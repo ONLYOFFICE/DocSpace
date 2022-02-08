@@ -43,14 +43,19 @@ const ProgressBarMobile = ({
         onClick={onClickHeaderAction}
         className="progress-header"
         fontSize={`14`}
-        color="#657077"
+        // color="#657077"
       >
         {label}
       </Text>
-      <Text className="progress_count" fontSize={`13`} color="#657077">
+      <Text className="progress_count" fontSize={`13`}>
         {status}
       </Text>
-      <IconButton onClick={onCancel} iconName={icon} size={14} />
+      <IconButton
+        className="progress_icon"
+        onClick={onCancel}
+        iconName={icon}
+        size={14}
+      />
       <StyledMobileProgressBar>
         <StyledBar uploadPercent={uploadPercent} error={error} />
       </StyledMobileProgressBar>
@@ -67,6 +72,8 @@ ProgressBarMobile.propTypes = {
   icon: PropTypes.string,
   /** The function that will be called after the progress header click  */
   onClickAction: PropTypes.func,
+  /** The function that hide button */
+  hideButton: PropTypes.func,
   /** If true the progress bar changes color */
   error: PropTypes.bool,
 };
@@ -129,9 +136,13 @@ const MainButtonMobile = (props) => {
   };
 
   React.useEffect(() => {
-    const openProgressOptions = progressOptions.filter((option) => option.open);
+    if (progressOptions) {
+      const openProgressOptions = progressOptions.filter(
+        (option) => option.open
+      );
 
-    setIsUploading(openProgressOptions.length > 0);
+      setIsUploading(openProgressOptions.length > 0);
+    }
   }, [progressOptions]);
 
   const renderItems = () => {
@@ -141,7 +152,6 @@ const MainButtonMobile = (props) => {
           {actionOptions.map((option) => {
             const optionOnClickAction = () => {
               toggle(false);
-              console.log("1");
               option.onClick && option.onClick({ action: option.action });
             };
 
@@ -149,7 +159,9 @@ const MainButtonMobile = (props) => {
               <StyledDropDownItem
                 key={option.key}
                 label={option.label}
-                className={option.className}
+                className={`${option.className} ${
+                  option.isSeparator && "is-separator"
+                }`}
                 onClick={optionOnClickAction}
                 icon={option.icon ? option.icon : ""}
                 action={option.action}
@@ -229,7 +241,6 @@ const MainButtonMobile = (props) => {
           isOpen={isOpen}
           onClick={onMainButtonClick}
           percent={percent}
-          color={"#ed7309"}
         />
         <StyledDropDown
           open={isOpen}

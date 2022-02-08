@@ -25,6 +25,7 @@ const StyledContextMenu = styled.div`
   .p-contextmenu {
     position: absolute;
     background: ${(props) => props.theme.newContextMenu.background};
+    border: ${(props) => props.theme.newContextMenu.border};
     border-radius: ${(props) => props.theme.newContextMenu.borderRadius};
     -moz-border-radius: ${(props) => props.theme.newContextMenu.borderRadius};
     -webkit-border-radius: ${(props) =>

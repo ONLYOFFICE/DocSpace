@@ -326,7 +326,12 @@ namespace ASC.Core.Data
 
         private T Deserialize<T>(string data)
         {
-            return JsonSerializer.Deserialize<T>(data);
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            return JsonSerializer.Deserialize<T>(data, options);
         }
 
         private string Serialize<T>(T settings)

@@ -13,10 +13,10 @@ import Item from "./item";
 import { isMobile, isMobileOnly } from "react-device-detect";
 import {
   tablet,
-  mobile,
   isMobile as IsMobileUtils,
   isTablet as isTabletUtils,
 } from "@appserver/components/utils/device";
+import { Base } from "@appserver/components/themes";
 
 const StyledBox = styled.div`
   position: absolute;
@@ -24,11 +24,19 @@ const StyledBox = styled.div`
   left: ${isMobile ? "-16px" : "-20px"};
   ${isMobile &&
   css`
+    width: ${(props) =>
+      props.showText
+        ? css`calc(100vw - 240px)`
+        : css`calc(100vw - 52px)`} !important;
+    max-width: 100vw !important;
+  `}
+
+  ${isMobileOnly &&
+  css`
     width: 100vw !important;
     max-width: 100vw !important;
   `}
-  height: fit-content;
-  min-width: 185px;
+  height: ${(props) => (props.height ? `${props.height}px` : "fit-content")};
   ${(props) =>
     props.changeWidth &&
     !isMobile &&
@@ -39,7 +47,7 @@ const StyledBox = styled.div`
   display: flex;
   flex-direction: column;
 
-  background: #ffffff;
+  background: ${(props) => props.theme.navigation.background};
 
   filter: drop-shadow(0px 12px 40px rgba(4, 15, 27, 0.12));
   border-radius: 0px 0px 6px 6px;
@@ -50,7 +58,17 @@ const StyledBox = styled.div`
     width: 100vw;
     max-width: 100vw !important;
   }
+
+  ${isMobile &&
+  css`
+    top: 0px;
+    left: -16px;
+    width: 100vw;
+    max-width: 100vw !important;
+  `}
 `;
+
+StyledBox.defaultProps = { theme: Base };
 
 const StyledContainer = styled.div`
   margin: 14px 0 7px;
@@ -72,8 +90,13 @@ const StyledContainer = styled.div`
       props.canCreate ? "auto 1fr auto" : "auto 1fr auto"};
   }
 
-  @media ${mobile} {
-  }
+  ${isMobile &&
+  css`
+    padding: 0px 16px;
+
+    grid-template-columns: ${(props) =>
+      props.canCreate ? "auto 1fr auto" : "auto 1fr auto"};
+  `}
 
   .arrow-button {
     margin-right: 15px;
@@ -86,19 +109,23 @@ const StyledContainer = styled.div`
       margin-left: -8px;
       margin-right: 16px;
     }
+
+    ${isMobile &&
+    css`
+      padding: 0 0 0 8px;
+      margin-left: -8px;
+      margin-right: 16px;
+    `};
   }
 
   .add-button {
     margin-left: 16px;
 
     @media ${tablet} {
-      margin-left: auto;
-
-      & > div:first-child {
-        padding: 0px 8px 8px 8px;
-        margin-right: -8px;
-      }
+      display: none;
     }
+
+    ${isMobile && `display: none`};
   }
 
   .option-button {
@@ -133,6 +160,8 @@ const DropBox = React.forwardRef(
   (
     {
       width,
+      height,
+      showText,
       changeWidth,
       isRootFolder,
       onBackToParentFolder,
@@ -170,7 +199,13 @@ const DropBox = React.forwardRef(
     });
 
     return (
-      <StyledBox ref={ref} width={width} changeWidth={changeWidth}>
+      <StyledBox
+        ref={ref}
+        width={width}
+        height={height < dropBoxHeight ? height : null}
+        showText={showText}
+        changeWidth={changeWidth}
+      >
         <StyledContainer canCreate={canCreate}>
           <ArrowButton
             isRootFolder={isRootFolder}

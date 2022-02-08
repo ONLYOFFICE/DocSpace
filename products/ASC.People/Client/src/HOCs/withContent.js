@@ -19,6 +19,7 @@ export default function withContent(WrappedContent) {
       selectUser,
       deselectUser,
       isAdmin,
+      theme,
     } = props;
     const { userName, mobilePhone, email, role, displayName, avatar } = item;
 
@@ -34,7 +35,10 @@ export default function withContent(WrappedContent) {
     const getFormattedGroups = () => {
       let temp = [];
       const groups = item.groups;
-      const linkColor = item.statusType === "pending" ? "#D0D5DA" : "#A3A9AE";
+      const linkColor =
+        item.statusType === "pending"
+          ? theme.peopleWithContent.pendingColor
+          : theme.peopleWithContent.color;
 
       if (!groups) temp.push({ key: 0, label: "" });
 
@@ -140,6 +144,7 @@ export default function withContent(WrappedContent) {
     const { selection, selectUser, deselectUser } = selectionStore;
 
     return {
+      theme: auth.settingsStore.theme,
       isAdmin,
       currentUserId: userStore.user.id,
       selectGroup,

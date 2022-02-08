@@ -74,6 +74,7 @@ class UploadPanelComponent extends React.Component {
       uploadDataFiles,
       cancelUpload,
       cancelConversion,
+      theme,
     } = this.props;
 
     const visible = uploadPanelVisible;
@@ -103,7 +104,7 @@ class UploadPanelComponent extends React.Component {
                     <IconButton
                       size="20"
                       iconName="images/clear.active.react.svg"
-                      color="#A3A9AE"
+                      // color={theme.filesPanels.upload.color}
                       isClickable
                       onClick={this.clearUploadPanel}
                     />
@@ -111,7 +112,7 @@ class UploadPanelComponent extends React.Component {
                     <IconButton
                       size="20"
                       iconName="images/button.cancel.react.svg"
-                      color={"#A3A9AE"}
+                      // color={theme.filesPanels.upload.color}
                       isClickable
                       onClick={uploaded ? cancelConversion : cancelUpload}
                     />
@@ -145,7 +146,7 @@ const UploadPanel = withTranslation("UploadPanel")(
   withLoader(UploadPanelComponent)(<Loaders.DialogAsideLoader isPanel />)
 );
 
-export default inject(({ /* dialogsStore, */ uploadDataStore }) => {
+export default inject(({ /* dialogsStore, */ auth, uploadDataStore }) => {
   //const { sharingPanelVisible } = dialogsStore;
 
   const {
@@ -176,5 +177,7 @@ export default inject(({ /* dialogsStore, */ uploadDataStore }) => {
     clearUploadedFiles,
     uploadDataFiles: files,
     clearPrimaryProgressData,
+
+    theme: auth.settingsStore.theme,
   };
 })(observer(UploadPanel));

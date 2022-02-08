@@ -113,6 +113,7 @@ export default function withBadges(WrappedComponent) {
     render() {
       const {
         t,
+        theme,
         item,
         canWebEdit,
         isTrashFolder,
@@ -136,6 +137,7 @@ export default function withBadges(WrappedComponent) {
       const badgesComponent = (
         <Badges
           t={t}
+          theme={theme}
           item={item}
           isAdmin={isAdmin}
           showNew={showNew}
@@ -183,7 +185,7 @@ export default function withBadges(WrappedComponent) {
         updateRootBadge,
       } = treeFoldersStore;
       const { markAsRead } = filesActionsStore;
-      const { isTabletView, isDesktopClient } = auth.settingsStore;
+      const { isTabletView, isDesktopClient, theme } = auth.settingsStore;
       const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
       const {
         setNewFilesPanelVisible,
@@ -201,6 +203,7 @@ export default function withBadges(WrappedComponent) {
       const canConvert = docserviceStore.canConvert(item.fileExst);
 
       return {
+        theme,
         isAdmin: auth.isAdmin,
         canWebEdit,
         canConvert,

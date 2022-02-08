@@ -8,6 +8,7 @@ import Badge from "../badge";
 import Text from "../text";
 
 import { tablet } from "../utils/device";
+import Base from "../themes/base";
 
 const StyledTreeMenu = styled(Tree)`
   margin: 0;
@@ -92,7 +93,7 @@ const StyledTreeMenu = styled(Tree)`
   .rc-tree-treenode-disabled > span:not(.rc-tree-switcher),
   .rc-tree-treenode-disabled > a,
   .rc-tree-treenode-disabled > a span {
-    color: #767676;
+    color: ${(props) => props.theme.treeMenu.disabledColor};
     cursor: not-allowed;
   }
 
@@ -147,6 +148,8 @@ const StyledTreeMenu = styled(Tree)`
   }
 `;
 
+StyledTreeMenu.defaultProps = { theme: Base };
+
 const TreeMenu = React.forwardRef((props, ref) => {
   //console.log("TreeMenu render");
   const {
@@ -189,6 +192,7 @@ const TreeMenu = React.forwardRef((props, ref) => {
     gapBetweenNodes,
     gapBetweenNodesTablet,
     isEmptyRootNode,
+    theme,
   } = props;
   const expandedKeysProp = expandedKeys ? { expandedKeys: expandedKeys } : {};
 
@@ -211,8 +215,6 @@ const TreeMenu = React.forwardRef((props, ref) => {
                 className="newItem"
                 key={child.props.id + "-badge"}
                 label={child.props.newItems}
-                backgroundColor="#ED7309"
-                color="#FFF"
                 fontSize="11px"
                 fontWeight={800}
                 borderRadius="11px"

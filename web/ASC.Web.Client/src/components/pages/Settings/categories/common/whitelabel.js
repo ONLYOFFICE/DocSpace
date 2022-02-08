@@ -11,6 +11,7 @@ import Link from "@appserver/components/link";
 import TextInput from "@appserver/components/text-input";
 
 import { inject, observer } from "mobx-react";
+import { Base } from "@appserver/components/themes";
 
 const StyledComponent = styled.div`
   .margin-top {
@@ -34,7 +35,8 @@ const StyledComponent = styled.div`
   }
 
   .border-img {
-    border: solid 1px #d1d1d1;
+    border: ${(props) =>
+      props.theme.studio.settings.common.whiteLabel.borderImg};
     box-sizing: content-box;
   }
 
@@ -42,7 +44,8 @@ const StyledComponent = styled.div`
     width: 142px;
     height: 23px;
     padding: 10px;
-    background-color: #0f4071;
+    background-color: ${(props) =>
+      props.theme.studio.settings.common.whiteLabel.backgroundColor};
   }
 
   .logo-dark {
@@ -63,17 +66,22 @@ const StyledComponent = styled.div`
   }
 
   .background-green {
-    background-color: #7e983f;
+    background-color: ${(props) =>
+      props.theme.studio.settings.common.whiteLabel.greenBackgroundColor};
   }
 
   .background-blue {
-    background-color: #5170b5;
+    background-color: ${(props) =>
+      props.theme.studio.settings.common.whiteLabel.blueBackgroundColor};
   }
 
   .background-orange {
-    background-color: #e86e2e;
+    background-color: ${(props) =>
+      props.theme.studio.settings.common.whiteLabel.orangeBackgroundColor};
   }
 `;
+
+StyledComponent.defaultProps = { theme: Base };
 
 const mapSizesToArray = (sizes) => {
   return sizes.map((size) => {
@@ -216,7 +224,7 @@ class WhiteLabel extends React.Component {
   };
 
   render() {
-    const { t } = this.props;
+    const { t, theme } = this.props;
     const {
       isLoadedData,
       isPortalPaid,
@@ -285,7 +293,9 @@ class WhiteLabel extends React.Component {
                     width="284"
                     height="46"
                     data-fontsize="36"
-                    data-fontcolor="#fff"
+                    data-fontcolor={
+                      theme.studio.settings.common.whiteLabel.dataFontColor
+                    }
                   >
                     {t("BrowserNoCanvasSupport")}
                   </canvas>
@@ -318,7 +328,9 @@ class WhiteLabel extends React.Component {
                     width="432"
                     height="70"
                     data-fontsize="54"
-                    data-fontcolor="#333"
+                    data-fontcolor={
+                      theme.studio.settings.common.whiteLabel.dataFontColorBlack
+                    }
                   >
                     {t("BrowserNoCanvasSupport")}
                   </canvas>
@@ -350,7 +362,9 @@ class WhiteLabel extends React.Component {
                     width="32"
                     height="32"
                     data-fontsize="28"
-                    data-fontcolor="#333"
+                    data-fontcolor={
+                      theme.studio.settings.common.whiteLabel.dataFontColorBlack
+                    }
                   >
                     {t("BrowserNoCanvasSupport")}
                   </canvas>
@@ -384,7 +398,9 @@ class WhiteLabel extends React.Component {
                       width="172"
                       height="40"
                       data-fontsize="22"
-                      data-fontcolor="#fff"
+                      data-fontcolor={
+                        theme.studio.settings.common.whiteLabel.dataFontColor
+                      }
                     >
                       {t("BrowserNoCanvasSupport")}
                     </canvas>
@@ -394,7 +410,9 @@ class WhiteLabel extends React.Component {
                       width="172"
                       height="40"
                       data-fontsize="22"
-                      data-fontcolor="#fff"
+                      data-fontcolor={
+                        theme.studio.settings.common.whiteLabel.dataFontColor
+                      }
                     >
                       {t("BrowserNoCanvasSupport")}
                     </canvas>
@@ -404,7 +422,9 @@ class WhiteLabel extends React.Component {
                       width="172"
                       height="40"
                       data-fontsize="22"
-                      data-fontcolor="#fff"
+                      data-fontcolor={
+                        theme.studio.settings.common.whiteLabel.dataFontColor
+                      }
                     >
                       {t("BrowserNoCanvasSupport")}
                     </canvas>
@@ -464,7 +484,7 @@ class WhiteLabel extends React.Component {
   }
 }
 
-export default inject(({ setup }) => {
+export default inject(({ setup, auth }) => {
   const {
     common,
     getWhiteLabelLogoText,
@@ -475,6 +495,7 @@ export default inject(({ setup }) => {
   const { logoText, logoSizes: rawSizes, logoUrls } = common.whiteLabel;
 
   return {
+    theme: auth.settingsStore.theme,
     logoText,
     rawSizes,
     logoUrls,

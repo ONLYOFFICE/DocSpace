@@ -13,6 +13,7 @@ import { isMobile } from "react-device-detect";
 import i18n from "./i18n";
 import toastr from "studio/toastr";
 import { checkProtocol } from "../../helpers/files-helpers";
+import Base from "@appserver/components/themes/base";
 
 const StyledPrivacyPage = styled.div`
   margin-top: ${isMobile ? "80px" : "36px"};
@@ -38,7 +39,7 @@ const StyledPrivacyPage = styled.div`
   .privacy-rooms-text-separator {
     width: 70%;
     margin: 28px 0 42px 0;
-    border-bottom: 1px solid #d3d3d3;
+    border-bottom: ${(props) => props.theme.filesPrivateRoom.borderBottom};
   }
 
   .privacy-rooms-install-text {
@@ -60,11 +61,12 @@ const StyledPrivacyPage = styled.div`
 
   .privacy-rooms-link {
     margin-left: 4px;
+    color: ${(props) => props.theme.filesPrivateRoom.linkColor};
   }
 
   .privacy-rooms-text-description {
     margin-top: 28px;
-
+    color: ${(props) => props.theme.filesPrivateRoom.textColor};
     p {
       margin: 0;
     }
@@ -92,6 +94,8 @@ const StyledPrivacyPage = styled.div`
     max-height: 35px;
   }
 `;
+
+StyledPrivacyPage.defaultProps = { theme: Base };
 
 const PrivacyPageComponent = ({ t, history, tReady }) => {
   //   useEffect(() => {
@@ -173,7 +177,6 @@ const PrivacyPageComponent = ({ t, history, tReady }) => {
             className="privacy-rooms-link privacy-rooms-install-text"
             fontSize="16px"
             isHovered
-            color="#116d9d"
             href="https://www.onlyoffice.com/desktop.aspx"
           >
             {t("PrivacyInstall")}
@@ -182,7 +185,6 @@ const PrivacyPageComponent = ({ t, history, tReady }) => {
 
         <Text
           as="div"
-          color="#83888D"
           fontSize="12px"
           textAlign="center"
           className="privacy-rooms-text-description"

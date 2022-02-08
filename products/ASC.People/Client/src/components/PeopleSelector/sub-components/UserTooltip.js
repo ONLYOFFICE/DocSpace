@@ -4,10 +4,11 @@ import Avatar from "@appserver/components/avatar";
 import Text from "@appserver/components/text";
 import StyledUserTooltip from "./StyledUserTooltip";
 
-const UserTooltip = ({ avatarUrl, label, email, position }) => (
-  <StyledUserTooltip>
+const UserTooltip = ({ avatarUrl, label, email, position, theme }) => (
+  <StyledUserTooltip theme={theme}>
     <div className="block-avatar">
       <Avatar
+        theme={theme}
         className="user-avatar"
         size="min"
         role="user"
@@ -19,6 +20,7 @@ const UserTooltip = ({ avatarUrl, label, email, position }) => (
 
     <div className="block-info">
       <Text
+        theme={theme}
         isBold={true}
         fontSize="13px"
         fontWeight={600}
@@ -28,7 +30,8 @@ const UserTooltip = ({ avatarUrl, label, email, position }) => (
         {label}
       </Text>
       <Text
-        color="#A3A9AE"
+        theme={theme}
+        color={theme.peopleSelector.textColor}
         fontSize="13px"
         className="email-text"
         truncate={true}
@@ -36,7 +39,13 @@ const UserTooltip = ({ avatarUrl, label, email, position }) => (
       >
         {email}
       </Text>
-      <Text fontSize="13px" fontWeight={600} truncate={true} title={position}>
+      <Text
+        theme={theme}
+        fontSize="13px"
+        fontWeight={600}
+        truncate={true}
+        title={position}
+      >
         {position}
       </Text>
     </div>

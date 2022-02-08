@@ -53,6 +53,10 @@ const Label = styled.div`
             cursor: pointer;
             background-color: ${(props) =>
               props.theme.tabsContainer.label.hoverBackgroundColor};
+            .title_style {
+              color: ${(props) =>
+                props.theme.tabsContainer.label.title.hoverColor};
+            }
           }
         `}
 

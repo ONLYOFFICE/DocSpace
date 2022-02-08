@@ -70,10 +70,12 @@ class SearchInput extends React.Component {
 
     return (
       <StyledSearchInput
+        theme={this.props.theme}
         className={this.props.className}
         style={this.props.style}
       >
         <InputBlock
+          theme={this.props.theme}
           className="search-input-block"
           ref={this.input}
           id={this.props.id}
@@ -86,8 +88,6 @@ class SearchInput extends React.Component {
           }
           isIconFill={true}
           iconSize={clearButtonSize}
-          iconColor={this.props.iconColor}
-          hoverColor={this.props.hoverIconColor}
           onIconClick={
             !!this.state.inputValue || this.props.showClearButton
               ? this.clearSearch
@@ -132,8 +132,6 @@ SearchInput.propTypes = {
   children: PropTypes.any,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  iconColor: PropTypes.string,
-  hoverIconColor: PropTypes.string,
 };
 
 SearchInput.defaultProps = {
@@ -144,8 +142,6 @@ SearchInput.defaultProps = {
   isDisabled: false,
   refreshTimeout: 1000,
   showClearButton: false,
-  iconColor: "#D0D5DA",
-  hoverIconColor: "#D0D5DA",
 };
 
 export default SearchInput;

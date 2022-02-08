@@ -7,69 +7,89 @@ import { isMobile } from "react-device-detect";
 
 import Text from "@appserver/components/text";
 
+// width, height
 const badgeWithoutText = css`
   position: absolute;
+
   top: ${(props) => props.theme.catalogItem.badgeWithoutText.position};
   right: ${(props) => props.theme.catalogItem.badgeWithoutText.position};
+
   border-radius: 1000px;
+
   background-color: ${(props) =>
     props.theme.catalogItem.badgeWithoutText.backgroundColor};
 
-  @media ${tablet} {
-    min-width: ${(props) =>
-      props.theme.catalogItem.badgeWithoutText.tablet.size};
-    min-height: ${(props) =>
-      props.theme.catalogItem.badgeWithoutText.tablet.size};
-    top: ${(props) => props.theme.catalogItem.badgeWithoutText.tablet.position};
-    right: ${(props) =>
-      props.theme.catalogItem.badgeWithoutText.tablet.position};
-  }
-  ${isMobile &&
-  css`
-    min-width: ${(props) =>
-      props.theme.catalogItem.badgeWithoutText.tablet.size};
-    min-height: ${(props) =>
-      props.theme.catalogItem.badgeWithoutText.tablet.size};
-    top: ${(props) => props.theme.catalogItem.badgeWithoutText.tablet.position};
-    right: ${(props) =>
-      props.theme.catalogItem.badgeWithoutText.tablet.position};
-  `}
+  width: ${(props) => props.theme.catalogItem.badgeWithoutText.size} !important;
+  min-width: ${(props) =>
+    props.theme.catalogItem.badgeWithoutText.size} !important;
+  height: ${(props) =>
+    props.theme.catalogItem.badgeWithoutText.size} !important;
+  min-height: ${(props) =>
+    props.theme.catalogItem.badgeWithoutText.size} !important;
+
+  margin: 0 !important;
 `;
 
 const StyledCatalogItemBadgeWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: ${(props) =>
-    props.showText
-      ? props.theme.catalogItem.badgeWrapper.size
-      : props.theme.catalogItem.badgeWithoutText.size};
-  min-height: ${(props) =>
-    props.showText
-      ? props.theme.catalogItem.badgeWrapper.size
-      : props.theme.catalogItem.badgeWithoutText.size};
-  margin-left: ${(props) =>
-    props.showText && props.theme.catalogItem.badgeWrapper.marginLeft};
   z-index: 3;
-  ${(props) => !props.showText && badgeWithoutText}
+
+  margin-left: ${(props) => props.theme.catalogItem.badgeWrapper.marginLeft};
+  margin-right: ${(props) => props.theme.catalogItem.badgeWrapper.marginRight};
 
   @media ${tablet} {
-    min-width: ${(props) =>
-      props.showText && props.theme.catalogItem.badgeWrapper.tablet.width};
-    min-height: ${(props) =>
-      props.showText && props.theme.catalogItem.badgeWrapper.tablet.height};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: ${(props) => props.theme.catalogItem.badgeWrapper.tablet.width};
+    min-width: ${(props) => props.theme.catalogItem.badgeWrapper.tablet.width};
+    height: ${(props) => props.theme.catalogItem.badgeWrapper.tablet.height};
     margin-right: ${(props) =>
-      props.showText &&
       props.theme.catalogItem.badgeWrapper.tablet.marginRight};
   }
 
   ${isMobile &&
   css`
-    min-width: ${(props) =>
-      props.showText && props.theme.catalogItem.badgeWrapper.tablet.width};
-    min-height: ${(props) =>
-      props.showText && props.theme.catalogItem.badgeWrapper.tablet.height};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: ${(props) => props.theme.catalogItem.badgeWrapper.tablet.width};
+    min-width: ${(props) => props.theme.catalogItem.badgeWrapper.tablet.width};
+    height: ${(props) => props.theme.catalogItem.badgeWrapper.tablet.height};
+    margin-right: ${(props) =>
+      props.theme.catalogItem.badgeWrapper.tablet.marginRight};
   `}
+
+  ${(props) => !props.showText && badgeWithoutText}
+
+  .catalog-item__badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: ${(props) => props.theme.catalogItem.badgeWrapper.size};
+    min-width: ${(props) => props.theme.catalogItem.badgeWrapper.size};
+    height: ${(props) => props.theme.catalogItem.badgeWrapper.size};
+    min-height: ${(props) => props.theme.catalogItem.badgeWrapper.size};
+
+    div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 6px;
+      height: ${(props) => props.theme.catalogItem.badgeWrapper.size};
+
+      p {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        line-height: 16px;
+      }
+    }
+  }
 `;
 
 StyledCatalogItemBadgeWrapper.defaultProps = { theme: Base };
@@ -109,10 +129,18 @@ StyledCatalogItemInitialText.defaultProps = { theme: Base };
 
 const StyledCatalogItemText = styled(Text)`
   width: ${(props) => props.theme.catalogItem.text.width};
+
   margin-left: ${(props) => props.theme.catalogItem.text.marginLeft};
+
   line-height: ${(props) => props.theme.catalogItem.text.lineHeight};
+
   z-index: 1;
+
+  display: flex;
+  align-items: center;
+
   pointer-events: none;
+
   color: ${(props) => props.theme.catalogItem.text.color};
   font-size: ${(props) => props.theme.catalogItem.text.fontSize};
   font-weight: ${(props) => props.theme.catalogItem.text.fontWeight};
@@ -140,15 +168,22 @@ StyledCatalogItemText.defaultProps = { theme: Base };
 
 const StyledCatalogItemImg = styled.div`
   position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   z-index: 1;
+
   pointer-events: none;
+
   height: ${(props) => props.theme.catalogItem.img.svg.height};
 
   svg {
     width: ${(props) => props.theme.catalogItem.img.svg.width};
     height: ${(props) => props.theme.catalogItem.img.svg.height};
     path {
-      fill: #657077 !important;
+      fill: ${(props) => props.theme.catalogItem.img.svg.fill} !important;
     }
   }
 
@@ -172,12 +207,23 @@ const StyledCatalogItemImg = styled.div`
 
 StyledCatalogItemImg.defaultProps = { theme: Base };
 
+const draggingSiblingCss = css`
+  background: ${(props) => props.theme.dragAndDrop.background} !important;
+
+  &:hover {
+    background: ${(props) =>
+      props.theme.dragAndDrop.acceptBackground} !important;
+  }
+`;
+
 const StyledCatalogItemSibling = styled.div`
   position: absolute;
   top: 0;
   left: 0;
+
   width: 100%;
   height: 100%;
+
   min-height: ${(props) => props.theme.catalogItem.container.height};
   max-height: ${(props) => props.theme.catalogItem.container.height};
 
@@ -199,6 +245,8 @@ const StyledCatalogItemSibling = styled.div`
     min-height: ${(props) => props.theme.catalogItem.container.tablet.height};
     max-height: ${(props) => props.theme.catalogItem.container.tablet.height};
   `}
+
+  ${(props) => props.isDragging && draggingSiblingCss}
 `;
 
 StyledCatalogItemSibling.defaultProps = { theme: Base };
@@ -207,20 +255,25 @@ const StyledCatalogItemContainer = styled.div`
   display: flex;
   justify-content: ${(props) => (props.showText ? "space-between" : "center")};
   align-items: center;
+
   min-width: ${(props) => props.theme.catalogItem.container.width};
   min-height: ${(props) => props.theme.catalogItem.container.height};
   max-height: ${(props) => props.theme.catalogItem.container.height};
+
   position: relative;
   box-sizing: border-box;
+
   padding: ${(props) =>
     props.showText && props.theme.catalogItem.container.padding};
   margin-bottom: ${(props) =>
     props.isEndOfBlock && props.theme.catalogItem.container.marginBottom};
+
   cursor: pointer;
 
   @media ${tablet} {
     min-height: ${(props) => props.theme.catalogItem.container.tablet.height};
     max-height: ${(props) => props.theme.catalogItem.container.tablet.height};
+
     padding: ${(props) =>
       props.showText && props.theme.catalogItem.container.tablet.padding};
     margin-bottom: ${(props) =>
@@ -232,6 +285,7 @@ const StyledCatalogItemContainer = styled.div`
   css`
     min-height: ${(props) => props.theme.catalogItem.container.tablet.height};
     max-height: ${(props) => props.theme.catalogItem.container.tablet.height};
+
     padding: ${(props) =>
       props.showText && props.theme.catalogItem.container.tablet.padding};
     margin-bottom: ${(props) =>

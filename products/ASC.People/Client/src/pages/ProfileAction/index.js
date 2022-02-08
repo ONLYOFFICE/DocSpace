@@ -1,32 +1,32 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import PageLayout from '@appserver/common/components/PageLayout';
-import Loaders from '@appserver/common/components/Loaders';
-import toastr from 'studio/toastr';
-import { linkOAuth } from '@appserver/common/api/people';
-import { getAuthProviders } from '@appserver/common/api/settings';
+import React from "react";
+import PropTypes from "prop-types";
+import PageLayout from "@appserver/common/components/PageLayout";
+import Loaders from "@appserver/common/components/Loaders";
+import toastr from "studio/toastr";
+import { linkOAuth } from "@appserver/common/api/people";
+import { getAuthProviders } from "@appserver/common/api/settings";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
   ArticleBodyContent,
-} from '../../components/Article';
+} from "../../components/Article";
 import {
   CatalogHeaderContent,
   CatalogMainButtonContent,
   CatalogBodyContent,
-} from '../../components/Catalog';
-import SectionUserBody from './Section/Body/index';
+} from "../../components/Catalog";
+import SectionUserBody from "./Section/Body/index";
 import {
   SectionHeaderContent,
   // CreateUserForm,
   // UpdateUserForm,
   // AvatarEditorPage,
   // CreateAvatarEditorPage,
-} from './Section';
-import { withTranslation } from 'react-i18next';
+} from "./Section";
+import { withTranslation } from "react-i18next";
 
-import { withRouter } from 'react-router';
-import { inject, observer } from 'mobx-react';
+import { withRouter } from "react-router";
+import { inject, observer } from "mobx-react";
 
 class ProfileAction extends React.Component {
   componentDidMount() {
@@ -43,8 +43,8 @@ class ProfileAction extends React.Component {
     } = this.props;
     const { userId } = match.params;
     setFirstLoad(false);
-    this.documentElement = document.getElementsByClassName('hidingHeader');
-    setDocumentTitle(t('ProfileAction'));
+    this.documentElement = document.getElementsByClassName("hidingHeader");
+    setDocumentTitle(t("ProfileAction"));
     if (isEdit) {
       setIsEditingForm(false);
     }
@@ -55,7 +55,7 @@ class ProfileAction extends React.Component {
 
     if (!this.loaded && this.documentElement) {
       for (var i = 0; i < this.documentElement.length; i++) {
-        this.documentElement[i].style.transition = 'none';
+        this.documentElement[i].style.transition = "none";
       }
     }
   }
@@ -71,7 +71,7 @@ class ProfileAction extends React.Component {
 
     if (this.loaded && this.documentElement) {
       for (var i = 0; i < this.documentElement.length; i++) {
-        this.documentElement[i].style.transition = '';
+        this.documentElement[i].style.transition = "";
       }
     }
   }
@@ -81,7 +81,7 @@ class ProfileAction extends React.Component {
   }
 
   render() {
-    console.log('ProfileAction render');
+    console.log("ProfileAction render");
 
     this.loaded = false;
     const { profile, match, isMy, tReady, showCatalog, isAdmin } = this.props;
@@ -154,7 +154,12 @@ ProfileAction.propTypes = {
 export default withRouter(
   inject(({ auth, peopleStore }) => {
     const { setDocumentTitle } = auth;
-    const { usersStore, editingFormStore, targetUserStore, loadingStore } = peopleStore;
+    const {
+      usersStore,
+      editingFormStore,
+      targetUserStore,
+      loadingStore,
+    } = peopleStore;
     const { setProviders } = usersStore;
     const { isEdit, setIsEditingForm } = editingFormStore;
     const {
@@ -177,5 +182,5 @@ export default withRouter(
       isAdmin: auth.isAdmin,
       showCatalog: auth.settingsStore.showCatalog,
     };
-  })(withTranslation(['ProfileAction', 'Common'])(observer(ProfileAction))),
+  })(withTranslation(["ProfileAction", "Common"])(observer(ProfileAction)))
 );

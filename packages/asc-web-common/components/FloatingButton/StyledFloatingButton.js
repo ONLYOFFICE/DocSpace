@@ -1,14 +1,14 @@
+import Base from "@appserver/components/themes/base";
 import styled, { keyframes, css } from "styled-components";
-
-const color = "#2DA7DB";
 
 const StyledCircleWrap = styled.div`
   width: 48px;
   height: 48px;
-  background: ${(props) => (props.color ? props.color : "#fff")};
+  background: ${(props) =>
+    props.color ? props.color : props.theme.floatingButton.backgroundColor};
   border-radius: 50%;
   cursor: pointer;
-  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
+  box-shadow: ${(props) => props.theme.floatingButton.boxShadow};
 `;
 
 const rotate360 = keyframes`
@@ -19,6 +19,8 @@ const rotate360 = keyframes`
     transform: rotate(360deg);
   }
 `;
+
+StyledCircleWrap.defaultProps = { theme: Base };
 
 const StyledCircle = styled.div`
   .circle__mask,
@@ -59,7 +61,7 @@ const StyledCircle = styled.div`
 
   .circle__mask .circle__fill {
     clip: rect(0px, 21px, 42px, 0px);
-    background-color: ${color};
+    background-color: ${(props) => props.theme.floatingButton.color};
   }
 
   .circle__mask.circle__full {
@@ -81,7 +83,8 @@ const StyledFloatingButton = styled.div`
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: ${(props) => (props.color ? props.color : "#fff")};
+  background: ${(props) =>
+    props.color ? props.color : props.theme.floatingButton.backgroundColor};
   text-align: center;
   margin: 5px;
   position: absolute;
@@ -90,12 +93,16 @@ const StyledFloatingButton = styled.div`
   justify-content: center;
 `;
 
+StyledFloatingButton.defaultProps = { theme: Base };
+
 const IconBox = styled.div`
   // padding-top: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
 `;
+
+IconBox.defaultProps = { theme: Base };
 
 const StyledAlertIcon = styled.div`
   position: absolute;

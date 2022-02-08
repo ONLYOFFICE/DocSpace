@@ -322,7 +322,7 @@ class LanguageAndTimeZone extends React.Component {
   };
 
   render() {
-    const { t, cultureNames } = this.props;
+    const { t, theme, cultureNames } = this.props;
     const {
       isLoadedData,
       language,
@@ -435,6 +435,7 @@ export default inject(({ auth, setup }) => {
   const { setLanguageAndTime } = setup;
 
   return {
+    theme: auth.settingsStore.theme,
     user,
     portalLanguage: culture,
     portalTimeZoneId: timezone,

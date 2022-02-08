@@ -28,6 +28,7 @@ const StyledHeader = styled.div`
 `;
 
 const HeaderContainer = ({
+  theme,
   culture,
   trialMode,
   expiresDate,
@@ -67,7 +68,7 @@ const HeaderContainer = ({
       </Text>
       <Text
         className="payments-header-additional_support"
-        color="#C96C27"
+        color={theme.studio.paymentsEnterprise.headerColor}
         fontWeight="600"
       >
         {t("ExpiryPaidLicense")} {licenseDateString}
@@ -96,9 +97,10 @@ HeaderContainer.propTypes = {
 };
 
 export default inject(({ auth, payments }) => {
-  const { organizationName, culture } = auth.settingsStore;
+  const { organizationName, culture, theme } = auth.settingsStore;
   const { expiresDate, trialMode } = payments;
   return {
+    theme,
     organizationName,
     culture,
     expiresDate,

@@ -1,15 +1,26 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 import {
   StyledContainer,
   StyledBlock,
   StyledRectangleLoader,
-} from './StyledDocumentCatalogFolderLoader';
-import { inject, observer } from 'mobx-react';
+} from "./StyledDocumentCatalogFolderLoader";
+import { inject, observer } from "mobx-react";
 
-const DocumentCatalogFolderLoader = ({ id, className, style, showText, ...rest }) => {
+const DocumentCatalogFolderLoader = ({
+  id,
+  className,
+  style,
+  showText,
+  ...rest
+}) => {
   return (
-    <StyledContainer id={id} className={className} style={style} showText={showText}>
+    <StyledContainer
+      id={id}
+      className={className}
+      style={style}
+      showText={showText}
+    >
       <StyledBlock>
         <StyledRectangleLoader {...rest} />
         <StyledRectangleLoader {...rest} />
@@ -43,6 +54,6 @@ DocumentCatalogFolderLoader.defaultProps = {
   style: undefined,
 };
 
-export default inject(({ auth }) => ({ showText: auth.settingsStore.showText }))(
-  observer(DocumentCatalogFolderLoader),
-);
+export default inject(({ auth }) => ({
+  showText: auth.settingsStore.showText,
+}))(observer(DocumentCatalogFolderLoader));

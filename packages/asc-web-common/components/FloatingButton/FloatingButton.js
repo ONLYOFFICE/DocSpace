@@ -43,7 +43,7 @@ const FloatingButton = ({ id, className, style, ...rest }) => {
           <div className="circle__fill"></div>
         </div>
 
-        <StyledFloatingButton color={color}>
+        <StyledFloatingButton className="circle__background" color={color}>
           <IconBox>
             {icon == "upload" ? (
               <ButtonUploadIcon />

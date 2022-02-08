@@ -17,6 +17,162 @@ import { inject, observer } from "mobx-react";
 import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu";
 import Navigation from "@appserver/common/components/Navigation";
 
+const StyledContainer = styled.div`
+  .table-container_group-menu {
+    ${(props) =>
+      props.viewAs === "table"
+        ? css`
+            margin: 0px -20px;
+            width: calc(100% + 44px);
+          `
+        : css`
+            margin: 0px -24px;
+            width: calc(100% + 48px);
+          `}
+
+    @media ${tablet} {
+      margin: 0 -16px;
+      width: calc(100% + 32px);
+    }
+  }
+`;
+// .header-container {
+//   position: relative;
+//   ${(props) =>
+//     props.title &&
+//     css`
+//       display: grid;
+//       grid-template-columns: ${(props) =>
+//         props.isRootFolder
+//           ? "auto auto 1fr"
+//           : props.canCreate
+//           ? "auto auto auto auto 1fr"
+//           : "auto auto auto 1fr"};
+
+//       @media ${tablet} {
+//         grid-template-columns: ${(props) =>
+//           props.isRootFolder
+//             ? "1fr auto"
+//             : props.canCreate
+//             ? "auto 1fr auto auto"
+//             : "auto 1fr auto"};
+//         ${(props) => !props.isLoading && "top: 7px;"}
+//       }
+//     `}
+//   align-items: center;
+//   max-width: calc(100vw - 32px);
+
+//   @media ${tablet} {
+//     .headline-header {
+//       margin-left: -1px;
+//     }
+//   }
+//   .arrow-button {
+//     margin-right: 15px;
+//     min-width: 17px;
+
+//     @media ${tablet} {
+//       padding: 8px 0 8px 8px;
+//       margin-left: -8px;
+//       margin-right: 16px;
+//     }
+//   }
+
+//   .add-button {
+//     margin-bottom: -1px;
+//     margin-left: 16px;
+
+//     @media ${tablet} {
+//       margin-left: auto;
+
+//       & > div:first-child {
+//         padding: 8px 8px 8px 8px;
+//         margin-right: -8px;
+//       }
+//     }
+//   }
+
+//   .option-button {
+//     margin-bottom: -1px;
+
+//     @media (min-width: 1024px) {
+//       margin-left: 8px;
+//     }
+
+//     @media ${tablet} {
+//       & > div:first-child {
+//         padding: 8px 8px 8px 8px;
+//         margin-right: -8px;
+//       }
+//     }
+//   }
+
+//   .trash-button {
+//     margin-bottom: -1px;
+
+//     @media (min-width: 1024px) {
+//       margin-left: 8px;
+//     }
+
+//     @media ${tablet} {
+//       & > div:first-child {
+//         margin-right: -8px;
+//       }
+//     }
+//   }
+// }
+
+// .group-button-menu-container {
+//   margin: 0 -16px;
+//   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+//   ${isMobile &&
+//   css`
+//     position: sticky;
+//   `}
+
+//   ${(props) =>
+//     !props.isTabletView
+//       ? props.width &&
+//         isMobile &&
+//         css`
+//           width: ${props.width + 40 + "px"};
+//         `
+//       : props.width &&
+//         isMobile &&
+//         css`
+//           width: ${props.width + 32 + "px"};
+//         `}
+
+//   @media ${tablet} {
+//     padding-bottom: 0;
+//     ${!isMobile &&
+//     css`
+//       height: 56px;
+//     `}
+//     & > div:first-child {
+//       ${(props) =>
+//         !isMobile &&
+//         props.width &&
+//         css`
+//           width: ${props.width + 16 + "px"};
+//         `}
+
+//       position: absolute;
+//       ${(props) =>
+//         !props.isDesktop &&
+//         css`
+//           top: 48px;
+//         `}
+//       z-index: 180;
+//     }
+//   }
+
+//   @media ${desktop} {
+//     margin: 0 -24px;
+//   }
+// }
+
 class SectionHeaderContent extends React.Component {
   constructor(props) {
     super(props);
@@ -280,28 +436,67 @@ class SectionHeaderContent extends React.Component {
       viewAs,
       isRecycleBinFolder,
       isEmptyFilesList,
+      isHeaderVisible,
+      isHeaderChecked,
+      isHeaderIndeterminate,
+      showText,
     } = this.props;
     const menuItems = this.getMenuItems();
     const isLoading = !title || !tReady;
     const headerMenu = getHeaderMenu(t);
 
     return (
-      <Navigation
-        isRootFolder={isRootFolder}
-        canCreate={canCreate}
-        title={title}
-        isDesktop={isDesktop}
-        isTabletView={isTabletView}
-        personal={personal}
-        tReady={tReady}
-        menuItems={menuItems}
-        navigationItems={navigationPath}
-        getContextOptionsPlus={this.getContextOptionsPlus}
-        getContextOptionsFolder={this.getContextOptionsFolder}
-        onClose={this.onClose}
-        onClickFolder={this.onClickFolder}
-        onBackToParentFolder={this.onBackToParentFolder}
-      />
+      <Consumer>
+        {(context) => (
+          <StyledContainer
+            width={context.sectionWidth}
+            isRootFolder={isRootFolder}
+            canCreate={canCreate}
+            title={title}
+            isDesktop={isDesktop}
+            isTabletView={isTabletView}
+            isLoading={isLoading}
+            viewAs={viewAs}
+          >
+            {isHeaderVisible ? (
+              <TableGroupMenu
+                checkboxOptions={menuItems}
+                onChange={this.onChange}
+                isChecked={isHeaderChecked}
+                isIndeterminate={isHeaderIndeterminate}
+                headerMenu={headerMenu}
+              />
+            ) : (
+              <div className="header-container">
+                {isLoading ? (
+                  <Loaders.SectionHeader />
+                ) : (
+                  <Navigation
+                    showText={showText}
+                    isRootFolder={isRootFolder}
+                    canCreate={canCreate}
+                    title={title}
+                    isDesktop={isDesktop}
+                    isTabletView={isTabletView}
+                    personal={personal}
+                    tReady={tReady}
+                    menuItems={menuItems}
+                    navigationItems={navigationPath}
+                    getContextOptionsPlus={this.getContextOptionsPlus}
+                    getContextOptionsFolder={this.getContextOptionsFolder}
+                    onClose={this.onClose}
+                    onClickFolder={this.onClickFolder}
+                    isRecycleBinFolder={isRecycleBinFolder}
+                    isEmptyFilesList={isEmptyFilesList}
+                    clearTrash={this.onEmptyTrashAction}
+                    onBackToParentFolder={this.onBackToParentFolder}
+                  />
+                )}
+              </div>
+            )}
+          </StyledContainer>
+        )}
+      </Consumer>
     );
   }
 }
@@ -350,6 +545,8 @@ export default inject(
     const { deleteAction, downloadAction, getHeaderMenu } = filesActionsStore;
 
     return {
+      showText: auth.settingsStore.showText,
+
       isDesktop: auth.settingsStore.isDesktopClient,
       isRootFolder: selectedFolderStore.parentId === 0,
       title: selectedFolderStore.title,

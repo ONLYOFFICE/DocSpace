@@ -65,7 +65,7 @@ const StyledFileInput = styled.div`
 
     position: absolute;
     right: 0;
-    background: white;
+    background: ${(props) => props.theme.fileInput.icon.background};
     width: ${(props) => widthIconStyle(props)};
 
     height: ${(props) => heightIconStyle(props)};
