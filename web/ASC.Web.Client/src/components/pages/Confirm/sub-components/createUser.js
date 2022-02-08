@@ -264,7 +264,7 @@ const Confirm = (props) => {
   };
 
   const authCallback = (profile) => {
-    const { t, defaultPage } = this.props;
+    const { defaultPage } = props;
     const { FirstName, LastName, EMail, Serialized } = profile;
 
     console.log(profile);
