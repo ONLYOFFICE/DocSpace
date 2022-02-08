@@ -30,6 +30,12 @@ import {
 import { getSettings } from "@appserver/common/api/settings";
 import { getUser } from "@appserver/common/api/people";
 
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useTranslation } from "next-i18next";
+
+//import { getDefaultFileName } from "@appserver/files/src/helpers/utils";
+import SharingDialog from "@appserver/files/src/components/panels/SharingDialog";
+
 const LoaderComponent = (
   <Loader
     type="rombs"
@@ -59,20 +65,7 @@ const loadScript = (url, id, onLoad, onError) => {
   }
 };
 
-const getDefaultFileName = (format) => {
-  switch (format) {
-    case "docx":
-      return "SSR New Document";
-    case "xlsx":
-      return "SSR New Spreadsheet";
-    case "pptx":
-      return "SSR New Presentation";
-    case "docxf":
-      return "SSR New MasterForm";
-    default:
-      return " SSR New Folder";
-  }
-}; // TODO:  i18n
+// TODO:  i18n
 
 const onSDKInfo = (event) => {
   console.log(
@@ -181,7 +174,42 @@ export default function Home({
   const [isVisible, setIsVisible] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [documentTitle, setNewDocumentTitle] = useState("Loading...");
-  const [faviconHref, setFaviconHref] = useState("/favicon.ico");
+  const [faviconHref, setFaviconHref] = useState("/favicon.ico"); // try without state
+
+  useEffect(() => {
+    console.log("useEffect error catch", error);
+
+    if (error) {
+      error?.unAuthorized &&
+        error?.redirectPath &&
+        (window.location.href = error?.redirectPath);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (config) {
+      console.log("useEffect meta change", config);
+      setFavicon(config?.documentType);
+      setDocumentTitle(config?.document?.title);
+    }
+  }, []);
+
+  const { t } = useTranslation("Editor");
+
+  const getDefaultFileName = (format) => {
+    switch (format) {
+      case "docx":
+        return t("NewDocument");
+      case "xlsx":
+        return t("NewSpreadsheet");
+      case "pptx":
+        return t("NewPresentation");
+      case "docxf":
+        return t("NewMasterForm");
+      default:
+        return t("NewFolder");
+    }
+  };
 
   const setFavicon = (documentType) => {
     const favicon = document.getElementById("favicon");
@@ -200,7 +228,6 @@ export default function Home({
       default:
         break;
     }
-    console.log("setFavicon", icon, documentType, `${homepage}/images/${icon}`);
     if (icon) setFaviconHref(`${homepage}/images/${icon}`);
   };
 
@@ -485,7 +512,6 @@ export default function Home({
 
       if (isMobile) {
         config.type = "mobile";
-        // not sure what is needed, as it arrives in the config
       }
 
       let goBack;
@@ -501,7 +527,7 @@ export default function Home({
         goBack = {
           blank: true,
           requestClose: false,
-          text: "SSR TEST", ///i18n.t("FileLocation"), TODO: connect i18
+          text: t("FileLocation"),
           url: `${combineUrl(filesUrl, `/filter?${urlFilter}`)}`,
         };
       }
@@ -610,24 +636,6 @@ export default function Home({
     }
   };
 
-  useEffect(() => {
-    console.log("useEffect error catch", error);
-
-    if (error) {
-      error?.unAuthorized &&
-        error?.redirectPath &&
-        (window.location.href = error?.redirectPath);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (config) {
-      console.log("useEffect meta change", config);
-      setFavicon(config?.documentType);
-      setDocumentTitle(config?.document?.title);
-    }
-  }, []);
-
   return (
     <div style={{ height: "100vh" }}>
       <Head>
@@ -656,7 +664,7 @@ export default function Home({
   );
 }
 
-export async function getServerSideProps({ params, req, query }) {
+export async function getServerSideProps({ params, req, query, locale }) {
   const { headers, url } = req;
   const { version, desktop: isDesktop } = query;
   let error = null;
@@ -671,7 +679,7 @@ export async function getServerSideProps({ params, req, query }) {
 
     if (!fileId) {
       return { props: { needLoader: true } };
-    } // TODO: t()
+    }
 
     const doc = query?.doc || null; // TODO: need to check
     const view = url.indexOf("action=view") !== -1;
@@ -681,6 +689,7 @@ export async function getServerSideProps({ params, req, query }) {
 
     const successAuth = !!user;
     const personal = settings?.personal;
+    const { cultureName } = user;
 
     if (!successAuth && !doc) {
       error = {
@@ -698,8 +707,6 @@ export async function getServerSideProps({ params, req, query }) {
       getDocServiceUrl(),
       getFileInfo(fileId),
     ]);
-
-    const actionLink = config?.editorConfig?.actionLink;
 
     if (successAuth) {
       try {
@@ -743,6 +750,8 @@ export async function getServerSideProps({ params, req, query }) {
       config.editorConfig.mode = "view";
     }
 
+    const actionLink = config?.editorConfig?.actionLink;
+
     return {
       props: {
         fileInfo,
@@ -758,6 +767,7 @@ export async function getServerSideProps({ params, req, query }) {
         doc,
         fileId,
         needInitDesktop,
+        ...(await serverSideTranslations(cultureName || locale, ["Editor"])),
       },
     };
   } catch (err) {
