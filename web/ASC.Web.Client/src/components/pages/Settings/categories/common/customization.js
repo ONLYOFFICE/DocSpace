@@ -254,7 +254,7 @@ class Customization extends React.Component {
           </Text>
           <Box marginProp="16px 0 0 0">
             <Link
-              color={theme.studio.settings.common.linkColorHelp}
+              // color={theme.studio.settings.common.linkColorHelp}
               target="_blank"
               isHovered={true}
               href={helpUrlCommonSettings}
