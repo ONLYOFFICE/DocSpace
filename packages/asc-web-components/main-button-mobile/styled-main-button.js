@@ -93,8 +93,10 @@ const StyledDropDown = styled(DropDown)`
   }
 
   .is-separator {
-    height: 1px;
-    width: 100%;
+    height: 1px !important;
+    width: calc(100% - 48px);
+    padding: 0 !important;
+    margin: 12px 24px !important;
     background-color: ${(props) =>
       props.theme.mainButtonMobile.dropDown.separatorBackground};
   }

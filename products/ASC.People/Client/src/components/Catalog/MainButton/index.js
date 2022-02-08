@@ -2,7 +2,6 @@ import React from "react";
 //import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import MainButton from "@appserver/components/main-button";
-import DropDownItem from "@appserver/components/drop-down-item";
 import InviteDialog from "./../../dialogs/InviteDialog/index";
 import { withTranslation } from "react-i18next";
 import toastr from "studio/toastr";
@@ -13,7 +12,11 @@ import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import withLoader from "../../../HOCs/withLoader";
 import { isMobile } from "react-device-detect";
-import { isMobile as isMobileUtils } from "@appserver/components/utils/device";
+import {
+  isMobile as isMobileUtils,
+  isTablet as isTabletUtils,
+} from "@appserver/components/utils/device";
+import MobileView from "./MobileView";
 
 class CatalogMainButtonContent extends React.Component {
   constructor(props) {
@@ -71,71 +74,89 @@ class CatalogMainButtonContent extends React.Component {
       userCaption,
       guestCaption,
       groupCaption,
+      sectionWidth,
     } = this.props;
 
     const { dialogVisible } = this.state;
 
+    const menuModel = [
+      {
+        key: "create-user",
+        icon: combineUrl(
+          AppServerConfig.proxyURL,
+          homepage,
+          "/images/add.employee.react.svg"
+        ),
+        label: userCaption,
+        onClick: this.goToEmployeeCreate,
+      },
+      {
+        key: "create-guest",
+        icon: combineUrl(
+          AppServerConfig.proxyURL,
+          homepage,
+          "/images/add.guest.react.svg"
+        ),
+        label: guestCaption,
+        onClick: this.goToGuestCreate,
+      },
+      {
+        key: "create-group",
+        icon: combineUrl(
+          AppServerConfig.proxyURL,
+          homepage,
+          "/images/add.department.react.svg"
+        ),
+        label: groupCaption,
+        onClick: this.goToGroupCreate,
+      },
+      {
+        key: "separator",
+        isSeparator: true,
+      },
+      {
+        key: "invite-link",
+        icon: combineUrl(
+          AppServerConfig.proxyURL,
+          "/static/images/invitation.link.react.svg"
+        ),
+        label: t("Translations:InviteLinkTitle"),
+        onClick: this.onInvitationDialogClick,
+      },
+      /* {
+        icon: combineUrl(
+          AppServerConfig.proxyURL,
+          "/static/images/plane.react.svg"
+        ),
+        label: t("SendInvitesAgain"),
+        onClick: this.onNotImplementedClick.bind(this, t("SendInvitesAgain")),
+      },
+      {
+        icon: combineUrl(
+          AppServerConfig.proxyURL,
+          "/static/images/import.react.svg"
+        ),
+        label: t("ImportPeople"),
+        onClick: this.onImportClick,
+      }, */
+    ];
+
+    console.log(sectionWidth);
+
     return isAdmin ? (
       <>
-        <MainButton
-          isDisabled={false}
-          isDropdown={true}
-          text={t("Common:Actions")}
-        >
-          <DropDownItem
-            icon={combineUrl(
-              AppServerConfig.proxyURL,
-              homepage,
-              "/images/add.employee.react.svg"
-            )}
-            label={userCaption}
-            onClick={this.goToEmployeeCreate}
+        {isMobile || isMobileUtils() || isTabletUtils() ? (
+          <MobileView actionOptions={menuModel} sectionWidth={sectionWidth} />
+        ) : (
+          <MainButton
+            isDisabled={false}
+            isDropdown={true}
+            text={t("Common:Actions")}
+            model={menuModel}
+            className="main-button_invitation-link"
           />
+        )}
 
-          <DropDownItem
-            icon={combineUrl(
-              AppServerConfig.proxyURL,
-              homepage,
-              "/images/add.guest.react.svg"
-            )}
-            label={guestCaption}
-            onClick={this.goToGuestCreate}
-          />
-          <DropDownItem
-            icon={combineUrl(
-              AppServerConfig.proxyURL,
-              homepage,
-              "/images/add.department.react.svg"
-            )}
-            label={groupCaption}
-            onClick={this.goToGroupCreate}
-          />
-          <DropDownItem isSeparator />
-          <DropDownItem
-            icon={combineUrl(
-              AppServerConfig.proxyURL,
-              "/static/images/invitation.link.react.svg"
-            )}
-            label={t("Translations:InviteLinkTitle")}
-            onClick={this.onInvitationDialogClick}
-          />
-          {/* <DropDownItem
-              icon="images/plane.react.svg"
-              label={t("SendInvitesAgain")}
-              onClick={this.onNotImplementedClick.bind(this, t("SendInvitesAgain"))}
-            /> */}
-          {false && (
-            <DropDownItem
-              icon={combineUrl(
-                AppServerConfig.proxyURL,
-                homepage,
-                "/images/import.react.svg"
-              )}
-              label={t("ImportPeople")}
-              onClick={this.onImportClick}
-            />
-          )}
-        </MainButton>
         {dialogVisible && (
           <InviteDialog
             visible={dialogVisible}

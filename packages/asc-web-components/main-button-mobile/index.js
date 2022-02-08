@@ -136,9 +136,13 @@ const MainButtonMobile = (props) => {
   };
 
   React.useEffect(() => {
-    const openProgressOptions = progressOptions.filter((option) => option.open);
+    if (progressOptions) {
+      const openProgressOptions = progressOptions.filter(
+        (option) => option.open
+      );
 
-    setIsUploading(openProgressOptions.length > 0);
+      setIsUploading(openProgressOptions.length > 0);
+    }
   }, [progressOptions]);
 
   const renderItems = () => {
@@ -155,7 +159,9 @@ const MainButtonMobile = (props) => {
               <StyledDropDownItem
                 key={option.key}
                 label={option.label}
-                className={option.className}
+                className={`${option.className} ${
+                  option.isSeparator && "is-separator"
+                }`}
                 onClick={optionOnClickAction}
                 icon={option.icon ? option.icon : ""}
                 action={option.action}
