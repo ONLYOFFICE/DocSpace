@@ -62,11 +62,18 @@ builder.Host.ConfigureServices((hostContext, services) =>
     var redisConfiguration = hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>();
     var kafkaConfiguration = hostContext.Configuration.GetSection("kafka").Get<KafkaSettings>();
 
-    if (kafkaConfiguration != null) diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-
-    else if (redisConfiguration != null) diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
-
-    else diHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
+    if (kafkaConfiguration != null)
+    {
+        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+    }
+    else if (redisConfiguration != null)
+    {
+        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+    }
+    else
+    {
+        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
+    }
 
     services.AddHostedService<ClearEventsService>();
     diHelper.TryAdd<ClearEventsService>();

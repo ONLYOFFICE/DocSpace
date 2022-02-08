@@ -62,7 +62,9 @@ public class ClearEventsService : IHostedService, IDisposable
         var handle = new AutoResetEvent(false);
 
         if ((bool)!(_timer?.Dispose(handle)))
+        {
             throw new Exception("Timer already disposed");
+        }
 
         handle.WaitOne();
     }
@@ -108,7 +110,10 @@ public class ClearEventsService : IHostedService, IDisposable
 
             ids = ae.Select(r => r.ef).ToList();
 
-            if (!ids.Any()) return;
+            if (!ids.Any())
+            {
+                return;
+            }
 
             table.RemoveRange(ids);
             ef.SaveChanges();
