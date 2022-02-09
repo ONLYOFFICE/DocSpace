@@ -57,8 +57,7 @@ namespace ASC.Core
                 .ForMember(src => src.CategoryId, opt => opt.NullSubstitute(Guid.Empty))
                 .ForMember(src => src.ParentId, opt => opt.NullSubstitute(Guid.Empty));
 
-            profile.CreateMap<GroupInfo, Group>()
-                .ForMember(src => src.CategoryId, opt => opt.NullSubstitute(Guid.Empty));
+            profile.CreateMap<GroupInfo, Group>();
         }
     }
 }
