@@ -9,7 +9,7 @@ export const LoginContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 120px auto 0 auto;
+  margin: 56px auto 0 auto;
   max-width: 960px;
 
   .login-tooltip {
