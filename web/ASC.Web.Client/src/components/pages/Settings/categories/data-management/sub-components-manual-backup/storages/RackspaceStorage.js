@@ -6,7 +6,7 @@ import RackspaceSettings from "../../consumer-storage-settings/RackspaceSettings
 class RackspaceStorage extends React.Component {
   constructor(props) {
     super(props);
-    const { availableStorage, selectedId } = this.props;
+    const { selectedStorage } = this.props;
 
     const formSettings = {};
     this.namesArray = RackspaceSettings.formNames();
@@ -16,8 +16,7 @@ class RackspaceStorage extends React.Component {
       formSettings,
       formErrors: {},
     };
-    this.isDisabled =
-      availableStorage[selectedId] && !availableStorage[selectedId].isSet;
+    this.isDisabled = selectedStorage && !selectedStorage.isSet;
   }
 
   onChange = (event) => {
@@ -51,13 +50,7 @@ class RackspaceStorage extends React.Component {
   };
   render() {
     const { formSettings, formErrors } = this.state;
-    const {
-      t,
-      isLoadingData,
-      isMaxProgress,
-      selectedId,
-      availableStorage,
-    } = this.props;
+    const { t, isLoadingData, isMaxProgress, selectedStorage } = this.props;
 
     return (
       <>
@@ -66,7 +59,7 @@ class RackspaceStorage extends React.Component {
           onChange={this.onChange}
           isLoadingData={isLoadingData}
           isError={formErrors}
-          selectedStorage={availableStorage[selectedId]}
+          selectedStorage={selectedStorage}
           t={t}
         />
 

@@ -4,30 +4,22 @@ import SelectFolderInput from "files/SelectFolderInput";
 import Button from "@appserver/components/button";
 import { getFromSessionStorage } from "../../../utils";
 
-let selectedFolderPathFromSessionStorage = "";
-let selectedFolderFromSessionStorage = "";
+let folderPath = "";
+let folder = "";
 class DocumentsModule extends React.Component {
   constructor(props) {
     super(props);
 
-    selectedFolderPathFromSessionStorage = getFromSessionStorage(
-      "selectedFolderPath"
-    );
-    selectedFolderFromSessionStorage = getFromSessionStorage("selectedFolder");
+    folderPath = getFromSessionStorage("LocalCopyPath");
+    folder = getFromSessionStorage("LocalCopyFolder");
 
     this.state = {
-      isLoadingData: false,
-      selectedFolder: selectedFolderFromSessionStorage || "",
+      isStartCopy: false,
+      selectedFolder: folder || "",
       isPanelVisible: false,
-      folderPath: selectedFolderPathFromSessionStorage || "",
+      folderPath: folderPath || "",
     };
   }
-
-  onSetLoadingData = (isLoading) => {
-    this.setState({
-      isLoadingData: isLoading,
-    });
-  };
 
   onSelectFolder = (folderId) => {
     this.setState({
@@ -47,17 +39,31 @@ class DocumentsModule extends React.Component {
     });
   };
 
-  onMakeCopy = () => {
+  onMakeCopy = async () => {
     const { onMakeCopy } = this.props;
     const { selectedFolder } = this.state;
 
-    onMakeCopy(selectedFolder, "documents", "0", "folderId");
+    this.setState({
+      isStartCopy: true,
+    });
+
+    await onMakeCopy(selectedFolder, "Documents", "0", "folderId");
+
+    this.setState({
+      isStartCopy: false,
+    });
   };
 
   render() {
-    const { isMaxProgress, t, isCopyingLocal } = this.props;
-    const { isPanelVisible, isLoadingData, folderPath } = this.state;
+    const { isMaxProgress, t } = this.props;
+    const {
+      isPanelVisible,
+      isStartCopy,
+      folderPath,
+      selectedFolder,
+    } = this.state;
 
+    const isModuleDisabled = !isMaxProgress || isStartCopy || !selectedFolder;
     return (
       <>
         <SelectFolderInput
@@ -65,10 +71,9 @@ class DocumentsModule extends React.Component {
           name={"common"}
           onClose={this.onClose}
           onClickInput={this.onClickInput}
-          onSetLoadingData={this.onSetLoadingData}
           folderPath={folderPath}
           isPanelVisible={isPanelVisible}
-          isSavingProcess={isCopyingLocal}
+          isSavingProcess={isModuleDisabled}
           foldersType="common"
           withoutProvider
           fontSizeInput={"13px"}
@@ -79,7 +84,7 @@ class DocumentsModule extends React.Component {
             label={t("MakeCopy")}
             onClick={this.onMakeCopy}
             primary
-            isDisabled={!isMaxProgress || isLoadingData}
+            isDisabled={isModuleDisabled}
             size="medium"
           />
           {!isMaxProgress && (

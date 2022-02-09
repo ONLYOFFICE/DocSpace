@@ -5,7 +5,7 @@ import AmazonSettings from "../../consumer-storage-settings/AmazonSettings";
 class AmazonStorage extends React.Component {
   constructor(props) {
     super(props);
-    const { availableStorage, selectedId } = this.props;
+    const { selectedStorage } = this.props;
 
     const formSettings = {};
 
@@ -19,8 +19,7 @@ class AmazonStorage extends React.Component {
       formErrors: {},
     };
 
-    this.isDisabled =
-      availableStorage[selectedId] && !availableStorage[selectedId].isSet;
+    this.isDisabled = selectedStorage && !selectedStorage.isSet;
   }
 
   onChange = (event) => {
@@ -58,13 +57,7 @@ class AmazonStorage extends React.Component {
   };
   render() {
     const { formSettings, formErrors } = this.state;
-    const {
-      t,
-      isLoadingData,
-      isMaxProgress,
-      availableStorage,
-      selectedId,
-    } = this.props;
+    const { t, isLoadingData, isMaxProgress, selectedStorage } = this.props;
 
     return (
       <>
@@ -73,7 +66,7 @@ class AmazonStorage extends React.Component {
           onChange={this.onChange}
           isLoadingData={isLoadingData}
           isError={formErrors}
-          selectedStorage={availableStorage[selectedId]}
+          selectedStorage={selectedStorage}
           t={t}
         />
 

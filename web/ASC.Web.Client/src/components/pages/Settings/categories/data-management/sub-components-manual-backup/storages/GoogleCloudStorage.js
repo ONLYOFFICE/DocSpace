@@ -6,7 +6,7 @@ import GoogleCloudSettings from "../../consumer-storage-settings/GoogleCloudSett
 class GoogleCloudStorage extends React.Component {
   constructor(props) {
     super(props);
-
+    const { selectedStorage } = this.props;
     const formSettings = {};
     this.namesArray = GoogleCloudSettings.formNames();
     this.namesArray.forEach((elem) => (formSettings[elem] = ""));
@@ -15,6 +15,8 @@ class GoogleCloudStorage extends React.Component {
       formSettings,
       formErrors: {},
     };
+
+    this.isDisabled = selectedStorage && !selectedStorage.isSet;
   }
 
   onChange = (event) => {
@@ -48,13 +50,7 @@ class GoogleCloudStorage extends React.Component {
   };
   render() {
     const { formSettings, formErrors } = this.state;
-    const {
-      t,
-      isLoadingData,
-      isMaxProgress,
-      availableStorage,
-      selectedId,
-    } = this.props;
+    const { t, isLoadingData, isMaxProgress, selectedStorage } = this.props;
 
     return (
       <>
@@ -62,7 +58,7 @@ class GoogleCloudStorage extends React.Component {
           formSettings={formSettings}
           onChange={this.onChange}
           isError={formErrors}
-          selectedStorage={availableStorage[selectedId]}
+          selectedStorage={selectedStorage}
           isLoadingData={isLoadingData}
         />
 
@@ -71,7 +67,7 @@ class GoogleCloudStorage extends React.Component {
             label={t("MakeCopy")}
             onClick={this.onMakeCopy}
             primary
-            isDisabled={!isMaxProgress}
+            isDisabled={!isMaxProgress || this.isDisabled}
             size="medium"
           />
           {!isMaxProgress && (

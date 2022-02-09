@@ -111,6 +111,7 @@ class SelectFolderModalDialog extends React.Component {
       foldersType,
       id,
       selectedFolderId,
+      foldersList,
     } = this.props;
 
     switch (foldersType) {
@@ -171,7 +172,9 @@ class SelectFolderModalDialog extends React.Component {
 
       case "third-party":
         try {
-          folderList = await SelectFolderDialog.getCommonThirdPartyList();
+          folderList = foldersList
+            ? foldersList
+            : await SelectFolderDialog.getCommonThirdPartyList();
 
           this.setBaseSettings();
         } catch (err) {
@@ -390,13 +393,15 @@ class SelectFolderModalDialog extends React.Component {
       onSetLoadingInput,
     } = this.props;
     const { folderId } = this.state;
-    onSetLoadingData && onSetLoadingData(true);
-    onSetLoadingInput && onSetLoadingInput(true);
+
     let requests = [];
 
     if (isArrayEqual([folder[0]], [folderId])) {
       return;
     }
+
+    onSetLoadingData && onSetLoadingData(true);
+    onSetLoadingInput && onSetLoadingInput(true);
 
     this.setState({
       folderId: folder[0],

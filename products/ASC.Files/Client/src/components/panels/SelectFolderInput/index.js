@@ -81,6 +81,7 @@ class SelectFolderInputBody extends React.PureComponent {
       fontSizeInput,
       maxInputWidth,
       isReset,
+      foldersList,
     } = this.props;
     const { isLoading, baseFolderPath, fullFolderPath } = this.state;
 
@@ -123,6 +124,7 @@ class SelectFolderInputBody extends React.PureComponent {
           footer={footer}
           selectionButtonPrimary={selectionButtonPrimary}
           isReset={isReset}
+          foldersList={foldersList}
         />
       </StyledComponent>
     );

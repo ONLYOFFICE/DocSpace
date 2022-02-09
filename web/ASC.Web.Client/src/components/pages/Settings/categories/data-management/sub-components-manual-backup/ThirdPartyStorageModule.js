@@ -12,77 +12,67 @@ import { ThirdPartyStorages } from "@appserver/common/constants";
 import { getFromSessionStorage } from "../../../utils";
 import { StyledManualBackup } from "../StyledBackup";
 
-let selectedStorageFromSessionStorage = "";
-let selectedIdFromSessionStorage = "";
+let storage = "";
+let storageId = "";
 class ThirdPartyStorageModule extends React.PureComponent {
   constructor(props) {
     super(props);
 
     this.isSetDefaultIdStorage = false;
 
-    selectedStorageFromSessionStorage = getFromSessionStorage(
-      "selectedStorage"
-    );
-    selectedIdFromSessionStorage = getFromSessionStorage("selectedStorageId");
+    storage = getFromSessionStorage("LocalCopyThirdPartyStorageType");
+    storageId = getFromSessionStorage("LocalCopyStorage");
 
     this.state = {
       availableOptions: [],
       availableStorage: {},
       selectedStorage: "",
       selectedId: "",
-      isInitialLoading: false,
+      isInitialLoading: true,
+      isStartCopy: false,
     };
 
     this.isFirstSet = false;
   }
   componentDidMount() {
-    const { onSetLoadingData } = this.props;
+    getBackupStorage()
+      .then((storageBackup) => {
+        const parameters = getOptions(storageBackup);
 
-    onSetLoadingData && onSetLoadingData(true);
-    this.setState(
-      {
-        isInitialLoading: true,
-      },
-      function () {
-        getBackupStorage()
-          .then((storageBackup) => {
-            const parameters = getOptions(storageBackup);
+        const {
+          options,
+          availableStorage,
+          selectedStorage,
+          selectedId,
+        } = parameters;
 
-            const {
-              options,
-              availableStorage,
-              selectedStorage,
-              selectedId,
-            } = parameters;
+        this.setState({
+          availableOptions: options,
+          availableStorage: availableStorage,
 
-            this.setState({
-              availableOptions: options,
-              availableStorage: availableStorage,
+          selectedStorage: storage || selectedStorage,
+          selectedId: storageId || selectedId,
 
-              selectedStorage:
-                selectedStorageFromSessionStorage || selectedStorage,
-              selectedId: selectedIdFromSessionStorage || selectedId,
-            });
-          })
-          .finally(() => {
-            onSetLoadingData && onSetLoadingData(false);
-            this.setState({ isInitialLoading: false });
-          });
-      }
-    );
+          isInitialLoading: false,
+        });
+      })
+      .catch(() => {
+        this.setState({ isInitialLoading: false });
+      });
   }
 
   onSelect = (option) => {
     const selectedStorageId = option.key;
     const { availableStorage } = this.state;
 
+    const selectedStorage = availableStorage[selectedStorageId];
     this.setState({
-      selectedStorage: availableStorage[selectedStorageId].title,
-      selectedId: availableStorage[selectedStorageId].id,
+      selectedStorage: selectedStorage.title,
+      selectedId: selectedStorage.id,
     });
   };
 
-  onMakeCopyIntoStorage = (arraySettings) => {
+  onMakeCopyIntoStorage = async (arraySettings) => {
     const { selectedId, selectedStorage } = this.state;
     const { onMakeCopy } = this.props;
 
@@ -98,9 +88,13 @@ class ThirdPartyStorageModule extends React.PureComponent {
       inputValueArray.push(obj);
     }
 
-    onMakeCopy(
+    this.setState({
+      isStartCopy: true,
+    });
+
+    await onMakeCopy(
       null,
-      "thirdPartyStorage",
+      "ThirdPartyStorage",
       "5",
       "module",
       selectedId,
@@ -108,6 +102,10 @@ class ThirdPartyStorageModule extends React.PureComponent {
       selectedId,
       selectedStorage
     );
+
+    this.setState({
+      isStartCopy: false,
+    });
   };
 
   isInvalidForm = (formSettings) => {
@@ -126,15 +124,26 @@ class ThirdPartyStorageModule extends React.PureComponent {
     return [firstError, errors];
   };
   render() {
-    const { isLoadingData, isMaxProgress } = this.props;
+    const { isMaxProgress } = this.props;
     const {
       availableOptions,
-      availableStorage,
       selectedStorage,
       isInitialLoading,
       selectedId,
+      isStartCopy,
+      availableStorage,
     } = this.state;
 
+    const commonProps = {
+      isLoadingData: !isMaxProgress || isStartCopy,
+      selectedStorage: availableStorage[selectedId],
+      isMaxProgress,
+      selectedId,
+      onMakeCopyIntoStorage: this.onMakeCopyIntoStorage,
+      isInvalidForm: this.isInvalidForm,
+    };
+
+    const { GoogleId, RackspaceId, SelectelId, AmazonId } = ThirdPartyStorages;
     return (
       <StyledManualBackup>
         <div className="manual-backup_storages-module">
@@ -142,7 +151,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
             options={availableOptions}
             selectedOption={{ key: 0, label: selectedStorage }}
             onSelect={this.onSelect}
-            isDisabled={isLoadingData || isInitialLoading}
+            isDisabled={!isMaxProgress || isStartCopy || isInitialLoading}
             noBorder={false}
             scaled
             scaledOptions
@@ -150,50 +159,20 @@ class ThirdPartyStorageModule extends React.PureComponent {
             className="backup_combo"
           />
 
-          {selectedId === ThirdPartyStorages.GoogleId && !isInitialLoading && (
-            <GoogleCloudStorage
-              isLoadingData={isLoadingData}
-              availableStorage={availableStorage}
-              isMaxProgress={isMaxProgress}
-              selectedId={selectedId}
-              onMakeCopyIntoStorage={this.onMakeCopyIntoStorage}
-              isInvalidForm={this.isInvalidForm}
-            />
+          {selectedId === GoogleId && !isInitialLoading && (
+            <GoogleCloudStorage {...commonProps} />
           )}
 
-          {selectedId === ThirdPartyStorages.RackspaceId &&
-            !isInitialLoading && (
-              <RackspaceStorage
-                isLoadingData={isLoadingData}
-                availableStorage={availableStorage}
-                isMaxProgress={isMaxProgress}
-                selectedId={selectedId}
-                onMakeCopyIntoStorage={this.onMakeCopyIntoStorage}
-                isInvalidForm={this.isInvalidForm}
-              />
-            )}
+          {selectedId === RackspaceId && !isInitialLoading && (
+            <RackspaceStorage {...commonProps} />
+          )}
 
-          {selectedId === ThirdPartyStorages.SelectelId &&
-            !isInitialLoading && (
-              <SelectelStorage
-                isLoadingData={isLoadingData}
-                availableStorage={availableStorage}
-                isMaxProgress={isMaxProgress}
-                selectedId={selectedId}
-                onMakeCopyIntoStorage={this.onMakeCopyIntoStorage}
-                isInvalidForm={this.isInvalidForm}
-              />
-            )}
+          {selectedId === SelectelId && !isInitialLoading && (
+            <SelectelStorage {...commonProps} />
+          )}
 
-          {selectedId === ThirdPartyStorages.AmazonId && !isInitialLoading && (
-            <AmazonStorage
-              isLoadingData={isLoadingData}
-              availableStorage={availableStorage}
-              isMaxProgress={isMaxProgress}
-              selectedId={selectedId}
-              onMakeCopyIntoStorage={this.onMakeCopyIntoStorage}
-              isInvalidForm={this.isInvalidForm}
-            />
+          {selectedId === AmazonId && !isInitialLoading && (
+            <AmazonStorage {...commonProps} />
           )}
         </div>
       </StyledManualBackup>

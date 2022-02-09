@@ -5,36 +5,36 @@ import Button from "@appserver/components/button";
 
 import { getFromSessionStorage } from "../../../utils";
 
-let selectedFolderPathFromSessionStorage = "";
-let selectedFolderFromSessionStorage = "";
+let folderPath = "";
+let folder = "";
 class ThirdPartyModule extends React.Component {
   constructor(props) {
     super(props);
 
-    selectedFolderPathFromSessionStorage = getFromSessionStorage(
-      "selectedFolderPath"
-    );
-    selectedFolderFromSessionStorage = getFromSessionStorage("selectedFolder");
+    folderPath = getFromSessionStorage("LocalCopyPath");
+    folder = getFromSessionStorage("LocalCopyFolder");
 
     this.state = {
-      isLoadingData: false,
-      selectedFolder: selectedFolderFromSessionStorage || "",
+      isStartCopy: false,
+      isLoadingData: true,
+      selectedFolder: folder || "",
       isPanelVisible: false,
       isError: false,
-      folderPath: selectedFolderPathFromSessionStorage || "",
+      folderPath: folderPath || "",
     };
   }
 
   onSetLoadingData = (isLoading) => {
-    this.setState({
-      isLoadingData: isLoading,
-    });
+    const { isLoadingData } = this.state;
+    isLoading !== isLoadingData &&
+      this.setState({
+        isLoadingData: isLoading,
+      });
   };
 
   onSelectFolder = (folderId) => {
     this.setState({
       selectedFolder: folderId,
-      isChanged: true,
     });
   };
 
@@ -61,7 +61,7 @@ class ThirdPartyModule extends React.Component {
     return true;
   };
 
-  onMakeCopy = () => {
+  onMakeCopy = async () => {
     const { onMakeCopy } = this.props;
     const { selectedFolder, isError } = this.state;
 
@@ -72,11 +72,27 @@ class ThirdPartyModule extends React.Component {
         isError: false,
       });
 
-    onMakeCopy(selectedFolder, "thirdPartyResource", "1", "folderId");
+    this.setState({
+      isStartCopy: true,
+    });
+
+    await onMakeCopy(selectedFolder, "ThirdPartyResource", "1", "folderId");
+
+    this.setState({
+      isStartCopy: false,
+    });
   };
   render() {
-    const { isMaxProgress, t, isCopyingLocal } = this.props;
-    const { isPanelVisible, isLoadingData, isError, folderPath } = this.state;
+    const { isMaxProgress, t, commonThirdPartyList } = this.props;
+    const {
+      isPanelVisible,
+      isLoadingData,
+      isError,
+      folderPath,
+      isStartCopy,
+    } = this.state;
+
+    const isModuleDisabled = !isMaxProgress || isStartCopy || isLoadingData;
     return (
       <>
         <SelectFolderInput
@@ -85,12 +101,13 @@ class ThirdPartyModule extends React.Component {
           onClose={this.onClose}
           onClickInput={this.onClickInput}
           onSetLoadingData={this.onSetLoadingData}
-          isSavingProcess={isCopyingLocal}
+          isSavingProcess={isModuleDisabled}
           isPanelVisible={isPanelVisible}
           isError={isError}
           folderPath={folderPath}
           foldersType="third-party"
           fontSizeInput={"13px"}
+          foldersList={commonThirdPartyList}
         />
 
         <div className="manual-backup_buttons">
@@ -98,7 +115,7 @@ class ThirdPartyModule extends React.Component {
             label={t("MakeCopy")}
             onClick={this.onMakeCopy}
             primary
-            isDisabled={!isMaxProgress || isLoadingData}
+            isDisabled={isModuleDisabled}
             size="medium"
           />
           {!isMaxProgress && (
