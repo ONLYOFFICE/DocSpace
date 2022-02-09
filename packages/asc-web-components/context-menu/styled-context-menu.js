@@ -23,6 +23,7 @@ const StyledContextMenu = styled.div`
   .p-contextmenu .p-submenu-list {
     position: absolute;
     background: ${(props) => props.theme.dropDown.background};
+    border: ${(props) => props.theme.dropDown.border};
     border-radius: ${(props) => props.theme.dropDown.borderRadius};
     -moz-border-radius: ${(props) => props.theme.dropDown.borderRadius};
     -webkit-border-radius: ${(props) => props.theme.dropDown.borderRadius};
