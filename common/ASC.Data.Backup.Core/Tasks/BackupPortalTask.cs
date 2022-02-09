@@ -78,7 +78,7 @@ namespace ASC.Data.Backup.Tasks
         public void Init(int tenantId, string fromConfigPath, string toFilePath, int limit)
         {
             if (string.IsNullOrEmpty(toFilePath))
-                throw new ArgumentNullException("toFilePath");
+                throw new ArgumentNullException(nameof(toFilePath));
             BackupFilePath = toFilePath;
             Limit = limit;
             Init(tenantId, fromConfigPath);
@@ -209,7 +209,7 @@ namespace ASC.Data.Backup.Tasks
         {
             var files = GetFilesToProcess(tenantId).ToList();
             var exclude = BackupRecordContext.Backups.Where(b => b.TenantId == tenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
-            files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains(string.Format("/file_{0}/", e.StoragePath)))).ToList();
+            files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
             return files;
 
         }
@@ -222,15 +222,15 @@ namespace ASC.Data.Backup.Tasks
                 using (var connection = DbFactory.OpenConnection())
                 {
                     var command = connection.CreateCommand();
-                    command.CommandText = string.Format("SHOW CREATE TABLE `{0}`", t);
+                    command.CommandText = $"SHOW CREATE TABLE `{t}`";
                     var createScheme = ExecuteList(command);
                     var creates = new StringBuilder();
-                    creates.AppendFormat("DROP TABLE IF EXISTS `{0}`;", t);
+                    creates.Append($"DROP TABLE IF EXISTS `{t}`;");
                     creates.AppendLine();
                     creates.Append(createScheme
                             .Select(r => Convert.ToString(r[1]))
                             .FirstOrDefault());
-                    creates.Append(";");
+                    creates.Append(';');
 
                     var path = CrossPlatform.PathCombine(dir, t);
                     using (var stream = File.OpenWrite(path))
@@ -284,7 +284,7 @@ namespace ASC.Data.Backup.Tasks
                 }
 
                 Logger.DebugFormat("dump table data start {0}", t);
-                var searchWithPrimary = false;
+                bool searchWithPrimary;
                 string primaryIndex;
                 var primaryIndexStep = 0;
                 var primaryIndexStart = 0;
@@ -293,7 +293,7 @@ namespace ASC.Data.Backup.Tasks
                 using (var connection = DbFactory.OpenConnection())
                 {
                     var command = connection.CreateCommand();
-                    command.CommandText = string.Format("SHOW COLUMNS FROM `{0}`", t);
+                    command.CommandText = string.Format($"SHOW COLUMNS FROM `{t}`");
                     columns = ExecuteList(command).Select(r => "`" + Convert.ToString(r[0]) + "`").ToList();
                     if (command.CommandText.Contains("tenants_quota") || command.CommandText.Contains("webstudio_settings"))
                     {
@@ -304,14 +304,14 @@ namespace ASC.Data.Backup.Tasks
                 using (var connection = DbFactory.OpenConnection())
                 {
                     var command = connection.CreateCommand();
-                    command.CommandText = string.Format("select COLUMN_NAME from information_schema.`COLUMNS` where TABLE_SCHEMA = '{0}' and TABLE_NAME = '{1}' and COLUMN_KEY = 'PRI' and DATA_TYPE = 'int'", connection.Database, t);
+                    command.CommandText = $"select COLUMN_NAME from information_schema.`COLUMNS` where TABLE_SCHEMA = '{connection.Database}' and TABLE_NAME = '{t}' and COLUMN_KEY = 'PRI' and DATA_TYPE = 'int'";
                     primaryIndex = ExecuteList(command).ConvertAll(r => Convert.ToString(r[0])).FirstOrDefault();
 
                 }
                 using (var connection = DbFactory.OpenConnection())
                 {
                     var command = connection.CreateCommand();
-                    command.CommandText = string.Format("SHOW INDEXES FROM {0} WHERE COLUMN_NAME='{1}' AND seq_in_index=1", t, primaryIndex);
+                    command.CommandText = $"SHOW INDEXES FROM {t} WHERE COLUMN_NAME='{primaryIndex}' AND seq_in_index=1";
                     var isLeft = ExecuteList(command);
                     searchWithPrimary = isLeft.Count == 1;
                 }
@@ -320,7 +320,7 @@ namespace ASC.Data.Backup.Tasks
                 {
                     using var connection = DbFactory.OpenConnection();
                     var command = connection.CreateCommand();
-                    command.CommandText = string.Format("select max({1}), min({1}) from {0}", t, primaryIndex);
+                    command.CommandText = $"select max({primaryIndex}), min({primaryIndex}) from {t}";
                     var minMax = ExecuteList(command).ConvertAll(r => new Tuple<int, int>(Convert.ToInt32(r[0]), Convert.ToInt32(r[1]))).FirstOrDefault();
                     primaryIndexStart = minMax.Item2;
                     primaryIndexStep = (minMax.Item1 - minMax.Item2) / count;
@@ -393,7 +393,7 @@ namespace ASC.Data.Backup.Tasks
         {
             Logger.DebugFormat("save to file {0}", t);
             List<object[]> portion;
-            while ((portion = data.Take(BatchLimit).ToList()).Any())
+            while ((portion = data.Take(BatchLimit).ToList()).Count > 0)
             {
                 using (var sw = new StreamWriter(path, true))
                 using (var writer = new JsonTextWriter(sw))
@@ -410,7 +410,8 @@ namespace ASC.Data.Backup.Tasks
 
                         for (var i = 0; i < obj.Length; i++)
                         {
-                            if (obj[i] is byte[] byteArray)
+                            var value = obj[i];
+                            if (value is byte[] byteArray)
                             {
                                 sw.Write("0x");
                                 foreach (var b in byteArray)
@@ -419,7 +420,7 @@ namespace ASC.Data.Backup.Tasks
                             else
                             {
                                 var ser = new JsonSerializer();
-                                ser.Serialize(writer, obj[i]);
+                                ser.Serialize(writer, value);
                             }
                             if (i != obj.Length - 1)
                             {
@@ -542,7 +543,7 @@ namespace ASC.Data.Backup.Tasks
             var files = GetFilesToProcess(TenantId).ToList();
             var exclude = BackupRecordContext.Backups.Where(b => b.TenantId == TenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
 
-            files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains(string.Format("/file_{0}/", e.StoragePath)))).ToList();
+            files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
 
             return files.GroupBy(file => file.Module).ToList();
         }
@@ -604,7 +605,7 @@ namespace ASC.Data.Backup.Tasks
                         Logger.DebugFormat("end saving table {0}", table.Name);
                     }
 
-                    SetCurrentStepProgress((int)((++tablesProcessed * 100) / (double)tablesCount));
+                    SetCurrentStepProgress((int)(++tablesProcessed * 100 / (double)tablesCount));
                 }
             }
             Logger.DebugFormat("end saving data for module {0}", module.ModuleName);

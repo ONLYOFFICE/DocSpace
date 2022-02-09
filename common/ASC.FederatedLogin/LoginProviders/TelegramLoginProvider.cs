@@ -83,7 +83,7 @@ namespace ASC.FederatedLogin.LoginProviders
 
         public bool ValidateKeys()
         {
-            if (TelegramBotToken == "")
+            if (TelegramBotToken.Length == 0)
             {
                 TelegramHelper.DisableClient(TenantManager.GetCurrentTenant().TenantId);
                 return true;

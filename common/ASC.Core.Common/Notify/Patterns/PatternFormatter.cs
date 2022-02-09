@@ -45,16 +45,16 @@ namespace ASC.Notify.Patterns
         }
 
 
-        public PatternFormatter()
+        protected PatternFormatter()
         {
         }
 
-        public PatternFormatter(string tagSearchRegExp)
+        protected PatternFormatter(string tagSearchRegExp)
             : this(tagSearchRegExp, false)
         {
         }
 
-        internal PatternFormatter(string tagSearchRegExp, bool formatMessage)
+        protected PatternFormatter(string tagSearchRegExp, bool formatMessage)
         {
             if (string.IsNullOrEmpty(tagSearchRegExp)) throw new ArgumentException("tagSearchRegExp");
 
@@ -65,7 +65,7 @@ namespace ASC.Notify.Patterns
 
         public string[] GetTags(IPattern pattern)
         {
-            if (pattern == null) throw new ArgumentNullException("pattern");
+            if (pattern == null) throw new ArgumentNullException(nameof(pattern));
 
             var findedTags = new List<string>(SearchTags(pattern.Body));
             Array.ForEach(SearchTags(pattern.Subject), tag => { if (!findedTags.Contains(tag)) findedTags.Add(tag); });
@@ -74,9 +74,9 @@ namespace ASC.Notify.Patterns
 
         public void FormatMessage(INoticeMessage message, ITagValue[] tagsValues)
         {
-            if (message == null) throw new ArgumentNullException("message");
+            if (message == null) throw new ArgumentNullException(nameof(message));
             if (message.Pattern == null) throw new ArgumentException("message");
-            if (tagsValues == null) throw new ArgumentNullException("tagsValues");
+            if (tagsValues == null) throw new ArgumentNullException(nameof(tagsValues));
 
             BeforeFormat(message, tagsValues);
 
@@ -98,7 +98,7 @@ namespace ASC.Notify.Patterns
 
         protected virtual string[] SearchTags(string text)
         {
-            if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(tagSearchPattern)) return new string[0];
+            if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(tagSearchPattern)) return Array.Empty<string>();
 
             var maches = RegEx.Matches(text);
             var findedTags = new List<string>(maches.Count);

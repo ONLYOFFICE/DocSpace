@@ -43,9 +43,9 @@ namespace ASC.Notify.Model
 
         public NotifyClientImpl(Context context, INotifySource notifySource, IServiceScope serviceScope)
         {
-            this.notifySource = notifySource ?? throw new ArgumentNullException("notifySource");
+            this.notifySource = notifySource ?? throw new ArgumentNullException(nameof(notifySource));
             ServiceScope = serviceScope;
-            ctx = context ?? throw new ArgumentNullException("context");
+            ctx = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public void SendNoticeToAsync(INotifyAction action, IRecipient[] recipients, string[] senderNames, params ITagValue[] args)
@@ -108,7 +108,7 @@ namespace ASC.Notify.Model
 
         public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, bool checkSubsciption, params ITagValue[] args)
         {
-            if (recipients == null) throw new ArgumentNullException("recipients");
+            if (recipients == null) throw new ArgumentNullException(nameof(recipients));
 
             BeginSingleRecipientEvent("__syspreventduplicateinterceptor");
 
@@ -127,8 +127,8 @@ namespace ASC.Notify.Model
 
         private NotifyRequest CreateRequest(INotifyAction action, string objectID, IRecipient recipient, ITagValue[] args, string[] senders, bool checkSubsciption)
         {
-            if (action == null) throw new ArgumentNullException("action");
-            if (recipient == null) throw new ArgumentNullException("recipient");
+            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
 
             var request = new NotifyRequest(notifySource, action, objectID, recipient)
             {

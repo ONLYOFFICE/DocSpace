@@ -32,7 +32,7 @@ using ASC.MessagingSystem;
 
 namespace ASC.AuditTrail.Mappers
 {
-    internal class LoginActionsMapper
+    internal static class LoginActionsMapper
     {
         public static Dictionary<MessageAction, MessageMaps> GetMaps()
         {
