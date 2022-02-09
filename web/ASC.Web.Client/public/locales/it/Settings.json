@@ -36,6 +36,8 @@
   "Guests": "Ospiti",
   "Job/Title": "Occupazione/Titolo",
   "LanguageAndTimeZoneSettingsDescription": "Modificare la lingua per tutti gli utenti del portale e configurare il fuso orario in modo che tutti gli eventi del portale vengano visualizzati con la data e l'ora corrette.",
+  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> ti permettono di cambiare la lingua di tutto il portale per tutti gli utenti e configurare il fuso orario perché tutti gli eventi del portale ONLYOFFICE® siano visualizzati con la data e l'ora corretta.",
+  "LanguageTimeSettingsTooltipDescription": "Per applicare i parametri impostati clicca su <1>{{save}}</1> nella parte inferiore della sezione.<3>{{learnMore}}</3>",
   "LogoDark": "Logo per la pagina Informazioni/Accesso",
   "LogoDocsEditor": "Logo per l'intestazione degli editor",
   "LogoFavicon": "Favicon",
