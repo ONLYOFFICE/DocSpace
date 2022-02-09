@@ -471,7 +471,6 @@ const Confirm = (props) => {
           {greetingTitle}
         </Text>
 
-        {/*TODO: get user info from api */}
         <div className="greeting-block">
           <Avatar className="avatar" role="user" source={user.avatar} />
           <div className="user-info">
