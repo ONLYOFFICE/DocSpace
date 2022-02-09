@@ -37,7 +37,7 @@
   "Guests": "Guests",
   "Job/Title": "Job/Title",
   "LanguageAndTimeZoneSettingsDescription": "Change language for all portal users and configure time zone so that all portal events are shown with the correct date and time.",
-  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> is a way to change the language of the whole portal for all portal users and to configure the time zone so that all the events of the ONLYOFFICE portal will be shown with the correct date and time. <2>{{description}}</2> <0>{{save}}</0> button at the bottom of the section.<5>{{learnMore}}</5>",
+  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> is a way to change the language of the whole portal for all portal users and to configure the time zone so that all the events of the ONLYOFFICE portal will be shown with the correct date and time.<2>{{description}}</2> <0>{{save}}</0> button at the bottom of the section.<5>{{learnMore}}</5>",
   "LogoDark": "Logo for the About/Login page",
   "LogoDocsEditor": "Logo for the editors header",
   "LogoFavicon": "Favicon",
