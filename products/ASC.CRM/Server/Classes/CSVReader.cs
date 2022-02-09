@@ -157,7 +157,7 @@ namespace ASC.Web.CRM.Classes
 
             // Build the list of objects in the line
             List<object> objects = new List<object>();
-            while (currentLine != "")
+            while (currentLine.Length != 0)
                 objects.Add(ReadNextObject());
             return objects;
         }
@@ -177,7 +177,7 @@ namespace ASC.Web.CRM.Classes
                 quoted = true;
 
             // Find the end of the next value
-            string nextObjectString = "";
+            string nextObjectString;
             int i = 0;
             int len = currentLine.Length;
             bool foundEnd = false;
@@ -185,17 +185,17 @@ namespace ASC.Web.CRM.Classes
             {
                 // Check if we've hit the end of the string
                 if ((!quoted && i == len) // non-quoted strings end with a comma or end of line
-                    || (!quoted && currentLine.Substring(i, 1) == FieldSep)
+                    || (!quoted && string.CompareOrdinal(currentLine, i, FieldSep, 0, 1) == 0)
                     // quoted strings end with a quote followed by a comma or end of line
                     || (quoted && i == len - 1 && currentLine.EndsWith("\""))
-                    || (quoted && currentLine.Substring(i, 2) == "\"" + FieldSep))
+                    || (quoted && string.CompareOrdinal(currentLine, i, "\"" + FieldSep, 0, 2) == 0))
                     foundEnd = true;
                 else
                     i++;
             }
             if (quoted)
             {
-                if (i > len || !currentLine.Substring(i, 1).StartsWith("\""))
+                if (i > len || currentLine[i] != '\"')
                     throw new FormatException("Invalid CSV format: " + currentLine.Substring(0, i));
                 i++;
             }
@@ -231,7 +231,7 @@ namespace ASC.Web.CRM.Classes
         {
             // Read the CSV data into rows
             List<List<object>> rows = new List<List<object>>();
-            List<object> readRow = null;
+            List<object> readRow;
             while ((readRow = ReadRow()) != null)
                 rows.Add(readRow);
 

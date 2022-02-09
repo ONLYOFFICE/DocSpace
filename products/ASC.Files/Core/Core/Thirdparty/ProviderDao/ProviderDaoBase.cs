@@ -62,7 +62,14 @@ namespace ASC.Files.Thirdparty.ProviderDao
         }
 
         private int tenantID;
-        private int TenantID { get => tenantID != 0 ? tenantID : (tenantID = TenantManager.GetCurrentTenant().TenantId); }
+        private int TenantID
+        {
+            get
+            {
+                if (tenantID == 0) tenantID = TenantManager.GetCurrentTenant().TenantId;
+                return tenantID;
+            }
+        }
 
         public ProviderDaoBase(
             IServiceProvider serviceProvider,
@@ -98,16 +105,17 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
         protected void SetSharedProperty(IEnumerable<FileEntry<string>> entries)
         {
-            SecurityDao.GetPureShareRecords(entries)
+            var ids = SecurityDao.GetPureShareRecords(entries)
                 //.Where(x => x.Owner == SecurityContext.CurrentAccount.ID)
-                .Select(x => x.EntryId).Distinct().ToList()
-                .ForEach(id =>
-                {
-                    var firstEntry = entries.FirstOrDefault(y => y.ID.Equals(id));
+                .Select(x => x.EntryId).Distinct();
 
-                    if (firstEntry != null)
-                        firstEntry.Shared = true;
-                });
+            foreach(var id in ids)
+            {
+                var firstEntry = entries.FirstOrDefault(y => y.ID.Equals(id));
+
+                if (firstEntry != null)
+                    firstEntry.Shared = true;
+            }
         }
 
         protected IEnumerable<IDaoSelector> GetSelectors()

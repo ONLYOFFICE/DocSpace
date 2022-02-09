@@ -53,7 +53,7 @@ namespace ASC.Feed.Aggregator
 
         public string Id
         {
-            get { return string.Format("{0}_{1}", Item, ItemId); }
+            get { return $"{Item}_{ItemId}"; }
         }
 
         public Guid AuthorId { get; private set; }

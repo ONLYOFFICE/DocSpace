@@ -257,7 +257,7 @@ namespace ASC.CRM.Core.Dao
                 }
             }
 
-            var itemToUpdate = Query(CrmDbContext.Invoices).FirstOrDefault(x => x.FileId == Convert.ToInt32(file.ID));
+            var itemToUpdate = Query(CrmDbContext.Invoices).FirstOrDefault(x => x.FileId == file.ID);
 
             itemToUpdate.FileId = 0;
 

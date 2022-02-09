@@ -69,7 +69,7 @@ namespace ASC.Web.Core.Mobile
                 q = q.Where(r => r.AppType == (int)appType.Value);
             }
 
-            return q.Count() > 0;
+            return q.Any();
         }
     }
 }

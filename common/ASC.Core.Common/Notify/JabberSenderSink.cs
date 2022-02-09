@@ -44,7 +44,7 @@ namespace ASC.Core.Notify
 
         public JabberSenderSink(INotifySender sender, IServiceProvider serviceProvider)
         {
-            this.sender = sender ?? throw new ArgumentNullException("sender");
+            this.sender = sender ?? throw new ArgumentNullException(nameof(sender));
             ServiceProvider = serviceProvider;
         }
 

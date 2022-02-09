@@ -114,7 +114,7 @@ namespace ASC.Core.Caching
 
         public CachedSubscriptionService(DbSubscriptionService service, SubscriptionServiceCache subscriptionServiceCache)
         {
-            this.service = service ?? throw new ArgumentNullException("service");
+            this.service = service ?? throw new ArgumentNullException(nameof(service));
             cache = subscriptionServiceCache.Cache;
             notifyRecord = subscriptionServiceCache.NotifyRecord;
             notifyMethod = subscriptionServiceCache.NotifyMethod;
@@ -201,7 +201,8 @@ namespace ASC.Core.Caching
             {
                 var records = service.GetSubscriptions(tenant, sourceId, actionId);
                 var methods = service.GetSubscriptionMethods(tenant, sourceId, actionId, null);
-                cache.Insert(key, store = new SubsciptionsStore(records, methods), DateTime.UtcNow.Add(CacheExpiration));
+                store = new SubsciptionsStore(records, methods);
+                cache.Insert(key, store, DateTime.UtcNow.Add(CacheExpiration));
             }
             return store;
         }

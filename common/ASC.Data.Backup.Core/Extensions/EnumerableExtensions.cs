@@ -56,13 +56,13 @@ namespace ASC.Data.Backup.Extensions
                                                                          Func<TEntry, TKey> parentKeySelector)
         {
             if (elements == null)
-                throw new ArgumentNullException("elements");
+                throw new ArgumentNullException(nameof(elements));
 
             if (keySelector == null)
-                throw new ArgumentNullException("keySelector");
+                throw new ArgumentNullException(nameof(keySelector));
 
             if (parentKeySelector == null)
-                throw new ArgumentNullException("parentKeySelector");
+                throw new ArgumentNullException(nameof(parentKeySelector));
 
             var dic = elements.ToDictionary(keySelector, x => new TreeNode<TEntry>(x));
             foreach (var keyValue in dic)
@@ -81,11 +81,16 @@ namespace ASC.Data.Backup.Extensions
         public static IEnumerable<IEnumerable<TEntry>> MakeParts<TEntry>(this IEnumerable<TEntry> collection, int partLength)
         {
             if (collection == null)
-                throw new ArgumentNullException("collection");
+                throw new ArgumentNullException(nameof(collection));
 
             if (partLength <= 0)
-                throw new ArgumentOutOfRangeException("partLength", partLength, "Length must be positive integer");
+                throw new ArgumentOutOfRangeException(nameof(partLength), partLength, "Length must be positive integer");
 
+            return MakePartsIterator(collection, partLength);
+        }
+
+        private static IEnumerable<IEnumerable<TEntry>> MakePartsIterator<TEntry>(this IEnumerable<TEntry> collection, int partLength)
+        {
             var part = new List<TEntry>(partLength);
 
             foreach (var entry in collection)
