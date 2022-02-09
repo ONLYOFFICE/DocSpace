@@ -183,8 +183,12 @@ namespace ASC.Web.Api.Models
 
             FillGroups(result, userInfo);
 
-            var userInfoLM = userInfo.LastModified.GetHashCode();
-            result.Avatar = UserPhotoManager.GetBigPhotoURL(userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+            var photoData = UserPhotoManager.GetUserPhotoData(userInfo.ID, UserPhotoManager.BigFotoSize);
+
+            if (photoData != null)
+            {
+                result.Avatar = "data:image/png;base64," + Convert.ToBase64String(photoData);
+            }
 
             return result;
         }
