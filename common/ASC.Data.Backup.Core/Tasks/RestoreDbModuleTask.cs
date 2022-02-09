@@ -29,32 +29,32 @@ namespace ASC.Data.Backup.Tasks
     {
         private const int TransactionLength = 10000;
 
-        private IDataReadOperator Reader { get; set; }
-        private IModuleSpecifics Module { get; set; }
-        private ColumnMapper ColumnMapper { get; set; }
-        private bool ReplaceDate { get; set; }
-        private bool Dump { get; set; }
+        private readonly IDataReadOperator _reader;
+        private readonly IModuleSpecifics _module;
+        private readonly ColumnMapper _columnMapper;
+        private readonly bool _replaceDate;
+        private readonly bool _dump;
 
         public RestoreDbModuleTask(IOptionsMonitor<ILog> options, IModuleSpecifics module, IDataReadOperator reader, ColumnMapper columnMapper, DbFactory factory, bool replaceDate, bool dump, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
             : base(factory, options, storageFactory, storageFactoryConfig, moduleProvider)
         {
-            Reader = reader ?? throw new ArgumentNullException("reader");
-            ColumnMapper = columnMapper ?? throw new ArgumentNullException("columnMapper");
+            _reader = reader ?? throw new ArgumentNullException("reader");
+            _columnMapper = columnMapper ?? throw new ArgumentNullException("columnMapper");
             DbFactory = factory ?? throw new ArgumentNullException("factory");
-            Module = module;
-            ReplaceDate = replaceDate;
-            Dump = dump;
+            _module = module;
+            _replaceDate = replaceDate;
+            _dump = dump;
             Init(-1, null);
         }
 
         public override void RunJob()
         {
-            Logger.DebugFormat("begin restore data for module {0}", Module.ModuleName);
-            SetStepsCount(Module.Tables.Count(t => !IgnoredTables.Contains(t.Name)));
+            Logger.DebugFormat("begin restore data for module {0}", _module.ModuleName);
+            SetStepsCount(_module.Tables.Count(t => !IgnoredTables.Contains(t.Name)));
 
             using (var connection = DbFactory.OpenConnection())
             {
-                foreach (var table in Module.GetTablesOrdered().Where(t => !IgnoredTables.Contains(t.Name) && t.InsertMethod != InsertMethod.None))
+                foreach (var table in _module.GetTablesOrdered().Where(t => !IgnoredTables.Contains(t.Name) && t.InsertMethod != InsertMethod.None))
                 {
                     Logger.DebugFormat("begin restore table {0}", table.Name);
 
@@ -64,7 +64,7 @@ namespace ASC.Data.Backup.Tasks
                         state =>
                             RestoreTable(connection.Fix(), (TableInfo)state, ref transactionsCommited,
                                 ref rowsInserted), table, 5,
-                        onAttemptFailure: error => ColumnMapper.Rollback(),
+                        onAttemptFailure: error => _columnMapper.Rollback(),
                         onFailure: error => { throw ThrowHelper.CantRestoreTable(table.Name, error); });
 
                     SetStepCompleted();
@@ -72,21 +72,21 @@ namespace ASC.Data.Backup.Tasks
                 }
             }
 
-            Logger.DebugFormat("end restore data for module {0}", Module.ModuleName);
+            Logger.DebugFormat("end restore data for module {0}", _module.ModuleName);
         }
 
         private void RestoreTable(DbConnection connection, TableInfo tableInfo, ref int transactionsCommited, ref int rowsInserted)
         {
             SetColumns(connection, tableInfo);
 
-            using var stream = Reader.GetEntry(KeyHelper.GetTableZipKey(Module, tableInfo.Name));
-            var lowImportanceRelations = Module
+            using var stream = _reader.GetEntry(KeyHelper.GetTableZipKey(_module, tableInfo.Name));
+            var lowImportanceRelations = _module
                 .TableRelations
                 .Where(
                     r =>
                         string.Equals(r.ParentTable, tableInfo.Name, StringComparison.InvariantCultureIgnoreCase))
                 .Where(r => r.Importance == RelationImportance.Low && !r.IsSelfRelation())
-                .Select(r => Tuple.Create(r, Module.Tables.Single(t => t.Name == r.ChildTable)))
+                .Select(r => Tuple.Create(r, _module.Tables.Single(t => t.Name == r.ChildTable)))
                 .ToList();
 
             foreach (
@@ -99,11 +99,11 @@ namespace ASC.Data.Backup.Tasks
                 var rowsSuccess = 0;
                 foreach (var row in rows)
                 {
-                    if (ReplaceDate)
+                    if (_replaceDate)
                     {
                         foreach (var column in tableInfo.DateColumns)
                         {
-                            ColumnMapper.SetDateMapping(tableInfo.Name, column, row[column.Key]);
+                            _columnMapper.SetDateMapping(tableInfo.Name, column, row[column.Key]);
                         }
                     }
 
@@ -113,7 +113,7 @@ namespace ASC.Data.Backup.Tasks
                     if (tableInfo.HasIdColumn())
                     {
                         oldIdValue = row[tableInfo.IdColumn];
-                        newIdValue = ColumnMapper.GetMapping(tableInfo.Name, tableInfo.IdColumn, oldIdValue);
+                        newIdValue = _columnMapper.GetMapping(tableInfo.Name, tableInfo.IdColumn, oldIdValue);
                         if (newIdValue == null)
                         {
                             if (tableInfo.IdType == IdType.Guid)
@@ -129,18 +129,18 @@ namespace ASC.Data.Backup.Tasks
                         }
                         if (newIdValue != null)
                         {
-                            ColumnMapper.SetMapping(tableInfo.Name, tableInfo.IdColumn, oldIdValue,
+                            _columnMapper.SetMapping(tableInfo.Name, tableInfo.IdColumn, oldIdValue,
                                 newIdValue);
                         }
                     }
 
-                    var insertCommand = Module.CreateInsertCommand(Dump, connection, ColumnMapper, tableInfo,
+                    var insertCommand = _module.CreateInsertCommand(_dump, connection, _columnMapper, tableInfo,
                         row);
                     if (insertCommand == null)
                     {
                         Logger.WarnFormat("Can't create command to insert row to {0} with values [{1}]", tableInfo,
                             row);
-                        ColumnMapper.Rollback();
+                        _columnMapper.Rollback();
                         continue;
                     }
                     insertCommand.WithTimeout(120).ExecuteNonQuery();
@@ -151,10 +151,10 @@ namespace ASC.Data.Backup.Tasks
                         var lastIdCommand = DbFactory.CreateLastInsertIdCommand();
                         lastIdCommand.Connection = connection;
                         newIdValue = Convert.ToInt32(lastIdCommand.ExecuteScalar());
-                        ColumnMapper.SetMapping(tableInfo.Name, tableInfo.IdColumn, oldIdValue, newIdValue);
+                        _columnMapper.SetMapping(tableInfo.Name, tableInfo.IdColumn, oldIdValue, newIdValue);
                     }
 
-                    ColumnMapper.Commit();
+                    _columnMapper.Commit();
 
                     foreach (var relation in lowImportanceRelations)
                     {
@@ -167,7 +167,7 @@ namespace ASC.Data.Backup.Tasks
                         }
 
                         var oldValue = row[relation.Item1.ParentColumn];
-                        var newValue = ColumnMapper.GetMapping(relation.Item1.ParentTable,
+                        var newValue = _columnMapper.GetMapping(relation.Item1.ParentTable,
                             relation.Item1.ParentColumn, oldValue);
                         var command = connection.CreateCommand();
                         command.CommandText = string.Format("update {0} set {1} = {2} where {1} = {3} and {4} = {5}",
@@ -176,7 +176,7 @@ namespace ASC.Data.Backup.Tasks
                                 newValue is string ? "'" + newValue + "'" : newValue,
                                 oldValue is string ? "'" + oldValue + "'" : oldValue,
                                 relation.Item2.TenantColumn,
-                                ColumnMapper.GetTenantMapping());
+                                _columnMapper.GetTenantMapping());
                         command.WithTimeout(120).ExecuteNonQuery();
                     }
                 }
@@ -194,7 +194,7 @@ namespace ASC.Data.Backup.Tasks
 
             var rows = DataRowInfoReader.ReadFromStream(xmlStream);
 
-            var selfRelation = Module.TableRelations.SingleOrDefault(x => x.ChildTable == table.Name && x.IsSelfRelation());
+            var selfRelation = _module.TableRelations.SingleOrDefault(x => x.ChildTable == table.Name && x.IsSelfRelation());
             if (selfRelation != null)
             {
                 rows = rows

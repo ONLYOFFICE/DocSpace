@@ -30,18 +30,19 @@ namespace ASC.Data.Backup.Tasks
     {
         public const string DefaultDirectoryName = "backup";
 
-        public string ToConfigPath { get; private set; }
-
         public string BackupDirectory { get; set; }
         public bool DeleteBackupFileAfterCompletion { get; set; }
         public bool BlockOldPortalAfterStart { get; set; }
         public bool DeleteOldPortalAfterCompletion { get; set; }
-        private IOptionsMonitor<ILog> Options { get; set; }
-        private TempStream TempStream { get; }
-        private TempPath TempPath { get; }
-        private IServiceProvider ServiceProvider { get; set; }
+        public string ToConfigPath { get; private set; }
         public int ToTenantId { get; private set; }
         public int Limit { get; private set; }
+
+        private readonly IOptionsMonitor<ILog> _options;
+        private readonly TempStream _tempStream;
+        private readonly TempPath _tempPath;
+        private readonly IServiceProvider _serviceProvider;
+        
 
         public TransferPortalTask(
             DbFactory dbFactory, 
@@ -57,10 +58,10 @@ namespace ASC.Data.Backup.Tasks
             DeleteBackupFileAfterCompletion = true;
             BlockOldPortalAfterStart = true;
             DeleteOldPortalAfterCompletion = true;
-            Options = options;
-            TempStream = tempStream;
-            TempPath = tempPath;
-            ServiceProvider = serviceProvider;
+            _options = options;
+            _tempStream = tempStream;
+            _tempPath = tempPath;
+            _serviceProvider = serviceProvider;
         }
 
         public void Init(int tenantId, string fromConfigPath, string toConfigPath, int limit, string backupDirectory)
@@ -93,7 +94,7 @@ namespace ASC.Data.Backup.Tasks
                 SetStepsCount(ProcessStorage ? 3 : 2);
 
                 //save db data to temporary file
-                var backupTask = ServiceProvider.GetService<BackupPortalTask>();
+                var backupTask = _serviceProvider.GetService<BackupPortalTask>();
                 backupTask.Init(TenantId, ConfigPath, backupFilePath, Limit);
                 backupTask.ProcessStorage = false;
                 backupTask.ProgressChanged += (sender, args) => SetCurrentStepProgress(args.Progress);
@@ -104,7 +105,7 @@ namespace ASC.Data.Backup.Tasks
                 backupTask.RunJob();
 
                 //restore db data from temporary file
-                var restoreTask = ServiceProvider.GetService<RestorePortalTask>();
+                var restoreTask = _serviceProvider.GetService<RestorePortalTask>();
                 restoreTask.Init(ToConfigPath, backupFilePath, columnMapper: columnMapper);
                 restoreTask.ProcessStorage = false;
                 restoreTask.ProgressChanged += (sender, args) => SetCurrentStepProgress(args.Progress);
@@ -160,7 +161,7 @@ namespace ASC.Data.Backup.Tasks
             {
                 var baseStorage = StorageFactory.GetStorage(ConfigPath, TenantId.ToString(), group.Key);
                 var destStorage = StorageFactory.GetStorage(ToConfigPath, columnMapper.GetTenantMapping().ToString(), group.Key);
-                var utility = new CrossModuleTransferUtility(Options, TempStream, TempPath, baseStorage, destStorage);
+                var utility = new CrossModuleTransferUtility(_options, _tempStream, _tempPath, baseStorage, destStorage);
 
                 foreach (var file in group)
                 {

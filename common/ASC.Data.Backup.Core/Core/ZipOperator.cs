@@ -27,53 +27,52 @@ namespace ASC.Data.Backup
 {
     public class ZipWriteOperator : IDataWriteOperator
     {
-        private readonly GZipOutputStream gZipOutputStream;
-        private readonly TarOutputStream tarOutputStream;
-        private readonly Stream file;
-
-        private TempStream TempStream { get; }
+        private readonly GZipOutputStream _gZipOutputStream;
+        private readonly TarOutputStream _tarOutputStream;
+        private readonly Stream _file;
+        private readonly TempStream _tempStream;
 
         public ZipWriteOperator(TempStream tempStream, string targetFile)
         {
-            file = new FileStream(targetFile, FileMode.Create);
-            gZipOutputStream = new GZipOutputStream(file);
-            tarOutputStream = new TarOutputStream(gZipOutputStream, Encoding.UTF8);
-            TempStream = tempStream;
+            _file = new FileStream(targetFile, FileMode.Create);
+            _gZipOutputStream = new GZipOutputStream(_file);
+            _tarOutputStream = new TarOutputStream(_gZipOutputStream, Encoding.UTF8);
+            _tempStream = tempStream;
         }
 
         public void WriteEntry(string key, Stream stream)
         {
-            using (var buffered = TempStream.GetBuffered(stream))
+            using (var buffered = _tempStream.GetBuffered(stream))
             {
                 var entry = TarEntry.CreateTarEntry(key);
                 entry.Size = buffered.Length;
-                tarOutputStream.PutNextEntry(entry);
+                _tarOutputStream.PutNextEntry(entry);
                 buffered.Position = 0;
-                buffered.CopyTo(tarOutputStream);
-                tarOutputStream.CloseEntry();
+                buffered.CopyTo(_tarOutputStream);
+                _tarOutputStream.CloseEntry();
             }
         }
 
         public void Dispose()
         {
-            tarOutputStream.Close();
-            tarOutputStream.Dispose();
+            _tarOutputStream.Close();
+            _tarOutputStream.Dispose();
         }
     }
 
     public class ZipReadOperator : IDataReadOperator
     {
-        private readonly string tmpdir;
+        private readonly string _tmpDir;
 
         public ZipReadOperator(string targetFile)
         {
-            tmpdir = Path.Combine(Path.GetDirectoryName(targetFile), Path.GetFileNameWithoutExtension(targetFile).Replace('>', '_').Replace(':', '_').Replace('?', '_'));
+            _tmpDir = Path.Combine(Path.GetDirectoryName(targetFile), Path.GetFileNameWithoutExtension(targetFile).Replace('>', '_').Replace(':', '_').Replace('?', '_'));
 
             using (var stream = File.OpenRead(targetFile))
             using (var reader = new GZipInputStream(stream))
             using (var tarOutputStream = TarArchive.CreateInputTarArchive(reader, Encoding.UTF8))
             {
-                tarOutputStream.ExtractContents(tmpdir);
+                tarOutputStream.ExtractContents(_tmpDir);
             }
 
             File.Delete(targetFile);
@@ -81,22 +80,22 @@ namespace ASC.Data.Backup
 
         public Stream GetEntry(string key)
         {
-            var filePath = Path.Combine(tmpdir, key);
+            var filePath = Path.Combine(_tmpDir, key);
             return File.Exists(filePath) ? File.Open(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read) : null;
         }
 
         public IEnumerable<string> GetEntries(string key)
         {
-            var path = Path.Combine(tmpdir, key);
+            var path = Path.Combine(_tmpDir, key);
             var files = Directory.EnumerateFiles(path);
             return files;
         }
 
         public void Dispose()
         {
-            if (Directory.Exists(tmpdir))
+            if (Directory.Exists(_tmpDir))
             {
-                Directory.Delete(tmpdir, true);
+                Directory.Delete(_tmpDir, true);
             }
         }
     }

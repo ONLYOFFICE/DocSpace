@@ -28,27 +28,23 @@ namespace ASC.Data.Backup
     [Scope]
     public class FileBackupProvider : IBackupProvider
     {
-        private readonly IEnumerable<string> allowedModules;
-        private readonly ILog log;
-        private StorageFactory StorageFactory { get; set; }
-        private StorageFactoryConfig StorageFactoryConfig { get; set; }
+        public string Name => "Files";
+
+        private readonly IEnumerable<string> _allowedModules;
+        private readonly ILog _logger;
+        private readonly StorageFactory _storageFactory;
+        private readonly StorageFactoryConfig _storageFactoryConfig;
 
         public FileBackupProvider(IOptionsMonitor<ILog> options, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig)
         {
-            StorageFactory = storageFactory;
-            StorageFactoryConfig = storageFactoryConfig;
-            log = options.CurrentValue;
+            _storageFactory = storageFactory;
+            _storageFactoryConfig = storageFactoryConfig;
+            _logger = options.CurrentValue;
         }
-
-        public string Name
-        {
-            get { return "Files"; }
-        }
-
 
         public FileBackupProvider()
         {
-            allowedModules = new List<string>() { "forum", "photo", "bookmarking", "wiki", "files", "crm", "projects", "logo", "fckuploaders", "talk" };
+            _allowedModules = new List<string>() { "forum", "photo", "bookmarking", "wiki", "files", "crm", "projects", "logo", "fckuploaders", "talk" };
         }
 
 
@@ -70,7 +66,7 @@ namespace ASC.Data.Backup
                 var backupPath = GetBackupPath(file);
                 if (!backupKeys.Contains(backupPath))
                 {
-                    var storage = StorageFactory.GetStorage(config, tenant.ToString(), file.Module);
+                    var storage = _storageFactory.GetStorage(config, tenant.ToString(), file.Module);
                     var errors = 0;
                     while (true)
                     {
@@ -85,14 +81,14 @@ namespace ASC.Data.Backup
                             errors++;
                             if (20 < errors)
                             {
-                                log.ErrorFormat("Can not backup file {0}: {1}", file.Path, error);
+                                _logger.ErrorFormat("Can not backup file {0}: {1}", file.Path, error);
                                 break;
                             }
                         }
                     }
                     elements.Add(file.ToXElement());
                     backupKeys.Add(backupPath);
-                    log.DebugFormat("Backup file {0}", file.Path);
+                    _logger.DebugFormat("Backup file {0}", file.Path);
                 }
                 InvokeProgressChanged("Saving file " + file.Path, counter++ / totalCount * 100);
             }
@@ -103,12 +99,12 @@ namespace ASC.Data.Backup
         private IEnumerable<FileBackupInfo> ComposeFiles(int tenant, string config)
         {
             var files = new List<FileBackupInfo>();
-            foreach (var module in StorageFactoryConfig.GetModuleList(config))
+            foreach (var module in _storageFactoryConfig.GetModuleList(config))
             {
-                if (allowedModules.Contains(module))
+                if (_allowedModules.Contains(module))
                 {
-                    var store = StorageFactory.GetStorage(config, tenant.ToString(), module);
-                    var domainList = StorageFactoryConfig.GetDomainList(config, module);
+                    var store = _storageFactory.GetStorage(config, tenant.ToString(), module);
+                    var domainList = _storageFactoryConfig.GetDomainList(config, module);
                     foreach (var domain in domainList)
                     {
                         files.AddRange(store
@@ -141,18 +137,18 @@ namespace ASC.Data.Backup
             foreach (var file in files)
             {
                 var backupInfo = new FileBackupInfo(file);
-                if (allowedModules.Contains(backupInfo.Module))
+                if (_allowedModules.Contains(backupInfo.Module))
                 {
                     using (var entry = dataOperator.GetEntry(GetBackupPath(backupInfo)))
                     {
-                        var storage = StorageFactory.GetStorage(config, tenant.ToString(), backupInfo.Module, null);
+                        var storage = _storageFactory.GetStorage(config, tenant.ToString(), backupInfo.Module, null);
                         try
                         {
                             storage.Save(backupInfo.Domain, backupInfo.Path, entry);
                         }
                         catch (Exception error)
                         {
-                            log.ErrorFormat("Can not restore file {0}: {1}", file, error);
+                            _logger.ErrorFormat("Can not restore file {0}: {1}", file, error);
                         }
                     }
                     InvokeProgressChanged("Restoring file " + backupInfo.Path, current++ / files.Count() * 100);
@@ -175,7 +171,7 @@ namespace ASC.Data.Backup
             }
             catch (Exception error)
             {
-                log.Error("InvokeProgressChanged", error);
+                _logger.Error("InvokeProgressChanged", error);
             }
         }
 

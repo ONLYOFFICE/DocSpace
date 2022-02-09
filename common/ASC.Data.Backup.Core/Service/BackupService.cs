@@ -28,11 +28,11 @@ namespace ASC.Data.Backup.Services
     [Scope]
     public class BackupService : IBackupService
     {
-        private ILog Log { get; set; }
-        private BackupStorageFactory BackupStorageFactory { get; set; }
-        private BackupWorker BackupWorker { get; set; }
-        private BackupRepository BackupRepository { get; }
-        private ConfigurationExtension Configuration { get; }
+        private readonly ILog _logger;
+        private readonly BackupStorageFactory _backupStorageFactory;
+        private readonly BackupWorker _backupWorker;
+        private readonly BackupRepository _backupRepository;
+        private readonly ConfigurationExtension _configuration;
 
         public BackupService(
             IOptionsMonitor<ILog> options,
@@ -41,16 +41,16 @@ namespace ASC.Data.Backup.Services
             BackupRepository backupRepository,
             ConfigurationExtension configuration)
         {
-            Log = options.CurrentValue;
-            BackupStorageFactory = backupStorageFactory;
-            BackupWorker = backupWorker;
-            BackupRepository = backupRepository;
-            Configuration = configuration;
+            _logger = options.CurrentValue;
+            _backupStorageFactory = backupStorageFactory;
+            _backupWorker = backupWorker;
+            _backupRepository = backupRepository;
+            _configuration = configuration;
         }
 
         public void StartBackup(StartBackupRequest request)
         {
-            var progress = BackupWorker.StartBackup(request);
+            var progress = _backupWorker.StartBackup(request);
             if (!string.IsNullOrEmpty(progress.Error))
             {
                 throw new FaultException();
@@ -59,28 +59,28 @@ namespace ASC.Data.Backup.Services
 
         public void DeleteBackup(Guid id)
         {
-            var backupRecord = BackupRepository.GetBackupRecord(id);
-            BackupRepository.DeleteBackupRecord(backupRecord.Id);
+            var backupRecord = _backupRepository.GetBackupRecord(id);
+            _backupRepository.DeleteBackupRecord(backupRecord.Id);
 
-            var storage = BackupStorageFactory.GetBackupStorage(backupRecord);
+            var storage = _backupStorageFactory.GetBackupStorage(backupRecord);
             if (storage == null) return;
             storage.Delete(backupRecord.StoragePath);
         }
 
         public void DeleteAllBackups(int tenantId)
         {
-            foreach (var backupRecord in BackupRepository.GetBackupRecordsByTenantId(tenantId))
+            foreach (var backupRecord in _backupRepository.GetBackupRecordsByTenantId(tenantId))
             {
                 try
                 {
-                    BackupRepository.DeleteBackupRecord(backupRecord.Id);
-                    var storage = BackupStorageFactory.GetBackupStorage(backupRecord);
+                    _backupRepository.DeleteBackupRecord(backupRecord.Id);
+                    var storage = _backupStorageFactory.GetBackupStorage(backupRecord);
                     if (storage == null) continue;
                     storage.Delete(backupRecord.StoragePath);
                 }
                 catch (Exception error)
                 {
-                    Log.Warn("error while removing backup record: {0}", error);
+                    _logger.Warn("error while removing backup record: {0}", error);
                 }
             }
         }
@@ -88,9 +88,9 @@ namespace ASC.Data.Backup.Services
         public List<BackupHistoryRecord> GetBackupHistory(int tenantId)
         {
             var backupHistory = new List<BackupHistoryRecord>();
-            foreach (var record in BackupRepository.GetBackupRecordsByTenantId(tenantId))
+            foreach (var record in _backupRepository.GetBackupRecordsByTenantId(tenantId))
             {
-                var storage = BackupStorageFactory.GetBackupStorage(record);
+                var storage = _backupStorageFactory.GetBackupStorage(record);
                 if (storage == null) continue;
                 if (storage.IsExists(record.StoragePath))
                 {
@@ -105,7 +105,7 @@ namespace ASC.Data.Backup.Services
                 }
                 else
                 {
-                    BackupRepository.DeleteBackupRecord(record.Id);
+                    _backupRepository.DeleteBackupRecord(record.Id);
                 }
             }
             return backupHistory;
@@ -113,7 +113,7 @@ namespace ASC.Data.Backup.Services
 
         public void StartTransfer(StartTransferRequest request)
         {
-            var progress = BackupWorker.StartTransfer(request.TenantId, request.TargetRegion, request.BackupMail, request.NotifyUsers);
+            var progress = _backupWorker.StartTransfer(request.TenantId, request.TargetRegion, request.BackupMail, request.NotifyUsers);
             if (!string.IsNullOrEmpty(progress.Error))
             {
                 throw new FaultException();
@@ -132,7 +132,7 @@ namespace ASC.Data.Backup.Services
 
             if (!request.BackupId.Equals(Guid.Empty))
             {
-                var backupRecord = BackupRepository.GetBackupRecord(request.BackupId);
+                var backupRecord = _backupRepository.GetBackupRecord(request.BackupId);
                 if (backupRecord == null)
                 {
                     throw new FileNotFoundException();
@@ -143,7 +143,7 @@ namespace ASC.Data.Backup.Services
                 request.StorageParams = JsonConvert.DeserializeObject<Dictionary<string, string>>(backupRecord.StorageParams);
             }
 
-            var progress = BackupWorker.StartRestore(request);
+            var progress = _backupWorker.StartRestore(request);
             if (!string.IsNullOrEmpty(progress.Error))
             {
                 throw new FaultException();
@@ -152,27 +152,27 @@ namespace ASC.Data.Backup.Services
 
         public BackupProgress GetBackupProgress(int tenantId)
         {
-            return BackupWorker.GetBackupProgress(tenantId);
+            return _backupWorker.GetBackupProgress(tenantId);
         }
 
         public BackupProgress GetTransferProgress(int tenantId)
         {
-            return BackupWorker.GetTransferProgress(tenantId);
+            return _backupWorker.GetTransferProgress(tenantId);
         }
 
         public BackupProgress GetRestoreProgress(int tenantId)
         {
-            return BackupWorker.GetRestoreProgress(tenantId);
+            return _backupWorker.GetRestoreProgress(tenantId);
         }
 
         public string GetTmpFolder()
         {
-            return BackupWorker.TempFolder;
+            return _backupWorker.TempFolder;
         }
 
         public List<TransferRegion> GetTransferRegions()
         {
-            var settings = Configuration.GetSetting<BackupSettings>("backup");
+            var settings = _configuration.GetSetting<BackupSettings>("backup");
             return settings.WebConfigs.Elements.Select(configElement =>
             {
                 var config = Utils.ConfigurationProvider.Open(PathHelper.ToRootedConfigPath(configElement.Path));
@@ -189,7 +189,7 @@ namespace ASC.Data.Backup.Services
 
         public void CreateSchedule(CreateScheduleRequest request)
         {
-            BackupRepository.SaveBackupSchedule(
+            _backupRepository.SaveBackupSchedule(
                 new BackupSchedule()
                 {
                     TenantId = request.TenantId,
@@ -204,12 +204,12 @@ namespace ASC.Data.Backup.Services
 
         public void DeleteSchedule(int tenantId)
         {
-            BackupRepository.DeleteBackupSchedule(tenantId);
+            _backupRepository.DeleteBackupSchedule(tenantId);
         }
 
         public ScheduleResponse GetSchedule(int tenantId)
         {
-            var schedule = BackupRepository.GetBackupSchedule(tenantId);
+            var schedule = _backupRepository.GetBackupSchedule(tenantId);
             if (schedule != null)
             {
                 var tmp = new ScheduleResponse

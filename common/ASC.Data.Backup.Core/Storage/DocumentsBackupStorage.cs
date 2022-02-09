@@ -28,14 +28,14 @@ namespace ASC.Data.Backup.Storage
     [Scope]
     public class DocumentsBackupStorage : IBackupStorage
     {
-        private int TenantId { get; set; }
-        private string WebConfigPath { get; set; }
-        private SetupInfo SetupInfo { get; }
-        private TenantManager TenantManager { get; set; }
-        private SecurityContext SecurityContext { get; set; }
-        private IDaoFactory DaoFactory { get; set; }
-        private StorageFactory StorageFactory { get; set; }
-        private IServiceProvider ServiceProvider { get; }
+        private int _tenantId;
+        private string _webConfigPath;
+        private readonly SetupInfo _setupInfo;
+        private readonly TenantManager _tenantManager;
+        private readonly SecurityContext _securityContext;
+        private readonly IDaoFactory _daoFactory;
+        private readonly StorageFactory _storageFactory;
+        private readonly IServiceProvider _serviceProvider;
 
         public DocumentsBackupStorage(
             SetupInfo setupInfo,
@@ -45,29 +45,29 @@ namespace ASC.Data.Backup.Storage
             StorageFactory storageFactory,
             IServiceProvider serviceProvider)
         {
-            SetupInfo = setupInfo;
-            TenantManager = tenantManager;
-            SecurityContext = securityContext;
-            DaoFactory = daoFactory;
-            StorageFactory = storageFactory;
-            ServiceProvider = serviceProvider;
+            _setupInfo = setupInfo;
+            _tenantManager = tenantManager;
+            _securityContext = securityContext;
+            _daoFactory = daoFactory;
+            _storageFactory = storageFactory;
+            _serviceProvider = serviceProvider;
         }
         public void Init(int tenantId, string webConfigPath)
         {
-            TenantId = tenantId;
-            WebConfigPath = webConfigPath;
+            _tenantId = tenantId;
+            _webConfigPath = webConfigPath;
         }
         public string Upload(string folderId, string localPath, Guid userId)
         {
-            TenantManager.SetCurrentTenant(TenantId);
+            _tenantManager.SetCurrentTenant(_tenantId);
             if (!userId.Equals(Guid.Empty))
             {
-                SecurityContext.AuthenticateMeWithoutCookie(userId);
+                _securityContext.AuthenticateMeWithoutCookie(userId);
             }
             else
             {
-                var tenant = TenantManager.GetTenant(TenantId);
-                SecurityContext.AuthenticateMeWithoutCookie(tenant.OwnerId);
+                var tenant = _tenantManager.GetTenant(_tenantId);
+                _securityContext.AuthenticateMeWithoutCookie(tenant.OwnerId);
             }
 
             if (int.TryParse(folderId, out var fId))
@@ -80,7 +80,7 @@ namespace ASC.Data.Backup.Storage
 
         public void Download(string fileId, string targetLocalPath)
         {
-            TenantManager.SetCurrentTenant(TenantId);
+            _tenantManager.SetCurrentTenant(_tenantId);
 
             if (int.TryParse(fileId, out var fId))
             {
@@ -93,7 +93,7 @@ namespace ASC.Data.Backup.Storage
 
         public void Delete(string fileId)
         {
-            TenantManager.SetCurrentTenant(TenantId);
+            _tenantManager.SetCurrentTenant(_tenantId);
 
             if (int.TryParse(fileId, out var fId))
             {
@@ -106,7 +106,7 @@ namespace ASC.Data.Backup.Storage
 
         public bool IsExists(string fileId)
         {
-            TenantManager.SetCurrentTenant(TenantId);
+            _tenantManager.SetCurrentTenant(_tenantId);
             if (int.TryParse(fileId, out var fId))
             {
                 return IsExistsDao(fId);
@@ -132,19 +132,19 @@ namespace ASC.Data.Backup.Storage
             }
 
             using var source = File.OpenRead(localPath);
-            var newFile = ServiceProvider.GetService<File<T>>();
+            var newFile = _serviceProvider.GetService<File<T>>();
             newFile.Title = Path.GetFileName(localPath);
             newFile.FolderID = folder.ID;
             newFile.ContentLength = source.Length;
 
             File<T> file = null;
-            var buffer = new byte[SetupInfo.ChunkUploadSize];
+            var buffer = new byte[_setupInfo.ChunkUploadSize];
             var chunkedUploadSession = fileDao.CreateUploadSession(newFile, source.Length);
             chunkedUploadSession.CheckQuota = false;
 
             var bytesRead = 0;
 
-            while ((bytesRead = source.Read(buffer, 0, (int)SetupInfo.ChunkUploadSize)) > 0)
+            while ((bytesRead = source.Read(buffer, 0, (int)_setupInfo.ChunkUploadSize)) > 0)
             {
                 using (var theMemStream = new MemoryStream())
                 {
@@ -159,7 +159,7 @@ namespace ASC.Data.Backup.Storage
 
         private void DownloadDao<T>(T fileId, string targetLocalPath)
         {
-            TenantManager.SetCurrentTenant(TenantId);
+            _tenantManager.SetCurrentTenant(_tenantId);
             var fileDao = GetFileDao<T>();
             var file = fileDao.GetFile(fileId);
             if (file == null)
@@ -195,15 +195,15 @@ namespace ASC.Data.Backup.Storage
 
         private IFolderDao<T> GetFolderDao<T>()
         {
-            return DaoFactory.GetFolderDao<T>();
+            return _daoFactory.GetFolderDao<T>();
         }
 
         private IFileDao<T> GetFileDao<T>()
         {
             // hack: create storage using webConfigPath and put it into DataStoreCache
             // FileDao will use this storage and will not try to create the new one from service config
-            StorageFactory.GetStorage(WebConfigPath, TenantId.ToString(), "files");
-            return DaoFactory.GetFileDao<T>();
+            _storageFactory.GetStorage(_webConfigPath, _tenantId.ToString(), "files");
+            return _daoFactory.GetFileDao<T>();
         }
     }
 }

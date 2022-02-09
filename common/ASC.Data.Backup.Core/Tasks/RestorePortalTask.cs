@@ -28,18 +28,18 @@ namespace ASC.Data.Backup.Tasks
     [Scope]
     public class RestorePortalTask : PortalTaskBase
     {
-        private ColumnMapper ColumnMapper { get; set; }
-
         public string BackupFilePath { get; private set; }
         public string UpgradesPath { get; private set; }
         public bool UnblockPortalAfterCompleted { get; set; }
         public bool ReplaceDate { get; set; }
         public bool Dump { get; set; }
-        private CoreBaseSettings CoreBaseSettings { get; set; }
-        private LicenseReader LicenseReader { get; set; }
-        public TenantManager TenantManager { get; }
-        private AscCacheNotify AscCacheNotify { get; set; }
-        private IOptionsMonitor<ILog> Options { get; set; }
+
+        private ColumnMapper _columnMapper;
+        private readonly CoreBaseSettings _coreBaseSettings;
+        private readonly LicenseReader _licenseReader;
+        public readonly TenantManager _tenantManager;
+        private readonly AscCacheNotify _ascCacheNotify;
+        private readonly IOptionsMonitor<ILog> _options;
 
         public RestorePortalTask(
             DbFactory dbFactory,
@@ -53,11 +53,11 @@ namespace ASC.Data.Backup.Tasks
             ModuleProvider moduleProvider)
             : base(dbFactory, options, storageFactory, storageFactoryConfig, moduleProvider)
         {
-            CoreBaseSettings = coreBaseSettings;
-            LicenseReader = licenseReader;
-            TenantManager = tenantManager;
-            AscCacheNotify = ascCacheNotify;
-            Options = options;
+            _coreBaseSettings = coreBaseSettings;
+            _licenseReader = licenseReader;
+            _tenantManager = tenantManager;
+            _ascCacheNotify = ascCacheNotify;
+            _options = options;
         }
 
         public void Init(string toConfigPath, string fromFilePath, int tenantId = -1, ColumnMapper columnMapper = null, string upgradesPath = null)
@@ -70,7 +70,7 @@ namespace ASC.Data.Backup.Tasks
 
             BackupFilePath = fromFilePath;
             UpgradesPath = upgradesPath;
-            ColumnMapper = columnMapper ?? new ColumnMapper();
+            _columnMapper = columnMapper ?? new ColumnMapper();
             Init(tenantId, toConfigPath);
         }
 
@@ -84,7 +84,7 @@ namespace ASC.Data.Backup.Tasks
             {
                 using (var entry = dataReader.GetEntry(KeyHelper.GetDumpKey()))
                 {
-                    Dump = entry != null && CoreBaseSettings.Standalone;
+                    Dump = entry != null && _coreBaseSettings.Standalone;
                 }
 
                 if (Dump)
@@ -98,7 +98,7 @@ namespace ASC.Data.Backup.Tasks
 
                     foreach (var module in modulesToProcess)
                     {
-                        var restoreTask = new RestoreDbModuleTask(Options, module, dataReader, ColumnMapper, DbFactory, ReplaceDate, Dump, StorageFactory, StorageFactoryConfig, ModuleProvider);
+                        var restoreTask = new RestoreDbModuleTask(_options, module, dataReader, _columnMapper, DbFactory, ReplaceDate, Dump, StorageFactory, StorageFactoryConfig, ModuleProvider);
                         restoreTask.ProgressChanged += (sender, args) => SetCurrentStepProgress(args.Progress);
                         foreach (var tableName in IgnoredTables)
                         {
@@ -112,26 +112,26 @@ namespace ASC.Data.Backup.Tasks
 
                 if (ProcessStorage)
                 {
-                    if (CoreBaseSettings.Standalone)
+                    if (_coreBaseSettings.Standalone)
                     {
                         Logger.Debug("clear cache");
-                        AscCacheNotify.ClearCache();
+                        _ascCacheNotify.ClearCache();
                     }
 
                     DoRestoreStorage(dataReader);
                 }
                 if (UnblockPortalAfterCompleted)
                 {
-                    SetTenantActive(ColumnMapper.GetTenantMapping());
+                    SetTenantActive(_columnMapper.GetTenantMapping());
                 }
             }
 
-            if (CoreBaseSettings.Standalone)
+            if (_coreBaseSettings.Standalone)
             {
                 Logger.Debug("refresh license");
                 try
                 {
-                    LicenseReader.RejectLicense();
+                    _licenseReader.RejectLicense();
                 }
                 catch (Exception ex)
                 {
@@ -139,7 +139,7 @@ namespace ASC.Data.Backup.Tasks
                 }
 
                 Logger.Debug("clear cache");
-                AscCacheNotify.ClearCache();
+                _ascCacheNotify.ClearCache();
             }
 
             Logger.Debug("end restore portal");
@@ -163,7 +163,7 @@ namespace ASC.Data.Backup.Tasks
             if (ProcessStorage)
             {
                 var storageModules = StorageFactoryConfig.GetModuleList(ConfigPath).Where(IsStorageModuleAllowed);
-                var tenants = TenantManager.GetTenants(false);
+                var tenants = _tenantManager.GetTenants(false);
 
                 stepscount += storageModules.Count() * tenants.Count;
 
@@ -253,7 +253,7 @@ namespace ASC.Data.Backup.Tasks
             {
                 foreach (var file in group)
                 {
-                    var storage = StorageFactory.GetStorage(ConfigPath, Dump ? file.Tenant.ToString() : ColumnMapper.GetTenantMapping().ToString(), group.Key);
+                    var storage = StorageFactory.GetStorage(ConfigPath, Dump ? file.Tenant.ToString() : _columnMapper.GetTenantMapping().ToString(), group.Key);
                     var quotaController = storage.QuotaController;
                     storage.SetQuotaController(null);
 
@@ -261,7 +261,7 @@ namespace ASC.Data.Backup.Tasks
                     {
                         var adjustedPath = file.Path;
                         var module = ModuleProvider.GetByStorageModule(file.Module, file.Domain);
-                        if (module == null || module.TryAdjustFilePath(Dump, ColumnMapper, ref adjustedPath))
+                        if (module == null || module.TryAdjustFilePath(Dump, _columnMapper, ref adjustedPath))
                         {
                             var key = file.GetZipKey();
                             if (Dump)
@@ -271,7 +271,7 @@ namespace ASC.Data.Backup.Tasks
                             using var stream = dataReader.GetEntry(key);
                             try
                             {
-                                storage.Save(file.Domain, adjustedPath, module != null ? module.PrepareData(key, stream, ColumnMapper) : stream);
+                                storage.Save(file.Domain, adjustedPath, module != null ? module.PrepareData(key, stream, _columnMapper) : stream);
                             }
                             catch (Exception error)
                             {

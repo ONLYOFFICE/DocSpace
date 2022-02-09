@@ -30,25 +30,24 @@ namespace ASC.Data.Backup.Tasks
     {
         public const string DefaultConnectionStringName = "default";
 
-
-        private DbProviderFactory dbProviderFactory;
-        private IConfiguration Configuration { get; set; }
-        private ConfigurationExtension ConfigurationExtension { get; set; }
-        private string ConnectionString { get; set; }
-        private string Path { get; set; }
+        private DbProviderFactory _dbProviderFactory;
+        private readonly IConfiguration _configuration;
+        private readonly ConfigurationExtension _configurationExtension;
+        private string _connectionString;
+        private string _path;
 
         internal ConnectionStringSettings ConnectionStringSettings
         {
             get
             {
 
-                if (string.IsNullOrEmpty(ConnectionString))
+                if (string.IsNullOrEmpty(_connectionString))
                 {
-                    return ConfigurationExtension.GetConnectionStrings(DefaultConnectionStringName);
+                    return _configurationExtension.GetConnectionStrings(DefaultConnectionStringName);
                 }
                 else
                 {
-                    return ConfigurationExtension.GetConnectionStrings(ConnectionString);
+                    return _configurationExtension.GetConnectionStrings(_connectionString);
                 }
 
             }
@@ -58,25 +57,25 @@ namespace ASC.Data.Backup.Tasks
         {
             get
             {
-                if (dbProviderFactory == null)
+                if (_dbProviderFactory == null)
                 {
-                    var type = Type.GetType(Configuration["DbProviderFactories:mysql:type"], true);
-                    dbProviderFactory = (DbProviderFactory)Activator.CreateInstance(type, true);
+                    var type = Type.GetType(_configuration["DbProviderFactories:mysql:type"], true);
+                    _dbProviderFactory = (DbProviderFactory)Activator.CreateInstance(type, true);
                 }
-                return dbProviderFactory;
+                return _dbProviderFactory;
             }
         }
 
         public DbFactory(IConfiguration configuration, ConfigurationExtension configurationExtension)
         {
-            Configuration = configuration;
-            ConfigurationExtension = configurationExtension;
+            _configuration = configuration;
+            _configurationExtension = configurationExtension;
         }
 
         public DbConnection OpenConnection(string path = "default", string connectionString = DefaultConnectionStringName)//TODO
         {
-            ConnectionString = connectionString;
-            Path = path;
+            _connectionString = connectionString;
+            _path = path;
             var connection = DbProviderFactory.CreateConnection();
             if (connection != null)
             {

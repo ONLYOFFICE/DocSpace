@@ -27,7 +27,7 @@ namespace ASC.Data.Backup.Tasks.Modules
 {
     public class FilesModuleSpecifics : ModuleSpecificsBase
     {
-        private static readonly Regex RegexIsInteger = new Regex(@"^\d+$", RegexOptions.Compiled);
+        private static readonly Regex s_regexIsInteger = new Regex(@"^\d+$", RegexOptions.Compiled);
         private const string BunchRightNodeStartProject = "projects/project/";
         private const string BunchRightNodeStartCrmOpportunity = "crm/opportunity/";
         private const string BunchRightNodeStartMy = "files/my/";
@@ -86,25 +86,25 @@ namespace ASC.Data.Backup.Tasks.Modules
                 new RelationInfo("files_folder", "id", "files_folder_tree", "parent_id"),
 
                 new RelationInfo("files_file", "id", "files_security", "entry_id",
-                                 x => Convert.ToInt32(x["entry_type"]) == 2 && RegexIsInteger.IsMatch(Convert.ToString(x["entry_id"]))),
+                                 x => Convert.ToInt32(x["entry_type"]) == 2 && s_regexIsInteger.IsMatch(Convert.ToString(x["entry_id"]))),
 
                 new RelationInfo("files_folder", "id", "files_security", "entry_id",
-                                 x => Convert.ToInt32(x["entry_type"]) == 1 && RegexIsInteger.IsMatch(Convert.ToString(x["entry_id"]))),
+                                 x => Convert.ToInt32(x["entry_type"]) == 1 && s_regexIsInteger.IsMatch(Convert.ToString(x["entry_id"]))),
 
                 new RelationInfo("files_thirdparty_id_mapping", "hash_id", "files_security", "entry_id",
-                                 x => !RegexIsInteger.IsMatch(Convert.ToString(x["entry_id"]))),
+                                 x => !s_regexIsInteger.IsMatch(Convert.ToString(x["entry_id"]))),
 
                 new RelationInfo("files_thirdparty_account", "id", "files_thirdparty_id_mapping", "id"),
 
                 new RelationInfo("files_thirdparty_account", "id", "files_thirdparty_id_mapping", "hash_id")
             };
 
-        private readonly Helpers helpers;
-        private readonly ILog log;
+        private readonly Helpers _helpers;
+        private readonly ILog _logger;
         public FilesModuleSpecifics(IOptionsMonitor<ILog> options, Helpers helpers) : base(helpers)
         {
-            log = options.CurrentValue;
-            this.helpers = helpers;
+            _logger = options.CurrentValue;
+            _helpers = helpers;
         }
 
         public override ModuleName ModuleName
@@ -199,7 +199,7 @@ namespace ASC.Data.Backup.Tasks.Modules
             {
                 //note: value could be ShareForEveryoneID and in that case result should be always false
                 var strVal = Convert.ToString(value);
-                if (helpers.IsEmptyOrSystemUser(strVal) || helpers.IsEmptyOrSystemGroup(strVal))
+                if (_helpers.IsEmptyOrSystemUser(strVal) || _helpers.IsEmptyOrSystemGroup(strVal))
                     return true;
 
                 foreach (var relation in relationList)
@@ -244,11 +244,11 @@ namespace ASC.Data.Backup.Tasks.Modules
             {
                 try
                 {
-                    value = helpers.CreateHash(value as string); // save original hash
+                    value = _helpers.CreateHash(value as string); // save original hash
                 }
                 catch (Exception err)
                 {
-                    log.ErrorFormat("Can not prepare value {0}: {1}", value, err);
+                    _logger.ErrorFormat("Can not prepare value {0}: {1}", value, err);
                     value = null;
                 }
                 return true;
@@ -274,12 +274,12 @@ namespace ASC.Data.Backup.Tasks.Modules
                     var row = data.Rows[i];
                     try
                     {
-                        row[pwdColumn] = helpers.CreateHash2(row[pwdColumn] as string);
-                        row[tokenColumn] = helpers.CreateHash2(row[tokenColumn] as string);
+                        row[pwdColumn] = _helpers.CreateHash2(row[pwdColumn] as string);
+                        row[tokenColumn] = _helpers.CreateHash2(row[tokenColumn] as string);
                     }
                     catch (Exception ex)
                     {
-                        log.ErrorFormat("Can not prepare data {0}: {1}", row[providerColumn] as string, ex);
+                        _logger.ErrorFormat("Can not prepare data {0}: {1}", row[providerColumn] as string, ex);
                         data.Rows.Remove(row);
                         i--;
                     }
@@ -303,13 +303,13 @@ namespace ASC.Data.Backup.Tasks.Modules
         {
 
         }
-        private static readonly Regex RegexIsInteger = new Regex(@"^\d+$", RegexOptions.Compiled);
+        private static readonly Regex s_regexIsInteger = new Regex(@"^\d+$", RegexOptions.Compiled);
         private const string TagStartMessage = "Message";
         private const string TagStartTask = "Task";
         private const string TagStartProject = "Project";
         private const string TagStartRelationshipEvent = "RelationshipEvent_";
 
-        private readonly TableInfo[] tables = new[]
+        private readonly TableInfo[] _tables = new[]
             {
                 new TableInfo("files_tag", "tenant_id", "id") {UserIDColumns = new[] {"owner"}},
                 new TableInfo("files_tag_link", "tenant_id")
@@ -319,7 +319,7 @@ namespace ASC.Data.Backup.Tasks.Modules
                     },
             };
 
-        private readonly RelationInfo[] rels = new[]
+        private readonly RelationInfo[] _rels = new[]
             {
                 new RelationInfo("projects_messages", "id", "files_tag", "name", typeof(ProjectsModuleSpecifics),
                     x => Convert.ToString(x["name"]).StartsWith(TagStartMessage, StringComparison.InvariantCultureIgnoreCase)),
@@ -336,13 +336,13 @@ namespace ASC.Data.Backup.Tasks.Modules
                 new RelationInfo("files_tag", "id", "files_tag_link", "tag_id", typeof(FilesModuleSpecifics)),
 
                 new RelationInfo("files_file", "id", "files_tag_link", "entry_id", typeof(FilesModuleSpecifics),
-                    x => Convert.ToInt32(x["entry_type"]) == 2 && RegexIsInteger.IsMatch(Convert.ToString(x["entry_id"]))),
+                    x => Convert.ToInt32(x["entry_type"]) == 2 && s_regexIsInteger.IsMatch(Convert.ToString(x["entry_id"]))),
 
                 new RelationInfo("files_folder", "id", "files_tag_link", "entry_id",typeof(FilesModuleSpecifics),
-                    x => Convert.ToInt32(x["entry_type"]) == 1 && RegexIsInteger.IsMatch(Convert.ToString(x["entry_id"]))),
+                    x => Convert.ToInt32(x["entry_type"]) == 1 && s_regexIsInteger.IsMatch(Convert.ToString(x["entry_id"]))),
 
                 new RelationInfo("files_thirdparty_id_mapping", "hash_id", "files_tag_link", "entry_id", typeof(FilesModuleSpecifics),
-                    x => !RegexIsInteger.IsMatch(Convert.ToString(x["entry_id"]))),
+                    x => !s_regexIsInteger.IsMatch(Convert.ToString(x["entry_id"]))),
             };
 
         public override ModuleName ModuleName
@@ -352,12 +352,12 @@ namespace ASC.Data.Backup.Tasks.Modules
 
         public override IEnumerable<TableInfo> Tables
         {
-            get { return tables; }
+            get { return _tables; }
         }
 
         public override IEnumerable<RelationInfo> TableRelations
         {
-            get { return rels; }
+            get { return _rels; }
         }
 
         protected override bool TryPrepareValue(DbConnection connection, ColumnMapper columnMapper, RelationInfo relation, ref object value)

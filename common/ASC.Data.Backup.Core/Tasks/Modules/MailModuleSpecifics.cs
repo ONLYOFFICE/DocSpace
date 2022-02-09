@@ -27,12 +27,12 @@ namespace ASC.Data.Backup.Tasks.Modules
 {
     internal class MailModuleSpecifics : ModuleSpecificsBase
     {
-        private readonly ILog log;
-        private readonly Helpers helpers;
+        private readonly ILog _logger;
+        private readonly Helpers _helpers;
         public MailModuleSpecifics(IOptionsMonitor<ILog> options, Helpers helpers) : base(helpers)
         {
-            log = options.CurrentValue;
-            this.helpers = helpers;
+            _logger = options.CurrentValue;
+            _helpers = helpers;
         }
         private readonly TableInfo[] _tables = new[]
             {
@@ -241,11 +241,11 @@ namespace ASC.Data.Backup.Tasks.Modules
             {
                 try
                 {
-                    value = helpers.CreateHash(value as string); // save original hash
+                    value = _helpers.CreateHash(value as string); // save original hash
                 }
                 catch (Exception err)
                 {
-                    log.ErrorFormat("Can not prepare value {0}: {1}", value, err);
+                    _logger.ErrorFormat("Can not prepare value {0}: {1}", value, err);
                     value = null;
                 }
                 return true;
@@ -266,13 +266,13 @@ namespace ASC.Data.Backup.Tasks.Modules
                     var row = data.Rows[i];
                     try
                     {
-                        row[smtp] = helpers.CreateHash2(row[smtp] as string);
-                        row[pop3] = helpers.CreateHash2(row[pop3] as string);
-                        row[token] = helpers.CreateHash2(row[token] as string);
+                        row[smtp] = _helpers.CreateHash2(row[smtp] as string);
+                        row[pop3] = _helpers.CreateHash2(row[pop3] as string);
+                        row[token] = _helpers.CreateHash2(row[token] as string);
                     }
                     catch (Exception ex)
                     {
-                        log.ErrorFormat("Can not prepare data {0}: {1}", row[address] as string, ex);
+                        _logger.ErrorFormat("Can not prepare data {0}: {1}", row[address] as string, ex);
                         data.Rows.Remove(row);
                         i--;
                     }

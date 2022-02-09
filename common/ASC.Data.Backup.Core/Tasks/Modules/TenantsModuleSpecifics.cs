@@ -28,12 +28,12 @@ namespace ASC.Data.Backup.Tasks.Modules
     public class TenantsModuleSpecifics : ModuleSpecificsBase
     {
 
-        private readonly CoreSettings coreSettings;
+        private readonly CoreSettings _coreSettings;
         public TenantsModuleSpecifics(CoreSettings coreSettings, Helpers helpers)
             : base(helpers)
         {
 
-            this.coreSettings = coreSettings;
+            this._coreSettings = coreSettings;
         }
         private readonly TableInfo[] _tables = new[]
             {
@@ -87,7 +87,7 @@ namespace ASC.Data.Backup.Tasks.Modules
             if (table.Name == "tenants_tenants" && string.IsNullOrEmpty(Convert.ToString(row["payment_id"])))
             {
                 var oldTenantID = Convert.ToInt32(row["id"]);
-                columnMapper.SetMapping("tenants_tenants", "payment_id", row["payment_id"], coreSettings.GetKey(oldTenantID));
+                columnMapper.SetMapping("tenants_tenants", "payment_id", row["payment_id"], _coreSettings.GetKey(oldTenantID));
             }
             return base.TryPrepareRow(dump, connection, columnMapper, table, row, out preparedRow);
         }

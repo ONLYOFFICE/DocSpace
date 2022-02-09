@@ -28,13 +28,13 @@ namespace ASC.Data.Backup.Storage
     [Scope]
     public class BackupStorageFactory
     {
-        private ConfigurationExtension Configuration { get; }
-        private DocumentsBackupStorage DocumentsBackupStorage { get; }
-        private DataStoreBackupStorage DataStoreBackupStorage { get; }
-        private ILog Log { get; }
-        private LocalBackupStorage LocalBackupStorage { get; }
-        private ConsumerBackupStorage ConsumerBackupStorage { get; }
-        private TenantManager TenantManager { get; }
+        private readonly ConfigurationExtension _configuration;
+        private readonly DocumentsBackupStorage _documentsBackupStorage;
+        private readonly DataStoreBackupStorage _dataStoreBackupStorage;
+        private readonly ILog _logger;
+        private readonly LocalBackupStorage _localBackupStorage;
+        private readonly ConsumerBackupStorage _consumerBackupStorage;
+        private readonly TenantManager _tenantManager;
 
         public BackupStorageFactory(
             ConsumerBackupStorage consumerBackupStorage,
@@ -45,13 +45,13 @@ namespace ASC.Data.Backup.Storage
             DataStoreBackupStorage dataStoreBackupStorage,
             IOptionsMonitor<ILog> options)
         {
-            Configuration = configuration;
-            DocumentsBackupStorage = documentsBackupStorage;
-            DataStoreBackupStorage = dataStoreBackupStorage;
-            Log = options.CurrentValue;
-            LocalBackupStorage = localBackupStorage;
-            ConsumerBackupStorage = consumerBackupStorage;
-            TenantManager = tenantManager;
+            _configuration = configuration;
+            _documentsBackupStorage = documentsBackupStorage;
+            _dataStoreBackupStorage = dataStoreBackupStorage;
+            _logger = options.CurrentValue;
+            _localBackupStorage = localBackupStorage;
+            _consumerBackupStorage = consumerBackupStorage;
+            _tenantManager = tenantManager;
         }
 
         public IBackupStorage GetBackupStorage(BackupRecord record)
@@ -62,14 +62,14 @@ namespace ASC.Data.Backup.Storage
             }
             catch (Exception error)
             {
-                Log.Error("can't get backup storage for record " + record.Id, error);
+                _logger.Error("can't get backup storage for record " + record.Id, error);
                 return null;
             }
         }
 
         public IBackupStorage GetBackupStorage(BackupStorageType type, int tenantId, Dictionary<string, string> storageParams)
         {
-            var settings = Configuration.GetSetting<BackupSettings>("backup");
+            var settings = _configuration.GetSetting<BackupSettings>("backup");
             var webConfigPath = PathHelper.ToRootedConfigPath(settings.WebConfigs.CurrentPath);
 
 
@@ -78,22 +78,22 @@ namespace ASC.Data.Backup.Storage
                 case BackupStorageType.Documents:
                 case BackupStorageType.ThridpartyDocuments:
                 {
-                    DocumentsBackupStorage.Init(tenantId, webConfigPath);
-                    return DocumentsBackupStorage;
+                    _documentsBackupStorage.Init(tenantId, webConfigPath);
+                    return _documentsBackupStorage;
                 }
                 case BackupStorageType.DataStore:
                 {
-                    DataStoreBackupStorage.Init(tenantId, webConfigPath);
-                    return DataStoreBackupStorage;
+                    _dataStoreBackupStorage.Init(tenantId, webConfigPath);
+                    return _dataStoreBackupStorage;
                 }
                 case BackupStorageType.Local:
-                    return LocalBackupStorage;
+                    return _localBackupStorage;
                 case BackupStorageType.ThirdPartyConsumer:
                 {
                     if (storageParams == null) return null;
-                    TenantManager.SetCurrentTenant(tenantId);
-                    ConsumerBackupStorage.Init(storageParams);
-                    return ConsumerBackupStorage;
+                    _tenantManager.SetCurrentTenant(tenantId);
+                    _consumerBackupStorage.Init(storageParams);
+                    return _consumerBackupStorage;
                 }
                 default:
                     throw new InvalidOperationException("Unknown storage type.");

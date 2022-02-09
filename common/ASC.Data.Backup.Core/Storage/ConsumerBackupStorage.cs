@@ -28,49 +28,51 @@ namespace ASC.Data.Backup.Storage
     [Scope]
     public class ConsumerBackupStorage : IBackupStorage
     {
-        private IDataStore Store { get; set; }
         private const string Domain = "backup";
-        private StorageSettingsHelper StorageSettingsHelper { get; set; }
+
+        private IDataStore _store;
+        private readonly StorageSettingsHelper _storageSettingsHelper;
+
         public ConsumerBackupStorage(StorageSettingsHelper storageSettingsHelper)
         {
-            StorageSettingsHelper = storageSettingsHelper;
+            _storageSettingsHelper = storageSettingsHelper;
         }
         public void Init(IReadOnlyDictionary<string, string> storageParams)
         {
             var settings = new StorageSettings { Module = storageParams["module"], Props = storageParams.Where(r => r.Key != "module").ToDictionary(r => r.Key, r => r.Value) };
-            Store = StorageSettingsHelper.DataStore(settings);
+            _store = _storageSettingsHelper.DataStore(settings);
         }
         public string Upload(string storageBasePath, string localPath, Guid userId)
         {
             using var stream = File.OpenRead(localPath);
             var storagePath = Path.GetFileName(localPath);
-            Store.Save(Domain, storagePath, stream, ACL.Private);
+            _store.Save(Domain, storagePath, stream, ACL.Private);
             return storagePath;
         }
 
         public void Download(string storagePath, string targetLocalPath)
         {
-            using var source = Store.GetReadStream(Domain, storagePath);
+            using var source = _store.GetReadStream(Domain, storagePath);
             using var destination = File.OpenWrite(targetLocalPath);
             source.CopyTo(destination);
         }
 
         public void Delete(string storagePath)
         {
-            if (Store.IsFile(Domain, storagePath))
+            if (_store.IsFile(Domain, storagePath))
             {
-                Store.Delete(Domain, storagePath);
+                _store.Delete(Domain, storagePath);
             }
         }
 
         public bool IsExists(string storagePath)
         {
-            return Store.IsFile(Domain, storagePath);
+            return _store.IsFile(Domain, storagePath);
         }
 
         public string GetPublicLink(string storagePath)
         {
-            return Store.GetInternalUri(Domain, storagePath, TimeSpan.FromDays(1), null).AbsoluteUri;
+            return _store.GetInternalUri(Domain, storagePath, TimeSpan.FromDays(1), null).AbsoluteUri;
         }
     }
 }

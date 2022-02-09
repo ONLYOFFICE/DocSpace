@@ -33,7 +33,7 @@ namespace ASC.Data.Backup.Tasks.Modules
     public class Helpers
     {
 
-        private readonly Guid[] SystemUsers = new[]
+        private readonly Guid[] _systemUsers = new[]
             {
                 Guid.Empty,
                 ConfigurationConstants.CoreSystem.ID,
@@ -42,7 +42,7 @@ namespace ASC.Data.Backup.Tasks.Modules
             };
 
 
-        private readonly Guid[] SystemGroups = new[]
+        private readonly Guid[] _systemGroups = new[]
             {
                 Guid.Empty,
                 UserConstants.LostGroupInfo.ID,
@@ -61,29 +61,29 @@ namespace ASC.Data.Backup.Tasks.Modules
                 new Guid("{BF88953E-3C43-4850-A3FB-B1E43AD53A3E}")  //talk product
             };
 
-        private readonly InstanceCrypto instanceCrypto;
+        private readonly InstanceCrypto _instanceCrypto;
         public Helpers(InstanceCrypto instanceCrypto)
         {
-            this.instanceCrypto = instanceCrypto;
+            _instanceCrypto = instanceCrypto;
         }
         public bool IsEmptyOrSystemUser(string id)
         {
-            return string.IsNullOrEmpty(id) || Guid.TryParse(id, out var g) && SystemUsers.Contains(g);
+            return string.IsNullOrEmpty(id) || Guid.TryParse(id, out var g) && _systemUsers.Contains(g);
         }
 
         public bool IsEmptyOrSystemGroup(string id)
         {
-            return string.IsNullOrEmpty(id) || Guid.TryParse(id, out var g) && SystemGroups.Contains(g);
+            return string.IsNullOrEmpty(id) || Guid.TryParse(id, out var g) && _systemGroups.Contains(g);
         }
 
         public string CreateHash(string s)
         {
-            return !string.IsNullOrEmpty(s) && s.StartsWith("S|") ? instanceCrypto.Encrypt(Crypto.GetV(s.Substring(2), 1, false)) : s;
+            return !string.IsNullOrEmpty(s) && s.StartsWith("S|") ? _instanceCrypto.Encrypt(Crypto.GetV(s.Substring(2), 1, false)) : s;
         }
 
         public string CreateHash2(string s)
         {
-            return !string.IsNullOrEmpty(s) ? "S|" + Crypto.GetV(instanceCrypto.Decrypt(s), 1, true) : s;
+            return !string.IsNullOrEmpty(s) ? "S|" + Crypto.GetV(_instanceCrypto.Decrypt(s), 1, true) : s;
         }
     }
 }

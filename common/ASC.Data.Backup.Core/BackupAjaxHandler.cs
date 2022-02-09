@@ -3,17 +3,17 @@
     [Scope]
     public class BackupAjaxHandler
     {
-        private TenantManager TenantManager { get; }
-        private MessageService MessageService { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private CoreConfiguration CoreConfiguration { get; }
-        private PermissionContext PermissionContext { get; }
-        private SecurityContext SecurityContext { get; }
-        private UserManager UserManager { get; }
-        private TenantExtra TenantExtra { get; }
-        private ConsumerFactory ConsumerFactory { get; }
-        private BackupFileUploadHandler BackupFileUploadHandler { get; }
-        private BackupService BackupService { get; }
+        private readonly TenantManager _tenantManager;
+        private readonly MessageService _messageService;
+        private readonly CoreBaseSettings _coreBaseSettings;
+        private readonly CoreConfiguration _coreConfiguration;
+        private readonly PermissionContext _permissionContext;
+        private readonly SecurityContext _securityContext;
+        private readonly UserManager _userManager;
+        private readonly TenantExtra _tenantExtra;
+        private readonly ConsumerFactory _consumerFactory;
+        private readonly BackupFileUploadHandler _backupFileUploadHandler;
+        private readonly BackupService _backupService;
 
         #region backup
 
@@ -30,17 +30,17 @@
             ConsumerFactory consumerFactory,
             BackupFileUploadHandler backupFileUploadHandler)
         {
-            TenantManager = tenantManager;
-            MessageService = messageService;
-            CoreBaseSettings = coreBaseSettings;
-            CoreConfiguration = coreConfiguration;
-            PermissionContext = permissionContext;
-            SecurityContext = securityContext;
-            UserManager = userManager;
-            TenantExtra = tenantExtra;
-            ConsumerFactory = consumerFactory;
-            BackupFileUploadHandler = backupFileUploadHandler;
-            BackupService = backupService;
+            _tenantManager = tenantManager;
+            _messageService = messageService;
+            _coreBaseSettings = coreBaseSettings;
+            _coreConfiguration = coreConfiguration;
+            _permissionContext = permissionContext;
+            _securityContext = securityContext;
+            _userManager = userManager;
+            _tenantExtra = tenantExtra;
+            _consumerFactory = consumerFactory;
+            _backupFileUploadHandler = backupFileUploadHandler;
+            _backupService = backupService;
         }
 
         public void StartBackup(BackupStorageType storageType, Dictionary<string, string> storageParams, bool backupMail)
@@ -50,7 +50,7 @@
             var backupRequest = new StartBackupRequest
             {
                 TenantId = GetCurrentTenantId(),
-                UserId = SecurityContext.CurrentAccount.ID,
+                UserId = _securityContext.CurrentAccount.ID,
                 BackupMail = backupMail,
                 StorageType = storageType,
                 StorageParams = storageParams
@@ -63,48 +63,48 @@
                     backupRequest.StorageBasePath = storageParams["folderId"];
                     break;
                 case BackupStorageType.Local:
-                    if (!CoreBaseSettings.Standalone) throw new Exception("Access denied");
+                    if (!_coreBaseSettings.Standalone) throw new Exception("Access denied");
                     backupRequest.StorageBasePath = storageParams["filePath"];
                     break;
             }
 
-            MessageService.Send(MessageAction.StartBackupSetting);
+            _messageService.Send(MessageAction.StartBackupSetting);
 
-            BackupService.StartBackup(backupRequest);
+            _backupService.StartBackup(backupRequest);
         }
 
         public BackupProgress GetBackupProgress()
         {
             DemandPermissionsBackup();
 
-            return BackupService.GetBackupProgress(GetCurrentTenantId());
+            return _backupService.GetBackupProgress(GetCurrentTenantId());
         }
 
         public BackupProgress GetBackupProgress(int tenantId)
         {
             DemandPermissionsBackup();
 
-            return BackupService.GetBackupProgress(tenantId);
+            return _backupService.GetBackupProgress(tenantId);
         }
 
         public void DeleteBackup(Guid id)
         {
             DemandPermissionsBackup();
 
-            BackupService.DeleteBackup(id);
+            _backupService.DeleteBackup(id);
         }
 
         public void DeleteAllBackups()
         {
             DemandPermissionsBackup();
 
-            BackupService.DeleteAllBackups(GetCurrentTenantId());
+            _backupService.DeleteAllBackups(GetCurrentTenantId());
         }
 
         public List<BackupHistoryRecord> GetBackupHistory()
         {
             DemandPermissionsBackup();
-            return BackupService.GetBackupHistory(GetCurrentTenantId());
+            return _backupService.GetBackupHistory(GetCurrentTenantId());
         }
 
         public void CreateSchedule(BackupStorageType storageType, Dictionary<string, string> storageParams, int backupsStored, CronParams cronParams, bool backupMail)
@@ -118,7 +118,7 @@
 
             var scheduleRequest = new CreateScheduleRequest
             {
-                TenantId = TenantManager.GetCurrentTenant().TenantId,
+                TenantId = _tenantManager.GetCurrentTenant().TenantId,
                 BackupMail = backupMail,
                 Cron = cronParams.ToString(),
                 NumberOfBackupsStored = backupsStored,
@@ -133,12 +133,12 @@
                     scheduleRequest.StorageBasePath = storageParams["folderId"];
                     break;
                 case BackupStorageType.Local:
-                    if (!CoreBaseSettings.Standalone) throw new Exception("Access denied");
+                    if (!_coreBaseSettings.Standalone) throw new Exception("Access denied");
                     scheduleRequest.StorageBasePath = storageParams["filePath"];
                     break;
             }
 
-            BackupService.CreateSchedule(scheduleRequest);
+            _backupService.CreateSchedule(scheduleRequest);
         }
 
         public Schedule GetSchedule()
@@ -147,7 +147,7 @@
 
             ScheduleResponse response;
 
-            response = BackupService.GetSchedule(GetCurrentTenantId());
+            response = _backupService.GetSchedule(GetCurrentTenantId());
             if (response == null)
             {
                 return null;
@@ -165,9 +165,9 @@
 
             if (response.StorageType == BackupStorageType.CustomCloud)
             {
-                var amazonSettings = CoreConfiguration.GetSection<AmazonS3Settings>();
+                var amazonSettings = _coreConfiguration.GetSection<AmazonS3Settings>();
 
-                var consumer = ConsumerFactory.GetByKey<DataStoreConsumer>("s3");
+                var consumer = _consumerFactory.GetByKey<DataStoreConsumer>("s3");
                 if (!consumer.IsSet)
                 {
                     consumer["acesskey"] = amazonSettings.AccessKeyId;
@@ -183,7 +183,7 @@
 
                 var Schedule = new CreateScheduleRequest
                 {
-                    TenantId = TenantManager.GetCurrentTenant().TenantId,
+                    TenantId = _tenantManager.GetCurrentTenant().TenantId,
                     BackupMail = schedule.BackupMail != null && (bool)schedule.BackupMail,
                     Cron = schedule.CronParams.ToString(),
                     NumberOfBackupsStored = schedule.BackupsStored == null ? 0 : (int)schedule.BackupsStored,
@@ -191,7 +191,7 @@
                     StorageParams = schedule.StorageParams
                 };
 
-                BackupService.CreateSchedule(Schedule);
+                _backupService.CreateSchedule(Schedule);
 
             }
             else if (response.StorageType != BackupStorageType.ThirdPartyConsumer)
@@ -206,13 +206,13 @@
         {
             DemandPermissionsBackup();
 
-            BackupService.DeleteSchedule(GetCurrentTenantId());
+            _backupService.DeleteSchedule(GetCurrentTenantId());
 
         }
 
         private void DemandPermissionsBackup()
         {
-            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             if (!SetupInfo.IsVisibleSettings(ManagementType.Backup.ToString()))
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Backup");
@@ -242,31 +242,31 @@
                 restoreRequest.StorageType = storageType;
                 restoreRequest.FilePathOrId = storageParams["filePath"];
 
-                if (restoreRequest.StorageType == BackupStorageType.Local && !CoreBaseSettings.Standalone)
+                if (restoreRequest.StorageType == BackupStorageType.Local && !_coreBaseSettings.Standalone)
                 {
-                    restoreRequest.FilePathOrId = BackupFileUploadHandler.GetFilePath();
+                    restoreRequest.FilePathOrId = _backupFileUploadHandler.GetFilePath();
                 }
             }
 
-            BackupService.StartRestore(restoreRequest);
+            _backupService.StartRestore(restoreRequest);
         }
 
         public BackupProgress GetRestoreProgress()
         {
             BackupProgress result;
 
-            var tenant = TenantManager.GetCurrentTenant();
-            result = BackupService.GetRestoreProgress(tenant.TenantId);
+            var tenant = _tenantManager.GetCurrentTenant();
+            result = _backupService.GetRestoreProgress(tenant.TenantId);
 
             return result;
         }
 
         private void DemandPermissionsRestore()
         {
-            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             if (!SetupInfo.IsVisibleSettings("Restore") ||
-                (!CoreBaseSettings.Standalone && !TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).Restore))
+                (!_coreBaseSettings.Standalone && !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().TenantId).Restore))
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Restore");
         }
 
@@ -278,8 +278,8 @@
         {
             DemandPermissionsTransfer();
 
-            MessageService.Send(MessageAction.StartTransferSetting);
-            BackupService.StartTransfer(
+            _messageService.Send(MessageAction.StartTransferSetting);
+            _backupService.StartTransfer(
                 new StartTransferRequest
                 {
                     TenantId = GetCurrentTenantId(),
@@ -292,17 +292,17 @@
 
         public BackupProgress GetTransferProgress()
         {
-            return BackupService.GetTransferProgress(GetCurrentTenantId());
+            return _backupService.GetTransferProgress(GetCurrentTenantId());
         }
 
         private void DemandPermissionsTransfer()
         {
-            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+            var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
             if (!SetupInfo.IsVisibleSettings(ManagementType.Migration.ToString())
-                || !currentUser.IsOwner(TenantManager.GetCurrentTenant())
-                || !SetupInfo.IsSecretEmail(currentUser.Email) && !TenantExtra.GetTenantQuota().HasMigration)
+                || !currentUser.IsOwner(_tenantManager.GetCurrentTenant())
+                || !SetupInfo.IsSecretEmail(currentUser.Email) && !_tenantExtra.GetTenantQuota().HasMigration)
                 throw new InvalidOperationException(Resource.ErrorNotAllowedOption);
         }
 
@@ -310,7 +310,7 @@
 
         public string GetTmpFolder()
         {
-            return BackupService.GetTmpFolder();
+            return _backupService.GetTmpFolder();
         }
 
         private static void ValidateCronSettings(CronParams cronParams)
@@ -320,7 +320,7 @@
 
         private int GetCurrentTenantId()
         {
-            return TenantManager.GetCurrentTenant().TenantId;
+            return _tenantManager.GetCurrentTenant().TenantId;
         }
 
         public class Schedule

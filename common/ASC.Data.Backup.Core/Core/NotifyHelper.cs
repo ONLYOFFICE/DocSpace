@@ -28,11 +28,11 @@ namespace ASC.Data.Backup
     [Singletone(Additional = typeof(NotifyHelperExtension))]
     public class NotifyHelper
     {
-        private IServiceProvider ServiceProvider { get; }
+        private readonly IServiceProvider _serviceProvider;
 
         public NotifyHelper(IServiceProvider serviceProvider)
         {
-            ServiceProvider = serviceProvider;
+            _serviceProvider = serviceProvider;
         }
 
         public void SendAboutTransferStart(Tenant tenant, string targetRegion, bool notifyUsers)
@@ -52,7 +52,7 @@ namespace ASC.Data.Backup
 
         public void SendAboutBackupCompleted(Guid userId)
         {
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
             var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper, _) = scopeClass;
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifySource, scope);
@@ -66,7 +66,7 @@ namespace ASC.Data.Backup
 
         public void SendAboutRestoreStarted(Tenant tenant, bool notifyAllUsers)
         {
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
             var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper, _) = scopeClass;
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifySource, scope);
@@ -85,7 +85,7 @@ namespace ASC.Data.Backup
 
         public void SendAboutRestoreCompleted(Tenant tenant, bool notifyAllUsers)
         {
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
@@ -115,7 +115,7 @@ namespace ASC.Data.Backup
 
         private void MigrationNotify(Tenant tenant, INotifyAction action, string region, string url, bool notify, int? toTenantId = null)
         {
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
             var (userManager, studioNotifyHelper, studioNotifySource, _, authManager) = scopeClass;
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifySource, scope);
@@ -182,11 +182,11 @@ namespace ASC.Data.Backup
     [Scope]
     public class NotifyHelperScope
     {
-        private AuthManager AuthManager { get; }
-        private UserManager UserManager { get; }
-        private StudioNotifyHelper StudioNotifyHelper { get; }
-        private StudioNotifySource StudioNotifySource { get; }
-        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        private readonly AuthManager _authManager;
+        private readonly UserManager _userManager;
+        private readonly StudioNotifyHelper _studioNotifyHelper;
+        private readonly StudioNotifySource _studioNotifySource;
+        private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
 
         public NotifyHelperScope(
             UserManager userManager,
@@ -195,11 +195,11 @@ namespace ASC.Data.Backup
             DisplayUserSettingsHelper displayUserSettingsHelper,
             AuthManager authManager)
         {
-            UserManager = userManager;
-            StudioNotifyHelper = studioNotifyHelper;
-            StudioNotifySource = studioNotifySource;
-            DisplayUserSettingsHelper = displayUserSettingsHelper;
-            AuthManager = authManager;
+            _userManager = userManager;
+            _studioNotifyHelper = studioNotifyHelper;
+            _studioNotifySource = studioNotifySource;
+            _displayUserSettingsHelper = displayUserSettingsHelper;
+            _authManager = authManager;
         }
 
         public void Deconstruct(
@@ -210,11 +210,11 @@ namespace ASC.Data.Backup
             out AuthManager authManager
             )
         {
-            userManager = UserManager;
-            studioNotifyHelper = StudioNotifyHelper;
-            studioNotifySource = StudioNotifySource;
-            displayUserSettingsHelper = DisplayUserSettingsHelper;
-            authManager = AuthManager;
+            userManager = _userManager;
+            studioNotifyHelper = _studioNotifyHelper;
+            studioNotifySource = _studioNotifySource;
+            displayUserSettingsHelper = _displayUserSettingsHelper;
+            authManager = _authManager;
         }
     }
 

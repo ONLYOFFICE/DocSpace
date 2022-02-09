@@ -27,8 +27,7 @@ namespace ASC.Data.Backup.Utils
 {
     static class FCKEditorPathUtility
     {
-        private static readonly Regex regex = new Regex("(?<start>\\/data\\/(?>htmleditorfiles|fckcomments))(?<tenant>\\/0\\/|\\/[\\d]+\\/\\d\\d\\/\\d\\d\\/)", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
+        private static readonly Regex s_regex = new Regex("(?<start>\\/data\\/(?>htmleditorfiles|fckcomments))(?<tenant>\\/0\\/|\\/[\\d]+\\/\\d\\d\\/\\d\\d\\/)", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         public static string CorrectStoragePath(string content, int tenant)
         {
@@ -37,7 +36,7 @@ namespace ASC.Data.Backup.Utils
                 return content;
             }
             var tenantPath = "/" + TenantPath.CreatePath(tenant.ToString()) + "/";
-            return regex.Replace(content, (m) => m.Success ? m.Groups["start"] + tenantPath : string.Empty);
+            return s_regex.Replace(content, (m) => m.Success ? m.Groups["start"] + tenantPath : string.Empty);
         }
     }
 }

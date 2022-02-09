@@ -27,20 +27,19 @@ namespace ASC.Data.Backup.Storage
 {
     internal class S3BackupStorage : IBackupStorage
     {
-        private readonly string accessKeyId;
-        private readonly string secretAccessKey;
-        private readonly string bucket;
-        private readonly string region;
-
-        private readonly ILog log;
+        private readonly string _accessKeyId;
+        private readonly string _secretAccessKey;
+        private readonly string _bucket;
+        private readonly string _region;
+        private readonly ILog _logger;
 
         public S3BackupStorage(IOptionsMonitor<ILog> options, string accessKeyId, string secretAccessKey, string bucket, string region)
         {
-            log = options.CurrentValue;
-            this.accessKeyId = accessKeyId;
-            this.secretAccessKey = secretAccessKey;
-            this.bucket = bucket;
-            this.region = region;
+            _logger = options.CurrentValue;
+            _accessKeyId = accessKeyId;
+            _secretAccessKey = secretAccessKey;
+            _bucket = bucket;
+            _region = region;
         }
 
         public string Upload(string storageBasePath, string localPath, Guid userId)
@@ -52,12 +51,12 @@ namespace ASC.Data.Backup.Storage
             else
                 key = string.Concat(storageBasePath.Trim(new char[] { ' ', '/', '\\' }), "/", Path.GetFileName(localPath));
 
-            using (var fileTransferUtility = new TransferUtility(accessKeyId, secretAccessKey, RegionEndpoint.GetBySystemName(region)))
+            using (var fileTransferUtility = new TransferUtility(_accessKeyId, _secretAccessKey, RegionEndpoint.GetBySystemName(_region)))
             {
                 fileTransferUtility.Upload(
                     new TransferUtilityUploadRequest
                     {
-                        BucketName = bucket,
+                        BucketName = _bucket,
                         FilePath = localPath,
                         StorageClass = S3StorageClass.StandardInfrequentAccess,
                         PartSize = 6291456, // 6 MB.
@@ -73,7 +72,7 @@ namespace ASC.Data.Backup.Storage
         {
             var request = new GetObjectRequest
             {
-                BucketName = bucket,
+                BucketName = _bucket,
                 Key = GetKey(storagePath),
             };
 
@@ -87,7 +86,7 @@ namespace ASC.Data.Backup.Storage
             using var s3 = GetClient();
             s3.DeleteObjectAsync(new DeleteObjectRequest
             {
-                BucketName = bucket,
+                BucketName = _bucket,
                 Key = GetKey(storagePath)
             });
         }
@@ -97,13 +96,13 @@ namespace ASC.Data.Backup.Storage
             using var s3 = GetClient();
             try
             {
-                var request = new ListObjectsRequest { BucketName = bucket, Prefix = GetKey(storagePath) };
+                var request = new ListObjectsRequest { BucketName = _bucket, Prefix = GetKey(storagePath) };
                 var response = s3.ListObjectsAsync(request).Result;
                 return response.S3Objects.Count > 0;
             }
             catch (AmazonS3Exception ex)
             {
-                log.Warn(ex);
+                _logger.Warn(ex);
 
                 return false;
             }
@@ -115,7 +114,7 @@ namespace ASC.Data.Backup.Storage
             return s3.GetPreSignedURL(
                 new GetPreSignedUrlRequest
                 {
-                    BucketName = bucket,
+                    BucketName = _bucket,
                     Key = GetKey(storagePath),
                     Expires = DateTime.UtcNow.AddDays(1),
                     Verb = HttpVerb.GET
@@ -130,7 +129,7 @@ namespace ASC.Data.Backup.Storage
 
         private AmazonS3Client GetClient()
         {
-            return new AmazonS3Client(accessKeyId, secretAccessKey, new AmazonS3Config { RegionEndpoint = RegionEndpoint.GetBySystemName(region) });
+            return new AmazonS3Client(_accessKeyId, _secretAccessKey, new AmazonS3Config { RegionEndpoint = RegionEndpoint.GetBySystemName(_region) });
         }
     }
 }

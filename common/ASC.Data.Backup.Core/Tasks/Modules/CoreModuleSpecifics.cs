@@ -27,11 +27,11 @@ namespace ASC.Data.Backup.Tasks.Modules
 {
     public class CoreModuleSpecifics : ModuleSpecificsBase
     {
-        private static readonly Guid ProjectsSourceID = new Guid("6045B68C-2C2E-42db-9E53-C272E814C4AD");
-        private static readonly Guid BookmarksSourceID = new Guid("28B10049-DD20-4f54-B986-873BC14CCFC7");
-        private static readonly Guid ForumsSourceID = new Guid("853B6EB9-73EE-438d-9B09-8FFEEDF36234");
-        private static readonly Guid NewsSourceID = new Guid("6504977C-75AF-4691-9099-084D3DDEEA04");
-        private static readonly Guid BlogsSourceID = new Guid("6A598C74-91AE-437d-A5F4-AD339BD11BB2");
+        private static readonly Guid s_projectsSourceID = new Guid("6045B68C-2C2E-42db-9E53-C272E814C4AD");
+        private static readonly Guid s_bookmarksSourceID = new Guid("28B10049-DD20-4f54-B986-873BC14CCFC7");
+        private static readonly Guid s_forumsSourceID = new Guid("853B6EB9-73EE-438d-9B09-8FFEEDF36234");
+        private static readonly Guid s_newsSourceID = new Guid("6504977C-75AF-4691-9099-084D3DDEEA04");
+        private static readonly Guid s_blogsSourceID = new Guid("6A598C74-91AE-437d-A5F4-AD339BD11BB2");
 
         private const string ForumsNewPostInTopicActionID = "new post in topic";
         private const string ForumsNewPostInThreadActionID = "new post in thread";
@@ -72,10 +72,10 @@ namespace ASC.Data.Backup.Tasks.Modules
             };
 
         private readonly RelationInfo[] _tableRelations;
-        private readonly Helpers helpers;
+        private readonly Helpers _helpers;
         public CoreModuleSpecifics(Helpers helpers) : base(helpers)
         {
-            this.helpers = helpers;
+            _helpers = helpers;
             _tableRelations = new[]
             {
                 new RelationInfo("core_user", "id", "core_acl", "subject", typeof(TenantsModuleSpecifics)),
@@ -112,31 +112,31 @@ namespace ASC.Data.Backup.Tasks.Modules
                                  x => Convert.ToString(x["object"]).StartsWith(CalendarEventAclObjectStart)),
 
                 new RelationInfo("projects_projects", "id", "core_subscription", "object", typeof(ProjectsModuleSpecifics),
-                                 x => ValidateSource(ProjectsSourceID, x)),
+                                 x => ValidateSource(s_projectsSourceID, x)),
 
                 new RelationInfo("projects_tasks", "id", "core_subscription", "object", typeof(ProjectsModuleSpecifics),
-                                 x => ValidateSource(ProjectsSourceID, x) && Convert.ToString(x["object"]).StartsWith("Task_")),
+                                 x => ValidateSource(s_projectsSourceID, x) && Convert.ToString(x["object"]).StartsWith("Task_")),
 
                 new RelationInfo("projects_messages", "id", "core_subscription", "object", typeof(ProjectsModuleSpecifics),
-                                 x => ValidateSource(ProjectsSourceID, x) && Convert.ToString(x["object"]).StartsWith("Message_")),
+                                 x => ValidateSource(s_projectsSourceID, x) && Convert.ToString(x["object"]).StartsWith("Message_")),
 
                 new RelationInfo("projects_milestones", "id", "core_subscription", "object", typeof(ProjectsModuleSpecifics),
-                                 x => ValidateSource(ProjectsSourceID, x) && Convert.ToString(x["object"]).StartsWith("Milestone_")),
+                                 x => ValidateSource(s_projectsSourceID, x) && Convert.ToString(x["object"]).StartsWith("Milestone_")),
 
                 new RelationInfo("bookmarking_bookmark", "ID", "core_subscription", "object", typeof(CommunityModuleSpecifics),
-                                 x => ValidateSource(BookmarksSourceID, x) && !string.IsNullOrEmpty(Convert.ToString(x["object"]))),
+                                 x => ValidateSource(s_bookmarksSourceID, x) && !string.IsNullOrEmpty(Convert.ToString(x["object"]))),
 
                 new RelationInfo("forum_topic", "id", "core_subscription", "object", typeof(CommunityModuleSpecifics),
-                                 x => ValidateSource(ForumsSourceID, x) && Convert.ToString(x["action"]) == ForumsNewPostInTopicActionID && !string.IsNullOrEmpty(Convert.ToString(x["object"]))),
+                                 x => ValidateSource(s_forumsSourceID, x) && Convert.ToString(x["action"]) == ForumsNewPostInTopicActionID && !string.IsNullOrEmpty(Convert.ToString(x["object"]))),
 
                 new RelationInfo("forum_thread", "id", "core_subscription", "object", typeof(CommunityModuleSpecifics),
-                                 x => ValidateSource(ForumsSourceID, x) && Convert.ToString(x["action"]) == ForumsNewPostInThreadActionID && !string.IsNullOrEmpty(Convert.ToString(x["object"]))),
+                                 x => ValidateSource(s_forumsSourceID, x) && Convert.ToString(x["action"]) == ForumsNewPostInThreadActionID && !string.IsNullOrEmpty(Convert.ToString(x["object"]))),
 
                 new RelationInfo("events_feed", "id", "core_subscription", "object", typeof(CommunityModuleSpecifics),
-                                 x => ValidateSource(NewsSourceID, x) && Convert.ToString(x["action"]) == NewsNewCommentActionID && !string.IsNullOrEmpty(Convert.ToString(x["object"]))),
+                                 x => ValidateSource(s_newsSourceID, x) && Convert.ToString(x["action"]) == NewsNewCommentActionID && !string.IsNullOrEmpty(Convert.ToString(x["object"]))),
 
                 new RelationInfo("blogs_posts", "id", "core_subscription", "object", typeof(CommunityModuleSpecifics),
-                                 x => ValidateSource(BlogsSourceID, x) && Convert.ToString(x["action"]) == BlogsNewCommentActionID),
+                                 x => ValidateSource(s_blogsSourceID, x) && Convert.ToString(x["action"]) == BlogsNewCommentActionID),
 
                 new RelationInfo("core_user", "id", "feed_users", "user_id", typeof(CoreModuleSpecifics)),
 
@@ -242,7 +242,7 @@ namespace ASC.Data.Backup.Tasks.Modules
                 || relationList.All(x => x.ChildTable == "core_acl" && x.ChildColumn == "subject"))
             {
                 var strVal = Convert.ToString(value);
-                if (helpers.IsEmptyOrSystemUser(strVal) || helpers.IsEmptyOrSystemGroup(strVal))
+                if (_helpers.IsEmptyOrSystemUser(strVal) || _helpers.IsEmptyOrSystemGroup(strVal))
                     return true;
 
                 foreach (var relation in relationList)

@@ -28,24 +28,26 @@ namespace ASC.Data.Backup.Tasks
     [Scope]
     public class BackupPortalTask : PortalTaskBase
     {
-        private const int MaxLength = 250;
-
-        private const int BatchLimit = 5000;
         public string BackupFilePath { get; private set; }
         public int Limit { get; private set; }
-        private bool Dump { get; set; }
-        private TenantManager TenantManager { get; set; }
-        private TempStream TempStream { get; }
-        private Lazy<BackupsContext> LazyBackupsContext { get; }
-        private BackupsContext BackupRecordContext { get => LazyBackupsContext.Value; }
+
+        private BackupsContext BackupRecordContext { get => _lazyBackupsContext.Value; }
+
+        private const int MaxLength = 250;
+        private const int BatchLimit = 5000;
+        
+        private readonly bool _dump;
+        private readonly TenantManager _tenantManager;
+        private readonly TempStream _tempStream;
+        private readonly Lazy<BackupsContext> _lazyBackupsContext;
 
         public BackupPortalTask(DbFactory dbFactory, DbContextManager<BackupsContext> dbContextManager, IOptionsMonitor<ILog> options, TenantManager tenantManager, CoreBaseSettings coreBaseSettings, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider, TempStream tempStream)
             : base(dbFactory, options, storageFactory, storageFactoryConfig, moduleProvider)
         {
-            Dump = coreBaseSettings.Standalone;
-            TenantManager = tenantManager;
-            TempStream = tempStream;
-            LazyBackupsContext = new Lazy<BackupsContext>(() => dbContextManager.Get(DbFactory.ConnectionStringSettings.ConnectionString));
+            _dump = coreBaseSettings.Standalone;
+            _tenantManager = tenantManager;
+            _tempStream = tempStream;
+            _lazyBackupsContext = new Lazy<BackupsContext>(() => dbContextManager.Get(DbFactory.ConnectionStringSettings.ConnectionString));
         }
 
         public void Init(int tenantId, string fromConfigPath, string toFilePath, int limit)
@@ -60,12 +62,12 @@ namespace ASC.Data.Backup.Tasks
         public override void RunJob()
         {
             Logger.DebugFormat("begin backup {0}", TenantId);
-            TenantManager.SetCurrentTenant(TenantId);
+            _tenantManager.SetCurrentTenant(TenantId);
 
 
-            using (var writer = new ZipWriteOperator(TempStream, BackupFilePath))
+            using (var writer = new ZipWriteOperator(_tempStream, BackupFilePath))
             {
-                if (Dump)
+                if (_dump)
                 {
                     DoDump(writer);
                 }
@@ -114,7 +116,7 @@ namespace ASC.Data.Backup.Tasks
             var stepscount = tables.Count * 4; // (schema + data) * (dump + zip)
             if (ProcessStorage)
             {
-                var tenants = TenantManager.GetTenants(false).Select(r => r.TenantId);
+                var tenants = _tenantManager.GetTenants(false).Select(r => r.TenantId);
                 foreach (var t in tenants)
                 {
                     files.AddRange(GetFiles(t));
@@ -566,7 +568,7 @@ namespace ASC.Data.Backup.Tasks
 
                         Logger.DebugFormat("begin saving table {0}", table.Name);
 
-                        using (var file = TempStream.Create())
+                        using (var file = _tempStream.Create())
                         {
                             data.WriteXml(file, XmlWriteMode.WriteSchema);
                             data.Clear();
@@ -613,7 +615,7 @@ namespace ASC.Data.Backup.Tasks
                     .SelectMany(group => group.Select(file => (object)file.ToXElement()))
                     .ToArray());
 
-            using (var tmpFile = TempStream.Create())
+            using (var tmpFile = _tempStream.Create())
             {
                 restoreInfoXml.WriteTo(tmpFile);
                 writer.WriteEntry(KeyHelper.GetStorageRestoreInfoZipKey(), tmpFile);

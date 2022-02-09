@@ -23,18 +23,18 @@ namespace ASC.Web.Studio.Core.Backup
         private const string BackupTempFolder = "backup";
         private const string BackupFileName = "backup.tmp";
 
-        private PermissionContext PermissionContext { get; }
-        private TempPath TempPath { get; }
-        private TenantManager TenantManager { get; }
+        private readonly PermissionContext _permissionContext;
+        private readonly TempPath _tempPath;
+        private readonly TenantManager _tenantManager;
 
         public BackupFileUploadHandler(
             PermissionContext permissionContext,
             TempPath tempPath,
             TenantManager tenantManager)
         {
-            PermissionContext = permissionContext;
-            TempPath = tempPath;
-            TenantManager = tenantManager;
+            _permissionContext = permissionContext;
+            _tempPath = tempPath;
+            _tenantManager = tenantManager;
         }
 
         public string ProcessUpload(IFormFile file)
@@ -44,7 +44,7 @@ namespace ASC.Web.Studio.Core.Backup
                 return "No files.";
             }
 
-            if (!PermissionContext.CheckPermissions(SecutiryConstants.EditPortalSettings))
+            if (!_permissionContext.CheckPermissions(SecutiryConstants.EditPortalSettings))
             {
                 return "Access denied.";
             }
@@ -78,7 +78,7 @@ namespace ASC.Web.Studio.Core.Backup
 
         internal string GetFilePath()
         {
-            var folder = Path.Combine(TempPath.GetTempPath(), BackupTempFolder, TenantManager.GetCurrentTenant().TenantId.ToString());
+            var folder = Path.Combine(_tempPath.GetTempPath(), BackupTempFolder, _tenantManager.GetCurrentTenant().TenantId.ToString());
 
             if (!Directory.Exists(folder))
             {

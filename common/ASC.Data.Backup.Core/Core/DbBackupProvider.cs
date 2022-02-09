@@ -30,23 +30,23 @@ namespace ASC.Data.Backup
     [Scope]
     public class DbBackupProvider : IBackupProvider
     {
-        private readonly List<string> processedTables = new List<string>();
-        private readonly DbHelper dbHelper;
-        private readonly TempStream tempStream;
+        public string Name => "databases";
 
-        public string Name
-        {
-            get { return "databases"; }
-        }
+        private readonly List<string> _processedTables = new List<string>();
+        private readonly DbHelper _dbHelper;
+        private readonly TempStream _tempStream;
 
         public DbBackupProvider(DbHelper dbHelper, TempStream tempStream)
         {
-            this.dbHelper = dbHelper;
-            this.tempStream = tempStream;
+            _dbHelper = dbHelper;
+            _tempStream = tempStream;
         }
+
+        public event EventHandler<ProgressChangedEventArgs> ProgressChanged;
+
         public IEnumerable<XElement> GetElements(int tenant, string[] configs, IDataWriteOperator writer)
         {
-            processedTables.Clear();
+            _processedTables.Clear();
             var xml = new List<XElement>();
             var connectionKeys = new Dictionary<string, string>();
             foreach (var connectionString in GetConnectionStrings(configs))
@@ -73,21 +73,17 @@ namespace ASC.Data.Backup
 
         public void LoadFrom(IEnumerable<XElement> elements, int tenant, string[] configs, IDataReadOperator reader)
         {
-            processedTables.Clear();
+            _processedTables.Clear();
             foreach (var connectionString in GetConnectionStrings(configs))
             {
                 RestoreDatabase(connectionString, elements, reader);
             }
         }
 
-        public event EventHandler<ProgressChangedEventArgs> ProgressChanged;
-
-
         private void OnProgressChanged(string status, int progress)
         {
             ProgressChanged?.Invoke(this, new ProgressChangedEventArgs(status, progress));
         }
-
 
         private Configuration GetConfiguration(string config)
         {
@@ -137,13 +133,13 @@ namespace ASC.Data.Backup
             var xml = new List<XElement>();
             var errors = 0;
             var timeout = TimeSpan.FromSeconds(1);
-            var tables = dbHelper.GetTables();
+            var tables = _dbHelper.GetTables();
             for (var i = 0; i < tables.Count; i++)
             {
                 var table = tables[i];
                 OnProgressChanged(table, (int)(i / (double)tables.Count * 100));
 
-                if (processedTables.Contains(table, StringComparer.InvariantCultureIgnoreCase))
+                if (_processedTables.Contains(table, StringComparer.InvariantCultureIgnoreCase))
                 {
                     continue;
                 }
@@ -154,7 +150,7 @@ namespace ASC.Data.Backup
                 {
                     try
                     {
-                        dataTable = dbHelper.GetTable(table, tenant);
+                        dataTable = _dbHelper.GetTable(table, tenant);
                         break;
                     }
                     catch
@@ -169,13 +165,13 @@ namespace ASC.Data.Backup
                     if (c.DataType == typeof(DateTime)) c.DateTimeMode = DataSetDateTime.Unspecified;
                 }
 
-                using (var file = tempStream.Create())
+                using (var file = _tempStream.Create())
                 {
                     dataTable.WriteXml(file, XmlWriteMode.WriteSchema);
                     writer.WriteEntry(string.Format("{0}\\{1}\\{2}", Name, connectionString.Name, table).ToLower(), file);
                 }
 
-                processedTables.Add(table);
+                _processedTables.Add(table);
             }
             return xml;
         }
@@ -191,13 +187,13 @@ namespace ASC.Data.Backup
             }
             if (dbElement == null) return;
 
-            var tables = dbHelper.GetTables();
+            var tables = _dbHelper.GetTables();
             for (var i = 0; i < tables.Count; i++)
             {
                 var table = tables[i];
                 OnProgressChanged(table, (int)(i / (double)tables.Count * 100));
 
-                if (processedTables.Contains(table, StringComparer.InvariantCultureIgnoreCase))
+                if (_processedTables.Contains(table, StringComparer.InvariantCultureIgnoreCase))
                 {
                     continue;
                 }
@@ -208,9 +204,9 @@ namespace ASC.Data.Backup
                     {
                         var data = new DataTable();
                         data.ReadXml(stream);
-                        dbHelper.SetTable(data);
+                        _dbHelper.SetTable(data);
                     }
-                    processedTables.Add(table);
+                    _processedTables.Add(table);
                 }
             }
         }

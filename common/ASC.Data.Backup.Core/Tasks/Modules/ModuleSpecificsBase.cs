@@ -37,10 +37,10 @@ namespace ASC.Data.Backup.Tasks.Modules
 
         public abstract IEnumerable<TableInfo> Tables { get; }
         public abstract IEnumerable<RelationInfo> TableRelations { get; }
-        private readonly Helpers helpers;
+        private readonly Helpers _helpers;
         public ModuleSpecificsBase(Helpers helpers)
         {
-            this.helpers = helpers;
+            _helpers = helpers;
         }
         public IEnumerable<TableInfo> GetTablesOrdered()
         {
@@ -219,7 +219,7 @@ namespace ASC.Data.Backup.Tasks.Modules
                 var strVal = Convert.ToString(value);
                 var userMapping = columnMapper.GetUserMapping(strVal);
                 if (userMapping == null)
-                    return helpers.IsEmptyOrSystemUser(strVal);
+                    return _helpers.IsEmptyOrSystemUser(strVal);
                 value = userMapping;
                 return true;
             }

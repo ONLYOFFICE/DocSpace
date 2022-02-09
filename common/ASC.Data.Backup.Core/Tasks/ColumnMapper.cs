@@ -27,9 +27,9 @@ namespace ASC.Data.Backup.Tasks
 {
     public class ColumnMapper
     {
-        private readonly Dictionary<string, object> mappings = new Dictionary<string, object>();
-        private readonly Dictionary<string, object> newMappings = new Dictionary<string, object>();
-        private readonly DateTime now = DateTime.UtcNow;
+        private readonly Dictionary<string, object> _mappings = new Dictionary<string, object>();
+        private readonly Dictionary<string, object> _newMappings = new Dictionary<string, object>();
+        private readonly DateTime _now = DateTime.UtcNow;
 
         public int GetTenantMapping()
         {
@@ -58,7 +58,7 @@ namespace ASC.Data.Backup.Tasks
         {
             if (!column.Value)
             {
-                SetMapping(tableName, column.Key, oldValue, now);
+                SetMapping(tableName, column.Key, oldValue, _now);
                 return;
             }
 
@@ -66,7 +66,7 @@ namespace ASC.Data.Backup.Tasks
             var tenantCreationDate = GetTenantCreationDate();
             if (tenantCreationDate != DateTime.MinValue && newValue > DateTime.MinValue.AddDays(1) && newValue < DateTime.MaxValue.AddDays(-1))
             {
-                newValue = newValue.AddDays(now.Subtract(tenantCreationDate).Days);
+                newValue = newValue.AddDays(_now.Subtract(tenantCreationDate).Days);
             }
 
             SetMapping(tableName, column.Key, oldValue, newValue);
@@ -107,31 +107,31 @@ namespace ASC.Data.Backup.Tasks
 
         public void Commit()
         {
-            foreach (var mapping in newMappings)
+            foreach (var mapping in _newMappings)
             {
-                mappings[mapping.Key] = mapping.Value;
+                _mappings[mapping.Key] = mapping.Value;
             }
-            newMappings.Clear();
+            _newMappings.Clear();
         }
 
         public void Rollback()
         {
-            newMappings.Clear();
+            _newMappings.Clear();
         }
 
         private void AddMappingInternal(string key, object value)
         {
-            newMappings[key] = value;
+            _newMappings[key] = value;
         }
 
         private object GetMappingInternal(string key)
         {
-            return newMappings.ContainsKey(key) ? newMappings[key] : mappings[key];
+            return _newMappings.ContainsKey(key) ? _newMappings[key] : _mappings[key];
         }
 
         private bool HasMapping(string key)
         {
-            return newMappings.ContainsKey(key) || mappings.ContainsKey(key);
+            return _newMappings.ContainsKey(key) || _mappings.ContainsKey(key);
         }
 
         private static string GetMappingKey(string tableName, string columnName)

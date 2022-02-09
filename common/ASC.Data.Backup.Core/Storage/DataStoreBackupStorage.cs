@@ -28,18 +28,19 @@ namespace ASC.Data.Backup.Storage
     [Scope]
     public class DataStoreBackupStorage : IBackupStorage
     {
-        private string WebConfigPath { get; set; }
-        private int Tenant { get; set; }
-        private StorageFactory StorageFactory { get; set; }
+        private string _webConfigPath;
+        private int _tenant;
+        private readonly StorageFactory _storageFactory;
+
         public DataStoreBackupStorage(StorageFactory storageFactory)
         {
 
-            StorageFactory = storageFactory;
+            _storageFactory = storageFactory;
         }
         public void Init(int tenant, string webConfigPath)
         {
-            WebConfigPath = webConfigPath;
-            Tenant = tenant;
+            _webConfigPath = webConfigPath;
+            _tenant = tenant;
         }
         public string Upload(string storageBasePath, string localPath, Guid userId)
         {
@@ -77,7 +78,7 @@ namespace ASC.Data.Backup.Storage
 
         protected virtual IDataStore GetDataStore()
         {
-            return StorageFactory.GetStorage(WebConfigPath, Tenant.ToString(), "backup", null);
+            return _storageFactory.GetStorage(_webConfigPath, _tenant.ToString(), "backup", null);
         }
     }
 }
