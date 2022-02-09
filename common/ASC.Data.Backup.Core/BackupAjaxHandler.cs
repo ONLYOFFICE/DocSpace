@@ -292,6 +292,15 @@ namespace ASC.Data.Backup
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Restore");
         }
 
+        public void DemandPermissionsAutoBackup()
+        {
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+            if (!SetupInfo.IsVisibleSettings("AutoBackup") ||
+                (!CoreBaseSettings.Standalone && !TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).AutoBackup))
+                throw new BillingException(Resource.ErrorNotAllowedOption, "AutoBackup");
+        }
+
         #endregion
 
         #region transfer

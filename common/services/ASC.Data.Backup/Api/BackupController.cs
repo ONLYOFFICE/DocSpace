@@ -269,4 +269,23 @@ public class BackupController
             return false;
         }
     }
+
+    ///<visible>false</visible>
+    [Read("enableAutoBackup")]
+    public bool EnableAutoBackup()
+    {
+        try
+        {
+            if (_coreBaseSettings.Standalone)
+            {
+                _tenantExtra.DemandControlPanelPermission();
+            }
+            _backupHandler.DemandPermissionsAutoBackup();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }
