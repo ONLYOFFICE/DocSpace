@@ -333,7 +333,9 @@ class LanguageAndTimeZone extends React.Component {
       showReminder,
     } = this.state;
 
-    const tooltipLanguageTimeSettings = <LanguageTimeSettingsTooltip t={t} />;
+    const tooltipLanguageTimeSettings = (
+      <LanguageTimeSettingsTooltip theme={theme} t={t} />
+    );
 
     return !isLoadedData ? (
       <Loader className="pageLoader" type="rombs" size="40px" />

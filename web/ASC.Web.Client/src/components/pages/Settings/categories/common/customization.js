@@ -205,7 +205,7 @@ class Customization extends React.Component {
   };
 
   render() {
-    const { t, helpUrlCommonSettings, customNames } = this.props;
+    const { t, helpUrlCommonSettings, customNames, theme } = this.props;
 
     return (
       <StyledComponent>
@@ -254,7 +254,7 @@ class Customization extends React.Component {
           </Text>
           <Box marginProp="16px 0 0 0">
             <Link
-              // color={theme.studio.settings.common.linkColorHelp}
+              color={theme.studio.settings.common.linkColorHelp}
               target="_blank"
               isHovered={true}
               href={helpUrlCommonSettings}
