@@ -7,5 +7,6 @@ module.exports = {
   i18n: {
     defaultLocale: "en",
     locales: availableLocales,
+    defaultNS: "Editor",
   },
 };

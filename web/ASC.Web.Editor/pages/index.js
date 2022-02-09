@@ -11,10 +11,6 @@ import { homepage } from "../package.json";
 import throttle from "lodash/throttle";
 import Loader from "@appserver/components/loader";
 
-// import Toast from "@appserver/components/toast";
-// import toastr from "../../../../../ASC.Web.Client/src/helpers/toastr";
-// import { toast } from "react-toastify";
-
 import {
   getDocServiceUrl,
   getFileInfo,
@@ -33,8 +29,11 @@ import { getUser } from "@appserver/common/api/people";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 
-//import { getDefaultFileName } from "@appserver/files/src/helpers/utils";
-import SharingDialog from "@appserver/files/src/components/panels/SharingDialog";
+import dynamic from "next/dynamic";
+
+// const SharingDialog = dynamic(() => import("files/SharingDialog"), {
+//   ssr: false,
+// });
 
 const LoaderComponent = (
   <Loader
@@ -405,8 +404,8 @@ export default function Home({
     //   docEditor.setSharingSettings({
     //     sharingSettings,
     //   });
-    // }); TODO:
-    console.log("loadUsersRightsList");
+    // });
+    TODO: console.log("loadUsersRightsList");
   };
 
   const onDocumentReady = () => {
@@ -635,32 +634,45 @@ export default function Home({
       //toastr.error(error.message, null, 0, true);
     }
   };
+  const onCancel = () => {
+    setIsVisible(false);
+  };
 
   return (
-    <div style={{ height: "100vh" }}>
+    <>
       <Head>
         <title>{documentTitle}</title>
         <link id="favicon" rel="shortcut icon" href={faviconHref} />
       </Head>
-      {needLoader ? (
-        LoaderComponent
-      ) : (
-        <>
-          <div id="editor"></div>
-          {!isLoaded && LoaderComponent}
-          <Script
-            async
-            defer
-            type={"text/javascript"}
-            id="scriptDocServiceAddress"
-            src={docApiUrl}
-            onLoad={() => onLoad()}
-            onError={() => console.log("error load")}
-            //strategy={"beforeInteractive"}
+      <div style={{ height: "100vh" }}>
+        {/* {isVisible && (
+          <SharingDialog
+            isVisible={isVisible}
+            sharingObject={fileInfo}
+            onCancel={onCancel}
+            onSuccess={loadUsersRightsList}
           />
-        </>
-      )}
-    </div>
+        )} */}
+        {needLoader ? (
+          LoaderComponent
+        ) : (
+          <>
+            <div id="editor"></div>
+            {!isLoaded && LoaderComponent}
+            <Script
+              async
+              defer
+              type={"text/javascript"}
+              id="scriptDocServiceAddress"
+              src={docApiUrl}
+              onLoad={() => onLoad()}
+              onError={() => console.log("error load")}
+              //strategy={"beforeInteractive"}
+            />
+          </>
+        )}
+      </div>
+    </>
   );
 }
 
@@ -670,7 +682,7 @@ export async function getServerSideProps({ params, req, query, locale }) {
   let error = null;
 
   initSSR(headers);
-
+  let cultureName;
   try {
     //const doc = url.indexOf("doc=") !== -1 ? url.split("doc=")[1] : null;??
     const decodedId = query.fileId || query.fileid || null;
@@ -678,7 +690,12 @@ export async function getServerSideProps({ params, req, query, locale }) {
       typeof decodedId === "string" ? encodeURIComponent(decodedId) : decodedId;
 
     if (!fileId) {
-      return { props: { needLoader: true } };
+      return {
+        props: {
+          needLoader: true,
+          ...(await serverSideTranslations(cultureName || locale, ["Editor"])),
+        },
+      };
     }
 
     const doc = query?.doc || null; // TODO: need to check
@@ -689,7 +706,7 @@ export async function getServerSideProps({ params, req, query, locale }) {
 
     const successAuth = !!user;
     const personal = settings?.personal;
-    const { cultureName } = user;
+    const cultureName = user.cultureName;
 
     if (!successAuth && !doc) {
       error = {
@@ -699,7 +716,12 @@ export async function getServerSideProps({ params, req, query, locale }) {
           personal ? "/sign-in" : "/login"
         ),
       };
-      return { props: { error } };
+      return {
+        props: {
+          error,
+          ...(await serverSideTranslations(cultureName || locale, ["Editor"])),
+        },
+      };
     }
 
     let [config, docApiUrl, fileInfo] = await Promise.all([
@@ -750,7 +772,7 @@ export async function getServerSideProps({ params, req, query, locale }) {
       config.editorConfig.mode = "view";
     }
 
-    const actionLink = config?.editorConfig?.actionLink;
+    const actionLink = config?.editorConfig?.actionLink || null;
 
     return {
       props: {
@@ -772,6 +794,11 @@ export async function getServerSideProps({ params, req, query, locale }) {
     };
   } catch (err) {
     error = { errorMessage: typeof err === "string" ? err : err.message };
-    return { props: { error } };
+    return {
+      props: {
+        error,
+        ...(await serverSideTranslations(cultureName || locale, ["Editor"])),
+      },
+    };
   }
 }
