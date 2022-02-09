@@ -184,7 +184,7 @@ namespace ASC.Web.Api.Models
             FillGroups(result, userInfo);
 
             var userInfoLM = userInfo.LastModified.GetHashCode();
-            result.AvatarMax = UserPhotoManager.GetMaxPhotoURL(userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+            result.Avatar = UserPhotoManager.GetBigPhotoURL(userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
 
             return result;
         }
