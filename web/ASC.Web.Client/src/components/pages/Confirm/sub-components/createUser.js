@@ -484,7 +484,7 @@ const Confirm = (props) => {
         </div>
 
         <div className="tooltip">
-          <span className="tooltiptext">Welcome to join our portal!</span>
+          <span className="tooltiptext">{t("WelcomeUser")}</span>
         </div>
       </GreetingContainer>
 
