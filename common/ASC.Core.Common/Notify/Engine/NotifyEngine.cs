@@ -23,623 +23,622 @@
  *
 */
 
-namespace ASC.Notify.Engine
+namespace ASC.Notify.Engine;
+
+public class NotifyEngine : INotifyEngine
 {
-    public class NotifyEngine : INotifyEngine
+    public event Action<NotifyEngine, NotifyRequest, IServiceScope> BeforeTransferRequest;
+    public event Action<NotifyEngine, NotifyRequest, IServiceScope> AfterTransferRequest;
+
+    private readonly ILog _logger;
+    private readonly Context _context;
+    private readonly List<SendMethodWrapper> _sendMethods = new List<SendMethodWrapper>();
+    private readonly Queue<NotifyRequest> _requests = new Queue<NotifyRequest>(1000);
+    private readonly Thread _notifyScheduler;
+    private readonly Thread _notifySender;
+    private readonly AutoResetEvent _requestsEvent = new AutoResetEvent(false);
+    private readonly AutoResetEvent _methodsEvent = new AutoResetEvent(false);
+    private readonly Dictionary<string, IPatternStyler> _stylers = new Dictionary<string, IPatternStyler>();
+    private readonly IPatternFormatter _sysTagFormatter = new ReplacePatternFormatter(@"_#(?<tagName>[A-Z0-9_\-.]+)#_", true);
+    private readonly TimeSpan _defaultSleep = TimeSpan.FromSeconds(10);
+    private readonly IServiceProvider _serviceProvider;
+
+    public NotifyEngine(Context context, IServiceProvider serviceProvider)
     {
-        public event Action<NotifyEngine, NotifyRequest, IServiceScope> BeforeTransferRequest;
-        public event Action<NotifyEngine, NotifyRequest, IServiceScope> AfterTransferRequest;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
 
-        private readonly ILog _logger;
-        private readonly Context _context;
-        private readonly List<SendMethodWrapper> _sendMethods = new List<SendMethodWrapper>();
-        private readonly Queue<NotifyRequest> _requests = new Queue<NotifyRequest>(1000);
-        private readonly Thread _notifyScheduler;
-        private readonly Thread _notifySender;
-        private readonly AutoResetEvent _requestsEvent = new AutoResetEvent(false);
-        private readonly AutoResetEvent _methodsEvent = new AutoResetEvent(false);
-        private readonly Dictionary<string, IPatternStyler> _stylers = new Dictionary<string, IPatternStyler>();
-        private readonly IPatternFormatter _sysTagFormatter = new ReplacePatternFormatter(@"_#(?<tagName>[A-Z0-9_\-.]+)#_", true);
-        private readonly TimeSpan _defaultSleep = TimeSpan.FromSeconds(10);
-        private readonly IServiceProvider _serviceProvider;
+        _logger = serviceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify");
+        _serviceProvider = serviceProvider;
+        _notifyScheduler = new Thread(NotifyScheduler) { IsBackground = true, Name = "NotifyScheduler" };
+        _notifySender = new Thread(NotifySender) { IsBackground = true, Name = "NotifySender" };
+    }
 
-        public NotifyEngine(Context context, IServiceProvider serviceProvider)
+
+    public virtual void QueueRequest(NotifyRequest request, IServiceScope serviceScope)
+    {
+        BeforeTransferRequest?.Invoke(this, request, serviceScope);
+
+        lock (_requests)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            if (!_notifySender.IsAlive)
+            {
+                _notifySender.Start();
+            }
 
-            _logger = serviceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify");
-            _serviceProvider = serviceProvider;
-            _notifyScheduler = new Thread(NotifyScheduler) { IsBackground = true, Name = "NotifyScheduler" };
-            _notifySender = new Thread(NotifySender) { IsBackground = true, Name = "NotifySender" };
+            _requests.Enqueue(request);
         }
 
+        _requestsEvent.Set();
+    }
 
-        public virtual void QueueRequest(NotifyRequest request, IServiceScope serviceScope)
+
+    internal void RegisterSendMethod(Action<DateTime> method, string cron)
+    {
+        if (method == null)
         {
-            BeforeTransferRequest?.Invoke(this, request, serviceScope);
+            throw new ArgumentNullException(nameof(method));
+        }
+        if (string.IsNullOrEmpty(cron))
+        {
+            throw new ArgumentNullException(nameof(cron));
+        }
 
-            lock (_requests)
+        var w = new SendMethodWrapper(method, cron, _logger);
+        lock (_sendMethods)
+        {
+            if (!_notifyScheduler.IsAlive)
             {
-                if (!_notifySender.IsAlive)
+                _notifyScheduler.Start();
+            }
+
+            _sendMethods.Remove(w);
+            _sendMethods.Add(w);
+        }
+        _methodsEvent.Set();
+    }
+
+    internal void UnregisterSendMethod(Action<DateTime> method)
+    {
+        if (method == null)
+        {
+            throw new ArgumentNullException(nameof(method));
+        }
+
+        lock (_sendMethods)
+        {
+            _sendMethods.Remove(new SendMethodWrapper(method, null, _logger));
+        }
+    }
+
+    private void NotifyScheduler(object state)
+    {
+        try
+        {
+            while (true)
+            {
+                var min = DateTime.MaxValue;
+                var now = DateTime.UtcNow;
+                List<SendMethodWrapper> copy;
+                lock (_sendMethods)
                 {
-                    _notifySender.Start();
+                    copy = _sendMethods.ToList();
                 }
 
-                _requests.Enqueue(request);
-            }
-
-            _requestsEvent.Set();
-        }
-
-
-        internal void RegisterSendMethod(Action<DateTime> method, string cron)
-        {
-            if (method == null)
-            {
-                throw new ArgumentNullException(nameof(method));
-            }
-            if (string.IsNullOrEmpty(cron))
-            {
-                throw new ArgumentNullException(nameof(cron));
-            }
-
-            var w = new SendMethodWrapper(method, cron, _logger);
-            lock (_sendMethods)
-            {
-                if (!_notifyScheduler.IsAlive)
+                foreach (var w in copy)
                 {
-                    _notifyScheduler.Start();
-                }
-
-                _sendMethods.Remove(w);
-                _sendMethods.Add(w);
-            }
-            _methodsEvent.Set();
-        }
-
-        internal void UnregisterSendMethod(Action<DateTime> method)
-        {
-            if (method == null)
-            {
-                throw new ArgumentNullException(nameof(method));
-            }
-
-            lock (_sendMethods)
-            {
-                _sendMethods.Remove(new SendMethodWrapper(method, null, _logger));
-            }
-        }
-
-        private void NotifyScheduler(object state)
-        {
-            try
-            {
-                while (true)
-                {
-                    var min = DateTime.MaxValue;
-                    var now = DateTime.UtcNow;
-                    List<SendMethodWrapper> copy;
-                    lock (_sendMethods)
+                    if (!w.ScheduleDate.HasValue)
                     {
-                        copy = _sendMethods.ToList();
-                    }
-
-                    foreach (var w in copy)
-                    {
-                        if (!w.ScheduleDate.HasValue)
+                        lock (_sendMethods)
                         {
-                            lock (_sendMethods)
-                            {
-                                _sendMethods.Remove(w);
-                            }
-                        }
-
-                        if (w.ScheduleDate.Value <= now)
-                        {
-                            try
-                            {
-                                w.InvokeSendMethod(now);
-                            }
-                            catch (Exception error)
-                            {
-                                _logger.Error(error);
-                            }
-                            w.UpdateScheduleDate(now);
-                        }
-
-                        if (w.ScheduleDate.Value > now && w.ScheduleDate.Value < min)
-                        {
-                            min = w.ScheduleDate.Value;
+                            _sendMethods.Remove(w);
                         }
                     }
 
-                    var wait = min != DateTime.MaxValue ? min - DateTime.UtcNow : _defaultSleep;
-
-                    if (wait < _defaultSleep)
+                    if (w.ScheduleDate.Value <= now)
                     {
-                        wait = _defaultSleep;
-                    }
-                    else if (wait.Ticks > int.MaxValue)
-                    {
-                        wait = TimeSpan.FromTicks(int.MaxValue);
-                    }
-
-                    _methodsEvent.WaitOne(wait, false);
-                }
-            }
-            catch (ThreadAbortException)
-            {
-                return;
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e);
-            }
-        }
-
-
-        private void NotifySender(object state)
-        {
-            try
-            {
-                while (true)
-                {
-                    NotifyRequest request = null;
-                    lock (_requests)
-                    {
-                        if (_requests.Any())
-                        {
-                            request = _requests.Dequeue();
-                        }
-                    }
-                    if (request != null)
-                    {
-                        using var scope = _serviceProvider.CreateScope();
-                        AfterTransferRequest?.Invoke(this, request, scope);
                         try
                         {
-                            SendNotify(request, scope);
+                            w.InvokeSendMethod(now);
                         }
-                        catch (Exception e)
+                        catch (Exception error)
                         {
-                            _logger.Error(e);
+                            _logger.Error(error);
                         }
+                        w.UpdateScheduleDate(now);
                     }
-                    else
+
+                    if (w.ScheduleDate.Value > now && w.ScheduleDate.Value < min)
                     {
-                        _requestsEvent.WaitOne();
+                        min = w.ScheduleDate.Value;
                     }
                 }
-            }
-            catch (ThreadAbortException)
-            {
-                return;
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e);
-            }
-        }
 
+                var wait = min != DateTime.MaxValue ? min - DateTime.UtcNow : _defaultSleep;
 
-        private NotifyResult SendNotify(NotifyRequest request, IServiceScope serviceScope)
-        {
-            var sendResponces = new List<SendResponse>();
-
-            var response = CheckPreventInterceptors(request, InterceptorPlace.Prepare, serviceScope, null);
-            if (response != null)
-            {
-                sendResponces.Add(response);
-            }
-            else
-            {
-                sendResponces.AddRange(SendGroupNotify(request, serviceScope));
-            }
-
-            var result = sendResponces == null || sendResponces.Count == 0
-                ? new NotifyResult(SendResult.OK, sendResponces)
-                : new NotifyResult(sendResponces.Aggregate((SendResult)0, (s, r) => s |= r.Result), sendResponces);
-            _logger.Debug(result);
-
-            return result;
-        }
-
-        private SendResponse CheckPreventInterceptors(NotifyRequest request, InterceptorPlace place, IServiceScope serviceScope, string sender)
-        {
-            return request.Intercept(place, serviceScope) ? new SendResponse(request.NotifyAction, sender, request.Recipient, SendResult.Prevented) : null;
-        }
-
-        private List<SendResponse> SendGroupNotify(NotifyRequest request, IServiceScope serviceScope)
-        {
-            var responces = new List<SendResponse>();
-            SendGroupNotify(request, responces, serviceScope);
-
-            return responces;
-        }
-
-        private void SendGroupNotify(NotifyRequest request, List<SendResponse> responces, IServiceScope serviceScope)
-        {
-            if (request.Recipient is IDirectRecipient)
-            {
-                var subscriptionSource = request.GetSubscriptionProvider(serviceScope);
-                if (!request.IsNeedCheckSubscriptions || !subscriptionSource.IsUnsubscribe(request.Recipient as IDirectRecipient, request.NotifyAction, request.ObjectID))
+                if (wait < _defaultSleep)
                 {
-                    var directresponses = new List<SendResponse>(1);
+                    wait = _defaultSleep;
+                }
+                else if (wait.Ticks > int.MaxValue)
+                {
+                    wait = TimeSpan.FromTicks(int.MaxValue);
+                }
+
+                _methodsEvent.WaitOne(wait, false);
+            }
+        }
+        catch (ThreadAbortException)
+        {
+            return;
+        }
+        catch (Exception e)
+        {
+            _logger.Error(e);
+        }
+    }
+
+
+    private void NotifySender(object state)
+    {
+        try
+        {
+            while (true)
+            {
+                NotifyRequest request = null;
+                lock (_requests)
+                {
+                    if (_requests.Any())
+                    {
+                        request = _requests.Dequeue();
+                    }
+                }
+                if (request != null)
+                {
+                    using var scope = _serviceProvider.CreateScope();
+                    AfterTransferRequest?.Invoke(this, request, scope);
                     try
                     {
-                        directresponses = SendDirectNotify(request, serviceScope);
+                        SendNotify(request, scope);
                     }
-                    catch (Exception exc)
+                    catch (Exception e)
                     {
-                        directresponses.Add(new SendResponse(request.NotifyAction, request.Recipient, exc));
-                    }
-                    responces.AddRange(directresponses);
-                }
-            }
-            else
-            {
-                if (request.Recipient is IRecipientsGroup)
-                {
-                    var checkresp = CheckPreventInterceptors(request, InterceptorPlace.GroupSend, serviceScope, null);
-                    if (checkresp != null)
-                    {
-                        responces.Add(checkresp);
-                    }
-                    else
-                    {
-                        var recipientProvider = request.GetRecipientsProvider(serviceScope);
-
-                        try
-                        {
-                            var recipients = recipientProvider.GetGroupEntries(request.Recipient as IRecipientsGroup) ?? new IRecipient[0];
-                            foreach (var recipient in recipients)
-                            {
-                                try
-                                {
-                                    var newRequest = request.Split(recipient);
-                                    SendGroupNotify(newRequest, responces, serviceScope);
-                                }
-                                catch (Exception exc)
-                                {
-                                    responces.Add(new SendResponse(request.NotifyAction, request.Recipient, exc));
-                                }
-                            }
-                        }
-                        catch (Exception exc)
-                        {
-                            responces.Add(new SendResponse(request.NotifyAction, request.Recipient, exc) { Result = SendResult.IncorrectRecipient });
-                        }
+                        _logger.Error(e);
                     }
                 }
                 else
                 {
-                    responces.Add(new SendResponse(request.NotifyAction, request.Recipient, null)
-                    {
-                        Result = SendResult.IncorrectRecipient,
-                        Exception = new NotifyException("recipient may be IRecipientsGroup or IDirectRecipient")
-                    });
+                    _requestsEvent.WaitOne();
                 }
             }
         }
-
-        private List<SendResponse> SendDirectNotify(NotifyRequest request, IServiceScope serviceScope)
+        catch (ThreadAbortException)
         {
-            if (!(request.Recipient is IDirectRecipient))
-            {
-                throw new ArgumentException("request.Recipient not IDirectRecipient", "request");
-            }
+            return;
+        }
+        catch (Exception e)
+        {
+            _logger.Error(e);
+        }
+    }
 
-            var responses = new List<SendResponse>();
-            var response = CheckPreventInterceptors(request, InterceptorPlace.DirectSend, serviceScope, null);
-            if (response != null)
-            {
-                responses.Add(response);
 
-                return responses;
-            }
+    private NotifyResult SendNotify(NotifyRequest request, IServiceScope serviceScope)
+    {
+        var sendResponces = new List<SendResponse>();
 
-            try
-            {
-                PrepareRequestFillSenders(request, serviceScope);
-                PrepareRequestFillPatterns(request, serviceScope);
-                PrepareRequestFillTags(request, serviceScope);
-            }
-            catch (Exception ex)
-            {
-                responses.Add(new SendResponse(request.NotifyAction, null, request.Recipient, SendResult.Impossible));
-                _logger.Error("Prepare", ex);
-            }
+        var response = CheckPreventInterceptors(request, InterceptorPlace.Prepare, serviceScope, null);
+        if (response != null)
+        {
+            sendResponces.Add(response);
+        }
+        else
+        {
+            sendResponces.AddRange(SendGroupNotify(request, serviceScope));
+        }
 
-            if (request.SenderNames != null && request.SenderNames.Length > 0)
+        var result = sendResponces == null || sendResponces.Count == 0
+            ? new NotifyResult(SendResult.OK, sendResponces)
+            : new NotifyResult(sendResponces.Aggregate((SendResult)0, (s, r) => s |= r.Result), sendResponces);
+        _logger.Debug(result);
+
+        return result;
+    }
+
+    private SendResponse CheckPreventInterceptors(NotifyRequest request, InterceptorPlace place, IServiceScope serviceScope, string sender)
+    {
+        return request.Intercept(place, serviceScope) ? new SendResponse(request.NotifyAction, sender, request.Recipient, SendResult.Prevented) : null;
+    }
+
+    private List<SendResponse> SendGroupNotify(NotifyRequest request, IServiceScope serviceScope)
+    {
+        var responces = new List<SendResponse>();
+        SendGroupNotify(request, responces, serviceScope);
+
+        return responces;
+    }
+
+    private void SendGroupNotify(NotifyRequest request, List<SendResponse> responces, IServiceScope serviceScope)
+    {
+        if (request.Recipient is IDirectRecipient)
+        {
+            var subscriptionSource = request.GetSubscriptionProvider(serviceScope);
+            if (!request.IsNeedCheckSubscriptions || !subscriptionSource.IsUnsubscribe(request.Recipient as IDirectRecipient, request.NotifyAction, request.ObjectID))
             {
-                foreach (var sendertag in request.SenderNames)
+                var directresponses = new List<SendResponse>(1);
+                try
                 {
-                    var channel = _context.NotifyService.GetSender(sendertag);
-                    if (channel != null)
+                    directresponses = SendDirectNotify(request, serviceScope);
+                }
+                catch (Exception exc)
+                {
+                    directresponses.Add(new SendResponse(request.NotifyAction, request.Recipient, exc));
+                }
+                responces.AddRange(directresponses);
+            }
+        }
+        else
+        {
+            if (request.Recipient is IRecipientsGroup)
+            {
+                var checkresp = CheckPreventInterceptors(request, InterceptorPlace.GroupSend, serviceScope, null);
+                if (checkresp != null)
+                {
+                    responces.Add(checkresp);
+                }
+                else
+                {
+                    var recipientProvider = request.GetRecipientsProvider(serviceScope);
+
+                    try
                     {
-                        try
+                        var recipients = recipientProvider.GetGroupEntries(request.Recipient as IRecipientsGroup) ?? new IRecipient[0];
+                        foreach (var recipient in recipients)
                         {
-                            response = SendDirectNotify(request, channel, serviceScope);
-                        }
-                        catch (Exception exc)
-                        {
-                            response = new SendResponse(request.NotifyAction, channel.SenderName, request.Recipient, exc);
+                            try
+                            {
+                                var newRequest = request.Split(recipient);
+                                SendGroupNotify(newRequest, responces, serviceScope);
+                            }
+                            catch (Exception exc)
+                            {
+                                responces.Add(new SendResponse(request.NotifyAction, request.Recipient, exc));
+                            }
                         }
                     }
-                    else
+                    catch (Exception exc)
                     {
-                        response = new SendResponse(request.NotifyAction, sendertag, request.Recipient, new NotifyException(string.Format("Not registered sender \"{0}\".", sendertag)));
+                        responces.Add(new SendResponse(request.NotifyAction, request.Recipient, exc) { Result = SendResult.IncorrectRecipient });
                     }
-                    responses.Add(response);
                 }
             }
             else
             {
-                response = new SendResponse(request.NotifyAction, request.Recipient, new NotifyException("Notice hasn't any senders."));
-                responses.Add(response);
+                responces.Add(new SendResponse(request.NotifyAction, request.Recipient, null)
+                {
+                    Result = SendResult.IncorrectRecipient,
+                    Exception = new NotifyException("recipient may be IRecipientsGroup or IDirectRecipient")
+                });
             }
+        }
+    }
+
+    private List<SendResponse> SendDirectNotify(NotifyRequest request, IServiceScope serviceScope)
+    {
+        if (!(request.Recipient is IDirectRecipient))
+        {
+            throw new ArgumentException("request.Recipient not IDirectRecipient", "request");
+        }
+
+        var responses = new List<SendResponse>();
+        var response = CheckPreventInterceptors(request, InterceptorPlace.DirectSend, serviceScope, null);
+        if (response != null)
+        {
+            responses.Add(response);
+
             return responses;
         }
 
-        private SendResponse SendDirectNotify(NotifyRequest request, ISenderChannel channel, IServiceScope serviceScope)
+        try
         {
-            if (!(request.Recipient is IDirectRecipient))
-            {
-                throw new ArgumentException("request.Recipient not IDirectRecipient", nameof(request));
-            }
-
-            request.CurrentSender = channel.SenderName;
-
-            var oops = CreateNoticeMessageFromNotifyRequest(request, channel.SenderName, serviceScope, out var noticeMessage);
-            if (oops != null)
-            {
-                return oops;
-            }
-
-            request.CurrentMessage = noticeMessage;
-            var preventresponse = CheckPreventInterceptors(request, InterceptorPlace.MessageSend, serviceScope, channel.SenderName);
-            if (preventresponse != null)
-            {
-                return preventresponse;
-            }
-
-            channel.SendAsync(noticeMessage);
-
-            return new SendResponse(noticeMessage, channel.SenderName, SendResult.Inprogress);
+            PrepareRequestFillSenders(request, serviceScope);
+            PrepareRequestFillPatterns(request, serviceScope);
+            PrepareRequestFillTags(request, serviceScope);
+        }
+        catch (Exception ex)
+        {
+            responses.Add(new SendResponse(request.NotifyAction, null, request.Recipient, SendResult.Impossible));
+            _logger.Error("Prepare", ex);
         }
 
-        private SendResponse CreateNoticeMessageFromNotifyRequest(NotifyRequest request, string sender, IServiceScope serviceScope, out NoticeMessage noticeMessage)
+        if (request.SenderNames != null && request.SenderNames.Length > 0)
         {
-            if (request == null)
+            foreach (var sendertag in request.SenderNames)
             {
-                throw new ArgumentNullException(nameof(request));
+                var channel = _context.NotifyService.GetSender(sendertag);
+                if (channel != null)
+                {
+                    try
+                    {
+                        response = SendDirectNotify(request, channel, serviceScope);
+                    }
+                    catch (Exception exc)
+                    {
+                        response = new SendResponse(request.NotifyAction, channel.SenderName, request.Recipient, exc);
+                    }
+                }
+                else
+                {
+                    response = new SendResponse(request.NotifyAction, sendertag, request.Recipient, new NotifyException(string.Format("Not registered sender \"{0}\".", sendertag)));
+                }
+                responses.Add(response);
+            }
+        }
+        else
+        {
+            response = new SendResponse(request.NotifyAction, request.Recipient, new NotifyException("Notice hasn't any senders."));
+            responses.Add(response);
+        }
+        return responses;
+    }
+
+    private SendResponse SendDirectNotify(NotifyRequest request, ISenderChannel channel, IServiceScope serviceScope)
+    {
+        if (!(request.Recipient is IDirectRecipient))
+        {
+            throw new ArgumentException("request.Recipient not IDirectRecipient", nameof(request));
+        }
+
+        request.CurrentSender = channel.SenderName;
+
+        var oops = CreateNoticeMessageFromNotifyRequest(request, channel.SenderName, serviceScope, out var noticeMessage);
+        if (oops != null)
+        {
+            return oops;
+        }
+
+        request.CurrentMessage = noticeMessage;
+        var preventresponse = CheckPreventInterceptors(request, InterceptorPlace.MessageSend, serviceScope, channel.SenderName);
+        if (preventresponse != null)
+        {
+            return preventresponse;
+        }
+
+        channel.SendAsync(noticeMessage);
+
+        return new SendResponse(noticeMessage, channel.SenderName, SendResult.Inprogress);
+    }
+
+    private SendResponse CreateNoticeMessageFromNotifyRequest(NotifyRequest request, string sender, IServiceScope serviceScope, out NoticeMessage noticeMessage)
+    {
+        if (request == null)
+        {
+            throw new ArgumentNullException(nameof(request));
+        }
+
+        var recipientProvider = request.GetRecipientsProvider(serviceScope);
+        var recipient = request.Recipient as IDirectRecipient;
+
+        var addresses = recipient.Addresses;
+        if (addresses == null || !addresses.Any())
+        {
+            addresses = recipientProvider.GetRecipientAddresses(request.Recipient as IDirectRecipient, sender);
+            recipient = new DirectRecipient(request.Recipient.ID, request.Recipient.Name, addresses);
+        }
+
+        recipient = recipientProvider.FilterRecipientAddresses(recipient);
+        noticeMessage = request.CreateMessage(recipient);
+
+        addresses = recipient.Addresses;
+        if (addresses == null || !addresses.Any(a => !string.IsNullOrEmpty(a)))
+        {
+            //checking addresses
+            return new SendResponse(request.NotifyAction, sender, recipient,
+                new NotifyException(string.Format("For recipient {0} by sender {1} no one addresses getted.", recipient, sender)));
+        }
+
+        var pattern = request.GetSenderPattern(sender);
+        if (pattern == null)
+        {
+            return new SendResponse(request.NotifyAction, sender, recipient,
+                new NotifyException(string.Format("For action \"{0}\" by sender \"{1}\" no one patterns getted.", request.NotifyAction, sender)));
+        }
+
+        noticeMessage.Pattern = pattern;
+        noticeMessage.ContentType = pattern.ContentType;
+        noticeMessage.AddArgument(request.Arguments.ToArray());
+        var patternProvider = request.GetPatternProvider(serviceScope);
+
+        var formatter = patternProvider.GetFormatter(pattern);
+        try
+        {
+            if (formatter != null)
+            {
+                formatter.FormatMessage(noticeMessage, noticeMessage.Arguments);
+            }
+            _sysTagFormatter.FormatMessage(
+                noticeMessage, new[]
+                                       {
+                                               new TagValue(Context.SysRecipientId, request.Recipient.ID),
+                                               new TagValue(Context.SysRecipientName, request.Recipient.Name),
+                                               new TagValue(Context.SysRecipientAddress, addresses != null && addresses.Length > 0 ? addresses[0] : null)
+                                       }
+                );
+            //Do styling here
+            if (!string.IsNullOrEmpty(pattern.Styler))
+            {
+                //We need to run through styler before templating
+                StyleMessage(serviceScope, noticeMessage);
+            }
+        }
+        catch (Exception exc)
+        {
+            return new SendResponse(request.NotifyAction, sender, recipient, exc);
+        }
+        return null;
+    }
+
+    private void StyleMessage(IServiceScope scope, NoticeMessage message)
+    {
+        try
+        {
+            if (!_stylers.ContainsKey(message.Pattern.Styler))
+            {
+                if (scope.ServiceProvider.GetService(Type.GetType(message.Pattern.Styler, true)) is IPatternStyler styler)
+                {
+                    _stylers.Add(message.Pattern.Styler, styler);
+                }
+            }
+            _stylers[message.Pattern.Styler].ApplyFormating(message);
+        }
+        catch (Exception exc)
+        {
+            _logger.Warn("error styling message", exc);
+        }
+    }
+
+    private void PrepareRequestFillSenders(NotifyRequest request, IServiceScope serviceScope)
+    {
+        if (request.SenderNames == null)
+        {
+            var subscriptionProvider = request.GetSubscriptionProvider(serviceScope);
+
+            var senderNames = new List<string>();
+            senderNames.AddRange(subscriptionProvider.GetSubscriptionMethod(request.NotifyAction, request.Recipient) ?? new string[0]);
+            senderNames.AddRange(request.Arguments.OfType<AdditionalSenderTag>().Select(tag => (string)tag.Value));
+
+            request.SenderNames = senderNames.ToArray();
+        }
+    }
+
+    private void PrepareRequestFillPatterns(NotifyRequest request, IServiceScope serviceScope)
+    {
+        if (request.Patterns == null)
+        {
+            request.Patterns = new IPattern[request.SenderNames.Length];
+            if (request.Patterns.Length == 0)
+            {
+                return;
             }
 
-            var recipientProvider = request.GetRecipientsProvider(serviceScope);
-            var recipient = request.Recipient as IDirectRecipient;
-
-            var addresses = recipient.Addresses;
-            if (addresses == null || !addresses.Any())
+            var apProvider = request.GetPatternProvider(serviceScope);
+            for (var i = 0; i < request.SenderNames.Length; i++)
             {
-                addresses = recipientProvider.GetRecipientAddresses(request.Recipient as IDirectRecipient, sender);
-                recipient = new DirectRecipient(request.Recipient.ID, request.Recipient.Name, addresses);
+                var senderName = request.SenderNames[i];
+                IPattern pattern = null;
+                if (apProvider.GetPatternMethod != null)
+                {
+                    pattern = apProvider.GetPatternMethod(request.NotifyAction, senderName, request);
+                }
+
+                if (pattern == null)
+                {
+                    pattern = apProvider.GetPattern(request.NotifyAction, senderName);
+                }
+
+                request.Patterns[i] = pattern ?? throw new NotifyException(
+                    string.Format("For action \"{0}\" by sender \"{1}\" no one patterns getted.", request.NotifyAction.ID, senderName));
             }
+        }
+    }
 
-            recipient = recipientProvider.FilterRecipientAddresses(recipient);
-            noticeMessage = request.CreateMessage(recipient);
-
-            addresses = recipient.Addresses;
-            if (addresses == null || !addresses.Any(a => !string.IsNullOrEmpty(a)))
+    private void PrepareRequestFillTags(NotifyRequest request, IServiceScope serviceScope)
+    {
+        var patternProvider = request.GetPatternProvider(serviceScope);
+        foreach (var pattern in request.Patterns)
+        {
+            IPatternFormatter formatter;
+            try
             {
-                //checking addresses
-                return new SendResponse(request.NotifyAction, sender, recipient, 
-                    new NotifyException(string.Format("For recipient {0} by sender {1} no one addresses getted.", recipient, sender)));
+                formatter = patternProvider.GetFormatter(pattern);
             }
-
-            var pattern = request.GetSenderPattern(sender);
-            if (pattern == null)
+            catch (Exception exc)
             {
-                return new SendResponse(request.NotifyAction, sender, recipient, 
-                    new NotifyException(string.Format("For action \"{0}\" by sender \"{1}\" no one patterns getted.", request.NotifyAction, sender)));
+                throw new NotifyException(string.Format("For pattern \"{0}\" formatter not instanced.", pattern), exc);
             }
-
-            noticeMessage.Pattern = pattern;
-            noticeMessage.ContentType = pattern.ContentType;
-            noticeMessage.AddArgument(request.Arguments.ToArray());
-            var patternProvider = request.GetPatternProvider(serviceScope);
-
-            var formatter = patternProvider.GetFormatter(pattern);
+            var tags = new string[0];
             try
             {
                 if (formatter != null)
                 {
-                    formatter.FormatMessage(noticeMessage, noticeMessage.Arguments);
-                }
-                _sysTagFormatter.FormatMessage(
-                    noticeMessage, new[]
-                                           {
-                                               new TagValue(Context.SysRecipientId, request.Recipient.ID),
-                                               new TagValue(Context.SysRecipientName, request.Recipient.Name),
-                                               new TagValue(Context.SysRecipientAddress, addresses != null && addresses.Length > 0 ? addresses[0] : null)
-                                           }
-                    );
-                //Do styling here
-                if (!string.IsNullOrEmpty(pattern.Styler))
-                {
-                    //We need to run through styler before templating
-                    StyleMessage(serviceScope, noticeMessage);
+                    tags = formatter.GetTags(pattern) ?? Array.Empty<string>();
                 }
             }
             catch (Exception exc)
             {
-                return new SendResponse(request.NotifyAction, sender, recipient, exc);
+                throw new NotifyException(string.Format("Get tags from formatter of pattern \"{0}\" failed.", pattern), exc);
             }
-            return null;
+
+            foreach (var tag in tags.Where(tag => !request.Arguments.Exists(tagValue => Equals(tagValue.Tag, tag)) && !request.RequaredTags.Exists(rtag => Equals(rtag, tag))))
+            {
+                request.RequaredTags.Add(tag);
+            }
+        }
+    }
+
+
+    private class SendMethodWrapper
+    {
+        public DateTime? ScheduleDate { get; private set; }
+
+        private readonly object _locker = new object();
+        private readonly CronExpression _cronExpression;
+        private readonly Action<DateTime> _method;
+        public readonly ILog _logger;
+
+        public SendMethodWrapper(Action<DateTime> method, string cron, ILog log)
+        {
+            _method = method;
+            _logger = log;
+
+            if (!string.IsNullOrEmpty(cron))
+            {
+                _cronExpression = new CronExpression(cron);
+            }
+
+            UpdateScheduleDate(DateTime.UtcNow);
         }
 
-        private void StyleMessage(IServiceScope scope, NoticeMessage message)
+        public void UpdateScheduleDate(DateTime d)
         {
             try
             {
-                if (!_stylers.ContainsKey(message.Pattern.Styler))
+                if (_cronExpression != null)
                 {
-                    if (scope.ServiceProvider.GetService(Type.GetType(message.Pattern.Styler, true)) is IPatternStyler styler)
-                    {
-                        _stylers.Add(message.Pattern.Styler, styler);
-                    }
+                    ScheduleDate = _cronExpression.GetTimeAfter(d);
                 }
-                _stylers[message.Pattern.Styler].ApplyFormating(message);
             }
-            catch (Exception exc)
+            catch (Exception e)
             {
-                _logger.Warn("error styling message", exc);
+                _logger.Error(e);
             }
         }
 
-        private void PrepareRequestFillSenders(NotifyRequest request, IServiceScope serviceScope)
+        public void InvokeSendMethod(DateTime d)
         {
-            if (request.SenderNames == null)
+            lock (_locker)
             {
-                var subscriptionProvider = request.GetSubscriptionProvider(serviceScope);
-
-                var senderNames = new List<string>();
-                senderNames.AddRange(subscriptionProvider.GetSubscriptionMethod(request.NotifyAction, request.Recipient) ?? new string[0]);
-                senderNames.AddRange(request.Arguments.OfType<AdditionalSenderTag>().Select(tag => (string)tag.Value));
-
-                request.SenderNames = senderNames.ToArray();
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        _method(d);
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.Error(e);
+                    }
+                }).Wait();
             }
         }
 
-        private void PrepareRequestFillPatterns(NotifyRequest request, IServiceScope serviceScope)
+        public override bool Equals(object obj)
         {
-            if (request.Patterns == null)
-            {
-                request.Patterns = new IPattern[request.SenderNames.Length];
-                if (request.Patterns.Length == 0)
-                {
-                    return;
-                }
-
-                var apProvider = request.GetPatternProvider(serviceScope);
-                for (var i = 0; i < request.SenderNames.Length; i++)
-                {
-                    var senderName = request.SenderNames[i];
-                    IPattern pattern = null;
-                    if (apProvider.GetPatternMethod != null)
-                    {
-                        pattern = apProvider.GetPatternMethod(request.NotifyAction, senderName, request);
-                    }
-
-                    if (pattern == null)
-                    {
-                        pattern = apProvider.GetPattern(request.NotifyAction, senderName);
-                    }
-
-                    request.Patterns[i] = pattern ?? throw new NotifyException(
-                        string.Format("For action \"{0}\" by sender \"{1}\" no one patterns getted.", request.NotifyAction.ID, senderName));
-                }
-            }
+            return obj is SendMethodWrapper w && _method.Equals(w._method);
         }
 
-        private void PrepareRequestFillTags(NotifyRequest request, IServiceScope serviceScope)
+        public override int GetHashCode()
         {
-            var patternProvider = request.GetPatternProvider(serviceScope);
-            foreach (var pattern in request.Patterns)
-            {
-                IPatternFormatter formatter;
-                try
-                {
-                    formatter = patternProvider.GetFormatter(pattern);
-                }
-                catch (Exception exc)
-                {
-                    throw new NotifyException(string.Format("For pattern \"{0}\" formatter not instanced.", pattern), exc);
-                }
-                var tags = new string[0];
-                try
-                {
-                    if (formatter != null)
-                    {
-                        tags = formatter.GetTags(pattern) ?? Array.Empty<string>();
-                    }
-                }
-                catch (Exception exc)
-                {
-                    throw new NotifyException(string.Format("Get tags from formatter of pattern \"{0}\" failed.", pattern), exc);
-                }
-
-                foreach (var tag in tags.Where(tag => !request.Arguments.Exists(tagValue => Equals(tagValue.Tag, tag)) && !request.RequaredTags.Exists(rtag => Equals(rtag, tag))))
-                {
-                    request.RequaredTags.Add(tag);
-                }
-            }
-        }
-
-
-        private class SendMethodWrapper
-        {
-            public DateTime? ScheduleDate { get; private set; }
-
-            private readonly object _locker = new object();
-            private readonly CronExpression _cronExpression;
-            private readonly Action<DateTime> _method;
-            public readonly ILog _logger;
-
-            public SendMethodWrapper(Action<DateTime> method, string cron, ILog log)
-            {
-                _method = method;
-                _logger = log;
-
-                if (!string.IsNullOrEmpty(cron))
-                {
-                    _cronExpression = new CronExpression(cron);
-                }
-
-                UpdateScheduleDate(DateTime.UtcNow);
-            }
-
-            public void UpdateScheduleDate(DateTime d)
-            {
-                try
-                {
-                    if (_cronExpression != null)
-                    {
-                        ScheduleDate = _cronExpression.GetTimeAfter(d);
-                    }
-                }
-                catch (Exception e)
-                {
-                    _logger.Error(e);
-                }
-            }
-
-            public void InvokeSendMethod(DateTime d)
-            {
-                lock (_locker)
-                {
-                    Task.Run(() =>
-                    {
-                        try
-                        {
-                            _method(d);
-                        }
-                        catch (Exception e)
-                        {
-                            _logger.Error(e);
-                        }
-                    }).Wait();
-                }
-            }
-
-            public override bool Equals(object obj)
-            {
-                return obj is SendMethodWrapper w && _method.Equals(w._method);
-            }
-
-            public override int GetHashCode()
-            {
-                return _method.GetHashCode();
-            }
+            return _method.GetHashCode();
         }
     }
 }

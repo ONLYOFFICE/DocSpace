@@ -23,367 +23,366 @@
  *
 */
 
-namespace ASC.Core.Notify.Signalr
+namespace ASC.Core.Notify.Signalr;
+
+[Scope]
+public class ConfigureSignalrServiceClient : IConfigureNamedOptions<SignalrServiceClient>
 {
-    [Scope]
-    public class ConfigureSignalrServiceClient : IConfigureNamedOptions<SignalrServiceClient>
+    internal TenantManager TenantManager { get; }
+    internal CoreSettings CoreSettings { get; }
+    internal MachinePseudoKeys MachinePseudoKeys { get; }
+    internal IConfiguration Configuration { get; }
+    internal IOptionsMonitor<ILog> Options { get; }
+
+    public ConfigureSignalrServiceClient(
+        TenantManager tenantManager,
+        CoreSettings coreSettings,
+        MachinePseudoKeys machinePseudoKeys,
+        IConfiguration configuration,
+        IOptionsMonitor<ILog> options)
     {
-        internal TenantManager TenantManager { get; }
-        internal CoreSettings CoreSettings { get; }
-        internal MachinePseudoKeys MachinePseudoKeys { get; }
-        internal IConfiguration Configuration { get; }
-        internal IOptionsMonitor<ILog> Options { get; }
+        TenantManager = tenantManager;
+        CoreSettings = coreSettings;
+        MachinePseudoKeys = machinePseudoKeys;
+        Configuration = configuration;
+        Options = options;
+    }
 
-        public ConfigureSignalrServiceClient(
-            TenantManager tenantManager,
-            CoreSettings coreSettings,
-            MachinePseudoKeys machinePseudoKeys,
-            IConfiguration configuration,
-            IOptionsMonitor<ILog> options)
+    public void Configure(string name, SignalrServiceClient options)
+    {
+        options.Logger = Options.CurrentValue;
+        options.Hub = name.Trim('/');
+        options.TenantManager = TenantManager;
+        options.CoreSettings = CoreSettings;
+        options.SKey = MachinePseudoKeys.GetMachineConstant();
+        options.Url = Configuration["web:hub:internal"];
+        options.EnableSignalr = !string.IsNullOrEmpty(options.Url);
+
+        try
         {
-            TenantManager = tenantManager;
-            CoreSettings = coreSettings;
-            MachinePseudoKeys = machinePseudoKeys;
-            Configuration = configuration;
-            Options = options;
-        }
-
-        public void Configure(string name, SignalrServiceClient options)
-        {
-            options.Logger = Options.CurrentValue;
-            options.Hub = name.Trim('/');
-            options.TenantManager = TenantManager;
-            options.CoreSettings = CoreSettings;
-            options.SKey = MachinePseudoKeys.GetMachineConstant();
-            options.Url = Configuration["web:hub:internal"];
-            options.EnableSignalr = !string.IsNullOrEmpty(options.Url);
-
-            try
+            var replaceSetting = Configuration["jabber:replace-domain"];
+            if (!string.IsNullOrEmpty(replaceSetting))
             {
-                var replaceSetting = Configuration["jabber:replace-domain"];
-                if (!string.IsNullOrEmpty(replaceSetting))
-                {
-                    options.JabberReplaceDomain = true;
-                    var q =
-                        replaceSetting.Split(new[] { "->" }, StringSplitOptions.RemoveEmptyEntries)
-                            .Select(s => s.Trim().ToLowerInvariant())
-                            .ToList();
-                    options.JabberReplaceFromDomain = q.ElementAt(0);
-                    options.JabberReplaceToDomain = q.ElementAt(1);
-                }
-            }
-            catch (Exception)
-            {
+                options.JabberReplaceDomain = true;
+                var q =
+                    replaceSetting.Split(new[] { "->" }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(s => s.Trim().ToLowerInvariant())
+                        .ToList();
+                options.JabberReplaceFromDomain = q.ElementAt(0);
+                options.JabberReplaceToDomain = q.ElementAt(1);
             }
         }
-
-        public void Configure(SignalrServiceClient options)
+        catch (Exception)
         {
-            Configure("default", options);
         }
     }
 
-    [Scope(typeof(ConfigureSignalrServiceClient))]
-    public class SignalrServiceClient
+    public void Configure(SignalrServiceClient options)
     {
-        public bool EnableSignalr { get; set; }
-        internal ILog Logger { get; set; }
-        internal byte[] SKey { get; set; }
-        internal string Url { get; set; }
-        internal bool JabberReplaceDomain { get; set; }
-        internal string JabberReplaceFromDomain { get; set; }
-        internal string JabberReplaceToDomain { get; set; }
-        internal string Hub { get; set; }
+        Configure("default", options);
+    }
+}
 
-        private static readonly TimeSpan s_timeout;
-        private static DateTime s_lastErrorTime;
+[Scope(typeof(ConfigureSignalrServiceClient))]
+public class SignalrServiceClient
+{
+    public bool EnableSignalr { get; set; }
+    internal ILog Logger { get; set; }
+    internal byte[] SKey { get; set; }
+    internal string Url { get; set; }
+    internal bool JabberReplaceDomain { get; set; }
+    internal string JabberReplaceFromDomain { get; set; }
+    internal string JabberReplaceToDomain { get; set; }
+    internal string Hub { get; set; }
 
-        internal TenantManager TenantManager { get; set; }
-        internal CoreSettings CoreSettings { get; set; }
+    private static readonly TimeSpan s_timeout;
+    private static DateTime s_lastErrorTime;
 
-        static SignalrServiceClient() => s_timeout = TimeSpan.FromSeconds(1);
+    internal TenantManager TenantManager { get; set; }
+    internal CoreSettings CoreSettings { get; set; }
 
-        public SignalrServiceClient() { }
+    static SignalrServiceClient() => s_timeout = TimeSpan.FromSeconds(1);
 
-        public void SendMessage(string callerUserName, string calleeUserName, string messageText, int tenantId,
-            string domain)
+    public SignalrServiceClient() { }
+
+    public void SendMessage(string callerUserName, string calleeUserName, string messageText, int tenantId,
+        string domain)
+    {
+        try
         {
-            try
+            domain = ReplaceDomain(domain);
+            var tenant = tenantId == -1
+                ? TenantManager.GetTenant(domain)
+                : TenantManager.GetTenant(tenantId);
+            var isTenantUser = callerUserName == string.Empty;
+            var message = new MessageClass
             {
-                domain = ReplaceDomain(domain);
-                var tenant = tenantId == -1
-                    ? TenantManager.GetTenant(domain)
-                    : TenantManager.GetTenant(tenantId);
-                var isTenantUser = callerUserName == string.Empty;
-                var message = new MessageClass
-                {
-                    UserName = isTenantUser ? tenant.GetTenantDomain(CoreSettings) : callerUserName,
-                    Text = messageText
-                };
+                UserName = isTenantUser ? tenant.GetTenantDomain(CoreSettings) : callerUserName,
+                Text = messageText
+            };
 
-                MakeRequest("send", new { tenantId = tenant.Id, callerUserName, calleeUserName, message, isTenantUser });
-            }
-            catch (Exception error)
+            MakeRequest("send", new { tenantId = tenant.Id, callerUserName, calleeUserName, message, isTenantUser });
+        }
+        catch (Exception error)
+        {
+            ProcessError(error);
+        }
+    }
+
+    public void SendInvite(string chatRoomName, string calleeUserName, string domain)
+    {
+        try
+        {
+            domain = ReplaceDomain(domain);
+
+            var tenant = TenantManager.GetTenant(domain);
+
+            var message = new MessageClass
             {
-                ProcessError(error);
+                UserName = tenant.GetTenantDomain(CoreSettings),
+                Text = chatRoomName
+            };
+
+            MakeRequest("sendInvite", new { tenantId = tenant.Id, calleeUserName, message });
+        }
+        catch (Exception error)
+        {
+            ProcessError(error);
+        }
+    }
+
+    public void SendState(string from, byte state, int tenantId, string domain)
+    {
+        try
+        {
+            domain = ReplaceDomain(domain);
+
+            if (tenantId == -1)
+            {
+                tenantId = TenantManager.GetTenant(domain).Id;
+            }
+
+            MakeRequest("setState", new { tenantId, from, state });
+        }
+        catch (Exception error)
+        {
+            ProcessError(error);
+        }
+    }
+
+    public void SendOfflineMessages(string callerUserName, List<string> users, int tenantId)
+    {
+        try
+        {
+            MakeRequest("sendOfflineMessages", new { tenantId, callerUserName, users });
+        }
+        catch (Exception error)
+        {
+            ProcessError(error);
+        }
+    }
+
+    public void SendUnreadCounts(Dictionary<string, int> unreadCounts, string domain)
+    {
+        try
+        {
+            domain = ReplaceDomain(domain);
+
+            var tenant = TenantManager.GetTenant(domain);
+
+            MakeRequest("sendUnreadCounts", new { tenantId = tenant.Id, unreadCounts });
+        }
+        catch (Exception error)
+        {
+            ProcessError(error);
+        }
+    }
+
+    public void SendUnreadUsers(Dictionary<int, Dictionary<Guid, int>> unreadUsers)
+    {
+        try
+        {
+            MakeRequest("sendUnreadUsers", unreadUsers);
+        }
+        catch (Exception error)
+        {
+            ProcessError(error);
+        }
+    }
+
+    public void SendUnreadUser(int tenant, string userId, int count)
+    {
+        try
+        {
+            MakeRequest("updateFolders", new { tenant, userId, count });
+        }
+        catch (Exception error)
+        {
+            ProcessError(error);
+        }
+    }
+
+    public void SendMailNotification(int tenant, string userId, int state)
+    {
+        try
+        {
+            MakeRequest("sendMailNotification", new { tenant, userId, state });
+        }
+        catch (Exception error)
+        {
+            ProcessError(error);
+        }
+    }
+
+    public void EnqueueCall(string numberId, string callId, string agent)
+    {
+        try
+        {
+            MakeRequest("enqueue", new { numberId, callId, agent });
+        }
+        catch (Exception error)
+        {
+            ProcessError(error);
+        }
+    }
+
+    public void IncomingCall(string callId, string agent)
+    {
+        try
+        {
+            MakeRequest("incoming", new { callId, agent });
+        }
+        catch (Exception error)
+        {
+            ProcessError(error);
+        }
+    }
+
+    public void MissCall(string numberId, string callId, string agent)
+    {
+        try
+        {
+            MakeRequest("miss", new { numberId, callId, agent });
+        }
+        catch (Exception error)
+        {
+            ProcessError(error);
+        }
+    }
+
+    public void Reload(string numberId, string agentId = null)
+    {
+        try
+        {
+            var numberRoom = TenantManager.GetCurrentTenant().Id + numberId;
+            MakeRequest("reload", new { numberRoom, agentId });
+        }
+        catch (Exception error)
+        {
+            ProcessError(error);
+        }
+    }
+
+    public void FilesChangeEditors(int tenantId, string fileId, bool finish)
+    {
+        try
+        {
+            MakeRequest("changeEditors", new { tenantId, fileId, finish });
+        }
+        catch (Exception error)
+        {
+            ProcessError(error);
+        }
+    }
+
+    public T GetAgent<T>(string numberId, List<Guid> contactsResponsibles)
+    {
+        try
+        {
+            return MakeRequest<T>("GetAgent", new { numberId, contactsResponsibles });
+        }
+        catch (Exception error)
+        {
+            ProcessError(error);
+        }
+
+        return default;
+    }
+
+    private string ReplaceDomain(string domain)
+    {
+        if (JabberReplaceDomain && domain.EndsWith(JabberReplaceFromDomain))
+        {
+            var place = domain.LastIndexOf(JabberReplaceFromDomain);
+            if (place >= 0)
+            {
+                return domain.Remove(place, JabberReplaceFromDomain.Length).Insert(place, JabberReplaceToDomain);
             }
         }
 
-        public void SendInvite(string chatRoomName, string calleeUserName, string domain)
+        return domain;
+    }
+
+    private void ProcessError(Exception e)
+    {
+        Logger.ErrorFormat("Service Error: {0}, {1}, {2}", e.Message, e.StackTrace,
+            (e.InnerException != null) ? e.InnerException.Message : string.Empty);
+
+        if (e is CommunicationException || e is TimeoutException)
         {
-            try
-            {
-                domain = ReplaceDomain(domain);
+            s_lastErrorTime = DateTime.Now;
+        }
+    }
 
-                var tenant = TenantManager.GetTenant(domain);
-
-                var message = new MessageClass
-                {
-                    UserName = tenant.GetTenantDomain(CoreSettings),
-                    Text = chatRoomName
-                };
-
-                MakeRequest("sendInvite", new { tenantId = tenant.Id, calleeUserName, message });
-            }
-            catch (Exception error)
-            {
-                ProcessError(error);
-            }
+    private string MakeRequest(string method, object data)
+    {
+        if (!IsAvailable())
+        {
+            return string.Empty;
         }
 
-        public void SendState(string from, byte state, int tenantId, string domain)
+        var request = new HttpRequestMessage();
+        request.Headers.Add("Authorization", CreateAuthToken());
+        request.Method = HttpMethod.Post;
+        request.RequestUri = new Uri(GetMethod(method));
+
+        var jsonData = JsonConvert.SerializeObject(data);
+        Logger.DebugFormat("Method:{0}, Data:{1}", method, jsonData);
+
+        request.Content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+        using (var httpClient = new HttpClient())
+        using (var response = httpClient.Send(request))
+        using (var stream = response.Content.ReadAsStream())
+        using (var streamReader = new StreamReader(stream))
         {
-            try
-            {
-                domain = ReplaceDomain(domain);
-
-                if (tenantId == -1)
-                {
-                    tenantId = TenantManager.GetTenant(domain).Id;
-                }
-
-                MakeRequest("setState", new { tenantId, from, state });
-            }
-            catch (Exception error)
-            {
-                ProcessError(error);
-            }
+            return streamReader.ReadToEnd();
         }
+    }
 
-        public void SendOfflineMessages(string callerUserName, List<string> users, int tenantId)
-        {
-            try
-            {
-                MakeRequest("sendOfflineMessages", new { tenantId, callerUserName, users });
-            }
-            catch (Exception error)
-            {
-                ProcessError(error);
-            }
-        }
+    private T MakeRequest<T>(string method, object data)
+    {
+        var resultMakeRequest = MakeRequest(method, data);
 
-        public void SendUnreadCounts(Dictionary<string, int> unreadCounts, string domain)
-        {
-            try
-            {
-                domain = ReplaceDomain(domain);
+        return JsonConvert.DeserializeObject<T>(resultMakeRequest);
+    }
 
-                var tenant = TenantManager.GetTenant(domain);
+    private bool IsAvailable()
+    {
+        return EnableSignalr && s_lastErrorTime + s_timeout < DateTime.Now;
+    }
 
-                MakeRequest("sendUnreadCounts", new { tenantId = tenant.Id, unreadCounts });
-            }
-            catch (Exception error)
-            {
-                ProcessError(error);
-            }
-        }
+    private string GetMethod(string method)
+    {
+        return $"{Url.TrimEnd('/')}/controller/{Hub}/{method}";
+    }
 
-        public void SendUnreadUsers(Dictionary<int, Dictionary<Guid, int>> unreadUsers)
-        {
-            try
-            {
-                MakeRequest("sendUnreadUsers", unreadUsers);
-            }
-            catch (Exception error)
-            {
-                ProcessError(error);
-            }
-        }
+    public string CreateAuthToken(string pkey = "socketio")
+    {
+        using var hasher = new HMACSHA1(SKey);
+        var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+        var hash = Convert.ToBase64String(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
 
-        public void SendUnreadUser(int tenant, string userId, int count)
-        {
-            try
-            {
-                MakeRequest("updateFolders", new { tenant, userId, count });
-            }
-            catch (Exception error)
-            {
-                ProcessError(error);
-            }
-        }
-
-        public void SendMailNotification(int tenant, string userId, int state)
-        {
-            try
-            {
-                MakeRequest("sendMailNotification", new { tenant, userId, state });
-            }
-            catch (Exception error)
-            {
-                ProcessError(error);
-            }
-        }
-
-        public void EnqueueCall(string numberId, string callId, string agent)
-        {
-            try
-            {
-                MakeRequest("enqueue", new { numberId, callId, agent });
-            }
-            catch (Exception error)
-            {
-                ProcessError(error);
-            }
-        }
-
-        public void IncomingCall(string callId, string agent)
-        {
-            try
-            {
-                MakeRequest("incoming", new { callId, agent });
-            }
-            catch (Exception error)
-            {
-                ProcessError(error);
-            }
-        }
-
-        public void MissCall(string numberId, string callId, string agent)
-        {
-            try
-            {
-                MakeRequest("miss", new { numberId, callId, agent });
-            }
-            catch (Exception error)
-            {
-                ProcessError(error);
-            }
-        }
-
-        public void Reload(string numberId, string agentId = null)
-        {
-            try
-            {
-                var numberRoom = TenantManager.GetCurrentTenant().Id + numberId;
-                MakeRequest("reload", new { numberRoom, agentId });
-            }
-            catch (Exception error)
-            {
-                ProcessError(error);
-            }
-        }
-
-        public void FilesChangeEditors(int tenantId, string fileId, bool finish)
-        {
-            try
-            {
-                MakeRequest("changeEditors", new { tenantId, fileId, finish });
-            }
-            catch (Exception error)
-            {
-                ProcessError(error);
-            }
-        }
-
-        public T GetAgent<T>(string numberId, List<Guid> contactsResponsibles)
-        {
-            try
-            {
-                return MakeRequest<T>("GetAgent", new { numberId, contactsResponsibles });
-            }
-            catch (Exception error)
-            {
-                ProcessError(error);
-            }
-
-            return default;
-        }
-
-        private string ReplaceDomain(string domain)
-        {
-            if (JabberReplaceDomain && domain.EndsWith(JabberReplaceFromDomain))
-            {
-                var place = domain.LastIndexOf(JabberReplaceFromDomain);
-                if (place >= 0)
-                {
-                    return domain.Remove(place, JabberReplaceFromDomain.Length).Insert(place, JabberReplaceToDomain);
-                }
-            }
-
-            return domain;
-        }
-
-        private void ProcessError(Exception e)
-        {
-            Logger.ErrorFormat("Service Error: {0}, {1}, {2}", e.Message, e.StackTrace,
-                (e.InnerException != null) ? e.InnerException.Message : string.Empty);
-
-            if (e is CommunicationException || e is TimeoutException)
-            {
-                s_lastErrorTime = DateTime.Now;
-            }
-        }
-
-        private string MakeRequest(string method, object data)
-        {
-            if (!IsAvailable())
-            {
-                return string.Empty;
-            }
-
-            var request = new HttpRequestMessage();
-            request.Headers.Add("Authorization", CreateAuthToken());
-            request.Method = HttpMethod.Post;
-            request.RequestUri = new Uri(GetMethod(method));
-
-            var jsonData = JsonConvert.SerializeObject(data);
-            Logger.DebugFormat("Method:{0}, Data:{1}", method, jsonData);
-
-            request.Content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
-            using (var httpClient = new HttpClient())
-            using (var response = httpClient.Send(request))
-            using (var stream = response.Content.ReadAsStream())
-            using (var streamReader = new StreamReader(stream))
-            {
-                return streamReader.ReadToEnd();
-            }
-        }
-
-        private T MakeRequest<T>(string method, object data)
-        {
-            var resultMakeRequest = MakeRequest(method, data);
-
-            return JsonConvert.DeserializeObject<T>(resultMakeRequest);
-        }
-
-        private bool IsAvailable()
-        {
-            return EnableSignalr && s_lastErrorTime + s_timeout < DateTime.Now;
-        }
-
-        private string GetMethod(string method)
-        {
-            return $"{Url.TrimEnd('/')}/controller/{Hub}/{method}";
-        }
-
-        public string CreateAuthToken(string pkey = "socketio")
-        {
-            using var hasher = new HMACSHA1(SKey);
-            var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
-            var hash = Convert.ToBase64String(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
-
-            return $"ASC {pkey}:{now}:{hash}";
-        }
+        return $"ASC {pkey}:{now}:{hash}";
     }
 }

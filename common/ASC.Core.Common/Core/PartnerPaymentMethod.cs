@@ -23,13 +23,11 @@
  *
 */
 
+namespace ASC.Core;
 
-namespace ASC.Core
+public enum PartnerPaymentMethod
 {
-    public enum PartnerPaymentMethod
-    {
-        Keys,
-        PayPal,
-        External
-    }
+    Keys,
+    PayPal,
+    External
 }

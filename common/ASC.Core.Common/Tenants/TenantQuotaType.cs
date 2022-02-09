@@ -24,13 +24,12 @@
 */
 
 
-namespace ASC.Core.Tenants
+namespace ASC.Core.Tenants;
+
+public enum TenantQuotaType
 {
-    public enum TenantQuotaType
-    {
-        MaxFileSize,
-        MaxTotalSize,
-        HttpsEnable,
-        PremiumAdminsCount,
-    }
+    MaxFileSize,
+    MaxTotalSize,
+    HttpsEnable,
+    PremiumAdminsCount,
 }

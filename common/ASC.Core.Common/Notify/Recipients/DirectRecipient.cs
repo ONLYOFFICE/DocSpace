@@ -23,57 +23,56 @@
  *
 */
 
-namespace ASC.Notify.Recipients
+namespace ASC.Notify.Recipients;
+
+[Serializable]
+public class DirectRecipient
+    : IDirectRecipient
 {
-    [Serializable]
-    public class DirectRecipient
-        : IDirectRecipient
+    public bool CheckActivation { get; set; }
+    public string ID { get; private set; }
+    public string Name { get; private set; }
+    public string[] Addresses => _addresses.ToArray();
+
+    private readonly List<string> _addresses = new List<string>();
+
+    public DirectRecipient(string id, string name)
     {
-        public bool CheckActivation { get; set; }
-        public string ID { get; private set; }
-        public string Name { get; private set; }
-        public string[] Addresses => _addresses.ToArray();
+        ID = id;
+        Name = name;
+    }
 
-        private readonly List<string> _addresses = new List<string>();
+    public DirectRecipient(string id, string name, string[] addresses)
+        : this(id, name, addresses, true) { }
 
-        public DirectRecipient(string id, string name)
+    public DirectRecipient(string id, string name, string[] addresses, bool checkActivation)
+    {
+        ID = id;
+        Name = name;
+        CheckActivation = checkActivation;
+        if (addresses != null)
         {
-            ID = id;
-            Name = name;
+            _addresses.AddRange(addresses);
+        }
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (!(obj is IDirectRecipient recD))
+        {
+            return false;
         }
 
-        public DirectRecipient(string id, string name, string[] addresses)
-            : this(id, name, addresses, true) { }
+        return Equals(recD.ID, ID);
+    }
 
-        public DirectRecipient(string id, string name, string[] addresses, bool checkActivation)
-        {
-            ID = id;
-            Name = name;
-            CheckActivation = checkActivation;
-            if (addresses != null)
-            {
-                _addresses.AddRange(addresses);
-            }
-        }
+    public override int GetHashCode()
+    {
+        return (ID ?? "").GetHashCode();
+    }
 
-        public override bool Equals(object obj)
-        {
-            if (!(obj is IDirectRecipient recD))
-            {
-                return false;
-            }
-
-            return Equals(recD.ID, ID);
-        }
-
-        public override int GetHashCode()
-        {
-            return (ID ?? "").GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return $"{Name}({string.Join(";", _addresses.ToArray())})";
-        }
+    public override string ToString()
+    {
+        return $"{Name}({string.Join(";", _addresses.ToArray())})";
     }
 }

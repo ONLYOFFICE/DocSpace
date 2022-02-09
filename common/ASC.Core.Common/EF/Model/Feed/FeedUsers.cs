@@ -1,69 +1,68 @@
-﻿namespace ASC.Core.Common.EF.Model
-{
-    public class FeedUsers : BaseEntity
-    {
-        public string FeedId { get; set; }
-        public Guid UserId { get; set; }
+﻿namespace ASC.Core.Common.EF.Model;
 
-        public override object[] GetKeys() => new object[] { FeedId, UserId };
+public class FeedUsers : BaseEntity
+{
+    public string FeedId { get; set; }
+    public Guid UserId { get; set; }
+
+    public override object[] GetKeys() => new object[] { FeedId, UserId };
+}
+
+public static class FeedUsersExtension
+{
+    public static ModelBuilderWrapper AddFeedUsers(this ModelBuilderWrapper modelBuilder)
+    {
+        modelBuilder
+            .Add(MySqlAddFeedUsers, Provider.MySql)
+            .Add(PgSqlAddFeedUsers, Provider.PostgreSql);
+        return modelBuilder;
     }
 
-    public static class FeedUsersExtension
+    public static void MySqlAddFeedUsers(this ModelBuilder modelBuilder)
     {
-        public static ModelBuilderWrapper AddFeedUsers(this ModelBuilderWrapper modelBuilder)
+        modelBuilder.Entity<FeedUsers>(entity =>
         {
-            modelBuilder
-                .Add(MySqlAddFeedUsers, Provider.MySql)
-                .Add(PgSqlAddFeedUsers, Provider.PostgreSql);
-            return modelBuilder;
-        }
+            entity.HasKey(e => new { e.FeedId, e.UserId })
+                .HasName("PRIMARY");
 
-        public static void MySqlAddFeedUsers(this ModelBuilder modelBuilder)
+            entity.ToTable("feed_users");
+
+            entity.HasIndex(e => e.UserId)
+                .HasDatabaseName("user_id");
+
+            entity.Property(e => e.FeedId)
+                .HasColumnName("feed_id")
+                .HasColumnType("varchar(88)")
+                .HasCharSet("utf8")
+                .UseCollation("utf8_general_ci");
+
+            entity.Property(e => e.UserId)
+                .HasColumnName("user_id")
+                .HasColumnType("char(38)")
+                .HasCharSet("utf8")
+                .UseCollation("utf8_general_ci");
+        });
+    }
+    public static void PgSqlAddFeedUsers(this ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<FeedUsers>(entity =>
         {
-            modelBuilder.Entity<FeedUsers>(entity =>
-            {
-                entity.HasKey(e => new { e.FeedId, e.UserId })
-                    .HasName("PRIMARY");
+            entity.HasKey(e => new { e.FeedId, e.UserId })
+                .HasName("feed_users_pkey");
 
-                entity.ToTable("feed_users");
+            entity.ToTable("feed_users", "onlyoffice");
 
-                entity.HasIndex(e => e.UserId)
-                    .HasDatabaseName("user_id");
+            entity.HasIndex(e => e.UserId)
+                .HasDatabaseName("user_id_feed_users");
 
-                entity.Property(e => e.FeedId)
-                    .HasColumnName("feed_id")
-                    .HasColumnType("varchar(88)")
-                    .HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
+            entity.Property(e => e.FeedId)
+                .HasColumnName("feed_id")
+                .HasMaxLength(88);
 
-                entity.Property(e => e.UserId)
-                    .HasColumnName("user_id")
-                    .HasColumnType("char(38)")
-                    .HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
-            });
-        }
-        public static void PgSqlAddFeedUsers(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<FeedUsers>(entity =>
-            {
-                entity.HasKey(e => new { e.FeedId, e.UserId })
-                    .HasName("feed_users_pkey");
-
-                entity.ToTable("feed_users", "onlyoffice");
-
-                entity.HasIndex(e => e.UserId)
-                    .HasDatabaseName("user_id_feed_users");
-
-                entity.Property(e => e.FeedId)
-                    .HasColumnName("feed_id")
-                    .HasMaxLength(88);
-
-                entity.Property(e => e.UserId)
-                    .HasColumnName("user_id")
-                    .HasMaxLength(38)
-                    .IsFixedLength();
-            });
-        }
+            entity.Property(e => e.UserId)
+                .HasColumnName("user_id")
+                .HasMaxLength(38)
+                .IsFixedLength();
+        });
     }
 }

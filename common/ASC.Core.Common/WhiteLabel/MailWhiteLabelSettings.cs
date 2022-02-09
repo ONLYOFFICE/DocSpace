@@ -23,123 +23,122 @@
  *
 */
 
-namespace ASC.Web.Core.WhiteLabel
+namespace ASC.Web.Core.WhiteLabel;
+
+[Serializable]
+public class MailWhiteLabelSettings : ISettings
 {
-    [Serializable]
-    public class MailWhiteLabelSettings : ISettings
+    public bool FooterEnabled { get; set; }
+    public bool FooterSocialEnabled { get; set; }
+    public string SupportUrl { get; set; }
+    public string SupportEmail { get; set; }
+    public string SalesEmail { get; set; }
+    public string DemoUrl { get; set; }
+    public string SiteUrl { get; set; }
+    public Guid ID => new Guid("{C3602052-5BA2-452A-BD2A-ADD0FAF8EB88}");
+
+    public ISettings GetDefault(IConfiguration configuration)
     {
-        public bool FooterEnabled { get; set; }
-        public bool FooterSocialEnabled { get; set; }
-        public string SupportUrl { get; set; }
-        public string SupportEmail { get; set; }
-        public string SalesEmail { get; set; }
-        public string DemoUrl { get; set; }
-        public string SiteUrl { get; set; }
-        public Guid ID => new Guid("{C3602052-5BA2-452A-BD2A-ADD0FAF8EB88}");
+        var mailWhiteLabelSettingsHelper = new MailWhiteLabelSettingsHelper(configuration);
 
-        public ISettings GetDefault(IConfiguration configuration)
+        return new MailWhiteLabelSettings
         {
-            var mailWhiteLabelSettingsHelper = new MailWhiteLabelSettingsHelper(configuration);
+            FooterEnabled = true,
+            FooterSocialEnabled = true,
+            SupportUrl = mailWhiteLabelSettingsHelper.DefaultMailSupportUrl,
+            SupportEmail = mailWhiteLabelSettingsHelper.DefaultMailSupportEmail,
+            SalesEmail = mailWhiteLabelSettingsHelper.DefaultMailSalesEmail,
+            DemoUrl = mailWhiteLabelSettingsHelper.DefaultMailDemoUrl,
+            SiteUrl = mailWhiteLabelSettingsHelper.DefaultMailSiteUrl
+        };
+    }
 
-            return new MailWhiteLabelSettings
-            {
-                FooterEnabled = true,
-                FooterSocialEnabled = true,
-                SupportUrl = mailWhiteLabelSettingsHelper.DefaultMailSupportUrl,
-                SupportEmail = mailWhiteLabelSettingsHelper.DefaultMailSupportEmail,
-                SalesEmail = mailWhiteLabelSettingsHelper.DefaultMailSalesEmail,
-                DemoUrl = mailWhiteLabelSettingsHelper.DefaultMailDemoUrl,
-                SiteUrl = mailWhiteLabelSettingsHelper.DefaultMailSiteUrl
-            };
-        }
+    public bool IsDefault(IConfiguration configuration)
+    {
+        return !(GetDefault(configuration) is MailWhiteLabelSettings defaultSettings)
+            ? false
+            : FooterEnabled == defaultSettings.FooterEnabled &&
+                FooterSocialEnabled == defaultSettings.FooterSocialEnabled &&
+                SupportUrl == defaultSettings.SupportUrl &&
+                SupportEmail == defaultSettings.SupportEmail &&
+                SalesEmail == defaultSettings.SalesEmail &&
+                DemoUrl == defaultSettings.DemoUrl &&
+                SiteUrl == defaultSettings.SiteUrl;
+    }
 
-        public bool IsDefault(IConfiguration configuration)
+    public static MailWhiteLabelSettings Instance(SettingsManager settingsManager)
+    {
+        return settingsManager.LoadForDefaultTenant<MailWhiteLabelSettings>();
+    }
+
+    public static bool IsDefault(SettingsManager settingsManager, IConfiguration configuration)
+    {
+        return Instance(settingsManager).IsDefault(configuration);
+    }
+
+    public ISettings GetDefault(IServiceProvider serviceProvider)
+    {
+        return GetDefault(serviceProvider.GetService<IConfiguration>());
+    }
+}
+
+[Singletone]
+public class MailWhiteLabelSettingsHelper
+{
+    public string DefaultMailSupportUrl
+    {
+        get
         {
-            return !(GetDefault(configuration) is MailWhiteLabelSettings defaultSettings)
-                ? false
-                : FooterEnabled == defaultSettings.FooterEnabled &&
-                    FooterSocialEnabled == defaultSettings.FooterSocialEnabled &&
-                    SupportUrl == defaultSettings.SupportUrl &&
-                    SupportEmail == defaultSettings.SupportEmail &&
-                    SalesEmail == defaultSettings.SalesEmail &&
-                    DemoUrl == defaultSettings.DemoUrl &&
-                    SiteUrl == defaultSettings.SiteUrl;
-        }
+            var url = BaseCommonLinkUtility.GetRegionalUrl(_configuration["web:support-feedback"] ?? string.Empty, null);
 
-        public static MailWhiteLabelSettings Instance(SettingsManager settingsManager)
-        {
-            return settingsManager.LoadForDefaultTenant<MailWhiteLabelSettings>();
-        }
-
-        public static bool IsDefault(SettingsManager settingsManager, IConfiguration configuration)
-        {
-            return Instance(settingsManager).IsDefault(configuration);
-        }
-
-        public ISettings GetDefault(IServiceProvider serviceProvider)
-        {
-            return GetDefault(serviceProvider.GetService<IConfiguration>());
+            return !string.IsNullOrEmpty(url) ? url : "http://helpdesk.onlyoffice.com";
         }
     }
 
-    [Singletone]
-    public class MailWhiteLabelSettingsHelper
+    public string DefaultMailSupportEmail
     {
-        public string DefaultMailSupportUrl
+        get
         {
-            get
-            {
-                var url = BaseCommonLinkUtility.GetRegionalUrl(_configuration["web:support-feedback"] ?? string.Empty, null);
+            var email = _configuration["web:support:email"];
 
-                return !string.IsNullOrEmpty(url) ? url : "http://helpdesk.onlyoffice.com";
-            }
+            return !string.IsNullOrEmpty(email) ? email : "support@onlyoffice.com";
         }
+    }
 
-        public string DefaultMailSupportEmail
+    public string DefaultMailSalesEmail
+    {
+        get
         {
-            get
-            {
-                var email = _configuration["web:support:email"];
+            var email = _configuration["web:payment:email"];
 
-                return !string.IsNullOrEmpty(email) ? email : "support@onlyoffice.com";
-            }
+            return !string.IsNullOrEmpty(email) ? email : "sales@onlyoffice.com";
         }
+    }
 
-        public string DefaultMailSalesEmail
+    public string DefaultMailDemoUrl
+    {
+        get
         {
-            get
-            {
-                var email = _configuration["web:payment:email"];
+            var url = BaseCommonLinkUtility.GetRegionalUrl(_configuration["web:demo-order"] ?? string.Empty, null);
 
-                return !string.IsNullOrEmpty(email) ? email : "sales@onlyoffice.com";
-            }
+            return !string.IsNullOrEmpty(url) ? url : "http://www.onlyoffice.com/demo-order.aspx";
         }
+    }
 
-        public string DefaultMailDemoUrl
+    public string DefaultMailSiteUrl
+    {
+        get
         {
-            get
-            {
-                var url = BaseCommonLinkUtility.GetRegionalUrl(_configuration["web:demo-order"] ?? string.Empty, null);
+            var url = _configuration["web:teamlab-site"];
 
-                return !string.IsNullOrEmpty(url) ? url : "http://www.onlyoffice.com/demo-order.aspx";
-            }
+            return !string.IsNullOrEmpty(url) ? url : "http://www.onlyoffice.com";
         }
+    }
 
-        public string DefaultMailSiteUrl
-        {
-            get
-            {
-                var url = _configuration["web:teamlab-site"];
+    private readonly IConfiguration _configuration;
 
-                return !string.IsNullOrEmpty(url) ? url : "http://www.onlyoffice.com";
-            }
-        }
-
-        private readonly IConfiguration _configuration;
-
-        public MailWhiteLabelSettingsHelper(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
+    public MailWhiteLabelSettingsHelper(IConfiguration configuration)
+    {
+        _configuration = configuration;
     }
 }

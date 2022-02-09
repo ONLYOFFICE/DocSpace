@@ -23,113 +23,112 @@
  *
 */
 
-namespace ASC.Core
+namespace ASC.Core;
+
+public class UserGroupRefDictionary : IDictionary<string, UserGroupRef>
 {
-    public class UserGroupRefDictionary : IDictionary<string, UserGroupRef>
+    public int Count => _store.Count;
+    public bool IsReadOnly => _store.IsReadOnly;
+    public ICollection<string> Keys => _store.Keys;
+    public ICollection<UserGroupRef> Values => _store.Values;
+    public UserGroupRef this[string key]
     {
-        public int Count => _store.Count;
-        public bool IsReadOnly => _store.IsReadOnly;
-        public ICollection<string> Keys => _store.Keys;
-        public ICollection<UserGroupRef> Values => _store.Values;
-        public UserGroupRef this[string key]
+        get => _store[key];
+        set
         {
-            get => _store[key];
-            set
-            {
-                _store[key] = value;
-                BuildIndexes();
-            }
-        }
-
-        private readonly IDictionary<string, UserGroupRef> _store = new Dictionary<string, UserGroupRef>();
-        private IDictionary<Guid, IEnumerable<UserGroupRef>> _byUsers;
-        private IDictionary<Guid, IEnumerable<UserGroupRef>> _byGroups;
-
-        public UserGroupRefDictionary(IDictionary<string, UserGroupRef> dic)
-        {
-            foreach (var p in dic)
-                _store.Add(p);
+            _store[key] = value;
             BuildIndexes();
         }
+    }
 
-        public void Add(string key, UserGroupRef value)
-        {
-            _store.Add(key, value);
-            BuildIndexes();
-        }
+    private readonly IDictionary<string, UserGroupRef> _store = new Dictionary<string, UserGroupRef>();
+    private IDictionary<Guid, IEnumerable<UserGroupRef>> _byUsers;
+    private IDictionary<Guid, IEnumerable<UserGroupRef>> _byGroups;
 
-        public void Add(KeyValuePair<string, UserGroupRef> item)
-        {
-            _store.Add(item);
-            BuildIndexes();
-        }
+    public UserGroupRefDictionary(IDictionary<string, UserGroupRef> dic)
+    {
+        foreach (var p in dic)
+            _store.Add(p);
+        BuildIndexes();
+    }
 
-        public bool Remove(string key)
-        {
-            var result = _store.Remove(key);
-            BuildIndexes();
+    public void Add(string key, UserGroupRef value)
+    {
+        _store.Add(key, value);
+        BuildIndexes();
+    }
 
-            return result;
-        }
+    public void Add(KeyValuePair<string, UserGroupRef> item)
+    {
+        _store.Add(item);
+        BuildIndexes();
+    }
 
-        public bool Remove(KeyValuePair<string, UserGroupRef> item)
-        {
-            var result = _store.Remove(item);
-            BuildIndexes();
+    public bool Remove(string key)
+    {
+        var result = _store.Remove(key);
+        BuildIndexes();
 
-            return result;
-        }
+        return result;
+    }
 
-        public void Clear()
-        {
-            _store.Clear();
-            BuildIndexes();
-        }
+    public bool Remove(KeyValuePair<string, UserGroupRef> item)
+    {
+        var result = _store.Remove(item);
+        BuildIndexes();
 
-        public bool TryGetValue(string key, out UserGroupRef value)
-        {
-            return _store.TryGetValue(key, out value);
-        }
+        return result;
+    }
 
-        public bool ContainsKey(string key)
-        {
-            return _store.ContainsKey(key);
-        }
+    public void Clear()
+    {
+        _store.Clear();
+        BuildIndexes();
+    }
 
-        public bool Contains(KeyValuePair<string, UserGroupRef> item)
-        {
-            return _store.Contains(item);
-        }
+    public bool TryGetValue(string key, out UserGroupRef value)
+    {
+        return _store.TryGetValue(key, out value);
+    }
 
-        public void CopyTo(KeyValuePair<string, UserGroupRef>[] array, int arrayIndex)
-        {
-            _store.CopyTo(array, arrayIndex);
-        }
+    public bool ContainsKey(string key)
+    {
+        return _store.ContainsKey(key);
+    }
 
-        public IEnumerator<KeyValuePair<string, UserGroupRef>> GetEnumerator()
-        {
-            return _store.GetEnumerator();
-        }
+    public bool Contains(KeyValuePair<string, UserGroupRef> item)
+    {
+        return _store.Contains(item);
+    }
 
-        public IEnumerable<UserGroupRef> GetByUser(Guid userId)
-        {
-            return _byUsers.ContainsKey(userId) ? _byUsers[userId].ToList() : new List<UserGroupRef>();
-        }
+    public void CopyTo(KeyValuePair<string, UserGroupRef>[] array, int arrayIndex)
+    {
+        _store.CopyTo(array, arrayIndex);
+    }
 
-        public IEnumerable<UserGroupRef> GetByGroups(Guid groupId)
-        {
-            return _byGroups.ContainsKey(groupId) ? _byGroups[groupId].ToList() : new List<UserGroupRef>();
-        }
+    public IEnumerator<KeyValuePair<string, UserGroupRef>> GetEnumerator()
+    {
+        return _store.GetEnumerator();
+    }
 
-        private void BuildIndexes()
-        {
-            _byUsers = _store.Values.GroupBy(r => r.UserId).ToDictionary(g => g.Key, g => g.AsEnumerable());
-            _byGroups = _store.Values.GroupBy(r => r.GroupId).ToDictionary(g => g.Key, g => g.AsEnumerable());
-        }
+    public IEnumerable<UserGroupRef> GetByUser(Guid userId)
+    {
+        return _byUsers.ContainsKey(userId) ? _byUsers[userId].ToList() : new List<UserGroupRef>();
+    }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable)_store).GetEnumerator();
-        }
+    public IEnumerable<UserGroupRef> GetByGroups(Guid groupId)
+    {
+        return _byGroups.ContainsKey(groupId) ? _byGroups[groupId].ToList() : new List<UserGroupRef>();
+    }
+
+    private void BuildIndexes()
+    {
+        _byUsers = _store.Values.GroupBy(r => r.UserId).ToDictionary(g => g.Key, g => g.AsEnumerable());
+        _byGroups = _store.Values.GroupBy(r => r.GroupId).ToDictionary(g => g.Key, g => g.AsEnumerable());
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return ((IEnumerable)_store).GetEnumerator();
     }
 }

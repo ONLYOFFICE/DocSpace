@@ -23,43 +23,42 @@
  *
 */
 
-namespace ASC.Notify.Patterns
+namespace ASC.Notify.Patterns;
+
+[DebuggerDisplay("{Tag}: {Value}")]
+public class TagValue : ITagValue
 {
-    [DebuggerDisplay("{Tag}: {Value}")]
-    public class TagValue : ITagValue
-    {
-        public string Tag { get; private set; }
-        public object Value { get; private set; }
+    public string Tag { get; private set; }
+    public object Value { get; private set; }
 
-        public TagValue(string tag, object value)
+    public TagValue(string tag, object value)
+    {
+        if (string.IsNullOrEmpty(tag))
         {
-            if (string.IsNullOrEmpty(tag))
-            {
-                throw new ArgumentNullException(nameof(tag));
-            }
-
-            Tag = tag;
-            Value = value;
+            throw new ArgumentNullException(nameof(tag));
         }
+
+        Tag = tag;
+        Value = value;
     }
+}
 
-    public class AdditionalSenderTag : TagValue
+public class AdditionalSenderTag : TagValue
+{
+    public AdditionalSenderTag(string senderName)
+        : base("__AdditionalSender", senderName) { }
+}
+
+public class TagActionValue : ITagValue
+{
+    public string Tag { get; private set; }
+    public object Value => _action();
+
+    private readonly Func<string> _action;
+
+    public TagActionValue(string name, Func<string> action)
     {
-        public AdditionalSenderTag(string senderName)
-            : base("__AdditionalSender", senderName) { }
-    }
-
-    public class TagActionValue : ITagValue
-    {
-        public string Tag { get; private set; }
-        public object Value => _action();
-
-        private readonly Func<string> _action;
-
-        public TagActionValue(string name, Func<string> action)
-        {
-            Tag = name;
-            _action = action;
-        }
+        Tag = name;
+        _action = action;
     }
 }

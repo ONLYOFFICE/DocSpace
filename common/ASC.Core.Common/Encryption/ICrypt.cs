@@ -23,20 +23,19 @@
  *
 */
 
-namespace ASC.Core.Encryption
+namespace ASC.Core.Encryption;
+
+public interface ICrypt
 {
-    public interface ICrypt
-    {
-        byte Version { get; }
+    byte Version { get; }
 
-        void EncryptFile(string filePath);
+    void EncryptFile(string filePath);
 
-        void DecryptFile(string filePath);
+    void DecryptFile(string filePath);
 
-        Stream GetReadStream(string filePath);
+    Stream GetReadStream(string filePath);
 
-        long GetFileSize(string filePath);
+    long GetFileSize(string filePath);
 
-        void Init(string storageName, EncryptionSettings encryptionSettings);
-    }
+    void Init(string storageName, EncryptionSettings encryptionSettings);
 }

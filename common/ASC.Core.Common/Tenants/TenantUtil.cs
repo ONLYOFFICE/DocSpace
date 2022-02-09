@@ -23,107 +23,106 @@
  *
 */
 
-namespace ASC.Core.Tenants
+namespace ASC.Core.Tenants;
+
+[Scope]
+class ConfigureTenantUtil : IConfigureNamedOptions<TenantUtil>
 {
-    [Scope]
-    class ConfigureTenantUtil : IConfigureNamedOptions<TenantUtil>
+    private readonly IOptionsSnapshot<TenantManager> _tenantManager;
+    private readonly TimeZoneConverter _timeZoneConverter;
+
+    public ConfigureTenantUtil(
+        IOptionsSnapshot<TenantManager> tenantManager,
+        TimeZoneConverter timeZoneConverter
+        )
     {
-        private readonly IOptionsSnapshot<TenantManager> _tenantManager;
-        private readonly TimeZoneConverter _timeZoneConverter;
-
-        public ConfigureTenantUtil(
-            IOptionsSnapshot<TenantManager> tenantManager,
-            TimeZoneConverter timeZoneConverter
-            )
-        {
-            _tenantManager = tenantManager;
-            _timeZoneConverter = timeZoneConverter;
-        }
-
-        public void Configure(string name, TenantUtil options)
-        {
-            Configure(options);
-            options.TenantManager = _tenantManager.Get(name);
-        }
-
-        public void Configure(TenantUtil options)
-        {
-            options.TimeZoneConverter = _timeZoneConverter;
-            options.TenantManager = _tenantManager.Value;
-        }
+        _tenantManager = tenantManager;
+        _timeZoneConverter = timeZoneConverter;
     }
 
-    [Scope(typeof(ConfigureTenantUtil))]
-    public class TenantUtil
+    public void Configure(string name, TenantUtil options)
     {
-        internal TenantManager TenantManager { get; set; }
-        internal TimeZoneConverter TimeZoneConverter { get; set; }
-        private TimeZoneInfo TimeZoneInfo =>
-            _timeZoneInfo ??= TimeZoneConverter.GetTimeZone(TenantManager.GetCurrentTenant().TimeZone);
+        Configure(options);
+        options.TenantManager = _tenantManager.Get(name);
+    }
 
-        private TimeZoneInfo _timeZoneInfo;
+    public void Configure(TenantUtil options)
+    {
+        options.TimeZoneConverter = _timeZoneConverter;
+        options.TenantManager = _tenantManager.Value;
+    }
+}
 
-        public TenantUtil() { }
+[Scope(typeof(ConfigureTenantUtil))]
+public class TenantUtil
+{
+    internal TenantManager TenantManager { get; set; }
+    internal TimeZoneConverter TimeZoneConverter { get; set; }
+    private TimeZoneInfo TimeZoneInfo =>
+        _timeZoneInfo ??= TimeZoneConverter.GetTimeZone(TenantManager.GetCurrentTenant().TimeZone);
 
-        public TenantUtil(TenantManager tenantManager, TimeZoneConverter timeZoneConverter)
+    private TimeZoneInfo _timeZoneInfo;
+
+    public TenantUtil() { }
+
+    public TenantUtil(TenantManager tenantManager, TimeZoneConverter timeZoneConverter)
+    {
+        TenantManager = tenantManager;
+        TimeZoneConverter = timeZoneConverter;
+    }
+
+    public DateTime DateTimeFromUtc(DateTime utc) => DateTimeFromUtc(TimeZoneInfo, utc);
+
+    public DateTime DateTimeFromUtc(string timeZone, DateTime utc) =>
+        DateTimeFromUtc(TimeZoneConverter.GetTimeZone(timeZone), utc);
+
+    public static DateTime DateTimeFromUtc(TimeZoneInfo timeZone, DateTime utc)
+    {
+        if (utc.Kind != DateTimeKind.Utc)
         {
-            TenantManager = tenantManager;
-            TimeZoneConverter = timeZoneConverter;
+            utc = DateTime.SpecifyKind(utc, DateTimeKind.Utc);
         }
 
-        public DateTime DateTimeFromUtc(DateTime utc) => DateTimeFromUtc(TimeZoneInfo, utc);
-
-        public DateTime DateTimeFromUtc(string timeZone, DateTime utc) => 
-            DateTimeFromUtc(TimeZoneConverter.GetTimeZone(timeZone), utc);
-
-        public static DateTime DateTimeFromUtc(TimeZoneInfo timeZone, DateTime utc)
+        if (utc == DateTime.MinValue || utc == DateTime.MaxValue)
         {
-            if (utc.Kind != DateTimeKind.Utc)
-            {
-                utc = DateTime.SpecifyKind(utc, DateTimeKind.Utc);
-            }
-
-            if (utc == DateTime.MinValue || utc == DateTime.MaxValue)
-            {
-                return utc;
-            }
-
-            return DateTime.SpecifyKind(TimeZoneInfo.ConvertTime(utc, TimeZoneInfo.Utc, timeZone), DateTimeKind.Local);
+            return utc;
         }
 
-        public DateTime DateTimeToUtc(DateTime local)
+        return DateTime.SpecifyKind(TimeZoneInfo.ConvertTime(utc, TimeZoneInfo.Utc, timeZone), DateTimeKind.Local);
+    }
+
+    public DateTime DateTimeToUtc(DateTime local)
+    {
+        return DateTimeToUtc(TimeZoneInfo, local);
+    }
+
+    public static DateTime DateTimeToUtc(TimeZoneInfo timeZone, DateTime local)
+    {
+        if (local.Kind == DateTimeKind.Utc || local == DateTime.MinValue || local == DateTime.MaxValue)
         {
-            return DateTimeToUtc(TimeZoneInfo, local);
+            return local;
         }
 
-        public static DateTime DateTimeToUtc(TimeZoneInfo timeZone, DateTime local)
+        if (timeZone.IsInvalidTime(DateTime.SpecifyKind(local, DateTimeKind.Unspecified)))
         {
-            if (local.Kind == DateTimeKind.Utc || local == DateTime.MinValue || local == DateTime.MaxValue)
-            {
-                return local;
-            }
-
-            if (timeZone.IsInvalidTime(DateTime.SpecifyKind(local, DateTimeKind.Unspecified)))
-            {
-                local = local.AddHours(1); // hack
-            }
-
-            return TimeZoneInfo.ConvertTimeToUtc(DateTime.SpecifyKind(local, DateTimeKind.Unspecified), timeZone);
+            local = local.AddHours(1); // hack
         }
 
-        public DateTime DateTimeNow()
-        {
-            return DateTimeNow(TimeZoneInfo);
-        }
+        return TimeZoneInfo.ConvertTimeToUtc(DateTime.SpecifyKind(local, DateTimeKind.Unspecified), timeZone);
+    }
 
-        public static DateTime DateTimeNow(TimeZoneInfo timeZone)
-        {
-            return DateTime.SpecifyKind(TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZone), DateTimeKind.Local);
-        }
+    public DateTime DateTimeNow()
+    {
+        return DateTimeNow(TimeZoneInfo);
+    }
 
-        public DateTime DateTimeNow(string timeZone)
-        {
-            return DateTimeNow(TimeZoneConverter.GetTimeZone(timeZone));
-        }
+    public static DateTime DateTimeNow(TimeZoneInfo timeZone)
+    {
+        return DateTime.SpecifyKind(TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZone), DateTimeKind.Local);
+    }
+
+    public DateTime DateTimeNow(string timeZone)
+    {
+        return DateTimeNow(TimeZoneConverter.GetTimeZone(timeZone));
     }
 }

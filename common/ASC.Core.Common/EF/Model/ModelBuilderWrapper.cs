@@ -1,51 +1,50 @@
-﻿namespace ASC.Core.Common.EF.Model
+﻿namespace ASC.Core.Common.EF.Model;
+
+public class ModelBuilderWrapper
 {
-    public class ModelBuilderWrapper
+    private ModelBuilder ModelBuilder { get; set; }
+    private Provider Provider { get; set; }
+
+    private ModelBuilderWrapper(ModelBuilder modelBuilder, Provider provider)
     {
-        private ModelBuilder ModelBuilder { get; set; }
-        private Provider Provider { get; set; }
+        ModelBuilder = modelBuilder;
+        Provider = provider;
+    }
 
-        private ModelBuilderWrapper(ModelBuilder modelBuilder, Provider provider)
-        {
-            ModelBuilder = modelBuilder;
-            Provider = provider;
-        }
+    public static ModelBuilderWrapper From(ModelBuilder modelBuilder, Provider provider) =>
+        new ModelBuilderWrapper(modelBuilder, provider);
 
-        public static ModelBuilderWrapper From(ModelBuilder modelBuilder, Provider provider) =>
-            new ModelBuilderWrapper(modelBuilder, provider);
+    public ModelBuilderWrapper Add(Action<ModelBuilder> action, Provider provider)
+    {
+        if (provider == Provider) action(ModelBuilder);
 
-        public ModelBuilderWrapper Add(Action<ModelBuilder> action, Provider provider)
-        {
-            if (provider == Provider) action(ModelBuilder);
+        return this;
+    }
 
-            return this;
-        }
+    public ModelBuilderWrapper HasData<T>(params T[] data) where T : class
+    {
+        ModelBuilder.Entity<T>().HasData(data);
 
-        public ModelBuilderWrapper HasData<T>(params T[] data) where T : class
-        {
-            ModelBuilder.Entity<T>().HasData(data);
+        return this;
+    }
 
-            return this;
-        }
-
-        public void AddDbFunction()
-        {
-            ModelBuilder
-                .HasDbFunction(typeof(JsonExtensions).GetMethod(nameof(JsonExtensions.JsonValue)))
-                .HasTranslation(e =>
+    public void AddDbFunction()
+    {
+        ModelBuilder
+            .HasDbFunction(typeof(JsonExtensions).GetMethod(nameof(JsonExtensions.JsonValue)))
+            .HasTranslation(e =>
+            {
+                var res = new List<SqlExpression>();
+                if (e is List<SqlExpression> list)
                 {
-                    var res = new List<SqlExpression>();
-                    if (e is List<SqlExpression> list)
-                    {
-                        if (list[0] is SqlConstantExpression key)
-                            res.Add(new SqlFragmentExpression($"`{key.Value}`"));
+                    if (list[0] is SqlConstantExpression key)
+                        res.Add(new SqlFragmentExpression($"`{key.Value}`"));
 
-                        if (list[1] is SqlConstantExpression val)
-                            res.Add(new SqlConstantExpression(Expression.Constant($"$.{val.Value}"), val.TypeMapping));
-                    }
+                    if (list[1] is SqlConstantExpression val)
+                        res.Add(new SqlConstantExpression(Expression.Constant($"$.{val.Value}"), val.TypeMapping));
+                }
 
-                    return new SqlFunctionExpression("JSON_EXTRACT", res, true, res.Select((SqlExpression a) => false), typeof(string), null);
-                });
-        }
+                return new SqlFunctionExpression("JSON_EXTRACT", res, true, res.Select((SqlExpression a) => false), typeof(string), null);
+            });
     }
 }

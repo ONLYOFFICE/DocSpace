@@ -1,7 +1,6 @@
-﻿namespace ASC.Core.Common.WhiteLabel
+﻿namespace ASC.Core.Common.WhiteLabel;
+
+public class BaseWhiteLabelSettings
 {
-    public class BaseWhiteLabelSettings
-    {
-        public const string DefaultLogoText = "ONLYOFFICE";
-    }
+    public const string DefaultLogoText = "ONLYOFFICE";
 }

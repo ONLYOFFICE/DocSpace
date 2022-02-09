@@ -23,24 +23,23 @@
  *
 */
 
-namespace ASC.Core.Notify.Senders
+namespace ASC.Core.Notify.Senders;
+
+public class NotifyServiceSender : INotifySender
 {
-    public class NotifyServiceSender : INotifySender
+    public NotifyServiceClient NotifyServiceClient { get; }
+
+    public NotifyServiceSender(
+        ICacheNotify<NotifyMessage> eventBusNotifyMessage,
+        ICacheNotify<NotifyInvoke> eventBusNotifyInvoke) =>
+        NotifyServiceClient = new NotifyServiceClient(eventBusNotifyMessage, eventBusNotifyInvoke);
+
+    public void Init(IDictionary<string, string> properties) { }
+
+    public NoticeSendResult Send(NotifyMessage m)
     {
-        public NotifyServiceClient NotifyServiceClient { get; }
+        NotifyServiceClient.SendNotifyMessage(m);
 
-        public NotifyServiceSender(
-            ICacheNotify<NotifyMessage> eventBusNotifyMessage, 
-            ICacheNotify<NotifyInvoke> eventBusNotifyInvoke) =>
-            NotifyServiceClient = new NotifyServiceClient(eventBusNotifyMessage, eventBusNotifyInvoke);
-
-        public void Init(IDictionary<string, string> properties) { }
-
-        public NoticeSendResult Send(NotifyMessage m)
-        {
-            NotifyServiceClient.SendNotifyMessage(m);
-
-            return NoticeSendResult.OK;
-        }
+        return NoticeSendResult.OK;
     }
 }

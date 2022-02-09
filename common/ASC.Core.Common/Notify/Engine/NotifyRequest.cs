@@ -23,117 +23,116 @@
  *
 */
 
-namespace ASC.Notify.Engine
+namespace ASC.Notify.Engine;
+
+public class NotifyRequest
 {
-    public class NotifyRequest
+    public INotifyAction NotifyAction { get; internal set; }
+    public string ObjectID { get; internal set; }
+    public IRecipient Recipient { get; internal set; }
+    public List<ITagValue> Arguments { get; internal set; }
+    public string CurrentSender { get; internal set; }
+    public INoticeMessage CurrentMessage { get; internal set; }
+    public Hashtable Properties { get; private set; }
+    internal string[] SenderNames { get; set; }
+    internal IPattern[] Patterns { get; set; }
+    internal List<string> RequaredTags { get; set; }
+    internal List<ISendInterceptor> Interceptors { get; set; }
+    internal bool IsNeedCheckSubscriptions { get; set; }
+
+    private INotifySource NotifySource;
+
+
+    public NotifyRequest(INotifySource notifySource, INotifyAction action, string objectID, IRecipient recipient)
     {
-        public INotifyAction NotifyAction { get; internal set; }
-        public string ObjectID { get; internal set; }
-        public IRecipient Recipient { get; internal set; }
-        public List<ITagValue> Arguments { get; internal set; }
-        public string CurrentSender { get; internal set; }
-        public INoticeMessage CurrentMessage { get; internal set; }
-        public Hashtable Properties { get; private set; }
-        internal string[] SenderNames { get; set; }
-        internal IPattern[] Patterns { get; set; }
-        internal List<string> RequaredTags { get; set; }
-        internal List<ISendInterceptor> Interceptors { get; set; }
-        internal bool IsNeedCheckSubscriptions { get; set; }
+        Properties = new Hashtable();
+        Arguments = new List<ITagValue>();
+        RequaredTags = new List<string>();
+        Interceptors = new List<ISendInterceptor>();
 
-        private INotifySource NotifySource;
+        NotifySource = notifySource ?? throw new ArgumentNullException(nameof(notifySource));
+        Recipient = recipient ?? throw new ArgumentNullException(nameof(recipient));
+        NotifyAction = action ?? throw new ArgumentNullException(nameof(action));
+        ObjectID = objectID;
 
+        IsNeedCheckSubscriptions = true;
+    }
 
-        public NotifyRequest(INotifySource notifySource, INotifyAction action, string objectID, IRecipient recipient)
+    internal bool Intercept(InterceptorPlace place, IServiceScope serviceScope)
+    {
+        var result = false;
+        foreach (var interceptor in Interceptors)
         {
-            Properties = new Hashtable();
-            Arguments = new List<ITagValue>();
-            RequaredTags = new List<string>();
-            Interceptors = new List<ISendInterceptor>();
-
-            NotifySource = notifySource ?? throw new ArgumentNullException(nameof(notifySource));
-            Recipient = recipient ?? throw new ArgumentNullException(nameof(recipient));
-            NotifyAction = action ?? throw new ArgumentNullException(nameof(action));
-            ObjectID = objectID;
-
-            IsNeedCheckSubscriptions = true;
-        }
-
-        internal bool Intercept(InterceptorPlace place, IServiceScope serviceScope)
-        {
-            var result = false;
-            foreach (var interceptor in Interceptors)
+            if ((interceptor.PreventPlace & place) == place)
             {
-                if ((interceptor.PreventPlace & place) == place)
+                try
                 {
-                    try
+                    if (interceptor.PreventSend(this, place, serviceScope))
                     {
-                        if (interceptor.PreventSend(this, place, serviceScope))
-                        {
-                            result = true;
-                        }
-                    }
-                    catch (Exception err)
-                    {
-                        serviceScope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify").ErrorFormat("{0} {1} {2}: {3}", interceptor.Name, NotifyAction, Recipient, err);
+                        result = true;
                     }
                 }
+                catch (Exception err)
+                {
+                    serviceScope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify").ErrorFormat("{0} {1} {2}: {3}", interceptor.Name, NotifyAction, Recipient, err);
+                }
             }
-
-            return result;
         }
 
-        internal IPattern GetSenderPattern(string senderName)
-        {
-            if (SenderNames == null || Patterns == null ||
-                SenderNames.Length == 0 || Patterns.Length == 0 ||
-                SenderNames.Length != Patterns.Length)
-            {
-                return null;
-            }
-
-            var index = Array.IndexOf(SenderNames, senderName);
-            if (index < 0)
-            {
-                throw new ApplicationException(string.Format("Sender with tag {0} dnot found", senderName));
-            }
-
-            return Patterns[index];
-        }
-
-        internal NotifyRequest Split(IRecipient recipient)
-        {
-            if (recipient == null)
-            {
-                throw new ArgumentNullException(nameof(recipient));
-            }
-
-            var newRequest = new NotifyRequest(NotifySource, NotifyAction, ObjectID, recipient)
-            {
-                SenderNames = SenderNames,
-                Patterns = Patterns,
-                Arguments = new List<ITagValue>(Arguments),
-                RequaredTags = RequaredTags,
-                CurrentSender = CurrentSender,
-                CurrentMessage = CurrentMessage
-            };
-            newRequest.Interceptors.AddRange(Interceptors);
-
-            return newRequest;
-        }
-
-        internal NoticeMessage CreateMessage(IDirectRecipient recipient) =>
-            new NoticeMessage(recipient, NotifyAction, ObjectID);
-
-        public IActionProvider GetActionProvider(IServiceScope scope) =>
-            ((INotifySource)scope.ServiceProvider.GetService(NotifySource.GetType())).GetActionProvider();
-
-        public IPatternProvider GetPatternProvider(IServiceScope scope) =>
-            ((INotifySource)scope.ServiceProvider.GetService(NotifySource.GetType())).GetPatternProvider();
-
-        public IRecipientProvider GetRecipientsProvider(IServiceScope scope) =>
-            ((INotifySource)scope.ServiceProvider.GetService(NotifySource.GetType())).GetRecipientsProvider();
-
-        public ISubscriptionProvider GetSubscriptionProvider(IServiceScope scope) =>
-            ((INotifySource) scope.ServiceProvider.GetService(NotifySource.GetType())).GetSubscriptionProvider();
+        return result;
     }
+
+    internal IPattern GetSenderPattern(string senderName)
+    {
+        if (SenderNames == null || Patterns == null ||
+            SenderNames.Length == 0 || Patterns.Length == 0 ||
+            SenderNames.Length != Patterns.Length)
+        {
+            return null;
+        }
+
+        var index = Array.IndexOf(SenderNames, senderName);
+        if (index < 0)
+        {
+            throw new ApplicationException(string.Format("Sender with tag {0} dnot found", senderName));
+        }
+
+        return Patterns[index];
+    }
+
+    internal NotifyRequest Split(IRecipient recipient)
+    {
+        if (recipient == null)
+        {
+            throw new ArgumentNullException(nameof(recipient));
+        }
+
+        var newRequest = new NotifyRequest(NotifySource, NotifyAction, ObjectID, recipient)
+        {
+            SenderNames = SenderNames,
+            Patterns = Patterns,
+            Arguments = new List<ITagValue>(Arguments),
+            RequaredTags = RequaredTags,
+            CurrentSender = CurrentSender,
+            CurrentMessage = CurrentMessage
+        };
+        newRequest.Interceptors.AddRange(Interceptors);
+
+        return newRequest;
+    }
+
+    internal NoticeMessage CreateMessage(IDirectRecipient recipient) =>
+        new NoticeMessage(recipient, NotifyAction, ObjectID);
+
+    public IActionProvider GetActionProvider(IServiceScope scope) =>
+        ((INotifySource)scope.ServiceProvider.GetService(NotifySource.GetType())).GetActionProvider();
+
+    public IPatternProvider GetPatternProvider(IServiceScope scope) =>
+        ((INotifySource)scope.ServiceProvider.GetService(NotifySource.GetType())).GetPatternProvider();
+
+    public IRecipientProvider GetRecipientsProvider(IServiceScope scope) =>
+        ((INotifySource)scope.ServiceProvider.GetService(NotifySource.GetType())).GetRecipientsProvider();
+
+    public ISubscriptionProvider GetSubscriptionProvider(IServiceScope scope) =>
+        ((INotifySource)scope.ServiceProvider.GetService(NotifySource.GetType())).GetSubscriptionProvider();
 }

@@ -23,125 +23,124 @@
  *
 */
 
-namespace ASC.Notify.Model
+namespace ASC.Notify.Model;
+
+class NotifyClientImpl : INotifyClient
 {
-    class NotifyClientImpl : INotifyClient
+    public IServiceScope ServiceScope { get; }
+
+    private readonly Context _ctx;
+    private readonly InterceptorStorage _interceptors = new InterceptorStorage();
+    private readonly INotifySource _notifySource;
+
+    public NotifyClientImpl(Context context, INotifySource notifySource, IServiceScope serviceScope)
     {
-        public IServiceScope ServiceScope { get; }
+        _notifySource = notifySource ?? throw new ArgumentNullException(nameof(notifySource));
+        ServiceScope = serviceScope;
+        _ctx = context ?? throw new ArgumentNullException(nameof(context));
+    }
 
-        private readonly Context _ctx;
-        private readonly InterceptorStorage _interceptors = new InterceptorStorage();
-        private readonly INotifySource _notifySource;
+    public void SendNoticeToAsync(INotifyAction action, IRecipient[] recipients, string[] senderNames, params ITagValue[] args)
+    {
+        SendNoticeToAsync(action, null, recipients, senderNames, false, args);
+    }
 
-        public NotifyClientImpl(Context context, INotifySource notifySource, IServiceScope serviceScope)
+    public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, params ITagValue[] args)
+    {
+        SendNoticeToAsync(action, objectID, recipients, senderNames, false, args);
+    }
+
+    public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, params ITagValue[] args)
+    {
+        SendNoticeToAsync(action, objectID, recipients, null, false, args);
+    }
+
+    public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, bool checkSubscription, params ITagValue[] args)
+    {
+        SendNoticeToAsync(action, objectID, recipients, null, checkSubscription, args);
+    }
+
+    public void SendNoticeAsync(INotifyAction action, string objectID, IRecipient recipient, params ITagValue[] args)
+    {
+        SendNoticeToAsync(action, objectID, new[] { recipient }, null, false, args);
+    }
+
+    public void SendNoticeAsync(int tenantId, INotifyAction action, string objectID, params ITagValue[] args)
+    {
+        var subscriptionSource = _notifySource.GetSubscriptionProvider();
+        var recipients = subscriptionSource.GetRecipients(action, objectID);
+        SendNoticeToAsync(action, objectID, recipients, null, false, args);
+    }
+
+    public void SendNoticeAsync(INotifyAction action, string objectID, IRecipient recipient, bool checkSubscription, params ITagValue[] args)
+    {
+        SendNoticeToAsync(action, objectID, new[] { recipient }, null, checkSubscription, args);
+    }
+
+    public void BeginSingleRecipientEvent(string name)
+    {
+        _interceptors.Add(new SingleRecipientInterceptor(name));
+    }
+
+    public void EndSingleRecipientEvent(string name)
+    {
+        _interceptors.Remove(name);
+    }
+
+    public void AddInterceptor(ISendInterceptor interceptor)
+    {
+        _interceptors.Add(interceptor);
+    }
+
+    public void RemoveInterceptor(string name)
+    {
+        _interceptors.Remove(name);
+    }
+
+    public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, bool checkSubsciption, params ITagValue[] args)
+    {
+        if (recipients == null)
         {
-            _notifySource = notifySource ?? throw new ArgumentNullException(nameof(notifySource));
-            ServiceScope = serviceScope;
-            _ctx = context ?? throw new ArgumentNullException(nameof(context));
+            throw new ArgumentNullException(nameof(recipients));
         }
 
-        public void SendNoticeToAsync(INotifyAction action, IRecipient[] recipients, string[] senderNames, params ITagValue[] args)
+        BeginSingleRecipientEvent("__syspreventduplicateinterceptor");
+
+        foreach (var recipient in recipients)
         {
-            SendNoticeToAsync(action, null, recipients, senderNames, false, args);
+            var r = CreateRequest(action, objectID, recipient, args, senderNames, checkSubsciption);
+            SendAsync(r);
+        }
+    }
+
+    private void SendAsync(NotifyRequest request)
+    {
+        request.Interceptors = _interceptors.GetAll();
+        _ctx.NotifyEngine.QueueRequest(request, ServiceScope);
+    }
+
+    private NotifyRequest CreateRequest(INotifyAction action, string objectID, IRecipient recipient, ITagValue[] args, string[] senders, bool checkSubsciption)
+    {
+        if (action == null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+        if (recipient == null)
+        {
+            throw new ArgumentNullException(nameof(recipient));
         }
 
-        public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, params ITagValue[] args)
+        var request = new NotifyRequest(_notifySource, action, objectID, recipient)
         {
-            SendNoticeToAsync(action, objectID, recipients, senderNames, false, args);
+            SenderNames = senders,
+            IsNeedCheckSubscriptions = checkSubsciption
+        };
+
+        if (args != null)
+        {
+            request.Arguments.AddRange(args);
         }
 
-        public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, params ITagValue[] args)
-        {
-            SendNoticeToAsync(action, objectID, recipients, null, false, args);
-        }
-
-        public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, bool checkSubscription, params ITagValue[] args)
-        {
-            SendNoticeToAsync(action, objectID, recipients, null, checkSubscription, args);
-        }
-
-        public void SendNoticeAsync(INotifyAction action, string objectID, IRecipient recipient, params ITagValue[] args)
-        {
-            SendNoticeToAsync(action, objectID, new[] { recipient }, null, false, args);
-        }
-
-        public void SendNoticeAsync(int tenantId, INotifyAction action, string objectID, params ITagValue[] args)
-        {
-            var subscriptionSource = _notifySource.GetSubscriptionProvider();
-            var recipients = subscriptionSource.GetRecipients(action, objectID);
-            SendNoticeToAsync(action, objectID, recipients, null, false, args);
-        }
-
-        public void SendNoticeAsync(INotifyAction action, string objectID, IRecipient recipient, bool checkSubscription, params ITagValue[] args)
-        {
-            SendNoticeToAsync(action, objectID, new[] { recipient }, null, checkSubscription, args);
-        }
-
-        public void BeginSingleRecipientEvent(string name)
-        {
-            _interceptors.Add(new SingleRecipientInterceptor(name));
-        }
-
-        public void EndSingleRecipientEvent(string name)
-        {
-            _interceptors.Remove(name);
-        }
-
-        public void AddInterceptor(ISendInterceptor interceptor)
-        {
-            _interceptors.Add(interceptor);
-        }
-
-        public void RemoveInterceptor(string name)
-        {
-            _interceptors.Remove(name);
-        }
-
-        public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, bool checkSubsciption, params ITagValue[] args)
-        {
-            if (recipients == null)
-            {
-                throw new ArgumentNullException(nameof(recipients));
-            }
-
-            BeginSingleRecipientEvent("__syspreventduplicateinterceptor");
-
-            foreach (var recipient in recipients)
-            {
-                var r = CreateRequest(action, objectID, recipient, args, senderNames, checkSubsciption);
-                SendAsync(r);
-            }
-        }
-
-        private void SendAsync(NotifyRequest request)
-        {
-            request.Interceptors = _interceptors.GetAll();
-            _ctx.NotifyEngine.QueueRequest(request, ServiceScope);
-        }
-
-        private NotifyRequest CreateRequest(INotifyAction action, string objectID, IRecipient recipient, ITagValue[] args, string[] senders, bool checkSubsciption)
-        {
-            if (action == null)
-            {
-                throw new ArgumentNullException(nameof(action));
-            }
-            if (recipient == null)
-            {
-                throw new ArgumentNullException(nameof(recipient));
-            }
-
-            var request = new NotifyRequest(_notifySource, action, objectID, recipient)
-            {
-                SenderNames = senders,
-                IsNeedCheckSubscriptions = checkSubsciption
-            };
-
-            if (args != null)
-            {
-                request.Arguments.AddRange(args);
-            }
-
-            return request;
-        }
+        return request;
     }
 }

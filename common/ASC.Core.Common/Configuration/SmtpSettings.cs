@@ -23,127 +23,126 @@
  *
 */
 
-namespace ASC.Core.Configuration
+namespace ASC.Core.Configuration;
+
+public class SmtpSettings
 {
-    public class SmtpSettings
+    public const int DefaultSmtpPort = 25;
+    public const string DefaultSenderDisplayName = "ONLYOFFICE Postman";
+
+    public string Host { get; private set; }
+    public int Port { get; private set; }
+    public string SenderAddress { get; private set; }
+    public string SenderDisplayName { get; private set; }
+    public string CredentialsDomain { get; private set; }
+    public string CredentialsUserName { get; private set; }
+    public string CredentialsUserPassword { get; private set; }
+    public bool EnableSSL { get; set; }
+    public bool EnableAuth { get; set; }
+    public bool IsDefaultSettings { get; internal set; }
+
+    public readonly static SmtpSettings Empty = new SmtpSettings();
+
+    public SmtpSettings(string host, string senderAddress)
+        : this(host, senderAddress, DefaultSenderDisplayName) { }
+
+    public SmtpSettings(string host, string senderAddress, string senderDisplayName)
+        : this(host, DefaultSmtpPort, senderAddress, senderDisplayName) { }
+
+    public SmtpSettings(string host, int port, string senderAddress)
+        : this(host, port, senderAddress, DefaultSenderDisplayName) { }
+
+    private SmtpSettings() { }
+
+    public SmtpSettings(string host, int port, string senderAddress, string senderDisplayName)
     {
-        public const int DefaultSmtpPort = 25;
-        public const string DefaultSenderDisplayName = "ONLYOFFICE Postman";
-
-        public string Host { get; private set; }
-        public int Port { get; private set; }
-        public string SenderAddress { get; private set; }
-        public string SenderDisplayName { get; private set; }
-        public string CredentialsDomain { get; private set; }
-        public string CredentialsUserName { get; private set; }
-        public string CredentialsUserPassword { get; private set; }
-        public bool EnableSSL { get; set; }
-        public bool EnableAuth { get; set; }
-        public bool IsDefaultSettings { get; internal set; }
-
-        public readonly static SmtpSettings Empty = new SmtpSettings();
-
-        public SmtpSettings(string host, string senderAddress)
-            : this(host, senderAddress, DefaultSenderDisplayName) { }
-
-        public SmtpSettings(string host, string senderAddress, string senderDisplayName)
-            : this(host, DefaultSmtpPort, senderAddress, senderDisplayName) { }
-
-        public SmtpSettings(string host, int port, string senderAddress)
-            : this(host, port, senderAddress, DefaultSenderDisplayName) { }
-
-        private SmtpSettings() { }
-
-        public SmtpSettings(string host, int port, string senderAddress, string senderDisplayName)
+        if (string.IsNullOrEmpty(host))
         {
-            if (string.IsNullOrEmpty(host))
-            {
-                throw new ArgumentException("Empty smtp host.", nameof(host));
-            }
-            if (string.IsNullOrEmpty(senderAddress))
-            {
-                throw new ArgumentException("Empty sender address.", nameof(senderAddress));
-            }
-
-            Host = host;
-            Port = port;
-            SenderAddress = senderAddress;
-            SenderDisplayName = senderDisplayName ?? throw new ArgumentNullException(nameof(senderDisplayName));
+            throw new ArgumentException("Empty smtp host.", nameof(host));
+        }
+        if (string.IsNullOrEmpty(senderAddress))
+        {
+            throw new ArgumentException("Empty sender address.", nameof(senderAddress));
         }
 
-        public void SetCredentials(string userName, string password)
+        Host = host;
+        Port = port;
+        SenderAddress = senderAddress;
+        SenderDisplayName = senderDisplayName ?? throw new ArgumentNullException(nameof(senderDisplayName));
+    }
+
+    public void SetCredentials(string userName, string password)
+    {
+        SetCredentials(userName, password, string.Empty);
+    }
+
+    public void SetCredentials(string userName, string password, string domain)
+    {
+        if (string.IsNullOrEmpty(userName))
         {
-            SetCredentials(userName, password, string.Empty);
+            throw new ArgumentException("Empty user name.", nameof(userName));
+        }
+        if (string.IsNullOrEmpty(password))
+        {
+            throw new ArgumentException("Empty password.", nameof(password));
         }
 
-        public void SetCredentials(string userName, string password, string domain)
-        {
-            if (string.IsNullOrEmpty(userName))
-            {
-                throw new ArgumentException("Empty user name.", nameof(userName));
-            }
-            if (string.IsNullOrEmpty(password))
-            {
-                throw new ArgumentException("Empty password.", nameof(password));
-            }
+        CredentialsUserName = userName;
+        CredentialsUserPassword = password;
+        CredentialsDomain = domain;
+    }
 
-            CredentialsUserName = userName;
-            CredentialsUserPassword = password;
-            CredentialsDomain = domain;
+    public string Serialize()
+    {
+        return ToString();
+    }
+
+    public static SmtpSettings Deserialize(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return Empty;
         }
 
-        public string Serialize()
+        var props = value.Split(new[] { '#' }, StringSplitOptions.None);
+        props = Array.ConvertAll(props, p => !string.IsNullOrEmpty(p) ? p : null);
+
+        var host = HttpUtility.UrlDecode(props[3]);
+        var port = !string.IsNullOrEmpty(props[4]) ? int.Parse(props[4]) : DefaultSmtpPort;
+        var senderAddress = HttpUtility.UrlDecode(props[5]);
+        var senderDisplayName = HttpUtility.UrlDecode(props[6]) ?? DefaultSenderDisplayName;
+
+        var settings = new SmtpSettings(host, port, senderAddress, senderDisplayName)
         {
-            return ToString();
+            EnableSSL = 7 < props.Length && !string.IsNullOrEmpty(props[7]) && Convert.ToBoolean(props[7])
+        };
+
+        var credentialsUserName = HttpUtility.UrlDecode(props[1]);
+        var credentialsUserPassword = HttpUtility.UrlDecode(props[2]);
+        var credentialsDomain = HttpUtility.UrlDecode(props[0]);
+        if (!string.IsNullOrEmpty(credentialsUserName) && !string.IsNullOrEmpty(credentialsUserPassword))
+        {
+            settings.SetCredentials(credentialsUserName, credentialsUserPassword, credentialsDomain);
+            settings.EnableAuth = true;
+        }
+        else
+        {
+            settings.EnableAuth = false;
         }
 
-        public static SmtpSettings Deserialize(string value)
-        {
-            if (string.IsNullOrEmpty(value))
-            {
-                return Empty;
-            }
+        return settings;
+    }
 
-            var props = value.Split(new[] { '#' }, StringSplitOptions.None);
-            props = Array.ConvertAll(props, p => !string.IsNullOrEmpty(p) ? p : null);
-
-            var host = HttpUtility.UrlDecode(props[3]);
-            var port = !string.IsNullOrEmpty(props[4]) ? int.Parse(props[4]) : DefaultSmtpPort;
-            var senderAddress = HttpUtility.UrlDecode(props[5]);
-            var senderDisplayName = HttpUtility.UrlDecode(props[6]) ?? DefaultSenderDisplayName;
-
-            var settings = new SmtpSettings(host, port, senderAddress, senderDisplayName)
-            {
-                EnableSSL = 7 < props.Length && !string.IsNullOrEmpty(props[7]) && Convert.ToBoolean(props[7])
-            };
-
-            var credentialsUserName = HttpUtility.UrlDecode(props[1]);
-            var credentialsUserPassword = HttpUtility.UrlDecode(props[2]);
-            var credentialsDomain = HttpUtility.UrlDecode(props[0]);
-            if (!string.IsNullOrEmpty(credentialsUserName) && !string.IsNullOrEmpty(credentialsUserPassword))
-            {
-                settings.SetCredentials(credentialsUserName, credentialsUserPassword, credentialsDomain);
-                settings.EnableAuth = true;
-            }
-            else
-            {
-                settings.EnableAuth = false;
-            }
-
-            return settings;
-        }
-
-        public override string ToString()
-        {
-            return string.Join("#",
-                               HttpUtility.UrlEncode(CredentialsDomain),
-                               HttpUtility.UrlEncode(CredentialsUserName),
-                               HttpUtility.UrlEncode(CredentialsUserPassword),
-                               HttpUtility.UrlEncode(Host),
-                               Port.ToString(),
-                               HttpUtility.UrlEncode(SenderAddress),
-                               HttpUtility.UrlEncode(SenderDisplayName),
-                               EnableSSL.ToString());
-        }
+    public override string ToString()
+    {
+        return string.Join("#",
+                           HttpUtility.UrlEncode(CredentialsDomain),
+                           HttpUtility.UrlEncode(CredentialsUserName),
+                           HttpUtility.UrlEncode(CredentialsUserPassword),
+                           HttpUtility.UrlEncode(Host),
+                           Port.ToString(),
+                           HttpUtility.UrlEncode(SenderAddress),
+                           HttpUtility.UrlEncode(SenderDisplayName),
+                           EnableSSL.ToString());
     }
 }

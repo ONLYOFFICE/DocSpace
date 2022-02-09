@@ -23,87 +23,86 @@
  *
 */
 
-namespace ASC.Core
+namespace ASC.Core;
+
+[Serializable]
+public class AzRecord : IMapFrom<Acl>
 {
-    [Serializable]
-    public class AzRecord : IMapFrom<Acl>
+    public Guid SubjectId { get; set; }
+    public Guid ActionId { get; set; }
+    public string ObjectId { get; set; }
+    public AceType Reaction { get; set; }
+    public int Tenant { get; set; }
+
+    public AzRecord() { }
+
+    public AzRecord(Guid subjectId, Guid actionId, AceType reaction)
+        : this(subjectId, actionId, default(string), reaction) { }
+
+    public AzRecord(Guid subjectId, Guid actionId, string objectId, AceType reaction)
     {
-        public Guid SubjectId { get; set; }
-        public Guid ActionId { get; set; }
-        public string ObjectId { get; set; }
-        public AceType Reaction { get; set; }
-        public int Tenant { get; set; }
+        SubjectId = subjectId;
+        ActionId = actionId;
+        Reaction = reaction;
+        ObjectId = objectId;
+    }
 
-        public AzRecord() { }
-
-        public AzRecord(Guid subjectId, Guid actionId, AceType reaction)
-            : this(subjectId, actionId, default(string), reaction) { }
-
-        public AzRecord(Guid subjectId, Guid actionId, string objectId, AceType reaction)
+    public static implicit operator AzRecord(AzRecordCache cache)
+    {
+        var result = new AzRecord()
         {
-            SubjectId = subjectId;
-            ActionId = actionId;
-            Reaction = reaction;
-            ObjectId = objectId;
+            Tenant = cache.Tenant
+        };
+
+
+        if (Guid.TryParse(cache.SubjectId, out var subjectId))
+        {
+            result.SubjectId = subjectId;
         }
 
-        public static implicit operator AzRecord(AzRecordCache cache)
+        if (Guid.TryParse(cache.ActionId, out var actionId))
         {
-            var result = new AzRecord()
-            {
-                Tenant = cache.Tenant
-            };
-
-
-            if (Guid.TryParse(cache.SubjectId, out var subjectId))
-            {
-                result.SubjectId = subjectId;
-            }
-
-            if (Guid.TryParse(cache.ActionId, out var actionId))
-            {
-                result.ActionId = actionId;
-            }
-
-            result.ObjectId = cache.ObjectId;
-
-            if (Enum.TryParse<AceType>(cache.Reaction, out var reaction))
-            {
-                result.Reaction = reaction;
-            }
-
-            return result;
+            result.ActionId = actionId;
         }
 
-        public static implicit operator AzRecordCache(AzRecord cache)
+        result.ObjectId = cache.ObjectId;
+
+        if (Enum.TryParse<AceType>(cache.Reaction, out var reaction))
         {
-            return new AzRecordCache
-            {
-                SubjectId = cache.SubjectId.ToString(),
-                ActionId = cache.ActionId.ToString(),
-                ObjectId = cache.ObjectId,
-                Reaction = cache.Reaction.ToString(),
-                Tenant = cache.Tenant
-            };
+            result.Reaction = reaction;
         }
 
-        public override bool Equals(object obj)
-        {
-            return obj is AzRecord r &&
-                r.Tenant == Tenant &&
-                r.SubjectId == SubjectId &&
-                r.ActionId == ActionId &&
-                r.ObjectId == ObjectId &&
-                r.Reaction == Reaction;
-        }
+        return result;
+    }
 
-        public override int GetHashCode()
+    public static implicit operator AzRecordCache(AzRecord cache)
+    {
+        return new AzRecordCache
         {
-            return Tenant.GetHashCode() ^
-                SubjectId.GetHashCode() ^
-                ActionId.GetHashCode() ^
-                (ObjectId ?? string.Empty).GetHashCode() ^
-                Reaction.GetHashCode();
-        }
+            SubjectId = cache.SubjectId.ToString(),
+            ActionId = cache.ActionId.ToString(),
+            ObjectId = cache.ObjectId,
+            Reaction = cache.Reaction.ToString(),
+            Tenant = cache.Tenant
+        };
+    }
+
+    public override bool Equals(object obj)
+    {
+        return obj is AzRecord r &&
+            r.Tenant == Tenant &&
+            r.SubjectId == SubjectId &&
+            r.ActionId == ActionId &&
+            r.ObjectId == ObjectId &&
+            r.Reaction == Reaction;
+    }
+
+    public override int GetHashCode()
+    {
+        return Tenant.GetHashCode() ^
+            SubjectId.GetHashCode() ^
+            ActionId.GetHashCode() ^
+            (ObjectId ?? string.Empty).GetHashCode() ^
+            Reaction.GetHashCode();
     }
 }

@@ -1,42 +1,41 @@
-﻿namespace ASC.Core.Common.EF.Context
-{
-    public class MySqlMailDbContext : MailDbContext { }
-    public class PostgreSqlMailDbContext : MailDbContext { }
-    public class MailDbContext : BaseDbContext
-    {
-        public DbSet<MailboxServer> MailboxServer { get; set; }
-        public DbSet<ServerServer> ServerServer { get; set; }
-        public DbSet<MailboxProvider> MailboxProvider { get; set; }
-        public DbSet<Mailbox> Mailbox { get; set; }
-        public DbSet<ApiKeys> ApiKeys { get; set; }
-        public DbSet<GreyListingWhiteList> GreyListingWhiteList { get; set; }
+﻿namespace ASC.Core.Common.EF.Context;
 
-        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext =>
-            new Dictionary<Provider, Func<BaseDbContext>>()
-            {
+public class MySqlMailDbContext : MailDbContext { }
+public class PostgreSqlMailDbContext : MailDbContext { }
+public class MailDbContext : BaseDbContext
+{
+    public DbSet<MailboxServer> MailboxServer { get; set; }
+    public DbSet<ServerServer> ServerServer { get; set; }
+    public DbSet<MailboxProvider> MailboxProvider { get; set; }
+    public DbSet<Mailbox> Mailbox { get; set; }
+    public DbSet<ApiKeys> ApiKeys { get; set; }
+    public DbSet<GreyListingWhiteList> GreyListingWhiteList { get; set; }
+
+    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext =>
+        new Dictionary<Provider, Func<BaseDbContext>>()
+        {
                 { Provider.MySql, () => new MySqlMailDbContext() } ,
                 { Provider.PostgreSql, () => new PostgreSqlMailDbContext() } ,
-            };
+        };
 
-        public MailDbContext() { }
+    public MailDbContext() { }
 
-        public MailDbContext(DbContextOptions options) : base(options) { }
+    public MailDbContext(DbContextOptions options) : base(options) { }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            ModelBuilderWrapper
-                .From(modelBuilder, Provider)
-                .AddMailbox()
-                .AddMailboxProvider()
-                .AddServerServer()
-                .AddGreyListingWhiteList();
-        }
-    }
-    public static class MailDbExtension
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public static DIHelper AddMailDbContextService(this DIHelper services)
-        {
-            return services.AddDbContextManagerService<MailDbContext>();
-        }
+        ModelBuilderWrapper
+            .From(modelBuilder, Provider)
+            .AddMailbox()
+            .AddMailboxProvider()
+            .AddServerServer()
+            .AddGreyListingWhiteList();
+    }
+}
+public static class MailDbExtension
+{
+    public static DIHelper AddMailDbContextService(this DIHelper services)
+    {
+        return services.AddDbContextManagerService<MailDbContext>();
     }
 }

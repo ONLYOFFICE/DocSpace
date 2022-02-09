@@ -23,65 +23,64 @@
  *
 */
 
-namespace ASC.Notify.Patterns
+namespace ASC.Notify.Patterns;
+
+public sealed class NVelocityPatternFormatter : PatternFormatter
 {
-    public sealed class NVelocityPatternFormatter : PatternFormatter
+    public const string DefaultPattern = @"(^|[^\\])\$[\{]{0,1}(?<tagName>[a-zA-Z0-9_]+)";
+    public const string NoStylePreffix = "==";
+    public const string NoStyleSuffix = "==";
+
+    private VelocityContext _nvelocityContext;
+
+    public NVelocityPatternFormatter()
+        : base(DefaultPattern) { }
+
+    protected override void BeforeFormat(INoticeMessage message, ITagValue[] tagsValues)
     {
-        public const string DefaultPattern = @"(^|[^\\])\$[\{]{0,1}(?<tagName>[a-zA-Z0-9_]+)";
-        public const string NoStylePreffix = "==";
-        public const string NoStyleSuffix = "==";
+        _nvelocityContext = new VelocityContext();
+        _nvelocityContext.AttachEventCartridge(new EventCartridge());
+        _nvelocityContext.EventCartridge.ReferenceInsertion += EventCartridgeReferenceInsertion;
 
-        private VelocityContext _nvelocityContext;
-
-        public NVelocityPatternFormatter()
-            : base(DefaultPattern) { }
-
-        protected override void BeforeFormat(INoticeMessage message, ITagValue[] tagsValues)
+        foreach (var tagValue in tagsValues)
         {
-            _nvelocityContext = new VelocityContext();
-            _nvelocityContext.AttachEventCartridge(new EventCartridge());
-            _nvelocityContext.EventCartridge.ReferenceInsertion += EventCartridgeReferenceInsertion;
-
-            foreach (var tagValue in tagsValues)
-            {
-                _nvelocityContext.Put(tagValue.Tag, tagValue.Value);
-            }
-
-            base.BeforeFormat(message, tagsValues);
+            _nvelocityContext.Put(tagValue.Tag, tagValue.Value);
         }
 
-        protected override string FormatText(string text, ITagValue[] tagsValues)
+        base.BeforeFormat(message, tagsValues);
+    }
+
+    protected override string FormatText(string text, ITagValue[] tagsValues)
+    {
+        return string.IsNullOrEmpty(text) ? text : VelocityFormatter.FormatText(text, _nvelocityContext);
+    }
+
+    protected override void AfterFormat(INoticeMessage message)
+    {
+        _nvelocityContext = null;
+        base.AfterFormat(message);
+    }
+
+    private static void EventCartridgeReferenceInsertion(object sender, ReferenceInsertionEventArgs e)
+    {
+        if (!(e.OriginalValue is string originalString))
         {
-            return string.IsNullOrEmpty(text) ? text : VelocityFormatter.FormatText(text, _nvelocityContext);
+            return;
         }
 
-        protected override void AfterFormat(INoticeMessage message)
+        var lines = originalString.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+        if (lines.Length == 0)
         {
-            _nvelocityContext = null;
-            base.AfterFormat(message);
+            return;
         }
 
-        private static void EventCartridgeReferenceInsertion(object sender, ReferenceInsertionEventArgs e)
+        e.NewValue = string.Empty;
+
+        for (var i = 0; i < lines.Length - 1; i++)
         {
-            if (!(e.OriginalValue is string originalString))
-            {
-                return;
-            }
-
-            var lines = originalString.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
-            if (lines.Length == 0)
-            {
-                return;
-            }
-
-            e.NewValue = string.Empty;
-
-            for (var i = 0; i < lines.Length - 1; i++)
-            {
-                e.NewValue += string.Format("{0}{1}{2}\n", NoStylePreffix, lines[i], NoStyleSuffix);
-            }
-
-            e.NewValue += string.Format("{0}{1}{2}", NoStylePreffix, lines[^1], NoStyleSuffix);
+            e.NewValue += string.Format("{0}{1}{2}\n", NoStylePreffix, lines[i], NoStyleSuffix);
         }
+
+        e.NewValue += string.Format("{0}{1}{2}", NoStylePreffix, lines[^1], NoStyleSuffix);
     }
 }

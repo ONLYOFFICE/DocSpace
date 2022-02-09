@@ -1,46 +1,45 @@
-﻿namespace ASC.Core.Common.EF.Context
-{
-    public class MySqlTenantDbContext : TenantDbContext { }
-    public class PostgreSqlTenantDbContext : TenantDbContext { }
-    public class TenantDbContext : BaseDbContext
-    {
-        public DbSet<DbTenant> Tenants { get; set; }
-        public DbSet<DbTenantVersion> TenantVersion { get; set; }
-        public DbSet<DbTenantPartner> TenantPartner { get; set; }
-        public DbSet<DbTenantForbiden> TenantForbiden { get; set; }
-        public DbSet<TenantIpRestrictions> TenantIpRestrictions { get; set; }
-        public DbSet<DbCoreSettings> CoreSettings { get; set; }
+﻿namespace ASC.Core.Common.EF.Context;
 
-        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext =>
-            new Dictionary<Provider, Func<BaseDbContext>>()
-            {
+public class MySqlTenantDbContext : TenantDbContext { }
+public class PostgreSqlTenantDbContext : TenantDbContext { }
+public class TenantDbContext : BaseDbContext
+{
+    public DbSet<DbTenant> Tenants { get; set; }
+    public DbSet<DbTenantVersion> TenantVersion { get; set; }
+    public DbSet<DbTenantPartner> TenantPartner { get; set; }
+    public DbSet<DbTenantForbiden> TenantForbiden { get; set; }
+    public DbSet<TenantIpRestrictions> TenantIpRestrictions { get; set; }
+    public DbSet<DbCoreSettings> CoreSettings { get; set; }
+
+    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext =>
+        new Dictionary<Provider, Func<BaseDbContext>>()
+        {
                 { Provider.MySql, () => new MySqlTenantDbContext() } ,
                 { Provider.PostgreSql, () => new PostgreSqlTenantDbContext() } ,
-            };
+        };
 
-        public TenantDbContext() { }
+    public TenantDbContext() { }
 
-        public TenantDbContext(DbContextOptions<TenantDbContext> options)
-            : base(options) { }
+    public TenantDbContext(DbContextOptions<TenantDbContext> options)
+        : base(options) { }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            ModelBuilderWrapper
-                .From(modelBuilder, Provider)
-                .AddDbTenant()
-                .AddCoreSettings()
-                .AddDbTenantForbiden()
-                .AddTenantIpRestrictions()
-                .AddDbTenantPartner()
-                .AddDbTenantVersion();
-        }
-    }
-
-    public static class TenantDbExtension
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public static DIHelper AddTenantDbContextService(this DIHelper services)
-        {
-            return services.AddDbContextManagerService<TenantDbContext>();
-        }
+        ModelBuilderWrapper
+            .From(modelBuilder, Provider)
+            .AddDbTenant()
+            .AddCoreSettings()
+            .AddDbTenantForbiden()
+            .AddTenantIpRestrictions()
+            .AddDbTenantPartner()
+            .AddDbTenantVersion();
+    }
+}
+
+public static class TenantDbExtension
+{
+    public static DIHelper AddTenantDbContextService(this DIHelper services)
+    {
+        return services.AddDbContextManagerService<TenantDbContext>();
     }
 }

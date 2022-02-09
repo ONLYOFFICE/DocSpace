@@ -23,89 +23,88 @@
  *
 */
 
-namespace ASC.Core.Caching
+namespace ASC.Core.Caching;
+
+[Singletone]
+class AzServiceCache
 {
-    [Singletone]
-    class AzServiceCache
+    internal ICache Cache { get; }
+    internal ICacheNotify<AzRecordCache> EventBusAzRecord { get; }
+
+    public AzServiceCache(ICacheNotify<AzRecordCache> eventBus, ICache cache)
     {
-        internal ICache Cache { get; }
-        internal ICacheNotify<AzRecordCache> EventBusAzRecord { get; }
+        EventBusAzRecord = eventBus;
+        Cache = cache;
 
-        public AzServiceCache(ICacheNotify<AzRecordCache> eventBus, ICache cache)
+        eventBus.Subscribe((r) => UpdateCache(r, true), CacheNotifyAction.Remove);
+        eventBus.Subscribe((r) => UpdateCache(r, false), CacheNotifyAction.InsertOrUpdate);
+    }
+
+    public static string GetKey(int tenant)
+    {
+        return $"acl{tenant}";
+    }
+
+    private void UpdateCache(AzRecord r, bool remove)
+    {
+        var aces = Cache.Get<AzRecordStore>(GetKey(r.Tenant));
+        if (aces != null)
         {
-            EventBusAzRecord = eventBus;
-            Cache = cache;
-
-            eventBus.Subscribe((r) => UpdateCache(r, true), CacheNotifyAction.Remove);
-            eventBus.Subscribe((r) => UpdateCache(r, false), CacheNotifyAction.InsertOrUpdate);
-        }
-
-        public static string GetKey(int tenant)
-        {
-            return $"acl{tenant}";
-        }
-
-        private void UpdateCache(AzRecord r, bool remove)
-        {
-            var aces = Cache.Get<AzRecordStore>(GetKey(r.Tenant));
-            if (aces != null)
+            lock (aces)
             {
-                lock (aces)
+                if (remove)
                 {
-                    if (remove)
-                    {
-                        aces.Remove(r);
-                    }
-                    else
-                    {
-                        aces.Add(r);
-                    }
+                    aces.Remove(r);
+                }
+                else
+                {
+                    aces.Add(r);
                 }
             }
         }
     }
+}
 
-    [Scope]
-    class CachedAzService : IAzService
+[Scope]
+class CachedAzService : IAzService
+{
+    private readonly IAzService _service;
+    private readonly ICacheNotify<AzRecordCache> _eventBusAzRecord;
+    private readonly ICache _cache;
+    private TimeSpan _cacheExpiration;
+
+    public CachedAzService(DbAzService service, AzServiceCache azServiceCache)
     {
-        private readonly IAzService _service;
-        private readonly ICacheNotify<AzRecordCache> _eventBusAzRecord;
-        private readonly ICache _cache;
-        private TimeSpan _cacheExpiration;
+        _service = service ?? throw new ArgumentNullException(nameof(service));
+        _cache = azServiceCache.Cache;
+        _eventBusAzRecord = azServiceCache.EventBusAzRecord;
+        _cacheExpiration = TimeSpan.FromMinutes(10);
+    }
 
-        public CachedAzService(DbAzService service, AzServiceCache azServiceCache)
+    public IEnumerable<AzRecord> GetAces(int tenant, DateTime from)
+    {
+        var key = AzServiceCache.GetKey(tenant);
+        var aces = _cache.Get<AzRecordStore>(key);
+        if (aces == null)
         {
-            _service = service ?? throw new ArgumentNullException(nameof(service));
-            _cache = azServiceCache.Cache;
-            _eventBusAzRecord = azServiceCache.EventBusAzRecord;
-            _cacheExpiration = TimeSpan.FromMinutes(10);
+            var records = _service.GetAces(tenant, default);
+            _cache.Insert(key, aces = new AzRecordStore(records), DateTime.UtcNow.Add(_cacheExpiration));
         }
 
-        public IEnumerable<AzRecord> GetAces(int tenant, DateTime from)
-        {
-            var key = AzServiceCache.GetKey(tenant);
-            var aces = _cache.Get<AzRecordStore>(key);
-            if (aces == null)
-            {
-                var records = _service.GetAces(tenant, default);
-                _cache.Insert(key, aces = new AzRecordStore(records), DateTime.UtcNow.Add(_cacheExpiration));
-            }
+        return aces;
+    }
 
-            return aces;
-        }
+    public AzRecord SaveAce(int tenant, AzRecord r)
+    {
+        r = _service.SaveAce(tenant, r);
+        _eventBusAzRecord.Publish(r, CacheNotifyAction.InsertOrUpdate);
 
-        public AzRecord SaveAce(int tenant, AzRecord r)
-        {
-            r = _service.SaveAce(tenant, r);
-            _eventBusAzRecord.Publish(r, CacheNotifyAction.InsertOrUpdate);
+        return r;
+    }
 
-            return r;
-        }
-
-        public void RemoveAce(int tenant, AzRecord r)
-        {
-            _service.RemoveAce(tenant, r);
-            _eventBusAzRecord.Publish(r, CacheNotifyAction.Remove);
-        }
+    public void RemoveAce(int tenant, AzRecord r)
+    {
+        _service.RemoveAce(tenant, r);
+        _eventBusAzRecord.Publish(r, CacheNotifyAction.Remove);
     }
 }

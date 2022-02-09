@@ -23,16 +23,15 @@
  *
 */
 
-namespace ASC.Notify
+namespace ASC.Notify;
+
+public interface ISendInterceptor
 {
-    public interface ISendInterceptor
-    {
-        string Name { get; }
+    string Name { get; }
 
-        InterceptorPlace PreventPlace { get; }
+    InterceptorPlace PreventPlace { get; }
 
-        InterceptorLifetime Lifetime { get; }
+    InterceptorLifetime Lifetime { get; }
 
-        bool PreventSend(NotifyRequest request, InterceptorPlace place, IServiceScope serviceScope);
-    }
+    bool PreventSend(NotifyRequest request, InterceptorPlace place, IServiceScope serviceScope);
 }

@@ -24,104 +24,102 @@
 */
 
 
-namespace ASC.Notify.Cron
+namespace ASC.Notify.Cron;
+
+[Serializable]
+public class TreeSet : ArrayList, ISortedSet
 {
+    public IComparer Comparator { get; } = Comparer.Default;
 
-    [Serializable]
-    public class TreeSet : ArrayList, ISortedSet
+    public TreeSet() { }
+
+    public TreeSet(ICollection c)
     {
-        public IComparer Comparator { get; } = Comparer.Default;
+        AddAll(c);
+    }
 
-        public TreeSet() { }
+    public TreeSet(IComparer c)
+    {
+        Comparator = c;
+    }
 
-        public TreeSet(ICollection c)
+    public new bool Add(object obj)
+    {
+        var inserted = AddWithoutSorting(obj);
+        Sort(Comparator);
+
+        return inserted;
+    }
+
+    public bool AddAll(ICollection c)
+    {
+        var e = new ArrayList(c).GetEnumerator();
+        var added = false;
+
+        while (e.MoveNext())
         {
-            AddAll(c);
-        }
-
-        public TreeSet(IComparer c)
-        {
-            Comparator = c;
-        }
-
-        public new bool Add(object obj)
-        {
-            var inserted = AddWithoutSorting(obj);
-            Sort(Comparator);
-
-            return inserted;
-        }
-
-        public bool AddAll(ICollection c)
-        {
-            var e = new ArrayList(c).GetEnumerator();
-            var added = false;
-
-            while (e.MoveNext())
+            if (AddWithoutSorting(e.Current))
             {
-                if (AddWithoutSorting(e.Current))
-                {
-                    added = true;
-                }
+                added = true;
             }
-
-            Sort(Comparator);
-
-            return added;
         }
 
-        public object First() => this[0];
+        Sort(Comparator);
 
-        public override bool Contains(object item)
+        return added;
+    }
+
+    public object First() => this[0];
+
+    public override bool Contains(object item)
+    {
+        var tempEnumerator = GetEnumerator();
+
+        while (tempEnumerator.MoveNext())
         {
-            var tempEnumerator = GetEnumerator();
-
-            while (tempEnumerator.MoveNext())
+            if (Comparator.Compare(tempEnumerator.Current, item) == 0)
             {
-                if (Comparator.Compare(tempEnumerator.Current, item) == 0)
-                {
-                    return true;
-                }
+                return true;
             }
-
-            return false;
         }
 
-        public ISortedSet TailSet(object limit)
+        return false;
+    }
+
+    public ISortedSet TailSet(object limit)
+    {
+        ISortedSet newList = new TreeSet();
+        var i = 0;
+
+        while ((i < Count) && (Comparator.Compare(this[i], limit) < 0))
         {
-            ISortedSet newList = new TreeSet();
-            var i = 0;
-
-            while ((i < Count) && (Comparator.Compare(this[i], limit) < 0))
-            {
-                i++;
-            }
-
-            for (; i < Count; i++)
-            {
-                newList.Add(this[i]);
-            }
-
-            return newList;
+            i++;
         }
 
-        public static TreeSet UnmodifiableTreeSet(ICollection collection)
+        for (; i < Count; i++)
         {
-            var items = new ArrayList(collection);
-            items = ReadOnly(items);
-
-            return new TreeSet(items);
+            newList.Add(this[i]);
         }
 
-        private bool AddWithoutSorting(object obj)
+        return newList;
+    }
+
+    public static TreeSet UnmodifiableTreeSet(ICollection collection)
+    {
+        var items = new ArrayList(collection);
+        items = ReadOnly(items);
+
+        return new TreeSet(items);
+    }
+
+    private bool AddWithoutSorting(object obj)
+    {
+        bool inserted;
+        if (!(inserted = Contains(obj)))
         {
-            bool inserted;
-            if (!(inserted = Contains(obj)))
-            {
-                base.Add(obj);
-            }
-
-            return !inserted;
+            base.Add(obj);
         }
+
+        return !inserted;
     }
 }

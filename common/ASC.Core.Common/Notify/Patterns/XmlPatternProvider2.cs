@@ -23,128 +23,127 @@
  *
 */
 
-namespace ASC.Notify.Patterns
+namespace ASC.Notify.Patterns;
+
+public class XmlPatternProvider2 : IPatternProvider
 {
-    public class XmlPatternProvider2 : IPatternProvider
+    public Func<INotifyAction, string, NotifyRequest, IPattern> GetPatternMethod { get; set; }
+
+    private readonly IDictionary<string, IPattern> _patterns = new Dictionary<string, IPattern>();
+    private readonly IPatternFormatter _formatter = null;
+
+    public XmlPatternProvider2(string xml)
+        : this(xml, null) { }
+
+    public XmlPatternProvider2(string xml, Func<INotifyAction, string, NotifyRequest, IPattern> getpattern)
     {
-        public Func<INotifyAction, string, NotifyRequest, IPattern> GetPatternMethod { get; set; }
+        GetPatternMethod = getpattern;
 
-        private readonly IDictionary<string, IPattern> _patterns = new Dictionary<string, IPattern>();
-        private readonly IPatternFormatter _formatter = null;
+        var xdoc = new XmlDocument();
+        xdoc.LoadXml(xml);
 
-        public XmlPatternProvider2(string xml)
-            : this(xml, null) { }
-
-        public XmlPatternProvider2(string xml, Func<INotifyAction, string, NotifyRequest, IPattern> getpattern)
+        if (xdoc.SelectSingleNode("/patterns/formatter") is XmlElement xformatter)
         {
-            GetPatternMethod = getpattern;
-
-            var xdoc = new XmlDocument();
-            xdoc.LoadXml(xml);
-
-            if (xdoc.SelectSingleNode("/patterns/formatter") is XmlElement xformatter)
+            var type = xformatter.GetAttribute("type");
+            if (!string.IsNullOrEmpty(type))
             {
-                var type = xformatter.GetAttribute("type");
-                if (!string.IsNullOrEmpty(type))
-                {
-                    _formatter = (IPatternFormatter)Activator.CreateInstance(Type.GetType(type, true));
-                }
-            }
-
-            var references = new Dictionary<string, string>();
-
-            foreach (XmlElement xpattern in xdoc.SelectNodes("/patterns/pattern"))
-            {
-                var id = xpattern.GetAttribute("id");
-                var sender = xpattern.GetAttribute("sender");
-                var reference = xpattern.GetAttribute("reference");
-
-                if (string.IsNullOrEmpty(reference))
-                {
-                    var subject = GetResource(GetElementByTagName(xpattern, "subject"));
-
-                    var xbody = GetElementByTagName(xpattern, "body");
-                    var body = GetResource(xbody);
-                    if (string.IsNullOrEmpty(body) && xbody != null && xbody.FirstChild is XmlText)
-                    {
-                        body = xbody.FirstChild.Value ?? string.Empty;
-                    }
-
-                    var styler = xbody != null ? xbody.GetAttribute("styler") : string.Empty;
-
-                    _patterns[id + sender] = new Pattern(id, subject, body, Pattern.HtmlContentType) { Styler = styler };
-                }
-                else
-                {
-                    references[id + sender] = reference + sender;
-                }
-            }
-
-            foreach (var pair in references)
-            {
-                _patterns[pair.Key] = _patterns[pair.Value];
+                _formatter = (IPatternFormatter)Activator.CreateInstance(Type.GetType(type, true));
             }
         }
 
-        public IPattern GetPattern(INotifyAction action, string senderName)
+        var references = new Dictionary<string, string>();
+
+        foreach (XmlElement xpattern in xdoc.SelectNodes("/patterns/pattern"))
         {
-            if (_patterns.TryGetValue(action.ID + senderName, out var p))
-            {
-                return p;
-            }
+            var id = xpattern.GetAttribute("id");
+            var sender = xpattern.GetAttribute("sender");
+            var reference = xpattern.GetAttribute("reference");
 
-            if (_patterns.TryGetValue(action.ID, out p))
+            if (string.IsNullOrEmpty(reference))
             {
-                return p;
-            }
+                var subject = GetResource(GetElementByTagName(xpattern, "subject"));
 
-            return null;
+                var xbody = GetElementByTagName(xpattern, "body");
+                var body = GetResource(xbody);
+                if (string.IsNullOrEmpty(body) && xbody != null && xbody.FirstChild is XmlText)
+                {
+                    body = xbody.FirstChild.Value ?? string.Empty;
+                }
+
+                var styler = xbody != null ? xbody.GetAttribute("styler") : string.Empty;
+
+                _patterns[id + sender] = new Pattern(id, subject, body, Pattern.HtmlContentType) { Styler = styler };
+            }
+            else
+            {
+                references[id + sender] = reference + sender;
+            }
         }
 
-        public IPatternFormatter GetFormatter(IPattern pattern) => _formatter;
-
-        private XmlElement GetElementByTagName(XmlElement e, string name)
+        foreach (var pair in references)
         {
-            var list = e.GetElementsByTagName(name);
+            _patterns[pair.Key] = _patterns[pair.Value];
+        }
+    }
 
-            return list.Count == 0 ? null : list[0] as XmlElement;
+    public IPattern GetPattern(INotifyAction action, string senderName)
+    {
+        if (_patterns.TryGetValue(action.ID + senderName, out var p))
+        {
+            return p;
         }
 
-        private string GetResource(XmlElement e)
+        if (_patterns.TryGetValue(action.ID, out p))
         {
-            var result = string.Empty;
+            return p;
+        }
 
-            if (e == null)
-            {
-                return result;
-            }
+        return null;
+    }
 
-            result = e.GetAttribute("resource");
-            if (string.IsNullOrEmpty(result))
-            {
-                return result;
-            }
+    public IPatternFormatter GetFormatter(IPattern pattern) => _formatter;
 
-            var array = result.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries);
-            if (array.Length < 2)
-            {
-                return result;
-            }
+    private XmlElement GetElementByTagName(XmlElement e, string name)
+    {
+        var list = e.GetElementsByTagName(name);
 
-            var resourceManagerType = Type.GetType(array[1], true, true);
-            var property = resourceManagerType.GetProperty(array[0], BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static) ??
-                           resourceManagerType.GetProperty(ToUpper(array[0]), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
-            if (property == null)
-            {
-                throw new NotifyException(string.Format("Resource {0} not found in resourceManager {1}", array[0], array[1]));
-            }
+        return list.Count == 0 ? null : list[0] as XmlElement;
+    }
 
-            return property.GetValue(resourceManagerType, null) as string;
+    private string GetResource(XmlElement e)
+    {
+        var result = string.Empty;
 
-            static string ToUpper(string name)
-            {
-                return name.Substring(0, 1).ToUpper() + name.Substring(1);
-            }
+        if (e == null)
+        {
+            return result;
+        }
+
+        result = e.GetAttribute("resource");
+        if (string.IsNullOrEmpty(result))
+        {
+            return result;
+        }
+
+        var array = result.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries);
+        if (array.Length < 2)
+        {
+            return result;
+        }
+
+        var resourceManagerType = Type.GetType(array[1], true, true);
+        var property = resourceManagerType.GetProperty(array[0], BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static) ??
+                       resourceManagerType.GetProperty(ToUpper(array[0]), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
+        if (property == null)
+        {
+            throw new NotifyException(string.Format("Resource {0} not found in resourceManager {1}", array[0], array[1]));
+        }
+
+        return property.GetValue(resourceManagerType, null) as string;
+
+        static string ToUpper(string name)
+        {
+            return name.Substring(0, 1).ToUpper() + name.Substring(1);
         }
     }
 }

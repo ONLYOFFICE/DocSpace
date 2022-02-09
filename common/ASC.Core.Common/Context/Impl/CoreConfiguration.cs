@@ -23,345 +23,344 @@
  *
 */
 
-namespace ASC.Core
+namespace ASC.Core;
+
+[Singletone]
+public class CoreBaseSettings
 {
-    [Singletone]
-    public class CoreBaseSettings
+    public bool Standalone =>
+        _standalone ?? (bool)(_standalone = _configuration["core:base-domain"] == "localhost");
+
+    public bool Personal =>
+        _personal ?? (bool)(_personal = string.Compare(_configuration["core:personal"], "true", true) == 0); //TODO:if (CustomMode && HttpContext.Current != null && HttpContext.Current.Request.SailfishApp()) return true;
+
+    public bool CustomMode =>
+        _customMode ?? (bool)(_customMode = string.Compare(_configuration["core:custom-mode"], "true", true) == 0);
+
+    private bool? _standalone;
+    private bool? _personal;
+    private bool? _customMode;
+    private readonly IConfiguration _configuration;
+
+    public CoreBaseSettings(IConfiguration configuration) =>
+        _configuration = configuration;
+}
+
+class ConfigureCoreSettings : IConfigureNamedOptions<CoreSettings>
+{
+    private readonly IOptionsSnapshot<CachedTenantService> _tenantService;
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly IConfiguration _configuration;
+
+    public ConfigureCoreSettings(
+        IOptionsSnapshot<CachedTenantService> tenantService,
+        CoreBaseSettings coreBaseSettings,
+        IConfiguration configuration
+        )
     {
-        public bool Standalone =>
-            _standalone ?? (bool)(_standalone = _configuration["core:base-domain"] == "localhost");
-
-        public bool Personal =>
-            _personal ?? (bool)(_personal = string.Compare(_configuration["core:personal"], "true", true) == 0); //TODO:if (CustomMode && HttpContext.Current != null && HttpContext.Current.Request.SailfishApp()) return true;
-
-        public bool CustomMode =>
-            _customMode ?? (bool)(_customMode = string.Compare(_configuration["core:custom-mode"], "true", true) == 0);
-
-        private bool? _standalone;
-        private bool? _personal;
-        private bool? _customMode;
-        private readonly IConfiguration _configuration;
-
-        public CoreBaseSettings(IConfiguration configuration) =>
-            _configuration = configuration;
+        _tenantService = tenantService;
+        _coreBaseSettings = coreBaseSettings;
+        _configuration = configuration;
     }
 
-    class ConfigureCoreSettings : IConfigureNamedOptions<CoreSettings>
+    public void Configure(string name, CoreSettings options)
     {
-        private readonly IOptionsSnapshot<CachedTenantService> _tenantService;
-        private readonly CoreBaseSettings _coreBaseSettings;
-        private readonly IConfiguration _configuration;
-
-        public ConfigureCoreSettings(
-            IOptionsSnapshot<CachedTenantService> tenantService,
-            CoreBaseSettings coreBaseSettings,
-            IConfiguration configuration
-            )
-        {
-            _tenantService = tenantService;
-            _coreBaseSettings = coreBaseSettings;
-            _configuration = configuration;
-        }
-
-        public void Configure(string name, CoreSettings options)
-        {
-            Configure(options);
-            options.TenantService = _tenantService.Get(name);
-        }
-
-        public void Configure(CoreSettings options)
-        {
-            options.Configuration = _configuration;
-            options.CoreBaseSettings = _coreBaseSettings;
-            options.TenantService = _tenantService.Value;
-        }
+        Configure(options);
+        options.TenantService = _tenantService.Get(name);
     }
 
-    [Scope(typeof(ConfigureCoreSettings))]
-    public class CoreSettings
+    public void Configure(CoreSettings options)
     {
-        public string BaseDomain
+        options.Configuration = _configuration;
+        options.CoreBaseSettings = _coreBaseSettings;
+        options.TenantService = _tenantService.Value;
+    }
+}
+
+[Scope(typeof(ConfigureCoreSettings))]
+public class CoreSettings
+{
+    public string BaseDomain
+    {
+        get
         {
-            get
+            if (_basedomain == null)
             {
-                if (_basedomain == null)
-                {
-                    _basedomain = Configuration["core:base-domain"] ?? string.Empty;
-                }
-
-                string result;
-
-                if (CoreBaseSettings.Standalone || string.IsNullOrEmpty(_basedomain))
-                {
-                    result = GetSetting("BaseDomain") ?? _basedomain;
-                }
-                else
-                {
-                    result = _basedomain;
-                }
-
-                return result;
-            }
-            set
-            {
-                if (CoreBaseSettings.Standalone || string.IsNullOrEmpty(_basedomain))
-                {
-                    SaveSetting("BaseDomain", value);
-                }
-            }
-        }
-        internal ITenantService TenantService { get; set; }
-        internal CoreBaseSettings CoreBaseSettings { get; set; }
-        internal IConfiguration Configuration { get; set; }
-
-        private string _basedomain;
-
-        public CoreSettings() { }
-
-        public CoreSettings(
-            ITenantService tenantService,
-            CoreBaseSettings coreBaseSettings,
-            IConfiguration configuration)
-        {
-            TenantService = tenantService;
-            CoreBaseSettings = coreBaseSettings;
-            Configuration = configuration;
-        }
-
-        public string GetBaseDomain(string hostedRegion)
-        {
-            var baseHost = BaseDomain;
-
-            if (string.IsNullOrEmpty(hostedRegion) || string.IsNullOrEmpty(baseHost) || !baseHost.Contains("."))
-            {
-                return baseHost;
+                _basedomain = Configuration["core:base-domain"] ?? string.Empty;
             }
 
-            var subdomain = baseHost.Remove(baseHost.IndexOf('.') + 1);
+            string result;
 
-            return hostedRegion.StartsWith(subdomain) ? hostedRegion : (subdomain + hostedRegion.TrimStart('.'));
-        }
-
-        public void SaveSetting(string key, string value, int tenant = Tenant.DefaultTenant)
-        {
-            if (string.IsNullOrEmpty(key))
+            if (CoreBaseSettings.Standalone || string.IsNullOrEmpty(_basedomain))
             {
-                throw new ArgumentNullException(nameof(key));
-            }
-
-            byte[] bytes = null;
-            if (value != null)
-            {
-                bytes = Crypto.GetV(Encoding.UTF8.GetBytes(value), 2, true);
-            }
-
-            TenantService.SetTenantSettings(tenant, key, bytes);
-        }
-
-        public string GetSetting(string key, int tenant = Tenant.DefaultTenant)
-        {
-            if (string.IsNullOrEmpty(key))
-            {
-                throw new ArgumentNullException(nameof(key));
-            }
-
-            var bytes = TenantService.GetTenantSettings(tenant, key);
-
-            var result = bytes != null ? Encoding.UTF8.GetString(Crypto.GetV(bytes, 2, false)) : null;
-
-            return result;
-        }
-
-        public string GetKey(int tenant)
-        {
-            if (CoreBaseSettings.Standalone)
-            {
-                var key = GetSetting("PortalId");
-                if (string.IsNullOrEmpty(key))
-                {
-                    lock (TenantService)
-                    {
-                        // thread safe
-                        key = GetSetting("PortalId");
-                        if (string.IsNullOrEmpty(key))
-                        {
-                            SaveSetting("PortalId", key = Guid.NewGuid().ToString());
-                        }
-                    }
-                }
-                return key;
+                result = GetSetting("BaseDomain") ?? _basedomain;
             }
             else
             {
-                var t = TenantService.GetTenant(tenant);
-                if (t != null && !string.IsNullOrWhiteSpace(t.PaymentId))
+                result = _basedomain;
+            }
+
+            return result;
+        }
+        set
+        {
+            if (CoreBaseSettings.Standalone || string.IsNullOrEmpty(_basedomain))
+            {
+                SaveSetting("BaseDomain", value);
+            }
+        }
+    }
+    internal ITenantService TenantService { get; set; }
+    internal CoreBaseSettings CoreBaseSettings { get; set; }
+    internal IConfiguration Configuration { get; set; }
+
+    private string _basedomain;
+
+    public CoreSettings() { }
+
+    public CoreSettings(
+        ITenantService tenantService,
+        CoreBaseSettings coreBaseSettings,
+        IConfiguration configuration)
+    {
+        TenantService = tenantService;
+        CoreBaseSettings = coreBaseSettings;
+        Configuration = configuration;
+    }
+
+    public string GetBaseDomain(string hostedRegion)
+    {
+        var baseHost = BaseDomain;
+
+        if (string.IsNullOrEmpty(hostedRegion) || string.IsNullOrEmpty(baseHost) || !baseHost.Contains("."))
+        {
+            return baseHost;
+        }
+
+        var subdomain = baseHost.Remove(baseHost.IndexOf('.') + 1);
+
+        return hostedRegion.StartsWith(subdomain) ? hostedRegion : (subdomain + hostedRegion.TrimStart('.'));
+    }
+
+    public void SaveSetting(string key, string value, int tenant = Tenant.DefaultTenant)
+    {
+        if (string.IsNullOrEmpty(key))
+        {
+            throw new ArgumentNullException(nameof(key));
+        }
+
+        byte[] bytes = null;
+        if (value != null)
+        {
+            bytes = Crypto.GetV(Encoding.UTF8.GetBytes(value), 2, true);
+        }
+
+        TenantService.SetTenantSettings(tenant, key, bytes);
+    }
+
+    public string GetSetting(string key, int tenant = Tenant.DefaultTenant)
+    {
+        if (string.IsNullOrEmpty(key))
+        {
+            throw new ArgumentNullException(nameof(key));
+        }
+
+        var bytes = TenantService.GetTenantSettings(tenant, key);
+
+        var result = bytes != null ? Encoding.UTF8.GetString(Crypto.GetV(bytes, 2, false)) : null;
+
+        return result;
+    }
+
+    public string GetKey(int tenant)
+    {
+        if (CoreBaseSettings.Standalone)
+        {
+            var key = GetSetting("PortalId");
+            if (string.IsNullOrEmpty(key))
+            {
+                lock (TenantService)
                 {
-                    return t.PaymentId;
+                    // thread safe
+                    key = GetSetting("PortalId");
+                    if (string.IsNullOrEmpty(key))
+                    {
+                        SaveSetting("PortalId", key = Guid.NewGuid().ToString());
+                    }
                 }
-
-                return Configuration["core:payment:region"] + tenant;
             }
+            return key;
         }
-
-        public string GetAffiliateId(int tenant)
+        else
         {
             var t = TenantService.GetTenant(tenant);
-            if (t != null && !string.IsNullOrWhiteSpace(t.AffiliateId))
+            if (t != null && !string.IsNullOrWhiteSpace(t.PaymentId))
             {
-                return t.AffiliateId;
+                return t.PaymentId;
             }
 
-            return null;
-        }
-
-        public string GetCampaign(int tenant)
-        {
-            var t = TenantService.GetTenant(tenant);
-            if (t != null && !string.IsNullOrWhiteSpace(t.Campaign))
-            {
-                return t.Campaign;
-            }
-
-            return null;
+            return Configuration["core:payment:region"] + tenant;
         }
     }
 
-    [Scope]
-    public class CoreConfiguration
+    public string GetAffiliateId(int tenant)
     {
-        public SmtpSettings SmtpSettings
+        var t = TenantService.GetTenant(tenant);
+        if (t != null && !string.IsNullOrWhiteSpace(t.AffiliateId))
         {
-            get
-            {
-                var isDefaultSettings = false;
-                var tenant = _tenantManager.GetCurrentTenant(false);
-
-                if (tenant != null)
-                {
-
-                    var settingsValue = GetSetting("SmtpSettings", tenant.Id);
-                    if (string.IsNullOrEmpty(settingsValue))
-                    {
-                        isDefaultSettings = true;
-                        settingsValue = GetSetting("SmtpSettings");
-                    }
-                    var settings = SmtpSettings.Deserialize(settingsValue);
-                    settings.IsDefaultSettings = isDefaultSettings;
-
-                    return settings;
-                }
-                else
-                {
-                    var settingsValue = GetSetting("SmtpSettings");
-
-                    var settings = SmtpSettings.Deserialize(settingsValue);
-                    settings.IsDefaultSettings = true;
-
-                    return settings;
-                }
-            }
-            set => SaveSetting("SmtpSettings", value?.Serialize(), _tenantManager.GetCurrentTenant().Id);
+            return t.AffiliateId;
         }
 
-        private long? _personalMaxSpace;
-        private readonly CoreSettings _coreSettings;
-        private readonly TenantManager _tenantManager;
-        private readonly IConfiguration _configuration;
+        return null;
+    }
 
-        public CoreConfiguration(CoreSettings coreSettings, TenantManager tenantManager, IConfiguration configuration)
+    public string GetCampaign(int tenant)
+    {
+        var t = TenantService.GetTenant(tenant);
+        if (t != null && !string.IsNullOrWhiteSpace(t.Campaign))
         {
-            _coreSettings = coreSettings;
-            _tenantManager = tenantManager;
-            _configuration = configuration;
+            return t.Campaign;
         }
 
-        public long PersonalMaxSpace(SettingsManager settingsManager)
+        return null;
+    }
+}
+
+[Scope]
+public class CoreConfiguration
+{
+    public SmtpSettings SmtpSettings
+    {
+        get
         {
-            var quotaSettings = settingsManager.LoadForCurrentUser<PersonalQuotaSettings>();
+            var isDefaultSettings = false;
+            var tenant = _tenantManager.GetCurrentTenant(false);
 
-            if (quotaSettings.MaxSpace != long.MaxValue)
+            if (tenant != null)
             {
-                return quotaSettings.MaxSpace;
-            }
 
-            if (_personalMaxSpace.HasValue)
+                var settingsValue = GetSetting("SmtpSettings", tenant.Id);
+                if (string.IsNullOrEmpty(settingsValue))
+                {
+                    isDefaultSettings = true;
+                    settingsValue = GetSetting("SmtpSettings");
+                }
+                var settings = SmtpSettings.Deserialize(settingsValue);
+                settings.IsDefaultSettings = isDefaultSettings;
+
+                return settings;
+            }
+            else
             {
-                return _personalMaxSpace.Value;
+                var settingsValue = GetSetting("SmtpSettings");
+
+                var settings = SmtpSettings.Deserialize(settingsValue);
+                settings.IsDefaultSettings = true;
+
+                return settings;
             }
+        }
+        set => SaveSetting("SmtpSettings", value?.Serialize(), _tenantManager.GetCurrentTenant().Id);
+    }
 
-            if (!long.TryParse(_configuration["core:personal.maxspace"], out var value))
-            {
-                value = long.MaxValue;
-            }
+    private long? _personalMaxSpace;
+    private readonly CoreSettings _coreSettings;
+    private readonly TenantManager _tenantManager;
+    private readonly IConfiguration _configuration;
 
-            _personalMaxSpace = value;
+    public CoreConfiguration(CoreSettings coreSettings, TenantManager tenantManager, IConfiguration configuration)
+    {
+        _coreSettings = coreSettings;
+        _tenantManager = tenantManager;
+        _configuration = configuration;
+    }
 
+    public long PersonalMaxSpace(SettingsManager settingsManager)
+    {
+        var quotaSettings = settingsManager.LoadForCurrentUser<PersonalQuotaSettings>();
+
+        if (quotaSettings.MaxSpace != long.MaxValue)
+        {
+            return quotaSettings.MaxSpace;
+        }
+
+        if (_personalMaxSpace.HasValue)
+        {
             return _personalMaxSpace.Value;
         }
 
-        #region Methods Get/Save Setting
-
-        public void SaveSetting(string key, string value, int tenant = Tenant.DefaultTenant)
+        if (!long.TryParse(_configuration["core:personal.maxspace"], out var value))
         {
-            _coreSettings.SaveSetting(key, value, tenant);
+            value = long.MaxValue;
         }
 
-        public string GetSetting(string key, int tenant = Tenant.DefaultTenant)
-        {
-            return _coreSettings.GetSetting(key, tenant);
-        }
+        _personalMaxSpace = value;
 
-        #endregion
-
-        #region Methods Get/Set Section
-
-        public T GetSection<T>() where T : class
-        {
-            return GetSection<T>(typeof(T).Name);
-        }
-
-        public T GetSection<T>(int tenantId) where T : class
-        {
-            return GetSection<T>(tenantId, typeof(T).Name);
-        }
-
-        public T GetSection<T>(string sectionName) where T : class
-        {
-            return GetSection<T>(_tenantManager.GetCurrentTenant().Id, sectionName);
-        }
-
-        public T GetSection<T>(int tenantId, string sectionName) where T : class
-        {
-            var serializedSection = GetSetting(sectionName, tenantId);
-            if (serializedSection == null && tenantId != Tenant.DefaultTenant)
-            {
-                serializedSection = GetSetting(sectionName, Tenant.DefaultTenant);
-            }
-
-            return serializedSection != null ? JsonConvert.DeserializeObject<T>(serializedSection) : null;
-        }
-
-        public void SaveSection<T>(string sectionName, T section) where T : class
-        {
-            SaveSection(_tenantManager.GetCurrentTenant().Id, sectionName, section);
-        }
-
-        public void SaveSection<T>(T section) where T : class
-        {
-            SaveSection(typeof(T).Name, section);
-        }
-
-        public void SaveSection<T>(int tenantId, T section) where T : class
-        {
-            SaveSection(tenantId, typeof(T).Name, section);
-        }
-
-        public void SaveSection<T>(int tenantId, string sectionName, T section) where T : class
-        {
-            var serializedSection = section != null ? JsonConvert.SerializeObject(section) : null;
-            SaveSetting(sectionName, serializedSection, tenantId);
-        }
-
-        #endregion
+        return _personalMaxSpace.Value;
     }
+
+    #region Methods Get/Save Setting
+
+    public void SaveSetting(string key, string value, int tenant = Tenant.DefaultTenant)
+    {
+        _coreSettings.SaveSetting(key, value, tenant);
+    }
+
+    public string GetSetting(string key, int tenant = Tenant.DefaultTenant)
+    {
+        return _coreSettings.GetSetting(key, tenant);
+    }
+
+    #endregion
+
+    #region Methods Get/Set Section
+
+    public T GetSection<T>() where T : class
+    {
+        return GetSection<T>(typeof(T).Name);
+    }
+
+    public T GetSection<T>(int tenantId) where T : class
+    {
+        return GetSection<T>(tenantId, typeof(T).Name);
+    }
+
+    public T GetSection<T>(string sectionName) where T : class
+    {
+        return GetSection<T>(_tenantManager.GetCurrentTenant().Id, sectionName);
+    }
+
+    public T GetSection<T>(int tenantId, string sectionName) where T : class
+    {
+        var serializedSection = GetSetting(sectionName, tenantId);
+        if (serializedSection == null && tenantId != Tenant.DefaultTenant)
+        {
+            serializedSection = GetSetting(sectionName, Tenant.DefaultTenant);
+        }
+
+        return serializedSection != null ? JsonConvert.DeserializeObject<T>(serializedSection) : null;
+    }
+
+    public void SaveSection<T>(string sectionName, T section) where T : class
+    {
+        SaveSection(_tenantManager.GetCurrentTenant().Id, sectionName, section);
+    }
+
+    public void SaveSection<T>(T section) where T : class
+    {
+        SaveSection(typeof(T).Name, section);
+    }
+
+    public void SaveSection<T>(int tenantId, T section) where T : class
+    {
+        SaveSection(tenantId, typeof(T).Name, section);
+    }
+
+    public void SaveSection<T>(int tenantId, string sectionName, T section) where T : class
+    {
+        var serializedSection = section != null ? JsonConvert.SerializeObject(section) : null;
+        SaveSetting(sectionName, serializedSection, tenantId);
+    }
+
+    #endregion
 }

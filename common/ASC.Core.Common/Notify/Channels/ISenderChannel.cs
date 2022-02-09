@@ -23,14 +23,13 @@
  *
 */
 
-namespace ASC.Notify.Channels
+namespace ASC.Notify.Channels;
+
+public interface ISenderChannel
 {
-    public interface ISenderChannel
-    {
-        string SenderName { get; }
+    string SenderName { get; }
 
-        void SendAsync(INoticeMessage message);
+    void SendAsync(INoticeMessage message);
 
-        SendResponse DirectSend(INoticeMessage message);
-    }
+    SendResponse DirectSend(INoticeMessage message);
 }

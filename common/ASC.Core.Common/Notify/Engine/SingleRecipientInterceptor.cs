@@ -23,39 +23,38 @@
  *
 */
 
-namespace ASC.Notify.Engine
+namespace ASC.Notify.Engine;
+
+class SingleRecipientInterceptor : ISendInterceptor
 {
-    class SingleRecipientInterceptor : ISendInterceptor
+    public string Name { get; private set; }
+    public InterceptorPlace PreventPlace => InterceptorPlace.GroupSend | InterceptorPlace.DirectSend;
+    public InterceptorLifetime Lifetime => InterceptorLifetime.Call;
+
+    private const string Prefix = "__singlerecipientinterceptor";
+
+    private readonly List<IRecipient> _sendedTo = new List<IRecipient>(10);
+
+
+    internal SingleRecipientInterceptor(string name)
     {
-        public string Name { get; private set; }
-        public InterceptorPlace PreventPlace => InterceptorPlace.GroupSend | InterceptorPlace.DirectSend;
-        public InterceptorLifetime Lifetime => InterceptorLifetime.Call;
-
-        private const string Prefix = "__singlerecipientinterceptor";
-
-        private readonly List<IRecipient> _sendedTo = new List<IRecipient>(10);
-
-
-        internal SingleRecipientInterceptor(string name)
+        if (string.IsNullOrEmpty(name))
         {
-            if (string.IsNullOrEmpty(name))
-            {
-                throw new ArgumentException(nameof(name));
-            }
-
-            Name = name;
+            throw new ArgumentException(nameof(name));
         }
 
-        public bool PreventSend(NotifyRequest request, InterceptorPlace place, IServiceScope serviceScope)
-        {
-            var sendTo = request.Recipient;
-            if (!_sendedTo.Exists(rec => Equals(rec, sendTo)))
-            {
-                _sendedTo.Add(sendTo);
-                return false;
-            }
+        Name = name;
+    }
 
-            return true;
+    public bool PreventSend(NotifyRequest request, InterceptorPlace place, IServiceScope serviceScope)
+    {
+        var sendTo = request.Recipient;
+        if (!_sendedTo.Exists(rec => Equals(rec, sendTo)))
+        {
+            _sendedTo.Add(sendTo);
+            return false;
         }
+
+        return true;
     }
 }

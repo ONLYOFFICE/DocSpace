@@ -1,31 +1,30 @@
-﻿namespace ASC.Core.Common.EF.Context
-{
-    public class MySqlAccountLinkContext : AccountLinkContext { }
-    public class PostgreSqlAccountLinkContext : AccountLinkContext { }
-    public class AccountLinkContext : BaseDbContext
-    {
-        public DbSet<AccountLinks> AccountLinks { get; set; }
+﻿namespace ASC.Core.Common.EF.Context;
 
-        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext =>
-            new Dictionary<Provider, Func<BaseDbContext>>()
-            {
+public class MySqlAccountLinkContext : AccountLinkContext { }
+public class PostgreSqlAccountLinkContext : AccountLinkContext { }
+public class AccountLinkContext : BaseDbContext
+{
+    public DbSet<AccountLinks> AccountLinks { get; set; }
+
+    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext =>
+        new Dictionary<Provider, Func<BaseDbContext>>()
+        {
                     { Provider.MySql, () => new MySqlAccountLinkContext() } ,
                     { Provider.PostgreSql, () => new PostgreSqlAccountLinkContext() } ,
-            };
+        };
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            ModelBuilderWrapper
-               .From(modelBuilder, Provider)
-               .AddAccountLinks();
-        }
-    }
-
-    public static class AccountLinkContextExtension
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public static DIHelper AddAccountLinkContextService(this DIHelper services)
-        {
-            return services.AddDbContextManagerService<AccountLinkContext>();
-        }
+        ModelBuilderWrapper
+           .From(modelBuilder, Provider)
+           .AddAccountLinks();
+    }
+}
+
+public static class AccountLinkContextExtension
+{
+    public static DIHelper AddAccountLinkContextService(this DIHelper services)
+    {
+        return services.AddDbContextManagerService<AccountLinkContext>();
     }
 }

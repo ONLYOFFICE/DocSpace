@@ -23,12 +23,10 @@
  *
 */
 
+namespace ASC.Notify.Recipients;
 
-namespace ASC.Notify.Recipients
+public interface IRecipient
 {
-    public interface IRecipient
-    {
-        string ID { get; }
-        string Name { get; }
-    }
+    string ID { get; }
+    string Name { get; }
 }

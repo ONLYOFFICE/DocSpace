@@ -23,141 +23,139 @@
  *
 */
 
-
 using Constants = ASC.Core.Configuration.Constants;
 using NotifyContext = ASC.Notify.Context;
 
-namespace ASC.Core
+namespace ASC.Core;
+
+public static class WorkContext
 {
-    public static class WorkContext
+    public static NotifyContext NotifyContext { get; private set; }
+    public static string MonoVersion => IsMono ? s_monoVersion : null;
+    public static string[] DefaultClientSenders =>
+        new[] { Constants.NotifyEMailSenderSysName, };
+    public static bool IsMono
     {
-        public static NotifyContext NotifyContext { get; private set; }
-        public static string MonoVersion => IsMono ? s_monoVersion : null;
-        public static string[] DefaultClientSenders =>
-            new[] { Constants.NotifyEMailSenderSysName, };
-        public static bool IsMono
+        get
         {
-            get
+            if (s_isMono.HasValue)
             {
-                if (s_isMono.HasValue)
-                {
-                    return s_isMono.Value;
-                }
-
-                var monoRuntime = Type.GetType("Mono.Runtime");
-
-                s_isMono = monoRuntime != null;
-                if (monoRuntime != null)
-                {
-                    var dispalayName = monoRuntime.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
-                    if (dispalayName != null)
-                    {
-                        s_monoVersion = dispalayName.Invoke(null, null) as string;
-                    }
-                }
-
                 return s_isMono.Value;
             }
+
+            var monoRuntime = Type.GetType("Mono.Runtime");
+
+            s_isMono = monoRuntime != null;
+            if (monoRuntime != null)
+            {
+                var dispalayName = monoRuntime.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
+                if (dispalayName != null)
+                {
+                    s_monoVersion = dispalayName.Invoke(null, null) as string;
+                }
+            }
+
+            return s_isMono.Value;
+        }
+    }
+
+    private static readonly object s_syncRoot = new object();
+    private static bool s_notifyStarted;
+    private static bool? s_isMono;
+    private static string s_monoVersion;
+
+    public static void NotifyStartUp(IServiceProvider serviceProvider)
+    {
+        if (s_notifyStarted)
+        {
+            return;
         }
 
-        private static readonly object s_syncRoot = new object();
-        private static bool s_notifyStarted;
-        private static bool? s_isMono;
-        private static string s_monoVersion;
-
-        public static void NotifyStartUp(IServiceProvider serviceProvider)
+        lock (s_syncRoot)
         {
             if (s_notifyStarted)
             {
                 return;
             }
 
-            lock (s_syncRoot)
+            var configuration = serviceProvider.GetService<IConfiguration>();
+            var cacheNotify = serviceProvider.GetService<ICacheNotify<NotifyMessage>>();
+            var cacheInvoke = serviceProvider.GetService<ICacheNotify<NotifyInvoke>>();
+            var options = serviceProvider.GetService<IOptionsMonitor<ILog>>();
+
+            NotifyContext = new NotifyContext(serviceProvider);
+
+            INotifySender jabberSender = new NotifyServiceSender(cacheNotify, cacheInvoke);
+            INotifySender emailSender = new NotifyServiceSender(cacheNotify, cacheInvoke);
+            INotifySender telegramSender = new TelegramSender(options, serviceProvider);
+
+            var postman = configuration["core:notify:postman"];
+
+            if ("ases".Equals(postman, StringComparison.InvariantCultureIgnoreCase) || "smtp".Equals(postman, StringComparison.InvariantCultureIgnoreCase))
             {
-                if (s_notifyStarted)
+                jabberSender = new JabberSender(serviceProvider);
+
+                var properties = new Dictionary<string, string>
                 {
-                    return;
+                    ["useCoreSettings"] = "true"
+                };
+
+                if ("ases".Equals(postman, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    emailSender = new AWSSender(serviceProvider, options);
+                    properties["accessKey"] = configuration["ses:accessKey"];
+                    properties["secretKey"] = configuration["ses:secretKey"];
+                    properties["refreshTimeout"] = configuration["ses:refreshTimeout"];
+                }
+                else
+                {
+                    emailSender = new SmtpSender(serviceProvider, options);
                 }
 
-                var configuration = serviceProvider.GetService<IConfiguration>();
-                var cacheNotify = serviceProvider.GetService<ICacheNotify<NotifyMessage>>();
-                var cacheInvoke = serviceProvider.GetService<ICacheNotify<NotifyInvoke>>();
-                var options = serviceProvider.GetService<IOptionsMonitor<ILog>>();
-
-                NotifyContext = new NotifyContext(serviceProvider);
-
-                INotifySender jabberSender = new NotifyServiceSender(cacheNotify, cacheInvoke);
-                INotifySender emailSender = new NotifyServiceSender(cacheNotify, cacheInvoke);
-                INotifySender telegramSender = new TelegramSender(options, serviceProvider);
-
-                var postman = configuration["core:notify:postman"];
-
-                if ("ases".Equals(postman, StringComparison.InvariantCultureIgnoreCase) || "smtp".Equals(postman, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    jabberSender = new JabberSender(serviceProvider);
-
-                    var properties = new Dictionary<string, string>
-                    {
-                        ["useCoreSettings"] = "true"
-                    };
-
-                    if ("ases".Equals(postman, StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        emailSender = new AWSSender(serviceProvider, options);
-                        properties["accessKey"] = configuration["ses:accessKey"];
-                        properties["secretKey"] = configuration["ses:secretKey"];
-                        properties["refreshTimeout"] = configuration["ses:refreshTimeout"];
-                    }
-                    else
-                    {
-                        emailSender = new SmtpSender(serviceProvider, options);
-                    }
-
-                    emailSender.Init(properties);
-                }
-
-                NotifyContext.NotifyService.RegisterSender(Constants.NotifyEMailSenderSysName, new EmailSenderSink(emailSender, serviceProvider, options));
-                NotifyContext.NotifyService.RegisterSender(Constants.NotifyMessengerSenderSysName, new JabberSenderSink(jabberSender, serviceProvider));
-                NotifyContext.NotifyService.RegisterSender(Constants.NotifyTelegramSenderSysName, new TelegramSenderSink(telegramSender, serviceProvider));
-
-                NotifyContext.NotifyEngine.BeforeTransferRequest += NotifyEngine_BeforeTransferRequest;
-                NotifyContext.NotifyEngine.AfterTransferRequest += NotifyEngine_AfterTransferRequest;
-                s_notifyStarted = true;
+                emailSender.Init(properties);
             }
-        }
 
-        public static void RegisterSendMethod(Action<DateTime> method, string cron)
-        {
-            NotifyContext.NotifyEngine.RegisterSendMethod(method, cron);
-        }
+            NotifyContext.NotifyService.RegisterSender(Constants.NotifyEMailSenderSysName, new EmailSenderSink(emailSender, serviceProvider, options));
+            NotifyContext.NotifyService.RegisterSender(Constants.NotifyMessengerSenderSysName, new JabberSenderSink(jabberSender, serviceProvider));
+            NotifyContext.NotifyService.RegisterSender(Constants.NotifyTelegramSenderSysName, new TelegramSenderSink(telegramSender, serviceProvider));
 
-        public static void UnregisterSendMethod(Action<DateTime> method)
-        {
-            NotifyContext.NotifyEngine.UnregisterSendMethod(method);
-        }
-
-        private static void NotifyEngine_BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope serviceScope)
-        {
-            request.Properties.Add("Tenant", serviceScope.ServiceProvider.GetService<TenantManager>().GetCurrentTenant(false));
-        }
-
-        private static void NotifyEngine_AfterTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope scope)
-        {
-            if ((request.Properties.Contains("Tenant") ? request.Properties["Tenant"] : null) is Tenant tenant)
-            {
-                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                tenantManager.SetCurrentTenant(tenant);
-            }
+            NotifyContext.NotifyEngine.BeforeTransferRequest += NotifyEngine_BeforeTransferRequest;
+            NotifyContext.NotifyEngine.AfterTransferRequest += NotifyEngine_AfterTransferRequest;
+            s_notifyStarted = true;
         }
     }
 
-    public class WorkContextExtension
+    public static void RegisterSendMethod(Action<DateTime> method, string cron)
     {
-        public static void Register(DIHelper dIHelper)
+        NotifyContext.NotifyEngine.RegisterSendMethod(method, cron);
+    }
+
+    public static void UnregisterSendMethod(Action<DateTime> method)
+    {
+        NotifyContext.NotifyEngine.UnregisterSendMethod(method);
+    }
+
+    private static void NotifyEngine_BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope serviceScope)
+    {
+        request.Properties.Add("Tenant", serviceScope.ServiceProvider.GetService<TenantManager>().GetCurrentTenant(false));
+    }
+
+    private static void NotifyEngine_AfterTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope scope)
+    {
+        if ((request.Properties.Contains("Tenant") ? request.Properties["Tenant"] : null) is Tenant tenant)
         {
-            dIHelper.TryAdd<TelegramHelper>();
-            dIHelper.TryAdd<EmailSenderSinkScope>();
-            dIHelper.TryAdd<JabberSenderSinkScope>();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            tenantManager.SetCurrentTenant(tenant);
         }
+    }
+}
+
+public class WorkContextExtension
+{
+    public static void Register(DIHelper dIHelper)
+    {
+        dIHelper.TryAdd<TelegramHelper>();
+        dIHelper.TryAdd<EmailSenderSinkScope>();
+        dIHelper.TryAdd<JabberSenderSinkScope>();
     }
 }

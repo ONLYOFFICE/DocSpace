@@ -23,39 +23,38 @@
  *
 */
 
-namespace ASC.Notify.Recipients
+namespace ASC.Notify.Recipients;
+
+[Serializable]
+public class RecipientsGroup
+    : IRecipientsGroup
 {
-    [Serializable]
-    public class RecipientsGroup
-        : IRecipientsGroup
+    public string ID { get; private set; }
+    public string Name { get; private set; }
+
+    public RecipientsGroup(string id, string name)
     {
-        public string ID { get; private set; }
-        public string Name { get; private set; }
+        ID = id;
+        Name = name;
+    }
 
-        public RecipientsGroup(string id, string name)
+    public override bool Equals(object obj)
+    {
+        if (!(obj is IRecipientsGroup recGr))
         {
-            ID = id;
-            Name = name;
+            return false;
         }
 
-        public override bool Equals(object obj)
-        {
-            if (!(obj is IRecipientsGroup recGr))
-            {
-                return false;
-            }
+        return Equals(recGr.ID, ID);
+    }
 
-            return Equals(recGr.ID, ID);
-        }
+    public override int GetHashCode()
+    {
+        return (ID ?? string.Empty).GetHashCode();
+    }
 
-        public override int GetHashCode()
-        {
-            return (ID ?? string.Empty).GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return Name;
-        }
+    public override string ToString()
+    {
+        return Name;
     }
 }
