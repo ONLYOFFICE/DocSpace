@@ -30,8 +30,6 @@ const withHotkeys = (Component) => {
       selectAll,
     } = props;
 
-    console.log("props", props.sectionWidth);
-
     const hotkeysFilter = {
       filter: (ev) =>
         ev.target?.type === "checkbox" || ev.target?.tagName !== "INPUT",

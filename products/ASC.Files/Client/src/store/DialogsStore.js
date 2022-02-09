@@ -201,6 +201,27 @@ class DialogsStore {
   setHotkeyPanelVisible = (hotkeyPanelVisible) => {
     this.hotkeyPanelVisible = hotkeyPanelVisible;
   };
+
+  get someDialogIsOpen() {
+    return (
+      this.sharingPanelVisible ||
+      this.ownerPanelVisible ||
+      this.moveToPanelVisible ||
+      this.copyPanelVisible ||
+      this.deleteThirdPartyDialogVisible ||
+      this.connectDialogVisible ||
+      this.thirdPartyMoveDialogVisible ||
+      this.deleteDialogVisible ||
+      this.downloadDialogVisible ||
+      this.emptyTrashDialogVisible ||
+      this.thirdPartyDialogVisible ||
+      this.newFilesPanelVisible ||
+      this.conflictResolveDialogVisible ||
+      this.convertDialogVisible ||
+      this.selectFileDialogVisible ||
+      this.hotkeyPanelVisible
+    );
+  }
 }
 
 export default DialogsStore;

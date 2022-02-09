@@ -75,7 +75,6 @@ const filesActionsStore = new FilesActionsStore(
 const versionHistoryStore = new VersionHistoryStore(filesStore);
 
 const hotkeyStore = new HotkeyStore(
-  store.auth,
   filesStore,
   dialogsStore,
   settingsStore,

@@ -1,21 +1,14 @@
+import { isDesktop } from "@appserver/components/utils/device";
 import { makeAutoObservable } from "mobx";
 
 class HotkeyStore {
-  authStore;
   filesStore;
   dialogsStore;
   settingsStore;
   filesActionsStore;
 
-  constructor(
-    authStore,
-    filesStore,
-    dialogsStore,
-    settingsStore,
-    filesActionsStore
-  ) {
+  constructor(filesStore, dialogsStore, settingsStore, filesActionsStore) {
     makeAutoObservable(this);
-    this.authStore = authStore;
     this.filesStore = filesStore;
     this.dialogsStore = dialogsStore;
     this.settingsStore = settingsStore;
@@ -307,6 +300,7 @@ class HotkeyStore {
   openItem = () => {
     const { selection } = this.filesStore;
     selection.length === 1 &&
+      !this.dialogsStore.someDialogIsOpen &&
       this.filesActionsStore.openFileAction(selection[0]);
   };
 
@@ -327,16 +321,13 @@ class HotkeyStore {
   };
 
   get countTilesInRow() {
-    const { isArticlePinned } = this.authStore.settingsStore;
-    const sectionPadding = isArticlePinned ? 24 : 16;
+    const isDesktopView = isDesktop();
+    const tileGap = isDesktopView ? 16 : 12;
+    const minTileWidth = 220 + tileGap;
+    const sectionPadding = isDesktopView ? 24 : 18;
 
     const body = document.getElementById("section");
     const sectionWidth = body ? body.offsetWidth - sectionPadding : 0;
-
-    const minTileWidth = isArticlePinned ? 220 + 10 : 220 + 18;
-
-    console.log("sectionWidth", sectionWidth);
-    console.log("countTilesInRow", sectionWidth / minTileWidth);
 
     return Math.floor(sectionWidth / minTileWidth);
   }
