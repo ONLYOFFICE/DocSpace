@@ -235,7 +235,7 @@ public class EFUserService : IUserService
             .Select(r => r.Photo)
             .FirstOrDefault();
 
-        return photo ?? new byte[0];
+        return photo ?? Array.Empty<byte>();
     }
 
     public IEnumerable<UserInfo> GetUsers(int tenant)
@@ -327,7 +327,10 @@ public class EFUserService : IUserService
         tr.Commit();
     }
 
-    public void RemoveUser(int tenant, Guid id) => RemoveUser(tenant, id, false);
+    public void RemoveUser(int tenant, Guid id)
+    {
+        RemoveUser(tenant, id, false);
+    }
 
     public void RemoveUser(int tenant, Guid id, bool immediate)
     {
