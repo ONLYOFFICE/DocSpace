@@ -1,14 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Web.Api.Routing;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.Routing.Patterns;
-using Microsoft.Extensions.Primitives;
-
-namespace ASC.Api.Core.Core
+﻿namespace ASC.Api.Core.Core
 {
     public class CustomEndpointDataSource : EndpointDataSource
     {

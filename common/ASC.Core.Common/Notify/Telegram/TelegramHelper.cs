@@ -23,22 +23,6 @@
  *
 */
 
-
-using System;
-using System.Linq;
-using System.Net;
-using System.Security.Cryptography;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core.Common.Configuration;
-using ASC.Core.Common.Notify.Telegram;
-using ASC.Notify.Messages;
-
-using Microsoft.Extensions.Options;
-
-using Telegram.Bot;
-
 namespace ASC.Core.Common.Notify
 {
     [Scope]

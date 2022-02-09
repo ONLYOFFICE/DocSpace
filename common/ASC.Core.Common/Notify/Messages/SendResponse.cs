@@ -23,12 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Notify.Model;
-using ASC.Notify.Recipients;
-
 namespace ASC.Notify.Messages
 {
     [Serializable]

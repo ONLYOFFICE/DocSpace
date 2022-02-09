@@ -23,17 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Threading;
-
-using ASC.Notify;
-using ASC.Notify.Model;
-using ASC.Notify.Patterns;
-using ASC.Notify.Recipients;
-
 namespace ASC.Core.Notify
 {
     public abstract class NotifySource : INotifySource

@@ -23,16 +23,6 @@
  *
 */
 
-
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-
-using NVelocity;
-using NVelocity.App;
-using NVelocity.Runtime.Resource.Loader;
-
 namespace ASC.Common.Utils
 {
     public class TextLoader : ResourceLoader

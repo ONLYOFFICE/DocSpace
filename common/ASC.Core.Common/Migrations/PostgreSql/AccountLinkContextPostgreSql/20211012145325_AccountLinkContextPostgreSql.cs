@@ -1,6 +1,3 @@
-using System;
-using Microsoft.EntityFrameworkCore.Migrations;
-
 namespace ASC.Core.Common.Migrations.PostgreSql.AccountLinkContextPostgreSql
 {
     public partial class AccountLinkContextPostgreSql : Migration

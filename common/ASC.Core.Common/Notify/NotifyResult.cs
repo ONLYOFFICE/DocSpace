@@ -23,12 +23,6 @@
  *
 */
 
-
-using System.Collections.Generic;
-using System.Text;
-
-using ASC.Notify.Messages;
-
 namespace ASC.Notify
 {
     public class NotifyResult

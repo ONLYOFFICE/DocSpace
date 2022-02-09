@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore.Migrations;
-
 #nullable disable
 
 namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql

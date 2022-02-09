@@ -1,15 +1,4 @@
-﻿using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Notify.Model;
-using ASC.Notify.Patterns;
-using ASC.Notify.Recipients;
-using ASC.Web.Studio.Core.Notify;
-using ASC.Web.Studio.Utility;
-
-namespace ASC.Web.Core.Notify
+﻿namespace ASC.Web.Core.Notify
 {
     [Scope]
     public class StudioNotifyServiceHelper

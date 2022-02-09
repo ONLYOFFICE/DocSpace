@@ -1,13 +1,4 @@
-﻿using System;
-
-using ASC.Common.Mapping;
-using ASC.Core.Tenants;
-
-using AutoMapper;
-
-using Microsoft.EntityFrameworkCore;
-
-namespace ASC.Core.Common.EF.Model
+﻿namespace ASC.Core.Common.EF.Model
 {
     public class DbTenant : IMapFrom<Tenant>
     {

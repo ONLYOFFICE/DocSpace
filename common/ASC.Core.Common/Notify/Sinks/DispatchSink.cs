@@ -23,12 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Notify.Engine;
-using ASC.Notify.Messages;
-
 namespace ASC.Notify.Sinks
 {
     class DispatchSink : Sink

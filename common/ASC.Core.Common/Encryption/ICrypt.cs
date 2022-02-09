@@ -23,9 +23,6 @@
  *
 */
 
-
-using System.IO;
-
 namespace ASC.Core.Encryption
 {
     public interface ICrypt

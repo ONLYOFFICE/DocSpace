@@ -23,11 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Core.Common.Settings;
-
 namespace ASC.Core.Tenants
 {
     [Serializable]

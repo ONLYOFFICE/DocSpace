@@ -23,23 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Notify.Engine;
-using ASC.Core.Billing;
-using ASC.Core.Caching;
-using ASC.Core.Tenants;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Core
 {
     [Scope]

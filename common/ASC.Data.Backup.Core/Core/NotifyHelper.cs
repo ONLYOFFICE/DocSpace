@@ -23,26 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-using ASC.Data.Backup.Core;
-using ASC.Notify.Model;
-using ASC.Notify.Patterns;
-using ASC.Notify.Recipients;
-using ASC.Web.Core.Users;
-using ASC.Web.Core.WhiteLabel;
-using ASC.Web.Studio.Core.Notify;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Data.Backup
 {
     [Singletone(Additional = typeof(NotifyHelperExtension))]

@@ -23,17 +23,7 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-using ASC.Common.Utils;
-
-using NLog;
-using NLog.Common;
-using NLog.Targets;
+using LogLevel = NLog.LogLevel;
 
 namespace ASC.Common.Logging
 {

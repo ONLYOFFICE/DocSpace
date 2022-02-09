@@ -23,16 +23,6 @@
  *
 */
 
-
-using System;
-using System.Diagnostics;
-using System.Linq;
-
-using ASC.Common.Mapping;
-using ASC.Core.Common.EF;
-
-using AutoMapper;
-
 namespace ASC.Core.Tenants
 {
     [DebuggerDisplay("{Name}")]

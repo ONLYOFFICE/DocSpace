@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace ASC.Web.Api.Routing
+﻿namespace ASC.Web.Api.Routing
 {
     public class DefaultRouteAttribute : RouteAttribute
     {

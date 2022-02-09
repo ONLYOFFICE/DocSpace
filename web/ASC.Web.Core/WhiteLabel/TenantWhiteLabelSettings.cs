@@ -24,29 +24,6 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text.Json.Serialization;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.Core.Common.WhiteLabel;
-using ASC.Core.Tenants;
-using ASC.Data.Storage;
-using ASC.Web.Core.Users;
-using ASC.Web.Core.Utility.Skins;
-
-using Microsoft.Extensions.Options;
-
-using SixLabors.ImageSharp;
-
-using TMResourceData;
-
 using UnknownImageFormatException = SixLabors.ImageSharp.UnknownImageFormatException;
 
 namespace ASC.Web.Core.WhiteLabel

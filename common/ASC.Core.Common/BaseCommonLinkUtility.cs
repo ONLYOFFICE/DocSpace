@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Web;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Core.Common
 {
     [Scope]

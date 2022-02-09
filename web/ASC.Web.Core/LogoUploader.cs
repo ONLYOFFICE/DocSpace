@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-using System.Globalization;
-using System.IO;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Data.Storage;
-using ASC.Web.Core.Users;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Web.Studio.UserControls.CustomNavigation
 {
     //internal class LogoUploader : IFileUploadHandler

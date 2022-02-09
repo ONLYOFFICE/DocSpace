@@ -23,11 +23,6 @@
  *
 */
 
-
-using System.Text.RegularExpressions;
-
-using ASC.Data.Storage;
-
 namespace ASC.Data.Backup.Utils
 {
     static class FCKEditorPathUtility

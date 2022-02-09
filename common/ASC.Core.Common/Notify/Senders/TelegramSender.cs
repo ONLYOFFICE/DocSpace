@@ -23,17 +23,6 @@
  *
 */
 
-using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-
-using ASC.Common.Logging;
-using ASC.Core.Common.Notify;
-using ASC.Notify.Messages;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Core.Notify.Senders
 {
     public class TelegramSender : INotifySender

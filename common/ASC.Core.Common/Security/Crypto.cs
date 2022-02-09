@@ -23,14 +23,6 @@
  *
 */
 
-
-using System;
-using System.IO;
-using System.Security.Cryptography;
-using System.Text;
-
-using ASC.Common.Security;
-
 namespace ASC.Core
 {
     public class Crypto

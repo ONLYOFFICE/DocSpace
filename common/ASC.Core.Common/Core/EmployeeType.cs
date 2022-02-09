@@ -23,9 +23,8 @@
  *
 */
 
-
-using System;
-using System.Text.Json.Serialization;
+using JsonConverter = System.Text.Json.Serialization.JsonConverter;
+using JsonConverterAttribute = System.Text.Json.Serialization.JsonConverterAttribute;
 
 namespace ASC.Core.Users
 {

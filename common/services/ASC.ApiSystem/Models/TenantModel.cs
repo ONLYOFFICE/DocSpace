@@ -23,13 +23,6 @@
  *
 */
 
-
-using System.ComponentModel.DataAnnotations;
-
-using ASC.ApiSystem.Interfaces;
-using ASC.Core.Tenants;
-
-
 namespace ASC.ApiSystem.Models
 {
     public class TenantModel : IModel

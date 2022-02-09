@@ -23,20 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core.Common.EF;
-using ASC.Core.Data;
-using ASC.Core.Users;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Core.Caching
 {
     [Singletone]

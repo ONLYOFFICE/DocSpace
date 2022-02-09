@@ -23,18 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
-using ASC.Common;
-using ASC.Common.Threading;
-using ASC.Core.Users;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Primitives;
-
 namespace ASC.Data.Reassigns
 {
     public class QueueWorker

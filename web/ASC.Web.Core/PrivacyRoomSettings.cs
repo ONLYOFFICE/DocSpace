@@ -23,14 +23,6 @@
  *
 */
 
-
-using System;
-using System.Text.Json.Serialization;
-
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.Web.Studio.Utility;
-
 namespace ASC.Web.Studio.Core
 {
     public class PrivacyRoomSettings : ISettings

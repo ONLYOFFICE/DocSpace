@@ -23,16 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
-
-using ASC.Common.Mapping;
-using ASC.Core.Common.EF;
-using ASC.Notify.Recipients;
-
 namespace ASC.Core.Users
 {
     [Serializable]

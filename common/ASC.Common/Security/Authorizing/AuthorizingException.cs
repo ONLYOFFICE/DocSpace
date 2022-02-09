@@ -26,7 +26,6 @@
 
 #region usings
 
-using System;
 using System.Runtime.Serialization;
 
 #endregion

@@ -23,16 +23,6 @@
  *
 */
 
-using System;
-using System.Runtime.Caching;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Core.Common.Notify.Telegram;
-using ASC.TelegramService.Core;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.TelegramService.Commands
 {
     [Scope]

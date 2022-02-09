@@ -23,25 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.ServiceModel;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Utils;
-using ASC.Data.Backup.Contracts;
-using ASC.Data.Backup.EF.Model;
-using ASC.Data.Backup.Storage;
-using ASC.Data.Backup.Utils;
-
-using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json;
-
 namespace ASC.Data.Backup.Services
 {
     [Scope]

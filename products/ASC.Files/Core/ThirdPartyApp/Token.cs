@@ -23,23 +23,6 @@
  *
 */
 
-
-using System;
-using System.Diagnostics;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.FederatedLogin;
-using ASC.FederatedLogin.Helpers;
-using ASC.Files.Core;
-using ASC.Files.Core.EF;
-using ASC.Security.Cryptography;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Web.Files.ThirdPartyApp
 {
     [DebuggerDisplay("{App} - {AccessToken}")]

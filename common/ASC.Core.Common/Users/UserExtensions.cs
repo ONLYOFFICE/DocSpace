@@ -23,11 +23,6 @@
  *
 */
 
-
-using System.Collections.Generic;
-
-using ASC.Core.Tenants;
-
 namespace ASC.Core.Users
 {
     public static class UserExtensions

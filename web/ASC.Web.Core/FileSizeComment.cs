@@ -23,14 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common;
-using ASC.Core.Tenants;
-using ASC.Web.Core.PublicResources;
-using ASC.Web.Studio.Utility;
-
 namespace ASC.Web.Studio.Core
 {
     [Scope]

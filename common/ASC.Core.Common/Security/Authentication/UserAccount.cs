@@ -23,12 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common.Security.Authentication;
-using ASC.Core.Users;
-
 namespace ASC.Core.Security.Authentication
 {
     [Serializable]

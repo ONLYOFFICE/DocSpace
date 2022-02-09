@@ -23,12 +23,7 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
-using ASC.Core;
-using ASC.Core.Users;
+using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Core.Calendars
 {

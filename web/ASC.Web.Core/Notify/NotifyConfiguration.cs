@@ -23,40 +23,6 @@
  *
 */
 
-
-using System;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Notify.Engine;
-using ASC.Common.Utils;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-using ASC.Notify;
-using ASC.Notify.Engine;
-using ASC.Notify.Messages;
-using ASC.Notify.Patterns;
-using ASC.Notify.Textile;
-using ASC.Web.Core;
-using ASC.Web.Core.Users;
-using ASC.Web.Core.WhiteLabel;
-using ASC.Web.Studio.Utility;
-
-using Google.Protobuf;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
-using MimeKit.Utils;
-
 using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Studio.Core.Notify

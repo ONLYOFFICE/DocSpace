@@ -23,43 +23,7 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Security;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Common.Security.Authentication;
-using ASC.Core;
-using ASC.Core.Common;
-using ASC.Files.Core;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
-using ASC.MessagingSystem;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Core;
-using ASC.Web.Files.Helpers;
-using ASC.Web.Files.Services.DocumentService;
-using ASC.Web.Files.Services.WCFService.FileOperations;
-using ASC.Web.Studio.Core;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
-using SecurityContext = ASC.Core.SecurityContext;
+using Timeout = System.Threading.Timeout;
 
 namespace ASC.Web.Files.Utils
 {

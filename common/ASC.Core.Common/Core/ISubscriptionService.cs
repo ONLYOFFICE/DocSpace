@@ -23,12 +23,6 @@
  *
 */
 
-
-using System.Collections.Generic;
-
-using ASC.Common;
-using ASC.Core.Data;
-
 namespace ASC.Core
 {
     [Scope(typeof(DbSubscriptionService))]

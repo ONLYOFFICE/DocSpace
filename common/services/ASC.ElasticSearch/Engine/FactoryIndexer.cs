@@ -23,31 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Tenants;
-using ASC.ElasticSearch.Core;
-
-using Autofac;
-
-using Elasticsearch.Net;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
-using Nest;
 namespace ASC.ElasticSearch
 {
     [Singletone]

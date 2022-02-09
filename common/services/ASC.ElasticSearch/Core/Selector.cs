@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-using System.Globalization;
-using System.Linq;
-using System.Linq.Expressions;
-
-using ASC.Common;
-using ASC.ElasticSearch.Core;
-
-using Microsoft.Extensions.DependencyInjection;
-
-using Nest;
-
 namespace ASC.ElasticSearch
 {
     [Scope]

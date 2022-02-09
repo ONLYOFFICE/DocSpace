@@ -23,14 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common.Mapping;
-using ASC.Common.Security;
-using ASC.Common.Security.Authorizing;
-using ASC.Core.Common.EF;
-
 namespace ASC.Core
 {
     [Serializable]

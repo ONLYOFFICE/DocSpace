@@ -1,12 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-
-using Microsoft.EntityFrameworkCore.Query;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
-
-
-namespace ASC.Core.Common.EF
+﻿namespace ASC.Core.Common.EF
 {
     public static class IQueryableExtensions
     {

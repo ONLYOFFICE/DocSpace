@@ -23,12 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
-using ASC.Common.Notify.Engine;
-
 namespace ASC.Notify.Engine
 {
     class InterceptorStorage

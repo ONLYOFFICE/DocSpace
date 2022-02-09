@@ -23,18 +23,6 @@
  *
 */
 
-
-using System;
-using System.Reflection;
-using System.Web;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.Core.Users;
-
-using Microsoft.Extensions.Configuration;
-
 namespace ASC.Web.Core.Users
 {
     [Serializable]

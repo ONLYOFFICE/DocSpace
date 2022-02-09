@@ -23,24 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Web;
-using ASC.Core;
-using ASC.Core.Billing;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-using ASC.Web.Core.PublicResources;
-using ASC.Web.Core.Utility.Settings;
-using ASC.Web.Studio.Core;
-using ASC.Web.Studio.UserControls.Management;
-using ASC.Web.Studio.UserControls.Statistics;
-
 namespace ASC.Web.Studio.Utility
 {
     [Scope]

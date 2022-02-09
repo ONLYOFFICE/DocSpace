@@ -23,10 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
 namespace ASC.Notify.Recipients
 {
     [Serializable]

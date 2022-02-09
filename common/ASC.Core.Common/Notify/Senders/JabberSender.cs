@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core.Notify.Jabber;
-using ASC.Notify.Messages;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Core.Notify.Senders
 {
     [Singletone(Additional = typeof(JabberSenderExtension))]

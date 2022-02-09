@@ -22,23 +22,7 @@
  * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
 */
-
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-
-using ASC.Collections;
-using ASC.Common;
-using ASC.Core.Caching;
-using ASC.Core.Common.EF;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-
-using AutoMapper;
-
-using Microsoft.AspNetCore.Http;
+using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Core
 {

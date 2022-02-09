@@ -24,14 +24,6 @@
 */
 
 
-using System;
-using System.Text;
-using System.Web;
-
-using ASC.Core;
-using ASC.Core.Common;
-using ASC.Core.Tenants;
-
 using Uri = System.Uri;
 
 namespace ASC.VoipService.Twilio

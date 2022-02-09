@@ -1,7 +1,4 @@
-﻿using System.Security.Claims;
-using System.Security.Principal;
-
-namespace ASC.Core.Common.Security
+﻿namespace ASC.Core.Common.Security
 {
     public class CustomClaimsPrincipal : ClaimsPrincipal
     {

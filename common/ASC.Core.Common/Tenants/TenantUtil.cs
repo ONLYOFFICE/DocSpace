@@ -23,14 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common;
-using ASC.Common.Utils;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Core.Tenants
 {
     [Scope]

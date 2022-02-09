@@ -23,23 +23,7 @@
  *
 */
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Threading;
-using ASC.Core;
-using ASC.Core.Encryption;
-using ASC.Core.Tenants;
-using ASC.Data.Storage.DiscStorage;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+using Tenant = ASC.Core.Tenants.Tenant;
 
 namespace ASC.Data.Storage.Encryption
 {

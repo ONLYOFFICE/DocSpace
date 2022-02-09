@@ -1,25 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Data.Common;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Xml.Linq;
-using System.Xml.XPath;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Utils;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-using ASC.Data.Backup.EF.Context;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-
-namespace ASC.Data.Backup
+﻿namespace ASC.Data.Backup
 {
     [Scope]
     public class DbHelper : IDisposable

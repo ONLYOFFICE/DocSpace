@@ -1,13 +1,4 @@
-﻿using System;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Utils;
-
-using Microsoft.Extensions.Options;
-
-namespace ASC.Core.Common.EF
+﻿namespace ASC.Core.Common.EF
 {
     [Scope]
     public class ConfigureDbContext<T> : IConfigureNamedOptions<T> where T : BaseDbContext, new()

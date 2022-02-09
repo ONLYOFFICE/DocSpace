@@ -23,17 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.MessagingSystem;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.AuditTrail.Mappers
 {
     [Singletone]

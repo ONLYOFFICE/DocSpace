@@ -23,20 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core.Tenants;
-
-using Autofac;
-
-using Microsoft.Extensions.Configuration;
-
 namespace ASC.Core.Common.Configuration
 {
     public class Consumer : IDictionary<string, string>

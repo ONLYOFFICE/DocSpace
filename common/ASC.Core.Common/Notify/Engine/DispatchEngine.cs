@@ -23,15 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common.Logging;
-using ASC.Notify.Messages;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Notify.Engine
 {
     public class DispatchEngine

@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Utils;
-using ASC.Core.Common.Configuration;
-using ASC.FederatedLogin.Profile;
-using ASC.Security.Cryptography;
-
-using Microsoft.AspNetCore.Http;
-
 namespace ASC.FederatedLogin.LoginProviders
 {
     [Scope]

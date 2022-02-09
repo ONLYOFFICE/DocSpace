@@ -23,8 +23,6 @@
  *
 */
 
-using Microsoft.AspNetCore.Http;
-
 namespace ASC.Collections
 {
     public sealed class HttpRequestDictionary<T> : CachedDictionaryBase<T>

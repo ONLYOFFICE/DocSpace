@@ -1,16 +1,4 @@
-﻿using System;
-using System.Threading;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Tenants;
-using ASC.Data.Backup.EF.Model;
-using ASC.Notify.Cron;
-
-using Microsoft.Extensions.Options;
-
-namespace ASC.Data.Backup
+﻿namespace ASC.Data.Backup
 {
     [Scope]
     public class Schedule

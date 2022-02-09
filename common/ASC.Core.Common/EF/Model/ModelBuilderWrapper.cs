@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
-
-namespace ASC.Core.Common.EF.Model
+﻿namespace ASC.Core.Common.EF.Model
 {
     public class ModelBuilderWrapper
     {

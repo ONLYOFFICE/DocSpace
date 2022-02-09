@@ -1,24 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Api.Security;
-using ASC.AuditTrail;
-using ASC.AuditTrail.Data;
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Billing;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.MessagingSystem;
-using ASC.Web.Api.Routing;
-using ASC.Web.Core.PublicResources;
-using ASC.Web.Studio.Core;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.AspNetCore.Mvc;
-
-namespace ASC.Web.Api.Controllers
+﻿namespace ASC.Web.Api.Controllers
 {
     [Scope]
     [DefaultRoute]

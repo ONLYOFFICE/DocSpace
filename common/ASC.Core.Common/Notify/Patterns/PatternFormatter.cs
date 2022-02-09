@@ -23,13 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-
-using ASC.Notify.Messages;
-
 namespace ASC.Notify.Patterns
 {
     public abstract class PatternFormatter : IPatternFormatter

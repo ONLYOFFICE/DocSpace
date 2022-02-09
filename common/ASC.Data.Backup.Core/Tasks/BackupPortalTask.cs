@@ -23,33 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Utils;
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Data.Backup.EF.Context;
-using ASC.Data.Backup.Exceptions;
-using ASC.Data.Backup.Extensions;
-using ASC.Data.Backup.Tasks.Data;
-using ASC.Data.Backup.Tasks.Modules;
-using ASC.Data.Storage;
-
-using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json;
-
 namespace ASC.Data.Backup.Tasks
 {
     [Scope]

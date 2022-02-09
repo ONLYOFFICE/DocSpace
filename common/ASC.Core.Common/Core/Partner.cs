@@ -23,9 +23,6 @@
  *
 */
 
-
-using System;
-
 namespace ASC.Core
 {
     public class Partner

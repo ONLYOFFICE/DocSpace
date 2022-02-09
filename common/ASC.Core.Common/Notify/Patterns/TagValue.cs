@@ -23,10 +23,6 @@
  *
 */
 
-
-using System;
-using System.Diagnostics;
-
 namespace ASC.Notify.Patterns
 {
     [DebuggerDisplay("{Tag}: {Value}")]

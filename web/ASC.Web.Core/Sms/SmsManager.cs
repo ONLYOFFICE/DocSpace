@@ -24,15 +24,7 @@
 */
 
 
-using System;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Common.Security;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-using ASC.Web.Core.PublicResources;
-using ASC.Web.Core.Sms;
+using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Studio.Core.SMS
 {

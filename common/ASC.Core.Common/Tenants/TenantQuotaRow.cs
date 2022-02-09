@@ -23,12 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common.Mapping;
-using ASC.Core.Common.EF;
-
 namespace ASC.Core.Tenants
 {
     [Serializable]

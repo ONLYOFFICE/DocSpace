@@ -24,14 +24,6 @@
 */
 
 
-#region usings
-
-using System;
-
-using ASC.Common.Security.Authorizing;
-
-#endregion
-
 namespace ASC.Common.Security
 {
     public interface ISecurityObjectId

@@ -23,28 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Data.Storage.Configuration;
-using ASC.Security.Cryptography;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-
-using net.openstack.Core.Domain;
-using net.openstack.Providers.Rackspace;
-
-using MimeMapping = ASC.Common.Web.MimeMapping;
-
 namespace ASC.Data.Storage.RackspaceCloud
 {
     [Scope]

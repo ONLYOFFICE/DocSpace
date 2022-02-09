@@ -23,14 +23,6 @@
  *
 */
 
-
-using System;
-using System.Text.RegularExpressions;
-
-using ASC.Common;
-
-using Microsoft.Extensions.Configuration;
-
 namespace ASC.Core.Tenants
 {
     [Singletone]

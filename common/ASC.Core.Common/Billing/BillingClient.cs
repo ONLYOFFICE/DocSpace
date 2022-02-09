@@ -23,22 +23,7 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Runtime.Serialization;
-using System.Security.Cryptography;
-using System.ServiceModel;
-using System.Text;
-using System.Text.Json;
-
-using ASC.Common;
-
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Configuration;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ASC.Core.Billing
 {

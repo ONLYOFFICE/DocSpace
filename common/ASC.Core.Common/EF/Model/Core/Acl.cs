@@ -1,14 +1,4 @@
-﻿using System;
-
-using ASC.Common.Mapping;
-using ASC.Common.Security.Authorizing;
-using ASC.Core.Common.EF.Model;
-
-using AutoMapper;
-
-using Microsoft.EntityFrameworkCore;
-
-namespace ASC.Core.Common.EF
+﻿namespace ASC.Core.Common.EF
 {
     public class Acl : BaseEntity, IMapFrom<AzRecord>
     {

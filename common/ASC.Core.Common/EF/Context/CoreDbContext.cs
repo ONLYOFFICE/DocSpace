@@ -1,12 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-
-using ASC.Core.Common.EF.Model;
-
-using Microsoft.EntityFrameworkCore;
-
-namespace ASC.Core.Common.EF
+﻿namespace ASC.Core.Common.EF
 {
     public class MySqlCoreDbContext : CoreDbContext { }
     public class PostgreSqlCoreDbContext : CoreDbContext { }

@@ -1,14 +1,4 @@
-﻿using System;
-
-using ASC.Common.Mapping;
-using ASC.Core.Common.EF.Model;
-using ASC.Core.Tenants;
-
-using AutoMapper;
-
-using Microsoft.EntityFrameworkCore;
-
-namespace ASC.Core.Common.EF
+﻿namespace ASC.Core.Common.EF
 {
     public class DbQuotaRow : BaseEntity, IMapFrom<TenantQuotaRow>
     {

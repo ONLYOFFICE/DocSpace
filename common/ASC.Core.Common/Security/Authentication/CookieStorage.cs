@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-using System.Globalization;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core.Tenants;
-using ASC.Security.Cryptography;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Core.Security.Authentication
 {
     [Scope]

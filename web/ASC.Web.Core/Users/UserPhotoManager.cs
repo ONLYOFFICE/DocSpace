@@ -23,30 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Common.Threading;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Data.Storage;
-using ASC.Web.Core.Utility.Skins;
-
-using Microsoft.Extensions.Options;
-
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats;
-using SixLabors.ImageSharp.Processing;
-
 namespace ASC.Web.Core.Users
 {
     [Transient]

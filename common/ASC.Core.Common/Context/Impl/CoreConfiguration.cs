@@ -23,21 +23,6 @@
  *
 */
 
-
-using System;
-using System.Text;
-
-using ASC.Common;
-using ASC.Core.Caching;
-using ASC.Core.Common.Settings;
-using ASC.Core.Configuration;
-using ASC.Core.Tenants;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json;
-
 namespace ASC.Core
 {
     [Singletone]

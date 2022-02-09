@@ -23,15 +23,7 @@
  *
 */
 
-
-using System;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Security.Authentication;
-using ASC.Core.Security.Authentication;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
+using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Core
 {

@@ -23,15 +23,6 @@
  *
 */
 
-using System;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core.Notify;
-using ASC.Notify.Messages;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Data.Storage.Encryption
 {
     [Scope]

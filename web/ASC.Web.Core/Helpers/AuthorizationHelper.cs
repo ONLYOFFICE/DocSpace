@@ -23,16 +23,6 @@
  *
 */
 
-
-using System;
-using System.Text;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Security.Cryptography;
-
-using Microsoft.AspNetCore.Http;
-
 namespace ASC.Web.Core.Helpers
 {
     [Scope]

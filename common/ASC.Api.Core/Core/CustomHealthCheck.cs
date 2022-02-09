@@ -1,16 +1,4 @@
-﻿using System;
-using System.Linq;
-
-using ASC.Common.Caching;
-using ASC.Common.Utils;
-
-using Confluent.Kafka;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-
-namespace ASC.Api.Core.Core
+﻿namespace ASC.Api.Core.Core
 {
     public static class CustomHealthCheck
     {

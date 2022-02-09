@@ -1,12 +1,4 @@
-﻿using System;
-
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Model;
-using ASC.Files.Core.Security;
-
-using Microsoft.EntityFrameworkCore;
-
-namespace ASC.Files.Core.EF
+﻿namespace ASC.Files.Core.EF
 {
     public class DbFilesSecurity : BaseEntity, IDbFile
     {

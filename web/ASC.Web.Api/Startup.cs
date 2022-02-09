@@ -1,13 +1,4 @@
-﻿
-using ASC.Api.Core;
-using ASC.Api.Settings;
-using ASC.Web.Api.Controllers;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-
-namespace ASC.Web.Api
+﻿namespace ASC.Web.Api
 {
     public class Startup : BaseStartup
     {

@@ -23,11 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace ASC.Data.Backup.Exceptions
 {
     internal static class ThrowHelper

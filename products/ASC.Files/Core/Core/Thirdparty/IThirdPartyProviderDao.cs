@@ -1,29 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Core.Tenants;
-using ASC.Files.Core;
-using ASC.Files.Core.EF;
-using ASC.Files.Core.Security;
-using ASC.Files.Core.Thirdparty;
-using ASC.Security.Cryptography;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Services.DocumentService;
-using ASC.Web.Studio.Core;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
-using FileShare = ASC.Files.Core.Security.FileShare;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace ASC.Files.Thirdparty
 {

@@ -23,15 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common.Mapping;
-using ASC.Core.Common.EF;
-using ASC.Core.Users;
-
-using AutoMapper;
-
 namespace ASC.Core
 {
     public class Group : IMapFrom<DbGroup>

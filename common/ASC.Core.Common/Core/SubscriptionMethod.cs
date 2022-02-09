@@ -23,14 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common.Mapping;
-using ASC.Core.Common.EF;
-
-using AutoMapper;
-
 namespace ASC.Core
 {
     [Serializable]

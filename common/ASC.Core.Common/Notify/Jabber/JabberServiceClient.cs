@@ -23,14 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.ServiceModel;
-
-using ASC.Common;
-using ASC.Core.Common.Notify.Jabber;
-
 namespace ASC.Core.Notify.Jabber
 {
     [Scope]

@@ -1,17 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Core;
-using ASC.Feed;
-using ASC.Feed.Data;
-using ASC.Files.Core;
-using ASC.Files.Core.Security;
-using ASC.Web.Core;
-using ASC.Web.Core.Files;
-
-using FeedModule = ASC.Feed.Aggregator.Modules.FeedModule;
+﻿using FeedModule = ASC.Feed.Aggregator.Modules.FeedModule;
 
 namespace ASC.Files.Service.Core
 {

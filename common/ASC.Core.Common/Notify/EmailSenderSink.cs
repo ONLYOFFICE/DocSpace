@@ -23,22 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Utils;
-using ASC.Core.Notify.Senders;
-using ASC.Core.Tenants;
-using ASC.Notify.Messages;
-using ASC.Notify.Sinks;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Core.Notify
 {
     public class EmailSenderSink : Sink

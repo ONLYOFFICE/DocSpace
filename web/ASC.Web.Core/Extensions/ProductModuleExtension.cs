@@ -23,9 +23,6 @@
  *
 */
 
-
-using ASC.Web.Core.Utility.Skins;
-
 namespace ASC.Web.Core
 {
     public static class ProductModuleExtension

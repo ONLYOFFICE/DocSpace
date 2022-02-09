@@ -23,15 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Xml;
-
-using ASC.Notify.Engine;
-using ASC.Notify.Model;
-
 namespace ASC.Notify.Patterns
 {
     public class XmlPatternProvider2 : IPatternProvider

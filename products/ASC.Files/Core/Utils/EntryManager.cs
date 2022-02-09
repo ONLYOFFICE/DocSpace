@@ -23,42 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Security;
-using System.Text;
-using System.Threading;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.Core.Users;
-using ASC.Files.Core;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Api;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Core;
-using ASC.Web.Files.Helpers;
-using ASC.Web.Files.Services.DocumentService;
-using ASC.Web.Files.ThirdPartyApp;
-using ASC.Web.Studio.Core;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json.Linq;
-
-using FileShare = ASC.Files.Core.Security.FileShare;
-
 namespace ASC.Web.Files.Utils
 {
     [Scope]

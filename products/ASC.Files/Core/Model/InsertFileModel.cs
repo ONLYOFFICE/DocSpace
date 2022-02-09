@@ -1,10 +1,4 @@
-﻿
-using System;
-using System.IO;
-
-using Microsoft.AspNetCore.Http;
-
-namespace ASC.Files.Core.Model
+﻿namespace ASC.Files.Core.Model
 {
     public class InsertFileModel : IModelWithFile, IDisposable
     {

@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Net;
-
-using ASC.Common.Mapping;
-using ASC.Core.Common.EF.Model;
-using ASC.Core.Data;
-
-using AutoMapper;
-
 namespace ASC.Core.Tenants
 {
     [Serializable]

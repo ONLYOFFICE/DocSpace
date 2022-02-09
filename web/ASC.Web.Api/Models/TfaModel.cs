@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ASC.Web.Api.Models
+﻿namespace ASC.Web.Api.Models
 {
     public class TfaModel
     {

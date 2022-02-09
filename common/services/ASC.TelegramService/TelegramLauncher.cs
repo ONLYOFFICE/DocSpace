@@ -23,18 +23,6 @@
  *
 */
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Common.Configuration;
-using ASC.FederatedLogin.LoginProviders;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-
 namespace ASC.TelegramService
 {
     [Singletone(Additional = typeof(TelegramLauncherExtension))]

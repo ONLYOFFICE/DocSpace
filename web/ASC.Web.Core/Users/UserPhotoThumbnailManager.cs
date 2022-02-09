@@ -23,16 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
-using ASC.Core.Common.Settings;
-
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats;
-using SixLabors.ImageSharp.Processing;
-
 namespace ASC.Web.Core.Users
 {
     public class UserPhotoThumbnailManager
