@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import Row from "@appserver/components/row";
 import { tablet } from "@appserver/components/utils/device";
+import { Base } from "@appserver/components/themes";
 
 const StyledBody = styled.div`
   height: 100%;
@@ -30,7 +31,8 @@ const StyledVersionList = styled.div`
           ${(props) =>
             props.isRestoreProcess &&
             `
-              fill: #d0d5da;
+              fill: ${(props) =>
+                props.theme.filesVersionHistory.versionList.fill};
             `};
         }
       }
@@ -49,7 +51,7 @@ const StyledVersionList = styled.div`
       ${(props) =>
         props.isRestoreProcess &&
         `
-          color: #d0d5da;
+          color:${(props) => props.theme.filesVersionHistory.versionList.color};
           touch-action: none;
           pointer-events: none;
         `}
@@ -70,7 +72,8 @@ const StyledVersionList = styled.div`
           ${(props) =>
             props.isRestoreProcess &&
             `
-              fill: #d0d5da;
+              fill: ${(props) =>
+                props.theme.filesVersionHistory.versionList.fill};
             `};
         }
       }
@@ -83,7 +86,8 @@ const StyledVersionList = styled.div`
           ${(props) =>
             props.isRestoreProcess &&
             `
-              stroke: #d0d5da;
+              stroke: ${(props) =>
+                props.theme.filesVersionHistory.versionList.stroke};
             `};
         }
       }
@@ -99,12 +103,17 @@ const StyledVersionList = styled.div`
         `}
       svg {
         path {
-          ${(props) => props.isRestoreProcess && " fill: #d0d5da"}
+          ${(props) =>
+            props.isRestoreProcess &&
+            `fill: ${(props) =>
+              props.theme.filesVersionHistory.versionList.fill}`}
         }
       }
     }
   }
 `;
+
+StyledVersionList.defaultProps = { theme: Base };
 
 const StyledVersionRow = styled(Row)`
   @media ${tablet} {
@@ -252,7 +261,8 @@ const StyledVersionRow = styled(Row)`
           ${(props) =>
             props.isSavingComment &&
             `
-              fill: #d0d5da;
+              fill: ${(props) =>
+                props.theme.filesVersionHistory.versionList.fill};
             `};
         }
       }
@@ -273,7 +283,8 @@ const StyledVersionRow = styled(Row)`
       ${(props) =>
         props.isSavingComment &&
         `
-          color: #d0d5da;
+          color: ${(props) =>
+            props.theme.filesVersionHistory.versionList.color};
           touch-action: none;
           pointer-events: none;
         `}
@@ -302,5 +313,7 @@ const StyledVersionRow = styled(Row)`
     margin-top: -24px;
   }
 `;
+
+StyledVersionRow.defaultProps = { theme: Base };
 
 export { StyledBody, StyledVersionRow, StyledVersionList };

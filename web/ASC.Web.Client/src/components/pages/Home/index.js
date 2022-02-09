@@ -74,7 +74,7 @@ Tiles.propTypes = {
   isPrimary: PropTypes.bool.isRequired,
 };
 
-const Body = ({ modules, match, isLoaded }) => {
+const Body = ({ modules, match, isLoaded, theme }) => {
   const { t } = useTranslation();
   const { error } = match.params;
   setDocumentTitle();
@@ -89,7 +89,11 @@ const Body = ({ modules, match, isLoaded }) => {
       <Tiles modules={modules} isPrimary={false} />
 
       {!modules || !modules.length ? (
-        <Text className="home-error-text" fontSize="14px" color="#c30">
+        <Text
+          className="home-error-text"
+          fontSize="14px"
+          color={theme.studio.home.textColorError}
+        >
           {t("NoOneModulesAvailable")}
         </Text>
       ) : null}
@@ -117,9 +121,10 @@ Home.propTypes = {
 
 export default inject(({ auth }) => {
   const { isLoaded, settingsStore, moduleStore } = auth;
-  const { defaultPage } = settingsStore;
+  const { defaultPage, theme } = settingsStore;
   const { modules } = moduleStore;
   return {
+    theme,
     defaultPage,
     modules,
     isLoaded,

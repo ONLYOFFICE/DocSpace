@@ -16,12 +16,11 @@ import { LayoutContextConsumer } from "../Layout/context";
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import i18n from "./i18n";
-
-const backgroundColor = "#0F4071";
+import { Base } from "@appserver/components/themes";
 
 const StyledContainer = styled.header`
   align-items: center;
-  background-color: ${backgroundColor};
+  background-color: ${(props) => props.theme.header.backgroundColor};
 
   ${(props) =>
     !props.isLoaded
@@ -64,6 +63,8 @@ const StyledContainer = styled.header`
     border-radius: 1px;
   }
 `;
+
+StyledContainer.defaultProps = { theme: Base };
 
 class NavMenu extends React.Component {
   constructor(props) {

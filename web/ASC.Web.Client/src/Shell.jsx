@@ -13,7 +13,7 @@ import toastr from "studio/toastr";
 import { combineUrl, updateTempContent } from "@appserver/common/utils";
 import { Provider as MobxProvider } from "mobx-react";
 import ThemeProvider from "@appserver/components/theme-provider";
-import { Base } from "@appserver/components/themes";
+
 import store from "studio/store";
 import config from "../package.json";
 import { I18nextProvider, useTranslation } from "react-i18next";
@@ -139,6 +139,21 @@ const MyProfileRoute = (props) => (
 
 const RedirectToHome = () => <Redirect to={PROXY_HOMEPAGE_URL} />;
 
+const checkTheme = () => {
+  const theme = localStorage.getItem("theme");
+
+  if (theme) return theme;
+
+  if (
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+  ) {
+    return "Dark";
+  }
+
+  return "Base";
+};
+
 const Shell = ({ items = [], page = "home", ...rest }) => {
   const {
     isLoaded,
@@ -148,6 +163,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     language,
     FirebaseHelper,
     personal,
+    setTheme,
   } = rest;
 
   useEffect(() => {
@@ -337,6 +353,10 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     console.log("Current page ", page);
   }, [page]);
 
+  useEffect(() => {
+    setTheme(checkTheme());
+  }, []);
+
   const pathname = window.location.pathname.toLowerCase();
   const isEditor = pathname.indexOf("doceditor") !== -1;
 
@@ -452,6 +472,7 @@ const ShellWrapper = inject(({ auth }) => {
     isDesktopClient,
     firebaseHelper,
     setModuleInfo,
+    setTheme,
   } = settingsStore;
 
   return {
@@ -470,15 +491,21 @@ const ShellWrapper = inject(({ auth }) => {
     isDesktop: isDesktopClient,
     FirebaseHelper: firebaseHelper,
     personal,
+    setTheme,
   };
 })(observer(Shell));
 
+const ThemeProviderWrapper = inject(({ auth }) => {
+  const { settingsStore } = auth;
+  return { theme: settingsStore.theme };
+})(observer(ThemeProvider));
+
 export default () => (
-  <ThemeProvider theme={Base}>
-    <MobxProvider {...store}>
-      <I18nextProvider i18n={i18n}>
+  <MobxProvider {...store}>
+    <I18nextProvider i18n={i18n}>
+      <ThemeProviderWrapper>
         <ShellWrapper />
-      </I18nextProvider>
-    </MobxProvider>
-  </ThemeProvider>
+      </ThemeProviderWrapper>
+    </I18nextProvider>
+  </MobxProvider>
 );

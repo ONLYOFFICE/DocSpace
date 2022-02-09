@@ -7,6 +7,11 @@ import {
   ArticleMainButtonContent,
   ArticleBodyContent,
 } from "../../components/Article";
+import {
+  CatalogHeaderContent,
+  CatalogMainButtonContent,
+  CatalogBodyContent,
+} from "../../components/Catalog";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withRouter } from "react-router";
 
@@ -89,21 +94,44 @@ class Profile extends React.Component {
   render() {
     //console.log("Profile render");
 
-    const { profile } = this.props;
+    const { profile, showCatalog, isAdmin } = this.props;
 
     return (
       <PageLayout withBodyAutoFocus>
-        <PageLayout.ArticleHeader>
-          <ArticleHeaderContent />
-        </PageLayout.ArticleHeader>
+        {showCatalog && (
+          <PageLayout.CatalogHeader>
+            <CatalogHeaderContent />
+          </PageLayout.CatalogHeader>
+        )}
 
-        <PageLayout.ArticleMainButton>
-          <ArticleMainButtonContent />
-        </PageLayout.ArticleMainButton>
+        {showCatalog && isAdmin && (
+          <PageLayout.CatalogMainButton>
+            <CatalogMainButtonContent />
+          </PageLayout.CatalogMainButton>
+        )}
+        {showCatalog && (
+          <PageLayout.CatalogBody>
+            <CatalogBodyContent />
+          </PageLayout.CatalogBody>
+        )}
 
-        <PageLayout.ArticleBody>
-          <ArticleBodyContent />
-        </PageLayout.ArticleBody>
+        {!showCatalog && (
+          <PageLayout.ArticleHeader>
+            <ArticleHeaderContent />
+          </PageLayout.ArticleHeader>
+        )}
+
+        {!showCatalog && (
+          <PageLayout.ArticleMainButton>
+            <ArticleMainButtonContent />
+          </PageLayout.ArticleMainButton>
+        )}
+
+        {!showCatalog && (
+          <PageLayout.ArticleBody>
+            <ArticleBodyContent />
+          </PageLayout.ArticleBody>
+        )}
 
         <PageLayout.SectionHeader>
           <SectionHeaderContent profile={profile} />
@@ -150,6 +178,7 @@ export default withRouter(
       isEditTargetUser,
       setIsEditTargetUser,
       setLoadedProfile,
+      showCatalog: auth.settingsStore.showCatalog,
     };
   })(observer(withTranslation(["Profile", "Common"])(Profile)))
 );

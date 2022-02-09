@@ -7,7 +7,10 @@ import { LayoutContextConsumer } from "studio/Layout/context";
 import { isMobile } from "react-device-detect";
 import { tablet, desktop } from "@appserver/components/utils/device";
 import NoUserSelect from "@appserver/components/utils/commonStyles";
+import Base from "@appserver/components/themes/base";
+
 const StyledSectionHeader = styled.div`
+  position: relative;
   height: 42px;
   margin-right: 24px;
   ${NoUserSelect}
@@ -63,7 +66,8 @@ const StyledSectionHeader = styled.div`
       width: ${(props) =>
         props.isArticlePinned ? `calc(100% - 272px)` : "100%"};
 
-      background-color: #fff;
+      background-color: ${(props) =>
+        props.theme.section.header.backgroundColor};
       z-index: 149;
       padding-right: 16px;
     `}
@@ -103,6 +107,8 @@ const StyledSectionHeader = styled.div`
     `}
   }
 `;
+
+StyledSectionHeader.defaultProps = { theme: Base };
 
 class SectionHeader extends React.Component {
   constructor(props) {

@@ -7,6 +7,7 @@ import Button from "@appserver/components/button";
 
 const SelectFolderDialogModalView = ({
   t,
+  theme,
   isPanelVisible,
   zIndex,
   onClose,
@@ -30,25 +31,28 @@ const SelectFolderDialogModalView = ({
   noTreeSwitcher,
 }) => {
   return (
-    <StyledAsidePanel visible={isPanelVisible}>
+    <StyledAsidePanel theme={theme} visible={isPanelVisible}>
       <ModalDialog
+        theme={theme}
         visible={isPanelVisible}
         zIndex={zIndex}
         onClose={onClose}
         displayType="modal"
         {...(!header && !footer && !showButtons && { contentHeight: "416px" })}
       >
-        <ModalDialog.Header>
+        <ModalDialog.Header theme={theme}>
           {headerName ? headerName : t("Translations:FolderSelection")}
         </ModalDialog.Header>
 
-        <ModalDialog.Body>
+        <ModalDialog.Body theme={theme}>
           <StyledSelectFolderPanel
+            theme={theme}
             isNeedArrowIcon={isNeedArrowIcon}
             noTreeSwitcher={noTreeSwitcher}
           >
             <div className="select-folder-modal-dialog-header">{header} </div>
             <FolderTreeBody
+              theme={theme}
               isLoadingData={isLoadingData}
               folderList={folderList}
               onSelect={onSelect}
@@ -60,12 +64,13 @@ const SelectFolderDialogModalView = ({
             />
           </StyledSelectFolderPanel>
         </ModalDialog.Body>
-        <ModalDialog.Footer>
-          <StyledSelectFolderPanel>
+        <ModalDialog.Footer theme={theme}>
+          <StyledSelectFolderPanel theme={theme}>
             {footer}
             {showButtons && (
               <div className="select-folder-dialog-modal_buttons">
                 <Button
+                  theme={theme}
                   className="select-folder-dialog-buttons-save"
                   primary
                   size="medium"
@@ -74,6 +79,7 @@ const SelectFolderDialogModalView = ({
                   isDisabled={isLoadingData || !isAvailable || !canCreate}
                 />
                 <Button
+                  theme={theme}
                   size="medium"
                   label={t("Common:CancelButton")}
                   onClick={onClose}

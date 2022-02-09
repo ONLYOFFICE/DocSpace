@@ -36,6 +36,7 @@ class ComboButton extends React.Component {
     } = this.props;
 
     const defaultOption = selectedOption.default;
+    const isSelected = selectedOption.key !== 0;
 
     return (
       <StyledComboButton
@@ -47,6 +48,7 @@ class ComboButton extends React.Component {
         onClick={onClick}
         scaled={scaled}
         size={size}
+        isSelected={isSelected}
         className="combo-button"
       >
         {innerContainer && (
@@ -63,6 +65,7 @@ class ComboButton extends React.Component {
             className="forceColor"
             isDisabled={isDisabled}
             defaultOption={defaultOption}
+            isSelected={isSelected}
           >
             <ReactSVG
               src={selectedOption.icon}

@@ -2,6 +2,10 @@ import React, { useEffect } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
+import {
+  isMobile as isMobileUtils,
+  isTablet as isTabletUtils,
+} from "@appserver/components/utils/device";
 import { observer, inject } from "mobx-react";
 import FilesRowContainer from "./RowsView/FilesRowContainer";
 import FilesTileContainer from "./TilesView/FilesTileContainer";
@@ -9,6 +13,7 @@ import EmptyContainer from "../../../../components/EmptyContainer";
 import withLoader from "../../../../HOCs/withLoader";
 import TableView from "./TableView/TableContainer";
 import { Consumer } from "@appserver/components/utils/context";
+import { CatalogMainButtonContent } from "../../../../components/Catalog";
 
 let currentDroppable = null;
 
@@ -185,16 +190,36 @@ const SectionBodyContent = (props) => {
     <Consumer>
       {(context) =>
         (!fileActionId && isEmptyFilesList) || null ? (
-          <EmptyContainer />
+          <>
+            <EmptyContainer />
+            {(isMobile || isMobileUtils() || isTabletUtils()) && (
+              <CatalogMainButtonContent sectionWidth={context.sectionWidth} />
+            )}
+          </>
         ) : viewAs === "tile" ? (
-          <FilesTileContainer sectionWidth={context.sectionWidth} t={t} />
+          <>
+            <FilesTileContainer sectionWidth={context.sectionWidth} t={t} />
+            {(isMobile || isMobileUtils() || isTabletUtils()) && (
+              <CatalogMainButtonContent sectionWidth={context.sectionWidth} />
+            )}
+          </>
         ) : viewAs === "table" ? (
-          <TableView sectionWidth={context.sectionWidth} tReady={tReady} />
+          <>
+            <TableView sectionWidth={context.sectionWidth} tReady={tReady} />
+            {(isMobile || isMobileUtils() || isTabletUtils()) && (
+              <CatalogMainButtonContent sectionWidth={context.sectionWidth} />
+            )}
+          </>
         ) : (
-          <FilesRowContainer
-            sectionWidth={context.sectionWidth}
-            tReady={tReady}
-          />
+          <>
+            <FilesRowContainer
+              sectionWidth={context.sectionWidth}
+              tReady={tReady}
+            />
+            {(isMobile || isMobileUtils() || isTabletUtils()) && (
+              <CatalogMainButtonContent sectionWidth={context.sectionWidth} />
+            )}
+          </>
         )
       }
     </Consumer>

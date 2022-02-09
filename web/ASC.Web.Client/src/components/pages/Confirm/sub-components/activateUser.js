@@ -231,7 +231,7 @@ class Confirm extends React.PureComponent {
 
   render() {
     console.log("ActivateUser render");
-    const { settings, t, greetingTitle } = this.props;
+    const { settings, t, greetingTitle, theme } = this.props;
     return !settings ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
@@ -246,7 +246,11 @@ class Confirm extends React.PureComponent {
               <a href="/login">
                 <img src="images/dark_general.png" alt="Logo" />
               </a>
-              <Text as="p" fontSize="24px" color="#116d9d">
+              <Text
+                as="p"
+                fontSize="24px"
+                color={theme.studio.confirm.activateUser.textColor}
+              >
                 {greetingTitle}
               </Text>
             </div>
@@ -350,7 +354,11 @@ class Confirm extends React.PureComponent {
 
             </Row>
  */}
-          <Text className="confirm-row" fontSize="14px" color="#c30">
+          <Text
+            className="confirm-row"
+            fontSize="14px"
+            color={theme.studio.confirm.activateUser.textColorError}
+          >
             {this.state.errorText}
           </Text>
         </div>
@@ -379,9 +387,11 @@ export default inject(({ auth }) => {
     passwordSettings,
     getSettings,
     getPortalPasswordSettings,
+    theme,
   } = auth.settingsStore;
 
   return {
+    theme,
     settings: passwordSettings,
     greetingTitle: greetingSettings,
     hashSettings,

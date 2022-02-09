@@ -72,6 +72,7 @@ class LinkWithDropdown extends React.Component {
       id,
       style,
       isDisabled,
+      theme,
       ...rest
     } = this.props;
 
@@ -162,7 +163,6 @@ LinkWithDropdown.propTypes = {
 };
 
 LinkWithDropdown.defaultProps = {
-  color: "#333333",
   data: [],
   dropdownType: "alwaysDashed",
   fontSize: "13px",

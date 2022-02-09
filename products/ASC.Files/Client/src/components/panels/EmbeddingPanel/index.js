@@ -1,4 +1,5 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import Backdrop from "@appserver/components/backdrop";
 import Heading from "@appserver/components/heading";
@@ -24,7 +25,7 @@ class EmbeddingPanelComponent extends React.Component {
   };
 
   render() {
-    const { visible, t } = this.props;
+    const { visible, t, theme } = this.props;
     const zIndex = 310;
 
     //console.log("EmbeddingPanel render");
@@ -43,7 +44,7 @@ class EmbeddingPanelComponent extends React.Component {
                 size="16"
                 iconName="/static/images/arrow.path.react.svg"
                 onClick={this.onArrowClick}
-                color="#A3A9AE"
+                // color={theme.filesPanels.embedding.color}
               />
               <Heading
                 className="header_aside-panel-header"
@@ -54,7 +55,7 @@ class EmbeddingPanelComponent extends React.Component {
               </Heading>
             </StyledHeaderContent>
             <StyledBody>
-              <EmbeddingBody />
+              <EmbeddingBody theme={theme} />
             </StyledBody>
           </StyledContent>
         </Aside>
@@ -69,9 +70,9 @@ EmbeddingPanelComponent.propTypes = {
   onClose: PropTypes.func,
 };
 
-const EmbeddingBodyWrapper = withTranslation("EmbeddingPanel")(
-  EmbeddingPanelComponent
-);
+const EmbeddingBodyWrapper = inject(({ auth }) => {
+  return { theme: auth.settingsStore.theme };
+})(observer(withTranslation("EmbeddingPanel")(EmbeddingPanelComponent)));
 
 export default (props) => (
   <I18nextProvider i18n={i18n}>

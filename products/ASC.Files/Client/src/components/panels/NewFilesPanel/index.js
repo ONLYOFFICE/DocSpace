@@ -154,7 +154,7 @@ class NewFilesPanel extends React.Component {
 
   render() {
     //console.log("NewFiles panel render");
-    const { t, visible, isLoading, newFiles } = this.props;
+    const { t, visible, isLoading, newFiles, theme } = this.props;
     const zIndex = 310;
 
     return (
@@ -191,7 +191,7 @@ class NewFilesPanel extends React.Component {
                             containerWidth="100%"
                             type="page"
                             fontWeight="bold"
-                            color="#333"
+                            color={theme.filesPanels.color}
                             isTextOverflow
                             truncate
                             title={file.title}
@@ -238,6 +238,7 @@ class NewFilesPanel extends React.Component {
 
 export default inject(
   ({
+    auth,
     filesStore,
     mediaViewerDataStore,
     treeFoldersStore,
@@ -289,6 +290,8 @@ export default inject(
       updateFolderBadge,
       updateFoldersBadge,
       updateFilesBadge,
+
+      theme: auth.settingsStore.theme,
     };
   }
 )(

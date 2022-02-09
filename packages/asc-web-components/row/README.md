@@ -5,7 +5,7 @@ Displays content as row
 ### Usage
 
 ```js
-import  Row  from "@appserver/components/row";
+import Row from "@appserver/components/row";
 ```
 
 ```jsx

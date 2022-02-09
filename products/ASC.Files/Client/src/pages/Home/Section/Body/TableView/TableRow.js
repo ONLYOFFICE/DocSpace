@@ -23,40 +23,39 @@ const sideColor = globalColors.gray;
 const { acceptBackground, background } = Base.dragAndDrop;
 
 const rowCheckboxCheckedStyle = css`
-  border-image-source: linear-gradient(to right, #f3f4f4 24px, #eceef1 24px);
+  border-image-source: ${(props) =>
+    props.theme.filesSection.tableView.row.checkboxChecked};
 `;
 const contextMenuWrapperCheckedStyle = css`
-  border-image-source: linear-gradient(to left, #f3f4f4 24px, #eceef1 24px);
+  border-image-source: ${(props) =>
+    props.theme.filesSection.tableView.row.contextMenuWrapperChecked};
 `;
 
 const rowCheckboxDraggingStyle = css`
-  border-image-source: linear-gradient(to right, #f8f7bf 24px, #eceef1 24px);
+  border-image-source: ${(props) =>
+    props.theme.filesSection.tableView.row.checkboxDragging};
 `;
 
 const contextMenuWrapperDraggingStyle = css`
-  border-image-source: linear-gradient(to left, #f8f7bf 24px, #eceef1 24px);
+  border-image-source: ${(props) =>
+    props.theme.filesSection.tableView.row.contextMenuWrapperDragging};
 `;
 
 const rowCheckboxDraggingHoverStyle = css`
-  border-image-source: linear-gradient(
-    to right,
-    rgb(239, 239, 178) 24px,
-    #eceef1 24px
-  );
+  border-image-source: ${(props) =>
+    props.theme.filesSection.tableView.row.checkboxDraggingHover};
 `;
 const contextMenuWrapperDraggingHoverStyle = css`
-  border-image-source: linear-gradient(
-    to left,
-    rgb(239, 239, 178) 24px,
-    #eceef1 24px
-  );
+  border-image-source: ${(props) =>
+    props.theme.filesSection.tableView.row.contextMenuWrapperDraggingHover};
 `;
 
 const StyledTableRow = styled(TableRow)`
   .table-container_cell {
     ${isSafari && `border-image-slice: 0 !important`};
     background: ${(props) =>
-      (props.checked || props.isActive) && "#F3F4F4 !important"};
+      (props.checked || props.isActive) &&
+      `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
     cursor: ${(props) =>
       !props.isThirdPartyFolder &&
       (props.checked || props.isActive) &&
@@ -87,7 +86,8 @@ const StyledTableRow = styled(TableRow)`
     padding-left: 24px;
     border-bottom: 1px solid;
     border-image-slice: 1;
-    border-image-source: linear-gradient(to right, #ffffff 24px, #eceef1 24px);
+    border-image-source: ${(props) =>
+      props.theme.filesSection.tableView.row.borderImageCheckbox};
 
     border-top: 0;
     border-right: 0;
@@ -102,7 +102,8 @@ const StyledTableRow = styled(TableRow)`
     padding-right: 18px;
     border-bottom: 1px solid;
     border-image-slice: 1;
-    border-image-source: linear-gradient(to left, #ffffff 24px, #eceef1 24px);
+    border-image-source: ${(props) =>
+      props.theme.filesSection.tableView.row.borderImageContextMenu};
 
     border-top: 0;
     border-left: 0;
@@ -183,7 +184,18 @@ const StyledQuickButtonsContainer = styled.div`
   .favorite {
     margin-top: 1px;
   }
+
+  .share-button-icon:hover {
+    cursor: pointer;
+    path {
+      fill: ${(props) =>
+        props.theme.filesSection.tableView.row.shareHoverColor};
+    }
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
 `;
+
+StyledQuickButtonsContainer.defaultProps = { theme: Base };
 
 const FilesTableRow = (props) => {
   const {
@@ -205,8 +217,10 @@ const FilesTableRow = (props) => {
     isActive,
     onHideContextMenu,
     onFilesClick,
+    theme,
     quickButtonsComponent,
   } = props;
+  const { acceptBackground, background } = theme.dragAndDrop;
 
   const element = (
     <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
@@ -273,6 +287,7 @@ const FilesTableRow = (props) => {
       >
         <TableCell {...dragStyles} {...selectionProp}>
           <FileNameCell
+            theme={theme}
             onContentSelect={onContentFileSelect}
             checked={checkedProps}
             element={element}
@@ -283,21 +298,37 @@ const FilesTableRow = (props) => {
         </TableCell>
         {!personal && (
           <TableCell {...dragStyles} {...selectionProp}>
-            <AuthorCell sideColor={sideColor} {...props} />
+            <AuthorCell
+              sideColor={theme.filesSection.tableView.row.sideColor}
+              {...props}
+            />
           </TableCell>
         )}
         <TableCell {...dragStyles} {...selectionProp}>
-          <DateCell create sideColor={sideColor} {...props} />
+          <DateCell
+            create
+            sideColor={theme.filesSection.tableView.row.sideColor}
+            {...props}
+          />
         </TableCell>
         <TableCell {...dragStyles} {...selectionProp}>
-          <DateCell sideColor={sideColor} {...props} />
+          <DateCell
+            sideColor={theme.filesSection.tableView.row.sideColor}
+            {...props}
+          />
         </TableCell>
         <TableCell {...dragStyles} {...selectionProp}>
-          <SizeCell sideColor={sideColor} {...props} />
+          <SizeCell
+            sideColor={theme.filesSection.tableView.row.sideColor}
+            {...props}
+          />
         </TableCell>
 
         <TableCell {...dragStyles} {...selectionProp}>
-          <TypeCell sideColor={sideColor} {...props} />
+          <TypeCell
+            sideColor={theme.filesSection.tableView.row.sideColor}
+            {...props}
+          />
         </TableCell>
 
         <TableCell {...dragStyles} {...selectionProp}>

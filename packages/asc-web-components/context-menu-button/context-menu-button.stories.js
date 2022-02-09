@@ -64,7 +64,6 @@ Default.args = {
   title: "Actions",
   iconName: "/static/images/vertical-dots.react.svg",
   size: 16,
-  color: "#A3A9AE",
   directionX: "right",
   isDisabled: false,
 };

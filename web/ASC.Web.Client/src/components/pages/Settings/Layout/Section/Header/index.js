@@ -261,8 +261,6 @@ class SectionHeaderContent extends React.Component {
               <IconButton
                 iconName="/static/images/arrow.path.react.svg"
                 size="17"
-                color="#A3A9AE"
-                hoverColor="#657077"
                 isFill={true}
                 onClick={this.onBackToParent}
                 className="arrow-button"
@@ -276,8 +274,6 @@ class SectionHeaderContent extends React.Component {
                 <IconButton
                   iconName="/static/images/actions.header.touch.react.svg"
                   size="17"
-                  color="#A3A9AE"
-                  hoverColor="#657077"
                   isFill={true}
                   onClick={this.onToggleSelector}
                   className="action-button"

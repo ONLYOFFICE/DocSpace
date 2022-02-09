@@ -126,7 +126,7 @@ class FileInput extends Component {
           <IconButton
             className="icon-button"
             iconName={"/static/images/catalog.folder.react.svg"}
-            color={"#A3A9AE"}
+            // color={"#A3A9AE"}
             size={iconSize}
             isDisabled={isDisabled}
           />

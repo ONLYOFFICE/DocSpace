@@ -23,6 +23,7 @@ const StyledContextMenu = styled.div`
   .p-contextmenu .p-submenu-list {
     position: absolute;
     background: ${(props) => props.theme.dropDown.background};
+    border: ${(props) => props.theme.dropDown.border};
     border-radius: ${(props) => props.theme.dropDown.borderRadius};
     -moz-border-radius: ${(props) => props.theme.dropDown.borderRadius};
     -webkit-border-radius: ${(props) => props.theme.dropDown.borderRadius};
@@ -86,7 +87,8 @@ const StyledContextMenu = styled.div`
     cursor: default;
     padding: 0px 16px;
     margin: 4px 16px 4px;
-    border-bottom: 1px solid #eceef1;
+    border-bottom: ${(props) =>
+      props.theme.dropDownItem.separator.borderBottom};
     width: calc(90%-32px);
 
     &:hover {
@@ -124,6 +126,9 @@ const StyledContextMenu = styled.div`
 
   .p-submenu-icon {
     margin-left: auto;
+    path {
+      fill: ${(props) => props.theme.dropDownItem.icon.color};
+    }
   }
 
   .p-contextmenu-enter {

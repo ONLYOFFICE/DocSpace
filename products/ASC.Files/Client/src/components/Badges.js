@@ -4,6 +4,7 @@ import Badge from "@appserver/components/badge";
 import IconButton from "@appserver/components/icon-button";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { isTablet } from "react-device-detect";
+import { Base } from "@appserver/components/themes";
 
 export const StyledIcon = styled(IconButton)`
   ${commonIconsStyles}
@@ -13,11 +14,13 @@ const StyledWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: white;
+  background: ${(props) => props.theme.filesBadges.color};
   padding: 6px;
   border-radius: 4px;
   box-shadow: 0px 2px 4px rgba(4, 15, 27, 0.16);
 `;
+
+StyledWrapper.defaultProps = { theme: Base };
 
 const BadgeWrapper = ({ onClick, isTile, children: badge }) => {
   if (!isTile) return badge;
@@ -47,6 +50,7 @@ const BadgeWrapper = ({ onClick, isTile, children: badge }) => {
 
 const Badges = ({
   t,
+  theme,
   newItems,
   sectionWidth,
   item,
@@ -98,7 +102,7 @@ const Badges = ({
 
   const commonBadgeProps = {
     borderRadius: "11px",
-    color: "#FFFFFF",
+    color: theme.filesBadges.color,
     fontSize: fontSizeBadge,
     fontWeight: 800,
     maxWidth: "50px",
@@ -123,7 +127,7 @@ const Badges = ({
             className="badge tablet-badge icons-group tablet-edit edit"
             size={sizeBadge}
             onClick={onFilesClick}
-            hoverColor="#3B72A7"
+            hoverColor={theme.filesBadges.hoverIconColor}
             title={t("Common:FillFormButton")}
           />
         )}
@@ -133,7 +137,7 @@ const Badges = ({
           className="badge icons-group is-editing tablet-badge tablet-edit"
           size={sizeBadge}
           onClick={onFilesClick}
-          hoverColor="#3B72A7"
+          hoverColor={theme.filesBadges.hoverIconColor}
           title={t("Common:EditButton")}
         />
       )}
@@ -143,7 +147,7 @@ const Badges = ({
           iconName={iconRefresh}
           className="badge tablet-badge icons-group can-convert"
           size={sizeBadge}
-          hoverColor="#3B72A7"
+          hoverColor={theme.filesBadges.hoverIconColor}
         />
       )}
       {version > 1 && (
@@ -151,7 +155,7 @@ const Badges = ({
           <Badge
             {...commonBadgeProps}
             className="badge-version badge-version-current tablet-badge icons-group"
-            backgroundColor="#A3A9AE"
+            backgroundColor={theme.filesBadges.backgroundColor}
             label={t("VersionBadge:Version", { version: countVersions })}
             onClick={onShowVersionHistory}
           />
@@ -162,7 +166,7 @@ const Badges = ({
           <Badge
             {...commonBadgeProps}
             className="badge-version badge-new-version tablet-badge icons-group"
-            backgroundColor="#ED7309"
+            backgroundColor={theme.filesBadges.badgeBackgroundColor}
             label={t("New")}
             onClick={onBadgeClick}
           />
@@ -174,7 +178,7 @@ const Badges = ({
       <Badge
         {...commonBadgeProps}
         className="new-items tablet-badge"
-        backgroundColor="#ED7309"
+        backgroundColor={theme.filesBadges.badgeBackgroundColor}
         label={contentNewItems}
         onClick={onBadgeClick}
       />

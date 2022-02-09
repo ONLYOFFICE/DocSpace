@@ -71,6 +71,8 @@ function getVerticalCss() {
 const Container = styled.div`
   .error-label {
     max-width: ${(props) => (props.maxwidth ? props.maxwidth : "293px")};
+    color: ${(props) =>
+      props.color ? props.color : props.theme.fieldContainer.errorLabel.color};
   }
   ${(props) =>
     props.vertical ? getVerticalCss() : getHorizontalCss(props.maxLabelWidth)}

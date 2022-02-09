@@ -99,8 +99,6 @@ class SharingPanelComponent extends React.Component {
   };
 
   onSaveClick = () => {
-
-
     const {
       baseShareData,
       isNotifyUsers,
@@ -123,6 +121,7 @@ class SharingPanelComponent extends React.Component {
       setIsFolderActions,
       onSuccess,
       isFolderActions,
+      theme,
     } = this.props;
 
     let folderIds = [];
@@ -340,29 +339,29 @@ class SharingPanelComponent extends React.Component {
       getShareUsers,
     } = this.props;
 
-      getShareUsers(folderId, fileId)
-        .then((shareDataItems) => {
-          const baseShareData = JSON.parse(JSON.stringify(shareDataItems));
-          const accessOptions = getAccessOption(selection);
+    getShareUsers(folderId, fileId)
+      .then((shareDataItems) => {
+        const baseShareData = JSON.parse(JSON.stringify(shareDataItems));
+        const accessOptions = getAccessOption(selection);
 
-          const externalAccessOptions = getExternalAccessOption(selection);
-          const filesOwner = shareDataItems.find((x) => x.isOwner);
-          const filesOwnerId = filesOwner ? filesOwner.sharedTo.id : null;
+        const externalAccessOptions = getExternalAccessOption(selection);
+        const filesOwner = shareDataItems.find((x) => x.isOwner);
+        const filesOwnerId = filesOwner ? filesOwner.sharedTo.id : null;
 
-          this.setState({
-            baseShareData,
-            shareDataItems,
-            accessOptions,
-            externalAccessOptions,
-            //showPanel: true,
-            filesOwnerId,
-          });
-        })
+        this.setState({
+          baseShareData,
+          shareDataItems,
+          accessOptions,
+          externalAccessOptions,
+          //showPanel: true,
+          filesOwnerId,
+        });
+      })
 
-        .catch((err) => {
-          toastr.error(err);
-          this.onClose();
-        })
+      .catch((err) => {
+        toastr.error(err);
+        this.onClose();
+      })
       .finally(() =>
         this.setState({
           isLoading: false,
@@ -487,6 +486,7 @@ class SharingPanelComponent extends React.Component {
       documentTitle,
       sharingPanelVisible,
       isPrivacy,
+      theme,
     } = this.props;
     const {
       showActionPanel,
@@ -518,17 +518,21 @@ class SharingPanelComponent extends React.Component {
 
     return isPersonal && !isMobileOnly ? (
       <ModalDialog
+        theme={theme}
         isLoading={!tReady}
         visible={visible}
         displayType="modal"
         onClose={this.onClose}
       >
-        <ModalDialog.Header>{t("SharingSettingsTitle")}</ModalDialog.Header>
-        <ModalDialog.Body>
-          <StyledModalRowContainer>
+        <ModalDialog.Header theme={theme}>
+          {t("SharingSettingsTitle")}
+        </ModalDialog.Header>
+        <ModalDialog.Body theme={theme}>
+          <StyledModalRowContainer theme={theme}>
             {!isLoading ? (
               shareDataItems.map((item, index) => (
                 <SharingRow
+                  theme={theme}
                   t={t}
                   isPersonal={isPersonal}
                   index={index}
@@ -551,10 +555,15 @@ class SharingPanelComponent extends React.Component {
               ))
             ) : (
               <Loaders.Rectangle
+                theme={theme}
                 height="47px"
                 animate={0}
-                foregroundColor="#f8f9f9"
-                backgroundColor="#f8f9f9"
+                foregroundColor={
+                  theme.filesPanels.sharing.loader.foregroundColor
+                }
+                backgroundColor={
+                  theme.filesPanels.sharing.loader.backgroundColor
+                }
                 backgroundOpacity={1}
                 foregroundOpacity={1}
               />
@@ -564,8 +573,9 @@ class SharingPanelComponent extends React.Component {
             )}
           </StyledModalRowContainer>
         </ModalDialog.Body>
-        <ModalDialog.Footer>
+        <ModalDialog.Footer theme={theme}>
           <Button
+            theme={theme}
             className="sharing_panel-button"
             label={t("Common:SaveButton")}
             size="big"
@@ -576,25 +586,35 @@ class SharingPanelComponent extends React.Component {
         </ModalDialog.Footer>
       </ModalDialog>
     ) : (
-      <StyledAsidePanel visible={visible}>
+      <StyledAsidePanel theme={theme} visible={visible}>
         <Backdrop
+          theme={theme}
           onClick={this.onClose}
           visible={visible}
           zIndex={zIndex}
           isAside={true}
         />
-        <Aside className="header_aside-panel" visible={visible}>
-          <StyledContent isDisabled={isLoading}>
-            <StyledHeaderContent className="sharing_panel-header-container">
+        <Aside theme={theme} className="header_aside-panel" visible={visible}>
+          <StyledContent theme={theme} isDisabled={isLoading}>
+            <StyledHeaderContent
+              theme={theme}
+              className="sharing_panel-header-container"
+            >
               {uploadPanelVisible && (
                 <IconButton
+                  theme={theme}
                   size="16"
                   iconName="/static/images/arrow.path.react.svg"
                   onClick={this.onClose}
-                  color="A3A9AE"
+                  // color={theme.filesPanels.sharing.color}
                 />
               )}
-              <Heading className="sharing_panel-header" size="medium" truncate>
+              <Heading
+                theme={theme}
+                className="sharing_panel-header"
+                size="medium"
+                truncate
+              >
                 {t("SharingSettingsTitle")}
               </Heading>
               {!isPersonal && (
@@ -604,15 +624,17 @@ class SharingPanelComponent extends React.Component {
                     className="sharing_panel-drop-down-wrapper"
                   >
                     <IconButton
+                      theme={theme}
                       size="17"
                       iconName="/static/images/actions.header.touch.react.svg"
                       className="sharing_panel-plus-icon"
                       {...onPlusClickProp}
-                      color="A3A9AE"
+                      // color={theme.filesPanels.sharing.color}
                       isDisabled={isLoading}
                     />
 
                     <DropDown
+                      theme={theme}
                       directionX="right"
                       className="sharing_panel-drop-down"
                       open={showActionPanel}
@@ -620,11 +642,13 @@ class SharingPanelComponent extends React.Component {
                       clickOutsideAction={this.onCloseActionPanel}
                     >
                       <DropDownItem
+                        theme={theme}
                         label={t("LinkText")}
                         onClick={this.onShowUsersPanel}
                       />
                       {!isEncrypted && (
                         <DropDownItem
+                          theme={theme}
                           label={t("AddGroupsForSharingButton")}
                           onClick={this.onShowGroupsPanel}
                         />
@@ -641,6 +665,7 @@ class SharingPanelComponent extends React.Component {
               )}
             </StyledHeaderContent>
             <StyledSharingBody
+              theme={theme}
               ref={this.scrollRef}
               stype="mediumBlack"
               style={SharingBodyStyle}
@@ -649,6 +674,7 @@ class SharingPanelComponent extends React.Component {
                 shareDataItems.map((item, index) => (
                   <SharingRow
                     t={t}
+                    theme={theme}
                     isPersonal={isPersonal}
                     index={index}
                     key={`${item.sharedTo.id}_${index}`}
@@ -670,15 +696,21 @@ class SharingPanelComponent extends React.Component {
                 ))
               ) : (
                 <div key="loader" className="panel-loader-wrapper">
-                  <Loader type="oval" size="16px" className="panel-loader" />
-                  <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
-                    "Common:LoadingDescription"
-                  )}`}</Text>
+                  <Loader
+                    theme={theme}
+                    type="oval"
+                    size="16px"
+                    className="panel-loader"
+                  />
+                  <Text theme={theme} as="span">{`${t(
+                    "Common:LoadingProcessing"
+                  )} ${t("Common:LoadingDescription")}`}</Text>
                 </div>
               )}
               {isNotifyUsers && (
                 <div className="sharing_panel-text-area">
                   <Textarea
+                    theme={theme}
                     placeholder={t("AddShareMessage")}
                     onChange={this.onChangeMessage}
                     value={message}
@@ -687,9 +719,10 @@ class SharingPanelComponent extends React.Component {
                 </div>
               )}
             </StyledSharingBody>
-            <StyledFooter>
+            <StyledFooter theme={theme}>
               {!isPersonal && (
                 <Checkbox
+                  theme={theme}
                   isChecked={isNotifyUsers}
                   label={t("Notify users")}
                   onChange={this.onNotifyUsersChange}
@@ -698,6 +731,7 @@ class SharingPanelComponent extends React.Component {
                 />
               )}
               <Button
+                theme={theme}
                 className="sharing_panel-button"
                 label={t("Common:SaveButton")}
                 size={isMobile ? "big" : "medium"}
@@ -712,6 +746,7 @@ class SharingPanelComponent extends React.Component {
 
         {showAddUsersPanel && (
           <AddUsersPanel
+            theme={theme}
             onSharingPanelClose={this.onClose}
             onClose={this.onShowUsersPanel}
             visible={showAddUsersPanel}
@@ -726,6 +761,7 @@ class SharingPanelComponent extends React.Component {
 
         {showAddGroupsPanel && (
           <AddGroupsPanel
+            theme={theme}
             onSharingPanelClose={this.onClose}
             onClose={this.onShowGroupsPanel}
             visible={showAddGroupsPanel}
@@ -738,6 +774,7 @@ class SharingPanelComponent extends React.Component {
 
         {showChangeOwnerPanel && (
           <AddUsersPanel
+            theme={theme}
             onSharingPanelClose={this.onClose}
             onClose={this.onShowChangeOwnerPanel}
             visible={showChangeOwnerPanel}
@@ -748,6 +785,7 @@ class SharingPanelComponent extends React.Component {
 
         {showEmbeddingPanel && (
           <EmbeddingPanel
+            theme={theme}
             visible={showEmbeddingPanel}
             onSharingPanelClose={this.onClose}
             onClose={this.onShowEmbeddingPanel}
@@ -772,7 +810,12 @@ const SharingPanel = inject(
     { uploadPanelVisible }
   ) => {
     const { replaceFileStream, setEncryptionAccess } = auth;
-    const { personal, customNames, isDesktopClient } = auth.settingsStore;
+    const {
+      personal,
+      customNames,
+      isDesktopClient,
+      theme,
+    } = auth.settingsStore;
 
     const { id, access } = selectedFolderStore;
 
@@ -805,6 +848,7 @@ const SharingPanel = inject(
     } = uploadDataStore;
 
     return {
+      theme,
       isPersonal: personal,
       isMyId: auth.userStore.user && auth.userStore.user.id,
       groupsCaption: customNames.groupsCaption,

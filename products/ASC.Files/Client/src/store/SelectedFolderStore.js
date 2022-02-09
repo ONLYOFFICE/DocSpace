@@ -17,6 +17,7 @@ class SelectedFolderStore {
   updatedBy = null;
   rootFolderType = null;
   pathParts = null;
+  navigationPath = null;
   providerItem = null;
 
   constructor() {
@@ -44,6 +45,7 @@ class SelectedFolderStore {
     this.updatedBy = null;
     this.rootFolderType = null;
     this.pathParts = null;
+    this.navigationPath = null;
     this.providerItem = null;
   };
 

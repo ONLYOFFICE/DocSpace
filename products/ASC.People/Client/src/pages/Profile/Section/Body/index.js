@@ -98,7 +98,7 @@ const ProviderButtonsWrapper = styled.div`
   }
 `;
 
-const createContacts = (contacts) => {
+const createContacts = (contacts, theme) => {
   const styledContacts = contacts.map((contact, index) => {
     let url = null;
     if (contact.link && contact.link.length > 0) {
@@ -108,7 +108,7 @@ const createContacts = (contacts) => {
       <ContactWrapper key={index}>
         <IconButton
           className="icon-button"
-          color="#333333"
+          color={theme ? theme.profileInfo.iconButtonColor : "#333333"}
           size={16}
           iconName={contact.icon}
           isFill={true}
@@ -255,7 +255,7 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   providerButtons = () => {
-    const { t, providers } = this.props;
+    const { t, providers, theme } = this.props;
 
     const providerButtons =
       providers &&
@@ -289,7 +289,7 @@ class SectionBodyContent extends React.PureComponent {
               <div>
                 <Link
                   type="action"
-                  color="A3A9AE"
+                  color={theme.profileInfo.linkColor}
                   onClick={(e) => this.unlinkAccount(item.provider, e)}
                   isHovered={true}
                 >
@@ -300,7 +300,7 @@ class SectionBodyContent extends React.PureComponent {
               <div>
                 <Link
                   type="action"
-                  color="A3A9AE"
+                  color={theme.profileInfo.linkColor}
                   onClick={(e) => this.linkAccount(item.provider, item.url, e)}
                   isHovered={true}
                 >
@@ -341,6 +341,7 @@ class SectionBodyContent extends React.PureComponent {
       providers,
       backupCodes,
       personal,
+      theme,
     } = this.props;
     const contacts = profile.contacts && getUserContacts(profile.contacts);
     const role = getUserRole(profile);
@@ -348,9 +349,9 @@ class SectionBodyContent extends React.PureComponent {
       (contacts &&
         contacts.social &&
         contacts.social.length > 0 &&
-        createContacts(contacts.social)) ||
+        createContacts(contacts.social, theme)) ||
       null;
-    const infoContacts = contacts && createContacts(contacts.contact);
+    const infoContacts = contacts && createContacts(contacts.contact, theme);
     //const isSelf = isMe(viewer, profile.userName);
 
     let backupCodesCount = 0;
@@ -440,7 +441,7 @@ class SectionBodyContent extends React.PureComponent {
                   {t("ShowBackupCodes")}
                 </Link>
 
-                <Link color="#A3A9AE" noHover={true}>
+                <Link color={theme.profileInfo.linkColor} noHover={true}>
                   ({backupCodesCount} {t("CountCodesRemaining")})
                 </Link>
               </LinkActionWrapper>
@@ -498,7 +499,7 @@ export default withRouter(
   inject(({ auth, peopleStore }) => {
     const { isAdmin, userStore, settingsStore, tfaStore } = auth;
     const { user: viewer } = userStore;
-    const { isTabletView, getOAuthToken, getLoginLink } = settingsStore;
+    const { isTabletView, getOAuthToken, getLoginLink, theme } = settingsStore;
     const { targetUserStore, avatarEditorStore, usersStore } = peopleStore;
     const {
       targetUser: profile,
@@ -536,6 +537,7 @@ export default withRouter(
       setBackupCodes,
       setIsEditTargetUser,
       personal: auth.settingsStore.personal,
+      theme,
     };
   })(
     observer(

@@ -14,6 +14,7 @@ const AccessComboBox = (props) => {
     itemId,
     onAccessChange,
     t,
+    theme,
     arrowIconColor,
     disableLink,
   } = props;
@@ -31,6 +32,7 @@ const AccessComboBox = (props) => {
     <>
       {accessOptions.includes("FullAccess") && (
         <DropDownItem
+          theme={theme}
           label={t("Common:FullAccess")}
           icon="/static/images/access.edit.react.svg"
           data-id={itemId}
@@ -41,6 +43,7 @@ const AccessComboBox = (props) => {
 
       {accessOptions.includes("FilterEditing") && (
         <DropDownItem
+          theme={theme}
           label={t("CustomFilter")}
           icon="/static/images/custom.filter.react.svg"
           data-id={itemId}
@@ -51,6 +54,7 @@ const AccessComboBox = (props) => {
 
       {accessOptions.includes("Review") && (
         <DropDownItem
+          theme={theme}
           label={t("Common:Review")}
           icon="/static/images/access.review.react.svg"
           data-id={itemId}
@@ -61,6 +65,7 @@ const AccessComboBox = (props) => {
 
       {accessOptions.includes("FormFilling") && (
         <DropDownItem
+          theme={theme}
           label={t("FormFilling")}
           icon="/static/images/access.form.react.svg"
           data-id={itemId}
@@ -71,6 +76,7 @@ const AccessComboBox = (props) => {
 
       {accessOptions.includes("Comment") && (
         <DropDownItem
+          theme={theme}
           label={t("Comment")}
           icon="/static/images/access.comment.react.svg"
           data-id={itemId}
@@ -81,6 +87,7 @@ const AccessComboBox = (props) => {
 
       {accessOptions.includes("ReadOnly") && (
         <DropDownItem
+          theme={theme}
           label={t("ReadOnly")}
           icon="/static/images/eye.react.svg"
           data-id={itemId}
@@ -91,6 +98,7 @@ const AccessComboBox = (props) => {
 
       {accessOptions.includes("DenyAccess") && (
         <DropDownItem
+          theme={theme}
           label={t("DenyAccess")}
           icon="/static/images/access.none.react.svg"
           data-id={itemId}
@@ -109,6 +117,7 @@ const AccessComboBox = (props) => {
 
   return (
     <ComboBox
+      theme={theme}
       advancedOptions={advancedOptions}
       options={[]}
       selectedOption={selectedOption}

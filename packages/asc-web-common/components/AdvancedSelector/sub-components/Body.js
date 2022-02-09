@@ -8,7 +8,7 @@ class Body extends React.Component {
   }
 
   render() {
-    const { children, displayType, className, style } = this.props;
+    const { children, displayType, className, style, theme } = this.props;
     return (
       <StyledBody displayType={displayType} className={className} style={style}>
         {children}

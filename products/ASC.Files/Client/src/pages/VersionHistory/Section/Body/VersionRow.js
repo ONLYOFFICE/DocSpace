@@ -14,13 +14,16 @@ import ExternalLinkIcon from "../../../../../public/images/external.link.react.s
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { inject, observer } from "mobx-react";
 import toastr from "studio/toastr";
+import { Base } from "@appserver/components/themes";
 
 const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
   ${commonIconsStyles}
   path {
-    fill: "#333333";
+    fill: ${(props) => props.theme.filesVersionHistory.fill};
   }
 `;
+
+StyledExternalLinkIcon.defaultProps = { theme: Base };
 const VersionRow = (props) => {
   const {
     info,
@@ -35,6 +38,7 @@ const VersionRow = (props) => {
     isTabletView,
     onUpdateHeight,
     versionsListLength,
+    theme,
   } = props;
   const [showEditPanel, setShowEditPanel] = useState(false);
   const [commentValue, setCommentValue] = useState(info.comment);
@@ -120,6 +124,7 @@ const VersionRow = (props) => {
       <div className={`version-row_${index}`}>
         <Box displayProp="flex">
           <VersionBadge
+            theme={theme}
             className={`version_badge ${
               isVersion ? "versioned" : "not-versioned"
             }`}
@@ -145,7 +150,7 @@ const VersionRow = (props) => {
           <Text
             className="version_content-length"
             fontWeight={600}
-            color="#A3A9AE"
+            color={theme.filesVersionHistory.color}
             fontSize="14px"
           >
             {info.contentLength}
@@ -278,6 +283,7 @@ export default inject(({ auth, versionHistoryStore }) => {
   } = versionHistoryStore;
 
   return {
+    theme: auth.settingsStore.theme,
     culture: language,
     isTabletView,
     markAsVersion,

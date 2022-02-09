@@ -352,10 +352,23 @@ class FilesStore {
             this.setSelected("close");
           }
 
+          const navigationPath = await Promise.all(
+            data.pathParts.map(async (folder) => {
+              const data = await api.files.getFolderInfo(folder);
+
+              return { id: folder, title: data.title };
+            })
+          ).then((res) => {
+            return res
+              .filter((item, index) => index !== res.length - 1)
+              .reverse();
+          });
+
           this.selectedFolderStore.setSelectedFolder({
             folders: data.folders,
             ...data.current,
             pathParts: data.pathParts,
+            navigationPath: navigationPath,
             ...{ new: data.new },
           });
 

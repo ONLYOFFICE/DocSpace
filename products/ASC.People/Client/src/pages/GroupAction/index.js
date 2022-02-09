@@ -6,6 +6,11 @@ import {
   ArticleMainButtonContent,
   ArticleBodyContent,
 } from "../../components/Article";
+import {
+  CatalogHeaderContent,
+  CatalogMainButtonContent,
+  CatalogBodyContent,
+} from "../../components/Catalog";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
@@ -40,23 +45,46 @@ class GroupAction extends React.Component {
   render() {
     console.log("GroupAction render");
 
-    const { group, match, tReady } = this.props;
+    const { group, match, tReady, isAdmin, showCatalog } = this.props;
 
     return (
       <>
         {group || !match.params.groupId ? (
           <PageLayout withBodyScroll={true}>
-            <PageLayout.ArticleHeader>
-              <ArticleHeaderContent />
-            </PageLayout.ArticleHeader>
+            {showCatalog && (
+              <PageLayout.CatalogHeader>
+                <CatalogHeaderContent />
+              </PageLayout.CatalogHeader>
+            )}
 
-            <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </PageLayout.ArticleMainButton>
+            {showCatalog && isAdmin && (
+              <PageLayout.CatalogMainButton>
+                <CatalogMainButtonContent />
+              </PageLayout.CatalogMainButton>
+            )}
+            {showCatalog && (
+              <PageLayout.CatalogBody>
+                <CatalogBodyContent />
+              </PageLayout.CatalogBody>
+            )}
 
-            <PageLayout.ArticleBody>
-              <ArticleBodyContent />
-            </PageLayout.ArticleBody>
+            {!showCatalog && (
+              <PageLayout.ArticleHeader>
+                <ArticleHeaderContent />
+              </PageLayout.ArticleHeader>
+            )}
+
+            {!showCatalog && (
+              <PageLayout.ArticleMainButton>
+                <ArticleMainButtonContent />
+              </PageLayout.ArticleMainButton>
+            )}
+
+            {!showCatalog && (
+              <PageLayout.ArticleBody>
+                <ArticleBodyContent />
+              </PageLayout.ArticleBody>
+            )}
 
             <PageLayout.SectionHeader>
               <SectionHeaderContent />
@@ -68,17 +96,22 @@ class GroupAction extends React.Component {
           </PageLayout>
         ) : (
           <PageLayout>
-            <PageLayout.ArticleHeader>
-              <ArticleHeaderContent />
-            </PageLayout.ArticleHeader>
+            {showCatalog && (
+              <PageLayout.CatalogHeader>
+                <CatalogHeaderContent />
+              </PageLayout.CatalogHeader>
+            )}
 
-            <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </PageLayout.ArticleMainButton>
-
-            <PageLayout.ArticleBody>
-              <ArticleBodyContent />
-            </PageLayout.ArticleBody>
+            {showCatalog && isAdmin && (
+              <PageLayout.CatalogMainButton>
+                <CatalogMainButtonContent />
+              </PageLayout.CatalogMainButton>
+            )}
+            {showCatalog && (
+              <PageLayout.CatalogBody>
+                <CatalogBodyContent />
+              </PageLayout.CatalogBody>
+            )}
 
             <PageLayout.SectionBody>
               <Loader className="pageLoader" type="rombs" size="40px" />
@@ -109,6 +142,8 @@ export default withRouter(
       group,
       resetGroup,
       setFirstLoad,
+      isAdmin: auth.isAdmin,
+      showCatalog: auth.settingsStore.showCatalog,
     };
   })(observer(GroupActionContainer))
 );

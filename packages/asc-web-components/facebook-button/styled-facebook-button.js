@@ -23,8 +23,8 @@ const StyledFacebookButton = styled(ButtonWrapper).attrs((props) => ({
   border: none;
   display: flex;
   align-items: center;
-  background-color: #ffffff;
-  border: 1px solid #1877f2;
+  background-color: ${(props) => props.theme.facebookButton.background};
+  border: ${(props) => props.theme.facebookButton.border};
   border-radius: 3px;
   width: 100%;
   ${(props) => !props.noHover && "cursor: pointer;"}
@@ -67,7 +67,7 @@ const StyledFacebookButton = styled(ButtonWrapper).attrs((props) => ({
     font-weight: 600;
     font-size: 14px;
     line-height: 14px;
-    color: #1877f2;
+    color: ${(props) => props.theme.facebookButton.color};
     margin: 0 11px;
   }
 `;

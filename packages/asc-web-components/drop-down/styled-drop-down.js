@@ -39,6 +39,7 @@ const StyledDropdown = styled.div`
   display: ${(props) =>
     props.open ? (props.columnCount ? "block" : "table") : "none"};
   background: ${(props) => props.theme.dropDown.background};
+  border: ${(props) => props.theme.dropDown.border}
   border-radius: ${(props) => props.theme.dropDown.borderRadius};
   -moz-border-radius: ${(props) => props.theme.dropDown.borderRadius};
   -webkit-border-radius: ${(props) => props.theme.dropDown.borderRadius};

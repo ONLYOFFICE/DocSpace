@@ -1,13 +1,12 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { Trans } from "react-i18next";
 import FieldContainer from "@appserver/components/field-container";
-import Text from "@appserver/components/text";
+import ToggleButton from "@appserver/components/toggle-button";
 import ComboBox from "@appserver/components/combobox";
 import Loader from "@appserver/components/loader";
 import toastr from "@appserver/components/toast/toastr";
-import Link from "@appserver/components/link";
+import HelpButton from "@appserver/components/help-button";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
 import { setDocumentTitle } from "../../../../../helpers/utils";
@@ -15,7 +14,7 @@ import { inject, observer } from "mobx-react";
 import { LANGUAGE } from "@appserver/common/constants";
 import { convertLanguage } from "@appserver/common/utils";
 import withCultureNames from "@appserver/common/hoc/withCultureNames";
-
+import LanguageTimeSettingsTooltip from "./sub-components/common-tooltips";
 const mapTimezonesToArray = (timezones) => {
   return timezones.map((timezone) => {
     return { key: timezone.id, label: timezone.displayName };
@@ -36,7 +35,7 @@ const StyledComponent = styled.div`
   }
 
   .settings-block {
-    margin-bottom: 70px;
+    margin-bottom: 24px;
   }
 
   .field-container-width {
@@ -45,6 +44,43 @@ const StyledComponent = styled.div`
 
   .combo-button-label {
     max-width: 100%;
+  }
+
+  .field-container-flex {
+    max-width: 500px;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    margin-bottom: 16px;
+  }
+
+  .toggle {
+    position: inherit;
+    grid-gap: inherit;
+  }
+
+  .title {
+    font-weight: 600;
+    line-height: 20px;
+  }
+
+  .save-cancel-buttons {
+    position: inherit;
+    display: block;
+    padding: 0;
+  }
+
+  .category-item-heading {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .category-item-title {
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 22px;
+    margin-right: 4px;
   }
 `;
 
@@ -286,7 +322,7 @@ class LanguageAndTimeZone extends React.Component {
   };
 
   render() {
-    const { t, cultureNames } = this.props;
+    const { t, theme, cultureNames } = this.props;
     const {
       isLoadedData,
       language,
@@ -297,24 +333,8 @@ class LanguageAndTimeZone extends React.Component {
       showReminder,
     } = this.state;
 
-    const supportEmail = "documentation@onlyoffice.com";
-    const tooltipLanguage = (
-      <Text fontSize="13px">
-        <Trans t={t} i18nKey="NotFoundLanguage" ns="Common">
-          "In case you cannot find your language in the list of the available
-          ones, feel free to write to us at
-          <Link href={`mailto:${supportEmail}`} isHovered={true}>
-            {{ supportEmail }}
-          </Link>{" "}
-          to take part in the translation and get up to 1 year free of charge."
-        </Trans>{" "}
-        <Link
-          isHovered={true}
-          href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx"
-        >
-          {t("Common:LearnMore")}
-        </Link>
-      </Text>
+    const tooltipLanguageTimeSettings = (
+      <LanguageTimeSettingsTooltip theme={theme} t={t} />
     );
 
     return !isLoadedData ? (
@@ -322,13 +342,21 @@ class LanguageAndTimeZone extends React.Component {
     ) : (
       <>
         <StyledComponent>
+          <div className="category-item-heading">
+            <div className="category-item-title">
+              {t("StudioTimeLanguageSettings")}
+            </div>
+            <HelpButton
+              iconName="static/images/combined.shape.svg"
+              size={12}
+              tooltipContent={tooltipLanguageTimeSettings}
+            />
+          </div>
           <div className="settings-block">
             <FieldContainer
               id="fieldContainerLanguage"
               className="field-container-width"
               labelText={`${t("Common:Language")}:`}
-              tooltipContent={tooltipLanguage}
-              helpButtonHeaderContent={t("Common:Language")}
               isVertical={true}
             >
               <ComboBox
@@ -344,6 +372,14 @@ class LanguageAndTimeZone extends React.Component {
                 className="dropdown-item-width"
               />
             </FieldContainer>
+
+            <div className="field-container-flex">
+              <div className="title">{`${t("Automatic time zone")}`}</div>
+              <ToggleButton
+                className="toggle"
+                onChange={() => toastr.info(<>Not implemented</>)}
+              />
+            </div>
 
             <FieldContainer
               id="fieldContainerTimezone"
@@ -367,6 +403,7 @@ class LanguageAndTimeZone extends React.Component {
           </div>
           {hasChanged && (
             <SaveCancelButtons
+              className="save-cancel-buttons"
               onSaveClick={this.onSaveLngTZSettings}
               onCancelClick={this.onCancelClick}
               showReminder={showReminder}
@@ -400,6 +437,7 @@ export default inject(({ auth, setup }) => {
   const { setLanguageAndTime } = setup;
 
   return {
+    theme: auth.settingsStore.theme,
     user,
     portalLanguage: culture,
     portalTimeZoneId: timezone,

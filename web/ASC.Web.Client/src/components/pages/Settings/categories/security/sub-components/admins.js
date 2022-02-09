@@ -35,6 +35,7 @@ import {
 } from "@appserver/common/constants";
 
 import { tablet } from "@appserver/components/utils/device";
+import { Base } from "@appserver/components/themes";
 
 const getUserStatus = (user) => {
   if (
@@ -121,7 +122,8 @@ const StyledModalBody = styled.div`
       content: "";
       width: 3px;
       height: 3px;
-      background-color: #333333;
+      background-color: ${(props) =>
+        props.theme.studio.settings.security.admins.backgroundColor};
       border-radius: 2px;
       position: absolute;
       left: 0;
@@ -131,6 +133,8 @@ const StyledModalBody = styled.div`
     }
   }
 `;
+
+StyledModalBody.defaultProps = { theme: Base };
 
 const ToggleContentContainer = styled.div`
   .buttons_container {
@@ -189,7 +193,7 @@ const ToggleContentContainer = styled.div`
   .userRole {
     text-transform: capitalize;
     font-size: 12px;
-    color: #d0d5da;
+    color: ${(props) => props.theme.studio.settings.security.admins.roleColor};
   }
 
   .styled-element {
@@ -220,7 +224,8 @@ const ToggleContentContainer = styled.div`
       display: flex;
       align-items: center;
       padding: 0px 5px;
-      background-color: #2da7db;
+      background-color: ${(props) =>
+        props.theme.studio.settings.security.admins.backgroundColorWrapper};
       border-radius: 9px;
     }
 
@@ -264,6 +269,8 @@ const ToggleContentContainer = styled.div`
     }
   }
 `;
+
+ToggleContentContainer.defaultProps = { theme: Base };
 
 const fullAccessId = "00000000-0000-0000-0000-000000000000";
 
@@ -666,6 +673,7 @@ class PortalAdmins extends Component {
       selectorIsOpen,
       groupsCaption,
       modules,
+      theme,
     } = this.props;
     const {
       isLoading,
@@ -722,7 +730,7 @@ class PortalAdmins extends Component {
                         />
                         <div className="user-info-wrapper">
                           <Text
-                            color="#316DAA"
+                            color={theme.studio.settings.security.admins.color}
                             fontWeight={600}
                             fontSize="19px"
                             truncate={true}
@@ -731,7 +739,10 @@ class PortalAdmins extends Component {
                           </Text>
                           {selectedUser.department && (
                             <Text
-                              color="#A3A9AE"
+                              color={
+                                theme.studio.settings.security.admins
+                                  .departmentColor
+                              }
                               fontWeight={400}
                               fontSize="13px"
                               truncate={true}
@@ -752,7 +763,10 @@ class PortalAdmins extends Component {
                               place="top"
                               offsetRight={0}
                               tooltipContent={this.fullAccessTooltip()}
-                              tooltipColor="#F8F7BF"
+                              tooltipColor={
+                                theme.studio.settings.security.admins
+                                  .tooltipColor
+                              }
                             />
                           </div>
                           <ToggleButton
@@ -780,7 +794,9 @@ class PortalAdmins extends Component {
                                 place="bottom"
                                 offsetRight={0}
                                 tooltipContent={this.modulesTooltip()}
-                                tooltipColor="#F8F7BF"
+                                tooltipColor={
+                                  theme.studio.settings.security.admins.color
+                                }
                               />
                             </div>
 
@@ -852,8 +868,9 @@ class PortalAdmins extends Component {
 
                         const nameColor =
                           getUserStatus(user) === "pending"
-                            ? "#A3A9AE"
-                            : "#333333";
+                            ? theme.studio.settings.security.admins
+                                .pendingNameColor
+                            : theme.studio.settings.security.admins.nameColor;
 
                         const checked = isUserSelected(user.id);
 
@@ -887,7 +904,10 @@ class PortalAdmins extends Component {
                                   <div className="fullAccessWrapper">
                                     <Text
                                       truncate={true}
-                                      color="#FFFFFF"
+                                      color={
+                                        theme.studio.settings.security.admins
+                                          .textColor
+                                      }
                                       fontSize="9px"
                                       fontWeight={600}
                                     >
@@ -910,7 +930,10 @@ class PortalAdmins extends Component {
                                           <IconButton
                                             iconName={module.iconUrl}
                                             size={14}
-                                            color="#2DA7DB"
+                                            color={
+                                              theme.studio.settings.security
+                                                .admins.iconColor
+                                            }
                                             isfill={true}
                                             isClickable={true} // TODO: temporary solution for desktop. Layouts for desktops will be different
                                           />
@@ -1008,6 +1031,7 @@ export default inject(({ auth, setup }) => {
   } = setup.selectionStore;
 
   return {
+    theme: auth.settingsStore.theme,
     groupsCaption: auth.settingsStore.customNames.groupsCaption,
     changeAdmins: setup.changeAdmins,
     fetchPeople: setup.fetchPeople,

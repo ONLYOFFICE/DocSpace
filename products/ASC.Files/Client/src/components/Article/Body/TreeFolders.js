@@ -16,6 +16,7 @@ import Loaders from "@appserver/common/components/Loaders";
 import { observer, inject } from "mobx-react";
 import { runInAction } from "mobx";
 import { withTranslation } from "react-i18next";
+import Base from "@appserver/components/themes/base";
 
 const backgroundDragColor = "#EFEFB2";
 const backgroundDragEnterColor = "#F8F7BF";
@@ -26,7 +27,10 @@ const StyledTreeMenu = styled(TreeMenu)`
   }
 
   .rc-tree-node-selected {
-    background: #dfe2e3 !important;
+    background: ${(props) =>
+      !props.isPanel
+        ? props.theme.filesArticleBody.background
+        : props.theme.filesArticleBody.panelBackground} !important;
   }
 
   .rc-tree-treenode-disabled > span:not(.rc-tree-switcher),
@@ -39,27 +43,37 @@ const StyledTreeMenu = styled(TreeMenu)`
     margin-left: 4px;
   }*/
 `;
+
+StyledTreeMenu.defaultProps = { theme: Base };
+
 const StyledFolderSVG = styled.div`
   svg {
     width: 100%;
 
     path {
-      fill: #657077;
+      fill: ${(props) => props.theme.filesArticleBody.fill};
     }
   }
 `;
+
+StyledFolderSVG.defaultProps = { theme: Base };
+
 const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
   ${commonIconsStyles}
   path {
-    fill: dimgray;
+    fill: ${(props) => props.theme.filesArticleBody.expanderColor};
   }
 `;
+StyledExpanderDownIcon.defaultProps = { theme: Base };
+
 const StyledExpanderRightIcon = styled(ExpanderRightIcon)`
   ${commonIconsStyles}
   path {
-    fill: dimgray;
+    fill: ${(props) => props.theme.filesArticleBody.expanderColor};
   }
 `;
+StyledExpanderRightIcon.defaultProps = { theme: Base };
+
 class TreeFolders extends React.Component {
   constructor(props) {
     super(props);
@@ -200,7 +214,7 @@ class TreeFolders extends React.Component {
   };
 
   getItems = (data) => {
-    const { withoutProvider } = this.props;
+    const { withoutProvider, theme } = this.props;
     return data.map((item) => {
       const dragging = this.props.dragging ? this.showDragItems(item) : false;
 
@@ -284,9 +298,9 @@ class TreeFolders extends React.Component {
       return null;
     }
     if (obj.expanded) {
-      return <StyledExpanderDownIcon size="scale" />;
+      return <StyledExpanderDownIcon theme={this.props.theme} size="scale" />;
     } else {
-      return <StyledExpanderRightIcon size="scale" />;
+      return <StyledExpanderRightIcon theme={this.props.theme} size="scale" />;
     }
   };
 
@@ -443,10 +457,13 @@ class TreeFolders extends React.Component {
       expandedPanelKeys,
       treeFolders,
       data,
+      theme,
+      isPanel,
     } = this.props;
 
     return (
       <StyledTreeMenu
+        isPanel={isPanel}
         className="files-tree-menu"
         checkable={false}
         draggable={dragging}

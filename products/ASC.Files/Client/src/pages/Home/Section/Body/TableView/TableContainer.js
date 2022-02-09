@@ -6,7 +6,7 @@ import TableHeader from "./TableHeader";
 import TableBody from "@appserver/components/table-container/TableBody";
 import { isMobile } from "react-device-detect";
 
-const Table = ({ filesList, sectionWidth, viewAs, setViewAs }) => {
+const Table = ({ filesList, sectionWidth, viewAs, setViewAs, theme }) => {
   const ref = useRef(null);
 
   useEffect(() => {
@@ -24,19 +24,20 @@ const Table = ({ filesList, sectionWidth, viewAs, setViewAs }) => {
       <TableHeader sectionWidth={sectionWidth} containerRef={ref} />
       <TableBody>
         {filesList.map((item) => (
-          <TableRow key={item.id} item={item} />
+          <TableRow key={item.id} item={item} theme={theme} />
         ))}
       </TableBody>
     </TableContainer>
   );
 };
 
-export default inject(({ filesStore }) => {
+export default inject(({ filesStore, auth }) => {
   const { filesList, viewAs, setViewAs } = filesStore;
 
   return {
     filesList,
     viewAs,
     setViewAs,
+    theme: auth.settingsStore.theme,
   };
 })(observer(Table));

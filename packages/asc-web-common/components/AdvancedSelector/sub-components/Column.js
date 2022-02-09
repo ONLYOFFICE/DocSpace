@@ -8,7 +8,7 @@ class Column extends React.Component {
   }
 
   render() {
-    const { children, displayType, className, style, size } = this.props;
+    const { children, displayType, className, style, size, theme } = this.props;
     return (
       <StyledColumn
         displayType={displayType}

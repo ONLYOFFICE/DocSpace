@@ -325,7 +325,6 @@ class AvatarEditorBody extends React.Component {
           type="action"
           fontWeight={600}
           isHovered
-          color="#316DAA"
           onClick={this.openDialog}
         >
           {selectNewPhotoLabel}
@@ -333,7 +332,7 @@ class AvatarEditorBody extends React.Component {
         {desktopMode && orDropFileHereLabel}
         <Text
           as="p"
-          color="#A3A9AE"
+          // color="#A3A9AE"
           fontSize="12px"
           fontWeight="600"
           textAlign={labelAlign}
@@ -423,7 +422,6 @@ class AvatarEditorBody extends React.Component {
                           iconName={"/static/images/catalog.trash.react.svg"}
                           isFill={true}
                           isClickable={true}
-                          color="#FFFFFF"
                           className="editor-button"
                         />
                       </Box>

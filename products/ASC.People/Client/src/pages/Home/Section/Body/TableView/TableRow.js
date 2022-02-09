@@ -37,6 +37,7 @@ const PeopleTableRow = (props) => {
     onEmailClick,
     onUserNameClick,
     isAdmin,
+    theme,
   } = props;
   const { displayName, email, role, statusType, userName } = item;
 
@@ -55,8 +56,14 @@ const PeopleTableRow = (props) => {
 
   const userRole = getRoleTranslation();
 
-  const nameColor = statusType === "pending" ? "#A3A9AE" : "#333333";
-  const sideInfoColor = statusType === "pending" ? "#D0D5DA" : "#A3A9AE";
+  const nameColor =
+    statusType === "pending"
+      ? theme.peopleTableRow.pendingNameColor
+      : theme.peopleTableRow.nameColor;
+  const sideInfoColor =
+    statusType === "pending"
+      ? theme.peopleTableRow.pendingSideInfoColor
+      : theme.peopleTableRow.sideInfoColor;
 
   const onChange = (e) => {
     onContentRowSelect && onContentRowSelect(e.target.checked, item);

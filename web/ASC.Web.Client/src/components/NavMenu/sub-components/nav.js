@@ -3,11 +3,10 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import Scrollbar from "@appserver/components/scrollbar";
 import { isMobileOnly, isDesktop } from "react-device-detect";
-
-const backgroundColor = "#0F4071";
+import { Base } from "@appserver/components/themes";
 
 const StyledNav = styled.nav`
-  background-color: ${backgroundColor};
+  background-color: ${(props) => props.theme.nav.backgroundColor};
   height: 100%;
   left: 0;
   overflow-x: hidden;
@@ -43,6 +42,8 @@ const StyledNav = styled.nav`
     }
   }
 `;
+
+StyledNav.defaultProps = { theme: Base };
 
 const StyledScrollbar = styled(Scrollbar)`
   width: ${(props) => (props.opened ? 240 : 56)};

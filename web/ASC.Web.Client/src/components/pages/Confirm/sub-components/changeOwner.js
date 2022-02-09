@@ -9,6 +9,7 @@ import PageLayout from "@appserver/common/components/PageLayout";
 import { tryRedirectTo } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
 import withLoader from "../withLoader";
+import { Base } from "@appserver/components/themes";
 
 const BodyStyle = styled.div`
   margin-top: 70px;
@@ -28,7 +29,7 @@ const BodyStyle = styled.div`
         margin: 8px 0;
         text-align: left;
         font-size: 24px;
-        color: #116d9d;
+        color: ${(props) => props.theme.studio.confirm.change.titleColor};
       }
       .owner-confirm_text {
         margin: 20px 0 12px 0;
@@ -47,6 +48,8 @@ const BodyStyle = styled.div`
     }
   }
 `;
+
+BodyStyle.defaultProps = { theme: Base };
 
 class Form extends React.PureComponent {
   constructor(props) {

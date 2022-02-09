@@ -6,6 +6,7 @@ class SecondaryProgressDataStore {
   visible = false;
   icon = "trash";
   alert = false;
+  filesCount = 0;
 
   constructor() {
     makeObservable(this, {
@@ -14,6 +15,7 @@ class SecondaryProgressDataStore {
       visible: observable,
       icon: observable,
       alert: observable,
+      filesCount: observable,
 
       isSecondaryProgressFinished: computed,
 
@@ -37,6 +39,7 @@ class SecondaryProgressDataStore {
     this.visible = false;
     this.icon = "";
     this.alert = false;
+    this.filesCount = 0;
   };
 
   get isSecondaryProgressFinished() {

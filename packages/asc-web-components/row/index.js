@@ -3,7 +3,7 @@ import React from "react";
 
 import Checkbox from "../checkbox";
 import ContextMenuButton from "../context-menu-button";
-import ContextMenu from "../context-menu";
+import NewContextMenu from "../new-context-menu";
 import {
   StyledOptionButton,
   StyledContentElement,
@@ -72,6 +72,14 @@ class Row extends React.Component {
       this.cm.current.show(e);
     };
 
+    let contextMenuHeader = {};
+    if (children.props.item) {
+      contextMenuHeader = {
+        icon: children.props.item.icon,
+        title: children.props.item.title,
+      };
+    }
+
     const { onRowClick, ...rest } = this.props;
 
     return (
@@ -103,8 +111,6 @@ class Row extends React.Component {
           )}
           {renderContext ? (
             <ContextMenuButton
-              color="#A3A9AE"
-              hoverColor="#657077"
               className="expandButton"
               getData={getOptions}
               directionX="right"
@@ -114,7 +120,11 @@ class Row extends React.Component {
           ) : (
             <div className="expandButton"> </div>
           )}
-          <ContextMenu model={contextOptions} ref={this.cm}></ContextMenu>
+          <NewContextMenu
+            model={contextOptions}
+            ref={this.cm}
+            header={contextMenuHeader}
+          ></NewContextMenu>
         </StyledOptionButton>
       </StyledRow>
     );

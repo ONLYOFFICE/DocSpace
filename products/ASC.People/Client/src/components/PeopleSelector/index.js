@@ -1,4 +1,5 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import i18n from "./i18n";
@@ -7,6 +8,7 @@ import { getUserList } from "@appserver/common/api/people";
 import { getGroupList } from "@appserver/common/api/groups";
 import Filter from "@appserver/common/api/people/filter";
 import UserTooltip from "./sub-components/UserTooltip";
+import from from "@appserver/components/text-input";
 
 class PeopleSelector extends React.Component {
   constructor(props) {
@@ -175,7 +177,7 @@ class PeopleSelector extends React.Component {
 
     // console.log("onOptionTooltipShow", index, user);
 
-    const { defaultOption } = this.props;
+    const { defaultOption, theme } = this.props;
 
     const label =
       defaultOption && defaultOption.id === user.key
@@ -184,6 +186,7 @@ class PeopleSelector extends React.Component {
 
     return (
       <UserTooltip
+        theme={theme}
         avatarUrl={user.avatarUrl}
         label={label}
         email={user.email}
@@ -229,6 +232,7 @@ class PeopleSelector extends React.Component {
       embeddedComponent,
       selectedOptions,
       showCounter,
+      theme,
     } = this.props;
 
     console.log("CustomAllGroups", t("CustomAllGroups", { groupsCaption }));
@@ -236,6 +240,7 @@ class PeopleSelector extends React.Component {
     console.log("PeopleSelector render");
     return (
       <AdvancedSelector
+        theme={theme}
         id={id}
         className={className}
         style={style}
@@ -312,11 +317,15 @@ PeopleSelector.defaultProps = {
   withoutAside: false,
 };
 
-const ExtendedPeopleSelector = withTranslation([
-  "PeopleSelector",
-  "Translations",
-  "Common",
-])(PeopleSelector);
+const ExtendedPeopleSelector = inject(({ auth }) => {
+  return { theme: auth.settingsStore.theme };
+})(
+  observer(
+    withTranslation(["PeopleSelector", "Translations", "Common"])(
+      PeopleSelector
+    )
+  )
+);
 
 export default (props) => (
   <I18nextProvider i18n={i18n}>

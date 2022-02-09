@@ -1,3 +1,4 @@
+import { Base } from "@appserver/components/themes";
 import React from "react";
 import styled from "styled-components";
 
@@ -14,12 +15,13 @@ const ScrollButton = styled.div`
 
   width: 40px;
   height: 40px;
-  background-color: rgba(11, 11, 11, 0.7);
+  background-color: ${(props) =>
+    props.theme.mediaViewer.scrollButton.backgroundColor};
   border-radius: 50%;
 
   &:hover {
     background-color: ${(props) =>
-      !props.inactive && "rgba(200, 200, 200, 0.2)"};
+      !props.inactive && props.theme.mediaViewer.scrollButton.background};
   }
 
   &:before {
@@ -27,7 +29,7 @@ const ScrollButton = styled.div`
     top: 12px;
     left: ${(props) => (props.orientation == "left" ? "9px;" : "15px;")};
     position: absolute;
-    border: solid #fff;
+    border: ${(props) => props.theme.mediaViewer.scrollButton.border};
     border-width: 0 2px 2px 0;
     display: inline-block;
     padding: 7px;
@@ -37,6 +39,8 @@ const ScrollButton = styled.div`
       props.orientation == "left" ? "rotate(-45deg)" : "rotate(135deg)"};
   }
 `;
+
+ScrollButton.defaultProps = { theme: Base };
 
 const MediaScrollButton = (props) => {
   return <ScrollButton {...props} />;

@@ -45,7 +45,6 @@ const Template = ({ linkLabel, onItemClick, ...args }) => {
 export const Default = Template.bind({});
 Default.args = {
   dropdownType: "alwaysDashed",
-  color: "#333333",
   fontSize: "13px",
   fontWeight: "400",
   isBold: false,

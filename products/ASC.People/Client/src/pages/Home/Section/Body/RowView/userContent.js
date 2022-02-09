@@ -10,19 +10,25 @@ import Box from "@appserver/components/box";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import SendClockIcon from "../../../../../../public/images/send.clock.react.svg";
 import CatalogSpamIcon from "../../../../../../public/images/catalog.spam.react.svg";
+import Base from "@appserver/components/themes/base";
 
 const StyledSendClockIcon = styled(SendClockIcon)`
   ${commonIconsStyles}
   path {
-    fill: #3b72a7;
+    fill: ${(props) => props.theme.peopleTableRow.fill};
   }
 `;
+
+StyledSendClockIcon.defaultProps = { theme: Base };
+
 const StyledCatalogSpamIcon = styled(CatalogSpamIcon)`
   ${commonIconsStyles}
   path {
-    fill: #3b72a7;
+    fill: ${(props) => props.theme.peopleTableRow.fill};
   }
 `;
+
+StyledCatalogSpamIcon.defaultProps = { theme: Base };
 
 const UserContent = ({
   item,
@@ -31,11 +37,18 @@ const UserContent = ({
   onEmailClick,
   onUserNameClick,
   groups,
+  theme,
 }) => {
   const { userName, displayName, title, mobilePhone, email, statusType } = item;
 
-  const nameColor = statusType === "pending" ? "#A3A9AE" : "#333333";
-  const sideInfoColor = statusType === "pending" ? "#D0D5DA" : "#A3A9AE";
+  const nameColor =
+    statusType === "pending"
+      ? theme.peopleTableRow.pendingNameColor
+      : theme.peopleTableRow.nameColor;
+  const sideInfoColor =
+    statusType === "pending"
+      ? theme.peopleTableRow.pendingSideInfoColor
+      : theme.peopleTableRow.sideInfoColor;
 
   return (
     <RowContent

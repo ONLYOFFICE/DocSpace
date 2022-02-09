@@ -35,7 +35,6 @@ Default.args = {
   fontSize: "13px",
   fontWeight: "400",
   truncate: false,
-  color: "#333333",
   backgroundColor: "",
   isBold: false,
   isItalic: false,

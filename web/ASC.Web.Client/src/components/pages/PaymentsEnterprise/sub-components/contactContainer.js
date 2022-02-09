@@ -15,20 +15,27 @@ const StyledContactContainer = styled.div`
   grid-row-gap: 11px;
 `;
 
-const ContactContainer = ({ salesEmail, helpUrl }) => {
+const ContactContainer = ({ salesEmail, helpUrl, theme }) => {
   const { t } = useTranslation("PaymentsEnterprise");
   return (
     <StyledContactContainer>
       <Text>
         {t("ContactEmail")}{" "}
-        <Link href={`mailto:${salesEmail}`} color="#316daa">
+        <Link
+          href={`mailto:${salesEmail}`}
+          color={theme.studio.paymentsEnterprise.linkColor}
+        >
           {salesEmail}
         </Link>
       </Text>
 
       <Text>
         {t("ContactUrl")}{" "}
-        <Link target="_blank" href={`${helpUrl}`} color="#316daa">
+        <Link
+          target="_blank"
+          href={`${helpUrl}`}
+          color={theme.studio.paymentsEnterprise.linkColor}
+        >
           {helpUrl}
         </Link>
       </Text>
@@ -41,10 +48,11 @@ ContactContainer.propTypes = {
   helpUrl: PropTypes.string,
 };
 
-export default inject(({ payments }) => {
+export default inject(({ payments, auth }) => {
   const { salesEmail, helpUrl } = payments;
   return {
     salesEmail,
     helpUrl,
+    theme: auth.settingsStore.theme,
   };
 })(withRouter(observer(ContactContainer)));

@@ -12,9 +12,14 @@ import withLoader from "../../../HOCs/withLoader";
 import { useCallback } from "react";
 import IconButton from "@appserver/components/icon-button";
 import { connectedCloudsTitleTranslation } from "../../../helpers/utils";
+import { Base } from "@appserver/components/themes";
 
 const StyledThirdParty = styled.div`
   margin-top: 42px;
+
+  .thirdparty-text {
+    color: ${(props) => props.theme.filesArticleBody.thirdPartyList.linkColor};
+  }
 
   .tree-thirdparty-list {
     padding-top: 3px;
@@ -31,7 +36,7 @@ const StyledThirdParty = styled.div`
       //background: #eceef1;
       //text-align: center;
       margin-right: 10px;
-      color: #818b91;
+      color: ${(props) => props.theme.filesArticleBody.thirdPartyList.color};
       :first-of-type {
         border-radius: 3px 0 0 3px;
       }
@@ -66,9 +71,9 @@ const StyledThirdParty = styled.div`
   }
 `;
 
+StyledThirdParty.defaultProps = { theme: Base };
+
 const iconButtonProps = {
-  color: "#A3A9AE",
-  hoverColor: "#818b91",
   size: 25,
   className: "icon",
 };
@@ -161,7 +166,7 @@ const PureThirdPartyListContainer = ({
   return (
     <StyledThirdParty>
       <Link
-        color="#555F65"
+        className="thirdparty-text"
         fontSize="14px"
         fontWeight={600}
         onClick={onShowConnectPanel}

@@ -62,7 +62,6 @@ class ContactField extends React.Component {
           iconName={"/static/images/catalog.trash.react.svg"}
           isFill={true}
           isClickable={true}
-          color="#A3A9AE"
         />
       </Container>
     );
