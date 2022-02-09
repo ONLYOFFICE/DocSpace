@@ -23,28 +23,23 @@ const LanguageTimeSettingsTooltip = ({ t, theme }) => {
   const learnMore = t("Common:LearnMore");
   const text = t("Settings:StudioTimeLanguageSettings");
   const save = t("Common:SaveButton");
-  const description = t("Settings:DescriptionTimeLanguage");
 
   return (
     <StyledLanguageTimeSettingsTooltip>
       <Text className="font-size">
+        <Trans ns="Settings" i18nKey="LanguageTimeSettingsTooltip" text={text}>
+          <Text className="bold display font-size">{{ text }}</Text>{" "}
+        </Trans>
+      </Text>
+      <Text className="font-size">
         <Trans
           ns="Settings"
-          i18nKey="LanguageTimeSettingsTooltip"
-          learnMore={t("Common:LearnMore")}
-          text={text}
+          i18nKey="LanguageTimeSettingsTooltipDescription"
+          learnMore={learnMore}
           save={save}
-          description={description}
         >
-          <Text className="bold display font-size"> {{ text }}</Text>
-          <Text className="display font-size">
-            is a way to change the language of the whole portal for all portal
-            users and to configure the time zone so that all the events of the
-            ONLYOFFICE portal will be shown with the correct date and time.
-          </Text>
-          <Text className="font-size">{{ description }}</Text>
-          <Text className="bold display font-size"> {{ save }}</Text> button at
-          the bottom of the section.
+          {" "}
+          <Text className="bold display font-size"> {{ save }}</Text>{" "}
           <Link
             color={theme.studio.settings.common.linkColorHelp}
             className="display-link font-size"
