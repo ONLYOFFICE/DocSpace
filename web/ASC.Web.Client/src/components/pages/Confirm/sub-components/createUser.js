@@ -18,6 +18,7 @@ import {
   getAuthProviders,
   getCapabilities,
 } from "@appserver/common/api/settings";
+import { getUserFromConfirm } from "@appserver/common/api/people";
 import PageLayout from "@appserver/common/components/PageLayout";
 import {
   createPasswordHash,
@@ -180,6 +181,8 @@ const Confirm = (props) => {
 
   const [errorText, setErrorText] = useState("");
 
+  const [user, setUser] = useState("");
+
   const getSso = async () => {
     const data = await getCapabilities();
     console.log(data);
@@ -192,6 +195,13 @@ const Confirm = (props) => {
   }, []);
 
   useEffect(async () => {
+    const { linkData } = props;
+    const uid = linkData.uid;
+    const confirmKey = linkData.confirmHeader;
+    const user = await getUserFromConfirm(uid, confirmKey);
+    console.log(user);
+    setUser(user);
+
     window.authCallback = authCallback;
     await setProviders();
   }, []);
@@ -463,13 +473,13 @@ const Confirm = (props) => {
 
         {/*TODO: get user info from api */}
         <div className="greeting-block">
-          <Avatar className="avatar" role="user" source="" />
+          <Avatar className="avatar" role="user" source={user.avatar} />
           <div className="user-info">
             <Text fontSize="15px" fontWeight={600}>
-              John Doe
+              {user.firstName} {user.lastName}
             </Text>
             <Text fontSize="12px" fontWeight={600} color="#A3A9AE">
-              Head of department
+              {user.department}
             </Text>
           </div>
         </div>
