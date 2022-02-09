@@ -127,7 +127,11 @@ namespace ASC.Data.Backup.Tasks.Modules
                 var contactId = columnMapper.GetMapping("crm_contact", "id", pathMatch.Groups["contactId"].Value);
                 if (contactId == null)
                 {
-                    if (!dump) return false;
+                    if (!dump)
+                    {
+                        return false;
+                    }
+
                     contactId = pathMatch.Groups["contactId"].Value;
                 }
 
@@ -215,10 +219,14 @@ namespace ASC.Data.Backup.Tasks.Modules
         protected override string GetSelectCommandConditionText(int tenantId, TableInfo table)
         {
             if (table.Name == "crm_entity_contact")
+            {
                 return "inner join crm_contact as t1 on t1.id = t.contact_id where t1.tenant_id = " + tenantId;
+            }
 
             if (table.Name == "crm_entity_tag")
+            {
                 return "inner join crm_tag as t1 on t1.id = t.tag_id where t1.tenant_id = " + tenantId;
+            }
 
             return base.GetSelectCommandConditionText(tenantId, table);
         }
@@ -343,7 +351,10 @@ namespace ASC.Data.Backup.Tasks.Modules
 
         protected override bool TryPrepareValue(DbConnection connection, ColumnMapper columnMapper, TableInfo table, string columnName, ref object value)
         {
-            if (value == null) return false;
+            if (value == null)
+            {
+                return false;
+            }
 
             if (table.Name == "crm_invoice" && columnName == "json_data")
             {

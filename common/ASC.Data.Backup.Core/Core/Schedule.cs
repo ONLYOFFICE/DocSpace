@@ -30,7 +30,11 @@
 
                 var nextBackupTime = cron.GetTimeAfter(lastBackupTime);
 
-                if (!nextBackupTime.HasValue) return false;
+                if (!nextBackupTime.HasValue)
+                {
+                    return false;
+                }
+
                 var now = _tenantUtil.DateTimeFromUtc(tenantTimeZone, DateTime.UtcNow);
                 return nextBackupTime <= now;
             }

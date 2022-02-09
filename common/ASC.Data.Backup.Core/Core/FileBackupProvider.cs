@@ -209,16 +209,33 @@ namespace ASC.Data.Backup
 
             public override bool Equals(object obj)
             {
-                if (obj is null) return false;
-                if (ReferenceEquals(this, obj)) return true;
-                if (obj.GetType() != typeof(FileBackupInfo)) return false;
+                if (obj is null)
+                {
+                    return false;
+                }
+                if (ReferenceEquals(this, obj))
+                {
+                    return true;
+                }
+                if (obj.GetType() != typeof(FileBackupInfo))
+                {
+                    return false;
+                }
+
                 return Equals((FileBackupInfo)obj);
             }
 
             public bool Equals(FileBackupInfo other)
             {
-                if (other is null) return false;
-                if (ReferenceEquals(this, other)) return true;
+                if (other is null)
+                {
+                    return false;
+                }
+                if (ReferenceEquals(this, other))
+                {
+                    return true;
+                }
+
                 return Equals(other.Module, Module) && Equals(other.Domain, Domain) && Equals(other.Path, Path);
             }
 

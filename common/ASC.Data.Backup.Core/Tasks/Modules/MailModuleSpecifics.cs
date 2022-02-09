@@ -226,7 +226,9 @@ namespace ASC.Data.Backup.Tasks.Modules
             {
                 var crmTagId = columnMapper.GetMapping(relation.ParentTable, relation.ParentColumn, -Convert.ToInt32(value));
                 if (crmTagId == null)
+                {
                     return false;
+                }
 
                 value = -Convert.ToInt32(crmTagId);
                 return true;

@@ -243,13 +243,19 @@ namespace ASC.Data.Backup.Tasks.Modules
         protected override string GetSelectCommandConditionText(int tenantId, TableInfo table)
         {
             if (table.Name == "forum_answer_variant")
+            {
                 return "inner join forum_answer as t1 on t1.id = t.answer_id where t1.TenantID = " + tenantId;
+            }
 
             if (table.Name == "forum_variant")
+            {
                 return "inner join forum_question as t1 on t1.id = t.question_id where t1.TenantID = " + tenantId;
+            }
 
             if (table.Name == "forum_topic_tag")
+            {
                 return "inner join forum_topic as t1 on t1.id = t.topic_id where t1.TenantID = " + tenantId;
+            }
 
             return base.GetSelectCommandConditionText(tenantId, table);
         }
@@ -260,19 +266,29 @@ namespace ASC.Data.Backup.Tasks.Modules
             var parts = path.Split(new[] { partsSeparator }, StringSplitOptions.None);
 
             if (parts.Length != 4)
+            {
                 return null;
+            }
 
             var categoryId = columnMapper.GetMapping("forum_category", "id", parts[0]);
             if (categoryId == null)
             {
-                if (!dump) return null;
+                if (!dump)
+                {
+                    return null;
+                }
+
                 categoryId = parts[0];
             }
 
             var threadId = columnMapper.GetMapping("forum_thread", "id", parts[1]);
             if (threadId == null)
             {
-                if (!dump) return null;
+                if (!dump)
+                {
+                    return null;
+                }
+
                 threadId = parts[1];
             }
 

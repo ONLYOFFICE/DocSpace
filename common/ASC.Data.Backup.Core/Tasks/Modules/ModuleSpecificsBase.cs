@@ -95,10 +95,14 @@ namespace ASC.Data.Backup.Tasks.Modules
         public DbCommand CreateInsertCommand(bool dump, DbConnection connection, ColumnMapper columnMapper, TableInfo table, DataRowInfo row)
         {
             if (table.InsertMethod == InsertMethod.None)
+            {
                 return null;
+            }
 
             if (!TryPrepareRow(dump, connection, columnMapper, table, row, out var valuesForInsert))
+            {
                 return null;
+            }
 
             var columns = valuesForInsert.Keys.Intersect(table.Columns).ToArray();
 
@@ -158,7 +162,9 @@ namespace ASC.Data.Backup.Tasks.Modules
         protected virtual string GetSelectCommandConditionText(int tenantId, TableInfo table)
         {
             if (!table.HasTenantColumn())
+            {
                 throw ThrowHelper.CantDetectTenant(table.Name);
+            }
 
             return string.Format("where t.{0} = {1}", table.TenantColumn, tenantId);
         }
@@ -180,21 +186,29 @@ namespace ASC.Data.Backup.Tasks.Modules
             foreach (var columnName in row.ColumnNames)
             {
                 if (table.IdType == IdType.Autoincrement && columnName.Equals(table.IdColumn, StringComparison.OrdinalIgnoreCase))
+                {
                     continue;
+                }
 
                 var val = row[columnName];
                 if (!parentRelations.ContainsKey(columnName))
                 {
                     if (!TryPrepareValue(connection, columnMapper, table, columnName, ref val))
+                    {
                         return false;
+                    }
                 }
                 else
                 {
                     if (!TryPrepareValue(dump, connection, columnMapper, table, columnName, parentRelations[columnName], ref val))
+                    {
                         return false;
+                    }
 
                     if (!table.HasIdColumn() && !table.HasTenantColumn() && val == row[columnName])
+                    {
                         return false;
+                    }
                 }
 
                 preparedRow.Add(columnName, val);
@@ -209,7 +223,10 @@ namespace ASC.Data.Backup.Tasks.Modules
             {
                 var tenantMapping = columnMapper.GetTenantMapping();
                 if (tenantMapping < 1)
+                {
                     return false;
+                }
+
                 value = tenantMapping;
                 return true;
             }
@@ -219,14 +236,19 @@ namespace ASC.Data.Backup.Tasks.Modules
                 var strVal = Convert.ToString(value);
                 var userMapping = columnMapper.GetUserMapping(strVal);
                 if (userMapping == null)
+                {
                     return _helpers.IsEmptyOrSystemUser(strVal);
+                }
+
                 value = userMapping;
                 return true;
             }
 
             var mapping = columnMapper.GetMapping(table.Name, columnName, value);
             if (mapping != null)
+            {
                 value = mapping;
+            }
 
             return true;
         }

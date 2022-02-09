@@ -63,10 +63,14 @@ namespace ASC.Data.Backup.Tasks
         public void Init(string toConfigPath, string fromFilePath, int tenantId = -1, ColumnMapper columnMapper = null, string upgradesPath = null)
         {
             if (fromFilePath == null)
+            {
                 throw new ArgumentNullException("fromFilePath");
+            }
 
             if (!File.Exists(fromFilePath))
+            {
                 throw new FileNotFoundException("file not found at given path");
+            }
 
             BackupFilePath = fromFilePath;
             UpgradesPath = upgradesPath;
@@ -219,14 +223,28 @@ namespace ASC.Data.Backup.Tasks
                 if (!string.IsNullOrEmpty(x))
                 {
                     var splittedX = x.Split('.');
-                    if (splittedX.Length <= 2) return -1;
-                    if (splittedX[1] == "upgrade") return 1;
+                    if (splittedX.Length <= 2)
+                    {
+                        return -1;
+                    }
+
+                    if (splittedX[1] == "upgrade")
+                    {
+                        return 1;
+                    }
 
                     if (splittedX[1].StartsWith("upgrade") && !string.IsNullOrEmpty(y))
                     {
                         var splittedY = y.Split('.');
-                        if (splittedY.Length <= 2) return 1;
-                        if (splittedY[1] == "upgrade") return -1;
+                        if (splittedY.Length <= 2)
+                        {
+                            return 1;
+                        }
+
+                        if (splittedY[1] == "upgrade")
+                        {
+                            return -1;
+                        }
 
                         if (splittedY[1].StartsWith("upgrade"))
                         {

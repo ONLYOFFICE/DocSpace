@@ -124,7 +124,10 @@ namespace ASC.Data.Backup.Tasks.Modules
                 var fileId = columnMapper.GetMapping("files_file", "id", match.Groups["fileId"].Value);
                 if (fileId == null)
                 {
-                    if (!dump) return false;
+                    if (!dump)
+                    {
+                        return false;
+                    }
 
                     fileId = match.Groups["fileId"].Value;
                 }
@@ -140,7 +143,9 @@ namespace ASC.Data.Backup.Tasks.Modules
         protected override string GetSelectCommandConditionText(int tenantId, TableInfo table)
         {
             if (table.Name == "projects_project_tag" || table.Name == "projects_following_project_participant")
+            {
                 return "inner join projects_projects as t1 on t1.id = t.project_id where t1.tenant_id = " + tenantId;
+            }
 
             return base.GetSelectCommandConditionText(tenantId, table);
         }
@@ -165,7 +170,9 @@ namespace ASC.Data.Backup.Tasks.Modules
 
                 var entityId = columnMapper.GetMapping(relation.ParentTable, relation.ParentColumn, valParts[1]);
                 if (entityId == null)
+                {
                     return false;
+                }
 
                 value = string.Format("{0}_{1}", valParts[0], entityId);
                 return true;

@@ -251,7 +251,10 @@
 
         private string GetWhere(string tableName, int tenant)
         {
-            if (tenant == -1) return string.Empty;
+            if (tenant == -1)
+            {
+                return string.Empty;
+            }
 
             if (_whereExceptions.ContainsKey(tableName.ToLower()))
             {

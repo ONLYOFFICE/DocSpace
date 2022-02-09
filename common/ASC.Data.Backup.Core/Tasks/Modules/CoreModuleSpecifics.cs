@@ -169,10 +169,14 @@ namespace ASC.Data.Backup.Tasks.Modules
         {
 
             if (table.Name == "feed_users")
+            {
                 return "inner join core_user t1 on t1.id = t.user_id where t1.tenant = " + tenantId;
+            }
 
             if (table.Name == "core_settings")
+            {
                 return string.Format("where t.{0} = {1} and id not in ('{2}')", table.TenantColumn, tenantId, LicenseReader.CustomerIdKey);
+            }
 
             return base.GetSelectCommandConditionText(tenantId, table);
         }
@@ -208,7 +212,9 @@ namespace ASC.Data.Backup.Tasks.Modules
 
                 var entityId = columnMapper.GetMapping(relation.ParentTable, relation.ParentColumn, valParts[1]);
                 if (entityId == null)
+                {
                     return false;
+                }
 
                 value = string.Format("{0}|{1}", valParts[0], entityId);
                 return true;
@@ -226,12 +232,16 @@ namespace ASC.Data.Backup.Tasks.Modules
 
                 var projectId = columnMapper.GetMapping("projects_projects", "id", valParts[2]);
                 if (projectId == null)
+                {
                     return false;
+                }
 
                 var firstRelation = relationList.First(x => x.ParentTable != "projects_projects");
                 var entityId = columnMapper.GetMapping(firstRelation.ParentTable, firstRelation.ParentColumn, valParts[1]);
                 if (entityId == null)
+                {
                     return false;
+                }
 
                 value = string.Format("{0}_{1}_{2}", valParts[0], entityId, projectId);
                 return true;
@@ -243,7 +253,9 @@ namespace ASC.Data.Backup.Tasks.Modules
             {
                 var strVal = Convert.ToString(value);
                 if (_helpers.IsEmptyOrSystemUser(strVal) || _helpers.IsEmptyOrSystemGroup(strVal))
+                {
                     return true;
+                }
 
                 foreach (var relation in relationList)
                 {

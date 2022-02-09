@@ -74,13 +74,17 @@ namespace ASC.Data.Backup.Tasks
         public void IgnoreModule(ModuleName moduleName)
         {
             if (!IgnoredModules.Contains(moduleName))
+            {
                 IgnoredModules.Add(moduleName);
+            }
         }
 
         public void IgnoreTable(string tableName)
         {
             if (!IgnoredTables.Contains(tableName))
+            {
                 IgnoredTables.Add(tableName);
+            }
         }
 
         public abstract void RunJob();
@@ -135,7 +139,9 @@ namespace ASC.Data.Backup.Tasks
                 };
 
             if (!allowedStorageModules.Contains(storageModuleName))
+            {
                 return false;
+            }
 
             var moduleSpecifics = ModuleProvider.GetByStorageModule(storageModuleName);
             return moduleSpecifics == null || !IgnoredModules.Contains(moduleSpecifics.ModuleName);
@@ -216,7 +222,11 @@ namespace ASC.Data.Backup.Tasks
 
             foreach (var p in parsed)
             {
-                if (string.IsNullOrEmpty(p.Trim())) continue;
+                if (string.IsNullOrEmpty(p.Trim()))
+                {
+                    continue;
+                }
+
                 var keyValue = p.Split('=');
                 result.Add(keyValue[0].ToLowerInvariant(), keyValue[1]);
             }
@@ -268,7 +278,10 @@ namespace ASC.Data.Backup.Tasks
         protected async Task RunMysqlFile(Stream stream, string delimiter = ";")
         {
 
-            if (stream == null) return;
+            if (stream == null)
+            {
+                return;
+            }
 
             using var reader = new StreamReader(stream, Encoding.UTF8);
             string commandText;

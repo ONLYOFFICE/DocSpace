@@ -175,7 +175,9 @@ namespace ASC.Data.Backup.Tasks.Modules
                 }, RegexOptions.Compiled);
 
                 if (folderId == null)
+                {
                     return false;
+                }
 
                 var hashBytes = MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(sboxId));
                 var hashedId = BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
@@ -200,7 +202,9 @@ namespace ASC.Data.Backup.Tasks.Modules
                 //note: value could be ShareForEveryoneID and in that case result should be always false
                 var strVal = Convert.ToString(value);
                 if (_helpers.IsEmptyOrSystemUser(strVal) || _helpers.IsEmptyOrSystemGroup(strVal))
+                {
                     return true;
+                }
 
                 foreach (var relation in relationList)
                 {
@@ -225,11 +229,15 @@ namespace ASC.Data.Backup.Tasks.Modules
 
                 var start = GetStart(strValue);
                 if (start == null)
+                {
                     return false;
+                }
 
                 var entityId = columnMapper.GetMapping(relation.ParentTable, relation.ParentColumn, strValue.Substring(start.Length));
                 if (entityId == null)
+                {
                     return false;
+                }
 
                 value = strValue.Substring(0, start.Length) + entityId;
                 return true;

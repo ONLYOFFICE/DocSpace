@@ -190,7 +190,9 @@ namespace ASC.Data.Backup.Tasks
         private IEnumerable<DataRowInfo> GetRows(TableInfo table, Stream xmlStream)
         {
             if (xmlStream == null)
+            {
                 return Enumerable.Empty<DataRowInfo>();
+            }
 
             var rows = DataRowInfoReader.ReadFromStream(xmlStream);
 

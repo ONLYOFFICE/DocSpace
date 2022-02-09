@@ -53,7 +53,10 @@ namespace ASC.Data.Backup.Tasks
         public void Init(int tenantId, string fromConfigPath, string toFilePath, int limit)
         {
             if (string.IsNullOrEmpty(toFilePath))
+            {
                 throw new ArgumentNullException("toFilePath");
+            }
+
             BackupFilePath = toFilePath;
             Limit = limit;
             Init(tenantId, fromConfigPath);
@@ -328,12 +331,17 @@ namespace ASC.Data.Backup.Tasks
 
                     var resultCount = result.Count;
 
-                    if (resultCount == 0) break;
+                    if (resultCount == 0)
+                    {
+                        break;
+                    }
 
                     SaveToFile(path, t, columns, result);
 
-                    if (resultCount < Limit) break;
-
+                    if (resultCount < Limit)
+                    {
+                        break;
+                    }
                 } while (true);
 
 
@@ -389,7 +397,9 @@ namespace ASC.Data.Backup.Tasks
                             {
                                 sw.Write("0x");
                                 foreach (var b in byteArray)
+                                {
                                     sw.Write("{0:x2}", b);
+                                }
                             }
                             else
                             {

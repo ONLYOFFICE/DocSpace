@@ -188,7 +188,9 @@ namespace ASC.Data.Backup.Tasks
             }
 
             if (fileGroups.Count == 0)
+            {
                 SetStepCompleted();
+            }
 
             Logger.Debug("end transfer storage");
         }
@@ -219,7 +221,10 @@ namespace ASC.Data.Backup.Tasks
                 alias);
 
             if (!string.IsNullOrEmpty(whereCondition))
+            {
                 commandText += (" and " + whereCondition);
+            }
+
             var command = connection.CreateCommand();
             command.CommandText = commandText;
             command.WithTimeout(120).ExecuteNonQuery();
@@ -243,7 +248,9 @@ namespace ASC.Data.Backup.Tasks
         private string GetBackupFilePath(string tenantAlias)
         {
             if (!Directory.Exists(BackupDirectory ?? DefaultDirectoryName))
+            {
                 Directory.CreateDirectory(BackupDirectory ?? DefaultDirectoryName);
+            }
 
             return CrossPlatform.PathCombine(BackupDirectory ?? DefaultDirectoryName, tenantAlias + DateTime.UtcNow.ToString("(yyyy-MM-dd HH-mm-ss)") + ".backup");
         }

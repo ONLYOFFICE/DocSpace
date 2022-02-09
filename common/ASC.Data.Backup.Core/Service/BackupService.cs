@@ -63,7 +63,11 @@ namespace ASC.Data.Backup.Services
             _backupRepository.DeleteBackupRecord(backupRecord.Id);
 
             var storage = _backupStorageFactory.GetBackupStorage(backupRecord);
-            if (storage == null) return;
+            if (storage == null)
+            {
+                return;
+            }
+
             storage.Delete(backupRecord.StoragePath);
         }
 
@@ -75,7 +79,11 @@ namespace ASC.Data.Backup.Services
                 {
                     _backupRepository.DeleteBackupRecord(backupRecord.Id);
                     var storage = _backupStorageFactory.GetBackupStorage(backupRecord);
-                    if (storage == null) continue;
+                    if (storage == null)
+                    {
+                        continue;
+                    }
+
                     storage.Delete(backupRecord.StoragePath);
                 }
                 catch (Exception error)
@@ -91,7 +99,11 @@ namespace ASC.Data.Backup.Services
             foreach (var record in _backupRepository.GetBackupRecordsByTenantId(tenantId))
             {
                 var storage = _backupStorageFactory.GetBackupStorage(record);
-                if (storage == null) continue;
+                if (storage == null)
+                {
+                    continue;
+                }
+
                 if (storage.IsExists(record.StoragePath))
                 {
                     backupHistory.Add(new BackupHistoryRecord

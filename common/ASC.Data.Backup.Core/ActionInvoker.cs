@@ -48,7 +48,9 @@ namespace ASC.Data.Backup
             bool isSleepExponential = true)
         {
             if (action == null)
+            {
                 throw new ArgumentNullException("action");
+            }
 
             var countAttempts = 0;
             while (countAttempts++ < maxAttempts)
@@ -65,7 +67,9 @@ namespace ASC.Data.Backup
                         onAttemptFailure?.Invoke(error);
 
                         if (sleepMs > 0)
+                        {
                             Thread.Sleep(isSleepExponential ? sleepMs * countAttempts : sleepMs);
+                        }
                     }
                     else
                     {

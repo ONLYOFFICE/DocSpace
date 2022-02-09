@@ -63,7 +63,11 @@
                     backupRequest.StorageBasePath = storageParams["folderId"];
                     break;
                 case BackupStorageType.Local:
-                    if (!_coreBaseSettings.Standalone) throw new Exception("Access denied");
+                    if (!_coreBaseSettings.Standalone)
+                    {
+                        throw new Exception("Access denied");
+                    }
+
                     backupRequest.StorageBasePath = storageParams["filePath"];
                     break;
             }
@@ -112,7 +116,9 @@
             DemandPermissionsBackup();
 
             if (!SetupInfo.IsVisibleSettings("AutoBackup"))
+            {
                 throw new InvalidOperationException(Resource.ErrorNotAllowedOption);
+            }
 
             ValidateCronSettings(cronParams);
 
@@ -133,7 +139,11 @@
                     scheduleRequest.StorageBasePath = storageParams["folderId"];
                     break;
                 case BackupStorageType.Local:
-                    if (!_coreBaseSettings.Standalone) throw new Exception("Access denied");
+                    if (!_coreBaseSettings.Standalone)
+                    {
+                        throw new Exception("Access denied");
+                    }
+
                     scheduleRequest.StorageBasePath = storageParams["filePath"];
                     break;
             }
@@ -215,7 +225,9 @@
             _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             if (!SetupInfo.IsVisibleSettings(ManagementType.Backup.ToString()))
+            {
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Backup");
+            }
         }
 
         #endregion
@@ -267,7 +279,9 @@
 
             if (!SetupInfo.IsVisibleSettings("Restore") ||
                 (!_coreBaseSettings.Standalone && !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().TenantId).Restore))
+            {
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Restore");
+            }
         }
 
         #endregion
@@ -303,7 +317,9 @@
             if (!SetupInfo.IsVisibleSettings(ManagementType.Migration.ToString())
                 || !currentUser.IsOwner(_tenantManager.GetCurrentTenant())
                 || !SetupInfo.IsSecretEmail(currentUser.Email) && !_tenantExtra.GetTenantQuota().HasMigration)
+            {
                 throw new InvalidOperationException(Resource.ErrorNotAllowedOption);
+            }
         }
 
         #endregion

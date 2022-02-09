@@ -118,7 +118,11 @@ namespace ASC.Data.Backup
             var connectionStrings = new List<ConnectionStringSettings>();
             foreach (ConnectionStringSettings connectionString in cfg.ConnectionStrings.ConnectionStrings)
             {
-                if (connectionString.Name == "LocalSqlServer" || connectionString.Name == "readonly") continue;
+                if (connectionString.Name == "LocalSqlServer" || connectionString.Name == "readonly")
+                {
+                    continue;
+                }
+
                 connectionStrings.Add(connectionString);
                 if (connectionString.ConnectionString.Contains("|DataDirectory|"))
                 {
@@ -162,7 +166,10 @@ namespace ASC.Data.Backup
                 }
                 foreach (DataColumn c in dataTable.Columns)
                 {
-                    if (c.DataType == typeof(DateTime)) c.DateTimeMode = DataSetDateTime.Unspecified;
+                    if (c.DataType == typeof(DateTime))
+                    {
+                        c.DateTimeMode = DataSetDateTime.Unspecified;
+                    }
                 }
 
                 using (var file = _tempStream.Create())
@@ -185,7 +192,10 @@ namespace ASC.Data.Backup
                 dbName = dbElement.Attribute("ref").Value;
                 dbElement = elements.Single(e => string.Compare(e.Name.LocalName, dbElement.Attribute("ref").Value, true) == 0);
             }
-            if (dbElement == null) return;
+            if (dbElement == null)
+            {
+                return;
+            }
 
             var tables = _dbHelper.GetTables();
             for (var i = 0; i < tables.Count; i++)

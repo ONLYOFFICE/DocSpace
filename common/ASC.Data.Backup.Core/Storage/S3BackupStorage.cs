@@ -47,9 +47,13 @@ namespace ASC.Data.Backup.Storage
             string key;
 
             if (string.IsNullOrEmpty(storageBasePath))
+            {
                 key = "backup/" + Path.GetFileName(localPath);
+            }
             else
+            {
                 key = string.Concat(storageBasePath.Trim(new char[] { ' ', '/', '\\' }), "/", Path.GetFileName(localPath));
+            }
 
             using (var fileTransferUtility = new TransferUtility(_accessKeyId, _secretAccessKey, RegionEndpoint.GetBySystemName(_region)))
             {
