@@ -11,6 +11,7 @@ import Box from "@appserver/components/box";
 import styled from "styled-components";
 import FloatingButton from "@appserver/common/components/FloatingButton";
 import {
+  enableAutoBackup,
   enableRestore,
   getBackupProgress,
   getBackupSchedule,
@@ -41,7 +42,8 @@ class Backup extends React.Component {
     this.state = {
       downloadingProgress: 100,
       enableRestore: false,
-      isLoading: false,
+      enableAutoBackup: false,
+      isLoading: true,
     };
     this._isMounted = false;
     this.timerId = null;
@@ -51,14 +53,7 @@ class Backup extends React.Component {
   componentDidMount() {
     this._isMounted = true;
 
-    this.setState(
-      {
-        isLoading: true,
-      },
-      function () {
-        this.setBasicSettings();
-      }
-    );
+    this.setBasicSettings();
   }
 
   setBasicSettings = async () => {
@@ -66,79 +61,88 @@ class Backup extends React.Component {
 
     const requests = [
       enableRestore(),
+      enableAutoBackup(),
       getBackupProgress(),
       getBackupSchedule(),
     ];
 
-    let progress, schedule, enable;
+    try {
+      const [
+        canRestore,
+        canAutoBackup,
+        progress,
+        schedule,
+      ] = await Promise.allSettled(requests);
 
-    [enable, progress, schedule] = await Promise.allSettled(requests);
+      const backupProgress = progress.value;
+      const backupSchedule = schedule.value;
 
-    const backupProgress = progress.value;
-    const backupSchedule = schedule.value;
-
-    if (backupProgress) {
-      if (!backupProgress.error) {
+      if (backupProgress && !backupProgress.error) {
         this._isMounted &&
           this.setState({
             downloadingProgress: backupProgress.progress,
-            link: backupProgress.link,
           });
         if (backupProgress.progress !== 100) {
           this.timerId = setInterval(() => this.getProgress(), 5000);
         }
       }
+
+      if (backupSchedule) {
+        if (backupSchedule.storageType === 0)
+          this.scheduleInformation += `${t("DocumentsModule")} `;
+        if (backupSchedule.storageType === 1)
+          this.scheduleInformation += `${t("ThirdPartyResource")} `;
+        if (backupSchedule.storageType === 5)
+          this.scheduleInformation += `${t("ThirdPartyStorage")} `;
+        let time = backupSchedule.cronParams.hour;
+        let day = backupSchedule.cronParams.day;
+
+        if (backupSchedule.cronParams.period === 1) {
+          let isoWeekDay = day !== 1 ? day - 1 : 7;
+
+          this.scheduleInformation += `(${t(
+            "WeeklyPeriodSchedule"
+          )}, ${moment()
+            .isoWeekday(isoWeekDay)
+            .add(7, "days")
+            .hour(time)
+            .minute("00")
+            .format("dddd,  LT")})`;
+        }
+
+        if (backupSchedule.cronParams.period === 0) {
+          this.scheduleInformation += `(${t(
+            "DailyPeriodSchedule"
+          )}, ${moment().add(1, "days").hour(time).minute("00").format("LT")})`;
+        }
+
+        if (backupSchedule.cronParams.period === 2) {
+          const year = moment().year();
+          const month = moment().month();
+
+          this.scheduleInformation += `(${t(
+            "MonthlyPeriodSchedule"
+          )}, ${moment([year, 0, day])
+            .month(month)
+            .hour(time)
+            .minute("00")
+            .format("Do, LT")})`;
+        }
+      }
+
+      this.setState({
+        isLoading: false,
+        enableRestore: canRestore,
+        enableAutoBackup: canAutoBackup,
+      });
+    } catch (error) {
+      console.error(error);
+      this.setState({
+        isLoading: false,
+      });
     }
-
-    if (backupSchedule) {
-      if (backupSchedule.storageType === 0)
-        this.scheduleInformation += `${t("DocumentsModule")} `;
-      if (backupSchedule.storageType === 1)
-        this.scheduleInformation += `${t("ThirdPartyResource")} `;
-      if (backupSchedule.storageType === 5)
-        this.scheduleInformation += `${t("ThirdPartyStorage")} `;
-      let time = backupSchedule.cronParams.hour;
-      let day = backupSchedule.cronParams.day;
-
-      if (backupSchedule.cronParams.period === 1) {
-        let isoWeekDay = day !== 1 ? day - 1 : 7;
-
-        this.scheduleInformation += `(${t(
-          "WeeklyPeriodSchedule"
-        )}, ${moment()
-          .isoWeekday(isoWeekDay)
-          .add(7, "days")
-          .hour(time)
-          .minute("00")
-          .format("dddd,  LT")})`;
-      }
-
-      if (backupSchedule.cronParams.period === 0) {
-        this.scheduleInformation += `(${t(
-          "DailyPeriodSchedule"
-        )}, ${moment().add(1, "days").hour(time).minute("00").format("LT")})`;
-      }
-
-      if (backupSchedule.cronParams.period === 2) {
-        const year = moment().year();
-        const month = moment().month();
-
-        this.scheduleInformation += `(${t("MonthlyPeriodSchedule")}, ${moment([
-          year,
-          0,
-          day,
-        ])
-          .month(month)
-          .hour(time)
-          .minute("00")
-          .format("Do, LT")})`;
-      }
-    }
-    this.setState({
-      isLoading: false,
-      enableRestore: enable,
-    });
   };
+
   componentWillUnmount() {
     this._isMounted = false;
     clearInterval(this.timerId);
@@ -201,13 +205,18 @@ class Backup extends React.Component {
   };
   render() {
     const { t, helpUrlCreatingBackup } = this.props;
-    const { downloadingProgress, isLoading, enableRestore } = this.state;
+    const {
+      downloadingProgress,
+      isLoading,
+      enableRestore,
+      enableAutoBackup,
+    } = this.state;
 
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <StyledBackup>
-        {enableRestore && (
+        {enableAutoBackup && (
           <div className="category-item-wrapper">
             <div className="category-item-heading">
               <Link
@@ -256,35 +265,37 @@ class Backup extends React.Component {
           </Text>
         </div>
 
-        <div className="category-item-wrapper">
-          <div className="category-item-heading">
-            <Link
-              truncate={true}
-              className="inherit-title-link header"
-              onClick={this.onClickLink}
-              href={combineUrl(
-                AppServerConfig.proxyURL,
-                "/settings/datamanagement/backup/restore-backup"
-              )}
-            >
-              {t("DataRestore")}
-            </Link>
-            <StyledArrowRightIcon size="small" color="#333333" />
+        {enableRestore && (
+          <div className="category-item-wrapper">
+            <div className="category-item-heading">
+              <Link
+                truncate={true}
+                className="inherit-title-link header"
+                onClick={this.onClickLink}
+                href={combineUrl(
+                  AppServerConfig.proxyURL,
+                  "/settings/datamanagement/backup/restore-backup"
+                )}
+              >
+                {t("DataRestore")}
+              </Link>
+              <StyledArrowRightIcon size="small" color="#333333" />
+            </div>
+            <Text className="category-item-description">
+              {t("DataRestoreSettingsDescription")}
+            </Text>
+            <Box marginProp="16px 0 0 0">
+              <Link
+                color="#316DAA"
+                target="_blank"
+                isHovered={true}
+                href={helpUrlCreatingBackup}
+              >
+                {t("Common:LearnMore")}
+              </Link>
+            </Box>
           </div>
-          <Text className="category-item-description">
-            {t("DataRestoreSettingsDescription")}
-          </Text>
-          <Box marginProp="16px 0 0 0">
-            <Link
-              color="#316DAA"
-              target="_blank"
-              isHovered={true}
-              href={helpUrlCreatingBackup}
-            >
-              {t("Common:LearnMore")}
-            </Link>
-          </Box>
-        </div>
+        )}
 
         {downloadingProgress > 0 && downloadingProgress !== 100 && (
           <FloatingButton

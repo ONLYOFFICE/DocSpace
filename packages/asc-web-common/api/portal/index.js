@@ -153,3 +153,7 @@ export function getRestoreProgress() {
 export function enableRestore() {
   return request({ method: "get", url: "/portal/enablerestore" });
 }
+
+export function enableAutoBackup() {
+  return request({ method: "get", url: "/portal/enableAutoBackup" });
+}
