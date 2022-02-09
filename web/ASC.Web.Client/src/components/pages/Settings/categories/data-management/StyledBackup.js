@@ -44,7 +44,7 @@ const commonStyles = css`
   }
   .select-folder_file-input {
     margin-left: 24px;
-    margin-top: 16px;
+    margin-top: 16px !important;
   }
 `;
 

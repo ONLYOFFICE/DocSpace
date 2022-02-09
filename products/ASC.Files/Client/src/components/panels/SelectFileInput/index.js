@@ -51,6 +51,7 @@ class SelectFileInputBody extends React.PureComponent {
       zIndex,
       fontSizeInput,
       maxInputWidth,
+      foldersList,
     } = this.props;
     const { fileName } = this.state;
 
@@ -88,6 +89,7 @@ class SelectFileInputBody extends React.PureComponent {
             isMediaOnly={isMediaOnly}
             loadingLabel={loadingLabel}
             titleFilesList={titleFilesList}
+            foldersList={foldersList}
           />
         )}
       </StyledComponent>

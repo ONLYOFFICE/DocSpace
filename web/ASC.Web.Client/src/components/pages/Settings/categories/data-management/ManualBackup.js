@@ -15,7 +15,6 @@ import { StyledModules, StyledManualBackup } from "./StyledBackup";
 import SelectFolderDialog from "files/SelectFolderDialog";
 import Loader from "@appserver/components/loader";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
-import { inject, observer } from "mobx-react";
 
 let selectedStorageType = "";
 
@@ -138,7 +137,7 @@ class ManualBackup extends React.Component {
           downloadingProgress: 1,
         })
       )
-      .then(() => this.setIntervalProcess())
+      .then(() => !this.timerId && this.setIntervalProcess())
       .catch((err) => console.error(err));
   };
 
@@ -187,6 +186,8 @@ class ManualBackup extends React.Component {
             this.setState({
               downloadingProgress: progress,
             });
+        } else {
+          clearInterval(this.timerId);
         }
       })
       .catch((err) => {
@@ -274,7 +275,7 @@ class ManualBackup extends React.Component {
 
     try {
       await startBackup(moduleType, storageParams);
-      this.setIntervalProcess();
+      !this.timerId && this.setIntervalProcess();
     } catch (err) {
       toastr.error(`${t("CopyingError")}`);
       console.error(err);
