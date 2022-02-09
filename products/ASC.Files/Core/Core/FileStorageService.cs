@@ -45,7 +45,6 @@ using ASC.Core.Common.Configuration;
 using ASC.Core.Common.Settings;
 using ASC.Core.Users;
 using ASC.Data.Storage;
-using ASC.ElasticSearch;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
 using ASC.Files.Core.Resources;
@@ -260,7 +259,6 @@ namespace ASC.Web.Files.Services.WCFService
             var subjectId = string.IsNullOrEmpty(ssubject) ? Guid.Empty : new Guid(ssubject);
 
             var folderDao = GetFolderDao();
-            var fileDao = GetFileDao();
 
             Folder<T> parent = null;
             try
@@ -310,7 +308,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             var breadCrumbs = EntryManager.GetBreadCrumbs(parentId, folderDao);
 
-            var prevVisible = breadCrumbs.ElementAtOrDefault(breadCrumbs.Count() - 2);
+            var prevVisible = breadCrumbs.ElementAtOrDefault(breadCrumbs.Count - 2);
             if (prevVisible != null)
             {
                 if (prevVisible is Folder<string> f1) parent.FolderID = (T)Convert.ChangeType(f1.ID, typeof(T));
@@ -322,8 +320,8 @@ namespace ASC.Web.Files.Services.WCFService
                 || parent.RootFolderType == FolderType.Privacy;
 
             entries = entries.Where(x => x.FileEntryType == FileEntryType.Folder ||
-            (x is File<string> f1 && !FileConverter.IsConverting(f1) ||
-             x is File<int> f2 && !FileConverter.IsConverting(f2)));
+            x is File<string> f1 && !FileConverter.IsConverting(f1) ||
+             x is File<int> f2 && !FileConverter.IsConverting(f2));
 
             var result = new DataWrapper<T>
             {
@@ -437,7 +435,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             var folderAccess = folder.Access;
 
-            if (string.Compare(folder.Title, title, false) != 0)
+            if (!string.Equals(folder.Title, title, StringComparison.OrdinalIgnoreCase))
             {
                 var newFolderID = folderDao.RenameFolder(folder, title);
                 folder = folderDao.GetFolder(newFolderID);
@@ -990,7 +988,7 @@ namespace ASC.Web.Files.Services.WCFService
                 }
 
                 var usersDrop = FileTracker.GetEditingBy(file.ID).Where(uid => uid != AuthContext.CurrentAccount.ID).Select(u => u.ToString()).ToArray();
-                if (usersDrop.Any())
+                if (usersDrop.Length > 0)
                 {
                     var fileStable = file.Forcesave == ForcesaveType.None ? file : fileDao.GetFileStable(file.ID, file.Version);
                     var docKey = DocumentServiceHelper.GetDocKey(fileStable);
@@ -1180,7 +1178,7 @@ namespace ASC.Web.Files.Services.WCFService
 
                 result = new List<FileEntry>(EntryManager.SortEntries<T>(result, new OrderBy(SortedByType.DateAndTime, false)));
 
-                if (!result.Any())
+                if (result.Count == 0)
                 {
                     MarkAsRead(new List<JsonElement>() { JsonDocument.Parse(JsonSerializer.Serialize(folderId)).RootElement }, new List<JsonElement>() { }); //TODO
                 }
@@ -1196,7 +1194,7 @@ namespace ASC.Web.Files.Services.WCFService
 
         public List<FileOperationResult> MarkAsRead(List<JsonElement> foldersId, List<JsonElement> filesId)
         {
-            if (!foldersId.Any() && !filesId.Any()) return GetTasksStatuses();
+            if (foldersId.Count == 0 && filesId.Count == 0) return GetTasksStatuses();
             return FileOperationsManager.MarkAsRead(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), foldersId, filesId);
         }
 
@@ -1231,7 +1229,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             var folders = providersInfo.Select(providerInfo =>
                 {
-                    var folder = EntryManager.GetFakeThirdpartyFolder<T>(providerInfo);
+                    var folder = EntryManager.GetFakeThirdpartyFolder(providerInfo);
                     folder.NewForMe = folder.RootFolderType == FolderType.COMMON ? 1 : 0;
                     return folder;
                 });
@@ -1326,7 +1324,7 @@ namespace ASC.Web.Files.Services.WCFService
             var curProviderId = Convert.ToInt32(providerId);
             var providerInfo = providerDao.GetProviderInfo(curProviderId);
 
-            var folder = EntryManager.GetFakeThirdpartyFolder<T>(providerInfo);
+            var folder = EntryManager.GetFakeThirdpartyFolder(providerInfo);
             ErrorIf(!FileSecurity.CanDelete(folder), FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder);
 
             if (providerInfo.RootFolderType == FolderType.COMMON)
@@ -1335,7 +1333,7 @@ namespace ASC.Web.Files.Services.WCFService
             }
 
             providerDao.RemoveProviderInfo(folder.ProviderId);
-            FilesMessageService.Send(folder, GetHttpHeaders(), MessageAction.ThirdPartyDeleted, folder.ID.ToString(), providerInfo.ProviderKey);
+            FilesMessageService.Send(folder, GetHttpHeaders(), MessageAction.ThirdPartyDeleted, folder.ID, providerInfo.ProviderKey);
 
             return folder.ID;
         }
@@ -1401,7 +1399,7 @@ namespace ASC.Web.Files.Services.WCFService
 
         public List<FileOperationResult> BulkDownload(Dictionary<JsonElement, string> folders, Dictionary<JsonElement, string> files)
         {
-            ErrorIf(!folders.Any() && !files.Any(), FilesCommonResource.ErrorMassage_BadRequest);
+            ErrorIf(folders.Count == 0 && files.Count == 0, FilesCommonResource.ErrorMassage_BadRequest);
 
             return FileOperationsManager.Download(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), folders, files, GetHttpHeaders());
         }
@@ -1468,7 +1466,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             var folders = folderDao.GetFolders(foldersId);
             var foldersProject = folders.Where(folder => folder.FolderType == FolderType.BUNCH).ToList();
-            if (foldersProject.Any())
+            if (foldersProject.Count > 0)
             {
                 var toSubfolders = destFolderDao.GetFolders(toFolder.ID);
 
@@ -1503,7 +1501,7 @@ namespace ASC.Web.Files.Services.WCFService
         public List<FileOperationResult> MoveOrCopyItems(List<JsonElement> foldersId, List<JsonElement> filesId, JsonElement destFolderId, FileConflictResolveType resolve, bool ic, bool deleteAfter = false)
         {
             List<FileOperationResult> result;
-            if (foldersId.Any() || filesId.Any())
+            if (foldersId.Count > 0 || filesId.Count > 0)
             {
                 result = FileOperationsManager.MoveOrCopy(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), foldersId, filesId, destFolderId, ic, resolve, !deleteAfter, GetHttpHeaders());
             }
@@ -1666,7 +1664,7 @@ namespace ASC.Web.Files.Services.WCFService
             if (providerDao != null)
             {
                 var providersInfo = providerDao.GetProvidersInfo(userFrom.ID);
-                var commonProvidersInfo = providersInfo.Where(provider => provider.RootFolderType == FolderType.COMMON).ToList();
+                var commonProvidersInfo = providersInfo.Where(provider => provider.RootFolderType == FolderType.COMMON);
 
                 //move common thirdparty storage userFrom
                 foreach (var commonProviderInfo in commonProvidersInfo)

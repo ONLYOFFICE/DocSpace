@@ -54,13 +54,13 @@ namespace ASC.Core.Configuration
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<AmiPublicDnsSyncServiceScope>();
-            var (tenantManager, coreBaseSettings) = scopeClass;
+            var (tenantManager, coreBaseSettings, clientFactory) = scopeClass;
             if (coreBaseSettings.Standalone)
             {
                 var tenants = tenantManager.GetTenants(false).Where(t => MappedDomainNotSettedByUser(t.MappedDomain));
                 if (tenants.Any())
                 {
-                    var dnsname = GetAmiPublicDnsName();
+                    var dnsname = GetAmiPublicDnsName(clientFactory);
                     foreach (var tenant in tenants.Where(t => !string.IsNullOrEmpty(dnsname) && t.MappedDomain != dnsname))
                     {
                         tenant.MappedDomain = dnsname;
@@ -75,7 +75,7 @@ namespace ASC.Core.Configuration
             return string.IsNullOrEmpty(domain) || Regex.IsMatch(domain, "^ec2.+\\.compute\\.amazonaws\\.com$", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
         }
 
-        private static string GetAmiPublicDnsName()
+        private static string GetAmiPublicDnsName(IHttpClientFactory clientFactory)
         {
             try
             {
@@ -83,7 +83,7 @@ namespace ASC.Core.Configuration
                 request.RequestUri = new Uri("http://169.254.169.254/latest/meta-data/public-hostname");
                 request.Method = HttpMethod.Get;
 
-                using var httpClient = new HttpClient();
+                var httpClient = clientFactory.CreateClient();
                 httpClient.Timeout = TimeSpan.FromMilliseconds(5000);
 
                 using var responce = httpClient.Send(request);
@@ -106,16 +106,18 @@ namespace ASC.Core.Configuration
     {
         private TenantManager TenantManager { get; }
         private CoreBaseSettings CoreBaseSettings { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
-        public AmiPublicDnsSyncServiceScope(TenantManager tenantManager, CoreBaseSettings coreBaseSettings)
+        public AmiPublicDnsSyncServiceScope(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, IHttpClientFactory clientFactory)
         {
             TenantManager = tenantManager;
             CoreBaseSettings = coreBaseSettings;
+            ClientFactory = clientFactory;
         }
 
-        public void Deconstruct(out TenantManager tenantManager, out CoreBaseSettings coreBaseSettings)
+        public void Deconstruct(out TenantManager tenantManager, out CoreBaseSettings coreBaseSettings, out IHttpClientFactory clientFactory)
         {
-            (tenantManager, coreBaseSettings) = (TenantManager, CoreBaseSettings);
+            (tenantManager, coreBaseSettings, clientFactory) = (TenantManager, CoreBaseSettings, ClientFactory);
         }
     }
 }

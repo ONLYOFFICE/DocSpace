@@ -56,7 +56,8 @@ namespace ASC.Web.Api.Controllers
         private SetupInfo SetupInfo { get; }
         private DocumentServiceLicense DocumentServiceLicense { get; }
         private TenantExtra TenantExtra { get; set; }
-        private ILog Log { get; }
+        public ILog Log { get; }
+        public IHttpClientFactory ClientFactory { get; }
 
 
         public PortalController(
@@ -77,7 +78,8 @@ namespace ASC.Web.Api.Controllers
             CoreBaseSettings coreBaseSettings,
             LicenseReader licenseReader,
             SetupInfo setupInfo,
-            DocumentServiceLicense documentServiceLicense
+            DocumentServiceLicense documentServiceLicense,
+            IHttpClientFactory clientFactory
             )
         {
             Log = options.CurrentValue;
@@ -98,6 +100,7 @@ namespace ASC.Web.Api.Controllers
             SetupInfo = setupInfo;
             DocumentServiceLicense = documentServiceLicense;
             TenantExtra = tenantExtra;
+            ClientFactory = clientFactory;
         }
 
         [Read("")]
@@ -173,7 +176,7 @@ namespace ASC.Web.Api.Controllers
         [Read("userscount")]
         public long GetUsersCount()
         {
-            return CoreBaseSettings.Personal ? 1 : UserManager.GetUserNames(EmployeeStatus.Active).Count();
+            return CoreBaseSettings.Personal ? 1 : UserManager.GetUserNames(EmployeeStatus.Active).Length;
         }
 
         [Read("tariff")]
@@ -211,7 +214,7 @@ namespace ASC.Web.Api.Controllers
         [Read("thumb")]
         public FileResult GetThumb(string url)
         {
-            if (!SecurityContext.IsAuthenticated || !(Configuration["bookmarking:thumbnail-url"] != null))
+            if (!SecurityContext.IsAuthenticated || Configuration["bookmarking:thumbnail-url"] == null)
             {
                 return null;
             }
@@ -222,7 +225,7 @@ namespace ASC.Web.Api.Controllers
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(string.Format(Configuration["bookmarking:thumbnail-url"], url));
 
-            using var httpClient = new HttpClient();
+            var httpClient = ClientFactory.CreateClient();
             using var response = httpClient.Send(request);
             using var stream = response.Content.ReadAsStream();
             var bytes = new byte[stream.Length];

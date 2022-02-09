@@ -80,14 +80,14 @@ namespace ASC.Api.Documents
                 //Updated = ApiDateTime.GetSample(),
                 //Created = ApiDateTime.GetSample(),
                 //CreatedBy = EmployeeWraper.GetSample(),
-                Id = new Random().Next(),
+                Id = 10,
                 RootFolderType = FolderType.BUNCH,
                 Shared = false,
                 Title = "Some titile",
                 //UpdatedBy = EmployeeWraper.GetSample(),
-                FilesCount = new Random().Next(),
-                FoldersCount = new Random().Next(),
-                ParentId = new Random().Next(),
+                FilesCount = 5,
+                FoldersCount = 7,
+                ParentId = 10,
                 IsShareable = null
             };
         }

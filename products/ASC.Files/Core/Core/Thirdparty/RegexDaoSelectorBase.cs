@@ -116,7 +116,7 @@ namespace ASC.Files.Thirdparty
         private T1 GetDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>
         {
             var providerKey = $"{id}{typeof(T1)}";
-            if (Providers.ContainsKey(providerKey)) return (T1)Providers[providerKey];
+            if (Providers.TryGetValue(providerKey, out var provider)) return (T1)provider;
 
             var res = ServiceProvider.GetService<T1>();
 
@@ -130,7 +130,7 @@ namespace ASC.Files.Thirdparty
 
         internal BaseProviderInfo<T> GetInfo(string objectId)
         {
-            if (objectId == null) throw new ArgumentNullException("objectId");
+            if (objectId == null) throw new ArgumentNullException(nameof(objectId));
             var id = objectId;
             var match = Selector.Match(id);
             if (match.Success)
