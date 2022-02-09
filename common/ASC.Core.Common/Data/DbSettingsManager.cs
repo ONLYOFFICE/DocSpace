@@ -169,10 +169,7 @@ public class DbSettingsManager
                 using var tr = WebstudioDbContext.Database.BeginTransaction();
                 // remove default settings
                 var s = WebstudioDbContext.WebstudioSettings
-                    .Where(r => r.Id == settings.ID)
-                    .Where(r => r.TenantId == tenantId)
-                    .Where(r => r.UserId == userId)
-                    .FirstOrDefault();
+                    .Find(new object[] { tenantId, settings.ID, userId });
 
                 if (s != null)
                 {

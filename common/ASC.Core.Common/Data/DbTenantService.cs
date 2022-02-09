@@ -197,10 +197,9 @@ public class DbTenantService : ITenantService
 
     public Tenant GetTenant(int id)
     {
-        return TenantsQuery()
-            .Where(r => r.Id == id)
-            .ProjectTo<Tenant>(_mapper.ConfigurationProvider)
-            .SingleOrDefault();
+        var tenant = TenantDbContext.Tenants.Find(id);
+
+        return _mapper.Map<DbTenant, Tenant>(tenant);
     }
 
     public Tenant GetTenant(string domain)
@@ -268,9 +267,7 @@ public class DbTenantService : ITenantService
         }
         else
         {
-            var tenant = TenantDbContext.Tenants
-                .Where(r => r.Id == t.Id)
-                .FirstOrDefault();
+            var tenant = TenantDbContext.Tenants.Find(t.Id);
 
             if (tenant != null)
             {
@@ -297,9 +294,7 @@ public class DbTenantService : ITenantService
 
         if (string.IsNullOrEmpty(t.PartnerId) && string.IsNullOrEmpty(t.AffiliateId) && string.IsNullOrEmpty(t.Campaign))
         {
-            var p = TenantDbContext.TenantPartner
-                .Where(r => r.TenantId == t.Id)
-                .FirstOrDefault();
+            var p = TenantDbContext.TenantPartner.Find(t.Id);
 
             if (p != null)
             {
@@ -340,7 +335,7 @@ public class DbTenantService : ITenantService
             .Where(r => r.TenantAlias.StartsWith(alias + postfix))
             .Count();
 
-        var tenant = TenantDbContext.Tenants.Where(r => r.Id == id).FirstOrDefault();
+        var tenant = TenantDbContext.Tenants.Find(id);
 
         if (tenant != null)
         {
@@ -380,9 +375,7 @@ public class DbTenantService : ITenantService
         if (data == null || data.Length == 0)
         {
             var settings = TenantDbContext.CoreSettings
-                .Where(r => r.Tenant == tenant)
-                .Where(r => r.Id == key)
-                .FirstOrDefault();
+                .Find(new object[] { tenant, key });
 
             if (settings != null)
             {

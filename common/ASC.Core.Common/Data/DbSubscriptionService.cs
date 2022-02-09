@@ -254,7 +254,7 @@ class DbSubscriptionService : ISubscriptionService
 
         foreach (var r in methods)
         {
-            var m = _mapper.Map<SubscriptionMethod>(r);
+            var m = _mapper.Map<DbSubscriptionMethod, SubscriptionMethod>(r);
             var key = m.SourceId + m.Action + m.Recipient;
             if (m.Tenant == Tenant.DefaultTenant)
             {
@@ -284,13 +284,9 @@ class DbSubscriptionService : ISubscriptionService
 
         if (subMethod.Methods == null || subMethod.Methods.Length == 0)
         {
-            var q = UserDbContext.SubscriptionMethods
-                .Where(r => r.Tenant == subMethod.Tenant)
-                .Where(r => r.Source == subMethod.SourceId)
-                .Where(r => r.Recipient == subMethod.Recipient)
-                .Where(r => r.Action == subMethod.Action);
-
-            var sm = q.FirstOrDefault();
+            var sm = UserDbContext.SubscriptionMethods
+                .Find(new object[] { subMethod.Tenant, subMethod.SourceId, 
+                        subMethod.Action, subMethod.Recipient });
 
             if (sm != null)
             {

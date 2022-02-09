@@ -69,9 +69,9 @@ class DbQuotaService : IQuotaService
 
     public TenantQuota GetTenantQuota(int id)
     {
-        return CoreDbContext.Quotas.Where(r => r.Tenant == id)
-            .ProjectTo<TenantQuota>(_mapper.ConfigurationProvider)
-            .SingleOrDefault();
+        var quota = CoreDbContext.Quotas.Find(id);
+
+        return _mapper.Map<DbQuota, TenantQuota>(quota);
     }
 
     public TenantQuota SaveTenantQuota(TenantQuota quota)
@@ -90,9 +90,7 @@ class DbQuotaService : IQuotaService
     public void RemoveTenantQuota(int id)
     {
         using var tr = CoreDbContext.Database.BeginTransaction();
-        var d = CoreDbContext.Quotas
-             .Where(r => r.Tenant == id)
-             .SingleOrDefault();
+        var d = CoreDbContext.Quotas.Find(id);
 
         if (d != null)
         {
@@ -112,17 +110,10 @@ class DbQuotaService : IQuotaService
 
         using var tx = CoreDbContext.Database.BeginTransaction();
 
-        var counter = CoreDbContext.QuotaRows
-            .Where(r => r.Path == row.Path && r.Tenant == row.Tenant)
-            .Select(r => r.Counter)
-            .Take(1)
-            .FirstOrDefault();
+        var quotaRow = CoreDbContext.QuotaRows.Find(new object[] { row.Tenant, row.Path });
+        quotaRow.Counter = exchange ? quotaRow.Counter + row.Counter : row.Counter;
+        quotaRow.LastModified = DateTime.UtcNow;
 
-        var dbQuotaRow = _mapper.Map<TenantQuotaRow, DbQuotaRow>(row);
-        dbQuotaRow.Counter = exchange ? counter + row.Counter : row.Counter;
-        dbQuotaRow.LastModified = DateTime.UtcNow;
-
-        CoreDbContext.AddOrUpdate(r => r.QuotaRows, dbQuotaRow);
         CoreDbContext.SaveChanges();
 
         tx.Commit();
