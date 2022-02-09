@@ -49,6 +49,7 @@ namespace ASC.Data.Backup
             _processedTables.Clear();
             var xml = new List<XElement>();
             var connectionKeys = new Dictionary<string, string>();
+
             foreach (var connectionString in GetConnectionStrings(configs))
             {
                 //do not save the base, having the same provider and connection string is not to duplicate
@@ -74,28 +75,11 @@ namespace ASC.Data.Backup
         public void LoadFrom(IEnumerable<XElement> elements, int tenant, string[] configs, IDataReadOperator reader)
         {
             _processedTables.Clear();
+
             foreach (var connectionString in GetConnectionStrings(configs))
             {
                 RestoreDatabase(connectionString, elements, reader);
             }
-        }
-
-        private void OnProgressChanged(string status, int progress)
-        {
-            ProgressChanged?.Invoke(this, new ProgressChangedEventArgs(status, progress));
-        }
-
-        private Configuration GetConfiguration(string config)
-        {
-            if (config.Contains(Path.DirectorySeparatorChar) && !Uri.IsWellFormedUriString(config, UriKind.Relative))
-            {
-                var map = new ExeConfigurationFileMap
-                {
-                    ExeConfigFilename = string.Compare(Path.GetExtension(config), ".config", true) == 0 ? config : CrossPlatform.PathCombine(config, "Web.config")
-                };
-                return ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
-            }
-            return ConfigurationManager.OpenExeConfiguration(config);
         }
 
         public IEnumerable<ConnectionStringSettings> GetConnectionStrings(string[] configs)
@@ -129,7 +113,28 @@ namespace ASC.Data.Backup
                     connectionString.ConnectionString = connectionString.ConnectionString.Replace("|DataDirectory|", Path.GetDirectoryName(cfg.FilePath) + '\\');
                 }
             }
+
             return connectionStrings;
+        }
+
+        private void OnProgressChanged(string status, int progress)
+        {
+            ProgressChanged?.Invoke(this, new ProgressChangedEventArgs(status, progress));
+        }
+
+        private Configuration GetConfiguration(string config)
+        {
+            if (config.Contains(Path.DirectorySeparatorChar) && !Uri.IsWellFormedUriString(config, UriKind.Relative))
+            {
+                var map = new ExeConfigurationFileMap
+                {
+                    ExeConfigFilename = string.Compare(Path.GetExtension(config), ".config", true) == 0 ? config : CrossPlatform.PathCombine(config, "Web.config")
+                };
+
+                return ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
+            }
+
+            return ConfigurationManager.OpenExeConfiguration(config);
         }
 
         private List<XElement> BackupDatabase(int tenant, ConnectionStringSettings connectionString, IDataWriteOperator writer)
@@ -138,6 +143,7 @@ namespace ASC.Data.Backup
             var errors = 0;
             var timeout = TimeSpan.FromSeconds(1);
             var tables = _dbHelper.GetTables();
+
             for (var i = 0; i < tables.Count; i++)
             {
                 var table = tables[i];
@@ -150,6 +156,7 @@ namespace ASC.Data.Backup
 
                 xml.Add(new XElement(table));
                 DataTable dataTable = null;
+
                 while (true)
                 {
                     try
@@ -164,6 +171,7 @@ namespace ASC.Data.Backup
                         Thread.Sleep(timeout);
                     }
                 }
+
                 foreach (DataColumn c in dataTable.Columns)
                 {
                     if (c.DataType == typeof(DateTime))
@@ -180,6 +188,7 @@ namespace ASC.Data.Backup
 
                 _processedTables.Add(table);
             }
+
             return xml;
         }
 
@@ -192,12 +201,14 @@ namespace ASC.Data.Backup
                 dbName = dbElement.Attribute("ref").Value;
                 dbElement = elements.Single(e => string.Compare(e.Name.LocalName, dbElement.Attribute("ref").Value, true) == 0);
             }
+
             if (dbElement == null)
             {
                 return;
             }
 
             var tables = _dbHelper.GetTables();
+
             for (var i = 0; i < tables.Count; i++)
             {
                 var table = tables[i];

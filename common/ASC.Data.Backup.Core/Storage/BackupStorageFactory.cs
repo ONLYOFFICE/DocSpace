@@ -63,6 +63,7 @@ namespace ASC.Data.Backup.Storage
             catch (Exception error)
             {
                 _logger.Error("can't get backup storage for record " + record.Id, error);
+
                 return null;
             }
         }
@@ -79,20 +80,27 @@ namespace ASC.Data.Backup.Storage
                 case BackupStorageType.ThridpartyDocuments:
                 {
                     _documentsBackupStorage.Init(tenantId, webConfigPath);
+
                     return _documentsBackupStorage;
                 }
                 case BackupStorageType.DataStore:
                 {
                     _dataStoreBackupStorage.Init(tenantId, webConfigPath);
+
                     return _dataStoreBackupStorage;
                 }
                 case BackupStorageType.Local:
                     return _localBackupStorage;
                 case BackupStorageType.ThirdPartyConsumer:
                 {
-                    if (storageParams == null) return null;
+                    if (storageParams == null)
+                    {
+                        return null;
+                    }
+
                     _tenantManager.SetCurrentTenant(tenantId);
                     _consumerBackupStorage.Init(storageParams);
+
                     return _consumerBackupStorage;
                 }
                 default:

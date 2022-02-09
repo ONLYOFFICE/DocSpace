@@ -38,6 +38,7 @@ namespace ASC.Data.Backup.Utils
             {
                 path = CrossPlatform.PathCombine(basePath, path);
             }
+
             return Path.GetFullPath(path);
         }
 
@@ -47,6 +48,7 @@ namespace ASC.Data.Backup.Utils
             {
                 path = CrossPlatform.PathCombine(path, "Web.config");
             }
+
             return ToRootedPath(path);
         }
 
@@ -57,6 +59,7 @@ namespace ASC.Data.Backup.Utils
             {
                 tempPath = CrossPlatform.PathCombine(tempDir, Path.GetRandomFileName());
             } while (File.Exists(tempPath));
+
             return tempPath;
         }
     }

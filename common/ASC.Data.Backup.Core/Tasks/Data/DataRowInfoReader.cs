@@ -84,6 +84,7 @@ namespace ASC.Data.Backup.Tasks.Data
             {
                 return Convert.FromBase64String(str);
             }
+
             return str;
         }
     }

@@ -27,82 +27,129 @@ namespace ASC.Data.Backup.Tasks.Modules
 {
     internal class MailModuleSpecifics : ModuleSpecificsBase
     {
+        public override ModuleName ModuleName => ModuleName.Mail;
+        public override IEnumerable<TableInfo> Tables => _tables;
+        public override IEnumerable<RelationInfo> TableRelations => _tableRelations;
+
         private readonly ILog _logger;
         private readonly Helpers _helpers;
+
+        private readonly TableInfo[] _tables = new[]
+        {
+            new TableInfo("mail_attachment", "tenant", "id"),
+            new TableInfo("mail_chain", "tenant") {UserIDColumns = new[] {"id_user"}},
+            new TableInfo("mail_contacts", "tenant", "id") {UserIDColumns = new[] {"id_user"}},
+            new TableInfo("mail_folder_counters", "tenant") {UserIDColumns = new[] {"id_user"}},
+            new TableInfo("mail_mail", "tenant", "id")
+            {
+                UserIDColumns = new[] {"id_user"},
+                DateColumns = new Dictionary<string, bool> {{"date_received", false}, {"date_sent", false}, {"chain_date", false}}
+            },
+            new TableInfo("mail_mailbox", "tenant", "id")
+            {
+                UserIDColumns = new[] {"id_user"},
+                DateColumns = new Dictionary<string, bool> {{"begin_date", false}}
+            },
+            new TableInfo("mail_tag", "tenant", "id") {UserIDColumns = new[] {"id_user"}},
+            new TableInfo("mail_tag_addresses", "tenant"),
+            new TableInfo("mail_tag_mail", "tenant") {UserIDColumns = new[] {"id_user"}},
+            new TableInfo("mail_chain_x_crm_entity", "id_tenant"),
+            new TableInfo("mail_mailbox_signature", "tenant"),
+            new TableInfo("mail_mailbox_autoreply", "tenant"),
+            new TableInfo("mail_mailbox_autoreply_history", "tenant"),
+            new TableInfo("mail_contact_info", "tenant", "id") {UserIDColumns = new[] {"id_user"}},
+            new TableInfo("mail_mailbox_provider", idColumn: "id"),
+            new TableInfo("mail_mailbox_domain", idColumn: "id"),
+            new TableInfo("mail_mailbox_server", idColumn: "id")
+        };
+
+        private readonly RelationInfo[] _tableRelations = new[]
+        {
+            new RelationInfo("mail_mail", "id", "mail_attachment", "id_mail"),
+            new RelationInfo("mail_mailbox", "id", "mail_chain", "id_mailbox"),
+            new RelationInfo("mail_tag", "id", "mail_chain", "tags"),
+            new RelationInfo("crm_tag", "id", "mail_chain", "tags", typeof(CrmModuleSpecifics)),
+            new RelationInfo("mail_mailbox", "id", "mail_mail", "id_mailbox"),
+            new RelationInfo("crm_tag", "id", "mail_tag", "crm_id", typeof(CrmModuleSpecifics)),
+            new RelationInfo("mail_tag", "id", "mail_tag_addresses", "id_tag", x => Convert.ToInt32(x["id_tag"]) > 0),
+            new RelationInfo("crm_tag", "id", "mail_tag_addresses", "id_tag", typeof(CrmModuleSpecifics), x => Convert.ToInt32(x["id_tag"]) < 0),
+            new RelationInfo("mail_mail", "id", "mail_tag_mail", "id_mail"),
+            new RelationInfo("mail_tag", "id", "mail_tag_mail", "id_tag", x => Convert.ToInt32(x["id_tag"]) > 0),
+            new RelationInfo("crm_tag", "id", "mail_tag_mail", "id_tag", typeof(CrmModuleSpecifics), x => Convert.ToInt32(x["id_tag"]) < 0),
+            new RelationInfo("mail_mailbox", "id", "mail_chain_x_crm_entity", "id_mailbox"),
+            new RelationInfo("crm_contact", "id", "mail_chain_x_crm_entity", "entity_id", typeof(CrmModuleSpecifics), x => Convert.ToInt32(x["entity_type"]) == 1),
+            new RelationInfo("crm_case", "id", "mail_chain_x_crm_entity", "entity_id", typeof(CrmModuleSpecifics), x => Convert.ToInt32(x["entity_type"]) == 2),
+            new RelationInfo("crm_deal", "id", "mail_chain_x_crm_entity", "entity_id", typeof(CrmModuleSpecifics), x => Convert.ToInt32(x["entity_type"]) == 3),
+            new RelationInfo("mail_mailbox", "id", "mail_mailbox_signature", "id_mailbox"),
+            new RelationInfo("files_folder", "id", "mail_mailbox", "email_in_folder", typeof(FilesModuleSpecifics)),
+            new RelationInfo("mail_mailbox", "id", "mail_mailbox_autoreply", "id_mailbox"),
+            new RelationInfo("mail_mailbox", "id", "mail_mailbox_autoreply_history", "id_mailbox"),
+            new RelationInfo("mail_contacts", "id", "mail_contact_info", "id_contact"),
+            new RelationInfo("mail_mailbox_provider", "id", "mail_mailbox_domain", "id_provider"),
+            new RelationInfo("mail_mailbox_server", "id", "mail_mailbox", "id_smtp_server"),
+            new RelationInfo("mail_mailbox_server", "id", "mail_mailbox", "id_in_server")
+        };
+
         public MailModuleSpecifics(IOptionsMonitor<ILog> options, Helpers helpers) : base(helpers)
         {
             _logger = options.CurrentValue;
             _helpers = helpers;
         }
-        private readonly TableInfo[] _tables = new[]
-            {
-                new TableInfo("mail_attachment", "tenant", "id"),
-                new TableInfo("mail_chain", "tenant") {UserIDColumns = new[] {"id_user"}},
-                new TableInfo("mail_contacts", "tenant", "id") {UserIDColumns = new[] {"id_user"}},
-                new TableInfo("mail_folder_counters", "tenant") {UserIDColumns = new[] {"id_user"}},
-                new TableInfo("mail_mail", "tenant", "id")
-                    {
-                        UserIDColumns = new[] {"id_user"},
-                        DateColumns = new Dictionary<string, bool> {{"date_received", false}, {"date_sent", false}, {"chain_date", false}}
-                    },
-                new TableInfo("mail_mailbox", "tenant", "id")
-                    {
-                        UserIDColumns = new[] {"id_user"},
-                        DateColumns = new Dictionary<string, bool> {{"begin_date", false}}
-                    },
-                new TableInfo("mail_tag", "tenant", "id") {UserIDColumns = new[] {"id_user"}},
-                new TableInfo("mail_tag_addresses", "tenant"),
-                new TableInfo("mail_tag_mail", "tenant") {UserIDColumns = new[] {"id_user"}},
-                new TableInfo("mail_chain_x_crm_entity", "id_tenant"),
-                new TableInfo("mail_mailbox_signature", "tenant"),
-                new TableInfo("mail_mailbox_autoreply", "tenant"),
-                new TableInfo("mail_mailbox_autoreply_history", "tenant"),
-                new TableInfo("mail_contact_info", "tenant", "id") {UserIDColumns = new[] {"id_user"}},
-                new TableInfo("mail_mailbox_provider", idColumn: "id"),
-                new TableInfo("mail_mailbox_domain", idColumn: "id"),
-                new TableInfo("mail_mailbox_server", idColumn: "id")
-            };
 
-        private readonly RelationInfo[] _tableRelations = new[]
-            {
-                new RelationInfo("mail_mail", "id", "mail_attachment", "id_mail"),
-                new RelationInfo("mail_mailbox", "id", "mail_chain", "id_mailbox"),
-                new RelationInfo("mail_tag", "id", "mail_chain", "tags"),
-                new RelationInfo("crm_tag", "id", "mail_chain", "tags", typeof(CrmModuleSpecifics)),
-                new RelationInfo("mail_mailbox", "id", "mail_mail", "id_mailbox"),
-                new RelationInfo("crm_tag", "id", "mail_tag", "crm_id", typeof(CrmModuleSpecifics)),
-                new RelationInfo("mail_tag", "id", "mail_tag_addresses", "id_tag", x => Convert.ToInt32(x["id_tag"]) > 0),
-                new RelationInfo("crm_tag", "id", "mail_tag_addresses", "id_tag", typeof(CrmModuleSpecifics), x => Convert.ToInt32(x["id_tag"]) < 0),
-                new RelationInfo("mail_mail", "id", "mail_tag_mail", "id_mail"),
-                new RelationInfo("mail_tag", "id", "mail_tag_mail", "id_tag", x => Convert.ToInt32(x["id_tag"]) > 0),
-                new RelationInfo("crm_tag", "id", "mail_tag_mail", "id_tag", typeof(CrmModuleSpecifics), x => Convert.ToInt32(x["id_tag"]) < 0),
-                new RelationInfo("mail_mailbox", "id", "mail_chain_x_crm_entity", "id_mailbox"),
-                new RelationInfo("crm_contact", "id", "mail_chain_x_crm_entity", "entity_id", typeof(CrmModuleSpecifics), x => Convert.ToInt32(x["entity_type"]) == 1),
-                new RelationInfo("crm_case", "id", "mail_chain_x_crm_entity", "entity_id", typeof(CrmModuleSpecifics), x => Convert.ToInt32(x["entity_type"]) == 2),
-                new RelationInfo("crm_deal", "id", "mail_chain_x_crm_entity", "entity_id", typeof(CrmModuleSpecifics), x => Convert.ToInt32(x["entity_type"]) == 3),
-                new RelationInfo("mail_mailbox", "id", "mail_mailbox_signature", "id_mailbox"),
-                new RelationInfo("files_folder", "id", "mail_mailbox", "email_in_folder", typeof(FilesModuleSpecifics)),
-                new RelationInfo("mail_mailbox", "id", "mail_mailbox_autoreply", "id_mailbox"),
-                new RelationInfo("mail_mailbox", "id", "mail_mailbox_autoreply_history", "id_mailbox"),
-                new RelationInfo("mail_contacts", "id", "mail_contact_info", "id_contact"),
-                new RelationInfo("mail_mailbox_provider", "id", "mail_mailbox_domain", "id_provider"),
-                new RelationInfo("mail_mailbox_server", "id", "mail_mailbox", "id_smtp_server"),
-                new RelationInfo("mail_mailbox_server", "id", "mail_mailbox", "id_in_server")
-            };
-
-        public override ModuleName ModuleName
+        public override bool TryAdjustFilePath(bool dump, ColumnMapper columnMapper, ref string filePath)
         {
-            get { return ModuleName.Mail; }
+            //todo: hack: will be changed later
+            filePath = Regex.Replace(filePath, @"^[-\w]+(?=/)", match => dump ? match.Value : columnMapper.GetUserMapping(match.Value));
+            return !filePath.StartsWith("/");
         }
 
-        public override IEnumerable<TableInfo> Tables
+        public override void PrepareData(DataTable data)
         {
-            get { return _tables; }
+            if (data.TableName == "mail_mailbox")
+            {
+                var address = data.Columns.Cast<DataColumn>().Single(c => c.ColumnName == "address");
+                var smtp = data.Columns.Cast<DataColumn>().Single(c => c.ColumnName == "smtp_password");
+                var pop3 = data.Columns.Cast<DataColumn>().Single(c => c.ColumnName == "pop3_password");
+                var token = data.Columns.Cast<DataColumn>().Single(c => c.ColumnName == "token");
+                for (var i = 0; i < data.Rows.Count; i++)
+                {
+                    var row = data.Rows[i];
+                    try
+                    {
+                        row[smtp] = _helpers.CreateHash2(row[smtp] as string);
+                        row[pop3] = _helpers.CreateHash2(row[pop3] as string);
+                        row[token] = _helpers.CreateHash2(row[token] as string);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.ErrorFormat("Can not prepare data {0}: {1}", row[address] as string, ex);
+                        data.Rows.Remove(row);
+                        i--;
+                    }
+                }
+            }
         }
 
-        public override IEnumerable<RelationInfo> TableRelations
+        public override Stream PrepareData(string key, Stream stream, ColumnMapper columnMapper)
         {
-            get { return _tableRelations; }
+            if (!key.EndsWith("body.html"))
+            {
+                return stream;
+            }
+
+            using (var streamReader = new StreamReader(stream, Encoding.UTF8, true, 1024, true))
+            {
+                var data = streamReader.ReadToEnd();
+                data = Regex.Replace(data, @"(htmleditorfiles|aggregator)(\/0\/|\/[\d]+\/\d\d\/\d\d\/)([-\w]+(?=/))",
+                    match => "/" + TenantPath.CreatePath(columnMapper.GetTenantMapping().ToString()) + "/" + columnMapper.GetUserMapping(match.Groups[3].Value));
+
+                var content = Encoding.UTF8.GetBytes(data);
+
+                stream.Position = 0;
+                stream.Write(content, 0, content.Length);
+            }
+
+            return stream;
         }
 
         protected override string GetSelectCommandConditionText(int tenantId, TableInfo table)
@@ -163,13 +210,6 @@ namespace ASC.Data.Backup.Tasks.Modules
             return base.GetSelectCommandConditionText(tenantId, table);
         }
 
-        public override bool TryAdjustFilePath(bool dump, ColumnMapper columnMapper, ref string filePath)
-        {
-            //todo: hack: will be changed later
-            filePath = Regex.Replace(filePath, @"^[-\w]+(?=/)", match => dump ? match.Value : columnMapper.GetUserMapping(match.Value));
-            return !filePath.StartsWith("/");
-        }
-
         protected override bool TryPrepareRow(bool dump, DbConnection connection, ColumnMapper columnMapper, TableInfo table, DataRowInfo row, out Dictionary<string, object> preparedRow)
         {
             if (table.Name == "mail_mailbox")
@@ -178,9 +218,11 @@ namespace ASC.Data.Backup.Tasks.Modules
                 if (boxType != null && Convert.ToBoolean(int.Parse(boxType.ToString())))
                 {
                     preparedRow = null;
+
                     return false;
                 }
             }
+
             return base.TryPrepareRow(dump, connection, columnMapper, table, row, out preparedRow);
         }
 
@@ -213,6 +255,7 @@ namespace ASC.Data.Backup.Tasks.Modules
                 }
 
                 value = string.Join(",", mappedTags.ToArray());
+
                 return true;
             }
 
@@ -231,6 +274,7 @@ namespace ASC.Data.Backup.Tasks.Modules
                 }
 
                 value = -Convert.ToInt32(crmTagId);
+
                 return true;
             }
 
@@ -250,55 +294,11 @@ namespace ASC.Data.Backup.Tasks.Modules
                     _logger.ErrorFormat("Can not prepare value {0}: {1}", value, err);
                     value = null;
                 }
+
                 return true;
             }
+
             return base.TryPrepareValue(connection, columnMapper, table, columnName, ref value);
-        }
-
-        public override void PrepareData(DataTable data)
-        {
-            if (data.TableName == "mail_mailbox")
-            {
-                var address = data.Columns.Cast<DataColumn>().Single(c => c.ColumnName == "address");
-                var smtp = data.Columns.Cast<DataColumn>().Single(c => c.ColumnName == "smtp_password");
-                var pop3 = data.Columns.Cast<DataColumn>().Single(c => c.ColumnName == "pop3_password");
-                var token = data.Columns.Cast<DataColumn>().Single(c => c.ColumnName == "token");
-                for (var i = 0; i < data.Rows.Count; i++)
-                {
-                    var row = data.Rows[i];
-                    try
-                    {
-                        row[smtp] = _helpers.CreateHash2(row[smtp] as string);
-                        row[pop3] = _helpers.CreateHash2(row[pop3] as string);
-                        row[token] = _helpers.CreateHash2(row[token] as string);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.ErrorFormat("Can not prepare data {0}: {1}", row[address] as string, ex);
-                        data.Rows.Remove(row);
-                        i--;
-                    }
-                }
-            }
-        }
-
-        public override Stream PrepareData(string key, Stream stream, ColumnMapper columnMapper)
-        {
-            if (!key.EndsWith("body.html")) return stream;
-
-            using (var streamReader = new StreamReader(stream, Encoding.UTF8, true, 1024, true))
-            {
-                var data = streamReader.ReadToEnd();
-                data = Regex.Replace(data, @"(htmleditorfiles|aggregator)(\/0\/|\/[\d]+\/\d\d\/\d\d\/)([-\w]+(?=/))",
-                    match => "/" + TenantPath.CreatePath(columnMapper.GetTenantMapping().ToString()) + "/" + columnMapper.GetUserMapping(match.Groups[3].Value));
-
-                var content = Encoding.UTF8.GetBytes(data);
-
-                stream.Position = 0;
-                stream.Write(content, 0, content.Length);
-            }
-
-            return stream;
         }
     }
 }

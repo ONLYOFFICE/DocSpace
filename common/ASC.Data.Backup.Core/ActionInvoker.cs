@@ -49,7 +49,7 @@ namespace ASC.Data.Backup
         {
             if (action == null)
             {
-                throw new ArgumentNullException("action");
+                throw new ArgumentNullException(nameof(action));
             }
 
             var countAttempts = 0;

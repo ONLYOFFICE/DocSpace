@@ -102,6 +102,7 @@ namespace ASC.Data.Backup.Storage
             {
                 var request = new ListObjectsRequest { BucketName = _bucket, Prefix = GetKey(storagePath) };
                 var response = s3.ListObjectsAsync(request).Result;
+
                 return response.S3Objects.Count > 0;
             }
             catch (AmazonS3Exception ex)
@@ -115,6 +116,7 @@ namespace ASC.Data.Backup.Storage
         public string GetPublicLink(string storagePath)
         {
             using var s3 = GetClient();
+
             return s3.GetPreSignedURL(
                 new GetPreSignedUrlRequest
                 {
@@ -133,7 +135,11 @@ namespace ASC.Data.Backup.Storage
 
         private AmazonS3Client GetClient()
         {
-            return new AmazonS3Client(_accessKeyId, _secretAccessKey, new AmazonS3Config { RegionEndpoint = RegionEndpoint.GetBySystemName(_region) });
+            return new AmazonS3Client(_accessKeyId, _secretAccessKey, 
+                new AmazonS3Config 
+                { 
+                    RegionEndpoint = RegionEndpoint.GetBySystemName(_region) 
+                });
         }
     }
 }

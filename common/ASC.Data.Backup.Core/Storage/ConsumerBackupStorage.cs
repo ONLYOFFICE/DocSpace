@@ -37,16 +37,19 @@ namespace ASC.Data.Backup.Storage
         {
             _storageSettingsHelper = storageSettingsHelper;
         }
+
         public void Init(IReadOnlyDictionary<string, string> storageParams)
         {
             var settings = new StorageSettings { Module = storageParams["module"], Props = storageParams.Where(r => r.Key != "module").ToDictionary(r => r.Key, r => r.Value) };
             _store = _storageSettingsHelper.DataStore(settings);
         }
+
         public string Upload(string storageBasePath, string localPath, Guid userId)
         {
             using var stream = File.OpenRead(localPath);
             var storagePath = Path.GetFileName(localPath);
             _store.Save(Domain, storagePath, stream, ACL.Private);
+
             return storagePath;
         }
 

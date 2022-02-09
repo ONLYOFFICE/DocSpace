@@ -8,11 +8,12 @@
         private readonly DbCommandBuilder _builder;
         private readonly DataTable _columns;
         private readonly bool _mysql;
-        private readonly IDictionary<string, string> _whereExceptions = new Dictionary<string, string>();
         private readonly ILog _logger;
         private readonly BackupsContext _backupsContext;
         private readonly TenantDbContext _tenantDbContext;
         private readonly CoreDbContext _coreDbContext;
+        private readonly IDictionary<string, string> _whereExceptions 
+            = new Dictionary<string, string>();
 
         public DbHelper(
             IOptionsMonitor<ILog> options, 
@@ -71,29 +72,29 @@
         public List<string> GetTables()
         {
             var allowTables = new List<string>
-                {
-                    "blogs_",
-                    "bookmarking_",
-                    "calendar_",
-                    "core_",
-                    "crm_",
-                    "events_",
-                    "files_",
-                    "forum_",
-                    "photo_",
-                    "projects_",
-                    "tenants_",
-                    "webstudio_",
-                    "wiki_",
-                };
+            {
+                "blogs_",
+                "bookmarking_",
+                "calendar_",
+                "core_",
+                "crm_",
+                "events_",
+                "files_",
+                "forum_",
+                "photo_",
+                "projects_",
+                "tenants_",
+                "webstudio_",
+                "wiki_",
+            };
 
             var disallowTables = new List<string>
-                {
-                    "core_settings",
-                    "webstudio_uservisit",
-                    "webstudio_useractivity",
-                    "tenants_forbiden",
-                };
+            {
+                "core_settings",
+                "webstudio_uservisit",
+                "webstudio_useractivity",
+                "tenants_forbiden",
+            };
 
             IEnumerable<string> tables;
 
@@ -125,6 +126,7 @@
                 _logger.Debug(adapter.SelectCommand.CommandText);
 
                 adapter.Fill(dataTable);
+
                 return dataTable;
             }
             catch (Exception error)
@@ -194,6 +196,7 @@
                     {
                         ((IDbDataParameter)insert.Parameters["@" + c]).Value = r[c];
                     }
+
                     insert.ExecuteNonQuery();
                 }
 
@@ -215,6 +218,7 @@
         {
             var command = _connect.CreateCommand();
             command.CommandText = sql;
+
             return command;
         }
 
@@ -228,6 +232,7 @@
                     list.Add(result.GetString(0));
                 }
             }
+
             return list;
         }
 
@@ -261,6 +266,7 @@
                 return string.Format(_whereExceptions[tableName.ToLower()], tenant);
             }
             var tenantColumn = GetColumnsFrom(tableName).FirstOrDefault(c => c.ToLower().StartsWith("tenant"));
+
             return tenantColumn != null ?
                 " where " + Quote(tenantColumn) + " = " + tenant :
                 " where 1 = 0";

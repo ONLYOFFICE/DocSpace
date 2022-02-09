@@ -47,6 +47,7 @@ namespace ASC.Data.Backup
             _allowedModules = new List<string>() { "forum", "photo", "bookmarking", "wiki", "files", "crm", "projects", "logo", "fckuploaders", "talk" };
         }
 
+        public event EventHandler<ProgressChangedEventArgs> ProgressChanged;
 
         public IEnumerable<XElement> GetElements(int tenant, string[] configs, IDataWriteOperator writer)
         {
@@ -96,37 +97,6 @@ namespace ASC.Data.Backup
             return elements;
         }
 
-        private IEnumerable<FileBackupInfo> ComposeFiles(int tenant, string config)
-        {
-            var files = new List<FileBackupInfo>();
-            foreach (var module in _storageFactoryConfig.GetModuleList(config))
-            {
-                if (_allowedModules.Contains(module))
-                {
-                    var store = _storageFactory.GetStorage(config, tenant.ToString(), module);
-                    var domainList = _storageFactoryConfig.GetDomainList(config, module);
-                    foreach (var domain in domainList)
-                    {
-                        files.AddRange(store
-                            .ListFilesRelative(domain, "\\", "*.*", true)
-                            .Select(x => new FileBackupInfo(domain, module, x)));
-                    }
-
-                    files.AddRange(store
-                        .ListFilesRelative(string.Empty, "\\", "*.*", true)
-                        .Where(x => domainList.All(domain => x.IndexOf(string.Format("{0}/", domain)) == -1))
-                        .Select(x => new FileBackupInfo(string.Empty, module, x)));
-                }
-            }
-            return files.Distinct();
-        }
-
-        private string GetBackupPath(FileBackupInfo backupInfo)
-        {
-            return CrossPlatform.PathCombine(backupInfo.Module, CrossPlatform.PathCombine(backupInfo.Domain, backupInfo.Path.Replace('/', '\\')));
-        }
-
-
         public void LoadFrom(IEnumerable<XElement> elements, int tenant, string[] configs, IDataReadOperator dataOperator)
         {
             InvokeProgressChanged("Restoring files...", 0);
@@ -156,12 +126,42 @@ namespace ASC.Data.Backup
             }
         }
 
+        private IEnumerable<FileBackupInfo> ComposeFiles(int tenant, string config)
+        {
+            var files = new List<FileBackupInfo>();
+            foreach (var module in _storageFactoryConfig.GetModuleList(config))
+            {
+                if (_allowedModules.Contains(module))
+                {
+                    var store = _storageFactory.GetStorage(config, tenant.ToString(), module);
+                    var domainList = _storageFactoryConfig.GetDomainList(config, module);
+
+                    foreach (var domain in domainList)
+                    {
+                        files.AddRange(store
+                            .ListFilesRelative(domain, "\\", "*.*", true)
+                            .Select(x => new FileBackupInfo(domain, module, x)));
+                    }
+
+                    files.AddRange(store
+                        .ListFilesRelative(string.Empty, "\\", "*.*", true)
+                        .Where(x => domainList.All(domain => x.IndexOf(string.Format("{0}/", domain)) == -1))
+                        .Select(x => new FileBackupInfo(string.Empty, module, x)));
+                }
+            }
+
+            return files.Distinct();
+        }
+
+        private string GetBackupPath(FileBackupInfo backupInfo)
+        {
+            return CrossPlatform.PathCombine(backupInfo.Module, CrossPlatform.PathCombine(backupInfo.Domain, backupInfo.Path.Replace('/', '\\')));
+        }
+
         private string GetWebConfig(string[] configs)
         {
             return configs.Where(c => "Web.config".Equals(Path.GetFileName(c), StringComparison.InvariantCultureIgnoreCase)).SingleOrDefault();
         }
-
-        public event EventHandler<ProgressChangedEventArgs> ProgressChanged;
 
         private void InvokeProgressChanged(string status, double currentProgress)
         {
@@ -174,8 +174,6 @@ namespace ASC.Data.Backup
                 _logger.Error("InvokeProgressChanged", error);
             }
         }
-
-
 
         private class FileBackupInfo
         {

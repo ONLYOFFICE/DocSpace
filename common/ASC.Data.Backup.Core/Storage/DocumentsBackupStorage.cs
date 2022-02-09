@@ -52,11 +52,13 @@ namespace ASC.Data.Backup.Storage
             _storageFactory = storageFactory;
             _serviceProvider = serviceProvider;
         }
+
         public void Init(int tenantId, string webConfigPath)
         {
             _tenantId = tenantId;
             _webConfigPath = webConfigPath;
         }
+
         public string Upload(string folderId, string localPath, Guid userId)
         {
             _tenantManager.SetCurrentTenant(_tenantId);
@@ -85,6 +87,7 @@ namespace ASC.Data.Backup.Storage
             if (int.TryParse(fileId, out var fId))
             {
                 DownloadDao(fId, targetLocalPath);
+
                 return;
             }
 
@@ -98,6 +101,7 @@ namespace ASC.Data.Backup.Storage
             if (int.TryParse(fileId, out var fId))
             {
                 DeleteDao(fId);
+
                 return;
             }
 
@@ -185,6 +189,7 @@ namespace ASC.Data.Backup.Storage
             {
 
                 var file = fileDao.GetFile(fileId);
+
                 return file != null && file.RootFolderType != FolderType.TRASH;
             }
             catch (Exception)

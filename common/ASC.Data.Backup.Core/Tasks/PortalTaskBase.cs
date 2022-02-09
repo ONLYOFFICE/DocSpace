@@ -29,32 +29,28 @@ namespace ASC.Data.Backup.Tasks
     {
         public int Progress { get; private set; }
 
-
         public ProgressChangedEventArgs(int progress)
         {
             Progress = progress;
-
         }
     }
 
     public abstract class PortalTaskBase
     {
         protected const int TasksLimit = 10;
-        protected readonly List<ModuleName> IgnoredModules = new List<ModuleName>();
-        protected readonly List<string> IgnoredTables = new List<string>(); //todo: add using to backup and transfer tasks
+
         protected StorageFactory StorageFactory { get; set; }
-        protected StorageFactoryConfig StorageFactoryConfig
-        { get; set; }
+        protected StorageFactoryConfig StorageFactoryConfig { get; set; }
         protected ILog Logger { get; set; }
-
         public int Progress { get; private set; }
-
         public int TenantId { get; private set; }
         public string ConfigPath { get; private set; }
-
         public bool ProcessStorage { get; set; }
         protected ModuleProvider ModuleProvider { get; set; }
         protected DbFactory DbFactory { get; set; }
+
+        protected readonly List<ModuleName> IgnoredModules = new List<ModuleName>();
+        protected readonly List<string> IgnoredTables = new List<string>(); //todo: add using to backup and transfer tasks
 
         protected PortalTaskBase(DbFactory dbFactory, IOptionsMonitor<ILog> options, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
         {
@@ -65,6 +61,7 @@ namespace ASC.Data.Backup.Tasks
             ModuleProvider = moduleProvider;
             DbFactory = dbFactory;
         }
+
         public void Init(int tenantId, string configPath)
         {
             TenantId = tenantId;
@@ -144,6 +141,7 @@ namespace ASC.Data.Backup.Tasks
             }
 
             var moduleSpecifics = ModuleProvider.GetByStorageModule(storageModuleName);
+
             return moduleSpecifics == null || !IgnoredModules.Contains(moduleSpecifics.ModuleName);
         }
 

@@ -46,7 +46,6 @@ namespace ASC.Data.Backup.Tasks.Modules
     {
         string ConnectionStringName { get; }
         ModuleName ModuleName { get; }
-
         IEnumerable<TableInfo> Tables { get; }
         IEnumerable<RelationInfo> TableRelations { get; }
 

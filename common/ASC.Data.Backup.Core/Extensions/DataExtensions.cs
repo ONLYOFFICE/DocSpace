@@ -33,6 +33,7 @@ namespace ASC.Data.Backup.Extensions
             {
                 command.CommandTimeout = timeout;
             }
+
             return command;
         }
 
@@ -43,6 +44,7 @@ namespace ASC.Data.Backup.Extensions
                 connection.Close();
                 connection.Open();
             }
+
             return connection;
         }
     }

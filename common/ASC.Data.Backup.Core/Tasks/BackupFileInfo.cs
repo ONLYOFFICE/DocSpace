@@ -32,9 +32,7 @@ namespace ASC.Data.Backup.Tasks
         public string Path { get; set; }
         public int Tenant { get; set; }
 
-        public BackupFileInfo()
-        {
-        }
+        public BackupFileInfo() { }
 
         public BackupFileInfo(string domain, string module, string path, int tenant = -1)
         {

@@ -5,11 +5,11 @@
         public DbSet<BackupRecord> Backups { get; set; }
         public DbSet<BackupSchedule> Schedules { get; set; }
         public DbSet<DbTenant> Tenants { get; set; }
+
         public BackupsContext() { }
+
         public BackupsContext(DbContextOptions<BackupsContext> options)
-            : base(options)
-        {
-        }
+            : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

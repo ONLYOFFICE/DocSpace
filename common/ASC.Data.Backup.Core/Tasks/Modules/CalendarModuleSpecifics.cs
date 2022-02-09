@@ -27,31 +27,33 @@ namespace ASC.Data.Backup.Tasks.Modules
 {
     public class CalendarModuleSpecifics : ModuleSpecificsBase
     {
-
-        private readonly TableInfo[] _tables = new[]
-            {
-                new TableInfo("calendar_calendars", "tenant", "id") {UserIDColumns = new[] {"owner_id"}},
-                new TableInfo("calendar_calendar_item"),
-                new TableInfo("calendar_calendar_user") {UserIDColumns = new[] {"user_id"}},
-                new TableInfo("calendar_events", "tenant", "id")
-                    {
-                        UserIDColumns = new[] {"owner_id"},
-                        DateColumns = new Dictionary<string, bool> {{"start_date", true}, {"end_date", true}}
-                    },
-                new TableInfo("calendar_event_history", "tenant"),
-                new TableInfo("calendar_event_item"),
-                new TableInfo("calendar_event_user") {UserIDColumns = new[] {"user_id"}},
-                new TableInfo("calendar_notifications", "tenant")
-                    {
-                        UserIDColumns = new[] {"user_id"},
-                        DateColumns = new Dictionary<string, bool> {{"notify_date", true}}
-                    }
-            };
+        public override ModuleName ModuleName => ModuleName.Calendar;
+        public override IEnumerable<TableInfo> Tables => _tables;
+        public override IEnumerable<RelationInfo> TableRelations => _tableRelations;
 
         private readonly RelationInfo[] _tableRelations;
+        private readonly TableInfo[] _tables = new[]
+        {
+            new TableInfo("calendar_calendars", "tenant", "id") {UserIDColumns = new[] {"owner_id"}},
+            new TableInfo("calendar_calendar_item"),
+            new TableInfo("calendar_calendar_user") {UserIDColumns = new[] {"user_id"}},
+            new TableInfo("calendar_events", "tenant", "id")
+            {
+                UserIDColumns = new[] {"owner_id"},
+                DateColumns = new Dictionary<string, bool> {{"start_date", true}, {"end_date", true}}
+            },
+            new TableInfo("calendar_event_history", "tenant"),
+            new TableInfo("calendar_event_item"),
+            new TableInfo("calendar_event_user") {UserIDColumns = new[] {"user_id"}},
+            new TableInfo("calendar_notifications", "tenant")
+            {
+                UserIDColumns = new[] {"user_id"},
+                DateColumns = new Dictionary<string, bool> {{"notify_date", true}}
+            }
+        };  
 
         public CalendarModuleSpecifics(Helpers helpers)
-    : base(helpers)
+            : base(helpers)
         {
             _tableRelations = new[]
             {
@@ -72,21 +74,6 @@ namespace ASC.Data.Backup.Tasks.Modules
                 new RelationInfo("core_group", "id", "calendar_event_item", "item_id", typeof(TenantsModuleSpecifics),
                     x => Convert.ToInt32(x["is_group"]) == 1 && !helpers.IsEmptyOrSystemGroup(Convert.ToString(x["item_id"])))
             };
-        }
-
-        public override ModuleName ModuleName
-        {
-            get { return ModuleName.Calendar; }
-        }
-
-        public override IEnumerable<TableInfo> Tables
-        {
-            get { return _tables; }
-        }
-
-        public override IEnumerable<RelationInfo> TableRelations
-        {
-            get { return _tableRelations; }
         }
 
         protected override string GetSelectCommandConditionText(int tenantId, TableInfo table)

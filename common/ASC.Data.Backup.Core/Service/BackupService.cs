@@ -185,10 +185,12 @@ namespace ASC.Data.Backup.Services
         public List<TransferRegion> GetTransferRegions()
         {
             var settings = _configuration.GetSetting<BackupSettings>("backup");
+
             return settings.WebConfigs.Elements.Select(configElement =>
             {
                 var config = Utils.ConfigurationProvider.Open(PathHelper.ToRootedConfigPath(configElement.Path));
                 var baseDomain = config.AppSettings.Settings["core:base-domain"].Value;
+
                 return new TransferRegion
                 {
                     Name = configElement.Region,
@@ -234,6 +236,7 @@ namespace ASC.Data.Backup.Services
                     LastBackupTime = schedule.LastBackupTime,
                     StorageParams = JsonConvert.DeserializeObject<Dictionary<string, string>>(schedule.StorageParams)
                 };
+
                 return tmp;
             }
             else

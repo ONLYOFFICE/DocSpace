@@ -81,13 +81,17 @@ namespace ASC.Data.Backup
         public Stream GetEntry(string key)
         {
             var filePath = Path.Combine(_tmpDir, key);
-            return File.Exists(filePath) ? File.Open(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read) : null;
+
+            return File.Exists(filePath) 
+                ? File.Open(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read) 
+                : null;
         }
 
         public IEnumerable<string> GetEntries(string key)
         {
             var path = Path.Combine(_tmpDir, key);
             var files = Directory.EnumerateFiles(path);
+
             return files;
         }
 

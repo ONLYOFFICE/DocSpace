@@ -27,11 +27,9 @@ namespace ASC.Data.Backup.Tasks.Modules
 {
     public class CoreModuleSpecifics : ModuleSpecificsBase
     {
-        private static readonly Guid s_projectsSourceID = new Guid("6045B68C-2C2E-42db-9E53-C272E814C4AD");
-        private static readonly Guid s_bookmarksSourceID = new Guid("28B10049-DD20-4f54-B986-873BC14CCFC7");
-        private static readonly Guid s_forumsSourceID = new Guid("853B6EB9-73EE-438d-9B09-8FFEEDF36234");
-        private static readonly Guid s_newsSourceID = new Guid("6504977C-75AF-4691-9099-084D3DDEEA04");
-        private static readonly Guid s_blogsSourceID = new Guid("6A598C74-91AE-437d-A5F4-AD339BD11BB2");
+        public override ModuleName ModuleName => ModuleName.Core;
+        public override IEnumerable<TableInfo> Tables => _tables;
+        public override IEnumerable<RelationInfo> TableRelations => _tableRelations;
 
         private const string ForumsNewPostInTopicActionID = "new post in topic";
         private const string ForumsNewPostInThreadActionID = "new post in thread";
@@ -46,50 +44,49 @@ namespace ASC.Data.Backup.Tasks.Modules
         private const string CalendarCalendarAclObjectStart = "ASC.Api.Calendar.BusinessObjects.Calendar|";
         private const string CalendarEventAclObjectStart = "ASC.Api.Calendar.BusinessObjects.Event|";
 
-
-        private readonly TableInfo[] _tables = new[]
-            {
-                new TableInfo("core_acl", "tenant") {InsertMethod = InsertMethod.Ignore},
-                new TableInfo("core_subscription", "tenant"),
-                new TableInfo("core_subscriptionmethod", "tenant"),
-                new TableInfo("core_userphoto", "tenant") {UserIDColumns = new[] {"userid"}},
-                new TableInfo("core_usersecurity", "tenant") {UserIDColumns = new[] {"userid"}},
-                new TableInfo("core_usergroup", "tenant") {UserIDColumns = new[] {"userid"}},
-                new TableInfo("feed_aggregate", "tenant")
-                    {
-                        InsertMethod = InsertMethod.None,
-                        DateColumns = new Dictionary<string, bool> {{"created_date", false}, {"aggregated_date", false}}
-                    },
-                new TableInfo("feed_readed", "tenant_id")
-                    {
-                        InsertMethod = InsertMethod.None,
-                        DateColumns = new Dictionary<string, bool> {{"timestamp", false}}
-                    },
-                new TableInfo("feed_users") {InsertMethod = InsertMethod.None},
-                new TableInfo("backup_backup", "tenant_id", "id", IdType.Guid),
-                new TableInfo("backup_schedule", "tenant_id"),
-                new TableInfo("core_settings", "tenant")
-            };
+        private static readonly Guid s_projectsSourceID = new Guid("6045B68C-2C2E-42db-9E53-C272E814C4AD");
+        private static readonly Guid s_bookmarksSourceID = new Guid("28B10049-DD20-4f54-B986-873BC14CCFC7");
+        private static readonly Guid s_forumsSourceID = new Guid("853B6EB9-73EE-438d-9B09-8FFEEDF36234");
+        private static readonly Guid s_newsSourceID = new Guid("6504977C-75AF-4691-9099-084D3DDEEA04");
+        private static readonly Guid s_blogsSourceID = new Guid("6A598C74-91AE-437d-A5F4-AD339BD11BB2");
 
         private readonly RelationInfo[] _tableRelations;
         private readonly Helpers _helpers;
+        private readonly TableInfo[] _tables = new[]
+        {
+            new TableInfo("core_acl", "tenant") {InsertMethod = InsertMethod.Ignore},
+            new TableInfo("core_subscription", "tenant"),
+            new TableInfo("core_subscriptionmethod", "tenant"),
+            new TableInfo("core_userphoto", "tenant") {UserIDColumns = new[] {"userid"}},
+            new TableInfo("core_usersecurity", "tenant") {UserIDColumns = new[] {"userid"}},
+            new TableInfo("core_usergroup", "tenant") {UserIDColumns = new[] {"userid"}},
+            new TableInfo("feed_aggregate", "tenant")
+            {
+                InsertMethod = InsertMethod.None,
+                DateColumns = new Dictionary<string, bool> {{"created_date", false}, {"aggregated_date", false}}
+            },
+            new TableInfo("feed_readed", "tenant_id")
+            {
+                InsertMethod = InsertMethod.None,
+                DateColumns = new Dictionary<string, bool> {{"timestamp", false}}
+            },
+            new TableInfo("feed_users") {InsertMethod = InsertMethod.None},
+            new TableInfo("backup_backup", "tenant_id", "id", IdType.Guid),
+            new TableInfo("backup_schedule", "tenant_id"),
+            new TableInfo("core_settings", "tenant")
+        };
+
         public CoreModuleSpecifics(Helpers helpers) : base(helpers)
         {
             _helpers = helpers;
             _tableRelations = new[]
             {
                 new RelationInfo("core_user", "id", "core_acl", "subject", typeof(TenantsModuleSpecifics)),
-
                 new RelationInfo("core_group", "id", "core_acl", "subject", typeof(TenantsModuleSpecifics)),
-
                 new RelationInfo("core_user", "id", "core_subscription", "recipient", typeof(TenantsModuleSpecifics)),
-
                 new RelationInfo("core_group", "id", "core_subscription", "recipient", typeof(TenantsModuleSpecifics)),
-
                 new RelationInfo("core_user", "id", "core_subscriptionmethod", "recipient", typeof(TenantsModuleSpecifics)),
-
                 new RelationInfo("core_group", "id", "core_subscriptionmethod", "recipient", typeof(TenantsModuleSpecifics)),
-
                 new RelationInfo("core_group", "id", "core_usergroup", "groupid", typeof(TenantsModuleSpecifics),
                                  x => !helpers.IsEmptyOrSystemGroup(Convert.ToString(x["groupid"]))),
 
@@ -150,24 +147,9 @@ namespace ASC.Data.Backup.Tasks.Modules
                                  x => IsDocumentsStorageType(Convert.ToString(x["storage_type"]))),
             };
         }
-        public override ModuleName ModuleName
-        {
-            get { return ModuleName.Core; }
-        }
-
-        public override IEnumerable<TableInfo> Tables
-        {
-            get { return _tables; }
-        }
-
-        public override IEnumerable<RelationInfo> TableRelations
-        {
-            get { return _tableRelations; }
-        }
 
         protected override string GetSelectCommandConditionText(int tenantId, TableInfo table)
         {
-
             if (table.Name == "feed_users")
             {
                 return "inner join core_user t1 on t1.id = t.user_id where t1.tenant = " + tenantId;
@@ -186,8 +168,10 @@ namespace ASC.Data.Backup.Tasks.Modules
             if (table.Name == "core_usergroup" && columnName == "last_modified")
             {
                 value = DateTime.UtcNow;
+
                 return true;
             }
+
             return base.TryPrepareValue(connection, columnMapper, table, columnName, ref value);
         }
 
@@ -198,9 +182,11 @@ namespace ASC.Data.Backup.Tasks.Modules
                 if (int.Parse((string)row["tenant"]) == -1)
                 {
                     preparedRow = null;
+
                     return false;
                 }
             }
+
             return base.TryPrepareRow(dump, connection, columnMapper, table, row, out preparedRow);
         }
 
@@ -217,8 +203,10 @@ namespace ASC.Data.Backup.Tasks.Modules
                 }
 
                 value = string.Format("{0}|{1}", valParts[0], entityId);
+
                 return true;
             }
+
             return base.TryPrepareValue(connection, columnMapper, relation, ref value);
         }
 
@@ -244,6 +232,7 @@ namespace ASC.Data.Backup.Tasks.Modules
                 }
 
                 value = string.Format("{0}_{1}_{2}", valParts[0], entityId, projectId);
+
                 return true;
             }
 
@@ -263,9 +252,11 @@ namespace ASC.Data.Backup.Tasks.Modules
                     if (mapping != null)
                     {
                         value = mapping;
+
                         return true;
                     }
                 }
+
                 return false;
             }
 
@@ -288,6 +279,7 @@ namespace ASC.Data.Backup.Tasks.Modules
         private static bool IsDocumentsStorageType(string strStorageType)
         {
             var storageType = int.Parse(strStorageType);
+
             return storageType == 0 || storageType == 1;
         }
     }

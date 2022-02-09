@@ -34,11 +34,13 @@ namespace ASC.Data.Backup.Storage
             {
                 throw new FileNotFoundException("Directory not found.");
             }
+
             var storagePath = CrossPlatform.PathCombine(storageBasePath, Path.GetFileName(localPath));
             if (localPath != storagePath)
             {
                 File.Copy(localPath, storagePath, true);
             }
+
             return storagePath;
         }
 

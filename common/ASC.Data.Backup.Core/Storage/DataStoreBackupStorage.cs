@@ -34,19 +34,21 @@ namespace ASC.Data.Backup.Storage
 
         public DataStoreBackupStorage(StorageFactory storageFactory)
         {
-
             _storageFactory = storageFactory;
         }
+
         public void Init(int tenant, string webConfigPath)
         {
             _webConfigPath = webConfigPath;
             _tenant = tenant;
         }
+
         public string Upload(string storageBasePath, string localPath, Guid userId)
         {
             using var stream = File.OpenRead(localPath);
             var storagePath = Path.GetFileName(localPath);
             GetDataStore().Save("", storagePath, stream);
+
             return storagePath;
         }
 

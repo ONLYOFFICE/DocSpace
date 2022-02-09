@@ -28,20 +28,19 @@ namespace ASC.Data.Backup.Tasks.Modules
     public abstract class ModuleSpecificsBase : IModuleSpecifics
     {
         public abstract ModuleName ModuleName { get; }
-
-        private string _connectionStringName;
-        public virtual string ConnectionStringName
-        {
-            get { return _connectionStringName ??= ModuleName.ToString().ToLower(); }
-        }
-
         public abstract IEnumerable<TableInfo> Tables { get; }
         public abstract IEnumerable<RelationInfo> TableRelations { get; }
+        public virtual string ConnectionStringName
+            => _connectionStringName ??= ModuleName.ToString().ToLower();
+
+        private string _connectionStringName;
         private readonly Helpers _helpers;
+        
         public ModuleSpecificsBase(Helpers helpers)
         {
             _helpers = helpers;
         }
+
         public IEnumerable<TableInfo> GetTablesOrdered()
         {
             var notOrderedTables = new List<TableInfo>(Tables);
@@ -65,6 +64,7 @@ namespace ASC.Data.Backup.Tasks.Modules
                     {
                         notOrderedTables.RemoveAt(i);
                         orderedTablesCount++;
+
                         yield return table;
                     }
                     else
@@ -74,7 +74,9 @@ namespace ASC.Data.Backup.Tasks.Modules
                 }
 
                 if (orderedTablesCountBeforeIter == orderedTablesCount) // ensure we not in infinite loop...
+                {
                     throw ThrowHelper.CantOrderTables(notOrderedTables.Select(x => x.Name));
+                }
             }
         }
 
@@ -82,6 +84,7 @@ namespace ASC.Data.Backup.Tasks.Modules
         {
             var command = connection.CreateCommand();
             command.CommandText = string.Format("select t.* from {0} as t {1} limit {2},{3};", table.Name, GetSelectCommandConditionText(tenantId, table), offset, limit);
+
             return command;
         }
 
@@ -89,6 +92,7 @@ namespace ASC.Data.Backup.Tasks.Modules
         {
             var command = connection.CreateCommand();
             command.CommandText = string.Format("delete t.* from {0} as t {1};", table.Name, GetDeleteCommandConditionText(tenantId, table));
+
             return command;
         }
 
@@ -116,12 +120,15 @@ namespace ASC.Data.Backup.Tasks.Modules
 
             var command = connection.CreateCommand();
             command.CommandText = insertCommantText;
+
             foreach (var parameter in valuesForInsert)
             {
                 AddParameter(command, parameter.Key, parameter.Value);
             }
+
             return command;
         }
+
         public DbCommand AddParameter(DbCommand command, string name, object value)
         {
             var p = command.CreateParameter();
@@ -133,6 +140,7 @@ namespace ASC.Data.Backup.Tasks.Modules
             p.Value = GetParameterValue(value);
 
             command.Parameters.Add(p);
+
             return command;
         }
 
@@ -152,11 +160,23 @@ namespace ASC.Data.Backup.Tasks.Modules
             {
                 return new DateTime(d.Year, d.Month, d.Day, d.Hour, d.Minute, d.Second, DateTimeKind.Unspecified);
             }
+
             return value;
         }
+
         public virtual bool TryAdjustFilePath(bool dump, ColumnMapper columnMapper, ref string filePath)
         {
             return true;
+        }
+
+        public virtual void PrepareData(DataTable data)
+        {
+            // nothing to do
+        }
+
+        public virtual Stream PrepareData(string key, Stream stream, ColumnMapper columnMapper)
+        {
+            return stream;
         }
 
         protected virtual string GetSelectCommandConditionText(int tenantId, TableInfo table)
@@ -228,6 +248,7 @@ namespace ASC.Data.Backup.Tasks.Modules
                 }
 
                 value = tenantMapping;
+
                 return true;
             }
 
@@ -241,6 +262,7 @@ namespace ASC.Data.Backup.Tasks.Modules
                 }
 
                 value = userMapping;
+
                 return true;
             }
 
@@ -264,22 +286,13 @@ namespace ASC.Data.Backup.Tasks.Modules
             if (mappedValue != null)
             {
                 value = mappedValue;
+
                 return true;
             }
 
             return value == null ||
                 Guid.TryParse(Convert.ToString(value), out _) ||
                 int.TryParse(Convert.ToString(value), out _);
-        }
-
-        public virtual void PrepareData(DataTable data)
-        {
-            // nothing to do
-        }
-
-        public virtual Stream PrepareData(string key, Stream stream, ColumnMapper columnMapper)
-        {
-            return stream;
         }
     }
 }

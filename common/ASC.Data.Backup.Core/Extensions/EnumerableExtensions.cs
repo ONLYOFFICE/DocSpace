@@ -52,20 +52,19 @@ namespace ASC.Data.Backup.Extensions
         {
             if (elements == null)
             {
-                throw new ArgumentNullException("elements");
+                throw new ArgumentNullException(nameof(elements));
             }
-
             if (keySelector == null)
             {
-                throw new ArgumentNullException("keySelector");
+                throw new ArgumentNullException(nameof(keySelector));
             }
-
             if (parentKeySelector == null)
             {
-                throw new ArgumentNullException("parentKeySelector");
+                throw new ArgumentNullException(nameof(parentKeySelector));
             }
 
             var dic = elements.ToDictionary(keySelector, x => new TreeNode<TEntry>(x));
+
             foreach (var keyValue in dic)
             {
                 var parentKey = parentKeySelector(keyValue.Value.Entry);
@@ -83,12 +82,11 @@ namespace ASC.Data.Backup.Extensions
         {
             if (collection == null)
             {
-                throw new ArgumentNullException("collection");
+                throw new ArgumentNullException(nameof(collection));
             }
-
             if (partLength <= 0)
             {
-                throw new ArgumentOutOfRangeException("partLength", partLength, "Length must be positive integer");
+                throw new ArgumentOutOfRangeException(nameof(partLength), partLength, "Length must be positive integer");
             }
 
             var part = new List<TEntry>(partLength);

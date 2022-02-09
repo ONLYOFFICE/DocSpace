@@ -108,6 +108,7 @@
         public List<BackupHistoryRecord> GetBackupHistory()
         {
             DemandPermissionsBackup();
+
             return _backupService.GetBackupHistory(GetCurrentTenantId());
         }
 
@@ -355,9 +356,7 @@
             public int Hour { get; set; }
             public int Day { get; set; }
 
-            public CronParams()
-            {
-            }
+            public CronParams() { }
 
             public CronParams(string cronString)
             {

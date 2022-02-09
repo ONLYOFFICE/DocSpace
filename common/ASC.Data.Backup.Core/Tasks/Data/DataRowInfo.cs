@@ -27,25 +27,14 @@ namespace ASC.Data.Backup.Tasks.Data
 {
     public class DataRowInfo
     {
+        public string TableName { get; private set; }
+        public IReadOnlyCollection<string> ColumnNames => _columnNames.AsReadOnly();
+
+        public object this[int index] => _values[index];
+        public object this[string columnName] => _values[GetIndex(columnName)];
+
         private readonly List<string> _columnNames = new List<string>();
         private readonly List<object> _values = new List<object>();
-
-        public string TableName { get; private set; }
-
-        public IReadOnlyCollection<string> ColumnNames
-        {
-            get { return _columnNames.AsReadOnly(); }
-        }
-
-        public object this[int index]
-        {
-            get { return _values[index]; }
-        }
-
-        public object this[string columnName]
-        {
-            get { return _values[GetIndex(columnName)]; }
-        }
 
         public DataRowInfo(string tableName)
         {
@@ -64,11 +53,6 @@ namespace ASC.Data.Backup.Tasks.Data
             {
                 _values[index] = item;
             }
-        }
-
-        private int GetIndex(string columnName)
-        {
-            return _columnNames.FindIndex(name => name.Equals(columnName, StringComparison.OrdinalIgnoreCase));
         }
 
         public override string ToString()
@@ -96,6 +80,11 @@ namespace ASC.Data.Backup.Tasks.Data
             }
 
             return sb.ToString();
+        }
+
+        private int GetIndex(string columnName)
+        {
+            return _columnNames.FindIndex(name => name.Equals(columnName, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

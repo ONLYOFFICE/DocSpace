@@ -28,11 +28,11 @@ namespace ASC.Data.Backup.Tasks
     [Scope]
     public class RestorePortalTask : PortalTaskBase
     {
+        public bool ReplaceDate { get; set; }
+        public bool Dump { get; set; }
         public string BackupFilePath { get; private set; }
         public string UpgradesPath { get; private set; }
         public bool UnblockPortalAfterCompleted { get; set; }
-        public bool ReplaceDate { get; set; }
-        public bool Dump { get; set; }
 
         private ColumnMapper _columnMapper;
         private readonly CoreBaseSettings _coreBaseSettings;
@@ -64,7 +64,7 @@ namespace ASC.Data.Backup.Tasks
         {
             if (fromFilePath == null)
             {
-                throw new ArgumentNullException("fromFilePath");
+                throw new ArgumentNullException(nameof(fromFilePath));
             }
 
             if (!File.Exists(fromFilePath))
@@ -104,10 +104,12 @@ namespace ASC.Data.Backup.Tasks
                     {
                         var restoreTask = new RestoreDbModuleTask(_options, module, dataReader, _columnMapper, DbFactory, ReplaceDate, Dump, StorageFactory, StorageFactoryConfig, ModuleProvider);
                         restoreTask.ProgressChanged += (sender, args) => SetCurrentStepProgress(args.Progress);
+
                         foreach (var tableName in IgnoredTables)
                         {
                             restoreTask.IgnoreTable(tableName);
                         }
+
                         restoreTask.RunJob();
                     }
                 }
@@ -124,6 +126,7 @@ namespace ASC.Data.Backup.Tasks
 
                     DoRestoreStorage(dataReader);
                 }
+
                 if (UnblockPortalAfterCompleted)
                 {
                     SetTenantActive(_columnMapper.GetTenantMapping());
@@ -313,6 +316,7 @@ namespace ASC.Data.Backup.Tasks
             {
                 SetStepCompleted();
             }
+
             Logger.Debug("end restore storage");
         }
 
@@ -359,7 +363,9 @@ namespace ASC.Data.Backup.Tasks
             {
                 return Enumerable.Empty<BackupFileInfo>();
             }
+
             var restoreInfo = XElement.Load(new StreamReader(stream));
+
             return restoreInfo.Elements("file").Select(BackupFileInfo.FromXElement).ToList();
         }
 

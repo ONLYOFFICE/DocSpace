@@ -38,36 +38,22 @@ namespace ASC.Data.Backup.Tasks.Data
         public string ParentColumn { get; private set; }
         public string ChildTable { get; private set; }
         public string ChildColumn { get; private set; }
-
         public Type ParentModule { get; private set; }
         public RelationImportance Importance { get; private set; }
-
         public Func<DataRowInfo, bool> CollisionResolver { get; private set; }
 
 
         public RelationInfo(string parentTable, string parentColumn, string childTable, string childColumn)
-            : this(parentTable, parentColumn, childTable, childColumn, null, null)
-        {
-
-        }
+            : this(parentTable, parentColumn, childTable, childColumn, null, null) { }
 
         public RelationInfo(string parentTable, string parentColumn, string childTable, string childColumn, Func<DataRowInfo, bool> collisionResolver)
-            : this(parentTable, parentColumn, childTable, childColumn, null, collisionResolver)
-        {
-
-        }
+            : this(parentTable, parentColumn, childTable, childColumn, null, collisionResolver) { }
 
         public RelationInfo(string parentTable, string parentColumn, string childTable, string childColumn, Type parentModule)
-            : this(parentTable, parentColumn, childTable, childColumn, parentModule, null)
-        {
-
-        }
+            : this(parentTable, parentColumn, childTable, childColumn, parentModule, null) { }
 
         public RelationInfo(string parentTable, string parentColumn, string childTable, string childColumn, Type parentModule, Func<DataRowInfo, bool> collisionResolver)
-            : this(parentTable, parentColumn, childTable, childColumn, parentModule, collisionResolver, RelationImportance.Normal)
-        {
-
-        }
+            : this(parentTable, parentColumn, childTable, childColumn, parentModule, collisionResolver, RelationImportance.Normal) { }
 
         public RelationInfo(string parentTable, string parentColumn, string childTable, string childColumn, Type parentModule, Func<DataRowInfo, bool> collisionResolver, RelationImportance importance)
         {
@@ -79,7 +65,6 @@ namespace ASC.Data.Backup.Tasks.Data
             CollisionResolver = collisionResolver;
             Importance = importance;
         }
-
 
         public bool FitsForTable(string tableName)
         {

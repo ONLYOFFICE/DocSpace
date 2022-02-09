@@ -175,6 +175,7 @@ namespace ASC.Data.Backup
                 args.Add(new TagValue(CommonTags.ProfileUrl, url + scope.ServiceProvider.GetService<CommonLinkUtility>().GetMyStaff()));
                 args.Add(new TagValue(CommonTags.LetterLogo, scope.ServiceProvider.GetService<TenantLogoManager>().GetLogoDark(true)));
             }
+
             return args;
         }
     }

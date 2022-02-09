@@ -38,9 +38,9 @@ namespace ASC.Data.Backup.Tasks
         public RestoreDbModuleTask(IOptionsMonitor<ILog> options, IModuleSpecifics module, IDataReadOperator reader, ColumnMapper columnMapper, DbFactory factory, bool replaceDate, bool dump, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
             : base(factory, options, storageFactory, storageFactoryConfig, moduleProvider)
         {
-            _reader = reader ?? throw new ArgumentNullException("reader");
-            _columnMapper = columnMapper ?? throw new ArgumentNullException("columnMapper");
-            DbFactory = factory ?? throw new ArgumentNullException("factory");
+            _reader = reader ?? throw new ArgumentNullException(nameof(reader));
+            _columnMapper = columnMapper ?? throw new ArgumentNullException(nameof(columnMapper));
+            DbFactory = factory ?? throw new ArgumentNullException(nameof(factory));
             _module = module;
             _replaceDate = replaceDate;
             _dump = dump;
@@ -73,6 +73,20 @@ namespace ASC.Data.Backup.Tasks
             }
 
             Logger.DebugFormat("end restore data for module {0}", _module.ModuleName);
+        }
+
+        public string[] ExecuteArray(DbCommand command)
+        {
+            var list = new List<string>();
+            using (var result = command.ExecuteReader())
+            {
+                while (result.Read())
+                {
+                    list.Add(result.GetString(0));
+                }
+            }
+
+            return list.ToArray();
         }
 
         private void RestoreTable(DbConnection connection, TableInfo tableInfo, ref int transactionsCommited, ref int rowsInserted)
@@ -141,6 +155,7 @@ namespace ASC.Data.Backup.Tasks
                         Logger.WarnFormat("Can't create command to insert row to {0} with values [{1}]", tableInfo,
                             row);
                         _columnMapper.Rollback();
+
                         continue;
                     }
                     insertCommand.WithTimeout(120).ExecuteNonQuery();
@@ -163,6 +178,7 @@ namespace ASC.Data.Backup.Tasks
                             Logger.WarnFormat(
                                 "Table {0} does not contain tenant id column. Can't apply low importance relations on such tables.",
                                 relation.Item2.Name);
+
                             continue;
                         }
 
@@ -211,6 +227,7 @@ namespace ASC.Data.Backup.Tasks
         {
             var result = new List<DataRowInfo> { node.Entry };
             result.AddRange(node.Children.SelectMany(x => OrderNode(x)));
+
             return result;
         }
 
@@ -220,19 +237,6 @@ namespace ASC.Data.Backup.Tasks
             showColumnsCommand.Connection = connection;
 
             table.Columns = ExecuteArray(showColumnsCommand);
-        }
-
-        public string[] ExecuteArray(DbCommand command)
-        {
-            var list = new List<string>();
-            using (var result = command.ExecuteReader())
-            {
-                while (result.Read())
-                {
-                    list.Add(result.GetString(0));
-                }
-            }
-            return list.ToArray();
         }
     }
 }

@@ -35,7 +35,9 @@ namespace ASC.Data.Backup.Utils
             {
                 return content;
             }
+
             var tenantPath = "/" + TenantPath.CreatePath(tenant.ToString()) + "/";
+
             return s_regex.Replace(content, (m) => m.Success ? m.Groups["start"] + tenantPath : string.Empty);
         }
     }

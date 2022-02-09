@@ -30,17 +30,10 @@ namespace ASC.Data.Backup.Tasks
     {
         public const string DefaultConnectionStringName = "default";
 
-        private DbProviderFactory _dbProviderFactory;
-        private readonly IConfiguration _configuration;
-        private readonly ConfigurationExtension _configurationExtension;
-        private string _connectionString;
-        private string _path;
-
         internal ConnectionStringSettings ConnectionStringSettings
         {
             get
             {
-
                 if (string.IsNullOrEmpty(_connectionString))
                 {
                     return _configurationExtension.GetConnectionStrings(DefaultConnectionStringName);
@@ -62,9 +55,16 @@ namespace ASC.Data.Backup.Tasks
                     var type = Type.GetType(_configuration["DbProviderFactories:mysql:type"], true);
                     _dbProviderFactory = (DbProviderFactory)Activator.CreateInstance(type, true);
                 }
+
                 return _dbProviderFactory;
             }
         }
+
+        private DbProviderFactory _dbProviderFactory;
+        private readonly IConfiguration _configuration;
+        private readonly ConfigurationExtension _configurationExtension;
+        private string _connectionString;
+        private string _path;
 
         public DbFactory(IConfiguration configuration, ConfigurationExtension configurationExtension)
         {
@@ -82,6 +82,7 @@ namespace ASC.Data.Backup.Tasks
                 connection.ConnectionString = EnsureConnectionTimeout(ConnectionStringSettings.ConnectionString);
                 connection.Open();
             }
+
             return connection;
         }
 
@@ -92,6 +93,7 @@ namespace ASC.Data.Backup.Tasks
             {
                 result = new MySqlDataAdapter();
             }
+
             return result;
         }
 
@@ -103,6 +105,7 @@ namespace ASC.Data.Backup.Tasks
                     ConnectionStringSettings.ProviderName.IndexOf("MySql", StringComparison.OrdinalIgnoreCase) != -1
                         ? "select Last_Insert_Id();"
                         : "select last_insert_rowid();";
+
             return command;
         }
 
@@ -113,6 +116,7 @@ namespace ASC.Data.Backup.Tasks
             {
                 command.CommandText = "show columns from " + tableName + ";";
             }
+
             return command;
         }
 
@@ -122,6 +126,7 @@ namespace ASC.Data.Backup.Tasks
             {
                 connectionString = connectionString.TrimEnd(';') + ";Connection Timeout=90";
             }
+
             return connectionString;
         }
     }

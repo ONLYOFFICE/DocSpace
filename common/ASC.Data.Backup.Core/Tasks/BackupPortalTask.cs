@@ -30,8 +30,7 @@ namespace ASC.Data.Backup.Tasks
     {
         public string BackupFilePath { get; private set; }
         public int Limit { get; private set; }
-
-        private BackupsContext BackupRecordContext { get => _lazyBackupsContext.Value; }
+        private BackupsContext BackupRecordContext => _lazyBackupsContext.Value;
 
         private const int MaxLength = 250;
         private const int BatchLimit = 5000;
@@ -54,7 +53,7 @@ namespace ASC.Data.Backup.Tasks
         {
             if (string.IsNullOrEmpty(toFilePath))
             {
-                throw new ArgumentNullException("toFilePath");
+                throw new ArgumentNullException(nameof(toFilePath));
             }
 
             BackupFilePath = toFilePath;
@@ -62,6 +61,7 @@ namespace ASC.Data.Backup.Tasks
             Init(tenantId, fromConfigPath);
 
         }
+
         public override void RunJob()
         {
             Logger.DebugFormat("begin backup {0}", TenantId);
@@ -93,7 +93,24 @@ namespace ASC.Data.Backup.Tasks
                     }
                 }
             }
+
             Logger.DebugFormat("end backup {0}", TenantId);
+        }
+
+        public List<object[]> ExecuteList(DbCommand command)
+        {
+            var list = new List<object[]>();
+            using (var result = command.ExecuteReader())
+            {
+                while (result.Read())
+                {
+                    var objects = new object[result.FieldCount];
+                    result.GetValues(objects);
+                    list.Add(objects);
+                }
+            }
+
+            return list;
         }
 
         private void DoDump(IDataWriteOperator writer)
@@ -124,6 +141,7 @@ namespace ASC.Data.Backup.Tasks
                 {
                     files.AddRange(GetFiles(t));
                 }
+
                 stepscount += files.Count * 2 + 1;
                 Logger.Debug("files:" + files.Count);
             }
@@ -240,6 +258,7 @@ namespace ASC.Data.Backup.Tasks
                 analyzeCommand.ExecuteNonQuery();
                 using var command = connection.CreateCommand();
                 command.CommandText = $"select TABLE_ROWS from INFORMATION_SCHEMA.TABLES where TABLE_NAME = '{t}' and TABLE_SCHEMA = '{connection.Database}'";
+
                 return int.Parse(command.ExecuteScalar().ToString());
             }
             catch (Exception e)
@@ -258,6 +277,7 @@ namespace ASC.Data.Backup.Tasks
                 {
                     Logger.DebugFormat("dump table data stop {0}", t);
                     SetStepCompleted(2);
+
                     return;
                 }
 
@@ -268,6 +288,7 @@ namespace ASC.Data.Backup.Tasks
                 var primaryIndexStart = 0;
 
                 List<string> columns;
+
                 using (var connection = DbFactory.OpenConnection())
                 {
                     var command = connection.CreateCommand();
@@ -286,6 +307,7 @@ namespace ASC.Data.Backup.Tasks
                     primaryIndex = ExecuteList(command).ConvertAll(r => Convert.ToString(r[0])).FirstOrDefault();
 
                 }
+
                 using (var connection = DbFactory.OpenConnection())
                 {
                     var command = connection.CreateCommand();
@@ -361,14 +383,17 @@ namespace ASC.Data.Backup.Tasks
             var command = connection.CreateCommand();
             var selects = string.Join(',', columns);
             command.CommandText = $"select {selects} from {t} LIMIT {offset}, {Limit}";
+
             return ExecuteList(command);
         }
+
         private List<object[]> GetDataWithPrimary(string t, List<string> columns, string primary, int start, int step)
         {
             using var connection = DbFactory.OpenConnection();
             var command = connection.CreateCommand();
             var selects = string.Join(',', columns);
             command.CommandText = $"select {selects} from {t} where {primary} BETWEEN  {start} and {start + step} ";
+
             return ExecuteList(command);
         }
 
@@ -413,6 +438,7 @@ namespace ASC.Data.Backup.Tasks
                         }
 
                         sw.Write(")");
+
                         if (j != portion.Count - 1)
                         {
                             sw.Write(",");
@@ -421,9 +447,11 @@ namespace ASC.Data.Backup.Tasks
                         {
                             sw.Write(";");
                         }
+
                         sw.WriteLine();
                     }
                 }
+
                 data = data.Skip(BatchLimit).ToList();
             }
         }
@@ -513,12 +541,15 @@ namespace ASC.Data.Backup.Tasks
                 {
                     f = @"\\?\" + f;
                 }
+
                 using (var tmpFile = new FileStream(f, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.DeleteOnClose))
                 {
                     writer.WriteEntry(enumerateFile.Substring(subDir.Length), tmpFile);
                 }
+
                 SetStepCompleted();
             }
+
             Logger.DebugFormat("archive dir end {0}", subDir);
         }
 
@@ -592,6 +623,7 @@ namespace ASC.Data.Backup.Tasks
                     SetCurrentStepProgress((int)((++tablesProcessed * 100) / (double)tablesCount));
                 }
             }
+
             Logger.DebugFormat("end saving data for module {0}", module.ModuleName);
         }
 
@@ -633,19 +665,6 @@ namespace ASC.Data.Backup.Tasks
 
             Logger.Debug("end backup storage");
         }
-        public List<object[]> ExecuteList(DbCommand command)
-        {
-            var list = new List<object[]>();
-            using (var result = command.ExecuteReader())
-            {
-                while (result.Read())
-                {
-                    var objects = new object[result.FieldCount];
-                    result.GetValues(objects);
-                    list.Add(objects);
-                }
-            }
-            return list;
-        }
+        
     }
 }

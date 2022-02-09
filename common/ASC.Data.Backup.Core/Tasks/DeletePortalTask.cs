@@ -38,14 +38,17 @@ namespace ASC.Data.Backup.Tasks
             Logger.DebugFormat("begin delete {0}", TenantId);
             var modulesToProcess = GetModulesToProcess().Reverse().ToList();
             SetStepsCount(ProcessStorage ? modulesToProcess.Count + 1 : modulesToProcess.Count);
+
             foreach (var module in modulesToProcess)
             {
                 DoDeleteModule(module);
             }
+
             if (ProcessStorage)
             {
                 DoDeleteStorage();
             }
+
             Logger.DebugFormat("end delete {0}", TenantId);
         }
 
@@ -66,6 +69,7 @@ namespace ASC.Data.Backup.Tasks
                     SetCurrentStepProgress((int)((++tablesProcessed * 100) / (double)tablesCount));
                 }
             }
+
             Logger.DebugFormat("end delete data for module ({0})", module.ModuleName);
         }
 
@@ -83,9 +87,11 @@ namespace ASC.Data.Backup.Tasks
                     ActionInvoker.Try(state => storage.DeleteFiles((string)state, "\\", "*.*", true), domain, 5,
                                       onFailure: error => Logger.WarnFormat("Can't delete files for domain {0}: \r\n{1}", domain, error));
                 }
+
                 storage.DeleteFiles("\\", "*.*", true);
                 SetCurrentStepProgress((int)((++modulesProcessed * 100) / (double)storageModules.Count));
             }
+
             Logger.Debug("end delete storage");
         }
     }

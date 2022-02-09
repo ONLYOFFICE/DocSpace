@@ -36,12 +36,14 @@
                 }
 
                 var now = _tenantUtil.DateTimeFromUtc(tenantTimeZone, DateTime.UtcNow);
+
                 return nextBackupTime <= now;
             }
             catch (Exception e)
             {
                 var log = _options.CurrentValue;
                 log.Error("Schedule " + backupSchedule.TenantId, e);
+
                 return false;
             }
         }
