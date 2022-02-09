@@ -19,7 +19,7 @@ const StyledLanguageTimeSettingsTooltip = styled.div`
   }
 `;
 
-const LanguageTimeSettingsTooltip = ({ t }) => {
+const LanguageTimeSettingsTooltip = ({ t, theme }) => {
   const learnMore = t("Common:LearnMore");
   const text = t("Settings:StudioTimeLanguageSettings");
   const save = t("Common:SaveButton");
@@ -46,6 +46,7 @@ const LanguageTimeSettingsTooltip = ({ t }) => {
           <Text className="bold display font-size"> {{ save }}</Text> button at
           the bottom of the section.
           <Link
+            color={theme.studio.settings.common.linkColorHelp}
             className="display-link font-size"
             isHovered={true}
             href="https://helpcenter.onlyoffice.com/administration/configuration.aspx#CustomizingPortal_block"
