@@ -48,9 +48,8 @@ namespace ASC.Socket.IO.Svc
     [Singletone]
     public class SocketServiceLauncher : IHostedService
     {
-        private const int PingInterval = 10000;
-        private const int ReconnectAttempts = 5;
-
+        private int PingInterval { get; set; }
+        private int ReconnectAttempts { get; set; }
         private Process Proc { get; set; }
         private ProcessStartInfo StartInfo { get; set; }
         private SocketIO SocketClient { get; set; }
@@ -84,6 +83,9 @@ namespace ASC.Socket.IO.Svc
             try
             {
                 var settings = ConfigurationExtension.GetSetting<SocketSettings>("socket");
+
+                PingInterval = settings.PingInterval.GetValueOrDefault(10000);
+                ReconnectAttempts = settings.ReconnectAttempts.GetValueOrDefault(5);
 
                 StartInfo = new ProcessStartInfo
                 {

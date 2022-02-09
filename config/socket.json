@@ -3,6 +3,8 @@
 		"path": "../../ASC.Socket.IO",
 		"port": "9899",
 		"redisHost": "",
-		"redisPort": 6379
+		"redisPort": 6379,
+		"pingInterval": 60000,
+		"reconnectAttempts": 3
 	}
 }
