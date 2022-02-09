@@ -1,4 +1,4 @@
-{
+﻿{
   "ChangePasswordSuccess": "Salasanan vaihtaminen onnistui",
   "ConfirmOwnerPortalSuccessMessage": "Portaalin omistajan vaihto onnistui. 10 sekunnin kuluttua sinut uudelleen ohjataan",
   "ConfirmOwnerPortalTitle": "Vahvista, että haluat vaihtaa portaalin omistajaksi henkilön {{newOwner}}",

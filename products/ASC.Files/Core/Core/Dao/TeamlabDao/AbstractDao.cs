@@ -52,11 +52,14 @@ namespace ASC.Files.Core.Data
 
         private Lazy<EF.FilesDbContext> LazyFilesDbContext { get; }
         public EF.FilesDbContext FilesDbContext { get => LazyFilesDbContext.Value; }
-        private Lazy<TenantDbContext> LazyTenantDbContext { get; }
-        public TenantDbContext TenantDbContext { get => LazyTenantDbContext.Value; }
-
         private int tenantID;
-        protected internal int TenantID { get => tenantID != 0 ? tenantID : (tenantID = TenantManager.GetCurrentTenant().TenantId); }
+        protected internal int TenantID { 
+            get 
+            {
+                if (tenantID == 0) tenantID = TenantManager.GetCurrentTenant().TenantId;
+                return tenantID; 
+            }
+        }
         protected UserManager UserManager { get; }
         protected TenantManager TenantManager { get; }
         protected TenantUtil TenantUtil { get; }
@@ -71,7 +74,6 @@ namespace ASC.Files.Core.Data
 
         protected AbstractDao(
             DbContextManager<EF.FilesDbContext> dbContextManager,
-            DbContextManager<TenantDbContext> dbContextManager1,
             UserManager userManager,
             TenantManager tenantManager,
             TenantUtil tenantUtil,
@@ -87,7 +89,6 @@ namespace ASC.Files.Core.Data
         {
             this.cache = cache;
             LazyFilesDbContext = new Lazy<EF.FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
-            LazyTenantDbContext = new Lazy<TenantDbContext>(() => dbContextManager1.Get(FileConstant.DatabaseId));
             UserManager = userManager;
             TenantManager = tenantManager;
             TenantUtil = tenantUtil;

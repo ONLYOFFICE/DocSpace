@@ -51,18 +51,21 @@ namespace ASC.Web.Core.Helpers
     public class ApiSystemHelper
     {
         public string ApiSystemUrl { get; private set; }
-
         public string ApiCacheUrl { get; private set; }
-
         private static byte[] Skey { get; set; }
         private CommonLinkUtility CommonLinkUtility { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
-        public ApiSystemHelper(IConfiguration configuration, CommonLinkUtility commonLinkUtility, MachinePseudoKeys machinePseudoKeys)
+        public ApiSystemHelper(IConfiguration configuration,
+            CommonLinkUtility commonLinkUtility,
+            MachinePseudoKeys machinePseudoKeys, 
+            IHttpClientFactory clientFactory)
         {
             ApiSystemUrl = configuration["web:api-system"];
             ApiCacheUrl = configuration["web:api-cache"];
             CommonLinkUtility = commonLinkUtility;
             Skey = machinePseudoKeys.GetMachineConstant();
+            ClientFactory = clientFactory;
         }
 
 
@@ -71,7 +74,7 @@ namespace ASC.Web.Core.Helpers
             using var hasher = new HMACSHA1(Skey);
             var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
             var hash = WebEncoders.Base64UrlEncode(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
-            return string.Format("ASC {0}:{1}:{2}", pkey, now, hash);
+            return $"ASC {pkey}:{now}:{hash}";
         }
 
         #region system
@@ -80,7 +83,7 @@ namespace ASC.Web.Core.Helpers
         {
             try
             {
-                var data = string.Format("portalName={0}", HttpUtility.UrlEncode(domain));
+                var data = $"portalName={HttpUtility.UrlEncode(domain)}";
                 SendToApi(ApiSystemUrl, "portal/validateportalname", WebRequestMethods.Http.Post, userId, data);
             }
             catch (WebException exception)
@@ -122,7 +125,7 @@ namespace ASC.Web.Core.Helpers
 
         public void AddTenantToCache(string domain, Guid userId)
         {
-            var data = string.Format("portalName={0}", HttpUtility.UrlEncode(domain));
+            var data = $"portalName={HttpUtility.UrlEncode(domain)}";
             SendToApi(ApiCacheUrl, "portal/add", WebRequestMethods.Http.Post, userId, data);
         }
 
@@ -147,10 +150,10 @@ namespace ASC.Web.Core.Helpers
             if (!Uri.TryCreate(absoluteApiUrl, UriKind.Absolute, out var uri))
             {
                 var appUrl = CommonLinkUtility.GetFullAbsolutePath("/");
-                absoluteApiUrl = string.Format("{0}/{1}", appUrl.TrimEnd('/'), absoluteApiUrl.TrimStart('/')).TrimEnd('/');
+                absoluteApiUrl = $"{appUrl.TrimEnd('/')}/{absoluteApiUrl.TrimStart('/')}".TrimEnd('/');
             }
 
-            var url = string.Format("{0}/{1}", absoluteApiUrl, apiPath);
+            var url = $"{absoluteApiUrl}/{apiPath}";
 
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(url);
@@ -163,7 +166,7 @@ namespace ASC.Web.Core.Helpers
                 request.Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
             }
 
-            using var httpClient = new HttpClient();
+            var httpClient = ClientFactory.CreateClient();
             using var response = httpClient.Send(request);
             using var stream = response.Content.ReadAsStream();
             using var reader = new StreamReader(stream, Encoding.UTF8);

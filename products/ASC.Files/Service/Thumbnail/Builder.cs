@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -50,11 +49,11 @@ namespace ASC.Files.ThumbnailBuilder
         private readonly ILog logger;
         private IServiceProvider ServiceProvider { get; }
 
-        public BuilderQueue(IServiceProvider serviceProvider, IOptionsMonitor<ILog> log, ASC.Common.Utils.ConfigurationExtension configurationExtension)
+        public BuilderQueue(IServiceProvider serviceProvider, IOptionsMonitor<ILog> log, ThumbnailSettings settings)
         {
             logger = log.Get("ASC.Files.ThumbnailBuilder");
             ServiceProvider = serviceProvider;
-            config = ThumbnailSettings.GetInstance(configurationExtension);
+            config = settings;
         }
 
         public void BuildThumbnails(IEnumerable<FileData<T>> filesWithoutThumbnails)
@@ -94,18 +93,20 @@ namespace ASC.Files.ThumbnailBuilder
         private DocumentServiceHelper DocumentServiceHelper { get; }
         private Global Global { get; }
         private PathProvider PathProvider { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
         public Builder(
-            Common.Utils.ConfigurationExtension configurationExtension,
+            ThumbnailSettings settings,
             TenantManager tenantManager,
             IDaoFactory daoFactory,
             DocumentServiceConnector documentServiceConnector,
             DocumentServiceHelper documentServiceHelper,
             Global global,
             PathProvider pathProvider,
-            IOptionsMonitor<ILog> log)
+            IOptionsMonitor<ILog> log,
+            IHttpClientFactory clientFactory)
         {
-            this.config = ThumbnailSettings.GetInstance(configurationExtension);
+            this.config = settings;
             TenantManager = tenantManager;
             DaoFactory = daoFactory;
             DocumentServiceConnector = documentServiceConnector;
@@ -113,6 +114,7 @@ namespace ASC.Files.ThumbnailBuilder
             Global = global;
             PathProvider = pathProvider;
             logger = log.Get("ASC.Files.ThumbnailBuilder");
+            ClientFactory = clientFactory;
         }
 
         internal void BuildThumbnail(FileData<T> fileData)
@@ -289,13 +291,7 @@ namespace ASC.Files.ThumbnailBuilder
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(thumbnailUrl);
 
-            //HACK: http://ubuntuforums.org/showthread.php?t=1841740
-            if (WorkContext.IsMono && ServicePointManager.ServerCertificateValidationCallback == null)
-            {
-                ServicePointManager.ServerCertificateValidationCallback += (s, c, n, p) => true;
-            }
-
-            using var httpClient = new HttpClient();
+            var httpClient = ClientFactory.CreateClient();
             using var response = httpClient.Send(request);
             using (var stream = new ResponseStream(response))
             {

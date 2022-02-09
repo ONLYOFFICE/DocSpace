@@ -57,14 +57,13 @@ namespace ASC.ElasticSearch
             ICacheNotify<AscCacheItem> notify,
             ICacheNotify<IndexAction> indexNotify,
             IServiceProvider serviceProvider,
-            SettingsHelper settingsHelper)
+            Settings settings)
         {
             Log = options.Get("ASC.Indexer");
             Notify = notify;
             IndexNotify = indexNotify;
             ServiceProvider = serviceProvider;
             CancellationTokenSource = new CancellationTokenSource();
-            var settings = settingsHelper.Settings;
             Period = TimeSpan.FromMinutes(settings.Period.Value);
         }
 
@@ -211,7 +210,7 @@ namespace ASC.ElasticSearch
         }
     }
 
-    public class ServiceLauncherExtension
+    public static class ServiceLauncherExtension
     {
         public static void Register(DIHelper services)
         {

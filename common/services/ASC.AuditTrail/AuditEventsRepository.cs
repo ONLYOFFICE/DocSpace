@@ -45,17 +45,14 @@ namespace ASC.AuditTrail
         private MessageTarget MessageTarget { get; set; }
         private UserFormatter UserFormatter { get; set; }
         private Lazy<AuditTrailContext> LazyAuditTrailContext { get; }
-        private Lazy<UserDbContext> LazyUserDbContext { get; }
         private AuditTrailContext AuditTrailContext { get => LazyAuditTrailContext.Value; }
-        private UserDbContext UserDbContext { get => LazyUserDbContext.Value; }
         private AuditActionMapper AuditActionMapper { get; }
 
-        public AuditEventsRepository(MessageTarget messageTarget, UserFormatter userFormatter, DbContextManager<AuditTrailContext> dbContextManager, AuditActionMapper auditActionMapper, DbContextManager<UserDbContext> DbContextManager)
+        public AuditEventsRepository(MessageTarget messageTarget, UserFormatter userFormatter, DbContextManager<AuditTrailContext> dbContextManager, AuditActionMapper auditActionMapper)
         {
             MessageTarget = messageTarget;
             UserFormatter = userFormatter;
             LazyAuditTrailContext = new Lazy<AuditTrailContext>(() => dbContextManager.Value );
-            LazyUserDbContext = new Lazy<UserDbContext>(() => DbContextManager.Value);
             AuditActionMapper = auditActionMapper;
         }
 
@@ -69,7 +66,7 @@ namespace ASC.AuditTrail
             return Get(tenant, from, to, null);
         }
 
-        private class Query
+        private sealed class Query
         {
             public Core.Common.EF.Model.AuditEvent AuditEvent { get; set; }
             public User User { get; set; }
@@ -79,14 +76,14 @@ namespace ASC.AuditTrail
         {
             var query =
                from q in AuditTrailContext.AuditEvents
-               from p in UserDbContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
+               from p in AuditTrailContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
                where q.TenantId == tenant
                orderby q.Date descending
                select new Query { AuditEvent = q, User = p };
 
             if (fromDate.HasValue && to.HasValue)
             {
-                query = query.Where(q => q.AuditEvent.Date >= fromDate & q.AuditEvent.Date <= to);
+                query = query.Where(q => q.AuditEvent.Date >= fromDate && q.AuditEvent.Date <= to);
             }
 
             if (limit.HasValue)
@@ -105,7 +102,7 @@ namespace ASC.AuditTrail
 
             if (from.HasValue && to.HasValue)
             {
-                query = query.Where(a => a.Date >= from & a.Date <= to);
+                query = query.Where(a => a.Date >= from && a.Date <= to);
             }
 
             return query.Count();
@@ -132,7 +129,7 @@ namespace ASC.AuditTrail
                 if (query.AuditEvent.Description != null)
                 {
                     evt.Description = JsonConvert.DeserializeObject<IList<string>>(
-                        Convert.ToString(query.AuditEvent.Description),
+                        query.AuditEvent.Description,
                         new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Utc });
                 }
 

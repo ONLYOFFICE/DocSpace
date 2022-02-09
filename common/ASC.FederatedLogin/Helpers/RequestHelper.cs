@@ -28,22 +28,24 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace ASC.FederatedLogin.Helpers
 {
-    public class RequestHelper
+    public static class RequestHelper
     {
+        private static HttpClient HttpClient { get; } = new HttpClient();
+
         public static string PerformRequest(string uri, string contentType = "", string method = "GET", string body = "", Dictionary<string, string> headers = null, int timeout = 30000)
         {
-            if (string.IsNullOrEmpty(uri)) throw new ArgumentNullException("uri");
+            if (string.IsNullOrEmpty(uri)) throw new ArgumentNullException(nameof(uri));
 
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(uri);
             request.Method = new HttpMethod(method);
 
-            using var httpClient = new HttpClient();
-            httpClient.Timeout = TimeSpan.FromMilliseconds(timeout);
+            HttpClient.Timeout = TimeSpan.FromMilliseconds(timeout);
 
             if (headers != null)
             {
@@ -59,11 +61,11 @@ namespace ASC.FederatedLogin.Helpers
                 request.Content = new ByteArrayContent(bytes, 0, bytes.Length);
                 if (!string.IsNullOrEmpty(contentType))
                 {
-                    request.Headers.Add("Content-Type", contentType);
+                    request.Content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
                 }
             }
 
-            using var response = httpClient.Send(request);
+            using var response = HttpClient.Send(request);
             using var stream = response.Content.ReadAsStream();
             if (stream == null) return null;
             using var readStream = new StreamReader(stream);

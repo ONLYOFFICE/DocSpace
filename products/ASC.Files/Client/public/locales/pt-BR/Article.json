@@ -1,8 +1,13 @@
 ﻿{
-    "NewDocument": "Novo Documento",
-    "NewFolder": "Nova pasta",
-    "NewPresentation": "Nova apresentação",
-    "NewSpreadsheet": "Nova planilha",
-    "UploadFiles": "Carregar arquivos",
-    "UploadFolder": "Carregar pasta"
+  "ButtonAddBoxNet": "Adicionar Conta Box",
+  "ButtonAddDropBox": "Adicionar Conta Dropbox",
+  "ButtonAddGoogle": "Adicionar Conta do Google",
+  "ButtonAddNextcloud": "Adicionar conta do Nextcloud",
+  "ButtonAddSkyDrive": "Adicionar conta OneDrive",
+  "NewDocument": "Novo Documento",
+  "NewFolder": "Nova pasta",
+  "NewPresentation": "Nova apresentação",
+  "NewSpreadsheet": "Nova planilha",
+  "UploadFiles": "Carregar arquivos",
+  "UploadFolder": "Carregar pasta"
 }

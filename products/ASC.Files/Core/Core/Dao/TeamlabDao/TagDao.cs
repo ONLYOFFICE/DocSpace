@@ -54,7 +54,6 @@ namespace ASC.Files.Core.Data
         public TagDao(
             UserManager userManager,
             DbContextManager<EF.FilesDbContext> dbContextManager,
-            DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             TenantUtil tenantUtil,
             SetupInfo setupInfo,
@@ -67,7 +66,6 @@ namespace ASC.Files.Core.Data
             IServiceProvider serviceProvider,
             ICache cache)
             : base(dbContextManager,
-                  dbContextManager1,
                   userManager,
                   tenantManager,
                   tenantUtil,
@@ -177,7 +175,7 @@ namespace ASC.Files.Core.Data
 
         public IEnumerable<Tag> GetTags(string[] names, TagType tagType)
         {
-            if (names == null) throw new ArgumentNullException("names");
+            if (names == null) throw new ArgumentNullException(nameof(names));
 
             var q = Query(FilesDbContext.Tag)
                 .Join(FilesDbContext.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
@@ -191,7 +189,7 @@ namespace ASC.Files.Core.Data
 
         public IEnumerable<Tag> GetTags(string name, TagType tagType)
         {
-            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("name");
+            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
 
             return GetTags(new[] { name }, tagType);
         }
@@ -443,8 +441,8 @@ namespace ASC.Files.Core.Data
                 FilesDbContext.TagLink.RemoveRange(toDelete);
                 FilesDbContext.SaveChanges();
 
-                var count = Query(FilesDbContext.TagLink).Count(r => r.TagId == id);
-                if (count == 0)
+                var any = Query(FilesDbContext.TagLink).Any(r => r.TagId == id);
+                if (!any)
                 {
                     var tagToDelete = Query(FilesDbContext.Tag).Where(r => r.Id == id);
                     FilesDbContext.Tag.RemoveRange(tagToDelete);
@@ -481,7 +479,7 @@ namespace ASC.Files.Core.Data
                 entryTypes.Add((int)entryType);
             }
 
-            if (entryIds.Any())
+            if (entryIds.Count > 0)
             {
                 var sqlQuery = Query(FilesDbContext.Tag)
                     .Join(FilesDbContext.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
@@ -753,7 +751,7 @@ namespace ASC.Files.Core.Data
                                                     .Concat(folderIds.ConvertAll(r => $"onedrive-{r}"))
                                                     .ToList();
 
-                if (thirdpartyFolderIds.Any())
+                if (thirdpartyFolderIds.Count > 0)
                 {
                     result.AddRange(FromQuery(newTagsForSBoxQuery(FilesDbContext, tenantId, subject, thirdpartyFolderIds)));
                 }

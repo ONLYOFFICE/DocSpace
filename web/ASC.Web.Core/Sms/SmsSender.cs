@@ -62,11 +62,11 @@ namespace ASC.Web.Core.Sms
         {
             if (string.IsNullOrEmpty(number))
             {
-                throw new ArgumentNullException("number");
+                throw new ArgumentNullException(nameof(number));
             }
             if (string.IsNullOrEmpty(message))
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             }
             if (!SmsProviderManager.Enabled())
             {
@@ -106,13 +106,13 @@ namespace ASC.Web.Core.Sms
                 return mobilePhone;
 
             var sb = new StringBuilder();
-            sb.Append("+");
-            sb.Append(mobilePhone.Substring(0, startLen));
+            sb.Append('+');
+            sb.Append(mobilePhone, 0, startLen);
             for (var i = startLen; i < mobilePhone.Length - endLen; i++)
             {
-                sb.Append("*");
+                sb.Append('*');
             }
-            sb.Append(mobilePhone.Substring(mobilePhone.Length - endLen));
+            sb.Append(mobilePhone, mobilePhone.Length - endLen, mobilePhone.Length - (endLen +1));
             return sb.ToString();
         }
     }

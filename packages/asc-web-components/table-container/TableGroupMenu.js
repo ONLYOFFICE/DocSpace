@@ -4,6 +4,7 @@ import Checkbox from "../checkbox";
 import { StyledTableGroupMenu, StyledScrollbar } from "./StyledTableContainer";
 import ComboBox from "../combobox";
 import GroupMenuItem from "./GroupMenuItem";
+import { useTranslation } from "react-i18next";
 
 const TableGroupMenu = (props) => {
   const {
@@ -20,6 +21,8 @@ const TableGroupMenu = (props) => {
     onChange && onChange(e.target && e.target.checked);
   };
 
+  const { t } = useTranslation("Common");
+
   return (
     <>
       <StyledTableGroupMenu
@@ -32,6 +35,7 @@ const TableGroupMenu = (props) => {
           onChange={onCheckboxChange}
           isChecked={isChecked}
           isIndeterminate={isIndeterminate}
+          title={t("Common:MainHeaderSelectAll")}
         />
         <ComboBox
           comboIcon="/static/images/triangle.navigation.down.react.svg"
@@ -42,6 +46,7 @@ const TableGroupMenu = (props) => {
           selectedOption={{}}
           manualY="42px"
           manualX="-32px"
+          title={t("Common:TitleSelectFile")}
         />
         <div className="table-container_group-menu-separator" />
         <StyledScrollbar>

@@ -33,7 +33,7 @@ namespace ASC.Web.Core.Calendars
     {
         public virtual TimeZoneInfo TimeZone { get; set; }
 
-        public BaseEvent()
+        protected BaseEvent()
         {
             this.Context = new EventContext();
             this.AlertType = EventAlertType.Never;
@@ -96,11 +96,14 @@ namespace ASC.Web.Core.Calendars
             var sb = new StringBuilder();
 
             sb.AppendLine("BEGIN:VEVENT");
-            sb.AppendLine(string.Format("UID:{0}", string.IsNullOrEmpty(this.Uid) ? this.Id : this.Uid));
-            sb.AppendLine(string.Format("SUMMARY:{0}", this.Name));
+
+            var id = string.IsNullOrEmpty(Uid) ? Id : Uid;
+
+            sb.AppendLine($"UID:{id}");
+            sb.AppendLine($"SUMMARY:{Name}");
 
             if (!string.IsNullOrEmpty(this.Description))
-                sb.AppendLine(string.Format("DESCRIPTION:{0}", this.Description.Replace("\n", "\\n")));
+                sb.AppendLine($"DESCRIPTION:{Description.Replace("\n", "\\n")}");
 
             if (this.AllDayLong)
             {
@@ -115,18 +118,30 @@ namespace ASC.Web.Core.Calendars
                 }
 
                 if (this.UtcStartDate != DateTime.MinValue)
-                    sb.AppendLine(string.Format("DTSTART;VALUE=DATE:{0}", startDate.ToString("yyyyMMdd")));
+                {
+                    var start = startDate.ToString("yyyyMMdd");
+                    sb.AppendLine($"DTSTART;VALUE=DATE:{start}");
+                }
 
                 if (this.UtcEndDate != DateTime.MinValue)
-                    sb.AppendLine(string.Format("DTEND;VALUE=DATE:{0}", endDate.AddDays(1).ToString("yyyyMMdd")));
+                {
+                    var end = endDate.AddDays(1).ToString("yyyyMMdd");
+                    sb.AppendLine($"DTEND;VALUE=DATE:{end}");
+                }
             }
             else
             {
                 if (this.UtcStartDate != DateTime.MinValue)
-                    sb.AppendLine(string.Format("DTSTART:{0}", this.UtcStartDate.ToString("yyyyMMdd'T'HHmmss'Z'")));
+                {
+                    var utcStart = UtcStartDate.ToString("yyyyMMdd'T'HHmmss'Z'");
+                    sb.AppendLine($"DTSTART:{utcStart}");
+                }
 
                 if (this.UtcEndDate != DateTime.MinValue)
-                    sb.AppendLine(string.Format("DTEND:{0}", this.UtcEndDate.ToString("yyyyMMdd'T'HHmmss'Z'")));
+                {
+                    var utcEnd = UtcEndDate.ToString("yyyyMMdd'T'HHmmss'Z'");
+                    sb.AppendLine($"DTEND:{utcEnd}");
+                }
             }
 
 

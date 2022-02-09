@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
 using System.Web;
 
@@ -118,7 +119,8 @@ namespace ASC.Web.Core.Sms
 
     public abstract class SmsProvider : Consumer
     {
-        protected readonly ILog Log;
+        protected ILog Log { get; }
+        protected IHttpClientFactory ClientFactory { get; }
         protected ICache MemoryCache { get; set; }
 
         protected virtual string SendMessageUrlFormat { get; set; }
@@ -139,12 +141,14 @@ namespace ASC.Web.Core.Sms
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
+            IHttpClientFactory clientFactory,
             ICache memCache,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
             : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)
         {
             MemoryCache = memCache;
             Log = options.CurrentValue;
+            ClientFactory = clientFactory;
         }
 
         public virtual bool Enable()
@@ -169,9 +173,9 @@ namespace ASC.Web.Core.Sms
 
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(url);
-                request.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
+                request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
 
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
                 httpClient.Timeout = TimeSpan.FromMilliseconds(15000);
 
                 using var response = httpClient.Send(request);
@@ -206,22 +210,21 @@ namespace ASC.Web.Core.Sms
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
+            IHttpClientFactory clientFactory,
             ICache memCache,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, clientFactory, memCache, name, order, props, additional)
         {
         }
 
         protected override string SendMessageUrlFormat
         {
             get { return "https://smsc.ru/sys/send.php?login={key}&psw={secret}&phones={phone}&mes={text}&fmt=3&sender={sender}&charset=utf-8"; }
-            set { }
         }
 
         protected override string GetBalanceUrlFormat
         {
             get { return "https://smsc.ru/sys/balance.php?login={key}&psw={secret}"; }
-            set { }
         }
 
         protected override string Key
@@ -263,9 +266,9 @@ namespace ASC.Web.Core.Sms
 
                     var request = new HttpRequestMessage();
                     request.RequestUri = new Uri(url);
-                    request.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
+                    request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
 
-                    using var httpClient = new HttpClient();
+                    var httpClient = ClientFactory.CreateClient();
                     httpClient.Timeout = TimeSpan.FromMilliseconds(1000);
 
                     using var response = httpClient.Send(request);
@@ -315,19 +318,16 @@ namespace ASC.Web.Core.Sms
         protected override string SendMessageUrlFormat
         {
             get { return "https://platform.clickatell.com/messages/http/send?apiKey={secret}&to={phone}&content={text}&from={sender}"; }
-            set { }
         }
 
         protected override string Secret
         {
             get { return this["clickatellapiKey"]; }
-            set { }
         }
 
         protected override string Sender
         {
             get { return this["clickatellSender"]; }
-            set { }
         }
 
         public override bool Enable()
@@ -347,9 +347,10 @@ namespace ASC.Web.Core.Sms
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
+            IHttpClientFactory clientFactory,
             ICache memCache,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, clientFactory, memCache, name, order, props, additional)
         {
         }
     }
@@ -368,9 +369,10 @@ namespace ASC.Web.Core.Sms
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
+            IHttpClientFactory clientFactory,
             ICache memCache,
             string name, int order, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache, name, order, null, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, clientFactory, memCache, name, order, null, additional)
         {
         }
     }
@@ -381,19 +383,16 @@ namespace ASC.Web.Core.Sms
         protected override string Key
         {
             get { return this["twilioAccountSid"]; }
-            set { }
         }
 
         protected override string Secret
         {
             get { return this["twilioAuthToken"]; }
-            set { }
         }
 
         protected override string Sender
         {
             get { return this["twiliosender"]; }
-            set { }
         }
 
         public AuthContext AuthContext { get; }
@@ -412,7 +411,7 @@ namespace ASC.Web.Core.Sms
 
         public override bool SendMessage(string number, string message)
         {
-            if (!number.StartsWith("+")) number = "+" + number;
+            if (!number.StartsWith('+')) number = "+" + number;
             var twilioRestClient = new TwilioRestClient(Key, Secret);
 
             try
@@ -450,9 +449,10 @@ namespace ASC.Web.Core.Sms
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
+            IHttpClientFactory clientFactory,
             ICache memCache,
             string name, int order, Dictionary<string, string> props)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache, name, order, props)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, clientFactory, memCache, name, order, props)
         {
             AuthContext = authContext;
             TenantUtil = tenantUtil;
@@ -501,9 +501,10 @@ namespace ASC.Web.Core.Sms
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
+            IHttpClientFactory clientFactory,
             ICache memCache,
             string name, int order)
-            : base(authContext, tenantUtil, securityContext, baseCommonLinkUtility, twilioProviderCleaner, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache, name, order, null)
+            : base(authContext, tenantUtil, securityContext, baseCommonLinkUtility, twilioProviderCleaner, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, clientFactory, memCache, name, order, null)
         {
         }
     }

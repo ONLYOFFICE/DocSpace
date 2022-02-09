@@ -43,7 +43,7 @@ namespace ASC.Core.Security.Authorizing
     {
         //circ dep
         private IServiceProvider ServiceProvider { get; }
-        public RoleProvider(IServiceProvider serviceProvider) => (ServiceProvider) = (serviceProvider);
+        public RoleProvider(IServiceProvider serviceProvider) => ServiceProvider = serviceProvider;
 
         public List<IRole> GetRoles(ISubject account)
         {

@@ -34,6 +34,9 @@ using Microsoft.Extensions.Hosting;
 using NLog;
 using NLog.Extensions.Logging;
 
+using StackExchange.Redis.Extensions.Core.Configuration;
+using StackExchange.Redis.Extensions.Newtonsoft;
+
 namespace ASC.Api.Core
 {
     public abstract class BaseStartup
@@ -56,7 +59,7 @@ namespace ASC.Api.Core
             if (bool.TryParse(Configuration["core:products"], out var loadProducts))
             {
                 LoadProducts = loadProducts;
-        }
+            }
         }
 
         public virtual void ConfigureServices(IServiceCollection services)
@@ -64,6 +67,7 @@ namespace ASC.Api.Core
             services.AddCustomHealthCheck(Configuration);
             services.AddHttpContextAccessor();
             services.AddMemoryCache();
+            services.AddHttpClient();
 
             if (AddAndUseSession)
                 services.AddSession();
@@ -83,7 +87,7 @@ namespace ASC.Api.Core
                             options.JsonSerializerOptions.Converters.Add(c);
                         }
                     }
-                               };
+                };
 
             services.AddControllers()
                 .AddXmlSerializerFormatters()
@@ -101,7 +105,25 @@ namespace ASC.Api.Core
             DIHelper.TryAdd<CookieAuthHandler>();
             DIHelper.TryAdd<WebhooksGlobalFilterAttribute>();
 
-            DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+            var redisConfiguration = Configuration.GetSection("Redis").Get<RedisConfiguration>();
+            var kafkaConfiguration = Configuration.GetSection("kafka").Get<KafkaSettings>();
+
+            if (kafkaConfiguration != null)
+            {
+                DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+            }
+            else if (redisConfiguration != null)
+            {
+                DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+
+                services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
+            }
+            else
+            {
+                DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
+            }
+
+
             DIHelper.TryAdd(typeof(IWebhookPublisher), typeof(WebhookPublisher));
 
             if (LoadProducts)
@@ -109,7 +131,7 @@ namespace ASC.Api.Core
                 DIHelper.RegisterProducts(Configuration, HostEnvironment.ContentRootPath);
             }
 
-            var builder = services.AddMvcCore(config =>
+            services.AddMvcCore(config =>
             {
                 config.Conventions.Add(new ControllerNameAttributeConvention());
 

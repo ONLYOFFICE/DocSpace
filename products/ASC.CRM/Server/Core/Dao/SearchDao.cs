@@ -73,7 +73,6 @@ namespace ASC.CRM.Core.Dao
 
 
         public SearchDao(DbContextManager<CrmDbContext> dbContextManager,
-             DbContextManager<TenantDbContext> dbContextManager1,
                       TenantManager tenantManager,
                       DaoFactory daoFactory,
                       SecurityContext securityContext,
@@ -89,7 +88,6 @@ namespace ASC.CRM.Core.Dao
                       IMapper mapper
                       ) :
            base(dbContextManager,
-               dbContextManager1,
                 tenantManager,
                 securityContext,
                 logger,
@@ -345,7 +343,7 @@ namespace ASC.CRM.Core.Dao
 
                     result.Add(new SearchResultItem
                     {
-                        Name = x.IsCompany ? x.CompanyName : String.Format("{0} {1}", x.FirstName, x.LastName),
+                        Name = x.IsCompany ? x.CompanyName : $"{x.FirstName} {x.LastName}",
                         Description = HtmlUtil.GetText(x.Notes, 120),
                         URL = String.Concat(_pathProvider.BaseAbsolutePath, String.Format("default.aspx?id={0}", x.Id)),
                         Date = _tenantUtil.DateTimeFromUtc(x.CreateOn),

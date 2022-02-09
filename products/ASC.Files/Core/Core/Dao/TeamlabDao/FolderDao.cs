@@ -78,7 +78,6 @@ namespace ASC.Files.Core.Data
             FactoryIndexerFolder factoryIndexer,
             UserManager userManager,
             DbContextManager<EF.FilesDbContext> dbContextManager,
-            DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             TenantUtil tenantUtil,
             SetupInfo setupInfo,
@@ -96,7 +95,6 @@ namespace ASC.Files.Core.Data
             CrossDao crossDao)
             : base(
                   dbContextManager,
-                  dbContextManager1,
                   userManager,
                   tenantManager,
                   tenantUtil,
@@ -297,7 +295,7 @@ namespace ASC.Files.Core.Data
 
         public int SaveFolder(Folder<int> folder, IDbContextTransaction transaction)
         {
-            if (folder == null) throw new ArgumentNullException("folder");
+            if (folder == null) throw new ArgumentNullException(nameof(folder));
 
             folder.Title = Global.ReplaceInvalidCharsAndTruncate(folder.Title);
 
@@ -486,7 +484,7 @@ namespace ASC.Files.Core.Data
                 var folder = GetFolder(folderId);
 
                 if (folder.FolderType != FolderType.DEFAULT)
-                    throw new ArgumentException("It is forbidden to move the System folder.", "folderId");
+                    throw new ArgumentException("It is forbidden to move the System folder.", nameof(folderId));
 
                 var recalcFolders = new List<int> { toFolderId };
                 var parent = FilesDbContext.Folders
@@ -657,14 +655,17 @@ namespace ASC.Files.Core.Data
 
                 if (conflict != 0)
                 {
-                    FilesDbContext.Files
+                    var files = FilesDbContext.Files
                         .AsNoTracking()
                         .Join(FilesDbContext.Files, f1 => f1.Title.ToLower(), f2 => f2.Title.ToLower(), (f1, f2) => new { f1, f2 })
                         .Where(r => r.f1.TenantId == TenantID && r.f1.CurrentVersion && r.f1.FolderId == folderId)
                         .Where(r => r.f2.TenantId == TenantID && r.f2.CurrentVersion && r.f2.FolderId == conflict)
-                        .Select(r => r.f1)
-                        .ToList()
-                        .ForEach(r => result[r.Id] = r.Title);
+                        .Select(r => r.f1);
+
+                    foreach (var file in files)
+                    {
+                        result[file.Id] = file.Title;
+                    }
 
                     var childs = Query(FilesDbContext.Folders)
                         .AsNoTracking()
@@ -755,7 +756,7 @@ namespace ASC.Files.Core.Data
             return true;
         }
 
-        public long GetMaxUploadSize(int folderId, bool chunkedUpload)
+        public long GetMaxUploadSize(int folderId, bool chunkedUpload = false)
         {
             var tmp = long.MaxValue;
 
@@ -798,7 +799,7 @@ namespace ASC.Files.Core.Data
         }
 
 
-        public IEnumerable<Folder<int>> SearchFolders(string text, bool bunch)
+        public IEnumerable<Folder<int>> SearchFolders(string text, bool bunch = false)
         {
             return Search(text).Where(f => bunch
                                                ? f.RootFolderType == FolderType.BUNCH
@@ -821,10 +822,10 @@ namespace ASC.Files.Core.Data
 
         public IEnumerable<int> GetFolderIDs(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
         {
-            if (string.IsNullOrEmpty(module)) throw new ArgumentNullException("module");
-            if (string.IsNullOrEmpty(bunch)) throw new ArgumentNullException("bunch");
+            if (string.IsNullOrEmpty(module)) throw new ArgumentNullException(nameof(module));
+            if (string.IsNullOrEmpty(bunch)) throw new ArgumentNullException(nameof(bunch));
 
-            var keys = data.Select(id => string.Format("{0}/{1}/{2}", module, bunch, id)).ToArray();
+            var keys = data.Select(id => $"{module}/{bunch}/{id}").ToArray();
 
             var folderIdsDictionary = Query(FilesDbContext.BunchObjects)
                 .AsNoTracking()
@@ -905,10 +906,10 @@ namespace ASC.Files.Core.Data
 
         public int GetFolderID(string module, string bunch, string data, bool createIfNotExists)
         {
-            if (string.IsNullOrEmpty(module)) throw new ArgumentNullException("module");
-            if (string.IsNullOrEmpty(bunch)) throw new ArgumentNullException("bunch");
+            if (string.IsNullOrEmpty(module)) throw new ArgumentNullException(nameof(module));
+            if (string.IsNullOrEmpty(bunch)) throw new ArgumentNullException(nameof(bunch));
 
-            var key = string.Format("{0}/{1}/{2}", module, bunch, data);
+            var key = $"{module}/{bunch}/{data}";
             var folderId = Query(FilesDbContext.BunchObjects)
                 .Where(r => r.RightNode == key)
                 .Select(r => r.LeftNode)
@@ -929,7 +930,7 @@ namespace ASC.Files.Core.Data
                     case my:
                         folder.FolderType = FolderType.USER;
                         folder.Title = my;
-                        folder.CreateBy = new Guid(data.ToString());
+                        folder.CreateBy = new Guid(data);
                         break;
                     case common:
                         folder.FolderType = FolderType.COMMON;
@@ -938,7 +939,7 @@ namespace ASC.Files.Core.Data
                     case trash:
                         folder.FolderType = FolderType.TRASH;
                         folder.Title = trash;
-                        folder.CreateBy = new Guid(data.ToString());
+                        folder.CreateBy = new Guid(data);
                         break;
                     case share:
                         folder.FolderType = FolderType.SHARE;
@@ -1173,7 +1174,7 @@ namespace ASC.Files.Core.Data
         public string GetBunchObjectID(int folderID)
         {
             return Query(FilesDbContext.BunchObjects)
-                .Where(r => r.LeftNode == (folderID).ToString())
+                .Where(r => r.LeftNode == folderID.ToString())
                 .Select(r => r.RightNode)
                 .FirstOrDefault();
         }
@@ -1216,14 +1217,14 @@ namespace ASC.Files.Core.Data
             var q1 = FilesDbContext.Files
                 .Where(r => r.ModifiedOn > fromTime)
                 .GroupBy(r => r.TenantId)
-                .Where(r => r.Count() > 0)
+                .Where(r => r.Any())
                 .Select(r => r.Key)
                 .ToList();
 
             var q2 = FilesDbContext.Security
                 .Where(r => r.TimeStamp > fromTime)
                 .GroupBy(r => r.TenantId)
-                .Where(r => r.Count() > 0)
+                .Where(r => r.Any())
                 .Select(r => r.Key)
                 .ToList();
 

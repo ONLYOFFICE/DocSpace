@@ -41,10 +41,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using StackExchange.Redis.Extensions.Core.Configuration;
+using StackExchange.Redis.Extensions.Newtonsoft;
 
 namespace ASC.UrlShortener.Svc
 {
-    public class Program
+    public static class Program
     {
         public async static Task Main(string[] args)
         {
@@ -79,6 +81,8 @@ namespace ASC.UrlShortener.Svc
                                 .AddJsonFile("storage.json")
                                 .AddJsonFile("kafka.json")
                                 .AddJsonFile($"kafka.{env}.json", true)
+                                .AddJsonFile("redis.json")
+                                .AddJsonFile($"redis.{env}.json", true)
                                 .AddEnvironmentVariables()
                                 .AddCommandLine(args)
                                 .AddInMemoryCollection(new Dictionary<string, string>
@@ -95,6 +99,9 @@ namespace ASC.UrlShortener.Svc
 
                             services.AddHostedService<UrlShortenerServiceLauncher>();
                             diHelper.TryAdd<UrlShortenerServiceLauncher>();
+
+                            services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>());
+
                         })
                         .ConfigureContainer<ContainerBuilder>((context, builder) =>
                         {

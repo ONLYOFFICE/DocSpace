@@ -20,7 +20,7 @@ namespace Textile
     /// <summary>
     /// A utility class for global things used by the TextileFormatter.
     /// </summary>
-    class Globals
+    static class Globals
     {
         #region Global Regex Patterns
 
@@ -44,44 +44,29 @@ namespace Textile
 
         #endregion
 
-        private static Dictionary<string, string> m_imageAlign;
         /// <summary>
         /// Image alignment tags, mapped to their HTML meanings.
         /// </summary>
-        public static Dictionary<string, string> ImageAlign
-        {
-            get { return Globals.m_imageAlign; }
-            set { Globals.m_imageAlign = value; }
-        }
-        private static Dictionary<string, string> m_horizontalAlign;
+        public static Dictionary<string, string> ImageAlign { get; set; }
         /// <summary>
         /// Horizontal text alignment tags, mapped to their HTML meanings.
         /// </summary>
-        public static Dictionary<string, string> HorizontalAlign
-        {
-            get { return Globals.m_horizontalAlign; }
-            set { Globals.m_horizontalAlign = value; }
-        }
-        private static Dictionary<string, string> m_verticalAlign;
+        public static Dictionary<string, string> HorizontalAlign { get; set; }
         /// <summary>
         /// Vertical text alignment tags, mapped to their HTML meanings.
         /// </summary>
-        public static Dictionary<string, string> VerticalAlign
-        {
-            get { return Globals.m_verticalAlign; }
-            set { Globals.m_verticalAlign = value; }
-        }
+        public static Dictionary<string, string> VerticalAlign { get; set;}
 
         static Globals()
         {
-            m_imageAlign = new Dictionary<string, string>
+            ImageAlign = new Dictionary<string, string>
             {
                 ["<"] = "left",
                 ["="] = "center",
                 [">"] = "right"
             };
 
-            m_horizontalAlign = new Dictionary<string, string>
+            HorizontalAlign = new Dictionary<string, string>
             {
                 ["<"] = "left",
                 ["="] = "center",
@@ -89,7 +74,7 @@ namespace Textile
                 ["<>"] = "justify"
             };
 
-            m_verticalAlign = new Dictionary<string, string>
+            VerticalAlign = new Dictionary<string, string>
             {
                 ["^"] = "top",
                 ["-"] = "middle",

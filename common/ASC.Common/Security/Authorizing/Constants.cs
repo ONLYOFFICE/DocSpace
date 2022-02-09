@@ -28,7 +28,7 @@ using System;
 
 namespace ASC.Common.Security.Authorizing
 {
-    public sealed class Constants
+    public static class Constants
     {
         public static readonly Role Admin = new Role(new Guid("cd84e66b-b803-40fc-99f9-b2969a54a1de"), "Admin");
 
