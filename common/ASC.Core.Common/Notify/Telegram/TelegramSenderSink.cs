@@ -39,12 +39,12 @@ namespace ASC.Core.Notify
     {
         private readonly string _senderName = Configuration.Constants.NotifyTelegramSenderSysName;
         private readonly INotifySender _sender;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public TelegramSenderSink(INotifySender sender, IServiceProvider serviceProvider)
+        public TelegramSenderSink(INotifySender sender, IServiceScopeFactory serviceScopeFactory)
         {
             _sender = sender ?? throw new ArgumentNullException(nameof(sender));
-            _serviceProvider = serviceProvider;
+            _serviceScopeFactory = serviceScopeFactory;
         }
 
 
@@ -63,7 +63,7 @@ namespace ASC.Core.Notify
                     CreationDate = DateTime.UtcNow.Ticks,
                 };
 
-                using var scope = _serviceProvider.CreateScope();
+                using var scope = _serviceScopeFactory.CreateScope();
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
 
                 var tenant = tenantManager.GetCurrentTenant(false);

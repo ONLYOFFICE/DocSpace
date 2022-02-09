@@ -39,7 +39,7 @@ namespace ASC.Core.Configuration
 {
     public class AmiPublicDnsSyncService : IServiceController
     {
-        public static IServiceProvider ServiceProvider { get; set; }
+        public static IServiceScopeFactory ServiceScopeFactory { get; set; }
 
         public void Start()
         {
@@ -50,7 +50,7 @@ namespace ASC.Core.Configuration
 
         public static void Synchronize()
         {
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = ServiceScopeFactory.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<AmiPublicDnsSyncServiceScope>();
             var (tenantManager, coreBaseSettings) = scopeClass;
             if (coreBaseSettings.Standalone)
