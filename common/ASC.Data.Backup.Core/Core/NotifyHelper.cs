@@ -28,11 +28,11 @@ namespace ASC.Data.Backup
     [Singletone(Additional = typeof(NotifyHelperExtension))]
     public class NotifyHelper
     {
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public NotifyHelper(IServiceProvider serviceProvider)
+        public NotifyHelper(IServiceScopeFactory serviceScopeFactory)
         {
-            _serviceProvider = serviceProvider;
+            _serviceScopeFactory = serviceScopeFactory;
         }
 
         public void SendAboutTransferStart(Tenant tenant, string targetRegion, bool notifyUsers)
@@ -52,7 +52,7 @@ namespace ASC.Data.Backup
 
         public void SendAboutBackupCompleted(Guid userId)
         {
-            using var scope = _serviceProvider.CreateScope();
+            using var scope = _serviceScopeFactory.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
             var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper, _) = scopeClass;
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifySource, scope);
@@ -66,7 +66,7 @@ namespace ASC.Data.Backup
 
         public void SendAboutRestoreStarted(Tenant tenant, bool notifyAllUsers)
         {
-            using var scope = _serviceProvider.CreateScope();
+            using var scope = _serviceScopeFactory.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
             var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper, _) = scopeClass;
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifySource, scope);
@@ -85,7 +85,7 @@ namespace ASC.Data.Backup
 
         public void SendAboutRestoreCompleted(Tenant tenant, bool notifyAllUsers)
         {
-            using var scope = _serviceProvider.CreateScope();
+            using var scope = _serviceScopeFactory.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
@@ -115,7 +115,7 @@ namespace ASC.Data.Backup
 
         private void MigrationNotify(Tenant tenant, INotifyAction action, string region, string url, bool notify, int? toTenantId = null)
         {
-            using var scope = _serviceProvider.CreateScope();
+            using var scope = _serviceScopeFactory.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
             var (userManager, studioNotifyHelper, studioNotifySource, _, authManager) = scopeClass;
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifySource, scope);

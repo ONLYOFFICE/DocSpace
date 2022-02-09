@@ -298,14 +298,14 @@ namespace ASC.Data.Backup.Services
         }
         public abstract BackupProgressItemEnum BackupProgressItemEnum { get; }
         protected ILog Log { get; set; }
-        protected IServiceProvider ServiceProvider { get; set; }
+        protected IServiceScopeFactory ServiceScopeFactory { get; set; }
 
         private int? _tenantId;  
 
-        public BaseBackupProgressItem(IOptionsMonitor<ILog> options, IServiceProvider serviceProvider)
+        public BaseBackupProgressItem(IOptionsMonitor<ILog> options, IServiceScopeFactory serviceScopeFactory)
         {
             Log = options.CurrentValue;
-            ServiceProvider = serviceProvider;
+            ServiceScopeFactory = serviceScopeFactory;
         }
 
         public abstract object Clone();
@@ -332,8 +332,8 @@ namespace ASC.Data.Backup.Services
 
         public BackupProgressItem(
             IOptionsMonitor<ILog> options, 
-            IServiceProvider serviceProvider) 
-            : base(options, serviceProvider)
+            IServiceScopeFactory serviceScopeFactory) 
+            : base(options, serviceScopeFactory)
         {
         }
 
@@ -374,7 +374,7 @@ namespace ASC.Data.Backup.Services
                 Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
             }
 
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = ServiceScopeFactory.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<BackupWorkerScope>();
             var (tenantManager, backupStorageFactory, notifyHelper, backupRepository, backupWorker, backupPortalTask, _, _, coreBaseSettings) = scopeClass;
 
@@ -489,8 +489,8 @@ namespace ASC.Data.Backup.Services
 
         public RestoreProgressItem(
             IOptionsMonitor<ILog> options, 
-            IServiceProvider serviceProvider) 
-            : base(options, serviceProvider)
+            IServiceScopeFactory serviceScopeFactory) 
+            : base(options, serviceScopeFactory)
         {
         }
 
@@ -508,7 +508,7 @@ namespace ASC.Data.Backup.Services
 
         protected override void DoJob()
         {
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = ServiceScopeFactory.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<BackupWorkerScope>();
             var (tenantManager, backupStorageFactory, notifyHelper, backupRepository, backupWorker, _, restorePortalTask, _, coreBaseSettings) = scopeClass;
             Tenant tenant = null;
@@ -634,20 +634,21 @@ namespace ASC.Data.Backup.Services
     [Transient]
     public class TransferProgressItem : BaseBackupProgressItem
     {
-        public TransferProgressItem(IOptionsMonitor<ILog> options, IServiceProvider serviceProvider) : base(options, serviceProvider)
-        {
-        }
-
         public override BackupProgressItemEnum BackupProgressItemEnum { get => BackupProgressItemEnum.Transfer; }
         public string TargetRegion { get; set; }
         public bool TransferMail { get; set; }
         public bool Notify { get; set; }
-
         public string Link { get; set; }
         public string TempFolder { get; set; }
         public Dictionary<string, string> ConfigPaths { get; set; }
         public string CurrentRegion { get; set; }
         public int Limit { get; set; }
+
+        public TransferProgressItem(
+            IOptionsMonitor<ILog> options,
+            IServiceScopeFactory serviceScopeFactory) : base(options, serviceScopeFactory)
+        {
+        }
 
         public void Init(
             string targetRegion,
@@ -672,7 +673,7 @@ namespace ASC.Data.Backup.Services
 
         protected override void DoJob()
         {
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = ServiceScopeFactory.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<BackupWorkerScope>();
             var (tenantManager, _, notifyHelper, _, backupWorker, _, _, transferPortalTask, _) = scopeClass;
             var tempFile = PathHelper.GetTempFileName(TempFolder);
