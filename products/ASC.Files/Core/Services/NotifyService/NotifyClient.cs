@@ -258,7 +258,7 @@ namespace ASC.Files.Core.Services.NotifyService
         }
     }
 
-    public class NotifyClientExtension
+    public static class NotifyClientExtension
     {
         public static void Register(DIHelper services)
         {

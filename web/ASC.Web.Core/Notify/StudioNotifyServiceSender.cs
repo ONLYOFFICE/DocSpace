@@ -101,7 +101,7 @@ namespace ASC.Web.Studio.Core.Notify
                 (NotifyAction)item.Action,
                 item.ObjectId,
                 item.Recipients?.Select(r => r.IsGroup ? new RecipientsGroup(r.Id, r.Name) : (IRecipient)new DirectRecipient(r.Id, r.Name, r.Addresses.ToArray(), r.CheckActivation)).ToArray(),
-                item.SenderNames.Any() ? item.SenderNames.ToArray() : null,
+                item.SenderNames.Count > 0 ? item.SenderNames.ToArray() : null,
                 item.CheckSubsciption,
                 item.Tags.Select(r => new TagValue(r.Tag_, r.Value)).ToArray());
         }

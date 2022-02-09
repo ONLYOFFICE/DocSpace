@@ -102,9 +102,9 @@ namespace ASC.Common.Utils
         {
             if (string.IsNullOrEmpty(searchText) || string.IsNullOrEmpty(htmlText)) return htmlText;
 
-            var regexpstr = Worder.Matches(searchText).Cast<Match>().Select(m => m.Value).Distinct().Aggregate((r, n) => r + "|" + n);
+            var regexpstr = Worder.Matches(searchText).Select(m => m.Value).Distinct().Aggregate((r, n) => r + "|" + n);
             var wordsFinder = new Regex(Regex.Escape(regexpstr), RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Multiline);
-            return wordsFinder.Replace(htmlText, m => string.Format("<span class='searchTextHighlight{1}'>{0}</span>", m.Value, withoutLink ? " bold" : string.Empty));
+            return wordsFinder.Replace(htmlText, m => "<span class='searchTextHighlight" + (withoutLink ? " bold" : string.Empty) + "'>" + m.Value + "</span>");
         }
     }
 }

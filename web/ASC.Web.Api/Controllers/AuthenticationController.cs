@@ -353,7 +353,7 @@ namespace ASC.Web.Api.Controllers
                 var token = SecurityContext.AuthenticateMe(user.ID);
 
                 MessageService.Send(sms ? MessageAction.LoginSuccessViaApiSms : MessageAction.LoginSuccessViaApiTfa);
-                ;
+                
                 var expires = TenantCookieSettingsHelper.GetExpiresTime(tenant);
 
                 var result = new AuthenticationTokenData

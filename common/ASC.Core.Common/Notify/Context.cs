@@ -131,7 +131,7 @@ namespace ASC.Notify
                         var pattern = source.GetPatternProvider().GetPattern(a, s);
                         if (pattern == null)
                         {
-                            throw new NotifyException(string.Format("In notify source {0} pattern not found for action {1} and sender {2}", source.ID, a.ID, s));
+                            throw new NotifyException($"In notify source {source.ID} pattern not found for action {a.ID} and sender {s}");
                         }
                     }
                     catch (Exception error)

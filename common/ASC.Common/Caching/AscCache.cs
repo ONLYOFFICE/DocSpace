@@ -30,8 +30,6 @@ using System.Linq;
 using System.Runtime.Caching;
 using System.Text.RegularExpressions;
 
-using Google.Protobuf;
-
 using Microsoft.Extensions.Caching.Memory;
 
 namespace ASC.Common.Caching
@@ -55,7 +53,7 @@ namespace ASC.Common.Caching
 
         public static void OnClearCache()
         {
-            var keys = MemoryCache.Default.Select(r => r.Key).ToList();
+            var keys = MemoryCache.Default.Select(r => r.Key);
 
             foreach (var k in keys)
             {
@@ -114,7 +112,7 @@ namespace ASC.Common.Caching
         public void Remove(Regex pattern)
         {
             var copy = MemoryCacheKeys.ToDictionary(p => p.Key, p => p.Value);
-            var keys = copy.Select(p => p.Key).Where(k => pattern.IsMatch(k)).ToArray();
+            var keys = copy.Select(p => p.Key).Where(k => pattern.IsMatch(k));
 
             foreach (var key in keys)
             {

@@ -111,12 +111,11 @@ namespace ASC.Data.Backup
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
-            var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper, tenantManager, authManager) = scopeClass;
-            tenantManager.SetCurrentTenant(tenant.TenantId);
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
+            var (userManager, _, studioNotifySource, _, _, authManager) = scopeClass;
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifySource, scope);
 
-            var owner = userManager.GetUsers(tenant.OwnerId);
             var users = notifyAllUsers
                 ? userManager.GetUsers(EmployeeStatus.Active)
                 : new[] { userManager.GetUsers(tenantManager.GetCurrentTenant().OwnerId) };
@@ -141,9 +140,7 @@ namespace ASC.Data.Backup
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
-            var (userManager, studioNotifyHelper, studioNotifySource, _, tenantManager, authManager) = scopeClass;
-            tenantManager.SetCurrentTenant(tenant.TenantId);
-
+            var (userManager, studioNotifyHelper, studioNotifySource, _, _, authManager) = scopeClass;
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifySource, scope);
             var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
 
@@ -151,7 +148,7 @@ namespace ASC.Data.Backup
                 .Where(u => notify ? u.ActivationStatus.HasFlag(EmployeeActivationStatus.Activated) : u.IsOwner(tenant))
                 .ToArray();
 
-            if (users.Any())
+            if (users.Length > 0)
             {
                 var args = CreateArgs(scope, region, url);
                 if (action == Actions.MigrationPortalSuccessV115)
@@ -248,7 +245,7 @@ namespace ASC.Data.Backup
         }
     }
 
-    public class NotifyHelperExtension
+    public static class NotifyHelperExtension
     {
         public static void Register(DIHelper services)
         {

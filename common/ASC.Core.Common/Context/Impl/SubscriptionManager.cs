@@ -42,19 +42,13 @@ namespace ASC.Core
         private TenantManager TenantManager { get; }
 
         private ICache Cache { get; set; }
-        public static readonly object CacheLocker;
-        public static readonly List<Guid> Groups;
-
-        static SubscriptionManager()
-        {
-            CacheLocker = new object();
-            Groups = new List<Guid>
+        public static readonly object CacheLocker = new object();
+        public static readonly List<Guid> Groups = Groups = new List<Guid>
             {
                 Constants.Admin.ID,
                 Constants.Everyone.ID,
                 Constants.User.ID
             };
-        }
 
         public SubscriptionManager(ISubscriptionService service, TenantManager tenantManager, ICache cache)
         {
@@ -123,7 +117,7 @@ namespace ASC.Core
                 m = methods.FirstOrDefault();
             }
 
-            return m != null ? m.Methods : new string[0];
+            return m != null ? m.Methods : Array.Empty<string>();
         }
 
         public string[] GetRecipients(string sourceID, string actionID, string objectID)

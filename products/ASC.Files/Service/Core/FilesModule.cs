@@ -65,7 +65,7 @@ namespace ASC.Files.Service.Core
 
                 var owner = (Guid)feed.Target;
                 var groupUsers = UserManager.GetUsersByGroup(owner).Select(x => x.ID).ToList();
-                if (!groupUsers.Any())
+                if (groupUsers.Count == 0)
                 {
                     groupUsers.Add(owner);
                 }
@@ -147,7 +147,7 @@ namespace ASC.Files.Service.Core
                     ExtraLocation = rootFolder.FolderType == FolderType.DEFAULT ? rootFolder.Title : string.Empty,
                     ExtraLocationUrl = rootFolder.FolderType == FolderType.DEFAULT ? FilesLinkUtility.GetFileRedirectPreviewUrl(file.FolderID, false) : string.Empty,
                     AdditionalInfo = file.ContentLengthString,
-                    Keywords = string.Format("{0}", file.Title),
+                    Keywords = file.Title,
                     HasPreview = false,
                     CanComment = false,
                     Target = shareRecord.ShareTo,
@@ -170,7 +170,7 @@ namespace ASC.Files.Service.Core
                 ExtraLocation = rootFolder.FolderType == FolderType.DEFAULT ? rootFolder.Title : string.Empty,
                 ExtraLocationUrl = rootFolder.FolderType == FolderType.DEFAULT ? FilesLinkUtility.GetFileRedirectPreviewUrl(file.FolderID, false) : string.Empty,
                 AdditionalInfo = file.ContentLengthString,
-                Keywords = string.Format("{0}", file.Title),
+                Keywords = file.Title,
                 HasPreview = false,
                 CanComment = false,
                 Target = null,
@@ -183,7 +183,7 @@ namespace ASC.Files.Service.Core
             if (target == null) return true;
             var owner = (Guid)target;
             var groupUsers = UserManager.GetUsersByGroup(owner).Select(x => x.ID).ToList();
-            if (!groupUsers.Any())
+            if (groupUsers.Count == 0)
             {
                 groupUsers.Add(owner);
             }
