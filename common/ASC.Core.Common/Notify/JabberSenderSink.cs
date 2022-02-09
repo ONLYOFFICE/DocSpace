@@ -40,20 +40,20 @@ namespace ASC.Core.Notify
     {
         private static readonly string s_senderName = Configuration.Constants.NotifyMessengerSenderSysName;
         private readonly INotifySender _sender;
-        private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly IServiceProvider _serviceProvider;
 
 
-        public JabberSenderSink(INotifySender sender, IServiceScopeFactory serviceScopeFactory)
+        public JabberSenderSink(INotifySender sender, IServiceProvider serviceProvider)
         {
             _sender = sender ?? throw new ArgumentNullException(nameof(sender));
-            _serviceScopeFactory = serviceScopeFactory;
+            _serviceProvider = serviceProvider;
         }
 
         public override SendResponse ProcessMessage(INoticeMessage message)
         {
             try
             {
-                using var scope = _serviceScopeFactory.CreateScope();
+                using var scope = _serviceProvider.CreateScope();
                 var scopeClass = scope.ServiceProvider.GetService<JabberSenderSinkScope>();
                 (var userManager, var tenantManager) = scopeClass;
                 var result = SendResult.OK;

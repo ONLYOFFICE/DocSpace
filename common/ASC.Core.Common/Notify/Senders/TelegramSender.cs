@@ -38,14 +38,14 @@ namespace ASC.Core.Notify.Senders
 {
     public class TelegramSender : INotifySender
     {
-        public IServiceScopeFactory ServiceScopeFactory { get; }
+        public IServiceProvider ServiceProvider { get; }
 
         private readonly ILog _logger;
 
-        public TelegramSender(IOptionsMonitor<ILog> options, IServiceScopeFactory serviceScopeFactory)
+        public TelegramSender(IOptionsMonitor<ILog> options, IServiceProvider serviceProvider)
         {
             _logger = options.Get("ASC");
-            ServiceScopeFactory = serviceScopeFactory;
+            ServiceProvider = serviceProvider;
         }
 
         public void Init(IDictionary<string, string> properties) { }
@@ -59,7 +59,7 @@ namespace ASC.Core.Notify.Senders
             }
             try
             {
-                using var scope = ServiceScopeFactory.CreateScope();
+                using var scope = ServiceProvider.CreateScope();
                 var TelegramHelper = scope.ServiceProvider.GetService<TelegramHelper>();
                 TelegramHelper.SendMessage(m);
             }
