@@ -21,7 +21,8 @@ import {
 import DragTooltip from "../../components/DragTooltip";
 import { createTreeFolders } from "../../helpers/files-helpers";
 import MediaViewer from "./MediaViewer";
-import { NotificationsBodyContent } from "./Notifications";
+import { RoomInfoBodyContent } from "./RoomInfo";
+import { RoomInfoHeaderContent } from "./RoomInfo";
 import {
     SectionBodyContent,
     SectionFilterContent,
@@ -333,9 +334,13 @@ class PureHome extends React.Component {
                         <SectionBodyContent />
                     </PageLayout.SectionBody>
 
-                    <PageLayout.NotificationsBody>
-                        <NotificationsBodyContent />
-                    </PageLayout.NotificationsBody>
+                    <PageLayout.RoomInfoHeader>
+                        <RoomInfoHeaderContent />
+                    </PageLayout.RoomInfoHeader>
+
+                    <PageLayout.RoomInfoBody>
+                        <RoomInfoBodyContent />
+                    </PageLayout.RoomInfoBody>
 
                     <PageLayout.SectionPaging>
                         <SectionPagingContent tReady={tReady} />

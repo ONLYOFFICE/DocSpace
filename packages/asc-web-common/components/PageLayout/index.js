@@ -15,8 +15,9 @@ import SubArticleBody from "./sub-components/article-body";
 import SubArticleHeader from "./sub-components/article-header";
 import SubArticleMainButton from "./sub-components/article-main-button";
 import ArticlePinPanel from "./sub-components/article-pin-panel";
-import Notifications from "./sub-components/notifications";
-import SubNotificationsBody from "./sub-components/notifications-body";
+import RoomInfo from "./sub-components/room-info";
+import SubRoomInfoBody from "./sub-components/room-info-body";
+import SubRoomInfoHeader from "./sub-components/room-info-header";
 import Section from "./sub-components/section";
 import SubSectionBody from "./sub-components/section-body";
 import SubSectionBodyContent from "./sub-components/section-body-content";
@@ -86,10 +87,15 @@ function SectionPaging() {
 }
 SectionPaging.displayName = "SectionPaging";
 
-function NotificationsBody() {
+function RoomInfoBody() {
     return null;
 }
-NotificationsBody.displayName = "NotificationsBody";
+RoomInfoBody.displayName = "RoomInfoBody";
+
+function RoomInfoHeader() {
+    return null;
+}
+RoomInfoHeader.displayName = "RoomInfoHeader";
 
 class PageLayout extends React.Component {
     static ArticleHeader = ArticleHeader;
@@ -99,7 +105,8 @@ class PageLayout extends React.Component {
     static SectionFilter = SectionFilter;
     static SectionBody = SectionBody;
     static SectionPaging = SectionPaging;
-    static NotificationsBody = NotificationsBody;
+    static RoomInfoBody = RoomInfoBody;
+    static RoomInfoHeader = RoomInfoHeader;
 
     constructor(props) {
         super(props);
@@ -250,7 +257,8 @@ class PageLayout extends React.Component {
         let sectionFilterContent = null;
         let sectionPagingContent = null;
         let sectionBodyContent = null;
-        let notificationsBodyContent = null;
+        let roomInfoBodyContent = null;
+        let roomInfoHeaderContent = null;
 
         React.Children.forEach(children, (child) => {
             const childType =
@@ -280,9 +288,11 @@ class PageLayout extends React.Component {
                 case SectionBody.displayName:
                     sectionBodyContent = child;
                     break;
-                case NotificationsBody.displayName:
-                    notificationsBodyContent = child;
-                    console.log(notificationsBodyContent);
+                case RoomInfoBody.displayName:
+                    roomInfoBodyContent = child;
+                    break;
+                case RoomInfoHeader.displayName:
+                    roomInfoHeaderContent = child;
                     break;
                 default:
                     break;
@@ -514,14 +524,14 @@ class PageLayout extends React.Component {
                                             />
                                         )}
                                     </Section>
-                                    <Notifications
-                                        width={"400px"}
-                                        isVisible={true}
-                                    >
-                                        <SubNotificationsBody>
-                                            {notificationsBodyContent}
-                                        </SubNotificationsBody>
-                                    </Notifications>
+                                    <RoomInfo>
+                                        <SubRoomInfoHeader>
+                                            {roomInfoHeaderContent}
+                                        </SubRoomInfoHeader>
+                                        <SubRoomInfoBody>
+                                            {roomInfoBodyContent}
+                                        </SubRoomInfoBody>
+                                    </RoomInfo>
                                 </Provider>
                             )}
                         </ReactResizeDetector>

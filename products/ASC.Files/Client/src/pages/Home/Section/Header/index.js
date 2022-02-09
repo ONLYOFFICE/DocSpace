@@ -317,7 +317,7 @@ class SectionHeaderContent extends React.Component {
     };
 
     onEmptyTrashAction = () => this.props.setEmptyTrashDialogVisible(true);
-    onToggleNotifications = () => this.props.toggleNotifications();
+    onToggleRoomInfo = () => this.props.toggleRoomInfo();
 
     getContextOptionsFolder = () => {
         const { t, personal } = this.props;
@@ -560,9 +560,7 @@ class SectionHeaderContent extends React.Component {
                                                 color="#A3A9AE"
                                                 hoverColor="#657077"
                                                 isFill={true}
-                                                onClick={
-                                                    this.onToggleNotifications
-                                                }
+                                                onClick={this.onToggleRoomInfo}
                                                 className="trash-button"
                                             />
                                         </span>

@@ -1,3 +1,4 @@
+import RoomInfoStore from "./RoomInfoStore";
 import store from "studio/store";
 
 import DialogsStore from "./DialogsStore";
@@ -9,7 +10,6 @@ import FormatsStore from "./FormatsStore";
 import iconFormatsStore from "./IconFormatsStore";
 import MediaViewerDataStore from "./MediaViewerDataStore";
 import mediaViewersFormatsStore from "./MediaViewersFormatsStore";
-import NotificationsStore from "./NotificationsStore";
 import PrimaryProgressDataStore from "./PrimaryProgressDataStore";
 import SecondaryProgressDataStore from "./SecondaryProgressDataStore";
 import selectedFilesStore from "./SelectedFilesStore";
@@ -73,7 +73,7 @@ const filesActionsStore = new FilesActionsStore(
 
 const versionHistoryStore = new VersionHistoryStore(filesStore);
 
-const notificationsStore = new NotificationsStore();
+const roomInfoStore = new RoomInfoStore();
 
 //const selectedFilesStore = new SelectedFilesStore(selectedFilesStore);
 const stores = {
@@ -88,7 +88,7 @@ const stores = {
     selectedFolderStore,
     filesActionsStore,
     selectedFilesStore,
-    notificationsStore,
+    roomInfoStore,
 };
 
 export default stores;

@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
 
-class NotificationsStore {
+class RoomInfoStore {
     isVisible = false;
 
     constructor() {
@@ -12,4 +12,4 @@ class NotificationsStore {
     };
 }
 
-export default NotificationsStore;
+export default RoomInfoStore;
