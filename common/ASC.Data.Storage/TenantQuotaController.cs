@@ -129,7 +129,7 @@ namespace ASC.Data.Storage
         private void SetTenantQuotaRow(string module, string domain, long size, string dataTag, bool exchange)
         {
             TenantManager.SetTenantQuotaRow(
-                new TenantQuotaRow { Tenant = tenant, Path = string.Format("/{0}/{1}", module, domain), Counter = size, Tag = dataTag },
+                new TenantQuotaRow { Tenant = tenant, Path = $"/{module}/{domain}", Counter = size, Tag = dataTag },
                 exchange);
         }
 

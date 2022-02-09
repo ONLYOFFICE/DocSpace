@@ -22,7 +22,7 @@ using StackExchange.Redis.Extensions.Newtonsoft;
 
 namespace ASC.Webhooks.Service
 {
-    public class Program
+    public static class Program
     {
         public async static Task Main(string[] args)
         {
@@ -71,8 +71,13 @@ namespace ASC.Webhooks.Service
                     var diHelper = new DIHelper(services);
 
                     var redisConfiguration = hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>();
+                    var kafkaConfiguration = hostContext.Configuration.GetSection("kafka").Get<KafkaSettings>();
 
-                    if (redisConfiguration != null)
+                    if (kafkaConfiguration != null)
+                    {
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                    }
+                    else if (redisConfiguration != null)
                     {
                         diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
 

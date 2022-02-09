@@ -167,7 +167,7 @@ namespace ASC.Data.Backup.Tasks
         {
             if (value <= 0)
             {
-                throw new ArgumentOutOfRangeException("value");
+                throw new ArgumentOutOfRangeException(nameof(value));
             }
             stepsCount = value;
             Logger.Debug("Steps: " + stepsCount);
@@ -191,7 +191,7 @@ namespace ASC.Data.Backup.Tasks
         {
             if (value < 0 || value > 100)
             {
-                throw new ArgumentOutOfRangeException("value");
+                throw new ArgumentOutOfRangeException(nameof(value));
             }
             if (value == 100)
             {
@@ -207,7 +207,7 @@ namespace ASC.Data.Backup.Tasks
         {
             if (value < 0 || value > 100)
             {
-                throw new ArgumentOutOfRangeException("value");
+                throw new ArgumentOutOfRangeException(nameof(value));
             }
             if (Progress != value)
             {
@@ -231,7 +231,7 @@ namespace ASC.Data.Backup.Tasks
 
             foreach (var p in parsed)
             {
-                if (string.IsNullOrEmpty(p.Trim())) continue;
+                if (string.IsNullOrWhiteSpace(p)) continue;
                 var keyValue = p.Split('=');
                 result.Add(keyValue[0].ToLowerInvariant(), keyValue[1]);
             }
@@ -243,16 +243,16 @@ namespace ASC.Data.Backup.Tasks
         {
             var connectionString = ParseConnectionString(DbFactory.ConnectionStringSettings.ConnectionString);
             var args = new StringBuilder()
-                .AppendFormat("-h {0} ", connectionString["server"])
-                .AppendFormat("-u {0} ", connectionString["user id"])
-                .AppendFormat("-p{0} ", connectionString["password"]);
+                .Append($"-h {connectionString["server"]} ")
+                .Append($"-u {connectionString["user id"]} ")
+                .Append($"-p{connectionString["password"]} ");
 
             if (db)
             {
-                args.AppendFormat("-D {0} ", connectionString["database"]);
+                args.Append($"-D {connectionString["database"]} ");
             }
 
-            args.AppendFormat("-e \" source {0}\"", file);
+            args.Append($"-e \" source {file}\"");
             Logger.DebugFormat("run mysql file {0} {1}", file, args.ToString());
 
             var startInfo = new ProcessStartInfo
@@ -280,16 +280,21 @@ namespace ASC.Data.Backup.Tasks
             Logger.DebugFormat("complete mysql file {0}", file);
         }
 
-        protected async Task RunMysqlFile(Stream stream, string delimiter = ";")
+        protected Task RunMysqlFile(Stream stream, string delimiter = ";")
         {
+            if (stream == null) return Task.CompletedTask;
 
-            if (stream == null) return;
+            return InternalRunMysqlFile(stream, delimiter);
+        }
 
+        private async Task InternalRunMysqlFile(Stream stream, string delimiter)
+        {
             using var reader = new StreamReader(stream, Encoding.UTF8);
             string commandText;
 
             while ((commandText = await reader.ReadLineAsync()) != null)
             {
+                var sb = new StringBuilder(commandText);
                 while (!commandText.EndsWith(delimiter))
                 {
                     var newline = await reader.ReadLineAsync();
@@ -297,9 +302,9 @@ namespace ASC.Data.Backup.Tasks
                     {
                         break;
                     }
-                    commandText += newline;
+                    sb.Append(newline);
                 }
-
+                commandText = sb.ToString();
                 try
                 {
 

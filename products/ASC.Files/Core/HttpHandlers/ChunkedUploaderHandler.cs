@@ -385,7 +385,7 @@ namespace ASC.Web.Files.HttpHandlers
 
         public ChunkedRequestHelper(HttpRequest request)
         {
-            _request = request ?? throw new ArgumentNullException("request");
+            _request = request ?? throw new ArgumentNullException(nameof(request));
         }
 
         private bool IsAuthDataSet(InstanceCrypto instanceCrypto)

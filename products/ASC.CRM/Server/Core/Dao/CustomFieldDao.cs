@@ -58,7 +58,6 @@ namespace ASC.CRM.Core.Dao
 
         public CustomFieldDao(
             DbContextManager<CrmDbContext> dbContextManager,
-             DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             SecurityContext securityContext,
             TenantUtil tenantUtil,
@@ -68,7 +67,6 @@ namespace ASC.CRM.Core.Dao
             IMapper mapper
             ) :
               base(dbContextManager,
-                dbContextManager1,
                  tenantManager,
                  securityContext,
                  logger,
@@ -349,7 +347,7 @@ namespace ASC.CRM.Core.Dao
 
                     if (fieldType == CustomFieldType.SelectBox)
                     {
-                        if (oldMask == customField.Mask || customField.Mask == "")
+                        if (oldMask == customField.Mask || customField.Mask.Length == 0)
                         {
                             resultMask = oldMask;
                         }

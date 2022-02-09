@@ -322,9 +322,9 @@ class HotkeyStore {
 
   get countTilesInRow() {
     const isDesktopView = isDesktop();
-    const tileGap = isDesktopView ? 16 : 12;
-    const minTileWidth = 220 + tileGap;
-    const sectionPadding = isDesktopView ? 24 : 18;
+    const tileGap = isDesktopView ? 16 : 14;
+    const minTileWidth = 216 + tileGap;
+    const sectionPadding = isDesktopView ? 24 : 16;
 
     const body = document.getElementById("section");
     const sectionWidth = body ? body.offsetWidth - sectionPadding : 0;

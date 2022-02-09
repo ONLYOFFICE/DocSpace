@@ -141,7 +141,7 @@ namespace ASC.Web.Files.Helpers
                 jsonBlogInfo.Add("key", easyBibappkey);
                 var citationData = jsonBlogInfo.ToString();
 
-                var uri = "https://api.citation-api.com/2.0/rest/cite";
+                const string uri = "https://api.citation-api.com/2.0/rest/cite";
                 const string contentType = "application/json";
                 const string method = "POST";
                 var body = citationData;

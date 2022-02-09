@@ -72,8 +72,8 @@ namespace ASC.Web.Files.Core.Entries
 
         public void SetKeyPair(string publicKey, string privateKeyEnc)
         {
-            if (string.IsNullOrEmpty(publicKey)) throw new ArgumentNullException("publicKey");
-            if (string.IsNullOrEmpty(privateKeyEnc)) throw new ArgumentNullException("privateKeyEnc");
+            if (string.IsNullOrEmpty(publicKey)) throw new ArgumentNullException(nameof(publicKey));
+            if (string.IsNullOrEmpty(privateKeyEnc)) throw new ArgumentNullException(nameof(privateKeyEnc));
 
             var user = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
             if (!AuthContext.IsAuthenticated || user.IsVisitor(UserManager)) throw new System.Security.SecurityException();

@@ -32,7 +32,7 @@ namespace Textile.States
         {
             for (var i = 0; i < HeaderLevel; i++)
             {
-                Formatter.Output.Write(string.Format("<br {0}/>", FormattedStylesAndAlignment("br")));
+                Formatter.Output.Write($"<br {FormattedStylesAndAlignment("br")}/>");
             }
         }
 
@@ -77,12 +77,12 @@ namespace Textile.States
 
         public override void Enter()
         {
-            Formatter.Output.Write(string.Format("<h{0}{1}>", HeaderLevel, FormattedStylesAndAlignment(string.Format("h{0}", HeaderLevel))));
+            Formatter.Output.Write("<h" + HeaderLevel + FormattedStylesAndAlignment("h" + HeaderLevel) + ">");
         }
 
         public override void Exit()
         {
-            Formatter.Output.WriteLine(string.Format("</h{0}>", HeaderLevel.ToString()));
+            Formatter.Output.WriteLine("</h" + HeaderLevel + ">");
         }
 
         protected override void OnContextAcquired()

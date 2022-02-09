@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -72,8 +73,9 @@ namespace ASC.Data.Storage.RackspaceCloud
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> options)
-            : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
+            IOptionsMonitor<ILog> options,
+            IHttpClientFactory httpClient)
+            : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options, httpClient)
         {
             _logger = options.Get("ASC.Data.Storage.Rackspace.RackspaceCloudStorage");
             TempPath = tempPath;
@@ -90,14 +92,10 @@ namespace ASC.Data.Storage.RackspaceCloud
                 if (_subDir.Length == 1 && (_subDir[0] == '/' || _subDir[0] == '\\'))
                     result = path;
                 else
-                    result = string.Format("{0}/{1}", _subDir, path); // Ignory all, if _subDir is not null
+                    result = $"{_subDir}/{path}"; // Ignory all, if _subDir is not null
             }
             else//Key combined from module+domain+filename
-                result = string.Format("{0}/{1}/{2}/{3}",
-                                                         _tenant,
-                                                         _modulename,
-                                                         domain,
-                                                         path);
+                result = $"{_tenant}/{_modulename}/{domain}/{path}";
 
             result = result.Replace("//", "/").TrimStart('/');
             if (_lowerCasing)
@@ -127,7 +125,7 @@ namespace ASC.Data.Storage.RackspaceCloud
             {
                 _modulename = moduleConfig.Name;
                 _dataList = new DataList(moduleConfig);
-                _domains.AddRange(moduleConfig.Domain.Select(x => string.Format("{0}/", x.Name)));
+                _domains.AddRange(moduleConfig.Domain.Select(x => $"{x.Name}/"));
                 _domainsExpires = moduleConfig.Domain.Where(x => x.Expires != TimeSpan.Zero).ToDictionary(x => x.Name, y => y.Expires);
                 _domainsExpires.Add(string.Empty, moduleConfig.Expires);
                 _domainsAcl = moduleConfig.Domain.ToDictionary(x => x.Name, y => y.Acl);
@@ -148,15 +146,12 @@ namespace ASC.Data.Storage.RackspaceCloud
             _apiKey = props["apiKey"];
             _username = props["username"];
 
-            if (props.ContainsKey("lower"))
+            if (props.TryGetValue("lower", out var value))
             {
-                bool.TryParse(props["lower"], out _lowerCasing);
+                bool.TryParse(value, out _lowerCasing);
             }
 
-            if (props.ContainsKey("subdir"))
-            {
-                _subDir = props["subdir"];
-            }
+            props.TryGetValue("subdir", out _subDir);
 
             _public_container = props["public_container"];
 
@@ -195,13 +190,13 @@ namespace ASC.Data.Storage.RackspaceCloud
 
             var accounMetaData = client.GetAccountMetaData(_region);
             string secretKey;
-            if (accounMetaData.ContainsKey("Temp-Url-Key"))
+            if (accounMetaData.TryGetValue("Temp-Url-Key", out secretKey))
             {
-                secretKey = accounMetaData["Temp-Url-Key"];
+
             }
             else
             {
-                secretKey = ASC.Common.Utils.RandomString.Generate(64);
+                secretKey = Common.Utils.RandomString.Generate(64);
                 accounMetaData.Add("Temp-Url-Key", secretKey);
                 client.UpdateAccountMetadata(accounMetaData, _region);
             }
@@ -257,12 +252,10 @@ namespace ASC.Data.Storage.RackspaceCloud
 
         protected override Uri SaveWithAutoAttachment(string domain, string path, Stream stream, string attachmentFileName)
         {
-            var contentDisposition = string.Format("attachment; filename={0};",
-                                                HttpUtility.UrlPathEncode(attachmentFileName));
+            var contentDisposition = $"attachment; filename={HttpUtility.UrlPathEncode(attachmentFileName)};";
             if (attachmentFileName.Any(c => c >= 0 && c <= 127))
             {
-                contentDisposition = string.Format("attachment; filename*=utf-8''{0};",
-                                                   HttpUtility.UrlPathEncode(attachmentFileName));
+                contentDisposition = $"attachment; filename*=utf-8''{HttpUtility.UrlPathEncode(attachmentFileName)};";
             }
 
             return Save(domain, path, stream, null, contentDisposition);
@@ -295,10 +288,6 @@ namespace ASC.Data.Storage.RackspaceCloud
                                  ? MimeMapping.GetMimeMapping(Path.GetFileName(path))
                                  : contentType;
 
-            if (mime == "application/octet-stream")
-            {
-                contentDisposition = "attachment";
-            }
 
             var customHeaders = new Dictionary<string, string>();
 
@@ -337,7 +326,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
                         var headers = new Dictionary<string, string>
                         {
-                            { "X-Object-Manifest", string.Format("{0}/{1}", _private_container, MakePath(domain, path)) }
+                            { "X-Object-Manifest", $"{_private_container}/{MakePath(domain, path)}" }
                         };
                         // create symlink
                         client.CreateObject(_public_container,
@@ -384,9 +373,9 @@ namespace ASC.Data.Storage.RackspaceCloud
                 return ACL.Auto;
             }
 
-            if (_domainsAcl.ContainsKey(domain))
+            if (_domainsAcl.TryGetValue(domain, out var value))
             {
-                return _domainsAcl[domain];
+                return value;
             }
             return _moduleAcl;
         }
@@ -411,8 +400,11 @@ namespace ASC.Data.Storage.RackspaceCloud
                               .Where(x => Wildcard.IsMatch(pattern, Path.GetFileName(x.Name)));
 
             if (!files.Any()) return;
-
-            files.ToList().ForEach(x => client.DeleteObject(_private_container, x.Name));
+            
+            foreach(var file in files)
+            {
+                client.DeleteObject(_private_container, file.Name);
+            }
 
             if (QuotaController != null)
             {
@@ -423,7 +415,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
         public override void DeleteFiles(string domain, List<string> paths)
         {
-            if (!paths.Any()) return;
+            if (paths.Count == 0) return;
 
             var keysToDel = new List<string>();
 
@@ -448,7 +440,7 @@ namespace ASC.Data.Storage.RackspaceCloud
                 }
             }
 
-            if (!keysToDel.Any()) return;
+            if (keysToDel.Count == 0) return;
 
             var client = GetClient();
 
@@ -469,7 +461,10 @@ namespace ASC.Data.Storage.RackspaceCloud
 
             if (!files.Any()) return;
 
-            files.ToList().ForEach(x => client.DeleteObject(_private_container, x.Name));
+            foreach(var file in files)
+            {
+                client.DeleteObject(_private_container, file.Name);
+            }
 
             if (QuotaController != null)
             {
@@ -527,11 +522,9 @@ namespace ASC.Data.Storage.RackspaceCloud
 
         public override string[] ListFilesRelative(string domain, string path, string pattern, bool recursive)
         {
-            var paths = new List<string>();
-
             var client = GetClient();
 
-            paths = client.ListObjects(_private_container, null, null, null, MakePath(domain, path), _region).Select(x => x.Name).ToList();
+            var paths = client.ListObjects(_private_container, null, null, null, MakePath(domain, path), _region).Select(x => x.Name);
 
             return paths
                 .Where(x => Wildcard.IsMatch(pattern, Path.GetFileName(x)))
@@ -543,7 +536,7 @@ namespace ASC.Data.Storage.RackspaceCloud
             var client = GetClient();
             var objects = client.ListObjects(_private_container, null, null, null, MakePath(domain, path), _region);
 
-            return objects.Count() > 0;
+            return objects.Any();
         }
 
         public override Task<bool> IsFileAsync(string domain, string path)
@@ -566,7 +559,7 @@ namespace ASC.Data.Storage.RackspaceCloud
             foreach (var obj in objToDel)
             {
                 client.DeleteObject(_private_container, obj.Name);
-                QuotaUsedDelete(domain, Convert.ToInt64(obj.Bytes));
+                QuotaUsedDelete(domain, obj.Bytes);
             }
         }
 
@@ -712,7 +705,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
         public override string UploadChunk(string domain, string path, string filePath, Stream stream, long defaultChunkSize, int chunkNumber, long chunkLength)
         {
-            var BufferSize = 4096;
+            const int BufferSize = 4096;
 
             var mode = chunkNumber == 0 ? FileMode.Create : FileMode.Append;
 

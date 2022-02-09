@@ -140,7 +140,7 @@ namespace ASC.Web.Studio.Core.SMS
 
             if (!SecurityContext.IsAuthenticated)
             {
-                var cookiesKey = SecurityContext.AuthenticateMe(user.ID);
+                SecurityContext.AuthenticateMe(user.ID);
                 //CookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
             }
 

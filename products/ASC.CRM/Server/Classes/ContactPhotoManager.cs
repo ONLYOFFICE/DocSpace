@@ -85,6 +85,7 @@ namespace ASC.Web.CRM.Classes
         private readonly DistributedTaskQueue _resizeQueue;
         private readonly ICacheNotify<ContactPhotoManagerCacheItem> _cacheNotify;
         private readonly ICache _cache;
+        private readonly IHttpClientFactory _clientFactory;
 
         private const string PhotosBaseDirName = "photos";
         private const string PhotosDefaultTmpDirName = "temp";
@@ -103,7 +104,8 @@ namespace ASC.Web.CRM.Classes
                                    IOptionsMonitor<ILog> logger,
                                    ICache cache,
                                    ICacheNotify<ContactPhotoManagerCacheItem> cacheNotify,
-                                   DistributedTaskQueueOptionsManager optionsQueue)
+                                   DistributedTaskQueueOptionsManager optionsQueue,
+                                   IHttpClientFactory clientFactory)
         {
             _global = global;
             _webImageSupplier = webImageSupplier;
@@ -111,6 +113,7 @@ namespace ASC.Web.CRM.Classes
             _cache = cache;
             _resizeQueue = optionsQueue.Get<ResizeWorkerItem>();
             _logger = logger.Get("ASC.CRM");
+            _clientFactory = clientFactory;
 
             _cacheNotify.Subscribe((x) =>
             {
@@ -349,14 +352,11 @@ namespace ASC.Web.CRM.Classes
 
             lock (locker)
             {
-                _resizeQueue.GetTasks<ResizeWorkerItem>().Where(item => item.ContactID == contactID)
-                           .All(item =>
-                               {
-                                   _resizeQueue.RemoveTask(item.Id);
-
-                                   return true;
-                               });
-
+                foreach(var item in _resizeQueue.GetTasks<ResizeWorkerItem>().Where(item => item.ContactID == contactID))
+                {
+                    _resizeQueue.RemoveTask(item.Id);
+                }
+                           
                 var photoDirectory = !isTmpDir
                                          ? BuildFileDirectory(contactID)
                                          : (String.IsNullOrEmpty(tmpDirName) ? BuildFileTmpDirectory(contactID) : BuildFileTmpDirectory(tmpDirName));
@@ -544,7 +544,7 @@ namespace ASC.Web.CRM.Classes
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(imageUrl);
 
-            using var httpClient = new HttpClient();
+            var httpClient = _clientFactory.CreateClient();
             using var response = httpClient.Send(request);
             using (var inputStream = response.Content.ReadAsStream())
             {
@@ -580,7 +580,7 @@ namespace ASC.Web.CRM.Classes
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(imageUrl);
 
-            using var httpClient = new HttpClient();
+            var httpClient = _clientFactory.CreateClient();
             using var response = httpClient.Send(request);
             using (var inputStream = response.Content.ReadAsStream())
             {

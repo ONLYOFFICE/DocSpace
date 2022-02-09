@@ -53,14 +53,12 @@ namespace ASC.CRM.Core.Dao
         public ListItemDao(
             CrmSecurity crmSecurity,
             DbContextManager<CrmDbContext> dbContextManager,
-             DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             SecurityContext securityContext,
             IOptionsMonitor<ILog> logger,
             ICache ascCache,
             IMapper mapper)
             : base(dbContextManager,
-                  dbContextManager1,
                   tenantManager,
                   securityContext,
                   logger,
@@ -218,7 +216,7 @@ namespace ASC.CRM.Core.Dao
                            .Where(x => x.ListType == listType)
                            .Select(x => new { x.Id, x.Color })
                            .ToList()
-                           .ForEach(x => result.Add(x.Id.ToString(), x.Color.ToString()));
+                           .ForEach(x => result.Add(x.Id.ToString(), x.Color));
 
             return result;
 
@@ -381,13 +379,13 @@ namespace ASC.CRM.Core.Dao
                 {
                     case ListType.ContactStatus:
                     case ListType.ContactType:
-                        throw new ArgumentException(string.Format("{0}. {1}.", CRMErrorsResource.BasicCannotBeEdited, CRMErrorsResource.HasRelatedContacts));
+                        throw new ArgumentException($"{CRMErrorsResource.BasicCannotBeEdited}. {CRMErrorsResource.HasRelatedContacts}.");
                     case ListType.TaskCategory:
-                        throw new ArgumentException(string.Format("{0}. {1}.", CRMErrorsResource.BasicCannotBeEdited, CRMErrorsResource.TaskCategoryHasRelatedTasks));
+                        throw new ArgumentException($"{CRMErrorsResource.BasicCannotBeEdited}. {CRMErrorsResource.TaskCategoryHasRelatedTasks}.");
                     case ListType.HistoryCategory:
-                        throw new ArgumentException(string.Format("{0}. {1}.", CRMErrorsResource.BasicCannotBeEdited, CRMErrorsResource.HistoryCategoryHasRelatedEvents));
+                        throw new ArgumentException($"{CRMErrorsResource.BasicCannotBeEdited}. {CRMErrorsResource.HistoryCategoryHasRelatedEvents}.");
                     default:
-                        throw new ArgumentException(string.Format("{0}.", CRMErrorsResource.BasicCannotBeEdited));
+                        throw new ArgumentException($"{CRMErrorsResource.BasicCannotBeEdited}.");
                 }
             }
 
@@ -498,16 +496,16 @@ namespace ASC.CRM.Core.Dao
                 {
                     case ListType.ContactStatus:
                     case ListType.ContactType:
-                        throw new ArgumentException(string.Format("{0}. {1}.", CRMErrorsResource.BasicCannotBeDeleted, CRMErrorsResource.HasRelatedContacts));
+                        throw new ArgumentException($"{CRMErrorsResource.BasicCannotBeDeleted}. {CRMErrorsResource.HasRelatedContacts}.");
                     case ListType.TaskCategory:
-                        var exMsg = string.Format("{0}. {1}.", CRMErrorsResource.BasicCannotBeDeleted, CRMErrorsResource.TaskCategoryHasRelatedTasks);
+                        var exMsg = $"{CRMErrorsResource.BasicCannotBeDeleted}. {CRMErrorsResource.TaskCategoryHasRelatedTasks}.";
                         if (itemID == toItemID) throw new ArgumentException(exMsg);
                         ChangeRelativeItemsLink(listType, itemID, toItemID);
                         break;
                     case ListType.HistoryCategory:
-                        throw new ArgumentException(string.Format("{0}. {1}.", CRMErrorsResource.BasicCannotBeDeleted, CRMErrorsResource.HistoryCategoryHasRelatedEvents));
+                        throw new ArgumentException($"{CRMErrorsResource.BasicCannotBeDeleted}. {CRMErrorsResource.HistoryCategoryHasRelatedEvents}.");
                     default:
-                        throw new ArgumentException(string.Format("{0}.", CRMErrorsResource.BasicCannotBeDeleted));
+                        throw new ArgumentException($"{CRMErrorsResource.BasicCannotBeDeleted}.");
                 }
             }
 

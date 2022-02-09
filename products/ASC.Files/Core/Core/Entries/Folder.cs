@@ -28,6 +28,7 @@ using System;
 using System.Diagnostics;
 
 using ASC.Common;
+using ASC.Web.Files.Classes;
 
 namespace ASC.Files.Core
 {
@@ -89,9 +90,10 @@ namespace ASC.Files.Core
             FileEntryType = FileEntryType.Folder;
         }
 
-        public Folder(FileHelper fileHelper) : this()
+        public Folder(FileHelper fileHelper, Global global) : this()
         {
             FileHelper = fileHelper;
+            Global = global;
         }
 
         public override string UniqID

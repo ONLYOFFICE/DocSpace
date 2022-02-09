@@ -366,7 +366,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         }
     }
 
-    public class GoogleDriveProviderInfoExtention
+    public static class GoogleDriveProviderInfoExtention
     {
         public static void Register(DIHelper dIHelper)
         {

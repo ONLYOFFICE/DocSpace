@@ -132,7 +132,7 @@ namespace ASC.Web.Files.Core.Search
 
             IQueryable<FileTenant> GetBaseQuery(DateTime lastIndexed) => fileDao.FilesDbContext.Files
                 .Where(r => r.ModifiedOn >= lastIndexed)
-                .Join(fileDao.TenantDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FileTenant { DbFile = f, DbTenant = t })
+                .Join(fileDao.FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FileTenant { DbFile = f, DbTenant = t })
                 .Where(r => r.DbTenant.Status == ASC.Core.Tenants.TenantStatus.Active);
 
             try
@@ -171,7 +171,7 @@ namespace ASC.Web.Files.Core.Search
                     }
                 }
 
-                if (tasks.Any())
+                if (tasks.Count > 0)
                 {
                     Task.WaitAll(tasks.ToArray());
                 }
@@ -196,7 +196,7 @@ namespace ASC.Web.Files.Core.Search
         public DbFile DbFile { get; set; }
     }
 
-    public class FactoryIndexerFileExtension
+    public static class FactoryIndexerFileExtension
     {
         public static void Register(DIHelper services)
         {
