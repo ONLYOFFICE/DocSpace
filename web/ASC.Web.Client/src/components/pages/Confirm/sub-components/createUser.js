@@ -259,6 +259,7 @@ const Confirm = (props) => {
       .catch((error) => {
         console.error("confirm error", error);
         setErrorText(error);
+        setEmailValid(false);
         setIsLoading(false);
       });
   };
@@ -620,10 +621,6 @@ const Confirm = (props) => {
             isLoading={isLoading}
             onClick={onSubmit}
           />
-
-          <Text fontSize="14px" color="#c30">
-            {errorText}
-          </Text>
         </form>
 
         <MoreLoginModal
