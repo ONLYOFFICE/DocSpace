@@ -93,12 +93,11 @@ class SectionFilterContent extends React.Component {
   };
 
   onChangeViewAs = (view) => {
-    const { setViewAs } = this.props;
-    //const tabletView = isTabletView();
+    const { setViewAs, sectionWidth } = this.props;
 
     if (view === "row") {
-      //tabletView ? setViewAs("table") : setViewAs("row");
-      setViewAs("table");
+      if (sectionWidth < 1025 || isMobile) setViewAs("row");
+      else setViewAs("table");
     } else {
       setViewAs(view);
     }
