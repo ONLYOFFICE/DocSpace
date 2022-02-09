@@ -2,7 +2,7 @@ import { inject, observer } from "mobx-react";
 import React from "react";
 
 const SubRoomInfoHeader = ({ children }) => {
-    console.log("SRIH children - ", { children });
+    console.log("Header children - ", { children });
     return (
         <div>
             <div>ROOM INFO HEADER</div>

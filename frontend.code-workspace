@@ -1,61 +1,61 @@
 {
-  "folders": [
-    {
-      "name": "✨ appserver",
-      "path": "."
+    "folders": [
+        {
+            "name": "✨ appserver",
+            "path": "."
+        },
+        {
+            "name": "📦 @appserver/common",
+            "path": "packages\\asc-web-common"
+        },
+        {
+            "name": "🚀 @appserver/files",
+            "path": "products\\ASC.Files\\Client"
+        },
+        {
+            "name": "📦 @appserver/components",
+            "path": "packages\\asc-web-components"
+        },
+        {
+            "name": "🚀 @appserver/people",
+            "path": "products\\ASC.People\\Client"
+        },
+        {
+            "name": "🚀 @appserver/crm",
+            "path": "products\\ASC.Crm\\Client"
+        },
+        {
+            "name": "🚀 @appserver/projects",
+            "path": "products\\ASC.Projects\\Client"
+        },
+        {
+            "name": "🚀 @appserver/mail",
+            "path": "products\\ASC.Mail\\Client"
+        },
+        {
+            "name": "🚀 @appserver/calendar",
+            "path": "products\\ASC.Calendar\\Client"
+        },
+        {
+            "name": "🚀 @appserver/studio",
+            "path": "web\\ASC.Web.Client"
+        },
+        {
+            "name": "🚀 @appserver/login",
+            "path": "web\\ASC.Web.Login"
+        },
+        {
+            "name": "🚀 @appserver/editor",
+            "path": "web\\ASC.Web.Editor"
+        }
+    ],
+    "settings": {
+        "window.zoomLevel": 0,
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "liveServer.settings.multiRootWorkspaceName": "✨ appserver"
     },
-    {
-      "name": "📦 @appserver/common",
-      "path": "packages\\asc-web-common"
-    },
-    {
-      "name": "📦 @appserver/components",
-      "path": "packages\\asc-web-components"
-    },
-    {
-      "name": "🚀 @appserver/files",
-      "path": "products\\ASC.Files\\Client"
-    },
-    {
-      "name": "🚀 @appserver/people",
-      "path": "products\\ASC.People\\Client"
-    },
-    {
-      "name": "🚀 @appserver/crm",
-      "path": "products\\ASC.Crm\\Client"
-    },
-    {
-      "name": "🚀 @appserver/projects",
-      "path": "products\\ASC.Projects\\Client"
-    },
-    {
-      "name": "🚀 @appserver/mail",
-      "path": "products\\ASC.Mail\\Client"
-    },
-    {
-      "name": "🚀 @appserver/calendar",
-      "path": "products\\ASC.Calendar\\Client"
-    },
-    {
-      "name": "🚀 @appserver/studio",
-      "path": "web\\ASC.Web.Client"
-    },
-    {
-      "name": "🚀 @appserver/login",
-      "path": "web\\ASC.Web.Login"
-    },
-    {
-      "name": "🚀 @appserver/editor",
-      "path": "web\\ASC.Web.Editor"
+    "extensions": {
+        "recommendations": ["folke.vscode-monorepo-workspace"]
     }
-  ],
-  "settings": {
-    "window.zoomLevel": 0,
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "liveServer.settings.multiRootWorkspaceName": "✨ appserver"
-  },
-  "extensions": {
-    "recommendations": ["folke.vscode-monorepo-workspace"]
-  }
 }

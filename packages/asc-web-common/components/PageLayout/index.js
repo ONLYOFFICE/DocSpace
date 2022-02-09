@@ -611,6 +611,8 @@ PageLayout.SectionHeader = SectionHeader;
 PageLayout.SectionFilter = SectionFilter;
 PageLayout.SectionBody = SectionBody;
 PageLayout.SectionPaging = SectionPaging;
+PageLayout.RoomInfoHeader = RoomInfoHeader;
+PageLayout.RoomInfoBody = RoomInfoBody;
 
 export default inject(({ auth }) => {
     const { isLoaded, settingsStore } = auth;

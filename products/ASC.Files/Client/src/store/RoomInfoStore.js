@@ -8,8 +8,12 @@ class RoomInfoStore {
     }
 
     toggleIsVisible = () => {
-        isVisible = !this.isVisible;
+        this.isVisible = !this.isVisible;
     };
+
+    get isVisible() {
+        return this.isVisible;
+    }
 }
 
 export default RoomInfoStore;

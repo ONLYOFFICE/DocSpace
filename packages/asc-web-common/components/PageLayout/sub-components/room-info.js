@@ -1,8 +1,10 @@
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
 
-const RoomInfo = ({ children }) => {
+const RoomInfo = ({ children, isVisible }) => {
+    if (!isVisible) return null;
+
     const StyledRoomInfo = styled.div`
         height: 100%;
         width: 400px;
@@ -14,4 +16,10 @@ const RoomInfo = ({ children }) => {
     return <StyledRoomInfo>{children}</StyledRoomInfo>;
 };
 
-export default observer(RoomInfo);
+export default inject(({ roomInfoStore }) => {
+    let isVisible = false;
+    if (roomInfoStore) isVisible = roomInfoStore.isVisible;
+    return {
+        isVisible,
+    };
+})(RoomInfo);

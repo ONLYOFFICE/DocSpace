@@ -119,6 +119,11 @@ const StyledContainer = styled.div`
                 }
             }
         }
+
+        .room-info-button {
+            position: absolute;
+            right: 0;
+        }
     }
 
     .group-button-menu-container {
@@ -553,7 +558,7 @@ class SectionHeaderContent extends React.Component {
                                                     />
                                                 </span>
                                             )}
-                                        <span>
+                                        <>
                                             <IconButton
                                                 iconName="/static/images/arrow.path.react.svg"
                                                 size="15"
@@ -561,9 +566,9 @@ class SectionHeaderContent extends React.Component {
                                                 hoverColor="#657077"
                                                 isFill={true}
                                                 onClick={this.onToggleRoomInfo}
-                                                className="trash-button"
+                                                className="room-info-button"
                                             />
-                                        </span>
+                                        </>
                                     </>
                                 )}
                             </div>
@@ -584,6 +589,7 @@ export default inject(
         filesActionsStore,
         settingsStore,
         treeFoldersStore,
+        roomInfoStore,
     }) => {
         const {
             setSelected,
@@ -621,6 +627,7 @@ export default inject(
             downloadAction,
             getHeaderMenu,
         } = filesActionsStore;
+        const toggleRoomInfo = roomInfoStore.toggleIsVisible;
 
         return {
             isDesktop: auth.settingsStore.isDesktopClient,
@@ -630,6 +637,7 @@ export default inject(
             currentFolderId: selectedFolderStore.id,
             filter,
             canCreate,
+            toggleRoomInfo,
             isHeaderVisible,
             isHeaderIndeterminate,
             isHeaderChecked,

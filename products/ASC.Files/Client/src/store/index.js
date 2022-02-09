@@ -1,4 +1,3 @@
-import RoomInfoStore from "./RoomInfoStore";
 import store from "studio/store";
 
 import DialogsStore from "./DialogsStore";
@@ -11,6 +10,7 @@ import iconFormatsStore from "./IconFormatsStore";
 import MediaViewerDataStore from "./MediaViewerDataStore";
 import mediaViewersFormatsStore from "./MediaViewersFormatsStore";
 import PrimaryProgressDataStore from "./PrimaryProgressDataStore";
+import RoomInfoStore from "./RoomInfoStore";
 import SecondaryProgressDataStore from "./SecondaryProgressDataStore";
 import selectedFilesStore from "./SelectedFilesStore";
 import selectedFolderStore from "./SelectedFolderStore";
