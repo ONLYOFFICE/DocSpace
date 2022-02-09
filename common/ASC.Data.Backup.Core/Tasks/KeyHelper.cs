@@ -23,54 +23,53 @@
  *
 */
 
-namespace ASC.Data.Backup.Tasks
+namespace ASC.Data.Backup.Tasks;
+
+internal static class KeyHelper
 {
-    internal static class KeyHelper
+    private const string Databases = "databases";
+
+    public static string GetDumpKey()
     {
-        private const string Databases = "databases";
+        return "dump";
+    }
 
-        public static string GetDumpKey()
-        {
-            return "dump";
-        }
+    public static string GetDatabaseSchema()
+    {
+        return string.Format("{0}/{1}", Databases, "scheme");
+    }
 
-        public static string GetDatabaseSchema()
-        {
-            return string.Format("{0}/{1}", Databases, "scheme");
-        }
+    public static string GetDatabaseData()
+    {
+        return string.Format("{0}/{1}", Databases, "data");
+    }
 
-        public static string GetDatabaseData()
-        {
-            return string.Format("{0}/{1}", Databases, "data");
-        }
+    public static string GetDatabaseSchema(string table)
+    {
+        return string.Format("{0}/{1}", GetDatabaseSchema(), table);
+    }
 
-        public static string GetDatabaseSchema(string table)
-        {
-            return string.Format("{0}/{1}", GetDatabaseSchema(), table);
-        }
+    public static string GetDatabaseData(string table)
+    {
+        return string.Format("{0}/{1}", GetDatabaseData(), table);
+    }
 
-        public static string GetDatabaseData(string table)
-        {
-            return string.Format("{0}/{1}", GetDatabaseData(), table);
-        }
+    public static string GetTableZipKey(IModuleSpecifics module, string tableName)
+    {
+        return string.Format("{0}/{1}/{2}", Databases, module.ConnectionStringName, tableName);
+    }
 
-        public static string GetTableZipKey(IModuleSpecifics module, string tableName)
-        {
-            return string.Format("{0}/{1}/{2}", Databases, module.ConnectionStringName, tableName);
-        }
+    public static string GetZipKey(this BackupFileInfo file)
+    {
+        return CrossPlatform.PathCombine(file.Module, file.Domain, file.Path);
+    }
 
-        public static string GetZipKey(this BackupFileInfo file)
-        {
-            return CrossPlatform.PathCombine(file.Module, file.Domain, file.Path);
-        }
-
-        public static string GetStorage()
-        {
-            return "storage";
-        }
-        public static string GetStorageRestoreInfoZipKey()
-        {
-            return string.Format("{0}/restore_info", GetStorage());
-        }
+    public static string GetStorage()
+    {
+        return "storage";
+    }
+    public static string GetStorageRestoreInfoZipKey()
+    {
+        return string.Format("{0}/restore_info", GetStorage());
     }
 }

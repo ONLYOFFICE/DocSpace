@@ -23,16 +23,16 @@
  *
 */
 
-namespace ASC.Data.Backup.Tasks.Modules
-{
-    public class CrmModuleSpecifics : ModuleSpecificsBase
-    {
-        public override ModuleName ModuleName => ModuleName.Crm;
-        public override IEnumerable<TableInfo> Tables => _tables;
-        public override IEnumerable<RelationInfo> TableRelations => _tableRelations;
+namespace ASC.Data.Backup.Tasks.Modules;
 
-        private readonly TableInfo[] _tables = new[]
-        {
+public class CrmModuleSpecifics : ModuleSpecificsBase
+{
+    public override ModuleName ModuleName => ModuleName.Crm;
+    public override IEnumerable<TableInfo> Tables => _tables;
+    public override IEnumerable<RelationInfo> TableRelations => _tableRelations;
+
+    private readonly TableInfo[] _tables = new[]
+    {
             new TableInfo("crm_case", "tenant_id", "id")
             {
                         UserIDColumns = new[] {"create_by", "last_modifed_by"},
@@ -81,8 +81,8 @@ namespace ASC.Data.Backup.Tasks.Modules
             }
         };
 
-        private readonly RelationInfo[] _tableRelations = new[]
-        {
+    private readonly RelationInfo[] _tableRelations = new[]
+    {
             new RelationInfo("crm_contact", "id", "crm_contact", "company_id"),
             new RelationInfo("crm_list_item", "id", "crm_contact", "status_id"),
             new RelationInfo("crm_list_item", "id", "crm_contact", "contact_type_id"),
@@ -103,60 +103,60 @@ namespace ASC.Data.Backup.Tasks.Modules
             new RelationInfo("crm_task_template", "id", "crm_task_template_task", "task_template_id")
         };
 
-        public CrmModuleSpecifics(Helpers helpers)
-        : base(helpers) { }
+    public CrmModuleSpecifics(Helpers helpers)
+    : base(helpers) { }
 
-        public override bool TryAdjustFilePath(bool dump, ColumnMapper columnMapper, ref string filePath)
+    public override bool TryAdjustFilePath(bool dump, ColumnMapper columnMapper, ref string filePath)
+    {
+        var pathMatch = Regex.Match(filePath, @"^photos/\d+/\d+/\d+/contact_(?'contactId'\d+)(?'sizeExtension'_\d+_\d+\.\w+)$", RegexOptions.Compiled);
+        if (pathMatch.Success)
         {
-            var pathMatch = Regex.Match(filePath, @"^photos/\d+/\d+/\d+/contact_(?'contactId'\d+)(?'sizeExtension'_\d+_\d+\.\w+)$", RegexOptions.Compiled);
-            if (pathMatch.Success)
+            var contactId = columnMapper.GetMapping("crm_contact", "id", pathMatch.Groups["contactId"].Value);
+            if (contactId == null)
             {
-                var contactId = columnMapper.GetMapping("crm_contact", "id", pathMatch.Groups["contactId"].Value);
-                if (contactId == null)
+                if (!dump)
                 {
-                    if (!dump)
-                    {
-                        return false;
-                    }
-
-                    contactId = pathMatch.Groups["contactId"].Value;
+                    return false;
                 }
 
-                var s = contactId.ToString().PadLeft(6, '0');
-                filePath = string.Format("photos/{0}/{1}/{2}/contact_{3}{4}", s.Substring(0, 2), s.Substring(2, 2), s.Substring(4), contactId, pathMatch.Groups["sizeExtension"].Value);
-
-                return true;
+                contactId = pathMatch.Groups["contactId"].Value;
             }
 
-            return false;
+            var s = contactId.ToString().PadLeft(6, '0');
+            filePath = string.Format("photos/{0}/{1}/{2}/contact_{3}{4}", s.Substring(0, 2), s.Substring(2, 2), s.Substring(4), contactId, pathMatch.Groups["sizeExtension"].Value);
+
+            return true;
         }
 
-        private static bool ResolveRelation(DataRowInfo row, params int[] matchingTypes)
-        {
-            var entityType = Convert.ToInt32(row["entity_type"]);
-
-            return matchingTypes.Contains(entityType);
-        }
+        return false;
     }
 
-    //todo: hack: in future there be no modules only tables!!!
-    public class CrmModuleSpecifics2 : ModuleSpecificsBase
+    private static bool ResolveRelation(DataRowInfo row, params int[] matchingTypes)
     {
-        public override string ConnectionStringName => "crm";
-        public override ModuleName ModuleName => ModuleName.Crm2;
-        public override IEnumerable<TableInfo> Tables => _tables;
-        public override IEnumerable<RelationInfo> TableRelations => _tableRelations;
+        var entityType = Convert.ToInt32(row["entity_type"]);
 
-        private readonly TableInfo[] _tables = new[]
-        {
+        return matchingTypes.Contains(entityType);
+    }
+}
+
+//todo: hack: in future there be no modules only tables!!!
+public class CrmModuleSpecifics2 : ModuleSpecificsBase
+{
+    public override string ConnectionStringName => "crm";
+    public override ModuleName ModuleName => ModuleName.Crm2;
+    public override IEnumerable<TableInfo> Tables => _tables;
+    public override IEnumerable<RelationInfo> TableRelations => _tableRelations;
+
+    private readonly TableInfo[] _tables = new[]
+    {
             new TableInfo("crm_field_value", "tenant_id", "id", IdType.Autoincrement) {UserIDColumns = new[] {"last_modifed_by"}},
             new TableInfo("crm_entity_contact"),
             new TableInfo("crm_entity_tag"),
             new TableInfo("crm_relationship_event", "tenant_id", "id") {UserIDColumns = new[] {"create_by", "last_modifed_by"}},
         };
 
-        private readonly RelationInfo[] _tableRelations = new[]
-        {
+    private readonly RelationInfo[] _tableRelations = new[]
+    {
             new RelationInfo("crm_contact", "id", "crm_field_value", "entity_id", x => ResolveRelation(x, 0, 4, 5)),
             new RelationInfo("crm_deal", "id", "crm_field_value", "entity_id", x => ResolveRelation(x, 1)),
             new RelationInfo("crm_task", "id", "crm_field_value", "entity_id", x => ResolveRelation(x, 3)),
@@ -185,79 +185,79 @@ namespace ASC.Data.Backup.Tasks.Modules
             new RelationInfo("mail_mail", "id", "crm_relationship_event", "content", typeof(MailModuleSpecifics), x => Convert.ToInt32(x["category_id"]) == -3),
         };
 
-        public CrmModuleSpecifics2(Helpers helpers) : base(helpers) { }
+    public CrmModuleSpecifics2(Helpers helpers) : base(helpers) { }
 
-        public override bool TryAdjustFilePath(bool dump, ColumnMapper columnMapper, ref string filePath)
+    public override bool TryAdjustFilePath(bool dump, ColumnMapper columnMapper, ref string filePath)
+    {
+        var match = Regex.Match(filePath, @"(?<=folder_\d+/message_)\d+(?=\.html)"); //todo:
+        if (match.Success)
         {
-            var match = Regex.Match(filePath, @"(?<=folder_\d+/message_)\d+(?=\.html)"); //todo:
-            if (match.Success)
+            var mappedMessageId = Convert.ToString(columnMapper.GetMapping("mail_mail", "id", match.Value));
+
+            if (dump && string.IsNullOrEmpty(mappedMessageId))
             {
-                var mappedMessageId = Convert.ToString(columnMapper.GetMapping("mail_mail", "id", match.Value));
-
-                if (dump && string.IsNullOrEmpty(mappedMessageId))
-                {
-                    mappedMessageId = match.Value;
-                }
-
-                if (!string.IsNullOrEmpty(mappedMessageId))
-                {
-                    filePath = string.Format("folder_{0}/message_{1}.html", (Convert.ToInt32(mappedMessageId) / 1000 + 1) * 1000, mappedMessageId);
-                }
-                return true;
-            }
-            return base.TryAdjustFilePath(dump, columnMapper, ref filePath);
-        }
-
-        protected override string GetSelectCommandConditionText(int tenantId, TableInfo table)
-        {
-            if (table.Name == "crm_entity_contact")
-            {
-                return "inner join crm_contact as t1 on t1.id = t.contact_id where t1.tenant_id = " + tenantId;
+                mappedMessageId = match.Value;
             }
 
-            if (table.Name == "crm_entity_tag")
+            if (!string.IsNullOrEmpty(mappedMessageId))
             {
-                return "inner join crm_tag as t1 on t1.id = t.tag_id where t1.tenant_id = " + tenantId;
+                filePath = string.Format("folder_{0}/message_{1}.html", (Convert.ToInt32(mappedMessageId) / 1000 + 1) * 1000, mappedMessageId);
             }
-
-            return base.GetSelectCommandConditionText(tenantId, table);
+            return true;
         }
-
-        protected override bool TryPrepareValue(DbConnection connection, ColumnMapper columnMapper, RelationInfo relation, ref object value)
-        {
-            if (relation.ChildTable == "crm_relationship_event" && relation.ChildColumn == "content")
-            {
-                value = Regex.Replace(
-                    Convert.ToString(value),
-                    @"(?<=""message_id"":|/Products/CRM/HttpHandlers/filehandler\.ashx\?action=mailmessage&message_id=)\d+",
-                    match =>
-                    {
-                        var mappedMessageId = Convert.ToString(columnMapper.GetMapping(relation.ParentTable, relation.ParentColumn, match.Value));
-                        var success = !string.IsNullOrEmpty(mappedMessageId);
-                        return success ? mappedMessageId : match.Value;
-                    });
-
-                return true;
-            }
-            return base.TryPrepareValue(connection, columnMapper, relation, ref value);
-        }
-
-        private static bool ResolveRelation(DataRowInfo row, params int[] matchingTypes)
-        {
-            var entityType = Convert.ToInt32(row["entity_type"]);
-            return matchingTypes.Contains(entityType);
-        }
+        return base.TryAdjustFilePath(dump, columnMapper, ref filePath);
     }
 
-    public class CrmInvoiceModuleSpecifics : ModuleSpecificsBase
+    protected override string GetSelectCommandConditionText(int tenantId, TableInfo table)
     {
-        public override ModuleName ModuleName => ModuleName.CrmInvoice;
-        public override string ConnectionStringName => "crm";
-        public override IEnumerable<TableInfo> Tables
+        if (table.Name == "crm_entity_contact")
         {
-            get
-            {
-                return new List<TableInfo>
+            return "inner join crm_contact as t1 on t1.id = t.contact_id where t1.tenant_id = " + tenantId;
+        }
+
+        if (table.Name == "crm_entity_tag")
+        {
+            return "inner join crm_tag as t1 on t1.id = t.tag_id where t1.tenant_id = " + tenantId;
+        }
+
+        return base.GetSelectCommandConditionText(tenantId, table);
+    }
+
+    protected override bool TryPrepareValue(DbConnection connection, ColumnMapper columnMapper, RelationInfo relation, ref object value)
+    {
+        if (relation.ChildTable == "crm_relationship_event" && relation.ChildColumn == "content")
+        {
+            value = Regex.Replace(
+                Convert.ToString(value),
+                @"(?<=""message_id"":|/Products/CRM/HttpHandlers/filehandler\.ashx\?action=mailmessage&message_id=)\d+",
+                match =>
+                {
+                    var mappedMessageId = Convert.ToString(columnMapper.GetMapping(relation.ParentTable, relation.ParentColumn, match.Value));
+                    var success = !string.IsNullOrEmpty(mappedMessageId);
+                    return success ? mappedMessageId : match.Value;
+                });
+
+            return true;
+        }
+        return base.TryPrepareValue(connection, columnMapper, relation, ref value);
+    }
+
+    private static bool ResolveRelation(DataRowInfo row, params int[] matchingTypes)
+    {
+        var entityType = Convert.ToInt32(row["entity_type"]);
+        return matchingTypes.Contains(entityType);
+    }
+}
+
+public class CrmInvoiceModuleSpecifics : ModuleSpecificsBase
+{
+    public override ModuleName ModuleName => ModuleName.CrmInvoice;
+    public override string ConnectionStringName => "crm";
+    public override IEnumerable<TableInfo> Tables
+    {
+        get
+        {
+            return new List<TableInfo>
                 {
                     new TableInfo("crm_organisation_logo", "tenant_id", "id")
                     {
@@ -281,14 +281,14 @@ namespace ASC.Data.Backup.Tasks.Modules
                         DateColumns = new Dictionary<string, bool> {{"create_on", false}, {"last_modified_on", false}}
                     }
                 };
-            }
         }
+    }
 
-        public override IEnumerable<RelationInfo> TableRelations
+    public override IEnumerable<RelationInfo> TableRelations
+    {
+        get
         {
-            get
-            {
-                return new List<RelationInfo>
+            return new List<RelationInfo>
                 {
                     new RelationInfo("crm_contact", "id", "crm_invoice", "contact_id"),
                     new RelationInfo("crm_contact", "id", "crm_invoice", "consignee_id"),
@@ -304,53 +304,52 @@ namespace ASC.Data.Backup.Tasks.Modules
                     new RelationInfo("crm_invoice", "id", "crm_invoice_line", "invoice_id"),
                     new RelationInfo("crm_invoice_item", "id", "crm_invoice_line", "invoice_item_id"),
                 };
-            }
         }
+    }
 
-        public CrmInvoiceModuleSpecifics(Helpers helpers) : base(helpers) { }
+    public CrmInvoiceModuleSpecifics(Helpers helpers) : base(helpers) { }
 
-        protected override bool TryPrepareValue(DbConnection connection, ColumnMapper columnMapper, TableInfo table, string columnName, ref object value)
+    protected override bool TryPrepareValue(DbConnection connection, ColumnMapper columnMapper, TableInfo table, string columnName, ref object value)
+    {
+        if (value == null)
         {
-            if (value == null)
-            {
-                return false;
-            }
-
-            if (table.Name == "crm_invoice" && columnName == "json_data")
-            {
-                var data = JObject.Parse((string)value);
-
-                var oldValue = Convert.ToInt32(data["LogoBase64Id"]);
-                if (oldValue != 0)
-                {
-                    data["LogoBase64Id"] = Convert.ToInt32(columnMapper.GetMapping("crm_organisation_logo", "id", oldValue));
-                }
-
-                oldValue = Convert.ToInt32(data["DeliveryAddressID"]);
-                if (oldValue != 0)
-                {
-                    data["DeliveryAddressID"] = Convert.ToInt32(columnMapper.GetMapping("crm_contact_info", "id", oldValue));
-                }
-
-                oldValue = Convert.ToInt32(data["BillingAddressID"]);
-                if (oldValue != 0)
-                {
-                    data["BillingAddressID"] = Convert.ToInt32(columnMapper.GetMapping("crm_contact_info", "id", oldValue));
-                }
-
-                value = data.ToString();
-
-                return true;
-            }
-
-            return base.TryPrepareValue(connection, columnMapper, table, columnName, ref value);
+            return false;
         }
 
-        private static bool ResolveRelation(DataRowInfo row, params int[] matchingTypes)
+        if (table.Name == "crm_invoice" && columnName == "json_data")
         {
-            var entityType = Convert.ToInt32(row["entity_type"]);
+            var data = JObject.Parse((string)value);
 
-            return matchingTypes.Contains(entityType);
+            var oldValue = Convert.ToInt32(data["LogoBase64Id"]);
+            if (oldValue != 0)
+            {
+                data["LogoBase64Id"] = Convert.ToInt32(columnMapper.GetMapping("crm_organisation_logo", "id", oldValue));
+            }
+
+            oldValue = Convert.ToInt32(data["DeliveryAddressID"]);
+            if (oldValue != 0)
+            {
+                data["DeliveryAddressID"] = Convert.ToInt32(columnMapper.GetMapping("crm_contact_info", "id", oldValue));
+            }
+
+            oldValue = Convert.ToInt32(data["BillingAddressID"]);
+            if (oldValue != 0)
+            {
+                data["BillingAddressID"] = Convert.ToInt32(columnMapper.GetMapping("crm_contact_info", "id", oldValue));
+            }
+
+            value = data.ToString();
+
+            return true;
         }
+
+        return base.TryPrepareValue(connection, columnMapper, table, columnName, ref value);
+    }
+
+    private static bool ResolveRelation(DataRowInfo row, params int[] matchingTypes)
+    {
+        var entityType = Convert.ToInt32(row["entity_type"]);
+
+        return matchingTypes.Contains(entityType);
     }
 }

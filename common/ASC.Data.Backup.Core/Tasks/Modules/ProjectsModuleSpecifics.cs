@@ -23,16 +23,16 @@
  *
 */
 
-namespace ASC.Data.Backup.Tasks.Modules
-{
-    public class ProjectsModuleSpecifics : ModuleSpecificsBase
-    {
-        public override ModuleName ModuleName => ModuleName.Projects;
-        public override IEnumerable<TableInfo> Tables => _tables;
-        public override IEnumerable<RelationInfo> TableRelations => _tableRelations;
+namespace ASC.Data.Backup.Tasks.Modules;
 
-        private readonly TableInfo[] _tables = new[]
-        {
+public class ProjectsModuleSpecifics : ModuleSpecificsBase
+{
+    public override ModuleName ModuleName => ModuleName.Projects;
+    public override IEnumerable<TableInfo> Tables => _tables;
+    public override IEnumerable<RelationInfo> TableRelations => _tableRelations;
+
+    private readonly TableInfo[] _tables = new[]
+    {
             new TableInfo("projects_comments", "tenant_id", "comment_id", IdType.Autoincrement) {UserIDColumns = new[] {"create_by"}},
             new TableInfo("projects_following_project_participant") {UserIDColumns = new[] {"participant_id"}},
             new TableInfo("projects_messages", "tenant_id", "id")
@@ -75,8 +75,8 @@ namespace ASC.Data.Backup.Tasks.Modules
             new TableInfo("projects_tasks_order", "tenant_id")
         };
 
-        private readonly RelationInfo[] _tableRelations = new[]
-        {
+    private readonly RelationInfo[] _tableRelations = new[]
+    {
             new RelationInfo("projects_comments", "id", "projects_comments", "parent_id"),
             new RelationInfo("projects_messages", "id", "projects_comments", "target_uniq_id", x => Convert.ToString(x["target_uniq_id"]).StartsWith("Message_", StringComparison.InvariantCultureIgnoreCase)),
             new RelationInfo("projects_tasks", "id", "projects_comments", "target_uniq_id", x => Convert.ToString(x["target_uniq_id"]).StartsWith("Task_", StringComparison.InvariantCultureIgnoreCase)),
@@ -100,107 +100,106 @@ namespace ASC.Data.Backup.Tasks.Modules
             new RelationInfo("projects_milestones", "id", "projects_tasks_order", "task_order")
         };
 
-        public ProjectsModuleSpecifics(Helpers helpers) : base(helpers) { }
+    public ProjectsModuleSpecifics(Helpers helpers) : base(helpers) { }
 
-        public override bool TryAdjustFilePath(bool dump, ColumnMapper columnMapper, ref string filePath)
+    public override bool TryAdjustFilePath(bool dump, ColumnMapper columnMapper, ref string filePath)
+    {
+        var match = Regex.Match(filePath, @"^thumbs/\d+/\d+/\d+/(?'fileId'\d+)\.jpg$");
+        if (match.Success)
         {
-            var match = Regex.Match(filePath, @"^thumbs/\d+/\d+/\d+/(?'fileId'\d+)\.jpg$");
-            if (match.Success)
+            var fileId = columnMapper.GetMapping("files_file", "id", match.Groups["fileId"].Value);
+            if (fileId == null)
             {
-                var fileId = columnMapper.GetMapping("files_file", "id", match.Groups["fileId"].Value);
-                if (fileId == null)
-                {
-                    if (!dump)
-                    {
-                        return false;
-                    }
-
-                    fileId = match.Groups["fileId"].Value;
-                }
-
-                var s = fileId.ToString().PadRight(6, '0');
-                filePath = string.Format("thumbs/{0}/{1}/{2}/{3}.jpg", s.Substring(0, 2), s.Substring(2, 2), s.Substring(4), fileId);
-
-                return true;
-            }
-
-            return false;
-        }
-
-        protected override string GetSelectCommandConditionText(int tenantId, TableInfo table)
-        {
-            if (table.Name == "projects_project_tag" || table.Name == "projects_following_project_participant")
-            {
-                return "inner join projects_projects as t1 on t1.id = t.project_id where t1.tenant_id = " + tenantId;
-            }
-
-            return base.GetSelectCommandConditionText(tenantId, table);
-        }
-
-        protected override bool TryPrepareValue(DbConnection connection, ColumnMapper columnMapper, TableInfo table, string columnName, ref object value)
-        {
-
-            if (table.Name == "projects_comments" && columnName == "content" ||
-                table.Name == "projects_messages" && columnName == "content")
-            {
-                value = FCKEditorPathUtility.CorrectStoragePath(value as string, columnMapper.GetTenantMapping());
-
-                return true;
-            }
-
-            return base.TryPrepareValue(connection, columnMapper, table, columnName, ref value);
-        }
-
-        protected override bool TryPrepareValue(DbConnection connection, ColumnMapper columnMapper, RelationInfo relation, ref object value)
-        {
-            if (relation.ChildTable == "projects_comments" && relation.ChildColumn == "target_uniq_id")
-            {
-                var valParts = value.ToString().Split('_');
-
-                var entityId = columnMapper.GetMapping(relation.ParentTable, relation.ParentColumn, valParts[1]);
-                if (entityId == null)
+                if (!dump)
                 {
                     return false;
                 }
 
-                value = string.Format("{0}_{1}", valParts[0], entityId);
-
-                return true;
+                fileId = match.Groups["fileId"].Value;
             }
 
-            return base.TryPrepareValue(connection, columnMapper, relation, ref value);
+            var s = fileId.ToString().PadRight(6, '0');
+            filePath = string.Format("thumbs/{0}/{1}/{2}/{3}.jpg", s.Substring(0, 2), s.Substring(2, 2), s.Substring(4), fileId);
+
+            return true;
         }
 
-        protected override bool TryPrepareValue(bool dump, DbConnection connection, ColumnMapper columnMapper, TableInfo table, string columnName, IEnumerable<RelationInfo> relations, ref object value)
+        return false;
+    }
+
+    protected override string GetSelectCommandConditionText(int tenantId, TableInfo table)
+    {
+        if (table.Name == "projects_project_tag" || table.Name == "projects_following_project_participant")
         {
-            if (table.Name == "projects_tasks_order" && columnName == "task_order")
+            return "inner join projects_projects as t1 on t1.id = t.project_id where t1.tenant_id = " + tenantId;
+        }
+
+        return base.GetSelectCommandConditionText(tenantId, table);
+    }
+
+    protected override bool TryPrepareValue(DbConnection connection, ColumnMapper columnMapper, TableInfo table, string columnName, ref object value)
+    {
+
+        if (table.Name == "projects_comments" && columnName == "content" ||
+            table.Name == "projects_messages" && columnName == "content")
+        {
+            value = FCKEditorPathUtility.CorrectStoragePath(value as string, columnMapper.GetTenantMapping());
+
+            return true;
+        }
+
+        return base.TryPrepareValue(connection, columnMapper, table, columnName, ref value);
+    }
+
+    protected override bool TryPrepareValue(DbConnection connection, ColumnMapper columnMapper, RelationInfo relation, ref object value)
+    {
+        if (relation.ChildTable == "projects_comments" && relation.ChildColumn == "target_uniq_id")
+        {
+            var valParts = value.ToString().Split('_');
+
+            var entityId = columnMapper.GetMapping(relation.ParentTable, relation.ParentColumn, valParts[1]);
+            if (entityId == null)
             {
-                value = Regex.Replace(
-                    Convert.ToString(value),
-                    @"(?<=""tasks"":\[(\d+,)*)\d+,?",
-                    match =>
-                    {
-                        var mappedId = Convert.ToString(columnMapper.GetMapping("projects_tasks", "id", match.Value.TrimEnd(',')));
-
-                        return !string.IsNullOrEmpty(mappedId) && match.Value.EndsWith(",") ? mappedId + "," : mappedId;
-                    },
-                    RegexOptions.Compiled);
-
-                value = Regex.Replace(
-                    Convert.ToString(value),
-                    @"(?<=""milestones"":\[(\d+,)*)\d+,?",
-                    match =>
-                    {
-                        var mappedId = Convert.ToString(columnMapper.GetMapping("projects_milestones", "id", match.Value.TrimEnd(',')));
-
-                        return !string.IsNullOrEmpty(mappedId) && match.Value.EndsWith(",") ? mappedId + "," : mappedId;
-                    },
-                    RegexOptions.Compiled);
-
-                return true;
+                return false;
             }
 
-            return base.TryPrepareValue(dump, connection, columnMapper, table, columnName, relations, ref value);
+            value = string.Format("{0}_{1}", valParts[0], entityId);
+
+            return true;
         }
+
+        return base.TryPrepareValue(connection, columnMapper, relation, ref value);
+    }
+
+    protected override bool TryPrepareValue(bool dump, DbConnection connection, ColumnMapper columnMapper, TableInfo table, string columnName, IEnumerable<RelationInfo> relations, ref object value)
+    {
+        if (table.Name == "projects_tasks_order" && columnName == "task_order")
+        {
+            value = Regex.Replace(
+                Convert.ToString(value),
+                @"(?<=""tasks"":\[(\d+,)*)\d+,?",
+                match =>
+                {
+                    var mappedId = Convert.ToString(columnMapper.GetMapping("projects_tasks", "id", match.Value.TrimEnd(',')));
+
+                    return !string.IsNullOrEmpty(mappedId) && match.Value.EndsWith(",") ? mappedId + "," : mappedId;
+                },
+                RegexOptions.Compiled);
+
+            value = Regex.Replace(
+                Convert.ToString(value),
+                @"(?<=""milestones"":\[(\d+,)*)\d+,?",
+                match =>
+                {
+                    var mappedId = Convert.ToString(columnMapper.GetMapping("projects_milestones", "id", match.Value.TrimEnd(',')));
+
+                    return !string.IsNullOrEmpty(mappedId) && match.Value.EndsWith(",") ? mappedId + "," : mappedId;
+                },
+                RegexOptions.Compiled);
+
+            return true;
+        }
+
+        return base.TryPrepareValue(dump, connection, columnMapper, table, columnName, relations, ref value);
     }
 }

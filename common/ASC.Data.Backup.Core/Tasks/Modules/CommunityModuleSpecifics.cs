@@ -23,16 +23,16 @@
  *
 */
 
-namespace ASC.Data.Backup.Tasks.Modules
-{
-    public class CommunityModuleSpecifics : ModuleSpecificsBase
-    {
-        public override ModuleName ModuleName => ModuleName.Community;
-        public override IEnumerable<TableInfo> Tables => _tables;
-        public override IEnumerable<RelationInfo> TableRelations => _tableRelations;
+namespace ASC.Data.Backup.Tasks.Modules;
 
-        private readonly TableInfo[] _tables = new[]
-        {
+public class CommunityModuleSpecifics : ModuleSpecificsBase
+{
+    public override ModuleName ModuleName => ModuleName.Community;
+    public override IEnumerable<TableInfo> Tables => _tables;
+    public override IEnumerable<RelationInfo> TableRelations => _tableRelations;
+
+    private readonly TableInfo[] _tables = new[]
+    {
             new TableInfo("bookmarking_bookmark", "Tenant", "ID")
             {
                 UserIDColumns = new[] {"UserCreatorID"},
@@ -147,8 +147,8 @@ namespace ASC.Data.Backup.Tasks.Modules
             },
         };
 
-        private readonly RelationInfo[] _tableRelations = new[]
-        {
+    private readonly RelationInfo[] _tableRelations = new[]
+    {
             new RelationInfo("bookmarking_bookmark", "ID", "bookmarking_bookmarktag", "BookmarkID"),
             new RelationInfo("bookmarking_tag", "TagID", "bookmarking_bookmarktag", "TagID"),
             new RelationInfo("bookmarking_bookmark", "ID", "bookmarking_comment", "BookmarkID"),
@@ -190,100 +190,99 @@ namespace ASC.Data.Backup.Tasks.Modules
             new RelationInfo("wiki_comments", "Id", "wiki_comments", "ParentId")
         };
 
-        public CommunityModuleSpecifics(Helpers helpers)
-        : base(helpers) { }
+    public CommunityModuleSpecifics(Helpers helpers)
+    : base(helpers) { }
 
-        public override bool TryAdjustFilePath(bool dump, ColumnMapper columnMapper, ref string filePath)
+    public override bool TryAdjustFilePath(bool dump, ColumnMapper columnMapper, ref string filePath)
+    {
+        filePath = PreparePath(dump, columnMapper, "/", filePath);
+        return filePath != null;
+    }
+
+    protected override bool TryPrepareValue(bool dump, DbConnection connection, ColumnMapper columnMapper, TableInfo table, string columnName, IEnumerable<RelationInfo> relations, ref object value)
+    {
+        relations = relations.ToList();
+
+        if (relations.All(x => x.ChildTable == "forum_attachment" && x.ChildColumn == "path"))
         {
-            filePath = PreparePath(dump, columnMapper, "/", filePath);
-            return filePath != null;
+            value = PreparePath(dump, columnMapper, "\\", Convert.ToString(value));
+            return value != null;
         }
 
-        protected override bool TryPrepareValue(bool dump, DbConnection connection, ColumnMapper columnMapper, TableInfo table, string columnName, IEnumerable<RelationInfo> relations, ref object value)
+        return base.TryPrepareValue(dump, connection, columnMapper, table, columnName, relations, ref value);
+    }
+
+    protected override bool TryPrepareValue(DbConnection connection, ColumnMapper columnMapper, TableInfo table, string columnName, ref object value)
+    {
+        var column = columnName.ToLowerInvariant();
+        if (table.Name == "forum_post" && column == "text" ||
+            table.Name == "events_feed" && column == "text" ||
+            table.Name == "events_comment" && column == "comment" ||
+            table.Name == "blogs_posts" && column == "content" ||
+            table.Name == "blogs_comments" && column == "content" ||
+            table.Name == "bookmarking_comment" && column == "content" ||
+            table.Name == "wiki_comments" && column == "body")
         {
-            relations = relations.ToList();
+            value = FCKEditorPathUtility.CorrectStoragePath(value as string, columnMapper.GetTenantMapping());
+            return true;
+        }
+        return base.TryPrepareValue(connection, columnMapper, table, columnName, ref value);
+    }
 
-            if (relations.All(x => x.ChildTable == "forum_attachment" && x.ChildColumn == "path"))
-            {
-                value = PreparePath(dump, columnMapper, "\\", Convert.ToString(value));
-                return value != null;
-            }
-
-            return base.TryPrepareValue(dump, connection, columnMapper, table, columnName, relations, ref value);
+    protected override string GetSelectCommandConditionText(int tenantId, TableInfo table)
+    {
+        if (table.Name == "forum_answer_variant")
+        {
+            return "inner join forum_answer as t1 on t1.id = t.answer_id where t1.TenantID = " + tenantId;
         }
 
-        protected override bool TryPrepareValue(DbConnection connection, ColumnMapper columnMapper, TableInfo table, string columnName, ref object value)
+        if (table.Name == "forum_variant")
         {
-            var column = columnName.ToLowerInvariant();
-            if (table.Name == "forum_post" && column == "text" ||
-                table.Name == "events_feed" && column == "text" ||
-                table.Name == "events_comment" && column == "comment" ||
-                table.Name == "blogs_posts" && column == "content" ||
-                table.Name == "blogs_comments" && column == "content" ||
-                table.Name == "bookmarking_comment" && column == "content" ||
-                table.Name == "wiki_comments" && column == "body")
-            {
-                value = FCKEditorPathUtility.CorrectStoragePath(value as string, columnMapper.GetTenantMapping());
-                return true;
-            }
-            return base.TryPrepareValue(connection, columnMapper, table, columnName, ref value);
+            return "inner join forum_question as t1 on t1.id = t.question_id where t1.TenantID = " + tenantId;
         }
 
-        protected override string GetSelectCommandConditionText(int tenantId, TableInfo table)
+        if (table.Name == "forum_topic_tag")
         {
-            if (table.Name == "forum_answer_variant")
-            {
-                return "inner join forum_answer as t1 on t1.id = t.answer_id where t1.TenantID = " + tenantId;
-            }
-
-            if (table.Name == "forum_variant")
-            {
-                return "inner join forum_question as t1 on t1.id = t.question_id where t1.TenantID = " + tenantId;
-            }
-
-            if (table.Name == "forum_topic_tag")
-            {
-                return "inner join forum_topic as t1 on t1.id = t.topic_id where t1.TenantID = " + tenantId;
-            }
-
-            return base.GetSelectCommandConditionText(tenantId, table);
+            return "inner join forum_topic as t1 on t1.id = t.topic_id where t1.TenantID = " + tenantId;
         }
 
-        private static string PreparePath(bool dump, ColumnMapper columnMapper, string partsSeparator, string path)
-        {
-            var parts = path.Split(new[] { partsSeparator }, StringSplitOptions.None);
+        return base.GetSelectCommandConditionText(tenantId, table);
+    }
 
-            if (parts.Length != 4)
+    private static string PreparePath(bool dump, ColumnMapper columnMapper, string partsSeparator, string path)
+    {
+        var parts = path.Split(new[] { partsSeparator }, StringSplitOptions.None);
+
+        if (parts.Length != 4)
+        {
+            return null;
+        }
+
+        var categoryId = columnMapper.GetMapping("forum_category", "id", parts[0]);
+        if (categoryId == null)
+        {
+            if (!dump)
             {
                 return null;
             }
 
-            var categoryId = columnMapper.GetMapping("forum_category", "id", parts[0]);
-            if (categoryId == null)
-            {
-                if (!dump)
-                {
-                    return null;
-                }
-
-                categoryId = parts[0];
-            }
-
-            var threadId = columnMapper.GetMapping("forum_thread", "id", parts[1]);
-            if (threadId == null)
-            {
-                if (!dump)
-                {
-                    return null;
-                }
-
-                threadId = parts[1];
-            }
-
-            parts[0] = categoryId.ToString();
-            parts[1] = threadId.ToString();
-
-            return string.Join(partsSeparator, parts);
+            categoryId = parts[0];
         }
+
+        var threadId = columnMapper.GetMapping("forum_thread", "id", parts[1]);
+        if (threadId == null)
+        {
+            if (!dump)
+            {
+                return null;
+            }
+
+            threadId = parts[1];
+        }
+
+        parts[0] = categoryId.ToString();
+        parts[1] = threadId.ToString();
+
+        return string.Join(partsSeparator, parts);
     }
 }

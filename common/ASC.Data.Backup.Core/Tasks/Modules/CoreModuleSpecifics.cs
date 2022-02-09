@@ -23,37 +23,37 @@
  *
 */
 
-namespace ASC.Data.Backup.Tasks.Modules
+namespace ASC.Data.Backup.Tasks.Modules;
+
+public class CoreModuleSpecifics : ModuleSpecificsBase
 {
-    public class CoreModuleSpecifics : ModuleSpecificsBase
+    public override ModuleName ModuleName => ModuleName.Core;
+    public override IEnumerable<TableInfo> Tables => _tables;
+    public override IEnumerable<RelationInfo> TableRelations => _tableRelations;
+
+    private const string ForumsNewPostInTopicActionID = "new post in topic";
+    private const string ForumsNewPostInThreadActionID = "new post in thread";
+    private const string NewsNewCommentActionID = "new feed comment";
+    private const string BlogsNewCommentActionID = "new comment";
+
+    private const string CrmCompanyAclObjectStart = "ASC.CRM.Core.Entities.Company|";
+    private const string CrmPersonAclObjectStart = "ASC.CRM.Core.Entities.Person|";
+    private const string CrmDealAclObjectStart = "ASC.CRM.Core.Entities.Deal|";
+    private const string CrmCasesAclObjectStart = "ASC.CRM.Core.Entities.Cases|";
+    private const string CrmRelationshipEventAclObjectStart = "ASC.CRM.Core.Entities.RelationshipEvent|";
+    private const string CalendarCalendarAclObjectStart = "ASC.Api.Calendar.BusinessObjects.Calendar|";
+    private const string CalendarEventAclObjectStart = "ASC.Api.Calendar.BusinessObjects.Event|";
+
+    private static readonly Guid s_projectsSourceID = new Guid("6045B68C-2C2E-42db-9E53-C272E814C4AD");
+    private static readonly Guid s_bookmarksSourceID = new Guid("28B10049-DD20-4f54-B986-873BC14CCFC7");
+    private static readonly Guid s_forumsSourceID = new Guid("853B6EB9-73EE-438d-9B09-8FFEEDF36234");
+    private static readonly Guid s_newsSourceID = new Guid("6504977C-75AF-4691-9099-084D3DDEEA04");
+    private static readonly Guid s_blogsSourceID = new Guid("6A598C74-91AE-437d-A5F4-AD339BD11BB2");
+
+    private readonly RelationInfo[] _tableRelations;
+    private readonly Helpers _helpers;
+    private readonly TableInfo[] _tables = new[]
     {
-        public override ModuleName ModuleName => ModuleName.Core;
-        public override IEnumerable<TableInfo> Tables => _tables;
-        public override IEnumerable<RelationInfo> TableRelations => _tableRelations;
-
-        private const string ForumsNewPostInTopicActionID = "new post in topic";
-        private const string ForumsNewPostInThreadActionID = "new post in thread";
-        private const string NewsNewCommentActionID = "new feed comment";
-        private const string BlogsNewCommentActionID = "new comment";
-
-        private const string CrmCompanyAclObjectStart = "ASC.CRM.Core.Entities.Company|";
-        private const string CrmPersonAclObjectStart = "ASC.CRM.Core.Entities.Person|";
-        private const string CrmDealAclObjectStart = "ASC.CRM.Core.Entities.Deal|";
-        private const string CrmCasesAclObjectStart = "ASC.CRM.Core.Entities.Cases|";
-        private const string CrmRelationshipEventAclObjectStart = "ASC.CRM.Core.Entities.RelationshipEvent|";
-        private const string CalendarCalendarAclObjectStart = "ASC.Api.Calendar.BusinessObjects.Calendar|";
-        private const string CalendarEventAclObjectStart = "ASC.Api.Calendar.BusinessObjects.Event|";
-
-        private static readonly Guid s_projectsSourceID = new Guid("6045B68C-2C2E-42db-9E53-C272E814C4AD");
-        private static readonly Guid s_bookmarksSourceID = new Guid("28B10049-DD20-4f54-B986-873BC14CCFC7");
-        private static readonly Guid s_forumsSourceID = new Guid("853B6EB9-73EE-438d-9B09-8FFEEDF36234");
-        private static readonly Guid s_newsSourceID = new Guid("6504977C-75AF-4691-9099-084D3DDEEA04");
-        private static readonly Guid s_blogsSourceID = new Guid("6A598C74-91AE-437d-A5F4-AD339BD11BB2");
-
-        private readonly RelationInfo[] _tableRelations;
-        private readonly Helpers _helpers;
-        private readonly TableInfo[] _tables = new[]
-        {
             new TableInfo("core_acl", "tenant") {InsertMethod = InsertMethod.Ignore},
             new TableInfo("core_subscription", "tenant"),
             new TableInfo("core_subscriptionmethod", "tenant"),
@@ -76,11 +76,11 @@ namespace ASC.Data.Backup.Tasks.Modules
             new TableInfo("core_settings", "tenant")
         };
 
-        public CoreModuleSpecifics(Helpers helpers) : base(helpers)
+    public CoreModuleSpecifics(Helpers helpers) : base(helpers)
+    {
+        _helpers = helpers;
+        _tableRelations = new[]
         {
-            _helpers = helpers;
-            _tableRelations = new[]
-            {
                 new RelationInfo("core_user", "id", "core_acl", "subject", typeof(TenantsModuleSpecifics)),
                 new RelationInfo("core_group", "id", "core_acl", "subject", typeof(TenantsModuleSpecifics)),
                 new RelationInfo("core_user", "id", "core_subscription", "recipient", typeof(TenantsModuleSpecifics)),
@@ -146,141 +146,140 @@ namespace ASC.Data.Backup.Tasks.Modules
                 new RelationInfo("files_folder", "id", "backup_schedule", "storage_base_path", typeof(FilesModuleSpecifics),
                                  x => IsDocumentsStorageType(Convert.ToString(x["storage_type"]))),
             };
+    }
+
+    protected override string GetSelectCommandConditionText(int tenantId, TableInfo table)
+    {
+        if (table.Name == "feed_users")
+        {
+            return "inner join core_user t1 on t1.id = t.user_id where t1.tenant = " + tenantId;
         }
 
-        protected override string GetSelectCommandConditionText(int tenantId, TableInfo table)
+        if (table.Name == "core_settings")
         {
-            if (table.Name == "feed_users")
-            {
-                return "inner join core_user t1 on t1.id = t.user_id where t1.tenant = " + tenantId;
-            }
-
-            if (table.Name == "core_settings")
-            {
-                return string.Format("where t.{0} = {1} and id not in ('{2}')", table.TenantColumn, tenantId, LicenseReader.CustomerIdKey);
-            }
-
-            return base.GetSelectCommandConditionText(tenantId, table);
+            return string.Format("where t.{0} = {1} and id not in ('{2}')", table.TenantColumn, tenantId, LicenseReader.CustomerIdKey);
         }
 
-        protected override bool TryPrepareValue(DbConnection connection, ColumnMapper columnMapper, TableInfo table, string columnName, ref object value)
-        {
-            if (table.Name == "core_usergroup" && columnName == "last_modified")
-            {
-                value = DateTime.UtcNow;
+        return base.GetSelectCommandConditionText(tenantId, table);
+    }
 
+    protected override bool TryPrepareValue(DbConnection connection, ColumnMapper columnMapper, TableInfo table, string columnName, ref object value)
+    {
+        if (table.Name == "core_usergroup" && columnName == "last_modified")
+        {
+            value = DateTime.UtcNow;
+
+            return true;
+        }
+
+        return base.TryPrepareValue(connection, columnMapper, table, columnName, ref value);
+    }
+
+    protected override bool TryPrepareRow(bool dump, DbConnection connection, ColumnMapper columnMapper, TableInfo table, DataRowInfo row, out Dictionary<string, object> preparedRow)
+    {
+        if (table.Name == "core_acl")
+        {
+            if (int.Parse((string)row["tenant"]) == -1)
+            {
+                preparedRow = null;
+
+                return false;
+            }
+        }
+
+        return base.TryPrepareRow(dump, connection, columnMapper, table, row, out preparedRow);
+    }
+
+    protected override bool TryPrepareValue(DbConnection connection, ColumnMapper columnMapper, RelationInfo relation, ref object value)
+    {
+        if (relation.ChildTable == "core_acl" && relation.ChildColumn == "object")
+        {
+            var valParts = Convert.ToString(value).Split('|');
+
+            var entityId = columnMapper.GetMapping(relation.ParentTable, relation.ParentColumn, valParts[1]);
+            if (entityId == null)
+            {
+                return false;
+            }
+
+            value = string.Format("{0}|{1}", valParts[0], entityId);
+
+            return true;
+        }
+
+        return base.TryPrepareValue(connection, columnMapper, relation, ref value);
+    }
+
+    protected override bool TryPrepareValue(bool dump, DbConnection connection, ColumnMapper columnMapper, TableInfo table, string columnName, IEnumerable<RelationInfo> relations, ref object value)
+    {
+        var relationList = relations.ToList();
+
+        if (relationList.All(x => x.ChildTable == "core_subscription" && x.ChildColumn == "object" && x.ParentTable.StartsWith("projects_")))
+        {
+            var valParts = Convert.ToString(value).Split('_');
+
+            var projectId = columnMapper.GetMapping("projects_projects", "id", valParts[2]);
+            if (projectId == null)
+            {
+                return false;
+            }
+
+            var firstRelation = relationList.First(x => x.ParentTable != "projects_projects");
+            var entityId = columnMapper.GetMapping(firstRelation.ParentTable, firstRelation.ParentColumn, valParts[1]);
+            if (entityId == null)
+            {
+                return false;
+            }
+
+            value = string.Format("{0}_{1}_{2}", valParts[0], entityId, projectId);
+
+            return true;
+        }
+
+        if (relationList.All(x => x.ChildTable == "core_subscription" && x.ChildColumn == "recipient")
+            || relationList.All(x => x.ChildTable == "core_subscriptionmethod" && x.ChildColumn == "recipient")
+            || relationList.All(x => x.ChildTable == "core_acl" && x.ChildColumn == "subject"))
+        {
+            var strVal = Convert.ToString(value);
+            if (_helpers.IsEmptyOrSystemUser(strVal) || _helpers.IsEmptyOrSystemGroup(strVal))
+            {
                 return true;
             }
 
-            return base.TryPrepareValue(connection, columnMapper, table, columnName, ref value);
-        }
-
-        protected override bool TryPrepareRow(bool dump, DbConnection connection, ColumnMapper columnMapper, TableInfo table, DataRowInfo row, out Dictionary<string, object> preparedRow)
-        {
-            if (table.Name == "core_acl")
+            foreach (var relation in relationList)
             {
-                if (int.Parse((string)row["tenant"]) == -1)
+                var mapping = columnMapper.GetMapping(relation.ParentTable, relation.ParentColumn, value);
+                if (mapping != null)
                 {
-                    preparedRow = null;
+                    value = mapping;
 
-                    return false;
-                }
-            }
-
-            return base.TryPrepareRow(dump, connection, columnMapper, table, row, out preparedRow);
-        }
-
-        protected override bool TryPrepareValue(DbConnection connection, ColumnMapper columnMapper, RelationInfo relation, ref object value)
-        {
-            if (relation.ChildTable == "core_acl" && relation.ChildColumn == "object")
-            {
-                var valParts = Convert.ToString(value).Split('|');
-
-                var entityId = columnMapper.GetMapping(relation.ParentTable, relation.ParentColumn, valParts[1]);
-                if (entityId == null)
-                {
-                    return false;
-                }
-
-                value = string.Format("{0}|{1}", valParts[0], entityId);
-
-                return true;
-            }
-
-            return base.TryPrepareValue(connection, columnMapper, relation, ref value);
-        }
-
-        protected override bool TryPrepareValue(bool dump, DbConnection connection, ColumnMapper columnMapper, TableInfo table, string columnName, IEnumerable<RelationInfo> relations, ref object value)
-        {
-            var relationList = relations.ToList();
-
-            if (relationList.All(x => x.ChildTable == "core_subscription" && x.ChildColumn == "object" && x.ParentTable.StartsWith("projects_")))
-            {
-                var valParts = Convert.ToString(value).Split('_');
-
-                var projectId = columnMapper.GetMapping("projects_projects", "id", valParts[2]);
-                if (projectId == null)
-                {
-                    return false;
-                }
-
-                var firstRelation = relationList.First(x => x.ParentTable != "projects_projects");
-                var entityId = columnMapper.GetMapping(firstRelation.ParentTable, firstRelation.ParentColumn, valParts[1]);
-                if (entityId == null)
-                {
-                    return false;
-                }
-
-                value = string.Format("{0}_{1}_{2}", valParts[0], entityId, projectId);
-
-                return true;
-            }
-
-            if (relationList.All(x => x.ChildTable == "core_subscription" && x.ChildColumn == "recipient")
-                || relationList.All(x => x.ChildTable == "core_subscriptionmethod" && x.ChildColumn == "recipient")
-                || relationList.All(x => x.ChildTable == "core_acl" && x.ChildColumn == "subject"))
-            {
-                var strVal = Convert.ToString(value);
-                if (_helpers.IsEmptyOrSystemUser(strVal) || _helpers.IsEmptyOrSystemGroup(strVal))
-                {
                     return true;
                 }
-
-                foreach (var relation in relationList)
-                {
-                    var mapping = columnMapper.GetMapping(relation.ParentTable, relation.ParentColumn, value);
-                    if (mapping != null)
-                    {
-                        value = mapping;
-
-                        return true;
-                    }
-                }
-
-                return false;
             }
 
-            return base.TryPrepareValue(dump, connection, columnMapper, table, columnName, relationList, ref value);
+            return false;
         }
 
-        private static bool ValidateSource(Guid expectedValue, DataRowInfo row)
+        return base.TryPrepareValue(dump, connection, columnMapper, table, columnName, relationList, ref value);
+    }
+
+    private static bool ValidateSource(Guid expectedValue, DataRowInfo row)
+    {
+        var source = Convert.ToString(row["source"]);
+        try
         {
-            var source = Convert.ToString(row["source"]);
-            try
-            {
-                return expectedValue == new Guid(source);
-            }
-            catch
-            {
-                return false;
-            }
+            return expectedValue == new Guid(source);
         }
-
-        private static bool IsDocumentsStorageType(string strStorageType)
+        catch
         {
-            var storageType = int.Parse(strStorageType);
-
-            return storageType == 0 || storageType == 1;
+            return false;
         }
+    }
+
+    private static bool IsDocumentsStorageType(string strStorageType)
+    {
+        var storageType = int.Parse(strStorageType);
+
+        return storageType == 0 || storageType == 1;
     }
 }

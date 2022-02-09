@@ -23,17 +23,17 @@
  *
 */
 
-namespace ASC.Data.Backup.Tasks.Modules
-{
-    public class CalendarModuleSpecifics : ModuleSpecificsBase
-    {
-        public override ModuleName ModuleName => ModuleName.Calendar;
-        public override IEnumerable<TableInfo> Tables => _tables;
-        public override IEnumerable<RelationInfo> TableRelations => _tableRelations;
+namespace ASC.Data.Backup.Tasks.Modules;
 
-        private readonly RelationInfo[] _tableRelations;
-        private readonly TableInfo[] _tables = new[]
-        {
+public class CalendarModuleSpecifics : ModuleSpecificsBase
+{
+    public override ModuleName ModuleName => ModuleName.Calendar;
+    public override IEnumerable<TableInfo> Tables => _tables;
+    public override IEnumerable<RelationInfo> TableRelations => _tableRelations;
+
+    private readonly RelationInfo[] _tableRelations;
+    private readonly TableInfo[] _tables = new[]
+    {
             new TableInfo("calendar_calendars", "tenant", "id") {UserIDColumns = new[] {"owner_id"}},
             new TableInfo("calendar_calendar_item"),
             new TableInfo("calendar_calendar_user") {UserIDColumns = new[] {"user_id"}},
@@ -50,13 +50,13 @@ namespace ASC.Data.Backup.Tasks.Modules
                 UserIDColumns = new[] {"user_id"},
                 DateColumns = new Dictionary<string, bool> {{"notify_date", true}}
             }
-        };  
+        };
 
-        public CalendarModuleSpecifics(Helpers helpers)
-            : base(helpers)
+    public CalendarModuleSpecifics(Helpers helpers)
+        : base(helpers)
+    {
+        _tableRelations = new[]
         {
-            _tableRelations = new[]
-            {
                 new RelationInfo("calendar_calendars", "id", "calendar_calendar_item", "calendar_id"),
                 new RelationInfo("calendar_calendars", "id", "calendar_calendar_user", "calendar_id"),
                 new RelationInfo("calendar_calendars", "id", "calendar_events", "calendar_id"),
@@ -74,28 +74,27 @@ namespace ASC.Data.Backup.Tasks.Modules
                 new RelationInfo("core_group", "id", "calendar_event_item", "item_id", typeof(TenantsModuleSpecifics),
                     x => Convert.ToInt32(x["is_group"]) == 1 && !helpers.IsEmptyOrSystemGroup(Convert.ToString(x["item_id"])))
             };
-        }
+    }
 
-        protected override string GetSelectCommandConditionText(int tenantId, TableInfo table)
+    protected override string GetSelectCommandConditionText(int tenantId, TableInfo table)
+    {
+        if (table.Name == "calendar_calendar_item" || table.Name == "calendar_calendar_user")
         {
-            if (table.Name == "calendar_calendar_item" || table.Name == "calendar_calendar_user")
-            {
-                return "inner join calendar_calendars as t1 on t1.id = t.calendar_id where t1.tenant = " + tenantId;
-            }
-
-            if (table.Name == "calendar_event_item" || table.Name == "calendar_event_user")
-            {
-                return "inner join calendar_events as t1 on t1.id = t.event_id where t1.tenant = " + tenantId;
-            }
-
-            if (table.Name == "calendar_event_history")
-            {
-                return string.Format(
-                    "inner join calendar_calendars as t1 on t1.id = t.calendar_id  and t1.tenant = t.tenant  inner join calendar_events as t2 on t2.id = t.event_id where t1.tenant = {0} and t2.tenant = {0}",
-                    tenantId);
-            }
-
-            return base.GetSelectCommandConditionText(tenantId, table);
+            return "inner join calendar_calendars as t1 on t1.id = t.calendar_id where t1.tenant = " + tenantId;
         }
+
+        if (table.Name == "calendar_event_item" || table.Name == "calendar_event_user")
+        {
+            return "inner join calendar_events as t1 on t1.id = t.event_id where t1.tenant = " + tenantId;
+        }
+
+        if (table.Name == "calendar_event_history")
+        {
+            return string.Format(
+                "inner join calendar_calendars as t1 on t1.id = t.calendar_id  and t1.tenant = t.tenant  inner join calendar_events as t2 on t2.id = t.event_id where t1.tenant = {0} and t2.tenant = {0}",
+                tenantId);
+        }
+
+        return base.GetSelectCommandConditionText(tenantId, table);
     }
 }

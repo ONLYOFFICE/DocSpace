@@ -23,59 +23,58 @@
  *
 */
 
-namespace ASC.Data.Backup.Storage
+namespace ASC.Data.Backup.Storage;
+
+[Scope]
+public class ConsumerBackupStorage : IBackupStorage
 {
-    [Scope]
-    public class ConsumerBackupStorage : IBackupStorage
+    private const string Domain = "backup";
+
+    private IDataStore _store;
+    private readonly StorageSettingsHelper _storageSettingsHelper;
+
+    public ConsumerBackupStorage(StorageSettingsHelper storageSettingsHelper)
     {
-        private const string Domain = "backup";
+        _storageSettingsHelper = storageSettingsHelper;
+    }
 
-        private IDataStore _store;
-        private readonly StorageSettingsHelper _storageSettingsHelper;
+    public void Init(IReadOnlyDictionary<string, string> storageParams)
+    {
+        var settings = new StorageSettings { Module = storageParams["module"], Props = storageParams.Where(r => r.Key != "module").ToDictionary(r => r.Key, r => r.Value) };
+        _store = _storageSettingsHelper.DataStore(settings);
+    }
 
-        public ConsumerBackupStorage(StorageSettingsHelper storageSettingsHelper)
+    public string Upload(string storageBasePath, string localPath, Guid userId)
+    {
+        using var stream = File.OpenRead(localPath);
+        var storagePath = Path.GetFileName(localPath);
+        _store.Save(Domain, storagePath, stream, ACL.Private);
+
+        return storagePath;
+    }
+
+    public void Download(string storagePath, string targetLocalPath)
+    {
+        using var source = _store.GetReadStream(Domain, storagePath);
+        using var destination = File.OpenWrite(targetLocalPath);
+        source.CopyTo(destination);
+    }
+
+    public void Delete(string storagePath)
+    {
+        if (_store.IsFile(Domain, storagePath))
         {
-            _storageSettingsHelper = storageSettingsHelper;
+            _store.Delete(Domain, storagePath);
         }
+    }
 
-        public void Init(IReadOnlyDictionary<string, string> storageParams)
-        {
-            var settings = new StorageSettings { Module = storageParams["module"], Props = storageParams.Where(r => r.Key != "module").ToDictionary(r => r.Key, r => r.Value) };
-            _store = _storageSettingsHelper.DataStore(settings);
-        }
+    public bool IsExists(string storagePath)
+    {
+        return _store.IsFile(Domain, storagePath);
+    }
 
-        public string Upload(string storageBasePath, string localPath, Guid userId)
-        {
-            using var stream = File.OpenRead(localPath);
-            var storagePath = Path.GetFileName(localPath);
-            _store.Save(Domain, storagePath, stream, ACL.Private);
-
-            return storagePath;
-        }
-
-        public void Download(string storagePath, string targetLocalPath)
-        {
-            using var source = _store.GetReadStream(Domain, storagePath);
-            using var destination = File.OpenWrite(targetLocalPath);
-            source.CopyTo(destination);
-        }
-
-        public void Delete(string storagePath)
-        {
-            if (_store.IsFile(Domain, storagePath))
-            {
-                _store.Delete(Domain, storagePath);
-            }
-        }
-
-        public bool IsExists(string storagePath)
-        {
-            return _store.IsFile(Domain, storagePath);
-        }
-
-        public string GetPublicLink(string storagePath)
-        {
-            return _store.GetInternalUri(Domain, storagePath, TimeSpan.FromDays(1), null).AbsoluteUri;
-        }
+    public string GetPublicLink(string storagePath)
+    {
+        return _store.GetInternalUri(Domain, storagePath, TimeSpan.FromDays(1), null).AbsoluteUri;
     }
 }

@@ -23,37 +23,36 @@
  *
 */
 
-namespace ASC.Data.Backup.Contracts
+namespace ASC.Data.Backup.Contracts;
+
+[ServiceContract]
+public interface IBackupService
 {
-    [ServiceContract]
-    public interface IBackupService
-    {
-        void StartBackup(StartBackupRequest request);
+    void StartBackup(StartBackupRequest request);
 
-        BackupProgress GetBackupProgress(int tenantId);
+    BackupProgress GetBackupProgress(int tenantId);
 
-        void DeleteBackup(Guid backupId);
+    void DeleteBackup(Guid backupId);
 
-        void DeleteAllBackups(int tenantId);
+    void DeleteAllBackups(int tenantId);
 
-        List<BackupHistoryRecord> GetBackupHistory(int tenantId);
+    List<BackupHistoryRecord> GetBackupHistory(int tenantId);
 
-        void StartTransfer(StartTransferRequest request);
+    void StartTransfer(StartTransferRequest request);
 
-        BackupProgress GetTransferProgress(int tenantId);
+    BackupProgress GetTransferProgress(int tenantId);
 
-        List<TransferRegion> GetTransferRegions();
+    List<TransferRegion> GetTransferRegions();
 
-        void StartRestore(StartRestoreRequest request);
+    void StartRestore(StartRestoreRequest request);
 
-        BackupProgress GetRestoreProgress(int tenantId);
+    BackupProgress GetRestoreProgress(int tenantId);
 
-        string GetTmpFolder();
+    string GetTmpFolder();
 
-        void CreateSchedule(CreateScheduleRequest request);
+    void CreateSchedule(CreateScheduleRequest request);
 
-        void DeleteSchedule(int tenantId);
+    void DeleteSchedule(int tenantId);
 
-        ScheduleResponse GetSchedule(int tenantId);
-    }
+    ScheduleResponse GetSchedule(int tenantId);
 }

@@ -27,23 +27,23 @@
 using ConfigurationConstants = ASC.Core.Configuration.Constants;
 using UserConstants = ASC.Core.Users.Constants;
 
-namespace ASC.Data.Backup.Tasks.Modules
-{
-    [Scope]
-    public class Helpers
-    {
-        private readonly InstanceCrypto _instanceCrypto;
+namespace ASC.Data.Backup.Tasks.Modules;
 
-        private readonly Guid[] _systemUsers = new[]
-        {
+[Scope]
+public class Helpers
+{
+    private readonly InstanceCrypto _instanceCrypto;
+
+    private readonly Guid[] _systemUsers = new[]
+    {
             Guid.Empty,
             ConfigurationConstants.CoreSystem.ID,
             ConfigurationConstants.Guest.ID,
             UserConstants.LostUser.ID
         };
 
-        private readonly Guid[] _systemGroups = new[]
-        {
+    private readonly Guid[] _systemGroups = new[]
+    {
             Guid.Empty,
             UserConstants.LostGroupInfo.ID,
             UserConstants.GroupAdmin.ID,
@@ -61,29 +61,28 @@ namespace ASC.Data.Backup.Tasks.Modules
             new Guid("{BF88953E-3C43-4850-A3FB-B1E43AD53A3E}")  //talk product
         };
 
-        public Helpers(InstanceCrypto instanceCrypto)
-        {
-            _instanceCrypto = instanceCrypto;
-        }
+    public Helpers(InstanceCrypto instanceCrypto)
+    {
+        _instanceCrypto = instanceCrypto;
+    }
 
-        public bool IsEmptyOrSystemUser(string id)
-        {
-            return string.IsNullOrEmpty(id) || Guid.TryParse(id, out var g) && _systemUsers.Contains(g);
-        }
+    public bool IsEmptyOrSystemUser(string id)
+    {
+        return string.IsNullOrEmpty(id) || Guid.TryParse(id, out var g) && _systemUsers.Contains(g);
+    }
 
-        public bool IsEmptyOrSystemGroup(string id)
-        {
-            return string.IsNullOrEmpty(id) || Guid.TryParse(id, out var g) && _systemGroups.Contains(g);
-        }
+    public bool IsEmptyOrSystemGroup(string id)
+    {
+        return string.IsNullOrEmpty(id) || Guid.TryParse(id, out var g) && _systemGroups.Contains(g);
+    }
 
-        public string CreateHash(string s)
-        {
-            return !string.IsNullOrEmpty(s) && s.StartsWith("S|") ? _instanceCrypto.Encrypt(Crypto.GetV(s.Substring(2), 1, false)) : s;
-        }
+    public string CreateHash(string s)
+    {
+        return !string.IsNullOrEmpty(s) && s.StartsWith("S|") ? _instanceCrypto.Encrypt(Crypto.GetV(s.Substring(2), 1, false)) : s;
+    }
 
-        public string CreateHash2(string s)
-        {
-            return !string.IsNullOrEmpty(s) ? "S|" + Crypto.GetV(_instanceCrypto.Decrypt(s), 1, true) : s;
-        }
+    public string CreateHash2(string s)
+    {
+        return !string.IsNullOrEmpty(s) ? "S|" + Crypto.GetV(_instanceCrypto.Decrypt(s), 1, true) : s;
     }
 }

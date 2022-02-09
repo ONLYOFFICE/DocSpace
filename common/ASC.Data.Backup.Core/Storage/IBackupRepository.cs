@@ -23,21 +23,20 @@
  *
 */
 
-namespace ASC.Data.Backup.Storage
-{
-    public interface IBackupRepository
-    {
-        void SaveBackupRecord(BackupRecord backupRecord);
-        BackupRecord GetBackupRecord(Guid id);
-        BackupRecord GetBackupRecord(string hash, int tenant);
-        List<BackupRecord> GetExpiredBackupRecords();
-        List<BackupRecord> GetScheduledBackupRecords();
-        List<BackupRecord> GetBackupRecordsByTenantId(int tenantId);
-        void DeleteBackupRecord(Guid id);
+namespace ASC.Data.Backup.Storage;
 
-        void SaveBackupSchedule(BackupSchedule schedule);
-        BackupSchedule GetBackupSchedule(int tenantId);
-        List<BackupSchedule> GetBackupSchedules();
-        void DeleteBackupSchedule(int tenantId);
-    }
+public interface IBackupRepository
+{
+    void SaveBackupRecord(BackupRecord backupRecord);
+    BackupRecord GetBackupRecord(Guid id);
+    BackupRecord GetBackupRecord(string hash, int tenant);
+    List<BackupRecord> GetExpiredBackupRecords();
+    List<BackupRecord> GetScheduledBackupRecords();
+    List<BackupRecord> GetBackupRecordsByTenantId(int tenantId);
+    void DeleteBackupRecord(Guid id);
+
+    void SaveBackupSchedule(BackupSchedule schedule);
+    BackupSchedule GetBackupSchedule(int tenantId);
+    List<BackupSchedule> GetBackupSchedules();
+    void DeleteBackupSchedule(int tenantId);
 }
