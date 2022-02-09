@@ -525,16 +525,16 @@ class HotkeyStore {
             selectionsUp.push(filesList[prevForTileUpItemIndex]);
           prevForTileUpItemIndex++;
         }
+      }
 
-        let counterToUp = 0;
-        if (prevForTileUpIndex > hotkeyCaretStartIndex) {
-          counterToUp = prevForTileUpIndex - hotkeyCaretStartIndex;
-        }
+      let counterToUp = 0;
+      if (prevForTileUpIndex > hotkeyCaretStartIndex) {
+        counterToUp = prevForTileUpIndex - hotkeyCaretStartIndex;
+      }
 
-        while (counterToUp !== 0) {
-          selectionsUp.push(filesList[hotkeyCaretStartIndex + counterToUp]);
-          counterToUp--;
-        }
+      while (counterToUp !== 0) {
+        selectionsUp.push(filesList[hotkeyCaretStartIndex + counterToUp]);
+        counterToUp--;
       }
     }
     return selectionsUp;
