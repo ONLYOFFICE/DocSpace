@@ -1,5 +1,6 @@
 import React from "react";
-import styled from "styled-components";
+import { ReactSVG } from "react-svg";
+import styled, { css } from "styled-components";
 import { Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
@@ -29,14 +30,52 @@ const StyledServicesBlock = styled.div`
     }
   }
 
-  img {
+  .service-item__svg {
     ${NoUserSelect}
     border: ${(props) => props.theme.filesThirdPartyDialog.border};
     width: 158px;
     height: 40px;
 
+    display: flex;
+    justify-content: center;
+    align-item: center;
+
     :hover {
       cursor: pointer;
+    }
+
+    ${(props) =>
+      !props.theme.isBase &&
+      css`
+        svg {
+          rect {
+            fill: #333333;
+          }
+          path {
+            fill: #ffffff;
+            opacity: 0.16;
+          }
+        }
+      `}
+  }
+
+  .kDrive {
+    svg {
+      path:nth-child(7) {
+        opacity: 0.5 !important;
+      }
+      path:nth-child(8) {
+        opacity: 0.8 !important;
+      }
+      path:nth-child(9) {
+        opacity: 0.8 !important;
+      }
+      path:nth-child(10) {
+        opacity: 0.16 !important;
+      }
+      path:nth-child(11) {
+        opacity: 0.16 !important;
+      }
     }
   }
 
@@ -50,7 +89,7 @@ const StyledServicesBlock = styled.div`
 StyledServicesBlock.defaultProps = { theme: Base };
 
 const ServiceItem = (props) => {
-  const { capability, t, ...rest } = props;
+  const { capability, t, className, ...rest } = props;
 
   const capabilityName = capability[0];
   const capabilityLink = capability.length > 1 ? capability[1] : "";
@@ -61,7 +100,14 @@ const ServiceItem = (props) => {
     "data-key": capabilityName,
   };
 
-  return <img {...dataProps} {...rest} alt="" />;
+  return (
+    <ReactSVG
+      {...dataProps}
+      {...rest}
+      className={`service-item__svg ${className}`}
+      alt=""
+    />
+  );
 };
 
 const ThirdPartyDialog = (props) => {
@@ -186,11 +232,7 @@ const ThirdPartyDialog = (props) => {
             <ServiceItem
               capability={sharePointConnectItem}
               onClick={onShowService}
-              src={
-                theme.isBase
-                  ? "images/services/logo_sharepoint.svg"
-                  : "images/services/logo_sharepoint_dark.svg"
-              }
+              src={"images/services/logo_sharepoint.svg"}
             />
           )}
 
@@ -206,11 +248,7 @@ const ThirdPartyDialog = (props) => {
             <ServiceItem
               capability={sharePointConnectItem}
               onClick={onShowService}
-              src={
-                theme.isBase
-                  ? "images/services/logo_onedrive-for-business.svg"
-                  : "images/services/logo_onedrive-for-business_dark.svg"
-              }
+              src={"images/services/logo_onedrive-for-business.svg"}
             />
           )}
 
@@ -234,11 +272,8 @@ const ThirdPartyDialog = (props) => {
             <ServiceItem
               capability={kDriveConnectItem}
               onClick={onShowService}
-              src={
-                theme.isBase
-                  ? "images/services/logo_kdrive.svg"
-                  : "images/services/logo_kdrive_dark.svg"
-              }
+              className={"kDrive"}
+              src="images/services/logo_kdrive.svg"
             />
           )}
           {yandexConnectItem && (
