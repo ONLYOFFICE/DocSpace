@@ -1307,6 +1307,7 @@ const Base = {
     background: white,
     borderRadius: "6px",
     boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
+    border: "none",
   },
 
   dropDownItem: {
