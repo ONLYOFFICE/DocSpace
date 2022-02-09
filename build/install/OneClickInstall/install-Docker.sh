@@ -790,6 +790,7 @@ download_files () {
 	fi
 
 	svn export --force https://github.com/ONLYOFFICE/${PRODUCT}/branches/${GIT_BRANCH}/build/install/docker/ ${BASE_DIR}
+	svn export --force https://github.com/ONLYOFFICE/CommunityServer/branches/master/build/sql/ ${BASE_DIR}/config/ #Download SQL scripts
 
 	reconfigure STATUS ${STATUS}
 }
