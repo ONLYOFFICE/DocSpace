@@ -79,5 +79,7 @@
     "UnblockVersion": "Poista esto/sisäänkirjautuminen",
     "UploadToFolder": "Lataa kansio",
     "ViewList": "Lista",
-    "ViewTiles": "Kuvakkeet"
+    "ViewTiles": "Kuvakkeet",
+    "VersionHistory": "Versiohistoria",
+    "MoveOrCopy": "Siirrä tai Kopioi"
 }

@@ -79,5 +79,7 @@
     "UnblockVersion": "Deblokkeren/inchecken",
     "UploadToFolder": "Upload naar map",
     "ViewList": "Lijst",
-    "ViewTiles": "Tegels"
+    "ViewTiles": "Tegels",
+    "VersionHistory": "Versie geschiedenis",
+    "MoveOrCopy": "Verplaats of copieer"
 }

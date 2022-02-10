@@ -79,5 +79,7 @@
     "UnblockVersion": "Bỏ chặn/Đăng ký",
     "UploadToFolder": "Tải lên thư mục",
     "ViewList": "Danh sách",
-    "ViewTiles": "Ô xếp"
+    "ViewTiles": "Ô xếp",
+    "VersionHistory": "Lịch sử phiên bản",
+    "MoveOrCopy": "Di chuyển hoặc Sao chép"
 }
