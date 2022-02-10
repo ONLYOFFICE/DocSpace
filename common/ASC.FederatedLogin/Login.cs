@@ -173,18 +173,19 @@ public class Login
 public class LoginHandler
 {
     private readonly RequestDelegate _next;
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public LoginHandler(RequestDelegate next, IServiceProvider serviceProvider)
+    public LoginHandler(RequestDelegate next, IServiceScopeFactory serviceScopeFactory)
     {
         _next = next;
-        _serviceProvider = serviceProvider;
+        _serviceScopeFactory = serviceScopeFactory;
     }
 
     public async Task InvokeAsync(HttpContext context)
     {
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = _serviceScopeFactory.CreateScope();
         var login = scope.ServiceProvider.GetService<Login>();
+
         await login.InvokeAsync(context);
     }
 }
