@@ -33,7 +33,7 @@ namespace ASC.Data.Storage.Encryption
         private const string ConfigPath = "";
         private const string ProgressFileName = "EncryptionProgress.tmp";
 
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
         private bool _hasErrors = false;
         private EncryptionSettings _encryptionSettings;
         private bool _isEncryption;
@@ -42,9 +42,9 @@ namespace ASC.Data.Storage.Encryption
         private IEnumerable<Tenant> _tenants;
         private string _serverRootPath;
 
-        public EncryptionOperation(IServiceProvider serviceProvider)
+        public EncryptionOperation(IServiceScopeFactory serviceScopeFactory)
         {
-            _serviceProvider = serviceProvider;
+            _serviceScopeFactory = serviceScopeFactory;
         }
 
         public void Init(EncryptionSettingsProto encryptionSettingsProto, string id)
@@ -57,7 +57,7 @@ namespace ASC.Data.Storage.Encryption
 
         protected override void DoJob()
         {
-            using var scope = _serviceProvider.CreateScope();
+            using var scope = _serviceScopeFactory.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<EncryptionOperationScope>();
             var (log, encryptionSettingsHelper, tenantManager, notifyHelper, coreBaseSettings, storageFactoryConfig, storageFactory, configuration) = scopeClass;
             notifyHelper.Init(_serverRootPath);
@@ -123,7 +123,6 @@ namespace ASC.Data.Storage.Encryption
                 log.Error(e);
             }
         }
-
 
         private void EncryptStore(Tenant tenant, string module, DiscDataStore store, StorageFactoryConfig storageFactoryConfig, ILog log)
         {
