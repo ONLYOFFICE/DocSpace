@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Security;
+using System.Threading.Tasks;
 
 using ASC.ApiSystem.Classes;
 using ASC.ApiSystem.Models;
@@ -133,7 +134,7 @@ namespace ASC.ApiSystem.Controllers
         [HttpPost("register")]
         [AllowCrossSiteJson]
         [Authorize(AuthenticationSchemes = "auth.allowskip.registerportal")]
-        public IActionResult Register(TenantModel model)
+        public async Task<IActionResult> RegisterAsync(TenantModel model)
         {
             if (model == null)
             {
@@ -187,8 +188,9 @@ namespace ASC.ApiSystem.Controllers
             }
 
             model.PortalName = (model.PortalName ?? "").Trim();
+            var (exists, _)= await CheckExistingNamePortalAsync(model.PortalName);
 
-            if (!CheckExistingNamePortal(model.PortalName, out error))
+            if (!exists)
             {
                 sw.Stop();
 
@@ -278,7 +280,7 @@ namespace ASC.ApiSystem.Controllers
                 /****REGISTRATION!!!*****/
                 if (!string.IsNullOrEmpty(ApiSystemHelper.ApiCacheUrl))
                 {
-                    ApiSystemHelper.AddTenantToCache(info.Address, SecurityContext.CurrentAccount.ID);
+                    await ApiSystemHelper.AddTenantToCacheAsync(info.Address, SecurityContext.CurrentAccount.ID);
 
                     Log.DebugFormat("PortalName = {0}; Elapsed ms. CacheController.AddTenantToCache: {1}", model.PortalName, sw.ElapsedMilliseconds);
                 }
@@ -445,7 +447,7 @@ namespace ASC.ApiSystem.Controllers
 
         [HttpPost("validateportalname")]
         [AllowCrossSiteJson]
-        public IActionResult CheckExistingNamePortal(TenantModel model)
+        public async Task<IActionResult> CheckExistingNamePortalAsync(TenantModel model)
         {
             if (model == null)
             {
@@ -455,8 +457,9 @@ namespace ASC.ApiSystem.Controllers
                     message = "PortalName is required"
                 });
             }
+            var (exists, error) = await CheckExistingNamePortalAsync((model.PortalName ?? "").Trim());
 
-            if (!CheckExistingNamePortal((model.PortalName ?? "").Trim(), out var error))
+            if (!exists)
             {
                 return BadRequest(error);
             }
@@ -538,14 +541,14 @@ namespace ASC.ApiSystem.Controllers
 
         #region Validate Method
 
-        private void ValidateDomain(string domain)
+        private async Task ValidateDomainAsync(string domain)
         {
             // size
             TenantDomainValidator.ValidateDomainLength(domain);
             // characters
             TenantDomainValidator.ValidateDomainCharacters(domain);
 
-            var sameAliasTenants = ApiSystemHelper.FindTenantsInCache(domain, SecurityContext.CurrentAccount.ID);
+            var sameAliasTenants = await ApiSystemHelper.FindTenantsInCacheAsync(domain, SecurityContext.CurrentAccount.ID);
 
             if (sameAliasTenants != null)
             {
@@ -553,19 +556,19 @@ namespace ASC.ApiSystem.Controllers
             }
         }
 
-        private bool CheckExistingNamePortal(string portalName, out object error)
+        private async Task<(bool exists, object error)> CheckExistingNamePortalAsync(string portalName)
         {
-            error = null;
+            object error = null;
             if (string.IsNullOrEmpty(portalName))
             {
                 error = new { error = "portalNameEmpty", message = "PortalName is required" };
-                return false;
+                return (false, error);
             }
             try
             {
                 if (!string.IsNullOrEmpty(ApiSystemHelper.ApiCacheUrl))
                 {
-                    ValidateDomain(portalName.Trim());
+                    await ValidateDomainAsync(portalName.Trim());
                 }
                 else
                 {
@@ -575,27 +578,27 @@ namespace ASC.ApiSystem.Controllers
             catch (TenantAlreadyExistsException ex)
             {
                 error = new { error = "portalNameExist", message = "Portal already exists", variants = ex.ExistsTenants.ToArray() };
-                return false;
+                return (false, error);
             }
             catch (TenantTooShortException)
             {
                 error = new { error = "tooShortError", message = "Portal name is too short" };
-                return false;
+                return (false, error);
 
             }
             catch (TenantIncorrectCharsException)
             {
                 error = new { error = "portalNameIncorrect", message = "Unallowable symbols in portalName" };
-                return false;
+                return (false, error);
             }
             catch (Exception ex)
             {
                 Log.Error(ex);
                 error = new { error = "error", message = ex.Message, stacktrace = ex.StackTrace };
-                return false;
+                return (false, error);
             }
 
-            return true;
+            return (true, error);
         }
 
         private bool CheckValidName(string name, out object error)

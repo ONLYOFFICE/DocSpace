@@ -79,7 +79,7 @@ namespace ASC.CRM.Api
         /// <returns>Report files</returns>
         /// <exception cref="SecurityException">if user can't create reports</exception>
         [Read(@"report/files")]
-        public IEnumerable<FileWrapper<int>> GetFiles()
+        public async Task<IEnumerable<FileWrapper<int>>> GetFilesAsync()
         {
             if (!_global.CanCreateReports)
                 throw _crmSecurity.CreateSecurityException();
@@ -94,7 +94,7 @@ namespace ASC.CRM.Api
 
                 if (settings.NeedToGenerate)
                 {
-                    files = reportDao.SaveSampleReportFiles();
+                    files = await reportDao.SaveSampleReportFilesAsync();
 
                     settings.NeedToGenerate = false;
 
@@ -102,7 +102,13 @@ namespace ASC.CRM.Api
                 }
             }
 
-            return files.ConvertAll(file => _fileWrapperHelper.Get<int>(file)).OrderByDescending(file => file.Id);
+            List<FileWrapper<int>> result = new List<FileWrapper<int>>(files.Count);
+            foreach(var file in files)
+            {
+                result.Add(await _fileWrapperHelper.GetAsync<int>(file));
+            }
+
+            return result.OrderByDescending(file => file.Id);
         }
 
         /// <summary>Delete the report file with the ID specified in the request</summary>

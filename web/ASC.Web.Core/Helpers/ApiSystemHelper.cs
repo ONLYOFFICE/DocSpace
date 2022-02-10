@@ -123,7 +123,7 @@ namespace ASC.Web.Core.Helpers
 
         public async Task AddTenantToCacheAsync(string domain, Guid userId)
         {
-            var data = string.Format("portalName={0}", HttpUtility.UrlEncode(domain));
+            var data = $"portalName={HttpUtility.UrlEncode(domain)}";
             await SendToApiAsync(ApiCacheUrl, "portal/add", WebRequestMethods.Http.Post, userId, data);
         }
 

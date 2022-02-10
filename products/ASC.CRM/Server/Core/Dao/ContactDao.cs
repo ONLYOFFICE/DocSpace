@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -1507,7 +1508,7 @@ namespace ASC.CRM.Core.Dao
                     .ConvertAll(ToContact);
         }
 
-        public List<Contact> DeleteBatchContact(int[] contactID)
+        public async Task<List<Contact>> DeleteBatchContactAsync(int[] contactID)
         {
             if (contactID == null || contactID.Length == 0) return null;
 
@@ -1517,12 +1518,12 @@ namespace ASC.CRM.Core.Dao
             // Delete relative  keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "contacts.*"));
 
-            DeleteBatchContactsExecute(contacts);
+            await DeleteBatchContactsExecuteAsync(contacts);
 
             return contacts;
         }
 
-        public List<Contact> DeleteBatchContact(List<Contact> contacts)
+        public async Task<List<Contact>> DeleteBatchContactAsync(List<Contact> contacts)
         {
             contacts = contacts.FindAll(_crmSecurity.CanDelete).ToList();
             if (!contacts.Any()) return contacts;
@@ -1530,12 +1531,12 @@ namespace ASC.CRM.Core.Dao
             // Delete relative  keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "contacts.*"));
 
-            DeleteBatchContactsExecute(contacts);
+            await DeleteBatchContactsExecuteAsync(contacts);
 
             return contacts;
         }
 
-        public Contact DeleteContact(int contactID)
+        public async Task<Contact> DeleteContactAsync(int contactID)
         {
             if (contactID <= 0) return null;
 
@@ -1548,7 +1549,7 @@ namespace ASC.CRM.Core.Dao
 
             _factoryIndexerContact.Delete(dbEntity);
 
-            DeleteBatchContactsExecute(new List<Contact>() { contact });
+            await DeleteBatchContactsExecuteAsync(new List<Contact>() { contact });
 
             // Delete relative  keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "contacts.*"));
@@ -1556,7 +1557,7 @@ namespace ASC.CRM.Core.Dao
             return contact;
         }
 
-        private void DeleteBatchContactsExecute(List<Contact> contacts)
+        private async System.Threading.Tasks.Task DeleteBatchContactsExecuteAsync(List<Contact> contacts)
         {
             var personsID = new List<int>();
             var companyID = new List<int>();
@@ -1573,9 +1574,9 @@ namespace ASC.CRM.Core.Dao
             }
 
             var contactID = newContactID.ToArray();
-            int[] filesIDs = new int[0];
+            var filesIDs = AsyncEnumerable.Empty<int>();
 
-            var tx = CrmDbContext.Database.BeginTransaction();
+            var tx = await CrmDbContext.Database.BeginTransactionAsync();
 
             var tagdao = _filesIntegration.DaoFactory.GetTagDao<int>();
 
@@ -1584,10 +1585,9 @@ namespace ASC.CRM.Core.Dao
 
             if (0 < tagNames.Length)
             {
-                filesIDs = tagdao.GetTags(tagNames, TagType.System)
+                filesIDs = tagdao.GetTagsAsync(tagNames, TagType.System)
                                  .Where(t => t.EntryType == FileEntryType.File)
-                                 .Select(t => Convert.ToInt32(t.EntryId))
-                                 .ToArray();
+                                 .Select(t => Convert.ToInt32(t.EntryId));
             }
 
             CrmDbContext.RemoveRange(Query(CrmDbContext.FieldValue)
@@ -1608,7 +1608,7 @@ namespace ASC.CRM.Core.Dao
 
             dealToUpdate.ForEach(x => x.ContactId = 0);
 
-            CrmDbContext.SaveChanges();
+            await CrmDbContext.SaveChangesAsync();
 
             if (companyID.Count > 0)
             {
@@ -1616,7 +1616,7 @@ namespace ASC.CRM.Core.Dao
 
                 itemToUpdate.ForEach(x => x.CompanyId = 0);
 
-                CrmDbContext.SaveChanges();
+                await CrmDbContext.SaveChangesAsync();
             }
 
             if (personsID.Count > 0)
@@ -1634,17 +1634,17 @@ namespace ASC.CRM.Core.Dao
                 TenantId = TenantID
             }));
 
-            CrmDbContext.SaveChanges();
+            await CrmDbContext.SaveChangesAsync();
 
-            tx.Commit();
+            await tx.CommitAsync();
 
             contacts.ForEach(contact => _authorizationManager.RemoveAllAces(contact));
 
             var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
-            foreach (var filesID in filesIDs)
+            await foreach (var filesID in filesIDs)
             {
-                filedao.DeleteFileAsync(filesID).Wait();
+                await filedao.DeleteFileAsync(filesID);
             }
 
             //todo: remove indexes

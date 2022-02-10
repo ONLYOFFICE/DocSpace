@@ -1102,7 +1102,7 @@ namespace ASC.Web.Files.Utils
 
                     var key = DocumentServiceConnector.GenerateRevisionId(downloadUri);
 
-                    var resultTuple = await DocumentServiceConnector.GetConvertedUriAsync(downloadUri, newExtension, currentExt, key, null, null, null, false, downloadUri);
+                    var resultTuple = await DocumentServiceConnector.GetConvertedUriAsync(downloadUri, newExtension, currentExt, key, null, null, null, false);
                     downloadUri = resultTuple.ConvertedDocumentUri;
 
                     stream = null;

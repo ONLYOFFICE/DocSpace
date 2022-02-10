@@ -277,8 +277,7 @@ namespace ASC.Files.ThumbnailBuilder
                 }
             };
 
-            url = null;
-            (var operationResultProgress, url) = DocumentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, null, thumbnail, spreadsheetLayout, false, url).Result;
+            (var operationResultProgress, url) = DocumentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, null, thumbnail, spreadsheetLayout, false).Result;
 
             operationResultProgress = Math.Min(operationResultProgress, 100);
             return operationResultProgress == 100;

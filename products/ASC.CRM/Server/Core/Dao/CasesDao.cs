@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -222,7 +223,7 @@ namespace ASC.CRM.Core.Dao
             CrmDbContext.SaveChanges();
         }
 
-        public Cases DeleteCases(int casesID)
+        public async Task<Cases> DeleteCasesAsync(int casesID)
         {
             if (casesID <= 0) return null;
 
@@ -235,11 +236,11 @@ namespace ASC.CRM.Core.Dao
             // Delete relative  keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "invoice.*"));
 
-            DeleteBatchCases(new[] { casesID });
+            await DeleteBatchCasesAsync(new[] { casesID });
             return cases;
         }
 
-        public List<Cases> DeleteBatchCases(List<Cases> caseses)
+        public async Task<List<Cases>> DeleteBatchCasesAsync(List<Cases> caseses)
         {
             caseses = caseses.FindAll(_crmSecurity.CanDelete).ToList();
 
@@ -248,12 +249,12 @@ namespace ASC.CRM.Core.Dao
             // Delete relative  keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "invoice.*"));
 
-            DeleteBatchCasesExecute(caseses);
+            await DeleteBatchCasesExecuteAsync(caseses);
 
             return caseses;
         }
 
-        public List<Cases> DeleteBatchCases(int[] casesID)
+        public async Task<List<Cases>> DeleteBatchCasesAsync(int[] casesID)
         {
             if (casesID == null || !casesID.Any()) return null;
 
@@ -264,12 +265,12 @@ namespace ASC.CRM.Core.Dao
             // Delete relative  keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "invoice.*"));
 
-            DeleteBatchCasesExecute(cases);
+            await DeleteBatchCasesExecuteAsync(cases);
 
             return cases;
         }
 
-        private void DeleteBatchCasesExecute(List<Cases> caseses)
+        private async System.Threading.Tasks.Task DeleteBatchCasesExecuteAsync(List<Cases> caseses)
         {
             var casesID = caseses.Select(x => x.ID).ToArray();
 
@@ -279,9 +280,9 @@ namespace ASC.CRM.Core.Dao
                             .Where(x => x.HaveFiles && casesID.Contains(x.EntityId) && x.EntityType == EntityType.Case)
                             .Select(x => String.Format("RelationshipEvent_{0}", x.Id)).ToArray();
 
-            var filesIDs = tagdao.GetTags(tagNames, TagType.System).Where(t => t.EntryType == FileEntryType.File).Select(t => Convert.ToInt32(t.EntryId)).ToArray();
+            var filesIDs = tagdao.GetTagsAsync(tagNames, TagType.System).Where(t => t.EntryType == FileEntryType.File).Select(t => Convert.ToInt32(t.EntryId));
 
-            using var tx = CrmDbContext.Database.BeginTransaction();
+            using var tx = await CrmDbContext.Database.BeginTransactionAsync();
 
             CrmDbContext.RemoveRange(Query(CrmDbContext.FieldValue)
                                      .Where(x => casesID.Contains(x.EntityId) && x.EntityType == EntityType.Case));
@@ -300,9 +301,9 @@ namespace ASC.CRM.Core.Dao
                 TenantId = TenantID
             }));
 
-            CrmDbContext.SaveChanges();
+            await CrmDbContext.SaveChangesAsync();
 
-            tx.Commit();
+            await tx.CommitAsync();
 
             caseses.ForEach(item => _authorizationManager.RemoveAllAces(item));
 
@@ -310,9 +311,9 @@ namespace ASC.CRM.Core.Dao
             {
                 var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
-                foreach (var filesID in filesIDs)
+                await foreach (var filesID in filesIDs)
                 {
-                    filedao.DeleteFileAsync(filesID).Wait();
+                    await filedao.DeleteFileAsync(filesID);
                 }
             }
 

@@ -280,7 +280,7 @@ namespace ASC.CRM.Core.Dao
 
         #region Report Files
 
-        public List<Files.Core.File<int>> SaveSampleReportFiles()
+        public async Task<List<Files.Core.File<int>>> SaveSampleReportFilesAsync()
         {
             var result = new List<Files.Core.File<int>>();
 
@@ -293,25 +293,25 @@ namespace ASC.CRM.Core.Dao
 
             var path = culture + "/";
 
-            if (!storeTemplate.IsDirectory(path))
+            if (!await storeTemplate.IsDirectoryAsync(path))
             {
                 path = "default/";
-                if (!storeTemplate.IsDirectory(path)) return result;
+                if (!await storeTemplate.IsDirectoryAsync(path)) return result;
             }
 
-            foreach (var filePath in storeTemplate.ListFilesRelative("", path, "*", false).Select(x => path + x))
+            await foreach (var filePath in storeTemplate.ListFilesRelativeAsync("", path, "*", false).Select(x => path + x))
             {
-                using (var stream = storeTemplate.GetReadStream("", filePath))
+                using (var stream = await storeTemplate.GetReadStreamAsync("", filePath))
                 {
 
                     var document = _serviceProvider.GetService<Files.Core.File<int>>();
 
                     document.Title = Path.GetFileName(filePath);
-                    document.FolderID = _daoFactory.GetFileDao().GetRoot();
+                    document.FolderID = await _daoFactory.GetFileDao().GetRootAsync();
                     document.ContentLength = stream.Length;
 
 
-                    var file = _daoFactory.GetFileDao().SaveFile(document, stream);
+                    var file = await _daoFactory.GetFileDao().SaveFileAsync(document, stream);
 
                     SaveFile(file.ID, -1);
 

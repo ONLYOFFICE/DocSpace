@@ -275,7 +275,7 @@ namespace ASC.Web.CRM.Classes
                             continue;
                         }
 
-                        var to = new MailboxAddress(recipientEmail);
+                        var to = MailboxAddress.Parse(recipientEmail);
 
                         var mimeMessage = new MimeMessage
                         {
@@ -431,8 +431,6 @@ namespace ASC.Web.CRM.Classes
         {
             var client = new SmtpClient
             {
-                ServerCertificateValidationCallback = (sender, certificate, chain, errors) =>
-                    WorkContext.IsMono || MailKit.MailService.DefaultServerCertificateValidationCallback(sender, certificate, chain, errors),
                 Timeout = (int)TimeSpan.FromSeconds(30).TotalMilliseconds
             };
 
@@ -563,7 +561,6 @@ namespace ASC.Web.CRM.Classes
         {
             var client = new SmtpClient
             {
-                ServerCertificateValidationCallback = (sender, certificate, chain, errors) => MailService.DefaultServerCertificateValidationCallback(sender, certificate, chain, errors),
                 Timeout = (int)TimeSpan.FromSeconds(30).TotalMilliseconds
             };
 
@@ -594,7 +591,7 @@ namespace ASC.Web.CRM.Classes
             {
                 try
                 {
-                    var toAddress = new MailboxAddress(recipientEmail);
+                    var toAddress = MailboxAddress.Parse(recipientEmail);
                     var fromAddress = new MailboxAddress(smtpSetting.SenderDisplayName, smtpSetting.SenderEmailAddress);
 
                     var mimeMessage = new MimeMessage

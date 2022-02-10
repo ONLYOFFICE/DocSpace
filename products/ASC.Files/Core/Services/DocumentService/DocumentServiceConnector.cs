@@ -100,8 +100,7 @@ namespace ASC.Web.Files.Services.DocumentService
                                           string password,
                                           ThumbnailData thumbnail,
                                           SpreadsheetLayout spreadsheetLayout,
-                                          bool isAsync,
-                                          string convertedDocumentUri)
+                                          bool isAsync)
         {
             Logger.Debug($"DocService convert from {fromExtension} to {toExtension} - {documentUri}, DocServiceConverterUrl:{FilesLinkUtility.DocServiceConverterUrl}");
             try
@@ -117,8 +116,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     thumbnail,
                     spreadsheetLayout,
                     isAsync,
-                    FileUtility.SignatureSecret,
-                    convertedDocumentUri);
+                    FileUtility.SignatureSecret);
             }
             catch (Exception ex)
             {
@@ -262,7 +260,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     var fileUri = ReplaceCommunityAdress(url);
 
                     var key = GenerateRevisionId(Guid.NewGuid().ToString());
-                    var uriTuple = await Web.Core.Files.DocumentService.GetConvertedUriAsync(FileUtility, FilesLinkUtility.DocServiceConverterUrl, fileUri, fileExtension, toExtension, key, null, null, null, false, FileUtility.SignatureSecret, convertedFileUri);
+                    var uriTuple = await Web.Core.Files.DocumentService.GetConvertedUriAsync(FileUtility, FilesLinkUtility.DocServiceConverterUrl, fileUri, fileExtension, toExtension, key, null, null, null, false, FileUtility.SignatureSecret);
                     convertedFileUri = uriTuple.ConvertedDocumentUri;
                 }
                 catch (Exception ex)

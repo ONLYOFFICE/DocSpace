@@ -263,7 +263,7 @@ namespace ASC.Web.Files.Utils
                             var docKey = documentServiceHelper.GetDocKey(file);
 
                             fileUri = documentServiceConnector.ReplaceCommunityAdress(fileUri);
-                            (operationResultProgress, convertedFileUrl) = documentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, password, null, null, true, convertedFileUrl).Result;
+                            (operationResultProgress, convertedFileUrl) = documentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, password, null, null, true).Result;
                         }
                         catch (Exception exception)
                         {
@@ -682,9 +682,8 @@ namespace ASC.Web.Files.Utils
             var docKey = DocumentServiceHelper.GetDocKey(file);
             fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
 
-            string convertUri = null;
-            var uriTuple = await DocumentServiceConnector.GetConvertedUriAsync(fileUri, file.ConvertedExtension, toExtension, docKey, null, null, null, false, convertUri);
-            convertUri = uriTuple.ConvertedDocumentUri;
+            var uriTuple = await DocumentServiceConnector.GetConvertedUriAsync(fileUri, file.ConvertedExtension, toExtension, docKey, null, null, null, false);
+            var convertUri = uriTuple.ConvertedDocumentUri;
 
             if (WorkContext.IsMono && ServicePointManager.ServerCertificateValidationCallback == null)
             {
@@ -722,9 +721,8 @@ namespace ASC.Web.Files.Utils
 
             fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
 
-            string convertUri = null;
-            var uriTuple = await DocumentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, null, null, null, false, convertUri);
-            convertUri = uriTuple.ConvertedDocumentUri;
+            var uriTuple = await DocumentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, null, null, null, false);
+            var convertUri = uriTuple.ConvertedDocumentUri;
 
             var operationResult = new ConvertFileOperationResult
             {

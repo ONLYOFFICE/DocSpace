@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -738,7 +739,7 @@ namespace ASC.CRM.Core.Dao
             return _mapper.Map<List<DbDeal>, List<Deal>>(dbDeals).FindAll(_crmSecurity.CanAccessTo);
         }
 
-        public Deal DeleteDeal(int id)
+        public async Task<Deal> DeleteDealAsync(int id)
         {
             if (id <= 0) return null;
 
@@ -755,12 +756,12 @@ namespace ASC.CRM.Core.Dao
             // Delete relative  keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "deals.*"));
 
-            DeleteBatchDealsExecute(new List<Deal>() { deal });
+            await DeleteBatchDealsExecuteAsync(new List<Deal>() { deal });
 
             return deal;
         }
 
-        public List<Deal> DeleteBatchDeals(int[] dealID)
+        public async Task<List<Deal>> DeleteBatchDealsAsync(int[] dealID)
         {
             var deals = GetDeals(dealID).FindAll(_crmSecurity.CanDelete).ToList();
 
@@ -769,11 +770,11 @@ namespace ASC.CRM.Core.Dao
             // Delete relative  keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "deals.*"));
 
-            DeleteBatchDealsExecute(deals);
+            await DeleteBatchDealsExecuteAsync(deals);
             return deals;
         }
 
-        public List<Deal> DeleteBatchDeals(List<Deal> deals)
+        public async Task<List<Deal>> DeleteBatchDealsAsync(List<Deal> deals)
         {
             deals = deals.FindAll(_crmSecurity.CanDelete).ToList();
 
@@ -782,29 +783,28 @@ namespace ASC.CRM.Core.Dao
             // Delete relative  keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "deals.*"));
 
-            DeleteBatchDealsExecute(deals);
+            await DeleteBatchDealsExecuteAsync(deals);
 
             return deals;
         }
 
-        private void DeleteBatchDealsExecute(List<Deal> deals)
+        private async System.Threading.Tasks.Task DeleteBatchDealsExecuteAsync(List<Deal> deals)
         {
             if (deals == null || !deals.Any()) return;
 
             var dealID = deals.Select(x => x.ID).ToArray();
 
-            object[] filesIDs;
 
             var tagdao = _filesIntegration.DaoFactory.GetTagDao<int>();
 
-            var tagNames = Query(CrmDbContext.RelationshipEvent)
+            var tagNames = await Query(CrmDbContext.RelationshipEvent)
                                 .Where(x => x.HaveFiles && dealID.Contains(x.EntityId) && x.EntityType == EntityType.Opportunity)
                                 .Select(x => string.Format("RelationshipEvent_{0}", x.Id))
-                                .ToArray();
+                                .ToArrayAsync();
 
-            filesIDs = tagdao.GetTags(tagNames, TagType.System).Where(t => t.EntryType == FileEntryType.File).Select(t => t.EntryId).ToArray();
+            var filesIDs = tagdao.GetTagsAsync(tagNames, TagType.System).Where(t => t.EntryType == FileEntryType.File).Select(t => t.EntryId);
 
-            var tx = CrmDbContext.Database.BeginTransaction();
+            var tx = await CrmDbContext.Database.BeginTransactionAsync();
 
 
             CrmDbContext.RemoveRange(Query(CrmDbContext.FieldValue)
@@ -832,15 +832,15 @@ namespace ASC.CRM.Core.Dao
                                         .AsNoTracking()
                                         .Where(x => dealID.Contains(x.Id)));
 
-            tx.Commit();
+            await tx.CommitAsync();
 
             deals.ForEach(deal => _authorizationManager.RemoveAllAces(deal));
 
             var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
-            foreach (var filesID in filesIDs)
+            await foreach (var filesID in filesIDs)
             {
-                filedao.DeleteFileAsync(Convert.ToInt32(filesID)).Wait();
+                await filedao.DeleteFileAsync(Convert.ToInt32(filesID));
             }
 
         }

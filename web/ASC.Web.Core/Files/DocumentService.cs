@@ -113,8 +113,7 @@ namespace ASC.Web.Core.Files
            ThumbnailData thumbnail,
            SpreadsheetLayout spreadsheetLayout,
            bool isAsync,
-           string signatureSecret,
-           string convertedDocumentUri)
+           string signatureSecret)
         {
             fromExtension = string.IsNullOrEmpty(fromExtension) ? Path.GetExtension(documentUri) : fromExtension;
             if (string.IsNullOrEmpty(fromExtension)) throw new ArgumentNullException("fromExtension", "Document's extension for conversion is not known");
@@ -218,9 +217,7 @@ namespace ASC.Web.Core.Files
                     response.Dispose();
             }
 
-            var resultPercent = GetResponseUri(dataResponse, out convertedDocumentUri);
-
-            return (resultPercent, convertedDocumentUri);
+            return GetResponseUri(dataResponse);
         }
 
         /// <summary>
@@ -806,7 +803,7 @@ namespace ASC.Web.Core.Files
         /// <param name="jsonDocumentResponse">The resulting json from editing service</param>
         /// <param name="responseUri">Uri to the converted document</param>
         /// <returns>The percentage of completion of conversion</returns>
-        private static int GetResponseUri(string jsonDocumentResponse, out string responseUri)
+        private static (int ResultPercent, string responseuri) GetResponseUri(string jsonDocumentResponse)
         {
             if (string.IsNullOrEmpty(jsonDocumentResponse)) throw new ArgumentException("Invalid param", "jsonDocumentResponse");
 
@@ -819,7 +816,7 @@ namespace ASC.Web.Core.Files
             var isEndConvert = responseFromService.Value<bool>("endConvert");
 
             int resultPercent;
-            responseUri = string.Empty;
+            var responseUri = string.Empty;
             if (isEndConvert)
             {
                 responseUri = responseFromService.Value<string>("fileUrl");
@@ -831,7 +828,7 @@ namespace ASC.Web.Core.Files
                 if (resultPercent >= 100) resultPercent = 99;
             }
 
-            return resultPercent;
+            return (resultPercent, responseUri);
         }
     }
 }

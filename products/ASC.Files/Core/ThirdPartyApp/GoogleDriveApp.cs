@@ -309,7 +309,7 @@ namespace ASC.Web.Files.ThirdPartyApp
 
                     var key = DocumentServiceConnector.GenerateRevisionId(downloadUrl);
 
-                    var resultTuple = await DocumentServiceConnector.GetConvertedUriAsync(downloadUrl, fileType, currentType, key, null, null, null, false, downloadUrl);
+                    var resultTuple = await DocumentServiceConnector.GetConvertedUriAsync(downloadUrl, fileType, currentType, key, null, null, null, false);
                     downloadUrl = resultTuple.ConvertedDocumentUri;
 
                     stream = null;
@@ -819,7 +819,7 @@ namespace ASC.Web.Files.ThirdPartyApp
 
                 var key = DocumentServiceConnector.GenerateRevisionId(downloadUrl);
 
-                var resultTuple = await DocumentServiceConnector.GetConvertedUriAsync(downloadUrl, fromExt, toExt, key, null, null, null, false, downloadUrl);
+                var resultTuple = await DocumentServiceConnector.GetConvertedUriAsync(downloadUrl, fromExt, toExt, key, null, null, null, false);
                 downloadUrl = resultTuple.ConvertedDocumentUri;
 
             }
