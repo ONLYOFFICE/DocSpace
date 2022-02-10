@@ -416,14 +416,12 @@ class HotkeyStore {
   get prevFile() {
     const { filesList, selection, hotkeyCaret } = this.filesStore;
 
-    if (filesList.length && selection.length && hotkeyCaret) {
-      if (this.caretIndex !== -1) {
-        const prevCaretIndex = this.caretIndex - 1;
-        return filesList[prevCaretIndex];
-      } else {
-        console.log("TODO");
-        return null;
-      }
+    if (this.caretIndex !== -1) {
+      const prevCaretIndex = this.caretIndex - 1;
+      return filesList[prevCaretIndex];
+    } else {
+      console.log("TODO");
+      return null;
     }
   }
 
