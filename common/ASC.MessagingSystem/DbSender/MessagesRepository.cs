@@ -29,7 +29,7 @@ using IsolationLevel = System.Data.IsolationLevel;
 namespace ASC.MessagingSystem.DbSender
 {
     [Singletone(Additional = typeof(MessagesRepositoryExtension))]
-    public class MessagesRepository: IDisposable
+    public class MessagesRepository : IDisposable
     {
         private DateTime lastSave = DateTime.UtcNow;
         private readonly TimeSpan CacheTime;
@@ -253,10 +253,10 @@ namespace ASC.MessagingSystem.DbSender
 
     public class Messages : MessagesContext
     {
-        public DbSet<AuditEvent> AuditEvents { get; set; }
         public DbSet<DbTenant> Tenants { get; set; }
         public DbSet<DbWebstudioSettings> WebstudioSettings { get; set; }
     }
+
     public static class MessagesRepositoryExtension
     {
         public static void Register(DIHelper services)

@@ -4,6 +4,7 @@
     public class PostgreSqlMessagesContext : MessagesContext { }
     public class MessagesContext : BaseDbContext
     {
+        public DbSet<AuditEvent> AuditEvents { get; set; }
         public DbSet<LoginEvents> LoginEvents { get; set; }
         public DbSet<User> Users { get; set; }
 
@@ -23,6 +24,7 @@
         {
             ModelBuilderWrapper
                 .From(modelBuilder, Provider)
+                .AddAuditEvent()
                 .AddLoginEvents()
                 .AddUser()
                 .AddDbFunction();
