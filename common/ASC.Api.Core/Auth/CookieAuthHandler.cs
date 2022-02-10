@@ -1,45 +1,46 @@
 ﻿using SecurityContext = ASC.Core.SecurityContext;
 
-namespace ASC.Api.Core.Auth
+namespace ASC.Api.Core.Auth;
+
+[Scope]
+public class CookieAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {
-    [Scope]
-    public class CookieAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
+    private readonly AuthorizationHelper _authorizationHelper;
+    private readonly SecurityContext _securityContext;
+    private readonly CookiesManager _cookiesManager;
+
+    public CookieAuthHandler(
+        IOptionsMonitor<AuthenticationSchemeOptions> options,
+        ILoggerFactory logger,
+        UrlEncoder encoder,
+        ISystemClock clock)
+        : base(options, logger, encoder, clock) { }
+
+    public CookieAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options,
+        ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock,
+        AuthorizationHelper authorizationHelper,
+        SecurityContext securityContext,
+        CookiesManager cookiesManager)
+        : this(options, logger, encoder, clock)
     {
-        private AuthorizationHelper AuthorizationHelper { get; }
-        private SecurityContext SecurityContext { get; }
-        private CookiesManager CookiesManager { get; }
+        _authorizationHelper = authorizationHelper;
+        _securityContext = securityContext;
+        _cookiesManager = cookiesManager;
+    }
 
-        public CookieAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
+    protected override Task<AuthenticateResult> HandleAuthenticateAsync()
+    {
+        var result = _authorizationHelper.ProcessBasicAuthorization(out _);
+        if (!result)
         {
-        }
-        //
-        public CookieAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock,
-            AuthorizationHelper authorizationHelper,
-            SecurityContext securityContext,
-            CookiesManager cookiesManager)
-            : this(options, logger, encoder, clock)
-        {
-            AuthorizationHelper = authorizationHelper;
-            SecurityContext = securityContext;
-            CookiesManager = cookiesManager;
+            _securityContext.Logout();
+            _cookiesManager.ClearCookies(CookiesType.AuthKey);
+            _cookiesManager.ClearCookies(CookiesType.SocketIO);
         }
 
-        protected override Task<AuthenticateResult> HandleAuthenticateAsync()
-        {
-            var result = AuthorizationHelper.ProcessBasicAuthorization(out _);
-
-            if (!result)
-            {
-                SecurityContext.Logout();
-                CookiesManager.ClearCookies(CookiesType.AuthKey);
-                CookiesManager.ClearCookies(CookiesType.SocketIO);
-            }
-
-            return Task.FromResult(
-                     result ?
-                     AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)) :
-                     AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Unauthorized)))
-                     );
-        }
+        return Task.FromResult(
+                 result ?
+                 AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)) :
+                 AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Unauthorized))));
     }
 }
