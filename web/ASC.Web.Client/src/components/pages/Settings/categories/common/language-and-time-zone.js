@@ -322,7 +322,7 @@ class LanguageAndTimeZone extends React.Component {
   };
 
   render() {
-    const { t, theme, cultureNames } = this.props;
+    const { t, theme, cultureNames, sectionWidth } = this.props;
     const {
       isLoadedData,
       language,
@@ -410,7 +410,8 @@ class LanguageAndTimeZone extends React.Component {
               reminderTest={t("YouHaveUnsavedChanges")}
               saveButtonLabel={t("Common:SaveButton")}
               cancelButtonLabel={t("Common:CancelButton")}
-              displaySettings={false}
+              displaySettings={true}
+              sectionWidth={sectionWidth}
             />
           )}
         </StyledComponent>
