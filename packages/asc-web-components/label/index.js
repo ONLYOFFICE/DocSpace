@@ -15,6 +15,7 @@ const Label = (props) => {
     className,
     id,
     style,
+    children,
   } = props;
   const errorProp = error ? { color: "#c30" } : {};
 
@@ -32,7 +33,7 @@ const Label = (props) => {
       title={title}
       className={className}
     >
-      {text} {isRequired && " *"}
+      {text} {isRequired && " *"} {children}
     </Text>
   );
 };
@@ -60,6 +61,7 @@ Label.propTypes = {
   id: PropTypes.string,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  children: PropTypes.node,
 };
 
 Label.defaultProps = {
