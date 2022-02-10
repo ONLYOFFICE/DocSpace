@@ -27,7 +27,7 @@ namespace ASC.FederatedLogin.Helpers
 {
     public static class XrdsHelper
     {
-        internal static async Task RenderXrds(HttpResponse responce, string location, string iconlink)
+        internal static async Task RenderXrdsAsync(HttpResponse responce, string location, string iconlink)
         {
             var xrds =
                 @"<xrds:XRDS xmlns:xrds=""xri://$xrds"" xmlns:openid=""http://openid.net/xmlns/1.0"" " +

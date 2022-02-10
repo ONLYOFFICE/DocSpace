@@ -75,7 +75,6 @@ namespace ASC.FederatedLogin.Profile
             internal set => SetField(WellKnownFields.Gender, value);
         }
 
-
         public string FirstName
         {
             get => GetField(WellKnownFields.FirstName);
@@ -187,12 +186,6 @@ namespace ASC.FederatedLogin.Profile
         private readonly InstanceCrypto _instanceCrypto;
         private IDictionary<string, string> _fields = new Dictionary<string, string>();
 
-        internal string GetField(string name)
-        {
-            return _fields.ContainsKey(name) ? _fields[name] : string.Empty;
-        }
-
-
         public LoginProfile GetMinimalProfile()
         {
             var profileNew = new LoginProfile(_signature, _instanceCrypto)
@@ -202,6 +195,46 @@ namespace ASC.FederatedLogin.Profile
             };
 
             return profileNew;
+        }
+
+        public static bool HasProfile(HttpContext context)
+        {
+            return context != null && HasProfile(context.Request);
+        }
+
+        public static bool HasProfile(HttpRequest request)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            return new Uri(request.GetDisplayUrl()).HasProfile();
+        }
+
+        public static LoginProfile GetProfile(Signature signature, InstanceCrypto instanceCrypto, HttpContext context, IMemoryCache memoryCache)
+        {
+            if (context == null)
+            {
+                return new LoginProfile(signature, instanceCrypto);
+            }
+
+            return new Uri(context.Request.GetDisplayUrl()).GetProfile(context, memoryCache, signature, instanceCrypto);
+        }
+
+        public LoginProfile(Signature signature, InstanceCrypto instanceCrypto, string transport) : this(signature, instanceCrypto)
+        {
+            FromTransport(transport);
+        }
+
+        public string ToJson()
+        {
+            return System.Text.Json.JsonSerializer.Serialize(this);
+        }
+
+        internal string GetField(string name)
+        {
+            return _fields.ContainsKey(name) ? _fields[name] : string.Empty;
         }
 
         internal void SetField(string name, string value)
@@ -238,60 +271,12 @@ namespace ASC.FederatedLogin.Profile
             return AppendQueryParam(uri, QueryParamName, value);
         }
 
-        public static bool HasProfile(HttpContext context)
-        {
-            return context != null && HasProfile(context.Request);
-        }
-
-        public static bool HasProfile(HttpRequest request)
-        {
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
-            return new Uri(request.GetDisplayUrl()).HasProfile();
-        }
-
-        public static LoginProfile GetProfile(Signature signature, InstanceCrypto instanceCrypto, HttpContext context, IMemoryCache memoryCache)
-        {
-            if (context == null)
-            {
-                return new LoginProfile(signature, instanceCrypto);
-            }
-
-            return new Uri(context.Request.GetDisplayUrl()).GetProfile(context, memoryCache, signature, instanceCrypto);
-        }
-
         internal static LoginProfile FromError(Signature signature, InstanceCrypto instanceCrypto, Exception e)
         {
             var profile = new LoginProfile(signature, instanceCrypto) { AuthorizationError = e.Message };
 
             return profile;
-        }
-
-        private static Uri AppendQueryParam(Uri uri, string keyvalue, string value)
-        {
-            var queryString = HttpUtility.ParseQueryString(uri.Query);
-            if (!string.IsNullOrEmpty(queryString[keyvalue]))
-            {
-                queryString[keyvalue] = value;
-            }
-            else
-            {
-                queryString.Add(keyvalue, value);
-            }
-            var query = new StringBuilder();
-
-            foreach (var key in queryString.AllKeys)
-            {
-                query.Append($"{key}={queryString[key]}&");
-            }
-
-            var builder = new UriBuilder(uri) { Query = query.ToString().TrimEnd('&') };
-
-            return builder.Uri;
-        }
+        } 
 
         internal Uri AppendCacheProfile(Uri uri, IMemoryCache memoryCache)
         {
@@ -379,14 +364,27 @@ namespace ASC.FederatedLogin.Profile
             FromTransport(transformed);
         }
 
-        public LoginProfile(Signature signature, InstanceCrypto instanceCrypto, string transport) : this(signature, instanceCrypto)
+        private static Uri AppendQueryParam(Uri uri, string keyvalue, string value)
         {
-            FromTransport(transport);
-        }
+            var queryString = HttpUtility.ParseQueryString(uri.Query);
+            if (!string.IsNullOrEmpty(queryString[keyvalue]))
+            {
+                queryString[keyvalue] = value;
+            }
+            else
+            {
+                queryString.Add(keyvalue, value);
+            }
+            var query = new StringBuilder();
 
-        public string ToJson()
-        {
-            return System.Text.Json.JsonSerializer.Serialize(this);
+            foreach (var key in queryString.AllKeys)
+            {
+                query.Append($"{key}={queryString[key]}&");
+            }
+
+            var builder = new UriBuilder(uri) { Query = query.ToString().TrimEnd('&') };
+
+            return builder.Uri;
         }
     }
 }

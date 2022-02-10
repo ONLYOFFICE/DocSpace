@@ -135,16 +135,6 @@ namespace ASC.FederatedLogin
             return AccountLinkerStorage.GetFromCache(obj, GetLinkedProfilesFromDB);
         }
 
-        private List<LoginProfile> GetLinkedProfilesFromDB(string obj)
-        {
-            //Retrieve by uinque id
-            return AccountLinks
-                    .Where(r => r.Id == obj)
-                    .Select(r => r.Profile)
-                    .ToList()
-                    .ConvertAll(x => LoginProfile.CreateFromSerializedString(Signature, InstanceCrypto, x));
-        }
-
         public void AddLink(string obj, LoginProfile profile)
         {
             var accountLink = new AccountLinks
@@ -200,6 +190,16 @@ namespace ASC.FederatedLogin
 
             tr.Commit();
             AccountLinkerStorage.RemoveFromCache(obj);
+        }
+
+        private List<LoginProfile> GetLinkedProfilesFromDB(string obj)
+        {
+            //Retrieve by uinque id
+            return AccountLinks
+                    .Where(r => r.Id == obj)
+                    .Select(r => r.Profile)
+                    .ToList()
+                    .ConvertAll(x => LoginProfile.CreateFromSerializedString(Signature, InstanceCrypto, x));
         }
     }
 }

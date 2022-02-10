@@ -30,24 +30,6 @@ namespace ASC.FederatedLogin
         private readonly Dictionary<string, AccountLinker> _accountLinkers = new Dictionary<string, AccountLinker>();
         private readonly string _baseDatabaseId = null;
 
-        private string GetDatabaseId(string hostedRegion)
-        {
-            var databaseId = _baseDatabaseId;
-
-            if (!string.IsNullOrEmpty(hostedRegion))
-            {
-                databaseId = string.Join(".", new[] { _baseDatabaseId, hostedRegion.Trim() });
-            }
-
-            if (!_accountLinkers.ContainsKey(databaseId))
-            {
-                throw new ArgumentException($"Region {databaseId} is not defined", nameof(hostedRegion));
-            }
-
-            return databaseId;
-        }
-
-
         public MultiRegionAccountLinker(string databaseId, ConfigurationExtension configuration, IOptionsSnapshot<AccountLinker> snapshot)
         {
             foreach (var connection in configuration.GetConnectionStrings())
@@ -107,6 +89,23 @@ namespace ASC.FederatedLogin
         public IEnumerable<LoginProfile> GetLinkedProfiles(string obj)
         {
             return _accountLinkers.Values.SelectMany(x => x.GetLinkedProfiles(obj));
+        }
+
+        private string GetDatabaseId(string hostedRegion)
+        {
+            var databaseId = _baseDatabaseId;
+
+            if (!string.IsNullOrEmpty(hostedRegion))
+            {
+                databaseId = string.Join(".", new[] { _baseDatabaseId, hostedRegion.Trim() });
+            }
+
+            if (!_accountLinkers.ContainsKey(databaseId))
+            {
+                throw new ArgumentException($"Region {databaseId} is not defined", nameof(hostedRegion));
+            }
+
+            return databaseId;
         }
     }
 }

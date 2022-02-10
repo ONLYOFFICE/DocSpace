@@ -82,22 +82,6 @@ namespace ASC.FederatedLogin
             Copy(FromJson(json));
         }
 
-        private void Copy(OAuth20Token oAuth20Token)
-        {
-            if (oAuth20Token == null)
-            {
-                return;
-            }
-
-            AccessToken = oAuth20Token.AccessToken;
-            RefreshToken = oAuth20Token.RefreshToken;
-            ExpiresIn = oAuth20Token.ExpiresIn;
-            ClientID = oAuth20Token.ClientID;
-            ClientSecret = oAuth20Token.ClientSecret;
-            RedirectUri = oAuth20Token.RedirectUri;
-            Timestamp = oAuth20Token.Timestamp;
-        }
-
         public static OAuth20Token FromJson(string json)
         {
             if (string.IsNullOrEmpty(json))
@@ -123,6 +107,22 @@ namespace ASC.FederatedLogin
         public override string ToString()
         {
             return AccessToken;
+        }
+
+        private void Copy(OAuth20Token oAuth20Token)
+        {
+            if (oAuth20Token == null)
+            {
+                return;
+            }
+
+            AccessToken = oAuth20Token.AccessToken;
+            RefreshToken = oAuth20Token.RefreshToken;
+            ExpiresIn = oAuth20Token.ExpiresIn;
+            ClientID = oAuth20Token.ClientID;
+            ClientSecret = oAuth20Token.ClientSecret;
+            RedirectUri = oAuth20Token.RedirectUri;
+            Timestamp = oAuth20Token.Timestamp;
         }
     }
 }

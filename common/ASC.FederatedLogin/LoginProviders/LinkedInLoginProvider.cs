@@ -39,6 +39,7 @@ namespace ASC.FederatedLogin.LoginProviders
         private const string LinkedInEmailUrl = "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))";
 
         public LinkedInLoginProvider() { }
+
         public LinkedInLoginProvider(
             OAuth20TokenHelper oAuth20TokenHelper,
             TenantManager tenantManager,
@@ -60,18 +61,6 @@ namespace ASC.FederatedLogin.LoginProviders
             }
 
             return RequestProfile(accessToken);
-        }
-
-        private LoginProfile RequestProfile(string accessToken)
-        {
-            var linkedInProfile = RequestHelper.PerformRequest(LinkedInProfileUrl,
-                headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
-            var loginProfile = ProfileFromLinkedIn(linkedInProfile);
-
-            var linkedInEmail = RequestHelper.PerformRequest(LinkedInEmailUrl, headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
-            loginProfile.EMail = EmailFromLinkedIn(linkedInEmail);
-
-            return loginProfile;
         }
 
         internal LoginProfile ProfileFromLinkedIn(string linkedInProfile)
@@ -103,6 +92,18 @@ namespace ASC.FederatedLogin.LoginProviders
             }
 
             return jEmail.SelectToken("elements[0].handle~.emailAddress").ToString();
+        }
+
+        private LoginProfile RequestProfile(string accessToken)
+        {
+            var linkedInProfile = RequestHelper.PerformRequest(LinkedInProfileUrl,
+                headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
+            var loginProfile = ProfileFromLinkedIn(linkedInProfile);
+
+            var linkedInEmail = RequestHelper.PerformRequest(LinkedInEmailUrl, headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
+            loginProfile.EMail = EmailFromLinkedIn(linkedInEmail);
+
+            return loginProfile;
         }
     }
 }

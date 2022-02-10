@@ -47,6 +47,7 @@ namespace ASC.FederatedLogin
                 return LoginMode.Popup;
             }
         }
+
         protected bool Minimal
         {
             get
@@ -83,8 +84,7 @@ namespace ASC.FederatedLogin
             _providerManager = providerManager;
         }
 
-
-        public async Task Invoke(HttpContext context)
+        public async Task InvokeAsync(HttpContext context)
         {
             _ = context.PushRewritenUri();
 
@@ -130,7 +130,7 @@ namespace ASC.FederatedLogin
                     var profile = _providerManager.Process(Auth, context, null, additionalStateArgs);
                     if (profile != null)
                     {
-                        await SendJsCallback(context, profile);
+                        await SendJsCallbackAsync(context, profile);
                     }
                 }
                 catch (ThreadAbortException)
@@ -139,25 +139,25 @@ namespace ASC.FederatedLogin
                 }
                 catch (Exception ex)
                 {
-                    await SendJsCallback(context, LoginProfile.FromError(_signature, _instanceCrypto, ex));
+                    await SendJsCallbackAsync(context, LoginProfile.FromError(_signature, _instanceCrypto, ex));
                 }
             }
             else
             {
                 //Render xrds
-                await RenderXrds(context);
+                await RenderXrdsAsync(context);
             }
             context.PopRewritenUri();
         }
 
-        private async Task RenderXrds(HttpContext context)
+        private async Task RenderXrdsAsync(HttpContext context)
         {
             var xrdsloginuri = new Uri(context.Request.GetUrlRewriter(), new Uri(context.Request.GetUrlRewriter().AbsolutePath, UriKind.Relative)) + "?auth=openid&returnurl=" + ReturnUrl;
             var xrdsimageuri = new Uri(context.Request.GetUrlRewriter(), new Uri(_webHostEnvironment.WebRootPath, UriKind.Relative)) + "openid.gif";
-            await XrdsHelper.RenderXrds(context.Response, xrdsloginuri, xrdsimageuri);
+            await XrdsHelper.RenderXrdsAsync(context.Response, xrdsloginuri, xrdsimageuri);
         }
 
-        private async Task SendJsCallback(HttpContext context, LoginProfile profile)
+        private async Task SendJsCallbackAsync(HttpContext context, LoginProfile profile)
         {
             //Render a page
             context.Response.ContentType = "text/html";
@@ -181,11 +181,11 @@ namespace ASC.FederatedLogin
             _serviceProvider = serviceProvider;
         }
 
-        public async Task Invoke(HttpContext context)
+        public async Task InvokeAsync(HttpContext context)
         {
             using var scope = _serviceProvider.CreateScope();
             var login = scope.ServiceProvider.GetService<Login>();
-            await login.Invoke(context);
+            await login.InvokeAsync(context);
         }
     }
 

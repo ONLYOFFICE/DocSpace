@@ -54,7 +54,6 @@ namespace ASC.FederatedLogin.LoginProviders
         {
         }
 
-
         public override LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs)
         {
             try
@@ -81,6 +80,69 @@ namespace ASC.FederatedLogin.LoginProviders
             {
                 return LoginProfile.FromError(_signature, _instanceCrypto, ex);
             }
+        }
+
+        public override LoginProfile GetLoginProfile(string accessToken)
+        {
+            var tokenPayloadString = JsonWebToken.Decode(accessToken, string.Empty, false, true);
+            var tokenPayload = JObject.Parse(tokenPayloadString);
+            if (tokenPayload == null)
+            {
+                throw new Exception("Payload is incorrect");
+            }
+
+            var oid = tokenPayload.Value<string>("urn:esia:sbj_id");
+
+            var userInfoString = RequestHelper.PerformRequest(GosUslugiProfileUrl + oid, "application/x-www-form-urlencoded", headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
+            var userInfo = JObject.Parse(userInfoString);
+            if (userInfo == null)
+            {
+                throw new Exception("userinfo is incorrect");
+            }
+
+            var profile = new LoginProfile(_signature, _instanceCrypto)
+            {
+                Id = oid,
+                FirstName = userInfo.Value<string>("firstName"),
+                LastName = userInfo.Value<string>("lastName"),
+
+                Provider = ProviderConstants.GosUslugi,
+            };
+
+            var userContactsString = RequestHelper.PerformRequest(GosUslugiProfileUrl + oid + "/ctts", "application/x-www-form-urlencoded", headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
+            var userContacts = JObject.Parse(userContactsString);
+            if (userContacts == null)
+            {
+                throw new Exception("usercontacts is incorrect");
+            }
+
+            var contactElements = userContacts.Value<JArray>("elements");
+            if (contactElements == null)
+            {
+                throw new Exception("usercontacts elements is incorrect");
+            }
+
+            foreach (var contactElement in contactElements.ToObject<List<string>>())
+            {
+                var userContactString = RequestHelper.PerformRequest(contactElement, "application/x-www-form-urlencoded", headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
+
+                var userContact = JObject.Parse(userContactString);
+                if (userContact == null)
+                {
+                    throw new Exception("usercontacts is incorrect");
+                }
+
+                var type = userContact.Value<string>("type");
+                if (type != "EML")
+                {
+                    continue;
+                }
+
+                profile.EMail = userContact.Value<string>("value");
+                break;
+            }
+
+            return profile;
         }
 
         protected override OAuth20Token Auth(HttpContext context, string scopes, out bool redirect, IDictionary<string, string> additionalArgs = null, IDictionary<string, string> additionalStateArgs = null)
@@ -163,70 +225,7 @@ namespace ASC.FederatedLogin.LoginProviders
             var result = RequestHelper.PerformRequest(AccessTokenUrl, "application/x-www-form-urlencoded", "POST", requestQuery);
 
             return OAuth20Token.FromJson(result);
-        }
-
-        public override LoginProfile GetLoginProfile(string accessToken)
-        {
-            var tokenPayloadString = JsonWebToken.Decode(accessToken, string.Empty, false, true);
-            var tokenPayload = JObject.Parse(tokenPayloadString);
-            if (tokenPayload == null)
-            {
-                throw new Exception("Payload is incorrect");
-            }
-
-            var oid = tokenPayload.Value<string>("urn:esia:sbj_id");
-
-            var userInfoString = RequestHelper.PerformRequest(GosUslugiProfileUrl + oid, "application/x-www-form-urlencoded", headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
-            var userInfo = JObject.Parse(userInfoString);
-            if (userInfo == null)
-            {
-                throw new Exception("userinfo is incorrect");
-            }
-
-            var profile = new LoginProfile(_signature, _instanceCrypto)
-            {
-                Id = oid,
-                FirstName = userInfo.Value<string>("firstName"),
-                LastName = userInfo.Value<string>("lastName"),
-
-                Provider = ProviderConstants.GosUslugi,
-            };
-
-            var userContactsString = RequestHelper.PerformRequest(GosUslugiProfileUrl + oid + "/ctts", "application/x-www-form-urlencoded", headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
-            var userContacts = JObject.Parse(userContactsString);
-            if (userContacts == null)
-            {
-                throw new Exception("usercontacts is incorrect");
-            }
-
-            var contactElements = userContacts.Value<JArray>("elements");
-            if (contactElements == null)
-            {
-                throw new Exception("usercontacts elements is incorrect");
-            }
-
-            foreach (var contactElement in contactElements.ToObject<List<string>>())
-            {
-                var userContactString = RequestHelper.PerformRequest(contactElement, "application/x-www-form-urlencoded", headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
-
-                var userContact = JObject.Parse(userContactString);
-                if (userContact == null)
-                {
-                    throw new Exception("usercontacts is incorrect");
-                }
-
-                var type = userContact.Value<string>("type");
-                if (type != "EML")
-                {
-                    continue;
-                }
-
-                profile.EMail = userContact.Value<string>("value");
-                break;
-            }
-
-            return profile;
-        }
+        }   
 
         private X509Certificate2 GetSignerCert()
         {

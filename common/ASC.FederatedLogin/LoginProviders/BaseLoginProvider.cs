@@ -109,6 +109,8 @@ namespace ASC.FederatedLogin.LoginProviders
             }
         }
 
+        public abstract LoginProfile GetLoginProfile(string accessToken);
+
         protected virtual OAuth20Token Auth(HttpContext context, string scopes, out bool redirect, IDictionary<string, string> additionalArgs = null, IDictionary<string, string> additionalStateArgs = null)
         {
             var error = context.Request.Query["error"];
@@ -135,8 +137,6 @@ namespace ASC.FederatedLogin.LoginProviders
 
             return OAuth20TokenHelper.GetAccessToken<T>(ConsumerFactory, code);
         }
-
-        public abstract LoginProfile GetLoginProfile(string accessToken);
     }
 
     public static class BaseLoginProviderExtension

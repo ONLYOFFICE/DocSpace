@@ -28,6 +28,16 @@ namespace ASC.FederatedLogin.LoginProviders
     [Scope]
     public class ProviderManager
     {
+        public bool IsNotEmpty
+        {
+            get
+            {
+                return AuthProviders
+                    .Select(GetLoginProvider)
+                    .Any(loginProvider => loginProvider != null && loginProvider.IsEnabled);
+            }
+        }
+
         public static readonly List<string> AuthProviders = new List<string>
         {
             ProviderConstants.Google,
@@ -78,16 +88,6 @@ namespace ASC.FederatedLogin.LoginProviders
             catch (Exception ex)
             {
                 return LoginProfile.FromError(_signature, _instanceCrypto, ex);
-            }
-        }
-
-        public bool IsNotEmpty
-        {
-            get
-            {
-                return AuthProviders
-                    .Select(GetLoginProvider)
-                    .Any(loginProvider => loginProvider != null && loginProvider.IsEnabled);
             }
         }
     }

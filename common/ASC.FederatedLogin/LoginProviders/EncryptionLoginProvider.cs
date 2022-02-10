@@ -66,7 +66,6 @@ namespace ASC.Web.Studio.Core
             linker.AddLink(userId.ToString(), loginProfile);
         }
 
-
         public string GetKeys()
         {
             return GetKeys(_securityContext.CurrentAccount.ID);

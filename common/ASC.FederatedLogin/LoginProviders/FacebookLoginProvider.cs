@@ -62,14 +62,6 @@ namespace ASC.FederatedLogin.LoginProviders
             return RequestProfile(accessToken);
         }
 
-        private LoginProfile RequestProfile(string accessToken)
-        {
-            var facebookProfile = RequestHelper.PerformRequest(FacebookProfileUrl + "&access_token=" + accessToken);
-            var loginProfile = ProfileFromFacebook(facebookProfile);
-
-            return loginProfile;
-        }
-
         internal LoginProfile ProfileFromFacebook(string facebookProfile)
         {
             var jProfile = JObject.Parse(facebookProfile);
@@ -94,6 +86,14 @@ namespace ASC.FederatedLogin.LoginProviders
             };
 
             return profile;
+        }
+
+        private LoginProfile RequestProfile(string accessToken)
+        {
+            var facebookProfile = RequestHelper.PerformRequest(FacebookProfileUrl + "&access_token=" + accessToken);
+            var loginProfile = ProfileFromFacebook(facebookProfile);
+
+            return loginProfile;
         }
     }
 }
