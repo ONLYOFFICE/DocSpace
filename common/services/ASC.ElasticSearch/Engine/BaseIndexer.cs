@@ -135,6 +135,7 @@ namespace ASC.ElasticSearch
         public Task ReIndex()
         {
             Clear();
+
             return Task.CompletedTask;
             //((IIndexer) this).IndexAll();
         }
@@ -143,7 +144,10 @@ namespace ASC.ElasticSearch
         {
             try
             {
-                if (CheckExist(data)) return;
+                if (CheckExist(data))
+                {
+                    return;
+                }
 
                 lock (_locker)
                 {
@@ -157,7 +161,10 @@ namespace ASC.ElasticSearch
 
                         foreach (var c in Enum.GetNames(typeof(CharFilter)))
                         {
-                            if (c == CharFilter.io.ToString()) continue;
+                            if (c == CharFilter.io.ToString())
+                            {
+                                continue;
+                            }
 
                             var charFilters = new List<string>() { CharFilter.io.ToString(), c };
                             var c1 = c;
@@ -207,7 +214,10 @@ namespace ASC.ElasticSearch
 
         internal void Index(List<T> data, bool immediately = true)
         {
-            if (!data.Any()) return;
+            if (!data.Any())
+            {
+                return;
+            }
 
             CreateIfNotExist(data[0]);
 
@@ -428,23 +438,33 @@ namespace ASC.ElasticSearch
             try
             {
                 var isExist = _baseIndexerHelper.IsExist.GetOrAdd(data.IndexName, (k) => _client.Instance.Indices.Exists(k).Exists);
-                if (isExist) return true;
+                if (isExist)
+                {
+                    return true;
+                }
 
                 lock (_locker)
                 {
-                    if (isExist) return true;
+                    if (isExist)
+                    {
+                        return true;
+                    }
 
                     isExist = _client.Instance.Indices.Exists(data.IndexName).Exists;
 
                     _baseIndexerHelper.IsExist.TryUpdate(data.IndexName, _isExist, false);
 
-                    if (isExist) return true;
+                    if (isExist)
+                    {
+                        return true;
+                    }
                 }
             }
             catch (Exception e)
             {
                 _logger.Error("CheckExist " + data.IndexName, e);
             }
+
             return false;
         }
 
@@ -453,6 +473,7 @@ namespace ASC.ElasticSearch
             var func = expression.Compile();
             var selector = new Selector<T>(_serviceProvider);
             var descriptor = func(selector).Where(r => r.TenantId, _tenantManager.GetCurrentTenant().TenantId);
+
             return _client.Instance.Search(descriptor.GetDescriptor(this, onlyId)).Documents;
         }
 
@@ -463,6 +484,7 @@ namespace ASC.ElasticSearch
             var descriptor = func(selector).Where(r => r.TenantId, _tenantManager.GetCurrentTenant().TenantId);
             var result = _client.Instance.Search(descriptor.GetDescriptor(this, onlyId));
             total = result.Total;
+
             return result.Documents;
         }
 
@@ -665,6 +687,7 @@ namespace ASC.ElasticSearch
             {
                 result.Refresh(Elasticsearch.Net.Refresh.True);
             }
+
             return result;
         }
 
@@ -673,6 +696,7 @@ namespace ASC.ElasticSearch
             var func = expression.Compile();
             var selector = new Selector<T>(_serviceProvider);
             var descriptor = func(selector).Where(r => r.TenantId, tenantId);
+
             return descriptor.GetDescriptorForDelete(this, immediately);
         }
 
@@ -681,6 +705,7 @@ namespace ASC.ElasticSearch
             var func = expression.Compile();
             var selector = new Selector<T>(_serviceProvider);
             var descriptor = func(selector).Where(r => r.TenantId, tenantId);
+
             return descriptor.GetDescriptorForUpdate(this, GetScriptUpdateByQuery(data, fields), immediately);
         }
 
@@ -689,6 +714,7 @@ namespace ASC.ElasticSearch
             var func = expression.Compile();
             var selector = new Selector<T>(_serviceProvider);
             var descriptor = func(selector).Where(r => r.TenantId, tenantId);
+
             return descriptor.GetDescriptorForUpdate(this, GetScriptForUpdate(data, action, fields), immediately);
         }
     }

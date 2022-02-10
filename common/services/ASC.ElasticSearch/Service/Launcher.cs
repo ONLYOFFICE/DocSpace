@@ -116,7 +116,10 @@ namespace ASC.ElasticSearch
             {
                 try
                 {
-                    if (!_isStarted) return;
+                    if (!_isStarted)
+                    {
+                        return;
+                    }
 
                     _logger.DebugFormat("Product reindex {0}", product.IndexName);
                     product.ReIndex();
@@ -130,7 +133,10 @@ namespace ASC.ElasticSearch
 
             try
             {
-                if (!_isStarted) return;
+                if (!_isStarted)
+                {
+                    return;
+                }
 
                 _logger.DebugFormat("Product {0}", product.IndexName);
                 _indexNotify.Publish(new IndexAction() { Indexing = product.IndexName, LastIndexed = 0 }, CacheNotifyAction.Any);
@@ -171,6 +177,7 @@ namespace ASC.ElasticSearch
             catch (Exception e)
             {
                 _logger.Fatal("IndexAll", e);
+
                 throw;
             }
         }

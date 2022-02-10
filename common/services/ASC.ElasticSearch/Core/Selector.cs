@@ -42,48 +42,56 @@ namespace ASC.ElasticSearch
         public Selector<T> Where<TProperty>(Expression<Func<T, TProperty>> selector, TProperty value)
         {
             _queryContainer = _queryContainer && +Wrap(selector, (w, r) => r.Term(w, value));
+
             return this;
         }
 
         public Selector<T> Where(Expression<Func<T, Guid>> selector, Guid value)
         {
             _queryContainer = _queryContainer && +Wrap(selector, (a, w) => w.Match(r => r.Field(a).Query(value.ToString())));
+
             return this;
         }
 
         public Selector<T> Gt(Expression<Func<T, object>> selector, double? value)
         {
             _queryContainer = _queryContainer && +Wrap(selector, (w, r) => r.Range(a => a.Field(w).GreaterThan(value)));
+
             return this;
         }
 
         public Selector<T> Lt(Expression<Func<T, object>> selector, double? value)
         {
             _queryContainer = _queryContainer && +Wrap(selector, (w, r) => r.Range(a => a.Field(w).LessThan(value)));
+
             return this;
         }
 
         public Selector<T> Gt(Expression<Func<T, object>> selector, DateTime? value)
         {
             _queryContainer = _queryContainer && +Wrap(selector, (w, r) => r.DateRange(a => a.Field(w).GreaterThan(value)));
+
             return this;
         }
 
         public Selector<T> Ge(Expression<Func<T, object>> selector, DateTime? value)
         {
             _queryContainer = _queryContainer && +Wrap(selector, (w, r) => r.DateRange(a => a.Field(w).GreaterThanOrEquals(value)));
+
             return this;
         }
 
         public Selector<T> Lt(Expression<Func<T, object>> selector, DateTime? value)
         {
             _queryContainer = _queryContainer && +Wrap(selector, (w, r) => r.DateRange(a => a.Field(w).LessThan(value)));
+
             return this;
         }
 
         public Selector<T> Le(Expression<Func<T, object>> selector, DateTime? value)
         {
             _queryContainer = _queryContainer && +Wrap(selector, (w, r) => r.DateRange(a => a.Field(w).LessThanOrEquals(value)));
+
             return this;
         }
 
@@ -101,6 +109,7 @@ namespace ASC.ElasticSearch
                 var v1 = v;
                 _queryContainer = _queryContainer && +Wrap(selector, (w, r) => r.Term(a => a.Field(w).Value(v1)));
             }
+
             return this;
         }
 
@@ -155,6 +164,7 @@ namespace ASC.ElasticSearch
             {
                 var t = _serviceProvider.GetService<T>();
                 var searchSettingsHelper = _serviceProvider.GetService<SearchSettingsHelper>();
+
                 return ((NewArrayExpression)(t.GetSearchContentFields(searchSettingsHelper)).Body).Expressions.ToArray();
             },
             value);
@@ -261,6 +271,7 @@ namespace ASC.ElasticSearch
                 {
                     result.Refresh();
                 }
+
                 return result;
             };
         }
@@ -285,7 +296,10 @@ namespace ASC.ElasticSearch
 
         private void Match(Func<Fields> propsFunc, string value)
         {
-            if (string.IsNullOrEmpty(value)) return;
+            if (string.IsNullOrEmpty(value))
+            {
+                return;
+            }
 
             value = value.PrepareToSearch();
 
@@ -344,13 +358,16 @@ namespace ASC.ElasticSearch
 
         private string IsNested(Field selector)
         {
-            if (!(selector.Expression is LambdaExpression lambdaExpression)) return null;
+            if (!(selector.Expression is LambdaExpression lambdaExpression))
+            {
+                return null;
+            }
 
             if (lambdaExpression.Body is MethodCallExpression methodCallExpression && methodCallExpression.Arguments.Count > 1)
             {
-                if (!(methodCallExpression.Arguments[0] is MemberExpression pathMember)) return null;
-
-                return pathMember.Member.Name.ToLowerCamelCase();
+                return !(methodCallExpression.Arguments[0] is MemberExpression pathMember) 
+                    ? null 
+                    : pathMember.Member.Name.ToLowerCamelCase();
             }
 
             return null;

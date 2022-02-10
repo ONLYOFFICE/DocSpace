@@ -32,11 +32,17 @@ namespace ASC.ElasticSearch
         {
             get
             {
-                if (_client != null) return _client;
+                if (_client != null)
+                {
+                    return _client;
+                }
 
                 lock (_locker)
                 {
-                    if (_client != null) return _client;
+                    if (_client != null)
+                    {
+                        return _client;
+                    }
 
                     using var scope = _serviceProvider.CreateScope();
                     var CoreConfiguration = _serviceProvider.GetService<CoreConfiguration>();
@@ -84,8 +90,6 @@ namespace ASC.ElasticSearch
                         _logger.Error(e);
                     }
 
-
-
                     return _client;
                 }
             }
@@ -111,7 +115,10 @@ namespace ASC.ElasticSearch
 
         private bool Ping(ElasticClient elasticClient)
         {
-            if (elasticClient == null) return false;
+            if (elasticClient == null)
+            {
+                return false;
+            }
 
             var result = elasticClient.Ping(new PingRequest());
 

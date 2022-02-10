@@ -34,8 +34,13 @@ namespace ASC.ElasticSearch.Core
         {
             get
             {
-                if (_items != null) return _items;
+                if (_items != null)
+                {
+                    return _items;
+                }
+
                 var parsed = JsonConvert.DeserializeObject<List<SearchSettingsItem>>(Data ?? "");
+
                 return _items = parsed ?? new List<SearchSettingsItem>();
             }
             set
@@ -91,7 +96,10 @@ namespace ASC.ElasticSearch.Core
 
         public List<SearchSettingsItem> GetAllItems()
         {
-            if (!_coreBaseSettings.Standalone) return new List<SearchSettingsItem>();
+            if (!_coreBaseSettings.Standalone)
+            {
+                return new List<SearchSettingsItem>();
+            }
 
             var settings = _settingsManager.Load<SearchSettings>();
 
@@ -105,7 +113,10 @@ namespace ASC.ElasticSearch.Core
 
         public void Set(List<SearchSettingsItem> items)
         {
-            if (!_coreBaseSettings.Standalone) return;
+            if (!_coreBaseSettings.Standalone)
+            {
+                return;
+            }
 
             var settings = _settingsManager.Load<SearchSettings>();
 
@@ -134,9 +145,15 @@ namespace ASC.ElasticSearch.Core
                 return false;
             }
 
-            if (Convert.ToBoolean(Configuration["core:search-by-content"] ?? "false")) return true;
+            if (Convert.ToBoolean(Configuration["core:search-by-content"] ?? "false"))
+            {
+                return true;
+            }
 
-            if (!_coreBaseSettings.Standalone) return true;
+            if (!_coreBaseSettings.Standalone)
+            {
+                return true;
+            }
 
             var settings = _settingsManager.LoadForTenant<SearchSettings>(tenantId);
 
@@ -151,7 +168,10 @@ namespace ASC.ElasticSearch.Core
         public bool CanSearchByContent(Type t)
         {
             var tenantId = _tenantManager.GetCurrentTenant().TenantId;
-            if (!CanIndexByContent(t, tenantId)) return false;
+            if (!CanIndexByContent(t, tenantId))
+            {
+                return false;
+            }
 
             if (_coreBaseSettings.Standalone)
             {

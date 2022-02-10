@@ -58,14 +58,20 @@ namespace ASC.ElasticSearch.Service
             foreach (var item in toReIndex)
             {
                 var index = allItems.FirstOrDefault(r => r.IndexName == item);
-                if (index == null) continue;
+                if (index == null)
+                {
+                    continue;
+                }
 
                 var generic = typeof(BaseIndexer<>);
                 var instance = (IIndexer)Activator.CreateInstance(generic.MakeGenericType(index.GetType()), index);
                 tasks.Add(instance.ReIndex());
             }
 
-            if (!tasks.Any()) return;
+            if (!tasks.Any())
+            {
+                return;
+            }
 
             Task.WhenAll(tasks).ContinueWith(r =>
             {
