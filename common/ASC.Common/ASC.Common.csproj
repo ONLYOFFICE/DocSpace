@@ -55,7 +55,7 @@
     </PackageReference> -->
     <PackageReference Include="NLog" Version="4.7.13" />
     <PackageReference Include="NVelocity" Version="1.2.0" />
-    <PackageReference Include="RabbitMQ.Client" Version="6.2.2" />
+    <PackageReference Include="RabbitMQ.Client" Version="6.2.3" />
     <PackageReference Include="StackExchange.Redis" Version="2.2.88" />
     <PackageReference Include="StackExchange.Redis.Extensions.Core" Version="7.2.1" />
   </ItemGroup>

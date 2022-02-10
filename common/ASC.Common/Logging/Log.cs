@@ -53,7 +53,7 @@ namespace ASC.Common.Logging
         bool IsTraceEnabled { get; }
 
         void Trace(object message);
-        void TraceFormat(string message, object arg0);
+        void TraceFormat(string message, params object[] args);
 
         void DebugWithProps(string message, IEnumerable<KeyValuePair<string, object>> props);
         void Debug(object message);
@@ -146,9 +146,9 @@ namespace ASC.Common.Logging
             if (IsTraceEnabled) loger.Logger.Log(GetType(), Level.Trace, message, null);
         }
 
-        public void TraceFormat(string message, object arg0)
+        public void TraceFormat(string message, params object[] args)
         {
-            if (IsTraceEnabled) loger.Logger.Log(GetType(), Level.Trace, string.Format(message, arg0), null);
+            if (IsTraceEnabled) loger.Logger.Log(GetType(), Level.Trace, string.Format(message, args), null);
         }
 
         public void Debug(object message)
@@ -470,9 +470,9 @@ namespace ASC.Common.Logging
             if (IsTraceEnabled) Loger.Log(LogLevel.Trace, message);
         }
 
-        public void TraceFormat(string message, object arg0)
+        public void TraceFormat(string message, params object[] args)
         {
-            if (IsTraceEnabled) Loger.Log(LogLevel.Trace, string.Format(message, arg0));
+            if (IsTraceEnabled) Loger.Trace(message, args);
         }
 
         public void Debug(object message)
@@ -697,7 +697,7 @@ namespace ASC.Common.Logging
         {
         }
 
-        public void TraceFormat(string message, object arg0)
+        public void TraceFormat(string message, params object[] args)
         {
         }
 
