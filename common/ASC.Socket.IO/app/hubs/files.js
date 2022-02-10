@@ -95,9 +95,9 @@
     filesIO.to(room).emit("s:start-edit-file", fileId);
   }
 
-  function stopEdit({ fileId, room } = {}) {
+  function stopEdit({ fileId, room, data } = {}) {
     logger.info(`stop edit file ${fileId} in room ${room}`);
-    filesIO.to(room).emit("s:stop-edit-file", fileId);
+    filesIO.to(room).emit("s:stop-edit-file", fileId, data);
   }
 
   function modifyFolder(room, cmd, id, type, data) {

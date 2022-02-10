@@ -43,16 +43,19 @@ namespace ASC.Web.Files.Utils
         private readonly SignalrServiceClient _signalrServiceClient;
         private FileWrapperHelper FilesWrapperHelper { get; }
         private TenantManager TenantManager { get; }
+        public IDaoFactory DaoFactory { get; }
 
         public SocketManager(
             IOptionsSnapshot<SignalrServiceClient> optionsSnapshot,
             FileWrapperHelper filesWrapperHelper,
-            TenantManager tenantManager
+            TenantManager tenantManager,
+            IDaoFactory daoFactory
             )
         {
             _signalrServiceClient = optionsSnapshot.Get("files");
             FilesWrapperHelper = filesWrapperHelper;
             TenantManager = tenantManager;
+            DaoFactory = daoFactory;
         }
 
         public void StartEdit<T>(T fileId)
@@ -64,7 +67,19 @@ namespace ASC.Web.Files.Utils
         public void StopEdit<T>(T fileId)
         {
             var room = GetFileRoom(fileId);
-            _signalrServiceClient.StopEdit(fileId, room);
+            var file = DaoFactory.GetFileDao<T>().GetFileStable(fileId);
+
+            var serializerSettings = new JsonSerializerOptions()
+            {
+                WriteIndented = false,
+                IgnoreNullValues = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            serializerSettings.Converters.Add(new ApiDateTimeConverter());
+            serializerSettings.Converters.Add(new FileEntryWrapperConverter());
+            var data = JsonSerializer.Serialize(FilesWrapperHelper.Get(file), serializerSettings);
+
+            _signalrServiceClient.StopEdit(fileId, room, data);
         }
 
         public void CreateFile<T>(File<T> file)

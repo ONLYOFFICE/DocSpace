@@ -6,6 +6,7 @@ import {
   FileType,
   FileAction,
   AppServerConfig,
+  FileStatus,
 } from "@appserver/common/constants";
 import history from "@appserver/common/history";
 import { loopTreeFolders } from "../helpers/files-helpers";
@@ -139,15 +140,29 @@ class FilesStore {
       const foundIndex = this.files.findIndex((x) => x.id === id);
       if (foundIndex == -1) return;
 
-      this.updateFileStatus(foundIndex, 1);
+      this.updateFileStatus(
+        foundIndex,
+        this.files[foundIndex].fileStatus | FileStatus.IsEditing
+      );
     });
 
-    socketHelper.on("s:stop-edit-file", (id) => {
+    socketHelper.on("s:stop-edit-file", (id, data) => {
       //console.log(`Call s:stop-edit-file (id=${id})`);
       const foundIndex = this.files.findIndex((x) => x.id === id);
       if (foundIndex == -1) return;
 
-      this.updateFileStatus(foundIndex, 0);
+      let file;
+
+      if (data) {
+        file = JSON.parse(data);
+        console.log(`socket stop-edit-file (id=${id}`, file);
+      }
+
+      this.updateFileStatus(
+        foundIndex,
+        this.files[foundIndex].fileStatus & ~FileStatus.IsEditing,
+        file
+      );
     });
   }
 
@@ -305,8 +320,12 @@ class FilesStore {
     this.folders = folders;
   };
 
-  updateFileStatus = (index, status) => {
+  updateFileStatus = (index, status, file) => {
     if (index < 0) return;
+
+    if (file) {
+      this.files[index] = file;
+    }
 
     this.files[index].fileStatus = status;
   };
@@ -436,8 +455,12 @@ class FilesStore {
     clearFilter = true,
     withSubfolders = false
   ) => {
-    const { treeFolders, setSelectedNode, getSubfolders, selectedTreeNode } =
-      this.treeFoldersStore;
+    const {
+      treeFolders,
+      setSelectedNode,
+      getSubfolders,
+      selectedTreeNode,
+    } = this.treeFoldersStore;
     const { id } = this.selectedFolderStore;
 
     const isPrefSettings = isNaN(+selectedTreeNode) && !id;
@@ -625,8 +648,11 @@ class FilesStore {
       isMy,
     } = this.treeFoldersStore;
 
-    const { canWebEdit, canViewedDocs, canFormFillingDocs } =
-      this.formatsStore.docserviceStore;
+    const {
+      canWebEdit,
+      canViewedDocs,
+      canFormFillingDocs,
+    } = this.formatsStore.docserviceStore;
 
     const isThirdPartyFolder =
       item.providerKey && item.id === item.rootFolderId;
@@ -1469,8 +1495,12 @@ class FilesStore {
 
   get cbMenuItems() {
     const { mediaViewersFormatsStore, iconFormatsStore } = this.formatsStore;
-    const { isDocument, isPresentation, isSpreadsheet, isArchive } =
-      iconFormatsStore;
+    const {
+      isDocument,
+      isPresentation,
+      isSpreadsheet,
+      isArchive,
+    } = iconFormatsStore;
     const { isImage, isVideo } = mediaViewersFormatsStore;
 
     let cbMenu = ["all"];
@@ -1526,8 +1556,11 @@ class FilesStore {
   };
 
   get sortedFiles() {
-    const { isSpreadsheet, isPresentation, isDocument } =
-      this.formatsStore.iconFormatsStore;
+    const {
+      isSpreadsheet,
+      isPresentation,
+      isDocument,
+    } = this.formatsStore.iconFormatsStore;
     const { filesConverts } = this.formatsStore.docserviceStore;
 
     let sortedFiles = {
