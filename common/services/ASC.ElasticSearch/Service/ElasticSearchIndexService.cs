@@ -34,7 +34,7 @@ public class ElasticSearchIndexService : IHostedService, IDisposable
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly CancellationTokenSource _cancellationTokenSource;
     private readonly TimeSpan _period;
-    private Timer _timer = null!;
+    private Timer _timer;
     private bool _isStarted;
 
     public ElasticSearchIndexService(
@@ -185,10 +185,17 @@ public class ElasticSearchIndexService : IHostedService, IDisposable
 
     public void Dispose()
     {
+        if (_timer == null)
+        {
+            return;
+        }
+
         var handle = new AutoResetEvent(false);
 
-        if (!(bool)_timer?.Dispose(handle))
+        if (!_timer.Dispose(handle))
+        {
             throw new Exception("Timer already disposed");
+        }   
 
         handle.WaitOne();
     }
