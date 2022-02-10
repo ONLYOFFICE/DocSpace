@@ -32,7 +32,7 @@ namespace ASC.Data.Reassigns
         public Guid FromUser { get; private set; }
         public Guid ToUser { get; private set; }
 
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly QueueWorkerRemove _queueWorkerRemove;
         private readonly IDictionary<string, StringValues> _httpHeaders;
         private int _tenantId;
@@ -43,11 +43,11 @@ namespace ASC.Data.Reassigns
         //private readonly ProjectsReassign _projectsReassign;
 
         public ReassignProgressItem(
-            IServiceProvider serviceProvider,
+            IServiceScopeFactory serviceScopeFactory,
             IHttpContextAccessor httpContextAccessor,
             QueueWorkerRemove queueWorkerRemove)
         {
-            _serviceProvider = serviceProvider;
+            _serviceScopeFactory = serviceScopeFactory;
             _queueWorkerRemove = queueWorkerRemove;
             _httpHeaders = QueueWorker.GetHttpHeaders(httpContextAccessor.HttpContext.Request);
 
@@ -75,7 +75,7 @@ namespace ASC.Data.Reassigns
 
         protected override void DoJob()
         {
-            using var scope = _serviceProvider.CreateScope();
+            using var scope = _serviceScopeFactory.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<ReassignProgressItemScope>();
             var (tenantManager, coreBaseSettings, messageService, studioNotifyService, securityContext, userManager, userPhotoManager, displayUserSettingsHelper, messageTarget, options) = scopeClass;
             var logger = options.Get("ASC.Web");

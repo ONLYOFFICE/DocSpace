@@ -32,7 +32,7 @@ namespace ASC.Data.Reassigns
         public UserInfo User { get; private set; }
 
         private readonly IDictionary<string, StringValues> _httpHeaders;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
         private int _tenantId;
         private Guid _currentUserId;
         private bool _notify;
@@ -40,11 +40,11 @@ namespace ASC.Data.Reassigns
         //private readonly MailGarbageEngine _mailEraser;
         
         public RemoveProgressItem(
-            IServiceProvider serviceProvider,
+            IServiceScopeFactory serviceScopeFactory,
             IHttpContextAccessor httpContextAccessor)
         {
             _httpHeaders = QueueWorker.GetHttpHeaders(httpContextAccessor.HttpContext.Request);
-            _serviceProvider = serviceProvider;
+            _serviceScopeFactory = serviceScopeFactory;
 
 
             //_docService = Web.Files.Classes.Global.FileStorageService;
@@ -68,7 +68,7 @@ namespace ASC.Data.Reassigns
 
         protected override void DoJob()
         {
-            using var scope = _serviceProvider.CreateScope();
+            using var scope = _serviceScopeFactory.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<RemoveProgressItemScope>();
             var (tenantManager, coreBaseSettings, messageService, studioNotifyService, securityContext, userManager, messageTarget, webItemManagerSecurity, storageFactory, userFormatter, options) = scopeClass;
             var logger = options.Get("ASC.Web");
