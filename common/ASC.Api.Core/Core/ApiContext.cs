@@ -110,7 +110,7 @@ public class ApiContext : ICloneable
     internal long SpecifiedStartIndex { get; set; }
 
     private Tenant _tenant;
-    private static int s_maxCount = 1000;
+    private static int _maxCount = 1000;
     private readonly SecurityContext _securityContext;
     private readonly TenantManager _tenantManager;
 
@@ -124,14 +124,14 @@ public class ApiContext : ICloneable
             return;
         }
 
-        Count = s_maxCount;
+        Count = _maxCount;
         var query = HttpContextAccessor.HttpContext.Request.Query;
         //Try parse values
         var count = query.GetRequestValue("count");
         if (!string.IsNullOrEmpty(count) && ulong.TryParse(count, out var countParsed))
         {
             //Count specified and valid
-            Count = Math.Min((long)countParsed, s_maxCount); 
+            Count = Math.Min((long)countParsed, _maxCount); 
         }
 
         var startIndex = query.GetRequestValue("startIndex");

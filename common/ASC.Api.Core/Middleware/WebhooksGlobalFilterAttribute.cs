@@ -7,7 +7,7 @@ public class WebhooksGlobalFilterAttribute : ResultFilterAttribute
 {
     private readonly IWebhookPublisher _webhookPublisher;
     private readonly JsonSerializerOptions _jsonSerializerOptions;
-    private static List<string> s_methodList = new List<string> { "POST", "UPDATE", "DELETE" };
+    private static List<string> _methodList = new List<string> { "POST", "UPDATE", "DELETE" };
 
     public WebhooksGlobalFilterAttribute(IWebhookPublisher webhookPublisher, Action<JsonOptions> projectJsonOptions)
     {
@@ -22,7 +22,7 @@ public class WebhooksGlobalFilterAttribute : ResultFilterAttribute
     {
         var method = context.HttpContext.Request.Method;
 
-        if (!s_methodList.Contains(method) || context.Canceled)
+        if (!_methodList.Contains(method) || context.Canceled)
         {
             base.OnResultExecuted(context);
 

@@ -3,7 +3,7 @@
 [Scope]
 public class ProductSecurityFilter : IResourceFilter
 {
-    private static readonly IDictionary<string, Guid> s_products;
+    private static readonly IDictionary<string, Guid> _products;
     private readonly ILog _logger;
     private readonly WebItemSecurity _webItemSecurity;
     private readonly AuthContext _authContext;
@@ -17,7 +17,7 @@ public class ProductSecurityFilter : IResourceFilter
         var wiki = new Guid("742cf945-cbbc-4a57-82d6-1600a12cf8ca");
         var photo = new Guid("9d51954f-db9b-4aed-94e3-ed70b914e101");
 
-        s_products = new Dictionary<string, Guid>
+        _products = new Dictionary<string, Guid>
                 {
                     { "blog", blog },
                     { "bookmark", bookmark },
@@ -88,14 +88,14 @@ public class ProductSecurityFilter : IResourceFilter
             if (!string.IsNullOrEmpty(url))
             {
                 var module = url.Split('/')[0];
-                    if (s_products.TryGetValue(module, out var communityProduct))
+                    if (_products.TryGetValue(module, out var communityProduct))
                     {
                         return communityProduct;
                     }
             }
         }
 
-            if (s_products.TryGetValue(name, out var product))
+            if (_products.TryGetValue(name, out var product))
             {
                 return product;
             }
