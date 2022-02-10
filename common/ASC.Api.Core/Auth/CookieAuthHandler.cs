@@ -41,6 +41,6 @@ public class CookieAuthHandler : AuthenticationHandler<AuthenticationSchemeOptio
         return Task.FromResult(
                  result ?
                  AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)) :
-                 AuthenticateResult.Fail(new AuthenticationException(HttpStatusCode.Unauthorized.ToString())));
+                 AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Unauthorized))));
     }
 }

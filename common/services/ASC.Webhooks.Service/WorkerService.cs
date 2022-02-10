@@ -3,7 +3,7 @@
     [Singletone]
     public class WorkerService
     {
-        private readonly int? threadCount = 10;
+        private readonly int? threadCount;
         private readonly WebhookSender webhookSender;
         private readonly ConcurrentQueue<WebhookRequest> queue;
         private CancellationToken cancellationToken;

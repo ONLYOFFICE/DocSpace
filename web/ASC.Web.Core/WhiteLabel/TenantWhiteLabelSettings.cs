@@ -323,7 +323,6 @@ namespace ASC.Web.Core.WhiteLabel
             using (var memory = new MemoryStream(data))
             using (var image = Image.Load(memory))
             {
-                var logoSize = image.Size();
                 var logoFileName = BuildLogoFileName(type, logoFileExt, false);
 
                 memory.Seek(0, SeekOrigin.Begin);
@@ -344,7 +343,7 @@ namespace ASC.Web.Core.WhiteLabel
 
             foreach (var currentLogo in logo)
             {
-                var currentLogoType = (WhiteLabelLogoTypeEnum)(currentLogo.Key);
+                var currentLogoType = (WhiteLabelLogoTypeEnum)currentLogo.Key;
                 var currentLogoPath = currentLogo.Value;
 
                 if (!string.IsNullOrEmpty(currentLogoPath))
@@ -381,7 +380,7 @@ namespace ASC.Web.Core.WhiteLabel
 
         public void SetLogoFromStream(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, string fileExt, Stream fileStream, IDataStore storage = null)
         {
-            byte[] data = null;
+            byte[] data;
             using (var memoryStream = new MemoryStream())
             {
                 fileStream.CopyTo(memoryStream);
@@ -497,7 +496,7 @@ namespace ASC.Web.Core.WhiteLabel
 
         public static string BuildLogoFileName(WhiteLabelLogoTypeEnum type, string fileExt, bool general)
         {
-            return string.Format("logo_{0}{2}.{1}", type.ToString().ToLowerInvariant(), fileExt, general ? "_general" : "");
+            return $"logo_{type.ToString().ToLowerInvariant()}{(general ? "_general" : "")}.{fileExt}";
         }
 
         public static Size GetSize(WhiteLabelLogoTypeEnum type, bool general)
@@ -533,7 +532,7 @@ namespace ASC.Web.Core.WhiteLabel
             {
                 using var stream = new MemoryStream(data);
                 using var img = Image.Load(stream, out var format);
-                var imgFormat = format;
+
                 if (size != img.Size())
                 {
                     using var img2 = CommonPhotoManager.DoThumbnail(img, size, false, true, false);

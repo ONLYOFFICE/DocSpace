@@ -89,7 +89,7 @@ namespace ASC.Web.CRM.HttpHandlers
 
                     var filePath = String.Format("folder_{0}/message_{1}.html", (messageId / 1000 + 1) * 1000, messageId);
 
-                    string messageContent = string.Empty;
+                    string messageContent;
 
                     using (var streamReader = new StreamReader(global.GetStore().GetReadStream("mail_messages", filePath)))
                     {

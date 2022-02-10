@@ -223,7 +223,7 @@ public class EmployeeWraperFullHelper : EmployeeWraperHelper
         if (_context.Check("listAdminModules"))
         {
             var listAdminModules = userInfo.GetListAdminModules(_webItemSecurity);
-            if (listAdminModules.Any())
+                if (listAdminModules.Count > 0)
             {
                 result.ListAdminModules = listAdminModules;
             }
@@ -249,7 +249,7 @@ public class EmployeeWraperFullHelper : EmployeeWraperHelper
             }
         }
 
-        if (contacts.Any())
+            if (contacts.Count > 0)
         {
             employeeWraperFull.Contacts = contacts;
         }

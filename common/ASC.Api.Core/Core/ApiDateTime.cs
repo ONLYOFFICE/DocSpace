@@ -26,7 +26,7 @@
 namespace ASC.Api.Core;
 
 [TypeConverter(typeof(ApiDateTimeTypeConverter))]
-public class ApiDateTime : IComparable<ApiDateTime>, IComparable
+public sealed class ApiDateTime : IComparable<ApiDateTime>, IComparable
 {
     public DateTime UtcTime { get; private set; }
     public TimeSpan TimeZoneOffset { get; private set; }
@@ -85,22 +85,14 @@ public class ApiDateTime : IComparable<ApiDateTime>, IComparable
 
     public static ApiDateTime Parse(string data, TimeZoneInfo tz, TenantManager tenantManager, TimeZoneConverter timeZoneConverter)
     {
-        if (string.IsNullOrEmpty(data))
-        {
-            throw new ArgumentNullException(nameof(data));
-        }
-        if (data.Length < 7)
-        {
-            throw new ArgumentException("invalid date time format");
-        }
+            if (string.IsNullOrEmpty(data)) throw new ArgumentNullException(nameof(data));
 
         var offsetPart = data.Substring(data.Length - 6, 6);
         if (DateTime.TryParseExact(data, Formats, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out var dateTime))
         {
             //Parse time   
             var tzOffset = TimeSpan.Zero;
-            if (offsetPart.Contains(':') 
-                && TimeSpan.TryParse(offsetPart.TrimStart('+'), out tzOffset))
+                if (offsetPart.Contains(':') && TimeSpan.TryParse(offsetPart.TrimStart('+'), out tzOffset))
             {
                 return new ApiDateTime(dateTime, tzOffset);
             }
@@ -285,19 +277,9 @@ public class ApiDateTime : IComparable<ApiDateTime>, IComparable
 
     public override bool Equals(object obj)
     {
-        if (obj is null)
-        {
-            return false;
-        }
-        if (ReferenceEquals(this, obj))
-        {
-            return true;
-        }
-        if (obj.GetType() != typeof(ApiDateTime))
-        {
-            return false;
-        }
-
+            if (obj is null) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (!(obj is ApiDateTime)) return false;
         return Equals((ApiDateTime)obj);
     }
 

@@ -31,6 +31,7 @@ public abstract class BaseStartup
         services.AddCustomHealthCheck(Configuration);
         services.AddHttpContextAccessor();
         services.AddMemoryCache();
+            services.AddHttpClient();
 
         if (AddAndUseSession)
         {
@@ -95,7 +96,7 @@ public abstract class BaseStartup
             DIHelper.RegisterProducts(Configuration, HostEnvironment.ContentRootPath);
         }
 
-        var builder = services.AddMvcCore(config =>
+            services.AddMvcCore(config =>
         {
             config.Conventions.Add(new ControllerNameAttributeConvention());
 

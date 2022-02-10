@@ -44,7 +44,7 @@ namespace ASC.Common.Caching
 
         public static void OnClearCache()
         {
-            var keys = MemoryCache.Default.Select(r => r.Key).ToList();
+            var keys = MemoryCache.Default.Select(r => r.Key);
 
             foreach (var k in keys)
             {
@@ -103,7 +103,7 @@ namespace ASC.Common.Caching
         public void Remove(Regex pattern)
         {
             var copy = MemoryCacheKeys.ToDictionary(p => p.Key, p => p.Value);
-            var keys = copy.Select(p => p.Key).Where(k => pattern.IsMatch(k)).ToArray();
+            var keys = copy.Select(p => p.Key).Where(k => pattern.IsMatch(k));
 
             foreach (var key in keys)
             {

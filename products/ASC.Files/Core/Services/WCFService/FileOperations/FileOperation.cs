@@ -55,7 +55,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         protected DistributedTask TaskInfo { get; set; }
 
-        public FileOperation(IServiceProvider serviceProvider)
+        protected FileOperation(IServiceProvider serviceProvider)
         {
             principal = serviceProvider.GetService<Microsoft.AspNetCore.Http.IHttpContextAccessor>()?.HttpContext?.User ?? Thread.CurrentPrincipal;
             culture = Thread.CurrentThread.CurrentCulture.Name;

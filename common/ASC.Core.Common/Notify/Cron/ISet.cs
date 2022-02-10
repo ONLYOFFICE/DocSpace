@@ -32,7 +32,7 @@ namespace ASC.Notify.Cron
 
     #endregion
 
-    public interface ISet : ICollection, IList
+    public interface ISet : IList
     {
         #region Methods
 

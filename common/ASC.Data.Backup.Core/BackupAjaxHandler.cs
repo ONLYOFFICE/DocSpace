@@ -214,7 +214,7 @@
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            if (!SetupInfo.IsVisibleSettings(ManagementType.Backup.ToString()))
+            if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.Backup)))
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Backup");
         }
 
@@ -300,7 +300,7 @@
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
-            if (!SetupInfo.IsVisibleSettings(ManagementType.Migration.ToString())
+            if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.Migration))
                 || !currentUser.IsOwner(TenantManager.GetCurrentTenant())
                 || !SetupInfo.IsSecretEmail(currentUser.Email) && !TenantExtra.GetTenantQuota().HasMigration)
                 throw new InvalidOperationException(Resource.ErrorNotAllowedOption);

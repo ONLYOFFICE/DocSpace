@@ -20,7 +20,7 @@ public class TenantStatusFilter : IResourceFilter
         if (tenant == null)
         {
             context.Result = new StatusCodeResult((int)HttpStatusCode.NotFound);
-            _logger.WarnFormat("Tenant {0} not found", tenant.TenantId);
+            _logger.Warn("Current tenant not found");
 
             return;
         }

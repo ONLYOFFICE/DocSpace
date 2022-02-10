@@ -50,7 +50,7 @@ namespace ASC.Web.CRM.HttpHandlers
             _next = next;
         }
 
-        public async System.Threading.Tasks.Task Invoke(HttpContext context,
+        public System.Threading.Tasks.Task Invoke(HttpContext context,
             CrmSecurity crmSecurity,
             SetupInfo setupInfo,
             FileSizeComment fileSizeComment,
@@ -62,6 +62,16 @@ namespace ASC.Web.CRM.HttpHandlers
             if (!crmSecurity.IsAdmin)
                 throw crmSecurity.CreateSecurityException();
 
+            return InternalInvoke(context, crmSecurity, setupInfo, fileSizeComment, contactPhotoManager, organisationLogoManager);
+        }
+
+        private async System.Threading.Tasks.Task InternalInvoke(HttpContext context,
+            CrmSecurity crmSecurity,
+            SetupInfo setupInfo,
+            FileSizeComment fileSizeComment,
+            ContactPhotoManager contactPhotoManager,
+            OrganisationLogoManager organisationLogoManager)
+        { 
             var fileUploadResult = new FileUploadResult();
 
             if (context.Request.Form.Files.Count == 0)

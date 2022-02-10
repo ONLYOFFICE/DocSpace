@@ -53,7 +53,6 @@ using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
 using ASC.Web.Files.Api;
 
-using MailKit;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 
@@ -275,7 +274,7 @@ namespace ASC.Web.CRM.Classes
                             continue;
                         }
 
-                        var to = new MailboxAddress(recipientEmail);
+                        var to = MailboxAddress.Parse(recipientEmail);
 
                         var mimeMessage = new MimeMessage
                         {
@@ -431,8 +430,6 @@ namespace ASC.Web.CRM.Classes
         {
             var client = new SmtpClient
             {
-                ServerCertificateValidationCallback = (sender, certificate, chain, errors) =>
-                    WorkContext.IsMono || MailKit.MailService.DefaultServerCertificateValidationCallback(sender, certificate, chain, errors),
                 Timeout = (int)TimeSpan.FromSeconds(30).TotalMilliseconds
             };
 
@@ -563,7 +560,6 @@ namespace ASC.Web.CRM.Classes
         {
             var client = new SmtpClient
             {
-                ServerCertificateValidationCallback = (sender, certificate, chain, errors) => MailService.DefaultServerCertificateValidationCallback(sender, certificate, chain, errors),
                 Timeout = (int)TimeSpan.FromSeconds(30).TotalMilliseconds
             };
 
@@ -594,7 +590,7 @@ namespace ASC.Web.CRM.Classes
             {
                 try
                 {
-                    var toAddress = new MailboxAddress(recipientEmail);
+                    var toAddress = MailboxAddress.Parse(recipientEmail);
                     var fromAddress = new MailboxAddress(smtpSetting.SenderDisplayName, smtpSetting.SenderEmailAddress);
 
                     var mimeMessage = new MimeMessage
@@ -693,7 +689,7 @@ namespace ASC.Web.CRM.Classes
 
             foreach (Match match in _regex.Matches(template))
             {
-                var findedTag = tags.Find(item => String.Compare(item.Name, match.Value) == 0);
+                var findedTag = tags.Find(item => string.Equals(item.Name, match.Value));
 
                 if (findedTag == null) continue;
 
@@ -827,7 +823,7 @@ namespace ASC.Web.CRM.Classes
 
         private String ToTagName(String value, bool isCompany)
         {
-            return String.Format("$({0}.{1})", isCompany ? "Company" : "Person", value);
+            return $"$({(isCompany ? "Company" : "Person")}.{value})";
         }
 
         private List<MailTemplateTag> GetAllTags()
@@ -907,7 +903,7 @@ namespace ASC.Web.CRM.Classes
                             DisplayName = String.Format(localTitle + " {0}", addressPartEnum.ToLocalizedString()),
                             Category = CRMContactResource.GeneralInformation,
                             isCompany = isCompany,
-                            Name = ToTagName(String.Format("{0} {1}", infoTypeEnum.ToString(), addressPartEnum.ToString()), isCompany)
+                            Name = ToTagName($"{infoTypeEnum} {addressPartEnum}", isCompany)
                         });
                 else
                     result.Add(new MailTemplateTag

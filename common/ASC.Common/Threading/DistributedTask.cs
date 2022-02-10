@@ -52,7 +52,7 @@ namespace ASC.Common.Threading
             }
             protected set
             {
-                DistributedTaskCache.Id = value?.ToString() ?? "";
+                DistributedTaskCache.Id = value ?? "";
             }
         }
 

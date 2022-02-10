@@ -27,7 +27,7 @@ namespace ASC.Collections
 {
     public sealed class HttpRequestDictionary<T> : CachedDictionaryBase<T>
     {
-        private class CachedItem
+        private sealed class CachedItem
         {
             internal T Value { get; set; }
 

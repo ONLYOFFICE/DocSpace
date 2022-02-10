@@ -30,7 +30,7 @@ namespace Textile
         /// Public constructor.
         /// </summary>
         /// <param name="f">The parent formatter.</param>
-        public FormatterState(TextileFormatter formatter)
+        protected FormatterState(TextileFormatter formatter)
         {
             Formatter = formatter;
         }

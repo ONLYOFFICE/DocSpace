@@ -88,17 +88,17 @@ public class ProductSecurityFilter : IResourceFilter
             if (!string.IsNullOrEmpty(url))
             {
                 var module = url.Split('/')[0];
-                if (s_products.ContainsKey(module))
-                {
-                    return s_products[module];
-                }
+                    if (s_products.TryGetValue(module, out var communityProduct))
+                    {
+                        return communityProduct;
+                    }
             }
         }
 
-        if (s_products.ContainsKey(name))
-        {
-            return s_products[name];
-        }
+            if (s_products.TryGetValue(name, out var product))
+            {
+                return product;
+            }
 
         return default;
     }
