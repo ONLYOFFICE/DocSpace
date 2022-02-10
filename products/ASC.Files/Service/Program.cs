@@ -79,8 +79,8 @@
 
                     if (!disableElastic)
                     {
-                        services.AddHostedService<ServiceLauncher>();
-                        diHelper.TryAdd<ServiceLauncher>();
+                        services.AddHostedService<ElasticSearchIndexService>();
+                        diHelper.TryAdd<ElasticSearchIndexService>();
                         //diHelper.TryAdd<FileConverter>();
                         diHelper.TryAdd<FactoryIndexerFile>();
                         diHelper.TryAdd<FactoryIndexerFolder>();
