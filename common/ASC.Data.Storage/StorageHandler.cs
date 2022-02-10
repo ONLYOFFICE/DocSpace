@@ -109,7 +109,11 @@ namespace ASC.Data.Storage.DiscStorage
             foreach (var h in headers)
             {
                 var toCopy = headersToCopy.Find(x => h.StartsWith(x));
-                if (string.IsNullOrEmpty(toCopy)) continue;
+                if (string.IsNullOrEmpty(toCopy))
+                {
+                    continue;
+                }
+
                 context.Response.Headers[toCopy] = h.Substring(toCopy.Length + 1);
             }
 
@@ -123,7 +127,9 @@ namespace ASC.Data.Storage.DiscStorage
             }
 
             if (encoding != null)
+            {
                 context.Response.Headers["Content-Encoding"] = encoding;
+            }
 
             using (var stream = storage.GetReadStream(_domain, path))
             {

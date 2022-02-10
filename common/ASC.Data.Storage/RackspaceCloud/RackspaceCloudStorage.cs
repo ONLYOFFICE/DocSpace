@@ -101,7 +101,9 @@ namespace ASC.Data.Storage.RackspaceCloud
             _public_container = props["public_container"];
 
             if (string.IsNullOrEmpty(_public_container))
+            {
                 throw new ArgumentException("_public_container");
+            }
 
             var client = GetClient();
 
@@ -170,7 +172,10 @@ namespace ASC.Data.Storage.RackspaceCloud
 
             outputStream.Position = 0;
 
-            if (0 < offset) outputStream.Seek(Convert.ToInt64(offset), SeekOrigin.Begin);
+            if (0 < offset)
+            {
+                outputStream.Seek(Convert.ToInt64(offset), SeekOrigin.Begin);
+            }
 
             return outputStream;
         }
@@ -243,9 +248,10 @@ namespace ASC.Data.Storage.RackspaceCloud
                 customHeaders.Add("X-Delete-After", deleteAfter.ToString());
             }
 
-
             if (!string.IsNullOrEmpty(contentEncoding))
+            {
                 customHeaders.Add("Content-Encoding", contentEncoding);
+            }
 
             var cannedACL = acl == ACL.Auto ? GetDomainACL(domain) : ACL.Read;
 
@@ -319,7 +325,10 @@ namespace ASC.Data.Storage.RackspaceCloud
             var files = client.ListObjects(_private_container, null, null, null, MakePath(domain, folderPath), _region)
                               .Where(x => Wildcard.IsMatch(pattern, Path.GetFileName(x.Name)));
 
-            if (!files.Any()) return;
+            if (!files.Any())
+            {
+                return;
+            }
 
             files.ToList().ForEach(x => client.DeleteObject(_private_container, x.Name));
 
@@ -332,7 +341,10 @@ namespace ASC.Data.Storage.RackspaceCloud
 
         public override void DeleteFiles(string domain, List<string> paths)
         {
-            if (!paths.Any()) return;
+            if (!paths.Any())
+            {
+                return;
+            }
 
             var keysToDel = new List<string>();
 
@@ -357,7 +369,10 @@ namespace ASC.Data.Storage.RackspaceCloud
                 }
             }
 
-            if (!keysToDel.Any()) return;
+            if (!keysToDel.Any())
+            {
+                return;
+            }
 
             var client = GetClient();
 
@@ -376,7 +391,10 @@ namespace ASC.Data.Storage.RackspaceCloud
             var files = client.ListObjects(_private_container, null, null, null, MakePath(domain, folderPath), _region)
                                .Where(x => x.LastModified >= fromDate && x.LastModified <= toDate);
 
-            if (!files.Any()) return;
+            if (!files.Any())
+            {
+                return;
+            }
 
             files.ToList().ForEach(x => client.DeleteObject(_private_container, x.Name));
 
@@ -485,10 +503,7 @@ namespace ASC.Data.Storage.RackspaceCloud
             var obj = client
                           .ListObjects(_private_container, null, null, null, MakePath(domain, path));
 
-            if (obj.Any())
-                return obj.Single().Bytes;
-
-            return 0;
+            return obj.Any() ? obj.Single().Bytes : 0;
         }
 
         public override long GetDirectorySize(string domain, string path)
@@ -690,16 +705,22 @@ namespace ASC.Data.Storage.RackspaceCloud
             if (!string.IsNullOrEmpty(_subDir))
             {
                 if (_subDir.Length == 1 && (_subDir[0] == '/' || _subDir[0] == '\\'))
+                {
                     result = path;
+                }
                 else
+                {
                     result = string.Format("{0}/{1}", _subDir, path); // Ignory all, if _subDir is not null
+                }
             }
             else//Key combined from module+domain+filename
+            {
                 result = string.Format("{0}/{1}/{2}/{3}",
                                                          _tenant,
                                                          _modulename,
                                                          domain,
                                                          path);
+            }
 
             result = result.Replace("//", "/").TrimStart('/');
             if (_lowerCasing)

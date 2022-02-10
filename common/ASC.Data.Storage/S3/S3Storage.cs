@@ -96,16 +96,39 @@ namespace ASC.Data.Storage.S3
 
                 foreach (var h in headers)
                 {
-                    if (h.StartsWith("Content-Disposition")) headersOverrides.ContentDisposition = (h.Substring("Content-Disposition".Length + 1));
-                    else if (h.StartsWith("Cache-Control")) headersOverrides.CacheControl = (h.Substring("Cache-Control".Length + 1));
-                    else if (h.StartsWith("Content-Encoding")) headersOverrides.ContentEncoding = (h.Substring("Content-Encoding".Length + 1));
-                    else if (h.StartsWith("Content-Language")) headersOverrides.ContentLanguage = (h.Substring("Content-Language".Length + 1));
-                    else if (h.StartsWith("Content-Type")) headersOverrides.ContentType = (h.Substring("Content-Type".Length + 1));
-                    else if (h.StartsWith("Expires")) headersOverrides.Expires = (h.Substring("Expires".Length + 1));
-                    else throw new FormatException(string.Format("Invalid header: {0}", h));
+                    if (h.StartsWith("Content-Disposition"))
+                    {
+                        headersOverrides.ContentDisposition = (h.Substring("Content-Disposition".Length + 1));
+                    }
+                    else if (h.StartsWith("Cache-Control"))
+                    {
+                        headersOverrides.CacheControl = (h.Substring("Cache-Control".Length + 1));
+                    }
+                    else if (h.StartsWith("Content-Encoding"))
+                    {
+                        headersOverrides.ContentEncoding = (h.Substring("Content-Encoding".Length + 1));
+                    }
+                    else if (h.StartsWith("Content-Language"))
+                    {
+                        headersOverrides.ContentLanguage = (h.Substring("Content-Language".Length + 1));
+                    }
+                    else if (h.StartsWith("Content-Type"))
+                    {
+                        headersOverrides.ContentType = (h.Substring("Content-Type".Length + 1));
+                    }
+                    else if (h.StartsWith("Expires"))
+                    {
+                        headersOverrides.Expires = (h.Substring("Expires".Length + 1));
+                    }
+                    else
+                    {
+                        throw new FormatException(string.Format("Invalid header: {0}", h));
+                    }
                 }
+
                 pUrlRequest.ResponseHeaderOverrides = headersOverrides;
             }
+
             using var client = GetClient();
 
             return MakeUri(client.GetPreSignedURL(pUrlRequest));
@@ -124,7 +147,10 @@ namespace ASC.Data.Storage.S3
                 Key = MakePath(domain, path)
             };
 
-            if (0 < offset) request.ByteRange = new ByteRange(offset, int.MaxValue);
+            if (0 < offset)
+            {
+                request.ByteRange = new ByteRange(offset, int.MaxValue);
+            }
 
             try
             {
@@ -151,7 +177,10 @@ namespace ASC.Data.Storage.S3
                 Key = MakePath(domain, path)
             };
 
-            if (0 < offset) request.ByteRange = new ByteRange(offset, int.MaxValue);
+            if (0 < offset)
+            {
+                request.ByteRange = new ByteRange(offset, int.MaxValue);
+            }
 
             try
             {
@@ -379,7 +408,10 @@ namespace ASC.Data.Storage.S3
 
         public override void DeleteFiles(string domain, List<string> paths)
         {
-            if (!paths.Any()) return;
+            if (!paths.Any())
+            {
+                return;
+            }
 
             var keysToDel = new List<string>();
 
@@ -409,7 +441,9 @@ namespace ASC.Data.Storage.S3
             }
 
             if (!keysToDel.Any())
+            {
                 return;
+            }
 
             using (var client = GetClient())
             {
@@ -540,6 +574,7 @@ namespace ASC.Data.Storage.S3
         public override Uri SaveTemp(string domain, out string assignedPath, Stream stream)
         {
             assignedPath = Guid.NewGuid().ToString();
+
             return Save(domain, assignedPath, stream);
         }
 
@@ -604,10 +639,20 @@ namespace ASC.Data.Storage.S3
 
                 var metadata = client.GetObjectMetadataAsync(request).Result;
                 var privateExpireKey = metadata.Metadata["private-expire"];
-                if (string.IsNullOrEmpty(privateExpireKey)) continue;
+                if (string.IsNullOrEmpty(privateExpireKey))
+                {
+                    continue;
+                }
 
-                if (!long.TryParse(privateExpireKey, out var fileTime)) continue;
-                if (DateTime.UtcNow <= DateTime.FromFileTimeUtc(fileTime)) continue;
+                if (!long.TryParse(privateExpireKey, out var fileTime))
+                {
+                    continue;
+                }
+
+                if (DateTime.UtcNow <= DateTime.FromFileTimeUtc(fileTime))
+                {
+                    continue;
+                }
                 //Delete it
                 var deleteObjectRequest = new DeleteObjectRequest
                 {
@@ -639,9 +684,14 @@ namespace ASC.Data.Storage.S3
             postBuilder.AppendFormat("\"success_action_status\":\"{0}\",", 201);
 
             if (!string.IsNullOrEmpty(contentType))
+            {
                 postBuilder.AppendFormat("\"Content-Type\":\"{0}\",", contentType);
+            }
+
             if (!string.IsNullOrEmpty(contentDisposition))
+            {
                 postBuilder.AppendFormat("\"Content-Disposition\":\"{0}\",", contentDisposition);
+            }
 
             postBuilder.AppendFormat("\"AWSAccessKeyId\":\"{0}\",", _accessKeyId);
             postBuilder.AppendFormat("\"Policy\":\"{0}\",", policyBase64);
@@ -649,6 +699,7 @@ namespace ASC.Data.Storage.S3
             postBuilder.AppendFormat("\"SignatureVersion\":\"{0}\"", 2);
             postBuilder.AppendFormat("\"SignatureMethod\":\"{0}\"", "HmacSHA1");
             postBuilder.Append("}");
+
             return postBuilder.ToString();
         }
 
@@ -666,16 +717,24 @@ namespace ASC.Data.Storage.S3
             formBuilder.AppendFormat("<input type=\"hidden\" name=\"key\" value=\"{0}${{filename}}\" />", key);
             formBuilder.Append("<input type=\"hidden\" name=\"acl\" value=\"public-read\" />");
             if (!string.IsNullOrEmpty(redirectTo))
+            {
                 formBuilder.AppendFormat("<input type=\"hidden\" name=\"success_action_redirect\" value=\"{0}\" />",
                                          redirectTo);
+            }
 
             formBuilder.AppendFormat("<input type=\"hidden\" name=\"success_action_status\" value=\"{0}\" />", 201);
 
             if (!string.IsNullOrEmpty(contentType))
+            {
                 formBuilder.AppendFormat("<input type=\"hidden\" name=\"Content-Type\" value=\"{0}\" />", contentType);
+            }
+
             if (!string.IsNullOrEmpty(contentDisposition))
+            {
                 formBuilder.AppendFormat("<input type=\"hidden\" name=\"Content-Disposition\" value=\"{0}\" />",
                                          contentDisposition);
+            }
+
             formBuilder.AppendFormat("<input type=\"hidden\" name=\"AWSAccessKeyId\" value=\"{0}\"/>", _accessKeyId);
             formBuilder.AppendFormat("<input type=\"hidden\" name=\"Policy\" value=\"{0}\" />", policyBase64);
             formBuilder.AppendFormat("<input type=\"hidden\" name=\"Signature\" value=\"{0}\" />", sign);
@@ -683,6 +742,7 @@ namespace ASC.Data.Storage.S3
             formBuilder.AppendFormat("<input type=\"hidden\" name=\"SignatureMethod\" value=\"{0}\" />", "HmacSHA1");
             formBuilder.AppendFormat("<input type=\"file\" name=\"file\" />");
             formBuilder.AppendFormat("<input type=\"submit\" name=\"submit\" value=\"{0}\" /></form>", submitLabel);
+
             return formBuilder.ToString();
         }
 
@@ -809,6 +869,7 @@ namespace ASC.Data.Storage.S3
             {
                 var request = new ListObjectsRequest { BucketName = _bucket, Prefix = (MakePath(domain, path)) };
                 var response = client.ListObjectsAsync(request).Result;
+
                 return response.S3Objects.Count > 0;
             }
         }
@@ -827,13 +888,16 @@ namespace ASC.Data.Storage.S3
             {
                 return response.S3Objects[0].Size;
             }
+
             throw new FileNotFoundException("file not found", path);
         }
 
         public override long GetDirectorySize(string domain, string path)
         {
             if (!IsDirectory(domain, path))
+            {
                 throw new FileNotFoundException("directory not found", path);
+            }
 
             return GetS3Objects(domain, path)
                 .Where(x => Wildcard.IsMatch("*.*", Path.GetFileName(x.Key)))
@@ -847,14 +911,17 @@ namespace ASC.Data.Storage.S3
                 var objects = GetS3Objects(domain);
                 var size = objects.Sum(s3Object => s3Object.Size);
                 QuotaController.QuotaUsedSet(_modulename, domain, _dataList.GetData(domain), size);
+
                 return size;
             }
+
             return 0;
         }
 
         public override long GetUsedQuota(string domain)
         {
             var objects = GetS3Objects(domain);
+
             return objects.Sum(s3Object => s3Object.Size);
         }
 
@@ -1060,7 +1127,10 @@ namespace ASC.Data.Storage.S3
 
         private void InvalidateCloudFront(params string[] paths)
         {
-            if (!_revalidateCloudFront || string.IsNullOrEmpty(_distributionId)) return;
+            if (!_revalidateCloudFront || string.IsNullOrEmpty(_distributionId))
+            {
+                return;
+            }
 
             using var cfClient = GetCloudFrontClient();
             var invalidationRequest = new CreateInvalidationRequest
@@ -1147,6 +1217,7 @@ namespace ASC.Data.Storage.S3
                 objects.AddRange(response.S3Objects.Where(entry => CheckKey(domain, entry.Key)));
                 request.Marker = response.NextMarker;
             } while (response.IsTruncated);
+
             return objects;
         }
 
@@ -1154,8 +1225,13 @@ namespace ASC.Data.Storage.S3
         {
             path = MakePath(domain, path) + '/';
             var obj = GetS3ObjectsByPath(domain, path).ToList();
-            if (string.IsNullOrEmpty(_recycleDir) || !recycle) return obj;
+            if (string.IsNullOrEmpty(_recycleDir) || !recycle)
+            {
+                return obj;
+            }
+
             obj.AddRange(GetS3ObjectsByPath(domain, GetRecyclePath(path)));
+
             return obj;
         }
 
@@ -1168,16 +1244,22 @@ namespace ASC.Data.Storage.S3
             if (!string.IsNullOrEmpty(_subDir))
             {
                 if (_subDir.Length == 1 && (_subDir[0] == '/' || _subDir[0] == '\\'))
+                {
                     result = path;
+                }
                 else
+                {
                     result = string.Format("{0}/{1}", _subDir, path); // Ignory all, if _subDir is not null
+                }
             }
             else//Key combined from module+domain+filename
+            {
                 result = string.Format("{0}/{1}/{2}/{3}",
                                                          _tenant,
                                                          _modulename,
                                                          domain,
                                                          path);
+            }
 
             result = result.Replace("//", "/").TrimStart('/').TrimEnd('/');
             if (_lowerCasing)
@@ -1215,6 +1297,7 @@ namespace ASC.Data.Storage.S3
         private IAmazonCloudFront GetCloudFrontClient()
         {
             var cfg = new AmazonCloudFrontConfig { MaxErrorRetry = 3 };
+
             return new AmazonCloudFrontClient(_accessKeyId, _secretAccessKeyId, cfg);
         }
 
@@ -1285,7 +1368,10 @@ namespace ASC.Data.Storage.S3
             protected override void Dispose(bool disposing)
             {
                 base.Dispose(disposing);
-                if (disposing) _response.Dispose();
+                if (disposing)
+                {
+                    _response.Dispose();
+                }
             }
         }
     }

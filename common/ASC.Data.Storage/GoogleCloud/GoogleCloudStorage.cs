@@ -33,13 +33,10 @@ namespace ASC.Data.Storage.GoogleCloud
         private string _subDir = string.Empty;
         private Dictionary<string, PredefinedObjectAcl> _domainsAcl;
         private PredefinedObjectAcl _moduleAcl;
-
         private string _bucket = string.Empty;
         private string _json = string.Empty;
-
         private Uri _bucketRoot;
         private Uri _bucketSSlRoot;
-
         private bool _lowerCasing = true;
 
         public GoogleCloudStorage(
@@ -149,7 +146,9 @@ namespace ASC.Data.Storage.GoogleCloud
             storage.DownloadObject(_bucket, MakePath(domain, path), tempStream, null, null);
 
             if (offset > 0)
+            {
                 tempStream.Seek(offset, SeekOrigin.Begin);
+            }
 
             tempStream.Position = 0;
 
@@ -165,7 +164,9 @@ namespace ASC.Data.Storage.GoogleCloud
             await storage.DownloadObjectAsync(_bucket, MakePath(domain, path), tempStream);
 
             if (offset > 0)
+            {
                 tempStream.Seek(offset, SeekOrigin.Begin);
+            }
 
             tempStream.Position = 0;
 
@@ -222,7 +223,9 @@ namespace ASC.Data.Storage.GoogleCloud
             uploaded.CacheControl = string.Format("public, maxage={0}", (int)TimeSpan.FromDays(cacheDays).TotalSeconds);
 
             if (uploaded.Metadata == null)
+            {
                 uploaded.Metadata = new Dictionary<string, string>();
+            }
 
             uploaded.Metadata["Expires"] = DateTime.UtcNow.Add(TimeSpan.FromDays(cacheDays)).ToString("R");
 
@@ -263,11 +266,15 @@ namespace ASC.Data.Storage.GoogleCloud
             IEnumerable<Google.Apis.Storage.v1.Data.Object> objToDel;
 
             if (recursive)
+            {
                 objToDel = storage
-                           .ListObjects(_bucket, MakePath(domain, folderPath))
-                           .Where(x => Wildcard.IsMatch(pattern, Path.GetFileName(x.Name)));
+                    .ListObjects(_bucket, MakePath(domain, folderPath))
+                    .Where(x => Wildcard.IsMatch(pattern, Path.GetFileName(x.Name)));
+            }
             else
+            {
                 objToDel = new List<Google.Apis.Storage.v1.Data.Object>();
+            }
 
             foreach (var obj in objToDel)
             {
@@ -278,7 +285,10 @@ namespace ASC.Data.Storage.GoogleCloud
 
         public override void DeleteFiles(string domain, List<string> paths)
         {
-            if (!paths.Any()) return;
+            if (!paths.Any())
+            {
+                return;
+            }
 
             var keysToDel = new List<string>();
 
@@ -304,7 +314,10 @@ namespace ASC.Data.Storage.GoogleCloud
                 }
             }
 
-            if (!keysToDel.Any()) return;
+            if (!keysToDel.Any())
+            {
+                return;
+            }
 
             using var storage = GetStorage();
 
@@ -369,7 +382,6 @@ namespace ASC.Data.Storage.GoogleCloud
             QuotaUsedAdd(newdomain, size, quotaCheckFileSize);
 
             return GetUri(newdomain, newpath);
-
         }
 
         public override Uri SaveTemp(string domain, out string assignedPath, System.IO.Stream stream)
@@ -392,7 +404,10 @@ namespace ASC.Data.Storage.GoogleCloud
 
             var items = storage.ListObjects(_bucket, MakePath(domain, path));
 
-            if (recursive) return items;
+            if (recursive)
+            {
+                return items;
+            }
 
             return items.Where(x => x.Name.IndexOf('/', MakePath(domain, path + "/").Length) == -1);
         }
@@ -409,7 +424,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
             var objects = storage.ListObjects(_bucket, MakePath(domain, path), null);
 
-            return objects.Count() > 0;
+            return objects.Any();
         }
 
         public override async Task<bool> IsFileAsync(string domain, string path)
@@ -418,7 +433,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
             var objects = await storage.ListObjectsAsync(_bucket, MakePath(domain, path)).ReadPageAsync(1);
 
-            return objects.Count() > 0;
+            return objects.Any();
         }
 
         public override bool IsDirectory(string domain, string path)
@@ -446,10 +461,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
             var obj = storage.GetObject(_bucket, MakePath(domain, path));
 
-            if (obj.Size.HasValue)
-                return Convert.ToInt64(obj.Size.Value);
-
-            return 0;
+            return obj.Size.HasValue ? Convert.ToInt64(obj.Size.Value) : 0;
         }
 
         public override long GetDirectorySize(string domain, string path)
@@ -464,7 +476,9 @@ namespace ASC.Data.Storage.GoogleCloud
             foreach (var obj in objToDel)
             {
                 if (obj.Size.HasValue)
+                {
                     result += Convert.ToInt64(obj.Size.Value);
+                }
             }
 
             return result;
@@ -484,7 +498,9 @@ namespace ASC.Data.Storage.GoogleCloud
                 foreach (var obj in objects)
                 {
                     if (obj.Size.HasValue)
+                    {
                         size += Convert.ToInt64(obj.Size.Value);
+                    }
                 }
 
                 QuotaController.QuotaUsedSet(_modulename, domain, _dataList.GetData(domain), size);
@@ -507,7 +523,9 @@ namespace ASC.Data.Storage.GoogleCloud
             foreach (var obj in objects)
             {
                 if (obj.Size.HasValue)
+                {
                     result += Convert.ToInt64(obj.Size.Value);
+                }
             }
 
             return result;
@@ -554,7 +572,6 @@ namespace ASC.Data.Storage.GoogleCloud
                     DestinationPredefinedAcl = GetDomainACL(newdomain)
                 });
 
-
                 QuotaUsedAdd(newdomain, Convert.ToInt64(obj.Size));
             }
         }
@@ -579,7 +596,9 @@ namespace ASC.Data.Storage.GoogleCloud
             uploaded.ContentDisposition = "attachment";
 
             if (uploaded.Metadata == null)
+            {
                 uploaded.Metadata = new Dictionary<string, string>();
+            }
 
             uploaded.Metadata["Expires"] = DateTime.UtcNow.Add(TimeSpan.FromDays(5)).ToString("R");
             uploaded.Metadata.Add("private-expire", expires.ToFileTimeUtc().ToString(CultureInfo.InvariantCulture));
@@ -605,9 +624,20 @@ namespace ASC.Data.Storage.GoogleCloud
 
                 var privateExpireKey = objInfo.Metadata["private-expire"];
 
-                if (string.IsNullOrEmpty(privateExpireKey)) continue;
-                if (!long.TryParse(privateExpireKey, out var fileTime)) continue;
-                if (DateTime.UtcNow <= DateTime.FromFileTimeUtc(fileTime)) continue;
+                if (string.IsNullOrEmpty(privateExpireKey))
+                {
+                    continue;
+                }
+
+                if (!long.TryParse(privateExpireKey, out var fileTime))
+                {
+                    continue;
+                }
+
+                if (DateTime.UtcNow <= DateTime.FromFileTimeUtc(fileTime))
+                {
+                    continue;
+                }
 
                 storage.DeleteObject(_bucket, MakePath(domain, path));
 
@@ -642,7 +672,9 @@ namespace ASC.Data.Storage.GoogleCloud
             var totalBytes = "*";
 
             if (chunkLength != defaultChunkSize)
+            {
                 totalBytes = Convert.ToString((chunkNumber - 1) * defaultChunkSize + chunkLength);
+            }
 
             var contentRangeHeader = string.Format("bytes {0}-{1}/{2}", bytesRangeStart, bytesRangeEnd, totalBytes);
 
@@ -680,7 +712,9 @@ namespace ASC.Data.Storage.GoogleCloud
                     }
 
                     if (status != 308)
+                    {
                         throw;
+                    }
 
                     break;
                 }
@@ -758,16 +792,22 @@ namespace ASC.Data.Storage.GoogleCloud
             if (!string.IsNullOrEmpty(_subDir))
             {
                 if (_subDir.Length == 1 && (_subDir[0] == '/' || _subDir[0] == '\\'))
+                {
                     result = path;
+                }
                 else
+                {
                     result = string.Format("{0}/{1}", _subDir, path); // Ignory all, if _subDir is not null
+                }
             }
             else//Key combined from module+domain+filename
+            {
                 result = string.Format("{0}/{1}/{2}/{3}",
                                                          _tenant,
                                                          _modulename,
                                                          domain,
                                                          path);
+            }
 
             result = result.Replace("//", "/").TrimStart('/');
 

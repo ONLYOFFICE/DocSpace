@@ -40,11 +40,17 @@ namespace ASC.Data.Storage.Configuration
 
         public void Subscribe()
         {
-            if (_subscribed) return;
+            if (_subscribed)
+            {
+                return;
+            }
 
             lock (_locker)
             {
-                if (_subscribed) return;
+                if (_subscribed)
+                {
+                    return;
+                }
 
                 _subscribed = true;
 
@@ -165,11 +171,17 @@ namespace ASC.Data.Storage.Configuration
 
         public DataStoreConsumer DataStoreConsumer<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings, new()
         {
-            if (string.IsNullOrEmpty(baseStorageSettings.Module) || baseStorageSettings.Props == null) return _dataStoreConsumer = new DataStoreConsumer();
+            if (string.IsNullOrEmpty(baseStorageSettings.Module) || baseStorageSettings.Props == null)
+            {
+                return _dataStoreConsumer = new DataStoreConsumer();
+            }
 
             var consumer = _consumerFactory.GetByKey<DataStoreConsumer>(baseStorageSettings.Module);
 
-            if (!consumer.IsSet) return _dataStoreConsumer = new DataStoreConsumer();
+            if (!consumer.IsSet)
+            {
+                return _dataStoreConsumer = new DataStoreConsumer();
+            }
 
             _dataStoreConsumer = (DataStoreConsumer)consumer.Clone();
 
@@ -183,9 +195,15 @@ namespace ASC.Data.Storage.Configuration
         
         public IDataStore DataStore<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings, new()
         {
-            if (_dataStore != null) return _dataStore;
+            if (_dataStore != null)
+            {
+                return _dataStore;
+            }
 
-            if (DataStoreConsumer(baseStorageSettings).HandlerType == null) return null;
+            if (DataStoreConsumer(baseStorageSettings).HandlerType == null)
+            {
+                return null;
+            }
 
             return _dataStore = ((IDataStore)
                 Activator.CreateInstance(DataStoreConsumer(baseStorageSettings).HandlerType, _tenantManager, _pathUtils, _httpContextAccessor, _options))

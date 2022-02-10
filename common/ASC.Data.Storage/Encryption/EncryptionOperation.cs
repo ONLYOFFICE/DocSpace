@@ -160,13 +160,12 @@ namespace ASC.Data.Storage.Encryption
             {
                 using var stream = store.GetReadStream(string.Empty, ProgressFileName);
                 using var reader = new StreamReader(stream);
-                        string line;
-
-                        while ((line = reader.ReadLine()) != null)
-                        {
-                            encryptedFiles.Add(line);
-                        }
-                    }
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    encryptedFiles.Add(line);
+                }
+            }
             else
             {
                 store.GetWriteStream(string.Empty, ProgressFileName).Close();
@@ -242,7 +241,7 @@ namespace ASC.Data.Storage.Encryption
 
             using var stream = store.GetWriteStream(string.Empty, ProgressFileName, FileMode.Append);
             using var writer = new StreamWriter(stream);
-                    writer.WriteLine(file);
+            writer.WriteLine(file);
         }
 
         private void DeleteProgressFiles(StorageFactory storageFactory)

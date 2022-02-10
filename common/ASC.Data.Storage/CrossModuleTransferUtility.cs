@@ -55,10 +55,25 @@ namespace ASC.Data.Storage
 
         public void CopyFile(string srcDomain, string srcPath, string destDomain, string destPath)
         {
-            if (srcDomain == null) throw new ArgumentNullException(nameof(srcDomain));
-            if (srcPath == null) throw new ArgumentNullException(nameof(srcPath));
-            if (destDomain == null) throw new ArgumentNullException(nameof(destDomain));
-            if (destPath == null) throw new ArgumentNullException(nameof(destPath));
+            if (srcDomain == null)
+            {
+                throw new ArgumentNullException(nameof(srcDomain));
+            }
+
+            if (srcPath == null)
+            {
+                throw new ArgumentNullException(nameof(srcPath));
+            }
+
+            if (destDomain == null)
+            {
+                throw new ArgumentNullException(nameof(destDomain));
+            }
+
+            if (destPath == null)
+            {
+                throw new ArgumentNullException(nameof(destPath));
+            }
 
             using var stream = _source.GetReadStream(srcDomain, srcPath);
             if (stream.Length < _maxChunkUploadSize)
@@ -114,7 +129,10 @@ namespace ASC.Data.Storage
             {
                 memstream.Write(buffer, 0, readed);
                 total += readed;
-                if (total >= _chunkSize) break;
+                if (total >= _chunkSize)
+                {
+                    break;
+                }
             }
 
             return total > 0;

@@ -78,6 +78,7 @@ namespace ASC.Data.Storage
         {
             var readed = _stream.Read(buffer, offset, count);
             OnReadProgress(this, (int)(_stream.Position / (double)_length * 100));
+
             return readed;
         }
 

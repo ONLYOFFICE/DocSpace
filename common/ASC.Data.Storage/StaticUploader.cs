@@ -63,9 +63,20 @@ namespace ASC.Data.Storage
 
         public string UploadFile(string relativePath, string mappedPath, Action<string> onComplete = null)
         {
-            if (s_tokenSource.Token.IsCancellationRequested) return null;
-            if (!CanUpload()) return null;
-            if (!File.Exists(mappedPath)) return null;
+            if (s_tokenSource.Token.IsCancellationRequested)
+            {
+                return null;
+            }
+
+            if (!CanUpload())
+            {
+                return null;
+            }
+
+            if (!File.Exists(mappedPath))
+            {
+                return null;
+            }
 
             var tenantId = _tenantManager.GetCurrentTenant().TenantId;
             UploadOperation uploadOperation;
@@ -111,8 +122,15 @@ namespace ASC.Data.Storage
 
         public void UploadDir(string relativePath, string mappedPath)
         {
-            if (!CanUpload()) return;
-            if (!Directory.Exists(mappedPath)) return;
+            if (!CanUpload())
+            {
+                return;
+            }
+
+            if (!Directory.Exists(mappedPath))
+            {
+                return;
+            }
 
             var tenant = _tenantManager.GetCurrentTenant();
             var key = typeof(UploadOperationProgress).FullName + tenant.TenantId;
@@ -121,7 +139,10 @@ namespace ASC.Data.Storage
             lock (s_locker)
             {
                 uploadOperation = Queue.GetTask<UploadOperationProgress>(key);
-                if (uploadOperation != null) return;
+                if (uploadOperation != null)
+                {
+                    return;
+                }
 
                 uploadOperation = new UploadOperationProgress(_serviceProvider, key, tenant.TenantId, relativePath, mappedPath);
                 Queue.QueueTask(uploadOperation);

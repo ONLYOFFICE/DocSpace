@@ -41,9 +41,8 @@
 
         public IDictionary<string, string> GetProperties()
         {
-            if (Property == null || !Property.Any()) return new Dictionary<string, string>();
-
-            return Property.ToDictionary(r => r.Name, r => r.Value);
+            return Property == null || !Property.Any() ? new Dictionary<string, string>() 
+                : Property.ToDictionary(r => r.Name, r => r.Value);
         }
     }
     public class Properties

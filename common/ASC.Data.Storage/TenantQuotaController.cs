@@ -65,6 +65,7 @@ namespace ASC.Data.Storage
                 QuotaUsedCheck(size, quotaCheckFileSize);
                 CurrentSize += size;
             }
+
             SetTenantQuotaRow(module, domain, size, dataTag, true);
         }
 
@@ -75,6 +76,7 @@ namespace ASC.Data.Storage
             {
                 CurrentSize += size;
             }
+
             SetTenantQuotaRow(module, domain, size, dataTag, true);
         }
 
@@ -85,6 +87,7 @@ namespace ASC.Data.Storage
             {
                 CurrentSize += size;
             }
+
             SetTenantQuotaRow(module, domain, size, dataTag, false);
         }
 

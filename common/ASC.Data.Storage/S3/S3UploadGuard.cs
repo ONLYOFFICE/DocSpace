@@ -110,6 +110,7 @@ namespace ASC.Data.Storage.S3
         private AmazonS3Client GetClient()
         {
             var s3Config = new AmazonS3Config { UseHttp = true, MaxErrorRetry = 3, RegionEndpoint = RegionEndpoint.GetBySystemName(_region) };
+
             return new AmazonS3Client(_accessKey, _secretAccessKey, s3Config);
         }
 

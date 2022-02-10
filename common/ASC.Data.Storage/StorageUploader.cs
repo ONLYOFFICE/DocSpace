@@ -54,7 +54,10 @@ namespace ASC.Data.Storage
             {
                 var id = GetCacheKey(tenantId);
                 var migrateOperation = Queue.GetTask<MigrateOperation>(id);
-                if (migrateOperation != null) return;
+                if (migrateOperation != null)
+                {
+                    return;
+                }
 
                 migrateOperation = new MigrateOperation(_serviceProvider, _cacheMigrationNotify, id, tenantId, newStorageSettings, storageFactoryConfig, _tempStream);
                 Queue.QueueTask(migrateOperation);
@@ -94,7 +97,7 @@ namespace ASC.Data.Storage
         private readonly IServiceProvider _serviceProvider;
         private readonly StorageFactoryConfig _storageFactoryConfig;
         private readonly TempStream _tempStream;
-        private readonly ICacheNotify<MigrationProgress> cacheMigrationNotify;
+        private readonly ICacheNotify<MigrationProgress> _cacheMigrationNotify;
 
         static MigrateOperation()
         {
@@ -114,7 +117,7 @@ namespace ASC.Data.Storage
             Status = DistributedTaskStatus.Created;
 
             _serviceProvider = serviceProvider;
-            this.cacheMigrationNotify = cacheMigrationNotify;
+            _cacheMigrationNotify = cacheMigrationNotify;
             _tenantId = tenantId;
             _settings = settings;
             _storageFactoryConfig = storageFactoryConfig;
@@ -202,7 +205,7 @@ namespace ASC.Data.Storage
 
         private void MigrationPublish()
         {
-            cacheMigrationNotify.Publish(new MigrationProgress
+            _cacheMigrationNotify.Publish(new MigrationProgress
             {
                 TenantId = _tenantId,
                 Progress = Percentage,

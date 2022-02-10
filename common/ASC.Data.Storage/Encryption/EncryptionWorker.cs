@@ -44,7 +44,11 @@ namespace ASC.Data.Storage.Encryption
             EncryptionOperation encryptionOperation;
             lock (_locker)
             {
-                if (_queue.GetTask<EncryptionOperation>(GetCacheId()) != null) return;
+                if (_queue.GetTask<EncryptionOperation>(GetCacheId()) != null)
+                {
+                    return;
+                }
+
                 encryptionOperation = _factoryOperation.CreateOperation(encryptionSettings, GetCacheId());
                 _queue.QueueTask(encryptionOperation);
             }
