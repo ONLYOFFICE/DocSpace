@@ -364,8 +364,8 @@ class FilesActionStore {
       if (isBuffer) setBufferSelection(item);
       else {
         setSelection([item]);
-        setHotkeyCaret(item);
-        setHotkeyCaretStart(item);
+        setHotkeyCaret(null);
+        setHotkeyCaretStart(null);
       }
     }
   };

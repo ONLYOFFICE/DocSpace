@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { observer, inject } from "mobx-react";
 
@@ -28,6 +28,7 @@ const withHotkeys = (Component) => {
       moveCaretRight,
       openItem,
       selectAll,
+      activateHotkeys,
     } = props;
 
     const hotkeysFilter = {
@@ -36,6 +37,14 @@ const withHotkeys = (Component) => {
       filterPreventDefault: false,
       enableOnTags: ["INPUT"],
     };
+
+    const onKeyDown = () => activateHotkeys();
+
+    useEffect(() => {
+      document.addEventListener("keydown", onKeyDown);
+
+      return () => document.removeEventListener("keypress", onKeyDown);
+    });
 
     //Select/deselect item
     useHotkeys("x", selectFile);
@@ -159,6 +168,7 @@ const withHotkeys = (Component) => {
         moveCaretRight,
         openItem,
         selectAll,
+        activateHotkeys,
       } = hotkeyStore;
 
       const { setHotkeyPanelVisible, setDeleteDialogVisible } = dialogsStore;
@@ -188,6 +198,7 @@ const withHotkeys = (Component) => {
         moveCaretRight,
         openItem,
         selectAll,
+        activateHotkeys,
       };
     }
   )(observer(WithHotkeys));

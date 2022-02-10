@@ -15,6 +15,15 @@ class HotkeyStore {
     this.filesActionsStore = filesActionsStore;
   }
 
+  activateHotkeys = () => {
+    const { selection, hotkeyCaret } = this.filesStore;
+
+    if (!hotkeyCaret && selection.length) {
+      this.filesStore.setHotkeyCaret(selection[0]);
+      this.filesStore.setHotkeyCaretStart(selection[0]);
+    }
+  };
+
   selectFirstFile = () => {
     const { filesList } = this.filesStore;
 
@@ -34,10 +43,11 @@ class HotkeyStore {
       selection,
       setSelection,
       hotkeyCaret,
+      setHotkeyCaret,
       setHotkeyCaretStart,
     } = this.filesStore;
 
-    const index = selection.findIndex((f) => f.id === hotkeyCaret.id);
+    const index = selection.findIndex((f) => f.id === hotkeyCaret?.id);
     if (index !== -1) {
       const newSelection = selection;
       newSelection.splice(index, 1);
@@ -48,8 +58,10 @@ class HotkeyStore {
       setSelection(newSelection);
       setHotkeyCaretStart(hotkeyCaret);
     } else {
-      this.selectFirstFile();
-      setHotkeyCaretStart(null);
+      if (selection.length) {
+        setHotkeyCaret(selection[0]);
+        setHotkeyCaretStart(selection[0]);
+      } else this.selectFirstFile();
     }
   };
 
