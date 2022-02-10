@@ -23,831 +23,799 @@
  *
 */
 
-namespace ASC.Data.Storage.S3
+namespace ASC.Data.Storage.S3;
+
+[Scope]
+public class S3Storage : BaseStorage
 {
-    [Scope]
-    public class S3Storage : BaseStorage
+    public override bool IsSupportChunking => true;
+
+    private readonly List<string> _domains = new List<string>();
+    private Dictionary<string, S3CannedACL> _domainsAcl;
+    private S3CannedACL _moduleAcl;
+    private string _accessKeyId = string.Empty;
+    private string _bucket = string.Empty;
+    private string _recycleDir = string.Empty;
+    private Uri _bucketRoot;
+    private Uri _bucketSSlRoot;
+    private string _region = string.Empty;
+    private string _serviceurl;
+    private bool _forcepathstyle;
+    private string _secretAccessKeyId = string.Empty;
+    private ServerSideEncryptionMethod _sse = ServerSideEncryptionMethod.AES256;
+    private bool _useHttp = true;
+    private bool _lowerCasing = true;
+    private bool _revalidateCloudFront;
+    private string _distributionId = string.Empty;
+    private string _subDir = string.Empty;
+
+    public S3Storage(
+        TempStream tempStream,
+        TenantManager tenantManager,
+        PathUtils pathUtils,
+        EmailValidationKeyProvider emailValidationKeyProvider,
+        IHttpContextAccessor httpContextAccessor,
+        IOptionsMonitor<ILog> options)
+        : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
     {
-        public override bool IsSupportChunking => true;
+    }
 
-        private readonly List<string> _domains = new List<string>();
-        private Dictionary<string, S3CannedACL> _domainsAcl;
-        private S3CannedACL _moduleAcl;
-        private string _accessKeyId = string.Empty;
-        private string _bucket = string.Empty;
-        private string _recycleDir = string.Empty;
-        private Uri _bucketRoot;
-        private Uri _bucketSSlRoot;
-        private string _region = string.Empty;
-        private string _serviceurl;
-        private bool _forcepathstyle;
-        private string _secretAccessKeyId = string.Empty;
-        private ServerSideEncryptionMethod _sse = ServerSideEncryptionMethod.AES256;
-        private bool _useHttp = true;
-        private bool _lowerCasing = true;
-        private bool _revalidateCloudFront;
-        private string _distributionId = string.Empty;
-        private string _subDir = string.Empty;
-        
-        public S3Storage(
-            TempStream tempStream,
-            TenantManager tenantManager,
-            PathUtils pathUtils,
-            EmailValidationKeyProvider emailValidationKeyProvider,
-            IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> options)
-            : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
+    public Uri GetUriInternal(string path)
+    {
+        return new Uri(SecureHelper.IsSecure(_httpContextAccessor?.HttpContext, _options) ? _bucketSSlRoot : _bucketRoot, path);
+    }
+
+    public Uri GetUriShared(string domain, string path)
+    {
+        return new Uri(SecureHelper.IsSecure(_httpContextAccessor?.HttpContext, _options) ? _bucketSSlRoot : _bucketRoot, MakePath(domain, path));
+    }
+
+    public override Uri GetInternalUri(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
+    {
+        if (expire == TimeSpan.Zero || expire == TimeSpan.MinValue || expire == TimeSpan.MaxValue)
         {
+            expire = GetExpire(domain);
+        }
+        if (expire == TimeSpan.Zero || expire == TimeSpan.MinValue || expire == TimeSpan.MaxValue)
+        {
+            return GetUriShared(domain, path);
         }
 
-        public Uri GetUriInternal(string path)
+        var pUrlRequest = new GetPreSignedUrlRequest
         {
-            return new Uri(SecureHelper.IsSecure(_httpContextAccessor?.HttpContext, _options) ? _bucketSSlRoot : _bucketRoot, path);
-        }
+            BucketName = _bucket,
+            Expires = DateTime.UtcNow.Add(expire),
+            Key = MakePath(domain, path),
+            Protocol = SecureHelper.IsSecure(_httpContextAccessor?.HttpContext, _options) ? Protocol.HTTPS : Protocol.HTTP,
+            Verb = HttpVerb.GET
+        };
 
-        public Uri GetUriShared(string domain, string path)
+        if (headers != null && headers.Any())
         {
-            return new Uri(SecureHelper.IsSecure(_httpContextAccessor?.HttpContext, _options) ? _bucketSSlRoot : _bucketRoot, MakePath(domain, path));
-        }
+            var headersOverrides = new ResponseHeaderOverrides();
 
-        public override Uri GetInternalUri(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
-        {
-            if (expire == TimeSpan.Zero || expire == TimeSpan.MinValue || expire == TimeSpan.MaxValue)
+            foreach (var h in headers)
             {
-                expire = GetExpire(domain);
-            }
-            if (expire == TimeSpan.Zero || expire == TimeSpan.MinValue || expire == TimeSpan.MaxValue)
-            {
-                return GetUriShared(domain, path);
-            }
-
-            var pUrlRequest = new GetPreSignedUrlRequest
-            {
-                BucketName = _bucket,
-                Expires = DateTime.UtcNow.Add(expire),
-                Key = MakePath(domain, path),
-                Protocol = SecureHelper.IsSecure(_httpContextAccessor?.HttpContext, _options) ? Protocol.HTTPS : Protocol.HTTP,
-                Verb = HttpVerb.GET
-            };
-
-            if (headers != null && headers.Any())
-            {
-                var headersOverrides = new ResponseHeaderOverrides();
-
-                foreach (var h in headers)
+                if (h.StartsWith("Content-Disposition"))
                 {
-                    if (h.StartsWith("Content-Disposition"))
-                    {
-                        headersOverrides.ContentDisposition = (h.Substring("Content-Disposition".Length + 1));
-                    }
-                    else if (h.StartsWith("Cache-Control"))
-                    {
-                        headersOverrides.CacheControl = (h.Substring("Cache-Control".Length + 1));
-                    }
-                    else if (h.StartsWith("Content-Encoding"))
-                    {
-                        headersOverrides.ContentEncoding = (h.Substring("Content-Encoding".Length + 1));
-                    }
-                    else if (h.StartsWith("Content-Language"))
-                    {
-                        headersOverrides.ContentLanguage = (h.Substring("Content-Language".Length + 1));
-                    }
-                    else if (h.StartsWith("Content-Type"))
-                    {
-                        headersOverrides.ContentType = (h.Substring("Content-Type".Length + 1));
-                    }
-                    else if (h.StartsWith("Expires"))
-                    {
-                        headersOverrides.Expires = (h.Substring("Expires".Length + 1));
-                    }
-                    else
-                    {
-                        throw new FormatException(string.Format("Invalid header: {0}", h));
-                    }
+                    headersOverrides.ContentDisposition = (h.Substring("Content-Disposition".Length + 1));
                 }
-
-                pUrlRequest.ResponseHeaderOverrides = headersOverrides;
+                else if (h.StartsWith("Cache-Control"))
+                {
+                    headersOverrides.CacheControl = (h.Substring("Cache-Control".Length + 1));
+                }
+                else if (h.StartsWith("Content-Encoding"))
+                {
+                    headersOverrides.ContentEncoding = (h.Substring("Content-Encoding".Length + 1));
+                }
+                else if (h.StartsWith("Content-Language"))
+                {
+                    headersOverrides.ContentLanguage = (h.Substring("Content-Language".Length + 1));
+                }
+                else if (h.StartsWith("Content-Type"))
+                {
+                    headersOverrides.ContentType = (h.Substring("Content-Type".Length + 1));
+                }
+                else if (h.StartsWith("Expires"))
+                {
+                    headersOverrides.Expires = (h.Substring("Expires".Length + 1));
+                }
+                else
+                {
+                    throw new FormatException(string.Format("Invalid header: {0}", h));
+                }
             }
 
+            pUrlRequest.ResponseHeaderOverrides = headersOverrides;
+        }
+
+        using var client = GetClient();
+
+        return MakeUri(client.GetPreSignedURL(pUrlRequest));
+    }
+
+    public override Stream GetReadStream(string domain, string path)
+    {
+        return GetReadStream(domain, path, 0);
+    }
+
+    public override Stream GetReadStream(string domain, string path, int offset)
+    {
+        var request = new GetObjectRequest
+        {
+            BucketName = _bucket,
+            Key = MakePath(domain, path)
+        };
+
+        if (0 < offset)
+        {
+            request.ByteRange = new ByteRange(offset, int.MaxValue);
+        }
+
+        try
+        {
             using var client = GetClient();
 
-            return MakeUri(client.GetPreSignedURL(pUrlRequest));
+            return new ResponseStreamWrapper(client.GetObjectAsync(request).Result);
+        }
+        catch (AmazonS3Exception ex)
+        {
+            if (ex.ErrorCode == "NoSuchKey")
+            {
+                throw new FileNotFoundException("File not found", path);
+            }
+
+            throw;
+        }
+    }
+
+    public override async Task<Stream> GetReadStreamAsync(string domain, string path, int offset)
+    {
+        var request = new GetObjectRequest
+        {
+            BucketName = _bucket,
+            Key = MakePath(domain, path)
+        };
+
+        if (0 < offset)
+        {
+            request.ByteRange = new ByteRange(offset, int.MaxValue);
         }
 
-        public override Stream GetReadStream(string domain, string path)
+        try
         {
-            return GetReadStream(domain, path, 0);
-        }
-
-        public override Stream GetReadStream(string domain, string path, int offset)
-        {
-            var request = new GetObjectRequest
-            {
-                BucketName = _bucket,
-                Key = MakePath(domain, path)
-            };
-
-            if (0 < offset)
-            {
-                request.ByteRange = new ByteRange(offset, int.MaxValue);
-            }
-
-            try
-            {
-                using var client = GetClient();
-
-                return new ResponseStreamWrapper(client.GetObjectAsync(request).Result);
-            }
-            catch (AmazonS3Exception ex)
-            {
-                if (ex.ErrorCode == "NoSuchKey")
-                {
-                    throw new FileNotFoundException("File not found", path);
-                }
-
-                throw;
-            }
-        }
-
-        public override async Task<Stream> GetReadStreamAsync(string domain, string path, int offset)
-        {
-            var request = new GetObjectRequest
-            {
-                BucketName = _bucket,
-                Key = MakePath(domain, path)
-            };
-
-            if (0 < offset)
-            {
-                request.ByteRange = new ByteRange(offset, int.MaxValue);
-            }
-
-            try
-            {
-                using var client = GetClient();
-
-                return new ResponseStreamWrapper(await client.GetObjectAsync(request));
-            }
-            catch (AmazonS3Exception ex)
-            {
-                if (ex.ErrorCode == "NoSuchKey")
-                {
-                    throw new FileNotFoundException("File not found", path);
-                }
-
-                throw;
-            }
-        }
-
-        public override Uri Save(string domain, string path, Stream stream, string contentType,
-                        string contentDisposition)
-        {
-            return Save(domain, path, stream, contentType, contentDisposition, ACL.Auto);
-        }
-
-        public Uri Save(string domain, string path, Stream stream, string contentType,
-                                 string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5)
-        {
-            var buffered = _tempStream.GetBuffered(stream);
-            if (QuotaController != null)
-            {
-                QuotaController.QuotaUsedCheck(buffered.Length);
-            }
-
             using var client = GetClient();
-            using var uploader = new TransferUtility(client);
-            var mime = string.IsNullOrEmpty(contentType)
-                ? MimeMapping.GetMimeMapping(Path.GetFileName(path))
-                : contentType;
 
-            var request = new TransferUtilityUploadRequest
+            return new ResponseStreamWrapper(await client.GetObjectAsync(request));
+        }
+        catch (AmazonS3Exception ex)
+        {
+            if (ex.ErrorCode == "NoSuchKey")
             {
-                BucketName = _bucket,
-                Key = MakePath(domain, path),
-                ContentType = mime,
-                ServerSideEncryptionMethod = _sse,
-                InputStream = buffered,
-                AutoCloseStream = false,
-                Headers =
+                throw new FileNotFoundException("File not found", path);
+            }
+
+            throw;
+        }
+    }
+
+    public override Uri Save(string domain, string path, Stream stream, string contentType,
+                    string contentDisposition)
+    {
+        return Save(domain, path, stream, contentType, contentDisposition, ACL.Auto);
+    }
+
+    public Uri Save(string domain, string path, Stream stream, string contentType,
+                             string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5)
+    {
+        var buffered = _tempStream.GetBuffered(stream);
+        if (QuotaController != null)
+        {
+            QuotaController.QuotaUsedCheck(buffered.Length);
+        }
+
+        using var client = GetClient();
+        using var uploader = new TransferUtility(client);
+        var mime = string.IsNullOrEmpty(contentType)
+            ? MimeMapping.GetMimeMapping(Path.GetFileName(path))
+            : contentType;
+
+        var request = new TransferUtilityUploadRequest
+        {
+            BucketName = _bucket,
+            Key = MakePath(domain, path),
+            ContentType = mime,
+            ServerSideEncryptionMethod = _sse,
+            InputStream = buffered,
+            AutoCloseStream = false,
+            Headers =
                 {
                     CacheControl = string.Format("public, maxage={0}", (int)TimeSpan.FromDays(cacheDays).TotalSeconds),
                     ExpiresUtc = DateTime.UtcNow.Add(TimeSpan.FromDays(cacheDays))
                 }
-            };
+        };
 
-            if (!WorkContext.IsMono) //  System.Net.Sockets.SocketException: Connection reset by peer
+        if (!WorkContext.IsMono) //  System.Net.Sockets.SocketException: Connection reset by peer
+        {
+            switch (acl)
             {
-                switch (acl)
-                {
-                    case ACL.Auto:
-                        request.CannedACL = GetDomainACL(domain);
-                        break;
-                    case ACL.Read:
-                    case ACL.Private:
-                        request.CannedACL = GetS3Acl(acl);
-                        break;
-                }
+                case ACL.Auto:
+                    request.CannedACL = GetDomainACL(domain);
+                    break;
+                case ACL.Read:
+                case ACL.Private:
+                    request.CannedACL = GetS3Acl(acl);
+                    break;
+            }
+        }
+
+        if (!string.IsNullOrEmpty(contentDisposition))
+        {
+            request.Headers.ContentDisposition = contentDisposition;
+        }
+        else if (mime == "application/octet-stream")
+        {
+            request.Headers.ContentDisposition = "attachment";
+        }
+
+        if (!string.IsNullOrEmpty(contentEncoding))
+        {
+            request.Headers.ContentEncoding = contentEncoding;
+        }
+
+        uploader.Upload(request);
+
+        InvalidateCloudFront(MakePath(domain, path));
+
+        QuotaUsedAdd(domain, buffered.Length);
+
+        return GetUri(domain, path);
+    }
+
+    public override Uri Save(string domain, string path, Stream stream)
+    {
+        return Save(domain, path, stream, string.Empty, string.Empty);
+    }
+
+    public override Uri Save(string domain, string path, Stream stream, string contentEncoding, int cacheDays)
+    {
+        return Save(domain, path, stream, string.Empty, string.Empty, ACL.Auto, contentEncoding, cacheDays);
+    }
+
+    public override Uri Save(string domain, string path, Stream stream, ACL acl)
+    {
+        return Save(domain, path, stream, null, null, acl);
+    }
+
+    #region chunking
+
+    public override string InitiateChunkedUpload(string domain, string path)
+    {
+        var request = new InitiateMultipartUploadRequest
+        {
+            BucketName = _bucket,
+            Key = MakePath(domain, path),
+            ServerSideEncryptionMethod = _sse
+        };
+
+        using var s3 = GetClient();
+        var response = s3.InitiateMultipartUploadAsync(request).Result;
+
+        return response.UploadId;
+    }
+
+    public override string UploadChunk(string domain, string path, string uploadId, Stream stream, long defaultChunkSize, int chunkNumber, long chunkLength)
+    {
+        var request = new UploadPartRequest
+        {
+            BucketName = _bucket,
+            Key = MakePath(domain, path),
+            UploadId = uploadId,
+            PartNumber = chunkNumber,
+            InputStream = stream
+        };
+
+        try
+        {
+            using var s3 = GetClient();
+            var response = s3.UploadPartAsync(request).Result;
+
+            return response.ETag;
+        }
+        catch (AmazonS3Exception error)
+        {
+            if (error.ErrorCode == "NoSuchUpload")
+            {
+                AbortChunkedUpload(domain, path, uploadId);
             }
 
-            if (!string.IsNullOrEmpty(contentDisposition))
+            throw;
+        }
+    }
+
+    public override Uri FinalizeChunkedUpload(string domain, string path, string uploadId, Dictionary<int, string> eTags)
+    {
+        var request = new CompleteMultipartUploadRequest
+        {
+            BucketName = _bucket,
+            Key = MakePath(domain, path),
+            UploadId = uploadId,
+            PartETags = eTags.Select(x => new PartETag(x.Key, x.Value)).ToList()
+        };
+
+        try
+        {
+            using (var s3 = GetClient())
             {
-                request.Headers.ContentDisposition = contentDisposition;
+                s3.CompleteMultipartUploadAsync(request).Wait();
+                InvalidateCloudFront(MakePath(domain, path));
             }
-            else if (mime == "application/octet-stream")
+
+            if (QuotaController != null)
             {
-                request.Headers.ContentDisposition = "attachment";
+                var size = GetFileSize(domain, path);
+                QuotaUsedAdd(domain, size);
             }
-
-            if (!string.IsNullOrEmpty(contentEncoding))
-            {
-                request.Headers.ContentEncoding = contentEncoding;
-            }
-
-            uploader.Upload(request);
-
-            InvalidateCloudFront(MakePath(domain, path));
-
-            QuotaUsedAdd(domain, buffered.Length);
 
             return GetUri(domain, path);
         }
-
-        public override Uri Save(string domain, string path, Stream stream)
+        catch (AmazonS3Exception error)
         {
-            return Save(domain, path, stream, string.Empty, string.Empty);
-        }
-
-        public override Uri Save(string domain, string path, Stream stream, string contentEncoding, int cacheDays)
-        {
-            return Save(domain, path, stream, string.Empty, string.Empty, ACL.Auto, contentEncoding, cacheDays);
-        }
-
-        public override Uri Save(string domain, string path, Stream stream, ACL acl)
-        {
-            return Save(domain, path, stream, null, null, acl);
-        }
-
-        #region chunking
-
-        public override string InitiateChunkedUpload(string domain, string path)
-        {
-            var request = new InitiateMultipartUploadRequest
+            if (error.ErrorCode == "NoSuchUpload")
             {
-                BucketName = _bucket,
-                Key = MakePath(domain, path),
-                ServerSideEncryptionMethod = _sse
-            };
+                AbortChunkedUpload(domain, path, uploadId);
+            }
 
-            using var s3 = GetClient();
-            var response = s3.InitiateMultipartUploadAsync(request).Result;
+            throw;
+        }
+    }
 
-            return response.UploadId;
+    public override void AbortChunkedUpload(string domain, string path, string uploadId)
+    {
+        var key = MakePath(domain, path);
+
+        var request = new AbortMultipartUploadRequest
+        {
+            BucketName = _bucket,
+            Key = key,
+            UploadId = uploadId
+        };
+
+        using var s3 = GetClient();
+        s3.AbortMultipartUploadAsync(request).Wait();
+    }
+
+    #endregion
+
+    public override void Delete(string domain, string path)
+    {
+        using var client = GetClient();
+        var key = MakePath(domain, path);
+        var size = GetFileSize(domain, path);
+
+        Recycle(client, domain, key);
+
+        var request = new DeleteObjectRequest
+        {
+            BucketName = _bucket,
+            Key = key
+        };
+
+        client.DeleteObjectAsync(request).Wait();
+
+        QuotaUsedDelete(domain, size);
+    }
+
+    public override void DeleteFiles(string domain, List<string> paths)
+    {
+        if (!paths.Any())
+        {
+            return;
         }
 
-        public override string UploadChunk(string domain, string path, string uploadId, Stream stream, long defaultChunkSize, int chunkNumber, long chunkLength)
-        {
-            var request = new UploadPartRequest
-            {
-                BucketName = _bucket,
-                Key = MakePath(domain, path),
-                UploadId = uploadId,
-                PartNumber = chunkNumber,
-                InputStream = stream
-            };
+        var keysToDel = new List<string>();
 
+        long quotaUsed = 0;
+
+        foreach (var path in paths)
+        {
             try
             {
-                using var s3 = GetClient();
-                var response = s3.UploadPartAsync(request).Result;
+                //var obj = GetS3Objects(domain, path).FirstOrDefault();
 
-                return response.ETag;
-            }
-            catch (AmazonS3Exception error)
-            {
-                if (error.ErrorCode == "NoSuchUpload")
-                {
-                    AbortChunkedUpload(domain, path, uploadId);
-                }
-
-                throw;
-            }
-        }
-
-        public override Uri FinalizeChunkedUpload(string domain, string path, string uploadId, Dictionary<int, string> eTags)
-        {
-            var request = new CompleteMultipartUploadRequest
-            {
-                BucketName = _bucket,
-                Key = MakePath(domain, path),
-                UploadId = uploadId,
-                PartETags = eTags.Select(x => new PartETag(x.Key, x.Value)).ToList()
-            };
-
-            try
-            {
-                using (var s3 = GetClient())
-                {
-                    s3.CompleteMultipartUploadAsync(request).Wait();
-                    InvalidateCloudFront(MakePath(domain, path));
-                }
+                var key = MakePath(domain, path);
 
                 if (QuotaController != null)
                 {
-                    var size = GetFileSize(domain, path);
-                    QuotaUsedAdd(domain, size);
+                    quotaUsed += GetFileSize(domain, path);
                 }
 
-                return GetUri(domain, path);
+                keysToDel.Add(key);
+
+                //objsToDel.Add(obj);
             }
-            catch (AmazonS3Exception error)
+            catch (FileNotFoundException)
             {
-                if (error.ErrorCode == "NoSuchUpload")
-                {
-                    AbortChunkedUpload(domain, path, uploadId);
-                }
 
-                throw;
             }
         }
 
-        public override void AbortChunkedUpload(string domain, string path, string uploadId)
+        if (!keysToDel.Any())
         {
-            var key = MakePath(domain, path);
+            return;
+        }
 
-            var request = new AbortMultipartUploadRequest
+        using (var client = GetClient())
+        {
+            var deleteRequest = new DeleteObjectsRequest
             {
                 BucketName = _bucket,
-                Key = key,
-                UploadId = uploadId
+                Objects = keysToDel.Select(key => new KeyVersion { Key = key }).ToList()
             };
 
-            using var s3 = GetClient();
-            s3.AbortMultipartUploadAsync(request).Wait();
+            client.DeleteObjectsAsync(deleteRequest).Wait();
         }
 
-        #endregion
-
-        public override void Delete(string domain, string path)
+        if (quotaUsed > 0)
         {
-            using var client = GetClient();
-            var key = MakePath(domain, path);
-            var size = GetFileSize(domain, path);
+            QuotaUsedDelete(domain, quotaUsed);
+        }
+    }
 
-            Recycle(client, domain, key);
+    public override void DeleteFiles(string domain, string path, string pattern, bool recursive)
+    {
+        var makedPath = MakePath(domain, path) + '/';
+        var objToDel = GetS3Objects(domain, path)
+            .Where(x =>
+                Wildcard.IsMatch(pattern, Path.GetFileName(x.Key))
+                && (recursive || !x.Key.Remove(0, makedPath.Length).Contains('/'))
+                );
 
-            var request = new DeleteObjectRequest
+        using var client = GetClient();
+        foreach (var s3Object in objToDel)
+        {
+            Recycle(client, domain, s3Object.Key);
+
+            var deleteRequest = new DeleteObjectRequest
             {
                 BucketName = _bucket,
-                Key = key
+                Key = s3Object.Key
             };
 
-            client.DeleteObjectAsync(request).Wait();
+            client.DeleteObjectAsync(deleteRequest).Wait();
 
-            QuotaUsedDelete(domain, size);
+            QuotaUsedDelete(domain, Convert.ToInt64(s3Object.Size));
         }
+    }
 
-        public override void DeleteFiles(string domain, List<string> paths)
+    public override void DeleteFiles(string domain, string path, DateTime fromDate, DateTime toDate)
+    {
+        var objToDel = GetS3Objects(domain, path)
+            .Where(x => x.LastModified >= fromDate && x.LastModified <= toDate);
+
+        using var client = GetClient();
+        foreach (var s3Object in objToDel)
         {
-            if (!paths.Any())
-            {
-                return;
-            }
+            Recycle(client, domain, s3Object.Key);
 
-            var keysToDel = new List<string>();
-
-            long quotaUsed = 0;
-
-            foreach (var path in paths)
-            {
-                try
-                {
-                    //var obj = GetS3Objects(domain, path).FirstOrDefault();
-
-                    var key = MakePath(domain, path);
-
-                    if (QuotaController != null)
-                    {
-                        quotaUsed += GetFileSize(domain, path);
-                    }
-
-                    keysToDel.Add(key);
-
-                    //objsToDel.Add(obj);
-                }
-                catch (FileNotFoundException)
-                {
-
-                }
-            }
-
-            if (!keysToDel.Any())
-            {
-                return;
-            }
-
-            using (var client = GetClient())
-            {
-                var deleteRequest = new DeleteObjectsRequest
-                {
-                    BucketName = _bucket,
-                    Objects = keysToDel.Select(key => new KeyVersion { Key = key }).ToList()
-                };
-
-                client.DeleteObjectsAsync(deleteRequest).Wait();
-            }
-
-            if (quotaUsed > 0)
-            {
-                QuotaUsedDelete(domain, quotaUsed);
-            }
-        }
-
-        public override void DeleteFiles(string domain, string path, string pattern, bool recursive)
-        {
-            var makedPath = MakePath(domain, path) + '/';
-            var objToDel = GetS3Objects(domain, path)
-                .Where(x =>
-                    Wildcard.IsMatch(pattern, Path.GetFileName(x.Key))
-                    && (recursive || !x.Key.Remove(0, makedPath.Length).Contains('/'))
-                    );
-
-            using var client = GetClient();
-            foreach (var s3Object in objToDel)
-            {
-                Recycle(client, domain, s3Object.Key);
-
-                var deleteRequest = new DeleteObjectRequest
-                {
-                    BucketName = _bucket,
-                    Key = s3Object.Key
-                };
-
-                client.DeleteObjectAsync(deleteRequest).Wait();
-
-                QuotaUsedDelete(domain, Convert.ToInt64(s3Object.Size));
-            }
-        }
-
-        public override void DeleteFiles(string domain, string path, DateTime fromDate, DateTime toDate)
-        {
-            var objToDel = GetS3Objects(domain, path)
-                .Where(x => x.LastModified >= fromDate && x.LastModified <= toDate);
-
-            using var client = GetClient();
-            foreach (var s3Object in objToDel)
-            {
-                Recycle(client, domain, s3Object.Key);
-
-                var deleteRequest = new DeleteObjectRequest
-                {
-                    BucketName = _bucket,
-                    Key = s3Object.Key
-                };
-
-                client.DeleteObjectAsync(deleteRequest).Wait();
-
-                QuotaUsedDelete(domain, Convert.ToInt64(s3Object.Size));
-            }
-        }
-
-        public override void MoveDirectory(string srcdomain, string srcdir, string newdomain, string newdir)
-        {
-            var srckey = MakePath(srcdomain, srcdir);
-            var dstkey = MakePath(newdomain, newdir);
-            //List files from src
-            using var client = GetClient();
-            var request = new ListObjectsRequest
+            var deleteRequest = new DeleteObjectRequest
             {
                 BucketName = _bucket,
-                Prefix = srckey
+                Key = s3Object.Key
             };
 
-            var response = client.ListObjectsAsync(request).Result;
-            foreach (var s3Object in response.S3Objects)
-            {
-                client.CopyObjectAsync(new CopyObjectRequest
-                {
-                    SourceBucket = _bucket,
-                    SourceKey = s3Object.Key,
-                    DestinationBucket = _bucket,
-                    DestinationKey = s3Object.Key.Replace(srckey, dstkey),
-                    CannedACL = GetDomainACL(newdomain),
-                    ServerSideEncryptionMethod = _sse
-                })
-                    .Wait();
+            client.DeleteObjectAsync(deleteRequest).Wait();
 
-                client.DeleteObjectAsync(new DeleteObjectRequest
-                {
-                    BucketName = _bucket,
-                    Key = s3Object.Key
-                }).Wait();
-            }
+            QuotaUsedDelete(domain, Convert.ToInt64(s3Object.Size));
         }
+    }
 
-        public override Uri Move(string srcdomain, string srcpath, string newdomain, string newpath, bool quotaCheckFileSize = true)
+    public override void MoveDirectory(string srcdomain, string srcdir, string newdomain, string newdir)
+    {
+        var srckey = MakePath(srcdomain, srcdir);
+        var dstkey = MakePath(newdomain, newdir);
+        //List files from src
+        using var client = GetClient();
+        var request = new ListObjectsRequest
         {
-            using var client = GetClient();
-            var srcKey = MakePath(srcdomain, srcpath);
-            var dstKey = MakePath(newdomain, newpath);
-            var size = GetFileSize(srcdomain, srcpath);
+            BucketName = _bucket,
+            Prefix = srckey
+        };
 
-            var request = new CopyObjectRequest
+        var response = client.ListObjectsAsync(request).Result;
+        foreach (var s3Object in response.S3Objects)
+        {
+            client.CopyObjectAsync(new CopyObjectRequest
             {
                 SourceBucket = _bucket,
-                SourceKey = srcKey,
+                SourceKey = s3Object.Key,
                 DestinationBucket = _bucket,
-                DestinationKey = dstKey,
+                DestinationKey = s3Object.Key.Replace(srckey, dstkey),
                 CannedACL = GetDomainACL(newdomain),
-                MetadataDirective = S3MetadataDirective.REPLACE,
                 ServerSideEncryptionMethod = _sse
-            };
+            })
+                .Wait();
 
-            client.CopyObjectAsync(request).Wait();
-            Delete(srcdomain, srcpath);
-
-            QuotaUsedDelete(srcdomain, size);
-            QuotaUsedAdd(newdomain, size, quotaCheckFileSize);
-
-            return GetUri(newdomain, newpath);
-        }
-
-        public override Uri SaveTemp(string domain, out string assignedPath, Stream stream)
-        {
-            assignedPath = Guid.NewGuid().ToString();
-
-            return Save(domain, assignedPath, stream);
-        }
-
-        public override string[] ListDirectoriesRelative(string domain, string path, bool recursive)
-        {
-            return GetS3Objects(domain, path)
-                .Select(x => x.Key.Substring((MakePath(domain, path) + "/").Length))
-                .ToArray();
-        }
-
-        public override string SavePrivate(string domain, string path, Stream stream, DateTime expires)
-        {
-            using var client = GetClient();
-            using var uploader = new TransferUtility(client);
-            var objectKey = MakePath(domain, path);
-            var buffered = _tempStream.GetBuffered(stream);
-            var request = new TransferUtilityUploadRequest
+            client.DeleteObjectAsync(new DeleteObjectRequest
             {
                 BucketName = _bucket,
-                Key = objectKey,
-                CannedACL = S3CannedACL.BucketOwnerFullControl,
-                ContentType = "application/octet-stream",
-                InputStream = buffered,
-                Headers =
+                Key = s3Object.Key
+            }).Wait();
+        }
+    }
+
+    public override Uri Move(string srcdomain, string srcpath, string newdomain, string newpath, bool quotaCheckFileSize = true)
+    {
+        using var client = GetClient();
+        var srcKey = MakePath(srcdomain, srcpath);
+        var dstKey = MakePath(newdomain, newpath);
+        var size = GetFileSize(srcdomain, srcpath);
+
+        var request = new CopyObjectRequest
+        {
+            SourceBucket = _bucket,
+            SourceKey = srcKey,
+            DestinationBucket = _bucket,
+            DestinationKey = dstKey,
+            CannedACL = GetDomainACL(newdomain),
+            MetadataDirective = S3MetadataDirective.REPLACE,
+            ServerSideEncryptionMethod = _sse
+        };
+
+        client.CopyObjectAsync(request).Wait();
+        Delete(srcdomain, srcpath);
+
+        QuotaUsedDelete(srcdomain, size);
+        QuotaUsedAdd(newdomain, size, quotaCheckFileSize);
+
+        return GetUri(newdomain, newpath);
+    }
+
+    public override Uri SaveTemp(string domain, out string assignedPath, Stream stream)
+    {
+        assignedPath = Guid.NewGuid().ToString();
+
+        return Save(domain, assignedPath, stream);
+    }
+
+    public override string[] ListDirectoriesRelative(string domain, string path, bool recursive)
+    {
+        return GetS3Objects(domain, path)
+            .Select(x => x.Key.Substring((MakePath(domain, path) + "/").Length))
+            .ToArray();
+    }
+
+    public override string SavePrivate(string domain, string path, Stream stream, DateTime expires)
+    {
+        using var client = GetClient();
+        using var uploader = new TransferUtility(client);
+        var objectKey = MakePath(domain, path);
+        var buffered = _tempStream.GetBuffered(stream);
+        var request = new TransferUtilityUploadRequest
+        {
+            BucketName = _bucket,
+            Key = objectKey,
+            CannedACL = S3CannedACL.BucketOwnerFullControl,
+            ContentType = "application/octet-stream",
+            InputStream = buffered,
+            Headers =
                     {
                         CacheControl = string.Format("public, maxage={0}", (int)TimeSpan.FromDays(5).TotalSeconds),
                         ExpiresUtc = DateTime.UtcNow.Add(TimeSpan.FromDays(5)),
                         ContentDisposition = "attachment",
                     }
-            };
+        };
 
-            request.Metadata.Add("private-expire", expires.ToFileTimeUtc().ToString(CultureInfo.InvariantCulture));
+        request.Metadata.Add("private-expire", expires.ToFileTimeUtc().ToString(CultureInfo.InvariantCulture));
 
-            uploader.Upload(request);
+        uploader.Upload(request);
 
-            //Get presigned url                
-            var pUrlRequest = new GetPreSignedUrlRequest
+        //Get presigned url                
+        var pUrlRequest = new GetPreSignedUrlRequest
+        {
+            BucketName = _bucket,
+            Expires = expires,
+            Key = objectKey,
+            Protocol = Protocol.HTTP,
+            Verb = HttpVerb.GET
+        };
+
+        var url = client.GetPreSignedURL(pUrlRequest);
+        //TODO: CNAME!
+        return url;
+    }
+
+    public override void DeleteExpired(string domain, string path, TimeSpan oldThreshold)
+    {
+        using var client = GetClient();
+        var s3Obj = GetS3Objects(domain, path);
+        foreach (var s3Object in s3Obj)
+        {
+            var request = new GetObjectMetadataRequest
             {
                 BucketName = _bucket,
-                Expires = expires,
-                Key = objectKey,
-                Protocol = Protocol.HTTP,
-                Verb = HttpVerb.GET
+                Key = s3Object.Key
             };
 
-            var url = client.GetPreSignedURL(pUrlRequest);
-            //TODO: CNAME!
-            return url;
+            var metadata = client.GetObjectMetadataAsync(request).Result;
+            var privateExpireKey = metadata.Metadata["private-expire"];
+            if (string.IsNullOrEmpty(privateExpireKey))
+            {
+                continue;
+            }
+
+            if (!long.TryParse(privateExpireKey, out var fileTime))
+            {
+                continue;
+            }
+
+            if (DateTime.UtcNow <= DateTime.FromFileTimeUtc(fileTime))
+            {
+                continue;
+            }
+            //Delete it
+            var deleteObjectRequest = new DeleteObjectRequest
+            {
+                BucketName = _bucket,
+                Key = s3Object.Key
+            };
+
+            client.DeleteObjectAsync(deleteObjectRequest).Wait();
+        }
+    }
+
+    public override string GetUploadUrl()
+    {
+        return GetUriInternal(string.Empty).ToString();
+    }
+
+    public override string GetPostParams(string domain, string directoryPath, long maxUploadSize, string contentType,
+                                         string contentDisposition)
+    {
+        var key = MakePath(domain, directoryPath) + "/";
+        //Generate policy
+        var policyBase64 = GetPolicyBase64(key, string.Empty, contentType, contentDisposition, maxUploadSize,
+                                              out var sign);
+        var postBuilder = new StringBuilder();
+        postBuilder.Append("{");
+        postBuilder.AppendFormat("\"key\":\"{0}${{filename}}\",", key);
+        postBuilder.AppendFormat("\"acl\":\"public-read\",");
+        postBuilder.AppendFormat("\"key\":\"{0}\",", key);
+        postBuilder.AppendFormat("\"success_action_status\":\"{0}\",", 201);
+
+        if (!string.IsNullOrEmpty(contentType))
+        {
+            postBuilder.AppendFormat("\"Content-Type\":\"{0}\",", contentType);
         }
 
-        public override void DeleteExpired(string domain, string path, TimeSpan oldThreshold)
+        if (!string.IsNullOrEmpty(contentDisposition))
         {
-            using var client = GetClient();
-            var s3Obj = GetS3Objects(domain, path);
-            foreach (var s3Object in s3Obj)
-            {
-                var request = new GetObjectMetadataRequest
-                {
-                    BucketName = _bucket,
-                    Key = s3Object.Key
-                };
+            postBuilder.AppendFormat("\"Content-Disposition\":\"{0}\",", contentDisposition);
+        }
 
-                var metadata = client.GetObjectMetadataAsync(request).Result;
-                var privateExpireKey = metadata.Metadata["private-expire"];
-                if (string.IsNullOrEmpty(privateExpireKey))
+        postBuilder.AppendFormat("\"AWSAccessKeyId\":\"{0}\",", _accessKeyId);
+        postBuilder.AppendFormat("\"Policy\":\"{0}\",", policyBase64);
+        postBuilder.AppendFormat("\"Signature\":\"{0}\"", sign);
+        postBuilder.AppendFormat("\"SignatureVersion\":\"{0}\"", 2);
+        postBuilder.AppendFormat("\"SignatureMethod\":\"{0}\"", "HmacSHA1");
+        postBuilder.Append("}");
+
+        return postBuilder.ToString();
+    }
+
+    public override string GetUploadForm(string domain, string directoryPath, string redirectTo, long maxUploadSize,
+                                         string contentType, string contentDisposition, string submitLabel)
+    {
+        var destBucket = GetUploadUrl();
+        var key = MakePath(domain, directoryPath) + "/";
+        //Generate policy
+        var policyBase64 = GetPolicyBase64(key, redirectTo, contentType, contentDisposition, maxUploadSize,
+                                              out var sign);
+
+        var formBuilder = new StringBuilder();
+        formBuilder.AppendFormat("<form action=\"{0}\" method=\"post\" enctype=\"multipart/form-data\">", destBucket);
+        formBuilder.AppendFormat("<input type=\"hidden\" name=\"key\" value=\"{0}${{filename}}\" />", key);
+        formBuilder.Append("<input type=\"hidden\" name=\"acl\" value=\"public-read\" />");
+        if (!string.IsNullOrEmpty(redirectTo))
+        {
+            formBuilder.AppendFormat("<input type=\"hidden\" name=\"success_action_redirect\" value=\"{0}\" />",
+                                     redirectTo);
+        }
+
+        formBuilder.AppendFormat("<input type=\"hidden\" name=\"success_action_status\" value=\"{0}\" />", 201);
+
+        if (!string.IsNullOrEmpty(contentType))
+        {
+            formBuilder.AppendFormat("<input type=\"hidden\" name=\"Content-Type\" value=\"{0}\" />", contentType);
+        }
+
+        if (!string.IsNullOrEmpty(contentDisposition))
+        {
+            formBuilder.AppendFormat("<input type=\"hidden\" name=\"Content-Disposition\" value=\"{0}\" />",
+                                     contentDisposition);
+        }
+
+        formBuilder.AppendFormat("<input type=\"hidden\" name=\"AWSAccessKeyId\" value=\"{0}\"/>", _accessKeyId);
+        formBuilder.AppendFormat("<input type=\"hidden\" name=\"Policy\" value=\"{0}\" />", policyBase64);
+        formBuilder.AppendFormat("<input type=\"hidden\" name=\"Signature\" value=\"{0}\" />", sign);
+        formBuilder.AppendFormat("<input type=\"hidden\" name=\"SignatureVersion\" value=\"{0}\" />", 2);
+        formBuilder.AppendFormat("<input type=\"hidden\" name=\"SignatureMethod\" value=\"{0}\" />", "HmacSHA1");
+        formBuilder.AppendFormat("<input type=\"file\" name=\"file\" />");
+        formBuilder.AppendFormat("<input type=\"submit\" name=\"submit\" value=\"{0}\" /></form>", submitLabel);
+
+        return formBuilder.ToString();
+    }
+
+    public override string GetUploadedUrl(string domain, string directoryPath)
+    {
+        if (_httpContextAccessor?.HttpContext != null)
+        {
+            var buket = _httpContextAccessor?.HttpContext.Request.Query["bucket"].FirstOrDefault();
+            var key = _httpContextAccessor?.HttpContext.Request.Query["key"].FirstOrDefault();
+            var etag = _httpContextAccessor?.HttpContext.Request.Query["etag"].FirstOrDefault();
+            var destkey = MakePath(domain, directoryPath) + "/";
+
+            if (!string.IsNullOrEmpty(buket) && !string.IsNullOrEmpty(key) && string.Equals(buket, _bucket) &&
+                key.StartsWith(destkey))
+            {
+                var domainpath = key.Substring(MakePath(domain, string.Empty).Length);
+                var skipQuota = false;
+                if (_httpContextAccessor?.HttpContext.Session != null)
                 {
-                    continue;
+                    _httpContextAccessor.HttpContext.Session.TryGetValue(etag, out var isCounted);
+                    skipQuota = isCounted != null;
                 }
-
-                if (!long.TryParse(privateExpireKey, out var fileTime))
+                //Add to quota controller
+                if (QuotaController != null && !skipQuota)
                 {
-                    continue;
-                }
-
-                if (DateTime.UtcNow <= DateTime.FromFileTimeUtc(fileTime))
-                {
-                    continue;
-                }
-                //Delete it
-                var deleteObjectRequest = new DeleteObjectRequest
-                {
-                    BucketName = _bucket,
-                    Key = s3Object.Key
-                };
-
-                client.DeleteObjectAsync(deleteObjectRequest).Wait();
-            }
-        }
-
-        public override string GetUploadUrl()
-        {
-            return GetUriInternal(string.Empty).ToString();
-        }
-
-        public override string GetPostParams(string domain, string directoryPath, long maxUploadSize, string contentType,
-                                             string contentDisposition)
-        {
-            var key = MakePath(domain, directoryPath) + "/";
-            //Generate policy
-            var policyBase64 = GetPolicyBase64(key, string.Empty, contentType, contentDisposition, maxUploadSize,
-                                                  out var sign);
-            var postBuilder = new StringBuilder();
-            postBuilder.Append("{");
-            postBuilder.AppendFormat("\"key\":\"{0}${{filename}}\",", key);
-            postBuilder.AppendFormat("\"acl\":\"public-read\",");
-            postBuilder.AppendFormat("\"key\":\"{0}\",", key);
-            postBuilder.AppendFormat("\"success_action_status\":\"{0}\",", 201);
-
-            if (!string.IsNullOrEmpty(contentType))
-            {
-                postBuilder.AppendFormat("\"Content-Type\":\"{0}\",", contentType);
-            }
-
-            if (!string.IsNullOrEmpty(contentDisposition))
-            {
-                postBuilder.AppendFormat("\"Content-Disposition\":\"{0}\",", contentDisposition);
-            }
-
-            postBuilder.AppendFormat("\"AWSAccessKeyId\":\"{0}\",", _accessKeyId);
-            postBuilder.AppendFormat("\"Policy\":\"{0}\",", policyBase64);
-            postBuilder.AppendFormat("\"Signature\":\"{0}\"", sign);
-            postBuilder.AppendFormat("\"SignatureVersion\":\"{0}\"", 2);
-            postBuilder.AppendFormat("\"SignatureMethod\":\"{0}\"", "HmacSHA1");
-            postBuilder.Append("}");
-
-            return postBuilder.ToString();
-        }
-
-        public override string GetUploadForm(string domain, string directoryPath, string redirectTo, long maxUploadSize,
-                                             string contentType, string contentDisposition, string submitLabel)
-        {
-            var destBucket = GetUploadUrl();
-            var key = MakePath(domain, directoryPath) + "/";
-            //Generate policy
-            var policyBase64 = GetPolicyBase64(key, redirectTo, contentType, contentDisposition, maxUploadSize,
-                                                  out var sign);
-
-            var formBuilder = new StringBuilder();
-            formBuilder.AppendFormat("<form action=\"{0}\" method=\"post\" enctype=\"multipart/form-data\">", destBucket);
-            formBuilder.AppendFormat("<input type=\"hidden\" name=\"key\" value=\"{0}${{filename}}\" />", key);
-            formBuilder.Append("<input type=\"hidden\" name=\"acl\" value=\"public-read\" />");
-            if (!string.IsNullOrEmpty(redirectTo))
-            {
-                formBuilder.AppendFormat("<input type=\"hidden\" name=\"success_action_redirect\" value=\"{0}\" />",
-                                         redirectTo);
-            }
-
-            formBuilder.AppendFormat("<input type=\"hidden\" name=\"success_action_status\" value=\"{0}\" />", 201);
-
-            if (!string.IsNullOrEmpty(contentType))
-            {
-                formBuilder.AppendFormat("<input type=\"hidden\" name=\"Content-Type\" value=\"{0}\" />", contentType);
-            }
-
-            if (!string.IsNullOrEmpty(contentDisposition))
-            {
-                formBuilder.AppendFormat("<input type=\"hidden\" name=\"Content-Disposition\" value=\"{0}\" />",
-                                         contentDisposition);
-            }
-
-            formBuilder.AppendFormat("<input type=\"hidden\" name=\"AWSAccessKeyId\" value=\"{0}\"/>", _accessKeyId);
-            formBuilder.AppendFormat("<input type=\"hidden\" name=\"Policy\" value=\"{0}\" />", policyBase64);
-            formBuilder.AppendFormat("<input type=\"hidden\" name=\"Signature\" value=\"{0}\" />", sign);
-            formBuilder.AppendFormat("<input type=\"hidden\" name=\"SignatureVersion\" value=\"{0}\" />", 2);
-            formBuilder.AppendFormat("<input type=\"hidden\" name=\"SignatureMethod\" value=\"{0}\" />", "HmacSHA1");
-            formBuilder.AppendFormat("<input type=\"file\" name=\"file\" />");
-            formBuilder.AppendFormat("<input type=\"submit\" name=\"submit\" value=\"{0}\" /></form>", submitLabel);
-
-            return formBuilder.ToString();
-        }
-
-        public override string GetUploadedUrl(string domain, string directoryPath)
-        {
-            if (_httpContextAccessor?.HttpContext != null)
-            {
-                var buket = _httpContextAccessor?.HttpContext.Request.Query["bucket"].FirstOrDefault();
-                var key = _httpContextAccessor?.HttpContext.Request.Query["key"].FirstOrDefault();
-                var etag = _httpContextAccessor?.HttpContext.Request.Query["etag"].FirstOrDefault();
-                var destkey = MakePath(domain, directoryPath) + "/";
-
-                if (!string.IsNullOrEmpty(buket) && !string.IsNullOrEmpty(key) && string.Equals(buket, _bucket) &&
-                    key.StartsWith(destkey))
-                {
-                    var domainpath = key.Substring(MakePath(domain, string.Empty).Length);
-                    var skipQuota = false;
-                    if (_httpContextAccessor?.HttpContext.Session != null)
+                    try
                     {
-                        _httpContextAccessor.HttpContext.Session.TryGetValue(etag, out var isCounted);
-                        skipQuota = isCounted != null;
-                    }
-                    //Add to quota controller
-                    if (QuotaController != null && !skipQuota)
-                    {
-                        try
-                        {
-                            var size = GetFileSize(domain, domainpath);
-                            QuotaUsedAdd(domain, size);
+                        var size = GetFileSize(domain, domainpath);
+                        QuotaUsedAdd(domain, size);
 
-                            if (_httpContextAccessor?.HttpContext.Session != null)
-                            {
-                                //TODO:
-                                //HttpContext.Current.Session.Add(etag, size); 
-                            }
-                        }
-                        catch (Exception)
+                        if (_httpContextAccessor?.HttpContext.Session != null)
                         {
-
+                            //TODO:
+                            //HttpContext.Current.Session.Add(etag, size); 
                         }
                     }
-                    return GetUriInternal(key).ToString();
-                }
-            }
-            return string.Empty;
-        }
-
-        public override string[] ListFilesRelative(string domain, string path, string pattern, bool recursive)
-        {
-            return GetS3Objects(domain, path)
-                .Where(x => Wildcard.IsMatch(pattern, Path.GetFileName(x.Key)))
-                .Select(x => x.Key.Substring((MakePath(domain, path) + "/").Length).TrimStart('/'))
-                .ToArray();
-        }
-
-        public override bool IsFile(string domain, string path)
-        {
-            using var client = GetClient();
-            try
-            {
-                var getObjectMetadataRequest = new GetObjectMetadataRequest
-                {
-                    BucketName = _bucket,
-                    Key = MakePath(domain, path)
-                };
-
-                client.GetObjectMetadataAsync(getObjectMetadataRequest).Wait();
-
-                return true;
-            }
-            catch (AggregateException agg)
-            {
-                if (agg.InnerException is AmazonS3Exception ex)
-                {
-                    if (string.Equals(ex.ErrorCode, "NoSuchBucket"))
+                    catch (Exception)
                     {
-                        return false;
-                    }
 
-                    if (string.Equals(ex.ErrorCode, "NotFound"))
-                    {
-                        return false;
                     }
                 }
-
-                throw;
+                return GetUriInternal(key).ToString();
             }
         }
+        return string.Empty;
+    }
 
-        public override async Task<bool> IsFileAsync(string domain, string path)
+    public override string[] ListFilesRelative(string domain, string path, string pattern, bool recursive)
+    {
+        return GetS3Objects(domain, path)
+            .Where(x => Wildcard.IsMatch(pattern, Path.GetFileName(x.Key)))
+            .Select(x => x.Key.Substring((MakePath(domain, path) + "/").Length).TrimStart('/'))
+            .ToArray();
+    }
+
+    public override bool IsFile(string domain, string path)
+    {
+        using var client = GetClient();
+        try
         {
-            using var client = GetClient();
-            try
+            var getObjectMetadataRequest = new GetObjectMetadataRequest
             {
-                var getObjectMetadataRequest = new GetObjectMetadataRequest
-                {
-                    BucketName = _bucket,
-                    Key = MakePath(domain, path)
-                };
+                BucketName = _bucket,
+                Key = MakePath(domain, path)
+            };
 
-                await client.GetObjectMetadataAsync(getObjectMetadataRequest);
+            client.GetObjectMetadataAsync(getObjectMetadataRequest).Wait();
 
-                return true;
-            }
-            catch (AmazonS3Exception ex)
+            return true;
+        }
+        catch (AggregateException agg)
+        {
+            if (agg.InnerException is AmazonS3Exception ex)
             {
                 if (string.Equals(ex.ErrorCode, "NoSuchBucket"))
                 {
@@ -858,520 +826,551 @@ namespace ASC.Data.Storage.S3
                 {
                     return false;
                 }
-
-                throw;
             }
+
+            throw;
         }
+    }
 
-        public override bool IsDirectory(string domain, string path)
+    public override async Task<bool> IsFileAsync(string domain, string path)
+    {
+        using var client = GetClient();
+        try
         {
-            using (var client = GetClient())
-            {
-                var request = new ListObjectsRequest { BucketName = _bucket, Prefix = (MakePath(domain, path)) };
-                var response = client.ListObjectsAsync(request).Result;
-
-                return response.S3Objects.Count > 0;
-            }
-        }
-
-        public override void DeleteDirectory(string domain, string path)
-        {
-            DeleteFiles(domain, path, "*", true);
-        }
-
-        public override long GetFileSize(string domain, string path)
-        {
-            using var client = GetClient();
-            var request = new ListObjectsRequest { BucketName = _bucket, Prefix = (MakePath(domain, path)) };
-            var response = client.ListObjectsAsync(request).Result;
-            if (response.S3Objects.Count > 0)
-            {
-                return response.S3Objects[0].Size;
-            }
-
-            throw new FileNotFoundException("file not found", path);
-        }
-
-        public override long GetDirectorySize(string domain, string path)
-        {
-            if (!IsDirectory(domain, path))
-            {
-                throw new FileNotFoundException("directory not found", path);
-            }
-
-            return GetS3Objects(domain, path)
-                .Where(x => Wildcard.IsMatch("*.*", Path.GetFileName(x.Key)))
-                .Sum(x => x.Size);
-        }
-
-        public override long ResetQuota(string domain)
-        {
-            if (QuotaController != null)
-            {
-                var objects = GetS3Objects(domain);
-                var size = objects.Sum(s3Object => s3Object.Size);
-                QuotaController.QuotaUsedSet(_modulename, domain, _dataList.GetData(domain), size);
-
-                return size;
-            }
-
-            return 0;
-        }
-
-        public override long GetUsedQuota(string domain)
-        {
-            var objects = GetS3Objects(domain);
-
-            return objects.Sum(s3Object => s3Object.Size);
-        }
-
-        public override Uri Copy(string srcdomain, string srcpath, string newdomain, string newpath)
-        {
-            using var client = GetClient();
-            var srcKey = MakePath(srcdomain, srcpath);
-            var dstKey = MakePath(newdomain, newpath);
-            var size = GetFileSize(srcdomain, srcpath);
-
-            var request = new CopyObjectRequest
-            {
-                SourceBucket = _bucket,
-                SourceKey = srcKey,
-                DestinationBucket = _bucket,
-                DestinationKey = dstKey,
-                CannedACL = GetDomainACL(newdomain),
-                MetadataDirective = S3MetadataDirective.REPLACE,
-                ServerSideEncryptionMethod = _sse
-            };
-
-            client.CopyObjectAsync(request).Wait();
-
-            QuotaUsedAdd(newdomain, size);
-
-            return GetUri(newdomain, newpath);
-        }
-
-        public override void CopyDirectory(string srcdomain, string srcdir, string newdomain, string newdir)
-        {
-            var srckey = MakePath(srcdomain, srcdir);
-            var dstkey = MakePath(newdomain, newdir);
-            //List files from src
-            using var client = GetClient();
-            var request = new ListObjectsRequest { BucketName = _bucket, Prefix = srckey };
-
-            var response = client.ListObjectsAsync(request).Result;
-            foreach (var s3Object in response.S3Objects)
-            {
-                client.CopyObjectAsync(new CopyObjectRequest
-                {
-                    SourceBucket = _bucket,
-                    SourceKey = s3Object.Key,
-                    DestinationBucket = _bucket,
-                    DestinationKey = s3Object.Key.Replace(srckey, dstkey),
-                    CannedACL = GetDomainACL(newdomain),
-                    ServerSideEncryptionMethod = _sse
-                }).Wait();
-
-                QuotaUsedAdd(newdomain, s3Object.Size);
-            }
-        }
-
-        public override IDataStore Configure(string tenant, Handler handlerConfig, Module moduleConfig, IDictionary<string, string> props)
-        {
-            _tenant = tenant;
-
-            if (moduleConfig != null)
-            {
-                _modulename = moduleConfig.Name;
-                _dataList = new DataList(moduleConfig);
-                _domains.AddRange(moduleConfig.Domain.Select(x => string.Format("{0}/", x.Name)));
-
-                //Make expires
-                _domainsExpires = moduleConfig.Domain.Where(x => x.Expires != TimeSpan.Zero).ToDictionary(x => x.Name, y => y.Expires);
-                _domainsExpires.Add(string.Empty, moduleConfig.Expires);
-
-                _domainsAcl = moduleConfig.Domain.ToDictionary(x => x.Name, y => GetS3Acl(y.Acl));
-                _moduleAcl = GetS3Acl(moduleConfig.Acl);
-            }
-            else
-            {
-                _modulename = string.Empty;
-                _dataList = null;
-
-                //Make expires
-                _domainsExpires = new Dictionary<string, TimeSpan> { { string.Empty, TimeSpan.Zero } };
-
-                _domainsAcl = new Dictionary<string, S3CannedACL>();
-                _moduleAcl = S3CannedACL.PublicRead;
-            }
-
-            _accessKeyId = props["acesskey"];
-            _secretAccessKeyId = props["secretaccesskey"];
-            _bucket = props["bucket"];
-
-            if (props.ContainsKey("recycleDir"))
-            {
-                _recycleDir = props["recycleDir"];
-            }
-
-            if (props.ContainsKey("region") && !string.IsNullOrEmpty(props["region"]))
-            {
-                _region = props["region"];
-            }
-
-            if (props.ContainsKey("serviceurl") && !string.IsNullOrEmpty(props["serviceurl"]))
-            {
-                _serviceurl = props["serviceurl"];
-            }
-
-            if (props.ContainsKey("forcepathstyle"))
-            {
-                if (bool.TryParse(props["forcepathstyle"], out var fps))
-                {
-                    _forcepathstyle = fps;
-                }
-            }
-
-            if (props.ContainsKey("usehttp"))
-            {
-                if (bool.TryParse(props["usehttp"], out var uh))
-                {
-                    _useHttp = uh;
-                }
-            }
-
-            if (props.ContainsKey("sse") && !string.IsNullOrEmpty(props["sse"]))
-            {
-                _sse = (props["sse"].ToLower()) switch
-                {
-                    "none" => ServerSideEncryptionMethod.None,
-                    "aes256" => ServerSideEncryptionMethod.AES256,
-                    "awskms" => ServerSideEncryptionMethod.AWSKMS,
-                    _ => ServerSideEncryptionMethod.None,
-                };
-            }
-
-            _bucketRoot = props.ContainsKey("cname") && Uri.IsWellFormedUriString(props["cname"], UriKind.Absolute)
-                              ? new Uri(props["cname"], UriKind.Absolute)
-                              : new Uri(string.Format("http://s3.{1}.amazonaws.com/{0}/", _bucket, _region), UriKind.Absolute);
-            _bucketSSlRoot = props.ContainsKey("cnamessl") &&
-                             Uri.IsWellFormedUriString(props["cnamessl"], UriKind.Absolute)
-                                 ? new Uri(props["cnamessl"], UriKind.Absolute)
-                                 : new Uri(string.Format("https://s3.{1}.amazonaws.com/{0}/", _bucket, _region), UriKind.Absolute);
-
-            if (props.ContainsKey("lower"))
-            {
-                bool.TryParse(props["lower"], out _lowerCasing);
-            }
-            if (props.ContainsKey("cloudfront"))
-            {
-                bool.TryParse(props["cloudfront"], out _revalidateCloudFront);
-            }
-            if (props.ContainsKey("distribution"))
-            {
-                _distributionId = props["distribution"];
-            }
-
-            if (props.ContainsKey("subdir"))
-            {
-                _subDir = props["subdir"];
-            }
-
-            return this;
-        }
-
-        protected override Uri SaveWithAutoAttachment(string domain, string path, Stream stream, string attachmentFileName)
-        {
-            var contentDisposition = string.Format("attachment; filename={0};",
-                                                   HttpUtility.UrlPathEncode(attachmentFileName));
-            if (attachmentFileName.Any(c => c >= 0 && c <= 127))
-            {
-                contentDisposition = string.Format("attachment; filename*=utf-8''{0};",
-                                                   HttpUtility.UrlPathEncode(attachmentFileName));
-            }
-
-            return Save(domain, path, stream, null, contentDisposition);
-        }
-
-        private S3CannedACL GetDomainACL(string domain)
-        {
-            if (GetExpire(domain) != TimeSpan.Zero)
-            {
-                return S3CannedACL.Private;
-            }
-
-            if (_domainsAcl.ContainsKey(domain))
-            {
-                return _domainsAcl[domain];
-            }
-
-            return _moduleAcl;
-        }
-
-        private S3CannedACL GetS3Acl(ACL acl)
-        {
-            return acl switch
-            {
-                ACL.Read => S3CannedACL.PublicRead,
-                ACL.Private => S3CannedACL.Private,
-                _ => S3CannedACL.PublicRead,
-            };
-        }
-
-        private Uri MakeUri(string preSignedURL)
-        {
-            var uri = new Uri(preSignedURL);
-            var signedPart = uri.PathAndQuery.TrimStart('/');
-
-            return new UnencodedUri(uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) ? _bucketSSlRoot : _bucketRoot, signedPart);
-        }
-
-        private void InvalidateCloudFront(params string[] paths)
-        {
-            if (!_revalidateCloudFront || string.IsNullOrEmpty(_distributionId))
-            {
-                return;
-            }
-
-            using var cfClient = GetCloudFrontClient();
-            var invalidationRequest = new CreateInvalidationRequest
-            {
-                DistributionId = _distributionId,
-                InvalidationBatch = new InvalidationBatch
-                {
-                    CallerReference = Guid.NewGuid().ToString(),
-
-                    Paths = new Paths
-                    {
-                        Items = paths.ToList(),
-                        Quantity = paths.Count()
-                    }
-                }
-            };
-
-            cfClient.CreateInvalidationAsync(invalidationRequest).Wait();
-        }
-
-        private string GetPolicyBase64(string key, string redirectTo, string contentType, string contentDisposition,
-                                       long maxUploadSize, out string sign)
-        {
-            var policyBuilder = new StringBuilder();
-            policyBuilder.AppendFormat("{{\"expiration\": \"{0}\",\"conditions\":[",
-                                       DateTime.UtcNow.AddMinutes(15).ToString(AWSSDKUtils.ISO8601DateFormat,
-                                                                               CultureInfo.InvariantCulture));
-            policyBuilder.AppendFormat("{{\"bucket\": \"{0}\"}},", _bucket);
-            policyBuilder.AppendFormat("[\"starts-with\", \"$key\", \"{0}\"],", key);
-            policyBuilder.Append("{\"acl\": \"public-read\"},");
-            if (!string.IsNullOrEmpty(redirectTo))
-            {
-                policyBuilder.AppendFormat("{{\"success_action_redirect\": \"{0}\"}},", redirectTo);
-            }
-            policyBuilder.AppendFormat("{{\"success_action_status\": \"{0}\"}},", 201);
-            if (!string.IsNullOrEmpty(contentType))
-            {
-                policyBuilder.AppendFormat("[\"eq\", \"$Content-Type\", \"{0}\"],", contentType);
-            }
-            if (!string.IsNullOrEmpty(contentDisposition))
-            {
-                policyBuilder.AppendFormat("[\"eq\", \"$Content-Disposition\", \"{0}\"],", contentDisposition);
-            }
-            policyBuilder.AppendFormat("[\"content-length-range\", 0, {0}]", maxUploadSize);
-            policyBuilder.Append("]}");
-
-            var policyBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(policyBuilder.ToString()));
-            //sign = AWSSDKUtils.HMACSign(policyBase64, _secretAccessKeyId, new HMACSHA1());
-            using var algorithm = new HMACSHA1 { Key = Encoding.UTF8.GetBytes(_secretAccessKeyId) };
-            try
-            {
-                algorithm.Key = Encoding.UTF8.GetBytes(key);
-                sign = Convert.ToBase64String(algorithm.ComputeHash(Encoding.UTF8.GetBytes(policyBase64)));
-            }
-            finally
-            {
-                algorithm.Clear();
-            }
-
-            return policyBase64;
-        }
-
-        private bool CheckKey(string domain, string key)
-        {
-            return !string.IsNullOrEmpty(domain) ||
-                   _domains.All(configuredDomains => !key.StartsWith(MakePath(configuredDomains, "")));
-        }
-
-        private IEnumerable<S3Object> GetS3ObjectsByPath(string domain, string path)
-        {
-            using var client = GetClient();
-            var request = new ListObjectsRequest
+            var getObjectMetadataRequest = new GetObjectMetadataRequest
             {
                 BucketName = _bucket,
-                Prefix = path,
-                MaxKeys = (1000)
+                Key = MakePath(domain, path)
             };
 
-            var objects = new List<S3Object>();
-            ListObjectsResponse response;
-            do
-            {
-                response = client.ListObjectsAsync(request).Result;
-                objects.AddRange(response.S3Objects.Where(entry => CheckKey(domain, entry.Key)));
-                request.Marker = response.NextMarker;
-            } while (response.IsTruncated);
+            await client.GetObjectMetadataAsync(getObjectMetadataRequest);
 
-            return objects;
+            return true;
         }
-
-        private IEnumerable<S3Object> GetS3Objects(string domain, string path = "", bool recycle = false)
+        catch (AmazonS3Exception ex)
         {
-            path = MakePath(domain, path) + '/';
-            var obj = GetS3ObjectsByPath(domain, path).ToList();
-            if (string.IsNullOrEmpty(_recycleDir) || !recycle)
+            if (string.Equals(ex.ErrorCode, "NoSuchBucket"))
             {
-                return obj;
+                return false;
             }
 
-            obj.AddRange(GetS3ObjectsByPath(domain, GetRecyclePath(path)));
+            if (string.Equals(ex.ErrorCode, "NotFound"))
+            {
+                return false;
+            }
 
+            throw;
+        }
+    }
+
+    public override bool IsDirectory(string domain, string path)
+    {
+        using (var client = GetClient())
+        {
+            var request = new ListObjectsRequest { BucketName = _bucket, Prefix = (MakePath(domain, path)) };
+            var response = client.ListObjectsAsync(request).Result;
+
+            return response.S3Objects.Count > 0;
+        }
+    }
+
+    public override void DeleteDirectory(string domain, string path)
+    {
+        DeleteFiles(domain, path, "*", true);
+    }
+
+    public override long GetFileSize(string domain, string path)
+    {
+        using var client = GetClient();
+        var request = new ListObjectsRequest { BucketName = _bucket, Prefix = (MakePath(domain, path)) };
+        var response = client.ListObjectsAsync(request).Result;
+        if (response.S3Objects.Count > 0)
+        {
+            return response.S3Objects[0].Size;
+        }
+
+        throw new FileNotFoundException("file not found", path);
+    }
+
+    public override long GetDirectorySize(string domain, string path)
+    {
+        if (!IsDirectory(domain, path))
+        {
+            throw new FileNotFoundException("directory not found", path);
+        }
+
+        return GetS3Objects(domain, path)
+            .Where(x => Wildcard.IsMatch("*.*", Path.GetFileName(x.Key)))
+            .Sum(x => x.Size);
+    }
+
+    public override long ResetQuota(string domain)
+    {
+        if (QuotaController != null)
+        {
+            var objects = GetS3Objects(domain);
+            var size = objects.Sum(s3Object => s3Object.Size);
+            QuotaController.QuotaUsedSet(_modulename, domain, _dataList.GetData(domain), size);
+
+            return size;
+        }
+
+        return 0;
+    }
+
+    public override long GetUsedQuota(string domain)
+    {
+        var objects = GetS3Objects(domain);
+
+        return objects.Sum(s3Object => s3Object.Size);
+    }
+
+    public override Uri Copy(string srcdomain, string srcpath, string newdomain, string newpath)
+    {
+        using var client = GetClient();
+        var srcKey = MakePath(srcdomain, srcpath);
+        var dstKey = MakePath(newdomain, newpath);
+        var size = GetFileSize(srcdomain, srcpath);
+
+        var request = new CopyObjectRequest
+        {
+            SourceBucket = _bucket,
+            SourceKey = srcKey,
+            DestinationBucket = _bucket,
+            DestinationKey = dstKey,
+            CannedACL = GetDomainACL(newdomain),
+            MetadataDirective = S3MetadataDirective.REPLACE,
+            ServerSideEncryptionMethod = _sse
+        };
+
+        client.CopyObjectAsync(request).Wait();
+
+        QuotaUsedAdd(newdomain, size);
+
+        return GetUri(newdomain, newpath);
+    }
+
+    public override void CopyDirectory(string srcdomain, string srcdir, string newdomain, string newdir)
+    {
+        var srckey = MakePath(srcdomain, srcdir);
+        var dstkey = MakePath(newdomain, newdir);
+        //List files from src
+        using var client = GetClient();
+        var request = new ListObjectsRequest { BucketName = _bucket, Prefix = srckey };
+
+        var response = client.ListObjectsAsync(request).Result;
+        foreach (var s3Object in response.S3Objects)
+        {
+            client.CopyObjectAsync(new CopyObjectRequest
+            {
+                SourceBucket = _bucket,
+                SourceKey = s3Object.Key,
+                DestinationBucket = _bucket,
+                DestinationKey = s3Object.Key.Replace(srckey, dstkey),
+                CannedACL = GetDomainACL(newdomain),
+                ServerSideEncryptionMethod = _sse
+            }).Wait();
+
+            QuotaUsedAdd(newdomain, s3Object.Size);
+        }
+    }
+
+    public override IDataStore Configure(string tenant, Handler handlerConfig, Module moduleConfig, IDictionary<string, string> props)
+    {
+        _tenant = tenant;
+
+        if (moduleConfig != null)
+        {
+            _modulename = moduleConfig.Name;
+            _dataList = new DataList(moduleConfig);
+            _domains.AddRange(moduleConfig.Domain.Select(x => string.Format("{0}/", x.Name)));
+
+            //Make expires
+            _domainsExpires = moduleConfig.Domain.Where(x => x.Expires != TimeSpan.Zero).ToDictionary(x => x.Name, y => y.Expires);
+            _domainsExpires.Add(string.Empty, moduleConfig.Expires);
+
+            _domainsAcl = moduleConfig.Domain.ToDictionary(x => x.Name, y => GetS3Acl(y.Acl));
+            _moduleAcl = GetS3Acl(moduleConfig.Acl);
+        }
+        else
+        {
+            _modulename = string.Empty;
+            _dataList = null;
+
+            //Make expires
+            _domainsExpires = new Dictionary<string, TimeSpan> { { string.Empty, TimeSpan.Zero } };
+
+            _domainsAcl = new Dictionary<string, S3CannedACL>();
+            _moduleAcl = S3CannedACL.PublicRead;
+        }
+
+        _accessKeyId = props["acesskey"];
+        _secretAccessKeyId = props["secretaccesskey"];
+        _bucket = props["bucket"];
+
+        if (props.ContainsKey("recycleDir"))
+        {
+            _recycleDir = props["recycleDir"];
+        }
+
+        if (props.ContainsKey("region") && !string.IsNullOrEmpty(props["region"]))
+        {
+            _region = props["region"];
+        }
+
+        if (props.ContainsKey("serviceurl") && !string.IsNullOrEmpty(props["serviceurl"]))
+        {
+            _serviceurl = props["serviceurl"];
+        }
+
+        if (props.ContainsKey("forcepathstyle"))
+        {
+            if (bool.TryParse(props["forcepathstyle"], out var fps))
+            {
+                _forcepathstyle = fps;
+            }
+        }
+
+        if (props.ContainsKey("usehttp"))
+        {
+            if (bool.TryParse(props["usehttp"], out var uh))
+            {
+                _useHttp = uh;
+            }
+        }
+
+        if (props.ContainsKey("sse") && !string.IsNullOrEmpty(props["sse"]))
+        {
+            _sse = (props["sse"].ToLower()) switch
+            {
+                "none" => ServerSideEncryptionMethod.None,
+                "aes256" => ServerSideEncryptionMethod.AES256,
+                "awskms" => ServerSideEncryptionMethod.AWSKMS,
+                _ => ServerSideEncryptionMethod.None,
+            };
+        }
+
+        _bucketRoot = props.ContainsKey("cname") && Uri.IsWellFormedUriString(props["cname"], UriKind.Absolute)
+                          ? new Uri(props["cname"], UriKind.Absolute)
+                          : new Uri(string.Format("http://s3.{1}.amazonaws.com/{0}/", _bucket, _region), UriKind.Absolute);
+        _bucketSSlRoot = props.ContainsKey("cnamessl") &&
+                         Uri.IsWellFormedUriString(props["cnamessl"], UriKind.Absolute)
+                             ? new Uri(props["cnamessl"], UriKind.Absolute)
+                             : new Uri(string.Format("https://s3.{1}.amazonaws.com/{0}/", _bucket, _region), UriKind.Absolute);
+
+        if (props.ContainsKey("lower"))
+        {
+            bool.TryParse(props["lower"], out _lowerCasing);
+        }
+        if (props.ContainsKey("cloudfront"))
+        {
+            bool.TryParse(props["cloudfront"], out _revalidateCloudFront);
+        }
+        if (props.ContainsKey("distribution"))
+        {
+            _distributionId = props["distribution"];
+        }
+
+        if (props.ContainsKey("subdir"))
+        {
+            _subDir = props["subdir"];
+        }
+
+        return this;
+    }
+
+    protected override Uri SaveWithAutoAttachment(string domain, string path, Stream stream, string attachmentFileName)
+    {
+        var contentDisposition = string.Format("attachment; filename={0};",
+                                               HttpUtility.UrlPathEncode(attachmentFileName));
+        if (attachmentFileName.Any(c => c >= 0 && c <= 127))
+        {
+            contentDisposition = string.Format("attachment; filename*=utf-8''{0};",
+                                               HttpUtility.UrlPathEncode(attachmentFileName));
+        }
+
+        return Save(domain, path, stream, null, contentDisposition);
+    }
+
+    private S3CannedACL GetDomainACL(string domain)
+    {
+        if (GetExpire(domain) != TimeSpan.Zero)
+        {
+            return S3CannedACL.Private;
+        }
+
+        if (_domainsAcl.ContainsKey(domain))
+        {
+            return _domainsAcl[domain];
+        }
+
+        return _moduleAcl;
+    }
+
+    private S3CannedACL GetS3Acl(ACL acl)
+    {
+        return acl switch
+        {
+            ACL.Read => S3CannedACL.PublicRead,
+            ACL.Private => S3CannedACL.Private,
+            _ => S3CannedACL.PublicRead,
+        };
+    }
+
+    private Uri MakeUri(string preSignedURL)
+    {
+        var uri = new Uri(preSignedURL);
+        var signedPart = uri.PathAndQuery.TrimStart('/');
+
+        return new UnencodedUri(uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) ? _bucketSSlRoot : _bucketRoot, signedPart);
+    }
+
+    private void InvalidateCloudFront(params string[] paths)
+    {
+        if (!_revalidateCloudFront || string.IsNullOrEmpty(_distributionId))
+        {
+            return;
+        }
+
+        using var cfClient = GetCloudFrontClient();
+        var invalidationRequest = new CreateInvalidationRequest
+        {
+            DistributionId = _distributionId,
+            InvalidationBatch = new InvalidationBatch
+            {
+                CallerReference = Guid.NewGuid().ToString(),
+
+                Paths = new Paths
+                {
+                    Items = paths.ToList(),
+                    Quantity = paths.Count()
+                }
+            }
+        };
+
+        cfClient.CreateInvalidationAsync(invalidationRequest).Wait();
+    }
+
+    private string GetPolicyBase64(string key, string redirectTo, string contentType, string contentDisposition,
+                                   long maxUploadSize, out string sign)
+    {
+        var policyBuilder = new StringBuilder();
+        policyBuilder.AppendFormat("{{\"expiration\": \"{0}\",\"conditions\":[",
+                                   DateTime.UtcNow.AddMinutes(15).ToString(AWSSDKUtils.ISO8601DateFormat,
+                                                                           CultureInfo.InvariantCulture));
+        policyBuilder.AppendFormat("{{\"bucket\": \"{0}\"}},", _bucket);
+        policyBuilder.AppendFormat("[\"starts-with\", \"$key\", \"{0}\"],", key);
+        policyBuilder.Append("{\"acl\": \"public-read\"},");
+        if (!string.IsNullOrEmpty(redirectTo))
+        {
+            policyBuilder.AppendFormat("{{\"success_action_redirect\": \"{0}\"}},", redirectTo);
+        }
+        policyBuilder.AppendFormat("{{\"success_action_status\": \"{0}\"}},", 201);
+        if (!string.IsNullOrEmpty(contentType))
+        {
+            policyBuilder.AppendFormat("[\"eq\", \"$Content-Type\", \"{0}\"],", contentType);
+        }
+        if (!string.IsNullOrEmpty(contentDisposition))
+        {
+            policyBuilder.AppendFormat("[\"eq\", \"$Content-Disposition\", \"{0}\"],", contentDisposition);
+        }
+        policyBuilder.AppendFormat("[\"content-length-range\", 0, {0}]", maxUploadSize);
+        policyBuilder.Append("]}");
+
+        var policyBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(policyBuilder.ToString()));
+        //sign = AWSSDKUtils.HMACSign(policyBase64, _secretAccessKeyId, new HMACSHA1());
+        using var algorithm = new HMACSHA1 { Key = Encoding.UTF8.GetBytes(_secretAccessKeyId) };
+        try
+        {
+            algorithm.Key = Encoding.UTF8.GetBytes(key);
+            sign = Convert.ToBase64String(algorithm.ComputeHash(Encoding.UTF8.GetBytes(policyBase64)));
+        }
+        finally
+        {
+            algorithm.Clear();
+        }
+
+        return policyBase64;
+    }
+
+    private bool CheckKey(string domain, string key)
+    {
+        return !string.IsNullOrEmpty(domain) ||
+               _domains.All(configuredDomains => !key.StartsWith(MakePath(configuredDomains, "")));
+    }
+
+    private IEnumerable<S3Object> GetS3ObjectsByPath(string domain, string path)
+    {
+        using var client = GetClient();
+        var request = new ListObjectsRequest
+        {
+            BucketName = _bucket,
+            Prefix = path,
+            MaxKeys = (1000)
+        };
+
+        var objects = new List<S3Object>();
+        ListObjectsResponse response;
+        do
+        {
+            response = client.ListObjectsAsync(request).Result;
+            objects.AddRange(response.S3Objects.Where(entry => CheckKey(domain, entry.Key)));
+            request.Marker = response.NextMarker;
+        } while (response.IsTruncated);
+
+        return objects;
+    }
+
+    private IEnumerable<S3Object> GetS3Objects(string domain, string path = "", bool recycle = false)
+    {
+        path = MakePath(domain, path) + '/';
+        var obj = GetS3ObjectsByPath(domain, path).ToList();
+        if (string.IsNullOrEmpty(_recycleDir) || !recycle)
+        {
             return obj;
         }
 
-        private string MakePath(string domain, string path)
+        obj.AddRange(GetS3ObjectsByPath(domain, GetRecyclePath(path)));
+
+        return obj;
+    }
+
+    private string MakePath(string domain, string path)
+    {
+        string result;
+
+        path = path.TrimStart('\\', '/').TrimEnd('/').Replace('\\', '/');
+
+        if (!string.IsNullOrEmpty(_subDir))
         {
-            string result;
-
-            path = path.TrimStart('\\', '/').TrimEnd('/').Replace('\\', '/');
-
-            if (!string.IsNullOrEmpty(_subDir))
+            if (_subDir.Length == 1 && (_subDir[0] == '/' || _subDir[0] == '\\'))
             {
-                if (_subDir.Length == 1 && (_subDir[0] == '/' || _subDir[0] == '\\'))
-                {
-                    result = path;
-                }
-                else
-                {
-                    result = string.Format("{0}/{1}", _subDir, path); // Ignory all, if _subDir is not null
-                }
-            }
-            else//Key combined from module+domain+filename
-            {
-                result = string.Format("{0}/{1}/{2}/{3}",
-                                                         _tenant,
-                                                         _modulename,
-                                                         domain,
-                                                         path);
-            }
-
-            result = result.Replace("//", "/").TrimStart('/').TrimEnd('/');
-            if (_lowerCasing)
-            {
-                result = result.ToLowerInvariant();
-            }
-
-            return result;
-        }
-
-        private string GetRecyclePath(string path)
-        {
-            return string.IsNullOrEmpty(_recycleDir) ? "" : string.Format("{0}/{1}", _recycleDir, path.TrimStart('/'));
-        }
-
-        private void Recycle(IAmazonS3 client, string domain, string key)
-        {
-            if (string.IsNullOrEmpty(_recycleDir)) return;
-
-            var copyObjectRequest = new CopyObjectRequest
-            {
-                SourceBucket = _bucket,
-                SourceKey = key,
-                DestinationBucket = _bucket,
-                DestinationKey = GetRecyclePath(key),
-                CannedACL = GetDomainACL(domain),
-                MetadataDirective = S3MetadataDirective.REPLACE,
-                ServerSideEncryptionMethod = _sse,
-                StorageClass = S3StorageClass.Glacier
-            };
-
-            client.CopyObjectAsync(copyObjectRequest).Wait();
-        }
-
-        private IAmazonCloudFront GetCloudFrontClient()
-        {
-            var cfg = new AmazonCloudFrontConfig { MaxErrorRetry = 3 };
-
-            return new AmazonCloudFrontClient(_accessKeyId, _secretAccessKeyId, cfg);
-        }
-
-        private IAmazonS3 GetClient()
-        {
-            var cfg = new AmazonS3Config { MaxErrorRetry = 3 };
-
-            if (!string.IsNullOrEmpty(_serviceurl))
-            {
-                cfg.ServiceURL = _serviceurl;
-
-                cfg.ForcePathStyle = _forcepathstyle;
+                result = path;
             }
             else
             {
-                cfg.RegionEndpoint = RegionEndpoint.GetBySystemName(_region);
+                result = string.Format("{0}/{1}", _subDir, path); // Ignory all, if _subDir is not null
             }
-
-            cfg.UseHttp = _useHttp;
-
-            return new AmazonS3Client(_accessKeyId, _secretAccessKeyId, cfg);
+        }
+        else//Key combined from module+domain+filename
+        {
+            result = string.Format("{0}/{1}/{2}/{3}",
+                                                     _tenant,
+                                                     _modulename,
+                                                     domain,
+                                                     path);
         }
 
-        private class ResponseStreamWrapper : Stream
+        result = result.Replace("//", "/").TrimStart('/').TrimEnd('/');
+        if (_lowerCasing)
         {
-            public override bool CanRead => _response.ResponseStream.CanRead;
-            public override bool CanSeek => _response.ResponseStream.CanSeek;
-            public override bool CanWrite => _response.ResponseStream.CanWrite;
-            public override long Length => _response.ContentLength;
-            public override long Position
-            {
-                get => _response.ResponseStream.Position;
-                set => _response.ResponseStream.Position = value;
-            }
+            result = result.ToLowerInvariant();
+        }
 
-            private readonly GetObjectResponse _response;
+        return result;
+    }
 
-            public ResponseStreamWrapper(GetObjectResponse response)
-            {
-                _response = response ?? throw new ArgumentNullException(nameof(response));
-            }
+    private string GetRecyclePath(string path)
+    {
+        return string.IsNullOrEmpty(_recycleDir) ? "" : string.Format("{0}/{1}", _recycleDir, path.TrimStart('/'));
+    }
 
-            public override int Read(byte[] buffer, int offset, int count)
-            {
-                return _response.ResponseStream.Read(buffer, offset, count);
-            }
+    private void Recycle(IAmazonS3 client, string domain, string key)
+    {
+        if (string.IsNullOrEmpty(_recycleDir)) return;
 
-            public override long Seek(long offset, SeekOrigin origin)
-            {
-                return _response.ResponseStream.Seek(offset, origin);
-            }
+        var copyObjectRequest = new CopyObjectRequest
+        {
+            SourceBucket = _bucket,
+            SourceKey = key,
+            DestinationBucket = _bucket,
+            DestinationKey = GetRecyclePath(key),
+            CannedACL = GetDomainACL(domain),
+            MetadataDirective = S3MetadataDirective.REPLACE,
+            ServerSideEncryptionMethod = _sse,
+            StorageClass = S3StorageClass.Glacier
+        };
 
-            public override void SetLength(long value)
-            {
-                _response.ResponseStream.SetLength(value);
-            }
+        client.CopyObjectAsync(copyObjectRequest).Wait();
+    }
 
-            public override void Write(byte[] buffer, int offset, int count)
-            {
-                _response.ResponseStream.Write(buffer, offset, count);
-            }
+    private IAmazonCloudFront GetCloudFrontClient()
+    {
+        var cfg = new AmazonCloudFrontConfig { MaxErrorRetry = 3 };
 
-            public override void Flush()
-            {
-                _response.ResponseStream.Flush();
-            }
+        return new AmazonCloudFrontClient(_accessKeyId, _secretAccessKeyId, cfg);
+    }
 
-            protected override void Dispose(bool disposing)
+    private IAmazonS3 GetClient()
+    {
+        var cfg = new AmazonS3Config { MaxErrorRetry = 3 };
+
+        if (!string.IsNullOrEmpty(_serviceurl))
+        {
+            cfg.ServiceURL = _serviceurl;
+
+            cfg.ForcePathStyle = _forcepathstyle;
+        }
+        else
+        {
+            cfg.RegionEndpoint = RegionEndpoint.GetBySystemName(_region);
+        }
+
+        cfg.UseHttp = _useHttp;
+
+        return new AmazonS3Client(_accessKeyId, _secretAccessKeyId, cfg);
+    }
+
+    private class ResponseStreamWrapper : Stream
+    {
+        public override bool CanRead => _response.ResponseStream.CanRead;
+        public override bool CanSeek => _response.ResponseStream.CanSeek;
+        public override bool CanWrite => _response.ResponseStream.CanWrite;
+        public override long Length => _response.ContentLength;
+        public override long Position
+        {
+            get => _response.ResponseStream.Position;
+            set => _response.ResponseStream.Position = value;
+        }
+
+        private readonly GetObjectResponse _response;
+
+        public ResponseStreamWrapper(GetObjectResponse response)
+        {
+            _response = response ?? throw new ArgumentNullException(nameof(response));
+        }
+
+        public override int Read(byte[] buffer, int offset, int count)
+        {
+            return _response.ResponseStream.Read(buffer, offset, count);
+        }
+
+        public override long Seek(long offset, SeekOrigin origin)
+        {
+            return _response.ResponseStream.Seek(offset, origin);
+        }
+
+        public override void SetLength(long value)
+        {
+            _response.ResponseStream.SetLength(value);
+        }
+
+        public override void Write(byte[] buffer, int offset, int count)
+        {
+            _response.ResponseStream.Write(buffer, offset, count);
+        }
+
+        public override void Flush()
+        {
+            _response.ResponseStream.Flush();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            if (disposing)
             {
-                base.Dispose(disposing);
-                if (disposing)
-                {
-                    _response.Dispose();
-                }
+                _response.Dispose();
             }
         }
     }

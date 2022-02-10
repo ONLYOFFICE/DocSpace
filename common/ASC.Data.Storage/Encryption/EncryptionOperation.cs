@@ -25,351 +25,350 @@
 
 using Tenant = ASC.Core.Tenants.Tenant;
 
-namespace ASC.Data.Storage.Encryption
+namespace ASC.Data.Storage.Encryption;
+
+[Transient(Additional = typeof(EncryptionOperationExtension))]
+public class EncryptionOperation : DistributedTaskProgress
 {
-    [Transient(Additional = typeof(EncryptionOperationExtension))]
-    public class EncryptionOperation : DistributedTaskProgress
+    private const string ConfigPath = "";
+    private const string ProgressFileName = "EncryptionProgress.tmp";
+
+    private readonly IServiceScopeFactory _serviceScopeFactory;
+    private bool _hasErrors = false;
+    private EncryptionSettings _encryptionSettings;
+    private bool _isEncryption;
+    private bool _useProgressFile;
+    private IEnumerable<string> _modules;
+    private IEnumerable<Tenant> _tenants;
+    private string _serverRootPath;
+
+    public EncryptionOperation(IServiceScopeFactory serviceScopeFactory)
     {
-        private const string ConfigPath = "";
-        private const string ProgressFileName = "EncryptionProgress.tmp";
+        _serviceScopeFactory = serviceScopeFactory;
+    }
 
-        private readonly IServiceScopeFactory _serviceScopeFactory;
-        private bool _hasErrors = false;
-        private EncryptionSettings _encryptionSettings;
-        private bool _isEncryption;
-        private bool _useProgressFile;
-        private IEnumerable<string> _modules;
-        private IEnumerable<Tenant> _tenants;
-        private string _serverRootPath;
+    public void Init(EncryptionSettingsProto encryptionSettingsProto, string id)
+    {
+        Id = id;
+        _encryptionSettings = new EncryptionSettings(encryptionSettingsProto);
+        _isEncryption = _encryptionSettings.Status == EncryprtionStatus.EncryptionStarted;
+        _serverRootPath = encryptionSettingsProto.ServerRootPath;
+    }
 
-        public EncryptionOperation(IServiceScopeFactory serviceScopeFactory)
+    protected override void DoJob()
+    {
+        using var scope = _serviceScopeFactory.CreateScope();
+        var scopeClass = scope.ServiceProvider.GetService<EncryptionOperationScope>();
+        var (log, encryptionSettingsHelper, tenantManager, notifyHelper, coreBaseSettings, storageFactoryConfig, storageFactory, configuration) = scopeClass;
+        notifyHelper.Init(_serverRootPath);
+        _tenants = tenantManager.GetTenants(false);
+        _modules = storageFactoryConfig.GetModuleList(ConfigPath, true);
+        _useProgressFile = Convert.ToBoolean(configuration["storage:encryption:progressfile"] ?? "true");
+
+        Percentage = 10;
+        PublishChanges();
+
+        try
         {
-            _serviceScopeFactory = serviceScopeFactory;
-        }
-
-        public void Init(EncryptionSettingsProto encryptionSettingsProto, string id)
-        {
-            Id = id;
-            _encryptionSettings = new EncryptionSettings(encryptionSettingsProto);
-            _isEncryption = _encryptionSettings.Status == EncryprtionStatus.EncryptionStarted;
-            _serverRootPath = encryptionSettingsProto.ServerRootPath;
-        }
-
-        protected override void DoJob()
-        {
-            using var scope = _serviceScopeFactory.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<EncryptionOperationScope>();
-            var (log, encryptionSettingsHelper, tenantManager, notifyHelper, coreBaseSettings, storageFactoryConfig, storageFactory, configuration) = scopeClass;
-            notifyHelper.Init(_serverRootPath);
-            _tenants = tenantManager.GetTenants(false);
-            _modules = storageFactoryConfig.GetModuleList(ConfigPath, true);
-            _useProgressFile = Convert.ToBoolean(configuration["storage:encryption:progressfile"] ?? "true");
-
-            Percentage = 10;
-            PublishChanges();
-
-            try
+            if (!coreBaseSettings.Standalone)
             {
-                if (!coreBaseSettings.Standalone)
-                {
-                    throw new NotSupportedException();
-                }
-
-                if (_encryptionSettings.Status == EncryprtionStatus.Encrypted || _encryptionSettings.Status == EncryprtionStatus.Decrypted)
-                {
-                    log.Debug("Storage already " + _encryptionSettings.Status);
-
-                    return;
-                }
-
-                Percentage = 30;
-                PublishChanges();
-
-                foreach (var tenant in _tenants)
-                {
-                    var dictionary = new Dictionary<string, DiscDataStore>();
-
-                    foreach (var module in _modules)
-                    {
-                        dictionary.Add(module, (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.TenantId.ToString(), module));
-                    }
-
-                    Parallel.ForEach(dictionary, (elem) =>
-                    {
-                        EncryptStore(tenant, elem.Key, elem.Value, storageFactoryConfig, log);
-                    });
-                }
-
-                Percentage = 70;
-                PublishChanges();
-
-                if (!_hasErrors)
-                {
-                    DeleteProgressFiles(storageFactory);
-                    SaveNewSettings(encryptionSettingsHelper, log);
-                }
-
-                Percentage = 90;
-                PublishChanges();
-
-                ActivateTenants(tenantManager, log, notifyHelper);
-
-                Percentage = 100;
-                PublishChanges();
-            }
-            catch (Exception e)
-            {
-                Exception = e;
-                log.Error(e);
-            }
-        }
-
-        private void EncryptStore(Tenant tenant, string module, DiscDataStore store, StorageFactoryConfig storageFactoryConfig, ILog log)
-        {
-            var domains = storageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
-
-            domains.Add(string.Empty);
-
-            var progress = ReadProgress(store);
-
-            foreach (var domain in domains)
-            {
-                var logParent = string.Format("Tenant: {0}, Module: {1}, Domain: {2}", tenant.TenantAlias, module, domain);
-
-                var files = GetFiles(domains, progress, store, domain);
-
-                EncryptFiles(store, domain, files, logParent, log);
+                throw new NotSupportedException();
             }
 
-            StepDone();
-
-            log.DebugFormat("Percentage: {0}", Percentage);
-        }
-
-        private List<string> ReadProgress(DiscDataStore store)
-        {
-            var encryptedFiles = new List<string>();
-
-            if (!_useProgressFile)
+            if (_encryptionSettings.Status == EncryprtionStatus.Encrypted || _encryptionSettings.Status == EncryprtionStatus.Decrypted)
             {
-                return encryptedFiles;
-            }
+                log.Debug("Storage already " + _encryptionSettings.Status);
 
-            if (store.IsFile(string.Empty, ProgressFileName))
-            {
-                using var stream = store.GetReadStream(string.Empty, ProgressFileName);
-                using var reader = new StreamReader(stream);
-                string line;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    encryptedFiles.Add(line);
-                }
-            }
-            else
-            {
-                store.GetWriteStream(string.Empty, ProgressFileName).Close();
-            }
-
-            return encryptedFiles;
-        }
-
-        private IEnumerable<string> GetFiles(List<string> domains, List<string> progress, DiscDataStore targetStore, string targetDomain)
-        {
-            IEnumerable<string> files = targetStore.ListFilesRelative(targetDomain, "\\", "*.*", true);
-
-            if (progress.Any())
-            {
-                files = files.Where(path => !progress.Contains(path));
-            }
-
-            if (!string.IsNullOrEmpty(targetDomain))
-            {
-                return files;
-            }
-
-            var notEmptyDomains = domains.Where(domain => !string.IsNullOrEmpty(domain));
-
-            if (notEmptyDomains.Any())
-            {
-                files = files.Where(path => notEmptyDomains.All(domain => !path.Contains(domain + Path.DirectorySeparatorChar)));
-            }
-
-            files = files.Where(path => !path.EndsWith(ProgressFileName));
-
-            return files;
-        }
-
-        private void EncryptFiles(DiscDataStore store, string domain, IEnumerable<string> files, string logParent, ILog log)
-        {
-            foreach (var file in files)
-            {
-                var logItem = string.Format("{0}, File: {1}", logParent, file);
-
-                log.Debug(logItem);
-
-                try
-                {
-                    if (_isEncryption)
-                    {
-                        store.Encrypt(domain, file);
-                    }
-                    else
-                    {
-                        store.Decrypt(domain, file);
-                    }
-
-                    WriteProgress(store, file, _useProgressFile);
-                }
-                catch (Exception e)
-                {
-                    _hasErrors = true;
-                    log.Error(logItem + " " + e.Message, e);
-
-                    // ERROR_DISK_FULL: There is not enough space on the disk.
-                    // if (e is IOException && e.HResult == unchecked((int)0x80070070)) break;
-                }
-            }
-        }
-
-        private void WriteProgress(DiscDataStore store, string file, bool useProgressFile)
-        {
-            if (!useProgressFile)
-            {
                 return;
             }
 
-            using var stream = store.GetWriteStream(string.Empty, ProgressFileName, FileMode.Append);
-            using var writer = new StreamWriter(stream);
-            writer.WriteLine(file);
-        }
+            Percentage = 30;
+            PublishChanges();
 
-        private void DeleteProgressFiles(StorageFactory storageFactory)
-        {
             foreach (var tenant in _tenants)
             {
+                var dictionary = new Dictionary<string, DiscDataStore>();
+
                 foreach (var module in _modules)
                 {
-                    var store = (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.TenantId.ToString(), module);
+                    dictionary.Add(module, (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.TenantId.ToString(), module));
+                }
 
-                    if (store.IsFile(string.Empty, ProgressFileName))
-                    {
-                        store.Delete(string.Empty, ProgressFileName);
-                    }
+                Parallel.ForEach(dictionary, (elem) =>
+                {
+                    EncryptStore(tenant, elem.Key, elem.Value, storageFactoryConfig, log);
+                });
+            }
+
+            Percentage = 70;
+            PublishChanges();
+
+            if (!_hasErrors)
+            {
+                DeleteProgressFiles(storageFactory);
+                SaveNewSettings(encryptionSettingsHelper, log);
+            }
+
+            Percentage = 90;
+            PublishChanges();
+
+            ActivateTenants(tenantManager, log, notifyHelper);
+
+            Percentage = 100;
+            PublishChanges();
+        }
+        catch (Exception e)
+        {
+            Exception = e;
+            log.Error(e);
+        }
+    }
+
+    private void EncryptStore(Tenant tenant, string module, DiscDataStore store, StorageFactoryConfig storageFactoryConfig, ILog log)
+    {
+        var domains = storageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
+
+        domains.Add(string.Empty);
+
+        var progress = ReadProgress(store);
+
+        foreach (var domain in domains)
+        {
+            var logParent = string.Format("Tenant: {0}, Module: {1}, Domain: {2}", tenant.TenantAlias, module, domain);
+
+            var files = GetFiles(domains, progress, store, domain);
+
+            EncryptFiles(store, domain, files, logParent, log);
+        }
+
+        StepDone();
+
+        log.DebugFormat("Percentage: {0}", Percentage);
+    }
+
+    private List<string> ReadProgress(DiscDataStore store)
+    {
+        var encryptedFiles = new List<string>();
+
+        if (!_useProgressFile)
+        {
+            return encryptedFiles;
+        }
+
+        if (store.IsFile(string.Empty, ProgressFileName))
+        {
+            using var stream = store.GetReadStream(string.Empty, ProgressFileName);
+            using var reader = new StreamReader(stream);
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                encryptedFiles.Add(line);
+            }
+        }
+        else
+        {
+            store.GetWriteStream(string.Empty, ProgressFileName).Close();
+        }
+
+        return encryptedFiles;
+    }
+
+    private IEnumerable<string> GetFiles(List<string> domains, List<string> progress, DiscDataStore targetStore, string targetDomain)
+    {
+        IEnumerable<string> files = targetStore.ListFilesRelative(targetDomain, "\\", "*.*", true);
+
+        if (progress.Any())
+        {
+            files = files.Where(path => !progress.Contains(path));
+        }
+
+        if (!string.IsNullOrEmpty(targetDomain))
+        {
+            return files;
+        }
+
+        var notEmptyDomains = domains.Where(domain => !string.IsNullOrEmpty(domain));
+
+        if (notEmptyDomains.Any())
+        {
+            files = files.Where(path => notEmptyDomains.All(domain => !path.Contains(domain + Path.DirectorySeparatorChar)));
+        }
+
+        files = files.Where(path => !path.EndsWith(ProgressFileName));
+
+        return files;
+    }
+
+    private void EncryptFiles(DiscDataStore store, string domain, IEnumerable<string> files, string logParent, ILog log)
+    {
+        foreach (var file in files)
+        {
+            var logItem = string.Format("{0}, File: {1}", logParent, file);
+
+            log.Debug(logItem);
+
+            try
+            {
+                if (_isEncryption)
+                {
+                    store.Encrypt(domain, file);
+                }
+                else
+                {
+                    store.Decrypt(domain, file);
+                }
+
+                WriteProgress(store, file, _useProgressFile);
+            }
+            catch (Exception e)
+            {
+                _hasErrors = true;
+                log.Error(logItem + " " + e.Message, e);
+
+                // ERROR_DISK_FULL: There is not enough space on the disk.
+                // if (e is IOException && e.HResult == unchecked((int)0x80070070)) break;
+            }
+        }
+    }
+
+    private void WriteProgress(DiscDataStore store, string file, bool useProgressFile)
+    {
+        if (!useProgressFile)
+        {
+            return;
+        }
+
+        using var stream = store.GetWriteStream(string.Empty, ProgressFileName, FileMode.Append);
+        using var writer = new StreamWriter(stream);
+        writer.WriteLine(file);
+    }
+
+    private void DeleteProgressFiles(StorageFactory storageFactory)
+    {
+        foreach (var tenant in _tenants)
+        {
+            foreach (var module in _modules)
+            {
+                var store = (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.TenantId.ToString(), module);
+
+                if (store.IsFile(string.Empty, ProgressFileName))
+                {
+                    store.Delete(string.Empty, ProgressFileName);
                 }
             }
         }
+    }
 
-        private void SaveNewSettings(EncryptionSettingsHelper encryptionSettingsHelper, ILog log)
+    private void SaveNewSettings(EncryptionSettingsHelper encryptionSettingsHelper, ILog log)
+    {
+        if (_isEncryption)
         {
-            if (_isEncryption)
-            {
-                _encryptionSettings.Status = EncryprtionStatus.Encrypted;
-            }
-            else
-            {
-                _encryptionSettings.Status = EncryprtionStatus.Decrypted;
-                _encryptionSettings.Password = string.Empty;
-            }
-
-            encryptionSettingsHelper.Save(_encryptionSettings);
-
-            log.Debug("Save new EncryptionSettings");
+            _encryptionSettings.Status = EncryprtionStatus.Encrypted;
+        }
+        else
+        {
+            _encryptionSettings.Status = EncryprtionStatus.Decrypted;
+            _encryptionSettings.Password = string.Empty;
         }
 
-        private void ActivateTenants(TenantManager tenantManager, ILog log, NotifyHelper notifyHelper)
+        encryptionSettingsHelper.Save(_encryptionSettings);
+
+        log.Debug("Save new EncryptionSettings");
+    }
+
+    private void ActivateTenants(TenantManager tenantManager, ILog log, NotifyHelper notifyHelper)
+    {
+        foreach (var tenant in _tenants)
         {
-            foreach (var tenant in _tenants)
+            if (tenant.Status == TenantStatus.Encryption)
             {
-                if (tenant.Status == TenantStatus.Encryption)
+                tenantManager.SetCurrentTenant(tenant);
+
+                tenant.SetStatus(TenantStatus.Active);
+                tenantManager.SaveTenant(tenant);
+                log.DebugFormat("Tenant {0} SetStatus Active", tenant.TenantAlias);
+
+                if (!_hasErrors)
                 {
-                    tenantManager.SetCurrentTenant(tenant);
-
-                    tenant.SetStatus(TenantStatus.Active);
-                    tenantManager.SaveTenant(tenant);
-                    log.DebugFormat("Tenant {0} SetStatus Active", tenant.TenantAlias);
-
-                    if (!_hasErrors)
-                    {
-                        if (_encryptionSettings.NotifyUsers)
-                        {
-                            if (_isEncryption)
-                            {
-                                notifyHelper.SendStorageEncryptionSuccess(tenant.TenantId);
-                            }
-                            else
-                            {
-                                notifyHelper.SendStorageDecryptionSuccess(tenant.TenantId);
-                            }
-                            log.DebugFormat("Tenant {0} SendStorageEncryptionSuccess", tenant.TenantAlias);
-                        }
-                    }
-                    else
+                    if (_encryptionSettings.NotifyUsers)
                     {
                         if (_isEncryption)
                         {
-                            notifyHelper.SendStorageEncryptionError(tenant.TenantId);
+                            notifyHelper.SendStorageEncryptionSuccess(tenant.TenantId);
                         }
                         else
                         {
-                            notifyHelper.SendStorageDecryptionError(tenant.TenantId);
+                            notifyHelper.SendStorageDecryptionSuccess(tenant.TenantId);
                         }
-
-                        log.DebugFormat("Tenant {0} SendStorageEncryptionError", tenant.TenantAlias);
+                        log.DebugFormat("Tenant {0} SendStorageEncryptionSuccess", tenant.TenantAlias);
                     }
+                }
+                else
+                {
+                    if (_isEncryption)
+                    {
+                        notifyHelper.SendStorageEncryptionError(tenant.TenantId);
+                    }
+                    else
+                    {
+                        notifyHelper.SendStorageDecryptionError(tenant.TenantId);
+                    }
+
+                    log.DebugFormat("Tenant {0} SendStorageEncryptionError", tenant.TenantAlias);
                 }
             }
         }
     }
+}
 
-    [Scope]
-    public class EncryptionOperationScope
+[Scope]
+public class EncryptionOperationScope
+{
+    private readonly ILog _logger;
+    private readonly EncryptionSettingsHelper _encryptionSettingsHelper;
+    private readonly TenantManager _tenantManager;
+    private readonly NotifyHelper _notifyHelper;
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly StorageFactoryConfig _storageFactoryConfig;
+    private readonly StorageFactory _storageFactory;
+    private readonly IConfiguration _configuration;
+
+    public EncryptionOperationScope(IOptionsMonitor<ILog> options,
+       StorageFactoryConfig storageFactoryConfig,
+       StorageFactory storageFactory,
+       TenantManager tenantManager,
+       CoreBaseSettings coreBaseSettings,
+       NotifyHelper notifyHelper,
+       EncryptionSettingsHelper encryptionSettingsHelper,
+       IConfiguration configuration)
     {
-        private readonly ILog _logger;
-        private readonly EncryptionSettingsHelper _encryptionSettingsHelper;
-        private readonly TenantManager _tenantManager;
-        private readonly NotifyHelper _notifyHelper;
-        private readonly CoreBaseSettings _coreBaseSettings;
-        private readonly StorageFactoryConfig _storageFactoryConfig;
-        private readonly StorageFactory _storageFactory;
-        private readonly IConfiguration _configuration;
-
-        public EncryptionOperationScope(IOptionsMonitor<ILog> options,
-           StorageFactoryConfig storageFactoryConfig,
-           StorageFactory storageFactory,
-           TenantManager tenantManager,
-           CoreBaseSettings coreBaseSettings,
-           NotifyHelper notifyHelper,
-           EncryptionSettingsHelper encryptionSettingsHelper,
-           IConfiguration configuration)
-        {
-            _logger = options.CurrentValue;
-            _storageFactoryConfig = storageFactoryConfig;
-            _storageFactory = storageFactory;
-            _tenantManager = tenantManager;
-            _coreBaseSettings = coreBaseSettings;
-            _notifyHelper = notifyHelper;
-            _encryptionSettingsHelper = encryptionSettingsHelper;
-            _configuration = configuration;
-        }
-
-        public void Deconstruct(out ILog log, out EncryptionSettingsHelper encryptionSettingsHelper, out TenantManager tenantManager, out NotifyHelper notifyHelper, out CoreBaseSettings coreBaseSettings, out StorageFactoryConfig storageFactoryConfig, out StorageFactory storageFactory, out IConfiguration configuration)
-        {
-            log = _logger;
-            encryptionSettingsHelper = _encryptionSettingsHelper;
-            tenantManager = _tenantManager;
-            notifyHelper = _notifyHelper;
-            coreBaseSettings = _coreBaseSettings;
-            storageFactoryConfig = _storageFactoryConfig;
-            storageFactory = _storageFactory;
-            configuration = _configuration;
-        }
+        _logger = options.CurrentValue;
+        _storageFactoryConfig = storageFactoryConfig;
+        _storageFactory = storageFactory;
+        _tenantManager = tenantManager;
+        _coreBaseSettings = coreBaseSettings;
+        _notifyHelper = notifyHelper;
+        _encryptionSettingsHelper = encryptionSettingsHelper;
+        _configuration = configuration;
     }
 
-    public class EncryptionOperationExtension
+    public void Deconstruct(out ILog log, out EncryptionSettingsHelper encryptionSettingsHelper, out TenantManager tenantManager, out NotifyHelper notifyHelper, out CoreBaseSettings coreBaseSettings, out StorageFactoryConfig storageFactoryConfig, out StorageFactory storageFactory, out IConfiguration configuration)
     {
-        public static void Register(DIHelper services)
-        {
-            services.TryAdd<EncryptionOperationScope>();
-        }
+        log = _logger;
+        encryptionSettingsHelper = _encryptionSettingsHelper;
+        tenantManager = _tenantManager;
+        notifyHelper = _notifyHelper;
+        coreBaseSettings = _coreBaseSettings;
+        storageFactoryConfig = _storageFactoryConfig;
+        storageFactory = _storageFactory;
+        configuration = _configuration;
+    }
+}
+
+public class EncryptionOperationExtension
+{
+    public static void Register(DIHelper services)
+    {
+        services.TryAdd<EncryptionOperationScope>();
     }
 }

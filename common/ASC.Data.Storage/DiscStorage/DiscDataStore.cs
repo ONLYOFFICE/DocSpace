@@ -23,806 +23,805 @@
  *
 */
 
-namespace ASC.Data.Storage.DiscStorage
+namespace ASC.Data.Storage.DiscStorage;
+
+[Scope]
+public class DiscDataStore : BaseStorage
 {
-    [Scope]
-    public class DiscDataStore : BaseStorage
+    public override bool IsSupportInternalUri => false;
+    public override bool IsSupportedPreSignedUri => false;
+    public override bool IsSupportChunking => true;
+
+    private readonly Dictionary<string, MappedPath> _mappedPaths = new Dictionary<string, MappedPath>();
+    private ICrypt _crypt;
+    private EncryptionSettingsHelper _encryptionSettingsHelper;
+    private EncryptionFactory _encryptionFactory;
+
+    public override IDataStore Configure(string tenant, Handler handlerConfig, Module moduleConfig, IDictionary<string, string> props)
     {
-        public override bool IsSupportInternalUri => false;
-        public override bool IsSupportedPreSignedUri => false;
-        public override bool IsSupportChunking => true;
+        _tenant = tenant;
+        //Fill map path
+        _modulename = moduleConfig.Name;
+        _dataList = new DataList(moduleConfig);
 
-        private readonly Dictionary<string, MappedPath> _mappedPaths = new Dictionary<string, MappedPath>();
-        private ICrypt _crypt;
-        private EncryptionSettingsHelper _encryptionSettingsHelper;
-        private EncryptionFactory _encryptionFactory;
-
-        public override IDataStore Configure(string tenant, Handler handlerConfig, Module moduleConfig, IDictionary<string, string> props)
+        foreach (var domain in moduleConfig.Domain)
         {
-            _tenant = tenant;
-            //Fill map path
-            _modulename = moduleConfig.Name;
-            _dataList = new DataList(moduleConfig);
-
-            foreach (var domain in moduleConfig.Domain)
-            {
-                _mappedPaths.Add(domain.Name, new MappedPath(_pathUtils, tenant, moduleConfig.AppendTenantId, domain.Path, handlerConfig.GetProperties()));
-            }
-
-            //Add default
-            _mappedPaths.Add(string.Empty, new MappedPath(_pathUtils, tenant, moduleConfig.AppendTenantId, PathUtils.Normalize(moduleConfig.Path), handlerConfig.GetProperties()));
-
-            //Make expires
-            _domainsExpires =
-                moduleConfig.Domain.Where(x => x.Expires != TimeSpan.Zero).
-                    ToDictionary(x => x.Name,
-                                 y => y.Expires);
-            _domainsExpires.Add(string.Empty, moduleConfig.Expires);
-            var settings = moduleConfig.DisabledEncryption ? new EncryptionSettings() : _encryptionSettingsHelper.Load();
-            _crypt = _encryptionFactory.GetCrypt(moduleConfig.Name, settings);
-
-            return this;
-        }
-              
-        public DiscDataStore(
-            TempStream tempStream,
-            TenantManager tenantManager,
-            PathUtils pathUtils,
-            EmailValidationKeyProvider emailValidationKeyProvider,
-            IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> options,
-            EncryptionSettingsHelper encryptionSettingsHelper,
-            EncryptionFactory encryptionFactory)
-            : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
-        {
-            _encryptionSettingsHelper = encryptionSettingsHelper;
-            _encryptionFactory = encryptionFactory;
+            _mappedPaths.Add(domain.Name, new MappedPath(_pathUtils, tenant, moduleConfig.AppendTenantId, domain.Path, handlerConfig.GetProperties()));
         }
 
-        public string GetPhysicalPath(string domain, string path)
+        //Add default
+        _mappedPaths.Add(string.Empty, new MappedPath(_pathUtils, tenant, moduleConfig.AppendTenantId, PathUtils.Normalize(moduleConfig.Path), handlerConfig.GetProperties()));
+
+        //Make expires
+        _domainsExpires =
+            moduleConfig.Domain.Where(x => x.Expires != TimeSpan.Zero).
+                ToDictionary(x => x.Name,
+                             y => y.Expires);
+        _domainsExpires.Add(string.Empty, moduleConfig.Expires);
+        var settings = moduleConfig.DisabledEncryption ? new EncryptionSettings() : _encryptionSettingsHelper.Load();
+        _crypt = _encryptionFactory.GetCrypt(moduleConfig.Name, settings);
+
+        return this;
+    }
+
+    public DiscDataStore(
+        TempStream tempStream,
+        TenantManager tenantManager,
+        PathUtils pathUtils,
+        EmailValidationKeyProvider emailValidationKeyProvider,
+        IHttpContextAccessor httpContextAccessor,
+        IOptionsMonitor<ILog> options,
+        EncryptionSettingsHelper encryptionSettingsHelper,
+        EncryptionFactory encryptionFactory)
+        : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
+    {
+        _encryptionSettingsHelper = encryptionSettingsHelper;
+        _encryptionFactory = encryptionFactory;
+    }
+
+    public string GetPhysicalPath(string domain, string path)
+    {
+        if (path == null)
         {
-            if (path == null)
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
-
-            var pathMap = GetPath(domain);
-
-            return (pathMap.PhysicalPath + EnsureLeadingSlash(path)).Replace('\\', '/');
+            throw new ArgumentNullException(nameof(path));
         }
 
-        public override Stream GetReadStream(string domain, string path)
+        var pathMap = GetPath(domain);
+
+        return (pathMap.PhysicalPath + EnsureLeadingSlash(path)).Replace('\\', '/');
+    }
+
+    public override Stream GetReadStream(string domain, string path)
+    {
+        return GetReadStream(domain, path, true);
+    }
+
+    public Stream GetReadStream(string domain, string path, bool withDecription)
+    {
+        if (path == null)
         {
-            return GetReadStream(domain, path, true);
+            throw new ArgumentNullException(nameof(path));
         }
 
-        public Stream GetReadStream(string domain, string path, bool withDecription)
+        var target = GetTarget(domain, path);
+
+        if (File.Exists(target))
         {
-            if (path == null)
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
-
-            var target = GetTarget(domain, path);
-
-            if (File.Exists(target))
-            {
-                return withDecription ? _crypt.GetReadStream(target) : File.OpenRead(target);
-            }
-
-            throw new FileNotFoundException("File not found", Path.GetFullPath(target));
+            return withDecription ? _crypt.GetReadStream(target) : File.OpenRead(target);
         }
 
-        public override Task<Stream> GetReadStreamAsync(string domain, string path, int offset)
+        throw new FileNotFoundException("File not found", Path.GetFullPath(target));
+    }
+
+    public override Task<Stream> GetReadStreamAsync(string domain, string path, int offset)
+    {
+        return Task.FromResult(GetReadStream(domain, path, offset));
+    }
+
+    public override Stream GetReadStream(string domain, string path, int offset)
+    {
+        if (path == null)
         {
-            return Task.FromResult(GetReadStream(domain, path, offset));
+            throw new ArgumentNullException(nameof(path));
         }
 
-        public override Stream GetReadStream(string domain, string path, int offset)
+        var target = GetTarget(domain, path);
+
+        if (File.Exists(target))
         {
-            if (path == null)
+            var stream = _crypt.GetReadStream(target);
+            if (0 < offset && stream.CanSeek)
             {
-                throw new ArgumentNullException(nameof(path));
+                stream.Seek(offset, SeekOrigin.Begin);
             }
 
-            var target = GetTarget(domain, path);
-
-            if (File.Exists(target))
-            {
-                var stream = _crypt.GetReadStream(target);
-                if (0 < offset && stream.CanSeek)
-                {
-                    stream.Seek(offset, SeekOrigin.Begin);
-                }
-
-                return stream;
-            }
-
-            throw new FileNotFoundException("File not found", Path.GetFullPath(target));
+            return stream;
         }
 
+        throw new FileNotFoundException("File not found", Path.GetFullPath(target));
+    }
 
-        public override Uri Save(string domain, string path, Stream stream, string contentType, string contentDisposition)
+
+    public override Uri Save(string domain, string path, Stream stream, string contentType, string contentDisposition)
+    {
+        return Save(domain, path, stream);
+    }
+
+    public override Uri Save(string domain, string path, Stream stream, string contentEncoding, int cacheDays)
+    {
+        return Save(domain, path, stream);
+
+    }
+
+    public override Uri Save(string domain, string path, Stream stream)
+    {
+        Logger.Debug("Save " + path);
+
+        var buffered = _tempStream.GetBuffered(stream);
+        if (QuotaController != null)
         {
-            return Save(domain, path, stream);
+            QuotaController.QuotaUsedCheck(buffered.Length);
         }
 
-        public override Uri Save(string domain, string path, Stream stream, string contentEncoding, int cacheDays)
+        if (path == null)
         {
-            return Save(domain, path, stream);
-
+            throw new ArgumentNullException(nameof(path));
         }
 
-        public override Uri Save(string domain, string path, Stream stream)
+        if (buffered == null)
         {
-            Logger.Debug("Save " + path);
-
-            var buffered = _tempStream.GetBuffered(stream);
-            if (QuotaController != null)
-            {
-                QuotaController.QuotaUsedCheck(buffered.Length);
-            }
-
-            if (path == null)
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
-
-            if (buffered == null)
-            {
-                throw new ArgumentNullException(nameof(stream));
-            }
-
-            //Try seek to start
-            if (buffered.CanSeek)
-            {
-                buffered.Seek(0, SeekOrigin.Begin);
-            }
-
-            //Lookup domain
-            var target = GetTarget(domain, path);
-            CreateDirectory(target);
-            //Copy stream
-
-            //optimaze disk file copy
-            long fslen;
-            if (buffered is FileStream fileStream)
-            {
-                File.Copy(fileStream.Name, target, true);
-                fslen = fileStream.Length;
-            }
-            else
-            {
-                using var fs = File.Open(target, FileMode.Create);
-                buffered.CopyTo(fs);
-                fslen = fs.Length;
-            }
-
-            QuotaUsedAdd(domain, fslen);
-
-            _crypt.EncryptFile(target);
-
-            return GetUri(domain, path);
+            throw new ArgumentNullException(nameof(stream));
         }
 
-        public override Uri Save(string domain, string path, Stream stream, ACL acl)
+        //Try seek to start
+        if (buffered.CanSeek)
         {
-            return Save(domain, path, stream);
+            buffered.Seek(0, SeekOrigin.Begin);
         }
 
-        #region chunking
+        //Lookup domain
+        var target = GetTarget(domain, path);
+        CreateDirectory(target);
+        //Copy stream
 
-        public override string InitiateChunkedUpload(string domain, string path)
+        //optimaze disk file copy
+        long fslen;
+        if (buffered is FileStream fileStream)
         {
-            var target = GetTarget(domain, path);
-            CreateDirectory(target);
-
-            return target;
+            File.Copy(fileStream.Name, target, true);
+            fslen = fileStream.Length;
+        }
+        else
+        {
+            using var fs = File.Open(target, FileMode.Create);
+            buffered.CopyTo(fs);
+            fslen = fs.Length;
         }
 
-        public override string UploadChunk(string domain, string path, string uploadId, Stream stream, long defaultChunkSize, int chunkNumber, long chunkLength)
+        QuotaUsedAdd(domain, fslen);
+
+        _crypt.EncryptFile(target);
+
+        return GetUri(domain, path);
+    }
+
+    public override Uri Save(string domain, string path, Stream stream, ACL acl)
+    {
+        return Save(domain, path, stream);
+    }
+
+    #region chunking
+
+    public override string InitiateChunkedUpload(string domain, string path)
+    {
+        var target = GetTarget(domain, path);
+        CreateDirectory(target);
+
+        return target;
+    }
+
+    public override string UploadChunk(string domain, string path, string uploadId, Stream stream, long defaultChunkSize, int chunkNumber, long chunkLength)
+    {
+        var target = GetTarget(domain, path);
+        var mode = chunkNumber == 0 ? FileMode.Create : FileMode.Append;
+
+        using (var fs = new FileStream(target, mode))
         {
-            var target = GetTarget(domain, path);
-            var mode = chunkNumber == 0 ? FileMode.Create : FileMode.Append;
-
-            using (var fs = new FileStream(target, mode))
-            {
-                stream.CopyTo(fs);
-            }
-
-            return string.Format("{0}_{1}", chunkNumber, uploadId);
+            stream.CopyTo(fs);
         }
 
-        public override Uri FinalizeChunkedUpload(string domain, string path, string uploadId, Dictionary<int, string> eTags)
+        return string.Format("{0}_{1}", chunkNumber, uploadId);
+    }
+
+    public override Uri FinalizeChunkedUpload(string domain, string path, string uploadId, Dictionary<int, string> eTags)
+    {
+        var target = GetTarget(domain, path);
+
+        if (QuotaController != null)
         {
-            var target = GetTarget(domain, path);
-
-            if (QuotaController != null)
+            if (!File.Exists(target))
             {
-                if (!File.Exists(target))
-                {
-                    throw new FileNotFoundException("file not found " + target);
-                }
-
-                var size = _crypt.GetFileSize(target);
-                QuotaUsedAdd(domain, size);
+                throw new FileNotFoundException("file not found " + target);
             }
 
-            _crypt.EncryptFile(target);
-
-            return GetUri(domain, path);
+            var size = _crypt.GetFileSize(target);
+            QuotaUsedAdd(domain, size);
         }
 
-        public override void AbortChunkedUpload(string domain, string path, string uploadId)
+        _crypt.EncryptFile(target);
+
+        return GetUri(domain, path);
+    }
+
+    public override void AbortChunkedUpload(string domain, string path, string uploadId)
+    {
+        var target = GetTarget(domain, path);
+        if (File.Exists(target))
         {
-            var target = GetTarget(domain, path);
-            if (File.Exists(target))
-            {
-                File.Delete(target);
-            }
+            File.Delete(target);
+        }
+    }
+
+    #endregion
+
+    public override void Delete(string domain, string path)
+    {
+        if (path == null)
+        {
+            throw new ArgumentNullException(nameof(path));
         }
 
-        #endregion
+        var target = GetTarget(domain, path);
 
-        public override void Delete(string domain, string path)
+        if (File.Exists(target))
         {
-            if (path == null)
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
-
-            var target = GetTarget(domain, path);
-
-            if (File.Exists(target))
-            {
-                var size = _crypt.GetFileSize(target);
-                File.Delete(target);
-
-                QuotaUsedDelete(domain, size);
-            }
-            else
-            {
-                throw new FileNotFoundException("file not found", target);
-            }
-        }
-
-        public override void DeleteFiles(string domain, List<string> paths)
-        {
-            if (paths == null)
-            {
-                throw new ArgumentNullException(nameof(paths));
-            }
-
-            foreach (var path in paths)
-            {
-                var target = GetTarget(domain, path);
-
-                if (!File.Exists(target))
-                {
-                    continue;
-                }
-
-                var size = _crypt.GetFileSize(target);
-                File.Delete(target);
-
-                QuotaUsedDelete(domain, size);
-            }
-        }
-
-        public override void DeleteFiles(string domain, string folderPath, string pattern, bool recursive)
-        {
-            if (folderPath == null)
-            {
-                throw new ArgumentNullException(nameof(folderPath));
-            }
-
-            //Return dirs
-            var targetDir = GetTarget(domain, folderPath);
-            if (Directory.Exists(targetDir))
-            {
-                var entries = Directory.GetFiles(targetDir, pattern, recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
-                foreach (var entry in entries)
-                {
-                    var size = _crypt.GetFileSize(entry);
-                    File.Delete(entry);
-                    QuotaUsedDelete(domain, size);
-                }
-            }
-            else
-            {
-                throw new DirectoryNotFoundException(string.Format("Directory '{0}' not found", targetDir));
-            }
-        }
-
-        public override void DeleteFiles(string domain, string folderPath, DateTime fromDate, DateTime toDate)
-        {
-            if (folderPath == null)
-            {
-                throw new ArgumentNullException(nameof(folderPath));
-            }
-
-            //Return dirs
-            var targetDir = GetTarget(domain, folderPath);
-            if (Directory.Exists(targetDir))
-            {
-                var entries = Directory.GetFiles(targetDir, "*", SearchOption.AllDirectories);
-                foreach (var entry in entries)
-                {
-                    var fileInfo = new FileInfo(entry);
-                    if (fileInfo.LastWriteTime >= fromDate && fileInfo.LastWriteTime <= toDate)
-                    {
-                        var size = _crypt.GetFileSize(entry);
-                        File.Delete(entry);
-                        QuotaUsedDelete(domain, size);
-                    }
-                }
-            }
-            else
-            {
-                throw new DirectoryNotFoundException(string.Format("Directory '{0}' not found", targetDir));
-            }
-        }
-
-        public override void MoveDirectory(string srcdomain, string srcdir, string newdomain, string newdir)
-        {
-            var target = GetTarget(srcdomain, srcdir);
-            var newtarget = GetTarget(newdomain, newdir);
-            var newtargetSub = newtarget.Remove(newtarget.LastIndexOf(Path.DirectorySeparatorChar));
-
-            if (!Directory.Exists(newtargetSub))
-            {
-                Directory.CreateDirectory(newtargetSub);
-            }
-
-            Directory.Move(target, newtarget);
-        }
-
-        public override Uri Move(string srcdomain, string srcpath, string newdomain, string newpath, bool quotaCheckFileSize = true)
-        {
-            if (srcpath == null)
-            {
-                throw new ArgumentNullException(nameof(srcpath));
-            }
-
-            if (newpath == null)
-            {
-                throw new ArgumentNullException(nameof(srcpath));
-            }
-
-            var target = GetTarget(srcdomain, srcpath);
-            var newtarget = GetTarget(newdomain, newpath);
-
-            if (File.Exists(target))
-            {
-                if (!Directory.Exists(Path.GetDirectoryName(newtarget)))
-                {
-                    Directory.CreateDirectory(Path.GetDirectoryName(newtarget));
-                }
-
-                var flength = _crypt.GetFileSize(target);
-
-                //Delete file if exists
-                if (File.Exists(newtarget))
-                {
-                    File.Delete(newtarget);
-                }
-
-                File.Move(target, newtarget);
-
-                QuotaUsedDelete(srcdomain, flength);
-                QuotaUsedAdd(newdomain, flength, quotaCheckFileSize);
-            }
-            else
-            {
-                throw new FileNotFoundException("File not found", Path.GetFullPath(target));
-            }
-
-            return GetUri(newdomain, newpath);
-        }
-
-        public override bool IsDirectory(string domain, string path)
-        {
-            if (path == null)
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
-
-            //Return dirs
-            var targetDir = GetTarget(domain, path);
-            if (!string.IsNullOrEmpty(targetDir) && !targetDir.EndsWith(Path.DirectorySeparatorChar.ToString()))
-            {
-                targetDir += Path.DirectorySeparatorChar;
-            }
-
-            return !string.IsNullOrEmpty(targetDir) && Directory.Exists(targetDir);
-        }
-
-        public override void DeleteDirectory(string domain, string path)
-        {
-            if (path == null)
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
-
-            //Return dirs
-            var targetDir = GetTarget(domain, path);
-
-            if (string.IsNullOrEmpty(targetDir))
-            {
-                throw new Exception("targetDir is null");
-            }
-
-            if (!string.IsNullOrEmpty(targetDir) && !targetDir.EndsWith(Path.DirectorySeparatorChar.ToString()))
-            {
-                targetDir += Path.DirectorySeparatorChar;
-            }
-
-            if (!Directory.Exists(targetDir)) return;
-
-            var entries = Directory.GetFiles(targetDir, "*.*", SearchOption.AllDirectories);
-            var size = entries.Select(entry => _crypt.GetFileSize(entry)).Sum();
-
-            var subDirs = Directory.GetDirectories(targetDir, "*", SearchOption.AllDirectories).ToList();
-            subDirs.Reverse();
-            subDirs.ForEach(subdir => Directory.Delete(subdir, true));
-
-            Directory.Delete(targetDir, true);
+            var size = _crypt.GetFileSize(target);
+            File.Delete(target);
 
             QuotaUsedDelete(domain, size);
         }
+        else
+        {
+            throw new FileNotFoundException("file not found", target);
+        }
+    }
 
-        public override long GetFileSize(string domain, string path)
+    public override void DeleteFiles(string domain, List<string> paths)
+    {
+        if (paths == null)
+        {
+            throw new ArgumentNullException(nameof(paths));
+        }
+
+        foreach (var path in paths)
         {
             var target = GetTarget(domain, path);
 
-            if (File.Exists(target))
+            if (!File.Exists(target))
             {
-                return _crypt.GetFileSize(target);
+                continue;
             }
 
-            throw new FileNotFoundException("file not found " + target);
+            var size = _crypt.GetFileSize(target);
+            File.Delete(target);
+
+            QuotaUsedDelete(domain, size);
+        }
+    }
+
+    public override void DeleteFiles(string domain, string folderPath, string pattern, bool recursive)
+    {
+        if (folderPath == null)
+        {
+            throw new ArgumentNullException(nameof(folderPath));
         }
 
-        public override long GetDirectorySize(string domain, string path)
+        //Return dirs
+        var targetDir = GetTarget(domain, folderPath);
+        if (Directory.Exists(targetDir))
         {
-            var target = GetTarget(domain, path);
-
-            if (Directory.Exists(target))
-            {
-                return Directory.GetFiles(target, "*.*", SearchOption.AllDirectories)
-                    .Select(entry => _crypt.GetFileSize(entry))
-                    .Sum();
-            }
-
-            throw new FileNotFoundException("directory not found " + target);
-        }
-
-        public override Uri SaveTemp(string domain, out string assignedPath, Stream stream)
-        {
-            assignedPath = Guid.NewGuid().ToString();
-
-            return Save(domain, assignedPath, stream);
-        }
-
-        public override string SavePrivate(string domain, string path, Stream stream, DateTime expires)
-        {
-            return Save(domain, path, stream).ToString();
-        }
-
-        public override void DeleteExpired(string domain, string folderPath, TimeSpan oldThreshold)
-        {
-            if (folderPath == null)
-            {
-                throw new ArgumentNullException(nameof(folderPath));
-            }
-
-            //Return dirs
-            var targetDir = GetTarget(domain, folderPath);
-            if (!Directory.Exists(targetDir))
-            {
-                return;
-            }
-
-            var entries = Directory.GetFiles(targetDir, "*.*", SearchOption.TopDirectoryOnly);
+            var entries = Directory.GetFiles(targetDir, pattern, recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
             foreach (var entry in entries)
             {
-                var finfo = new FileInfo(entry);
-                if ((DateTime.UtcNow - finfo.CreationTimeUtc) > oldThreshold)
+                var size = _crypt.GetFileSize(entry);
+                File.Delete(entry);
+                QuotaUsedDelete(domain, size);
+            }
+        }
+        else
+        {
+            throw new DirectoryNotFoundException(string.Format("Directory '{0}' not found", targetDir));
+        }
+    }
+
+    public override void DeleteFiles(string domain, string folderPath, DateTime fromDate, DateTime toDate)
+    {
+        if (folderPath == null)
+        {
+            throw new ArgumentNullException(nameof(folderPath));
+        }
+
+        //Return dirs
+        var targetDir = GetTarget(domain, folderPath);
+        if (Directory.Exists(targetDir))
+        {
+            var entries = Directory.GetFiles(targetDir, "*", SearchOption.AllDirectories);
+            foreach (var entry in entries)
+            {
+                var fileInfo = new FileInfo(entry);
+                if (fileInfo.LastWriteTime >= fromDate && fileInfo.LastWriteTime <= toDate)
                 {
                     var size = _crypt.GetFileSize(entry);
                     File.Delete(entry);
-
                     QuotaUsedDelete(domain, size);
                 }
             }
         }
-
-        public override string GetUploadForm(string domain, string directoryPath, string redirectTo, long maxUploadSize, string contentType, string contentDisposition, string submitLabel)
+        else
         {
-            throw new NotSupportedException("This operation supported only on s3 storage");
+            throw new DirectoryNotFoundException(string.Format("Directory '{0}' not found", targetDir));
+        }
+    }
+
+    public override void MoveDirectory(string srcdomain, string srcdir, string newdomain, string newdir)
+    {
+        var target = GetTarget(srcdomain, srcdir);
+        var newtarget = GetTarget(newdomain, newdir);
+        var newtargetSub = newtarget.Remove(newtarget.LastIndexOf(Path.DirectorySeparatorChar));
+
+        if (!Directory.Exists(newtargetSub))
+        {
+            Directory.CreateDirectory(newtargetSub);
         }
 
-        public override string GetUploadedUrl(string domain, string directoryPath)
+        Directory.Move(target, newtarget);
+    }
+
+    public override Uri Move(string srcdomain, string srcpath, string newdomain, string newpath, bool quotaCheckFileSize = true)
+    {
+        if (srcpath == null)
         {
-            throw new NotSupportedException("This operation supported only on s3 storage");
+            throw new ArgumentNullException(nameof(srcpath));
         }
 
-        public override string GetUploadUrl()
+        if (newpath == null)
         {
-            throw new NotSupportedException("This operation supported only on s3 storage");
+            throw new ArgumentNullException(nameof(srcpath));
         }
 
-        public override string GetPostParams(string domain, string directoryPath, long maxUploadSize, string contentType, string contentDisposition)
+        var target = GetTarget(srcdomain, srcpath);
+        var newtarget = GetTarget(newdomain, newpath);
+
+        if (File.Exists(target))
         {
-            throw new NotSupportedException("This operation supported only on s3 storage");
+            if (!Directory.Exists(Path.GetDirectoryName(newtarget)))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(newtarget));
+            }
+
+            var flength = _crypt.GetFileSize(target);
+
+            //Delete file if exists
+            if (File.Exists(newtarget))
+            {
+                File.Delete(newtarget);
+            }
+
+            File.Move(target, newtarget);
+
+            QuotaUsedDelete(srcdomain, flength);
+            QuotaUsedAdd(newdomain, flength, quotaCheckFileSize);
+        }
+        else
+        {
+            throw new FileNotFoundException("File not found", Path.GetFullPath(target));
         }
 
-        public override string[] ListDirectoriesRelative(string domain, string path, bool recursive)
+        return GetUri(newdomain, newpath);
+    }
+
+    public override bool IsDirectory(string domain, string path)
+    {
+        if (path == null)
         {
-            if (path == null)
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
-
-            //Return dirs
-            var targetDir = GetTarget(domain, path);
-            if (!string.IsNullOrEmpty(targetDir) && !targetDir.EndsWith(Path.DirectorySeparatorChar.ToString()))
-            {
-                targetDir += Path.DirectorySeparatorChar;
-            }
-
-            if (Directory.Exists(targetDir))
-            {
-                var entries = Directory.GetDirectories(targetDir, "*", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
-
-                return Array.ConvertAll(
-                    entries,
-                    x => x.Substring(targetDir.Length));
-            }
-
-            return Array.Empty<string>();
+            throw new ArgumentNullException(nameof(path));
         }
 
-        public override string[] ListFilesRelative(string domain, string path, string pattern, bool recursive)
+        //Return dirs
+        var targetDir = GetTarget(domain, path);
+        if (!string.IsNullOrEmpty(targetDir) && !targetDir.EndsWith(Path.DirectorySeparatorChar.ToString()))
         {
-            if (path == null)
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
-
-            //Return dirs
-            var targetDir = GetTarget(domain, path);
-            if (!string.IsNullOrEmpty(targetDir) && !targetDir.EndsWith(Path.DirectorySeparatorChar.ToString()))
-            {
-                targetDir += Path.DirectorySeparatorChar;
-            }
-
-            if (Directory.Exists(targetDir))
-            {
-                var entries = Directory.GetFiles(targetDir, pattern, recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
-
-                return Array.ConvertAll(
-                    entries,
-                    x => x.Substring(targetDir.Length));
-            }
-
-            return Array.Empty<string>();
+            targetDir += Path.DirectorySeparatorChar;
         }
 
-        public override bool IsFile(string domain, string path)
+        return !string.IsNullOrEmpty(targetDir) && Directory.Exists(targetDir);
+    }
+
+    public override void DeleteDirectory(string domain, string path)
+    {
+        if (path == null)
         {
-            if (path == null)
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
-
-            //Return dirs
-            var target = GetTarget(domain, path);
-            var result = File.Exists(target);
-
-            return result;
+            throw new ArgumentNullException(nameof(path));
         }
 
-        public override Task<bool> IsFileAsync(string domain, string path)
+        //Return dirs
+        var targetDir = GetTarget(domain, path);
+
+        if (string.IsNullOrEmpty(targetDir))
         {
-            return Task.FromResult(IsFile(domain, path));
+            throw new Exception("targetDir is null");
         }
 
-        public override long ResetQuota(string domain)
+        if (!string.IsNullOrEmpty(targetDir) && !targetDir.EndsWith(Path.DirectorySeparatorChar.ToString()))
         {
-            if (QuotaController != null)
-            {
-                var size = GetUsedQuota(domain);
-                QuotaController.QuotaUsedSet(_modulename, domain, _dataList.GetData(domain), size);
-            }
-
-            return 0;
+            targetDir += Path.DirectorySeparatorChar;
         }
 
-        public override long GetUsedQuota(string domain)
+        if (!Directory.Exists(targetDir)) return;
+
+        var entries = Directory.GetFiles(targetDir, "*.*", SearchOption.AllDirectories);
+        var size = entries.Select(entry => _crypt.GetFileSize(entry)).Sum();
+
+        var subDirs = Directory.GetDirectories(targetDir, "*", SearchOption.AllDirectories).ToList();
+        subDirs.Reverse();
+        subDirs.ForEach(subdir => Directory.Delete(subdir, true));
+
+        Directory.Delete(targetDir, true);
+
+        QuotaUsedDelete(domain, size);
+    }
+
+    public override long GetFileSize(string domain, string path)
+    {
+        var target = GetTarget(domain, path);
+
+        if (File.Exists(target))
         {
-            var target = GetTarget(domain, string.Empty);
-            long size = 0;
-
-            if (Directory.Exists(target))
-            {
-                var entries = Directory.GetFiles(target, "*.*", SearchOption.AllDirectories);
-                size = entries.Select(entry => _crypt.GetFileSize(entry)).Sum();
-            }
-
-            return size;
+            return _crypt.GetFileSize(target);
         }
 
-        public override Uri Copy(string srcdomain, string srcpath, string newdomain, string newpath)
+        throw new FileNotFoundException("file not found " + target);
+    }
+
+    public override long GetDirectorySize(string domain, string path)
+    {
+        var target = GetTarget(domain, path);
+
+        if (Directory.Exists(target))
         {
-            if (srcpath == null)
-            {
-                throw new ArgumentNullException(nameof(srcpath));
-            }
-
-            if (newpath == null)
-            {
-                throw new ArgumentNullException(nameof(srcpath));
-            }
-
-            var target = GetTarget(srcdomain, srcpath);
-            var newtarget = GetTarget(newdomain, newpath);
-
-            if (File.Exists(target))
-            {
-                if (!Directory.Exists(Path.GetDirectoryName(newtarget)))
-                {
-                    Directory.CreateDirectory(Path.GetDirectoryName(newtarget));
-                }
-
-                File.Copy(target, newtarget, true);
-
-                var flength = _crypt.GetFileSize(target);
-                QuotaUsedAdd(newdomain, flength);
-            }
-            else
-            {
-                throw new FileNotFoundException("File not found", Path.GetFullPath(target));
-            }
-
-            return GetUri(newdomain, newpath);
+            return Directory.GetFiles(target, "*.*", SearchOption.AllDirectories)
+                .Select(entry => _crypt.GetFileSize(entry))
+                .Sum();
         }
 
-        public override void CopyDirectory(string srcdomain, string srcdir, string newdomain, string newdir)
+        throw new FileNotFoundException("directory not found " + target);
+    }
+
+    public override Uri SaveTemp(string domain, out string assignedPath, Stream stream)
+    {
+        assignedPath = Guid.NewGuid().ToString();
+
+        return Save(domain, assignedPath, stream);
+    }
+
+    public override string SavePrivate(string domain, string path, Stream stream, DateTime expires)
+    {
+        return Save(domain, path, stream).ToString();
+    }
+
+    public override void DeleteExpired(string domain, string folderPath, TimeSpan oldThreshold)
+    {
+        if (folderPath == null)
         {
-            var target = GetTarget(srcdomain, srcdir);
-            var newtarget = GetTarget(newdomain, newdir);
-
-            var diSource = new DirectoryInfo(target);
-            var diTarget = new DirectoryInfo(newtarget);
-
-            CopyAll(diSource, diTarget, newdomain);
+            throw new ArgumentNullException(nameof(folderPath));
         }
 
-
-        public Stream GetWriteStream(string domain, string path)
+        //Return dirs
+        var targetDir = GetTarget(domain, folderPath);
+        if (!Directory.Exists(targetDir))
         {
-            return GetWriteStream(domain, path, FileMode.Create);
+            return;
         }
 
-        public Stream GetWriteStream(string domain, string path, FileMode fileMode)
+        var entries = Directory.GetFiles(targetDir, "*.*", SearchOption.TopDirectoryOnly);
+        foreach (var entry in entries)
         {
-            if (path == null)
+            var finfo = new FileInfo(entry);
+            if ((DateTime.UtcNow - finfo.CreationTimeUtc) > oldThreshold)
             {
-                throw new ArgumentNullException(nameof(path));
-            }
+                var size = _crypt.GetFileSize(entry);
+                File.Delete(entry);
 
-            var target = GetTarget(domain, path);
-            CreateDirectory(target);
-
-            return File.Open(target, fileMode);
-        }
-
-        public void Decrypt(string domain, string path)
-        {
-            if (path == null)
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
-
-            var target = GetTarget(domain, path);
-
-            if (File.Exists(target))
-            {
-                _crypt.DecryptFile(target);
-            }
-            else
-            {
-                throw new FileNotFoundException("file not found", target);
+                QuotaUsedDelete(domain, size);
             }
         }
+    }
 
-        protected override Uri SaveWithAutoAttachment(string domain, string path, Stream stream, string attachmentFileName)
+    public override string GetUploadForm(string domain, string directoryPath, string redirectTo, long maxUploadSize, string contentType, string contentDisposition, string submitLabel)
+    {
+        throw new NotSupportedException("This operation supported only on s3 storage");
+    }
+
+    public override string GetUploadedUrl(string domain, string directoryPath)
+    {
+        throw new NotSupportedException("This operation supported only on s3 storage");
+    }
+
+    public override string GetUploadUrl()
+    {
+        throw new NotSupportedException("This operation supported only on s3 storage");
+    }
+
+    public override string GetPostParams(string domain, string directoryPath, long maxUploadSize, string contentType, string contentDisposition)
+    {
+        throw new NotSupportedException("This operation supported only on s3 storage");
+    }
+
+    public override string[] ListDirectoriesRelative(string domain, string path, bool recursive)
+    {
+        if (path == null)
         {
-            return Save(domain, path, stream);
+            throw new ArgumentNullException(nameof(path));
         }
 
-        private void CopyAll(DirectoryInfo source, DirectoryInfo target, string newdomain)
+        //Return dirs
+        var targetDir = GetTarget(domain, path);
+        if (!string.IsNullOrEmpty(targetDir) && !targetDir.EndsWith(Path.DirectorySeparatorChar.ToString()))
         {
-            // Check if the target directory exists, if not, create it.
-            if (!Directory.Exists(target.FullName))
-            {
-                Directory.CreateDirectory(target.FullName);
-            }
-
-            // Copy each file into it's new directory.
-            foreach (var fi in source.GetFiles())
-            {
-                var fp = CrossPlatform.PathCombine(target.ToString(), fi.Name);
-                fi.CopyTo(fp, true);
-                var size = _crypt.GetFileSize(fp);
-                QuotaUsedAdd(newdomain, size);
-            }
-
-            // Copy each subdirectory using recursion.
-            foreach (var diSourceSubDir in source.GetDirectories())
-            {
-                var nextTargetSubDir = target.CreateSubdirectory(diSourceSubDir.Name);
-                CopyAll(diSourceSubDir, nextTargetSubDir, newdomain);
-            }
+            targetDir += Path.DirectorySeparatorChar;
         }
 
-        private MappedPath GetPath(string domain)
+        if (Directory.Exists(targetDir))
         {
-            if (domain != null && _mappedPaths.ContainsKey(domain))
-            {
-                return _mappedPaths[domain];
-            }
+            var entries = Directory.GetDirectories(targetDir, "*", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
 
-            return _mappedPaths[string.Empty].AppendDomain(domain);
+            return Array.ConvertAll(
+                entries,
+                x => x.Substring(targetDir.Length));
         }
 
-        private static void CreateDirectory(string target)
+        return Array.Empty<string>();
+    }
+
+    public override string[] ListFilesRelative(string domain, string path, string pattern, bool recursive)
+    {
+        if (path == null)
         {
-            var targetDirectory = Path.GetDirectoryName(target);
-            if (!Directory.Exists(targetDirectory))
-            {
-                Directory.CreateDirectory(targetDirectory);
-            }
+            throw new ArgumentNullException(nameof(path));
         }
 
-        private string GetTarget(string domain, string path)
+        //Return dirs
+        var targetDir = GetTarget(domain, path);
+        if (!string.IsNullOrEmpty(targetDir) && !targetDir.EndsWith(Path.DirectorySeparatorChar.ToString()))
         {
-            var pathMap = GetPath(domain);
-            //Build Dir
-            var target = CrossPlatform.PathCombine(pathMap.PhysicalPath, PathUtils.Normalize(path));
-            ValidatePath(target);
-
-            return target;
+            targetDir += Path.DirectorySeparatorChar;
         }
 
-        private static void ValidatePath(string target)
+        if (Directory.Exists(targetDir))
         {
-            if (Path.GetDirectoryName(target).IndexOfAny(Path.GetInvalidPathChars()) != -1 ||
-                Path.GetFileName(target).IndexOfAny(Path.GetInvalidFileNameChars()) != -1)
-            {
-                //Throw
-                throw new ArgumentException("bad path");
-            }
+            var entries = Directory.GetFiles(targetDir, pattern, recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
+
+            return Array.ConvertAll(
+                entries,
+                x => x.Substring(targetDir.Length));
         }
 
-        public void Encrypt(string domain, string path)
+        return Array.Empty<string>();
+    }
+
+    public override bool IsFile(string domain, string path)
+    {
+        if (path == null)
         {
-            if (path == null)
+            throw new ArgumentNullException(nameof(path));
+        }
+
+        //Return dirs
+        var target = GetTarget(domain, path);
+        var result = File.Exists(target);
+
+        return result;
+    }
+
+    public override Task<bool> IsFileAsync(string domain, string path)
+    {
+        return Task.FromResult(IsFile(domain, path));
+    }
+
+    public override long ResetQuota(string domain)
+    {
+        if (QuotaController != null)
+        {
+            var size = GetUsedQuota(domain);
+            QuotaController.QuotaUsedSet(_modulename, domain, _dataList.GetData(domain), size);
+        }
+
+        return 0;
+    }
+
+    public override long GetUsedQuota(string domain)
+    {
+        var target = GetTarget(domain, string.Empty);
+        long size = 0;
+
+        if (Directory.Exists(target))
+        {
+            var entries = Directory.GetFiles(target, "*.*", SearchOption.AllDirectories);
+            size = entries.Select(entry => _crypt.GetFileSize(entry)).Sum();
+        }
+
+        return size;
+    }
+
+    public override Uri Copy(string srcdomain, string srcpath, string newdomain, string newpath)
+    {
+        if (srcpath == null)
+        {
+            throw new ArgumentNullException(nameof(srcpath));
+        }
+
+        if (newpath == null)
+        {
+            throw new ArgumentNullException(nameof(srcpath));
+        }
+
+        var target = GetTarget(srcdomain, srcpath);
+        var newtarget = GetTarget(newdomain, newpath);
+
+        if (File.Exists(target))
+        {
+            if (!Directory.Exists(Path.GetDirectoryName(newtarget)))
             {
-                throw new ArgumentNullException(nameof(path));
+                Directory.CreateDirectory(Path.GetDirectoryName(newtarget));
             }
 
-            var target = GetTarget(domain, path);
+            File.Copy(target, newtarget, true);
 
-            if (File.Exists(target))
-            {
-                _crypt.EncryptFile(target);
-            }
-            else
-            {
-                throw new FileNotFoundException("file not found", target);
-            }
+            var flength = _crypt.GetFileSize(target);
+            QuotaUsedAdd(newdomain, flength);
+        }
+        else
+        {
+            throw new FileNotFoundException("File not found", Path.GetFullPath(target));
+        }
+
+        return GetUri(newdomain, newpath);
+    }
+
+    public override void CopyDirectory(string srcdomain, string srcdir, string newdomain, string newdir)
+    {
+        var target = GetTarget(srcdomain, srcdir);
+        var newtarget = GetTarget(newdomain, newdir);
+
+        var diSource = new DirectoryInfo(target);
+        var diTarget = new DirectoryInfo(newtarget);
+
+        CopyAll(diSource, diTarget, newdomain);
+    }
+
+
+    public Stream GetWriteStream(string domain, string path)
+    {
+        return GetWriteStream(domain, path, FileMode.Create);
+    }
+
+    public Stream GetWriteStream(string domain, string path, FileMode fileMode)
+    {
+        if (path == null)
+        {
+            throw new ArgumentNullException(nameof(path));
+        }
+
+        var target = GetTarget(domain, path);
+        CreateDirectory(target);
+
+        return File.Open(target, fileMode);
+    }
+
+    public void Decrypt(string domain, string path)
+    {
+        if (path == null)
+        {
+            throw new ArgumentNullException(nameof(path));
+        }
+
+        var target = GetTarget(domain, path);
+
+        if (File.Exists(target))
+        {
+            _crypt.DecryptFile(target);
+        }
+        else
+        {
+            throw new FileNotFoundException("file not found", target);
+        }
+    }
+
+    protected override Uri SaveWithAutoAttachment(string domain, string path, Stream stream, string attachmentFileName)
+    {
+        return Save(domain, path, stream);
+    }
+
+    private void CopyAll(DirectoryInfo source, DirectoryInfo target, string newdomain)
+    {
+        // Check if the target directory exists, if not, create it.
+        if (!Directory.Exists(target.FullName))
+        {
+            Directory.CreateDirectory(target.FullName);
+        }
+
+        // Copy each file into it's new directory.
+        foreach (var fi in source.GetFiles())
+        {
+            var fp = CrossPlatform.PathCombine(target.ToString(), fi.Name);
+            fi.CopyTo(fp, true);
+            var size = _crypt.GetFileSize(fp);
+            QuotaUsedAdd(newdomain, size);
+        }
+
+        // Copy each subdirectory using recursion.
+        foreach (var diSourceSubDir in source.GetDirectories())
+        {
+            var nextTargetSubDir = target.CreateSubdirectory(diSourceSubDir.Name);
+            CopyAll(diSourceSubDir, nextTargetSubDir, newdomain);
+        }
+    }
+
+    private MappedPath GetPath(string domain)
+    {
+        if (domain != null && _mappedPaths.ContainsKey(domain))
+        {
+            return _mappedPaths[domain];
+        }
+
+        return _mappedPaths[string.Empty].AppendDomain(domain);
+    }
+
+    private static void CreateDirectory(string target)
+    {
+        var targetDirectory = Path.GetDirectoryName(target);
+        if (!Directory.Exists(targetDirectory))
+        {
+            Directory.CreateDirectory(targetDirectory);
+        }
+    }
+
+    private string GetTarget(string domain, string path)
+    {
+        var pathMap = GetPath(domain);
+        //Build Dir
+        var target = CrossPlatform.PathCombine(pathMap.PhysicalPath, PathUtils.Normalize(path));
+        ValidatePath(target);
+
+        return target;
+    }
+
+    private static void ValidatePath(string target)
+    {
+        if (Path.GetDirectoryName(target).IndexOfAny(Path.GetInvalidPathChars()) != -1 ||
+            Path.GetFileName(target).IndexOfAny(Path.GetInvalidFileNameChars()) != -1)
+        {
+            //Throw
+            throw new ArgumentException("bad path");
+        }
+    }
+
+    public void Encrypt(string domain, string path)
+    {
+        if (path == null)
+        {
+            throw new ArgumentNullException(nameof(path));
+        }
+
+        var target = GetTarget(domain, path);
+
+        if (File.Exists(target))
+        {
+            _crypt.EncryptFile(target);
+        }
+        else
+        {
+            throw new FileNotFoundException("file not found", target);
         }
     }
 }

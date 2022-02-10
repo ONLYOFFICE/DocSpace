@@ -24,14 +24,13 @@
 */
 
 
-namespace ASC.Data.Storage
+namespace ASC.Data.Storage;
+
+class Constants
 {
-    class Constants
-    {
-        public const string ConfigDir = "CONFIG_DIR";
-        public const string StorageRootParam = "$STORAGE_ROOT";
-        public const string QueryAuth = "auth";
-        public const string QueryExpire = "expire";
-        public const string QueryHeader = "headers";
-    }
+    public const string ConfigDir = "CONFIG_DIR";
+    public const string StorageRootParam = "$STORAGE_ROOT";
+    public const string QueryAuth = "auth";
+    public const string QueryExpire = "expire";
+    public const string QueryHeader = "headers";
 }

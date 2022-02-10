@@ -23,32 +23,31 @@
  *
 */
 
-namespace ASC.Data.Storage.Encryption
+namespace ASC.Data.Storage.Encryption;
+
+[Singletone]
+public class EncryptionFactory
 {
-    [Singletone]
-    public class EncryptionFactory
+    private readonly IServiceScopeFactory _serviceScopeFactory;
+
+    public EncryptionFactory(IServiceScopeFactory serviceScopeFactory)
     {
-        private readonly IServiceScopeFactory _serviceScopeFactory;
+        _serviceScopeFactory = serviceScopeFactory;
+    }
 
-        public EncryptionFactory(IServiceScopeFactory serviceScopeFactory)
+    public ICrypt GetCrypt(string storageName, EncryptionSettings encryptionSettings)
+    {
+        ICrypt result = null;
+
+        using var scope = _serviceScopeFactory.CreateScope();
+        if (scope != null)
         {
-            _serviceScopeFactory = serviceScopeFactory;
+            result = scope.ServiceProvider.GetService<ICrypt>();
         }
 
-        public ICrypt GetCrypt(string storageName, EncryptionSettings encryptionSettings)
-        {
-            ICrypt result = null;
+        result ??= new FakeCrypt();
+        result.Init(storageName, encryptionSettings);
 
-            using var scope = _serviceScopeFactory.CreateScope();
-            if (scope != null)
-            {
-                result = scope.ServiceProvider.GetService<ICrypt>();
-            }
-
-            result ??= new FakeCrypt();
-            result.Init(storageName, encryptionSettings);
-
-            return result;
-        }
+        return result;
     }
 }
