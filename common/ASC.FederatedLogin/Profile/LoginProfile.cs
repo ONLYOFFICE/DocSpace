@@ -29,138 +29,129 @@ namespace ASC.FederatedLogin.Profile
     [DebuggerDisplay("{DisplayName} ({Id})")]
     public class LoginProfile
     {
-        private IDictionary<string, string> _fields = new Dictionary<string, string>();
-
+        public const string QueryParamName = "up";
+        public const string QuerySessionParamName = "sup";
+        public const string QueryCacheParamName = "cup";
 
         public string Id
         {
-            get { return GetField(WellKnownFields.Id); }
-            internal set { SetField(WellKnownFields.Id, value); }
+            get => GetField(WellKnownFields.Id);
+            internal set => SetField(WellKnownFields.Id, value);
         }
 
         public string Link
         {
-            get { return GetField(WellKnownFields.Link); }
-            internal set { SetField(WellKnownFields.Link, value); }
+            get => GetField(WellKnownFields.Link);
+            internal set => SetField(WellKnownFields.Link, value);
         }
 
         public string Name
         {
-            get { return GetField(WellKnownFields.Name); }
-            internal set { SetField(WellKnownFields.Name, value); }
+            get => GetField(WellKnownFields.Name);
+            internal set => SetField(WellKnownFields.Name, value);
         }
 
         public string DisplayName
         {
-            get { return GetField(WellKnownFields.DisplayName); }
-            internal set { SetField(WellKnownFields.DisplayName, value); }
+            get => GetField(WellKnownFields.DisplayName);
+            internal set => SetField(WellKnownFields.DisplayName, value);
         }
 
         public string EMail
         {
-            get { return GetField(WellKnownFields.Email); }
+            get => GetField(WellKnownFields.Email);
             internal set { SetField(WellKnownFields.Email, value); }
         }
 
         public string Avatar
         {
-            get { return GetField(WellKnownFields.Avatar); }
-            internal set { SetField(WellKnownFields.Avatar, value); }
+            get => GetField(WellKnownFields.Avatar);
+            internal set => SetField(WellKnownFields.Avatar, value);
         }
 
         public string Gender
         {
-            get { return GetField(WellKnownFields.Gender); }
-            internal set { SetField(WellKnownFields.Gender, value); }
+            get => GetField(WellKnownFields.Gender);
+            internal set => SetField(WellKnownFields.Gender, value);
         }
 
 
         public string FirstName
         {
-            get { return GetField(WellKnownFields.FirstName); }
-            internal set { SetField(WellKnownFields.FirstName, value); }
+            get => GetField(WellKnownFields.FirstName);
+            internal set => SetField(WellKnownFields.FirstName, value);
         }
 
         public string LastName
         {
-            get { return GetField(WellKnownFields.LastName); }
-            internal set { SetField(WellKnownFields.LastName, value); }
+            get => GetField(WellKnownFields.LastName);
+            internal set => SetField(WellKnownFields.LastName, value);
         }
 
         public string MiddleName
         {
-            get { return GetField(WellKnownFields.MiddleName); }
-            internal set { SetField(WellKnownFields.MiddleName, value); }
+            get => GetField(WellKnownFields.MiddleName);
+            internal set => SetField(WellKnownFields.MiddleName, value);
         }
 
         public string Salutation
         {
-            get { return GetField(WellKnownFields.Salutation); }
-            internal set { SetField(WellKnownFields.Salutation, value); }
+            get => GetField(WellKnownFields.Salutation);
+            internal set => SetField(WellKnownFields.Salutation, value);
         }
 
         public string BirthDay
         {
-            get { return GetField(WellKnownFields.BirthDay); }
-            internal set { SetField(WellKnownFields.BirthDay, value); }
+            get => GetField(WellKnownFields.BirthDay);
+            internal set => SetField(WellKnownFields.BirthDay, value);
         }
 
         public string Locale
         {
-            get { return GetField(WellKnownFields.Locale); }
-            internal set { SetField(WellKnownFields.Locale, value); }
+            get => GetField(WellKnownFields.Locale);
+            internal set => SetField(WellKnownFields.Locale, value);
         }
 
         public string TimeZone
         {
-            get { return GetField(WellKnownFields.Timezone); }
-            internal set { SetField(WellKnownFields.Timezone, value); }
+            get => GetField(WellKnownFields.Timezone);
+            internal set => SetField(WellKnownFields.Timezone, value);
         }
 
         public string AuthorizationResult
         {
-            get { return GetField(WellKnownFields.Auth); }
-            internal set { SetField(WellKnownFields.Auth, value); }
+            get => GetField(WellKnownFields.Auth);
+            internal set => SetField(WellKnownFields.Auth, value);
         }
 
         public string AuthorizationError
         {
-            get { return GetField(WellKnownFields.AuthError); }
-            internal set { SetField(WellKnownFields.AuthError, value); }
+            get => GetField(WellKnownFields.AuthError);
+            internal set => SetField(WellKnownFields.AuthError, value);
         }
 
         public string Provider
         {
-            get { return GetField(WellKnownFields.Provider); }
-            internal set { SetField(WellKnownFields.Provider, value); }
+            get => GetField(WellKnownFields.Provider);
+            internal set => SetField(WellKnownFields.Provider, value);
         }
 
         public string RealmUrl
         {
-            get { return GetField(WellKnownFields.RealmUrl); }
-            internal set { SetField(WellKnownFields.RealmUrl, value); }
-        }
-
-        public string UniqueId
-        {
-            get { return $"{Provider}/{Id}"; }
-        }
-
-        public string HashId
-        {
-            get { return HashHelper.MD5(UniqueId); }
+            get => GetField(WellKnownFields.RealmUrl);
+            internal set => SetField(WellKnownFields.RealmUrl, value);
         }
 
         public string Hash
         {
-            get { return Signature?.Create(HashId); }
-            set { throw new NotImplementedException(); }
+            get => _signature?.Create(HashId);
+            set => throw new NotImplementedException();
         }
 
         public string Serialized
         {
-            get { return Transport(); }
-            set { throw new NotImplementedException(); }
+            get => Transport();
+            set => throw new NotImplementedException();
         }
 
         public string UserDisplayName
@@ -182,18 +173,17 @@ namespace ASC.FederatedLogin.Profile
             }
         }
 
-        public bool IsFailed
-        {
-            get { return !string.IsNullOrEmpty(AuthorizationError); }
-        }
+        public string UniqueId => $"{Provider}/{Id}";
+        public string HashId => HashHelper.MD5(UniqueId);
+        public bool IsFailed => !string.IsNullOrEmpty(AuthorizationError);
+        public bool IsAuthorized => !IsFailed;
 
-        public bool IsAuthorized
-        {
-            get { return !IsFailed; }
-        }
+        private const char KeyValueSeparator = '→';
+        private const char PairSeparator = '·';
 
-        private Signature Signature { get; }
-        private InstanceCrypto InstanceCrypto { get; }
+        private readonly Signature _signature;
+        private readonly InstanceCrypto _instanceCrypto;
+        private IDictionary<string, string> _fields = new Dictionary<string, string>();
 
         internal string GetField(string name)
         {
@@ -203,7 +193,7 @@ namespace ASC.FederatedLogin.Profile
 
         public LoginProfile GetMinimalProfile()
         {
-            var profileNew = new LoginProfile(Signature, InstanceCrypto)
+            var profileNew = new LoginProfile(_signature, _instanceCrypto)
             {
                 Provider = Provider,
                 Id = Id
@@ -234,20 +224,11 @@ namespace ASC.FederatedLogin.Profile
             }
         }
 
-
-        public const string QueryParamName = "up";
-        public const string QuerySessionParamName = "sup";
-        public const string QueryCacheParamName = "cup";
-        private const char KeyValueSeparator = '→';
-        private const char PairSeparator = '·';
-
-
         internal Uri AppendProfile(Uri uri)
         {
             var value = Transport();
             return AppendQueryParam(uri, QueryParamName, value);
         }
-
 
         public static bool HasProfile(HttpContext context)
         {
@@ -308,7 +289,6 @@ namespace ASC.FederatedLogin.Profile
             return AppendQueryParam(uri, QuerySessionParamName, key);
         }
 
-
         internal void ParseFromUrl(HttpContext context, Uri uri, IMemoryCache memoryCache)
         {
             var queryString = HttpUtility.ParseQueryString(uri.Query);
@@ -325,7 +305,6 @@ namespace ASC.FederatedLogin.Profile
                 FromTransport((string)memoryCache.Get(queryString[QueryCacheParamName]));
             }
         }
-
 
         internal string ToSerializedString()
         {
@@ -347,20 +326,19 @@ namespace ASC.FederatedLogin.Profile
 
         internal string Transport()
         {
-            return WebEncoders.Base64UrlEncode(InstanceCrypto.Encrypt(Encoding.UTF8.GetBytes(ToSerializedString())));
+            return WebEncoders.Base64UrlEncode(_instanceCrypto.Encrypt(Encoding.UTF8.GetBytes(ToSerializedString())));
         }
 
         internal void FromTransport(string transportstring)
         {
-            var serialized = InstanceCrypto.Decrypt(WebEncoders.Base64UrlDecode(transportstring));
+            var serialized = _instanceCrypto.Decrypt(WebEncoders.Base64UrlDecode(transportstring));
             FromSerializedString(serialized);
         }
 
-
         internal LoginProfile(Signature signature, InstanceCrypto instanceCrypto)
         {
-            Signature = signature;
-            InstanceCrypto = instanceCrypto;
+            _signature = signature;
+            _instanceCrypto = instanceCrypto;
         }
 
         protected LoginProfile(Signature signature, InstanceCrypto instanceCrypto, SerializationInfo info) : this(signature, instanceCrypto)

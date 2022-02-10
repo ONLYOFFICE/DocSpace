@@ -30,13 +30,44 @@ namespace ASC.FederatedLogin
     [Scope]
     public class Login
     {
-        private Dictionary<string, string> _params;
+        public bool IsReusable => false;
+        protected string Callback => _params.Get("callback") ?? "loginCallback";
+        protected string Auth => _params.Get("auth");
+        protected string ReturnUrl => _params.Get("returnurl"); //TODO?? FormsAuthentication.LoginUrl;
 
-        private IWebHostEnvironment WebHostEnvironment { get; }
-        private IMemoryCache MemoryCache { get; }
-        private Signature Signature { get; }
-        private InstanceCrypto InstanceCrypto { get; }
-        private ProviderManager ProviderManager { get; }
+        protected LoginMode Mode
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(_params.Get("mode")))
+                {
+                    return (LoginMode)Enum.Parse(typeof(LoginMode), _params.Get("mode"), true);
+                }
+
+                return LoginMode.Popup;
+            }
+        }
+        protected bool Minimal
+        {
+            get
+            {
+                if (_params.ContainsKey("min"))
+                {
+                    bool.TryParse(_params.Get("min"), out var result);
+
+                    return result;
+                }
+
+                return false;
+            }
+        }
+
+        private Dictionary<string, string> _params;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IMemoryCache _memoryCache;
+        private readonly Signature _signature;
+        private readonly InstanceCrypto _instanceCrypto;
+        private readonly ProviderManager _providerManager;
 
         public Login(
             IWebHostEnvironment webHostEnvironment,
@@ -45,11 +76,11 @@ namespace ASC.FederatedLogin
             InstanceCrypto instanceCrypto,
             ProviderManager providerManager)
         {
-            WebHostEnvironment = webHostEnvironment;
-            MemoryCache = memoryCache;
-            Signature = signature;
-            InstanceCrypto = instanceCrypto;
-            ProviderManager = providerManager;
+            _webHostEnvironment = webHostEnvironment;
+            _memoryCache = memoryCache;
+            _signature = signature;
+            _instanceCrypto = instanceCrypto;
+            _providerManager = providerManager;
         }
 
 
@@ -95,7 +126,7 @@ namespace ASC.FederatedLogin
                         }
                     }
 
-                    var profile = ProviderManager.Process(Auth, context, null, additionalStateArgs);
+                    var profile = _providerManager.Process(Auth, context, null, additionalStateArgs);
                     if (profile != null)
                     {
                         await SendJsCallback(context, profile);
@@ -107,7 +138,7 @@ namespace ASC.FederatedLogin
                 }
                 catch (Exception ex)
                 {
-                    await SendJsCallback(context, LoginProfile.FromError(Signature, InstanceCrypto, ex));
+                    await SendJsCallback(context, LoginProfile.FromError(_signature, _instanceCrypto, ex));
                 }
             }
             else
@@ -118,56 +149,11 @@ namespace ASC.FederatedLogin
             context.PopRewritenUri();
         }
 
-        protected bool Minimal
-        {
-            get
-            {
-                if (_params.ContainsKey("min"))
-                {
-                    bool.TryParse(_params.Get("min"), out var result);
-                    return result;
-                }
-                return false;
-            }
-        }
-
-        protected string Callback
-        {
-            get { return _params.Get("callback") ?? "loginCallback"; }
-        }
-
         private async Task RenderXrds(HttpContext context)
         {
             var xrdsloginuri = new Uri(context.Request.GetUrlRewriter(), new Uri(context.Request.GetUrlRewriter().AbsolutePath, UriKind.Relative)) + "?auth=openid&returnurl=" + ReturnUrl;
-            var xrdsimageuri = new Uri(context.Request.GetUrlRewriter(), new Uri(WebHostEnvironment.WebRootPath, UriKind.Relative)) + "openid.gif";
+            var xrdsimageuri = new Uri(context.Request.GetUrlRewriter(), new Uri(_webHostEnvironment.WebRootPath, UriKind.Relative)) + "openid.gif";
             await XrdsHelper.RenderXrds(context.Response, xrdsloginuri, xrdsimageuri);
-        }
-
-        protected LoginMode Mode
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(_params.Get("mode")))
-                {
-                    return (LoginMode)Enum.Parse(typeof(LoginMode), _params.Get("mode"), true);
-                }
-                return LoginMode.Popup;
-            }
-        }
-
-        protected string ReturnUrl
-        {
-            get { return _params.Get("returnurl"); } //TODO?? FormsAuthentication.LoginUrl; }
-        }
-
-        protected string Auth
-        {
-            get { return _params.Get("auth"); }
-        }
-
-        public bool IsReusable
-        {
-            get { return false; }
         }
 
         private async Task SendJsCallback(HttpContext context, LoginProfile profile)
@@ -185,18 +171,18 @@ namespace ASC.FederatedLogin
 
     public class LoginHandler
     {
-        private RequestDelegate Next { get; }
-        private IServiceProvider ServiceProvider { get; }
+        private readonly RequestDelegate _next;
+        private readonly IServiceProvider _serviceProvider;
 
         public LoginHandler(RequestDelegate next, IServiceProvider serviceProvider)
         {
-            Next = next;
-            ServiceProvider = serviceProvider;
+            _next = next;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task Invoke(HttpContext context)
         {
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
             var login = scope.ServiceProvider.GetService<Login>();
             await login.Invoke(context);
         }

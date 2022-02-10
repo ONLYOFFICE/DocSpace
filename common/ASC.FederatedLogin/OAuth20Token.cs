@@ -57,9 +57,17 @@ namespace ASC.FederatedLogin
         [JsonIgnore]
         public string OriginJson { get; set; }
 
-        public OAuth20Token()
+        public bool IsExpired
         {
+            get
+            {
+                if (!ExpiresIn.Equals(default))
+                    return DateTime.UtcNow > Timestamp + TimeSpan.FromSeconds(ExpiresIn);
+                return true;
+            }
         }
+
+        public OAuth20Token() { }
 
         public OAuth20Token(OAuth20Token oAuth20Token)
         {
@@ -82,16 +90,6 @@ namespace ASC.FederatedLogin
             ClientSecret = oAuth20Token.ClientSecret;
             RedirectUri = oAuth20Token.RedirectUri;
             Timestamp = oAuth20Token.Timestamp;
-        }
-
-        public bool IsExpired
-        {
-            get
-            {
-                if (!ExpiresIn.Equals(default))
-                    return DateTime.UtcNow > Timestamp + TimeSpan.FromSeconds(ExpiresIn);
-                return true;
-            }
         }
 
         public static OAuth20Token FromJson(string json)

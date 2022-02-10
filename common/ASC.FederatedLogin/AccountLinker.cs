@@ -28,27 +28,28 @@ namespace ASC.FederatedLogin
     [Singletone]
     public class AccountLinkerStorage
     {
-        private readonly ICache cache;
-        private readonly ICacheNotify<LinkerCacheItem> notify;
+        private readonly ICache _cache;
+        private readonly ICacheNotify<LinkerCacheItem> _notify;
 
         public AccountLinkerStorage(ICacheNotify<LinkerCacheItem> notify, ICache cache)
         {
-            this.cache = cache;
-            this.notify = notify;
+            _cache = cache;
+            _notify = notify;
             notify.Subscribe((c) => cache.Remove(c.Obj), CacheNotifyAction.Remove);
         }
 
         public void RemoveFromCache(string obj)
         {
-            notify.Publish(new LinkerCacheItem { Obj = obj }, CacheNotifyAction.Remove);
+            _notify.Publish(new LinkerCacheItem { Obj = obj }, CacheNotifyAction.Remove);
         }
+
         public List<LoginProfile> GetFromCache(string obj, Func<string, List<LoginProfile>> fromDb)
         {
-            var profiles = cache.Get<List<LoginProfile>>(obj);
+            var profiles = _cache.Get<List<LoginProfile>>(obj);
             if (profiles == null)
             {
                 profiles = fromDb(obj);
-                cache.Insert(obj, profiles, DateTime.UtcNow + TimeSpan.FromMinutes(10));
+                _cache.Insert(obj, profiles, DateTime.UtcNow + TimeSpan.FromMinutes(10));
             }
             return profiles;
         }
@@ -57,11 +58,12 @@ namespace ASC.FederatedLogin
     [Scope]
     public class ConfigureAccountLinker : IConfigureNamedOptions<AccountLinker>
     {
-        private Signature Signature { get; }
         public IConfiguration Configuration { get; }
-        private InstanceCrypto InstanceCrypto { get; }
-        private AccountLinkerStorage AccountLinkerStorage { get; }
-        private DbContextManager<AccountLinkContext> DbContextManager { get; }
+
+        private readonly Signature _signature;
+        private readonly InstanceCrypto _instanceCrypto;
+        private readonly AccountLinkerStorage _accountLinkerStorage;
+        private readonly DbContextManager<AccountLinkContext> _dbContextManager;
 
         public ConfigureAccountLinker(
             Signature signature,
@@ -70,20 +72,20 @@ namespace ASC.FederatedLogin
             AccountLinkerStorage accountLinkerStorage,
             DbContextManager<AccountLinkContext> dbContextManager)
         {
-            Signature = signature;
+            _signature = signature;
             Configuration = configuration;
-            InstanceCrypto = instanceCrypto;
-            AccountLinkerStorage = accountLinkerStorage;
-            DbContextManager = dbContextManager;
+            _instanceCrypto = instanceCrypto;
+            _accountLinkerStorage = accountLinkerStorage;
+            _dbContextManager = dbContextManager;
         }
 
         public void Configure(string name, AccountLinker options)
         {
             options.DbId = name;
-            options.AccountLinkerStorage = AccountLinkerStorage;
-            options.InstanceCrypto = InstanceCrypto;
-            options.Signature = Signature;
-            options.AccountLinkContextManager = DbContextManager;
+            options.AccountLinkerStorage = _accountLinkerStorage;
+            options.InstanceCrypto = _instanceCrypto;
+            options.Signature = _signature;
+            options.AccountLinkContextManager = _dbContextManager;
         }
 
         public void Configure(AccountLinker options)
@@ -96,26 +98,12 @@ namespace ASC.FederatedLogin
     public class AccountLinker
     {
         public string DbId { get; set; }
+        public AccountLinkContext AccountLinkContext => AccountLinkContextManager.Get(DbId);
+        public DbSet<AccountLinks> AccountLinks => AccountLinkContext.AccountLinks;
         internal Signature Signature { get; set; }
         internal InstanceCrypto InstanceCrypto { get; set; }
         internal AccountLinkerStorage AccountLinkerStorage { get; set; }
         internal DbContextManager<AccountLinkContext> AccountLinkContextManager { get; set; }
-
-        public AccountLinkContext AccountLinkContext
-        {
-            get
-            {
-                return AccountLinkContextManager.Get(DbId);
-            }
-        }
-
-        public DbSet<AccountLinks> AccountLinks
-        {
-            get
-            {
-                return AccountLinkContext.AccountLinks;
-            }
-        }
 
         public IEnumerable<string> GetLinkedObjects(string id, string provider)
         {
