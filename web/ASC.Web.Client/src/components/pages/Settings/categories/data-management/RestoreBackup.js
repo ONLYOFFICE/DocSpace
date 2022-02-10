@@ -301,7 +301,7 @@ class RestoreBackup extends React.Component {
       if (isCheckedDocuments || isCheckedThirdParty) {
         obj.value = selectedFileId;
       } else {
-        obj.value = selectedFile; //TODO: added upload of file.
+        obj.value = ""; //TODO: added upload of file.
       }
       storageParams.push(obj);
     }
@@ -333,19 +333,19 @@ class RestoreBackup extends React.Component {
       console.error("error");
     }
 
-    // startRestore(backupId, storageType, storageParams, isNotify)
-    //   .then(() => getSettings())
-    //.then(() => this.storageId ="")
-    //   .then(() =>
-    //     history.push(
-    //       combineUrl(
-    //         AppServerConfig.proxyURL,
-    //         config.homepage,
-    //         "/preparation-portal"
-    //       )
-    //     )
-    //   )
-    //   .catch((error) => toastr.error(error));
+    startRestore(backupId, storageType, storageParams, isNotify)
+      .then(() => getSettings())
+      .then(() => (this.storageId = ""))
+      .then(() =>
+        history.push(
+          combineUrl(
+            AppServerConfig.proxyURL,
+            config.homepage,
+            "/preparation-portal"
+          )
+        )
+      )
+      .catch((error) => toastr.error(error));
   };
 
   onSetRequiredFormNames = (namesArray) => {
