@@ -110,38 +110,6 @@ namespace ASC.ElasticSearch
             return Task.CompletedTask;
         }
 
-        private void IndexAll(bool reindex = false)
-        {
-            try
-            {
-                _timer.Change(Timeout.Infinite, Timeout.Infinite);
-                _isStarted = true;
-
-                using (var scope = _serviceProvider.CreateScope())
-                {
-                    var wrappers = scope.ServiceProvider.GetService<IEnumerable<IFactoryIndexer>>();
-
-                    Parallel.ForEach(wrappers, wrapper =>
-                    {
-                        using (var scope = _serviceProvider.CreateScope())
-                        {
-                            var w = (IFactoryIndexer)scope.ServiceProvider.GetService(wrapper.GetType());
-                            IndexProduct(w, reindex);
-                        }
-                    });
-                }
-
-                _timer.Change(_period, _period);
-                _indexNotify.Publish(new IndexAction() { Indexing = "", LastIndexed = DateTime.Now.Ticks }, CacheNotifyAction.Any);
-                _isStarted = false;
-            }
-            catch (Exception e)
-            {
-                _logger.Fatal("IndexAll", e);
-                throw;
-            }
-        }
-
         public void IndexProduct(IFactoryIndexer product, bool reindex)
         {
             if (reindex)
@@ -172,6 +140,38 @@ namespace ASC.ElasticSearch
             {
                 _logger.Error(e);
                 _logger.ErrorFormat("Product {0}", product.IndexName);
+            }
+        }
+
+        private void IndexAll(bool reindex = false)
+        {
+            try
+            {
+                _timer.Change(Timeout.Infinite, Timeout.Infinite);
+                _isStarted = true;
+
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var wrappers = scope.ServiceProvider.GetService<IEnumerable<IFactoryIndexer>>();
+
+                    Parallel.ForEach(wrappers, wrapper =>
+                    {
+                        using (var scope = _serviceProvider.CreateScope())
+                        {
+                            var w = (IFactoryIndexer)scope.ServiceProvider.GetService(wrapper.GetType());
+                            IndexProduct(w, reindex);
+                        }
+                    });
+                }
+
+                _timer.Change(_period, _period);
+                _indexNotify.Publish(new IndexAction() { Indexing = "", LastIndexed = DateTime.Now.Ticks }, CacheNotifyAction.Any);
+                _isStarted = false;
+            }
+            catch (Exception e)
+            {
+                _logger.Fatal("IndexAll", e);
+                throw;
             }
         }
     }

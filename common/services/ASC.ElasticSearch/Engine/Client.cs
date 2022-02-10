@@ -28,20 +28,6 @@ namespace ASC.ElasticSearch
     [Singletone]
     public class Client
     {
-        private static volatile ElasticClient _client;
-        private static readonly object _locker = new object();
-
-        private readonly ILog _logger;
-        private readonly Settings _settings;
-        private readonly IServiceProvider _serviceProvider;
-
-        public Client(IOptionsMonitor<ILog> option, IServiceProvider serviceProvider, Settings settings)
-        {
-            _logger = option.Get("ASC.Indexer");
-            _settings = settings;
-            _serviceProvider = serviceProvider;
-        }
-
         public ElasticClient Instance
         {
             get
@@ -103,6 +89,19 @@ namespace ASC.ElasticSearch
                     return _client;
                 }
             }
+        }
+
+        private static volatile ElasticClient _client;
+        private static readonly object _locker = new object();
+        private readonly ILog _logger;
+        private readonly Settings _settings;
+        private readonly IServiceProvider _serviceProvider;
+
+        public Client(IOptionsMonitor<ILog> option, IServiceProvider serviceProvider, Settings settings)
+        {
+            _logger = option.Get("ASC.Indexer");
+            _settings = settings;
+            _serviceProvider = serviceProvider;
         }
 
         public bool Ping()

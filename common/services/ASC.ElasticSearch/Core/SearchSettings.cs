@@ -29,30 +29,26 @@ namespace ASC.ElasticSearch.Core
     public class SearchSettings : ISettings
     {
         public string Data { get; set; }
-
-        public Guid ID
-        {
-            get { return new Guid("{93784AB2-10B5-4C2F-9B36-F2662CCCF316}"); }
-        }
-
-        public ISettings GetDefault(IServiceProvider serviceProvider)
-        {
-            return new SearchSettings();
-        }
-
-        private List<SearchSettingsItem> items;
+        public Guid ID => new Guid("{93784AB2-10B5-4C2F-9B36-F2662CCCF316}");
         internal List<SearchSettingsItem> Items
         {
             get
             {
-                if (items != null) return items;
+                if (_items != null) return _items;
                 var parsed = JsonConvert.DeserializeObject<List<SearchSettingsItem>>(Data ?? "");
-                return items = parsed ?? new List<SearchSettingsItem>();
+                return _items = parsed ?? new List<SearchSettingsItem>();
             }
             set
             {
-                items = value;
+                _items = value;
             }
+        }
+
+        private List<SearchSettingsItem> _items;
+
+        public ISettings GetDefault(IServiceProvider serviceProvider)
+        {
+            return new SearchSettings();
         }
 
         internal bool IsEnabled(string name)
@@ -67,12 +63,15 @@ namespace ASC.ElasticSearch.Core
     public class SearchSettingsHelper
     {
         public IConfiguration Configuration { get; }
+        internal List<IFactoryIndexer> AllItems => 
+            _allItems ??= _serviceProvider.GetService<IEnumerable<IFactoryIndexer>>().ToList();
 
         private readonly TenantManager _tenantManager;
         private readonly SettingsManager _settingsManager;
         private readonly CoreBaseSettings _coreBaseSettings;
         private readonly ICacheNotify<ReIndexAction> _cacheNotify;
         private readonly IServiceProvider _serviceProvider;
+        private List<IFactoryIndexer> _allItems;
 
         public SearchSettingsHelper(
             TenantManager tenantManager,
@@ -102,15 +101,6 @@ namespace ASC.ElasticSearch.Core
                 Enabled = settings.IsEnabled(r.IndexName),
                 Title = r.SettingsTitle
             }).ToList();
-        }
-
-        private List<IFactoryIndexer> allItems;
-        internal List<IFactoryIndexer> AllItems
-        {
-            get
-            {
-                return allItems ??= _serviceProvider.GetService<IEnumerable<IFactoryIndexer>>().ToList();
-            }
         }
 
         public void Set(List<SearchSettingsItem> items)
@@ -176,9 +166,7 @@ namespace ASC.ElasticSearch.Core
     public class SearchSettingsItem
     {
         public string ID { get; set; }
-
         public bool Enabled { get; set; }
-
         public string Title { get; set; }
     }
 }

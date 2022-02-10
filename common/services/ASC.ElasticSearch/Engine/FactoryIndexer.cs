@@ -57,7 +57,7 @@ namespace ASC.ElasticSearch
     {
         public ILog Logger { get; }
         public string IndexName { get => _indexer.IndexName; }
-        public virtual string SettingsTitle { get => ""; }
+        public virtual string SettingsTitle => string.Empty;
 
         protected readonly TenantManager _tenantManager;
         protected readonly BaseIndexer<T> _indexer;
@@ -439,7 +439,6 @@ namespace ASC.ElasticSearch
             return await Queue(() => _indexer.Delete(expression, tenant, immediately));
         }
 
-
         public void Flush()
         {
             var t = _serviceProvider.GetService<T>();
@@ -452,31 +451,6 @@ namespace ASC.ElasticSearch
             var t = _serviceProvider.GetService<T>();
             if (!Support(t)) return;
             _indexer.Refresh();
-        }
-
-        private Task<bool> Queue(Action actionData)
-        {
-            var task = new Task<bool>(() =>
-            {
-                try
-                {
-                    actionData();
-                    return true;
-                }
-                catch (AggregateException agg)
-                {
-                    foreach (var e in agg.InnerExceptions)
-                    {
-                        Logger.Error(e);
-                    }
-                    throw;
-                }
-
-            }, TaskCreationOptions.LongRunning);
-
-            task.ConfigureAwait(false);
-            task.Start(_scheduler);
-            return task;
         }
 
         public virtual void IndexAll()
@@ -523,6 +497,31 @@ namespace ASC.ElasticSearch
         public async Task<bool> SupportAsync(T t)
         {
             return await _factoryIndexerCommon.CheckStateAsync();
+        }
+
+        private Task<bool> Queue(Action actionData)
+        {
+            var task = new Task<bool>(() =>
+            {
+                try
+                {
+                    actionData();
+                    return true;
+                }
+                catch (AggregateException agg)
+                {
+                    foreach (var e in agg.InnerExceptions)
+                    {
+                        Logger.Error(e);
+                    }
+                    throw;
+                }
+
+            }, TaskCreationOptions.LongRunning);
+
+            task.ConfigureAwait(false);
+            task.Start(_scheduler);
+            return task;
         }
     }
 

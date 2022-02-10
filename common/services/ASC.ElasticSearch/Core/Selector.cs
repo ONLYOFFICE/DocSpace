@@ -142,44 +142,6 @@ namespace ASC.ElasticSearch
             return this;
         }
 
-        private void Match(Func<Fields> propsFunc, string value)
-        {
-            if (string.IsNullOrEmpty(value)) return;
-
-            value = value.PrepareToSearch();
-
-            var props = propsFunc();
-
-            if (IsExactlyPhrase(value))
-            {
-                _queryContainer = _queryContainer && MultiPhrase(props, value.TrimQuotes());
-            }
-            else if (value.HasOtherLetter() || IsExactly(value))
-            {
-                _queryContainer = _queryContainer && MultiMatch(props, value.TrimQuotes());
-            }
-            else
-            {
-                if (IsPhrase(value))
-                {
-                    var phrase = value.Split(' ');
-                    foreach (var p in phrase)
-                    {
-                        _queryContainer = _queryContainer && MultiWildCard(props, p.WrapAsterisk());
-                    }
-                }
-                else
-                {
-                    _queryContainer = _queryContainer && MultiWildCard(props, value.WrapAsterisk());
-                }
-            }
-
-            if (IsExactly(value))
-            {
-                _queryContainer = _queryContainer || MultiPhrase(props, value);
-            }
-        }
-
         public Selector<T> Match(Expression<Func<T, object[]>> selector, string value)
         {
             Match(() => ((NewArrayExpression)selector.Body).Expressions.ToArray(), value);
@@ -319,6 +281,44 @@ namespace ASC.ElasticSearch
 
                 return result;
             };
+        }
+
+        private void Match(Func<Fields> propsFunc, string value)
+        {
+            if (string.IsNullOrEmpty(value)) return;
+
+            value = value.PrepareToSearch();
+
+            var props = propsFunc();
+
+            if (IsExactlyPhrase(value))
+            {
+                _queryContainer = _queryContainer && MultiPhrase(props, value.TrimQuotes());
+            }
+            else if (value.HasOtherLetter() || IsExactly(value))
+            {
+                _queryContainer = _queryContainer && MultiMatch(props, value.TrimQuotes());
+            }
+            else
+            {
+                if (IsPhrase(value))
+                {
+                    var phrase = value.Split(' ');
+                    foreach (var p in phrase)
+                    {
+                        _queryContainer = _queryContainer && MultiWildCard(props, p.WrapAsterisk());
+                    }
+                }
+                else
+                {
+                    _queryContainer = _queryContainer && MultiWildCard(props, value.WrapAsterisk());
+                }
+            }
+
+            if (IsExactly(value))
+            {
+                _queryContainer = _queryContainer || MultiPhrase(props, value);
+            }
         }
 
         private QueryContainer Wrap(Field fieldSelector, Func<Field, QueryContainerDescriptor<T>, QueryContainer> selector)

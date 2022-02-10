@@ -25,6 +25,13 @@
 
 namespace ASC.ElasticSearch
 {
+    public enum UpdateAction
+    {
+        Add,
+        Replace,
+        Remove
+    }
+
     [Singletone]
     public class BaseIndexerHelper
     {
@@ -53,9 +60,9 @@ namespace ASC.ElasticSearch
     {
         public const int QueryLimit = 10000;
 
-        protected internal T Wrapper { get { return _serviceProvider.GetService<T>(); } }
-        internal string IndexName { get { return Wrapper.IndexName; } }
-        private WebstudioDbContext WebstudioDbContext { get => _lazyWebstudioDbContext.Value; }
+        protected internal T Wrapper => _serviceProvider.GetService<T>();
+        internal string IndexName => Wrapper.IndexName;
+        private WebstudioDbContext WebstudioDbContext => _lazyWebstudioDbContext.Value;
 
         private bool _isExist;
         private readonly Client _client;
@@ -66,7 +73,6 @@ namespace ASC.ElasticSearch
         private readonly IServiceProvider _serviceProvider;
         private readonly Lazy<WebstudioDbContext> _lazyWebstudioDbContext;
         private static readonly object _locker = new object();
-
 
         public BaseIndexer(
             Client client,
@@ -84,6 +90,113 @@ namespace ASC.ElasticSearch
             _settings = settings;
             _serviceProvider = serviceProvider;
             _lazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => dbContextManager.Value);
+        }
+
+        public IEnumerable<List<T>> IndexAll(
+            Func<DateTime, (int, int, int)> getCount,
+            Func<DateTime, List<int>> getIds,
+            Func<long, long, DateTime, List<T>> getData)
+        {
+            var now = DateTime.UtcNow;
+            var lastIndexed = WebstudioDbContext.WebstudioIndex
+                .Where(r => r.IndexName == Wrapper.IndexName)
+                .Select(r => r.LastModified)
+                .FirstOrDefault();
+
+            if (lastIndexed.Equals(DateTime.MinValue))
+            {
+                CreateIfNotExist(_serviceProvider.GetService<T>());
+            }
+
+            var (count, max, min) = getCount(lastIndexed);
+            _logger.Debug($"Index: {IndexName}, Count {count}, Max: {max}, Min: {min}");
+
+            var ids = new List<int>() { min };
+            ids.AddRange(getIds(lastIndexed));
+            ids.Add(max);
+
+            for (var i = 0; i < ids.Count - 1; i++)
+            {
+                yield return getData(ids[i], ids[i + 1], lastIndexed);
+            }
+
+
+            WebstudioDbContext.AddOrUpdate(r => r.WebstudioIndex, new DbWebstudioIndex()
+            {
+                IndexName = Wrapper.IndexName,
+                LastModified = now
+            });
+
+            WebstudioDbContext.SaveChanges();
+
+            _logger.Debug($"index completed {Wrapper.IndexName}");
+        }
+
+        public Task ReIndex()
+        {
+            Clear();
+            return Task.CompletedTask;
+            //((IIndexer) this).IndexAll();
+        }
+
+        public void CreateIfNotExist(T data)
+        {
+            try
+            {
+                if (CheckExist(data)) return;
+
+                lock (_locker)
+                {
+                    IPromise<IAnalyzers> analyzers(AnalyzersDescriptor b)
+                    {
+                        foreach (var c in Enum.GetNames(typeof(Analyzer)))
+                        {
+                            var c1 = c;
+                            b.Custom(c1 + "custom", ca => ca.Tokenizer(c1).Filters(Filter.lowercase.ToString()).CharFilters(CharFilter.io.ToString()));
+                        }
+
+                        foreach (var c in Enum.GetNames(typeof(CharFilter)))
+                        {
+                            if (c == CharFilter.io.ToString()) continue;
+
+                            var charFilters = new List<string>() { CharFilter.io.ToString(), c };
+                            var c1 = c;
+                            b.Custom(c1 + "custom", ca => ca.Tokenizer(Analyzer.whitespace.ToString()).Filters(Filter.lowercase.ToString()).CharFilters(charFilters));
+                        }
+
+                        if (data is ISearchItemDocument)
+                        {
+                            b.Custom("document", ca => ca.Tokenizer(Analyzer.whitespace.ToString()).Filters(Filter.lowercase.ToString()).CharFilters(CharFilter.io.ToString()));
+                        }
+
+                        return b;
+                    }
+
+                    var createIndexResponse = _client.Instance.Indices.Create(data.IndexName,
+                        c =>
+                        c.Map<T>(m => m.AutoMap())
+                        .Settings(r => r.Analysis(a =>
+                                        a.Analyzers(analyzers)
+                                        .CharFilters(d => d.HtmlStrip(CharFilter.html.ToString())
+                                        .Mapping(CharFilter.io.ToString(), m => m.Mappings("ё => е", "Ё => Е"))))));
+
+                    _isExist = true;
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error("CreateIfNotExist", e);
+            }
+        }
+
+        public void Flush()
+        {
+            _client.Instance.Indices.Flush(new FlushRequest(IndexName));
+        }
+
+        public void Refresh()
+        {
+            _client.Instance.Indices.Refresh(new RefreshRequest(IndexName));
         }
 
         internal void Index(T data, bool immediately = true)
@@ -310,16 +423,6 @@ namespace ASC.ElasticSearch
             _client.Instance.DeleteByQuery(GetDescriptorForDelete(expression, tenantId, immediately));
         }
 
-        public void Flush()
-        {
-            _client.Instance.Indices.Flush(new FlushRequest(IndexName));
-        }
-
-        public void Refresh()
-        {
-            _client.Instance.Indices.Refresh(new RefreshRequest(IndexName));
-        }
-
         internal bool CheckExist(T data)
         {
             try
@@ -345,30 +448,6 @@ namespace ASC.ElasticSearch
             return false;
         }
 
-        public Task ReIndex()
-        {
-            Clear();
-            return Task.CompletedTask;
-            //((IIndexer) this).IndexAll();
-        }
-
-        private void Clear()
-        {
-            var index = WebstudioDbContext.WebstudioIndex.Where(r => r.IndexName == Wrapper.IndexName).FirstOrDefault();
-
-            if (index != null)
-            {
-                WebstudioDbContext.WebstudioIndex.Remove(index);
-            }
-
-            WebstudioDbContext.SaveChanges();
-
-            _logger.DebugFormat("Delete {0}", Wrapper.IndexName);
-            _client.Instance.Indices.Delete(Wrapper.IndexName);
-            _baseIndexerHelper.Clear(Wrapper);
-            CreateIfNotExist(Wrapper);
-        }
-
         internal IReadOnlyCollection<T> Select(Expression<Func<Selector<T>, Selector<T>>> expression, bool onlyId = false)
         {
             var func = expression.Compile();
@@ -387,54 +466,21 @@ namespace ASC.ElasticSearch
             return result.Documents;
         }
 
-        public void CreateIfNotExist(T data)
+        private void Clear()
         {
-            try
+            var index = WebstudioDbContext.WebstudioIndex.Where(r => r.IndexName == Wrapper.IndexName).FirstOrDefault();
+
+            if (index != null)
             {
-                if (CheckExist(data)) return;
-
-                lock (_locker)
-                {
-                    IPromise<IAnalyzers> analyzers(AnalyzersDescriptor b)
-                    {
-                        foreach (var c in Enum.GetNames(typeof(Analyzer)))
-                        {
-                            var c1 = c;
-                            b.Custom(c1 + "custom", ca => ca.Tokenizer(c1).Filters(Filter.lowercase.ToString()).CharFilters(CharFilter.io.ToString()));
-                        }
-
-                        foreach (var c in Enum.GetNames(typeof(CharFilter)))
-                        {
-                            if (c == CharFilter.io.ToString()) continue;
-
-                            var charFilters = new List<string>() { CharFilter.io.ToString(), c };
-                            var c1 = c;
-                            b.Custom(c1 + "custom", ca => ca.Tokenizer(Analyzer.whitespace.ToString()).Filters(Filter.lowercase.ToString()).CharFilters(charFilters));
-                        }
-
-                        if (data is ISearchItemDocument)
-                        {
-                            b.Custom("document", ca => ca.Tokenizer(Analyzer.whitespace.ToString()).Filters(Filter.lowercase.ToString()).CharFilters(CharFilter.io.ToString()));
-                        }
-
-                        return b;
-                    }
-
-                    var createIndexResponse = _client.Instance.Indices.Create(data.IndexName,
-                        c =>
-                        c.Map<T>(m => m.AutoMap())
-                        .Settings(r => r.Analysis(a =>
-                                        a.Analyzers(analyzers)
-                                        .CharFilters(d => d.HtmlStrip(CharFilter.html.ToString())
-                                        .Mapping(CharFilter.io.ToString(), m => m.Mappings("ё => е", "Ё => Е"))))));
-
-                    _isExist = true;
-                }
+                WebstudioDbContext.WebstudioIndex.Remove(index);
             }
-            catch (Exception e)
-            {
-                _logger.Error("CreateIfNotExist", e);
-            }
+
+            WebstudioDbContext.SaveChanges();
+
+            _logger.DebugFormat("Delete {0}", Wrapper.IndexName);
+            _client.Instance.Indices.Delete(Wrapper.IndexName);
+            _baseIndexerHelper.Clear(Wrapper);
+            CreateIfNotExist(Wrapper);
         }
 
         private IIndexRequest<T> GetMeta(IndexDescriptor<T> request, T data, bool immediately = true)
@@ -645,46 +691,6 @@ namespace ASC.ElasticSearch
             var descriptor = func(selector).Where(r => r.TenantId, tenantId);
             return descriptor.GetDescriptorForUpdate(this, GetScriptForUpdate(data, action, fields), immediately);
         }
-
-        public IEnumerable<List<T>> IndexAll(
-            Func<DateTime, (int, int, int)> getCount,
-            Func<DateTime, List<int>> getIds,
-            Func<long, long, DateTime, List<T>> getData)
-        {
-            var now = DateTime.UtcNow;
-            var lastIndexed = WebstudioDbContext.WebstudioIndex
-                .Where(r => r.IndexName == Wrapper.IndexName)
-                .Select(r => r.LastModified)
-                .FirstOrDefault();
-
-            if (lastIndexed.Equals(DateTime.MinValue))
-            {
-                CreateIfNotExist(_serviceProvider.GetService<T>());
-            }
-
-            var (count, max, min) = getCount(lastIndexed);
-            _logger.Debug($"Index: {IndexName}, Count {count}, Max: {max}, Min: {min}");
-
-            var ids = new List<int>() { min };
-            ids.AddRange(getIds(lastIndexed));
-            ids.Add(max);
-
-            for (var i = 0; i < ids.Count - 1; i++)
-            {
-                yield return getData(ids[i], ids[i + 1], lastIndexed);
-            }
-
-
-            WebstudioDbContext.AddOrUpdate(r => r.WebstudioIndex, new DbWebstudioIndex()
-            {
-                IndexName = Wrapper.IndexName,
-                LastModified = now
-            });
-
-            WebstudioDbContext.SaveChanges();
-
-            _logger.Debug($"index completed {Wrapper.IndexName}");
-        }
     }
 
     static class CamelCaseExtension
@@ -693,13 +699,5 @@ namespace ASC.ElasticSearch
         {
             return str.ToLowerInvariant()[0] + str.Substring(1);
         }
-    }
-
-
-    public enum UpdateAction
-    {
-        Add,
-        Replace,
-        Remove
     }
 }
