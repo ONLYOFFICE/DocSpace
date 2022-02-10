@@ -28,8 +28,8 @@ namespace ASC.ElasticSearch
     [Singletone]
     public class Client
     {
-        private static volatile ElasticClient s_client;
-        private static readonly object s_locker = new object();
+        private static volatile ElasticClient _client;
+        private static readonly object _locker = new object();
 
         private readonly ILog _logger;
         private readonly Settings _settings;
@@ -46,11 +46,11 @@ namespace ASC.ElasticSearch
         {
             get
             {
-                if (s_client != null) return s_client;
+                if (_client != null) return _client;
 
-                lock (s_locker)
+                lock (_locker)
                 {
-                    if (s_client != null) return s_client;
+                    if (_client != null) return _client;
 
                     using var scope = _serviceProvider.CreateScope();
                     var CoreConfiguration = _serviceProvider.GetService<CoreConfiguration>();
@@ -84,9 +84,9 @@ namespace ASC.ElasticSearch
                     {
                         if (Ping(new ElasticClient(settings)))
                         {
-                            s_client = new ElasticClient(settings);
+                            _client = new ElasticClient(settings);
 
-                            s_client.Ingest.PutPipeline("attachments", p => p
+                            _client.Ingest.PutPipeline("attachments", p => p
                             .Processors(pp => pp
                                 .Attachment<Attachment>(a => a.Field("document.data").TargetField("document.attachment"))
                             ));
@@ -100,7 +100,7 @@ namespace ASC.ElasticSearch
 
 
 
-                    return s_client;
+                    return _client;
                 }
             }
         }

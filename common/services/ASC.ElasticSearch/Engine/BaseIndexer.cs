@@ -65,7 +65,7 @@ namespace ASC.ElasticSearch
         private readonly Settings _settings;
         private readonly IServiceProvider _serviceProvider;
         private readonly Lazy<WebstudioDbContext> _lazyWebstudioDbContext;
-        private static readonly object s_locker = new object();
+        private static readonly object _locker = new object();
 
 
         public BaseIndexer(
@@ -327,7 +327,7 @@ namespace ASC.ElasticSearch
                 var isExist = _baseIndexerHelper.IsExist.GetOrAdd(data.IndexName, (k) => _client.Instance.Indices.Exists(k).Exists);
                 if (isExist) return true;
 
-                lock (s_locker)
+                lock (_locker)
                 {
                     if (isExist) return true;
 
@@ -393,7 +393,7 @@ namespace ASC.ElasticSearch
             {
                 if (CheckExist(data)) return;
 
-                lock (s_locker)
+                lock (_locker)
                 {
                     IPromise<IAnalyzers> analyzers(AnalyzersDescriptor b)
                     {
