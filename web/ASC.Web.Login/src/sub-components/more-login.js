@@ -62,7 +62,7 @@ const MoreLoginModal = (props) => {
               {ssoLabel || getProviderTranslation("sso", t)}
             </Text>
             <Button
-              label={t("LoginButton")}
+              label={t("Common:LoginButton")}
               className="signin-button"
               size="medium"
               onClick={() => (window.location.href = ssoUrl)}
@@ -81,7 +81,7 @@ const MoreLoginModal = (props) => {
                 {getProviderTranslation(label, t)}
               </Text>
               <Button
-                label={t("LoginButton")}
+                label={t("Common:LoginButton")}
                 className="signin-button"
                 size="medium"
                 data-url={item.url}
