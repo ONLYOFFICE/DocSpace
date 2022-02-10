@@ -30,7 +30,7 @@ public class ClearEventsService : IHostedService, IDisposable
 {
     private readonly ILog _logger;
     private readonly IServiceScopeFactory _serviceScopeFactory;
-    private Timer _timer = null!;
+    private Timer _timer;
 
     public ClearEventsService(IOptionsMonitor<ILog> options, IServiceScopeFactory serviceScopeFactory)
     {
@@ -59,9 +59,14 @@ public class ClearEventsService : IHostedService, IDisposable
 
     public void Dispose()
     {
+        if (_timer == null)
+        {
+            return;
+        }
+
         var handle = new AutoResetEvent(false);
 
-        if ((bool)!(_timer?.Dispose(handle)))
+        if (!_timer.Dispose(handle))
         {
             throw new Exception("Timer already disposed");
         }
