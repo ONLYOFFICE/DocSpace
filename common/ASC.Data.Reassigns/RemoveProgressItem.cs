@@ -162,21 +162,33 @@ namespace ASC.Data.Reassigns
                 if (item.ID == WebItemManager.DocumentsProductID)
                 {
                     manager = item.Context.SpaceUsageStatManager as IUserSpaceUsage;
-                    if (manager == null) continue;
+                    if (manager == null)
+                    {
+                        continue;
+                    }
+
                     docsSpace = manager.GetUserSpaceUsage(FromUser);
                 }
 
                 if (item.ID == WebItemManager.MailProductID)
                 {
                     manager = item.Context.SpaceUsageStatManager as IUserSpaceUsage;
-                    if (manager == null) continue;
+                    if (manager == null)
+                    {
+                        continue;
+                    }
+
                     mailSpace = manager.GetUserSpaceUsage(FromUser);
                 }
 
                 if (item.ID == WebItemManager.TalkProductID)
                 {
                     manager = item.Context.SpaceUsageStatManager as IUserSpaceUsage;
-                    if (manager == null) continue;
+                    if (manager == null)
+                    {
+                        continue;
+                    }
+
                     talkSpace = manager.GetUserSpaceUsage(FromUser);
                 }
             }
@@ -207,18 +219,27 @@ namespace ASC.Data.Reassigns
         private void SendSuccessNotify(StudioNotifyService studioNotifyService, MessageService messageService, MessageTarget messageTarget, string userName, long docsSpace, long crmSpace, long mailSpace, long talkSpace)
         {
             if (_notify)
+            {
                 studioNotifyService.SendMsgRemoveUserDataCompleted(_currentUserId, User, userName,
                                                                             docsSpace, crmSpace, mailSpace, talkSpace);
+            }
 
             if (_httpHeaders != null)
+            {
                 messageService.Send(_httpHeaders, MessageAction.UserDataRemoving, messageTarget.Create(FromUser), new[] { userName });
+            }
             else
+            {
                 messageService.Send(MessageAction.UserDataRemoving, messageTarget.Create(FromUser), userName);
+            }
         }
 
         private void SendErrorNotify(StudioNotifyService studioNotifyService, string errorMessage, string userName)
         {
-            if (!_notify) return;
+            if (!_notify)
+            {
+                return;
+            }
 
             studioNotifyService.SendMsgRemoveUserDataFailed(_currentUserId, User, userName, errorMessage);
         }

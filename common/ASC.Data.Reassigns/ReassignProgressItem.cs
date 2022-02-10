@@ -160,9 +160,13 @@ namespace ASC.Data.Reassigns
             var toUserName = toUser.DisplayUserName(false, displayUserSettingsHelper);
 
             if (_httpHeaders != null)
+            {
                 messageService.Send(_httpHeaders, MessageAction.UserDataReassigns, messageTarget.Create(FromUser), new[] { fromUserName, toUserName });
+            }
             else
+            {
                 messageService.Send(MessageAction.UserDataReassigns, messageTarget.Create(FromUser), fromUserName, toUserName);
+            }
         }
 
         private void SendErrorNotify(UserManager userManager, StudioNotifyService studioNotifyService, string errorMessage)
@@ -183,9 +187,13 @@ namespace ASC.Data.Reassigns
             _queueWorkerRemove.Start(_tenantId, user, _currentUserId, false);
 
             if (_httpHeaders != null)
+            {
                 messageService.Send(_httpHeaders, MessageAction.UserDeleted, messageTarget.Create(FromUser), new[] { userName });
+            }
             else
+            {
                 messageService.Send(MessageAction.UserDeleted, messageTarget.Create(FromUser), userName);
+            }
         }
     }
 
