@@ -31,7 +31,7 @@ public class ElasticSearchIndexService : IHostedService, IDisposable
     private readonly ILog _logger;
     private readonly ICacheNotify<AscCacheItem> _notify;
     private readonly ICacheNotify<IndexAction> _indexNotify;
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly CancellationTokenSource _cancellationTokenSource;
     private readonly TimeSpan _period;
     private Timer _timer = null!;
@@ -41,13 +41,13 @@ public class ElasticSearchIndexService : IHostedService, IDisposable
         IOptionsMonitor<ILog> options,
         ICacheNotify<AscCacheItem> notify,
         ICacheNotify<IndexAction> indexNotify,
-        IServiceProvider serviceProvider,
+        IServiceScopeFactory serviceScopeFactory,
         Settings settings)
     {
         _logger = options.Get("ASC.Indexer");
         _notify = notify;
         _indexNotify = indexNotify;
-        _serviceProvider = serviceProvider;
+        _serviceScopeFactory = serviceScopeFactory;
         _cancellationTokenSource = new CancellationTokenSource();
         _period = TimeSpan.FromMinutes(settings.Period.Value);
     }
@@ -74,7 +74,7 @@ public class ElasticSearchIndexService : IHostedService, IDisposable
 
         var task = new Task(async () =>
         {
-            using var scope = _serviceProvider.CreateScope();
+            using var scope = _serviceScopeFactory.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<ServiceLauncherScope>();
             var (factoryIndexer, service) = scopeClass;
             while (!factoryIndexer.CheckState(false))
@@ -157,13 +157,13 @@ public class ElasticSearchIndexService : IHostedService, IDisposable
             _timer.Change(Timeout.Infinite, Timeout.Infinite);
             _isStarted = true;
 
-            using (var scope = _serviceProvider.CreateScope())
+            using (var scope = _serviceScopeFactory.CreateScope())
             {
                 var wrappers = scope.ServiceProvider.GetService<IEnumerable<IFactoryIndexer>>();
 
                 Parallel.ForEach(wrappers, wrapper =>
                 {
-                    using (var scope = _serviceProvider.CreateScope())
+                    using (var scope = _serviceScopeFactory.CreateScope())
                     {
                         var w = (IFactoryIndexer)scope.ServiceProvider.GetService(wrapper.GetType());
                         IndexProduct(w, reindex);
@@ -198,15 +198,15 @@ public class ElasticSearchIndexService : IHostedService, IDisposable
 public class ServiceLauncherScope
 {
     private readonly FactoryIndexer _factoryIndexer;
-    private readonly Service.ElasticSearchService _service;
+    private readonly ElasticSearchService _service;
 
-    public ServiceLauncherScope(FactoryIndexer factoryIndexer, Service.ElasticSearchService service)
+    public ServiceLauncherScope(FactoryIndexer factoryIndexer, ElasticSearchService service)
     {
         _factoryIndexer = factoryIndexer;
         _service = service;
     }
 
-    public void Deconstruct(out FactoryIndexer factoryIndexer, out Service.ElasticSearchService service)
+    public void Deconstruct(out FactoryIndexer factoryIndexer, out ElasticSearchService service)
     {
         factoryIndexer = _factoryIndexer;
         service = _service;
