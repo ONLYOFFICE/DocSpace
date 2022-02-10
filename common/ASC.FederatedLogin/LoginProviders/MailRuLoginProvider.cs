@@ -31,36 +31,15 @@ namespace ASC.FederatedLogin.LoginProviders
     [Scope]
     public class MailRuLoginProvider : BaseLoginProvider<MailRuLoginProvider>
     {
-        public override string CodeUrl
-        {
-            get { return "https://connect.mail.ru/oauth/authorize"; }
-        }
-
-        public override string AccessTokenUrl
-        {
-            get { return "https://connect.mail.ru/oauth/token"; }
-        }
-
-        public override string ClientID
-        {
-            get { return this["mailRuClientId"]; }
-        }
-
-        public override string ClientSecret
-        {
-            get { return this["mailRuClientSecret"]; }
-        }
-
-        public override string RedirectUri
-        {
-            get { return this["mailRuRedirectUrl"]; }
-        }
+        public override string CodeUrl => "https://connect.mail.ru/oauth/authorize";
+        public override string AccessTokenUrl => "https://connect.mail.ru/oauth/token";
+        public override string ClientID => this["mailRuClientId"];
+        public override string ClientSecret => this["mailRuClientSecret"];
+        public override string RedirectUri => this["mailRuRedirectUrl"];
 
         private const string MailRuApiUrl = "http://www.appsmail.ru/platform/api";
 
-        public MailRuLoginProvider()
-        {
-        }
+        public MailRuLoginProvider() { }
 
         public MailRuLoginProvider(
             OAuth20TokenHelper oAuth20TokenHelper,
@@ -103,7 +82,7 @@ namespace ASC.FederatedLogin.LoginProviders
             }
             catch (Exception ex)
             {
-                return LoginProfile.FromError(Signature, InstanceCrypto, ex);
+                return LoginProfile.FromError(_signature, _instanceCrypto, ex);
             }
         }
 
@@ -147,12 +126,12 @@ namespace ASC.FederatedLogin.LoginProviders
             var mailRuProfiles = jProfile.ToObject<List<MailRuProfile>>();
             if (mailRuProfiles.Count == 0) throw new Exception("Failed to correctly process the response");
 
-            var profile = new LoginProfile(Signature, InstanceCrypto)
+            var profile = new LoginProfile(_signature, _instanceCrypto)
             {
-                EMail = mailRuProfiles[0].email,
-                Id = mailRuProfiles[0].uid,
-                FirstName = mailRuProfiles[0].first_name,
-                LastName = mailRuProfiles[0].last_name,
+                EMail = mailRuProfiles[0].Email,
+                Id = mailRuProfiles[0].Uid,
+                FirstName = mailRuProfiles[0].FirstName,
+                LastName = mailRuProfiles[0].LastName,
 
                 Provider = ProviderConstants.MailRu,
             };
@@ -162,10 +141,10 @@ namespace ASC.FederatedLogin.LoginProviders
 
         private class MailRuProfile
         {
-            public string uid = null;
-            public string first_name = null;
-            public string last_name = null;
-            public string email = null;
+            public string Uid { get; set; }
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public string Email { get; set; }
         }
 
         private static string GetUid(OAuth20Token token)

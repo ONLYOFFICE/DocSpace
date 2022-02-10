@@ -28,38 +28,15 @@ namespace ASC.FederatedLogin.LoginProviders
     [Scope]
     public class LinkedInLoginProvider : BaseLoginProvider<LinkedInLoginProvider>
     {
+        public override string AccessTokenUrl => "https://www.linkedin.com/oauth/v2/accessToken";
+        public override string RedirectUri => this["linkedInRedirectUrl"];
+        public override string ClientID => this["linkedInKey"];
+        public override string ClientSecret => this["linkedInSecret"];
+        public override string CodeUrl => "https://www.linkedin.com/oauth/v2/authorization";
+        public override string Scopes => "r_liteprofile r_emailaddress";
+
         private const string LinkedInProfileUrl = "https://api.linkedin.com/v2/me";
         private const string LinkedInEmailUrl = "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))";
-
-        public override string AccessTokenUrl
-        {
-            get { return "https://www.linkedin.com/oauth/v2/accessToken"; }
-        }
-
-        public override string RedirectUri
-        {
-            get { return this["linkedInRedirectUrl"]; }
-        }
-
-        public override string ClientID
-        {
-            get { return this["linkedInKey"]; }
-        }
-
-        public override string ClientSecret
-        {
-            get { return this["linkedInSecret"]; }
-        }
-
-        public override string CodeUrl
-        {
-            get { return "https://www.linkedin.com/oauth/v2/authorization"; }
-        }
-
-        public override string Scopes
-        {
-            get { return "r_liteprofile r_emailaddress"; }
-        }
 
         public LinkedInLoginProvider() { }
         public LinkedInLoginProvider(
@@ -100,7 +77,7 @@ namespace ASC.FederatedLogin.LoginProviders
             var jProfile = JObject.Parse(linkedInProfile);
             if (jProfile == null) throw new Exception("Failed to correctly process the response");
 
-            var profile = new LoginProfile(Signature, InstanceCrypto)
+            var profile = new LoginProfile(_signature, _instanceCrypto)
             {
                 Id = jProfile.Value<string>("id"),
                 FirstName = jProfile.Value<string>("localizedFirstName"),

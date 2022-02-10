@@ -28,13 +28,12 @@ namespace ASC.FederatedLogin.LoginProviders
     [Scope]
     public class DropboxLoginProvider : Consumer, IOAuthProvider
     {
-        public string Scopes { get { return ""; } }
-        public string CodeUrl { get { return "https://www.dropbox.com/oauth2/authorize"; } }
-        public string AccessTokenUrl { get { return "https://api.dropboxapi.com/oauth2/token"; } }
-        public string RedirectUri { get { return this["dropboxRedirectUrl"]; } }
-        public string ClientID { get { return this["dropboxClientId"]; } }
-        public string ClientSecret { get { return this["dropboxClientSecret"]; } }
-
+        public string Scopes => string.Empty;
+        public string CodeUrl => "https://www.dropbox.com/oauth2/authorize";
+        public string AccessTokenUrl => "https://api.dropboxapi.com/oauth2/token";
+        public string RedirectUri => this["dropboxRedirectUrl"];
+        public string ClientID => this["dropboxClientId"];
+        public string ClientSecret => this["dropboxClientSecret"];
         public bool IsEnabled
         {
             get

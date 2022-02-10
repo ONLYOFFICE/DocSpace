@@ -28,16 +28,17 @@ namespace ASC.FederatedLogin.LoginProviders
     [Scope]
     public class FacebookLoginProvider : BaseLoginProvider<FacebookLoginProvider>
     {
-        private const string FacebookProfileUrl = "https://graph.facebook.com/v2.7/me?fields=email,id,birthday,link,first_name,last_name,gender,timezone,locale";
+        public override string AccessTokenUrl => "https://graph.facebook.com/v2.7/oauth/access_token";
+        public override string RedirectUri => this["facebookRedirectUrl"];
+        public override string ClientID => this["facebookClientId"];
+        public override string ClientSecret => this["facebookClientSecret"];
+        public override string CodeUrl => "https://www.facebook.com/v2.7/dialog/oauth/";
+        public override string Scopes => "email,public_profile";
 
-        public override string AccessTokenUrl { get { return "https://graph.facebook.com/v2.7/oauth/access_token"; } }
-        public override string RedirectUri { get { return this["facebookRedirectUrl"]; } }
-        public override string ClientID { get { return this["facebookClientId"]; } }
-        public override string ClientSecret { get { return this["facebookClientSecret"]; } }
-        public override string CodeUrl { get { return "https://www.facebook.com/v2.7/dialog/oauth/"; } }
-        public override string Scopes { get { return "email,public_profile"; } }
+        private const string FacebookProfileUrl = "https://graph.facebook.com/v2.7/me?fields=email,id,birthday,link,first_name,last_name,gender,timezone,locale"; 
 
         public FacebookLoginProvider() { }
+
         public FacebookLoginProvider(
             OAuth20TokenHelper oAuth20TokenHelper,
             TenantManager tenantManager,
@@ -71,7 +72,7 @@ namespace ASC.FederatedLogin.LoginProviders
             var jProfile = JObject.Parse(facebookProfile);
             if (jProfile == null) throw new Exception("Failed to correctly process the response");
 
-            var profile = new LoginProfile(Signature, InstanceCrypto)
+            var profile = new LoginProfile(_signature, _instanceCrypto)
             {
                 BirthDay = jProfile.Value<string>("birthday"),
                 Link = jProfile.Value<string>("link"),

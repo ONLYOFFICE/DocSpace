@@ -44,21 +44,7 @@ namespace ASC.FederatedLogin.LoginProviders
 
     public abstract class BaseLoginProvider<T> : Consumer, ILoginProvider where T : Consumer, ILoginProvider, new()
     {
-        public T Instance
-        {
-            get
-            {
-                return ConsumerFactory.Get<T>();
-            }
-        }
-
-        public abstract string CodeUrl { get; }
-        public abstract string AccessTokenUrl { get; }
-        public abstract string RedirectUri { get; }
-        public abstract string ClientID { get; }
-        public abstract string ClientSecret { get; }
-        public virtual string Scopes { get { return ""; } }
-
+        public T Instance => ConsumerFactory.Get<T>();
         public virtual bool IsEnabled
         {
             get
@@ -69,14 +55,18 @@ namespace ASC.FederatedLogin.LoginProviders
             }
         }
 
-        private OAuth20TokenHelper OAuth20TokenHelper { get; }
-        internal Signature Signature { get; }
-        internal InstanceCrypto InstanceCrypto { get; }
+        public abstract string CodeUrl { get; }
+        public abstract string AccessTokenUrl { get; }
+        public abstract string RedirectUri { get; }
+        public abstract string ClientID { get; }
+        public abstract string ClientSecret { get; }
+        public virtual string Scopes => string.Empty;
 
-        protected BaseLoginProvider()
-        {
+        internal readonly Signature _signature;
+        internal readonly InstanceCrypto _instanceCrypto;
+        private readonly OAuth20TokenHelper _oAuth20TokenHelper;
 
-        }
+        protected BaseLoginProvider() { }
 
         protected BaseLoginProvider(
             OAuth20TokenHelper oAuth20TokenHelper,
@@ -91,9 +81,9 @@ namespace ASC.FederatedLogin.LoginProviders
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
             : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)
         {
-            OAuth20TokenHelper = oAuth20TokenHelper;
-            Signature = signature;
-            InstanceCrypto = instanceCrypto;
+            _oAuth20TokenHelper = oAuth20TokenHelper;
+            _signature = signature;
+            _instanceCrypto = instanceCrypto;
         }
 
         public virtual LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs)
@@ -115,7 +105,7 @@ namespace ASC.FederatedLogin.LoginProviders
             }
             catch (Exception ex)
             {
-                return LoginProfile.FromError(Signature, InstanceCrypto, ex);
+                return LoginProfile.FromError(_signature, _instanceCrypto, ex);
             }
         }
 
@@ -134,7 +124,7 @@ namespace ASC.FederatedLogin.LoginProviders
             var code = context.Request.Query["code"];
             if (string.IsNullOrEmpty(code))
             {
-                context.Response.Redirect(OAuth20TokenHelper.RequestCode<T>(scopes, additionalArgs, additionalStateArgs));
+                context.Response.Redirect(_oAuth20TokenHelper.RequestCode<T>(scopes, additionalArgs, additionalStateArgs));
                 redirect = true;
                 return null;
             }

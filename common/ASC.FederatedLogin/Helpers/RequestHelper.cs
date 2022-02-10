@@ -27,7 +27,7 @@ namespace ASC.FederatedLogin.Helpers
 {
     public static class RequestHelper
     {
-        private static HttpClient HttpClient { get; } = new HttpClient();
+        private readonly static HttpClient _httpClient = new HttpClient();
 
         public static string PerformRequest(string uri, string contentType = "", string method = "GET", string body = "", Dictionary<string, string> headers = null, int timeout = 30000)
         {
@@ -37,7 +37,7 @@ namespace ASC.FederatedLogin.Helpers
             request.RequestUri = new Uri(uri);
             request.Method = new HttpMethod(method);
 
-            HttpClient.Timeout = TimeSpan.FromMilliseconds(timeout);
+            _httpClient.Timeout = TimeSpan.FromMilliseconds(timeout);
 
             if (headers != null)
             {
@@ -57,7 +57,7 @@ namespace ASC.FederatedLogin.Helpers
                 }
             }
 
-            using var response = HttpClient.Send(request);
+            using var response = _httpClient.Send(request);
             using var stream = response.Content.ReadAsStream();
             if (stream == null) return null;
             using var readStream = new StreamReader(stream);

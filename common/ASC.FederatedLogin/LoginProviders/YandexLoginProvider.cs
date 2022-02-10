@@ -28,37 +28,16 @@ namespace ASC.FederatedLogin.LoginProviders
     [Scope]
     public class YandexLoginProvider : BaseLoginProvider<YandexLoginProvider>
     {
-        public override string CodeUrl
-        {
-            get { return "https://oauth.yandex.ru/authorize"; }
-        }
-
-        public override string AccessTokenUrl
-        {
-            get { return "https://oauth.yandex.ru/token"; }
-        }
-
-        public override string ClientID
-        {
-            get { return this["yandexClientId"]; }
-        }
-
-        public override string ClientSecret
-        {
-            get { return this["yandexClientSecret"]; }
-        }
-
-        public override string RedirectUri
-        {
-            get { return this["yandexRedirectUrl"]; }
-        }
+        public override string CodeUrl => "https://oauth.yandex.ru/authorize";
+        public override string AccessTokenUrl => "https://oauth.yandex.ru/token";
+        public override string ClientID => this["yandexClientId"];
+        public override string ClientSecret => this["yandexClientSecret"];
+        public override string RedirectUri => this["yandexRedirectUrl"];
 
         private const string YandexProfileUrl = "https://login.yandex.ru/info";
 
 
-        public YandexLoginProvider()
-        {
-        }
+        public YandexLoginProvider() { }
 
         public YandexLoginProvider(
             OAuth20TokenHelper oAuth20TokenHelper,
@@ -98,7 +77,7 @@ namespace ASC.FederatedLogin.LoginProviders
             }
             catch (Exception ex)
             {
-                return LoginProfile.FromError(Signature, InstanceCrypto, ex);
+                return LoginProfile.FromError(_signature, _instanceCrypto, ex);
             }
         }
 
@@ -123,7 +102,7 @@ namespace ASC.FederatedLogin.LoginProviders
             var jProfile = JObject.Parse(strProfile);
             if (jProfile == null) throw new Exception("Failed to correctly process the response");
 
-            var profile = new LoginProfile(Signature, InstanceCrypto)
+            var profile = new LoginProfile(_signature, _instanceCrypto)
             {
                 EMail = jProfile.Value<string>("default_email"),
                 Id = jProfile.Value<string>("id"),

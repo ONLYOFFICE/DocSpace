@@ -28,42 +28,16 @@ namespace ASC.FederatedLogin.LoginProviders
     [Scope]
     public class VKLoginProvider : BaseLoginProvider<VKLoginProvider>
     {
-        public override string CodeUrl
-        {
-            get { return "https://oauth.vk.com/authorize"; }
-        }
-
-        public override string AccessTokenUrl
-        {
-            get { return "https://oauth.vk.com/access_token"; }
-        }
-
-        public override string ClientID
-        {
-            get { return this["vkClientId"]; }
-        }
-
-        public override string ClientSecret
-        {
-            get { return this["vkClientSecret"]; }
-        }
-
-        public override string RedirectUri
-        {
-            get { return this["vkRedirectUrl"]; }
-        }
-
-        public override string Scopes
-        {
-            get { return (new[] { 4194304 }).Sum().ToString(); }
-        }
+        public override string CodeUrl => "https://oauth.vk.com/authorize";
+        public override string AccessTokenUrl => "https://oauth.vk.com/access_token";
+        public override string ClientID => this["vkClientId"];
+        public override string ClientSecret => this["vkClientSecret"];
+        public override string RedirectUri => this["vkRedirectUrl"];
+        public override string Scopes => (new[] { 4194304 }).Sum().ToString();
 
         private const string VKProfileUrl = "https://api.vk.com/method/users.get?v=5.103";
 
-
-        public VKLoginProvider()
-        {
-        }
+        public VKLoginProvider() { }
 
         public VKLoginProvider(
             OAuth20TokenHelper oAuth20TokenHelper,
@@ -114,7 +88,7 @@ namespace ASC.FederatedLogin.LoginProviders
             }
             catch (Exception ex)
             {
-                return LoginProfile.FromError(Signature, InstanceCrypto, ex);
+                return LoginProfile.FromError(_signature, _instanceCrypto, ex);
             }
         }
 
@@ -149,11 +123,11 @@ namespace ASC.FederatedLogin.LoginProviders
             var vkProfiles = profileJson.ToObject<List<VKProfile>>();
             if (vkProfiles.Count == 0) throw new Exception("Failed to correctly process the response");
 
-            var profile = new LoginProfile(Signature, InstanceCrypto)
+            var profile = new LoginProfile(_signature, _instanceCrypto)
             {
-                Id = vkProfiles[0].id,
-                FirstName = vkProfiles[0].first_name,
-                LastName = vkProfiles[0].last_name,
+                Id = vkProfiles[0].Id,
+                FirstName = vkProfiles[0].FirstName,
+                LastName = vkProfiles[0].LastName,
 
                 Provider = ProviderConstants.VK,
             };
@@ -163,9 +137,9 @@ namespace ASC.FederatedLogin.LoginProviders
 
         private class VKProfile
         {
-            public string id = null;
-            public string first_name = null;
-            public string last_name = null;
+            public string Id { get; set; }
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
         }
 
         private static string GetMail(OAuth20Token token)

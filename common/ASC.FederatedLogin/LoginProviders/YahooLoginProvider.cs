@@ -31,14 +31,15 @@ namespace ASC.FederatedLogin.LoginProviders
         public const string YahooUrlUserGuid = "https://social.yahooapis.com/v1/me/guid";
         public const string YahooUrlContactsFormat = "https://social.yahooapis.com/v1/user/{0}/contacts";
 
-        public override string CodeUrl { get { return "https://api.login.yahoo.com/oauth2/request_auth"; } }
-        public override string AccessTokenUrl { get { return "https://api.login.yahoo.com/oauth2/get_token"; } }
-        public override string RedirectUri { get { return this["yahooRedirectUrl"]; } }
-        public override string ClientID { get { return this["yahooClientId"]; } }
-        public override string ClientSecret { get { return this["yahooClientSecret"]; } }
-        public override string Scopes { get { return "sdct-r"; } }
+        public override string CodeUrl => "https://api.login.yahoo.com/oauth2/request_auth";
+        public override string AccessTokenUrl => "https://api.login.yahoo.com/oauth2/get_token";
+        public override string RedirectUri => this["yahooRedirectUrl"];
+        public override string ClientID => this["yahooClientId"];
+        public override string ClientSecret => this["yahooClientSecret"];
+        public override string Scopes => "sdct-r";
 
         public YahooLoginProvider() { }
+
         public YahooLoginProvider(
             OAuth20TokenHelper oAuth20TokenHelper,
             TenantManager tenantManager,

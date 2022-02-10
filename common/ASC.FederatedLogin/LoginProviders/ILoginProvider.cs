@@ -35,17 +35,11 @@ namespace ASC.FederatedLogin.LoginProviders
     public interface IOAuthProvider
     {
         string Scopes { get; }
-
         string CodeUrl { get; }
-
         string AccessTokenUrl { get; }
-
         string RedirectUri { get; }
-
         string ClientID { get; }
-
         string ClientSecret { get; }
-
         bool IsEnabled { get; }
     }
 }

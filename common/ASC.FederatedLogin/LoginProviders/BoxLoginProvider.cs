@@ -28,13 +28,12 @@ namespace ASC.FederatedLogin.LoginProviders
     [Scope]
     public class BoxLoginProvider : Consumer, IOAuthProvider
     {
-        public string Scopes { get { return ""; } }
-        public string CodeUrl { get { return "https://app.box.com/api/oauth2/authorize"; } }
-        public string AccessTokenUrl { get { return "https://app.box.com/api/oauth2/token"; } }
-        public string RedirectUri { get { return this["boxRedirectUrl"]; } }
-        public string ClientID { get { return this["boxClientId"]; } }
-        public string ClientSecret { get { return this["boxClientSecret"]; } }
-
+        public string Scopes => string.Empty;
+        public string CodeUrl => "https://app.box.com/api/oauth2/authorize";
+        public string AccessTokenUrl => "https://app.box.com/api/oauth2/token";
+        public string RedirectUri => this["boxRedirectUrl"];
+        public string ClientID => this["boxClientId"];
+        public string ClientSecret => this["boxClientSecret"];
         public bool IsEnabled
         {
             get

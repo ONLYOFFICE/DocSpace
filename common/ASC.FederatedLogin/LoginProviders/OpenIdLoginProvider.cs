@@ -27,18 +27,29 @@ namespace ASC.FederatedLogin.LoginProviders
 {
     class OpenIdLoginProvider : ILoginProvider
     {
-        private static readonly OpenIdRelyingParty Openid = new OpenIdRelyingParty();
+        public string Scopes => string.Empty;
+        public string CodeUrl => string.Empty;
+        public string AccessTokenUrl => string.Empty;
+        public string RedirectUri => string.Empty;
+        public string ClientID => string.Empty;
+        public string ClientSecret => string.Empty;
+        public bool IsEnabled => _consumerFactory.Get<GoogleLoginProvider>().IsEnabled;
+
+        private static readonly OpenIdRelyingParty _openId = new OpenIdRelyingParty();
+        private readonly Signature _signature;
+        private readonly InstanceCrypto _instanceCrypto;
+        private readonly ConsumerFactory _consumerFactory;
 
         public OpenIdLoginProvider(Signature signature, InstanceCrypto instanceCrypto, ConsumerFactory consumerFactory)
         {
-            Signature = signature;
-            InstanceCrypto = instanceCrypto;
-            ConsumerFactory = consumerFactory;
+            _signature = signature;
+            _instanceCrypto = instanceCrypto;
+            _consumerFactory = consumerFactory;
         }
 
         public LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs)
         {
-            var response = Openid.GetResponse();
+            var response = _openId.GetResponse();
             if (response == null)
             {
                 if (Identifier.TryParse(@params["oid"], out var id))
@@ -52,9 +63,9 @@ namespace ASC.FederatedLogin.LoginProviders
                         @params.TryGetValue("realmUrl", out realmUrlString);
 
                         if (!string.IsNullOrEmpty(realmUrlString))
-                            request = Openid.CreateRequest(id, new Realm(realmUrlString));
+                            request = _openId.CreateRequest(id, new Realm(realmUrlString));
                         else
-                            request = Openid.CreateRequest(id);
+                            request = _openId.CreateRequest(id);
 
                         request.AddExtension(new ClaimsRequest
                         {
@@ -87,12 +98,12 @@ namespace ASC.FederatedLogin.LoginProviders
                     }
                     catch (ProtocolException ex)
                     {
-                        return LoginProfile.FromError(Signature, InstanceCrypto, ex);
+                        return LoginProfile.FromError(_signature, _instanceCrypto, ex);
                     }
                 }
                 else
                 {
-                    return LoginProfile.FromError(Signature, InstanceCrypto, new Exception("invalid OpenID identifier"));
+                    return LoginProfile.FromError(_signature, _instanceCrypto, new Exception("invalid OpenID identifier"));
                 }
             }
             else
@@ -110,9 +121,9 @@ namespace ASC.FederatedLogin.LoginProviders
                         var profile = ProfileFromOpenId(spprofile, fetchprofile, response.ClaimedIdentifier.ToString(), realmUrlString);
                         return profile;
                     case AuthenticationStatus.Canceled:
-                        return LoginProfile.FromError(Signature, InstanceCrypto, new Exception("Canceled at provider"));
+                        return LoginProfile.FromError(_signature, _instanceCrypto, new Exception("Canceled at provider"));
                     case AuthenticationStatus.Failed:
-                        return LoginProfile.FromError(Signature, InstanceCrypto, response.Exception);
+                        return LoginProfile.FromError(_signature, _instanceCrypto, response.Exception);
                 }
             }
             return null;
@@ -123,21 +134,9 @@ namespace ASC.FederatedLogin.LoginProviders
             throw new NotImplementedException();
         }
 
-        public string Scopes { get { return ""; } }
-        public string CodeUrl { get { return ""; } }
-        public string AccessTokenUrl { get { return ""; } }
-        public string RedirectUri { get { return ""; } }
-        public string ClientID { get { return ""; } }
-        public string ClientSecret { get { return ""; } }
-        public bool IsEnabled { get { return ConsumerFactory.Get<GoogleLoginProvider>().IsEnabled; } }
-
-        private Signature Signature { get; }
-        private InstanceCrypto InstanceCrypto { get; }
-        private ConsumerFactory ConsumerFactory { get; }
-
         internal LoginProfile ProfileFromOpenId(ClaimsResponse spprofile, FetchResponse fetchprofile, string claimedId, string realmUrlString)
         {
-            var profile = new LoginProfile(Signature, InstanceCrypto)
+            var profile = new LoginProfile(_signature, _instanceCrypto)
             {
                 Link = claimedId,
                 Id = claimedId,

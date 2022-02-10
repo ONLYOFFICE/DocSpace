@@ -28,15 +28,14 @@ namespace ASC.FederatedLogin.LoginProviders
     [Scope]
     public class DocuSignLoginProvider : Consumer, IOAuthProvider
     {
-        public static string DocuSignLoginProviderScopes { get { return "signature"; } }
-        public string Scopes { get { return DocuSignLoginProviderScopes; } }
-        public string CodeUrl { get { return DocuSignHost + "/oauth/auth"; } }
-        public string AccessTokenUrl { get { return DocuSignHost + "/oauth/token"; } }
-        public string RedirectUri { get { return this["docuSignRedirectUrl"]; } }
-        public string ClientID { get { return this["docuSignClientId"]; } }
-        public string ClientSecret { get { return this["docuSignClientSecret"]; } }
-        public string DocuSignHost { get { return "https://" + this["docuSignHost"]; } }
-
+        public static string DocuSignLoginProviderScopes => "signature";
+        public string Scopes => DocuSignLoginProviderScopes;
+        public string CodeUrl => DocuSignHost + "/oauth/auth";
+        public string AccessTokenUrl => DocuSignHost + "/oauth/token";
+        public string RedirectUri => this["docuSignRedirectUrl"];
+        public string ClientID => this["docuSignClientId"];
+        public string ClientSecret => this["docuSignClientSecret"];
+        public string DocuSignHost => "https://" + this["docuSignHost"];
         public bool IsEnabled
         {
             get
@@ -44,6 +43,17 @@ namespace ASC.FederatedLogin.LoginProviders
                 return !string.IsNullOrEmpty(ClientID) &&
                        !string.IsNullOrEmpty(ClientSecret) &&
                        !string.IsNullOrEmpty(RedirectUri);
+            }
+        }
+        private string AuthHeader
+        {
+            get
+            {
+                var codeAuth = $"{ClientID}:{ClientSecret}";
+                var codeAuthBytes = Encoding.UTF8.GetBytes(codeAuth);
+                var codeAuthBase64 = Convert.ToBase64String(codeAuthBytes);
+
+                return "Basic " + codeAuthBase64;
             }
         }
 
@@ -59,18 +69,6 @@ namespace ASC.FederatedLogin.LoginProviders
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
             : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)
         {
-        }
-
-
-        private string AuthHeader
-        {
-            get
-            {
-                var codeAuth = $"{ClientID}:{ClientSecret}";
-                var codeAuthBytes = Encoding.UTF8.GetBytes(codeAuth);
-                var codeAuthBase64 = Convert.ToBase64String(codeAuthBytes);
-                return "Basic " + codeAuthBase64;
-            }
         }
 
         public OAuth20Token GetAccessToken(string authCode)

@@ -28,18 +28,18 @@ namespace ASC.FederatedLogin.Helpers
     [Scope]
     public class OAuth20TokenHelper
     {
-        private IHttpContextAccessor HttpContextAccessor { get; }
-        private ConsumerFactory ConsumerFactory { get; }
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ConsumerFactory _consumerFactory;
 
         public OAuth20TokenHelper(IHttpContextAccessor httpContextAccessor, ConsumerFactory consumerFactory)
         {
-            HttpContextAccessor = httpContextAccessor;
-            ConsumerFactory = consumerFactory;
+            _httpContextAccessor = httpContextAccessor;
+            _consumerFactory = consumerFactory;
         }
 
         public string RequestCode<T>(string scope = null, IDictionary<string, string> additionalArgs = null, IDictionary<string, string> additionalStateArgs = null) where T : Consumer, IOAuthProvider, new()
         {
-            var loginProvider = ConsumerFactory.Get<T>();
+            var loginProvider = _consumerFactory.Get<T>();
             var requestUrl = loginProvider.CodeUrl;
             var clientID = loginProvider.ClientID;
             var redirectUri = loginProvider.RedirectUri;
@@ -54,7 +54,7 @@ namespace ASC.FederatedLogin.Helpers
             if (!string.IsNullOrEmpty(redirectUri)) query += $"&redirect_uri={HttpUtility.UrlEncode(redirectUri)}";
             if (!string.IsNullOrEmpty(scope)) query += $"&scope={HttpUtility.UrlEncode(scope)}";
 
-            var u = HttpContextAccessor.HttpContext.Request.GetUrlRewriter();
+            var u = _httpContextAccessor.HttpContext.Request.GetUrlRewriter();
 
             var stateUriBuilder = new UriBuilder(u.Scheme, u.Host, u.Port, $"thirdparty/{loginProvider.Name.ToLower()}/code");
 

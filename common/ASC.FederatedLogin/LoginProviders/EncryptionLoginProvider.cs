@@ -31,10 +31,10 @@ namespace ASC.Web.Studio.Core
     [Scope]
     public class EncryptionLoginProvider
     {
-        private SecurityContext SecurityContext { get; }
-        private Signature Signature { get; }
-        private InstanceCrypto InstanceCrypto { get; }
-        private IOptionsSnapshot<AccountLinker> Snapshot { get; }
+        private readonly SecurityContext _securityContext;
+        private readonly Signature _signature;
+        private readonly InstanceCrypto _instanceCrypto;
+        private readonly IOptionsSnapshot<AccountLinker> _snapshot;
 
         public EncryptionLoginProvider(
             SecurityContext securityContext,
@@ -42,10 +42,10 @@ namespace ASC.Web.Studio.Core
             InstanceCrypto instanceCrypto,
             IOptionsSnapshot<AccountLinker> snapshot)
         {
-            SecurityContext = securityContext;
-            Signature = signature;
-            InstanceCrypto = instanceCrypto;
-            Snapshot = snapshot;
+            _securityContext = securityContext;
+            _signature = signature;
+            _instanceCrypto = instanceCrypto;
+            _snapshot = snapshot;
         }
 
 
@@ -53,29 +53,29 @@ namespace ASC.Web.Studio.Core
         {
             if (string.IsNullOrEmpty(keys)) return;
 
-            var loginProfile = new LoginProfile(Signature, InstanceCrypto)
+            var loginProfile = new LoginProfile(_signature, _instanceCrypto)
             {
                 Provider = ProviderConstants.Encryption,
-                Name = InstanceCrypto.Encrypt(keys)
+                Name = _instanceCrypto.Encrypt(keys)
             };
 
-            var linker = Snapshot.Get("webstudio");
+            var linker = _snapshot.Get("webstudio");
             linker.AddLink(userId.ToString(), loginProfile);
         }
 
 
         public string GetKeys()
         {
-            return GetKeys(SecurityContext.CurrentAccount.ID);
+            return GetKeys(_securityContext.CurrentAccount.ID);
         }
 
         public string GetKeys(Guid userId)
         {
-            var linker = Snapshot.Get("webstudio");
+            var linker = _snapshot.Get("webstudio");
             var profile = linker.GetLinkedProfiles(userId.ToString(), ProviderConstants.Encryption).FirstOrDefault();
             if (profile == null) return null;
 
-            var keys = InstanceCrypto.Decrypt(profile.Name);
+            var keys = _instanceCrypto.Decrypt(profile.Name);
             return keys;
         }
     }

@@ -31,9 +31,13 @@ namespace ASC.FederatedLogin.LoginProviders
         public const string WordpressMeInfoUrl = "https://public-api.wordpress.com/rest/v1/me";
         public const string WordpressSites = "https://public-api.wordpress.com/rest/v1.2/sites/";
 
-        public WordpressLoginProvider()
-        {
-        }
+        public override string CodeUrl => "https://public-api.wordpress.com/oauth2/authorize";
+        public override string AccessTokenUrl => "https://public-api.wordpress.com/oauth2/token";
+        public override string RedirectUri => this["wpRedirectUrl"];
+        public override string ClientID => this["wpClientId"];
+        public override string ClientSecret => this["wpClientSecret"];
+
+        public WordpressLoginProvider() { }
 
         public WordpressLoginProvider(
             OAuth20TokenHelper oAuth20TokenHelper,
@@ -79,31 +83,6 @@ namespace ASC.FederatedLogin.LoginProviders
             {
                 return false;
             }
-        }
-
-        public override string CodeUrl
-        {
-            get { return "https://public-api.wordpress.com/oauth2/authorize"; }
-        }
-
-        public override string AccessTokenUrl
-        {
-            get { return "https://public-api.wordpress.com/oauth2/token"; }
-        }
-
-        public override string RedirectUri
-        {
-            get { return this["wpRedirectUrl"]; }
-        }
-
-        public override string ClientID
-        {
-            get { return this["wpClientId"]; }
-        }
-
-        public override string ClientSecret
-        {
-            get { return this["wpClientSecret"]; }
         }
 
         public override LoginProfile GetLoginProfile(string accessToken)

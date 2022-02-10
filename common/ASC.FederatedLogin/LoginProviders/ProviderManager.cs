@@ -29,33 +29,33 @@ namespace ASC.FederatedLogin.LoginProviders
     public class ProviderManager
     {
         public static readonly List<string> AuthProviders = new List<string>
-            {
-                ProviderConstants.Google,
-                ProviderConstants.Facebook,
-                ProviderConstants.Twitter,
-                ProviderConstants.LinkedIn,
-                ProviderConstants.MailRu,
-                ProviderConstants.VK,
-                ProviderConstants.Yandex,
-                ProviderConstants.GosUslugi
-            };
+        {
+            ProviderConstants.Google,
+            ProviderConstants.Facebook,
+            ProviderConstants.Twitter,
+            ProviderConstants.LinkedIn,
+            ProviderConstants.MailRu,
+            ProviderConstants.VK,
+            ProviderConstants.Yandex,
+            ProviderConstants.GosUslugi
+        };
 
-        private Signature Signature { get; }
-        private InstanceCrypto InstanceCrypto { get; }
-        private ConsumerFactory ConsumerFactory { get; }
+        private readonly Signature _signature;
+        private readonly InstanceCrypto _instanceCrypto;
+        private readonly ConsumerFactory _consumerFactory;
 
         public ProviderManager(Signature signature, InstanceCrypto instanceCrypto, ConsumerFactory consumerFactory)
         {
-            Signature = signature;
-            InstanceCrypto = instanceCrypto;
-            ConsumerFactory = consumerFactory;
+            _signature = signature;
+            _instanceCrypto = instanceCrypto;
+            _consumerFactory = consumerFactory;
         }
 
         public ILoginProvider GetLoginProvider(string providerType)
         {
             return providerType == ProviderConstants.OpenId
-                ? new OpenIdLoginProvider(Signature, InstanceCrypto, ConsumerFactory)
-                : ConsumerFactory.GetByKey(providerType) as ILoginProvider;
+                ? new OpenIdLoginProvider(_signature, _instanceCrypto, _consumerFactory)
+                : _consumerFactory.GetByKey(providerType) as ILoginProvider;
         }
 
         public LoginProfile Process(string providerType, HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs = null)
@@ -74,7 +74,7 @@ namespace ASC.FederatedLogin.LoginProviders
             }
             catch (Exception ex)
             {
-                return LoginProfile.FromError(Signature, InstanceCrypto, ex);
+                return LoginProfile.FromError(_signature, _instanceCrypto, ex);
             }
         }
 

@@ -28,20 +28,9 @@ namespace ASC.FederatedLogin.LoginProviders
     [Scope]
     public class BitlyLoginProvider : Consumer, IValidateKeysProvider
     {
-        private string BitlyClientId
-        {
-            get { return this["bitlyClientId"]; }
-        }
-
-        private string BitlyClientSecret
-        {
-            get { return this["bitlyClientSecret"]; }
-        }
-
-        private string BitlyUrl
-        {
-            get { return this["bitlyUrl"]; }
-        }
+        private string BitlyClientId => this["bitlyClientId"];
+        private string BitlyClientSecret => this["bitlyClientSecret"];
+        private string BitlyUrl => this["bitlyUrl"];
 
         public BitlyLoginProvider() { }
 

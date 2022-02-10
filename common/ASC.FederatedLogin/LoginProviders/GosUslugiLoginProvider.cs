@@ -28,49 +28,16 @@ namespace ASC.FederatedLogin.LoginProviders
     [Scope]
     public class GosUslugiLoginProvider : BaseLoginProvider<GosUslugiLoginProvider>
     {
-        public string BaseDomain
-        {
-            get { return this["gosUslugiDomain"]; }
-        }
+        public string BaseDomain => this["gosUslugiDomain"];
+        public override string CodeUrl => BaseDomain + "/aas/oauth2/ac";
+        public override string AccessTokenUrl => BaseDomain + "/aas/oauth2/te";
+        public override string ClientID => this["gosUslugiClientId"];
+        public override string ClientSecret => this["gosUslugiCert"];
+        public override string RedirectUri => this["gosUslugiRedirectUrl"];
+        public override string Scopes => "fullname birthdate gender email";
+        private string GosUslugiProfileUrl => BaseDomain + "/rs/prns/";
 
-        public override string CodeUrl
-        {
-            get { return BaseDomain + "/aas/oauth2/ac"; }
-        }
-
-        public override string AccessTokenUrl
-        {
-            get { return BaseDomain + "/aas/oauth2/te"; }
-        }
-
-        public override string ClientID
-        {
-            get { return this["gosUslugiClientId"]; }
-        }
-
-        public override string ClientSecret
-        {
-            get { return this["gosUslugiCert"]; }
-        }
-
-        public override string RedirectUri
-        {
-            get { return this["gosUslugiRedirectUrl"]; }
-        }
-
-        public override string Scopes
-        {
-            get { return "fullname birthdate gender email"; }
-        }
-
-        private string GosUslugiProfileUrl
-        {
-            get { return BaseDomain + "/rs/prns/"; }
-        }
-
-        public GosUslugiLoginProvider()
-        {
-        }
+        public GosUslugiLoginProvider() { }
 
         public GosUslugiLoginProvider(
             OAuth20TokenHelper oAuth20TokenHelper,
@@ -112,7 +79,7 @@ namespace ASC.FederatedLogin.LoginProviders
             }
             catch (Exception ex)
             {
-                return LoginProfile.FromError(Signature, InstanceCrypto, ex);
+                return LoginProfile.FromError(_signature, _instanceCrypto, ex);
             }
         }
 
@@ -212,7 +179,7 @@ namespace ASC.FederatedLogin.LoginProviders
                 throw new Exception("userinfo is incorrect");
             }
 
-            var profile = new LoginProfile(Signature, InstanceCrypto)
+            var profile = new LoginProfile(_signature, _instanceCrypto)
             {
                 Id = oid,
                 FirstName = userInfo.Value<string>("firstName"),
