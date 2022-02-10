@@ -23,20 +23,24 @@
  *
 */
 
+using ASC.Common.Mapping;
+
+using AutoMapper;
+
 namespace ASC.Feed.Data
 {
-    public class FeedRow
+    public class FeedRow : IMapFrom<FeedAggregate>
     {
         public DateTime AggregatedDate { get; set; }
         public IList<Guid> Users { get; set; }
         public int Tenant { get; set; }
-        public string ProductId { get; set; }
+        public string Product { get; set; }
         public Aggregator.Feed Feed { get; private set; }
         public string Id => Feed.Id;
         public bool ClearRightsBeforeInsert => Feed.Variate;
-        public string ModuleId => Feed.Module;
-        public Guid AuthorId => Feed.AuthorId;
-        public Guid ModifiedById => Feed.ModifiedBy;
+        public string Module => Feed.Module;
+        public Guid Author => Feed.AuthorId;
+        public Guid ModifiedBy => Feed.ModifiedBy;
         public DateTime CreatedDate => Feed.CreatedDate;
         public DateTime ModifiedDate => Feed.ModifiedDate;
         public string GroupId => Feed.GroupId;
@@ -56,6 +60,11 @@ namespace ASC.Feed.Data
         {
             Users = new List<Guid>();
             Feed = feed;
+        }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<FeedAggregate, FeedRow>().ReverseMap();
         }
     }
 }
