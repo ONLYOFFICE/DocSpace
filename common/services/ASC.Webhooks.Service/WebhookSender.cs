@@ -93,7 +93,7 @@
             {
                 var responseContent = streamReader.ReadToEnd();
                 responsePayload = JsonSerializer.Serialize(responseContent);
-            };
+            }
 
             dbWorker.UpdateWebhookJournal(id, status, responsePayload, responseHeaders, requestHeaders);
         }

@@ -42,7 +42,7 @@ namespace ASC.Web.Core.Mobile
         {
             Cache = cache;
             TenantManager = tenantManager;
-            this.registrator = registrator ?? throw new ArgumentNullException("registrator");
+            this.registrator = registrator ?? throw new ArgumentNullException(nameof(registrator));
             this.cacheExpiration = cacheExpiration;
         }
 

@@ -25,7 +25,7 @@
 
 namespace ASC.AuditTrail.Mappers;
 
-internal class CrmActionMapper
+internal static class CrmActionMapper
 {
     public static Dictionary<MessageAction, MessageMaps> GetMaps() =>
         new Dictionary<MessageAction, MessageMaps>

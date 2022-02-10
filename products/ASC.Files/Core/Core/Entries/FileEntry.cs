@@ -31,14 +31,18 @@ namespace ASC.Files.Core
         [JsonIgnore]
         public FileHelper FileHelper { get; set; }
 
+        [JsonIgnore]
+        public Global Global { get; set; }
+
         protected FileEntry()
         {
 
         }
 
-        public FileEntry(FileHelper fileHelper)
+        protected FileEntry(FileHelper fileHelper, Global global)
         {
             FileHelper = fileHelper;
+            Global = global;
         }
 
         public virtual string Title { get; set; }
@@ -46,12 +50,20 @@ namespace ASC.Files.Core
         public Guid CreateBy { get; set; }
 
         [JsonIgnore]
-        public string CreateByString { get => FileHelper.GetCreateByString(this); }
+        public string CreateByString
+        {
+            get => !CreateBy.Equals(Guid.Empty) ? Global.GetUserName(CreateBy) : _createByString;
+            set => _createByString = value;
+        }
 
         public Guid ModifiedBy { get; set; }
 
         [JsonIgnore]
-        public string ModifiedByString { get => FileHelper.GetModifiedByString(this); }
+        public string ModifiedByString 
+        { 
+            get => !ModifiedBy.Equals(Guid.Empty) ? Global.GetUserName(ModifiedBy) : _modifiedByString;
+            set => _modifiedByString = value;
+        }
 
         [JsonIgnore]
         public string CreateOnString
@@ -91,10 +103,10 @@ namespace ASC.Files.Core
 
         public abstract bool IsNew { get; set; }
 
-        public FileEntryType FileEntryType;
+        public FileEntryType FileEntryType { get; set; }
 
-        public string _modifiedByString;
-        public string _createByString;
+        private string _modifiedByString;
+        private string _createByString;
 
         public override string ToString()
         {
@@ -128,7 +140,7 @@ namespace ASC.Files.Core
 
         }
 
-        protected FileEntry(FileHelper fileHelper) : base(fileHelper)
+        protected FileEntry(FileHelper fileHelper, Global global) : base(fileHelper, global)
         {
         }
 
@@ -156,7 +168,7 @@ namespace ASC.Files.Core
             return obj is FileEntry<T> f && Equals(f.ID, ID);
         }
 
-        public bool Equals(FileEntry<T> obj)
+        public virtual bool Equals(FileEntry<T> obj)
         {
             return Equals(obj.ID, ID);
         }

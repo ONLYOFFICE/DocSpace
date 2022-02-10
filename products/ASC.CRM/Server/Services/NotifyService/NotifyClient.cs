@@ -246,8 +246,8 @@ namespace ASC.Web.CRM.Services.NotifyService
 
             var recipient = notifySource.GetRecipientsProvider().GetRecipient(recipientID.ToString());
 
-            var entitiyListTitle = "";
-            var entitiyListRelativeURL = "";
+            string entitiyListTitle;
+            string entitiyListRelativeURL;
 
             switch (entityType)
             {

@@ -1,23 +1,23 @@
-﻿namespace ASC.Api.Core.Core
+﻿namespace ASC.Api.Core.Core;
+
+public class XmlOutputFormatter : IOutputFormatter
 {
-    public class XmlOutputFormatter : IOutputFormatter
+    public bool CanWriteResult(OutputFormatterCanWriteContext context)
     {
-        public bool CanWriteResult(OutputFormatterCanWriteContext context)
-        {
-            return context.ContentType == MimeMapping.GetMimeMapping(".xml");
-        }
+        return context.ContentType == MimeMapping.GetMimeMapping(".xml");
+    }
 
-        public Task WriteAsync(OutputFormatterWriteContext context)
+    public Task WriteAsync(OutputFormatterWriteContext context)
+    {
+        var settings = new JsonSerializerSettings
         {
-            var settings = new JsonSerializerSettings
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                DateParseHandling = DateParseHandling.None
-            };
+            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            DateParseHandling = DateParseHandling.None
+        };
 
-            var responseJson = JsonConvert.SerializeObject(context.Object, Formatting.Indented, settings);
-            responseJson = JsonConvert.DeserializeObject<XDocument>("{\"result\":" + responseJson + "}", settings).ToString(SaveOptions.None);
-            return context.HttpContext.Response.WriteAsync(responseJson);
-        }
+        var responseJson = JsonConvert.SerializeObject(context.Object, Formatting.Indented, settings);
+        responseJson = JsonConvert.DeserializeObject<XDocument>("{\"result\":" + responseJson + "}", settings).ToString(SaveOptions.None);
+
+        return context.HttpContext.Response.WriteAsync(responseJson);
     }
 }

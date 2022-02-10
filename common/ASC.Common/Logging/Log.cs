@@ -860,7 +860,7 @@ namespace ASC.Common.Logging
         }
     }
 
-    public class LoggerExtension<T> where T : class, ILog, new()
+    public static class LoggerExtension<T> where T : class, ILog, new()
     {
         public static void RegisterLog(DIHelper services)
         {
@@ -868,11 +868,11 @@ namespace ASC.Common.Logging
         }
     }
 
-    public class LogNLogExtension : LoggerExtension<LogNLog>
+    public static class LogNLogExtension
     {
         public static void Register(DIHelper services)
         {
-            RegisterLog(services);
+            LoggerExtension<LogNLog>.RegisterLog(services);
         }
     }
 }

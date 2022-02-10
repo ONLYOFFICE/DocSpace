@@ -224,7 +224,7 @@ namespace ASC.Core.Data
 
         public UserInfo GetUserByPasswordHash(int tenant, string login, string passwordHash)
         {
-            if (string.IsNullOrEmpty(login)) throw new ArgumentNullException("login");
+            if (string.IsNullOrEmpty(login)) throw new ArgumentNullException(nameof(login));
 
             if (Guid.TryParse(login, out var userId))
             {
@@ -358,7 +358,7 @@ namespace ASC.Core.Data
                 .Select(r => r.Photo)
                 .FirstOrDefault();
 
-            return photo ?? new byte[0];
+            return photo ?? Array.Empty<byte>();
         }
 
         public IEnumerable<UserInfo> GetUsers(int tenant)
@@ -541,7 +541,7 @@ namespace ASC.Core.Data
 
         public UserInfo SaveUser(int tenant, UserInfo user)
         {
-            if (user == null) throw new ArgumentNullException("user");
+            if (user == null) throw new ArgumentNullException(nameof(user));
             if (string.IsNullOrEmpty(user.UserName)) throw new ArgumentOutOfRangeException("Empty username.");
 
             if (user.ID == default) user.ID = Guid.NewGuid();
@@ -694,17 +694,15 @@ namespace ASC.Core.Data
 
             q = q.Where(r => !r.Removed);
 
-            if (includeGroups != null && includeGroups.Any())
+            if (includeGroups != null && includeGroups.Count > 0)
             {
-                Expression or = Expression.Empty();
-
                 foreach (var ig in includeGroups)
                 {
                     q = q.Where(r => r.Groups.Any(a => !a.Removed && a.Tenant == r.Tenant && a.UserId == r.Id && ig.Any(r => r == a.GroupId)));
                 }
             }
 
-            if (excludeGroups != null && excludeGroups.Any())
+            if (excludeGroups != null && excludeGroups.Count > 0)
             {
                 foreach (var eg in excludeGroups)
                 {

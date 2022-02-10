@@ -34,7 +34,7 @@ namespace ASC.MessagingSystem
         {
             secretIps =
                 configuration["messaging.secret-ips"] == null
-                ? new string[] { }
+                ? Array.Empty<string>()
                 : configuration["messaging.secret-ips"].Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
         }
 

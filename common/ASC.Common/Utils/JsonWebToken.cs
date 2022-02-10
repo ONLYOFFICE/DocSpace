@@ -29,7 +29,7 @@ using IJsonSerializer = JWT.IJsonSerializer;
 
 namespace ASC.Web.Core.Files
 {
-    public class JsonWebToken
+    public static class JsonWebToken
     {
         public static string Encode(object payload, string key)
         {

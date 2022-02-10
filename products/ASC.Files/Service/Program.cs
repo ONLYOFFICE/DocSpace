@@ -1,6 +1,6 @@
 ﻿namespace ASC.Files.Service
 {
-    public class Program
+    public static class Program
     {
         public async static Task Main(string[] args)
         {

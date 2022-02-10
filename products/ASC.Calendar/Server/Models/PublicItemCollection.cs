@@ -86,10 +86,10 @@ namespace ASC.Calendar.Models
                 Id = calendar.OwnerId,
                 IsGroup = false
             },
-                  calendar.Id.ToString(), calendar.OwnerId));
+                  calendar.Id, calendar.OwnerId));
 
             foreach (var item in calendar.SharingOptions.PublicItems)
-                sharingOptions.Items.Add(PublicItemWrapperHelper.Get(item, calendar.Id.ToString(), calendar.OwnerId));
+                sharingOptions.Items.Add(PublicItemWrapperHelper.Get(item, calendar.Id, calendar.OwnerId));
 
             return sharingOptions;
         }

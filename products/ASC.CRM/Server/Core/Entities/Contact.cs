@@ -75,7 +75,7 @@ namespace ASC.CRM.Core.Entities
 
             var people = (Person)contact;
 
-            return String.Format("{0} {1}", people.FirstName, people.LastName);
+            return $"{people.FirstName} {people.LastName}";
         }
 
         //public static String RenderLinkForCard(this Contact contact)

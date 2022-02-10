@@ -32,7 +32,7 @@ namespace ASC.Data.Storage
 
         public ProgressStream(Stream stream)
         {
-            this.stream = stream ?? throw new ArgumentNullException("stream");
+            this.stream = stream ?? throw new ArgumentNullException(nameof(stream));
             try
             {
                 length = stream.Length;
