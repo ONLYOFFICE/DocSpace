@@ -18,6 +18,7 @@ global using ASC.Common.Logging;
 global using ASC.Common.Utils;
 global using ASC.Web.Webhooks;
 global using ASC.Webhooks.Core;
+global using ASC.Webhooks.Service.Services;
 
 global using Autofac;
 global using Autofac.Extensions.DependencyInjection;

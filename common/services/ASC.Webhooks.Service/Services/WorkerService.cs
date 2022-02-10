@@ -1,16 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Web.Webhooks;
-
-using Microsoft.Extensions.Hosting;
-
-namespace ASC.Webhooks.Service.Services;
+﻿namespace ASC.Webhooks.Service.Services;
 
 [Singletone]
 public class WorkerService: IHostedService, IDisposable

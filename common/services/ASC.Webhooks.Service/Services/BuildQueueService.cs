@@ -1,14 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Web.Webhooks;
-
-using Microsoft.Extensions.Hosting;
-
-namespace ASC.Webhooks.Service.Services;
+﻿namespace ASC.Webhooks.Service.Services;
 
 [Singletone]
 public class BuildQueueService : IHostedService
