@@ -74,9 +74,9 @@ rpm -Uvh https://packages.microsoft.com/config/centos/$REV/packages-microsoft-pr
 case $REV in
 	8) 	dnf remove -y @mysql
 		dnf module -y reset mysql && dnf module -y disable mysql
-		${package_manager} localinstall -y https://dev.mysql.com/get/mysql80-community-release-el8-1.noarch.rpm || true ;;
-	7) 	${package_manager} localinstall -y https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm || true ;;
-	6) 	${package_manager} localinstall -y https://dev.mysql.com/get/mysql80-community-release-el6-3.noarch.rpm || true ;;
+		${package_manager} localinstall -y https://dev.mysql.com/get/mysql80-community-release-el8-3.noarch.rpm || true ;;
+	7) 	${package_manager} localinstall -y https://dev.mysql.com/get/mysql80-community-release-el7-5.noarch.rpm || true ;;
+	6) 	${package_manager} localinstall -y https://dev.mysql.com/get/mysql80-community-release-el6-5.noarch.rpm || true ;;
 esac
 
 if ! rpm -q mysql-community-server; then
@@ -100,12 +100,14 @@ END
 
 #install kafka
 PRODUCT_DIR="/var/www/${product}"
-if [ "$(ls -A "$PRODUCT_DIR/services/kafka" 2> /dev/null)" == "" ]; then
+if [ "$(ls "$PRODUCT_DIR/services/kafka" 2> /dev/null)" == "" ]; then
 	mkdir -p ${PRODUCT_DIR}/services/
 	getent passwd kafka >/dev/null || useradd -m -d ${PRODUCT_DIR}/services/kafka -s /sbin/nologin -p kafka kafka
 	cd ${PRODUCT_DIR}/services/kafka
-	curl https://downloads.apache.org/kafka/2.7.2/kafka_2.13-2.7.2.tgz -O
-	tar xzf kafka_*.tgz --strip 1 && rm -rf kafka_*.tgz
+	KAFKA_VERSION=$(curl https://downloads.apache.org/kafka/ | grep -Eo '3.1.[0-9]' | tail -1)
+	KAFKA_ARCHIVE=$(curl https://downloads.apache.org/kafka/$KAFKA_VERSION/ | grep -Eo "kafka_2.[0-9][0-9]-$KAFKA_VERSION.tgz" | tail -1)
+	curl https://downloads.apache.org/kafka/$KAFKA_VERSION/$KAFKA_ARCHIVE -O
+	tar xzf $KAFKA_ARCHIVE --strip 1 && rm -rf $KAFKA_ARCHIVE
 	chown -R kafka ${PRODUCT_DIR}/services/kafka
 	cd -
 fi

@@ -79,5 +79,7 @@
     "UnblockVersion": "Sblocca/Controlla",
     "UploadToFolder": "Carica nella cartella",
     "ViewList": "Lista",
-    "ViewTiles": "Tegole"
+    "ViewTiles": "Tegole",
+    "VersionHistory": "Cronologia delle versioni",
+    "MoveOrCopy": "Sposta o Copia"
 }
