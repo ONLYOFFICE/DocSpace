@@ -59,6 +59,7 @@ namespace ASC.Data.Reassigns
         public T GetProgressItemStatus(int tenantId, Guid userId)
         {
             var id = GetProgressItemId(tenantId, userId);
+
             return Queue.GetTask<T>(id);
         }
 

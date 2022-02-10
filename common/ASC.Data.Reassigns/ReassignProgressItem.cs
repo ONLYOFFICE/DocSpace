@@ -141,6 +141,7 @@ namespace ASC.Data.Reassigns
                 logger.Info("data reassignment is complete");
                 IsCompleted = true;
             }
+
             PublishChanges();
         }
 
