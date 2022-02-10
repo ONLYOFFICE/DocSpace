@@ -31,7 +31,7 @@ public class WebStudioModuleSpecifics : ModuleSpecificsBase
     public override IEnumerable<TableInfo> Tables => _tables;
     public override IEnumerable<RelationInfo> TableRelations => _relations;
 
-    private static readonly Guid s_crmSettingsId = new Guid("fdf39b9a-ec96-4eb7-aeab-63f2c608eada");
+    private static readonly Guid _crmSettingsId = new Guid("fdf39b9a-ec96-4eb7-aeab-63f2c608eada");
 
     private readonly TableInfo[] _tables = new[]
     {
@@ -43,7 +43,7 @@ public class WebStudioModuleSpecifics : ModuleSpecificsBase
     private readonly RelationInfo[] _relations = new[]
     {
             new RelationInfo("crm_organisation_logo", "id", "webstudio_settings", "Data", typeof(CrmInvoiceModuleSpecifics),
-                x => s_crmSettingsId == new Guid(Convert.ToString(x["ID"])))
+                x => _crmSettingsId == new Guid(Convert.ToString(x["ID"])))
         };
 
     public WebStudioModuleSpecifics(Helpers helpers) : base(helpers) { }

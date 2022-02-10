@@ -36,7 +36,7 @@ public class FilesModuleSpecifics : ModuleSpecificsBase
     private const string BunchRightNodeStartMy = "files/my/";
     private const string BunchRightNodeStartTrash = "files/trash/";
 
-    private static readonly Regex s_regexIsInteger = new Regex(@"^\d+$", RegexOptions.Compiled);
+    private static readonly Regex _regexIsInteger = new Regex(@"^\d+$", RegexOptions.Compiled);
     private readonly Helpers _helpers;
     private readonly ILog _logger;
     private readonly TableInfo[] _tables = new[]
@@ -85,13 +85,13 @@ public class FilesModuleSpecifics : ModuleSpecificsBase
             new RelationInfo("files_folder", "id", "files_folder_tree", "folder_id"),
             new RelationInfo("files_folder", "id", "files_folder_tree", "parent_id"),
             new RelationInfo("files_file", "id", "files_security", "entry_id",
-                x => Convert.ToInt32(x["entry_type"]) == 2 && s_regexIsInteger.IsMatch(Convert.ToString(x["entry_id"]))),
+                x => Convert.ToInt32(x["entry_type"]) == 2 && _regexIsInteger.IsMatch(Convert.ToString(x["entry_id"]))),
 
             new RelationInfo("files_folder", "id", "files_security", "entry_id",
-                x => Convert.ToInt32(x["entry_type"]) == 1 && s_regexIsInteger.IsMatch(Convert.ToString(x["entry_id"]))),
+                x => Convert.ToInt32(x["entry_type"]) == 1 && _regexIsInteger.IsMatch(Convert.ToString(x["entry_id"]))),
 
             new RelationInfo("files_thirdparty_id_mapping", "hash_id", "files_security", "entry_id",
-                x => !s_regexIsInteger.IsMatch(Convert.ToString(x["entry_id"]))),
+                x => !_regexIsInteger.IsMatch(Convert.ToString(x["entry_id"]))),
 
             new RelationInfo("files_thirdparty_account", "id", "files_thirdparty_id_mapping", "id"),
             new RelationInfo("files_thirdparty_account", "id", "files_thirdparty_id_mapping", "hash_id")
@@ -299,7 +299,7 @@ public class FilesModuleSpecifics2 : ModuleSpecificsBase
     public override IEnumerable<TableInfo> Tables => _tables;
     public override IEnumerable<RelationInfo> TableRelations => _rels;
 
-    private static readonly Regex s_regexIsInteger = new Regex(@"^\d+$", RegexOptions.Compiled);
+    private static readonly Regex _regexIsInteger = new Regex(@"^\d+$", RegexOptions.Compiled);
     private const string TagStartMessage = "Message";
     private const string TagStartTask = "Task";
     private const string TagStartProject = "Project";
@@ -332,13 +332,13 @@ public class FilesModuleSpecifics2 : ModuleSpecificsBase
             new RelationInfo("files_tag", "id", "files_tag_link", "tag_id", typeof(FilesModuleSpecifics)),
 
             new RelationInfo("files_file", "id", "files_tag_link", "entry_id", typeof(FilesModuleSpecifics),
-                x => Convert.ToInt32(x["entry_type"]) == 2 && s_regexIsInteger.IsMatch(Convert.ToString(x["entry_id"]))),
+                x => Convert.ToInt32(x["entry_type"]) == 2 && _regexIsInteger.IsMatch(Convert.ToString(x["entry_id"]))),
 
             new RelationInfo("files_folder", "id", "files_tag_link", "entry_id",typeof(FilesModuleSpecifics),
-                x => Convert.ToInt32(x["entry_type"]) == 1 && s_regexIsInteger.IsMatch(Convert.ToString(x["entry_id"]))),
+                x => Convert.ToInt32(x["entry_type"]) == 1 && _regexIsInteger.IsMatch(Convert.ToString(x["entry_id"]))),
 
             new RelationInfo("files_thirdparty_id_mapping", "hash_id", "files_tag_link", "entry_id", typeof(FilesModuleSpecifics),
-                x => !s_regexIsInteger.IsMatch(Convert.ToString(x["entry_id"]))),
+                x => !_regexIsInteger.IsMatch(Convert.ToString(x["entry_id"]))),
         };
 
     public FilesModuleSpecifics2(Helpers helpers) : base(helpers) { }
