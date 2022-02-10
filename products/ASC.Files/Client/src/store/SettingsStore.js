@@ -25,8 +25,6 @@ class SettingsStore {
     hideConfirmConvertSave = null;
     chunkUploadSize = 1024 * 1023; // 1024 * 1023; //~0.999mb
 
-    roomInfoIsVisible = false;
-
     settingsIsLoaded = false;
 
     constructor(thirdPartyStore, treeFoldersStore) {

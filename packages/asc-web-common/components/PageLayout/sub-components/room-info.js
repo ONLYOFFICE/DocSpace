@@ -1,5 +1,7 @@
 import IconButton from "@appserver/components/icon-button";
 import { mobile, tablet } from "@appserver/components/utils/device";
+import PropTypes from "prop-types";
+
 import { inject } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
@@ -31,20 +33,20 @@ const RoomInfo = ({ children, isVisible, toggleIsVisible }) => {
         display: flex;
         flex-direction: column;
         align-items: center;
+        padding: 0 16px;
 
         @media ${tablet} {
             position: absolute;
             border: none;
             right: 0;
-            width: 480px;
-            max-width: calc(100vw - 37px);
+            width: 448px;
+            max-width: calc(100vw - 69px);
         }
 
         @media ${mobile} {
             bottom: 0;
             height: 80%;
-            max-width: none;
-            width: 100%;
+            max-width: calc(100vw - 32px);
         }
     `;
 
@@ -72,7 +74,7 @@ const RoomInfo = ({ children, isVisible, toggleIsVisible }) => {
                 <StyledCloseButtonWrapper>
                     <IconButton
                         onClick={toggleIsVisible}
-                        iconName="/static/images/arrow.path.react.svg"
+                        iconName="/static/images/cross.react.svg"
                         size="17"
                         color="#ffffff"
                         hoverColor="#657077"
@@ -84,6 +86,16 @@ const RoomInfo = ({ children, isVisible, toggleIsVisible }) => {
             </StyledRoomInfo>
         </StyledRoomInfoWrapper>
     );
+};
+
+RoomInfo.propTypes = {
+    children: PropTypes.oneOfType([
+        PropTypes.arrayOf(PropTypes.node),
+        PropTypes.node,
+        PropTypes.any,
+    ]),
+    isVisible: PropTypes.bool,
+    toggleIsVisible: PropTypes.func,
 };
 
 export default inject(({ roomInfoStore }) => {
