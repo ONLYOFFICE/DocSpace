@@ -23,735 +23,703 @@
  *
 */
 
-namespace ASC.ElasticSearch
+namespace ASC.ElasticSearch;
+
+[Singletone]
+public class FactoryIndexerHelper
 {
-    [Singletone]
-    public class FactoryIndexerHelper
-    {
-        public DateTime LastIndexed { get; set; }
-        public string Indexing { get; set; }
+    public DateTime LastIndexed { get; set; }
+    public string Indexing { get; set; }
 
-        public FactoryIndexerHelper(ICacheNotify<IndexAction> cacheNotify)
+    public FactoryIndexerHelper(ICacheNotify<IndexAction> cacheNotify)
+    {
+        cacheNotify.Subscribe((a) =>
         {
-            cacheNotify.Subscribe((a) =>
+            if (a.LastIndexed != 0)
             {
-                if (a.LastIndexed != 0)
-                {
-                    LastIndexed = new DateTime(a.LastIndexed);
-                }
-                Indexing = a.Indexing;
-            }, CacheNotifyAction.Any);
-        }
+                LastIndexed = new DateTime(a.LastIndexed);
+            }
+            Indexing = a.Indexing;
+        }, CacheNotifyAction.Any);
+    }
+}
+
+public interface IFactoryIndexer
+{
+    void IndexAll();
+    string IndexName { get; }
+    void ReIndex();
+    string SettingsTitle { get; }
+}
+
+[Scope]
+public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
+{
+    public ILog Logger { get; }
+    public string IndexName { get => _indexer.IndexName; }
+    public virtual string SettingsTitle => string.Empty;
+
+    protected readonly TenantManager _tenantManager;
+    protected readonly BaseIndexer<T> _indexer;
+    private readonly SearchSettingsHelper _searchSettingsHelper;
+    private readonly FactoryIndexer _factoryIndexerCommon;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly ICache _cache;
+    private static readonly TaskScheduler _scheduler
+        = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, 10).ConcurrentScheduler;
+
+    public FactoryIndexer(
+        IOptionsMonitor<ILog> options,
+        TenantManager tenantManager,
+        SearchSettingsHelper searchSettingsHelper,
+        FactoryIndexer factoryIndexer,
+        BaseIndexer<T> baseIndexer,
+        IServiceProvider serviceProvider,
+        ICache cache)
+    {
+        _cache = cache;
+        Logger = options.Get("ASC.Indexer");
+        _tenantManager = tenantManager;
+        _searchSettingsHelper = searchSettingsHelper;
+        _factoryIndexerCommon = factoryIndexer;
+        _indexer = baseIndexer;
+        _serviceProvider = serviceProvider;
     }
 
-    public interface IFactoryIndexer
+    public bool TrySelect(Expression<Func<Selector<T>, Selector<T>>> expression, out IReadOnlyCollection<T> result)
     {
-        void IndexAll();
-        string IndexName { get; }
-        void ReIndex();
-        string SettingsTitle { get; }
-    }
-
-    [Scope]
-    public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
-    {
-        public ILog Logger { get; }
-        public string IndexName { get => _indexer.IndexName; }
-        public virtual string SettingsTitle => string.Empty;
-
-        protected readonly TenantManager _tenantManager;
-        protected readonly BaseIndexer<T> _indexer;
-        private readonly SearchSettingsHelper _searchSettingsHelper;
-        private readonly FactoryIndexer _factoryIndexerCommon;
-        private readonly IServiceProvider _serviceProvider;
-        private readonly ICache _cache;
-        private static readonly TaskScheduler _scheduler 
-            = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, 10).ConcurrentScheduler;
-
-        public FactoryIndexer(
-            IOptionsMonitor<ILog> options,
-            TenantManager tenantManager,
-            SearchSettingsHelper searchSettingsHelper,
-            FactoryIndexer factoryIndexer,
-            BaseIndexer<T> baseIndexer,
-            IServiceProvider serviceProvider,
-            ICache cache)
+        var t = _serviceProvider.GetService<T>();
+        if (!Support(t) || !_indexer.CheckExist(t))
         {
-            _cache = cache;
-            Logger = options.Get("ASC.Indexer");
-            _tenantManager = tenantManager;
-            _searchSettingsHelper = searchSettingsHelper;
-            _factoryIndexerCommon = factoryIndexer;
-            _indexer = baseIndexer;
-            _serviceProvider = serviceProvider;
-        }
-
-        public bool TrySelect(Expression<Func<Selector<T>, Selector<T>>> expression, out IReadOnlyCollection<T> result)
-        {
-            var t = _serviceProvider.GetService<T>();
-            if (!Support(t) || !_indexer.CheckExist(t))
-            {
-                result = new List<T>();
-
-                return false;
-            }
-
-            try
-            {
-                result = _indexer.Select(expression);
-            }
-            catch (Exception e)
-            {
-                Logger.Error("Select", e);
-                result = new List<T>();
-
-                return false;
-            }
-
-            return true;
-        }
-
-        public bool TrySelectIds(Expression<Func<Selector<T>, Selector<T>>> expression, out List<int> result)
-        {
-            var t = _serviceProvider.GetService<T>();
-            if (!Support(t) || !_indexer.CheckExist(t))
-            {
-                result = new List<int>();
-
-                return false;
-            }
-
-            try
-            {
-                result = _indexer.Select(expression, true).Select(r => r.Id).ToList();
-            }
-            catch (Exception e)
-            {
-                Logger.Error("Select", e);
-                result = new List<int>();
-
-                return false;
-            }
-
-            return true;
-        }
-
-        public bool TrySelectIds(Expression<Func<Selector<T>, Selector<T>>> expression, out List<int> result, out long total)
-        {
-            var t = _serviceProvider.GetService<T>();
-            if (!Support(t) || !_indexer.CheckExist(t))
-            {
-                result = new List<int>();
-                total = 0;
-
-                return false;
-            }
-
-            try
-            {
-                result = _indexer.Select(expression, true, out total).Select(r => r.Id).ToList();
-            }
-            catch (Exception e)
-            {
-                Logger.Error("Select", e);
-                total = 0;
-                result = new List<int>();
-
-                return false;
-            }
-
-            return true;
-        }
-
-        public bool CanIndexByContent(T t)
-        {
-            return Support(t) && _searchSettingsHelper.CanIndexByContent<T>(_tenantManager.GetCurrentTenant().TenantId);
-        }
-
-        public bool Index(T data, bool immediately = true)
-        {
-            var t = _serviceProvider.GetService<T>();
-            if (!Support(t))
-            {
-                return false;
-            }
-
-            try
-            {
-                _indexer.Index(data, immediately);
-
-                return true;
-            }
-            catch (Exception e)
-            {
-                Logger.Error("Index", e);
-            }
+            result = new List<T>();
 
             return false;
         }
 
-        public void Index(List<T> data, bool immediately = true, int retry = 0)
+        try
         {
-            var t = _serviceProvider.GetService<T>();
-            if (!Support(t) || !data.Any())
-            {
-                return;
-            }
+            result = _indexer.Select(expression);
+        }
+        catch (Exception e)
+        {
+            Logger.Error("Select", e);
+            result = new List<T>();
 
-            try
-            {
-                _indexer.Index(data, immediately);
-            }
-            catch (ElasticsearchClientException e)
-            {
-                Logger.Error(e);
-
-                if (e.Response != null)
-                {
-                    Logger.Error(e.Response.HttpStatusCode);
-
-                    if (e.Response.HttpStatusCode == 413 || e.Response.HttpStatusCode == 403 || e.Response.HttpStatusCode == 408)
-                    {
-                        data.ForEach(r => Index(r, immediately));
-                    }
-                    else if (e.Response.HttpStatusCode == 429)
-                    {
-                        Thread.Sleep(60000);
-                        if (retry < 5)
-                        {
-                            Index(data, immediately, retry++);
-                            return;
-                        }
-
-                        throw;
-                    }
-                }
-            }
-            catch (AggregateException e) //ElasticsearchClientException
-            {
-                if (e.InnerExceptions.Count == 0)
-                {
-                    throw;
-                }
-
-                var inner = e.InnerExceptions.OfType<ElasticsearchClientException>().FirstOrDefault();
-
-
-                if (inner != null)
-                {
-                    Logger.Error(inner);
-
-                    if (inner.Response.HttpStatusCode == 413 || inner.Response.HttpStatusCode == 403)
-                    {
-                        Logger.Error(inner.Response.HttpStatusCode);
-                        data.ForEach(r => Index(r, immediately));
-                    }
-                    else if (inner.Response.HttpStatusCode == 429)
-                    {
-                        Thread.Sleep(60000);
-                        if (retry < 5)
-                        {
-                            Index(data, immediately, retry++);
-                            return;
-                        }
-
-                        throw;
-                    }
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            return false;
         }
 
-        public async Task IndexAsync(List<T> data, bool immediately = true, int retry = 0)
+        return true;
+    }
+
+    public bool TrySelectIds(Expression<Func<Selector<T>, Selector<T>>> expression, out List<int> result)
+    {
+        var t = _serviceProvider.GetService<T>();
+        if (!Support(t) || !_indexer.CheckExist(t))
         {
-            var t = _serviceProvider.GetService<T>();
-            if (!Support(t) || !data.Any())
-            {
-                return;
-            }
+            result = new List<int>();
 
-            try
-            {
-                await _indexer.IndexAsync(data, immediately).ConfigureAwait(false);
-            }
-            catch (ElasticsearchClientException e)
-            {
-                Logger.Error(e);
-
-                if (e.Response != null)
-                {
-                    Logger.Error(e.Response.HttpStatusCode);
-
-                    if (e.Response.HttpStatusCode == 413 || e.Response.HttpStatusCode == 403 || e.Response.HttpStatusCode == 408)
-                    {
-                        data.ForEach(r => Index(r, immediately));
-                    }
-                    else if (e.Response.HttpStatusCode == 429)
-                    {
-                        await Task.Delay(60000);
-                        if (retry < 5)
-                        {
-                            await IndexAsync(data, immediately, retry++);
-
-                            return;
-                        }
-
-                        throw;
-                    }
-                }
-            }
-            catch (AggregateException e) //ElasticsearchClientException
-            {
-                if (e.InnerExceptions.Count == 0)
-                {
-                    throw;
-                }
-
-                var inner = e.InnerExceptions.OfType<ElasticsearchClientException>().FirstOrDefault();
-
-
-                if (inner != null)
-                {
-                    Logger.Error(inner);
-
-                    if (inner.Response.HttpStatusCode == 413 || inner.Response.HttpStatusCode == 403)
-                    {
-                        Logger.Error(inner.Response.HttpStatusCode);
-                        data.ForEach(r => Index(r, immediately));
-                    }
-                    else if (inner.Response.HttpStatusCode == 429)
-                    {
-                        await Task.Delay(60000);
-                        if (retry < 5)
-                        {
-                            await IndexAsync(data, immediately, retry++);
-
-                            return;
-                        }
-
-                        throw;
-                    }
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            return false;
         }
 
-        public void Update(T data, bool immediately = true, params Expression<Func<T, object>>[] fields)
+        try
         {
-            var t = _serviceProvider.GetService<T>();
-            if (!Support(t))
-            {
-                return;
-            }
+            result = _indexer.Select(expression, true).Select(r => r.Id).ToList();
+        }
+        catch (Exception e)
+        {
+            Logger.Error("Select", e);
+            result = new List<int>();
 
-            try
-            {
-                _indexer.Update(data, immediately, fields);
-            }
-            catch (Exception e)
-            {
-                Logger.Error("Update", e);
-            }
+            return false;
         }
 
-        public void Update(T data, UpdateAction action, Expression<Func<T, IList>> field, bool immediately = true)
-        {
-            var t = _serviceProvider.GetService<T>();
-            if (!Support(t))
-            {
-                return;
-            }
+        return true;
+    }
 
-            try
-            {
-                _indexer.Update(data, action, field, immediately);
-            }
-            catch (Exception e)
-            {
-                Logger.Error("Update", e);
-            }
+    public bool TrySelectIds(Expression<Func<Selector<T>, Selector<T>>> expression, out List<int> result, out long total)
+    {
+        var t = _serviceProvider.GetService<T>();
+        if (!Support(t) || !_indexer.CheckExist(t))
+        {
+            result = new List<int>();
+            total = 0;
+
+            return false;
         }
 
-        public void Update(T data, Expression<Func<Selector<T>, Selector<T>>> expression, bool immediately = true, params Expression<Func<T, object>>[] fields)
+        try
         {
-            var t = _serviceProvider.GetService<T>();
-            if (!Support(t))
-            {
-                return;
-            }
+            result = _indexer.Select(expression, true, out total).Select(r => r.Id).ToList();
+        }
+        catch (Exception e)
+        {
+            Logger.Error("Select", e);
+            total = 0;
+            result = new List<int>();
 
-            try
-            {
-                var tenant = _tenantManager.GetCurrentTenant().TenantId;
-                _indexer.Update(data, expression, tenant, immediately, fields);
-            }
-            catch (Exception e)
-            {
-                Logger.Error("Update", e);
-            }
+            return false;
         }
 
-        public void Update(T data, Expression<Func<Selector<T>, Selector<T>>> expression, UpdateAction action, Expression<Func<T, IList>> fields, bool immediately = true)
-        {
-            var t = _serviceProvider.GetService<T>();
-            if (!Support(t))
-            {
-                return;
-            }
+        return true;
+    }
 
-            try
-            {
-                var tenant = _tenantManager.GetCurrentTenant().TenantId;
-                _indexer.Update(data, expression, tenant, action, fields, immediately);
-            }
-            catch (Exception e)
-            {
-                Logger.Error("Update", e);
-            }
+    public bool CanIndexByContent(T t)
+    {
+        return Support(t) && _searchSettingsHelper.CanIndexByContent<T>(_tenantManager.GetCurrentTenant().TenantId);
+    }
+
+    public bool Index(T data, bool immediately = true)
+    {
+        var t = _serviceProvider.GetService<T>();
+        if (!Support(t))
+        {
+            return false;
         }
 
-        public void Delete(T data, bool immediately = true)
+        try
         {
-            var t = _serviceProvider.GetService<T>();
-            if (!Support(t))
-            {
-                return;
-            }
+            _indexer.Index(data, immediately);
 
-            try
-            {
-                _indexer.Delete(data, immediately);
-            }
-            catch (Exception e)
-            {
-                Logger.Error("Delete", e);
-            }
+            return true;
+        }
+        catch (Exception e)
+        {
+            Logger.Error("Index", e);
         }
 
-        public void Delete(Expression<Func<Selector<T>, Selector<T>>> expression, bool immediately = true)
-        {
-            var t = _serviceProvider.GetService<T>();
-            if (!Support(t))
-            {
-                return;
-            }
+        return false;
+    }
 
-            var tenant = _tenantManager.GetCurrentTenant().TenantId;
-
-            try
-            {
-                _indexer.Delete(expression, tenant, immediately);
-            }
-            catch (Exception e)
-            {
-                Logger.Error("Index", e);
-            }
-        }
-
-        public Task<bool> IndexAsync(T data, bool immediately = true)
-        {
-            var t = _serviceProvider.GetService<T>();
-
-            return !Support(t) 
-                ? Task.FromResult(false) 
-                : Queue(() => _indexer.Index(data, immediately));
-        }
-
-        public Task<bool> UpdateAsync(T data, bool immediately = true, params Expression<Func<T, object>>[] fields)
-        {
-            var t = _serviceProvider.GetService<T>();
-
-            return !Support(t) 
-                ? Task.FromResult(false) 
-                : Queue(() => _indexer.Update(data, immediately, fields));
-        }
-
-        public Task<bool> DeleteAsync(T data, bool immediately = true)
-        {
-            var t = _serviceProvider.GetService<T>();
-
-            return !Support(t) 
-                ? Task.FromResult(false) 
-                : Queue(() => _indexer.Delete(data, immediately));
-        }
-
-        public async Task<bool> DeleteAsync(Expression<Func<Selector<T>, Selector<T>>> expression, bool immediately = true)
-        {
-            var t = _serviceProvider.GetService<T>();
-            if (!await SupportAsync(t))
-            {
-                return false;
-            }
-
-            var tenant = _tenantManager.GetCurrentTenant().TenantId;
-
-            return await Queue(() => _indexer.Delete(expression, tenant, immediately));
-        }
-
-        public void Flush()
-        {
-            var t = _serviceProvider.GetService<T>();
-            if (!Support(t))
-            {
-                return;
-            }
-
-            _indexer.Flush();
-        }
-
-        public void Refresh()
-        {
-            var t = _serviceProvider.GetService<T>();
-            if (!Support(t))
-            {
-                return;
-            }
-
-            _indexer.Refresh();
-        }
-
-        public virtual void IndexAll()
+    public void Index(List<T> data, bool immediately = true, int retry = 0)
+    {
+        var t = _serviceProvider.GetService<T>();
+        if (!Support(t) || !data.Any())
         {
             return;
         }
 
-        public void ReIndex()
+        try
         {
-            _indexer.ReIndex();
+            _indexer.Index(data, immediately);
         }
-
-        public bool Support(T t)
+        catch (ElasticsearchClientException e)
         {
-            if (!_factoryIndexerCommon.CheckState())
-            {
-                return false;
-            }
+            Logger.Error(e);
 
-            var cacheTime = DateTime.UtcNow.AddMinutes(15);
-            var key = "elasticsearch " + t.IndexName;
-            try
+            if (e.Response != null)
             {
-                var cacheValue = _cache.Get<string>(key);
-                if (!string.IsNullOrEmpty(cacheValue))
+                Logger.Error(e.Response.HttpStatusCode);
+
+                if (e.Response.HttpStatusCode == 413 || e.Response.HttpStatusCode == 403 || e.Response.HttpStatusCode == 408)
                 {
-                    return Convert.ToBoolean(cacheValue);
+                    data.ForEach(r => Index(r, immediately));
                 }
-
-                //TODO:
-                //var service = new Service.Service();
-
-                //var result = service.Support(t.IndexName);
-
-                //Cache.Insert(key, result.ToString(CultureInfo.InvariantCulture).ToLower(), cacheTime);
-
-                return true;
-            }
-            catch (Exception e)
-            {
-                _cache.Insert(key, "false", cacheTime);
-                Logger.Error("FactoryIndexer CheckState", e);
-
-                return false;
-            }
-        }
-
-        public async Task<bool> SupportAsync(T t)
-        {
-            return await _factoryIndexerCommon.CheckStateAsync();
-        }
-
-        private Task<bool> Queue(Action actionData)
-        {
-            var task = new Task<bool>(() =>
-            {
-                try
+                else if (e.Response.HttpStatusCode == 429)
                 {
-                    actionData();
-
-                    return true;
-                }
-                catch (AggregateException agg)
-                {
-                    foreach (var e in agg.InnerExceptions)
+                    Thread.Sleep(60000);
+                    if (retry < 5)
                     {
-                        Logger.Error(e);
+                        Index(data, immediately, retry++);
+                        return;
                     }
 
                     throw;
                 }
+            }
+        }
+        catch (AggregateException e) //ElasticsearchClientException
+        {
+            if (e.InnerExceptions.Count == 0)
+            {
+                throw;
+            }
 
-            }, TaskCreationOptions.LongRunning);
+            var inner = e.InnerExceptions.OfType<ElasticsearchClientException>().FirstOrDefault();
 
-            task.ConfigureAwait(false);
-            task.Start(_scheduler);
 
-            return task;
+            if (inner != null)
+            {
+                Logger.Error(inner);
+
+                if (inner.Response.HttpStatusCode == 413 || inner.Response.HttpStatusCode == 403)
+                {
+                    Logger.Error(inner.Response.HttpStatusCode);
+                    data.ForEach(r => Index(r, immediately));
+                }
+                else if (inner.Response.HttpStatusCode == 429)
+                {
+                    Thread.Sleep(60000);
+                    if (retry < 5)
+                    {
+                        Index(data, immediately, retry++);
+                        return;
+                    }
+
+                    throw;
+                }
+            }
+            else
+            {
+                throw;
+            }
         }
     }
 
-    [Scope]
-    public class FactoryIndexer
+    public async Task IndexAsync(List<T> data, bool immediately = true, int retry = 0)
     {
-        public ILog Log { get; }
-
-        private readonly ICache _cache;
-        private readonly IServiceProvider _serviceProvider;
-        private readonly FactoryIndexerHelper _factoryIndexerHelper;
-        private readonly Client _client;
-        private readonly CoreBaseSettings _coreBaseSettings;
-
-        public FactoryIndexer(
-            IServiceProvider serviceProvider,
-            FactoryIndexerHelper factoryIndexerHelper,
-            Client client,
-            IOptionsMonitor<ILog> options,
-            CoreBaseSettings coreBaseSettings,
-            ICache cache)
+        var t = _serviceProvider.GetService<T>();
+        if (!Support(t) || !data.Any())
         {
-            _cache = cache;
-            _serviceProvider = serviceProvider;
-            _factoryIndexerHelper = factoryIndexerHelper;
-            _client = client;
-            _coreBaseSettings = coreBaseSettings;
+            return;
+        }
 
+        try
+        {
+            await _indexer.IndexAsync(data, immediately).ConfigureAwait(false);
+        }
+        catch (ElasticsearchClientException e)
+        {
+            Logger.Error(e);
+
+            if (e.Response != null)
+            {
+                Logger.Error(e.Response.HttpStatusCode);
+
+                if (e.Response.HttpStatusCode == 413 || e.Response.HttpStatusCode == 403 || e.Response.HttpStatusCode == 408)
+                {
+                    data.ForEach(r => Index(r, immediately));
+                }
+                else if (e.Response.HttpStatusCode == 429)
+                {
+                    await Task.Delay(60000);
+                    if (retry < 5)
+                    {
+                        await IndexAsync(data, immediately, retry++);
+
+                        return;
+                    }
+
+                    throw;
+                }
+            }
+        }
+        catch (AggregateException e) //ElasticsearchClientException
+        {
+            if (e.InnerExceptions.Count == 0)
+            {
+                throw;
+            }
+
+            var inner = e.InnerExceptions.OfType<ElasticsearchClientException>().FirstOrDefault();
+
+
+            if (inner != null)
+            {
+                Logger.Error(inner);
+
+                if (inner.Response.HttpStatusCode == 413 || inner.Response.HttpStatusCode == 403)
+                {
+                    Logger.Error(inner.Response.HttpStatusCode);
+                    data.ForEach(r => Index(r, immediately));
+                }
+                else if (inner.Response.HttpStatusCode == 429)
+                {
+                    await Task.Delay(60000);
+                    if (retry < 5)
+                    {
+                        await IndexAsync(data, immediately, retry++);
+
+                        return;
+                    }
+
+                    throw;
+                }
+            }
+            else
+            {
+                throw;
+            }
+        }
+    }
+
+    public void Update(T data, bool immediately = true, params Expression<Func<T, object>>[] fields)
+    {
+        var t = _serviceProvider.GetService<T>();
+        if (!Support(t))
+        {
+            return;
+        }
+
+        try
+        {
+            _indexer.Update(data, immediately, fields);
+        }
+        catch (Exception e)
+        {
+            Logger.Error("Update", e);
+        }
+    }
+
+    public void Update(T data, UpdateAction action, Expression<Func<T, IList>> field, bool immediately = true)
+    {
+        var t = _serviceProvider.GetService<T>();
+        if (!Support(t))
+        {
+            return;
+        }
+
+        try
+        {
+            _indexer.Update(data, action, field, immediately);
+        }
+        catch (Exception e)
+        {
+            Logger.Error("Update", e);
+        }
+    }
+
+    public void Update(T data, Expression<Func<Selector<T>, Selector<T>>> expression, bool immediately = true, params Expression<Func<T, object>>[] fields)
+    {
+        var t = _serviceProvider.GetService<T>();
+        if (!Support(t))
+        {
+            return;
+        }
+
+        try
+        {
+            var tenant = _tenantManager.GetCurrentTenant().TenantId;
+            _indexer.Update(data, expression, tenant, immediately, fields);
+        }
+        catch (Exception e)
+        {
+            Logger.Error("Update", e);
+        }
+    }
+
+    public void Update(T data, Expression<Func<Selector<T>, Selector<T>>> expression, UpdateAction action, Expression<Func<T, IList>> fields, bool immediately = true)
+    {
+        var t = _serviceProvider.GetService<T>();
+        if (!Support(t))
+        {
+            return;
+        }
+
+        try
+        {
+            var tenant = _tenantManager.GetCurrentTenant().TenantId;
+            _indexer.Update(data, expression, tenant, action, fields, immediately);
+        }
+        catch (Exception e)
+        {
+            Logger.Error("Update", e);
+        }
+    }
+
+    public void Delete(T data, bool immediately = true)
+    {
+        var t = _serviceProvider.GetService<T>();
+        if (!Support(t))
+        {
+            return;
+        }
+
+        try
+        {
+            _indexer.Delete(data, immediately);
+        }
+        catch (Exception e)
+        {
+            Logger.Error("Delete", e);
+        }
+    }
+
+    public void Delete(Expression<Func<Selector<T>, Selector<T>>> expression, bool immediately = true)
+    {
+        var t = _serviceProvider.GetService<T>();
+        if (!Support(t))
+        {
+            return;
+        }
+
+        var tenant = _tenantManager.GetCurrentTenant().TenantId;
+
+        try
+        {
+            _indexer.Delete(expression, tenant, immediately);
+        }
+        catch (Exception e)
+        {
+            Logger.Error("Index", e);
+        }
+    }
+
+    public Task<bool> IndexAsync(T data, bool immediately = true)
+    {
+        var t = _serviceProvider.GetService<T>();
+
+        return !Support(t)
+            ? Task.FromResult(false)
+            : Queue(() => _indexer.Index(data, immediately));
+    }
+
+    public Task<bool> UpdateAsync(T data, bool immediately = true, params Expression<Func<T, object>>[] fields)
+    {
+        var t = _serviceProvider.GetService<T>();
+
+        return !Support(t)
+            ? Task.FromResult(false)
+            : Queue(() => _indexer.Update(data, immediately, fields));
+    }
+
+    public Task<bool> DeleteAsync(T data, bool immediately = true)
+    {
+        var t = _serviceProvider.GetService<T>();
+
+        return !Support(t)
+            ? Task.FromResult(false)
+            : Queue(() => _indexer.Delete(data, immediately));
+    }
+
+    public async Task<bool> DeleteAsync(Expression<Func<Selector<T>, Selector<T>>> expression, bool immediately = true)
+    {
+        var t = _serviceProvider.GetService<T>();
+        if (!await SupportAsync(t))
+        {
+            return false;
+        }
+
+        var tenant = _tenantManager.GetCurrentTenant().TenantId;
+
+        return await Queue(() => _indexer.Delete(expression, tenant, immediately));
+    }
+
+    public void Flush()
+    {
+        var t = _serviceProvider.GetService<T>();
+        if (!Support(t))
+        {
+            return;
+        }
+
+        _indexer.Flush();
+    }
+
+    public void Refresh()
+    {
+        var t = _serviceProvider.GetService<T>();
+        if (!Support(t))
+        {
+            return;
+        }
+
+        _indexer.Refresh();
+    }
+
+    public virtual void IndexAll()
+    {
+        return;
+    }
+
+    public void ReIndex()
+    {
+        _indexer.ReIndex();
+    }
+
+    public bool Support(T t)
+    {
+        if (!_factoryIndexerCommon.CheckState())
+        {
+            return false;
+        }
+
+        var cacheTime = DateTime.UtcNow.AddMinutes(15);
+        var key = "elasticsearch " + t.IndexName;
+        try
+        {
+            var cacheValue = _cache.Get<string>(key);
+            if (!string.IsNullOrEmpty(cacheValue))
+            {
+                return Convert.ToBoolean(cacheValue);
+            }
+
+            //TODO:
+            //var service = new Service.Service();
+
+            //var result = service.Support(t.IndexName);
+
+            //Cache.Insert(key, result.ToString(CultureInfo.InvariantCulture).ToLower(), cacheTime);
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            _cache.Insert(key, "false", cacheTime);
+            Logger.Error("FactoryIndexer CheckState", e);
+
+            return false;
+        }
+    }
+
+    public async Task<bool> SupportAsync(T t)
+    {
+        return await _factoryIndexerCommon.CheckStateAsync();
+    }
+
+    private Task<bool> Queue(Action actionData)
+    {
+        var task = new Task<bool>(() =>
+        {
             try
             {
-                Log = options.Get("ASC.Indexer");
+                actionData();
+
+                return true;
             }
-            catch (Exception e)
+            catch (AggregateException agg)
             {
-                Log.Fatal("FactoryIndexer", e);
+                foreach (var e in agg.InnerExceptions)
+                {
+                    Logger.Error(e);
+                }
+
+                throw;
+            }
+
+        }, TaskCreationOptions.LongRunning);
+
+        task.ConfigureAwait(false);
+        task.Start(_scheduler);
+
+        return task;
+    }
+}
+
+[Scope]
+public class FactoryIndexer
+{
+    public ILog Log { get; }
+
+    private readonly ICache _cache;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly FactoryIndexerHelper _factoryIndexerHelper;
+    private readonly Client _client;
+    private readonly CoreBaseSettings _coreBaseSettings;
+
+    public FactoryIndexer(
+        IServiceProvider serviceProvider,
+        FactoryIndexerHelper factoryIndexerHelper,
+        Client client,
+        IOptionsMonitor<ILog> options,
+        CoreBaseSettings coreBaseSettings,
+        ICache cache)
+    {
+        _cache = cache;
+        _serviceProvider = serviceProvider;
+        _factoryIndexerHelper = factoryIndexerHelper;
+        _client = client;
+        _coreBaseSettings = coreBaseSettings;
+
+        try
+        {
+            Log = options.Get("ASC.Indexer");
+        }
+        catch (Exception e)
+        {
+            Log.Fatal("FactoryIndexer", e);
+        }
+    }
+
+    public bool CheckState(bool cacheState = true)
+    {
+        const string key = "elasticsearch";
+
+        if (cacheState)
+        {
+            var cacheValue = _cache.Get<string>(key);
+            if (!string.IsNullOrEmpty(cacheValue))
+            {
+                return Convert.ToBoolean(cacheValue);
             }
         }
 
-        public bool CheckState(bool cacheState = true)
+        var cacheTime = DateTime.UtcNow.AddMinutes(15);
+
+        try
         {
-            const string key = "elasticsearch";
+            var isValid = _client.Ping();
 
             if (cacheState)
             {
-                var cacheValue = _cache.Get<string>(key);
-                if (!string.IsNullOrEmpty(cacheValue))
-                {
-                    return Convert.ToBoolean(cacheValue);
-                }
+                _cache.Insert(key, isValid.ToString(CultureInfo.InvariantCulture).ToLower(), cacheTime);
             }
 
-            var cacheTime = DateTime.UtcNow.AddMinutes(15);
-
-            try
+            return isValid;
+        }
+        catch (Exception e)
+        {
+            if (cacheState)
             {
-                var isValid = _client.Ping();
-
-                if (cacheState)
-                {
-                    _cache.Insert(key, isValid.ToString(CultureInfo.InvariantCulture).ToLower(), cacheTime);
-                }
-
-                return isValid;
+                _cache.Insert(key, "false", cacheTime);
             }
-            catch (Exception e)
+
+            Log.Error("Ping false", e);
+
+            return false;
+        }
+    }
+
+    public async Task<bool> CheckStateAsync(bool cacheState = true)
+    {
+        const string key = "elasticsearch";
+
+        if (cacheState)
+        {
+            var cacheValue = _cache.Get<string>(key);
+            if (!string.IsNullOrEmpty(cacheValue))
             {
-                if (cacheState)
-                {
-                    _cache.Insert(key, "false", cacheTime);
-                }
-
-                Log.Error("Ping false", e);
-
-                return false;
+                return Convert.ToBoolean(cacheValue);
             }
         }
 
-        public async Task<bool> CheckStateAsync(bool cacheState = true)
+        var cacheTime = DateTime.UtcNow.AddMinutes(15);
+
+        try
         {
-            const string key = "elasticsearch";
+            var result = await _client.Instance.PingAsync(new PingRequest());
+
+            var isValid = result.IsValid;
+
+            Log.DebugFormat("CheckState ping {0}", result.DebugInformation);
 
             if (cacheState)
             {
-                var cacheValue = _cache.Get<string>(key);
-                if (!string.IsNullOrEmpty(cacheValue))
-                {
-                    return Convert.ToBoolean(cacheValue);
-                }
+                _cache.Insert(key, isValid.ToString(CultureInfo.InvariantCulture).ToLower(), cacheTime);
             }
 
-            var cacheTime = DateTime.UtcNow.AddMinutes(15);
-
-            try
-            {
-                var result = await _client.Instance.PingAsync(new PingRequest());
-
-                var isValid = result.IsValid;
-
-                Log.DebugFormat("CheckState ping {0}", result.DebugInformation);
-
-                if (cacheState)
-                {
-                    _cache.Insert(key, isValid.ToString(CultureInfo.InvariantCulture).ToLower(), cacheTime);
-                }
-
-                return isValid;
-            }
-            catch (Exception e)
-            {
-                if (cacheState)
-                {
-                    _cache.Insert(key, "false", cacheTime);
-                }
-
-                Log.Error("Ping false", e);
-
-                return false;
-            }
+            return isValid;
         }
-
-        public object GetState(TenantUtil tenantUtil)
+        catch (Exception e)
         {
-            State state = null;
-            IEnumerable<object> indices = null;
-            Dictionary<string, long> count = null;
-
-            if (!_coreBaseSettings.Standalone)
+            if (cacheState)
             {
-                return new
-                {
-                    state,
-                    indices,
-                    status = CheckState()
-                };
+                _cache.Insert(key, "false", cacheTime);
             }
 
-            state = new State
-            {
-                Indexing = _factoryIndexerHelper.Indexing,
-                LastIndexed = _factoryIndexerHelper.LastIndexed != DateTime.MinValue ? _factoryIndexerHelper.LastIndexed : default(DateTime?)
-            };
+            Log.Error("Ping false", e);
 
-            if (state.LastIndexed.HasValue)
-            {
-                state.LastIndexed = tenantUtil.DateTimeFromUtc(state.LastIndexed.Value);
-            }
+            return false;
+        }
+    }
 
-            indices = _client.Instance.Cat.Indices(new CatIndicesRequest { SortByColumns = new[] { "index" } }).Records
-                .Select(r => new
-                {
-                    r.Index,
-                    Count = count.ContainsKey(r.Index) ? count[r.Index] : 0,
-                    DocsCount = _client.Instance.Count(new CountRequest(r.Index)).Count,
-                    r.StoreSize
-                })
-                .Where(r =>
-                {
-                    return r.Count > 0;
-                });
+    public object GetState(TenantUtil tenantUtil)
+    {
+        State state = null;
+        IEnumerable<object> indices = null;
+        Dictionary<string, long> count = null;
 
+        if (!_coreBaseSettings.Standalone)
+        {
             return new
             {
                 state,
@@ -760,22 +728,53 @@ namespace ASC.ElasticSearch
             };
         }
 
-        public void Reindex(string name)
+        state = new State
         {
-            if (!_coreBaseSettings.Standalone)
-            {
-                return;
-            }
+            Indexing = _factoryIndexerHelper.Indexing,
+            LastIndexed = _factoryIndexerHelper.LastIndexed != DateTime.MinValue ? _factoryIndexerHelper.LastIndexed : default(DateTime?)
+        };
 
-            var generic = typeof(BaseIndexer<>);
-            var indexers = _serviceProvider.GetService<IEnumerable<IFactoryIndexer>>()
-                .Where(r => string.IsNullOrEmpty(name) || r.IndexName == name)
-                .Select(r => (IFactoryIndexer)Activator.CreateInstance(generic.MakeGenericType(r.GetType()), r));
+        if (state.LastIndexed.HasValue)
+        {
+            state.LastIndexed = tenantUtil.DateTimeFromUtc(state.LastIndexed.Value);
+        }
 
-            foreach (var indexer in indexers)
+        indices = _client.Instance.Cat.Indices(new CatIndicesRequest { SortByColumns = new[] { "index" } }).Records
+            .Select(r => new
             {
-                indexer.ReIndex();
-            }
+                r.Index,
+                Count = count.ContainsKey(r.Index) ? count[r.Index] : 0,
+                DocsCount = _client.Instance.Count(new CountRequest(r.Index)).Count,
+                r.StoreSize
+            })
+            .Where(r =>
+            {
+                return r.Count > 0;
+            });
+
+        return new
+        {
+            state,
+            indices,
+            status = CheckState()
+        };
+    }
+
+    public void Reindex(string name)
+    {
+        if (!_coreBaseSettings.Standalone)
+        {
+            return;
+        }
+
+        var generic = typeof(BaseIndexer<>);
+        var indexers = _serviceProvider.GetService<IEnumerable<IFactoryIndexer>>()
+            .Where(r => string.IsNullOrEmpty(name) || r.IndexName == name)
+            .Select(r => (IFactoryIndexer)Activator.CreateInstance(generic.MakeGenericType(r.GetType()), r));
+
+        foreach (var indexer in indexers)
+        {
+            indexer.ReIndex();
         }
     }
 }

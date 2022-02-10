@@ -23,115 +23,98 @@
  *
 */
 
-namespace ASC.ElasticSearch
+namespace ASC.ElasticSearch;
+
+[Singletone(Additional = typeof(ServiceLauncherExtension))]
+public class ElasticSearchIndexService : IHostedService, IDisposable
 {
-    [Singletone(Additional = typeof(ServiceLauncherExtension))]
-    public class ElasticSearchIndexService : IHostedService, IDisposable
+    private readonly ILog _logger;
+    private readonly ICacheNotify<AscCacheItem> _notify;
+    private readonly ICacheNotify<IndexAction> _indexNotify;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly CancellationTokenSource _cancellationTokenSource;
+    private readonly TimeSpan _period;
+    private Timer _timer = null!;
+    private bool _isStarted;
+
+    public ElasticSearchIndexService(
+        IOptionsMonitor<ILog> options,
+        ICacheNotify<AscCacheItem> notify,
+        ICacheNotify<IndexAction> indexNotify,
+        IServiceProvider serviceProvider,
+        Settings settings)
     {
-        private readonly ILog _logger;
-        private readonly ICacheNotify<AscCacheItem> _notify;
-        private readonly ICacheNotify<IndexAction> _indexNotify;
-        private readonly IServiceProvider _serviceProvider;
-        private readonly CancellationTokenSource _cancellationTokenSource;
-        private readonly TimeSpan _period;
-        private Timer _timer = null!;
-        private bool _isStarted;
+        _logger = options.Get("ASC.Indexer");
+        _notify = notify;
+        _indexNotify = indexNotify;
+        _serviceProvider = serviceProvider;
+        _cancellationTokenSource = new CancellationTokenSource();
+        _period = TimeSpan.FromMinutes(settings.Period.Value);
+    }
 
-        public ElasticSearchIndexService(
-            IOptionsMonitor<ILog> options,
-            ICacheNotify<AscCacheItem> notify,
-            ICacheNotify<IndexAction> indexNotify,
-            IServiceProvider serviceProvider,
-            Settings settings)
+    public Task StartAsync(CancellationToken cancellationToken)
+    {
+        _logger.Info("ElasticSearch Index Service running.");
+
+        try
         {
-            _logger = options.Get("ASC.Indexer");
-            _notify = notify;
-            _indexNotify = indexNotify;
-            _serviceProvider = serviceProvider;
-            _cancellationTokenSource = new CancellationTokenSource();
-            _period = TimeSpan.FromMinutes(settings.Period.Value);
-        }
-
-        public Task StartAsync(CancellationToken cancellationToken)
-        {
-            _logger.Info("ElasticSearch Index Service running.");
-
-            try
+            _notify.Subscribe(async (item) =>
             {
-                _notify.Subscribe(async (item) =>
+                while (_isStarted)
                 {
-                    while (_isStarted)
-                    {
-                        await Task.Delay(10000);
-                    }
-                    IndexAll(true);
-                }, CacheNotifyAction.Any);
-            }
-            catch (Exception e)
-            {
-                _logger.Error("Subscribe on start", e);
-            }
-
-            var task = new Task(async () =>
-            {
-                using var scope = _serviceProvider.CreateScope();
-                var scopeClass = scope.ServiceProvider.GetService<ServiceLauncherScope>();
-                var (factoryIndexer, service) = scopeClass;
-                while (!factoryIndexer.CheckState(false))
-                {
-                    if (_cancellationTokenSource.IsCancellationRequested)
-                    {
-                        return;
-                    }
-
                     await Task.Delay(10000);
                 }
-
-                service.Subscribe();
-                _timer = new Timer(_ => IndexAll(), null, TimeSpan.Zero, TimeSpan.Zero);
-
-            }, _cancellationTokenSource.Token, TaskCreationOptions.LongRunning);
-
-            task.ConfigureAwait(false);
-            task.Start();
-
-            return Task.CompletedTask;
+                IndexAll(true);
+            }, CacheNotifyAction.Any);
+        }
+        catch (Exception e)
+        {
+            _logger.Error("Subscribe on start", e);
         }
 
-        public Task StopAsync(CancellationToken cancellationToken)
+        var task = new Task(async () =>
         {
-            _logger.Info("ElasticSearch Index Service is stopping.");
-
-            _isStarted = false;
-
-            _timer?.Change(Timeout.Infinite, 0);
-
-            _cancellationTokenSource.Cancel();
-
-            return Task.CompletedTask;
-        }
-
-        public void IndexProduct(IFactoryIndexer product, bool reindex)
-        {
-            if (reindex)
+            using var scope = _serviceProvider.CreateScope();
+            var scopeClass = scope.ServiceProvider.GetService<ServiceLauncherScope>();
+            var (factoryIndexer, service) = scopeClass;
+            while (!factoryIndexer.CheckState(false))
             {
-                try
+                if (_cancellationTokenSource.IsCancellationRequested)
                 {
-                    if (!_isStarted)
-                    {
-                        return;
-                    }
+                    return;
+                }
 
-                    _logger.DebugFormat("Product reindex {0}", product.IndexName);
-                    product.ReIndex();
-                }
-                catch (Exception e)
-                {
-                    _logger.Error(e);
-                    _logger.ErrorFormat("Product reindex {0}", product.IndexName);
-                }
+                await Task.Delay(10000);
             }
 
+            service.Subscribe();
+            _timer = new Timer(_ => IndexAll(), null, TimeSpan.Zero, TimeSpan.Zero);
+
+        }, _cancellationTokenSource.Token, TaskCreationOptions.LongRunning);
+
+        task.ConfigureAwait(false);
+        task.Start();
+
+        return Task.CompletedTask;
+    }
+
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        _logger.Info("ElasticSearch Index Service is stopping.");
+
+        _isStarted = false;
+
+        _timer?.Change(Timeout.Infinite, 0);
+
+        _cancellationTokenSource.Cancel();
+
+        return Task.CompletedTask;
+    }
+
+    public void IndexProduct(IFactoryIndexer product, bool reindex)
+    {
+        if (reindex)
+        {
             try
             {
                 if (!_isStarted)
@@ -139,85 +122,101 @@ namespace ASC.ElasticSearch
                     return;
                 }
 
-                _logger.DebugFormat("Product {0}", product.IndexName);
-                _indexNotify.Publish(new IndexAction() { Indexing = product.IndexName, LastIndexed = 0 }, CacheNotifyAction.Any);
-                product.IndexAll();
+                _logger.DebugFormat("Product reindex {0}", product.IndexName);
+                product.ReIndex();
             }
             catch (Exception e)
             {
                 _logger.Error(e);
-                _logger.ErrorFormat("Product {0}", product.IndexName);
+                _logger.ErrorFormat("Product reindex {0}", product.IndexName);
             }
         }
 
-        private void IndexAll(bool reindex = false)
+        try
         {
-            try
+            if (!_isStarted)
             {
-                _timer.Change(Timeout.Infinite, Timeout.Infinite);
-                _isStarted = true;
+                return;
+            }
 
-                using (var scope = _serviceProvider.CreateScope())
+            _logger.DebugFormat("Product {0}", product.IndexName);
+            _indexNotify.Publish(new IndexAction() { Indexing = product.IndexName, LastIndexed = 0 }, CacheNotifyAction.Any);
+            product.IndexAll();
+        }
+        catch (Exception e)
+        {
+            _logger.Error(e);
+            _logger.ErrorFormat("Product {0}", product.IndexName);
+        }
+    }
+
+    private void IndexAll(bool reindex = false)
+    {
+        try
+        {
+            _timer.Change(Timeout.Infinite, Timeout.Infinite);
+            _isStarted = true;
+
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var wrappers = scope.ServiceProvider.GetService<IEnumerable<IFactoryIndexer>>();
+
+                Parallel.ForEach(wrappers, wrapper =>
                 {
-                    var wrappers = scope.ServiceProvider.GetService<IEnumerable<IFactoryIndexer>>();
-
-                    Parallel.ForEach(wrappers, wrapper =>
+                    using (var scope = _serviceProvider.CreateScope())
                     {
-                        using (var scope = _serviceProvider.CreateScope())
-                        {
-                            var w = (IFactoryIndexer)scope.ServiceProvider.GetService(wrapper.GetType());
-                            IndexProduct(w, reindex);
-                        }
-                    });
-                }
-
-                _timer.Change(_period, _period);
-                _indexNotify.Publish(new IndexAction() { Indexing = "", LastIndexed = DateTime.Now.Ticks }, CacheNotifyAction.Any);
-                _isStarted = false;
+                        var w = (IFactoryIndexer)scope.ServiceProvider.GetService(wrapper.GetType());
+                        IndexProduct(w, reindex);
+                    }
+                });
             }
-            catch (Exception e)
-            {
-                _logger.Fatal("IndexAll", e);
 
-                throw;
-            }
+            _timer.Change(_period, _period);
+            _indexNotify.Publish(new IndexAction() { Indexing = "", LastIndexed = DateTime.Now.Ticks }, CacheNotifyAction.Any);
+            _isStarted = false;
         }
-
-        public void Dispose()
+        catch (Exception e)
         {
-            var handle = new AutoResetEvent(false);
+            _logger.Fatal("IndexAll", e);
 
-            if (!(bool)_timer?.Dispose(handle))
-                throw new Exception("Timer already disposed");
-
-            handle.WaitOne();
+            throw;
         }
     }
 
-    [Scope]
-    public class ServiceLauncherScope
+    public void Dispose()
     {
-        private readonly FactoryIndexer _factoryIndexer;
-        private readonly Service.ElasticSearchService _service;
+        var handle = new AutoResetEvent(false);
 
-        public ServiceLauncherScope(FactoryIndexer factoryIndexer, Service.ElasticSearchService service)
-        {
-            _factoryIndexer = factoryIndexer;
-            _service = service;
-        }
+        if (!(bool)_timer?.Dispose(handle))
+            throw new Exception("Timer already disposed");
 
-        public void Deconstruct(out FactoryIndexer factoryIndexer, out Service.ElasticSearchService service)
-        {
-            factoryIndexer = _factoryIndexer;
-            service = _service;
-        }
+        handle.WaitOne();
+    }
+}
+
+[Scope]
+public class ServiceLauncherScope
+{
+    private readonly FactoryIndexer _factoryIndexer;
+    private readonly Service.ElasticSearchService _service;
+
+    public ServiceLauncherScope(FactoryIndexer factoryIndexer, Service.ElasticSearchService service)
+    {
+        _factoryIndexer = factoryIndexer;
+        _service = service;
     }
 
-    public class ServiceLauncherExtension
+    public void Deconstruct(out FactoryIndexer factoryIndexer, out Service.ElasticSearchService service)
     {
-        public static void Register(DIHelper services)
-        {
-            services.TryAdd<ServiceLauncherScope>();
-        }
+        factoryIndexer = _factoryIndexer;
+        service = _service;
+    }
+}
+
+public class ServiceLauncherExtension
+{
+    public static void Register(DIHelper services)
+    {
+        services.TryAdd<ServiceLauncherScope>();
     }
 }
