@@ -1,22 +1,18 @@
 import { inject, observer } from "mobx-react";
 import React from "react";
 
-const SubRoomInfoBody = ({ children, isVisible }) => {
+const SubRoomInfoBody = ({ children }) => {
     console.log("Body children - ", children);
 
     return (
         <div>
-            <p>Room Info Is {isVisible ? "Visible" : "Hidden"}</p>
             <div>ROOM INFO BODY</div>
-            <div>Children - {children}</div>
+            <div>Children: </div>
+            {children}
         </div>
     );
 };
 
 export default inject(({ roomInfoStore }) => {
-    let isVisible = false;
-    if (roomInfoStore) isVisible = roomInfoStore.isVisible;
-    return {
-        isVisible,
-    };
+    return {};
 })(observer(SubRoomInfoBody));

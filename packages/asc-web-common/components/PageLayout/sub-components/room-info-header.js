@@ -6,7 +6,8 @@ const SubRoomInfoHeader = ({ children }) => {
     return (
         <div>
             <div>ROOM INFO HEADER</div>
-            <div>Children - {children}</div>
+            <div>Children: </div>
+            {children}
         </div>
     );
 };

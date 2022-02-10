@@ -11,6 +11,10 @@ class RoomInfoStore {
         this.isVisible = !this.isVisible;
     };
 
+    setIsVisible = (bool) => {
+        this.isVisible = bool;
+    };
+
     get isVisible() {
         return this.isVisible;
     }

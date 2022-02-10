@@ -31,7 +31,7 @@ const StyledContainer = styled.div`
 
         @media ${tablet} {
             margin: 0 -16px;
-            width: calc(100% + 32px);
+            //width: calc(100% + 32px);
         }
     }
 
@@ -83,6 +83,7 @@ const StyledContainer = styled.div`
 
             @media ${tablet} {
                 margin-left: auto;
+                margin-right: 32px;
 
                 & > div:first-child {
                     padding: 8px 8px 8px 8px;
@@ -99,6 +100,8 @@ const StyledContainer = styled.div`
             }
 
             @media ${tablet} {
+                margin-left: auto;
+                margin-right: 32px;
                 & > div:first-child {
                     padding: 8px 8px 8px 8px;
                     margin-right: -8px;
@@ -114,13 +117,17 @@ const StyledContainer = styled.div`
             }
 
             @media ${tablet} {
+                margin-left: auto;
+                margin-right: 32px;
                 & > div:first-child {
+                    padding: 3px;
                     margin-right: -8px;
                 }
             }
         }
 
         .room-info-button {
+            margin-bottom: -1px;
             position: absolute;
             right: 0;
         }
@@ -560,10 +567,13 @@ class SectionHeaderContent extends React.Component {
                                             )}
                                         <>
                                             <IconButton
-                                                iconName="/static/images/arrow.path.react.svg"
+                                                iconName="images/panel.svg"
                                                 size="15"
-                                                color="#A3A9AE"
-                                                hoverColor="#657077"
+                                                color={
+                                                    this.props.isRoomInfoVisible
+                                                        ? "#3B72A7"
+                                                        : "#A3A9AE"
+                                                }
                                                 isFill={true}
                                                 onClick={this.onToggleRoomInfo}
                                                 className="room-info-button"
@@ -627,7 +637,9 @@ export default inject(
             downloadAction,
             getHeaderMenu,
         } = filesActionsStore;
+
         const toggleRoomInfo = roomInfoStore.toggleIsVisible;
+        const isRoomInfoVisible = roomInfoStore.isVisible;
 
         return {
             isDesktop: auth.settingsStore.isDesktopClient,
@@ -638,6 +650,7 @@ export default inject(
             filter,
             canCreate,
             toggleRoomInfo,
+            isRoomInfoVisible,
             isHeaderVisible,
             isHeaderIndeterminate,
             isHeaderChecked,
