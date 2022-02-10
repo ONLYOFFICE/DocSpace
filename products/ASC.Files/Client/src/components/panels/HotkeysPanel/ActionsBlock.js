@@ -2,7 +2,7 @@ import React from "react";
 import Row from "@appserver/components/row";
 import Text from "@appserver/components/text";
 
-const ActionsBlock = ({ t, textStyles, keyTextStyles }) => {
+const ActionsBlock = ({ t, textStyles, keyTextStyles, CtrlKey }) => {
   return (
     <>
       <Row className="hotkeys_row">
@@ -20,13 +20,13 @@ const ActionsBlock = ({ t, textStyles, keyTextStyles }) => {
       <Row className="hotkeys_row">
         <>
           <Text {...textStyles}>{t("HotkeysUndoLastAction")}</Text>
-          <Text {...keyTextStyles}>Ctrl+z</Text>
+          <Text {...keyTextStyles}>{CtrlKey}+z</Text>
         </>
       </Row>
       <Row className="hotkeys_row">
         <>
           <Text {...textStyles}>{t("HotkeysRedoLastUndoneAction")}</Text>
-          <Text {...keyTextStyles}>Ctrl+Shift+z</Text>
+          <Text {...keyTextStyles}>{CtrlKey}+Shift+z</Text>
         </>
       </Row>
     </>

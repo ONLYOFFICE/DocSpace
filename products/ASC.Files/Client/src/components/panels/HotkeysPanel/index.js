@@ -10,6 +10,7 @@ import MoveBlock from "./MoveBlock";
 import ActionsBlock from "./ActionsBlock";
 import ApplicationActionsBlock from "./ApplicationActionsBlock";
 import PreviewActionsBlock from "./PreviewActionsBlock";
+import { isMacOs } from "react-device-detect";
 
 const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, tReady }) => {
   const onClose = () => setHotkeyPanelVisible(false);
@@ -22,6 +23,8 @@ const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, tReady }) => {
     ...textStyles,
     ...{ color: "#657077", className: "hotkeys-key" },
   };
+
+  const CtrlKey = isMacOs ? "⌘" : "Ctrl";
 
   const onKeyPress = (e) =>
     (e.key === "Esc" || e.key === "Escape") && onClose();
@@ -54,6 +57,7 @@ const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, tReady }) => {
             t={t}
             textStyles={textStyles}
             keyTextStyles={keyTextStyles}
+            CtrlKey={CtrlKey}
           />
 
           <Heading className="hotkeys_sub-header">
@@ -63,6 +67,7 @@ const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, tReady }) => {
             t={t}
             textStyles={textStyles}
             keyTextStyles={keyTextStyles}
+            CtrlKey={CtrlKey}
           />
           <Heading className="hotkeys_sub-header">
             {t("HotkeysApplicationActions")}
@@ -71,6 +76,7 @@ const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, tReady }) => {
             t={t}
             textStyles={textStyles}
             keyTextStyles={keyTextStyles}
+            CtrlKey={CtrlKey}
           />
 
           <Heading className="hotkeys_sub-header">
