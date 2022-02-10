@@ -65,9 +65,9 @@ const StyledComponent = styled.div`
   }
 
   .save-cancel-buttons {
-    position: inherit;
+    /* position: inherit;
     display: block;
-    padding: 0;
+    padding: 0; */
   }
 
   .category-item-heading {
@@ -410,6 +410,7 @@ class LanguageAndTimeZone extends React.Component {
               reminderTest={t("YouHaveUnsavedChanges")}
               saveButtonLabel={t("Common:SaveButton")}
               cancelButtonLabel={t("Common:CancelButton")}
+              displaySettings={false}
             />
           )}
         </StyledComponent>

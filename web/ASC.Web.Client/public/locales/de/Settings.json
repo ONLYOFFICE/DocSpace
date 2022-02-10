@@ -36,6 +36,8 @@
   "Guests": "Gäste",
   "Job/Title": "Aufgabe/Titel",
   "LanguageAndTimeZoneSettingsDescription": "Die Sprache für alle Portalbenutzer ändern und Zeitzone konfigurieren, so dass alle Veranstaltungen mit richtigen Daten und Uhrzeiten angezeigt werden.",
+  "LanguageTimeSettingsTooltip": "Die <0>{{text}}</0> lassen Sie die Sprache des kompletten Portals für alle Benutzer ändern und die Zeitzone konfigurieren, so dass alle Ereignisse des ONLYOFFICE-Portals mit einem richtigen Datum und der Uhrzeit angezeigt werden.",
+  "LanguageTimeSettingsTooltipDescription": "Um die Änderungen zu übernehmen, klicken Sie auf den Button <1>{{save}}</1> im unteren Bereich der Sektion.<3>{{learnMore}}</3>",
   "LogoDark": "Logo für die Login- und Informationsseite",
   "LogoDocsEditor": "Logo für Kopfzeile der Editoren",
   "LogoFavicon": "Favicon",
