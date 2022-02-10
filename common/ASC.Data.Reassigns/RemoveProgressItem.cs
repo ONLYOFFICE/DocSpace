@@ -28,24 +28,23 @@ namespace ASC.Data.Reassigns
     [Transient]
     public class RemoveProgressItem : DistributedTaskProgress
     {
-        private readonly IDictionary<string, StringValues> _httpHeaders;
+        public Guid FromUser { get; private set; }
+        public UserInfo User { get; private set; }
 
+        private readonly IDictionary<string, StringValues> _httpHeaders;
+        private readonly IServiceProvider _serviceProvider;
         private int _tenantId;
         private Guid _currentUserId;
         private bool _notify;
-
         //private readonly IFileStorageService _docService;
         //private readonly MailGarbageEngine _mailEraser;
-        public Guid FromUser { get; private set; }
-        private IServiceProvider ServiceProvider { get; }
-        public UserInfo User { get; private set; }
-
+        
         public RemoveProgressItem(
             IServiceProvider serviceProvider,
             IHttpContextAccessor httpContextAccessor)
         {
             _httpHeaders = QueueWorker.GetHttpHeaders(httpContextAccessor.HttpContext.Request);
-            ServiceProvider = serviceProvider;
+            _serviceProvider = serviceProvider;
 
 
             //_docService = Web.Files.Classes.Global.FileStorageService;
@@ -69,7 +68,7 @@ namespace ASC.Data.Reassigns
 
         protected override void DoJob()
         {
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<RemoveProgressItemScope>();
             var (tenantManager, coreBaseSettings, messageService, studioNotifyService, securityContext, userManager, messageTarget, webItemManagerSecurity, storageFactory, userFormatter, options) = scopeClass;
             var logger = options.Get("ASC.Web");
@@ -228,17 +227,17 @@ namespace ASC.Data.Reassigns
     [Scope]
     public class RemoveProgressItemScope
     {
-        private TenantManager TenantManager { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private MessageService MessageService { get; }
-        private StudioNotifyService StudioNotifyService { get; }
-        private SecurityContext SecurityContext { get; }
-        private UserManager UserManager { get; }
-        private MessageTarget MessageTarget { get; }
-        private WebItemManagerSecurity WebItemManagerSecurity { get; }
-        private StorageFactory StorageFactory { get; }
-        private UserFormatter UserFormatter { get; }
-        private IOptionsMonitor<ILog> Options { get; }
+        private readonly TenantManager _tenantManager;
+        private readonly CoreBaseSettings _coreBaseSettings;
+        private readonly MessageService _messageService;
+        private readonly StudioNotifyService _studioNotifyService;
+        private readonly SecurityContext _securityContext;
+        private readonly UserManager _userManager;
+        private readonly MessageTarget _messageTarget;
+        private readonly WebItemManagerSecurity _webItemManagerSecurity;
+        private readonly StorageFactory _storageFactory;
+        private readonly UserFormatter _userFormatter;
+        private readonly IOptionsMonitor<ILog> _options;
 
         public RemoveProgressItemScope(TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
@@ -252,17 +251,17 @@ namespace ASC.Data.Reassigns
             UserFormatter userFormatter,
             IOptionsMonitor<ILog> options)
         {
-            TenantManager = tenantManager;
-            CoreBaseSettings = coreBaseSettings;
-            MessageService = messageService;
-            StudioNotifyService = studioNotifyService;
-            SecurityContext = securityContext;
-            UserManager = userManager;
-            MessageTarget = messageTarget;
-            WebItemManagerSecurity = webItemManagerSecurity;
-            StorageFactory = storageFactory;
-            UserFormatter = userFormatter;
-            Options = options;
+            _tenantManager = tenantManager;
+            _coreBaseSettings = coreBaseSettings;
+            _messageService = messageService;
+            _studioNotifyService = studioNotifyService;
+            _securityContext = securityContext;
+            _userManager = userManager;
+            _messageTarget = messageTarget;
+            _webItemManagerSecurity = webItemManagerSecurity;
+            _storageFactory = storageFactory;
+            _userFormatter = userFormatter;
+            _options = options;
         }
 
         public void Deconstruct(out TenantManager tenantManager,
@@ -277,17 +276,17 @@ namespace ASC.Data.Reassigns
             out UserFormatter userFormatter,
             out IOptionsMonitor<ILog> optionsMonitor)
         {
-            tenantManager = TenantManager;
-            coreBaseSettings = CoreBaseSettings;
-            messageService = MessageService;
-            studioNotifyService = StudioNotifyService;
-            securityContext = SecurityContext;
-            userManager = UserManager;
-            messageTarget = MessageTarget;
-            webItemManagerSecurity = WebItemManagerSecurity;
-            storageFactory = StorageFactory;
-            userFormatter = UserFormatter;
-            optionsMonitor = Options;
+            tenantManager = _tenantManager;
+            coreBaseSettings = _coreBaseSettings;
+            messageService = _messageService;
+            studioNotifyService = _studioNotifyService;
+            securityContext = _securityContext;
+            userManager = _userManager;
+            messageTarget = _messageTarget;
+            webItemManagerSecurity = _webItemManagerSecurity;
+            storageFactory = _storageFactory;
+            userFormatter = _userFormatter;
+            optionsMonitor = _options;
         }
     }
 
