@@ -156,7 +156,7 @@ namespace ASC.Feed.Aggregator
                                 .Select(tuple => new Tuple<FeedRow, object>(new FeedRow(tuple.Item1)
                                 {
                                     Tenant = tenant1,
-                                    ProductId = module1.Product
+                                    Product = module1.Product
                                 }, tuple.Item2))
                                 .ToList();
 
@@ -186,7 +186,7 @@ namespace ASC.Feed.Aggregator
 
                     foreach (var res in result)
                     {
-                        foreach (var userGuid in res.Users.Where(userGuid => !userGuid.Equals(res.ModifiedById)))
+                        foreach (var userGuid in res.Users.Where(userGuid => !userGuid.Equals(res.ModifiedBy)))
                         {
                             if (!unreadUsers.TryGetValue(res.Tenant, out var dictionary))
                             {

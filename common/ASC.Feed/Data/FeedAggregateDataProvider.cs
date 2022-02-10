@@ -23,32 +23,42 @@
  *
 */
 
+using AutoMapper;
+
 namespace ASC.Feed.Data
 {
     [Scope]
     public class FeedAggregateDataProvider
     {
+        private FeedDbContext FeedDbContext => _lazyFeedDbContext.Value;
+
         private readonly AuthContext _authContext;
         private readonly TenantManager _tenantManager;
         private readonly TenantUtil _tenantUtil;
         private readonly Lazy<FeedDbContext> _lazyFeedDbContext;
-        private FeedDbContext FeedDbContext => _lazyFeedDbContext.Value;
+        private IMapper _mapper;
 
         public FeedAggregateDataProvider(
             AuthContext authContext, 
             TenantManager tenantManager, 
-            TenantUtil tenantUtil, 
-            DbContextManager<FeedDbContext> dbContextManager)
-            : this(authContext, tenantManager, tenantUtil)
+            TenantUtil tenantUtil,
+            DbContextManager<FeedDbContext> dbContextManager,
+            IMapper mapper)
+            : this(authContext, tenantManager, tenantUtil, mapper)
         {
             _lazyFeedDbContext = new Lazy<FeedDbContext>(() => dbContextManager.Get(Constants.FeedDbId));
         }
 
-        public FeedAggregateDataProvider(AuthContext authContext, TenantManager tenantManager, TenantUtil tenantUtil)
+        public FeedAggregateDataProvider(
+            AuthContext authContext, 
+            TenantManager tenantManager, 
+            TenantUtil tenantUtil,
+            IMapper mapper)
         {
             _authContext = authContext;
             _tenantManager = tenantManager;
             _tenantUtil = tenantUtil;
+            _mapper = mapper;
         }
 
         public DateTime GetLastTimeAggregate(string key)
@@ -102,21 +112,8 @@ namespace ASC.Feed.Data
                     continue;
                 }
 
-                var feedAggregate = new FeedAggregate
-                {
-                    Id = f.Id,
-                    Tenant = f.Tenant,
-                    Product = f.ProductId,
-                    Module = f.ModuleId,
-                    Author = f.AuthorId,
-                    ModifiedBy = f.ModifiedById,
-                    GroupId = f.GroupId,
-                    CreatedDate = f.CreatedDate,
-                    ModifiedDate = f.ModifiedDate,
-                    Json = f.Json,
-                    Keywords = f.Keywords,
-                    AggregateDate = aggregatedDate
-                };
+                var feedAggregate = _mapper.Map<FeedRow, FeedAggregate>(f);
+                feedAggregate.AggregateDate = aggregatedDate;
 
                 if (f.ClearRightsBeforeInsert)
                 {
