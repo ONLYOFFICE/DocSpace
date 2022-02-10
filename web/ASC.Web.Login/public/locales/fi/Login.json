@@ -2,7 +2,6 @@
   "Authorization": "Valtuutus",
   "CookieSettingsTitle": "Istunnon kesto",
   "ForgotPassword": "Unohditko salasanasi?",
-  "LoginButton": "Kirjaudu sisään",
   "MessageAuthorize": "Kirjaudu sisään jatkaaksesi",
   "MessageEmailConfirmed": "Sähköpostisi aktivointi onnistui.",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "Kirjoita rekisteröinnissä käyttämäsi sähköpostiosoite. Salasanan palautusohjeet lähetetään siihen.",

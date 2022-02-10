@@ -2,7 +2,6 @@
   "Authorization": "Autorisation",
   "CookieSettingsTitle": "Durée de validité de la session",
   "ForgotPassword": "Mot de passe oublié ?",
-  "LoginButton": "SE CONNECTER",
   "MessageAuthorize": "Veuillez vous connecter pour continuer",
   "MessageEmailConfirmed": "Votre adresse e-mail est activée avec succès.",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "Merci de renseigner l'adresse e-mail que vous avez utilisé lors de votre inscription sur le portail. Les instructions de récupération de votre mot de passe seront envoyées à cette adresse.",

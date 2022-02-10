@@ -2,7 +2,6 @@
   "Authorization": "Autorización",
   "CookieSettingsTitle": "Duración de la sesión",
   "ForgotPassword": "¿Ha olvidado su contraseña?",
-  "LoginButton": "Iniciar sesión",
   "MessageAuthorize": "Inicie sesión para continuar.",
   "MessageEmailConfirmed": "Su email se ha activado correctamente.",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "Por favor, introduzca el email que ha utilizado para registrarse. Se le enviarán las instrucciones para recuperar la contraseña.",

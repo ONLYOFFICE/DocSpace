@@ -2,7 +2,6 @@
   "Authorization": "ການອານຸຍາດ",
   "CookieSettingsTitle": "ຕະຫຼອດການນຳໃຊ້",
   "ForgotPassword": "ລືມລະຫັດຜ່ານຂອງທ່ານ?",
-  "LoginButton": "ເຂົ້າສູ່ລະບົບ",
   "MessageAuthorize": "ເຂົ້າສູ່ລະບົບ ເພື່ອດຳເນີນການຕໍ່",
   "MessageEmailConfirmed": "ອິເມວ ຂອງທ່ານຖືກລົງທະບຽນສຳເລັດ",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "ກະລຸນາໃສ່ອີເມວທີ່ທ່ານໃຊ້ ສຳລັບການລົງທະບຽນ.  ໃນການກູ້ຂໍ້ມູນບັນຊີ, ລະຫັດຜ່ານຈະຖືກສົ່ງໄປຫາທ່ານຜ່ານທາງ ອິເມວ.",

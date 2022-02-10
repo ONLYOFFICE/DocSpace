@@ -2,7 +2,6 @@
   "Authorization": "Yetki",
   "CookieSettingsTitle": "Oturum ömrü",
   "ForgotPassword": "Şifrenizi mi unuttunuz?",
-  "LoginButton": "Oturum aç",
   "MessageAuthorize": "Devam etmek için giriş yapın",
   "MessageEmailConfirmed": "E-posta adresiniz başarıyla etkinleştirildi.",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "Lütfen kayıt için kullandığınız e-postayı giriniz. Şifre kurtarma talimatları o adrese gönderilecektir.",

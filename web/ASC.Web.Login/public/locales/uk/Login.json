@@ -2,7 +2,6 @@
   "Authorization": "Авторизація",
   "CookieSettingsTitle": "Термін дії сеансу",
   "ForgotPassword": "Забули пароль?",
-  "LoginButton": "Вхід",
   "MessageAuthorize": "Увійдіть, щоб продовжити",
   "MessageEmailConfirmed": "Вашу електронну пошту успішно активовано.",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "Введіть електронну пошту, яку ви використовували для реєстрації. На неї буде надіслано інструкції з відновлення пароля.",

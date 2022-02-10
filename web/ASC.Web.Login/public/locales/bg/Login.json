@@ -2,7 +2,6 @@
   "Authorization": "Удостоверяване",
   "CookieSettingsTitle": "Продължителност на сесията",
   "ForgotPassword": "Забравили сте паролата си?",
-  "LoginButton": "Вписване",
   "MessageAuthorize": "Впишете се, за да продължите",
   "MessageEmailConfirmed": "Имейлът Ви беше активиран успешно.",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "Моля, въведете имейла, който използвахте при регистрацията. Инструкциите за възстановяване на паролата ще бъдат изпратени на него.",

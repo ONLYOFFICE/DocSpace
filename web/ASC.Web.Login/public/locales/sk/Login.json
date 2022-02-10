@@ -2,7 +2,6 @@
   "Authorization": "Autorizácia",
   "CookieSettingsTitle": "Doba trvania relácie",
   "ForgotPassword": "Zabudli ste heslo?",
-  "LoginButton": "Prihlásiť sa",
   "MessageAuthorize": "Prihláste sa, aby ste mohli pokračovať",
   "MessageEmailConfirmed": "Váš email bol úspešne aktivovaný.",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "Zadajte e-mail, ktorý ste použili pri registrácii. Budú vám naň zaslané pokyny na obnovenie hesla.",
