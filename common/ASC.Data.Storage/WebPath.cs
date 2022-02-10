@@ -130,7 +130,7 @@ public class WebPath
     public IServiceProvider ServiceProvider { get; }
     public IHostEnvironment HostEnvironment { get; }
 
-    private static readonly IDictionary<string, bool> s_existing = new ConcurrentDictionary<string, bool>();
+    private static readonly IDictionary<string, bool> _existing = new ConcurrentDictionary<string, bool>();
     private readonly WebPathSettings _webPathSettings;
     private readonly SettingsManager _settingsManager;
     private readonly StorageSettingsHelper _storageSettingsHelper;
@@ -200,21 +200,21 @@ public class WebPath
     public bool Exists(string relativePath)
     {
         var path = GetPath(relativePath);
-        if (!s_existing.ContainsKey(path))
+        if (!_existing.ContainsKey(path))
         {
             if (Uri.IsWellFormedUriString(path, UriKind.Relative) && _httpContextAccessor?.HttpContext != null)
             {
                 //Local
-                s_existing[path] = File.Exists(CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, path));
+                _existing[path] = File.Exists(CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, path));
             }
             if (Uri.IsWellFormedUriString(path, UriKind.Absolute))
             {
                 //Make request
-                s_existing[path] = CheckWebPath(path);
+                _existing[path] = CheckWebPath(path);
             }
         }
 
-        return s_existing[path];
+        return _existing[path];
     }
 
     private bool CheckWebPath(string path)

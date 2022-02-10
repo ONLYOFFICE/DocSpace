@@ -30,9 +30,9 @@ public class StaticUploader
 {
     protected readonly DistributedTaskQueue Queue;
     private ICache _cache;
-    private static readonly TaskScheduler s_scheduler;
-    private static readonly CancellationTokenSource s_tokenSource;
-    private static readonly object s_locker;
+    private static readonly TaskScheduler _scheduler;
+    private static readonly CancellationTokenSource _tokenSource;
+    private static readonly object _locker;
     private readonly IServiceProvider _serviceProvider;
     private readonly TenantManager _tenantManager;
     private readonly SettingsManager _settingsManager;
@@ -40,9 +40,9 @@ public class StaticUploader
 
     static StaticUploader()
     {
-        s_scheduler = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, 4).ConcurrentScheduler;
-        s_locker = new object();
-        s_tokenSource = new CancellationTokenSource();
+        _scheduler = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, 4).ConcurrentScheduler;
+        _locker = new object();
+        _tokenSource = new CancellationTokenSource();
     }
 
     public StaticUploader(
@@ -63,7 +63,7 @@ public class StaticUploader
 
     public string UploadFile(string relativePath, string mappedPath, Action<string> onComplete = null)
     {
-        if (s_tokenSource.Token.IsCancellationRequested)
+        if (_tokenSource.Token.IsCancellationRequested)
         {
             return null;
         }
@@ -82,7 +82,7 @@ public class StaticUploader
         UploadOperation uploadOperation;
         var key = GetCacheKey(tenantId.ToString(), relativePath);
 
-        lock (s_locker)
+        lock (_locker)
         {
             uploadOperation = _cache.Get<UploadOperation>(key);
             if (uploadOperation != null)
@@ -115,7 +115,7 @@ public class StaticUploader
 
         task.ConfigureAwait(false);
 
-        task.Start(s_scheduler);
+        task.Start(_scheduler);
 
         return task;
     }
@@ -136,7 +136,7 @@ public class StaticUploader
         var key = typeof(UploadOperationProgress).FullName + tenant.TenantId;
         UploadOperationProgress uploadOperation;
 
-        lock (s_locker)
+        lock (_locker)
         {
             uploadOperation = Queue.GetTask<UploadOperationProgress>(key);
             if (uploadOperation != null)
@@ -162,12 +162,12 @@ public class StaticUploader
 
     public static void Stop()
     {
-        s_tokenSource.Cancel();
+        _tokenSource.Cancel();
     }
 
     public UploadOperationProgress GetProgress(int tenantId)
     {
-        lock (s_locker)
+        lock (_locker)
         {
             var key = typeof(UploadOperationProgress).FullName + tenantId;
 

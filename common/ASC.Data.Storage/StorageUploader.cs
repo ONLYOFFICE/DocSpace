@@ -30,14 +30,14 @@ public class StorageUploader
 {
     protected readonly DistributedTaskQueue Queue;
 
-    private static readonly object s_locker;
+    private static readonly object _locker;
     private readonly IServiceProvider _serviceProvider;
     private readonly TempStream _tempStream;
     private readonly ICacheNotify<MigrationProgress> _cacheMigrationNotify;
 
     static StorageUploader()
     {
-        s_locker = new object();
+        _locker = new object();
     }
 
     public StorageUploader(IServiceProvider serviceProvider, TempStream tempStream, ICacheNotify<MigrationProgress> cacheMigrationNotify, DistributedTaskQueueOptionsManager options)
@@ -50,7 +50,7 @@ public class StorageUploader
 
     public void Start(int tenantId, StorageSettings newStorageSettings, StorageFactoryConfig storageFactoryConfig)
     {
-        lock (s_locker)
+        lock (_locker)
         {
             var id = GetCacheKey(tenantId);
             var migrateOperation = Queue.GetTask<MigrateOperation>(id);
@@ -66,7 +66,7 @@ public class StorageUploader
 
     public MigrateOperation GetProgress(int tenantId)
     {
-        lock (s_locker)
+        lock (_locker)
         {
             return Queue.GetTask<MigrateOperation>(GetCacheKey(tenantId));
         }
