@@ -16,7 +16,17 @@ class HotkeyStore {
   }
 
   selectFirstFile = () => {
-    this.filesStore.setSelection([this.filesStore.filesList[0]]);
+    const { filesList } = this.filesStore;
+
+    this.filesStore.setSelection([filesList[0]]);
+    this.filesStore.setHotkeyCaret(filesList[0]);
+    this.filesStore.setHotkeyCaretStart(filesList[0]);
+  };
+
+  setSelectionWithCaret = (selection) => {
+    this.filesStore.setSelection(selection);
+    this.filesStore.setHotkeyCaret(selection[0]);
+    this.filesStore.setHotkeyCaretStart(selection[0]);
   };
 
   selectFile = () => {
@@ -44,50 +54,42 @@ class HotkeyStore {
   };
 
   selectBottom = () => {
-    const { setSelection, viewAs, hotkeyCaret } = this.filesStore;
+    const { viewAs, hotkeyCaret } = this.filesStore;
 
     if (!hotkeyCaret) return this.selectFirstFile();
-    else if (viewAs === "tile") setSelection([this.nextForTileDown]);
-    else if (this.nextFile) setSelection([this.nextFile]);
+    else if (viewAs === "tile")
+      this.setSelectionWithCaret([this.nextForTileDown]);
+    else if (this.nextFile) this.setSelectionWithCaret([this.nextFile]);
   };
 
   selectUpper = () => {
-    const { hotkeyCaret, setSelection, viewAs } = this.filesStore;
+    const { hotkeyCaret, viewAs } = this.filesStore;
 
     if (!hotkeyCaret) return this.selectFirstFile();
-    else if (viewAs === "tile") setSelection([this.prevForTileUp]);
-    else if (this.prevFile) setSelection([this.prevFile]);
+    else if (viewAs === "tile")
+      this.setSelectionWithCaret([this.prevForTileUp]);
+    else if (this.prevFile) this.setSelectionWithCaret([this.prevFile]);
   };
 
   selectLeft = () => {
-    const {
-      hotkeyCaret,
-      setSelection,
-      filesList,
-      setHotkeyCaretStart,
-    } = this.filesStore;
+    const { hotkeyCaret, filesList, setHotkeyCaretStart } = this.filesStore;
     if (!hotkeyCaret) {
       this.selectFirstFile();
 
       setHotkeyCaretStart(filesList[0]);
     } else if (this.prevFile) {
-      setSelection([this.prevFile]);
+      this.setSelectionWithCaret([this.prevFile]);
     }
   };
 
   selectRight = () => {
-    const {
-      hotkeyCaret,
-      setSelection,
-      filesList,
-      setHotkeyCaretStart,
-    } = this.filesStore;
+    const { hotkeyCaret, filesList, setHotkeyCaretStart } = this.filesStore;
 
     if (!hotkeyCaret) {
       this.selectFirstFile();
       setHotkeyCaretStart(filesList[0]);
     } else if (this.nextFile) {
-      setSelection([this.nextFile]);
+      this.setSelectionWithCaret([this.nextFile]);
     }
   };
 
