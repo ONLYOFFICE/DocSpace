@@ -127,16 +127,16 @@ namespace ASC.Data.Storage
     [Scope]
     public class WebPath
     {
-        private static readonly IDictionary<string, bool> Existing = new ConcurrentDictionary<string, bool>();
-
-        private WebPathSettings WebPathSettings { get; }
         public IServiceProvider ServiceProvider { get; }
-        private SettingsManager SettingsManager { get; }
-        private StorageSettingsHelper StorageSettingsHelper { get; }
-        private IHttpContextAccessor HttpContextAccessor { get; }
         public IHostEnvironment HostEnvironment { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private IOptionsMonitor<ILog> Options { get; }
+
+        private static readonly IDictionary<string, bool> s_existing = new ConcurrentDictionary<string, bool>();
+        private readonly WebPathSettings _webPathSettings;
+        private readonly SettingsManager _settingsManager;
+        private readonly StorageSettingsHelper _storageSettingsHelper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly CoreBaseSettings _coreBaseSettings;
+        private readonly IOptionsMonitor<ILog> _options;
 
         public WebPath(
             WebPathSettings webPathSettings,
@@ -147,13 +147,13 @@ namespace ASC.Data.Storage
             CoreBaseSettings coreBaseSettings,
             IOptionsMonitor<ILog> options)
         {
-            WebPathSettings = webPathSettings;
+            _webPathSettings = webPathSettings;
             ServiceProvider = serviceProvider;
-            SettingsManager = settingsManager;
-            StorageSettingsHelper = storageSettingsHelper;
+            _settingsManager = settingsManager;
+            _storageSettingsHelper = storageSettingsHelper;
             HostEnvironment = hostEnvironment;
-            CoreBaseSettings = coreBaseSettings;
-            Options = options;
+            _coreBaseSettings = coreBaseSettings;
+            _options = options;
         }
 
         public WebPath(
@@ -168,7 +168,7 @@ namespace ASC.Data.Storage
             IOptionsMonitor<ILog> options)
             : this(webPathSettings, serviceProvider, settingsManager, storageSettingsHelper, hostEnvironment, coreBaseSettings, options)
         {
-            HttpContextAccessor = httpContextAccessor;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public string GetPath(string relativePath)
@@ -178,11 +178,11 @@ namespace ASC.Data.Storage
                 throw new ArgumentException(string.Format("bad path format {0} remove '~'", relativePath), "relativePath");
             }
 
-            if (CoreBaseSettings.Standalone && ServiceProvider.GetService<StaticUploader>().CanUpload()) //hack for skip resolve DistributedTaskQueueOptionsManager
+            if (_coreBaseSettings.Standalone && ServiceProvider.GetService<StaticUploader>().CanUpload()) //hack for skip resolve DistributedTaskQueueOptionsManager
             {
                 try
                 {
-                    var result = StorageSettingsHelper.DataStore(SettingsManager.Load<CdnStorageSettings>()).GetInternalUri("", relativePath, TimeSpan.Zero, null).AbsoluteUri.ToLower();
+                    var result = _storageSettingsHelper.DataStore(_settingsManager.Load<CdnStorageSettings>()).GetInternalUri("", relativePath, TimeSpan.Zero, null).AbsoluteUri.ToLower();
                     if (!string.IsNullOrEmpty(result))
                     {
                         return result;
@@ -194,27 +194,27 @@ namespace ASC.Data.Storage
                 }
             }
 
-            return WebPathSettings.GetPath(HttpContextAccessor?.HttpContext, Options, relativePath);
+            return _webPathSettings.GetPath(_httpContextAccessor?.HttpContext, _options, relativePath);
         }
 
         public bool Exists(string relativePath)
         {
             var path = GetPath(relativePath);
-            if (!Existing.ContainsKey(path))
+            if (!s_existing.ContainsKey(path))
             {
-                if (Uri.IsWellFormedUriString(path, UriKind.Relative) && HttpContextAccessor?.HttpContext != null)
+                if (Uri.IsWellFormedUriString(path, UriKind.Relative) && _httpContextAccessor?.HttpContext != null)
                 {
                     //Local
-                    Existing[path] = File.Exists(CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, path));
+                    s_existing[path] = File.Exists(CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, path));
                 }
                 if (Uri.IsWellFormedUriString(path, UriKind.Absolute))
                 {
                     //Make request
-                    Existing[path] = CheckWebPath(path);
+                    s_existing[path] = CheckWebPath(path);
                 }
             }
 
-            return Existing[path];
+            return s_existing[path];
         }
 
         private bool CheckWebPath(string path)
