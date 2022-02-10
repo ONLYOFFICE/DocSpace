@@ -9,6 +9,7 @@ import EmptyContainer from "../../../../components/EmptyContainer";
 import withLoader from "../../../../HOCs/withLoader";
 import TableView from "./TableView/TableContainer";
 import withHotkeys from "../../../../HOCs/withHotkeys";
+import { Consumer } from "@appserver/components/utils/context";
 
 let currentDroppable = null;
 
@@ -185,14 +186,23 @@ const SectionBodyContent = (props) => {
 
   //console.log("Files Home SectionBodyContent render", props);
 
-  return (!fileActionId && isEmptyFilesList) || null ? (
-    <EmptyContainer />
-  ) : viewAs === "tile" ? (
-    <FilesTileContainer t={t} />
-  ) : viewAs === "table" ? (
-    <TableView tReady={tReady} />
-  ) : (
-    <FilesRowContainer tReady={tReady} />
+  return (
+    <Consumer>
+      {(context) =>
+        (!fileActionId && isEmptyFilesList) || null ? (
+          <EmptyContainer />
+        ) : viewAs === "tile" ? (
+          <FilesTileContainer sectionWidth={context.sectionWidth} t={t} />
+        ) : viewAs === "table" ? (
+          <TableView sectionWidth={context.sectionWidth} tReady={tReady} />
+        ) : (
+          <FilesRowContainer
+            sectionWidth={context.sectionWidth}
+            tReady={tReady}
+          />
+        )
+      }
+    </Consumer>
   );
 };
 
