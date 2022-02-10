@@ -262,16 +262,9 @@ namespace ASC.Data.Backup.Services
                 BackupProgressEnum = progressItem.BackupProgressItemEnum.Convert()
             };
 
-            if (progressItem is BackupProgressItem backupProgressItem && backupProgressItem.Link != null)
+            if ((progressItem.BackupProgressItemEnum == BackupProgressItemEnum.Backup || progressItem.BackupProgressItemEnum == BackupProgressItemEnum.Transfer) && progressItem.Link != null)
             {
-                progress.Link = backupProgressItem.Link;
-            }
-            else
-            {
-                if (progressItem is TransferProgressItem transferProgressItem && transferProgressItem.Link != null)
-                {
-                    progress.Link = transferProgressItem.Link;
-                }
+                progress.Link = progressItem.Link;
             }
 
             return progress;
@@ -312,17 +305,31 @@ namespace ASC.Data.Backup.Services
 
     public abstract class BaseBackupProgressItem : DistributedTaskProgress
     {
-        private int? tenantId;
+        private int? _tenantId;
         public int TenantId
         {
             get
             {
-                return tenantId ?? GetProperty<int>(nameof(tenantId));
+                return _tenantId ?? GetProperty<int>(nameof(_tenantId));
             }
             set
             {
-                tenantId = value;
-                SetProperty(nameof(tenantId), value);
+                _tenantId = value;
+                SetProperty(nameof(_tenantId), value);
+            }
+        }
+
+        private string _link;
+        public string Link
+        {
+            get
+            {
+                return _link ?? GetProperty<string>(nameof(_link));
+            }
+            set
+            {
+                _link = value;
+                SetProperty(nameof(_link), value);
             }
         }
 
@@ -358,7 +365,6 @@ namespace ASC.Data.Backup.Services
         private string StorageBasePath { get; set; }
         public bool BackupMail { get; set; }
         public Dictionary<string, string> StorageParams { get; set; }
-        public string Link { get; private set; }
         public string TempFolder { get; set; }
         private string CurrentRegion { get; set; }
         private Dictionary<string, string> ConfigPaths { get; set; }
@@ -664,8 +670,6 @@ namespace ASC.Data.Backup.Services
         public string TargetRegion { get; set; }
         public bool TransferMail { get; set; }
         public bool Notify { get; set; }
-
-        public string Link { get; set; }
         public string TempFolder { get; set; }
         public Dictionary<string, string> ConfigPaths { get; set; }
         public string CurrentRegion { get; set; }
