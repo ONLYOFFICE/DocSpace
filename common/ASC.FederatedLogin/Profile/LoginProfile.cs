@@ -23,368 +23,367 @@
  *
 */
 
-namespace ASC.FederatedLogin.Profile
+namespace ASC.FederatedLogin.Profile;
+
+[Serializable]
+[DebuggerDisplay("{DisplayName} ({Id})")]
+public class LoginProfile
 {
-    [Serializable]
-    [DebuggerDisplay("{DisplayName} ({Id})")]
-    public class LoginProfile
+    public const string QueryParamName = "up";
+    public const string QuerySessionParamName = "sup";
+    public const string QueryCacheParamName = "cup";
+
+    public string Id
     {
-        public const string QueryParamName = "up";
-        public const string QuerySessionParamName = "sup";
-        public const string QueryCacheParamName = "cup";
+        get => GetField(WellKnownFields.Id);
+        internal set => SetField(WellKnownFields.Id, value);
+    }
 
-        public string Id
-        {
-            get => GetField(WellKnownFields.Id);
-            internal set => SetField(WellKnownFields.Id, value);
-        }
+    public string Link
+    {
+        get => GetField(WellKnownFields.Link);
+        internal set => SetField(WellKnownFields.Link, value);
+    }
 
-        public string Link
-        {
-            get => GetField(WellKnownFields.Link);
-            internal set => SetField(WellKnownFields.Link, value);
-        }
+    public string Name
+    {
+        get => GetField(WellKnownFields.Name);
+        internal set => SetField(WellKnownFields.Name, value);
+    }
 
-        public string Name
-        {
-            get => GetField(WellKnownFields.Name);
-            internal set => SetField(WellKnownFields.Name, value);
-        }
+    public string DisplayName
+    {
+        get => GetField(WellKnownFields.DisplayName);
+        internal set => SetField(WellKnownFields.DisplayName, value);
+    }
 
-        public string DisplayName
-        {
-            get => GetField(WellKnownFields.DisplayName);
-            internal set => SetField(WellKnownFields.DisplayName, value);
-        }
+    public string EMail
+    {
+        get => GetField(WellKnownFields.Email);
+        internal set { SetField(WellKnownFields.Email, value); }
+    }
 
-        public string EMail
-        {
-            get => GetField(WellKnownFields.Email);
-            internal set { SetField(WellKnownFields.Email, value); }
-        }
+    public string Avatar
+    {
+        get => GetField(WellKnownFields.Avatar);
+        internal set => SetField(WellKnownFields.Avatar, value);
+    }
 
-        public string Avatar
-        {
-            get => GetField(WellKnownFields.Avatar);
-            internal set => SetField(WellKnownFields.Avatar, value);
-        }
+    public string Gender
+    {
+        get => GetField(WellKnownFields.Gender);
+        internal set => SetField(WellKnownFields.Gender, value);
+    }
 
-        public string Gender
-        {
-            get => GetField(WellKnownFields.Gender);
-            internal set => SetField(WellKnownFields.Gender, value);
-        }
+    public string FirstName
+    {
+        get => GetField(WellKnownFields.FirstName);
+        internal set => SetField(WellKnownFields.FirstName, value);
+    }
 
-        public string FirstName
-        {
-            get => GetField(WellKnownFields.FirstName);
-            internal set => SetField(WellKnownFields.FirstName, value);
-        }
+    public string LastName
+    {
+        get => GetField(WellKnownFields.LastName);
+        internal set => SetField(WellKnownFields.LastName, value);
+    }
 
-        public string LastName
-        {
-            get => GetField(WellKnownFields.LastName);
-            internal set => SetField(WellKnownFields.LastName, value);
-        }
+    public string MiddleName
+    {
+        get => GetField(WellKnownFields.MiddleName);
+        internal set => SetField(WellKnownFields.MiddleName, value);
+    }
 
-        public string MiddleName
-        {
-            get => GetField(WellKnownFields.MiddleName);
-            internal set => SetField(WellKnownFields.MiddleName, value);
-        }
+    public string Salutation
+    {
+        get => GetField(WellKnownFields.Salutation);
+        internal set => SetField(WellKnownFields.Salutation, value);
+    }
 
-        public string Salutation
-        {
-            get => GetField(WellKnownFields.Salutation);
-            internal set => SetField(WellKnownFields.Salutation, value);
-        }
+    public string BirthDay
+    {
+        get => GetField(WellKnownFields.BirthDay);
+        internal set => SetField(WellKnownFields.BirthDay, value);
+    }
 
-        public string BirthDay
-        {
-            get => GetField(WellKnownFields.BirthDay);
-            internal set => SetField(WellKnownFields.BirthDay, value);
-        }
+    public string Locale
+    {
+        get => GetField(WellKnownFields.Locale);
+        internal set => SetField(WellKnownFields.Locale, value);
+    }
 
-        public string Locale
-        {
-            get => GetField(WellKnownFields.Locale);
-            internal set => SetField(WellKnownFields.Locale, value);
-        }
+    public string TimeZone
+    {
+        get => GetField(WellKnownFields.Timezone);
+        internal set => SetField(WellKnownFields.Timezone, value);
+    }
 
-        public string TimeZone
-        {
-            get => GetField(WellKnownFields.Timezone);
-            internal set => SetField(WellKnownFields.Timezone, value);
-        }
+    public string AuthorizationResult
+    {
+        get => GetField(WellKnownFields.Auth);
+        internal set => SetField(WellKnownFields.Auth, value);
+    }
 
-        public string AuthorizationResult
-        {
-            get => GetField(WellKnownFields.Auth);
-            internal set => SetField(WellKnownFields.Auth, value);
-        }
+    public string AuthorizationError
+    {
+        get => GetField(WellKnownFields.AuthError);
+        internal set => SetField(WellKnownFields.AuthError, value);
+    }
 
-        public string AuthorizationError
-        {
-            get => GetField(WellKnownFields.AuthError);
-            internal set => SetField(WellKnownFields.AuthError, value);
-        }
+    public string Provider
+    {
+        get => GetField(WellKnownFields.Provider);
+        internal set => SetField(WellKnownFields.Provider, value);
+    }
 
-        public string Provider
-        {
-            get => GetField(WellKnownFields.Provider);
-            internal set => SetField(WellKnownFields.Provider, value);
-        }
+    public string RealmUrl
+    {
+        get => GetField(WellKnownFields.RealmUrl);
+        internal set => SetField(WellKnownFields.RealmUrl, value);
+    }
 
-        public string RealmUrl
-        {
-            get => GetField(WellKnownFields.RealmUrl);
-            internal set => SetField(WellKnownFields.RealmUrl, value);
-        }
+    public string Hash
+    {
+        get => _signature?.Create(HashId);
+        set => throw new NotImplementedException();
+    }
 
-        public string Hash
-        {
-            get => _signature?.Create(HashId);
-            set => throw new NotImplementedException();
-        }
+    public string Serialized
+    {
+        get => Transport();
+        set => throw new NotImplementedException();
+    }
 
-        public string Serialized
+    public string UserDisplayName
+    {
+        get
         {
-            get => Transport();
-            set => throw new NotImplementedException();
-        }
-
-        public string UserDisplayName
-        {
-            get
+            if (!string.IsNullOrEmpty(DisplayName))
             {
-                if (!string.IsNullOrEmpty(DisplayName))
-                {
-                    return DisplayName;
-                }
-
-                var combinedName = string.Join(" ",
-                                               new[] { FirstName, MiddleName, LastName }.Where(
-                                                   x => !string.IsNullOrEmpty(x)).ToArray());
-                if (string.IsNullOrEmpty(combinedName))
-                {
-                    combinedName = Name;
-                }
-
-                return combinedName;
-            }
-        }
-
-        public string UniqueId => $"{Provider}/{Id}";
-        public string HashId => HashHelper.MD5(UniqueId);
-        public bool IsFailed => !string.IsNullOrEmpty(AuthorizationError);
-        public bool IsAuthorized => !IsFailed;
-
-        private const char KeyValueSeparator = '→';
-        private const char PairSeparator = '·';
-
-        private readonly Signature _signature;
-        private readonly InstanceCrypto _instanceCrypto;
-        private IDictionary<string, string> _fields = new Dictionary<string, string>();
-
-        public LoginProfile GetMinimalProfile()
-        {
-            var profileNew = new LoginProfile(_signature, _instanceCrypto)
-            {
-                Provider = Provider,
-                Id = Id
-            };
-
-            return profileNew;
-        }
-
-        public static bool HasProfile(HttpContext context)
-        {
-            return context != null && HasProfile(context.Request);
-        }
-
-        public static bool HasProfile(HttpRequest request)
-        {
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
+                return DisplayName;
             }
 
-            return new Uri(request.GetDisplayUrl()).HasProfile();
-        }
-
-        public static LoginProfile GetProfile(Signature signature, InstanceCrypto instanceCrypto, HttpContext context, IMemoryCache memoryCache)
-        {
-            if (context == null)
+            var combinedName = string.Join(" ",
+                                           new[] { FirstName, MiddleName, LastName }.Where(
+                                               x => !string.IsNullOrEmpty(x)).ToArray());
+            if (string.IsNullOrEmpty(combinedName))
             {
-                return new LoginProfile(signature, instanceCrypto);
+                combinedName = Name;
             }
 
-            return new Uri(context.Request.GetDisplayUrl()).GetProfile(context, memoryCache, signature, instanceCrypto);
+            return combinedName;
+        }
+    }
+
+    public string UniqueId => $"{Provider}/{Id}";
+    public string HashId => HashHelper.MD5(UniqueId);
+    public bool IsFailed => !string.IsNullOrEmpty(AuthorizationError);
+    public bool IsAuthorized => !IsFailed;
+
+    private const char KeyValueSeparator = '→';
+    private const char PairSeparator = '·';
+
+    private readonly Signature _signature;
+    private readonly InstanceCrypto _instanceCrypto;
+    private IDictionary<string, string> _fields = new Dictionary<string, string>();
+
+    public LoginProfile GetMinimalProfile()
+    {
+        var profileNew = new LoginProfile(_signature, _instanceCrypto)
+        {
+            Provider = Provider,
+            Id = Id
+        };
+
+        return profileNew;
+    }
+
+    public static bool HasProfile(HttpContext context)
+    {
+        return context != null && HasProfile(context.Request);
+    }
+
+    public static bool HasProfile(HttpRequest request)
+    {
+        if (request == null)
+        {
+            throw new ArgumentNullException(nameof(request));
         }
 
-        public LoginProfile(Signature signature, InstanceCrypto instanceCrypto, string transport) : this(signature, instanceCrypto)
+        return new Uri(request.GetDisplayUrl()).HasProfile();
+    }
+
+    public static LoginProfile GetProfile(Signature signature, InstanceCrypto instanceCrypto, HttpContext context, IMemoryCache memoryCache)
+    {
+        if (context == null)
         {
-            FromTransport(transport);
+            return new LoginProfile(signature, instanceCrypto);
         }
 
-        public string ToJson()
+        return new Uri(context.Request.GetDisplayUrl()).GetProfile(context, memoryCache, signature, instanceCrypto);
+    }
+
+    public LoginProfile(Signature signature, InstanceCrypto instanceCrypto, string transport) : this(signature, instanceCrypto)
+    {
+        FromTransport(transport);
+    }
+
+    public string ToJson()
+    {
+        return System.Text.Json.JsonSerializer.Serialize(this);
+    }
+
+    internal string GetField(string name)
+    {
+        return _fields.ContainsKey(name) ? _fields[name] : string.Empty;
+    }
+
+    internal void SetField(string name, string value)
+    {
+        if (name == null)
         {
-            return System.Text.Json.JsonSerializer.Serialize(this);
+            throw new ArgumentNullException(nameof(name));
         }
 
-        internal string GetField(string name)
+        if (!string.IsNullOrEmpty(value))
         {
-            return _fields.ContainsKey(name) ? _fields[name] : string.Empty;
-        }
-
-        internal void SetField(string name, string value)
-        {
-            if (name == null)
+            if (_fields.ContainsKey(name))
             {
-                throw new ArgumentNullException(nameof(name));
-            }
-
-            if (!string.IsNullOrEmpty(value))
-            {
-                if (_fields.ContainsKey(name))
-                {
-                    _fields[name] = value;
-                }
-                else
-                {
-                    _fields.Add(name, value);
-                }
+                _fields[name] = value;
             }
             else
             {
-                if (_fields.ContainsKey(name))
-                {
-                    _fields.Remove(name);
-                }
+                _fields.Add(name, value);
             }
         }
-
-        internal Uri AppendProfile(Uri uri)
+        else
         {
-            var value = Transport();
-
-            return AppendQueryParam(uri, QueryParamName, value);
-        }
-
-        internal static LoginProfile FromError(Signature signature, InstanceCrypto instanceCrypto, Exception e)
-        {
-            var profile = new LoginProfile(signature, instanceCrypto) { AuthorizationError = e.Message };
-
-            return profile;
-        } 
-
-        internal Uri AppendCacheProfile(Uri uri, IMemoryCache memoryCache)
-        {
-            //gen key
-            var key = HashHelper.MD5(Transport());
-            memoryCache.Set(key, this, TimeSpan.FromMinutes(15));
-
-            return AppendQueryParam(uri, QuerySessionParamName, key);
-        }
-
-        internal Uri AppendSessionProfile(Uri uri, HttpContext context)
-        {
-            //gen key
-            var key = HashHelper.MD5(Transport());
-            context.Session.SetString(key, JsonConvert.SerializeObject(this));
-
-            return AppendQueryParam(uri, QuerySessionParamName, key);
-        }
-
-        internal void ParseFromUrl(HttpContext context, Uri uri, IMemoryCache memoryCache)
-        {
-            var queryString = HttpUtility.ParseQueryString(uri.Query);
-            if (!string.IsNullOrEmpty(queryString[QueryParamName]))
+            if (_fields.ContainsKey(name))
             {
-                FromTransport(queryString[QueryParamName]);
-            }
-            else if (!string.IsNullOrEmpty(queryString[QuerySessionParamName]))
-            {
-                FromTransport(context.Session.GetString(queryString[QuerySessionParamName]));
-            }
-            else if (!string.IsNullOrEmpty(queryString[QueryCacheParamName]))
-            {
-                FromTransport((string)memoryCache.Get(queryString[QueryCacheParamName]));
+                _fields.Remove(name);
             }
         }
+    }
 
-        internal string ToSerializedString()
+    internal Uri AppendProfile(Uri uri)
+    {
+        var value = Transport();
+
+        return AppendQueryParam(uri, QueryParamName, value);
+    }
+
+    internal static LoginProfile FromError(Signature signature, InstanceCrypto instanceCrypto, Exception e)
+    {
+        var profile = new LoginProfile(signature, instanceCrypto) { AuthorizationError = e.Message };
+
+        return profile;
+    }
+
+    internal Uri AppendCacheProfile(Uri uri, IMemoryCache memoryCache)
+    {
+        //gen key
+        var key = HashHelper.MD5(Transport());
+        memoryCache.Set(key, this, TimeSpan.FromMinutes(15));
+
+        return AppendQueryParam(uri, QuerySessionParamName, key);
+    }
+
+    internal Uri AppendSessionProfile(Uri uri, HttpContext context)
+    {
+        //gen key
+        var key = HashHelper.MD5(Transport());
+        context.Session.SetString(key, JsonConvert.SerializeObject(this));
+
+        return AppendQueryParam(uri, QuerySessionParamName, key);
+    }
+
+    internal void ParseFromUrl(HttpContext context, Uri uri, IMemoryCache memoryCache)
+    {
+        var queryString = HttpUtility.ParseQueryString(uri.Query);
+        if (!string.IsNullOrEmpty(queryString[QueryParamName]))
         {
-            return string.Join(new string(PairSeparator, 1), _fields.Select(x => string.Join(new string(KeyValueSeparator, 1), new[] { x.Key, x.Value })).ToArray());
+            FromTransport(queryString[QueryParamName]);
+        }
+        else if (!string.IsNullOrEmpty(queryString[QuerySessionParamName]))
+        {
+            FromTransport(context.Session.GetString(queryString[QuerySessionParamName]));
+        }
+        else if (!string.IsNullOrEmpty(queryString[QueryCacheParamName]))
+        {
+            FromTransport((string)memoryCache.Get(queryString[QueryCacheParamName]));
+        }
+    }
+
+    internal string ToSerializedString()
+    {
+        return string.Join(new string(PairSeparator, 1), _fields.Select(x => string.Join(new string(KeyValueSeparator, 1), new[] { x.Key, x.Value })).ToArray());
+    }
+
+    internal static LoginProfile CreateFromSerializedString(Signature signature, InstanceCrypto instanceCrypto, string serialized)
+    {
+        var profile = new LoginProfile(signature, instanceCrypto);
+        profile.FromSerializedString(serialized);
+
+        return profile;
+    }
+
+    internal void FromSerializedString(string serialized)
+    {
+        if (serialized == null)
+        {
+            throw new ArgumentNullException(nameof(serialized));
         }
 
-        internal static LoginProfile CreateFromSerializedString(Signature signature, InstanceCrypto instanceCrypto, string serialized)
-        {
-            var profile = new LoginProfile(signature, instanceCrypto);
-            profile.FromSerializedString(serialized);
+        _fields = serialized.Split(PairSeparator).ToDictionary(x => x.Split(KeyValueSeparator)[0], y => y.Split(KeyValueSeparator)[1]);
+    }
 
-            return profile;
+    internal string Transport()
+    {
+        return WebEncoders.Base64UrlEncode(_instanceCrypto.Encrypt(Encoding.UTF8.GetBytes(ToSerializedString())));
+    }
+
+    internal void FromTransport(string transportstring)
+    {
+        var serialized = _instanceCrypto.Decrypt(WebEncoders.Base64UrlDecode(transportstring));
+        FromSerializedString(serialized);
+    }
+
+    internal LoginProfile(Signature signature, InstanceCrypto instanceCrypto)
+    {
+        _signature = signature;
+        _instanceCrypto = instanceCrypto;
+    }
+
+    protected LoginProfile(Signature signature, InstanceCrypto instanceCrypto, SerializationInfo info) : this(signature, instanceCrypto)
+    {
+        if (info == null)
+        {
+            throw new ArgumentNullException(nameof(info));
         }
 
-        internal void FromSerializedString(string serialized)
-        {
-            if (serialized == null)
-            {
-                throw new ArgumentNullException(nameof(serialized));
-            }
+        var transformed = (string)info.GetValue(QueryParamName, typeof(string));
+        FromTransport(transformed);
+    }
 
-            _fields = serialized.Split(PairSeparator).ToDictionary(x => x.Split(KeyValueSeparator)[0], y => y.Split(KeyValueSeparator)[1]);
+    private static Uri AppendQueryParam(Uri uri, string keyvalue, string value)
+    {
+        var queryString = HttpUtility.ParseQueryString(uri.Query);
+        if (!string.IsNullOrEmpty(queryString[keyvalue]))
+        {
+            queryString[keyvalue] = value;
+        }
+        else
+        {
+            queryString.Add(keyvalue, value);
+        }
+        var query = new StringBuilder();
+
+        foreach (var key in queryString.AllKeys)
+        {
+            query.Append($"{key}={queryString[key]}&");
         }
 
-        internal string Transport()
-        {
-            return WebEncoders.Base64UrlEncode(_instanceCrypto.Encrypt(Encoding.UTF8.GetBytes(ToSerializedString())));
-        }
+        var builder = new UriBuilder(uri) { Query = query.ToString().TrimEnd('&') };
 
-        internal void FromTransport(string transportstring)
-        {
-            var serialized = _instanceCrypto.Decrypt(WebEncoders.Base64UrlDecode(transportstring));
-            FromSerializedString(serialized);
-        }
-
-        internal LoginProfile(Signature signature, InstanceCrypto instanceCrypto)
-        {
-            _signature = signature;
-            _instanceCrypto = instanceCrypto;
-        }
-
-        protected LoginProfile(Signature signature, InstanceCrypto instanceCrypto, SerializationInfo info) : this(signature, instanceCrypto)
-        {
-            if (info == null)
-            {
-                throw new ArgumentNullException(nameof(info));
-            }
-
-            var transformed = (string)info.GetValue(QueryParamName, typeof(string));
-            FromTransport(transformed);
-        }
-
-        private static Uri AppendQueryParam(Uri uri, string keyvalue, string value)
-        {
-            var queryString = HttpUtility.ParseQueryString(uri.Query);
-            if (!string.IsNullOrEmpty(queryString[keyvalue]))
-            {
-                queryString[keyvalue] = value;
-            }
-            else
-            {
-                queryString.Add(keyvalue, value);
-            }
-            var query = new StringBuilder();
-
-            foreach (var key in queryString.AllKeys)
-            {
-                query.Append($"{key}={queryString[key]}&");
-            }
-
-            var builder = new UriBuilder(uri) { Query = query.ToString().TrimEnd('&') };
-
-            return builder.Uri;
-        }
+        return builder.Uri;
     }
 }

@@ -26,63 +26,62 @@
 
 using SecurityContext = ASC.Core.SecurityContext;
 
-namespace ASC.Web.Studio.Core
+namespace ASC.Web.Studio.Core;
+
+[Scope]
+public class EncryptionLoginProvider
 {
-    [Scope]
-    public class EncryptionLoginProvider
+    private readonly SecurityContext _securityContext;
+    private readonly Signature _signature;
+    private readonly InstanceCrypto _instanceCrypto;
+    private readonly IOptionsSnapshot<AccountLinker> _snapshot;
+
+    public EncryptionLoginProvider(
+        SecurityContext securityContext,
+        Signature signature,
+        InstanceCrypto instanceCrypto,
+        IOptionsSnapshot<AccountLinker> snapshot)
     {
-        private readonly SecurityContext _securityContext;
-        private readonly Signature _signature;
-        private readonly InstanceCrypto _instanceCrypto;
-        private readonly IOptionsSnapshot<AccountLinker> _snapshot;
+        _securityContext = securityContext;
+        _signature = signature;
+        _instanceCrypto = instanceCrypto;
+        _snapshot = snapshot;
+    }
 
-        public EncryptionLoginProvider(
-            SecurityContext securityContext,
-            Signature signature,
-            InstanceCrypto instanceCrypto,
-            IOptionsSnapshot<AccountLinker> snapshot)
+
+    public void SetKeys(Guid userId, string keys)
+    {
+        if (string.IsNullOrEmpty(keys))
         {
-            _securityContext = securityContext;
-            _signature = signature;
-            _instanceCrypto = instanceCrypto;
-            _snapshot = snapshot;
+            return;
         }
 
-
-        public void SetKeys(Guid userId, string keys)
+        var loginProfile = new LoginProfile(_signature, _instanceCrypto)
         {
-            if (string.IsNullOrEmpty(keys))
-            {
-                return;
-            }
+            Provider = ProviderConstants.Encryption,
+            Name = _instanceCrypto.Encrypt(keys)
+        };
 
-            var loginProfile = new LoginProfile(_signature, _instanceCrypto)
-            {
-                Provider = ProviderConstants.Encryption,
-                Name = _instanceCrypto.Encrypt(keys)
-            };
+        var linker = _snapshot.Get("webstudio");
+        linker.AddLink(userId.ToString(), loginProfile);
+    }
 
-            var linker = _snapshot.Get("webstudio");
-            linker.AddLink(userId.ToString(), loginProfile);
+    public string GetKeys()
+    {
+        return GetKeys(_securityContext.CurrentAccount.ID);
+    }
+
+    public string GetKeys(Guid userId)
+    {
+        var linker = _snapshot.Get("webstudio");
+        var profile = linker.GetLinkedProfiles(userId.ToString(), ProviderConstants.Encryption).FirstOrDefault();
+        if (profile == null)
+        {
+            return null;
         }
 
-        public string GetKeys()
-        {
-            return GetKeys(_securityContext.CurrentAccount.ID);
-        }
+        var keys = _instanceCrypto.Decrypt(profile.Name);
 
-        public string GetKeys(Guid userId)
-        {
-            var linker = _snapshot.Get("webstudio");
-            var profile = linker.GetLinkedProfiles(userId.ToString(), ProviderConstants.Encryption).FirstOrDefault();
-            if (profile == null)
-            {
-                return null;
-            }
-
-            var keys = _instanceCrypto.Decrypt(profile.Name);
-
-            return keys;
-        }
+        return keys;
     }
 }
