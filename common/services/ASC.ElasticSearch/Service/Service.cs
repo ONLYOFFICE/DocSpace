@@ -65,7 +65,7 @@ namespace ASC.ElasticSearch.Service
                 tasks.Add(instance.ReIndex());
             }
 
-            if (!tasks.Any()) return;
+            if (tasks.Count == 0) return;
 
             Task.WhenAll(tasks).ContinueWith(r =>
             {
@@ -106,7 +106,7 @@ namespace ASC.ElasticSearch.Service
         }
     }
 
-    internal class ServiceExtension
+    internal static class ServiceExtension
     {
         public static void Register(DIHelper services)
         {

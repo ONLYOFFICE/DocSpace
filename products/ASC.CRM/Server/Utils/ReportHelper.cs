@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Core;
@@ -57,6 +58,7 @@ namespace ASC.Web.CRM.Classes
         private SettingsManager _settingsManager;
         private TenantUtil _tenantUtil;
         private TenantManager _tenantManager;
+        private IHttpClientFactory _clientFactory;
 
         public ReportHelper(TenantManager tenantManager,
                             TenantUtil tenantUtil,
@@ -67,7 +69,8 @@ namespace ASC.Web.CRM.Classes
                             SecurityContext securityContext,
                             IServiceProvider serviceProvider,
                             IHttpContextAccessor httpContextAccessor,
-                            CurrencyProvider currencyProvider
+                            CurrencyProvider currencyProvider,
+                            IHttpClientFactory clientFactory
                           )
         {
             _tenantManager = tenantManager;
@@ -80,6 +83,7 @@ namespace ASC.Web.CRM.Classes
             _securityContext = securityContext;
             _httpContext = httpContextAccessor;
             _currencyProvider = currencyProvider;
+            _clientFactory = clientFactory;
         }
 
         private string GetFileName(ReportType reportType)
@@ -123,10 +127,7 @@ namespace ASC.Web.CRM.Classes
                     break;
             }
 
-            return string.Format("{0} ({1} {2}).xlsx",
-                                 reportName,
-                                 _tenantUtil.DateTimeNow().ToShortDateString(),
-                                 _tenantUtil.DateTimeNow().ToShortTimeString());
+            return $"{reportName} ({_tenantUtil.DateTimeNow().ToShortDateString()} {_tenantUtil.DateTimeNow().ToShortTimeString()}).xlsx";
         }
 
         public bool CheckReportData(ReportType reportType, ReportTimePeriod timePeriod, Guid[] managers)
@@ -221,9 +222,9 @@ namespace ASC.Web.CRM.Classes
                          .Replace("${reportData}", JsonSerializer.Serialize(data));
         }
 
-        private async void SaveReportFile(ReportState state, string url)
+        private async Task SaveReportFile(ReportState state, string url)
         {
-            using var httpClient = new HttpClient();
+            var httpClient = _clientFactory.CreateClient();
             var responseData = await httpClient.GetByteArrayAsync(url);
 
             using (var stream = new System.IO.MemoryStream(responseData))

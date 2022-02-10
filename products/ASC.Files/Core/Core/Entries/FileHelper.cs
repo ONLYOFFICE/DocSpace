@@ -36,25 +36,12 @@ namespace ASC.Files.Core
 
         private FileConverter FileConverter { get; set; }
 
-        private Global Global { get; set; }
-
-        public FileHelper(FileTrackerHelper fileTracker, FilesLinkUtility filesLinkUtility, FileUtility fileUtility, FileConverter fileConverter, Global global)
+        public FileHelper(FileTrackerHelper fileTracker, FilesLinkUtility filesLinkUtility, FileUtility fileUtility, FileConverter fileConverter)
         {
             FileTracker = fileTracker;
             FilesLinkUtility = filesLinkUtility;
             FileUtility = fileUtility;
             FileConverter = fileConverter;
-            Global = global;
-        }
-
-        internal string GetCreateByString(FileEntry fileEntry)
-        {
-            return !fileEntry.CreateBy.Equals(Guid.Empty) ? Global.GetUserName(fileEntry.CreateBy) : fileEntry._createByString;
-        }
-
-        internal string GetModifiedByString(FileEntry fileEntry)
-        {
-            return !fileEntry.ModifiedBy.Equals(Guid.Empty) ? Global.GetUserName(fileEntry.ModifiedBy) : fileEntry._modifiedByString;
         }
 
         internal string GetTitle<T>(File<T> file)

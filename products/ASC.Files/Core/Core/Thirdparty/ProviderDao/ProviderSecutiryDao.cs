@@ -50,7 +50,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             var files = entries.Where(x => x.FileEntryType == FileEntryType.File).ToArray();
             var folders = entries.Where(x => x.FileEntryType == FileEntryType.Folder).ToList();
 
-            if (files.Any())
+            if (files.Length > 0)
             {
                 var folderIds = files.Select(x => ((File<string>)x).FolderID).Distinct();
                 foreach (var folderId in folderIds)
@@ -121,7 +121,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
         private List<FileShareRecord> GetShareForFolders(IReadOnlyCollection<FileEntry<string>> folders)
         {
-            if (!folders.Any()) return new List<FileShareRecord>();
+            if (folders.Count > 0) return new List<FileShareRecord>();
 
             var result = new List<FileShareRecord>();
 
@@ -132,7 +132,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
                 if (folderDao == null) continue;
 
                 var parentFolders = folderDao.GetParentFolders(selector.ConvertId(folder.ID));
-                if (parentFolders == null || !parentFolders.Any()) continue;
+                if (parentFolders == null || parentFolders.Count > 0) continue;
 
                 parentFolders.Reverse();
                 var pureShareRecords = GetPureShareRecords(parentFolders);

@@ -36,7 +36,6 @@ global using ASC.Core;
 global using ASC.Core.Common.EF;
 global using ASC.Core.Tenants;
 global using ASC.Core.Users;
-global using ASC.IPSecurity;
 global using ASC.Security.Cryptography;
 global using ASC.Web.Api.Routing;
 global using ASC.Web.Core;

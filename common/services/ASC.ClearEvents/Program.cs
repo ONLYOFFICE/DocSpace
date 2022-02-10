@@ -45,7 +45,6 @@ builder.Host.ConfigureAppConfiguration((hostContext, config) =>
 
     config.SetBasePath(path);
 
-    var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
 
     config.AddJsonFile("appsettings.json")
                       .AddEnvironmentVariables()

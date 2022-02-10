@@ -121,7 +121,7 @@ namespace ASC.Common.Threading
 
     public class DistributedTaskQueue
     {
-        public static readonly int InstanceId;
+        public static readonly int InstanceId = Process.GetCurrentProcess().Id;
 
         private string key;
         private TaskScheduler Scheduler { get; set; } = TaskScheduler.Default;
@@ -142,12 +142,6 @@ namespace ASC.Common.Threading
         }
 
         public DistributedTaskCacheNotify DistributedTaskCacheNotify { get; set; }
-
-        static DistributedTaskQueue()
-        {
-            InstanceId = Process.GetCurrentProcess().Id;
-        }
-
 
         public void QueueTask(DistributedTaskProgress taskProgress)
         {
@@ -224,7 +218,7 @@ namespace ASC.Common.Threading
                 using var scope = ServiceProvider.CreateScope();
                 var task = scope.ServiceProvider.GetService<T>();
                 task.DistributedTaskCache = cache;
-                if (task != null && task.Publication == null)
+                if (task.Publication == null)
                 {
                     task.Publication = GetPublication();
                 }
@@ -241,7 +235,7 @@ namespace ASC.Common.Threading
             {
                 var task = new DistributedTask();
                 task.DistributedTaskCache = cache;
-                if (task != null && task.Publication == null)
+                if (task.Publication == null)
                 {
                     task.Publication = GetPublication();
                 }

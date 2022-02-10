@@ -157,7 +157,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         public string SaveFolder(Folder<string> folder)
         {
-            if (folder == null) throw new ArgumentNullException("folder");
+            if (folder == null) throw new ArgumentNullException(nameof(folder));
             if (folder.ID != null)
             {
                 return RenameFolder(folder, folder.Title);
@@ -404,7 +404,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             return false;
         }
 
-        public long GetMaxUploadSize(string folderId, bool chunkedUpload)
+        public long GetMaxUploadSize(string folderId, bool chunkedUpload = false)
         {
             var storageMaxUploadSize = ProviderInfo.Storage.GetMaxUploadSize();
 
