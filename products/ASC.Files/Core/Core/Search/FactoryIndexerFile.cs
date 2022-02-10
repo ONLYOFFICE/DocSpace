@@ -121,13 +121,13 @@ namespace ASC.Web.Files.Core.Search
                 var j = 0;
                 var tasks = new List<Task>();
 
-                foreach (var data in Indexer.IndexAll(getCount, getIds, getData))
+                foreach (var data in _indexer.IndexAll(getCount, getIds, getData))
                 {
                     if (Settings.Threads == 1)
                     {
                         data.ForEach(r =>
                         {
-                            TenantManager.SetCurrentTenant(r.TenantId);
+                            _tenantManager.SetCurrentTenant(r.TenantId);
                             fileDao.InitDocument(r);
                         });
                         Index(data);
@@ -137,7 +137,7 @@ namespace ASC.Web.Files.Core.Search
                         //TODO: refactoring
                         data.ForEach(r =>
                         {
-                            TenantManager.SetCurrentTenant(r.TenantId);
+                            _tenantManager.SetCurrentTenant(r.TenantId);
                             fileDao.InitDocument(r);
                         });
 

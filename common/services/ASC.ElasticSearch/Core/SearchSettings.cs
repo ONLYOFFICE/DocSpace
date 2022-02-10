@@ -66,12 +66,13 @@ namespace ASC.ElasticSearch.Core
     [Scope]
     public class SearchSettingsHelper
     {
-        private TenantManager TenantManager { get; }
-        private SettingsManager SettingsManager { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private ICacheNotify<ReIndexAction> CacheNotify { get; }
-        private IServiceProvider ServiceProvider { get; }
         public IConfiguration Configuration { get; }
+
+        private readonly TenantManager _tenantManager;
+        private readonly SettingsManager _settingsManager;
+        private readonly CoreBaseSettings _coreBaseSettings;
+        private readonly ICacheNotify<ReIndexAction> _cacheNotify;
+        private readonly IServiceProvider _serviceProvider;
 
         public SearchSettingsHelper(
             TenantManager tenantManager,
@@ -81,19 +82,19 @@ namespace ASC.ElasticSearch.Core
             IServiceProvider serviceProvider,
             IConfiguration configuration)
         {
-            TenantManager = tenantManager;
-            SettingsManager = settingsManager;
-            CoreBaseSettings = coreBaseSettings;
-            CacheNotify = cacheNotify;
-            ServiceProvider = serviceProvider;
+            _tenantManager = tenantManager;
+            _settingsManager = settingsManager;
+            _coreBaseSettings = coreBaseSettings;
+            _cacheNotify = cacheNotify;
+            _serviceProvider = serviceProvider;
             Configuration = configuration;
         }
 
         public List<SearchSettingsItem> GetAllItems()
         {
-            if (!CoreBaseSettings.Standalone) return new List<SearchSettingsItem>();
+            if (!_coreBaseSettings.Standalone) return new List<SearchSettingsItem>();
 
-            var settings = SettingsManager.Load<SearchSettings>();
+            var settings = _settingsManager.Load<SearchSettings>();
 
             return AllItems.Select(r => new SearchSettingsItem
             {
@@ -108,27 +109,27 @@ namespace ASC.ElasticSearch.Core
         {
             get
             {
-                return allItems ??= ServiceProvider.GetService<IEnumerable<IFactoryIndexer>>().ToList();
+                return allItems ??= _serviceProvider.GetService<IEnumerable<IFactoryIndexer>>().ToList();
             }
         }
 
         public void Set(List<SearchSettingsItem> items)
         {
-            if (!CoreBaseSettings.Standalone) return;
+            if (!_coreBaseSettings.Standalone) return;
 
-            var settings = SettingsManager.Load<SearchSettings>();
+            var settings = _settingsManager.Load<SearchSettings>();
 
             var settingsItems = settings.Items;
             var toReIndex = !settingsItems.Any() ? items.Where(r => r.Enabled).ToList() : items.Where(item => settingsItems.Any(r => r.ID == item.ID && r.Enabled != item.Enabled)).ToList();
 
             settings.Items = items;
             settings.Data = JsonConvert.SerializeObject(items);
-            SettingsManager.Save(settings);
+            _settingsManager.Save(settings);
 
-            var action = new ReIndexAction() { Tenant = TenantManager.GetCurrentTenant().TenantId };
+            var action = new ReIndexAction() { Tenant = _tenantManager.GetCurrentTenant().TenantId };
             action.Names.AddRange(toReIndex.Select(r => r.ID).ToList());
 
-            CacheNotify.Publish(action, CacheNotifyAction.Any);
+            _cacheNotify.Publish(action, CacheNotifyAction.Any);
         }
 
         public bool CanIndexByContent<T>(int tenantId) where T : class, ISearchItem
@@ -145,11 +146,11 @@ namespace ASC.ElasticSearch.Core
 
             if (Convert.ToBoolean(Configuration["core:search-by-content"] ?? "false")) return true;
 
-            if (!CoreBaseSettings.Standalone) return true;
+            if (!_coreBaseSettings.Standalone) return true;
 
-            var settings = SettingsManager.LoadForTenant<SearchSettings>(tenantId);
+            var settings = _settingsManager.LoadForTenant<SearchSettings>(tenantId);
 
-            return settings.IsEnabled(((ISearchItemDocument)ServiceProvider.GetService(t)).IndexName);
+            return settings.IsEnabled(((ISearchItemDocument)_serviceProvider.GetService(t)).IndexName);
         }
 
         public bool CanSearchByContent<T>() where T : class, ISearchItem
@@ -159,15 +160,15 @@ namespace ASC.ElasticSearch.Core
 
         public bool CanSearchByContent(Type t)
         {
-            var tenantId = TenantManager.GetCurrentTenant().TenantId;
+            var tenantId = _tenantManager.GetCurrentTenant().TenantId;
             if (!CanIndexByContent(t, tenantId)) return false;
 
-            if (CoreBaseSettings.Standalone)
+            if (_coreBaseSettings.Standalone)
             {
                 return true;
             }
 
-            return TenantManager.GetTenantQuota(tenantId).ContentSearch;
+            return _tenantManager.GetTenantQuota(tenantId).ContentSearch;
         }
     }
 

@@ -28,18 +28,18 @@ namespace ASC.ElasticSearch.Service
     [Singletone(Additional = typeof(ServiceExtension))]
     public class Service
     {
-        private IServiceProvider ServiceProvider { get; }
-        private ICacheNotify<ReIndexAction> CacheNotify { get; }
+        private readonly IServiceProvider _serviceProvider;
+        private readonly ICacheNotify<ReIndexAction> _cacheNotify;
 
         public Service(IServiceProvider serviceProvider, ICacheNotify<ReIndexAction> cacheNotify)
         {
-            ServiceProvider = serviceProvider;
-            CacheNotify = cacheNotify;
+            _serviceProvider = serviceProvider;
+            _cacheNotify = cacheNotify;
         }
 
         public void Subscribe()
         {
-            CacheNotify.Subscribe((a) =>
+            _cacheNotify.Subscribe((a) =>
             {
                 ReIndex(a.Names.ToList(), a.Tenant);
             }, CacheNotifyAction.Any);
@@ -47,12 +47,12 @@ namespace ASC.ElasticSearch.Service
 
         public bool Support(string table)
         {
-            return ServiceProvider.GetService<IEnumerable<IFactoryIndexer>>().Any(r => r.IndexName == table);
+            return _serviceProvider.GetService<IEnumerable<IFactoryIndexer>>().Any(r => r.IndexName == table);
         }
 
         public void ReIndex(List<string> toReIndex, int tenant)
         {
-            var allItems = ServiceProvider.GetService<IEnumerable<IFactoryIndexer>>().ToList();
+            var allItems = _serviceProvider.GetService<IEnumerable<IFactoryIndexer>>().ToList();
             var tasks = new List<Task>(toReIndex.Count);
 
             foreach (var item in toReIndex)
@@ -69,7 +69,7 @@ namespace ASC.ElasticSearch.Service
 
             Task.WhenAll(tasks).ContinueWith(r =>
             {
-                using var scope = ServiceProvider.CreateScope();
+                using var scope = _serviceProvider.CreateScope();
 
                 var scopeClass = scope.ServiceProvider.GetService<ServiceScope>();
                 var (tenantManager, settingsManager) = scopeClass;
@@ -90,19 +90,19 @@ namespace ASC.ElasticSearch.Service
     [Scope]
     public class ServiceScope
     {
-        private TenantManager TenantManager { get; }
-        private SettingsManager SettingsManager { get; }
+        private readonly TenantManager _tenantManager;
+        private readonly SettingsManager _settingsManager;
 
         public ServiceScope(TenantManager tenantManager, SettingsManager settingsManager)
         {
-            TenantManager = tenantManager;
-            SettingsManager = settingsManager;
+            _tenantManager = tenantManager;
+            _settingsManager = settingsManager;
         }
 
         public void Deconstruct(out TenantManager tenantManager, out SettingsManager settingsManager)
         {
-            tenantManager = TenantManager;
-            settingsManager = SettingsManager;
+            tenantManager = _tenantManager;
+            settingsManager = _settingsManager;
         }
     }
 

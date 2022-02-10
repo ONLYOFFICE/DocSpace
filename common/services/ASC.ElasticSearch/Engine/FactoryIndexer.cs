@@ -55,19 +55,18 @@ namespace ASC.ElasticSearch
     [Scope]
     public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
     {
-        private static readonly TaskScheduler Scheduler = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, 10).ConcurrentScheduler;
-
         public ILog Logger { get; }
-
-        protected TenantManager TenantManager { get; }
-        private SearchSettingsHelper SearchSettingsHelper { get; }
-        private FactoryIndexer FactoryIndexerCommon { get; }
-        protected BaseIndexer<T> Indexer { get; }
-        private IServiceProvider ServiceProvider { get; }
-        public string IndexName { get => Indexer.IndexName; }
-
-        private ICache Cache { get; }
+        public string IndexName { get => _indexer.IndexName; }
         public virtual string SettingsTitle { get => ""; }
+
+        protected readonly TenantManager _tenantManager;
+        protected readonly BaseIndexer<T> _indexer;
+        private readonly SearchSettingsHelper _searchSettingsHelper;
+        private readonly FactoryIndexer _factoryIndexerCommon;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly ICache _cache;
+        private static readonly TaskScheduler _scheduler 
+            = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, 10).ConcurrentScheduler;
 
         public FactoryIndexer(
             IOptionsMonitor<ILog> options,
@@ -78,19 +77,19 @@ namespace ASC.ElasticSearch
             IServiceProvider serviceProvider,
             ICache cache)
         {
-            Cache = cache;
+            _cache = cache;
             Logger = options.Get("ASC.Indexer");
-            TenantManager = tenantManager;
-            SearchSettingsHelper = searchSettingsHelper;
-            FactoryIndexerCommon = factoryIndexer;
-            Indexer = baseIndexer;
-            ServiceProvider = serviceProvider;
+            _tenantManager = tenantManager;
+            _searchSettingsHelper = searchSettingsHelper;
+            _factoryIndexerCommon = factoryIndexer;
+            _indexer = baseIndexer;
+            _serviceProvider = serviceProvider;
         }
 
         public bool TrySelect(Expression<Func<Selector<T>, Selector<T>>> expression, out IReadOnlyCollection<T> result)
         {
-            var t = ServiceProvider.GetService<T>();
-            if (!Support(t) || !Indexer.CheckExist(t))
+            var t = _serviceProvider.GetService<T>();
+            if (!Support(t) || !_indexer.CheckExist(t))
             {
                 result = new List<T>();
                 return false;
@@ -98,7 +97,7 @@ namespace ASC.ElasticSearch
 
             try
             {
-                result = Indexer.Select(expression);
+                result = _indexer.Select(expression);
             }
             catch (Exception e)
             {
@@ -111,8 +110,8 @@ namespace ASC.ElasticSearch
 
         public bool TrySelectIds(Expression<Func<Selector<T>, Selector<T>>> expression, out List<int> result)
         {
-            var t = ServiceProvider.GetService<T>();
-            if (!Support(t) || !Indexer.CheckExist(t))
+            var t = _serviceProvider.GetService<T>();
+            if (!Support(t) || !_indexer.CheckExist(t))
             {
                 result = new List<int>();
                 return false;
@@ -120,7 +119,7 @@ namespace ASC.ElasticSearch
 
             try
             {
-                result = Indexer.Select(expression, true).Select(r => r.Id).ToList();
+                result = _indexer.Select(expression, true).Select(r => r.Id).ToList();
             }
             catch (Exception e)
             {
@@ -134,8 +133,8 @@ namespace ASC.ElasticSearch
 
         public bool TrySelectIds(Expression<Func<Selector<T>, Selector<T>>> expression, out List<int> result, out long total)
         {
-            var t = ServiceProvider.GetService<T>();
-            if (!Support(t) || !Indexer.CheckExist(t))
+            var t = _serviceProvider.GetService<T>();
+            if (!Support(t) || !_indexer.CheckExist(t))
             {
                 result = new List<int>();
                 total = 0;
@@ -144,7 +143,7 @@ namespace ASC.ElasticSearch
 
             try
             {
-                result = Indexer.Select(expression, true, out total).Select(r => r.Id).ToList();
+                result = _indexer.Select(expression, true, out total).Select(r => r.Id).ToList();
             }
             catch (Exception e)
             {
@@ -159,17 +158,17 @@ namespace ASC.ElasticSearch
 
         public bool CanIndexByContent(T t)
         {
-            return Support(t) && SearchSettingsHelper.CanIndexByContent<T>(TenantManager.GetCurrentTenant().TenantId);
+            return Support(t) && _searchSettingsHelper.CanIndexByContent<T>(_tenantManager.GetCurrentTenant().TenantId);
         }
 
         public bool Index(T data, bool immediately = true)
         {
-            var t = ServiceProvider.GetService<T>();
+            var t = _serviceProvider.GetService<T>();
             if (!Support(t)) return false;
 
             try
             {
-                Indexer.Index(data, immediately);
+                _indexer.Index(data, immediately);
                 return true;
             }
             catch (Exception e)
@@ -181,12 +180,12 @@ namespace ASC.ElasticSearch
 
         public void Index(List<T> data, bool immediately = true, int retry = 0)
         {
-            var t = ServiceProvider.GetService<T>();
+            var t = _serviceProvider.GetService<T>();
             if (!Support(t) || !data.Any()) return;
 
             try
             {
-                Indexer.Index(data, immediately);
+                _indexer.Index(data, immediately);
             }
             catch (ElasticsearchClientException e)
             {
@@ -250,12 +249,12 @@ namespace ASC.ElasticSearch
 
         public async Task IndexAsync(List<T> data, bool immediately = true, int retry = 0)
         {
-            var t = ServiceProvider.GetService<T>();
+            var t = _serviceProvider.GetService<T>();
             if (!Support(t) || !data.Any()) return;
 
             try
             {
-                await Indexer.IndexAsync(data, immediately).ConfigureAwait(false);
+                await _indexer.IndexAsync(data, immediately).ConfigureAwait(false);
             }
             catch (ElasticsearchClientException e)
             {
@@ -319,12 +318,12 @@ namespace ASC.ElasticSearch
 
         public void Update(T data, bool immediately = true, params Expression<Func<T, object>>[] fields)
         {
-            var t = ServiceProvider.GetService<T>();
+            var t = _serviceProvider.GetService<T>();
             if (!Support(t)) return;
 
             try
             {
-                Indexer.Update(data, immediately, fields);
+                _indexer.Update(data, immediately, fields);
             }
             catch (Exception e)
             {
@@ -334,12 +333,12 @@ namespace ASC.ElasticSearch
 
         public void Update(T data, UpdateAction action, Expression<Func<T, IList>> field, bool immediately = true)
         {
-            var t = ServiceProvider.GetService<T>();
+            var t = _serviceProvider.GetService<T>();
             if (!Support(t)) return;
 
             try
             {
-                Indexer.Update(data, action, field, immediately);
+                _indexer.Update(data, action, field, immediately);
             }
             catch (Exception e)
             {
@@ -349,13 +348,13 @@ namespace ASC.ElasticSearch
 
         public void Update(T data, Expression<Func<Selector<T>, Selector<T>>> expression, bool immediately = true, params Expression<Func<T, object>>[] fields)
         {
-            var t = ServiceProvider.GetService<T>();
+            var t = _serviceProvider.GetService<T>();
             if (!Support(t)) return;
 
             try
             {
-                var tenant = TenantManager.GetCurrentTenant().TenantId;
-                Indexer.Update(data, expression, tenant, immediately, fields);
+                var tenant = _tenantManager.GetCurrentTenant().TenantId;
+                _indexer.Update(data, expression, tenant, immediately, fields);
             }
             catch (Exception e)
             {
@@ -365,13 +364,13 @@ namespace ASC.ElasticSearch
 
         public void Update(T data, Expression<Func<Selector<T>, Selector<T>>> expression, UpdateAction action, Expression<Func<T, IList>> fields, bool immediately = true)
         {
-            var t = ServiceProvider.GetService<T>();
+            var t = _serviceProvider.GetService<T>();
             if (!Support(t)) return;
 
             try
             {
-                var tenant = TenantManager.GetCurrentTenant().TenantId;
-                Indexer.Update(data, expression, tenant, action, fields, immediately);
+                var tenant = _tenantManager.GetCurrentTenant().TenantId;
+                _indexer.Update(data, expression, tenant, action, fields, immediately);
             }
             catch (Exception e)
             {
@@ -381,12 +380,12 @@ namespace ASC.ElasticSearch
 
         public void Delete(T data, bool immediately = true)
         {
-            var t = ServiceProvider.GetService<T>();
+            var t = _serviceProvider.GetService<T>();
             if (!Support(t)) return;
 
             try
             {
-                Indexer.Delete(data, immediately);
+                _indexer.Delete(data, immediately);
             }
             catch (Exception e)
             {
@@ -396,14 +395,14 @@ namespace ASC.ElasticSearch
 
         public void Delete(Expression<Func<Selector<T>, Selector<T>>> expression, bool immediately = true)
         {
-            var t = ServiceProvider.GetService<T>();
+            var t = _serviceProvider.GetService<T>();
             if (!Support(t)) return;
 
-            var tenant = TenantManager.GetCurrentTenant().TenantId;
+            var tenant = _tenantManager.GetCurrentTenant().TenantId;
 
             try
             {
-                Indexer.Delete(expression, tenant, immediately);
+                _indexer.Delete(expression, tenant, immediately);
             }
             catch (Exception e)
             {
@@ -413,46 +412,46 @@ namespace ASC.ElasticSearch
 
         public Task<bool> IndexAsync(T data, bool immediately = true)
         {
-            var t = ServiceProvider.GetService<T>();
+            var t = _serviceProvider.GetService<T>();
             if (!Support(t)) return Task.FromResult(false);
-            return Queue(() => Indexer.Index(data, immediately));
+            return Queue(() => _indexer.Index(data, immediately));
         }
 
         public Task<bool> UpdateAsync(T data, bool immediately = true, params Expression<Func<T, object>>[] fields)
         {
-            var t = ServiceProvider.GetService<T>();
+            var t = _serviceProvider.GetService<T>();
             if (!Support(t)) return Task.FromResult(false);
-            return Queue(() => Indexer.Update(data, immediately, fields));
+            return Queue(() => _indexer.Update(data, immediately, fields));
         }
 
         public Task<bool> DeleteAsync(T data, bool immediately = true)
         {
-            var t = ServiceProvider.GetService<T>();
+            var t = _serviceProvider.GetService<T>();
             if (!Support(t)) return Task.FromResult(false);
-            return Queue(() => Indexer.Delete(data, immediately));
+            return Queue(() => _indexer.Delete(data, immediately));
         }
 
         public async Task<bool> DeleteAsync(Expression<Func<Selector<T>, Selector<T>>> expression, bool immediately = true)
         {
-            var t = ServiceProvider.GetService<T>();
+            var t = _serviceProvider.GetService<T>();
             if (!await SupportAsync(t)) return false;
-            var tenant = TenantManager.GetCurrentTenant().TenantId;
-            return await Queue(() => Indexer.Delete(expression, tenant, immediately));
+            var tenant = _tenantManager.GetCurrentTenant().TenantId;
+            return await Queue(() => _indexer.Delete(expression, tenant, immediately));
         }
 
 
         public void Flush()
         {
-            var t = ServiceProvider.GetService<T>();
+            var t = _serviceProvider.GetService<T>();
             if (!Support(t)) return;
-            Indexer.Flush();
+            _indexer.Flush();
         }
 
         public void Refresh()
         {
-            var t = ServiceProvider.GetService<T>();
+            var t = _serviceProvider.GetService<T>();
             if (!Support(t)) return;
-            Indexer.Refresh();
+            _indexer.Refresh();
         }
 
         private Task<bool> Queue(Action actionData)
@@ -476,7 +475,7 @@ namespace ASC.ElasticSearch
             }, TaskCreationOptions.LongRunning);
 
             task.ConfigureAwait(false);
-            task.Start(Scheduler);
+            task.Start(_scheduler);
             return task;
         }
 
@@ -487,18 +486,18 @@ namespace ASC.ElasticSearch
 
         public void ReIndex()
         {
-            Indexer.ReIndex();
+            _indexer.ReIndex();
         }
 
         public bool Support(T t)
         {
-            if (!FactoryIndexerCommon.CheckState()) return false;
+            if (!_factoryIndexerCommon.CheckState()) return false;
 
             var cacheTime = DateTime.UtcNow.AddMinutes(15);
             var key = "elasticsearch " + t.IndexName;
             try
             {
-                var cacheValue = Cache.Get<string>(key);
+                var cacheValue = _cache.Get<string>(key);
                 if (!string.IsNullOrEmpty(cacheValue))
                 {
                     return Convert.ToBoolean(cacheValue);
@@ -515,7 +514,7 @@ namespace ASC.ElasticSearch
             }
             catch (Exception e)
             {
-                Cache.Insert(key, "false", cacheTime);
+                _cache.Insert(key, "false", cacheTime);
                 Logger.Error("FactoryIndexer CheckState", e);
                 return false;
             }
@@ -523,19 +522,20 @@ namespace ASC.ElasticSearch
 
         public async Task<bool> SupportAsync(T t)
         {
-            return await FactoryIndexerCommon.CheckStateAsync();
+            return await _factoryIndexerCommon.CheckStateAsync();
         }
     }
 
     [Scope]
     public class FactoryIndexer
     {
-        private readonly ICache cache;
-        private IServiceProvider ServiceProvider { get; }
-        private FactoryIndexerHelper FactoryIndexerHelper { get; }
         public ILog Log { get; }
-        private Client Client { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
+
+        private readonly ICache _cache;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly FactoryIndexerHelper _factoryIndexerHelper;
+        private readonly Client _client;
+        private readonly CoreBaseSettings _coreBaseSettings;
 
         public FactoryIndexer(
             IServiceProvider serviceProvider,
@@ -545,11 +545,11 @@ namespace ASC.ElasticSearch
             CoreBaseSettings coreBaseSettings,
             ICache cache)
         {
-            this.cache = cache;
-            ServiceProvider = serviceProvider;
-            FactoryIndexerHelper = factoryIndexerHelper;
-            Client = client;
-            CoreBaseSettings = coreBaseSettings;
+            _cache = cache;
+            _serviceProvider = serviceProvider;
+            _factoryIndexerHelper = factoryIndexerHelper;
+            _client = client;
+            _coreBaseSettings = coreBaseSettings;
 
             try
             {
@@ -567,7 +567,7 @@ namespace ASC.ElasticSearch
 
             if (cacheState)
             {
-                var cacheValue = cache.Get<string>(key);
+                var cacheValue = _cache.Get<string>(key);
                 if (!string.IsNullOrEmpty(cacheValue))
                 {
                     return Convert.ToBoolean(cacheValue);
@@ -578,11 +578,11 @@ namespace ASC.ElasticSearch
 
             try
             {
-                var isValid = Client.Ping();
+                var isValid = _client.Ping();
 
                 if (cacheState)
                 {
-                    cache.Insert(key, isValid.ToString(CultureInfo.InvariantCulture).ToLower(), cacheTime);
+                    _cache.Insert(key, isValid.ToString(CultureInfo.InvariantCulture).ToLower(), cacheTime);
                 }
 
                 return isValid;
@@ -591,7 +591,7 @@ namespace ASC.ElasticSearch
             {
                 if (cacheState)
                 {
-                    cache.Insert(key, "false", cacheTime);
+                    _cache.Insert(key, "false", cacheTime);
                 }
 
                 Log.Error("Ping false", e);
@@ -605,7 +605,7 @@ namespace ASC.ElasticSearch
 
             if (cacheState)
             {
-                var cacheValue = cache.Get<string>(key);
+                var cacheValue = _cache.Get<string>(key);
                 if (!string.IsNullOrEmpty(cacheValue))
                 {
                     return Convert.ToBoolean(cacheValue);
@@ -616,7 +616,7 @@ namespace ASC.ElasticSearch
 
             try
             {
-                var result = await Client.Instance.PingAsync(new PingRequest());
+                var result = await _client.Instance.PingAsync(new PingRequest());
 
                 var isValid = result.IsValid;
 
@@ -624,7 +624,7 @@ namespace ASC.ElasticSearch
 
                 if (cacheState)
                 {
-                    cache.Insert(key, isValid.ToString(CultureInfo.InvariantCulture).ToLower(), cacheTime);
+                    _cache.Insert(key, isValid.ToString(CultureInfo.InvariantCulture).ToLower(), cacheTime);
                 }
 
                 return isValid;
@@ -633,7 +633,7 @@ namespace ASC.ElasticSearch
             {
                 if (cacheState)
                 {
-                    cache.Insert(key, "false", cacheTime);
+                    _cache.Insert(key, "false", cacheTime);
                 }
 
                 Log.Error("Ping false", e);
@@ -647,7 +647,7 @@ namespace ASC.ElasticSearch
             IEnumerable<object> indices = null;
             Dictionary<string, long> count = null;
 
-            if (!CoreBaseSettings.Standalone)
+            if (!_coreBaseSettings.Standalone)
             {
                 return new
                 {
@@ -659,8 +659,8 @@ namespace ASC.ElasticSearch
 
             state = new State
             {
-                Indexing = FactoryIndexerHelper.Indexing,
-                LastIndexed = FactoryIndexerHelper.LastIndexed != DateTime.MinValue ? FactoryIndexerHelper.LastIndexed : default(DateTime?)
+                Indexing = _factoryIndexerHelper.Indexing,
+                LastIndexed = _factoryIndexerHelper.LastIndexed != DateTime.MinValue ? _factoryIndexerHelper.LastIndexed : default(DateTime?)
             };
 
             if (state.LastIndexed.HasValue)
@@ -668,12 +668,12 @@ namespace ASC.ElasticSearch
                 state.LastIndexed = tenantUtil.DateTimeFromUtc(state.LastIndexed.Value);
             }
 
-            indices = Client.Instance.Cat.Indices(new CatIndicesRequest { SortByColumns = new[] { "index" } }).Records
+            indices = _client.Instance.Cat.Indices(new CatIndicesRequest { SortByColumns = new[] { "index" } }).Records
                 .Select(r => new
                 {
                     r.Index,
                     Count = count.ContainsKey(r.Index) ? count[r.Index] : 0,
-                    DocsCount = Client.Instance.Count(new CountRequest(r.Index)).Count,
+                    DocsCount = _client.Instance.Count(new CountRequest(r.Index)).Count,
                     r.StoreSize
                 })
                 .Where(r =>
@@ -691,10 +691,10 @@ namespace ASC.ElasticSearch
 
         public void Reindex(string name)
         {
-            if (!CoreBaseSettings.Standalone) return;
+            if (!_coreBaseSettings.Standalone) return;
 
             var generic = typeof(BaseIndexer<>);
-            var indexers = ServiceProvider.GetService<IEnumerable<IFactoryIndexer>>()
+            var indexers = _serviceProvider.GetService<IEnumerable<IFactoryIndexer>>()
                 .Where(r => string.IsNullOrEmpty(name) || r.IndexName == name)
                 .Select(r => (IFactoryIndexer)Activator.CreateInstance(generic.MakeGenericType(r.GetType()), r));
 

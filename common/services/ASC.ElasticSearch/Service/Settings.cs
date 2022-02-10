@@ -33,28 +33,28 @@ namespace ASC.ElasticSearch.Service
             configuration.GetSetting("elastic", this);
         }
 
-        private string host;
-        public string Host { get => host ?? "localhost"; set { host = value; } }
+        private string _host;
+        public string Host { get => _host ?? "localhost"; set { _host = value; } }
 
-        private int? port;
-        public int? Port { get => port ?? 9200; set { port = value; } }
+        private int? _port;
+        public int? Port { get => _port ?? 9200; set { _port = value; } }
 
-        private string scheme;
-        public string Scheme { get => scheme ?? "http"; set { scheme = value; } }
+        private string _scheme;
+        public string Scheme { get => _scheme ?? "http"; set { _scheme = value; } }
 
-        private int? period;
-        public int? Period { get => period ?? 1; set { period = value; } }
+        private int? _period;
+        public int? Period { get => _period ?? 1; set { _period = value; } }
 
-        private long? maxContentLength;
-        public long? MaxContentLength { get => maxContentLength ?? 100 * 1024 * 1024L; set { maxContentLength = value; } }
+        private long? _maxContentLength;
+        public long? MaxContentLength { get => _maxContentLength ?? 100 * 1024 * 1024L; set { _maxContentLength = value; } }
 
-        private long? maxFileSize;
-        public long? MaxFileSize { get => maxFileSize ?? 10 * 1024 * 1024L; set { maxFileSize = value; } }
+        private long? _maxFileSize;
+        public long? MaxFileSize { get => _maxFileSize ?? 10 * 1024 * 1024L; set { _maxFileSize = value; } }
 
-        private int? threads;
-        public int? Threads { get => threads ?? 1; set { threads = value; } }
+        private int? _threads;
+        public int? Threads { get => _threads ?? 1; set { _threads = value; } }
 
-        private bool? httpCompression;
-        public bool? HttpCompression { get => httpCompression ?? true; set { httpCompression = value; } }
+        private bool? _httpCompression;
+        public bool? HttpCompression { get => _httpCompression ?? true; set { _httpCompression = value; } }
     }
 }

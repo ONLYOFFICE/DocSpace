@@ -28,33 +28,33 @@ namespace ASC.ElasticSearch
     [Singletone]
     public class Client
     {
-        private static volatile ElasticClient client;
-        private static readonly object Locker = new object();
+        private static volatile ElasticClient s_client;
+        private static readonly object s_locker = new object();
 
-        private ILog Log { get; }
-        private Settings Settings { get; }
-        private IServiceProvider ServiceProvider { get; }
+        private readonly ILog _logger;
+        private readonly Settings _settings;
+        private readonly IServiceProvider _serviceProvider;
 
         public Client(IOptionsMonitor<ILog> option, IServiceProvider serviceProvider, Settings settings)
         {
-            Log = option.Get("ASC.Indexer");
-            Settings = settings;
-            ServiceProvider = serviceProvider;
+            _logger = option.Get("ASC.Indexer");
+            _settings = settings;
+            _serviceProvider = serviceProvider;
         }
 
         public ElasticClient Instance
         {
             get
             {
-                if (client != null) return client;
+                if (s_client != null) return s_client;
 
-                lock (Locker)
+                lock (s_locker)
                 {
-                    if (client != null) return client;
+                    if (s_client != null) return s_client;
 
-                    using var scope = ServiceProvider.CreateScope();
-                    var CoreConfiguration = ServiceProvider.GetService<CoreConfiguration>();
-                    var launchSettings = CoreConfiguration.GetSection<Settings>(Tenant.DEFAULT_TENANT) ?? Settings;
+                    using var scope = _serviceProvider.CreateScope();
+                    var CoreConfiguration = _serviceProvider.GetService<CoreConfiguration>();
+                    var launchSettings = CoreConfiguration.GetSection<Settings>(Tenant.DEFAULT_TENANT) ?? _settings;
 
                     var uri = new Uri(string.Format("{0}://{1}:{2}", launchSettings.Scheme, launchSettings.Host, launchSettings.Port));
                     var settings = new ConnectionSettings(new SingleNodeConnectionPool(uri))
@@ -62,7 +62,7 @@ namespace ASC.ElasticSearch
                         .MaximumRetries(10)
                         .ThrowExceptions();
 
-                    if (Log.IsTraceEnabled)
+                    if (_logger.IsTraceEnabled)
                     {
                         settings.DisableDirectStreaming().PrettyJson().EnableDebugMode(r =>
                         {
@@ -75,7 +75,7 @@ namespace ASC.ElasticSearch
 
                             if (r.HttpStatusCode != null && (r.HttpStatusCode == 403 || r.HttpStatusCode == 500) && r.ResponseBodyInBytes != null)
                             {
-                                Log.TraceFormat("Response: {0}", Encoding.UTF8.GetString(r.ResponseBodyInBytes));
+                                _logger.TraceFormat("Response: {0}", Encoding.UTF8.GetString(r.ResponseBodyInBytes));
                             }
                         });
                     }
@@ -84,9 +84,9 @@ namespace ASC.ElasticSearch
                     {
                         if (Ping(new ElasticClient(settings)))
                         {
-                            client = new ElasticClient(settings);
+                            s_client = new ElasticClient(settings);
 
-                            client.Ingest.PutPipeline("attachments", p => p
+                            s_client.Ingest.PutPipeline("attachments", p => p
                             .Processors(pp => pp
                                 .Attachment<Attachment>(a => a.Field("document.data").TargetField("document.attachment"))
                             ));
@@ -95,12 +95,12 @@ namespace ASC.ElasticSearch
                     }
                     catch (Exception e)
                     {
-                        Log.Error(e);
+                        _logger.Error(e);
                     }
 
 
 
-                    return client;
+                    return s_client;
                 }
             }
         }
@@ -116,7 +116,7 @@ namespace ASC.ElasticSearch
 
             var result = elasticClient.Ping(new PingRequest());
 
-            Log.DebugFormat("Ping {0}", result.DebugInformation);
+            _logger.DebugFormat("Ping {0}", result.DebugInformation);
 
             return result.IsValid;
         }
