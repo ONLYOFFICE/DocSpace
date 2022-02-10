@@ -63,9 +63,13 @@ namespace ASC.FederatedLogin.LoginProviders
                         @params.TryGetValue("realmUrl", out realmUrlString);
 
                         if (!string.IsNullOrEmpty(realmUrlString))
+                        {
                             request = _openId.CreateRequest(id, new Realm(realmUrlString));
+                        }
                         else
+                        {
                             request = _openId.CreateRequest(id);
+                        }
 
                         request.AddExtension(new ClaimsRequest
                         {
@@ -167,6 +171,7 @@ namespace ASC.FederatedLogin.LoginProviders
                 profile.BirthDay = fetchprofile.GetAttributeValue(WellKnownAttributes.BirthDate.WholeBirthDate);
             }
             profile.RealmUrl = realmUrlString;
+
             return profile;
         }
     }

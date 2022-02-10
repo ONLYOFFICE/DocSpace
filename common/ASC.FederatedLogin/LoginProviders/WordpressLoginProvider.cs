@@ -60,6 +60,7 @@ namespace ASC.FederatedLogin.LoginProviders
                 {
                     { "Authorization", "bearer " + token }
                 };
+
             return RequestHelper.PerformRequest(WordpressMeInfoUrl, "", "GET", "", headers);
         }
 
@@ -77,6 +78,7 @@ namespace ASC.FederatedLogin.LoginProviders
                     };
 
                 RequestHelper.PerformRequest(uri, contentType, method, body, headers);
+
                 return true;
             }
             catch (Exception)

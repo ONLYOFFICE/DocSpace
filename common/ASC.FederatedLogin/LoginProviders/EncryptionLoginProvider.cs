@@ -51,7 +51,10 @@ namespace ASC.Web.Studio.Core
 
         public void SetKeys(Guid userId, string keys)
         {
-            if (string.IsNullOrEmpty(keys)) return;
+            if (string.IsNullOrEmpty(keys))
+            {
+                return;
+            }
 
             var loginProfile = new LoginProfile(_signature, _instanceCrypto)
             {
@@ -73,9 +76,13 @@ namespace ASC.Web.Studio.Core
         {
             var linker = _snapshot.Get("webstudio");
             var profile = linker.GetLinkedProfiles(userId.ToString(), ProviderConstants.Encryption).FirstOrDefault();
-            if (profile == null) return null;
+            if (profile == null)
+            {
+                return null;
+            }
 
             var keys = _instanceCrypto.Decrypt(profile.Name);
+
             return keys;
         }
     }

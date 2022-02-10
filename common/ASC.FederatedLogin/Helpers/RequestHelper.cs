@@ -31,7 +31,10 @@ namespace ASC.FederatedLogin.Helpers
 
         public static string PerformRequest(string uri, string contentType = "", string method = "GET", string body = "", Dictionary<string, string> headers = null, int timeout = 30000)
         {
-            if (string.IsNullOrEmpty(uri)) throw new ArgumentNullException(nameof(uri));
+            if (string.IsNullOrEmpty(uri))
+            {
+                throw new ArgumentNullException(nameof(uri));
+            }
 
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(uri);
@@ -59,10 +62,14 @@ namespace ASC.FederatedLogin.Helpers
 
             using var response = _httpClient.Send(request);
             using var stream = response.Content.ReadAsStream();
-            if (stream == null) return null;
-            using var readStream = new StreamReader(stream);
-            return readStream.ReadToEnd();
+            if (stream == null)
+            {
+                return null;
+            }
 
+            using var readStream = new StreamReader(stream);
+
+            return readStream.ReadToEnd();
         }
     }
 }

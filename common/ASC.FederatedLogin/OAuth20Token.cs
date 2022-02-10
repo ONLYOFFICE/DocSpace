@@ -62,7 +62,10 @@ namespace ASC.FederatedLogin
             get
             {
                 if (!ExpiresIn.Equals(default))
+                {
                     return DateTime.UtcNow > Timestamp + TimeSpan.FromSeconds(ExpiresIn);
+                }
+
                 return true;
             }
         }
@@ -81,7 +84,10 @@ namespace ASC.FederatedLogin
 
         private void Copy(OAuth20Token oAuth20Token)
         {
-            if (oAuth20Token == null) return;
+            if (oAuth20Token == null)
+            {
+                return;
+            }
 
             AccessToken = oAuth20Token.AccessToken;
             RefreshToken = oAuth20Token.RefreshToken;
@@ -94,7 +100,11 @@ namespace ASC.FederatedLogin
 
         public static OAuth20Token FromJson(string json)
         {
-            if (string.IsNullOrEmpty(json)) return null;
+            if (string.IsNullOrEmpty(json))
+            {
+                return null;
+            }
+
             try
             {
                 return JsonSerializer.Deserialize<OAuth20Token>(json);

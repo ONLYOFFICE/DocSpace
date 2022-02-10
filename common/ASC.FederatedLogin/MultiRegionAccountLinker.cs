@@ -35,10 +35,14 @@ namespace ASC.FederatedLogin
             var databaseId = _baseDatabaseId;
 
             if (!string.IsNullOrEmpty(hostedRegion))
+            {
                 databaseId = string.Join(".", new[] { _baseDatabaseId, hostedRegion.Trim() });
+            }
 
             if (!_accountLinkers.ContainsKey(databaseId))
+            {
                 throw new ArgumentException($"Region {databaseId} is not defined", nameof(hostedRegion));
+            }
 
             return databaseId;
         }
@@ -49,7 +53,9 @@ namespace ASC.FederatedLogin
             foreach (var connection in configuration.GetConnectionStrings())
             {
                 if (connection.Name.StartsWith(databaseId))
+                {
                     _accountLinkers.Add(connection.Name, snapshot.Get(connection.Name));
+                }
             }
         }
 

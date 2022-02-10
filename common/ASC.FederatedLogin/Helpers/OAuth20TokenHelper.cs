@@ -37,7 +37,8 @@ namespace ASC.FederatedLogin.Helpers
             _consumerFactory = consumerFactory;
         }
 
-        public string RequestCode<T>(string scope = null, IDictionary<string, string> additionalArgs = null, IDictionary<string, string> additionalStateArgs = null) where T : Consumer, IOAuthProvider, new()
+        public string RequestCode<T>(string scope = null, IDictionary<string, string> additionalArgs = null, IDictionary<string, string> additionalStateArgs = null) 
+            where T : Consumer, IOAuthProvider, new()
         {
             var loginProvider = _consumerFactory.Get<T>();
             var requestUrl = loginProvider.CodeUrl;
@@ -47,12 +48,27 @@ namespace ASC.FederatedLogin.Helpers
             var uriBuilder = new UriBuilder(requestUrl);
 
             var query = uriBuilder.Query;
-            if (!string.IsNullOrEmpty(query)) query += "&";
+            if (!string.IsNullOrEmpty(query))
+            {
+                query += "&";
+            }
+
             query += "response_type=code";
 
-            if (!string.IsNullOrEmpty(clientID)) query += $"&client_id={HttpUtility.UrlEncode(clientID)}";
-            if (!string.IsNullOrEmpty(redirectUri)) query += $"&redirect_uri={HttpUtility.UrlEncode(redirectUri)}";
-            if (!string.IsNullOrEmpty(scope)) query += $"&scope={HttpUtility.UrlEncode(scope)}";
+            if (!string.IsNullOrEmpty(clientID))
+            {
+                query += $"&client_id={HttpUtility.UrlEncode(clientID)}";
+            }
+
+            if (!string.IsNullOrEmpty(redirectUri))
+            {
+                query += $"&redirect_uri={HttpUtility.UrlEncode(redirectUri)}";
+            }
+
+            if (!string.IsNullOrEmpty(scope))
+            {
+                query += $"&scope={HttpUtility.UrlEncode(scope)}";
+            }
 
             var u = _httpContextAccessor.HttpContext.Request.GetUrlRewriter();
 
@@ -91,14 +107,27 @@ namespace ASC.FederatedLogin.Helpers
             var clientSecret = loginProvider.ClientSecret;
             var redirectUri = loginProvider.RedirectUri;
 
-            if (string.IsNullOrEmpty(authCode)) throw new ArgumentNullException(nameof(authCode));
-            if (string.IsNullOrEmpty(clientID)) throw new ArgumentNullException("clientID");
-            if (string.IsNullOrEmpty(clientSecret)) throw new ArgumentNullException("clientSecret");
+            if (string.IsNullOrEmpty(authCode))
+            {
+                throw new ArgumentNullException(nameof(authCode));
+            }
+
+            if (string.IsNullOrEmpty(clientID))
+            {
+                throw new ArgumentNullException(nameof(clientID));
+            }
+
+            if (string.IsNullOrEmpty(clientSecret))
+            {
+                throw new ArgumentNullException(nameof(clientSecret));
+            }
 
             var data = $"code={HttpUtility.UrlEncode(authCode)}&client_id={HttpUtility.UrlEncode(clientID)}&client_secret={HttpUtility.UrlEncode(clientSecret)}";
 
             if (!string.IsNullOrEmpty(redirectUri))
+            {
                 data += "&redirect_uri=" + HttpUtility.UrlEncode(redirectUri);
+            }
 
             data += "&grant_type=authorization_code";
 
@@ -111,11 +140,15 @@ namespace ASC.FederatedLogin.Helpers
                 }
 
                 var token = OAuth20Token.FromJson(json);
-                if (token == null) return null;
+                if (token == null)
+                {
+                    return null;
+                }
 
                 token.ClientID = clientID;
                 token.ClientSecret = clientSecret;
                 token.RedirectUri = redirectUri;
+
                 return token;
             }
 
@@ -125,12 +158,16 @@ namespace ASC.FederatedLogin.Helpers
         public static OAuth20Token RefreshToken<T>(ConsumerFactory consumerFactory, OAuth20Token token) where T : Consumer, IOAuthProvider, new()
         {
             var loginProvider = consumerFactory.Get<T>();
+
             return RefreshToken(loginProvider.AccessTokenUrl, token);
         }
 
         public static OAuth20Token RefreshToken(string requestUrl, OAuth20Token token)
         {
-            if (token == null || !CanRefresh(token)) throw new ArgumentException("Can not refresh given token", nameof(token));
+            if (token == null || !CanRefresh(token))
+            {
+                throw new ArgumentException("Can not refresh given token", nameof(token));
+            }
 
             var data = $"client_id={HttpUtility.UrlEncode(token.ClientID)}&client_secret={HttpUtility.UrlEncode(token.ClientSecret)}&refresh_token={HttpUtility.UrlEncode(token.RefreshToken)}&grant_type=refresh_token";
 
@@ -142,6 +179,7 @@ namespace ASC.FederatedLogin.Helpers
                 refreshed.ClientSecret = token.ClientSecret;
                 refreshed.RedirectUri = token.RedirectUri;
                 refreshed.RefreshToken ??= token.RefreshToken;
+
                 return refreshed;
             }
 

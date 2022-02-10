@@ -55,7 +55,9 @@ namespace ASC.FederatedLogin.LoginProviders
         public override LoginProfile GetLoginProfile(string accessToken)
         {
             if (string.IsNullOrEmpty(accessToken))
+            {
                 throw new Exception("Login failed");
+            }
 
             return RequestProfile(accessToken);
         }
@@ -75,7 +77,10 @@ namespace ASC.FederatedLogin.LoginProviders
         internal LoginProfile ProfileFromLinkedIn(string linkedInProfile)
         {
             var jProfile = JObject.Parse(linkedInProfile);
-            if (jProfile == null) throw new Exception("Failed to correctly process the response");
+            if (jProfile == null)
+            {
+                throw new Exception("Failed to correctly process the response");
+            }
 
             var profile = new LoginProfile(_signature, _instanceCrypto)
             {
@@ -92,7 +97,10 @@ namespace ASC.FederatedLogin.LoginProviders
         internal static string EmailFromLinkedIn(string linkedInEmail)
         {
             var jEmail = JObject.Parse(linkedInEmail);
-            if (jEmail == null) throw new Exception("Failed to correctly process the response");
+            if (jEmail == null)
+            {
+                throw new Exception("Failed to correctly process the response");
+            }
 
             return jEmail.SelectToken("elements[0].handle~.emailAddress").ToString();
         }

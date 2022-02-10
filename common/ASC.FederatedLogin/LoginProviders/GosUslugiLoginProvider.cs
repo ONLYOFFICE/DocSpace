@@ -92,6 +92,7 @@ namespace ASC.FederatedLogin.LoginProviders
                 {
                     error = "Canceled at provider";
                 }
+
                 throw new Exception(error);
             }
 
@@ -100,11 +101,13 @@ namespace ASC.FederatedLogin.LoginProviders
             {
                 RequestCode(context, scopes);
                 redirect = true;
+
                 return null;
             }
 
             redirect = false;
             var state = context.Request.Query["state"];
+
             return GetAccessToken(state, code);
         }
 
@@ -170,6 +173,7 @@ namespace ASC.FederatedLogin.LoginProviders
             {
                 throw new Exception("Payload is incorrect");
             }
+
             var oid = tokenPayload.Value<string>("urn:esia:sbj_id");
 
             var userInfoString = RequestHelper.PerformRequest(GosUslugiProfileUrl + oid, "application/x-www-form-urlencoded", headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
@@ -212,7 +216,10 @@ namespace ASC.FederatedLogin.LoginProviders
                 }
 
                 var type = userContact.Value<string>("type");
-                if (type != "EML") continue;
+                if (type != "EML")
+                {
+                    continue;
+                }
 
                 profile.EMail = userContact.Value<string>("value");
                 break;
@@ -231,6 +238,7 @@ namespace ASC.FederatedLogin.LoginProviders
             {
                 throw new Exception("Certificate not found");
             }
+
             return certColl[0];
         }
 
@@ -243,6 +251,7 @@ namespace ASC.FederatedLogin.LoginProviders
             var signedCms = new SignedCms(contentInfo, true);
             var cmsSigner = new CmsSigner(signerCert);
             signedCms.ComputeSignature(cmsSigner);
+
             return signedCms.Encode();
         }
 

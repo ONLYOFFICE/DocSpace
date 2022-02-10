@@ -51,6 +51,7 @@ namespace ASC.FederatedLogin
                 profiles = fromDb(obj);
                 _cache.Insert(obj, profiles, DateTime.UtcNow + TimeSpan.FromMinutes(10));
             }
+
             return profiles;
         }
     }
@@ -183,8 +184,15 @@ namespace ASC.FederatedLogin
             var accountLinkQuery = AccountLinks
                 .Where(r => r.Id == obj);
 
-            if (!string.IsNullOrEmpty(provider)) accountLinkQuery = accountLinkQuery.Where(r => r.Provider == provider);
-            if (!string.IsNullOrEmpty(hashId)) accountLinkQuery = accountLinkQuery.Where(r => r.UId == hashId);
+            if (!string.IsNullOrEmpty(provider))
+            {
+                accountLinkQuery = accountLinkQuery.Where(r => r.Provider == provider);
+            }
+
+            if (!string.IsNullOrEmpty(hashId))
+            {
+                accountLinkQuery = accountLinkQuery.Where(r => r.UId == hashId);
+            }
 
             var accountLink = accountLinkQuery.FirstOrDefault();
             AccountLinks.Remove(accountLink);

@@ -29,9 +29,7 @@ namespace ASC.FederatedLogin.Helpers
     {
         public static int CombineHashCodes(int hash1, int hash2)
         {
-            if (hash2 == 0)
-                return hash1;
-            return ((hash1 << 5) + hash1) ^ hash2;
+            return hash2 == 0 ? hash1 : ((hash1 << 5) + hash1) ^ hash2;
         }
 
         //Use this luke!!!
@@ -58,12 +56,14 @@ namespace ASC.FederatedLogin.Helpers
             {
                 sb.Append(hash[i].ToString("X2"));
             }
+
             return sb.ToString();
         }
 
         public static byte[] MD5(byte[] data)
         {
             using var md5 = System.Security.Cryptography.MD5.Create();
+
             return md5.ComputeHash(data);
         }
     }

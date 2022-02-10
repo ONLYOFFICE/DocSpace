@@ -118,6 +118,7 @@ namespace ASC.FederatedLogin.LoginProviders
                 {
                     error = "Canceled at provider";
                 }
+
                 throw new Exception(error);
             }
 
@@ -126,10 +127,12 @@ namespace ASC.FederatedLogin.LoginProviders
             {
                 context.Response.Redirect(_oAuth20TokenHelper.RequestCode<T>(scopes, additionalArgs, additionalStateArgs));
                 redirect = true;
+
                 return null;
             }
 
             redirect = false;
+
             return OAuth20TokenHelper.GetAccessToken<T>(ConsumerFactory, code);
         }
 

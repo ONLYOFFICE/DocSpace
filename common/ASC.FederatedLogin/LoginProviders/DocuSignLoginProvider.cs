@@ -73,15 +73,29 @@ namespace ASC.FederatedLogin.LoginProviders
 
         public OAuth20Token GetAccessToken(string authCode)
         {
-            if (string.IsNullOrEmpty(authCode)) throw new ArgumentNullException(nameof(authCode));
-            if (string.IsNullOrEmpty(ClientID)) throw new ArgumentException("clientID");
-            if (string.IsNullOrEmpty(ClientSecret)) throw new ArgumentException("clientSecret");
+            if (string.IsNullOrEmpty(authCode))
+            {
+                throw new ArgumentNullException(nameof(authCode));
+            }
+
+            if (string.IsNullOrEmpty(ClientID))
+            {
+                throw new ArgumentException(nameof(ClientID));
+            }
+
+            if (string.IsNullOrEmpty(ClientSecret))
+            {
+                throw new ArgumentException(nameof(ClientSecret));
+            }
 
             var data = $"grant_type=authorization_code&code={authCode}";
             var headers = new Dictionary<string, string> { { "Authorization", AuthHeader } };
 
             var json = RequestHelper.PerformRequest(AccessTokenUrl, "application/x-www-form-urlencoded", "POST", data, headers);
-            if (json == null) throw new Exception("Can not get token");
+            if (json == null)
+            {
+                throw new Exception("Can not get token");
+            }
 
             if (!json.StartsWith('{'))
             {
@@ -89,30 +103,40 @@ namespace ASC.FederatedLogin.LoginProviders
             }
 
             var token = OAuth20Token.FromJson(json);
-            if (token == null) return null;
+            if (token == null)
+            {
+                return null;
+            }
 
             token.ClientID = ClientID;
             token.ClientSecret = ClientSecret;
             token.RedirectUri = RedirectUri;
+
             return token;
         }
 
         public OAuth20Token RefreshToken(string refreshToken)
         {
             if (string.IsNullOrEmpty(refreshToken) || string.IsNullOrEmpty(ClientID) || string.IsNullOrEmpty(ClientSecret))
+            {
                 throw new ArgumentException("Can not refresh given token");
+            }
 
             var data = $"grant_type=refresh_token&refresh_token={refreshToken}";
             var headers = new Dictionary<string, string> { { "Authorization", AuthHeader } };
 
             var json = RequestHelper.PerformRequest(AccessTokenUrl, "application/x-www-form-urlencoded", "POST", data, headers);
-            if (json == null) throw new Exception("Can not get token");
+            if (json == null)
+            {
+                throw new Exception("Can not get token");
+            }
 
             var refreshed = OAuth20Token.FromJson(json);
             refreshed.ClientID = ClientID;
             refreshed.ClientSecret = ClientSecret;
             refreshed.RedirectUri = RedirectUri;
             refreshed.RefreshToken ??= refreshToken;
+
             return refreshed;
         }
     }

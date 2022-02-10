@@ -66,7 +66,9 @@ namespace ASC.FederatedLogin.LoginProviders
         public override LoginProfile GetLoginProfile(string accessToken)
         {
             if (string.IsNullOrEmpty(accessToken))
+            {
                 throw new Exception("Login failed");
+            }
 
             return RequestProfile(accessToken);
         }
@@ -74,25 +76,29 @@ namespace ASC.FederatedLogin.LoginProviders
         public OAuth20Token Auth(HttpContext context)
         {
             return Auth(context, GoogleScopeContacts, out var _, (context.Request.Query["access_type"].ToString() ?? "") == "offline"
-                                                          ? new Dictionary<string, string>
-                                                              {
-                                                                  { "access_type", "offline" },
-                                                                  { "prompt", "consent" }
-                                                              }
-                                                          : null);
+                ? new Dictionary<string, string>
+                {
+                    { "access_type", "offline" },
+                    { "prompt", "consent" }
+                }
+                : null);
         }
 
         private LoginProfile RequestProfile(string accessToken)
         {
             var googleProfile = RequestHelper.PerformRequest(GoogleUrlProfile + "?personFields=" + HttpUtility.UrlEncode(ProfileFields), headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
             var loginProfile = ProfileFromGoogle(googleProfile);
+
             return loginProfile;
         }
 
         private LoginProfile ProfileFromGoogle(string googleProfile)
         {
             var jProfile = JObject.Parse(googleProfile);
-            if (jProfile == null) throw new Exception("Failed to correctly process the response");
+            if (jProfile == null)
+            {
+                throw new Exception("Failed to correctly process the response");
+            }
 
             var profile = new LoginProfile(_signature, _instanceCrypto)
             {
@@ -107,7 +113,7 @@ namespace ASC.FederatedLogin.LoginProviders
                 if (emailsList.Count > 0)
                 {
                     var ind = emailsList.FindIndex(googleEmail => googleEmail.Metadata.Primary);
-                    profile.EMail = emailsList[ind > -1 ? ind : 0].value;
+                    profile.EMail = emailsList[ind > -1 ? ind : 0].Value;
                 }
             }
 
@@ -132,7 +138,7 @@ namespace ASC.FederatedLogin.LoginProviders
                 if (gendersList.Count > 0)
                 {
                     var ind = gendersList.FindIndex(googleGender => googleGender.Metadata.Primary);
-                    profile.Gender = gendersList[ind > -1 ? ind : 0].value;
+                    profile.Gender = gendersList[ind > -1 ? ind : 0].Value;
                 }
             }
 
@@ -141,27 +147,27 @@ namespace ASC.FederatedLogin.LoginProviders
 
         private class GoogleEmailAddress
         {
-            public GoogleMetadata Metadata = new GoogleMetadata();
-            public string value = null;
+            public GoogleMetadata Metadata { get; set; } = new GoogleMetadata();
+            public string Value { get; set; }
         }
 
         private class GoogleGender
         {
-            public GoogleMetadata Metadata = new GoogleMetadata();
-            public string value = null;
+            public GoogleMetadata Metadata { get; set; } = new GoogleMetadata();
+            public string Value { get; set; }
         }
 
         private class GoogleName
         {
-            public GoogleMetadata Metadata = new GoogleMetadata();
-            public string DisplayName = null;
-            public string FamilyName = null;
-            public string GivenName = null;
+            public GoogleMetadata Metadata { get; set; } = new GoogleMetadata();
+            public string DisplayName { get; set; }
+            public string FamilyName { get; set; }
+            public string GivenName { get; set; }
         }
 
         private class GoogleMetadata
         {
-            public bool Primary = false;
+            public bool Primary { get; set; }
         }
     }
 }

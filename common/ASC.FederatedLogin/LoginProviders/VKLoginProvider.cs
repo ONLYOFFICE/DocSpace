@@ -60,11 +60,11 @@ namespace ASC.FederatedLogin.LoginProviders
             try
             {
                 var token = Auth(context, Scopes, out var redirect, context.Request.Query["access_type"] == "offline"
-                                      ? new Dictionary<string, string>
-                                          {
-                                                              { "revoke", "1" }
-                                          }
-                                      : null, additionalStateArgs);
+                    ? new Dictionary<string, string>
+                    {
+                        { "revoke", "1" }
+                    }
+                    : null, additionalStateArgs);
 
                 if (redirect)
                 {
@@ -95,7 +95,9 @@ namespace ASC.FederatedLogin.LoginProviders
         public override LoginProfile GetLoginProfile(string accessToken)
         {
             if (string.IsNullOrEmpty(accessToken))
+            {
                 throw new Exception("Login failed");
+            }
 
             return RequestProfile(accessToken);
         }
@@ -112,16 +114,28 @@ namespace ASC.FederatedLogin.LoginProviders
         private LoginProfile ProfileFromVK(string strProfile)
         {
             var jProfile = JObject.Parse(strProfile);
-            if (jProfile == null) throw new Exception("Failed to correctly process the response");
+            if (jProfile == null)
+            {
+                throw new Exception("Failed to correctly process the response");
+            }
 
             var error = jProfile.Value<JObject>("error");
-            if (error != null) throw new Exception(error.Value<string>("error_msg"));
+            if (error != null)
+            {
+                throw new Exception(error.Value<string>("error_msg"));
+            }
 
             var profileJson = jProfile.Value<JArray>("response");
-            if (profileJson == null) throw new Exception("Failed to correctly process the response");
+            if (profileJson == null)
+            {
+                throw new Exception("Failed to correctly process the response");
+            }
 
             var vkProfiles = profileJson.ToObject<List<VKProfile>>();
-            if (vkProfiles.Count == 0) throw new Exception("Failed to correctly process the response");
+            if (vkProfiles.Count == 0)
+            {
+                throw new Exception("Failed to correctly process the response");
+            }
 
             var profile = new LoginProfile(_signature, _instanceCrypto)
             {
@@ -144,11 +158,14 @@ namespace ASC.FederatedLogin.LoginProviders
 
         private static string GetMail(OAuth20Token token)
         {
-            if (string.IsNullOrEmpty(token.OriginJson)) return null;
+            if (string.IsNullOrEmpty(token.OriginJson))
+            {
+                return null;
+            }
+
             var parser = JObject.Parse(token.OriginJson);
 
-            return
-                parser?.Value<string>("email");
+            return parser?.Value<string>("email");
         }
     }
 }

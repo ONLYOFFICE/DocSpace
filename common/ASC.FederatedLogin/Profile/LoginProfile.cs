@@ -162,6 +162,7 @@ namespace ASC.FederatedLogin.Profile
                 {
                     return DisplayName;
                 }
+
                 var combinedName = string.Join(" ",
                                                new[] { FirstName, MiddleName, LastName }.Where(
                                                    x => !string.IsNullOrEmpty(x)).ToArray());
@@ -169,6 +170,7 @@ namespace ASC.FederatedLogin.Profile
                 {
                     combinedName = Name;
                 }
+
                 return combinedName;
             }
         }
@@ -198,12 +200,17 @@ namespace ASC.FederatedLogin.Profile
                 Provider = Provider,
                 Id = Id
             };
+
             return profileNew;
         }
 
         internal void SetField(string name, string value)
         {
-            if (name == null) throw new ArgumentNullException(nameof(name));
+            if (name == null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
             if (!string.IsNullOrEmpty(value))
             {
                 if (_fields.ContainsKey(name))
@@ -227,6 +234,7 @@ namespace ASC.FederatedLogin.Profile
         internal Uri AppendProfile(Uri uri)
         {
             var value = Transport();
+
             return AppendQueryParam(uri, QueryParamName, value);
         }
 
@@ -237,19 +245,28 @@ namespace ASC.FederatedLogin.Profile
 
         public static bool HasProfile(HttpRequest request)
         {
-            if (request == null) throw new ArgumentNullException(nameof(request));
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             return new Uri(request.GetDisplayUrl()).HasProfile();
         }
 
         public static LoginProfile GetProfile(Signature signature, InstanceCrypto instanceCrypto, HttpContext context, IMemoryCache memoryCache)
         {
-            if (context == null) return new LoginProfile(signature, instanceCrypto);
+            if (context == null)
+            {
+                return new LoginProfile(signature, instanceCrypto);
+            }
+
             return new Uri(context.Request.GetDisplayUrl()).GetProfile(context, memoryCache, signature, instanceCrypto);
         }
 
         internal static LoginProfile FromError(Signature signature, InstanceCrypto instanceCrypto, Exception e)
         {
             var profile = new LoginProfile(signature, instanceCrypto) { AuthorizationError = e.Message };
+
             return profile;
         }
 
@@ -265,11 +282,14 @@ namespace ASC.FederatedLogin.Profile
                 queryString.Add(keyvalue, value);
             }
             var query = new StringBuilder();
+
             foreach (var key in queryString.AllKeys)
             {
                 query.Append($"{key}={queryString[key]}&");
             }
+
             var builder = new UriBuilder(uri) { Query = query.ToString().TrimEnd('&') };
+
             return builder.Uri;
         }
 
@@ -278,14 +298,16 @@ namespace ASC.FederatedLogin.Profile
             //gen key
             var key = HashHelper.MD5(Transport());
             memoryCache.Set(key, this, TimeSpan.FromMinutes(15));
+
             return AppendQueryParam(uri, QuerySessionParamName, key);
         }
 
-        internal Uri AppendSessionProfile(Uri uri, Microsoft.AspNetCore.Http.HttpContext context)
+        internal Uri AppendSessionProfile(Uri uri, HttpContext context)
         {
             //gen key
             var key = HashHelper.MD5(Transport());
             context.Session.SetString(key, JsonConvert.SerializeObject(this));
+
             return AppendQueryParam(uri, QuerySessionParamName, key);
         }
 
@@ -315,12 +337,17 @@ namespace ASC.FederatedLogin.Profile
         {
             var profile = new LoginProfile(signature, instanceCrypto);
             profile.FromSerializedString(serialized);
+
             return profile;
         }
 
         internal void FromSerializedString(string serialized)
         {
-            if (serialized == null) throw new ArgumentNullException(nameof(serialized));
+            if (serialized == null)
+            {
+                throw new ArgumentNullException(nameof(serialized));
+            }
+
             _fields = serialized.Split(PairSeparator).ToDictionary(x => x.Split(KeyValueSeparator)[0], y => y.Split(KeyValueSeparator)[1]);
         }
 
@@ -344,7 +371,10 @@ namespace ASC.FederatedLogin.Profile
         protected LoginProfile(Signature signature, InstanceCrypto instanceCrypto, SerializationInfo info) : this(signature, instanceCrypto)
         {
             if (info == null)
+            {
                 throw new ArgumentNullException(nameof(info));
+            }
+
             var transformed = (string)info.GetValue(QueryParamName, typeof(string));
             FromTransport(transformed);
         }

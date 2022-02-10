@@ -103,6 +103,7 @@ namespace ASC.FederatedLogin
                 uriBuilder.Query = "p=" + token;
                 context.Response.Redirect(uriBuilder.Uri.ToString(), true);
                 await context.Response.CompleteAsync();
+
                 return;
             }
             else

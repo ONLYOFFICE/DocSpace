@@ -66,7 +66,10 @@ namespace ASC.FederatedLogin.LoginProviders
         public LoginProfile GetLoginProfile(string providerType, string accessToken)
         {
             var consumer = GetLoginProvider(providerType);
-            if (consumer == null) throw new ArgumentException("Unknown provider type", nameof(providerType));
+            if (consumer == null)
+            {
+                throw new ArgumentException("Unknown provider type", nameof(providerType));
+            }
 
             try
             {

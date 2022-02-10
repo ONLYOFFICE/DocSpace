@@ -59,11 +59,12 @@ namespace ASC.FederatedLogin.LoginProviders
             try
             {
                 var token = Auth(context, Scopes, out var redirect, context.Request.Query["access_type"] == "offline"
-                                                      ? new Dictionary<string, string>
-                                                          {
-                                                              { "force_confirm", "true" }
-                                                          }
-                                                      : null, additionalStateArgs);
+                    ? new Dictionary<string, string>
+                    {
+                        { "force_confirm", "true" }
+                    }
+                    : null, additionalStateArgs);
+
                 if (redirect)
                 {
                     return null;
@@ -84,7 +85,9 @@ namespace ASC.FederatedLogin.LoginProviders
         public override LoginProfile GetLoginProfile(string accessToken)
         {
             if (string.IsNullOrEmpty(accessToken))
+            {
                 throw new Exception("Login failed");
+            }
 
             return RequestProfile(accessToken);
         }
@@ -100,7 +103,10 @@ namespace ASC.FederatedLogin.LoginProviders
         private LoginProfile ProfileFromYandex(string strProfile)
         {
             var jProfile = JObject.Parse(strProfile);
-            if (jProfile == null) throw new Exception("Failed to correctly process the response");
+            if (jProfile == null)
+            {
+                throw new Exception("Failed to correctly process the response");
+            }
 
             var profile = new LoginProfile(_signature, _instanceCrypto)
             {

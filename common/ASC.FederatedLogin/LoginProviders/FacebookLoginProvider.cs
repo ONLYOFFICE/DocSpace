@@ -55,7 +55,9 @@ namespace ASC.FederatedLogin.LoginProviders
         public override LoginProfile GetLoginProfile(string accessToken)
         {
             if (string.IsNullOrEmpty(accessToken))
+            {
                 throw new Exception("Login failed");
+            }
 
             return RequestProfile(accessToken);
         }
@@ -64,13 +66,17 @@ namespace ASC.FederatedLogin.LoginProviders
         {
             var facebookProfile = RequestHelper.PerformRequest(FacebookProfileUrl + "&access_token=" + accessToken);
             var loginProfile = ProfileFromFacebook(facebookProfile);
+
             return loginProfile;
         }
 
         internal LoginProfile ProfileFromFacebook(string facebookProfile)
         {
             var jProfile = JObject.Parse(facebookProfile);
-            if (jProfile == null) throw new Exception("Failed to correctly process the response");
+            if (jProfile == null)
+            {
+                throw new Exception("Failed to correctly process the response");
+            }
 
             var profile = new LoginProfile(_signature, _instanceCrypto)
             {

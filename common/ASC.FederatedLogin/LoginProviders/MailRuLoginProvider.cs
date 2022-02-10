@@ -121,10 +121,16 @@ namespace ASC.FederatedLogin.LoginProviders
         private LoginProfile ProfileFromMailRu(string strProfile)
         {
             var jProfile = JArray.Parse(strProfile);
-            if (jProfile == null) throw new Exception("Failed to correctly process the response");
+            if (jProfile == null)
+            {
+                throw new Exception("Failed to correctly process the response");
+            }
 
             var mailRuProfiles = jProfile.ToObject<List<MailRuProfile>>();
-            if (mailRuProfiles.Count == 0) throw new Exception("Failed to correctly process the response");
+            if (mailRuProfiles.Count == 0)
+            {
+                throw new Exception("Failed to correctly process the response");
+            }
 
             var profile = new LoginProfile(_signature, _instanceCrypto)
             {
@@ -149,11 +155,14 @@ namespace ASC.FederatedLogin.LoginProviders
 
         private static string GetUid(OAuth20Token token)
         {
-            if (string.IsNullOrEmpty(token.OriginJson)) return null;
+            if (string.IsNullOrEmpty(token.OriginJson))
+            {
+                return null;
+            }
+
             var parser = JObject.Parse(token.OriginJson);
 
-            return
-                parser?.Value<string>("x_mailru_vid");
+            return parser?.Value<string>("x_mailru_vid");
         }
     }
 }

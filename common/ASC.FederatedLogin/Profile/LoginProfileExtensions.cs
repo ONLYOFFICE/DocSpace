@@ -31,6 +31,7 @@ namespace ASC.FederatedLogin.Profile
         {
             return profile.AppendProfile(uri);
         }
+
         public static Uri AddProfileSession(this Uri uri, LoginProfile profile, Microsoft.AspNetCore.Http.HttpContext context)
         {
             return profile.AppendSessionProfile(uri, context);
@@ -58,15 +59,17 @@ namespace ASC.FederatedLogin.Profile
             {
                 return (LoginProfile)memoryCache.Get(queryString[LoginProfile.QuerySessionParamName]);
             }
+
             return null;
         }
 
         public static bool HasProfile(this Uri uri)
         {
             var queryString = HttpUtility.ParseQueryString(uri.Query);
-            return !string.IsNullOrEmpty(queryString[LoginProfile.QueryParamName]) || !string.IsNullOrEmpty(queryString[LoginProfile.QuerySessionParamName]) || !string.IsNullOrEmpty(queryString[LoginProfile.QueryCacheParamName]);
+
+            return !string.IsNullOrEmpty(queryString[LoginProfile.QueryParamName]) 
+                || !string.IsNullOrEmpty(queryString[LoginProfile.QuerySessionParamName]) 
+                || !string.IsNullOrEmpty(queryString[LoginProfile.QueryCacheParamName]);
         }
-
-
     }
 }

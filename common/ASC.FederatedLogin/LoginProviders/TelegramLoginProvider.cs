@@ -60,6 +60,7 @@ namespace ASC.FederatedLogin.LoginProviders
             if (TelegramBotToken.Length == 0)
             {
                 _telegramHelper.DisableClient(TenantManager.GetCurrentTenant().TenantId);
+
                 return true;
             }
             else
