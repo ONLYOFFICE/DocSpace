@@ -363,10 +363,7 @@ class HotkeyStore {
 
     if (this.caretIndex !== -1) {
       return filesList[this.caretIndex].isFolder;
-    } else {
-      console.log("TODO");
-      return false;
-    }
+    } else return false;
   }
 
   get caretIndex() {
@@ -374,10 +371,7 @@ class HotkeyStore {
     const caretIndex = filesList.findIndex((f) => f.id === hotkeyCaret.id);
 
     if (caretIndex !== -1) return caretIndex;
-    else {
-      console.log("TODO");
-      return null;
-    }
+    else return null;
   }
 
   get nextFile() {
@@ -386,10 +380,7 @@ class HotkeyStore {
     if (this.caretIndex !== -1) {
       const nextCaretIndex = this.caretIndex + 1;
       return filesList[nextCaretIndex];
-    } else {
-      console.log("TODO");
-      return null;
-    }
+    } else return null;
   }
 
   get nextForTileDown() {
@@ -431,10 +422,7 @@ class HotkeyStore {
     if (this.caretIndex !== -1) {
       const prevCaretIndex = this.caretIndex - 1;
       return filesList[prevCaretIndex];
-    } else {
-      console.log("TODO");
-      return null;
-    }
+    } else return null;
   }
 
   get prevForTileUp() {
