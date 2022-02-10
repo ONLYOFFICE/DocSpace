@@ -6,6 +6,8 @@ import HelpButton from "../help-button";
 import Text from "../text";
 import Container from "./styled-field-container";
 
+const displayInlineBlock = { display: "inline-block" };
+
 class FieldContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -29,6 +31,7 @@ class FieldContainer extends React.Component {
       errorMessage,
       errorColor,
       errorMessageWidth,
+      inlineHelpButton,
     } = this.props;
 
     return (
@@ -40,24 +43,46 @@ class FieldContainer extends React.Component {
         style={style}
         maxwidth={errorMessageWidth}
       >
-        {labelVisible && (
-          <div className="field-label-icon">
-            <Label
-              isRequired={isRequired}
-              error={hasError}
-              text={labelText}
-              truncate={true}
-              className="field-label"
-            />
-            {tooltipContent && (
-              <HelpButton
-                tooltipContent={tooltipContent}
-                place={place}
-                helpButtonHeaderContent={helpButtonHeaderContent}
+        {labelVisible &&
+          (!inlineHelpButton ? (
+            <div className="field-label-icon">
+              <Label
+                isRequired={isRequired}
+                error={hasError}
+                text={labelText}
+                truncate={true}
+                className="field-label"
               />
-            )}
-          </div>
-        )}
+              {tooltipContent && (
+                <HelpButton
+                  tooltipContent={tooltipContent}
+                  place={place}
+                  helpButtonHeaderContent={helpButtonHeaderContent}
+                />
+              )}
+            </div>
+          ) : (
+            <div className="field-label-icon">
+              <Label
+                isRequired={isRequired}
+                error={hasError}
+                text={labelText}
+                truncate={true}
+                className="field-label"
+              >
+                {tooltipContent && (
+                  <HelpButton
+                    tooltipContent={tooltipContent}
+                    place={place}
+                    helpButtonHeaderContent={helpButtonHeaderContent}
+                    style={displayInlineBlock}
+                    offsetRight={0}
+                  />
+                )}
+              </Label>
+            </div>
+          ))}
+
         <div className="field-body">
           {children}
           {hasError ? (
@@ -87,6 +112,8 @@ FieldContainer.propTypes = {
   /** Field label text or element */
   labelText: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   icon: PropTypes.string,
+  /** Renders help button inline instead of separate div*/
+  inlineHelpButton: PropTypes.bool,
   /** Children elements */
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
