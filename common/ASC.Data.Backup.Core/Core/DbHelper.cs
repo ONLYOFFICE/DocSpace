@@ -9,7 +9,6 @@ public class DbHelper : IDisposable
     private readonly DataTable _columns;
     private readonly bool _mysql;
     private readonly ILog _logger;
-    private readonly BackupsContext _backupsContext;
     private readonly TenantDbContext _tenantDbContext;
     private readonly CoreDbContext _coreDbContext;
     private readonly IDictionary<string, string> _whereExceptions
@@ -18,12 +17,10 @@ public class DbHelper : IDisposable
     public DbHelper(
         IOptionsMonitor<ILog> options,
         ConnectionStringSettings connectionString,
-        BackupsContext backupsContext,
         TenantDbContext tenantDbContext,
         CoreDbContext coreDbContext)
     {
         _logger = options.CurrentValue;
-        _backupsContext = backupsContext;
         _tenantDbContext = tenantDbContext;
         _coreDbContext = coreDbContext;
 

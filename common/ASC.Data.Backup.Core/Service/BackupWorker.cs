@@ -46,21 +46,18 @@ public class BackupWorker
     private int _limit;
     private string _upgradesPath;
     private readonly ILog _logger;
-    private readonly ICacheNotify<BackupProgress> _cacheBackupProgress;
     private readonly FactoryProgressItem _factoryProgressItem;
     private readonly TempPath _tempPath;
     private readonly object _synchRoot = new object();
 
     public BackupWorker(
         IOptionsMonitor<ILog> options,
-        ICacheNotify<BackupProgress> cacheBackupProgress,
         DistributedTaskQueueOptionsManager progressQueue,
         FactoryProgressItem factoryProgressItem,
         TempPath tempPath)
     {
         _logger = options.CurrentValue;
         _progressQueue = progressQueue.Get<BaseBackupProgressItem>();
-        _cacheBackupProgress = cacheBackupProgress;
         _factoryProgressItem = factoryProgressItem;
         _tempPath = tempPath;
     }
