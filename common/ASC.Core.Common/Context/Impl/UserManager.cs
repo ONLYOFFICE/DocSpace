@@ -175,13 +175,13 @@ namespace ASC.Core
         public UserInfo GetUserBySid(string sid)
         {
             return GetUsersInternal()
-                .FirstOrDefault(u => u.Sid != null && u.Sid.Equals(sid, StringComparison.CurrentCultureIgnoreCase)) ?? Constants.LostUser;
+                .FirstOrDefault(u => u.Sid != null && string.Equals(u.Sid , sid, StringComparison.CurrentCultureIgnoreCase)) ?? Constants.LostUser;
         }
 
         public UserInfo GetSsoUserByNameId(string nameId)
         {
             return GetUsersInternal()
-                .FirstOrDefault(u => !string.IsNullOrEmpty(u.SsoNameId) && u.SsoNameId.Equals(nameId, StringComparison.CurrentCultureIgnoreCase)) ?? Constants.LostUser;
+                .FirstOrDefault(u => !string.IsNullOrEmpty(u.SsoNameId) && string.Equals(u.SsoNameId, nameId, StringComparison.CurrentCultureIgnoreCase)) ?? Constants.LostUser;
         }
         public bool IsUserNameExists(string username)
         {
