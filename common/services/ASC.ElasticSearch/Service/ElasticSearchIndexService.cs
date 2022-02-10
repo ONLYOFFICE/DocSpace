@@ -75,7 +75,7 @@ public class ElasticSearchIndexService : IHostedService, IDisposable
         var task = new Task(async () =>
         {
             using var scope = _serviceScopeFactory.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<ServiceLauncherScope>();
+            var scopeClass = scope.ServiceProvider.GetService<ElasticSearchIndexServiceScope>();
             var (factoryIndexer, service) = scopeClass;
             while (!factoryIndexer.CheckState(false))
             {
@@ -202,12 +202,12 @@ public class ElasticSearchIndexService : IHostedService, IDisposable
 }
 
 [Scope]
-public class ServiceLauncherScope
+public class ElasticSearchIndexServiceScope
 {
     private readonly FactoryIndexer _factoryIndexer;
     private readonly ElasticSearchService _service;
 
-    public ServiceLauncherScope(FactoryIndexer factoryIndexer, ElasticSearchService service)
+    public ElasticSearchIndexServiceScope(FactoryIndexer factoryIndexer, ElasticSearchService service)
     {
         _factoryIndexer = factoryIndexer;
         _service = service;
@@ -224,6 +224,6 @@ public class ServiceLauncherExtension
 {
     public static void Register(DIHelper services)
     {
-        services.TryAdd<ServiceLauncherScope>();
+        services.TryAdd<ElasticSearchIndexServiceScope>();
     }
 }
