@@ -246,7 +246,7 @@ namespace ASC.Web.Api.Models
             {
                 var listAdminModules = userInfo.GetListAdminModules(WebItemSecurity);
 
-                if (listAdminModules.Any())
+                if (listAdminModules.Count > 0)
                     result.ListAdminModules = listAdminModules;
             }
 
@@ -267,7 +267,7 @@ namespace ASC.Web.Api.Models
                 }
             }
 
-            if (contacts.Any())
+            if (contacts.Count > 0)
             {
                 employeeWraperFull.Contacts = contacts;
             }

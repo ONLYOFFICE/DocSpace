@@ -27,8 +27,8 @@ namespace ASC.Common.Security
 {
     public class AscRandom : Random
     {
-        private int inext;
-        private int inextp;
+        private int _inext;
+        private int _inextp;
         private const int MBIG = int.MaxValue;
         private const int MSEED = 161803398;
         private const int MZ = 0;
@@ -48,7 +48,7 @@ namespace ASC.Common.Security
             var num3 = 1;
             for (var i = 1; i < seeds.Length - 1; i++)
             {
-                var index = (21 * i) % (seeds.Length - 1);
+                var index = 21 * i % (seeds.Length - 1);
                 seeds[index] = num3;
                 num3 = num2 - num3;
                 if (num3 < 0)
@@ -68,8 +68,8 @@ namespace ASC.Common.Security
                     }
                 }
             }
-            inext = 0;
-            inextp = 21;
+            _inext = 0;
+            _inextp = 21;
         }
 
         public override int Next(int maxValue)
@@ -93,8 +93,8 @@ namespace ASC.Common.Security
 
         private int InternalSample()
         {
-            var inext = this.inext;
-            var inextp = this.inextp;
+            var inext = this._inext;
+            var inextp = this._inextp;
             if (++inext >= seeds.Length - 1)
             {
                 inext = 1;
@@ -113,8 +113,8 @@ namespace ASC.Common.Security
                 num += int.MaxValue;
             }
             seeds[inext] = num;
-            this.inext = inext;
-            this.inextp = inextp;
+            this._inext = inext;
+            this._inextp = inextp;
             return num;
         }
     }

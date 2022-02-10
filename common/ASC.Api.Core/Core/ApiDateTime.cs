@@ -26,7 +26,7 @@
 namespace ASC.Api.Core
 {
     [TypeConverter(typeof(ApiDateTimeTypeConverter))]
-    public class ApiDateTime : IComparable<ApiDateTime>, IComparable
+    public sealed class ApiDateTime : IComparable<ApiDateTime>, IComparable
     {
         internal static readonly string[] Formats = new[]
                                                        {
@@ -77,7 +77,7 @@ namespace ASC.Api.Core
 
         public static ApiDateTime Parse(string data, TimeZoneInfo tz, TenantManager tenantManager, TimeZoneConverter timeZoneConverter)
         {
-            if (string.IsNullOrEmpty(data)) throw new ArgumentNullException("data");
+            if (string.IsNullOrEmpty(data)) throw new ArgumentNullException(nameof(data));
 
             if (data.Length < 7) throw new ArgumentException("invalid date time format");
 
@@ -86,7 +86,7 @@ namespace ASC.Api.Core
             {
                 //Parse time   
                 var tzOffset = TimeSpan.Zero;
-                if (offsetPart.Contains(":") && TimeSpan.TryParse(offsetPart.TrimStart('+'), out tzOffset))
+                if (offsetPart.Contains(':') && TimeSpan.TryParse(offsetPart.TrimStart('+'), out tzOffset))
                 {
                     return new ApiDateTime(dateTime, tzOffset);
                 }
@@ -240,7 +240,7 @@ namespace ASC.Api.Core
         {
             if (obj is null) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != typeof(ApiDateTime)) return false;
+            if (!(obj is ApiDateTime)) return false;
             return Equals((ApiDateTime)obj);
         }
 

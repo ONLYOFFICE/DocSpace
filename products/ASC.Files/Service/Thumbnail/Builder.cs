@@ -67,6 +67,7 @@ namespace ASC.Files.ThumbnailBuilder
         private DocumentServiceHelper DocumentServiceHelper { get; }
         private Global Global { get; }
         private PathProvider PathProvider { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
         public Builder(
             ThumbnailSettings settings,
@@ -76,7 +77,8 @@ namespace ASC.Files.ThumbnailBuilder
             DocumentServiceHelper documentServiceHelper,
             Global global,
             PathProvider pathProvider,
-            IOptionsMonitor<ILog> log)
+            IOptionsMonitor<ILog> log,
+            IHttpClientFactory clientFactory)
         {
             this.config = settings;
             TenantManager = tenantManager;
@@ -86,6 +88,7 @@ namespace ASC.Files.ThumbnailBuilder
             Global = global;
             PathProvider = pathProvider;
             logger = log.Get("ASC.Files.ThumbnailBuilder");
+            ClientFactory = clientFactory;
         }
 
         internal void BuildThumbnail(FileData<T> fileData)
@@ -262,13 +265,7 @@ namespace ASC.Files.ThumbnailBuilder
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(thumbnailUrl);
 
-            //HACK: http://ubuntuforums.org/showthread.php?t=1841740
-            if (WorkContext.IsMono && ServicePointManager.ServerCertificateValidationCallback == null)
-            {
-                ServicePointManager.ServerCertificateValidationCallback += (s, c, n, p) => true;
-            }
-
-            using var httpClient = new HttpClient();
+            var httpClient = ClientFactory.CreateClient();
             using var response = httpClient.Send(request);
             using (var stream = new ResponseStream(response))
             {

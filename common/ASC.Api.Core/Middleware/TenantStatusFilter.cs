@@ -23,7 +23,7 @@
             if (tenant == null)
             {
                 context.Result = new StatusCodeResult((int)HttpStatusCode.NotFound);
-                log.WarnFormat("Tenant {0} not found", tenant.TenantId);
+                log.WarnFormat("Current tenant not found");
                 return;
             }
 

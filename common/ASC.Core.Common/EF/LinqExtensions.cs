@@ -26,7 +26,7 @@
         private static PropertyInfo GetPropertyInfo(Type objType, string name)
         {
             var properties = objType.GetProperties();
-            var matchedProperty = properties.FirstOrDefault(p => p.Name.ToLower() == name.ToLower());
+            var matchedProperty = properties.FirstOrDefault(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
             if (matchedProperty == null)
                 throw new ArgumentException("name");
 

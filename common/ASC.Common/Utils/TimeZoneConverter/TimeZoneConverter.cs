@@ -106,7 +106,7 @@ namespace ASC.Common.Utils
             if (mapZone != null)
                 return mapZone.WindowsTimeZoneId;
 
-            Log.Error(string.Format("OlsonTimeZone {0} not found", olsonTimeZoneId));
+            Log.Error("OlsonTimeZone " + olsonTimeZoneId + " not found");
 
             return defaultIfNoMatch ? "UTC" : null;
         }
@@ -123,7 +123,7 @@ namespace ASC.Common.Utils
             if (mapZone != null)
                 return mapZone.OlsonTimeZoneId;
 
-            Log.Error(string.Format("WindowsTimeZone {0} not found", windowsTimeZoneId));
+            Log.Error("WindowsTimeZone " + windowsTimeZoneId + " not found");
 
             return defaultIfNoMatch ? "Etc/GMT" : null;
         }

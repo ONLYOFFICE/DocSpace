@@ -12,7 +12,7 @@
 
             var connectionString = configurationExtension.GetConnectionStrings("default");
 
-            if (String.Compare(connectionString.ProviderName, "MySql.Data.MySqlClient") == 0)
+            if (string.Equals(connectionString.ProviderName, "MySql.Data.MySqlClient"))
             {
                 hcBuilder.AddMySql(connectionString.ConnectionString,
                                    name: "mysqldb",
@@ -20,7 +20,7 @@
                                   );
             }
 
-            if (String.Compare(connectionString.ProviderName, "Npgsql") == 0)
+            if (string.Equals(connectionString.ProviderName, "Npgsql"))
             {
                 hcBuilder.AddNpgSql(connectionString.ConnectionString,
                                    name: "postgredb",

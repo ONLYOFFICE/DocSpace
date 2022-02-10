@@ -69,18 +69,20 @@
             if (deleteSourceFile)
             {
                 if (fromFileShareRecords.Any())
-                    fromFileShareRecords.ToList().ForEach(x =>
+                {
+                    foreach (var record in fromFileShareRecords)
                     {
-                        x.EntryId = toFile.ID;
-                        securityDao.SetShare(x);
-                    });
+                        record.EntryId = toFile.ID;
+                        securityDao.SetShare(record);
+                    }
+                }
 
                 var fromFileTags = fromFileNewTags;
                 if (fromFileLockTag != null) fromFileTags.Add(fromFileLockTag);
                 if (fromFileFavoriteTag != null) fromFileTags.AddRange(fromFileFavoriteTag);
                 if (fromFileTemplateTag != null) fromFileTags.AddRange(fromFileTemplateTag);
 
-                if (fromFileTags.Any())
+                if (fromFileTags.Count > 0)
                 {
                     fromFileTags.ForEach(x => x.EntryId = toFile.ID);
 
@@ -150,17 +152,16 @@
 
                 if (fromFileShareRecords.Any())
                 {
-                    fromFileShareRecords.ToList().ForEach(x =>
-                    {
-                        x.EntryId = toFolderId;
-                        securityDao.SetShare(x);
-                    });
+                    foreach(var record in fromFileShareRecords){
+                        record.EntryId = toFolderId;
+                        securityDao.SetShare(record);
+                    }
                 }
 
                 var tagDao = ServiceProvider.GetService<ITagDao<TFrom>>();
                 var fromFileNewTags = tagDao.GetNewTags(Guid.Empty, fromFolder).ToList();
 
-                if (fromFileNewTags.Any())
+                if (fromFileNewTags.Count > 0)
                 {
                     fromFileNewTags.ForEach(x => x.EntryId = toFolderId);
 
@@ -177,7 +178,7 @@
         }
     }
 
-    public class CrossDaoExtension
+    public static class CrossDaoExtension
     {
         public static void Register(DIHelper services)
         {

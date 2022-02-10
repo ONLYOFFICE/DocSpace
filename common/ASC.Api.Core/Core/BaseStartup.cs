@@ -30,6 +30,7 @@ namespace ASC.Api.Core
             services.AddCustomHealthCheck(Configuration);
             services.AddHttpContextAccessor();
             services.AddMemoryCache();
+            services.AddHttpClient();
 
             if (AddAndUseSession)
                 services.AddSession();
@@ -93,7 +94,7 @@ namespace ASC.Api.Core
                 DIHelper.RegisterProducts(Configuration, HostEnvironment.ContentRootPath);
             }
 
-            var builder = services.AddMvcCore(config =>
+            services.AddMvcCore(config =>
             {
                 config.Conventions.Add(new ControllerNameAttributeConvention());
 

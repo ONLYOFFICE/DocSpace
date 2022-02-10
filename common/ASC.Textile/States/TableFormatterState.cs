@@ -54,7 +54,7 @@ namespace Textile.States
                                    @"(\.\s?)?(?<tag>\|)" +
                                    @"(?<content>.*)(?=\|)"
                                   );
-            return (m.Success == false);
+            return !m.Success;
         }
 
         protected string FormattedStylesAndAlignment()

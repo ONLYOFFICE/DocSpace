@@ -57,7 +57,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
         }
     }
 
-    public class SharpBoxDaoSelectorExtension
+    public static class SharpBoxDaoSelectorExtension
     {
         public static void Register(DIHelper services)
         {
