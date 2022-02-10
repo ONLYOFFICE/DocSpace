@@ -135,33 +135,35 @@ Scenario("Registration tab render test", async ({ I }) => {
   }
 });
 
-Scenario("Help button modal render test", async ({ I }) => {
-  I.seeElement({
-    react: "HelpButton",
-    props: {
-      className: "login-tooltip",
-    },
-  });
-
-  I.click({
-    react: "HelpButton",
-    props: {
-      className: "login-tooltip",
-    },
-  });
-
-  I.see(
-    "The default session lifetime is 20 minutes. Check this option to set it to 1 year. To set your own value, go to Settings."
-  );
-
-  I.saveScreenshot(`4.help-button-modal.png`);
-  if (!isModel) {
-    I.seeVisualDiff(`4.help-button-modal.png`, {
-      tolerance: 1,
-      prepareBaseImage: false,
+//TODO: check help button test on mobile chromium/ff
+if (browser === "webkit" || deviceType === "desktop") {
+  Scenario("Help button modal render test", async ({ I }) => {
+    I.seeElement({
+      react: "HelpButton",
+      props: {
+        className: "login-tooltip",
+      },
     });
-  }
-});
+
+    I.click({
+      react: "HelpButton",
+      props: {
+        className: "login-tooltip",
+      },
+    });
+    I.see(
+      "The default session lifetime is 20 minutes. Check this option to set it to 1 year. To set your own value, go to Settings."
+    );
+
+    I.saveScreenshot(`4.help-button-modal.png`);
+    if (!isModel) {
+      I.seeVisualDiff(`4.help-button-modal.png`, {
+        tolerance: 1,
+        prepareBaseImage: false,
+      });
+    }
+  });
+}
 
 Scenario("More login modal render test", async ({ I }) => {
   I.seeElement({
