@@ -28,23 +28,27 @@ namespace ASC.Feed.Data
     [Scope]
     public class FeedAggregateDataProvider
     {
-        private AuthContext AuthContext { get; }
-        private TenantManager TenantManager { get; }
-        private TenantUtil TenantUtil { get; }
-        private Lazy<FeedDbContext> LazyFeedDbContext { get; }
-        private FeedDbContext FeedDbContext { get => LazyFeedDbContext.Value; }
+        private readonly AuthContext _authContext;
+        private readonly TenantManager _tenantManager;
+        private readonly TenantUtil _tenantUtil;
+        private readonly Lazy<FeedDbContext> _lazyFeedDbContext;
+        private readonly FeedDbContext FeedDbContext => _lazyFeedDbContext.Value;
 
-        public FeedAggregateDataProvider(AuthContext authContext, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FeedDbContext> dbContextManager)
+        public FeedAggregateDataProvider(
+            AuthContext authContext, 
+            TenantManager tenantManager, 
+            TenantUtil tenantUtil, 
+            DbContextManager<FeedDbContext> dbContextManager)
             : this(authContext, tenantManager, tenantUtil)
         {
-            LazyFeedDbContext = new Lazy<FeedDbContext>(() => dbContextManager.Get(Constants.FeedDbId));
+            _lazyFeedDbContext = new Lazy<FeedDbContext>(() => dbContextManager.Get(Constants.FeedDbId));
         }
 
         public FeedAggregateDataProvider(AuthContext authContext, TenantManager tenantManager, TenantUtil tenantUtil)
         {
-            AuthContext = authContext;
-            TenantManager = tenantManager;
-            TenantUtil = tenantUtil;
+            _authContext = authContext;
+            _tenantManager = tenantManager;
+            _tenantUtil = tenantUtil;
         }
 
         public DateTime GetLastTimeAggregate(string key)
@@ -183,10 +187,10 @@ namespace ASC.Feed.Data
         private List<FeedResultItem> GetFeedsInternal(FeedApiFilter filter)
         {
             var q = FeedDbContext.FeedAggregates
-                .Where(r => r.Tenant == TenantManager.GetCurrentTenant().TenantId)
-                .Where(r => r.ModifiedBy != AuthContext.CurrentAccount.ID)
+                .Where(r => r.Tenant == _tenantManager.GetCurrentTenant().TenantId)
+                .Where(r => r.ModifiedBy != _authContext.CurrentAccount.ID)
                 .Join(FeedDbContext.FeedUsers, a => a.Id, b => b.FeedId, (aggregates, users) => new { aggregates, users })
-                .Where(r => r.users.UserId == AuthContext.CurrentAccount.ID)
+                .Where(r => r.users.UserId == _authContext.CurrentAccount.ID)
                 .OrderByDescending(r => r.aggregates.ModifiedDate)
                 .Skip(filter.Offset)
                 .Take(filter.Max);
@@ -235,10 +239,10 @@ namespace ASC.Feed.Data
                 r.Author,
                 r.ModifiedBy,
                 r.GroupId,
-                TenantUtil.DateTimeFromUtc(r.CreatedDate),
-                TenantUtil.DateTimeFromUtc(r.ModifiedDate),
-                TenantUtil.DateTimeFromUtc(r.AggregateDate),
-                TenantUtil))
+                _tenantUtil.DateTimeFromUtc(r.CreatedDate),
+                _tenantUtil.DateTimeFromUtc(r.ModifiedDate),
+                _tenantUtil.DateTimeFromUtc(r.AggregateDate),
+                _tenantUtil))
                 .ToList();
         }
 
@@ -293,9 +297,19 @@ namespace ASC.Feed.Data
         }
     }
 
-
     public class FeedResultItem
     {
+        public string Json { get; private set; }
+        public string Module { get; private set; }
+        public Guid AuthorId { get; private set; }
+        public Guid ModifiedById { get; private set; }
+        public string GroupId { get; private set; }
+        public bool IsToday { get; private set; }
+        public bool IsYesterday { get; private set; }
+        public DateTime CreatedDate { get; private set; }
+        public DateTime ModifiedDate { get; private set; }
+        public DateTime AggregatedDate { get; private set; }
+
         public FeedResultItem(
             string json,
             string module,
@@ -330,26 +344,6 @@ namespace ASC.Feed.Data
             ModifiedDate = modifiedDate;
             AggregatedDate = aggregatedDate;
         }
-
-        public string Json { get; private set; }
-
-        public string Module { get; private set; }
-
-        public Guid AuthorId { get; private set; }
-
-        public Guid ModifiedById { get; private set; }
-
-        public string GroupId { get; private set; }
-
-        public bool IsToday { get; private set; }
-
-        public bool IsYesterday { get; private set; }
-
-        public DateTime CreatedDate { get; private set; }
-
-        public DateTime ModifiedDate { get; private set; }
-
-        public DateTime AggregatedDate { get; private set; }
 
         public FeedMin ToFeedMin(UserManager userManager)
         {

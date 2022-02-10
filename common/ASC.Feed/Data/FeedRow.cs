@@ -27,28 +27,20 @@ namespace ASC.Feed.Data
 {
     public class FeedRow
     {
-        public Aggregator.Feed Feed { get; private set; }
-
-        public string Id { get { return Feed.Id; } }
-
-        public bool ClearRightsBeforeInsert { get { return Feed.Variate; } }
-
+        public DateTime AggregatedDate { get; set; }
+        public IList<Guid> Users { get; set; }
         public int Tenant { get; set; }
-
         public string ProductId { get; set; }
-
-        public string ModuleId { get { return Feed.Module; } }
-
-        public Guid AuthorId { get { return Feed.AuthorId; } }
-
-        public Guid ModifiedById { get { return Feed.ModifiedBy; } }
-
-        public DateTime CreatedDate { get { return Feed.CreatedDate; } }
-
-        public DateTime ModifiedDate { get { return Feed.ModifiedDate; } }
-
-        public string GroupId { get { return Feed.GroupId; } }
-
+        public Aggregator.Feed Feed { get; private set; }
+        public string Id => Feed.Id;
+        public bool ClearRightsBeforeInsert => Feed.Variate;
+        public string ModuleId => Feed.Module;
+        public Guid AuthorId => Feed.AuthorId;
+        public Guid ModifiedById => Feed.ModifiedBy;
+        public DateTime CreatedDate => Feed.CreatedDate;
+        public DateTime ModifiedDate => Feed.ModifiedDate;
+        public string GroupId => Feed.GroupId;
+        public string Keywords => Feed.Keywords;
         public string Json
         {
             get
@@ -59,13 +51,6 @@ namespace ASC.Feed.Data
                 });
             }
         }
-
-        public string Keywords { get { return Feed.Keywords; } }
-
-        public DateTime AggregatedDate { get; set; }
-
-        public IList<Guid> Users { get; set; }
-
 
         public FeedRow(Aggregator.Feed feed)
         {
