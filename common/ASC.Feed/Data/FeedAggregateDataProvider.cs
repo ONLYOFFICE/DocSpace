@@ -32,7 +32,7 @@ namespace ASC.Feed.Data
         private readonly TenantManager _tenantManager;
         private readonly TenantUtil _tenantUtil;
         private readonly Lazy<FeedDbContext> _lazyFeedDbContext;
-        private readonly FeedDbContext FeedDbContext => _lazyFeedDbContext.Value;
+        private FeedDbContext FeedDbContext => _lazyFeedDbContext.Value;
 
         public FeedAggregateDataProvider(
             AuthContext authContext, 
@@ -76,11 +76,15 @@ namespace ASC.Feed.Data
             foreach (var feed in feeds)
             {
                 feedsPortion.Add(feed);
-                if (feedsPortion.Sum(f => f.Users.Count) <= feedsPortionSize) continue;
+                if (feedsPortion.Sum(f => f.Users.Count) <= feedsPortionSize)
+                {
+                    continue;
+                }
 
                 SaveFeedsPortion(feedsPortion, aggregatedDate);
                 feedsPortion.Clear();
             }
+
             if (feedsPortion.Count > 0)
             {
                 SaveFeedsPortion(feedsPortion, aggregatedDate);
@@ -93,7 +97,10 @@ namespace ASC.Feed.Data
 
             foreach (var f in feeds)
             {
-                if (0 >= f.Users.Count) continue;
+                if (0 >= f.Users.Count)
+                {
+                    continue;
+                }
 
                 var feedAggregate = new FeedAggregate
                 {
@@ -181,6 +188,7 @@ namespace ASC.Feed.Data
                      && tryCount++ < 5);
 
             filter.Offset = filterOffset;
+
             return feeds.Take(filterLimit).SelectMany(group => group.Value).ToList();
         }
 
@@ -351,12 +359,16 @@ namespace ASC.Feed.Data
             feedMin.Author = new FeedMinUser { UserInfo = userManager.GetUsers(feedMin.AuthorId) };
             feedMin.CreatedDate = CreatedDate;
 
-            if (feedMin.Comments == null) return feedMin;
+            if (feedMin.Comments == null)
+            {
+                return feedMin;
+            }
 
             foreach (var comment in feedMin.Comments)
             {
                 comment.Author = new FeedMinUser { UserInfo = userManager.GetUsers(comment.AuthorId) };
             }
+
             return feedMin;
         }
     }

@@ -78,7 +78,10 @@ namespace ASC.Feed.Data
 
         public void SetTimeReaded(Guid user, DateTime time, string module, int tenant)
         {
-            if (string.IsNullOrEmpty(module)) return;
+            if (string.IsNullOrEmpty(module))
+            {
+                return;
+            }
 
             var feedReaded = new FeedReaded
             {
