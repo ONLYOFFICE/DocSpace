@@ -133,10 +133,10 @@ class RestoreBackup extends React.Component {
         }
       })
       .catch((err) => {
-        clearInterval(timerId);
-        timerId && toastr.error(err);
+        clearInterval(this.timerId);
+        this.timerId && toastr.error(err);
         console.log("err", err);
-        timerId = null;
+        this.timerId = null;
 
         this._isMounted &&
           this.setState({
