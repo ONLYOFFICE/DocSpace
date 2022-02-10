@@ -27,43 +27,43 @@ namespace ASC.Data.Storage
 {
     public class ProgressStream : Stream
     {
-        private readonly Stream stream;
-        private long length = long.MaxValue;
+        private readonly Stream _stream;
+        private long _length = long.MaxValue;
 
         public ProgressStream(Stream stream)
         {
-            this.stream = stream ?? throw new ArgumentNullException("stream");
+            _stream = stream ?? throw new ArgumentNullException("stream");
             try
             {
-                length = stream.Length;
+                _length = stream.Length;
             }
             catch (Exception) { }
         }
 
         public override bool CanRead
         {
-            get { return stream.CanRead; }
+            get { return _stream.CanRead; }
         }
 
         public override bool CanSeek
         {
-            get { return stream.CanSeek; }
+            get { return _stream.CanSeek; }
         }
 
         public override bool CanWrite
         {
-            get { return stream.CanWrite; }
+            get { return _stream.CanWrite; }
         }
 
         public override long Length
         {
-            get { return length; }
+            get { return _length; }
         }
 
         public override long Position
         {
-            get { return stream.Position; }
-            set { stream.Position = value; }
+            get { return _stream.Position; }
+            set { _stream.Position = value; }
         }
 
         public event Action<ProgressStream, int> OnReadProgress;
@@ -75,30 +75,30 @@ namespace ASC.Data.Storage
 
         public override void Flush()
         {
-            stream.Flush();
+            _stream.Flush();
         }
 
         public override long Seek(long offset, SeekOrigin origin)
         {
-            return stream.Seek(offset, origin);
+            return _stream.Seek(offset, origin);
         }
 
         public override void SetLength(long value)
         {
-            stream.SetLength(value);
-            length = value;
+            _stream.SetLength(value);
+            _length = value;
         }
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            var readed = stream.Read(buffer, offset, count);
-            OnReadProgress(this, (int)(stream.Position / (double)length * 100));
+            var readed = _stream.Read(buffer, offset, count);
+            OnReadProgress(this, (int)(_stream.Position / (double)_length * 100));
             return readed;
         }
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            stream.Write(buffer, offset, count);
+            _stream.Write(buffer, offset, count);
         }
     }
 }

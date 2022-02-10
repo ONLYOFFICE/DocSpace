@@ -28,21 +28,22 @@ namespace ASC.Data.Storage
     [Singletone]
     public class PathUtils
     {
-        private string StorageRoot { get; }
-        private IConfiguration Configuration { get; }
         public IHostEnvironment HostEnvironment { get; }
-        private IWebHostEnvironment WebHostEnvironment { get; }
+
+        private readonly string _storageRoot;
+        private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
         public PathUtils(IConfiguration configuration, IHostEnvironment hostEnvironment)
         {
-            Configuration = configuration;
+            _configuration = configuration;
             HostEnvironment = hostEnvironment;
-            StorageRoot = Configuration[Constants.STORAGE_ROOT_PARAM];
+            _storageRoot = _configuration[Constants.StorageRootParam];
         }
 
         public PathUtils(IConfiguration configuration, IHostEnvironment hostEnvironment, IWebHostEnvironment webHostEnvironment) : this(configuration, hostEnvironment)
         {
-            WebHostEnvironment = webHostEnvironment;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public static string Normalize(string path, bool addTailingSeparator = false)
@@ -74,9 +75,9 @@ namespace ASC.Data.Storage
             if (virtPath.StartsWith('~') && !Uri.IsWellFormedUriString(virtPath, UriKind.Absolute))
             {
                 var rootPath = "/";
-                if (!string.IsNullOrEmpty(WebHostEnvironment?.WebRootPath) && WebHostEnvironment?.WebRootPath.Length > 1)
+                if (!string.IsNullOrEmpty(_webHostEnvironment?.WebRootPath) && _webHostEnvironment?.WebRootPath.Length > 1)
                 {
-                    rootPath = WebHostEnvironment?.WebRootPath.Trim('/');
+                    rootPath = _webHostEnvironment?.WebRootPath.Trim('/');
                 }
                 virtPath = virtPath.Replace("~", rootPath);
             }
@@ -95,9 +96,9 @@ namespace ASC.Data.Storage
         {
             physPath = Normalize(physPath, false).TrimStart('~');
 
-            if (physPath.Contains(Constants.STORAGE_ROOT_PARAM))
+            if (physPath.Contains(Constants.StorageRootParam))
             {
-                physPath = physPath.Replace(Constants.STORAGE_ROOT_PARAM, StorageRoot ?? storageConfig[Constants.STORAGE_ROOT_PARAM]);
+                physPath = physPath.Replace(Constants.StorageRootParam, _storageRoot ?? storageConfig[Constants.StorageRootParam]);
             }
 
             if (!Path.IsPathRooted(physPath))

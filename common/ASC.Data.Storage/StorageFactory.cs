@@ -79,7 +79,7 @@ namespace ASC.Data.Storage
                     var props = discHandler.Property != null ? discHandler.Property.ToDictionary(r => r.Name, r => r.Value) : new Dictionary<string, string>();
                     foreach (var m in section.Module.Where(m => m.Type == "disc"))
                     {
-                        if (m.Path.Contains(Constants.STORAGE_ROOT_PARAM))
+                        if (m.Path.Contains(Constants.StorageRootParam))
                             builder.RegisterDiscDataHandler(
                                 pathUtils.ResolveVirtualPath(m.VirtualPath),
                                 pathUtils.ResolvePhysicalPath(m.Path, props),
@@ -87,7 +87,7 @@ namespace ASC.Data.Storage
 
                         if (m.Domain != null)
                         {
-                            foreach (var d in m.Domain.Where(d => (d.Type == "disc" || string.IsNullOrEmpty(d.Type)) && d.Path.Contains(Constants.STORAGE_ROOT_PARAM)))
+                            foreach (var d in m.Domain.Where(d => (d.Type == "disc" || string.IsNullOrEmpty(d.Type)) && d.Path.Contains(Constants.StorageRootParam)))
                             {
                                 builder.RegisterDiscDataHandler(
                                     pathUtils.ResolveVirtualPath(d.VirtualPath),
@@ -103,7 +103,7 @@ namespace ASC.Data.Storage
                     foreach (var m in section.Module)
                     {
                         //todo: add path criterion
-                        if (m.Type == "disc" || !m.Public || m.Path.Contains(Constants.STORAGE_ROOT_PARAM))
+                        if (m.Type == "disc" || !m.Public || m.Path.Contains(Constants.StorageRootParam))
                             builder.RegisterStorageHandler(
                                 m.Name,
                                 string.Empty,
@@ -112,7 +112,7 @@ namespace ASC.Data.Storage
                         //todo: add path criterion
                         if (m.Domain != null)
                         {
-                            foreach (var d in m.Domain.Where(d => d.Path.Contains(Constants.STORAGE_ROOT_PARAM)))
+                            foreach (var d in m.Domain.Where(d => d.Path.Contains(Constants.StorageRootParam)))
                             {
                                 builder.RegisterStorageHandler(
                                     m.Name,
@@ -131,12 +131,12 @@ namespace ASC.Data.Storage
     {
         private const string DefaultTenantName = "default";
 
-        private StorageFactoryConfig StorageFactoryConfig { get; }
-        private SettingsManager SettingsManager { get; }
-        private StorageSettingsHelper StorageSettingsHelper { get; }
-        private TenantManager TenantManager { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private IServiceProvider ServiceProvider { get; }
+        private readonly StorageFactoryConfig _storageFactoryConfig;
+        private readonly SettingsManager _settingsManager;
+        private readonly StorageSettingsHelper _storageSettingsHelper;
+        private readonly TenantManager _tenantManager;
+        private readonly CoreBaseSettings _coreBaseSettings;
+        private readonly IServiceProvider _serviceProvider;
 
         public StorageFactory(
             IServiceProvider serviceProvider,
@@ -146,12 +146,12 @@ namespace ASC.Data.Storage
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings)
         {
-            ServiceProvider = serviceProvider;
-            StorageFactoryConfig = storageFactoryConfig;
-            SettingsManager = settingsManager;
-            StorageSettingsHelper = storageSettingsHelper;
-            TenantManager = tenantManager;
-            CoreBaseSettings = coreBaseSettings;
+            _serviceProvider = serviceProvider;
+            _storageFactoryConfig = storageFactoryConfig;
+            _settingsManager = settingsManager;
+            _storageSettingsHelper = storageSettingsHelper;
+            _tenantManager = tenantManager;
+            _coreBaseSettings = coreBaseSettings;
         }
 
         public IDataStore GetStorage(string tenant, string module)
@@ -162,7 +162,7 @@ namespace ASC.Data.Storage
         public IDataStore GetStorage(string configpath, string tenant, string module)
         {
             int.TryParse(tenant, out var tenantId);
-            return GetStorage(configpath, tenant, module, new TenantQuotaController(tenantId, TenantManager));
+            return GetStorage(configpath, tenant, module, new TenantQuotaController(tenantId, _tenantManager));
         }
 
         public IDataStore GetStorage(string configpath, string tenant, string module, IQuotaController controller)
@@ -180,15 +180,15 @@ namespace ASC.Data.Storage
             //Make tennant path
             tenant = TenantPath.CreatePath(tenant);
 
-            var section = StorageFactoryConfig.Section;
+            var section = _storageFactoryConfig.Section;
             if (section == null)
             {
                 throw new InvalidOperationException("config section not found");
             }
 
-            var settings = SettingsManager.LoadForTenant<StorageSettings>(tenantId);
+            var settings = _settingsManager.LoadForTenant<StorageSettings>(tenantId);
             //TODO:GetStoreAndCache
-            return GetDataStore(tenant, module, StorageSettingsHelper.DataStoreConsumer(settings), controller);
+            return GetDataStore(tenant, module, _storageSettingsHelper.DataStoreConsumer(settings), controller);
         }
 
         public IDataStore GetStorageFromConsumer(string configpath, string tenant, string module, DataStoreConsumer consumer)
@@ -198,19 +198,19 @@ namespace ASC.Data.Storage
             //Make tennant path
             tenant = TenantPath.CreatePath(tenant);
 
-            var section = StorageFactoryConfig.Section;
+            var section = _storageFactoryConfig.Section;
             if (section == null)
             {
                 throw new InvalidOperationException("config section not found");
             }
 
             int.TryParse(tenant, out var tenantId);
-            return GetDataStore(tenant, module, consumer, new TenantQuotaController(tenantId, TenantManager));
+            return GetDataStore(tenant, module, consumer, new TenantQuotaController(tenantId, _tenantManager));
         }
 
         private IDataStore GetDataStore(string tenant, string module, DataStoreConsumer consumer, IQuotaController controller)
         {
-            var storage = StorageFactoryConfig.Section;
+            var storage = _storageFactoryConfig.Section;
             var moduleElement = storage.GetModuleElement(module);
             if (moduleElement == null)
             {
@@ -221,7 +221,7 @@ namespace ASC.Data.Storage
             Type instanceType;
             IDictionary<string, string> props;
 
-            if (CoreBaseSettings.Standalone &&
+            if (_coreBaseSettings.Standalone &&
                 !moduleElement.DisableMigrate &&
                 consumer.IsSet)
             {
@@ -235,7 +235,7 @@ namespace ASC.Data.Storage
             }
 
             ;
-            return ((IDataStore)ActivatorUtilities.CreateInstance(ServiceProvider, instanceType))
+            return ((IDataStore)ActivatorUtilities.CreateInstance(_serviceProvider, instanceType))
                 .Configure(tenant, handler, moduleElement, props)
                 .SetQuotaController(moduleElement.Count ? controller : null
                 /*don't count quota if specified on module*/);

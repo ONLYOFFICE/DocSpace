@@ -28,23 +28,21 @@ namespace ASC.Data.Storage
     [Scope(Additional = typeof(StaticUploaderExtension))]
     public class StaticUploader
     {
-        private static readonly TaskScheduler Scheduler;
-        private static readonly CancellationTokenSource TokenSource;
-
-        private ICache Cache { get; set; }
-        private static readonly object Locker;
-
-        private IServiceProvider ServiceProvider { get; }
-        private TenantManager TenantManager { get; }
-        private SettingsManager SettingsManager { get; }
-        private StorageSettingsHelper StorageSettingsHelper { get; }
-
         protected readonly DistributedTaskQueue Queue;
+        private ICache _cache;
+        private static readonly TaskScheduler s_scheduler;
+        private static readonly CancellationTokenSource s_tokenSource;
+        private static readonly object s_locker;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly TenantManager _tenantManager;
+        private readonly SettingsManager _settingsManager;
+        private readonly StorageSettingsHelper _storageSettingsHelper;
+
         static StaticUploader()
         {
-            Scheduler = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, 4).ConcurrentScheduler;
-            Locker = new object();
-            TokenSource = new CancellationTokenSource();
+            s_scheduler = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, 4).ConcurrentScheduler;
+            s_locker = new object();
+            s_tokenSource = new CancellationTokenSource();
         }
 
         public StaticUploader(
@@ -55,34 +53,34 @@ namespace ASC.Data.Storage
             ICache cache,
             DistributedTaskQueueOptionsManager options)
         {
-            Cache = cache;
-            ServiceProvider = serviceProvider;
-            TenantManager = tenantManager;
-            SettingsManager = settingsManager;
-            StorageSettingsHelper = storageSettingsHelper;
+            _cache = cache;
+            _serviceProvider = serviceProvider;
+            _tenantManager = tenantManager;
+            _settingsManager = settingsManager;
+            _storageSettingsHelper = storageSettingsHelper;
             Queue = options.Get<UploadOperationProgress>();
         }
 
         public string UploadFile(string relativePath, string mappedPath, Action<string> onComplete = null)
         {
-            if (TokenSource.Token.IsCancellationRequested) return null;
+            if (s_tokenSource.Token.IsCancellationRequested) return null;
             if (!CanUpload()) return null;
             if (!File.Exists(mappedPath)) return null;
 
-            var tenantId = TenantManager.GetCurrentTenant().TenantId;
+            var tenantId = _tenantManager.GetCurrentTenant().TenantId;
             UploadOperation uploadOperation;
             var key = GetCacheKey(tenantId.ToString(), relativePath);
 
-            lock (Locker)
+            lock (s_locker)
             {
-                uploadOperation = Cache.Get<UploadOperation>(key);
+                uploadOperation = _cache.Get<UploadOperation>(key);
                 if (uploadOperation != null)
                 {
                     return !string.IsNullOrEmpty(uploadOperation.Result) ? uploadOperation.Result : string.Empty;
                 }
 
-                uploadOperation = new UploadOperation(ServiceProvider, tenantId, relativePath, mappedPath);
-                Cache.Insert(key, uploadOperation, DateTime.MaxValue);
+                uploadOperation = new UploadOperation(_serviceProvider, tenantId, relativePath, mappedPath);
+                _cache.Insert(key, uploadOperation, DateTime.MaxValue);
             }
 
             uploadOperation.DoJob();
@@ -93,10 +91,10 @@ namespace ASC.Data.Storage
 
         public Task<string> UploadFileAsync(string relativePath, string mappedPath, Action<string> onComplete = null)
         {
-            var tenantId = TenantManager.GetCurrentTenant().TenantId;
+            var tenantId = _tenantManager.GetCurrentTenant().TenantId;
             var task = new Task<string>(() =>
             {
-                using var scope = ServiceProvider.CreateScope();
+                using var scope = _serviceProvider.CreateScope();
                 var scopeClass = scope.ServiceProvider.GetService<StaticUploaderScope>();
                 var (tenantManager, staticUploader, _, _, _) = scopeClass;
                 tenantManager.SetCurrentTenant(tenantId);
@@ -105,7 +103,7 @@ namespace ASC.Data.Storage
 
             task.ConfigureAwait(false);
 
-            task.Start(Scheduler);
+            task.Start(s_scheduler);
 
             return task;
         }
@@ -115,23 +113,23 @@ namespace ASC.Data.Storage
             if (!CanUpload()) return;
             if (!Directory.Exists(mappedPath)) return;
 
-            var tenant = TenantManager.GetCurrentTenant();
+            var tenant = _tenantManager.GetCurrentTenant();
             var key = typeof(UploadOperationProgress).FullName + tenant.TenantId;
             UploadOperationProgress uploadOperation;
 
-            lock (Locker)
+            lock (s_locker)
             {
                 uploadOperation = Queue.GetTask<UploadOperationProgress>(key);
                 if (uploadOperation != null) return;
 
-                uploadOperation = new UploadOperationProgress(ServiceProvider, key, tenant.TenantId, relativePath, mappedPath);
+                uploadOperation = new UploadOperationProgress(_serviceProvider, key, tenant.TenantId, relativePath, mappedPath);
                 Queue.QueueTask(uploadOperation);
             }
         }
 
         public bool CanUpload()
         {
-            var current = StorageSettingsHelper.DataStoreConsumer(SettingsManager.Load<CdnStorageSettings>());
+            var current = _storageSettingsHelper.DataStoreConsumer(_settingsManager.Load<CdnStorageSettings>());
             if (current == null || !current.IsSet || (string.IsNullOrEmpty(current["cnamessl"]) && string.IsNullOrEmpty(current["cname"])))
             {
                 return false;
@@ -142,12 +140,12 @@ namespace ASC.Data.Storage
 
         public static void Stop()
         {
-            TokenSource.Cancel();
+            s_tokenSource.Cancel();
         }
 
         public UploadOperationProgress GetProgress(int tenantId)
         {
-            lock (Locker)
+            lock (s_locker)
             {
                 var key = typeof(UploadOperationProgress).FullName + tenantId;
                 return Queue.GetTask<UploadOperationProgress>(key);
@@ -162,20 +160,22 @@ namespace ASC.Data.Storage
 
     public class UploadOperation
     {
-        private readonly ILog Log;
-        private readonly int tenantId;
-        private readonly string path;
-        private readonly string mappedPath;
         public string Result { get; private set; }
-        private IServiceProvider ServiceProvider { get; }
+
+        private readonly ILog _logger;
+        private readonly int _tenantId;
+        private readonly string _path;
+        private readonly string _mappedPath;
+
+        private readonly IServiceProvider _serviceProvider;
 
         public UploadOperation(IServiceProvider serviceProvider, int tenantId, string path, string mappedPath)
         {
-            ServiceProvider = serviceProvider;
-            Log = ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
-            this.tenantId = tenantId;
-            this.path = path.TrimStart('/');
-            this.mappedPath = mappedPath;
+            _serviceProvider = serviceProvider;
+            _logger = _serviceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
+            _tenantId = tenantId;
+            _path = path.TrimStart('/');
+            _mappedPath = mappedPath;
             Result = string.Empty;
         }
 
@@ -183,31 +183,31 @@ namespace ASC.Data.Storage
         {
             try
             {
-                using var scope = ServiceProvider.CreateScope();
+                using var scope = _serviceProvider.CreateScope();
                 var scopeClass = scope.ServiceProvider.GetService<StaticUploaderScope>();
                 var (tenantManager, _, securityContext, settingsManager, storageSettingsHelper) = scopeClass;
-                var tenant = tenantManager.GetTenant(tenantId);
+                var tenant = tenantManager.GetTenant(_tenantId);
                 tenantManager.SetCurrentTenant(tenant);
                 securityContext.AuthenticateMeWithoutCookie(tenant.OwnerId);
 
                 var dataStore = storageSettingsHelper.DataStore(settingsManager.Load<CdnStorageSettings>());
 
-                if (File.Exists(mappedPath))
+                if (File.Exists(_mappedPath))
                 {
-                    if (!dataStore.IsFile(path))
+                    if (!dataStore.IsFile(_path))
                     {
-                        using var stream = File.OpenRead(mappedPath);
-                        dataStore.Save(path, stream);
+                        using var stream = File.OpenRead(_mappedPath);
+                        dataStore.Save(_path, stream);
                     }
 
-                    Result = dataStore.GetInternalUri("", path, TimeSpan.Zero, null).AbsoluteUri.ToLower();
-                    Log.DebugFormat("UploadFile {0}", Result);
+                    Result = dataStore.GetInternalUri("", _path, TimeSpan.Zero, null).AbsoluteUri.ToLower();
+                    _logger.DebugFormat("UploadFile {0}", Result);
                     return Result;
                 }
             }
             catch (Exception e)
             {
-                Log.Error(e);
+                _logger.Error(e);
             }
             return null;
         }
@@ -216,37 +216,37 @@ namespace ASC.Data.Storage
     [Transient]
     public class UploadOperationProgress : DistributedTaskProgress
     {
-        private readonly string relativePath;
-        private readonly string mappedPath;
-        private readonly IEnumerable<string> directoryFiles;
-
-        private IServiceProvider ServiceProvider { get; }
         public int TenantId { get; }
+
+        private readonly string _relativePath;
+        private readonly string _mappedPath;
+        private readonly IEnumerable<string> _directoryFiles;
+        private readonly IServiceProvider _serviceProvider;
 
         public UploadOperationProgress(IServiceProvider serviceProvider, string key, int tenantId, string relativePath, string mappedPath)
         {
-            ServiceProvider = serviceProvider;
+            _serviceProvider = serviceProvider;
 
             Id = key;
             Status = DistributedTaskStatus.Created;
 
             TenantId = tenantId;
-            this.relativePath = relativePath;
-            this.mappedPath = mappedPath;
+            _relativePath = relativePath;
+            _mappedPath = mappedPath;
 
             var extensions = ".png|.jpeg|.jpg|.gif|.ico|.swf|.mp3|.ogg|.eot|.svg|.ttf|.woff|.woff2|.css|.less|.js";
             var extensionsArray = extensions.Split('|');
 
-            directoryFiles = Directory.GetFiles(mappedPath, "*", SearchOption.AllDirectories)
+            _directoryFiles = Directory.GetFiles(mappedPath, "*", SearchOption.AllDirectories)
                 .Where(r => extensionsArray.Contains(Path.GetExtension(r)))
                 .ToList();
 
-            StepCount = directoryFiles.Count();
+            StepCount = _directoryFiles.Count();
         }
 
         protected override void DoJob()
         {
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             var staticUploader = scope.ServiceProvider.GetService<StaticUploader>();
             var tenant = tenantManager.GetTenant(TenantId);
@@ -256,10 +256,10 @@ namespace ASC.Data.Storage
             tenantManager.SaveTenant(tenant);
             PublishChanges();
 
-            foreach (var file in directoryFiles)
+            foreach (var file in _directoryFiles)
             {
-                var filePath = file.Substring(mappedPath.TrimEnd('/').Length);
-                staticUploader.UploadFile(CrossPlatform.PathCombine(relativePath, filePath), file, (res) => StepDone());
+                var filePath = file.Substring(_mappedPath.TrimEnd('/').Length);
+                staticUploader.UploadFile(CrossPlatform.PathCombine(_relativePath, filePath), file, (res) => StepDone());
             }
 
             tenant.SetStatus(Core.Tenants.TenantStatus.Active);
@@ -274,11 +274,11 @@ namespace ASC.Data.Storage
     [Scope]
     public class StaticUploaderScope
     {
-        private TenantManager TenantManager { get; }
-        private StaticUploader StaticUploader { get; }
-        private SecurityContext SecurityContext { get; }
-        private SettingsManager SettingsManager { get; }
-        private StorageSettingsHelper StorageSettingsHelper { get; }
+        private readonly TenantManager _tenantManager;
+        private readonly StaticUploader _staticUploader;
+        private readonly SecurityContext _securityContext;
+        private readonly SettingsManager _settingsManager;
+        private readonly StorageSettingsHelper _storageSettingsHelper;
 
         public StaticUploaderScope(TenantManager tenantManager,
             StaticUploader staticUploader,
@@ -286,20 +286,20 @@ namespace ASC.Data.Storage
             SettingsManager settingsManager,
             StorageSettingsHelper storageSettingsHelper)
         {
-            TenantManager = tenantManager;
-            StaticUploader = staticUploader;
-            SecurityContext = securityContext;
-            SettingsManager = settingsManager;
-            StorageSettingsHelper = storageSettingsHelper;
+            _tenantManager = tenantManager;
+            _staticUploader = staticUploader;
+            _securityContext = securityContext;
+            _settingsManager = settingsManager;
+            _storageSettingsHelper = storageSettingsHelper;
         }
 
         public void Deconstruct(out TenantManager tenantManager, out StaticUploader staticUploader, out SecurityContext securityContext, out SettingsManager settingsManager, out StorageSettingsHelper storageSettingsHelper)
         {
-            tenantManager = TenantManager;
-            staticUploader = StaticUploader;
-            securityContext = SecurityContext;
-            settingsManager = SettingsManager;
-            storageSettingsHelper = StorageSettingsHelper;
+            tenantManager = _tenantManager;
+            staticUploader = _staticUploader;
+            securityContext = _securityContext;
+            settingsManager = _settingsManager;
+            storageSettingsHelper = _storageSettingsHelper;
         }
     }
 

@@ -28,10 +28,10 @@ namespace ASC.Data.Storage
 {
     class Constants
     {
-        public const string CONFIG_DIR = "CONFIG_DIR";
-        public const string STORAGE_ROOT_PARAM = "$STORAGE_ROOT";
-        public const string QUERY_AUTH = "auth";
-        public const string QUERY_EXPIRE = "expire";
-        public const string QUERY_HEADER = "headers";
+        public const string ConfigDir = "CONFIG_DIR";
+        public const string StorageRootParam = "$STORAGE_ROOT";
+        public const string QueryAuth = "auth";
+        public const string QueryExpire = "expire";
+        public const string QueryHeader = "headers";
     }
 }

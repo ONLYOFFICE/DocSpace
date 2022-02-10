@@ -28,31 +28,31 @@ namespace ASC.Data.Storage.Encryption
     [Singletone]
     public class EncryptionWorker
     {
-        private object Locker { get; }
-        private FactoryOperation FactoryOperation { get; }
-        private DistributedTaskQueue Queue { get; }
+        private readonly object _locker;
+        private readonly FactoryOperation _factoryOperation;
+        private readonly DistributedTaskQueue _queue;
 
         public EncryptionWorker(FactoryOperation factoryOperation, DistributedTaskQueueOptionsManager options)
         {
-            Locker = new object();
-            FactoryOperation = factoryOperation;
-            Queue = options.Get<EncryptionOperation>();
+            _locker = new object();
+            _factoryOperation = factoryOperation;
+            _queue = options.Get<EncryptionOperation>();
         }
 
         public void Start(EncryptionSettingsProto encryptionSettings)
         {
             EncryptionOperation encryptionOperation;
-            lock (Locker)
+            lock (_locker)
             {
-                if (Queue.GetTask<EncryptionOperation>(GetCacheId()) != null) return;
-                encryptionOperation = FactoryOperation.CreateOperation(encryptionSettings, GetCacheId());
-                Queue.QueueTask(encryptionOperation);
+                if (_queue.GetTask<EncryptionOperation>(GetCacheId()) != null) return;
+                encryptionOperation = _factoryOperation.CreateOperation(encryptionSettings, GetCacheId());
+                _queue.QueueTask(encryptionOperation);
             }
         }
 
         public void Stop()
         {
-            Queue.CancelTask(GetCacheId());
+            _queue.CancelTask(GetCacheId());
         }
 
         public string GetCacheId()
@@ -62,7 +62,7 @@ namespace ASC.Data.Storage.Encryption
 
         public double? GetEncryptionProgress()
         {
-            var progress = Queue.GetTasks<EncryptionOperation>().FirstOrDefault();
+            var progress = _queue.GetTasks<EncryptionOperation>().FirstOrDefault();
             return progress.Percentage;
     }
     }
@@ -70,16 +70,16 @@ namespace ASC.Data.Storage.Encryption
     [Singletone(Additional = typeof(FactoryOperationExtension))]
     public class FactoryOperation
     {
-        private IServiceProvider ServiceProvider { get; set; }
+        private readonly IServiceProvider _serviceProvider;
 
         public FactoryOperation(IServiceProvider serviceProvider)
         {
-            ServiceProvider = serviceProvider;
+            _serviceProvider = serviceProvider;
         }
 
         public EncryptionOperation CreateOperation(EncryptionSettingsProto encryptionSettings, string id)
         {
-            var item = ServiceProvider.GetService<EncryptionOperation>();
+            var item = _serviceProvider.GetService<EncryptionOperation>();
             item.Init(encryptionSettings, id);
             return item;
         }

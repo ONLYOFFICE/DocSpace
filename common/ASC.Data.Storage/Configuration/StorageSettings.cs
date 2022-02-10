@@ -28,29 +28,30 @@ namespace ASC.Data.Storage.Configuration
     [Singletone(Additional = typeof(StorageSettingsExtension))]
     public class BaseStorageSettingsListener
     {
-        private IServiceProvider ServiceProvider { get; }
-        private volatile bool Subscribed;
-        private readonly object locker;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly object _locker;
+        private volatile bool _subscribed;
+        
 
         public BaseStorageSettingsListener(IServiceProvider serviceProvider)
         {
-            ServiceProvider = serviceProvider;
-            locker = new object();
+            _serviceProvider = serviceProvider;
+            _locker = new object();
         }
 
         public void Subscribe()
         {
-            if (Subscribed) return;
+            if (_subscribed) return;
 
-            lock (locker)
+            lock (_locker)
             {
-                if (Subscribed) return;
+                if (_subscribed) return;
 
-                Subscribed = true;
+                _subscribed = true;
 
-                ServiceProvider.GetService<ICacheNotify<ConsumerCacheItem>>().Subscribe((i) =>
+                _serviceProvider.GetService<ICacheNotify<ConsumerCacheItem>>().Subscribe((i) =>
                 {
-                    using var scope = ServiceProvider.CreateScope();
+                    using var scope = _serviceProvider.CreateScope();
 
                     var scopeClass = scope.ServiceProvider.GetService<BaseStorageSettingsListenerScope>();
                     var (storageSettingsHelper, settingsManager, cdnStorageSettings) = scopeClass;
@@ -113,14 +114,16 @@ namespace ASC.Data.Storage.Configuration
     [Scope]
     public class StorageSettingsHelper
     {
-        private StorageFactoryConfig StorageFactoryConfig { get; }
-        private PathUtils PathUtils { get; }
-        private ICacheNotify<DataStoreCacheItem> Cache { get; }
-        private IOptionsMonitor<ILog> Options { get; }
-        private TenantManager TenantManager { get; }
-        private SettingsManager SettingsManager { get; }
-        private IHttpContextAccessor HttpContextAccessor { get; }
-        private ConsumerFactory ConsumerFactory { get; }
+        private readonly StorageFactoryConfig _storageFactoryConfig;
+        private readonly PathUtils _pathUtils;
+        private readonly ICacheNotify<DataStoreCacheItem> _cache;
+        private readonly IOptionsMonitor<ILog> _options;
+        private readonly TenantManager _tenantManager;
+        private readonly SettingsManager _settingsManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ConsumerFactory _consumerFactory;
+        private DataStoreConsumer _dataStoreConsumer;
+        private IDataStore _dataStore;
 
         public StorageSettingsHelper(
             BaseStorageSettingsListener baseStorageSettingsListener,
@@ -133,13 +136,13 @@ namespace ASC.Data.Storage.Configuration
             ConsumerFactory consumerFactory)
         {
             baseStorageSettingsListener.Subscribe();
-            StorageFactoryConfig = storageFactoryConfig;
-            PathUtils = pathUtils;
-            Cache = cache;
-            Options = options;
-            TenantManager = tenantManager;
-            SettingsManager = settingsManager;
-            ConsumerFactory = consumerFactory;
+            _storageFactoryConfig = storageFactoryConfig;
+            _pathUtils = pathUtils;
+            _cache = cache;
+            _options = options;
+            _tenantManager = tenantManager;
+            _settingsManager = settingsManager;
+            _consumerFactory = consumerFactory;
         }
         public StorageSettingsHelper(
             BaseStorageSettingsListener baseStorageSettingsListener,
@@ -153,23 +156,23 @@ namespace ASC.Data.Storage.Configuration
             ConsumerFactory consumerFactory)
             : this(baseStorageSettingsListener, storageFactoryConfig, pathUtils, cache, options, tenantManager, settingsManager, consumerFactory)
         {
-            HttpContextAccessor = httpContextAccessor;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public bool Save<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings, new()
         {
             ClearDataStoreCache();
-            dataStoreConsumer = null;
-            return SettingsManager.Save(baseStorageSettings);
+            _dataStoreConsumer = null;
+            return _settingsManager.Save(baseStorageSettings);
         }
 
         internal void ClearDataStoreCache()
         {
-            var tenantId = TenantManager.GetCurrentTenant().TenantId.ToString();
+            var tenantId = _tenantManager.GetCurrentTenant().TenantId.ToString();
             var path = TenantPath.CreatePath(tenantId);
-            foreach (var module in StorageFactoryConfig.GetModuleList("", true))
+            foreach (var module in _storageFactoryConfig.GetModuleList("", true))
             {
-                Cache.Publish(new DataStoreCacheItem() { TenantId = path, Module = module }, CacheNotifyAction.Remove);
+                _cache.Publish(new DataStoreCacheItem() { TenantId = path, Module = module }, CacheNotifyAction.Remove);
             }
         }
 
@@ -180,57 +183,55 @@ namespace ASC.Data.Storage.Configuration
             Save(baseStorageSettings);
         }
 
-        private DataStoreConsumer dataStoreConsumer;
         public DataStoreConsumer DataStoreConsumer<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings, new()
         {
-            if (string.IsNullOrEmpty(baseStorageSettings.Module) || baseStorageSettings.Props == null) return dataStoreConsumer = new DataStoreConsumer();
+            if (string.IsNullOrEmpty(baseStorageSettings.Module) || baseStorageSettings.Props == null) return _dataStoreConsumer = new DataStoreConsumer();
 
-            var consumer = ConsumerFactory.GetByKey<DataStoreConsumer>(baseStorageSettings.Module);
+            var consumer = _consumerFactory.GetByKey<DataStoreConsumer>(baseStorageSettings.Module);
 
-            if (!consumer.IsSet) return dataStoreConsumer = new DataStoreConsumer();
+            if (!consumer.IsSet) return _dataStoreConsumer = new DataStoreConsumer();
 
-            dataStoreConsumer = (DataStoreConsumer)consumer.Clone();
+            _dataStoreConsumer = (DataStoreConsumer)consumer.Clone();
 
             foreach (var prop in baseStorageSettings.Props)
             {
-                dataStoreConsumer[prop.Key] = prop.Value;
+                _dataStoreConsumer[prop.Key] = prop.Value;
             }
 
-            return dataStoreConsumer;
+            return _dataStoreConsumer;
         }
-
-        private IDataStore dataStore;
+        
         public IDataStore DataStore<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings, new()
         {
-            if (dataStore != null) return dataStore;
+            if (_dataStore != null) return _dataStore;
 
             if (DataStoreConsumer(baseStorageSettings).HandlerType == null) return null;
 
-            return dataStore = ((IDataStore)
-                Activator.CreateInstance(DataStoreConsumer(baseStorageSettings).HandlerType, TenantManager, PathUtils, HttpContextAccessor, Options))
-                .Configure(TenantManager.GetCurrentTenant().TenantId.ToString(), null, null, DataStoreConsumer(baseStorageSettings));
+            return _dataStore = ((IDataStore)
+                Activator.CreateInstance(DataStoreConsumer(baseStorageSettings).HandlerType, _tenantManager, _pathUtils, _httpContextAccessor, _options))
+                .Configure(_tenantManager.GetCurrentTenant().TenantId.ToString(), null, null, DataStoreConsumer(baseStorageSettings));
         }
     }
 
     [Scope]
     public class BaseStorageSettingsListenerScope
     {
-        private StorageSettingsHelper StorageSettingsHelper { get; }
-        private SettingsManager SettingsManager { get; }
-        private CdnStorageSettings CdnStorageSettings { get; }
+        private readonly StorageSettingsHelper _storageSettingsHelper;
+        private readonly SettingsManager _settingsManager;
+        private readonly CdnStorageSettings _cdnStorageSettings;
 
         public BaseStorageSettingsListenerScope(StorageSettingsHelper storageSettingsHelper, SettingsManager settingsManager, CdnStorageSettings cdnStorageSettings)
         {
-            StorageSettingsHelper = storageSettingsHelper;
-            SettingsManager = settingsManager;
-            CdnStorageSettings = cdnStorageSettings;
+            _storageSettingsHelper = storageSettingsHelper;
+            _settingsManager = settingsManager;
+            _cdnStorageSettings = cdnStorageSettings;
         }
 
         public void Deconstruct(out StorageSettingsHelper storageSettingsHelper, out SettingsManager settingsManager, out CdnStorageSettings cdnStorageSettings)
         {
-            storageSettingsHelper = StorageSettingsHelper;
-            settingsManager = SettingsManager;
-            cdnStorageSettings = CdnStorageSettings;
+            storageSettingsHelper = _storageSettingsHelper;
+            settingsManager = _settingsManager;
+            cdnStorageSettings = this._cdnStorageSettings;
         }
     }
 

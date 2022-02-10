@@ -28,7 +28,7 @@ namespace ASC.Data.Storage
     [Singletone]
     public class WebPathSettings
     {
-        private readonly IEnumerable<Appender> Appenders;
+        private readonly IEnumerable<Appender> _appenders;
 
 
         public WebPathSettings(Configuration.Storage storage)
@@ -36,7 +36,7 @@ namespace ASC.Data.Storage
             var section = storage;
             if (section != null)
             {
-                Appenders = section.Appender;
+                _appenders = section.Appender;
             }
         }
 
@@ -47,7 +47,7 @@ namespace ASC.Data.Storage
                 throw new ArgumentException(string.Format("bad path format {0} is not absolute", absolutePath));
             }
 
-            var appender = Appenders.FirstOrDefault(x => absolutePath.Contains(x.Append) || (absolutePath.Contains(x.AppendSecure) && !string.IsNullOrEmpty(x.AppendSecure)));
+            var appender = _appenders.FirstOrDefault(x => absolutePath.Contains(x.Append) || (absolutePath.Contains(x.AppendSecure) && !string.IsNullOrEmpty(x.AppendSecure)));
             if (appender == null)
             {
                 return absolutePath;
@@ -67,9 +67,9 @@ namespace ASC.Data.Storage
             var result = relativePath;
             var ext = Path.GetExtension(relativePath).ToLowerInvariant();
 
-            if (Appenders.Any())
+            if (_appenders.Any())
             {
-                var avaliableAppenders = Appenders.Where(x => x.Extensions != null && x.Extensions.Split('|').Contains(ext) || string.IsNullOrEmpty(ext)).ToList();
+                var avaliableAppenders = _appenders.Where(x => x.Extensions != null && x.Extensions.Split('|').Contains(ext) || string.IsNullOrEmpty(ext)).ToList();
                 var avaliableAppendersCount = avaliableAppenders.LongCount();
 
                 Appender appender;
@@ -83,7 +83,7 @@ namespace ASC.Data.Storage
                 }
                 else
                 {
-                    appender = Appenders.First();
+                    appender = _appenders.First();
                 }
 
                 if (appender.Append.IndexOf('~') == 0)

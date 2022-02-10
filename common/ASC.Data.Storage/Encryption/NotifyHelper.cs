@@ -30,19 +30,19 @@ namespace ASC.Data.Storage.Encryption
     {
         private const string NotifyService = "ASC.Web.Studio.Core.Notify.StudioNotifyService, ASC.Web.Core";
 
-        private string ServerRootPath { get; set; }
-        private NotifyServiceClient NotifyServiceClient { get; set; }
-        private ILog Log { get; set; }
+        private string _serverRootPath;
+        private readonly NotifyServiceClient _notifyServiceClient;
+        private readonly ILog _logger;
 
         public NotifyHelper(IOptionsMonitor<ILog> option, NotifyServiceClient notifyServiceClient)
         {
-            NotifyServiceClient = notifyServiceClient;
-            Log = option.CurrentValue;
+            _notifyServiceClient = notifyServiceClient;
+            _logger = option.CurrentValue;
         }
 
         public void Init(string serverRootPath)
         {
-            ServerRootPath = serverRootPath;
+            _serverRootPath = serverRootPath;
         }
 
         public void SendStorageEncryptionStart(int tenantId)
@@ -83,14 +83,14 @@ namespace ASC.Data.Storage.Encryption
                 Method = method,
                 Tenant = tenantId
             };
-            notifyInvoke.Parameters.Add(ServerRootPath);
+            notifyInvoke.Parameters.Add(_serverRootPath);
             try
             {
-                NotifyServiceClient.InvokeSendMethod(notifyInvoke);
+                _notifyServiceClient.InvokeSendMethod(notifyInvoke);
             }
             catch (Exception error)
             {
-                Log.Warn("Error while sending notification", error);
+                _logger.Warn("Error while sending notification", error);
             }
         }
     }

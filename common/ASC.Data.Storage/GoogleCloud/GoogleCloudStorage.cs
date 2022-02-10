@@ -32,8 +32,8 @@ namespace ASC.Data.Storage.GoogleCloud
         private Dictionary<string, PredefinedObjectAcl> _domainsAcl;
         private PredefinedObjectAcl _moduleAcl;
 
-        private string _bucket = "";
-        private string _json = "";
+        private string _bucket = string.Empty;
+        private string _json = string.Empty;
 
         private Uri _bucketRoot;
         private Uri _bucketSSlRoot;
@@ -166,7 +166,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
         public Uri GetUriShared(string domain, string path)
         {
-            return new Uri(SecureHelper.IsSecure(HttpContextAccessor.HttpContext, Options) ? _bucketSSlRoot : _bucketRoot, MakePath(domain, path));
+            return new Uri(SecureHelper.IsSecure(_httpContextAccessor.HttpContext, _options) ? _bucketSSlRoot : _bucketRoot, MakePath(domain, path));
         }
 
         private Uri MakeUri(string preSignedURL)
@@ -185,7 +185,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
         public override System.IO.Stream GetReadStream(string domain, string path, int offset)
         {
-            var tempStream = TempStream.Create();
+            var tempStream = _tempStream.Create();
 
             using var storage = GetStorage();
 
@@ -201,7 +201,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
         public override async Task<Stream> GetReadStreamAsync(string domain, string path, int offset)
         {
-            var tempStream = TempStream.Create();
+            var tempStream = _tempStream.Create();
 
             var storage = GetStorage();
 
@@ -251,7 +251,7 @@ namespace ASC.Data.Storage.GoogleCloud
                           string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5)
         {
 
-            var buffered = TempStream.GetBuffered(stream);
+            var buffered = _tempStream.GetBuffered(stream);
 
             if (QuotaController != null)
             {
@@ -649,7 +649,7 @@ namespace ASC.Data.Storage.GoogleCloud
             using var storage = GetStorage();
 
             var objectKey = MakePath(domain, path);
-            var buffered = TempStream.GetBuffered(stream);
+            var buffered = _tempStream.GetBuffered(stream);
 
             var uploadObjectOptions = new UploadObjectOptions
             {

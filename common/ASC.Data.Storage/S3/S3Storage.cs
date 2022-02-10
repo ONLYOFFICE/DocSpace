@@ -31,15 +31,15 @@ namespace ASC.Data.Storage.S3
         private readonly List<string> _domains = new List<string>();
         private Dictionary<string, S3CannedACL> _domainsAcl;
         private S3CannedACL _moduleAcl;
-        private string _accessKeyId = "";
-        private string _bucket = "";
-        private string _recycleDir = "";
+        private string _accessKeyId = string.Empty;
+        private string _bucket = string.Empty;
+        private string _recycleDir = string.Empty;
         private Uri _bucketRoot;
         private Uri _bucketSSlRoot;
         private string _region = string.Empty;
         private string _serviceurl;
         private bool _forcepathstyle;
-        private string _secretAccessKeyId = "";
+        private string _secretAccessKeyId = string.Empty;
         private ServerSideEncryptionMethod _sse = ServerSideEncryptionMethod.AES256;
         private bool _useHttp = true;
 
@@ -85,12 +85,12 @@ namespace ASC.Data.Storage.S3
 
         public Uri GetUriInternal(string path)
         {
-            return new Uri(SecureHelper.IsSecure(HttpContextAccessor?.HttpContext, Options) ? _bucketSSlRoot : _bucketRoot, path);
+            return new Uri(SecureHelper.IsSecure(_httpContextAccessor?.HttpContext, _options) ? _bucketSSlRoot : _bucketRoot, path);
         }
 
         public Uri GetUriShared(string domain, string path)
         {
-            return new Uri(SecureHelper.IsSecure(HttpContextAccessor?.HttpContext, Options) ? _bucketSSlRoot : _bucketRoot, MakePath(domain, path));
+            return new Uri(SecureHelper.IsSecure(_httpContextAccessor?.HttpContext, _options) ? _bucketSSlRoot : _bucketRoot, MakePath(domain, path));
         }
 
         public override Uri GetInternalUri(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
@@ -109,7 +109,7 @@ namespace ASC.Data.Storage.S3
                 BucketName = _bucket,
                 Expires = DateTime.UtcNow.Add(expire),
                 Key = MakePath(domain, path),
-                Protocol = SecureHelper.IsSecure(HttpContextAccessor?.HttpContext, Options) ? Protocol.HTTPS : Protocol.HTTP,
+                Protocol = SecureHelper.IsSecure(_httpContextAccessor?.HttpContext, _options) ? Protocol.HTTPS : Protocol.HTTP,
                 Verb = HttpVerb.GET
             };
 
@@ -219,7 +219,7 @@ namespace ASC.Data.Storage.S3
         public Uri Save(string domain, string path, Stream stream, string contentType,
                                  string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5)
         {
-            var buffered = TempStream.GetBuffered(stream);
+            var buffered = _tempStream.GetBuffered(stream);
             if (QuotaController != null)
             {
                 QuotaController.QuotaUsedCheck(buffered.Length);
@@ -619,7 +619,7 @@ namespace ASC.Data.Storage.S3
             using var client = GetClient();
             using var uploader = new TransferUtility(client);
             var objectKey = MakePath(domain, path);
-            var buffered = TempStream.GetBuffered(stream);
+            var buffered = _tempStream.GetBuffered(stream);
             var request = new TransferUtilityUploadRequest
             {
                 BucketName = _bucket,
@@ -795,11 +795,11 @@ namespace ASC.Data.Storage.S3
 
         public override string GetUploadedUrl(string domain, string directoryPath)
         {
-            if (HttpContextAccessor?.HttpContext != null)
+            if (_httpContextAccessor?.HttpContext != null)
             {
-                var buket = HttpContextAccessor?.HttpContext.Request.Query["bucket"].FirstOrDefault();
-                var key = HttpContextAccessor?.HttpContext.Request.Query["key"].FirstOrDefault();
-                var etag = HttpContextAccessor?.HttpContext.Request.Query["etag"].FirstOrDefault();
+                var buket = _httpContextAccessor?.HttpContext.Request.Query["bucket"].FirstOrDefault();
+                var key = _httpContextAccessor?.HttpContext.Request.Query["key"].FirstOrDefault();
+                var etag = _httpContextAccessor?.HttpContext.Request.Query["etag"].FirstOrDefault();
                 var destkey = MakePath(domain, directoryPath) + "/";
 
                 if (!string.IsNullOrEmpty(buket) && !string.IsNullOrEmpty(key) && string.Equals(buket, _bucket) &&
@@ -807,9 +807,9 @@ namespace ASC.Data.Storage.S3
                 {
                     var domainpath = key.Substring(MakePath(domain, string.Empty).Length);
                     var skipQuota = false;
-                    if (HttpContextAccessor?.HttpContext.Session != null)
+                    if (_httpContextAccessor?.HttpContext.Session != null)
                     {
-                        HttpContextAccessor.HttpContext.Session.TryGetValue(etag, out var isCounted);
+                        _httpContextAccessor.HttpContext.Session.TryGetValue(etag, out var isCounted);
                         skipQuota = isCounted != null;
                     }
                     //Add to quota controller
@@ -820,7 +820,7 @@ namespace ASC.Data.Storage.S3
                             var size = GetFileSize(domain, domainpath);
                             QuotaUsedAdd(domain, size);
 
-                            if (HttpContextAccessor?.HttpContext.Session != null)
+                            if (_httpContextAccessor?.HttpContext.Session != null)
                             {
                                 //TODO:
                                 //HttpContext.Current.Session.Add(etag, size); 

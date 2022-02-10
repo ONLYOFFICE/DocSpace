@@ -195,7 +195,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
         private Uri GetUriShared(string domain, string path)
         {
-            return new Uri(string.Format("{0}{1}", SecureHelper.IsSecure(HttpContextAccessor?.HttpContext, Options) ? _cnameSSL : _cname, MakePath(domain, path)));
+            return new Uri(string.Format("{0}{1}", SecureHelper.IsSecure(_httpContextAccessor?.HttpContext, _options) ? _cnameSSL : _cname, MakePath(domain, path)));
         }
 
         public override Stream GetReadStream(string domain, string path)
@@ -205,7 +205,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
         public override Stream GetReadStream(string domain, string path, int offset)
         {
-            var outputStream = TempStream.Create();
+            var outputStream = _tempStream.Create();
 
             var client = GetClient();
 
@@ -260,7 +260,7 @@ namespace ASC.Data.Storage.RackspaceCloud
                               string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5,
             DateTime? deleteAt = null, long? deleteAfter = null)
         {
-            var buffered = TempStream.GetBuffered(stream);
+            var buffered = _tempStream.GetBuffered(stream);
 
             if (QuotaController != null)
             {
@@ -310,7 +310,7 @@ namespace ASC.Data.Storage.RackspaceCloud
                 try
                 {
 
-                    using (var emptyStream = TempStream.Create())
+                    using (var emptyStream = _tempStream.Create())
                     {
 
                         var headers = new Dictionary<string, string>

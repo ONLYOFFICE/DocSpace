@@ -29,9 +29,9 @@ namespace ASC.Data.Storage.DiscStorage
     public class DiscDataStore : BaseStorage
     {
         private readonly Dictionary<string, MappedPath> _mappedPaths = new Dictionary<string, MappedPath>();
-        private ICrypt Crypt { get; set; }
-        private EncryptionSettingsHelper EncryptionSettingsHelper { get; set; }
-        private EncryptionFactory EncryptionFactory { get; set; }
+        private ICrypt _crypt;
+        private EncryptionSettingsHelper _encryptionSettingsHelper;
+        private EncryptionFactory _encryptionFactory;
 
         public override IDataStore Configure(string tenant, Handler handlerConfig, Module moduleConfig, IDictionary<string, string> props)
         {
@@ -41,10 +41,10 @@ namespace ASC.Data.Storage.DiscStorage
             _dataList = new DataList(moduleConfig);
             foreach (var domain in moduleConfig.Domain)
             {
-                _mappedPaths.Add(domain.Name, new MappedPath(PathUtils, tenant, moduleConfig.AppendTenantId, domain.Path, handlerConfig.GetProperties()));
+                _mappedPaths.Add(domain.Name, new MappedPath(_pathUtils, tenant, moduleConfig.AppendTenantId, domain.Path, handlerConfig.GetProperties()));
             }
             //Add default
-            _mappedPaths.Add(string.Empty, new MappedPath(PathUtils, tenant, moduleConfig.AppendTenantId, PathUtils.Normalize(moduleConfig.Path), handlerConfig.GetProperties()));
+            _mappedPaths.Add(string.Empty, new MappedPath(_pathUtils, tenant, moduleConfig.AppendTenantId, PathUtils.Normalize(moduleConfig.Path), handlerConfig.GetProperties()));
 
             //Make expires
             _domainsExpires =
@@ -52,8 +52,8 @@ namespace ASC.Data.Storage.DiscStorage
                     ToDictionary(x => x.Name,
                                  y => y.Expires);
             _domainsExpires.Add(string.Empty, moduleConfig.Expires);
-            var settings = moduleConfig.DisabledEncryption ? new EncryptionSettings() : EncryptionSettingsHelper.Load();
-            Crypt = EncryptionFactory.GetCrypt(moduleConfig.Name, settings);
+            var settings = moduleConfig.DisabledEncryption ? new EncryptionSettings() : _encryptionSettingsHelper.Load();
+            _crypt = _encryptionFactory.GetCrypt(moduleConfig.Name, settings);
 
             return this;
         }
@@ -69,8 +69,8 @@ namespace ASC.Data.Storage.DiscStorage
             EncryptionFactory encryptionFactory)
             : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
         {
-            EncryptionSettingsHelper = encryptionSettingsHelper;
-            EncryptionFactory = encryptionFactory;
+            _encryptionSettingsHelper = encryptionSettingsHelper;
+            _encryptionFactory = encryptionFactory;
         }
 
         public string GetPhysicalPath(string domain, string path)
@@ -102,7 +102,7 @@ namespace ASC.Data.Storage.DiscStorage
 
             if (File.Exists(target))
             {
-                return withDecription ? Crypt.GetReadStream(target) : File.OpenRead(target);
+                return withDecription ? _crypt.GetReadStream(target) : File.OpenRead(target);
             }
             throw new FileNotFoundException("File not found", Path.GetFullPath(target));
         }
@@ -119,7 +119,7 @@ namespace ASC.Data.Storage.DiscStorage
 
             if (File.Exists(target))
             {
-                var stream = Crypt.GetReadStream(target);
+                var stream = _crypt.GetReadStream(target);
                 if (0 < offset && stream.CanSeek) stream.Seek(offset, SeekOrigin.Begin);
                 return stream;
             }
@@ -144,8 +144,8 @@ namespace ASC.Data.Storage.DiscStorage
 
         public override Uri Save(string domain, string path, Stream stream)
         {
-            Log.Debug("Save " + path);
-            var buffered = TempStream.GetBuffered(stream);
+            Logger.Debug("Save " + path);
+            var buffered = _tempStream.GetBuffered(stream);
             if (QuotaController != null)
             {
                 QuotaController.QuotaUsedCheck(buffered.Length);
@@ -180,7 +180,7 @@ namespace ASC.Data.Storage.DiscStorage
 
             QuotaUsedAdd(domain, fslen);
 
-            Crypt.EncryptFile(target);
+            _crypt.EncryptFile(target);
 
             return GetUri(domain, path);
         }
@@ -229,11 +229,11 @@ namespace ASC.Data.Storage.DiscStorage
                     throw new FileNotFoundException("file not found " + target);
                 }
 
-                var size = Crypt.GetFileSize(target);
+                var size = _crypt.GetFileSize(target);
                 QuotaUsedAdd(domain, size);
             }
 
-            Crypt.EncryptFile(target);
+            _crypt.EncryptFile(target);
 
             return GetUri(domain, path);
         }
@@ -261,7 +261,7 @@ namespace ASC.Data.Storage.DiscStorage
 
             if (File.Exists(target))
             {
-                var size = Crypt.GetFileSize(target);
+                var size = _crypt.GetFileSize(target);
                 File.Delete(target);
 
                 QuotaUsedDelete(domain, size);
@@ -283,7 +283,7 @@ namespace ASC.Data.Storage.DiscStorage
                 if (!File.Exists(target))
                     continue;
 
-                var size = Crypt.GetFileSize(target);
+                var size = _crypt.GetFileSize(target);
                 File.Delete(target);
 
                 QuotaUsedDelete(domain, size);
@@ -301,7 +301,7 @@ namespace ASC.Data.Storage.DiscStorage
                 var entries = Directory.GetFiles(targetDir, pattern, recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
                 foreach (var entry in entries)
                 {
-                    var size = Crypt.GetFileSize(entry);
+                    var size = _crypt.GetFileSize(entry);
                     File.Delete(entry);
                     QuotaUsedDelete(domain, size);
                 }
@@ -326,7 +326,7 @@ namespace ASC.Data.Storage.DiscStorage
                     var fileInfo = new FileInfo(entry);
                     if (fileInfo.LastWriteTime >= fromDate && fileInfo.LastWriteTime <= toDate)
                     {
-                        var size = Crypt.GetFileSize(entry);
+                        var size = _crypt.GetFileSize(entry);
                         File.Delete(entry);
                         QuotaUsedDelete(domain, size);
                     }
@@ -365,7 +365,7 @@ namespace ASC.Data.Storage.DiscStorage
                     Directory.CreateDirectory(Path.GetDirectoryName(newtarget));
                 }
 
-                var flength = Crypt.GetFileSize(target);
+                var flength = _crypt.GetFileSize(target);
 
                 //Delete file if exists
                 if (File.Exists(newtarget))
@@ -414,7 +414,7 @@ namespace ASC.Data.Storage.DiscStorage
             if (!Directory.Exists(targetDir)) return;
 
             var entries = Directory.GetFiles(targetDir, "*.*", SearchOption.AllDirectories);
-            var size = entries.Select(entry => Crypt.GetFileSize(entry)).Sum();
+            var size = entries.Select(entry => _crypt.GetFileSize(entry)).Sum();
 
             var subDirs = Directory.GetDirectories(targetDir, "*", SearchOption.AllDirectories).ToList();
             subDirs.Reverse();
@@ -431,7 +431,7 @@ namespace ASC.Data.Storage.DiscStorage
 
             if (File.Exists(target))
             {
-                return Crypt.GetFileSize(target);
+                return _crypt.GetFileSize(target);
             }
             throw new FileNotFoundException("file not found " + target);
         }
@@ -443,7 +443,7 @@ namespace ASC.Data.Storage.DiscStorage
             if (Directory.Exists(target))
             {
                 return Directory.GetFiles(target, "*.*", SearchOption.AllDirectories)
-                    .Select(entry => Crypt.GetFileSize(entry))
+                    .Select(entry => _crypt.GetFileSize(entry))
                     .Sum();
             }
 
@@ -479,7 +479,7 @@ namespace ASC.Data.Storage.DiscStorage
                 var finfo = new FileInfo(entry);
                 if ((DateTime.UtcNow - finfo.CreationTimeUtc) > oldThreshold)
                 {
-                    var size = Crypt.GetFileSize(entry);
+                    var size = _crypt.GetFileSize(entry);
                     File.Delete(entry);
 
                     QuotaUsedDelete(domain, size);
@@ -574,7 +574,7 @@ namespace ASC.Data.Storage.DiscStorage
             if (Directory.Exists(target))
             {
                 var entries = Directory.GetFiles(target, "*.*", SearchOption.AllDirectories);
-                size = entries.Select(entry => Crypt.GetFileSize(entry)).Sum();
+                size = entries.Select(entry => _crypt.GetFileSize(entry)).Sum();
             }
             return size;
         }
@@ -595,7 +595,7 @@ namespace ASC.Data.Storage.DiscStorage
 
                 File.Copy(target, newtarget, true);
 
-                var flength = Crypt.GetFileSize(target);
+                var flength = _crypt.GetFileSize(target);
                 QuotaUsedAdd(newdomain, flength);
             }
             else
@@ -629,7 +629,7 @@ namespace ASC.Data.Storage.DiscStorage
             {
                 var fp = CrossPlatform.PathCombine(target.ToString(), fi.Name);
                 fi.CopyTo(fp, true);
-                var size = Crypt.GetFileSize(fp);
+                var size = _crypt.GetFileSize(fp);
                 QuotaUsedAdd(newdomain, size);
             }
 
@@ -701,7 +701,7 @@ namespace ASC.Data.Storage.DiscStorage
 
             if (File.Exists(target))
             {
-                Crypt.EncryptFile(target);
+                _crypt.EncryptFile(target);
             }
             else
             {
@@ -717,7 +717,7 @@ namespace ASC.Data.Storage.DiscStorage
 
             if (File.Exists(target))
             {
-                Crypt.DecryptFile(target);
+                _crypt.DecryptFile(target);
             }
             else
             {

@@ -27,33 +27,33 @@ namespace ASC.Data.Storage
 {
     public class TenantQuotaController : IQuotaController
     {
-        private readonly int tenant;
-        private Lazy<long> lazyCurrentSize;
+        private readonly int _tenant;
+        private Lazy<long> _lazyCurrentSize;
 
-        private long currentSize;
+        private long _currentSize;
         private long CurrentSize {
             get
             {
-                if (!lazyCurrentSize.IsValueCreated)
+                if (!_lazyCurrentSize.IsValueCreated)
                 {
-                    return currentSize = lazyCurrentSize.Value;
+                    return _currentSize = _lazyCurrentSize.Value;
                 }
 
-                return currentSize;
+                return _currentSize;
             }
             set
             {
-                currentSize = value;
+                _currentSize = value;
             }
         }
 
-        private TenantManager TenantManager { get; }
+        private readonly TenantManager _tenantManager;
 
         public TenantQuotaController(int tenant, TenantManager tenantManager)
         {
-            this.tenant = tenant;
-            TenantManager = tenantManager;
-            lazyCurrentSize = new Lazy<long>(() => TenantManager.FindTenantQuotaRows(tenant)
+            _tenant = tenant;
+            _tenantManager = tenantManager;
+            _lazyCurrentSize = new Lazy<long>(() => _tenantManager.FindTenantQuotaRows(tenant)
                 .Where(r => UsedInQuota(r.Tag))
                 .Sum(r => r.Counter));
         }
@@ -98,7 +98,7 @@ namespace ASC.Data.Storage
 
         public void QuotaUsedCheck(long size, bool quotaCheckFileSize)
         {
-            var quota = TenantManager.GetTenantQuota(tenant);
+            var quota = _tenantManager.GetTenantQuota(_tenant);
             if (quota != null)
             {
                 if (quotaCheckFileSize && quota.MaxFileSize != 0 && quota.MaxFileSize < size)
@@ -121,8 +121,8 @@ namespace ASC.Data.Storage
 
         private void SetTenantQuotaRow(string module, string domain, long size, string dataTag, bool exchange)
         {
-            TenantManager.SetTenantQuotaRow(
-                new TenantQuotaRow { Tenant = tenant, Path = string.Format("/{0}/{1}", module, domain), Counter = size, Tag = dataTag },
+            _tenantManager.SetTenantQuotaRow(
+                new TenantQuotaRow { Tenant = _tenant, Path = string.Format("/{0}/{1}", module, domain), Counter = size, Tag = dataTag },
                 exchange);
         }
 

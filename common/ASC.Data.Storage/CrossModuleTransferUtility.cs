@@ -27,14 +27,14 @@ namespace ASC.Data.Storage
 {
     public class CrossModuleTransferUtility
     {
-        private readonly ILog Log;
-        private readonly IDataStore source;
-        private readonly IDataStore destination;
-        private readonly long maxChunkUploadSize;
-        private readonly int chunksize;
-        private IOptionsMonitor<ILog> Option { get; }
-        private TempStream TempStream { get; }
-        private TempPath TempPath { get; }
+        private readonly ILog _logger;
+        private readonly IDataStore _source;
+        private readonly IDataStore _destination;
+        private readonly long _maxChunkUploadSize;
+        private readonly int _chunkSize;
+        private readonly IOptionsMonitor<ILog> _option;
+        private readonly TempStream _tempStream;
+        private readonly TempPath _tempPath;
 
         public CrossModuleTransferUtility(
             IOptionsMonitor<ILog> option, 
@@ -43,14 +43,14 @@ namespace ASC.Data.Storage
             IDataStore source, 
             IDataStore destination)
         {
-            Log = option.Get("ASC.CrossModuleTransferUtility");
-            Option = option;
-            TempStream = tempStream;
-            TempPath = tempPath;
-            this.source = source ?? throw new ArgumentNullException("source");
-            this.destination = destination ?? throw new ArgumentNullException("destination");
-            maxChunkUploadSize = 10 * 1024 * 1024;
-            chunksize = 5 * 1024 * 1024;
+            _logger = option.Get("ASC.CrossModuleTransferUtility");
+            _option = option;
+            _tempStream = tempStream;
+            _tempPath = tempPath;
+            this._source = source ?? throw new ArgumentNullException("source");
+            this._destination = destination ?? throw new ArgumentNullException("destination");
+            _maxChunkUploadSize = 10 * 1024 * 1024;
+            _chunkSize = 5 * 1024 * 1024;
         }
 
         public void CopyFile(string srcDomain, string srcPath, string destDomain, string destPath)
@@ -60,15 +60,15 @@ namespace ASC.Data.Storage
             if (destDomain == null) throw new ArgumentNullException("destDomain");
             if (destPath == null) throw new ArgumentNullException("destPath");
 
-            using var stream = source.GetReadStream(srcDomain, srcPath);
-            if (stream.Length < maxChunkUploadSize)
+            using var stream = _source.GetReadStream(srcDomain, srcPath);
+            if (stream.Length < _maxChunkUploadSize)
             {
-                destination.Save(destDomain, destPath, stream);
+                _destination.Save(destDomain, destPath, stream);
             }
             else
             {
                 var session = new CommonChunkedUploadSession(stream.Length);
-                var holder = new CommonChunkedUploadSessionHolder(TempPath, Option, destination, destDomain);
+                var holder = new CommonChunkedUploadSessionHolder(_tempPath, _option, _destination, destDomain);
                 holder.Init(session);
                 try
                 {
@@ -78,7 +78,7 @@ namespace ASC.Data.Storage
                         while (GetStream(stream, out memstream))
                         {
                             memstream.Seek(0, SeekOrigin.Begin);
-                            holder.UploadChunk(session, memstream, chunksize);
+                            holder.UploadChunk(session, memstream, _chunkSize);
                             memstream.Dispose();
                             memstream = null;
                         }
@@ -92,11 +92,11 @@ namespace ASC.Data.Storage
                     }
 
                     holder.Finalize(session);
-                    destination.Move(destDomain, session.TempPath, destDomain, destPath);
+                    _destination.Move(destDomain, session.TempPath, destDomain, destPath);
                 }
                 catch (Exception ex)
                 {
-                    Log.Error("Copy File", ex);
+                    _logger.Error("Copy File", ex);
                     holder.Abort(session);
                 }
             }
@@ -104,7 +104,7 @@ namespace ASC.Data.Storage
 
         private bool GetStream(Stream stream, out Stream memstream)
         {
-            memstream = TempStream.Create();
+            memstream = _tempStream.Create();
             var total = 0;
             int readed;
             const int portion = 2048;
@@ -114,7 +114,7 @@ namespace ASC.Data.Storage
             {
                 memstream.Write(buffer, 0, readed);
                 total += readed;
-                if (total >= chunksize) break;
+                if (total >= _chunkSize) break;
             }
 
             return total > 0;

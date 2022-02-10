@@ -27,19 +27,19 @@ namespace ASC.Data.Storage.S3
 {
     public class S3UploadGuard
     {
-        private string accessKey;
-        private string secretAccessKey;
-        private string bucket;
-        private string region;
-        private bool configErrors;
-        private bool configured;
-
-        private CoreSettings CoreSettings { get; }
         public Configuration.Storage Storage { get; }
+
+        private readonly CoreSettings _coreSettings;
+        private string _accessKey;
+        private string _secretAccessKey;
+        private string _bucket;
+        private string _region;
+        private bool _configErrors;
+        private bool _configured;
 
         public S3UploadGuard(CoreSettings coreSettings, Configuration.Storage storage)
         {
-            CoreSettings = coreSettings;
+            _coreSettings = coreSettings;
             Storage = storage;
         }
 
@@ -57,7 +57,7 @@ namespace ASC.Data.Storage.S3
         {
             Configure();
 
-            if (configErrors)
+            if (_configErrors)
             {
                 return;
             }
@@ -69,7 +69,7 @@ namespace ASC.Data.Storage.S3
 
             do
             {
-                var request = new ListMultipartUploadsRequest { BucketName = bucket };
+                var request = new ListMultipartUploadsRequest { BucketName = _bucket };
 
                 if (!string.IsNullOrEmpty(nextKeyMarker))
                 {
@@ -99,7 +99,7 @@ namespace ASC.Data.Storage.S3
         {
             var request = new AbortMultipartUploadRequest
             {
-                BucketName = bucket,
+                BucketName = _bucket,
                 Key = u.Key,
                 UploadId = u.UploadId,
             };
@@ -109,30 +109,30 @@ namespace ASC.Data.Storage.S3
 
         private AmazonS3Client GetClient()
         {
-            var s3Config = new AmazonS3Config { UseHttp = true, MaxErrorRetry = 3, RegionEndpoint = RegionEndpoint.GetBySystemName(region) };
-            return new AmazonS3Client(accessKey, secretAccessKey, s3Config);
+            var s3Config = new AmazonS3Config { UseHttp = true, MaxErrorRetry = 3, RegionEndpoint = RegionEndpoint.GetBySystemName(_region) };
+            return new AmazonS3Client(_accessKey, _secretAccessKey, s3Config);
         }
 
         private void Configure()
         {
-            if (!configured)
+            if (!_configured)
             {
                 var handler = Storage.GetHandler("s3");
                 if (handler != null)
                 {
                     var props = handler.GetProperties();
-                    bucket = props["bucket"];
-                    accessKey = props["acesskey"];
-                    secretAccessKey = props["secretaccesskey"];
-                    region = props["region"];
+                    _bucket = props["bucket"];
+                    _accessKey = props["acesskey"];
+                    _secretAccessKey = props["secretaccesskey"];
+                    _region = props["region"];
                 }
-                configErrors = string.IsNullOrEmpty(CoreSettings.BaseDomain) //localhost
-                                || string.IsNullOrEmpty(accessKey)
-                                || string.IsNullOrEmpty(secretAccessKey)
-                                || string.IsNullOrEmpty(bucket)
-                                || string.IsNullOrEmpty(region);
+                _configErrors = string.IsNullOrEmpty(_coreSettings.BaseDomain) //localhost
+                                || string.IsNullOrEmpty(_accessKey)
+                                || string.IsNullOrEmpty(_secretAccessKey)
+                                || string.IsNullOrEmpty(_bucket)
+                                || string.IsNullOrEmpty(_region);
 
-                configured = true;
+                _configured = true;
             }
         }
     }

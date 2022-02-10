@@ -28,18 +28,18 @@ namespace ASC.Data.Storage.Encryption
     [Singletone]
     public class EncryptionFactory
     {
-        private IServiceProvider ServiceProvider { get; }
+        private readonly IServiceProvider _serviceProvider;
 
         public EncryptionFactory(IServiceProvider serviceProvider)
         {
-            ServiceProvider = serviceProvider;
+            _serviceProvider = serviceProvider;
         }
 
         public ICrypt GetCrypt(string storageName, EncryptionSettings encryptionSettings)
         {
             ICrypt result = null;
 
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
             if (scope != null)
             {
                 result = scope.ServiceProvider.GetService<ICrypt>();

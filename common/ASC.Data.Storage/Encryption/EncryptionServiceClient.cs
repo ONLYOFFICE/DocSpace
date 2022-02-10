@@ -28,25 +28,24 @@ namespace ASC.Data.Storage.Encryption
     [Scope]
     public class EncryptionServiceClient : IEncryptionService
     {
-
-        private ICacheNotify<EncryptionSettingsProto> NotifySetting { get; }
-        private ICacheNotify<EncryptionStop> NotifyStop { get; }
+        private readonly ICacheNotify<EncryptionSettingsProto> _notifySetting;
+        private readonly ICacheNotify<EncryptionStop> _notifyStop;
 
         public EncryptionServiceClient(
             ICacheNotify<EncryptionSettingsProto> notifySetting, ICacheNotify<EncryptionStop> notifyStop)
         {
-            NotifySetting = notifySetting;
-            NotifyStop = notifyStop;
+            _notifySetting = notifySetting;
+            _notifyStop = notifyStop;
         }
 
         public void Start(EncryptionSettingsProto encryptionSettingsProto)
         {
-            NotifySetting.Publish(encryptionSettingsProto, CacheNotifyAction.Insert);
+            _notifySetting.Publish(encryptionSettingsProto, CacheNotifyAction.Insert);
         }
 
         public void Stop()
         {
-            NotifyStop.Publish(new EncryptionStop(), CacheNotifyAction.Insert);
+            _notifyStop.Publish(new EncryptionStop(), CacheNotifyAction.Insert);
         }
 
     }

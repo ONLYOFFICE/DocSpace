@@ -27,13 +27,13 @@ namespace ASC.Core.ChunkedUploader
 {
     public class CommonChunkedUploadSessionHolder
     {
-        public static readonly TimeSpan SlidingExpiration = TimeSpan.FromHours(12);
-
-        private TempPath TempPath { get; }
-        private IOptionsMonitor<ILog> Option { get; }
         public IDataStore DataStore { get; set; }
-        private string Domain { get; set; }
-        private long MaxChunkUploadSize { get; set; }
+
+        public static readonly TimeSpan SlidingExpiration = TimeSpan.FromHours(12);
+        private readonly TempPath _tempPath;
+        private readonly IOptionsMonitor<ILog> _option;
+        private readonly string _domain;
+        private readonly long _maxChunkUploadSize;
 
         private const string StoragePath = "sessions";
 
@@ -44,11 +44,11 @@ namespace ASC.Core.ChunkedUploader
             string domain,
             long maxChunkUploadSize = 10 * 1024 * 1024)
         {
-            TempPath = tempPath;
-            Option = option;
+            _tempPath = tempPath;
+            _option = option;
             DataStore = dataStore;
-            Domain = domain;
-            MaxChunkUploadSize = maxChunkUploadSize;
+            _domain = domain;
+            _maxChunkUploadSize = maxChunkUploadSize;
         }
 
         public void DeleteExpired()
@@ -56,40 +56,40 @@ namespace ASC.Core.ChunkedUploader
             // clear old sessions
             try
             {
-                DataStore.DeleteExpired(Domain, StoragePath, SlidingExpiration);
+                DataStore.DeleteExpired(_domain, StoragePath, SlidingExpiration);
             }
             catch (Exception err)
             {
-                Option.CurrentValue.Error(err);
+                _option.CurrentValue.Error(err);
             }
         }
 
         public void Store(CommonChunkedUploadSession s)
         {
             using var stream = s.Serialize();
-            DataStore.SavePrivate(Domain, GetPathWithId(s.Id), stream, s.Expired);
+            DataStore.SavePrivate(_domain, GetPathWithId(s.Id), stream, s.Expired);
         }
 
         public void Remove(CommonChunkedUploadSession s)
         {
-            DataStore.Delete(Domain, GetPathWithId(s.Id));
+            DataStore.Delete(_domain, GetPathWithId(s.Id));
         }
 
         public Stream GetStream(string sessionId)
         {
-            return DataStore.GetReadStream(Domain, GetPathWithId(sessionId));
+            return DataStore.GetReadStream(_domain, GetPathWithId(sessionId));
         }
 
         public void Init(CommonChunkedUploadSession chunkedUploadSession)
         {
-            if (chunkedUploadSession.BytesTotal < MaxChunkUploadSize)
+            if (chunkedUploadSession.BytesTotal < _maxChunkUploadSize)
             {
                 chunkedUploadSession.UseChunks = false;
                 return;
             }
 
             var tempPath = Guid.NewGuid().ToString();
-            var uploadId = DataStore.InitiateChunkedUpload(Domain, tempPath);
+            var uploadId = DataStore.InitiateChunkedUpload(_domain, tempPath);
 
             chunkedUploadSession.TempPath = tempPath;
             chunkedUploadSession.UploadId = uploadId;
@@ -103,12 +103,12 @@ namespace ASC.Core.ChunkedUploader
                 .Select((x, i) => new KeyValuePair<int, string>(i + 1, x))
                 .ToDictionary(x => x.Key, x => x.Value);
 
-            DataStore.FinalizeChunkedUpload(Domain, tempPath, uploadId, eTags);
+            DataStore.FinalizeChunkedUpload(_domain, tempPath, uploadId, eTags);
         }
 
         public void Move(CommonChunkedUploadSession chunkedUploadSession, string newPath, bool quotaCheckFileSize = true)
         {
-            DataStore.Move(Domain, chunkedUploadSession.TempPath, string.Empty, newPath, quotaCheckFileSize);
+            DataStore.Move(_domain, chunkedUploadSession.TempPath, string.Empty, newPath, quotaCheckFileSize);
         }
 
         public void Abort(CommonChunkedUploadSession uploadSession)
@@ -118,7 +118,7 @@ namespace ASC.Core.ChunkedUploader
                 var tempPath = uploadSession.TempPath;
                 var uploadId = uploadSession.UploadId;
 
-                DataStore.AbortChunkedUpload(Domain, tempPath, uploadId);
+                DataStore.AbortChunkedUpload(_domain, tempPath, uploadId);
             }
             else if (!string.IsNullOrEmpty(uploadSession.ChunksBuffer))
             {
@@ -132,7 +132,7 @@ namespace ASC.Core.ChunkedUploader
             var uploadId = uploadSession.UploadId;
             var chunkNumber = uploadSession.GetItemOrDefault<int>("ChunksUploaded") + 1;
 
-            var eTag = DataStore.UploadChunk(Domain, tempPath, uploadId, stream, MaxChunkUploadSize, chunkNumber, length);
+            var eTag = DataStore.UploadChunk(_domain, tempPath, uploadId, stream, _maxChunkUploadSize, chunkNumber, length);
 
             uploadSession.Items["ChunksUploaded"] = chunkNumber;
             uploadSession.BytesUploaded += length;
@@ -153,7 +153,7 @@ namespace ASC.Core.ChunkedUploader
 
                 if (string.IsNullOrEmpty(uploadSession.ChunksBuffer))
                 {
-                    uploadSession.ChunksBuffer = TempPath.GetTempFileName();
+                    uploadSession.ChunksBuffer = _tempPath.GetTempFileName();
                 }
 
                 using (var bufferStream = new FileStream(uploadSession.ChunksBuffer, FileMode.Append))

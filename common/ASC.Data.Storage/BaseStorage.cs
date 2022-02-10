@@ -27,13 +27,14 @@ namespace ASC.Data.Storage
 {
     public abstract class BaseStorage : IDataStore
     {
-        protected ILog Log { get; set; }
-        protected TempStream TempStream { get; }
-        protected TenantManager TenantManager { get; }
-        protected PathUtils PathUtils { get; }
-        protected EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        protected IHttpContextAccessor HttpContextAccessor { get; }
-        protected IOptionsMonitor<ILog> Options { get; }
+        protected ILog Logger { get; set; }
+
+        protected readonly TempStream _tempStream;
+        protected readonly TenantManager _tenantManager;
+        protected readonly PathUtils _pathUtils;
+        protected readonly EmailValidationKeyProvider _emailValidationKeyProvider;
+        protected readonly IHttpContextAccessor _httpContextAccessor;
+        protected readonly IOptionsMonitor<ILog> _options;
             
         public BaseStorage(
             TempStream tempStream,
@@ -44,13 +45,13 @@ namespace ASC.Data.Storage
             IOptionsMonitor<ILog> options)
         {
 
-            TempStream = tempStream;
-            TenantManager = tenantManager;
-            PathUtils = pathUtils;
-            EmailValidationKeyProvider = emailValidationKeyProvider;
-            Options = options;
-            Log = options.CurrentValue;
-            HttpContextAccessor = httpContextAccessor;
+            _tempStream = tempStream;
+            _tenantManager = tenantManager;
+            _pathUtils = pathUtils;
+            _emailValidationKeyProvider = emailValidationKeyProvider;
+            _options = options;
+            Logger = options.CurrentValue;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         #region IDataStore Members
@@ -106,7 +107,7 @@ namespace ASC.Data.Storage
                 var expireString = expire.TotalMinutes.ToString(CultureInfo.InvariantCulture);
 
                 int currentTenantId;
-                var currentTenant = TenantManager.GetCurrentTenant(false);
+                var currentTenant = _tenantManager.GetCurrentTenant(false);
                 if (currentTenant != null)
                 {
                     currentTenantId = currentTenant.TenantId;
@@ -116,12 +117,12 @@ namespace ASC.Data.Storage
                     currentTenantId = 0;
                 }
 
-                var auth = EmailValidationKeyProvider.GetEmailKey(currentTenantId, path.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar) + "." + headerAttr + "." + expireString);
+                var auth = _emailValidationKeyProvider.GetEmailKey(currentTenantId, path.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar) + "." + headerAttr + "." + expireString);
                 query = string.Format("{0}{1}={2}&{3}={4}",
                                       path.Contains("?") ? "&" : "?",
-                                      Constants.QUERY_EXPIRE,
+                                      Constants.QueryExpire,
                                       expireString,
-                                      Constants.QUERY_AUTH,
+                                      Constants.QueryAuth,
                                       auth);
             }
 
@@ -129,13 +130,13 @@ namespace ASC.Data.Storage
             {
                 query += string.Format("{0}{1}={2}",
                                        query.Contains("?") ? "&" : "?",
-                                       Constants.QUERY_HEADER,
+                                       Constants.QueryHeader,
                                        HttpUtility.UrlEncode(headerAttr));
             }
 
             var tenant = _tenant.Trim('/');
-            var vpath = PathUtils.ResolveVirtualPath(_modulename, domain);
-            vpath = PathUtils.ResolveVirtualPath(vpath, false);
+            var vpath = _pathUtils.ResolveVirtualPath(_modulename, domain);
+            vpath = _pathUtils.ResolveVirtualPath(vpath, false);
             vpath = string.Format(vpath, tenant);
             var virtualPath = new Uri(vpath + "/", UriKind.RelativeOrAbsolute);
 

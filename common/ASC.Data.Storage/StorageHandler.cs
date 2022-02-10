@@ -31,21 +31,20 @@ namespace ASC.Data.Storage.DiscStorage
         private readonly string _module;
         private readonly string _domain;
         private readonly bool _checkAuth;
+        private readonly IServiceProvider _serviceProvider;
 
         public StorageHandler(IServiceProvider serviceProvider, string path, string module, string domain, bool checkAuth = true)
         {
-            ServiceProvider = serviceProvider;
+            _serviceProvider = serviceProvider;
             _path = path;
             _module = module;
             _domain = domain;
             _checkAuth = checkAuth;
         }
 
-        private IServiceProvider ServiceProvider { get; }
-
         public async Task Invoke(HttpContext context)
         {
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<StorageHandlerScope>();
             var (tenantManager, securityContext, storageFactory, emailValidationKeyProvider) = scopeClass;
 
@@ -57,14 +56,14 @@ namespace ASC.Data.Storage.DiscStorage
 
             var storage = storageFactory.GetStorage(tenantManager.GetCurrentTenant().TenantId.ToString(CultureInfo.InvariantCulture), _module);
             var path = CrossPlatform.PathCombine(_path, GetRouteValue("pathInfo").Replace('/', Path.DirectorySeparatorChar));
-            var header = context.Request.Query[Constants.QUERY_HEADER].FirstOrDefault() ?? "";
+            var header = context.Request.Query[Constants.QueryHeader].FirstOrDefault() ?? "";
 
-            var auth = context.Request.Query[Constants.QUERY_AUTH].FirstOrDefault() ?? "";
+            var auth = context.Request.Query[Constants.QueryAuth].FirstOrDefault() ?? "";
             var storageExpire = storage.GetExpire(_domain);
 
             if (storageExpire != TimeSpan.Zero && storageExpire != TimeSpan.MinValue && storageExpire != TimeSpan.MaxValue || !string.IsNullOrEmpty(auth))
             {
-                var expire = context.Request.Query[Constants.QUERY_EXPIRE];
+                var expire = context.Request.Query[Constants.QueryExpire];
                 if (string.IsNullOrEmpty(expire)) expire = storageExpire.TotalMinutes.ToString(CultureInfo.InvariantCulture);
 
                 var validateResult = emailValidationKeyProvider.ValidateEmailKey(path + "." + header + "." + expire, auth ?? "", TimeSpan.FromMinutes(Convert.ToDouble(expire)));
@@ -140,24 +139,24 @@ namespace ASC.Data.Storage.DiscStorage
     [Scope]
     public class StorageHandlerScope
     {
-        private TenantManager TenantManager { get; }
-        private SecurityContext SecurityContext { get; }
-        private StorageFactory StorageFactory { get; }
-        private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        private readonly TenantManager _tenantManager;
+        private readonly SecurityContext _securityContext;
+        private readonly StorageFactory _storageFactory;
+        private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
 
         public StorageHandlerScope(TenantManager tenantManager, SecurityContext securityContext, StorageFactory storageFactory, EmailValidationKeyProvider emailValidationKeyProvider)
         {
-            TenantManager = tenantManager;
-            SecurityContext = securityContext;
-            StorageFactory = storageFactory;
-            EmailValidationKeyProvider = emailValidationKeyProvider;
+            _tenantManager = tenantManager;
+            _securityContext = securityContext;
+            _storageFactory = storageFactory;
+            _emailValidationKeyProvider = emailValidationKeyProvider;
         }
         public void Deconstruct(out TenantManager tenantManager, out SecurityContext securityContext, out StorageFactory storageFactory, out EmailValidationKeyProvider emailValidationKeyProvider)
         {
-            tenantManager = TenantManager;
-            securityContext = SecurityContext;
-            storageFactory = StorageFactory;
-            emailValidationKeyProvider = EmailValidationKeyProvider;
+            tenantManager = _tenantManager;
+            securityContext = _securityContext;
+            storageFactory = _storageFactory;
+            emailValidationKeyProvider = _emailValidationKeyProvider;
         }
     }
 
