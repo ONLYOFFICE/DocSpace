@@ -23,16 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common;
-using ASC.Core.Common;
-using ASC.Core.Common.Settings;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Web.Core.WhiteLabel
 {
     [Serializable]

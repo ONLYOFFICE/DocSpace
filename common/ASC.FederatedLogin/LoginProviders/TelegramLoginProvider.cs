@@ -23,17 +23,6 @@
  *
 */
 
-
-using System.Collections.Generic;
-
-using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Core.Common.Configuration;
-using ASC.Core.Common.Notify;
-using ASC.Core.Common.Notify.Telegram;
-
-using Microsoft.Extensions.Configuration;
-
 namespace ASC.FederatedLogin.LoginProviders
 {
     public class TelegramLoginProvider : Consumer, IValidateKeysProvider, ITelegramLoginProvider
@@ -83,7 +72,7 @@ namespace ASC.FederatedLogin.LoginProviders
 
         public bool ValidateKeys()
         {
-            if (TelegramBotToken == "")
+            if (TelegramBotToken.Length == 0)
             {
                 TelegramHelper.DisableClient(TenantManager.GetCurrentTenant().TenantId);
                 return true;

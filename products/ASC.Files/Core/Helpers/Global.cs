@@ -23,36 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.RegularExpressions;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.Core.Users;
-using ASC.Data.Storage;
-using ASC.Files.Core;
-using ASC.Files.Core.Data;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
-using ASC.Web.Core;
-using ASC.Web.Core.Files;
-using ASC.Web.Core.Users;
-using ASC.Web.Core.WhiteLabel;
-using ASC.Web.Files.Utils;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
-using Constants = ASC.Core.Configuration.Constants;
-
 namespace ASC.Web.Files.Classes
 {
     [Singletone]
@@ -135,7 +105,7 @@ namespace ASC.Web.Files.Classes
 
         #region Property
 
-        public string ThumbnailExtension;
+        public string ThumbnailExtension { get; set; }
 
         public const int MaxTitle = 170;
 
@@ -198,10 +168,10 @@ namespace ASC.Web.Files.Classes
         public string GetUserName(Guid userId, bool alive = false)
         {
             if (userId.Equals(AuthContext.CurrentAccount.ID)) return FilesCommonResource.Author_Me;
-            if (userId.Equals(Constants.Guest.ID)) return FilesCommonResource.Guest;
+            if (userId.Equals(ASC.Core.Configuration.Constants.Guest.ID)) return FilesCommonResource.Guest;
 
             var userInfo = UserManager.GetUsers(userId);
-            if (userInfo.Equals(ASC.Core.Users.Constants.LostUser)) return alive ? FilesCommonResource.Guest : CustomNamingPeople.Substitute<FilesCommonResource>("ProfileRemoved");
+            if (userInfo.Equals(Constants.LostUser)) return alive ? FilesCommonResource.Guest : CustomNamingPeople.Substitute<FilesCommonResource>("ProfileRemoved");
 
             return userInfo.DisplayUserName(false, DisplayUserSettingsHelper);
         }

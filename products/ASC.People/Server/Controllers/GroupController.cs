@@ -1,21 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Api.Core;
-using ASC.Api.Utils;
-using ASC.Common;
-using ASC.Common.Web;
-using ASC.Core;
-using ASC.Core.Users;
-using ASC.MessagingSystem;
-using ASC.People.Models;
-using ASC.Web.Api.Models;
-using ASC.Web.Api.Routing;
-
-using Microsoft.AspNetCore.Mvc;
-
-namespace ASC.Employee.Core.Controllers
+﻿namespace ASC.Employee.Core.Controllers
 {
     [Scope]
     [DefaultRoute]

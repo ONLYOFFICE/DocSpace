@@ -23,19 +23,6 @@
  *
 */
 
-
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.MessagingSystem.DbSender;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Primitives;
-
 namespace ASC.MessagingSystem
 {
     [Scope]

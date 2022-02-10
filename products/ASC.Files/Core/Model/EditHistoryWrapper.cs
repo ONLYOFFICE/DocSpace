@@ -1,12 +1,4 @@
-﻿
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Api.Core;
-using ASC.Core;
-using ASC.Web.Core.Users;
-
-namespace ASC.Files.Core.Model
+﻿namespace ASC.Files.Core.Model
 {
     public class EditHistoryWrapper
     {

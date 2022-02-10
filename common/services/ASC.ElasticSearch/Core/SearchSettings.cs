@@ -23,23 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-
-using Autofac;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
-using Newtonsoft.Json;
-
 namespace ASC.ElasticSearch.Core
 {
     [Serializable]
@@ -120,12 +103,12 @@ namespace ASC.ElasticSearch.Core
             }).ToList();
         }
 
-        private List<IFactoryIndexer> allItems;
-        internal List<IFactoryIndexer> AllItems
+        private IEnumerable<IFactoryIndexer> allItems;
+        internal IEnumerable<IFactoryIndexer> AllItems
         {
             get
             {
-                return allItems ??= ServiceProvider.GetService<IEnumerable<IFactoryIndexer>>().ToList();
+                return allItems ??= ServiceProvider.GetService<IEnumerable<IFactoryIndexer>>();
             }
         }
 
@@ -136,7 +119,7 @@ namespace ASC.ElasticSearch.Core
             var settings = SettingsManager.Load<SearchSettings>();
 
             var settingsItems = settings.Items;
-            var toReIndex = !settingsItems.Any() ? items.Where(r => r.Enabled).ToList() : items.Where(item => settingsItems.Any(r => r.ID == item.ID && r.Enabled != item.Enabled)).ToList();
+            var toReIndex = settingsItems.Count == 0 ? items.Where(r => r.Enabled).ToList() : items.Where(item => settingsItems.Any(r => r.ID == item.ID && r.Enabled != item.Enabled)).ToList();
 
             settings.Items = items;
             settings.Data = JsonConvert.SerializeObject(items);

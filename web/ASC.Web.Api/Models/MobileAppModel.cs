@@ -1,7 +1,4 @@
-﻿
-using ASC.Core.Common.Notify.Push;
-
-namespace ASC.Web.Api.Models
+﻿namespace ASC.Web.Api.Models
 {
     public class MobileAppModel
     {

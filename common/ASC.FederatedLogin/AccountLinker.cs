@@ -23,24 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Utils;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-using ASC.Core.Common.EF.Model;
-using ASC.FederatedLogin.Profile;
-using ASC.Security.Cryptography;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-
 namespace ASC.FederatedLogin
 {
     [Singletone]
@@ -65,7 +47,8 @@ namespace ASC.FederatedLogin
             var profiles = cache.Get<List<LoginProfile>>(obj);
             if (profiles == null)
             {
-                cache.Insert(obj, profiles = fromDb(obj), DateTime.UtcNow + TimeSpan.FromMinutes(10));
+                profiles = fromDb(obj);
+                cache.Insert(obj, profiles, DateTime.UtcNow + TimeSpan.FromMinutes(10));
             }
             return profiles;
         }

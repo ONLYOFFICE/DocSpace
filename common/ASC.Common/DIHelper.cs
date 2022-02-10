@@ -1,18 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-
-using ASC.Common.DependencyInjection;
-
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
-
-namespace ASC.Common
+﻿namespace ASC.Common
 {
     public enum DIAttributeEnum
     {
@@ -97,14 +83,14 @@ namespace ASC.Common
         public Type Service { get; }
         public Type Additional { get; set; }
 
-        public DIAttribute() { }
+        protected DIAttribute() { }
 
-        public DIAttribute(Type service)
+        protected DIAttribute(Type service)
         {
             Service = service;
         }
 
-        public DIAttribute(Type service, Type implementation)
+        protected DIAttribute(Type service, Type implementation)
         {
             Implementation = implementation;
             Service = service;
@@ -233,7 +219,7 @@ namespace ASC.Common
                             }
                             else
                             {
-                                Type c = null;
+                                Type c;
                                 var a1 = a.GetGenericTypeDefinition();
                                 var b = a.GetGenericArguments().FirstOrDefault();
 
@@ -297,7 +283,7 @@ namespace ASC.Common
                             }
                             else
                             {
-                                Type c = null;
+                                Type c;
                                 var a1 = a.GetGenericTypeDefinition();
                                 var b = a.GetGenericArguments().FirstOrDefault();
 

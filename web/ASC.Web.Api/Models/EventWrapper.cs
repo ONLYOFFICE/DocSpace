@@ -23,12 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Api.Core;
-using ASC.AuditTrail;
-
 namespace ASC.Api.Security
 {
     public class EventWrapper

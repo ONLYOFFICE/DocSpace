@@ -23,26 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Core.Tenants;
-using ASC.Files.Core;
-using ASC.Files.Core.EF;
-using ASC.Files.Core.Thirdparty;
-using ASC.Web.Core.Files;
-using ASC.Web.Studio.Core;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Files.Thirdparty.Dropbox
 {
     [Scope]
@@ -181,7 +161,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public string SaveFolder(Folder<string> folder)
         {
-            if (folder == null) throw new ArgumentNullException("folder");
+            if (folder == null) throw new ArgumentNullException(nameof(folder));
             if (folder.ID != null)
             {
                 return RenameFolder(folder, folder.Title);
@@ -432,7 +412,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             return false;
         }
 
-        public long GetMaxUploadSize(string folderId, bool chunkedUpload)
+        public long GetMaxUploadSize(string folderId, bool chunkedUpload = false)
         {
             var storageMaxUploadSize = ProviderInfo.Storage.MaxChunkedUploadFileSize;
 

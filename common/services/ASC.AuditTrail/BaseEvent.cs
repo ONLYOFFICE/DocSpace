@@ -23,16 +23,6 @@
  *
 */
 
-
-
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-
-using CsvHelper.Configuration;
-
 namespace ASC.AuditTrail
 {
     public class BaseEvent

@@ -23,27 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Core.Tenants;
-using ASC.Files.Core;
-using ASC.Files.Core.EF;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Thirdparty;
-using ASC.Web.Core.Files;
-using ASC.Web.Studio.Core;
-
-using Microsoft.Extensions.Options;
-using Microsoft.OneDrive.Sdk;
-
 namespace ASC.Files.Thirdparty.OneDrive
 {
     [Scope]
@@ -99,7 +78,7 @@ namespace ASC.Files.Thirdparty.OneDrive
                               .FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase) && item.File != null));
         }
 
-        public File<string> GetFileStable(string fileId, int fileVersion)
+        public File<string> GetFileStable(string fileId, int fileVersion = -1)
         {
             return ToFile(GetOneDriveItem(fileId));
         }
@@ -151,8 +130,8 @@ namespace ASC.Files.Thirdparty.OneDrive
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
                         {
-                            FileType fileType;
-                            return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
+                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                            return fileType == FileType.Audio || fileType == FileType.Video;
                         });
                     break;
                 case FilterType.ByExtension:
@@ -212,8 +191,8 @@ namespace ASC.Files.Thirdparty.OneDrive
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
                         {
-                            FileType fileType;
-                            return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
+                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                            return fileType == FileType.Audio || fileType == FileType.Video;
                         });
                     break;
                 case FilterType.ByExtension:
@@ -252,7 +231,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             ProviderInfo.CacheReset(onedriveFileId);
 
             var onedriveFile = GetOneDriveItem(file.ID);
-            if (onedriveFile == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
+            if (onedriveFile == null) throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
             if (onedriveFile is ErrorItem errorItem) throw new Exception(errorItem.Error);
 
             var fileStream = ProviderInfo.Storage.DownloadStream(onedriveFile, (int)offset);
@@ -272,8 +251,8 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public File<string> SaveFile(File<string> file, Stream fileStream)
         {
-            if (file == null) throw new ArgumentNullException("file");
-            if (fileStream == null) throw new ArgumentNullException("fileStream");
+            if (file == null) throw new ArgumentNullException(nameof(file));
+            if (fileStream == null) throw new ArgumentNullException(nameof(fileStream));
 
             Item newOneDriveFile = null;
 
@@ -488,10 +467,10 @@ namespace ASC.Files.Thirdparty.OneDrive
             if (file == null) return null;
 
             if (file.ID != null)
-                file.ID = MakeId(file.ID.ToString());
+                file.ID = MakeId(file.ID);
 
             if (file.FolderID != null)
-                file.FolderID = MakeId(file.FolderID.ToString());
+                file.FolderID = MakeId(file.FolderID);
 
             return file;
         }

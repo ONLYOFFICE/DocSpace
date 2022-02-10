@@ -10,10 +10,6 @@
 // You must not remove this notice, or any other, from this software.
 #endregion
 
-#region Using Statements
-using System.Text.RegularExpressions;
-#endregion
-
 
 namespace Textile.States
 {
@@ -36,7 +32,7 @@ namespace Textile.States
             get { return m_tag.Length; }
         }
 
-        public ListFormatterState(TextileFormatter formatter)
+        protected ListFormatterState(TextileFormatter formatter)
             : base(formatter)
         {
         }
@@ -72,7 +68,7 @@ namespace Textile.States
             {
                 if (!m_firstItem)
                     Formatter.Output.WriteLine("</li>");
-                Formatter.Output.Write(string.Format("<li {0}>", FormattedStylesAndAlignment("li")));
+                Formatter.Output.Write("<li " + FormattedStylesAndAlignment("li") + ">");
                 m_firstItemLine = false;
             }
             else
@@ -86,7 +82,7 @@ namespace Textile.States
         public sealed override bool ShouldNestState(FormatterState other)
         {
             var listState = (ListFormatterState)other;
-            return (listState.NestingDepth > NestingDepth);
+            return listState.NestingDepth > NestingDepth;
         }
 
         public sealed override bool ShouldExit(string input)

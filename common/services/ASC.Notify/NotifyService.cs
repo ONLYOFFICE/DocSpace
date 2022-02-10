@@ -23,21 +23,6 @@
  *
 */
 
-
-using System;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.Notify.Messages;
-using ASC.Web.Core.WhiteLabel;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Notify
 {
     [Singletone(Additional = typeof(NotifyServiceExtension))]
@@ -142,7 +127,7 @@ namespace ASC.Notify
         }
     }
 
-    public class NotifyServiceExtension
+    public static class NotifyServiceExtension
     {
         public static void Register(DIHelper services)
         {

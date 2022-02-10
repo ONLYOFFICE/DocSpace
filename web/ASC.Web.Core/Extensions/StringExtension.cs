@@ -23,14 +23,6 @@
  *
 */
 
-
-using System.Globalization;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Web;
-
 namespace System
 {
     public static class StringExtension
@@ -52,7 +44,7 @@ namespace System
         /// <returns></returns>
         public static string ReplaceSingleQuote(this string str)
         {
-            return str?.Replace("'", "′");
+            return str?.Replace('\'', '′');
         }
 
         public static bool TestEmailRegex(this string emailAddress)

@@ -23,14 +23,6 @@
  *
 */
 
-
-using System.IO;
-using System.Text.RegularExpressions;
-
-using ASC.Files.Core;
-
-using Microsoft.AspNetCore.Http;
-
 namespace ASC.Web.Files.ThirdPartyApp
 {
     public interface IThirdPartyApp
@@ -46,7 +38,7 @@ namespace ASC.Web.Files.ThirdPartyApp
         void SaveFile(string fileId, string fileType, string downloadUrl, Stream stream);
     }
 
-    public class ThirdPartySelector
+    public static class ThirdPartySelector
     {
         public const string AppAttr = "app";
         public static readonly Regex AppRegex = new Regex("^" + AppAttr + @"-(\S+)\|(\S+)$", RegexOptions.Singleline | RegexOptions.Compiled);

@@ -23,16 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Serialization;
-
-using ASC.Common.Utils;
-using ASC.Core.Common.Settings;
-using ASC.Security.Cryptography;
-
 namespace ASC.Web.Studio.Core.TFA
 {
     [Serializable]
@@ -82,7 +72,7 @@ namespace ASC.Web.Studio.Core.TFA
             var settings = settingsManager.LoadForUser<TfaAppUserSettings>(userId);
             var query = settings.CodesSetting.Where(x => x.GetEncryptedCode(instanceCrypto, signature) == code).ToList();
 
-            if (query.Any())
+            if (query.Count > 0)
                 query.First().IsUsed = true;
 
             settingsManager.SaveForUser(settings, userId);

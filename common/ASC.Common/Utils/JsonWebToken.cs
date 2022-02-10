@@ -24,20 +24,12 @@
 */
 
 
-using System;
-
-using JWT;
-using JWT.Algorithms;
-using JWT.Serializers;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-
 using Formatting = Newtonsoft.Json.Formatting;
+using IJsonSerializer = JWT.IJsonSerializer;
 
 namespace ASC.Web.Core.Files
 {
-    public class JsonWebToken
+    public static class JsonWebToken
     {
         public static string Encode(object payload, string key)
         {

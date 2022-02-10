@@ -23,15 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Xml;
-
-using ASC.Notify.Engine;
-using ASC.Notify.Model;
-
 namespace ASC.Notify.Patterns
 {
     public class XmlPatternProvider2 : IPatternProvider
@@ -155,13 +146,13 @@ namespace ASC.Notify.Patterns
                            resourceManagerType.GetProperty(ToUpper(array[0]), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
             if (property == null)
             {
-                throw new NotifyException(string.Format("Resource {0} not found in resourceManager {1}", array[0], array[1]));
+                throw new NotifyException($"Resource {array[0]} not found in resourceManager {array[1]}");
             }
             return property.GetValue(resourceManagerType, null) as string;
 
             static string ToUpper(string name)
             {
-                return name.Substring(0, 1).ToUpper() + name.Substring(1);
+                return name[0].ToString().ToUpper() + name.Substring(1);
             }
         }
     }

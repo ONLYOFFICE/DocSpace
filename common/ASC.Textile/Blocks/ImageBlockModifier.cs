@@ -10,10 +10,6 @@
 // You must not remove this notice, or any other, from this software.
 #endregion
 
-#region Using Statements
-using System.Text.RegularExpressions;
-#endregion
-
 namespace Textile.Blocks
 {
     public class ImageBlockModifier : BlockModifier
@@ -36,7 +32,7 @@ namespace Textile.Blocks
             return line;
         }
 
-        static string ImageFormatMatchEvaluator(Match m)
+        string ImageFormatMatchEvaluator(Match m)
         {
             var atts = BlockAttributesParser.ParseBlockAttributes(m.Groups["atts"].Value, "img");
             if (m.Groups["algn"].Length > 0)

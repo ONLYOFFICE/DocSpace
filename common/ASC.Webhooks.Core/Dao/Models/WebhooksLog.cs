@@ -1,11 +1,4 @@
-﻿using System;
-
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Model;
-
-using Microsoft.EntityFrameworkCore;
-
-#nullable disable
+﻿#nullable disable
 
 namespace ASC.Webhooks.Core.Dao.Models;
 

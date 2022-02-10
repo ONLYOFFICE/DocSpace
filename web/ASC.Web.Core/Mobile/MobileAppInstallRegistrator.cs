@@ -24,14 +24,7 @@
 */
 
 
-using System;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-using ASC.Core.Common.EF.Model;
-using ASC.Core.Common.Notify.Push;
+using DbContext = ASC.Core.Common.EF.Context.DbContext;
 
 namespace ASC.Web.Core.Mobile
 {
@@ -69,7 +62,7 @@ namespace ASC.Web.Core.Mobile
                 q = q.Where(r => r.AppType == (int)appType.Value);
             }
 
-            return q.Count() > 0;
+            return q.Any();
         }
     }
 }

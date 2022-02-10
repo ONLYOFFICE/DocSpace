@@ -1,9 +1,4 @@
-﻿using System;
-
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-
-namespace ASC.Webhooks.Core.Migrations;
+﻿namespace ASC.Webhooks.Core.Migrations;
 
 public partial class WebhooksDbContextMySql : Migration
 {

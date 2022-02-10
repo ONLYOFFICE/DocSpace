@@ -1,7 +1,3 @@
-using System;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-
 namespace ASC.Core.Common.Migrations.PostgreSql.AuditTrailContextPostgreSql
 {
     public partial class AuditTrailContextPostgreSql : Migration

@@ -23,38 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Security;
-
-using ASC.ApiSystem.Classes;
-using ASC.ApiSystem.Models;
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Utils;
-using ASC.Core;
-using ASC.Core.Billing;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-using ASC.Security.Cryptography;
-using ASC.Web.Core.Helpers;
-using ASC.Web.Core.Users;
-using ASC.Web.Core.Utility;
-using ASC.Web.Core.Utility.Settings;
-
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json.Linq;
-
-
 namespace ASC.ApiSystem.Controllers
 {
     [Scope]
@@ -477,13 +445,13 @@ namespace ASC.ApiSystem.Controllers
                 var tenants = new List<Tenant>();
                 var empty = true;
 
-                if (!string.IsNullOrEmpty((model.Email ?? "").Trim()))
+                if (!string.IsNullOrWhiteSpace((model.Email ?? "")))
                 {
                     empty = false;
                     tenants.AddRange(HostedSolution.FindTenants((model.Email ?? "").Trim()));
                 }
 
-                if (!string.IsNullOrEmpty((model.PortalName ?? "").Trim()))
+                if (!string.IsNullOrWhiteSpace((model.PortalName ?? "")))
                 {
                     empty = false;
                     var tenant = HostedSolution.GetTenant((model.PortalName ?? "").Trim());
@@ -673,7 +641,7 @@ namespace ASC.ApiSystem.Controllers
                     return true;
                 }
 
-                var data = string.Format("{0} {1} {2} {3} {4} {5}", model.PortalName, model.FirstName, model.LastName, model.Email, model.Phone, model.RecaptchaType);
+                var data = $"{model.PortalName} {model.FirstName} {model.LastName} {model.Email} {model.Phone} {model.RecaptchaType}";
 
                 /*** validate recaptcha ***/
                 if (!CommonMethods.ValidateRecaptcha(model.RecaptchaResponse, model.RecaptchaType, clientIP))

@@ -23,18 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-
-using ASC.Common;
-using ASC.Core.Caching;
-using ASC.Core.Common.EF;
-using ASC.Core.Data;
-using ASC.Core.Users;
-
 namespace ASC.Core
 {
     [Scope(typeof(ConfigureEFUserService), typeof(ConfigureCachedUserService))]

@@ -1,49 +1,36 @@
-﻿using System.Net;
+﻿namespace ASC.Api.Core.Middleware;
 
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Tenants;
-
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Options;
-
-namespace ASC.Api.Core.Middleware
+[Scope]
+public class TenantStatusFilter : IResourceFilter
 {
-    [Scope]
-    public class TenantStatusFilter : IResourceFilter
+    private readonly TenantManager _tenantManager;
+    private readonly ILog _logger;
+
+    public TenantStatusFilter(IOptionsMonitor<ILog> options, TenantManager tenantManager)
     {
-        private readonly ILog log;
+        _logger = options.CurrentValue;
+        _tenantManager = tenantManager;
+    }
 
-        public TenantStatusFilter(IOptionsMonitor<ILog> options, TenantManager tenantManager)
+    public void OnResourceExecuted(ResourceExecutedContext context) { }
+
+    public void OnResourceExecuting(ResourceExecutingContext context)
+    {
+        var tenant = _tenantManager.GetCurrentTenant(false);
+        if (tenant == null)
         {
-            log = options.CurrentValue;
-            TenantManager = tenantManager;
+            context.Result = new StatusCodeResult((int)HttpStatusCode.NotFound);
+            _logger.Warn("Current tenant not found");
+
+            return;
         }
 
-        private TenantManager TenantManager { get; }
-
-        public void OnResourceExecuted(ResourceExecutedContext context)
+        if (tenant.Status == TenantStatus.RemovePending || tenant.Status == TenantStatus.Suspended)
         {
-        }
+            context.Result = new StatusCodeResult((int)HttpStatusCode.NotFound);
+            _logger.WarnFormat("Tenant {0} is not removed or suspended", tenant.TenantId);
 
-        public void OnResourceExecuting(ResourceExecutingContext context)
-        {
-            var tenant = TenantManager.GetCurrentTenant(false);
-            if (tenant == null)
-            {
-                context.Result = new StatusCodeResult((int)HttpStatusCode.NotFound);
-                log.WarnFormat("Tenant {0} not found", tenant.TenantId);
-                return;
-            }
-
-            if (tenant.Status == TenantStatus.RemovePending || tenant.Status == TenantStatus.Suspended)
-            {
-                context.Result = new StatusCodeResult((int)HttpStatusCode.NotFound);
-                log.WarnFormat("Tenant {0} is not removed or suspended", tenant.TenantId);
-                return;
-            }
+            return;
         }
     }
 }

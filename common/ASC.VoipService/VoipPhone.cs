@@ -23,13 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Core;
-using ASC.Core.Common;
-using ASC.Core.Tenants;
-
 namespace ASC.VoipService
 {
     public class VoipPhone

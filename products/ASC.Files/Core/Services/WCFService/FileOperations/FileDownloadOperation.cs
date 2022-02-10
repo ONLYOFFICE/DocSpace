@@ -23,32 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-
-using ASC.Common;
-using ASC.Common.Security.Authentication;
-using ASC.Common.Threading;
-using ASC.Common.Web;
-using ASC.Core.Tenants;
-using ASC.Files.Core;
-using ASC.Files.Core.EF;
-using ASC.Files.Core.Resources;
-using ASC.MessagingSystem;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Core.Compress;
-using ASC.Web.Files.Helpers;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Core;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Primitives;
-
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
     internal class FileDownloadOperationData<T> : FileOperationData<T>
@@ -87,16 +61,16 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             using var scope = ThirdPartyOperation.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
             var (globalStore, filesLinkUtility, _, _, _) = scopeClass;
-            var stream = TempStream.Create();
+            using var stream = TempStream.Create();
 
             (ThirdPartyOperation as FileDownloadOperation<string>).CompressToZip(stream, scope);
             (DaoOperation as FileDownloadOperation<int>).CompressToZip(stream, scope);
 
             if (stream != null)
             {
-                var archiveExtension = "";
+                string archiveExtension;
 
-                using(var zip = scope.ServiceProvider.GetService<CompressToArchive>())
+                using (var zip = scope.ServiceProvider.GetService<CompressToArchive>())
                 {
                     archiveExtension = zip.ArchiveExtension;
                 }
@@ -117,7 +91,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     stream,
                     MimeMapping.GetMimeMapping(path),
                     "attachment; filename=\"" + fileName + "\"");
-                Result = string.Format("{0}?{1}=bulk&ext={2}", filesLinkUtility.FileHandlerPath, FilesLinkUtility.Action, archiveExtension);
+                Result = $"{filesLinkUtility.FileHandlerPath}?{FilesLinkUtility.Action}=bulk&ext={archiveExtension}";
 
                 TaskInfo.SetProperty(PROGRESS, 100);
                 TaskInfo.SetProperty(RESULT, Result);
@@ -153,16 +127,16 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             base.FillDistributedTask();
 
-            TaskInfo.SetProperty(PROGRESS, progress < 100 ? progress : progress);
+            TaskInfo.SetProperty(PROGRESS, progress);
             TaskInfo.PublishChanges();
         }
     }
 
     class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
     {
-        private readonly Dictionary<T, string> files;
+        private readonly Dictionary<T, string> _files;
         private readonly IDictionary<string, StringValues> headers;
-        ItemNameValueCollection<T> entriesPathId;
+        private ItemNameValueCollection<T> _entriesPathId;
         public override FileOperationType OperationType
         {
             get { return FileOperationType.Download; }
@@ -171,17 +145,17 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         public FileDownloadOperation(IServiceProvider serviceProvider, FileDownloadOperationData<T> fileDownloadOperationData)
             : base(serviceProvider, fileDownloadOperationData)
         {
-            files = fileDownloadOperationData.FilesDownload;
+            _files = fileDownloadOperationData.FilesDownload;
             headers = fileDownloadOperationData.Headers;
         }
 
         protected override void Do(IServiceScope scope)
         {
-            if (!Files.Any() && !Folders.Any()) return;
+            if (Files.Count == 0 && Folders.Count == 0) return;
 
-            entriesPathId = GetEntriesPathId(scope);
+            _entriesPathId = GetEntriesPathId(scope);
 
-            if (entriesPathId == null || entriesPathId.Count == 0)
+            if (_entriesPathId == null || _entriesPathId.Count == 0)
             {
                 if (Files.Count > 0)
                 {
@@ -191,9 +165,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 throw new DirectoryNotFoundException(FilesCommonResource.ErrorMassage_FolderNotFound);
             }
 
-            ReplaceLongPath(entriesPathId);
+            ReplaceLongPath(_entriesPathId);
 
-            Total = entriesPathId.Count;
+            Total = _entriesPathId.Count;
 
             TaskInfo.PublishChanges();
         }
@@ -205,10 +179,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             var title = file.Title;
 
-            if (files.ContainsKey(file.ID))
+            if (_files.TryGetValue(file.ID, out var convertToExt))
             {
-                var convertToExt = files[file.ID];
-
                 if (!string.IsNullOrEmpty(convertToExt))
                 {
                     title = FileUtility.ReplaceFileExtension(title, convertToExt);
@@ -233,8 +205,12 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
             if (0 < Folders.Count)
             {
-                FilesSecurity.FilterRead(FolderDao.GetFolders(Files)).Cast<FileEntry<T>>().ToList()
-                             .ForEach(folder => fileMarker.RemoveMarkAsNew(folder));
+                var folders = FilesSecurity.FilterRead(FolderDao.GetFolders(Files));
+
+                foreach (var folder in folders)
+                {
+                    fileMarker.RemoveMarkAsNew(folder);
+                }
 
                 var filesInFolder = GetFilesInFolders(scope, Folders, string.Empty);
                 entriesPathId.Add(filesInFolder);
@@ -275,10 +251,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
             return entriesPathId;
         }
-            
+
         internal void CompressToZip(Stream stream, IServiceScope scope)
         {
-            if (entriesPathId == null) return;
+            if (_entriesPathId == null) return;
             var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
             var (_, _, _, fileConverter, filesMessageService) = scopeClass;
             var FileDao = scope.ServiceProvider.GetService<IFileDao<T>>();
@@ -287,15 +263,13 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 compressTo.SetStream(stream);
 
-                foreach (var path in entriesPathId.AllKeys)
+                foreach (var path in _entriesPathId.AllKeys)
                 {
                     var counter = 0;
-                    foreach (var entryId in entriesPathId[path])
+                    foreach (var entryId in _entriesPathId[path])
                     {
                         if (CancellationToken.IsCancellationRequested)
                         {
-                            compressTo.Dispose();
-                            stream.Dispose();
                             CancellationToken.ThrowIfCancellationRequested();
                         }
 
@@ -315,9 +289,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                 continue;
                             }
 
-                            if (files.ContainsKey(file.ID))
+                            if (_files.TryGetValue(file.ID, out convertToExt))
                             {
-                                convertToExt = files[file.ID];
                                 if (!string.IsNullOrEmpty(convertToExt))
                                 {
                                     newtitle = FileUtility.ReplaceFileExtension(path, convertToExt);
@@ -331,7 +304,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                             if (!Equals(entryId, default(T)))
                             {
-                                newtitle = 0 < newtitle.IndexOf('.') ? newtitle.Insert(newtitle.LastIndexOf('.'), suffix) : newtitle + suffix;
+                                newtitle = newtitle.IndexOf('.') > 0 ? newtitle.Insert(newtitle.LastIndexOf('.'), suffix) : newtitle + suffix;
                             }
                             else
                             {

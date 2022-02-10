@@ -23,28 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Users;
-using ASC.Files.Core;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
-using ASC.Files.Core.Services.NotifyService;
-using ASC.Web.Core.Files;
-using ASC.Web.Core.Users;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Services.DocumentService;
-using ASC.Web.Files.Services.WCFService;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Web.Files.Utils
 {
     [Scope]
@@ -167,7 +145,7 @@ namespace ASC.Web.Files.Utils
                 DocumentServiceHelper.CheckUsersForDrop((File<T>)entry);
             }
 
-            if (recipients.Any())
+            if (recipients.Count > 0)
             {
                 if (entryType == FileEntryType.File
                     || ((Folder<T>)entry).TotalSubFolders + ((Folder<T>)entry).TotalFiles > 0
@@ -299,7 +277,7 @@ namespace ASC.Web.Files.Utils
             if (entry == null) throw new ArgumentNullException(FilesCommonResource.ErrorMassage_BadRequest);
             if (!CanSetAccess(entry))
             {
-                Logger.ErrorFormat("User {0} can't get shared info for {1} {2}", AuthContext.CurrentAccount.ID, (entry.FileEntryType == FileEntryType.File ? "file" : "folder"), entry.ID);
+                Logger.ErrorFormat("User {0} can't get shared info for {1} {2}", AuthContext.CurrentAccount.ID, entry.FileEntryType == FileEntryType.File ? "file" : "folder", entry.ID);
                 throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
             }
 
@@ -467,7 +445,7 @@ namespace ASC.Web.Files.Utils
                     var duplicate = result.FirstOrDefault(ace => ace.SubjectId == aceForObject.SubjectId);
                     if (duplicate == null)
                     {
-                        if (result.Any())
+                        if (result.Count > 0)
                         {
                             aceForObject.Owner = false;
                             aceForObject.Share = FileShare.Varies;

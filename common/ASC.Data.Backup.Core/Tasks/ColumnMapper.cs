@@ -23,10 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
 namespace ASC.Data.Backup.Tasks
 {
     public class ColumnMapper
@@ -140,7 +136,7 @@ namespace ASC.Data.Backup.Tasks
 
         private static string GetMappingKey(string tableName, string columnName)
         {
-            return string.Format("t:{0};c:{1}", tableName, columnName).ToLowerInvariant();
+            return $"t:{tableName};c:{columnName}".ToLowerInvariant();
         }
 
         private static string GetMappingKey(string tableName, string columnName, object oldValue)

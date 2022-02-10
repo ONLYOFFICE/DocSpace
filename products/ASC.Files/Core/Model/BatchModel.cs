@@ -1,10 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Text.Json;
-
-using ASC.Api.Collections;
-using ASC.Web.Files.Services.WCFService.FileOperations;
-
-namespace ASC.Files.Model
+﻿namespace ASC.Files.Model
 {
     public class BaseBatchModel
     {

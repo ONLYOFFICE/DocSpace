@@ -23,11 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Web.Core.WebZones;
-
 namespace ASC.Web.Core
 {
     [WebZone(WebZoneType.TopNavigationProductList | WebZoneType.StartProductList)]

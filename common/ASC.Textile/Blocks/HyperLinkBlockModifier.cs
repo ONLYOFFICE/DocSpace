@@ -10,12 +10,6 @@
 // You must not remove this notice, or any other, from this software.
 #endregion
 
-#region Using Statements
-
-using System.Text.RegularExpressions;
-
-#endregion
-
 
 namespace Textile.Blocks
 {
@@ -33,7 +27,7 @@ namespace Textile.Blocks
                                     @"\s?" +
                                     @"(?:\((?<title>[^)]+)\)(?=""))?" +		// title
                                     "\":" +
-                                    string.Format(@"""(?<url>\S+[^""]+)""", Regex.Escape(@"a-zA-Z:/.-{}?&_%#+=@")) +						// url
+                                    @"""(?<url>\S+[^""]+)""" +						// url
                                     @"(?<slash>\/)?" +						// slash
                                     @"(?<post>[^\w\/;]*)" +					// post
                                     @"(?=\s|$)",

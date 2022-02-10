@@ -23,10 +23,6 @@
  *
 */
 
-
-using System.Net;
-using System.Net.Sockets;
-
 namespace ASC.IPSecurity
 {
     class IPAddressRange
@@ -56,13 +52,18 @@ namespace ASC.IPSecurity
             for (var i = 0; i < lowerBytes.Length &&
                             (lowerBoundary || upperBoundary); i++)
             {
-                if ((lowerBoundary && addressBytes[i] < lowerBytes[i]) || (upperBoundary && addressBytes[i] > upperBytes[i]))
+                var addressByte = addressBytes[i];
+                var upperByte = upperBytes[i];
+                var lowerByte = lowerBytes[i];
+
+
+                if ((lowerBoundary && addressByte < lowerByte) || (upperBoundary && addressByte > upperByte))
                 {
                     return false;
                 }
 
-                lowerBoundary &= (addressBytes[i] == lowerBytes[i]);
-                upperBoundary &= (addressBytes[i] == upperBytes[i]);
+                lowerBoundary &= addressByte == lowerByte;
+                upperBoundary &= addressByte == upperByte;
             }
 
             return true;

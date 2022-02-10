@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core.Common.Configuration;
-using ASC.FederatedLogin;
-using ASC.FederatedLogin.Helpers;
-using ASC.FederatedLogin.LoginProviders;
-using ASC.Web.Files.ThirdPartyApp;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Web.Files.Helpers
 {
     [Scope]
@@ -61,7 +48,7 @@ namespace ASC.Web.Files.Helpers
 
         public void SaveToken(OAuth20Token token)
         {
-            if (token == null) throw new ArgumentNullException("token");
+            if (token == null) throw new ArgumentNullException(nameof(token));
             TokenHelper.SaveToken(new Token(token, AppAttr));
         }
 
@@ -75,7 +62,7 @@ namespace ASC.Web.Files.Helpers
 
         public void DeleteToken(OAuth20Token token)
         {
-            if (token == null) throw new ArgumentNullException("token");
+            if (token == null) throw new ArgumentNullException(nameof(token));
             TokenHelper.DeleteToken(AppAttr);
 
         }

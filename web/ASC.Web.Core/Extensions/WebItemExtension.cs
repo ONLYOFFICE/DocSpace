@@ -23,14 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Core;
-using ASC.Web.Core.Utility.Skins;
-
 namespace ASC.Web.Core
 {
     public static class WebItemExtension

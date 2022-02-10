@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-using System.IO;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Data.Storage;
-using ASC.Files.Core;
-using ASC.Web.Studio.Core;
-//using File = ASC.Files.Core.File;
-
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Data.Backup.Storage
 {
     [Scope]
@@ -155,7 +142,7 @@ namespace ASC.Data.Backup.Storage
             var chunkedUploadSession = fileDao.CreateUploadSession(newFile, source.Length);
             chunkedUploadSession.CheckQuota = false;
 
-            var bytesRead = 0;
+            int bytesRead;
 
             while ((bytesRead = source.Read(buffer, 0, (int)SetupInfo.ChunkUploadSize)) > 0)
             {

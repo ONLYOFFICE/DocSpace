@@ -23,18 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-
-using ASC.Common;
-using ASC.Common.Utils;
-
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-
 namespace ASC.Data.Storage
 {
     [Singletone]
@@ -70,9 +58,7 @@ namespace ASC.Data.Storage
 
         public string ResolveVirtualPath(string module, string domain)
         {
-            var url = string.Format("~/storage/{0}/{1}/",
-                                 module,
-                                 string.IsNullOrEmpty(domain) ? "root" : domain);
+            var url = $"~/storage/{module}/{(string.IsNullOrEmpty(domain) ? "root" : domain)}/";
             return ResolveVirtualPath(url);
         }
 

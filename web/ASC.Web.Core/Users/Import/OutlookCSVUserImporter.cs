@@ -23,10 +23,6 @@
  *
 */
 
-
-using System.Collections.Generic;
-using System.IO;
-
 namespace ASC.Web.Core.Users.Import
 {
     public class OutlookCSVUserImporter : TextFileUserImporter

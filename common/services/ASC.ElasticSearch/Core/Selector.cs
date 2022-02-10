@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-using System.Globalization;
-using System.Linq;
-using System.Linq.Expressions;
-
-using ASC.Common;
-using ASC.ElasticSearch.Core;
-
-using Microsoft.Extensions.DependencyInjection;
-
-using Nest;
-
 namespace ASC.ElasticSearch
 {
     [Scope]
@@ -207,7 +194,7 @@ namespace ASC.ElasticSearch
             {
                 var t = ServiceProvider.GetService<T>();
                 var searchSettingsHelper = ServiceProvider.GetService<SearchSettingsHelper>();
-                return ((NewArrayExpression)(t.GetSearchContentFields(searchSettingsHelper)).Body).Expressions.ToArray();
+                return ((NewArrayExpression)t.GetSearchContentFields(searchSettingsHelper).Body).Expressions.ToArray();
             },
             value);
 
@@ -341,7 +328,7 @@ namespace ASC.ElasticSearch
 
             if (string.IsNullOrEmpty(path) &&
                 !string.IsNullOrEmpty(fieldSelector.Name) &&
-                fieldSelector.Name.IndexOf(".", StringComparison.InvariantCulture) > 0)
+                fieldSelector.Name.IndexOf('.') > -1)
             {
                 var splitted = fieldSelector.Name.Split(':')[1];
                 path = splitted.Split('.')[0];
@@ -372,7 +359,7 @@ namespace ASC.ElasticSearch
 
         private bool IsPhrase(string searchText)
         {
-            return searchText.Contains(" ") || searchText.Contains("\r\n") || searchText.Contains("\n");
+            return searchText.Contains(' ') || searchText.Contains("\r\n") || searchText.Contains('\n');
         }
 
         private bool IsExactlyPhrase(string searchText)
@@ -382,7 +369,7 @@ namespace ASC.ElasticSearch
 
         private bool IsExactly(string searchText)
         {
-            return searchText.StartsWith("\"") && searchText.EndsWith("\"");
+            return searchText.StartsWith('\"') && searchText.EndsWith('\"');
         }
 
         private QueryContainer MultiMatch(Fields fields, string value)
@@ -440,7 +427,7 @@ namespace ASC.ElasticSearch
         {
             var result = value;
 
-            if (!value.Contains("*") && !value.Contains("?"))
+            if (!value.Contains('*') && !value.Contains('?'))
             {
                 result = "*" + result + "*";
             }

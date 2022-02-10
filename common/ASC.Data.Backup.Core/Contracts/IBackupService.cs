@@ -23,11 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.ServiceModel;
-
 namespace ASC.Data.Backup.Contracts
 {
     [ServiceContract]

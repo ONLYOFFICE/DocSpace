@@ -23,16 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Core;
-using ASC.Core.Tenants;
-
-using Twilio.TwiML;
-
 namespace ASC.VoipService.Twilio
 {
     public class TwilioResponseHelper

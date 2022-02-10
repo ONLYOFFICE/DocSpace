@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net.Mime;
-
-using ASC.Files.Core.Model;
-
-using Microsoft.AspNetCore.Http;
-
-namespace ASC.Files.Model
+﻿namespace ASC.Files.Model
 {
     public class UploadModel : IModelWithFile, IDisposable
     {

@@ -1,18 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿namespace ASC.Web.Api.Routing;
 
-namespace ASC.Web.Api.Routing
+public class DefaultRouteAttribute : RouteAttribute
 {
-    public class DefaultRouteAttribute : RouteAttribute
+    public static string BaseUrl { get; set; }
+
+    static DefaultRouteAttribute()
     {
-        public static string BaseUrl { get; set; }
-
-        static DefaultRouteAttribute()
-        {
-            BaseUrl = "api/2.0";
-        }
-
-        public DefaultRouteAttribute() : base(BaseUrl)
-        {
-        }
+        BaseUrl = "api/2.0";
     }
+
+    public DefaultRouteAttribute() : base(BaseUrl) { }
 }

@@ -23,17 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Text.RegularExpressions;
-
-using ASC.Data.Backup.Tasks.Data;
-
-using Newtonsoft.Json.Linq;
-
 namespace ASC.Data.Backup.Tasks.Modules
 {
     public class CrmModuleSpecifics : ModuleSpecificsBase

@@ -1,17 +1,4 @@
-﻿using System;
-using System.Linq.Expressions;
-
-using ASC.Common;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Model;
-using ASC.ElasticSearch;
-using ASC.ElasticSearch.Core;
-
-using Microsoft.EntityFrameworkCore;
-
-using Nest;
-
-namespace ASC.Files.Core.EF
+﻿namespace ASC.Files.Core.EF
 {
     [Transient]
     [ElasticsearchType(RelationName = Tables.Folder)]

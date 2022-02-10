@@ -23,23 +23,7 @@
  *
 */
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Threading;
-using ASC.Core;
-using ASC.Core.Encryption;
-using ASC.Core.Tenants;
-using ASC.Data.Storage.DiscStorage;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+using Tenant = ASC.Core.Tenants.Tenant;
 
 namespace ASC.Data.Storage.Encryption
 {
@@ -147,7 +131,7 @@ namespace ASC.Data.Storage.Encryption
 
             foreach (var domain in domains)
             {
-                var logParent = string.Format("Tenant: {0}, Module: {1}, Domain: {2}", tenant.TenantAlias, module, domain);
+                var logParent = $"Tenant: {tenant.TenantAlias}, Module: {module}, Domain: {domain}";
 
                 var files = GetFiles(domains, progress, store, domain);
 
@@ -191,7 +175,7 @@ namespace ASC.Data.Storage.Encryption
         {
             IEnumerable<string> files = targetStore.ListFilesRelative(targetDomain, "\\", "*.*", true);
 
-            if (progress.Any())
+            if (progress.Count > 0)
             {
                 files = files.Where(path => !progress.Contains(path));
             }
@@ -217,7 +201,7 @@ namespace ASC.Data.Storage.Encryption
         {
             foreach (var file in files)
             {
-                var logItem = string.Format("{0}, File: {1}", logParent, file);
+                var logItem = $"{logParent}, File: {file}";
 
                 log.Debug(logItem);
 
@@ -378,7 +362,7 @@ namespace ASC.Data.Storage.Encryption
         }
     }
 
-    public class EncryptionOperationExtension
+    public static class EncryptionOperationExtension
     {
         public static void Register(DIHelper services)
         {

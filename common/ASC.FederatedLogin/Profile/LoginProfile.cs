@@ -23,26 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Web;
-
-using ASC.Common.Utils;
-using ASC.FederatedLogin.Helpers;
-using ASC.Security.Cryptography;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Caching.Memory;
-
-using Newtonsoft.Json;
-
 namespace ASC.FederatedLogin.Profile
 {
     [Serializable]
@@ -163,7 +143,7 @@ namespace ASC.FederatedLogin.Profile
 
         public string UniqueId
         {
-            get { return string.Format("{0}/{1}", Provider, Id); }
+            get { return $"{Provider}/{Id}"; }
         }
 
         public string HashId
@@ -233,7 +213,7 @@ namespace ASC.FederatedLogin.Profile
 
         internal void SetField(string name, string value)
         {
-            if (name == null) throw new ArgumentNullException("name");
+            if (name == null) throw new ArgumentNullException(nameof(name));
             if (!string.IsNullOrEmpty(value))
             {
                 if (_fields.ContainsKey(name))
@@ -276,7 +256,7 @@ namespace ASC.FederatedLogin.Profile
 
         public static bool HasProfile(HttpRequest request)
         {
-            if (request == null) throw new ArgumentNullException("request");
+            if (request == null) throw new ArgumentNullException(nameof(request));
             return new Uri(request.GetDisplayUrl()).HasProfile();
         }
 
@@ -306,8 +286,7 @@ namespace ASC.FederatedLogin.Profile
             var query = new StringBuilder();
             foreach (var key in queryString.AllKeys)
             {
-                query.AppendFormat("{0}={1}&", key,
-                                   queryString[key]);
+                query.Append($"{key}={queryString[key]}&");
             }
             var builder = new UriBuilder(uri) { Query = query.ToString().TrimEnd('&') };
             return builder.Uri;
@@ -362,7 +341,7 @@ namespace ASC.FederatedLogin.Profile
 
         internal void FromSerializedString(string serialized)
         {
-            if (serialized == null) throw new ArgumentNullException("serialized");
+            if (serialized == null) throw new ArgumentNullException(nameof(serialized));
             _fields = serialized.Split(PairSeparator).ToDictionary(x => x.Split(KeyValueSeparator)[0], y => y.Split(KeyValueSeparator)[1]);
         }
 
@@ -387,7 +366,7 @@ namespace ASC.FederatedLogin.Profile
         protected LoginProfile(Signature signature, InstanceCrypto instanceCrypto, SerializationInfo info) : this(signature, instanceCrypto)
         {
             if (info == null)
-                throw new ArgumentNullException("info");
+                throw new ArgumentNullException(nameof(info));
             var transformed = (string)info.GetValue(QueryParamName, typeof(string));
             FromTransport(transformed);
         }

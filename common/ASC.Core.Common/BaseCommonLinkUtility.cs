@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Web;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Core.Common
 {
     [Scope]
@@ -90,6 +77,9 @@ namespace ASC.Core.Common
                     if (HttpContextAccessor?.HttpContext?.Request != null)
                     {
                         var u = HttpContextAccessor?.HttpContext.Request.GetUrlRewriter();
+
+                        if (u == null) throw new ArgumentNullException("u");
+
                         uriBuilder = new UriBuilder(u.Scheme, LOCALHOST, u.Port);
                     }
                     _serverRoot = uriBuilder;
@@ -125,6 +115,9 @@ namespace ASC.Core.Common
                 if (HttpContextAccessor?.HttpContext?.Request != null)
                 {
                     var u = HttpContextAccessor?.HttpContext?.Request.GetUrlRewriter();
+
+                    if (u == null) throw new ArgumentNullException("u");
+
                     result = new UriBuilder(u.Scheme, u.Host, u.Port);
 
                     if (CoreBaseSettings.Standalone && !result.Uri.IsLoopback)
@@ -179,7 +172,7 @@ namespace ASC.Core.Common
                 virtualPath.StartsWith("https://", StringComparison.InvariantCultureIgnoreCase))
                 return virtualPath;
 
-            if (string.IsNullOrEmpty(virtualPath) || virtualPath.StartsWith("/"))
+            if (virtualPath.StartsWith('/'))
             {
                 return ServerRootPath + virtualPath;
             }
@@ -193,7 +186,7 @@ namespace ASC.Core.Common
                 return VirtualPathUtility.ToAbsolute(virtualPath);
             }
 
-            if (string.IsNullOrEmpty(virtualPath) || virtualPath.StartsWith("/"))
+            if (string.IsNullOrEmpty(virtualPath) || virtualPath.StartsWith('/'))
             {
                 return virtualPath;
             }
@@ -211,7 +204,7 @@ namespace ASC.Core.Common
 
             if (string.IsNullOrEmpty(lang))
             {
-                url = matches.Cast<Match>().Aggregate(url, (current, match) => current.Replace(match.Value, string.Empty));
+                url = matches.Aggregate(url, (current, match) => current.Replace(match.Value, string.Empty));
             }
             else
             {

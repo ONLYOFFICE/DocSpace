@@ -1,7 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Threading;
-
-namespace ASC.Common.Notify.Engine
+﻿namespace ASC.Common.Notify.Engine
 {
     /// <summary>
     /// Provides a way to set contextual data that flows with the call and 

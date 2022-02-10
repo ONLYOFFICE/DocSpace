@@ -1,42 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Text.Json;
-using System.Text.RegularExpressions;
-using System.Web;
-
-using ASC.Api.Core;
-using ASC.Api.Documents;
-using ASC.Api.Utils;
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Web;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.FederatedLogin.Helpers;
-using ASC.Files.Core;
-using ASC.Files.Core.Model;
-using ASC.Files.Model;
-using ASC.Web.Core.Files;
-using ASC.Web.Core.Users;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Core.Entries;
-using ASC.Web.Files.Services.DocumentService;
-using ASC.Web.Files.Services.WCFService;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Core;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json.Linq;
-
-using static ASC.Api.Documents.FilesController;
-
+﻿
 using FileShare = ASC.Files.Core.Security.FileShare;
 using MimeMapping = ASC.Common.Web.MimeMapping;
 using SortedByType = ASC.Files.Core.SortedByType;
@@ -72,6 +34,7 @@ namespace ASC.Files.Helpers
         private UserManager UserManager { get; }
         private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
         private ILog Logger { get; set; }
+        private IHttpClientFactory ClientFactory { get; set; }
 
         /// <summary>
         /// </summary>
@@ -102,7 +65,8 @@ namespace ASC.Files.Helpers
             FileConverter fileConverter,
             ApiDateTimeHelper apiDateTimeHelper,
             UserManager userManager,
-            DisplayUserSettingsHelper displayUserSettingsHelper)
+            DisplayUserSettingsHelper displayUserSettingsHelper,
+            IHttpClientFactory clientFactory)
         {
             ApiContext = context;
             FileStorageService = fileStorageService;
@@ -129,6 +93,7 @@ namespace ASC.Files.Helpers
             HttpContextAccessor = httpContextAccessor;
             FileConverter = fileConverter;
             Logger = optionMonitor.Get("ASC.Files");
+            ClientFactory = clientFactory;
         }
 
         public FolderContentWrapper<T> GetFolder(T folderId, Guid userIdOrGroupId, FilterType filterType, bool withSubFolders)
@@ -258,7 +223,7 @@ namespace ASC.Files.Helpers
 
             if (FilesLinkUtility.IsLocalFileUploader)
             {
-                var session = FileUploader.InitiateUpload(file.FolderID, (file.ID ?? default), file.Title, file.ContentLength, encrypted);
+                var session = FileUploader.InitiateUpload(file.FolderID, file.ID ?? default, file.Title, file.ContentLength, encrypted);
 
                 var responseObject = ChunkedUploadSessionHelper.ToResponseObject(session, true);
                 return new
@@ -270,7 +235,7 @@ namespace ASC.Files.Helpers
 
             var createSessionUrl = FilesLinkUtility.GetInitiateUploadSessionUrl(TenantManager.GetCurrentTenant().TenantId, file.FolderID, file.ID, file.Title, file.ContentLength, encrypted, SecurityContext);
 
-            using var httpClient = new HttpClient();
+            var httpClient = ClientFactory.CreateClient();
 
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(createSessionUrl);
@@ -283,12 +248,6 @@ namespace ASC.Files.Helpers
                 request.Headers.Add(HttpRequestExtensions.UrlRewriterHeader, rewriterHeader.ToString());
             }
 
-            // hack. http://ubuntuforums.org/showthread.php?t=1841740
-            if (WorkContext.IsMono)
-            {
-                ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
-            }
-
             using var response = httpClient.Send(request);
             using var responseStream = response.Content.ReadAsStream();
             using var streamReader = new StreamReader(responseStream);
@@ -297,7 +256,7 @@ namespace ASC.Files.Helpers
 
         public FileWrapper<T> CreateTextFile(T folderId, string title, string content)
         {
-            if (title == null) throw new ArgumentNullException("title");
+            if (title == null) throw new ArgumentNullException(nameof(title));
             //Try detect content
             var extension = ".txt";
             if (!string.IsNullOrEmpty(content))
@@ -321,7 +280,7 @@ namespace ASC.Files.Helpers
 
         public FileWrapper<T> CreateHtmlFile(T folderId, string title, string content)
         {
-            if (title == null) throw new ArgumentNullException("title");
+            if (title == null) throw new ArgumentNullException(nameof(title));
             return CreateFile(folderId, title, content, ".html");
         }
 
@@ -486,8 +445,8 @@ namespace ASC.Files.Helpers
 
         public IEnumerable<FileEntryWrapper> MoveOrCopyBatchCheck(BatchModel batchModel)
         {
-            var checkedFiles = new List<object>();
-            var checkedFolders = new List<object>();
+            List<object> checkedFiles;
+            List<object> checkedFolders;
 
             if (batchModel.DestFolderId.ValueKind == JsonValueKind.Number)
             {
@@ -667,8 +626,6 @@ namespace ASC.Files.Helpers
 
         public string GenerateSharedLink(T fileId, FileShare share)
         {
-            var file = GetFileInfo(fileId);
-
             var sharedInfo = FileStorageService.GetSharedInfo(new List<T> { fileId }, new List<T> { }).Find(r => r.SubjectId == FileConstant.ShareLinkId);
             if (sharedInfo == null || sharedInfo.Share != share)
             {

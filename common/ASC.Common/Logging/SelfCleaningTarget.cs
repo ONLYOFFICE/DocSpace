@@ -23,17 +23,7 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-using ASC.Common.Utils;
-
-using NLog;
-using NLog.Common;
-using NLog.Targets;
+using LogLevel = NLog.LogLevel;
 
 namespace ASC.Common.Logging
 {
@@ -53,10 +43,8 @@ namespace ASC.Common.Logging
 
             const string key = "cleanPeriod";
 
-            if (NLog.LogManager.Configuration.Variables.Keys.Contains(key))
+            if (LogManager.Configuration.Variables.TryGetValue(key, out var variable))
             {
-                var variable = NLog.LogManager.Configuration.Variables[key];
-
                 if (variable != null && !string.IsNullOrEmpty(variable.Text))
                 {
                     int.TryParse(variable.Text, out value);
@@ -111,7 +99,7 @@ namespace ASC.Common.Logging
                 {
                     Exception = err,
                     Level = LogLevel.Error,
-                    Message = string.Format("file: {0}, dir: {1}, mess: {2}", filePath, dirPath, err.Message),
+                    Message = $"file: {filePath}, dir: {dirPath}, mess: {err.Message}",
                     LoggerName = "SelfCleaningTarget"
                 });
             }

@@ -1,6 +1,3 @@
-using System;
-using Microsoft.EntityFrameworkCore.Migrations;
-
 namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
 {
     public partial class UserDbContextMySql : Migration

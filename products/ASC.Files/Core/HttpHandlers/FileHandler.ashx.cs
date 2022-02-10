@@ -24,51 +24,8 @@
 */
 
 
-using System;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Utils;
-using ASC.Common.Web;
-using ASC.Core;
-using ASC.Files.Core;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
-using ASC.MessagingSystem;
-using ASC.Security.Cryptography;
-using ASC.Web.Core;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Core.Compress;
-using ASC.Web.Files.Helpers;
-using ASC.Web.Files.Services.DocumentService;
-using ASC.Web.Files.Services.FFmpegService;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Core;
-using ASC.Web.Studio.Utility;
-
-using JWT;
-
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json.Linq;
-
-using FileShare = ASC.Files.Core.Security.FileShare;
+using JsonException = System.Text.Json.JsonException;
 using MimeMapping = ASC.Common.Web.MimeMapping;
-using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Files
 {
@@ -120,6 +77,7 @@ namespace ASC.Web.Files
         public TempStream TempStream { get; }
         private UserManager UserManager { get; }
         private ILog Logger { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
         public FileHandlerService(
             FilesLinkUtility filesLinkUtility,
@@ -146,7 +104,8 @@ namespace ASC.Web.Files
             FileConverter fileConverter,
             FFmpegService fFmpegService,
             IServiceProvider serviceProvider,
-            TempStream tempStream)
+            TempStream tempStream,
+            IHttpClientFactory clientFactory)
         {
             FilesLinkUtility = filesLinkUtility;
             TenantExtra = tenantExtra;
@@ -172,17 +131,23 @@ namespace ASC.Web.Files
             TempStream = tempStream;
             UserManager = userManager;
             Logger = optionsMonitor.CurrentValue;
+            ClientFactory = clientFactory;
         }
 
-        public async Task Invoke(HttpContext context)
+        public Task Invoke(HttpContext context)
         {
             if (TenantExtra.IsNotPaid())
             {
                 context.Response.StatusCode = (int)HttpStatusCode.PaymentRequired;
                 //context.Response.StatusDescription = "Payment Required.";
-                return;
+                return Task.CompletedTask;
             }
 
+            return InternalInvoke(context);
+        }
+
+        private async Task InternalInvoke(HttpContext context)
+        {
             try
             {
                 switch ((context.Request.Query[FilesLinkUtility.Action].FirstOrDefault() ?? "").ToLower())
@@ -229,12 +194,12 @@ namespace ASC.Web.Files
             }
         }
 
-        private async Task BulkDownloadFile(HttpContext context)
+        private Task BulkDownloadFile(HttpContext context)
         {
             if (!SecurityContext.IsAuthenticated)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                return;
+                return Task.CompletedTask;
             }
 
             var ext = CompressToArchive.GetExt(ServiceProvider, context.Request.Query["ext"]);
@@ -245,18 +210,22 @@ namespace ASC.Web.Files
             {
                 Logger.ErrorFormat("BulkDownload file error. File is not exist on storage. UserId: {0}.", AuthContext.CurrentAccount.ID);
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                return;
+                return Task.CompletedTask;
             }
 
             if (store.IsSupportedPreSignedUri)
             {
                 var url = store.GetPreSignedUri(FileConstant.StorageDomainTmp, path, TimeSpan.FromHours(1), null).ToString();
                 context.Response.Redirect(url);
-                return;
+                return Task.CompletedTask;
             }
 
             context.Response.Clear();
+            return InternalBulkDownloadFile(context, store, path, ext);
+        }
 
+        private async Task InternalBulkDownloadFile(HttpContext context, IDataStore store, string path, string ext)
+        {
             try
             {
                 var flushed = false;
@@ -270,7 +239,7 @@ namespace ASC.Web.Files
                         readStream.Seek(offset, SeekOrigin.Begin);
                     }
 
-                    flushed = await SendStreamByChunksAsync(context, length, FileConstant.DownloadTitle + ext, readStream, flushed);
+                    await SendStreamByChunksAsync(context, length, FileConstant.DownloadTitle + ext, readStream, flushed);
                 }
 
                 await context.Response.Body.FlushAsync();
@@ -522,7 +491,7 @@ namespace ASC.Web.Files
 
             var range = context.Request.Headers["Range"].FirstOrDefault().Split(new[] { '=', '-' });
             offset = Convert.ToInt64(range[1]);
-            if (range.Count() > 2 && !string.IsNullOrEmpty(range[2]))
+            if (range.Length > 2 && !string.IsNullOrEmpty(range[2]))
             {
                 endOffset = Convert.ToInt64(range[2]);
             }
@@ -1042,18 +1011,23 @@ namespace ASC.Web.Files
             return file.ID + ":" + file.Version + ":" + file.Title.GetHashCode() + ":" + file.ContentLength;
         }
 
-        private async Task CreateFile(HttpContext context)
+        private Task CreateFile(HttpContext context)
         {
             if (!SecurityContext.IsAuthenticated)
             {
                 //var refererURL = context.Request.GetUrlRewriter().AbsoluteUri;
 
                 //context.Session["refererURL"] = refererURL;
-                var authUrl = "~/Auth.aspx";
+                const string authUrl = "~/Auth.aspx";
                 context.Response.Redirect(authUrl, true);
-                return;
+                return Task.CompletedTask;
             }
 
+            return InternalCreateFile(context);
+        }
+
+        private async Task InternalCreateFile(HttpContext context)
+        {
             var folderId = context.Request.Query[FilesLinkUtility.FolderId].FirstOrDefault();
             if (string.IsNullOrEmpty(folderId))
             {
@@ -1072,9 +1046,10 @@ namespace ASC.Web.Files
             }
         }
 
-        private async Task CreateFile<T>(HttpContext context, T folderId)
+        private Task CreateFile<T>(HttpContext context, T folderId)
         {
             var responseMessage = context.Request.Query["response"] == "message";
+
             Folder<T> folder;
 
             var folderDao = DaoFactory.GetFolderDao<T>();
@@ -1100,7 +1075,28 @@ namespace ASC.Web.Files
             }
             catch (Exception ex)
             {
+                return InternalWriteError(context, ex, responseMessage);
+            }
+
+            FileMarker.MarkAsNew(file);
+
+            if (responseMessage)
+            {
+                return InternalWriteOk(context, folder, file);
+            }
+
+            context.Response.Redirect(
+                (context.Request.Query["openfolder"].FirstOrDefault() ?? "").Equals("true")
+                    ? PathProvider.GetFolderUrlById(file.FolderID)
+                    : (FilesLinkUtility.GetFileWebEditorUrl(file.ID) + "#message/" + HttpUtility.UrlEncode(string.Format(FilesCommonResource.MessageFileCreated, folder.Title))));
+
+            return Task.CompletedTask;
+        }
+
+        private async Task InternalWriteError(HttpContext context, Exception ex, bool responseMessage)
+        {
                 Logger.Error(ex);
+
                 if (responseMessage)
                 {
                     await context.Response.WriteAsync("error: " + ex.Message);
@@ -1110,23 +1106,14 @@ namespace ASC.Web.Files
                 return;
             }
 
-            FileMarker.MarkAsNew(file);
-
-            if (responseMessage)
+        private async Task InternalWriteOk<T>(HttpContext context, Folder<T> folder, File<T> file)
             {
                 var message = string.Format(FilesCommonResource.MessageFileCreated, folder.Title);
                 if (FileUtility.CanWebRestrictedEditing(file.Title))
                     message = string.Format(FilesCommonResource.MessageFileCreatedForm, folder.Title);
 
                 await context.Response.WriteAsync("ok: " + message);
-                return;
             }
-
-            context.Response.Redirect(
-                (context.Request.Query["openfolder"].FirstOrDefault() ?? "").Equals("true")
-                    ? PathProvider.GetFolderUrlById(file.FolderID)
-                    : (FilesLinkUtility.GetFileWebEditorUrl(file.ID) + "#message/" + HttpUtility.UrlEncode(string.Format(FilesCommonResource.MessageFileCreated, folder.Title))));
-        }
 
         private File<T> CreateFileFromTemplate<T>(Folder<T> folder, string fileTitle, string docType)
         {
@@ -1183,16 +1170,8 @@ namespace ASC.Web.Files
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(fileUri);
 
-            // hack. http://ubuntuforums.org/showthread.php?t=1841740
-            if (WorkContext.IsMono)
-            {
-                ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
-            }
-
-
-
             var fileDao = DaoFactory.GetFileDao<T>();
-            using var httpClient = new HttpClient();
+            var httpClient = ClientFactory.CreateClient();
             using var response = httpClient.Send(request);
             using var fileStream = httpClient.Send(request).Content.ReadAsStream();
 
@@ -1278,7 +1257,7 @@ namespace ASC.Web.Files
             }
         }
 
-        private async Task TrackFile<T>(HttpContext context, T fileId)
+        private Task TrackFile<T>(HttpContext context, T fileId)
         {
             var auth = context.Request.Query[FilesLinkUtility.AuthKey].FirstOrDefault();
             Logger.Debug("DocService track fileid: " + fileId);
@@ -1291,6 +1270,11 @@ namespace ASC.Web.Files
                 throw new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException);
             }
 
+            return InternalTrackFile(context, fileId);
+        }
+
+        private async Task InternalTrackFile<T>(HttpContext context, T fileId)
+        {
             DocumentServiceTracker.TrackerData fileData;
             try
             {

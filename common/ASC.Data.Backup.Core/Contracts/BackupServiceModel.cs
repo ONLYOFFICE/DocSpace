@@ -23,9 +23,6 @@
  *
 */
 
-using System;
-using System.Collections.Generic;
-
 namespace ASC.Data.Backup.Contracts
 {
     public enum BackupStorageType

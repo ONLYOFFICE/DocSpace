@@ -23,27 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Utils;
-using ASC.Common.Web;
-using ASC.Core;
-using ASC.Security.Cryptography;
-
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Data.Storage.DiscStorage
 {
     public class StorageHandler
@@ -64,7 +43,7 @@ namespace ASC.Data.Storage.DiscStorage
 
         private IServiceProvider ServiceProvider { get; }
 
-        public async Task Invoke(HttpContext context)
+        public Task Invoke(HttpContext context)
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<StorageHandlerScope>();
@@ -73,11 +52,11 @@ namespace ASC.Data.Storage.DiscStorage
             if (_checkAuth && !securityContext.IsAuthenticated)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                return;
+                return Task.CompletedTask;
             }
 
             var storage = storageFactory.GetStorage(tenantManager.GetCurrentTenant().TenantId.ToString(CultureInfo.InvariantCulture), _module);
-            var path = CrossPlatform.PathCombine(_path, GetRouteValue("pathInfo").Replace('/', Path.DirectorySeparatorChar));
+            var path = CrossPlatform.PathCombine(_path, GetRouteValue("pathInfo", context).Replace('/', Path.DirectorySeparatorChar));
             var header = context.Request.Query[Constants.QUERY_HEADER].FirstOrDefault() ?? "";
 
             var auth = context.Request.Query[Constants.QUERY_AUTH].FirstOrDefault() ?? "";
@@ -92,17 +71,17 @@ namespace ASC.Data.Storage.DiscStorage
                 if (validateResult != EmailValidationKeyProvider.ValidationResult.Ok)
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                    return;
+                    return Task.CompletedTask;
                 }
             }
 
             if (!storage.IsFile(_domain, path))
             {
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                return;
+                return Task.CompletedTask;
             }
 
-            var headers = header.Length > 0 ? header.Split('&').Select(HttpUtility.UrlDecode) : new string[] { };
+            var headers = header.Length > 0 ? header.Split('&').Select(HttpUtility.UrlDecode) : Array.Empty<string>();
 
             if (storage.IsSupportInternalUri)
             {
@@ -113,7 +92,7 @@ namespace ASC.Data.Storage.DiscStorage
                 //context.Response.Cache.SetCacheability(HttpCacheability.NoCache);
 
                 context.Response.Redirect(uri.ToString());
-                return;
+                return Task.CompletedTask;
             }
 
             string encoding = null;
@@ -143,6 +122,11 @@ namespace ASC.Data.Storage.DiscStorage
             if (encoding != null)
                 context.Response.Headers["Content-Encoding"] = encoding;
 
+            return InternalInvoke(context, storage, path);
+        }
+
+        private async Task InternalInvoke(HttpContext context, IDataStore storage, string path)
+        {
             using (var stream = storage.GetReadStream(_domain, path))
             {
                 await stream.CopyToAsync(context.Response.Body);
@@ -150,11 +134,11 @@ namespace ASC.Data.Storage.DiscStorage
 
             await context.Response.Body.FlushAsync();
             await context.Response.CompleteAsync();
+        }
 
-            string GetRouteValue(string name)
-            {
-                return (context.GetRouteValue(name) ?? "").ToString();
-            }
+        private string GetRouteValue(string name, HttpContext context)
+        {
+            return (context.GetRouteValue(name) ?? "").ToString();
         }
     }
 

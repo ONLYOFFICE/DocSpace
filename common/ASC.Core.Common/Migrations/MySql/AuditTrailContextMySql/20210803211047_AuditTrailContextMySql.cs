@@ -1,8 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-
-namespace ASC.Core.Common.Migrations.MySql.AuditTrailContextMySql
+﻿namespace ASC.Core.Common.Migrations.MySql.AuditTrailContextMySql
 {
     public partial class AuditTrailContextMySql : Migration
     {

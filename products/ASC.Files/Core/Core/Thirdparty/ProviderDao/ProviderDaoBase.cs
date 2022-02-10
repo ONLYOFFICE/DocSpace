@@ -23,25 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-
-using ASC.Core;
-using ASC.Files.Core;
-using ASC.Files.Core.Data;
-using ASC.Files.Core.Thirdparty;
-using ASC.Files.Thirdparty.Box;
-using ASC.Files.Thirdparty.Dropbox;
-using ASC.Files.Thirdparty.GoogleDrive;
-using ASC.Files.Thirdparty.OneDrive;
-using ASC.Files.Thirdparty.SharePoint;
-using ASC.Files.Thirdparty.Sharpbox;
-
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Files.Thirdparty.ProviderDao
 {
     internal class ProviderDaoBase : ThirdPartyProviderDao, IDisposable
@@ -62,7 +43,14 @@ namespace ASC.Files.Thirdparty.ProviderDao
         }
 
         private int tenantID;
-        private int TenantID { get => tenantID != 0 ? tenantID : (tenantID = TenantManager.GetCurrentTenant().TenantId); }
+        private int TenantID
+        {
+            get
+            {
+                if (tenantID == 0) tenantID = TenantManager.GetCurrentTenant().TenantId;
+                return tenantID;
+            }
+        }
 
         public ProviderDaoBase(
             IServiceProvider serviceProvider,
@@ -98,16 +86,17 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
         protected void SetSharedProperty(IEnumerable<FileEntry<string>> entries)
         {
-            SecurityDao.GetPureShareRecords(entries)
+            var ids = SecurityDao.GetPureShareRecords(entries)
                 //.Where(x => x.Owner == SecurityContext.CurrentAccount.ID)
-                .Select(x => x.EntryId).Distinct().ToList()
-                .ForEach(id =>
+                .Select(x => x.EntryId).Distinct();
+
+            foreach(var id in ids)
                 {
                     var firstEntry = entries.FirstOrDefault(y => y.ID.Equals(id));
 
                     if (firstEntry != null)
                         firstEntry.Shared = true;
-                });
+        }
         }
 
         protected IEnumerable<IDaoSelector> GetSelectors()

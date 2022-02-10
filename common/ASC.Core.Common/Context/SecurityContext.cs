@@ -23,30 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security;
-using System.Security.Authentication;
-using System.Security.Claims;
-using System.Threading;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Security;
-using ASC.Common.Security.Authentication;
-using ASC.Common.Security.Authorizing;
-using ASC.Core.Billing;
-using ASC.Core.Common.Security;
-using ASC.Core.Security.Authentication;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Core
 {
     [Scope]
@@ -113,8 +89,8 @@ namespace ASC.Core
 
         public string AuthenticateMe(string login, string passwordHash)
         {
-            if (login == null) throw new ArgumentNullException("login");
-            if (passwordHash == null) throw new ArgumentNullException("passwordHash");
+            if (login == null) throw new ArgumentNullException(nameof(login));
+            if (passwordHash == null) throw new ArgumentNullException(nameof(passwordHash));
 
             var tenantid = TenantManager.GetCurrentTenant().TenantId;
             var u = UserManager.GetUsersByPasswordHash(tenantid, login, passwordHash);
@@ -134,6 +110,9 @@ namespace ASC.Core
                     if (HttpContextAccessor?.HttpContext != null)
                     {
                         var request = HttpContextAccessor?.HttpContext.Request;
+
+                        if (request == null) throw new ArgumentNullException("request");
+
                         ipFrom = "from " + (request.Headers["X-Forwarded-For"].ToString() ?? request.GetUserHostAddress());
                         address = "for " + request.GetUrlRewriter();
                     }
@@ -189,6 +168,9 @@ namespace ASC.Core
                     if (HttpContextAccessor?.HttpContext != null)
                     {
                         var request = HttpContextAccessor?.HttpContext.Request;
+
+                        if (request == null) throw new ArgumentNullException("request");
+
                         address = "for " + request.GetUrlRewriter();
                         ipFrom = "from " + (request.Headers["X-Forwarded-For"].ToString() ?? request.GetUserHostAddress());
                     }

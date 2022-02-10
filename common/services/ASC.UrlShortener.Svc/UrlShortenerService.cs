@@ -23,22 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Module;
-using ASC.Common.Utils;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
-
-
 namespace ASC.UrlShortener.Svc
 {
     [Singletone]
@@ -50,7 +34,6 @@ namespace ASC.UrlShortener.Svc
 
         private readonly IHostEnvironment hostEnvironment;
         private readonly ConfigurationExtension configurationExtension;
-        private ProcessStartInfo processStartInfo;
 
         private Process process;
 
@@ -74,7 +57,7 @@ namespace ASC.UrlShortener.Svc
             {
                 Stop();
 
-                processStartInfo = GetProcessStartInfo();
+                var processStartInfo = GetProcessStartInfo();
                 process = Process.Start(processStartInfo);
             }
             catch (Exception e)
@@ -116,7 +99,7 @@ namespace ASC.UrlShortener.Svc
                 UseShellExecute = false,
                 FileName = "node",
                 WindowStyle = ProcessWindowStyle.Hidden,
-                Arguments = string.Format("\"{0}\"", Path.GetFullPath(CrossPlatform.PathCombine(hostEnvironment.ContentRootPath, path))),
+                Arguments = $"\"{Path.GetFullPath(CrossPlatform.PathCombine(hostEnvironment.ContentRootPath, path))}\"",
                 WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory
             };
 
@@ -140,9 +123,9 @@ namespace ASC.UrlShortener.Svc
 
                 if (splited.Length < 2) continue;
 
-                if (dict.ContainsKey(splited[0]))
+                if (dict.TryGetValue(splited[0], out var value))
                 {
-                    startInfo.EnvironmentVariables.Add("sql:" + dict[splited[0]], splited[1]);
+                    startInfo.EnvironmentVariables.Add("sql:" + dict[value], splited[1]);
                 }
             }
 

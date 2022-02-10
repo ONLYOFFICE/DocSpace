@@ -23,26 +23,6 @@
  *
 */
 
-
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common;
-using ASC.Files.Core.Resources;
-using ASC.Web.Files.ThirdPartyApp;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Web.Files.HttpHandlers
 {
     public class ThirdPartyAppHandler
@@ -115,7 +95,7 @@ namespace ASC.Web.Files.HttpHandlers
 
             if (string.IsNullOrEmpty(message))
             {
-                if ((context.Request.Query["error"].FirstOrDefault() ?? "").ToLower() == "access_denied")
+                if ((context.Request.Query["error"].FirstOrDefault() ?? "").Equals("access_denied", StringComparison.InvariantCultureIgnoreCase))
                 {
                     message = context.Request.Query["error_description"].FirstOrDefault() ?? FilesCommonResource.AppAccessDenied;
                 }

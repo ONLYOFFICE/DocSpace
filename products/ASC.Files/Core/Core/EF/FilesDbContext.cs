@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-using ASC.Common;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Model;
-
-using Microsoft.EntityFrameworkCore;
-namespace ASC.Files.Core.EF
+﻿namespace ASC.Files.Core.EF
 {
     public class MySqlFilesDbContext : FilesDbContext { }
     public class PostgreSqlFilesDbContext : FilesDbContext { }

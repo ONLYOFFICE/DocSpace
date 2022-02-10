@@ -23,31 +23,6 @@
  *
 */
 
-
-using System;
-using System.Globalization;
-using System.Linq;
-using System.Net;
-using System.Security.Authentication;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core.Common.Security;
-using ASC.Security.Cryptography;
-using ASC.Web.Core.Helpers;
-
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-
 namespace ASC.ApiSystem.Classes
 {
     [Scope]
@@ -105,7 +80,7 @@ namespace ASC.ApiSystem.Classes
                 {
                     Log.Debug("Auth header is NULL");
 
-                    return Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(HttpStatusCode.Unauthorized.ToString())));
+                    return Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Unauthorized))));
                 }
 
                 var substring = "ASC";
@@ -118,7 +93,7 @@ namespace ASC.ApiSystem.Classes
                     {
                         Log.DebugFormat("Auth failed: invalid token {0}.", header);
 
-                        return Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(HttpStatusCode.Unauthorized.ToString())));
+                        return Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Unauthorized))));
                     }
 
                     var pkey = splitted[0];
@@ -137,7 +112,7 @@ namespace ASC.ApiSystem.Classes
                         {
                             Log.DebugFormat("Auth failed: invalid timesatmp {0}, now {1}.", timestamp, DateTime.UtcNow);
 
-                            return Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(HttpStatusCode.Forbidden.ToString())));
+                            return Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Forbidden))));
                         }
                     }
 
@@ -150,21 +125,21 @@ namespace ASC.ApiSystem.Classes
                     {
                         Log.DebugFormat("Auth failed: invalid token {0}, expect {1} or {2}.", orighash, WebEncoders.Base64UrlEncode(hash), Convert.ToBase64String(hash));
 
-                        return Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(HttpStatusCode.Forbidden.ToString())));
+                        return Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Forbidden))));
                     }
                 }
                 else
                 {
                     Log.DebugFormat("Auth failed: invalid auth header. Sheme: {0}, parameter: {1}.", Scheme.Name, header);
 
-                    return Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(HttpStatusCode.Forbidden.ToString())));
+                    return Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Forbidden))));
                 }
             }
             catch (Exception ex)
             {
                 Log.Error(ex);
 
-                return Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(HttpStatusCode.InternalServerError.ToString())));
+                return Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.InternalServerError))));
             }
             var identity = new ClaimsIdentity( Scheme.Name);
 

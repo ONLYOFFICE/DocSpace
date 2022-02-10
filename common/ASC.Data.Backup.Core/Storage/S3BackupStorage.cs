@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-using System.IO;
-
-using Amazon;
-using Amazon.S3;
-using Amazon.S3.Model;
-using Amazon.S3.Transfer;
-
-using ASC.Common.Logging;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Data.Backup.Storage
 {
     internal class S3BackupStorage : IBackupStorage

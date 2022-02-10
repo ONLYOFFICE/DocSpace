@@ -23,25 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Utils;
-using ASC.Core;
-using ASC.Data.Storage.Configuration;
-using ASC.Security.Cryptography;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Data.Storage
 {
     public abstract class BaseStorage : IDataStore
@@ -53,14 +34,16 @@ namespace ASC.Data.Storage
         protected EmailValidationKeyProvider EmailValidationKeyProvider { get; }
         protected IHttpContextAccessor HttpContextAccessor { get; }
         protected IOptionsMonitor<ILog> Options { get; }
-            
-        public BaseStorage(
+        protected IHttpClientFactory ClientFactory { get; }
+
+        protected BaseStorage(
             TempStream tempStream,
             TenantManager tenantManager,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> options)
+            IOptionsMonitor<ILog> options,
+            IHttpClientFactory clientFactory)
         {
 
             TempStream = tempStream;
@@ -70,6 +53,7 @@ namespace ASC.Data.Storage
             Options = options;
             Log = options.CurrentValue;
             HttpContextAccessor = httpContextAccessor;
+            ClientFactory = clientFactory;
         }
 
         #region IDataStore Members
@@ -100,7 +84,7 @@ namespace ASC.Data.Storage
         {
             if (path == null)
             {
-                throw new ArgumentNullException("path");
+                throw new ArgumentNullException(nameof(path));
             }
 
             if (string.IsNullOrEmpty(_tenant) && IsSupportInternalUri)
@@ -136,20 +120,12 @@ namespace ASC.Data.Storage
                 }
 
                 var auth = EmailValidationKeyProvider.GetEmailKey(currentTenantId, path.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar) + "." + headerAttr + "." + expireString);
-                query = string.Format("{0}{1}={2}&{3}={4}",
-                                      path.Contains("?") ? "&" : "?",
-                                      Constants.QUERY_EXPIRE,
-                                      expireString,
-                                      Constants.QUERY_AUTH,
-                                      auth);
+                query = $"{(path.IndexOf('?') >= 0 ? "&" : "?")}{Constants.QUERY_EXPIRE}={expireString}&{Constants.QUERY_AUTH}={auth}";
             }
 
             if (!string.IsNullOrEmpty(headerAttr))
             {
-                query += string.Format("{0}{1}={2}",
-                                       query.Contains("?") ? "&" : "?",
-                                       Constants.QUERY_HEADER,
-                                       HttpUtility.UrlEncode(headerAttr));
+                query += $"{(query.IndexOf('?') >= 0 ? "&" : "?")}{Constants.QUERY_HEADER}={HttpUtility.UrlEncode(headerAttr)}";
             }
 
             var tenant = _tenant.Trim('/');
