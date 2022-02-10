@@ -23,8 +23,6 @@
  *
 */
 
-using AutoMapper;
-
 namespace ASC.Feed.Data
 {
     [Scope]
@@ -236,19 +234,9 @@ namespace ASC.Feed.Data
                 q = q.Where(r => keys.Any(k => r.aggregates.Keywords.StartsWith(k)));
             }
 
-            var news = q.Select(r => r.aggregates).ToList();
+            var news = q.Select(r => r.aggregates).AsEnumerable();
 
-            return news.Select(r => new FeedResultItem(
-                r.Json,
-                r.Module,
-                r.Author,
-                r.ModifiedBy,
-                r.GroupId,
-                _tenantUtil.DateTimeFromUtc(r.CreatedDate),
-                _tenantUtil.DateTimeFromUtc(r.ModifiedDate),
-                _tenantUtil.DateTimeFromUtc(r.AggregateDate),
-                _tenantUtil))
-                .ToList();
+            return _mapper.Map<IEnumerable<FeedAggregate>, List<FeedResultItem>>(news);
         }
 
         public int GetNewFeedsCount(DateTime lastReadedTime, AuthContext authContext, TenantManager tenantManager)
@@ -283,7 +271,7 @@ namespace ASC.Feed.Data
                 .Where(r => r.Id == id)
                 .FirstOrDefault();
 
-            return new FeedResultItem(news.Json, news.Module, news.Author, news.ModifiedBy, news.GroupId, news.CreatedDate, news.ModifiedDate, news.AggregateDate, tenantUtil);
+            return _mapper.Map<FeedAggregate, FeedResultItem>(news);
         }
 
         public void RemoveFeedItem(string id)
@@ -302,7 +290,7 @@ namespace ASC.Feed.Data
         }
     }
 
-    public class FeedResultItem
+    public class FeedResultItem : IMapFrom<FeedAggregate>
     {
         public string Json { get; private set; }
         public string Module { get; private set; }
@@ -350,23 +338,10 @@ namespace ASC.Feed.Data
             AggregatedDate = aggregatedDate;
         }
 
-        public FeedMin ToFeedMin(UserManager userManager)
+        public void Mapping(Profile profile)
         {
-            var feedMin = JsonConvert.DeserializeObject<FeedMin>(Json);
-            feedMin.Author = new FeedMinUser { UserInfo = userManager.GetUsers(feedMin.AuthorId) };
-            feedMin.CreatedDate = CreatedDate;
-
-            if (feedMin.Comments == null)
-            {
-                return feedMin;
-            }
-
-            foreach (var comment in feedMin.Comments)
-            {
-                comment.Author = new FeedMinUser { UserInfo = userManager.GetUsers(comment.AuthorId) };
-            }
-
-            return feedMin;
+            profile.CreateMap<FeedAggregate, FeedResultItem>()
+                .ConvertUsing<FeedTypeConverter>();
         }
     }
 }

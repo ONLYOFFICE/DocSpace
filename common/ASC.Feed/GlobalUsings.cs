@@ -10,6 +10,11 @@ global using ASC.Core.Common.EF.Context;
 global using ASC.Core.Common.EF.Model;
 global using ASC.Core.Tenants;
 global using ASC.Core.Users;
+global using ASC.Common.Mapping;
+global using ASC.Feed.Mapping;
+global using ASC.Feed.Data;
+
+global using AutoMapper;
 
 global using Autofac;
 

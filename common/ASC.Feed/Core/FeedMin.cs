@@ -30,7 +30,7 @@ namespace ASC.Feed
         public UserInfo UserInfo { get; set; }
     }
 
-    public class FeedMin
+    public class FeedMin : IMapFrom<FeedResultItem>
     {
         public string Id { get; set; }
         public Guid AuthorId { get; set; }
@@ -65,6 +65,12 @@ namespace ASC.Feed
                     ModifiedDate = Date 
                 };
             }
+        }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<FeedResultItem, FeedMin>()
+                .ConvertUsing<FeedTypeConverter>();
         }
     }
 }

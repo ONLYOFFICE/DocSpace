@@ -23,10 +23,6 @@
  *
 */
 
-using ASC.Common.Mapping;
-
-using AutoMapper;
-
 namespace ASC.Feed.Data
 {
     public class FeedRow : IMapFrom<FeedAggregate>
