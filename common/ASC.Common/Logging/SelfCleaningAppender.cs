@@ -27,14 +27,14 @@ namespace ASC.Common.Logging;
 
 public class SelfCleaningAppender : RollingFileAppender
 {
-    private static DateTime s_lastCleanDate;
-    private static int? s_cleanPeriod;
+    private static DateTime _lastCleanDate;
+    private static int? _cleanPeriod;
 
     protected override void Append(LoggingEvent loggingEvent)
     {
-        if (DateTime.UtcNow.Date > s_lastCleanDate.Date)
+        if (DateTime.UtcNow.Date > _lastCleanDate.Date)
         {
-            s_lastCleanDate = DateTime.UtcNow.Date;
+            _lastCleanDate = DateTime.UtcNow.Date;
             Clean();
         }
 
@@ -43,9 +43,9 @@ public class SelfCleaningAppender : RollingFileAppender
 
     protected override void Append(LoggingEvent[] loggingEvents)
     {
-        if (DateTime.UtcNow.Date > s_lastCleanDate.Date)
+        if (DateTime.UtcNow.Date > _lastCleanDate.Date)
         {
-            s_lastCleanDate = DateTime.UtcNow.Date;
+            _lastCleanDate = DateTime.UtcNow.Date;
             Clean();
         }
 
@@ -54,9 +54,9 @@ public class SelfCleaningAppender : RollingFileAppender
 
     private static int GetCleanPeriod()
     {
-        if (s_cleanPeriod != null)
+        if (_cleanPeriod != null)
         {
-            return s_cleanPeriod.Value;
+            return _cleanPeriod.Value;
         }
 
         const string key = "CleanPeriod";
@@ -69,7 +69,7 @@ public class SelfCleaningAppender : RollingFileAppender
             int.TryParse(repo.Properties[key].ToString(), out value);
         }
 
-        s_cleanPeriod = value;
+        _cleanPeriod = value;
 
         return value;
     }

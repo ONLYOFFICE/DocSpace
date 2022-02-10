@@ -28,7 +28,7 @@ namespace ASC.Common.Security.Authorizing;
 
 public static class AzObjectIdHelper
 {
-    private static readonly string s_separator = "|";
+    private static readonly string _separator = "|";
 
     public static string GetFullObjectId(ISecurityObjectId objectId)
     {
@@ -37,6 +37,6 @@ public static class AzObjectIdHelper
             return null;
         }
 
-        return $"{objectId.ObjectType.FullName}{s_separator}{objectId.SecurityId}";
+        return $"{objectId.ObjectType.FullName}{_separator}{objectId.SecurityId}";
     }
 }
