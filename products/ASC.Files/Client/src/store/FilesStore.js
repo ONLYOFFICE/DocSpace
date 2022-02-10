@@ -436,12 +436,8 @@ class FilesStore {
     clearFilter = true,
     withSubfolders = false
   ) => {
-    const {
-      treeFolders,
-      setSelectedNode,
-      getSubfolders,
-      selectedTreeNode,
-    } = this.treeFoldersStore;
+    const { treeFolders, setSelectedNode, getSubfolders, selectedTreeNode } =
+      this.treeFoldersStore;
     const { id } = this.selectedFolderStore;
 
     const isPrefSettings = isNaN(+selectedTreeNode) && !id;
@@ -629,11 +625,8 @@ class FilesStore {
       isMy,
     } = this.treeFoldersStore;
 
-    const {
-      canWebEdit,
-      canViewedDocs,
-      canFormFillingDocs,
-    } = this.formatsStore.docserviceStore;
+    const { canWebEdit, canViewedDocs, canFormFillingDocs } =
+      this.formatsStore.docserviceStore;
 
     const isThirdPartyFolder =
       item.providerKey && item.id === item.rootFolderId;
@@ -1106,6 +1099,10 @@ class FilesStore {
         ]);
       }
 
+      if (!(isMyFolder && (this.filterType || this.filterSearch))) {
+        folderOptions = this.removeOptions(folderOptions, ["open-location"]);
+      }
+
       return folderOptions;
     }
   };
@@ -1472,12 +1469,8 @@ class FilesStore {
 
   get cbMenuItems() {
     const { mediaViewersFormatsStore, iconFormatsStore } = this.formatsStore;
-    const {
-      isDocument,
-      isPresentation,
-      isSpreadsheet,
-      isArchive,
-    } = iconFormatsStore;
+    const { isDocument, isPresentation, isSpreadsheet, isArchive } =
+      iconFormatsStore;
     const { isImage, isVideo } = mediaViewersFormatsStore;
 
     let cbMenu = ["all"];
@@ -1533,11 +1526,8 @@ class FilesStore {
   };
 
   get sortedFiles() {
-    const {
-      isSpreadsheet,
-      isPresentation,
-      isDocument,
-    } = this.formatsStore.iconFormatsStore;
+    const { isSpreadsheet, isPresentation, isDocument } =
+      this.formatsStore.iconFormatsStore;
     const { filesConverts } = this.formatsStore.docserviceStore;
 
     let sortedFiles = {
