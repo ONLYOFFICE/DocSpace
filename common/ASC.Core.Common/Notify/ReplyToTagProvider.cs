@@ -48,7 +48,7 @@ public class ReplyToTagProvider
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly CoreSettings _coreSettings;
 
-    private static readonly Regex s_entityTypePattern
+    private static readonly Regex _entityTypePattern
         = new Regex(@"blog|forum.topic|event|photo|file|wiki|bookmark|project\.milestone|project\.task|project\.message");
 
     public ReplyToTagProvider(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings)
@@ -78,7 +78,7 @@ public class ReplyToTagProvider
     /// <returns>New TeamLab tag</returns>
     public TagValue Comment(string entity, string entityId, string parentId)
     {
-        if (string.IsNullOrEmpty(entity) || !s_entityTypePattern.Match(entity).Success)
+        if (string.IsNullOrEmpty(entity) || !_entityTypePattern.Match(entity).Success)
         {
             throw new ArgumentException(@"Not supported entity type", entity);
         }

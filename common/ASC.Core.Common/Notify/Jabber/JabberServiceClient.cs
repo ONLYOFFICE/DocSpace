@@ -28,8 +28,8 @@ namespace ASC.Core.Notify.Jabber;
 [Scope]
 public class JabberServiceClient
 {
-    private static readonly TimeSpan s_timeout = TimeSpan.FromMinutes(2);
-    private static DateTime s_lastErrorTime = default;
+    private static readonly TimeSpan _timeout = TimeSpan.FromMinutes(2);
+    private static DateTime _lastErrorTime = default;
 
     private readonly UserManager _userManager;
     private readonly AuthContext _authContext;
@@ -248,7 +248,7 @@ public class JabberServiceClient
 
     private static bool IsServiceProbablyNotAvailable()
     {
-        return s_lastErrorTime != default && s_lastErrorTime + s_timeout > DateTime.Now;
+        return _lastErrorTime != default && _lastErrorTime + _timeout > DateTime.Now;
     }
 
     private int GetCurrentTenantId()
@@ -268,7 +268,7 @@ public class JabberServiceClient
 
         if (error is CommunicationException || error is TimeoutException)
         {
-            s_lastErrorTime = DateTime.Now;
+            _lastErrorTime = DateTime.Now;
         }
 
         throw error;

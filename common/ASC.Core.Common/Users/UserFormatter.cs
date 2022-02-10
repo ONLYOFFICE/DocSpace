@@ -32,10 +32,10 @@ public class UserFormatter : IComparer<UserInfo>
 
     private readonly DisplayUserNameFormat _format;
     private readonly IConfiguration _configuration;
-    private static bool s_forceFormatChecked;
-    private static string s_forceFormat;
+    private static bool _forceFormatChecked;
+    private static string _forceFormat;
 
-    private static readonly Dictionary<string, Dictionary<DisplayUserNameFormat, string>> s_displayFormats = new Dictionary<string, Dictionary<DisplayUserNameFormat, string>>
+    private static readonly Dictionary<string, Dictionary<DisplayUserNameFormat, string>> _displayFormats = new Dictionary<string, Dictionary<DisplayUserNameFormat, string>>
         {
             { "ru", new Dictionary<DisplayUserNameFormat, string>{ { DisplayUserNameFormat.Default, "{1} {0}" }, { DisplayUserNameFormat.FirstLast, "{0} {1}" }, { DisplayUserNameFormat.LastFirst, "{1} {0}" } } },
             { "default", new Dictionary<DisplayUserNameFormat, string>{ {DisplayUserNameFormat.Default, "{0} {1}" }, { DisplayUserNameFormat.FirstLast, "{0} {1}" }, { DisplayUserNameFormat.LastFirst, "{1}, {0}" } } },
@@ -126,12 +126,12 @@ public class UserFormatter : IComparer<UserInfo>
     public static DisplayUserNameFormat GetUserDisplayDefaultOrder()
     {
         var culture = Thread.CurrentThread.CurrentCulture.Name;
-        if (!s_displayFormats.TryGetValue(culture, out var formats))
+        if (!_displayFormats.TryGetValue(culture, out var formats))
         {
             var twoletter = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
-            if (!s_displayFormats.TryGetValue(twoletter, out formats))
+            if (!_displayFormats.TryGetValue(twoletter, out formats))
             {
-                formats = s_displayFormats["default"];
+                formats = _displayFormats["default"];
             }
         }
         var format = formats[DisplayUserNameFormat.Default];
@@ -141,29 +141,29 @@ public class UserFormatter : IComparer<UserInfo>
 
     private string GetUserDisplayFormat(DisplayUserNameFormat format)
     {
-        if (!s_forceFormatChecked)
+        if (!_forceFormatChecked)
         {
-            s_forceFormat = _configuration["core:user-display-format"];
-            if (string.IsNullOrEmpty(s_forceFormat))
+            _forceFormat = _configuration["core:user-display-format"];
+            if (string.IsNullOrEmpty(_forceFormat))
             {
-                s_forceFormat = null;
+                _forceFormat = null;
             }
 
-            s_forceFormatChecked = true;
+            _forceFormatChecked = true;
         }
 
-        if (s_forceFormat != null)
+        if (_forceFormat != null)
         {
-            return s_forceFormat;
+            return _forceFormat;
         }
 
         var culture = Thread.CurrentThread.CurrentCulture.Name;
-        if (!s_displayFormats.TryGetValue(culture, out var formats))
+        if (!_displayFormats.TryGetValue(culture, out var formats))
         {
             var twoletter = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
-            if (!s_displayFormats.TryGetValue(twoletter, out formats))
+            if (!_displayFormats.TryGetValue(twoletter, out formats))
             {
-                formats = s_displayFormats["default"];
+                formats = _displayFormats["default"];
             }
         }
 

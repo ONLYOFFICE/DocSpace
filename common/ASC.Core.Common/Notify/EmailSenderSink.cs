@@ -27,7 +27,7 @@ namespace ASC.Core.Notify;
 
 public class EmailSenderSink : Sink
 {
-    private static readonly string s_senderName = Configuration.Constants.NotifyEMailSenderSysName;
+    private static readonly string _senderName = Configuration.Constants.NotifyEMailSenderSysName;
     private readonly INotifySender _sender;
     private readonly IServiceProvider _serviceProvider;
     private readonly ILog _logger;
@@ -43,10 +43,10 @@ public class EmailSenderSink : Sink
     {
         if (message.Recipient.Addresses == null || message.Recipient.Addresses.Length == 0)
         {
-            return new SendResponse(message, s_senderName, SendResult.IncorrectRecipient);
+            return new SendResponse(message, _senderName, SendResult.IncorrectRecipient);
         }
 
-        var responce = new SendResponse(message, s_senderName, default(SendResult));
+        var responce = new SendResponse(message, _senderName, default(SendResult));
         try
         {
             var m = CreateNotifyMessage(message);
@@ -63,7 +63,7 @@ public class EmailSenderSink : Sink
         }
         catch (Exception e)
         {
-            return new SendResponse(message, s_senderName, e);
+            return new SendResponse(message, _senderName, e);
         }
     }
 
@@ -74,7 +74,7 @@ public class EmailSenderSink : Sink
             Subject = message.Subject.Trim(' ', '\t', '\n', '\r'),
             ContentType = message.ContentType,
             Content = message.Body,
-            Sender = s_senderName,
+            Sender = _senderName,
             CreationDate = DateTime.UtcNow.Ticks,
         };
 

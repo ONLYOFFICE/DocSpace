@@ -27,7 +27,7 @@ namespace ASC.Core.Notify;
 
 class JabberSenderSink : Sink
 {
-    private static readonly string s_senderName = Configuration.Constants.NotifyMessengerSenderSysName;
+    private static readonly string _senderName = Configuration.Constants.NotifyMessengerSenderSysName;
     private readonly INotifySender _sender;
     private readonly IServiceProvider _serviceProvider;
 
@@ -59,7 +59,7 @@ class JabberSenderSink : Sink
                     Subject = message.Subject,
                     ContentType = message.ContentType,
                     Content = message.Body,
-                    Sender = s_senderName,
+                    Sender = _senderName,
                     CreationDate = DateTime.UtcNow.Ticks,
                 };
 
@@ -69,11 +69,11 @@ class JabberSenderSink : Sink
                 _sender.Send(m);
             }
 
-            return new SendResponse(message, s_senderName, result);
+            return new SendResponse(message, _senderName, result);
         }
         catch (Exception ex)
         {
-            return new SendResponse(message, s_senderName, ex);
+            return new SendResponse(message, _senderName, ex);
         }
     }
 }

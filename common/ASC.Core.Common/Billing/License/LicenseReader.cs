@@ -32,7 +32,7 @@ public class LicenseReader
     public const int MaxUserCount = 10000;
 
     public string LicensePath { get; }
-    public DateTime VersionReleaseDate => s_date;
+    public DateTime VersionReleaseDate => _date;
     public string CustomerId
     {
         get => _coreSettings.GetSetting(CustomerIdKey);
@@ -46,7 +46,7 @@ public class LicenseReader
     private readonly PaymentManager _paymentManager;
     private readonly CoreSettings _coreSettings;
     private readonly IConfiguration _configuration;
-    private static readonly DateTime s_date = DateTime.MinValue;
+    private static readonly DateTime _date = DateTime.MinValue;
 
     public LicenseReader(
         UserManager userManager,

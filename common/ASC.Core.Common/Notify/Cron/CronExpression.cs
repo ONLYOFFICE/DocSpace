@@ -41,8 +41,8 @@ public class CronExpression : ICloneable, IDeserializationCallback
     protected const int AllSpec = AllSpecInt;
     protected const int NoSpec = NoSpecInt;
 
-    private static readonly Hashtable s_monthMap = new Hashtable(20);
-    private static readonly Hashtable s_dayMap = new Hashtable(60);
+    private static readonly Hashtable _monthMap = new Hashtable(20);
+    private static readonly Hashtable _dayMap = new Hashtable(60);
 
     [NonSerialized] protected bool CalendardayOfMonth;
     [NonSerialized] protected bool CalendardayOfWeek;
@@ -67,25 +67,25 @@ public class CronExpression : ICloneable, IDeserializationCallback
 
     static CronExpression()
     {
-        s_monthMap.Add("JAN", 0);
-        s_monthMap.Add("FEB", 1);
-        s_monthMap.Add("MAR", 2);
-        s_monthMap.Add("APR", 3);
-        s_monthMap.Add("MAY", 4);
-        s_monthMap.Add("JUN", 5);
-        s_monthMap.Add("JUL", 6);
-        s_monthMap.Add("AUG", 7);
-        s_monthMap.Add("SEP", 8);
-        s_monthMap.Add("OCT", 9);
-        s_monthMap.Add("NOV", 10);
-        s_monthMap.Add("DEC", 11);
-        s_dayMap.Add("SUN", 1);
-        s_dayMap.Add("MON", 2);
-        s_dayMap.Add("TUE", 3);
-        s_dayMap.Add("WED", 4);
-        s_dayMap.Add("THU", 5);
-        s_dayMap.Add("FRI", 6);
-        s_dayMap.Add("SAT", 7);
+        _monthMap.Add("JAN", 0);
+        _monthMap.Add("FEB", 1);
+        _monthMap.Add("MAR", 2);
+        _monthMap.Add("APR", 3);
+        _monthMap.Add("MAY", 4);
+        _monthMap.Add("JUN", 5);
+        _monthMap.Add("JUL", 6);
+        _monthMap.Add("AUG", 7);
+        _monthMap.Add("SEP", 8);
+        _monthMap.Add("OCT", 9);
+        _monthMap.Add("NOV", 10);
+        _monthMap.Add("DEC", 11);
+        _dayMap.Add("SUN", 1);
+        _dayMap.Add("MON", 2);
+        _dayMap.Add("TUE", 3);
+        _dayMap.Add("WED", 4);
+        _dayMap.Add("THU", 5);
+        _dayMap.Add("FRI", 6);
+        _dayMap.Add("SAT", 7);
     }
 
     public CronExpression(string cronExpression)
@@ -1103,9 +1103,9 @@ public class CronExpression : ICloneable, IDeserializationCallback
 
     protected virtual int GetMonthNumber(string s)
     {
-        if (s_monthMap.ContainsKey(s))
+        if (_monthMap.ContainsKey(s))
         {
-            return (int)s_monthMap[s];
+            return (int)_monthMap[s];
         }
         else
         {
@@ -1115,9 +1115,9 @@ public class CronExpression : ICloneable, IDeserializationCallback
 
     protected virtual int GetDayOfWeekNumber(string s)
     {
-        if (s_dayMap.ContainsKey(s))
+        if (_dayMap.ContainsKey(s))
         {
-            return (int)s_dayMap[s];
+            return (int)_dayMap[s];
         }
         else
         {

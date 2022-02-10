@@ -31,49 +31,49 @@ namespace ASC.Core;
 public static class WorkContext
 {
     public static NotifyContext NotifyContext { get; private set; }
-    public static string MonoVersion => IsMono ? s_monoVersion : null;
+    public static string MonoVersion => IsMono ? _monoVersion : null;
     public static string[] DefaultClientSenders =>
         new[] { Constants.NotifyEMailSenderSysName, };
     public static bool IsMono
     {
         get
         {
-            if (s_isMono.HasValue)
+            if (_isMono.HasValue)
             {
-                return s_isMono.Value;
+                return _isMono.Value;
             }
 
             var monoRuntime = Type.GetType("Mono.Runtime");
 
-            s_isMono = monoRuntime != null;
+            _isMono = monoRuntime != null;
             if (monoRuntime != null)
             {
                 var dispalayName = monoRuntime.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
                 if (dispalayName != null)
                 {
-                    s_monoVersion = dispalayName.Invoke(null, null) as string;
+                    _monoVersion = dispalayName.Invoke(null, null) as string;
                 }
             }
 
-            return s_isMono.Value;
+            return _isMono.Value;
         }
     }
 
-    private static readonly object s_syncRoot = new object();
-    private static bool s_notifyStarted;
-    private static bool? s_isMono;
-    private static string s_monoVersion;
+    private static readonly object _syncRoot = new object();
+    private static bool _notifyStarted;
+    private static bool? _isMono;
+    private static string _monoVersion;
 
     public static void NotifyStartUp(IServiceProvider serviceProvider)
     {
-        if (s_notifyStarted)
+        if (_notifyStarted)
         {
             return;
         }
 
-        lock (s_syncRoot)
+        lock (_syncRoot)
         {
-            if (s_notifyStarted)
+            if (_notifyStarted)
             {
                 return;
             }
@@ -121,7 +121,7 @@ public static class WorkContext
 
             NotifyContext.NotifyEngine.BeforeTransferRequest += NotifyEngine_BeforeTransferRequest;
             NotifyContext.NotifyEngine.AfterTransferRequest += NotifyEngine_AfterTransferRequest;
-            s_notifyStarted = true;
+            _notifyStarted = true;
         }
     }
 

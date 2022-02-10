@@ -34,7 +34,7 @@ public class EmailValidationKeyProvider
     private readonly ILog _logger;
     private readonly MachinePseudoKeys _machinePseudoKeys;
     private readonly TenantManager _tenantManager;
-    private static readonly DateTime s_from = new DateTime(2010, 01, 01, 0, 0, 0, DateTimeKind.Utc);
+    private static readonly DateTime _from = new DateTime(2010, 01, 01, 0, 0, 0, DateTimeKind.Utc);
 
     public EmailValidationKeyProvider(MachinePseudoKeys machinePseudoKeys, TenantManager tenantManager, IConfiguration configuration, IOptionsMonitor<ILog> options)
     {
@@ -67,7 +67,7 @@ public class EmailValidationKeyProvider
 
         email = FormatEmail(tenantId, email);
 
-        var ms = (long)(DateTime.UtcNow - s_from).TotalMilliseconds;
+        var ms = (long)(DateTime.UtcNow - _from).TotalMilliseconds;
         var hash = GetMashineHashedData(BitConverter.GetBytes(ms), Encoding.ASCII.GetBytes(email));
 
         return string.Format("{0}.{1}", ms, DoStringFromBytes(hash));
@@ -134,7 +134,7 @@ public class EmailValidationKeyProvider
             return ValidationResult.Invalid;
         }
 
-        var ms_current = (long)(DateTime.UtcNow - s_from).TotalMilliseconds;
+        var ms_current = (long)(DateTime.UtcNow - _from).TotalMilliseconds;
 
         return validInterval >= TimeSpan.FromMilliseconds(ms_current - ms) ? ValidationResult.Ok : ValidationResult.Expired;
     }

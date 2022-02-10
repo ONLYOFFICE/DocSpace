@@ -30,7 +30,7 @@ public class TenantDomainValidator
 {
     private const int MaxLength = 100;
 
-    private static readonly Regex s_validDomainPatter = new Regex("^[a-z0-9]([a-z0-9-]){1,98}[a-z0-9]$",
+    private static readonly Regex _validDomainPatter = new Regex("^[a-z0-9]([a-z0-9-]){1,98}[a-z0-9]$",
                                                           RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
     private readonly int _minLength;
 
@@ -57,7 +57,7 @@ public class TenantDomainValidator
 
     public static void ValidateDomainCharacters(string domain)
     {
-        if (!s_validDomainPatter.IsMatch(domain))
+        if (!_validDomainPatter.IsMatch(domain))
         {
             throw new TenantIncorrectCharsException("Domain contains invalid characters.");
         }

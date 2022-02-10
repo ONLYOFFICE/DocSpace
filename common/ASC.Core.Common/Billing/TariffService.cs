@@ -143,10 +143,10 @@ public class TariffService : ITariffService
 
     private const int DefaultTrialPeriod = 30;
 
-    private static readonly TimeSpan s_defaultCacheExpiration = TimeSpan.FromMinutes(5);
-    private static readonly TimeSpan s_standaloneCacheExpiration = TimeSpan.FromMinutes(15);
+    private static readonly TimeSpan _defaultCacheExpiration = TimeSpan.FromMinutes(5);
+    private static readonly TimeSpan _standaloneCacheExpiration = TimeSpan.FromMinutes(15);
 
-    public TariffService() => CacheExpiration = s_defaultCacheExpiration;
+    public TariffService() => CacheExpiration = _defaultCacheExpiration;
 
     public TariffService(
         IQuotaService quotaService,
@@ -679,7 +679,7 @@ public class TariffService : ITariffService
 
     private TimeSpan GetCacheExpiration()
     {
-        if (CoreBaseSettings.Standalone && CacheExpiration < s_standaloneCacheExpiration)
+        if (CoreBaseSettings.Standalone && CacheExpiration < _standaloneCacheExpiration)
         {
             CacheExpiration = CacheExpiration.Add(TimeSpan.FromSeconds(30));
         }
@@ -691,7 +691,7 @@ public class TariffService : ITariffService
     {
         if (CoreBaseSettings.Standalone)
         {
-            CacheExpiration = s_defaultCacheExpiration;
+            CacheExpiration = _defaultCacheExpiration;
         }
     }
 

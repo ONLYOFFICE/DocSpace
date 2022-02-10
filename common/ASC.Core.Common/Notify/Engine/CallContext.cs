@@ -6,7 +6,7 @@
 /// </summary>
 public static class CallContext
 {
-    private static readonly ConcurrentDictionary<string, AsyncLocal<object>> s_state
+    private static readonly ConcurrentDictionary<string, AsyncLocal<object>> _state
         = new ConcurrentDictionary<string, AsyncLocal<object>>();
 
     /// <summary>
@@ -16,7 +16,7 @@ public static class CallContext
     /// <param name="data">The object to store in the call context.</param>
     public static void SetData(string name, object data)
     {
-        s_state.GetOrAdd(name, _ => new AsyncLocal<object>()).Value = data;
+        _state.GetOrAdd(name, _ => new AsyncLocal<object>()).Value = data;
     }
 
     /// <summary>
@@ -26,6 +26,6 @@ public static class CallContext
     /// <returns>The object in the call context associated with the specified name, or <see langword="null"/> if not found.</returns>
     public static object GetData(string name)
     {
-        return s_state.TryGetValue(name, out var data) ? data.Value : null;
+        return _state.TryGetValue(name, out var data) ? data.Value : null;
     }
 }

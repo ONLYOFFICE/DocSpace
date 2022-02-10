@@ -86,16 +86,16 @@ public class TenantManager
     internal CoreSettings CoreSettings { get; set; }
 
     private Tenant _currentTenant;
-    private static readonly List<string> s_thisCompAddresses = new List<string>();
+    private static readonly List<string> _thisCompAddresses = new List<string>();
 
     static TenantManager()
     {
-        s_thisCompAddresses.Add("localhost");
-        s_thisCompAddresses.Add(Dns.GetHostName().ToLowerInvariant());
-        s_thisCompAddresses.AddRange(Dns.GetHostAddresses("localhost").Select(a => a.ToString()));
+        _thisCompAddresses.Add("localhost");
+        _thisCompAddresses.Add(Dns.GetHostName().ToLowerInvariant());
+        _thisCompAddresses.AddRange(Dns.GetHostAddresses("localhost").Select(a => a.ToString()));
         try
         {
-            s_thisCompAddresses.AddRange(Dns.GetHostAddresses(Dns.GetHostName()).Select(a => a.ToString()));
+            _thisCompAddresses.AddRange(Dns.GetHostAddresses(Dns.GetHostName()).Select(a => a.ToString()));
         }
         catch
         {
@@ -154,7 +154,7 @@ public class TenantManager
 
         Tenant t = null;
 
-        if (s_thisCompAddresses.Contains(domain, StringComparer.InvariantCultureIgnoreCase))
+        if (_thisCompAddresses.Contains(domain, StringComparer.InvariantCultureIgnoreCase))
         {
             t = TenantService.GetTenant("localhost");
         }

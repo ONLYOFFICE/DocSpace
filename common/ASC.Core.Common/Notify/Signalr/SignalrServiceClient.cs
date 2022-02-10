@@ -95,13 +95,13 @@ public class SignalrServiceClient
     internal string JabberReplaceToDomain { get; set; }
     internal string Hub { get; set; }
 
-    private static readonly TimeSpan s_timeout;
-    private static DateTime s_lastErrorTime;
+    private static readonly TimeSpan _timeout;
+    private static DateTime _lastErrorTime;
 
     internal TenantManager TenantManager { get; set; }
     internal CoreSettings CoreSettings { get; set; }
 
-    static SignalrServiceClient() => s_timeout = TimeSpan.FromSeconds(1);
+    static SignalrServiceClient() => _timeout = TimeSpan.FromSeconds(1);
 
     public SignalrServiceClient() { }
 
@@ -330,7 +330,7 @@ public class SignalrServiceClient
 
         if (e is CommunicationException || e is TimeoutException)
         {
-            s_lastErrorTime = DateTime.Now;
+            _lastErrorTime = DateTime.Now;
         }
     }
 
@@ -369,7 +369,7 @@ public class SignalrServiceClient
 
     private bool IsAvailable()
     {
-        return EnableSignalr && s_lastErrorTime + s_timeout < DateTime.Now;
+        return EnableSignalr && _lastErrorTime + _timeout < DateTime.Now;
     }
 
     private string GetMethod(string method)
