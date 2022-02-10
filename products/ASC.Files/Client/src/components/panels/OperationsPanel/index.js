@@ -179,14 +179,17 @@ const OperationsPanel = withTranslation(["OperationsPanel", "Translations"])(
 );
 
 export default inject(
-  ({
-    filesStore,
-    treeFoldersStore,
-    selectedFolderStore,
-    dialogsStore,
-    filesActionsStore,
-    uploadDataStore,
-  }) => {
+  (
+    {
+      filesStore,
+      treeFoldersStore,
+      selectedFolderStore,
+      dialogsStore,
+      filesActionsStore,
+      uploadDataStore,
+    },
+    { isCopy }
+  ) => {
     const { filter, selection, bufferSelection } = filesStore;
     const {
       isRecycleBinFolder,
@@ -207,7 +210,9 @@ export default inject(
     } = dialogsStore;
 
     const selections = selection.length ? selection : [bufferSelection];
-    const selectionsWithoutEditing = selections.filter((f) => !f.isEditing);
+    const selectionsWithoutEditing = isCopy
+      ? selections
+      : selections.filter((f) => !f.isEditing);
 
     const provider = selections.find((x) => x.providerKey);
 
