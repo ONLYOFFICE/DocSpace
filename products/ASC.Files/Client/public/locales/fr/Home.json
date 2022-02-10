@@ -79,5 +79,7 @@
     "UnblockVersion": "Débloquer/enregistrer",
     "UploadToFolder": "Télécharger le dossier",
     "ViewList": "Liste",
-    "ViewTiles": "Carreaux"
+    "ViewTiles": "Carreaux",
+    "VersionHistory": "Historique des versions",
+    "MoveOrCopy": "Déplacer ou copier"
 }

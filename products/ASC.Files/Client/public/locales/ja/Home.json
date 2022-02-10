@@ -79,5 +79,7 @@
     "UnblockVersion": "アンブロック/チェックイン",
     "UploadToFolder": "フォルダへのアップロード",
     "ViewList": "リスト",
-    "ViewTiles": "タイル"
+    "ViewTiles": "タイル",
+    "VersionHistory": "バージョン履歴",
+    "MoveOrCopy": "移動またはコピーする"
 }

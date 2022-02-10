@@ -79,5 +79,7 @@
     "UnblockVersion": "Desbloqueio/Check-in",
     "UploadToFolder": "Upload para pasta",
     "ViewList": "Lista",
-    "ViewTiles": "Azulejos"
+    "ViewTiles": "Azulejos",
+    "VersionHistory": "Histórico de Versão",
+    "MoveOrCopy": "Mover ou copiar"
 }
