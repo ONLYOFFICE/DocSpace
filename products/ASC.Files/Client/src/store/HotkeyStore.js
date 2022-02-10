@@ -32,11 +32,14 @@ class HotkeyStore {
       const newSelection = selection;
       newSelection.splice(index, 1);
       setSelection(newSelection);
-    } else {
+    } else if (hotkeyCaret) {
       const newSelection = selection;
       newSelection.push(hotkeyCaret);
       setSelection(newSelection);
       setHotkeyCaretStart(hotkeyCaret);
+    } else {
+      this.selectFirstFile();
+      setHotkeyCaretStart(null);
     }
   };
 

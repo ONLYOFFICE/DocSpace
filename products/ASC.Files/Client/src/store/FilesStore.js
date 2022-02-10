@@ -250,7 +250,7 @@ class FilesStore {
   };
 
   setSelection = (selection) => {
-    if (selection.length === 1 || !this.hotkeyCaret) {
+    if (selection.length === 1 && !this.hotkeyCaret) {
       this.setHotkeyCaret(selection[0]);
       this.setHotkeyCaretStart(selection[0]);
     }
