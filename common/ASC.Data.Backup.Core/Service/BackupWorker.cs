@@ -628,6 +628,7 @@ namespace ASC.Data.Backup.Services
             }
             finally
             {
+                IsCompleted = true;
                 try
                 {
                     PublishChanges();
@@ -730,6 +731,7 @@ namespace ASC.Data.Backup.Services
             }
             finally
             {
+                IsCompleted = true;
                 try
                 {
                     PublishChanges();
