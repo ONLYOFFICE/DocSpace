@@ -80,16 +80,16 @@ const withHotkeys = (Component) => {
     useHotkeys("shift+n", () => setSelected("none"), hotkeysFilter);
 
     //Move down without changing selection
-    useHotkeys("ctrl+DOWN", moveCaretBottom, hotkeysFilter);
+    useHotkeys("ctrl+DOWN, command+DOWN", moveCaretBottom, hotkeysFilter);
 
     //Move up without changing selection
-    useHotkeys("ctrl+UP", moveCaretUpper, hotkeysFilter);
+    useHotkeys("ctrl+UP, command+UP", moveCaretUpper, hotkeysFilter);
 
     //Move left without changing selection
-    useHotkeys("ctrl+LEFT", moveCaretLeft, hotkeysFilter);
+    useHotkeys("ctrl+LEFT, command+LEFT", moveCaretLeft, hotkeysFilter);
 
     //Move right without changing selection
-    useHotkeys("ctrl+RIGHT", moveCaretRight, hotkeysFilter);
+    useHotkeys("ctrl+RIGHT, command+RIGHT", moveCaretRight, hotkeysFilter);
 
     //Open item
     useHotkeys("Enter", openItem, hotkeysFilter);
@@ -118,7 +118,7 @@ const withHotkeys = (Component) => {
 
     //TODO: Undo the last action
     useHotkeys(
-      "Ctrl+z",
+      "Ctrl+z, command+z",
       () => alert("Undo the last action"),
       hotkeysFilter,
       []
@@ -126,7 +126,7 @@ const withHotkeys = (Component) => {
 
     //TODO: Redo the last undone action
     useHotkeys(
-      "Ctrl+Shift+z",
+      "Ctrl+Shift+z, command+Shift+z",
       () => alert("Redo the last undone action"),
       hotkeysFilter,
       []
@@ -134,7 +134,7 @@ const withHotkeys = (Component) => {
 
     //Open hotkeys panel
     useHotkeys(
-      "Ctrl+num_divide, Ctrl+/",
+      "Ctrl+num_divide, Ctrl+/, command+/",
       () => setHotkeyPanelVisible(true),
       hotkeysFilter
     );
