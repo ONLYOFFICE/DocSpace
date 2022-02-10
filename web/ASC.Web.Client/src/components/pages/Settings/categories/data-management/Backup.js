@@ -68,14 +68,17 @@ class Backup extends React.Component {
 
     try {
       const [
-        canRestore,
-        canAutoBackup,
+        restore,
+        autoBackup,
         progress,
         schedule,
       ] = await Promise.allSettled(requests);
 
       const backupProgress = progress.value;
       const backupSchedule = schedule.value;
+
+      const canRestore = restore.value;
+      const canAutoBackup = autoBackup.value;
 
       if (backupProgress && !backupProgress.error) {
         this._isMounted &&
