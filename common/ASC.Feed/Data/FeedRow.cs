@@ -23,44 +23,43 @@
  *
 */
 
-namespace ASC.Feed.Data
+namespace ASC.Feed.Data;
+
+public class FeedRow : IMapFrom<FeedAggregate>
 {
-    public class FeedRow : IMapFrom<FeedAggregate>
+    public DateTime AggregatedDate { get; set; }
+    public IList<Guid> Users { get; set; }
+    public int Tenant { get; set; }
+    public string Product { get; set; }
+    public Aggregator.Feed Feed { get; private set; }
+    public string Id => Feed.Id;
+    public bool ClearRightsBeforeInsert => Feed.Variate;
+    public string Module => Feed.Module;
+    public Guid Author => Feed.AuthorId;
+    public Guid ModifiedBy => Feed.ModifiedBy;
+    public DateTime CreatedDate => Feed.CreatedDate;
+    public DateTime ModifiedDate => Feed.ModifiedDate;
+    public string GroupId => Feed.GroupId;
+    public string Keywords => Feed.Keywords;
+    public string Json
     {
-        public DateTime AggregatedDate { get; set; }
-        public IList<Guid> Users { get; set; }
-        public int Tenant { get; set; }
-        public string Product { get; set; }
-        public Aggregator.Feed Feed { get; private set; }
-        public string Id => Feed.Id;
-        public bool ClearRightsBeforeInsert => Feed.Variate;
-        public string Module => Feed.Module;
-        public Guid Author => Feed.AuthorId;
-        public Guid ModifiedBy => Feed.ModifiedBy;
-        public DateTime CreatedDate => Feed.CreatedDate;
-        public DateTime ModifiedDate => Feed.ModifiedDate;
-        public string GroupId => Feed.GroupId;
-        public string Keywords => Feed.Keywords;
-        public string Json
+        get
         {
-            get
+            return JsonConvert.SerializeObject(Feed, new JsonSerializerSettings
             {
-                return JsonConvert.SerializeObject(Feed, new JsonSerializerSettings
-                {
-                    DateTimeZoneHandling = DateTimeZoneHandling.Utc
-                });
-            }
+                DateTimeZoneHandling = DateTimeZoneHandling.Utc
+            });
         }
+    }
 
-        public FeedRow(Aggregator.Feed feed)
-        {
-            Users = new List<Guid>();
-            Feed = feed;
-        }
+    public FeedRow(Aggregator.Feed feed)
+    {
+        Users = new List<Guid>();
+        Feed = feed;
+    }
 
-        public void Mapping(Profile profile)
-        {
-            profile.CreateMap<FeedAggregate, FeedRow>().ReverseMap();
-        }
+    public void Mapping(Profile profile)
+    {
+        profile.CreateMap<FeedAggregate, FeedRow>().ReverseMap();
     }
 }
