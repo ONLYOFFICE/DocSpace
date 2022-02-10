@@ -73,6 +73,7 @@ class Checkbox extends React.Component {
       value,
       title,
       truncate,
+      name,
     } = this.props;
 
     return (
@@ -91,6 +92,7 @@ class Checkbox extends React.Component {
           ref={this.ref}
           value={value}
           onChange={this.onInputChange}
+          name={name}
         />
         <RenderCheckboxIcon {...this.props} />
         {this.props.label && (
