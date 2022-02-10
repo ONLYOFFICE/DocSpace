@@ -41,7 +41,10 @@ namespace ASC.Data.Storage
             _storageRoot = _configuration[Constants.StorageRootParam];
         }
 
-        public PathUtils(IConfiguration configuration, IHostEnvironment hostEnvironment, IWebHostEnvironment webHostEnvironment) : this(configuration, hostEnvironment)
+        public PathUtils(
+            IConfiguration configuration, 
+            IHostEnvironment hostEnvironment, 
+            IWebHostEnvironment webHostEnvironment) : this(configuration, hostEnvironment)
         {
             _webHostEnvironment = webHostEnvironment;
         }
@@ -54,6 +57,7 @@ namespace ASC.Data.Storage
                 .Replace("\\\\", Path.DirectorySeparatorChar.ToString())
                 .Replace("//", Path.DirectorySeparatorChar.ToString())
                 .TrimEnd(Path.DirectorySeparatorChar);
+
             return addTailingSeparator && 0 < path.Length ? path + Path.DirectorySeparatorChar : path;
         }
 
@@ -62,6 +66,7 @@ namespace ASC.Data.Storage
             var url = string.Format("~/storage/{0}/{1}/",
                                  module,
                                  string.IsNullOrEmpty(domain) ? "root" : domain);
+
             return ResolveVirtualPath(url);
         }
 
@@ -79,6 +84,7 @@ namespace ASC.Data.Storage
                 {
                     rootPath = _webHostEnvironment?.WebRootPath.Trim('/');
                 }
+
                 virtPath = virtPath.Replace("~", rootPath);
             }
             if (addTrailingSlash)
@@ -89,6 +95,7 @@ namespace ASC.Data.Storage
             {
                 virtPath = virtPath.TrimEnd('/');
             }
+
             return virtPath.Replace("//", "/");
         }
 
@@ -105,6 +112,7 @@ namespace ASC.Data.Storage
             {
                 physPath = Path.GetFullPath(CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, physPath.Trim(Path.DirectorySeparatorChar)));
             }
+
             return physPath;
         }
     }

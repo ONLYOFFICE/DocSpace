@@ -2,7 +2,7 @@
 {
     public class FakeCrypt : ICrypt
     {
-        public byte Version { get { return 1; } }
+        public byte Version => 1;
 
         public void EncryptFile(string filePath)
         {
@@ -24,9 +24,6 @@
             return new FileInfo(filePath).Length;
         }
 
-        public void Init(string storageName, EncryptionSettings encryptionSettings)
-        {
-            
-        }
+        public void Init(string storageName, EncryptionSettings encryptionSettings) { }
     }
 }

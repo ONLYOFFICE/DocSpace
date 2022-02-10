@@ -49,6 +49,7 @@ namespace ASC.Data.Storage
             {
                 return this[name] ?? string.Empty;
             }
+
             return string.Empty;
         }
     }

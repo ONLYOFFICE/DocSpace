@@ -28,6 +28,8 @@ namespace ASC.Data.Storage.GoogleCloud
     [Scope]
     public class GoogleCloudStorage : BaseStorage
     {
+        public override bool IsSupportChunking => true;
+
         private string _subDir = string.Empty;
         private Dictionary<string, PredefinedObjectAcl> _domainsAcl;
         private PredefinedObjectAcl _moduleAcl;
@@ -102,46 +104,10 @@ namespace ASC.Data.Storage.GoogleCloud
             return this;
         }
 
-        private StorageClient GetStorage()
-        {
-            var credential = GoogleCredential.FromJson(_json);
-
-            return StorageClient.Create(credential);
-        }
-
-        private string MakePath(string domain, string path)
-        {
-            string result;
-
-            path = path.TrimStart('\\', '/').TrimEnd('/').Replace('\\', '/');
-
-            if (!string.IsNullOrEmpty(_subDir))
-            {
-                if (_subDir.Length == 1 && (_subDir[0] == '/' || _subDir[0] == '\\'))
-                    result = path;
-                else
-                    result = string.Format("{0}/{1}", _subDir, path); // Ignory all, if _subDir is not null
-            }
-            else//Key combined from module+domain+filename
-                result = string.Format("{0}/{1}/{2}/{3}",
-                                                         _tenant,
-                                                         _modulename,
-                                                         domain,
-                                                         path);
-
-            result = result.Replace("//", "/").TrimStart('/');
-            if (_lowerCasing)
-            {
-                result = result.ToLowerInvariant();
-            }
-
-            return result;
-        }
-
-
         public static long DateToUnixTimestamp(DateTime date)
         {
             var ts = date - new DateTime(1970, 1, 1, 0, 0, 0);
+
             return (long)ts.TotalSeconds;
         }
 
@@ -169,21 +135,12 @@ namespace ASC.Data.Storage.GoogleCloud
             return new Uri(SecureHelper.IsSecure(_httpContextAccessor.HttpContext, _options) ? _bucketSSlRoot : _bucketRoot, MakePath(domain, path));
         }
 
-        private Uri MakeUri(string preSignedURL)
-        {
-            var uri = new Uri(preSignedURL);
-            var signedPart = uri.PathAndQuery.TrimStart('/');
-
-            return new Uri(uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) ? _bucketSSlRoot : _bucketRoot, signedPart);
-
-        }
-
-        public override System.IO.Stream GetReadStream(string domain, string path)
+        public override Stream GetReadStream(string domain, string path)
         {
             return GetReadStream(domain, path, 0);
         }
 
-        public override System.IO.Stream GetReadStream(string domain, string path, int offset)
+        public override Stream GetReadStream(string domain, string path, int offset)
         {
             var tempStream = _tempStream.Create();
 
@@ -223,18 +180,6 @@ namespace ASC.Data.Storage.GoogleCloud
         public override Uri Save(string domain, string path, System.IO.Stream stream, Configuration.ACL acl)
         {
             return Save(domain, path, stream, null, null, acl);
-        }
-
-        protected override Uri SaveWithAutoAttachment(string domain, string path, System.IO.Stream stream, string attachmentFileName)
-        {
-            var contentDisposition = string.Format("attachment; filename={0};",
-                                                 HttpUtility.UrlPathEncode(attachmentFileName));
-            if (attachmentFileName.Any(c => c >= 0 && c <= 127))
-            {
-                contentDisposition = string.Format("attachment; filename*=utf-8''{0};",
-                                                   HttpUtility.UrlPathEncode(attachmentFileName));
-            }
-            return Save(domain, path, stream, null, contentDisposition);
         }
 
         public override Uri Save(string domain, string path, System.IO.Stream stream, string contentType, string contentDisposition)
@@ -299,35 +244,6 @@ namespace ASC.Data.Storage.GoogleCloud
             return GetUri(domain, path);
         }
 
-        private void InvalidateCloudFront(params string[] paths)
-        {
-            throw new NotImplementedException();
-        }
-
-        private PredefinedObjectAcl GetGoogleCloudAcl(ACL acl)
-        {
-            return PredefinedObjectAcl.PublicRead;
-            //return acl switch
-            //{
-            //    ACL.Read => PredefinedObjectAcl.PublicRead,
-            //    _ => PredefinedObjectAcl.PublicRead,
-            //};
-        }
-
-        private PredefinedObjectAcl GetDomainACL(string domain)
-        {
-            if (GetExpire(domain) != TimeSpan.Zero)
-            {
-                return PredefinedObjectAcl.Private;
-            }
-
-            if (_domainsAcl.ContainsKey(domain))
-            {
-                return _domainsAcl[domain];
-            }
-            return _moduleAcl;
-        }
-
         public override void Delete(string domain, string path)
         {
             using var storage = GetStorage();
@@ -339,7 +255,6 @@ namespace ASC.Data.Storage.GoogleCloud
 
             QuotaUsedDelete(domain, size);
         }
-
 
         public override void DeleteFiles(string domain, string folderPath, string pattern, bool recursive)
         {
@@ -691,8 +606,6 @@ namespace ASC.Data.Storage.GoogleCloud
                 var privateExpireKey = objInfo.Metadata["private-expire"];
 
                 if (string.IsNullOrEmpty(privateExpireKey)) continue;
-
-
                 if (!long.TryParse(privateExpireKey, out var fileTime)) continue;
                 if (DateTime.UtcNow <= DateTime.FromFileTimeUtc(fileTime)) continue;
 
@@ -738,7 +651,6 @@ namespace ASC.Data.Storage.GoogleCloud
             request.Method = HttpMethod.Put;
             request.Headers.Add("Content-Range", contentRangeHeader);
             request.Content = new StreamContent(stream);
-
 
             long MAX_RETRIES = 100;
             int millisecondsTimeout;
@@ -793,12 +705,7 @@ namespace ASC.Data.Storage.GoogleCloud
             return GetUri(domain, path);
         }
 
-        public override void AbortChunkedUpload(string domain, string path, string uploadUri)
-        {
-
-        }
-
-        public override bool IsSupportChunking { get { return true; } }
+        public override void AbortChunkedUpload(string domain, string path, string uploadUri) { } 
 
         #endregion
 
@@ -821,6 +728,93 @@ namespace ASC.Data.Storage.GoogleCloud
         {
             throw new NotImplementedException();
         }
+
+        protected override Uri SaveWithAutoAttachment(string domain, string path, System.IO.Stream stream, string attachmentFileName)
+        {
+            var contentDisposition = string.Format("attachment; filename={0};",
+                                                 HttpUtility.UrlPathEncode(attachmentFileName));
+            if (attachmentFileName.Any(c => c >= 0 && c <= 127))
+            {
+                contentDisposition = string.Format("attachment; filename*=utf-8''{0};",
+                                                   HttpUtility.UrlPathEncode(attachmentFileName));
+            }
+
+            return Save(domain, path, stream, null, contentDisposition);
+        }
+
+        private StorageClient GetStorage()
+        {
+            var credential = GoogleCredential.FromJson(_json);
+
+            return StorageClient.Create(credential);
+        }
+
+        private string MakePath(string domain, string path)
+        {
+            string result;
+
+            path = path.TrimStart('\\', '/').TrimEnd('/').Replace('\\', '/');
+
+            if (!string.IsNullOrEmpty(_subDir))
+            {
+                if (_subDir.Length == 1 && (_subDir[0] == '/' || _subDir[0] == '\\'))
+                    result = path;
+                else
+                    result = string.Format("{0}/{1}", _subDir, path); // Ignory all, if _subDir is not null
+            }
+            else//Key combined from module+domain+filename
+                result = string.Format("{0}/{1}/{2}/{3}",
+                                                         _tenant,
+                                                         _modulename,
+                                                         domain,
+                                                         path);
+
+            result = result.Replace("//", "/").TrimStart('/');
+
+            if (_lowerCasing)
+            {
+                result = result.ToLowerInvariant();
+            }
+
+            return result;
+        }
+
+        private Uri MakeUri(string preSignedURL)
+        {
+            var uri = new Uri(preSignedURL);
+            var signedPart = uri.PathAndQuery.TrimStart('/');
+
+            return new Uri(uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) ? _bucketSSlRoot : _bucketRoot, signedPart);
+        }
+
+        private void InvalidateCloudFront(params string[] paths)
+        {
+            throw new NotImplementedException();
+        }
+
+        private PredefinedObjectAcl GetGoogleCloudAcl(ACL acl)
+        {
+            return PredefinedObjectAcl.PublicRead;
+            //return acl switch
+            //{
+            //    ACL.Read => PredefinedObjectAcl.PublicRead,
+            //    _ => PredefinedObjectAcl.PublicRead,
+            //};
+        }
+
+        private PredefinedObjectAcl GetDomainACL(string domain)
+        {
+            if (GetExpire(domain) != TimeSpan.Zero)
+            {
+                return PredefinedObjectAcl.Private;
+            }
+
+            if (_domainsAcl.ContainsKey(domain))
+            {
+                return _domainsAcl[domain];
+            }
+
+            return _moduleAcl;
+        }
     }
 }
-

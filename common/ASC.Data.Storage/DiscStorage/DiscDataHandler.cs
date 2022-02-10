@@ -85,7 +85,7 @@ namespace ASC.Data.Storage.DiscStorage
             }
         }
 
-        static string CombinePath(string physPath, HttpContext requestContext)
+        private static string CombinePath(string physPath, HttpContext requestContext)
         {
             var pathInfo = GetRouteValue("pathInfo").Replace('/', Path.DirectorySeparatorChar);
 
@@ -98,6 +98,7 @@ namespace ASC.Data.Storage.DiscStorage
             }
 
             path = path.Replace("{0}", tenant);
+
             return path;
 
             string GetRouteValue(string name)

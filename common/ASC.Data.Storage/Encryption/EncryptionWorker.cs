@@ -63,6 +63,7 @@ namespace ASC.Data.Storage.Encryption
         public double? GetEncryptionProgress()
         {
             var progress = _queue.GetTasks<EncryptionOperation>().FirstOrDefault();
+
             return progress.Percentage;
     }
     }
@@ -81,6 +82,7 @@ namespace ASC.Data.Storage.Encryption
         {
             var item = _serviceProvider.GetService<EncryptionOperation>();
             item.Init(encryptionSettings, id);
+
             return item;
         }
     }

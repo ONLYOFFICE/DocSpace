@@ -67,7 +67,6 @@
         public bool DisableMigrate { get; set; }
         public bool Count { get; set; } = true;
         public bool DisabledEncryption { get; set; }
-
         public IEnumerable<Module> Domain { get; set; }
     }
 }

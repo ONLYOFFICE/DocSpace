@@ -47,6 +47,5 @@ namespace ASC.Data.Storage.Encryption
         {
             _notifyStop.Publish(new EncryptionStop(), CacheNotifyAction.Insert);
         }
-
     }
 }

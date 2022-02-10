@@ -30,7 +30,6 @@ namespace ASC.Data.Storage
     {
         private readonly IEnumerable<Appender> _appenders;
 
-
         public WebPathSettings(Configuration.Storage storage)
         {
             var section = storage;
@@ -52,6 +51,7 @@ namespace ASC.Data.Storage
             {
                 return absolutePath;
             }
+
             return SecureHelper.IsSecure(httpContext, options) && !string.IsNullOrEmpty(appender.AppendSecure) ?
                 absolutePath.Remove(0, appender.AppendSecure.Length) :
                 absolutePath.Remove(0, appender.Append.Length);
@@ -210,6 +210,7 @@ namespace ASC.Data.Storage
                     Existing[path] = CheckWebPath(path);
                 }
             }
+
             return Existing[path];
         }
 

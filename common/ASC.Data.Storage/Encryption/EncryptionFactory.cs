@@ -47,6 +47,7 @@ namespace ASC.Data.Storage.Encryption
 
             result ??= new FakeCrypt();
             result.Init(storageName, encryptionSettings);
+
             return result;
         }
     }

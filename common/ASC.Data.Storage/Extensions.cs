@@ -34,13 +34,14 @@ namespace ASC.Data.Storage
             var ms = tempStream.Create();
             IronReadToStream(store, domain, path, tryCount, ms);
             ms.Seek(0, SeekOrigin.Begin);
+
             return ms;
         }
 
         public static void IronReadToStream(this IDataStore store, string domain, string path, int tryCount, Stream readTo)
         {
-            if (tryCount < 1) throw new ArgumentOutOfRangeException("tryCount", "Must be greater or equal 1.");
-            if (!readTo.CanWrite) throw new ArgumentException("stream cannot be written", "readTo");
+            if (tryCount < 1) throw new ArgumentOutOfRangeException(nameof(tryCount), "Must be greater or equal 1.");
+            if (!readTo.CanWrite) throw new ArgumentException("stream cannot be written", nameof(readTo));
 
             var tryCurrent = 0;
             var offset = 0;
@@ -66,6 +67,7 @@ namespace ASC.Data.Storage
                     {
                         throw new IOException("Can not read stream. Tries count: " + tryCurrent + ".", ex);
                     }
+
                     Thread.Sleep(tryCount * 50);
                 }
             }

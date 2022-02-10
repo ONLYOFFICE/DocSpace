@@ -27,11 +27,8 @@ namespace ASC.Data.Storage
 {
     public class TenantQuotaController : IQuotaController
     {
-        private readonly int _tenant;
-        private Lazy<long> _lazyCurrentSize;
-
-        private long _currentSize;
-        private long CurrentSize {
+        private long CurrentSize
+        {
             get
             {
                 if (!_lazyCurrentSize.IsValueCreated)
@@ -41,13 +38,13 @@ namespace ASC.Data.Storage
 
                 return _currentSize;
             }
-            set
-            {
-                _currentSize = value;
-            }
+            set => _currentSize = value;
         }
 
+        private readonly int _tenant;
         private readonly TenantManager _tenantManager;
+        private Lazy<long> _lazyCurrentSize;
+        private long _currentSize;
 
         public TenantQuotaController(int tenant, TenantManager tenantManager)
         {

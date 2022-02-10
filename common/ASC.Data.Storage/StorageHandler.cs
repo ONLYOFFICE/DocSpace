@@ -51,6 +51,7 @@ namespace ASC.Data.Storage.DiscStorage
             if (_checkAuth && !securityContext.IsAuthenticated)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+
                 return;
             }
 
@@ -70,6 +71,7 @@ namespace ASC.Data.Storage.DiscStorage
                 if (validateResult != EmailValidationKeyProvider.ValidationResult.Ok)
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+
                     return;
                 }
             }
@@ -77,6 +79,7 @@ namespace ASC.Data.Storage.DiscStorage
             if (!storage.IsFile(_domain, path))
             {
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+
                 return;
             }
 
@@ -91,6 +94,7 @@ namespace ASC.Data.Storage.DiscStorage
                 //context.Response.Cache.SetCacheability(HttpCacheability.NoCache);
 
                 context.Response.Redirect(uri.ToString());
+
                 return;
             }
 

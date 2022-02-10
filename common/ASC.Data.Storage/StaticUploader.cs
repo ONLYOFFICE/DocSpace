@@ -98,6 +98,7 @@ namespace ASC.Data.Storage
                 var scopeClass = scope.ServiceProvider.GetService<StaticUploaderScope>();
                 var (tenantManager, staticUploader, _, _, _) = scopeClass;
                 tenantManager.SetCurrentTenant(tenantId);
+
                 return staticUploader.UploadFile(relativePath, mappedPath, onComplete);
             }, TaskCreationOptions.LongRunning);
 
@@ -148,6 +149,7 @@ namespace ASC.Data.Storage
             lock (s_locker)
             {
                 var key = typeof(UploadOperationProgress).FullName + tenantId;
+
                 return Queue.GetTask<UploadOperationProgress>(key);
             }
         }
@@ -202,6 +204,7 @@ namespace ASC.Data.Storage
 
                     Result = dataStore.GetInternalUri("", _path, TimeSpan.Zero, null).AbsoluteUri.ToLower();
                     _logger.DebugFormat("UploadFile {0}", Result);
+
                     return Result;
                 }
             }
@@ -209,6 +212,7 @@ namespace ASC.Data.Storage
             {
                 _logger.Error(e);
             }
+
             return null;
         }
     }
@@ -262,7 +266,7 @@ namespace ASC.Data.Storage
                 staticUploader.UploadFile(CrossPlatform.PathCombine(_relativePath, filePath), file, (res) => StepDone());
             }
 
-            tenant.SetStatus(Core.Tenants.TenantStatus.Active);
+            tenant.SetStatus(TenantStatus.Active);
             tenantManager.SaveTenant(tenant);
         }
 
@@ -271,6 +275,7 @@ namespace ASC.Data.Storage
             return MemberwiseClone();
         }
     }
+
     [Scope]
     public class StaticUploaderScope
     {
@@ -293,7 +298,12 @@ namespace ASC.Data.Storage
             _storageSettingsHelper = storageSettingsHelper;
         }
 
-        public void Deconstruct(out TenantManager tenantManager, out StaticUploader staticUploader, out SecurityContext securityContext, out SettingsManager settingsManager, out StorageSettingsHelper storageSettingsHelper)
+        public void Deconstruct(
+            out TenantManager tenantManager, 
+            out StaticUploader staticUploader, 
+            out SecurityContext securityContext, 
+            out SettingsManager settingsManager, 
+            out StorageSettingsHelper storageSettingsHelper)
         {
             tenantManager = _tenantManager;
             staticUploader = _staticUploader;

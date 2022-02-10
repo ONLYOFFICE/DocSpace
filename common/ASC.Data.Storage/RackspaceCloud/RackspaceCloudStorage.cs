@@ -28,10 +28,12 @@ namespace ASC.Data.Storage.RackspaceCloud
     [Scope]
     public class RackspaceCloudStorage : BaseStorage
     {
+        public override bool IsSupportChunking => true;
+        public TempPath TempPath { get; }
+
         private string _region;
         private string _private_container;
         private string _public_container;
-        private readonly List<string> _domains = new List<string>();
         private Dictionary<string, ACL> _domainsAcl;
         private ACL _moduleAcl;
         private string _subDir;
@@ -40,7 +42,7 @@ namespace ASC.Data.Storage.RackspaceCloud
         private bool _lowerCasing = true;
         private Uri _cname;
         private Uri _cnameSSL;
-
+        private readonly List<string> _domains = new List<string>();
         private readonly ILog _logger;
             
         public RackspaceCloudStorage(
@@ -55,46 +57,6 @@ namespace ASC.Data.Storage.RackspaceCloud
         {
             _logger = options.Get("ASC.Data.Storage.Rackspace.RackspaceCloudStorage");
             TempPath = tempPath;
-        }
-
-        private string MakePath(string domain, string path)
-        {
-            string result;
-
-            path = path.TrimStart('\\', '/').TrimEnd('/').Replace('\\', '/');
-
-            if (!string.IsNullOrEmpty(_subDir))
-            {
-                if (_subDir.Length == 1 && (_subDir[0] == '/' || _subDir[0] == '\\'))
-                    result = path;
-                else
-                    result = string.Format("{0}/{1}", _subDir, path); // Ignory all, if _subDir is not null
-            }
-            else//Key combined from module+domain+filename
-                result = string.Format("{0}/{1}/{2}/{3}",
-                                                         _tenant,
-                                                         _modulename,
-                                                         domain,
-                                                         path);
-
-            result = result.Replace("//", "/").TrimStart('/');
-            if (_lowerCasing)
-            {
-                result = result.ToLowerInvariant();
-            }
-
-            return result;
-        }
-
-        private CloudFilesProvider GetClient()
-        {
-            var cloudIdentity = new CloudIdentity()
-            {
-                Username = _username,
-                APIKey = _apiKey
-            };
-
-            return new CloudFilesProvider(cloudIdentity);
         }
 
         public override IDataStore Configure(string tenant, Handler handlerConfig, Module moduleConfig, IDictionary<string, string> props)
@@ -193,11 +155,6 @@ namespace ASC.Data.Storage.RackspaceCloud
                                                         _region);
         }
 
-        private Uri GetUriShared(string domain, string path)
-        {
-            return new Uri(string.Format("{0}{1}", SecureHelper.IsSecure(_httpContextAccessor?.HttpContext, _options) ? _cnameSSL : _cname, MakePath(domain, path)));
-        }
-
         public override Stream GetReadStream(string domain, string path)
         {
             return GetReadStream(domain, path, 0);
@@ -231,19 +188,6 @@ namespace ASC.Data.Storage.RackspaceCloud
         public override Uri Save(string domain, string path, Stream stream, ACL acl)
         {
             return Save(domain, path, stream, null, null, acl);
-        }
-
-        protected override Uri SaveWithAutoAttachment(string domain, string path, Stream stream, string attachmentFileName)
-        {
-            var contentDisposition = string.Format("attachment; filename={0};",
-                                                HttpUtility.UrlPathEncode(attachmentFileName));
-            if (attachmentFileName.Any(c => c >= 0 && c <= 127))
-            {
-                contentDisposition = string.Format("attachment; filename*=utf-8''{0};",
-                                                   HttpUtility.UrlPathEncode(attachmentFileName));
-            }
-
-            return Save(domain, path, stream, null, contentDisposition);
         }
 
         public override Uri Save(string domain, string path, Stream stream, string contentType, string contentDisposition)
@@ -338,6 +282,7 @@ namespace ASC.Data.Storage.RackspaceCloud
                     _logger.Error(exp);
                 }
             }
+
             stream.Position = 0;
 
             client.CreateObject(_private_container,
@@ -353,20 +298,6 @@ namespace ASC.Data.Storage.RackspaceCloud
 
             return GetUri(domain, path);
 
-        }
-
-        private ACL GetDomainACL(string domain)
-        {
-            if (GetExpire(domain) != TimeSpan.Zero)
-            {
-                return ACL.Auto;
-            }
-
-            if (_domainsAcl.ContainsKey(domain))
-            {
-                return _domainsAcl[domain];
-            }
-            return _moduleAcl;
         }
 
         public override void Delete(string domain, string path)
@@ -521,14 +452,13 @@ namespace ASC.Data.Storage.RackspaceCloud
             var client = GetClient();
             var objects = client.ListObjects(_private_container, null, null, null, MakePath(domain, path), _region);
 
-            return objects.Count() > 0;
+            return objects.Any();
         }
 
         public override Task<bool> IsFileAsync(string domain, string path)
         {
             return Task.FromResult(IsFile(domain, path));
         }
-
 
         public override bool IsDirectory(string domain, string path)
         {
@@ -736,10 +666,79 @@ namespace ASC.Data.Storage.RackspaceCloud
             return GetUri(domain, path);
         }
 
-        public override bool IsSupportChunking { get { return true; } }
-
-        public TempPath TempPath { get; }
-
         #endregion
+
+        protected override Uri SaveWithAutoAttachment(string domain, string path, Stream stream, string attachmentFileName)
+        {
+            var contentDisposition = string.Format("attachment; filename={0};",
+                                                HttpUtility.UrlPathEncode(attachmentFileName));
+            if (attachmentFileName.Any(c => c >= 0 && c <= 127))
+            {
+                contentDisposition = string.Format("attachment; filename*=utf-8''{0};",
+                                                   HttpUtility.UrlPathEncode(attachmentFileName));
+            }
+
+            return Save(domain, path, stream, null, contentDisposition);
+        }
+
+        private string MakePath(string domain, string path)
+        {
+            string result;
+
+            path = path.TrimStart('\\', '/').TrimEnd('/').Replace('\\', '/');
+
+            if (!string.IsNullOrEmpty(_subDir))
+            {
+                if (_subDir.Length == 1 && (_subDir[0] == '/' || _subDir[0] == '\\'))
+                    result = path;
+                else
+                    result = string.Format("{0}/{1}", _subDir, path); // Ignory all, if _subDir is not null
+            }
+            else//Key combined from module+domain+filename
+                result = string.Format("{0}/{1}/{2}/{3}",
+                                                         _tenant,
+                                                         _modulename,
+                                                         domain,
+                                                         path);
+
+            result = result.Replace("//", "/").TrimStart('/');
+            if (_lowerCasing)
+            {
+                result = result.ToLowerInvariant();
+            }
+
+            return result;
+        }
+
+        private CloudFilesProvider GetClient()
+        {
+            var cloudIdentity = new CloudIdentity()
+            {
+                Username = _username,
+                APIKey = _apiKey
+            };
+
+            return new CloudFilesProvider(cloudIdentity);
+        }
+
+        private Uri GetUriShared(string domain, string path)
+        {
+            return new Uri(string.Format("{0}{1}", SecureHelper.IsSecure(_httpContextAccessor?.HttpContext, _options) ? _cnameSSL : _cname, MakePath(domain, path)));
+        }
+
+        private ACL GetDomainACL(string domain)
+        {
+            if (GetExpire(domain) != TimeSpan.Zero)
+            {
+                return ACL.Auto;
+            }
+
+            if (_domainsAcl.ContainsKey(domain))
+            {
+                return _domainsAcl[domain];
+            }
+
+            return _moduleAcl;
+        }
     }
 }

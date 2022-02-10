@@ -27,43 +27,28 @@ namespace ASC.Data.Storage
 {
     public class ProgressStream : Stream
     {
+        public override bool CanRead => _stream.CanRead;
+        public override bool CanSeek => _stream.CanSeek;
+        public override bool CanWrite => _stream.CanWrite;
+        public override long Length => _length;
+        public override long Position
+        {
+            get => _stream.Position;
+            set => _stream.Position = value;
+        }
+
         private readonly Stream _stream;
         private long _length = long.MaxValue;
 
         public ProgressStream(Stream stream)
         {
-            _stream = stream ?? throw new ArgumentNullException("stream");
+            _stream = stream ?? throw new ArgumentNullException(nameof(stream));
+
             try
             {
                 _length = stream.Length;
             }
             catch (Exception) { }
-        }
-
-        public override bool CanRead
-        {
-            get { return _stream.CanRead; }
-        }
-
-        public override bool CanSeek
-        {
-            get { return _stream.CanSeek; }
-        }
-
-        public override bool CanWrite
-        {
-            get { return _stream.CanWrite; }
-        }
-
-        public override long Length
-        {
-            get { return _length; }
-        }
-
-        public override long Position
-        {
-            get { return _stream.Position; }
-            set { _stream.Position = value; }
         }
 
         public event Action<ProgressStream, int> OnReadProgress;

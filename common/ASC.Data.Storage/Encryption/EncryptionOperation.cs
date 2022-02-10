@@ -78,6 +78,7 @@ namespace ASC.Data.Storage.Encryption
                 if (_encryptionSettings.Status == EncryprtionStatus.Encrypted || _encryptionSettings.Status == EncryprtionStatus.Decrypted)
                 {
                     log.Debug("Storage already " + _encryptionSettings.Status);
+
                     return;
                 }
 
@@ -87,10 +88,12 @@ namespace ASC.Data.Storage.Encryption
                 foreach (var tenant in _tenants)
                 {
                     var dictionary = new Dictionary<string, DiscDataStore>();
+
                     foreach (var module in _modules)
                     {
                         dictionary.Add(module, (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.TenantId.ToString(), module));
                     }
+
                     Parallel.ForEach(dictionary, (elem) =>
                     {
                         EncryptStore(tenant, elem.Key, elem.Value, storageFactoryConfig, log);
@@ -240,7 +243,7 @@ namespace ASC.Data.Storage.Encryption
             using var stream = store.GetWriteStream(string.Empty, ProgressFileName, FileMode.Append);
             using var writer = new StreamWriter(stream);
                     writer.WriteLine(file);
-                }
+        }
 
         private void DeleteProgressFiles(StorageFactory storageFactory)
         {
@@ -312,6 +315,7 @@ namespace ASC.Data.Storage.Encryption
                         {
                             notifyHelper.SendStorageDecryptionError(tenant.TenantId);
                         }
+
                         log.DebugFormat("Tenant {0} SendStorageEncryptionError", tenant.TenantAlias);
                     }
                 }

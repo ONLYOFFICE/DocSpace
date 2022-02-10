@@ -83,7 +83,9 @@ namespace ASC.Data.Storage.Encryption
                 Method = method,
                 Tenant = tenantId
             };
+
             notifyInvoke.Parameters.Add(_serverRootPath);
+
             try
             {
                 _notifyServiceClient.InvokeSendMethod(notifyInvoke);

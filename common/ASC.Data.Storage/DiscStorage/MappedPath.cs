@@ -28,12 +28,8 @@ namespace ASC.Data.Storage.DiscStorage
     internal class MappedPath
     {
         public string PhysicalPath { get; set; }
-        private readonly PathUtils _pathUtils;
 
-        private MappedPath(PathUtils pathUtils)
-        {
-            _pathUtils = pathUtils;
-        }
+        private readonly PathUtils _pathUtils;
 
         public MappedPath(PathUtils pathUtils, string tenant, bool appendTenant, string ppath, IDictionary<string, string> storageConfig) : this(pathUtils)
         {
@@ -43,9 +39,15 @@ namespace ASC.Data.Storage.DiscStorage
             PhysicalPath = ppath.IndexOf('{') == -1 && appendTenant ? CrossPlatform.PathCombine(ppath, tenant) : string.Format(ppath, tenant);
         }
 
+        private MappedPath(PathUtils pathUtils)
+        {
+            _pathUtils = pathUtils;
+        }
+
         public MappedPath AppendDomain(string domain)
         {
             domain = domain.Replace('.', '_'); //Domain prep. Remove dots
+
             return new MappedPath(_pathUtils)
             {
                 PhysicalPath = CrossPlatform.PathCombine(PhysicalPath, PathUtils.Normalize(domain, true)),

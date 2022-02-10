@@ -36,6 +36,7 @@ namespace ASC.Data.Storage
             catch (Exception err)
             {
                 options.Get("ASC.Data.Storage.SecureHelper").Error(err);
+
                 return false;
             }
         }

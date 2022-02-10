@@ -62,11 +62,11 @@ namespace ASC.Data.Storage
         }
 
         public MigrateOperation GetProgress(int tenantId)
-                {
-                    lock (s_locker)
-                    {
+        {
+            lock (s_locker)
+            {
                 return Queue.GetTask<MigrateOperation>(GetCacheKey(tenantId));
-                    }
+            }
         }
 
         public void Stop()
@@ -122,6 +122,11 @@ namespace ASC.Data.Storage
             _modules = storageFactoryConfig.GetModuleList(_configPath, true);
             StepCount = _modules.Count();
             _logger = serviceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
+        }
+
+        public object Clone()
+        {
+            return MemberwiseClone();
         }
 
         protected override void DoJob()
@@ -193,12 +198,7 @@ namespace ASC.Data.Storage
             }
 
             MigrationPublish();
-        }
-
-        public object Clone()
-        {
-            return MemberwiseClone();
-        }
+        }   
 
         private void MigrationPublish()
         {

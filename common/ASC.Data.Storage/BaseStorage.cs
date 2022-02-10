@@ -27,15 +27,23 @@ namespace ASC.Data.Storage
 {
     public abstract class BaseStorage : IDataStore
     {
+        public IQuotaController QuotaController { get; set; }
+        public virtual bool IsSupportInternalUri => true;
+        public virtual bool IsSupportedPreSignedUri => true;
+        public virtual bool IsSupportChunking => false;
         protected ILog Logger { get; set; }
 
+        internal string _modulename;
+        internal DataList _dataList;
+        internal string _tenant;
+        internal Dictionary<string, TimeSpan> _domainsExpires = new Dictionary<string, TimeSpan>();
         protected readonly TempStream _tempStream;
         protected readonly TenantManager _tenantManager;
         protected readonly PathUtils _pathUtils;
         protected readonly EmailValidationKeyProvider _emailValidationKeyProvider;
         protected readonly IHttpContextAccessor _httpContextAccessor;
         protected readonly IOptionsMonitor<ILog> _options;
-            
+
         public BaseStorage(
             TempStream tempStream,
             TenantManager tenantManager,
@@ -53,15 +61,6 @@ namespace ASC.Data.Storage
             Logger = options.CurrentValue;
             _httpContextAccessor = httpContextAccessor;
         }
-
-        #region IDataStore Members
-
-        internal string _modulename;
-        internal DataList _dataList;
-        internal string _tenant;
-        internal Dictionary<string, TimeSpan> _domainsExpires = new Dictionary<string, TimeSpan>();
-
-        public IQuotaController QuotaController { get; set; }
 
         public TimeSpan GetExpire(string domain)
         {
@@ -147,21 +146,19 @@ namespace ASC.Data.Storage
             return uri;
         }
 
-        public virtual bool IsSupportInternalUri
-        {
-            get { return true; }
-        }
-
         public virtual Uri GetInternalUri(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
         {
             return null;
         }
 
         public abstract Stream GetReadStream(string domain, string path);
+
         public abstract Stream GetReadStream(string domain, string path, int offset);
+
         public abstract Task<Stream> GetReadStreamAsync(string domain, string path, int offset);
 
         public abstract Uri Save(string domain, string path, Stream stream);
+
         public abstract Uri Save(string domain, string path, Stream stream, ACL acl);
 
         public Uri Save(string domain, string path, Stream stream, string attachmentFileName)
@@ -170,6 +167,7 @@ namespace ASC.Data.Storage
             {
                 return SaveWithAutoAttachment(domain, path, stream, attachmentFileName);
             }
+
             return Save(domain, path, stream);
         }
 
@@ -177,15 +175,8 @@ namespace ASC.Data.Storage
 
         public abstract Uri Save(string domain, string path, Stream stream, string contentType,
                                  string contentDisposition);
-        public abstract Uri Save(string domain, string path, Stream stream, string contentEncoding, int cacheDays);
 
-        public virtual bool IsSupportedPreSignedUri
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public abstract Uri Save(string domain, string path, Stream stream, string contentEncoding, int cacheDays);
 
         #region chunking
 
@@ -209,30 +200,45 @@ namespace ASC.Data.Storage
             throw new NotImplementedException();
         }
 
-        public virtual bool IsSupportChunking { get { return false; } }
-
         #endregion
 
         public abstract void Delete(string domain, string path);
-        public abstract void DeleteFiles(string domain, string folderPath, string pattern, bool recursive);
-        public abstract void DeleteFiles(string domain, List<string> paths);
-        public abstract void DeleteFiles(string domain, string folderPath, DateTime fromDate, DateTime toDate);
-        public abstract void MoveDirectory(string srcdomain, string srcdir, string newdomain, string newdir);
-        public abstract Uri Move(string srcdomain, string srcpath, string newdomain, string newpath, bool quotaCheckFileSize = true);
-        public abstract Uri SaveTemp(string domain, out string assignedPath, Stream stream);
-        public abstract string[] ListDirectoriesRelative(string domain, string path, bool recursive);
-        public abstract string[] ListFilesRelative(string domain, string path, string pattern, bool recursive);
-        public abstract bool IsFile(string domain, string path);
-        public abstract Task<bool> IsFileAsync(string domain, string path);
-        public abstract bool IsDirectory(string domain, string path);
-        public abstract void DeleteDirectory(string domain, string path);
-        public abstract long GetFileSize(string domain, string path);
-        public abstract long GetDirectorySize(string domain, string path);
-        public abstract long ResetQuota(string domain);
-        public abstract long GetUsedQuota(string domain);
-        public abstract Uri Copy(string srcdomain, string path, string newdomain, string newpath);
-        public abstract void CopyDirectory(string srcdomain, string dir, string newdomain, string newdir);
 
+        public abstract void DeleteFiles(string domain, string folderPath, string pattern, bool recursive);
+
+        public abstract void DeleteFiles(string domain, List<string> paths);
+
+        public abstract void DeleteFiles(string domain, string folderPath, DateTime fromDate, DateTime toDate);
+
+        public abstract void MoveDirectory(string srcdomain, string srcdir, string newdomain, string newdir);
+
+        public abstract Uri Move(string srcdomain, string srcpath, string newdomain, string newpath, bool quotaCheckFileSize = true);
+
+        public abstract Uri SaveTemp(string domain, out string assignedPath, Stream stream);
+
+        public abstract string[] ListDirectoriesRelative(string domain, string path, bool recursive);
+
+        public abstract string[] ListFilesRelative(string domain, string path, string pattern, bool recursive);
+
+        public abstract bool IsFile(string domain, string path);
+
+        public abstract Task<bool> IsFileAsync(string domain, string path);
+
+        public abstract bool IsDirectory(string domain, string path);
+
+        public abstract void DeleteDirectory(string domain, string path);
+
+        public abstract long GetFileSize(string domain, string path);
+
+        public abstract long GetDirectorySize(string domain, string path);
+
+        public abstract long ResetQuota(string domain);
+
+        public abstract long GetUsedQuota(string domain);
+
+        public abstract Uri Copy(string srcdomain, string path, string newdomain, string newpath);
+
+        public abstract void CopyDirectory(string srcdomain, string dir, string newdomain, string newdir);
 
         public Stream GetReadStream(string path)
         {
@@ -331,10 +337,12 @@ namespace ASC.Data.Storage
         public IDataStore SetQuotaController(IQuotaController controller)
         {
             QuotaController = controller;
+
             return this;
         }
 
         public abstract string SavePrivate(string domain, string path, Stream stream, DateTime expires);
+
         public abstract void DeleteExpired(string domain, string path, TimeSpan oldThreshold);
 
         public abstract string GetUploadForm(string domain, string directoryPath, string redirectTo, long maxUploadSize,
@@ -345,8 +353,6 @@ namespace ASC.Data.Storage
 
         public abstract string GetPostParams(string domain, string directoryPath, long maxUploadSize, string contentType,
                                              string contentDisposition);
-
-        #endregion
 
         internal void QuotaUsedAdd(string domain, long size, bool quotaCheckFileSize = true)
         {
@@ -372,14 +378,10 @@ namespace ASC.Data.Storage
         internal class MonoUri : Uri
         {
             public MonoUri(Uri baseUri, string relativeUri)
-                : base(baseUri, relativeUri)
-            {
-            }
+                : base(baseUri, relativeUri) { }
 
             public MonoUri(string uriString, UriKind uriKind)
-                : base(uriString, uriKind)
-            {
-            }
+                : base(uriString, uriKind) { }
 
             public override string ToString()
             {
@@ -388,6 +390,7 @@ namespace ASC.Data.Storage
                 {
                     return s.Substring(7);
                 }
+
                 return s;
             }
         }

@@ -49,12 +49,12 @@ namespace ASC.Data.Storage
             {
                 throw new ArgumentException("config section not found");
             }
-            return
-                Section.Module
-                    .Single(x => x.Name.Equals(modulename, StringComparison.OrdinalIgnoreCase))
-                    .Domain
-                    .Where(x => x.Visible)
-                    .Select(x => x.Name);
+
+            return Section.Module
+                .Single(x => x.Name.Equals(modulename, StringComparison.OrdinalIgnoreCase))
+                .Domain
+                .Where(x => x.Visible)
+                .Select(x => x.Name);
         }
     }
 
@@ -162,6 +162,7 @@ namespace ASC.Data.Storage
         public IDataStore GetStorage(string configpath, string tenant, string module)
         {
             int.TryParse(tenant, out var tenantId);
+
             return GetStorage(configpath, tenant, module, new TenantQuotaController(tenantId, _tenantManager));
         }
 
@@ -205,6 +206,7 @@ namespace ASC.Data.Storage
             }
 
             int.TryParse(tenant, out var tenantId);
+
             return GetDataStore(tenant, module, consumer, new TenantQuotaController(tenantId, _tenantManager));
         }
 

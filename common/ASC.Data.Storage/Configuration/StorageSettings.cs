@@ -30,8 +30,7 @@ namespace ASC.Data.Storage.Configuration
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly object _locker;
-        private volatile bool _subscribed;
-        
+        private volatile bool _subscribed; 
 
         public BaseStorageSettingsListener(IServiceProvider serviceProvider)
         {
@@ -75,40 +74,30 @@ namespace ASC.Data.Storage.Configuration
     public abstract class BaseStorageSettings<T> : ISettings where T : class, ISettings, new()
     {
         public string Module { get; set; }
-
         public Dictionary<string, string> Props { get; set; }
+        public virtual Func<DataStoreConsumer, DataStoreConsumer> Switch => d => d;
+        public abstract Guid ID { get; }
+        internal ICacheNotify<DataStoreCacheItem> Cache { get; set; }
 
         public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new T();
         }
-
-        public virtual Func<DataStoreConsumer, DataStoreConsumer> Switch { get { return d => d; } }
-
-        internal ICacheNotify<DataStoreCacheItem> Cache { get; set; }
-
-        public abstract Guid ID { get; }
     }
 
     [Serializable]
     public class StorageSettings : BaseStorageSettings<StorageSettings>
     {
-        public override Guid ID
-        {
-            get { return new Guid("F13EAF2D-FA53-44F1-A6D6-A5AEDA46FA2B"); }
-        }
+        public override Guid ID => new Guid("F13EAF2D-FA53-44F1-A6D6-A5AEDA46FA2B");
     }
 
     [Scope]
     [Serializable]
     public class CdnStorageSettings : BaseStorageSettings<CdnStorageSettings>
     {
-        public override Guid ID
-        {
-            get { return new Guid("0E9AE034-F398-42FE-B5EE-F86D954E9FB2"); }
-        }
+        public override Guid ID => new Guid("0E9AE034-F398-42FE-B5EE-F86D954E9FB2");
 
-        public override Func<DataStoreConsumer, DataStoreConsumer> Switch { get { return d => d.Cdn; } }
+        public override Func<DataStoreConsumer, DataStoreConsumer> Switch => d => d.Cdn;
     }
 
     [Scope]
@@ -163,17 +152,8 @@ namespace ASC.Data.Storage.Configuration
         {
             ClearDataStoreCache();
             _dataStoreConsumer = null;
-            return _settingsManager.Save(baseStorageSettings);
-        }
 
-        internal void ClearDataStoreCache()
-        {
-            var tenantId = _tenantManager.GetCurrentTenant().TenantId.ToString();
-            var path = TenantPath.CreatePath(tenantId);
-            foreach (var module in _storageFactoryConfig.GetModuleList("", true))
-            {
-                _cache.Publish(new DataStoreCacheItem() { TenantId = path, Module = module }, CacheNotifyAction.Remove);
-            }
+            return _settingsManager.Save(baseStorageSettings);
         }
 
         public void Clear<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings, new()
@@ -210,6 +190,17 @@ namespace ASC.Data.Storage.Configuration
             return _dataStore = ((IDataStore)
                 Activator.CreateInstance(DataStoreConsumer(baseStorageSettings).HandlerType, _tenantManager, _pathUtils, _httpContextAccessor, _options))
                 .Configure(_tenantManager.GetCurrentTenant().TenantId.ToString(), null, null, DataStoreConsumer(baseStorageSettings));
+        }
+
+        internal void ClearDataStoreCache()
+        {
+            var tenantId = _tenantManager.GetCurrentTenant().TenantId.ToString();
+            var path = TenantPath.CreatePath(tenantId);
+
+            foreach (var module in _storageFactoryConfig.GetModuleList("", true))
+            {
+                _cache.Publish(new DataStoreCacheItem() { TenantId = path, Module = module }, CacheNotifyAction.Remove);
+            }
         }
     }
 
