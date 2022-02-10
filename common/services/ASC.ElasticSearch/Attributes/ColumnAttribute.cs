@@ -23,9 +23,6 @@
  *
 */
 
-
-using System;
-
 namespace ASC.ElasticSearch
 {
     public enum Analyzer

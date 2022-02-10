@@ -23,9 +23,6 @@
  *
 */
 
-
-using System.Xml.XPath;
-
 namespace ASC.FederatedLogin.Helpers
 {
     public static class XmlExtensions

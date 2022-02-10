@@ -23,11 +23,6 @@
  *
 */
 
-
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace ASC.Core.Caching
 {
     class AzRecordStore : IEnumerable<AzRecord>
@@ -68,9 +63,9 @@ namespace ASC.Core.Caching
             if (r == null) return;
 
             var id = r.ObjectId ?? string.Empty;
-            if (byObjectId.ContainsKey(id))
+            if (byObjectId.TryGetValue(id, out var list))
             {
-                byObjectId[id].RemoveAll(a => a.SubjectId == r.SubjectId && a.ActionId == r.ActionId && a.Reaction == r.Reaction);
+                list.RemoveAll(a => a.SubjectId == r.SubjectId && a.ActionId == r.ActionId && a.Reaction == r.Reaction);
             }
         }
 

@@ -1,18 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Mime;
-using System.Text.Json;
-using System.Threading.Tasks;
-
-using ASC.Files.Core.Model;
-using ASC.Web.Files.Services.WCFService.FileOperations;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-
-#nullable enable
+﻿#nullable enable
 
 namespace ASC.Files.Model
 {
@@ -57,7 +43,7 @@ namespace ASC.Files.Model
                 return valueProviderResult.Select(ParseQueryParam).ToList();
             }
 
-            if (modelName.EndsWith("[]"))
+            if (modelName.EndsWith("[]", StringComparison.Ordinal))
             {
                 return new List<JsonElement>();
             }
@@ -197,7 +183,7 @@ namespace ASC.Files.Model
             var defaultBindingContext = bindingContext as DefaultModelBindingContext;
             var composite = bindingContext.ValueProvider as CompositeValueProvider;
 
-            if (defaultBindingContext != null && composite != null && !composite.Any())
+            if (defaultBindingContext != null && composite != null && composite.Count == 0)
             {
                 bindingContext.ValueProvider = defaultBindingContext.OriginalValueProvider;
             }
@@ -245,7 +231,7 @@ namespace ASC.Files.Model
             var defaultBindingContext = bindingContext as DefaultModelBindingContext;
             var composite = bindingContext.ValueProvider as CompositeValueProvider;
 
-            if (defaultBindingContext != null && composite != null && !composite.Any())
+            if (defaultBindingContext != null && composite != null && composite.Count == 0)
             {
                 bindingContext.ValueProvider = defaultBindingContext.OriginalValueProvider;
             }

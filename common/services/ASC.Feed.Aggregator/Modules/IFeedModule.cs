@@ -23,12 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
-using ASC.Feed.Data;
-
 namespace ASC.Feed.Aggregator.Modules
 {
     public interface IFeedModule

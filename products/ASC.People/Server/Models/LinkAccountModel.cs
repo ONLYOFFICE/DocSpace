@@ -1,6 +1,4 @@
-﻿using ASC.Core.Users;
-
-namespace ASC.People.Models
+﻿namespace ASC.People.Models
 {
     public class LinkAccountModel
     {

@@ -23,27 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text.RegularExpressions;
-
-using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Files.Core.EF;
-using ASC.Security.Cryptography;
-using ASC.Web.Studio.Core;
-using ASC.Web.Studio.UserControls.Statistics;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.EntityFrameworkCore;
-
 namespace ASC.Files.Core.Data
 {
     public class AbstractDao
@@ -53,7 +32,13 @@ namespace ASC.Files.Core.Data
         private Lazy<EF.FilesDbContext> LazyFilesDbContext { get; }
         public EF.FilesDbContext FilesDbContext { get => LazyFilesDbContext.Value; }
         private int tenantID;
-        protected internal int TenantID { get => tenantID != 0 ? tenantID : (tenantID = TenantManager.GetCurrentTenant().TenantId); }
+        protected internal int TenantID { 
+            get 
+            {
+                if (tenantID == 0) tenantID = TenantManager.GetCurrentTenant().TenantId;
+                return tenantID; 
+            }
+        }
         protected UserManager UserManager { get; }
         protected TenantManager TenantManager { get; }
         protected TenantUtil TenantUtil { get; }

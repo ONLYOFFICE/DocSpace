@@ -23,27 +23,7 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Core.Tenants;
-using ASC.Files.Core;
-using ASC.Files.Core.EF;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Thirdparty;
-using ASC.Web.Core.Files;
-using ASC.Web.Studio.Core;
-
-using Box.V2.Models;
-
-using Microsoft.Extensions.Options;
+using File = System.IO.File;
 
 namespace ASC.Files.Thirdparty.Box
 {
@@ -99,7 +79,7 @@ namespace ASC.Files.Thirdparty.Box
                               .FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase)) as BoxFile);
         }
 
-        public File<string> GetFileStable(string fileId, int fileVersion)
+        public File<string> GetFileStable(string fileId, int fileVersion = -1)
         {
             return ToFile(GetBoxFile(fileId));
         }
@@ -151,8 +131,8 @@ namespace ASC.Files.Thirdparty.Box
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
                         {
-                            FileType fileType;
-                            return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
+                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                            return fileType == FileType.Audio || fileType == FileType.Video;
                         });
                     break;
                 case FilterType.ByExtension:
@@ -212,8 +192,8 @@ namespace ASC.Files.Thirdparty.Box
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
                         {
-                            FileType fileType;
-                            return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
+                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                            return fileType == FileType.Audio || fileType == FileType.Video;
                         });
                     break;
                 case FilterType.ByExtension:
@@ -252,7 +232,7 @@ namespace ASC.Files.Thirdparty.Box
             ProviderInfo.CacheReset(boxFileId, true);
 
             var boxFile = GetBoxFile(file.ID);
-            if (boxFile == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
+            if (boxFile == null) throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
             if (boxFile is ErrorFile errorFile) throw new Exception(errorFile.Error);
 
             var fileStream = ProviderInfo.Storage.DownloadStream(boxFile, (int)offset);
@@ -272,8 +252,8 @@ namespace ASC.Files.Thirdparty.Box
 
         public File<string> SaveFile(File<string> file, Stream fileStream)
         {
-            if (file == null) throw new ArgumentNullException("file");
-            if (fileStream == null) throw new ArgumentNullException("fileStream");
+            if (file == null) throw new ArgumentNullException(nameof(file));
+            if (fileStream == null) throw new ArgumentNullException(nameof(fileStream));
 
             BoxFile newBoxFile = null;
 

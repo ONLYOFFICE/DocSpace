@@ -23,16 +23,6 @@
  *
 */
 
-
-using System;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Threading;
-using ASC.Core.Encryption;
-
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Data.Storage.Encryption
 {
     [Singletone]
@@ -95,7 +85,7 @@ namespace ASC.Data.Storage.Encryption
         }
     }
 
-    public class FactoryOperationExtension
+    public static class FactoryOperationExtension
     {
         public static void Register(DIHelper dIHelper)
         {

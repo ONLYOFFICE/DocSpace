@@ -23,24 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-using ASC.Core.Users;
-using ASC.Files.Core;
-using ASC.Files.Core.Resources;
-using ASC.Web.Core;
-using ASC.Web.Core.Users;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Utility;
-
 namespace ASC.Web.Files
 {
     [Scope]
@@ -83,7 +65,7 @@ namespace ASC.Web.Files
                 .Join(FilesDbContext.BunchObjects, a => a.tree.ParentId.ToString(), b => b.LeftNode, (fileTree, bunch) => new { fileTree.file, fileTree.tree, bunch })
                 .Where(r => r.file.TenantId == r.bunch.TenantId)
                 .Where(r => r.file.TenantId == TenantManager.GetCurrentTenant().TenantId)
-                .Where(r => r.bunch.RightNode.StartsWith("files/my/") | r.bunch.RightNode.StartsWith("files/trash/"))
+                .Where(r => r.bunch.RightNode.StartsWith("files/my/") || r.bunch.RightNode.StartsWith("files/trash/"))
                 .GroupBy(r => r.file.CreateBy)
                 .Select(r => new { CreateBy = r.Key, Size = r.Sum(a => a.file.ContentLength) });
 

@@ -90,7 +90,7 @@ namespace ASC.Socket.IO.Svc
                     UseShellExecute = false,
                     FileName = "node",
                     WindowStyle = ProcessWindowStyle.Hidden,
-                    Arguments = string.Format("\"{0}\"", Path.GetFullPath(CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, settings.Path, "app.js"))),
+                    Arguments = $"\"{Path.GetFullPath(CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, settings.Path, "app.js"))}\"",
                     WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory
                 };
                 StartInfo.EnvironmentVariables.Add("core.machinekey", Configuration["core:machinekey"]);
@@ -161,7 +161,7 @@ namespace ASC.Socket.IO.Svc
             Thread.Sleep(PingInterval);
 
             var error = false;
-            WebSocket = new WebSocket(string.Format("ws://127.0.0.1:{0}/socket.io/?EIO=3&transport=websocket", StartInfo.EnvironmentVariables["port"]));
+            WebSocket = new WebSocket($"ws://127.0.0.1:{StartInfo.EnvironmentVariables["port"]}/socket.io/?EIO=3&transport=websocket");
             WebSocket.SetCookie(new WebSocketSharp.Net.Cookie("authorization", SignalrServiceClient.CreateAuthToken()));
             WebSocket.EmitOnPing = true;
 

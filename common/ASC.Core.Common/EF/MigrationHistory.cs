@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-
-using ASC.Common;
-
-namespace ASC.Core.Common.EF
+﻿namespace ASC.Core.Common.EF
 {
     [Singletone]
     public class MigrationHistory

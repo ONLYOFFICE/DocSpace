@@ -23,14 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
-using ASC.Core;
-using ASC.Feed.Data;
-using ASC.Web.Core;
-
 namespace ASC.Feed.Aggregator.Modules
 {
     public abstract class FeedModule : IFeedModule
@@ -49,7 +41,7 @@ namespace ASC.Feed.Aggregator.Modules
         protected TenantManager TenantManager { get; }
         protected WebItemSecurity WebItemSecurity { get; }
 
-        public FeedModule(TenantManager tenantManager, WebItemSecurity webItemSecurity)
+        protected FeedModule(TenantManager tenantManager, WebItemSecurity webItemSecurity)
         {
             TenantManager = tenantManager;
             WebItemSecurity = webItemSecurity;

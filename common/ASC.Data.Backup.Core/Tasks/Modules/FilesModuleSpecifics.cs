@@ -23,21 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
-
-using ASC.Common.Logging;
-using ASC.Data.Backup.Tasks.Data;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Data.Backup.Tasks.Modules
 {
     public class FilesModuleSpecifics : ModuleSpecificsBase

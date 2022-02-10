@@ -23,9 +23,6 @@
  *
 */
 
-
-using System;
-
 namespace ASC.Data.Backup.Storage
 {
     public interface IBackupStorage

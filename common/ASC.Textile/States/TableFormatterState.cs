@@ -1,7 +1,3 @@
-using System;
-using System.Text.RegularExpressions;
-
-
 namespace Textile.States
 {
     [FormatterState(@"^\s*(?<tag>table)" +
@@ -58,7 +54,7 @@ namespace Textile.States
                                    @"(\.\s?)?(?<tag>\|)" +
                                    @"(?<content>.*)(?=\|)"
                                   );
-            return (m.Success == false);
+            return !m.Success;
         }
 
         protected string FormattedStylesAndAlignment()

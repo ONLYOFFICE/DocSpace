@@ -23,15 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common.Utils;
-using ASC.Notify.Messages;
-
-using NVelocity;
-using NVelocity.App.Events;
-
 namespace ASC.Notify.Patterns
 {
     public sealed class NVelocityPatternFormatter : PatternFormatter
@@ -71,7 +62,7 @@ namespace ASC.Notify.Patterns
             base.AfterFormat(message);
         }
 
-        private static void EventCartridgeReferenceInsertion(object sender, ReferenceInsertionEventArgs e)
+        private void EventCartridgeReferenceInsertion(object sender, ReferenceInsertionEventArgs e)
         {
             if (!(e.OriginalValue is string originalString)) return;
             var lines = originalString.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
@@ -79,9 +70,9 @@ namespace ASC.Notify.Patterns
             e.NewValue = string.Empty;
             for (var i = 0; i < lines.Length - 1; i++)
             {
-                e.NewValue += string.Format("{0}{1}{2}\n", NoStylePreffix, lines[i], NoStyleSuffix);
+                e.NewValue += $"{NoStylePreffix}{lines[i]}{NoStyleSuffix}\n";
             }
-            e.NewValue += string.Format("{0}{1}{2}", NoStylePreffix, lines[^1], NoStyleSuffix);
+            e.NewValue += $"{NoStylePreffix}{lines[^1]}{NoStyleSuffix}";
         }
     }
 }

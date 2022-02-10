@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-
-namespace ASC.Core.Common.EF
+﻿namespace ASC.Core.Common.EF
 {
     public static class LinqExtensions
     {
@@ -31,7 +26,7 @@ namespace ASC.Core.Common.EF
         private static PropertyInfo GetPropertyInfo(Type objType, string name)
         {
             var properties = objType.GetProperties();
-            var matchedProperty = properties.FirstOrDefault(p => p.Name.ToLower() == name.ToLower());
+            var matchedProperty = properties.FirstOrDefault(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
             if (matchedProperty == null)
                 throw new ArgumentException("name");
 

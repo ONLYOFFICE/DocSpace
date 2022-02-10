@@ -24,14 +24,6 @@
 */
 
 
-using System.Globalization;
-using System.Reflection;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.Net.Http.Headers;
-
 using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
 
 namespace System.Web
@@ -186,7 +178,7 @@ namespace System.Web
             }
 
             const StringComparison cmp = StringComparison.OrdinalIgnoreCase;
-            if (0 < s.Length && (s.StartsWith("0", cmp)))
+            if (0 < s.Length && s.StartsWith('0'))
             {
                 s = Uri.UriSchemeHttp + s.Substring(1);
             }
@@ -194,7 +186,7 @@ namespace System.Web
             {
                 s = Uri.UriSchemeHttp + s.Substring(3);
             }
-            else if (0 < s.Length && (s.StartsWith("1", cmp)))
+            else if (0 < s.Length && s.StartsWith('1'))
             {
                 s = Uri.UriSchemeHttps + s.Substring(1);
             }

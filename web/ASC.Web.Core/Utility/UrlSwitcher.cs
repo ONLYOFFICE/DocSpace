@@ -23,12 +23,6 @@
  *
 */
 
-
-using System;
-using System.Web;
-
-using Microsoft.AspNetCore.Http;
-
 namespace ASC.Web.Core.Utility
 {
     public static class UrlSwitcher

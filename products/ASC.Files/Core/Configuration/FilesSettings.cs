@@ -23,16 +23,6 @@
  *
 */
 
-
-using System;
-using System.Text.Json.Serialization;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.Files.Core;
-using ASC.Web.Studio.Core;
-
 namespace ASC.Web.Files.Classes
 {
     [Serializable]

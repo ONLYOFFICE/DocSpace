@@ -1,16 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-
-using ASC.Common;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Model;
-using ASC.ElasticSearch;
-using ASC.ElasticSearch.Core;
-
-using Microsoft.EntityFrameworkCore;
-
-using Nest;
+﻿using Document = ASC.ElasticSearch.Document;
 
 namespace ASC.Files.Core.EF
 {

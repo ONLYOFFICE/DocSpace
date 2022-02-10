@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ASC.People.Models
+﻿namespace ASC.People.Models
 {
     public class GroupModel
     {

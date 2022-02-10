@@ -23,14 +23,6 @@
  *
 */
 
-
-using System;
-using System.Security.Cryptography;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Security.Cryptography;
-
 namespace ASC.Core.Encryption
 {
     public class EncryptionSettings
@@ -131,19 +123,18 @@ namespace ASC.Core.Encryption
 
             if (length < 1 || length > 128)
             {
-                throw new ArgumentException("password_length_incorrect", "length");
+                throw new ArgumentException("password_length_incorrect", nameof(length));
             }
 
             if (numberOfNonAlphanumericCharacters > length || numberOfNonAlphanumericCharacters < 0)
             {
-                throw new ArgumentException("min_required_non_alphanumeric_characters_incorrect", "numberOfNonAlphanumericCharacters");
+                throw new ArgumentException("min_required_non_alphanumeric_characters_incorrect", nameof(numberOfNonAlphanumericCharacters));
             }
 
-            var array = new byte[length];
             var array2 = new char[length];
             var num = 0;
 
-            array = RandomNumberGenerator.GetBytes(length);
+            var array = RandomNumberGenerator.GetBytes(length);
 
             for (var i = 0; i < length; i++)
             {
@@ -172,16 +163,15 @@ namespace ASC.Core.Encryption
 
             if (num < numberOfNonAlphanumericCharacters)
             {
-                var random = new Random();
                 for (var j = 0; j < numberOfNonAlphanumericCharacters - num; j++)
                 {
                     int num3;
                     do
                     {
-                        num3 = random.Next(0, length);
+                        num3 = RandomNumberGenerator.GetInt32(0, length);
                     }
                     while (!char.IsLetterOrDigit(array2[num3]));
-                    array2[num3] = punctuations[random.Next(0, punctuations.Length)];
+                    array2[num3] = punctuations[RandomNumberGenerator.GetInt32(0, punctuations.Length)];
                 }
             }
 

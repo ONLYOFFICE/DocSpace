@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-
-namespace ASC.Web.Files.Core.Compress
+﻿namespace ASC.Web.Files.Core.Compress
 {
     ///<summary>Archiving Class Unification Interface</summary>
     public interface ICompress : IDisposable

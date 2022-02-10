@@ -14,17 +14,6 @@
  *
 */
 
-
-using System;
-using System.Linq;
-using System.Threading;
-
-using ASC.Common;
-using ASC.Common.Logging;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Files.ThumbnailBuilder
 {
     [Singletone]
@@ -81,7 +70,7 @@ namespace ASC.Files.ThumbnailBuilder
 
             var filesWithoutThumbnails = Launcher.Queue.Select(pair => pair.Value).ToList();
 
-            if (!filesWithoutThumbnails.Any())
+            if (filesWithoutThumbnails.Count == 0)
             {
                 logger.TraceFormat("Procedure: Waiting for data. Sleep {0}.", thumbnailSettings.LaunchFrequency);
                 timer.Change(TimeSpan.FromSeconds(thumbnailSettings.LaunchFrequency), TimeSpan.FromMilliseconds(-1));
@@ -106,7 +95,7 @@ namespace ASC.Files.ThumbnailBuilder
         }
     }
 
-    public class WorkerExtension
+    public static class WorkerExtension
     {
         public static void Register(DIHelper services)
         {

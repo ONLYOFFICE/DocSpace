@@ -23,13 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common;
-using ASC.Files.Core;
-using ASC.Files.Core.Security;
-
 namespace ASC.Files.Thirdparty.Box
 {
     [Scope(Additional = typeof(BoxDaoSelectorExtension))]
@@ -63,7 +56,7 @@ namespace ASC.Files.Thirdparty.Box
             return base.GetSecurityDao<BoxSecurityDao>(id);
         }
     }
-    public class BoxDaoSelectorExtension
+    public static class BoxDaoSelectorExtension
     {
         public static void Register(DIHelper services)
         {

@@ -23,13 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Net;
-
 namespace ASC.Core.Tenants
 {
     [Serializable]
@@ -181,7 +174,7 @@ namespace ASC.Core.Tenants
             }
             else
             {
-                result = string.Format("{0}.{1}", TenantAlias, baseHost).TrimEnd('.').ToLowerInvariant();
+                result = $"{TenantAlias}.{baseHost}".TrimEnd('.').ToLowerInvariant();
             }
             if (!string.IsNullOrEmpty(MappedDomain) && allowMappedDomain)
             {

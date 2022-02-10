@@ -23,24 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Common.Configuration;
-using ASC.Core.Common.Settings;
-using ASC.Data.Storage.Configuration;
-using ASC.Data.Storage.DiscStorage;
-using ASC.Data.Storage.GoogleCloud;
-using ASC.Data.Storage.RackspaceCloud;
-using ASC.Data.Storage.S3;
-
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Data.Storage
 {
     [Singletone(Additional = typeof(StorageConfigExtension))]
@@ -56,8 +38,7 @@ namespace ASC.Data.Storage
         public IEnumerable<string> GetModuleList(string configpath, bool exceptDisabledMigration = false)
         {
             return Section.Module
-                .Where(x => x.Visible)
-                .Where(x => !exceptDisabledMigration || !x.DisableMigrate)
+                .Where(x => x.Visible && (!exceptDisabledMigration || !x.DisableMigrate))
                 .Select(x => x.Name);
         }
 
@@ -252,7 +233,7 @@ namespace ASC.Data.Storage
                 props = handler.Property.ToDictionary(r => r.Name, r => r.Value);
             }
 
-            ;
+            
             return ((IDataStore)ActivatorUtilities.CreateInstance(ServiceProvider, instanceType))
                 .Configure(tenant, handler, moduleElement, props)
                 .SetQuotaController(moduleElement.Count ? controller : null
@@ -260,7 +241,7 @@ namespace ASC.Data.Storage
         }
     }
 
-    public class StorageFactoryExtension
+    public static class StorageFactoryExtension
     {
         public static void Register(DIHelper services)
         {

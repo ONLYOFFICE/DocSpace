@@ -14,26 +14,6 @@
  *
 */
 
-
-
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-
-using ASC.ApiSystem.Classes;
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Users;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-
 namespace ASC.ApiSystem.Controllers
 {
     [Scope]

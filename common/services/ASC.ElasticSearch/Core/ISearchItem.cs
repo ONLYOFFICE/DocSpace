@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq.Expressions;
-
-using ASC.ElasticSearch.Core;
-
-namespace ASC.ElasticSearch
+﻿namespace ASC.ElasticSearch
 {
     public interface ISearchItem
     {

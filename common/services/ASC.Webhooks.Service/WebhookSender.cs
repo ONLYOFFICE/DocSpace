@@ -1,21 +1,3 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Web.Webhooks;
-using ASC.Webhooks.Core;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Webhooks.Service;
 
 [Singletone]
@@ -111,7 +93,7 @@ public class WebhookSender
         {
             var responseContent = streamReader.ReadToEnd();
             responsePayload = JsonSerializer.Serialize(responseContent);
-        };
+        }
 
         dbWorker.UpdateWebhookJournal(id, status, responsePayload, responseHeaders, requestHeaders);
     }

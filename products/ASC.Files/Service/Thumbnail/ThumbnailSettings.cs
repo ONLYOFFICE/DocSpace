@@ -14,12 +14,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common;
-using ASC.Common.Utils;
-
 namespace ASC.Files.ThumbnailBuilder
 {
     [Singletone]

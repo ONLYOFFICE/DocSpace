@@ -23,18 +23,6 @@
  *
 */
 
-
-using System.Collections.Generic;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Files.Core;
-using ASC.MessagingSystem;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Primitives;
-
 namespace ASC.Web.Files.Helpers
 {
     [Scope]

@@ -14,8 +14,6 @@
  *
 */
 
-using ASC.Common;
-
 namespace ASC.Files.Core
 {
     [Scope]

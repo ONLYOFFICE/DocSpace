@@ -1,21 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-
-using ASC.Api.Core;
-using ASC.Common.Utils;
-
-using Autofac.Extensions.DependencyInjection;
-
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-
 namespace ASC.Web.Api
 {
-    public class Program
+    public static class Program
     {
         public async static Task Main(string[] args)
         {

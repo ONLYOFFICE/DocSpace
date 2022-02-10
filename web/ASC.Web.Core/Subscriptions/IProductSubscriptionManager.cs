@@ -23,8 +23,6 @@
  *
 */
 
-
-using System.Collections.Generic;
 namespace ASC.Web.Core.Subscriptions
 {
     public enum GroupByType

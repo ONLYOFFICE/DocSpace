@@ -24,24 +24,6 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text.RegularExpressions;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Core.Common.Configuration;
-using ASC.FederatedLogin;
-using ASC.FederatedLogin.Helpers;
-using ASC.FederatedLogin.LoginProviders;
-using ASC.Files.Core;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
 using DriveFile = Google.Apis.Drive.v3.Data.File;
 
 namespace ASC.Files.Thirdparty.GoogleDrive
@@ -366,7 +348,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         }
     }
 
-    public class GoogleDriveProviderInfoExtention
+    public static class GoogleDriveProviderInfoExtention
     {
         public static void Register(DIHelper dIHelper)
         {

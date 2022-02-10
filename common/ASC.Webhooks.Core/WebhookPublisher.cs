@@ -1,15 +1,4 @@
-﻿using System;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Web.Webhooks;
-using ASC.Webhooks.Core.Dao.Models;
-
-using Microsoft.Extensions.Options;
-
-namespace ASC.Webhooks.Core
+﻿namespace ASC.Webhooks.Core
 {
     [Scope]
     public class WebhookPublisher : IWebhookPublisher

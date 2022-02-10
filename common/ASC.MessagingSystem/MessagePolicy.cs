@@ -23,15 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-
-using Microsoft.Extensions.Configuration;
-
 namespace ASC.MessagingSystem
 {
     [Singletone]
@@ -43,7 +34,7 @@ namespace ASC.MessagingSystem
         {
             secretIps =
                 configuration["messaging.secret-ips"] == null
-                ? new string[] { }
+                ? Array.Empty<string>()
                 : configuration["messaging.secret-ips"].Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
         }
 

@@ -23,21 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Core.Common;
-using ASC.Core.Common.Configuration;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-using ASC.Core.Tenants;
-
 namespace ASC.VoipService.Dao
 {
     [Singletone]
@@ -104,7 +89,7 @@ namespace ASC.VoipService.Dao
                 cache.Insert(GetCacheKey(TenantID), numbers, DateTime.UtcNow.Add(timeout));
             }
 
-            return ids.Any() ? numbers.Where(r => ids.Contains(r.Id) || ids.Contains(r.Number)).ToList() : numbers;
+            return ids.Length > 0 ? numbers.Where(r => ids.Contains(r.Id) || ids.Contains(r.Number)).ToList() : numbers;
         }
 
         public static string GetCacheKey(int tenant)

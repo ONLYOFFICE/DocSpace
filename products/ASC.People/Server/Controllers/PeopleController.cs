@@ -1,55 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Mail;
-using System.Security;
-using System.ServiceModel.Security;
-using System.Threading;
-using System.Web;
-
-using ASC.Api.Core;
-using ASC.Api.Utils;
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Utils;
-using ASC.Common.Web;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-using ASC.Data.Reassigns;
-using ASC.FederatedLogin;
-using ASC.FederatedLogin.LoginProviders;
-using ASC.FederatedLogin.Profile;
-using ASC.MessagingSystem;
-using ASC.People;
-using ASC.People.Models;
-using ASC.People.Resources;
-using ASC.Security.Cryptography;
-using ASC.Web.Api.Models;
-using ASC.Web.Api.Routing;
-using ASC.Web.Core;
-using ASC.Web.Core.Mobile;
-using ASC.Web.Core.PublicResources;
-using ASC.Web.Core.Users;
-using ASC.Web.Studio.Core;
-using ASC.Web.Studio.Core.Notify;
-using ASC.Web.Studio.UserControls.Statistics;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats;
-
-using SecurityContext = ASC.Core.SecurityContext;
+﻿using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Employee.Core.Controllers
 {
@@ -99,6 +48,7 @@ namespace ASC.Employee.Core.Controllers
         private Constants Constants { get; }
         private Recaptcha Recaptcha { get; }
         private ILog Log { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
         public PeopleController(
             MessageService messageService,
@@ -140,7 +90,8 @@ namespace ASC.Employee.Core.Controllers
             MobileDetector mobileDetector,
             ProviderManager providerManager,
             Constants constants,
-            Recaptcha recaptcha
+            Recaptcha recaptcha,
+            IHttpClientFactory clientFactory
             )
         {
             Log = option.Get("ASC.Api");
@@ -183,6 +134,7 @@ namespace ASC.Employee.Core.Controllers
             ProviderManager = providerManager;
             Constants = constants;
             Recaptcha = recaptcha;
+            ClientFactory = clientFactory;
         }
 
         [Read("info")]
@@ -496,7 +448,7 @@ namespace ASC.Employee.Core.Controllers
                     }
                     catch (Exception ex)
                     {
-                        Log.Debug(String.Format("ERROR write to template_unsubscribe {0}, email:{1}", ex.Message, model.Email.ToLowerInvariant()));
+                        Log.Debug($"ERROR write to template_unsubscribe {ex.Message}, email:{model.Email.ToLowerInvariant()}");
                     }
                 }
 
@@ -562,8 +514,8 @@ namespace ASC.Employee.Core.Controllers
                            ? true
                            : ("female".Equals(memberModel.Sex, StringComparison.OrdinalIgnoreCase) ? (bool?)false : null);
 
-            user.BirthDate = memberModel.Birthday != null && memberModel.Birthday != DateTime.MinValue ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Birthday)) : null;
-            user.WorkFromDate = memberModel.Worksfrom != null && memberModel.Worksfrom != DateTime.MinValue ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Worksfrom)) : DateTime.UtcNow.Date;
+            user.BirthDate = memberModel.Birthday != null && memberModel.Birthday != DateTime.MinValue ? TenantUtil.DateTimeFromUtc(memberModel.Birthday) : null;
+            user.WorkFromDate = memberModel.Worksfrom != null && memberModel.Worksfrom != DateTime.MinValue ? TenantUtil.DateTimeFromUtc(memberModel.Worksfrom) : DateTime.UtcNow.Date;
 
             UpdateContacts(memberModel.Contacts, user);
 
@@ -631,8 +583,8 @@ namespace ASC.Employee.Core.Controllers
                            ? true
                            : ("female".Equals(memberModel.Sex, StringComparison.OrdinalIgnoreCase) ? (bool?)false : null);
 
-            user.BirthDate = memberModel.Birthday != null ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Birthday)) : null;
-            user.WorkFromDate = memberModel.Worksfrom != null ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Worksfrom)) : DateTime.UtcNow.Date;
+            user.BirthDate = memberModel.Birthday != null ? TenantUtil.DateTimeFromUtc(memberModel.Birthday) : null;
+            user.WorkFromDate = memberModel.Worksfrom != null ? TenantUtil.DateTimeFromUtc(memberModel.Worksfrom) : DateTime.UtcNow.Date;
 
             UpdateContacts(memberModel.Contacts, user);
 
@@ -751,14 +703,14 @@ namespace ASC.Employee.Core.Controllers
                             ? true
                             : ("female".Equals(memberModel.Sex, StringComparison.OrdinalIgnoreCase) ? (bool?)false : null)) ?? user.Sex;
 
-            user.BirthDate = memberModel.Birthday != null ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Birthday)) : user.BirthDate;
+            user.BirthDate = memberModel.Birthday != null ? TenantUtil.DateTimeFromUtc(memberModel.Birthday) : user.BirthDate;
 
             if (user.BirthDate == resetDate)
             {
                 user.BirthDate = null;
             }
 
-            user.WorkFromDate = memberModel.Worksfrom != null ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Worksfrom)) : user.WorkFromDate;
+            user.WorkFromDate = memberModel.Worksfrom != null ? TenantUtil.DateTimeFromUtc(memberModel.Worksfrom) : user.WorkFromDate;
 
             if (user.WorkFromDate == resetDate)
             {
@@ -785,7 +737,7 @@ namespace ASC.Employee.Core.Controllers
             }
 
             // change user type
-            var canBeGuestFlag = !user.IsOwner(Tenant) && !user.IsAdmin(UserManager) && !user.GetListAdminModules(WebItemSecurity).Any() && !user.IsMe(AuthContext);
+            var canBeGuestFlag = !user.IsOwner(Tenant) && !user.IsAdmin(UserManager) && user.GetListAdminModules(WebItemSecurity).Count == 0 && !user.IsMe(AuthContext);
 
             if (memberModel.IsVisitor && !user.IsVisitor(UserManager) && canBeGuestFlag)
             {
@@ -934,6 +886,7 @@ namespace ASC.Employee.Core.Controllers
             if (UserManager.IsSystemUser(user.ID))
                 throw new SecurityException();
 
+            user.ContactsList.Clear();
             UpdateContacts(memberModel.Contacts, user);
             UserManager.SaveUserInfo(user);
             return EmployeeWraperFullHelper.GetFull(user);
@@ -1184,8 +1137,8 @@ namespace ASC.Employee.Core.Controllers
 
         private object SendUserPassword(MemberModel memberModel)
         {
-            string error;
-            if (!string.IsNullOrEmpty(error = UserManagerWrapper.SendUserPassword(memberModel.Email)))
+            string error = UserManagerWrapper.SendUserPassword(memberModel.Email);
+            if (!string.IsNullOrEmpty(error))
             {
                 Log.ErrorFormat("Password recovery ({0}): {1}", memberModel.Email, error);
             }
@@ -1387,7 +1340,7 @@ namespace ASC.Employee.Core.Controllers
 
             foreach (var user in users)
             {
-                if (user.IsOwner(Tenant) || user.IsAdmin(UserManager) || user.IsMe(AuthContext) || user.GetListAdminModules(WebItemSecurity).Any())
+                if (user.IsOwner(Tenant) || user.IsAdmin(UserManager) || user.IsMe(AuthContext) || user.GetListAdminModules(WebItemSecurity).Count > 0)
                     continue;
 
                 switch (type)
@@ -1496,8 +1449,6 @@ namespace ASC.Employee.Core.Controllers
                 if (user.IsActive) continue;
                 var viewer = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
 
-                if (user == null) throw new Exception(Resource.ErrorUserNotFound);
-
                 if (viewer == null) throw new Exception(Resource.ErrorAccessDenied);
 
                 if (viewer.IsAdmin(UserManager) || viewer.ID == user.ID)
@@ -1605,7 +1556,7 @@ namespace ASC.Employee.Core.Controllers
 
             foreach (var provider in ProviderManager.AuthProviders.Where(provider => string.IsNullOrEmpty(fromOnly) || fromOnly == provider || (provider == "google" && fromOnly == "openid")))
             {
-                if (inviteView && provider.ToLower() == "twitter") continue;
+                if (inviteView && provider.Equals("twitter", StringComparison.OrdinalIgnoreCase)) continue;
 
                 var loginProvider = ProviderManager.GetLoginProvider(provider);
                 if (loginProvider != null && loginProvider.IsEnabled)
@@ -1865,7 +1816,7 @@ namespace ASC.Employee.Core.Controllers
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(url);
 
-                using (var httpClient = new HttpClient())
+                var httpClient = ClientFactory.CreateClient();
                 using (var response = httpClient.Send(request))
                 using (var stream = response.Content.ReadAsStream())
                 {
@@ -2110,12 +2061,12 @@ namespace ASC.Employee.Core.Controllers
 
             if (!files.StartsWith("http://") && !files.StartsWith("https://"))
             {
-                files = new Uri(ApiContext.HttpContextAccessor.HttpContext.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Scheme | UriPartial.Authority) + "/" + files.TrimStart('/');
+                files = new Uri(ApiContext.HttpContextAccessor.HttpContext.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Authority) + "/" + files.TrimStart('/');
             }
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(files);
 
-            using var httpClient = new HttpClient();
+            var httpClient = ClientFactory.CreateClient();
             using var response = httpClient.Send(request);
             using var inputStream = response.Content.ReadAsStream();
             using var br = new BinaryReader(inputStream);

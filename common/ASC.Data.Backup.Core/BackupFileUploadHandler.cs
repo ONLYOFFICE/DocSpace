@@ -14,15 +14,6 @@
  *
 */
 
-
-using System;
-using System.IO;
-
-using ASC.Common;
-using ASC.Core;
-
-using Microsoft.AspNetCore.Http;
-
 namespace ASC.Web.Studio.Core.Backup
 {
     [Scope]

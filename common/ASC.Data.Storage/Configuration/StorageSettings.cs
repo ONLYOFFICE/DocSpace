@@ -23,21 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.Configuration;
-using ASC.Core.Common.Settings;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Data.Storage.Configuration
 {
     [Singletone(Additional = typeof(StorageSettingsExtension))]
@@ -174,7 +159,6 @@ namespace ASC.Data.Storage.Configuration
         public bool Save<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings, new()
         {
             ClearDataStoreCache();
-            dataStoreConsumer = null;
             return SettingsManager.Save(baseStorageSettings);
         }
 
@@ -195,16 +179,15 @@ namespace ASC.Data.Storage.Configuration
             Save(baseStorageSettings);
         }
 
-        private DataStoreConsumer dataStoreConsumer;
         public DataStoreConsumer DataStoreConsumer<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings, new()
         {
-            if (string.IsNullOrEmpty(baseStorageSettings.Module) || baseStorageSettings.Props == null) return dataStoreConsumer = new DataStoreConsumer();
+            if (string.IsNullOrEmpty(baseStorageSettings.Module) || baseStorageSettings.Props == null) return new DataStoreConsumer();
 
             var consumer = ConsumerFactory.GetByKey<DataStoreConsumer>(baseStorageSettings.Module);
 
-            if (!consumer.IsSet) return dataStoreConsumer = new DataStoreConsumer();
+            if (!consumer.IsSet) return new DataStoreConsumer();
 
-            dataStoreConsumer = (DataStoreConsumer)consumer.Clone();
+            var dataStoreConsumer = (DataStoreConsumer)consumer.Clone();
 
             foreach (var prop in baseStorageSettings.Props)
             {
@@ -249,7 +232,7 @@ namespace ASC.Data.Storage.Configuration
         }
     }
 
-    public class StorageSettingsExtension
+    public static class StorageSettingsExtension
     {
         public static void Register(DIHelper services)
         {

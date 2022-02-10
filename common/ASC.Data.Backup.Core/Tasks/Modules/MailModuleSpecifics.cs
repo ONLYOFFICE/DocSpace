@@ -23,22 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-
-using ASC.Common.Logging;
-using ASC.Data.Backup.Tasks.Data;
-using ASC.Data.Storage;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Data.Backup.Tasks.Modules
 {
     internal class MailModuleSpecifics : ModuleSpecificsBase
@@ -183,7 +167,7 @@ namespace ASC.Data.Backup.Tasks.Modules
         {
             //todo: hack: will be changed later
             filePath = Regex.Replace(filePath, @"^[-\w]+(?=/)", match => dump ? match.Value : columnMapper.GetUserMapping(match.Value));
-            return !filePath.StartsWith("/");
+            return !filePath.StartsWith('/');
         }
 
         protected override bool TryPrepareRow(bool dump, DbConnection connection, ColumnMapper columnMapper, TableInfo table, DataRowInfo row, out Dictionary<string, object> preparedRow)

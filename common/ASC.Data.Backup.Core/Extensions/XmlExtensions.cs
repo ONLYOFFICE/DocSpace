@@ -23,11 +23,6 @@
  *
 */
 
-
-using System.IO;
-using System.Text;
-using System.Xml.Linq;
-
 namespace ASC.Data.Backup.Extensions
 {
     public static class XmlExtensions

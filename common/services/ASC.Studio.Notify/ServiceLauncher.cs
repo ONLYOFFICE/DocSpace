@@ -23,16 +23,6 @@
  *
 */
 
-
-using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Web.Core;
-using ASC.Web.Studio.Core.Notify;
-
-using Microsoft.Extensions.Hosting;
-
 namespace ASC.Notify
 {
     [Singletone]

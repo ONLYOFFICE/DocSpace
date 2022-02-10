@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-using ASC.Api.Collections;
-
-namespace ASC.Web.Api.Models
+﻿namespace ASC.Web.Api.Models
 {
     public class WebItemSecurityModel
     {

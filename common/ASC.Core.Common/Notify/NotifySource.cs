@@ -23,17 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Threading;
-
-using ASC.Notify;
-using ASC.Notify.Model;
-using ASC.Notify.Patterns;
-using ASC.Notify.Recipients;
-
 namespace ASC.Core.Notify
 {
     public abstract class NotifySource : INotifySource
@@ -67,9 +56,9 @@ namespace ASC.Core.Notify
         private UserManager UserManager { get; }
         private SubscriptionManager SubscriptionManager { get; }
 
-        public NotifySource(string id, UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
+        protected NotifySource(string id, UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
         {
-            if (string.IsNullOrEmpty(id)) throw new ArgumentNullException("id");
+            if (string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));
 
             ID = id;
             UserManager = userManager;
@@ -77,7 +66,7 @@ namespace ASC.Core.Notify
             SubscriptionManager = subscriptionManager;
         }
 
-        public NotifySource(Guid id, UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
+        protected NotifySource(Guid id, UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
             : this(id.ToString(), userManager, recipientsProvider, subscriptionManager)
         {
         }
@@ -132,12 +121,12 @@ namespace ASC.Core.Notify
         {
             var subscriptionProvider = new DirectSubscriptionProvider(ID, SubscriptionManager, RecipientsProvider);
             return new TopSubscriptionProvider(RecipientsProvider, subscriptionProvider, WorkContext.DefaultClientSenders) ??
-                throw new NotifyException(string.Format("Provider {0} not instanced.", "ISubscriprionProvider"));
+                throw new NotifyException("Provider ISubscriprionProvider not instanced.");
         }
 
         protected virtual IRecipientProvider CreateRecipientsProvider()
         {
-            return new RecipientProviderImpl(UserManager) ?? throw new NotifyException(string.Format("Provider {0} not instanced.", "IRecipientsProvider"));
+            return new RecipientProviderImpl(UserManager) ?? throw new NotifyException("Provider IRecipientsProvider not instanced.");
         }
     }
 }

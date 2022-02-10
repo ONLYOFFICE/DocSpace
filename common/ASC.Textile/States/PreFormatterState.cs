@@ -1,6 +1,3 @@
-using System;
-using System.Text.RegularExpressions;
-
 namespace Textile.States
 {
     [FormatterState(@"^\s*<pre" + Globals.HtmlAttributesPattern + ">")]

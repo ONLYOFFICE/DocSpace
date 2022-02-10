@@ -1,5 +1,3 @@
-using System.Text.RegularExpressions;
-
 namespace Textile.Blocks
 {
     public class CapitalsBlockModifier : BlockModifier
@@ -11,7 +9,7 @@ namespace Textile.Blocks
             return line;
         }
 
-        static private string CapitalsFormatMatchEvaluator(Match m)
+        private string CapitalsFormatMatchEvaluator(Match m)
         {
             return @"<span class=""caps"">" + m.Groups["caps"].Value + @"</span>";
         }

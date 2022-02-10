@@ -23,10 +23,7 @@
  *
 */
 
-
-using System;
-using System.Linq;
-using System.Text.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ASC.Common.Threading
 {
@@ -55,7 +52,7 @@ namespace ASC.Common.Threading
             }
             protected set
             {
-                DistributedTaskCache.Id = value?.ToString() ?? "";
+                DistributedTaskCache.Id = value ?? "";
             }
         }
 

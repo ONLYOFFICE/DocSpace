@@ -23,32 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Security;
-using System.Threading;
-
-using AppLimit.CloudComputing.SharpBox;
-using AppLimit.CloudComputing.SharpBox.Exceptions;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Core.Tenants;
-using ASC.Files.Core;
-using ASC.Files.Core.EF;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Thirdparty;
-using ASC.Web.Core.Files;
-using ASC.Web.Studio.Core;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Files.Thirdparty.Sharpbox
 {
     [Scope]
@@ -205,7 +179,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 var webException = (WebException)e.InnerException;
                 if (webException != null)
                 {
-                    var response = ((HttpWebResponse)webException.Response);
+                    var response = (HttpWebResponse)webException.Response;
                     if (response != null)
                     {
                         if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden)
@@ -450,7 +424,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return false;
         }
 
-        public long GetMaxUploadSize(string folderId, bool chunkedUpload)
+        public long GetMaxUploadSize(string folderId, bool chunkedUpload = false)
         {
             var storageMaxUploadSize =
                 chunkedUpload

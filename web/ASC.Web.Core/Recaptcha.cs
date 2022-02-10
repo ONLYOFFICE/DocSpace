@@ -1,15 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Net.Http;
-using System.Security.Authentication;
-using System.Text;
-
-using ASC.Common;
-using ASC.Web.Studio.Core;
-
-using Newtonsoft.Json.Linq;
-
-namespace ASC.Web.Core
+﻿namespace ASC.Web.Core
 {
     public class RecaptchaException : InvalidCredentialException
     {
@@ -27,10 +16,12 @@ namespace ASC.Web.Core
     public class Recaptcha
     {
         private SetupInfo SetupInfo { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
-        public Recaptcha(SetupInfo setupInfo)
+        public Recaptcha(SetupInfo setupInfo, IHttpClientFactory clientFactory)
         {
             SetupInfo = setupInfo;
+            ClientFactory = clientFactory;
         }
 
 
@@ -38,14 +29,14 @@ namespace ASC.Web.Core
         {
             try
             {
-                var data = string.Format("secret={0}&remoteip={1}&response={2}", SetupInfo.RecaptchaPrivateKey, ip, response);
+                var data = $"secret={SetupInfo.RecaptchaPrivateKey}&remoteip={ip}&response={response}";
 
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(SetupInfo.RecaptchaVerifyUrl);
                 request.Method = HttpMethod.Post;
                 request.Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
 
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
                 using var httpClientResponse = httpClient.Send(request);
                 using (var reader = new StreamReader(httpClientResponse.Content.ReadAsStream()))
                 {

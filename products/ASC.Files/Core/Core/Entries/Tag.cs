@@ -23,10 +23,6 @@
  *
 */
 
-
-using System;
-using System.Diagnostics;
-
 namespace ASC.Files.Core
 {
     [Flags]
@@ -42,7 +38,7 @@ namespace ASC.Files.Core
 
     [Serializable]
     [DebuggerDisplay("{TagName} ({Id}) entry {EntryType} ({EntryId})")]
-    public class Tag
+    public sealed class Tag
     {
         public string TagName { get; set; }
 

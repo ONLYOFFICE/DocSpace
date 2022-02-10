@@ -23,13 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Core.Common.Notify.Push;
-
 namespace ASC.Web.Core.Mobile
 {
     public class CachedMobileAppInstallRegistrator : IMobileAppInstallRegistrator
@@ -49,7 +42,7 @@ namespace ASC.Web.Core.Mobile
         {
             Cache = cache;
             TenantManager = tenantManager;
-            this.registrator = registrator ?? throw new ArgumentNullException("registrator");
+            this.registrator = registrator ?? throw new ArgumentNullException(nameof(registrator));
             this.cacheExpiration = cacheExpiration;
         }
 

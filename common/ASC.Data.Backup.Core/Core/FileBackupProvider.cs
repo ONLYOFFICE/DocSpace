@@ -23,20 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Xml.Linq;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Utils;
-using ASC.Data.Storage;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Data.Backup
 {
     [Scope]
@@ -132,7 +118,7 @@ namespace ASC.Data.Backup
 
                     files.AddRange(store
                         .ListFilesRelative(string.Empty, "\\", "*.*", true)
-                        .Where(x => domainList.All(domain => x.IndexOf(string.Format("{0}/", domain)) == -1))
+                        .Where(x => domainList.All(domain => x.IndexOf($"{domain}/") == -1))
                         .Select(x => new FileBackupInfo(string.Empty, module, x)));
                 }
             }

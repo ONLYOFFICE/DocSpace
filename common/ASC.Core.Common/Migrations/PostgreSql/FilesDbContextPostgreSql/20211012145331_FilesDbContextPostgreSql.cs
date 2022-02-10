@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-
-namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
+﻿namespace ASC.Core.Common.Migrations.PostgreSql.FilesDbContextPostgreSql
 {
     public partial class FilesDbContextPostgreSql : Migration
     {

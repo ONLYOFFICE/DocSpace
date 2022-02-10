@@ -23,14 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.ServiceModel;
-
-using ASC.Common;
-using ASC.Core.Common.Notify.Jabber;
-
 namespace ASC.Core.Notify.Jabber
 {
     [Scope]
@@ -94,7 +86,7 @@ namespace ASC.Core.Notify.Jabber
 
         public int GetNewMessagesCount()
         {
-            var result = 0;
+            const int result = 0;
             if (IsServiceProbablyNotAvailable()) return result;
 
             using (var service = GetService())

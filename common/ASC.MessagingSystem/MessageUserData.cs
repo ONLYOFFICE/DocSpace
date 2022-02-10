@@ -23,9 +23,6 @@
  *
 */
 
-
-using System;
-
 namespace ASC.MessagingSystem
 {
     public class MessageUserData

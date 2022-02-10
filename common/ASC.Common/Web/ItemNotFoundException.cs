@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ASC.Common.Web
+﻿namespace ASC.Common.Web
 {
     [Serializable]
     public class ItemNotFoundException : HttpException

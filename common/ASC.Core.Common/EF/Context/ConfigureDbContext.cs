@@ -1,13 +1,4 @@
-﻿using System;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Utils;
-
-using Microsoft.Extensions.Options;
-
-namespace ASC.Core.Common.EF
+﻿namespace ASC.Core.Common.EF
 {
     [Scope]
     public class ConfigureDbContext<T> : IConfigureNamedOptions<T> where T : BaseDbContext, new()
@@ -39,7 +30,7 @@ namespace ASC.Core.Common.EF
 
     public class ConfigureMultiRegionalDbContext<T> : IConfigureNamedOptions<MultiRegionalDbContext<T>> where T : BaseDbContext, new()
     {
-        public string baseName = "default";
+        private readonly string _baseName = "default";
         private ConfigurationExtension Configuration { get; }
         private DbContextManager<T> DbContext { get; }
 
@@ -57,7 +48,7 @@ namespace ASC.Core.Common.EF
 
             foreach (var c in Configuration.GetConnectionStrings().Where(r =>
             r.Name.Equals(name, cmp) || r.Name.StartsWith(name + ".", cmp) ||
-            r.Name.Equals(baseName, cmp) || r.Name.StartsWith(baseName + ".", cmp)
+            r.Name.Equals(_baseName, cmp) || r.Name.StartsWith(_baseName + ".", cmp)
             ))
             {
                 context.Context.Add(DbContext.Get(c.Name));
@@ -66,7 +57,7 @@ namespace ASC.Core.Common.EF
 
         public void Configure(MultiRegionalDbContext<T> context)
         {
-            Configure(baseName, context);
+            Configure(_baseName, context);
         }
     }
 }

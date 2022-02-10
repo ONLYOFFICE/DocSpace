@@ -14,15 +14,6 @@
  *
 */
 
-
-using System.Collections.Concurrent;
-using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Common;
-
-using Microsoft.Extensions.Hosting;
-
 namespace ASC.Files.ThumbnailBuilder
 {
     [Singletone(Additional = typeof(WorkerExtension))]

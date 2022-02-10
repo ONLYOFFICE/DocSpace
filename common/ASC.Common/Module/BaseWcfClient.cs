@@ -24,7 +24,6 @@
 */
 
 
-using System;
 using System.ServiceModel;
 
 namespace ASC.Common.Module
