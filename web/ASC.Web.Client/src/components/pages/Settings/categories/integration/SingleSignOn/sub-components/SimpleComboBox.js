@@ -1,9 +1,11 @@
 import React from "react";
+import { observer } from "mobx-react";
+
 import ComboBox from "@appserver/components/combobox";
 import FieldContainer from "@appserver/components/field-container";
+
 import StyledInputWrapper from "../styled-containers/StyledInputWrapper";
-import { addParameter } from "../../../../utils";
-import { observer } from "mobx-react";
+import { addParameter } from "../../../../utils/addParameter";
 
 const SimpleComboBox = ({ FormStore, labelText, name, options, tabIndex }) => {
   const currentOption = options.find(

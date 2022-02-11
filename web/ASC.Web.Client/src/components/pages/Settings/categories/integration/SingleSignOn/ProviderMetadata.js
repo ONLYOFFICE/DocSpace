@@ -1,9 +1,11 @@
 import React from "react";
+import { observer } from "mobx-react";
+
 import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
+
 import HideButton from "./sub-components/HideButton";
 import SimpleFormField from "./sub-components/SimpleFormField";
-import { observer } from "mobx-react";
 
 const ProviderMetadata = ({ FormStore, t }) => {
   return (

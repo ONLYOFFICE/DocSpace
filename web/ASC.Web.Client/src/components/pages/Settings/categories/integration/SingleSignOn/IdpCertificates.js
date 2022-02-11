@@ -1,17 +1,19 @@
 import React from "react";
+import { observer } from "mobx-react";
+
 import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
 import HelpButton from "@appserver/components/help-button";
-import HideButton from "./sub-components/HideButton";
-import SimpleComboBox from "./sub-components/SimpleComboBox";
 import Text from "@appserver/components/text";
+
+import AddCertificateModal from "./sub-components/AddCertificateModal";
+import HideButton from "./sub-components/HideButton";
+import SimpleCheckbox from "./sub-components/SimpleCheckbox";
+import SimpleComboBox from "./sub-components/SimpleComboBox";
 import {
   decryptAlgorithmsOptions,
   verifyAlgorithmsOptions,
 } from "./sub-components/constants";
-import { observer } from "mobx-react";
-import SimpleCheckbox from "./sub-components/SimpleCheckbox";
-import AddCertificateModal from "./sub-components/AddCertificateModal";
 
 const IdpCertificates = ({ FormStore, t }) => {
   return (

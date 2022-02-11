@@ -1,12 +1,14 @@
 import React from "react";
+import { observer } from "mobx-react";
+
 import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
 import FieldContainer from "@appserver/components/field-container";
 import HelpButton from "@appserver/components/help-button";
+import Text from "@appserver/components/text";
+
 import SimpleCheckbox from "./sub-components/SimpleCheckbox";
 import SimpleFormField from "./sub-components/SimpleFormField";
-import Text from "@appserver/components/text";
-import { observer } from "mobx-react";
 
 const FieldMapping = ({ FormStore, t }) => {
   return (

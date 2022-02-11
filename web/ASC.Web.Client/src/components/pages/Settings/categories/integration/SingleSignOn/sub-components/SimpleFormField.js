@@ -1,7 +1,9 @@
 import React from "react";
-import FieldContainer from "@appserver/components/field-container";
-import SimpleTextInput from "./SimpleTextInput";
 import { observer } from "mobx-react";
+
+import FieldContainer from "@appserver/components/field-container";
+
+import SimpleTextInput from "./SimpleTextInput";
 
 const SimpleFormField = ({
   FormStore,

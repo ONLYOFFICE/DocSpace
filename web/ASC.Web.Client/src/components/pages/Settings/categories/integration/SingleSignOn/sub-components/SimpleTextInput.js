@@ -1,7 +1,8 @@
 import React from "react";
+import { observer } from "mobx-react";
+
 import StyledInputWrapper from "../styled-containers/StyledInputWrapper";
 import TextInput from "@appserver/components/text-input";
-import { observer } from "mobx-react";
 
 const SimpleTextInput = ({
   FormStore,

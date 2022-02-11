@@ -1,9 +1,10 @@
 import React from "react";
+import { observer } from "mobx-react";
+
 import Box from "@appserver/components/box";
 import HelpButton from "@appserver/components/help-button";
 import Text from "@appserver/components/text";
 import ToggleButton from "@appserver/components/toggle-button";
-import { observer } from "mobx-react";
 
 const ToggleSSO = ({ FormStore, t }) => {
   return (

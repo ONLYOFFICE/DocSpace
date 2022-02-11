@@ -1,6 +1,7 @@
 import React from "react";
-import Checkbox from "@appserver/components/checkbox";
 import { observer } from "mobx-react";
+
+import Checkbox from "@appserver/components/checkbox";
 
 const SimpleCheckbox = ({ FormStore, label, name, tabIndex }) => {
   return (

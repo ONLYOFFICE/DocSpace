@@ -1,15 +1,17 @@
 import React from "react";
+import { observer } from "mobx-react";
+
 import Box from "@appserver/components/box";
 import FieldContainer from "@appserver/components/field-container";
 import RadioButtonGroup from "@appserver/components/radio-button-group";
+
+import HideButton from "./sub-components/HideButton";
 import SimpleComboBox from "./sub-components/SimpleComboBox";
 import SimpleFormField from "./sub-components/SimpleFormField";
 import SimpleTextInput from "./sub-components/SimpleTextInput";
 import Text from "@appserver/components/text";
-import { bindingOptions, nameIdOptions } from "./sub-components/constants";
-import { observer } from "mobx-react";
-import HideButton from "./sub-components/HideButton";
 import UploadXML from "./sub-components/UploadXML";
+import { bindingOptions, nameIdOptions } from "./sub-components/constants";
 
 const IdpSettings = ({ FormStore, t }) => {
   return (

@@ -1,11 +1,13 @@
 import React from "react";
+import { ReactSVG } from "react-svg";
+import { observer } from "mobx-react";
+
 import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
 import FieldContainer from "@appserver/components/field-container";
-import SimpleTextInput from "./SimpleTextInput";
 import Text from "@appserver/components/text";
-import { ReactSVG } from "react-svg";
-import { observer } from "mobx-react";
+
+import SimpleTextInput from "./SimpleTextInput";
 
 const UploadXML = ({ FormStore, t }) => {
   return (

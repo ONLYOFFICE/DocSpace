@@ -1,9 +1,11 @@
 import React from "react";
+import { observer } from "mobx-react";
+
 import Box from "@appserver/components/box";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
-import { addParameter } from "../../../../utils";
-import { observer } from "mobx-react";
+
+import { addParameter } from "../../../../utils/addParameter";
 
 const HideButton = ({ FormStore, label, t, isAdditionalParameters }) => {
   const hide = isAdditionalParameters ? "HideAdditionalParameters" : "Hide";

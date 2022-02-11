@@ -1,11 +1,12 @@
 import React from "react";
-import Button from "@appserver/components/button";
-import Text from "@appserver/components/text";
-import ModalDialog from "@appserver/components/modal-dialog";
-import TextArea from "@appserver/components/textarea";
-import { observer } from "mobx-react";
-import { Box } from "@appserver/components";
 import styled from "styled-components";
+import { observer } from "mobx-react";
+
+import Box from "@appserver/components/box";
+import Button from "@appserver/components/button";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Text from "@appserver/components/text";
+import TextArea from "@appserver/components/textarea";
 
 const StyledModalDialog = styled(ModalDialog)`
   .text-area {
