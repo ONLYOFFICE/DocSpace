@@ -35,7 +35,6 @@ public class IPSecurity
     private readonly AuthContext _authContext;
     private readonly TenantManager _tenantManager;
     private readonly IPRestrictionsService _ipRestrictionsService;
-    private readonly SettingsManager _settingsManager;
     private readonly string _currentIpForTest;
 
     public IPSecurity(
@@ -44,7 +43,6 @@ public class IPSecurity
         AuthContext authContext,
         TenantManager tenantManager,
         IPRestrictionsService iPRestrictionsService,
-        SettingsManager settingsManager,
         IOptionsMonitor<ILog> options)
     {
         _logger = options.Get("ASC.IPSecurity");
@@ -52,7 +50,6 @@ public class IPSecurity
         _authContext = authContext;
         _tenantManager = tenantManager;
         _ipRestrictionsService = iPRestrictionsService;
-        _settingsManager = settingsManager;
         _currentIpForTest = configuration["ipsecurity:test"];
         var hideSettings = (configuration["web:hide-settings"] ?? "").Split(new[] { ',', ';', ' ' });
         IpSecurityEnabled = !hideSettings.Contains("IpSecurity", StringComparer.CurrentCultureIgnoreCase);
