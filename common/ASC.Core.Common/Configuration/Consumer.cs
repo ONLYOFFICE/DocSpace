@@ -32,11 +32,11 @@ public class Consumer : IDictionary<string, string>
     public string Name { get; private set; }
     public int Count => AllProps.Count;
     public bool IsReadOnly => true;
-    public bool IsSet => _props.Any() && !_props.All(r => string.IsNullOrEmpty(this[r.Key]));
-    public IEnumerable<string> ManagedKeys => _props.Select(r => r.Key).ToList();
+    public bool IsSet => Props.Any() && !Props.All(r => string.IsNullOrEmpty(this[r.Key]));
+    public IEnumerable<string> ManagedKeys => Props.Select(r => r.Key).ToList();
     public ICollection<string> Keys => AllProps.Keys;
     public ICollection<string> Values => AllProps.Values;
-    public virtual IEnumerable<string> AdditionalKeys => _additional.Select(r => r.Key).ToList();
+    public virtual IEnumerable<string> AdditionalKeys => Additional.Select(r => r.Key).ToList();
 
     public string this[string key]
     {
@@ -55,9 +55,9 @@ public class Consumer : IDictionary<string, string>
     {
         get
         {
-            var result = _props.ToDictionary(item => item.Key, item => item.Value);
+            var result = Props.ToDictionary(item => item.Key, item => item.Value);
 
-            foreach (var item in _additional.Where(item => !result.ContainsKey(item.Key)))
+            foreach (var item in Additional.Where(item => !result.ContainsKey(item.Key)))
             {
                 result.Add(item.Key, item.Value);
             }
@@ -66,16 +66,16 @@ public class Consumer : IDictionary<string, string>
         }
     }
 
-    protected readonly Dictionary<string, string> _props;
-    protected readonly Dictionary<string, string> _additional;
+    protected readonly Dictionary<string, string> Props;
+    protected readonly Dictionary<string, string> Additional;
     private readonly bool _onlyDefault;
 
     static Consumer() { }
 
     public Consumer()
     {
-        _props = new Dictionary<string, string>();
-        _additional = new Dictionary<string, string>();
+        Props = new Dictionary<string, string>();
+        Additional = new Dictionary<string, string>();
     }
 
     public Consumer(
@@ -109,8 +109,8 @@ public class Consumer : IDictionary<string, string>
     {
         Name = name;
         Order = order;
-        _props = new Dictionary<string, string>();
-        _additional = additional;
+        Props = new Dictionary<string, string>();
+        Additional = additional;
     }
 
     public Consumer(
@@ -125,8 +125,8 @@ public class Consumer : IDictionary<string, string>
     {
         Name = name;
         Order = order;
-        _props = props ?? new Dictionary<string, string>();
-        _additional = additional ?? new Dictionary<string, string>();
+        Props = props ?? new Dictionary<string, string>();
+        Additional = additional ?? new Dictionary<string, string>();
 
         if (props != null && props.Any())
         {
@@ -148,7 +148,7 @@ public class Consumer : IDictionary<string, string>
             throw new NotSupportedException("Key for read only. Consumer " + Name);
         }
 
-        foreach (var providerProp in _props)
+        foreach (var providerProp in Props)
         {
             this[providerProp.Key] = null;
         }
@@ -220,12 +220,12 @@ public class Consumer : IDictionary<string, string>
 
         if (!ManagedKeys.Contains(name))
         {
-            if (_additional.ContainsKey(name))
+            if (Additional.ContainsKey(name))
             {
-                _additional[name] = value;
+                Additional[name] = value;
             }
 
-            else _additional.Add(name, value);
+            else Additional.Add(name, value);
 
             return;
         }
@@ -289,8 +289,8 @@ public class DataStoreConsumer : Consumer, ICloneable
     public object Clone()
     {
         return new DataStoreConsumer(TenantManager, CoreBaseSettings, CoreSettings, Configuration,
-            EventBusConsumerItem, ConsumerFactory, Name, Order, _props.ToDictionary(r => r.Key, r => r.Value),
-            _additional.ToDictionary(r => r.Key, r => r.Value));
+            EventBusConsumerItem, ConsumerFactory, Name, Order, Props.ToDictionary(r => r.Key, r => r.Value),
+            Additional.ToDictionary(r => r.Key, r => r.Value));
     }
 
     protected override string GetSettingsKey(string name)
