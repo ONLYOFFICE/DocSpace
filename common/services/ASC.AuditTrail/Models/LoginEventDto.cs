@@ -23,20 +23,18 @@
  *
 */
 
-namespace ASC.AuditTrail.Mappers;
+namespace ASC.AuditTrail.Models;
 
-internal static class OthersActionsMapper
+public class LoginEventDto : BaseEvent, IMapFrom<LoginEventQuery>
 {
-    public static Dictionary<MessageAction, MessageMaps> GetMaps() =>
-        new Dictionary<MessageAction, MessageMaps>
-        {
-                    {
-                        MessageAction.ContactAdminMailSent, new MessageMaps
-                            {
-                                ActionTypeTextResourceName = "SendActionType",
-                                ActionTextResourceName = "ContactAdminMailSent",
-                                ProductResourceName = "OthersProduct"
-                            }
-                    }
-        };
+    public string Login { get; set; }
+    public int Action { get; set; }
+
+    public void Mapping(Profile profile)
+    {
+        profile.CreateMap<LoginEvent, LoginEventDto>();
+
+        profile.CreateMap<LoginEventQuery, LoginEventDto>()
+            .ConvertUsing<EventTypeConverter>();
+    }
 }

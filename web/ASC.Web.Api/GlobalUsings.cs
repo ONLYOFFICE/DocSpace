@@ -10,7 +10,6 @@ global using System.Net.Mail;
 global using System.Net.Sockets;
 global using System.Runtime.InteropServices;
 global using System.Security;
-global using System.Security.Authentication;
 global using System.ServiceModel.Security;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
@@ -26,7 +25,7 @@ global using ASC.Api.Settings;
 global using ASC.Api.Settings.Smtp;
 global using ASC.Api.Utils;
 global using ASC.AuditTrail;
-global using ASC.AuditTrail.Data;
+global using ASC.AuditTrail.Models;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.Logging;
@@ -84,6 +83,7 @@ global using ASC.Web.Studio.UserControls.Statistics;
 global using ASC.Web.Studio.Utility;
 global using ASC.Webhooks.Core;
 global using ASC.Webhooks.Core.Dao.Models;
+global using ASC.AuditTrail.Repositories;
 
 global using Autofac.Extensions.DependencyInjection;
 
@@ -103,8 +103,5 @@ global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Options;
 
 global using MimeKit;
-
-global using StackExchange.Redis.Extensions.Core.Configuration;
-global using StackExchange.Redis.Extensions.Newtonsoft;
 
 global using static ASC.Security.Cryptography.EmailValidationKeyProvider;
