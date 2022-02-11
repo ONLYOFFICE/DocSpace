@@ -4,184 +4,184 @@ namespace ASC.Api.Core;
 
 public abstract class BaseStartup
 {
-    public IConfiguration Configuration { get; }
-    public IHostEnvironment HostEnvironment { get; }
-    public virtual JsonConverter[] Converters { get; }
-    public virtual bool AddControllersAsServices { get; } = false;
-    public virtual bool ConfirmAddScheme { get; } = false;
-    public virtual bool AddAndUseSession { get; } = false;
-    protected DIHelper DIHelper { get; }
-    protected bool LoadProducts { get; set; } = true;
-    protected bool LoadConsumers { get; } = true;
+        public IConfiguration Configuration { get; }
+        public IHostEnvironment HostEnvironment { get; }
+        public virtual JsonConverter[] Converters { get; }
+        public virtual bool AddControllersAsServices { get; } = false;
+        public virtual bool ConfirmAddScheme { get; } = false;
+        public virtual bool AddAndUseSession { get; } = false;
+        protected DIHelper DIHelper { get; }
+        protected bool LoadProducts { get; set; } = true;
+        protected bool LoadConsumers { get; } = true;
 
-    public BaseStartup(IConfiguration configuration, IHostEnvironment hostEnvironment)
-    {
-        Configuration = configuration;
-        HostEnvironment = hostEnvironment;
-        DIHelper = new DIHelper();
-
-        if (bool.TryParse(Configuration["core:products"], out var loadProducts))
+        public BaseStartup(IConfiguration configuration, IHostEnvironment hostEnvironment)
         {
-            LoadProducts = loadProducts;
-        }
-    }
+            Configuration = configuration;
+            HostEnvironment = hostEnvironment;
+            DIHelper = new DIHelper();
 
-    public virtual void ConfigureServices(IServiceCollection services)
-    {
-        services.AddCustomHealthCheck(Configuration);
-        services.AddHttpContextAccessor();
-        services.AddMemoryCache();
+            if (bool.TryParse(Configuration["core:products"], out var loadProducts))
+            {
+                LoadProducts = loadProducts;
+            }
+        }
+
+        public virtual void ConfigureServices(IServiceCollection services)
+        {
+            services.AddCustomHealthCheck(Configuration);
+            services.AddHttpContextAccessor();
+            services.AddMemoryCache();
             services.AddHttpClient();
 
-        if (AddAndUseSession)
+            if (AddAndUseSession)
         {
-            services.AddSession();
+                services.AddSession();
         }
 
-        DIHelper.Configure(services);
+            DIHelper.Configure(services);
 
-        Action<JsonOptions> jsonOptions = options =>
-        {
-            options.JsonSerializerOptions.WriteIndented = false;
-            options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-            options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
-
-            if (Converters != null)
-            {
-                foreach (var c in Converters)
+            Action<JsonOptions> jsonOptions = options =>
                 {
-                    options.JsonSerializerOptions.Converters.Add(c);
-                }
+                    options.JsonSerializerOptions.WriteIndented = false;
+                    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+                    options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
+
+                    if (Converters != null)
+                    {
+                        foreach (var c in Converters)
+                        {
+                            options.JsonSerializerOptions.Converters.Add(c);
+                        }
+                    }
+                };
+
+            services.AddControllers()
+                .AddXmlSerializerFormatters()
+                .AddJsonOptions(jsonOptions);
+
+            services.AddSingleton(jsonOptions);
+
+            DIHelper.TryAdd<DisposeMiddleware>();
+            DIHelper.TryAdd<CultureMiddleware>();
+            DIHelper.TryAdd<IpSecurityFilter>();
+            DIHelper.TryAdd<PaymentFilter>();
+            DIHelper.TryAdd<ProductSecurityFilter>();
+            DIHelper.TryAdd<TenantStatusFilter>();
+            DIHelper.TryAdd<ConfirmAuthHandler>();
+            DIHelper.TryAdd<CookieAuthHandler>();
+            DIHelper.TryAdd<WebhooksGlobalFilterAttribute>();
+
+            var redisConfiguration = Configuration.GetSection("Redis").Get<RedisConfiguration>();
+            var kafkaConfiguration = Configuration.GetSection("kafka").Get<KafkaSettings>();
+
+            if (kafkaConfiguration != null)
+            {
+                DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
             }
-        };
+            else if (redisConfiguration != null)
+            {
+                DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
 
-        services.AddControllers()
-            .AddXmlSerializerFormatters()
-            .AddJsonOptions(jsonOptions);
+                services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
+            }
+            else
+            {
+                DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
+            }
 
-        services.AddSingleton(jsonOptions);
+            DIHelper.TryAdd(typeof(IWebhookPublisher), typeof(WebhookPublisher));
 
-        DIHelper.TryAdd<DisposeMiddleware>();
-        DIHelper.TryAdd<CultureMiddleware>();
-        DIHelper.TryAdd<IpSecurityFilter>();
-        DIHelper.TryAdd<PaymentFilter>();
-        DIHelper.TryAdd<ProductSecurityFilter>();
-        DIHelper.TryAdd<TenantStatusFilter>();
-        DIHelper.TryAdd<ConfirmAuthHandler>();
-        DIHelper.TryAdd<CookieAuthHandler>();
-        DIHelper.TryAdd<WebhooksGlobalFilterAttribute>();
-
-        var redisConfiguration = Configuration.GetSection("Redis").Get<RedisConfiguration>();
-        var kafkaConfiguration = Configuration.GetSection("kafka").Get<KafkaSettings>();
-
-        if (kafkaConfiguration != null)
-        {
-            DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-        }
-        else if (redisConfiguration != null)
-        {
-            DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
-
-            services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
-        }
-        else
-        {
-            DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
-        }
-
-        DIHelper.TryAdd(typeof(IWebhookPublisher), typeof(WebhookPublisher));
-
-        if (LoadProducts)
-        {
-            DIHelper.RegisterProducts(Configuration, HostEnvironment.ContentRootPath);
-        }
+            if (LoadProducts)
+            {
+                DIHelper.RegisterProducts(Configuration, HostEnvironment.ContentRootPath);
+            }
 
             services.AddMvcCore(config =>
-        {
-            config.Conventions.Add(new ControllerNameAttributeConvention());
+            {
+                config.Conventions.Add(new ControllerNameAttributeConvention());
 
-            var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+                var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
 
-            config.Filters.Add(new AuthorizeFilter(policy));
-            config.Filters.Add(new TypeFilterAttribute(typeof(TenantStatusFilter)));
-            config.Filters.Add(new TypeFilterAttribute(typeof(PaymentFilter)));
-            config.Filters.Add(new TypeFilterAttribute(typeof(IpSecurityFilter)));
-            config.Filters.Add(new TypeFilterAttribute(typeof(ProductSecurityFilter)));
-            config.Filters.Add(new CustomResponseFilterAttribute());
-            config.Filters.Add(new CustomExceptionFilterAttribute());
-            config.Filters.Add(new TypeFilterAttribute(typeof(FormatFilter)));
-            config.Filters.Add(new TypeFilterAttribute(typeof(WebhooksGlobalFilterAttribute)));
+                config.Filters.Add(new AuthorizeFilter(policy));
+                config.Filters.Add(new TypeFilterAttribute(typeof(TenantStatusFilter)));
+                config.Filters.Add(new TypeFilterAttribute(typeof(PaymentFilter)));
+                config.Filters.Add(new TypeFilterAttribute(typeof(IpSecurityFilter)));
+                config.Filters.Add(new TypeFilterAttribute(typeof(ProductSecurityFilter)));
+                config.Filters.Add(new CustomResponseFilterAttribute());
+                config.Filters.Add(new CustomExceptionFilterAttribute());
+                config.Filters.Add(new TypeFilterAttribute(typeof(FormatFilter)));
+                config.Filters.Add(new TypeFilterAttribute(typeof(WebhooksGlobalFilterAttribute)));
 
-            config.OutputFormatters.RemoveType<XmlSerializerOutputFormatter>();
-            config.OutputFormatters.Add(new XmlOutputFormatter());
-        });
+                config.OutputFormatters.RemoveType<XmlSerializerOutputFormatter>();
+                config.OutputFormatters.Add(new XmlOutputFormatter());
+            });
 
 
-        var authBuilder = services.AddAuthentication("cookie")
-            .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
+            var authBuilder = services.AddAuthentication("cookie")
+                .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
 
-        if (ConfirmAddScheme)
-        {
-            authBuilder.AddScheme<AuthenticationSchemeOptions, ConfirmAuthHandler>("confirm", a => { });
+            if (ConfirmAddScheme)
+            {
+                authBuilder.AddScheme<AuthenticationSchemeOptions, ConfirmAuthHandler>("confirm", a => { });
+            }
+
+            services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
         }
 
-        services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
-    }
-
-    public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-    {
-        app.UseForwardedHeaders(new ForwardedHeadersOptions
+        public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-        });
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
 
-        app.UseRouting();
+            app.UseRouting();
 
-        if (AddAndUseSession)
+            if (AddAndUseSession)
         {
-            app.UseSession();
+                app.UseSession();
         }
 
-        app.UseAuthentication();
+            app.UseAuthentication();
 
-        app.UseAuthorization();
+            app.UseAuthorization();
 
-        app.UseCultureMiddleware();
+            app.UseCultureMiddleware();
 
-        app.UseDisposeMiddleware();
+            app.UseDisposeMiddleware();
 
-        app.UseEndpoints(endpoints =>
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapCustom();
+
+                endpoints.MapHealthChecks("/health", new HealthCheckOptions()
+                {
+                    Predicate = _ => true,
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });
+                endpoints.MapHealthChecks("/liveness", new HealthCheckOptions
+                {
+                    Predicate = r => r.Name.Contains("self")
+                });
+            });
+        }
+
+        public void ConfigureContainer(ContainerBuilder builder)
         {
-            endpoints.MapControllers();
-            endpoints.MapCustom();
-
-            endpoints.MapHealthChecks("/health", new HealthCheckOptions()
-            {
-                Predicate = _ => true,
-                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-            });
-            endpoints.MapHealthChecks("/liveness", new HealthCheckOptions
-            {
-                Predicate = r => r.Name.Contains("self")
-            });
-        });
-    }
-
-    public void ConfigureContainer(ContainerBuilder builder)
-    {
-        builder.Register(Configuration, LoadProducts, LoadConsumers);
-    }
+            builder.Register(Configuration, LoadProducts, LoadConsumers);
+        }
 }
 
 public static class LogNLogConfigureExtenstion
 {
-    public static IHostBuilder ConfigureNLogLogging(this IHostBuilder hostBuilder)
-    {
-        return hostBuilder.ConfigureLogging((hostBuildexContext, r) =>
+        public static IHostBuilder ConfigureNLogLogging(this IHostBuilder hostBuilder)
         {
+            return hostBuilder.ConfigureLogging((hostBuildexContext, r) =>
+            {
             _ = new ConfigureLogNLog(hostBuildexContext.Configuration, 
                 new ConfigurationExtension(hostBuildexContext.Configuration), hostBuildexContext.HostingEnvironment);
-            r.AddNLog(LogManager.Configuration);
-        });
-    }
+                r.AddNLog(LogManager.Configuration);
+            });
+        }
 }
