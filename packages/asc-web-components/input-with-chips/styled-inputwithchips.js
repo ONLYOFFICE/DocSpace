@@ -24,7 +24,6 @@ const StyledContent = styled.div`
 
 const StyledChipGroup = styled.div`
   height: fit-content;
-  padding-top: 2px;
   ${commonInputStyle} :focus-within {
     border-color: ${(props) => props.theme.inputBlock.borderColor};
   }
@@ -63,7 +62,7 @@ const StyledChip = styled.div`
 
   height: 32px;
   margin: 2px 4px;
-  padding: 6px 8px;
+  padding: ${(props) => (props.isSelected ? "5px 7px" : "6px 8px")};
 
   border-radius: ${CHIPS_BORDER_RADIUS} 0 0 ${CHIPS_BORDER_RADIUS};
   border: ${(props) => props.isSelected && "1px dashed #000"};
@@ -95,9 +94,21 @@ const StyledChipInput = styled(TextInput)`
 `;
 
 const StyledInputWithLink = styled.div`
+  position: relative;
   width: 100%;
   display: flex;
   align-items: center;
+`;
+
+const StyledTooltip = styled.div`
+  position: absolute;
+  top: -49px;
+  left: 0;
+  width: 300px;
+  padding: 16px;
+  background: #f8f7bf;
+  border-radius: 6px;
+  opacity: 0.9;
 `;
 
 export {
@@ -109,4 +120,5 @@ export {
   StyledChipValue,
   StyledChipInput,
   StyledInputWithLink,
+  StyledTooltip,
 };

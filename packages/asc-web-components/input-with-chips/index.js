@@ -5,6 +5,8 @@ import Chip from "./sub-components/chip";
 import TextInput from "../text-input";
 import Scrollbar from "../scrollbar";
 import { EmailSettings, parseAddress } from "../utils/email/";
+import { useClickOutside } from "./sub-components/use-click-outside";
+import Link from "../link";
 
 import {
   StyledContent,
@@ -12,9 +14,8 @@ import {
   StyledChipWithInput,
   StyledAllChips,
   StyledInputWithLink,
+  StyledTooltip,
 } from "./styled-inputwithchips";
-import { useClickOutside } from "./sub-components/use-click-outside";
-import Link from "../link";
 
 const InputWithChips = ({ options, placeholder, onChange, ...props }) => {
   const [chips, setChips] = useState(options || []);
@@ -27,11 +28,13 @@ const InputWithChips = ({ options, placeholder, onChange, ...props }) => {
   const [isCtrlDown, setIsCtrlDown] = useState(false);
 
   const [isBlured, setIsBlured] = useState(true);
+  const [isExistedOn, setIsExistedOn] = useState(false);
 
   const emailSettings = new EmailSettings();
 
   const inputRef = useRef(null);
   const blockRef = useRef(null);
+  const scrollbarRef = useRef(null);
 
   useEffect(() => {
     document.addEventListener("keydown", onKeyDown);
@@ -52,7 +55,10 @@ const InputWithChips = ({ options, placeholder, onChange, ...props }) => {
     }
   }, [isBlured]);
 
-  useClickOutside(blockRef, () => setIsBlured(true));
+  useClickOutside(blockRef, () => {
+    setIsBlured(true);
+    setIsExistedOn(false);
+  });
 
   const onInputChange = (e) => {
     setValue(e.target.value);
@@ -72,6 +78,7 @@ const InputWithChips = ({ options, placeholder, onChange, ...props }) => {
   };
 
   const onDoubleClick = (value) => {
+    setSelectedChips([]);
     setCurrentChip(value);
   };
 
@@ -84,15 +91,28 @@ const InputWithChips = ({ options, placeholder, onChange, ...props }) => {
       const separators = [",", " ", ", "];
       const chipsFromString = value
         .split(new RegExp(separators.join("|"), "g"))
+        .filter((it) => it.trim().length !== 0);
+
+      if (chipsFromString.length === 1) {
+        let isExisted = !!chips.find(
+          (chip) => chip.value === chipsFromString[0]
+        );
+        setIsExistedOn(isExisted);
+        if (isExisted) return;
+      }
+
+      const filteredChips = chipsFromString
         .filter((it) => {
-          return (
-            !chips.find((chip) => chip.value === it) && it.trim().length > 0
-          );
+          return !chips.find((chip) => chip.value === it);
         })
         .map((it) => ({ label: it, value: it }));
 
-      setChips([...chips, ...chipsFromString]);
+      setChips([...chips, ...filteredChips]);
       setValue("");
+
+      if (scrollbarRef.current) {
+        scrollbarRef.current.scrollToBottom();
+      }
     }
   };
 
@@ -235,9 +255,9 @@ const InputWithChips = ({ options, placeholder, onChange, ...props }) => {
     <StyledContent ref={blockRef} onFocus={() => setIsBlured(false)}>
       <StyledChipGroup>
         <StyledChipWithInput length={chips.length}>
-          <Scrollbar scrollclass={"scroll"} stype="thumbV">
+          <Scrollbar scrollclass={"scroll"} stype="thumbV" ref={scrollbarRef}>
             <StyledAllChips>
-              {chips.map((it) => {
+              {chips?.map((it) => {
                 return (
                   <Chip
                     key={it?.value}
@@ -256,6 +276,11 @@ const InputWithChips = ({ options, placeholder, onChange, ...props }) => {
             </StyledAllChips>
           </Scrollbar>
           <StyledInputWithLink>
+            {isExistedOn && (
+              <StyledTooltip>
+                This email address has already been entered
+              </StyledTooltip>
+            )}
             <TextInput
               value={value}
               onChange={onInputChange}
