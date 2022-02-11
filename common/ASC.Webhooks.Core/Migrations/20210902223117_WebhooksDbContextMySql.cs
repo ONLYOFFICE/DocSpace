@@ -2,6 +2,15 @@
 
 public partial class WebhooksDbContextMySql : Migration
 {
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropTable(
+            name: "webhooks_config");
+
+        migrationBuilder.DropTable(
+            name: "webhooks_logs");
+    }
+
     protected override void Up(MigrationBuilder migrationBuilder)
     {
         migrationBuilder.AlterDatabase()
@@ -54,14 +63,5 @@ public partial class WebhooksDbContextMySql : Migration
                 table.PrimaryKey("PRIMARY", x => x.id);
             })
             .Annotation("MySql:CharSet", "utf8mb4");
-    }
-
-    protected override void Down(MigrationBuilder migrationBuilder)
-    {
-        migrationBuilder.DropTable(
-            name: "webhooks_config");
-
-        migrationBuilder.DropTable(
-            name: "webhooks_logs");
     }
 }

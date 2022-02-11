@@ -5,15 +5,16 @@ public class MySqlWebhooksDbContext : WebhooksDbContext { }
 public class PostgreSqlWebhooksDbContext : WebhooksDbContext { }
 public partial class WebhooksDbContext : BaseDbContext
 {
-    public virtual DbSet<WebhooksConfig> WebhooksConfigs { get; set; }
-    public virtual DbSet<WebhooksLog> WebhooksLogs { get; set; }
-
     public WebhooksDbContext() { }
+
     public WebhooksDbContext(DbContextOptions<WebhooksDbContext> options)
         : base(options)
     {
 
     }
+
+    public virtual DbSet<WebhooksConfig> WebhooksConfigs { get; set; }
+    public virtual DbSet<WebhooksLog> WebhooksLogs { get; set; }
     protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
     {
         get

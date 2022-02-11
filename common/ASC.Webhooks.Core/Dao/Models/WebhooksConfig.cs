@@ -4,9 +4,9 @@ namespace ASC.Webhooks.Core.Dao.Models;
 public partial class WebhooksConfig
 {
     public int ConfigId { get; set; }
+    public string SecretKey { get; set; }
     public int TenantId { get; set; }
     public string Uri { get; set; }
-    public string SecretKey { get; set; }
 }
 
 public static class WebhooksConfigExtension

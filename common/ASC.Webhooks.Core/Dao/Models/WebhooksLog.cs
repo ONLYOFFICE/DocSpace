@@ -4,17 +4,17 @@ namespace ASC.Webhooks.Core.Dao.Models;
 
 public partial class WebhooksLog
 {
-    public int Id { get; set; }
     public int ConfigId { get; set; }
-    public string Uid { get; set; }
-    public int TenantId { get; set; }
-    public string RequestPayload { get; set; }
-    public string RequestHeaders { get; set; }
-    public string ResponsePayload { get; set; }
-    public string ResponseHeaders { get; set; }
     public DateTime CreationTime { get; set; }
     public string Event { get; set; }
+    public int Id { get; set; }
+    public string RequestHeaders { get; set; }
+    public string RequestPayload { get; set; }
+    public string ResponseHeaders { get; set; }
+    public string ResponsePayload { get; set; }
     public ProcessStatus Status { get; set; }
+    public int TenantId { get; set; }
+    public string Uid { get; set; }
 }
 
 public static class WebhooksPayloadExtension
