@@ -5,7 +5,7 @@ import FieldContainer from "@appserver/components/field-container";
 import Loader from "@appserver/components/loader";
 import toastr from "@appserver/components/toast/toastr";
 import TextInput from "@appserver/components/text-input";
-import Link from "@appserver/components/link";
+import HelpButton from "@appserver/components/help-button";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import { showLoader, hideLoader } from "@appserver/common/utils";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
@@ -25,15 +25,25 @@ const StyledComponent = styled.div`
     margin-bottom: 70px;
   }
 
-  .field-container-width {
-    max-width: 500px;
+  .settings-block {
+    max-width: 350px;
   }
 
   .combo-button-label {
     max-width: 100%;
   }
-  .link-wrapper {
-    margin-top: 8px;
+
+  .category-item-heading {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .category-item-title {
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 22px;
+    margin-right: 4px;
   }
 `;
 
@@ -120,24 +130,6 @@ class CustomTitles extends React.Component {
     });
   };
 
-  onRestoreGreetingSettings = () => {
-    const { restoreGreetingTitle, t } = this.props;
-    this.setState({ isLoadingGreetingRestore: true }, function () {
-      restoreGreetingTitle()
-        .then(() => {
-          this.setState({
-            greetingTitle: this.props.greetingSettings,
-            greetingTitleDefault: this.props.greetingSettings,
-            showReminder: false,
-          });
-          saveToSessionStorage("greetingTitle", "");
-          toastr.success(t("SuccessfullySaveGreetingSettingsMessage"));
-        })
-        .catch((error) => toastr.error(error))
-        .finally(() => this.setState({ isLoadingGreetingRestore: false }));
-    });
-  };
-
   onCancelClick = () => {
     settingNames.forEach((currentSetting) => {
       const valueFromSessionStorage = getFromSessionStorage(currentSetting);
@@ -189,7 +181,7 @@ class CustomTitles extends React.Component {
   };
 
   render() {
-    const { t, theme } = this.props;
+    const { t, theme, sectionWidth } = this.props;
     const {
       isLoadedData,
       greetingTitle,
@@ -204,11 +196,19 @@ class CustomTitles extends React.Component {
     ) : (
       <>
         <StyledComponent>
+          <div className="category-item-heading">
+            <div className="category-item-title">{t("WelcomePageTitle")}</div>
+            <HelpButton
+              iconName="static/images/combined.shape.svg"
+              size={12}
+              // tooltipContent={tooltipLanguageTimeSettings}
+            />
+          </div>
           <div className="settings-block">
             <FieldContainer
               id="fieldContainerWelcomePage"
               className="field-container-width"
-              labelText={`${t("WelcomePageTitle")}:`}
+              labelText={`${t("Title")}:`}
               isVertical={true}
             >
               <TextInput
@@ -216,16 +216,8 @@ class CustomTitles extends React.Component {
                 value={greetingTitle}
                 onChange={this.onChangeGreetingTitle}
                 isDisabled={isLoadingGreetingSave || isLoadingGreetingRestore}
+                placeholder={`${t("Cloud Office Applications")}`}
               />
-              <div className="link-wrapper">
-                <Link
-                  onClick={this.onRestoreGreetingSettings}
-                  type="action"
-                  color={theme.studio.settings.common.linkColor}
-                >
-                  {t("SetDefaultTitle")}
-                </Link>
-              </div>
             </FieldContainer>
           </div>
           {hasChanged && (
@@ -236,6 +228,8 @@ class CustomTitles extends React.Component {
               reminderTest={t("YouHaveUnsavedChanges")}
               saveButtonLabel={t("Common:SaveButton")}
               cancelButtonLabel={t("Common:CancelButton")}
+              displaySettings={true}
+              sectionWidth={sectionWidth}
             />
           )}
         </StyledComponent>

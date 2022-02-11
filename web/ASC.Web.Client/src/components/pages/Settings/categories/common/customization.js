@@ -13,6 +13,7 @@ import { inject, observer } from "mobx-react";
 import { AppServerConfig } from "@appserver/common/constants";
 import withCultureNames from "@appserver/common/hoc/withCultureNames";
 import LanguageAndTimeZone from "./language-and-time-zone";
+import CustomTitles from "./custom-titles";
 import { Base } from "@appserver/components/themes";
 import { Consumer } from "@appserver/components/utils/context";
 
@@ -57,7 +58,6 @@ const StyledComponent = styled.div`
   }
 
   .category-item-wrapper {
-    max-width: 350px;
     margin-bottom: 16px;
 
     /* .category-item-heading {
@@ -217,23 +217,7 @@ class Customization extends React.Component {
               <LanguageAndTimeZone sectionWidth={context.sectionWidth} />
             </div>
             <div className="category-item-wrapper">
-              <div className="category-item-heading">
-                <Link
-                  truncate={true}
-                  className="inherit-title-link header"
-                  onClick={this.onClickLink}
-                  href={combineUrl(
-                    AppServerConfig.proxyURL,
-                    "/settings/common/customization/custom-titles"
-                  )}
-                >
-                  {t("CustomTitles")}
-                </Link>
-                <StyledArrowRightIcon size="small" />
-              </div>
-              <Text className="category-item-description">
-                {t("CustomTitlesSettingsDescription")}
-              </Text>
+              <CustomTitles sectionWidth={context.sectionWidth} />
             </div>
             <div className="category-item-wrapper">
               <div className="category-item-heading">
