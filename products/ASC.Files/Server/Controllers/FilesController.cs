@@ -23,47 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
-
-using ASC.Api.Core;
-using ASC.Api.Utils;
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Common.Configuration;
-using ASC.Core.Users;
-using ASC.FederatedLogin.Helpers;
-using ASC.FederatedLogin.LoginProviders;
-using ASC.Files.Core;
-using ASC.Files.Core.Model;
-using ASC.Files.Helpers;
-using ASC.Files.Model;
-using ASC.MessagingSystem;
-using ASC.Web.Api.Routing;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Configuration;
-using ASC.Web.Files.Core.Compress;
-using ASC.Web.Files.Helpers;
-using ASC.Web.Files.Services.DocumentService;
-using ASC.Web.Files.Services.WCFService;
-using ASC.Web.Files.Services.WCFService.FileOperations;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Core;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-
-using Newtonsoft.Json.Linq;
-
 namespace ASC.Api.Documents
 {
     /// <summary>
@@ -211,7 +170,7 @@ namespace ASC.Api.Documents
 
             if (!IsVisitor
                && !withoutAdditionalFolder
-               && FileUtility.ExtsWebTemplate.Any()
+               && FileUtility.ExtsWebTemplate.Count > 0
                && FilesSettingsHelper.TemplatesSection)
             {
                 result.Add(GlobalFolderHelper.FolderTemplates);
@@ -2441,7 +2400,7 @@ namespace ASC.Api.Documents
 
         private object WordpressSave(WordpressSaveModel model)
         {
-            if (model.Code == "")
+            if (model.Code.Length == 0)
             {
                 return new
                 {

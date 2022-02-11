@@ -24,22 +24,6 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Core.Tenants;
-using ASC.Files.Core.EF;
-using ASC.Web.Core.Files;
-using ASC.Web.Studio.Core;
-
-using Microsoft.Extensions.Options;
-
 using Folder = Microsoft.SharePoint.Client.Folder;
 
 namespace ASC.Files.Thirdparty.SharePoint
@@ -63,9 +47,9 @@ namespace ASC.Files.Thirdparty.SharePoint
             if (!match.Success)
             {
                 var insertIndex = requestTitle.Length;
-                if (requestTitle.LastIndexOf(".", StringComparison.Ordinal) != -1)
+                if (requestTitle.LastIndexOf('.') != -1)
                 {
-                    insertIndex = requestTitle.LastIndexOf(".", StringComparison.Ordinal);
+                    insertIndex = requestTitle.LastIndexOf('.');
                 }
                 requestTitle = requestTitle.Insert(insertIndex, " (1)");
             }
@@ -77,7 +61,7 @@ namespace ASC.Files.Thirdparty.SharePoint
             return requestTitle;
         }
 
-        private static string MatchEvaluator(Match match)
+        private string MatchEvaluator(Match match)
         {
             var index = Convert.ToInt32(match.Groups[2].Value);
             var staticText = match.Value.Substring(string.Format(" ({0})", index).Length);

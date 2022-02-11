@@ -23,13 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common;
-using ASC.Files.Core;
-using ASC.Files.Core.Security;
-
 namespace ASC.Files.Thirdparty.GoogleDrive
 {
     [Scope(Additional = typeof(GoogleDriveDaoSelectorExtension))]
@@ -63,7 +56,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         }
     }
 
-    public class GoogleDriveDaoSelectorExtension
+    public static class GoogleDriveDaoSelectorExtension
     {
         public static void Register(DIHelper services)
         {

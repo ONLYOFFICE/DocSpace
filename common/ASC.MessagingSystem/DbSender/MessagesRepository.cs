@@ -24,33 +24,14 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-using ASC.Core.Common.EF.Model;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json;
-
-using UAParser;
-
 using IsolationLevel = System.Data.IsolationLevel;
 
 namespace ASC.MessagingSystem.DbSender
 {
     [Singletone(Additional = typeof(MessagesRepositoryExtension))]
-    public class MessagesRepository: IDisposable
+    public class MessagesRepository : IDisposable
     {
-        private static DateTime lastSave = DateTime.UtcNow;
+        private DateTime lastSave = DateTime.UtcNow;
         private readonly TimeSpan CacheTime;
         private readonly IDictionary<string, EventMessage> Cache;
         private Parser Parser { get; set; }
@@ -133,9 +114,9 @@ namespace ASC.MessagingSystem.DbSender
 
                         ClientInfo clientInfo;
 
-                        if (dict.ContainsKey(message.UAHeader))
+                        if (dict.TryGetValue(message.UAHeader, out clientInfo))
                         {
-                            clientInfo = dict[message.UAHeader];
+
                         }
                         else
                         {
@@ -181,7 +162,7 @@ namespace ASC.MessagingSystem.DbSender
                 Action = (int)message.Action
             };
 
-            if (message.Description != null && message.Description.Any())
+            if (message.Description != null && message.Description.Count > 0)
             {
                 le.Description =
                     JsonConvert.SerializeObject(message.Description, new JsonSerializerSettings
@@ -210,7 +191,7 @@ namespace ASC.MessagingSystem.DbSender
                 Target = message.Target?.ToString()
             };
 
-            if (message.Description != null && message.Description.Any())
+            if (message.Description != null && message.Description.Count > 0)
             {
                 ae.Description =
                     JsonConvert.SerializeObject(GetSafeDescription(message.Description), new JsonSerializerSettings
@@ -251,14 +232,14 @@ namespace ASC.MessagingSystem.DbSender
         {
             return clientInfo == null
                        ? null
-                       : string.Format("{0} {1}", clientInfo.UA.Family, clientInfo.UA.Major);
+                       : $"{clientInfo.UA.Family} {clientInfo.UA.Major}";
         }
 
         private static string GetPlatform(ClientInfo clientInfo)
         {
             return clientInfo == null
                        ? null
-                       : string.Format("{0} {1}", clientInfo.OS.Family, clientInfo.OS.Major);
+                       : $"{clientInfo.OS.Family} {clientInfo.OS.Major}";
         }
 
         public void Dispose()
@@ -272,11 +253,11 @@ namespace ASC.MessagingSystem.DbSender
 
     public class Messages : MessagesContext
     {
-        public DbSet<AuditEvent> AuditEvents { get; set; }
         public DbSet<DbTenant> Tenants { get; set; }
         public DbSet<DbWebstudioSettings> WebstudioSettings { get; set; }
     }
-    public class MessagesRepositoryExtension
+
+    public static class MessagesRepositoryExtension
     {
         public static void Register(DIHelper services)
         {

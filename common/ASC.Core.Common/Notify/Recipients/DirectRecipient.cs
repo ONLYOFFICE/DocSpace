@@ -23,10 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
 namespace ASC.Notify.Recipients
 {
     [Serializable]
@@ -88,7 +84,7 @@ namespace ASC.Notify.Recipients
 
         public override string ToString()
         {
-            return string.Format("{0}({1})", Name, string.Join(";", _Addresses.ToArray()));
+            return $"{Name}({string.Join(";", _Addresses.ToArray())})";
         }
     }
 }

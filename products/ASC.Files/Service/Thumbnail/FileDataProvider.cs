@@ -14,21 +14,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-using ASC.Core.Tenants;
-using ASC.Files.Core;
-using ASC.Files.Core.EF;
-using ASC.Web.Files.Core.Search;
-
 namespace ASC.Files.ThumbnailBuilder
 {
     [Scope]
@@ -100,12 +85,12 @@ namespace ASC.Files.ThumbnailBuilder
                              !r.tariff.Comment.Contains("trial")
                             )
                         ) &&
-                        (
+                        
                             !r.quota.Features.Contains("free") &&
                             !r.quota.Features.Contains("non-profit") &&
                             !r.quota.Features.Contains("trial")
+                        
                         )
-                )
                 .GroupBy(r => r.tariff.Tenant)
                 .Select(r => new { tenant = r.Key, stamp = r.Max(b => b.tariff.Stamp) })
                 .Where(r => r.stamp > DateTime.UtcNow);
@@ -142,7 +127,7 @@ namespace ASC.Files.ThumbnailBuilder
 
             var premiumTenants = GetPremiumTenants();
 
-            if (premiumTenants.Any())
+            if (premiumTenants.Length > 0)
             {
                 result = GetFileData(r => premiumTenants.Contains(r.TenantId));
 

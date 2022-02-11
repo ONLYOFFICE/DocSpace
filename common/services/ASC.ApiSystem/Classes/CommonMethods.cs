@@ -23,35 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.RegularExpressions;
-
-using ASC.ApiSystem.Classes;
-using ASC.ApiSystem.Interfaces;
-using ASC.ApiSystem.Models;
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Utils;
-using ASC.Core;
-using ASC.Core.Tenants;
-using ASC.Security.Cryptography;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json.Linq;
-
-
 namespace ASC.ApiSystem.Controllers
 {
     [Scope]
@@ -81,6 +52,8 @@ namespace ASC.ApiSystem.Controllers
 
         private TenantManager TenantManager { get; }
 
+        private IHttpClientFactory ClientFactory { get; }
+
         public CommonMethods(
             IHttpContextAccessor httpContextAccessor,
             IConfiguration configuration,
@@ -92,7 +65,8 @@ namespace ASC.ApiSystem.Controllers
             IMemoryCache memoryCache,
             IOptionsSnapshot<HostedSolution> hostedSolutionOptions,
             CoreBaseSettings coreBaseSettings,
-            TenantManager tenantManager)
+            TenantManager tenantManager,
+            IHttpClientFactory clientFactory)
         {
             HttpContextAccessor = httpContextAccessor;
 
@@ -111,8 +85,13 @@ namespace ASC.ApiSystem.Controllers
             CommonConstants = commonConstants;
 
             MemoryCache = memoryCache;
+
             CoreBaseSettings = coreBaseSettings;
+
             TenantManager = tenantManager;
+
+            ClientFactory = clientFactory;
+
             HostedSolution = hostedSolutionOptions.Get(CommonConstants.BaseDbConnKeyString);
         }
 
@@ -139,16 +118,8 @@ namespace ASC.ApiSystem.Controllers
 
         public string CreateReference(string requestUriScheme, string tenantDomain, string email, bool first = false, string module = "", bool sms = false)
         {
-            return string.Format("{0}{1}{2}/{3}{4}{5}{6}",
-                                 requestUriScheme,
-                                 Uri.SchemeDelimiter,
-                                 tenantDomain,
-                                 CommonLinkUtility.GetConfirmationUrlRelative(email, ConfirmType.Auth, (first ? "true" : "") + module + (sms ? "true" : "")),
-                                 first ? "&first=true" : "",
-                                 string.IsNullOrEmpty(module) ? "" : "&module=" + module,
-                                 sms ? "&sms=true" : ""
-
-                );
+            var url = CommonLinkUtility.GetConfirmationUrlRelative(email, ConfirmType.Auth, (first ? "true" : "") + module + (sms ? "true" : ""));
+            return $"{requestUriScheme}{Uri.SchemeDelimiter}{tenantDomain}/{url}{(first ? "&first=true" : "")}{(string.IsNullOrEmpty(module) ? "" : "&module=" + module)}{(sms ? "&sms=true" : "")}";
         }
 
         public bool SendCongratulations(string requestUriScheme, Tenant tenant, bool skipWelcome, out string url)
@@ -176,7 +147,7 @@ namespace ASC.ApiSystem.Controllers
 
             try
             {
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
                 using var response = httpClient.Send(request);
                 using var stream = response.Content.ReadAsStream();
                 using var reader = new StreamReader(stream, Encoding.UTF8);
@@ -204,7 +175,7 @@ namespace ASC.ApiSystem.Controllers
 
         public bool GetTenant(IModel model, out Tenant tenant)
         {
-            if (CoreBaseSettings.Standalone && model != null && !string.IsNullOrEmpty((model.PortalName ?? "").Trim()))
+            if (CoreBaseSettings.Standalone && model != null && !string.IsNullOrWhiteSpace((model.PortalName ?? "")))
             {
                 tenant = TenantManager.GetTenant((model.PortalName ?? "").Trim());
                 return true;
@@ -216,7 +187,7 @@ namespace ASC.ApiSystem.Controllers
                 return true;
             }
 
-            if (model != null && !string.IsNullOrEmpty((model.PortalName ?? "").Trim()))
+            if (model != null && !string.IsNullOrWhiteSpace((model.PortalName ?? "")))
             {
                 tenant = HostedSolution.GetTenant((model.PortalName ?? "").Trim());
                 return true;
@@ -316,7 +287,7 @@ namespace ASC.ApiSystem.Controllers
                         break;
                 }
 
-                var data = string.Format("secret={0}&remoteip={1}&response={2}", privateKey, ip, response);
+                var data = $"secret={privateKey}&remoteip={ip}&response={response}";
                 var url = Configuration["recaptcha:verify-url"] ?? "https://www.recaptcha.net/recaptcha/api/siteverify";
 
                 var request = new HttpRequestMessage();
@@ -324,7 +295,7 @@ namespace ASC.ApiSystem.Controllers
                 request.Method = HttpMethod.Post;
                 request.Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
 
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
                 using var httpClientResponse = httpClient.Send(request);
                 using var stream = httpClientResponse.Content.ReadAsStream();
                 using var reader = new StreamReader(stream);

@@ -23,34 +23,10 @@
  *
 */
 
-
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Common.Threading;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Data.Storage;
-using ASC.Web.Core.Utility.Skins;
-
-using Microsoft.Extensions.Options;
-
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats;
-using SixLabors.ImageSharp.Processing;
-
 namespace ASC.Web.Core.Users
 {
     [Transient]
-    public class ResizeWorkerItem : DistributedTask
+    public sealed class ResizeWorkerItem : DistributedTask
     {
         public ResizeWorkerItem()
         {
@@ -83,7 +59,7 @@ namespace ASC.Web.Core.Users
         {
             if (obj is null) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != typeof(ResizeWorkerItem)) return false;
+            if (!(obj is ResizeWorkerItem)) return false;
             return Equals((ResizeWorkerItem)obj);
         }
 
@@ -233,10 +209,10 @@ namespace ASC.Web.Core.Users
             Log = options.Get("ASC.Web.Photo");
         }
 
-        public string defaultAbsoluteWebPath;
+        private string _defaultAbsoluteWebPath;
         public string GetDefaultPhotoAbsoluteWebPath()
         {
-            return defaultAbsoluteWebPath ??= WebImageSupplier.GetAbsoluteWebPath(_defaultAvatar);
+            return _defaultAbsoluteWebPath ??= WebImageSupplier.GetAbsoluteWebPath(_defaultAvatar);
         }
 
         public string GetRetinaPhotoURL(Guid userID)
@@ -296,34 +272,34 @@ namespace ASC.Web.Core.Users
         }
 
 
-        public string defaultSmallPhotoURL;
+        private string _defaultSmallPhotoURL;
         public string GetDefaultSmallPhotoURL()
         {
-            return defaultSmallPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(SmallFotoSize);
+            return _defaultSmallPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(SmallFotoSize);
         }
 
-        public string defaultMediumPhotoURL;
+        private string _defaultMediumPhotoURL;
         public string GetDefaultMediumPhotoURL()
         {
-            return defaultMediumPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(MediumFotoSize);
+            return _defaultMediumPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(MediumFotoSize);
         }
 
-        public string defaultBigPhotoURL;
+        private string _defaultBigPhotoURL;
         public string GetDefaultBigPhotoURL()
         {
-            return defaultBigPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(BigFotoSize);
+            return _defaultBigPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(BigFotoSize);
         }
 
-        public string defaultMaxPhotoURL;
+        private string _defaultMaxPhotoURL;
         public string GetDefaultMaxPhotoURL()
         {
-            return defaultMaxPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(MaxFotoSize);
+            return _defaultMaxPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(MaxFotoSize);
         }
 
-        public string defaultRetinaPhotoURL;
+        private string _defaultRetinaPhotoURL;
         public string GetDefaultRetinaPhotoURL()
         {
-            return defaultRetinaPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(RetinaFotoSize);
+            return _defaultRetinaPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(RetinaFotoSize);
         }
 
         public static Size OriginalFotoSize { get; } = new Size(1280, 1280);
@@ -806,7 +782,7 @@ namespace ASC.Web.Core.Users
                 var store = GetDataStore();
                 store.DeleteFiles(_tempDomainName, "", fileNameWithoutExt + "*.*", false);
             }
-            catch { };
+            catch { }
         }
 
 
@@ -832,7 +808,7 @@ namespace ASC.Web.Core.Users
             var moduleID = Guid.Empty;
             var widening = CommonPhotoManager.GetImgFormatName(format);
             var size = img.Size();
-            var fileName = string.Format("{0}{1}_size_{2}-{3}.{4}", (moduleID == Guid.Empty ? "" : moduleID.ToString()), userID, img.Width, img.Height, widening);
+            var fileName = string.Format("{0}{1}_size_{2}-{3}.{4}", moduleID == Guid.Empty ? "" : moduleID.ToString(), userID, img.Width, img.Height, widening);
 
             var store = GetDataStore();
             string photoUrl;
@@ -1023,7 +999,7 @@ namespace ASC.Web.Core.Users
     }
     }
 
-    public class ResizeWorkerItemExtension
+    public static class ResizeWorkerItemExtension
     {
         public static void Register(DIHelper services)
         {

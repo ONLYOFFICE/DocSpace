@@ -23,16 +23,6 @@
  *
 */
 
-
-using ASC.ApiSystem.Models;
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-
 namespace ASC.ApiSystem.Controllers
 {
     [Scope]

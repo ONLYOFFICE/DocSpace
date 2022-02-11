@@ -23,10 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
 namespace ASC.Web.Core.Calendars
 {
     public class CalendarContext : ICloneable

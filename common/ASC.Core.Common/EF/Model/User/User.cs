@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using ASC.Core.Common.EF.Model;
-using ASC.Core.Users;
-using Microsoft.EntityFrameworkCore;
-
-namespace ASC.Core.Common.EF
+﻿namespace ASC.Core.Common.EF
 {
     public class User : BaseEntity
     {

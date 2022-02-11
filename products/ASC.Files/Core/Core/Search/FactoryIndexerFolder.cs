@@ -23,26 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.EF.Model;
-using ASC.ElasticSearch;
-using ASC.ElasticSearch.Core;
-using ASC.ElasticSearch.Service;
-using ASC.Files.Core;
-using ASC.Files.Core.Data;
-using ASC.Files.Core.EF;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Web.Files.Core.Search
 {
     [Scope(Additional = typeof(FactoryIndexerFolderExtension))]
@@ -155,7 +135,7 @@ namespace ASC.Web.Files.Core.Search
                     }
                 }
 
-                if (tasks.Any())
+                if (tasks.Count > 0)
                 {
                     Task.WaitAll(tasks.ToArray());
                 }
@@ -174,7 +154,7 @@ namespace ASC.Web.Files.Core.Search
         public DbFolder DbFolder { get; set; }
     }
 
-    public class FactoryIndexerFolderExtension
+    public static class FactoryIndexerFolderExtension
     {
         public static void Register(DIHelper services)
         {

@@ -1,21 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.InteropServices;
-
-using ASC.Api.Core;
-using ASC.Common.Utils;
-using ASC.Web.Studio;
-
-using Autofac;
-using Autofac.Extensions.DependencyInjection;
-
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Hosting.WindowsServices;
-
 var options = new WebApplicationOptions
 {
     Args = args,

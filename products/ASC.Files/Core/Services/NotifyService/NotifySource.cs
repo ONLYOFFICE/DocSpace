@@ -24,15 +24,8 @@
 */
 
 
-using System;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Notify.Model;
-using ASC.Notify.Patterns;
-using ASC.Notify.Recipients;
-
 using NotifySourceBase = ASC.Core.Notify.NotifySource;
+using SubscriptionManager = ASC.Core.SubscriptionManager;
 
 namespace ASC.Files.Core.Services.NotifyService
 {

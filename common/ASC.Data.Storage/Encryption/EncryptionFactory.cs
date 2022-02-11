@@ -23,14 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common;
-using ASC.Core.Encryption;
-
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Data.Storage.Encryption
 {
     [Singletone]

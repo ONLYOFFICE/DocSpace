@@ -23,25 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Utils;
-using ASC.Core;
-using ASC.Core.Common.Configuration;
-using ASC.FederatedLogin.Helpers;
-using ASC.FederatedLogin.Profile;
-using ASC.Security.Cryptography;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-
-using Newtonsoft.Json.Linq;
-
 namespace ASC.FederatedLogin.LoginProviders
 {
     [Scope]
@@ -58,9 +39,9 @@ namespace ASC.FederatedLogin.LoginProviders
         public const string GoogleUrlProfile = "https://people.googleapis.com/v1/people/me";
 
         public static readonly string[] GoogleDriveExt = new[] { ".gdoc", ".gsheet", ".gslides", ".gdraw" };
-        public static string GoogleDriveMimeTypeFolder = "application/vnd.google-apps.folder";
-        public static string FilesFields = "id,name,mimeType,parents,createdTime,modifiedTime,owners/displayName,lastModifyingUser/displayName,capabilities/canEdit,size";
-        public static string ProfileFields = "emailAddresses,genders,names";
+        public static readonly string GoogleDriveMimeTypeFolder = "application/vnd.google-apps.folder";
+        public static readonly string FilesFields = "id,name,mimeType,parents,createdTime,modifiedTime,owners/displayName,lastModifyingUser/displayName,capabilities/canEdit,size";
+        public static readonly string ProfileFields = "emailAddresses,genders,names";
 
         public override string AccessTokenUrl { get { return "https://www.googleapis.com/oauth2/v4/token"; } }
         public override string CodeUrl { get { return "https://accounts.google.com/o/oauth2/v2/auth"; } }

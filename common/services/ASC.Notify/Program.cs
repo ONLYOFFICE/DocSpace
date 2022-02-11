@@ -1,29 +1,6 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-
-using ASC.Api.Core;
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.DependencyInjection;
-using ASC.Common.Utils;
-using ASC.Core.Notify.Senders;
-using ASC.Notify.Config;
-
-using Autofac;
-using Autofac.Extensions.DependencyInjection;
-
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-
-using StackExchange.Redis.Extensions.Core.Configuration;
-using StackExchange.Redis.Extensions.Newtonsoft;
-
-namespace ASC.Notify
+﻿namespace ASC.Notify
 {
-    public class Program
+    public static class Program
     {
         public async static Task Main(string[] args)
         {

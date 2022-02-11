@@ -24,27 +24,7 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Utils;
-using ASC.Core;
-using ASC.Core.Common.Security;
-using ASC.Core.Common.Settings;
-using ASC.Core.Users;
-using ASC.Security.Cryptography;
-using ASC.Web.Core;
-using ASC.Web.Core.PublicResources;
-
-using Google.Authenticator;
-
-using Microsoft.AspNetCore.WebUtilities;
+using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Studio.Core.TFA
 {
@@ -146,7 +126,7 @@ namespace ASC.Web.Studio.Core.TFA
                 }
             }
 
-            Cache.Insert("tfa/" + user.ID, (--counter).ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
+            Cache.Insert("tfa/" + user.ID, (counter - 1).ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
 
             if (!SecurityContext.IsAuthenticated)
             {
@@ -170,7 +150,7 @@ namespace ASC.Web.Studio.Core.TFA
 
             const string alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-_";
 
-            var data = new byte[length];
+            byte[] data;
 
             var list = new List<BackupCode>();
 
@@ -181,7 +161,7 @@ namespace ASC.Web.Studio.Core.TFA
                 var result = new StringBuilder(length);
                 foreach (var b in data)
                 {
-                    result.Append(alphabet[b % (alphabet.Length)]);
+                    result.Append(alphabet[b % alphabet.Length]);
                 }
 
                     var code = new BackupCode();

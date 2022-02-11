@@ -23,14 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Text.RegularExpressions;
-
-using ASC.Data.Backup.Tasks.Data;
-
 namespace ASC.Data.Backup.Tasks.Modules
 {
     public class WebStudioModuleSpecifics : ModuleSpecificsBase

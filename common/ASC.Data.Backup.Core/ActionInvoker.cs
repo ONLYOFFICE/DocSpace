@@ -23,10 +23,6 @@
  *
 */
 
-
-using System;
-using System.Threading;
-
 namespace ASC.Data.Backup
 {
     public static class ActionInvoker
@@ -52,7 +48,7 @@ namespace ASC.Data.Backup
             bool isSleepExponential = true)
         {
             if (action == null)
-                throw new ArgumentNullException("action");
+                throw new ArgumentNullException(nameof(action));
 
             var countAttempts = 0;
             while (countAttempts++ < maxAttempts)

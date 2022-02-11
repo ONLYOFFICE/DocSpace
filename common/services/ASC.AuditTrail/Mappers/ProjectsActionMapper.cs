@@ -23,15 +23,9 @@
  *
 */
 
-
-
-using System.Collections.Generic;
-
-using ASC.MessagingSystem;
-
 namespace ASC.AuditTrail.Mappers
 {
-    internal class ProjectsActionsMapper
+    internal static class ProjectsActionsMapper
     {
         public static Dictionary<MessageAction, MessageMaps> GetMaps()
         {

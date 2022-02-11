@@ -23,16 +23,6 @@
  *
 */
 
-
-using System;
-using System.Text.RegularExpressions;
-
-using ASC.Common;
-using ASC.Common.Caching;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-
 namespace ASC.Web.Core.Mobile
 {
     [Scope]
@@ -78,7 +68,8 @@ namespace ASC.Web.Core.Mobile
                 }
                 else
                 {
-                    cache.Insert(key, (result = regex.IsMatch(ua)).ToString(), TimeSpan.FromMinutes(10));
+                    result = regex.IsMatch(ua);
+                    cache.Insert(key, result.ToString(), TimeSpan.FromMinutes(10));
                 }
             }
             return result.GetValueOrDefault();

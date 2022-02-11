@@ -23,17 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core.Common.EF.Model;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Core.Common.Notify.Telegram
 {
     class ConfigureCachedTelegramDao : IConfigureNamedOptions<CachedTelegramDao>
@@ -107,7 +96,7 @@ namespace ASC.Core.Common.Notify.Telegram
             if (users != null) return users;
 
             users = TgDao.GetUser(telegramId);
-            if (users.Any()) Cache.Insert(key, users, Expiration);
+            if (users.Count > 0) Cache.Insert(key, users, Expiration);
             return users;
         }
 

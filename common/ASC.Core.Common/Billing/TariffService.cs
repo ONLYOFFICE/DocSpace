@@ -23,26 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Core.Caching;
-using ASC.Core.Common.EF;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Core.Billing
 {
     [Singletone]
@@ -180,7 +160,7 @@ namespace ASC.Core.Billing
             DbContextManager<CoreDbContext> coreDbContextManager,
             TariffServiceStorage tariffServiceStorage,
             IOptionsMonitor<ILog> options,
-            Constants constants,
+            Users.Constants constants,
             BillingClient billingClient)
             : this()
 
@@ -239,7 +219,7 @@ namespace ASC.Core.Billing
                               var quota = QuotaService.GetTenantQuotas().SingleOrDefault(q => q.AvangateId == lastPayment.ProductId);
                               if (quota == null)
                               {
-                                  throw new InvalidOperationException(string.Format("Quota with id {0} not found for portal {1}.", lastPayment.ProductId, GetPortalId(tenantId)));
+                                  throw new InvalidOperationException($"Quota with id {lastPayment.ProductId} not found for portal {GetPortalId(tenantId)}.");
                               }
 
                               var asynctariff = Tariff.CreateDefault();
@@ -279,7 +259,7 @@ namespace ASC.Core.Billing
         {
             if (tariff == null)
             {
-                throw new ArgumentNullException("tariff");
+                throw new ArgumentNullException(nameof(tariff));
             }
 
             var q = QuotaService.GetTenantQuota(tariff.QuotaId);
@@ -362,7 +342,7 @@ namespace ASC.Core.Billing
 
             var key = tenant.HasValue
                           ? GetBillingUrlCacheKey(tenant.Value)
-                          : string.Format("notenant{0}", !string.IsNullOrEmpty(affiliateId) ? "_" + affiliateId : "");
+                          : string.Format($"notenant{(!string.IsNullOrEmpty(affiliateId) ? "_" + affiliateId : "")}");
             key += quota.Visible ? "" : "0";
             if (!(Cache.Get<Dictionary<string, Tuple<Uri, Uri>>>(key) is IDictionary<string, Tuple<Uri, Uri>> urls))
             {
@@ -432,7 +412,7 @@ namespace ASC.Core.Billing
         {
             if (productIds == null)
             {
-                throw new ArgumentNullException("productIds");
+                throw new ArgumentNullException(nameof(productIds));
             }
             try
             {
@@ -503,10 +483,10 @@ namespace ASC.Core.Billing
                 using var tx = CoreDbContext.Database.BeginTransaction();
 
                 // last record is not the same
-                var count = CoreDbContext.Tariffs
-                    .Count(r => r.Tenant == tenant && r.Tariff == tariffInfo.QuotaId && r.Stamp == tariffInfo.DueDate && r.Quantity == tariffInfo.Quantity);
+                var any = CoreDbContext.Tariffs
+                    .Any(r => r.Tenant == tenant && r.Tariff == tariffInfo.QuotaId && r.Stamp == tariffInfo.DueDate && r.Quantity == tariffInfo.Quantity);
 
-                if (tariffInfo.DueDate == DateTime.MaxValue || renewal || count == 0)
+                if (tariffInfo.DueDate == DateTime.MaxValue || renewal || any)
                 {
                     var efTariff = new DbTariff
                     {

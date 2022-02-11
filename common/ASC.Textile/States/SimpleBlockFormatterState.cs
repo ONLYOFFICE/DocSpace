@@ -1,5 +1,3 @@
-using System.Text.RegularExpressions;
-
 namespace Textile.States
 {
     public abstract class SimpleBlockFormatterState : FormatterState
@@ -35,9 +33,9 @@ namespace Textile.States
         public override bool ShouldNestState(FormatterState other)
         {
             var blockFormatterState = (SimpleBlockFormatterState)other;
-            return (blockFormatterState.Tag != Tag ||
+            return blockFormatterState.Tag != Tag ||
                     blockFormatterState.AlignInfo != AlignInfo ||
-                    blockFormatterState.AttInfo != AttInfo);
+                    blockFormatterState.AttInfo != AttInfo;
         }
 
         protected virtual void OnContextAcquired()

@@ -23,15 +23,6 @@
  *
 */
 
-
-using System.Collections.Generic;
-
-using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Core.Common.Configuration;
-
-using Microsoft.Extensions.Configuration;
-
 namespace ASC.Web.Core.Jabber
 {
     public class FireBase : Consumer

@@ -1,9 +1,4 @@
-﻿
-using System.IO;
-
-using ASC.Core.Encryption;
-
-namespace ASC.Data.Storage.Encryption
+﻿namespace ASC.Data.Storage.Encryption
 {
     public class FakeCrypt : ICrypt
     {

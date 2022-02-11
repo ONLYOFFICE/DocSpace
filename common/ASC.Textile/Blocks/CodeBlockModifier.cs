@@ -10,11 +10,6 @@
 // You must not remove this notice, or any other, from this software.
 #endregion
 
-#region Using Statements
-using System.Text.RegularExpressions;
-#endregion
-
-
 namespace Textile.Blocks
 {
     public class CodeBlockModifier : BlockModifier
@@ -49,7 +44,7 @@ namespace Textile.Blocks
             return line;
         }
 
-        static public string CodeFormatMatchEvaluator(Match m)
+        public string CodeFormatMatchEvaluator(Match m)
         {
             var res = m.Groups["before"].Value + "<code";
             if (m.Groups["lang"].Length > 0)

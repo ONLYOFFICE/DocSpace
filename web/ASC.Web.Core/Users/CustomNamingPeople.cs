@@ -23,17 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Xml;
-
-using ASC.Common;
-using ASC.Core.Common.Settings;
-using ASC.Web.Core.PublicResources;
-
 namespace ASC.Web.Core.Users
 {
     [Serializable]
@@ -164,18 +153,11 @@ namespace ASC.Web.Core.Users
     [Scope]
     public class CustomNamingPeople
     {
-        private static object Locked;
+        private static object Locked = new object();
         private static bool loaded = false;
 
         private static readonly List<PeopleNamesItem> items = new List<PeopleNamesItem>();
         private SettingsManager SettingsManager { get; }
-
-        static CustomNamingPeople()
-        {
-            Locked = new object();
-            loaded = false;
-            items = new List<PeopleNamesItem>();
-        }
 
         public CustomNamingPeople(SettingsManager settingsManager)
         {

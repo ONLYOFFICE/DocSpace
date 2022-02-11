@@ -58,6 +58,7 @@ namespace ASC.Web.CRM.Classes
         private OrganisationLogoManager _organisationLogoManager;
         private Files.Classes.PathProvider _filesPathProvider;
         private ILog _logger;
+        private IHttpClientFactory _clientFactory;
 
 
         public PdfCreator(IOptionsMonitor<ILog> logger,
@@ -66,7 +67,8 @@ namespace ASC.Web.CRM.Classes
                           IServiceProvider serviceProvider,
                           OrganisationLogoManager organisationLogoManager,
                           DaoFactory daoFactory,
-                          InvoiceFormattedData invoiceFormattedData)
+                          InvoiceFormattedData invoiceFormattedData,
+                          IHttpClientFactory clientFactory)
         {
             _filesPathProvider = filesPathProvider;
 
@@ -77,6 +79,7 @@ namespace ASC.Web.CRM.Classes
             _organisationLogoManager = organisationLogoManager;
             _daoFactory = daoFactory;
             _invoiceFormattedData = invoiceFormattedData;
+            _clientFactory = clientFactory;
         }
 
 
@@ -124,13 +127,13 @@ namespace ASC.Web.CRM.Classes
 
                 var file = _serviceProvider.GetService<File<int>>();
 
-                file.Title = string.Format("{0}{1}", invoice.Number, FormatPdf);
+                file.Title = $"{invoice.Number}{FormatPdf}";
                 file.FolderID = _daoFactory.GetFileDao().GetRoot();
 
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(urlToFile);
 
-                using (var httpClient = new HttpClient())
+                var httpClient = _clientFactory.CreateClient();
                 using (var response = httpClient.Send(request))
                 using (var stream = response.Content.ReadAsStream())
                 {
@@ -249,7 +252,7 @@ namespace ASC.Web.CRM.Classes
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(url);
 
-            using var httpClient = new HttpClient();
+            var httpClient = _clientFactory.CreateClient();
 
             using (var stream = httpClient.Send(request).Content.ReadAsStream())
             {
@@ -257,7 +260,7 @@ namespace ASC.Web.CRM.Classes
                 {
                     var document = _serviceProvider.GetService<File<int>>();
 
-                    document.Title = string.Format("{0}{1}", data.Number, FormatPdf);
+                    document.Title = $"{data.Number}{FormatPdf}";
                     document.FolderID = _daoFactory.GetFileDao().GetRoot();
                     document.ContentLength = stream.Length;
 

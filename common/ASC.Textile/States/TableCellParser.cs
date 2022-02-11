@@ -1,7 +1,3 @@
-using System;
-using System.Text.RegularExpressions;
-
-
 namespace Textile.States
 {
     public class TableCellParser

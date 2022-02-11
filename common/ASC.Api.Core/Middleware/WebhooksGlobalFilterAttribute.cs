@@ -1,62 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.Json;
+﻿using JsonSerializer = System.Text.Json.JsonSerializer;
 
-using ASC.Common;
-using ASC.Webhooks.Core;
+namespace ASC.Api.Core.Middleware;
 
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Routing;
-
-namespace ASC.Api.Core.Middleware
+[Scope]
+public class WebhooksGlobalFilterAttribute : ResultFilterAttribute
 {
-    [Scope]
-    public class WebhooksGlobalFilterAttribute : ResultFilterAttribute
+    private readonly IWebhookPublisher _webhookPublisher;
+    private readonly JsonSerializerOptions _jsonSerializerOptions;
+    private static List<string> _methodList = new List<string> { "POST", "UPDATE", "DELETE" };
+
+    public WebhooksGlobalFilterAttribute(IWebhookPublisher webhookPublisher, Action<JsonOptions> projectJsonOptions)
     {
-        private IWebhookPublisher WebhookPublisher { get; }
-        private static List<string> methodList = new List<string> { "POST", "UPDATE", "DELETE" };
-        private JsonSerializerOptions jsonSerializerOptions;
+        _webhookPublisher = webhookPublisher;
 
-        public WebhooksGlobalFilterAttribute(IWebhookPublisher webhookPublisher, Action<JsonOptions> projectJsonOptions)
+        var jsonOptions = new JsonOptions();
+        projectJsonOptions.Invoke(jsonOptions);
+        _jsonSerializerOptions = jsonOptions.JsonSerializerOptions;
+    }
+
+    public override void OnResultExecuted(ResultExecutedContext context)
+    {
+        var method = context.HttpContext.Request.Method;
+
+        if (!_methodList.Contains(method) || context.Canceled)
         {
-            WebhookPublisher = webhookPublisher;
-
-            var jsonOptions = new JsonOptions();
-            projectJsonOptions.Invoke(jsonOptions);
-            jsonSerializerOptions = jsonOptions.JsonSerializerOptions;
-        }
-
-        public override void OnResultExecuted(ResultExecutedContext context)
-        {
-            var method = context.HttpContext.Request.Method;
-
-            if (!methodList.Contains(method) || context.Canceled)
-            {
-                base.OnResultExecuted(context);
-                return;
-            }
-
-            var endpoint = (RouteEndpoint)context.HttpContext.GetEndpoint();
-            var routePattern = endpoint?.RoutePattern.RawText;
-
-            if (routePattern == null)
-            {
-                base.OnResultExecuted(context);
-                return;
-            }
-
-            if (context.Result is ObjectResult objectResult)
-            {
-                var resultContent = JsonSerializer.Serialize(objectResult.Value, jsonSerializerOptions);
-
-                var eventName = $"method: {method}, route: {routePattern}";
-
-                WebhookPublisher.Publish(eventName, resultContent);
-            }
-
             base.OnResultExecuted(context);
+
+            return;
         }
+
+        var endpoint = (RouteEndpoint)context.HttpContext.GetEndpoint();
+        var routePattern = endpoint?.RoutePattern.RawText;
+
+        if (routePattern == null)
+        {
+            base.OnResultExecuted(context);
+
+            return;
+        }
+
+        if (context.Result is ObjectResult objectResult)
+        {
+            var resultContent = JsonSerializer.Serialize(objectResult.Value, _jsonSerializerOptions);
+
+            var eventName = $"method: {method}, route: {routePattern}";
+
+            _webhookPublisher.Publish(eventName, resultContent);
+        }
+
+        base.OnResultExecuted(context);
     }
 }

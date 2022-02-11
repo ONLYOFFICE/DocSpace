@@ -23,21 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Users;
-using ASC.Files.Core;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
-using ASC.Web.Files.Services.WCFService;
-using ASC.Web.Studio.Core;
-
 namespace ASC.Web.Files.Core.Entries
 {
     public class EncryptionKeyPair
@@ -72,8 +57,8 @@ namespace ASC.Web.Files.Core.Entries
 
         public void SetKeyPair(string publicKey, string privateKeyEnc)
         {
-            if (string.IsNullOrEmpty(publicKey)) throw new ArgumentNullException("publicKey");
-            if (string.IsNullOrEmpty(privateKeyEnc)) throw new ArgumentNullException("privateKeyEnc");
+            if (string.IsNullOrEmpty(publicKey)) throw new ArgumentNullException(nameof(publicKey));
+            if (string.IsNullOrEmpty(privateKeyEnc)) throw new ArgumentNullException(nameof(privateKeyEnc));
 
             var user = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
             if (!AuthContext.IsAuthenticated || user.IsVisitor(UserManager)) throw new System.Security.SecurityException();

@@ -24,25 +24,6 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Security;
-using System.Text.RegularExpressions;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Core.Tenants;
-using ASC.Files.Core;
-using ASC.Web.Files.Classes;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Microsoft.SharePoint.Client;
-
 using File = Microsoft.SharePoint.Client.File;
 using Folder = Microsoft.SharePoint.Client.Folder;
 
@@ -60,8 +41,7 @@ namespace ASC.Files.Thirdparty.SharePoint
         public DateTime CreateOn { get; set; }
         public string CustomerTitle { get; set; }
         public string RootFolderId { get { return "spoint-" + ID; } }
-
-        public string SpRootFolderId = "/Shared Documents";
+        public string SpRootFolderId { get; set; } = "/Shared Documents";
 
         public SharePointProviderInfo(
             IOptionsMonitor<ILog> options,
@@ -114,7 +94,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
             if (authData.Login.EndsWith("onmicrosoft.com"))
             {
-                var personalPath = string.Concat("/personal/", authData.Login.Replace("@", "_").Replace(".", "_").ToLower());
+                var personalPath = string.Concat("/personal/", authData.Login.Replace('@', '_').Replace('.', '_').ToLower());
                 SpRootFolderId = string.Concat(personalPath, "/Documents");
 
                 var ss = new SecureString();
@@ -166,7 +146,7 @@ namespace ASC.Files.Thirdparty.SharePoint
             {
                 SharePointProviderInfoHelper.PublishFolder(MakeId(GetParentFolderId(id)));
                 var serverException = (ServerException)ex;
-                if (serverException.ServerErrorTypeName == (typeof(FileNotFoundException)).ToString())
+                if (serverException.ServerErrorTypeName == typeof(FileNotFoundException).ToString())
                 {
                     return null;
                 }
@@ -375,7 +355,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         private Folder GetFolder(object id)
         {
-            if ((string)id == "") id = SpRootFolderId;
+            if (((string)id).Length == 0) id = SpRootFolderId;
             var folder = clientContext.Web.GetFolderByServerRelativeUrl((string)id);
             clientContext.Load(folder);
             clientContext.Load(folder.Files, collection => collection.IncludeWithDefaultProperties(r => r.ListItemAllFields));
@@ -389,7 +369,7 @@ namespace ASC.Files.Thirdparty.SharePoint
             {
                 SharePointProviderInfoHelper.PublishFolder(MakeId(GetParentFolderId(id)));
                 var serverException = (ServerException)ex;
-                if (serverException.ServerErrorTypeName == (typeof(FileNotFoundException)).ToString())
+                if (serverException.ServerErrorTypeName == typeof(FileNotFoundException).ToString())
                 {
                     return null;
                 }
@@ -456,16 +436,30 @@ namespace ASC.Files.Thirdparty.SharePoint
 
             if (delete)
             {
-                folder.Folders.ToList().ForEach(r => MoveFolder(r.ServerRelativeUrl, newUrl));
-                folder.Files.ToList().ForEach(r => MoveFile(r.ServerRelativeUrl, newUrl));
+                foreach (var f in folder.Folders)
+                {
+                    MoveFolder(f.ServerRelativeUrl, newUrl);
+                }
+
+                foreach (var f in folder.Files)
+                {
+                    MoveFile(f.ServerRelativeUrl, newUrl);
+                }
 
                 folder.DeleteObject();
                 clientContext.ExecuteQuery();
             }
             else
             {
-                folder.Folders.ToList().ForEach(r => CopyFolder(r.ServerRelativeUrl, newUrl));
-                folder.Files.ToList().ForEach(r => CopyFile(r.ServerRelativeUrl, newUrl));
+                foreach (var f in folder.Folders)
+                {
+                    CopyFolder(f.ServerRelativeUrl, newUrl);
+                }
+                
+                foreach(var f in folder.Files)
+                {
+                    CopyFile(f.ServerRelativeUrl, newUrl);
+                }
             }
 
             return newFolder;
@@ -549,7 +543,8 @@ namespace ASC.Files.Thirdparty.SharePoint
         public string MakeId(string path = "")
         {
             path = path.Replace(SpRootFolderId, "");
-            return string.Format("{0}{1}", "spoint-" + ID, string.IsNullOrEmpty(path) || path == "/" || path == SpRootFolderId ? "" : ("-" + path.Replace('/', '|')));
+            var p = string.IsNullOrEmpty(path) || path == "/" || path == SpRootFolderId ? "" : ("-" + path.Replace('/', '|'));
+            return $"{ID}{p}";
         }
 
         private string MakeId(object path)

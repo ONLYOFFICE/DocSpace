@@ -23,15 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common.Logging;
-using ASC.Notify.Messages;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Notify.Engine
 {
     public class DispatchEngine
@@ -47,7 +38,7 @@ namespace ASC.Notify.Engine
         {
             log = options.Get("ASC.Notify");
             logMessages = options.Get("ASC.Notify.Messages");
-            this.context = context ?? throw new ArgumentNullException("context");
+            this.context = context ?? throw new ArgumentNullException(nameof(context));
             logOnly = "log".Equals(configuration["core:notify:postman"], StringComparison.InvariantCultureIgnoreCase);
             log.DebugFormat("LogOnly: {0}", logOnly);
         }

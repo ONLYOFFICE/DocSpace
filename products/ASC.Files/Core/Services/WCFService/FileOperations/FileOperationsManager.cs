@@ -23,21 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text.Json;
-
-using ASC.Common;
-using ASC.Common.Threading;
-using ASC.Core.Tenants;
-using ASC.Files.Core.Resources;
-using ASC.Web.Files.Core.Compress;
-
-using Microsoft.Extensions.Primitives;
-
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
     [Singletone(Additional = typeof(FileOperationsManagerHelperExtention))]
@@ -61,7 +46,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var processlist = Process.GetProcesses();
 
             //TODO: replace with distributed cache
-            if (processlist.Any())
+            if (processlist.Length > 0)
             {
                 foreach (var o in operations.Where(o => processlist.All(p => p.Id != o.InstanceId)))
                 {
@@ -254,7 +239,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
     }
 
-    public class FileOperationsManagerHelperExtention
+    public static class FileOperationsManagerHelperExtention
     {
         public static void Register(DIHelper services)
         {

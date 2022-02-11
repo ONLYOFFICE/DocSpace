@@ -10,11 +10,6 @@
 // You must not remove this notice, or any other, from this software.
 #endregion
 
-#region Using Statements
-using System.Text.RegularExpressions;
-#endregion
-
-
 namespace Textile.Blocks
 {
     public class GlyphBlockModifier : BlockModifier
@@ -39,7 +34,7 @@ namespace Textile.Blocks
                                 { @"\b ?[([](C|c)[])]", "&#169;" }                                      //  copyright
                               };
 
-            var output = "";
+            var sb = new StringBuilder();
 
             if (!Regex.IsMatch(line, "<.*>"))
             {
@@ -48,13 +43,14 @@ namespace Textile.Blocks
                 {
                     line = Regex.Replace(line, glyphs[i, 0], glyphs[i, 1]);
                 }
-                output = line;
+                sb.Append(line);
             }
             else
             {
                 var splits = Regex.Split(line, "(<.*?>)");
                 var offtags = "code|pre|notextile";
                 var codepre = false;
+                
                 foreach (var split in splits)
                 {
                     var modifiedSplit = split;
@@ -75,18 +71,18 @@ namespace Textile.Blocks
                     }
 
                     // do htmlspecial if between <code>
-                    if (codepre == true)
+                    if (codepre)
                     {
                         //TODO: htmlspecialchars(line)
                         //line = Regex.Replace(line, @"&lt;(\/?" + offtags + ")&gt;", "<$1>");
                         //line = line.Replace("&amp;#", "&#");
                     }
 
-                    output += modifiedSplit;
+                    sb.Append(modifiedSplit);
                 }
             }
 
-            return output;
+            return sb.ToString();
         }
     }
 }

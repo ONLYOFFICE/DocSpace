@@ -1,34 +1,26 @@
-﻿using System.Threading.Tasks;
+﻿namespace ASC.Api.Core.Middleware;
 
-using ASC.Common.Web;
-
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-
-namespace ASC.Api.Core.Middleware
+public class DisposeMiddleware
 {
-    public class DisposeMiddleware
+    private readonly RequestDelegate _next;
+
+    public DisposeMiddleware(RequestDelegate next)
     {
-        private readonly RequestDelegate next;
-
-        public DisposeMiddleware(RequestDelegate next)
-        {
-            this.next = next;
-        }
-
-        public async Task Invoke(HttpContext context)
-        {
-            context.Response.RegisterForDispose(new DisposableHttpContext(context));
-
-            await next.Invoke(context);
-        }
+        _next = next;
     }
 
-    public static class DisposeMiddlewareExtensions
+    public async Task Invoke(HttpContext context)
     {
-        public static IApplicationBuilder UseDisposeMiddleware(this IApplicationBuilder builder)
-        {
-            return builder.UseMiddleware<DisposeMiddleware>();
-        }
+        context.Response.RegisterForDispose(new DisposableHttpContext(context));
+
+        await _next.Invoke(context);
+    }
+}
+
+public static class DisposeMiddlewareExtensions
+{
+    public static IApplicationBuilder UseDisposeMiddleware(this IApplicationBuilder builder)
+    {
+        return builder.UseMiddleware<DisposeMiddleware>();
     }
 }

@@ -1,25 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Data.Common;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Xml.Linq;
-using System.Xml.XPath;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Utils;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-using ASC.Data.Backup.EF.Context;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-
-namespace ASC.Data.Backup
+﻿namespace ASC.Data.Backup
 {
     [Scope]
     public class DbHelper : IDisposable
@@ -31,14 +10,12 @@ namespace ASC.Data.Backup
         private readonly bool mysql;
         private readonly IDictionary<string, string> whereExceptions = new Dictionary<string, string>();
         private readonly ILog log;
-        private readonly BackupsContext backupsContext;
         private readonly TenantDbContext tenantDbContext;
         private readonly CoreDbContext coreDbContext;
 
-        public DbHelper(IOptionsMonitor<ILog> options, ConnectionStringSettings connectionString, BackupsContext backupsContext, TenantDbContext tenantDbContext, CoreDbContext coreDbContext)
+        public DbHelper(IOptionsMonitor<ILog> options, ConnectionStringSettings connectionString, TenantDbContext tenantDbContext, CoreDbContext coreDbContext)
         {
             log = options.CurrentValue;
-            this.backupsContext = backupsContext;
             this.tenantDbContext = tenantDbContext;
             this.coreDbContext = coreDbContext;
             var file = connectionString.ElementInformation.Source;
@@ -54,7 +31,7 @@ namespace ASC.Data.Backup
             connect.ConnectionString = connectionString.ConnectionString;
             connect.Open();
 
-            mysql = connectionString.ProviderName.ToLower().Contains("mysql");
+            mysql = connectionString.ProviderName.Contains("mysql", StringComparison.OrdinalIgnoreCase);
             if (mysql)
             {
                 CreateCommand("set @@session.sql_mode = concat(@@session.sql_mode, ',NO_AUTO_VALUE_ON_ZERO')").ExecuteNonQuery();
@@ -119,7 +96,7 @@ namespace ASC.Data.Backup
                 tables = connect
                     .GetSchema("Tables")
                     .Select(@"TABLE_TYPE <> 'SYSTEM_TABLE'")
-                    .Select(row => ((string)row["TABLE_NAME"]));
+                    .Select(row => (string)row["TABLE_NAME"]);
             }
 
             return tables
@@ -187,13 +164,13 @@ namespace ASC.Data.Backup
                     .Intersect(table.Columns.Cast<DataColumn>().Select(c => c.ColumnName), StringComparer.InvariantCultureIgnoreCase)
                     .ToList();
 
-                tableColumns.ForEach(column => sql.AppendFormat("{0}, ", Quote(column)));
+                tableColumns.ForEach(column => sql.Append($"{Quote(column)}, "));
                 sql.Replace(", ", ") values (", sql.Length - 2, 2);
 
                 var insert = connect.CreateCommand();
                 tableColumns.ForEach(column =>
                 {
-                    sql.AppendFormat("@{0}, ", column);
+                    sql.Append($"@{column}, ");
                     var p = insert.CreateParameter();
                     p.ParameterName = "@" + column;
                     insert.Parameters.Add(p);
@@ -257,7 +234,7 @@ namespace ASC.Data.Backup
             }
             else
             {
-                return columns.Select(string.Format("TABLE_NAME = '{0}'", table))
+                return columns.Select($"TABLE_NAME = '{table}'")
                     .Select(r => r["COLUMN_NAME"].ToString());
             }
         }
@@ -266,11 +243,11 @@ namespace ASC.Data.Backup
         {
             if (tenant == -1) return string.Empty;
 
-            if (whereExceptions.ContainsKey(tableName.ToLower()))
+            if (whereExceptions.TryGetValue(tableName.ToLower(), out var exc))
             {
-                return string.Format(whereExceptions[tableName.ToLower()], tenant);
+                return string.Format(exc, tenant);
             }
-            var tenantColumn = GetColumnsFrom(tableName).FirstOrDefault(c => c.ToLower().StartsWith("tenant"));
+            var tenantColumn = GetColumnsFrom(tableName).FirstOrDefault(c => c.StartsWith("tenant", StringComparison.OrdinalIgnoreCase));
             return tenantColumn != null ?
                 " where " + Quote(tenantColumn) + " = " + tenant :
                 " where 1 = 0";

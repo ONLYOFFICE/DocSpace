@@ -23,20 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.ElasticSearch.Core;
-
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.ElasticSearch.Service
 {
     [Singletone(Additional = typeof(ServiceExtension))]
@@ -79,7 +65,7 @@ namespace ASC.ElasticSearch.Service
                 tasks.Add(instance.ReIndex());
             }
 
-            if (!tasks.Any()) return;
+            if (tasks.Count == 0) return;
 
             Task.WhenAll(tasks).ContinueWith(r =>
             {
@@ -120,7 +106,7 @@ namespace ASC.ElasticSearch.Service
         }
     }
 
-    internal class ServiceExtension
+    internal static class ServiceExtension
     {
         public static void Register(DIHelper services)
         {

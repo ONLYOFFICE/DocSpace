@@ -24,15 +24,6 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Security;
-using ASC.Common.Security.Authentication;
-using ASC.Common.Security.Authorizing;
-
 using Constants = ASC.Core.Configuration.Constants;
 
 namespace ASC.Core.Security.Authorizing
@@ -45,7 +36,7 @@ namespace ASC.Core.Security.Authorizing
 
         public PermissionResolver(AzManager azManager)
         {
-            this.azManager = azManager ?? throw new ArgumentNullException("azManager");
+            this.azManager = azManager ?? throw new ArgumentNullException(nameof(azManager));
         }
 
 

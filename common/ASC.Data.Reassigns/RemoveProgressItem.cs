@@ -23,31 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Security.Cryptography;
-using System.Text;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Threading;
-using ASC.Core;
-using ASC.Core.Users;
-using ASC.Data.Storage;
-//using ASC.Mail.Core.Engine;
-using ASC.MessagingSystem;
-//using ASC.Web.CRM.Core;
-using ASC.Web.Core;
-//using ASC.Web.Files.Services.WCFService;
-using ASC.Web.Studio.Core.Notify;
-//using CrmDaoFactory = ASC.CRM.Core.Dao.DaoFactory;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Primitives;
-
 namespace ASC.Data.Reassigns
 {
     [Transient]
@@ -98,7 +73,7 @@ namespace ASC.Data.Reassigns
             var scopeClass = scope.ServiceProvider.GetService<RemoveProgressItemScope>();
             var (tenantManager, coreBaseSettings, messageService, studioNotifyService, securityContext, userManager, messageTarget, webItemManagerSecurity, storageFactory, userFormatter, options) = scopeClass;
             var logger = options.Get("ASC.Web");
-            var tenant = tenantManager.SetCurrentTenant(_tenantId);
+            tenantManager.SetCurrentTenant(_tenantId);
             var userName = userFormatter.GetUserName(User, DisplayUserNameFormat.Default);
 
             try

@@ -23,15 +23,6 @@
  *
 */
 
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-
-using ASC.Common;
-using ASC.Core.Notify.Senders;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Notify.Config
 {
     [Singletone]

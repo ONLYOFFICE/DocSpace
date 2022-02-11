@@ -1,22 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-
-using ASC.Common;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
-using ASC.Files.Thirdparty.Box;
-using ASC.Files.Thirdparty.Dropbox;
-using ASC.Files.Thirdparty.GoogleDrive;
-using ASC.Files.Thirdparty.OneDrive;
-using ASC.Files.Thirdparty.SharePoint;
-using ASC.Files.Thirdparty.Sharpbox;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Core;
-
-using Microsoft.Extensions.DependencyInjection;
-
-namespace ASC.Files.Core.Thirdparty
+﻿namespace ASC.Files.Core.Thirdparty
 {
     [Scope(Additional = typeof(CrossDaoExtension))]
     internal class CrossDao //Additional SharpBox
@@ -87,18 +69,20 @@ namespace ASC.Files.Core.Thirdparty
             if (deleteSourceFile)
             {
                 if (fromFileShareRecords.Any())
-                    fromFileShareRecords.ToList().ForEach(x =>
+                {
+                    foreach (var record in fromFileShareRecords)
                     {
-                        x.EntryId = toFile.ID;
-                        securityDao.SetShare(x);
-                    });
+                        record.EntryId = toFile.ID;
+                        securityDao.SetShare(record);
+                    }
+                }
 
                 var fromFileTags = fromFileNewTags;
                 if (fromFileLockTag != null) fromFileTags.Add(fromFileLockTag);
                 if (fromFileFavoriteTag != null) fromFileTags.AddRange(fromFileFavoriteTag);
                 if (fromFileTemplateTag != null) fromFileTags.AddRange(fromFileTemplateTag);
 
-                if (fromFileTags.Any())
+                if (fromFileTags.Count > 0)
                 {
                     fromFileTags.ForEach(x => x.EntryId = toFile.ID);
 
@@ -168,17 +152,16 @@ namespace ASC.Files.Core.Thirdparty
 
                 if (fromFileShareRecords.Any())
                 {
-                    fromFileShareRecords.ToList().ForEach(x =>
-                    {
-                        x.EntryId = toFolderId;
-                        securityDao.SetShare(x);
-                    });
+                    foreach(var record in fromFileShareRecords){
+                        record.EntryId = toFolderId;
+                        securityDao.SetShare(record);
+                    }
                 }
 
                 var tagDao = ServiceProvider.GetService<ITagDao<TFrom>>();
                 var fromFileNewTags = tagDao.GetNewTags(Guid.Empty, fromFolder).ToList();
 
-                if (fromFileNewTags.Any())
+                if (fromFileNewTags.Count > 0)
                 {
                     fromFileNewTags.ForEach(x => x.EntryId = toFolderId);
 
@@ -195,7 +178,7 @@ namespace ASC.Files.Core.Thirdparty
         }
     }
 
-    public class CrossDaoExtension
+    public static class CrossDaoExtension
     {
         public static void Register(DIHelper services)
         {

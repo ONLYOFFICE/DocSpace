@@ -23,13 +23,6 @@
  *
 */
 
-
-using System;
-using System.IO;
-
-using ASC.Common;
-using ASC.Data.Storage;
-
 namespace ASC.Data.Backup.Storage
 {
     [Scope]

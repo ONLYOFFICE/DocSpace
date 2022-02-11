@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore.Migrations;
-
 namespace ASC.Core.Common.Migrations.PostgreSql.TelegramDbContextPostgreSql
 {
     public partial class TelegramDbContextPostgreSql : Migration

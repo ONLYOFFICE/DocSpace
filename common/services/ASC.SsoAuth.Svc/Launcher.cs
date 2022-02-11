@@ -69,7 +69,7 @@ namespace ASC.SsoAuth.Svc
                     UseShellExecute = false,
                     FileName = "node",
                     WindowStyle = ProcessWindowStyle.Hidden,
-                    Arguments = string.Format("\"{0}\"", Path.GetFullPath(CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, cfg.Path, "app.js"))),
+                    Arguments = $"\"{Path.GetFullPath(CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, cfg.Path, "app.js"))}\"",
                     WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory
                 };
 

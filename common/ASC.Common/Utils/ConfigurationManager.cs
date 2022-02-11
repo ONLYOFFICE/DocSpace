@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-
-using Microsoft.Extensions.Configuration;
-
-namespace ASC.Common.Utils
+﻿namespace ASC.Common.Utils
 {
     public class ConnectionStringCollection : IEnumerable<ConnectionStringSettings>
     {

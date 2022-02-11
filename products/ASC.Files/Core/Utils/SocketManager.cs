@@ -23,13 +23,6 @@
  *
 */
 
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Notify.Signalr;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Web.Files.Utils
 {
     [Scope]

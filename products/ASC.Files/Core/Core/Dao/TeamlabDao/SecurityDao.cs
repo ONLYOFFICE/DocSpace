@@ -23,25 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Files.Core.EF;
-using ASC.Files.Core.Security;
-using ASC.Web.Studio.Core;
-using ASC.Web.Studio.UserControls.Statistics;
-using ASC.Web.Studio.Utility;
-
 namespace ASC.Files.Core.Data
 {
     [Scope]
@@ -215,7 +196,7 @@ namespace ASC.Files.Core.Data
 
             var q = GetQuery(r => folders.Contains(r.EntryId) && r.EntryType == FileEntryType.Folder);
 
-            if (files.Any())
+            if (files.Count > 0)
             {
                 q = q.Union(GetQuery(r => files.Contains(r.EntryId) && r.EntryType == FileEntryType.File));
             }

@@ -23,20 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-using ASC.Core.Tenants;
-using ASC.Data.Backup.EF.Context;
-using ASC.Data.Backup.EF.Model;
-
-using Microsoft.EntityFrameworkCore;
-
 namespace ASC.Data.Backup.Storage
 {
     [Scope]

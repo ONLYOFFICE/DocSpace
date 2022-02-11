@@ -23,22 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.Configuration;
-using ASC.FederatedLogin.Helpers;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json.Linq;
-
 namespace ASC.Web.Files.Helpers
 {
     [Scope]
@@ -141,7 +125,7 @@ namespace ASC.Web.Files.Helpers
                 jsonBlogInfo.Add("key", easyBibappkey);
                 var citationData = jsonBlogInfo.ToString();
 
-                var uri = "https://api.citation-api.com/2.0/rest/cite";
+                const string uri = "https://api.citation-api.com/2.0/rest/cite";
                 const string contentType = "application/json";
                 const string method = "POST";
                 var body = citationData;

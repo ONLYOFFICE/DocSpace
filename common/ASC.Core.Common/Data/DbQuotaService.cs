@@ -23,18 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-
-using ASC.Common;
-using ASC.Core.Common.EF;
-using ASC.Core.Tenants;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Core.Data
 {
     [Scope]
@@ -115,7 +103,7 @@ namespace ASC.Core.Data
 
         public TenantQuota SaveTenantQuota(TenantQuota quota)
         {
-            if (quota == null) throw new ArgumentNullException("quota");
+            if (quota == null) throw new ArgumentNullException(nameof(quota));
 
             var dbQuota = new DbQuota
             {
@@ -155,7 +143,7 @@ namespace ASC.Core.Data
 
         public void SetTenantQuotaRow(TenantQuotaRow row, bool exchange)
         {
-            if (row == null) throw new ArgumentNullException("row");
+            if (row == null) throw new ArgumentNullException(nameof(row));
 
             using var tx = CoreDbContext.Database.BeginTransaction();
 

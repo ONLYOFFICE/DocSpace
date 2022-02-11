@@ -1,5 +1,3 @@
-using System.Text.RegularExpressions;
-
 namespace Textile.States
 {
     [FormatterState(SimpleBlockFormatterState.PatternBegin + @"bc" + SimpleBlockFormatterState.PatternEnd)]

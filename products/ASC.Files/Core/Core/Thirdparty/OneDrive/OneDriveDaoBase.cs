@@ -23,33 +23,13 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Core.Tenants;
-using ASC.Files.Core;
-using ASC.Files.Core.EF;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Classes;
-using ASC.Web.Studio.Core;
-
-using Microsoft.Extensions.Options;
-using Microsoft.OneDrive.Sdk;
-
 namespace ASC.Files.Thirdparty.OneDrive
 {
     internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProviderInfo>
     {
         protected override string Id { get => "onedrive"; }
 
-        public OneDriveDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility, TempPath tempPath) 
+        protected OneDriveDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility, TempPath tempPath) 
             : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
         {
         }
@@ -84,18 +64,17 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         protected override string MakeId(string id = null)
         {
-            return string.Format("{0}{1}", PathPrefix,
-                                 string.IsNullOrEmpty(id) || id == ""
-                                     ? "" : ("-|" + id.TrimStart('/')));
+            var i = string.IsNullOrEmpty(id) ? "" : ("-|" + id.TrimStart('/'));
+            return $"{PathPrefix}{i}";
         }
 
         public string MakeOneDrivePath(Item onedriveItem)
         {
             return onedriveItem == null || IsRoot(onedriveItem)
                        ? string.Empty
-                       : (OneDriveStorage.MakeOneDrivePath(
+                       : OneDriveStorage.MakeOneDrivePath(
                            new Regex("^" + OneDriveStorage.RootPath).Replace(onedriveItem.ParentReference.Path, ""),
-                           onedriveItem.Name));
+                           onedriveItem.Name);
         }
 
         protected string MakeItemTitle(Item onedriveItem)
@@ -254,9 +233,9 @@ namespace ASC.Files.Thirdparty.OneDrive
             if (!match.Success)
             {
                 var insertIndex = requestTitle.Length;
-                if (requestTitle.LastIndexOf(".", StringComparison.InvariantCulture) != -1)
+                if (requestTitle.LastIndexOf('.') != -1)
                 {
-                    insertIndex = requestTitle.LastIndexOf(".", StringComparison.InvariantCulture);
+                    insertIndex = requestTitle.LastIndexOf('.');
                 }
                 requestTitle = requestTitle.Insert(insertIndex, " (1)");
             }
@@ -268,7 +247,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             return requestTitle;
         }
 
-        private static string MatchEvaluator(Match match)
+        private string MatchEvaluator(Match match)
         {
             var index = Convert.ToInt32(match.Groups[2].Value);
             var staticText = match.Value.Substring(string.Format(" ({0})", index).Length);

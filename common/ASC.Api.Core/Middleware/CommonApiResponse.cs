@@ -1,102 +1,91 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿namespace ASC.Api.Core.Middleware;
 
-namespace ASC.Api.Core.Middleware
+public abstract class CommonApiResponse
 {
-    public abstract class CommonApiResponse
+    public int Status { get; set; }
+    public HttpStatusCode StatusCode { get; set; }
+
+    protected CommonApiResponse(HttpStatusCode statusCode)
     {
-        public int Status { get; set; }
+        StatusCode = statusCode;
 
-        public HttpStatusCode StatusCode { get; set; }
-
-        protected CommonApiResponse(HttpStatusCode statusCode)
-        {
-            StatusCode = statusCode;
-        }
-
-        public static SuccessApiResponse Create(HttpStatusCode statusCode, object response)
-        {
-            return new SuccessApiResponse(statusCode, response);
-        }
-
-        public static ErrorApiResponse CreateError(HttpStatusCode statusCode, Exception error)
-        {
-            return new ErrorApiResponse(statusCode, error);
-        }
     }
 
-    public class ErrorApiResponse : CommonApiResponse
+    public static SuccessApiResponse Create(HttpStatusCode statusCode, object response)
     {
-        public CommonApiError Error { get; set; }
-
-        protected internal ErrorApiResponse(HttpStatusCode statusCode, Exception error, string message = null) : base(statusCode)
-        {
-            Status = 1;
-            Error = CommonApiError.FromException(error, message);
-        }
+        return new SuccessApiResponse(statusCode, response);
     }
 
-    public class SuccessApiResponse : CommonApiResponse
+    public static ErrorApiResponse CreateError(HttpStatusCode statusCode, Exception error)
     {
-        public int? Count { get; set; }
+        return new ErrorApiResponse(statusCode, error);
+    }
+}
 
-        public long? Total { get; set; }
+public class ErrorApiResponse : CommonApiResponse
+{
+    public CommonApiError Error { get; set; }
 
-        public object Response { get; set; }
+    protected internal ErrorApiResponse(HttpStatusCode statusCode, Exception error, string message = null) : base(statusCode)
+    {
+        Status = 1;
+        Error = CommonApiError.FromException(error, message);
+    }
+}
 
-        protected internal SuccessApiResponse(HttpStatusCode statusCode, object response, long? total = null, int? count = null) : base(statusCode)
+public class SuccessApiResponse : CommonApiResponse
+{
+    public int? Count { get; set; }
+    public long? Total { get; set; }
+    public object Response { get; set; }
+
+    protected internal SuccessApiResponse(HttpStatusCode statusCode, object response, long? total = null, int? count = null) : base(statusCode)
+    {
+        Status = 0;
+        Response = response;
+        Total = total;
+
+        if (count.HasValue)
         {
-            Status = 0;
-            Response = response;
-            Total = total;
-
-            if (count.HasValue)
+            Count = count;
+        }
+        else
+        {
+            if (response is List<object> list)
             {
-                Count = count;
+                Count = list.Count;
+            }
+            else if (response is IEnumerable<object> collection)
+            {
+                Count = collection.Count();
+            }
+            else if (response == null)
+            {
+                Count = 0;
             }
             else
             {
-                if (response is List<object> list)
-                {
-                    Count = list.Count;
-                }
-                else if (response is IEnumerable<object> collection)
-                {
-                    Count = collection.Count();
-                }
-                else if (response == null)
-                {
-                    Count = 0;
-                }
-                else
-                {
-                    Count = 1;
-                }
+                Count = 1;
             }
         }
     }
+}
 
-    public class CommonApiError
+public class CommonApiError
+{
+    public string Message { get; set; }
+    public string Type { get; set; }
+    public string Stack { get; set; }
+    public int Hresult { get; set; }
+
+    public static CommonApiError FromException(Exception exception, string message = null)
     {
-        public string Message { get; set; }
-
-        public string Type { get; set; }
-
-        public string Stack { get; set; }
-
-        public int Hresult { get; set; }
-
-        public static CommonApiError FromException(Exception exception, string message = null)
+        return new CommonApiError()
         {
-            return new CommonApiError()
-            {
-                Message = message ?? exception.Message,
-                Type = exception.GetType().ToString(),
-                Stack = exception.StackTrace,
-                Hresult = exception.HResult
-            };
-        }
+            Message = message ?? exception.Message,
+            Type = exception.GetType().ToString(),
+            Stack = exception.StackTrace,
+            Hresult = exception.HResult
+        };
     }
 }

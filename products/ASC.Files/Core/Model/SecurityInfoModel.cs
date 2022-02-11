@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-
-using ASC.Api.Documents;
-
-namespace ASC.Files.Model
+﻿namespace ASC.Files.Model
 {
     public class SecurityInfoModel : BaseBatchModel
     {

@@ -23,21 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Net;
-using System.Xml.Linq;
-using System.Xml.XPath;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Core.Common.Configuration;
-
-using Microsoft.Extensions.Configuration;
-
 namespace ASC.FederatedLogin.LoginProviders
 {
     [Scope]

@@ -23,22 +23,7 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-
-using ASC.Common.Utils;
-
-using log4net.Config;
-using log4net.Core;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
-
-using NLog;
+using LogLevel = NLog.LogLevel;
 
 namespace ASC.Common.Logging
 {
@@ -875,7 +860,7 @@ namespace ASC.Common.Logging
         }
     }
 
-    public class LoggerExtension<T> where T : class, ILog, new()
+    public static class LoggerExtension<T> where T : class, ILog, new()
     {
         public static void RegisterLog(DIHelper services)
         {
@@ -883,11 +868,11 @@ namespace ASC.Common.Logging
         }
     }
 
-    public class LogNLogExtension : LoggerExtension<LogNLog>
+    public static class LogNLogExtension
     {
         public static void Register(DIHelper services)
         {
-            RegisterLog(services);
+            LoggerExtension<LogNLog>.RegisterLog(services);
         }
     }
 }

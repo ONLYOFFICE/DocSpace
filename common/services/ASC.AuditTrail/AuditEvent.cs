@@ -23,9 +23,6 @@
  *
 */
 
-
-using ASC.MessagingSystem;
-
 namespace ASC.AuditTrail
 {
     public class AuditEvent : BaseEvent

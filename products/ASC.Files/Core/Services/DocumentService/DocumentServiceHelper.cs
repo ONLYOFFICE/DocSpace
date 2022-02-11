@@ -24,25 +24,6 @@
 */
 
 
-using System;
-using System.IO;
-using System.Linq;
-using System.Security;
-using System.Text;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Users;
-using ASC.Files.Core;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
-using ASC.Security.Cryptography;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Core;
-
-using FileShare = ASC.Files.Core.Security.FileShare;
 
 namespace ASC.Web.Files.Services.DocumentService
 {
@@ -225,7 +206,7 @@ namespace ASC.Web.Files.Services.DocumentService
             }
 
 
-            if (!editPossible && !FileUtility.CanWebView(file.Title)) throw new Exception(string.Format("{0} ({1})", FilesCommonResource.ErrorMassage_NotSupportedFormat, FileUtility.GetFileExtension(file.Title)));
+            if (!editPossible && !FileUtility.CanWebView(file.Title)) throw new Exception($"{FilesCommonResource.ErrorMassage_NotSupportedFormat} ({FileUtility.GetFileExtension(file.Title)})");
 
             if (reviewPossible &&
                 !FileUtility.CanWebReview(file.Title))
@@ -308,7 +289,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             if (!lastVersion)
             {
-                configuration.Document.Title += string.Format(" ({0})", file.CreateOnString);
+                configuration.Document.Title += $" ({file.CreateOnString})";
             }
 
             return file;
@@ -371,7 +352,7 @@ namespace ASC.Web.Files.Services.DocumentService
                                            })
                                        .Select(u => u.ToString()).ToArray();
 
-            if (!usersDrop.Any()) return;
+            if (usersDrop.Length == 0) return;
 
             var fileStable = file;
             if (file.Forcesave != ForcesaveType.None)

@@ -23,12 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
-using ASC.Notify.Model;
-
 namespace ASC.Web.Core.Subscriptions
 {
     public delegate bool IsEmptySubscriptionTypeDelegate(Guid productID, Guid moduleOrGroupID, Guid typeID);
@@ -47,9 +41,9 @@ namespace ASC.Web.Core.Subscriptions
 
         public bool CanSubscribe { get; set; }
 
-        public IsEmptySubscriptionTypeDelegate IsEmptySubscriptionType;
+        public IsEmptySubscriptionTypeDelegate IsEmptySubscriptionType { get; set; }
 
-        public GetSubscriptionObjectsDelegate GetSubscriptionObjects;
+        public GetSubscriptionObjectsDelegate GetSubscriptionObjects { get; set; }
 
     }
 }

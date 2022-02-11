@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+﻿
+using DbContext = Microsoft.EntityFrameworkCore.DbContext;
 
 namespace ASC.Core.Common.EF
 {
@@ -17,7 +11,6 @@ namespace ASC.Core.Common.EF
 
     public class BaseDbContext : DbContext
     {
-        public string baseName;
         public BaseDbContext() { }
         public BaseDbContext(DbContextOptions options) : base(options)
         {
@@ -29,7 +22,7 @@ namespace ASC.Core.Common.EF
         public ConnectionStringSettings ConnectionStringSettings { get; set; }
         protected internal Provider Provider { get; set; }
 
-        public static ServerVersion ServerVersion = ServerVersion.Parse("8.0.25");
+        public static readonly ServerVersion ServerVersion = ServerVersion.Parse("8.0.25");
         protected virtual Dictionary<Provider, Func<BaseDbContext>> ProviderContext
         {
             get { return null; }
@@ -66,7 +59,7 @@ namespace ASC.Core.Common.EF
                     {
                         if (!string.IsNullOrEmpty(MigrateAssembly))
                         {
-                            r = r.MigrationsAssembly(MigrateAssembly);
+                            r.MigrationsAssembly(MigrateAssembly);
                         }
                     });
                     break;
@@ -133,10 +126,16 @@ namespace ASC.Core.Common.EF
                 }
             }
         }
-        public async ValueTask DisposeAsync()
-        {
-            if (Context == null) return;
 
+        public ValueTask DisposeAsync()
+        {
+            if (Context == null) return ValueTask.CompletedTask;
+
+            return InternalDisposeAsync();
+        }
+
+        private async ValueTask InternalDisposeAsync()
+        {
             foreach (var c in Context)
             {
                 if (c != null)

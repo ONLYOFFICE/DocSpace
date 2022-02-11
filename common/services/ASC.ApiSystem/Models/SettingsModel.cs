@@ -23,11 +23,6 @@
  *
 */
 
-
-using System.ComponentModel.DataAnnotations;
-
-using ASC.ApiSystem.Interfaces;
-
 namespace ASC.ApiSystem.Models
 {
     public class SettingsModel : IModel
