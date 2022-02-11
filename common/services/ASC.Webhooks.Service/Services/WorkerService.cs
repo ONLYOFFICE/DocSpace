@@ -17,7 +17,7 @@ public class WorkerService : IHostedService, IDisposable
     {
         _logger = logger;
         _webhookSender = webhookSender;
-        _queue = buildQueueService.Queue;
+        _queue = buildQueueService._queue;
         _threadCount = settings.ThreadCount;
     }
 
