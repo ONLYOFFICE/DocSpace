@@ -149,7 +149,7 @@ namespace ASC.MessagingSystem.DbSender
 
         private static void AddLoginEvent(EventMessage message, MessagesContext dbContext)
         {
-            var le = new DbLoginEvent
+            var le = new LoginEvent
             {
                 Ip = message.IP,
                 Login = message.Initiator,
@@ -177,7 +177,7 @@ namespace ASC.MessagingSystem.DbSender
 
         private static void AddAuditEvent(EventMessage message, Messages dbContext)
         {
-            var ae = new DbAuditEvent
+            var ae = new AuditEvent
             {
                 Ip = message.IP,
                 Initiator = message.Initiator,

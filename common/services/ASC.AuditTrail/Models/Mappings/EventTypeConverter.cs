@@ -1,7 +1,7 @@
 ﻿namespace ASC.AuditTrail.Models.Mappings;
 
-public class EventTypeConverter : ITypeConverter<LoginEventQuery, LoginEvent>, 
-                                  ITypeConverter<AuditEventQuery, AuditEvent>
+public class EventTypeConverter : ITypeConverter<LoginEventQuery, LoginEventDto>, 
+                                  ITypeConverter<AuditEventQuery, AuditEventDto>
 {
     private readonly UserFormatter _userFormatter;
     private readonly AuditActionMapper _auditActionMapper;
@@ -17,9 +17,9 @@ public class EventTypeConverter : ITypeConverter<LoginEventQuery, LoginEvent>,
         _messageTarget = messageTarget;
     }
 
-    public LoginEvent Convert(LoginEventQuery source, LoginEvent destination, ResolutionContext context)
+    public LoginEventDto Convert(LoginEventQuery source, LoginEventDto destination, ResolutionContext context)
     {
-        var result = context.Mapper.Map<LoginEvent>(source.Event);
+        var result = context.Mapper.Map<LoginEventDto>(source.Event);
 
         if (source.Event.DescriptionRaw != null)
         {
@@ -43,9 +43,9 @@ public class EventTypeConverter : ITypeConverter<LoginEventQuery, LoginEvent>,
         return result;
     }
 
-    public AuditEvent Convert(AuditEventQuery source, AuditEvent destination, ResolutionContext context)
+    public AuditEventDto Convert(AuditEventQuery source, AuditEventDto destination, ResolutionContext context)
     {
-        var result = context.Mapper.Map<AuditEvent>(source.Event);
+        var result = context.Mapper.Map<AuditEventDto>(source.Event);
 
         if (source.Event.DescriptionRaw != null)
         {

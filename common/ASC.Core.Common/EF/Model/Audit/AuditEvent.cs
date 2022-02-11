@@ -1,32 +1,32 @@
 ﻿namespace ASC.Core.Common.EF.Model
 {
-    public class DbLoginEvent : MessageEvent
+    public class AuditEvent : MessageEvent
     {
-        public string Login { get; set; }
+        public string Initiator { get; set; }
+        public string Target { get; set; }
     }
-
-    public static class LoginEventsExtension
+    public static class AuditEventExtension
     {
-        public static ModelBuilderWrapper AddLoginEvents(this ModelBuilderWrapper modelBuilder)
+        public static ModelBuilderWrapper AddAuditEvent(this ModelBuilderWrapper modelBuilder)
         {
             modelBuilder
-                .Add(MySqlAddLoginEvents, Provider.MySql)
-                .Add(PgSqlAddLoginEvents, Provider.PostgreSql);
+                .Add(MySqlAddAuditEvent, Provider.MySql)
+                .Add(PgSqlAddAuditEvent, Provider.PostgreSql);
             return modelBuilder;
         }
-        public static void MySqlAddLoginEvents(this ModelBuilder modelBuilder)
+        public static void MySqlAddAuditEvent(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DbLoginEvent>(entity =>
+            modelBuilder.Entity<AuditEvent>(entity =>
             {
-                entity.ToTable("login_events");
+                entity.ToTable("audit_events");
 
-                entity.HasIndex(e => e.Date)
+                entity.HasIndex(e => new { e.TenantId, e.Date })
                     .HasDatabaseName("date");
 
-                entity.HasIndex(e => new { e.TenantId, e.UserId })
-                    .HasDatabaseName("tenant_id");
-
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity
+                .Property(e => e.Id)
+                .HasColumnName("id")
+                .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Action).HasColumnName("action");
 
@@ -42,19 +42,19 @@
 
                 entity.Property(e => e.DescriptionRaw)
                     .HasColumnName("description")
-                    .HasColumnType("varchar(500)")
+                    .HasColumnType("varchar(20000)")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
+                entity.Property(e => e.Initiator)
+                    .HasColumnName("initiator")
+                    .HasColumnType("varchar(200)")
                     .HasCharSet("utf8")
                     .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Ip)
                     .HasColumnName("ip")
                     .HasColumnType("varchar(50)")
-                    .HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
-
-                entity.Property(e => e.Login)
-                    .HasColumnName("login")
-                    .HasColumnType("varchar(200)")
                     .HasCharSet("utf8")
                     .UseCollation("utf8_general_ci");
 
@@ -70,27 +70,29 @@
                     .HasCharSet("utf8")
                     .UseCollation("utf8_general_ci");
 
+                entity.Property(e => e.Target)
+                    .HasColumnName("target")
+                    .HasColumnType("text")
+                    .HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
                 entity.Property(e => e.UserId)
-                    .IsRequired()
                     .HasColumnName("user_id")
                     .HasColumnType("char(38)")
                     .HasCharSet("utf8")
                     .UseCollation("utf8_general_ci");
             });
         }
-        public static void PgSqlAddLoginEvents(this ModelBuilder modelBuilder)
+        public static void PgSqlAddAuditEvent(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DbLoginEvent>(entity =>
+            modelBuilder.Entity<AuditEvent>(entity =>
             {
-                entity.ToTable("login_events", "onlyoffice");
+                entity.ToTable("audit_events", "onlyoffice");
 
-                entity.HasIndex(e => e.Date)
-                    .HasDatabaseName("date_login_events");
-
-                entity.HasIndex(e => new { e.UserId, e.TenantId })
-                    .HasDatabaseName("tenant_id_login_events");
+                entity.HasIndex(e => new { e.TenantId, e.Date })
+                    .HasDatabaseName("date");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -99,23 +101,23 @@
                 entity.Property(e => e.Browser)
                     .HasColumnName("browser")
                     .HasMaxLength(200)
-                    .HasDefaultValueSql("NULL::character varying");
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Date).HasColumnName("date");
 
                 entity.Property(e => e.DescriptionRaw)
                     .HasColumnName("description")
-                    .HasMaxLength(500)
+                    .HasMaxLength(20000)
+                    .HasDefaultValueSql("NULL");
+
+                entity.Property(e => e.Initiator)
+                    .HasColumnName("initiator")
+                    .HasMaxLength(200)
                     .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Ip)
                     .HasColumnName("ip")
                     .HasMaxLength(50)
-                    .HasDefaultValueSql("NULL");
-
-                entity.Property(e => e.Login)
-                    .HasColumnName("login")
-                    .HasMaxLength(200)
                     .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Page)
@@ -128,13 +130,15 @@
                     .HasMaxLength(200)
                     .HasDefaultValueSql("NULL");
 
+                entity.Property(e => e.Target).HasColumnName("target");
+
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
                 entity.Property(e => e.UserId)
-                    .IsRequired()
                     .HasColumnName("user_id")
                     .HasMaxLength(38)
-                    .IsFixedLength();
+                    .IsFixedLength()
+                    .HasDefaultValueSql("NULL");
             });
         }
     }

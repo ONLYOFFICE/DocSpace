@@ -25,30 +25,16 @@
 
 namespace ASC.AuditTrail.Models;
 
-public class AuditEvent : BaseEvent, IMapFrom<AuditEventQuery>
+public class LoginEventDto : BaseEvent, IMapFrom<LoginEventQuery>
 {
-    public string Initiator { get; set; }
-
-    [Event("ActionIdCol", 33)]
+    public string Login { get; set; }
     public int Action { get; set; }
-
-    [Event("ActionTypeCol", 30)]
-    public string ActionTypeText { get; set; }
-
-    [Event("ProductCol", 31)]
-    public string Product { get; set; }
-
-    [Event("ModuleCol", 32)]
-    public string Module { get; set; }
-
-    [Event("TargetIdCol", 34)]
-    public MessageTarget Target { get; set; }
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<DbAuditEvent, AuditEvent>();
+        profile.CreateMap<LoginEvent, LoginEventDto>();
 
-        profile.CreateMap<AuditEventQuery, AuditEvent>()
+        profile.CreateMap<LoginEventQuery, LoginEventDto>()
             .ConvertUsing<EventTypeConverter>();
     }
 }

@@ -47,7 +47,7 @@ public class AuditActionMapper
             .ToDictionary(x => x.Key, x => x.Value);
     }
 
-    public string GetActionText(AuditEvent evt)
+    public string GetActionText(AuditEventDto evt)
     {
         var action = (MessageAction)evt.Action;
         if (!_actions.ContainsKey(action))
@@ -77,7 +77,7 @@ public class AuditActionMapper
         }
     }
 
-    public string GetActionText(LoginEvent evt)
+    public string GetActionText(LoginEventDto evt)
     {
         var action = (MessageAction)evt.Action;
         if (!_actions.ContainsKey(action))
@@ -105,7 +105,7 @@ public class AuditActionMapper
         }
     }
 
-    public string GetActionTypeText(AuditEvent evt)
+    public string GetActionTypeText(AuditEventDto evt)
     {
         var action = (MessageAction)evt.Action;
 
@@ -114,7 +114,7 @@ public class AuditActionMapper
                    : _actions[(MessageAction)evt.Action].GetActionTypeText();
     }
 
-    public string GetProductText(AuditEvent evt)
+    public string GetProductText(AuditEventDto evt)
     {
         var action = (MessageAction)evt.Action;
 
@@ -123,7 +123,7 @@ public class AuditActionMapper
                    : _actions[(MessageAction)evt.Action].GetProduct();
     }
 
-    public string GetModuleText(AuditEvent evt)
+    public string GetModuleText(AuditEventDto evt)
     {
         var action = (MessageAction)evt.Action;
 

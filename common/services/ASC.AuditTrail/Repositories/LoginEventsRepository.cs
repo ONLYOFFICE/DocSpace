@@ -41,7 +41,7 @@ public class LoginEventsRepository
         _mapper = mapper;
     }
 
-    public IEnumerable<LoginEvent> GetLast(int tenant, int chunk)
+    public IEnumerable<LoginEventDto> GetLast(int tenant, int chunk)
     {
         var query =
             (from b in MessagesContext.LoginEvents
@@ -57,10 +57,10 @@ public class LoginEventsRepository
              })
              .Take(chunk);
 
-        return _mapper.Map<List<LoginEventQuery>, IEnumerable<LoginEvent>>(query.ToList());
+        return _mapper.Map<List<LoginEventQuery>, IEnumerable<LoginEventDto>>(query.ToList());
     }
 
-    public IEnumerable<LoginEvent> Get(int tenant, DateTime fromDate, DateTime to)
+    public IEnumerable<LoginEventDto> Get(int tenant, DateTime fromDate, DateTime to)
     {
         var query =
             from q in MessagesContext.LoginEvents
@@ -77,7 +77,7 @@ public class LoginEventsRepository
                 LastName = p.LastName
             };
 
-        return _mapper.Map<List<LoginEventQuery>, IEnumerable<LoginEvent>>(query.ToList());
+        return _mapper.Map<List<LoginEventQuery>, IEnumerable<LoginEventDto>>(query.ToList());
     }
 
     public int GetCount(int tenant, DateTime? from = null, DateTime? to = null)
