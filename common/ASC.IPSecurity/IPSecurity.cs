@@ -62,18 +62,30 @@ namespace ASC.IPSecurity
         {
             var tenant = _tenantManager.GetCurrentTenant();
 
-            if (!IpSecurityEnabled) return true;
+            if (!IpSecurityEnabled)
+            {
+                return true;
+            }
 
-            if (_httpContextAccessor?.HttpContext == null) return true;
+            if (_httpContextAccessor?.HttpContext == null)
+            {
+                return true;
+            }
 
-            if (tenant == null || _authContext.CurrentAccount.ID == tenant.OwnerId) return true;
+            if (tenant == null || _authContext.CurrentAccount.ID == tenant.OwnerId)
+            {
+                return true;
+            }
 
             string requestIps = null;
             try
             {
                 var restrictions = _ipRestrictionsService.Get(tenant.TenantId).ToList();
 
-                if (restrictions.Count == 0) return true;
+                if (restrictions.Count == 0)
+                {
+                    return true;
+                }
 
                 requestIps = _currentIpForTest;
 
@@ -95,10 +107,12 @@ namespace ASC.IPSecurity
             catch (Exception ex)
             {
                 _logger.ErrorFormat("Can't verify request with IP-address: {0}. Tenant: {1}. Error: {2} ", requestIps ?? "", tenant, ex);
+
                 return false;
             }
 
             _logger.InfoFormat("Restricted from IP-address: {0}. Tenant: {1}. Request to: {2}", requestIps ?? "", tenant, _httpContextAccessor.HttpContext.Request.GetDisplayUrl());
+
             return false;
         }
 
@@ -111,6 +125,7 @@ namespace ASC.IPSecurity
                 var upper = IPAddress.Parse(restrictionIp.Substring(dividerIdx + 1).Trim());
 
                 var range = new IPAddressRange(lower, upper);
+
                 return range.IsInRange(IPAddress.Parse(requestIp));
             }
 
@@ -120,6 +135,7 @@ namespace ASC.IPSecurity
         private static string GetIpWithoutPort(string ip)
         {
             var portIdx = ip.IndexOf(':');
+
             return portIdx > 0 ? ip.Substring(0, portIdx) : ip;
         }
     }
