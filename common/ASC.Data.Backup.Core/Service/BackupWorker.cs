@@ -294,14 +294,14 @@ public abstract class BaseBackupProgressItem : DistributedTaskProgress
         }
     }
     public abstract BackupProgressItemEnum BackupProgressItemEnum { get; }
-    protected ILog Log { get; set; }
+    protected ILog Logger { get; set; }
     protected IServiceScopeFactory ServiceScopeFactory { get; set; }
 
     private int? _tenantId;
 
     public BaseBackupProgressItem(IOptionsMonitor<ILog> options, IServiceScopeFactory serviceScopeFactory)
     {
-        Log = options.CurrentValue;
+        Logger = options.CurrentValue;
         ServiceScopeFactory = serviceScopeFactory;
     }
 
@@ -435,7 +435,7 @@ public class BackupProgressItem : BaseBackupProgressItem
         }
         catch (Exception error)
         {
-            Log.ErrorFormat("RunJob - Params: {0}, Error = {1}", new { Id, Tenant = TenantId, File = tempFile, BasePath = _storageBasePath, }, error);
+            Logger.ErrorFormat("RunJob - Params: {0}, Error = {1}", new { Id, Tenant = TenantId, File = tempFile, BasePath = _storageBasePath, }, error);
             Exception = error;
             IsCompleted = true;
         }
@@ -447,7 +447,7 @@ public class BackupProgressItem : BaseBackupProgressItem
             }
             catch (Exception error)
             {
-                Log.Error("publish", error);
+                Logger.Error("publish", error);
             }
 
             try
@@ -459,7 +459,7 @@ public class BackupProgressItem : BaseBackupProgressItem
             }
             catch (Exception error)
             {
-                Log.Error("can't delete file: {0}", error);
+                Logger.Error("can't delete file: {0}", error);
             }
         }
     }
@@ -595,7 +595,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
         }
         catch (Exception error)
         {
-            Log.Error(error);
+            Logger.Error(error);
             Exception = error;
 
             if (tenant != null)
@@ -612,7 +612,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
             }
             catch (Exception error)
             {
-                Log.Error("publish", error);
+                Logger.Error("publish", error);
             }
 
             if (File.Exists(tempFile))
@@ -699,7 +699,7 @@ public class TransferProgressItem : BaseBackupProgressItem
         }
         catch (Exception error)
         {
-            Log.Error(error);
+            Logger.Error(error);
             Exception = error;
 
             Link = GetLink(alias, true);
@@ -713,7 +713,7 @@ public class TransferProgressItem : BaseBackupProgressItem
             }
             catch (Exception error)
             {
-                Log.Error("publish", error);
+                Logger.Error("publish", error);
             }
 
             if (File.Exists(tempFile))
