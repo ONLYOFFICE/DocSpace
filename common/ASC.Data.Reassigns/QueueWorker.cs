@@ -25,7 +25,7 @@
 
 namespace ASC.Data.Reassigns
 {
-    public class QueueWorker
+    public static class QueueWorker
     {
         public static IDictionary<string, StringValues> GetHttpHeaders(HttpRequest httpRequest)
         {
@@ -40,7 +40,7 @@ namespace ASC.Data.Reassigns
         protected IHttpContextAccessor HttpContextAccessor { get; }
         protected IServiceProvider ServiceProvider { get; }
 
-        public object SynchRoot = new object();
+        private readonly object _synchRoot = new object();
 
         public QueueWorker(
             IHttpContextAccessor httpContextAccessor,
@@ -75,7 +75,7 @@ namespace ASC.Data.Reassigns
 
         protected DistributedTaskProgress Start(int tenantId, Guid userId, Func<T> constructor)
         {
-            lock (SynchRoot)
+            lock (_synchRoot)
             {
                 var task = GetProgressItemStatus(tenantId, userId);
 

@@ -44,8 +44,6 @@ namespace ASC.FederatedLogin.LoginProviders
 
     public abstract class BaseLoginProvider<T> : Consumer, ILoginProvider where T : Consumer, ILoginProvider, new()
     {
-        private readonly InstanceCrypto zinstanceCrypto;
-
         public T Instance
         {
             get
@@ -98,7 +96,7 @@ namespace ASC.FederatedLogin.LoginProviders
             InstanceCrypto = instanceCrypto;
         }
 
-        public virtual LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs = null)
+        public virtual LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs)
         {
             try
             {
@@ -148,7 +146,7 @@ namespace ASC.FederatedLogin.LoginProviders
         public abstract LoginProfile GetLoginProfile(string accessToken);
     }
 
-    public class BaseLoginProviderExtension
+    public static class BaseLoginProviderExtension
     {
         public static void Register(DIHelper services)
         {

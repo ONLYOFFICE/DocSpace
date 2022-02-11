@@ -813,7 +813,7 @@ public static class MimeMapping
         foreach (DictionaryEntry entry in _extensionToMimeMappingTable)
         {
             var mime = (string)entry.Value;
-            if (mime == mimeMapping.ToLowerInvariant()) return (string)entry.Key;
+            if (mime.Equals(mimeMapping, StringComparison.OrdinalIgnoreCase)) return (string)entry.Key;
             if (!_mimeSynonyms.ContainsKey(mime)) continue;
             if (_mimeSynonyms[mime].Contains(mimeMapping.ToLowerInvariant())) return (string)entry.Key;
         }

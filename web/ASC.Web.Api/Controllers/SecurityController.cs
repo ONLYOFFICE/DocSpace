@@ -40,7 +40,7 @@
         [Read("audit/login/last")]
         public IEnumerable<EventWrapper> GetLastLoginEvents()
         {
-            if (!SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString()))
+            if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.LoginHistory)))
             {
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Audit");
             }
@@ -53,7 +53,7 @@
         [Read("audit/events/last")]
         public IEnumerable<EventWrapper> GetLastAuditEvents()
         {
-            if (!SetupInfo.IsVisibleSettings(ManagementType.AuditTrail.ToString()))
+            if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.AuditTrail)))
             {
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Audit");
             }
@@ -70,7 +70,7 @@
 
             var tenantId = TenantManager.GetCurrentTenant().TenantId;
 
-            if (!TenantExtra.GetTenantQuota().Audit || !SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString()))
+            if (!TenantExtra.GetTenantQuota().Audit || !SetupInfo.IsVisibleSettings(nameof(ManagementType.LoginHistory)))
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Audit");
 
             var settings = SettingsManager.LoadForTenant<TenantAuditSettings>(TenantManager.GetCurrentTenant().TenantId);
@@ -93,7 +93,7 @@
 
             var tenantId = TenantManager.GetCurrentTenant().TenantId;
 
-            if (!TenantExtra.GetTenantQuota().Audit || !SetupInfo.IsVisibleSettings(ManagementType.AuditTrail.ToString()))
+            if (!TenantExtra.GetTenantQuota().Audit || !SetupInfo.IsVisibleSettings(nameof(ManagementType.AuditTrail)))
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Audit");
 
             var settings = SettingsManager.LoadForTenant<TenantAuditSettings>(TenantManager.GetCurrentTenant().TenantId);
@@ -113,7 +113,7 @@
         [Read("audit/settings/lifetime")]
         public TenantAuditSettings GetAuditSettings()
         {
-            if (!SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString()))
+            if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.LoginHistory)))
             {
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Audit");
             }
@@ -138,7 +138,7 @@
 
         private TenantAuditSettings SetAuditSettings(TenantAuditSettingsWrapper wrapper)
         {
-            if (!TenantExtra.GetTenantQuota().Audit || !SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString()))
+            if (!TenantExtra.GetTenantQuota().Audit || !SetupInfo.IsVisibleSettings(nameof(ManagementType.LoginHistory)))
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Audit");
 
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);

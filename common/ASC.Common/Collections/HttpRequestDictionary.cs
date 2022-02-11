@@ -78,7 +78,7 @@ public sealed class HttpRequestDictionary<T> : CachedDictionaryBase<T>
         //We can't expire in HtppContext in such way
     }
 
-    private class CachedItem
+    private sealed class CachedItem
     {
         internal T Value { get; set; }
 

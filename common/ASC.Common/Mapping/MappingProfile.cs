@@ -38,8 +38,7 @@ public class MappingProfile : Profile
 
         var types = assembly.GetExportedTypes()
             .Where(t => t.GetInterfaces().Any(i =>
-                i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IMapFrom<>)))
-            .ToList();
+                    i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IMapFrom<>)));
 
         foreach (var type in types)
         {

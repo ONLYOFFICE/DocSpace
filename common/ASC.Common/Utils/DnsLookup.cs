@@ -100,7 +100,7 @@ public class DnsLookup
 
         var dnsMessage = GetDnsMessage(domainName);
 
-        return dnsMessage.AnswerRecords.Any();
+            return dnsMessage.AnswerRecords.Count != 0;
     }
 
     /// <summary>

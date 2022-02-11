@@ -48,7 +48,7 @@ public class TextLoader : ResourceLoader
     }
 }
 
-public class VelocityFormatter
+public static class VelocityFormatter
 {
     private static bool _initialized;
     private static readonly ConcurrentDictionary<string, Template> _patterns = new ConcurrentDictionary<string, Template>();

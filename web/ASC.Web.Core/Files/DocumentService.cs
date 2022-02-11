@@ -33,13 +33,13 @@ namespace ASC.Web.Core.Files
         /// <summary>
         /// Timeout to request conversion
         /// </summary>
-        public static int Timeout = 120000;
+        public static readonly int Timeout = 120000;
         //public static int Timeout = Convert.ToInt32(ConfigurationManagerExtension.AppSettings["files.docservice.timeout"] ?? "120000");
 
         /// <summary>
         /// Number of tries request conversion
         /// </summary>
-        public static int MaxTry = 3;
+        public static readonly int MaxTry = 3;
 
         /// <summary>
         /// Translation key to a supported form.
@@ -88,14 +88,15 @@ namespace ASC.Web.Core.Files
             SpreadsheetLayout spreadsheetLayout,
             bool isAsync,
             string signatureSecret,
+            IHttpClientFactory clientFactory,
             out string convertedDocumentUri)
         {
             fromExtension = string.IsNullOrEmpty(fromExtension) ? Path.GetExtension(documentUri) : fromExtension;
-            if (string.IsNullOrEmpty(fromExtension)) throw new ArgumentNullException("fromExtension", "Document's extension for conversion is not known");
-            if (string.IsNullOrEmpty(toExtension)) throw new ArgumentNullException("toExtension", "Extension for conversion is not known");
+            if (string.IsNullOrEmpty(fromExtension)) throw new ArgumentNullException(nameof(fromExtension), "Document's extension for conversion is not known");
+            if (string.IsNullOrEmpty(toExtension)) throw new ArgumentNullException(nameof(toExtension), "Extension for conversion is not known");
 
             var title = Path.GetFileName(documentUri ?? "");
-            title = string.IsNullOrEmpty(title) || title.Contains("?") ? Guid.NewGuid().ToString() : title;
+            title = string.IsNullOrEmpty(title) || title.Contains('?') ? Guid.NewGuid().ToString() : title;
 
             documentRevisionId = string.IsNullOrEmpty(documentRevisionId)
                                      ? documentUri
@@ -107,7 +108,7 @@ namespace ASC.Web.Core.Files
             request.Method = HttpMethod.Post;
             request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
-            using var httpClient = new HttpClient();
+            var httpClient = clientFactory.CreateClient();
             httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
 
             var body = new ConvertionBody
@@ -148,12 +149,6 @@ namespace ASC.Web.Core.Files
             });
 
             request.Content = new StringContent(bodyString, Encoding.UTF8, "application/json");
-
-            // hack. http://ubuntuforums.org/showthread.php?t=1841740
-            if (WorkContext.IsMono)
-            {
-                ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
-            }
 
             string dataResponse;
             HttpResponseMessage response = null;
@@ -214,13 +209,14 @@ namespace ASC.Web.Core.Files
             string callbackUrl,
             string[] users,
             MetaData meta,
-            string signatureSecret)
+            string signatureSecret,
+            IHttpClientFactory clientFactory)
         {
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(documentTrackerUrl);
             request.Method = HttpMethod.Post;
 
-            using var httpClient = new HttpClient();
+            var httpClient = clientFactory.CreateClient();
             httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
 
             var body = new CommandBody
@@ -256,12 +252,6 @@ namespace ASC.Web.Core.Files
 
             request.Content = new StringContent(bodyString, Encoding.UTF8, "application/json");
 
-            // hack. http://ubuntuforums.org/showthread.php?t=1841740
-            if (WorkContext.IsMono)
-            {
-                ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
-            }
-
             string dataResponse;
             using (var response = httpClient.Send(request))
             using (var stream = response.Content.ReadAsStream())
@@ -295,10 +285,11 @@ namespace ASC.Web.Core.Files
             string scriptUrl,
             bool isAsync,
             string signatureSecret,
+            IHttpClientFactory clientFactory,
             out Dictionary<string, string> urls)
         {
             if (string.IsNullOrEmpty(docbuilderUrl))
-                throw new ArgumentNullException("docbuilderUrl");
+                throw new ArgumentNullException(nameof(docbuilderUrl));
 
             if (string.IsNullOrEmpty(requestKey) && string.IsNullOrEmpty(scriptUrl))
                 throw new ArgumentException("requestKey or inputScript is empty");
@@ -307,7 +298,7 @@ namespace ASC.Web.Core.Files
             request.RequestUri = new Uri(docbuilderUrl);
             request.Method = HttpMethod.Post;
 
-            using var httpClient = new HttpClient();
+            var httpClient = clientFactory.CreateClient();
             httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
 
             var body = new BuilderBody
@@ -339,12 +330,6 @@ namespace ASC.Web.Core.Files
             });
 
             request.Content = new StringContent(bodyString, Encoding.UTF8, "application/json");
-
-            // hack. http://ubuntuforums.org/showthread.php?t=1841740
-            if (WorkContext.IsMono)
-            {
-                ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
-            }
 
             string dataResponse = null;
 
@@ -382,15 +367,15 @@ namespace ASC.Web.Core.Files
             return responseFromService.Value<string>("key");
         }
 
-        public static bool HealthcheckRequest(string healthcheckUrl)
+        public static bool HealthcheckRequest(string healthcheckUrl, IHttpClientFactory clientFactory)
         {
             if (string.IsNullOrEmpty(healthcheckUrl))
-                throw new ArgumentNullException("healthcheckUrl");
+                throw new ArgumentNullException(nameof(healthcheckUrl));
 
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(healthcheckUrl);
 
-            using var httpClient = new HttpClient();
+            var httpClient = clientFactory.CreateClient();
             httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
 
             using var response = httpClient.Send(request);
@@ -702,7 +687,7 @@ namespace ASC.Web.Core.Files
         [Serializable]
         public class DocumentServiceException : Exception
         {
-            public ErrorCode Code;
+            public ErrorCode Code { get; set; }
 
             public DocumentServiceException(ErrorCode errorCode, string message)
                 : base(message)
@@ -780,7 +765,7 @@ namespace ASC.Web.Core.Files
         /// <returns>The percentage of completion of conversion</returns>
         private static int GetResponseUri(string jsonDocumentResponse, out string responseUri)
         {
-            if (string.IsNullOrEmpty(jsonDocumentResponse)) throw new ArgumentException("Invalid param", "jsonDocumentResponse");
+            if (string.IsNullOrEmpty(jsonDocumentResponse)) throw new ArgumentException("Invalid param", nameof(jsonDocumentResponse));
 
             var responseFromService = JObject.Parse(jsonDocumentResponse);
             if (responseFromService == null) throw new WebException("Invalid answer format");

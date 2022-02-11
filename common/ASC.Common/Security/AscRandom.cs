@@ -47,7 +47,7 @@ public class AscRandom : Random
 
         for (var i = 1; i < _seeds.Length - 1; i++)
         {
-            var index = (21 * i) % (_seeds.Length - 1);
+            var index = 21 * i % (_seeds.Length - 1);
             _seeds[index] = num3;
             num3 = num2 - num3;
 

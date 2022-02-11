@@ -1,6 +1,6 @@
 ﻿namespace ASC.Common.Web;
 
-public class VirtualPathUtility
+public static class VirtualPathUtility
 {
     public static string ToAbsolute(string virtualPath)
     {

@@ -18,7 +18,7 @@ global using System.Threading;
 global using System.Threading.Tasks;
 global using System.Web;
 global using System.Xml.Linq;
-global using StackExchange.Redis.Extensions.Newtonsoft;
+
 global using ASC.Api.Core;
 global using ASC.Api.Core.Auth;
 global using ASC.Api.Core.Convention;
@@ -36,7 +36,6 @@ global using ASC.Core;
 global using ASC.Core.Common.EF;
 global using ASC.Core.Tenants;
 global using ASC.Core.Users;
-global using ASC.IPSecurity;
 global using ASC.Security.Cryptography;
 global using ASC.Web.Api.Routing;
 global using ASC.Web.Core;

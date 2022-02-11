@@ -25,7 +25,7 @@
 
 namespace ASC.AuditTrail.Mappers
 {
-    internal class PeopleActionMapper
+    internal static class PeopleActionMapper
     {
         public static Dictionary<MessageAction, MessageMaps> GetMaps()
         {

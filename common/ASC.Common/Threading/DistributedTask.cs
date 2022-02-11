@@ -38,7 +38,7 @@ public class DistributedTask
     public string Id
     {
         get => DistributedTaskCache.Id;
-        protected set => DistributedTaskCache.Id = value?.ToString() ?? "";
+        protected set => DistributedTaskCache.Id = value ?? "";
     }
     public DistributedTaskStatus Status
     {

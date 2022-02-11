@@ -63,7 +63,7 @@ namespace ASC.Files.Core.Data
         }
     }
 
-    public class DaoFactoryExtension
+    public static class DaoFactoryExtension
     {
         public static void Register(DIHelper services)
         {

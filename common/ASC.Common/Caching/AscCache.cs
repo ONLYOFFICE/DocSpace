@@ -41,7 +41,7 @@ public class AscCacheNotify
 
     public static void OnClearCache()
     {
-        var keys = MemoryCache.Default.Select(r => r.Key).ToList();
+            var keys = MemoryCache.Default.Select(r => r.Key);
 
         foreach (var k in keys)
         {
@@ -95,7 +95,7 @@ public class AscCache : ICache
     public void Remove(Regex pattern)
     {
         var copy = _memoryCacheKeys.ToDictionary(p => p.Key, p => p.Value);
-        var keys = copy.Select(p => p.Key).Where(k => pattern.IsMatch(k)).ToArray();
+            var keys = copy.Select(p => p.Key).Where(k => pattern.IsMatch(k));
 
         foreach (var key in keys)
         {

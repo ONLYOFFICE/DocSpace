@@ -56,7 +56,7 @@ namespace ASC.Notify.Recipients
 
         public override string ToString()
         {
-            return string.Format("{0}", Name);
+            return Name;
         }
     }
 }

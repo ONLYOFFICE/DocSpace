@@ -44,7 +44,7 @@ public class SpecialFolderPathConverter : PatternConverter
                 var args = Environment.CommandLine.Split(' ');
                 for (var i = 0; i < args.Length - 1; i++)
                 {
-                    if (args[i].Equals(Option.Substring(CMD_LINE.Length), StringComparison.InvariantCultureIgnoreCase))
+                        if (args[i].Contains(Option, StringComparison.InvariantCultureIgnoreCase))
                     {
                         result = args[i + 1];
                     }

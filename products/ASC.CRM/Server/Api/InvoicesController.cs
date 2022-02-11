@@ -192,9 +192,9 @@ namespace ASC.CRM.Api
             )
         {
             if (!String.IsNullOrEmpty(entityType) && !(
-                                                          String.Compare(entityType, "contact", true) == 0 ||
-                                                          String.Compare(entityType, "opportunity", true) == 0 ||
-                                                          String.Compare(entityType, "case", true) == 0))
+                                                          string.Equals(entityType, "contact", StringComparison.CurrentCultureIgnoreCase) ||
+                                                          string.Equals(entityType, "opportunity", StringComparison.CurrentCultureIgnoreCase) ||
+                                                          string.Equals(entityType, "case", StringComparison.CurrentCultureIgnoreCase)))
                 throw new ArgumentException();
 
             IEnumerable<InvoiceBaseDto> result;

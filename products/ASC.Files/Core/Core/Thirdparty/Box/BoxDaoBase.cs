@@ -29,7 +29,7 @@ namespace ASC.Files.Thirdparty.Box
     {
         protected override string Id { get => "box"; }
 
-        public BoxDaoBase(
+        protected BoxDaoBase(
             IServiceProvider serviceProvider,
             UserManager userManager,
             TenantManager tenantManager,
@@ -71,7 +71,8 @@ namespace ASC.Files.Thirdparty.Box
 
         protected override string MakeId(string path = null)
         {
-            return string.Format("{0}{1}", PathPrefix, string.IsNullOrEmpty(path) || path == "0" ? "" : ("-|" + path.TrimStart('/')));
+            var p = string.IsNullOrEmpty(path) || path == "0" ? "" : ("-|" + path.TrimStart('/'));
+            return $"{PathPrefix}{p}";
         }
 
         protected string MakeFolderTitle(BoxFolder boxFolder)
@@ -275,9 +276,9 @@ namespace ASC.Files.Thirdparty.Box
             if (!match.Success)
             {
                 var insertIndex = requestTitle.Length;
-                if (requestTitle.LastIndexOf(".", StringComparison.InvariantCulture) != -1)
+                if (requestTitle.LastIndexOf('.') != -1)
                 {
-                    insertIndex = requestTitle.LastIndexOf(".", StringComparison.InvariantCulture);
+                    insertIndex = requestTitle.LastIndexOf('.');
                 }
                 requestTitle = requestTitle.Insert(insertIndex, " (1)");
             }
@@ -289,7 +290,7 @@ namespace ASC.Files.Thirdparty.Box
             return requestTitle;
         }
 
-        private static string MatchEvaluator(Match match)
+        private string MatchEvaluator(Match match)
         {
             var index = Convert.ToInt32(match.Groups[2].Value);
             var staticText = match.Value.Substring(string.Format(" ({0})", index).Length);

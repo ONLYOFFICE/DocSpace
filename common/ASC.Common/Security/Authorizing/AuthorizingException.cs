@@ -101,42 +101,34 @@ public class AuthorizingException : Exception
             throw new ArgumentException();
         }
 
-        var reasons = "";
+        var sb = new StringBuilder();
         for (var i = 0; i < actions.Length; i++)
         {
-            var reason = "";
+            var action = actions[i];
+            var denyAction = denyActions[i];
+            var denySubject = denySubjects[i];
 
-            if (denySubjects[i] != null && denyActions[i] != null)
+            string reason;
+            if (denySubject != null && denyAction != null)
             {
-                reason = string.Format("{0}:{1} access denied {2}.",
-                                       actions[i].Name,
-                                       (denySubjects[i] is IRole ? "role:" : "") + denySubjects[i].Name,
-                                       denyActions[i].Name
-                    );
+                reason = $"{action.Name}:{(denySubject is IRole ? "role:" : "") + denySubject.Name} access denied {denyAction.Name}.";
             }
             else
             {
-                reason = string.Format("{0}: access denied.", actions[i].Name);
+                reason = $"{action.Name}: access denied.";
             }
-
             if (i != actions.Length - 1)
             {
                 reason += ", ";
             }
 
-            reasons += reason;
+            sb.Append(reason);
         }
+        var reasons = sb.ToString();
         var sactions = "";
-
         Array.ForEach(actions, action => { sactions += action.ToString() + ", "; });
 
-        var message = string.Format(
-            "\"{0}\" access denied \"{1}\". Cause: {2}.",
-            (subject is IRole ? "role:" : "") + subject.Name,
-            sactions,
-            reasons
-            );
-
+        var message = $"\"{(subject is IRole ? "role:" : "") + subject.Name}\" access denied \"{sactions}\". Cause: {reasons}.";
         return message;
     }
 }

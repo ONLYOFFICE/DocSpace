@@ -80,10 +80,8 @@ public class SelfCleaningTarget : FileTarget
 
         const string key = "cleanPeriod";
 
-        if (LogManager.Configuration.Variables.Keys.Contains(key))
+            if (LogManager.Configuration.Variables.TryGetValue(key, out var variable))
         {
-            var variable = LogManager.Configuration.Variables[key];
-
             if (variable != null && !string.IsNullOrEmpty(variable.Text))
             {
                 int.TryParse(variable.Text, out value);
@@ -143,7 +141,7 @@ public class SelfCleaningTarget : FileTarget
             {
                 Exception = err,
                 Level = LogLevel.Error,
-                Message = string.Format("file: {0}, dir: {1}, mess: {2}", filePath, dirPath, err.Message),
+                    Message = $"file: {filePath}, dir: {dirPath}, mess: {err.Message}",
                 LoggerName = "SelfCleaningTarget"
             });
         }

@@ -113,7 +113,7 @@ public abstract class CachedDictionaryBase<T>
 
     protected virtual bool FitsCondition(object cached)
     {
-        return cached != null && cached is T;
+        return cached is T;
     }
 
     protected virtual T ReturnCached(object objectCache)

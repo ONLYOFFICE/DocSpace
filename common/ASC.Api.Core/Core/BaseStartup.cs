@@ -1,9 +1,9 @@
 ﻿using JsonConverter = System.Text.Json.Serialization.JsonConverter;
 
-namespace ASC.Api.Core
+namespace ASC.Api.Core;
+
+public abstract class BaseStartup
 {
-    public abstract class BaseStartup
-    {
         public IConfiguration Configuration { get; }
         public IHostEnvironment HostEnvironment { get; }
         public virtual JsonConverter[] Converters { get; }
@@ -19,6 +19,7 @@ namespace ASC.Api.Core
             Configuration = configuration;
             HostEnvironment = hostEnvironment;
             DIHelper = new DIHelper();
+
             if (bool.TryParse(Configuration["core:products"], out var loadProducts))
             {
                 LoadProducts = loadProducts;
@@ -30,9 +31,12 @@ namespace ASC.Api.Core
             services.AddCustomHealthCheck(Configuration);
             services.AddHttpContextAccessor();
             services.AddMemoryCache();
+            services.AddHttpClient();
 
             if (AddAndUseSession)
+        {
                 services.AddSession();
+        }
 
             DIHelper.Configure(services);
 
@@ -85,7 +89,6 @@ namespace ASC.Api.Core
                 DIHelper.TryAdd(typeof(IEventBus<>), typeof(EventBusMemoryCache<>));
             }
 
-
             DIHelper.TryAdd(typeof(IWebhookPublisher), typeof(WebhookPublisher));
 
             if (LoadProducts)
@@ -93,7 +96,7 @@ namespace ASC.Api.Core
                 DIHelper.RegisterProducts(Configuration, HostEnvironment.ContentRootPath);
             }
 
-            var builder = services.AddMvcCore(config =>
+            services.AddMvcCore(config =>
             {
                 config.Conventions.Add(new ControllerNameAttributeConvention());
 
@@ -135,7 +138,9 @@ namespace ASC.Api.Core
             app.UseRouting();
 
             if (AddAndUseSession)
+        {
                 app.UseSession();
+        }
 
             app.UseAuthentication();
 
@@ -166,17 +171,17 @@ namespace ASC.Api.Core
         {
             builder.Register(Configuration, LoadProducts, LoadConsumers);
         }
-    }
+}
 
-    public static class LogNLogConfigureExtenstion
-    {
+public static class LogNLogConfigureExtenstion
+{
         public static IHostBuilder ConfigureNLogLogging(this IHostBuilder hostBuilder)
         {
             return hostBuilder.ConfigureLogging((hostBuildexContext, r) =>
             {
-                _ = new ConfigureLogNLog(hostBuildexContext.Configuration, new ConfigurationExtension(hostBuildexContext.Configuration), hostBuildexContext.HostingEnvironment);
+            _ = new ConfigureLogNLog(hostBuildexContext.Configuration, 
+                new ConfigurationExtension(hostBuildexContext.Configuration), hostBuildexContext.HostingEnvironment);
                 r.AddNLog(LogManager.Configuration);
             });
         }
-    }
 }

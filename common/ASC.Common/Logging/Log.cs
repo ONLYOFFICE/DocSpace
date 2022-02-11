@@ -982,7 +982,7 @@ public class LogManager<T> : OptionsMonitor<T> where T : class, ILog, new()
     }
 }
 
-public class LoggerExtension<T> where T : class, ILog, new()
+public static class LoggerExtension<T> where T : class, ILog, new()
 {
     public static void RegisterLog(DIHelper services)
     {
@@ -990,10 +990,10 @@ public class LoggerExtension<T> where T : class, ILog, new()
     }
 }
 
-public class LogNLogExtension : LoggerExtension<LogNLog>
+public static class LogNLogExtension
 {
     public static void Register(DIHelper services)
     {
-        RegisterLog(services);
+            LoggerExtension<LogNLog>.RegisterLog(services);
     }
 }

@@ -83,14 +83,14 @@ public abstract class DIAttribute : Attribute
     public Type Service { get; }
     public Type Additional { get; set; }
 
-    public DIAttribute() { }
+        protected DIAttribute() { }
 
-    public DIAttribute(Type service)
+        protected DIAttribute(Type service)
     {
         Service = service;
     }
 
-    public DIAttribute(Type service, Type implementation)
+        protected DIAttribute(Type service, Type implementation)
     {
         Implementation = implementation;
         Service = service;
@@ -232,7 +232,7 @@ public class DIHelper
                         }
                         else
                         {
-                            Type c = null;
+                                Type c;
                             var a1 = a.GetGenericTypeDefinition();
                             var b = a.GetGenericArguments().FirstOrDefault();
 
@@ -295,7 +295,7 @@ public class DIHelper
                         }
                         else
                         {
-                            Type c = null;
+                                Type c;
                             var a1 = a.GetGenericTypeDefinition();
                             var b = a.GetGenericArguments().FirstOrDefault();
 
