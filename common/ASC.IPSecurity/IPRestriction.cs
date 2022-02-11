@@ -26,10 +26,10 @@
 namespace ASC.IPSecurity
 {
     [Serializable]
-    public class IPRestriction
+    public class IPRestriction : IMapFrom<TenantIpRestrictions>
     {
         public int Id { get; set; }
-        public int TenantId { get; set; }
+        public int Tenant { get; set; }
         public string Ip { get; set; }
     }
 }
