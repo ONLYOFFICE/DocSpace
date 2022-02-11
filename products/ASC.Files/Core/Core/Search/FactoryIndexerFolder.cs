@@ -116,7 +116,7 @@ namespace ASC.Web.Files.Core.Search
                 var j = 0;
                 var tasks = new List<Task>();
 
-                foreach (var data in _indexer.IndexAll(getCount, getIds, getData))
+                foreach (var data in Indexer.IndexAll(getCount, getIds, getData))
                 {
                     if (Settings.Threads == 1)
                     {
