@@ -13,11 +13,11 @@ const SubInfoPanelHeader = ({ children, toggleIsVisible }) => {
 
     const StyledInfoPanelHeader = styled.div`
         width: 100%;
-        height: 53px;
+        height: 52px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin: 8px 0;
+        margin: 8px -16px;
 
         .close-btn {
             @media ${tablet} {
@@ -26,21 +26,31 @@ const SubInfoPanelHeader = ({ children, toggleIsVisible }) => {
         }
     `;
 
+    const StyledDivider = styled.div`
+        margin: 0 -16px;
+        width: calc(100% + 32px);
+        height: 1px;
+        background: #eceef1;
+    `;
+
     return (
-        <StyledInfoPanelHeader>
-            <Text fontSize="21px" fontWeight="700">
-                {content}
-            </Text>
-            <IconButton
-                className="close-btn"
-                onClick={toggleIsVisible}
-                iconName="/static/images/cross.react.svg"
-                size="17"
-                color="#A3A9AE"
-                hoverColor="#657077"
-                isFill={true}
-            />
-        </StyledInfoPanelHeader>
+        <>
+            <StyledInfoPanelHeader>
+                <Text className="header-text" fontSize="21px" fontWeight="700">
+                    {content}
+                </Text>
+                <IconButton
+                    className="close-btn"
+                    onClick={toggleIsVisible}
+                    iconName="/static/images/cross.react.svg"
+                    size="17"
+                    color="#A3A9AE"
+                    hoverColor="#657077"
+                    isFill={true}
+                />
+            </StyledInfoPanelHeader>
+            <StyledDivider />
+        </>
     );
 };
 
