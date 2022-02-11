@@ -28,14 +28,15 @@ namespace ASC.IPSecurity
     [Scope]
     public class IPRestrictionsRepository
     {
-        private const string dbId = "core";
+        private TenantDbContext TenantDbContext => _lazyTenantDbContext.Value;
 
-        private Lazy<TenantDbContext> LazyTenantDbContext { get; }
-        private TenantDbContext TenantDbContext { get => LazyTenantDbContext.Value; }
+        private const string DbId = "core";
+
+        private readonly Lazy<TenantDbContext> _lazyTenantDbContext;
 
         public IPRestrictionsRepository(DbContextManager<TenantDbContext> dbContextManager)
         {
-            LazyTenantDbContext = new Lazy<TenantDbContext>(() => dbContextManager.Get(dbId));
+            _lazyTenantDbContext = new Lazy<TenantDbContext>(() => dbContextManager.Get(DbId));
         }
 
         public List<IPRestriction> Get(int tenant)
@@ -67,6 +68,7 @@ namespace ASC.IPSecurity
             TenantDbContext.TenantIpRestrictions.AddRange(ipsList);
 
             tx.Commit();
+
             return ips.ToList();
         }
     }

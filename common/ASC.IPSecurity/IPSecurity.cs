@@ -28,17 +28,15 @@ namespace ASC.IPSecurity
     [Scope]
     public class IPSecurity
     {
-        private readonly ILog Log;
-
         public bool IpSecurityEnabled { get; }
 
-        private IHttpContextAccessor HttpContextAccessor { get; }
-        private AuthContext AuthContext { get; }
-        private TenantManager TenantManager { get; }
-        private IPRestrictionsService IPRestrictionsService { get; }
-        private SettingsManager SettingsManager { get; }
-
-        private readonly string CurrentIpForTest;
+        private readonly ILog _logger;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly AuthContext _authContext;
+        private readonly TenantManager _tenantManager;
+        private readonly IPRestrictionsService _ipRestrictionsService;
+        private readonly SettingsManager _settingsManager;
+        private readonly string _currentIpForTest;
 
         public IPSecurity(
             IConfiguration configuration,
@@ -49,39 +47,39 @@ namespace ASC.IPSecurity
             SettingsManager settingsManager,
             IOptionsMonitor<ILog> options)
         {
-            Log = options.Get("ASC.IPSecurity");
-            HttpContextAccessor = httpContextAccessor;
-            AuthContext = authContext;
-            TenantManager = tenantManager;
-            IPRestrictionsService = iPRestrictionsService;
-            SettingsManager = settingsManager;
-            CurrentIpForTest = configuration["ipsecurity:test"];
+            _logger = options.Get("ASC.IPSecurity");
+            _httpContextAccessor = httpContextAccessor;
+            _authContext = authContext;
+            _tenantManager = tenantManager;
+            _ipRestrictionsService = iPRestrictionsService;
+            _settingsManager = settingsManager;
+            _currentIpForTest = configuration["ipsecurity:test"];
             var hideSettings = (configuration["web:hide-settings"] ?? "").Split(new[] { ',', ';', ' ' });
             IpSecurityEnabled = !hideSettings.Contains("IpSecurity", StringComparer.CurrentCultureIgnoreCase);
         }
 
         public bool Verify()
         {
-            var tenant = TenantManager.GetCurrentTenant();
+            var tenant = _tenantManager.GetCurrentTenant();
 
             if (!IpSecurityEnabled) return true;
 
-            if (HttpContextAccessor?.HttpContext == null) return true;
+            if (_httpContextAccessor?.HttpContext == null) return true;
 
-            if (tenant == null || AuthContext.CurrentAccount.ID == tenant.OwnerId) return true;
+            if (tenant == null || _authContext.CurrentAccount.ID == tenant.OwnerId) return true;
 
             string requestIps = null;
             try
             {
-                var restrictions = IPRestrictionsService.Get(tenant.TenantId).ToList();
+                var restrictions = _ipRestrictionsService.Get(tenant.TenantId).ToList();
 
                 if (restrictions.Count == 0) return true;
 
-                requestIps = CurrentIpForTest;
+                requestIps = _currentIpForTest;
 
                 if (string.IsNullOrWhiteSpace(requestIps))
                 {
-                    var request = HttpContextAccessor.HttpContext.Request;
+                    var request = _httpContextAccessor.HttpContext.Request;
                     requestIps = request.Headers["X-Forwarded-For"].FirstOrDefault() ?? request.GetUserHostAddress();
                 }
 
@@ -96,11 +94,11 @@ namespace ASC.IPSecurity
             }
             catch (Exception ex)
             {
-                Log.ErrorFormat("Can't verify request with IP-address: {0}. Tenant: {1}. Error: {2} ", requestIps ?? "", tenant, ex);
+                _logger.ErrorFormat("Can't verify request with IP-address: {0}. Tenant: {1}. Error: {2} ", requestIps ?? "", tenant, ex);
                 return false;
             }
 
-            Log.InfoFormat("Restricted from IP-address: {0}. Tenant: {1}. Request to: {2}", requestIps ?? "", tenant, HttpContextAccessor.HttpContext.Request.GetDisplayUrl());
+            _logger.InfoFormat("Restricted from IP-address: {0}. Tenant: {1}. Request to: {2}", requestIps ?? "", tenant, _httpContextAccessor.HttpContext.Request.GetDisplayUrl());
             return false;
         }
 

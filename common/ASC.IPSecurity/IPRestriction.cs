@@ -29,9 +29,7 @@ namespace ASC.IPSecurity
     public class IPRestriction
     {
         public int Id { get; set; }
-
         public int TenantId { get; set; }
-
         public string Ip { get; set; }
     }
 }

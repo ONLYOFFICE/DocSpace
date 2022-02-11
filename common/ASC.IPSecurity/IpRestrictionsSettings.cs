@@ -30,10 +30,7 @@ namespace ASC.IPSecurity
     {
         public bool Enable { get; set; }
 
-        public Guid ID
-        {
-            get { return new Guid("{2EDDDF64-F792-4498-A638-2E3E6EBB13C9}"); }
-        }
+        public Guid ID => new Guid("{2EDDDF64-F792-4498-A638-2E3E6EBB13C9}");
 
         public ISettings GetDefault(IServiceProvider serviceProvider)
         {
