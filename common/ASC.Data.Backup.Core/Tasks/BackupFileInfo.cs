@@ -23,12 +23,6 @@
  *
 */
 
-
-using System;
-using System.Xml.Linq;
-
-using ASC.Data.Backup.Extensions;
-
 namespace ASC.Data.Backup.Tasks
 {
     public class BackupFileInfo

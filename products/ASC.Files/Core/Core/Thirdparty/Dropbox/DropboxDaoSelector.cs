@@ -23,13 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common;
-using ASC.Files.Core;
-using ASC.Files.Core.Security;
-
 namespace ASC.Files.Thirdparty.Dropbox
 {
     [Scope(Additional = typeof(DropboxDaoSelectorExtension))]
@@ -64,7 +57,7 @@ namespace ASC.Files.Thirdparty.Dropbox
         }
     }
 
-    public class DropboxDaoSelectorExtension
+    public static class DropboxDaoSelectorExtension
     {
         public static void Register(DIHelper services)
         {

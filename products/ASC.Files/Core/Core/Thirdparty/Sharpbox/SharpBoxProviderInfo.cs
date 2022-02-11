@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-
-using AppLimit.CloudComputing.SharpBox;
-using AppLimit.CloudComputing.SharpBox.Exceptions;
-using AppLimit.CloudComputing.SharpBox.StorageProvider;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Files.Core;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Files.Thirdparty.Sharpbox
 {
     [Transient]
@@ -141,7 +128,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         internal CloudStorage CreateStorage(AuthData _authData, nSupportedCloudConfigurations _providerKey)
         {
-            var prms = new object[] { };
+            var prms = Array.Empty<object>();
             if (!string.IsNullOrEmpty(_authData.Url))
             {
                 var uri = _authData.Url;

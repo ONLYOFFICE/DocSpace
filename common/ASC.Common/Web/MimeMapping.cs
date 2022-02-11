@@ -23,11 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections;
-using System.Collections.Generic;
-
 namespace ASC.Common.Web
 {
     public static class MimeMapping
@@ -857,7 +852,7 @@ namespace ASC.Common.Web
             foreach (DictionaryEntry entry in extensionToMimeMappingTable)
             {
                 var mime = (string)entry.Value;
-                if (mime == mimeMapping.ToLowerInvariant()) return (string)entry.Key;
+                if (mime.Equals(mimeMapping, StringComparison.OrdinalIgnoreCase)) return (string)entry.Key;
                 if (!mimeSynonyms.ContainsKey(mime)) continue;
                 if (mimeSynonyms[mime].Contains(mimeMapping.ToLowerInvariant())) return (string)entry.Key;
             }

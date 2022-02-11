@@ -23,27 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Common.Threading;
-using ASC.Common.Utils;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Data.Storage.Configuration;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Data.Storage
 {
     [Scope(Additional = typeof(StaticUploaderExtension))]
@@ -255,7 +234,7 @@ namespace ASC.Data.Storage
             this.relativePath = relativePath;
             this.mappedPath = mappedPath;
 
-            var extensions = ".png|.jpeg|.jpg|.gif|.ico|.swf|.mp3|.ogg|.eot|.svg|.ttf|.woff|.woff2|.css|.less|.js";
+            const string extensions = ".png|.jpeg|.jpg|.gif|.ico|.swf|.mp3|.ogg|.eot|.svg|.ttf|.woff|.woff2|.css|.less|.js";
             var extensionsArray = extensions.Split('|');
 
             directoryFiles = Directory.GetFiles(mappedPath, "*", SearchOption.AllDirectories)

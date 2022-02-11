@@ -23,11 +23,6 @@
  *
 */
 
-
-using System;
-using System.Linq;
-using System.Text;
-
 namespace ASC.Common.Utils
 {
     public static class MimeHeaderUtils

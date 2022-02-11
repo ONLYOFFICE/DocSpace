@@ -1,19 +1,9 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Web.Webhooks;
-
-namespace ASC.Webhooks.Service
+﻿namespace ASC.Webhooks.Service
 {
     [Singletone]
     public class WorkerService
     {
-        private readonly int? threadCount = 10;
+        private readonly int? threadCount;
         private readonly WebhookSender webhookSender;
         private readonly ConcurrentQueue<WebhookRequest> queue;
         private CancellationToken cancellationToken;

@@ -1,11 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Common;
-
-using Microsoft.Extensions.Hosting;
-
-namespace ASC.Webhooks.Service
+﻿namespace ASC.Webhooks.Service
 {
     [Singletone]
     public class WebhookHostedService : IHostedService

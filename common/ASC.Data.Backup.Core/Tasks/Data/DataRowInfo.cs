@@ -23,11 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace ASC.Data.Backup.Tasks.Data
 {
     public class DataRowInfo
@@ -86,7 +81,7 @@ namespace ASC.Data.Backup.Tasks.Data
             while (i < _values.Count && sb.Length <= maxStrLength)
             {
                 var strVal = Convert.ToString(_values[i]);
-                sb.AppendFormat("\"{0}\", ", strVal);
+                sb.Append($"\"{strVal}\", ");
                 i++;
             }
 

@@ -23,9 +23,6 @@
  *
 */
 
-
-using Nest;
-
 namespace ASC.ElasticSearch
 {
     public class Document

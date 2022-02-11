@@ -23,10 +23,6 @@
  *
 */
 
-
-using System;
-using System.IO;
-
 namespace ASC.Data.Storage
 {
     public class ProgressStream : Stream
@@ -36,7 +32,7 @@ namespace ASC.Data.Storage
 
         public ProgressStream(Stream stream)
         {
-            this.stream = stream ?? throw new ArgumentNullException("stream");
+            this.stream = stream ?? throw new ArgumentNullException(nameof(stream));
             try
             {
                 length = stream.Length;

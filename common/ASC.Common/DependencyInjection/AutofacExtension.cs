@@ -1,17 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Loader;
-
-using ASC.Common.Utils;
-
-using Autofac;
-using Autofac.Configuration;
-
-using Microsoft.Extensions.Configuration;
-
-namespace ASC.Common.DependencyInjection
+﻿namespace ASC.Common.DependencyInjection
 {
     internal class AutofacComponent
     {
@@ -120,7 +107,7 @@ namespace ASC.Common.DependencyInjection
 
             void LoadAssembly(string type)
             {
-                var dll = type.Substring(type.IndexOf(",") + 1).Trim();
+                var dll = type.Substring(type.IndexOf(',') + 1).Trim();
                 var path = GetFullPath(dll);
 
                 if (!string.IsNullOrEmpty(path))

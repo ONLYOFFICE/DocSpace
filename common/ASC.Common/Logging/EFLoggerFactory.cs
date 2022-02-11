@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+﻿using ILogger = Microsoft.Extensions.Logging.ILogger;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace ASC.Common.Logging
 {

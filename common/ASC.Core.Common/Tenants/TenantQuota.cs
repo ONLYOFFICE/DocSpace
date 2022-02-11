@@ -23,11 +23,6 @@
  *
 */
 
-
-using System;
-using System.Diagnostics;
-using System.Linq;
-
 namespace ASC.Core.Tenants
 {
     [DebuggerDisplay("{Name}")]
@@ -307,7 +302,7 @@ namespace ASC.Core.Tenants
         internal void SetFeature(string feature, bool set)
         {
             var features = (Features == null
-                                ? new string[] { }
+                                ? Array.Empty<string>()
                                 : Features.Split(' ', ',', ';')).ToList();
             if (set && !features.Contains(feature))
             {

@@ -14,15 +14,6 @@
  *
 */
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-
-using ASC.Common;
-using ASC.Web.Files.Classes;
-
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Web.Files.Core.Compress
 {
     /// <summary>
@@ -33,8 +24,8 @@ namespace ASC.Web.Files.Core.Compress
     {
         private readonly ICompress compress;
 
-        internal static string TarExt = ".tar.gz";
-        internal static string ZipExt = ".zip";
+        internal static readonly string TarExt = ".tar.gz";
+        internal static readonly string ZipExt = ".zip";
         private static List<string> Exts = new List<string>(2) { TarExt, ZipExt };
 
         public CompressToArchive(FilesSettingsHelper filesSettings, CompressToTarGz compressToTarGz, CompressToZip compressToZip)

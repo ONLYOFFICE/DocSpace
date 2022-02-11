@@ -23,27 +23,13 @@
  *
 */
 
-
-using System;
-using System.Text;
-
-using ASC.Common;
-using ASC.Core.Caching;
-using ASC.Core.Common.Settings;
-using ASC.Core.Configuration;
-using ASC.Core.Tenants;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json;
-
 namespace ASC.Core
 {
     [Singletone]
     public class CoreBaseSettings
     {
         private bool? standalone;
+        private string basedomain;
         private bool? personal;
         private bool? customMode;
 
@@ -52,6 +38,17 @@ namespace ASC.Core
         public CoreBaseSettings(IConfiguration configuration)
         {
             Configuration = configuration;
+        }
+        public string Basedomain
+        {
+            get 
+            {
+                if (basedomain == null)
+                {
+                    basedomain = Configuration["core:base-domain"] ?? string.Empty;
+                }
+                return basedomain;
+            }
         }
 
         public bool Standalone
@@ -64,13 +61,14 @@ namespace ASC.Core
             get
             {
                 //TODO:if (CustomMode && HttpContext.Current != null && HttpContext.Current.Request.SailfishApp()) return true;
-                return personal ?? (bool)(personal = string.Compare(Configuration["core:personal"], "true", true) == 0);
+                return personal ?? (bool)(personal = string.Equals(Configuration["core:personal"], "true", StringComparison.OrdinalIgnoreCase));
             }
         }
 
         public bool CustomMode
         {
-            get { return customMode ?? (bool)(customMode = string.Compare(Configuration["core:custom-mode"], "true", true) == 0); }
+            get { return customMode ?? (bool)(customMode = string.Equals(Configuration["core:custom-mode"], "true", StringComparison.OrdinalIgnoreCase));}
+
         }
     }
 
@@ -108,31 +106,24 @@ namespace ASC.Core
     [Scope(typeof(ConfigureCoreSettings))]
     public class CoreSettings
     {
-        private string basedomain;
-
         public string BaseDomain
         {
             get
             {
-                if (basedomain == null)
-                {
-                    basedomain = Configuration["core:base-domain"] ?? string.Empty;
-                }
-
                 string result;
-                if (CoreBaseSettings.Standalone || string.IsNullOrEmpty(basedomain))
+                if (CoreBaseSettings.Standalone || string.IsNullOrEmpty(CoreBaseSettings.Basedomain))
                 {
-                    result = GetSetting("BaseDomain") ?? basedomain;
+                    result = GetSetting("BaseDomain") ?? CoreBaseSettings.Basedomain;
                 }
                 else
                 {
-                    result = basedomain;
+                    result = CoreBaseSettings.Basedomain;
                 }
                 return result;
             }
             set
             {
-                if (CoreBaseSettings.Standalone || string.IsNullOrEmpty(basedomain))
+                if (CoreBaseSettings.Standalone || string.IsNullOrEmpty(CoreBaseSettings.Basedomain))
                 {
                     SaveSetting("BaseDomain", value);
                 }
@@ -162,7 +153,7 @@ namespace ASC.Core
         {
             var baseHost = BaseDomain;
 
-            if (string.IsNullOrEmpty(hostedRegion) || string.IsNullOrEmpty(baseHost) || !baseHost.Contains("."))
+            if (string.IsNullOrEmpty(hostedRegion) || string.IsNullOrEmpty(baseHost) || baseHost.IndexOf('.') < 0)
             {
                 return baseHost;
             }
@@ -174,7 +165,7 @@ namespace ASC.Core
         {
             if (string.IsNullOrEmpty(key))
             {
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException(nameof(key));
             }
             byte[] bytes = null;
             if (value != null)
@@ -188,7 +179,7 @@ namespace ASC.Core
         {
             if (string.IsNullOrEmpty(key))
             {
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException(nameof(key));
             }
             var bytes = TenantService.GetTenantSettings(tenant, key);
 
@@ -210,7 +201,8 @@ namespace ASC.Core
                         key = GetSetting("PortalId");
                         if (string.IsNullOrEmpty(key))
                         {
-                            SaveSetting("PortalId", key = Guid.NewGuid().ToString());
+                            key = Guid.NewGuid().ToString();
+                            SaveSetting("PortalId", key);
                         }
                     }
                 }

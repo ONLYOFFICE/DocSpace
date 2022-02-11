@@ -23,15 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-
-using ARSoft.Tools.Net;
-using ARSoft.Tools.Net.Dns;
-
 namespace ASC.Common.Utils
 {
     public class DnsLookup
@@ -101,7 +92,7 @@ namespace ASC.Common.Utils
 
             var dnsMessage = GetDnsMessage(domainName);
 
-            return dnsMessage.AnswerRecords.Any();
+            return dnsMessage.AnswerRecords.Count != 0;
         }
 
         /// <summary>

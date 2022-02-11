@@ -10,12 +10,6 @@
 // You must not remove this notice, or any other, from this software.
 #endregion
 
-#region Using Statements
-using System;
-using System.Text.RegularExpressions;
-#endregion
-
-
 namespace Textile.States
 {
     [FormatterState(SimpleBlockFormatterState.PatternBegin + @"bq" + SimpleBlockFormatterState.PatternEnd)]

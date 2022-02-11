@@ -23,9 +23,6 @@
  *
 */
 
-
-using System;
-
 namespace ASC.Notify.Patterns
 {
     public class Pattern : IPattern
@@ -52,8 +49,8 @@ namespace ASC.Notify.Patterns
         {
             if (string.IsNullOrEmpty(id)) throw new ArgumentException("id");
             ID = id;
-            Subject = subject ?? throw new ArgumentNullException("subject");
-            Body = body ?? throw new ArgumentNullException("body");
+            Subject = subject ?? throw new ArgumentNullException(nameof(subject));
+            Body = body ?? throw new ArgumentNullException(nameof(body));
             ContentType = string.IsNullOrEmpty(contentType) ? HTMLContentType : contentType;
         }
 

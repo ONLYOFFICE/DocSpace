@@ -23,20 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core.Common.EF;
-using ASC.Core.Data;
-using ASC.Core.Users;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Core.Caching
 {
     [Singletone]
@@ -207,7 +193,7 @@ namespace ASC.Core.Caching
             UserServiceCache userServiceCache
             ) : this()
         {
-            Service = service ?? throw new ArgumentNullException("service");
+            Service = service ?? throw new ArgumentNullException(nameof(service));
             CoreBaseSettings = coreBaseSettings;
             UserServiceCache = userServiceCache;
             Cache = userServiceCache.Cache;
@@ -322,7 +308,7 @@ namespace ASC.Core.Caching
                 group = Service.GetGroup(tenant, id);
 
                 if (group != null) Cache.Insert(key, group, CacheExpiration);
-            };
+            }
 
             return group;
         }

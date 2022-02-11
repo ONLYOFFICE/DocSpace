@@ -23,12 +23,6 @@
  *
 */
 
-
-using System;
-using System.Globalization;
-using System.Security.Principal;
-using System.Threading;
-
 namespace ASC.Common.Web
 {
     public abstract class AbstractHttpAsyncHandler // : IHttpAsyncHandler, IReadOnlySessionState

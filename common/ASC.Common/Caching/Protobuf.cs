@@ -1,10 +1,4 @@
-﻿using System;
-
-using Confluent.Kafka;
-
-using Google.Protobuf;
-
-namespace ASC.Common.Caching
+﻿namespace ASC.Common.Caching
 {
     public class ProtobufSerializer<T> : ISerializer<T> where T : IMessage<T>, new()
     {

@@ -23,34 +23,7 @@
  *
 */
 
-
-using System;
-using System.Collections.Specialized;
-using System.Globalization;
-using System.IO;
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Utils;
-using ASC.Core;
-using ASC.Core.Billing;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-using ASC.MessagingSystem;
-using ASC.Web.Api.Models;
-using ASC.Web.Core.PublicResources;
-using ASC.Web.Core.Users;
-using ASC.Web.Core.Utility.Settings;
-using ASC.Web.Studio.Core;
-using ASC.Web.Studio.Core.Notify;
-using ASC.Web.Studio.UserControls.Management;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.Extensions.Options;
+using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Studio.UserControls.FirstTime
 {
@@ -70,6 +43,7 @@ namespace ASC.Web.Studio.UserControls.FirstTime
         private StudioNotifyService StudioNotifyService { get; }
         private TimeZoneConverter TimeZoneConverter { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
+        public IHttpClientFactory ClientFactory { get; }
 
         public FirstTimeTenantSettings(
             IOptionsMonitor<ILog> options,
@@ -84,7 +58,8 @@ namespace ASC.Web.Studio.UserControls.FirstTime
             LicenseReader licenseReader,
             StudioNotifyService studioNotifyService,
             TimeZoneConverter timeZoneConverter,
-            CoreBaseSettings coreBaseSettings)
+            CoreBaseSettings coreBaseSettings,
+            IHttpClientFactory clientFactory)
         {
             Log = options.CurrentValue;
             TenantManager = tenantManager;
@@ -99,6 +74,7 @@ namespace ASC.Web.Studio.UserControls.FirstTime
             StudioNotifyService = studioNotifyService;
             TimeZoneConverter = timeZoneConverter;
             CoreBaseSettings = coreBaseSettings;
+            ClientFactory = clientFactory;
         }
 
         public WizardSettings SaveData(WizardModel wizardModel)
@@ -247,7 +223,7 @@ namespace ASC.Web.Studio.UserControls.FirstTime
 
                 try
                 {
-                    using (var httpClient = new HttpClient())
+                    var httpClient = ClientFactory.CreateClient();
                     using (var response = httpClient.Send(request))
                     using (var responseStream = response.Content.ReadAsStream())
                     using (var reader = new StreamReader(responseStream))
@@ -286,7 +262,7 @@ namespace ASC.Web.Studio.UserControls.FirstTime
                 var data = JsonSerializer.Serialize(values);
                 request.Content = new StringContent(data);
 
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
                 using var response = httpClient.Send(request);
 
                 Log.Debug("Subscribe response: " + response);//toto write

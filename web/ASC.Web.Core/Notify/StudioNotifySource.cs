@@ -23,15 +23,6 @@
  *
 */
 
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Notify;
-using ASC.Notify.Model;
-using ASC.Notify.Patterns;
-using ASC.Notify.Recipients;
-using ASC.Web.Core.PublicResources;
-
 namespace ASC.Web.Studio.Core.Notify
 {
     [Scope]

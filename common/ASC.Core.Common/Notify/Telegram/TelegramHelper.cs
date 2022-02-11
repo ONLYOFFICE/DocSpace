@@ -23,22 +23,6 @@
  *
 */
 
-
-using System;
-using System.Linq;
-using System.Net;
-using System.Security.Cryptography;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core.Common.Configuration;
-using ASC.Core.Common.Notify.Telegram;
-using ASC.Notify.Messages;
-
-using Microsoft.Extensions.Options;
-
-using Telegram.Bot;
-
 namespace ASC.Core.Common.Notify
 {
     [Scope]
@@ -106,7 +90,7 @@ namespace ASC.Core.Common.Notify
         public string CurrentRegistrationLink(Guid userId, int tenantId)
         {
             var token = GetCurrentToken(userId, tenantId);
-            if (token == null || token == "") return "";
+            if (token == null || token.Length == 0) return "";
 
             return GetLink(token);
         }
@@ -149,7 +133,7 @@ namespace ASC.Core.Common.Notify
             var botname = tgProvider == null ? default : tgProvider.TelegramBotName;
             if (string.IsNullOrEmpty(botname)) return null;
 
-            return string.Format("t.me/{0}?start={1}", botname, token);
+            return $"t.me/{botname}?start={token}";
         }
 
         public bool TestingClient(TelegramBotClient telegramBotClient)

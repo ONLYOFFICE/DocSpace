@@ -23,16 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Security;
-using ASC.Common.Security.Authorizing;
-using ASC.Core.Caching;
-
 namespace ASC.Core
 {
     [Scope]
@@ -100,7 +90,7 @@ namespace ASC.Core
 
         public void RemoveAllAces(ISecurityObjectId id)
         {
-            foreach (var r in GetAces(Guid.Empty, Guid.Empty, id).ToArray())
+            foreach (var r in GetAces(Guid.Empty, Guid.Empty, id))
             {
                 RemoveAce(r);
             }

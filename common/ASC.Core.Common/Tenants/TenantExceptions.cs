@@ -23,19 +23,13 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-
 namespace ASC.Core.Tenants
 {
     [Serializable]
     public class TenantTooShortException : Exception
     {
-        public int MinLength = 0;
-        public int MaxLength = 0;
+        public int MinLength { get; set; } = 0;
+        public int MaxLength { get; set; } = 0;
 
         public TenantTooShortException(string message)
             : base(message)

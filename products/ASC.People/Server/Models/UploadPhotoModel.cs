@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-
-using Microsoft.AspNetCore.Http;
-
-namespace ASC.People.Models
+﻿namespace ASC.People.Models
 {
     public class UploadPhotoModel
     {

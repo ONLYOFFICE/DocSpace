@@ -23,26 +23,7 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-
-using Amazon;
-using Amazon.Runtime;
-using Amazon.SimpleEmail;
-using Amazon.SimpleEmail.Model;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Utils;
-using ASC.Notify.Messages;
-using ASC.Notify.Patterns;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+using Message = Amazon.SimpleEmail.Model.Message;
 
 namespace ASC.Core.Notify.Senders
 {
@@ -249,7 +230,7 @@ namespace ASC.Core.Notify.Senders
         }
     }
 
-    public class AWSSenderExtension
+    public static class AWSSenderExtension
     {
         public static void Register(DIHelper services)
         {

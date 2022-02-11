@@ -23,12 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
-using ASC.Core.Users;
-
 namespace ASC.Feed
 {
     public class FeedMinUser

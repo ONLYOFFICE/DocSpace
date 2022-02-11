@@ -23,17 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-
-using ASC.Core.Users;
-
 namespace ASC.Web.Core.Users.Import
 {
     public class TextFileUserImporter : IUserImporter
@@ -115,7 +104,7 @@ namespace ASC.Web.Core.Users.Import
                     var value = ConvertFromString(dataFields[j], propinfo.PropertyType);
                     if (value != null)
                     {
-                        propinfo.SetValue(exportedUser, value, new object[] { });
+                        propinfo.SetValue(exportedUser, value, Array.Empty<object>());
                     }
                 }
             }
@@ -150,9 +139,9 @@ namespace ASC.Web.Core.Users.Import
                 foreach (var info in infos)
                 {
                     var propertyField = field.Trim();
-                    if (NameMapping != null && NameMapping.ContainsKey(propertyField))
+                    if (NameMapping != null)
                     {
-                        propertyField = NameMapping[propertyField];
+                        NameMapping.TryGetValue(propertyField, out propertyField);
                     }
                     if (!string.IsNullOrEmpty(propertyField) && !ExcludeList.Contains(propertyField) && propertyField.Equals(info.Name, StringComparison.OrdinalIgnoreCase))
                     {

@@ -10,12 +10,6 @@
 // You must not remove this notice, or any other, from this software.
 #endregion
 
-#region Using Statements
-using System;
-using System.Text.RegularExpressions;
-#endregion
-
-
 namespace Textile
 {
     /// <summary>
@@ -36,7 +30,7 @@ namespace Textile
         /// Public constructor.
         /// </summary>
         /// <param name="f">The parent formatter.</param>
-        public FormatterState(TextileFormatter formatter)
+        protected FormatterState(TextileFormatter formatter)
         {
             Formatter = formatter;
         }

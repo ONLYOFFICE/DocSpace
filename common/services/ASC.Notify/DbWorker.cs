@@ -23,27 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-using ASC.Core.Common.EF.Model;
-using ASC.Notify.Config;
-using ASC.Notify.Messages;
-
-using Google.Protobuf.Collections;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json;
-
 namespace ASC.Notify
 {
     [Singletone(Additional = typeof(DbWorkerExtension))]
@@ -224,7 +203,7 @@ namespace ASC.Notify
         }
     }
 
-    public class DbWorkerExtension
+    public static class DbWorkerExtension
     {
         public static void Register(DIHelper services)
         {

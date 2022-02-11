@@ -23,16 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Core.Notify.Senders;
-using ASC.Core.Tenants;
-using ASC.Notify.Messages;
-using ASC.Notify.Sinks;
-
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Core.Notify
 {
     class TelegramSenderSink : Sink
@@ -43,7 +33,7 @@ namespace ASC.Core.Notify
 
         public TelegramSenderSink(INotifySender sender, IServiceProvider serviceProvider)
         {
-            this.sender = sender ?? throw new ArgumentNullException("sender");
+            this.sender = sender ?? throw new ArgumentNullException(nameof(sender));
             this.serviceProvider = serviceProvider;
         }
 
@@ -52,7 +42,7 @@ namespace ASC.Core.Notify
         {
             try
             {
-                var result = SendResult.OK;
+                const SendResult result = SendResult.OK;
                 var m = new NotifyMessage
                 {
                     To = message.Recipient.ID,

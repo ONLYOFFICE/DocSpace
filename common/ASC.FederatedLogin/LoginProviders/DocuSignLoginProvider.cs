@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Core.Common.Configuration;
-using ASC.FederatedLogin.Helpers;
-
-using Microsoft.Extensions.Configuration;
-
 namespace ASC.FederatedLogin.LoginProviders
 {
     [Scope]
@@ -79,7 +66,7 @@ namespace ASC.FederatedLogin.LoginProviders
         {
             get
             {
-                var codeAuth = string.Format("{0}:{1}", ClientID, ClientSecret);
+                var codeAuth = $"{ClientID}:{ClientSecret}";
                 var codeAuthBytes = Encoding.UTF8.GetBytes(codeAuth);
                 var codeAuthBase64 = Convert.ToBase64String(codeAuthBytes);
                 return "Basic " + codeAuthBase64;
@@ -88,17 +75,17 @@ namespace ASC.FederatedLogin.LoginProviders
 
         public OAuth20Token GetAccessToken(string authCode)
         {
-            if (string.IsNullOrEmpty(authCode)) throw new ArgumentNullException("authCode");
+            if (string.IsNullOrEmpty(authCode)) throw new ArgumentNullException(nameof(authCode));
             if (string.IsNullOrEmpty(ClientID)) throw new ArgumentException("clientID");
             if (string.IsNullOrEmpty(ClientSecret)) throw new ArgumentException("clientSecret");
 
-            var data = string.Format("grant_type=authorization_code&code={0}", authCode);
+            var data = $"grant_type=authorization_code&code={authCode}";
             var headers = new Dictionary<string, string> { { "Authorization", AuthHeader } };
 
             var json = RequestHelper.PerformRequest(AccessTokenUrl, "application/x-www-form-urlencoded", "POST", data, headers);
             if (json == null) throw new Exception("Can not get token");
 
-            if (!json.StartsWith("{"))
+            if (!json.StartsWith('{'))
             {
                 json = "{\"" + json.Replace("=", "\":\"").Replace("&", "\",\"") + "\"}";
             }
@@ -117,7 +104,7 @@ namespace ASC.FederatedLogin.LoginProviders
             if (string.IsNullOrEmpty(refreshToken) || string.IsNullOrEmpty(ClientID) || string.IsNullOrEmpty(ClientSecret))
                 throw new ArgumentException("Can not refresh given token");
 
-            var data = string.Format("grant_type=refresh_token&refresh_token={0}", refreshToken);
+            var data = $"grant_type=refresh_token&refresh_token={refreshToken}";
             var headers = new Dictionary<string, string> { { "Authorization", AuthHeader } };
 
             var json = RequestHelper.PerformRequest(AccessTokenUrl, "application/x-www-form-urlencoded", "POST", data, headers);

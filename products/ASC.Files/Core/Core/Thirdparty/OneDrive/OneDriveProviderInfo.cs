@@ -23,23 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core.Common.Configuration;
-using ASC.FederatedLogin;
-using ASC.FederatedLogin.Helpers;
-using ASC.FederatedLogin.LoginProviders;
-using ASC.Files.Core;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OneDrive.Sdk;
-
 namespace ASC.Files.Thirdparty.OneDrive
 {
     [Transient]
@@ -258,7 +241,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             }
         }
     }
-    public class OneDriveProviderInfoExtention
+    public static class OneDriveProviderInfoExtention
     {
         public static void Register(DIHelper dIHelper)
         {

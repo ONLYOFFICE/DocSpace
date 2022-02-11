@@ -23,22 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core.ChunkedUploader;
-using ASC.Web.Files.Utils;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Files.Core
 {
     [DebuggerDisplay("{Id} into {FolderId}")]
@@ -76,7 +60,7 @@ namespace ASC.Files.Core
 
         public static ChunkedUploadSession<T> Deserialize(Stream stream, FileHelper fileHelper)
         {
-            var chunkedUploadSession = JsonSerializer.DeserializeAsync<ChunkedUploadSession<T>>(stream).Result;
+            var chunkedUploadSession = JsonSerializer.Deserialize<ChunkedUploadSession<T>>(stream);
             chunkedUploadSession.File.FileHelper = fileHelper;
             chunkedUploadSession.TransformItems();
             return chunkedUploadSession;

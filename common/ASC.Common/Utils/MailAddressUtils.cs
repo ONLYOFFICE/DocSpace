@@ -23,10 +23,6 @@
  *
 */
 
-
-using System.Net.Mail;
-using System.Text;
-
 namespace ASC.Common.Utils
 {
     public static class MailAddressUtils
@@ -66,7 +62,7 @@ namespace ASC.Common.Utils
 
         private static string ToSmtpAddress(string address, string displayName)
         {
-            return string.Format("\"{0}\" <{1}>", displayName, address);
+            return $"\"{displayName}\" <{address}>";
         }
     }
 }

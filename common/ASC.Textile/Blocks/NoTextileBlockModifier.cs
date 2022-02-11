@@ -10,9 +10,6 @@
 // You must not remove this notice, or any other, from this software.
 #endregion
 
-#region Using Statements
-#endregion
-
 
 namespace Textile.Blocks
 {

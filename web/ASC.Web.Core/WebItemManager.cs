@@ -23,21 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Web.Core.WebZones;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Web.Core
 {
     [Flags]
@@ -156,7 +141,7 @@ namespace ASC.Web.Core
                 }
                 catch (Exception exc)
                 {
-                    log.Error(string.Format("Couldn't load web item {0}", file), exc);
+                    log.Error($"Couldn't load web item {file}", exc);
                 }
             }
 
@@ -261,10 +246,11 @@ namespace ASC.Web.Core
 
         public List<IWebItem> GetSubItems(Guid parentItemID, ItemAvailableState avaliableState)
         {
-            return GetItems(WebZoneType.All, avaliableState).OfType<IModule>()
-                                                            .Where(p => p.ProjectId == parentItemID)
-                                                            .Cast<IWebItem>()
-                                                            .ToList();
+            return GetItems(WebZoneType.All, avaliableState)
+                .OfType<IModule>()
+                .Where(p => p.ProjectId == parentItemID)
+                .Cast<IWebItem>()
+                .ToList();
         }
     }
 }

@@ -23,13 +23,6 @@
  *
 */
 
-
-using System.Collections.Generic;
-
-using ASC.FederatedLogin.Profile;
-
-using Microsoft.AspNetCore.Http;
-
 namespace ASC.FederatedLogin.LoginProviders
 {
     public interface ILoginProvider : IOAuthProvider

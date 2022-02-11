@@ -23,23 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-using ASC.Core.Common.EF.Model;
-using ASC.Core.Tenants;
-
-using Microsoft.EntityFrameworkCore;
-
-using Newtonsoft.Json;
-
 namespace ASC.Feed.Data
 {
     [Scope]
@@ -94,7 +77,7 @@ namespace ASC.Feed.Data
                 SaveFeedsPortion(feedsPortion, aggregatedDate);
                 feedsPortion.Clear();
             }
-            if (feedsPortion.Any())
+            if (feedsPortion.Count > 0)
             {
                 SaveFeedsPortion(feedsPortion, aggregatedDate);
             }
@@ -179,9 +162,9 @@ namespace ASC.Feed.Data
                 feedsIteration = GetFeedsInternal(filter);
                 foreach (var feed in feedsIteration)
                 {
-                    if (feeds.ContainsKey(feed.GroupId))
+                    if (feeds.TryGetValue(feed.GroupId, out var value))
                     {
-                        feeds[feed.GroupId].Add(feed);
+                        value.Add(feed);
                     }
                     else
                     {

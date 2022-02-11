@@ -1,11 +1,3 @@
-using System;
-
-using ASC.Web.HealthChecks.UI;
-
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Hosting.WindowsServices;
-
 var options = new WebApplicationOptions
 {
     Args = args,

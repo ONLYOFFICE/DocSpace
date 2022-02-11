@@ -23,36 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Tenants;
-using ASC.Files.Core;
-using ASC.Files.Core.Resources;
-using ASC.MessagingSystem;
-using ASC.Security.Cryptography;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Helpers;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Core;
-
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json;
-
 namespace ASC.Web.Files.HttpHandlers
 {
     public class ChunkedUploaderHandler
@@ -385,7 +355,7 @@ namespace ASC.Web.Files.HttpHandlers
 
         public ChunkedRequestHelper(HttpRequest request)
         {
-            _request = request ?? throw new ArgumentNullException("request");
+            _request = request ?? throw new ArgumentNullException(nameof(request));
         }
 
         private bool IsAuthDataSet(InstanceCrypto instanceCrypto)

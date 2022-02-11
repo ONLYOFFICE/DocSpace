@@ -23,18 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Files.Core;
-using ASC.Files.Core.Data;
-using ASC.Files.Core.Thirdparty;
-
 namespace ASC.Files.Thirdparty.ProviderDao
 {
     [Scope]
@@ -103,7 +91,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             var result = folderDao.GetFolders(selector.ConvertId(parentId), orderBy, filterType, subjectGroup, subjectID, searchText, withSubfolders)
 .Where(r => r != null).ToList();
 
-            if (!result.Any()) return new List<Folder<string>>();
+            if (result.Count > 0) return new List<Folder<string>>();
 
             SetSharedProperty(result);
 
@@ -119,7 +107,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
                 var selectorLocal = selector;
                 var matchedIds = folderIds.Where(selectorLocal.IsMatch).ToList();
 
-                if (!matchedIds.Any()) continue;
+                if (matchedIds.Count > 0) continue;
 
                 result = result.Concat(matchedIds.GroupBy(selectorLocal.GetIdCode)
                                                 .SelectMany(matchedId =>
@@ -144,7 +132,7 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
 
         public string SaveFolder(Folder<string> folder)
         {
-            if (folder == null) throw new ArgumentNullException("folder");
+            if (folder == null) throw new ArgumentNullException(nameof(folder));
 
             if (folder.ID != null)
             {
@@ -261,12 +249,12 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
 
         public IDictionary<string, string> CanMoveOrCopy(string[] folderIds, string to)
         {
-            if (!folderIds.Any()) return new Dictionary<string, string>();
+            if (folderIds.Length > 0) return new Dictionary<string, string>();
 
             var selector = GetSelector(to);
             var matchedIds = folderIds.Where(selector.IsMatch).ToArray();
 
-            if (!matchedIds.Any()) return new Dictionary<string, string>();
+            if (matchedIds.Length > 0) return new Dictionary<string, string>();
 
             var folderDao = selector.GetFolderDao(matchedIds.FirstOrDefault());
             return folderDao.CanMoveOrCopy(matchedIds, to);
@@ -338,7 +326,7 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
             return folderDao.CanCalculateSubitems(entryId);
         }
 
-        public long GetMaxUploadSize(string folderId, bool chunkedUpload)
+        public long GetMaxUploadSize(string folderId, bool chunkedUpload = false)
         {
             var selector = GetSelector(folderId);
             var folderDao = selector.GetFolderDao(folderId);

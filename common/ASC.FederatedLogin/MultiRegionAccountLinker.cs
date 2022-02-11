@@ -23,16 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common.Utils;
-using ASC.FederatedLogin.Profile;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.FederatedLogin
 {
     public class MultiRegionAccountLinker
@@ -48,7 +38,7 @@ namespace ASC.FederatedLogin
                 databaseId = string.Join(".", new[] { _baseDatabaseId, hostedRegion.Trim() });
 
             if (!_accountLinkers.ContainsKey(databaseId))
-                throw new ArgumentException(string.Format("Region {0} is not defined", databaseId), "hostedRegion");
+                throw new ArgumentException($"Region {databaseId} is not defined", nameof(hostedRegion));
 
             return databaseId;
         }

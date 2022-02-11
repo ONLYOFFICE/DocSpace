@@ -23,10 +23,6 @@
  *
 */
 
-
-using System.IO;
-using System.Net.Http;
-
 namespace ASC.Web.Files.Core
 {
     public class ResponseStream : Stream

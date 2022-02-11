@@ -23,37 +23,32 @@
  *
 */
 
+using GroupInfo = ASC.Core.Users.GroupInfo;
 
-using System;
+namespace ASC.Web.Api.Models;
 
-using ASC.Core;
-using ASC.Core.Users;
-
-namespace ASC.Web.Api.Models
+public class GroupWrapperSummary
 {
-    public class GroupWrapperSummary
+    public Guid Id { get; set; }
+    public string Name { get; set; }
+    public string Manager { get; set; }
+
+    protected GroupWrapperSummary() { }
+
+    public GroupWrapperSummary(GroupInfo group, UserManager userManager)
     {
-        public GroupWrapperSummary(GroupInfo group, UserManager userManager)
+        Id = group.ID;
+        Name = group.Name;
+        Manager = userManager.GetUsers(userManager.GetDepartmentManager(group.ID)).UserName;
+    }
+
+    public static GroupWrapperSummary GetSample()
+    {
+        return new GroupWrapperSummary 
         {
-            Id = group.ID;
-            Name = group.Name;
-            Manager = userManager.GetUsers(userManager.GetDepartmentManager(group.ID)).UserName;
-        }
-
-        protected GroupWrapperSummary()
-        {
-        }
-
-
-        public string Name { get; set; }
-
-        public Guid Id { get; set; }
-
-        public string Manager { get; set; }
-
-        public static GroupWrapperSummary GetSample()
-        {
-            return new GroupWrapperSummary { Id = Guid.Empty, Manager = "Jake.Zazhitski", Name = "Group Name" };
-        }
+            Id = Guid.Empty, 
+            Manager = "Jake.Zazhitski", 
+            Name = "Group Name" 
+        };
     }
 }

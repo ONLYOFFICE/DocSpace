@@ -23,24 +23,7 @@
  *
 */
 
-
-using System;
-using System.Globalization;
-using System.Linq;
-using System.Threading;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Core.Common;
-using ASC.Core.Configuration;
-using ASC.Notify.Model;
-using ASC.Notify.Patterns;
-using ASC.Notify.Recipients;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using Constants = ASC.Core.Configuration.Constants;
 
 namespace ASC.Web.Studio.Core.Notify
 {
@@ -101,7 +84,7 @@ namespace ASC.Web.Studio.Core.Notify
                 (NotifyAction)item.Action,
                 item.ObjectId,
                 item.Recipients?.Select(r => r.IsGroup ? new RecipientsGroup(r.Id, r.Name) : (IRecipient)new DirectRecipient(r.Id, r.Name, r.Addresses.ToArray(), r.CheckActivation)).ToArray(),
-                item.SenderNames.Any() ? item.SenderNames.ToArray() : null,
+                item.SenderNames.Count > 0 ? item.SenderNames.ToArray() : null,
                 item.CheckSubsciption,
                 item.Tags.Select(r => new TagValue(r.Tag_, r.Value)).ToArray());
         }

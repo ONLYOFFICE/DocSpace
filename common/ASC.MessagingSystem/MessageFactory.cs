@@ -23,20 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Primitives;
-
 namespace ASC.MessagingSystem
 {
     [Scope]
@@ -73,7 +59,7 @@ namespace ASC.MessagingSystem
                     Action = action,
                     Description = description,
                     Target = target,
-                    UAHeader = request.Headers[userAgentHeader].FirstOrDefault()
+                    UAHeader = request?.Headers[userAgentHeader].FirstOrDefault()
                 };
             }
             catch (Exception ex)

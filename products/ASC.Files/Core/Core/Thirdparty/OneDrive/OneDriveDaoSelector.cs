@@ -23,13 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common;
-using ASC.Files.Core;
-using ASC.Files.Core.Security;
-
 namespace ASC.Files.Thirdparty.OneDrive
 {
     [Scope(Additional = typeof(OneDriveDaoSelectorExtension))]
@@ -64,7 +57,7 @@ namespace ASC.Files.Thirdparty.OneDrive
         }
     }
 
-    public class OneDriveDaoSelectorExtension
+    public static class OneDriveDaoSelectorExtension
     {
         public static void Register(DIHelper services)
         {

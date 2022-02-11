@@ -23,12 +23,6 @@
  *
 */
 
-
-using System;
-using System.Diagnostics;
-
-using ASC.Common;
-
 namespace ASC.Files.Core
 {
     public enum FolderType
@@ -89,9 +83,10 @@ namespace ASC.Files.Core
             FileEntryType = FileEntryType.Folder;
         }
 
-        public Folder(FileHelper fileHelper) : this()
+        public Folder(FileHelper fileHelper, Global global) : this()
         {
             FileHelper = fileHelper;
+            Global = global;
         }
 
         public override string UniqID

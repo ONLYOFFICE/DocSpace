@@ -162,7 +162,7 @@ namespace ASC.Web.CRM.Classes
 
             var languageName = System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
 
-            var findedCurrency = currencyProvider.GetAll().Find(item => String.Compare(item.CultureName, languageName, true) == 0);
+            var findedCurrency = currencyProvider.GetAll().Find(item => string.Equals(item.CultureName, languageName, StringComparison.OrdinalIgnoreCase));
 
             return new CrmSettings()
             {

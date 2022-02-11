@@ -23,19 +23,9 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
-using ASC.Core.Common.Settings;
-
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats;
-using SixLabors.ImageSharp.Processing;
-
 namespace ASC.Web.Core.Users
 {
-    public class UserPhotoThumbnailManager
+    public static class UserPhotoThumbnailManager
     {
         public static List<ThumbnailItem> SaveThumbnails(UserPhotoManager userPhotoManager, SettingsManager settingsManager, int x, int y, int width, int height, Guid userId)
         {
@@ -78,16 +68,20 @@ namespace ASC.Web.Core.Users
 
             var x = thumbnailSettings.Point.X > 0 ? thumbnailSettings.Point.X : 0;
             var y = thumbnailSettings.Point.Y > 0 ? thumbnailSettings.Point.Y : 0;
+            var width =  x + thumbnailSettings.Size.Width > mainImg.Width ? mainImg.Width : thumbnailSettings.Size.Width;
+            var height = y + thumbnailSettings.Size.Height > mainImg.Height ? mainImg.Height : thumbnailSettings.Size.Height;
+
             var rect = new Rectangle(x,
                                      y,
-                                     thumbnailSettings.Size.Width,
-                                     thumbnailSettings.Size.Height);
+                                     width,
+                                     height);
 
             Image destRound = mainImg.Clone(x => x.Crop(rect).Resize(new ResizeOptions
             {
                 Size = size,
                 Mode = ResizeMode.Stretch
             }));
+
             return destRound;
         }
     }

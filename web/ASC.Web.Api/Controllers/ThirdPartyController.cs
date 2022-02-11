@@ -23,19 +23,6 @@
  *
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Web;
-
-using ASC.Common;
-using ASC.FederatedLogin.Helpers;
-using ASC.FederatedLogin.LoginProviders;
-using ASC.Web.Api.Routing;
-
-using Microsoft.AspNetCore.Mvc;
-
 namespace ASC.Web.Api.Controllers
 {
     [Scope(Additional = typeof(BaseLoginProviderExtension))]
@@ -140,7 +127,7 @@ namespace ASC.Web.Api.Controllers
 
         private static string AppendCode(string url, string code = null, string error = null)
         {
-            url += (url.Contains("#") ? "&" : "#")
+            url += (url.Contains('#') ? "&" : "#")
                    + (string.IsNullOrEmpty(error)
                           ? (string.IsNullOrEmpty(code)
                                  ? string.Empty

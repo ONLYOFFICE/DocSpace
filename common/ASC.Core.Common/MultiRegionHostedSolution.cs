@@ -24,23 +24,6 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Security;
-
-using ASC.Common.Logging;
-using ASC.Common.Utils;
-using ASC.Core.Billing;
-using ASC.Core.Security.Authentication;
-using ASC.Core.Tenants;
-using ASC.Security.Cryptography;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-
 using DbContext = ASC.Core.Common.EF.Context.DbContext;
 
 namespace ASC.Core
@@ -107,7 +90,7 @@ namespace ASC.Core
                     error = exception;
                 }
             }
-            if (!result.Any() && error != null)
+            if (result.Count == 0 && error != null)
             {
                 throw error;
             }
@@ -204,11 +187,10 @@ namespace ASC.Core
         private void Initialize()
         {
             var connectionStrings = ConfigurationExtension.GetConnectionStrings();
-            var dbConnectionStrings = ConfigurationExtension.GetConnectionStrings(dbid);
 
             if (Convert.ToBoolean(Configuraion["core.multi-hosted.config-only"] ?? "false"))
             {
-                foreach (var cs in ConfigurationExtension.GetConnectionStrings())
+                foreach (var cs in connectionStrings)
                 {
                     if (cs.Name.StartsWith(dbid + "."))
                     {

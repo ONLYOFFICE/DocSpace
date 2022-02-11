@@ -23,15 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common;
-using ASC.Files.Core.Security;
-using ASC.Files.Thirdparty.ProviderDao;
-
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Files.Core.Data
 {
     [Scope]
@@ -72,7 +63,7 @@ namespace ASC.Files.Core.Data
         }
     }
 
-    public class DaoFactoryExtension
+    public static class DaoFactoryExtension
     {
         public static void Register(DIHelper services)
         {

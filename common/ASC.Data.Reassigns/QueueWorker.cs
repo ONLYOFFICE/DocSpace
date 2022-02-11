@@ -23,21 +23,9 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
-using ASC.Common;
-using ASC.Common.Threading;
-using ASC.Core.Users;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Primitives;
-
 namespace ASC.Data.Reassigns
 {
-    public class QueueWorker
+    public static class QueueWorker
     {
         public static IDictionary<string, StringValues> GetHttpHeaders(HttpRequest httpRequest)
         {
@@ -52,7 +40,7 @@ namespace ASC.Data.Reassigns
         protected IHttpContextAccessor HttpContextAccessor { get; }
         protected IServiceProvider ServiceProvider { get; }
 
-        public object SynchRoot = new object();
+        private readonly object _synchRoot = new object();
 
         public QueueWorker(
             IHttpContextAccessor httpContextAccessor,
@@ -87,7 +75,7 @@ namespace ASC.Data.Reassigns
 
         protected DistributedTaskProgress Start(int tenantId, Guid userId, Func<T> constructor)
         {
-            lock (SynchRoot)
+            lock (_synchRoot)
             {
                 var task = GetProgressItemStatus(tenantId, userId);
 

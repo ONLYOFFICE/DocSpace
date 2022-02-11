@@ -23,26 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Runtime.Caching;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core.Common.Notify;
-using ASC.Core.Common.Notify.Telegram;
-using ASC.Notify.Messages;
-using ASC.TelegramService.Core;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
-using Telegram.Bot;
-using Telegram.Bot.Args;
-
 namespace ASC.TelegramService
 {
     [Singletone(Additional = typeof(TelegramHandlerExtension))]
@@ -62,12 +42,18 @@ namespace ASC.TelegramService
             ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
         }
 
-        public async Task SendMessage(NotifyMessage msg)
+        public Task SendMessage(NotifyMessage msg)
+        {
+            if (string.IsNullOrEmpty(msg.To)) return Task.CompletedTask;
+            if (!Clients.ContainsKey(msg.Tenant)) return Task.CompletedTask;
+
+            return InternalSendMessage(msg);
+        }
+
+        private async Task InternalSendMessage(NotifyMessage msg)
         {
             var scope = ServiceProvider.CreateScope();
             var cachedTelegramDao = scope.ServiceProvider.GetService<IOptionsSnapshot<CachedTelegramDao>>().Value;
-            if (string.IsNullOrEmpty(msg.To)) return;
-            if (!Clients.ContainsKey(msg.Tenant)) return;
 
             var client = Clients[msg.Tenant].Client;
 
@@ -106,9 +92,8 @@ namespace ASC.TelegramService
             var telegramHelper = scope.ServiceProvider.GetService<TelegramHelper>();
             var newClient = telegramHelper.InitClient(token, proxy);
 
-            if (Clients.ContainsKey(tenantId))
+            if (Clients.TryGetValue(tenantId, out var client))
             {
-                var client = Clients[tenantId];
                 client.TokenLifeSpan = tokenLifespan;
 
                 if (token != client.Token || proxy != client.Proxy)
@@ -156,10 +141,14 @@ namespace ASC.TelegramService
             MemoryCache.Default.Set(token, userKey, dateExpires);
         }
 
-
-        private async Task OnMessage(object sender, MessageEventArgs e, TelegramBotClient client, int tenantId)
+        private Task OnMessage(object sender, MessageEventArgs e, TelegramBotClient client, int tenantId)
         {
-            if (string.IsNullOrEmpty(e.Message.Text) || e.Message.Text[0] != '/') return;
+            if (string.IsNullOrEmpty(e.Message.Text) || e.Message.Text[0] != '/') return Task.CompletedTask;
+            return InternalOnMessage(sender, e, client, tenantId);
+        }
+
+        private async Task InternalOnMessage(object sender, MessageEventArgs e, TelegramBotClient client, int tenantId)
+        {
             await Command.HandleCommand(e.Message, client, tenantId);
         }
 
@@ -176,7 +165,7 @@ namespace ASC.TelegramService
         }
     }
 
-    public class TelegramHandlerExtension
+    public static class TelegramHandlerExtension
     {
         public static void Register(DIHelper services)
         {

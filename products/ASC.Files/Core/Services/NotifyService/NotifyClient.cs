@@ -23,23 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Common;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
-using ASC.Notify.Patterns;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Classes;
-using ASC.Web.Studio.Core.Notify;
-
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Files.Core.Services.NotifyService
 {
     [Scope(Additional = typeof(NotifyClientExtension))]
@@ -258,7 +241,7 @@ namespace ASC.Files.Core.Services.NotifyService
         }
     }
 
-    public class NotifyClientExtension
+    public static class NotifyClientExtension
     {
         public static void Register(DIHelper services)
         {

@@ -1,6 +1,3 @@
-using System;
-using Microsoft.EntityFrameworkCore.Migrations;
-
 namespace ASC.Core.Common.Migrations.PostgreSql.WebstudioDbContextPostgreSql
 {
     public partial class WebstudioDbContextPostgreSql : Migration

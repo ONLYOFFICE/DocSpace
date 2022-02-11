@@ -24,17 +24,6 @@
 */
 
 
-using System;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Utils;
-using ASC.FederatedLogin;
-using ASC.FederatedLogin.Profile;
-using ASC.Security.Cryptography;
-
-using Microsoft.Extensions.Options;
-
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Studio.Core

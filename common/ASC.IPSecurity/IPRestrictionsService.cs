@@ -23,13 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
-using ASC.Common;
-using ASC.Common.Caching;
-
 namespace ASC.IPSecurity
 {
     [Singletone]
@@ -77,7 +70,8 @@ namespace ASC.IPSecurity
             var restrictions = cache.Get<List<IPRestriction>>(key);
             if (restrictions == null)
             {
-                cache.Insert(key, restrictions = IPRestrictionsRepository.Get(tenant), timeout);
+                restrictions = IPRestrictionsRepository.Get(tenant);
+                cache.Insert(key, restrictions, timeout);
             }
             return restrictions;
         }

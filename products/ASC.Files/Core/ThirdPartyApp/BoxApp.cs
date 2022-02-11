@@ -23,54 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Security;
-using System.Text;
-using System.Threading;
-using System.Web;
-
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Common.Web;
-using ASC.Core;
-using ASC.Core.Common;
-using ASC.Core.Common.Configuration;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-using ASC.FederatedLogin;
-using ASC.FederatedLogin.Helpers;
-using ASC.FederatedLogin.LoginProviders;
-using ASC.Files.Core;
-using ASC.Files.Core.Resources;
-using ASC.MessagingSystem;
-using ASC.Security.Cryptography;
-using ASC.Web.Core;
-using ASC.Web.Core.Files;
-using ASC.Web.Core.Users;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Core;
-using ASC.Web.Files.HttpHandlers;
-using ASC.Web.Files.Services.DocumentService;
-using ASC.Web.Studio.Core;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json.Linq;
-
-using SecurityContext = ASC.Core.SecurityContext;
-
 namespace ASC.Web.Files.ThirdPartyApp
 {
     public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
@@ -114,6 +66,7 @@ namespace ASC.Web.Files.ThirdPartyApp
         private ThirdPartyAppHandlerService ThirdPartyAppHandlerService { get; }
         private IServiceProvider ServiceProvider { get; }
         public ILog Logger { get; }
+        public IHttpClientFactory ClientFactory { get; }
 
         public BoxApp()
         {
@@ -147,6 +100,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
+            IHttpClientFactory clientFactory,
             string name, int order, Dictionary<string, string> additional)
             : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, additional)
         {
@@ -171,6 +125,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             ThirdPartyAppHandlerService = thirdPartyAppHandlerService;
             ServiceProvider = serviceProvider;
             Logger = option.CurrentValue;
+            ClientFactory = clientFactory;
         }
 
         public bool Request(HttpContext context)
@@ -198,11 +153,11 @@ namespace ASC.Web.Files.ThirdPartyApp
         public File<string> GetFile(string fileId, out bool editable)
         {
             Logger.Debug("BoxApp: get file " + fileId);
-            fileId = ThirdPartySelector.GetFileId(fileId.ToString());
+            fileId = ThirdPartySelector.GetFileId(fileId);
 
             var token = TokenHelper.GetToken(AppAttr);
 
-            var boxFile = GetBoxFile(fileId.ToString(), token);
+            var boxFile = GetBoxFile(fileId, token);
             editable = true;
 
             if (boxFile == null) return null;
@@ -220,13 +175,13 @@ namespace ASC.Web.Files.ThirdPartyApp
             var modifiedBy = jsonFile.Value<JObject>("modified_by");
             if (modifiedBy != null)
             {
-                file._modifiedByString = modifiedBy.Value<string>("name");
+                file.ModifiedByString = modifiedBy.Value<string>("name");
             }
 
             var createdBy = jsonFile.Value<JObject>("created_by");
             if (createdBy != null)
             {
-                file._createByString = createdBy.Value<string>("name");
+                file.CreateByString = createdBy.Value<string>("name");
             }
 
 
@@ -275,11 +230,11 @@ namespace ASC.Web.Files.ThirdPartyApp
                                 (stream == null
                                      ? " from - " + downloadUrl
                                      : " from stream"));
-            fileId = ThirdPartySelector.GetFileId(fileId.ToString());
+            fileId = ThirdPartySelector.GetFileId(fileId);
 
             var token = TokenHelper.GetToken(AppAttr);
 
-            var boxFile = GetBoxFile(fileId.ToString(), token);
+            var boxFile = GetBoxFile(fileId, token);
             if (boxFile == null)
             {
                 Logger.Error("BoxApp: file is null");
@@ -311,7 +266,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                 }
             }
 
-            using var httpClient = new HttpClient();
+            var httpClient = ClientFactory.CreateClient();
 
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(BoxUrlUpload.Replace("{fileId}", fileId));
@@ -320,8 +275,8 @@ namespace ASC.Web.Files.ThirdPartyApp
             {
                 var boundary = DateTime.UtcNow.Ticks.ToString("x");
 
-                var metadata = string.Format("Content-Disposition: form-data; name=\"filename\"; filename=\"{0}\"\r\nContent-Type: application/octet-stream\r\n\r\n", title);
-                var metadataPart = string.Format("--{0}\r\n{1}", boundary, metadata);
+                var metadata = $"Content-Disposition: form-data; name=\"filename\"; filename=\"{title}\"\r\nContent-Type: application/octet-stream\r\n\r\n";
+                var metadataPart = $"--{boundary}\r\n{metadata}";
                 var bytes = Encoding.UTF8.GetBytes(metadataPart);
                 tmpStream.Write(bytes, 0, bytes.Length);
 
@@ -338,7 +293,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                     downloadStream.CopyTo(tmpStream);
                 }
 
-                var mediaPartEnd = string.Format("\r\n--{0}--\r\n", boundary);
+                var mediaPartEnd = $"\r\n--{boundary}--\r\n";
                 bytes = Encoding.UTF8.GetBytes(mediaPartEnd);
                 tmpStream.Write(bytes, 0, bytes.Length);
 
@@ -472,7 +427,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                 request.Method = HttpMethod.Get;
                 request.Headers.Add("Authorization", "Bearer " + token);
 
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
                 using var response = httpClient.Send(request);
                 using var stream = new ResponseStream(response);
                 stream.CopyTo(context.Response.Body);
@@ -500,7 +455,7 @@ namespace ASC.Web.Files.ThirdPartyApp
         private bool CurrentUser(string boxUserId)
         {
             var linkedProfiles = Snapshot.Get("webstudio")
-                .GetLinkedObjectsByHashId(HashHelper.MD5(string.Format("{0}/{1}", ProviderConstants.Box, boxUserId)));
+                .GetLinkedObjectsByHashId(HashHelper.MD5($"{ProviderConstants.Box}/{boxUserId}"));
             return linkedProfiles.Any(profileId => Guid.TryParse(profileId, out var tmp) && tmp == AuthContext.CurrentAccount.ID);
         }
 

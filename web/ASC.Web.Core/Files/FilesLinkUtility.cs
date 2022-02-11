@@ -23,20 +23,6 @@
  *
 */
 
-
-using System;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Web;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Common;
-using ASC.Security.Cryptography;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.Extensions.Configuration;
-
 namespace ASC.Web.Core.Files
 {
     [Scope]

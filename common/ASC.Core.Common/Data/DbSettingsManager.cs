@@ -23,22 +23,7 @@
  *
 */
 
-
-using System;
-using System.Linq;
-using System.Text.Json;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-using ASC.Core.Common.EF.Model;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ASC.Core.Data
 {
@@ -148,13 +133,21 @@ namespace ASC.Core.Data
         private int tenantID;
         private int TenantID
         {
-            get { return tenantID != 0 ? tenantID : (tenantID = TenantManager.GetCurrentTenant().TenantId); }
+            get 
+            {
+                if (tenantID == 0) tenantID = TenantManager.GetCurrentTenant().TenantId;
+                return tenantID;
+            }
         }
         //
         private Guid? currentUserID;
         private Guid CurrentUserID
         {
-            get { return ((Guid?)(currentUserID ??= AuthContext.CurrentAccount.ID)).Value; }
+            get 
+            {
+                currentUserID ??= AuthContext.CurrentAccount.ID;
+                return currentUserID.Value; 
+            }
         }
 
         public bool SaveSettings<T>(T settings, int tenantId) where T : ISettings
@@ -177,7 +170,7 @@ namespace ASC.Core.Data
 
         public bool SaveSettingsFor<T>(T settings, int tenantId, Guid userId) where T : ISettings
         {
-            if (settings == null) throw new ArgumentNullException("settings");
+            if (settings == null) throw new ArgumentNullException(nameof(settings));
             try
             {
                 var key = settings.ID.ToString() + tenantId + userId;
@@ -326,7 +319,12 @@ namespace ASC.Core.Data
 
         private T Deserialize<T>(string data)
         {
-            return JsonSerializer.Deserialize<T>(data);
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            return JsonSerializer.Deserialize<T>(data, options);
         }
 
         private string Serialize<T>(T settings)

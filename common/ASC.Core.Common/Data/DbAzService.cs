@@ -23,16 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-
-using ASC.Common;
-using ASC.Core.Common.EF;
-using ASC.Core.Tenants;
-
 namespace ASC.Core.Data
 {
     [Scope]
@@ -75,9 +65,8 @@ namespace ASC.Core.Data
             foreach (var a in tenantAces)
             {
                 var key = string.Concat(a.Tenant.ToString(), a.SubjectId.ToString(), a.ActionId.ToString(), a.ObjectId);
-                if (commonAces.ContainsKey(key))
+                if (commonAces.TryGetValue(key, out var common))
                 {
-                    var common = commonAces[key];
                     commonAces.Remove(key);
                     if (common.Reaction == a.Reaction)
                     {
@@ -126,15 +115,13 @@ namespace ASC.Core.Data
 
         private bool ExistEscapeRecord(AzRecord r)
         {
-            var count = UserDbContext.Acl
+            return UserDbContext.Acl
                 .Where(a => a.Tenant == Tenant.DEFAULT_TENANT)
                 .Where(a => a.Subject == r.SubjectId)
                 .Where(a => a.Action == r.ActionId)
                 .Where(a => a.Object == (r.ObjectId ?? string.Empty))
                 .Where(a => a.AceType == r.Reaction)
-                .Count();
-
-            return count != 0;
+                .Any();
         }
 
         private void DeleteRecord(AzRecord r)

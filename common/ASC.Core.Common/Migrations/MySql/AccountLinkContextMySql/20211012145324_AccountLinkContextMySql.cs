@@ -1,6 +1,3 @@
-using System;
-using Microsoft.EntityFrameworkCore.Migrations;
-
 namespace ASC.Core.Common.Migrations.MySql.AccountLinkContextMySql
 {
     public partial class AccountLinkContextMySql : Migration

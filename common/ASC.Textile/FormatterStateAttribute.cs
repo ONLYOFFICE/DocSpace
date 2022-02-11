@@ -1,5 +1,3 @@
-using System;
-
 namespace Textile
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
