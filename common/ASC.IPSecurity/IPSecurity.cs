@@ -23,120 +23,119 @@
  *
 */
 
-namespace ASC.IPSecurity
+namespace ASC.IPSecurity;
+
+[Scope]
+public class IPSecurity
 {
-    [Scope]
-    public class IPSecurity
+    public bool IpSecurityEnabled { get; }
+
+    private readonly ILog _logger;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly AuthContext _authContext;
+    private readonly TenantManager _tenantManager;
+    private readonly IPRestrictionsService _ipRestrictionsService;
+    private readonly SettingsManager _settingsManager;
+    private readonly string _currentIpForTest;
+
+    public IPSecurity(
+        IConfiguration configuration,
+        IHttpContextAccessor httpContextAccessor,
+        AuthContext authContext,
+        TenantManager tenantManager,
+        IPRestrictionsService iPRestrictionsService,
+        SettingsManager settingsManager,
+        IOptionsMonitor<ILog> options)
     {
-        public bool IpSecurityEnabled { get; }
+        _logger = options.Get("ASC.IPSecurity");
+        _httpContextAccessor = httpContextAccessor;
+        _authContext = authContext;
+        _tenantManager = tenantManager;
+        _ipRestrictionsService = iPRestrictionsService;
+        _settingsManager = settingsManager;
+        _currentIpForTest = configuration["ipsecurity:test"];
+        var hideSettings = (configuration["web:hide-settings"] ?? "").Split(new[] { ',', ';', ' ' });
+        IpSecurityEnabled = !hideSettings.Contains("IpSecurity", StringComparer.CurrentCultureIgnoreCase);
+    }
 
-        private readonly ILog _logger;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly AuthContext _authContext;
-        private readonly TenantManager _tenantManager;
-        private readonly IPRestrictionsService _ipRestrictionsService;
-        private readonly SettingsManager _settingsManager;
-        private readonly string _currentIpForTest;
+    public bool Verify()
+    {
+        var tenant = _tenantManager.GetCurrentTenant();
 
-        public IPSecurity(
-            IConfiguration configuration,
-            IHttpContextAccessor httpContextAccessor,
-            AuthContext authContext,
-            TenantManager tenantManager,
-            IPRestrictionsService iPRestrictionsService,
-            SettingsManager settingsManager,
-            IOptionsMonitor<ILog> options)
+        if (!IpSecurityEnabled)
         {
-            _logger = options.Get("ASC.IPSecurity");
-            _httpContextAccessor = httpContextAccessor;
-            _authContext = authContext;
-            _tenantManager = tenantManager;
-            _ipRestrictionsService = iPRestrictionsService;
-            _settingsManager = settingsManager;
-            _currentIpForTest = configuration["ipsecurity:test"];
-            var hideSettings = (configuration["web:hide-settings"] ?? "").Split(new[] { ',', ';', ' ' });
-            IpSecurityEnabled = !hideSettings.Contains("IpSecurity", StringComparer.CurrentCultureIgnoreCase);
+            return true;
         }
 
-        public bool Verify()
+        if (_httpContextAccessor?.HttpContext == null)
         {
-            var tenant = _tenantManager.GetCurrentTenant();
+            return true;
+        }
 
-            if (!IpSecurityEnabled)
+        if (tenant == null || _authContext.CurrentAccount.ID == tenant.OwnerId)
+        {
+            return true;
+        }
+
+        string requestIps = null;
+        try
+        {
+            var restrictions = _ipRestrictionsService.Get(tenant.TenantId).ToList();
+
+            if (restrictions.Count == 0)
             {
                 return true;
             }
 
-            if (_httpContextAccessor?.HttpContext == null)
+            requestIps = _currentIpForTest;
+
+            if (string.IsNullOrWhiteSpace(requestIps))
+            {
+                var request = _httpContextAccessor.HttpContext.Request;
+                requestIps = request.Headers["X-Forwarded-For"].FirstOrDefault() ?? request.GetUserHostAddress();
+            }
+
+            var ips = string.IsNullOrWhiteSpace(requestIps)
+                          ? Array.Empty<string>()
+                          : requestIps.Split(new[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (ips.Any(requestIp => restrictions.Any(restriction => MatchIPs(GetIpWithoutPort(requestIp), restriction.Ip))))
             {
                 return true;
             }
-
-            if (tenant == null || _authContext.CurrentAccount.ID == tenant.OwnerId)
-            {
-                return true;
-            }
-
-            string requestIps = null;
-            try
-            {
-                var restrictions = _ipRestrictionsService.Get(tenant.TenantId).ToList();
-
-                if (restrictions.Count == 0)
-                {
-                    return true;
-                }
-
-                requestIps = _currentIpForTest;
-
-                if (string.IsNullOrWhiteSpace(requestIps))
-                {
-                    var request = _httpContextAccessor.HttpContext.Request;
-                    requestIps = request.Headers["X-Forwarded-For"].FirstOrDefault() ?? request.GetUserHostAddress();
-                }
-
-                var ips = string.IsNullOrWhiteSpace(requestIps)
-                              ? Array.Empty<string>()
-                              : requestIps.Split(new[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries);
-
-                if (ips.Any(requestIp => restrictions.Any(restriction => MatchIPs(GetIpWithoutPort(requestIp), restriction.Ip))))
-                {
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.ErrorFormat("Can't verify request with IP-address: {0}. Tenant: {1}. Error: {2} ", requestIps ?? "", tenant, ex);
-
-                return false;
-            }
-
-            _logger.InfoFormat("Restricted from IP-address: {0}. Tenant: {1}. Request to: {2}", requestIps ?? "", tenant, _httpContextAccessor.HttpContext.Request.GetDisplayUrl());
+        }
+        catch (Exception ex)
+        {
+            _logger.ErrorFormat("Can't verify request with IP-address: {0}. Tenant: {1}. Error: {2} ", requestIps ?? "", tenant, ex);
 
             return false;
         }
 
-        private static bool MatchIPs(string requestIp, string restrictionIp)
+        _logger.InfoFormat("Restricted from IP-address: {0}. Tenant: {1}. Request to: {2}", requestIps ?? "", tenant, _httpContextAccessor.HttpContext.Request.GetDisplayUrl());
+
+        return false;
+    }
+
+    private static bool MatchIPs(string requestIp, string restrictionIp)
+    {
+        var dividerIdx = restrictionIp.IndexOf('-');
+        if (dividerIdx > -1)
         {
-            var dividerIdx = restrictionIp.IndexOf('-');
-            if (dividerIdx > -1)
-            {
-                var lower = IPAddress.Parse(restrictionIp.Substring(0, dividerIdx).Trim());
-                var upper = IPAddress.Parse(restrictionIp.Substring(dividerIdx + 1).Trim());
+            var lower = IPAddress.Parse(restrictionIp.Substring(0, dividerIdx).Trim());
+            var upper = IPAddress.Parse(restrictionIp.Substring(dividerIdx + 1).Trim());
 
-                var range = new IPAddressRange(lower, upper);
+            var range = new IPAddressRange(lower, upper);
 
-                return range.IsInRange(IPAddress.Parse(requestIp));
-            }
-
-            return requestIp == restrictionIp;
+            return range.IsInRange(IPAddress.Parse(requestIp));
         }
 
-        private static string GetIpWithoutPort(string ip)
-        {
-            var portIdx = ip.IndexOf(':');
+        return requestIp == restrictionIp;
+    }
 
-            return portIdx > 0 ? ip.Substring(0, portIdx) : ip;
-        }
+    private static string GetIpWithoutPort(string ip)
+    {
+        var portIdx = ip.IndexOf(':');
+
+        return portIdx > 0 ? ip.Substring(0, portIdx) : ip;
     }
 }
