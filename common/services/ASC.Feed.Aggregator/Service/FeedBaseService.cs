@@ -1,8 +1,9 @@
 ﻿namespace ASC.Feed.Aggregator.Service
 {
-    [Singletone(Additional = typeof(FeedAggregatorServiceExtension))]
     public abstract class FeedBaseService : IHostedService, IDisposable
     {
+        protected virtual string LoggerName { get; set; } = "ASC.Feed";
+
         protected Timer Timer;
         protected volatile bool IsStopped;
         protected readonly ILog Logger;
@@ -17,7 +18,7 @@
         {
             FeedSettings = feedSettings;
             ServiceProvider = serviceProvider;
-            Logger = optionsMonitor.Get("ASC.Feed.Agregator");
+            Logger = optionsMonitor.Get(LoggerName);
         }
 
         public abstract Task StartAsync(CancellationToken cancellationToken);

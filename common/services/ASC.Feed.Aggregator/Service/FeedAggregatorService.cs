@@ -1,7 +1,9 @@
 ﻿namespace ASC.Feed.Aggregator.Service
 {
+    [Singletone(Additional = typeof(FeedAggregatorServiceExtension))]
     public class FeedAggregatorService : FeedBaseService
     {
+        protected override string LoggerName { get; set; } = "ASC.Feed.Aggregator";
         private readonly SignalrServiceClient _signalrServiceClient;
 
         public FeedAggregatorService(

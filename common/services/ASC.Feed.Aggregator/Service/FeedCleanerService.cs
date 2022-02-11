@@ -2,6 +2,8 @@
 {
     public class FeedCleanerService : FeedBaseService
     {
+        protected override string LoggerName { get; set; } = "ASC.Feed.Cleaner";
+
         public FeedCleanerService(
             FeedSettings feedSettings,
             IServiceProvider serviceProvider,
